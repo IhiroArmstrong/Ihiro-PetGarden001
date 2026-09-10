@@ -10,16 +10,30 @@
  * Charter: `docs/GROWTH_METRICS_CHARTER.md` · `docs/tracker-entries/lotus-pond-daily-score-cap.md`
  */
 
-/** @type {number} PO-approved default (2026-09-10). */
+import { getDailyScoreCapMinutes } from './growthMetricsConfigOverlay.js';
+
+/** @type {number} PO-approved git freeze default (2026-09-10). Remote overlay may differ in production. */
 export const DAILY_SCORE_CAP_MINUTES = 180;
 
+export const DAILY_SCORE_CAP_MIN = 60;
+export const DAILY_SCORE_CAP_MAX = 480;
+
 /**
- * @param {number} rawMinutes
- * @returns {number}
+ * @param {unknown} value
+ * @returns {number | null}
  */
+export function normalizeDailyScoreCapMinutes(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  const floored = Math.floor(n);
+  if (floored < DAILY_SCORE_CAP_MIN) return null;
+  if (floored > DAILY_SCORE_CAP_MAX) return null;
+  return floored;
+}
+
 export function capDailyMinutesForScore(rawMinutes) {
   const n = Math.max(0, Number(rawMinutes) || 0);
-  return Math.min(n, DAILY_SCORE_CAP_MINUTES);
+  return Math.min(n, getDailyScoreCapMinutes());
 }
 
 /**
@@ -30,7 +44,7 @@ export function capDailyMinutesForScore(rawMinutes) {
 export function resolveScoreEligibleIncrement(todayEligibleAlready, deltaMinutes) {
   const today = Math.max(0, Number(todayEligibleAlready) || 0);
   const delta = Math.max(0, Number(deltaMinutes) || 0);
-  const remaining = Math.max(0, DAILY_SCORE_CAP_MINUTES - today);
+  const remaining = Math.max(0, getDailyScoreCapMinutes() - today);
   const eligibleAdd = Math.min(delta, remaining);
   return { eligibleAdd, overflow: delta - eligibleAdd };
 }
@@ -61,5 +75,5 @@ export function resolvePersonaScoreEligibleMinutes(seed) {
   const lifetime = Math.max(0, Number(seed.lifetimeMinutes) || 0);
   const days = Math.max(0, Math.floor(Number(seed.practiceDayCount) || 0));
   if (days <= 0) return 0;
-  return Math.min(lifetime, days * DAILY_SCORE_CAP_MINUTES);
+  return Math.min(lifetime, days * getDailyScoreCapMinutes());
 }

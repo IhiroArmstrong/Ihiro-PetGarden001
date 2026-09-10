@@ -80,7 +80,7 @@
 | 2 | Rituals + 自定义 Ritual + 分享至 Circle（`rituals-custom-share`） | **并行**：自定义 Ritual ↔ #1。**仅分享切片**串行依赖 #3 的可分享基建。耦合 #1（完成仪式事件）。 | 建议分享做子 Issue，不要让整个 Epic blocked by #3。 |
 | 3 | Social & Circle（`social-circle`） | **并行**。被 #2 分享切片依赖。刀2 Witness/2c/2d 挂本线。 | |
 | 4 | Support Yin & Stripe 支付完善/付费层级管理（`monetization-tiers`） | **并行**。其它带付费感知的线 **兼容** 本线矩阵（SKU/文案），不整线等待。**耦合** #5（官网/壳收款收口）。 | 禁止「任何付费门槛都 blocked by 本 Epic」。 |
-| 5 | 苹果 DMG 发布准备（`mac-dmg-release`） | **并行**到打包周。**耦合** #9（是否打进模型）、#4（收款）。**兼容** #19（下载入口）。 | 不 blocks #9 开工。 |
+| 5 | 苹果 DMG 发布准备（`mac-dmg-release`） | **并行**到打包周。**耦合** #9（是否打进模型）、#4（收款）、**#21**（客户端防随手抄）。**兼容** #19（下载入口）。 | 不 blocks #9 开工。**子切片**：**V8 字节码编译**（bytenode）— Electron + DMG 后源码仍在 `app.asar`（非加密；`asar extract` 可原样解压）；若加门槛，V8 字节码是性价比合理选项；**不建议**为 score/徽章/纪念印公式上 C++/Rust 原生模块。 |
 | 6 | Focus Coin & Collections（`focus-coin-collections`） | **耦合** #1（发点来源）。**耦合** #14（花园 vs 珍藏空间，已切开）。**兼容** #18（数字对得上即可）。 | 新「按时长发点」切片建议等 #1 口径；商店/清供可并行。 |
 | 7 | Five Moments 场景功能扩充（`five-moments-expansion`） | **兼容** #10 #11 #13（共用 Arrive/Focus/Recover/… 标签）。**禁止**整线耦合、禁止本线认领金句/Reset/倾诉实现。 | 范围=分类框架扩展；具体功能归各产品线。 |
 | 8 | Yin's Personalization Engine 算法层（`personalization-engine`） | **并行**本地 L0/L1。**耦合** #21（云端秘密变换归防剽窃，本线只管信号/Pack 形状）。**兼容** #12（问答若将来做，只是可选输入）。**兼容** #17（画像是否进备份包，分切片谈）。**不**耦合 #9。 | 算法/信号 ≠ YPE 云闭包 ≠ Qwen ≠ Operating。**防剽窃收口**：YPE V2 真保护须 insight 被 Confide 真实消费 + 现网阈值 ≠ git 验收锚 + 「部署」——见 `ANTI_PLAGIARISM_LAYER.md` §3.2.2 C。 |
@@ -96,7 +96,7 @@
 | 18 | Journey Log（`journey-log`） | **耦合** #1（写入钩）。**兼容** #6 #8 #22（1B 读数须对列表）。**耦合** #17（在备份白名单里）。 | |
 | 19 | 市场官网（`marketing-site`） | **并行**。发布周 **兼容** #4 定价、#5 下载链。 | |
 | 20 | 美术优化（`art-polish`） | **兼容约束（全局 UI）**；不阻塞。 | |
-| 21 | 防剽窃层（`anti-plagiarism-layer`） | **耦合** #8 #11 #13（分 PR overlay，不整线互相等完）。 | 正文链 `ANTI_PLAGIARISM_LAYER.md`。**不单独排期**：§3.2.2 C 挂主线前置；权重分叉等 D3 冻结；真保护 = 现网 ≠ 冻表（尺子，不是第 22 条产品线）。 |
+| 21 | 防剽窃层（`anti-plagiarism-layer`） | **耦合** #8 #11 #13（分 PR overlay，不整线互相等完）、**#5**（Electron 打包后客户端源码保护 · V8 字节码编译）。 | 正文链 `ANTI_PLAGIARISM_LAYER.md`。**不单独排期**：§3.2.2 C 挂主线前置；权重分叉等 D3 冻结；真保护 = 现网 ≠ 冻表（尺子，不是第 22 条产品线）。客户端打包见 §7（与云 overlay 正交）。 |
 | 22 | Local AI Phase 1A/1B/1C 验收（`phase1-a-b-c-testing`） | **挂在 #13 下的验收轨**，Epic 级并行于其它产品线。**兼容** #18（1B 数字）。1C 只用实验室环境，**不** blocks #9。 | 1B 问练习/到场；1A 口头出示记忆；1C 第二面镜子 validation≠上线。≠ 记忆切片 1a/1b/1c。 |
 
 ## 已拍板

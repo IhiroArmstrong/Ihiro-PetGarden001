@@ -23,6 +23,8 @@ export interface Env {
 	NEWSLETTER_KV: KVNamespace;
 	/** YPE L2 personalization signals + Pack (not tip/backup/funnel). */
 	YPE_PERSONALIZATION_KV: KVNamespace;
+	/** Growth metrics remote params (not entitlement / taste / YPE). */
+	GROWTH_METRICS_KV: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;
@@ -122,6 +124,11 @@ export interface EmotionWeightResponse {
 	welcomePool: Array<{ key: string; weight: number }>;
 	lightCompletePool: Array<{ key: string; weight: number }>;
 	honestyLongMinMinutes: number;
+}
+
+export interface GrowthMetricsConfigResponse {
+	schemaVersion: number;
+	dailyScoreCapMinutes: number;
 }
 
 export interface CreateCheckoutSessionResponse {
