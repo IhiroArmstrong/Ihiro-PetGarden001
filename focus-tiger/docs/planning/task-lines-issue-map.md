@@ -1,7 +1,8 @@
 # 开发任务线 · GitHub Issue 对照表
 
 > 由 2026-09-07 批量建库生成。草案 SSOT：[`task-lines-epic-draft.md`](./task-lines-epic-draft.md)。  
-> **Epic 之间不设 `blocked by`。** 仅有的真先后：#638 blocked by 审计 #648；切片 #650 blocked by #649。
+> **Epic 之间不设 `blocked by`。** 仅有的真先后：#638 blocked by 审计 #648；切片 #650 blocked by #649。  
+> **#640（2026-09-10）**：意义层 SSOT `YIN_EVOLUTION.md`（莲花池降为 Visible Growth 切片，不另开 Epic）。P0 表面耦合 #643。
 
 仓库：https://github.com/IhiroArmstrong/Ihiro-PetGarden001
 

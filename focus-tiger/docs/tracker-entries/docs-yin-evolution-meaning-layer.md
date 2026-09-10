@@ -1,0 +1,1 @@
+| Yin Evolution 意义层方向锁 | 纯文档 | 仅单元测试覆盖 | **无运行时**。新增 `YIN_EVOLUTION.md`：关系叙事叠在现有分数/莲花/徽章上；Come Back ∪ Keep Going；阶段禁止 HUD/用户可见阶段名；见证不得锁付费。看板：重写 Epic #640，#643 保持独立（P0 表面）。P0 与莲花文案须另口令。**测**：阅读 SSOT + `npm run docs:check`。 | — | — | `docs/YIN_EVOLUTION.md` · Epic #640 / #643 | 2026-09-10 |

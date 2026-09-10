@@ -1,8 +1,8 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.7
-> 最后更新：2026-09-04
+> 版本：1.8
+> 最后更新：2026-09-10
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
@@ -12,6 +12,7 @@
 
 1. `PRODUCT_POSITIONING.md`：品牌定位、使命、长期方向；
 1a. `FROM_APP_TO_CULTURE.md`：**文化探索方向锁**（From App to Culture；验证框架；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
+1b. `YIN_EVOLUTION.md`：**陪伴成长意义层**（关系叙事；不改分数公式；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
 3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
 4. `PRODUCT_MOMENTS.md`：一天中的 Five Moments 产品叙事框架（Arrive / Focus / Recover / Transition / Reflect），位于定位之下、任务排期之上；
@@ -250,6 +251,8 @@ Focus Tiger 不采用「用户专注 → 小老虎更健康；用户离开 → �
 - 用户回看自己投入过的时间与练习轨迹。
 
 默认状态始终完整、温暖、安全。成长是额外惊喜，不是从缺陷恢复，也不制造照料负担。
+
+**意义层（2026-09-10）**：分数 / 莲花 / 徽章仍是 Progression Engine；长期陪伴叙事见 `YIN_EVOLUTION.md`（Keep Going ∪ Come Back；阶段不是等级；见证不得锁付费）。本定位稿不改公式。
 
 ---
 
