@@ -84,6 +84,7 @@ focus-tiger/
 ├─ docs/                          # 流程/设计文档，不参与构建
 │  ├─ PRODUCT_POSITIONING.md      # 品牌定位、核心使命与长期方向（产品语义顶层）
 │  ├─ FROM_APP_TO_CULTURE.md      # 文化探索方向锁（App→Slack；废除证据门；无运行时）
+│  ├─ YIN_EVOLUTION.md            # 陪伴成长意义层（关系叙事；无运行时；≠ scoreFormula）
 │  ├─ TASKS.md
 │  ├─ PRINCIPLES.md
 │  ├─ ARCHITECTURE.md

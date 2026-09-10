@@ -2,7 +2,7 @@
 
 > **Status**: Initial charter (2026-09-10) · persona regression in CI  
 > **Companion code**: `src/core/growthMetricsRegistry.js` · `src/core/growthPersonaFixtures.js` · `src/core/growthPersonaRegression.js`  
-> **Related**: `practice-aggregate-registry.md` (baseline write hook + P0 consumers) · `FOCUS_COINS.md` (currency track) · `TEST_TRACKER.md` (QA seeds)
+> **Related**: `practice-aggregate-registry.md` (baseline write hook + P0 consumers) · `FOCUS_COINS.md` (currency track) · `TEST_TRACKER.md` (QA seeds) · `YIN_EVOLUTION.md` (relationship meaning layer; **not** a formula consumer)
 
 ---
 
@@ -15,6 +15,7 @@ Focus Tiger **does not** use one formula for all growth. That is intentional pro
 | **Garden (自动)** | Lotus pond, practice badges, memorial seals | Lifetime / score / streak — never sold for coins |
 | **Collections (结缘)** | 清供八件、称号 | Focus Coins + SKU gates |
 | **Session feedback** | Celebrating, MilestoneGlow animation | Today / streak nodes — not a scoreboard |
+| **Relationship (意义层)** | Come Back / Journey memories / internal stage groups | Derived presentation — **never** an unlock-gate; see `YIN_EVOLUTION.md`. Must not add a `scoreFormula` consumer. |
 
 This charter makes **fairness operable**: every track declares input sources, window, daily-cap policy, formula version, and authoritative consumers. **Persona fixtures** turn “is this fair?” into pass/fail regression instead of ad-hoc debate.
 
@@ -163,3 +164,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 |---|---|
 | 2026-09-10 | Initial charter + registry schema + persona CI + TEST_TRACKER seed contract |
 | 2026-09-10 | scoreFormula.v3 — 180 min/day score cap; `single-binge-extreme` persona |
+| 2026-09-10 | Pointer: relationship layer is presentation/memory, not a growth formula (`YIN_EVOLUTION.md`) |

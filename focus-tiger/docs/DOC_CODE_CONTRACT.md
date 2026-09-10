@@ -169,7 +169,7 @@ git commit --no-verify -m "…"
 
 ## 五、明确不需要重绑定的范围
 
-- 产品定位、品牌措辞（`PRODUCT_POSITIONING.md`）；文化探索方向锁（`FROM_APP_TO_CULTURE.md`，无运行时）  
+- 产品定位、品牌措辞（`PRODUCT_POSITIONING.md`）；文化探索方向锁（`FROM_APP_TO_CULTURE.md`，无运行时）；陪伴成长意义层（`YIN_EVOLUTION.md`，无运行时，≠ 成长公式）  
 - 情绪 Bible 叙事与文案池（`EMOTION_BIBLE.md` 正文）  
 - 序列动画观感、帧率调参、Shader 视觉  
 - Task 排期、Backlog、一次性调研  

@@ -2,6 +2,7 @@
 本项目文档已拆分为以下结构，请在需要时查阅对应文件：
 - 产品定位(品牌使命与长期方向): /docs/PRODUCT_POSITIONING.md
 - 文化探索方向锁(From App to Culture；App 社交塑造 Slack；废除证据门): /docs/FROM_APP_TO_CULTURE.md
+- 陪伴成长意义层(Yin Evolution；关系叙事；不改分数公式): /docs/YIN_EVOLUTION.md
 - 项目原则(硬性红线): /docs/PRINCIPLES.md
 - 架构设计(模块职责边界): /docs/ARCHITECTURE.md
 - 产品设计(角色设定与状态语义): /docs/DESIGN.md

@@ -89,11 +89,11 @@
 | 11 | 金句库/三池 + 逐步接线（`wisdom-pools`） | **并行**。**耦合** #21（Quiet Line overlay）。**兼容** #7（Moment 分桶）。与 #13 **并行且分池**（禁止倾诉语料当金句菜单）。 | 内容入库 + overlay 槽 + 挂到界面；不另开接线 Epic。**防剽窃收口**：Quiet Line 其余键逐键部署分叉（overlay 已就绪）；Calm Action 70 须 runtime Layer C 关单后再谈 overlay——见 §3.2.2 C / C′。 |
 | 12 | Onboarding 提问（`onboarding-goal-questions`） | **真串行**：blocked by **表外**「冷启动第一幕审计」收口。与 #8 **不**互 blocks。 | 现状：方向采纳、现在不实现。解禁口令另说。建议审计做短 Epic 或挂本线前置子 Issue。 |
 | 13 | Confide 与 AI 仪式应用（`confide-ai-ritual`） | **并行**活基线。**耦合** #21（句库 overlay）。**兼容** #9 #10。#22 是本线验收轨，**不**互设 Epic blocks。 | 工作量最大；正文链已有 task-briefs。**防剽窃收口**：句库除已分叉 EN 外，其余键 + ja/zh/corpus 逐键部署分叉；YPE insight 消费路径到位后 V2 闭包才算熟——见 §3.2.2 C。 |
-| 14 | Yin Evolution（`yin-evolution`） | **耦合** #1（终身分钟）。**耦合** #6（空间切开）。**兼容** #20。 | 一句话：身旁终身莲花池；Slice A 已接线；后续 Slice B 金环 + 未接线环境纪念物。 |
+| 14 | Yin Evolution（`yin-evolution`） | **耦合** #1（终身分钟）。**耦合** #6（空间切开）。**耦合** #18（P0 记忆表面在 Journey）。**兼容** #20。 | **意义层**（SSOT `YIN_EVOLUTION.md`）。莲花池 Slice A = Visible Growth（已接线）；Slice B 金环仍属本线、非 P0。禁止再造第二座池、禁止改 scoreFormula。 |
 | 15 | 多语言（`i18n`） | **兼容约束（全局）**：凡用户可见文案的线都要对它兼容；**永不** blocks。 | 只 claim en+ja，zh 为草稿。 |
 | 16 | ~~Personalization Engine~~ | — | **已并入 #8**，不建 Epic。 |
 | 17 | 本地数据导入导出（`local-data-import-export`） | **并行**（P0 已有）。扩白名单时 **耦合** #18；若纳入 YPE/记忆则 **耦合** 对应线。不 blocks #8。 | |
-| 18 | Journey Log（`journey-log`） | **耦合** #1（写入钩）。**兼容** #6 #8 #22（1B 读数须对列表）。**耦合** #17（在备份白名单里）。 | |
+| 18 | Journey Log（`journey-log`） | **耦合** #1（写入钩）。**兼容** #6 #8 #22（1B 读数须对列表）。**耦合** #17（在备份白名单里）。**耦合** #14（P0 Come Back + 六条记忆落本线表面，不合并 Epic）。 | 练习留痕仍本线；关系叙事原则在 #14。 |
 | 19 | 市场官网（`marketing-site`） | **并行**。发布周 **兼容** #4 定价、#5 下载链。 | |
 | 20 | 美术优化（`art-polish`） | **兼容约束（全局 UI）**；不阻塞。 | |
 | 21 | 防剽窃层（`anti-plagiarism-layer`） | **耦合** #8 #11 #13（分 PR overlay，不整线互相等完）、**#5**（Electron 打包后客户端源码保护 · V8 字节码编译）。 | 正文链 `ANTI_PLAGIARISM_LAYER.md`。**不单独排期**：§3.2.2 C 挂主线前置；权重分叉等 D3 冻结；真保护 = 现网 ≠ 冻表（尺子，不是第 22 条产品线）。客户端打包见 §7（与云 overlay 正交）。 |
