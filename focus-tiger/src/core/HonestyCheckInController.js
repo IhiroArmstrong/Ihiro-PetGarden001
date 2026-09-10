@@ -75,7 +75,7 @@ export class HonestyCheckInController {
    * @param {() => void} [deps.clearFocusGlow]
    * @param {(detail?: { durationMinutes: number, wokeFromDormant?: boolean }) => void} [deps.onCheckInComplete]
    *   补登仪式结束（记账）后；桥接 CTA 挂这里。L1 同坐点用 durationMinutes 发 Honesty 档；L2 用 wokeFromDormant 记睡醒门槛。
-   * @param {(detail: { durationMinutes: number }) => void} [deps.onPracticeDay]
+   * @param {(detail: { durationMinutes: number, sourceId?: string }) => void} [deps.onPracticeDay]
    *   计时达标或 Honesty 记账后标记练习日（光点圈 + 当日累计分钟）
    * @param {(detail: { durationMinutes: number }) => void} [deps.onSessionRecorded]
    *   完成写入后（计时 / Honesty）；留存 `first_session_complete` 挂这里
@@ -157,7 +157,7 @@ export class HonestyCheckInController {
   onTimedSessionCompleted(durationMinutes) {
     this.focusSessionEndStore.recordSessionEnded();
     const entry = this.store.recordCompletion(durationMinutes);
-    this.onPracticeDay({ durationMinutes });
+    this.onPracticeDay({ durationMinutes, sourceId: 'sit-timed' });
     if (entry) {
       this.onSessionRecorded({ durationMinutes: entry.durationMinutes });
     }
@@ -361,7 +361,7 @@ export class HonestyCheckInController {
     }
 
     const entry = this.store.recordCompletion(minutes);
-    this.onPracticeDay({ durationMinutes: minutes });
+    this.onPracticeDay({ durationMinutes: minutes, sourceId: 'honesty-checkin' });
     if (entry) {
       this.onSessionRecorded({ durationMinutes: entry.durationMinutes });
     }

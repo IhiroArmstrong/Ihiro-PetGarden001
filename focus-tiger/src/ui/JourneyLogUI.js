@@ -14,6 +14,15 @@ import {
   journeyLogLineKind,
   readJourneyLog
 } from '../core/journeyLogGate.js';
+import {
+  journeyPracticeMemoryLocaleKey,
+  journeyTimelineSortKey,
+  readJourneyLogExtended,
+  reconcileJourneyPracticeMemoriesFromHistory,
+  writeJourneyLogExtended
+} from '../core/journeyPracticeMemory.js';
+import { LotusPondStore } from '../core/LotusPondStore.js';
+import { PracticeDaysStore } from '../core/PracticeDaysStore.js';
 import { readPracticeBackupOptIn } from '../core/practiceBackup/practiceBackupOptIn.js';
 import { practiceBackupWhereText } from '../core/practiceBackup/practiceBackupWhereCopy.js';
 import {
@@ -34,7 +43,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 
-const STYLE_ID = 'journey-log-card-styles-v4';
+const STYLE_ID = 'journey-log-card-styles-v5';
 const FADE_MS = 220;
 const LIST_MAX = 12;
 
@@ -270,30 +279,72 @@ export class JourneyLogUI {
     this.enableBtn.textContent = t('JOURNEY_LOG_BACKUP_ENABLE');
     this.disableBtn.textContent = t('JOURNEY_LOG_BACKUP_DISABLE');
 
-    const entries = readJourneyLog(this._storage).entries;
+    const now = () => new Date();
+    const practiceDaysStore = new PracticeDaysStore({
+      storage: this._storage,
+      now
+    });
+    const lotusPondStore = new LotusPondStore({ storage: this._storage, now });
+    let extended = readJourneyLogExtended(this._storage);
+    const reconciled = reconcileJourneyPracticeMemoriesFromHistory(extended, {
+      practiceDaysStore,
+      lotusPondStore,
+      now
+    });
+    if (
+      (reconciled.memories?.length ?? 0) !== (extended.memories?.length ?? 0)
+    ) {
+      writeJourneyLogExtended(this._storage, reconciled);
+      extended = reconciled;
+    }
+
+    const entries = extended.entries;
+    /** @type {{ kind: 'sitting' | 'memory', at: string, entry?: typeof entries[number], memory?: import('../core/journeyPracticeMemory.js').JourneyPracticeMemory }[]} */
+    const timeline = [];
+    for (const entry of entries) {
+      timeline.push({ kind: 'sitting', at: entry.at, entry });
+    }
+    for (const memory of extended.memories ?? []) {
+      timeline.push({ kind: 'memory', at: memory.at, memory });
+    }
+    timeline.sort(
+      (a, b) => journeyTimelineSortKey(b) - journeyTimelineSortKey(a)
+    );
+
     this.listEl.replaceChildren();
-    if (!entries.length) {
+    if (!timeline.length) {
       this.emptyEl.hidden = false;
       this.listEl.hidden = true;
     } else {
       this.emptyEl.hidden = true;
       this.listEl.hidden = false;
-      const recent = entries.slice(-LIST_MAX).reverse();
-      for (const entry of recent) {
+      const recent = timeline.slice(0, LIST_MAX);
+      for (const row of recent) {
         const li = document.createElement('li');
-        li.className = 'journey-log__row';
-        const kind = journeyLogLineKind(entry);
-        const key = `JOURNEY_LOG_ENTRY_${kind}`;
-        li.textContent = t(key)
-          .replaceAll('{date}', journeyLogDateKey(entry.at))
-          .replaceAll('{n}', String(entry.minutes));
-        if (entry.insightSpark === true) {
-          const mark = document.createElement('span');
-          mark.className = 'journey-log__insight-spark';
-          mark.dataset.testid = 'journey-log-insight-spark';
-          mark.setAttribute('aria-label', t('JOURNEY_LOG_INSIGHT_MARK'));
-          mark.textContent = '◦';
-          li.append(' ', mark);
+        if (row.kind === 'memory' && row.memory) {
+          li.className = 'journey-log__row journey-log__row--memory';
+          li.dataset.testid = 'journey-log-memory';
+          li.dataset.memoryId = row.memory.id;
+          const date = journeyLogDateKey(row.memory.at);
+          li.textContent = t(journeyPracticeMemoryLocaleKey(row.memory)).replaceAll(
+            '{date}',
+            date
+          );
+        } else if (row.entry) {
+          li.className = 'journey-log__row';
+          const kind = journeyLogLineKind(row.entry);
+          const key = `JOURNEY_LOG_ENTRY_${kind}`;
+          li.textContent = t(key)
+            .replaceAll('{date}', journeyLogDateKey(row.entry.at))
+            .replaceAll('{n}', String(row.entry.minutes));
+          if (row.entry.insightSpark === true) {
+            const mark = document.createElement('span');
+            mark.className = 'journey-log__insight-spark';
+            mark.dataset.testid = 'journey-log-insight-spark';
+            mark.setAttribute('aria-label', t('JOURNEY_LOG_INSIGHT_MARK'));
+            mark.textContent = '◦';
+            li.append(' ', mark);
+          }
         }
         this.listEl.appendChild(li);
       }
@@ -505,6 +556,10 @@ export class JourneyLogUI {
         background: ${GLASS_FILL_STRONG};
         border-radius: 10px;
         cursor: default;
+      }
+      .journey-log__row--memory {
+        font-style: italic;
+        opacity: 0.92;
       }
       .journey-log__row:last-child {
         margin-bottom: 0;
