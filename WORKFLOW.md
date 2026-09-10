@@ -401,6 +401,31 @@ git log HEAD..origin/develop --stat  # develop 上多出来、本支还没有的
 
 `gh` 使用你的登录态；GitHub `mergedBy` 仍是你。Cursor **Run** = 批准 Agent 代跑合并命令，**不是**另发一套 Agent 特权，也**不是**人工测试关单。
 
+#### 「Out of date」黄条 ≠ 合入门闩（2026-09-11）
+
+> **背景**：`develop` 分支保护**未**勾选「Require branches to be up to date before merging」（`requiresStrictStatusChecks: false`）。一批互不冲突的 PR 可连续合并；每合一个，其余 PR 相对 `develop` 会显示 **out-of-date** 黄条——**不阻塞**合并。
+
+**默认习惯（强制）**：
+
+1. **禁止**仅为去掉黄条而逐个点 GitHub **Update branch**；Required checks 已绿且 `mergeable=MERGEABLE` 时，**直接 Merge**（或 `gh pr merge`）。  
+2. **批量合 develop PR**（示例；号码换成当批 open PR）：
+
+```bash
+for pr in 702 695 677; do
+  gh pr merge "$pr" --merge
+done
+```
+
+每合一个后按上文跑 `npm run sync:qa-develop`（有 QA 树时）。
+
+**仍须 Update branch / rebase 的情形**（与黄条无关）：
+
+- `mergeable=CONFLICTING` 或有 merge conflict check 红。  
+- behind `develop` 很大，或本 PR 改动与刚合入的提交**文件重叠**、需基于最新 tip 再验。  
+- 你**主动**要求「必须基于最新 `develop` 重跑 CI」——属额外保险，非默认合入前提。
+
+**对比**：合进 **`main`** 的发版 PR 仍可能要求 up-to-date（`main` 的 strict 与 `develop` 不同）；本条只管 **base = `develop`** 的日常 PR。
+
 ---
 
 ## 何时可以把 `develop` 合并进 `main`？
