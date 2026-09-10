@@ -322,3 +322,49 @@ _（无）_
 | **FocusHUD vs ActionBar（语义）** | **窄屏**：ActionBar（? · **本机墙钟** · ♪）在 Idle / Arrival / Focusing / 叠层 suppress 下**常显**；会话累计时长只在 `#focus-hud`。宽屏仍用 FocusHUD。细则显隐见机器块 `focusing-*` 行。 | Choose→鞠躬→点选后 Focusing；375 顶栏须见墙钟而非 `00:00` |
 
 外侧取消邻接（点 tip 只关 tip、不关面板）属交互回归，见 `DEV_WORKFLOW_QUALITY.md` §8 N18；实现：`src/ui/outsideDismissGuard.js`（Arrival / Companion / Honesty 共用）。不单列为本表第三壳。
+
+---
+
+## 7. Cursor Agent hooks（仓库级 · 非运行时）
+
+> **地位**：与 §1–§6 产品共享面互补。本节登记 **Cursor IDE Agent** 在仓库内的硬闸门与运行时目录，供改 hook / 新会话验收 / 排查「Agent 无法改文件或跑命令」时对照。  
+> **SSOT 接线**：`.cursor/hooks.json` + `.cursor/hooks/*.sh`；策略叙事见 `PROCESS.md`「Cursor Agent 终端权限」、`focus-tiger-agent-token-cost.mdc`、`focus-tiger-browser-energy.mdc`（IDE Browser 硬禁）。
+
+### 7.1 已接线闸门（`failClosed: true`）
+
+| Hook 脚本 | 事件 | 匹配 / 行为 | 用户可见拦截 |
+|---|---|---|---|
+| `deny-subagent-start.sh` | `subagentStart`；`preToolUse`（`Task`） | 任意子 Agent / Task 工具 | `permission: deny` — Subagent/Task blocked by project hook |
+| `deny-ide-browser-mcp.sh` | `beforeMCPExecution`；`preToolUse`（`MCP:.*cursor-ide-browser`） | IDE Browser MCP | `permission: deny` — IDE Browser MCP blocked |
+| `gate-destructive-shell.sh` | `beforeShellExecution` | `git push\|reset\|clean\|rebase\|merge`；`gh pr merge`；`gh repo delete` | `permission: ask` — 远程 / 破坏性 git·gh 须确认 |
+| `gate-full-e2e-dispatch.sh` | `beforeShellExecution` | `gh workflow run`；`gh run watch\|rerun`；长 `sleep`（≥60s） | `permission: ask` — 全量 e2e / CI 轮询须确认 |
+| `gate-local-heavy-e2e.sh` | `beforeShellExecution` | `test:e2e`；`playwright test`；多 spec 链式 | `permission: deny` — 本地重 e2e 硬拦（逃生：`RUN_E2E_LOCAL=true`） |
+
+**`stop`**：空数组（2026-07-21 起不再发 Git 同步系统通知；`remind-git-sync.sh` 保留未挂）。
+
+**模型路由**：hooks **不能**硬控 Cursor 模型档位；控 token 靠上表 + `permissions.json` + rules。Cursor CLI / headless 批量任务是另一条路径，须单独设计。
+
+### 7.2 运行时目录 `.cursor/hooks/state/`
+
+| 项 | 说明 |
+|---|---|
+| **内容** | 每 Chat 会话的 hook 侧车状态（如 `has_grepped`、`tool_count`）；由 Cursor hooks runtime 自动创建 |
+| **版本控制** | **已写入根目录 `.gitignore`**（`.cursor/hooks/state/`）——**禁止 commit** |
+| **清理** | 可安全删除整个 `state/` 目录；Reload Window 后会按需重建 |
+
+### 7.3 脚本可执行位与「hook 死锁」
+
+| 现象 | 处理 |
+|---|---|
+| Hook 报 `failed … spawn` / 会话无法 Shell·写文件 | 确认 `.cursor/hooks/*.sh` 具 **可执行位**（`chmod +x .cursor/hooks/*.sh`），然后 **Developer: Reload Window** |
+| `failClosed: true` 且 hook 进程起不来 | Cursor **硬拒绝**该次调用（非静默放行）；见 `PROCESS.md`「`gate-destructive-shell` × `zsh ENOENT`」 |
+| 临时绕过破坏性闸 | 本机终端手动 `git push` / `gh pr create`（不经 Agent hooks） |
+
+### 7.4 新会话验收清单（改 hook 后、合 develop 前）
+
+1. **子 Agent**：父 Agent 尝试 `Task` → 须出现 deny 文案，不得静默成功。  
+2. **IDE Browser MCP**：尝试 `cursor-ide-browser` 工具 → 须 deny。  
+3. **破坏性 Shell**：Agent 跑 `git push`（或命中表内其它命令）→ 须弹出 **ask** 确认卡。  
+4. **重 e2e**：Agent 跑 `npm run test:e2e`（或多 spec 链）→ 须 deny；单 spec `test:e2e:changed` 仍允许。
+
+验收通过后再把 hook 相关改动 commit 进旁支 PR（避免未验证配置直接进 develop）。
