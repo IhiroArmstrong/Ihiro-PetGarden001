@@ -74,6 +74,36 @@ export const WELCOME_POOL = Object.freeze([
   Object.freeze({ key: 'nodGreeting', weight: 40 })
 ]);
 
+/**
+ * Cold-start welcome keys that are **not** WELCOME_POOL members
+ * (Day1 / 久别 flower override of WELCOME_APP).
+ * A new welcome-period sequence that is not in the pool **must** be listed
+ * here — CI asserts WELCOME_APP can only emit latch keys.
+ */
+export const COLD_START_WELCOME_EXTRA_EMOTION_KEYS = Object.freeze([
+  FLOWER_WELCOME_EMOTION_KEY
+]);
+
+/**
+ * @param {ReadonlyArray<{ key?: string }>} [pool]
+ * @returns {Set<string>}
+ */
+export function collectColdStartWelcomeEmotionKeys(pool = welcomePool()) {
+  const keys = new Set(COLD_START_WELCOME_EXTRA_EMOTION_KEYS);
+  if (Array.isArray(pool)) {
+    for (const entry of pool) {
+      if (entry?.key) keys.add(entry.key);
+    }
+  }
+  return keys;
+}
+
+/** @param {string | null | undefined} key */
+export function isColdStartWelcomeEmotionKey(key) {
+  if (!key) return false;
+  return collectColdStartWelcomeEmotionKeys().has(key);
+}
+
 /** Light completion / micro-ritual — never celebrate-dance.
  * 2026-08-03：撤出 `curiousTilt`（blink-smile）——当时微仪式呼吸期是 smiling/blink-smile，
  * 再抽到几乎像没播；权重并入摆尾 / 点头。鹦鹉仍稀有。

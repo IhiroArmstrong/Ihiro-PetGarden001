@@ -342,6 +342,7 @@ import {
   resolveSceneAnimation,
   pickRiseInterruptEmotion,
   isRiseInterruptHoldEmotion,
+  isColdStartWelcomeEmotionKey,
   LATE_NIGHT_FORCE_DORMANT_KEY
 } from './core/sceneAnimationDispatcher.js';
 import { isLateNightHour } from './core/lateNightHour.js';
@@ -349,6 +350,7 @@ import {
   SPRITE_OCCUPANCY,
   SPRITE_SOURCES,
   arbitrateSpriteChannel,
+  occupancyHoldsParrotMessenger,
   dormantDeltaFromDecision,
   resolveBootSpriteOccupancy,
   resolveSessionEndSpriteOccupancy,
@@ -781,13 +783,11 @@ async function init() {
     emotionController.playEmotion(emotionKeyForPaymentThanks(kind));
   };
 
-  const WELCOME_EMOTION_KEYS = new Set([
-    'magicBookReading',
-    'nodGreeting',
-    'conjureFlowersBlowAway'
-  ]);
   function isColdStartWelcomePlaying() {
-    return WELCOME_EMOTION_KEYS.has(emotionController.getCurrentEmotionKey());
+    if (occupancyHoldsParrotMessenger(spriteOccupancy)) return true;
+    return isColdStartWelcomeEmotionKey(
+      emotionController.getCurrentEmotionKey()
+    );
   }
   function playParrotMessengerNow() {
     if (deriveReminderBusySessionTarget(buildLiveOverlaySnapshot())) return;
@@ -801,7 +801,12 @@ async function init() {
         now: new Date()
       }
     });
-    if (decision.occupy !== SPRITE_OCCUPANCY.PARROT) return;
+    if (decision.occupy !== SPRITE_OCCUPANCY.PARROT) {
+      if (decision.reason === 'first-paint-holds-parrot') {
+        pendingParrotMessengerAfterWelcome = true;
+      }
+      return;
+    }
     spriteOccupancy = decision.occupy;
     parrotMessengerPlayedThisPageSession = true;
     pendingParrotMessengerAfterWelcome = false;
@@ -813,7 +818,21 @@ async function init() {
       }
     });
   }
-  /** 欢迎已结束/被打断后：补播挂起的信使（不依赖 sticky latch） */
+  /** 第一幕结束后：等 CapCut 叠化再补播挂起的信使（不依赖 sticky latch） */
+  function scheduleParrotAfterFirstPaintRelease() {
+    spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+    const playMessenger =
+      pendingParrotMessengerAfterWelcome &&
+      inAppReminderBannerUI.isVisible();
+    window.setTimeout(() => {
+      if (playMessenger) {
+        playParrotMessengerNow();
+        return;
+      }
+      pendingParrotMessengerAfterWelcome = false;
+      syncInAppReminderBanner();
+    }, CAPCUT_DISSOLVE_MS);
+  }
   function flushPendingParrotMessengerAfterWelcome() {
     if (!pendingParrotMessengerAfterWelcome) return;
     if (isColdStartWelcomePlaying()) return;
@@ -4246,19 +4265,8 @@ async function init() {
 
   const welcomePlayOptions = {
     onComplete: () => {
-      spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
       startTastePrefetchOnce();
-      const playMessenger =
-        pendingParrotMessengerAfterWelcome &&
-        inAppReminderBannerUI.isVisible();
-      window.setTimeout(() => {
-        if (playMessenger) {
-          playParrotMessengerNow();
-          return;
-        }
-        pendingParrotMessengerAfterWelcome = false;
-        syncInAppReminderBanner();
-      }, CAPCUT_DISSOLVE_MS);
+      scheduleParrotAfterFirstPaintRelease();
     }
   };
 
@@ -4270,11 +4278,11 @@ async function init() {
     emotionController.playEmotion('dormantWake', {
       holdPose: true,
       onComplete: () => {
-        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
         emotionController.playEmotion('idle', {
           crossFadeMs: CAPCUT_DISSOLVE_MS
         });
         window.setTimeout(startTastePrefetchOnce, CAPCUT_DISSOLVE_MS + 250);
+        scheduleParrotAfterFirstPaintRelease();
       }
     });
     mindfulToast.show(t('WELLNESS_MORNING_WAKE'), { visibleMs: 5200 });
@@ -4284,8 +4292,8 @@ async function init() {
   ) {
     emotionController.playEmotion(paymentThanksAtWelcome, {
       onComplete: () => {
-        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
         startTastePrefetchOnce();
+        scheduleParrotAfterFirstPaintRelease();
       }
     });
   } else if (

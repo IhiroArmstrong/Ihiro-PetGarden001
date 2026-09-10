@@ -57,6 +57,11 @@ export const FIRST_PAINT_OCCUPANCY = Object.freeze(
   ])
 );
 
+/** Reminder parrot is after first-paint, not a competing first-frame winner. */
+export function occupancyHoldsParrotMessenger(occupancy) {
+  return occupancy != null && FIRST_PAINT_OCCUPANCY.has(occupancy);
+}
+
 export const TAP_BLOCKING_OCCUPANCY = Object.freeze(
   new Set([
     SPRITE_OCCUPANCY.WELCOME,
@@ -295,9 +300,12 @@ export function arbitrateSpriteChannel({
     return keep('short-hide-after-first-paint');
   }
 
-  // 7b — parrot after welcome
+  // 7b — parrot after first-paint (not a parallel setTimeout channel)
   if (intent === SPRITE_OCCUPANCY.PARROT || source === SPRITE_SOURCES.PARROT) {
     if (ctx.sessionState === STATES.DORMANT) return keep('dormant-blocks-parrot');
+    if (occupancyHoldsParrotMessenger(ctx.occupancy)) {
+      return keep('first-paint-holds-parrot');
+    }
     return playOccupy(
       SPRITE_OCCUPANCY.PARROT,
       emotionKey || 'parrotEarVisit',

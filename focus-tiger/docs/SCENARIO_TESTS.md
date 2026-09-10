@@ -314,7 +314,7 @@
 
 **何时评估**：App **冷启动**；浏览器标签从后台 **切回前台**（`visibilitychange` → visible）；状态从忙碌回到 Idle 等（见 P3）。
 
-5. 设好提醒且已过设定时分、今日零完成 → 顶部居中 `#in-app-reminder-banner` 出现，文案 `reminder.gentle_waiting`（EN "Yin is right here when you're ready." / ZH「你准备好了，阿寅就在这儿。」），右侧 **×** 可关。不得再用「waiting / 在等你」类紧逼措辞。**2026-08-03**：横幅本页首次可见时伴随 `parrotEarVisit`（鹦鹉信使）；同页不重播。
+5. 设好提醒且已过设定时分、今日零完成 → 顶部居中 `#in-app-reminder-banner` 出现，文案 `reminder.gentle_waiting`（EN "Yin is right here when you're ready." / ZH「你准备好了，阿寅就在这儿。」），右侧 **×** 可关。不得再用「waiting / 在等你」类紧逼措辞。**2026-08-03**：横幅本页首次可见时伴随 `parrotEarVisit`（鹦鹉信使）；同页不重播。**2026-09-06**：若同屏第一幕仍是吹花/欢迎池/清晨苏醒/付款致谢，横幅可先出，**鹦鹉不得插入**；须等该序列结束并约 **1s CapCut** 后再播（场景 V 组合）。
 6. 点 × 关闭 → **本页会话内不再出现**（即使条件仍满足）。
 7. **回流**：再次 `sync` / 切后台再回前台 → 仍不重复；**完整刷新**或新开 App → 若条件仍满足，**可再次出现**。
 8. **负例**：未到设定时分 → 不出现；今日已完成任一会话 → 不出现；未勾选开启 → 不出现。
@@ -463,6 +463,7 @@
 4. 模拟 ≥3 日久别（拨 `lastOpen`）→ 再吹花（跟 locale）。
 5. **回流**：吹花进行中仍可点 Sit。
 6. Lab 对照（非产品故事）：无 `?product=1` 调试钮「变花吹散+气泡」。
+7. **组合 · 提醒已过时分（E12）**：清库后设每日提醒为过去时分、今日零完成 → 硬刷新。**0–1 秒内**见吹花（或欢迎池），**不得**在吹花进行中突然切鹦鹉、也不得无 1s 叠化硬切。横幅可在吹花期间出现。吹花结束后约 1s 才见 `parrotEarVisit`。自动化：单元 `spriteChannelArbitration` first-paint KEEP + dispatcher latch；观感仍人工。
 
 ---
 
