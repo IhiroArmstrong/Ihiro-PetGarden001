@@ -54,3 +54,60 @@ emit_ask() {
     '{permission:"ask", agentMessage:$a, userMessage:$u}'
   exit 0
 }
+
+budget_tier_file() {
+  echo "$(state_dir_for "$1")/budget_tier"
+}
+
+read_budget_tier() {
+  local cid="$1" default="${2:-qa}"
+  local f
+  f=$(budget_tier_file "$cid")
+  if [ -f "$f" ]; then
+    cat "$f"
+  else
+    echo "$default"
+  fi
+}
+
+write_budget_tier() {
+  local cid="$1" tier="$2"
+  echo "$tier" > "$(budget_tier_file "$cid")"
+}
+
+reset_tool_count() {
+  local cid="$1"
+  echo "0" > "$(state_dir_for "$cid")/tool_count"
+}
+
+limits_for_tier() {
+  local tier="$1" soft hard
+  case "$tier" in
+    large)
+      soft=$(cfg tool_soft_limit_large 64)
+      hard=$(cfg tool_hard_limit_large 80)
+      ;;
+    impl)
+      soft=$(cfg tool_soft_limit_impl 40)
+      hard=$(cfg tool_hard_limit_impl 50)
+      ;;
+    qa|*)
+      soft=$(cfg tool_soft_limit_qa 22)
+      hard=$(cfg tool_hard_limit_qa 28)
+      ;;
+  esac
+  echo "$soft $hard"
+}
+
+classify_prompt_tier_action() {
+  local prompt="$1"
+  if echo "$prompt" | grep -qE '大任务'; then
+    echo large
+  elif echo "$prompt" | grep -qE '开工'; then
+    echo impl
+  elif echo "$prompt" | grep -qE '继续'; then
+    echo continue
+  else
+    echo unchanged
+  fi
+}
