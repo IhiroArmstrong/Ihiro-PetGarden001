@@ -17,7 +17,8 @@ Manual audit trail for **production** changes to `GROWTH_METRICS_KV` key `growth
 cd focus-tiger/cloud
 npx wrangler kv key put growth-metrics:v1:params \
   '{"schemaVersion":1,"dailyScoreCapMinutes":240}' \
-  --binding GROWTH_METRICS_KV
+  --binding GROWTH_METRICS_KV \
+  --remote
 ```
 
 3. Redeploy Worker after PR merge (user command **「部署」**).
@@ -29,4 +30,4 @@ npx wrangler kv key put growth-metrics:v1:params \
 
 | Date (UTC+8) | Author | Change | Reason |
 |---|---|---|---|
-| _（尚无生产写入）_ | — | — | Pilot PR only; KV empty → Worker returns git freeze 180 |
+| 2026-09-10 | Armstrong | `dailyScoreCapMinutes` 180 → 240 (KV) | Pilot fork after #692; git freeze stays 180 |
