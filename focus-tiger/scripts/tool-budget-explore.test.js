@@ -43,6 +43,16 @@ function readCount() {
   return Number(readFileSync(f, 'utf8').trim() || '0');
 }
 
+function readStreak() {
+  const f = join(stateDir, 'explore_streak');
+  if (!existsSync(f)) return 0;
+  return Number(readFileSync(f, 'utf8').trim() || '0');
+}
+
+function writeTempLines(file, lineCount) {
+  writeFileSync(file, `${'line\n'.repeat(lineCount)}end\n`);
+}
+
 describe('tool_budget explore-only', () => {
   beforeEach(() => {
     rmSync(stateDir, { recursive: true, force: true });
@@ -114,7 +124,7 @@ describe('tool_budget explore-only', () => {
     const dir = join(tmpdir(), 'ft-tool-budget-read-unbounded');
     mkdirSync(dir, { recursive: true });
     const big = join(dir, 'big.js');
-    writeFileSync(big, `${'line\n'.repeat(450)}end\n`);
+    writeTempLines(big, 450);
     const { json } = runHook(hook, {
       conversation_id: CID,
       tool_name: 'Read',
@@ -123,6 +133,76 @@ describe('tool_budget explore-only', () => {
     assert.equal(json.permission, 'allow');
     assert.equal(readCount(), 1);
     rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('does not increment short-file whole Read (<200 lines)', () => {
+    const dir = join(tmpdir(), 'ft-tool-budget-read-short');
+    mkdirSync(dir, { recursive: true });
+    const short = join(dir, 'short.js');
+    writeTempLines(short, 150);
+    const { json } = runHook(hook, {
+      conversation_id: CID,
+      tool_name: 'Read',
+      tool_input: { path: short }
+    });
+    assert.equal(json.permission, 'allow');
+    assert.equal(readCount(), 0);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('increments unbounded Read of a medium file (>=200 lines)', () => {
+    const dir = join(tmpdir(), 'ft-tool-budget-read-medium');
+    mkdirSync(dir, { recursive: true });
+    const medium = join(dir, 'medium.js');
+    writeTempLines(medium, 250);
+    const { json } = runHook(hook, {
+      conversation_id: CID,
+      tool_name: 'Read',
+      tool_input: { path: medium }
+    });
+    assert.equal(json.permission, 'allow');
+    assert.equal(readCount(), 1);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('increments bounded Read when limit exceeds max productive span', () => {
+    const dir = join(tmpdir(), 'ft-tool-budget-read-large-limit');
+    mkdirSync(dir, { recursive: true });
+    const big = join(dir, 'big.js');
+    writeTempLines(big, 450);
+    const { json } = runHook(hook, {
+      conversation_id: CID,
+      tool_name: 'Read',
+      tool_input: { path: big, offset: 1, limit: 250 }
+    });
+    assert.equal(json.permission, 'allow');
+    assert.equal(readCount(), 1);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('soft-stops after 8 consecutive explores without StrReplace/Write', () => {
+    writeFileSync(join(stateDir, 'explore_streak'), '7\n');
+    const { json } = runHook(hook, {
+      conversation_id: CID,
+      tool_name: 'Grep',
+      tool_input: { pattern: 'streak' }
+    });
+    assert.equal(json.permission, 'ask');
+    assert.equal(readStreak(), 8);
+    assert.match(String(json.agentMessage || json.agent_message || ''), /探索快照/);
+    assert.match(String(json.agentMessage || json.agent_message || ''), /连续 8 次探索/);
+  });
+
+  it('resets explore streak on StrReplace', () => {
+    writeFileSync(join(stateDir, 'explore_streak'), '5\n');
+    const { json } = runHook(hook, {
+      conversation_id: CID,
+      tool_name: 'StrReplace',
+      tool_input: { path: 'x', old_string: 'a', new_string: 'b' }
+    });
+    assert.equal(json.permission, 'allow');
+    assert.equal(readStreak(), 0);
+    assert.equal(readCount(), 0);
   });
 
   it('hard-denies further Grep but still allows StrReplace', () => {
@@ -161,5 +241,15 @@ describe('session_gate continue on new chat', () => {
     });
     assert.equal(json.continue, true);
     assert.match(String(json.userMessage || json.user_message || ''), /新会话/);
+  });
+
+  it('reminds large-task startup to list expected files/functions first', () => {
+    rmSync(dir, { recursive: true, force: true });
+    const { json } = runHook(gate, {
+      conversation_id: cid,
+      prompt: '大任务 Yin Evolution P1'
+    });
+    assert.equal(json.continue, true);
+    assert.match(String(json.userMessage || json.user_message || ''), /预期文件\/函数清单/);
   });
 });

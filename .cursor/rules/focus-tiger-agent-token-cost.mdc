@@ -36,10 +36,20 @@ alwaysApply: false
 | 计入探索预算 | 不计入（硬顶也不拦） |
 |---|---|
 | `Grep` / `Glob` / `codebase_search` / WebSearch / WebFetch / SearchConversations / Task | `StrReplace` / `Write` / `Delete` |
-| 无 `offset`/`limit` 且超过 `explore_unbounded_read_lines` 的整文件 `Read` | 定点 `Read`（带行号范围）与短文件整读 |
+| `Read` 违反 `source-read-granularity` 阈值（见下） | 合规片段 `Read`（≤`max_productive_read_span` 行）与 **&lt;200 行**短文件整读 |
 | Shell 里的 `rg` / `grep` / `find` / `git grep` | `git` / `gh`（非 grep）、约定的一次 `test:smoke` / `node --test` |
 
-软上限到达时：**先口头汇报**；改文件与 git 仍可走。硬顶到达时：**只 deny 再探索**；禁止因此新开 Chat。
+**`Read` 计次与 `source-read-granularity` 对齐**（数字 SSOT：`config.json` 的 `short_file_lines` / `source_read_large_lines` / `max_productive_read_span`，与 `focus-tiger-source-read-granularity.mdc` 同阈）：
+
+- **&lt;200 行**：任意 `Read` 不计次。
+- **≥200 行且无 `offset`/`limit`**：整读，**计次**。
+- **≥200 行且带 `offset`/`limit`**：若本次读取跨度 **&gt;200 行**（含「假定点大 `limit`」），**仍计次**；合规小窗口片段读不计次。
+
+**连续探索软停**（与累计软/硬顶**并列**，不替代硬顶）：连续 **8** 次探索类调用且其间无 `StrReplace`/`Write` → hook 先 **ask 软停**；`StrReplace`/`Write` 会清零连续计数。累计硬顶仍保留。
+
+软上限 / 连续探索软停到达时：**先口头汇报完整探索快照**（已读文件 / 已确认 / 已排除假设）；改文件与 git 仍可走。硬顶到达时：**只 deny 再探索**，且须附完整探索快照；禁止因此新开 Chat。
+
+**「大任务」开工纪律**：首条回复须先列 **预期文件/函数清单**，再只读审计；勿立刻改代码（`session_gate.sh` 会提醒）。
 
 ### 三档表 + 口令
 

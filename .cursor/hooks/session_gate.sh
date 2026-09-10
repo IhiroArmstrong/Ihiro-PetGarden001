@@ -17,16 +17,20 @@ fi
 
 ACTION=$(classify_prompt_tier_action "$PROMPT")
 NEW_CHAT_CONTINUE=0
+LARGE_STARTUP=0
 
 case "$ACTION" in
   large)
     write_budget_tier "$CID" large
     reset_tool_count "$CID"
+    reset_explore_streak "$CID"
     rm -f "$DIR/continue_resume"
+    LARGE_STARTUP=1
     ;;
   impl)
     write_budget_tier "$CID" impl
     reset_tool_count "$CID"
+    reset_explore_streak "$CID"
     rm -f "$DIR/continue_resume"
     ;;
   continue)
@@ -36,6 +40,7 @@ case "$ACTION" in
     fi
     touch "$DIR/continue_resume"
     reset_tool_count "$CID"
+    reset_explore_streak "$CID"
     ;;
   unchanged)
     if [ ! -f "$TIER_FILE" ]; then
@@ -47,6 +52,12 @@ esac
 if [ "$NEW_CHAT_CONTINUE" -eq 1 ]; then
   jq -n \
     '{continue:true, userMessage:"「继续」开在了新会话。按规则应在被硬顶的同一 Chat 里发「继续 <任务>」；新 Chat 只留给 PR 已合入或完全换题。本次仍放行，但会重新缴纳探索税。"}'
+  exit 0
+fi
+
+if [ "$LARGE_STARTUP" -eq 1 ]; then
+  jq -n \
+    '{continue:true, userMessage:"大任务档位已选。开工第一条回复须先列「预期文件/函数清单」，再只读审计当前状态；勿立刻改代码。"}'
   exit 0
 fi
 

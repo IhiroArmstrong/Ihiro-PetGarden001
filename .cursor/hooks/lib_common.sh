@@ -80,6 +80,39 @@ reset_tool_count() {
   echo "0" > "$(state_dir_for "$cid")/tool_count"
 }
 
+explore_streak_file() {
+  echo "$(state_dir_for "$1")/explore_streak"
+}
+
+read_explore_streak() {
+  local cid="$1" f val
+  f=$(explore_streak_file "$cid")
+  val=0
+  [ -f "$f" ] && val=$(cat "$f")
+  [ -z "$val" ] && val=0
+  echo "$val"
+}
+
+write_explore_streak() {
+  local cid="$1" streak="$2"
+  echo "$streak" > "$(explore_streak_file "$cid")"
+}
+
+reset_explore_streak() {
+  write_explore_streak "$1" 0
+}
+
+is_productive_write() {
+  local tool="$1" n
+  n=$(printf '%s' "$tool" | tr '[:upper:]' '[:lower:]')
+  case "$n" in
+    strreplace|write|*strreplace*|*write*)
+      return 0
+      ;;
+  esac
+  return 1
+}
+
 limits_for_tier() {
   local tier="$1" soft hard
   case "$tier" in
@@ -134,23 +167,36 @@ is_explore_budgeted() {
   esac
 
   if printf '%s' "$n" | grep -qE '^(read|read_file|readfile)$'; then
+    local short_thresh max_span has_offset has_limit read_span
     path=$(json_tool_field "$json" path)
     [ -z "$path" ] && path=$(json_tool_field "$json" file_path)
     offset=$(json_tool_field "$json" offset)
     limit=$(json_tool_field "$json" limit)
-    if [ -n "$offset" ] && [ "$offset" != "null" ]; then
-      return 1
-    fi
-    if [ -n "$limit" ] && [ "$limit" != "null" ]; then
-      return 1
-    fi
     if [ -z "$path" ] || [ ! -f "$path" ]; then
       return 1
     fi
-    thresh=$(cfg explore_unbounded_read_lines 400)
+    short_thresh=$(cfg short_file_lines 200)
+    max_span=$(cfg max_productive_read_span 200)
     lines=$(wc -l < "$path" 2>/dev/null | tr -d ' ')
     [ -z "$lines" ] && lines=0
-    if [ "$lines" -gt "$thresh" ]; then
+    if [ "$lines" -lt "$short_thresh" ]; then
+      return 1
+    fi
+    has_offset=0
+    has_limit=0
+    [ -n "$offset" ] && [ "$offset" != "null" ] && has_offset=1
+    [ -n "$limit" ] && [ "$limit" != "null" ] && has_limit=1
+    if [ "$has_offset" -eq 0 ] && [ "$has_limit" -eq 0 ]; then
+      return 0
+    fi
+    read_span=0
+    if [ "$has_limit" -eq 1 ]; then
+      read_span=$limit
+    elif [ "$has_offset" -eq 1 ]; then
+      read_span=$((lines - offset + 1))
+      [ "$read_span" -lt 0 ] && read_span=0
+    fi
+    if [ "$read_span" -gt "$max_span" ]; then
       return 0
     fi
     return 1
