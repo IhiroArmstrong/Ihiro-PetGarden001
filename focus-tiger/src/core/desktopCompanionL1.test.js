@@ -129,8 +129,9 @@ describe('desktop companion L1 renderer gates', () => {
     assert.equal(desktopCompanionDownloadPercent({ received: 1, total: null }), null);
     assert.equal(
       desktopCompanionModelLabel({ modelId: 'Qwen3-1.7B-Q4_K_M' }),
-      'Qwen3-1.7B-Q4_K_M'
+      'Model317'
     );
+    assert.equal(desktopCompanionModelLabel({ modelId: 'unknown-model-id' }), '');
     assert.equal(desktopCompanionModelLabel({ modelId: '  ' }), '');
     assert.equal(desktopCompanionModelLabel(null), '');
   });
