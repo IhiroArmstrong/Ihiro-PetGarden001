@@ -1182,6 +1182,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 **适配面**：资源与用户数据路径、原生菜单与窗口生命周期、固定自定义协议 origin（禁止生产 `file://`）；云请求（Checkout / OTP / 备份）在壳内须可见成功或可见错误。
 
 - **状态**：壳 **已拍板 Electron**（#326）；脚手架 Brief 已开（#329/#331）；**步骤 A 窗口代码已提交**。**步骤 B 托盘 + SB-18 已接线**（待 Mac 场景 AB 人工）。
+- **V8 字节码编译（2026-09-10 · 待排期 · Epic #5 / #631）**：Electron + DMG 后源码仍在 `app.asar`（非加密）。若加「防随手抄」门槛，**bytenode 等 V8 字节码编译是性价比合理选项**；不建议为 score/徽章/纪念印公式上 C++/Rust 原生模块。细则 `ANTI_PLAGIARISM_LAYER.md` §7 · `TASKS.md`「苹果 DMG 发布准备」。
 - **不在范围**：不替代 Browser First；不把手机原生 App 混入；不把场景 AA PiP 升级成托盘常驻桌宠（托盘是收费 DMG 的另一条路径）；端侧陪伴生成另 Brief（2026-08-18 窄例外），**不挡**步骤 B。
 - **与 2026-08-07 技术方向纪要的关系**：手机商店壳 / Capacitor **仍不**并入本条；本条只解「本地电脑版」。纪要里「桌面壳仍开放」已由本拍板取代。详见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。
 

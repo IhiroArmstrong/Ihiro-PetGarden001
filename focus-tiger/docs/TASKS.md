@@ -257,6 +257,22 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 **我认为最合理的下一刀**：**Calm Action Reflect**（口令「开工 Calm Action Reflect」· `task-calm-action-reflect-runtime.md` · C4）。较弱：Transition / Focus 标语 / 日签扩容 / 伸懒腰 / 好奇池仍后排；权重生产分叉在无调参目标前不做。
 
+## 📍 苹果 DMG 发布准备（Epic #5 · #631）
+
+> SSOT 草案：`planning/task-lines-epic-draft.md` #5 · `PROCESS.md` Backlog「本地桌面 APP 打包」。
+
+| 序 | 内容 | Brief / 权威 | 状态 |
+|---|---|---|---|
+| **—** | 脚手架步骤 A/B（窗口 + 托盘 + SB-18） | `task-electron-desktop-scaffold.md` | 步骤 A/B 已接线 · 待 Mac 场景 AB |
+| **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期** |
+
+**V8 字节码编译 · 拍板摘要（2026-09-10）**：
+
+- Electron + DMG 打包后，前端代码进 `app.asar`（Mac 右键应用→显示包内容可见）。**asar 不是加密**——`npx asar extract app.asar output/` 可原样解压；门槛从「F12 看源码」变成「装 DMG + 解压 asar」，对懂技术的竞品仍 <10 分钟。
+- **不是「安全」**，只是提高门槛。可选加深：代码混淆（terser/obfuscator）→ 难读但仍可扒逻辑；**V8 字节码编译（bytenode）** → 不再是直接可读源码，需额外反编译功夫，Electron 生态里相对成熟、成本不高。
+- **再往上**（核心逻辑写 C++/Rust 原生模块）防护力更强，但工程复杂度显著上升；对 score/徽章/纪念印公式这类保护对象 **大概率不值得**。
+- **建议不变**：真正护城河是阿寅人设、美术、内容库（版权能覆盖、更难简单复制）。若只想加一道「防随手抄」门槛，**V8 字节码编译是性价比比较合理的选项**；不建议为防剽窃做到原生模块量级。**耦合** Epic #21。
+
 ## 📍 Calm Action Wisdom 运行时（2026-09-07 · 用户拍板）
 
 > SSOT 内容：`CALM_ACTION_WISDOM.md`（70 条 · 无 overlay）。**执行次序** → [`taste-layer-calm-action-roadmap.md`](./taste-layer-calm-action-roadmap.md)。
