@@ -1272,7 +1272,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **Canonical**：`https://twinsology.com`；`www` → apex 301。  
 - **托管**：同一 ihiro Cloudflare 帐号 **Pages**（静态），与 `focus-tiger-cloud` Worker 分项目。  
 - **身份**：Twinsology 工作室首页，主角 Focus Tiger；不是把重型练习壳挂在根路径。  
-- **下一刀（须另口令）**：`communityLink.js` 改链营销站；公网 Newsletter 表单、`app.twinsology.com`。  
+- **下一刀（须另口令）**：公网 Newsletter 表单；`app.twinsology.com`（Electron-only 阶段可标否决）。  
 - **Brief**：`docs/task-briefs/task-marketing-site.md`。
 
 ### Backlog:CI 全量 `test:smoke` + `test:e2e`（勿长期依赖本机手跑）

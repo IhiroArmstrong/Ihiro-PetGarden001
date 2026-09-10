@@ -51,7 +51,7 @@ Custom domains: `twinsology.com` and `www.twinsology.com`. **www must 301 to ape
 
 - **Early Yin Community** section after showcase
 - Five-space short journey (Newcomers → The Den)
-- **Join the laboratory** → same shared invite as `communityLink.js` (new tab)
+- **Join the laboratory** → `COMMUNITY_SLACK_INVITE_URL` in `communityLink.js` (new tab). App **Join our community** → `https://twinsology.com/#community`.
 - No `#the-den` deep links
 
 ## Does not

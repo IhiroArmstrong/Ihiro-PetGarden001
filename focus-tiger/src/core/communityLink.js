@@ -4,12 +4,15 @@
  */
 
 /**
- * Join our community — static external link to the Focus Tiger Slack workspace.
- * No backend, no local state.
+ * Join our community — static external link to the public marketing site community section.
+ * Slack invite lives on the marketing page (Join the laboratory). No backend, no local state.
  */
 
-/** Permanent Slack shared invite for Early Yin Community. */
-export const COMMUNITY_EXTERNAL_URL =
+/** App menu → Early Yin Community on twinsology.com (Slice 2). */
+export const COMMUNITY_EXTERNAL_URL = 'https://twinsology.com/#community';
+
+/** Permanent Slack shared invite (marketing site Join the laboratory). */
+export const COMMUNITY_SLACK_INVITE_URL =
   'https://join.slack.com/t/focustigercommunity/shared_invite/zt-48ced3q4y-gEbQ98CwCzVHIZy1WlEY7w';
 
 /**

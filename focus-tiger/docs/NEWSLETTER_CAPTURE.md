@@ -15,7 +15,7 @@
 | Stay in touch | 打开 `#newsletter-capture-card`；提交走 `NewsletterProvider`。**录入中点页面空白不关卡**（**SB-19**）；关卡用左下 **Cancel**、右下 **Close**，或 Esc |
 
 | 提交后 | 菜单行变为 **We'll keep in touch**（`interactive: false`），不可再开表单。**You're subscribed** 只用于已解锁进阶仪式的付费确认行 |
-| Join our community | 静态外链 → Focus Tiger Slack workspace（`communityLink.js` 永不过期邀请链接，**2026-08-29 已接线**）。**文化口径**：**culture laboratory / Early Yin Community**，不是 App 内社交、不是 Support Forum；目标是约 100 个真正在乎的人。五空间 IA 见 `FROM_APP_TO_CULTURE.md` §8.2；公约见 `SLACK_COMMUNITY_GUIDELINES.md`。 |
+| Join our community | 静态外链 → `https://twinsology.com/#community`（`communityLink.js` · **2026-09-10** 改链营销站 Early Yin Community 段；Slack 邀请在站上 **Join the laboratory**）。**文化口径**：**culture laboratory / Early Yin Community**，不是 App 内社交、不是 Support Forum；目标是约 100 个真正在乎的人。五空间 IA 见 `FROM_APP_TO_CULTURE.md` §8.2；公约见 `SLACK_COMMUNITY_GUIDELINES.md`。 |
 | 本地状态 | `focus-tiger.newsletter-capture.v1` → `{ submitted }` 仅标记；**不**存邮箱明文 |
 
 ## Provider 接口
@@ -173,5 +173,5 @@
 | `cloud/src/lib/newsletterWelcome.ts` | 欢迎信计划（skip / 502 / 重发）+ List-Unsubscribe 400 回退 |
 | `cloud/src/routes/subscribeNewsletter.ts` | `POST /api/newsletter/subscribe` |
 | `cloud/src/routes/unsubscribeNewsletter.ts` | `GET|POST /api/newsletter/unsubscribe` |
-| `src/core/communityLink.js` | 社群 Slack 邀请外链 |
+| `src/core/communityLink.js` | App 菜单社群外链（营销站 `#community`）；`COMMUNITY_SLACK_INVITE_URL` 供营销页 Join the laboratory |
 | `src/core/idleChromeOrchestration.js` | 次级菜单行（`newsletter` / `community`） |

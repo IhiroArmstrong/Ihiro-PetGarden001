@@ -22,7 +22,7 @@ const communityLink = readFileSync(
   'utf8'
 );
 const sharedInviteMatch = communityLink.match(
-  /COMMUNITY_EXTERNAL_URL\s*=\s*'([^']+)'/
+  /COMMUNITY_SLACK_INVITE_URL\s*=\s*\n\s*'([^']+)'/
 );
 const sharedInviteUrl = sharedInviteMatch?.[1] ?? '';
 
@@ -91,7 +91,7 @@ describe('marketing-site Slice 1 contract', () => {
 
 describe('marketing-site Slice 2 contract', () => {
   it('uses the same Slack shared invite as communityLink.js', () => {
-    assert.ok(sharedInviteUrl, 'communityLink.js must export COMMUNITY_EXTERNAL_URL');
+    assert.ok(sharedInviteUrl, 'communityLink.js must export COMMUNITY_SLACK_INVITE_URL');
     assert.match(sharedInviteUrl, /shared_invite/);
     assert.match(html, new RegExp(sharedInviteUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.doesNotMatch(html, /#the-den/i);
