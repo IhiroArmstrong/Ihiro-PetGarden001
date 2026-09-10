@@ -251,6 +251,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-10 | 修订 `agent-tool-budget`（#700 后补漏）：`Read` 计次对齐 `source-read-granularity`（200/400；大 `limit` 仍计）；连续 8 次探索无改文件先软停；软/硬顶与 `session-handoff` 强制探索快照；「大任务」开工须先列预期文件/函数清单。 |
 | 2026-09-10 | 修订 `agent-tool-budget`：hook **只计探索类**；硬顶不拦改文件/git/约定 smoke；「继续」只留本 Chat（禁止 New Agent 续同一任务）；跨模块+单测+PR 用口令「大任务」。数字仍以 `config.json` + `focus-tiger-agent-token-cost.mdc` 为准。 |
 | 2026-09-10 | 新增 `agent-tool-budget`：三档工具调用预算（qa 28 / impl 50 / large 80 硬顶）+ 口令「开工」「继续」「大任务」；执行 `session_gate.sh` + `tool_budget.sh`；「继续」继承档位并重置计数；实现类冒烟纪律见 `testing-strategy.mdc`。SSOT `focus-tiger-agent-token-cost.mdc` 新节 |
 | 2026-09-09 | Brief 共用机制核对：须写点名结论句（SSOT `COLLAB.md` 第七节）；清单扩 `SHARED_RESOURCES` §4.1–4.2、`Z_INDEX` Idle chrome。不另起总册、不进新 rules-authority 主题 |

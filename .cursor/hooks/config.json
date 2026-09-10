@@ -5,7 +5,11 @@
   "tool_hard_limit_impl": 64,
   "tool_soft_limit_large": 64,
   "tool_hard_limit_large": 80,
-  "explore_unbounded_read_lines": 400,
+  "short_file_lines": 200,
+  "source_read_large_lines": 400,
+  "max_productive_read_span": 200,
+  "explore_streak_soft_limit": 8,
+  "explore_unbounded_read_lines": 200,
   "large_file_lines": 800,
   "destructive_shell_pattern": "rm -rf|git reset --hard|git clean -fd|drop table|truncate table",
   "merge_success_pattern": "Merged pull request|gh pr merge.*(Merged|merged)|Squashed and merged"
