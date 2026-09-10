@@ -20,7 +20,7 @@
 | 托管 | 同一 **163 / ihiro Cloudflare** 帐号上的 **Cloudflare Pages**（静态）。与 `focus-tiger-cloud` Worker **分项目**。 |
 | DNS | 只加 Pages 所需的 apex / www。**禁止**改 MX / SPF / DKIM / DMARC / Resend 验证记录。 |
 | 语气 | 观察式、宁静；允许委婉付费感知；**禁止** FOMO、倒计时、强迫签到、街机狂欢。 |
-| 应用内接线 | `communityLink.js` 已指向 Slack 邀请外链（2026-08-29）。改指向营销站 = **另口令**。 |
+| 应用内接线 | `communityLink.js` → `https://twinsology.com/#community`（**2026-09-10** 已改链）。 |
 
 ## 与相邻入口的分职
 
@@ -55,7 +55,7 @@
 
 - **已完成**：域名拍板；**Slice 0**（关单 2026-09-03）；**Slice 1** 短单页（`task-marketing-site-slice-1.md` · #663 · 2026-09-08）。  
 - **进行中（Slice 2 · 2026-09-08）**：Slack 实验室入口（shared invite）+ 五空间极短旅程；见 `task-marketing-site-slice-2.md`。  
-- **更后面（须另口令）**：应用内 Join our community 改链、公网留资、`app.twinsology.com`。
+- **更后面（须另口令）**：公网留资、`app.twinsology.com`（Electron-only 可否决）。
 
 ## 冲突扫描（Slice 0）
 

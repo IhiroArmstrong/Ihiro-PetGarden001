@@ -11,9 +11,9 @@ import {
 } from './communityLink.js';
 
 describe('communityLink', () => {
-  it('exports the Slack invite URL', () => {
+  it('exports the marketing site community URL', () => {
     assert.equal(typeof COMMUNITY_EXTERNAL_URL, 'string');
-    assert.ok(COMMUNITY_EXTERNAL_URL.startsWith('https://join.slack.com/'));
+    assert.equal(COMMUNITY_EXTERNAL_URL, 'https://twinsology.com/#community');
   });
 
   it('opens with noopener target', () => {

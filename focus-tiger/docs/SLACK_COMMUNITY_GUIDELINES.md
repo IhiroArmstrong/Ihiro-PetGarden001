@@ -3,7 +3,7 @@
 > **状态：公约草案（2026-08-29）** — Early Yin Community / culture laboratory 的运营约定。  
 > **性质**：Slack workspace 人工运营与 pinned 文案依据；**不是** App 运行时、不新增 entitlement。  
 > **IA SSOT**：五空间架构见 `FROM_APP_TO_CULTURE.md` §8.2–§8.4。  
-> **入口**：App 菜单 **Join our community** → `communityLink.js` 永不过期 Slack 邀请链接（2026-08-29 已接线）。
+> **入口**：App 菜单 **Join our community** → `https://twinsology.com/#community`（`communityLink.js` · 2026-09-10）；站上 **Join the laboratory** → Slack shared invite（`COMMUNITY_SLACK_INVITE_URL`）。
 
 ---
 
