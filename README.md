@@ -13,6 +13,15 @@ v1.0.0 ships **English only**.
 
 ## For developers (local)
 
+After **clone / unzip / cloud sync**, restore Cursor hook execute bits once (zip and some sync tools drop `+x`):
+
+```bash
+chmod +x .cursor/hooks/*.sh
+# or: bash .cursor/hooks/ensure-permissions.sh
+```
+
+Then:
+
 ```bash
 cd focus-tiger
 npm ci

@@ -14,6 +14,8 @@
  *   npx wrangler kv namespace create NEWSLETTER_KV --preview
  *   npx wrangler kv namespace create YPE_PERSONALIZATION_KV
  *   npx wrangler kv namespace create YPE_PERSONALIZATION_KV --preview
+ *   npx wrangler kv namespace create GROWTH_METRICS_KV
+ *   npx wrangler kv namespace create GROWTH_METRICS_KV --preview
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY
@@ -39,6 +41,11 @@
  * NEWSLETTER_KV (created 2026-08-13):
  *   id         = baeb661cb8f2450ab4a87d6f23af6896
  *   preview_id = 8e13fe05705841c9939c3164bfb9a3bd
+ *
+ * GROWTH_METRICS_KV (placeholder ids in kv_namespaces — create before first deploy):
+ *   npx wrangler kv namespace create GROWTH_METRICS_KV
+ *   npx wrangler kv namespace create GROWTH_METRICS_KV --preview
+ *   Then replace 00000000000000000000000000000001 / 0002 in kv_namespaces below.
  *
  * Production Worker (2026-08-20): Version 5b5b3451-4c35-4d9b-b27b-622b72ed673e
  * Covers taste-layer schemaVersion 1 freeze tables (plus 2026-08-16 Tip $4.99 / newsletter).
@@ -91,6 +98,11 @@
 			"binding": "YPE_PERSONALIZATION_KV",
 			"id": "2b5d3c65fe714991bc31cd60e163dd5e",
 			"preview_id": "763411aeaade493eb2a74986e14491ec"
+		},
+		{
+			"binding": "GROWTH_METRICS_KV",
+			"id": "00000000000000000000000000000001",
+			"preview_id": "00000000000000000000000000000002"
 		}
 	],
 	"vars": {

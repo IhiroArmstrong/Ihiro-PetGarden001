@@ -10,6 +10,10 @@
     ],
     "preToolUse": [
       {
+        "command": ".cursor/hooks/tool_budget.sh",
+        "failClosed": true
+      },
+      {
         "command": ".cursor/hooks/deny-subagent-start.sh",
         "matcher": "Task",
         "failClosed": true
@@ -20,6 +24,12 @@
         "failClosed": true
       }
     ],
+    "beforeReadFile": [
+      {
+        "command": ".cursor/hooks/read_file_gate.sh",
+        "failClosed": true
+      }
+    ],
     "beforeMCPExecution": [
       {
         "command": ".cursor/hooks/deny-ide-browser-mcp.sh",
@@ -27,6 +37,10 @@
       }
     ],
     "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/shell_guard.sh",
+        "failClosed": true
+      },
       {
         "command": ".cursor/hooks/gate-destructive-shell.sh",
         "matcher": "git\\s+(push|reset|clean|rebase|merge)\\b|gh\\s+pr\\s+merge\\b|gh\\s+repo\\s+delete\\b",
@@ -40,6 +54,18 @@
       {
         "command": ".cursor/hooks/gate-local-heavy-e2e.sh",
         "matcher": "test:e2e|playwright\\s+test|npx\\s+playwright",
+        "failClosed": true
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": ".cursor/hooks/after_shell_merge_detect.sh",
+        "failClosed": false
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": ".cursor/hooks/session_gate.sh",
         "failClosed": true
       }
     ]

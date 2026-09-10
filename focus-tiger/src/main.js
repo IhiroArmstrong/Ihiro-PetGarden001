@@ -368,7 +368,13 @@ import {
   prefetchTasteLayer,
   resetTasteLayerSyncForTests
 } from './core/tasteLayerSync.js';
+import {
+  getGrowthMetricsStatus,
+  prefetchGrowthMetricsConfig,
+  resetGrowthMetricsConfigSyncForTests
+} from './core/growthMetricsConfigSync.js';
 import { resetTasteLayerOverlayForTests } from './core/tasteLayerOverlay.js';
+import { resetGrowthMetricsConfigOverlayForTests } from './core/growthMetricsConfigOverlay.js';
 import { resolveWellnessDayBand } from './character/cloakVariant.js';
 import {
   HonestyCheckInController,
@@ -606,6 +612,10 @@ async function init() {
     void prefetchTasteLayer({
       search: location.search,
       locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
+    });
+    void prefetchGrowthMetricsConfig({
+      search: location.search,
       canApply: () => !isSceneAnimOverlayBusy()
     });
   };
@@ -1906,6 +1916,18 @@ async function init() {
     reset: () => {
       resetTasteLayerSyncForTests();
       resetTasteLayerOverlayForTests();
+    }
+  };
+  window.__growthMetrics = {
+    status: () => getGrowthMetricsStatus(),
+    prefetch: () =>
+      prefetchGrowthMetricsConfig({
+        search: location.search,
+        canApply: () => !isSceneAnimOverlayBusy()
+      }),
+    reset: () => {
+      resetGrowthMetricsConfigSyncForTests();
+      resetGrowthMetricsConfigOverlayForTests();
     }
   };
   window.__focusCoins = {
@@ -4258,6 +4280,10 @@ async function init() {
     void prefetchTasteLayer({
       search: location.search,
       locale: getLocale(),
+      canApply: () => !isSceneAnimOverlayBusy()
+    });
+    void prefetchGrowthMetricsConfig({
+      search: location.search,
       canApply: () => !isSceneAnimOverlayBusy()
     });
   }
