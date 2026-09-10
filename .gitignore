@@ -57,3 +57,6 @@ focus-tiger/art-reference/models/sources/*
 # Worktree session occupancy lock (Agent; never commit)
 .ft-session-lock
 .ft-session-identity
+
+# Cursor Agent hook runtime session state (per-chat; never commit)
+.cursor/hooks/state/
