@@ -328,7 +328,7 @@ _（无）_
 ## 7. Cursor Agent hooks（仓库级 · 非运行时）
 
 > **地位**：与 §1–§6 产品共享面互补。本节登记 **Cursor IDE Agent** 在仓库内的硬闸门与运行时目录，供改 hook / 新会话验收 / 排查「Agent 无法改文件或跑命令」时对照。  
-> **SSOT 接线**：`.cursor/hooks.json` + `.cursor/hooks/*.sh`；策略叙事见 `PROCESS.md`「Cursor Agent 终端权限」、`focus-tiger-agent-token-cost.mdc`、`focus-tiger-browser-energy.mdc`（IDE Browser 硬禁）。
+> **SSOT 接线**：`.cursor/hooks.json` + `.cursor/hooks/*.sh`；策略叙事见 `PROCESS.md`「Cursor Agent 终端权限」、`focus-tiger-agent-token-cost.mdc`（含 `agent-tool-budget` 分档）、`focus-tiger-browser-energy.mdc`（IDE Browser 硬禁）。
 
 ### 7.1 已接线闸门（`failClosed: true`）
 
@@ -339,6 +339,8 @@ _（无）_
 | `gate-destructive-shell.sh` | `beforeShellExecution` | `git push\|reset\|clean\|rebase\|merge`；`gh pr merge`；`gh repo delete` | `permission: ask` — 远程 / 破坏性 git·gh 须确认 |
 | `gate-full-e2e-dispatch.sh` | `beforeShellExecution` | `gh workflow run`；`gh run watch\|rerun`；长 `sleep`（≥60s） | `permission: ask` — 全量 e2e / CI 轮询须确认 |
 | `gate-local-heavy-e2e.sh` | `beforeShellExecution` | `test:e2e`；`playwright test`；多 spec 链式 | `permission: deny` — 本地重 e2e 硬拦（逃生：`RUN_E2E_LOCAL=true`） |
+| `session_gate.sh` | `beforeSubmitPrompt` | PR 已合并 → 断会话；口令「大任务」「开工」「继续」选档并重置计数 | `continue: false` 或放行 |
+| `tool_budget.sh` | `preToolUse` | 按 `budget_tier`（qa/impl/large）计次；软 ask / 硬 deny | 耗尽时提示发「继续 &lt;任务&gt;」 |
 
 **`stop`**：空数组（2026-07-21 起不再发 Git 同步系统通知；`remind-git-sync.sh` 保留未挂）。
 
@@ -348,7 +350,7 @@ _（无）_
 
 | 项 | 说明 |
 |---|---|
-| **内容** | 每 Chat 会话的 hook 侧车状态（如 `has_grepped`、`tool_count`）；由 Cursor hooks runtime 自动创建 |
+| **内容** | 每 Chat 会话的 hook 侧车状态（如 `budget_tier`、`tool_count`、`has_grepped`、`continue_resume`）；由 Cursor hooks runtime 自动创建 |
 | **版本控制** | **已写入根目录 `.gitignore`**（`.cursor/hooks/state/`）——**禁止 commit** |
 | **清理** | 可安全删除整个 `state/` 目录；Reload Window 后会按需重建 |
 

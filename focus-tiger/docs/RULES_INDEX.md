@@ -67,6 +67,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `release-blocker-ledger` | 缺陷分级 / open-blockers / 发布候选清算 | `focus-tiger/docs/TEST_TRACKER.md` | 缺陷分级与处理承诺 |
 | `z-index-registry` | 产品 z-index 层叠登记 | `focus-tiger/docs/Z_INDEX.md` | Z_INDEX.md — 产品层叠登记 |
 | `agent-token-cost` | Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e） | `.cursor/rules/focus-tiger-agent-token-cost.mdc` | Focus Tiger · Agent Token Cost（控 Fast Request） |
+| `agent-tool-budget` | 工具调用预算分档（qa/impl/large + 口令「开工」「继续」「大任务」；hook 可执行） | `.cursor/rules/focus-tiger-agent-token-cost.mdc` | 工具调用预算分档（agent-tool-budget · 可执行） |
 | `e2e-local-budget` | 本地 e2e 硬顶（≤1 spec/次；全量/visibility/多文件禁本地；RUN_E2E_LOCAL 逃生口） | `.cursor/rules/testing-strategy.mdc` | 本地 e2e 硬顶（e2e-local-budget · 可执行） |
 | `risk-mitigation-playbook` | 中高风险任务落地降险 Playbook | `focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md` | 触发条件 |
 | `interaction-feedback` | 点击接收反馈 vs 结果反馈 vs 已知静默白名单 | `focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md` | 核心原则 |
@@ -106,6 +107,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `rules-authority` | 各处链到本索引 | 「以最后修改的文档为准」 |
 | `browser-energy` | 「预览浏览器 / 进程收尾 / Cloud 独立会话 / 用户侧 `cd` 路径口径见 `focus-tiger-browser-energy.mdc`」 | 复述完整条款或具体分钟/时长数值；主张把内置 Browser 当默认预览 / 窄屏特例可开；绕过 IDE Browser 硬闸；违反 SSOT 连续开放上限 / 续开不清零 / 精确时间戳汇报；起过 Vite/Playwright 却不在「待你知道」提醒收尾；给用户 `npm run dev` 却写省略号 / 占位 `cd` 路径 |
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent / `Merged` 须新开会话见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI；主张 `Merged` 后可在同会话继续 |
+| `agent-tool-budget` | 「工具调用预算分档 / 口令「开工」「继续」「大任务」见 `focus-tiger-agent-token-cost.mdc`」；执行：`session_gate.sh` / `tool_budget.sh` / `config.json`；实现类冒烟见 `testing-strategy.mdc` | 平行写第二套软/硬上限数字；主张可无「继续」无限探索；主张每改一点就跑 smoke |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
 | `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收」与 `KNOWN_RISKY_TEST_CHECKLIST` §0；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解；本机树见 `qa-develop-worktree` | 主张 feature/fix 试跑即正式关单验收；主张用过时 feature worktree / Support-only QA tree 代替当时 tip |
 | `qa-develop-worktree` | 「固定 QA 树见 `WORKFLOW.md`」；合入后 `sync:qa-develop` + ①重启/硬刷新 ②一句变化；`TEST_TRACKER` / KnownRisky / regression-lock / browser-energy 可一行引用 | 主张在 QA 树开发/commit；主张每次新建 `…-wt-qa-develop-tip`；Cloud 假装已在 Mac pull；为收尾停掉 QA `:5173` Vite；主张 `5173` 正在测时抢端口或 `git switch` 正在出码的目录 |
@@ -249,6 +251,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-10 | 新增 `agent-tool-budget`：三档工具调用预算（qa 28 / impl 50 / large 80 硬顶）+ 口令「开工」「继续」「大任务」；执行 `session_gate.sh` + `tool_budget.sh`；「继续」继承档位并重置计数；实现类冒烟纪律见 `testing-strategy.mdc`。SSOT `focus-tiger-agent-token-cost.mdc` 新节 |
 | 2026-09-09 | Brief 共用机制核对：须写点名结论句（SSOT `COLLAB.md` 第七节）；清单扩 `SHARED_RESOURCES` §4.1–4.2、`Z_INDEX` Idle chrome。不另起总册、不进新 rules-authority 主题 |
 | 2026-09-09 | `git-pr-task-line-ref`：新增 `.github/workflows/task-line-ref-check.yml` 软提醒；`backfill-open-pr-task-line-refs.sh` 支持 `--merged`；回填 #663–#672 → #644/#637。SSOT `WORKFLOW.md` |
 | 2026-09-08 | 收窄 `git-pr-task-line-ref`：`Closes` 数量按 Issue 类型区分——切片/审计一 PR 一 Closes；Epic 允许多 Closes（耦合信号）；Dependabot/bump 不挂线。移除 `#558`/`#559` 误挂 `#630`。SSOT `WORKFLOW.md` |

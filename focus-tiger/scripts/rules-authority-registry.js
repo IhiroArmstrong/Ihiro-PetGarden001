@@ -1109,6 +1109,42 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'agent-tool-budget',
+    title:
+      '工具调用预算分档（qa/impl/large + 口令「开工」「继续」「大任务」；hook 可执行）',
+    ssotPath: '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+    ssotSection: '工具调用预算分档（agent-tool-budget · 可执行）',
+    ssotMustContain: [
+      /agent-tool-budget/,
+      /tool_budget\.sh/,
+      /session_gate\.sh/,
+      /开工/,
+      /继续/,
+      /大任务/
+    ],
+    topicSignals: [
+      /agent-tool-budget/,
+      /tool_budget\.sh/,
+      /session_gate\.sh/,
+      /budget_tier/,
+      /工具调用预算分档/
+    ],
+    mustCite: [/focus-tiger-agent-token-cost\.mdc|agent-tool-budget/],
+    restatementFingerprints: [
+      /tool_soft_limit_qa/,
+      /tool_hard_limit_impl/,
+      /classify_prompt_tier_action/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'parallel-tool-budget-numbers',
+        pattern: /tool_(?:soft|hard)_limit(?:_qa|_impl|_large)?\s*[:=]\s*\d+/,
+        note: '软/硬上限数字只在 config.json + agent-token-cost SSOT；别处只链主题'
+      }
+    ]
+  },
+  {
     id: 'e2e-local-budget',
     title:
       '本地 e2e 硬顶（≤1 spec/次；全量/visibility/多文件禁本地；RUN_E2E_LOCAL 逃生口）',
