@@ -1306,11 +1306,13 @@ export class ConfideToYinUI {
         opacity: 0.92;
       }
       .confide-to-yin__desktop-model {
-        margin: 6px 0 0;
-        font-size: 0.72rem;
-        line-height: 1.3;
-        letter-spacing: 0.02em;
-        opacity: 0.72;
+        margin: 4px 0 0;
+        font-size: 0.58rem;
+        line-height: 1.25;
+        letter-spacing: 0.05em;
+        font-weight: 400;
+        color: rgba(44, 31, 20, 0.38);
+        opacity: 0.55;
       }
       .confide-to-yin__desktop-model[hidden] {
         display: none;

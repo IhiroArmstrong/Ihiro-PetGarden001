@@ -763,7 +763,7 @@
 
 **前提**：`cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger` → `npm --prefix desktop install` → `npm run desktop:dev`。**勿**与 `dev:qa` 抢 5173。非低配宽屏（≥480）；Web Safari 同 URL **不算**本场景。
 
-1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见 **`Qwen3-1.7B-Q4_K_M`**（不是独立 HUD；Safari Web **无**此行）。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：**仅**一条 `Forget this`（或当前 locale 金句）；**禁止**出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → **0–1 秒内** textarea 填入该金句、Share **仍可点**、**不**自动发送。  
+1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见隐晦代号 **`Model317`**（小字淡色；**禁止**裸显 `Qwen3-1.7B-Q4_K_M`；不是独立 HUD；Safari Web **无**此行）。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：**仅**一条 `Forget this`（或当前 locale 金句）；**禁止**出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → **0–1 秒内** textarea 填入该金句、Share **仍可点**、**不**自动发送。  
 2. Share **或** textarea 里 **Enter**（对得上情绪桶 / 安全阀）→ **0–1 秒内**发送钮按压/disabled + `[data-testid=confide-to-yin-reply]` **`data-source=corpus`**。**Shift+Enter** 只换行、不发送。下载中 Share/Enter **仍**有检索回复（非哑点击）。  
 3. **Focusing 卸载**：Sit→Focusing → companion 状态不再 ready；Share **不得**走生成。Rise 后再开 ⋯ 仍有该行。  
 4. **拖窄关层**：拖到 ≤479 → 生成层关掉；窄屏抽屉 **无** Confide 行。  
