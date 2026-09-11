@@ -458,7 +458,7 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
     readers: 'RecoverResetOfferUI.tryShow (Focusing allowed; passive refocus follow-up)',
-    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.NONE,
     dismissRoot: '#recover-reset-offer',
     snapshotField: 'recoverResetOfferOpen'
   }),
