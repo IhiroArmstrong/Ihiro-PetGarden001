@@ -587,6 +587,7 @@
   "FOCUS_CIRCLE_WITNESS_LEAVE_PICKER_TITLE": "Choose a short trace",
   "FOCUS_CIRCLE_WITNESS_RESPOND_PICKER_TITLE": "Choose a short response",
   "FOCUS_CIRCLE_WITNESS_PICKER_CANCEL": "Cancel",
+  "FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR": "Could not leave that trace right now. Try again in a moment.",
   "FOCUS_CIRCLE_WITNESS_RESPOND_BTN": "Respond",
   "FOCUS_CIRCLE_WITNESS_IDLE_LINE": "{name} left: {phrase}",
   "FOCUS_CIRCLE_WITNESS_IDLE_ARIA": "Anonymous trace from a circle companion",

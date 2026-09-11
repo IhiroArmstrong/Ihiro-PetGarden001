@@ -1437,7 +1437,7 @@ async function init() {
   }
 
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
-    document.getElementById('ui-overlay') || document.body,
+    document.body,
     {
       requestLeaveSlot: requestWitnessLeaveOverlaySlot,
       releaseLeaveSlot: releaseWitnessLeaveOverlaySlot,
@@ -2382,7 +2382,7 @@ async function init() {
       focusCircleWitnessLeaveVisible:
         focusCircleWitnessLeaveUI?.isLeaveVisible?.() === true,
       focusCircleWitnessRespondOpen:
-        focusCircleWitnessLeaveUI?.isRespondOpen?.() === true,
+        focusCircleWitnessLeaveUI?.isPickerOpen?.() === true,
       transitionMomentOpen:
         transitionMomentSlotHeld || transitionMomentUI?.isOpen?.() === true,
       focusAwarenessOpen: focusAwarenessCardUI?.isVisible?.() === true,
