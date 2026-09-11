@@ -763,6 +763,17 @@ export class TigerReflectionMoment {
     }
     this._applyQuotePhase(REFLECTION_QUOTE_PHASE.WISDOM);
     this._syncReflectionCompanionOffer();
+    this._syncWisdomHoldFooter();
+  }
+
+  /** Wisdom landing: only Continue dismisses — hide Skip / Skip all chrome. */
+  _syncWisdomHoldFooter() {
+    if (!this.skipBtn || !this.skipAllBtn) return;
+    const wisdom = this._awaitingWisdomHold;
+    this.skipBtn.hidden = wisdom;
+    this.skipAllBtn.hidden = wisdom;
+    this.skipBtn.style.display = wisdom ? 'none' : '';
+    this.skipAllBtn.style.display = wisdom ? 'none' : '';
   }
 
   /** Keep last-question echo on screen; input becomes read-only. */

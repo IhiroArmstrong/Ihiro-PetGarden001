@@ -291,9 +291,13 @@ export class LightProgression {
 
     const overlay = this.getSpriteOverlay();
     if (overlay) {
-      overlay.style.transition = `transform ${ms}ms ${ease}`;
-      overlay.style.transformOrigin = '50% 55%';
-      overlay.style.transform = `translateZ(0) scale(${dollyScaleForLayer('yin', dollyIn)})`;
+      overlay.style.transition = 'none';
+      overlay.style.transform = 'translateZ(0) scale(1)';
+      const stage = overlay.querySelector('#sprite-stage');
+      const target = stage || overlay;
+      target.style.transition = `transform ${ms}ms ${ease}`;
+      target.style.transformOrigin = '50% 55%';
+      target.style.transform = `translateZ(0) scale(${dollyScaleForLayer('yin', dollyIn)})`;
     }
   }
 
