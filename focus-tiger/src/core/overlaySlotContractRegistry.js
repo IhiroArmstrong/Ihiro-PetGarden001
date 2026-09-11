@@ -37,6 +37,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   RECOVER_RESET_PRACTICE: 'recover-reset-practice',
   ONBOARDING_HINT: 'onboarding-hint',
   WELLNESS_FIRST: 'wellness-first',
+  COLD_START_GOAL: 'cold-start-goal',
   SOFT_UPDATE: 'soft-update',
   SEASONAL_WHISPER: 'seasonal-whisper',
   CONFIDE: 'confide',
@@ -199,6 +200,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#honesty-checkin',
     snapshotField: null
+  }),
+  contract({
+    id: OVERLAY_SOURCES.COLD_START_GOAL,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 10,
+    readers: 'Cold-start goal card; first-run defer queue after flower bubble',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#cold-start-goal-card',
+    snapshotField: 'coldStartGoalOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.GROWTH_COMPASS,
@@ -498,6 +510,7 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
  */
 export const FIRST_CARD_DEFER_PRIORITY = Object.freeze([
   OVERLAY_SOURCES.FLOWER_WELCOME,
+  OVERLAY_SOURCES.COLD_START_GOAL,
   OVERLAY_SOURCES.GROWTH_COMPASS,
   OVERLAY_SOURCES.WELLNESS_FIRST
 ]);
@@ -531,7 +544,8 @@ export const OVERLAY_UI_POINTER_HIT_TEST_REQUIRED = Object.freeze([
   'RecoverResetOfferUI.js',
   'RecoverResetPracticeUI.js',
   'FocusCircleWitnessLeaveUI.js',
-  'OnboardingHintsUI.js'
+  'OnboardingHintsUI.js',
+  'ColdStartGoalCardUI.js'
 ]);
 
 export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
@@ -545,6 +559,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   ],
   'FocusDurationPickerUI.js': [OVERLAY_SOURCES.FOCUS_DURATION_PICKER],
   'CompanionModePicker.js': [OVERLAY_SOURCES.COMPANION_PICKER],
+  'ColdStartGoalCardUI.js': [OVERLAY_SOURCES.COLD_START_GOAL],
   'FiveMomentsCompassUI.js': [OVERLAY_SOURCES.GROWTH_COMPASS],
   'MustardSeedSealCardUI.js': [OVERLAY_SOURCES.GROWTH_MUSTARD_SEED],
   'ConfideToYinUI.js': [OVERLAY_SOURCES.CONFIDE],

@@ -413,14 +413,19 @@ describe('target matrix (C1–C6 · PR-2 contract)', () => {
     );
   });
 
-  it('C6: first-card queue flower > compass > wellness', () => {
+  it('C6: first-card queue flower > goal > compass > wellness', () => {
     assert.deepEqual(FIRST_CARD_DEFER_PRIORITY, [
       OVERLAY_SOURCES.FLOWER_WELCOME,
+      OVERLAY_SOURCES.COLD_START_GOAL,
       OVERLAY_SOURCES.GROWTH_COMPASS,
       OVERLAY_SOURCES.WELLNESS_FIRST
     ]);
 
     const withFlower = buildOverlaySnapshot({ flowerWelcomeVisible: true });
+    assert.equal(
+      canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, withFlower),
+      false
+    );
     assert.equal(
       canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, withFlower),
       false
@@ -428,6 +433,16 @@ describe('target matrix (C1–C6 · PR-2 contract)', () => {
     assert.equal(
       canAttemptFirstCard(OVERLAY_SOURCES.WELLNESS_FIRST, withFlower),
       false
+    );
+
+    const withGoal = buildOverlaySnapshot({ coldStartGoalOpen: true });
+    assert.equal(
+      canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, withGoal),
+      false
+    );
+    assert.equal(
+      canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, withGoal),
+      true
     );
 
     const withCompass = buildOverlaySnapshot({ compassOpen: true });

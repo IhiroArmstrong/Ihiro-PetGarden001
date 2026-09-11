@@ -41,6 +41,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [companionPickerOpen]
  * @property {boolean} [postSessionOverlayActive] Gate field (may include mustard bypass)
  * @property {boolean} [compassOpen]
+ * @property {boolean} [coldStartGoalOpen]
  * @property {boolean} [mustardSeedOpen]
  * @property {boolean} [tipJarOpen]
  * @property {boolean} [supportModalOpen]
@@ -72,7 +73,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'sessionState' | 'completionPending' | 'honestyPhase' | 'honestyBridgeVisible' |
  *   'arrivalOpen' | 'reflectionOpen' | 'microRitualOpen' | 'ritualFlowOpen' |
  *   'focusDurationPickerOpen' | 'companionPickerOpen' | 'postSessionOverlayActive' |
- *   'compassOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
+ *   'compassOpen' | 'coldStartGoalOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
  *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' | 'secondaryMenuOpen' |
  *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
@@ -103,6 +104,7 @@ export function buildOverlaySnapshot(input = {}) {
     companionPickerOpen: Boolean(input.companionPickerOpen),
     postSessionOverlayActive: Boolean(input.postSessionOverlayActive),
     compassOpen: Boolean(input.compassOpen),
+    coldStartGoalOpen: Boolean(input.coldStartGoalOpen),
     mustardSeedOpen: Boolean(input.mustardSeedOpen),
     tipJarOpen: Boolean(input.tipJarOpen),
     supportModalOpen: Boolean(input.supportModalOpen),
@@ -214,7 +216,8 @@ export function deriveTeaBubbleBusy(snapshot) {
     snapshot.mustardSeedOpen ||
     snapshot.reflectionOpen ||
     snapshot.arrivalOpen ||
-    snapshot.compassOpen
+    snapshot.compassOpen ||
+    snapshot.coldStartGoalOpen
   );
 }
 
@@ -226,7 +229,7 @@ export function deriveTeaBubbleBusy(snapshot) {
  * @returns {boolean}
  */
 export function deriveMomentWhisperBusy(snapshot, forKey = '') {
-  if (snapshot.compassOpen) return true;
+  if (snapshot.compassOpen || snapshot.coldStartGoalOpen) return true;
   if (snapshot.sessionState === STATES.CELEBRATE) return true;
   if (snapshot.microRitualOpen) return true;
   if (
@@ -254,7 +257,7 @@ export function deriveFocusingSoftCardBusy(snapshot) {
   if (snapshot.recoverResetOfferOpen) return true;
   if (snapshot.recoverResetPracticeOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
-  if (snapshot.compassOpen) return true;
+  if (snapshot.compassOpen || snapshot.coldStartGoalOpen) return true;
   if (snapshot.mustardSeedOpen) return true;
   if (snapshot.sessionState === STATES.CELEBRATE) return true;
   if (snapshot.microRitualOpen) return true;
@@ -460,6 +463,7 @@ function activeVisualPrimary(snapshot) {
  */
 function activeGrowthCard(snapshot) {
   if (snapshot.mustardSeedOpen) return OVERLAY_SOURCES.GROWTH_MUSTARD_SEED;
+  if (snapshot.coldStartGoalOpen) return OVERLAY_SOURCES.COLD_START_GOAL;
   if (snapshot.compassOpen) return OVERLAY_SOURCES.GROWTH_COMPASS;
   return null;
 }
@@ -500,6 +504,12 @@ function collectFirstCardBlockers(snapshot, source) {
       blockers.push(higher);
     }
     if (
+      higher === OVERLAY_SOURCES.COLD_START_GOAL &&
+      snapshot.coldStartGoalOpen
+    ) {
+      blockers.push(higher);
+    }
+    if (
       higher === OVERLAY_SOURCES.GROWTH_COMPASS &&
       snapshot.compassOpen
     ) {
@@ -515,6 +525,9 @@ function collectWitnessLeaveYield(snapshot) {
   if (snapshot.postSessionOverlayActive) blockers.push('post-session-overlay');
   if (snapshot.flowerWelcomeVisible) {
     blockers.push(OVERLAY_SOURCES.FLOWER_WELCOME);
+  }
+  if (snapshot.coldStartGoalOpen) {
+    blockers.push(OVERLAY_SOURCES.COLD_START_GOAL);
   }
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
   if (snapshot.mustardSeedOpen) {
@@ -565,6 +578,9 @@ function collectTransitionMomentYield(snapshot) {
     blockers.push(OVERLAY_SOURCES.COMPANION_PICKER);
   }
   if (snapshot.confideOpen) blockers.push(OVERLAY_SOURCES.CONFIDE);
+  if (snapshot.coldStartGoalOpen) {
+    blockers.push(OVERLAY_SOURCES.COLD_START_GOAL);
+  }
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
   if (snapshot.journeyOpen) blockers.push(OVERLAY_SOURCES.JOURNEY_LOG);
   if (snapshot.recoverResetPracticeOpen) {
@@ -592,6 +608,9 @@ function collectRecoverResetBaseYield(snapshot) {
   if (snapshot.microRitualOpen) blockers.push(OVERLAY_SOURCES.MICRO_RITUAL);
   if (isHonestyUiBusy(snapshot.honestyPhase)) {
     blockers.push(OVERLAY_SOURCES.HONESTY_PANEL);
+  }
+  if (snapshot.coldStartGoalOpen) {
+    blockers.push(OVERLAY_SOURCES.COLD_START_GOAL);
   }
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
   if (snapshot.mustardSeedOpen) {
@@ -649,6 +668,7 @@ export function requestOverlaySlot(req) {
     growth &&
     growth !== source &&
     (req.kind === OVERLAY_SLOT_KIND.GROWTH_CARD ||
+      source === OVERLAY_SOURCES.COLD_START_GOAL ||
       source === OVERLAY_SOURCES.GROWTH_COMPASS ||
       source === OVERLAY_SOURCES.GROWTH_MUSTARD_SEED)
   ) {
@@ -672,6 +692,9 @@ export function requestOverlaySlot(req) {
     }
     if (snapshot.flowerWelcomeVisible) {
       mustYieldTo.push(OVERLAY_SOURCES.FLOWER_WELCOME);
+    }
+    if (snapshot.coldStartGoalOpen) {
+      mustYieldTo.push(OVERLAY_SOURCES.COLD_START_GOAL);
     }
     if (snapshot.compassOpen) {
       mustYieldTo.push(OVERLAY_SOURCES.GROWTH_COMPASS);

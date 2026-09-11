@@ -103,6 +103,7 @@ import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
+import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
@@ -112,6 +113,10 @@ import {
   resolveFiveMomentAction,
   shouldOfferFiveMomentsCompassFirstCard
 } from './core/fiveMomentsCompassGate.js';
+import {
+  resolveColdStartGoalAction,
+  shouldOfferColdStartGoalCard
+} from './core/coldStartGoalGate.js';
 import {
   hasSeenWellnessDisclaimer,
   markWellnessDisclaimerSeen,
@@ -1199,6 +1204,14 @@ async function init() {
     })
   );
   window.__fiveMomentsCompass = fiveMomentsCompassUI;
+  const coldStartGoalCardUI = new ColdStartGoalCardUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onChoice: (choice) => handleColdStartGoalSelect(choice),
+      onOpen: () => syncInAppReminderBanner()
+    })
+  );
+  window.__coldStartGoalCard = coldStartGoalCardUI;
   const journeyLogUI = new JourneyLogUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1666,6 +1679,7 @@ async function init() {
     if (except !== 'confide') confideToYinUI.close();
     if (except !== 'cinema') zenCinemaCardUI.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
+    if (except !== 'cold-start-goal') coldStartGoalCardUI.close();
     if (except !== 'journey') journeyLogUI.close();
     if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
@@ -1674,6 +1688,54 @@ async function init() {
     if (except !== 'quiet-together') quietTogetherPanelUI.closePanel();
     if (except !== 'focus-circle') focusCirclePanelUI.closePanel();
     syncIdleYinTap();
+  }
+
+  /**
+   * Cold-start goal card → existing MicroRitual / Sit with Yin surfaces.
+   * Choice is session-only; seen flag prevents re-offer on later visits.
+   * @param {string} choice
+   */
+  function handleColdStartGoalSelect(choice) {
+    const action = resolveColdStartGoalAction(choice);
+    if (!action || action.type === 'browse') return;
+    if (action.type === 'companion') {
+      closeGrowthOverlayCards();
+      companionModePicker.open();
+      resyncSessionChrome();
+      syncOnboardingAutoHints();
+      return;
+    }
+    if (action.type === 'micro-ritual') {
+      if (
+        reflectionMoment?.isOpen?.() ||
+        microRitualUI?.isOpen?.() ||
+        focusDurationPicker?.isOpen?.() ||
+        honestyBridge?.isVisible?.()
+      ) {
+        return;
+      }
+      if (arrivalPractice?.isOpen?.()) {
+        arrivalPractice.hide();
+        pendingAutoStartMode = null;
+        arrivalChoseThisRun = false;
+        suppressCompanionOpenAfterNod = false;
+        pendingChoose = null;
+        postChooseChrome.pending = false;
+        syncArrivalGateReady(false);
+      }
+      sessionEndFlow.cancelPending();
+      honestyBridge?.hide();
+      honestyCheckInUI.hide();
+      companionModePicker.hide();
+      focusDurationPicker?.hide();
+      pendingFocusDurationMode = null;
+      onboardingHints?.markSeen('quick-start');
+      onboardingHints?.markSeen('micro-ritual');
+      beginMicroRitualChrome();
+      microRitualUI.selectDurationAndStart(action.minutes);
+      resyncSessionChrome();
+      syncOnboardingAutoHints();
+    }
   }
 
   /**
@@ -2362,6 +2424,7 @@ async function init() {
       postSessionOverlayActive:
         window.__sessionUiGate?.postSessionOverlayActive === true,
       compassOpen: window.__fiveMomentsCompass?.isOpen?.() === true,
+      coldStartGoalOpen: window.__coldStartGoalCard?.isOpen?.() === true,
       mustardSeedOpen: window.__mustardSeedCard?.isOpen?.() === true,
       tipJarOpen: window.__tipJar?.isOpen?.() === true,
       supportModalOpen: window.__supportYin?.isOpen?.() === true,
@@ -4379,6 +4442,25 @@ async function init() {
     return true;
   }
 
+  function maybeOfferColdStartGoalCard() {
+    if (!productChrome) return false;
+    if (postChooseChrome.pending) return false;
+    if (confideToYinUI.isOpen()) return false;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (!shouldOfferColdStartGoalCard(storage)) return false;
+    if (onboardingHints?.isWellnessFirstCardOpen?.()) return false;
+    if (stateManager.state !== STATES.IDLE) return false;
+    if (onboardingHintsBlockFirstCard()) return false;
+    const snapshot = buildLiveOverlaySnapshot();
+    if (!canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, snapshot)) {
+      return false;
+    }
+    closeGrowthOverlayCards({ except: 'cold-start-goal' });
+    coldStartGoalCardUI.open();
+    return true;
+  }
+
   function maybeOfferFiveMomentsCompassFirstCard() {
     if (!productChrome) return;
     if (postChooseChrome.pending) return;
@@ -4387,6 +4469,7 @@ async function init() {
       typeof localStorage !== 'undefined' ? localStorage : null;
     if (!shouldOfferFiveMomentsCompassFirstCard(storage)) return;
     if (onboardingHints?.isWellnessFirstCardOpen?.()) return;
+    if (coldStartGoalCardUI?.isOpen?.()) return;
     if (
       !wellnessFirstConsumedThisPage &&
       shouldOfferWellnessDisclaimerFirstCard(storage, location.search)
@@ -4412,6 +4495,7 @@ async function init() {
     firstCardOfferTimer = window.setTimeout(() => {
       firstCardOfferTimer = null;
       if (maybeOfferWellnessDisclaimerFirstCard()) return;
+      if (maybeOfferColdStartGoalCard()) return;
       maybeOfferFiveMomentsCompassFirstCard();
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
@@ -4419,13 +4503,16 @@ async function init() {
         storage,
         location.search
       );
+      const wantsGoal = shouldOfferColdStartGoalCard(storage);
       const wantsCompass = shouldOfferFiveMomentsCompassFirstCard(storage);
-      if (!wantsWellness && !wantsCompass) return;
+      if (!wantsWellness && !wantsGoal && !wantsCompass) return;
       const snapshot = buildLiveOverlaySnapshot();
       const stillBlocked =
         (wantsWellness &&
           !wellnessFirstConsumedThisPage &&
           !canAttemptFirstCard(OVERLAY_SOURCES.WELLNESS_FIRST, snapshot)) ||
+        (wantsGoal &&
+          !canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, snapshot)) ||
         (wantsCompass &&
           !canAttemptFirstCard(OVERLAY_SOURCES.GROWTH_COMPASS, snapshot));
       if (stillBlocked) {
