@@ -411,7 +411,10 @@ export async function importPracticeSnapshotAtomic(storage, snapshot) {
   }
   const priorRaw = backupLocalStoreRaw(storage);
   const priorCompanion = await readCompanionBackupBundle();
-  const normalized = normalizeSnapshotStoresForApply(snapshot);
+  const normalized = normalizeSnapshotStoresForApply(snapshot, {
+    filterOwnershipForLocalImport: true,
+    storage
+  });
   const storeKeys =
     practiceBackupStoreKeysForSchemaVersion(normalized.schemaVersion) ??
     PRACTICE_BACKUP_STORE_KEYS;

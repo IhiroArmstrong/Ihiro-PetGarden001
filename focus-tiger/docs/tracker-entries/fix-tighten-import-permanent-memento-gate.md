@@ -1,0 +1,1 @@
+| 本地导入不写未验证付费的仪式纪念标记 | 纯后端 | 仅单元测试覆盖 | 未付费设备导入含 `ritual.*.memento/history` 的备份 → Preferences → Backup & restore → Import → 仪式纪念不可回看；Journey/热力图仍恢复。已付费/ Sanctuary 设备导入同文件 → 纪念标记正常写入。自动化：`practiceBackupImportOwnershipGate.test.js`。 | — | — | — | `practiceBackupImportOwnershipGate.js` · `practiceBackupLocalIo.js` | 2026-09-11 |
