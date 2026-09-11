@@ -50,7 +50,7 @@ describe('practiceBackupLocalIo', () => {
     assert.ok(payload.json.includes('"stores"'));
   });
 
-  it('migrates v1 import payloads to v2', () => {
+  it('migrates v1 import payloads to current schema', () => {
     const v1 = {
       schemaVersion: 1,
       savedAt: '2026-01-01T00:00:00.000Z',
@@ -66,8 +66,9 @@ describe('practiceBackupLocalIo', () => {
     const validated = validatePracticeImportPayload(JSON.stringify(v1));
     assert.equal(validated.ok, true);
     if (validated.ok) {
-      assert.equal(validated.snapshot.schemaVersion, 2);
+      assert.equal(validated.snapshot.schemaVersion, PRACTICE_BACKUP_SCHEMA_VERSION);
       assert.ok('focus-tiger.presence-signals.v1' in validated.snapshot.stores);
+      assert.ok('focus-tiger.lotus-pond.v1' in validated.snapshot.stores);
     }
   });
 

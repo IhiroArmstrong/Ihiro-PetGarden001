@@ -109,6 +109,11 @@ export class LotusPondStore {
   }
 
   /** @returns {number} */
+  /** Re-read persisted state (e.g. after practice backup import). */
+  reloadFromStorage() {
+    this._read();
+  }
+
   getLifetimeMinutes() {
     return this._read().lifetimeMinutes;
   }

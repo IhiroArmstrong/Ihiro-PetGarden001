@@ -30,18 +30,21 @@ function memStorage(initial = {}) {
 }
 
 describe('practiceBackupSnapshot', () => {
-  it('serialize includes exactly whitelist keys (no tip-jar / entitlement-cache)', () => {
+  it('serialize includes exactly whitelist keys (no entitlement-cache)', () => {
     const storage = memStorage({
       'focus-tiger.journey-log.v1': JSON.stringify({
         entries: [{ at: '2026-01-01T00:00:00.000Z', minutes: 10, arrive: true, reflect: false }]
       }),
-      'focus-tiger.tip-jar.v1': JSON.stringify({ tipped: true }),
+      'focus-tiger.tip-jar.v1': JSON.stringify({ tipped: true, badgeIds: ['silver-mono'] }),
+      'focus-tiger.lotus-pond.v1': JSON.stringify({ lifetimeMinutes: 120 }),
       'focus-tiger.entitlement-cache.v1': JSON.stringify({ lifetime: true })
     });
     const snap = serializePracticeBackupSnapshot(storage, () => new Date('2026-08-12T00:00:00.000Z'));
     assert.equal(snap.schemaVersion, PRACTICE_BACKUP_SCHEMA_VERSION);
     assert.deepEqual(Object.keys(snap.stores).sort(), [...PRACTICE_BACKUP_STORE_KEYS].sort());
-    assert.equal('focus-tiger.tip-jar.v1' in snap.stores, false);
+    assert.equal('focus-tiger.tip-jar.v1' in snap.stores, true);
+    assert.equal('focus-tiger.lotus-pond.v1' in snap.stores, true);
+    assert.equal('focus-tiger.entitlement-cache.v1' in snap.stores, false);
     assert.ok(snap.stores['focus-tiger.journey-log.v1']);
     const parsed = parsePracticeBackupSnapshotClient(snap);
     assert.equal(parsed.ok, true);

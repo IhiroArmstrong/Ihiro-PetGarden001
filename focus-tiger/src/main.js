@@ -148,6 +148,7 @@ import {
   PRACTICE_BACKUP_IDLE_FLUSH_MS,
   PRACTICE_BACKUP_BOOT_RESTORE_MS
 } from './core/practiceBackup/practiceBackupSync.js';
+import { subscribePracticeDataImported } from './core/practiceBackup/practiceBackupLocalIo.js';
 import {
   scheduleYpePersonalizationIngest,
   flushYpePersonalizationIngest,
@@ -1952,6 +1953,11 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
+  subscribePracticeDataImported(() => {
+    lotusPondStore.reloadFromStorage();
+    lotusPondRuntime.boot();
+    tipKindnessBadgesChrome.refresh();
+  });
   supportYinModalUI.setShouldLeadWithTea(() => {
     const aggregate = resolvePracticeAggregate({
       lotusPondStore,
