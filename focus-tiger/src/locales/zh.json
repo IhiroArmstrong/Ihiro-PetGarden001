@@ -970,5 +970,10 @@
   "CONFIDE_BOUNDARY_RESPECT": "可以先不说。寅在这儿。",
   "CONFIDE_COMPANION_PRESENCE": "寅在这儿。可以就这样待着，不必开始一场练习。",
   "CONFIDE_PREFERENCE_HONESTY": "寅不记口味清单。你允许留下的，在「阿寅记得什么」里。",
-  "CONFIDE_OBSERVATION_HONESTY": "寅不做「你是个怎样的人」的总结。你允许记住的，在「阿寅记得什么」里——不是模式报告。"
+  "CONFIDE_OBSERVATION_HONESTY": "寅不做「你是个怎样的人」的总结。你允许记住的，在「阿寅记得什么」里——不是模式报告。",
+  "FIVE_MOMENTS_IDLE_ENTRY": "与阿寅的五个时刻",
+  "MEMBERSHIP_MENU_UNLOCKED": "已解锁付费内容",
+  "CONTENT_UNLOCK_SANCTUARY_TITLE": "付费内容已解锁",
+  "CONTENT_UNLOCK_COMPANION_UPSELL": "圣所终身版已解锁进阶场景。若需要，可一次性加购本机 AI 陪伴——无需订阅。",
+  "CONTENT_UNLOCK_COMPANION_CTA": "解锁 AI 陪伴"
 }

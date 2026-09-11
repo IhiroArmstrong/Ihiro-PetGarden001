@@ -970,5 +970,10 @@
   "CONFIDE_BOUNDARY_RESPECT": "話さなくていい。寅はここにいる。",
   "CONFIDE_COMPANION_PRESENCE": "寅はここにいる。このままでいい。始める必要はない。",
   "CONFIDE_PREFERENCE_HONESTY": "好みの一覧は持っていません。残してよいとしたことは「寅が覚えていること」にあります。",
-  "CONFIDE_OBSERVATION_HONESTY": "寅は「あなたはどんな人か」のまとめは持ちません。覚えてよいとしたことは「寅が覚えていること」にあります——パターン報告ではありません。"
+  "CONFIDE_OBSERVATION_HONESTY": "寅は「あなたはどんな人か」のまとめは持ちません。覚えてよいとしたことは「寅が覚えていること」にあります——パターン報告ではありません。",
+  "FIVE_MOMENTS_IDLE_ENTRY": "寅との五つの時間",
+  "MEMBERSHIP_MENU_UNLOCKED": "有料コンテンツ解除済み",
+  "CONTENT_UNLOCK_SANCTUARY_TITLE": "有料コンテンツ解除済み",
+  "CONTENT_UNLOCK_COMPANION_UPSELL": "サンクチュアリ生涯版で上級シーンが使えます。端末内コンパニオンは一度きりの追加購入で。",
+  "CONTENT_UNLOCK_COMPANION_CTA": "AI コンパニオンを解放"
 }

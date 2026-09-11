@@ -355,7 +355,8 @@ function pushLabeledGroup(out, labelKey, items) {
 
 /**
  * Secondary chrome entries for drawer (narrow) or ⋯ menu (wide).
- * Honesty is a home ball on both viewports — never listed here.
+ * Honesty check-in lives in Practice (below Five Moments). The third home ball
+ * opens Five Moments Compass — never listed here.
  * Same four groups on both shells; presentation (drawer vs right sheet) stays in UI.
  *
  * @param {'narrow-drawer' | 'wide-more'} surface
@@ -396,6 +397,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
       ? { proxy: 'companion', labelKey: 'COMPANION_MODE_HINT' }
       : null,
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
+    { proxy: 'honesty', labelKey: 'HONESTY_IDLE_ENTRY' },
     { proxy: 'journey-log', labelKey: 'JOURNEY_LOG_MENU_LABEL' },
     { proxy: 'presence-signals', labelKey: 'PRESENCE_SIGNALS_MENU_LABEL' },
     yinCoinVisible
@@ -415,7 +417,6 @@ export function listSecondaryChromeEntries(surface, visibility) {
   ]);
 
   pushLabeledGroup(out, 'MENU_GROUP_INSPIRATION', [
-    { proxy: 'zen-cinema', labelKey: 'ZEN_CINEMA_MENU_LABEL' },
     { proxy: 'daily-quote', labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL' },
     visibility.mustardSeedSealUnlocked
       ? {
@@ -456,13 +457,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
   // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.
   // One contextual row here (not the three pay SKUs) sits immediately above
   // the Rituals heading (user 2026-08-15): beige subscribe CTA when locked;
-  // "You're subscribed" when entitled.
+  // “Premium unlocked” when entitled (Membership ∪ Sanctuary Lifetime).
   const scenesEntitled = hasUnlockedAdvancedScenes(visibility);
   if (scenesEntitled) {
     out.push({
       proxy: 'membership',
-      labelKey: 'MEMBERSHIP_MENU_SUBSCRIBED',
-      testId: 'idle-membership-subscribed'
+      labelKey: 'MEMBERSHIP_MENU_UNLOCKED',
+      testId: 'idle-membership-unlocked'
     });
   } else {
     out.push({

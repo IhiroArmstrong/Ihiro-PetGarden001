@@ -317,10 +317,10 @@ describe('listSecondaryChromeEntries', () => {
       [
         'companion',
         'five-moments',
+        'honesty',
         'journey-log',
         'presence-signals',
         'yin-coin',
-        'zen-cinema',
         'daily-quote',
         'wallpapers',
         'quiet-together',
@@ -356,10 +356,10 @@ describe('listSecondaryChromeEntries', () => {
       [
         'companion',
         'five-moments',
+        'honesty',
         'journey-log',
         'presence-signals',
         'yin-coin',
-        'zen-cinema',
         'daily-quote',
         'wallpapers',
         'quiet-together',
@@ -395,10 +395,10 @@ describe('listSecondaryChromeEntries', () => {
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
         'five-moments',
+        'honesty',
         'journey-log',
         'presence-signals',
         'yin-coin',
-        'zen-cinema',
         'daily-quote',
         'wallpapers',
         'quiet-together',
@@ -474,10 +474,10 @@ describe('listSecondaryChromeEntries', () => {
       scenesEntitled: true
     });
     const row = entries.find((e) => e.proxy === 'membership');
-    assert.equal(row?.labelKey, 'MEMBERSHIP_MENU_SUBSCRIBED');
+    assert.equal(row?.labelKey, 'MEMBERSHIP_MENU_UNLOCKED');
     assert.equal(row?.interactive, undefined);
     assert.equal(row?.emphasis, undefined);
-    assert.equal(row?.testId, 'idle-membership-subscribed');
+    assert.equal(row?.testId, 'idle-membership-unlocked');
   });
 
   it('confide row hidden while safety copy draft; visible only when gate open', () => {

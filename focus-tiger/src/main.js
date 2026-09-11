@@ -1520,6 +1520,10 @@ async function init() {
         // Ritual lock rows re-read isEntitled on next menu/drawer open.
         tipKindnessBadgesChrome.refresh();
         sanctuaryEnsoMarkChrome.refresh();
+      },
+      onCompanionAddon: () => {
+        membershipUnlockUI.close();
+        window.__supportYinModal?.open?.();
       }
     })
   );
