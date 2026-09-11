@@ -24,6 +24,7 @@ import {
   emptyPracticeBackupOptInState
 } from './practiceBackupOptIn.js';
 import { normalizeOwnershipState } from '../entitlement/entitlementOwnership.js';
+import { filterOwnershipForLocalImport } from './practiceBackupImportOwnershipGate.js';
 import { normalizeJourneyLogState } from '../journeyLogGate.js';
 import { normalizeRitualCompletionState } from '../RitualCompletionStore.js';
 import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
@@ -79,8 +80,12 @@ export function resetPracticeBackupSyncForTests() {
 /**
  * Normalize each store before write (esp. ownership persistent filter).
  * @param {import('./practiceBackupSnapshot.js').PracticeBackupSnapshot} snapshot
+ * @param {object} [opts]
+ * @param {boolean} [opts.filterOwnershipForLocalImport] Local file import only
+ * @param {Storage | null} [opts.storage] Required when filterOwnershipForLocalImport
+ * @param {() => Date} [opts.now]
  */
-export function normalizeSnapshotStoresForApply(snapshot) {
+export function normalizeSnapshotStoresForApply(snapshot, opts = {}) {
   /** @type {Record<string, unknown | null>} */
   const stores = {};
   for (const key of PRACTICE_BACKUP_STORE_KEYS) {
@@ -93,7 +98,9 @@ export function normalizeSnapshotStoresForApply(snapshot) {
       if (key === 'focus-tiger.journey-log.v1') {
         stores[key] = normalizeJourneyLogState(val);
       } else if (key === 'focus-tiger.entitlement-ownership.v1') {
-        stores[key] = normalizeOwnershipState(val);
+        stores[key] = opts.filterOwnershipForLocalImport
+          ? filterOwnershipForLocalImport(val, opts.storage, opts.now)
+          : normalizeOwnershipState(val);
       } else if (key === 'focus-tiger.ritual-completions.v1') {
         stores[key] = normalizeRitualCompletionState(val);
       } else if (key === 'focus-tiger.milestone-glow.v1') {
