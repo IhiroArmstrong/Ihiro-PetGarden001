@@ -53,7 +53,7 @@
 | **17** | `src/ui/MomentWhisperUI.js` | `#moment-whisper` Five Moments 轻量认出句（阿寅旁；3–4s 淡出；非 Banner） |
 | **17** | `src/ui/TransitionMomentUI.js` | `#transition-moment-overlay` + `#transition-moment-backdrop` Calm Action Transition 结界（合十 + CAW-T；~8s 自动关；`BLANK_CLOSES`） |
 | **17** | `src/ui/FocusAwarenessCardUI.js` | `#focus-awareness-card` Focusing **底部**间隔拍觉察短句（可重复；可单独关；**不**写 Whisper seen） |
-| **17** | `src/ui/RecoverResetOfferUI.js` | `#recover-reset-offer` 被动 Re-focus 后可选 emoji 条（8s 超时；可跳过） |
+| **17** | `src/ui/RecoverResetOfferUI.js` | `#recover-reset-offer` 被动 Re-focus 后可选 emoji 条（仅 ✕ 关闭；选 emoji 或继续专注） |
 | **17** | `src/ui/RecoverResetPracticeUI.js` | `#recover-reset-practice` Reset 微练习半高卡（Ground / Breath / Look Around） |
 | **17** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-whisper` 节日观察式短句（一日一次；可点消；非 Banner） |
 | **17** | `src/ui/ContextualTeaTipBubbleUI.js` | `#contextual-tea-tip-bubble` 场景化请茶轻气泡（达标/里程碑；可忽略；非 modal 墙） |

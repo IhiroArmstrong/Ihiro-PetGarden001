@@ -10,7 +10,6 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
-import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 
 export const RESET_ROUTES = Object.freeze({
   STEADY: 'steady',
@@ -25,7 +24,6 @@ export const RESET_ROUTES = Object.freeze({
 const ROOT_ID = 'recover-reset-offer';
 const STYLE_ID = 'recover-reset-offer-styles-v1';
 const OFFER_DELAY_MS = 8_200;
-const OFFER_TIMEOUT_MS = 8_000;
 const FADE_MS = 320;
 
 /** @type {readonly { emoji: string, route: ResetRoute, labelKey: string }[]} */
@@ -57,12 +55,9 @@ export class RecoverResetOfferUI {
     /** @type {ReturnType<typeof setTimeout> | null} */
     this._delayTimer = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
-    this._timeoutTimer = null;
-    /** @type {ReturnType<typeof setTimeout> | null} */
     this._fadeTimer = null;
     this._visible = false;
     this._offeredThisSession = false;
-    this._boundOutsideDismiss = this._handleOutsideDismiss.bind(this);
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => {
       if (this._visible && this.root) this._refreshCopy(this.root);
@@ -157,11 +152,8 @@ export class RecoverResetOfferUI {
     this.root = root;
     this._visible = true;
 
-    document.addEventListener('pointerdown', this._boundOutsideDismiss, true);
     root.getBoundingClientRect();
     root.classList.add('is-visible');
-
-    this._timeoutTimer = window.setTimeout(() => this.hide(), OFFER_TIMEOUT_MS);
     return true;
   }
 
@@ -170,15 +162,10 @@ export class RecoverResetOfferUI {
    */
   hide(opts = {}) {
     this._clearDelayTimer();
-    if (this._timeoutTimer) {
-      clearTimeout(this._timeoutTimer);
-      this._timeoutTimer = null;
-    }
     if (this._fadeTimer) {
       clearTimeout(this._fadeTimer);
       this._fadeTimer = null;
     }
-    document.removeEventListener('pointerdown', this._boundOutsideDismiss, true);
 
     const root = this.root;
     this.root = null;
@@ -222,16 +209,6 @@ export class RecoverResetOfferUI {
     });
   }
 
-  /** @param {PointerEvent} ev */
-  _handleOutsideDismiss(ev) {
-    if (!this._visible || !this.root) return;
-    const target = ev.target;
-    if (!(target instanceof Node)) return;
-    if (this.root.contains(target)) return;
-    if (shouldIgnoreOutsideDismissTarget(target)) return;
-    this.hide();
-  }
-
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
@@ -272,17 +249,18 @@ export class RecoverResetOfferUI {
       }
       .recover-reset-offer__emoji-row {
         display: flex;
-        gap: 6px;
+        gap: 4px;
         justify-content: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
       }
       .recover-reset-offer__emoji-btn {
         display: flex;
+        flex: 1 1 0;
         flex-direction: column;
         align-items: center;
         gap: 2px;
-        min-width: 52px;
-        padding: 6px 4px;
+        min-width: 0;
+        padding: 6px 2px;
         border: 1px solid rgba(196, 165, 116, 0.22);
         border-radius: 12px;
         background: rgba(255, 255, 255, 0.55);
@@ -298,11 +276,14 @@ export class RecoverResetOfferUI {
         line-height: 1;
       }
       .recover-reset-offer__label {
-        font-size: 0.62rem;
-        line-height: 1.2;
+        font-size: 0.58rem;
+        line-height: 1.15;
         opacity: 0.82;
-        max-width: 56px;
+        max-width: 100%;
         text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .recover-reset-offer__dismiss {
         position: absolute;
