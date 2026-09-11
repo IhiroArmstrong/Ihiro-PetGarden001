@@ -30,10 +30,19 @@ import {
   getFocusCircleWitnessPeekSnapshot,
   isFocusCircleWitnessClientEnabled
 } from '../core/focusCircleWitness.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 
-const STYLE_ID = 'focus-circle-witness-chrome-v1';
+const STYLE_ID = 'focus-circle-witness-chrome-v2';
 /** Above presence dots (~42px) + caption (~18px). */
 const WITNESS_ABOVE_PRESENCE_CSS = '62px';
+const TEXT_PRIMARY = '#3c3c3c';
+const TEXT_SECONDARY = 'rgba(60, 60, 60, 0.72)';
 
 export class FocusCircleWitnessChrome {
   /**
@@ -259,8 +268,15 @@ export class FocusCircleWitnessChrome {
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
-        max-width: 46vw;
-        opacity: 0.76;
+        max-width: min(46vw, 280px);
+        padding: 8px 10px;
+        border-radius: ${GLASS_RADIUS};
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        border: ${GLASS_BORDER};
+        box-shadow: ${GLASS_SHADOW};
+        color: ${TEXT_PRIMARY};
+        opacity: 0.92;
         transition: opacity 280ms ease;
       }
       .focus-circle-witness.is-focusing,
@@ -270,22 +286,25 @@ export class FocusCircleWitnessChrome {
       .focus-circle-witness__phrase {
         margin: 0;
         font-size: 10.5px;
-        line-height: 1.35;
+        line-height: 1.4;
         letter-spacing: 0.02em;
-        color: rgba(214, 222, 236, 0.72);
-        text-shadow: 0 1px 2px rgba(20, 16, 10, 0.45);
+        color: ${TEXT_PRIMARY};
       }
       .focus-circle-witness__respond {
         pointer-events: auto;
         margin: 0;
         padding: 4px 10px;
         border-radius: 999px;
-        border: 1px solid rgba(180, 198, 224, 0.35);
-        background: rgba(24, 30, 42, 0.42);
-        color: rgba(228, 236, 248, 0.88);
+        border: 1px solid rgba(196, 154, 74, 0.45);
+        background: rgba(196, 154, 74, 0.88);
+        color: #fff;
+        font: inherit;
         font-size: 10px;
         letter-spacing: 0.03em;
         cursor: pointer;
+      }
+      .focus-circle-witness__respond:active {
+        opacity: 0.92;
       }
       .focus-circle-witness__hide {
         pointer-events: auto;
@@ -293,7 +312,8 @@ export class FocusCircleWitnessChrome {
         padding: 0;
         border: 0;
         background: transparent;
-        color: rgba(198, 208, 224, 0.62);
+        color: ${TEXT_SECONDARY};
+        font: inherit;
         font-size: 9.5px;
         letter-spacing: 0.02em;
         cursor: pointer;
