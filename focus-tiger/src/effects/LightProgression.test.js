@@ -5,6 +5,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import {
   arrivalBackdropForWarmth,
@@ -66,6 +67,15 @@ test('rim breath modulation uses 4s period and stays in range', () => {
   assert.ok(c >= 0 && c <= 1);
   assert.notEqual(a, b);
   assert.equal(rimOpacityWithBreath(0, 1), 0);
+});
+
+test('dolly zoom targets #sprite-stage so lotus pond chrome stays fixed', () => {
+  const src = readFileSync(
+    new URL('./LightProgression.js', import.meta.url),
+    'utf8'
+  );
+  assert.match(src, /querySelector\('#sprite-stage'\)/);
+  assert.match(src, /overlay\.style\.transform = 'translateZ\(0\) scale\(1\)'/);
 });
 
 test('clearArrivalAtmosphere snap keeps warmth cut instant; animate fades with CapCut ms', () => {

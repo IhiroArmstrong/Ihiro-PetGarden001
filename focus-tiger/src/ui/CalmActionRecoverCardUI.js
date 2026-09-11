@@ -9,13 +9,15 @@
  */
 
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
+import { ACTIVE_RECOVER_TOAST_MS } from '../core/MindfulReminderController.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 
 const ROOT_ID = 'calm-action-recover-card';
 const STYLE_ID = 'calm-action-recover-card-styles-v1';
 const HOLD_MS = 5200;
 const FADE_MS = 380;
-const SHOW_DELAY_MS = 420;
+/** After center ACTIVE_RECOVER toast fades — never stack two quote boxes. */
+const SHOW_DELAY_MS = ACTIVE_RECOVER_TOAST_MS + 180;
 
 export class CalmActionRecoverCardUI {
   /**

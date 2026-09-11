@@ -5,18 +5,12 @@
 
 /**
  * Transition Moment overlay — ~10s boundary marking (palmsTogether + CAW-T).
- * Idle-only; blocks Yin tap; pure CSS backdrop (no LightProgression).
+ * Idle-only; blocks Yin tap; quote-only (no full-screen dim — pure text box).
  */
 
 import { findCalmActionTransitionEntry } from '../content/calm-action-wisdom/index.js';
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
-import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
-import {
-  OVERLAY_BACKDROP_FADE_MS,
-  createOverlayBackdrop,
-  hideOverlayBackdrop,
-  showOverlayBackdrop
-} from './overlayBackdrop.js';
+import { OVERLAY_BACKDROP_FADE_MS } from './overlayBackdrop.js';
 
 const ROOT_ID = 'transition-moment-overlay';
 const QUOTE_ID = 'transition-moment-quote';
@@ -48,14 +42,6 @@ export class TransitionMomentUI {
     /** @type {string | null} */
     this._activeQuoteId = null;
 
-    this.backdrop = createOverlayBackdrop(mountRoot, {
-      id: 'transition-moment-backdrop',
-      testId: 'transition-moment-backdrop',
-      zIndex: 17,
-      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
-      onDismiss: () => this.close()
-    });
-
     this.root = document.createElement('div');
     this.root.id = ROOT_ID;
     this.root.className = 'transition-moment-overlay';
@@ -73,6 +59,9 @@ export class TransitionMomentUI {
 
     this.root.appendChild(this.quoteEl);
     mountRoot.appendChild(this.root);
+    this.root.addEventListener('click', (event) => {
+      if (event.target === this.root) this.close();
+    });
 
     this._onKeyDown = (event) => {
       if (!this._open) return;
@@ -117,7 +106,6 @@ export class TransitionMomentUI {
     this.root.classList.remove('is-closing');
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
-    showOverlayBackdrop(this.backdrop);
     this.handlers.onPlayPalmsTogether?.();
     this.handlers.onOpen?.();
 
@@ -132,7 +120,6 @@ export class TransitionMomentUI {
     this._activeQuoteId = null;
     this.root.classList.remove('is-visible');
     this.root.classList.add('is-closing');
-    hideOverlayBackdrop(this.backdrop);
     this.handlers.onReturnIdle?.();
     this.handlers.releaseSlot?.();
     this.handlers.onClose?.();
@@ -149,7 +136,6 @@ export class TransitionMomentUI {
     document.removeEventListener('keydown', this._onKeyDown);
     this.close();
     this.root.remove();
-    this.backdrop?.remove?.();
   }
 
   _clearTimers() {

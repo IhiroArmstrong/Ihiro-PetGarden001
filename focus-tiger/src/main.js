@@ -2396,30 +2396,10 @@ async function init() {
     });
   }
 
-  const TRANSITION_MOMENT_BLOCKED_EMOTIONS = new Set([
-    'celebrating',
-    'sessionComplete'
-  ]);
-
   function canShowTransitionMomentTrigger() {
-    if (stateManager.state !== STATES.IDLE) return false;
-    if (transitionMomentUI?.isOpen?.() === true) return false;
-    if (
-      spriteOccupancy === SPRITE_OCCUPANCY.CELEBRATE ||
-      spriteOccupancy === SPRITE_OCCUPANCY.RISE_HOLD
-    ) {
-      return false;
-    }
-    const emotionKey = emotionController.getCurrentEmotionKey();
-    if (emotionKey && TRANSITION_MOMENT_BLOCKED_EMOTIONS.has(emotionKey)) {
-      return false;
-    }
-    return requestOverlaySlot({
-      source: OVERLAY_SOURCES.TRANSITION_MOMENT,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot: buildLiveOverlaySnapshot({ transitionMomentOpen: false })
-    }).canShow;
+    // C5.1: Transition Moment opens from Five Moments Compass only — no Idle
+    // micro-btn (overlapped weekly ? help; Work Transition ritual stays in menu).
+    return false;
   }
 
   function syncTransitionMomentTrigger() {

@@ -18,4 +18,6 @@ test('CalmActionRecoverCardUI exposes stable testid and bottom clearance', () =>
   assert.match(src, /homeClearanceBottomCss/);
   assert.equal(src.includes("t('ACTIVE_RECOVER')"), false);
   assert.equal(src.includes('COPY_POOLS'), false);
+  assert.match(src, /ACTIVE_RECOVER_TOAST_MS/);
+  assert.doesNotMatch(src, /SHOW_DELAY_MS = 420/);
 });

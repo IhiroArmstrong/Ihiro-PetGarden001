@@ -1,0 +1,1 @@
+| Buy Yin a Tea / Tip Jar 支付回跳致谢动画 | UI可见 | 待人工测试 | **主路径**：`?product=1` → Support Yin → Buy Yin a Tea → Stripe 测试付完 → 回跳 Idle → **0–1s** 内 `teaDrinking` 致谢动画。自动化：`paymentCheckoutThanks.test.js`。 | **2026-09-11 用户书面**（`?product=1`）：支付完成回跳见 Yin 喝茶动画 — **测试 OK**（feature 自检，非 develop tip 关单）。 | — | — | `PAYMENT_MANUAL_TEST_CHECKLIST.md` §A1 | 2026-09-11 |
