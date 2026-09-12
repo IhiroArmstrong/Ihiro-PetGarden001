@@ -2,7 +2,7 @@
 
 > **Status**: Initial charter (2026-09-10) · persona regression in CI  
 > **Companion code**: `src/core/growthMetricsRegistry.js` · `src/core/growthPersonaFixtures.js` · `src/core/growthPersonaRegression.js`  
-> **Related**: `practice-aggregate-registry.md` (baseline write hook + P0 consumers) · `FOCUS_COINS.md` (currency track) · `TEST_TRACKER.md` (QA seeds) · `YIN_EVOLUTION.md` (relationship meaning layer; **not** a formula consumer)
+> **Related**: `practice-aggregate-registry.md` (baseline write hook + P0 consumers) · `FOCUS_COINS.md` (currency track) · `TEST_TRACKER.md` (QA seeds) · `YIN_EVOLUTION.md` (relationship meaning layer; **not** a formula consumer) · `REMOTE_PARAM_CANDIDATES.md` (which numeric knobs may leave git without a new client build)
 
 ---
 

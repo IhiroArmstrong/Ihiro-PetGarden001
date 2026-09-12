@@ -29,7 +29,7 @@
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
-| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表 |
+| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/门槛仍在 Worker 源码** `tasteLayerFreeze.ts`（改须 deploy，无独立 TASTE KV）。花园数值试点走 `GROWTH_METRICS_KV`。审计：`REMOTE_PARAM_CANDIDATES.md` |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
