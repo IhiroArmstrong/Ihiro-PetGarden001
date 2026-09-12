@@ -686,7 +686,10 @@ async function init() {
         tInLocale
       });
       flowerBlowWelcomeBubble?.show(msg.lines, {
-        onHidden: () => maybeOfferIdleYinTapHint()
+        onHidden: () => {
+          ensureIdleBaselineAfterWelcome();
+          maybeOfferIdleYinTapHint();
+        }
       });
       markFlowerWelcomeBubbleShown(flowerStorage, { copyKey: msg.copyKey });
     }
@@ -2210,6 +2213,17 @@ async function init() {
       // Timed Breath practice sits with the existing Idle 闭目坐禅 loop
       // (idleBreathClosed ×2 → glance). Do not override with blink-smile —
       // that made a 1-min "Exhale..." look like Arrival's short greeting beat.
+      // Cold-start / flower welcome can leave overlay visible but idle loop off
+      // (Safari narrow): restore idle before breath dolly.
+      if (
+        !spritePlayer.isOverlayVisible() ||
+        !idleOrchestrator.isActive()
+      ) {
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: true
+        });
+      }
       sessionCues.preload();
       sessionCues.playStart({ ambient: ambientSoundscape });
       sessionCues.startIntervalSession();
@@ -4356,8 +4370,20 @@ async function init() {
   }
   window.setTimeout(startTastePrefetchOnce, 12000);
 
+  /** After welcome / flower first paint: occupancy resets but idle loop may not. */
+  function ensureIdleBaselineAfterWelcome() {
+    spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+    if (!idleOrchestrator.isActive()) {
+      emotionController.playEmotion('idle', {
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true
+      });
+    }
+  }
+
   const welcomePlayOptions = {
     onComplete: () => {
+      ensureIdleBaselineAfterWelcome();
       startTastePrefetchOnce();
       scheduleParrotAfterFirstPaintRelease();
     }
