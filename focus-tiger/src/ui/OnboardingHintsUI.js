@@ -65,16 +65,6 @@ import {
   setYpeCloudPersonalizationConsent
 } from '../core/ypeCloudPersonalizationConsent.js';
 import {
-  isQuietTogetherEnabled,
-  setQuietTogetherEnabled
-} from '../core/quietTogetherPreference.js';
-import {
-  scheduleLanternPeek,
-  stopLanternHeartbeat
-} from '../core/quietTogetherPresence.js';
-import { refreshFocusCircleStatus } from '../core/focusCircleMembership.js';
-import { FocusCircleControlsUI } from './FocusCircleControlsUI.js';
-import {
   onYpeCloudPersonalizationConsentDisabled,
   onYpeCloudPersonalizationConsentEnabled
 } from '../core/ypePersonalizationSync.js';
@@ -456,7 +446,6 @@ export class OnboardingHintsUI {
    * @param {object} [options]
    * @param {ReturnType<typeof createHintsSeenStore>} [options.store]
    * @param {() => object} [options.getScene]
-   * @param {() => void} [options.onOpenFiveMoments]
    * @param {() => void} [options.onWellnessFirstDismiss]
    * @param {Storage | null} [options.storage]
    */
@@ -465,7 +454,6 @@ export class OnboardingHintsUI {
     {
       store = createHintsSeenStore(),
       getScene = () => ({}),
-      onOpenFiveMoments = null,
       onWellnessFirstDismiss = null,
       onPurposeOpen = null,
       onPurposeClose = null,
@@ -474,7 +462,6 @@ export class OnboardingHintsUI {
   ) {
     this.store = store;
     this.getScene = getScene;
-    this.onOpenFiveMoments = onOpenFiveMoments;
     this.onWellnessFirstDismiss = onWellnessFirstDismiss;
     this.onPurposeOpen = onPurposeOpen;
     this.onPurposeClose = onPurposeClose;
@@ -650,7 +637,7 @@ export class OnboardingHintsUI {
   /**
    * Desktop: hover ? → purpose card; leave ? / card → hide after grace
    * (unless click-pinned). Grace lets the pointer cross the 14px gap and
-   * reach in-card links (The five moments / Privacy).
+   * reach in-card links (Privacy).
    * @param {Element | null} host
    * @returns {void}
    */
@@ -1950,16 +1937,6 @@ export class OnboardingHintsUI {
       this._openPrivacySheetFromPurpose();
     });
 
-    const moments = document.createElement('button');
-    moments.type = 'button';
-    moments.className = 'onboarding-app-purpose__moments';
-    moments.dataset.testid = 'onboarding-purpose-moments';
-    moments.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      this._openFiveMomentsFromPurpose();
-    });
-
     const dismiss = document.createElement('button');
     dismiss.type = 'button';
     dismiss.className = 'onboarding-app-purpose__dismiss';
@@ -1984,7 +1961,7 @@ export class OnboardingHintsUI {
 
     colophon.append(colophonMark, colophonByline, colophonCopy);
 
-    actions.append(moments, privacy, dismiss);
+    actions.append(privacy, dismiss);
     card.append(title, body, wellness, desktopRam, actions, colophon);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
@@ -1995,7 +1972,6 @@ export class OnboardingHintsUI {
     this._purposeDesktopRamEl = desktopRam;
     this._purposeDesktopRamTitleEl = desktopRamTitle;
     this._purposeDesktopRamBodyEl = desktopRamBody;
-    this._purposeMomentsEl = moments;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
     this._purposeColophonMarkEl = colophonMark;
@@ -2038,13 +2014,6 @@ export class OnboardingHintsUI {
         'HINT_APP_PURPOSE_DESKTOP_RAM_BODY'
       );
     }
-    if (this._purposeMomentsEl) {
-      this._purposeMomentsEl.textContent = t('HINT_APP_PURPOSE_MOMENTS');
-      this._purposeMomentsEl.setAttribute(
-        'aria-label',
-        t('HINT_APP_PURPOSE_MOMENTS_ARIA')
-      );
-    }
     if (this._purposePrivacyEl) {
       this._purposePrivacyEl.textContent = t('HINT_APP_PURPOSE_PRIVACY');
       this._purposePrivacyEl.setAttribute(
@@ -2068,12 +2037,6 @@ export class OnboardingHintsUI {
         'HINT_APP_PURPOSE_COLOPHON_COPYRIGHT'
       );
     }
-  }
-
-  _openFiveMomentsFromPurpose() {
-    this._purposeFromHover = false;
-    this.closePurposeCard();
-    this.onOpenFiveMoments?.();
   }
 
   _ensureWellnessDetailCard() {
@@ -2266,61 +2229,6 @@ export class OnboardingHintsUI {
     ypeOptInLabel.append(ypeOptInCheck, ypeOptInText);
     ypeOptIn.append(ypeOptInLabel, ypeOptInHint, ypeOptInDetail);
 
-    const lanternOptIn = document.createElement('div');
-    lanternOptIn.className = 'onboarding-privacy-sheet__opt-in';
-    lanternOptIn.id = 'privacy-quiet-together-opt-in';
-
-    const lanternOptInLabel = document.createElement('label');
-    lanternOptInLabel.className = 'onboarding-privacy-sheet__opt-in-label';
-    lanternOptInLabel.htmlFor = 'privacy-quiet-together-opt-in-toggle';
-
-    const lanternOptInCheck = document.createElement('input');
-    lanternOptInCheck.type = 'checkbox';
-    lanternOptInCheck.id = 'privacy-quiet-together-opt-in-toggle';
-    lanternOptInCheck.className = 'onboarding-privacy-sheet__opt-in-check';
-    lanternOptInCheck.dataset.testid = 'privacy-quiet-together-toggle';
-    lanternOptInCheck.addEventListener('change', () => {
-      const enabled = lanternOptInCheck.checked === true;
-      setQuietTogetherEnabled(globalThis.localStorage, enabled);
-      if (enabled) {
-        scheduleLanternPeek({ storage: globalThis.localStorage, forceSoon: true });
-      } else {
-        void stopLanternHeartbeat();
-      }
-      this._refreshQuietTogetherOptInCopy();
-    });
-
-    const lanternOptInText = document.createElement('span');
-    lanternOptInText.className = 'onboarding-privacy-sheet__opt-in-text';
-    lanternOptInText.dataset.privacyKey = 'PRIVACY_SHEET_QUIET_TOGETHER_LABEL';
-
-    const lanternOptInHint = document.createElement('p');
-    lanternOptInHint.className = 'onboarding-privacy-sheet__opt-in-hint';
-    lanternOptInHint.dataset.privacyKey = 'PRIVACY_SHEET_QUIET_TOGETHER_HINT';
-
-    lanternOptInLabel.append(lanternOptInCheck, lanternOptInText);
-    lanternOptIn.append(lanternOptInLabel, lanternOptInHint);
-
-    const circleSection = document.createElement('section');
-    circleSection.className = 'onboarding-privacy-sheet__focus-circle';
-    circleSection.id = 'privacy-focus-circle';
-    circleSection.dataset.testid = 'privacy-focus-circle';
-
-    const circleTitle = document.createElement('h3');
-    circleTitle.className = 'onboarding-privacy-sheet__section-title';
-    circleTitle.dataset.privacyKey = 'PRIVACY_SHEET_FOCUS_CIRCLE_TITLE';
-
-    const circleHint = document.createElement('p');
-    circleHint.className = 'onboarding-privacy-sheet__opt-in-hint';
-    circleHint.dataset.privacyKey = 'PRIVACY_SHEET_FOCUS_CIRCLE_HINT';
-
-    const circleMenuPointer = document.createElement('p');
-    circleMenuPointer.className = 'onboarding-privacy-sheet__opt-in-hint';
-    circleMenuPointer.dataset.privacyKey = 'PRIVACY_SHEET_FOCUS_CIRCLE_MENU_POINTER';
-
-    const circleControlsMount = document.createElement('div');
-    circleSection.append(circleTitle, circleHint, circleMenuPointer, circleControlsMount);
-
     const optIn = document.createElement('div');
     optIn.className = 'onboarding-privacy-sheet__opt-in';
     optIn.id = 'privacy-monetization-funnel-opt-in';
@@ -2377,7 +2285,7 @@ export class OnboardingHintsUI {
     });
 
     sheet.append(title, body, back);
-    body.append(ypeOptIn, lanternOptIn, circleSection, optIn, wellnessNote, wellnessLink);
+    body.append(ypeOptIn, optIn, wellnessNote, wellnessLink);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._privacyTitleEl = title;
@@ -2388,14 +2296,6 @@ export class OnboardingHintsUI {
     this._privacyYpeOptInText = ypeOptInText;
     this._privacyYpeOptInHint = ypeOptInHint;
     this._privacyYpeOptInDetail = ypeOptInDetail;
-    this._privacyQuietTogetherEl = lanternOptIn;
-    this._privacyQuietTogetherCheck = lanternOptInCheck;
-    this._privacyQuietTogetherText = lanternOptInText;
-    this._privacyQuietTogetherHint = lanternOptInHint;
-    this._privacyFocusCircleSection = circleSection;
-    this._privacyFocusCircleControls = new FocusCircleControlsUI(
-      circleControlsMount
-    );
     this._privacyOptInEl = optIn;
     this._privacyOptInCheck = optInCheck;
     this._privacyOptInText = optInText;
@@ -2431,23 +2331,6 @@ export class OnboardingHintsUI {
     }
   }
 
-  _refreshQuietTogetherOptInCopy() {
-    if (!this._privacyQuietTogetherCheck) return;
-    this._privacyQuietTogetherCheck.checked = isQuietTogetherEnabled(
-      globalThis.localStorage
-    );
-    if (this._privacyQuietTogetherText) {
-      this._privacyQuietTogetherText.textContent = t(
-        'PRIVACY_SHEET_QUIET_TOGETHER_LABEL'
-      );
-    }
-    if (this._privacyQuietTogetherHint) {
-      this._privacyQuietTogetherHint.textContent = t(
-        'PRIVACY_SHEET_QUIET_TOGETHER_HINT'
-      );
-    }
-  }
-
   _refreshPrivacyOptInCopy() {
     if (!this._privacyOptInCheck) return;
     this._privacyOptInCheck.checked = isMonetizationFunnelOptInEnabled(
@@ -2474,8 +2357,6 @@ export class OnboardingHintsUI {
       if (key) p.textContent = t(key);
     }
     this._refreshYpeOptInCopy();
-    this._refreshQuietTogetherOptInCopy();
-    this._privacyFocusCircleControls?.refresh();
     this._refreshPrivacyOptInCopy();
     if (this._privacyWellnessNoteEl) {
       this._privacyWellnessNoteEl.textContent = t('PRIVACY_SHEET_WELLNESS_NOTE');
@@ -2492,13 +2373,6 @@ export class OnboardingHintsUI {
   _openPrivacySheetFromPurpose() {
     this._ensurePrivacySheet();
     this._refreshPrivacySheetCopy();
-    void refreshFocusCircleStatus({
-      storage: globalThis.localStorage,
-      search: globalThis.location?.search ?? ''
-    }).then(() => {
-      this._privacyFocusCircleControls?.refresh();
-      this._privacyFocusCircleControls?.setStatusPollingActive(true);
-    });
     this._purposeFromHover = false;
     this._purposePinned = true;
     if (this.purposeCard) this.purposeCard.hidden = true;
@@ -2514,7 +2388,6 @@ export class OnboardingHintsUI {
   }
 
   _closePrivacySheetToPurpose() {
-    this._privacyFocusCircleControls?.setStatusPollingActive(false);
     if (this.privacySheet) this.privacySheet.hidden = true;
     if (this._privacyOpenedFromPurpose) {
       this._privacyOpenedFromPurpose = false;
@@ -2524,7 +2397,6 @@ export class OnboardingHintsUI {
   }
 
   _hidePrivacySheet() {
-    this._privacyFocusCircleControls?.setStatusPollingActive(false);
     if (this.privacySheet) this.privacySheet.hidden = true;
     this._privacyOpenedFromPurpose = false;
   }
@@ -3052,22 +2924,7 @@ export class OnboardingHintsUI {
         text-underline-offset: 3px;
         cursor: pointer;
       }
-      .onboarding-app-purpose__moments {
-        margin: 0;
-        padding: 0;
-        border: none;
-        background: transparent;
-        color: #3a5348;
-        font-family: inherit;
-        font-size: 12.5px;
-        font-weight: 600;
-        font-style: normal;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-        cursor: pointer;
-      }
-      .onboarding-app-purpose__privacy:hover,
-      .onboarding-app-purpose__moments:hover {
+      .onboarding-app-purpose__privacy:hover {
         color: #2f463c;
       }
       .onboarding-app-purpose__dismiss {
@@ -3272,62 +3129,6 @@ export class OnboardingHintsUI {
       }
       .onboarding-privacy-sheet__opt-in-detail-list li {
         margin: 0 0 0.35rem;
-      }
-      .onboarding-privacy-sheet__focus-circle {
-        margin: 0.85rem 0 0.35rem;
-        padding: 0.65rem 0.7rem;
-        border: 1px solid rgba(90, 107, 74, 0.28);
-        border-radius: 8px;
-        background: rgba(244, 248, 240, 0.55);
-      }
-      .onboarding-privacy-sheet__focus-circle-join-row {
-        display: flex;
-        gap: 0.45rem;
-        margin-top: 0.55rem;
-        align-items: center;
-      }
-      .onboarding-privacy-sheet__focus-circle-input {
-        flex: 1 1 auto;
-        min-width: 0;
-        font-size: 0.9rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        padding: 0.35rem 0.45rem;
-        border-radius: 6px;
-        border: 1px solid rgba(90, 107, 74, 0.35);
-        background: rgba(255, 255, 255, 0.75);
-        color: #2c1f14;
-      }
-      .onboarding-privacy-sheet__focus-circle-btn {
-        margin-top: 0.55rem;
-        margin-right: 0.45rem;
-        font-size: 0.82rem;
-        padding: 0.35rem 0.65rem;
-        border-radius: 6px;
-        border: 1px solid rgba(90, 107, 74, 0.35);
-        background: rgba(255, 255, 255, 0.8);
-        color: #2c1f14;
-        cursor: pointer;
-      }
-      .onboarding-privacy-sheet__focus-circle-btn:disabled {
-        opacity: 0.55;
-        cursor: wait;
-      }
-      .onboarding-privacy-sheet__focus-circle-btn--leave {
-        margin-top: 0.65rem;
-      }
-      .onboarding-privacy-sheet__focus-circle-code,
-      .onboarding-privacy-sheet__focus-circle-count {
-        margin: 0.35rem 0 0;
-        font-size: 0.86rem;
-        line-height: 1.4;
-        color: #2c1f14;
-      }
-      .onboarding-privacy-sheet__focus-circle-status {
-        margin: 0.5rem 0 0;
-        font-size: 0.78rem;
-        line-height: 1.35;
-        color: #3a5348;
       }
       .onboarding-privacy-sheet__back {
         align-self: flex-start;
