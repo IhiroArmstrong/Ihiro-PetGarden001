@@ -213,10 +213,49 @@ export const RITUAL_CATALOG = Object.freeze({
         guideKey: 'ritual.shared.breath_guide'
       }),
       Object.freeze({
-        kind: 'prompts',
-        promptKeys: Object.freeze([
-          'ritual.work_transition.prompt.stay',
-          'ritual.work_transition.prompt.home'
+        kind: 'chips',
+        promptKey: 'ritual.work_transition.prompt.stay',
+        field: 'stay',
+        options: Object.freeze([
+          Object.freeze({
+            id: 'task',
+            labelKey: 'ritual.work_transition.chip.stay.task'
+          }),
+          Object.freeze({
+            id: 'worry',
+            labelKey: 'ritual.work_transition.chip.stay.worry'
+          }),
+          Object.freeze({
+            id: 'decision',
+            labelKey: 'ritual.work_transition.chip.stay.decision'
+          }),
+          Object.freeze({
+            id: 'nothing',
+            labelKey: 'ritual.work_transition.chip.stay.nothing'
+          })
+        ])
+      }),
+      Object.freeze({
+        kind: 'chips',
+        promptKey: 'ritual.work_transition.prompt.home',
+        field: 'home',
+        options: Object.freeze([
+          Object.freeze({
+            id: 'accomplishment',
+            labelKey: 'ritual.work_transition.chip.home.accomplishment'
+          }),
+          Object.freeze({
+            id: 'on_mind',
+            labelKey: 'ritual.work_transition.chip.home.on_mind'
+          }),
+          Object.freeze({
+            id: 'rest',
+            labelKey: 'ritual.work_transition.chip.home.rest'
+          }),
+          Object.freeze({
+            id: 'energy',
+            labelKey: 'ritual.work_transition.chip.home.energy'
+          })
         ])
       }),
       Object.freeze({ kind: 'end', bodyKey: 'ritual.work_transition.end' })
