@@ -512,7 +512,7 @@ export default {
 					origin,
 				);
 			}
-			return withCors(await handleEmotionWeight(request), origin);
+			return withCors(await handleEmotionWeight(request, env), origin);
 		}
 
 		if (url.pathname === "/api/growth-metrics-config") {

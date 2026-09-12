@@ -99,6 +99,17 @@ npx wrangler kv namespace create GROWTH_METRICS_KV --preview
 
 改生产值（例 180→240）→ 见 [`../docs/growth-metrics-kv-changelog.md`](../docs/growth-metrics-kv-changelog.md)（**禁止**写回 git 冻表）。
 
+**首次 deploy 前**（`TASTE_LAYER_KV` 占位 id 须替换）：
+
+```bash
+cd focus-tiger/cloud
+npx wrangler kv namespace create TASTE_LAYER_KV
+npx wrangler kv namespace create TASTE_LAYER_KV --preview
+# 将输出的 id / preview_id 写入 wrangler.jsonc → TASTE_LAYER_KV
+```
+
+`/api/emotion-weight` 读 `taste-layer:v1:params`；KV 空或无效 → git 冻表（含 `honestyLongMinMinutes: 30`）。改生产值 → [`../docs/taste-layer-kv-changelog.md`](../docs/taste-layer-kv-changelog.md)（**禁止**写回 `tasteLayerFreeze.ts` / `sceneAnimationDispatcher.js`）。
+
 ## 目录结构
 
 ```
