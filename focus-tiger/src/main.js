@@ -644,33 +644,6 @@ async function init() {
     });
   }
 
-  /**
-   * TEMP diagnostic for #727 复测失败（完全无吹花）。只打 console，不改守卫。
-   * 指纹：`[FT-DIAG-727]`。取证后须删。
-   * @param {string} site
-   * @param {Record<string, unknown>} [extra]
-   */
-  function logWelcomeFirstPaintDiag(site, extra = {}) {
-    const trackedSequence = welcomeFirstPaintSequence;
-    const playing = spritePlayer?.isPlaying?.() === true;
-    const currentSequence = spritePlayer?.getCurrentSequence?.() ?? null;
-    const guarded = isWelcomeFirstPaintSequencePlaying({
-      trackedSequence,
-      playing,
-      currentSequence
-    });
-    console.info('[FT-DIAG-727]', {
-      site,
-      trackedSequence,
-      playing,
-      currentSequence,
-      guarded,
-      bubbleOpen: flowerBlowWelcomeBubble?.isOpen?.() === true,
-      idleActive: idleOrchestrator?.isActive?.() === true,
-      occupancy: spriteOccupancy,
-      ...extra
-    });
-  }
   /** Box, not `let onboardingHints`: overlayBusy may run before that binding. */
   /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
   const onboardingHintHost = { hints: null };
@@ -731,7 +704,6 @@ async function init() {
       });
       flowerBlowWelcomeBubble?.show(msg.lines, {
         onHidden: () => {
-          logWelcomeFirstPaintDiag('flowerBubble.onHidden');
           ensureIdleBaselineAfterWelcome();
           maybeOfferIdleYinTapHint();
         }
@@ -4425,11 +4397,7 @@ async function init() {
   function ensureIdleBaselineAfterWelcome() {
     // 第一幕还在播 → 交给它自己的 onComplete 回 idle。抢跑这一刀会把吹散尾段
     // 定格 + 叠化掉（气泡 ≈3.6s vs 序列 ≈6.5s），观感等于吹花压根没播。
-    const stillPlaying = isWelcomeFirstPaintPlaying();
-    logWelcomeFirstPaintDiag('ensureIdleBaselineAfterWelcome', {
-      willReturn: stillPlaying
-    });
-    if (stillPlaying) return;
+    if (isWelcomeFirstPaintPlaying()) return;
     spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
     if (!idleOrchestrator.isActive()) {
       emotionController.playEmotion('idle', {
@@ -4441,9 +4409,6 @@ async function init() {
 
   const welcomePlayOptions = {
     onComplete: () => {
-      logWelcomeFirstPaintDiag('welcomePlayOptions.onComplete', {
-        note: 'trackedSequence will be cleared next'
-      });
       welcomeFirstPaintSequence = null;
       ensureIdleBaselineAfterWelcome();
       startTastePrefetchOnce();
@@ -4487,14 +4452,20 @@ async function init() {
     const welcomeStarted = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
       playOptions: welcomePlayOptions
     });
-    logWelcomeFirstPaintDiag('welcome-boot', {
-      occupy: bootDecision.occupy,
-      resolvePlay: welcomeStarted?.play === true,
-      emotionKey: welcomeStarted?.emotionKey ?? null,
-      flowerWelcome: welcomeStarted?.flowerWelcome === true,
-      playEmotionStarted: spritePlayer?.isPlaying?.() === true
-    });
-    if (!welcomeStarted?.play) startTastePrefetchOnce();
+    // 占用已标 FLOWER/WELCOME 但 dispatcher 拒播（同日 quota 等）→ 立刻放手，
+    // 否则 isColdStartWelcomePlaying 会一直 true，动画却不播。
+    const broadcastNeverStarted =
+      welcomeStarted?.play !== true || welcomeFirstPaintSequence == null;
+    if (broadcastNeverStarted) {
+      spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      if (!idleOrchestrator.isActive()) {
+        emotionController.playEmotion('idle');
+      }
+      startTastePrefetchOnce();
+      scheduleParrotAfterFirstPaintRelease();
+      syncIdleYinTap();
+      scheduleFirstCardOffers(CAPCUT_DISSOLVE_MS + 250);
+    }
   } else {
     emotionController.playEmotion('idle');
     startTastePrefetchOnce();
@@ -4559,11 +4530,6 @@ async function init() {
       OVERLAY_SOURCES.COLD_START_GOAL,
       snapshot
     );
-    logWelcomeFirstPaintDiag('maybeOfferColdStartGoalCard', {
-      welcomeSequencePlaying: snapshot.welcomeSequencePlaying === true,
-      flowerWelcomeVisible: snapshot.flowerWelcomeVisible === true,
-      canAttempt: allowed
-    });
     if (!allowed) {
       return false;
     }

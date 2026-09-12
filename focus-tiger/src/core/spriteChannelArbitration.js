@@ -414,8 +414,8 @@ export function resolveBootSpriteOccupancy(context = {}) {
     );
   }
 
-  // 4 — flower over wellness cloak / morning wake
-  if (ctx.flowerForce) {
+  // 4 — flower over wellness cloak / morning wake (only when welcome quota still open)
+  if (ctx.flowerForce && ctx.welcomeAvailable) {
     return playOccupy(SPRITE_OCCUPANCY.FLOWER, null, false, 'flower-boot');
   }
 

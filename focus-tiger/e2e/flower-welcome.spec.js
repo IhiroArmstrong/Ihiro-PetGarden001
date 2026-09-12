@@ -76,6 +76,7 @@ test('welcome quota blocks flower even if Day1 force would apply', async ({
   // Burned welcome quota stays; reset flower lastOpen to Day1-looking state.
   await page.evaluate(() => {
     localStorage.removeItem('focus-tiger.flower-welcome.v1');
+    localStorage.removeItem('focus-tiger.flower-welcome-flag.v1');
   });
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
@@ -84,4 +85,10 @@ test('welcome quota blocks flower even if Day1 force would apply', async ({
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 15_000 });
   await page.waitForTimeout(1500);
   await expect(page.locator('#flower-blow-welcome-bubble')).toHaveCount(0);
+  // Occupancy must not stay on FLOWER when broadcast never started.
+  const frameSrc = await page.evaluate(() => {
+    const imgs = document.querySelectorAll('#sprite-stage img');
+    return imgs[imgs.length - 1]?.getAttribute('src') || '';
+  });
+  expect(frameSrc).toContain('idle-breathing');
 });
