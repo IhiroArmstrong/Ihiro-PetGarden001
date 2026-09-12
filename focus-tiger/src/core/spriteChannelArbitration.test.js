@@ -24,15 +24,28 @@ const twoAm = new Date('2026-08-20T02:00:00');
 const elevenPm = new Date('2026-08-20T23:30:00');
 const staleEnded = Date.parse('2026-08-20T10:00:00');
 
-test('boot: flower beats wellness late cloak', () => {
+test('boot: flower beats wellness late cloak when welcome quota open', () => {
   const d = resolveBootSpriteOccupancy({
     now: twoAm,
     wellnessBand: WELLNESS_DAY_BANDS.LATE_NIGHT,
     flowerForce: true,
+    welcomeAvailable: true,
     lateNight: true
   });
   assert.equal(d.occupy, SPRITE_OCCUPANCY.FLOWER);
   assert.equal(d.sessionDelta, null);
+});
+
+test('boot: flower force with welcome quota used does not claim FLOWER occupancy', () => {
+  const d = resolveBootSpriteOccupancy({
+    now: afternoon,
+    wellnessBand: WELLNESS_DAY_BANDS.DAY,
+    flowerForce: true,
+    welcomeAvailable: false,
+    lateNight: false
+  });
+  assert.equal(d.occupy, SPRITE_OCCUPANCY.IDLE_BASELINE);
+  assert.equal(d.reason, 'boot-idle');
 });
 
 test('boot: checkout tip thanks beats wellness late cloak', () => {
