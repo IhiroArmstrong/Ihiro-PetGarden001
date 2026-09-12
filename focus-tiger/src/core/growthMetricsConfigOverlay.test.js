@@ -26,15 +26,36 @@ afterEach(() => {
 test('parseGrowthMetricsConfigOverlay accepts schema 1 and rejects schema 2', () => {
   assert.deepEqual(parseGrowthMetricsConfigOverlay({ schemaVersion: 1, dailyScoreCapMinutes: 240 }), {
     schemaVersion: 1,
-    dailyScoreCapMinutes: 240
+    dailyScoreCapMinutes: 240,
+    lotusFirstBloomMinutes: 25,
+    lotusEarlyStepMinutes: 25,
+    lotusEarlyBloomLast: 5,
+    lotusLaterStepMinutes: 45,
+    lotusRingCapacity: 12
   });
   assert.equal(parseGrowthMetricsConfigOverlay({ schemaVersion: 2, dailyScoreCapMinutes: 240 }), null);
   assert.equal(parseGrowthMetricsConfigOverlay({ schemaVersion: 1, dailyScoreCapMinutes: 59 }), null);
+  assert.equal(
+    parseGrowthMetricsConfigOverlay({
+      schemaVersion: 1,
+      dailyScoreCapMinutes: 180,
+      lotusFirstBloomMinutes: 20
+    }),
+    null
+  );
 });
 
 test('getDailyScoreCapMinutes uses overlay when set', () => {
   assert.equal(getDailyScoreCapMinutes(), GROWTH_METRICS_FROZEN_DAILY_SCORE_CAP_MINUTES);
-  setGrowthMetricsConfigOverlay({ schemaVersion: 1, dailyScoreCapMinutes: 240 });
+  setGrowthMetricsConfigOverlay({
+    schemaVersion: 1,
+    dailyScoreCapMinutes: 240,
+    lotusFirstBloomMinutes: 25,
+    lotusEarlyStepMinutes: 25,
+    lotusEarlyBloomLast: 5,
+    lotusLaterStepMinutes: 45,
+    lotusRingCapacity: 12
+  });
   assert.equal(getDailyScoreCapMinutes(), 240);
 });
 

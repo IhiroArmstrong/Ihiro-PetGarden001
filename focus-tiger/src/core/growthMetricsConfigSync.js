@@ -12,6 +12,11 @@ import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
 import {
   GROWTH_METRICS_SCHEMA_VERSION,
   getDailyScoreCapMinutes,
+  getLotusEarlyBloomLast,
+  getLotusEarlyStepMinutes,
+  getLotusFirstBloomMinutes,
+  getLotusLaterStepMinutes,
+  getLotusRingCapacity,
   growthMetricsConfigOverlayMatchesLocalFreeze,
   isGrowthMetricsCloudConfirmed,
   markGrowthMetricsCloudOk,
@@ -184,11 +189,24 @@ export async function prefetchGrowthMetricsConfig(opts = {}) {
 }
 
 /**
- * @returns {{ growthMetrics: boolean, dailyScoreCapMinutes: number }}
+ * @returns {{
+ *   growthMetrics: boolean,
+ *   dailyScoreCapMinutes: number,
+ *   lotusFirstBloomMinutes: number,
+ *   lotusEarlyStepMinutes: number,
+ *   lotusEarlyBloomLast: number,
+ *   lotusLaterStepMinutes: number,
+ *   lotusRingCapacity: number
+ * }}
  */
 export function getGrowthMetricsStatus() {
   return {
     growthMetrics: isGrowthMetricsCloudConfirmed(),
-    dailyScoreCapMinutes: getDailyScoreCapMinutes()
+    dailyScoreCapMinutes: getDailyScoreCapMinutes(),
+    lotusFirstBloomMinutes: getLotusFirstBloomMinutes(),
+    lotusEarlyStepMinutes: getLotusEarlyStepMinutes(),
+    lotusEarlyBloomLast: getLotusEarlyBloomLast(),
+    lotusLaterStepMinutes: getLotusLaterStepMinutes(),
+    lotusRingCapacity: getLotusRingCapacity()
   };
 }

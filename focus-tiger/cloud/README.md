@@ -38,7 +38,7 @@ curl -s http://127.0.0.1:8787/health
 | `GET` | `/health` | 健康检查 |
 | `POST` | `/api/daily-message` | 品味层日签池 overlay（`schemaVersion: 1`） |
 | `POST` | `/api/emotion-weight` | 品味层权重 overlay（`schemaVersion: 1`） |
-| `POST` | `/api/growth-metrics-config` | 成长指标远程参数 overlay（`schemaVersion: 1` · 试点 `dailyScoreCapMinutes`） |
+| `POST` | `/api/growth-metrics-config` | 成长指标远程参数 overlay（`schemaVersion: 1` · `dailyScoreCapMinutes` + 莲花阶梯系数） |
 | `POST` | `/api/monetization-funnel-ingest` | 意愿漏斗 opt-in 快照（含可选 `layout`）→ `TIP_KV` 键 `funnel:v1:{day}:{clientId}`（TTL 90d） |
 | `POST` | `/api/lantern-presence` | Quiet Together 匿名 presence：`action` = `peek` \| `heartbeat` \| `leave`；`sessionId` UUID；`TIP_KV` `lantern:v1:live`（TTL 120s） |
 | `POST` | `/api/focus-circle` | Focus Circle：`action` = `create` \| `join` \| `leave` \| `status` \| `presence_peek`（含 `hereTodayOthers`） \| `presence_heartbeat` \| `presence_leave` \| `was_here_mark` \| `identity_set` \| `witness_*`；`witness_peek` 含 `identities` + trace `authorMemberId`；`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` + `circle:v1:here:{id}` + `circle:v1:identity:{id}` + `circle:v1:witness:{id}`（最多 8 人；presence TTL 120s；witness 滚动 24h） |
@@ -86,7 +86,7 @@ curl -s http://127.0.0.1:8787/health
 
 | Method | Path | 必需 JSON 字段 | 响应要点 |
 |---|---|---|---|
-| `POST` | `/api/growth-metrics-config` | 可选 `{ clientSchema: 1 }` | `{ schemaVersion: 1, dailyScoreCapMinutes }` — KV 空时返回 git 冻表 **180** |
+| `POST` | `/api/growth-metrics-config` | 可选 `{ clientSchema: 1 }` | `{ schemaVersion: 1, dailyScoreCapMinutes, lotusFirstBloomMinutes, lotusEarlyStepMinutes, lotusEarlyBloomLast, lotusLaterStepMinutes, lotusRingCapacity }` — KV 空时返回 git 冻表 |
 
 **首次 deploy 前**（占位 id 须替换）：
 
