@@ -4790,7 +4790,9 @@ async function init() {
           '刷新后 = 场景 A 全新用户：\n' +
           '• 当日零完成\n' +
           '• 阿寅 Idle 闭目坐禅（无专注结束记录 → 不自动 DORMANT）\n' +
-          '• Honesty 正念登入小钮可见\n\n' +
+          '• Honesty 正念登入小钮可见\n' +
+          '• 冷启动四选卡 seen 一并清空（须 ?product=1 才出卡）\n\n' +
+          '完整冷启动（吹花+四选）：重置后开 ?product=1 硬刷新。\n' +
           '（DORMANT 需距上次专注结束 ≥2h；要测 idle 动画请用「重置并 idle 坐禅」。）\n\n' +
           '确定重置？'
       );
@@ -4798,12 +4800,14 @@ async function init() {
 
       const {
         clearAllFocusTigerLocalState,
+        clearDevResetSessionState,
         markDevResetToast
       } = await import('./core/localStateKeys.js');
       const { clearAllUserAmbientTracks } = await import(
         './audio/UserAmbientLibrary.js'
       );
       clearAllFocusTigerLocalState();
+      clearDevResetSessionState();
       await clearAllUserAmbientTracks();
       markDevResetToast();
       window.location.reload();
@@ -4827,12 +4831,14 @@ async function init() {
 
       const {
         clearAllFocusTigerLocalState,
+        clearDevResetSessionState,
         markDevBootIdle
       } = await import('./core/localStateKeys.js');
       const { clearAllUserAmbientTracks } = await import(
         './audio/UserAmbientLibrary.js'
       );
       clearAllFocusTigerLocalState();
+      clearDevResetSessionState();
       await clearAllUserAmbientTracks();
       markDevBootIdle();
       window.location.reload();

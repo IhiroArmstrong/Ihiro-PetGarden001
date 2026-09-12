@@ -65,6 +65,7 @@
 | `focus-tiger.flower-welcome.v1` | `flowerWelcomeGate` | 吹花门闩：`{ lastOpenDateKey, firstBubbleDone, lastCopyKey }`（Day1 / ≥3 日久别；文案轮换记账） |
 | `focus-tiger.idle-yin-tap-hint.v1` | `idleYinTapHintGate` | 冷启动额头发现气泡已读：`'1'` 后不再出现 |
 | `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
+| `focus-tiger.cold-start-goal-seen.v1` | `coldStartGoalGate` | 冷启动四选卡已读（`'1'`）；二次打开不再出卡；DEV 重置清 |
 | `focus-tiger.tip-jar.v1` | `tipJarGate` | Buy Yin a Tea 本地 tip 状态：`{ tipped, tipCount, lastTippedAt, email?, source?, badgeIds[], tipLog[] }`；`badgeIds` = 善意/练习徽章（付费起 3，免费练习起 1，只增不减；练习上涨可 sync）；`tipLog` = 茶室留痕；**不**解锁内容；与 Sanctuary **零耦合** |
 | `focus-tiger.contextual-tea-tip.v1` | `contextualTeaTipGate` | 场景化请茶气泡：`{ lastShownLocalDay, lastShownReason, lastShownAt, dismissedCount }`；本地日一次；达标 / 里程碑触发；**不**解锁内容 |
 | `focus-tiger.monetization-funnel.v1` | `MonetizationFunnelStore` | 付费意愿漏斗：`{ counts, events[] }`（事件含可选 `layout=tea-first\|sanctuary-first`）；Support→CTA→Checkout→完成；本地 + 可选 Privacy opt-in 回传。**不**在练习备份 6 key 内。见 `MONETIZATION_INTENT_FUNNEL.md` |
