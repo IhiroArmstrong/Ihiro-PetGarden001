@@ -131,6 +131,11 @@ export interface EmotionWeightResponse {
 export interface GrowthMetricsConfigResponse {
 	schemaVersion: number;
 	dailyScoreCapMinutes: number;
+	lotusFirstBloomMinutes: number;
+	lotusEarlyStepMinutes: number;
+	lotusEarlyBloomLast: number;
+	lotusLaterStepMinutes: number;
+	lotusRingCapacity: number;
 }
 
 export interface CreateCheckoutSessionResponse {
