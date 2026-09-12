@@ -40,6 +40,7 @@ import {
 } from '../core/onboardingHintRegistry.js';
 import { ONBOARDING_HINT_ANCHORS } from './onboardingHintAnchors.js';
 import './ft-onboarding-hint-bubble.js';
+import { getGlassHoverTipHandle } from './ft-glass-hover-tip.js';
 import {
   NotificationBadge,
   NOTIFICATION_BADGE_TAG
@@ -839,43 +840,15 @@ export class OnboardingHintsUI {
       streak.removeAttribute('title');
     }
 
-    const quickUnread =
-      isClickTriggerHint('quick-start') && !this.store.isDone('quick-start');
-    for (const sel of [
-      '#quick-start-focus',
-      '#ft-wide-home-quickstart',
-      '#ft-narrow-home-quickstart'
-    ]) {
-      const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
-      if (!el) continue;
-      if (quickUnread) {
-        if (el.title && !el.dataset.ftNativeTitleBackup) {
-          el.dataset.ftNativeTitleBackup = el.title;
-        }
-        el.removeAttribute('title');
-      } else if (el.dataset.ftNativeTitleBackup) {
-        el.title = el.dataset.ftNativeTitleBackup;
-        delete el.dataset.ftNativeTitleBackup;
-      }
-    }
+    // Home balls use glass tips — no native title backup for quick-start.
 
-    // Ambient note: mint pulse owns first-visit tip; residual hover after done
-    // uses native `title` (AMBIENT_NOTE_HOVER) once pulse is cleared.
+    // Ambient note: mint pulse owns first-visit tip; residual glass tip after done.
     const ambientUnread =
       isClickTriggerHint('ambient-soundscape') &&
       !this.store.isDone('ambient-soundscape');
     for (const sel of ['.ambient-soundscape__mute', '#ft-narrow-mute-btn']) {
       const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
-      if (!el) continue;
-      if (ambientUnread) {
-        if (el.title && !el.dataset.ftNativeTitleBackup) {
-          el.dataset.ftNativeTitleBackup = el.title;
-        }
-        el.removeAttribute('title');
-      } else if (el.dataset.ftNativeTitleBackup) {
-        el.title = el.dataset.ftNativeTitleBackup;
-        delete el.dataset.ftNativeTitleBackup;
-      }
+      getGlassHoverTipHandle(el)?.setSuppressed(ambientUnread);
     }
   }
 

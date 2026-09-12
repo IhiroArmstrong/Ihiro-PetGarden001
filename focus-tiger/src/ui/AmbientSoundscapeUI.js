@@ -26,6 +26,7 @@ import {
 } from '../audio/UserAmbientLibrary.js';
 import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
 import { onEntitlementChange } from '../core/entitlement/entitlementGate.js';
+import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
@@ -110,6 +111,11 @@ export class AmbientSoundscapeUI {
     });
     this.muteBtn.addEventListener('pointerdown', () => {
       this._clearHoverOpenTimer();
+    });
+    this._muteTip = attachGlassHoverTip(this.muteBtn, {
+      placement: 'bottom',
+      tipId: 'ambient-soundscape-mute-tip',
+      text: t('AMBIENT_NOTE_HOVER')
     });
 
     this.focusChrome = document.createElement('div');
@@ -1079,9 +1085,9 @@ export class AmbientSoundscapeUI {
     this.muteBtn.classList.toggle('is-ghost', !audible);
     // Opens Soundscape (same as Sound) — aria mirrors FAB label, not mute toggle
     this.muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
-    // Residual after mint done: native title. Unread mint hover owns tip copy
-    // (OnboardingHintsUI strips title while pulse is active).
-    this.muteBtn.setAttribute('title', t('AMBIENT_NOTE_HOVER'));
+    // Residual after mint done: glass tip (not native title). Unread mint hover
+    // owns tip copy (OnboardingHintsUI suppresses while pulse is active).
+    this._muteTip?.setText(t('AMBIENT_NOTE_HOVER'));
     this.muteBtn.setAttribute(
       'aria-expanded',
       this.isPanelOpen() ? 'true' : 'false'

@@ -20,7 +20,8 @@ test('narrow ActionBar has Idle Confide ear slot (hidden until gate)', () => {
   assert.match(src, /id="ft-narrow-confide-btn"/);
   assert.match(src, /icon-confide-to-yin\.png/);
   assert.match(src, /setConfideEarVisible/);
-  assert.match(src, /CONFIDE_MENU_LABEL/);
+  assert.match(src, /CONFIDE_EAR_TOOLTIP/);
+  assert.match(src, /attachGlassHoverTip/);
   assert.match(src, /\.ft-narrow-action-bar__btn:active/);
 });
 

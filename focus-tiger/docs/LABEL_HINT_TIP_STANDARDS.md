@@ -1,12 +1,12 @@
 # LABEL_HINT_TIP_STANDARDS.md — 说明信号分层规则（草案）
 
 创建日期：2026-09-12  
-状态：**草案 · 待产品拍板**（本轮不改运行时）  
+状态：**草案 · 待产品拍板**（第一批运行时迁移进行中 · `feature/label-hint-tip-batch1`）  
 权威路径：`focus-tiger/docs/LABEL_HINT_TIP_STANDARDS.md`  
 配套清单：[`LABEL_HINT_TIP_AUDIT.md`](./LABEL_HINT_TIP_AUDIT.md)  
 相邻 SSOT（发现性脉冲 / 首次提示气泡）：[`ONBOARDING_HINTS.md`](./ONBOARDING_HINTS.md) · [`HINTS_WIRING.md`](./HINTS_WIRING.md)
 
-> **地面真相（2026-09-12）**：任务书里写的「已去掉 `title`、改用 CSS `data-ft-tip`、约 120ms」**尚未合入** `origin/develop`。全仓无 `idleHomeCtaTip.js`、无 `data-ft-tip`。Home 三球仍写原生 `title`。仓内已有的快速悬停样板是倾听耳 / Transition 入口的 **自绘 `__tip` 节点**，不是统一属性。本草案把「悬停解释一律走自绘 tip、禁用原生 title」写成目标规则；实现须另开工。
+> **地面真相（2026-09-12 · 批 1 后）**：`ft-glass-hover-tip.js` 已收编倾听耳玻璃胶囊样式（~120ms 淡入）。**已迁移**：Home 三球（宽/窄）、窄屏倾诉钮、音符/♪ 残句（mint done 后仍自绘，不再恢复原生 `title`）。**仍待后续批次**：地球仪/时钟残句、面板内滑杆 `title`、原生 `title` lint。属性名仍用子节点 `role="tooltip"`，非 `data-ft-tip`。
 
 ---
 
