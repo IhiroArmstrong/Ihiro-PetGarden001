@@ -22,6 +22,10 @@ import {
   NARROW_HOME_SIT_PX,
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
+import {
+  injectIdleHomeCtaTipStyles,
+  syncIdleHomeCtaTip
+} from './idleHomeCtaTip.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
@@ -670,8 +674,7 @@ export class NarrowIdleShell {
     if (this.sitHomeBtn) {
       const sitLabel =
         focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
-      this.sitHomeBtn.setAttribute('aria-label', sitLabel);
-      this.sitHomeBtn.title = sitLabel;
+      syncIdleHomeCtaTip(this.sitHomeBtn, sitLabel);
       const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
       this.sitHomeBtn.disabled = !sitOk;
       this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
@@ -683,9 +686,7 @@ export class NarrowIdleShell {
     const quickEl = document.getElementById('quick-start-focus');
     if (this.quickHomeBtn) {
       const qsLabel = t('QUICK_START_ARIA');
-      this.quickHomeBtn.setAttribute('aria-label', qsLabel);
-      // Home left ball: no mint pulse (2026-08-11) — always keep hover label.
-      this.quickHomeBtn.title = qsLabel;
+      syncIdleHomeCtaTip(this.quickHomeBtn, qsLabel);
       const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
       this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
       this.quickHomeBtn.disabled = !qsOk;
@@ -693,11 +694,8 @@ export class NarrowIdleShell {
     }
 
     if (this.honestyHomeBtn) {
-      const honestyLabel = t('HONESTY_IDLE_ENTRY');
-      this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
-      this.honestyHomeBtn.title = honestyLabel;
-      // Idle home: always offer Honesty (entry may be missing / attribute-hidden).
-      // keepQuickStart: hide Honesty (W3 — only ⚡ stays).
+      const momentsLabel = t('FIVE_MOMENTS_IDLE_ENTRY');
+      syncIdleHomeCtaTip(this.honestyHomeBtn, momentsLabel);
       const showHonesty = !this._keepQuickStart;
       this.honestyHomeBtn.hidden = !showHonesty;
       this.honestyHomeBtn.disabled = false;
@@ -874,6 +872,12 @@ export class NarrowIdleShell {
       this.handlers.onFiveMoments?.();
       return;
     }
+    if (key === 'honesty') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onHonesty?.();
+      return;
+    }
     if (key === 'journey-log') {
       this.closeSheet();
       this.clearStage();
@@ -995,16 +999,7 @@ export class NarrowIdleShell {
       return;
     }
     if (key === 'honesty') {
-      const el = document.getElementById('honesty-idle-entry');
-      if (el && !el.disabled && !el.hidden) {
-        const prev = el.style.pointerEvents;
-        el.style.pointerEvents = 'auto';
-        el.click();
-        el.style.pointerEvents = prev;
-        return;
-      }
-      // Entry may be attribute-hidden while Idle drawer is open — still open check-in.
-      this.handlers.onHonesty?.();
+      this.handlers.onFiveMoments?.();
       return;
     }
 
@@ -1022,6 +1017,7 @@ export class NarrowIdleShell {
   }
 
   _injectStyles() {
+    injectIdleHomeCtaTipStyles();
     // Drop prior style tags if STYLE_ID was bumped (HMR / hot reload)
     for (const el of document.querySelectorAll(
       'style[id^="ft-narrow-idle-shell-styles"]'

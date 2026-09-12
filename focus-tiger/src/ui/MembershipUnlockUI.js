@@ -18,10 +18,15 @@ import {
   isMembershipActiveLocally,
   markMembershipFromPayment,
   MEMBERSHIP_PLAN_ID,
-  MEMBERSHIP_PRICE_DISPLAY
+  MEMBERSHIP_PRICE_DISPLAY,
+  resolvePaidContentUnlockView
 } from '../core/membershipCheckout.js';
 import { persistMembershipDeviceCredentialFromBody } from '../core/membershipDeviceCredential.js';
 import { createMembershipPortalSession } from '../core/entitlement/cloudEntitlementProvider.js';
+import { getEntitlementState } from '../core/entitlement/entitlementGate.js';
+import { mayOfferCompanionLifetimeAddon } from '../core/entitlement/companionAddonSku.js';
+import { isCompanionAddonActive } from '../core/companionEntitlement.js';
+import { SANCTUARY_LIFETIME_PRICE_USD } from './SanctuaryUnlockUI.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -46,6 +51,7 @@ export class MembershipUnlockUI {
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
    * @param {() => void} [handlers.onEntitlementChanged]
+   * @param {() => void} [handlers.onCompanionAddon]
    * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
@@ -61,6 +67,8 @@ export class MembershipUnlockUI {
     this._checkoutArmedAt = 0;
     /** @type {MembershipCardView} */
     this._view = 'subscribe';
+    /** @type {'membership' | 'sanctuary'} */
+    this._activeKind = 'membership';
 
     this.backdrop = document.createElement('div');
     this.backdrop.id = 'yin-membership-backdrop';
@@ -177,9 +185,14 @@ export class MembershipUnlockUI {
       'yin-membership__btn yin-membership__btn--ghost';
     this.restoreBackBtn.dataset.testid = 'yin-membership-restore-back';
     this.restoreBackBtn.addEventListener('click', () => {
-      this._view = isMembershipActiveLocally({ storage: this._storage })
-        ? 'active'
-        : 'subscribe';
+      const unlockView = resolvePaidContentUnlockView({ storage: this._storage });
+      if (unlockView === 'subscribe') {
+        this._view = 'subscribe';
+      } else {
+        this._view = 'active';
+        this._activeKind =
+          unlockView === 'sanctuary-active' ? 'sanctuary' : 'membership';
+      }
       this._refreshTexts();
     });
 
@@ -210,6 +223,20 @@ export class MembershipUnlockUI {
     this.activeSection.className = 'yin-membership__section';
     this.activeSection.dataset.testid = 'yin-membership-active-section';
     this.activeSection.append(this.planEl);
+
+    this.companionUpsellEl = document.createElement('p');
+    this.companionUpsellEl.className = 'yin-membership__companion-upsell';
+    this.companionUpsellEl.dataset.testid = 'yin-membership-companion-upsell';
+
+    this.companionAddonBtn = document.createElement('button');
+    this.companionAddonBtn.type = 'button';
+    this.companionAddonBtn.className =
+      'yin-membership__btn yin-membership__btn--ghost';
+    this.companionAddonBtn.dataset.testid = 'yin-membership-companion-addon';
+    this.companionAddonBtn.addEventListener('click', () => {
+      this.handlers.onCompanionAddon?.();
+    });
+    this.activeSection.append(this.companionUpsellEl, this.companionAddonBtn);
 
     this.restoreSection = document.createElement('div');
     this.restoreSection.className = 'yin-membership__section';
@@ -268,9 +295,14 @@ export class MembershipUnlockUI {
     this._open = true;
     this._userDismissed = false;
     this._checkoutArmedAt = Date.now() + CHECKOUT_ARM_MS;
-    this._view = isMembershipActiveLocally({ storage: this._storage })
-      ? 'active'
-      : 'subscribe';
+    const unlockView = resolvePaidContentUnlockView({ storage: this._storage });
+    if (unlockView === 'subscribe') {
+      this._view = 'subscribe';
+    } else {
+      this._view = 'active';
+      this._activeKind =
+        unlockView === 'sanctuary-active' ? 'sanctuary' : 'membership';
+    }
     this.backdrop.hidden = false;
     this.root.hidden = false;
     this.root.tabIndex = -1;
@@ -519,14 +551,23 @@ export class MembershipUnlockUI {
     const active = view === 'active';
     const subscribe = view === 'subscribe';
     const restore = view === 'restore';
+    const showCompanionUpsell =
+      active &&
+      mayOfferCompanionLifetimeAddon({
+        lifetimeActive: getEntitlementState({ storage: this._storage })
+          .lifetimeActive
+      }) &&
+      !isCompanionAddonActive({ storage: this._storage });
 
     this.activeSection.hidden = !active;
     this.subscribeSection.hidden = !subscribe;
     this.restoreSection.hidden = !restore;
 
     this.buyBtn.hidden = !subscribe;
-    this.manageBtn.hidden = !active;
+    this.manageBtn.hidden = !active || this._activeKind !== 'membership';
     this.restoreLinkBtn.hidden = !subscribe;
+    this.companionUpsellEl.hidden = !showCompanionUpsell;
+    this.companionAddonBtn.hidden = !showCompanionUpsell;
 
     this.root.classList.toggle('yin-membership--active', active);
     this.root.classList.toggle('yin-membership--subscribe', subscribe);
@@ -534,21 +575,35 @@ export class MembershipUnlockUI {
   }
 
   _refreshTexts() {
-    const active = isMembershipActiveLocally({ storage: this._storage });
-    if (this._open && this._view === 'subscribe' && active) {
+    const unlockView = resolvePaidContentUnlockView({ storage: this._storage });
+    if (this._open && this._view === 'subscribe' && unlockView !== 'subscribe') {
       this._view = 'active';
+      this._activeKind =
+        unlockView === 'sanctuary-active' ? 'sanctuary' : 'membership';
     }
 
     if (this._view === 'active') {
-      this.titleEl.textContent = t('MEMBERSHIP_ACTIVE_TITLE');
-      this.statusEl.textContent = t('MEMBERSHIP_STATUS_YES');
-      this.planEl.textContent = t('MEMBERSHIP_ACTIVE_PLAN').replaceAll(
-        '{price}',
-        MEMBERSHIP_PRICE_DISPLAY
-      );
+      if (this._activeKind === 'sanctuary') {
+        this.titleEl.textContent = t('CONTENT_UNLOCK_SANCTUARY_TITLE');
+        this.statusEl.textContent = t('SANCTUARY_ALREADY');
+        this.planEl.textContent = t('SANCTUARY_PRICE').replaceAll(
+          '{price}',
+          SANCTUARY_LIFETIME_PRICE_USD
+        );
+        this.root.setAttribute('aria-label', t('CONTENT_UNLOCK_SANCTUARY_TITLE'));
+      } else {
+        this.titleEl.textContent = t('MEMBERSHIP_ACTIVE_TITLE');
+        this.statusEl.textContent = t('MEMBERSHIP_STATUS_YES');
+        this.planEl.textContent = t('MEMBERSHIP_ACTIVE_PLAN').replaceAll(
+          '{price}',
+          MEMBERSHIP_PRICE_DISPLAY
+        );
+        this.root.setAttribute('aria-label', t('MEMBERSHIP_ACTIVE_TITLE'));
+      }
       this.closeBtn.textContent = t('MEMBERSHIP_ACTIVE_CLOSE');
       this.manageBtn.textContent = t('MEMBERSHIP_MANAGE_CTA');
-      this.root.setAttribute('aria-label', t('MEMBERSHIP_ACTIVE_TITLE'));
+      this.companionUpsellEl.textContent = t('CONTENT_UNLOCK_COMPANION_UPSELL');
+      this.companionAddonBtn.textContent = t('CONTENT_UNLOCK_COMPANION_CTA');
     } else if (this._view === 'restore') {
       this.titleEl.textContent = t('MEMBERSHIP_RESTORE_TITLE');
       this.restoreTitle.textContent = t('MEMBERSHIP_RESTORE_TITLE');
