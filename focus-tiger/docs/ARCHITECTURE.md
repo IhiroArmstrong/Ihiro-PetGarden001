@@ -396,7 +396,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 - **不做**：用 Tauri 作为 v1 壳；用 Capacitor 包 Mac 窗口；把 PWA 任务六当成电脑版终局。
 - **与 Web 的关系**：v1.0.0 默认仍是纯 Web；Electron 是加法。渲染层继续 `localStorage`；壳内不注册现有 PWA SW。
 - **手机**：未来默认 Capacitor（HealthKit 等）；与本条分离。
-- **尚未实现（运行时）**：公证 CI、`electron-updater`、步骤 B 托盘。步骤 A 窗口代码在 `focus-tiger/desktop/`（无托盘；关窗 quit）。Electron 不进产品 `dependencies`。
+- **尚未实现（运行时）**：公证 CI、`electron-updater`（Brief `task-electron-desktop-updater.md` · 2026-09-12 口径已锁；第一份收费 DMG 前必须接线）。**步骤 B 托盘已接线**（待 Mac 场景 AB 人工）。窗口代码在 `focus-tiger/desktop/`。Electron 不进产品 `dependencies`。
 - **Cloud API**：壳内 `postCloudJson` 走主进程 IPC（避开自定义协议 CORS）。Worker `ALLOWED_ORIGIN` 可逗号列表含 `focus-tiger://app`（下次生产部署再加；本回合**不** Redeploy）。
 - **失败反馈**：Checkout / OTP / 备份失败复用现有 Web 卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC` / `JOURNEY_LOG_BACKUP_STATUS_ERR`），不为壳另做一套。
 

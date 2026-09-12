@@ -265,7 +265,16 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 序 | 内容 | Brief / 权威 | 状态 |
 |---|---|---|---|
 | **—** | 脚手架步骤 A/B（窗口 + 托盘 + SB-18） | `task-electron-desktop-scaffold.md` | 步骤 A/B 已接线 · 待 Mac 场景 AB |
-| **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期** |
+| **P0** | **官网 DMG 自动更新器**（第一份收费包出门前） | `task-electron-desktop-updater.md` | **Brief 已锁 · 运行时待口令** |
+| **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期**（后于更新器） |
+
+**官网 DMG 自动更新器 · 拍板摘要（2026-09-12）**：
+
+- 官网直销无商店更新托底；第一份收费 DMG **必须**带检查更新代码（老包补不进这段逻辑）。
+- **不重开** Electron vs Tauri。MVP：检测 → 空闲左下芯片 → 后台下载 → 用户确认后重启安装。网页 #263 仍只刷新。
+- 失败须有 Retry / Not now；`urgency: required` 只预留、MVP 当 optional。渠道 `direct` 才开自建更新；Setapp / MAS 编译期关掉。
+- 验收不得等两次正式发版：单测状态机 + DEV 假通路 + 本地 generic feed；公证双包是发版彩排。
+- 发布检查清单写在 Brief 内（可勾选），禁止只停留在散文。
 
 **V8 字节码编译 · 拍板摘要（2026-09-10）**：
 
