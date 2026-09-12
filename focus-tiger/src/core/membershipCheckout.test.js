@@ -12,13 +12,16 @@ import {
   ENTITLEMENT_CACHE_STORAGE_KEY,
   getEntitlementState,
   isEntitled,
-  readEntitlementCache
+  readEntitlementCache,
+  applyEntitlementPatch
 } from './entitlement/entitlementGate.js';
 import {
   confirmMembershipReturnQuery,
   markMembershipFromPayment,
   MEMBERSHIP_PLAN_ID,
-  MEMBERSHIP_PRICE_DISPLAY
+  MEMBERSHIP_PRICE_DISPLAY,
+  resolvePaidContentUnlockView,
+  hasAdvancedScenesUnlock
 } from './membershipCheckout.js';
 import {
   MEMBERSHIP_DEVICE_CREDENTIAL_KEY,
@@ -173,5 +176,34 @@ describe('membership ↔ tip zero-coupling (static)', () => {
       false,
       'membershipCheckout.js must not import sanctuaryEntitlementGate'
     );
+  });
+});
+
+describe('paid content unlock view', () => {
+  it('sanctuary lifetime opens sanctuary-active card, not subscribe', () => {
+    /** @type {Record<string, string>} */
+    const bag = {};
+    const storage = {
+      getItem: (k) => (k in bag ? bag[k] : null),
+      setItem: (k, v) => {
+        bag[k] = String(v);
+      },
+      removeItem: (k) => {
+        delete bag[k];
+      }
+    };
+    applyEntitlementPatch(
+      {
+        lifetime: {
+          active: true,
+          unlockedAt: '2026-01-01T00:00:00.000Z',
+          itemId: 'yin-sanctuary-lifetime',
+          via: 'payment'
+        }
+      },
+      { storage }
+    );
+    assert.equal(hasAdvancedScenesUnlock({ storage }), true);
+    assert.equal(resolvePaidContentUnlockView({ storage }), 'sanctuary-active');
   });
 });

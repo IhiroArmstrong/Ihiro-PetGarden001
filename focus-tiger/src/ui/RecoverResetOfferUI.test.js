@@ -20,6 +20,20 @@ test('RecoverResetOfferUI exposes stable testids and bottom clearance', () => {
   assert.equal(src.includes('pointer-events: auto'), true);
 });
 
+test('reset offer stays until explicit dismiss (no auto-timeout or outside dismiss)', () => {
+  const src = readFileSync(join(here, 'RecoverResetOfferUI.js'), 'utf8');
+  assert.equal(src.includes('OFFER_TIMEOUT_MS'), false);
+  assert.equal(src.includes('outsideDismissGuard'), false);
+  assert.equal(src.includes('_handleOutsideDismiss'), false);
+  assert.match(src, /recover-reset-offer-dismiss/);
+});
+
+test('reset offer emoji row stays on one line at narrow widths', () => {
+  const src = readFileSync(join(here, 'RecoverResetOfferUI.js'), 'utf8');
+  assert.match(src, /flex-wrap:\s*nowrap/);
+  assert.match(src, /flex:\s*1\s+1\s+0/);
+});
+
 test('reset offer locale keys exist in en', () => {
   assert.ok(en.RESET_OFFER_PROMPT.length > 10);
   assert.ok(en.RESET_EMOJI_STEADY.length > 0);

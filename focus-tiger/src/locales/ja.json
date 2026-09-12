@@ -980,5 +980,10 @@
   "CONFIDE_OBSERVATION_HONESTY": "寅は「あなたはどんな人か」のまとめは持ちません。覚えてよいとしたことは「寅が覚えていること」にあります——パターン報告ではありません。",
   "LOCAL_DATA_CAT_LOTUS_POND": "蓮池の花",
   "LOCAL_DATA_CAT_TIP_KINDNESS_BADGES": "感謝の徽章",
-  "LOCAL_DATA_CAT_SANCTUARY_BADGES": "聖域の徽章"
+  "LOCAL_DATA_CAT_SANCTUARY_BADGES": "聖域の徽章",
+  "FIVE_MOMENTS_IDLE_ENTRY": "寅との五つの時間",
+  "MEMBERSHIP_MENU_UNLOCKED": "有料コンテンツ解除済み",
+  "CONTENT_UNLOCK_SANCTUARY_TITLE": "有料コンテンツ解除済み",
+  "CONTENT_UNLOCK_COMPANION_UPSELL": "サンクチュアリ生涯版で上級シーンが使えます。端末内コンパニオンは一度きりの追加購入で。",
+  "CONTENT_UNLOCK_COMPANION_CTA": "AI コンパニオンを解放"
 }

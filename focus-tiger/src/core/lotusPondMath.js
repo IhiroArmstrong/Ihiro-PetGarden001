@@ -3,6 +3,14 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
+import {
+  getLotusEarlyBloomLast,
+  getLotusEarlyStepMinutes,
+  getLotusFirstBloomMinutes,
+  getLotusLaterStepMinutes,
+  getLotusRingCapacity
+} from './growthMetricsConfigOverlay.js';
+
 /**
  * Slice A lotus pond — cumulative lifetime minutes → visible blooms.
  *
@@ -99,20 +107,18 @@ export function spiralForViewportWidth(widthPx) {
 export function thresholdMinutesForBloom(n) {
   const i = Math.floor(Number(n));
   if (!Number.isFinite(i) || i < 1) return 0;
-  const capped = Math.min(i, LOTUS_POND_RING_CAPACITY);
-  if (capped <= LOTUS_POND_EARLY_BLOOM_LAST) {
-    return (
-      LOTUS_POND_FIRST_BLOOM_MINUTES +
-      (capped - 1) * LOTUS_POND_EARLY_STEP_MINUTES
-    );
+  const ringCapacity = getLotusRingCapacity();
+  const earlyBloomLast = getLotusEarlyBloomLast();
+  const firstBloomMinutes = getLotusFirstBloomMinutes();
+  const earlyStepMinutes = getLotusEarlyStepMinutes();
+  const laterStepMinutes = getLotusLaterStepMinutes();
+  const capped = Math.min(i, ringCapacity);
+  if (capped <= earlyBloomLast) {
+    return firstBloomMinutes + (capped - 1) * earlyStepMinutes;
   }
   const earlyLastMinutes =
-    LOTUS_POND_FIRST_BLOOM_MINUTES +
-    (LOTUS_POND_EARLY_BLOOM_LAST - 1) * LOTUS_POND_EARLY_STEP_MINUTES;
-  return (
-    earlyLastMinutes +
-    (capped - LOTUS_POND_EARLY_BLOOM_LAST) * LOTUS_POND_LATER_STEP_MINUTES
-  );
+    firstBloomMinutes + (earlyBloomLast - 1) * earlyStepMinutes;
+  return earlyLastMinutes + (capped - earlyBloomLast) * laterStepMinutes;
 }
 
 /**
@@ -122,9 +128,10 @@ export function thresholdMinutesForBloom(n) {
  */
 export function bloomCountForMinutes(minutes) {
   const m = Number(minutes);
-  if (!Number.isFinite(m) || m < LOTUS_POND_FIRST_BLOOM_MINUTES) return 0;
+  if (!Number.isFinite(m) || m < getLotusFirstBloomMinutes()) return 0;
   let count = 0;
-  for (let n = 1; n <= LOTUS_POND_RING_CAPACITY; n += 1) {
+  const ringCapacity = getLotusRingCapacity();
+  for (let n = 1; n <= ringCapacity; n += 1) {
     if (m >= thresholdMinutesForBloom(n)) count = n;
     else break;
   }
@@ -140,7 +147,7 @@ export function bloomCountForMinutes(minutes) {
 export function newBloomIndices(previousCount, nextCount) {
   const from = Math.max(0, Math.floor(Number(previousCount)) || 0);
   const to = Math.min(
-    LOTUS_POND_RING_CAPACITY,
+    getLotusRingCapacity(),
     Math.max(from, Math.floor(Number(nextCount)) || 0)
   );
   /** @type {number[]} */
@@ -157,11 +164,12 @@ export function newBloomIndices(previousCount, nextCount) {
  */
 export function minutesToSeedQaBloomCount(bloomCount) {
   const n = Math.floor(Number(bloomCount));
+  const ringCapacity = getLotusRingCapacity();
   if (!Number.isFinite(n) || n <= 0) {
     return Math.max(0, thresholdMinutesForBloom(1) - 1);
   }
-  if (n >= LOTUS_POND_RING_CAPACITY) {
-    return thresholdMinutesForBloom(LOTUS_POND_RING_CAPACITY);
+  if (n >= ringCapacity) {
+    return thresholdMinutesForBloom(ringCapacity);
   }
   return Math.max(0, thresholdMinutesForBloom(n + 1) - 1);
 }
@@ -214,11 +222,9 @@ function collidesWithPlaced(leftPct, bottomPct, placed) {
  * @param {typeof LOTUS_POND_SPIRAL} [spiral]
  */
 export function spiralSlots(count = LOTUS_POND_RING_CAPACITY, spiral = LOTUS_POND_SPIRAL) {
-  const n = Math.min(
-    LOTUS_POND_RING_CAPACITY,
-    Math.max(0, Math.floor(Number(count)) || 0)
-  );
-  const stepDeg = 360 / LOTUS_POND_RING_CAPACITY;
+  const ringCapacity = getLotusRingCapacity();
+  const n = Math.min(ringCapacity, Math.max(0, Math.floor(Number(count)) || 0));
+  const stepDeg = 360 / ringCapacity;
   const r = spiral.rOuterPct;
   /** @type {Array<{ index: number, leftPct: number, bottomPct: number, widthCss: string }>} */
   const placed = [];

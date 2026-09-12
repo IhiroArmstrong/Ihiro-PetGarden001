@@ -20,6 +20,10 @@ import {
   hasDesktopCompanionBridge
 } from '../core/desktopCompanionGate.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
+import {
+  injectIdleHomeCtaTipStyles,
+  syncIdleHomeCtaTip
+} from './idleHomeCtaTip.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v6';
 const WIDE_MQ = '(min-width: 480px)';
@@ -434,8 +438,7 @@ export class WideIdleMoreMenu {
       const focusEl = document.getElementById('btn-focus');
       if (this.sitHomeBtn) {
         const sitLabel = focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
-        setAttrIfChanged(this.sitHomeBtn, 'aria-label', sitLabel);
-        if (this.sitHomeBtn.title !== sitLabel) this.sitHomeBtn.title = sitLabel;
+        syncIdleHomeCtaTip(this.sitHomeBtn, sitLabel);
         const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
         setBoolPropIfChanged(this.sitHomeBtn, 'disabled', !sitOk);
         setAttrIfChanged(
@@ -454,11 +457,7 @@ export class WideIdleMoreMenu {
       const quickEl = document.getElementById('quick-start-focus');
       if (this.quickHomeBtn) {
         const qsLabel = t('QUICK_START_ARIA');
-        setAttrIfChanged(this.quickHomeBtn, 'aria-label', qsLabel);
-        // Home left ball: no mint pulse (2026-08-11) — always keep hover label.
-        if (this.quickHomeBtn.title !== qsLabel) {
-          this.quickHomeBtn.title = qsLabel;
-        }
+        syncIdleHomeCtaTip(this.quickHomeBtn, qsLabel);
         const companionOpen =
           document.querySelector('.session-start-dock__panel:not([hidden])') !=
           null;
@@ -482,11 +481,8 @@ export class WideIdleMoreMenu {
       }
 
       if (this.honestyHomeBtn) {
-        const honestyLabel = t('HONESTY_IDLE_ENTRY');
-        setAttrIfChanged(this.honestyHomeBtn, 'aria-label', honestyLabel);
-        if (this.honestyHomeBtn.title !== honestyLabel) {
-          this.honestyHomeBtn.title = honestyLabel;
-        }
+        const momentsLabel = t('FIVE_MOMENTS_IDLE_ENTRY');
+        syncIdleHomeCtaTip(this.honestyHomeBtn, momentsLabel);
         setBoolPropIfChanged(
           this.honestyHomeBtn,
           'hidden',
@@ -520,15 +516,8 @@ export class WideIdleMoreMenu {
     }
     if (key === 'honesty') {
       this.clearStage();
-      const el = document.getElementById('honesty-idle-entry');
-      if (el && !el.disabled && !el.hidden) {
-        const prev = el.style.pointerEvents;
-        el.style.pointerEvents = 'auto';
-        el.click();
-        el.style.pointerEvents = prev;
-        return;
-      }
-      this.handlers.onHonesty?.();
+      this.handlers.onFiveMoments?.();
+      return;
     }
   }
 
@@ -698,6 +687,12 @@ export class WideIdleMoreMenu {
       this.handlers.onFiveMoments?.();
       return;
     }
+    if (key === 'honesty') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onHonesty?.();
+      return;
+    }
     if (key === 'journey-log') {
       this.clearStage();
       this.closeMenu();
@@ -820,10 +815,6 @@ export class WideIdleMoreMenu {
       this.handlers.onSound?.();
       return;
     }
-    if (key === 'honesty') {
-      this._proxyHome('honesty');
-      return;
-    }
 
     const map = {
       breath: () => document.getElementById('micro-ritual-idle-entry')
@@ -837,6 +828,7 @@ export class WideIdleMoreMenu {
   }
 
   _injectStyles() {
+    injectIdleHomeCtaTipStyles();
     for (const el of document.querySelectorAll(
       'style[id^="ft-wide-idle-more-styles"]'
     )) {

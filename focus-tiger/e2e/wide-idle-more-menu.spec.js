@@ -317,21 +317,18 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   }
 });
 
-test('wide Idle: Zen Cinema row opens confirm card with backdrop dim', async ({
-  page
-}) => {
+test('wide Idle: Zen Cinema row removed from menu', async ({ page }) => {
   await openFreshProductShell(page);
-  await page.evaluate(() => {
-    try {
-      localStorage.setItem('focus-tiger.five-moments-compass-seen.v1', '1');
-    } catch {
-      /* ignore */
-    }
-  });
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expect(menu.locator('[data-proxy="zen-cinema"]')).toBeVisible();
+  await expect(menu.locator('[data-proxy="zen-cinema"]')).toHaveCount(0);
+});
+  await page.locator('#ft-wide-more-btn').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  // Zen Cinema removed from Idle menu (2026-09-11) — lives on twinsology.com
+  await expect(menu.locator('[data-proxy="zen-cinema"]')).toHaveCount(0);
   await menu.locator('[data-proxy="zen-cinema"]').click();
   const card = page.locator('#zen-cinema-card');
   const backdrop = page.getByTestId('zen-cinema-backdrop');

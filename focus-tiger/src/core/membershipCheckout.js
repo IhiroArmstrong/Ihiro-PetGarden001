@@ -187,6 +187,43 @@ export function isMembershipActiveLocally({
 }
 
 /**
+ * Advanced RitualFlow scenes unlock with Membership ∪ Sanctuary Lifetime.
+ * Menu “Premium unlocked” and the status card use this — not subscription alone.
+ *
+ * @param {object} [opts]
+ * @param {Storage | null} [opts.storage]
+ * @param {() => Date} [opts.now]
+ * @returns {boolean}
+ */
+export function hasAdvancedScenesUnlock({
+  storage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null,
+  now = () => new Date()
+} = {}) {
+  return isEntitled('ritual.morning.access', { storage, now });
+}
+
+/**
+ * @typedef {'subscribe' | 'membership-active' | 'sanctuary-active'} PaidContentUnlockView
+ */
+
+/**
+ * Which Membership card view to show when the user taps the menu unlock row.
+ *
+ * @param {object} [opts]
+ * @param {Storage | null} [opts.storage]
+ * @param {() => Date} [opts.now]
+ * @returns {PaidContentUnlockView}
+ */
+export function resolvePaidContentUnlockView({
+  storage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null,
+  now = () => new Date()
+} = {}) {
+  if (!hasAdvancedScenesUnlock({ storage, now })) return 'subscribe';
+  if (isMembershipActiveLocally({ storage, now })) return 'membership-active';
+  return 'sanctuary-active';
+}
+
+/**
  * Convenience: advanced rituals / B-tier ongoing keys after membership confirm.
  * @param {string} featureKey
  * @param {object} [opts]

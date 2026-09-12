@@ -300,6 +300,7 @@ import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
   isFlowerWelcomeEnabled,
+  isWelcomeFirstPaintSequencePlaying,
   markFlowerWelcomeBubbleShown,
   readFlowerWelcomeState,
   resolveFlowerWelcomeForce,
@@ -632,6 +633,18 @@ async function init() {
     /** @type {import('./ui/FlowerBlowWelcomeBubbleUI.js').FlowerBlowWelcomeBubbleUI | null} */ (
       null
     );
+  /** 冷启动第一幕（吹花 / 欢迎）起播时记下的序列名；播完由 onComplete 清空。 */
+  let welcomeFirstPaintSequence = /** @type {string | null} */ (null);
+
+  /** 第一幕未播完 → 不得叠化回 idle，也不得让首张卡压上来。 */
+  function isWelcomeFirstPaintPlaying() {
+    return isWelcomeFirstPaintSequencePlaying({
+      trackedSequence: welcomeFirstPaintSequence,
+      playing: spritePlayer?.isPlaying?.() === true,
+      currentSequence: spritePlayer?.getCurrentSequence?.() ?? null
+    });
+  }
+
   /** Box, not `let onboardingHints`: overlayBusy may run before that binding. */
   /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
   const onboardingHintHost = { hints: null };
@@ -671,6 +684,10 @@ async function init() {
       decision.emotionKey,
       playOptions || {}
     );
+    // 记下第一幕序列名（play 同步写 currentName），供「序列还在播就别抢」守卫用。
+    if (started && event === SCENE_ANIM_EVENTS.WELCOME_APP) {
+      welcomeFirstPaintSequence = spritePlayer?.getCurrentSequence?.() ?? null;
+    }
     // Phase 2b：吹花产品路径与 Lab 同气泡（非孤儿字）
     if (
       started &&
@@ -687,7 +704,10 @@ async function init() {
         tInLocale
       });
       flowerBlowWelcomeBubble?.show(msg.lines, {
-        onHidden: () => maybeOfferIdleYinTapHint()
+        onHidden: () => {
+          ensureIdleBaselineAfterWelcome();
+          maybeOfferIdleYinTapHint();
+        }
       });
       markFlowerWelcomeBubbleShown(flowerStorage, { copyKey: msg.copyKey });
     }
@@ -1209,7 +1229,12 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
       onChoice: (choice) => handleColdStartGoalSelect(choice),
-      onOpen: () => syncInAppReminderBanner()
+      onOpen: () => {
+        // Flower welcome can finish before idle loop starts; goal card may open
+        // from the boot defer queue while occupancy is already IDLE_BASELINE.
+        ensureIdleBaselineAfterWelcome();
+        syncInAppReminderBanner();
+      }
     })
   );
   window.__coldStartGoalCard = coldStartGoalCardUI;
@@ -1534,6 +1559,10 @@ async function init() {
         // Ritual lock rows re-read isEntitled on next menu/drawer open.
         tipKindnessBadgesChrome.refresh();
         sanctuaryEnsoMarkChrome.refresh();
+      },
+      onCompanionAddon: () => {
+        membershipUnlockUI.close();
+        window.__supportYinModal?.open?.();
       }
     })
   );
@@ -2212,6 +2241,17 @@ async function init() {
       // Timed Breath practice sits with the existing Idle 闭目坐禅 loop
       // (idleBreathClosed ×2 → glance). Do not override with blink-smile —
       // that made a 1-min "Exhale..." look like Arrival's short greeting beat.
+      // Cold-start / flower welcome can leave overlay visible but idle loop off
+      // (Safari narrow): restore idle before breath dolly.
+      if (
+        !spritePlayer.isOverlayVisible() ||
+        !idleOrchestrator.isActive()
+      ) {
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: true
+        });
+      }
       sessionCues.preload();
       sessionCues.playStart({ ambient: ambientSoundscape });
       sessionCues.startIntervalSession();
@@ -2437,6 +2477,7 @@ async function init() {
       sanctuaryOpen: window.__sanctuaryUnlock?.isOpen?.() === true,
       membershipOpen: window.__membershipUnlock?.isOpen?.() === true,
       flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true,
+      welcomeSequencePlaying: isWelcomeFirstPaintPlaying(),
       confideOpen: window.__confideToYin?.isOpen?.() === true,
       journeyOpen: window.__journeyLog?.isOpen?.() === true,
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
@@ -4358,10 +4399,29 @@ async function init() {
   }
   window.setTimeout(startTastePrefetchOnce, 12000);
 
+  /** After welcome / flower first paint: occupancy resets but idle loop may not. */
+  function ensureIdleBaselineAfterWelcome() {
+    // 第一幕还在播 → 交给它自己的 onComplete 回 idle。抢跑这一刀会把吹散尾段
+    // 定格 + 叠化掉（气泡 ≈3.6s vs 序列 ≈6.5s），观感等于吹花压根没播。
+    if (isWelcomeFirstPaintPlaying()) return;
+    spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+    if (!idleOrchestrator.isActive()) {
+      emotionController.playEmotion('idle', {
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true
+      });
+    }
+  }
+
   const welcomePlayOptions = {
     onComplete: () => {
+      welcomeFirstPaintSequence = null;
+      ensureIdleBaselineAfterWelcome();
       startTastePrefetchOnce();
       scheduleParrotAfterFirstPaintRelease();
+      // 气泡早走时首张卡与摸摸提示都被守卫拦过，序列播完须补一次出卡/上钩。
+      syncIdleYinTap();
+      scheduleFirstCardOffers(CAPCUT_DISSOLVE_MS + 250);
     }
   };
 
@@ -4398,7 +4458,20 @@ async function init() {
     const welcomeStarted = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
       playOptions: welcomePlayOptions
     });
-    if (!welcomeStarted?.play) startTastePrefetchOnce();
+    // 占用已标 FLOWER/WELCOME 但 dispatcher 拒播（同日 quota 等）→ 立刻放手，
+    // 否则 isColdStartWelcomePlaying 会一直 true，动画却不播。
+    const broadcastNeverStarted =
+      welcomeStarted?.play !== true || welcomeFirstPaintSequence == null;
+    if (broadcastNeverStarted) {
+      spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      if (!idleOrchestrator.isActive()) {
+        emotionController.playEmotion('idle');
+      }
+      startTastePrefetchOnce();
+      scheduleParrotAfterFirstPaintRelease();
+      syncIdleYinTap();
+      scheduleFirstCardOffers(CAPCUT_DISSOLVE_MS + 250);
+    }
   } else {
     emotionController.playEmotion('idle');
     startTastePrefetchOnce();
@@ -4459,7 +4532,11 @@ async function init() {
     if (stateManager.state !== STATES.IDLE) return false;
     if (onboardingHintsBlockFirstCard()) return false;
     const snapshot = buildLiveOverlaySnapshot();
-    if (!canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, snapshot)) {
+    const allowed = canAttemptFirstCard(
+      OVERLAY_SOURCES.COLD_START_GOAL,
+      snapshot
+    );
+    if (!allowed) {
       return false;
     }
     closeGrowthOverlayCards({ except: 'cold-start-goal' });

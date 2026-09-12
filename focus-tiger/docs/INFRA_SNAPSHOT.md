@@ -24,12 +24,12 @@
 | Worker name | `focus-tiger-cloud` |
 | Public URL | `https://focus-tiger-cloud.ihiro.workers.dev`（163 / ihiro Cloudflare；**勿**用旁路 `*.focus-tiger.workers.dev`） |
 | `ALLOWED_ORIGIN`（vars） | `http://127.0.0.1:5173`（支持逗号列表；可含 `focus-tiger://app`；**生产名单变更须 redeploy**）。本地旁支 `:5174` 不在名单内 → 浏览器 CORS 拦结账；Vite dev 用同源 `/api` 代理，不扩生产 Origin。Checkout POST `pageOrigin` 仅改写 loopback success/cancel；生产 Version `2e94d4c0`（2026-09-01）已含。 |
-| KV bindings（7） | 见下表 |
+| KV bindings（9） | 见下表 |
 | Checkout `vars` 接线 | Tip ✓ · Sanctuary ✓ · Membership ✓ · **Pro ✓** · **Companion Add-on ✓** |
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
-| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表 |
+| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。审计：`REMOTE_PARAM_CANDIDATES.md` · `taste-layer-kv-changelog.md` |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -43,6 +43,8 @@
 | `PRACTICE_BACKUP_KV` | `f6f99774` | `5b9051e9` |
 | `NEWSLETTER_KV` | `baeb661c` | `8e13fe05` |
 | `YPE_PERSONALIZATION_KV` | `2b5d3c65` | `763411ae` |
+| `GROWTH_METRICS_KV` | `70675d54` | `b1d457c5` |
+| `TASTE_LAYER_KV` | `3653c059` | `f1df2e6d` |
 
 ### HTTP 路由（`index.ts` · 32 path handlers + webhook）
 
