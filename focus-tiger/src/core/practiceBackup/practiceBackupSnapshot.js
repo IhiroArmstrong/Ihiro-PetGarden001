@@ -7,7 +7,7 @@
  * Local export/import + cloud backup · whitelist + snapshot helpers (client).
  */
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 3;
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 4;
 
 /** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
 export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
@@ -32,11 +32,16 @@ export const PRACTICE_BACKUP_V2_STORE_KEYS = Object.freeze([
   'focus-tiger.contemplative-archive-seals.v1'
 ]);
 
-export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
+export const PRACTICE_BACKUP_V3_STORE_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V2_STORE_KEYS,
   'focus-tiger.lotus-pond.v1',
   'focus-tiger.tip-jar.v1',
   'focus-tiger.sanctuary-entitlement.v1'
+]);
+
+export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V3_STORE_KEYS,
+  'focus-tiger.focus-coins.v1'
 ]);
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
@@ -64,6 +69,7 @@ export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
 export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   if (schemaVersion === 1) return PRACTICE_BACKUP_V1_STORE_KEYS;
   if (schemaVersion === 2) return PRACTICE_BACKUP_V2_STORE_KEYS;
+  if (schemaVersion === 3) return PRACTICE_BACKUP_V3_STORE_KEYS;
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
   }
@@ -278,6 +284,8 @@ export function isPracticeBackupStoreEmpty(storage, key) {
         parsed.unlocked !== true &&
         (!Array.isArray(parsed.badgeIds) || parsed.badgeIds.length === 0)
       );
+    case 'focus-tiger.focus-coins.v1':
+      return Number(parsed.balance) <= 0 && (!Array.isArray(parsed.ownedIds) || parsed.ownedIds.length === 0);
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':
       return Object.keys(parsed).length === 0;

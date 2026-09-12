@@ -228,13 +228,13 @@ describe('focusCoinsAward L1', () => {
     assert.equal(store.getSnapshot().balance, 0);
   });
 
-  it('wallet key is on L-01 path and must not enter practice-backup 6 keys', () => {
+  it('wallet key is on L-01 path and enters practice-backup v4 whitelist', () => {
     assert.equal(FOCUS_COINS_STORAGE_KEY, 'focus-tiger.focus-coins.v1');
     assert.equal(
       PRACTICE_BACKUP_STORE_KEYS.includes(FOCUS_COINS_STORAGE_KEY),
-      false
+      true
     );
-    assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 18);
+    assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 19);
   });
 
   it('main.js completeMicroRitual awards breath coins; Leave does not', () => {

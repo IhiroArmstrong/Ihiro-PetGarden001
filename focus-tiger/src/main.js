@@ -1986,6 +1986,9 @@ async function init() {
     lotusPondStore.reloadFromStorage();
     lotusPondRuntime.boot();
     tipKindnessBadgesChrome.refresh();
+    focusCoinsStore.reloadFromStorage();
+    syncFocusCoinsCosmetics();
+    yinCoinPanelUI?.refresh?.();
   });
   supportYinModalUI.setShouldLeadWithTea(() => {
     const aggregate = resolvePracticeAggregate({
