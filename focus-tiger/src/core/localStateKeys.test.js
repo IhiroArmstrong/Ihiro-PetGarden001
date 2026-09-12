@@ -104,8 +104,13 @@ import {
 } from './focusCircleIdentity.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
+  COLD_START_GOAL_SEEN_KEY,
+  COLD_START_GOAL_SESSION_KEY
+} from './coldStartGoalGate.js';
+import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
   clearAllFocusTigerLocalState,
+  clearDevResetSessionState,
   markDevResetToast,
   consumeDevResetToast,
   markDevBootIdle,
@@ -155,6 +160,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   PRESENCE_SIGNALS_DISCLOSURE_SEEN_KEY,
   PRESENCE_FREETEXT_L3_CONSENT_KEY,
   COMPANION_MODE_STORAGE_KEY,
+  COLD_START_GOAL_SEEN_KEY,
   REMINDER_QUOTA_STORAGE_KEY,
   REMINDER_PREFERENCE_STORAGE_KEY,
   HINTS_SEEN_STORAGE_KEY,
@@ -354,6 +360,14 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
     (value) => storage.setItem(HINTS_SEEN_STORAGE_KEY, JSON.stringify(value))
   );
   assert.equal(freshHints.isSeen('sit-button'), false);
+});
+
+test('clearDevResetSessionState removes cold-start goal session choice', () => {
+  const session = createMapStorage({
+    [COLD_START_GOAL_SESSION_KEY]: 'focus'
+  });
+  clearDevResetSessionState(session);
+  assert.equal(session.getItem(COLD_START_GOAL_SESSION_KEY), null);
 });
 
 test('dev session flags are one-shot consume (sessionStorage, not wiped by clear)', () => {

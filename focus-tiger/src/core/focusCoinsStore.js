@@ -4,7 +4,7 @@
  */
 
 /**
- * 寅币钱包持久化（L1 发点 / L2 兑换）。不写 entitlement、不进练习备份 6 key。
+ * 寅币钱包持久化（L1 发点 / L2 兑换）。不写 entitlement；进练习备份 v4 whitelist。
  *
  * @see docs/FOCUS_COINS.md
  */
@@ -122,6 +122,12 @@ export class FocusCoinsStore {
   /** @returns {ReturnType<typeof emptyFocusCoinsWallet>} */
   getSnapshot() {
     return this._read();
+  }
+
+  /** Re-read persisted state (e.g. after practice backup import). */
+  reloadFromStorage() {
+    this._memory = null;
+    this._read();
   }
 
   /** @returns {number} */

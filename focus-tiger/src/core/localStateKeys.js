@@ -26,6 +26,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.presence-signals-disclosure-seen.v1',
   'focus-tiger.presence-freetext-l3-consent.v1',
   'focus-tiger.companion-mode.v1',
+  'focus-tiger.cold-start-goal-seen.v1',
   'focus-tiger.reminder-quota.v1',
   'focus-tiger.reminder-preference.v1',
   'focus-tiger.hints-seen.v1',
@@ -79,6 +80,11 @@ export const DEV_RESET_TOAST_SESSION_KEY = 'focus-tiger.dev-reset-toast.v1';
 
 /** sessionStorage：DEV 重置后直接进入 idle 坐禅（测动画用）。 */
 export const DEV_BOOT_IDLE_SESSION_KEY = 'focus-tiger.dev-boot-idle.v1';
+
+/** sessionStorage：DEV 一键重置须清掉的会话 key（与 local 白名单分开维护）。 */
+export const DEV_RESET_SESSION_KEYS = Object.freeze([
+  'focus-tiger.cold-start-goal-choice.v1'
+]);
 
 function getSessionStorage() {
   try {
@@ -155,4 +161,23 @@ export function clearAllFocusTigerLocalState(
     }
   }
   return [...FOCUS_TIGER_LOCAL_STORAGE_KEYS];
+}
+
+/**
+ * 清空 DEV 重置须一并丢弃的 sessionStorage（四选当次选择等）。
+ * @param {Storage | { removeItem(key: string): void }} [storage]
+ * @returns {string[]}
+ */
+export function clearDevResetSessionState(
+  storage = getSessionStorage()
+) {
+  if (!storage?.removeItem) return [];
+  for (const key of DEV_RESET_SESSION_KEYS) {
+    try {
+      storage.removeItem(key);
+    } catch {
+      // ignore
+    }
+  }
+  return [...DEV_RESET_SESSION_KEYS];
 }

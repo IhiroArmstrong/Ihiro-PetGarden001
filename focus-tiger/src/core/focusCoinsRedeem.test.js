@@ -236,9 +236,9 @@ describe('focusCoinsRedeem L2', () => {
     assert.equal(dataset.focusCoinsTitle, undefined);
     assert.equal(
       PRACTICE_BACKUP_STORE_KEYS.includes(FOCUS_COINS_STORAGE_KEY),
-      false
+      true
     );
-    assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 18);
+    assert.equal(PRACTICE_BACKUP_STORE_KEYS.length, 19);
     assert.deepEqual(focusCoinsCosmeticState({ ownedIds: [LOTUS_DEW_OWNED_ID] }).lotusDew, false);
     assert.deepEqual(
       focusCoinsCosmeticState({ ownedIds: [LOTUS_DEW_OWNED_ID] }).ownedLotusDew,
