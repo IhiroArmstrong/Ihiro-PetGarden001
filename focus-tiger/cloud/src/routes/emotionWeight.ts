@@ -1,22 +1,21 @@
 import { json } from "../lib/http.ts";
-import { requireJsonFields } from "../lib/validate.ts";
 import {
-	TASTE_HONESTY_LONG_MIN_MINUTES,
+	readTasteLayerConfig,
 	TASTE_LAYER_SCHEMA_VERSION,
-	TASTE_LIGHT_COMPLETE_POOL,
-	TASTE_RISE_INTERRUPT_POOL,
-	TASTE_WELCOME_POOL,
-} from "../lib/tasteLayerFreeze.ts";
+} from "../lib/tasteLayerConfigKv.ts";
+import { requireJsonFields } from "../lib/validate.ts";
 import type { EmotionWeightResponse } from "../types";
+import type { Env } from "../types";
 
 const REQUIRED = ["emotionKey", "sessionPhase"] as const;
 
 /**
- * Taste-layer weight overlay. schemaVersion 1 = freeze tables.
+ * Taste-layer weight overlay. schemaVersion 1 = freeze tables by default.
  * Unknown client versions keep using local tables.
  */
 export async function handleEmotionWeight(
 	request: Request,
+	env: Env,
 ): Promise<Response> {
 	const parsed = await requireJsonFields(request, REQUIRED);
 	if (parsed instanceof Response) {
@@ -24,14 +23,15 @@ export async function handleEmotionWeight(
 	}
 	void parsed;
 
+	const config = await readTasteLayerConfig(env.TASTE_LAYER_KV);
 	const payload: EmotionWeightResponse = {
 		schemaVersion: TASTE_LAYER_SCHEMA_VERSION,
 		variant: "default",
 		weight: 1.0,
-		riseInterruptPool: TASTE_RISE_INTERRUPT_POOL,
-		welcomePool: TASTE_WELCOME_POOL,
-		lightCompletePool: TASTE_LIGHT_COMPLETE_POOL,
-		honestyLongMinMinutes: TASTE_HONESTY_LONG_MIN_MINUTES,
+		riseInterruptPool: config.riseInterruptPool,
+		welcomePool: config.welcomePool,
+		lightCompletePool: config.lightCompletePool,
+		honestyLongMinMinutes: config.honestyLongMinMinutes,
 	};
 	return json(payload);
 }

@@ -25,6 +25,8 @@ export interface Env {
 	YPE_PERSONALIZATION_KV: KVNamespace;
 	/** Growth metrics remote params (not entitlement / taste / YPE). */
 	GROWTH_METRICS_KV: KVNamespace;
+	/** Taste-layer weight pools + Honesty long-sit threshold (not growth / YPE). */
+	TASTE_LAYER_KV: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;
