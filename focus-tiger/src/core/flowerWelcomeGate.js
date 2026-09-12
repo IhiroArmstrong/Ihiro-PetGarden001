@@ -16,6 +16,16 @@ export const FLOWER_WELCOME_STORAGE_KEY = 'focus-tiger.flower-welcome.v1';
 export const FLOWER_WELCOME_FLAG_STORAGE_KEY =
   'focus-tiger.flower-welcome-flag.v1';
 
+/**
+ * Keys that belong to the flower-welcome gate itself.
+ * Adding a new flower-welcome storage key → append here in the same commit.
+ * Scene recipes live in `debugScenarioReset.js` (also clear daily quota / goal).
+ */
+export const FLOWER_WELCOME_RESET_LOCAL_KEYS = Object.freeze([
+  FLOWER_WELCOME_STORAGE_KEY,
+  FLOWER_WELCOME_FLAG_STORAGE_KEY
+]);
+
 /** 久别：≥ 该自然日差未打开 → 强制吹花 */
 export const FLOWER_WELCOME_ABSENCE_DAYS = 3;
 

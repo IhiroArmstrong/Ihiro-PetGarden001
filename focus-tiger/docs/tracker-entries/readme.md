@@ -25,6 +25,7 @@
 - 不要在功能 PR 里跑 `npm run tracker:assemble` 再提交 `TEST_TRACKER.md`（会回到「大家都改同一个文件」）。
 - 不要用碎片复制一条主表里已有的功能名（改已有行：该行已在主表 → 改 `TEST_TRACKER.md`；还只在碎片里 → 改对应碎片）。
 - 不要把用户反馈写进「测试步骤」。
+- 不要默写 `localStorage.removeItem(...)` 清库命令。场景复测只引用 `window.__ftDebug.resetScenario('<id>')` 或 `SCENARIO_TESTS.md` 对应节（见 `TEST_TRACKER.md` 文首）。
 
 ## 拼装触发（试点）
 

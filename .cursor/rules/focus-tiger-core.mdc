@@ -48,6 +48,7 @@ alwaysApply: true
 | 工具调用预算分档·口令「开工」「继续」「大任务」；继续只留本 Chat；跨模块用「大任务」 | `focus-tiger-agent-token-cost.mdc`（`RULES_INDEX` → `agent-tool-budget`） |
 | CI/smoke/PR checks 失败且未附失败日志 | `focus-tiger-ci-failure-triage.mdc`（`RULES_INDEX` → `ci-failure-triage`） |
 | UI/交互回归 bug（菜单无反应、点击无反馈等）且未给锚点 | `focus-tiger-ui-bug-triage.mdc`（`RULES_INDEX` → `ui-bug-triage`） |
+| CI/单测绿但手动复测失败 | `focus-tiger-ui-bug-triage.mdc` **Step A0**（先核对官方 `resetScenario` / `SCENARIO_TESTS`，再怀疑代码） |
 | 关单 QA·5173·PR 合 develop 后 | `focus-tiger-qa-develop-worktree.mdc`（`WORKFLOW.md` · `qa-develop-worktree`） |
 | 邀你复测 / 改动看似无效 / 声称已修 | `focus-tiger-qa-develop-worktree.mdc` §「复测提醒」 |
 | 口令「生成交接」·阶段性收尾 | `focus-tiger-session-handoff.mdc` |
