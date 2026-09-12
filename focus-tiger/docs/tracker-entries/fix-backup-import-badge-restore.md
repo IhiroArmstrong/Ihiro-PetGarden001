@@ -1,0 +1,3 @@
+# fix/backup-import-badge-restore
+
+| 备份 v3 导入后 Idle 徽章枚数（Membership/Sanctuary 章） | UI可见 | 待人工测试 | **主路径**：导出端有 **4 枚** Idle 旁徽章（Membership 订阅或 Sanctuary 尊贵章均可）+ 莲花齐全 → Web 5173 清数据 → Preferences 导入同一 `.json` → `#yin-tip-kindness-badges` **仍应 4 枚**（不得只剩 2 枚 Tea 章）。**对照**：仅 Tea/免费练习章路径（无 `sanctuary-entitlement.badgeIds`）→ 导入后枚数与文件内 `tip-jar` 一致。**回流**：导入后 Rise 再回 Idle 枚数不变。**根因**：v3 备份写入 `sanctuary-entitlement` 但不写 `entitlement-cache`；导入端无订阅缓存时误走 Tea 包。自动化：`idlePracticeBadges.test.js`（restored sanctuary marks + tip 优先当枚数更多）。 | **2026-09-13 用户书面（PR #713 人工验收）**：Electron 5173 导出含莲花+4 徽章；Web 5173 导入后莲花齐全、徽章少 2 枚；估计与壳子导出无关。 | — | — | `#yin-tip-kindness-badges` · `#local-practice-data-import` · backup schema v3 | 2026-09-13 |
