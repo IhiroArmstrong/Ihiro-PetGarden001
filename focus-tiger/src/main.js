@@ -3403,10 +3403,6 @@ async function init() {
   onboardingHints = new OnboardingHintsUI(document.body, {
     store: createHintsSeenStore(),
     getScene: getOnboardingScene,
-    onOpenFiveMoments: () => {
-      closeGrowthOverlayCards({ except: 'moments' });
-      fiveMomentsCompassUI.open({ markSeenOnOpen: true });
-    },
     onPurposeOpen: () => {
       idleSecondaryPanelHost.close({ except: 'purpose' });
       syncIdleYinTap();
