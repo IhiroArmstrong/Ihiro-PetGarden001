@@ -247,6 +247,60 @@ describe('practiceBackupLocalIo', () => {
     );
   });
 
+  it('migrates v3 import payloads to current schema with focus coins slot', () => {
+    const v3 = {
+      schemaVersion: 3,
+      savedAt: '2026-01-01T00:00:00.000Z',
+      stores: Object.fromEntries(
+        [
+          'focus-tiger.journey-log.v1',
+          'focus-tiger.practice-days.v1',
+          'focus-tiger.milestone-glow.v1',
+          'focus-tiger.entitlement-ownership.v1',
+          'focus-tiger.ritual-completions.v1',
+          'focus-tiger.mustard-seed-seal.v1',
+          'focus-tiger.presence-signals.v1',
+          'focus-tiger.presence-freetext-l3-consent.v1',
+          'focus-tiger.reflections.v1',
+          'focus-tiger.locale.v1',
+          'focus-tiger.reminder-preference.v1',
+          'focus-tiger.companion-mode.v1',
+          'focus-tiger.ambient-pref.v1',
+          'focus-tiger.session-cues.v1',
+          'focus-tiger.contemplative-archive-seals.v1',
+          'focus-tiger.lotus-pond.v1',
+          'focus-tiger.tip-jar.v1',
+          'focus-tiger.sanctuary-entitlement.v1'
+        ].map((key) => [key, null])
+      )
+    };
+    const validated = validatePracticeImportPayload(JSON.stringify(v3));
+    assert.equal(validated.ok, true);
+    if (validated.ok) {
+      assert.equal(validated.snapshot.schemaVersion, PRACTICE_BACKUP_SCHEMA_VERSION);
+      assert.ok('focus-tiger.focus-coins.v1' in validated.snapshot.stores);
+    }
+  });
+
+  it('imports focus coins atomically', async () => {
+    const storage = memStorage();
+    const snapshot = (await createPracticeExportPayload(storage)).snapshot;
+    snapshot.stores['focus-tiger.focus-coins.v1'] = {
+      balance: 42,
+      ownedIds: ['curio.quiet-pebble'],
+      equippedTitle: null,
+      lifetimeMarks: { honestyWake: false, activeRecover: false },
+      dateKey: '2026-09-13',
+      day: {},
+      session: {}
+    };
+    const ok = await importPracticeSnapshotAtomic(storage, snapshot);
+    assert.equal(ok.ok, true);
+    const raw = storage.getItem('focus-tiger.focus-coins.v1');
+    assert.ok(raw?.includes('"balance":42'));
+    assert.ok(raw?.includes('curio.quiet-pebble'));
+  });
+
   it('subscribePracticeDataImported fires then unsubscribes', () => {
     const target = new EventTarget();
     let n = 0;

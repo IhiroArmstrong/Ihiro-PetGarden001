@@ -19,7 +19,10 @@ import {
   readSanctuaryEntitlement,
   syncSanctuaryBadgesFromPractice
 } from './sanctuaryEntitlementGate.js';
-import { readTipStatus, syncTipBadgesFromPractice } from './tipJarGate.js';
+import {
+  readTipStatus,
+  syncTipBadgesFromPractice
+} from './tipJarGate.js';
 
 /**
  * @param {object} [opts]
@@ -36,12 +39,31 @@ export function isPrestigiousBadgeEntitled({
 }
 
 /**
+ * Backup v3 restores `sanctuary-entitlement.badgeIds` but not
+ * `entitlement-cache` (subscription verify). On import receivers without
+ * live B-track cache, still honor restored prestigious marks when they carry
+ * at least as many badges as the Tea/free pack would show.
+ *
+ * @param {Storage | null | undefined} storage
+ * @returns {boolean}
+ */
+export function shouldShowSanctuaryIdleBadges(storage) {
+  if (isPrestigiousBadgeEntitled({ storage })) return true;
+  const sanctuaryIds = readSanctuaryEntitlement(storage).badgeIds;
+  if (sanctuaryIds.length <= 0) return false;
+  const tipIds = readTipStatus(storage).badgeIds;
+  return sanctuaryIds.length >= tipIds.length;
+}
+
+/**
  * @param {Storage | null | undefined} storage
  * @returns {{ kind: 'sanctuary' | 'tip' | 'practice', ids: string[] }}
  */
 export function syncAndReadIdleBadgePack(storage) {
-  if (isPrestigiousBadgeEntitled({ storage })) {
-    syncSanctuaryBadgesFromPractice(storage, { entitled: true });
+  if (shouldShowSanctuaryIdleBadges(storage)) {
+    syncSanctuaryBadgesFromPractice(storage, {
+      entitled: isPrestigiousBadgeEntitled({ storage })
+    });
     return {
       kind: 'sanctuary',
       ids: readSanctuaryEntitlement(storage).badgeIds
