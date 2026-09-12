@@ -1,8 +1,6 @@
 import { json } from "../lib/http.ts";
-import {
-	readTasteLayerConfig,
-	TASTE_LAYER_SCHEMA_VERSION,
-} from "../lib/tasteLayerConfigKv.ts";
+import { TASTE_LAYER_SCHEMA_VERSION } from "../lib/tasteLayerFreeze.ts";
+import { readTasteLayerConfig } from "../lib/tasteLayerConfigKv.ts";
 import { requireJsonFields } from "../lib/validate.ts";
 import type { EmotionWeightResponse } from "../types";
 import type { Env } from "../types";

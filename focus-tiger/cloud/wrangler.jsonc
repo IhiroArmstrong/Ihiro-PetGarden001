@@ -48,9 +48,9 @@
  *   id         = 70675d549f4645829ee6beb2c58a84d9
  *   preview_id = b1d457c584fa451d8897665065b65548
  *
- * TASTE_LAYER_KV (created 2026-09-12 — run create commands above before first deploy):
- *   id         = REPLACE_AFTER_WRANGLER_CREATE
- *   preview_id = REPLACE_AFTER_WRANGLER_CREATE_PREVIEW
+ * TASTE_LAYER_KV (created 2026-09-12):
+ *   id         = 3653c0594828421fac8fbc7982711f86
+ *   preview_id = f1df2e6d335e4e1f933d205c0a90ba94
  *
  * Production Worker (2026-08-20): Version 5b5b3451-4c35-4d9b-b27b-622b72ed673e
  * Covers taste-layer schemaVersion 1 freeze tables (plus 2026-08-16 Tip $4.99 / newsletter).
@@ -111,8 +111,8 @@
 		},
 		{
 			"binding": "TASTE_LAYER_KV",
-			"id": "00000000000000000000000000000000",
-			"preview_id": "00000000000000000000000000000001"
+			"id": "3653c0594828421fac8fbc7982711f86",
+			"preview_id": "f1df2e6d335e4e1f933d205c0a90ba94"
 		}
 	],
 	"vars": {

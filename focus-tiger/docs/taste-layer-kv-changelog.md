@@ -39,4 +39,4 @@ npx wrangler kv key put taste-layer:v1:params \
 
 | Date (UTC+8) | Author | Change | Reason |
 |---|---|---|---|
-| — | — | — | No production fork yet; KV empty → API returns git freeze |
+| 2026-09-12 | Armstrong | Namespace created + Worker redeploy (`c26fbec7`); KV empty → API returns git freeze | #722 post-merge deploy |
