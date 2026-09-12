@@ -72,6 +72,8 @@
 
 可选：`qaSeedMinutes=60` 改播种日每天分钟；`qaResetMilestones=1` 只清金辉已播、不改练习日。实现：`src/core/qaPracticeSeed.js` · `src/core/qaLotusPondSeed.js`。贴图只用 `/textures/lotus.png`（去水印），**勿**把 `lotus-front-rising` / `lotus-chest-halo` 当池花。
 
+**复现步骤只许引用、禁止默写 Console（2026-09-13）**：冷启动吹花等场景清库，TRACKER / 碎片 / PR 验收行须写 `window.__ftDebug.resetScenario('<id>')`（**仅 Vite DEV**；生产构建不挂该钩子）或「见 `SCENARIO_TESTS` 场景 V」。权威配方：`src/core/debugScenarioReset.js`。**禁止**凭记忆誊抄 `localStorage.removeItem(...)`。
+
 用户场景串联剧本：权威 **`focus-tiger/docs/SCENARIO_TESTS.md`**（与本表互补，非替代；仓库根同名文件仅为指针）。  
 点击反馈原则：[`INTERACTION_FEEDBACK_PRINCIPLES.md`](./INTERACTION_FEEDBACK_PRINCIPLES.md)；已知静默白名单：[`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md)（`RULES_INDEX` → `interaction-feedback`）。  
 实现前冲突扫描：[`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md)（`RULES_INDEX` → `feature-conflict-review`）。

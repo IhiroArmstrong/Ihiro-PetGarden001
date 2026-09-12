@@ -44,6 +44,14 @@ export const SCENE_ANIM_COOLDOWN_STORAGE_KEY =
   'focus-tiger.scene-anim-cooldown.v1';
 export const SCENE_ANIM_DAILY_STORAGE_KEY = 'focus-tiger.scene-anim-daily.v1';
 
+/**
+ * Welcome-pool daily quota (XOR with Day1 flower). Adding another welcome-day
+ * quota key → append here in the same commit; `debugScenarioReset` imports this.
+ */
+export const WELCOME_DAILY_QUOTA_RESET_LOCAL_KEYS = Object.freeze([
+  SCENE_ANIM_DAILY_STORAGE_KEY
+]);
+
 /** Honesty: ≤20 and 21–29 → nod; ≥30 → halo oneshot */
 export const HONESTY_LONG_MIN_MINUTES = 30;
 

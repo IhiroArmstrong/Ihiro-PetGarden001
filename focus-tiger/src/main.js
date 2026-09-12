@@ -594,6 +594,11 @@ async function init() {
     window.__idleOrchestrator = idleOrchestrator;
     window.__i18n = { t, tPool, setLocale, getLocale };
     window.__THREE = THREE;
+    // Dynamic import so production / `vite preview` bundles never include
+    // `__ftDebug` (tree-shaken; not an attack-surface hook in prod).
+    void import('./core/debugScenarioReset.js').then(({ attachFtDebug }) => {
+      attachFtDebug(window);
+    });
   }
 
   // Keep Loading mask until 2D sprite paints. Early hide used to flash the
@@ -4366,6 +4371,16 @@ async function init() {
   const paymentThanksAtWelcome = checkoutWelcomeGate.playAtWelcomeSlot;
   const welcomeUsed =
     readDailySceneAnimState(bootStorage, () => bootNow).welcome === true;
+  if (import.meta.env.DEV) {
+    void import('./core/debugScenarioReset.js').then(
+      ({ warnFlowerWelcomeScenarioInconsistency }) => {
+        warnFlowerWelcomeScenarioInconsistency({
+          storage: bootStorage,
+          now: () => bootNow
+        });
+      }
+    );
+  }
   const bootDecision = resolveBootSpriteOccupancy({
     now: bootNow,
     sessionState: stateManager.state,

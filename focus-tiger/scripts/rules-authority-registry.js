@@ -1470,6 +1470,7 @@ export const RULE_AUTHORITY_TOPICS = [
       'Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层）',
     ssotMustContain: [
       /ui-bug-triage/,
+      /Step A0/,
       /Step A/,
       /连续 5 次/,
       /禁止.*地毯式/

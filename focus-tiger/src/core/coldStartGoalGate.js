@@ -17,6 +17,16 @@ export const COLD_START_GOAL_SEEN_KEY =
 export const COLD_START_GOAL_SESSION_KEY =
   'focus-tiger.cold-start-goal-choice.v1';
 
+/** Persistent “already saw the four-choice card”. */
+export const COLD_START_GOAL_RESET_LOCAL_KEYS = Object.freeze([
+  COLD_START_GOAL_SEEN_KEY
+]);
+
+/** This-tab choice; DEV / scenario reset must drop it with the seen flag. */
+export const COLD_START_GOAL_RESET_SESSION_KEYS = Object.freeze([
+  COLD_START_GOAL_SESSION_KEY
+]);
+
 /** @typedef {'focus' | 'calm' | 'study-work' | 'browse'} ColdStartGoalChoice */
 
 export const COLD_START_GOAL_CHOICES = Object.freeze([

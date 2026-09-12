@@ -5,6 +5,7 @@
 
 import { test, expect } from '@playwright/test';
 import { openFreshProductShell } from './helpers/product-shell.js';
+import { applyScenarioResetOnPage } from './helpers/scenario-reset.js';
 
 /**
  * Phase 2c · Day1 / 久别吹花门闩（DOM）。
@@ -73,11 +74,8 @@ test('welcome quota blocks flower even if Day1 force would apply', async ({
   await expect(page.locator('#flower-blow-welcome-bubble')).toBeVisible({
     timeout: 12_000
   });
-  // Burned welcome quota stays; reset flower lastOpen to Day1-looking state.
-  await page.evaluate(() => {
-    localStorage.removeItem('focus-tiger.flower-welcome.v1');
-    localStorage.removeItem('focus-tiger.flower-welcome-flag.v1');
-  });
+  // Burned welcome quota stays; official negative recipe (flower keys only).
+  await applyScenarioResetOnPage(page, 'welcome-quota-blocks-flower');
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
     timeout: 35_000

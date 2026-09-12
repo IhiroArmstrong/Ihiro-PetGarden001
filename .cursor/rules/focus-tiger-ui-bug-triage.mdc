@@ -22,6 +22,18 @@ alwaysApply: false
 
 仅症状描述 /「坏了」/ 截图无文字 = **信息不足**，须走下方 Step A；**禁止**先全仓考古。
 
+## Step A0 — 手动复测步骤是否等于官方配方（优先于怀疑代码）
+
+适用：**CI / 单测绿，但手动复测失败**（或「清库后行为像 bug」）。
+
+在第一次怀疑刚合入的代码之前，必须：
+
+1. 当次 Console / 清库步骤是否等于 `window.__ftDebug.resetScenario('<id>')`（仅 Vite DEV）或 `SCENARIO_TESTS.md` 对应场景原文。权威配方：`src/core/debugScenarioReset.js`。
+2. 禁止凭记忆誊抄 `localStorage.removeItem(...)`。TRACKER / PR 验收行只许**引用**场景 id，不许默写 key 列表。
+3. 若 Console 出现 `⚠️ scenario inconsistency: flower reset but daily quota still consumed` → 先当「清库清一半」，不要当占用/动画代码 bug。正在跑 `welcome-quota-blocks-flower` 时可忽略该警告。
+
+本步**不**替代 Step A 的 git 锚点；只把「配方是否官方」排在「改代码」前面。
+
 ## Step A — 取锚点（硬闸 · 优先于一切源码 Grep/Read/Glob）
 
 在**第一次**对 `focus-tiger/` 源码做探索性 Grep / Read / Glob 之前，**必须**完成本步。
@@ -101,6 +113,7 @@ alwaysApply: false
 - `source-read-granularity`：Step B 定点读码时适用
 - `agent-token-cost` §5–§7：UI/交互 bug 排查场景下，本条 Step C 的 **5 轮硬顶**优先于 §5 笼统上限；§7 大范围读取前仍须说明范围
 - `ci-failure-triage`：CI/smoke 失败走 CI 条，**不**用本条代替
+- **Step A0**：CI/单测绿、手动复测红 → 先核对 `__ftDebug.resetScenario` / `SCENARIO_TESTS`，再怀疑代码；叙事见 `DEV_WORKFLOW_QUALITY.md` §6.24
 - `regression-lock` / §7：声称修好仍须五证 + 人工关单；**已合 develop ≠ 已修复**
 
 ## 汇报

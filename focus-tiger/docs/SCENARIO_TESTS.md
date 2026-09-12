@@ -1,12 +1,14 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-02（**Electron 结账回本壳 confirm**，不把 Vite `5173` 当产品成功页；Safari 存储仍不自动同步。**E′ 规则预筛进 AE L2** sit next / 软边界 / 窄 OTHER · 场景 **AL** Reflection Companion validation；**Gate 0.2 #472 关单**；AG Slice 0 含 `total sitting time` → `practice_facts`；What Yin remembers 开着面板 Remember 须刷新；抽取规则见 `YIN_PERSONAL_MEMORY.md` §8。**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS`；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals · **AG** Yin Personal Memory · **AH** Overlay slot · **AI** 练习备份 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP；**AD** 仍有效。AB 托盘 + SB-18。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-09-13（官方场景清库 `__ftDebug.resetScenario` · 仅 DEV；场景 V 禁止默写 removeItem）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
+
+**官方清库（2026-09-13）**：Vite DEV Console 用 `window.__ftDebug.resetScenario('<id>')`（生产 / `vite preview` **不挂**该钩子）。权威配方 `src/core/debugScenarioReset.js`。TRACKER / PR **禁止**默写 `localStorage.removeItem`。CI/单测绿但手测红 → 先核对本步，再怀疑代码（`ui-bug-triage` Step A0）。
 
 **功能 vs 测试覆盖缺口审计（2026-07-30）**：模块级对照、三条「绿」口径、永不自动化清单、**unit\*→smoke 分类（§7）**、Honesty/i18n 发布口径（§8–§9）→ [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（与 `TEST_TRACKER` §C 互补；改覆盖结论先改审计文档）。
 
@@ -457,13 +459,14 @@
 > **仍须人工**：约 10 fps 弧线；末约 **1s CapCut** 回 Idle **不闪白**；窄屏气泡完整在 ActionBar **下方**；文案轮换不连出同一句。  
 > **负例**：`?flowerWelcome=0` → 永不吹花只走书/点头池；产品壳不得无故自动连播实验室按钮。
 
-1. 清 `focus-tiger.flower-welcome.v1` + 相关 `scene-anim-daily`（实验室重置或手清）→ `?product=1` 硬刷新。
+1. `?product=1` → DEV Console：`window.__ftDebug.resetScenario('day1-flower-card')`（吹花+四选卡；只要吹花用 `'day1-flower-only'`）→ 硬刷新。**禁止**手打 `removeItem`。
 2. Day1：见吹花 + `#flower-blow-welcome-bubble`（可点气泡/空白立刻消）；含 ≥23:00 / 清晨——**压过** wellness 斗篷/苏醒。
 3. 同日再刷 → **不得**再吹花 / 再书或点头欢迎池抢播。
 4. 模拟 ≥3 日久别（拨 `lastOpen`）→ 再吹花（跟 locale）。
 5. **回流**：吹花进行中仍可点 Sit。
 6. Lab 对照（非产品故事）：无 `?product=1` 调试钮「变花吹散+气泡」。
 7. **组合 · 提醒已过时分（E12）**：清库后设每日提醒为过去时分、今日零完成 → 硬刷新。**0–1 秒内**见吹花（或欢迎池），**不得**在吹花进行中突然切鹦鹉、也不得无 1s 叠化硬切。横幅可在吹花期间出现。吹花结束后约 1s 才见 `parrotEarVisit`。自动化：单元 `spriteChannelArbitration` first-paint KEEP + dispatcher latch；观感仍人工。
+8. **负例 · 配额拦截**：先走完一次 Day1，再 `resetScenario('welcome-quota-blocks-flower')` 刷新 → **不得**再吹花（日旗仍在）。Console 可出现 `⚠️ scenario inconsistency: flower reset but daily quota still consumed`——测本负例时可忽略。
 
 ---
 
@@ -955,6 +958,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | Idle 加速眨眼 | DEV：`__idleOrchestrator.setTiming({ breathCyclesBeforeBlink: 1 })` |
 | 清当日完成（模拟 DORMANT） | DEV：清 `DailyCompletionStore` 相关 localStorage 后刷新（或 `__dailyCompletionStore`）——**仅**清零完成记录；**不会**单独进睡 |
 | 模拟 ≥2h 后进 DORMANT | DEV：设 `focus-tiger.focus-session-end.v1` = `{"lastEndedAt": <≥2h 前 epoch ms>}` 后刷新或切回前台；或坐完一场后把系统时间拨快 |
+| 场景 V 官方清库 | **仅 DEV**：`__ftDebug.resetScenario('day1-flower-card')` / `'day1-flower-only'` / `'welcome-quota-blocks-flower'`（生产构建无此钩子；e2e 从同一模块 import 配方） |
 
 说明：`#emotion-debug-ui` 当前在**非** `?product=1` 时挂载；多数 `window.__*` 仍仅 `import.meta.env.DEV`。例外：`__honestyBridge` / `__honestyBridgeStore` 在生产构建也挂载（e2e 注入桥接可见态；非完整补登链）。
 
