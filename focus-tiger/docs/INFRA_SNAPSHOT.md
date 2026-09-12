@@ -44,7 +44,7 @@
 | `NEWSLETTER_KV` | `baeb661c` | `8e13fe05` |
 | `YPE_PERSONALIZATION_KV` | `2b5d3c65` | `763411ae` |
 | `GROWTH_METRICS_KV` | `70675d54` | `b1d457c5` |
-| `TASTE_LAYER_KV` | **待创建** | **待创建** |
+| `TASTE_LAYER_KV` | `3653c059` | `f1df2e6d` |
 
 ### HTTP 路由（`index.ts` · 32 path handlers + webhook）
 
