@@ -63,6 +63,12 @@ describe('shouldIgnoreOutsideDismissTarget', () => {
       }),
       true
     );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#reminder-preference-panel' ? {} : null)
+      }),
+      true
+    );
     assert.equal(shouldIgnoreOutsideDismissTarget(blank), false);
     assert.equal(shouldIgnoreOutsideDismissTarget(null), false);
   });

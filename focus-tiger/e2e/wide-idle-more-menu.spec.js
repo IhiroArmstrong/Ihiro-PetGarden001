@@ -124,6 +124,7 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   await reminderRow.hover();
   await page.waitForTimeout(250);
   await reminderRow.click();
+  await expect(page.locator('#ft-wide-more-menu')).toBeHidden();
   const reminderPanel = page.locator('#reminder-preference-panel');
   await expect(reminderPanel).toBeVisible({
     timeout: 5_000

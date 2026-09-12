@@ -406,7 +406,7 @@ export class ReminderPreferenceUI {
         right: auto;
         bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
         transform: translateX(-50%);
-        z-index: 32;
+        z-index: 35;
         width: min(260px, calc(100vw - 36px));
         padding: 16px 16px 14px;
         border-radius: 18px;
@@ -484,9 +484,8 @@ export class ReminderPreferenceUI {
         cursor: pointer;
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
       }
-      .reminder-pref__confirm:disabled {
-        cursor: default;
-        opacity: 0.45;
+      .reminder-pref__confirm:active:not(:disabled) {
+        transform: scale(0.96);
       }
       .reminder-pref__confirm-hint {
         margin: 0;

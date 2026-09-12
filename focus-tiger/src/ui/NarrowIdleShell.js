@@ -855,6 +855,7 @@ export class NarrowIdleShell {
       return;
     }
     if (key === 'reminder') {
+      this.closeSheet();
       this.clearStage();
       document.body.classList.add(NARROW_STAGE_CLASS.reminder);
       this.handlers.onReminder?.();
@@ -1550,7 +1551,7 @@ export class NarrowIdleShell {
           width: min(260px, calc(100vw - 32px)) !important;
           transform: translateX(-50%) !important;
           translate: none !important;
-          z-index: 33 !important;
+          z-index: 35 !important;
         }
 
         /* Idle drawer Sound: Soundscape track panel only — never the red FAB */

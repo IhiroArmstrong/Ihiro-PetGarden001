@@ -671,6 +671,7 @@ export class WideIdleMoreMenu {
     }
     if (key === 'reminder') {
       this.clearStage();
+      this.closeMenu();
       document.body.classList.add(WIDE_STAGE_CLASS.reminder);
       this.handlers.onReminder?.();
       return;
@@ -1155,7 +1156,7 @@ export class WideIdleMoreMenu {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
-          z-index: 32 !important;
+          z-index: 35 !important;
         }
       }
     `;

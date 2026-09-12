@@ -43,5 +43,7 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   // Hover tips sit on ⋯ / drawer rows; those clicks are not blank space.
   if (el.closest('#ft-wide-more-menu')) return true;
   if (el.closest('#ft-narrow-options-drawer')) return true;
+  // Reminder panel is body-fixed beside ⋯/drawer; clicks must not dismiss chrome.
+  if (el.closest('#reminder-preference-panel')) return true;
   return false;
 }
