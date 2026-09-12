@@ -15,7 +15,12 @@ export const FLOWER_BLOW_WELCOME_COPY_KEYS = Object.freeze([
   'FLOWER_BLOW_WELCOME_3'
 ]);
 
-export const FLOWER_BLOW_BUBBLE_HOLD_MS = 3500;
+/**
+ * 「随风喃喃」驻留带 3.0–3.5s 的下沿：文案先走，吹花序列（≈6.5s）继续演到吹散。
+ * 气泡收起**不代表**第一幕演完——回 idle 与首张卡都挂在序列播完，见
+ * `flowerWelcomeGate.isWelcomeFirstPaintSequencePlaying`。
+ */
+export const FLOWER_BLOW_BUBBLE_HOLD_MS = 3000;
 export const FLOWER_BLOW_BUBBLE_FADE_MS = 600;
 
 /**

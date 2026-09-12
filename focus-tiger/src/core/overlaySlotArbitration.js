@@ -28,6 +28,12 @@ import {
 export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistry.js';
 
 /**
+ * Defer 原因：冷启动第一幕序列仍在播（≠ 气泡还开着）。不是 overlay source，
+ * 只作 `mustYieldTo` / `reason` 里的可读原因，便于分辨「等气泡」与「等序列」。
+ */
+export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
+
+/**
  * @typedef {object} OverlaySnapshotInput
  * @property {string} [sessionState]
  * @property {boolean} [completionPending]
@@ -48,6 +54,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [sanctuaryOpen]
  * @property {boolean} [membershipOpen]
  * @property {boolean} [flowerWelcomeVisible]
+ * @property {boolean} [welcomeSequencePlaying] 冷启动第一幕序列未播完（气泡可能已收）
  * @property {boolean} [secondaryMenuOpen]
  * @property {boolean} [confideOpen]
  * @property {boolean} [journeyOpen]
@@ -74,7 +81,8 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'arrivalOpen' | 'reflectionOpen' | 'microRitualOpen' | 'ritualFlowOpen' |
  *   'focusDurationPickerOpen' | 'companionPickerOpen' | 'postSessionOverlayActive' |
  *   'compassOpen' | 'coldStartGoalOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
- *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' | 'secondaryMenuOpen' |
+ *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' |
+ *   'welcomeSequencePlaying' | 'secondaryMenuOpen' |
  *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
@@ -111,6 +119,7 @@ export function buildOverlaySnapshot(input = {}) {
     sanctuaryOpen: Boolean(input.sanctuaryOpen),
     membershipOpen: Boolean(input.membershipOpen),
     flowerWelcomeVisible: Boolean(input.flowerWelcomeVisible),
+    welcomeSequencePlaying: Boolean(input.welcomeSequencePlaying),
     secondaryMenuOpen: Boolean(input.secondaryMenuOpen),
     confideOpen: Boolean(input.confideOpen),
     journeyOpen: Boolean(input.journeyOpen),
@@ -502,6 +511,13 @@ function collectFirstCardBlockers(snapshot, source) {
     const higher = FIRST_CARD_DEFER_PRIORITY[i];
     if (higher === OVERLAY_SOURCES.FLOWER_WELCOME && snapshot.flowerWelcomeVisible) {
       blockers.push(higher);
+    }
+    // 气泡（≈3.6s）比吹花序列（≈6.5s）先走：只认气泡会让毛玻璃卡压在没播完的第一幕上。
+    if (
+      higher === OVERLAY_SOURCES.FLOWER_WELCOME &&
+      snapshot.welcomeSequencePlaying
+    ) {
+      blockers.push(WELCOME_SEQUENCE_BLOCKER);
     }
     if (
       higher === OVERLAY_SOURCES.COLD_START_GOAL &&

@@ -147,6 +147,30 @@ export function resolveFlowerWelcomeForce({
 }
 
 /**
+ * 冷启动第一幕（吹花 / 欢迎）一次性序列是否仍在播。
+ *
+ * 判据挂在「序列真播完」，不挂气泡秒数：气泡 hold 比吹花（65 帧 @10fps ≈ 6.5s）短，
+ * 而 `preload: false` 下实际时长还会随冷启动帧下载浮动，写死秒数照样会切错。
+ * `trackedSequence` 已被别的序列顶掉（用户中途互动）或 player 已停 → 立刻放手，
+ * 免得守卫变成僵尸门闩把 idle 基底与首张卡永久挡死。
+ *
+ * @param {object} input
+ * @param {string | null | undefined} input.trackedSequence 第一幕起播时记下的序列名
+ * @param {boolean} input.playing `SpriteSequencePlayer.isPlaying()`
+ * @param {string | null | undefined} input.currentSequence `getCurrentSequence()`
+ * @returns {boolean}
+ */
+export function isWelcomeFirstPaintSequencePlaying({
+  trackedSequence,
+  playing,
+  currentSequence
+}) {
+  if (!trackedSequence) return false;
+  if (playing !== true) return false;
+  return currentSequence === trackedSequence;
+}
+
+/**
  * Day1 / 久别吹花是否压过 wellness 斗篷/清晨苏醒（用户 2026-08-06 纠正）。
  * @param {{ force?: boolean } | null | undefined} flowerForce
  * @returns {boolean}
