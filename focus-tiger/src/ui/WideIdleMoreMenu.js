@@ -20,6 +20,7 @@ import {
   hasDesktopCompanionBridge
 } from '../core/desktopCompanionGate.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
+import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v6';
 const WIDE_MQ = '(min-width: 480px)';
@@ -328,6 +329,7 @@ export class WideIdleMoreMenu {
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
     this.honestyHomeBtn = this.homeCtas.querySelector('#ft-wide-home-honesty');
+    this._attachHomeGlassTips();
 
     this.wrap = document.createElement('div');
     this.wrap.className = 'ft-wide-more';
@@ -423,6 +425,28 @@ export class WideIdleMoreMenu {
     this._refreshHomeCtas();
   }
 
+  /** @returns {void} */
+  _attachHomeGlassTips() {
+    if (this.quickHomeBtn) {
+      this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-wide-home-quickstart-tip'
+      });
+    }
+    if (this.sitHomeBtn) {
+      this._sitHomeTip = attachGlassHoverTip(this.sitHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-wide-home-sit-tip'
+      });
+    }
+    if (this.honestyHomeBtn) {
+      this._honestyHomeTip = attachGlassHoverTip(this.honestyHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-wide-home-honesty-tip'
+      });
+    }
+  }
+
   /**
    * Keep home Quick Start / Sit / Honesty enablement in sync with parked pills.
    * @returns {void}
@@ -435,7 +459,7 @@ export class WideIdleMoreMenu {
       if (this.sitHomeBtn) {
         const sitLabel = focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
         setAttrIfChanged(this.sitHomeBtn, 'aria-label', sitLabel);
-        if (this.sitHomeBtn.title !== sitLabel) this.sitHomeBtn.title = sitLabel;
+        this._sitHomeTip?.setText(sitLabel);
         const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
         setBoolPropIfChanged(this.sitHomeBtn, 'disabled', !sitOk);
         setAttrIfChanged(
@@ -455,10 +479,8 @@ export class WideIdleMoreMenu {
       if (this.quickHomeBtn) {
         const qsLabel = t('QUICK_START_ARIA');
         setAttrIfChanged(this.quickHomeBtn, 'aria-label', qsLabel);
-        // Home left ball: no mint pulse (2026-08-11) — always keep hover label.
-        if (this.quickHomeBtn.title !== qsLabel) {
-          this.quickHomeBtn.title = qsLabel;
-        }
+        // Home left ball: no mint pulse (2026-08-11) — glass tip always owns hover.
+        this._quickHomeTip?.setText(qsLabel);
         const companionOpen =
           document.querySelector('.session-start-dock__panel:not([hidden])') !=
           null;
@@ -484,9 +506,7 @@ export class WideIdleMoreMenu {
       if (this.honestyHomeBtn) {
         const honestyLabel = t('HONESTY_IDLE_ENTRY');
         setAttrIfChanged(this.honestyHomeBtn, 'aria-label', honestyLabel);
-        if (this.honestyHomeBtn.title !== honestyLabel) {
-          this.honestyHomeBtn.title = honestyLabel;
-        }
+        this._honestyHomeTip?.setText(honestyLabel);
         setBoolPropIfChanged(
           this.honestyHomeBtn,
           'hidden',

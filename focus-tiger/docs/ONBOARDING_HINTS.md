@@ -19,7 +19,7 @@
 
 > **Five Moments 显性化（2026-08-09）**：Moment Whisper / Compass **不是** Hint `auto` 喷洒，不得借机恢复已取消的补救铺开。权威排期与边界见 `PRODUCT_MOMENTS.md` §5.6 与 `task-briefs/task-five-moments-surface-plan.md`。Whisper = `#moment-whisper` 一生一次淡出句（`momentWhispersGate`）；与 Hint registry **分轨**。
 
-> **与脉冲点重复的悬停 Hint（2026-08-05）**：若某控件**已有**薄荷绿脉冲 tip，禁止再叠原生 `title` / 控件自绘 hover 卡等与 tip 同义的悬停文案（例：`streak-meter` 的 `title` + `.label` 与 `focus-hud-streak`）。**例外（2026-08-11）**：首页左球 `quick-start` **不再**画薄荷绿脉冲，始终保留 `title`（Breath practice / QUICK_START_ARIA）。**例外（2026-08-15）**：Focus HUD 三条 **不再**画薄荷绿脉冲，但未读时仍由 hint tip 拥有悬停（`pulse-owns-tip` 去重 `.label`）；**脉冲已 done / 无脉冲且无宿主悬停 tip**时，须保留残余悬停，不得静默清空。
+> **与脉冲点重复的悬停 Hint（2026-08-05）**：若某控件**已有**薄荷绿脉冲 tip，禁止再叠原生 `title` / 控件自绘 hover 卡等与 tip 同义的悬停文案（例：`streak-meter` 的 `title` + `.label` 与 `focus-hud-streak`）。**例外（2026-08-11）**：首页左球 `quick-start` **不再**画薄荷绿脉冲，始终保留自绘 glass tip（`ft-glass-hover-tip` · Breath practice / QUICK_START_ARIA）。**例外（2026-08-15）**：Focus HUD 三条 **不再**画薄荷绿脉冲，但未读时仍由 hint tip 拥有悬停（`pulse-owns-tip` 去重 `.label`）；**脉冲已 done / 无脉冲且无宿主悬停 tip**时，须保留残余悬停，不得静默清空。
 
 > **场景接线（何时出、互斥、宽窄门闩、批次政策）**：权威见 **[`HINTS_WIRING.md`](./HINTS_WIRING.md)**。registry / 文案键仍以下方机器块为准；**运行时策略以上方「产品面」为准**。
 
@@ -147,7 +147,7 @@
 
 ### 音乐提示（对应 ambient-soundscape 文案）
 
-音乐 **默认关闭（opt-in）**。首次 Idle：右上音符见**薄荷绿脉冲**；悬停展开 tip（`HINT_AMBIENT_SOUNDSCAPE`），移开即收。**仅选曲**后永久 `markSeen`（mint 消）；点音符开面板**不清** mint。done 后悬停残余用原生 `title`（`AMBIENT_NOTE_HOVER`）；未读时由 mint tip 压掉原生 title，避免双文案。**不**再使用常驻 `#ambient-note-label` 自绘气泡（2026-08-06 用户书面：点后长文案气泡行为不对，改回脉冲点 Hint）。**不**在 hint 中承诺光效变化。
+音乐 **默认关闭（opt-in）**。首次 Idle：右上音符见**薄荷绿脉冲**；悬停展开 tip（`HINT_AMBIENT_SOUNDSCAPE`），移开即收。**仅选曲**后永久 `markSeen`（mint 消）；点音符开面板**不清** mint。done 后悬停残余用自绘 glass tip（`AMBIENT_NOTE_HOVER`）；未读时由 mint tip 压掉 glass tip，避免双文案。**不**再使用常驻 `#ambient-note-label` 自绘气泡（2026-08-06 用户书面：点后长文案气泡行为不对，改回脉冲点 Hint）。**不**在 hint 中承诺光效变化。
 
 ---
 

@@ -118,4 +118,12 @@ describe('wide more menu click reception', () => {
     assert.match(src, /shouldIgnoreOutsideDismissTarget/);
     assert.match(src, /doc\.body \|\| mountRoot/);
   });
+
+  it('home balls use glass hover tips instead of native title', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /attachGlassHoverTip/);
+    assert.match(src, /_quickHomeTip\?\.setText/);
+    assert.doesNotMatch(src, /sitHomeBtn\.title\s*=/);
+  });
 });
