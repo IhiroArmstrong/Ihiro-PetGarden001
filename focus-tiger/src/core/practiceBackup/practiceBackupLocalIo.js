@@ -14,6 +14,7 @@ import {
   isPracticeBackupStoreEmpty,
   PRACTICE_BACKUP_SCHEMA_VERSION,
   PRACTICE_BACKUP_STORE_KEYS,
+  PRACTICE_BACKUP_V2_STORE_KEYS,
   PRACTICE_BACKUP_V1_STORE_KEYS,
   practiceBackupStoreKeysForSchemaVersion,
   stringifyPracticeBackupStorageValue,
@@ -81,6 +82,9 @@ export function formatPracticeImportSavedAt(
 export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'journey_log', storeKey: 'focus-tiger.journey-log.v1' },
   { id: 'practice_days', storeKey: 'focus-tiger.practice-days.v1' },
+  { id: 'lotus_pond', storeKey: 'focus-tiger.lotus-pond.v1' },
+  { id: 'tip_kindness_badges', storeKey: 'focus-tiger.tip-jar.v1' },
+  { id: 'sanctuary_badges', storeKey: 'focus-tiger.sanctuary-entitlement.v1' },
   { id: 'milestone_glow', storeKey: 'focus-tiger.milestone-glow.v1' },
   { id: 'entitlement_ownership', storeKey: 'focus-tiger.entitlement-ownership.v1' },
   { id: 'ritual_completions', storeKey: 'focus-tiger.ritual-completions.v1' },
@@ -157,8 +161,9 @@ export function validatePracticeImportPayload(raw) {
     };
   }
   let working = parsed;
-  if (version < PRACTICE_BACKUP_SCHEMA_VERSION) {
-    const migrated = migratePracticeSnapshot(working, version, PRACTICE_BACKUP_SCHEMA_VERSION);
+  let cursor = version;
+  while (cursor < PRACTICE_BACKUP_SCHEMA_VERSION) {
+    const migrated = migratePracticeSnapshot(working, cursor, cursor + 1);
     if (!migrated.ok) {
       return {
         ok: false,
@@ -167,6 +172,7 @@ export function validatePracticeImportPayload(raw) {
       };
     }
     working = migrated.snapshot;
+    cursor += 1;
   }
   const check = parsePracticeBackupSnapshotClient(working);
   if (!check.ok) {
@@ -195,7 +201,7 @@ export function migratePracticeSnapshot(snapshot, fromVersion, toVersion) {
         : {};
     /** @type {Record<string, unknown | null>} */
     const stores = {};
-    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+    for (const key of PRACTICE_BACKUP_V2_STORE_KEYS) {
       if (key in storesIn) {
         stores[key] = storesIn[key] ?? null;
       } else if (PRACTICE_BACKUP_V1_STORE_KEYS.includes(key)) {
@@ -211,6 +217,30 @@ export function migratePracticeSnapshot(snapshot, fromVersion, toVersion) {
         savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
         stores,
         companionFiles: null
+      }
+    };
+  }
+  if (fromVersion === 2 && toVersion === 3) {
+    if (!snapshot || typeof snapshot !== 'object') {
+      return { ok: false, reason: 'not_object' };
+    }
+    const o = /** @type {Record<string, unknown>} */ (snapshot);
+    const storesIn =
+      o.stores && typeof o.stores === 'object' && !Array.isArray(o.stores)
+        ? /** @type {Record<string, unknown>} */ (o.stores)
+        : {};
+    /** @type {Record<string, unknown | null>} */
+    const stores = {};
+    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+      stores[key] = key in storesIn ? storesIn[key] ?? null : null;
+    }
+    return {
+      ok: true,
+      snapshot: {
+        schemaVersion: 3,
+        savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
+        stores,
+        companionFiles: o.companionFiles ?? null
       }
     };
   }
@@ -274,6 +304,16 @@ export function countPracticeStoreEntries(storeKey, val) {
       return Array.isArray(val) ? val.length : 0;
     case 'focus-tiger.reminder-preference.v1':
       return typeof val.hour === 'number' && typeof val.minute === 'number' ? 1 : 0;
+    case 'focus-tiger.lotus-pond.v1': {
+      const mins = /** @type {{ lifetimeMinutes?: unknown }} */ (val).lifetimeMinutes;
+      const n = Number(mins);
+      return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+    }
+    case 'focus-tiger.tip-jar.v1':
+    case 'focus-tiger.sanctuary-entitlement.v1': {
+      const badgeIds = /** @type {{ badgeIds?: unknown }} */ (val).badgeIds;
+      return Array.isArray(badgeIds) ? badgeIds.length : 0;
+    }
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':
       return Object.keys(val).length > 0 ? 1 : 0;

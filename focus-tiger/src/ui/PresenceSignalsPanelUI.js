@@ -28,6 +28,12 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
+import {
+  createOverlayBackdrop,
+  hideOverlayBackdrop,
+  showOverlayBackdrop
+} from './overlayBackdrop.js';
 
 const FADE_MS = 220;
 
@@ -43,6 +49,13 @@ export class PresenceSignalsPanelUI {
       (typeof localStorage !== 'undefined' ? localStorage : null);
     this._open = false;
     this._statusText = '';
+
+    this.backdrop = createOverlayBackdrop(mountRoot, {
+      testId: 'presence-signals-panel-backdrop',
+      zIndex: 15,
+      outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+      onDismiss: () => this.close()
+    });
 
     this.root = document.createElement('div');
     this.root.id = 'presence-signals-panel';
@@ -135,6 +148,7 @@ export class PresenceSignalsPanelUI {
   open() {
     if (this._open) return;
     this._open = true;
+    showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this._statusText = '';
     this._renderList();
@@ -147,6 +161,7 @@ export class PresenceSignalsPanelUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    hideOverlayBackdrop(this.backdrop);
     this.root.style.opacity = '0';
     this.root.style.transform = 'translate(-50%, 8px)';
     window.setTimeout(() => {

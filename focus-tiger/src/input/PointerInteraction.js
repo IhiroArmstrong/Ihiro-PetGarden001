@@ -28,8 +28,8 @@ export const POINTER_INTERACTION_CONFIG = {
 
   /** 头部命中：从头顶向下占老虎包围盒高度的比例 */
   headHeightRatio: 0.42,
-  /** 头部命中：水平方向相对中心的半宽比例（相对包围盒半宽） */
-  headHalfWidthRatio: 0.55,
+  /** 头部命中：水平方向相对中心的半宽比例（相对包围盒半宽）；1 = 全宽可点 */
+  headHalfWidthRatio: 1,
 
   /** 抚摸：pointerdown 后累计移动超过此值（CSS px）才算抚摸而非点击 */
   petMinTravelPx: 14,

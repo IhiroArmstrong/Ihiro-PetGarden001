@@ -7,7 +7,7 @@
  * Local export/import + cloud backup · whitelist + snapshot helpers (client).
  */
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 2;
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 3;
 
 /** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
 export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
@@ -19,7 +19,7 @@ export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
   'focus-tiger.mustard-seed-seal.v1'
 ]);
 
-export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
+export const PRACTICE_BACKUP_V2_STORE_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V1_STORE_KEYS,
   'focus-tiger.presence-signals.v1',
   'focus-tiger.presence-freetext-l3-consent.v1',
@@ -30,6 +30,13 @@ export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
   'focus-tiger.ambient-pref.v1',
   'focus-tiger.session-cues.v1',
   'focus-tiger.contemplative-archive-seals.v1'
+]);
+
+export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V2_STORE_KEYS,
+  'focus-tiger.lotus-pond.v1',
+  'focus-tiger.tip-jar.v1',
+  'focus-tiger.sanctuary-entitlement.v1'
 ]);
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
@@ -56,6 +63,7 @@ export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
  */
 export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   if (schemaVersion === 1) return PRACTICE_BACKUP_V1_STORE_KEYS;
+  if (schemaVersion === 2) return PRACTICE_BACKUP_V2_STORE_KEYS;
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
   }
@@ -260,6 +268,15 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       return (
         typeof parsed.hour !== 'number' ||
         typeof parsed.minute !== 'number'
+      );
+    case 'focus-tiger.lotus-pond.v1':
+      return Number(parsed.lifetimeMinutes) <= 0;
+    case 'focus-tiger.tip-jar.v1':
+      return !Array.isArray(parsed.badgeIds) || parsed.badgeIds.length === 0;
+    case 'focus-tiger.sanctuary-entitlement.v1':
+      return (
+        parsed.unlocked !== true &&
+        (!Array.isArray(parsed.badgeIds) || parsed.badgeIds.length === 0)
       );
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':
