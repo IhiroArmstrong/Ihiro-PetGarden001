@@ -465,6 +465,61 @@ describe('target matrix (C1–C6 · PR-2 contract)', () => {
       false
     );
   });
+
+  it('C6b: first cards wait for the welcome first-paint sequence, not the bubble', () => {
+    // 气泡（3.0s + 0.6s 淡出）比吹花序列（65 帧 @10fps ≈ 6.5s）先走；
+    // 门闩只认「气泡开着」时，毛玻璃卡会压在还没播完的吹花上。
+    const bubbleGoneSequencePlaying = buildOverlaySnapshot({
+      flowerWelcomeVisible: false,
+      welcomeSequencePlaying: true
+    });
+    assert.equal(
+      canAttemptFirstCard(
+        OVERLAY_SOURCES.COLD_START_GOAL,
+        bubbleGoneSequencePlaying
+      ),
+      false
+    );
+    assert.equal(
+      canAttemptFirstCard(
+        OVERLAY_SOURCES.GROWTH_COMPASS,
+        bubbleGoneSequencePlaying
+      ),
+      false
+    );
+    assert.equal(
+      canAttemptFirstCard(
+        OVERLAY_SOURCES.WELLNESS_FIRST,
+        bubbleGoneSequencePlaying
+      ),
+      false
+    );
+
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.COLD_START_GOAL,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: bubbleGoneSequencePlaying
+    });
+    assert.equal(decision.canShow, false);
+    // 串与 overlaySlotArbitration.WELCOME_SEQUENCE_BLOCKER 一致；此处故意写死，
+    // 好让修复前本用例以断言失败落红（而不是 import 不存在的符号报错）。
+    assert.equal(
+      decision.mustYieldTo.includes('welcome-sequence-playing'),
+      true,
+      'defer 原因须点名「序列在播」，而非气泡'
+    );
+
+    // 序列播完 → 四选卡照旧能开（不得把冷启动第一张卡永久挡死）
+    const sequenceDone = buildOverlaySnapshot({
+      flowerWelcomeVisible: false,
+      welcomeSequencePlaying: false
+    });
+    assert.equal(
+      canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, sequenceDone),
+      true
+    );
+  });
 });
 
 describe('requestOverlaySlot', () => {
