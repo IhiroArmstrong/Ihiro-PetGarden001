@@ -1211,7 +1211,12 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
       onChoice: (choice) => handleColdStartGoalSelect(choice),
-      onOpen: () => syncInAppReminderBanner()
+      onOpen: () => {
+        // Flower welcome can finish before idle loop starts; goal card may open
+        // from the boot defer queue while occupancy is already IDLE_BASELINE.
+        ensureIdleBaselineAfterWelcome();
+        syncInAppReminderBanner();
+      }
     })
   );
   window.__coldStartGoalCard = coldStartGoalCardUI;
