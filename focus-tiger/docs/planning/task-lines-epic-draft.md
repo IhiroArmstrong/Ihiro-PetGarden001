@@ -80,7 +80,7 @@
 | 2 | Rituals + 自定义 Ritual + 分享至 Circle（`rituals-custom-share`） | **并行**：自定义 Ritual ↔ #1。**仅分享切片**串行依赖 #3 的可分享基建。耦合 #1（完成仪式事件）。 | 建议分享做子 Issue，不要让整个 Epic blocked by #3。 |
 | 3 | Social & Circle（`social-circle`） | **并行**。被 #2 分享切片依赖。刀2 Witness/2c/2d 挂本线。 | |
 | 4 | Support Yin & Stripe 支付完善/付费层级管理（`monetization-tiers`） | **并行**。其它带付费感知的线 **兼容** 本线矩阵（SKU/文案），不整线等待。**耦合** #5（官网/壳收款收口）。 | 禁止「任何付费门槛都 blocked by 本 Epic」。 |
-| 5 | 苹果 DMG 发布准备（`mac-dmg-release`） | **并行**到打包周。**耦合** #9（是否打进模型）、#4（收款）、**#21**（客户端防随手抄）。**兼容** #19（下载入口）。 | 不 blocks #9 开工。**子切片**：**V8 字节码编译**（bytenode）— Electron + DMG 后源码仍在 `app.asar`（非加密；`asar extract` 可原样解压）；若加门槛，V8 字节码是性价比合理选项；**不建议**为 score/徽章/纪念印公式上 C++/Rust 原生模块。 |
+| 5 | 苹果 DMG 发布准备（`mac-dmg-release`） | **并行**到打包周。**耦合** #9（是否打进模型）、#4（收款）、**#21**（客户端防随手抄）。**兼容** #19（下载入口）。 | 不 blocks #9 开工。**子切片**：**官网 DMG 自动更新器**（P0，挡第一份收费包；Brief `task-electron-desktop-updater.md`）· **V8 字节码编译**（bytenode，后于更新器）— Electron + DMG 后源码仍在 `app.asar`（非加密；`asar extract` 可原样解压）；若加门槛，V8 字节码是性价比合理选项；**不建议**为 score/徽章/纪念印公式上 C++/Rust 原生模块。 |
 | 6 | Focus Coin & Collections（`focus-coin-collections`） | **耦合** #1（发点来源）。**耦合** #14（花园 vs 珍藏空间，已切开）。**兼容** #18（数字对得上即可）。 | 新「按时长发点」切片建议等 #1 口径；商店/清供可并行。 |
 | 7 | Five Moments 场景功能扩充（`five-moments-expansion`） | **兼容** #10 #11 #13（共用 Arrive/Focus/Recover/… 标签）。**禁止**整线耦合、禁止本线认领金句/Reset/倾诉实现。 | 范围=分类框架扩展；具体功能归各产品线。 |
 | 8 | Yin's Personalization Engine 算法层（`personalization-engine`） | **并行**本地 L0/L1。**耦合** #21（云端秘密变换归防剽窃，本线只管信号/Pack 形状）。**兼容** #12（问答若将来做，只是可选输入）。**兼容** #17（画像是否进备份包，分切片谈）。**不**耦合 #9。 | 算法/信号 ≠ YPE 云闭包 ≠ Qwen ≠ Operating。**防剽窃收口**：YPE V2 真保护须 insight 被 Confide 真实消费 + 现网阈值 ≠ git 验收锚 + 「部署」——见 `ANTI_PLAGIARISM_LAYER.md` §3.2.2 C。 |
