@@ -37,6 +37,14 @@ export const LOTUS_POND_LATER_STEP_MINUTES = 45;
 export const LOTUS_POND_GOLDEN_ANGLE_DEG = 137.5;
 
 /**
+ * 12-slot ring angles (degrees). Skips bottom-center (270°) so Sit / three-ball
+ * chrome stays clear; 345° fills the right-side gap for symmetry (375 QA 2026-09-13).
+ */
+export const LOTUS_POND_RING_ANGLES_DEG = Object.freeze([
+  180, 210, 240, 345, 300, 330, 0, 30, 60, 120, 135, 150
+]);
+
+/**
  * Spiral layout inside `#sprite-overlay` (percent of overlay).
  * Tunable — Yin is not screen-centered; keep inner radius off the face
  * and outer radius inside HUD / Sit chrome.
@@ -203,6 +211,25 @@ function isYinExclusionZone(leftPct, bottomPct, spiral) {
   );
 }
 
+/** Bottom-center Sit / three-ball dock — blooms must not cover it (375). */
+function isSitChromeExclusionZone(leftPct, bottomPct, spiral) {
+  return (
+    Math.abs(leftPct - spiral.originLeftPct) < 14 &&
+    bottomPct <= spiral.originBottomPct - 12
+  );
+}
+
+/**
+ * @param {number} ringCapacity
+ * @returns {readonly number[] | null}
+ */
+function ringAnglesForCapacity(ringCapacity) {
+  if (ringCapacity === LOTUS_POND_RING_ANGLES_DEG.length) {
+    return LOTUS_POND_RING_ANGLES_DEG;
+  }
+  return null;
+}
+
 /**
  * @param {number} leftPct
  * @param {number} bottomPct
@@ -224,12 +251,15 @@ function collidesWithPlaced(leftPct, bottomPct, placed) {
 export function spiralSlots(count = LOTUS_POND_RING_CAPACITY, spiral = LOTUS_POND_SPIRAL) {
   const ringCapacity = getLotusRingCapacity();
   const n = Math.min(ringCapacity, Math.max(0, Math.floor(Number(count)) || 0));
+  const explicitAngles = ringAnglesForCapacity(ringCapacity);
   const stepDeg = 360 / ringCapacity;
   const r = spiral.rOuterPct;
   /** @type {Array<{ index: number, leftPct: number, bottomPct: number, widthCss: string }>} */
   const placed = [];
   for (let i = 0; i < n; i += 1) {
-    let angleDeg = spiral.angleOffsetDeg + i * stepDeg;
+    let angleDeg = explicitAngles
+      ? explicitAngles[i]
+      : spiral.angleOffsetDeg + i * stepDeg;
     let slot = null;
     for (let attempt = 0; attempt < 12; attempt += 1) {
       const rad = (angleDeg * Math.PI) / 180;
@@ -245,6 +275,7 @@ export function spiralSlots(count = LOTUS_POND_RING_CAPACITY, spiral = LOTUS_PON
       );
       if (
         isYinExclusionZone(leftPct, bottomPct, spiral) ||
+        isSitChromeExclusionZone(leftPct, bottomPct, spiral) ||
         collidesWithPlaced(leftPct, bottomPct, placed)
       ) {
         angleDeg += stepDeg / 2;
