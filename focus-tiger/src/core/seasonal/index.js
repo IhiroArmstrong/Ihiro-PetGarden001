@@ -49,6 +49,11 @@ export {
   seasonalLineText
 } from './christmasCorpus.js';
 export {
+  HALLOWEEN_CORPUS,
+  isHalloweenCorpusOk,
+  pickHalloweenLineForDay
+} from './halloweenCorpus.js';
+export {
   THANKSGIVING_CORPUS,
   isThanksgivingCorpusOk,
   pickThanksgivingLineForDay

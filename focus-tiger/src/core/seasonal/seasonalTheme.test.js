@@ -110,9 +110,14 @@ describe('seasonal dual gate · Phase 3', () => {
     assert.equal(isSeasonalThemeGateOpen('thanksgiving-ca'), true);
   });
 
+  it('halloween contentReady true when corpus ok', () => {
+    assert.equal(getSeason('halloween').contentReady, true);
+    assert.equal(isSeasonalThemeGateOpen('halloween'), true);
+  });
+
   it('other seasons remain contentReady false', () => {
-    assert.equal(getSeason('halloween').contentReady, false);
-    assert.equal(isSeasonalThemeGateOpen('halloween'), false);
+    assert.equal(getSeason('new-years-day').contentReady, false);
+    assert.equal(isSeasonalThemeGateOpen('new-years-day'), false);
   });
 });
 
@@ -216,6 +221,27 @@ describe('resolveActiveSeasonalTheme', () => {
     const active = resolveActiveSeasonalTheme({
       now: new Date('2026-10-11T16:00:00.000Z'),
       region: 'US',
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.equal(active, null);
+  });
+
+  it('entitled applies halloween in October window', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2026-10-30T17:00:00.000Z'),
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.ok(active);
+    assert.equal(active.seasonId, 'halloween');
+    assert.equal(active.assets.background, 'autumn-twilight-wash');
+    assert.equal(active.assets.copyPoolId, 'halloween');
+  });
+
+  it('halloween does not apply outside window', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2026-10-27T17:00:00.000Z'),
       mountEnabled: true,
       entitled: () => true
     });
