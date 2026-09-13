@@ -10,10 +10,8 @@
 
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
 import { homeClearanceTopCss } from './homeChromeClearance.js';
-import {
-  pickChristmasLineForDay,
-  seasonalLineText
-} from '../core/seasonal/christmasCorpus.js';
+import { seasonalLineText } from '../core/seasonal/christmasCorpus.js';
+import { pickSeasonalLineForDay } from '../core/seasonal/seasonalCopyPools.js';
 import {
   markSeasonalWhisperShown,
   shouldShowSeasonalWhisper
@@ -85,8 +83,9 @@ export class SeasonalThemeChromeUI {
       return;
     }
 
-    if (active.assets?.copyPoolId === 'christmas') {
-      const line = pickChristmasLineForDay(dayIso);
+    const copyPoolId = active.assets?.copyPoolId;
+    if (copyPoolId) {
+      const line = pickSeasonalLineForDay(copyPoolId, dayIso);
       if (!line) return;
       this._showWhisper(seasonalLineText(line, getLocale()), line.id);
       markSeasonalWhisperShown(this.storage, active.seasonId, dayIso);
@@ -197,6 +196,11 @@ export class SeasonalThemeChromeUI {
           background:
             radial-gradient(ellipse 85% 50% at 50% 12%, rgba(255, 250, 240, 0.28), transparent 68%),
             radial-gradient(ellipse 75% 45% at 50% 100%, rgba(170, 195, 215, 0.16), transparent 62%);
+        }
+        .seasonal-theme-wash[data-background="autumn-gratitude-wash"] {
+          background:
+            radial-gradient(ellipse 82% 48% at 50% 14%, rgba(255, 236, 210, 0.26), transparent 66%),
+            radial-gradient(ellipse 72% 42% at 50% 100%, rgba(195, 155, 115, 0.14), transparent 60%);
         }
       `;
       document.head.appendChild(s);

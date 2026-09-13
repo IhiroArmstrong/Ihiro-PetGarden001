@@ -17,7 +17,7 @@
  */
 
 import { getSeason } from './seasonalCalendar.js';
-import { isChristmasCorpusOk } from './christmasCorpus.js';
+import { isSeasonalCopyPoolOk } from './seasonalCopyPools.js';
 
 /**
  * Flip to true only when seasonal themes are intentionally user-launched
@@ -67,10 +67,8 @@ export function isSeasonalThemeGateOpen(
   if (killSwitched(seasonId)) return false;
   const season = getSeason(seasonId);
   if (!season || season.contentReady !== true) return false;
-  if (
-    season.assets?.copyPoolId === 'christmas' &&
-    isChristmasCorpusOk() !== true
-  ) {
+  const copyPoolId = season.assets?.copyPoolId;
+  if (copyPoolId && isSeasonalCopyPoolOk(copyPoolId) !== true) {
     return false;
   }
   return true;
