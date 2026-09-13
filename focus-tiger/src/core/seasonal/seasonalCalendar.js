@@ -78,9 +78,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     windowDaysAfter: 0,
     timezone: 'America/New_York',
     priority: 70,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'winter-turn-wash',
+      copyPoolId: 'new-year'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'valentines-day',
@@ -190,9 +194,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     windowDaysAfter: 0,
     timezone: 'America/New_York',
     priority: 70,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'winter-turn-wash',
+      copyPoolId: 'new-year'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'chunfen',

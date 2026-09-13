@@ -207,6 +207,11 @@ export class SeasonalThemeChromeUI {
             radial-gradient(ellipse 80% 46% at 50% 16%, rgba(210, 185, 225, 0.22), transparent 64%),
             radial-gradient(ellipse 74% 44% at 50% 100%, rgba(120, 95, 130, 0.12), transparent 58%);
         }
+        .seasonal-theme-wash[data-background="winter-turn-wash"] {
+          background:
+            radial-gradient(ellipse 84% 50% at 50% 14%, rgba(245, 250, 255, 0.24), transparent 66%),
+            radial-gradient(ellipse 76% 46% at 50% 100%, rgba(160, 180, 210, 0.13), transparent 60%);
+        }
       `;
       document.head.appendChild(s);
     }
