@@ -418,7 +418,7 @@
   "YIN_COIN_SKU_QING_VASE": "Qing porcelain vase",
   "YIN_COIN_SKU_BRONZE_VESSEL": "Ritual bronze",
   "YIN_COIN_SKU_WAVE_HELLO": "Wave hello",
-  "YIN_COIN_GAP_BALANCE": "Need {n} more Focus Coins.",
+  "YIN_COIN_GAP_BALANCE": "Still {n} Focus Coins away.",
   "YIN_COIN_GAP_MINUTES": "Need {n} more lifetime minutes.",
   "YIN_COIN_GAP_PRACTICE_DAYS": "Need {n} more practice days.",
   "YIN_COIN_GAP_LOTUS": "Need a lotus trace in the garden first.",
@@ -1005,5 +1005,6 @@
   "MEMBERSHIP_MENU_UNLOCKED": "Premium unlocked",
   "CONTENT_UNLOCK_SANCTUARY_TITLE": "Premium content unlocked",
   "CONTENT_UNLOCK_COMPANION_UPSELL": "Sanctuary Lifetime unlocks advanced scenes. Add on-device Yin when you are ready — one-time, no subscription.",
-  "CONTENT_UNLOCK_COMPANION_CTA": "Unlock AI Companion"
+  "CONTENT_UNLOCK_COMPANION_CTA": "Unlock AI Companion",
+  "YIN_COIN_NOT_YET": "Not yet"
 }

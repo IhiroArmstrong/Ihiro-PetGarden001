@@ -413,7 +413,7 @@
   "YIN_COIN_SKU_QING_VASE": "青瓷瓶",
   "YIN_COIN_SKU_BRONZE_VESSEL": "青铜礼器",
   "YIN_COIN_SKU_WAVE_HELLO": "挥手",
-  "YIN_COIN_GAP_BALANCE": "还差 {n} 枚寅币。",
+  "YIN_COIN_GAP_BALANCE": "还差 {n} 寅币。",
   "YIN_COIN_GAP_MINUTES": "还差 {n} 分钟终身坐时。",
   "YIN_COIN_GAP_PRACTICE_DAYS": "还差 {n} 个练习日。",
   "YIN_COIN_GAP_LOTUS": "需要先在花园里留下一朵莲。",
@@ -1005,5 +1005,6 @@
   "MEMBERSHIP_MENU_UNLOCKED": "已解锁付费内容",
   "CONTENT_UNLOCK_SANCTUARY_TITLE": "付费内容已解锁",
   "CONTENT_UNLOCK_COMPANION_UPSELL": "圣所终身版已解锁进阶场景。若需要，可一次性加购本机 AI 陪伴——无需订阅。",
-  "CONTENT_UNLOCK_COMPANION_CTA": "解锁 AI 陪伴"
+  "CONTENT_UNLOCK_COMPANION_CTA": "解锁 AI 陪伴",
+  "YIN_COIN_NOT_YET": "还差一些"
 }
