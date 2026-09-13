@@ -107,6 +107,10 @@ import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
+import {
+  acquireYinCoinWaveFocus,
+  releaseYinCoinWaveFocus
+} from './ui/overlayBackdrop.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
@@ -2536,8 +2540,10 @@ async function init() {
       yinCoinPanelUI?.refresh?.();
       return result;
     }
+    acquireYinCoinWaveFocus();
     emotionController.playEmotion(COLLECTIONS_WAVE_HELLO_EMOTION_KEY, {
       onComplete: () => {
+        releaseYinCoinWaveFocus();
         yinCoinPanelUI?.refresh?.();
         syncIdleYinTap();
       }

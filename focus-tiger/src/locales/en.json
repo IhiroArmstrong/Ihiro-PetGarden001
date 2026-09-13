@@ -392,6 +392,8 @@
   "YIN_COIN_NOT_FOR_SALE": "Desk treasures come only from sitting together over time. They cannot be bought.",
   "YIN_COIN_BALANCE": "{n} Focus Coins",
   "YIN_COIN_EXCHANGE": "Bond",
+  "YIN_COIN_SECTION_OBTAINED": "On your desk",
+  "YIN_COIN_SECTION_PENDING": "Awaiting bond",
   "YIN_COIN_OWNED": "Bonded",
   "YIN_COIN_WEAR": "Wear",
   "YIN_COIN_WEARING": "Wearing",

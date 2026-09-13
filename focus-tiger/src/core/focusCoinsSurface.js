@@ -13,6 +13,21 @@ import {
   listShopFocusCoinSkus
 } from './focusCoinsLedger.js';
 
+/**
+ * Optional curio still paths — mount designer assets here; absent ids use gradients.
+ * @type {Readonly<Record<string, string>>}
+ */
+export const FOCUS_COIN_CURIO_THUMB_SRC = Object.freeze({});
+
+/**
+ * @param {string} skuId
+ * @returns {string | null}
+ */
+export function getFocusCoinCurioThumbSrc(skuId) {
+  const src = FOCUS_COIN_CURIO_THUMB_SRC[skuId];
+  return typeof src === 'string' && src.length > 0 ? src : null;
+}
+
 /** @type {Readonly<Record<string, string>>} */
 export const FOCUS_COIN_SKU_NAME_KEYS = Object.freeze({
   'space.incense-tint-warm': 'YIN_COIN_SKU_INCENSE_TINT',
@@ -169,6 +184,7 @@ export function listFocusCoinSurfaceRows(ctx = {}) {
       kind: sku.kind,
       price: sku.price,
       nameKey: FOCUS_COIN_SKU_NAME_KEYS[sku.id],
+      thumbSrc: getFocusCoinCurioThumbSrc(sku.id),
       owned,
       canRedeem: evaluated.ok === true,
       reason: evaluated.reason,
@@ -179,4 +195,16 @@ export function listFocusCoinSurfaceRows(ctx = {}) {
       ceremonial
     };
   });
+}
+
+/**
+ * Owned vs pending shop rows for Collections section headers.
+ * @param {Parameters<typeof listFocusCoinSurfaceRows>[0]} [ctx]
+ */
+export function listFocusCoinSurfaceSections(ctx = {}) {
+  const rows = listFocusCoinSurfaceRows(ctx);
+  return {
+    obtained: rows.filter((row) => row.owned),
+    pending: rows.filter((row) => !row.owned)
+  };
 }
