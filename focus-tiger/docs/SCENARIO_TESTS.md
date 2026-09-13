@@ -1028,6 +1028,22 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ---
 
+## 2026-09-12–13 增量核对摘要（C.2–C.3 · D.2–D.4 · Collections P0 · Ground Exercise · Seasonal Phase 4）
+
+1. **背景**：9/12–9/13 合入 develop 一批 Sanctuary / Collections / Seasonal 用户面（#739–#755）；TRACKER 碎片已 `tracker:assemble` 折入机器块；故事剧本仍缺 D 系与季节主题正式场景。  
+2. **本次核对（增量，未升格新字母场景）**：  
+   - **场景 AC** 仍为准；D.4（#750）补 **金 tier 卡片**与更安静的 Bond 触感——步 1 商店行须见 tier 色带/层级，步 3 结缘 toast 仍中置、非彩纸。  
+   - **Collections P0**（#752）：已结缘区 unblur + owned-card 分区——AC 步 3/4 回流后须见已结缘卡面分区，勿与未结缘 SKU 混排。  
+   - **C.2 Focus HUD idle calm**（#739）· **C.3 Reflection CTA tier**（#740）：尚无独立场景字母；批量测时对照 TRACKER `feature/c2-*` / `feature/c3-*` 行与场景 B/Q 叠层。  
+   - **D.2 Presence quiet object**（#746）· **D.3 Quiet Drawer**（#749）：宽屏 paper surface / accordion 抽屉；尚无独立场景——走 TRACKER 行 + 场景 D/O 叠层时留意 375 不挡三球。  
+   - **Ground exercise standalone menu**（#747）：被动 emoji 入口改为独立菜单项；走场景 K/O 附近时留意菜单行出现，勿与 Breath practice 混淆。  
+   - **Seasonal Phase 4**（#751 Thanksgiving · #754 Halloween · #755 New Year/Eve）：`seasonalThemeEngine` wash + copy；**无**独立场景字母——冷启动/Idle 背景须见对应节日 wash（按 locale/日历 gate）；勿与场景 V 吹花日旗冲突。  
+   - **官方清库**：文首已记 `__ftDebug.resetScenario`（#debug-scenario-reset）；场景 V 步 1 已引用，禁止默写 `removeItem`。  
+3. **仍须人工 / 勿当缺口**：D 系与 Seasonal 的 375 观感、金 tier 配色、节日 wash 与莲花/披毯叠层时序；C.1 关单行见 PR #753（待你 Merge）。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
 ## 给 Cursor 的 Prompt（增量核对；勿整份重写）
 
 ```
