@@ -1,8 +1,9 @@
 # Task Brief · Reset & Return MVP（Feel the Ground / Take a Breath / Look Around）
 
-> **状态（2026-09-07）**：**方案文档** · 纯 PRD / 落位方案 · **不写代码**  
-> **上游决策**：`task-focus-tiger-reset-system-mvp-brief.md`（5 项架构决策已拍板）  
-> **叙事归属**：Recover Moment · 被动 Re-focus Acknowledge 同线（非第三套「练习中断提示」）
+> **状态（2026-09-13）**：**部分 superseded**。触发/归属（并入 Recover、接被动 Re-focus、5-emoji 分流）以 [`task-ground-exercise-standalone-menu.md`](./task-ground-exercise-standalone-menu.md) 为准。本文仍可用于盘点已合入的练习组件与历史决策，**不得再按本文 §一决策 1/2/5 实现新代码**。  
+> **原状态（2026-09-07）**：方案文档 · 纯 PRD / 落位方案 · **不写代码**  
+> **上游决策**：`task-focus-tiger-reset-system-mvp-brief.md`（5 项架构决策已拍板；其中决策 1 已推翻）  
+> **叙事归属（历史）**：Recover Moment · 被动 Re-focus Acknowledge 同线（非第三套「练习中断提示」）
 
 ---
 
