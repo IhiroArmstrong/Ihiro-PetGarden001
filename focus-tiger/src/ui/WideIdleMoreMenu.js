@@ -25,7 +25,8 @@ import {
   syncIdleHomeCtaTip
 } from './idleHomeCtaTip.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v6';
+const STYLE_ID = 'ft-wide-idle-more-styles-v7';
+const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
 const WIDE_MQ = '(min-width: 480px)';
 /** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
 const HOME_CTA_PX = 72;
@@ -128,6 +129,7 @@ export class WideIdleMoreMenu {
     this._suppressed = false;
     this._keepQuickStart = false;
     this._menuOpen = false;
+    this._expandedGroups = new Set([DEFAULT_EXPANDED_MENU_GROUP]);
     this._localeUnsub = null;
     this._refreshingHomeCtas = false;
 
@@ -615,18 +617,41 @@ export class WideIdleMoreMenu {
     });
 
     this.listEl.innerHTML = '';
+    /** @type {HTMLUListElement | null} */
+    let sectionItems = null;
     for (const item of entries) {
-      const li = document.createElement('li');
       if (item.kind === 'group-label') {
-        li.setAttribute('role', 'presentation');
-        const label = document.createElement('div');
-        label.className = 'ft-wide-more__group';
-        label.dataset.group = item.labelKey;
-        label.textContent = t(item.labelKey);
-        li.appendChild(label);
-        this.listEl.appendChild(li);
+        const expanded = this._expandedGroups.has(item.labelKey);
+        const sectionLi = document.createElement('li');
+        sectionLi.className = 'ft-wide-more__section';
+        sectionLi.dataset.group = item.labelKey;
+        sectionLi.setAttribute('role', 'none');
+
+        const header = document.createElement('button');
+        header.type = 'button';
+        header.className = 'ft-wide-more__section-header';
+        header.dataset.group = item.labelKey;
+        header.textContent = t(item.labelKey);
+        header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        header.addEventListener('click', (event) => {
+          event.stopPropagation();
+          if (this._expandedGroups.has(item.labelKey)) {
+            this._expandedGroups.delete(item.labelKey);
+          } else {
+            this._expandedGroups.add(item.labelKey);
+          }
+          this._refreshItems();
+        });
+
+        sectionItems = document.createElement('ul');
+        sectionItems.className = 'ft-wide-more__section-items';
+        sectionItems.hidden = !expanded;
+        sectionLi.append(header, sectionItems);
+        this.listEl.appendChild(sectionLi);
         continue;
       }
+      if (!sectionItems) continue;
+      const li = document.createElement('li');
       li.setAttribute('role', 'none');
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -653,7 +678,7 @@ export class WideIdleMoreMenu {
         Boolean(hintId) && this.handlers.isHintUnread?.(hintId) === true;
       syncSecondaryMenuHintDot(btn, showDot);
       li.appendChild(btn);
-      this.listEl.appendChild(li);
+      sectionItems.appendChild(li);
     }
   }
 
@@ -978,11 +1003,11 @@ export class WideIdleMoreMenu {
         top: max(16px, env(safe-area-inset-top, 0px));
         right: max(12px, env(safe-area-inset-right, 0px));
         bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
-        left: max(56vw, calc(100vw - 312px));
+        left: auto;
         transform: none;
-        width: auto;
+        width: min(360px, calc(100vw - 48px));
         min-width: 0;
-        max-width: none;
+        max-width: 380px;
         display: flex;
         flex-direction: column;
         padding: 8px;
@@ -1010,6 +1035,36 @@ export class WideIdleMoreMenu {
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
+      .ft-wide-more__section {
+        list-style: none;
+      }
+      .ft-wide-more__section-header {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 10px 12px 6px;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: rgba(92, 67, 48, 0.78);
+        cursor: pointer;
+      }
+      .ft-wide-more__section-header:hover {
+        color: rgba(92, 67, 48, 0.92);
+      }
+      .ft-wide-more__section-items {
+        list-style: none;
+        margin: 0;
+        padding: 0 0 4px;
+      }
+      .ft-wide-more__section-items[hidden] {
+        display: none !important;
+      }
       .ft-wide-more__item {
         display: block;
         position: relative;
@@ -1022,7 +1077,7 @@ export class WideIdleMoreMenu {
         background: transparent;
         color: var(--color-ink, #2c1f14);
         font-size: 13px;
-        font-weight: 600;
+        font-weight: 500;
         line-height: 1.35;
         cursor: pointer;
         transition: transform 120ms ease;
@@ -1034,14 +1089,6 @@ export class WideIdleMoreMenu {
       .ft-wide-more__item:disabled {
         opacity: 0.48;
         cursor: not-allowed;
-      }
-      .ft-wide-more__group {
-        padding: 10px 12px 4px;
-        font-size: 11px;
-        font-weight: 650;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        color: rgba(92, 67, 48, 0.72);
       }
       .ft-wide-more__item:hover {
         background: rgba(255, 246, 230, 0.9);
