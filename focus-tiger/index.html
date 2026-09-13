@@ -193,6 +193,47 @@
       #focus-hud .ft-hud[data-focusing='0'] .ft-hud__core {
         animation-duration: 5s;
       }
+      /* C.2 · Idle default lighter — bar + streak deprioritized; hover / Focusing restore */
+      #focus-hud .ft-hud[data-focusing='0'] {
+        gap: 8px;
+      }
+      #focus-hud .ft-hud[data-focusing='0'] .ft-hud__bar {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        margin-top: -8px;
+        pointer-events: none;
+        transition:
+          opacity 220ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)),
+          max-height 280ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)),
+          margin-top 280ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
+      }
+      #focus-hud .ft-hud[data-focusing='0'] .ft-hud__streak {
+        opacity: 0.18;
+        --meter-size: 52px;
+        transition:
+          opacity 220ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1)),
+          --meter-size 280ms var(--ease-calm, cubic-bezier(0.33, 0.1, 0.25, 1));
+      }
+      #focus-hud .ft-hud[data-focusing='0']:hover .ft-hud__bar,
+      #focus-hud .ft-hud[data-focusing='0']:focus-within .ft-hud__bar {
+        opacity: 1;
+        max-height: 4rem;
+        margin-top: 0;
+        pointer-events: auto;
+      }
+      #focus-hud .ft-hud[data-focusing='0']:hover .ft-hud__streak,
+      #focus-hud .ft-hud[data-focusing='0']:focus-within .ft-hud__streak {
+        opacity: 1;
+        --meter-size: 64px;
+      }
+      #focus-hud .ft-hud[data-focusing='1'] .ft-hud__bar,
+      #focus-hud .ft-hud[data-focusing='1'] .ft-hud__streak {
+        opacity: 1;
+        max-height: none;
+        margin-top: 0;
+        pointer-events: auto;
+      }
       #focus-hud .ft-hud__meta {
         display: flex;
         flex-direction: column;
@@ -283,6 +324,13 @@
           height: 64px;
         }
         #focus-hud .ft-hud__streak {
+          --meter-size: 48px;
+        }
+        #focus-hud .ft-hud[data-focusing='0'] .ft-hud__streak {
+          --meter-size: 40px;
+        }
+        #focus-hud .ft-hud[data-focusing='0']:hover .ft-hud__streak,
+        #focus-hud .ft-hud[data-focusing='0']:focus-within .ft-hud__streak {
           --meter-size: 48px;
         }
         #focus-hud .ft-hud__meta {
