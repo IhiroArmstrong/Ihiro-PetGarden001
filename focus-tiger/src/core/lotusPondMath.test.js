@@ -131,6 +131,32 @@ describe('lotusPondMath spiral slots', () => {
     }
   });
 
+  it('full ring clears bottom-center Sit dock on 375 (no bloom over three balls)', () => {
+    const slots = Array.from({ length: 12 }, (_, i) =>
+      spiralSlotForBloomIndex(i)
+    );
+    const { originLeftPct, originBottomPct } = LOTUS_POND_SPIRAL;
+    for (const slot of slots) {
+      const onSitDock =
+        Math.abs(slot.leftPct - originLeftPct) < 14 &&
+        slot.bottomPct <= originBottomPct - 12;
+      assert.equal(onSitDock, false, `slot ${slot.index} blocks Sit dock`);
+    }
+  });
+
+  it('fourth bloom (index 3) sits in the right gap, not bottom center', () => {
+    const slot = spiralSlotForBloomIndex(3);
+    const { originLeftPct } = LOTUS_POND_SPIRAL;
+    assert.ok(
+      slot.leftPct > originLeftPct + 20,
+      `fourth bloom should be on the right (leftPct=${slot.leftPct})`
+    );
+    assert.ok(
+      Math.abs(slot.leftPct - originLeftPct) > 14,
+      'fourth bloom must not sit on bottom-center axis'
+    );
+  });
+
   it('12 slots share one width and stay distinct (no shrinking / crowding)', () => {
     const slots = Array.from({ length: 12 }, (_, i) =>
       spiralSlotForBloomIndex(i)
