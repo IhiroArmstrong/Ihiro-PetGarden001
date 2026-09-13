@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `60d6cb92` |
-| `snapshot_date` | 2026-09-05 |
+| `snapshot_base` | `origin/develop` tip `544f0f70` |
+| `snapshot_date` | 2026-09-09 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -69,8 +69,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `0ef2b77a-6815-431b-ab8d-593988e56193` |
-| `prod_verified_at` | 2026-09-08（本机 `wrangler deploy` · Quiet Line schema 2 · 29 键 mixed pool · #602） |
+| `prod_worker_version` | `f7034cbb-78cd-43e3-b4ad-2f8c6f318e3c` |
+| `prod_verified_at` | 2026-09-09（本机 `wrangler deploy` · Calm Action copy schema 2 · 14+14+20 reflect pool · #675） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
