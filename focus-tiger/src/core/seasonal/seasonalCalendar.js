@@ -140,9 +140,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     windowDaysAfter: 0,
     timezone: 'America/New_York',
     priority: 70,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'autumn-twilight-wash',
+      copyPoolId: 'halloween'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'thanksgiving-us',
