@@ -34,7 +34,7 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v3';
+const STYLE_ID = 'yin-coin-panel-styles-v4';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CEREMONIAL_MS = 2400;
 /** Relief medallion — panel header / ceremonial. Not a sprite overlay. */
@@ -277,7 +277,13 @@ export class FocusCoinsPanelUI {
       const thumb = document.createElement('span');
       thumb.className = 'yin-coin-panel__thumb';
       thumb.dataset.kind = row.kind;
+      thumb.dataset.state = row.owned
+        ? 'collected'
+        : row.canRedeem
+          ? 'bondable'
+          : 'locked';
       thumb.setAttribute('aria-hidden', 'true');
+      li.dataset.state = thumb.dataset.state;
 
       const body = document.createElement('div');
       body.className = 'yin-coin-panel__body';
@@ -333,14 +339,21 @@ export class FocusCoinsPanelUI {
           }
           meta.append(wearBtn);
         }
-      } else {
+      } else if (row.canRedeem) {
         const exchange = document.createElement('button');
         exchange.type = 'button';
-        exchange.className = 'yin-coin-panel__btn yin-coin-panel__btn--primary';
+        exchange.className =
+          'yin-coin-panel__btn yin-coin-panel__btn--bond';
         exchange.dataset.testid = 'yin-coin-exchange';
         exchange.textContent = t('YIN_COIN_EXCHANGE');
         exchange.addEventListener('click', () => this._onExchange(row));
         meta.append(exchange);
+      } else {
+        const faint = document.createElement('span');
+        faint.className = 'yin-coin-panel__faint';
+        faint.dataset.testid = 'yin-coin-not-yet';
+        faint.textContent = t('YIN_COIN_NOT_YET');
+        meta.append(faint);
       }
 
       const gap = document.createElement('p');
@@ -508,10 +521,10 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__balance {
         margin: 0;
-        font-size: 0.86rem;
+        font-size: 0.84rem;
         line-height: 1.45;
-        font-weight: 600;
-        opacity: 0.92;
+        font-weight: 500;
+        opacity: 0.82;
       }
       .yin-coin-panel__list {
         margin: 0 0 12px;
@@ -520,23 +533,33 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__row {
         display: flex;
-        gap: 10px;
+        gap: 12px;
         align-items: flex-start;
-        margin: 0 0 8px;
-        padding: 8px 10px;
-        background: ${GLASS_FILL_STRONG};
-        border-radius: 10px;
+        margin: 0 0 10px;
+        padding: 12px 12px 11px;
+        background: rgba(255, 249, 240, 0.96);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        border-radius: 14px;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
       }
       .yin-coin-panel__row:last-child {
         margin-bottom: 0;
       }
       .yin-coin-panel__thumb {
-        width: 24px;
-        height: 24px;
-        margin-top: 2px;
+        width: 28px;
+        height: 28px;
+        margin-top: 1px;
         flex-shrink: 0;
-        border-radius: 50%;
-        border: 1.5px solid rgba(184, 148, 72, 0.55);
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.2);
+        background: radial-gradient(circle at 40% 35%, #f0ebe3, #c8c0b4);
+      }
+      .yin-coin-panel__thumb[data-state='bondable'] {
+        border-color: rgba(184, 148, 72, 0.38);
+        background: radial-gradient(circle at 40% 35%, #f7efe0, #d4b36a);
+      }
+      .yin-coin-panel__thumb[data-state='collected'] {
+        border-color: rgba(184, 148, 72, 0.55);
         background: radial-gradient(circle at 40% 35%, #f4e6c1, #c9a227);
       }
       .yin-coin-panel__thumb[data-kind='space'] {
@@ -615,6 +638,18 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__btn--ghost {
         font-weight: 500;
+      }
+      .yin-coin-panel__btn--bond {
+        padding: 6px 12px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border-color: rgba(139, 115, 85, 0.28);
+        background: rgba(255, 248, 232, 0.92);
+      }
+      .yin-coin-panel__faint {
+        font-size: 0.78rem;
+        font-weight: 500;
+        opacity: 0.72;
       }
       .yin-coin-panel__btn--primary {
         font-weight: 600;

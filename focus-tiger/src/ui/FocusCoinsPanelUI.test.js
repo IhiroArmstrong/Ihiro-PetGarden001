@@ -96,3 +96,10 @@ test('not-for-sale copy names sitting-together over time, not years of sitting',
   assert.match(en.YIN_COIN_NOT_FOR_SALE, /sitting together over time/i);
   assert.match(zh.YIN_COIN_NOT_FOR_SALE, /同坐日久/);
 });
+
+test('Collections D.4 uses object-card states and bond-only CTA', () => {
+  assert.match(src, /dataset\.state = row\.owned/);
+  assert.match(src, /yin-coin-panel__btn--bond/);
+  assert.match(src, /yin-coin-panel__faint/);
+  assert.match(src, /YIN_COIN_NOT_YET/);
+});

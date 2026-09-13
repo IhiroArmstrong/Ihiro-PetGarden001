@@ -22,7 +22,7 @@ import {
 } from './focusCoinsSurface.js';
 
 const LOOKUP = {
-  YIN_COIN_GAP_BALANCE: 'Need {n} more Focus Coins.',
+  YIN_COIN_GAP_BALANCE: 'Still {n} Focus Coins away.',
   YIN_COIN_GAP_MINUTES: 'Need {n} more lifetime minutes.',
   YIN_COIN_GAP_PRACTICE_DAYS: 'Need {n} more practice days.',
   YIN_COIN_GAP_INCENSE: 'Need incense, or {n} more practice days.',
@@ -77,7 +77,7 @@ test('shortfall copy names the coin gap instead of a vague cannot-redeem', () =>
   assert.equal(pebble?.reason, 'insufficient-balance');
   assert.equal(
     formatFocusCoinGapMessage(pebble?.gaps ?? [], (key) => LOOKUP[key]),
-    'Need 62 more Focus Coins.'
+    'Still 62 Focus Coins away.'
   );
 });
 
