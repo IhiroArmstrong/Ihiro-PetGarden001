@@ -18,7 +18,8 @@ import {
   FOCUS_COIN_SKU_NAME_KEYS,
   formatFocusCoinGapMessage,
   listFocusCoinRedeemGaps,
-  listFocusCoinSurfaceRows
+  listFocusCoinSurfaceRows,
+  listFocusCoinSurfaceSections
 } from './focusCoinsSurface.js';
 
 const LOOKUP = {
@@ -107,6 +108,24 @@ test('catalog extras still redeem without garden gates, but stay off the drawer'
     hasLotusBloom: false
   });
   assert.deepEqual(gaps, []);
+});
+
+test('surface sections partition owned vs pending shop rows', () => {
+  const sections = listFocusCoinSurfaceSections({
+    balance: 0,
+    ownedIds: ['badge.rare.quiet-pebble', 'title.sits-with-yin']
+  });
+  assert.equal(sections.obtained.length, 2);
+  assert.equal(sections.pending.length, 6);
+  assert.deepEqual(
+    sections.obtained.map((row) => row.id).sort(),
+    ['badge.rare.quiet-pebble', 'title.sits-with-yin'].sort()
+  );
+  assert.equal(sections.obtained.every((row) => row.owned), true);
+  assert.equal(sections.pending.every((row) => !row.owned), true);
+  for (const row of sections.obtained) {
+    assert.equal(row.thumbSrc, null);
+  }
 });
 
 test('owned SKU has no gaps and Wear is offered on titles', () => {
