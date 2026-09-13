@@ -54,6 +54,11 @@ export {
   pickHalloweenLineForDay
 } from './halloweenCorpus.js';
 export {
+  NEW_YEAR_CORPUS,
+  isNewYearCorpusOk,
+  pickNewYearLineForDay
+} from './newYearCorpus.js';
+export {
   THANKSGIVING_CORPUS,
   isThanksgivingCorpusOk,
   pickThanksgivingLineForDay

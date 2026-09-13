@@ -17,6 +17,10 @@ import {
   pickHalloweenLineForDay
 } from './halloweenCorpus.js';
 import {
+  isNewYearCorpusOk,
+  pickNewYearLineForDay
+} from './newYearCorpus.js';
+import {
   isThanksgivingCorpusOk,
   pickThanksgivingLineForDay
 } from './thanksgivingCorpus.js';
@@ -42,6 +46,10 @@ const COPY_POOLS = Object.freeze({
   halloween: Object.freeze({
     isOk: isHalloweenCorpusOk,
     pickForDay: pickHalloweenLineForDay
+  }),
+  'new-year': Object.freeze({
+    isOk: isNewYearCorpusOk,
+    pickForDay: pickNewYearLineForDay
   })
 });
 

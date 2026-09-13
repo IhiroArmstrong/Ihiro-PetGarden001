@@ -115,9 +115,16 @@ describe('seasonal dual gate · Phase 3', () => {
     assert.equal(isSeasonalThemeGateOpen('halloween'), true);
   });
 
+  it('new-years-day/eve contentReady true when corpus ok', () => {
+    assert.equal(getSeason('new-years-day').contentReady, true);
+    assert.equal(getSeason('new-years-eve').contentReady, true);
+    assert.equal(isSeasonalThemeGateOpen('new-years-day'), true);
+    assert.equal(isSeasonalThemeGateOpen('new-years-eve'), true);
+  });
+
   it('other seasons remain contentReady false', () => {
-    assert.equal(getSeason('new-years-day').contentReady, false);
-    assert.equal(isSeasonalThemeGateOpen('new-years-day'), false);
+    assert.equal(getSeason('valentines-day').contentReady, false);
+    assert.equal(isSeasonalThemeGateOpen('valentines-day'), false);
   });
 });
 
@@ -246,6 +253,43 @@ describe('resolveActiveSeasonalTheme', () => {
       entitled: () => true
     });
     assert.equal(active, null);
+  });
+
+  it('entitled applies new-years-eve on Dec 31', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2026-12-31T17:00:00.000Z'),
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.ok(active);
+    assert.equal(active.seasonId, 'new-years-eve');
+    assert.equal(active.assets.background, 'winter-turn-wash');
+    assert.equal(active.assets.copyPoolId, 'new-year');
+  });
+
+  it('entitled applies new-years-day on Jan 1', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2027-01-01T17:00:00.000Z'),
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.ok(active);
+    assert.equal(active.seasonId, 'new-years-day');
+    assert.equal(active.assets.background, 'winter-turn-wash');
+    assert.equal(active.assets.copyPoolId, 'new-year');
+  });
+
+  it('christmas wins over new-years-eve when windows overlap by priority', () => {
+    const christmas = getSeason('christmas');
+    const nyEve = getSeason('new-years-eve');
+    assert.ok(christmas.priority > nyEve.priority);
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2026-12-24T17:00:00.000Z'),
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.ok(active);
+    assert.equal(active.seasonId, 'christmas');
   });
 
   it('isSeasonInWindow respects before/after', () => {
