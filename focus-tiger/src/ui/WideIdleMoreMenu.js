@@ -682,6 +682,12 @@ export class WideIdleMoreMenu {
       this.handlers.onLanguage?.();
       return;
     }
+    if (key === 'ground-exercise') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onGroundExercise?.();
+      return;
+    }
     if (key === 'five-moments') {
       this.clearStage();
       this.closeMenu();

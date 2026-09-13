@@ -47,6 +47,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [companionPickerOpen]
  * @property {boolean} [postSessionOverlayActive] Gate field (may include mustard bypass)
  * @property {boolean} [compassOpen]
+ * @property {boolean} [groundExerciseChoiceOpen]
  * @property {boolean} [coldStartGoalOpen]
  * @property {boolean} [mustardSeedOpen]
  * @property {boolean} [tipJarOpen]
@@ -70,7 +71,6 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [focusCircleWitnessLeaveVisible]
  * @property {boolean} [focusCircleWitnessRespondOpen]
  * @property {boolean} [focusAwarenessOpen]
- * @property {boolean} [recoverResetOfferOpen]
  * @property {boolean} [recoverResetPracticeOpen]
  * @property {boolean} [transitionMomentOpen]
  */
@@ -86,7 +86,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
- *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' | 'recoverResetOfferOpen' |
+ *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' |
  *   'recoverResetPracticeOpen' | 'transitionMomentOpen'
  * >>} OverlaySnapshot
  */
@@ -112,6 +112,7 @@ export function buildOverlaySnapshot(input = {}) {
     companionPickerOpen: Boolean(input.companionPickerOpen),
     postSessionOverlayActive: Boolean(input.postSessionOverlayActive),
     compassOpen: Boolean(input.compassOpen),
+    groundExerciseChoiceOpen: Boolean(input.groundExerciseChoiceOpen),
     coldStartGoalOpen: Boolean(input.coldStartGoalOpen),
     mustardSeedOpen: Boolean(input.mustardSeedOpen),
     tipJarOpen: Boolean(input.tipJarOpen),
@@ -135,7 +136,6 @@ export function buildOverlaySnapshot(input = {}) {
     focusCircleWitnessLeaveVisible: Boolean(input.focusCircleWitnessLeaveVisible),
     focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen),
     focusAwarenessOpen: Boolean(input.focusAwarenessOpen),
-    recoverResetOfferOpen: Boolean(input.recoverResetOfferOpen),
     recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
     transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };
@@ -263,7 +263,6 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
  * @returns {boolean}
  */
 export function deriveFocusingSoftCardBusy(snapshot) {
-  if (snapshot.recoverResetOfferOpen) return true;
   if (snapshot.recoverResetPracticeOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
   if (snapshot.compassOpen || snapshot.coldStartGoalOpen) return true;
@@ -474,6 +473,9 @@ function activeGrowthCard(snapshot) {
   if (snapshot.mustardSeedOpen) return OVERLAY_SOURCES.GROWTH_MUSTARD_SEED;
   if (snapshot.coldStartGoalOpen) return OVERLAY_SOURCES.COLD_START_GOAL;
   if (snapshot.compassOpen) return OVERLAY_SOURCES.GROWTH_COMPASS;
+  if (snapshot.groundExerciseChoiceOpen) {
+    return OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE;
+  }
   return null;
 }
 
@@ -629,6 +631,9 @@ function collectRecoverResetBaseYield(snapshot) {
     blockers.push(OVERLAY_SOURCES.COLD_START_GOAL);
   }
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
+  if (snapshot.groundExerciseChoiceOpen) {
+    blockers.push(OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE);
+  }
   if (snapshot.mustardSeedOpen) {
     blockers.push(OVERLAY_SOURCES.GROWTH_MUSTARD_SEED);
   }
@@ -693,9 +698,7 @@ export function requestOverlaySlot(req) {
 
   if (isSessionHardGate(snapshot)) {
     const focusingSoftCardAllowed =
-      (source === OVERLAY_SOURCES.FOCUS_AWARENESS ||
-        source === OVERLAY_SOURCES.RECOVER_RESET_OFFER ||
-        source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE) &&
+      source === OVERLAY_SOURCES.FOCUS_AWARENESS &&
       snapshot.sessionState === STATES.FOCUSING;
     if (!focusingSoftCardAllowed) {
       mustYieldTo.push('session-hard-gate');
@@ -738,17 +741,10 @@ export function requestOverlaySlot(req) {
     }
   }
 
-  if (source === OVERLAY_SOURCES.RECOVER_RESET_OFFER) {
-    mustYieldTo.push(...collectRecoverResetBaseYield(snapshot));
-    if (deriveFocusingSoftCardBusy(snapshot)) {
-      mustYieldTo.push('focusing-soft-card-busy');
-    }
-  }
-
   if (source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE) {
     mustYieldTo.push(...collectRecoverResetBaseYield(snapshot));
-    if (snapshot.recoverResetOfferOpen) {
-      mustYieldTo.push(OVERLAY_SOURCES.RECOVER_RESET_OFFER);
+    if (snapshot.sessionState === STATES.FOCUSING) {
+      mustYieldTo.push('session-hard-gate');
     }
     if (deriveFocusingSoftCardBusy(snapshot)) {
       mustYieldTo.push('focusing-soft-card-busy');
