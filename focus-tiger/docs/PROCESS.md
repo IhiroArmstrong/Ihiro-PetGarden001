@@ -771,6 +771,8 @@
 
 建议：日常本地 **≤1–2 个写 Agent**；其余长任务丢 **Cloud Agent**。任务跑完关掉多余窗口；Vite / Playwright 由 Agent 或你手动停掉。
 
+**Code Intelligence · LSP for Worktrees（编辑器体验，≠ Agent 省 token）**：`Cursor Settings` → Code Intelligence → **Enable LSPs for Worktrees** 建议开启——在 `…-wt-…` 目录人手跳转定义 / 类型提示用；**不**减少 Agent 的 `Grep`/`Glob` 次数或探索 token（行业与 Cursor 自身技术选型均把 Grep 作 Agent 主力检索）。Agent 砍探索面靠 `@folder` 白名单 + 工具预算分档（`agent-token-cost`），不靠 LSP。
+
 ### 同一帐号：本机 Cursor + Cloud Agent
 
 | 面 | 结论 |

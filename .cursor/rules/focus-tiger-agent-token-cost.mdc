@@ -49,7 +49,7 @@ alwaysApply: false
 
 软上限 / 连续探索软停到达时：**先口头汇报完整探索快照**（已读文件 / 已确认 / 已排除假设）；改文件与 git 仍可走。硬顶到达时：**只 deny 再探索**，且须附完整探索快照；禁止因此新开 Chat。
 
-**「大任务」开工纪律**：首条回复须先列 **预期文件/函数清单**，再只读审计；勿立刻改代码（`session_gate.sh` 会提醒）。
+**「大任务」开工纪律**：首条回复须先列 **预期文件/函数清单**，再只读审计；勿立刻改代码（`session_gate.sh` 会提醒）。跨目录 / monorepo 任务，首条口令还须带 **`@folder` 目录白名单**（或等效「只碰 `focus-tiger/src/…`」书面范围）——**禁止**无范围全仓 `Grep`/`Glob` 摸底。口令范例：`大任务 只碰 focus-tiger/src/journey/ 和 focus-tiger/src/core/，先列文件地图再开工`。
 
 ### 三档表 + 口令
 
@@ -114,6 +114,7 @@ alwaysApply: false
    - 改完后：**本地最多 1 轮**确认语法 / 明显逻辑（如 `test:smoke` 或 **`test:e2e:changed --` 单个 spec**）；**最终验收交给 push + CI**（`test:pr-smoke` / 相关 workflow）。禁止多文件 changed / 全量 / 直调长列表（脚本+hook 硬拦；`RUN_E2E_LOCAL=true` 逃生口会打警告）。
 7. **上下文范围控制（防止大规模误读）**
    - 单文件粒度见 `focus-tiger-source-read-granularity.mdc`（`RULES_INDEX` → `source-read-granularity`）。
+   - **目录白名单**：`开工` / `大任务` 首条宜 `@folder` 或写明子目录范围；Agent 探索须限制在白名单内，不得为「摸清边界」扫全仓。
    - 禁止一次性读取/索引整个仓库或大范围目录树，除非用户当回合明确批准范围。
    - 默认以 `.cursorignore` 为准排除 `node_modules`、构建产物（`dist`/`build`/`.next`/`out`）、大体积媒体资源（音频/视频/图片/字体）、大数据文件；若发现这类文件未被排除，先提醒用户补充 `.cursorignore`，不要直接把它们读入上下文。
    - 涉及跨目录 / 多文件（≥5 个文件）搜索或读取前，先说明预计扫描范围，等待用户确认后再执行，不要一次性拉取大范围上下文。
