@@ -103,6 +103,13 @@ describe('seasonal dual gate · Phase 3', () => {
     assert.equal(isSeasonalThemeGateOpen('christmas'), true);
   });
 
+  it('thanksgiving-us/ca contentReady true when corpus ok', () => {
+    assert.equal(getSeason('thanksgiving-us').contentReady, true);
+    assert.equal(getSeason('thanksgiving-ca').contentReady, true);
+    assert.equal(isSeasonalThemeGateOpen('thanksgiving-us'), true);
+    assert.equal(isSeasonalThemeGateOpen('thanksgiving-ca'), true);
+  });
+
   it('other seasons remain contentReady false', () => {
     assert.equal(getSeason('halloween').contentReady, false);
     assert.equal(isSeasonalThemeGateOpen('halloween'), false);
@@ -179,6 +186,40 @@ describe('resolveActiveSeasonalTheme', () => {
       resolveAnchorIsoForYear(ca.dateRule, 2026),
       '2026-10-12'
     );
+  });
+
+  it('entitled + US region applies thanksgiving-us in window', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2026-11-25T17:00:00.000Z'),
+      region: 'US',
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.ok(active);
+    assert.equal(active.seasonId, 'thanksgiving-us');
+    assert.equal(active.assets.background, 'autumn-gratitude-wash');
+    assert.equal(active.assets.copyPoolId, 'thanksgiving');
+  });
+
+  it('entitled + CA region applies thanksgiving-ca in October window', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2026-10-11T16:00:00.000Z'),
+      region: 'CA',
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.ok(active);
+    assert.equal(active.seasonId, 'thanksgiving-ca');
+  });
+
+  it('US thanksgiving does not apply in CA October window', () => {
+    const active = resolveActiveSeasonalTheme({
+      now: new Date('2026-10-11T16:00:00.000Z'),
+      region: 'US',
+      mountEnabled: true,
+      entitled: () => true
+    });
+    assert.equal(active, null);
   });
 
   it('isSeasonInWindow respects before/after', () => {
