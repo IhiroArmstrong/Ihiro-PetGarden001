@@ -21,6 +21,10 @@ const communityLink = readFileSync(
   join(repoRoot, 'focus-tiger/src/core/communityLink.js'),
   'utf8'
 );
+const zenCinemaConfig = readFileSync(
+  join(repoRoot, 'focus-tiger/src/core/zenCinemaConfig.js'),
+  'utf8'
+);
 const sharedInviteMatch = communityLink.match(
   /COMMUNITY_SLACK_INVITE_URL\s*=\s*\n\s*'([^']+)'/
 );
@@ -125,5 +129,41 @@ describe('marketing-site Slice 2 contract', () => {
     assert.match(css, /\.hero-yin[\s\S]*?aspect-ratio:\s*1\s*\/\s*1/);
     assert.doesNotMatch(css, /Iowan Old Style/);
     assert.match(headers, /\*\.css[\s\S]*Content-Type:\s*text\/css/);
+  });
+});
+
+describe('marketing-site Slice 3 contract', () => {
+  const youtubeUrlMatch = zenCinemaConfig.match(
+    /ZEN_CINEMA_YOUTUBE_URL\s*=\s*'([^']+)'/
+  );
+  const youtubeUrl = youtubeUrlMatch?.[1] ?? '';
+
+  it('uses the same Zen Cinema YouTube URL as zenCinemaConfig.js', () => {
+    assert.ok(youtubeUrl, 'zenCinemaConfig.js must export ZEN_CINEMA_YOUTUBE_URL');
+    assert.match(youtubeUrl, /youtu\.be\/RV46qrvG1pw/);
+    assert.match(html, new RegExp(youtubeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'));
+  });
+
+  it('shows Zen Cinema between community Slack note and footer legal links', () => {
+    const communityEnd = html.indexOf('</section>', html.indexOf('id="community"'));
+    const zenStart = html.indexOf('id="zen-cinema"');
+    const footerStart = html.indexOf('<footer class="colophon"');
+    assert.ok(communityEnd > 0 && zenStart > communityEnd && footerStart > zenStart);
+    assert.match(html, /Zen Cinema/);
+    assert.match(html, /Mindful Moments with Yin/);
+    assert.match(html, /Satori: The Flash That Changes Everything/);
+    assert.match(html, /zen-cinema-satori-flash-thumb\.png/);
+    assert.match(html, />Watch on YouTube</);
+    assert.match(html, /Opens YouTube in a new tab/);
+  });
+
+  it('keeps calm tone without FOMO on Zen Cinema', () => {
+    const zenSection = html.match(
+      /<section id="zen-cinema"[\s\S]*?<\/section>/
+    )?.[0] ?? '';
+    assert.ok(zenSection, 'zen-cinema section must exist');
+    assert.doesNotMatch(zenSection, /limited time/i);
+    assert.doesNotMatch(zenSection, /hurry/i);
+    assert.doesNotMatch(zenSection, /Download App/i);
   });
 });
