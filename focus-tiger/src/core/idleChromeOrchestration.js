@@ -396,6 +396,8 @@ export function listSecondaryChromeEntries(surface, visibility) {
     companionOk
       ? { proxy: 'companion', labelKey: 'COMPANION_MODE_HINT' }
       : null,
+    // TODO: menu position may move once menu-governance audit lands
+    { proxy: 'ground-exercise', labelKey: 'GROUND_EXERCISE_MENU_LABEL' },
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
     { proxy: 'honesty', labelKey: 'HONESTY_IDLE_ENTRY' },
     { proxy: 'journey-log', labelKey: 'JOURNEY_LOG_MENU_LABEL' },
