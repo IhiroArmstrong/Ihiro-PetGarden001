@@ -6,7 +6,7 @@
 
 仓库：https://github.com/IhiroArmstrong/Ihiro-PetGarden001
 
-## Epic（21，跳过已作废表行 #16）
+## Epic（22，跳过已作废表行 #16）
 
 | 表行 | slug | Issue | 标题 |
 |---|---|---|---|
@@ -32,6 +32,7 @@
 | 20 | `art-polish` | [#645](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/645) | 美术优化 |
 | 21 | `anti-plagiarism-layer` | [#646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/646) | 防剽窃层 |
 | 22 | `phase1-a-b-c-testing` | [#647](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/647) | Local AI Phase 1A/1B/1C 验收 |
+| 23 | `seasonal-theme-engine` | [#742](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/742) | 节日主题引擎（Seasonal Theme · B 轨全年氛围） |
 
 ## 审计与切片（真先后）
 
@@ -40,6 +41,9 @@
 | 审计 | [#648](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/648) | 冷启动第一幕审计 | 挡住 #638 |
 | 切片 | [#649](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/649) | Circle 可分享基建 | 父 #629；挡住 #650 |
 | 切片 | [#650](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/650) | Ritual 分享到 Circle | 父 #628；blocked by #649 |
+| 切片 | [#743](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/743) | Phase 4 · 感恩节氛围放出（US/CA） | 父 #742；波次 1 |
+| 切片 | [#744](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/744) | Phase 4 · 万圣节氛围放出 | 父 #742；波次 1 |
+| 切片 | [#745](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/745) | Phase 4 · 元旦与跨年氛围放出 | 父 #742；波次 1 |
 
 ## 建库执行记录（2026-09-07）
 
@@ -49,3 +53,11 @@
 | 24 个 label | 成功（`--force`） |
 | 21 个 Epic | 全部 CREATE，无 SKIP、无失败 |
 | 审计 + 两切片 + blocked-by / parent | CREATE #648–#650；#638 `--add-blocked-by` 648 |
+
+## 建库执行记录（2026-09-13 · #23 节日主题）
+
+| 步骤 | 结果 |
+|---|---|
+| label `line:seasonal-theme-engine` | CREATE（`--force`） |
+| Epic #23 | CREATE [#742](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/742) |
+| Phase 4 波次 1 切片 | CREATE [#743](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/743)–[#745](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/745)；parent #742 |
