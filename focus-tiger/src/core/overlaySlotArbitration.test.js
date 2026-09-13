@@ -558,61 +558,8 @@ describe('requestOverlaySlot', () => {
     assert.equal(d.canShow, true);
   });
 
-  it('recover reset offer allowed during focusing', () => {
+  it('recover reset practice blocked during focusing (Idle menu only)', () => {
     const snapshot = buildOverlaySnapshot({ sessionState: STATES.FOCUSING });
-    const d = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot
-    });
-    assert.equal(d.canShow, true);
-  });
-
-  it('recover reset practice allowed during focusing', () => {
-    const snapshot = buildOverlaySnapshot({ sessionState: STATES.FOCUSING });
-    const d = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot
-    });
-    assert.equal(d.canShow, true);
-  });
-
-  it('recover reset offer yields to practice and awareness peers', () => {
-    const withPractice = buildOverlaySnapshot({
-      sessionState: STATES.FOCUSING,
-      recoverResetPracticeOpen: true
-    });
-    const practiceBlock = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot: withPractice
-    });
-    assert.equal(practiceBlock.canShow, false);
-    assert.ok(practiceBlock.mustYieldTo.includes('focusing-soft-card-busy'));
-
-    const withAwareness = buildOverlaySnapshot({
-      sessionState: STATES.FOCUSING,
-      focusAwarenessOpen: true
-    });
-    const awarenessBlock = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot: withAwareness
-    });
-    assert.equal(awarenessBlock.canShow, false);
-    assert.ok(awarenessBlock.mustYieldTo.includes('focusing-soft-card-busy'));
-  });
-
-  it('recover reset practice yields to open offer', () => {
-    const snapshot = buildOverlaySnapshot({
-      sessionState: STATES.FOCUSING,
-      recoverResetOfferOpen: true
-    });
     const d = requestOverlaySlot({
       source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
       kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
@@ -620,7 +567,33 @@ describe('requestOverlaySlot', () => {
       snapshot
     });
     assert.equal(d.canShow, false);
-    assert.ok(d.mustYieldTo.includes(OVERLAY_SOURCES.RECOVER_RESET_OFFER));
+    assert.ok(d.mustYieldTo.includes('session-hard-gate'));
+  });
+
+  it('recover reset practice allowed on idle when no blockers', () => {
+    const snapshot = buildOverlaySnapshot({ sessionState: STATES.IDLE });
+    const d = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot
+    });
+    assert.equal(d.canShow, true);
+  });
+
+  it('recover reset practice yields to awareness peers during idle', () => {
+    const withAwareness = buildOverlaySnapshot({
+      sessionState: STATES.IDLE,
+      focusAwarenessOpen: true
+    });
+    const awarenessBlock = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: withAwareness
+    });
+    assert.equal(awarenessBlock.canShow, false);
+    assert.ok(awarenessBlock.mustYieldTo.includes('focusing-soft-card-busy'));
   });
 
   it('transition moment granted on idle when no blockers', () => {
@@ -667,21 +640,9 @@ describe('requestOverlaySlot', () => {
   it('recover reset practice blocks idle yin tap when open', () => {
     const snapshot = buildOverlaySnapshot({ recoverResetPracticeOpen: true });
     assert.equal(deriveIdleYinTapOverlayBusy(snapshot), true);
-    assert.equal(
-      deriveIdleYinTapOverlayBusy(
-        buildOverlaySnapshot({ recoverResetOfferOpen: true })
-      ),
-      false
-    );
   });
 
   it('deriveFocusingSoftCardBusy mutual exclusion', () => {
-    assert.equal(
-      deriveFocusingSoftCardBusy(
-        buildOverlaySnapshot({ recoverResetOfferOpen: true })
-      ),
-      true
-    );
     assert.equal(
       deriveFocusingSoftCardBusy(
         buildOverlaySnapshot({ recoverResetPracticeOpen: true })

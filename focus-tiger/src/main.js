@@ -107,6 +107,10 @@ import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
+import {
+  acquireYinCoinWaveFocus,
+  releaseYinCoinWaveFocus
+} from './ui/overlayBackdrop.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
@@ -447,11 +451,9 @@ import { CalmActionTransitionStore } from './core/CalmActionTransitionStore.js';
 import { CalmActionReflectStore } from './core/CalmActionReflectStore.js';
 import { TransitionMomentUI } from './ui/TransitionMomentUI.js';
 import { TransitionMomentTriggerUI } from './ui/TransitionMomentTriggerUI.js';
-import {
-  RecoverResetOfferUI,
-  RESET_ROUTES
-} from './ui/RecoverResetOfferUI.js';
+import { GroundExerciseChoiceUI } from './ui/GroundExerciseChoiceUI.js';
 import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
+import { RESET_ROUTES } from './ui/resetPracticeRoutes.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -996,9 +998,6 @@ async function init() {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();
       }
-      if (type === 'refocus') {
-        scheduleRecoverResetOfferAfterRefocus();
-      }
       if (type === 'activeRecover') {
         calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
@@ -1338,12 +1337,11 @@ async function init() {
   let witnessLeaveSlotHeld = false;
   let witnessRespondSlotHeld = false;
   let transitionMomentSlotHeld = false;
-  let recoverResetOfferSlotHeld = false;
   let recoverResetPracticeSlotHeld = false;
-  /** @type {RecoverResetOfferUI | null} */
-  let recoverResetOfferUI = null;
   /** @type {RecoverResetPracticeUI | null} */
   let recoverResetPracticeUI = null;
+  /** @type {GroundExerciseChoiceUI | null} */
+  let groundExerciseChoiceUI = null;
 
   function requestWitnessLeaveOverlaySlot() {
     const decision = requestOverlaySlot({
@@ -1410,35 +1408,12 @@ async function init() {
     syncTransitionMomentTrigger();
   }
 
-  function requestRecoverResetOfferOverlaySlot() {
-    const decision = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot: buildLiveOverlaySnapshot({
-        recoverResetOfferOpen: false,
-        recoverResetPracticeOpen: recoverResetPracticeSlotHeld
-      })
-    });
-    if (!decision.canShow) return false;
-    recoverResetOfferSlotHeld = true;
-    syncIdleYinTap();
-    return true;
-  }
-
-  function releaseRecoverResetOfferOverlaySlot() {
-    if (!recoverResetOfferSlotHeld) return;
-    recoverResetOfferSlotHeld = false;
-    syncIdleYinTap();
-  }
-
   function requestRecoverResetPracticeOverlaySlot() {
     const decision = requestOverlaySlot({
       source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
       kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
       intent: 'show',
       snapshot: buildLiveOverlaySnapshot({
-        recoverResetOfferOpen: recoverResetOfferSlotHeld,
         recoverResetPracticeOpen: false
       })
     });
@@ -1456,15 +1431,6 @@ async function init() {
 
   const overlayRoot =
     document.getElementById('ui-overlay') || document.body;
-  recoverResetOfferUI = new RecoverResetOfferUI(overlayRoot, {
-    requestSlot: requestRecoverResetOfferOverlaySlot,
-    releaseSlot: releaseRecoverResetOfferOverlaySlot,
-    getBusy: () => isFocusAwarenessCardBusy(),
-    onSelect: (route) => {
-      if (route === RESET_ROUTES.STEADY) return;
-      recoverResetPracticeUI?.show(route);
-    }
-  });
   recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
     requestSlot: requestRecoverResetPracticeOverlaySlot,
     releaseSlot: releaseRecoverResetPracticeOverlaySlot,
@@ -1473,12 +1439,15 @@ async function init() {
       if (canOpenConfideNow()) confideToYinUI.open();
     }
   });
-  window.__recoverResetOffer = recoverResetOfferUI;
+  groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
+    onSelect: (route) => {
+      groundExerciseChoiceUI?.close();
+      recoverResetPracticeUI?.show(route);
+    },
+    onClose: () => syncIdleYinTap()
+  });
   window.__recoverResetPractice = recoverResetPracticeUI;
-
-  function scheduleRecoverResetOfferAfterRefocus() {
-    recoverResetOfferUI?.tryScheduleAfterRefocus();
-  }
+  window.__groundExerciseChoice = groundExerciseChoiceUI;
 
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
     document.body,
@@ -1713,6 +1682,7 @@ async function init() {
     if (except !== 'newsletter') newsletterCaptureUI.close();
     if (except !== 'confide') confideToYinUI.close();
     if (except !== 'cinema') zenCinemaCardUI.close();
+    if (except !== 'ground-exercise') groundExerciseChoiceUI?.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'cold-start-goal') coldStartGoalCardUI.close();
     if (except !== 'journey') journeyLogUI.close();
@@ -2430,6 +2400,7 @@ async function init() {
       zenCinemaCardUI?.isOpen?.() === true ||
       presenceSignalsPanelUI?.isOpen?.() === true ||
       confideToYinUI?.isOpen?.() === true ||
+      groundExerciseChoiceUI?.isOpen?.() === true ||
       fiveMomentsCompassUI?.isOpen?.() === true ||
       supportYinModalUI?.isOpen?.() === true ||
       sanctuaryUnlockUI?.isOpen?.() === true ||
@@ -2478,6 +2449,8 @@ async function init() {
       postSessionOverlayActive:
         window.__sessionUiGate?.postSessionOverlayActive === true,
       compassOpen: window.__fiveMomentsCompass?.isOpen?.() === true,
+      groundExerciseChoiceOpen:
+        window.__groundExerciseChoice?.isOpen?.() === true,
       coldStartGoalOpen: window.__coldStartGoalCard?.isOpen?.() === true,
       mustardSeedOpen: window.__mustardSeedCard?.isOpen?.() === true,
       tipJarOpen: window.__tipJar?.isOpen?.() === true,
@@ -2504,9 +2477,6 @@ async function init() {
       transitionMomentOpen:
         transitionMomentSlotHeld || transitionMomentUI?.isOpen?.() === true,
       focusAwarenessOpen: focusAwarenessCardUI?.isVisible?.() === true,
-      recoverResetOfferOpen:
-        recoverResetOfferSlotHeld ||
-        recoverResetOfferUI?.isVisible?.() === true,
       recoverResetPracticeOpen:
         recoverResetPracticeSlotHeld ||
         recoverResetPracticeUI?.isVisible?.() === true,
@@ -2570,8 +2540,10 @@ async function init() {
       yinCoinPanelUI?.refresh?.();
       return result;
     }
+    acquireYinCoinWaveFocus();
     emotionController.playEmotion(COLLECTIONS_WAVE_HELLO_EMOTION_KEY, {
       onComplete: () => {
+        releaseYinCoinWaveFocus();
         yinCoinPanelUI?.refresh?.();
         syncIdleYinTap();
       }
@@ -3189,6 +3161,10 @@ async function init() {
     },
     onLanguage: () => {
       languagePreferenceUI.openPanel();
+    },
+    onGroundExercise: () => {
+      closeGrowthOverlayCards({ except: 'ground-exercise' });
+      groundExerciseChoiceUI?.open();
     },
     onFiveMoments: () => {
       closeGrowthOverlayCards({ except: 'moments' });
@@ -3833,7 +3809,7 @@ async function init() {
     calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
     transitionMomentUI.close();
-    recoverResetOfferUI?.hide({ immediate: true });
+    groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
@@ -4018,7 +3994,7 @@ async function init() {
     focusAwarenessCardUI.resetSession();
     calmActionRecoverStore.resetSession();
     calmActionRecoverCardUI.resetSession();
-    recoverResetOfferUI?.resetSession();
+    groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
@@ -4223,7 +4199,7 @@ async function init() {
       calmActionRecoverCardUI.hide({ immediate: true });
       calmActionArriveCardUI.hide({ immediate: true });
       transitionMomentUI.close();
-      recoverResetOfferUI?.hide({ immediate: true });
+      groundExerciseChoiceUI?.close();
       recoverResetPracticeUI?.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();

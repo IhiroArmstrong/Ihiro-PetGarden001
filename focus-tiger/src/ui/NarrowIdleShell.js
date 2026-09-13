@@ -867,6 +867,12 @@ export class NarrowIdleShell {
       this.handlers.onLanguage?.();
       return;
     }
+    if (key === 'ground-exercise') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onGroundExercise?.();
+      return;
+    }
     if (key === 'five-moments') {
       this.closeSheet();
       this.clearStage();

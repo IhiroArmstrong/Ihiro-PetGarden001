@@ -16,7 +16,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   formatFocusCoinGapMessage,
-  listFocusCoinSurfaceRows
+  listFocusCoinSurfaceSections
 } from '../core/focusCoinsSurface.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
@@ -29,8 +29,10 @@ import {
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
+  YIN_COIN_WAVE_FOCUS_BODY_CLASS,
   createOverlayBackdrop,
   hideOverlayBackdrop,
+  releaseYinCoinWaveFocus,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 
@@ -223,6 +225,7 @@ export class FocusCoinsPanelUI {
     if (!this._open) return;
     this._open = false;
     this._hideCeremonial();
+    releaseYinCoinWaveFocus();
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -260,41 +263,100 @@ export class FocusCoinsPanelUI {
     );
     this.closeBtn.textContent = t('YIN_COIN_CLOSE');
     this.waveBtn.textContent = t('YIN_COIN_WAVE_PLAY');
-    this._renderRows(listFocusCoinSurfaceRows(ctx));
+    this._renderSections(listFocusCoinSurfaceSections(ctx));
   }
 
   /**
-   * @param {ReturnType<typeof listFocusCoinSurfaceRows>} rows
+   * @param {ReturnType<typeof listFocusCoinSurfaceSections>} sections
    */
-  _renderRows(rows) {
+  _renderSections(sections) {
     this.listEl.replaceChildren();
-    for (const row of rows) {
-      const li = document.createElement('li');
-      li.className = 'yin-coin-panel__row';
-      li.dataset.sku = row.id;
-      li.dataset.testid = `yin-coin-row-${row.id}`;
+    if (sections.obtained.length > 0) {
+      this.listEl.append(this._sectionHeader('YIN_COIN_SECTION_OBTAINED'));
+      for (const row of sections.obtained) {
+        this.listEl.append(this._rowEl(row));
+      }
+    }
+    if (sections.pending.length > 0) {
+      this.listEl.append(this._sectionHeader('YIN_COIN_SECTION_PENDING'));
+      for (const row of sections.pending) {
+        this.listEl.append(this._rowEl(row));
+      }
+    }
+  }
 
-      const thumb = document.createElement('span');
-      thumb.className = 'yin-coin-panel__thumb';
-      thumb.dataset.kind = row.kind;
-      thumb.dataset.state = row.owned
-        ? 'collected'
-        : row.canRedeem
-          ? 'bondable'
-          : 'locked';
-      thumb.setAttribute('aria-hidden', 'true');
-      li.dataset.state = thumb.dataset.state;
+  /**
+   * @param {string} key
+   * @returns {HTMLLIElement}
+   */
+  _sectionHeader(key) {
+    const li = document.createElement('li');
+    li.className = 'yin-coin-panel__section';
+    li.dataset.testid = `yin-coin-section-${key}`;
+    li.textContent = t(key);
+    return li;
+  }
 
-      const body = document.createElement('div');
-      body.className = 'yin-coin-panel__body';
+  /**
+   * @param {ReturnType<typeof listFocusCoinSurfaceSections>['obtained'][number]} row
+   * @returns {HTMLLIElement}
+   */
+  _rowEl(row) {
+    const li = document.createElement('li');
+    li.className = row.owned
+      ? 'yin-coin-panel__row yin-coin-panel__row--owned'
+      : 'yin-coin-panel__row yin-coin-panel__row--pending';
+    li.dataset.sku = row.id;
+    li.dataset.testid = `yin-coin-row-${row.id}`;
+    li.dataset.state = row.owned
+      ? 'collected'
+      : row.canRedeem
+        ? 'bondable'
+        : 'locked';
 
-      const name = document.createElement('p');
-      name.className = 'yin-coin-panel__name';
-      name.textContent = t(row.nameKey);
+    const body = document.createElement('div');
+    body.className = 'yin-coin-panel__body';
 
-      const meta = document.createElement('div');
-      meta.className = 'yin-coin-panel__meta';
+    const name = document.createElement('p');
+    name.className = 'yin-coin-panel__name';
+    name.textContent = t(row.nameKey);
 
+    const meta = document.createElement('div');
+    meta.className = 'yin-coin-panel__meta';
+
+    if (row.owned) {
+      const memorial = document.createElement('span');
+      memorial.className = 'yin-coin-panel__memorial';
+      memorial.textContent = t('YIN_COIN_PRICE').replaceAll(
+        '{n}',
+        String(row.price)
+      );
+      meta.append(memorial);
+
+      const owned = document.createElement('span');
+      owned.className = 'yin-coin-panel__owned yin-coin-panel__owned-seal';
+      owned.textContent = t('YIN_COIN_OWNED');
+      meta.append(owned);
+      if (row.showWear) {
+        const wearBtn = document.createElement('button');
+        wearBtn.type = 'button';
+        wearBtn.className = 'yin-coin-panel__btn yin-coin-panel__btn--ghost';
+        wearBtn.dataset.testid = 'yin-coin-wear';
+        const wearing = Boolean(row.wearingTitleId);
+        wearBtn.textContent = wearing
+          ? t('YIN_COIN_WEARING')
+          : t('YIN_COIN_WEAR');
+        wearBtn.disabled = wearing;
+        if (!wearing) {
+          const titleId = row.titleIds[0];
+          wearBtn.addEventListener('click', () => {
+            this.handlers.equipTitle?.(titleId);
+            this._refresh();
+          });
+        }
+        meta.append(wearBtn);
+      }
+    } else {
       const price = document.createElement('span');
       price.className = 'yin-coin-panel__price';
       const priceIcon = document.createElement('img');
@@ -312,34 +374,9 @@ export class FocusCoinsPanelUI {
           t('YIN_COIN_PRICE').replaceAll('{n}', String(row.price))
         )
       );
-
       meta.append(price);
 
-      if (row.owned) {
-        const owned = document.createElement('span');
-        owned.className = 'yin-coin-panel__owned';
-        owned.textContent = t('YIN_COIN_OWNED');
-        meta.append(owned);
-        if (row.showWear) {
-          const wearBtn = document.createElement('button');
-          wearBtn.type = 'button';
-          wearBtn.className = 'yin-coin-panel__btn yin-coin-panel__btn--ghost';
-          wearBtn.dataset.testid = 'yin-coin-wear';
-          const wearing = Boolean(row.wearingTitleId);
-          wearBtn.textContent = wearing
-            ? t('YIN_COIN_WEARING')
-            : t('YIN_COIN_WEAR');
-          wearBtn.disabled = wearing;
-          if (!wearing) {
-            const titleId = row.titleIds[0];
-            wearBtn.addEventListener('click', () => {
-              this.handlers.equipTitle?.(titleId);
-              this._refresh();
-            });
-          }
-          meta.append(wearBtn);
-        }
-      } else if (row.canRedeem) {
+      if (row.canRedeem) {
         const exchange = document.createElement('button');
         exchange.type = 'button';
         exchange.className =
@@ -355,18 +392,66 @@ export class FocusCoinsPanelUI {
         faint.textContent = t('YIN_COIN_NOT_YET');
         meta.append(faint);
       }
+    }
 
+    body.append(name, meta);
+
+    if (!row.owned) {
       const gap = document.createElement('p');
       gap.className = 'yin-coin-panel__gap';
       gap.dataset.testid = 'yin-coin-gap';
       const gapText = formatFocusCoinGapMessage(row.gaps, t);
       gap.textContent = gapText;
       gap.hidden = !gapText;
-
-      body.append(name, meta, gap);
-      li.append(thumb, body);
-      this.listEl.append(li);
+      body.append(gap);
     }
+
+    li.append(this._thumbEl(row), body);
+    return li;
+  }
+
+  /**
+   * @param {ReturnType<typeof listFocusCoinSurfaceSections>['obtained'][number]} row
+   * @returns {HTMLElement}
+   */
+  _thumbEl(row) {
+    if (row.thumbSrc) {
+      const img = document.createElement('img');
+      img.className = 'yin-coin-panel__thumb-img';
+      img.src = row.thumbSrc;
+      img.alt = '';
+      img.width = 40;
+      img.height = 40;
+      img.decoding = 'async';
+      img.draggable = false;
+      img.setAttribute('aria-hidden', 'true');
+      img.addEventListener('error', () => {
+        const fallback = this._gradientThumb(row);
+        img.replaceWith(fallback);
+      });
+      return img;
+    }
+    return this._gradientThumb(row);
+  }
+
+  /**
+   * @param {ReturnType<typeof listFocusCoinSurfaceSections>['obtained'][number]} row
+   * @returns {HTMLSpanElement}
+   */
+  _gradientThumb(row) {
+    const thumb = document.createElement('span');
+    const state = row.owned
+      ? 'collected'
+      : row.canRedeem
+        ? 'bondable'
+        : 'locked';
+    thumb.className = row.owned
+      ? 'yin-coin-panel__thumb yin-coin-panel__thumb--owned'
+      : 'yin-coin-panel__thumb yin-coin-panel__thumb--locked';
+    thumb.dataset.state = state;
+    thumb.dataset.kind = row.kind;
+    thumb.setAttribute('aria-hidden', 'true');
+    return thumb;
   }
 
   _onPlayWave() {
@@ -526,10 +611,29 @@ export class FocusCoinsPanelUI {
         font-weight: 500;
         opacity: 0.82;
       }
+      body.${YIN_COIN_WAVE_FOCUS_BODY_CLASS} #yin-coin-panel-backdrop.is-visible {
+        background: rgba(44, 31, 20, 0.06);
+        backdrop-filter: blur(0);
+        -webkit-backdrop-filter: blur(0);
+        transition: opacity ${FADE_MS}ms ease, background ${FADE_MS}ms ease,
+          backdrop-filter ${FADE_MS}ms ease, -webkit-backdrop-filter ${FADE_MS}ms ease;
+      }
       .yin-coin-panel__list {
         margin: 0 0 12px;
         padding: 0;
         list-style: none;
+      }
+      .yin-coin-panel__section {
+        margin: 10px 0 6px;
+        padding: 0 2px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        opacity: 0.72;
+      }
+      .yin-coin-panel__section:first-child {
+        margin-top: 0;
       }
       .yin-coin-panel__row {
         display: flex;
@@ -542,15 +646,26 @@ export class FocusCoinsPanelUI {
         border-radius: 14px;
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
       }
+      .yin-coin-panel__row--owned {
+        background: rgba(255, 244, 220, 0.82);
+        border: 1px solid rgba(201, 162, 39, 0.22);
+      }
+      .yin-coin-panel__row--pending {
+        background: rgba(248, 246, 242, 0.78);
+      }
       .yin-coin-panel__row:last-child {
         margin-bottom: 0;
       }
-      .yin-coin-panel__thumb {
-        width: 28px;
-        height: 28px;
-        margin-top: 1px;
+      .yin-coin-panel__thumb,
+      .yin-coin-panel__thumb-img {
+        width: 40px;
+        height: 40px;
+        margin-top: 0;
         flex-shrink: 0;
         border-radius: 10px;
+        object-fit: cover;
+      }
+      .yin-coin-panel__thumb {
         border: 1px solid rgba(139, 115, 85, 0.2);
         background: radial-gradient(circle at 40% 35%, #f0ebe3, #c8c0b4);
       }
@@ -561,6 +676,14 @@ export class FocusCoinsPanelUI {
       .yin-coin-panel__thumb[data-state='collected'] {
         border-color: rgba(184, 148, 72, 0.55);
         background: radial-gradient(circle at 40% 35%, #f4e6c1, #c9a227);
+      }
+      .yin-coin-panel__thumb--owned {
+        background: radial-gradient(circle at 38% 32%, #f8e8b8, #c9a227 72%, #9a7b2a);
+        border-color: rgba(201, 162, 39, 0.62);
+      }
+      .yin-coin-panel__thumb--locked {
+        background: radial-gradient(circle at 40% 35%, #f0ebe3, #b8b0a4);
+        border-color: rgba(139, 115, 85, 0.28);
       }
       .yin-coin-panel__thumb[data-kind='space'] {
         background: radial-gradient(circle at 40% 35%, #e8f0d8, #8aa35a);
@@ -593,12 +716,28 @@ export class FocusCoinsPanelUI {
         align-items: center;
       }
       .yin-coin-panel__price,
-      .yin-coin-panel__owned {
+      .yin-coin-panel__owned,
+      .yin-coin-panel__memorial {
         display: inline-flex;
         align-items: center;
         gap: 4px;
         font-size: 0.78rem;
         opacity: 0.82;
+      }
+      .yin-coin-panel__memorial {
+        opacity: 0.62;
+        font-weight: 500;
+      }
+      .yin-coin-panel__owned-seal {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: #8b1e1e;
+        background: rgba(196, 58, 48, 0.1);
+        border: 1px solid rgba(196, 58, 48, 0.28);
+        opacity: 1;
       }
       .yin-coin-panel__price-icon {
         width: 16px;
