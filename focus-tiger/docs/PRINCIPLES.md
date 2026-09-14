@@ -390,6 +390,7 @@ UI文字：墨色 #2c1f14
 - 点击反馈与 0–1s 可见性：`INTERACTION_FEEDBACK_PRINCIPLES.md`
 - 已知允许静默：`SILENT_BEHAVIORS.md`
 - 桌面快捷键与模态现状盘点：`MACOS_HIG_AUDIT_ROUND1.md`
+- 全项目阻断式确认核实与拍板清单（**决策 SSOT**）：`MODAL_USAGE_AUDIT.md`（勿在 `p5-ritual-modal-audit.md` 重复打勾）
 
 ---
 
