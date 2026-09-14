@@ -1091,8 +1091,6 @@ async function init() {
       requestSlot: requestTransitionMomentOverlaySlot,
       releaseSlot: releaseTransitionMomentOverlaySlot,
       onOpen: () => {
-        transitionMomentSlotHeld = true;
-        syncIdleYinTap();
         syncTransitionMomentTrigger();
       },
       onClose: () => {
@@ -1422,7 +1420,6 @@ async function init() {
     });
     if (!decision.canShow) return false;
     transitionMomentSlotHeld = true;
-    syncIdleYinTap();
     syncTransitionMomentTrigger();
     return true;
   }
@@ -1430,7 +1427,6 @@ async function init() {
   function releaseTransitionMomentOverlaySlot() {
     if (!transitionMomentSlotHeld) return;
     transitionMomentSlotHeld = false;
-    syncIdleYinTap();
     syncTransitionMomentTrigger();
   }
 

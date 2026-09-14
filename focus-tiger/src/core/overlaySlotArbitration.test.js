@@ -632,9 +632,9 @@ describe('requestOverlaySlot', () => {
     assert.ok(confideBlock.mustYieldTo.includes(OVERLAY_SOURCES.CONFIDE));
   });
 
-  it('transition moment blocks idle yin tap when open', () => {
+  it('transition moment whisper does not block idle yin tap when open', () => {
     const snapshot = buildOverlaySnapshot({ transitionMomentOpen: true });
-    assert.equal(deriveIdleYinTapOverlayBusy(snapshot), true);
+    assert.equal(deriveIdleYinTapOverlayBusy(snapshot), false);
   });
 
   it('recover reset practice blocks idle yin tap when open', () => {

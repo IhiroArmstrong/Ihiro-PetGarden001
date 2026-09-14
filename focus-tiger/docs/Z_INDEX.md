@@ -51,7 +51,7 @@
 | **16** | `src/ui/LanguagePreferenceUI.js` | 宽屏 Idle 右下语言地球钮（`.language-pref__fab`）；窄屏 CSS 隐藏 |
 | **17** | `src/ui/FlowerBlowWelcomeBubbleUI.js` | 变花鼓励气泡（`#flower-blow-welcome-bubble`）；白玉毛玻璃 + 尖角；窄屏 `top` 须让开 ActionBar（`homeClearanceTopCss`）；须可点消 |
 | **17** | `src/ui/MomentWhisperUI.js` | `#moment-whisper` Five Moments 轻量认出句（阿寅旁；3–4s 淡出；非 Banner） |
-| **17** | `src/ui/TransitionMomentUI.js` | `#transition-moment-overlay` + `#transition-moment-backdrop` Calm Action Transition 结界（合十 + CAW-T；~8s 自动关；`BLANK_CLOSES`） |
+| **17** | `src/ui/TransitionMomentUI.js` | `#transition-moment-whisper` Calm Action Transition 轻提示（阿寅旁；合十 + CAW-T；~8s 淡出；非模态、不挡摸头） |
 | **17** | `src/ui/FocusAwarenessCardUI.js` | `#focus-awareness-card` Focusing **底部**间隔拍觉察短句（可重复；可单独关；**不**写 Whisper seen） |
 | **17** | `src/ui/GroundExerciseChoiceUI.js` | `#ground-exercise-choice-backdrop` Idle「更多」→ 接地练习选择层遮罩（与 Five Moments 同族 dim） |
 | **17** | `src/ui/RecoverResetPracticeUI.js` | `#recover-reset-practice` 接地练习半高卡（Feel the Ground / Look Around；Idle 菜单入口） |
