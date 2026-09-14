@@ -135,5 +135,19 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /_funnelLayout/);
     assert.doesNotMatch(src, /spriteChannelArbitration/);
   });
+
+  it('pro and companion checkout errors stay inline in the support card', () => {
+    const src = readFileSync(
+      join(here, '../ui/SupportYinModalUI.js'),
+      'utf8'
+    );
+    assert.doesNotMatch(src, /window\.alert/);
+    assert.match(src, /yin-support-pro-checkout-status/);
+    assert.match(src, /yin-support-companion-addon-checkout-status/);
+    assert.match(src, /_showInlineCheckoutError/);
+    assert.match(src, /yin-support-card__checkout-status/);
+    assert.match(src, /SUPPORT_PRO_ERROR/);
+    assert.match(src, /SUPPORT_COMPANION_ADDON_ERROR/);
+  });
 });
 
