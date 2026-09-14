@@ -73,4 +73,20 @@ desktopShell.confideObservation = {
     ipcRenderer.invoke('desktop:confide-observation-append', record)
 };
 
+desktopShell.updater = {
+  getState: () => ipcRenderer.invoke('desktop:updater-get-state'),
+  check: () => ipcRenderer.invoke('desktop:updater-check'),
+  download: () => ipcRenderer.invoke('desktop:updater-download'),
+  quitAndInstall: () => ipcRenderer.invoke('desktop:updater-quit-and-install'),
+  skip: () => ipcRenderer.invoke('desktop:updater-skip'),
+  fakeState: (payload) =>
+    ipcRenderer.invoke('desktop:updater-fake-state', payload || {}),
+  onState: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = (_event, payload) => cb(payload);
+    ipcRenderer.on('desktop:updater-state', wrapped);
+    return () => ipcRenderer.removeListener('desktop:updater-state', wrapped);
+  }
+};
+
 contextBridge.exposeInMainWorld('desktopShell', desktopShell);

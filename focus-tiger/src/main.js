@@ -83,6 +83,7 @@ import {
   shouldRevealSoftUpdatePrompt,
   LOCAL_APP_BUILD_ID
 } from './core/appVersionCheck.js';
+import { attachDesktopUpdater } from './core/desktopUpdaterAttach.js';
 import { shouldPlayParrotMessengerOnBannerShow } from './core/parrotMessengerGate.js';
 import {
   evaluateInAppReminderBanner,
@@ -892,32 +893,52 @@ async function init() {
       }
     }
   );
-  /** Soft update chip: only when remote buildId differs (or ?forceUpdatePrompt=1). */
+  /** Soft update chip: web reload when buildId differs; desktop uses IPC updater. */
   let softUpdateAvailable = false;
   let softUpdateVersionLabel = '';
   let syncSoftUpdatePrompt = () => {};
-  const softUpdatePromptUI = new SoftUpdatePromptUI(document.body, {
-    onUpdate: () => {
-      try {
-        globalThis.location.reload();
-      } catch {
-        // ignore
-      }
-    }
-  });
-  syncSoftUpdatePrompt = () => {
-    const busy = deriveReminderBusySessionTarget(buildLiveOverlaySnapshot());
-    const reveal = shouldRevealSoftUpdatePrompt({
-      updateAvailable: softUpdateAvailable,
-      busySession: busy,
-      desktopShell: Boolean(globalThis.desktopShell?.isDesktop)
+  const softUpdatePromptUI = new SoftUpdatePromptUI(document.body);
+  const isDesktopShell = Boolean(globalThis.desktopShell?.isDesktop);
+  /** @type {ReturnType<typeof attachDesktopUpdater> | null} */
+  let desktopUpdaterController = null;
+  if (isDesktopShell) {
+    desktopUpdaterController = attachDesktopUpdater({
+      softUpdatePromptUI,
+      getBusySession: () =>
+        deriveReminderBusySessionTarget(buildLiveOverlaySnapshot()),
+      updater: globalThis.desktopShell?.updater || null,
+      locationSearch: globalThis.location?.search || '',
+      devFake: import.meta.env.DEV
     });
-    if (reveal && softUpdateVersionLabel) {
-      softUpdatePromptUI.setVersionLabel(softUpdateVersionLabel);
-    }
-    softUpdatePromptUI.setRevealed(reveal);
-  };
+    syncSoftUpdatePrompt = () => desktopUpdaterController?.sync?.();
+  } else {
+    softUpdatePromptUI.setHandlers({
+      onUpdate: () => {
+        try {
+          globalThis.location.reload();
+        } catch {
+          // ignore
+        }
+      }
+    });
+    syncSoftUpdatePrompt = () => {
+      const busy = deriveReminderBusySessionTarget(buildLiveOverlaySnapshot());
+      const reveal = shouldRevealSoftUpdatePrompt({
+        updateAvailable: softUpdateAvailable,
+        busySession: busy,
+        desktopShell: false
+      });
+      if (reveal && softUpdateVersionLabel) {
+        softUpdatePromptUI.setVersionLabel(softUpdateVersionLabel);
+      }
+      softUpdatePromptUI.setRevealed(reveal);
+    };
+  }
   async function refreshSoftUpdateAvailability() {
+    if (isDesktopShell) {
+      syncSoftUpdatePrompt();
+      return;
+    }
     const force = readForceUpdatePromptFlag(globalThis.location?.search || '');
     if (force) {
       softUpdateAvailable = true;
@@ -955,7 +976,9 @@ async function init() {
     refresh: () => refreshSoftUpdateAvailability(),
     ui: softUpdatePromptUI,
     get available() {
-      return softUpdateAvailable;
+      return isDesktopShell
+        ? Boolean(desktopUpdaterController?.state?.phase === 'available')
+        : softUpdateAvailable;
     }
   };
   /** Assigned after DailyCompletionStore is ready (soft notes need hasCompletedToday; cluster mount needs heatmap only). */

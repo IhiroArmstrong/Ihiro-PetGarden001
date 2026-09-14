@@ -13,6 +13,7 @@
     "companion:intent-diagnostic": "node scripts/l0-intent-diagnostic-probe.js"
   },
   "dependencies": {
+    "electron-updater": "^6.8.9",
     "node-llama-cpp": "^3.14.4"
   },
   "devDependencies": {
@@ -23,7 +24,10 @@
     "appId": "com.twinsology.focus-tiger",
     "productName": "Focus Tiger",
     "asar": true,
-    "asarUnpack": ["**/*.node", "node_modules/node-llama-cpp/**"],
+    "asarUnpack": [
+      "**/*.node",
+      "node_modules/node-llama-cpp/**"
+    ],
     "directories": {
       "output": "release"
     },
@@ -32,11 +36,18 @@
       "preload.js",
       "ipcGuard.js",
       "trayPolicy.js",
+      "updater/**/*.js",
+      "../src/core/desktopUpdaterChannel.js",
+      "../src/core/desktopUpdaterState.js",
       "companion/**/*.js",
       {
         "from": "../dist",
         "to": "dist",
-        "filter": ["**/*", "!sprites/**", "!audio/**"]
+        "filter": [
+          "**/*",
+          "!sprites/**",
+          "!audio/**"
+        ]
       }
     ],
     "extraResources": [
@@ -58,7 +69,9 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["arm64"]
+          "arch": [
+            "arm64"
+          ]
         }
       ]
     }
