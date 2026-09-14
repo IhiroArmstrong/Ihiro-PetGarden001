@@ -1,0 +1,1 @@
+| 菜单治理四条进度表 + 逃生舱原则句 | 文档 | 待人工测试 | **不测新交互。** 打开 `docs/MENU_CHROME_CENSUS.md` §1：四条各有「已完成 / 还差 / 下一步」。`PRINCIPLES.md`「菜单逃生舱」一句硬性。对照表 §2 与 5173 菜单抽查：Zen Cinema、Sign in 灰行、语言/寅币仍在菜单。**不要**用本行关 #757/#759 冻屏/Esc 关单。 | — | — | — | `MENU_CHROME_CENSUS.md` · `PRINCIPLES.md` | 2026-09-14 |

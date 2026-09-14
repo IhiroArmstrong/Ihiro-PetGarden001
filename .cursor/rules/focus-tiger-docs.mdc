@@ -34,7 +34,8 @@ alwaysApply: false
 | `docs/CORE_LOOP.md` | **单次会话七步状态机**：Arrive→Focus→Recover→Reflect→Grow；与 Five Moments 的粒度关系 |
 | `docs/ARRIVE_MOMENT_DESIGN.md` | Arrival Practice 交互详规（v2：Notice/Choose 点选为主） |
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
-| `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、诚实机制、一次一任务、不超范围、性能与风格 |
+| `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、**菜单逃生舱**、诚实机制、一次一任务、不超范围、性能与风格 |
+| `docs/MENU_CHROME_CENSUS.md` | **角落按钮 vs 菜单对照** + 菜单治理四条进度（从属 PRINCIPLES；无新运行时） |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay；准入四问 + 值得保护四测；≠ 支付/备份/Confide 路由） |
 | `docs/YIN_PERSONAL_MEMORY.md` | **阿寅个人记忆架构 V1**（方向锁；≠ 练习云备份 / Journey Log / `turns.jsonl`） |
@@ -84,6 +85,7 @@ alwaysApply: false
 - **反馈分级**：每次完成轻量确认；每日首次达标完整庆祝；长期里程碑纪念奖励。
 - **不制造焦虑**：默认态中性/温馨；禁止退步感视觉（灰败、悲伤、评判「不专注」因果）。  
 - **永不消失**：只有打瞌睡等候，无死亡/离家出走苦情。  
+- **菜单逃生舱（2026-09-14）**：`⋯` / 抽屉抓手不得因 overlay/sprite 仲裁或 suppress 隐藏或吞点击；Esc 只关最上一层；禁止长按空白清空全部叠层。对照表 `MENU_CHROME_CENSUS.md`。  
 - **一次只做一个任务**；禁止未立项超范围与占位空目录。  
 - **路径必须使用英文 ASCII**：所有新增并由代码、构建流程或 Git 处理的文件/目录均用小写 `kebab-case`；禁止中文、空格、下划线、括号、省略号等特殊字符。用户提供的素材或压缩包须在入库前先按语义重命名（如「点头致意」→ `nod-greeting`），只豁免文件正文内容，不豁免文件名。完整规则见 `PRINCIPLES.md`「原则三」。
 - 老虎与陪伴体验是主角，数据是配角；正向反馈要即时有情感。
