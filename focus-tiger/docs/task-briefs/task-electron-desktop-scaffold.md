@@ -91,7 +91,7 @@
 2. 主进程：`contextIsolation: true`、`nodeIntegration: false`；preload 白名单：`openExternal`、`quit`、版本号。**步骤 A 不加** `hide`/`show` / Tray。
 3. 加载 Vite **生产** `dist`；`desktop:dev` 可指向 Vite `127.0.0.1:5173`。
 4. Electron 内 **不注册** `public/sw.js`。
-5. 隐藏 Web 软更新芯片（`version.json` + `reload` 对本地包无意义）；`electron-updater` **本 Task 不做**。
+5. 隐藏 Web 软更新芯片（`version.json` + `reload` 对本地包无意义）；`electron-updater` **本 Task 不做**（口径改挂 `task-electron-desktop-updater.md`）。
 6. `electron-builder`：macOS `dmg`、**arm64 优先**；Hardened Runtime + JIT entitlements 预留（公证可本机有证书后再跑）。步骤 A 的开发窗口关红灯可以 `quit`。
 7. P0-1 / P0-3 / P0-4。
 
@@ -106,7 +106,7 @@
 ### 明确不做（两步都不要做）
 
 - Apple Developer 入会 / 公证 CI（证书在用户侧；与写窗口**并行**，见下）
-- `electron-updater`、Setapp、MAS、Windows/Linux 包
+- `electron-updater`（**改挂** `task-electron-desktop-updater.md`；本脚手架仍不做）、Setapp、MAS、Windows/Linux 包
 - HealthKit / Capacitor
 - 把练习记忆迁到原生 FS
 - 改 Web 主路径门闩语义

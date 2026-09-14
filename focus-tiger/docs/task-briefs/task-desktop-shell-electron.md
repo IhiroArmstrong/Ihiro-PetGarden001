@@ -57,7 +57,7 @@
 - 团队是 **JS/CSS 前端**；没有 Rust 主线人力。
 - 目标是 **尽快有可分发的 Mac 窗口**，不是先做最省内存的壳。
 - 核心路径 **v1.0.0 纯本地**（不把练习绑死在云请求上）。
-- 自动更新器、公证 CI 仍后置；Web 轻提示（#263）继续只管浏览器刷新。脚手架规格见 `task-electron-desktop-scaffold.md`（P0：Stripe `openExternal`、托盘≠走神、CORS/origin、`extraResources`）。
+- 公证 CI 仍后置（证书在用户侧）。**自动更新器**口径已锁：`task-electron-desktop-updater.md`（2026-09-12）；运行时另口令。Web 轻提示（#263）继续只管浏览器刷新。脚手架规格见 `task-electron-desktop-scaffold.md`（P0：Stripe `openExternal`、托盘≠走神、CORS/origin、`extraResources`）。
 
 ---
 
