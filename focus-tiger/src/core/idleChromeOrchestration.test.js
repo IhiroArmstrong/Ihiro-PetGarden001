@@ -307,7 +307,8 @@ describe('listSecondaryChromeEntries', () => {
     const quoteIdx = proxies.indexOf('daily-quote');
     const sealIdx = proxies.indexOf('mustard-seed-seal');
     assert.ok(quoteIdx >= 0);
-    assert.equal(sealIdx, quoteIdx + 1);
+    assert.equal(proxies[quoteIdx + 1], 'zen-cinema');
+    assert.equal(sealIdx, quoteIdx + 2);
   });
 
   it('narrow drawer omits honesty and breath; includes companion/reminder/language/five-moments/zen-cinema/…', () => {
@@ -323,12 +324,14 @@ describe('listSecondaryChromeEntries', () => {
         'presence-signals',
         'yin-coin',
         'daily-quote',
+        'zen-cinema',
         'wallpapers',
         'quiet-together',
         'focus-circle',
         'reminder',
         'language',
         'newsletter',
+        'account',
         'community',
         'local-backup',
         'membership',
@@ -363,12 +366,14 @@ describe('listSecondaryChromeEntries', () => {
         'presence-signals',
         'yin-coin',
         'daily-quote',
+        'zen-cinema',
         'wallpapers',
         'quiet-together',
         'focus-circle',
         'reminder',
         'language',
         'newsletter',
+        'account',
         'community',
         'local-backup',
         'membership',
@@ -403,11 +408,13 @@ describe('listSecondaryChromeEntries', () => {
         'presence-signals',
         'yin-coin',
         'daily-quote',
+        'zen-cinema',
         'wallpapers',
         'quiet-together',
         'focus-circle',
         'language',
         'newsletter',
+        'account',
         'community',
         'local-backup',
         'membership',

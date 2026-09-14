@@ -84,6 +84,7 @@ import {
   LOCAL_APP_BUILD_ID
 } from './core/appVersionCheck.js';
 import { attachDesktopUpdater } from './core/desktopUpdaterAttach.js';
+import { ensureOverlayEscapeListener } from './core/overlayEscapeStack.js';
 import { shouldPlayParrotMessengerOnBannerShow } from './core/parrotMessengerGate.js';
 import {
   evaluateInAppReminderBanner,
@@ -510,6 +511,7 @@ function showDevLabToast(message, durationMs = 8000) {
 }
 
 async function init() {
+  ensureOverlayEscapeListener();
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
   // Taste overlay: do NOT fetch here — races `spritePlayer.preload()` and

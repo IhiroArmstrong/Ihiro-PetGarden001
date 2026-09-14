@@ -839,6 +839,7 @@
   "NEWSLETTER_FEEDBACK_OK": "登録しました。ありがとう。",
   "NEWSLETTER_EMAIL_INVALID": "有効なメールを入力してください。",
   "NEWSLETTER_ERROR_GENERIC": "いまは送れません。しばらくしてからもう一度。",
+  "ACCOUNT_MENU_PLACEHOLDER": "サインイン（近日公開）",
   "COMMUNITY_MENU_LABEL": "コミュニティに参加",
   "TIP_CARD_TITLE": "阿寅にお茶を",
   "TIP_CARD_BLURB": "小さなありがとう — 任意です。音やアニメの解除にはなりません。",

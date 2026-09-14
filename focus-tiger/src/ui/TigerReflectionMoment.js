@@ -16,6 +16,7 @@
  */
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
+import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import {
   ReflectionFlowState,
   REFLECTION_QUESTION_KEYS
@@ -245,10 +246,9 @@ export class TigerReflectionMoment {
     this.companionObservationEl = null;
     this._reflectionCompanionBusy = false;
     this._reflectionCompanionSettled = false;
+    /** @type {(() => void) | null} */
+    this._popEscapeLayer = null;
 
-    this._onKeyDown = (event) => {
-      if (event.key === 'Escape') this._dismiss();
-    };
     this._unsubscribeLocale = onLocaleChange(() => this._refreshTexts());
   }
 
@@ -280,7 +280,11 @@ export class TigerReflectionMoment {
     this.root.style.opacity = '1';
     this.root.style.transform = 'translate(-50%, 0)';
     this.inputEl.focus({ preventScroll: true });
-    document.addEventListener('keydown', this._onKeyDown);
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = pushOverlayEscapeLayer({
+      id: 'tiger-reflection',
+      dismiss: () => this._dismiss()
+    });
   }
 
   dispose() {
@@ -893,7 +897,8 @@ export class TigerReflectionMoment {
     this._awaitingWisdomHold = false;
     this._reflectionCompanionBusy = false;
     this._reflectionCompanionSettled = false;
-    document.removeEventListener('keydown', this._onKeyDown);
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = null;
 
     if (this.root) {
       this.root.style.opacity = '0';
@@ -906,7 +911,8 @@ export class TigerReflectionMoment {
   }
 
   _teardownDom() {
-    document.removeEventListener('keydown', this._onKeyDown);
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = null;
     this.root?.remove();
     this.root = null;
     this.echoEl = null;

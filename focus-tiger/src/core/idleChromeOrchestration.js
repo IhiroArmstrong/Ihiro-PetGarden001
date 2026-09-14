@@ -420,6 +420,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
 
   pushLabeledGroup(out, 'MENU_GROUP_INSPIRATION', [
     { proxy: 'daily-quote', labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL' },
+    { proxy: 'zen-cinema', labelKey: 'ZEN_CINEMA_MENU_LABEL' },
     visibility.mustardSeedSealUnlocked
       ? {
           proxy: 'mustard-seed-seal',
@@ -452,6 +453,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
           interactive: false
         }
       : { proxy: 'newsletter', labelKey: 'NEWSLETTER_MENU_LABEL' },
+    {
+      proxy: 'account',
+      labelKey: 'ACCOUNT_MENU_PLACEHOLDER',
+      interactive: false,
+      testId: 'idle-account-placeholder'
+    },
     { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' },
     { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' }
   ]);
