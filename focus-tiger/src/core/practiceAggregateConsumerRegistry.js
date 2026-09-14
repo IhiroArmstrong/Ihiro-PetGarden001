@@ -189,17 +189,6 @@ export const PRACTICE_AGGREGATE_CONSUMER_ROWS = Object.freeze([
     reflectedSources: null,
     notes: 'Feedback tier; not cumulative unlock'
   }),
-  Object.freeze({
-    id: 'recover-reset-breath',
-    feature: 'Reset & Return · Take a Breath',
-    priority: 'P2',
-    fixBatch: null,
-    coverageStatus: 'intentional-exclude',
-    moduleRelPath: 'src/ui/RecoverResetPracticeUI.js',
-    codeAnchors: Object.freeze(['RecoverResetPracticeUI']),
-    reflectedSources: null,
-    notes: 'Recover micro-reset ≠ baseline breath practice'
-  })
 ]);
 
 /**

@@ -5,20 +5,17 @@
 
 /**
  * Ground exercise micro-practices — Feel the Ground / Look Around (Idle menu).
- * Breath / overwhelmed routes remain for legacy wiring only.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
-import '../components/breath-pacer/breath-pacer.js';
 import { RESET_ROUTES } from './resetPracticeRoutes.js';
 
 const ROOT_ID = 'recover-reset-practice';
 const STYLE_ID = 'recover-reset-practice-styles-v1';
 const FADE_MS = 320;
 const LOOK_STEP_MS = 9_000;
-const CONFIDE_OFFER_MS = 6_000;
 
 /** @typedef {import('./resetPracticeRoutes.js').ResetRoute} ResetRoute */
 
@@ -47,22 +44,12 @@ export class RecoverResetPracticeUI {
    * @param {() => boolean} deps.requestSlot
    * @param {() => void} deps.releaseSlot
    * @param {() => void} [deps.onClose]
-   * @param {() => void} [deps.onOpenConfide]
-   * @param {() => boolean} [deps.canOpenConfide]
    */
-  constructor(container, {
-    requestSlot,
-    releaseSlot,
-    onClose,
-    onOpenConfide,
-    canOpenConfide
-  }) {
+  constructor(container, { requestSlot, releaseSlot, onClose }) {
     this.container = container;
     this.requestSlot = requestSlot;
     this.releaseSlot = releaseSlot;
     this.onClose = onClose;
-    this.onOpenConfide = onOpenConfide;
-    this.canOpenConfide = canOpenConfide;
     /** @type {HTMLElement | null} */
     this.root = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
@@ -95,7 +82,7 @@ export class RecoverResetPracticeUI {
    * @returns {boolean}
    */
   show(route) {
-    if (route === RESET_ROUTES.STEADY) return false;
+    if (route !== RESET_ROUTES.GROUND && route !== RESET_ROUTES.LOOK) return false;
     if (this._visible) this.hide({ immediate: true });
     if (!this.requestSlot()) return false;
 
@@ -120,7 +107,7 @@ export class RecoverResetPracticeUI {
     dismiss.addEventListener('click', (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
-      this._finishPractice(false);
+      this._finishPractice();
     });
     root.appendChild(dismiss);
 
@@ -139,9 +126,7 @@ export class RecoverResetPracticeUI {
     if (route === RESET_ROUTES.GROUND) {
       this._groundPhaseIndex = 0;
       this._startGroundPractice(panel);
-    } else if (route === RESET_ROUTES.BREATH || route === RESET_ROUTES.OVERWHELMED) {
-      this._startBreathPractice(panel, route === RESET_ROUTES.OVERWHELMED);
-    } else if (route === RESET_ROUTES.LOOK) {
+    } else {
       this._lookStepIndex = 0;
       this._startLookPractice(panel);
     }
@@ -181,70 +166,9 @@ export class RecoverResetPracticeUI {
     this.hide({ immediate: true });
   }
 
-  /**
-   * @param {boolean} showConfideOffer
-   */
-  _finishPractice(showConfideOffer) {
-    if (showConfideOffer) {
-      this._showConfideOfferStrip();
-      return;
-    }
+  _finishPractice() {
     this.hide();
     this.onClose?.();
-  }
-
-  /** Release overlay occupancy while a lightweight follow-up strip stays visible. */
-  _releasePracticeOverlayCapture() {
-    document.removeEventListener('pointerdown', this._boundOutsideDismiss, true);
-    if (this._visible) {
-      this.releaseSlot();
-    }
-    this.root?.classList.add('is-pass-through');
-  }
-
-  _showConfideOfferStrip() {
-    const root = this.root;
-    const panel = root?.querySelector('.recover-reset-practice__panel');
-    if (!root || !panel) {
-      this.hide();
-      this.onClose?.();
-      return;
-    }
-    this._releasePracticeOverlayCapture();
-    const dismiss = root.querySelector('.recover-reset-practice__dismiss');
-    if (dismiss instanceof HTMLElement) dismiss.hidden = true;
-
-    panel.innerHTML = '';
-    panel.classList.remove('recover-reset-practice__panel--breath-minimal');
-    const copy = document.createElement('p');
-    copy.className = 'recover-reset-practice__copy';
-    copy.textContent = t('RESET_OVERWHELMED_CONFIDE_OFFER');
-    panel.appendChild(copy);
-
-    const canOpen = this.canOpenConfide?.() === true;
-    const link = document.createElement('button');
-    link.type = 'button';
-    link.className = 'recover-reset-practice__confide-link';
-    link.dataset.testid = 'recover-reset-confide-link';
-    link.textContent = t('RESET_OVERWHELMED_CONFIDE_LINK');
-    link.disabled = !canOpen;
-    if (!canOpen) {
-      link.setAttribute('aria-disabled', 'true');
-      link.title = t('RESET_OVERWHELMED_CONFIDE_UNAVAILABLE');
-    }
-    link.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      if (!canOpen) return;
-      this.hide();
-      this.onClose?.();
-      this.onOpenConfide?.();
-    });
-    panel.appendChild(link);
-
-    this._phaseTimer = window.setTimeout(() => {
-      this._finishPractice(false);
-    }, CONFIDE_OFFER_MS);
   }
 
   /**
@@ -256,7 +180,7 @@ export class RecoverResetPracticeUI {
       const phase = GROUND_PHASES[this._groundPhaseIndex];
       if (!phase) {
         panel.innerHTML = `<p class="recover-reset-practice__copy">${t('RESET_GROUND_OUTRO')}</p>`;
-        this._phaseTimer = window.setTimeout(() => this._finishPractice(false), 2_500);
+        this._phaseTimer = window.setTimeout(() => this._finishPractice(), 2_500);
         return;
       }
       panel.innerHTML = `<p class="recover-reset-practice__copy">${t(phase.key)}</p>`;
@@ -270,41 +194,6 @@ export class RecoverResetPracticeUI {
 
   /**
    * @param {HTMLElement} panel
-   * @param {boolean} overwhelmed
-   */
-  _startBreathPractice(panel, overwhelmed) {
-    panel.classList.add('recover-reset-practice__panel--breath-minimal');
-    panel.innerHTML = `
-      <div class="recover-reset-practice__breath-host"></div>
-    `;
-    const host = panel.querySelector('.recover-reset-practice__breath-host');
-    if (!host) {
-      this._finishPractice(false);
-      return;
-    }
-    const pacer = document.createElement('breath-pacer');
-    pacer.setAttribute('preset', 'natural');
-    pacer.setAttribute('cycles', '2');
-    pacer.setAttribute('compact', '');
-    pacer.setAttribute('minimal', '');
-    host.appendChild(pacer);
-
-    const onDone = () => {
-      pacer.removeEventListener('breath-complete-done', onDone);
-      pacer.removeEventListener('breath-dismissed', onDismiss);
-      this._finishPractice(overwhelmed);
-    };
-    const onDismiss = () => {
-      pacer.removeEventListener('breath-complete-done', onDone);
-      pacer.removeEventListener('breath-dismissed', onDismiss);
-      this._finishPractice(overwhelmed);
-    };
-    pacer.addEventListener('breath-complete-done', onDone);
-    pacer.addEventListener('breath-dismissed', onDismiss);
-  }
-
-  /**
-   * @param {HTMLElement} panel
    */
   _startLookPractice(panel) {
     const renderStep = () => {
@@ -312,7 +201,7 @@ export class RecoverResetPracticeUI {
       const key = LOOK_STEPS[this._lookStepIndex];
       if (!key) {
         panel.innerHTML = `<p class="recover-reset-practice__copy">${t('RESET_LOOK_OUTRO')}</p>`;
-        this._phaseTimer = window.setTimeout(() => this._finishPractice(false), 2_500);
+        this._phaseTimer = window.setTimeout(() => this._finishPractice(), 2_500);
         return;
       }
       const isLast = this._lookStepIndex >= LOOK_STEPS.length - 1;
@@ -332,7 +221,7 @@ export class RecoverResetPracticeUI {
           LOOK_STEP_MS
         );
       } else {
-        this._phaseTimer = window.setTimeout(() => this._finishPractice(false), LOOK_STEP_MS);
+        this._phaseTimer = window.setTimeout(() => this._finishPractice(), LOOK_STEP_MS);
       }
     };
     renderStep();
@@ -378,7 +267,7 @@ export class RecoverResetPracticeUI {
     if (!(target instanceof Node)) return;
     if (this.root.contains(target)) return;
     if (shouldIgnoreOutsideDismissTarget(target)) return;
-    this._finishPractice(false);
+    this._finishPractice();
   }
 
   _injectStyles() {
@@ -404,12 +293,6 @@ export class RecoverResetPracticeUI {
         opacity: 1;
         transform: translate(-50%, 0);
       }
-      .recover-reset-practice.is-pass-through {
-        pointer-events: none;
-      }
-      .recover-reset-practice.is-pass-through .recover-reset-practice__panel {
-        pointer-events: auto;
-      }
       .recover-reset-practice__panel {
         padding: 14px 16px 16px;
         border: 1px solid rgba(196, 165, 116, 0.3);
@@ -420,14 +303,6 @@ export class RecoverResetPracticeUI {
         color: #3a2e22;
         box-shadow: 0 10px 28px rgba(58, 46, 34, 0.1);
       }
-      .recover-reset-practice__panel--breath-minimal {
-        padding: 0;
-        border: 0;
-        background: transparent;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        box-shadow: none;
-      }
       .recover-reset-practice__copy {
         margin: 0;
         font-size: 0.88rem;
@@ -435,14 +310,7 @@ export class RecoverResetPracticeUI {
         text-align: center;
         letter-spacing: 0.01em;
       }
-      .recover-reset-practice__intro {
-        margin-bottom: 10px;
-      }
-      .recover-reset-practice__breath-host {
-        margin-top: 4px;
-      }
-      .recover-reset-practice__next,
-      .recover-reset-practice__confide-link {
+      .recover-reset-practice__next {
         display: block;
         margin: 12px auto 0;
         padding: 8px 16px;
@@ -454,13 +322,8 @@ export class RecoverResetPracticeUI {
         font-size: 0.8rem;
         cursor: pointer;
       }
-      .recover-reset-practice__next:active,
-      .recover-reset-practice__confide-link:active {
+      .recover-reset-practice__next:active {
         transform: translateY(1px);
-      }
-      .recover-reset-practice__confide-link:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
       }
       .recover-reset-practice__dismiss {
         position: absolute;

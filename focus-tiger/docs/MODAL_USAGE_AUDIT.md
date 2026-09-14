@@ -110,8 +110,8 @@
 | S14 | `MicroRitualUI.js` · 离开 (M4) | 时长/呼吸板 | **是** | **不阻断** | **B** | 同 F7 |
 | S15 | `RecoverResetPracticeUI.js` · 接地四段 (R1) | 菜单 → 接地 →「感受地面」 | Recover 流程 | **部分阻断**：下半玻璃卡，`role=dialog`，点外整段结束 | **C** | 练习本体；点空白即放弃是否历史省事待 PO 定 |
 | S16 | `RecoverResetPracticeUI.js` · 环顾 (R2) | 同上 →「环顾四周」 | 同 R1 | 同 R1 | **C** | 同 R1 |
-| S17 | `RecoverResetPracticeUI.js` · 呼吸/过载遗留 (R3) | 旧路径仍可唤起 | 可能 | 同 R1；过载极简 | **C** | 是否仍算主路径待 PO 定 |
-| S18 | `RecoverResetPracticeUI.js` · 过载后倾诉条 (R4) | R3 走完柔性链接 | Recover 后 | **不阻断**（释放名额，点外可点下面） | **B** | 已实现轻量跟条 |
+| ~~S17~~ | ~~`RecoverResetPracticeUI.js` · 呼吸/过载遗留 (R3)~~ | — | — | — | **已删** | **开工 5**（2026-09-14）已移除遗留 breath/overwhelmed 接线 |
+| ~~S18~~ | ~~`RecoverResetPracticeUI.js` · 过载后倾诉条 (R4)~~ | — | — | — | **已删** | 随 S17 一并移除 |
 | S19 | `TigerReflectionMoment.js` | 专注结束后反思 | 否（Reflect 时刻） | 是（占 tier-2，SB-19 hold） | **B** | 设计内的反思时刻，非专注中段打断 |
 | S20 | `CompanionModePicker.js` | 「How shall we sit?」选同伴模式 | 专注开始前 | 是（空白关闭） | **B** | 开练前必要选择 |
 | S21 | `TransitionMomentUI.js` | Calm Action 边界过渡（~8s CAW-T 轻提示） | 仪式/过渡边界 | **弱**（阿寅旁 whisper；不挡 Yin tap） | **A** | PO 2026-09-14 降为 Whisper · **开工 2** |

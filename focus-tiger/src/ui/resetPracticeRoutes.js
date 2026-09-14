@@ -6,9 +6,7 @@
 export const RESET_ROUTES = Object.freeze({
   STEADY: 'steady',
   GROUND: 'ground',
-  BREATH: 'breath',
-  LOOK: 'look',
-  OVERWHELMED: 'overwhelmed'
+  LOOK: 'look'
 });
 
-/** @typedef {'steady' | 'ground' | 'breath' | 'look' | 'overwhelmed'} ResetRoute */
+/** @typedef {'steady' | 'ground' | 'look'} ResetRoute */
