@@ -462,6 +462,22 @@ test('375 Honesty panel: narrow home Honesty ball hidden', async ({ page }) => {
 });
 
 /**
+ * micro-ritual-sit-unavailable (S11): M1 duration picker open — Sit must stay
+ * hidden/disabled before breath starts (no competing overlay with pick chips).
+ */
+test('micro ritual duration picker: Sit unavailable while picking (S11)', async ({
+  page
+}) => {
+  await openFreshProductShell(page, { path: '/?product=1' });
+  await clickBreathPracticeEntry(page);
+  const ritual = page.locator('#micro-ritual');
+  await expect(ritual).toBeVisible({ timeout: 5_000 });
+  await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
+  await expect(page.locator('#btn-focus')).toBeHidden();
+  await expect(page.locator('#btn-focus')).toBeDisabled();
+});
+
+/**
  * micro-ritual-sit-unavailable (narrow): during Breath practice,
  * home Sit ball must not remain clickable/visible (shell Focusing hides home CTAs;
  * legacy #btn-focus stays disabled).
@@ -484,6 +500,8 @@ test('375 micro ritual: home Sit unavailable while breath runs', async ({
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 5_000 });
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
+  await expect(page.locator('#ft-narrow-home-sit')).toBeHidden();
+  await expect(page.locator('#btn-focus')).toBeDisabled();
   await ritual.locator('[data-micro-ritual-minutes="1"]').click();
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');
   await expect(

@@ -44,6 +44,8 @@ describe('createSessionChromeSync', () => {
     let arrivalOpen = false;
     let reflectionOpen = false;
     let microOpen = false;
+    let microRitualActive = false;
+    let focusButtonEnabled = null;
     let mustardOpen = false;
     let honestyPhase = 'hidden';
     let honestyEntryHidden = true;
@@ -93,6 +95,9 @@ describe('createSessionChromeSync', () => {
       },
       isOpen() {
         return companionOpen;
+      },
+      isMicroRitualActive() {
+        return microRitualActive;
       }
     };
     const narrowIdleShell = {
@@ -139,6 +144,9 @@ describe('createSessionChromeSync', () => {
       honestyCheckInUI,
       honestyCheckIn,
       companionModePicker,
+      setFocusButtonEnabled: (enabled) => {
+        focusButtonEnabled = enabled;
+      },
       narrowIdleShell,
       wideIdleMoreMenu,
       stateManager,
@@ -173,6 +181,9 @@ describe('createSessionChromeSync', () => {
         },
         companionOpen: (v) => {
           companionOpen = v;
+        },
+        microRitualActive: (v) => {
+          microRitualActive = v;
         }
       },
       get: {
@@ -189,7 +200,8 @@ describe('createSessionChromeSync', () => {
         narrowKeepQs: () => narrowKeepQs,
         wideIdle: () => wideIdle,
         wideSuppressed: () => wideSuppressed,
-        wideKeepQs: () => wideKeepQs
+        wideKeepQs: () => wideKeepQs,
+        focusButtonEnabled: () => focusButtonEnabled
       }
     };
   }
@@ -239,6 +251,23 @@ describe('createSessionChromeSync', () => {
     assert.equal(h.sessionUiGate.postSessionOverlayActive, true);
     assert.equal(h.get.overlayOnPicker(), true);
     assert.equal(h.get.optionEnabled(), false);
+  });
+
+  it('resyncSessionChrome：M1 时长板闩（pick 窗 isOpen 仍 false）→ 禁用 Sit', () => {
+    const h = harness();
+    h.set.microRitualActive(true);
+    h.sync.resyncSessionChrome();
+    assert.equal(h.get.focusButtonEnabled(), false);
+    assert.equal(h.sessionUiGate.postSessionOverlayActive, false);
+  });
+
+  it('resyncSessionChrome：M1 时长板开（isOpen）→ overlay + 禁用 Sit', () => {
+    const h = harness();
+    h.set.microOpen(true);
+    h.sync.resyncSessionChrome();
+    assert.equal(h.sessionUiGate.postSessionOverlayActive, true);
+    assert.equal(h.get.focusButtonEnabled(), false);
+    assert.equal(h.get.narrowSuppressed(), true);
   });
 
   it('resyncSessionChrome：Reflection 叠层 → Gate + Companion + 窄宽壳对齐', () => {

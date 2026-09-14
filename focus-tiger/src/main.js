@@ -1784,7 +1784,8 @@ async function init() {
       if (
         !sessionUiGate.canStartArrivalFromChrome({
           isFocusing: stateManager.state === STATES.FOCUSING,
-          arrivalOpen: arrivalPractice?.isOpen?.() === true
+          arrivalOpen: arrivalPractice?.isOpen?.() === true,
+          microRitualOpen: isMicroRitualSitLatchActive()
         })
       ) {
         mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
@@ -2737,6 +2738,14 @@ async function init() {
     focusButton.style.opacity = enabled ? '' : '0.45';
   }
 
+  /** S11：M1 时长板 / 呼吸叠层占用中（含 pick 窗 begin→open 闩）。 */
+  function isMicroRitualSitLatchActive() {
+    return (
+      microRitualUI?.isOpen?.() === true ||
+      companionModePicker?.isMicroRitualActive?.() === true
+    );
+  }
+
   /**
    * 微仪式进行中：收起 Idle chrome、禁 Sit；离开/完成后由 endMicroRitualChrome 还原。
    */
@@ -2751,8 +2760,7 @@ async function init() {
     setFocusButtonEnabled(false);
     microRitualUI?.hideIdleEntry();
     resyncSessionChrome();
-    // Tip sync for microRitualOpen must wait until startBreath → onBreathStart
-    // (isOpen() is still false here).
+    // openDurationPicker 后 isOpen()=true；onBreathStart 再 sync tips 防 breath 前误出 sit-button。
   }
 
   function endMicroRitualChrome() {
@@ -3827,7 +3835,8 @@ async function init() {
       if (
         !sessionUiGate.canStartArrivalFromChrome({
           isFocusing: stateManager.state === STATES.FOCUSING,
-          arrivalOpen: arrivalPractice.isOpen()
+          arrivalOpen: arrivalPractice.isOpen(),
+          microRitualOpen: isMicroRitualSitLatchActive()
         })
       ) {
         mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
@@ -4163,7 +4172,8 @@ async function init() {
     if (
       !sessionUiGate.canStartArrivalFromChrome({
         isFocusing: stateManager.state === STATES.FOCUSING,
-        arrivalOpen: arrivalPractice.isOpen()
+        arrivalOpen: arrivalPractice.isOpen(),
+        microRitualOpen: isMicroRitualSitLatchActive()
       })
     ) {
       return false;
@@ -4215,7 +4225,8 @@ async function init() {
       }
 
       const sitAction = sessionUiGate.resolveSitClickWhenIdle({
-        isFocusing: stateManager.state === STATES.FOCUSING
+        isFocusing: stateManager.state === STATES.FOCUSING,
+        microRitualOpen: isMicroRitualSitLatchActive()
       });
       if (sitAction === 'ignore') return false;
       if (sitAction === 'start-arrival') {

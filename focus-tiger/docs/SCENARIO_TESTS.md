@@ -398,7 +398,7 @@
 > **对照**：正式 Focus 仍走 Sit→Arrival（或场景 T 时长 chip）；⚡ 旧 Quick Start「立刻 Focusing」已改为本球开 Breath。
 
 1. Idle：宽屏 `#ft-wide-home-quickstart` / 窄屏 `#ft-narrow-home-quickstart` 文案/aria 为 **Breath practice**（非「立刻 Focusing」）。
-2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **10/15/25/45** 分轨：Focus 走 Sit→Arrival，本球无 Arrival）→ 点选即开。**0–1 秒内**：吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。picker 打开时须见静默 `#focus-coins-duration-hint`（寅币、满 5 分钟；`?focusCoins=0` 时无；非 HUD / 非 +N toast）。
+2. 点开 → 时长 chip **1 / 3 / 5 / 10 / 20**（与 Focus **10/15/25/45** 分轨：Focus 走 Sit→Arrival，本球无 Arrival）→ 点选即开。**M1 时长板开着时**：Sit 须隐藏/禁用（宽 `#btn-focus`、窄 `#ft-narrow-home-sit`；不得与选时长叠层抢同一层）。**0–1 秒内**：picker + 静默 `#focus-coins-duration-hint`（寅币、满 5 分钟；`?focusCoins=0` 时无）；点 chip 后吸↔呼文案出现 + **开始磬**（若计时提示音开）+ 氛围乐起。
 3. 进行中：吸↔呼 + **闭目坐禅呼吸**（不得整段眨眼微笑）+ 光环；到点 toast + 轻完成 → **Reflection 浅出**；记账=所选分钟；**Reflection 关闭后（含 Skip）Journey log 见一行**（无 Arrival，降级 focus 文案）。  
 4. **Leave**：不记账、不进 Reflection、**不写** Journey log、停播。
 5. **抽屉 / ⋯**：不得再出现 Breath / 「一分钟呼吸」行。
