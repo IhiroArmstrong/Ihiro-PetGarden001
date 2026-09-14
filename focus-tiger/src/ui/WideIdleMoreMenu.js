@@ -202,7 +202,7 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   openMenu() {
-    if (!this._isWide() || !this._idle || this._suppressed) return;
+    if (!this._isWide() || !this._idle) return;
     this._menuOpen = true;
     this._refreshItems();
     this._sync();
@@ -556,7 +556,8 @@ export class WideIdleMoreMenu {
     const wide = this._isWide();
     const park = wide && this._idle;
     const keepQs = Boolean(this._keepQuickStart);
-    const showMore = park && !this._suppressed;
+    // Menu entry stays visible as an escape hatch even when overlays suppress home CTAs.
+    const showMore = park;
     // Full suppress (Reflection / duration picker / growth cards): hide home balls.
     // keepQuickStart: Quick Start only via `.is-arrival-quick` (matches narrow shell).
     const showHome = park && (!this._suppressed || keepQs);

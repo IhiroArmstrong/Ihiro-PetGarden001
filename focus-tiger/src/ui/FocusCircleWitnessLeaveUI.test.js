@@ -17,8 +17,9 @@ test('leave picker acquires Tier27 respond slot so idle yin tap cannot steal cli
   assert.match(src, /_openLeavePicker\(/);
   assert.match(
     src,
-    /_openLeavePicker[\s\S]*?requestRespondSlot/
+    /_openLeavePicker[\s\S]*?releaseLeaveSlot[\s\S]*?requestRespondSlot/
   );
+  assert.match(src, /FOCUS_CIRCLE_WITNESS_PICKER_BUSY/);
   assert.match(src, /isPickerOpen\(\)/);
   assert.match(mainSrc, /isPickerOpen\?\.\(\) === true/);
 });

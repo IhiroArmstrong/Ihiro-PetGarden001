@@ -1435,8 +1435,10 @@ async function init() {
     requestSlot: requestRecoverResetPracticeOverlaySlot,
     releaseSlot: releaseRecoverResetPracticeOverlaySlot,
     onClose: () => syncIdleYinTap(),
+    canOpenConfide: canOpenConfideEntitled,
     onOpenConfide: () => {
-      if (canOpenConfideNow()) confideToYinUI.open();
+      if (!canOpenConfideEntitled()) return;
+      confideToYinUI.open();
     }
   });
   groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
@@ -1573,15 +1575,7 @@ async function init() {
   );
   window.__newsletterCapture = newsletterCaptureUI;
 
-  const canOpenConfideNow = () => {
-    const busy =
-      stateManager.state === STATES.FOCUSING ||
-      Boolean(arrivalPractice?.isOpen?.()) ||
-      Boolean(reflectionMoment?.isOpen?.()) ||
-      Boolean(microRitualUI?.isOpen?.()) ||
-      Boolean(honestyBridge?.isVisible?.()) ||
-      (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
-    if (busy) return false;
+  const canOpenConfideEntitled = () => {
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
     return canOpenConfidePanel({
@@ -1597,6 +1591,17 @@ async function init() {
           search: location.search
         })
     });
+  };
+  const canOpenConfideNow = () => {
+    const busy =
+      stateManager.state === STATES.FOCUSING ||
+      Boolean(arrivalPractice?.isOpen?.()) ||
+      Boolean(reflectionMoment?.isOpen?.()) ||
+      Boolean(microRitualUI?.isOpen?.()) ||
+      Boolean(honestyBridge?.isVisible?.()) ||
+      (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
+    if (busy) return false;
+    return canOpenConfideEntitled();
   };
   const companionIdleUnloadScheduler = createCompanionUnloadScheduler({
     unload: () => {

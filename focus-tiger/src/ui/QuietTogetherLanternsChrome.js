@@ -185,7 +185,7 @@ export class QuietTogetherLanternsChrome {
         align-items: flex-start;
         gap: 6px;
         max-width: 42vw;
-        opacity: 0.82;
+        opacity: 0.94;
         transition: opacity 280ms ease;
       }
       .quiet-together-lanterns.is-focusing,
@@ -206,10 +206,14 @@ export class QuietTogetherLanternsChrome {
       }
       .quiet-together-lanterns__caption {
         margin: 0;
-        font-size: 11px;
-        letter-spacing: 0.02em;
-        color: rgba(236, 228, 208, 0.72);
-        text-shadow: 0 1px 2px rgba(20, 16, 10, 0.45);
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: rgba(58, 46, 34, 0.88);
+        background: rgba(255, 252, 245, 0.72);
+        text-shadow: none;
       }
       @media (max-width: ${IDLE_LANTERN_NARROW_MQ_MAX_PX}px) {
         .quiet-together-lanterns {

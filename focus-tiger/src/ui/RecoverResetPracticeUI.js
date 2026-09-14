@@ -48,13 +48,21 @@ export class RecoverResetPracticeUI {
    * @param {() => void} deps.releaseSlot
    * @param {() => void} [deps.onClose]
    * @param {() => void} [deps.onOpenConfide]
+   * @param {() => boolean} [deps.canOpenConfide]
    */
-  constructor(container, { requestSlot, releaseSlot, onClose, onOpenConfide }) {
+  constructor(container, {
+    requestSlot,
+    releaseSlot,
+    onClose,
+    onOpenConfide,
+    canOpenConfide
+  }) {
     this.container = container;
     this.requestSlot = requestSlot;
     this.releaseSlot = releaseSlot;
     this.onClose = onClose;
     this.onOpenConfide = onOpenConfide;
+    this.canOpenConfide = canOpenConfide;
     /** @type {HTMLElement | null} */
     this.root = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
@@ -185,6 +193,15 @@ export class RecoverResetPracticeUI {
     this.onClose?.();
   }
 
+  /** Release overlay occupancy while a lightweight follow-up strip stays visible. */
+  _releasePracticeOverlayCapture() {
+    document.removeEventListener('pointerdown', this._boundOutsideDismiss, true);
+    if (this._visible) {
+      this.releaseSlot();
+    }
+    this.root?.classList.add('is-pass-through');
+  }
+
   _showConfideOfferStrip() {
     const root = this.root;
     const panel = root?.querySelector('.recover-reset-practice__panel');
@@ -193,20 +210,32 @@ export class RecoverResetPracticeUI {
       this.onClose?.();
       return;
     }
+    this._releasePracticeOverlayCapture();
+    const dismiss = root.querySelector('.recover-reset-practice__dismiss');
+    if (dismiss instanceof HTMLElement) dismiss.hidden = true;
+
     panel.innerHTML = '';
+    panel.classList.remove('recover-reset-practice__panel--breath-minimal');
     const copy = document.createElement('p');
     copy.className = 'recover-reset-practice__copy';
     copy.textContent = t('RESET_OVERWHELMED_CONFIDE_OFFER');
     panel.appendChild(copy);
 
+    const canOpen = this.canOpenConfide?.() === true;
     const link = document.createElement('button');
     link.type = 'button';
     link.className = 'recover-reset-practice__confide-link';
     link.dataset.testid = 'recover-reset-confide-link';
     link.textContent = t('RESET_OVERWHELMED_CONFIDE_LINK');
+    link.disabled = !canOpen;
+    if (!canOpen) {
+      link.setAttribute('aria-disabled', 'true');
+      link.title = t('RESET_OVERWHELMED_CONFIDE_UNAVAILABLE');
+    }
     link.addEventListener('click', (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
+      if (!canOpen) return;
       this.hide();
       this.onClose?.();
       this.onOpenConfide?.();
@@ -244,8 +273,8 @@ export class RecoverResetPracticeUI {
    * @param {boolean} overwhelmed
    */
   _startBreathPractice(panel, overwhelmed) {
+    panel.classList.add('recover-reset-practice__panel--breath-minimal');
     panel.innerHTML = `
-      <p class="recover-reset-practice__copy recover-reset-practice__intro">${t('RESET_BREATH_INTRO')}</p>
       <div class="recover-reset-practice__breath-host"></div>
     `;
     const host = panel.querySelector('.recover-reset-practice__breath-host');
@@ -257,6 +286,7 @@ export class RecoverResetPracticeUI {
     pacer.setAttribute('preset', 'natural');
     pacer.setAttribute('cycles', '2');
     pacer.setAttribute('compact', '');
+    pacer.setAttribute('minimal', '');
     host.appendChild(pacer);
 
     const onDone = () => {
@@ -374,6 +404,12 @@ export class RecoverResetPracticeUI {
         opacity: 1;
         transform: translate(-50%, 0);
       }
+      .recover-reset-practice.is-pass-through {
+        pointer-events: none;
+      }
+      .recover-reset-practice.is-pass-through .recover-reset-practice__panel {
+        pointer-events: auto;
+      }
       .recover-reset-practice__panel {
         padding: 14px 16px 16px;
         border: 1px solid rgba(196, 165, 116, 0.3);
@@ -383,6 +419,14 @@ export class RecoverResetPracticeUI {
         -webkit-backdrop-filter: blur(10px);
         color: #3a2e22;
         box-shadow: 0 10px 28px rgba(58, 46, 34, 0.1);
+      }
+      .recover-reset-practice__panel--breath-minimal {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
       }
       .recover-reset-practice__copy {
         margin: 0;
@@ -413,6 +457,10 @@ export class RecoverResetPracticeUI {
       .recover-reset-practice__next:active,
       .recover-reset-practice__confide-link:active {
         transform: translateY(1px);
+      }
+      .recover-reset-practice__confide-link:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
       }
       .recover-reset-practice__dismiss {
         position: absolute;

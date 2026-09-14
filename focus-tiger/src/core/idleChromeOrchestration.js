@@ -296,7 +296,7 @@ export function resolveRoleVisibility(input) {
       sit: 'hidden',
       quickStart: 'hidden',
       honesty: 'hidden',
-      moreOrGrabber: 'hidden',
+      moreOrGrabber: 'visible',
       actionBar: narrow ? 'visible' : 'na'
     };
   }
