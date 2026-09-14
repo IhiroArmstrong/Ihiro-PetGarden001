@@ -22,10 +22,7 @@ import {
   NARROW_HOME_SIT_PX,
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
-import {
-  injectIdleHomeCtaTipStyles,
-  syncIdleHomeCtaTip
-} from './idleHomeCtaTip.js';
+import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
@@ -462,7 +459,51 @@ export class NarrowIdleShell {
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
     this.honestyHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-honesty');
+    this._attachHomeGlassTips();
+    this._attachActionBarGlassTips();
     this._refreshLabels();
+  }
+
+  /** @returns {void} */
+  _attachHomeGlassTips() {
+    if (this.quickHomeBtn) {
+      this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-narrow-home-quickstart-tip'
+      });
+    }
+    if (this.sitHomeBtn) {
+      this._sitHomeTip = attachGlassHoverTip(this.sitHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-narrow-home-sit-tip'
+      });
+    }
+    if (this.honestyHomeBtn) {
+      this._honestyHomeTip = attachGlassHoverTip(this.honestyHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-narrow-home-honesty-tip'
+      });
+    }
+  }
+
+  /** @returns {void} */
+  _attachActionBarGlassTips() {
+    const confideBtn = this.actionBar?.querySelector('#ft-narrow-confide-btn');
+    if (confideBtn) {
+      this._confideTip = attachGlassHoverTip(confideBtn, {
+        placement: 'bottom',
+        tipId: 'ft-narrow-confide-tip',
+        text: t('CONFIDE_EAR_TOOLTIP')
+      });
+    }
+    const muteBtn = this.actionBar?.querySelector('#ft-narrow-mute-btn');
+    if (muteBtn) {
+      this._narrowMuteTip = attachGlassHoverTip(muteBtn, {
+        placement: 'bottom',
+        tipId: 'ft-narrow-mute-tip',
+        text: t('AMBIENT_NOTE_HOVER')
+      });
+    }
   }
 
   _refreshLabels() {
@@ -474,9 +515,12 @@ export class NarrowIdleShell {
     if (helpBtn) helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
     if (confideBtn) {
       confideBtn.setAttribute('aria-label', t('CONFIDE_MENU_LABEL'));
-      confideBtn.title = t('CONFIDE_MENU_LABEL');
+      this._confideTip?.setText(t('CONFIDE_EAR_TOOLTIP'));
     }
-    if (muteBtn) muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
+    if (muteBtn) {
+      muteBtn.setAttribute('aria-label', t('AMBIENT_TOGGLE_ARIA'));
+      this._narrowMuteTip?.setText(t('AMBIENT_NOTE_HOVER'));
+    }
     if (title) title.textContent = t('NARROW_SHEET_TITLE');
     if (close) {
       close.textContent = '×';
@@ -674,7 +718,8 @@ export class NarrowIdleShell {
     if (this.sitHomeBtn) {
       const sitLabel =
         focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
-      syncIdleHomeCtaTip(this.sitHomeBtn, sitLabel);
+      this.sitHomeBtn.setAttribute('aria-label', sitLabel);
+      this._sitHomeTip?.setText(sitLabel);
       const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
       this.sitHomeBtn.disabled = !sitOk;
       this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
@@ -686,7 +731,9 @@ export class NarrowIdleShell {
     const quickEl = document.getElementById('quick-start-focus');
     if (this.quickHomeBtn) {
       const qsLabel = t('QUICK_START_ARIA');
-      syncIdleHomeCtaTip(this.quickHomeBtn, qsLabel);
+      this.quickHomeBtn.setAttribute('aria-label', qsLabel);
+      // Home left ball: no mint pulse (2026-08-11) — glass tip always owns hover.
+      this._quickHomeTip?.setText(qsLabel);
       const qsOk = Boolean(quickEl) && !quickEl.hidden && !quickEl.disabled;
       this.quickHomeBtn.hidden = !quickEl || quickEl.hidden;
       this.quickHomeBtn.disabled = !qsOk;
@@ -695,7 +742,10 @@ export class NarrowIdleShell {
 
     if (this.honestyHomeBtn) {
       const momentsLabel = t('FIVE_MOMENTS_IDLE_ENTRY');
-      syncIdleHomeCtaTip(this.honestyHomeBtn, momentsLabel);
+      this.honestyHomeBtn.setAttribute('aria-label', momentsLabel);
+      this._honestyHomeTip?.setText(momentsLabel);
+      // Idle home: always offer Honesty (entry may be missing / attribute-hidden).
+      // keepQuickStart: hide Honesty (W3 — only ⚡ stays).
       const showHonesty = !this._keepQuickStart;
       this.honestyHomeBtn.hidden = !showHonesty;
       this.honestyHomeBtn.disabled = false;
@@ -1024,7 +1074,6 @@ export class NarrowIdleShell {
   }
 
   _injectStyles() {
-    injectIdleHomeCtaTipStyles();
     // Drop prior style tags if STYLE_ID was bumped (HMR / hot reload)
     for (const el of document.querySelectorAll(
       'style[id^="ft-narrow-idle-shell-styles"]'
