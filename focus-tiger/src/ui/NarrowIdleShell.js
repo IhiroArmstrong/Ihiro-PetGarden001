@@ -741,9 +741,9 @@ export class NarrowIdleShell {
     }
 
     if (this.honestyHomeBtn) {
-      const honestyLabel = t('HONESTY_IDLE_ENTRY');
-      this.honestyHomeBtn.setAttribute('aria-label', honestyLabel);
-      this._honestyHomeTip?.setText(honestyLabel);
+      const momentsLabel = t('FIVE_MOMENTS_IDLE_ENTRY');
+      this.honestyHomeBtn.setAttribute('aria-label', momentsLabel);
+      this._honestyHomeTip?.setText(momentsLabel);
       // Idle home: always offer Honesty (entry may be missing / attribute-hidden).
       // keepQuickStart: hide Honesty (W3 — only ⚡ stays).
       const showHonesty = !this._keepQuickStart;
@@ -905,6 +905,7 @@ export class NarrowIdleShell {
       return;
     }
     if (key === 'reminder') {
+      this.closeSheet();
       this.clearStage();
       document.body.classList.add(NARROW_STAGE_CLASS.reminder);
       this.handlers.onReminder?.();
@@ -916,10 +917,22 @@ export class NarrowIdleShell {
       this.handlers.onLanguage?.();
       return;
     }
+    if (key === 'ground-exercise') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onGroundExercise?.();
+      return;
+    }
     if (key === 'five-moments') {
       this.closeSheet();
       this.clearStage();
       this.handlers.onFiveMoments?.();
+      return;
+    }
+    if (key === 'honesty') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onHonesty?.();
       return;
     }
     if (key === 'journey-log') {
@@ -1043,16 +1056,7 @@ export class NarrowIdleShell {
       return;
     }
     if (key === 'honesty') {
-      const el = document.getElementById('honesty-idle-entry');
-      if (el && !el.disabled && !el.hidden) {
-        const prev = el.style.pointerEvents;
-        el.style.pointerEvents = 'auto';
-        el.click();
-        el.style.pointerEvents = prev;
-        return;
-      }
-      // Entry may be attribute-hidden while Idle drawer is open — still open check-in.
-      this.handlers.onHonesty?.();
+      this.handlers.onFiveMoments?.();
       return;
     }
 
@@ -1602,7 +1606,7 @@ export class NarrowIdleShell {
           width: min(260px, calc(100vw - 32px)) !important;
           transform: translateX(-50%) !important;
           translate: none !important;
-          z-index: 33 !important;
+          z-index: 35 !important;
         }
 
         /* Idle drawer Sound: Soundscape track panel only — never the red FAB */

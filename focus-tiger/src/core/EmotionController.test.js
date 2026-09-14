@@ -479,6 +479,41 @@ test('earWiggleHeadTouch plays once then CapCut idle (~1s)', () => {
   assert.equal(plays[1].options.freezeUntilCrossFadeEnds, true);
 });
 
+test('finishOneShot restart skips idle early-return when orchestrator already live', () => {
+  const plays = [];
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer: {
+      play(name, options = {}) {
+        plays.push({ name, options });
+        return true;
+      },
+      stop() {}
+    },
+    idleOrchestrator: {
+      isActive() {
+        return true;
+      },
+      stop() {},
+      start(options) {
+        plays.push({ name: 'idleBreathing', options });
+      }
+    }
+  });
+
+  controller.playEmotion('idle');
+  assert.equal(plays.length, 1);
+  controller.playEmotion('earWiggleHeadTouch');
+  assert.equal(plays[0].name, 'idleBreathing');
+  assert.equal(plays[1].name, 'earWiggleHeadTouch');
+  plays[1].options.onComplete();
+  assert.equal(plays.length, 3);
+  assert.equal(plays[2].name, 'idleBreathing');
+  assert.equal(plays[2].options.crossFadeMs, 1000);
+});
+
 test('parrotEarVisit plays once then CapCut idle (~1s)', () => {
   const plays = [];
   const stops = [];

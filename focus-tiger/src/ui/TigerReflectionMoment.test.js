@@ -222,3 +222,14 @@ test('Reflection mounts one-time bilingual brand tagline after first session', (
   assert.match(src, /mountReflectionBrandTagline/);
   assert.match(src, /markBrandYinWayFirstReflectShown/);
 });
+
+test('Reflection CTA tier (C.3): Continue primary pill, Skip link, Skip all corner', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, 'TigerReflectionMoment.js'), 'utf8');
+  assert.match(src, /CONTINUE_PRIMARY_CSS/);
+  assert.match(src, /SKIP_LINK_CSS/);
+  assert.match(src, /SKIP_ALL_TERTIARY_CSS/);
+  assert.match(src, /reflection-skip-all/);
+  assert.match(src, /root\.appendChild\(this\.skipAllBtn\)/);
+  assert.equal(src.includes('buttons.appendChild(this.skipAllBtn)'), false);
+});

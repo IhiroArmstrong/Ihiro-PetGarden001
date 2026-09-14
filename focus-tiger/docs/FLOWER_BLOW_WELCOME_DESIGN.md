@@ -54,8 +54,9 @@
 
 | 项 | 拍板值 |
 |---|---|
-| 气泡驻留 | **3.0–3.5 s**（足够读完） |
+| 气泡驻留 | **3.0–3.5 s**（足够读完）；实现取下沿 **3.0s**（`FLOWER_BLOW_BUBBLE_HOLD_MS`）——文案先走，吹花继续演 |
 | 回 Idle | **`CAPCUT_DISSOLVE_MS` ≈ 1s** + `freezeUntilCrossFadeEnds`；禁止闪切 |
+| 「第一幕演完」判据 | **序列真播完**（`conjureFlowersBlowAway` 65 帧 @10fps ≈ 6.5s，`preload:false` 下实际更久），**不是**气泡寿命。气泡收起时**禁止**回 idle，也**禁止**放首张毛玻璃卡（2026-09-12 PO 拍板；`flowerWelcomeGate.isWelcomeFirstPaintSequencePlaying` + overlay 快照 `welcomeSequencePlaying`） |
 | 气泡淡出 | 可与花瓣消散同节奏；**不得**用「只淡气泡、硬切角色」代替 CapCut |
 | 入场 | 与吹花动作同步淡入（约 400ms ease-out 可作实现参考，非硬门禁） |
 
@@ -69,7 +70,8 @@
 ### 2.6 降级与兜底
 
 - **Feature flag**（建议名 `ENABLE_FLOWER_WELCOME`，默认可先 `false` 直至 Phase 2 产品接线验收）：`false` 时完全回退现有冷启动，零产品路径污染。  
-- 气泡 **≤3.5s 强制销毁**（含 dismiss / 超时）；动画失败也不得卡住 Idle 控制权。
+- 气泡 **≤3.5s 强制销毁**（含 dismiss / 超时）；动画失败也不得卡住 Idle 控制权。  
+- 气泡销毁 **≠** 第一幕结束：序列守卫只在 `getCurrentSequence()` 仍是本次第一幕且 `isPlaying()` 为真时生效，被别的序列顶掉或 player 已停即放手——动画失败/被打断时首张卡与 Idle 基底照旧恢复。
 
 ---
 

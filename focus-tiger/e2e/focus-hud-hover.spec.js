@@ -138,6 +138,10 @@ test('FocusHUD hosts show hint copy on hover without mint pulse badges', async (
 
   for (const { host, hintId, copy } of cases) {
     const el = page.locator(host);
+    if (host.includes('ft-hud__bar')) {
+      // Idle C.2 collapses the bar until the HUD card is hovered.
+      await page.locator('#focus-hud .ft-hud').hover();
+    }
     await expect(el).toBeVisible();
     await el.hover();
     const tip = page.locator(

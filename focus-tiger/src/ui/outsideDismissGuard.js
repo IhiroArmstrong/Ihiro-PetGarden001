@@ -31,6 +31,7 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   if (el.closest('#onboarding-app-purpose')) return true;
   if (el.closest('#onboarding-privacy-sheet')) return true;
   if (el.closest('#onboarding-wellness-first')) return true;
+  if (el.closest('#ground-exercise-choice')) return true;
   if (el.closest('#five-moments-compass')) return true;
   if (el.closest('#journey-log')) return true;
   if (el.closest('#yin-coin-panel')) return true;
@@ -43,5 +44,7 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   // Hover tips sit on ⋯ / drawer rows; those clicks are not blank space.
   if (el.closest('#ft-wide-more-menu')) return true;
   if (el.closest('#ft-narrow-options-drawer')) return true;
+  // Reminder panel is body-fixed beside ⋯/drawer; clicks must not dismiss chrome.
+  if (el.closest('#reminder-preference-panel')) return true;
   return false;
 }

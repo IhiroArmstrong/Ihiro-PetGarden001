@@ -53,13 +53,14 @@
 | **17** | `src/ui/MomentWhisperUI.js` | `#moment-whisper` Five Moments 轻量认出句（阿寅旁；3–4s 淡出；非 Banner） |
 | **17** | `src/ui/TransitionMomentUI.js` | `#transition-moment-overlay` + `#transition-moment-backdrop` Calm Action Transition 结界（合十 + CAW-T；~8s 自动关；`BLANK_CLOSES`） |
 | **17** | `src/ui/FocusAwarenessCardUI.js` | `#focus-awareness-card` Focusing **底部**间隔拍觉察短句（可重复；可单独关；**不**写 Whisper seen） |
-| **17** | `src/ui/RecoverResetOfferUI.js` | `#recover-reset-offer` 被动 Re-focus 后可选 emoji 条（仅 ✕ 关闭；选 emoji 或继续专注） |
-| **17** | `src/ui/RecoverResetPracticeUI.js` | `#recover-reset-practice` Reset 微练习半高卡（Ground / Breath / Look Around） |
+| **17** | `src/ui/GroundExerciseChoiceUI.js` | `#ground-exercise-choice-backdrop` Idle「更多」→ 接地练习选择层遮罩（与 Five Moments 同族 dim） |
+| **17** | `src/ui/RecoverResetPracticeUI.js` | `#recover-reset-practice` 接地练习半高卡（Feel the Ground / Look Around；Idle 菜单入口） |
 | **17** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-whisper` 节日观察式短句（一日一次；可点消；非 Banner） |
 | **17** | `src/ui/ContextualTeaTipBubbleUI.js` | `#contextual-tea-tip-bubble` 场景化请茶轻气泡（达标/里程碑；可忽略；非 modal 墙） |
 | **18** | `src/ui/HonestyBridgeCtaUI.js` | Honesty 桥接 Yes/No CTA |
 | **18** | `src/ui/LanguagePreferenceUI.js` | `#language-preference` 语言面板（FAB / ⋯ / 抽屉打开） |
 | **18** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-card` Zen Cinema 确认卡（⋯ / 抽屉；将打开 YouTube） |
+| **18** | `src/ui/GroundExerciseChoiceUI.js` | `#ground-exercise-choice` Idle「更多」→ 接地练习两按钮选择卡 |
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
@@ -109,9 +110,10 @@
 | **30** | `src/ui/NarrowIdleShell.js` | NarrowIdleShell 固定壳（ActionBar / 抽屉 / 主屏三球）；须高于 Ambient(22) 才能点 ♪ / ? |
 | **32** | `src/ui/NarrowIdleShell.js` | 窄屏 stage：Companion dock / Reminder 热力图簇 / Soundscape chrome 抬到壳之上 |
 | **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Sound：Soundscape chrome 抬到菜单之上 |
-| **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Reminder：`#reminder-preference-panel` 抬到菜单之上 |
-| **32** | `src/ui/ReminderPreferenceUI.js` | `#reminder-preference-panel` viewport-fixed 挂 `body`（避开热力图簇 `backdrop-filter` 包含块；⋯ / 抽屉点选后居中偏下） |
-| **33** | `src/ui/NarrowIdleShell.js` | 窄屏 stage Reminder：偏好面板再抬一层（相对 staged 簇） |
+| **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Reminder：热力图簇 staging（面板本身见下行 **35**） |
+| **35** | `src/ui/ReminderPreferenceUI.js` | `#reminder-preference-panel` viewport-fixed 挂 `body`（须高于 onboarding tip z34；避开热力图簇 `backdrop-filter` 包含块） |
+| **35** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Reminder：`#reminder-preference-panel` 再 pin 一层 |
+| **33** | `src/ui/NarrowIdleShell.js` | 窄屏 stage Reminder：偏好面板再抬一层（相对 staged 簇 **32**） |
 | **34** | `src/ui/ft-onboarding-hint-bubble.js` | Onboarding 提示气泡（Lit）；须高于窄壳主 CTA(~30) |
 | **34** | `src/ui/InAppReminderBannerUI.js` | 窄屏 Idle/park：Reminder 横幅抬到 ActionBar 之下可见（防被壳顶栏盖住） |
 | **34** | `src/ui/FocusCircleWitnessLeaveUI.js` | Rise 留痕底条 `#focus-circle-witness-leave`（挂 `body`；玻璃底；Tier26） |

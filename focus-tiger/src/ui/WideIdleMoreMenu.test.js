@@ -76,9 +76,18 @@ describe('wide more menu click reception', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
     assert.match(src, /ft-wide-more__backdrop/);
-    assert.match(src, /left: max\(56vw, calc\(100vw - 312px\)\)/);
+    assert.match(src, /width: min\(360px, calc\(100vw - 48px\)\)/);
+    assert.match(src, /max-width: 380px/);
     assert.match(src, /z-index: 26/);
     assert.doesNotMatch(src, /bottom: calc\(100% \+ 10px\)/);
+  });
+
+  it('wide ⋯ menu uses accordion sections with Practice expanded by default (D.3)', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /ft-wide-more__section-header/);
+    assert.match(src, /DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE'/);
+    assert.match(src, /aria-expanded/);
   });
 
   it('hides the Breath/Quick home ball while Companion 三选一 is staged', () => {

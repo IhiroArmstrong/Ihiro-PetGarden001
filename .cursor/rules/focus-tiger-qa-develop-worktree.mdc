@@ -21,3 +21,15 @@ alwaysApply: false
 5. **禁止**为收尾停掉 QA 树 5173 Vite；禁止在该树 `git commit`。  
 6. **5173 正在测时**：禁止抢端口、禁止 `git switch` 正在出码的目录。只允许另建 detached QA 树；等这轮测完再 `npm run dev:qa`。  
 7. **Cloud Apply / checkout migrated branch** 视同抢检出：禁止在主仓、本 QA 树、或正在出 5173 的目录上点。落到本机须另开 `…-wt-…`（`WORKFLOW.md` 并行 worktree 第 8 款）。
+
+## 复测提醒（强制 · 邀测 / 声称已修 / 改动看似无效）
+
+凡本回合**改了代码**并请你复测、或你反馈「改了但没效果」时，Agent **禁止**只写「再试一遍 / 硬刷新 / 清缓存」。
+
+**必须同时写明：**
+
+1. **测哪棵树**：5173 固定 QA 树（`…-wt-develop-qa`）还是 feature 主仓旁支（另开端口，如 5174）。二者不可混用。  
+2. **QA 树是否已 sync**：若测 5173 → 须先 `npm run sync:qa-develop`（或确认本回合已跑过）；写明 ① 是否须重启 QA Vite ② 一句变化。  
+3. **代码指纹（可选但推荐）**：DevTools 跑 `fetch('/src/main.js').then(r=>r.text()).then(t=>console.log(t.includes('<本次关键符号>')))`，须为 `true` 才继续功能验收。
+
+**「改动无效」高概率根因**：浏览器仍在旧树（常见：主仓改了代码但 5173 仍跑 QA 树旧 tip）。此时先查「谁在监听该端口 + 服务端 main.js 是否含本次符号」，再谈下一版补丁。

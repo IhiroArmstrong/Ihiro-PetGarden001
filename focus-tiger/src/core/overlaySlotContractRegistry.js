@@ -24,6 +24,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   FOCUS_DURATION_PICKER: 'focus-duration-picker',
   COMPANION_PICKER: 'companion-picker',
   GROWTH_COMPASS: 'growth-compass',
+  GROUND_EXERCISE_CHOICE: 'ground-exercise-choice',
   GROWTH_MUSTARD_SEED: 'growth-mustard-seed',
   REMINDER_BANNER: 'reminder-banner',
   TEA_BUBBLE: 'tea-bubble',
@@ -33,7 +34,6 @@ export const OVERLAY_SOURCES = Object.freeze({
   CALM_ACTION_RECOVER: 'calm-action-recover',
   CALM_ACTION_ARRIVE: 'calm-action-arrive',
   TRANSITION_MOMENT: 'transition-moment',
-  RECOVER_RESET_OFFER: 'recover-reset-offer',
   RECOVER_RESET_PRACTICE: 'recover-reset-practice',
   ONBOARDING_HINT: 'onboarding-hint',
   WELLNESS_FIRST: 'wellness-first',
@@ -222,6 +222,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#five-moments-compass',
     snapshotField: 'compassOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 10,
+    readers: 'GroundExerciseChoiceUI.open (Idle menu → Feel the Ground / Look Around)',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#ground-exercise-choice',
+    snapshotField: 'groundExerciseChoiceOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.GROWTH_MUSTARD_SEED,
@@ -454,19 +465,11 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     snapshotField: 'transitionMomentOpen'
   }),
   contract({
-    id: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-    tier: 24,
-    readers: 'RecoverResetOfferUI.tryShow (Focusing allowed; passive refocus follow-up)',
-    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.NONE,
-    dismissRoot: '#recover-reset-offer',
-    snapshotField: 'recoverResetOfferOpen'
-  }),
-  contract({
     id: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
-    readers: 'RecoverResetPracticeUI.tryShow (Focusing allowed; blocks idle Yin tap)',
+    readers:
+      'RecoverResetPracticeUI.show (Idle menu → Ground exercise; blocks idle Yin tap)',
     blocksIdleYinTap: true,
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BACKDROP_ONLY,
     dismissRoot: '#recover-reset-practice',
@@ -541,8 +544,8 @@ export const OVERLAY_UI_POINTER_HIT_TEST_REQUIRED = Object.freeze([
   'CalmActionRecoverCardUI.js',
   'CalmActionArriveCardUI.js',
   'TransitionMomentUI.js',
-  'RecoverResetOfferUI.js',
   'RecoverResetPracticeUI.js',
+  'GroundExerciseChoiceUI.js',
   'FocusCircleWitnessLeaveUI.js',
   'OnboardingHintsUI.js',
   'ColdStartGoalCardUI.js'
@@ -561,6 +564,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'CompanionModePicker.js': [OVERLAY_SOURCES.COMPANION_PICKER],
   'ColdStartGoalCardUI.js': [OVERLAY_SOURCES.COLD_START_GOAL],
   'FiveMomentsCompassUI.js': [OVERLAY_SOURCES.GROWTH_COMPASS],
+  'GroundExerciseChoiceUI.js': [OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE],
   'MustardSeedSealCardUI.js': [OVERLAY_SOURCES.GROWTH_MUSTARD_SEED],
   'ConfideToYinUI.js': [OVERLAY_SOURCES.CONFIDE],
   'JourneyLogUI.js': [OVERLAY_SOURCES.JOURNEY_LOG],
@@ -589,7 +593,6 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
   'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],
   'TransitionMomentUI.js': [OVERLAY_SOURCES.TRANSITION_MOMENT],
-  'RecoverResetOfferUI.js': [OVERLAY_SOURCES.RECOVER_RESET_OFFER],
   'RecoverResetPracticeUI.js': [OVERLAY_SOURCES.RECOVER_RESET_PRACTICE],
   'FocusCircleWitnessLeaveUI.js': [
     OVERLAY_SOURCES.FOCUS_CIRCLE_WITNESS_LEAVE,

@@ -28,7 +28,12 @@ afterEach(() => {
 
 const freezePayload = {
   schemaVersion: GROWTH_METRICS_SCHEMA_VERSION,
-  dailyScoreCapMinutes: GROWTH_METRICS_FROZEN_DAILY_SCORE_CAP_MINUTES
+  dailyScoreCapMinutes: GROWTH_METRICS_FROZEN_DAILY_SCORE_CAP_MINUTES,
+  lotusFirstBloomMinutes: 25,
+  lotusEarlyStepMinutes: 25,
+  lotusEarlyBloomLast: 5,
+  lotusLaterStepMinutes: 45,
+  lotusRingCapacity: 12
 };
 
 test('isGrowthMetricsFetchEnabled respects query flag and cloud base', () => {
@@ -59,7 +64,12 @@ test('prefetchGrowthMetricsConfig retains overlay when cap differs from freeze',
   assert.equal(getDailyScoreCapMinutes(), 240);
   assert.deepEqual(getGrowthMetricsStatus(), {
     growthMetrics: true,
-    dailyScoreCapMinutes: 240
+    dailyScoreCapMinutes: 240,
+    lotusFirstBloomMinutes: 25,
+    lotusEarlyStepMinutes: 25,
+    lotusEarlyBloomLast: 5,
+    lotusLaterStepMinutes: 45,
+    lotusRingCapacity: 12
   });
 });
 

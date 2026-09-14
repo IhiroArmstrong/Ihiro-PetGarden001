@@ -1,6 +1,6 @@
 # Remote parameterization candidates — full-project audit
 
-> **Status**: Audit only (2026-09-12). No runtime change in this document.  
+> **Status**: Audit (2026-09-12) + **PO lock** (same day, after #717). No runtime in this document.  
 > **Scope**: `focus-tiger/src` + `focus-tiger/cloud/src` (production paths). Tests, e2e timeouts, CSS `font-weight`, locale copy, and media assets are **out**.  
 > **Criteria SSOT**: Task Brief「全项目扫描——哪些算法/参数适合做远程参数化」§1（五条须同时满足才建议远程化）。  
 > **Related**: `GROWTH_METRICS_CHARTER.md` · `ANTI_PLAGIARISM_LAYER.md` · `FOCUS_COINS.md` · `tasteLayerSync.js` / `growthMetricsConfigSync.js`
@@ -16,6 +16,7 @@
 | **伪远程** | 已走云 API，但数值仍在 Worker **源码冻表**，改仍要 `wrangler deploy` |
 | **不建议** | 至少一条不成立，或属于 Brief §3 排除项 |
 | **产品判断** | 数值可调，但第 2 条（会反复改）或经济/纪念语义未拍；不要默认开工 |
+| **这次不做** | **评估过、显式跳过本批**（不是遗漏）。以后翻文档不得当成「漏扫」再开刀 |
 
 **发版摩擦**列：`client` = 改了要重新构建前端；`wrangler` = 改了要部署 Worker；`KV` = 改 KV 即可（仍须冻表兜底）；`env` = 环境变量 / Secrets。
 
@@ -40,14 +41,14 @@
 | `dailyScoreCapMinutes`（180；夹具 60–480） | `scoreDailyCap.js` + `growthMetricsConfigOverlay.js` + `cloud/.../growthMetricsConfigKv.ts` | KV（冻表 180 仍在 git） | ✓ | ✓ | ✓ | ✓ | ✓（冻表） | **已试点**。独立 Brief 推进中；本清单不重复开工。 |
 | 品味层加权池：Rise 60/25/15、Welcome 60/40、轻量完成 70/30/8 | `sceneAnimationDispatcher.js` 冻表 ∪ `tasteLayerFreeze.ts` | wrangler（API 已通、无 KV） | ✓ | ✓ | ✓ | ✓ | ✓ | **远程化**（优先）。把冻表搬进 KV（或品味专用绑定），客户端 overlay **已存在**，只需 Worker 真分叉。 |
 | Honesty 长坐门槛 `HONESTY_LONG_MIN_MINUTES` / `TASTE_HONESTY_LONG_MIN_MINUTES` = 30 | 同上两端 | wrangler | ✓ | ✓ | ✓ | ✓ | ✓ | **远程化**（与权重同域，勿另开管道）。 |
-| Stretch 池 60/40；Curiosity `CURIOSITY_CHANCE`=0.05；`LIFE_COOLDOWN_MS`=1h | 仅 `sceneAnimationDispatcher.js`（**未**进 `tasteLayerFreeze`） | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断**。同属品味手感，但云端尚未覆盖；若做权重 KV，建议一并纳入同一 schema，避免第三套同步。 |
+| Stretch 池 60/40；Curiosity `CURIOSITY_CHANCE`=0.05；`LIFE_COOLDOWN_MS`=1h | 仅 `sceneAnimationDispatcher.js`（**未**进 `tasteLayerFreeze`） | client | ✓ | △ | ✓ | ✓ | ✓ | **这次不做**（2026-09-12 PO）。未进品味冻表，与「权重进 KV」不是同批自然延伸。评估过；禁止当遗漏。 |
 | 莲花池阶梯：首朵 25m、早段步长 25、早段末枚 5、后段 45、环容量 12 | `lotusPondMath.js`（注释已写 tunable） | client | ✓ | ✓ | ✓ | ✓ | ✓ | **远程化**（第二优先，可并入 `GROWTH_METRICS_KV` 而不是新绑定）。公式形状（分段函数）不动，只搬系数。 |
 | 莲花螺旋几何（origin / rInner / 金角 137.5 / 断点 480px） | `lotusPondMath.js` `LOTUS_POND_SPIRAL*` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。布局/美术一次定稿；远程化收益低且易在窄屏打到脸上。 |
-| MilestoneGlow 节点 7 / 21 / 100 天 | `MilestoneGlowStore.js` `MILESTONE_GLOW_STREAK_NODES` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断**。曾因范围外搁置。改节点会改变「已播过」语义，须写迁移（已播放 id 不撤销）。 |
-| 徽章枚数步长 `floor(score / 3)` 的 **3**；免费 min1/max9；付费 min3 | `practiceBadgeAward.js` / `tipKindnessBadges.js` / `sanctuaryBadges.js` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断**。`/60` 是小时单位（结构，排除）；`/3` 是节奏系数。与 charter persona 绑定，改则必须改 fixtures。 |
-| 芥子须弥解锁 `score ≥ 21` | `mustardSeedSeal.js` ← `memorialSealDirectory` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断**。纪念门槛，不像日封顶那样频繁试数；改门槛不倒扣已揭示 case。 |
+| MilestoneGlow 节点 7 / 21 / 100 天 | `MilestoneGlowStore.js` `MILESTONE_GLOW_STREAK_NODES` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断 · 暂不搬**（2026-09-12 PO）。无反复改的证据；② 的反面。改节点会改变「已播过」语义，真要动时再写迁移。 |
+| 徽章枚数步长 `floor(score / 3)` 的 **3**；免费 min1/max9；付费 min3 | `practiceBadgeAward.js` / `tipKindnessBadges.js` / `sanctuaryBadges.js` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断 · 暂不搬**（2026-09-12 PO）。没改过、没人提要改。`/60` 仍是结构排除；`/3` 仍是节奏系数。 |
+| 芥子须弥解锁 `score ≥ 21` | `mustardSeedSeal.js` ← `memorialSealDirectory` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断 · 暂不搬**（2026-09-12 PO）。growth-metrics 清单曾标适合远程化；**现在不提前动**。真要调时并入 `GROWTH_METRICS_KV`。 |
 | 静思典藏各印 `scoreThreshold` 30/45/60… | `memorialSealCatalogCa.js` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。目录级内容门槛，跟文案一起走内容管理，不走参数 KV。 |
-| 寅币日封顶 36 / 3 / 12 / 48；Stay 5m=1；半速 10m=1；仪式点 2/1/3 | `focusCoinsLedger.js` | client | ✓ | ✓ | △ | ✓ | ✓ | **产品判断**（经济轨）。③ 不直接判 Stripe 到账，但会改「一天能攒多少」；须对照 `FOCUS_COINS.md` + 防通胀。**不要**和花园 score 封顶混进同一 JSON 而不加域前缀。 |
+| 寅币日封顶 36 / 3 / 12 / 48；Stay 5m=1；半速 10m=1；仪式点 2/1/3 | `focusCoinsLedger.js` | client | ✓ | ✓ | △ | ✓ | ✓ | **产品判断**（经济轨 · 排序 ③）。PO：寅币可花出去，调封顶 = 虚拟通胀/紧缩，与体验权重性质不同；**禁止**与 ①② 顺手同批改。须单独 Brief + 稀缺感评估（清供 8 件）。不要和花园 score 封顶混进同一 JSON 而不加域前缀。 |
 | 寅币 SKU 价（如须弥座 360）与 `SUMERU_MIN_LIFETIME_MINUTES`=600 | `focusCoinsLedger.js` | client | ✓ | △ | △ | ✓ | ✓ | **不建议**（本层）。价目是商品表，不是调参；远程改价还要防客户端伪造发放。 |
 | Sit 时长 chips 10/15/25/45；默认 chip 10；HUD 软顶 25 | `focusDuration.js` / `FOCUS_SESSION_DEFAULT_MINUTES` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。2026-08-18 已拍板；改芯片是产品规格不是运营旋钮。 |
 | across-tools 闲置 30 分钟 | `FocusSession.js` `ACROSS_TOOLS_IDLE_THRESHOLD_MS` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。注释写可调，上线后无改记录。 |
@@ -64,10 +65,12 @@
 
 | 项 | 结论 |
 |---|---|
-| 品味层 Worker 源码常量 | **远程化（优先）**。伪远程已证实。 |
-| MilestoneGlow 7/21/100 | **产品判断**。①③④⑤ 成立；② 弱；另有「已播放节点」迁移。 |
-| 寅币日封顶 36/3/12/48 | **产品判断**。经济轨，建议单独 Brief + 通胀评估，不要当成长度量试点的顺手加字段。 |
-| 莲花池阶梯（growth-metrics Brief 未列的系数） | **远程化**。与 `dailyScoreCapMinutes` 同属花园轨，适合作为该 KV schema 的下一字段组（仍须 persona fixtures）。 |
+| 品味层 Worker 源码常量 | **远程化（优先 · 已拍）**。伪远程已证实；优先理由含消除「已经在云上很安全」的认知误区。 |
+| Stretch / 好奇概率 / 一小时冷却 | **这次不做**（2026-09-12 PO）。评估过。 |
+| MilestoneGlow 7/21/100 | **产品判断 · 暂不搬**（2026-09-12 PO）。② 弱；另有「已播放节点」迁移。 |
+| 徽章步长 `/3`、芥子门槛 21 | **产品判断 · 暂不搬**（2026-09-12 PO）。芥子真要调时并入 `GROWTH_METRICS_KV`。 |
+| 寅币日封顶 36/3/12/48 | **产品判断**。经济轨，单独 Brief + 通胀评估；**不要**跟 ①② 同批。 |
+| 莲花池阶梯（growth-metrics Brief 未列的系数） | **远程化（第二优先 · 已拍）**。并入现有花园 KV，不另起绑定（仍须 persona fixtures）。 |
 
 ---
 
@@ -99,15 +102,18 @@
 
 建议形态（工作量大约 **0.5–1 天**，含把现有两处改成调用方）：一个小 helper，参数化 `queryParam`、`schemaVersion`、`parse`、`matchesFreeze`、`timeoutMs`、`waitApplyMs`、`canApply`。**不要**做成「任意 JSON 远程配置中心」——域仍要分 KV / schema，防剽窃层禁止把灵魂数字和支付记录混绑定。
 
-**我认为最合理的**：成长度量试点合入并验证分叉之后，抽 helper；品味层 KV 作为第一个「只换 Worker、客户端已会 overlay」的复用样例。不要先抽抽象再找第三域。
+**我认为最合理的（2026-09-12 PO 已锁）**：只有成长度量一个真实案例时**不要**抽通用配置中心。等品味层 KV 也跑通、两个真实案例摆在那，再抽公共逻辑。不要先抽抽象再找第三域。
 
 ---
 
-## 6. 建议的下一批顺序（供拍板，非开工）
+## 6. 下一批顺序（2026-09-12 PO 已拍 · 仍须口令「开工」）
 
-1. **品味权重 + Honesty 30 分钟门槛 → KV**（伪远程一次打穿；stretch/curiosity 可同 schema 或明确不做）。  
-2. **莲花阶梯系数 → 已有 `GROWTH_METRICS_KV`**（花园轨，fixtures 已在）。  
-3. **寅币日封顶** 单独经济 Brief。  
-4. MilestoneGlow 仅当产品要改 7/21/100 时再做。
+本文件**不是**开工令。实现须新 Chat + 口令，一次一刀。
 
-禁止：一次把上表全部塞进一个超级 JSON。
+1. **品味权重 + Honesty 30 分钟门槛 → KV**（伪远程一次打穿）。**不含** Stretch / 好奇 / 1h 冷却。优先理由：管道复用之外，还要消除「看起来已在云上、其实改数字仍要发版」的认知误区。  
+2. **莲花阶梯系数 → 已有 `GROWTH_METRICS_KV`**（花园轨顺水推舟，不另起炉灶）。  
+3. **寅币日封顶** 单独经济 Brief（虚拟通胀；慢一点动）。
+
+**本批明确不做**：Stretch 池 / `CURIOSITY_CHANCE` / `LIFE_COOLDOWN_MS`；MilestoneGlow 7/21/100；徽章 `/3`；芥子 21（真要调再并入花园 KV）。通用 overlay helper 等 ① 跑通后再议。
+
+禁止：一次把上表全部塞进一个超级 JSON；禁止把 ③ 跟 ①② 顺手改。

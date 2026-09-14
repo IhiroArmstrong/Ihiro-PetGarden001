@@ -27,7 +27,7 @@ test("Yin's Collections panel is Journey-log glass family (z-index 18, 220ms fad
   assert.match(src, /const FADE_MS = OVERLAY_BACKDROP_FADE_MS/);
   assert.match(src, /\.yin-coin-panel__btn:active:not\(:disabled\)/);
   assert.match(src, /overflow: auto/);
-  assert.match(src, /listFocusCoinSurfaceRows/);
+  assert.match(src, /listFocusCoinSurfaceSections/);
 });
 
 test("Yin's Collections docks right on ≥480 and stays a short sheet on narrow", () => {
@@ -45,10 +45,22 @@ test('Collections Bond / busy copy uses the center toast so the panel cannot bur
   );
 });
 
-test('panel source maps shop SKUs via listFocusCoinSurfaceRows', () => {
+test('panel source maps shop SKUs via listFocusCoinSurfaceSections', () => {
   assert.equal(listShopFocusCoinSkus().length, 8);
-  assert.match(src, /listFocusCoinSurfaceRows\(ctx\)/);
+  assert.match(src, /listFocusCoinSurfaceSections\(ctx\)/);
   assert.match(src, /dataset\.sku = row\.id/);
+  assert.match(src, /YIN_COIN_SECTION_OBTAINED/);
+  assert.match(src, /YIN_COIN_SECTION_PENDING/);
+  assert.match(src, /yin-coin-panel__row--owned/);
+  assert.match(src, /yin-coin-panel__owned-seal/);
+});
+
+test('Collections wave play eases backdrop blur via body class', () => {
+  assert.match(src, /YIN_COIN_WAVE_FOCUS_BODY_CLASS/);
+  assert.match(src, /releaseYinCoinWaveFocus/);
+  const main = readFileSync(join(here, '../main.js'), 'utf8');
+  assert.match(main, /acquireYinCoinWaveFocus/);
+  assert.match(main, /releaseYinCoinWaveFocus/);
 });
 
 test('Yin Coin marks are UI chrome files (relief header + flat icon)', () => {
@@ -95,4 +107,11 @@ test('not-for-sale copy names sitting-together over time, not years of sitting',
   assert.equal(/years of sitting/i.test(en.YIN_COIN_NOT_FOR_SALE), false);
   assert.match(en.YIN_COIN_NOT_FOR_SALE, /sitting together over time/i);
   assert.match(zh.YIN_COIN_NOT_FOR_SALE, /同坐日久/);
+});
+
+test('Collections D.4 uses object-card states and bond-only CTA', () => {
+  assert.match(src, /dataset\.state = row\.owned/);
+  assert.match(src, /yin-coin-panel__btn--bond/);
+  assert.match(src, /yin-coin-panel__faint/);
+  assert.match(src, /YIN_COIN_NOT_YET/);
 });

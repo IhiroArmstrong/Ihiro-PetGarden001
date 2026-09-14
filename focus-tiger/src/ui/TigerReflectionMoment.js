@@ -8,7 +8,8 @@
  *
  * 设计约束（DESIGN.md「结束反思」/ PRINCIPLES「观照者而非情绪本身」）：
  * - 不是表单、不是日报：三个问题逐个淡入，每题独立可跳，无必填、无校验、无提交语义；
- * - 任何跳过路径都没有提示或劝导文案，Skip 与 Continue 视觉同级；
+ * - 任何跳过路径都没有提示或劝导文案；CTA 分层（C.3）：Continue = Primary pill，
+ *   Skip = 文字链，Skip all = 卡片角落 Tertiary（行为不变）；
  * - 问题三使用「下次」而非「明天」，避免暗示每日义务
  *   （regular practice, at your own pace）。
  * - 若本次填写了 Session Intention，开头回显一句纯展示文字，不参与三问跳过/记录。
@@ -74,6 +75,52 @@ export {
 } from './reflectionEchoCopy.js';
 
 const FADE_MS = 260;
+
+/** C.3 — Continue primary pill (warm accent, 13px scale). */
+const CONTINUE_PRIMARY_CSS = [
+  'padding:7px 18px',
+  'font-size:13px',
+  'font-weight:600',
+  'color:#fff',
+  'background:linear-gradient(180deg,#c47a4e 0%,#b36846 48%,#8f4a2c 100%)',
+  'border:1px solid rgba(255,230,210,.35)',
+  'border-radius:16px',
+  'cursor:pointer',
+  'box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 2px 0 rgba(122,63,36,.35)'
+].join(';');
+
+/** C.3 — Skip as text link (no pill chrome). */
+const SKIP_LINK_CSS = [
+  'padding:7px 10px',
+  'font-size:13px',
+  'font-weight:500',
+  'color:rgba(74,58,40,.72)',
+  'background:transparent',
+  'border:none',
+  'border-radius:8px',
+  'cursor:pointer',
+  'text-decoration:underline',
+  'text-underline-offset:3px',
+  'box-shadow:none'
+].join(';');
+
+/** C.3 — Skip all in card corner (tertiary). */
+const SKIP_ALL_TERTIARY_CSS = [
+  'position:absolute',
+  'top:10px',
+  'right:14px',
+  'padding:4px 6px',
+  'font-size:11px',
+  'font-weight:500',
+  'color:rgba(74,58,40,.55)',
+  'background:transparent',
+  'border:none',
+  'cursor:pointer',
+  'text-decoration:underline',
+  'text-underline-offset:2px',
+  'box-shadow:none',
+  'z-index:1'
+].join(';');
 
 /**
  * After Continue with a non-empty answer → locale key for companion echo.
@@ -268,6 +315,12 @@ export class TigerReflectionMoment {
       '-webkit-overflow-scrolling:touch'
     ].join(';');
 
+    this.skipAllBtn = document.createElement('button');
+    this.skipAllBtn.type = 'button';
+    this.skipAllBtn.dataset.testid = 'reflection-skip-all';
+    this.skipAllBtn.style.cssText = SKIP_ALL_TERTIARY_CSS;
+    this.skipAllBtn.addEventListener('click', () => this._skipAll());
+
     this.echoEl = document.createElement('div');
     this.echoEl.dataset.testid = 'reflection-intention-echo';
     this.echoEl.style.cssText = [
@@ -383,38 +436,26 @@ export class TigerReflectionMoment {
     });
 
     const buttons = document.createElement('div');
-    buttons.style.cssText = 'display:flex;gap:8px;';
-    const buttonCss = [
-      'padding:7px 16px',
-      'font-size:13px',
-      'color:#4a3a28',
-      `background:${GLASS_FILL_STRONG}`,
-      GLASS_BORDER_STRONG,
-      'border-radius:16px',
-      'cursor:pointer',
-      'box-shadow:0 1px 0 rgba(255,255,255,.7) inset'
-    ].join(';');
+    buttons.style.cssText = 'display:flex;gap:10px;align-items:center;';
 
     this.skipBtn = document.createElement('button');
     this.skipBtn.type = 'button';
-    this.skipBtn.style.cssText = buttonCss;
+    this.skipBtn.dataset.testid = 'reflection-skip';
+    this.skipBtn.style.cssText = SKIP_LINK_CSS;
     this.skipBtn.addEventListener('click', () => this._advance({ submit: false }));
-
-    this.skipAllBtn = document.createElement('button');
-    this.skipAllBtn.type = 'button';
-    this.skipAllBtn.style.cssText = buttonCss;
-    this.skipAllBtn.addEventListener('click', () => this._skipAll());
 
     this.continueBtn = document.createElement('button');
     this.continueBtn.type = 'button';
-    this.continueBtn.style.cssText = buttonCss;
+    this.continueBtn.dataset.testid = 'reflection-continue';
+    this.continueBtn.style.cssText = CONTINUE_PRIMARY_CSS;
     this.continueBtn.addEventListener('click', () => this._advance({ submit: true }));
 
     buttons.appendChild(this.skipBtn);
-    buttons.appendChild(this.skipAllBtn);
     buttons.appendChild(this.continueBtn);
     footer.appendChild(dots);
     footer.appendChild(buttons);
+
+    this.root.appendChild(this.skipAllBtn);
 
     if (this._sessionIntention) {
       this.root.appendChild(this.echoEl);

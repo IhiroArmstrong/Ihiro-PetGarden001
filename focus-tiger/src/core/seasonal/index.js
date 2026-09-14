@@ -49,6 +49,25 @@ export {
   seasonalLineText
 } from './christmasCorpus.js';
 export {
+  HALLOWEEN_CORPUS,
+  isHalloweenCorpusOk,
+  pickHalloweenLineForDay
+} from './halloweenCorpus.js';
+export {
+  NEW_YEAR_CORPUS,
+  isNewYearCorpusOk,
+  pickNewYearLineForDay
+} from './newYearCorpus.js';
+export {
+  THANKSGIVING_CORPUS,
+  isThanksgivingCorpusOk,
+  pickThanksgivingLineForDay
+} from './thanksgivingCorpus.js';
+export {
+  isSeasonalCopyPoolOk,
+  pickSeasonalLineForDay
+} from './seasonalCopyPools.js';
+export {
   parseMockDateIso,
   dateFromMockIso,
   resolveSeasonalNow,
