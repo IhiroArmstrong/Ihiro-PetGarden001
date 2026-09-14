@@ -16,7 +16,7 @@ import {
   writePresenceSignals
 } from './presenceSignalsGate.js';
 
-/** Dwell before ritual welcome after retrospective bubble. */
+/** Dwell before leave-echo auto-fades on ritual welcome (F6). */
 export const RITUAL_LEAVE_RETROSPECTIVE_DWELL_MS = 4000;
 
 /**

@@ -89,20 +89,18 @@ const CHIP_CSS = [
   'cursor:pointer'
 ].join(';');
 
-/** Arrival/Notice-style observation bubble (non-blocking). */
-const RETROSPECTIVE_BUBBLE_CSS = [
-  'max-width:100%',
-  'padding:10px 16px',
-  'border-radius:18px',
-  'background:rgba(255,252,245,0.72)',
-  'backdrop-filter:blur(8px)',
-  '-webkit-backdrop-filter:blur(8px)',
-  'border:1px solid rgba(139,115,85,0.14)',
-  'box-shadow:0 4px 18px rgba(44,31,20,0.06)',
-  'font-size:15px',
-  'line-height:1.55',
-  'color:#4a3a28',
-  'text-align:center'
+/** F6 leave echo — weak status strip inside welcome glass (non-blocking). */
+const RETROSPECTIVE_ECHO_CSS = [
+  'margin:-2px 0 10px',
+  'padding:6px 10px',
+  'border-radius:12px',
+  'background:rgba(139,115,85,0.08)',
+  'border:1px solid rgba(139,115,85,0.12)',
+  'font-size:12px',
+  'line-height:1.45',
+  'color:var(--text-secondary, rgba(74,58,40,.72))',
+  'text-align:center',
+  'transition:opacity 320ms ease'
 ].join(';');
 
 export class RitualFlowUI {
@@ -145,6 +143,9 @@ export class RitualFlowUI {
     this._ritualSessionId = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
     this._retrospectiveTimer = null;
+    /** @type {{ ritualId: string, field: string, emotionTag: string } | null} */
+    this._activeRetrospective = null;
+    this._retrospectiveEchoVisible = false;
     /** @type {((ev: Event) => void) | null} */
     this._onVisibility = null;
     this._unsubscribeLocale = onLocaleChange(() => {
@@ -195,17 +196,20 @@ export class RitualFlowUI {
     if (!isRitualId(ritualId)) return false;
     if (this.isOpen()) return false;
     this._clearBreathTimers();
-    this._clearRetrospectiveTimer();
+    this._clearRetrospectiveEchoState();
     this._ritualSessionId = `ritual-${ritualId}-${Date.now()}`;
     this.state = createRitualFlowState(ritualId);
     this._ensureRoot();
     this._fadeIn();
     const retrospective = this.handlers.consumeLeaveRetrospective?.(ritualId);
     if (retrospective) {
-      this._showRetrospectiveThenWelcome(ritualId, retrospective);
-      return true;
+      this._activeRetrospective = { ritualId, ...retrospective };
+      this._retrospectiveEchoVisible = true;
     }
     this._render();
+    if (retrospective) {
+      this._startRetrospectiveEchoTimer();
+    }
     return true;
   }
 
@@ -215,7 +219,7 @@ export class RitualFlowUI {
     const selections = { ...this.state.selections };
     const ritualSessionId = this._ritualSessionId || `ritual-${ritualId}-${Date.now()}`;
     this._clearBreathTimers();
-    this._clearRetrospectiveTimer();
+    this._clearRetrospectiveEchoState();
     this.state = leaveRitualFlow(this.state);
     this._teardown();
     this.handlers.onLeave?.({ ritualId, selections, ritualSessionId });
@@ -223,7 +227,7 @@ export class RitualFlowUI {
 
   hide() {
     this._clearBreathTimers();
-    this._clearRetrospectiveTimer();
+    this._clearRetrospectiveEchoState();
     this.state = null;
     if (!this.root) return;
     this.root.style.opacity = '0';
@@ -236,7 +240,7 @@ export class RitualFlowUI {
   dispose() {
     this._unsubscribeLocale();
     this._clearBreathTimers();
-    this._clearRetrospectiveTimer();
+    this._clearRetrospectiveEchoState();
     this._teardown();
     this.state = null;
   }
@@ -275,7 +279,7 @@ export class RitualFlowUI {
       const ritualSessionId =
         this._ritualSessionId || `ritual-${ritualId}-${Date.now()}`;
       this._clearBreathTimers();
-      this._clearRetrospectiveTimer();
+      this._clearRetrospectiveEchoState();
       this.hide();
       this.handlers.onComplete?.({ ritualId, selections, ritualSessionId });
       return;
@@ -288,6 +292,9 @@ export class RitualFlowUI {
     const step = getCurrentStep(this.state);
     const config = getRitualConfig(this.state.ritualId);
     if (!step || !config) return;
+    if (step.kind !== 'welcome') {
+      this._clearRetrospectiveEchoState();
+    }
     this.root.replaceChildren();
     this.root.dataset.ritualId = this.state.ritualId;
     this.root.dataset.ritualStep = step.kind;
@@ -320,38 +327,69 @@ export class RitualFlowUI {
     }
   }
 
+  _clearRetrospectiveEchoState() {
+    this._clearRetrospectiveTimer();
+    this._activeRetrospective = null;
+    this._retrospectiveEchoVisible = false;
+  }
+
+  _startRetrospectiveEchoTimer() {
+    this._clearRetrospectiveTimer();
+    this._retrospectiveTimer = window.setTimeout(() => {
+      this._retrospectiveTimer = null;
+      this._dismissRetrospectiveEcho();
+    }, RITUAL_LEAVE_RETROSPECTIVE_DWELL_MS);
+  }
+
+  _dismissRetrospectiveEcho() {
+    if (!this._retrospectiveEchoVisible) return;
+    this._retrospectiveEchoVisible = false;
+    this._activeRetrospective = null;
+    const step = getCurrentStep(this.state);
+    if (step?.kind !== 'welcome' || !this.root) return;
+    const echo = this.root.querySelector('[data-testid=ritual-leave-retrospective]');
+    if (!echo) return;
+    echo.style.opacity = '0';
+    window.setTimeout(() => echo.remove(), 320);
+  }
+
   /**
    * @param {string} ritualId
    * @param {{ field: string, emotionTag: string }} retrospective
+   * @returns {HTMLElement}
    */
-  _showRetrospectiveThenWelcome(ritualId, retrospective) {
-    if (!this.root) return;
-    this.root.replaceChildren();
-    this.root.dataset.ritualStep = 'retrospective';
+  _buildRetrospectiveEchoEl(ritualId, retrospective) {
     const labelKey = resolveRitualChipLabelKey(
       ritualId,
       retrospective.field,
       retrospective.emotionTag
     );
     const chipLabel = labelKey ? t(labelKey) : retrospective.emotionTag;
-    const bubble = document.createElement('div');
-    bubble.dataset.testid = 'ritual-leave-retrospective';
-    bubble.style.cssText = RETROSPECTIVE_BUBBLE_CSS;
-    bubble.textContent = t('PRESENCE_RITUAL_LEAVE_RETROSPECTIVE').replaceAll(
+    const echo = document.createElement('div');
+    echo.dataset.testid = 'ritual-leave-retrospective';
+    echo.setAttribute('aria-live', 'polite');
+    echo.style.cssText = RETROSPECTIVE_ECHO_CSS;
+    echo.textContent = t('PRESENCE_RITUAL_LEAVE_RETROSPECTIVE').replaceAll(
       '{chip}',
       chipLabel
     );
-    this.root.append(bubble);
-    this._clearRetrospectiveTimer();
-    this._retrospectiveTimer = window.setTimeout(() => {
-      this._retrospectiveTimer = null;
-      if (!this.state || this.state.leftEarly || this.state.completed) return;
-      this._render();
-    }, RITUAL_LEAVE_RETROSPECTIVE_DWELL_MS);
+    return echo;
   }
 
   /** @param {Extract<import('../core/RitualFlow.js').RitualStepDef, { kind: 'welcome' }>} step */
   _renderWelcome(step) {
+    if (
+      this._retrospectiveEchoVisible &&
+      this._activeRetrospective?.ritualId === this.state?.ritualId
+    ) {
+      this.root?.append(
+        this._buildRetrospectiveEchoEl(
+          this._activeRetrospective.ritualId,
+          this._activeRetrospective
+        )
+      );
+    }
+
     const body = document.createElement('div');
     body.style.cssText =
       'font-size:15px;line-height:1.55;color:#4a3a28;text-align:center;margin-bottom:14px;';
