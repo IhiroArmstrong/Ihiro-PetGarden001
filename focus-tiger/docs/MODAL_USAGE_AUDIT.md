@@ -1,7 +1,7 @@
 # 全项目「阻断式确认 / 模态使用」审计
 
-**状态**：纯审计（本轮不实现代码）  
-**决策权威（2026-09-14）**：文末 **A 类 5 条 / C 类 10 条** 是全项目「阻断式确认」的**唯一打勾处**。`p5-ritual-modal-audit.md`（PR #763）那 15 行清单已被 §4 吸收，**不要再填**；PR #763 可按留档正常合并。  
+**状态**：PO 已拍板（2026-09-14）——实现须分批另开对话「开工」  
+**决策权威（2026-09-14）**：文末 **A 类 5 条 / C 类 10 条** + §「PO 拍板记录」是全项目「阻断式确认」的**唯一打勾处**。`p5-ritual-modal-audit.md`（PR #763）那 15 行清单已被 §4 吸收，**不要再填**。  
 **对齐原则**：`PRINCIPLES.md` §「减少阻断式确认（专注与仪式 · 2026-09-14）」  
 **背景来源**：`MACOS_HIG_AUDIT_ROUND1.md`（P6 已合入原则；本文件核实现状）  
 **吸收范围**：原 `task-modal-p5-focus-ritual.md` Part 2（Recover / RitualFlow / MicroRitual 窄范围）→ 已并入下文 §4；Part 1（OnboardingHints / Focus Circle Witness 改造方案）**不受影响**，独立推进。
@@ -152,41 +152,90 @@
 
 ## 待 PO 拍板清单
 
-> **只在本页勾选。** 已由本审计判为 **B、不必再问** 的仪式细目：S10 / F7 离开钮、S13 / M3 入口、S14 / M4 离开、S18 / R4 轻量跟条。本清单另含 15 条没有的 **S03**（Honesty 登入）、**S21**（Transition Moment）。
+> **只在本页勾选。** 已由本审计判为 **B、不必再问** 的仪式细目：S10 / F7 离开钮、S13 / M3 入口、S14 / M4 离开、S18 / R4 轻量跟条。本清单另含 15 条没有的 **S03**（Honesty 登入）、**S21**（Transition Moment）。  
+> **2026-09-14 PO 已全部拍板** → 见下节「PO 拍板记录」；下列勾选为落盘镜像，**批准 ≠ 开工**。
 
 ### 批准 ≠ 开工（强制分两步）
 
-- 勾选 A 类 **G02 / G06 / G08** = 同意「这几处违背原则、可以进降级队列」。**不等于**批准 PR #762 写代码。#762 方案通过后须**另开对话**发口令「开工」。
+- 勾选 A 类 **G02 / G06 / G08** = 同意「这几处违背原则、可以进降级队列」。**不等于**已写代码；须**另开对话**发口令「开工」。
 - 勾选 **NA4 / NA5** = 只确认方向（Support `alert` 应改为内联）。实际改造仍跟 HIG **P4** 既定排期，**不因本次勾选插队**。
 
 ### A 类 — 明显违背原则（批准后可进下一批降级实现）
 
-- [ ] **NA4** Support 结账：云 API 未配置 → `window.alert`（**见 P4**）
-- [ ] **NA5** Support 结账：Session 创建失败 → `window.alert`（**见 P4**）
-- [ ] **G02** Onboarding `?` Purpose 大卡（`aria-modal` + backdrop）— 含 detailed hint「了解更多」链入
-- [ ] **G06** detailed hint CTA → Purpose 卡展开链（气泡本身可保留）
-- [ ] **G08** Focus Circle Witness respond/leave 短语选择器（`role=dialog`，挡 Yin tap）
+- [x] **NA4** Support 结账：云 API 未配置 → `window.alert`（**见 P4 · 方向同意 · 不插队**）
+- [x] **NA5** Support 结账：Session 创建失败 → `window.alert`（**见 P4 · 方向同意 · 不插队**）
+- [x] **G02** Onboarding `?` Purpose 大卡（`aria-modal` + backdrop）— 含 detailed hint「了解更多」链入 → **同意降级 · 开工 1**
+- [x] **G06** detailed hint CTA → Purpose 卡展开链（气泡本身可保留）→ **同意降级 · 开工 1**
+- [x] **G08** Focus Circle Witness respond/leave 短语选择器（`role=dialog`，挡 Yin tap）→ **同意降级 · 开工 1**
 
 ### C 类 — 不确定，请归入 A 或 B
 
-- [ ] **S03** Honesty 正念登入面板：维持现状 **B** / 降级轻量 **A** / 其它：________
-- [ ] **S04–S08** RitualFlow 各步玻璃板（F1–F5）：维持现状 **B** / 部分降级 **A** / 其它：________
-- [ ] **S09** RitualFlow 早退回顾气泡 (F6)：维持 **B** / 降级 **A** / 其它：________
-- [ ] **S11** MicroRitual 时长板 (M1)：维持 **B** / 降级 **A** / 其它：________
-- [ ] **S12** MicroRitual 呼吸层 (M2)：维持 **B** / 降级 **A** / 其它：________
-- [ ] **S15** Recover 接地四段 (R1)：维持 **B** / 降级 **A** / 其它：________
-- [ ] **S16** Recover 环顾 (R2)：维持 **B** / 降级 **A** / 其它：________
-- [ ] **S17** Recover 遗留呼吸/过载 (R3)：维持 **B** / 删遗留 / 降级 **A** / 其它：________
-- [ ] **S21** Transition Moment 边界文案：维持 **B** / 降为 Whisper **A** / 其它：________
-- [ ] **G07** Focus Circle Witness leave 底栏：维持 **B** / 降级 **A** / 其它：________
+- [x] **S03** Honesty 正念登入面板 → **维持 B**
+- [x] **S04–S08** RitualFlow 各步玻璃板（F1–F5）→ **维持 B**（仪式/接地/微呼吸本体不动）
+- [x] **S09** RitualFlow 早退回顾气泡 (F6) → **降级 A**（不占整块仪式板 · 开工 3）
+- [x] **S11** MicroRitual 时长板 (M1) → **维持 B + 门闩**（板开着时禁止/忽略 Sit · 开工 4）
+- [x] **S12** MicroRitual 呼吸层 (M2) → **维持 B**
+- [x] **S15** Recover 接地四段 (R1) → **维持 B**
+- [x] **S16** Recover 环顾 (R2) → **维持 B**
+- [x] **S17** Recover 遗留呼吸/过载 (R3) → **删遗留**（开工 5）
+- [x] **S21** Transition Moment 边界文案 → **降级 A**（改为 Whisper 轻提示 · 开工 2）
+- [x] **G07** Focus Circle Witness leave 底栏 → **维持 B**（G08 在开工 1 改）
+
+---
+
+## PO 拍板记录（2026-09-14）
+
+**拍板人**：PO（用户书面确认）  
+**落盘日期**：2026-09-14  
+**主干锚点**：`origin/develop` @ `4eae1af2`（#762 + #763 已合）  
+**执行顺序**：**0 → 1 → 2 → 3 → 4 → 5**（一次一任务，每批单独新对话「开工」）
+
+### 汇总表
+
+| ID | 决定 | 实现批次 | 备注 |
+|---|---|---|---|
+| NA4 / NA5 | 方向同意 | P4（HIG 原排期） | **不插队** |
+| G02 / G06 / G08 | 同意降级 | **开工 1** | 依据 `p5-hints-witness-nonmodal-plan.md` |
+| S03 | 维持 **B** | — | 无需写代码 |
+| S04–S08、S12、S15–S16 | 维持 **B** | — | 仪式/接地/微呼吸本体不动 |
+| S09 | 降级 **A** | **开工 3** | 早退回顾变轻，不占整块仪式板 |
+| S11 | 维持 **B** + 门闩 | **开工 4** | 时长板留着；板开着时不能同时点坐下 |
+| S17 | 删遗留 | **开工 5** | 过载/旧呼吸路径去掉 |
+| S21 | 降级 **A** | **开工 2** | 过渡句 → Whisper，不挡摸头 |
+| G07 | 维持 **B** | — | 离开底栏留着当底座（G08 在开工 1 改） |
+
+### 分批开工口令（引用用）
+
+| 批次 | 口令 | 范围摘要 |
+|---|---|---|
+| 0 | `开工 把模态审计拍板写入 MODAL_USAGE_AUDIT.md` | 本文档落盘（纯文档） |
+| 1 | `大任务 开工 P5 Part1 问号卡与留痕选句非模态` | G02 / G06 / G08 |
+| 2 | `开工 Transition Moment 降为 Whisper` | S21 |
+| 3 | `开工 RitualFlow 早退回顾变轻` | S09 |
+| 4 | `开工 MicroRitual 时长板开着时禁止坐下` | S11 门闩 |
+| 5 | `开工 Recover 删遗留呼吸过载路径` | S17 |
+
+每批纪律：新 Chat · 旁支 + 单 PR · 收尾 `test:smoke` + `test:e2e:smoke` · 动叠层须写保护面并核对 `overlaySlotContractRegistry` / `Z_INDEX.md`。
+
+### 开工 1 边界：隐私页未勾完能否点走下面？
+
+**拍板**：**必须先关隐私页** — 隐私 sheet 开着时，底下**不可点穿**去坐下/菜单/摸头。
+
+**依据（Mac / HIG 习惯）**：
+
+1. **G03** 隐私说明页归类为 **B**（`role=dialog` + backdrop），语义 = macOS **sheet 级模态**：父窗口内容在 sheet 存续期间不可交互。
+2. 现有验收契约（`TEST_TRACKER`「Privacy 点空白关 sheet」）：点 sheet **外**空白或 backdrop → 0–1 秒内关 Privacy（可同时收简介卡）。这是 Mac「点外面 dismiss sheet」范式，**不是**点穿到底下主界面。
+3. 勾选未完成只禁用 sheet 内确认钮，**不**等于允许绕过 sheet 去操作花园；用户须 Back / 点空白先关 sheet，再操作底下。
+
+**与开工 1 非模态简介卡的关系**：Purpose 卡去掉全屏遮罩后，**G03 隐私 sheet 仍保持 sheet 模态 + backdrop**；仅非模态的是贴边玻璃简介卡（G02）与留痕选句（G08）。简介开着、用户点坐下/起来 → 仍按 `p5-hints-witness-nonmodal-plan.md` §1.4 自动收卡；**不卷** Recover / Ritual / Micro。
 
 ---
 
 ## 验收
 
-1. PO **只**过本文分类：对 A 类勾选批准项；对 C 类每条定 A 或 B。  
-2. 批准后再另开对话发「开工」分批实现；**本轮不预设实现顺序**。G02/G06/G08 的代码实现另走 PR #762 的开工口令。  
-3. P5 Part 1（OnboardingHints / FocusCircleWitness 非模态方案）与本文 A 类 G02/G06/G08 重叠部分可合并排期，但不阻塞 Part 1 独立推进。  
+1. PO 拍板已完成（2026-09-14）；上表与勾选为 SSOT。  
+2. **批准 ≠ 开工**：各批次须另开对话发上表口令；每批一个旁支 + 一个 PR。  
+3. P5 Part 1 方案（#762 已合）与 A 类 G02/G06/G08 对齐，从**开工 1**起实现。  
 4. 勿在 `p5-ritual-modal-audit.md` 再打一套勾。
 
 ---
@@ -196,4 +245,5 @@
 - `PRINCIPLES.md` §「减少阻断式确认」
 - `MACOS_HIG_AUDIT_ROUND1.md` §3
 - `p5-ritual-modal-audit.md`（R/F/M 细目，已吸收进 §4）
+- `p5-hints-witness-nonmodal-plan.md`（开工 1 方案 · #762 已合）
 - `overlaySlotContractRegistry.js`（叠层 SSOT）
