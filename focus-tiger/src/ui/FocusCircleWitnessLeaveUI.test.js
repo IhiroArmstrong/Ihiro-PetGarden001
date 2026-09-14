@@ -38,7 +38,15 @@ test('failed witness submit surfaces visible picker error instead of silent retu
   assert.match(src, /role', 'alert'/);
 });
 
+test('leave picker expands upward inside bottom leave strip (non-modal)', () => {
+  assert.match(src, /is-picker-open/);
+  assert.match(src, /focus-circle-witness-respond-shell/);
+  assert.match(src, /bottom: calc\(\$\{homeClearanceBottomCss\(\)\}/);
+  assert.doesNotMatch(src, /top: 50%/);
+  assert.doesNotMatch(src, /is-hidden-for-picker/);
+});
+
 test('leave strip hides while picker is open and restores on cancel', () => {
-  assert.match(src, /is-hidden-for-picker/);
   assert.match(src, /restoreLeave: mode === 'leave'/);
+  assert.match(src, /focus-circle-witness-leave__actions\[hidden\]/);
 });

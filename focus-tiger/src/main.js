@@ -4051,6 +4051,7 @@ async function init() {
     calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
+    onboardingHints?.closePurposeCard?.();
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);

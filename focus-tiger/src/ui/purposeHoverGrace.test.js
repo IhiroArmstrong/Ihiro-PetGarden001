@@ -33,15 +33,13 @@ describe('purpose card hover grace + left-ball no mint', () => {
     assert.match(hintsSrc, /'quick-start'/);
   });
 
-  it('hover opens adjacent card without backdrop; click pins modal', () => {
+  it('hover opens adjacent card without backdrop; click pins until dismiss', () => {
     assert.match(hintsSrc, /_purposePinned/);
     assert.match(hintsSrc, /onboarding-app-purpose--pinned/);
     assert.match(hintsSrc, /ft-purpose-pinned/);
     assert.match(hintsSrc, /_positionPurposeCard\(\)/);
-    assert.match(
-      hintsSrc,
-      /purposeBackdrop\.hidden = true[\s\S]*pinned/
-    );
+    assert.match(hintsSrc, /G02 non-modal: full-screen backdrop is Privacy-only/);
+    assert.match(hintsSrc, /purposeBackdrop\.hidden = true/);
   });
 
   it('Privacy sheet opt-in lives in the scroll body; outside tap dismisses', () => {

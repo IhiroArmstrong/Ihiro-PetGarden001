@@ -80,8 +80,8 @@
 | **27** | `src/ui/SanctuaryUnlockUI.js` | `#yin-sanctuary-card` Sanctuary Lifetime 解锁卡（须高于 Support 模态 25/26，避免 Unlock Lifetime 点到淡出遮罩） |
 | **17** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-backdrop` Membership 模态遮罩 |
 | **18** | `src/ui/MembershipUnlockUI.js` | `#yin-membership-card` Yin Membership 订阅卡（⋯ / 抽屉 / Support；与 Sanctuary 互斥打开） |
-| **26** | `src/ui/OnboardingHintsUI.js` | `#onboarding-app-purpose-backdrop` ? 简介卡遮罩 |
-| **27** | `src/ui/OnboardingHintsUI.js` | `#onboarding-app-purpose` ? 产品简介卡（居中） |
+| **26** | `src/ui/OnboardingHintsUI.js` | `#onboarding-app-purpose-backdrop` Privacy sheet 遮罩（G03；Purpose 卡本身无罩） |
+| **27** | `src/ui/OnboardingHintsUI.js` | `#onboarding-app-purpose` ? 产品简介卡（贴 ? 玻璃卡 · 非模态） |
 | **28** | `src/ui/OnboardingHintsUI.js` | `#onboarding-wellness-detail` 免责全文二级卡 |
 | **18** | `src/ui/TipJarUI.js` | `#yin-tip-jar-card` Buy Yin a Tea 卡（⋯ / 抽屉） |
 | **18** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-card` Stay in touch 可选邮件留资卡（⋯ / 抽屉；不存邮箱；无 entitlement） |
@@ -117,7 +117,7 @@
 | **34** | `src/ui/ft-onboarding-hint-bubble.js` | Onboarding 提示气泡（Lit）；须高于窄壳主 CTA(~30) |
 | **34** | `src/ui/InAppReminderBannerUI.js` | 窄屏 Idle/park：Reminder 横幅抬到 ActionBar 之下可见（防被壳顶栏盖住） |
 | **34** | `src/ui/FocusCircleWitnessLeaveUI.js` | Rise 留痕底条 `#focus-circle-witness-leave`（挂 `body`；玻璃底；Tier26） |
-| **35** | `src/ui/FocusCircleWitnessLeaveUI.js` | 留痕/回应短语 picker `#focus-circle-witness-picker`（挂 `body`；Tier27；压过 NarrowIdleShell ~30 与摸头区） |
+| **35** | `src/ui/FocusCircleWitnessLeaveUI.js` | 留痕/回应短语 picker（自底条向上展开 · `#focus-circle-witness-picker` / `#focus-circle-witness-respond-shell`；Tier27；挂 `body`） |
 | **40** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 中置/窄屏抬高层（Honesty 桥接等同带） |
 | **100** | `index.html` | `#loading-mask` 启动加载遮罩（最高产品层，加载完移除） |
 

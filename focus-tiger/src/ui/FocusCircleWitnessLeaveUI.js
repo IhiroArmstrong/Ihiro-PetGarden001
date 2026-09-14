@@ -31,7 +31,7 @@ import {
 
 const LEAVE_ROOT_ID = 'focus-circle-witness-leave';
 const PICKER_ROOT_ID = 'focus-circle-witness-picker';
-const STYLE_ID = 'focus-circle-witness-leave-styles-v2';
+const STYLE_ID = 'focus-circle-witness-leave-styles-v3';
 const GOLD_ACCENT = 'rgba(196, 154, 74, 0.38)';
 const TEXT_PRIMARY = '#3c3c3c';
 const TEXT_SECONDARY = 'rgba(60, 60, 60, 0.72)';
@@ -215,10 +215,6 @@ export class FocusCircleWitnessLeaveUI {
       return;
     }
     this._pickerSlotHeld = true;
-    if (this._leaveRoot) {
-      this._leaveRoot.classList.add('is-hidden-for-picker');
-      this._leaveRoot.setAttribute('aria-hidden', 'true');
-    }
     this._showPicker('leave');
   }
 
@@ -249,14 +245,17 @@ export class FocusCircleWitnessLeaveUI {
   _showPicker(mode) {
     if (mode === 'respond' && !this._respondTraceId) return;
     if (mode === 'leave' && !this._leaveVisible) return;
-    if (this._pickerRoot) this._pickerRoot.remove();
+    this._removePickerDom();
+
+    const host =
+      mode === 'leave' ? this._leaveRoot : this._mountRespondPickerShell();
+    if (!host) return;
 
     const root = document.createElement('div');
-    root.id = PICKER_ROOT_ID;
     root.className = 'focus-circle-witness-picker';
+    root.id = PICKER_ROOT_ID;
     root.dataset.testid = 'focus-circle-witness-picker';
     root.dataset.mode = mode;
-    root.setAttribute('role', 'dialog');
 
     const title = document.createElement('p');
     title.className = 'focus-circle-witness-picker__title';
@@ -296,12 +295,57 @@ export class FocusCircleWitnessLeaveUI {
     });
 
     root.append(title, status, list, cancel);
-    this.container.appendChild(root);
+
+    if (mode === 'leave') {
+      const actions = host.querySelector('.focus-circle-witness-leave__actions');
+      const leaveTitle = host.querySelector('.focus-circle-witness-leave__title');
+      if (leaveTitle) leaveTitle.hidden = true;
+      if (actions) {
+        host.insertBefore(root, actions);
+        actions.hidden = true;
+      } else {
+        host.appendChild(root);
+      }
+      host.classList.add('is-picker-open');
+    } else {
+      host.appendChild(root);
+      requestAnimationFrame(() => host.classList.add('is-visible'));
+    }
+
     this._pickerRoot = root;
     this._pickerMode = mode;
     if (mode === 'respond') this._respondOpen = true;
     this._paintPickerCopy();
     requestAnimationFrame(() => root.classList.add('is-visible'));
+  }
+
+  _mountRespondPickerShell() {
+    const existing = document.getElementById(`${PICKER_ROOT_ID}-shell`);
+    existing?.remove();
+    const shell = document.createElement('div');
+    shell.id = `${PICKER_ROOT_ID}-shell`;
+    shell.className = 'focus-circle-witness-respond-shell';
+    shell.dataset.testid = 'focus-circle-witness-respond-shell';
+    this.container.appendChild(shell);
+    return shell;
+  }
+
+  _removePickerDom() {
+    this._pickerRoot?.remove();
+    this._pickerRoot = null;
+    this._pickerMode = null;
+    if (this._leaveRoot) {
+      this._leaveRoot.classList.remove('is-picker-open');
+      const actions = this._leaveRoot.querySelector(
+        '.focus-circle-witness-leave__actions'
+      );
+      if (actions) actions.hidden = false;
+      const leaveTitle = this._leaveRoot.querySelector(
+        '.focus-circle-witness-leave__title'
+      );
+      if (leaveTitle) leaveTitle.hidden = false;
+    }
+    document.getElementById(`${PICKER_ROOT_ID}-shell`)?.remove();
   }
 
   /**
@@ -313,20 +357,17 @@ export class FocusCircleWitnessLeaveUI {
     const root = this._pickerRoot;
 
     const finish = () => {
-      root.remove();
-      if (this._pickerRoot === root) {
-        this._pickerRoot = null;
-        this._pickerMode = null;
-      }
+      this._removePickerDom();
       if (mode === 'respond') {
         this._respondOpen = false;
         this._respondTraceId = null;
       }
       this._releasePickerSlot();
       if (restoreLeave && this._leaveRoot) {
-        this._leaveRoot.classList.remove('is-hidden-for-picker');
-        this._leaveRoot.removeAttribute('aria-hidden');
-        this.handlers.requestLeaveSlot?.();
+        if (!this.handlers.requestLeaveSlot?.()) {
+          this.hideLeave({ immediate: true });
+          return;
+        }
         const status = this._leaveRoot.querySelector(
           '.focus-circle-witness-leave__status'
         );
@@ -388,9 +429,7 @@ export class FocusCircleWitnessLeaveUI {
       this._submitting = false;
       if (result.ok) {
         this._releasePickerSlot();
-        this._pickerRoot?.remove();
-        this._pickerRoot = null;
-        this._pickerMode = null;
+        this._removePickerDom();
         this.hideLeave();
         this.handlers.onLeaveComplete?.();
         return;
@@ -487,9 +526,10 @@ export class FocusCircleWitnessLeaveUI {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
       }
-      .focus-circle-witness-leave.is-hidden-for-picker {
-        visibility: hidden;
-        pointer-events: none;
+      .focus-circle-witness-leave.is-picker-open {
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
+        padding-bottom: 10px;
       }
       .focus-circle-witness-leave__title {
         margin: 0 0 10px;
@@ -514,6 +554,9 @@ export class FocusCircleWitnessLeaveUI {
         justify-content: center;
         align-items: center;
       }
+      .focus-circle-witness-leave__actions[hidden] {
+        display: none;
+      }
       .focus-circle-witness-leave__leave,
       .focus-circle-witness-leave__skip {
         padding: 6px 14px;
@@ -537,29 +580,37 @@ export class FocusCircleWitnessLeaveUI {
         text-decoration: underline;
         text-underline-offset: 2px;
       }
-      .focus-circle-witness-picker {
+      .focus-circle-witness-respond-shell {
         position: fixed;
         left: 50%;
-        top: 50%;
-        transform: translate(-50%, -48%);
+        bottom: calc(${homeClearanceBottomCss()} + 12px);
+        transform: translateX(-50%) translateY(8px);
         z-index: 35;
         pointer-events: auto;
-        width: min(92vw, 380px);
+        width: min(92vw, 420px);
         max-height: min(70vh, 520px);
-        overflow: auto;
-        padding: 14px 16px 12px;
+        overflow-y: auto;
+        padding: 12px 16px 10px;
         border-radius: ${GLASS_RADIUS};
         background: ${GLASS_FILL};
         ${GLASS_BLUR_CSS};
         border: ${GLASS_BORDER};
         box-shadow: ${GLASS_SHADOW};
-        color: ${TEXT_PRIMARY};
         opacity: 0;
         transition: opacity 280ms ease, transform 280ms ease;
       }
+      .focus-circle-witness-respond-shell.is-visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .focus-circle-witness-picker {
+        width: 100%;
+        color: ${TEXT_PRIMARY};
+        opacity: 0;
+        transition: opacity 280ms ease;
+      }
       .focus-circle-witness-picker.is-visible {
         opacity: 1;
-        transform: translate(-50%, -50%);
       }
       .focus-circle-witness-picker__title {
         margin: 0 0 8px;
