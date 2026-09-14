@@ -189,7 +189,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
-| `PRINCIPLES.md` | 硬性红线（**用户体验优先** / 经济可持续 / 非 MVP-only） |
+| `PRINCIPLES.md` | 硬性红线（**用户体验优先** / 经济可持续 / **菜单逃生舱** / 非 MVP-only） |
+| `MENU_CHROME_CENSUS.md` | **角落按钮 vs ⋯/抽屉对照** + 菜单治理四条进度（从属 PRINCIPLES 逃生舱；**无新运行时**） |
 | `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收反馈 vs 结果反馈 vs 已知静默（`interaction-feedback`） |
 | `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
@@ -252,6 +253,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-14 | 菜单逃生舱硬句进 `PRINCIPLES.md`；对照表 `MENU_CHROME_CENSUS.md`（四条进度 + 角落 vs 菜单）。不进 rules-authority 机器块 |
 | 2026-09-10 | 修订 `agent-tool-budget`（#700 后补漏）：`Read` 计次对齐 `source-read-granularity`（200/400；大 `limit` 仍计）；连续 8 次探索无改文件先软停；软/硬顶与 `session-handoff` 强制探索快照；「大任务」开工须先列预期文件/函数清单。 |
 | 2026-09-10 | 修订 `agent-tool-budget`：hook **只计探索类**；硬顶不拦改文件/git/约定 smoke；「继续」只留本 Chat（禁止 New Agent 续同一任务）；跨模块+单测+PR 用口令「大任务」。数字仍以 `config.json` + `focus-tiger-agent-token-cost.mdc` 为准。 |
 | 2026-09-10 | 新增 `agent-tool-budget`：三档工具调用预算（qa 28 / impl 50 / large 80 硬顶）+ 口令「开工」「继续」「大任务」；执行 `session_gate.sh` + `tool_budget.sh`；「继续」继承档位并重置计数；实现类冒烟纪律见 `testing-strategy.mdc`。SSOT `focus-tiger-agent-token-cost.mdc` 新节 |
