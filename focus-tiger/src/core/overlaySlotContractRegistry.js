@@ -392,7 +392,7 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     kind: OVERLAY_SLOT_KIND.HINT,
     tier: 28,
     readers: '? product purpose card; idle tap via onboardingHintHost',
-    blocksIdleYinTap: true,
+    blocksIdleYinTap: false,
     blocksEnterSleep: true,
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#onboarding-app-purpose',
@@ -495,7 +495,7 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     kind: OVERLAY_SLOT_KIND.HINT,
     tier: 27,
     readers: 'Focus Circle Gentle Witness respond phrase picker',
-    blocksIdleYinTap: true,
+    blocksIdleYinTap: false,
     blocksEnterSleep: false,
     snapshotField: 'focusCircleWitnessRespondOpen'
   }),

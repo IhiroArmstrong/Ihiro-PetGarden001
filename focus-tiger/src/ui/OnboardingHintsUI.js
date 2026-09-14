@@ -506,7 +506,7 @@ export class OnboardingHintsUI {
     this.wellnessFirstCard = null;
     /** Purpose card opened by ? hover (leave ? / card → hide). Click pins until dismiss. */
     this._purposeFromHover = false;
-    /** Click-pinned purpose card (backdrop + centered modal until dismiss). */
+    /** Click-pinned purpose card (adjacent glass; stays until dismiss — no backdrop). */
     this._purposePinned = false;
     /** @type {ReturnType<typeof setTimeout> | null} */
     this._purposeHoverHideTimer = null;
@@ -599,7 +599,7 @@ export class OnboardingHintsUI {
 
   /**
    * 「?」唯一动作：产品简介。绝不铺本页其它 Hints。
-   * Hover → adjacent card, no backdrop. Click / pin → centered modal + backdrop.
+   * Hover → adjacent card, no backdrop. Click / pin → same adjacent card until dismiss.
    * @param {{ markHelpDone?: boolean, pin?: boolean }} [opts]
    * @returns {void}
    */
@@ -1175,6 +1175,9 @@ export class OnboardingHintsUI {
       this._positionBadge(hintId);
     }
     this._positionPurposeCard();
+    if (this.wellnessDetailCard && !this.wellnessDetailCard.hidden) {
+      this._positionWellnessDetailCard();
+    }
     this._positionCatalogChip();
     this.syncDiscoveryDots();
   }
@@ -1402,6 +1405,8 @@ export class OnboardingHintsUI {
     if (!isDetailedHint(hintId)) return;
     this._collapseClickHint(hintId, { acknowledgeSimple: false });
     this.markSeen(hintId);
+    this._purposePinned = true;
+    this._purposeFromHover = false;
     this._showPurposeCard();
   }
 
@@ -1854,7 +1859,6 @@ export class OnboardingHintsUI {
     card.className = 'onboarding-app-purpose';
     card.hidden = true;
     card.setAttribute('role', 'dialog');
-    card.setAttribute('aria-modal', 'true');
     card.setAttribute('aria-labelledby', 'onboarding-app-purpose-title');
 
     const title = document.createElement('h2');
@@ -2019,7 +2023,6 @@ export class OnboardingHintsUI {
     card.className = 'onboarding-wellness-detail';
     card.hidden = true;
     card.setAttribute('role', 'dialog');
-    card.setAttribute('aria-modal', 'true');
     card.setAttribute('aria-labelledby', 'onboarding-wellness-detail-title');
     card.dataset.testid = 'onboarding-wellness-detail';
 
@@ -2062,6 +2065,8 @@ export class OnboardingHintsUI {
     this._ensureWellnessDetailCard();
     this._refreshWellnessDetailCopy();
     this.wellnessDetailCard.hidden = false;
+    this.wellnessDetailCard.removeAttribute('aria-modal');
+    this._positionWellnessDetailCard();
     try {
       this._wellnessDetailDismissEl?.focus({ preventScroll: true });
     } catch {
@@ -2071,6 +2076,45 @@ export class OnboardingHintsUI {
 
   _hideWellnessDetailCard() {
     if (this.wellnessDetailCard) this.wellnessDetailCard.hidden = true;
+  }
+
+  _positionWellnessDetailCard() {
+    const card = this.wellnessDetailCard;
+    if (!card || card.hidden) return;
+    const anchor =
+      this.purposeCard && !this.purposeCard.hidden
+        ? this.purposeCard
+        : this.helpBtn;
+    const gap = 10;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const maxW = Math.min(380, vw - 24);
+    card.style.maxWidth = `${maxW}px`;
+    card.style.left = '0px';
+    card.style.top = '0px';
+    card.style.transform = '';
+
+    const cr = card.getBoundingClientRect();
+    const ar = anchor?.getBoundingClientRect?.() || {
+      left: 12,
+      top: 12,
+      right: 332,
+      bottom: 52,
+      width: 320,
+      height: 40
+    };
+    let left = ar.right + gap;
+    if (left + cr.width > vw - 12) {
+      left = Math.max(12, ar.left);
+    }
+    let top = ar.top;
+    if (top + cr.height > vh - 12) {
+      top = Math.max(12, ar.bottom - cr.height - gap);
+    }
+    left = Math.max(12, Math.min(left, vw - cr.width - 12));
+    top = Math.max(12, Math.min(top, vh - cr.height - 12));
+    card.style.left = `${Math.round(left)}px`;
+    card.style.top = `${Math.round(top)}px`;
   }
 
   /** @returns {boolean} */
@@ -2381,25 +2425,16 @@ export class OnboardingHintsUI {
     this._ensurePurposeCard();
     this._refreshPurposeCardCopy();
     const pinned = this._purposePinned;
+    // G02 non-modal: full-screen backdrop is Privacy-only (G03).
     if (this.purposeBackdrop) {
-      if (pinned) {
-        this.purposeBackdrop.hidden = false;
-        this.purposeBackdrop.classList.add('is-visible');
-      } else {
-        this.purposeBackdrop.classList.remove('is-visible');
-        this.purposeBackdrop.hidden = true;
-      }
+      this.purposeBackdrop.classList.remove('is-visible');
+      this.purposeBackdrop.hidden = true;
     }
     this.purposeCard.classList.toggle('onboarding-app-purpose--pinned', pinned);
     document.body.classList.toggle('ft-purpose-pinned', pinned);
     this.purposeCard.hidden = false;
-    if (pinned) {
-      this.purposeCard.style.left = '';
-      this.purposeCard.style.top = '';
-      this.purposeCard.style.maxWidth = '';
-    } else {
-      this._positionPurposeCard();
-    }
+    this.purposeCard.removeAttribute('aria-modal');
+    this._positionPurposeCard();
     this._bindPurposeCardHoverLeave();
     markWellnessDisclaimerSeen(this._storage);
     this.onPurposeOpen?.();
@@ -2719,10 +2754,7 @@ export class OnboardingHintsUI {
         display: none !important;
       }
       .onboarding-app-purpose--pinned {
-        left: 50%;
-        top: 50%;
-        width: min(360px, calc(100vw - 32px));
-        transform: translate(-50%, -50%);
+        /* pinned = stays until dismiss; layout stays adjacent to ? */
       }
       .ft-hint-catalog-chip {
         position: fixed;
@@ -2804,15 +2836,14 @@ export class OnboardingHintsUI {
       }
       .onboarding-wellness-detail {
         position: fixed;
-        left: 50%;
-        top: 50%;
+        left: 0;
+        top: 0;
         z-index: 28;
         box-sizing: border-box;
         width: min(380px, calc(100vw - 32px));
         max-height: min(72vh, 480px);
         overflow-y: auto;
         padding: 16px 16px 12px;
-        transform: translate(-50%, -50%);
         color: #3a5348;
         background: ${GLASS_FILL};
         ${GLASS_BLUR_CSS};
