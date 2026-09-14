@@ -846,6 +846,7 @@
   "NEWSLETTER_FEEDBACK_OK": "You're on the list — thank you.",
   "NEWSLETTER_EMAIL_INVALID": "Please enter a valid email.",
   "NEWSLETTER_ERROR_GENERIC": "Something went quiet — try again in a moment.",
+  "ACCOUNT_MENU_PLACEHOLDER": "Sign in (coming soon)",
   "COMMUNITY_MENU_LABEL": "Join our community",
   "TIP_CARD_TITLE": "Buy Yin a Tea",
   "TIP_CARD_BLURB": "A small thank-you — optional. It does not unlock sounds or animations.",

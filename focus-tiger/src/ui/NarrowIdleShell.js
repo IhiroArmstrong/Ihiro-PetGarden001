@@ -23,6 +23,7 @@ import {
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
+import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
@@ -104,6 +105,8 @@ export class NarrowIdleShell {
     this._suppressed = false;
     this._keepQuickStart = false;
     this._sheetOpen = false;
+    /** @type {(() => void) | null} */
+    this._popEscapeLayer = null;
     this._touchStartY = null;
     this._localeUnsub = null;
     this._hudObserver = null;
@@ -291,6 +294,11 @@ export class NarrowIdleShell {
   openSheet() {
     if (!this._isNarrow() || !this._idle) return;
     this._sheetOpen = true;
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = pushOverlayEscapeLayer({
+      id: 'narrow-options-drawer',
+      dismiss: () => this.closeSheet()
+    });
     this.shell?.classList.add('is-sheet-open');
     this.sheet?.setAttribute('aria-hidden', 'false');
     this.backdrop?.removeAttribute('hidden');
@@ -307,6 +315,8 @@ export class NarrowIdleShell {
     // can stack-overflow (Choose → postChoose keepQuickStart path).
     if (!this._sheetOpen) return;
     this._sheetOpen = false;
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = null;
     this.shell?.classList.remove('is-sheet-open');
     this.sheet?.setAttribute('aria-hidden', 'true');
     this.backdrop?.setAttribute('hidden', '');

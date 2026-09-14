@@ -21,6 +21,7 @@ import {
 } from '../core/desktopCompanionGate.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
+import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v7';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
@@ -126,6 +127,8 @@ export class WideIdleMoreMenu {
     this._suppressed = false;
     this._keepQuickStart = false;
     this._menuOpen = false;
+    /** @type {(() => void) | null} */
+    this._popEscapeLayer = null;
     this._expandedGroups = new Set([DEFAULT_EXPANDED_MENU_GROUP]);
     this._localeUnsub = null;
     this._refreshingHomeCtas = false;
@@ -201,6 +204,14 @@ export class WideIdleMoreMenu {
   openMenu() {
     if (!this._isWide() || !this._idle) return;
     this._menuOpen = true;
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = pushOverlayEscapeLayer({
+      id: 'wide-more-menu',
+      dismiss: () => {
+        this.closeMenu();
+        this.moreBtn?.focus();
+      }
+    });
     this._refreshItems();
     this._sync();
     this.moreBtn?.setAttribute('aria-expanded', 'true');
@@ -213,6 +224,8 @@ export class WideIdleMoreMenu {
   closeMenu() {
     if (!this._menuOpen) return;
     this._menuOpen = false;
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = null;
     this._sync();
     this.moreBtn?.setAttribute('aria-expanded', 'false');
     this.handlers.onMenuChange?.(false);
@@ -564,15 +577,6 @@ export class WideIdleMoreMenu {
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
 
-    this._onKeyDown = (event) => {
-      if (!this._menuOpen) return;
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        this.closeMenu();
-        this.moreBtn?.focus();
-      }
-    };
-    document.addEventListener('keydown', this._onKeyDown, true);
   }
 
   _sync() {

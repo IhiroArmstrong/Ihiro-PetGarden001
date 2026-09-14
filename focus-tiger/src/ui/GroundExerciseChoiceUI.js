@@ -23,6 +23,7 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 import { RESET_ROUTES } from './resetPracticeRoutes.js';
+import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 
 /** @typedef {import('./resetPracticeRoutes.js').ResetRoute} ResetRoute */
 
@@ -46,6 +47,8 @@ export class GroundExerciseChoiceUI {
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._open = false;
+    /** @type {(() => void) | null} */
+    this._popEscapeLayer = null;
 
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'ground-exercise-choice-backdrop',
@@ -82,15 +85,6 @@ export class GroundExerciseChoiceUI {
     this.root.append(this.titleEl, this.actions);
     mountRoot.appendChild(this.root);
 
-    this._onKeyDown = (event) => {
-      if (!this._open) return;
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        this.close();
-      }
-    };
-    document.addEventListener('keydown', this._onKeyDown);
-
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this._refreshTexts());
     this._refreshTexts();
@@ -107,6 +101,11 @@ export class GroundExerciseChoiceUI {
       return;
     }
     this._open = true;
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = pushOverlayEscapeLayer({
+      id: 'ground-exercise-choice',
+      dismiss: () => this.close()
+    });
     showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.getBoundingClientRect();
@@ -122,6 +121,8 @@ export class GroundExerciseChoiceUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = null;
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -132,7 +133,8 @@ export class GroundExerciseChoiceUI {
 
   destroy() {
     this._unsubLocale?.();
-    document.removeEventListener('keydown', this._onKeyDown);
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = null;
     this.backdrop.remove();
     this.root.remove();
   }
