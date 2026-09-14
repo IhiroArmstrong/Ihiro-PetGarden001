@@ -114,7 +114,7 @@
 | S18 | `RecoverResetPracticeUI.js` · 过载后倾诉条 (R4) | R3 走完柔性链接 | Recover 后 | **不阻断**（释放名额，点外可点下面） | **B** | 已实现轻量跟条 |
 | S19 | `TigerReflectionMoment.js` | 专注结束后反思 | 否（Reflect 时刻） | 是（占 tier-2，SB-19 hold） | **B** | 设计内的反思时刻，非专注中段打断 |
 | S20 | `CompanionModePicker.js` | 「How shall we sit?」选同伴模式 | 专注开始前 | 是（空白关闭） | **B** | 开练前必要选择 |
-| S21 | `TransitionMomentUI.js` | Calm Action 边界过渡（~8s 文案） | 仪式/过渡边界 | 是（`aria-modal`，挡 Yin tap，无全屏 dim） | **C** | 边界标记是否应降为 Whisper 待 PO 定 |
+| S21 | `TransitionMomentUI.js` | Calm Action 边界过渡（~8s CAW-T 轻提示） | 仪式/过渡边界 | **弱**（阿寅旁 whisper；不挡 Yin tap） | **A** | PO 2026-09-14 降为 Whisper · **开工 2** |
 | S22 | `FocusAwarenessCardUI.js` | 专注中段觉察卡片 | **是**（Focusing 允许） | **弱**：底部条，自动收起，可点关 | **B** | 已是非侵入式范例 |
 | S23 | `CalmActionRecoverCardUI.js` | Active Recover 后轻卡 | Recover 后 | 弱阻断，自动消失 | **B** | 跟练后轻提示 |
 | S24 | `CalmActionArriveCardUI.js` | Arrival 后轻卡 | Arrive 后、专注前 | 弱阻断 | **B** | 过渡轻提示 |

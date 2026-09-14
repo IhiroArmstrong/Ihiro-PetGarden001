@@ -4,20 +4,18 @@
  */
 
 /**
- * Transition Moment overlay — ~10s boundary marking (palmsTogether + CAW-T).
- * Idle-only; blocks Yin tap; quote-only (no full-screen dim — pure text box).
+ * Transition Moment whisper — ~8s CAW-T boundary line near Yin (S21).
+ * Non-modal: does not block idle Yin tap; click or auto-dismiss to close.
  */
 
 import { findCalmActionTransitionEntry } from '../content/calm-action-wisdom/index.js';
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
-import { OVERLAY_BACKDROP_FADE_MS } from './overlayBackdrop.js';
+import { homeClearanceTopCss } from './homeChromeClearance.js';
 
-const ROOT_ID = 'transition-moment-overlay';
-const QUOTE_ID = 'transition-moment-quote';
-const STYLE_ID = 'transition-moment-overlay-styles-v1';
-const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
+const ROOT_ID = 'transition-moment-whisper';
+const STYLE_ID = 'transition-moment-whisper-styles-v1';
 const HOLD_MS = 8000;
-const QUOTE_FADE_MS = 380;
+const FADE_MS = 380;
 
 export class TransitionMomentUI {
   /**
@@ -32,9 +30,12 @@ export class TransitionMomentUI {
    * @param {() => void} [handlers.onReturnIdle]
    */
   constructor(mountRoot, store, handlers = {}) {
+    this.mountRoot = mountRoot;
     this.store = store;
     this.handlers = handlers;
     this._open = false;
+    /** @type {HTMLElement | null} */
+    this.root = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
     this._holdTimer = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
@@ -42,44 +43,14 @@ export class TransitionMomentUI {
     /** @type {string | null} */
     this._activeQuoteId = null;
 
-    this.root = document.createElement('div');
-    this.root.id = ROOT_ID;
-    this.root.className = 'transition-moment-overlay';
-    this.root.hidden = true;
-    this.root.dataset.testid = ROOT_ID;
-    this.root.setAttribute('role', 'dialog');
-    this.root.setAttribute('aria-modal', 'true');
-    this.root.setAttribute('aria-labelledby', QUOTE_ID);
-
-    this.quoteEl = document.createElement('p');
-    this.quoteEl.id = QUOTE_ID;
-    this.quoteEl.className = 'transition-moment-overlay__quote';
-    this.quoteEl.dataset.testid = 'transition-moment-quote';
-    this.quoteEl.setAttribute('aria-live', 'polite');
-
-    this.root.appendChild(this.quoteEl);
-    mountRoot.appendChild(this.root);
-    this.root.addEventListener('click', (event) => {
-      if (event.target === this.root) this.close();
-    });
-
-    this._onKeyDown = (event) => {
-      if (!this._open) return;
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        this.close();
-      }
-    };
-    document.addEventListener('keydown', this._onKeyDown);
-
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => {
-      if (!this._open || !this._activeQuoteId) return;
+      if (!this._open || !this.root || !this._activeQuoteId) return;
       const entry = findCalmActionTransitionEntry(
         this._activeQuoteId,
         getLocale()
       );
-      if (entry?.text) this.quoteEl.textContent = entry.text;
+      if (entry?.text) this.root.textContent = entry.text;
     });
   }
 
@@ -99,13 +70,29 @@ export class TransitionMomentUI {
       return false;
     }
 
+    this.close({ immediate: true });
+
+    const root = document.createElement('button');
+    root.type = 'button';
+    root.id = ROOT_ID;
+    root.className = 'transition-moment-whisper';
+    root.dataset.testid = 'transition-moment-quote';
+    root.setAttribute('aria-live', 'polite');
+    root.textContent = entry.text;
+    root.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.close();
+    });
+
+    root.style.top = homeClearanceTopCss();
+    this.mountRoot.appendChild(root);
+    this.root = root;
     this._open = true;
     this._activeQuoteId = entry.id;
-    this.quoteEl.textContent = entry.text;
-    this.root.hidden = false;
-    this.root.classList.remove('is-closing');
-    this.root.getBoundingClientRect();
-    this.root.classList.add('is-visible');
+
+    root.getBoundingClientRect();
+    root.classList.add('is-visible');
     this.handlers.onPlayPalmsTogether?.();
     this.handlers.onOpen?.();
 
@@ -113,29 +100,37 @@ export class TransitionMomentUI {
     return true;
   }
 
-  close() {
-    if (!this._open) return;
+  /**
+   * @param {{ immediate?: boolean }} [opts]
+   */
+  close(opts = {}) {
+    if (!this._open && !this.root) return;
     this._clearTimers();
+    const wasOpen = this._open;
     this._open = false;
     this._activeQuoteId = null;
-    this.root.classList.remove('is-visible');
-    this.root.classList.add('is-closing');
-    this.handlers.onReturnIdle?.();
-    this.handlers.releaseSlot?.();
-    this.handlers.onClose?.();
+    const root = this.root;
+    this.root = null;
+    if (wasOpen) {
+      this.handlers.onReturnIdle?.();
+      this.handlers.releaseSlot?.();
+      this.handlers.onClose?.();
+    }
+    if (!root) return;
+    if (opts.immediate) {
+      root.remove();
+      return;
+    }
+    root.classList.remove('is-visible');
     this._fadeTimer = window.setTimeout(() => {
-      this._fadeTimer = null;
-      this.root.hidden = true;
-      this.root.classList.remove('is-closing');
-    }, QUOTE_FADE_MS + 40);
+      root.remove();
+    }, FADE_MS + 40);
   }
 
   destroy() {
     this._unsubLocale?.();
     this._clearTimers();
-    document.removeEventListener('keydown', this._onKeyDown);
-    this.close();
-    this.root.remove();
+    this.close({ immediate: true });
   }
 
   _clearTimers() {
@@ -154,48 +149,37 @@ export class TransitionMomentUI {
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
-      .transition-moment-overlay {
-        position: fixed;
-        inset: 0;
+      .transition-moment-whisper {
+        position: absolute;
+        left: 50%;
+        top: max(12px, env(safe-area-inset-top, 0px));
+        bottom: auto;
         z-index: 17;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px 20px;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity ${QUOTE_FADE_MS}ms ease;
-      }
-      .transition-moment-overlay.is-visible {
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .transition-moment-overlay.is-closing {
-        opacity: 0;
-        pointer-events: none;
-      }
-      .transition-moment-overlay__quote {
-        max-width: min(360px, calc(100vw - 40px));
+        max-width: min(340px, calc(100vw - 56px));
         margin: 0;
-        padding: 14px 20px;
-        border: 1px solid rgba(196, 165, 116, 0.32);
+        padding: 10px 16px;
+        border: 1px solid rgba(196, 165, 116, 0.35);
         border-radius: 16px;
-        background: rgba(255, 251, 243, 0.86);
+        background: rgba(255, 252, 245, 0.82);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         color: #3a2e22;
         font: inherit;
-        font-size: 0.9rem;
-        font-weight: 460;
-        letter-spacing: 0.015em;
-        line-height: 1.55;
+        font-size: 0.84rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        line-height: 1.45;
         text-align: center;
-        box-shadow: 0 8px 28px rgba(58, 46, 34, 0.08);
-        transform: translateY(10px);
-        transition: transform ${QUOTE_FADE_MS}ms ease;
+        cursor: pointer;
+        opacity: 0;
+        transform: translate(-50%, 8px);
+        transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
+        pointer-events: auto;
+        box-shadow: none;
       }
-      .transition-moment-overlay.is-visible .transition-moment-overlay__quote {
-        transform: translateY(0);
+      .transition-moment-whisper.is-visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
       }
     `;
     document.head.appendChild(style);

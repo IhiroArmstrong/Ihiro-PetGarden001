@@ -28,8 +28,7 @@ export class TransitionMomentTriggerUI {
     this.btn.className = 'transition-moment-trigger';
     this.btn.hidden = true;
     this.btn.dataset.testid = ROOT_ID;
-    this.btn.setAttribute('aria-haspopup', 'dialog');
-    this.btn.setAttribute('aria-controls', 'transition-moment-overlay');
+    this.btn.setAttribute('aria-controls', 'transition-moment-whisper');
 
     this.icon = document.createElement('span');
     this.icon.className = 'transition-moment-trigger__icon';

@@ -457,11 +457,10 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     id: OVERLAY_SOURCES.TRANSITION_MOMENT,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 22,
-    readers: 'TransitionMomentUI.tryOpen (Idle boundary marking; blocks Yin tap)',
-    blocksIdleYinTap: true,
+    readers:
+      'TransitionMomentUI.tryOpen (Idle CAW-T whisper; does not block Yin tap)',
+    blocksIdleYinTap: false,
     blocksEnterSleep: false,
-    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
-    dismissRoot: '#transition-moment-overlay',
     snapshotField: 'transitionMomentOpen'
   }),
   contract({
