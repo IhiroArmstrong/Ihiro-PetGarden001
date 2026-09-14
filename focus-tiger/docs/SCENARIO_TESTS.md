@@ -811,7 +811,7 @@
 **前提**：`?product=1&entitlementMock=subscription`（Morning Ritual 需订阅 mock）。
 
 1. Morning Ritual → Continue → 选 arrival chip → **Leave** → **无** Leave 当下 toast/确认（**SB** 类静默记账）；DevTools `presence-signals.v1` 应有 `ritual_chip` + `ritualCompleted:false`。  
-2. **回顾**：同类型**第二次**进入 → welcome 前见 `[data-testid=ritual-leave-retrospective]` 气泡 ~4s → **第三次**进入**不再**出现。  
+2. **回顾**：同类型**第二次**进入 → welcome 步顶栏见 `[data-testid=ritual-leave-retrospective]` 弱回声 ~4s 淡出；**Continue / Leave 立即可点**（不占整块板）→ **第三次**进入**不再**出现。  
 3. **完成**：走完全程 → chip 行 `ritualCompleted:true`、无回顾。**跨类型**：Emotional Reset 未完成**不在** Morning 提及。  
 4. **趋势对照**：Confide breakdown 仍只计 `emotionTag`（Ritual chip **不**抬高 `totalTagged`）。
 
