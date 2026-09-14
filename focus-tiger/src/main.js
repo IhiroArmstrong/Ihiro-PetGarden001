@@ -456,7 +456,6 @@ import { TransitionMomentUI } from './ui/TransitionMomentUI.js';
 import { TransitionMomentTriggerUI } from './ui/TransitionMomentTriggerUI.js';
 import { GroundExerciseChoiceUI } from './ui/GroundExerciseChoiceUI.js';
 import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
-import { RESET_ROUTES } from './ui/resetPracticeRoutes.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -1474,12 +1473,7 @@ async function init() {
   recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
     requestSlot: requestRecoverResetPracticeOverlaySlot,
     releaseSlot: releaseRecoverResetPracticeOverlaySlot,
-    onClose: () => syncIdleYinTap(),
-    canOpenConfide: canOpenConfideEntitled,
-    onOpenConfide: () => {
-      if (!canOpenConfideEntitled()) return;
-      confideToYinUI.open();
-    }
+    onClose: () => syncIdleYinTap()
   });
   groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
     onSelect: (route) => {

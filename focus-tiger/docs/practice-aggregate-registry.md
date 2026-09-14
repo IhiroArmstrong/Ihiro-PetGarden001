@@ -80,7 +80,6 @@ Sources that **should** feed cumulative practice metrics (via the shared write h
 | `practice-days-heatmap` | P2 | — | wire-only | `src/core/PracticeDaysStore.js` | `getLastNDays` | — |
 | `milestone-glow-streak` | P2 | — | wire-only | `src/core/MilestoneGlowStore.js` | `claimOffer` | — |
 | `celebrating-timed-only` | P2 | — | intentional-exclude | `src/core/DailyCompletionStore.js` | `hasCelebratedToday` | — |
-| `recover-reset-breath` | P2 | — | intentional-exclude | `src/ui/RecoverResetPracticeUI.js` | `RecoverResetPracticeUI` | — |
 
 <!-- practice-aggregate-consumer-registry:end -->
 
@@ -128,7 +127,6 @@ Legend: **Gap** = baseline practice sources not reflected in current read path.
 | `arrival-practice` | Arrival flow | Not 同坐 (product) |
 | `ritual-flow-complete` | RitualFlow history | Not 同坐 (product) |
 | `sit-rise-journey-only` | Early Rise Journey row | Not a practice day |
-| `recover-reset-breath` | Reset & Return · Take a Breath (~20s passive Recover) | Recover micro-reset ≠ active Breath practice; no `breathSessions` / lotus / practice-days / Journey (see `task-reset-return-mvp.md` §4.2) |
 
 ---
 
@@ -173,4 +171,4 @@ Planned script: `npm run audit:practice-coverage` (wired in `docs:check` · Batc
 | 2026-09-09 | Batch 3: mustard / archive auto-offer wired to Honesty + Breath baseline completion ceremonies |
 | 2026-09-09 | Batch 4: machine registry + `audit:practice-coverage` in docs:check; contemplative archive score on aggregate |
 | 2026-09-10 | Batch 5 (governance): `GROWTH_METRICS_CHARTER.md` + persona regression CI; TEST_TRACKER qaSeedStreak=21 |
-| 2026-09-07 | Add `recover-reset-breath` intentional exclude (Reset MVP cross-line alignment) |
+| 2026-09-14 | Remove `recover-reset-breath` exclude — legacy Recover breath path deleted (P5 S17) |
