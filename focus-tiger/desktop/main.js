@@ -37,6 +37,8 @@ import {
 } from './trayPolicy.js';
 import { attachCompanionL1Ipc } from './companion/l1Ipc.js';
 import { appendConfideObservationLog } from './companion/confideObservationLog.js';
+import { createDesktopUpdaterRuntime } from './updater/updaterRuntime.js';
+import { attachDesktopUpdaterIpc } from './updater/updaterIpc.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -63,6 +65,8 @@ let mainWindow = null;
 let pendingCheckoutReturnUrl = null;
 /** @type {import('./companion/l1Runtime.js').CompanionL1Runtime | null} */
 let companionRuntime = null;
+/** @type {ReturnType<typeof createDesktopUpdaterRuntime> | null} */
+let updaterRuntime = null;
 /** @type {Tray | null} */
 let tray = null;
 let isQuitting = false;
@@ -433,8 +437,20 @@ if (gotSingleInstanceLock) {
     getMainWindow: () => mainWindow
   });
 
+  updaterRuntime = createDesktopUpdaterRuntime({
+    app,
+    getMainWindow: () => mainWindow,
+    env: process.env
+  });
+  attachDesktopUpdaterIpc({
+    ipcMain,
+    runtime: updaterRuntime,
+    isDevMode
+  });
+
   createTray();
   mainWindow = createMainWindow();
+  updaterRuntime.scheduleCheck();
 
   if (pendingCheckoutReturnUrl) {
     navigateDesktopCheckoutReturn(pendingCheckoutReturnUrl);
@@ -443,6 +459,7 @@ if (gotSingleInstanceLock) {
 
   app.on('activate', () => {
     showMainWindow();
+    updaterRuntime?.scheduleCheck();
   });
   });
 }
@@ -450,6 +467,7 @@ if (gotSingleInstanceLock) {
 app.on('before-quit', () => {
   isQuitting = true;
   void companionRuntime?.dispose?.();
+  updaterRuntime?.dispose?.();
 });
 
 app.on('window-all-closed', () => {
