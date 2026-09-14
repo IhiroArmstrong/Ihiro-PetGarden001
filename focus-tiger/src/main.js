@@ -1452,14 +1452,34 @@ async function init() {
     syncIdleYinTap();
   }
 
+  const canOpenConfideEntitled = () => {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    return canOpenConfidePanel({
+      search: location.search,
+      stage: 'idle',
+      companionGeneration:
+        canRegisterDesktopCompanionGeneration({
+          hasBridge: hasDesktopCompanionBridge(),
+          widthPx: window.innerWidth
+        }) &&
+        isCompanionEntitled({
+          storage,
+          search: location.search
+        })
+    });
+  };
+
   const overlayRoot =
     document.getElementById('ui-overlay') || document.body;
   recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
     requestSlot: requestRecoverResetPracticeOverlaySlot,
     releaseSlot: releaseRecoverResetPracticeOverlaySlot,
     onClose: () => syncIdleYinTap(),
+    canOpenConfide: canOpenConfideEntitled,
     onOpenConfide: () => {
-      if (canOpenConfideNow()) confideToYinUI.open();
+      if (!canOpenConfideEntitled()) return;
+      confideToYinUI.open();
     }
   });
   groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
@@ -1605,21 +1625,7 @@ async function init() {
       Boolean(honestyBridge?.isVisible?.()) ||
       (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
     if (busy) return false;
-    const storage =
-      typeof localStorage !== 'undefined' ? localStorage : null;
-    return canOpenConfidePanel({
-      search: location.search,
-      stage: 'idle',
-      companionGeneration:
-        canRegisterDesktopCompanionGeneration({
-          hasBridge: hasDesktopCompanionBridge(),
-          widthPx: window.innerWidth
-        }) &&
-        isCompanionEntitled({
-          storage,
-          search: location.search
-        })
-    });
+    return canOpenConfideEntitled();
   };
   const companionIdleUnloadScheduler = createCompanionUnloadScheduler({
     unload: () => {

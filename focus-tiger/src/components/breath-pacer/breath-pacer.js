@@ -34,6 +34,8 @@ export class BreathPacerElement extends LitElement {
     cycles: { type: Number },
     /** Reset context: hide preset pills; completion shows Done only. */
     compact: { type: Boolean, reflect: true },
+    /** Halo + phase copy only — no card chrome or mascot slot. */
+    minimal: { type: Boolean, reflect: true },
     /** @private */
     _phase: { state: true },
     /** @private */
@@ -163,6 +165,31 @@ export class BreathPacerElement extends LitElement {
       }
       .breath-pacer__complete button:active {
         transform: translateY(1px);
+      }
+      :host([minimal]) {
+        width: auto;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      :host([minimal]) .breath-pacer__progress {
+        display: none;
+      }
+      :host([minimal]) .breath-pacer__mascot-wrap {
+        display: none;
+      }
+      :host([minimal]) .breath-pacer__stage {
+        min-height: auto;
+      }
+      :host([minimal]) .breath-pacer__phase-copy {
+        margin-top: 0;
+        font-size: 14px;
+      }
+      :host([minimal]) .breath-pacer__dismiss {
+        top: -4px;
+        right: -8px;
       }
       :host([completed]) .breath-pacer__mascot-wrap {
         animation: breath-mascot-nod 700ms ease;

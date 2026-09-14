@@ -204,13 +204,43 @@ export class FocusCircleWitnessLeaveUI {
 
   _openLeavePicker() {
     if (!this._leaveVisible) return;
-    if (!this.handlers.requestRespondSlot?.()) return;
+    // Tier27 respond picker cannot coexist with Tier26 leave occupancy.
+    this.handlers.releaseLeaveSlot?.();
+    if (!this.handlers.requestRespondSlot?.()) {
+      if (!this.handlers.requestLeaveSlot?.()) {
+        this.hideLeave({ immediate: true });
+        return;
+      }
+      this._showLeaveStripError(t('FOCUS_CIRCLE_WITNESS_PICKER_BUSY'));
+      return;
+    }
     this._pickerSlotHeld = true;
     if (this._leaveRoot) {
       this._leaveRoot.classList.add('is-hidden-for-picker');
       this._leaveRoot.setAttribute('aria-hidden', 'true');
     }
     this._showPicker('leave');
+  }
+
+  /**
+   * @param {string} message
+   */
+  _showLeaveStripError(message) {
+    if (!this._leaveRoot || !message) return;
+    let status = this._leaveRoot.querySelector(
+      '.focus-circle-witness-leave__status'
+    );
+    if (!status) {
+      status = document.createElement('p');
+      status.className = 'focus-circle-witness-leave__status';
+      status.setAttribute('role', 'alert');
+      const title = this._leaveRoot.querySelector(
+        '.focus-circle-witness-leave__title'
+      );
+      title?.after(status);
+    }
+    status.textContent = message;
+    status.hidden = false;
   }
 
   /**
@@ -296,6 +326,14 @@ export class FocusCircleWitnessLeaveUI {
       if (restoreLeave && this._leaveRoot) {
         this._leaveRoot.classList.remove('is-hidden-for-picker');
         this._leaveRoot.removeAttribute('aria-hidden');
+        this.handlers.requestLeaveSlot?.();
+        const status = this._leaveRoot.querySelector(
+          '.focus-circle-witness-leave__status'
+        );
+        if (status) {
+          status.textContent = '';
+          status.hidden = true;
+        }
       }
     };
 
@@ -459,6 +497,16 @@ export class FocusCircleWitnessLeaveUI {
         line-height: 1.45;
         color: ${TEXT_PRIMARY};
         text-align: center;
+      }
+      .focus-circle-witness-leave__status {
+        margin: 0 0 8px;
+        font-size: 11px;
+        line-height: 1.4;
+        color: #8b3a3a;
+        text-align: center;
+      }
+      .focus-circle-witness-leave__status[hidden] {
+        display: none;
       }
       .focus-circle-witness-leave__actions {
         display: flex;

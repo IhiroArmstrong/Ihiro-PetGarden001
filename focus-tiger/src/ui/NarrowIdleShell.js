@@ -226,7 +226,7 @@ export class NarrowIdleShell {
 
   /**
    * Overlay chrome policy (narrow):
-   * - Full suppress (Reflection): hide grabber / home / sheet;
+   * - Full suppress (Reflection): hide home / sheet; **grabber stays** (menu escape hatch).
    *   **ActionBar (? · wall clock · ♪) stays visible**.
    * - Arrival / Honesty / Companion (`keepQuickStart`): hide grabber / Sit /
    *   Honesty, but **keep ActionBar + Quick Start** (W3 — ⚡ only).
@@ -1095,10 +1095,10 @@ export class NarrowIdleShell {
       .ft-narrow-idle-shell > * {
         pointer-events: auto;
       }
-      .ft-narrow-idle-shell.is-suppressed .ft-narrow-grabber,
       .ft-narrow-idle-shell.is-suppressed .ft-narrow-home-ctas,
-      .ft-narrow-idle-shell.is-suppressed .ft-narrow-sheet,
-      .ft-narrow-idle-shell.is-suppressed .ft-narrow-sheet-backdrop {
+      .ft-narrow-idle-shell.is-suppressed:not(.is-sheet-open) .ft-narrow-sheet,
+      .ft-narrow-idle-shell.is-suppressed:not(.is-sheet-open)
+        .ft-narrow-sheet-backdrop {
         visibility: hidden;
         pointer-events: none;
       }

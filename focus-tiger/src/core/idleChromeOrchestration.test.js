@@ -239,6 +239,16 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
     }
   });
 
+  it('overlay-suppress: menu escape hatch stays visible (both viewports)', () => {
+    for (const viewport of /** @type {const} */ (['narrow', 'wide'])) {
+      const r = resolveRoleVisibility({ stage: 'overlay-suppress', viewport });
+      assert.equal(r.sit, 'hidden');
+      assert.equal(r.quickStart, 'hidden');
+      assert.equal(r.honesty, 'hidden');
+      assert.equal(r.moreOrGrabber, 'visible');
+    }
+  });
+
   it('bridge: narrow hides Sit/Quick/Honesty/grabber; ActionBar stays; wide More hidden', () => {
     const narrow = resolveRoleVisibility({
       stage: 'bridge',
