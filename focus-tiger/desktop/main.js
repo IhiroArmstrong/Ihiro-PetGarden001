@@ -264,6 +264,47 @@ function attachWindowLifecycle(win) {
   });
 }
 
+function notifyOpenPreferences(win = mainWindow) {
+  if (!win || win.isDestroyed() || win.webContents.isDestroyed()) return;
+  win.webContents.send('desktop:open-preferences');
+}
+
+function openPreferencesFromMenu() {
+  showMainWindow();
+  notifyOpenPreferences(mainWindow);
+}
+
+function installMacApplicationMenu() {
+  if (process.platform !== 'darwin') return;
+
+  const template = [
+    {
+      label: app.name,
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        {
+          label: 'Preferences…',
+          accelerator: 'Cmd+,',
+          click: () => openPreferencesFromMenu()
+        },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideOthers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    },
+    { role: 'editMenu' },
+    { role: 'viewMenu' },
+    { role: 'windowMenu' }
+  ];
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+}
+
 function createTray() {
   if (tray) return tray;
   tray = new Tray(trayIconImage());
@@ -448,6 +489,7 @@ if (gotSingleInstanceLock) {
     isDevMode
   });
 
+  installMacApplicationMenu();
   createTray();
   mainWindow = createMainWindow();
   updaterRuntime.scheduleCheck();

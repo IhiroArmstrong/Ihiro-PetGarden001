@@ -84,6 +84,13 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:hide/);
     assert.match(preload, /desktop:show/);
     assert.match(preload, /desktop:shell-visibility/);
+    assert.match(preload, /desktop:open-preferences/);
+  });
+
+  it('macOS Application menu wires Cmd+, to open Preferences', () => {
+    assert.match(mainSrc, /installMacApplicationMenu/);
+    assert.match(mainSrc, /accelerator:\s*['"]Cmd\+,['"]/);
+    assert.match(mainSrc, /desktop:open-preferences/);
   });
 
   it('preload is CommonJS so sandboxed Electron can parse it as a script', () => {
