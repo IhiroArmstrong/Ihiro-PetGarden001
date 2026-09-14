@@ -92,6 +92,12 @@ describe('SessionUiGate', () => {
     );
     gate.setCompletionPending(true);
     assert.equal(gate.resolveSitClickWhenIdle(), 'ignore');
+    gate.setCompletionPending(false);
+    assert.equal(
+      gate.resolveSitClickWhenIdle({ microRitualOpen: true }),
+      'ignore',
+      'S11：M1 时长板开着时 Sit 须 ignore'
+    );
   });
 
   it('shouldEnableFocusChromeButton：完成中 / 微仪式 → 禁用（防静默 return）', () => {
@@ -167,6 +173,12 @@ describe('SessionUiGate', () => {
     assert.equal(gate.canStartArrivalFromChrome({ isFocusing: true }), false);
     gate.setCompletionPending(true);
     assert.equal(gate.canStartArrivalFromChrome(), false);
+    gate.setCompletionPending(false);
+    assert.equal(
+      gate.canStartArrivalFromChrome({ microRitualOpen: true }),
+      false,
+      'S11：时长板开着时不得从 chrome 启动 Arrival'
+    );
   });
 });
 

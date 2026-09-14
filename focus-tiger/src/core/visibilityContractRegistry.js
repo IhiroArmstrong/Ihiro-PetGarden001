@@ -148,7 +148,7 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     wideSelector: '#btn-focus',
     narrowSelector: '#ft-narrow-home-sit',
     testAnchorWide:
-      'e2e/micro-ritual.spec.js › micro ritual: entry → breath → complete…',
+      'e2e/micro-ritual.spec.js › micro ritual duration picker: Sit unavailable while picking (S11)',
     testAnchorNarrow:
       'e2e/micro-ritual.spec.js › 375 micro ritual: home Sit unavailable while breath runs',
     lockStatus: 'locked',

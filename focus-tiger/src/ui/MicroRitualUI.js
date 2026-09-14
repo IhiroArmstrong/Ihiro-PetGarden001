@@ -111,6 +111,11 @@ export class MicroRitualUI {
     return this.phase !== 'hidden';
   }
 
+  /** M1 时长板（chip 点选前）是否打开。S11 门闩：与 Sit 互斥。 */
+  isDurationPickerOpen() {
+    return this.phase === 'pick';
+  }
+
   /** @returns {boolean} */
   isIdleEntryVisible() {
     return Boolean(this.idleEntryBtn && !this.idleEntryBtn.hidden);

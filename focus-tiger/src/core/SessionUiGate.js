@@ -28,6 +28,7 @@ import {
  * @property {boolean} [arrivalOpen] Arrival Practice 面板是否打开
  * @property {boolean} [isFocusing] 是否已在 FOCUSING
  * @property {boolean} [idleChromeVisible] Companion hint 是否处于空闲可见
+ * @property {boolean} [microRitualOpen] MicroRitual / 时长板占用（含 M1 pick）
  */
 
 /**
@@ -224,6 +225,7 @@ export class SessionUiGate {
   resolveSitClickWhenIdle(ext = {}) {
     if (this._completionPending) return 'ignore';
     if (ext.isFocusing) return 'ignore';
+    if (ext.microRitualOpen) return 'ignore';
     return 'start-arrival';
   }
 
@@ -255,6 +257,7 @@ export class SessionUiGate {
     if (this._completionPending) return false;
     if (ext.isFocusing) return false;
     if (ext.arrivalOpen) return false;
+    if (ext.microRitualOpen) return false;
     return true;
   }
 }
