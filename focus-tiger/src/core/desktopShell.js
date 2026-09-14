@@ -20,6 +20,7 @@
  *   show?: () => Promise<unknown>,
  *   getShellVisibility?: () => Promise<{ hidden?: boolean, hideReason?: string }>,
  *   onShellVisibility?: (cb: (payload: { hidden?: boolean, hideReason?: string }) => void) => () => void,
+ *   onOpenPreferences?: (cb: () => void) => () => void,
  *   companion?: {
  *     ensureReady?: () => Promise<unknown>,
  *     unload?: () => Promise<unknown>,

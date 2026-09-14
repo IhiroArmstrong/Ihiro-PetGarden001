@@ -26,6 +26,12 @@ const desktopShell = {
     const wrapped = (_event, payload) => cb(payload);
     ipcRenderer.on('desktop:shell-visibility', wrapped);
     return () => ipcRenderer.removeListener('desktop:shell-visibility', wrapped);
+  },
+  onOpenPreferences: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = () => cb();
+    ipcRenderer.on('desktop:open-preferences', wrapped);
+    return () => ipcRenderer.removeListener('desktop:open-preferences', wrapped);
   }
 };
 

@@ -280,6 +280,7 @@ import {
 import { AttentionSignals } from './input/AttentionSignals.js';
 import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime } from './core/desktopShell.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
+import { bindDesktopPreferencesShortcut } from './core/desktopPreferencesShortcut.js';
 import {
   canRegisterDesktopCompanionGeneration,
   getDesktopCompanionBridge,
@@ -3332,6 +3333,29 @@ async function init() {
     },
     onOpenSecondaryMenu: () => {
       idleChrome.openSecondaryMenu?.();
+    }
+  });
+
+  bindDesktopPreferencesShortcut({
+    onOpen: (proxy) => {
+      switch (proxy) {
+        case 'reminder':
+          reminderPreferenceUI.openPanel();
+          return;
+        case 'language':
+          languagePreferenceUI.openPanel();
+          return;
+        case 'newsletter':
+          closeGrowthOverlayCards({ except: 'newsletter' });
+          newsletterCaptureUI.open();
+          return;
+        case 'local-backup':
+          closeGrowthOverlayCards({ except: 'local-backup' });
+          localPracticeDataPanelUI.openPanel();
+          return;
+        default:
+          return;
+      }
     }
   });
 
