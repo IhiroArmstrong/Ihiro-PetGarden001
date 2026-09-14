@@ -6,7 +6,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
-  advanceRitualPrompt,
   completeRitualBreath,
   continueWelcome,
   createRitualFlowState,
@@ -100,19 +99,19 @@ describe('RitualFlow emotional-reset path', () => {
   });
 });
 
-describe('RitualFlow work-transition prompts', () => {
-  it('two skippable prompts then end', () => {
+describe('RitualFlow work-transition path', () => {
+  it('welcome → breath → stay chip → home chip → end → complete', () => {
     let state = createRitualFlowState('work-transition');
     state = continueWelcome(state);
+    assert.equal(getCurrentStep(state)?.kind, 'breath');
     state = completeRitualBreath(state);
-    assert.equal(getCurrentStep(state)?.kind, 'prompts');
-    assert.equal(state.promptIndex, 0);
-    state = advanceRitualPrompt(state, { skipped: true });
-    assert.equal(state.promptIndex, 1);
-    assert.equal(state.selections.prompt_0, 'skipped');
-    state = advanceRitualPrompt(state, { skipped: false });
+    assert.equal(getCurrentStep(state)?.kind, 'chips');
+    state = selectRitualChip(state, 'worry');
+    assert.equal(state.selections.stay, 'worry');
+    assert.equal(getCurrentStep(state)?.kind, 'chips');
+    state = selectRitualChip(state, 'rest');
+    assert.equal(state.selections.home, 'rest');
     assert.equal(getCurrentStep(state)?.kind, 'end');
-    assert.equal(state.selections.prompt_1, 'continued');
     state = finishRitualEnd(state);
     assert.equal(state.completed, true);
   });

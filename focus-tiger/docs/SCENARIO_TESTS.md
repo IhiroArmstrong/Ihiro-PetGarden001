@@ -1,12 +1,14 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-02（**Electron 结账回本壳 confirm**，不把 Vite `5173` 当产品成功页；Safari 存储仍不自动同步。**E′ 规则预筛进 AE L2** sit next / 软边界 / 窄 OTHER · 场景 **AL** Reflection Companion validation；**Gate 0.2 #472 关单**；AG Slice 0 含 `total sitting time` → `practice_facts`；What Yin remembers 开着面板 Remember 须刷新；抽取规则见 `YIN_PERSONAL_MEMORY.md` §8。**叠层占用三问** `OVERLAY_SOURCE_CONTRACTS`；**AE** Confide 打开睡态唤醒 · #491；**AF** Presence Signals · **AG** Yin Personal Memory · **AH** Overlay slot · **AI** 练习备份 · **AJ** Stay in touch · **AK** Focusing Float Yin PiP；**AD** 仍有效。AB 托盘 + SB-18。逐功能仍以 `TEST_TRACKER` 为准）
+最近代码核对：2026-09-13（官方场景清库 `__ftDebug.resetScenario` · 仅 DEV；场景 V 禁止默写 removeItem）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
+
+**官方清库（2026-09-13）**：Vite DEV Console 用 `window.__ftDebug.resetScenario('<id>')`（生产 / `vite preview` **不挂**该钩子）。权威配方 `src/core/debugScenarioReset.js`。TRACKER / PR **禁止**默写 `localStorage.removeItem`。CI/单测绿但手测红 → 先核对本步，再怀疑代码（`ui-bug-triage` Step A0）。
 
 **功能 vs 测试覆盖缺口审计（2026-07-30）**：模块级对照、三条「绿」口径、永不自动化清单、**unit\*→smoke 分类（§7）**、Honesty/i18n 发布口径（§8–§9）→ [`COVERAGE_GAP_AUDIT.md`](./COVERAGE_GAP_AUDIT.md)（与 `TEST_TRACKER` §C 互补；改覆盖结论先改审计文档）。
 
@@ -457,13 +459,14 @@
 > **仍须人工**：约 10 fps 弧线；末约 **1s CapCut** 回 Idle **不闪白**；窄屏气泡完整在 ActionBar **下方**；文案轮换不连出同一句。  
 > **负例**：`?flowerWelcome=0` → 永不吹花只走书/点头池；产品壳不得无故自动连播实验室按钮。
 
-1. 清 `focus-tiger.flower-welcome.v1` + 相关 `scene-anim-daily`（实验室重置或手清）→ `?product=1` 硬刷新。
+1. `?product=1` → DEV Console：`window.__ftDebug.resetScenario('day1-flower-card')`（吹花+四选卡；只要吹花用 `'day1-flower-only'`）→ 硬刷新。**禁止**手打 `removeItem`。
 2. Day1：见吹花 + `#flower-blow-welcome-bubble`（可点气泡/空白立刻消）；含 ≥23:00 / 清晨——**压过** wellness 斗篷/苏醒。
 3. 同日再刷 → **不得**再吹花 / 再书或点头欢迎池抢播。
 4. 模拟 ≥3 日久别（拨 `lastOpen`）→ 再吹花（跟 locale）。
 5. **回流**：吹花进行中仍可点 Sit。
 6. Lab 对照（非产品故事）：无 `?product=1` 调试钮「变花吹散+气泡」。
 7. **组合 · 提醒已过时分（E12）**：清库后设每日提醒为过去时分、今日零完成 → 硬刷新。**0–1 秒内**见吹花（或欢迎池），**不得**在吹花进行中突然切鹦鹉、也不得无 1s 叠化硬切。横幅可在吹花期间出现。吹花结束后约 1s 才见 `parrotEarVisit`。自动化：单元 `spriteChannelArbitration` first-paint KEEP + dispatcher latch；观感仍人工。
+8. **负例 · 配额拦截**：先走完一次 Day1，再 `resetScenario('welcome-quota-blocks-flower')` 刷新 → **不得**再吹花（日旗仍在）。Console 可出现 `⚠️ scenario inconsistency: flower reset but daily quota still consumed`——测本负例时可忽略。
 
 ---
 
@@ -955,6 +958,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | Idle 加速眨眼 | DEV：`__idleOrchestrator.setTiming({ breathCyclesBeforeBlink: 1 })` |
 | 清当日完成（模拟 DORMANT） | DEV：清 `DailyCompletionStore` 相关 localStorage 后刷新（或 `__dailyCompletionStore`）——**仅**清零完成记录；**不会**单独进睡 |
 | 模拟 ≥2h 后进 DORMANT | DEV：设 `focus-tiger.focus-session-end.v1` = `{"lastEndedAt": <≥2h 前 epoch ms>}` 后刷新或切回前台；或坐完一场后把系统时间拨快 |
+| 场景 V 官方清库 | **仅 DEV**：`__ftDebug.resetScenario('day1-flower-card')` / `'day1-flower-only'` / `'welcome-quota-blocks-flower'`（生产构建无此钩子；e2e 从同一模块 import 配方） |
 
 说明：`#emotion-debug-ui` 当前在**非** `?product=1` 时挂载；多数 `window.__*` 仍仅 `import.meta.env.DEV`。例外：`__honestyBridge` / `__honestyBridgeStore` 在生产构建也挂载（e2e 注入桥接可见态；非完整补登链）。
 
@@ -1021,6 +1025,22 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 3. **链接表**：补 `?entitlementMock=subscription`（AF Slice 2）；Electron 行补 AG/AK。  
 4. **仍须人工 / 勿当缺口**：AJ 欢迎信 Resend 细节待 #444 合入后二次核对；Presence 披露 ~4s 观感；Electron memory JSON 对账；Overlay 吹花→Compass 时序。  
 5. **下班前 Git 同步门禁（2026-08-26）**：凡口令「请安排下班前的 Git 同步」，须先增量核对并更新本文「最近代码核对」日期（见 `RULES_INDEX` → `scenario-tests-eod-sync`）。
+
+---
+
+## 2026-09-12–13 增量核对摘要（C.2–C.3 · D.2–D.4 · Collections P0 · Ground Exercise · Seasonal Phase 4）
+
+1. **背景**：9/12–9/13 合入 develop 一批 Sanctuary / Collections / Seasonal 用户面（#739–#755）；TRACKER 碎片已 `tracker:assemble` 折入机器块；故事剧本仍缺 D 系与季节主题正式场景。  
+2. **本次核对（增量，未升格新字母场景）**：  
+   - **场景 AC** 仍为准；D.4（#750）补 **金 tier 卡片**与更安静的 Bond 触感——步 1 商店行须见 tier 色带/层级，步 3 结缘 toast 仍中置、非彩纸。  
+   - **Collections P0**（#752）：已结缘区 unblur + owned-card 分区——AC 步 3/4 回流后须见已结缘卡面分区，勿与未结缘 SKU 混排。  
+   - **C.2 Focus HUD idle calm**（#739）· **C.3 Reflection CTA tier**（#740）：尚无独立场景字母；批量测时对照 TRACKER `feature/c2-*` / `feature/c3-*` 行与场景 B/Q 叠层。  
+   - **D.2 Presence quiet object**（#746）· **D.3 Quiet Drawer**（#749）：宽屏 paper surface / accordion 抽屉；尚无独立场景——走 TRACKER 行 + 场景 D/O 叠层时留意 375 不挡三球。  
+   - **Ground exercise standalone menu**（#747）：被动 emoji 入口改为独立菜单项；走场景 K/O 附近时留意菜单行出现，勿与 Breath practice 混淆。  
+   - **Seasonal Phase 4**（#751 Thanksgiving · #754 Halloween · #755 New Year/Eve）：`seasonalThemeEngine` wash + copy；**无**独立场景字母——冷启动/Idle 背景须见对应节日 wash（按 locale/日历 gate）；勿与场景 V 吹花日旗冲突。  
+   - **官方清库**：文首已记 `__ftDebug.resetScenario`（#debug-scenario-reset）；场景 V 步 1 已引用，禁止默写 `removeItem`。  
+3. **仍须人工 / 勿当缺口**：D 系与 Seasonal 的 375 观感、金 tier 配色、节日 wash 与莲花/披毯叠层时序；C.1 关单行见 PR #753（待你 Merge）。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
 

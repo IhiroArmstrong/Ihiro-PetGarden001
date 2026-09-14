@@ -9,6 +9,7 @@ import {
   FLOWER_WELCOME_ABSENCE_DAYS,
   FLOWER_WELCOME_FLAG_STORAGE_KEY,
   isFlowerWelcomeEnabled,
+  isWelcomeFirstPaintSequencePlaying,
   markFlowerWelcomeBubbleShown,
   readFlowerWelcomeState,
   resolveFlowerWelcomeForce,
@@ -91,6 +92,44 @@ describe('flowerWelcomeGate', () => {
       false
     );
     assert.equal(shouldPreferFlowerWelcomeOverWellness(null), false);
+  });
+
+  it('first-paint sequence guard: only the tracked sequence still on the player holds', () => {
+    assert.equal(
+      isWelcomeFirstPaintSequencePlaying({
+        trackedSequence: 'conjureFlowersBlowAway',
+        playing: true,
+        currentSequence: 'conjureFlowersBlowAway'
+      }),
+      true
+    );
+    // 播完（player 已停）→ 序列自己的 onComplete 负责回 idle，不再守
+    assert.equal(
+      isWelcomeFirstPaintSequencePlaying({
+        trackedSequence: 'conjureFlowersBlowAway',
+        playing: false,
+        currentSequence: 'conjureFlowersBlowAway'
+      }),
+      false
+    );
+    // 被别的序列接管（用户互动打断）→ 不得把守卫留成僵尸门闩
+    assert.equal(
+      isWelcomeFirstPaintSequencePlaying({
+        trackedSequence: 'conjureFlowersBlowAway',
+        playing: true,
+        currentSequence: 'idleBreathClosed'
+      }),
+      false
+    );
+    // 本次冷启动没有第一幕序列（普通 Idle 开场）
+    assert.equal(
+      isWelcomeFirstPaintSequencePlaying({
+        trackedSequence: null,
+        playing: true,
+        currentSequence: 'idleBreathClosed'
+      }),
+      false
+    );
   });
 
   it('records lastCopyKey for rotation accounting', () => {

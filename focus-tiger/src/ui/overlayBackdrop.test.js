@@ -11,13 +11,16 @@ import {
   OVERLAY_BACKDROP_RGBA,
   OVERLAY_BACKDROP_BASE_CLASS,
   IDLE_OVERLAY_CHROME_DIM_BODY_CLASS,
+  YIN_COIN_WAVE_FOCUS_BODY_CLASS,
   acquireIdleOverlayChromeDim,
+  acquireYinCoinWaveFocus,
   createOverlayBackdrop,
   ensureOverlayBackdropStyles,
   hideOverlayBackdrop,
   overlayBackdropBaseCss,
   overlayBackdropDismissModifier,
   releaseIdleOverlayChromeDim,
+  releaseYinCoinWaveFocus,
   showOverlayBackdrop,
   syncIdleOverlayChromeDim
 } from './overlayBackdrop.js';
@@ -242,6 +245,39 @@ describe('overlayBackdrop lifecycle (mock DOM)', () => {
       assert.equal(injected, 1);
       ensureOverlayBackdropStyles('ft-overlay-backdrop-styles-v1', doc);
       assert.equal(injected, 1);
+    } finally {
+      globalThis.document = previousDocument;
+    }
+  });
+
+  it('toggles yin-coin wave focus body class for backdrop unblur', () => {
+    const previousDocument = globalThis.document;
+    const body = {
+      classList: {
+        _tokens: new Set(),
+        add(token) {
+          this._tokens.add(token);
+        },
+        remove(token) {
+          this._tokens.delete(token);
+        },
+        contains(token) {
+          return this._tokens.has(token);
+        }
+      }
+    };
+    globalThis.document = { body };
+    try {
+      acquireYinCoinWaveFocus();
+      assert.equal(
+        body.classList.contains(YIN_COIN_WAVE_FOCUS_BODY_CLASS),
+        true
+      );
+      releaseYinCoinWaveFocus();
+      assert.equal(
+        body.classList.contains(YIN_COIN_WAVE_FOCUS_BODY_CLASS),
+        false
+      );
     } finally {
       globalThis.document = previousDocument;
     }

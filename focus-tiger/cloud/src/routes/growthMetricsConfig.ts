@@ -25,6 +25,11 @@ export async function handleGrowthMetricsConfig(
 	const payload: GrowthMetricsConfigResponse = {
 		schemaVersion: GROWTH_METRICS_SCHEMA_VERSION,
 		dailyScoreCapMinutes: config.dailyScoreCapMinutes,
+		lotusFirstBloomMinutes: config.lotusFirstBloomMinutes,
+		lotusEarlyStepMinutes: config.lotusEarlyStepMinutes,
+		lotusEarlyBloomLast: config.lotusEarlyBloomLast,
+		lotusLaterStepMinutes: config.lotusLaterStepMinutes,
+		lotusRingCapacity: config.lotusRingCapacity,
 	};
 	return json(payload);
 }

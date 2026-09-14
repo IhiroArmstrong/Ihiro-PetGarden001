@@ -28,6 +28,12 @@ import {
 export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistry.js';
 
 /**
+ * Defer 原因：冷启动第一幕序列仍在播（≠ 气泡还开着）。不是 overlay source，
+ * 只作 `mustYieldTo` / `reason` 里的可读原因，便于分辨「等气泡」与「等序列」。
+ */
+export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
+
+/**
  * @typedef {object} OverlaySnapshotInput
  * @property {string} [sessionState]
  * @property {boolean} [completionPending]
@@ -41,6 +47,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [companionPickerOpen]
  * @property {boolean} [postSessionOverlayActive] Gate field (may include mustard bypass)
  * @property {boolean} [compassOpen]
+ * @property {boolean} [groundExerciseChoiceOpen]
  * @property {boolean} [coldStartGoalOpen]
  * @property {boolean} [mustardSeedOpen]
  * @property {boolean} [tipJarOpen]
@@ -48,6 +55,7 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [sanctuaryOpen]
  * @property {boolean} [membershipOpen]
  * @property {boolean} [flowerWelcomeVisible]
+ * @property {boolean} [welcomeSequencePlaying] 冷启动第一幕序列未播完（气泡可能已收）
  * @property {boolean} [secondaryMenuOpen]
  * @property {boolean} [confideOpen]
  * @property {boolean} [journeyOpen]
@@ -63,7 +71,6 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  * @property {boolean} [focusCircleWitnessLeaveVisible]
  * @property {boolean} [focusCircleWitnessRespondOpen]
  * @property {boolean} [focusAwarenessOpen]
- * @property {boolean} [recoverResetOfferOpen]
  * @property {boolean} [recoverResetPracticeOpen]
  * @property {boolean} [transitionMomentOpen]
  */
@@ -74,11 +81,12 @@ export { OVERLAY_SOURCES, OVERLAY_SLOT_KIND } from './overlaySlotContractRegistr
  *   'arrivalOpen' | 'reflectionOpen' | 'microRitualOpen' | 'ritualFlowOpen' |
  *   'focusDurationPickerOpen' | 'companionPickerOpen' | 'postSessionOverlayActive' |
  *   'compassOpen' | 'coldStartGoalOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
- *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' | 'secondaryMenuOpen' |
+ *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' |
+ *   'welcomeSequencePlaying' | 'secondaryMenuOpen' |
  *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
- *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' | 'recoverResetOfferOpen' |
+ *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' |
  *   'recoverResetPracticeOpen' | 'transitionMomentOpen'
  * >>} OverlaySnapshot
  */
@@ -104,6 +112,7 @@ export function buildOverlaySnapshot(input = {}) {
     companionPickerOpen: Boolean(input.companionPickerOpen),
     postSessionOverlayActive: Boolean(input.postSessionOverlayActive),
     compassOpen: Boolean(input.compassOpen),
+    groundExerciseChoiceOpen: Boolean(input.groundExerciseChoiceOpen),
     coldStartGoalOpen: Boolean(input.coldStartGoalOpen),
     mustardSeedOpen: Boolean(input.mustardSeedOpen),
     tipJarOpen: Boolean(input.tipJarOpen),
@@ -111,6 +120,7 @@ export function buildOverlaySnapshot(input = {}) {
     sanctuaryOpen: Boolean(input.sanctuaryOpen),
     membershipOpen: Boolean(input.membershipOpen),
     flowerWelcomeVisible: Boolean(input.flowerWelcomeVisible),
+    welcomeSequencePlaying: Boolean(input.welcomeSequencePlaying),
     secondaryMenuOpen: Boolean(input.secondaryMenuOpen),
     confideOpen: Boolean(input.confideOpen),
     journeyOpen: Boolean(input.journeyOpen),
@@ -126,7 +136,6 @@ export function buildOverlaySnapshot(input = {}) {
     focusCircleWitnessLeaveVisible: Boolean(input.focusCircleWitnessLeaveVisible),
     focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen),
     focusAwarenessOpen: Boolean(input.focusAwarenessOpen),
-    recoverResetOfferOpen: Boolean(input.recoverResetOfferOpen),
     recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
     transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };
@@ -254,7 +263,6 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
  * @returns {boolean}
  */
 export function deriveFocusingSoftCardBusy(snapshot) {
-  if (snapshot.recoverResetOfferOpen) return true;
   if (snapshot.recoverResetPracticeOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
   if (snapshot.compassOpen || snapshot.coldStartGoalOpen) return true;
@@ -465,6 +473,9 @@ function activeGrowthCard(snapshot) {
   if (snapshot.mustardSeedOpen) return OVERLAY_SOURCES.GROWTH_MUSTARD_SEED;
   if (snapshot.coldStartGoalOpen) return OVERLAY_SOURCES.COLD_START_GOAL;
   if (snapshot.compassOpen) return OVERLAY_SOURCES.GROWTH_COMPASS;
+  if (snapshot.groundExerciseChoiceOpen) {
+    return OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE;
+  }
   return null;
 }
 
@@ -502,6 +513,13 @@ function collectFirstCardBlockers(snapshot, source) {
     const higher = FIRST_CARD_DEFER_PRIORITY[i];
     if (higher === OVERLAY_SOURCES.FLOWER_WELCOME && snapshot.flowerWelcomeVisible) {
       blockers.push(higher);
+    }
+    // 气泡（≈3.6s）比吹花序列（≈6.5s）先走：只认气泡会让毛玻璃卡压在没播完的第一幕上。
+    if (
+      higher === OVERLAY_SOURCES.FLOWER_WELCOME &&
+      snapshot.welcomeSequencePlaying
+    ) {
+      blockers.push(WELCOME_SEQUENCE_BLOCKER);
     }
     if (
       higher === OVERLAY_SOURCES.COLD_START_GOAL &&
@@ -613,6 +631,9 @@ function collectRecoverResetBaseYield(snapshot) {
     blockers.push(OVERLAY_SOURCES.COLD_START_GOAL);
   }
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
+  if (snapshot.groundExerciseChoiceOpen) {
+    blockers.push(OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE);
+  }
   if (snapshot.mustardSeedOpen) {
     blockers.push(OVERLAY_SOURCES.GROWTH_MUSTARD_SEED);
   }
@@ -677,9 +698,7 @@ export function requestOverlaySlot(req) {
 
   if (isSessionHardGate(snapshot)) {
     const focusingSoftCardAllowed =
-      (source === OVERLAY_SOURCES.FOCUS_AWARENESS ||
-        source === OVERLAY_SOURCES.RECOVER_RESET_OFFER ||
-        source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE) &&
+      source === OVERLAY_SOURCES.FOCUS_AWARENESS &&
       snapshot.sessionState === STATES.FOCUSING;
     if (!focusingSoftCardAllowed) {
       mustYieldTo.push('session-hard-gate');
@@ -722,17 +741,10 @@ export function requestOverlaySlot(req) {
     }
   }
 
-  if (source === OVERLAY_SOURCES.RECOVER_RESET_OFFER) {
-    mustYieldTo.push(...collectRecoverResetBaseYield(snapshot));
-    if (deriveFocusingSoftCardBusy(snapshot)) {
-      mustYieldTo.push('focusing-soft-card-busy');
-    }
-  }
-
   if (source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE) {
     mustYieldTo.push(...collectRecoverResetBaseYield(snapshot));
-    if (snapshot.recoverResetOfferOpen) {
-      mustYieldTo.push(OVERLAY_SOURCES.RECOVER_RESET_OFFER);
+    if (snapshot.sessionState === STATES.FOCUSING) {
+      mustYieldTo.push('session-hard-gate');
     }
     if (deriveFocusingSoftCardBusy(snapshot)) {
       mustYieldTo.push('focusing-soft-card-busy');

@@ -10,10 +10,8 @@
 
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
 import { homeClearanceTopCss } from './homeChromeClearance.js';
-import {
-  pickChristmasLineForDay,
-  seasonalLineText
-} from '../core/seasonal/christmasCorpus.js';
+import { seasonalLineText } from '../core/seasonal/christmasCorpus.js';
+import { pickSeasonalLineForDay } from '../core/seasonal/seasonalCopyPools.js';
 import {
   markSeasonalWhisperShown,
   shouldShowSeasonalWhisper
@@ -85,8 +83,9 @@ export class SeasonalThemeChromeUI {
       return;
     }
 
-    if (active.assets?.copyPoolId === 'christmas') {
-      const line = pickChristmasLineForDay(dayIso);
+    const copyPoolId = active.assets?.copyPoolId;
+    if (copyPoolId) {
+      const line = pickSeasonalLineForDay(copyPoolId, dayIso);
       if (!line) return;
       this._showWhisper(seasonalLineText(line, getLocale()), line.id);
       markSeasonalWhisperShown(this.storage, active.seasonId, dayIso);
@@ -197,6 +196,21 @@ export class SeasonalThemeChromeUI {
           background:
             radial-gradient(ellipse 85% 50% at 50% 12%, rgba(255, 250, 240, 0.28), transparent 68%),
             radial-gradient(ellipse 75% 45% at 50% 100%, rgba(170, 195, 215, 0.16), transparent 62%);
+        }
+        .seasonal-theme-wash[data-background="autumn-gratitude-wash"] {
+          background:
+            radial-gradient(ellipse 82% 48% at 50% 14%, rgba(255, 236, 210, 0.26), transparent 66%),
+            radial-gradient(ellipse 72% 42% at 50% 100%, rgba(195, 155, 115, 0.14), transparent 60%);
+        }
+        .seasonal-theme-wash[data-background="autumn-twilight-wash"] {
+          background:
+            radial-gradient(ellipse 80% 46% at 50% 16%, rgba(210, 185, 225, 0.22), transparent 64%),
+            radial-gradient(ellipse 74% 44% at 50% 100%, rgba(120, 95, 130, 0.12), transparent 58%);
+        }
+        .seasonal-theme-wash[data-background="winter-turn-wash"] {
+          background:
+            radial-gradient(ellipse 84% 50% at 50% 14%, rgba(245, 250, 255, 0.24), transparent 66%),
+            radial-gradient(ellipse 76% 46% at 50% 100%, rgba(160, 180, 210, 0.13), transparent 60%);
         }
       `;
       document.head.appendChild(s);

@@ -1062,12 +1062,15 @@ export class EmotionController {
             ? Number(raw)
             : CAPCUT_DISSOLVE_MS;
       if (crossFadeMs > 0) {
+        // restart:true — cold-start welcome may have idleOrchestrator live again
+        // before oneshot onComplete; without restart the idle early-return skips CapCut.
         this.playEmotion('idle', {
+          restart: true,
           crossFadeMs,
           freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
         });
       } else {
-        this.playEmotion('idle');
+        this.playEmotion('idle', { restart: true });
       }
     }
   }

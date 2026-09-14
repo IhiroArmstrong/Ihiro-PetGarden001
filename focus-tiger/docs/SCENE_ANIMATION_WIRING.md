@@ -96,7 +96,7 @@
 | 语言切换 → **日本語** | `bookReading`（单程看书、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：入库 `book-reading`；告别合十过密） | 仅 `locale` **实际变化**；同日同目标语最多 1 次（**播成功后**再记配额）；≠ `magic-book-reading` |
 | 语言切换 → **English**（及日后其它 ready） | `teaDrinking`（单程喝茶、**无倒放**；末约 **1s CapCut** Idle） | ack | **Slice A · 已实现**（2026-08-02：EN 茶 QA OK） | 同上限频；深夜池同素材亦用茶 |
 | 当日首次冷启动问候 | **加权池试验**：`magicBookReading` 60% · `nodGreeting` 40%（同日 1 次） | ack | **试验接线**（Dispatcher） | 靠近自动仍 **勿接**。**新旧挥手暂时停接线**（2026-08-02 拍板；`welcomeBack` 空实现）。`magicBookReading` / `nodGreeting` 均 **~1s CapCut** 回 Idle（2026-08-05：魔法书由硬切改叠化）。**冷启动互斥**：占用由 `spriteChannelArbitration` 一处拍板（欢迎 / 吹花 / 付款 / wellness 深夜睡不得同 tick 叠）。回前台 **仅 hidden≥2h** 才检深夜进睡（短切 tab 不得披毯）；凌晨 0–6 与 wellness 对齐 |
-| Day1 / 久别（≥3 日）吹花鼓励 | `conjureFlowersBlowAway` + 观察式气泡 | ack | **Phase 2b 已接线**（`WELCOME_APP` 门闩） | **策略 C**。同日 XOR `welcome` 日旗。**压过** wellness ≥23:00 斗篷 / 清晨苏醒（2026-08-06）。`?flowerWelcome=0` 可关。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` |
+| Day1 / 久别（≥3 日）吹花鼓励 | `conjureFlowersBlowAway` + 观察式气泡 | ack | **Phase 2b 已接线**（`WELCOME_APP` 门闩） | **策略 C**。同日 XOR `welcome` 日旗。**压过** wellness ≥23:00 斗篷 / 清晨苏醒（2026-08-06）。`?flowerWelcome=0` 可关。**第一幕结束 = 序列播完**（≈6.5s），非气泡寿命（3.0s）：气泡收起时不得回 idle、不得放首张毛玻璃卡（2026-09-12）。SSOT：`FLOWER_BLOW_WELCOME_DESIGN.md` |
 
 > **A′ 演进（2026-08-02）**：切语 ja 曾 `palmsTogether` → 现 `bookReading`（入库单程看书 + CapCut）。切语 en：`magicBookReading` 硬切（QA OK）→ `teaDrinking` + CapCut（QA OK）。`palmsTogether` 仍调试可播。
 

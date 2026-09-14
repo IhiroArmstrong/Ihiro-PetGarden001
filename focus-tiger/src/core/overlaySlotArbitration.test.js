@@ -465,6 +465,61 @@ describe('target matrix (C1–C6 · PR-2 contract)', () => {
       false
     );
   });
+
+  it('C6b: first cards wait for the welcome first-paint sequence, not the bubble', () => {
+    // 气泡（3.0s + 0.6s 淡出）比吹花序列（65 帧 @10fps ≈ 6.5s）先走；
+    // 门闩只认「气泡开着」时，毛玻璃卡会压在还没播完的吹花上。
+    const bubbleGoneSequencePlaying = buildOverlaySnapshot({
+      flowerWelcomeVisible: false,
+      welcomeSequencePlaying: true
+    });
+    assert.equal(
+      canAttemptFirstCard(
+        OVERLAY_SOURCES.COLD_START_GOAL,
+        bubbleGoneSequencePlaying
+      ),
+      false
+    );
+    assert.equal(
+      canAttemptFirstCard(
+        OVERLAY_SOURCES.GROWTH_COMPASS,
+        bubbleGoneSequencePlaying
+      ),
+      false
+    );
+    assert.equal(
+      canAttemptFirstCard(
+        OVERLAY_SOURCES.WELLNESS_FIRST,
+        bubbleGoneSequencePlaying
+      ),
+      false
+    );
+
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.COLD_START_GOAL,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: bubbleGoneSequencePlaying
+    });
+    assert.equal(decision.canShow, false);
+    // 串与 overlaySlotArbitration.WELCOME_SEQUENCE_BLOCKER 一致；此处故意写死，
+    // 好让修复前本用例以断言失败落红（而不是 import 不存在的符号报错）。
+    assert.equal(
+      decision.mustYieldTo.includes('welcome-sequence-playing'),
+      true,
+      'defer 原因须点名「序列在播」，而非气泡'
+    );
+
+    // 序列播完 → 四选卡照旧能开（不得把冷启动第一张卡永久挡死）
+    const sequenceDone = buildOverlaySnapshot({
+      flowerWelcomeVisible: false,
+      welcomeSequencePlaying: false
+    });
+    assert.equal(
+      canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, sequenceDone),
+      true
+    );
+  });
 });
 
 describe('requestOverlaySlot', () => {
@@ -503,61 +558,8 @@ describe('requestOverlaySlot', () => {
     assert.equal(d.canShow, true);
   });
 
-  it('recover reset offer allowed during focusing', () => {
+  it('recover reset practice blocked during focusing (Idle menu only)', () => {
     const snapshot = buildOverlaySnapshot({ sessionState: STATES.FOCUSING });
-    const d = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot
-    });
-    assert.equal(d.canShow, true);
-  });
-
-  it('recover reset practice allowed during focusing', () => {
-    const snapshot = buildOverlaySnapshot({ sessionState: STATES.FOCUSING });
-    const d = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot
-    });
-    assert.equal(d.canShow, true);
-  });
-
-  it('recover reset offer yields to practice and awareness peers', () => {
-    const withPractice = buildOverlaySnapshot({
-      sessionState: STATES.FOCUSING,
-      recoverResetPracticeOpen: true
-    });
-    const practiceBlock = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot: withPractice
-    });
-    assert.equal(practiceBlock.canShow, false);
-    assert.ok(practiceBlock.mustYieldTo.includes('focusing-soft-card-busy'));
-
-    const withAwareness = buildOverlaySnapshot({
-      sessionState: STATES.FOCUSING,
-      focusAwarenessOpen: true
-    });
-    const awarenessBlock = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot: withAwareness
-    });
-    assert.equal(awarenessBlock.canShow, false);
-    assert.ok(awarenessBlock.mustYieldTo.includes('focusing-soft-card-busy'));
-  });
-
-  it('recover reset practice yields to open offer', () => {
-    const snapshot = buildOverlaySnapshot({
-      sessionState: STATES.FOCUSING,
-      recoverResetOfferOpen: true
-    });
     const d = requestOverlaySlot({
       source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
       kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
@@ -565,7 +567,33 @@ describe('requestOverlaySlot', () => {
       snapshot
     });
     assert.equal(d.canShow, false);
-    assert.ok(d.mustYieldTo.includes(OVERLAY_SOURCES.RECOVER_RESET_OFFER));
+    assert.ok(d.mustYieldTo.includes('session-hard-gate'));
+  });
+
+  it('recover reset practice allowed on idle when no blockers', () => {
+    const snapshot = buildOverlaySnapshot({ sessionState: STATES.IDLE });
+    const d = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot
+    });
+    assert.equal(d.canShow, true);
+  });
+
+  it('recover reset practice yields to awareness peers during idle', () => {
+    const withAwareness = buildOverlaySnapshot({
+      sessionState: STATES.IDLE,
+      focusAwarenessOpen: true
+    });
+    const awarenessBlock = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: withAwareness
+    });
+    assert.equal(awarenessBlock.canShow, false);
+    assert.ok(awarenessBlock.mustYieldTo.includes('focusing-soft-card-busy'));
   });
 
   it('transition moment granted on idle when no blockers', () => {
@@ -612,21 +640,9 @@ describe('requestOverlaySlot', () => {
   it('recover reset practice blocks idle yin tap when open', () => {
     const snapshot = buildOverlaySnapshot({ recoverResetPracticeOpen: true });
     assert.equal(deriveIdleYinTapOverlayBusy(snapshot), true);
-    assert.equal(
-      deriveIdleYinTapOverlayBusy(
-        buildOverlaySnapshot({ recoverResetOfferOpen: true })
-      ),
-      false
-    );
   });
 
   it('deriveFocusingSoftCardBusy mutual exclusion', () => {
-    assert.equal(
-      deriveFocusingSoftCardBusy(
-        buildOverlaySnapshot({ recoverResetOfferOpen: true })
-      ),
-      true
-    );
     assert.equal(
       deriveFocusingSoftCardBusy(
         buildOverlaySnapshot({ recoverResetPracticeOpen: true })

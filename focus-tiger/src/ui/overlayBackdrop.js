@@ -17,6 +17,8 @@ export const OVERLAY_BACKDROP_BASE_CLASS = 'ft-overlay-backdrop';
 export const OVERLAY_BACKDROP_STYLES_ID = 'ft-overlay-backdrop-styles-v1';
 /** Dims fixed Idle chrome (Support FAB, music note) that sits above z-17 backdrops. */
 export const IDLE_OVERLAY_CHROME_DIM_BODY_CLASS = 'ft-idle-overlay-chrome-dim';
+/** Collections wave play — Yin-coin backdrop blur eases off so wave stays visible. */
+export const YIN_COIN_WAVE_FOCUS_BODY_CLASS = 'ft-yin-coin-wave-focus';
 
 /** @type {Set<HTMLElement>} */
 const idleChromeDimBackdrops = new Set();
@@ -110,6 +112,18 @@ export function acquireIdleOverlayChromeDim(backdrop) {
 export function releaseIdleOverlayChromeDim(backdrop) {
   if (!idleChromeDimBackdrops.delete(backdrop)) return;
   syncIdleOverlayChromeDim();
+}
+
+/** @returns {void} */
+export function acquireYinCoinWaveFocus() {
+  const body = typeof document !== 'undefined' ? document.body : null;
+  body?.classList.add(YIN_COIN_WAVE_FOCUS_BODY_CLASS);
+}
+
+/** @returns {void} */
+export function releaseYinCoinWaveFocus() {
+  const body = typeof document !== 'undefined' ? document.body : null;
+  body?.classList.remove(YIN_COIN_WAVE_FOCUS_BODY_CLASS);
 }
 
 /**

@@ -49,7 +49,8 @@ const EASTER_WESTERN_BY_YEAR = Object.freeze({
 
 /**
  * Official seasons. Global holidays use America/New_York (§5.2.1).
- * Phase 3: Christmas contentReady true + winter wash; other seasons still false.
+ * Phase 3: Christmas contentReady true + winter wash.
+ * Phase 4 wave 1: Thanksgiving US/CA contentReady true + autumn wash.
  * @type {readonly SeasonConfig[]}
  */
 export const SEASONAL_CALENDAR = Object.freeze([
@@ -77,9 +78,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     windowDaysAfter: 0,
     timezone: 'America/New_York',
     priority: 70,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'winter-turn-wash',
+      copyPoolId: 'new-year'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'valentines-day',
@@ -139,9 +144,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     windowDaysAfter: 0,
     timezone: 'America/New_York',
     priority: 70,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'autumn-twilight-wash',
+      copyPoolId: 'halloween'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'thanksgiving-us',
@@ -152,9 +161,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     regions: ['US'],
     timezone: 'America/New_York',
     priority: 90,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'autumn-gratitude-wash',
+      copyPoolId: 'thanksgiving'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'thanksgiving-ca',
@@ -165,9 +178,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     regions: ['CA'],
     timezone: 'America/Toronto',
     priority: 90,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'autumn-gratitude-wash',
+      copyPoolId: 'thanksgiving'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'new-years-eve',
@@ -177,9 +194,13 @@ export const SEASONAL_CALENDAR = Object.freeze([
     windowDaysAfter: 0,
     timezone: 'America/New_York',
     priority: 70,
-    assets: {},
+    assets: {
+      poses: [],
+      background: 'winter-turn-wash',
+      copyPoolId: 'new-year'
+    },
     subscriberOnly: true,
-    contentReady: false
+    contentReady: true
   },
   {
     id: 'chunfen',

@@ -107,6 +107,10 @@ import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
+import {
+  acquireYinCoinWaveFocus,
+  releaseYinCoinWaveFocus
+} from './ui/overlayBackdrop.js';
 import { MomentWhisperUI } from './ui/MomentWhisperUI.js';
 import { ContextualTeaTipBubbleUI } from './ui/ContextualTeaTipBubbleUI.js';
 import {
@@ -148,6 +152,7 @@ import {
   PRACTICE_BACKUP_IDLE_FLUSH_MS,
   PRACTICE_BACKUP_BOOT_RESTORE_MS
 } from './core/practiceBackup/practiceBackupSync.js';
+import { subscribePracticeDataImported } from './core/practiceBackup/practiceBackupLocalIo.js';
 import {
   scheduleYpePersonalizationIngest,
   flushYpePersonalizationIngest,
@@ -299,6 +304,7 @@ import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
   isFlowerWelcomeEnabled,
+  isWelcomeFirstPaintSequencePlaying,
   markFlowerWelcomeBubbleShown,
   readFlowerWelcomeState,
   resolveFlowerWelcomeForce,
@@ -445,11 +451,9 @@ import { CalmActionTransitionStore } from './core/CalmActionTransitionStore.js';
 import { CalmActionReflectStore } from './core/CalmActionReflectStore.js';
 import { TransitionMomentUI } from './ui/TransitionMomentUI.js';
 import { TransitionMomentTriggerUI } from './ui/TransitionMomentTriggerUI.js';
-import {
-  RecoverResetOfferUI,
-  RESET_ROUTES
-} from './ui/RecoverResetOfferUI.js';
+import { GroundExerciseChoiceUI } from './ui/GroundExerciseChoiceUI.js';
 import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
+import { RESET_ROUTES } from './ui/resetPracticeRoutes.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -592,6 +596,11 @@ async function init() {
     window.__idleOrchestrator = idleOrchestrator;
     window.__i18n = { t, tPool, setLocale, getLocale };
     window.__THREE = THREE;
+    // Dynamic import so production / `vite preview` bundles never include
+    // `__ftDebug` (tree-shaken; not an attack-surface hook in prod).
+    void import('./core/debugScenarioReset.js').then(({ attachFtDebug }) => {
+      attachFtDebug(window);
+    });
   }
 
   // Keep Loading mask until 2D sprite paints. Early hide used to flash the
@@ -631,6 +640,18 @@ async function init() {
     /** @type {import('./ui/FlowerBlowWelcomeBubbleUI.js').FlowerBlowWelcomeBubbleUI | null} */ (
       null
     );
+  /** 冷启动第一幕（吹花 / 欢迎）起播时记下的序列名；播完由 onComplete 清空。 */
+  let welcomeFirstPaintSequence = /** @type {string | null} */ (null);
+
+  /** 第一幕未播完 → 不得叠化回 idle，也不得让首张卡压上来。 */
+  function isWelcomeFirstPaintPlaying() {
+    return isWelcomeFirstPaintSequencePlaying({
+      trackedSequence: welcomeFirstPaintSequence,
+      playing: spritePlayer?.isPlaying?.() === true,
+      currentSequence: spritePlayer?.getCurrentSequence?.() ?? null
+    });
+  }
+
   /** Box, not `let onboardingHints`: overlayBusy may run before that binding. */
   /** @type {{ hints: import('./ui/OnboardingHintsUI.js').OnboardingHintsUI | null }} */
   const onboardingHintHost = { hints: null };
@@ -670,6 +691,10 @@ async function init() {
       decision.emotionKey,
       playOptions || {}
     );
+    // 记下第一幕序列名（play 同步写 currentName），供「序列还在播就别抢」守卫用。
+    if (started && event === SCENE_ANIM_EVENTS.WELCOME_APP) {
+      welcomeFirstPaintSequence = spritePlayer?.getCurrentSequence?.() ?? null;
+    }
     // Phase 2b：吹花产品路径与 Lab 同气泡（非孤儿字）
     if (
       started &&
@@ -686,7 +711,10 @@ async function init() {
         tInLocale
       });
       flowerBlowWelcomeBubble?.show(msg.lines, {
-        onHidden: () => maybeOfferIdleYinTapHint()
+        onHidden: () => {
+          ensureIdleBaselineAfterWelcome();
+          maybeOfferIdleYinTapHint();
+        }
       });
       markFlowerWelcomeBubbleShown(flowerStorage, { copyKey: msg.copyKey });
     }
@@ -970,9 +998,6 @@ async function init() {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();
       }
-      if (type === 'refocus') {
-        scheduleRecoverResetOfferAfterRefocus();
-      }
       if (type === 'activeRecover') {
         calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
@@ -1208,7 +1233,12 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
       onChoice: (choice) => handleColdStartGoalSelect(choice),
-      onOpen: () => syncInAppReminderBanner()
+      onOpen: () => {
+        // Flower welcome can finish before idle loop starts; goal card may open
+        // from the boot defer queue while occupancy is already IDLE_BASELINE.
+        ensureIdleBaselineAfterWelcome();
+        syncInAppReminderBanner();
+      }
     })
   );
   window.__coldStartGoalCard = coldStartGoalCardUI;
@@ -1307,12 +1337,11 @@ async function init() {
   let witnessLeaveSlotHeld = false;
   let witnessRespondSlotHeld = false;
   let transitionMomentSlotHeld = false;
-  let recoverResetOfferSlotHeld = false;
   let recoverResetPracticeSlotHeld = false;
-  /** @type {RecoverResetOfferUI | null} */
-  let recoverResetOfferUI = null;
   /** @type {RecoverResetPracticeUI | null} */
   let recoverResetPracticeUI = null;
+  /** @type {GroundExerciseChoiceUI | null} */
+  let groundExerciseChoiceUI = null;
 
   function requestWitnessLeaveOverlaySlot() {
     const decision = requestOverlaySlot({
@@ -1379,35 +1408,12 @@ async function init() {
     syncTransitionMomentTrigger();
   }
 
-  function requestRecoverResetOfferOverlaySlot() {
-    const decision = requestOverlaySlot({
-      source: OVERLAY_SOURCES.RECOVER_RESET_OFFER,
-      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
-      intent: 'show',
-      snapshot: buildLiveOverlaySnapshot({
-        recoverResetOfferOpen: false,
-        recoverResetPracticeOpen: recoverResetPracticeSlotHeld
-      })
-    });
-    if (!decision.canShow) return false;
-    recoverResetOfferSlotHeld = true;
-    syncIdleYinTap();
-    return true;
-  }
-
-  function releaseRecoverResetOfferOverlaySlot() {
-    if (!recoverResetOfferSlotHeld) return;
-    recoverResetOfferSlotHeld = false;
-    syncIdleYinTap();
-  }
-
   function requestRecoverResetPracticeOverlaySlot() {
     const decision = requestOverlaySlot({
       source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
       kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
       intent: 'show',
       snapshot: buildLiveOverlaySnapshot({
-        recoverResetOfferOpen: recoverResetOfferSlotHeld,
         recoverResetPracticeOpen: false
       })
     });
@@ -1425,15 +1431,6 @@ async function init() {
 
   const overlayRoot =
     document.getElementById('ui-overlay') || document.body;
-  recoverResetOfferUI = new RecoverResetOfferUI(overlayRoot, {
-    requestSlot: requestRecoverResetOfferOverlaySlot,
-    releaseSlot: releaseRecoverResetOfferOverlaySlot,
-    getBusy: () => isFocusAwarenessCardBusy(),
-    onSelect: (route) => {
-      if (route === RESET_ROUTES.STEADY) return;
-      recoverResetPracticeUI?.show(route);
-    }
-  });
   recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
     requestSlot: requestRecoverResetPracticeOverlaySlot,
     releaseSlot: releaseRecoverResetPracticeOverlaySlot,
@@ -1442,12 +1439,15 @@ async function init() {
       if (canOpenConfideNow()) confideToYinUI.open();
     }
   });
-  window.__recoverResetOffer = recoverResetOfferUI;
+  groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
+    onSelect: (route) => {
+      groundExerciseChoiceUI?.close();
+      recoverResetPracticeUI?.show(route);
+    },
+    onClose: () => syncIdleYinTap()
+  });
   window.__recoverResetPractice = recoverResetPracticeUI;
-
-  function scheduleRecoverResetOfferAfterRefocus() {
-    recoverResetOfferUI?.tryScheduleAfterRefocus();
-  }
+  window.__groundExerciseChoice = groundExerciseChoiceUI;
 
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
     document.body,
@@ -1533,6 +1533,10 @@ async function init() {
         // Ritual lock rows re-read isEntitled on next menu/drawer open.
         tipKindnessBadgesChrome.refresh();
         sanctuaryEnsoMarkChrome.refresh();
+      },
+      onCompanionAddon: () => {
+        membershipUnlockUI.close();
+        window.__supportYinModal?.open?.();
       }
     })
   );
@@ -1678,6 +1682,7 @@ async function init() {
     if (except !== 'newsletter') newsletterCaptureUI.close();
     if (except !== 'confide') confideToYinUI.close();
     if (except !== 'cinema') zenCinemaCardUI.close();
+    if (except !== 'ground-exercise') groundExerciseChoiceUI?.close();
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'cold-start-goal') coldStartGoalCardUI.close();
     if (except !== 'journey') journeyLogUI.close();
@@ -1952,6 +1957,14 @@ async function init() {
     incenseGreeting
   });
   lotusPondRuntime.boot();
+  subscribePracticeDataImported(() => {
+    lotusPondStore.reloadFromStorage();
+    lotusPondRuntime.boot();
+    tipKindnessBadgesChrome.refresh();
+    focusCoinsStore.reloadFromStorage();
+    syncFocusCoinsCosmetics();
+    yinCoinPanelUI?.refresh?.();
+  });
   supportYinModalUI.setShouldLeadWithTea(() => {
     const aggregate = resolvePracticeAggregate({
       lotusPondStore,
@@ -2206,6 +2219,17 @@ async function init() {
       // Timed Breath practice sits with the existing Idle 闭目坐禅 loop
       // (idleBreathClosed ×2 → glance). Do not override with blink-smile —
       // that made a 1-min "Exhale..." look like Arrival's short greeting beat.
+      // Cold-start / flower welcome can leave overlay visible but idle loop off
+      // (Safari narrow): restore idle before breath dolly.
+      if (
+        !spritePlayer.isOverlayVisible() ||
+        !idleOrchestrator.isActive()
+      ) {
+        emotionController.playEmotion('idle', {
+          crossFadeMs: CAPCUT_DISSOLVE_MS,
+          freezeUntilCrossFadeEnds: true
+        });
+      }
       sessionCues.preload();
       sessionCues.playStart({ ambient: ambientSoundscape });
       sessionCues.startIntervalSession();
@@ -2376,6 +2400,7 @@ async function init() {
       zenCinemaCardUI?.isOpen?.() === true ||
       presenceSignalsPanelUI?.isOpen?.() === true ||
       confideToYinUI?.isOpen?.() === true ||
+      groundExerciseChoiceUI?.isOpen?.() === true ||
       fiveMomentsCompassUI?.isOpen?.() === true ||
       supportYinModalUI?.isOpen?.() === true ||
       sanctuaryUnlockUI?.isOpen?.() === true ||
@@ -2424,6 +2449,8 @@ async function init() {
       postSessionOverlayActive:
         window.__sessionUiGate?.postSessionOverlayActive === true,
       compassOpen: window.__fiveMomentsCompass?.isOpen?.() === true,
+      groundExerciseChoiceOpen:
+        window.__groundExerciseChoice?.isOpen?.() === true,
       coldStartGoalOpen: window.__coldStartGoalCard?.isOpen?.() === true,
       mustardSeedOpen: window.__mustardSeedCard?.isOpen?.() === true,
       tipJarOpen: window.__tipJar?.isOpen?.() === true,
@@ -2431,6 +2458,7 @@ async function init() {
       sanctuaryOpen: window.__sanctuaryUnlock?.isOpen?.() === true,
       membershipOpen: window.__membershipUnlock?.isOpen?.() === true,
       flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true,
+      welcomeSequencePlaying: isWelcomeFirstPaintPlaying(),
       confideOpen: window.__confideToYin?.isOpen?.() === true,
       journeyOpen: window.__journeyLog?.isOpen?.() === true,
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
@@ -2449,9 +2477,6 @@ async function init() {
       transitionMomentOpen:
         transitionMomentSlotHeld || transitionMomentUI?.isOpen?.() === true,
       focusAwarenessOpen: focusAwarenessCardUI?.isVisible?.() === true,
-      recoverResetOfferOpen:
-        recoverResetOfferSlotHeld ||
-        recoverResetOfferUI?.isVisible?.() === true,
       recoverResetPracticeOpen:
         recoverResetPracticeSlotHeld ||
         recoverResetPracticeUI?.isVisible?.() === true,
@@ -2515,8 +2540,10 @@ async function init() {
       yinCoinPanelUI?.refresh?.();
       return result;
     }
+    acquireYinCoinWaveFocus();
     emotionController.playEmotion(COLLECTIONS_WAVE_HELLO_EMOTION_KEY, {
       onComplete: () => {
+        releaseYinCoinWaveFocus();
         yinCoinPanelUI?.refresh?.();
         syncIdleYinTap();
       }
@@ -3135,6 +3162,10 @@ async function init() {
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
+    onGroundExercise: () => {
+      closeGrowthOverlayCards({ except: 'ground-exercise' });
+      groundExerciseChoiceUI?.open();
+    },
     onFiveMoments: () => {
       closeGrowthOverlayCards({ except: 'moments' });
       fiveMomentsCompassUI.open({ markSeenOnOpen: true });
@@ -3348,10 +3379,6 @@ async function init() {
   onboardingHints = new OnboardingHintsUI(document.body, {
     store: createHintsSeenStore(),
     getScene: getOnboardingScene,
-    onOpenFiveMoments: () => {
-      closeGrowthOverlayCards({ except: 'moments' });
-      fiveMomentsCompassUI.open({ markSeenOnOpen: true });
-    },
     onPurposeOpen: () => {
       idleSecondaryPanelHost.close({ except: 'purpose' });
       syncIdleYinTap();
@@ -3782,7 +3809,7 @@ async function init() {
     calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
     transitionMomentUI.close();
-    recoverResetOfferUI?.hide({ immediate: true });
+    groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
     if (stopAmbient) {
       ambientSoundscape.endSession();
@@ -3967,7 +3994,7 @@ async function init() {
     focusAwarenessCardUI.resetSession();
     calmActionRecoverStore.resetSession();
     calmActionRecoverCardUI.resetSession();
-    recoverResetOfferUI?.resetSession();
+    groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
@@ -4172,7 +4199,7 @@ async function init() {
       calmActionRecoverCardUI.hide({ immediate: true });
       calmActionArriveCardUI.hide({ immediate: true });
       transitionMomentUI.close();
-      recoverResetOfferUI?.hide({ immediate: true });
+      groundExerciseChoiceUI?.close();
       recoverResetPracticeUI?.hide({ immediate: true });
       ambientSoundscape.cancelDuck();
       endFocusChrome();
@@ -4316,6 +4343,16 @@ async function init() {
   const paymentThanksAtWelcome = checkoutWelcomeGate.playAtWelcomeSlot;
   const welcomeUsed =
     readDailySceneAnimState(bootStorage, () => bootNow).welcome === true;
+  if (import.meta.env.DEV) {
+    void import('./core/debugScenarioReset.js').then(
+      ({ warnFlowerWelcomeScenarioInconsistency }) => {
+        warnFlowerWelcomeScenarioInconsistency({
+          storage: bootStorage,
+          now: () => bootNow
+        });
+      }
+    );
+  }
   const bootDecision = resolveBootSpriteOccupancy({
     now: bootNow,
     sessionState: stateManager.state,
@@ -4352,10 +4389,29 @@ async function init() {
   }
   window.setTimeout(startTastePrefetchOnce, 12000);
 
+  /** After welcome / flower first paint: occupancy resets but idle loop may not. */
+  function ensureIdleBaselineAfterWelcome() {
+    // 第一幕还在播 → 交给它自己的 onComplete 回 idle。抢跑这一刀会把吹散尾段
+    // 定格 + 叠化掉（气泡 ≈3.6s vs 序列 ≈6.5s），观感等于吹花压根没播。
+    if (isWelcomeFirstPaintPlaying()) return;
+    spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+    if (!idleOrchestrator.isActive()) {
+      emotionController.playEmotion('idle', {
+        crossFadeMs: CAPCUT_DISSOLVE_MS,
+        freezeUntilCrossFadeEnds: true
+      });
+    }
+  }
+
   const welcomePlayOptions = {
     onComplete: () => {
+      welcomeFirstPaintSequence = null;
+      ensureIdleBaselineAfterWelcome();
       startTastePrefetchOnce();
       scheduleParrotAfterFirstPaintRelease();
+      // 气泡早走时首张卡与摸摸提示都被守卫拦过，序列播完须补一次出卡/上钩。
+      syncIdleYinTap();
+      scheduleFirstCardOffers(CAPCUT_DISSOLVE_MS + 250);
     }
   };
 
@@ -4392,7 +4448,20 @@ async function init() {
     const welcomeStarted = tryPlaySceneAnim(SCENE_ANIM_EVENTS.WELCOME_APP, {
       playOptions: welcomePlayOptions
     });
-    if (!welcomeStarted?.play) startTastePrefetchOnce();
+    // 占用已标 FLOWER/WELCOME 但 dispatcher 拒播（同日 quota 等）→ 立刻放手，
+    // 否则 isColdStartWelcomePlaying 会一直 true，动画却不播。
+    const broadcastNeverStarted =
+      welcomeStarted?.play !== true || welcomeFirstPaintSequence == null;
+    if (broadcastNeverStarted) {
+      spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      if (!idleOrchestrator.isActive()) {
+        emotionController.playEmotion('idle');
+      }
+      startTastePrefetchOnce();
+      scheduleParrotAfterFirstPaintRelease();
+      syncIdleYinTap();
+      scheduleFirstCardOffers(CAPCUT_DISSOLVE_MS + 250);
+    }
   } else {
     emotionController.playEmotion('idle');
     startTastePrefetchOnce();
@@ -4453,7 +4522,11 @@ async function init() {
     if (stateManager.state !== STATES.IDLE) return false;
     if (onboardingHintsBlockFirstCard()) return false;
     const snapshot = buildLiveOverlaySnapshot();
-    if (!canAttemptFirstCard(OVERLAY_SOURCES.COLD_START_GOAL, snapshot)) {
+    const allowed = canAttemptFirstCard(
+      OVERLAY_SOURCES.COLD_START_GOAL,
+      snapshot
+    );
+    if (!allowed) {
       return false;
     }
     closeGrowthOverlayCards({ except: 'cold-start-goal' });
@@ -4707,7 +4780,9 @@ async function init() {
           '刷新后 = 场景 A 全新用户：\n' +
           '• 当日零完成\n' +
           '• 阿寅 Idle 闭目坐禅（无专注结束记录 → 不自动 DORMANT）\n' +
-          '• Honesty 正念登入小钮可见\n\n' +
+          '• Honesty 正念登入小钮可见\n' +
+          '• 冷启动四选卡 seen 一并清空（须 ?product=1 才出卡）\n\n' +
+          '完整冷启动（吹花+四选）：重置后开 ?product=1 硬刷新。\n' +
           '（DORMANT 需距上次专注结束 ≥2h；要测 idle 动画请用「重置并 idle 坐禅」。）\n\n' +
           '确定重置？'
       );
@@ -4715,12 +4790,14 @@ async function init() {
 
       const {
         clearAllFocusTigerLocalState,
+        clearDevResetSessionState,
         markDevResetToast
       } = await import('./core/localStateKeys.js');
       const { clearAllUserAmbientTracks } = await import(
         './audio/UserAmbientLibrary.js'
       );
       clearAllFocusTigerLocalState();
+      clearDevResetSessionState();
       await clearAllUserAmbientTracks();
       markDevResetToast();
       window.location.reload();
@@ -4744,12 +4821,14 @@ async function init() {
 
       const {
         clearAllFocusTigerLocalState,
+        clearDevResetSessionState,
         markDevBootIdle
       } = await import('./core/localStateKeys.js');
       const { clearAllUserAmbientTracks } = await import(
         './audio/UserAmbientLibrary.js'
       );
       clearAllFocusTigerLocalState();
+      clearDevResetSessionState();
       await clearAllUserAmbientTracks();
       markDevBootIdle();
       window.location.reload();

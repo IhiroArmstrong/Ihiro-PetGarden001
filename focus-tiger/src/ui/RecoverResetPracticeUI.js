@@ -4,14 +4,15 @@
  */
 
 /**
- * Reset micro-practices during Focusing — Feel the Ground / Take a Breath / Look Around.
+ * Ground exercise micro-practices — Feel the Ground / Look Around (Idle menu).
+ * Breath / overwhelmed routes remain for legacy wiring only.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import '../components/breath-pacer/breath-pacer.js';
-import { RESET_ROUTES } from './RecoverResetOfferUI.js';
+import { RESET_ROUTES } from './resetPracticeRoutes.js';
 
 const ROOT_ID = 'recover-reset-practice';
 const STYLE_ID = 'recover-reset-practice-styles-v1';
@@ -19,7 +20,7 @@ const FADE_MS = 320;
 const LOOK_STEP_MS = 9_000;
 const CONFIDE_OFFER_MS = 6_000;
 
-/** @typedef {import('./RecoverResetOfferUI.js').ResetRoute} ResetRoute */
+/** @typedef {import('./resetPracticeRoutes.js').ResetRoute} ResetRoute */
 
 /** @type {readonly { key: string, durationMs: number }[]} */
 const GROUND_PHASES = Object.freeze([

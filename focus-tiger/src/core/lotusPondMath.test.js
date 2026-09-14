@@ -3,8 +3,12 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
-import { describe, it } from 'node:test';
+import { afterEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import {
+  resetGrowthMetricsConfigOverlayForTests,
+  setGrowthMetricsConfigOverlay
+} from './growthMetricsConfigOverlay.js';
 import {
   LOTUS_POND_FIRST_BLOOM_MINUTES,
   LOTUS_POND_RING_CAPACITY,
@@ -17,6 +21,10 @@ import {
   spiralSlotForBloomIndex,
   thresholdMinutesForBloom
 } from './lotusPondMath.js';
+
+afterEach(() => {
+  resetGrowthMetricsConfigOverlayForTests();
+});
 
 describe('lotusPondMath thresholds', () => {
   it('first bloom is 25 minutes (一炷香) and early steps stay 25', () => {
@@ -123,6 +131,32 @@ describe('lotusPondMath spiral slots', () => {
     }
   });
 
+  it('full ring clears bottom-center Sit dock on 375 (no bloom over three balls)', () => {
+    const slots = Array.from({ length: 12 }, (_, i) =>
+      spiralSlotForBloomIndex(i)
+    );
+    const { originLeftPct, originBottomPct } = LOTUS_POND_SPIRAL;
+    for (const slot of slots) {
+      const onSitDock =
+        Math.abs(slot.leftPct - originLeftPct) < 14 &&
+        slot.bottomPct <= originBottomPct - 12;
+      assert.equal(onSitDock, false, `slot ${slot.index} blocks Sit dock`);
+    }
+  });
+
+  it('fourth bloom (index 3) sits in the right gap, not bottom center', () => {
+    const slot = spiralSlotForBloomIndex(3);
+    const { originLeftPct } = LOTUS_POND_SPIRAL;
+    assert.ok(
+      slot.leftPct > originLeftPct + 20,
+      `fourth bloom should be on the right (leftPct=${slot.leftPct})`
+    );
+    assert.ok(
+      Math.abs(slot.leftPct - originLeftPct) > 14,
+      'fourth bloom must not sit on bottom-center axis'
+    );
+  });
+
   it('12 slots share one width and stay distinct (no shrinking / crowding)', () => {
     const slots = Array.from({ length: 12 }, (_, i) =>
       spiralSlotForBloomIndex(i)
@@ -163,5 +197,26 @@ describe('lotusPondMath spiral slots', () => {
       false,
       `wide first bloom must not sit under the cushion (left=${first.leftPct}, bottom=${first.bottomPct})`
     );
+  });
+});
+
+describe('lotusPondMath remote overlay', () => {
+  it('uses growth-metrics overlay when lotus stair coefficients differ from freeze', () => {
+    setGrowthMetricsConfigOverlay({
+      schemaVersion: 1,
+      dailyScoreCapMinutes: 180,
+      lotusFirstBloomMinutes: 20,
+      lotusEarlyStepMinutes: 20,
+      lotusEarlyBloomLast: 4,
+      lotusLaterStepMinutes: 40,
+      lotusRingCapacity: 10
+    });
+    assert.equal(thresholdMinutesForBloom(1), 20);
+    assert.equal(thresholdMinutesForBloom(2), 40);
+    assert.equal(thresholdMinutesForBloom(5), 120);
+    assert.equal(bloomCountForMinutes(19), 0);
+    assert.equal(bloomCountForMinutes(20), 1);
+    assert.equal(bloomCountForMinutes(39), 1);
+    assert.equal(bloomCountForMinutes(40), 2);
   });
 });

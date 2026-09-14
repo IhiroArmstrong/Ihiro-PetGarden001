@@ -43,10 +43,12 @@
 | 2026-08-25 | Electron/各壳 :5173：Float Yin 哑点击、空白右键从未接线、? 卡点不到 Privacy、Skip all 后无结束舞、Update 0.0.0 | **§6.21** |
 | 2026-09-01 | Unlock Lifetime 失败重开已关卡 + 额头提示记入未实现 | **§6.22** |
 | 2026-09-04 | Confide 复读「已解决」却再测仍套话：ledger 假关 + 茶句 fallback 被单测放行 | **§6.23** |
+| 2026-09-13 | 手动复测用错 Console 清库，症状像真 bug：官方配方应收进代码 | **§6.24** |
 | 2026-09-06 | 冷启动吹花后鹦鹉无叠化：第一幕占用未拦鹦鹉 + 平行情绪键白名单漏 `conjureFlowersBlowAway` | **§6.10 补记 / §6.17 Y6** |
+| 2026-09-13 | PR #713 备份 v3：莲花导入 OK、徽章少 2、寅币未导入——storage 扩了但展示/whitelist 未闭环 | **§6.25** |
 
 **一句话（整套机制）**：  
-回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.20）+ **悬停预览不得盖住点击钉住；feature detect 不得把「函数在」写成「能打开」；合入邻接 PR ≠ 已修用户点名的另一入口**（§6.21）+ **ISSUE_LEDGER「已解决」不得早于 TRACKER 人工关单；允许的 fallback 字面须锁「不得连打同一句」**（§6.23）。  
+回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.20）+ **悬停预览不得盖住点击钉住；feature detect 不得把「函数在」写成「能打开」；合入邻接 PR ≠ 已修用户点名的另一入口**（§6.21）+ **ISSUE_LEDGER「已解决」不得早于 TRACKER 人工关单；允许的 fallback 字面须锁「不得连打同一句」**（§6.23）+ **手动复测清库须官方 `resetScenario`，禁止默写 Console**（§6.24）。  
 
 **视口补充**：布局开关烟测 ≠ 完整用户故事——**窄/宽对称**（§8 / §9）。
 
@@ -866,6 +868,48 @@
 | H5 | 关单问一句：这次关的是**具体复现**还是 TRACKER **通用规范**？规范未单独验收 → 不得顺带关规范行（`TEST_TRACKER`「标已通过」第 6 款） |
 
 **本回合落地**：§6.23 补根因的根因；运行时 `pickConfideLine` 排除上一句可见字面 + generate 失败重抽 fallback；单测锁连续 8 次冻住 exclude 不得连打；连续 generate 失败 ≥2 打 `console.info`（无网络）。
+
+### 6.24 手动复测清库配方口口相传 · CI 绿手测红（2026-09-13）
+
+**现象**：吹花冷启动人工复测失败（占用像花、动画不播），自动化全绿。后来发现当次 Console 漏清 `scene-anim-daily`，症状与真代码 bug 几乎同形。权威步骤其实写在 `SCENARIO_TESTS` 场景 V / `SHARED_RESOURCES`，但验收行把错误配方又誊抄了一遍。
+
+**因果一句话**：没有唯一运行时配方 → 文档互相复述 → 手误被钉成官方口径。堵法不是「下次记得看文档」，是 **`debugScenarioReset.js` + DEV `__ftDebug.resetScenario` + 半清库 console 警告 + 排查 Step A0**。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| R1 | 人/Agent 复测只跑 `window.__ftDebug.resetScenario('<id>')`（**仅 Vite DEV**；生产不挂）。e2e 从同一模块 import 配方。 |
+| R2 | TRACKER / PR 验收行只许**引用**场景 id，禁止默写 `localStorage.removeItem`。 |
+| R3 | CI/单测绿、手测红 → 先走 `ui-bug-triage` Step A0，再怀疑刚合的代码。 |
+| R4 | 残余风险：场景「该清哪几个 key」仍是人工映射。新加日配额/门闩 key 时，同 commit 改模块 `*_RESET_*_KEYS` **和** `debugScenarioReset.js` 配方。 |
+
+### 6.25 练习备份扩 key 未锁「导出→导入→可见」闭环（2026-09-13 · PR #713 人工验收）
+
+**现象**：Electron 5173 导出后 Web 5173 导入：莲花池齐全；Idle 旁徽章 **4→2**；寅币余额/已兑清供 **未恢复**。用户判断与壳子导出无关——正确。
+
+**不是** Electron 写坏 JSON 的单点 bug。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 徽章：storage ≠ 展示 | v3 已导出 `sanctuary-entitlement.badgeIds`，但 **未**导出 `entitlement-cache`（订阅验证）。Idle 展示走 `syncAndReadIdleBadgePack`：有 B 轨 entitlement 才读尊贵章，否则读 `tip-jar`。导入端无 cache → 误走 Tea 包（常更少枚）。**文件里有 4 枚、屏幕只画 2 枚。** |
+| B · 寅币：文档排除 | `SHARED_RESOURCES` 长期写 focus-coins **不进**练习备份；PR #713 只扩 lotus/tip/sanctuary，**未**改 whitelist；`FocusCoinsStore` 也无 `reloadFromStorage` + import 事件刷新。用户合理预期「导出=迁走练习进度」与文档/实现分叉。 |
+| C · 假完成形态 | PR test plan 只列「lotus + badges」；**无** cross-device 导入后 Idle 枚数断言；**无** focus coins 行。单测 `focusCoinsAward.test.js` 甚至锁「must **not** enter backup」——把排除写进 CI，扩 whitelist 时易漏改。 |
+| D · import refresh 不完整 | 莲花有 `reloadFromStorage` + `lotusPondRuntime.boot()`；徽章只 `tipKindnessBadgesChrome.refresh()` 但未修路径选择；寅币 **无**订阅 `ft:practice-data-imported`。 |
+
+**因果一句话**：**扩 storage key ≠ 用户可感知备份闭环**；须同时答三问：**(1) 白名单是否含 key (2) 导入后 runtime 是否 reload (3) 展示层是否读对 store**。
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| I1 | 备份 whitelist 变更 PR：test plan **必须**含「A 端导出 → B 端清库导入 → 用户可见状态一致」（徽章枚数、寅币余额、莲花朵数等），不得只写 serialize 单测 |
+| I2 | 新增 backup key 时同步查 `SHARED_RESOURCES` + 展示 orchestration（Idle 徽章、寅币 panel、`getEntitlementState` 等），禁止只改 `practiceBackupSnapshot.js` |
+| I3 | 凡 in-memory store（`FocusCoinsStore`、`LotusPondStore`…）对应持久 key 进 backup → **必须** `reloadFromStorage` + 挂 `subscribePracticeDataImported`（或等价 refresh） |
+| I4 | 单测禁止把「故意排除 backup」锁成永久契约；若产品改口径纳入 backup，须改断言并补 round-trip 用例 |
+| I5 | TRACKER 备份行 schema 版本号与 `PRACTICE_BACKUP_SCHEMA_VERSION` 同步（v3→v4），避免文档仍写 v2/6 key |
+
+**本回合落地**：`idlePracticeBadges` honor restored sanctuary marks；backup **v4** 纳入 `focus-tiger.focus-coins.v1` + import refresh；`fix-backup-import-badge-restore` tracker 行 + 本 §6.25。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 

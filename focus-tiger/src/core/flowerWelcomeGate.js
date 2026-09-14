@@ -16,6 +16,16 @@ export const FLOWER_WELCOME_STORAGE_KEY = 'focus-tiger.flower-welcome.v1';
 export const FLOWER_WELCOME_FLAG_STORAGE_KEY =
   'focus-tiger.flower-welcome-flag.v1';
 
+/**
+ * Keys that belong to the flower-welcome gate itself.
+ * Adding a new flower-welcome storage key → append here in the same commit.
+ * Scene recipes live in `debugScenarioReset.js` (also clear daily quota / goal).
+ */
+export const FLOWER_WELCOME_RESET_LOCAL_KEYS = Object.freeze([
+  FLOWER_WELCOME_STORAGE_KEY,
+  FLOWER_WELCOME_FLAG_STORAGE_KEY
+]);
+
 /** 久别：≥ 该自然日差未打开 → 强制吹花 */
 export const FLOWER_WELCOME_ABSENCE_DAYS = 3;
 
@@ -144,6 +154,30 @@ export function resolveFlowerWelcomeForce({
     return { force: true, reason: 'absence', bilingual };
   }
   return { force: false, reason: 'ordinary', bilingual: false };
+}
+
+/**
+ * 冷启动第一幕（吹花 / 欢迎）一次性序列是否仍在播。
+ *
+ * 判据挂在「序列真播完」，不挂气泡秒数：气泡 hold 比吹花（65 帧 @10fps ≈ 6.5s）短，
+ * 而 `preload: false` 下实际时长还会随冷启动帧下载浮动，写死秒数照样会切错。
+ * `trackedSequence` 已被别的序列顶掉（用户中途互动）或 player 已停 → 立刻放手，
+ * 免得守卫变成僵尸门闩把 idle 基底与首张卡永久挡死。
+ *
+ * @param {object} input
+ * @param {string | null | undefined} input.trackedSequence 第一幕起播时记下的序列名
+ * @param {boolean} input.playing `SpriteSequencePlayer.isPlaying()`
+ * @param {string | null | undefined} input.currentSequence `getCurrentSequence()`
+ * @returns {boolean}
+ */
+export function isWelcomeFirstPaintSequencePlaying({
+  trackedSequence,
+  playing,
+  currentSequence
+}) {
+  if (!trackedSequence) return false;
+  if (playing !== true) return false;
+  return currentSequence === trackedSequence;
 }
 
 /**

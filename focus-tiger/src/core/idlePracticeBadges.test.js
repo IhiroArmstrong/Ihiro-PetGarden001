@@ -17,8 +17,10 @@ import { markTipFromCheckoutReturn, TIP_JAR_STORAGE_KEY } from './tipJarGate.js'
 import { SANCTUARY_BADGE_MIN } from './sanctuaryBadges.js';
 import {
   isPrestigiousBadgeEntitled,
+  shouldShowSanctuaryIdleBadges,
   syncAndReadIdleBadgePack
 } from './idlePracticeBadges.js';
+import { SANCTUARY_STORAGE_KEY } from './sanctuaryEntitlementGate.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -90,6 +92,67 @@ describe('idlePracticeBadges', () => {
     assert.equal(pack.kind, 'sanctuary');
     assert.equal(pack.ids.length, SANCTUARY_BADGE_MIN);
     assert.equal(readSanctuaryEntitlement(storage).unlocked, true);
+  });
+
+  it('restored sanctuary badgeIds show after import without entitlement-cache', () => {
+    const storage = memoryStorage({
+      [SANCTUARY_STORAGE_KEY]: JSON.stringify({
+        unlocked: false,
+        unlockedVia: null,
+        unlockedAt: null,
+        itemId: 'yin-sanctuary-lifetime',
+        badgeIds: [
+          'silver-gold-rim-gray-scene',
+          'silver-gold-rim',
+          'silver-gold-rim-v2',
+          'silver-gold-rim-frost'
+        ]
+      }),
+      [TIP_JAR_STORAGE_KEY]: JSON.stringify({
+        tipped: false,
+        tipCount: 0,
+        lastTippedAt: null,
+        email: null,
+        source: null,
+        badgeIds: ['silver-mono', 'silver-gold-outline'],
+        tipLog: []
+      })
+    });
+    assert.equal(isPrestigiousBadgeEntitled({ storage }), false);
+    assert.equal(shouldShowSanctuaryIdleBadges(storage), true);
+    const pack = syncAndReadIdleBadgePack(storage);
+    assert.equal(pack.kind, 'sanctuary');
+    assert.equal(pack.ids.length, 4);
+  });
+
+  it('prefers tip pack when it has more badges than restored sanctuary marks', () => {
+    const storage = memoryStorage({
+      [SANCTUARY_STORAGE_KEY]: JSON.stringify({
+        unlocked: false,
+        unlockedVia: null,
+        unlockedAt: null,
+        itemId: 'yin-sanctuary-lifetime',
+        badgeIds: ['silver-gold-rim-gray-scene', 'silver-gold-rim']
+      }),
+      [TIP_JAR_STORAGE_KEY]: JSON.stringify({
+        tipped: true,
+        tipCount: 1,
+        lastTippedAt: '2026-08-01T00:00:00.000Z',
+        email: null,
+        source: 'checkout-return',
+        badgeIds: [
+          'silver-mono',
+          'silver-gold-outline',
+          'silver-gold-outline-rim',
+          'silver-gold-rim'
+        ],
+        tipLog: [{ at: '2026-08-01T00:00:00.000Z', n: 1 }]
+      })
+    });
+    assert.equal(shouldShowSanctuaryIdleBadges(storage), false);
+    const pack = syncAndReadIdleBadgePack(storage);
+    assert.equal(pack.kind, 'tip');
+    assert.equal(pack.ids.length, 4);
   });
 
   it('does not import payment gates into each other (static)', () => {
