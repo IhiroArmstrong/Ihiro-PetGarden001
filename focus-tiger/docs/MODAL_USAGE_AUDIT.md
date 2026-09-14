@@ -162,8 +162,8 @@
 
 ### A 类 — 明显违背原则（批准后可进下一批降级实现）
 
-- [x] **NA4** Support 结账：云 API 未配置 → `window.alert`（**见 P4 · 方向同意 · 不插队**）
-- [x] **NA5** Support 结账：Session 创建失败 → `window.alert`（**见 P4 · 方向同意 · 不插队**）
+- [x] **NA4** Support 结账：云 API 未配置 → 内联提示（**P4 · `fix/support-checkout-inline-error`**）
+- [x] **NA5** Support 结账：Session 创建失败 → 内联提示（**P4 · `fix/support-checkout-inline-error`**）
 - [x] **G02** Onboarding `?` Purpose 大卡（`aria-modal` + backdrop）— 含 detailed hint「了解更多」链入 → **同意降级 · 开工 1**
 - [x] **G06** detailed hint CTA → Purpose 卡展开链（气泡本身可保留）→ **同意降级 · 开工 1**
 - [x] **G08** Focus Circle Witness respond/leave 短语选择器（`role=dialog`，挡 Yin tap）→ **同意降级 · 开工 1**
@@ -194,7 +194,7 @@
 
 | ID | 决定 | 实现批次 | 备注 |
 |---|---|---|---|
-| NA4 / NA5 | 方向同意 | P4（HIG 原排期） | **不插队** |
+| NA4 / NA5 | 已开工 | P4 · `fix/support-checkout-inline-error` | 内联提示替代 `window.alert` |
 | G02 / G06 / G08 | 同意降级 | **开工 1** | 依据 `p5-hints-witness-nonmodal-plan.md` |
 | S03 | 维持 **B** | — | 无需写代码 |
 | S04–S08、S12、S15–S16 | 维持 **B** | — | 仪式/接地/微呼吸本体不动 |

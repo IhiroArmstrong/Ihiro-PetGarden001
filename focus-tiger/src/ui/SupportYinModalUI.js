@@ -45,7 +45,7 @@ import {
 } from '../core/supportModalLead.js';
 import { supportPaidCardPresentation } from '../core/supportPaidCardPresentation.js';
 
-const STYLE_ID = 'yin-support-modal-styles-v6';
+const STYLE_ID = 'yin-support-modal-styles-v7';
 const FADE_MS = 220;
 
 const ICON_SRC = '/ui/support/support-yin-icon.png';
@@ -236,6 +236,7 @@ export class SupportYinModalUI {
       ctaKey: 'SUPPORT_PRO_CTA',
       ctaTestId: 'yin-support-pro-cta',
       ctaVariant: 'beige',
+      checkoutStatusTestId: 'yin-support-pro-checkout-status',
       onCta: () => {
         void this._runCheckout('pro');
       }
@@ -247,6 +248,7 @@ export class SupportYinModalUI {
     this.proPrice = pro.priceEl;
     this.proCta = pro.ctaBtn;
     this.proImg = pro.imgEl;
+    this.proCheckoutStatusEl = pro.checkoutStatusEl;
 
     const companionAddon = this._buildCard({
       testId: 'yin-support-companion-addon-card',
@@ -264,6 +266,7 @@ export class SupportYinModalUI {
       ctaKey: 'SUPPORT_COMPANION_ADDON_CTA',
       ctaTestId: 'yin-support-companion-addon-cta',
       ctaVariant: 'beige',
+      checkoutStatusTestId: 'yin-support-companion-addon-checkout-status',
       onCta: () => {
         void this._runCheckout('companion-addon');
       }
@@ -275,6 +278,7 @@ export class SupportYinModalUI {
     this.companionAddonPrice = companionAddon.priceEl;
     this.companionAddonCta = companionAddon.ctaBtn;
     this.companionAddonImg = companionAddon.imgEl;
+    this.companionAddonCheckoutStatusEl = companionAddon.checkoutStatusEl;
 
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
@@ -326,6 +330,7 @@ export class SupportYinModalUI {
    * @param {object} opts
    * @param {'beige' | 'cushion' | 'ghost' | 'primary'} [opts.ctaVariant]
    * @param {string} [opts.badgeKey]
+   * @param {string} [opts.checkoutStatusTestId]
    */
   _buildCard(opts) {
     const card = document.createElement('article');
@@ -390,8 +395,32 @@ export class SupportYinModalUI {
     ctaBtn.dataset.key = opts.ctaKey;
     ctaBtn.addEventListener('click', opts.onCta);
 
-    card.append(artEl, titleEl, blurbEl, benefits, priceEl, ctaBtn);
-    return { card, imgEl, titleEl, blurbEl, benefitEls, priceEl, ctaBtn, badgeEl };
+    /** @type {HTMLParagraphElement | null} */
+    let checkoutStatusEl = null;
+    if (opts.checkoutStatusTestId) {
+      checkoutStatusEl = document.createElement('p');
+      checkoutStatusEl.className = 'yin-support-card__checkout-status';
+      checkoutStatusEl.dataset.testid = opts.checkoutStatusTestId;
+      checkoutStatusEl.setAttribute('role', 'status');
+      checkoutStatusEl.hidden = true;
+    }
+
+    if (checkoutStatusEl) {
+      card.append(artEl, titleEl, blurbEl, benefits, priceEl, ctaBtn, checkoutStatusEl);
+    } else {
+      card.append(artEl, titleEl, blurbEl, benefits, priceEl, ctaBtn);
+    }
+    return {
+      card,
+      imgEl,
+      titleEl,
+      blurbEl,
+      benefitEls,
+      priceEl,
+      ctaBtn,
+      badgeEl,
+      checkoutStatusEl
+    };
   }
 
   /** @returns {boolean} */
@@ -411,6 +440,7 @@ export class SupportYinModalUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._clearInlineCheckoutErrors();
     this._syncPaidCardVisibility();
     this._syncLeadLayout();
     this.backdrop.hidden = false;
@@ -474,13 +504,20 @@ export class SupportYinModalUI {
     }
     this._busy = true;
     this._setCheckoutBusy(true);
+    const inlineCheckout =
+      (kind === 'pro' && !this.handlers.onSubscribePro) ||
+      (kind === 'companion-addon' && !this.handlers.onBuyCompanionAddon);
     try {
       getMonetizationFunnelStore().supportCta(
         kind,
         'support-modal',
         this._funnelLayout()
       );
-      this.close();
+      if (inlineCheckout) {
+        this._clearInlineCheckoutErrors(kind);
+      } else {
+        this.close();
+      }
       if (kind === 'sanctuary') {
         await this.handlers.onUnlockSanctuary?.();
       } else if (kind === 'membership') {
@@ -523,45 +560,81 @@ export class SupportYinModalUI {
    * @param {'pro' | 'companion-addon'} kind
    */
   async _startInlineCheckout(kind) {
+    const errorKey =
+      kind === 'pro' ? 'SUPPORT_PRO_ERROR' : 'SUPPORT_COMPANION_ADDON_ERROR';
     if (!getCloudApiBaseUrl()) {
-      window.alert(
-        t(
-          kind === 'pro'
-            ? 'SUPPORT_PRO_ERROR'
-            : 'SUPPORT_COMPANION_ADDON_ERROR'
-        )
-      );
+      this._showInlineCheckoutError(kind, errorKey);
       return;
     }
     const path =
       kind === 'pro'
         ? '/api/create-pro-checkout-session'
         : '/api/create-companion-addon-checkout-session';
-    const res = await postCloudJson(path, {
-      body: JSON.stringify(buildCheckoutSessionBody({}))
-    });
-    const url =
-      res && typeof res === 'object'
-        ? /** @type {{ url?: unknown }} */ (res).url
-        : null;
-    const sessionId =
-      res && typeof res === 'object'
-        ? /** @type {{ sessionId?: unknown }} */ (res).sessionId
-        : null;
-    if (typeof url === 'string' && url) {
-      getMonetizationFunnelStore().checkoutStart(kind, 'support-modal');
-      noteDesktopCheckoutOpened(kind, {
-        url,
-        sessionId: typeof sessionId === 'string' ? sessionId : ''
+    try {
+      const res = await postCloudJson(path, {
+        body: JSON.stringify(buildCheckoutSessionBody({}))
       });
-      await openCheckoutUrl(url);
+      const url =
+        res && typeof res === 'object'
+          ? /** @type {{ url?: unknown }} */ (res).url
+          : null;
+      const sessionId =
+        res && typeof res === 'object'
+          ? /** @type {{ sessionId?: unknown }} */ (res).sessionId
+          : null;
+      if (typeof url === 'string' && url) {
+        getMonetizationFunnelStore().checkoutStart(kind, 'support-modal');
+        noteDesktopCheckoutOpened(kind, {
+          url,
+          sessionId: typeof sessionId === 'string' ? sessionId : ''
+        });
+        this.close();
+        await openCheckoutUrl(url);
+        return;
+      }
+      this._showInlineCheckoutError(kind, errorKey);
+    } catch {
+      this._showInlineCheckoutError(kind, errorKey);
+    }
+  }
+
+  /**
+   * @param {'pro' | 'companion-addon' | undefined} [kind]
+   */
+  _clearInlineCheckoutErrors(kind) {
+    if (!kind || kind === 'pro') {
+      this._setInlineCheckoutStatus(this.proCheckoutStatusEl, '');
+    }
+    if (!kind || kind === 'companion-addon') {
+      this._setInlineCheckoutStatus(this.companionAddonCheckoutStatusEl, '');
+    }
+  }
+
+  /**
+   * @param {'pro' | 'companion-addon'} kind
+   * @param {string} messageKey
+   */
+  _showInlineCheckoutError(kind, messageKey) {
+    const statusEl =
+      kind === 'pro'
+        ? this.proCheckoutStatusEl
+        : this.companionAddonCheckoutStatusEl;
+    this._setInlineCheckoutStatus(statusEl, messageKey);
+  }
+
+  /**
+   * @param {HTMLParagraphElement | null} statusEl
+   * @param {string} messageKey
+   */
+  _setInlineCheckoutStatus(statusEl, messageKey) {
+    if (!statusEl) return;
+    if (messageKey) {
+      statusEl.textContent = t(messageKey);
+      statusEl.hidden = false;
       return;
     }
-    window.alert(
-      t(
-        kind === 'pro' ? 'SUPPORT_PRO_ERROR' : 'SUPPORT_COMPANION_ADDON_ERROR'
-      )
-    );
+    statusEl.textContent = '';
+    statusEl.hidden = true;
   }
 
   _refreshTexts() {
@@ -932,6 +1005,15 @@ export class SupportYinModalUI {
         font-size: 13px;
         font-weight: 650;
         color: #4a3426;
+      }
+      .yin-support-card__checkout-status {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+        color: #8b4a32;
+      }
+      .yin-support-card__checkout-status[hidden] {
+        display: none;
       }
       .yin-support-card__cta {
         appearance: none;
