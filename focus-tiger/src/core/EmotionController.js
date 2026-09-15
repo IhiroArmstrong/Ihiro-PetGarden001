@@ -1084,7 +1084,7 @@ export class EmotionController {
     const holdPose = Boolean(options.holdPose);
     return {
       ...options,
-      holdLastFrame: holdPose ? true : options.holdLastFrame,
+      holdLastFrame: holdPose ? true : (options.holdLastFrame ?? true),
       onComplete: () => this._finishOneShot(options, tag)
     };
   }

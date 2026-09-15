@@ -313,7 +313,7 @@ export const SPRITE_SEQUENCES = {
     preload: false,
     loop: false,
     loopMode: 'none',
-    holdLastFrame: false
+    holdLastFrame: true
   },
 
   // 变花吹散（Day1 / 久别鼓励）。源：yin-smiling-…-blow-away_transparent → conjure-flowers-blow-away。
