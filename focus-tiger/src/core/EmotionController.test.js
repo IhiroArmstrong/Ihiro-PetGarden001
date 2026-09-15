@@ -553,6 +553,7 @@ test('parrotEarVisit plays once then CapCut idle (~1s)', () => {
   assert.equal(plays[0].options.holdLastFrame, true);
   assert.equal(plays[0].options.returnCrossFadeMs, CAPCUT_DISSOLVE_MS);
   assert.equal(plays[0].options.freezeUntilCrossFadeEnds, true);
+  assert.equal(plays[0].options.holdLastFrame, true);
   assert.equal(controller.getCurrentEmotionKey(), 'parrotEarVisit');
   plays[0].options.onComplete();
   assert.equal(plays[1].name, 'idleBreathing');
