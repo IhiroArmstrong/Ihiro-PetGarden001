@@ -13,12 +13,9 @@
 
 ## 做（顺序）
 
-1. 按 `LAB_SCRIPT_CONVENTIONS.md` 对 #774 差样本集跑两条实验室命令（系统终端 · Metal）：
-   - **空历史方差**：`FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance`
-   - **同会话连发**：`FT_CHITCHAT_REPEATS=3 npm run companion:ja-chitchat-session-repeat`
-   产出 `/tmp/ft-l0-lab/compare-*.json`，统计：规则桶 / fallback-02 / L3 generate / 贴题 / 第 2–3 次是否回落语料。
-2. 结论：方差 vs 回归。回归才查 sanitize / 语料 / 采样 git。
-3. 加规则仅覆盖差样本集，且须另拍板。
+1. ~~**空历史方差**~~ **已完成**（2026-09-16 · `compare-1789489932173.json` · 5×15 · `FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance`）。路由 100% generate；贪婪解码下零波动。
+2. **同会话连发**（待跑 · 系统终端 · Metal）：`FT_CHITCHAT_REPEATS=3 npm run companion:ja-chitchat-session-repeat`；以及 Electron 同一会话 5 句连发（见 tracker 碎片）。结论：**不是采样方差**（产品默认 temperature=0，与探针同一调用）。田野「不同答案」**疑似** sanitize 历史去重 → 语料回落，**待本步验证**后再当根因。
+3. 加规则仅覆盖差样本集，且须另拍板。**当前先不加**；等同会话连发 / Electron 结果后再决定规则要堵住「首次 generate 差」还是连「去重回落也差」。
 
 ## 验收
 
