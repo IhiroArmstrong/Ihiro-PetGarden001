@@ -187,13 +187,21 @@ export class NarrowIdleShell {
   }
 
   /**
+   * Idle visual-primary dismiss — same contract as wide openMenu (not global stack).
+   * @returns {void}
+   */
+  _dismissIdleVisualPrimaryOverlays() {
+    this._dropStageClasses();
+    if (this.handlers.isGrowthCardOverlayActive?.()) return;
+    this.handlers.onClearStage?.();
+  }
+
+  /**
    * Clear companion/reminder staging classes.
    * @returns {void}
    */
   clearStage() {
-    this._dropStageClasses();
-    if (this.handlers.isGrowthCardOverlayActive?.()) return;
-    this.handlers.onClearStage?.();
+    this._dismissIdleVisualPrimaryOverlays();
   }
 
   /**
@@ -293,6 +301,7 @@ export class NarrowIdleShell {
    */
   openSheet() {
     if (!this._isNarrow() || !this._idle) return;
+    this._dismissIdleVisualPrimaryOverlays();
     this._sheetOpen = true;
     this._popEscapeLayer?.();
     this._popEscapeLayer = pushOverlayEscapeLayer({

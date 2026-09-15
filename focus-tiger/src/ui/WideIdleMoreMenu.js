@@ -203,6 +203,7 @@ export class WideIdleMoreMenu {
    */
   openMenu() {
     if (!this._isWide() || !this._idle) return;
+    this._dismissIdleVisualPrimaryOverlays();
     this._menuOpen = true;
     this._popEscapeLayer?.();
     this._popEscapeLayer = pushOverlayEscapeLayer({
@@ -260,16 +261,26 @@ export class WideIdleMoreMenu {
   }
 
   /**
-   * Dismiss staged secondary panels (Soundscape / companion / reminder).
+   * Idle visual-primary dismiss (companion trio, chips, staged panels).
+   * Opening ⋯ uses the same contract as menu-row clearStage — not a global
+   * modal stack wipe (growth glass cards stay via isGrowthCardOverlayActive).
    * @returns {void}
    */
-  clearStage() {
+  _dismissIdleVisualPrimaryOverlays() {
     this._dropStageClasses();
     // Growth glass cards *are* the overlay — onClearStage closes them via
     // idleSecondaryPanelHost; suppress after open would flash-dismiss Quiet Line /
     // Wallpapers rows (7940bfaa · isGrowthCardOverlayActive).
     if (this.handlers.isGrowthCardOverlayActive?.()) return;
     this.handlers.onClearStage?.();
+  }
+
+  /**
+   * Dismiss staged secondary panels (Soundscape / companion / reminder).
+   * @returns {void}
+   */
+  clearStage() {
+    this._dismissIdleVisualPrimaryOverlays();
   }
 
   /**

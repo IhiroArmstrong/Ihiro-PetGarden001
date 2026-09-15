@@ -120,6 +120,17 @@ describe('wide more menu click reception', () => {
     );
   });
 
+  it('openMenu dismisses idle visual-primary overlays (companion trio) before opening', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /_dismissIdleVisualPrimaryOverlays/);
+    assert.match(
+      src,
+      /openMenu\(\) \{[\s\S]*_dismissIdleVisualPrimaryOverlays\(\);[\s\S]*this\._menuOpen = true/
+    );
+    assert.match(src, /clearStage\(\) \{[\s\S]*_dismissIdleVisualPrimaryOverlays\(\)/);
+  });
+
   it('reminder panel lives on body as viewport-fixed (escapes cluster filter)', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
