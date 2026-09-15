@@ -13,9 +13,9 @@
 
 ## 做（顺序）
 
-1. ~~按 `LAB_SCRIPT_CONVENTIONS.md` 对 #774 差样本集同一版本重复采样 10–20 次/句~~ **已完成**（2026-09-16 · `compare-1789489932173.json` · 5×15）。路由 100% generate；贪婪解码下零波动。
-2. 结论：**不是采样方差**（产品默认 temperature=0，与探针同一调用）。不必先挖 sanitize/语料/采样的近期 git。田野「不同答案」**疑似** sanitize 历史去重 → 语料回落，**待 Electron 同一会话 5 句连发验证**后再当根因。
-3. 加规则仅覆盖差样本集，且须另拍板。**当前先不加**；等步骤 2 的 Electron 连发结果，再决定规则要堵住「首次 generate 差」还是连「去重回落也差」。
+1. ~~**空历史方差**~~ **已完成**（2026-09-16 · `compare-1789489932173.json` · 5×15 · `FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance`）。路由 100% generate；贪婪解码下零波动。
+2. **同会话连发**（待跑 · 系统终端 · Metal）：`FT_CHITCHAT_REPEATS=3 npm run companion:ja-chitchat-session-repeat`；以及 Electron 同一会话 5 句连发（见 tracker 碎片）。结论：**不是采样方差**（产品默认 temperature=0，与探针同一调用）。田野「不同答案」**疑似** sanitize 历史去重 → 语料回落，**待本步验证**后再当根因。
+3. 加规则仅覆盖差样本集，且须另拍板。**当前先不加**；等同会话连发 / Electron 结果后再决定规则要堵住「首次 generate 差」还是连「去重回落也差」。
 
 ## 验收
 

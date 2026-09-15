@@ -63,7 +63,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_INTENT_ARCH` | 可选 · `A` / `C` / `D` / `E` | 2B 架构：A=7-way · C=决策树 · D=规则预筛+残差 · E=C+窄化 stats/trend OTHER（E′）；`2b-hard5` 与 `FT_INTENT_TIER2=1` 缺省 `E` |
 | `FT_INTENT_HOLDOUT` | 可选 · `1` | 仅 `2b`：追加 🔁 holdout；禁止拿去调 C / E′ |
 | `FT_INTENT_TIER2` | 可选 · `1` | 只跑 Tier 2 盲测 12 条（`confideIntentDiagnosticTier2.js`）；**不要**与 HOLDOUT 混跑；禁止拿去调 E′ |
-| `FT_CHITCHAT_RUNS` | 可选 · 整数 | #774 日语闲聊方差探针每条样本重复次数；缺省 = 15，合法范围 10–20 |
+| `FT_CHITCHAT_RUNS` | 可选 · 整数 | #774 方差探针每条样本重复次数（**空历史**）；缺省 = 15，合法范围 10–20 |
+| `FT_CHITCHAT_REPEATS` | 可选 · 整数 | #774 同会话连发探针每句重复次数；缺省 = 3，合法范围 2–5 |
 | `FT_CHITCHAT_GGUF` | 可选 · 绝对路径 | #774 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
@@ -104,7 +105,15 @@ cd focus-tiger/desktop && npm run companion:tool-call
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance
 ```
 
-结果：`/tmp/ft-l0-lab/compare-<epoch>.json`。fixture：`confideJaChitchatVarianceFixtures.js`（5 条差样本 · locale 固定 `ja`）。完整路由：`resolveConfideReply` → 拦截器 → 命中 fallback 时 `buildCompanionL2Prompt` + `LlamaChatSession`。**不是** intent diagnostic / tool-call 探针。须在系统终端跑（Metal）。`onTopic` 留 `null` 供人工标注。
+结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "variance"`）。fixture：`confideJaChitchatVarianceFixtures.js`（5 条差样本 · locale 固定 `ja`）。每次运行 **空历史**（测第一次问的方差，不测同句连发）。完整路由：`resolveConfideReply` → 拦截器 → 命中 fallback 时 `buildCompanionL2Prompt` + `LlamaChatSession`。**不是** intent diagnostic / tool-call 探针。须在系统终端跑（Metal）。`onTopic` 留 `null` 供人工标注。
+
+**日语 Confide 闲聊同会话连发探针（2026-09-16 · #774 · 仓库内脚本）**：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_CHITCHAT_REPEATS=3 npm run companion:ja-chitchat-session-repeat
+```
+
+结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "session-repeat"`）。同一虚拟会话内对 5 条差样本**各连发 2–5 次**（同句、累积 `_l2Turns`）；第 2 次起 `priorRepeatableYinRepliesFromHistory` 去重 + 带 history 的 `resolveCorpusFallbackAfterGenerateFailure`。与方差探针共用 fixture，**不能**用方差命令代替本探针。
 
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
@@ -152,7 +161,7 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 6. **从 QA 树 import，不要从主仓。** 主仓 `desktop/companion` 导出名曾和 QA 树对不上。档案脚本里 `l0Download.js` 若仍指向主仓，改回 QA `DESKTOP`。
 7. **Cursor 沙箱没有 Metal。** 会 `ggml_metal_init: failed to create command queue`；CPU 回退还可能去编 llama。只在系统终端跑。
 8. **`'</s>'` 控制符警告不是质量失败证据。** 0.6B 与 4B 都出现过；有警告仍可能出正常句子。
-9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。
+9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。`companion:ja-chitchat-variance` = 空历史方差；`companion:ja-chitchat-session-repeat` = 同会话连发去重/回落——二者不可互换。
 10. **实验室 dest ≠ 生产缓存。** 不要把 `/tmp/ft-l0-lab/` 和下到 `~/Library/Application Support/Focus Tiger/companion-l0/` 的文件当成同一份。
 11. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
 12. **intent diagnostic ≠ 生产 L3。** `companion:intent-diagnostic` 禁止 Yin 口吻；结论只拆模型 vs routing，**不得**据此改默认 GGUF。
