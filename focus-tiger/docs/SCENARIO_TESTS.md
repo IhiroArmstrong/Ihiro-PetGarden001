@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-13（官方场景清库 `__ftDebug.resetScenario` · 仅 DEV；场景 V 禁止默写 removeItem）
+最近代码核对：2026-09-16（P5 菜单/Recover/Checkout 增量 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV；场景 V 禁止默写 removeItem）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -1025,6 +1025,22 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 3. **链接表**：补 `?entitlementMock=subscription`（AF Slice 2）；Electron 行补 AG/AK。  
 4. **仍须人工 / 勿当缺口**：AJ 欢迎信 Resend 细节待 #444 合入后二次核对；Presence 披露 ~4s 观感；Electron memory JSON 对账；Overlay 吹花→Compass 时序。  
 5. **下班前 Git 同步门禁（2026-08-26）**：凡口令「请安排下班前的 Git 同步」，须先增量核对并更新本文「最近代码核对」日期（见 `RULES_INDEX` → `scenario-tests-eod-sync`）。
+
+---
+
+## 2026-09-14–16 增量核对摘要（Menu governance · P5 overlays · Support Checkout · Recover freeze · Desktop updater）
+
+1. **背景**：9/14–9/16 合入 develop 一批菜单治理、P5 叠层/仪式、Support Checkout 内联错误、Recover 冻结与 Electron 桌面更新器（#760–#779 区间）；TRACKER 碎片本旁支 `tracker:assemble` 折入机器块。  
+2. **本次核对（增量，未升格新字母场景）**：  
+   - **场景 O / Idle 菜单**：`fix/menu-governance-wave2` + `fix/menu-open-dismiss-idle-overlays`（#773）——开菜单须 dismiss 视觉主叠层（吹花/见证/Confide 等）；Esc 栈与登录占位见 `MENU_CHROME_CENSUS`；批量测时对照场景 D/O 叠层回流。  
+   - **场景 Q · Support Checkout**：`fix/support-checkout-inline-error`——Checkout 卡内联错误取代 `alert`；步 3 失败须见卡内文案，勿当「点了没反应」。  
+   - **场景 S / T · P5 微仪式**：`feature/p5-s11-micro-ritual-duration-sit-latch`（M1 时长 picker 开时 Sit latch）· `feature/p5-s09-ritual-leave-echo`（Leave 回顾轻化为 welcome echo）· `feature/p5-s21-transition-moment-whisper`（Transition Moment 降为 CAW-T whisper）· `feature/p5-part1-hints-witness-nonmodal`（? 目的卡与 witness picker 非模态）——仍走场景 S/T 主路径，勿与 Honesty/Reflection 模态混验。  
+   - **Recover 路径**：`fix/recover-freeze-breath-guides` + `fix/p5-s17-recover-legacy-breath-path`——移除 legacy breath/overwhelmed Recover 支路；场景 B/C Recover 回流须见最小呼吸引导，勿期待旧 overwhelmed 入口。  
+   - **场景 AB · Electron**：`feature/electron-desktop-updater-mvp` + `fix/desktop-updater-esm-import`——桌面更新 chip / IPC；Web Safari 不测 updater；托盘/Confide 仍走 AB/AE。  
+   - **鹦鹉 CapCut**：`fix/parrot-idle-visible-capcut` 合入后又 revert（#779 前）；若手测仍硬闪 → 走 `ISSUE_LEDGER` RCA 行，勿当新场景字母。  
+   - **Lab only**：`feat/lab-ja-chitchat-*` 为 #774 方差探针脚本，**非** `?product=1` 用户故事。  
+3. **仍须人工 / 勿当缺口**：P5 非模态 ? 卡与 witness picker 375 按压、菜单 Esc 栈与底条 Leave a trace 区分、Checkout 内联错误文案、Recover 最小呼吸观感、桌面 updater 真下包。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
 
