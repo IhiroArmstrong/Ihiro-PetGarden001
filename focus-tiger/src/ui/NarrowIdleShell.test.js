@@ -48,3 +48,12 @@ test('narrow grabber keeps swipe aria-label but hides visible hint text', () => 
   assert.match(src, /\.ft-narrow-grabber[\s\S]*font-size:\s*0;/);
   assert.match(src, /\.ft-narrow-grabber::before/);
 });
+
+test('openSheet dismisses idle visual-primary overlays before opening drawer', () => {
+  assert.match(src, /_dismissIdleVisualPrimaryOverlays/);
+  assert.match(
+    src,
+    /openSheet\(\) \{[\s\S]*_dismissIdleVisualPrimaryOverlays\(\);[\s\S]*this\._sheetOpen = true/
+  );
+  assert.match(src, /clearStage\(\) \{[\s\S]*_dismissIdleVisualPrimaryOverlays\(\)/);
+});
