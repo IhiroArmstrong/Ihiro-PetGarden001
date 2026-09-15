@@ -63,6 +63,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_INTENT_ARCH` | 可选 · `A` / `C` / `D` / `E` | 2B 架构：A=7-way · C=决策树 · D=规则预筛+残差 · E=C+窄化 stats/trend OTHER（E′）；`2b-hard5` 与 `FT_INTENT_TIER2=1` 缺省 `E` |
 | `FT_INTENT_HOLDOUT` | 可选 · `1` | 仅 `2b`：追加 🔁 holdout；禁止拿去调 C / E′ |
 | `FT_INTENT_TIER2` | 可选 · `1` | 只跑 Tier 2 盲测 12 条（`confideIntentDiagnosticTier2.js`）；**不要**与 HOLDOUT 混跑；禁止拿去调 E′ |
+| `FT_CHITCHAT_RUNS` | 可选 · 整数 | #774 日语闲聊方差探针每条样本重复次数；缺省 = 15，合法范围 10–20 |
+| `FT_CHITCHAT_GGUF` | 可选 · 绝对路径 | #774 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
 
@@ -93,6 +95,16 @@ cd focus-tiger/desktop && npm run companion:tool-call
 ```
 
 结果：`/tmp/ft-l0-lab/tool-call-<epoch>.json`。过门必要条件：`writeFalsePositives === 0`。fixture：`src/core/confide/confideToolCallFixtures.js`。实验室 prompt 仍含 forget 测假阳性；**生产 Read Hybrid** 用 `buildConfideReadHybridPrompt`（无 forget），见 `task-confide-read-hybrid-v1.md`。
+
+**日语 Confide 闲聊方差探针（2026-09-16 · #774 · 仓库内脚本）**：
+
+合 develop 后先同步 QA worktree：`cd focus-tiger && npm run sync:qa-develop`。
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance
+```
+
+结果：`/tmp/ft-l0-lab/compare-<epoch>.json`。fixture：`confideJaChitchatVarianceFixtures.js`（5 条差样本 · locale 固定 `ja`）。完整路由：`resolveConfideReply` → 拦截器 → 命中 fallback 时 `buildCompanionL2Prompt` + `LlamaChatSession`。**不是** intent diagnostic / tool-call 探针。须在系统终端跑（Metal）。`onTopic` 留 `null` 供人工标注。
 
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
