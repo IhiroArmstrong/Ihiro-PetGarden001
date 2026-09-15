@@ -76,27 +76,6 @@ export function shouldHideOverlayOnFinish({
   return !holdLastFrame && !hasOnComplete;
 }
 
-/**
- * CapCut 叠化门闩：有上一帧 + crossFadeMs 时，overlay 若被误藏须先恢复可见再叠化
- * （§6.12 / 任务1：「不得先藏图层」，不是 opacity 0 硬叠）。
- * @param {{ crossFadeMs: number, hasPreviousSrc: boolean, overlayHidden: boolean }} input
- * @returns {{ shouldRevealOverlay: boolean, shouldCrossFade: boolean }}
- */
-export function resolveCapCutCrossFadeGate({
-  crossFadeMs,
-  hasPreviousSrc,
-  overlayHidden
-}) {
-  const ms = Math.max(0, Number(crossFadeMs) || 0);
-  if (!(ms > 0 && hasPreviousSrc)) {
-    return { shouldRevealOverlay: false, shouldCrossFade: false };
-  }
-  if (overlayHidden) {
-    return { shouldRevealOverlay: true, shouldCrossFade: true };
-  }
-  return { shouldRevealOverlay: false, shouldCrossFade: true };
-}
-
 export function advanceSpriteFrame({
   frameIndex,
   direction,
@@ -320,16 +299,10 @@ export class SpriteSequencePlayer {
 
     const crossFadeMs = Math.max(0, Number(options.crossFadeMs) || 0);
     const previousSrc = this.imgEl.getAttribute('src');
-    const overlayHidden = this.overlayEl.style.opacity === '0';
-    const capCutGate = resolveCapCutCrossFadeGate({
-      crossFadeMs,
-      hasPreviousSrc: Boolean(previousSrc),
-      overlayHidden
-    });
-    if (capCutGate.shouldRevealOverlay) {
-      this._show();
-    }
-    const shouldCrossFade = capCutGate.shouldCrossFade;
+    const shouldCrossFade =
+      crossFadeMs > 0 &&
+      Boolean(previousSrc) &&
+      this.overlayEl.style.opacity !== '0';
 
     // 立即打断当前序列（满足「中途打断切换」要求）
     this._cancelRaf();

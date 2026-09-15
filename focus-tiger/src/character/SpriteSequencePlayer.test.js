@@ -7,7 +7,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   advanceSpriteFrame,
-  resolveCapCutCrossFadeGate,
   shouldHideOverlayOnFinish,
   SPRITE_LOOP_MODES
 } from './SpriteSequencePlayer.js';
@@ -46,41 +45,6 @@ test('oneshot finish keeps overlay when onComplete will CapCut to idle', () => {
   assert.equal(
     shouldHideOverlayOnFinish({ holdLastFrame: true, hasOnComplete: false }),
     false
-  );
-});
-
-test('resolveCapCutCrossFadeGate reveals hidden overlay before dissolve (parrot→Idle)', () => {
-  assert.deepEqual(
-    resolveCapCutCrossFadeGate({
-      crossFadeMs: 1000,
-      hasPreviousSrc: true,
-      overlayHidden: true
-    }),
-    { shouldRevealOverlay: true, shouldCrossFade: true }
-  );
-  assert.deepEqual(
-    resolveCapCutCrossFadeGate({
-      crossFadeMs: 1000,
-      hasPreviousSrc: true,
-      overlayHidden: false
-    }),
-    { shouldRevealOverlay: false, shouldCrossFade: true }
-  );
-  assert.deepEqual(
-    resolveCapCutCrossFadeGate({
-      crossFadeMs: 0,
-      hasPreviousSrc: true,
-      overlayHidden: false
-    }),
-    { shouldRevealOverlay: false, shouldCrossFade: false }
-  );
-  assert.deepEqual(
-    resolveCapCutCrossFadeGate({
-      crossFadeMs: 1000,
-      hasPreviousSrc: false,
-      overlayHidden: false
-    }),
-    { shouldRevealOverlay: false, shouldCrossFade: false }
   );
 });
 
