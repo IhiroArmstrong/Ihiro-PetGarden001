@@ -11,7 +11,8 @@
     "companion:spike-17b": "node scripts/l0-spike-17b.js",
     "companion:tool-call": "node scripts/l0-tool-call-probe.js",
     "companion:intent-diagnostic": "node scripts/l0-intent-diagnostic-probe.js",
-    "companion:ja-chitchat-variance": "node scripts/l0-ja-chitchat-variance-probe.js"
+    "companion:ja-chitchat-variance": "node scripts/l0-ja-chitchat-variance-probe.js",
+    "companion:ja-chitchat-session-repeat": "node scripts/l0-ja-chitchat-session-repeat-probe.js"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",

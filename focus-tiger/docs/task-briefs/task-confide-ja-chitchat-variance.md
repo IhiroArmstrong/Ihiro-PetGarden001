@@ -13,7 +13,10 @@
 
 ## 做（顺序）
 
-1. 按 `LAB_SCRIPT_CONVENTIONS.md` 对 #774 差样本集同一版本重复采样 10–20 次/句，产出 `/tmp/ft-l0-lab/compare-*.json`（或同等机器 JSON），统计：规则桶 / fallback-02 / L3 generate / 贴题。
+1. 按 `LAB_SCRIPT_CONVENTIONS.md` 对 #774 差样本集跑两条实验室命令（系统终端 · Metal）：
+   - **空历史方差**：`FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance`
+   - **同会话连发**：`FT_CHITCHAT_REPEATS=3 npm run companion:ja-chitchat-session-repeat`
+   产出 `/tmp/ft-l0-lab/compare-*.json`，统计：规则桶 / fallback-02 / L3 generate / 贴题 / 第 2–3 次是否回落语料。
 2. 结论：方差 vs 回归。回归才查 sanitize / 语料 / 采样 git。
 3. 加规则仅覆盖差样本集，且须另拍板。
 

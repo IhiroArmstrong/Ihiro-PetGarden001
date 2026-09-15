@@ -4,12 +4,12 @@
  */
 
 /**
- * Lab-only #774: batch variance probe for ja Confide chitchat diff samples.
- * Each run uses empty history (first-ask variance, not same-session repeats).
+ * Lab-only #774: same-session repeat probe for ja Confide chitchat.
+ * Each fixture is sent 2–3 times in one virtual session (history accumulates).
  * Never wired to Confide send. Run from system Terminal (Metal).
  *
- *   cd focus-tiger/desktop && npm run companion:ja-chitchat-variance
- *   FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance
+ *   cd focus-tiger/desktop && npm run companion:ja-chitchat-session-repeat
+ *   FT_CHITCHAT_REPEATS=3 npm run companion:ja-chitchat-session-repeat
  *
  * Results: /tmp/ft-l0-lab/compare-<epoch>.json
  */
@@ -18,32 +18,31 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadModelHold } from '../companion/l1Hold.js';
-import { confideLineText } from '../../src/core/confide/confideCorpus.js';
 import { CONFIDE_JA_CHITCHAT_VARIANCE_FIXTURES } from '../../src/core/confide/confideJaChitchatVarianceFixtures.js';
 import { setLocale } from '../../src/locales/i18n.js';
 import {
   JA_CHITCHAT_LAB_ROOT,
   JA_CHITCHAT_LOCALE,
+  appendJaChitchatTurn,
   errorMessage,
-  resolveJaChitchatLabRoute,
+  processJaChitchatSend,
   resolveJaChitchatModelPath,
-  resolveJaChitchatRunCount,
-  runJaChitchatL2Generate
+  resolveJaChitchatRepeatCount
 } from './l0-ja-chitchat-probe-shared.js';
 
 async function main() {
   setLocale(JA_CHITCHAT_LOCALE);
-  const runs = resolveJaChitchatRunCount();
+  const repeats = resolveJaChitchatRepeatCount();
   const modelPath = resolveJaChitchatModelPath();
   if (!modelPath) {
     process.stderr.write(
-      `[ja-chitchat] missing GGUF. Set FT_CHITCHAT_GGUF or download production model to companion-l0.\n`
+      `[ja-chitchat-session] missing GGUF. Set FT_CHITCHAT_GGUF or download production model to:\n  ${defaultGgufHint()}\n`
     );
     process.exit(2);
   }
 
   process.stderr.write(
-    `[ja-chitchat] model ${modelPath} · locale ${JA_CHITCHAT_LOCALE} · runs ${runs} · samples ${CONFIDE_JA_CHITCHAT_VARIANCE_FIXTURES.length}\n`
+    `[ja-chitchat-session] model ${modelPath} · locale ${JA_CHITCHAT_LOCALE} · repeats ${repeats} · samples ${CONFIDE_JA_CHITCHAT_VARIANCE_FIXTURES.length}\n`
   );
 
   /** @type {object[]} */
@@ -53,25 +52,26 @@ async function main() {
   try {
     hold = await loadModelHold({
       modelPath,
-      onProgress: (msg) => process.stderr.write(`[ja-chitchat] ${msg}\n`)
+      onProgress: (msg) => process.stderr.write(`[ja-chitchat-session] ${msg}\n`)
     });
 
     for (const fixture of CONFIDE_JA_CHITCHAT_VARIANCE_FIXTURES) {
-      const text = fixture.text;
-      const routed = resolveJaChitchatLabRoute(text);
-      const corpusText = routed.hit
-        ? confideLineText(routed.hit.line, JA_CHITCHAT_LOCALE)
-        : '';
+      /** @type {Array<{ role?: string, text?: string, source?: string }>} */
+      const history = [];
+      const sessionExclude = new Set();
 
-      for (let runIndex = 1; runIndex <= runs; runIndex += 1) {
-        let outcome = routed;
-        if (routed.needsGenerate) {
-          outcome = await runJaChitchatL2Generate(text, corpusText, routed.hit, hold);
-        }
+      for (let repeatIndex = 1; repeatIndex <= repeats; repeatIndex += 1) {
+        const text = fixture.text;
+        const outcome = await processJaChitchatSend(text, {
+          history,
+          sessionExclude,
+          hold
+        });
         rows.push({
           fixtureId: fixture.id,
           input: text,
-          runIndex,
+          repeatIndex,
+          historyRowsBefore: history.length,
           route: outcome.route,
           'data-source': outcome.dataSource,
           corpusId: outcome.corpusId,
@@ -79,8 +79,10 @@ async function main() {
           onTopic: null
         });
         process.stderr.write(
-          `[ja-chitchat] ${fixture.id} run ${runIndex}/${runs} route=${outcome.route} source=${outcome.dataSource}\n`
+          `[ja-chitchat-session] ${fixture.id} repeat ${repeatIndex}/${repeats} route=${outcome.route} source=${outcome.dataSource}\n`
         );
+        if (outcome.corpusId) sessionExclude.add(outcome.corpusId);
+        appendJaChitchatTurn(history, text, outcome);
       }
     }
   } finally {
@@ -92,10 +94,10 @@ async function main() {
   const report = {
     at: new Date().toISOString(),
     issue: '774',
-    probe: 'variance',
+    probe: 'session-repeat',
     locale: JA_CHITCHAT_LOCALE,
     modelPath,
-    runsPerSample: runs,
+    repeatsPerSample: repeats,
     sampleCount: CONFIDE_JA_CHITCHAT_VARIANCE_FIXTURES.length,
     rowCount: rows.length,
     rows
@@ -106,10 +108,22 @@ async function main() {
   fs.writeFileSync(outPath, `${JSON.stringify(report, null, 2)}\n`);
   process.stdout.write(
     `${JSON.stringify(
-      { reportPath: outPath, rowCount: rows.length, runsPerSample: runs, probe: 'variance' },
+      {
+        reportPath: outPath,
+        rowCount: rows.length,
+        repeatsPerSample: repeats,
+        probe: 'session-repeat'
+      },
       null,
       2
     )}\n`
+  );
+}
+
+function defaultGgufHint() {
+  return path.join(
+    process.env.HOME || '~',
+    'Library/Application Support/Focus Tiger/companion-l0'
   );
 }
 
