@@ -81,3 +81,4 @@ jobs:
           test -d dist/assets
           echo "Build OK: dist/index.html + dist/assets present"
           du -sh dist
+          npm run build:verify-no-qa-boot

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:verify-no-qa-boot": "node scripts/verify-no-qa-boot-in-dist.js",
     "preview": "vite preview",
     "test": "node scripts/run-src-unit-tests.js",
     "test:smoke": "node scripts/run-src-unit-tests.js && npm run docs:check",
