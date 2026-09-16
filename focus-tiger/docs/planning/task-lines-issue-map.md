@@ -6,7 +6,7 @@
 
 仓库：https://github.com/IhiroArmstrong/Ihiro-PetGarden001
 
-## Epic（22，跳过已作废表行 #16）
+## Epic（24，跳过已作废表行 #16）
 
 | 表行 | slug | Issue | 标题 |
 |---|---|---|---|
@@ -33,6 +33,8 @@
 | 21 | `anti-plagiarism-layer` | [#646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/646) | 防剽窃层 |
 | 22 | `phase1-a-b-c-testing` | [#647](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/647) | Local AI Phase 1A/1B/1C 验收 |
 | 23 | `seasonal-theme-engine` | [#742](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/742) | 节日主题引擎（Seasonal Theme · B 轨全年氛围） |
+| 24 | `soundscape` | [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) | 音景（Soundscape · 曲库/上传/试听/音符） |
+| 25 | `habitat-shell` | [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) | 栖居壳层（Habitat Shell · 菜单/叠层/Esc/chrome） |
 
 ## 审计与切片（真先后）
 
@@ -61,3 +63,13 @@
 | label `line:seasonal-theme-engine` | CREATE（`--force`） |
 | Epic #23 | CREATE [#742](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/742) |
 | Phase 4 波次 1 切片 | CREATE [#743](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/743)–[#745](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/745)；parent #742 |
+
+## 建库执行记录（2026-09-16 · #24 音景 + #25 栖居壳层）
+
+| 步骤 | 结果 |
+|---|---|
+| label `line:soundscape` · `line:habitat-shell` · `type:process` | CREATE（`--force`） |
+| Epic #24 / #25 | CREATE [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) · [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) |
+| #773 改挂 `line:habitat-shell` | 移除 `line:core-practice` |
+| Project 挂板 | #792 #793 加入 Focus Tiger 开发任务线看板 #1 |
+| guard | `task-line-ref-check.yml` 认 `type:process` PR 豁免 + `Closes` 目标校验 |

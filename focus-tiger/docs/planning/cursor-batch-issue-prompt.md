@@ -33,11 +33,15 @@ gh label create "line:marketing-site" --color "1D76DB" --description "市场官�
 gh label create "line:art-polish" --color "1D76DB" --description "美术优化（全局兼容约束）" --force
 gh label create "line:anti-plagiarism-layer" --color "1D76DB" --description "防剽窃层" --force
 gh label create "line:phase1-a-b-c-testing" --color "1D76DB" --description "Local AI Phase 1A/1B/1C 验收（挂在 confide-ai-ritual 下）" --force
+gh label create "line:seasonal-theme-engine" --color "1D76DB" --description "节日主题引擎（Seasonal Theme · B 轨全年氛围）" --force
+gh label create "line:soundscape" --color "1D76DB" --description "音景（曲库/上传/试听/音符/Soundscape）" --force
+gh label create "line:habitat-shell" --color "1D76DB" --description "栖居壳层（菜单/叠层仲裁/Esc/响应式 chrome）" --force
 
 # 类型 label
 gh label create "type:epic" --color "5319E7" --description "Epic Issue，代表一条长期开发任务线" --force
 gh label create "type:audit" --color "B60205" --description "短命审计/收口条目，解锁下游线开工口令" --force
 gh label create "type:slice" --color "FBCA04" --description "Epic 下的具体切片子 Issue" --force
+gh label create "type:process" --color "0E8A16" --description "工作室流程 PR（CI/规则/拼装；非产品 Epic）" --force
 ```
 
 ## 2. 批量建 21 个 Epic Issue

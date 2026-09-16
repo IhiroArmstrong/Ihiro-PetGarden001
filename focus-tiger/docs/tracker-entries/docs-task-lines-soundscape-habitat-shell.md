@@ -1,0 +1,1 @@
+| 音景 + 栖居壳层 Epic 建库 + type:process guard | 纯后端 | 仅单元测试覆盖 | **无用户路径**。核对 GitHub Epic [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) / [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) 与 `task-lines-issue-map.md` 是否一致；#773 标签应为 `line:habitat-shell`。 | — | — | — | `docs/task-lines-soundscape-habitat-shell` | 2026-09-16 |
