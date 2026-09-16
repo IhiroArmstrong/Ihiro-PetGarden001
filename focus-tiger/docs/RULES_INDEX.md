@@ -220,6 +220,8 @@ cd focus-tiger && npm run rules:doc-sync
 | `MONETIZATION_INTENT_FUNNEL.md` | 付费意愿漏斗事件（本地） |
 | `ONBOARDING_HINTS.md` / `HONESTY_BRIDGE_CTA.md` 等 | 对应功能详规（Hints 文案/tier；接线见 `HINTS_WIRING.md`） |
 | `TASKS.md` | 任务序列（排期，非门禁） |
+| `EPIC_COVERAGE_AUDIT.md` | **存量 Epic 覆盖度审计**（已合并 PR / 任务书与 SSOT / 代码仲裁层 ↔ #627–#647+#742+#648 切片；只报告不建 Issue） |
+| `planning/task-lines-epic-draft.md` | 开发任务线 Epic 建库草案（线名与关系；Issue 编号以 GitHub 为准） |
 
 仓库根若干同名文件（如 `SCENARIO_TESTS.md`）仅为**指针**，权威在 `focus-tiger/docs/`。
 
@@ -253,6 +255,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-16 | 产品表：`EPIC_COVERAGE_AUDIT.md`（存量线覆盖；只报告不建 Issue）+ `planning/task-lines-epic-draft.md` 指针。不进 rules-authority 机器块 |
 | 2026-09-16 | 产品表：`FOCUS_COINS.md` / `REMOTE_PARAM_CANDIDATES.md` 挂寅币日封顶经济评估 Brief（`task-yin-coin-daily-cap-economy`；Step D 待 PO；无运行时）。不进 rules-authority 机器块 |
 | 2026-09-10 | 修订 `agent-tool-budget`（#700 后补漏）：`Read` 计次对齐 `source-read-granularity`（200/400；大 `limit` 仍计）；连续 8 次探索无改文件先软停；软/硬顶与 `session-handoff` 强制探索快照；「大任务」开工须先列预期文件/函数清单。 |
 | 2026-09-10 | 修订 `agent-tool-budget`：hook **只计探索类**；硬顶不拦改文件/git/约定 smoke；「继续」只留本 Chat（禁止 New Agent 续同一任务）；跨模块+单测+PR 用口令「大任务」。数字仍以 `config.json` + `focus-tiger-agent-token-cost.mdc` 为准。 |
