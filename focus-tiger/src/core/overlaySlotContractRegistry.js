@@ -7,7 +7,8 @@
  * Overlay slot arbitration — machine-readable contract registry (SSOT).
  *
  * Tap / enter-sleep occupancy: `overlaySlotArbitration.js` derive* + `main.js`
- * `buildLiveOverlaySnapshot`. UI file ↔ id scan: `scripts/overlay-contract-ui-check.js`.
+ * `buildLiveOverlaySnapshot`. UI occupancy file ↔ id scan + O-04 surface:
+ * `scripts/overlay-contract-ui-check.js` / `overlayUiSurfaceContract.js`.
  *
  * @see docs/DOC_CODE_CONTRACT.md
  * @see overlaySlotArbitration.js
