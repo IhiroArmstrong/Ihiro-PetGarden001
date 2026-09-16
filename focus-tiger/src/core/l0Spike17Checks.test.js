@@ -16,18 +16,18 @@ import {
 } from '../../desktop/companion/l0Spike17Checks.js';
 import { L0_MODEL_ID } from '../../desktop/companion/l0Config.js';
 
-describe('1.7B spike config (mirrors production l0Config)', () => {
-  it('locks unsloth 1.7B Q4 metadata aligned with production default', () => {
+describe('1.7B spike config (isolated lab; production may be Gemma4)', () => {
+  it('locks unsloth 1.7B Q4 metadata for spike-only runs', () => {
     assert.equal(SPIKE_17_MODEL_ID, 'Qwen3-1.7B-Q4_K_M');
     assert.equal(SPIKE_17_MODEL_FILENAME, 'Qwen3-1.7B-Q4_K_M.gguf');
     assert.equal(SPIKE_17_EXPECTED_BYTES, 1_107_409_472);
-    assert.equal(L0_MODEL_ID, SPIKE_17_MODEL_ID);
   });
 
-  it('production l0Config.js is wired to 1.7B', () => {
+  it('reports production model separately from spike lab target', () => {
     const row = verifyProductionL0ConfigUnchanged();
-    assert.equal(row.productionModelId, 'Qwen3-1.7B-Q4_K_M');
+    assert.equal(row.productionModelId, L0_MODEL_ID);
     assert.equal(row.unchanged, true);
+    assert.equal(row.productionMatchesSpike, L0_MODEL_ID === SPIKE_17_MODEL_ID);
   });
 
   it('unmatched confide still resolves corpus fallback (generate failure path)', () => {

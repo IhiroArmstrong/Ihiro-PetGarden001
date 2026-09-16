@@ -7,6 +7,9 @@
  * L2 on-device prompt. Not a product locale string — model instructions only.
  */
 
+import { L0_PROMPT_FAMILY } from './l0Config.js';
+import { joinL3PromptLines } from './l2PromptAdapter.js';
+
 export const L2_MAX_TOKENS = 48;
 
 export const L2_MAX_REPLY_CHARS = 160;
@@ -90,7 +93,8 @@ const REFLECTION_FIELD_LABELS = {
  */
 export function buildReflectionCompanionPrompt({
   answers = {},
-  locale = 'en'
+  locale = 'en',
+  promptFamily = L0_PROMPT_FAMILY
 } = {}) {
   const lang = LANG[locale] || LANG.en;
   const lines = Object.entries(REFLECTION_FIELD_LABELS)
@@ -105,15 +109,17 @@ export function buildReflectionCompanionPrompt({
     lines.length > 0
       ? lines.join('\n')
       : 'The user completed reflection but left no written answers.';
-  return [
-    '/no_think',
-    `You are Yin, a young tiger cub. Reply in ${lang}.`,
-    'The user already saw their own reflection. They invited you to offer ONE short observation — a second mirror.',
-    'Write one or two short sentences only. Observe what is already in their words; do not advise, diagnose, coach, score progress, or add action steps.',
-    'Do not mention being an AI or a model.',
-    `Their reflection (this session only — do not invent other facts):\n${block}`,
-    'Yin (one short observation):'
-  ].join('\n');
+  return joinL3PromptLines(
+    [
+      `You are Yin, a young tiger cub. Reply in ${lang}.`,
+      'The user already saw their own reflection. They invited you to offer ONE short observation — a second mirror.',
+      'Write one or two short sentences only. Observe what is already in their words; do not advise, diagnose, coach, score progress, or add action steps.',
+      'Do not mention being an AI or a model.',
+      `Their reflection (this session only — do not invent other facts):\n${block}`,
+      'Yin (one short observation):'
+    ],
+    promptFamily
+  );
 }
 
 export function buildCompanionL2Prompt({
@@ -121,7 +127,8 @@ export function buildCompanionL2Prompt({
   locale = 'en',
   history = [],
   memorySummaries = [],
-  patternInsights = []
+  patternInsights = [],
+  promptFamily = L0_PROMPT_FAMILY
 } = {}) {
   const lang = LANG[locale] || LANG.en;
   const memories = Array.isArray(memorySummaries)
@@ -153,23 +160,23 @@ export function buildCompanionL2Prompt({
     .filter((line) => line.length > 6)
     .join('\n');
   const user = String(text || '').slice(0, 280);
-  return [
-    '/no_think',
-    `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
-    'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
-    'If they did not name scenery, do not answer with river, mountain, or ground as a substitute for hearing them. Stay with their words; do not replace them with scenery, weather, season, or light.',
-    'Name at least one concrete word or idea from their latest message.',
-    'Do not answer with only still, watching, here, quiet, or listening presence.',
-    'Never reply with I am curious, I am aware, or any label for the user\'s inner state.',
-    'If they are unsure whether to speak, respect the boundary; do not probe.',
-    'Answer the latest User line only. Do not repeat an earlier Yin sentence.',
-    'Do not list steps. Do not mention being an AI or a model.',
-    memoryBlock,
-    insightBlock,
-    turns ? `Recent turns:\n${turns}` : '',
-    `User: ${user}`,
-    'Yin:'
-  ]
-    .filter(Boolean)
-    .join('\n');
+  return joinL3PromptLines(
+    [
+      `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
+      'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
+      'If they did not name scenery, do not answer with river, mountain, or ground as a substitute for hearing them. Stay with their words; do not replace them with scenery, weather, season, or light.',
+      'Name at least one concrete word or idea from their latest message.',
+      'Do not answer with only still, watching, here, quiet, or listening presence.',
+      'Never reply with I am curious, I am aware, or any label for the user\'s inner state.',
+      'If they are unsure whether to speak, respect the boundary; do not probe.',
+      'Answer the latest User line only. Do not repeat an earlier Yin sentence.',
+      'Do not list steps. Do not mention being an AI or a model.',
+      memoryBlock,
+      insightBlock,
+      turns ? `Recent turns:\n${turns}` : '',
+      `User: ${user}`,
+      'Yin:'
+    ].filter(Boolean),
+    promptFamily
+  );
 }

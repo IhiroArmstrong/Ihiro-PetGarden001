@@ -5,41 +5,56 @@
 
 /**
  * L0 production constants (Electron companion download + probe).
- * Locked 2026-08-24: Qwen3-1.7B-Q4_K_M unsloth after spike + M5 Focusing hitch.
+ * Default 2026-09-16: Gemma4-E4B-it Q4_K_M (jc-builds) for Mac companion L3.
+ * Fallback: `FT_COMPANION_L0_MODEL=qwen3-1.7b` → Qwen3-1.7B unsloth.
  * Not a product entry; Web / PWA must not import this file.
  */
 
-export const L0_MODEL_ID = 'Qwen3-1.7B-Q4_K_M';
+import {
+  L0_DEFAULT_MODEL_KEY,
+  L0_MODEL_PROFILES,
+  resolveL0ModelProfile
+} from './l0ModelProfiles.js';
 
-export const L0_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
+const ACTIVE = resolveL0ModelProfile();
+
+export const L0_MODEL_PROFILE_KEY = ACTIVE.key;
+
+export const L0_MODEL_ID = ACTIVE.modelId;
+
+export const L0_MODEL_FILENAME = ACTIVE.filename;
 
 /**
- * Leftover production files from the 0.6B bartowski era.
- * Never loaded after 1.7B dest is complete; unlinked so Confide cannot
- * look "ready" on the old GGUF.
+ * Leftover production files from earlier eras.
+ * Never loaded after the active dest is complete; unlinked so Confide cannot
+ * look "ready" on an old GGUF.
  */
 export const L0_LEGACY_MODEL_FILENAMES = Object.freeze([
   'Qwen_Qwen3-0.6B-Q4_K_M.gguf'
 ]);
 
-/** Locked size from 2026-08-24 selection (`compare-1787541422867.json`). */
-export const L0_MODEL_EXPECTED_BYTES = 1_107_409_472;
+export const L0_MODEL_EXPECTED_BYTES = ACTIVE.expectedBytes;
 
 /** Hugging Face resolve URL (follows to CDN). */
-export const L0_MODEL_URL =
-  'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf';
+export const L0_MODEL_URL = ACTIVE.urls[0];
 
 /** Try these in order if the official resolve stream dies. */
-export const L0_MODEL_URLS = [
-  L0_MODEL_URL,
-  'https://hf-mirror.com/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf'
-];
+export const L0_MODEL_URLS = ACTIVE.urls;
 
 /** Reject HTML error pages and truncated GGUF. */
-export const L0_MODEL_MIN_BYTES = 1_100_000_000;
+export const L0_MODEL_MIN_BYTES = ACTIVE.minBytes;
+
+/** `qwen` = Qwen3 `/no_think`; `gemma` = Gemma4 chat template via node-llama-cpp. */
+export const L0_PROMPT_FAMILY = ACTIVE.promptFamily;
+
+export const L0_MODEL_DISPLAY_CODE = ACTIVE.displayCode;
+
+export { L0_DEFAULT_MODEL_KEY, L0_MODEL_PROFILES, resolveL0ModelProfile };
 
 export const L0_PROMPT =
-  '/no_think Reply with one short calm sentence, then stop. Do not give advice.';
+  L0_PROMPT_FAMILY === 'qwen'
+    ? '/no_think Reply with one short calm sentence, then stop. Do not give advice.'
+    : 'Reply with one short calm sentence, then stop. Do not give advice.';
 
 export const L0_MAX_TOKENS = 48;
 

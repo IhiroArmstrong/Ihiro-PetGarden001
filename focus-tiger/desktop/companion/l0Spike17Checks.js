@@ -7,29 +7,24 @@
  * Spike-only checks: production config wired + L2 corpus fallback on generate failure.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { resolveConfideReply } from '../../src/core/confide/confideReplyFlow.js';
 import { CONFIDE_ROUTE } from '../../src/core/confide/confideRoutes.js';
 import { L0_MODEL_ID } from './l0Config.js';
 import { SPIKE_17_MODEL_ID } from './l0Spike17Config.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 /**
- * Spike must not drift from production `l0Config.js` (now 1.7B).
- * Field `unchanged` kept for spike script exit code compatibility.
+ * Spike lab stays on isolated 1.7B metadata; production default may differ (Gemma4-E4B).
+ * Field `unchanged` = spike config still targets 1.7B (script exit compatibility).
  *
- * @returns {{ productionModelId: string, unchanged: boolean }}
+ * @returns {{ productionModelId: string, unchanged: boolean, productionMatchesSpike: boolean }}
  */
 export function verifyProductionL0ConfigUnchanged() {
-  const configPath = path.join(__dirname, 'l0Config.js');
-  const src = fs.readFileSync(configPath, 'utf8');
-  const unchanged =
-    L0_MODEL_ID === SPIKE_17_MODEL_ID &&
-    src.includes(`export const L0_MODEL_ID = '${SPIKE_17_MODEL_ID}'`);
-  return { productionModelId: L0_MODEL_ID, unchanged };
+  const spikeConfigIntact = SPIKE_17_MODEL_ID === 'Qwen3-1.7B-Q4_K_M';
+  return {
+    productionModelId: L0_MODEL_ID,
+    unchanged: spikeConfigIntact,
+    productionMatchesSpike: L0_MODEL_ID === SPIKE_17_MODEL_ID
+  };
 }
 
 /**
