@@ -3,7 +3,7 @@
 > **目的**：新加 `position: fixed` / 浮层前，先扫一眼本表，避免与既有层级打架。  
 > **范围**：`focus-tiger/` 产品运行时代码（`index.html` + `src/` + 实际挂进主壳的 ui-kit 组件）。  
 > **不含**：仅 e2e 测试夹具、`ui-kit/demo.html` 演示页（见文末附录）。  
-> **维护**：新增/改动产品 `z-index` 时顺手改本表一行；**不要**借登记名义批量改数值。新增 dim 遮罩时对照下文 **Idle 常驻 chrome**，不得只按「卡片 z − 1」覆盖背景。  
+> **维护**：新增/改动产品 `z-index` 时顺手改本表一行；**不要**借登记名义批量改数值。新增 dim 遮罩时对照下文 **Idle 常驻 chrome**，不得只按「卡片 z − 1」覆盖背景。body 挂载的可点叠层还须进 `OVERLAY_UI_SURFACE`（O-04）；**常量化 + 全仓静态扫描**仍是 [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) **Z-dim**，本表不替代。  
 > **扫描日**：2026-07-29（对照当前 `develop` 工作树）。**dim 消费者节**：2026-09-09。
 
 叠层上下文提醒：多数业务浮层挂在 `#ui-overlay`（`z-index: 10`）内部；其子节点的 `z-index` 只在该 stacking context 内比较。`NarrowIdleShell` / Ambient / Hints 等是 **同级 `position: fixed` 挂在 `body`/`#app`**，会与 `#ui-overlay` 整层比较。`IdleChromeFacade`（Task 3）**不设** z-index——层级仍登记在下方 Narrow / Wide 适配器行。

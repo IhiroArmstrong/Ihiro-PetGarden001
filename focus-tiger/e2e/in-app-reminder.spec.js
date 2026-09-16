@@ -233,3 +233,46 @@ test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
   });
   await expect(page.locator(BANNER)).toBeHidden();
 });
+
+test('reminder save stays clickable above an open hint bubble (z-index overlap)', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await expect(page.locator(TOGGLE)).toBeAttached({ timeout: 15_000 });
+
+  await page.evaluate(() => {
+    const tip = document.createElement('ft-onboarding-hint-bubble');
+    tip.id = 'ft-e2e-reminder-hint-overlap';
+    tip.setAttribute('open', '');
+    tip.message = 'Hint overlap fixture';
+    tip.style.cssText =
+      'position:fixed;right:12px;bottom:12px;width:220px;height:120px;z-index:34;';
+    document.body.appendChild(tip);
+  });
+
+  await openReminderPanel(page);
+  const panel = page.locator(PANEL);
+  await expect(panel).toBeVisible({ timeout: 10_000 });
+  const panelZ = await panel.evaluate((el) => Number(getComputedStyle(el).zIndex));
+  expect(panelZ).toBeGreaterThanOrEqual(34);
+
+  await page.locator(ENABLED).check();
+  await page.locator(TIME).fill('09:30');
+  await page.locator('#reminder-preference-confirm').click();
+  await expect(page.locator('#reminder-preference-saved')).toBeVisible();
+});
+
+test('cold start flower bubble: reminder panel still opens and saves', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await expect(page.locator('#flower-blow-welcome-bubble')).toBeVisible({
+    timeout: 12_000
+  });
+  await expect(page.locator(TOGGLE)).toBeAttached({ timeout: 15_000 });
+  await openReminderPanel(page);
+  await page.locator(ENABLED).check();
+  await page.locator(TIME).fill('09:30');
+  await page.locator('#reminder-preference-confirm').click();
+  await expect(page.locator('#reminder-preference-saved')).toBeVisible();
+});

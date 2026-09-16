@@ -141,13 +141,14 @@ COLLAB.md（本文档，协作层）
 
 ## 七、Task Brief · 共用机制核对（强制写出结论句）
 
-> **目的**：共用机制上的漏接 / 误伤，不是缺清单，是 Brief 只要求「已核对」却不留下可检查的文字。本条约束**写法**；三张清单本身不在本文复述。
+> **目的**：共用机制上的漏接 / 误伤，不是缺清单，是 Brief 只要求「已核对」却不留下可检查的文字。本条约束**写法**；清单本身不在本文复述。
 
 触及下列任一者时，Brief 必须有一小节 **「共用机制核对」**（不触及则写一句跳过理由，不得省略该节）：
 
 1. **overlayBusy / 叠层忙碌门闩** → 对照 `SHARED_RESOURCES.md` §4.1  
 2. **HUD 呼吸 / 计时驱动** → 对照 `SHARED_RESOURCES.md` §4.2  
-3. **z-index / overlay 遮罩 dim** → 对照 `Z_INDEX.md`「Idle 常驻 chrome（遮罩 dim 消费者）」
+3. **z-index / overlay 遮罩 dim** → 对照 `Z_INDEX.md`「Idle 常驻 chrome（遮罩 dim 消费者）」  
+4. **新建可点击叠层** → 对照 `DOC_CODE_CONTRACT.md` **O-04** 七列（登记 / `request*Slot` 或 derive / z 归属 / 挂载与 O-02 / 失败反馈 / 遮挡共存 e2e / TRACKER 覆盖范围）。结论句须点名 `OVERLAY_UI_SURFACE` 将新增的那一行，禁止只写「已对照 overlay registry」。
 
 **合格**：每条写出**一句结论**，点名清单里的具体项，并写清「不受影响」或「需要联动」。
 
@@ -160,12 +161,12 @@ COLLAB.md（本文档，协作层）
 **不合格（视为未做核对）**：
 
 - 只有 `☑ 已核对 z-index 消费者清单`
-- 「已对照三处打勾」但没有点名任何消费者
+- 「已对照四处打勾」但没有点名任何消费者
 - 把「我这条新功能能跑通」写成核对结论
 
-不触及三处时允许的跳过句（仍须出现在 Brief）：`本次不触及 overlayBusy / HUD 呼吸驱动 / z≥17 遮罩，三处核对跳过。`
+不触及四处时允许的跳过句（仍须出现在 Brief）：`本次不触及 overlayBusy / HUD 呼吸驱动 / z≥17 遮罩 / 新建可点击叠层，核对跳过。`
 
 运行时字段（如 registry 的 `busyGateExceptions`）**本约定不要求同 PR 改 JS**；先把结论写进 Brief。清单漏项则先补 `SHARED_RESOURCES` / `Z_INDEX` 再实现。
 
 ---
-*版本：1.8 · 2026-09-09 Brief 共用机制核对须写结论句；CI 绿合 develop；人工测试事后批量*
+*版本：1.9 · 2026-09-16 Brief 叠层 O-04 七列须写结论句；CI 绿合 develop；人工测试事后批量*
