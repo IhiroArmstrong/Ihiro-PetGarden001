@@ -48,7 +48,7 @@
 | 徽章枚数步长 `floor(score / 3)` 的 **3**；免费 min1/max9；付费 min3 | `practiceBadgeAward.js` / `tipKindnessBadges.js` / `sanctuaryBadges.js` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断 · 暂不搬**（2026-09-12 PO）。没改过、没人提要改。`/60` 仍是结构排除；`/3` 仍是节奏系数。 |
 | 芥子须弥解锁 `score ≥ 21` | `mustardSeedSeal.js` ← `memorialSealDirectory` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断 · 暂不搬**（2026-09-12 PO）。growth-metrics 清单曾标适合远程化；**现在不提前动**。真要调时并入 `GROWTH_METRICS_KV`。 |
 | 静思典藏各印 `scoreThreshold` 30/45/60… | `memorialSealCatalogCa.js` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。目录级内容门槛，跟文案一起走内容管理，不走参数 KV。 |
-| 寅币日封顶 36 / 3 / 12 / 48；Stay 5m=1；半速 10m=1；仪式点 2/1/3 | `focusCoinsLedger.js` | client | ✓ | ✓ | △ | ✓ | ✓ | **产品判断 · 已锁 A**（经济轨 · 排序 ③）。`task-yin-coin-daily-cap-economy.md`（Step D = A · 2026-09-16）。冻表、不远程、不改价。**禁止**与 ①② 同批。 |
+| 寅币日封顶 36 / 3 / 12 / 48；Stay 5m=1；半速 10m=1；仪式点 2/1/3 | `focusCoinsLedger.js` | client | ✓ | ✓ | △ | ✓ | ✓ | **产品判断 · 已锁 A**（经济轨 · 排序 ③）。`task-yin-coin-daily-cap-economy.md`（Step D = A · 2026-09-16 · PR #784 评估）。冻表、不远程、不改价；5 条 persona 已进 `focus-coins-earn` CI 夹具。**禁止**与 ①② 同批。不要和花园 score 封顶混进同一 JSON 而不加域前缀。 |
 | 寅币 SKU 价（如须弥座 360）与 `SUMERU_MIN_LIFETIME_MINUTES`=600 | `focusCoinsLedger.js` | client | ✓ | △ | △ | ✓ | ✓ | **不建议**（本层）。价目是商品表，不是调参；远程改价还要防客户端伪造发放。 |
 | Sit 时长 chips 10/15/25/45；默认 chip 10；HUD 软顶 25 | `focusDuration.js` / `FOCUS_SESSION_DEFAULT_MINUTES` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。2026-08-18 已拍板；改芯片是产品规格不是运营旋钮。 |
 | across-tools 闲置 30 分钟 | `FocusSession.js` `ACROSS_TOOLS_IDLE_THRESHOLD_MS` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。注释写可调，上线后无改记录。 |

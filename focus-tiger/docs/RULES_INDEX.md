@@ -178,9 +178,9 @@ cd focus-tiger && npm run rules:doc-sync
 | `SLACK_COMMUNITY_GUIDELINES.md` | **Slack 实验室公约草案**（Quiet Room · Support 分流 · 隐私红线；从属 `FROM_APP_TO_CULTURE` §8） |
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 / 付费假设 |
 | `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五） |
-| `FOCUS_COINS.md` | 寅币（Focus Coins）+ Yin's Collections：隔离 B 轨、花园 vs 珍藏、清供 8、序列帧铁律（**方向锁 2026-08-20**；运行时见 `task-focus-coins`；日封顶经济评估见 `task-yin-coin-daily-cap-economy` · Step D 待 PO） |
+| `FOCUS_COINS.md` | 寅币（Focus Coins）+ Yin's Collections：隔离 B 轨、花园 vs 珍藏、清供 8、序列帧铁律（**方向锁 2026-08-20**；运行时见 `task-focus-coins`；日封顶 Step D = A 见 `task-yin-coin-daily-cap-economy`） |
 | `GROWTH_METRICS_CHARTER.md` | **成长指标治理 SSOT**：多轨 registry · persona 回归 · 公式版本迁移 · QA seed 契约（`audit:growth-metrics` in `docs:check`） |
-| `REMOTE_PARAM_CANDIDATES.md` | **远程参数化候选审计 + PO 拍板**（2026-09-12）：五条门槛 · 伪远程 vs KV · ①权重KV→②莲花花园KV→③寅币经济评估（`task-yin-coin-daily-cap-economy` · 2026-09-16 Step A–C 已写、Step D 待拍）· Stretch/好奇/冷却这次不做 |
+| `REMOTE_PARAM_CANDIDATES.md` | **远程参数化候选审计 + PO 拍板**（2026-09-12）：五条门槛 · 伪远程 vs KV · ①权重KV→②莲花花园KV→③寅币经济评估（`task-yin-coin-daily-cap-economy` · Step D = A 已锁）· Stretch/好奇/冷却这次不做 |
 | `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
 | `ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 | `PRODUCT_MOMENTS.md` | Five Moments |
@@ -256,7 +256,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 日期 | 说明 |
 |---|---|
 | 2026-09-16 | 产品表：`EPIC_COVERAGE_AUDIT.md`（存量线覆盖；只报告不建 Issue）+ `planning/task-lines-epic-draft.md` 指针。不进 rules-authority 机器块 |
-| 2026-09-16 | 产品表：`FOCUS_COINS.md` / `REMOTE_PARAM_CANDIDATES.md` 挂寅币日封顶经济评估 Brief（`task-yin-coin-daily-cap-economy`；Step D 待 PO；无运行时）。不进 rules-authority 机器块 |
+| 2026-09-16 | 产品表：`FOCUS_COINS.md` / `REMOTE_PARAM_CANDIDATES.md` 寅币日封顶 Step D = A 已锁（`task-yin-coin-daily-cap-economy`）；persona CI `focusCoinsPersonaRegression.js`。不进 rules-authority 机器块 |
 | 2026-09-10 | 修订 `agent-tool-budget`（#700 后补漏）：`Read` 计次对齐 `source-read-granularity`（200/400；大 `limit` 仍计）；连续 8 次探索无改文件先软停；软/硬顶与 `session-handoff` 强制探索快照；「大任务」开工须先列预期文件/函数清单。 |
 | 2026-09-10 | 修订 `agent-tool-budget`：hook **只计探索类**；硬顶不拦改文件/git/约定 smoke；「继续」只留本 Chat（禁止 New Agent 续同一任务）；跨模块+单测+PR 用口令「大任务」。数字仍以 `config.json` + `focus-tiger-agent-token-cost.mdc` 为准。 |
 | 2026-09-10 | 新增 `agent-tool-budget`：三档工具调用预算（qa 28 / impl 50 / large 80 硬顶）+ 口令「开工」「继续」「大任务」；执行 `session_gate.sh` + `tool_budget.sh`；「继续」继承档位并重置计数；实现类冒烟纪律见 `testing-strategy.mdc`。SSOT `focus-tiger-agent-token-cost.mdc` 新节 |

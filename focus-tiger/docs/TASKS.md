@@ -211,7 +211,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 级 | 内容 | Brief / 分支 | 状态 |
 |---|---|---|---|
 | **文档** | 花园 vs 珍藏、铁律、清供 8 | `FOCUS_COINS.md` · `task-focus-coins.md` | **本支** |
-| **经济评估** | 日封顶通胀/紧缩（Step A–C） | `task-yin-coin-daily-cap-economy.md` | **评估已写 · Step D 待 PO**；无运行时 |
+| **经济评估** | 日封顶通胀/紧缩（Step A–D） | `task-yin-coin-daily-cap-economy.md` | **Step D = A 已锁**（冻表、不远程、不改价）；persona CI 已接线 |
 | **L0** | 纯账本单测 | `feature/focus-coins-l0-ledger` | **#335 已合** |
 | **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **#338 已合**（TRACKER 待人工） |
 | **L2** | 清供卡面可兑；叠层视觉拆掉 | `feature/focus-coins-l2-redeem` | **#339 已合**；2026-08-20 清供改名 |

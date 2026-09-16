@@ -261,7 +261,13 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
       'Event grants on completion hooks; Stay 5m=1pt; Across/Honesty 10m=1pt; echo +3.',
     formulaModule: 'src/core/focusCoinsLedger.js',
     authoritativeConsumers: Object.freeze(['src/core/focusCoinsAward.js']),
-    relatedPersonas: Object.freeze([])
+    relatedPersonas: Object.freeze([
+      'light-stay-10',
+      'medium-stay-25',
+      'honesty-30',
+      'breath-1',
+      'binge-cap'
+    ])
   }),
   Object.freeze({
     id: 'focus-coins-redeem',

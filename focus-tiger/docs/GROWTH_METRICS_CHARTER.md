@@ -63,7 +63,7 @@ Before changing any growth formula or adding a cumulative consumer:
 | `focus-coins-redeem` | unlock-gate | mixed | focusCoinsRedeem.v1 | evaluateFocusCoinRedeem(skuId, context) — coins never satisfy isEntitled. |
 | `celebrating-today` | session-feedback | session | sessionFeedback.v1 | hasCelebratedToday() — not cumulative unlock. |
 
-### Persona regression (contract)
+### Persona regression (garden track)
 
 | id | label | intent | score | mustard | blooms | badges |
 |---|---|---|---:|---|---:|---:|
@@ -75,6 +75,16 @@ Before changing any growth formula or adding a cumulative consumer:
 | `qa-mustard-shortcut` | QA · 芥子印正确播种 | qaSeedStreak=21（只写 practice-days）→ score=21，可测纪念印 | 21 | yes | 0 | 8 |
 | `qa-seed-streak-15-legacy` | QA · 旧文档陷阱（Batch 2 后失效） | qaSeedStreak=15 不写 lotus — score=15，不得再当芥子印捷径 | 15 | no | 0 | 6 |
 | `milestone-streak-7` | 连续 7 天 · MilestoneGlow | 6 个连续练习日 + 今日达标 → streak-7 节点可 claim | 8 | no | 5 | 3 |
+
+### Persona regression (focus-coins earn)
+
+| id | label | intent | D0 | D | cap | first SKU | drawer 648 |
+|---|---|---|---:|---:|---|---:|---:|
+| `light-stay-10` | 轻量 Stay 10 | 1× Stay 10 + Arrive + Reflect — 约 3 日结缘最便宜清供；永远撞不到 48 封顶 | 6 | 9 | no | 3 | 73 |
+| `medium-stay-25` | 中等 Stay 25 | Stay 25 + 仪式全套 + Breath 10m — 第一件清供卡练习日 3；撞不到 48 | 11 | 14 | no | 3 | 47 |
+| `honesty-30` | 仅 Honesty 30 | Honesty-only 日收入低；第一件清供约 4 日；撞不到 48 | 3 | 6 | no | 4 | 109 |
+| `breath-1` | 仅 Breath 10m | 单场半速 1 点 — 最慢清空曲线；撞不到 48 | 1 | 4 | no | 6 | 163 |
+| `binge-cap` | 刷满日封顶 | 故意刷满全日合计 48 — 唯一切到封顶的人；14 日清空抽屉 | 48 | 48 | yes | 3 | 14 |
 
 <!-- growth-metrics-registry:end -->
 
@@ -96,6 +106,11 @@ Fixtures live in `growthPersonaFixtures.js`. Each row encodes **product intent**
 | `qa-mustard-shortcut` | **Correct** mustard QA: `?qaSeedStreak=21` |
 | `qa-seed-streak-15-legacy` | **Trap** after Batch 2: `?qaSeedStreak=15` alone → score 15 |
 | `milestone-streak-7` | MilestoneGlow node at consecutive day 7 |
+| `light-stay-10` | Focus Coins · light Stay 10 — never hits 48 cap; ~3 days to first SKU |
+| `medium-stay-25` | Focus Coins · medium ritual day — practice-day gate for first SKU |
+| `honesty-30` | Focus Coins · Honesty-only — slow earn curve |
+| `breath-1` | Focus Coins · single half-rate point — slowest drawer clear |
+| `binge-cap` | Focus Coins · only persona that hits 48 total daily cap |
 
 Run: `npm run audit:growth-metrics` (also in `docs:check`).
 
