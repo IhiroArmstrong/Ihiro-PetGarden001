@@ -17,9 +17,11 @@ import { practiceAggregateMeetsScoreThreshold } from './practiceAggregate.js';
 import { MUSTARD_SEED_SEAL_SCORE_THRESHOLD } from './mustardSeedSeal.js';
 import { countRecentPracticeStreak } from './PracticeDaysStore.js';
 import {
+  GARDEN_PERSONA_FIXTURES,
   GROWTH_PERSONA_TODAY_KEY,
-  GROWTH_PERSONA_FIXTURES
+  isFocusCoinsPersonaFixture
 } from './growthPersonaFixtures.js';
+import { runFocusCoinsPersonaRegression } from './focusCoinsPersonaRegression.js';
 import { resolvePersonaScoreEligibleMinutes } from './scoreDailyCap.js';
 
 /**
@@ -131,11 +133,16 @@ export function listGrowthPersonaExpectationViolations(persona) {
 export function runGrowthPersonaRegression() {
   /** @type {{ id: string, violations: string[] }[]} */
   const failures = [];
-  for (const persona of GROWTH_PERSONA_FIXTURES) {
+  for (const persona of GARDEN_PERSONA_FIXTURES) {
+    if (isFocusCoinsPersonaFixture(persona)) continue;
     const violations = listGrowthPersonaExpectationViolations(persona);
     if (violations.length > 0) {
       failures.push({ id: persona.id, violations });
     }
+  }
+  const focusCoins = runFocusCoinsPersonaRegression();
+  if (!focusCoins.ok) {
+    failures.push(...focusCoins.failures);
   }
   return { ok: failures.length === 0, failures };
 }

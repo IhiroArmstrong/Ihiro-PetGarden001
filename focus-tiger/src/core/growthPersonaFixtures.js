@@ -10,7 +10,10 @@
  * Run via `npm run audit:growth-metrics` on every formula / registry change.
  *
  * Charter: `docs/GROWTH_METRICS_CHARTER.md` § Persona regression.
+ * Focus Coins earn personas: `focusCoinsPersonaRegression.js` (economic assessment §4).
  */
+
+import { FOCUS_COINS_PERSONA_FIXTURES } from './focusCoinsPersonaRegression.js';
 
 /**
  * @typedef {{
@@ -38,17 +41,26 @@
  *   label: string,
  *   intent: string,
  *   seed: GrowthPersonaSeed,
- *   expectations: GrowthPersonaExpectations
+ *   expectations: GrowthPersonaExpectations,
+ *   domain?: 'garden'
  * }} GrowthPersonaFixture
  */
+
+/**
+ * @typedef {import('./focusCoinsPersonaRegression.js').FocusCoinsPersonaFixture} FocusCoinsPersonaFixture
+ */
+
+/** @typedef {GrowthPersonaFixture | FocusCoinsPersonaFixture} GrowthPersonaRow */
 
 /** Fixed today for streak personas (deterministic). */
 export const GROWTH_PERSONA_TODAY_KEY = '2026-09-10';
 
 /**
+ * Garden-track personas (score / lotus / badges / milestones).
+ *
  * @type {readonly GrowthPersonaFixture[]}
  */
-export const GROWTH_PERSONA_FIXTURES = Object.freeze([
+export const GARDEN_PERSONA_FIXTURES = Object.freeze([
   Object.freeze({
     id: 'steady-light',
     label: '坚持型轻练习者',
@@ -191,9 +203,27 @@ export const GROWTH_PERSONA_FIXTURES = Object.freeze([
 ]);
 
 /**
+ * @type {readonly GrowthPersonaRow[]}
+ */
+export const GROWTH_PERSONA_FIXTURES = Object.freeze([
+  ...GARDEN_PERSONA_FIXTURES,
+  ...FOCUS_COINS_PERSONA_FIXTURES
+]);
+
+export { FOCUS_COINS_PERSONA_FIXTURES };
+
+/**
  * @param {string} personaId
- * @returns {GrowthPersonaFixture | undefined}
+ * @returns {GrowthPersonaRow | undefined}
  */
 export function getGrowthPersonaFixture(personaId) {
   return GROWTH_PERSONA_FIXTURES.find((p) => p.id === personaId);
+}
+
+/**
+ * @param {GrowthPersonaRow} persona
+ * @returns {boolean}
+ */
+export function isFocusCoinsPersonaFixture(persona) {
+  return persona.domain === 'focus-coins';
 }

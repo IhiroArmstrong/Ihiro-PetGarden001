@@ -20,9 +20,12 @@ import {
   listAllGrowthMetricSchemaViolations
 } from '../src/core/growthMetricsRegistry.js';
 import {
+  GARDEN_PERSONA_FIXTURES,
   GROWTH_PERSONA_FIXTURES,
-  getGrowthPersonaFixture
+  getGrowthPersonaFixture,
+  isFocusCoinsPersonaFixture
 } from '../src/core/growthPersonaFixtures.js';
+import { FOCUS_COINS_PERSONA_FIXTURES } from '../src/core/focusCoinsPersonaRegression.js';
 import { runGrowthPersonaRegression } from '../src/core/growthPersonaRegression.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -47,7 +50,8 @@ export function listGrowthMetricPersonaLinkViolations() {
       }
     }
   }
-  for (const persona of GROWTH_PERSONA_FIXTURES) {
+  for (const persona of GARDEN_PERSONA_FIXTURES) {
+    if (isFocusCoinsPersonaFixture(persona)) continue;
     if (!persona.id.startsWith('qa-') && persona.id !== 'milestone-streak-7') {
       const linked = GROWTH_METRIC_TRACK_ROWS.some((row) =>
         row.relatedPersonas.includes(persona.id)
@@ -55,6 +59,14 @@ export function listGrowthMetricPersonaLinkViolations() {
       if (!linked) {
         out.push(`persona ${persona.id} not referenced by any track row`);
       }
+    }
+  }
+  for (const persona of FOCUS_COINS_PERSONA_FIXTURES) {
+    const linked = GROWTH_METRIC_TRACK_ROWS.some((row) =>
+      row.relatedPersonas.includes(persona.id)
+    );
+    if (!linked) {
+      out.push(`focus-coins persona ${persona.id} not referenced by any track row`);
     }
   }
   return out;
@@ -80,14 +92,26 @@ export function renderGrowthMetricsRegistryMarkdownBlock() {
     );
   }
 
-  lines.push('', '### Persona regression (contract)', '');
+  lines.push('', '### Persona regression (garden track)', '');
   lines.push('| id | label | intent | score | mustard | blooms | badges |');
   lines.push('|---|---|---|---:|---|---:|---:|');
 
-  for (const persona of GROWTH_PERSONA_FIXTURES) {
+  for (const persona of GARDEN_PERSONA_FIXTURES) {
+    if (isFocusCoinsPersonaFixture(persona)) continue;
     const e = persona.expectations;
     lines.push(
       `| \`${persona.id}\` | ${persona.label} | ${persona.intent.replace(/\|/g, '\\|')} | ${e.score} | ${e.mustardUnlocked ? 'yes' : 'no'} | ${e.visibleBloomCount} | ${e.freeBadgeCount} |`
+    );
+  }
+
+  lines.push('', '### Persona regression (focus-coins earn)', '');
+  lines.push('| id | label | intent | D0 | D | cap | first SKU | drawer 648 |');
+  lines.push('|---|---|---|---:|---:|---|---:|---:|');
+
+  for (const persona of FOCUS_COINS_PERSONA_FIXTURES) {
+    const e = persona.focusCoinsExpectations;
+    lines.push(
+      `| \`${persona.id}\` | ${persona.label} | ${persona.intent.replace(/\|/g, '\\|')} | ${e.dailyIncomeD0} | ${e.dailyIncomeD} | ${e.hitsTotalCap ? 'yes' : 'no'} | ${e.calendarDaysToFirstSku} | ${e.calendarDaysToDrawer648} |`
     );
   }
 
