@@ -66,6 +66,8 @@
 
 **0.D 通过前**：**不开** 多模型 Benchmark、**不**改生产默认 GGUF。0.D 证明「Qwen 能标 intent、现网仍贴标签」→ 修 prompt / 层序 / 语料，不换模型。Qwen 标不出 companion / boundary / mixed primary intent → 再议容量（1.7B 是否瓶颈）。
 
+**PO 推翻（2026-09-16）**：多次 Confide 肉眼实测后认定 **1.7B 不足以 ship**；**必须换模**。Mac 桌面 APP 优先 → 生产默认切 **Gemma4-E4B-it Q4_K_M**（`l0ModelProfiles.js` · `FT_COMPANION_L0_MODEL` 可回退 `qwen3-1.7b`）。性能闸门降级为 sanity check（公开 16GB Mac 实测已够）。规则桶 / intent 实验室路径**未改**；仅 L3 生成层 prompt 适配（去 Qwen `/no_think`）。tracker：`feature-companion-l0-gemma4-e4b.md`。
+
 **Lab 旁支并行（2026-08-30 · PO 拍板）**：带 **lab flag** 的 Phase 1 轨（如 1C `?reflectionCompanion=1`）可在 **feature 旁支上分 PR 并行开发**；**合 develop / 对用户 mount** 顺序仍跟本文 §1 流程图与 §4 顺序——**Gate 0.2 hybrid 验收关单 → 1B → 1A → 1C validation**。开发进度与上线顺序解耦：旁支开发不被 #472 卡住，但 **不得**抢跑到真实用户（无 lab · 无 validation 结论 · 非 shipping）。
 
 ---

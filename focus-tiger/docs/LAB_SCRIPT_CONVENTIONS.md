@@ -55,7 +55,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_LAB_ONLY` | `0.6` 或 `4b` | 档案脚本只跑 0.6B 或只跑 4B |
 | `FT_LAB_4B_SOURCE` | `unsloth`（缺省 = bartowski dest） | 档案脚本换 4B 的 URL / dest |
 | `FT_LAB_CANDIDATE` | `0.6q5` 或 `1.7q4` | 候选脚本选哪一条 |
-| `FT_TOOL_CALL_GGUF` | 可选 · 绝对路径 | tool-call 探针 GGUF；缺省 = `~/Library/Application Support/Focus Tiger/companion-l0/Qwen3-1.7B-Q4_K_M.gguf` |
+| `FT_TOOL_CALL_GGUF` | 可选 · 绝对路径 | tool-call 探针 GGUF；缺省 = 生产 `l0Config.js` 当前 filename（默认 `…/companion-l0/Gemma-4-E4B-it-Q4_K_M.gguf`；回退 `qwen3-1.7b` 时为 `Qwen3-1.7B-Q4_K_M.gguf`） |
+| `FT_COMPANION_L0_MODEL` | 可选 | 生产 L0 profile：`gemma4-e4b`（默认）· `qwen3-1.7b`（回退）。实验室 intent/tool-call 仍可用 `FT_*_GGUF` 指向旧 1.7B。 |
 | `FT_TOOL_CALL_MAX_TOKENS` | 可选 · 整数 | tool-call 探针 `maxTokens`；缺省 = `L0_MAX_TOKENS` |
 | `FT_INTENT_GGUF` | 可选 · 绝对路径 | Gate 0.D 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
 | `FT_INTENT_MAX_TOKENS` | 可选 · 整数 | Gate 0.D `maxTokens`；缺省 = 96 |

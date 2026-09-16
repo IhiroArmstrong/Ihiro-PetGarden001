@@ -108,12 +108,11 @@ describe('desktop companion L0 metrics', () => {
 });
 
 describe('desktop companion L0 isolation', () => {
-  it('keeps the locked 1.7B candidate on Hugging Face GGUF, not a chat API', () => {
-    assert.equal(L0_MODEL_ID, 'Qwen3-1.7B-Q4_K_M');
-    assert.equal(L0_MODEL_EXPECTED_BYTES, 1_107_409_472);
+  it('defaults to Gemma4-E4B on Hugging Face GGUF, not a chat API', () => {
+    assert.equal(L0_MODEL_ID, 'Gemma-4-E4B-it-Q4_K_M');
+    assert.equal(L0_MODEL_EXPECTED_BYTES, 5_335_290_592);
     assert.match(L0_MODEL_URL, /huggingface\.co/);
-    assert.match(L0_MODEL_URL, /Qwen3-1\.7B/);
-    assert.match(L0_MODEL_URL, /unsloth/);
+    assert.match(L0_MODEL_URL, /Gemma-4-E4B/);
     assert.match(L0_MODEL_URL, /\.gguf$/);
     assert.equal(L0_MODEL_URLS[0], L0_MODEL_URL);
     assert.ok(L0_MODEL_URLS.length >= 1);

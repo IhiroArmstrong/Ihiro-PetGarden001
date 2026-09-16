@@ -174,13 +174,20 @@ describe('desktop companion L2 route', () => {
 });
 
 describe('desktop companion L2 persona / sanitize', () => {
-  it('builds a no_think observer prompt and drops banned coaching', () => {
+  it('builds an observer prompt for the active L0 family and drops banned coaching', () => {
     const prompt = buildCompanionL2Prompt({
       text: 'the weather is mild today',
       locale: 'en',
       history: [{ role: 'user', text: 'hello' }, { role: 'yin', text: 'Heard.' }]
     });
-    assert.match(prompt, /\/no_think/);
+    const qwenPrompt = buildCompanionL2Prompt({
+      text: 'the weather is mild today',
+      locale: 'en',
+      history: [{ role: 'user', text: 'hello' }, { role: 'yin', text: 'Heard.' }],
+      promptFamily: 'qwen'
+    });
+    assert.match(qwenPrompt, /\/no_think/);
+    assert.doesNotMatch(prompt, /\/no_think/);
     assert.match(prompt, /do not advise/i);
     assert.match(prompt, /do not answer with river, mountain, or ground/i);
     assert.match(prompt, /do not replace them with scenery, weather, season, or light/i);

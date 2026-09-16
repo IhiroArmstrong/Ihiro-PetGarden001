@@ -10,7 +10,12 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { SPIKE_17_CACHE_DIRNAME } from './l0Spike17Config.js';
+import {
+  SPIKE_17_CACHE_DIRNAME,
+  SPIKE_17_EXPECTED_BYTES,
+  SPIKE_17_MODEL_FILENAME,
+  SPIKE_17_MODEL_MIN_BYTES
+} from './l0Spike17Config.js';
 import { isGgufDownloadComplete, writeDownloadMeta } from './l0Download.js';
 import {
   L0_LEGACY_MODEL_FILENAMES,
@@ -27,11 +32,13 @@ import {
 export function seedProductionFromSpikeFile(destPath, spikePath) {
   if (fs.existsSync(destPath)) return false;
   if (path.basename(destPath) !== L0_MODEL_FILENAME) return false;
+  if (path.basename(spikePath) !== SPIKE_17_MODEL_FILENAME) return false;
+  if (L0_MODEL_FILENAME !== SPIKE_17_MODEL_FILENAME) return false;
   if (!spikePath || !fs.existsSync(spikePath)) return false;
 
   const bytes = fs.statSync(spikePath).size;
   if (
-    !isGgufDownloadComplete(bytes, L0_MODEL_EXPECTED_BYTES, L0_MODEL_MIN_BYTES)
+    !isGgufDownloadComplete(bytes, SPIKE_17_EXPECTED_BYTES, SPIKE_17_MODEL_MIN_BYTES)
   ) {
     return false;
   }
@@ -39,7 +46,7 @@ export function seedProductionFromSpikeFile(destPath, spikePath) {
   fs.mkdirSync(path.dirname(destPath), { recursive: true });
   fs.copyFileSync(spikePath, destPath);
   writeDownloadMeta(destPath, {
-    expectedBytes: L0_MODEL_EXPECTED_BYTES,
+    expectedBytes: SPIKE_17_EXPECTED_BYTES,
     url: null,
     etag: null
   });
@@ -100,7 +107,7 @@ function defaultSpikeModelPath() {
       'Application Support',
       'Focus Tiger',
       SPIKE_17_CACHE_DIRNAME,
-      L0_MODEL_FILENAME
+      SPIKE_17_MODEL_FILENAME
     );
   }
   return null;

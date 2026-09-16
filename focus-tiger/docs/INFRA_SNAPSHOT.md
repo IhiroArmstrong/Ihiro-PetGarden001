@@ -166,11 +166,13 @@
 
 | 项 | 现状 |
 |---|---|
-| Model id | `Qwen3-1.7B-Q4_K_M` |
-| File | `Qwen3-1.7B-Q4_K_M.gguf` |
-| Expected bytes | ~1.11 GB（`1_107_409_472`） |
-| Locked | 2026-08-24（unsloth · M5 Focusing spike） |
+| Model id（默认） | `Gemma-4-E4B-it-Q4_K_M` |
+| File（默认） | `Gemma-4-E4B-it-Q4_K_M.gguf` |
+| Expected bytes（默认） | ~5.0 GB（`5_335_290_592` · jc-builds） |
+| 回退 | `FT_COMPANION_L0_MODEL=qwen3-1.7b` → `Qwen3-1.7B-Q4_K_M.gguf`（`1_107_409_472` B · unsloth） |
+| Locked | 2026-09-16 PO：Mac 优先 · Gemma4-E4B 多语 L3；Gate 0.D「不换模」已推翻 |
 | Legacy（卸载） | `Qwen_Qwen3-0.6B-Q4_K_M.gguf` |
+| 状态条代号 | `Model4E4`（Gemma）· `Model317`（Qwen 回退） |
 
 ---
 
