@@ -106,7 +106,7 @@ cd focus-tiger/desktop && npm run companion:tool-call
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_CHITCHAT_RUNS=15 npm run companion:ja-chitchat-variance
 ```
 
-结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "variance"`）。fixture：`confideJaChitchatVarianceFixtures.js`（5 条差样本 · locale 固定 `ja`）。每次运行 **空历史**（测第一次问的方差，不测同句连发）。完整路由：`resolveConfideReply` → 拦截器 → 命中 fallback 时 `buildCompanionL2Prompt` + `LlamaChatSession`。**不是** intent diagnostic / tool-call 探针。须在系统终端跑（Metal）。`onTopic` 留 `null` 供人工标注。
+结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "variance"`）。fixture：`confideJaChitchatVarianceFixtures.js`（5 条差样本 · locale 固定 `ja`）。每次运行 **空历史**（测第一次问的方差，不测同句连发）。完整路由：`resolveConfideReply` → 拦截器 → 命中 fallback 时 `buildCompanionL2Prompt` + `LlamaChatSession`。**不是** intent diagnostic / tool-call 探针。须在系统终端跑（Metal）。`onTopic` 留 `null` 供人工标注。每行另含 `needsGenerate` / `generateAttempted` / `rawGenerate`（sanitize 前模型原文）/ `sanitizePassed` / `generateError`——用于区分「路由未进 generate」「generate 抛错」「sanitize 拦下」。
 
 **日语 Confide 闲聊同会话连发探针（2026-09-16 · #774 · 仓库内脚本）**：
 
@@ -114,7 +114,7 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-q
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_CHITCHAT_REPEATS=3 npm run companion:ja-chitchat-session-repeat
 ```
 
-结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "session-repeat"`）。同一虚拟会话内对 5 条差样本**各连发 2–5 次**（同句、累积 `_l2Turns`）；第 2 次起 `priorRepeatableYinRepliesFromHistory` 去重 + 带 history 的 `resolveCorpusFallbackAfterGenerateFailure`。与方差探针共用 fixture，**不能**用方差命令代替本探针。
+结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "session-repeat"`）。同一虚拟会话内对 5 条差样本**各连发 2–5 次**（同句、累积 `_l2Turns`）；第 2 次起 `priorRepeatableYinRepliesFromHistory` 去重 + 带 history 的 `resolveCorpusFallbackAfterGenerateFailure`。与方差探针共用 fixture，**不能**用方差命令代替本探针。JSON 行字段同方差探针（含 `rawGenerate` / `sanitizePassed` / `generateError`）。
 
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
