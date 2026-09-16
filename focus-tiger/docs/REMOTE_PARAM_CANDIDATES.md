@@ -48,7 +48,7 @@
 | 徽章枚数步长 `floor(score / 3)` 的 **3**；免费 min1/max9；付费 min3 | `practiceBadgeAward.js` / `tipKindnessBadges.js` / `sanctuaryBadges.js` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断 · 暂不搬**（2026-09-12 PO）。没改过、没人提要改。`/60` 仍是结构排除；`/3` 仍是节奏系数。 |
 | 芥子须弥解锁 `score ≥ 21` | `mustardSeedSeal.js` ← `memorialSealDirectory` | client | ✓ | △ | ✓ | ✓ | ✓ | **产品判断 · 暂不搬**（2026-09-12 PO）。growth-metrics 清单曾标适合远程化；**现在不提前动**。真要调时并入 `GROWTH_METRICS_KV`。 |
 | 静思典藏各印 `scoreThreshold` 30/45/60… | `memorialSealCatalogCa.js` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。目录级内容门槛，跟文案一起走内容管理，不走参数 KV。 |
-| 寅币日封顶 36 / 3 / 12 / 48；Stay 5m=1；半速 10m=1；仪式点 2/1/3 | `focusCoinsLedger.js` | client | ✓ | ✓ | △ | ✓ | ✓ | **产品判断**（经济轨 · 排序 ③）。PO：寅币可花出去，调封顶 = 虚拟通胀/紧缩，与体验权重性质不同；**禁止**与 ①② 顺手同批改。须单独 Brief + 稀缺感评估（清供 8 件）。不要和花园 score 封顶混进同一 JSON 而不加域前缀。 |
+| 寅币日封顶 36 / 3 / 12 / 48；Stay 5m=1；半速 10m=1；仪式点 2/1/3 | `focusCoinsLedger.js` | client | ✓ | ✓ | △ | ✓ | ✓ | **产品判断**（经济轨 · 排序 ③）。评估正文 `task-yin-coin-daily-cap-economy.md`（Step A–C 2026-09-16；Step D 待 PO）。**禁止**与 ①② 同批。不要和花园 score 封顶混进同一 JSON 而不加域前缀。 |
 | 寅币 SKU 价（如须弥座 360）与 `SUMERU_MIN_LIFETIME_MINUTES`=600 | `focusCoinsLedger.js` | client | ✓ | △ | △ | ✓ | ✓ | **不建议**（本层）。价目是商品表，不是调参；远程改价还要防客户端伪造发放。 |
 | Sit 时长 chips 10/15/25/45；默认 chip 10；HUD 软顶 25 | `focusDuration.js` / `FOCUS_SESSION_DEFAULT_MINUTES` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。2026-08-18 已拍板；改芯片是产品规格不是运营旋钮。 |
 | across-tools 闲置 30 分钟 | `FocusSession.js` `ACROSS_TOOLS_IDLE_THRESHOLD_MS` | client | ✓ | ✗ | ✓ | ✓ | ✓ | **不建议**。注释写可调，上线后无改记录。 |
@@ -69,7 +69,7 @@
 | Stretch / 好奇概率 / 一小时冷却 | **这次不做**（2026-09-12 PO）。评估过。 |
 | MilestoneGlow 7/21/100 | **产品判断 · 暂不搬**（2026-09-12 PO）。② 弱；另有「已播放节点」迁移。 |
 | 徽章步长 `/3`、芥子门槛 21 | **产品判断 · 暂不搬**（2026-09-12 PO）。芥子真要调时并入 `GROWTH_METRICS_KV`。 |
-| 寅币日封顶 36/3/12/48 | **产品判断**。经济轨，单独 Brief + 通胀评估；**不要**跟 ①② 同批。 |
+| 寅币日封顶 36/3/12/48 | **产品判断**。经济轨；评估正文 `task-yin-coin-daily-cap-economy.md`（Step D 未拍）。**不要**跟 ①② 同批。 |
 | 莲花池阶梯（growth-metrics Brief 未列的系数） | **远程化（第二优先 · 已拍）**。并入现有花园 KV，不另起绑定（仍须 persona fixtures）。 |
 
 ---
@@ -112,7 +112,7 @@
 
 1. **品味权重 + Honesty 30 分钟门槛 → KV**（伪远程一次打穿）。**不含** Stretch / 好奇 / 1h 冷却。优先理由：管道复用之外，还要消除「看起来已在云上、其实改数字仍要发版」的认知误区。  
 2. **莲花阶梯系数 → 已有 `GROWTH_METRICS_KV`**（花园轨顺水推舟，不另起炉灶）。  
-3. **寅币日封顶** 单独经济 Brief（虚拟通胀；慢一点动）。
+3. **寅币日封顶** 单独经济评估（虚拟通胀；慢一点动）。**Step A–C 已写**：[`task-briefs/task-yin-coin-daily-cap-economy.md`](./task-briefs/task-yin-coin-daily-cap-economy.md)（2026-09-16）。结论草案：48 是防刷顶，轻量用户撞不上；推荐冻表、不远程、不改价。**Step D 待 PO 拍板**。拍板 ≠ 改 `focusCoinsLedger.js` / 进 KV。
 
 **本批明确不做**：Stretch 池 / `CURIOSITY_CHANCE` / `LIFE_COOLDOWN_MS`；MilestoneGlow 7/21/100；徽章 `/3`；芥子 21（真要调再并入花园 KV）。通用 overlay helper 等 ① 跑通后再议。
 

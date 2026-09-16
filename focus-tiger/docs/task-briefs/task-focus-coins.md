@@ -3,6 +3,7 @@
 > **状态**：L3 抽屉已合 `develop`。花园 vs 珍藏仍锁。**2026-08-20**：铁律进 PRINCIPLES；旧 8 id 清供改名、现价现门槛上架；晨露/须弥滤镜已拆。本旁支：珍藏挥手点播 Play（抽屉不列挥手 SKU）。L0 #335 · L1 #338 · L2 #339 · L3 #352+#353+#354+#348 已合（TRACKER 待人工）。方向锁见 `FOCUS_COINS.md`。  
 
 > **权威**：[`FOCUS_COINS.md`](../FOCUS_COINS.md)（语义 SSOT）· `FREE_PAID_MATRIX.md` A5 · `RISK_MITIGATION_PLAYBOOK.md`  
+> **日封顶经济评估**（另一份 Brief，不是本实现包）：[`task-yin-coin-daily-cap-economy.md`](./task-yin-coin-daily-cap-economy.md)。本文件不授权改 36/3/12/48。  
 > **性质**：清供目录 + 铁律硬条（中风险：ledger 商店列表 / redeem）。不改 Honesty 分档、不扩备份 6 key、不把滤镜盖回序列帧。  
 > **禁止**：建 entitlement gate key；用余额满足 `isEntitled`；Support 三卡样式；常驻 HUD；晨露/须弥/念珠披毯盖 `#sprite-stage` 或莲花；把寅币 SKU 并进 `#yin-tip-kindness-badges`。
 
