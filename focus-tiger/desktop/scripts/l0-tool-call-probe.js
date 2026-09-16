@@ -17,6 +17,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { L0_MAX_TOKENS, L0_MODEL_FILENAME } from '../companion/l0Config.js';
+import { openFreshChatSession } from '../companion/l1ChatSequence.js';
 import { CONFIDE_TOOL_CALL_FIXTURES } from '../../src/core/confide/confideToolCallFixtures.js';
 import {
   buildConfideToolCallLabPrompt,
@@ -74,15 +75,22 @@ async function main() {
   try {
     llama = await getLlama();
     model = await llama.loadModel({ modelPath });
-    const context = await model.createContext();
-    const sequence = context.getSequence();
+    let context = await model.createContext();
+    let chat = null;
 
     for (const fixture of CONFIDE_TOOL_CALL_FIXTURES) {
-      const session = new LlamaChatSession({ contextSequence: sequence });
+      const next = await openFreshChatSession({
+        LlamaChatSession,
+        model,
+        context,
+        chat
+      });
+      context = next.context;
+      chat = next.chat;
       const prompt = buildConfideToolCallLabPrompt(fixture.text);
       let text = '';
       try {
-        text = await session.prompt(prompt, {
+        text = await chat.prompt(prompt, {
           maxTokens: Number(process.env.FT_TOOL_CALL_MAX_TOKENS) || L0_MAX_TOKENS
         });
       } catch (err) {

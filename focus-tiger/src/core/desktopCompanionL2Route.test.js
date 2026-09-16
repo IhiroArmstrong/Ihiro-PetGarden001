@@ -536,14 +536,21 @@ describe('desktop companion L2 isolation', () => {
     assert.equal(recover.includes('companion.generate'), false);
   });
 
-  it('resets the chat hold so later unmatched turns can still generate', () => {
+  it('recycles llama context when the sequence pool is empty', () => {
     const hold = readFileSync(
       join(focusTigerRoot, 'desktop/companion/l1Hold.js'),
       'utf8'
     );
-    assert.match(hold, /disposeSequence:\s*true/);
-    assert.match(hold, /context\.getSequence\(\)/);
+    const sequence = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1ChatSequence.js'),
+      'utf8'
+    );
+    assert.match(hold, /openFreshChatSession/);
+    assert.match(sequence, /disposeSequence:\s*true/);
+    assert.match(sequence, /isNoSequencesLeftError/);
+    assert.match(sequence, /createContext/);
     assert.equal(hold.includes('resetChatHistory'), false);
+    assert.equal(sequence.includes('resetChatHistory'), false);
   });
 
   it('keeps llama out of src/', () => {
