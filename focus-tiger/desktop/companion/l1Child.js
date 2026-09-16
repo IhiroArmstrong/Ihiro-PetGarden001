@@ -46,11 +46,12 @@ async function downloadModel(modelPath) {
   const cached = isGgufCachedAt(modelPath);
   await emit({
     event: 'status',
-    phase: cached ? 'loading' : 'downloading',
-    message: cached ? 'cached' : undefined
+    phase: 'loading',
+    message: cached ? 'cached' : 'checking'
   });
   return ensureGgufDownloaded(modelPath, L0_MODEL_URLS, {
     onProgress: ({ received, total }) => {
+      void emit({ event: 'status', phase: 'downloading' });
       void emit({
         event: 'progress',
         received,
