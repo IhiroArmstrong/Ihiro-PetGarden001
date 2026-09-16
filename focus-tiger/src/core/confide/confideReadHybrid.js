@@ -26,7 +26,8 @@ export const CONFIDE_READ_HYBRID_CLASSIFY_TIMEOUT_MS = 12_000;
  *   hasBridge?: boolean,
  *   hasClassifyFn?: boolean,
  *   wideViewport?: boolean,
- *   focusing?: boolean
+ *   focusing?: boolean,
+ *   generateEnabled?: boolean
  * }} [opts]
  * @returns {boolean}
  */
@@ -36,12 +37,14 @@ export function mayUseConfideReadHybrid({
   hasBridge = false,
   hasClassifyFn = false,
   wideViewport = false,
-  focusing = false
+  focusing = false,
+  generateEnabled = false
 } = {}) {
   if (regexTool) return false;
   if (route !== CONFIDE_ROUTE.FALLBACK) return false;
   if (!hasBridge || !hasClassifyFn || !wideViewport) return false;
   if (focusing) return false;
+  if (!generateEnabled) return false;
   return true;
 }
 

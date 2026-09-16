@@ -42,6 +42,18 @@ export function l0MetaPath(destPath) {
  * @param {number | null | undefined} expectedBytes
  * @param {number} [minBytes]
  */
+/**
+ * @param {string} destPath
+ * @param {number} [minBytes]
+ * @returns {boolean}
+ */
+export function isGgufCachedAt(destPath, minBytes = L0_MODEL_MIN_BYTES) {
+  if (!fs.existsSync(destPath)) return false;
+  const bytes = fs.statSync(destPath).size;
+  const meta = readDownloadMeta(destPath);
+  return isGgufDownloadComplete(bytes, meta?.expectedBytes, minBytes);
+}
+
 export function isGgufDownloadComplete(
   bytes,
   expectedBytes,

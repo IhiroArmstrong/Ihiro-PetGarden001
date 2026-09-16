@@ -1033,7 +1033,8 @@ export class ConfideToYinUI {
           Boolean(this._companion) &&
           typeof this._companion.classifyReadTool === 'function',
         wideViewport: this._viewportAllowsGenerateLayer(),
-        focusing: Boolean(this._companionStatus?.focusing)
+        focusing: Boolean(this._companionStatus?.focusing),
+        generateEnabled: Boolean(this._companionStatus?.generateEnabled)
       })
     ) {
       void this._tryReadHybridThenContinue(routePayload);

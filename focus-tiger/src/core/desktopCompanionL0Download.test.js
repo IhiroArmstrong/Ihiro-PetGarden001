@@ -11,11 +11,13 @@ import { describe, it } from 'node:test';
 import {
   canReusePartOnMirror,
   ensureGgufDownloaded,
+  isGgufCachedAt,
   isGgufDownloadComplete,
   l0MetaPath,
   l0PartPath,
   normalizeDownloadUrls,
-  readDownloadMeta
+  readDownloadMeta,
+  writeDownloadMeta
 } from '../../desktop/companion/l0Download.js';
 
 function tmpDest() {
@@ -68,6 +70,15 @@ describe('L0 GGUF resume download', () => {
       'https://a/x',
       'https://b/x'
     ]);
+  });
+
+
+  it('isGgufCachedAt skips download when dest is complete', () => {
+    const dest = tmpDest();
+    fs.writeFileSync(dest, Buffer.alloc(8, 1));
+    writeDownloadMeta(dest, { expectedBytes: 8, url: 'https://example.test/m.gguf' });
+    assert.equal(isGgufCachedAt(dest, 4), true);
+    assert.equal(fs.existsSync(l0PartPath(dest)), false);
   });
 
   it('resumes from .part after a dropped connection', async () => {

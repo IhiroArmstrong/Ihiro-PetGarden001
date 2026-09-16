@@ -224,7 +224,25 @@ describe('desktop companion L1 status reducer', () => {
     status = applyCompanionEvent(status, { event: 'unloaded' });
     assert.equal(status.phase, 'idle');
   });
+
+  it('clears download progress when loading cached model', () => {
+    let status = applyCompanionEvent(createCompanionStatus(), {
+      event: 'progress',
+      received: 1_000_000,
+      total: 5_000_000_000
+    });
+    assert.equal(status.phase, 'downloading');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'loading',
+      message: 'cached'
+    });
+    assert.equal(status.phase, 'loading');
+    assert.equal(status.received, null);
+    assert.equal(status.total, null);
+  });
 });
+
 
 describe('desktop companion L1 isolation', () => {
   it('spawns a Node child, not renderer llama, and uses ELECTRON_RUN_AS_NODE when packed', () => {
