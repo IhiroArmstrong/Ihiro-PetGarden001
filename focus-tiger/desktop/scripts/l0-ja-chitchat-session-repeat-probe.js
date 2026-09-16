@@ -24,6 +24,7 @@ import {
   JA_CHITCHAT_LAB_ROOT,
   JA_CHITCHAT_LOCALE,
   appendJaChitchatTurn,
+  buildJaChitchatProbeRow,
   errorMessage,
   processJaChitchatSend,
   resolveJaChitchatModelPath,
@@ -67,17 +68,17 @@ async function main() {
           sessionExclude,
           hold
         });
-        rows.push({
-          fixtureId: fixture.id,
-          input: text,
-          repeatIndex,
-          historyRowsBefore: history.length,
-          route: outcome.route,
-          'data-source': outcome.dataSource,
-          corpusId: outcome.corpusId,
-          replyText: outcome.replyText,
-          onTopic: null
-        });
+        rows.push(
+          buildJaChitchatProbeRow(
+            {
+              fixtureId: fixture.id,
+              input: text,
+              repeatIndex,
+              historyRowsBefore: history.length
+            },
+            outcome
+          )
+        );
         process.stderr.write(
           `[ja-chitchat-session] ${fixture.id} repeat ${repeatIndex}/${repeats} route=${outcome.route} source=${outcome.dataSource}\n`
         );

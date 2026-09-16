@@ -317,7 +317,7 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
   let raw = '';
   try {
     raw = await hold.generate(prompt, { maxTokens: L2_MAX_TOKENS });
-  } catch {
+  } catch (err) {
     const picked = resolveCorpusFallbackAfterGenerateFailure({
       locale: JA_CHITCHAT_LOCALE,
       localDate: formatLocalDateYmd(),
@@ -331,14 +331,24 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
         route: picked.route,
         dataSource: 'corpus',
         corpusId: picked.line.id,
-        replyText: picked.text
+        replyText: picked.text,
+        needsGenerate: true,
+        generateAttempted: true,
+        rawGenerate: raw || null,
+        sanitizePassed: null,
+        generateError: errorMessage(err)
       };
     }
     return {
       route: hit.route,
       dataSource: 'corpus',
       corpusId: hit.line.id,
-      replyText: corpusText
+      replyText: corpusText,
+      needsGenerate: true,
+      generateAttempted: true,
+      rawGenerate: raw || null,
+      sanitizePassed: null,
+      generateError: errorMessage(err)
     };
   }
 
@@ -351,7 +361,12 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
       route: 'generate',
       dataSource: 'generate',
       corpusId: null,
-      replyText: sanitized
+      replyText: sanitized,
+      needsGenerate: true,
+      generateAttempted: true,
+      rawGenerate: raw,
+      sanitizePassed: true,
+      generateError: null
     };
   }
 
@@ -368,14 +383,24 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
       route: picked.route,
       dataSource: 'corpus',
       corpusId: picked.line.id,
-      replyText: picked.text
+      replyText: picked.text,
+      needsGenerate: true,
+      generateAttempted: true,
+      rawGenerate: raw,
+      sanitizePassed: false,
+      generateError: null
     };
   }
   return {
     route: hit.route,
     dataSource: 'corpus',
     corpusId: hit.line.id,
-    replyText: corpusText
+    replyText: corpusText,
+    needsGenerate: true,
+    generateAttempted: true,
+    rawGenerate: raw,
+    sanitizePassed: false,
+    generateError: null
   };
 }
 
@@ -387,10 +412,36 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
  *   hold?: { generate: (prompt: string, opts?: object) => Promise<string> }
  * }} ctx
  */
+/**
+ * @param {object} base
+ * @param {object} outcome
+ */
+export function buildJaChitchatProbeRow(base, outcome) {
+  return {
+    ...base,
+    route: outcome.route,
+    'data-source': outcome.dataSource,
+    corpusId: outcome.corpusId,
+    replyText: outcome.replyText,
+    onTopic: null,
+    needsGenerate: Boolean(outcome.needsGenerate),
+    generateAttempted: Boolean(outcome.generateAttempted),
+    rawGenerate: outcome.rawGenerate ?? null,
+    sanitizePassed: outcome.sanitizePassed ?? null,
+    generateError: outcome.generateError ?? null
+  };
+}
+
 export async function processJaChitchatSend(text, ctx = {}) {
   const routed = resolveJaChitchatLabRoute(text, ctx);
   if (!routed.needsGenerate || !ctx.hold) {
-    return routed;
+    return {
+      ...routed,
+      generateAttempted: false,
+      rawGenerate: null,
+      sanitizePassed: null,
+      generateError: null
+    };
   }
   const corpusText = routed.hit
     ? confideLineText(routed.hit.line, JA_CHITCHAT_LOCALE)

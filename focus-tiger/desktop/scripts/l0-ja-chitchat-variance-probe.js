@@ -18,17 +18,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadModelHold } from '../companion/l1Hold.js';
-import { confideLineText } from '../../src/core/confide/confideCorpus.js';
 import { CONFIDE_JA_CHITCHAT_VARIANCE_FIXTURES } from '../../src/core/confide/confideJaChitchatVarianceFixtures.js';
 import { setLocale } from '../../src/locales/i18n.js';
 import {
   JA_CHITCHAT_LAB_ROOT,
   JA_CHITCHAT_LOCALE,
+  buildJaChitchatProbeRow,
   errorMessage,
-  resolveJaChitchatLabRoute,
+  processJaChitchatSend,
   resolveJaChitchatModelPath,
-  resolveJaChitchatRunCount,
-  runJaChitchatL2Generate
+  resolveJaChitchatRunCount
 } from './l0-ja-chitchat-probe-shared.js';
 
 async function main() {
@@ -58,26 +57,19 @@ async function main() {
 
     for (const fixture of CONFIDE_JA_CHITCHAT_VARIANCE_FIXTURES) {
       const text = fixture.text;
-      const routed = resolveJaChitchatLabRoute(text);
-      const corpusText = routed.hit
-        ? confideLineText(routed.hit.line, JA_CHITCHAT_LOCALE)
-        : '';
 
       for (let runIndex = 1; runIndex <= runs; runIndex += 1) {
-        let outcome = routed;
-        if (routed.needsGenerate) {
-          outcome = await runJaChitchatL2Generate(text, corpusText, routed.hit, hold);
-        }
-        rows.push({
-          fixtureId: fixture.id,
-          input: text,
-          runIndex,
-          route: outcome.route,
-          'data-source': outcome.dataSource,
-          corpusId: outcome.corpusId,
-          replyText: outcome.replyText,
-          onTopic: null
-        });
+        const outcome = await processJaChitchatSend(text, { hold });
+        rows.push(
+          buildJaChitchatProbeRow(
+            {
+              fixtureId: fixture.id,
+              input: text,
+              runIndex
+            },
+            outcome
+          )
+        );
         process.stderr.write(
           `[ja-chitchat] ${fixture.id} run ${runIndex}/${runs} route=${outcome.route} source=${outcome.dataSource}\n`
         );

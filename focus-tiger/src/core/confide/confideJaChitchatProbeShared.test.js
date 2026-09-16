@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import {
   appendJaChitchatTurn,
+  buildJaChitchatProbeRow,
   historySourceFromDataSource,
   resolveJaChitchatRepeatCount,
   resolveJaChitchatLabRoute
@@ -38,6 +39,28 @@ describe('confideJaChitchatProbeShared', () => {
     assert.equal(history.length, 2);
     assert.equal(history[1].source, 'generate');
     assert.equal(historySourceFromDataSource('corpus'), 'corpus');
+  });
+
+  it('buildJaChitchatProbeRow includes raw generate diagnostics', () => {
+    const row = buildJaChitchatProbeRow(
+      { fixtureId: 'ja-chitchat-01', input: 'test', runIndex: 1 },
+      {
+        route: 'fallback',
+        dataSource: 'corpus',
+        corpusId: 'fallback-03',
+        replyText: '茶はまだ温かい。',
+        needsGenerate: true,
+        generateAttempted: true,
+        rawGenerate: 'still watching.',
+        sanitizePassed: false,
+        generateError: null
+      }
+    );
+    assert.equal(row.rawGenerate, 'still watching.');
+    assert.equal(row.sanitizePassed, false);
+    assert.equal(row.generateAttempted, true);
+    assert.equal(row.generateError, null);
+    assert.equal(row.onTopic, null);
   });
 
   it('resolveJaChitchatLabRoute uses session salt for corpus retrieve', () => {
