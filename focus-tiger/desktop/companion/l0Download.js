@@ -9,8 +9,9 @@
  */
 
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
-import { L0_MODEL_MIN_BYTES } from './l0Config.js';
+import { L0_MODEL_FILENAME, L0_MODEL_MIN_BYTES } from './l0Config.js';
 import {
   retireLegacyProductionGgufs,
   trySeedProductionFromSpikeCache
@@ -52,6 +53,60 @@ export function isGgufCachedAt(destPath, minBytes = L0_MODEL_MIN_BYTES) {
   const bytes = fs.statSync(destPath).size;
   const meta = readDownloadMeta(destPath);
   return isGgufDownloadComplete(bytes, meta?.expectedBytes, minBytes);
+}
+
+/**
+ * Electron `desktop:dev` uses package `name` userData (`focus-tiger-desktop`),
+ * while the packaged app uses productName (`Focus Tiger`). A complete GGUF in
+ * either folder must be reused — do not start a second multi-GB download.
+ *
+ * @param {{
+ *   userDataDir?: string,
+ *   homeDir?: string,
+ *   platform?: NodeJS.Platform,
+ *   filename?: string,
+ *   minBytes?: number
+ * }} [opts]
+ * @returns {string[]}
+ */
+export function listCompanionModelDirCandidates(opts = {}) {
+  const dirs = [];
+  const userDataDir = typeof opts.userDataDir === 'string' ? opts.userDataDir.trim() : '';
+  if (userDataDir) dirs.push(path.join(userDataDir, 'companion-l0'));
+  const platform = opts.platform || process.platform;
+  const homeDir = opts.homeDir || os.homedir();
+  if (platform === 'darwin' && homeDir) {
+    dirs.push(
+      path.join(homeDir, 'Library', 'Application Support', 'Focus Tiger', 'companion-l0')
+    );
+  }
+  return [...new Set(dirs)];
+}
+
+/**
+ * Directory that already holds a complete active GGUF, else the userData
+ * download target (first candidate).
+ *
+ * @param {{
+ *   userDataDir: string,
+ *   homeDir?: string,
+ *   platform?: NodeJS.Platform,
+ *   filename?: string,
+ *   minBytes?: number
+ * }} opts
+ * @returns {string}
+ */
+export function resolveCompanionModelDir(opts) {
+  const filename = opts.filename || L0_MODEL_FILENAME;
+  const minBytes = opts.minBytes ?? L0_MODEL_MIN_BYTES;
+  const candidates = listCompanionModelDirCandidates(opts);
+  if (candidates.length === 0) {
+    throw new Error('companion_model_dir_unresolved');
+  }
+  for (const dir of candidates) {
+    if (isGgufCachedAt(path.join(dir, filename), minBytes)) return dir;
+  }
+  return candidates[0];
 }
 
 export function isGgufDownloadComplete(

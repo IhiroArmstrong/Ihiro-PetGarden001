@@ -30,6 +30,7 @@ import {
   sanitizeCompanionL2Reply
 } from './l2Sanitize.js';
 import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
+import { resolveCompanionModelDir } from './l0Download.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -163,7 +164,9 @@ export class CompanionL1Runtime {
       execPath: this.execPath,
       env: {
         ...this.env,
-        FT_COMPANION_L1_MODEL_DIR: path.join(this.userDataDir, 'companion-l0')
+        FT_COMPANION_L1_MODEL_DIR: resolveCompanionModelDir({
+          userDataDir: this.userDataDir
+        })
       }
     });
     const child = spawn(spawnSpec.command, spawnSpec.args, {

@@ -241,6 +241,25 @@ describe('desktop companion L1 status reducer', () => {
     assert.equal(status.received, null);
     assert.equal(status.total, null);
   });
+
+  it('does not keep a stale download bar after loading status', () => {
+    let status = applyCompanionEvent(createCompanionStatus(), {
+      event: 'status',
+      phase: 'loading',
+      message: 'checking'
+    });
+    assert.equal(status.phase, 'loading');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'downloading'
+    });
+    status = applyCompanionEvent(status, {
+      event: 'progress',
+      received: 10,
+      total: 100
+    });
+    assert.equal(status.phase, 'downloading');
+  });
 });
 
 
@@ -282,6 +301,7 @@ describe('desktop companion L1 isolation', () => {
       'utf8'
     );
     assert.match(runtimeSrc, /modelId: L0_MODEL_ID/);
+    assert.match(runtimeSrc, /resolveCompanionModelDir/);
   });
 
   it('packs companion runtime JS and still keeps GGUF out of the file list', () => {

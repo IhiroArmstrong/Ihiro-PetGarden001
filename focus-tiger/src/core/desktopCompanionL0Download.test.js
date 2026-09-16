@@ -15,8 +15,10 @@ import {
   isGgufDownloadComplete,
   l0MetaPath,
   l0PartPath,
+  listCompanionModelDirCandidates,
   normalizeDownloadUrls,
   readDownloadMeta,
+  resolveCompanionModelDir,
   writeDownloadMeta
 } from '../../desktop/companion/l0Download.js';
 
@@ -79,6 +81,43 @@ describe('L0 GGUF resume download', () => {
     writeDownloadMeta(dest, { expectedBytes: 8, url: 'https://example.test/m.gguf' });
     assert.equal(isGgufCachedAt(dest, 4), true);
     assert.equal(fs.existsSync(l0PartPath(dest)), false);
+  });
+
+  it('reuses a complete GGUF from packaged Focus Tiger when desktop:dev userData only has a partial', () => {
+    const home = fs.mkdtempSync(path.join(os.tmpdir(), 'ft-l0-home-'));
+    const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'ft-l0-desktop-'));
+    const packagedDir = path.join(
+      home,
+      'Library',
+      'Application Support',
+      'Focus Tiger',
+      'companion-l0'
+    );
+    const devDir = path.join(userData, 'companion-l0');
+    fs.mkdirSync(packagedDir, { recursive: true });
+    fs.mkdirSync(devDir, { recursive: true });
+    const filename = 'reuse.gguf';
+    const packaged = path.join(packagedDir, filename);
+    fs.writeFileSync(packaged, Buffer.alloc(8, 1));
+    writeDownloadMeta(packaged, { expectedBytes: 8 });
+    fs.writeFileSync(path.join(devDir, `${filename}.part`), Buffer.alloc(2, 2));
+    const resolved = resolveCompanionModelDir({
+      userDataDir: userData,
+      homeDir: home,
+      platform: 'darwin',
+      filename,
+      minBytes: 4
+    });
+    assert.equal(resolved, packagedDir);
+    const candidates = listCompanionModelDirCandidates({
+      userDataDir: userData,
+      homeDir: home,
+      platform: 'darwin'
+    });
+    assert.equal(candidates[0], devDir);
+    assert.equal(candidates.includes(packagedDir), true);
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(userData, { recursive: true, force: true });
   });
 
   it('resumes from .part after a dropped connection', async () => {
