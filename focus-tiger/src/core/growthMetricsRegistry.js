@@ -271,7 +271,7 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
       'focus-tiger.focus-coins.v1',
       'focus-tiger.practice-days.v1',
       'focus-tiger.lotus-pond.v1',
-      'focus-tiger.focus-coins-owned.v1'
+      'focus-tiger.focus-coins.v1'
     ]),
     aggregationWindow: 'mixed',
     dailyCapPolicy: 'Spend balance once; SKU minPracticeDays / minLifetimeMinutes / flags.',

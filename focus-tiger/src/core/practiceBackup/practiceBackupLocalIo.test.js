@@ -282,6 +282,43 @@ describe('practiceBackupLocalIo', () => {
     }
   });
 
+  it('migrates v4 import payloads to v5 with focus circle and prefs slots', () => {
+    const v4 = {
+      schemaVersion: 4,
+      savedAt: '2026-01-01T00:00:00.000Z',
+      stores: Object.fromEntries(
+        [
+          'focus-tiger.journey-log.v1',
+          'focus-tiger.practice-days.v1',
+          'focus-tiger.milestone-glow.v1',
+          'focus-tiger.entitlement-ownership.v1',
+          'focus-tiger.ritual-completions.v1',
+          'focus-tiger.mustard-seed-seal.v1',
+          'focus-tiger.presence-signals.v1',
+          'focus-tiger.presence-freetext-l3-consent.v1',
+          'focus-tiger.reflections.v1',
+          'focus-tiger.locale.v1',
+          'focus-tiger.reminder-preference.v1',
+          'focus-tiger.companion-mode.v1',
+          'focus-tiger.ambient-pref.v1',
+          'focus-tiger.session-cues.v1',
+          'focus-tiger.contemplative-archive-seals.v1',
+          'focus-tiger.lotus-pond.v1',
+          'focus-tiger.tip-jar.v1',
+          'focus-tiger.sanctuary-entitlement.v1',
+          'focus-tiger.focus-coins.v1'
+        ].map((key) => [key, null])
+      )
+    };
+    const validated = validatePracticeImportPayload(JSON.stringify(v4));
+    assert.equal(validated.ok, true);
+    if (validated.ok) {
+      assert.equal(validated.snapshot.schemaVersion, PRACTICE_BACKUP_SCHEMA_VERSION);
+      assert.ok('focus-tiger.focus-circle.v1' in validated.snapshot.stores);
+      assert.ok('focus-tiger.focus-duration-pref.v1' in validated.snapshot.stores);
+    }
+  });
+
   it('imports focus coins atomically', async () => {
     const storage = memStorage();
     const snapshot = (await createPracticeExportPayload(storage)).snapshot;

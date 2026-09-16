@@ -187,6 +187,7 @@
 
 - **莲花池 Slice A（2026-08-17；前景/宽屏 2026-08-21）**：取代 2026-07-15 日历型莲花池（只留这一套）。终身只增分钟 `focus-tiger.lotus-pond.v1`（**禁止**复用 90 天 practice-days）；金色角度螺旋（Vogel packing，**不是** 12 点均分圆）；首朵 25 分、一圈约 12（可调常量）；满 12 诚实封顶。花在阿寅**前景**（`#lotus-pond` z 2）；宽屏用更大内外半径。QA：`?qaLotusBlooms=N`。TRACKER 待人工。
 
+- **Electron 两条离开信号线（2026-09-15 定案）**：`AttentionSignals`（走神：blur ∨ visibility，托盘 **SB-18** 例外）与 `onShellVisibility`（壳 hidden：companion unload / Checkout）**禁止合并**为同一「离开」定义。alt-tab 切 App → 前者记离开、后者仍 visible；收托盘 → 前者不算走神、后者 hidden。平台旁证与实现锚点：`ARCHITECTURE.md`「两条『离开』信号线」。
 - **Electron 步骤 B · 托盘 + 关窗后台（2026-08-18）**：收费 DMG 前提。关红灯 = hide；托盘「显示 / 退出」；**P0-2 / SB-18**：hide-to-tray **不是**走神。对照：窗口可见时切 App 仍走场景 B。权威：`task-electron-desktop-scaffold.md`。TRACKER 场景 AB 待人工。陪伴智能体 **不**绑本验收。
 - **Electron 步骤 A 窗口（2026-08-17）**：`focus-tiger/desktop/` 薄壳。P0-1 `openExternal`；P0-3 Cloud POST；P0-4 extraResources。#331 已合。当前 `desktop:dev` **已是步骤 B**（有托盘）。
 - **本地电脑版壳选型（2026-08-16）**：Mac DMG **拍板 Electron**（electron-builder）；Tauri 日后备选；Capacitor 不用于桌面包装；PWA 仍非电脑版终局。选型合入 **#326**（`fe5b76a`）。Brief `task-briefs/task-desktop-shell-electron.md`。

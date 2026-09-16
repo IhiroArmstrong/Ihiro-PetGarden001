@@ -7,7 +7,12 @@
  * Local export/import + cloud backup · whitelist + snapshot helpers (client).
  */
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 4;
+import {
+  PRACTICE_BACKUP_EXPORT_KEYS,
+  PRACTICE_BACKUP_V5_ADDED_KEYS
+} from './localBackupStorageRegistry.js';
+
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 5;
 
 /** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
 export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
@@ -39,10 +44,17 @@ export const PRACTICE_BACKUP_V3_STORE_KEYS = Object.freeze([
   'focus-tiger.sanctuary-entitlement.v1'
 ]);
 
-export const PRACTICE_BACKUP_STORE_KEYS = Object.freeze([
+export const PRACTICE_BACKUP_V4_STORE_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V3_STORE_KEYS,
   'focus-tiger.focus-coins.v1'
 ]);
+
+export const PRACTICE_BACKUP_V5_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V4_STORE_KEYS,
+  ...PRACTICE_BACKUP_V5_ADDED_KEYS
+]);
+
+export const PRACTICE_BACKUP_STORE_KEYS = PRACTICE_BACKUP_EXPORT_KEYS;
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
 
@@ -70,6 +82,7 @@ export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   if (schemaVersion === 1) return PRACTICE_BACKUP_V1_STORE_KEYS;
   if (schemaVersion === 2) return PRACTICE_BACKUP_V2_STORE_KEYS;
   if (schemaVersion === 3) return PRACTICE_BACKUP_V3_STORE_KEYS;
+  if (schemaVersion === 4) return PRACTICE_BACKUP_V4_STORE_KEYS;
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
   }
@@ -286,6 +299,26 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       );
     case 'focus-tiger.focus-coins.v1':
       return Number(parsed.balance) <= 0 && (!Array.isArray(parsed.ownedIds) || parsed.ownedIds.length === 0);
+    case 'focus-tiger.focus-duration-pref.v1': {
+      const minutes = Number(parsed.minutes);
+      return !Number.isFinite(minutes) || minutes <= 0;
+    }
+    case 'focus-tiger.intentions.v1':
+      return !Array.isArray(parsed) || parsed.length === 0;
+    case 'focus-tiger.quiet-together.v1':
+      return typeof parsed.enabled !== 'boolean';
+    case 'focus-tiger.focus-circle.v1':
+      return !parsed.circleId || !parsed.memberId;
+    case 'focus-tiger.focus-circle-witness-responded.v1':
+      return !Array.isArray(parsed) || parsed.length === 0;
+    case 'focus-tiger.focus-circle-passive-share.v1':
+      return typeof parsed.sharePassiveMarks !== 'boolean';
+    case 'focus-tiger.focus-circle-was-here-mark.v1':
+      return !parsed.dayKey;
+    case 'focus-tiger.focus-circle-identity.v1':
+      return !parsed.nickname && !parsed.badgeKey;
+    case 'focus-tiger.focus-circle-identity-hidden.v1':
+      return !parsed || typeof parsed !== 'object' || Object.keys(parsed).length === 0;
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':
       return Object.keys(parsed).length === 0;

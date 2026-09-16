@@ -17,6 +17,7 @@ import {
   PRACTICE_BACKUP_V2_STORE_KEYS,
   PRACTICE_BACKUP_V1_STORE_KEYS,
   PRACTICE_BACKUP_V3_STORE_KEYS,
+  PRACTICE_BACKUP_V4_STORE_KEYS,
   practiceBackupStoreKeysForSchemaVersion,
   stringifyPracticeBackupStorageValue,
   parsePracticeBackupStorageRaw
@@ -26,6 +27,7 @@ import {
   writeCompanionBackupBundle
 } from './practiceBackupCompanionIo.js';
 import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
+import { reconcileEntitlementAfterPracticeRestore } from './practiceBackupEntitlementReconcile.js';
 import { normalizeSnapshotStoresForApply } from './practiceBackupSync.js';
 
 /** Dispatched after a successful local import (Preferences backup panel). */
@@ -103,7 +105,28 @@ export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'reminder_pref', storeKey: 'focus-tiger.reminder-preference.v1' },
   { id: 'companion_mode', storeKey: 'focus-tiger.companion-mode.v1' },
   { id: 'ambient_pref', storeKey: 'focus-tiger.ambient-pref.v1' },
-  { id: 'session_cues', storeKey: 'focus-tiger.session-cues.v1' }
+  { id: 'session_cues', storeKey: 'focus-tiger.session-cues.v1' },
+  { id: 'focus_duration_pref', storeKey: 'focus-tiger.focus-duration-pref.v1' },
+  { id: 'intentions', storeKey: 'focus-tiger.intentions.v1' },
+  { id: 'quiet_together', storeKey: 'focus-tiger.quiet-together.v1' },
+  { id: 'focus_circle', storeKey: 'focus-tiger.focus-circle.v1' },
+  {
+    id: 'focus_circle_witness',
+    storeKey: 'focus-tiger.focus-circle-witness-responded.v1'
+  },
+  {
+    id: 'focus_circle_passive_share',
+    storeKey: 'focus-tiger.focus-circle-passive-share.v1'
+  },
+  {
+    id: 'focus_circle_was_here',
+    storeKey: 'focus-tiger.focus-circle-was-here-mark.v1'
+  },
+  { id: 'focus_circle_identity', storeKey: 'focus-tiger.focus-circle-identity.v1' },
+  {
+    id: 'focus_circle_identity_hidden',
+    storeKey: 'focus-tiger.focus-circle-identity-hidden.v1'
+  }
 ]);
 
 /**
@@ -257,13 +280,37 @@ export function migratePracticeSnapshot(snapshot, fromVersion, toVersion) {
         : {};
     /** @type {Record<string, unknown | null>} */
     const stores = {};
-    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+    for (const key of PRACTICE_BACKUP_V4_STORE_KEYS) {
       stores[key] = key in storesIn ? storesIn[key] ?? null : null;
     }
     return {
       ok: true,
       snapshot: {
         schemaVersion: 4,
+        savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
+        stores,
+        companionFiles: o.companionFiles ?? null
+      }
+    };
+  }
+  if (fromVersion === 4 && toVersion === 5) {
+    if (!snapshot || typeof snapshot !== 'object') {
+      return { ok: false, reason: 'not_object' };
+    }
+    const o = /** @type {Record<string, unknown>} */ (snapshot);
+    const storesIn =
+      o.stores && typeof o.stores === 'object' && !Array.isArray(o.stores)
+        ? /** @type {Record<string, unknown>} */ (o.stores)
+        : {};
+    /** @type {Record<string, unknown | null>} */
+    const stores = {};
+    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+      stores[key] = key in storesIn ? storesIn[key] ?? null : null;
+    }
+    return {
+      ok: true,
+      snapshot: {
+        schemaVersion: 5,
         savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
         stores,
         companionFiles: o.companionFiles ?? null
@@ -502,6 +549,7 @@ export async function importPracticeSnapshotAtomic(storage, snapshot) {
       }
     }
     reconcileDailyCompletionAfterRestore(storage, new Date());
+    await reconcileEntitlementAfterPracticeRestore(storage);
     const companionResult = await writeCompanionBackupBundle(
       snapshot.companionFiles ?? null
     );

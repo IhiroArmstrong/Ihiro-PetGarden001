@@ -102,6 +102,10 @@ import {
   FOCUS_CIRCLE_IDENTITY_DRAFT_STORAGE_KEY,
   FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY
 } from './focusCircleIdentity.js';
+import { CONFIDE_OBSERVATION_STORAGE_KEY } from './confide/confideObservationTelemetry.js';
+import { SEASONAL_WHISPER_STORAGE_KEY } from './seasonal/seasonalWhisperGate.js';
+import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.js';
+import { FOCUS_DURATION_STORAGE_KEY } from './focusDuration.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   COLD_START_GOAL_SEEN_KEY,
@@ -205,7 +209,11 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_CIRCLE_PASSIVE_SHARE_STORAGE_KEY,
   FOCUS_CIRCLE_WAS_HERE_MARK_STORAGE_KEY,
   FOCUS_CIRCLE_IDENTITY_DRAFT_STORAGE_KEY,
-  FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY
+  FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY,
+  FOCUS_DURATION_STORAGE_KEY,
+  CONFIDE_OBSERVATION_STORAGE_KEY,
+  SEASONAL_WHISPER_STORAGE_KEY,
+  DESKTOP_CHECKOUT_PENDING_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

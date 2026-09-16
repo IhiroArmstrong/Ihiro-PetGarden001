@@ -1,6 +1,6 @@
 # Task Brief · 本地 AI 模型「切后台 / 关 Confide 即 unload」
 
-> **状态（2026-09-06）**：**可开工**（产品已拍板宽限期 **60 秒**）。  
+> **状态（2026-09-06 开工 · 2026-09-15 定案对齐）**：宽限期 **60 秒** 与 shell hidden 接线**已落地**（`desktopCompanionUnloadSchedule.js` · `main.js`）。**两条离开信号线不合并**的架构定案见 `ARCHITECTURE.md`「两条『离开』信号线」。  
 > **分支**：`fix/companion-unload-background-confide`（勿与 `docs/hints-briefs-arrival-c1-sep6` 等文档旁支混改）。
 
 ## 一句话
@@ -14,7 +14,7 @@
 | 场景 | 改前 |
 |---|---|
 | Sit → Focusing | 已 unload，已验证释放约 1.27GB RSS |
-| App 退后台（shell hidden/托盘） | 未接线，`onShellVisibility` 只服务 AttentionSignals/Checkout |
+| App 退后台（shell `hidden` / 托盘） | **已接线**（宽限 unload）；`onShellVisibility` 另服务 Checkout 回前台与 `bindDesktopShellAttention`（tray 例外） |
 | 关闭 Confide 面板 | 未接线，`close()` 显式传 `unload: false` |
 
 结果：Idle 开着 Confide、或关闭面板后、或切到别的 App/收进托盘，模型仍可能常驻内存。对 8GB 门槛机型（尤其 Apple 统一内存）是不必要的常驻负担。
@@ -33,7 +33,7 @@
 **触发点 1：Electron shell hidden**
 
 - 挂载在现有 `onShellVisibility` 回调链路上，新增 unload 调度分支（不影响 AttentionSignals/Checkout 既有逻辑）。
-- 覆盖：窗口最小化、收进系统托盘、切换到其他 App（shell `hidden: true`）。
+- 覆盖：**仅**主进程上报 `hidden: true` 的路径（收进托盘 / `win.hide()` 等）。**不含** alt-tab 到别的 App 且窗口仍留在背景——那种场景 `shellHidden` 仍为 `false`，走神走 `AttentionSignals` 的 `blur`，**不**触发本 unload（见 `ARCHITECTURE.md`「两条『离开』信号线」）。
 - `hidden: false` → 取消宽限计时器。
 
 **触发点 2：关闭 Confide 面板**
