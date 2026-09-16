@@ -84,6 +84,7 @@ export async function runL0Inference(opts) {
     const rssAfterLoad = rssBytes();
 
     const context = await model.createContext();
+    // Single generate then unload. Multi-turn holds must use openFreshChatSession.
     const session = new LlamaChatSession({
       contextSequence: context.getSequence()
     });

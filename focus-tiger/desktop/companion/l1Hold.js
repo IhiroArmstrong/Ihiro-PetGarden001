@@ -8,6 +8,12 @@
  * Dynamic import so unit tests never load the native addon.
  */
 
+import {
+  disposeChatSession,
+  disposeContextQuietly,
+  openFreshChatSession
+} from './l1ChatSequence.js';
+
 function errorMessage(err) {
   return err instanceof Error ? err.message : String(err);
 }
@@ -73,26 +79,24 @@ export async function loadModelHold(opts) {
   onProgress('loadModel');
   model = await llama.loadModel({ modelPath: opts.modelPath });
   context = await model.createContext();
-  chat = new LlamaChatSession({
-    contextSequence: context.getSequence()
-  });
+  chat = null;
 
   let disposed = false;
   return {
     gpu,
     async generate(prompt, genOpts = {}) {
-      if (disposed || !context) throw new Error('companion_session_disposed');
-      // Each Share already sends a full one-shot prompt. Clearing the JS
-      // message list does not erase the KV sequence, so by ~turn 5 Qwen
-      // repeats the first generate reply (previously "Yes."). Dispose the
-      // sequence and start a fresh session.
-      if (chat && typeof chat.dispose === 'function') {
-        chat.dispose({ disposeSequence: true });
-        chat = null;
-      }
-      chat = new LlamaChatSession({
-        contextSequence: context.getSequence()
+      if (disposed || !model) throw new Error('companion_session_disposed');
+      // One-shot prompts still need a wiped KV (Qwen repeated turn-1).
+      // Gemma then exhausted the sequence pool; openFreshChatSession
+      // recreates the context instead of dying on getSequence().
+      const next = await openFreshChatSession({
+        LlamaChatSession,
+        model,
+        context,
+        chat
       });
+      context = next.context;
+      chat = next.chat;
       const maxTokens = Number(genOpts.maxTokens);
       const text = await chat.prompt(String(prompt || ''), {
         maxTokens: Number.isFinite(maxTokens) && maxTokens > 0 ? maxTokens : 48
@@ -102,15 +106,9 @@ export async function loadModelHold(opts) {
     async dispose() {
       if (disposed) return;
       disposed = true;
-      if (chat && typeof chat.dispose === 'function') {
-        try {
-          chat.dispose({ disposeSequence: true });
-        } catch {
-          /* already failed */
-        }
-      }
+      disposeChatSession(chat);
       chat = null;
-      await disposeQuietly(context, null, 4000);
+      await disposeContextQuietly(context);
       context = null;
       await disposeQuietly(model, llama, 8000);
       model = null;

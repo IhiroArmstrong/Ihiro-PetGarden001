@@ -166,6 +166,7 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 10. **实验室 dest ≠ 生产缓存。** 不要把 `/tmp/ft-l0-lab/` 和下到 `~/Library/Application Support/Focus Tiger/companion-l0/` 的文件当成同一份。
 11. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
 12. **intent diagnostic ≠ 生产 L3。** `companion:intent-diagnostic` 禁止 Yin 口吻；结论只拆模型 vs routing，**不得**据此改默认 GGUF。
+13. **换模后 `No sequences left`。** Qwen 用每轮 `disposeSequence` 清 KV；Gemma-4-E4B 会在下一次 `getSequence()` 抛错，探针/面板就会整段茶句回落。产品 `loadModelHold`、intent/tool-call 探针、1.7B spike 一律走 `openFreshChatSession`（池空则 `createContext` 重建）。**不要**只 `resetChatHistory`。不要为迁就某一 GGUF 改生产 `l2Persona` 提示词。
 
 ---
 

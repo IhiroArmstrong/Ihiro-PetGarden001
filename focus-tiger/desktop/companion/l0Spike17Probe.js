@@ -21,6 +21,7 @@ import {
 } from './l0Spike17Config.js';
 import { ensureGgufDownloaded, isGgufDownloadComplete } from './l0Download.js';
 import { evaluateL0Verdict, rssMb, tokensPerSecond } from './l0Metrics.js';
+import { disposeChatSession, disposeContextQuietly, openFreshChatSession } from './l1ChatSequence.js';
 
 function rssBytes() {
   return process.memoryUsage().rss;
@@ -67,17 +68,20 @@ async function openSpikeSession(modelPath, onProgress) {
         : 'unknown';
   onProgress('loadModel');
   const model = await llama.loadModel({ modelPath });
-  const context = await model.createContext();
-  const chat = new LlamaChatSession({
-    contextSequence: context.getSequence()
-  });
+  let context = await model.createContext();
+  let chat = null;
 
   return {
     gpu,
     async generate(prompt, maxTokens = SPIKE_17_MAX_TOKENS) {
-      if (typeof chat.resetChatHistory === 'function') {
-        await chat.resetChatHistory();
-      }
+      const next = await openFreshChatSession({
+        LlamaChatSession,
+        model,
+        context,
+        chat
+      });
+      context = next.context;
+      chat = next.chat;
       let firstTokenAt = null;
       let tokenCount = 0;
       const genStarted = Date.now();
@@ -101,7 +105,10 @@ async function openSpikeSession(modelPath, onProgress) {
       };
     },
     async dispose() {
-      await disposeQuietly(context, null, 4000);
+      disposeChatSession(chat);
+      chat = null;
+      await disposeContextQuietly(context);
+      context = null;
       await disposeQuietly(model, llama, 8000);
     }
   };

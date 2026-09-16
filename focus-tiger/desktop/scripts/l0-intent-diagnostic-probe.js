@@ -17,6 +17,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { L0_MODEL_FILENAME } from '../companion/l0Config.js';
+import { openFreshChatSession } from '../companion/l1ChatSequence.js';
 import { YIN_INTENT_DIAGNOSTIC_FIXTURES } from '../../src/core/confide/confideIntentDiagnosticFixtures.js';
 import {
   YIN_INTENT_DIAGNOSTIC_FIXTURES_PHASE2B_HARD5,
@@ -175,8 +176,8 @@ async function main() {
   try {
     llama = await getLlama();
     model = await llama.loadModel({ modelPath });
-    const context = await model.createContext();
-    const sequence = context.getSequence();
+    let context = await model.createContext();
+    let chat = null;
 
     for (const fixture of fixtures) {
       const rule =
@@ -198,13 +199,20 @@ async function main() {
           confidence: 1
         });
       } else {
-        const session = new LlamaChatSession({ contextSequence: sequence });
+        const next = await openFreshChatSession({
+          LlamaChatSession,
+          model,
+          context,
+          chat
+        });
+        context = next.context;
+        chat = next.chat;
         const prompt =
           phase === '2b-residual'
             ? buildYinIntentObservationMetaProbePrompt(fixture.text)
             : buildYinIntentDiagnosticPrompt(fixture.text, arch);
         try {
-          text = await session.prompt(prompt, {
+          text = await chat.prompt(prompt, {
             maxTokens: Number(process.env.FT_INTENT_MAX_TOKENS) || DEFAULT_MAX_TOKENS
           });
         } catch (err) {
