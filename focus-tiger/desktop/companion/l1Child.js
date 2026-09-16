@@ -13,6 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { L0_MODEL_FILENAME, L0_MODEL_URLS } from './l0Config.js';
 import { ensureGgufDownloaded, isGgufCachedAt } from './l0Download.js';
+import { resolveCompanionL0ModelDir } from './l0ModelDir.js';
 import { errorMessage, loadModelHold } from './l1Hold.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -24,22 +25,12 @@ function emit(obj) {
 }
 
 function defaultModelDir() {
-  if (process.env.FT_COMPANION_L1_MODEL_DIR) {
-    return process.env.FT_COMPANION_L1_MODEL_DIR;
-  }
-  if (process.env.FT_COMPANION_L0_MODEL_DIR) {
-    return process.env.FT_COMPANION_L0_MODEL_DIR;
-  }
-  if (process.platform === 'darwin') {
-    return path.join(
-      os.homedir(),
-      'Library',
-      'Application Support',
-      'Focus Tiger',
-      'companion-l0'
-    );
-  }
-  return path.join(__dirname, '..', '.l0-cache');
+  return resolveCompanionL0ModelDir({
+    env: process.env,
+    platform: process.platform,
+    homedir: os.homedir(),
+    desktopRoot: path.join(__dirname, '..')
+  });
 }
 
 async function downloadModel(modelPath) {

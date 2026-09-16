@@ -14,6 +14,7 @@ import {
   createCompanionStatus
 } from '../../desktop/companion/l1Status.js';
 import { resolveCompanionNodeSpawn } from '../../desktop/companion/l1Runtime.js';
+import { resolveCompanionL0ModelDir } from '../../desktop/companion/l0ModelDir.js';
 import {
   canRegisterDesktopCompanionGeneration,
   DESKTOP_COMPANION_WIDE_MIN_PX,
@@ -244,6 +245,41 @@ describe('desktop companion L1 status reducer', () => {
 });
 
 
+describe('companion L0 model dir', () => {
+  it('uses Focus Tiger companion-l0 on darwin even when Electron userData differs', () => {
+    const dir = resolveCompanionL0ModelDir({
+      env: {},
+      platform: 'darwin',
+      homedir: '/Users/demo',
+      userDataDir: '/Users/demo/Library/Application Support/focus-tiger-desktop'
+    });
+    assert.equal(
+      dir,
+      '/Users/demo/Library/Application Support/Focus Tiger/companion-l0'
+    );
+  });
+
+  it('lets FT_COMPANION_L1_MODEL_DIR override the darwin default', () => {
+    const dir = resolveCompanionL0ModelDir({
+      env: { FT_COMPANION_L1_MODEL_DIR: '/tmp/custom-l0' },
+      platform: 'darwin',
+      homedir: '/Users/demo',
+      userDataDir: '/Users/demo/Library/Application Support/focus-tiger-desktop'
+    });
+    assert.equal(dir, '/tmp/custom-l0');
+  });
+
+  it('uses userData companion-l0 off darwin when no env override', () => {
+    const dir = resolveCompanionL0ModelDir({
+      env: {},
+      platform: 'linux',
+      homedir: '/home/demo',
+      userDataDir: '/home/demo/.config/focus-tiger-desktop'
+    });
+    assert.equal(dir, '/home/demo/.config/focus-tiger-desktop/companion-l0');
+  });
+});
+
 describe('desktop companion L1 isolation', () => {
   it('spawns a Node child, not renderer llama, and uses ELECTRON_RUN_AS_NODE when packed', () => {
     const packed = resolveCompanionNodeSpawn({
@@ -282,6 +318,11 @@ describe('desktop companion L1 isolation', () => {
       'utf8'
     );
     assert.match(runtimeSrc, /modelId: L0_MODEL_ID/);
+    assert.match(runtimeSrc, /resolveCompanionL0ModelDir/);
+    assert.equal(
+      runtimeSrc.includes("path.join(this.userDataDir, 'companion-l0')"),
+      false
+    );
   });
 
   it('packs companion runtime JS and still keeps GGUF out of the file list', () => {

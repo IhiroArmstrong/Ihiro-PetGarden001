@@ -11,6 +11,7 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { appendFile, mkdir } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isCompanionL1Allowed } from './l1Capability.js';
@@ -30,6 +31,7 @@ import {
   sanitizeCompanionL2Reply
 } from './l2Sanitize.js';
 import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
+import { resolveCompanionL0ModelDir } from './l0ModelDir.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -163,7 +165,13 @@ export class CompanionL1Runtime {
       execPath: this.execPath,
       env: {
         ...this.env,
-        FT_COMPANION_L1_MODEL_DIR: path.join(this.userDataDir, 'companion-l0')
+        FT_COMPANION_L1_MODEL_DIR: resolveCompanionL0ModelDir({
+          env: this.env,
+          platform: process.platform,
+          homedir: os.homedir(),
+          userDataDir: this.userDataDir,
+          desktopRoot: path.join(__dirname, '..')
+        })
       }
     });
     const child = spawn(spawnSpec.command, spawnSpec.args, {
