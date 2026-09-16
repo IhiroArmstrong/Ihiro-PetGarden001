@@ -60,7 +60,11 @@ export function applyCompanionEvent(status, ev) {
     next.phase = ev.phase;
     if (ev.phase === 'error' && ev.message) next.error = String(ev.message);
     if (ev.phase !== 'error') next.error = null;
-    if (ev.phase === 'idle' || ev.phase === 'unloading') {
+    if (
+      ev.phase === 'loading' ||
+      ev.phase === 'idle' ||
+      ev.phase === 'unloading'
+    ) {
       next.received = null;
       next.total = null;
     }

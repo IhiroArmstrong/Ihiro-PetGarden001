@@ -12,7 +12,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { L0_MODEL_FILENAME, L0_MODEL_URLS } from './l0Config.js';
-import { ensureGgufDownloaded } from './l0Download.js';
+import { ensureGgufDownloaded, isGgufCachedAt } from './l0Download.js';
 import { errorMessage, loadModelHold } from './l1Hold.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -43,7 +43,12 @@ function defaultModelDir() {
 }
 
 async function downloadModel(modelPath) {
-  await emit({ event: 'status', phase: 'downloading' });
+  const cached = isGgufCachedAt(modelPath);
+  await emit({
+    event: 'status',
+    phase: cached ? 'loading' : 'downloading',
+    message: cached ? 'cached' : undefined
+  });
   return ensureGgufDownloaded(modelPath, L0_MODEL_URLS, {
     onProgress: ({ received, total }) => {
       void emit({

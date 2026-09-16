@@ -27,7 +27,8 @@ describe('confide read hybrid', () => {
         regexTool: null,
         hasBridge: true,
         hasClassifyFn: true,
-        wideViewport: true
+        wideViewport: true,
+        generateEnabled: true
       }),
       true
     );
@@ -38,6 +39,17 @@ describe('confide read hybrid', () => {
         hasBridge: true,
         hasClassifyFn: true,
         wideViewport: true
+      }),
+      false
+    );
+    assert.equal(
+      mayUseConfideReadHybrid({
+        route: CONFIDE_ROUTE.FALLBACK,
+        regexTool: null,
+        hasBridge: true,
+        hasClassifyFn: true,
+        wideViewport: true,
+        generateEnabled: false
       }),
       false
     );
