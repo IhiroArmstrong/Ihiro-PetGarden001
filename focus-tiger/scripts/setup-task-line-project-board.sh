@@ -12,11 +12,11 @@ TASK_LINE_FIELD="任务线"
 # Group by Labels is unsupported in Projects V2 UI/API; use 任务线 single-select.
 VIEW_NAME="按任务线分组"
 
-# Epic #627-647 (skip #16 slot) + audit/slice #648-650
+# Epic #627-647 (skip #16 slot) + #742 + #792-793 + audit/slice #648-650
 ISSUES=(
   627 628 629 630 631 632 633 634 635 636 637
   638 639 640 641 642 643 644 645 646 647
-  648 649 650
+  648 649 650 742 792 793
 )
 
 die() { echo "ERROR: $*" >&2; exit 1; }
@@ -81,7 +81,8 @@ TASK_LINE_OPTIONS=(
   personalization-engine local-ai-operating reset-return wisdom-pools
   onboarding-goal-questions confide-ai-ritual yin-evolution i18n
   local-data-import-export journey-log marketing-site art-polish
-  anti-plagiarism-layer phase1-a-b-c-testing audit-cold-start
+  anti-plagiarism-layer phase1-a-b-c-testing seasonal-theme-engine
+  soundscape habitat-shell audit-cold-start
 )
 TASK_LINE_FIELD_ID=$(echo "$FIELD_JSON" | jq -r --arg n "$TASK_LINE_FIELD" '.fields[] | select(.name==$n) | .id' | head -1)
 
