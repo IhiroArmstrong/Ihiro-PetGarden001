@@ -28,6 +28,10 @@ import { filterOwnershipForLocalImport } from './practiceBackupImportOwnershipGa
 import { normalizeJourneyLogState } from '../journeyLogGate.js';
 import { normalizeRitualCompletionState } from '../RitualCompletionStore.js';
 import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
+import {
+  reconcileEntitlementAfterPracticeRestore,
+  reconcileEntitlementCacheAfterRestore
+} from './practiceBackupEntitlementReconcile.js';
 import { practiceBackupCloudEnabled } from './practiceBackupCloudEnabled.js';
 
 export const PRACTICE_BACKUP_DEBOUNCE_MS = 10 * 60 * 1000;
@@ -139,6 +143,9 @@ export function applyPracticeBackupSnapshot(storage, snapshot, opts = {}) {
     storage,
     opts.now instanceof Date ? opts.now : new Date()
   );
+  reconcileEntitlementCacheAfterRestore(storage, {
+    now: opts.now instanceof Date ? opts.now : undefined
+  });
 }
 
 /**
@@ -306,6 +313,9 @@ export async function maybeRestorePracticeBackupOnBoot(opts = {}) {
       return { ok: false, reason: 'local_not_empty_race', skipped: true };
     }
     applyPracticeBackupSnapshot(storage, parsed.snapshot, {
+      now: opts.now instanceof Date ? opts.now : undefined
+    });
+    await reconcileEntitlementAfterPracticeRestore(storage, {
       now: opts.now instanceof Date ? opts.now : undefined
     });
     writePracticeBackupOptIn(storage, {
