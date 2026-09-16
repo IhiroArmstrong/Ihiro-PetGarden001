@@ -4,6 +4,7 @@
 > **内部名**：Focus Coins。**货币对外名（硬）**：**寅币** / **Focus Coins**（2026-08-19 取代「同坐点」；旧文案可视为别名，新产品面只用寅币）。禁止金币 / 积分 / Shop / Purchase 口吻。  
 > **个人中心对外名（硬）**：**阿寅的珍藏** / **Yin's Collections**（日文 **阿寅の蒐集**）。不要 Desk / Study / Sanctuary（后者已是 Lifetime 买断名）。百宝箱 / 清供匣只作气质比喻，不作产品名。  
 > **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)。  
+> **日封顶经济评估（2026-09-16 · 无运行时）**：[`task-briefs/task-yin-coin-daily-cap-economy.md`](./task-briefs/task-yin-coin-daily-cap-economy.md)（persona + 敏感性；Step D 待 PO；**禁止**与品味/莲花 KV 同批改封顶）。  
 > **禁止**：用寅币满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；**禁止**修改或覆盖已有 PNG 序列 / 蒲团 / 莲花朵（铁律见 `PRINCIPLES.md`）。  
 > **文化层（2026-08-27 · 2026-09-04）**：寅币是**个人象征货币**（自觉与自己相处过的时间），不是社交财富、不是 Shop。故事型 Objects / Practice Identity 设计方向见 `FROM_APP_TO_CULTURE.md`（**废除**「证据后才产品化」；运行时另 Brief，**不**推翻本文件清供 8）。
 
@@ -175,6 +176,8 @@ Tea 善意章不得用点买，请茶也不得充点。
 | **全日合计** | **48** |
 
 超顶：练习与徽章分仍涨，只停发点。无「今日已满快买会员」文案。
+
+数字是否该动、要不要远程化：见经济评估 Brief（评估 ≠ 已改账本）。`growthMetricsRegistry` 的 `focus-coins-earn` 仍无 persona 夹具——那是后置 CI 债，不在评估范围。
 
 ---
 
