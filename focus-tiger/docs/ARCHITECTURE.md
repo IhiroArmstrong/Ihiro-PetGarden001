@@ -400,6 +400,31 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 - **Cloud API**：壳内 `postCloudJson` 走主进程 IPC（避开自定义协议 CORS）。Worker `ALLOWED_ORIGIN` 可逗号列表含 `focus-tiger://app`（下次生产部署再加；本回合**不** Redeploy）。
 - **失败反馈**：Checkout / OTP / 备份失败复用现有 Web 卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC` / `JOURNEY_LOG_BACKUP_STATUS_ERR`），不为壳另做一套。
 
+### 两条「离开」信号线（定案 · 2026-09-15）
+
+**定案**：桌面壳内 **`AttentionSignals`（走神 / 分心）** 与 **`onShellVisibility`（壳窗口生命周期 / 资源调度）** 是两条**独立**信号线，**禁止**合并为同一个「离开」判定或共用一套时长计时器。
+
+| | **AttentionSignals** | **onShellVisibility** |
+|---|---|---|
+| **问的问题** | 用户注意力是否离开本产品（分心） | 主窗口是否从屏幕上消失（壳生命周期） |
+| **信号来源** | 渲染进程：`window.blur` / `focus` **与** `document.visibilitychange`（OR 合并、同次离开去重） | 主进程 IPC：`desktop:shell-visibility`（`hidden` + `hideReason`） |
+| **Electron 切到别的 App、窗口仍留在背景** | **算离开**（`blur` 随 OS 窗口焦点；不依赖 `visibilityState` 变 `hidden`） | **不算 hidden**（`shellHidden` 仍为 `false`） |
+| **收进托盘 / `win.hide()`** | **不算走神**（`hideReason === 'tray'` → **SB-18**；即使 `document.hidden`） | **算 hidden**（`shellHidden: true`） |
+| **主要消费者** | Re-focus、Reset & Return（`displayEligible`）、`MindfulReminderController` | 本地 AI companion 宽限 unload、Stripe Checkout 回前台、`bindDesktopShellAttention`（仅注入 tray 例外） |
+| **实现锚点** | `src/input/AttentionSignals.js` · `attentionAwayGate.js` | `desktop/main.js` · `desktop/preload.js` · `src/core/desktopShell.js` · `desktopCompanionUnloadSchedule.js` |
+
+**平台事实（已定案，非本项目猜测）**：Electron / Chromium 上，窗口失焦停在背景时 `document.visibilityState` **长期存在**「仍显示 `visible`、不触发 `hidden`」的已知行为（社区 issue 与 Page Visibility 文档旁证）；`BrowserWindow` 的 `blur`/`focus` 则随 OS 级窗口焦点走。因此走神链路的 OR 逻辑**不依赖** `visibilitychange` 在 alt-tab 时是否翻转——**`blur` 可靠即足够**让 `isAttentionAway` 为 true。若未来某平台出现「未切走却误 blur」（如原生 dialog、个别 Linux 版本），按平台 bug 排查，**不得**为此把两条线硬合并。
+
+**为何禁止合并（产品语义）**：
+
+1. **粒度不同**：切到微信 70s 再回来 → 应 Re-focus / Reset & Return，但窗口仍在屏幕上 → **不应**因「离开」卸载本地模型（过重）。
+2. **托盘例外相反**：收进托盘是用户主动收起壳，不是「去了别的前台」→ **不应** Re-focus（**SB-18**），但窗口已 hidden → **应**走 companion 宽限 unload。
+3. 若强行共用一条「离开」：要么 alt-tab 也卸模型，要么托盘也算走神——两条都与已拍板体验冲突。
+
+**其它「切标签 / 回前台才触发」功能**（应用内提醒重评、长离苏醒 `visibilitychange`、微仪式墙钟补查等）**不一定**走 `AttentionSignals`；改壳信号时须先查本表，禁止假设「所有被动接线共用同一离开定义」。
+
+权威交叉引用：`SCENARIO_TESTS` 场景 **B**（切 App）与 **AB**（托盘 **SB-18**）；`SILENT_BEHAVIORS.md` **SB-18**；Brief `task-companion-model-unload-background-confide.md`（unload 只认 `hidden`）。
+
 ---
 
 ## Focus Confidence 数据层与视觉层的接口约定

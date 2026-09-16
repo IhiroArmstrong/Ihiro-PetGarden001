@@ -79,6 +79,7 @@
 - 计时与氛围乐 **继续**。
 - 对照：窗口仍可见时切到**另一个 Mac App** 停留 >60s 再回来 → 仍走场景 B（Here & Now 应 Re-focus）。
 - 契约锁进场景 **AB**；实现须改 `AttentionSignals`（或壳侧注入「hide-to-tray ≠ away」），禁止只在主进程 hide、渲染层当 `document.hidden` 走神。
+- **架构定案（2026-09-15）**：`AttentionSignals` 与 `onShellVisibility` **两条线不合并**——切 App 走前者 blur；托盘 hidden 走后者 unload、前者 **SB-18** 豁免。全文 `ARCHITECTURE.md`「两条『离开』信号线」。
 - **未做到 = 步骤 B 未完成 = 收费 DMG 不得上架**。托盘 UI 单独合入但未过场景 AB = 未完成。
 
 ---
