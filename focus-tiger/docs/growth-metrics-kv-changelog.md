@@ -44,4 +44,4 @@ npx wrangler kv key put growth-metrics:v1:params \
 | Date (UTC+8) | Author | Change | Reason |
 |---|---|---|---|
 | 2026-09-10 | Armstrong | `dailyScoreCapMinutes` 180 → 240 (KV) | Pilot fork after #692; git freeze stays 180 |
-| — | — | — | Lotus stair fields not forked in production yet; API returns freeze until KV write |
+| 2026-09-16 | Armstrong | Lotus stair: `lotusFirstBloomMinutes` 25 → 20 (KV; five fields written); Worker redeploy `f0ddf1b4` | §6 分叉验 · #725 莲花首朵验收锚；`dailyScoreCapMinutes` 仍 240 |
