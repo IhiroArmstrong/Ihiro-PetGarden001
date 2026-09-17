@@ -12,8 +12,14 @@ import {
 } from './confideExecutableTools.js';
 import {
   buildConfideReadHybridPrompt,
+  CONFIDE_READ_HYBRID_MEMORY_LIST_GLOSS_LINES,
   parseConfideReadHybridJson
 } from './confideToolCallParse.js';
+import {
+  CONFIDE_READ_HYBRID_MEMORY_LIST_NEG_FIXTURES,
+  CONFIDE_READ_HYBRID_MEMORY_LIST_POS_FIXTURES
+} from './confideReadHybridGlossFixtures.js';
+import { isMemoryListQuestion } from './confideMemoryList.js';
 import {
   mayUseConfideReadHybrid,
   resolveConfideReadHybridToolFromRaw
@@ -110,5 +116,34 @@ describe('confide read hybrid', () => {
       ),
       null
     );
+  });
+
+  it('narrows query_memory_list gloss with negative examples (2026-09-18)', () => {
+    const prompt = buildConfideReadHybridPrompt(
+      'What have I been spending my time on lately?'
+    );
+    assert.match(prompt, /ONLY when the user explicitly asks to see, list, recall, or review/);
+    assert.match(prompt, /Do NOT classify as query_memory_list/);
+    assert.match(prompt, /Do you remember why I started doing this/);
+    assert.match(prompt, /What have I been busy with lately/);
+    assert.match(prompt, /Show me what you remember/);
+    assert.equal(
+      prompt.includes('list what Yin remembers on this device'),
+      false,
+      'old one-line gloss must be gone'
+    );
+    assert.ok(CONFIDE_READ_HYBRID_MEMORY_LIST_GLOSS_LINES.length >= 8);
+    for (const row of CONFIDE_READ_HYBRID_MEMORY_LIST_NEG_FIXTURES) {
+      assert.equal(
+        isMemoryListQuestion(row.text),
+        false,
+        `${row.id} must stay regex miss`
+      );
+      if (row.note.includes('observe-only')) continue;
+      assert.match(prompt, new RegExp(row.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    }
+    for (const row of CONFIDE_READ_HYBRID_MEMORY_LIST_POS_FIXTURES) {
+      assert.match(prompt, new RegExp(row.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    }
   });
 });
