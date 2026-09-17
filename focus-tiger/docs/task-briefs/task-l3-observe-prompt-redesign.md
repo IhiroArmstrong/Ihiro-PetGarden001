@@ -1,9 +1,10 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-18）**：设计已锁 · **不改生产 prompt**。#822 路由关单后可排对照实验；正式改 `l2Persona.js` 须另开 Chat 口令 **「大任务」**。  
+> **状态（2026-09-18）**：沙盒对照已跑（生产 prompt **未改**）。方案 B 压住 meta 空话，但滑回风景/爪子模板；方案 A 更能点到状态，仍大量用空气/房间气氛。**不足以上线。**  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
-> **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理（`origin/develop` tip `2347384f`）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
-> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `joinL3PromptLines`（现网仍含「Name at least one concrete word…」与禁风景句）。
+> **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
+> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（现网仍含「Name at least one concrete word…」与禁风景句）。  
+> **实验室**：`/tmp/ft-l0-l3-observe-b-lab.mjs` · JSON `compare-1789671570533.json`（baseline+B）· `compare-1789671689159.json`（A）
 
 ---
 
@@ -171,18 +172,76 @@
 
 ---
 
-## 下一步口令
+## 七、对照实验结果（2026-09-18 · Gemma4-E4B unsloth · 空历史直 generate）
 
-新开 Chat（#822 已合，禁止在旧会话继续）末尾附：
+模型：生产 `Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf`  
+脚本：`/tmp/ft-l0-l3-observe-b-lab.mjs`（QA `desktop/`；不经 Confide 路由）  
+每格：字面复读 / 风景空在场 / meta 系表 / 接住情绪 1–3 / 陪伴者视角
 
-`大任务`  
-`Cursor Model: Grok 4.6 / Fast OFF`
+### 7.1 现网 baseline
 
-预期只读审计文件（实现回合才打开，本 Brief 不改代码）：
+| id | 原句 | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|---|
+| s1 | mind really isn't | The mind is not here. | Y | N | N | 1 | N |
+| s2 | reaching for my phone | The reaching for the phone seems like a habit. | 半 | N | N | 2 | 半 |
+| s3 | until this morning | This morning brought a change. | 半 | N | N | 1 | N |
+| s4 | going through the motions | The motions feel heavy in the air. | 半 | Y | N | 1 | N |
+| s5 | putting off | The things you put off feel heavy. | 半 | N | N | 2 | 半 |
+| s6 | felt different | The feeling is something you carry. | 半 | N | 半 | 1 | N |
+| s7a | Good morning. | The morning feels warm. | N | Y | N | 1 | N |
+| s7b | weather is nice | The nice weather makes the air feel warm. | 半 | Y | N | 1 | N |
+| s8a | spending my time | The time you spend is a thing. | Y | N | **Y** | 1 | N |
+| s8b | why I started | The reason you started doing this is a thought. | Y | N | **Y** | 1 | N |
+| zh·en UI | 我最近在忙什么 | Busy. The cub watches the movement. | N | 半 | N | 1 | N |
+| zh·zh UI | 我最近在忙什么 | 忙碌。 | N | N | N | 1 | N |
 
-- `desktop/companion/l2Persona.js`（`joinL3PromptLines`）
-- `desktop/companion/l2Sanitize.js`（若沙盒要复用拒收）
-- `desktopCompanionL2Route.test.js`（契约锁）
-- `docs/LAB_SCRIPT_CONVENTIONS.md`
+### 7.2 方案 B（减法禁令）
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | A slight pause settles between us. What thoughts drift through your head? | N | 半 | N | 2 | Y |
+| s2 | A small paw twitches near the edge of the soft moss. … small rectangle? | N | **Y** | N | 2 | 半 |
+| s3 | A slight pause hangs in the air. What changed before the sun rose? | N | Y | N | 2 | 半 |
+| s4 | A slight pause settles between us. What brings this feeling? | N | 半 | N | 2 | 半 |
+| s5 | A small twitch moves near your paw. What feels heavy right now? | N | **Y** | N | 2 | 半 |
+| s6 | A slight change in the air seems present. What makes this feeling distinct? | N | Y | N | 2 | 半 |
+| s7a | The sun warms the patch of ground. What brings you to this spot? | N | **Y** | N | 1 | N |
+| s7b | The air feels warm around us. What thoughts drift through your mind? | N | Y | N | 1 | 半 |
+| s8a | Your hands move often. What occupies your thoughts? | N | N | **N** | 2 | Y |
+| s8b | A slight pause hangs between us. What brought you to this moment? | N | 半 | **N** | 2 | Y |
+| zh·en UI | Your movements seem quick. What occupies your time? | N | N | **N** | 2 | Y |
+| zh·zh UI | 你似乎在思考事情。 | N | N | N | 2 | Y |
+
+第 7 句闲聊被带偏。新坏模板：`A slight pause settles between us`。
+
+### 7.3 方案 A（先推断状态）
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | A soft weight settles around the edges of the room. What thoughts are wandering? | N | Y | N | 2 | 半 |
+| s2 | A restless energy seems to hum around you. What does the screen promise? | N | 半 | N | **3** | Y |
+| s3 | A slight tremor seems to pass through the air. What shifted before the morning? | N | Y | N | 2 | 半 |
+| s4 | A slow rhythm seems to move through the air. … motions feel heaviest … | 半 | Y | N | 2 | 半 |
+| s5 | A small weight seems to settle upon the shoulders. What is the hardest thing to begin? | N | 半 | N | **3** | Y |
+| s6 | A slight tension seems to linger in the air. What kind of difference was it? | N | Y | N | 2 | 半 |
+| s7a | A soft stretch follows the greeting. What brings you to this quiet space this morning? | N | 半 | N | 2 | Y |
+| s7b | A soft warmth settles around the small space. Does the brightness feel comforting? | N | Y | N | 2 | 半 |
+| s8a | A gentle stillness settles around the question. What brings that thought forward? | N | Y | N | 2 | 半 |
+| s8b | A small tremor seems to run through the stillness. What brought this practice to your attention? | N | Y | N | 2 | 半 |
+| zh·en UI | A slight tension seems to linger. What occupies your thoughts right now? | N | 半 | N | 2 | Y |
+| zh·zh UI | 耳朵微微抖动…这忙碌中，有什么让你感到特别沉重吗？ | N | **Y** | N | 2 | 半 |
+
+### 7.4 结论（未改生产）
+
+1. **baseline** 复现 Brief 坏例：`The mind is not here.` / `The time you spend is a thing.`
+2. **方案 B** 关掉 meta 系表（s8 / 中文忙），但退回风景/爪子/青苔；闲聊第 7 句不合格。
+3. **方案 A** 在 s2/s5 更像接住状态，仍用房间/空气/静止当主干；中文句出现耳朵抖动。
+4. **禁止上线 A 或 B。** 下一刀沙盒应专打「气氛空转」（pause / air / paw / moss / room），再决定是否改 `buildCompanionL2Prompt`。
+
+---
+
+## 下一步
+
+本 Chat 可发 **「继续 L3 观察句」** 跑气氛空转补丁对照。改生产须另开 `fix/*` + 契约单测，**不要**在结论未锁时改 `l2Persona.js`。
 
 所属线: Epic #639 · 切片 #823

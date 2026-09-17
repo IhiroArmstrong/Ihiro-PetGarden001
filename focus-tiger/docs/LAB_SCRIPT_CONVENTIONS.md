@@ -33,6 +33,7 @@
 | 实验室根目录 | `/tmp/ft-l0-lab/` |
 | 档案对照脚本（0.6B Q4 bartowski ↔ 4B） | `/tmp/ft-l0-qwen3-4b-lab.mjs` |
 | 新候选脚本（一次跑一个 key） | `/tmp/ft-l0-candidate-lab.mjs` |
+| L3 观察句对照（#823 · baseline / B / A） | `/tmp/ft-l0-l3-observe-b-lab.mjs` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
 | 对照表（只追加，不另起格式） | `/tmp/ft-l0-lab/compare-tables.md` |
 | 必须 `cd`、必须从这里 `import` | `/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop` |
@@ -135,6 +136,14 @@ cd focus-tiger/desktop && npm run companion:gemma4-multilang-ab
 jc 默认：`~/Library/Application Support/Focus Tiger/companion-l0/Gemma-4-E4B-it-Q4_K_M.gguf`。unsloth 默认：`/tmp/ft-l0-lab/Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf`（或 `FT_GEMMA4_UNSLOTH_GGUF`）。须 `reasoning:false`（#802 已合 · 陷阱 #14）。
 
 输出：`compare-<epoch>-jc.json` · `compare-<epoch>-un.json` · `gemma4-multilang-ab-summary-<epoch>.json` · `multilang-chitchat-annotate-<epoch>.md` · `.csv`（人工标 `onTopic_jc` / `onTopic_un`）。
+
+**L3 观察句对照（2026-09-18 · #823 · 仓库外脚本）**：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && node /tmp/ft-l0-l3-observe-b-lab.mjs
+```
+
+`FT_L3_VARIANTS=baseline,scheme-b`（缺省）或 `scheme-a`。直 `buildCompanionL2Prompt` + `loadModelHold.generate`，**不走** Confide 路由。结果：`compare-<epoch>.json`。打分写 Brief `task-l3-observe-prompt-redesign.md` §7，本文不抄原句。
 
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
