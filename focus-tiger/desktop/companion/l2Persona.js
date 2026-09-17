@@ -22,7 +22,11 @@ export const L2_PROMPT_HISTORY_MAX_ROWS = 8;
 const LANG = {
   zh: 'Chinese',
   ja: 'Japanese',
-  en: 'English'
+  en: 'English',
+  it: 'Italian',
+  de: 'German',
+  es: 'Spanish',
+  fr: 'French'
 };
 
 /**

@@ -116,6 +116,26 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-q
 
 结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "session-repeat"`）。同一虚拟会话内对 5 条差样本**各连发 2–5 次**（同句、累积 `_l2Turns`）；第 2 次起 `priorRepeatableYinRepliesFromHistory` 去重 + 带 history 的 `resolveCorpusFallbackAfterGenerateFailure`。与方差探针共用 fixture，**不能**用方差命令代替本探针。JSON 行字段同方差探针（含 `rawGenerate` / `sanitizePassed` / `generateError`）。
 
+**六语日常闲聊首问探针（2026-09-17 · PO 拍板 ja/en/it/de/es/fr · 仓库内脚本）**：
+
+```bash
+cd focus-tiger/desktop && npm run companion:multilang-chitchat
+```
+
+可选：`FT_MULTILANG_LOCALE=de` 只跑一种语言；`FT_CHITCHAT_GGUF` 指定 GGUF。
+
+结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "multilang-chitchat"`）。fixture：`confideMultilangChitchatFixtures.js`（**6 语 × 18 句 = 108** · 非 #774 差样本）。每句 **空历史**、只跑 1 次（供人工标注合格率）。`onTopic` 留 `null`。
+
+**Gemma4-E4B 六语 jc vs unsloth A/B（2026-09-17 · 仓库内脚本）**：
+
+```bash
+cd focus-tiger/desktop && npm run companion:gemma4-multilang-ab
+```
+
+jc 默认：`~/Library/Application Support/Focus Tiger/companion-l0/Gemma-4-E4B-it-Q4_K_M.gguf`。unsloth 默认：`/tmp/ft-l0-lab/Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf`（或 `FT_GEMMA4_UNSLOTH_GGUF`）。须 `reasoning:false`（#802 已合 · 陷阱 #14）。
+
+输出：`compare-<epoch>-jc.json` · `compare-<epoch>-un.json` · `gemma4-multilang-ab-summary-<epoch>.json` · `multilang-chitchat-annotate-<epoch>.md` · `.csv`（人工标 `onTopic_jc` / `onTopic_un`）。
+
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
 合 develop 后先同步 QA worktree：`cd focus-tiger && npm run sync:qa-develop`。

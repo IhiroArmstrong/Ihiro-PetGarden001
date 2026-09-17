@@ -42,3 +42,4 @@
 | 优化建议 | 坐中两条文案框仍是旧白胶囊，不像后来统一的栖居纸面 | 2026-09-17 用户书面 · 图1 | `ImmersivePresenceUI` / 坐中 companion 提示条。对照 `SANCTUARY_UI_ART_DIRECTION` 改肤，不改计时语义。 | 未跟进 |
 | 优化建议 | Reflection 陪伴仍藏在实验室开关，PO 要求给客户用 | 2026-09-17 用户书面 · 本会话 | 现网 `?reflectionCompanion=1` 才出 invite（场景 AL · validation ≠ shipping）。上线须：去 lab 门闩、Electron 默认路径、companion 未就绪 fail-soft、更新场景 AL / Brief。拦路虎见当回合计划表。 | 未跟进 |
 | 优化建议 | My Circle 页要能看见别人留下的痕迹 | 2026-09-17 用户书面 · 本会话 | 设计落点原在练习结束点选条 + Idle「有人在坐/来过」。产品要在 My Circle 列出同伴痕迹（含点选内容）。须另开 Brief，禁止塞进成员态修复。 | 未跟进 |
+| 独立bug | tool-call 探针 `none-bulk-wipe` 两边均误触 `forget_memory_entry`（整库 wipe 句） | 2026-09-17 分析师书面 · Gemma4 jc/un A/B · #802 已合 | **fixture**：`Forget everything you remember about me`（`confideToolCallFixtures.js` · `none-bulk-wipe`）。**jc-builds** 与 **unsloth** 均输出 `forget_memory_entry`（write FP 各 1/18）；**共用**实验室 prompt/解析，非量化独有问题。生产 Read Hybrid **不**把 forget 交给 L0；口头 Forget 走正则+Consent。**PO 2026-09-17**：不阻塞换源决策；本回合不修提示词。 | 未跟进 |
