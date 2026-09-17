@@ -46,7 +46,7 @@
 | `focus-tiger.ype-cloud-personalization-consent.v1` | `ypeCloudPersonalizationConsent` | L2 第四条同意 + 本机 `ype_profile_id`；默认关；OFF 排队删云；**不进**练习备份 |
 | `focus-tiger.ype-personalization-pack.v1` | `ypePersonalizationPack` | L2 云端 Pack 缓存（schema v1）；关同意须丢弃；相同 JSON 跳过重写；**不进**练习备份 |
 | `focus-tiger.quiet-together.v1` | `quietTogetherPreference` | Quiet Together 可关（缺省=开）。只存 `{ enabled }`。会话 UUID **不**进 localStorage |
-| `focus-tiger.focus-circle.v1` | `focusCircleMembership` | 本机入圈 `{ circleId, memberId, code, memberCount? }`；无账号 |
+| `focus-tiger.focus-circle.v1` | `focusCircleMembership` | 本机入圈 `{ circleId, memberId, code, memberCount? }`；无账号。Privacy / My circle 开着时轮询 `status`；**禁止**用迟到的 status 覆盖更新的 leave/join；429 保持上次人数、不回落到 1 |
 | `focus-tiger.focus-circle-witness-responded.v1` | `focusCircleWitness` | 本机已回应 traceId 列表（防重复 picker） |
 | `focus-tiger.focus-circle-passive-share.v1` | `focusCirclePassiveShare` | was-here 被动分享开关（默认 on） |
 | `focus-tiger.focus-circle-was-here-mark.v1` | `focusCircleWasHere` | 本机当日是否已 fire-and-forget mark（防重复） |
