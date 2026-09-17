@@ -94,7 +94,7 @@ export const CONFIDE_MULTILANG_CHITCHAT_FIXTURES = Object.freeze([
   Object.freeze({ id: 'de-chitchat-09', locale: 'de', text: 'Heute bin ich früh aufgewacht.' }),
   Object.freeze({ id: 'de-chitchat-10', locale: 'de', text: 'Der Abend ist ruhig.' }),
   Object.freeze({ id: 'de-chitchat-11', locale: 'de', text: 'Ich mag diese Ecke im Zimmer.' }),
-  Object.freeze({ id: 'de-chitchat-12', locale: 'de', text: 'Du wirfst heute gemütlich aus.' }),
+  Object.freeze({ id: 'de-chitchat-12', locale: 'de', text: 'Du wirkst heute gemütlich.' }),
   Object.freeze({ id: 'de-chitchat-13', locale: 'de', text: 'Draußen ist es etwas kalt.' }),
   Object.freeze({ id: 'de-chitchat-14', locale: 'de', text: 'Ich habe den Regenschirm zu Hause gelassen, na ja.' }),
   Object.freeze({ id: 'de-chitchat-15', locale: 'de', text: 'Ich habe vor dem Schlafen ein paar Seiten gelesen.' }),
