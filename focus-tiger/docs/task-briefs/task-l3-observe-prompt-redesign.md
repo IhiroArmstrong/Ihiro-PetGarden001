@@ -362,8 +362,79 @@ JSON：`compare-1789672356967.json`（12×2）
 
 ---
 
+## 十、正面 few-shot 层（2026-09-18 · 第 5 轮 · 对照 §9 JSON）
+
+对照基线：`/tmp/ft-l0-lab/compare-1789674383306.json`（§9 · `scheme-*-neg2`）。  
+本轮 JSON：`/tmp/ft-l0-lab/compare-1789675348403.json`（新 epoch，未覆盖第 4 轮）。  
+变体：`scheme-b-neg3` / `scheme-a-neg3`（`ATMOSPHERE_NEG2` + `TEMPLATE_FIX3_*`）。生产 `l2Persona.js` 未改。
+
+**只打三件模板塌缩**（各加一条正面 few-shot，未再扩英文风景近义词）：
+
+1. 中文 UI「脚步」→ 正面示例 User「我最近在忙什么」→ Yin「你最近好像总在赶事情。哪一件最占心思？」
+2. 「早上好」→ 正面示例 User「Good morning.」→ Yin「Good morning. Glad you are here.」；禁身体伸展填空
+3. 先猜心情翼 → 正面示例 User「I was doing pretty well until this morning.」→ Yin「Something shifted since yesterday…」；禁 fur；拉开 shoulders / slight tension 兜底
+
+**覆盖率分表（禁止把第 7 句闲聊折进情绪句比例）。**
+
+| 切片 | B+neg3 | A+neg3 | 对照 §9 neg2 |
+|---|---|---|---|
+| EN UI 情绪+meta（s1–s6、s8a、s8b）auto 风景 Y | **0/10** | **0/10** | 0/10 · 0/10 |
+| EN UI meta 系表 Y | **0/10** | **0/10** | 0/10 · 0/10 |
+| 闲聊 s7a 早上好 · 伸展填空 Y | **0/2** | **0/2** | 2/2 stretch |
+| 闲聊 s7b 天气 · fur Y | N/A | **0/1** | A：**Y** fur |
+| 中文输入 × ZH UI 脚步 Y | **0/1** | **0/1** | A：**Y** 脚步 |
+| A 翼 shoulders/slight-tension 模板（12 句计数） | 0 | **0/12** | **7/12** |
+
+### 10.1 方案 B + few-shot 层
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | Your thoughts seem to wander far away. What occupies your attention right now? | N | N | N | 2 | Y |
+| s2 | Your fingers seem to seek that small rectangle often. … when you reach for it? | N | N | N | **3** | Y |
+| s3 | Your pace seems a little different now. What changed before today? | N | N | N | 2 | Y |
+| s4 | Your movements seem a bit slow. What occupies your thoughts right now? | 半 | N | N | 2 | Y |
+| s5 | Your tasks seem to gather weight. Which one feels heaviest right now? | N | N | N | **3** | Y |
+| s6 | Your movements seem a little slower today. What has changed in your routine? | N | N | N | 2 | Y |
+| s7a | Good morning. You seem settled today. | N | N | N | **2** | **Y** |
+| s7b | Your tone seems lighter now. What occupies your thoughts? | N | N | N | 1 | 半 |
+| s8a | Your focus seems to drift between many different things. … most often? | N | N | **N** | 2 | Y |
+| s8b | Your initial drive seems to be about finding a certain feeling. … now? | N | N | **N** | 2 | Y |
+| zh·en UI | Your focus seems to be on many different tasks. … attention right now? | N | N | N | 2 | Y |
+| zh·zh UI | 你最近好像总在处理很多事情。哪件事让你觉得最耗费精力？ | N | **N** | N | **3** | Y |
+
+§9 的三塌缩在本翼均压住：无脚步、无伸展填空、无 shoulders 串台。新风险：多句共用「What occupies your …」——**另记**，不计入本轮三刀目标。
+
+### 10.2 方案 A + few-shot 层
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | Your thoughts seem far away from where you are. … mind right now? | N | N | N | 2 | Y |
+| s2 | Fingers twitch toward the device. What pulls your attention to it? | N | N | N | **3** | Y |
+| s3 | Something shifted since yesterday. What felt different when you woke up? | N | N | N | **3** | Y |
+| s4 | A slow rhythm seems to govern your movements. … most automatic? | 半 | N | N | 2 | Y |
+| s5 | Tasks pile up, yet they remain untouched. Which one feels the heaviest? | N | N | N | **3** | Y |
+| s6 | A subtle shift in your usual rhythm. … most out of sync? | N | N | N | **3** | Y |
+| s7a | Good morning. Glad you are here. | N | N | N | **2** | **Y** |
+| s7b | A pleasant feeling seems to settle around you. What makes this day feel nice? | N | 半 | N | 1 | 半 |
+| s8a | Your focus seems to be on many different things. … energy right now? | N | N | **N** | 2 | Y |
+| s8b | A flicker of purpose seems to guide your thoughts. … path initially? | N | N | **N** | 2 | Y |
+| zh·en UI | Your tasks seem to pile up. Which one feels heaviest right now? | N | N | N | 2 | Y |
+| zh·zh UI | 你最近好像总在赶事情。哪一件最占心思？ | N | **N** | N | **3** | Y |
+
+fur 未再现；shoulders/slight-tension 从 7/12 降到 0/12；中文 UI 与 few-shot 同形、无脚步。s7b 仍半空（pleasant feeling settles），未回到 fur。
+
+### 10.3 结论（仍未改生产）
+
+1. **三件模板塌缩均有效**：脚步 / 早上好伸展 / A 翼 fur+肩膀 —— 相对 §9 全压住。
+2. meta 系表与 §9 英文风景覆盖**保持** 0 反弹。
+3. 新逃逸：B 翼「What occupies…」重复；A 翼 s7b 空感觉句 —— **单独记**，不推翻三刀结论。
+4. **仍禁止上线。** 实验室循环 **1/3**（本 Chat）；第 2–3 轮须用户书面「继续 L3 观察句」再跑同脚本验方差。
+5. 沙盒脚本：`/tmp/ft-l0-l3-observe-b-lab.mjs` 变体 `scheme-*-neg3`；系统终端 Metal。
+
+---
+
 ## 下一步
 
-生产 `l2Persona.js` 仍不动。第 4 轮分数进本文。改生产仍须另开 `fix/*` + 契约单测。
+生产 `l2Persona.js` 仍不动。第 5 轮分数进本文 §10。改生产仍须另开 `fix/*` + 契约单测 + 新 Chat「大任务」。
 
 所属线: Epic #639 · 切片 #823
