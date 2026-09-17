@@ -5,7 +5,8 @@
 
 /**
  * L0 production constants (Electron companion download + probe).
- * Default 2026-09-16: Gemma4-E4B-it Q4_K_M (jc-builds) for Mac companion L3.
+ * Default 2026-09-17: Gemma4-E4B-it UD-Q4_K_XL (unsloth QAT) for Mac companion L3.
+ * Rollback: `FT_COMPANION_L0_MODEL=gemma4-e4b-jc` → jc-builds Q4_K_M.
  * Fallback: `FT_COMPANION_L0_MODEL=qwen3-1.7b` → Qwen3-1.7B unsloth.
  * Not a product entry; Web / PWA must not import this file.
  */

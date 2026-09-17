@@ -91,6 +91,7 @@ export function desktopCompanionStatusCopyKey(status, { sending = false } = {}) 
 
 /** Obscure display names for Confide status strip (never show raw GGUF ids). */
 const DESKTOP_COMPANION_MODEL_DISPLAY = Object.freeze({
+  'Gemma-4-E4B-it-UD-Q4_K_XL': 'Model4E4',
   'Gemma-4-E4B-it-Q4_K_M': 'Model4E4',
   'Qwen3-1.7B-Q4_K_M': 'Model317'
 });

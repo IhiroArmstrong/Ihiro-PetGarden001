@@ -22,11 +22,17 @@ import {
 } from '../../desktop/companion/l2PromptAdapter.js';
 
 describe('L0 model profiles', () => {
-  it('defaults to Gemma4-E4B for Mac companion L3', () => {
+  it('defaults to Gemma4-E4B unsloth QAT for Mac companion L3', () => {
     assert.equal(L0_DEFAULT_MODEL_KEY, 'gemma4-e4b');
     assert.equal(L0_MODEL_PROFILE_KEY, 'gemma4-e4b');
-    assert.equal(L0_MODEL_ID, 'Gemma-4-E4B-it-Q4_K_M');
+    assert.equal(L0_MODEL_ID, 'Gemma-4-E4B-it-UD-Q4_K_XL');
     assert.equal(L0_PROMPT_FAMILY, 'gemma');
+  });
+
+  it('resolves jc-builds rollback via env alias', () => {
+    const profile = resolveL0ModelProfile({ FT_COMPANION_L0_MODEL: 'gemma4-e4b-jc' });
+    assert.equal(profile.modelId, 'Gemma-4-E4B-it-Q4_K_M');
+    assert.equal(resolveL0ModelProfile({ FT_COMPANION_L0_MODEL: 'jc' }).key, 'gemma4-e4b-jc');
   });
 
   it('resolves qwen3-1.7b fallback via env alias', () => {

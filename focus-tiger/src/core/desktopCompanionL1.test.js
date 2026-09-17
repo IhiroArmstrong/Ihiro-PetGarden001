@@ -128,6 +128,10 @@ describe('desktop companion L1 renderer gates', () => {
     );
     assert.equal(desktopCompanionDownloadPercent({ received: 1, total: null }), null);
     assert.equal(
+      desktopCompanionModelLabel({ modelId: 'Gemma-4-E4B-it-UD-Q4_K_XL' }),
+      'Model4E4'
+    );
+    assert.equal(
       desktopCompanionModelLabel({ modelId: 'Gemma-4-E4B-it-Q4_K_M' }),
       'Model4E4'
     );
