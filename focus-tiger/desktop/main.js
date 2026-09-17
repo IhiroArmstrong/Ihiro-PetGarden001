@@ -77,6 +77,26 @@ function isDevMode() {
   return process.env.FT_DESKTOP_DEV === '1' || process.argv.includes('--dev');
 }
 
+/** Dev launcher (^C / SIGTERM) must quit even with Step B tray alive. */
+function installDevSignalQuit() {
+  if (!isDevMode()) return;
+
+  let signalQuitStarted = false;
+  const quitFromDevSignal = () => {
+    if (signalQuitStarted) return;
+    signalQuitStarted = true;
+    isQuitting = true;
+    void companionRuntime?.dispose?.();
+    updaterRuntime?.dispose?.();
+    app.quit();
+  };
+
+  process.once('SIGINT', quitFromDevSignal);
+  process.once('SIGTERM', quitFromDevSignal);
+}
+
+installDevSignalQuit();
+
 function cloudApiBase() {
   return String(
     process.env.FT_CLOUD_API_BASE_URL || DEFAULT_CLOUD_API_BASE
