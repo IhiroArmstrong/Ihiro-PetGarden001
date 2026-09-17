@@ -536,8 +536,8 @@ export class FocusCoinsPanelUI {
       }
       @media (min-width: 480px) {
         .yin-coin-panel {
-          top: max(16px, env(safe-area-inset-top, 0px));
-          right: max(12px, env(safe-area-inset-right, 0px));
+          top: max(56px, calc(env(safe-area-inset-top, 0px) + 48px));
+          right: max(112px, calc(env(safe-area-inset-right, 0px) + 96px));
           bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
           left: max(56vw, calc(100vw - 360px));
           width: auto;

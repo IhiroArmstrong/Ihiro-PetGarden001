@@ -70,6 +70,12 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
       'Who says this heart is not immeasurable?',
       'A mustard seed can hold Mount Sumeru.'
     ]),
+    poemJa: Object.freeze([
+      '大鵬は九万里に翅を広げ、',
+      '十方の世界はひとつの菩提を分かつ。',
+      '誰がこの心を無量でないと言うだろう、',
+      '芥子もまた須弥を納め足りる。'
+    ]),
     attributionZh: '樂五齋詩稿',
     attributionEn: 'Verses of Le Wu Zhai',
     badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
@@ -94,6 +100,12 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
       'Immeasurable, a mustard seed holds Mount Sumeru.',
       'How could a hero remain a creature of the pond?'
     ]),
+    poemJa: Object.freeze([
+      '山海に奇雲、風幡は舞う、',
+      '紅塵は電のごとく露のごとし。',
+      '無量の芥子、須弥を納む、',
+      '英雄は豈（いずくんぞ）池中の物ならん。'
+    ]),
     attributionZh: '樂五齋七言歌行',
     attributionEn: 'Song Verse of Le Wu Zhai',
     badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
@@ -117,6 +129,12 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
       'Minute as a mustard seed, it still holds Mount Sumeru.',
       "Why would a hero need the Azure Dragon's hand?",
       'Wherever one goes, unmarked, all yield.'
+    ]),
+    poemJa: Object.freeze([
+      '乾坤は縦横九万里、',
+      '芥子は微にして須弥を納む。',
+      '英雄何ぞ青龍の手を要らん、',
+      '所向に痕なし、皆靡く。'
     ]),
     attributionZh: '樂五齋詩稿',
     attributionEn: 'Verses of Le Wu Zhai · 0902',
@@ -229,7 +247,8 @@ export function nextUnrevealedMemorialSealEntry(entries, revealedIds, score) {
 export function memorialSealEntryToVerseCase(entry) {
   return {
     id: entry.id,
-    poemZh: entry.poemZh ?? entry.poemJa ?? [],
+    poemZh: entry.poemZh ?? [],
+    poemJa: entry.poemJa ?? [],
     poemEn: entry.poemEn,
     attributionZh: entry.attributionZh,
     attributionEn: entry.attributionEn

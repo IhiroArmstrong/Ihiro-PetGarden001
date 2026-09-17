@@ -13,6 +13,13 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
+import {
   canEnterImmersivePresence,
   exitElementFullscreen,
   formatMmSs,
@@ -380,16 +387,15 @@ export class ImmersivePresenceUI {
       }
       .immersive-presence__btn {
         pointer-events: auto;
-        border: 1px solid rgba(139, 115, 85, 0.18);
-        border-radius: 999px;
+        border: ${GLASS_BORDER};
+        border-radius: ${GLASS_RADIUS};
         padding: 8px 14px;
         font: 600 0.82rem/1.2 var(--font-family, "Nunito", system-ui, sans-serif);
         letter-spacing: 0.01em;
-        color: rgba(44, 31, 20, 0.78);
-        background: rgba(255, 252, 245, 0.72);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.06);
+        color: rgba(74, 58, 40, 0.82);
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        box-shadow: ${GLASS_SHADOW};
         cursor: pointer;
       }
       .immersive-presence__btn:hover {
