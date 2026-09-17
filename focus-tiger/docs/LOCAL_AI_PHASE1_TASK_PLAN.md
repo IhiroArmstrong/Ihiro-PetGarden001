@@ -3,7 +3,7 @@
 **状态（2026-09-01）**：**执行 SSOT** · Gate 0.2 #472 已关单 · **1B #503 已合** · **1A #506 已合** · **1C lab 本旁支（非 shipping）**。  
 **产品政策 SSOT**：`LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` · `LOCAL_AI_SCENARIOS_V1.md`  
 **排期索引**：`TASKS.md` §Local AI Phase 1  
-**交叉引用**：`task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-confide-read-hybrid-v1.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LAB_SCRIPT_CONVENTIONS.md`
+**交叉引用**：`task-local-ai-phase1-nl-actions-mvp.md` · `task-local-ai-phase1-ask-journey-presence-mvp.md` · `task-local-ai-reflection-companion-validation.md` · `task-local-ai-reflection-companion-shipping.md`（骨架 · #811） · `task-confide-read-hybrid-v1.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LAB_SCRIPT_CONVENTIONS.md` · `planning/task-lines-issue-map.md`（Epic 切片 #807–#816）
 
 ---
 
@@ -203,7 +203,7 @@ npm run desktop:dev
 | 1C.1 | 用户主动触发 → one short observation 原型 | `task-local-ai-reflection-companion-validation.md` |
 | 1C.2 | lab flag · **不**默认生产 | 同上 |
 | 1C.3 | 设计师 + PO 书面 validation 结论 | 同上 |
-| 1C.4 | 若通过 → **另开** shipping Brief | 新 Brief · 未来口令 |
+| 1C.4 | 若通过 → **另开** shipping Brief | `task-local-ai-reflection-companion-shipping.md`（骨架 2026-09-17 · Issue **#811** · 待 PO 口令） |
 
 **口令**：`开工 Reflection Companion Validation` / **2026-09-01 口令 1C**  
 **硬规则**：Validation approval ≠ shipping approval · **禁止**提交后自动 generate · **禁止**与 1A/1B 同 PR  

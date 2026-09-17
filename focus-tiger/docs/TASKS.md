@@ -395,7 +395,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|---|
 | **1A** | NL Actions MVP：Forget（CI-01）+ Show memory read | `task-local-ai-phase1-nl-actions-mvp.md` | **CORE** | **#506 已合** |
 | **1B** | Ask Journey / Presence · Retrieve + bounded Describe + **Temporal Compare** | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | **#503 已合** |
-| **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | **本旁支** · lab `?reflectionCompanion=1` · 非 shipping · tracker 待人工 |
+| **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | lab `?reflectionCompanion=1` · PR #486/#507 已合 · tracker 待人工 · Epic #810/#815 |
+| **1C-ship** | Reflection Companion · shipping（去 lab） | `task-local-ai-reflection-companion-shipping.md` | **骨架 · 未批准** | Issue **#811** / QA **#816** · 待 PO 口令 |
 | **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
 | **—** | Don't save this | `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` | ✅ Slice 1f | tracker 待人工 |
 | **0.D** | Yin Intent Diagnostic（只输出 intent JSON） | `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 | **换模型前必做** | Phase 1–2B/E′ **#495–#520** · 字面预筛 **#523** · 三门禁 **#524** · 切片 3 **#525** · Tier 2 **#526** · **PO 不立项 Phase 3 / 不换模**；语用残差不另开生产任务 |
