@@ -16,7 +16,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { L0_MAX_TOKENS, L0_MODEL_FILENAME } from '../companion/l0Config.js';
+import { L0_MAX_TOKENS, L0_MODEL_FILENAME, L0_PROMPT_FAMILY } from '../companion/l0Config.js';
 import { openFreshChatSession } from '../companion/l1ChatSequence.js';
 import { CONFIDE_TOOL_CALL_FIXTURES } from '../../src/core/confide/confideToolCallFixtures.js';
 import {
@@ -83,7 +83,8 @@ async function main() {
         LlamaChatSession,
         model,
         context,
-        chat
+        chat,
+        promptFamily: L0_PROMPT_FAMILY
       });
       context = next.context;
       chat = next.chat;

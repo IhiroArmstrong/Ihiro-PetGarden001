@@ -8,6 +8,7 @@
  * Dynamic import so unit tests never load the native addon.
  */
 
+import { L0_PROMPT_FAMILY } from './l0Config.js';
 import {
   disposeChatSession,
   disposeContextQuietly,
@@ -93,7 +94,8 @@ export async function loadModelHold(opts) {
         LlamaChatSession,
         model,
         context,
-        chat
+        chat,
+        promptFamily: L0_PROMPT_FAMILY
       });
       context = next.context;
       chat = next.chat;
