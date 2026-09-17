@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **全项目 Epic 覆盖度审计（2026-09-16 · 纯文档 · 无运行时）**：`EPIC_COVERAGE_AUDIT.md`。已合并 PR 698 条里规范挂线仅 31 条；任务书/SSOT/代码仲裁层已对照 24 条 Epic。**同日口令一已建库**：音景 Epic [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) · 栖居壳层 Epic [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793)；`type:process` 标签 + guard 豁免；#773 改挂 `line:habitat-shell`。口令二（历史 PR 回填 Closes）另开。
+- **全项目 Epic 覆盖度审计（2026-09-16 · 纯文档 · 无运行时）**：`EPIC_COVERAGE_AUDIT.md`。已合并 PR 698 条里规范挂线仅 31 条；任务书/SSOT/代码仲裁层已对照 24 条 Epic。**同日口令一已建库**：音景 Epic [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) · 栖居壳层 Epic [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793)；`type:process` 标签 + guard 豁免；#773 改挂 `line:habitat-shell`。**口令二已执行**：各 15 条 curated PR 正文 `Relates to #792/#793`；#773 已关（#775 已合）。
 
 - **寅币日封顶 Step D = A + persona CI（2026-09-16）**：`task-yin-coin-daily-cap-economy.md`（PR #784 评估 · PO 拍 A：冻表 36/3/12/48、不远程、不改价）。5 条 persona 已进 `focus-coins-earn` 夹具（`focusCoinsPersonaRegression.js` · `npm run audit:growth-metrics`）。拍板 ≠ 改 ledger。
 
