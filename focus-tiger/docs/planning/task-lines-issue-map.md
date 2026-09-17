@@ -47,6 +47,23 @@
 | 切片 | [#744](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/744) | Phase 4 · 万圣节氛围放出 | 父 #742；波次 1 |
 | 切片 | [#745](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/745) | Phase 4 · 元旦与跨年氛围放出 | 父 #742；波次 1 |
 
+## Local AI Phase 1 切片（2026-09-17 回填）
+
+> 父 Epic **#639**（Confide 与 AI 仪式应用）· 验收轨 **#647**（Phase 1A/1B/1C 验收）。Runtime 已合项在 #639 下 **CLOSED** 作索引；开放 QA 在 #647。
+
+| 类型 | Issue | 标题 | PR / 备注 | 父 Epic |
+|---|---|---|---|---|
+| 切片（runtime · CLOSED） | [#807](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/807) | Gate 0.2 · Read Hybrid L0 | [#472](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/472) · 关单 2026-09-01 | #639 |
+| 切片（runtime · CLOSED） | [#808](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/808) | Phase 1A · Show memory CI-03 | [#506](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/506) | #639 |
+| 切片（runtime · CLOSED） | [#809](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/809) | Phase 1B · Ask Journey/Presence | [#503](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/503) | #639 |
+| 切片（runtime · CLOSED） | [#810](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/810) | Phase 1C · Reflection Companion lab | [#486](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/486) · [#507](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/507) | #639 |
+| 切片（shipping · OPEN） | [#811](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/811) | Reflection Companion shipping | Brief `task-local-ai-reflection-companion-shipping.md` | #639 |
+| 切片（验收 · OPEN） | [#812](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/812) | 验收 · Gate 0.2 Read Hybrid A/B/C | 关单 2026-09-01 | #647 |
+| 切片（验收 · OPEN） | [#813](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/813) | 验收 · Phase 1A Show memory | 待人工 | #647 |
+| 切片（验收 · OPEN） | [#814](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/814) | 验收 · Phase 1B Journey/Presence | 待人工 | #647 |
+| 切片（验收 · OPEN） | [#815](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/815) | 验收 · Phase 1C Reflection lab 场景 AL | 待人工 | #647 |
+| 切片（验收 · OPEN） | [#816](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/816) | 验收 · Reflection Companion shipping | 阻塞 PO Brief | #647 |
+
 ## 建库执行记录（2026-09-07）
 
 | 步骤 | 结果 |
@@ -73,3 +90,12 @@
 | #773 改挂 `line:habitat-shell` | 移除 `line:core-practice` |
 | Project 挂板 | #792 #793 加入 Focus Tiger 开发任务线看板 #1 |
 | guard | `task-line-ref-check.yml` 认 `type:process` PR 豁免 + `Closes` 目标校验 |
+
+## 建库执行记录（2026-09-17 · Local AI Phase 1 Epic 回填）
+
+| 步骤 | 结果 |
+|---|---|
+| #639 子切片 | CREATE #807–#811（#807–#810 runtime 已 CLOSED；#811 shipping OPEN） |
+| #647 验收切片 | CREATE #812–#816（#812 Gate 0.2 关单注记；#813–#815 待人工；#816 阻塞 shipping Brief） |
+| Brief 骨架 | `task-briefs/task-local-ai-reflection-companion-shipping.md` |
+| Epic 正文 | #639 · #647 更新「已知子任务/PR」 |
