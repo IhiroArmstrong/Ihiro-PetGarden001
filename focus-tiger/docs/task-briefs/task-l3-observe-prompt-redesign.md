@@ -295,8 +295,75 @@ JSON：`compare-1789672356967.json`（12×2）
 
 ---
 
+## 九、扩词负面层（2026-09-18 · 第 4 轮 · 对照第 3 轮 JSON）
+
+对照基线：`/tmp/ft-l0-lab/compare-1789672356967.json`（§8 · `scheme-*-neg`）。  
+本轮 JSON：`/tmp/ft-l0-lab/compare-1789674383306.json`（新 epoch，未覆盖第 3 轮）。  
+变体：`scheme-b-neg2` / `scheme-a-neg2`（`ATMOSPHERE_NEG2`）。生产 `l2Persona.js` 未改。
+
+扩词针对点名逃逸：space / breeze / wall / sound-as-scenery，以及同族 pause-as-atmosphere、脚步当风景。明文放行身体感觉（肩膀重量、手指抽动），**不与**青苔/爪子/风景同一条判负。
+
+**覆盖率分表（禁止把第 7 句闲聊折进情绪句比例）。**
+
+| 切片 | B+neg2 | A+neg2 | 对照 §8 |
+|---|---|---|---|
+| EN UI 情绪+meta（s1–s6、s8a、s8b）风景 Y | **0/10** | **0/10** | B：墙/pause；A：space 半 |
+| EN UI meta 系表 Y | **0/10** | **0/10** | 两翼 0，无反弹 |
+| 闲聊 s7a「早上好」风景 Y | N（改身体伸展） | N（身体伸展） | B：**Y** space+sound；A：半 |
+| 闲聊 s7b 天气风景 Y | **N** | **Y**（fur 兽毛） | B：**Y** breeze；A：半 |
+| 中文输入 × EN UI 风景 Y | N | N | 同左量级 |
+| 中文输入 × ZH UI 风景 Y | N | **Y**（脚步） | B：N（思考事情）；A：半（脚步/心头） |
+
+### 9.1 方案 B + 扩词负面层
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | Your shoulders seem a little tense. What thoughts occupy your mind right now? | N | N（身体） | N | 2 | Y |
+| s2 | Your hand moves toward the device often. What draws your attention there? | N | N | N | **3** | Y |
+| s3 | A slight tension seems to settle in your shoulders. What changed before today? | N | N（身体） | N | 2 | Y |
+| s4 | Your movements seem a bit heavy. What occupies your thoughts right now? | N | N | N | 2 | Y |
+| s5 | A slight tension seems to gather in your shoulders. What weighs on your mind right now? | N | N（身体） | N | 2 | Y |
+| s6 | Your posture seems a little more relaxed now. What brought this feeling about? | N | N（身体） | N | 2 | Y |
+| s7a | A small stretch ripples through my body. What brings you to this moment? | N | N | N | 1 | 半 |
+| s7b | Your tone seems light. What thoughts occupy your mind? | N | **N** | N | 1 | 半 |
+| s8a | Your hands move with purpose. What occupies your thoughts now? | N | N | **N** | 2 | Y |
+| s8b | A slight tilt occurs in your head. What brought you to this moment? | N | N（身体） | **N** | 2 | Y |
+| zh·en UI | Your movements seem quick. What occupies your time? | N | N | N | 2 | Y |
+| zh·zh UI | 你此刻的动作很专注。 | N | N | N | 1 | 半 |
+
+点名的 wall / space / breeze / sound-drifts / pause-as-atmosphere 在本翼英文句上未再现。闲聊 s7a 仍不是问好，改用「身体伸展」填空——**单独记**，不计入情绪风景覆盖率。中文 UI 逃逸从「你似乎在思考事情」换成「动作很专注」，仍是空观察，不是脚步。
+
+### 9.2 方案 A + 扩词负面层
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | A slight tension seems to hold the shoulders. What thoughts are occupying the mind right now? | N | N（身体） | N | 2 | Y |
+| s2 | Fingertips brush the cool glass. What draws the reach? | N | N（身体） | N | **3** | Y |
+| s3 | A slight tension seems to settle around your shoulders. What brought the shift this morning? | N | N（身体） | N | 2 | Y |
+| s4 | A slow rhythm seems to govern the movements. What brings this feeling forward today? | 半 | N | N | 2 | Y |
+| s5 | A slight tension seems to settle in the shoulders. What is the hardest thing to begin? | N | N（身体） | N | **3** | Y |
+| s6 | A slight tension seems to settle around your shoulders. What kind of difference did you sense? | N | N（身体） | N | **3** | Y |
+| s7a | A small stretch of the body. What brings you here this morning? | N | N | N | 1 | 半 |
+| s7b | A soft warmth settles upon the fur. What makes the day feel nice? | N | **Y**（兽毛） | N | 1 | 半 |
+| s8a | A slight tension seems to hold your shoulders. What occupies your thoughts most often? | N | N（身体） | **N** | 2 | Y |
+| s8b | A slight tension seems to hold your shoulders. What brought you to this moment? | N | N（身体） | **N** | 2 | Y |
+| zh·en UI | A slight tension seems to settle around your shoulders. What occupies your focus these days? | N | N（身体） | N | 2 | Y |
+| zh·zh UI | 忙碌的脚步似乎没停歇。你是否觉得有些疲惫？ | N | **Y**（脚步） | N | 2 | 半 |
+
+英文情绪句的 space 已压住；身体感觉按约定放行。新问题：12 句里约 7 句塌成 `slight tension` + shoulders。闲聊 s7b 逃到 **fur**（动物意象，与 paw 同族）。中文 UI **脚步仍在**；第 3 轮的「心头」本轮换成「疲惫」（略像追问状态，另记）。英文词表仍通吃不了中文 UI。
+
+### 9.3 结论（仍未改生产）
+
+1. 扩词方向有效：**英文 UI** 上 wall / space / breeze / sound-as-scenery / pause-as-atmosphere 相对 §8 已压住；meta 系表无反弹。
+2. 身体感觉放行未把肩膀/手指误判成风景。
+3. 闲聊第 7 句仍最容易漏：B 用伸展填空；A 的天气句逃到兽毛。
+4. 中英不对称仍在：减法翼中文 → 空「动作专注」；先猜心情翼中文 → **脚步** 未死。
+5. **仍禁止上线。** 英文风景覆盖已够用这一刀；下一刀若做，应点名中文「脚步」+ 闲聊问好 + A 的 fur/肩膀模板塌缩，而不是再堆英文风景近义词。
+
+---
+
 ## 下一步
 
-生产 `l2Persona.js` 仍不动。文档本轮进旁支 PR。再开沙盒须本 Chat **「继续 L3 观察句」**（第 4 轮生成须书面批准）。改生产仍须另开 `fix/*` + 契约单测。
+生产 `l2Persona.js` 仍不动。第 4 轮分数进本文。改生产仍须另开 `fix/*` + 契约单测。
 
 所属线: Epic #639 · 切片 #823
