@@ -1,0 +1,3 @@
+# Tracker fragment · feature/multilang-chitchat-gemma4-ab
+
+| 六语闲聊冻表 + Gemma4 jc/un A/B 标注表 | 仅单元测试覆盖 | 待人工测试 | **不在 Cursor 跑**；须系统终端.app + Metal + jc/un GGUF 均已就位。`cd focus-tiger/desktop && npm run companion:gemma4-multilang-ab`。验收：`/tmp/ft-l0-lab/multilang-chitchat-annotate-<epoch>.csv`（108 行 · ja/en/it/de/es/fr 各 18）+ summary JSON。单测：`node --test src/core/confide/confideMultilangChitchatFixtures.test.js` | PO 2026-09-17：六语 = ja/en/it/de/es/fr（非 zh/ko）；每语 18 句；#802 已合；none-bulk-wipe 记 ISSUE_LEDGER 本回合不修 | — | — | `confideMultilangChitchatFixtures.js` · `l0-gemma4-multilang-ab.js` | 2026-09-17 |
