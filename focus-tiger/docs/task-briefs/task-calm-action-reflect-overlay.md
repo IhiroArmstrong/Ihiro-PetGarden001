@@ -1,6 +1,6 @@
 # Task Brief · Calm Action Reflect 句包 overlay（D1 扩面）
 
-> **状态（2026-09-09）**：**开工** · 旁支 `feature/calm-action-reflect-overlay`。  
+> **状态（2026-09-09）**：**#675 已合 + 生产已部署**（Version `f7034cbb-78cd-43e3-b4ad-2f8c6f318e3c`）。  
 > **父排期**：`taste-layer-calm-action-roadmap.md` · **D1 扩面**（C4 Reflect 运行时 #672 + #674 已合）。  
 > **前置**：`task-calm-action-copy-overlay.md`（Recover + Arrive · #670 已合 · 生产已部署）。  
 > **用户拍板**：口令「同意开工 Reflect overlay」（2026-09-09）。
@@ -45,7 +45,7 @@
 - [x] `tasteLayerOverlay` 解析 + `overlayCalmActionReflectTextForId`  
 - [x] `findCalmActionReflectEntry` overlay 优先  
 - [x] `tasteCalmActionCopyOverlayMatchesLocalFreeze` 含 reflect  
-- [ ] 生产 Redeploy（须用户口令「部署」）
+- [x] 生产 Redeploy（2026-09-09 · Version `f7034cbb-78cd-43e3-b4ad-2f8c6f318e3c`）
 
 ## 不做
 
