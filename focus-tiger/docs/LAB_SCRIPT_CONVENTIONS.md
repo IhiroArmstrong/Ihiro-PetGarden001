@@ -145,6 +145,14 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-q
 
 `FT_L3_VARIANTS=baseline,scheme-b`（缺省）或 `scheme-a` / `scheme-b-neg,scheme-a-neg`。直 `buildCompanionL2Prompt` + `loadModelHold.generate`，**不走** Confide 路由。结果：`compare-<epoch>.json`。打分写 Brief `task-l3-observe-prompt-redesign.md` §7–§8，本文不抄原句。
 
+**L3 观察句沙盒（#823 · `/tmp` 脚本，不改生产 prompt）**：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_L3_VARIANTS=scheme-b-neg2,scheme-a-neg2 node /tmp/ft-l0-l3-observe-b-lab.mjs
+```
+
+脚本：`/tmp/ft-l0-l3-observe-b-lab.mjs`。分数与句表只写 `task-briefs/task-l3-observe-prompt-redesign.md`，**不要**把答句抄进本文。变体名带 `neg2` 等后缀，避免覆盖既有 `compare-*.json`。
+
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
 合 develop 后先同步 QA worktree：`cd focus-tiger && npm run sync:qa-develop`。
