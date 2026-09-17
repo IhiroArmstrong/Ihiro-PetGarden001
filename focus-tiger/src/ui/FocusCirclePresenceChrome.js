@@ -164,9 +164,9 @@ export class FocusCirclePresenceChrome {
       this._visibleAllowed &&
       enabled &&
       inCircle &&
+      !this._focusing &&
       (debugLanterns ||
-        (!this._focusing &&
-          !isFocusCirclePresenceContributing() &&
+        (!isFocusCirclePresenceContributing() &&
           sittingOthers != null &&
           sittingOthers > 0));
     const showWasHere =

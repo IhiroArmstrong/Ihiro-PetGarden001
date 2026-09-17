@@ -139,11 +139,9 @@ export class QuietTogetherLanternsChrome {
     const show =
       this._visibleAllowed &&
       enabled &&
+      !this._focusing &&
       (debugLanterns ||
-        (!this._focusing &&
-          !this._contributing &&
-          sitting != null &&
-          sitting > 0));
+        (!this._contributing && sitting != null && sitting > 0));
 
     this.root.hidden = !show;
     this.root.dataset.debugLanterns = debugLanterns ? 'true' : 'false';
