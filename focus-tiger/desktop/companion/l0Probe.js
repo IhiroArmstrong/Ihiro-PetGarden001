@@ -8,7 +8,8 @@
  * Dynamic import so unit tests never load the native addon.
  */
 
-import { L0_MAX_TOKENS, L0_PROMPT } from './l0Config.js';
+import { L0_MAX_TOKENS, L0_PROMPT, L0_PROMPT_FAMILY } from './l0Config.js';
+import { resolveGemmaChatWrapper } from './l1ChatSequence.js';
 import { rssMb, tokensPerSecond } from './l0Metrics.js';
 
 function rssBytes() {
@@ -85,8 +86,10 @@ export async function runL0Inference(opts) {
 
     const context = await model.createContext();
     // Single generate then unload. Multi-turn holds must use openFreshChatSession.
+    const chatWrapper = await resolveGemmaChatWrapper(L0_PROMPT_FAMILY);
     const session = new LlamaChatSession({
-      contextSequence: context.getSequence()
+      contextSequence: context.getSequence(),
+      ...(chatWrapper ? { chatWrapper } : {})
     });
 
     if (typeof opts.onHolding === 'function') {

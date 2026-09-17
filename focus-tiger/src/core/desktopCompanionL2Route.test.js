@@ -546,6 +546,7 @@ describe('desktop companion L2 isolation', () => {
       'utf8'
     );
     assert.match(hold, /openFreshChatSession/);
+    assert.match(hold, /promptFamily:\s*L0_PROMPT_FAMILY/);
     assert.match(sequence, /disposeSequence:\s*true/);
     assert.match(sequence, /isNoSequencesLeftError/);
     assert.match(sequence, /createContext/);

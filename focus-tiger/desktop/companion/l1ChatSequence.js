@@ -46,11 +46,25 @@ export async function disposeContextQuietly(context) {
 }
 
 /**
+ * Gemma4 via node-llama-cpp defaults to reasoning mode; companion L3 needs
+ * short replies without a hidden thought segment.
+ *
+ * @param {'qwen' | 'gemma' | undefined} promptFamily
+ * @returns {Promise<object | undefined>}
+ */
+export async function resolveGemmaChatWrapper(promptFamily) {
+  if (promptFamily !== 'gemma') return undefined;
+  const { Gemma4ChatWrapper } = await import('node-llama-cpp');
+  return new Gemma4ChatWrapper({ reasoning: false });
+}
+
+/**
  * @param {{
- *   LlamaChatSession: new (opts: { contextSequence: unknown }) => object,
+ *   LlamaChatSession: new (opts: { contextSequence: unknown, chatWrapper?: unknown }) => object,
  *   model: { createContext: () => Promise<object> },
  *   context: { getSequence: () => unknown, dispose?: () => unknown } | null,
- *   chat?: { dispose?: (opts?: { disposeSequence?: boolean }) => void } | null
+ *   chat?: { dispose?: (opts?: { disposeSequence?: boolean }) => void } | null,
+ *   promptFamily?: 'qwen' | 'gemma'
  * }} opts
  * @returns {Promise<{ context: object, chat: object }>}
  */
@@ -74,8 +88,13 @@ export async function openFreshChatSession(opts) {
     sequence = context.getSequence();
   }
 
+  const chatWrapper = await resolveGemmaChatWrapper(opts.promptFamily);
+
   return {
     context,
-    chat: new LlamaChatSession({ contextSequence: sequence })
+    chat: new LlamaChatSession({
+      contextSequence: sequence,
+      ...(chatWrapper ? { chatWrapper } : {})
+    })
   };
 }

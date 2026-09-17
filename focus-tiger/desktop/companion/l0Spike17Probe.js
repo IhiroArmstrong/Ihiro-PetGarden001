@@ -78,7 +78,8 @@ async function openSpikeSession(modelPath, onProgress) {
         LlamaChatSession,
         model,
         context,
-        chat
+        chat,
+        promptFamily: 'qwen'
       });
       context = next.context;
       chat = next.chat;

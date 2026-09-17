@@ -8,7 +8,8 @@ import { describe, it } from 'node:test';
 import {
   disposeChatSession,
   isNoSequencesLeftError,
-  openFreshChatSession
+  openFreshChatSession,
+  resolveGemmaChatWrapper
 } from '../../desktop/companion/l1ChatSequence.js';
 
 describe('l1ChatSequence', () => {
@@ -67,6 +68,11 @@ describe('l1ChatSequence', () => {
     assert.ok(disposed >= 2);
     assert.equal(next.context, freshContext);
     assert.equal(next.chat.contextSequence, freshSequence);
+  });
+
+  it('skips Gemma chat wrapper for non-gemma prompt families', async () => {
+    assert.equal(await resolveGemmaChatWrapper('qwen'), undefined);
+    assert.equal(await resolveGemmaChatWrapper(undefined), undefined);
   });
 
   it('reuses getSequence when the pool still has a slot', async () => {
