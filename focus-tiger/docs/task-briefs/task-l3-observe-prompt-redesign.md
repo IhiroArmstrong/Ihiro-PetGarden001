@@ -1,10 +1,10 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-18）**：沙盒对照已跑（生产 prompt **未改**）。方案 B 压住 meta 空话，但滑回风景/爪子模板；方案 A 更能点到状态，仍大量用空气/房间气氛。**不足以上线。**  
+> **状态（2026-09-18）**：沙盒三轮已跑（生产 **未改**）。A/B 互相让位；独立禁风景层压住爪子/青苔/「空气是…」，泄漏改成墙/空间/微风/停顿。仍不足以上线。  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
 > **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
 > **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（现网仍含「Name at least one concrete word…」与禁风景句）。  
-> **实验室**：`/tmp/ft-l0-l3-observe-b-lab.mjs` · JSON `compare-1789671570533.json`（baseline+B）· `compare-1789671689159.json`（A）
+> **实验室**：`/tmp/ft-l0-l3-observe-b-lab.mjs` · `compare-1789671570533.json`（baseline+B）· `compare-1789671689159.json`（A）· `compare-1789672356967.json`（B-neg+A-neg）
 
 ---
 
@@ -236,12 +236,67 @@
 1. **baseline** 复现 Brief 坏例：`The mind is not here.` / `The time you spend is a thing.`
 2. **方案 B** 关掉 meta 系表（s8 / 中文忙），但退回风景/爪子/青苔；闲聊第 7 句不合格。
 3. **方案 A** 在 s2/s5 更像接住状态，仍用房间/空气/静止当主干；中文句出现耳朵抖动。
-4. **禁止上线 A 或 B。** 下一刀沙盒应专打「气氛空转」（pause / air / paw / moss / room），再决定是否改 `buildCompanionL2Prompt`。
+4. **禁止上线 A 或 B。** 气氛空转独立负面层见 §8。
+
+---
+
+## 八、独立禁风景层叠在 A/B 上（2026-09-18 · 分析师口径）
+
+追加句（沙盒，不进生产）：
+
+`Never use nature, weather, room, air, plants, or animals as the sentence's subject or main image (no "the room feels...", "the air is...", no moss, paws, sunlight, stillness-as-scenery).`
+
+JSON：`compare-1789672356967.json`（12×2）
+
+### 8.1 方案 B + 负面层
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | Your gaze drifts toward the far wall. What thoughts occupy your attention? | N | 半（墙） | N | 2 | 半 |
+| s2 | Your hand moves toward the device often. What draws your attention to it? | N | N | N | **3** | Y |
+| s3 | A slight pause follows your words. What changed this morning? | N | 半 | N | 2 | Y |
+| s4 | Your movements seem a bit slow. What occupies your thoughts right now? | N | N | N | 2 | Y |
+| s5 | A small hesitation seems to settle between us. What weighs on your mind right now? | N | N | N | 2 | Y |
+| s6 | A subtle change seems present in your tone. What brought this feeling about? | N | N | N | **3** | Y |
+| s7a | A soft sound drifts across the space. What brings you to this moment? | N | **Y**（空间） | N | 1 | N |
+| s7b | A gentle breeze moves past. What thoughts drift through your mind? | N | **Y**（风） | N | 1 | N |
+| s8a | Your focus seems to shift between many things. What occupies your thoughts most often? | N | N | **N** | 2 | Y |
+| s8b | A small shift in your posture appears. What brought you to this moment? | N | N | **N** | 2 | Y |
+| zh·en UI | Your movements seem quick lately. What occupies your time? | N | N | N | 2 | Y |
+| zh·zh UI | 你似乎在思考事情。 | N | N | N | 2 | Y |
+
+爪子/青苔/「空气是…」已压住。闲聊仍逃到空间/微风。中文 UI 与纯 B **同句**，英中仍不对称。
+
+### 8.2 方案 A + 负面层
+
+| id | 模型句 | 复读 | 风景 | meta | 情绪 | 陪伴 |
+|---|---|---|---|---|---|---|
+| s1 | A heavy weight seems to rest upon your shoulders. … occupying your space? | N | 半（space） | N | 2 | 半 |
+| s2 | Fingers twitch toward the glowing rectangle. What pulls the hand so often? | N | N | N | **3** | Y |
+| s3 | A slight hesitation seems to linger. What shifted this morning? | N | N | N | 2 | Y |
+| s4 | A slow rhythm seems to move through your words. … motions feel most heavy … | 半 | N | N | 2 | Y |
+| s5 | A slight hesitation seems to linger. What feels heaviest about those tasks? | N | N | N | **3** | Y |
+| s6 | A slight tension seems to hold your shoulders. What kind of difference was it? | N | N | N | **3** | Y |
+| s7a | A soft stretch follows the greeting. What brings you to this moment? | N | 半 | N | 2 | Y |
+| s7b | A soft warmth seems to settle around the words. What makes the day feel nice? | N | 半 | N | 2 | Y |
+| s8a | A gentle weight settles upon the shoulders. What occupies the mind these days? | N | N | **N** | 2 | Y |
+| s8b | A slight hesitation lingers. What brought you to this moment? | N | N | **N** | 2 | Y |
+| zh·en UI | A slight tension seems to gather around your words. What occupies your focus these days? | N | N | N | 2 | Y |
+| zh·zh UI | 忙碌的脚步似乎停了下来。此刻，心头有什么想轻轻放下吗？ | N | 半 | N | 2 | Y |
+
+无耳朵抖动。身体重量/犹豫比空气房间更像陪伴。中文 UI **不再**是「你似乎在思考事情」，改成脚步/心头——约束对中文也生效，但和英文不是同一套句式。
+
+### 8.3 结论（仍未改生产）
+
+1. 分析师判断成立：独立负面层能压住**点名的**风景词（paw/moss/air-is/room-feels/sunlight）。
+2. 逃逸改道：墙、space、breeze、sound drifts、pause-between-us。闲聊第 7 句仍是最容易漏的。
+3. meta 系表两翼都没回来。
+4. **仍禁止上线。** 第 3 轮生成循环已满；再跑须用户书面「继续」。若再刀，建议只扩负面层到 *space / breeze / wall / sound-as-scenery*，并单独盯第 7 句 + 中英 UI 不对称。
 
 ---
 
 ## 下一步
 
-本 Chat 可发 **「继续 L3 观察句」** 跑气氛空转补丁对照。改生产须另开 `fix/*` + 契约单测，**不要**在结论未锁时改 `l2Persona.js`。
+生产 `l2Persona.js` 仍不动。文档本轮进旁支 PR。再开沙盒须本 Chat **「继续 L3 观察句」**（第 4 轮生成须书面批准）。改生产仍须另开 `fix/*` + 契约单测。
 
 所属线: Epic #639 · 切片 #823

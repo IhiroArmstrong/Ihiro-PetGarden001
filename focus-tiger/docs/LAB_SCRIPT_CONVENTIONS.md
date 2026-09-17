@@ -143,7 +143,7 @@ jc 默认：`~/Library/Application Support/Focus Tiger/companion-l0/Gemma-4-E4B-
 cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && node /tmp/ft-l0-l3-observe-b-lab.mjs
 ```
 
-`FT_L3_VARIANTS=baseline,scheme-b`（缺省）或 `scheme-a`。直 `buildCompanionL2Prompt` + `loadModelHold.generate`，**不走** Confide 路由。结果：`compare-<epoch>.json`。打分写 Brief `task-l3-observe-prompt-redesign.md` §7，本文不抄原句。
+`FT_L3_VARIANTS=baseline,scheme-b`（缺省）或 `scheme-a` / `scheme-b-neg,scheme-a-neg`。直 `buildCompanionL2Prompt` + `loadModelHold.generate`，**不走** Confide 路由。结果：`compare-<epoch>.json`。打分写 Brief `task-l3-observe-prompt-redesign.md` §7–§8，本文不抄原句。
 
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
