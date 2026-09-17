@@ -66,6 +66,30 @@ export function mustardSeedSealZhIsPrimaryLocale(locale) {
   return locale === 'zh';
 }
 
+/**
+ * @param {string} locale
+ * @returns {boolean}
+ */
+export function mustardSeedSealJaIsPrimaryLocale(locale) {
+  return locale === 'ja';
+}
+
+/**
+ * @param {{ poemZh: readonly string[], poemJa?: readonly string[], poemEn: readonly string[] }} verse
+ * @param {string} locale
+ * @returns {{ primary: readonly string[], secondary: readonly string[] }}
+ */
+export function resolveMustardSeedPoemPresentation(verse, locale) {
+  if (mustardSeedSealZhIsPrimaryLocale(locale)) {
+    return { primary: verse.poemZh, secondary: verse.poemEn };
+  }
+  if (mustardSeedSealJaIsPrimaryLocale(locale)) {
+    const primary = verse.poemJa?.length ? verse.poemJa : verse.poemEn;
+    return { primary, secondary: verse.poemEn };
+  }
+  return { primary: verse.poemEn, secondary: verse.poemZh };
+}
+
 const sumeruEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_SUMERU);
 const heroEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_HERO);
 const noTraceEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_NO_TRACE);

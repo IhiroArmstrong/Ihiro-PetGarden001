@@ -556,8 +556,7 @@ export class CompanionModePicker {
       }
       /* 次级立体 pill 共用质感（尺寸/描边/内高光/底边）；色相可不同 */
       .session-start-dock__honesty-entry,
-      .session-start-dock__micro-ritual-entry,
-      .session-start-dock__hint {
+      .session-start-dock__micro-ritual-entry {
         align-self: center;
         flex-shrink: 0;
         box-sizing: border-box;
@@ -583,6 +582,29 @@ export class CompanionModePicker {
           0 1px 0 rgba(255, 255, 255, 0.9) inset,
           0 2px 0 rgba(165, 130, 85, 0.22),
           0 3px 8px rgba(44, 31, 20, 0.08);
+        transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
+      }
+      .session-start-dock__hint {
+        align-self: center;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        border-radius: 18px;
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        line-height: 1.45;
+        text-align: center;
+        white-space: normal;
+        max-width: 100%;
+        cursor: pointer;
+        text-decoration: none;
+        color: rgba(74, 58, 40, 0.82);
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
         transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
       }
       .session-start-dock__honesty-entry:hover,
@@ -625,11 +647,8 @@ export class CompanionModePicker {
       }
       .session-start-dock__hint:hover,
       .session-start-dock__hint.is-expanded {
-        background: linear-gradient(
-          180deg,
-          #fffcf4 0%,
-          #ede0c4 100%
-        );
+        background: rgba(255, 252, 245, 0.72);
+        box-shadow: 0 6px 20px rgba(44, 31, 20, 0.08);
         filter: none;
       }
       /* Sit 主 CTA：同族立体语言，略大一档，不抢成另一套材质 */
