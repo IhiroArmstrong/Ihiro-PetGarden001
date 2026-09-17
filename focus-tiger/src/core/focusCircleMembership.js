@@ -150,6 +150,16 @@ export function writeFocusCircleMembership(storage, membership) {
     store.setItem(FOCUS_CIRCLE_STORAGE_KEY, nextJson);
   } catch {
     // quota / private mode
+    return null;
+  }
+  const readBack = readFocusCircleMembership(store);
+  if (
+    !readBack ||
+    readBack.circleId !== normalized.circleId ||
+    readBack.memberId !== normalized.memberId ||
+    readBack.code !== normalized.code
+  ) {
+    return null;
   }
   dispatchFocusCircleChange();
   return normalized;
@@ -323,7 +333,9 @@ export async function createFocusCircle(opts = {}) {
   const memberId = newFocusCircleMemberId();
   const result = await postFocusCircle({ ...opts, action: 'create', memberId });
   if (!result.ok || !result.membership) return result;
-  writeFocusCircleMembership(storage, result.membership);
+  if (!writeFocusCircleMembership(storage, result.membership)) {
+    return { ok: false, reason: 'storage_failed', membership: result.membership };
+  }
   return result;
 }
 
@@ -349,7 +361,9 @@ export async function joinFocusCircle(opts = {}) {
   const memberId = newFocusCircleMemberId();
   const result = await postFocusCircle({ ...opts, action: 'join', code, memberId });
   if (!result.ok || !result.membership) return result;
-  writeFocusCircleMembership(storage, result.membership);
+  if (!writeFocusCircleMembership(storage, result.membership)) {
+    return { ok: false, reason: 'storage_failed', membership: result.membership };
+  }
   return result;
 }
 
