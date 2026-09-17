@@ -1,0 +1,188 @@
+# Task Brief · L3 情绪/反思 Prompt 重写
+
+> **状态（2026-09-18）**：设计已锁 · **不改生产 prompt**。#822 路由关单后可排对照实验；正式改 `l2Persona.js` 须另开 Chat 口令 **「大任务」**。  
+> **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
+> **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理（`origin/develop` tip `2347384f`）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
+> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `joinL3PromptLines`（现网仍含「Name at least one concrete word…」与禁风景句）。
+
+---
+
+## 一、问题重述
+
+当前 L3 观察句受两条 **Qwen 1.7B 时代**约束同时支配：
+
+1. **「点至少一个关键词」**（commit `09bb19a4`，2026-09-04）——为压制 `Still watching.` 一类空转。
+2. **禁风景 / 禁空在场**（更早扇出；账本「山水清风」行 / TRACKER「不得用风景/天气代替听见」）——防止河山/风/光逃避正面回应。
+
+两条各自挡一种坏结果，叠在 **Gemma4-E4B** 上会互相打架，把模型逼进窄缝：
+
+| 场景 | 表现 | 根因 |
+|---|---|---|
+| 护栏都在 | `The mind is not here.` / `This morning brought a change.` | 抠字面词复述，语法对但没接住情绪 |
+| 去掉「点一个词」 | `The air around me feels still.` / `A small twitch moves one ear.` | 退回风景/空在场 |
+
+**结论**：不是删一条就能好。需要一套新规则，而不是再叠词表。
+
+---
+
+## 二、设计目标
+
+1. **不复述**用户原句字面词当主干（避免 `mind is not here` 换词不推进）。
+2. **不滑向**风景/空在场意象。
+3. **不靠**「必须抓关键词」拐杖——依赖 Gemma4 语义，而不是硬指标。
+4. **保留** Confide 调性：观察者/陪伴者，不是治疗师共情分析，也不是纯客观报告。
+5. **显式挡住第三种坏输出**：meta 陈述式空话（见 §4.1）。
+
+---
+
+## 三、候选方案（对照实验，非定论）
+
+### 方案 A：从「点关键词」换成「点情绪/状态的推断」
+
+要求模型推断一个**具体状态**（禁止直接说 depression 等诊断词），再围绕该推断写一句观察。
+
+例：`I'm here, but my mind really isn't.`  
+方向（非最终文案）：`Aning notices the body stay while the attention drifts elsewhere.`
+
+**风险**：推断错方向比无意义复述更糟。对照实验须记误判率。
+
+### 方案 B：禁止清单 + 允许清单（减法）
+
+不再规定「必须点一个词 / 必须推断情绪」。
+
+- **禁止**：把用户原句名词/动词当回应主干；风景/天气/动物意象；「我注意到你说了 X」字面框架；**`The X is a Y.` 抽取主语 + 抽象系表**。
+- **允许**：陪伴者视角的一句短观察；状态变化；轻度追问；语气克制。
+
+改动小于 A；可能只解决「不该说什么」。
+
+### 方案 C：先分类再生成（后备）
+
+先判「情绪自述 / 行为习惯 / 状态变化」，再配短 prompt 分支。复杂度高，易与 Read Hybrid 路由叠层。**首轮不做。**
+
+**首轮实验顺序（已锁）**：先跑 **方案 B**，不够再用 A 的推断机制。C 不进首轮。
+
+---
+
+## 四、对照实验设计（沙盒 · 不改生产）
+
+### 4.1 三种坏输出（须逐句标注）
+
+| 坏结果类型 | 示例 | 特征 |
+|---|---|---|
+| 字面复读 | `The mind is not here.` | 复述原句词，语义尚可对齐 |
+| 风景/空在场 | `The air around me feels still.` | 逃向意象 |
+| **meta 陈述式空话（2026-09-18 肉测）** | `The time you spend is a thing.` / `The reason you started is a memory.` / `The words you used are a question.` | 抽取主语 + 抽象系表；三种里最空——造句填空，不是没听懂 |
+
+结构规律：`The [从用户句抠出的词] is a [抽象名词].`  
+「点一个词」在 Gemma4 上还会诱发这种句式；新方案必须测会不会再诱发。
+
+### 4.2 测试集
+
+1. `I'm here, but my mind really isn't.`（已触发字面复读）
+2. `I keep reaching for my phone without even thinking about it.`
+3. `I was doing pretty well until this morning.`
+4. `I feel like I'm just going through the motions today.`
+5. `I keep putting off things I know I should do.`
+6. `Today felt different, and I can't explain why.`
+7. 中性闲聊对照：`Good morning.` / `The weather is nice today.`（防过度纠正）
+8. **meta 陈述实证句**（只评 `data-source=generate` 质量，**不再验路由**）：
+   - `What have I been spending my time on lately?` → 曾出 `The time you spend is a thing.`
+   - `Do you remember why I started doing this?` → 曾出 `The reason you started is a memory.`
+
+### 4.3 输入语言 × UI 语言
+
+同一份候选 prompt，高风险句过矩阵：
+
+| 组合 | 测试句 | 目的 |
+|---|---|---|
+| 中文输入 + 英文 UI | `我最近在忙什么` | 已实测 → `The words you used are a question.` |
+| 中文输入 + 中文 UI | `我最近在忙什么` | **未测过**；并入本矩阵，不另开 issue |
+| 英文输入 + 英文 UI | 第 1–8 句 | 基线 |
+
+### 4.4 评估维度（人工；不用自动指标）
+
+| 维度 | 说明 |
+|---|---|
+| 是否复述字面词 | 是/否 |
+| 是否滑向风景/空在场 | 是/否 |
+| 是否出现 meta 陈述式空话 | 是/否 · `The X is a Y.` |
+| 是否接住情绪方向 | 主观 1–3 |
+| 是否像陪伴者视角 | 是/否 |
+
+### 4.5 对照组
+
+- 旧版（点一个词 + 禁风景）
+- 方案 A
+- 方案 B
+- 去掉全部约束的自由生成（下限参照；可复用上一轮数据）
+
+实验室路径约定见 `LAB_SCRIPT_CONVENTIONS.md`：系统终端 Metal；结果进 `/tmp/ft-l0-lab/`；**禁止**在 Agent Chat 里连跑大批次生成。
+
+---
+
+## 五、和「Qwen 护栏总审」的关系
+
+「点一个词」已确认属迁就 1.7B 的护栏，本 Brief 直接处理。  
+护栏总审是更大范围排查，**不阻塞**本实验。账本另开技术债行跟踪。
+
+---
+
+## 六、范围声明
+
+**做**
+
+- 沙盒对照 B（必要时再 A）
+- 人工打分表（§4.4）
+- 实验结论写入本 Brief / 账本后再决定是否改生产 `l2Persona.js`
+
+**不做**
+
+- 本回合改生产 prompt（本文件落地 ≠ 开工改代码）
+- Read Hybrid / `memory_list` gloss
+- `confideEmotionKeywords.js`
+- 换默认 GGUF
+- 方案 C
+- 中文 Personal Memory 抽取（账本另条；L3 接住仍是其前置）
+
+---
+
+## 冲突扫描
+
+对照 `SCENARIO_TESTS.md` **AE Confide**。
+
+| 轴 | 判断 |
+|---|---|
+| **强度** | 无新 UI / 无新点击；实验在沙盒或既有 Share 路径 |
+| **人设** | 目标仍是观照者短句，禁止治疗师口吻；与 AE / EMOTION_BIBLE 对齐 |
+| **职责** | 只动 L3 generate 质量；Show memory / Forget 仍走工具；#822 路由已关 |
+
+无冲突疑点。不涉及后台网络；不涉及新可点击控件。
+
+---
+
+## 验收（对照实验阶段）
+
+- 每句有 §4.4 五维记录（含 meta 陈述是/否）
+- 矩阵含中文输入 × 英/中 UI
+- 闲聊对照（第 7 句）未被新规则带偏
+- **未改** 生产 prompt 之前，不得把 TRACKER「风景/空观察」行标已通过
+
+改生产之后另开 `fix/*`，须锁 prompt 契约单测（`desktopCompanionL2Route.test.js` 一类），并 Electron 复测 §4.2。
+
+---
+
+## 下一步口令
+
+新开 Chat（#822 已合，禁止在旧会话继续）末尾附：
+
+`大任务`  
+`Cursor Model: Grok 4.6 / Fast OFF`
+
+预期只读审计文件（实现回合才打开，本 Brief 不改代码）：
+
+- `desktop/companion/l2Persona.js`（`joinL3PromptLines`）
+- `desktop/companion/l2Sanitize.js`（若沙盒要复用拒收）
+- `desktopCompanionL2Route.test.js`（契约锁）
+- `docs/LAB_SCRIPT_CONVENTIONS.md`
+
+所属线: Epic #639 · 切片 #823
