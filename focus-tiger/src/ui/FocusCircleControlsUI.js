@@ -257,6 +257,8 @@ export class FocusCircleControlsUI {
           key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED';
         } else if (result.reason === 'timeout') {
           key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT';
+        } else if (result.reason === 'storage_failed') {
+          key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_STORAGE';
         }
         this._setStatus(key, true);
         return;

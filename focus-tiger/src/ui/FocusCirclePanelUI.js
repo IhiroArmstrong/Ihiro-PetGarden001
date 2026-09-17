@@ -269,22 +269,29 @@ export class FocusCirclePanelUI {
       selectedBadge === 'none' ? null : normalizeFocusCircleBadgeKey(selectedBadge);
     this.identitySaveBtn.disabled = true;
     this._showIdentityStatus(t('FOCUS_CIRCLE_IDENTITY_SAVE_PENDING'), false);
-    const result = await postFocusCircleIdentitySet({
-      circleId: membership.circleId,
-      memberId: membership.memberId,
-      nickname: nickname ?? null,
-      badgeKey
-    });
-    this.identitySaveBtn.disabled = false;
-    if (!result.ok) {
-      this._showIdentityStatus(t('FOCUS_CIRCLE_IDENTITY_SAVE_FAILED'), true);
-      return;
+    try {
+      const result = await postFocusCircleIdentitySet({
+        circleId: membership.circleId,
+        memberId: membership.memberId,
+        nickname: nickname ?? null,
+        badgeKey
+      });
+      if (!result.ok) {
+        const failKey =
+          result.reason === 'timeout'
+            ? 'FOCUS_CIRCLE_IDENTITY_SAVE_TIMEOUT'
+            : 'FOCUS_CIRCLE_IDENTITY_SAVE_FAILED';
+        this._showIdentityStatus(t(failKey), true);
+        return;
+      }
+      writeFocusCircleIdentityDraft(globalThis.localStorage, {
+        nickname: nickname ?? '',
+        badgeKey
+      });
+      this._showIdentityStatus(t('FOCUS_CIRCLE_IDENTITY_SAVE_OK'), false);
+    } finally {
+      this.identitySaveBtn.disabled = false;
     }
-    writeFocusCircleIdentityDraft(globalThis.localStorage, {
-      nickname: nickname ?? '',
-      badgeKey
-    });
-    this._showIdentityStatus(t('FOCUS_CIRCLE_IDENTITY_SAVE_OK'), false);
   }
 
   /**

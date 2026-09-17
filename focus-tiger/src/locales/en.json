@@ -1020,5 +1020,7 @@
   "CONTENT_UNLOCK_SANCTUARY_TITLE": "Premium content unlocked",
   "CONTENT_UNLOCK_COMPANION_UPSELL": "Sanctuary Lifetime unlocks advanced scenes. Add on-device Yin when you are ready — one-time, no subscription.",
   "CONTENT_UNLOCK_COMPANION_CTA": "Unlock AI Companion",
-  "YIN_COIN_NOT_YET": "Not yet"
+  "YIN_COIN_NOT_YET": "Not yet",
+  "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_STORAGE": "Could not save circle membership on this device. Turn off private browsing or free storage, then try again.",
+  "FOCUS_CIRCLE_IDENTITY_SAVE_TIMEOUT": "Saving is taking too long. Try again in a moment."
 }

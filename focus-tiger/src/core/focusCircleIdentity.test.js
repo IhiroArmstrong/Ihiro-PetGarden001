@@ -6,6 +6,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  FOCUS_CIRCLE_PATH,
+  FOCUS_CIRCLE_SCHEMA_VERSION,
   FOCUS_CIRCLE_STORAGE_KEY
 } from './focusCircleMembership.js';
 import {
@@ -116,3 +118,45 @@ describe('focusCircleIdentity', () => {
     assert.deepEqual(raw[MEMBERSHIP.circleId], [AUTHOR]);
   });
 });
+
+describe('postFocusCircleIdentitySet', () => {
+  it('posts identity_set on the shared focus-circle path with JSON body', async () => {
+    const { postFocusCircleIdentitySet } = await import('./focusCircleIdentity.js');
+    let path = '';
+    let body = '';
+    const result = await postFocusCircleIdentitySet({
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      nickname: 'Kai',
+      badgeKey: 'tiger',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async (p, init) => {
+        path = p;
+        body = String(init.body);
+        return { ok: true, schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION };
+      }
+    });
+    assert.equal(result.ok, true);
+    assert.equal(path, FOCUS_CIRCLE_PATH);
+    const payload = JSON.parse(body);
+    assert.equal(payload.action, 'identity_set');
+    assert.equal(payload.nickname, 'Kai');
+    assert.equal(payload.badgeKey, 'tiger');
+  });
+
+  it('maps timeout to reason timeout', async () => {
+    const { postFocusCircleIdentitySet } = await import('./focusCircleIdentity.js');
+    const result = await postFocusCircleIdentitySet({
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      nickname: 'Kai',
+      badgeKey: null,
+      timeoutMs: 20,
+      getBaseUrl: () => 'https://example.test',
+      postJson: () => new Promise(() => {})
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'timeout');
+  });
+});
+

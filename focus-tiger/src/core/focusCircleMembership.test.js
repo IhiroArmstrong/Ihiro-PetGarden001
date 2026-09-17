@@ -317,4 +317,32 @@ describe('focusCircleMembership', () => {
     assert.equal(result.ok, false);
     assert.equal(result.reason, 'timeout');
   });
+  it('join maps local storage write failure to storage_failed', async () => {
+    const storage = memoryStorage();
+    const throwing = {
+      getItem: storage.getItem,
+      removeItem: storage.removeItem,
+      setItem: () => {
+        throw new Error('quota');
+      }
+    };
+    const result = await joinFocusCircle({
+      storage: throwing,
+      search: '',
+      code: 'ABCD23',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => ({
+        ok: true,
+        schemaVersion: 1,
+        circleId: '11111111-1111-4111-8111-111111111111',
+        memberId: '22222222-2222-4222-8222-222222222222',
+        code: 'ABCD23',
+        memberCount: 2
+      })
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'storage_failed');
+    assert.equal(readFocusCircleMembership(throwing), null);
+  });
+
 });
