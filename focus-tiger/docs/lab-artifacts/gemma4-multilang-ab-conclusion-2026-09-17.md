@@ -29,6 +29,8 @@ Both jc and un replied to the literal “throw” sense — **not a model-qualit
 
 ## Decision (2026-09-17)
 
-- **Do not switch default GGUF to unsloth** on this A/B alone (tie + jc failure mode judged more harmful).
-- **Keep** `l0ModelProfiles.js` default **jc-builds** until post-fix re-run (optional: only `de-chitchat-12` spot-check or full 108).
+- **First pass (analyst)**: tie + jc grammar failures judged more harmful → do not switch.
+- **PO override (same day)**: unsloth answers five questions more on-topic; no grammar errors in this run; 95% yes — **switch default to unsloth QAT** for live Confide肉测.
+- **Rollback**: `FT_COMPANION_L0_MODEL=gemma4-e4b-jc` (alias `jc`) → jc-builds `Gemma-4-E4B-it-Q4_K_M.gguf` still in `companion-l0/`.
+- `de-chitchat-12` fixture typo fixed (#818); no full 108 re-run required (1/108 bad row).
 - `none-bulk-wipe` write FP: see ISSUE_LEDGER — not blocking source choice.

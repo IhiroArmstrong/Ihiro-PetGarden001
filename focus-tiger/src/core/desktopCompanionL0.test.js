@@ -108,11 +108,11 @@ describe('desktop companion L0 metrics', () => {
 });
 
 describe('desktop companion L0 isolation', () => {
-  it('defaults to Gemma4-E4B on Hugging Face GGUF, not a chat API', () => {
-    assert.equal(L0_MODEL_ID, 'Gemma-4-E4B-it-Q4_K_M');
-    assert.equal(L0_MODEL_EXPECTED_BYTES, 5_335_290_592);
+  it('defaults to Gemma4-E4B unsloth QAT on Hugging Face GGUF, not a chat API', () => {
+    assert.equal(L0_MODEL_ID, 'Gemma-4-E4B-it-UD-Q4_K_XL');
+    assert.equal(L0_MODEL_EXPECTED_BYTES, 4_215_695_776);
     assert.match(L0_MODEL_URL, /huggingface\.co/);
-    assert.match(L0_MODEL_URL, /Gemma-4-E4B/);
+    assert.match(L0_MODEL_URL, /unsloth\/gemma-4-E4B-it-qat-GGUF/);
     assert.match(L0_MODEL_URL, /\.gguf$/);
     assert.equal(L0_MODEL_URLS[0], L0_MODEL_URL);
     assert.ok(L0_MODEL_URLS.length >= 1);

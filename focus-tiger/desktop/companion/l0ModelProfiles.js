@@ -28,6 +28,22 @@
 export const L0_MODEL_PROFILES = Object.freeze({
   'gemma4-e4b': {
     key: 'gemma4-e4b',
+    modelId: 'Gemma-4-E4B-it-UD-Q4_K_XL',
+    filename: 'Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf',
+    /** unsloth/gemma-4-E4B-it-qat-GGUF · Hugging Face API 2026-09-17 */
+    expectedBytes: 4_215_695_776,
+    minBytes: 4_000_000_000,
+    urls: [
+      'https://huggingface.co/unsloth/gemma-4-E4B-it-qat-GGUF/resolve/main/gemma-4-E4B-it-qat-UD-Q4_K_XL.gguf',
+      'https://hf-mirror.com/unsloth/gemma-4-E4B-it-qat-GGUF/resolve/main/gemma-4-E4B-it-qat-UD-Q4_K_XL.gguf'
+    ],
+    promptFamily: 'gemma',
+    displayCode: 'Model4E4',
+    lockedNote:
+      '2026-09-17 PO: unsloth QAT UD-Q4_K_XL default after jc/un A/B; rollback via gemma4-e4b-jc'
+  },
+  'gemma4-e4b-jc': {
+    key: 'gemma4-e4b-jc',
     modelId: 'Gemma-4-E4B-it-Q4_K_M',
     filename: 'Gemma-4-E4B-it-Q4_K_M.gguf',
     /** jc-builds/Gemma-4-E4B-it-GGUF · Hugging Face API 2026-09-16 */
@@ -39,7 +55,7 @@ export const L0_MODEL_PROFILES = Object.freeze({
     ],
     promptFamily: 'gemma',
     displayCode: 'Model4E4',
-    lockedNote: '2026-09-16 PO: Mac-first companion L3 default; multiling. Gemma4-E4B'
+    lockedNote: '2026-09-16 jc-builds Gemma4-E4B rollback profile'
   },
   'qwen3-1.7b': {
     key: 'qwen3-1.7b',
@@ -63,6 +79,9 @@ const PROFILE_ALIASES = Object.freeze({
   gemma: 'gemma4-e4b',
   gemma4: 'gemma4-e4b',
   e4b: 'gemma4-e4b',
+  unsloth: 'gemma4-e4b',
+  jc: 'gemma4-e4b-jc',
+  'jc-builds': 'gemma4-e4b-jc',
   qwen: 'qwen3-1.7b',
   'qwen3': 'qwen3-1.7b',
   '1.7b': 'qwen3-1.7b',
