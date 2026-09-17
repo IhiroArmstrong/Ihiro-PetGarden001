@@ -638,12 +638,15 @@
 > **地位**：Privacy 内可选社交基础设施。**≠** 全球灯火（AM）、**≠** Presence Signals、**≠** 聊天。  
 > **单元**：`focusCircleMembership.test.js` · cloud `focusCircleKv.test.ts`。  
 > **生产**：Worker 未部署 `/api/focus-circle` 时 Create/Join 须见错误文案，不挡 Sit。  
-> **点击**：Create / Join / Leave / Copy 均 0–1 秒内 disabled 或状态句。
+> **点击**：Create / Join / Leave / Copy 均 0–1 秒内 disabled 或状态句。Copy 后须见「已拷贝」类句，且面板仍开着、人数刷新时**不得立刻清掉**该句。Start a circle 若云端超过约 12 秒无响应，须出失败句并恢复可点（禁止无限等待光标）。Leave 后迟到的人数回写不得把人「加回去」。
 
 1. `?product=1` → ? → Privacy → **Focus Circle** → Start a circle → **0–1 秒内**见六位暗号与「一人」。  
 2. 另一标签 Join 同码 → 人数增至 2（满 8 时 Join 须见满员句）。  
 3. Leave → **0–1 秒内**回到未入圈态；错误暗号须见「无匹配」类文案。  
 4. `?circleJoin=XXXXXX` 打开 Privacy 时预填加入框。`?focusCircle=0` 禁用请求。
+5. Copy invite code → **0–1 秒内**见 copied 状态句；窗口再聚焦后该句仍在（剪贴板已有码却像没反应 = 失败）。
+6. Start a circle 云端卡住 → 约 12 秒内失败句 + 按钮可再点。
+7. Leave 后再 Join 同一六位码 → 须稳定显示已加入（暗号 + 人数 + Leave），不得停在 Start a circle。
 
 ---
 

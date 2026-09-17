@@ -588,6 +588,7 @@
   "PRIVACY_SHEET_FOCUS_CIRCLE_LEFT": "You left the circle.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_COPIED": "Invite code copied.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC": "Could not reach the circle service. Try again in a moment.",
+  "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT": "The circle service is taking too long. You can try again.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED": "Circles need the cloud service. Check your connection or try later.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_CODE": "Enter a six-character invite code.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_NOT_FOUND": "No circle matches that code.",

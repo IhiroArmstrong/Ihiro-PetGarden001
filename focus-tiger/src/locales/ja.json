@@ -583,6 +583,7 @@
   "PRIVACY_SHEET_FOCUS_CIRCLE_LEFT": "輪を出ました。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_COPIED": "合言葉をコピーしました。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC": "輪のサービスに届きませんでした。しばらくしてからお試しください。",
+  "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT": "輪のサービスが時間内に戻りませんでした。もう一度試せます。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED": "輪にはクラウド接続が必要です。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_CODE": "6文字の合言葉を入力してください。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_NOT_FOUND": "その合言葉の輪は見つかりません。",

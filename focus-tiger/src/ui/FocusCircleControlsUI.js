@@ -132,6 +132,7 @@ export class FocusCircleControlsUI {
   refresh() {
     const membership = readFocusCircleMembership(globalThis.localStorage);
     const inCircle = Boolean(membership);
+    const wasInCircle = !this.inPanel.hidden;
     this.notIn.hidden = inCircle;
     this.inPanel.hidden = !inCircle;
     this.createBtn.textContent = t('PRIVACY_SHEET_FOCUS_CIRCLE_CREATE');
@@ -161,7 +162,9 @@ export class FocusCircleControlsUI {
               String(count)
             );
     }
-    this._setStatus('', false);
+    if (wasInCircle !== inCircle) {
+      this._setStatus('', false);
+    }
     this._syncStatusPolling();
   }
 
@@ -204,6 +207,7 @@ export class FocusCircleControlsUI {
     this.joinBtn.disabled = disabled;
     this.leaveBtn.disabled = disabled;
     this.copyBtn.disabled = disabled;
+    this.joinInput.disabled = disabled;
   }
 
   async _handleCreate() {
@@ -218,7 +222,9 @@ export class FocusCircleControlsUI {
         const key =
           result.reason === 'disabled'
             ? 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED'
-            : 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC';
+            : result.reason === 'timeout'
+              ? 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT'
+              : 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC';
         this._setStatus(key, true);
         return;
       }
@@ -249,6 +255,8 @@ export class FocusCircleControlsUI {
           key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_FULL';
         } else if (result.reason === 'disabled') {
           key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED';
+        } else if (result.reason === 'timeout') {
+          key = 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT';
         }
         this._setStatus(key, true);
         return;

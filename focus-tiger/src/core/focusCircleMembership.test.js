@@ -10,6 +10,7 @@ import {
   clearFocusCircleMembership,
   isFocusCircleClientEnabled,
   joinFocusCircle,
+  leaveFocusCircle,
   normalizeFocusCircleCode,
   postFocusCircle,
   readCircleJoinQueryCode,
@@ -182,5 +183,138 @@ describe('focusCircleMembership', () => {
     stopFocusCircleStatusPolling();
     assert.ok(polls >= 1);
     assert.equal(readFocusCircleMembership(storage), null);
+  });
+
+  it('late status after leave does not restore membership', async () => {
+    const storage = memoryStorage();
+    writeFocusCircleMembership(storage, {
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      code: 'ABCD23',
+      memberCount: 1
+    });
+    let release;
+    const gate = new Promise((resolve) => {
+      release = resolve;
+    });
+    const pending = refreshFocusCircleStatus({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        await gate;
+        return {
+          ok: true,
+          schemaVersion: 1,
+          circleId: '11111111-1111-4111-8111-111111111111',
+          memberId: '22222222-2222-4222-8222-222222222222',
+          code: 'ABCD23',
+          memberCount: 2,
+          isMember: true
+        };
+      }
+    });
+    const left = await leaveFocusCircle({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => ({ ok: true })
+    });
+    assert.equal(left.ok, true);
+    assert.equal(readFocusCircleMembership(storage), null);
+    release();
+    await pending;
+    assert.equal(readFocusCircleMembership(storage), null);
+  });
+
+  it('older status response cannot overwrite a newer memberCount', async () => {
+    const storage = memoryStorage();
+    writeFocusCircleMembership(storage, {
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      code: 'ABCD23',
+      memberCount: 1
+    });
+    let resolveSlow;
+    const slow = new Promise((resolve) => {
+      resolveSlow = resolve;
+    });
+    let n = 0;
+    const postJson = async () => {
+      n += 1;
+      if (n === 1) {
+        await slow;
+        return {
+          ok: true,
+          schemaVersion: 1,
+          circleId: '11111111-1111-4111-8111-111111111111',
+          memberId: '22222222-2222-4222-8222-222222222222',
+          code: 'ABCD23',
+          memberCount: 1,
+          isMember: true
+        };
+      }
+      return {
+        ok: true,
+        schemaVersion: 1,
+        circleId: '11111111-1111-4111-8111-111111111111',
+        memberId: '22222222-2222-4222-8222-222222222222',
+        code: 'ABCD23',
+        memberCount: 2,
+        isMember: true
+      };
+    };
+    const first = refreshFocusCircleStatus({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson
+    });
+    const second = refreshFocusCircleStatus({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson
+    });
+    await second;
+    assert.equal(readFocusCircleMembership(storage)?.memberCount, 2);
+    resolveSlow();
+    await first;
+    assert.equal(readFocusCircleMembership(storage)?.memberCount, 2);
+  });
+
+  it('rate-limited status keeps the last known memberCount', async () => {
+    const storage = memoryStorage();
+    writeFocusCircleMembership(storage, {
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      code: 'ABCD23',
+      memberCount: 2
+    });
+    const result = await refreshFocusCircleStatus({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        const err = new Error('Too Many Requests');
+        /** @type {any} */ (err).status = 429;
+        throw err;
+      }
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'rate_limited');
+    assert.equal(readFocusCircleMembership(storage)?.memberCount, 2);
+  });
+
+  it('hanging create maps to timeout so callers can fail out', async () => {
+    const result = await postFocusCircle({
+      action: 'create',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      timeoutMs: 30,
+      getBaseUrl: () => 'https://example.test',
+      postJson: () => new Promise(() => {})
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'timeout');
   });
 });
