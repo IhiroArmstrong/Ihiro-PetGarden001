@@ -2,7 +2,7 @@
 
 日期：2026-09-18  
 修订：同日分析师挑刺后补硬锚 / 挂起分档 / 中间件顺序 / #839 关单条件  
-状态：**Slice 1 骨架本支**（点击原则定义 + O-04 三键；无产品 UI 改动）。Slice 2/3 仍须新 Chat 口令 **「大任务」**。  
+状态：**Slice 2 审计稿已入库**（只读；无产品 UI）。Slice 3 中间件仍须口令 **「大任务」**。审计 SSOT：`docs/MUTATION_THREE_STATE_SLICE2_AUDIT.md`。  
 建议模型（落地会话首条用户口吻）：`Cursor Model: Grok 4.6 / High / Fast OFF`  
 任务线：工作室流程 [#839](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/839)（`type:process`）。**禁止**挂产品 Epic。
 
@@ -167,7 +167,7 @@ Safari Circle 与提醒保存表面不同，和 O-04 / #710 / #732 放在一起�
 1. 三处正文已改：点击原则承载 §〇；O-04 与 M-01 只引用不复述。  
 2. 扫描器按三态分键；§2.1 锚绿（成功 token 不在失败键）。  
 3. 一次跨模块回归绿（同一 PR 或紧随的 process PR）：提醒保存成功确认仍可见 **且** Circle mutation 在超时窗口内有挂起**或**超时后有失败呈现（单测或 1 条 e2e）。  
-4. Slice 2 审计稿已入库（路径写进本 Brief 附录或 `docs/` 一页）。
+4. Slice 2 审计稿已入库（路径写进本 Brief 附录或 `docs/` 一页）。**本条已满足**：`docs/MUTATION_THREE_STATE_SLICE2_AUDIT.md`（2026-09-18）。1–3 未齐前仍不可关 #839。
 
 **不挡关**：存量 `grandfather` gap 未全部补 UI（另跟 TRACKER）；Z-dim；#838 人工关单；Confide / L3。
 
@@ -186,7 +186,7 @@ Safari Circle 与提醒保存表面不同，和 O-04 / #710 / #732 放在一起�
 5. `ReminderPreferenceUI` 成功 token 在失败列（§2.1）。  
 6. #710 留痕迹 / #732 提醒 z-index：同族「出事补一列」。  
 7. 点击原则「结果反馈」未拆三态，与 O-04、静默白名单并列。  
-8. `OVERLAY_UI_SURFACE` 全表 `failureFeedback: GAP` 行的三态缺口 — Slice 2 按该 JS 全表逐行扫。
+8. `OVERLAY_UI_SURFACE` 全表 `failureFeedback: GAP` 行的三态缺口 — Slice 2 已按该 JS 全表逐行扫，见 `MUTATION_THREE_STATE_SLICE2_AUDIT.md`。
 
 ---
 
@@ -214,3 +214,11 @@ Safari Circle 与提醒保存表面不同，和 O-04 / #710 / #732 放在一起�
 1. Brief 含 §〇 共享定义、§2.1 行号锚、挂起单独成档、中间件后做必做、#839 关单 AND。  
 2. 账本该行含关单句 + 8 项仍未修。  
 3. 无 `src/` 运行时 diff。
+
+---
+
+## 附录 · Slice 2 审计稿
+
+路径：[`docs/MUTATION_THREE_STATE_SLICE2_AUDIT.md`](../MUTATION_THREE_STATE_SLICE2_AUDIT.md)  
+结论摘要：36 行 O-04 已逐行定性；真正缺超时的是同 path 的 `witness` / `was_here`（及 Presence）；Circle Leave 先清本地且 UI 忽略失败；Newsletter/结账/Journey 备份 UI 已有三态但未进 O-04 键。#839 仅第 4 条因此满足。
+
