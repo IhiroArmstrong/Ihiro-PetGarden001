@@ -1,6 +1,6 @@
 # Task Brief · P0 中文「攻击他人」规则（EN 桶 fast-follow）
 
-> **状态（2026-09-18）**：Brief 已开 · **未开工代码**。须另口令「开工 P0 中文 aggression」。  
+> **状态（2026-09-18）**：Brief 已开 · **未开工代码**。工单 [#847](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/847)。须另口令「开工 P0 中文 aggression」。  
 > **并行线**：Read Hybrid 补漏率审计 `docs/read-hybrid-gapfill-rate-audit.md`（**禁止**与本 Brief 混 PR 改 send / Hybrid / E′）。  
 > **父 Brief**：`task-confide-aggression-toward-others.md`（#566 已合；当时拍板本轮仅 EN）。  
 > **账本**：`ISSUE_LEDGER.md`「I want to beat people」行 · 2026-09-18 肉测 `我想打人` → L3。
