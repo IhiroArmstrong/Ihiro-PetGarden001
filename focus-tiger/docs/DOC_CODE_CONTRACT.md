@@ -166,7 +166,26 @@ git commit --no-verify -m "…"
 5. [ ] 更新本文件「已纳入」表一行；`SHARED_RESOURCES` / `ARCHITECTURE` 叙述段若有波及，人工补一句指针。  
 6. [ ] **禁止**只改手写文档不改 SSOT；**禁止**只改 SSOT 不 `doc-sync`。
 
-### O-04 新建可点击叠层（复制进 PR / Brief）
+### 类别契约：穷尽失败模式 → 建表 → 按表扫（复制进 Brief / PR）
+
+**何时用**：已判定缺陷是**一类**系统性漏洞（同一根因可在不同表层/马甲再现），不是一次性笔误。叙事与 H7 见 `DEV_WORKFLOW_QUALITY.md` §6.23。
+
+1. [ ] **穷尽列维**：问「用户还能怎样失败」，按**属性**一次列齐（例：登记漏、接线漏、失败静默、被遮挡抢点、连续字面复读…），不靠「这次复现长什么样」  
+2. [ ] **建表**：`src/core/*ContractRegistry.js` 或等价 SSOT；每行一实例，每列一失败维；新行禁止默 `gap`（存量须 `grandfather: true`）  
+3. [ ] **按表扫**：新建或扩展 `scripts/*-doc-check.js` 并注册进 `docs:check`；**整表**扫，禁止只补出事那一列  
+4. [ ] **行为锁 (b)**：按行或按维补 smoke / e2e；做不到的列须显式 gap + `TEST_TRACKER`「明确未测」——禁止契约单测冒充用户路径  
+5. [ ] **覆盖范围**（§6.23 H6）：TRACKER / PR 写明自动化已锁 / 须人工 / 明确未测  
+6. [ ] 更新本文件「已纳入」表一行；领域实例清单（若有）挂在本段下方，**禁止**另起平行总册  
+
+**已落地实例**（同一方法，不是多套流程）：
+
+| ID | 领域 | SSOT 表 | 扫描 |
+|---|---|---|---|
+| **O-04** | 叠层可点 UI | `OVERLAY_UI_SURFACE` | `overlay-contract-ui-check.js` O-04 段 |
+| **V-01** | 跨视口可见 | `visibilityContractRegistry` | `visibility-contract-doc-check` + `test:e2e:visibility` 整表 |
+| **G-01～G-04** | Session 门闩 | `sessionUiGateContractRegistry` | `gate-contract-doc-check` + `SessionUiGate.test.js` |
+
+### 实例：O-04 新建可点击叠层（复制进 PR / Brief）
 
 对照 `OVERLAY_UI_SURFACE` **七列一次填齐**，禁止只补「这次出事的那一列」：
 
