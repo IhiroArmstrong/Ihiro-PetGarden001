@@ -100,9 +100,24 @@ export async function loadModelHold(opts) {
       context = next.context;
       chat = next.chat;
       const maxTokens = Number(genOpts.maxTokens);
+      const genStarted = Date.now();
+      let firstTokenAt = null;
       const text = await chat.prompt(String(prompt || ''), {
-        maxTokens: Number.isFinite(maxTokens) && maxTokens > 0 ? maxTokens : 48
+        maxTokens: Number.isFinite(maxTokens) && maxTokens > 0 ? maxTokens : 48,
+        onTextChunk() {
+          if (firstTokenAt == null) firstTokenAt = Date.now();
+        }
       });
+      const genEnded = Date.now();
+      if (typeof genOpts.onTiming === 'function') {
+        const ttftMs =
+          firstTokenAt == null ? genEnded - genStarted : firstTokenAt - genStarted;
+        genOpts.onTiming({
+          ttftMs,
+          totalMs: genEnded - genStarted,
+          decodeMs: Math.max(1, genEnded - (firstTokenAt ?? genStarted))
+        });
+      }
       return String(text || '');
     },
     async dispose() {
