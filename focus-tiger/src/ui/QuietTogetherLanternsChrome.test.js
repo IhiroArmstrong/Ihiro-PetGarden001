@@ -15,6 +15,17 @@ const src = readFileSync(join(here, 'QuietTogetherLanternsChrome.js'), 'utf8');
 test('refresh prefers live sitting snapshot over cached chrome count', () => {
   assert.match(
     src,
-    /const snapshot = getLanternSittingSnapshot\(\);\s*const sitting = snapshot != null \? snapshot : this\._sitting;/
+    /const snapshot = getLanternSittingSnapshot\(\);\s*let sitting = snapshot != null \? snapshot : this\._sitting;/
   );
+});
+
+test('uses svg lantern shells instead of css dots', () => {
+  assert.match(src, /createPresenceLanternShell/);
+  assert.match(src, /quiet-together-lanterns__lantern/);
+  assert.doesNotMatch(src, /quiet-together-lanterns__dot/);
+});
+
+test('debugLanterns preview bypasses presence gates', () => {
+  assert.match(src, /readDebugLanternsQueryFlag/);
+  assert.match(src, /DEBUG_LANTERNS_GLOBAL_MOCK_COUNT/);
 });
