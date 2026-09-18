@@ -68,7 +68,7 @@
 
 - **Confide Read Hybrid memory_list 误判（2026-09-18 · #822 关单）**：生活/动机问句不再进列表；`Show me what you remember` 仍列表。L3 答句质量不在本单。权威账本 `ISSUE_LEDGER` 该行「已解决」。
 
-- **状态变更三态可见性 Brief（2026-09-18 · 纯文档 · 无运行时）**：`task-mutation-three-state-visibility.md` · [#839](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/839)。Circle 挂死与提醒「没反应」是同一习惯：契约追事故补列，不穷尽挂起/成功/失败。**禁止**第四份 SSOT；落地 Slice 1–3 须新 Chat「大任务」。账本 `ISSUE_LEDGER` 该扇出行。
+- **状态变更三态可见性 Brief（2026-09-18 · 纯文档 · 无运行时）**：`task-mutation-three-state-visibility.md` · [#839](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/839)。概念只定义一次（点击原则），O-04 升级为 pending/success/fail 三键而非只加成功列。挂起单独成档。中间件是通解、Slice 3 必做。关单 AND 见 Brief §七。账本该扇出行。落地须新 Chat「大任务」· `Cursor Model: Grok 4.6 / High / Fast OFF`。
 
 - **L3 情绪/反思 Prompt 重写 Brief（2026-09-18 · 纯文档 · 无运行时）**：`task-l3-observe-prompt-redesign.md`。点关键词 × 禁风景互打架；新增坏模式 `The X is a Y.`。对照实验先方案 B；改生产须新 Chat「大任务」。
 
