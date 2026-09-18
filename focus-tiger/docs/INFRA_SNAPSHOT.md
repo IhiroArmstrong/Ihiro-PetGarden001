@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `60d6cb92` |
-| `snapshot_date` | 2026-09-05 |
+| `snapshot_base` | `origin/develop` tip `255167a4` |
+| `snapshot_date` | 2026-09-16 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -29,7 +29,8 @@
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
-| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。审计：`REMOTE_PARAM_CANDIDATES.md` · `taste-layer-kv-changelog.md` |
+| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
+| 生产 Worker Version | `f0ddf1b4-05b4-4c87-a277-cb292ecddc18`（2026-09-16 · §6 KV 分叉验 redeploy） |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
