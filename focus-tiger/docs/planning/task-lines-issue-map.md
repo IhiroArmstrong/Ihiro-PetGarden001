@@ -47,6 +47,16 @@
 | 切片 | [#744](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/744) | Phase 4 · 万圣节氛围放出 | 父 #742；波次 1 |
 | 切片 | [#745](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/745) | Phase 4 · 元旦与跨年氛围放出 | 父 #742；波次 1 |
 
+## 防剽窃层 · 远程参数化 §6 切片（2026-09-18 回填）
+
+> 父 Epic **#646**（防剽窃层）。Runtime/文档已合项 **CLOSED** 作看板索引；人工验收仍见 `TEST_TRACKER` 碎片。
+
+| 类型 | Issue | 标题 | PR / 备注 | 父 Epic |
+|---|---|---|---|---|
+| 切片（文档 · CLOSED） | [#844](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/844) | 远程参数化候选全项目审计 | [#717](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/717) · `REMOTE_PARAM_CANDIDATES.md` | #646 |
+| 切片（runtime · CLOSED） | [#845](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/845) | 品味权重 + Honesty 30 → `TASTE_LAYER_KV` | [#722](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/722) · binding [#724](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/724) · 生产分叉 [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) | #646 |
+| 切片（runtime · CLOSED） | [#846](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/846) | 莲花阶梯系数 → `GROWTH_METRICS_KV` | [#725](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/725) · 生产分叉 [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) | #646 |
+
 ## Local AI Phase 1 切片（2026-09-17 回填）
 
 > 父 Epic **#639**（Confide 与 AI 仪式应用）· 验收轨 **#647**（Phase 1A/1B/1C 验收）。Runtime 已合项在 #639 下 **CLOSED** 作索引；开放 QA 在 #647。
@@ -99,3 +109,11 @@
 | #647 验收切片 | CREATE #812–#816（#812 Gate 0.2 关单注记；#813–#815 待人工；#816 阻塞 shipping Brief） |
 | Brief 骨架 | `task-briefs/task-local-ai-reflection-companion-shipping.md` |
 | Epic 正文 | #639 · #647 更新「已知子任务/PR」 |
+
+## 建库执行记录（2026-09-18 · #646 远程参数化 §6 切片回填）
+
+| 步骤 | 结果 |
+|---|---|
+| #646 子切片 | CREATE #844–#846（文档 #717 · runtime #722 · runtime #725；均已 CLOSED） |
+| Project 挂板 | #844–#846 加入 Focus Tiger 开发任务线看板 #1 |
+| Epic 正文 | #646 更新「已知子任务/PR」 |
