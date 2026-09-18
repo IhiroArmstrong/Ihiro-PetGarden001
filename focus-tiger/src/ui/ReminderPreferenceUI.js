@@ -25,6 +25,7 @@ const CLOCK_ICON = `<svg class="reminder-pref__icon-svg" viewBox="0 0 24 24" ari
 
 const DEFAULT_TIME = { hour: 9, minute: 0 };
 const FADE_MS = 260;
+const SAVED_FLASH_MS = 2200;
 const STYLE_ID = 'reminder-preference-styles';
 
 /**
@@ -42,7 +43,7 @@ function toTimeInputValue(pref) {
  * @returns {{ hour: number, minute: number } | null}
  */
 function parseTimeInputValue(value) {
-  const match = /^(\d{1,2}):(\d{2})$/.exec(String(value || '').trim());
+  const match = /^(\d{1,2}):(\d{2})(?::\d{2})?$/.exec(String(value || '').trim());
   if (!match) return null;
   const hour = Number(match[1]);
   const minute = Number(match[2]);
@@ -73,6 +74,7 @@ export class ReminderPreferenceUI {
     this.handlers = handlers;
     this._expanded = false;
     this._visible = true;
+    this._syncingTimeValue = false;
 
     this.root = document.createElement('div');
     this.root.id = 'reminder-preference';
@@ -127,7 +129,10 @@ export class ReminderPreferenceUI {
     this.timeInput.step = '60';
     // Native picker commit still saves; mid-edit `input` no longer auto-writes
     // so → / Enter remain the clear "saved" affordance.
-    this.timeInput.addEventListener('change', () => this._commitTime({ flash: false }));
+    this.timeInput.addEventListener('change', () => {
+      if (this._syncingTimeValue) return;
+      this._commitTime({ flash: false });
+    });
     this.timeInput.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
       event.preventDefault();
@@ -153,6 +158,7 @@ export class ReminderPreferenceUI {
     this.savedBriefEl.id = 'reminder-preference-saved';
     this.savedBriefEl.className = 'reminder-pref__saved';
     this.savedBriefEl.setAttribute('role', 'status');
+    this.savedBriefEl.setAttribute('aria-live', 'polite');
     this.savedBriefEl.hidden = true;
 
     this.timeRow.append(
@@ -251,12 +257,28 @@ export class ReminderPreferenceUI {
       const parsed =
         parseTimeInputValue(this.timeInput.value) || DEFAULT_TIME;
       setReminderPreference(parsed);
-      this.timeInput.value = toTimeInputValue(parsed);
+      this._syncTimeInputValue(toTimeInputValue(parsed));
     } else {
       setReminderPreference(null);
     }
     this._render();
-    this.handlers.onPreferenceChange?.();
+    this._notifyPreferenceChange();
+  }
+
+  /**
+   * Programmatic time writes must not re-enter `change` and steal confirm flash.
+   * @param {string} value
+   */
+  _syncTimeInputValue(value) {
+    this._syncingTimeValue = true;
+    this.timeInput.value = value;
+    this._syncingTimeValue = false;
+  }
+
+  _notifyPreferenceChange() {
+    const notify = this.handlers.onPreferenceChange;
+    if (!notify) return;
+    window.requestAnimationFrame(() => notify());
   }
 
   _commitTime({ flash }) {
@@ -265,10 +287,11 @@ export class ReminderPreferenceUI {
     if (!parsed) return;
     setReminderPreference(parsed);
     if (flash) {
-      this._savedFlashUntil = Date.now() + 1600;
+      this._savedFlashUntil = Date.now() + SAVED_FLASH_MS;
     }
+    this._syncTimeInputValue(toTimeInputValue(parsed));
     this._render();
-    this.handlers.onPreferenceChange?.();
+    this._notifyPreferenceChange();
   }
 
   _onTimeChange() {
@@ -290,7 +313,6 @@ export class ReminderPreferenceUI {
     this.enableLabelText.textContent = t('reminder.enable_label');
     this.timeLabelText.textContent = t('reminder.time_label');
     this.confirmHintEl.textContent = t('reminder.confirm_hint');
-    this.confirmBtn.setAttribute('aria-label', t('reminder.confirm_aria'));
     this.blurbEl.textContent = t(notes.dailyBlurbKey);
     this.toggleBtn.setAttribute('aria-label', t('reminder.settings_aria'));
     this.toggleBtn.setAttribute(
@@ -300,7 +322,7 @@ export class ReminderPreferenceUI {
     this.toggleBtn.classList.toggle('is-armed', enabled);
 
     this.enableInput.checked = enabled;
-    this.timeInput.value = toTimeInputValue(displayPref);
+    this._syncTimeInputValue(toTimeInputValue(displayPref));
     // 今日已练：时间仍可改（留给以后的日子）；仅「未开启」时禁用
     this.timeInput.disabled = !enabled;
     this.confirmBtn.disabled = !enabled;
@@ -308,22 +330,19 @@ export class ReminderPreferenceUI {
     this.confirmHintEl.hidden = !enabled;
 
     const showSaved = Date.now() < this._savedFlashUntil;
+    const savedLabel = showSaved ? t('reminder.saved_brief') : '';
     this.savedBriefEl.hidden = !showSaved;
-    this.savedBriefEl.textContent = showSaved ? t('reminder.saved_brief') : '';
+    this.savedBriefEl.textContent = savedLabel;
+    this.confirmBtn.classList.toggle('is-saved', showSaved);
+    this.confirmBtn.textContent = showSaved ? '✓' : '→';
+    this.confirmBtn.setAttribute(
+      'aria-label',
+      showSaved ? savedLabel : t('reminder.confirm_aria')
+    );
     if (showSaved) {
       const remain = this._savedFlashUntil - Date.now();
       window.clearTimeout(this._savedFlashTimer);
       this._savedFlashTimer = window.setTimeout(() => this._render(), remain + 20);
-    }
-
-    if (notes.statusNoteKey) {
-      this.statusEl.hidden = false;
-      this.statusEl.textContent = t(notes.statusNoteKey);
-      this.statusEl.dataset.note = notes.statusNoteKey;
-    } else {
-      this.statusEl.hidden = true;
-      this.statusEl.textContent = '';
-      delete this.statusEl.dataset.note;
     }
 
     if (notes.statusNoteKey) {
@@ -487,6 +506,14 @@ export class ReminderPreferenceUI {
       .reminder-pref__confirm:active:not(:disabled) {
         transform: scale(0.96);
       }
+      .reminder-pref__confirm.is-saved {
+        background: rgba(130, 170, 115, 0.28);
+        border-color: rgba(95, 130, 85, 0.55);
+        color: rgba(55, 95, 48, 0.96);
+        box-shadow:
+          0 0 0 2px rgba(130, 170, 115, 0.22),
+          0 1px 0 rgba(255, 255, 255, 0.7) inset;
+      }
       .reminder-pref__confirm-hint {
         margin: 0;
         font-size: 11.5px;
@@ -498,10 +525,14 @@ export class ReminderPreferenceUI {
       }
       .reminder-pref__saved {
         margin: 0;
-        font-size: 12px;
+        padding: 7px 10px;
+        border-radius: 10px;
+        font-size: 13px;
         font-weight: 560;
         line-height: 1.35;
-        color: rgba(95, 130, 85, 0.95);
+        color: rgba(55, 95, 48, 0.96);
+        background: rgba(130, 170, 115, 0.16);
+        border: 1px solid rgba(95, 130, 85, 0.32);
       }
       .reminder-pref__saved[hidden] {
         display: none !important;
