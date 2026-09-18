@@ -25,3 +25,10 @@ test('create and join map timeout to a recoverable error key', () => {
   assert.match(src, /PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT/);
   assert.match(src, /result\.reason === 'timeout'/);
 });
+
+test('leave maps timeout to fail copy and reads result.ok', () => {
+  assert.match(src, /async _handleLeave\(\)/);
+  assert.match(src, /result\.ok/);
+  assert.match(src, /PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT/);
+  assert.match(src, /PRIVACY_SHEET_FOCUS_CIRCLE_LEFT/);
+});

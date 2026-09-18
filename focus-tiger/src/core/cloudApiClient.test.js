@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  CLOUD_JSON_DEFAULT_TIMEOUT_MS,
   DEFAULT_CLOUD_API_BASE_URL,
   getCloudApiBaseUrl,
   postCloudJson
@@ -99,5 +100,32 @@ describe('postCloudJson desktop IPC', () => {
         return true;
       }
     );
+  });
+
+  it('fails hanging desktop IPC with 408 after timeoutMs', async () => {
+    const started = Date.now();
+    await assert.rejects(
+      () =>
+        postCloudJson(
+          '/api/focus-circle',
+          { body: '{}' },
+          {
+            timeoutMs: 40,
+            desktopShell: {
+              cloudPostJson: () => new Promise(() => {})
+            }
+          }
+        ),
+      (err) => {
+        assert.equal(err.message, 'timeout');
+        assert.equal(err.status, 408);
+        return true;
+      }
+    );
+    assert.ok(Date.now() - started < 1000);
+  });
+
+  it('exports a default click-mutation timeout', () => {
+    assert.equal(CLOUD_JSON_DEFAULT_TIMEOUT_MS, 12000);
   });
 });

@@ -149,5 +149,14 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(src, /SUPPORT_PRO_ERROR/);
     assert.match(src, /SUPPORT_COMPANION_ADDON_ERROR/);
   });
+
+  it('must not close before awaiting checkout handlers', () => {
+    const src = readFileSync(join(here, '../ui/SupportYinModalUI.js'), 'utf8');
+    assert.doesNotMatch(
+      src,
+      /this\.close\(\);\s*if \(kind === 'sanctuary'\)/
+    );
+    assert.match(src, /if \(!inlineCheckout\)/);
+  });
 });
 

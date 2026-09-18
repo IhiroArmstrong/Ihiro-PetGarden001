@@ -24,6 +24,7 @@ import { runOverlayContractUiCheck } from './overlay-contract-ui-check.js';
 import { runPracticeAggregateCoverageAudit } from './audit-practice-coverage.js';
 import { runGrowthMetricsAudit } from './audit-growth-metrics.js';
 import { runLocalBackupCoverageAudit } from './audit-local-backup-coverage.js';
+import { runMutationM01Check } from './mutation-m01-check.js';
 
 function main() {
   let ok = true;
@@ -40,6 +41,7 @@ function main() {
   if (!runPracticeAggregateCoverageAudit()) ok = false;
   if (!runGrowthMetricsAudit()) ok = false;
   if (!runLocalBackupCoverageAudit()) ok = false;
+  if (!runMutationM01Check()) ok = false;
 
   if (!ok) {
     console.error(
