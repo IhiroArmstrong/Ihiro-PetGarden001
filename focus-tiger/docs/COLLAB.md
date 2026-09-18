@@ -148,7 +148,7 @@ COLLAB.md（本文档，协作层）
 1. **overlayBusy / 叠层忙碌门闩** → 对照 `SHARED_RESOURCES.md` §4.1  
 2. **HUD 呼吸 / 计时驱动** → 对照 `SHARED_RESOURCES.md` §4.2  
 3. **z-index / overlay 遮罩 dim** → 对照 `Z_INDEX.md`「Idle 常驻 chrome（遮罩 dim 消费者）」  
-4. **新建可点击叠层** → 对照 `DOC_CODE_CONTRACT.md` **O-04** 七列（登记 / `request*Slot` 或 derive / z 归属 / 挂载与 O-02 / 失败反馈 / 遮挡共存 e2e / TRACKER 覆盖范围）。结论句须点名 `OVERLAY_UI_SURFACE` 将新增的那一行，禁止只写「已对照 overlay registry」。
+4. **新建可点击叠层** → 对照 `DOC_CODE_CONTRACT.md` **O-04** 三态键 + 其余列（登记 / `request*Slot` 或 derive / z 归属 / 挂载与 O-02 / `mutationFeedback.{pending,success,fail}` / 遮挡共存 e2e / TRACKER 覆盖范围）。结论句须点名 `OVERLAY_UI_SURFACE` 将新增的那一行及三键字段变更，禁止只写「已对照 overlay registry」。定义见点击原则「持久化三态可见性」，此处不复述三态。
 
 **合格**：每条写出**一句结论**，点名清单里的具体项，并写清「不受影响」或「需要联动」。
 
@@ -169,4 +169,4 @@ COLLAB.md（本文档，协作层）
 运行时字段（如 registry 的 `busyGateExceptions`）**本约定不要求同 PR 改 JS**；先把结论写进 Brief。清单漏项则先补 `SHARED_RESOURCES` / `Z_INDEX` 再实现。
 
 ---
-*版本：1.9 · 2026-09-16 Brief 叠层 O-04 七列须写结论句；CI 绿合 develop；人工测试事后批量*
+*版本：1.10 · 2026-09-18 Brief 叠层 O-04 三态键须写结论句；CI 绿合 develop；人工测试事后批量*

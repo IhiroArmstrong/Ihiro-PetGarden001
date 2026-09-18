@@ -5,7 +5,8 @@
  */
 
 /**
- * Assert overlay UI occupancy map + O-04 surface checklist.
+ * Assert overlay UI occupancy map + O-04 surface checklist
+ * (`mutationFeedback.{pending,success,fail}`).
  *
  *   node scripts/overlay-contract-ui-check.js
  */
@@ -18,7 +19,11 @@ import {
   OVERLAY_UI_FILE_SOURCES,
   OVERLAY_UI_POINTER_HIT_TEST_REQUIRED
 } from '../src/core/overlaySlotContractRegistry.js';
-import { OVERLAY_UI_SURFACE } from '../src/core/overlayUiSurfaceContract.js';
+import {
+  OVERLAY_UI_MUTATION_FEEDBACK_KEYS,
+  OVERLAY_UI_SUCCESS_TOKENS_FORBIDDEN_IN_FAIL,
+  OVERLAY_UI_SURFACE
+} from '../src/core/overlayUiSurfaceContract.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, '..');
@@ -159,6 +164,66 @@ function scanClaim(claim, label, fileSrc, readRel) {
 }
 
 /**
+ * O-04 persistence three-state: pending / success / fail must all exist;
+ * tokens must not cross keys; known success tokens must not sit on fail.
+ *
+ * @param {object} row
+ * @param {string} fileSrc
+ * @param {(rel: string) => string} readRel
+ * @returns {string[]}
+ */
+function scanMutationFeedback(row, fileSrc, readRel) {
+  /** @type {string[]} */
+  const errors = [];
+  const label = `${row.file} mutationFeedback`;
+  if (Object.prototype.hasOwnProperty.call(row, 'failureFeedback')) {
+    errors.push(
+      `${row.file}: failureFeedback is retired; use mutationFeedback.{pending,success,fail}`
+    );
+  }
+  const mf = row.mutationFeedback;
+  if (!mf || typeof mf !== 'object' || Array.isArray(mf)) {
+    errors.push(`${label}: missing object`);
+    return errors;
+  }
+  for (const key of OVERLAY_UI_MUTATION_FEEDBACK_KEYS) {
+    if (!Object.prototype.hasOwnProperty.call(mf, key)) {
+      errors.push(`${label}: missing ${key}`);
+      continue;
+    }
+    errors.push(...scanClaim(mf[key], `${label}.${key}`, fileSrc, readRel));
+  }
+  for (const key of Object.keys(mf)) {
+    if (!OVERLAY_UI_MUTATION_FEEDBACK_KEYS.includes(key)) {
+      errors.push(`${label}: unknown key ${key}`);
+    }
+  }
+  /** @type {Map<string, string[]>} */
+  const tokenKeys = new Map();
+  for (const key of OVERLAY_UI_MUTATION_FEEDBACK_KEYS) {
+    for (const token of mf[key]?.tokens || []) {
+      const list = tokenKeys.get(token) || [];
+      list.push(key);
+      tokenKeys.set(token, list);
+    }
+  }
+  for (const [token, keys] of tokenKeys) {
+    if (keys.length > 1) {
+      errors.push(
+        `${label}: token ${token} must not appear in multiple keys (${keys.join(',')})`
+      );
+    }
+  }
+  const failTokens = mf.fail?.tokens || [];
+  for (const token of OVERLAY_UI_SUCCESS_TOKENS_FORBIDDEN_IN_FAIL) {
+    if (failTokens.includes(token)) {
+      errors.push(`${label}.fail must not include success token ${token}`);
+    }
+  }
+  return errors;
+}
+
+/**
  * @returns {boolean}
  */
 export function runOverlayContractUiCheck() {
@@ -285,14 +350,7 @@ export function runOverlayContractUiCheck() {
       errors.push(`${row.file} mount must be body | ui-overlay | mixed`);
     }
 
-    errors.push(
-      ...scanClaim(
-        row.failureFeedback,
-        `${row.file} failureFeedback`,
-        src,
-        readRel
-      )
-    );
+    errors.push(...scanMutationFeedback(row, src, readRel));
     errors.push(
       ...scanClaim(row.e2eOverlap, `${row.file} e2eOverlap`, src, readRel)
     );
