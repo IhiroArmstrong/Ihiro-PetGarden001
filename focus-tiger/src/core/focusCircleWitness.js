@@ -246,7 +246,8 @@ export async function postFocusCircleWitness({
   memberId = '',
   phraseKey = '',
   traceId = '',
-  storage = globalThis.localStorage
+  storage = globalThis.localStorage,
+  updateIdleSnapshot = true
 } = {}) {
   if (!getBaseUrl()) {
     return { ok: false, reason: 'cloud_api_unconfigured', skipped: true };
@@ -276,7 +277,10 @@ export async function postFocusCircleWitness({
     if (action === 'witness_peek') {
       const traces = parseWitnessPeekBody(body);
       if (!traces) return { ok: false, reason: 'bad_payload', skipped: true };
-      const remembered = rememberWitnessPeek(traces, storage);
+      const remembered =
+        updateIdleSnapshot === false
+          ? { changed: false, trace: witnessPeekSnapshot }
+          : rememberWitnessPeek(traces, storage);
       return { ok: true, traces, ...remembered, skipped: false };
     }
     if (action === 'witness_leave') {
