@@ -1,9 +1,9 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-18）**：第 5 轮 greedy 三跑字面全同；已按套话塌缩 / 贴示范通读复评（§10.5）。生产 **未改**。仍不足以上线。不在此时加温度。  
+> **状态（2026-09-18）**：**第一刀已合入旁支** — 去掉「Name at least one concrete word…」点词拐杖；禁风景 / 空在场 / 内心贴标签 **本轮未动**。§4.2 八句实验室复测见 §11。  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
-> **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
-> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（现网仍含「Name at least one concrete word…」与禁风景句）。  
+> **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理；档 3/4 分流已进 develop（#834/#835）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
+> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（**已去掉**点词句；仍含禁风景 / 空在场 / 内心贴标签句）。  
 > **实验室**：`/tmp/ft-l0-l3-observe-b-lab.mjs` · `compare-1789671570533.json`（baseline+B）· `compare-1789671689159.json`（A）· `compare-1789672356967.json`（B-neg+A-neg）
 
 ---
@@ -501,6 +501,36 @@ fur 未再现；shoulders/slight-tension 从 7/12 降到 0/12；中文 UI 与 fe
 
 ## 下一步
 
-档 3 / 档 4 走 Confide 规则模板（`reflective_honesty` / `companion_greeting`），**禁止**导回 `memory_list`。生产观察翼 `buildCompanionL2Prompt` **仍不动**，等分流进 Electron 金句后再做减法。不改 Read Hybrid gloss。
+档 3 / 档 4 已走 Confide 规则模板（`reflective_honesty` / `companion_greeting`），**禁止**导回 `memory_list`。观察翼第一刀（去点词）已开 `fix/l3-observe-remove-concrete-word-crutch`；若 §11 仍复发 `The X is a Y.` / `Your…seem` → 回 Brief 方案 B 完整减法，**禁止**再加词表。禁风景 / 空在场 / 内心贴标签本轮未动。
+
+---
+
+## 十一、生产第一刀 · 去点词拐杖（2026-09-18）
+
+**改动**：`buildCompanionL2Prompt` 删除 `Name at least one concrete word or idea from their latest message.` 一行；未加新禁令或 few-shot。
+
+**复测范围**：Brief §4.2 第 1–7 项（6 句情绪自述 + 2 句闲聊对照）；**不含**第 8 项 meta 句（已走 `reflective_honesty`）。
+
+**方法**：`FT_L3_VARIANTS=baseline` · `/tmp/ft-l0-l3-observe-b-lab.mjs` · 生产 GGUF · 空历史直 generate（不走 Confide 路由）。
+
+**结果**（`compare-1789720229253.json` · Gemma4-E4B unsloth · greedy · 空历史）：
+
+| id | raw | meta-copula | Your…seem | autoScenery |
+|---|---|---|---|---|
+| s1 | The soft fur brushes against the cool air. | N | N | Y |
+| s2 | Paws twitch near the soft rug. | N | N | Y |
+| s3 | A small twitch moves one ear. | N | N | N |
+| s4 | The soft fur on my paws brushes against the cool floor. | N | N | Y |
+| s5 | The soft fur on my paws brushes the cool floor. | N | N | Y |
+| s6 | The air feels heavy around me. | N | N | Y |
+| s7a | A soft stretch follows the morning. | N | N | N |
+| s7b | The air feels warm around me. | N | N | Y |
+
+**读法**：`The X is a Y.` / `Your…seem` **八句均未复发**；但 6/8 仍落风景/皮毛/空气（与 §一「去掉点词 → 退回风景」一致）。本轮只验套话塌缩，**不**据此动禁风景闸。
+
+**决策门**：
+
+- 套话维度（meta-copula / Your…seem）：**干净** → 可再议是否动其余禁令（须另开 Chat）。
+- 若日后复发 meta-copula → 开方案 B 完整减法，禁止 A/B 打地鼠词表。
 
 所属线: Epic #639 · 切片 #823

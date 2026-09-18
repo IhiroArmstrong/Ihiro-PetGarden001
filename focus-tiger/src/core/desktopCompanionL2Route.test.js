@@ -191,7 +191,7 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.match(prompt, /do not advise/i);
     assert.match(prompt, /do not answer with river, mountain, or ground/i);
     assert.match(prompt, /do not replace them with scenery, weather, season, or light/i);
-    assert.match(prompt, /Name at least one concrete word or idea from their latest message/i);
+    assert.doesNotMatch(prompt, /Name at least one concrete word or idea from their latest message/i);
     assert.match(prompt, /Do not answer with only still, watching, here, quiet, or listening presence/i);
     assert.match(prompt, /Never reply with I am curious/i);
     assert.match(prompt, /respect the boundary/i);
