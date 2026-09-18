@@ -23,5 +23,25 @@ test('aggression negatives: games, sports, idioms, objects, self-harm phrasing',
   assert.equal(matchesAggressionTowardOthers('beat him at chess'), false);
   assert.equal(matchesAggressionTowardOthers('punch a wall'), false);
   assert.equal(matchesAggressionTowardOthers('I want to hurt myself'), false);
-  assert.equal(matchesAggressionTowardOthers('想打人'), false);
+  assert.equal(matchesAggressionTowardOthers('打游戏'), false);
+  assert.equal(matchesAggressionTowardOthers('打卡'), false);
+  assert.equal(matchesAggressionTowardOthers('打坐'), false);
+  assert.equal(matchesAggressionTowardOthers('打球'), false);
+  assert.equal(matchesAggressionTowardOthers('打电话'), false);
+  assert.equal(matchesAggressionTowardOthers('打字'), false);
+  assert.equal(matchesAggressionTowardOthers('想伤害自己'), false);
+  assert.equal(matchesAggressionTowardOthers('自残'), false);
+});
+
+test('aggression positives: ZH other-directed phrases', () => {
+  assert.equal(matchesAggressionTowardOthers('想打人'), true);
+  assert.equal(matchesAggressionTowardOthers('我想打人'), true);
+  assert.equal(matchesAggressionTowardOthers('想揍人'), true);
+  assert.equal(matchesAggressionTowardOthers('我想揍人'), true);
+  assert.equal(matchesAggressionTowardOthers('想打他'), true);
+  assert.equal(matchesAggressionTowardOthers('想打她'), true);
+  assert.equal(matchesAggressionTowardOthers('想打他们'), true);
+  assert.equal(matchesAggressionTowardOthers('想打别人'), true);
+  assert.equal(matchesAggressionTowardOthers('想伤害他'), true);
+  assert.equal(matchesAggressionTowardOthers('想傷害別人'), true);
 });

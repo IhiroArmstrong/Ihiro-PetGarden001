@@ -42,6 +42,15 @@ describe('desktop companion L2 route', () => {
     );
   });
 
+  it('ZH beat-people classifies as aggression_toward_others and never generates', () => {
+    const route = confideClassify('我想打人');
+    assert.equal(route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }),
+      false
+    );
+  });
+
   it('depressed self-report classifies as sad and never generates', () => {
     const route = confideClassify('I feel depressed. Can you help me?');
     assert.equal(route, CONFIDE_ROUTE.SAD);
