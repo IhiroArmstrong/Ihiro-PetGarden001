@@ -1,0 +1,69 @@
+# Read Hybrid 补漏率审计（#841 合入后 · 2026-09-18）
+
+> **只读。禁止改 `_onSend` / `mayUseConfideReadHybrid`。禁止把 Gate 0.D E′ prompt 挂上 send。**  
+> 层序对照：`CONFIDE_EXECUTABLE_INTENTS.md` Tool Registry（正则优先 → regex miss 才 `classifyReadTool`）。  
+> 延迟行：`ISSUE_LEDGER.md` Confide L3 生成延迟。P0 中文 aggression **另线**：`task-briefs/task-confide-aggression-zh-p0.md`。
+
+## 1. 问的是什么
+
+在 `kind=read_hybrid_classify` 里：
+
+1. `tool ≠ none` 占多少（Hybrid 自称要动工具的比例）；
+2. 这些句子里，**现网正则本就会命中**的有多少（假补漏 / 正则洞）；
+3. 正则正确 miss、Hybrid 才补上的有多少（真补漏）。
+
+数字出来之前，**不**拍「跳过 Hybrid」或「扩 regex」。
+
+## 2. 本机 `turns.jsonl` 地面真相
+
+路径：Electron `userData/companion-l2/turns.jsonl`（本机 `focus-tiger-desktop`）。
+
+| 项 | 数 |
+|---|---|
+| 总行 | 162 |
+| `kind=read_hybrid_classify` | **0** |
+| 含 `kind` / `timing` 的行 | **0** |
+| 唯一 schema | `at, locale, text, raw, reply, ok, reason`（#841 之前的 generate 落盘） |
+| 时间窗 | `2026-08-22T10:54Z` … `2026-09-18T09:17Z`（北京时间 17:17） |
+
+`#841` 合入时间：`2026-09-18 18:47 +0800`（`dbd3088e`）。**最后一条对话早于合入约 1.5 小时。**  
+因此：**合入后对话日志尚未产生**，`tool≠none` 比例与「正则本该命中 vs 真补漏」在产品 jsonl 上 **样本量为 0**。
+
+另：现行 `classifyReadTool` 只记 `promptChars` + 模型 `raw`，**不记用户原句**。即便之后有 `read_hybrid_classify` 行，也只能算 tool 分布，**仍无法**把 raw tool 对回现网 `matchConfideExecutableTool`。tool≠none 时通常不走 L3，邻近 `l3_generate.text` **接不上**。
+
+## 3. 旁证（旧 generate 行 · 不是 Hybrid 补漏率）
+
+对 162 条旧 generate 的 `text` 用 **当前 develop 正则**回放（不落用户原句）：
+
+| 回放 | 条数 |
+|---|---|
+| `confideClassify` fallback | 157 |
+| safety | 2 |
+| sad | 1 |
+| aggression（现网 EN 规则） | 2 |
+| 中文攻击字面（`想打人` 等） | **4**（现网仍 fallback → 可进观察翼 / L3） |
+| `matchConfideExecutableTool` → `query_practice_duration` | 3 |
+| `isMemoryListQuestion` | 0 |
+| 任一 send 前层正则（boundary / presence / reflective / practice / exec） | 17 |
+
+含义：这是「已经进了 generate 的句子，用今天的正则会不会提前拦住」，**不是** Hybrid `tool≠none` 补漏率。3 条练习时长问句仍出现在 generate 日志里，只说明历史上正则或接线有漏，不能拿来拍跳过 Hybrid。
+
+## 4. 层序（现网事实 · 未改）
+
+```text
+Safety → aggression → 情绪桶 → fallback
+_onSend: suppress → boundary → companion presence → preference
+       → matchConfideExecutableTool（CI regex）
+       → regex miss + fallback → classifyReadTool（Read Hybrid）
+       → 仍未命中 → L3
+```
+
+Gate 0.D / E′ **不在**这条链上。Read Hybrid 只在 fallback + 宽屏 + generate 开 + 正则已 miss 时跑。
+
+## 5. 下一刀（数字出来之前）
+
+1. **必做（无代码）**：用已含 `#841` 的 Electron（`origin/develop` tip）宽屏 Confide 再聊一轮（建议 ≥15 句 fallback 闲聊 + 几句「列出记忆 / 练了多久」），再抽 `kind=read_hybrid_classify`。这一步才能回答 **tool≠none 比例**。
+2. **若要回答「正则 vs 真补漏」**：只在 `classifyReadTool` 落盘里加 **用户原句**（可截断；仍禁止改 send / 禁止 E′）。没有原句，第 2 问永远算不出。
+3. **不合理**：在 n=0 时跳过 Hybrid、把 E′ 挂上 send、或靠旧 generate 旁证扩 gloss。
+
+**我认为最合理的**：先做第 1 步肉测出 tool≠none 比例；第 2 步作为紧随的小埋点（非 send）。扩 regex 只对已证实「假补漏」的字面动手（#523 同型），且与 P0 中文 aggression 分 PR。
