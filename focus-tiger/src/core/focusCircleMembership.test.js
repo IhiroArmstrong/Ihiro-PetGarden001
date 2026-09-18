@@ -345,4 +345,54 @@ describe('focusCircleMembership', () => {
     assert.equal(readFocusCircleMembership(throwing), null);
   });
 
+  it('keeps local membership when leave times out', async () => {
+    const membership = {
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      code: 'ABCD23',
+      memberCount: 1
+    };
+    const storage = memoryStorage();
+    writeFocusCircleMembership(storage, membership);
+    const result = await leaveFocusCircle({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        const err = new Error('timeout');
+        /** @type {any} */ (err).status = 408;
+        throw err;
+      }
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'timeout');
+    const kept = readFocusCircleMembership(storage);
+    assert.equal(kept?.circleId, membership.circleId);
+    assert.equal(kept?.memberId, membership.memberId);
+  });
+
+  it('clears local membership when cloud leave reports not_found', async () => {
+    const membership = {
+      circleId: '11111111-1111-4111-8111-111111111111',
+      memberId: '22222222-2222-4222-8222-222222222222',
+      code: 'ABCD23',
+      memberCount: 1
+    };
+    const storage = memoryStorage();
+    writeFocusCircleMembership(storage, membership);
+    const result = await leaveFocusCircle({
+      storage,
+      search: '',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        const err = new Error('gone');
+        /** @type {any} */ (err).status = 404;
+        throw err;
+      }
+    });
+    assert.equal(result.ok, true);
+    assert.equal(result.reason, 'not_found');
+    assert.equal(readFocusCircleMembership(storage), null);
+  });
+
 });

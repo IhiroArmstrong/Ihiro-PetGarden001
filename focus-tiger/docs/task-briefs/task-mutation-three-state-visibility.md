@@ -2,7 +2,7 @@
 
 日期：2026-09-18  
 修订：同日分析师挑刺后补硬锚 / 挂起分档 / 中间件顺序 / #839 关单条件  
-状态：**Slice 2 审计稿已入库**（只读；无产品 UI）。Slice 3 中间件仍须口令 **「大任务」**。审计 SSOT：`docs/MUTATION_THREE_STATE_SLICE2_AUDIT.md`。  
+状态：**Slice 3 中间件本支**（`postCloudJson` 默认超时 + M-01 扫描 + 跨模块回归）。审计 SSOT：`docs/MUTATION_THREE_STATE_SLICE2_AUDIT.md`。#839 待 CI 绿后手关。  
 建议模型（落地会话首条用户口吻）：`Cursor Model: Grok 4.6 / High / Fast OFF`  
 任务线：工作室流程 [#839](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/839)（`type:process`）。**禁止**挂产品 Epic。
 
@@ -155,8 +155,8 @@ Safari Circle 与提醒保存表面不同，和 O-04 / #710 / #732 放在一起�
 
 ### Slice 3 — 机器强制（审计稿拍板后 · 必做中间件）
 
-1. `postCloudJson` 族静态检查（path/body/超时/错误映射）。挂起：须有超时常数 + 超时映射到**失败呈现**；窗口内须有 pending 声明或 `SB-xx`。  
-2. 本地持久化默认写入后读回。豁免书面（配额、纯缓存、后台「同内容跳过写入」）。
+1. `postCloudJson` 族静态检查（path/body/超时/错误映射）。挂起：须有超时常数 + 超时映射到**失败呈现**；窗口内须有 pending 声明或 `SB-xx`。 **本支已做**：`CLOUD_JSON_DEFAULT_TIMEOUT_MS` + `scripts/mutation-m01-check.js`。  
+2. 本地持久化默认写入后读回。豁免书面（配额、纯缓存、后台「同内容跳过写入」）。 **本支已做**：`mutationM01Contract.js` 豁免表；Circle leave 改为云成功/`not_found` 后再清本地。
 
 ---
 

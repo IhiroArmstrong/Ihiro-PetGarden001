@@ -8,7 +8,11 @@
  * No account. Optional social layer under Privacy.
  */
 
-import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
+import {
+  getCloudApiBaseUrl,
+  postCloudJson,
+  withCloudJsonTimeout
+} from './cloudApiClient.js';
 
 export const FOCUS_CIRCLE_STORAGE_KEY = 'focus-tiger.focus-circle.v1';
 export const FOCUS_CIRCLE_PATH = '/api/focus-circle';
@@ -51,22 +55,7 @@ export function readFocusCircleMembershipGeneration() {
  * @param {number} timeoutMs
  */
 export async function withFocusCircleRequestTimeout(promise, timeoutMs) {
-  if (!(timeoutMs > 0)) return promise;
-  let timer = null;
-  try {
-    return await Promise.race([
-      promise,
-      new Promise((_, reject) => {
-        timer = setTimeout(() => {
-          const err = new Error('timeout');
-          /** @type {any} */ (err).status = 408;
-          reject(err);
-        }, timeoutMs);
-      })
-    ]);
-  } finally {
-    if (timer) clearTimeout(timer);
-  }
+  return withCloudJsonTimeout(promise, timeoutMs);
 }
 
 /**
@@ -288,9 +277,13 @@ export async function postFocusCircle({
       : FOCUS_CIRCLE_MUTATION_TIMEOUT_MS);
   try {
     const body = await withFocusCircleRequestTimeout(
-      postJson(FOCUS_CIRCLE_PATH, {
-        body: JSON.stringify(payload)
-      }),
+      postJson(
+        FOCUS_CIRCLE_PATH,
+        {
+          body: JSON.stringify(payload)
+        },
+        { timeoutMs: waitMs }
+      ),
       waitMs
     );
     if (action === 'leave') {
@@ -375,8 +368,8 @@ export async function leaveFocusCircle(opts = {}) {
   const storage = opts.storage ?? getDefaultStorage();
   const membership = opts.membership ?? readFocusCircleMembership(storage);
   if (!membership) return { ok: true, reason: 'no_membership' };
-  clearFocusCircleMembership(storage);
   if (!isFocusCircleClientEnabled({ search: opts.search, cloudBaseUrl: opts.getBaseUrl?.() })) {
+    clearFocusCircleMembership(storage);
     return { ok: true, reason: 'local_only' };
   }
   const result = await postFocusCircle({
@@ -385,8 +378,9 @@ export async function leaveFocusCircle(opts = {}) {
     circleId: membership.circleId,
     memberId: membership.memberId
   });
-  if (!result.ok && result.reason === 'not_found') {
-    return { ok: true, reason: 'not_found' };
+  if (result.ok || result.reason === 'not_found') {
+    clearFocusCircleMembership(storage);
+    return result.ok ? result : { ok: true, reason: 'not_found' };
   }
   return result;
 }

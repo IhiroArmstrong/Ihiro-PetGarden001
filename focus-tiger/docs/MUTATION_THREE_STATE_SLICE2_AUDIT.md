@@ -161,3 +161,9 @@ IndexedDB：仅氛围库。Slice 3 本地中间件要么书面豁免，要么单
 - 不改 Confide / L3 生产路径  
 - 不解冻 Z-dim  
 - 不把挂起并进失败
+
+---
+
+## Slice 3 落地指针（2026-09-18）
+
+运行时与扫描不在本审计稿正文展开。SSOT：`src/core/mutationM01Contract.js` + `scripts/mutation-m01-check.js` + `src/core/cloudApiClient.js` `CLOUD_JSON_DEFAULT_TIMEOUT_MS`。Ritual Leave 产品静默仍未挂 SB-xx（本刀不改白名单）。

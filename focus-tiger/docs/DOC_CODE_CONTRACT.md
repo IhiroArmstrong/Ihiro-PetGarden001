@@ -60,7 +60,7 @@
 | **O-04** | 新建可点击叠层的**完整契约面**（登记 / 接线 / z 归属 / 挂载 / **三态 mutationFeedback** / 遮挡共存 e2e / TRACKER 覆盖范围） | 类别契约，不是「上次那个 bug」的补丁条。SSOT：`OVERLAY_UI_SURFACE`（`overlayUiSurfaceContract.js`）。定义见点击原则「持久化三态可见性」，此处只锁机器检查。新 occupancy 行三键禁止 `mode: 'gap'`。提醒保存 / Witness picker / Confide 复读 是三例，不是三套平行清单。z-index **常量化 + 全量扫描**仍见 **Z-dim**（本条只锁声明底线与 body 挂载 ≥ hint 34） | **(a)** `overlay-contract-ui-check.js` O-04 段（三键分扫；`reminder-preference-saved` 不得在 fail 键）；**(b)** 遮挡共存 e2e 按行声明（例：`e2e/in-app-reminder.spec.js`）；未补的行须 `grandfather:true` 显式 gap，禁止默不作声 |
 | **O-03** | HUD 呼吸驱动者（谁在 breath 须推 FocusHUD） | 清单在 `SHARED_RESOURCES` §4.2；漏接 = 计时停 00:00 | **暂无 (a)**；部分字符串锁 `ritualFlowHudWiring.test.js`。新增 breath 流程须补表 + `overlayBreathing`。Brief 结论句见 `COLLAB.md` 第七节 |
 | **Z-dim** | Idle 常驻 chrome 在 overlay dim 时的变暗对象 | `Z_INDEX.md`「Idle 常驻 chrome」；禁止只按卡 z−1 盖背景 | **暂无 (a)**；`overlayBackdrop.test.js` 锁 Support / mute 选择器。Brief 结论句见 `COLLAB.md` 第七节 |
-| **M-01** | 非叠层持久化 mutation（`postCloudJson` 族 path/body/超时/错误映射；本地写入后读回） | 定义见点击原则「持久化三态可见性」，此处只锁机器检查。脚本在 Slice 3；本行先占位，禁止另开第四份 SSOT | **暂无 (a)**；Slice 3 补扫描。与 O-04 三键正交（O-04 管叠层行，M-01 管写入函数） |
+| **M-01** | 非叠层持久化 mutation（`postCloudJson` 族 path/body/超时/错误映射；本地写入后读回） | 定义见点击原则「持久化三态可见性」，此处只锁机器检查。SSOT 表：`mutationM01Contract.js`。禁止另开第四份 SSOT | **(a)** `scripts/mutation-m01-check.js`（`docs:check`：默认超时、leave 先云后本地、Controls 读 `result.ok`、witness/was-here 映射 408、提醒成功 token 仍在）；**(b)** `mutationThreeStateSlice3.regression.test.js`。与 O-04 三键正交（O-04 管叠层行，M-01 管写入函数） |
 
 ---
 
