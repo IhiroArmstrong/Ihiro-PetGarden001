@@ -404,6 +404,37 @@ export class MembershipUnlockUI {
     }
   }
 
+  /**
+   * @param {unknown} err
+   * @returns {{ statusKey: string, switchToRestore?: boolean }}
+   */
+  _resolvePortalError(err) {
+    const code = /** @type {any} */ (err)?.code;
+    if (code === 'credential_missing') {
+      return {
+        statusKey: 'MEMBERSHIP_MANAGE_NEED_RESTORE',
+        switchToRestore: true
+      };
+    }
+    const status = /** @type {any} */ (err)?.status;
+    if (status === 404) {
+      return { statusKey: 'MEMBERSHIP_RESTORE_MISS' };
+    }
+    if (status === 429) {
+      return { statusKey: 'MEMBERSHIP_RESTORE_RATE' };
+    }
+    const message =
+      err instanceof Error ? err.message : String(err || '');
+    if (
+      message === 'cannot_open_checkout' ||
+      message === 'missing_checkout_url' ||
+      message === 'membership_portal_missing_url'
+    ) {
+      return { statusKey: 'MEMBERSHIP_MANAGE_OPEN_FAILED' };
+    }
+    return { statusKey: 'MEMBERSHIP_ERROR_GENERIC' };
+  }
+
   async _openPortal() {
     if (this._busy) return;
     if (!getCloudApiBaseUrl()) {
@@ -413,20 +444,20 @@ export class MembershipUnlockUI {
     this._busy = true;
     this.manageBtn.disabled = true;
     this.buyBtn.disabled = true;
+    this.statusEl.textContent = t('MEMBERSHIP_MANAGE_OPENING');
     try {
       const { url } = await createMembershipPortalSession({
         storage: this._storage
       });
       await openCheckoutUrl(url);
+      this.statusEl.textContent = t('MEMBERSHIP_MANAGE_OPENED');
     } catch (err) {
-      const code = /** @type {any} */ (err)?.code;
-      if (code === 'credential_missing') {
+      const resolved = this._resolvePortalError(err);
+      if (resolved.switchToRestore) {
         this._view = 'restore';
-        this.statusEl.textContent = t('MEMBERSHIP_MANAGE_NEED_RESTORE');
         this._refreshTexts();
-      } else {
-        this.statusEl.textContent = t('MEMBERSHIP_ERROR_GENERIC');
       }
+      this.statusEl.textContent = t(resolved.statusKey);
     } finally {
       this._busy = false;
       this.manageBtn.disabled = false;

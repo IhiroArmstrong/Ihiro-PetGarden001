@@ -15,9 +15,10 @@ const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
 
 test('leave picker acquires Tier27 respond slot so idle yin tap cannot steal clicks', () => {
   assert.match(src, /_openLeavePicker\(/);
+  assert.match(src, /_openLeavePickerAsync/);
   assert.match(
     src,
-    /_openLeavePicker[\s\S]*?releaseLeaveSlot[\s\S]*?requestRespondSlot/
+    /_openLeavePickerAsync[\s\S]*?releaseLeaveSlot[\s\S]*?_acquireRespondSlotWithRetry/
   );
   assert.match(src, /FOCUS_CIRCLE_WITNESS_PICKER_BUSY/);
   assert.match(src, /isPickerOpen\(\)/);

@@ -204,9 +204,14 @@ export class FocusCircleWitnessLeaveUI {
 
   _openLeavePicker() {
     if (!this._leaveVisible) return;
+    void this._openLeavePickerAsync();
+  }
+
+  async _openLeavePickerAsync() {
     // Tier27 respond picker cannot coexist with Tier26 leave occupancy.
     this.handlers.releaseLeaveSlot?.();
-    if (!this.handlers.requestRespondSlot?.()) {
+    const acquired = await this._acquireRespondSlotWithRetry();
+    if (!acquired) {
       if (!this.handlers.requestLeaveSlot?.()) {
         this.hideLeave({ immediate: true });
         return;
@@ -216,6 +221,23 @@ export class FocusCircleWitnessLeaveUI {
     }
     this._pickerSlotHeld = true;
     this._showPicker('leave');
+  }
+
+  /**
+   * Overlay arbitration can lag one frame after leave slot release (e.g. post-Rise
+   * sessionComplete). Retry before surfacing PICKER_BUSY.
+   *
+   * @param {number} [attempts]
+   * @param {number} [delayMs]
+   */
+  async _acquireRespondSlotWithRetry(attempts = 5, delayMs = 80) {
+    for (let i = 0; i < attempts; i += 1) {
+      if (this.handlers.requestRespondSlot?.()) return true;
+      if (i + 1 < attempts) {
+        await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+      }
+    }
+    return false;
   }
 
   /**
