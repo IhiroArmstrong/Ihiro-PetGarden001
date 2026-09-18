@@ -57,6 +57,16 @@ export {
   shouldHandleConfideObservationHonesty
 } from './confideObservationHonesty.js';
 export {
+  formatConfideReflectiveHonestyReply,
+  isConfideReflectiveOpenAsk,
+  shouldHandleConfideReflectiveHonesty
+} from './confideReflectiveHonesty.js';
+export {
+  formatConfideCompanionGreetingReply,
+  isConfideCompanionGreetingIntent,
+  shouldHandleConfideCompanionGreeting
+} from './confideCompanionGreeting.js';
+export {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideUserVisible,
   isConfideDevHarness,

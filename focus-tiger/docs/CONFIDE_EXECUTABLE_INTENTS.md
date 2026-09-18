@@ -60,6 +60,8 @@
 | 帮我备份练习记录 | 备份属 Operating Layer（`LOCAL_AI_OPERATING_LAYER.md`）；现网走 Journey / 练习云备份链 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
 | 忘掉你记得的一切 | bulk wipe 风险高 | 引导「What Yin remembers」逐条 Forget（1e 负例） |
 | 喜欢吃什么 / 任意 Preference | 本机无该事实字段 | 不记、不编（架构 § 延后） |
+| 最近在忙什么 / 为什么开始（无账本） | 不是 CI-03 列表（#822）；本机无日程/动机账本 | 管道 `reflective_honesty` 诚实空态 + 邀请点一件；**禁止** L3 观察句、**禁止**念记忆列表 |
+| Good morning / 天气真好（整句闲聊） | 不是待着、不是自述 | 管道 `companion_greeting` 短问候；**禁止** L3 观察句 |
 | Don't save this / Don't keep this one / 别记这句 | **Slice 1f · pipeline** · `memory_suppress` · **非 CI** | 见 `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` · 含 `this one` · 无 Consent 仍走模板 · **不** L3
 | Delete today's Journey entry | V2 **Future Candidate** · Phase 1 **NOT MVP** | 指向 Journey Log UI；Phase 2 另 Brief |
 

@@ -54,7 +54,9 @@ export function historyForGeneratePrompt(
     'boundary',
     'companion_presence',
     'preference_honesty',
-    'observation_honesty'
+    'observation_honesty',
+    'reflective_honesty',
+    'companion_greeting'
   ]);
   for (const row of rows) {
     if (row?.role === 'yin' && dropYinSources.has(row?.source)) {

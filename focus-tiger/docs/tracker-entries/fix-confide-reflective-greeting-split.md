@@ -1,0 +1,3 @@
+# fix/confide-reflective-greeting-split
+
+| Confide 档3开放问句 + 档4闲聊分流 | UI可见 | 待人工测试 | **Electron 宽屏 Confide。** 发 `What have I been spending my time on lately?` / `Do you remember why I started doing this?` / `我最近在忙什么` → **0–1 秒内** `[data-testid=confide-to-yin-reply]` **`data-source=reflective_honesty`**，诚实空态，禁止 `memory_list` 列表、禁止观察句套话。发 `Good morning.` / `The weather is nice today.` → **`data-source=companion_greeting`**。**回归**：`Show me what you remember` 仍 `memory_list`（须 Allow）；`I'm here, but my mind really isn't.` 仍可走 generate（本切片不改观察 prompt）。QA 树合入后再测 5173。自动化：`confideReflectiveHonesty.test.js` · `desktopCompanionL2Route.test.js` 接线。 | — | — | — | Related #823 · Epic #639 | 2026-09-18 |
