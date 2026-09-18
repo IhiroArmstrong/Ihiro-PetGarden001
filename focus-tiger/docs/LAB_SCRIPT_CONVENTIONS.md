@@ -199,7 +199,14 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 6. **从 QA 树 import，不要从主仓。** 主仓 `desktop/companion` 导出名曾和 QA 树对不上。档案脚本里 `l0Download.js` 若仍指向主仓，改回 QA `DESKTOP`。
 7. **Cursor 沙箱没有 Metal。** 会 `ggml_metal_init: failed to create command queue`；CPU 回退还可能去编 llama。只在系统终端跑。
 8. **`'</s>'` 控制符警告不是质量失败证据。** 0.6B 与 4B 都出现过；有警告仍可能出正常句子。
-9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。`companion:ja-chitchat-variance` = 空历史方差；`companion:ja-chitchat-session-repeat` = 同会话连发去重/回落——二者不可互换。
+9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。`companion:ja-chitchat-variance` = 空历史方差；`companion:ja-chitchat-session-repeat` = 同会话连发去重/回落——二者不可互换。`companion:confide-latency` = 多轮 L3 延迟（TTFT+total+promptChars · 生产 `loadModelHold`）；**不能**代替 Electron 全栈秒表，须对照面板 IPC 开销。
+
+```bash
+cd focus-tiger/desktop && npm run companion:confide-latency
+FT_LATENCY_ROUNDS=15 npm run companion:confide-latency
+```
+
+结果：`/tmp/ft-l0-lab/confide-latency-<epoch>.json`（`probe: "confide-latency"`）。
 10. **实验室 dest ≠ 生产缓存。** 不要把 `/tmp/ft-l0-lab/` 和下到 `~/Library/Application Support/Focus Tiger/companion-l0/` 的文件当成同一份。
 11. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
 12. **intent diagnostic ≠ 生产 L3。** `companion:intent-diagnostic` 禁止 Yin 口吻；结论只拆模型 vs routing，**不得**据此改默认 GGUF。

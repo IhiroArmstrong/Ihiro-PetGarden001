@@ -263,7 +263,22 @@ export class CompanionL1Runtime {
    * @param {{ text?: string, locale?: string, history?: unknown }} [payload]
    * @returns {Promise<{ ok: boolean, text?: string, reason?: string }>}
    */
+
+  _modelTimingFromChildEvent(ev) {
+    const timing = ev?.timing;
+    if (!timing || typeof timing !== 'object') return null;
+    const ttftMs = Number(timing.ttftMs);
+    const totalMs = Number(timing.totalMs);
+    const decodeMs = Number(timing.decodeMs);
+    return {
+      ttftMs: Number.isFinite(ttftMs) ? ttftMs : undefined,
+      totalMs: Number.isFinite(totalMs) ? totalMs : undefined,
+      decodeMs: Number.isFinite(decodeMs) ? decodeMs : undefined
+    };
+  }
+
   async generate(payload = {}) {
+    const wallStarted = Date.now();
     if (!this.allowed) {
       return { ok: false, reason: 'unavailable' };
     }
@@ -304,15 +319,18 @@ export class CompanionL1Runtime {
       });
     } else {
       if (!Array.isArray(this._ypeSessionMemoryIds)) this._ypeSessionMemoryIds = [];
+      const memoryStarted = Date.now();
       const retrieved = await retrieveYpeMemoriesForL3Generate(this.userDataDir, text, {
         companionStyle: payload.companionStyle,
         sessionExcludeIds: this._ypeSessionMemoryIds,
         skipYpeOnSafety: Boolean(payload.skipYpeOnSafety)
       });
+      const memoryRetrieveMs = Date.now() - memoryStarted;
       this._ypeSessionMemoryIds = [
         ...this._ypeSessionMemoryIds,
         ...retrieved.ids.filter((mid) => !this._ypeSessionMemoryIds.includes(mid))
       ];
+      const promptStarted = Date.now();
       prompt = buildCompanionL2Prompt({
         text,
         locale,
@@ -322,6 +340,8 @@ export class CompanionL1Runtime {
           ? payload.patternInsights
           : []
       });
+      var promptBuildMs = Date.now() - promptStarted;
+      var memoryRetrieveMsCaptured = memoryRetrieveMs;
     }
     this._queue = this._queue.then(async () => {
       const done = new Promise((resolve) => {
@@ -343,22 +363,35 @@ export class CompanionL1Runtime {
     });
     const ev = await this._queue;
     const raw = ev?.event === 'generated' ? ev.text : '';
+    const sanitizeStarted = Date.now();
     const sanitized = sanitizeCompanionL2Reply(raw, {
       priorReplies: priorRepeatableYinRepliesFromHistory(payload.history),
       userText: text
     });
+    const sanitizeMs = Date.now() - sanitizeStarted;
+    const model = this._modelTimingFromChildEvent(ev);
+    const timing = {
+      wallMs: Date.now() - wallStarted,
+      promptBuildMs: typeof promptBuildMs === 'number' ? promptBuildMs : undefined,
+      memoryRetrieveMs:
+        typeof memoryRetrieveMsCaptured === 'number' ? memoryRetrieveMsCaptured : undefined,
+      sanitizeMs,
+      model
+    };
     const record = {
       at: new Date().toISOString(),
+      kind: 'l3_generate',
       locale: payload.locale || 'en',
       text,
       raw: String(raw || '').slice(0, 400),
       reply: sanitized,
       ok: Boolean(sanitized),
-      reason: sanitized ? 'ok' : ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned'
+      reason: sanitized ? 'ok' : ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned',
+      timing
     };
     await this._appendTurnLog(record);
-    if (!sanitized) return { ok: false, reason: record.reason };
-    return { ok: true, text: sanitized };
+    if (!sanitized) return { ok: false, reason: record.reason, timing };
+    return { ok: true, text: sanitized, timing };
   }
 
   /**
@@ -367,6 +400,7 @@ export class CompanionL1Runtime {
    * @returns {Promise<{ ok: boolean, raw?: string, reason?: string }>}
    */
   async classifyReadTool(payload = {}) {
+    const wallStarted = Date.now();
     if (!this.allowed) {
       return { ok: false, reason: 'unavailable' };
     }
@@ -407,13 +441,26 @@ export class CompanionL1Runtime {
     });
     const ev = await this._queue;
     const raw = ev?.event === 'classified' ? String(ev.text || '') : '';
+    const timing = {
+      wallMs: Date.now() - wallStarted,
+      model: this._modelTimingFromChildEvent(ev)
+    };
+    await this._appendTurnLog({
+      at: new Date().toISOString(),
+      kind: 'read_hybrid_classify',
+      promptChars: prompt.length,
+      raw: raw.slice(0, 400),
+      ok: Boolean(raw),
+      timing
+    });
     if (!raw) {
       return {
         ok: false,
-        reason: ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_unparsed'
+        reason: ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_unparsed',
+        timing
       };
     }
-    return { ok: true, raw };
+    return { ok: true, raw, timing };
   }
 
   /**

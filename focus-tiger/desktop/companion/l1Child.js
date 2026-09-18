@@ -151,10 +151,15 @@ async function main() {
             if (!session || typeof session.generate !== 'function') {
               throw new Error('companion_session_missing');
             }
+            /** @type {{ ttftMs?: number, totalMs?: number, decodeMs?: number } | null} */
+            let timing = null;
             const text = await session.generate(payload.prompt, {
-              maxTokens: payload.maxTokens
+              maxTokens: payload.maxTokens,
+              onTiming(metrics) {
+                timing = metrics;
+              }
             });
-            await emit({ event: 'generated', id, text });
+            await emit({ event: 'generated', id, text, timing });
           } catch (err) {
             await emit({
               event: 'generate_error',
@@ -182,10 +187,15 @@ async function main() {
             if (!session || typeof session.generate !== 'function') {
               throw new Error('companion_session_missing');
             }
+            /** @type {{ ttftMs?: number, totalMs?: number, decodeMs?: number } | null} */
+            let timing = null;
             const text = await session.generate(payload.prompt, {
-              maxTokens: payload.maxTokens
+              maxTokens: payload.maxTokens,
+              onTiming(metrics) {
+                timing = metrics;
+              }
             });
-            await emit({ event: 'classified', id, text });
+            await emit({ event: 'classified', id, text, timing });
           } catch (err) {
             await emit({
               event: 'classify_error',
