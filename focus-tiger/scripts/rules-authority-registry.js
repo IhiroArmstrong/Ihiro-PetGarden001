@@ -1263,6 +1263,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /功能测试通过/,
       /接收反馈/,
       /结果反馈/,
+      /持久化三态可见性/,
+      /挂起是单独一档/,
       /SILENT_BEHAVIORS\.md/,
       /点击后 0–1 秒内用户会看到什么/,
       /不在白名单里的沉默视为 bug/

@@ -2,7 +2,7 @@
 
 日期：2026-09-18  
 修订：同日分析师挑刺后补硬锚 / 挂起分档 / 中间件顺序 / #839 关单条件  
-状态：**Brief 已锁 · 无运行时**。落地须新 Chat 口令 **「大任务」**（跨模块 + 单测 + PR）。  
+状态：**Slice 1 骨架本支**（点击原则定义 + O-04 三键；无产品 UI 改动）。Slice 2/3 仍须新 Chat 口令 **「大任务」**。  
 建议模型（落地会话首条用户口吻）：`Cursor Model: Grok 4.6 / High / Fast OFF`  
 任务线：工作室流程 [#839](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/839)（`type:process`）。**禁止**挂产品 Epic。
 
@@ -18,9 +18,9 @@
 
 ## 共用机制核对
 
-本次不触及 overlayBusy / HUD 呼吸驱动 / z≥17 遮罩 / 新建可点击叠层，核对跳过。
+本次不触及 overlayBusy / HUD 呼吸驱动 / z≥17 遮罩，也**不**新建 occupancy 叠层。O-04 存量行字段变更见下句。
 
-落地 Slice 1 若把 `failureFeedback` 升级为三态键，须另写结论句，点名 `OVERLAY_UI_SURFACE` 行字段变更；不得只写「已对照 overlay registry」。**不**解冻 Z-dim。
+落地 Slice 1 已把 `failureFeedback` 升级为 `mutationFeedback.{pending,success,fail}`。`OVERLAY_UI_SURFACE` 行字段变更：提醒保存成功 token 改挂 `success`；Witness 提交错误仍挂 `fail`；存量其余行三键 `grandfather` gap。**不解冻** Z-dim。本刀不新建可点击叠层。
 
 ---
 
@@ -64,7 +64,7 @@ Safari Circle 与提醒保存表面不同，和 O-04 / #710 / #732 放在一起�
 | `scripts/overlay-contract-ui-check.js` **L94–132** `scanClaim` | `mode: 'token'` 只断言源文件 `includes(token)`；**不读 token 语义** |
 | 同脚本 **L288–294** | 对每行只 `scanClaim(row.failureFeedback, …)`，没有成功/挂起键 |
 
-扫描器能绿，是因为格子非空且字符串出现在 `ReminderPreferenceUI.js` 里，不是因为填对了态。#838 修好可见样式之后，这行**仍然**错位——所以 #838 没被 O-04 拦住。Slice 1 回归锚：`reminder-preference-saved` 不得再出现在失败键。
+扫描器能绿，是因为格子非空且字符串出现在 `ReminderPreferenceUI.js` 里，不是因为填对了态。#838 修好可见样式之后，这行**仍然**错位——所以 #838 没被 O-04 拦住。**Slice 1 回归锚**：`reminder-preference-saved` 不得再出现在失败键；本刀已把该 token 挪到 `mutationFeedback.success`，扫描器见它出现在 `fail` 则红。
 
 不是 `overlaySlotArbitration.js`（那是 O-01 占用槽，不管反馈列）。
 

@@ -57,9 +57,10 @@
 | **Y-01** | 精灵占用 / 进睡仲裁（冷启动·回前台·付款·会话结束） | 优先级矩阵是行为契约，不是 enum 导出 | **(b)**：`spriteChannelArbitration.test.js` + `dormantIdle.test.js` overlayBusy；叙事 `DEV_WORKFLOW_QUALITY` §6.17 |
 | **O-01** | 叠层占用三问（摸头 / 进睡 / 点空白） | `OVERLAY_SOURCE_CONTRACTS` 五字段 + `deriveIdleYinTapOverlayBusy` / `deriveSceneAnimOverlayBusy`；禁止 `main.js` 手写 OR | **(a)** `scripts/overlay-contract-ui-check.js`（`docs:check`）；**(b)** `overlaySlotArbitration.test.js`。**门控例外**（谁忙但不得误伤并行交互）文档表：`SHARED_RESOURCES` §4.1；Brief 结论句：`COLLAB.md` 第七节 |
 | **O-02** | 叠层可交互性（`#ui-overlay` 下须 `pointer-events: auto`） | `#ui-overlay` 全局 `pointer-events: none`；挂在其内的可点叠层须在交互根显式 opt-in。与 O-01 **正交**（O-01 管「谁该显示」，O-02 管「显示出来能不能点到」）。SSOT 列表：`OVERLAY_UI_POINTER_HIT_TEST_REQUIRED` | **(a)** `overlay-contract-ui-check.js` O-02 段（`docs:check`）；**(b)** 暂无 e2e 像素点击锁 |
-| **O-04** | 新建可点击叠层的**完整契约面**（登记 / 接线 / z 归属 / 挂载 / 失败反馈 / 遮挡共存 e2e / TRACKER 覆盖范围） | 类别契约，不是「上次那个 bug」的补丁条。SSOT：`OVERLAY_UI_SURFACE`（`overlayUiSurfaceContract.js`）。新 occupancy 行禁止 `mode: 'gap'`。提醒保存 / Witness picker / Confide 复读 是三例，不是三套平行清单。z-index **常量化 + 全量扫描**仍见 **Z-dim**（本条只锁声明底线与 body 挂载 ≥ hint 34） | **(a)** `overlay-contract-ui-check.js` O-04 段；**(b)** 遮挡共存 e2e 按行声明（例：`e2e/in-app-reminder.spec.js`）；未补的行须 `grandfather:true` 显式 gap，禁止默不作声 |
+| **O-04** | 新建可点击叠层的**完整契约面**（登记 / 接线 / z 归属 / 挂载 / **三态 mutationFeedback** / 遮挡共存 e2e / TRACKER 覆盖范围） | 类别契约，不是「上次那个 bug」的补丁条。SSOT：`OVERLAY_UI_SURFACE`（`overlayUiSurfaceContract.js`）。定义见点击原则「持久化三态可见性」，此处只锁机器检查。新 occupancy 行三键禁止 `mode: 'gap'`。提醒保存 / Witness picker / Confide 复读 是三例，不是三套平行清单。z-index **常量化 + 全量扫描**仍见 **Z-dim**（本条只锁声明底线与 body 挂载 ≥ hint 34） | **(a)** `overlay-contract-ui-check.js` O-04 段（三键分扫；`reminder-preference-saved` 不得在 fail 键）；**(b)** 遮挡共存 e2e 按行声明（例：`e2e/in-app-reminder.spec.js`）；未补的行须 `grandfather:true` 显式 gap，禁止默不作声 |
 | **O-03** | HUD 呼吸驱动者（谁在 breath 须推 FocusHUD） | 清单在 `SHARED_RESOURCES` §4.2；漏接 = 计时停 00:00 | **暂无 (a)**；部分字符串锁 `ritualFlowHudWiring.test.js`。新增 breath 流程须补表 + `overlayBreathing`。Brief 结论句见 `COLLAB.md` 第七节 |
 | **Z-dim** | Idle 常驻 chrome 在 overlay dim 时的变暗对象 | `Z_INDEX.md`「Idle 常驻 chrome」；禁止只按卡 z−1 盖背景 | **暂无 (a)**；`overlayBackdrop.test.js` 锁 Support / mute 选择器。Brief 结论句见 `COLLAB.md` 第七节 |
+| **M-01** | 非叠层持久化 mutation（`postCloudJson` 族 path/body/超时/错误映射；本地写入后读回） | 定义见点击原则「持久化三态可见性」，此处只锁机器检查。脚本在 Slice 3；本行先占位，禁止另开第四份 SSOT | **暂无 (a)**；Slice 3 补扫描。与 O-04 三键正交（O-04 管叠层行，M-01 管写入函数） |
 
 ---
 
@@ -168,12 +169,12 @@ git commit --no-verify -m "…"
 
 ### O-04 新建可点击叠层（复制进 PR / Brief）
 
-对照 `OVERLAY_UI_SURFACE` **七列一次填齐**，禁止只补「这次出事的那一列」：
+对照 `OVERLAY_UI_SURFACE` **三态键 + 其余列一次填齐**，禁止只补「这次出事的那一列」：
 
 1. [ ] `overlaySlotContractRegistry` 已登记 source id，且 `OVERLAY_UI_FILE_SOURCES` 已映射 UI 文件  
 2. [ ] 开面板走 `request*Slot()`（`main.js` 真调 `requestOverlaySlot`）**或**书面 `derive`（快照占用）——禁止登记了却不接线  
 3. [ ] 挂 `body` 时声明 z ≥ hint **34** / 窄壳 **30**；挂 `#ui-overlay` 时走 O-02 opt-in  
-4. [ ] 失败路径有可见反馈（或挂 `SILENT_BEHAVIORS` `SB-xx`）；禁止静默 `return`  
+4. [ ] `mutationFeedback.{pending,success,fail}` 各有 token / `gap+grandfather` / `na`；token 不得跨键。定义见点击原则「持久化三态可见性」。禁止静默 `return`；禁止把成功 token 放进 fail 键  
 5. [ ] 关层释放 slot（`release*Slot`）若走了 request 模式  
 6. [ ] e2e 覆盖「与已知遮挡层共存」（hint / 窄壳 / 冷启动气泡）；做不到则 TRACKER 写明未测，**禁止**用契约单测冒充  
 7. [ ] `TEST_TRACKER` / 碎片写明：自动化锁了什么、人工测什么、明确未测什么  

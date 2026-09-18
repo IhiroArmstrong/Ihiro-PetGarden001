@@ -11,6 +11,8 @@
  * must have a row. New occupancy overlays may not use `mode: 'gap'`.
  *
  * Scan: `scripts/overlay-contract-ui-check.js`.
+ * Persistence mutations use `mutationFeedback.{pending,success,fail}`
+ * (definition: INTERACTION_FEEDBACK_PRINCIPLES.md「持久化三态可见性」).
  */
 
 /** Known body-level occluders. Full z-index constant extraction is deferred (Z-dim). */
@@ -24,13 +26,42 @@ export const OVERLAY_UI_SURFACE_COLUMNS = Object.freeze([
   'slotRequest',
   'zIndexFloor',
   'mountPointer',
-  'failureFeedback',
+  'mutationFeedback',
   'e2eOverlap',
   'trackerCoverage'
 ]);
 
+export const OVERLAY_UI_MUTATION_FEEDBACK_KEYS = Object.freeze([
+  'pending',
+  'success',
+  'fail'
+]);
+
+/** Slice 1 wrong-key anchor: success confirm must not live on the fail key. */
+export const OVERLAY_UI_SUCCESS_TOKENS_FORBIDDEN_IN_FAIL = Object.freeze([
+  'reminder-preference-saved'
+]);
+
 /** @type {{ mode: 'gap', grandfather: true }} */
 const GAP = Object.freeze({ mode: 'gap', grandfather: true });
+
+/** @type {Readonly<{ pending: typeof GAP, success: typeof GAP, fail: typeof GAP }>} */
+const MUTATION_GAP = Object.freeze({
+  pending: GAP,
+  success: GAP,
+  fail: GAP
+});
+
+/**
+ * @param {{ pending?: object, success?: object, fail?: object }} [partial]
+ */
+function mutationStates(partial = {}) {
+  return Object.freeze({
+    pending: partial.pending ?? GAP,
+    success: partial.success ?? GAP,
+    fail: partial.fail ?? GAP
+  });
+}
 
 /**
  * @param {object} row
@@ -69,7 +100,7 @@ function glassCard(file) {
     slotRequest: deriveSlot(),
     zIndexFloor: overlayStack(),
     mount: 'ui-overlay',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: GAP,
     trackerCoverage: GAP
   });
@@ -84,7 +115,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     slotRequest: deriveSlot(),
     zIndexFloor: overlayStack(),
     mount: 'ui-overlay',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: GAP,
     trackerCoverage: GAP
   }),
@@ -96,7 +127,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     slotRequest: deriveSlot(),
     zIndexFloor: overlayStack(),
     mount: 'ui-overlay',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: GAP,
     trackerCoverage: GAP
   }),
@@ -124,7 +155,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     slotRequest: deriveSlot(),
     zIndexFloor: overlayStack(),
     mount: 'ui-overlay',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: GAP,
     trackerCoverage: GAP
   }),
@@ -133,7 +164,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     slotRequest: deriveSlot(),
     zIndexFloor: overlayStack(),
     mount: 'ui-overlay',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: {
       mode: 'spec',
       path: 'e2e/in-app-reminder.spec.js',
@@ -146,7 +177,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     slotRequest: deriveSlot(),
     zIndexFloor: bodyMin(),
     mount: 'mixed',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: {
       mode: 'spec',
       path: 'e2e/in-app-reminder.spec.js',
@@ -167,7 +198,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     ),
     zIndexFloor: overlayStack(),
     mount: 'ui-overlay',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: GAP,
     trackerCoverage: GAP
   }),
@@ -179,7 +210,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     ),
     zIndexFloor: overlayStack(),
     mount: 'ui-overlay',
-    failureFeedback: GAP,
+    mutationFeedback: MUTATION_GAP,
     e2eOverlap: GAP,
     trackerCoverage: GAP
   }),
@@ -199,10 +230,12 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     ),
     zIndexFloor: bodyMin(),
     mount: 'body',
-    failureFeedback: {
-      mode: 'token',
-      tokens: Object.freeze(['FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR'])
-    },
+    mutationFeedback: mutationStates({
+      fail: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze(['FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR'])
+      })
+    }),
     e2eOverlap: GAP,
     trackerCoverage: {
       mode: 'token',
@@ -221,10 +254,12 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     }),
     zIndexFloor: bodyMin(),
     mount: 'body',
-    failureFeedback: {
-      mode: 'token',
-      tokens: Object.freeze(['reminder-preference-saved'])
-    },
+    mutationFeedback: mutationStates({
+      success: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze(['reminder-preference-saved'])
+      })
+    }),
     e2eOverlap: {
       mode: 'spec',
       path: 'e2e/in-app-reminder.spec.js',
