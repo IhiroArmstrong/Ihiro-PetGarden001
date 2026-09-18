@@ -56,6 +56,9 @@
 | 切片（文档 · CLOSED） | [#844](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/844) | 远程参数化候选全项目审计 | [#717](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/717) · `REMOTE_PARAM_CANDIDATES.md` | #646 |
 | 切片（runtime · CLOSED） | [#845](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/845) | 品味权重 + Honesty 30 → `TASTE_LAYER_KV` | [#722](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/722) · binding [#724](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/724) · 生产分叉 [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) | #646 |
 | 切片（runtime · CLOSED） | [#846](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/846) | 莲花阶梯系数 → `GROWTH_METRICS_KV` | [#725](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/725) · 生产分叉 [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) | #646 |
+| 切片（文档 · CLOSED） | [#851](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/851) | 寅币日封顶经济评估 · Step D = A | [#784](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/784) · Brief `task-yin-coin-daily-cap-economy.md` | #646 |
+| 切片（文档 · CLOSED） | [#852](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/852) | 远程参数化 §6 本批收口文档 | [#787](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/787) | #646 |
+| 切片（infra 文档 · CLOSED） | [#853](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/853) | §6 KV 生产分叉部署记录 | [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) · Worker `f0ddf1b4` | #646 |
 
 ## Local AI Phase 1 切片（2026-09-17 回填）
 
@@ -114,6 +117,15 @@
 
 | 步骤 | 结果 |
 |---|---|
-| #646 子切片 | CREATE #844–#846（文档 #717 · runtime #722 · runtime #725；均已 CLOSED） |
+| #646 子切片（批 1） | CREATE #844–#846（文档 #717 · runtime #722 · runtime #725；均已 CLOSED） |
 | Project 挂板 | #844–#846 加入 Focus Tiger 开发任务线看板 #1 |
+| Epic 正文 | #646 更新「已知子任务/PR」 |
+| PR 对照表 | [#848](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/848) 合 develop |
+
+## 建库执行记录（2026-09-18 · #646 §6 切片补全）
+
+| 步骤 | 结果 |
+|---|---|
+| #646 子切片（批 2） | CREATE #851–#853（文档 #784 · 文档 #787 · infra 文档 #788；均已 CLOSED） |
+| Project 挂板 | #851–#853 加入 Focus Tiger 开发任务线看板 #1 |
 | Epic 正文 | #646 更新「已知子任务/PR」 |
