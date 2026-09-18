@@ -102,6 +102,14 @@ import {
   shouldHandleConfideObservationHonesty
 } from '../core/confide/confideObservationHonesty.js';
 import {
+  formatConfideReflectiveHonestyReply,
+  shouldHandleConfideReflectiveHonesty
+} from '../core/confide/confideReflectiveHonesty.js';
+import {
+  formatConfideCompanionGreetingReply,
+  shouldHandleConfideCompanionGreeting
+} from '../core/confide/confideCompanionGreeting.js';
+import {
   buildConfideTurnId,
   formatMemorySuppressReply,
   shouldHandlePostRecallMemorySuppress,
@@ -603,6 +611,10 @@ export class ConfideToYinUI {
                         ? 'preference_honesty'
                         : shown.source === 'observation_honesty'
                           ? 'observation_honesty'
+                          : shown.source === 'reflective_honesty'
+                            ? 'reflective_honesty'
+                            : shown.source === 'companion_greeting'
+                              ? 'companion_greeting'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -1023,6 +1035,28 @@ export class ConfideToYinUI {
       this._executeConfideTool(tool, hit, text);
       return;
     }
+    if (shouldHandleConfideCompanionGreeting({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideCompanionGreetingReply(t),
+          source: 'companion_greeting'
+        },
+        text
+      );
+      return;
+    }
+    if (shouldHandleConfideReflectiveHonesty({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideReflectiveHonestyReply(t),
+          source: 'reflective_honesty'
+        },
+        text
+      );
+      return;
+    }
     const routePayload = { text, hit, locale, corpusText };
     if (
       mayUseConfideReadHybrid({
@@ -1143,6 +1177,28 @@ export class ConfideToYinUI {
    */
   _continueAfterToolRouting(payload) {
     const { text, hit, locale, corpusText } = payload;
+    if (shouldHandleConfideCompanionGreeting({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideCompanionGreetingReply(t),
+          source: 'companion_greeting'
+        },
+        text
+      );
+      return 'sync';
+    }
+    if (shouldHandleConfideReflectiveHonesty({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideReflectiveHonestyReply(t),
+          source: 'reflective_honesty'
+        },
+        text
+      );
+      return 'sync';
+    }
     const wantGenerate = ypeMayUseCompanionGenerate({
       route: hit.route,
       generateEnabled: Boolean(this._companionStatus?.generateEnabled),
@@ -1381,6 +1437,8 @@ export class ConfideToYinUI {
       .confide-to-yin__reply[data-source='companion_presence']::before,
       .confide-to-yin__reply[data-source='preference_honesty']::before,
       .confide-to-yin__reply[data-source='observation_honesty']::before,
+      .confide-to-yin__reply[data-source='reflective_honesty']::before,
+      .confide-to-yin__reply[data-source='companion_greeting']::before,
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;

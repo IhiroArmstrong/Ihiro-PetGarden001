@@ -501,6 +501,6 @@ fur 未再现；shoulders/slight-tension 从 7/12 降到 0/12；中文 UI 与 fe
 
 ## 下一步
 
-生产 `l2Persona.js` 仍不动。第 5 轮通读复评进本文 §10.5。改生产仍须另开 `fix/*` + 契约单测 + 新 Chat「大任务」。
+档 3 / 档 4 走 Confide 规则模板（`reflective_honesty` / `companion_greeting`），**禁止**导回 `memory_list`。生产观察翼 `buildCompanionL2Prompt` **仍不动**，等分流进 Electron 金句后再做减法。不改 Read Hybrid gloss。
 
 所属线: Epic #639 · 切片 #823
