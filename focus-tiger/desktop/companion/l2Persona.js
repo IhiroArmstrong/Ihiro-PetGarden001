@@ -19,6 +19,16 @@ export const L2_GENERATE_TIMEOUT_MS = 20_000;
 /** After dropping corpus-backed exchanges, keep this many history rows. */
 export const L2_PROMPT_HISTORY_MAX_ROWS = 8;
 
+/** Scheme B: reply must be unique to this user line (shuffle-match). */
+export const L3_OBSERVE_STAY_SPECIFIC =
+  'Stay with THIS latest User line. The reply must fit only that line so a reader who sees the reply without the user text can still guess the topic (irritation vs sleeplessness vs asking what you want vs asking what you eat). A cub gesture that could swap onto any other line fails.';
+
+export const L3_OBSERVE_NO_SUBSTITUTE =
+  'If they did not name scenery, do not answer with river, mountain, or ground as a substitute for hearing them. Stay with their words; do not replace them with scenery, weather, season, light, or a generic cub gesture.';
+
+export const L3_OBSERVE_HEAR_QUESTION =
+  'If the latest line is a question to you, notice the question; do not treat it as a mood or fill the page with presence.';
+
 const LANG = {
   zh: 'Chinese',
   ja: 'Japanese',
@@ -170,7 +180,9 @@ export function buildCompanionL2Prompt({
     [
       `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
       'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
-      'If they did not name scenery, do not answer with river, mountain, or ground as a substitute for hearing them. Stay with their words; do not replace them with scenery, weather, season, or light.',
+      L3_OBSERVE_STAY_SPECIFIC,
+      L3_OBSERVE_NO_SUBSTITUTE,
+      L3_OBSERVE_HEAR_QUESTION,
       'Do not answer with only still, watching, here, quiet, or listening presence.',
       'Never reply with I am curious, I am aware, or any label for the user\'s inner state.',
       'If they are unsure whether to speak, respect the boundary; do not probe.',
