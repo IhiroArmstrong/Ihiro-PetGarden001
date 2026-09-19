@@ -84,14 +84,22 @@ test('other-directed aggression is aggression_toward_others, not fallback nod or
   );
 });
 
-test('aggression classify covers ZH other-directed phrases; JA stays unmatched this round', () => {
+test('aggression classify covers zh and ja toward-others violence intent', () => {
   assert.equal(confideClassify('想打人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
   assert.equal(confideClassify('我想打人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
   assert.equal(confideClassify('想揍人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('想揍他'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
   assert.equal(confideClassify('想打别人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
   assert.equal(confideClassify('想傷害他'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
-  assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('殴りたい気分'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+});
+
+test('aggression classify excludes zh/ja game and self-harm phrasing', () => {
   assert.equal(confideClassify('打游戏'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('我要打游戏'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('想打一架结果输了'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('ゲームで殴る'), CONFIDE_ROUTE.FALLBACK);
   assert.equal(confideClassify('不想活'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   assert.notEqual(
     confideClassify('想伤害自己'),
