@@ -92,6 +92,8 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
 
 **我认为最合理的**：下一刀运行时只补 `列出记忆` 进 `isMemoryListQuestion`（真补漏、无 #822 冲突），并收 `忙啥` 进与 `忙什么` 同一诚实桶。**不要**把 `我最近在忙什么` 改回 `memory_list`（与 #822 关单冲突，须 PO 先拍）。闲聊 3s 是 L3 generate，不是 Hybrid。P0 中文 aggression（#847）另线。
 
+**2026-09-19 已开工**（`fix/confide-meta-regex-and-acceptance`）：上两刀 regex 已合入旁支；肉测终止条件见 `docs/confide-meta-query-acceptance.md`（32 句冻表 + 单测）。
+
 ## 7. 不合理（仍作废）
 
 把 E′ 挂上 send、或把 `我最近在忙什么` 改回 `memory_list`（与 #822 关单冲突）而未先经 PO、或凭第一轮无 `text` 旁证扩 gloss。

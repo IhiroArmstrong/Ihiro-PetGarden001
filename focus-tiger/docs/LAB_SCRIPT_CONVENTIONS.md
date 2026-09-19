@@ -128,6 +128,20 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 
 结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "multilang-chitchat"`）。fixture：`confideMultilangChitchatFixtures.js`（**6 语 × 18 句 = 108** · 非 #774 差样本）。每句 **空历史**、只跑 1 次（供人工标注合格率）。`onTopic` 留 `null`。
 
+**Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 仓库内 fixture）**：
+
+- 真源：`confideMetaQueryAcceptanceFixtures.js`（**32 句** · 6 桶）
+- 文档：`docs/confide-meta-query-acceptance.md`
+- 单测：`node --test src/core/confide/confideMetaQueryAcceptanceFixtures.test.js`
+- 人工：Electron 宽屏按冻表 `id` 顺序逐句发，核对 `data-source` / 是否写 `read_hybrid_classify`；**过关本表 = 本轮 regex 验收通过**（L3 质量另议）
+
+**Confide 攻击他人 / 安全边界验收冻表（2026-09-19 · aggression / safety · 仓库内 fixture）**：
+
+- 真源：`confideAggressionAcceptanceFixtures.js`（**30 句** · 3 路由）
+- 文档：`docs/confide-aggression-acceptance.md`
+- 单测：`node --test src/core/confide/confideAggressionAcceptanceFixtures.test.js`
+- 人工：Electron 宽屏按冻表 `id` 顺序逐句发，核对 `data-route` / 禁 Heard·点头；**过关本表 = 本轮 aggression 边界验收通过**（ja 语料审定另议）
+
 **Gemma4-E4B 六语 jc vs unsloth A/B（2026-09-17 · 仓库内脚本）**：
 
 ```bash
