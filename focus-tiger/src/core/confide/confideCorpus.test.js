@@ -91,6 +91,8 @@ test('aggression pool 03/04 carry analyst direction drafts without Heard or nods
     assert.doesNotMatch(line.en, /nod/i);
     assert.doesNotMatch(line.zh, /听见了/);
     assert.doesNotMatch(line.zh, /点头/);
+    assert.doesNotMatch(line.ja, /聴いた/);
+    assert.doesNotMatch(line.ja, /うなず/);
   }
 });
 
