@@ -60,11 +60,38 @@ _onSend: suppress → boundary → companion presence → preference
 
 Gate 0.D / E′ **不在**这条链上。Read Hybrid 只在 fallback + 宽屏 + generate 开 + 正则已 miss 时跑。
 
-## 5. 下一刀（数字出来之前）
+## 5. 肉测协议（develop tip · 含 #859 原句 + #861 正例门闩）
 
-1. **必做（无代码）**：用已含 `#841` 的 Electron（`origin/develop` tip）宽屏 Confide 再聊一轮（建议 ≥15 句 fallback 闲聊 + 几句「列出记忆 / 练了多久」），再抽 `kind=read_hybrid_classify`。这一步才能回答 **tool≠none 比例**。
-2. **若要回答「正则 vs 真补漏」**：只在 `classifyReadTool` 落盘里加 **用户原句**（可截断；仍禁止改 send / 禁止 E′）。没有原句，第 2 问永远算不出。
-3. **不合理**：在 n=0 时跳过 Hybrid、把 E′ 挂上 send、或靠旧 generate 旁证扩 gloss。
-4. **已批准（2026-09-19）**：`shouldRunConfideReadHybridClassify` 正例门闩——明显非查询闲聊跳过 L0 classify；合入前单测须覆盖列出记忆/你还记得什么/我最近在忙什么/为什么开始做这件事/我练了多久。
+**壳**：`origin/develop` tip · Electron 宽屏 · `npm run desktop:dev`（`focus-tiger-desktop` userData）。
 
-**我认为最合理的**：先做第 1 步肉测出 tool≠none 比例；第 2 步作为紧随的小埋点（非 send）。扩 regex 只对已证实「假补漏」的字面动手（#523 同型），且与 P0 中文 aggression 分 PR。跳过 classify 见 `fix/confide-skip-hybrid-classify`（正例门闩，非裸 skip）。
+**会话脚本**（建议 ≥15 轮 fallback 闲聊 + 5 轮正例门闩句）：
+
+| 批次 | 例句 | 预期 |
+|---|---|---|
+| 闲聊（≥15） | `今天好累` / `有点烦` / `睡不着` … | #861 后 **不**写 `read_hybrid_classify`（直进 generate） |
+| 正例门闩（5） | `列出记忆` · `你还记得什么` · `我最近在忙什么` · `为什么开始做这件事` · `我练了多久` | 仍写 `read_hybrid_classify`；`练了多久` 可能 regex 直命中、不进 Hybrid |
+| 可选对照 | `我想打游戏` | 跳过 classify（#861 反例） |
+
+**抽数**（肉测后）：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger && npm run audit:read-hybrid-gapfill
+```
+
+默认只统计 **带 `text` 字段** 且 `at ≥ 2026-09-19` 的 `read_hybrid_classify` 行（`--all` 可含旧行）。
+
+## 6. 已做 / 仍缺
+
+| 项 | 状态 |
+|---|---|
+| #841 `read_hybrid_classify` + timing 落盘 | 已合 develop |
+| #859 分类行记 `text`（截断 400） | 已合 develop（`128b344d`） |
+| #861 `shouldRunConfideReadHybridClassify` 正例门闩 | 已合 develop（`bdd167b1`）；明显闲聊跳过 classify |
+| 第一轮肉测（17 句 · 无 `text`） | **旁证**：14 条 classify · tool≠none **1/14 ≈ 7%**（`列出记忆`）；不可算假/真补漏 |
+| 带 `text` 的第二轮肉测 | **未完成**（本机 jsonl 仅 1 条带 `text`） |
+
+**我认为最合理的**：按 §5 再聊一轮 → `npm run audit:read-hybrid-gapfill` 出 tool≠none / 假补漏 / 真补漏三数；再决定扩 regex 或维持 #861 短路。P0 中文 aggression（#847）另线。
+
+## 7. 不合理（仍作废）
+
+在带 `text` 样本仍为 0 时：把 E′ 挂上 send、或靠旧 generate 旁证扩 gloss、或凭第一轮无 `text` 行拍「跳过 Hybrid」产品决策。
