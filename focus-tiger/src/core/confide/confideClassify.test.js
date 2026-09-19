@@ -41,6 +41,7 @@ test('emotion buckets: anxious / tired / stuck / sad / scattered', () => {
   assert.equal(confideClassify('太累了'), CONFIDE_ROUTE.TIRED);
   assert.equal(confideClassify('卡住了'), CONFIDE_ROUTE.STUCK);
   assert.equal(confideClassify('很难过'), CONFIDE_ROUTE.SAD);
+  assert.equal(confideClassify('我有点不高兴'), CONFIDE_ROUTE.SAD);
   assert.equal(confideClassify('心乱静不下来'), CONFIDE_ROUTE.SCATTERED);
 });
 
