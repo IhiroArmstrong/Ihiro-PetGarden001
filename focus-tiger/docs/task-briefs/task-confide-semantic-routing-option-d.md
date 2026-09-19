@@ -141,6 +141,7 @@ Electron 宽屏且面板内已有上一轮时，同一行会填 `hadPriorTurn: t
 |---|---|
 | 非 Electron / 无 `semanticShadowClassify` IPC | 不写日志或 `ok:false reason:unavailable` |
 | embedding 模型未下载 / 加载失败 | `ok:false`；Confide 主路径不变 |
+| embedding 下载/加载进度 | **仅 shadow phase**（`embedding_downloading` / `embedding_loading`）；`l1Status` 忽略，**不**驱动 Confide 状态条 |
 | `getEmbeddingFor` 抛错 | 捕获；`reason:embed_failed` |
 | `safety_redirect` / `aggression_toward_others` | `reason:skipped_safety`；不加载 embedding |
 
