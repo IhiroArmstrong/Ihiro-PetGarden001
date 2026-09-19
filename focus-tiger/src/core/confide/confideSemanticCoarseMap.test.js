@@ -77,6 +77,8 @@ describe('confideSemanticCoarseMap', () => {
     assert.equal(row.text, '累积了多久');
     assert.equal(row.literalCoarse, CONFIDE_SEMANTIC_BUCKET.EMOTIONAL);
     assert.equal(row.semanticCoarse, CONFIDE_SEMANTIC_BUCKET.FUNCTIONAL);
+    assert.equal(row.hadPriorTurn, false);
+    assert.equal(row.semanticCoarseWithPrior, null);
   });
 
   it('degrades shadow logging when embedding fails', () => {

@@ -14,6 +14,10 @@ import {
   resolveConfideLiteralCoarseBucket,
   shouldRunConfideSemanticShadow
 } from '../core/confide/confideSemanticCoarseMap.js';
+import {
+  buildConfideShadowContextualText,
+  priorConfideTurnForShadow
+} from '../core/confide/confideSemanticShadowPriorTurn.js';
 import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
@@ -643,6 +647,7 @@ export class ConfideToYinUI {
 
   /**
    * Stage 1 shadow: async semantic coarse bucket audit after the user sees the reply.
+   * May include the previous `_l2Turns` pair in a second embedding (still not production routing).
    * @param {{ text: string, route: string, source: string }} ctx
    */
   _maybeScheduleSemanticShadow(ctx) {
@@ -654,9 +659,13 @@ export class ConfideToYinUI {
       return;
     }
     const literalCoarse = resolveConfideLiteralCoarseBucket(ctx);
+    const prior = priorConfideTurnForShadow(this._l2Turns);
+    const contextualText = buildConfideShadowContextualText(ctx.text, prior);
     void Promise.resolve(
       this._companion.semanticShadowClassify({
         text: ctx.text,
+        contextualText,
+        hadPriorTurn: Boolean(prior),
         route: ctx.route,
         source: ctx.source,
         literalCoarse

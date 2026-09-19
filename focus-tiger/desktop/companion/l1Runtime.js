@@ -494,6 +494,8 @@ export class CompanionL1Runtime {
    * Shadow-only semantic coarse classify. Never blocks production routing.
    * @param {{
    *   text?: string,
+   *   contextualText?: string,
+   *   hadPriorTurn?: boolean,
    *   route?: string,
    *   source?: string,
    *   literalCoarse?: string | null
@@ -505,6 +507,9 @@ export class CompanionL1Runtime {
       return { ok: false, reason: 'unavailable' };
     }
     const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    const contextualText =
+      typeof payload.contextualText === 'string' ? payload.contextualText.trim() : '';
+    const hadPriorTurn = Boolean(payload.hadPriorTurn) && Boolean(contextualText);
     const route = typeof payload.route === 'string' ? payload.route : '';
     const source = typeof payload.source === 'string' ? payload.source : '';
     const literalCoarse =
@@ -512,7 +517,14 @@ export class CompanionL1Runtime {
     if (!text) return { ok: false, reason: 'empty_text' };
 
     void (this._shadowQueue = this._shadowQueue.then(() =>
-      this._runSemanticShadowClassify({ text, route, source, literalCoarse })
+      this._runSemanticShadowClassify({
+        text,
+        contextualText,
+        hadPriorTurn,
+        route,
+        source,
+        literalCoarse
+      })
     ));
     return { ok: true, queued: true };
   }
@@ -520,6 +532,8 @@ export class CompanionL1Runtime {
   /**
    * @param {{
    *   text: string,
+   *   contextualText: string,
+   *   hadPriorTurn: boolean,
    *   route: string,
    *   source: string,
    *   literalCoarse: string | null
@@ -531,7 +545,9 @@ export class CompanionL1Runtime {
       text: payload.text,
       route: payload.route,
       source: payload.source,
-      literalCoarse: payload.literalCoarse
+      literalCoarse: payload.literalCoarse,
+      hadPriorTurn: payload.hadPriorTurn,
+      contextualText: payload.contextualText || null
     };
 
     if (!this.child) {
@@ -546,7 +562,8 @@ export class CompanionL1Runtime {
       this._write(
         `semantic-shadow-classify ${JSON.stringify({
           id,
-          text: payload.text
+          text: payload.text,
+          contextualText: payload.contextualText || ''
         })}`
       );
       const timed = await Promise.race([
@@ -563,6 +580,7 @@ export class CompanionL1Runtime {
       }
 
       if (timed?.event === 'semantic_shadow_classified') {
+        const priorBucket = timed.bucketWithPrior;
         await this._appendTurnLog(
           buildSemanticShadowTurnLogRecord({
             ...baseRecord,
@@ -574,9 +592,19 @@ export class CompanionL1Runtime {
               scoreB: Number(timed.scoreB),
               grayMargin: Number(timed.grayMargin)
             },
+            semanticResultWithPrior:
+              typeof priorBucket === 'string' && priorBucket
+                ? {
+                    bucket: priorBucket,
+                    scoreA: Number(timed.scoreAWithPrior),
+                    scoreB: Number(timed.scoreBWithPrior),
+                    grayMargin: Number(timed.grayMarginWithPrior ?? timed.grayMargin)
+                  }
+                : null,
             timing: {
               wallMs: Number(timed.wallMs) || Date.now() - wallStarted,
-              embedMs: Number(timed.embedMs) || undefined
+              embedMs: Number(timed.embedMs) || undefined,
+              embedMsWithPrior: Number(timed.embedMsWithPrior) || undefined
             }
           })
         );
