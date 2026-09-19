@@ -1,5 +1,7 @@
 # Task Brief · 日语 Confide 闲聊：方差统计后再改
 
+> **状态（2026-09-18）**：**Brief 已发起 · 规则桶未开工** · 空会话统计已完成 · **下一步 = Electron 5 句连发验证**
+
 **Issue**：[#774](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/774)  
 **Epic**：#639 Confide  
 **口令**：统计阶段用 QA 树终端实验室脚本，**不要**在 Agent Chat 里连跑 10–20 次生成。生产改路由须新 Chat **「开工」** 且须你书面同意加规则（PO 曾否决残差语用扩规则）。

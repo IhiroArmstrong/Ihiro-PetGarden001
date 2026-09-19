@@ -275,10 +275,23 @@ export class FocusCircleControlsUI {
     this._setBusy(true);
     this._setStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
     try {
-      await leaveFocusCircle({
+      const result = await leaveFocusCircle({
         storage: globalThis.localStorage,
         search: globalThis.location?.search ?? ''
       });
+      if (
+        !result.ok &&
+        result.reason !== 'no_membership' &&
+        result.reason !== 'local_only' &&
+        result.reason !== 'not_found'
+      ) {
+        const key =
+          result.reason === 'timeout'
+            ? 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT'
+            : 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC';
+        this._setStatus(key, true);
+        return;
+      }
       this.joinInput.value = '';
       this.refresh();
       this._setStatus('PRIVACY_SHEET_FOCUS_CIRCLE_LEFT', true);

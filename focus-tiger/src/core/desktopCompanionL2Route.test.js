@@ -529,6 +529,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
     assert.match(runtime, /priorRepeatableYinRepliesFromHistory/);
     assert.match(runtime, /classifyReadTool/);
+    assert.match(runtime, /kind: 'read_hybrid_classify'[\s\S]*?text: userText\.slice\(0, 400\)/);
+    assert.match(ui, /classifyReadTool\(\{[\s\S]*?userText: text/);
     assert.equal(runtime.includes('buildConfideReadHybridPrompt'), false);
     
     assert.match(ui, /ypeMayUseCompanionGenerate/);

@@ -199,4 +199,23 @@ describe('focusCircleWitness', () => {
     assert.equal(blocked.reason, 'rate_limited');
   });
 
+  it('maps 408 to timeout so picker fail can surface', async () => {
+    const storage = memoryStorage({
+      [FOCUS_CIRCLE_STORAGE_KEY]: JSON.stringify(MEMBERSHIP)
+    });
+    const result = await postFocusCircleWitness({
+      storage,
+      action: 'witness_leave',
+      phraseKey: 'FOCUS_CIRCLE_WITNESS_LEAVE_1',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        const err = new Error('timeout');
+        /** @type {any} */ (err).status = 408;
+        throw err;
+      }
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'timeout');
+  });
+
 });

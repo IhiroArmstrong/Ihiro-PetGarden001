@@ -638,11 +638,11 @@
 > **地位**：Privacy 内可选社交基础设施。**≠** 全球灯火（AM）、**≠** Presence Signals、**≠** 聊天。  
 > **单元**：`focusCircleMembership.test.js` · cloud `focusCircleKv.test.ts`。  
 > **生产**：Worker 未部署 `/api/focus-circle` 时 Create/Join 须见错误文案，不挡 Sit。  
-> **点击**：Create / Join / Leave / Copy 均 0–1 秒内 disabled 或状态句。Copy 后须见「已拷贝」类句，且面板仍开着、人数刷新时**不得立刻清掉**该句。Start a circle 若云端超过约 12 秒无响应，须出失败句并恢复可点（禁止无限等待光标）。Leave 后迟到的人数回写不得把人「加回去」。
+> **点击**：Create / Join / Leave / Copy 均 0–1 秒内 disabled 或状态句。Copy 后须见「已拷贝」类句，且面板仍开着、人数刷新时**不得立刻清掉**该句。Start a circle 若云端超过约 12 秒无响应，须出失败句并恢复可点（禁止无限等待光标）。**Leave 挂起**见 WORKING + 钮 disabled；**Leave 超时/失败**须失败句且仍显示已入圈（禁止尚未离圈却报已离开）。Leave 成功后迟到的人数回写不得把人「加回去」。
 
 1. `?product=1` → ? → Privacy → **Focus Circle** → Start a circle → **0–1 秒内**见六位暗号与「一人」。  
 2. 另一标签 Join 同码 → 人数增至 2（满 8 时 Join 须见满员句）。  
-3. Leave → **0–1 秒内**回到未入圈态；错误暗号须见「无匹配」类文案。  
+3. Leave 成功 → **0–1 秒内**回到未入圈态；Leave 超时/失败 → 失败句且仍为已入圈。错误暗号须见「无匹配」类文案。  
 4. `?circleJoin=XXXXXX` 打开 Privacy 时预填加入框。`?focusCircle=0` 禁用请求。
 5. Copy invite code → **0–1 秒内**见 copied 状态句；窗口再聚焦后该句仍在（剪贴板已有码却像没反应 = 失败）。
 6. Start a circle 云端卡住 → 约 12 秒内失败句 + 按钮可再点。
@@ -670,7 +670,7 @@
 > **地位**：Idle / Arrive 背景级匿名短句痕迹 + **每条最多一次**预设回应。**≠** sitting dots（AO）、**≠** 聊天、**≠** 点赞墙、**≠** was-here-today（2d）、**≠** 昵称（2e）。Focusing 内不画。  
 > **单元**：（开工后）`focusCircleWitness.test.js` · cloud `focusCircleWitnessKv.test.ts`。  
 > **生产**：Worker 未部署 witness actions 时 Idle **不画痕迹**（诚实）。  
-> **点击**：Rise 留痕条须 0–1s 反馈且无自动消失倒计时；Idle 回应须 0–1s disabled → picker。**仲裁**：Rise 条 = `FOCUS_CIRCLE_WITNESS_LEAVE` Tier26；回应 picker = Tier27；须过 `requestOverlaySlot`（场景 AH / AD 邻接）。
+> **点击**：Rise 留痕条须 0–1s 反馈且无自动消失倒计时；Idle 回应须 0–1s disabled → picker。选句提交 **挂起**见 `aria-busy` + 钮 disabled；**约 12 秒超时或失败**须见 `FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR` 且 picker 仍在（禁止无限转圈）。**仲裁**：Rise 条 = `FOCUS_CIRCLE_WITNESS_LEAVE` Tier26；回应 picker = Tier27；须过 `requestOverlaySlot`（场景 AH / AD 邻接）。
 
 1. A、B **均已入圈** → A **Sit ≥60s** → **Rise** → **约 3s 后**（非 3s 限时关条）见可忽略留痕条 → **留下** → 选预设句 → 条消失。**对照**：Celebrate / 芥子印 / 吹花首卡可见时条 **不得**抢叠。  
 2. B **硬刷新 Idle** 约 2.5–10s 见 **1 条**匿名痕迹 + **回应** 入口；银蓝 dots（AO）可同时出现。  

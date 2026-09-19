@@ -13,11 +13,13 @@ import {
   resetFocusCircleIdentityForTests
 } from './focusCircleIdentity.js';
 import {
+  FOCUS_CIRCLE_MUTATION_TIMEOUT_MS,
   FOCUS_CIRCLE_PATH,
   FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS,
   FOCUS_CIRCLE_SCHEMA_VERSION,
   isFocusCircleClientEnabled,
-  readFocusCircleMembership
+  readFocusCircleMembership,
+  withFocusCircleRequestTimeout
 } from './focusCircleMembership.js';
 import {
   LANTERN_BUSY_RETRY_MS,
@@ -264,9 +266,16 @@ export async function postFocusCircleWitness({
     ...(traceId ? { traceId } : {})
   };
   try {
-    const body = await postJson(FOCUS_CIRCLE_PATH, {
-      body: JSON.stringify(payload)
-    });
+    const body = await withFocusCircleRequestTimeout(
+      postJson(
+        FOCUS_CIRCLE_PATH,
+        {
+          body: JSON.stringify(payload)
+        },
+        { timeoutMs: FOCUS_CIRCLE_MUTATION_TIMEOUT_MS }
+      ),
+      FOCUS_CIRCLE_MUTATION_TIMEOUT_MS
+    );
     if (!body || typeof body !== 'object') {
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
@@ -303,6 +312,7 @@ export async function postFocusCircleWitness({
       }
       return { ok: false, reason: 'rate_limited', skipped: true };
     }
+    if (status === 408) return { ok: false, reason: 'timeout', skipped: true };
     return { ok: false, reason: 'network', skipped: true };
   }
 }

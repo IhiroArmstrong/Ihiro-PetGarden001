@@ -515,8 +515,6 @@ export class SupportYinModalUI {
       );
       if (inlineCheckout) {
         this._clearInlineCheckoutErrors(kind);
-      } else {
-        this.close();
       }
       if (kind === 'sanctuary') {
         await this.handlers.onUnlockSanctuary?.();
@@ -536,6 +534,9 @@ export class SupportYinModalUI {
         } else {
           await this._startInlineCheckout('companion-addon');
         }
+      }
+      if (!inlineCheckout) {
+        this.close();
       }
     } finally {
       this._busy = false;
