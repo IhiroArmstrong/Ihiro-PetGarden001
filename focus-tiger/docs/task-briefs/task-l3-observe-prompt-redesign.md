@@ -1,9 +1,9 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-19）**：**方案 B 生产刀已开工** — 打乱配对验收入 Brief §12；`buildCompanionL2Prompt` 加「只贴本句」+ 禁可互换幼虎套势；sanitize 拒收四句田野套话。关单须 Electron 人工打乱配对 ≥8/12。  
+> **状态（2026-09-20）**：**方案 B 生产刀续作** — #874 后 Electron 三句独白仍第一人称耳/尾/爪套势。本刀扩观察翼 prompt + sanitize 拒收该族改写；**禁止**把 §4.2 独白改去问答翼。关单仍须 Electron 打乱配对 ≥8/12。  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
 > **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理；档 3/4 分流已进 develop（#834/#835）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
-> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（方案 B：只贴本句 + generic cub gesture；sanitize 拒收田野四句套势）。  
+> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（方案 B：只贴本句 + generic cub gesture + 禁第一人称耳/尾/爪空转；sanitize 拒收田野套势含 My ears/tail/paws）。  
 > **实验室**：`/tmp/ft-l0-l3-observe-b-lab.mjs` · `compare-1789671570533.json`（baseline+B）· `compare-1789671689159.json`（A）· `compare-1789672356967.json`（B-neg+A-neg）
 
 ---
@@ -543,8 +543,8 @@ fur 未再现；shoulders/slight-tension 从 7/12 降到 0/12；中文 UI 与 fe
 
 **生产改动**（本刀）：
 
-1. `buildCompanionL2Prompt`：正约束「只贴本句、读者不见原文也能猜主题」；禁令扩到 **generic cub gesture**；问句须当问句听。**不加** paw/moss 打地鼠词表进 prompt 主干（与 §十一决策一致）。
-2. `sanitizeCompanionL2Reply`：拒收田野四句可互换套势（`shifts its weight` / `stretches a paw` / `blinks slowly` / `nudges … moss`）及同族皮毛/空气空转。拒收后仍走既有 corpus fallback。
+1. `buildCompanionL2Prompt`：正约束「只贴本句、读者不见原文也能猜主题」；禁令扩到 **generic cub gesture**；问句须当问句听。风景 paw/moss **不**堆进 prompt 主干（与 §十一决策一致）。**2026-09-20**：观察翼另加 `L3_OBSERVE_NO_FIRST_PERSON_CUB_BODY`（点名耳/尾/爪空转，并要求点出本句主题）。**禁止**把 §4.2 独白改走 chat 翼（#874 对照）。
+2. `sanitizeCompanionL2Reply`：拒收田野四句可互换套势（`shifts its weight` / `stretches a paw` / `blinks slowly` / `nudges … moss`）、同族皮毛/空气空转，以及 **2026-09-20** 第一人称肢体族（`My ears twitch…` / `My tail … flick` / `My paws shift…` 及同族改写）。拒收后仍走既有 corpus fallback。
 3. 夹具：`desktop/companion/l3ObserveShuffleFixtures.js`（12 句 · 情绪 / 问寅 / 习惯）。
 
 **打乱配对（关单标准）**：
