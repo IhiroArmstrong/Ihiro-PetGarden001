@@ -1,8 +1,8 @@
 # Task Brief · Confide 语义向量前置分流（Option D · Stage 1 影子模式）
 
-> **状态（2026-09-19）**：Stage 1 已开工——建设施 + 影子日志；**不切换**任何现网路由。  
+> **状态（2026-09-20）**：Stage 1 已在 develop。Prompt 6 影子对照已开工：同一影子行同时记「只看当前句」与「看了上一轮」；**仍不切换**现网路由。  
 > **前置诊断**：字面子串堆叠（`textMatchesAnyPhrase` 等）造成多起误判（例：「累积了多久」里的「累」→ `tired`；「忙啥」未命中「忙什么」正则）。  
-> **权威实现**：`confideSemanticRouting.js` · `confideSemanticExamples.js` · `l1EmbeddingHold.js` · `l0EmbeddingProfiles.js`
+> **权威实现**：`confideSemanticRouting.js` · `confideSemanticExamples.js` · `l1EmbeddingHold.js` · `l0EmbeddingProfiles.js` · `confideSemanticShadowPriorTurn.js`
 
 ---
 
@@ -122,9 +122,16 @@
   "grayMargin": 0.08,
   "ok": true,
   "reason": "ok | skipped_safety | embed_unavailable | embed_failed | …",
-  "timing": { "wallMs": 120, "embedMs": 95 }
+  "timing": { "wallMs": 120, "embedMs": 95 },
+  "hadPriorTurn": false,
+  "contextualText": null,
+  "semanticCoarseWithPrior": null,
+  "scoreAWithPrior": null,
+  "scoreBWithPrior": null
 }
 ```
+
+Electron 宽屏且面板内已有上一轮时，同一行会填 `hadPriorTurn: true` 与 `contextualText`（上一轮 user+yin 拼在当前句前，截断规则见 `confideSemanticShadowPriorTurn.js`）。对照读法：`docs/confide-semantic-shadow-prior-turn-audit.md`。**Web / 窄屏无此历史。**
 
 ---
 
@@ -151,6 +158,7 @@
 
 ## 验收
 
-- 单测：`confideSemanticRouting.test.js` · `confideSemanticCoarseMap.test.js` · `l0EmbeddingProfiles.test.js`
+- 单测：`confideSemanticRouting.test.js` · `confideSemanticCoarseMap.test.js` · `confideSemanticShadowPriorTurn.test.js` · `l0EmbeddingProfiles.test.js`
 - 结构：`desktopCompanionL2Route.test.js` 锁 IPC + `_showReply` 影子接线
 - 人工（Stage 2 前）：Electron 宽屏发「累积了多久」「忙啥」→ `turns.jsonl` 含 `semantic_shadow_classify` 且带 `text`
+- Prompt 6：同会话第二句「好累」→ 同行含 `semanticCoarse` 与 `semanticCoarseWithPrior`（见对照审计文档）

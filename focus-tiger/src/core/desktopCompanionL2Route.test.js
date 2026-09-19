@@ -523,6 +523,10 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
     assert.match(ui, /_maybeRememberFromL3/);
     assert.match(ui, /onMemoryRemembered/);
+    assert.match(ui, /priorConfideTurnForShadow/);
+    assert.match(ui, /buildConfideShadowContextualText/);
+    assert.match(ui, /contextualText/);
+    assert.match(preload, /desktop:companion-semantic-shadow-classify/);
     const runtime = readFileSync(
       join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
       'utf8'
@@ -534,6 +538,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
     assert.match(runtime, /priorRepeatableYinRepliesFromHistory/);
     assert.match(runtime, /classifyReadTool/);
+    assert.match(runtime, /contextualText/);
+    assert.match(child, /classifyUserText\(contextualText\)/);
     assert.match(runtime, /kind: 'read_hybrid_classify'[\s\S]*?text: userText\.slice\(0, 400\)/);
     assert.match(ui, /classifyReadTool\(\{[\s\S]*?userText: text/);
     assert.equal(runtime.includes('buildConfideReadHybridPrompt'), false);

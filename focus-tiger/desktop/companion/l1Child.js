@@ -243,6 +243,10 @@ async function main() {
           }
           const id = typeof payload.id === 'string' ? payload.id : '';
           const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          const contextualText =
+            typeof payload.contextualText === 'string'
+              ? payload.contextualText.trim()
+              : '';
           if (!text) {
             await emit({
               event: 'semantic_shadow_error',
@@ -258,6 +262,14 @@ async function main() {
               throw new Error('embedding_session_missing');
             }
             const result = await embeddingSession.classifyUserText(text);
+            let withPrior = null;
+            if (contextualText) {
+              try {
+                withPrior = await embeddingSession.classifyUserText(contextualText);
+              } catch {
+                withPrior = null;
+              }
+            }
             await emit({
               event: 'semantic_shadow_classified',
               id,
@@ -268,6 +280,11 @@ async function main() {
               grayMargin: result.grayMargin,
               topK: result.topK,
               embedMs: result.embedMs,
+              bucketWithPrior: withPrior?.bucket ?? null,
+              scoreAWithPrior: withPrior?.scoreA ?? null,
+              scoreBWithPrior: withPrior?.scoreB ?? null,
+              grayMarginWithPrior: withPrior?.grayMargin ?? null,
+              embedMsWithPrior: withPrior?.embedMs ?? null,
               wallMs: Date.now() - started
             });
           } catch (err) {
