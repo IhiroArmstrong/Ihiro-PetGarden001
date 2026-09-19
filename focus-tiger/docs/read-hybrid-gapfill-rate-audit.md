@@ -29,7 +29,7 @@
 `#841` 合入时间：`2026-09-18 18:47 +0800`（`dbd3088e`）。**最后一条对话早于合入约 1.5 小时。**  
 因此：**合入后对话日志尚未产生**，`tool≠none` 比例与「正则本该命中 vs 真补漏」在产品 jsonl 上 **样本量为 0**。
 
-另：现行 `classifyReadTool` 只记 `promptChars` + 模型 `raw`，**不记用户原句**。即便之后有 `read_hybrid_classify` 行，也只能算 tool 分布，**仍无法**把 raw tool 对回现网 `matchConfideExecutableTool`。tool≠none 时通常不走 L3，邻近 `l3_generate.text` **接不上**。
+`read_hybrid_classify` 行自 **2026-09-19** 起另记 `text`（用户原句，截断 400 字；仍不改 send / 不挂 E′）。合入前旧行只有 `promptChars` + `raw`，无法把 tool 对回 `matchConfideExecutableTool`。
 
 ## 3. 旁证（旧 generate 行 · 不是 Hybrid 补漏率）
 

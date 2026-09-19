@@ -1143,7 +1143,8 @@ export class ConfideToYinUI {
     this._renderDesktopStatus();
     void Promise.resolve(
       this._companion.classifyReadTool({
-        prompt: buildConfideReadHybridPrompt(text)
+        prompt: buildConfideReadHybridPrompt(text),
+        userText: text
       })
     )
       .then((result) => {

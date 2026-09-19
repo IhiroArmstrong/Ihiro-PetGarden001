@@ -396,7 +396,7 @@ export class CompanionL1Runtime {
 
   /**
    * Regex-miss read hybrid: run constrained L0 JSON prompt; resolution stays in renderer.
-   * @param {{ prompt?: string }} [payload]
+   * @param {{ prompt?: string, userText?: string }} [payload]
    * @returns {Promise<{ ok: boolean, raw?: string, reason?: string }>}
    */
   async classifyReadTool(payload = {}) {
@@ -408,6 +408,12 @@ export class CompanionL1Runtime {
       return { ok: false, reason: 'focusing' };
     }
     const prompt = typeof payload.prompt === 'string' ? payload.prompt.trim() : '';
+    const userText =
+      typeof payload.userText === 'string'
+        ? payload.userText.trim()
+        : typeof payload.text === 'string'
+          ? payload.text.trim()
+          : '';
     if (!prompt) return { ok: false, reason: 'empty_prompt' };
     const ready = await this.ensureReady();
     if (!ready.ok || this.status.phase !== 'ready') {
@@ -448,6 +454,7 @@ export class CompanionL1Runtime {
     await this._appendTurnLog({
       at: new Date().toISOString(),
       kind: 'read_hybrid_classify',
+      text: userText.slice(0, 400),
       promptChars: prompt.length,
       raw: raw.slice(0, 400),
       ok: Boolean(raw),
