@@ -15,6 +15,16 @@ import {
 } from '../core/focusCirclePassiveShare.js';
 import { readFocusCircleMembership } from '../core/focusCircleMembership.js';
 import {
+  formatFocusCirclePeerTraceLines,
+  normalizeFocusCirclePeerTraces,
+  sortFocusCirclePeerTracesForPanel
+} from '../core/focusCirclePeerTraces.js';
+import {
+  FOCUS_CIRCLE_WITNESS_CHANGE_EVENT,
+  isFocusCircleWitnessClientEnabled,
+  postFocusCircleWitness
+} from '../core/focusCircleWitness.js';
+import {
   FOCUS_CIRCLE_NICKNAME_MAX_LEN,
   isFocusCircleIdentityClientEnabled,
   normalizeFocusCircleBadgeKey,
@@ -123,6 +133,38 @@ export class FocusCirclePanelUI {
       this.identityHint
     );
 
+    this.tracesSection = document.createElement('section');
+    this.tracesSection.className = 'focus-circle-panel__traces';
+    this.tracesSection.dataset.testid = 'focus-circle-peer-traces-section';
+
+    this.tracesTitle = document.createElement('p');
+    this.tracesTitle.className = 'focus-circle-panel__traces-title';
+
+    this.tracesHint = document.createElement('p');
+    this.tracesHint.className = 'focus-circle-panel__hint';
+
+    this.tracesList = document.createElement('ul');
+    this.tracesList.className = 'focus-circle-panel__traces-list';
+    this.tracesList.dataset.testid = 'focus-circle-peer-traces-list';
+
+    this.tracesEmpty = document.createElement('p');
+    this.tracesEmpty.className = 'focus-circle-panel__traces-empty';
+    this.tracesEmpty.dataset.testid = 'focus-circle-peer-traces-empty';
+    this.tracesEmpty.hidden = true;
+
+    this.tracesStatus = document.createElement('p');
+    this.tracesStatus.className = 'focus-circle-panel__traces-status';
+    this.tracesStatus.dataset.testid = 'focus-circle-peer-traces-status';
+    this.tracesStatus.hidden = true;
+
+    this.tracesSection.append(
+      this.tracesTitle,
+      this.tracesHint,
+      this.tracesList,
+      this.tracesEmpty,
+      this.tracesStatus
+    );
+
     this.passiveShareLabel = document.createElement('label');
     this.passiveShareLabel.className = 'focus-circle-panel__opt-in-label';
     this.passiveShareLabel.htmlFor = 'focus-circle-passive-share-toggle';
@@ -159,6 +201,7 @@ export class FocusCirclePanelUI {
       this.titleEl,
       this.blurbEl,
       this.identitySection,
+      this.tracesSection,
       this.passiveShareLabel,
       this.passiveShareHint,
       this.controlsMount,
@@ -167,6 +210,14 @@ export class FocusCirclePanelUI {
     mountRoot.appendChild(this.root);
 
     this.controls = new FocusCircleControlsUI(this.controlsMount);
+    this._peerTracesFetchSeq = 0;
+    this._onWitnessChange = () => {
+      if (this._open) void this._refreshPeerTraces();
+    };
+    globalThis.addEventListener?.(
+      FOCUS_CIRCLE_WITNESS_CHANGE_EVENT,
+      this._onWitnessChange
+    );
     this._unsubLocale = onLocaleChange(() => this._refreshTexts());
     this._injectStyles();
     this._refreshTexts();
@@ -174,6 +225,10 @@ export class FocusCirclePanelUI {
 
   destroy() {
     this._unsubLocale?.();
+    globalThis.removeEventListener?.(
+      FOCUS_CIRCLE_WITNESS_CHANGE_EVENT,
+      this._onWitnessChange
+    );
     this.controls.destroy();
     this.root.remove();
   }
@@ -188,6 +243,7 @@ export class FocusCirclePanelUI {
     this.root.hidden = false;
     this.controls.refresh();
     this.controls.setStatusPollingActive(true);
+    void this._refreshPeerTraces();
     this.root.getBoundingClientRect();
     this.root.style.opacity = '1';
     this.root.style.transform = 'translate(-50%, 0)';
@@ -215,8 +271,109 @@ export class FocusCirclePanelUI {
       globalThis.localStorage
     );
     this.closeBtn.textContent = t('FOCUS_CIRCLE_PANEL_CLOSE');
+    this.tracesTitle.textContent = t('FOCUS_CIRCLE_PEER_TRACES_TITLE');
+    this.tracesHint.textContent = t('FOCUS_CIRCLE_PEER_TRACES_WINDOW_HINT');
+    this.tracesEmpty.textContent = t('FOCUS_CIRCLE_PEER_TRACES_EMPTY');
     this.controls.refresh();
     this._refreshIdentityFields();
+    this._renderPeerTracesList(this._peerTracesRows ?? []);
+  }
+
+  /**
+   * @param {import('../core/focusCirclePeerTraces.js').FocusCirclePeerTraceRow[]} rows
+   */
+  _renderPeerTracesList(rows) {
+    this._peerTracesRows = rows;
+    this.tracesList.replaceChildren();
+    const showSection = isFocusCircleWitnessClientEnabled({
+      storage: globalThis.localStorage,
+      search:
+        typeof globalThis.location?.search === 'string'
+          ? globalThis.location.search
+          : ''
+    });
+    this.tracesSection.hidden = !showSection;
+    if (!showSection) return;
+    if (!rows.length) {
+      this.tracesEmpty.hidden = false;
+      return;
+    }
+    this.tracesEmpty.hidden = true;
+    for (const trace of rows) {
+      const item = document.createElement('li');
+      item.className = 'focus-circle-panel__traces-item';
+      item.dataset.testid = 'focus-circle-peer-trace-item';
+      item.dataset.traceId = trace.traceId;
+      const { leaveLine, respondLine } = formatFocusCirclePeerTraceLines({
+        trace,
+        t
+      });
+      const leaveEl = document.createElement('p');
+      leaveEl.className = 'focus-circle-panel__traces-leave';
+      leaveEl.textContent = leaveLine;
+      item.append(leaveEl);
+      if (respondLine) {
+        const respondEl = document.createElement('p');
+        respondEl.className = 'focus-circle-panel__traces-respond';
+        respondEl.textContent = respondLine;
+        item.append(respondEl);
+      }
+      this.tracesList.append(item);
+    }
+  }
+
+  /**
+   * @param {string} message
+   * @param {boolean} isError
+   */
+  _showPeerTracesStatus(message, isError) {
+    this.tracesStatus.hidden = false;
+    this.tracesStatus.textContent = message;
+    this.tracesStatus.dataset.error = isError ? '1' : '0';
+  }
+
+  async _refreshPeerTraces() {
+    const seq = ++this._peerTracesFetchSeq;
+    const membership = readFocusCircleMembership(globalThis.localStorage);
+    if (
+      !membership ||
+      !isFocusCircleWitnessClientEnabled({
+        storage: globalThis.localStorage,
+        search:
+          typeof globalThis.location?.search === 'string'
+            ? globalThis.location.search
+            : ''
+      })
+    ) {
+      this.tracesStatus.hidden = true;
+      this._renderPeerTracesList([]);
+      return;
+    }
+    this.tracesStatus.hidden = true;
+    try {
+      const result = await postFocusCircleWitness({
+        action: 'witness_peek',
+        updateIdleSnapshot: false
+      });
+      if (seq !== this._peerTracesFetchSeq || !this._open) return;
+      if (!result.ok) {
+        if (result.reason === 'rate_limited') {
+          this._showPeerTracesStatus(t('FOCUS_CIRCLE_PEER_TRACES_RATE_LIMITED'), true);
+        } else if (result.reason !== 'disabled') {
+          this._showPeerTracesStatus(t('FOCUS_CIRCLE_PEER_TRACES_LOAD_FAILED'), true);
+        }
+        this._renderPeerTracesList([]);
+        return;
+      }
+      const rows = sortFocusCirclePeerTracesForPanel(
+        normalizeFocusCirclePeerTraces(result.traces)
+      );
+      this._renderPeerTracesList(rows);
+    } catch {
+      if (seq !== this._peerTracesFetchSeq || !this._open) return;
+      this._showPeerTracesStatus(t('FOCUS_CIRCLE_PEER_TRACES_LOAD_FAILED'), true);
+      this._renderPeerTracesList([]);
+    }
   }
 
   _refreshIdentityFields() {
@@ -400,6 +557,52 @@ export class FocusCirclePanelUI {
         color: rgba(74, 58, 40, 0.78);
       }
       .focus-circle-panel__identity-status[data-error="1"] {
+        color: #8b3a2a;
+      }
+      .focus-circle-panel__traces {
+        margin: 0 0 12px;
+        padding: 10px 0 0;
+        border-top: 1px solid rgba(139,115,85,.12);
+      }
+      .focus-circle-panel__traces-title {
+        margin: 0 0 4px;
+        font-size: 12.5px;
+        font-weight: 650;
+      }
+      .focus-circle-panel__traces-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 8px;
+        max-height: min(32vh, 220px);
+        overflow: auto;
+      }
+      .focus-circle-panel__traces-item {
+        margin: 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(255,252,245,.72);
+        border: 1px solid rgba(139,115,85,.12);
+      }
+      .focus-circle-panel__traces-leave,
+      .focus-circle-panel__traces-respond {
+        margin: 0;
+        font-size: 12.5px;
+        line-height: 1.4;
+      }
+      .focus-circle-panel__traces-respond {
+        margin-top: 4px;
+        color: rgba(74, 58, 40, 0.72);
+      }
+      .focus-circle-panel__traces-empty,
+      .focus-circle-panel__traces-status {
+        margin: 6px 0 0;
+        font-size: 11.5px;
+        line-height: 1.35;
+        color: rgba(74, 58, 40, 0.78);
+      }
+      .focus-circle-panel__traces-status[data-error="1"] {
         color: #8b3a2a;
       }
       .focus-circle-panel__opt-in-label {

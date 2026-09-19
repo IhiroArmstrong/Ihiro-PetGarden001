@@ -1,6 +1,6 @@
 # Task Brief · My Circle 同伴痕迹列表
 
-> **状态（2026-09-18）**：**Brief 已发起 · 待 PO 书面拍板 · 无 runtime**  
+> **状态（2026-09-18）**：**已开工（2026-09-19）** · PO 书面拍板 · `feature/my-circle-peer-traces`  
 > **Issue**：待开（Epic Focus Circle · 随 #811 圈体验扇出）  
 > **前置**：成员态 refresh 修复（`fix/focus-circle-membership-refresh` · #803）与 identity（#820）**分开**——本 Brief 不塞进成员态 bugfix。
 
