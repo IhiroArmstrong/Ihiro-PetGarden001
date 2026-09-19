@@ -55,7 +55,8 @@
     "audit:growth-metrics": "node scripts/audit-growth-metrics.js",
     "audit:growth-metrics:sync": "node scripts/audit-growth-metrics.js --write",
     "audit:local-backup-coverage": "node scripts/audit-local-backup-coverage.js",
-    "audit:read-hybrid-gapfill": "node scripts/audit-read-hybrid-gapfill.js"
+    "audit:read-hybrid-gapfill": "node scripts/audit-read-hybrid-gapfill.js",
+    "audit:confide-semantic-shadow": "node scripts/audit-confide-semantic-shadow.js"
   },
   "dependencies": {
     "lit": "^3.3.3",
