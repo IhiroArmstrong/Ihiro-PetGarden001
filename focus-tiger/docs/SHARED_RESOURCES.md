@@ -24,7 +24,7 @@
 |---|---|---|
 
 | `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent；1b Remember；1c Forget；1f `rememberOptOuts[]` + suppress）；**不进**云端 6 key；**本地** Backup & restore v2 `companionFiles`；Web 无此文件 |
-| `userData/companion-l2/turns.jsonl` | `CompanionL1Runtime._appendTurnLog` | Confide 调试 jsonl（**非** Personal Memory）；**本地** Backup & restore v2 `companionFiles.confideTurnsJsonl`（Electron）；**不进**云端 6 key |
+| `userData/companion-l2/turns.jsonl` | `CompanionL1Runtime._appendTurnLog` | Confide 调试 jsonl（**非** Personal Memory）；**不进**本地 Backup & restore v2（2026-09-19 · 见 `confide-turns-jsonl-backup-exclude.md`）；本机滚动清理（影子 7d / 生成 30d）；**不进**云端 6 key |
 | `userData/companion-l2/confide-observation.jsonl` | `confideObservationTelemetry` / IPC `desktop:confide-observation-append` | Batch 0 观察本地打点（chip tap / Share `data-source` + chip 匹配；**不含**用户自由文本）；Electron jsonl + 渲染层 `focus-tiger.confide-observation.v1` localStorage 环缓；汇总 `node scripts/dump-confide-observation.js`；**不进**云端 6 key / 练习备份 |
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图。**「今日已同坐」语义 SSOT**：`hasCompletedToday()` — 全表见 `TODAY_PRACTICE_SEMANTICS_AUDIT.md` |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |

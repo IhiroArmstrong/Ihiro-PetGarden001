@@ -34,6 +34,7 @@ import { L0_SEMANTIC_SHADOW_TIMEOUT_MS } from './l0EmbeddingConfig.js';
 import { resolveCompanionModelDir } from './l0Download.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 import { buildSemanticShadowTurnLogRecord } from './l1SemanticShadowLog.js';
+import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -95,6 +96,9 @@ export class CompanionL1Runtime {
     /** @type {Map<string, (ev: object) => void>} */
     this._semanticShadowWaiters = new Map();
     this._shadowQueue = Promise.resolve();
+    this._turnLogAppendCount = 0;
+    this._lastTurnLogPruneMs = 0;
+    void pruneLocalConfideTurnsJsonl(this.userDataDir);
   }
 
   snapshot() {
@@ -649,6 +653,15 @@ export class CompanionL1Runtime {
         `${JSON.stringify(record)}\n`,
         'utf8'
       );
+      this._turnLogAppendCount += 1;
+      const now = Date.now();
+      const pruneDue =
+        this._turnLogAppendCount % 25 === 0 ||
+        now - this._lastTurnLogPruneMs > 6 * 60 * 60 * 1000;
+      if (pruneDue) {
+        this._lastTurnLogPruneMs = now;
+        void pruneLocalConfideTurnsJsonl(this.userDataDir, now);
+      }
     } catch {
       /* local log must not break Share */
     }

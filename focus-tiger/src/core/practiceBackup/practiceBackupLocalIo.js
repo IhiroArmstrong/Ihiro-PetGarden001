@@ -20,7 +20,8 @@ import {
   PRACTICE_BACKUP_V4_STORE_KEYS,
   practiceBackupStoreKeysForSchemaVersion,
   stringifyPracticeBackupStorageValue,
-  parsePracticeBackupStorageRaw
+  parsePracticeBackupStorageRaw,
+  stripConfideTurnsFromCompanionBackup
 } from './practiceBackupSnapshot.js';
 import {
   readCompanionBackupBundle,
@@ -100,7 +101,6 @@ export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'presence_signals', storeKey: 'focus-tiger.presence-signals.v1' },
   { id: 'reflections', storeKey: 'focus-tiger.reflections.v1' },
   { id: 'yin_memory', companionField: 'yinPersonalMemory' },
-  { id: 'confide_turns', companionField: 'confideTurnsJsonl' },
   { id: 'locale_pref', storeKey: 'focus-tiger.locale.v1' },
   { id: 'reminder_pref', storeKey: 'focus-tiger.reminder-preference.v1' },
   { id: 'companion_mode', storeKey: 'focus-tiger.companion-mode.v1' },
@@ -150,8 +150,9 @@ export function buildPracticeExportFilename(now = new Date()) {
 export async function createPracticeExportPayload(storage, now = () => new Date()) {
   const snapshot = serializePracticeBackupSnapshot(storage, now);
   const companionFiles = await readCompanionBackupBundle();
-  if (companionFiles) {
-    snapshot.companionFiles = companionFiles;
+  const exportCompanion = stripConfideTurnsFromCompanionBackup(companionFiles);
+  if (exportCompanion) {
+    snapshot.companionFiles = exportCompanion;
   }
   return {
     snapshot,
@@ -414,13 +415,6 @@ export function countCompanionBackupEntries(companionField, val) {
     const memories = /** @type {{ memories?: unknown }} */ (val).memories;
     return Array.isArray(memories) ? memories.length : 0;
   }
-  if (companionField === 'confideTurnsJsonl') {
-    if (val == null || val === '') return 0;
-    if (typeof val !== 'string') return null;
-    const trimmed = val.trim();
-    if (!trimmed) return 0;
-    return trimmed.split('\n').filter((line) => line.trim()).length;
-  }
   return null;
 }
 
@@ -551,7 +545,7 @@ export async function importPracticeSnapshotAtomic(storage, snapshot) {
     reconcileDailyCompletionAfterRestore(storage, new Date());
     await reconcileEntitlementAfterPracticeRestore(storage);
     const companionResult = await writeCompanionBackupBundle(
-      snapshot.companionFiles ?? null
+      stripConfideTurnsFromCompanionBackup(snapshot.companionFiles ?? null) ?? null
     );
     if (!companionResult.ok) {
       throw new Error(companionResult.reason || 'companion_import_failed');
