@@ -30,8 +30,10 @@ import {
   sanitizeCompanionL2Reply
 } from './l2Sanitize.js';
 import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
+import { L0_SEMANTIC_SHADOW_TIMEOUT_MS } from './l0EmbeddingConfig.js';
 import { resolveCompanionModelDir } from './l0Download.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
+import { buildSemanticShadowTurnLogRecord } from './l1SemanticShadowLog.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -90,6 +92,9 @@ export class CompanionL1Runtime {
     this._generateWaiters = new Map();
     /** @type {Map<string, (ev: object) => void>} */
     this._classifyWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._semanticShadowWaiters = new Map();
+    this._shadowQueue = Promise.resolve();
   }
 
   snapshot() {
@@ -134,6 +139,14 @@ export class CompanionL1Runtime {
         resolve(ev);
       }
     }
+    if (ev.event === 'semantic_shadow_classified' || ev.event === 'semantic_shadow_error') {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._semanticShadowWaiters.get(id);
+      if (resolve) {
+        this._semanticShadowWaiters.delete(id);
+        resolve(ev);
+      }
+    }
     if (ev.event === 'error') {
       const waiters = [...this._readyWaiters, ...this._unloadedWaiters];
       this._readyWaiters = [];
@@ -147,6 +160,13 @@ export class CompanionL1Runtime {
         resolve({ event: 'classify_error', message: ev.message || 'companion_error' });
       }
       this._classifyWaiters.clear();
+      for (const resolve of this._semanticShadowWaiters.values()) {
+        resolve({
+          event: 'semantic_shadow_error',
+          message: ev.message || 'companion_error'
+        });
+      }
+      this._semanticShadowWaiters.clear();
     }
     this._push();
   }
@@ -461,6 +481,125 @@ export class CompanionL1Runtime {
       };
     }
     return { ok: true, raw, timing };
+  }
+
+  /**
+   * Shadow-only semantic coarse classify. Never blocks production routing.
+   * @param {{
+   *   text?: string,
+   *   route?: string,
+   *   source?: string,
+   *   literalCoarse?: string | null
+   * }} [payload]
+   * @returns {Promise<{ ok: boolean, queued?: boolean, reason?: string }>}
+   */
+  async semanticShadowClassify(payload = {}) {
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable' };
+    }
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    const route = typeof payload.route === 'string' ? payload.route : '';
+    const source = typeof payload.source === 'string' ? payload.source : '';
+    const literalCoarse =
+      typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
+    if (!text) return { ok: false, reason: 'empty_text' };
+
+    void (this._shadowQueue = this._shadowQueue.then(() =>
+      this._runSemanticShadowClassify({ text, route, source, literalCoarse })
+    ));
+    return { ok: true, queued: true };
+  }
+
+  /**
+   * @param {{
+   *   text: string,
+   *   route: string,
+   *   source: string,
+   *   literalCoarse: string | null
+   * }} payload
+   */
+  async _runSemanticShadowClassify(payload) {
+    const wallStarted = Date.now();
+    const baseRecord = {
+      text: payload.text,
+      route: payload.route,
+      source: payload.source,
+      literalCoarse: payload.literalCoarse
+    };
+
+    if (!this.child) {
+      this._spawnIfNeeded();
+    }
+
+    const id = randomUUID();
+    try {
+      const done = new Promise((resolve) => {
+        this._semanticShadowWaiters.set(id, resolve);
+      });
+      this._write(
+        `semantic-shadow-classify ${JSON.stringify({
+          id,
+          text: payload.text
+        })}`
+      );
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(
+            () => resolve({ event: 'timeout' }),
+            L0_SEMANTIC_SHADOW_TIMEOUT_MS
+          );
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._semanticShadowWaiters.delete(id);
+      }
+
+      if (timed?.event === 'semantic_shadow_classified') {
+        await this._appendTurnLog(
+          buildSemanticShadowTurnLogRecord({
+            ...baseRecord,
+            ok: true,
+            reason: 'ok',
+            semanticResult: {
+              bucket: String(timed.bucket || ''),
+              scoreA: Number(timed.scoreA),
+              scoreB: Number(timed.scoreB),
+              grayMargin: Number(timed.grayMargin)
+            },
+            timing: {
+              wallMs: Number(timed.wallMs) || Date.now() - wallStarted,
+              embedMs: Number(timed.embedMs) || undefined
+            }
+          })
+        );
+        return;
+      }
+
+      const reason =
+        timed?.event === 'timeout'
+          ? 'timeout'
+          : timed?.message || 'embed_failed';
+      await this._appendTurnLog(
+        buildSemanticShadowTurnLogRecord({
+          ...baseRecord,
+          ok: false,
+          reason,
+          semanticResult: null,
+          timing: { wallMs: Date.now() - wallStarted }
+        })
+      );
+    } catch {
+      await this._appendTurnLog(
+        buildSemanticShadowTurnLogRecord({
+          ...baseRecord,
+          ok: false,
+          reason: 'embed_failed',
+          semanticResult: null,
+          timing: { wallMs: Date.now() - wallStarted }
+        })
+      );
+    }
   }
 
   /**

@@ -517,6 +517,10 @@ describe('desktop companion L2 isolation', () => {
       join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
       'utf8'
     );
+    const child = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1Child.js'),
+      'utf8'
+    );
     assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
     assert.match(runtime, /priorRepeatableYinRepliesFromHistory/);
     assert.match(runtime, /classifyReadTool/);
