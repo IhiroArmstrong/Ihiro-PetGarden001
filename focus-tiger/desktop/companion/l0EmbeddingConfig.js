@@ -26,7 +26,7 @@ export const L0_EMBEDDING_MODEL_URLS = ACTIVE.urls;
 export const L0_EMBEDDING_CONTEXT_SIZE = 512;
 export const L0_EMBEDDING_BATCH_SIZE = 512;
 
-/** Shadow classify must never block the user path for long. */
+/** Post-ready classify wall clock only — cold embedding load waits separately (Prompt 11). */
 export const L0_SEMANTIC_SHADOW_TIMEOUT_MS = 15_000;
 
 export {

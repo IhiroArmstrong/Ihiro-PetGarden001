@@ -149,6 +149,18 @@ async function main() {
     });
   }
 
+  async function ensureEmbeddingReady() {
+    try {
+      await ensureEmbedding();
+      await emit({ event: 'embedding_ready' });
+    } catch (err) {
+      await emit({
+        event: 'embedding_error',
+        message: embeddingErrorMessage(err)
+      });
+    }
+  }
+
   function enqueue(work) {
     chain = chain.then(work).catch(async (err) => {
       await emit({
@@ -180,6 +192,8 @@ async function main() {
       if (!line) continue;
       if (line === 'ensure') {
         enqueue(ensure);
+      } else if (line === 'ensure-embedding') {
+        enqueueShadow(ensureEmbeddingReady);
       } else if (line === 'unload') {
         enqueue(unload);
       } else if (line === 'quit') {
@@ -252,8 +266,10 @@ async function main() {
           }
           const started = Date.now();
           try {
-            await ensureEmbedding();
-            if (!embeddingSession || typeof embeddingSession.classifyUserText !== 'function') {
+            if (!embeddingSession) {
+              throw new Error('embedding_not_ready');
+            }
+            if (typeof embeddingSession.classifyUserText !== 'function') {
               throw new Error('embedding_session_missing');
             }
             const result = await embeddingSession.classifyUserText(text);
