@@ -21,7 +21,10 @@ export const L3_GENERIC_CUB_THEATER_FAILS = [
   'The cub nudges its nose toward a patch of moss.',
   'My ears twitch slightly at the sound of your words.',
   'My tail gives a small, restless flick.',
-  'My paws shift a little on the ground.'
+  'My paws shift a little on the ground.',
+  '耳朵一抖。',
+  '尾巴一甩。',
+  '爪子搁地。'
 ];
 
 export const L3_OBSERVE_SHUFFLE_FIXTURES = [

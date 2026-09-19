@@ -1,6 +1,6 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-20）**：**方案 B 生产刀续作** — #874 后 Electron 三句独白仍第一人称耳/尾/爪套势。本刀扩观察翼 prompt + sanitize 拒收该族改写；**禁止**把 §4.2 独白改去问答翼。关单仍须 Electron 打乱配对 ≥8/12。  
+> **状态（2026-09-20）**：**方案 B 生产刀续作** — #876 已合英文第一人称耳/尾/爪字面拒收。**下一刀不扩字面表**：正式规格 `task-l3-observe-cliche-semantic-guard.md`（语义相似度 · 复用 Qwen3-Embedding）。本 Brief 仍管打乱配对 ≥8/12；**禁止**把 §4.2 独白改去问答翼。  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
 > **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理；档 3/4 分流已进 develop（#834/#835）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
 > **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（方案 B：只贴本句 + generic cub gesture + 禁第一人称耳/尾/爪空转；sanitize 拒收田野套势含 My ears/tail/paws）。  
