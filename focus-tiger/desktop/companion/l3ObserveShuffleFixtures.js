@@ -13,12 +13,15 @@ export const L3_OBSERVE_SHUFFLE_MIN_N = 12;
 
 export const L3_OBSERVE_SHUFFLE_PASS_HITS = 8;
 
-/** Replies from 2026-09-19 field QA — interchangeable cub theater. */
+/** Replies from 2026-09-19 / 2026-09-20 field QA — interchangeable cub theater. */
 export const L3_GENERIC_CUB_THEATER_FAILS = [
   'The cub shifts its weight slightly.',
   'The cub stretches a paw out onto the floor.',
   'The cub blinks slowly.',
-  'The cub nudges its nose toward a patch of moss.'
+  'The cub nudges its nose toward a patch of moss.',
+  'My ears twitch slightly at the sound of your words.',
+  'My tail gives a small, restless flick.',
+  'My paws shift a little on the ground.'
 ];
 
 export const L3_OBSERVE_SHUFFLE_FIXTURES = [

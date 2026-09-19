@@ -48,6 +48,7 @@ describe('L3 observe scheme B shuffle gate', () => {
     assert.match(prompt, /fit only that line/i);
     assert.match(prompt, /irritation vs sleeplessness/i);
     assert.match(prompt, /generic cub gesture/i);
+    assert.match(prompt, /first-person cub body/i);
     assert.match(prompt, /notice the question/i);
     assert.doesNotMatch(
       prompt,
@@ -61,6 +62,7 @@ describe('L3 observe scheme B shuffle gate', () => {
     assert.match(prompt, /Do not invent a job/i);
     assert.match(prompt, /Do not repeat the user line/i);
     assert.doesNotMatch(prompt, /irritation vs sleeplessness/i);
+    assert.doesNotMatch(prompt, /first-person cub body/i);
     const today = buildCompanionL2Prompt({
       text: 'What should we do today?',
       locale: 'en'
@@ -70,7 +72,16 @@ describe('L3 observe scheme B shuffle gate', () => {
     assert.equal(isCompanionChatGenerateLine('小姐姐喜欢吃胖粉吗？'), true);
   });
 
-  it('rejects the four interchangeable cub-theater lines from field QA', () => {
+  it('keeps emotion self-reports on the observe wing, not chat-answer', () => {
+    const mindAway = "I'm here, but my mind really isn't.";
+    assert.equal(isCompanionChatGenerateLine(mindAway), false);
+    const prompt = buildCompanionL2Prompt({ text: mindAway, locale: 'en' });
+    assert.match(prompt, /first-person cub body/i);
+    assert.match(prompt, /irritation vs sleeplessness/i);
+    assert.doesNotMatch(prompt, /conversation, not a mood to observe/i);
+  });
+
+  it('rejects interchangeable cub-theater lines from field QA', () => {
     for (const line of L3_GENERIC_CUB_THEATER_FAILS) {
       assert.equal(isGenericCubTheaterReply(line), true);
       assert.equal(sanitizeCompanionL2Reply(line, { userText: '有点烦' }), null);
@@ -99,6 +110,12 @@ describe('L3 observe scheme B shuffle gate', () => {
     assert.equal(
       sanitizeCompanionL2Reply('The little sister likes to eat what?', {
         userText: '小姐姐喜欢吃胖粉吗？'
+      }),
+      null
+    );
+    assert.equal(
+      sanitizeCompanionL2Reply('My ear twitches at the sound of your words.', {
+        userText: "I'm here, but my mind really isn't."
       }),
       null
     );

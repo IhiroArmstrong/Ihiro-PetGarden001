@@ -26,6 +26,10 @@ export const L3_OBSERVE_STAY_SPECIFIC =
 export const L3_OBSERVE_NO_SUBSTITUTE =
   'If they did not name scenery, do not answer with river, mountain, or ground as a substitute for hearing them. Stay with their words; do not replace them with scenery, weather, season, light, or a generic cub gesture.';
 
+/** First-person ear/tail/paw fill can swap onto any mood line (2026-09-20 field). */
+export const L3_OBSERVE_NO_FIRST_PERSON_CUB_BODY =
+  'Do not answer with first-person cub body that could sit on any other line (my ears twitch, my tail flicks, my paws shift). Name what THIS line is about — drifting attention, a phone habit, a morning that broke the streak — not a limb.';
+
 export const L3_OBSERVE_HEAR_QUESTION =
   'If the latest line is a question to you, notice the question; do not treat it as a mood or fill the page with presence.';
 
@@ -225,6 +229,7 @@ export function buildCompanionL2Prompt({
         'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
         L3_OBSERVE_STAY_SPECIFIC,
         L3_OBSERVE_NO_SUBSTITUTE,
+        L3_OBSERVE_NO_FIRST_PERSON_CUB_BODY,
         L3_OBSERVE_HEAR_QUESTION,
         'Do not answer with only still, watching, here, quiet, or listening presence.'
       ];
