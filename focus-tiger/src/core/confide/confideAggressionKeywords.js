@@ -4,8 +4,10 @@
  */
 
 /**
- * Confide · other-directed aggression / violence intent (rule-only, EN).
+ * Confide · other-directed aggression / violence intent (rule-only).
+ * EN: word-boundary regex. ZH: includes phrases (same shape as safety).
  * SSOT: task-confide-aggression-toward-others.md
+ *       + task-confide-aggression-zh-p0.md
  * Self-harm stays in confideSafetyKeywords (classify runs safety first).
  */
 
@@ -51,6 +53,64 @@ const AGGRESSION_EXCLUSION_RES = Object.freeze([
   /\b(?:punch|hit|kick|beat)\s+(?:a|the)\s+(?:wall|door|pillow)\b/i
 ]);
 
+/** @type {readonly string[]} */
+export const AGGRESSION_PHRASES_ZH = Object.freeze([
+  '想打人',
+  '我想打人',
+  '想揍人',
+  '我想揍人',
+  '想打他',
+  '想打她',
+  '想打他们',
+  '想打他們',
+  '想打别人',
+  '想打別人',
+  '想伤害他',
+  '想傷害他',
+  '想伤害她',
+  '想傷害她',
+  '想伤害别人',
+  '想傷害別人'
+]);
+
+/** Games / typing / practice — not other-directed attack. */
+const AGGRESSION_ZH_ACTIVITY_EXCLUSIONS = Object.freeze([
+  '打游戏',
+  '打遊戲',
+  '打卡',
+  '打坐',
+  '打球',
+  '打电话',
+  '打電話',
+  '打字'
+]);
+
+const AGGRESSION_ZH_SELF_HARM_EXCLUSIONS = Object.freeze([
+  '想伤害自己',
+  '想傷害自己',
+  '自残',
+  '自殘',
+  '自杀',
+  '自殺'
+]);
+
+/**
+ * CJK needles stay as authored; Latin needles fold case like safety.
+ * @param {string} hayRaw
+ * @param {readonly string[]} phrases
+ * @returns {boolean}
+ */
+function includesAnyPhrase(hayRaw, phrases) {
+  for (const phrase of phrases) {
+    const p = foldConfideSafetyText(String(phrase || '')).trim();
+    if (!p) continue;
+    const needle = /[a-z]/i.test(p) ? p.toLowerCase() : p;
+    const hay = /[a-z]/i.test(p) ? hayRaw.trim().toLowerCase() : hayRaw;
+    if (hay.includes(needle)) return true;
+  }
+  return false;
+}
+
 /**
  * @param {string} text
  * @returns {boolean}
@@ -59,7 +119,14 @@ export function matchesAggressionTowardOthers(text) {
   const raw = foldConfideSafetyText(typeof text === 'string' ? text : '');
   const normalized = raw.trim().toLowerCase();
   if (!normalized) return false;
-  const matched = AGGRESSION_POSITIVE_RES.some((re) => re.test(normalized));
-  if (!matched) return false;
+  if (includesAnyPhrase(raw, AGGRESSION_ZH_SELF_HARM_EXCLUSIONS)) {
+    return false;
+  }
+  if (includesAnyPhrase(raw, AGGRESSION_ZH_ACTIVITY_EXCLUSIONS)) {
+    return false;
+  }
+  const zhMatched = includesAnyPhrase(raw, AGGRESSION_PHRASES_ZH);
+  const enMatched = AGGRESSION_POSITIVE_RES.some((re) => re.test(normalized));
+  if (!zhMatched && !enMatched) return false;
   return !AGGRESSION_EXCLUSION_RES.some((re) => re.test(normalized));
 }

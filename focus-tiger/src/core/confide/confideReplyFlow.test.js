@@ -75,6 +75,22 @@ test('resolveConfideReply: beat people → aggression pool, never nods quietly',
   assert.doesNotMatch(hit.line.zh, /听见了/);
 });
 
+test('resolveConfideReply: ZH beat-people phrase → aggression pool, never generate nod', () => {
+  const hit = resolveConfideReply({
+    text: '我想打人',
+    locale: 'zh',
+    localDate: '2026-09-18'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.ok(
+    ['aggression-01', 'aggression-02', 'aggression-03', 'aggression-04'].includes(
+      hit.line.id
+    )
+  );
+  assert.doesNotMatch(hit.line.zh, /点头/);
+});
+
 test('resolveCorpusFallbackAfterGenerateFailure: 8 frozen-exclude fails are not consecutive-identical', () => {
   const excludeIds = new Set(['fallback-01', 'fallback-02', 'fallback-03']);
   const history = [];
