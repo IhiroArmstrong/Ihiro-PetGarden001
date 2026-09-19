@@ -19,7 +19,10 @@ import {
   dispatchPracticeDataImported,
   formatPracticeImportSavedAt
 } from './practiceBackupLocalIo.js';
-import { PRACTICE_BACKUP_SCHEMA_VERSION } from './practiceBackupSnapshot.js';
+import {
+  PRACTICE_BACKUP_SCHEMA_VERSION,
+  stripConfideTurnsFromCompanionBackup
+} from './practiceBackupSnapshot.js';
 
 function memStorage(initial = {}) {
   const map = new Map(Object.entries(initial));
@@ -38,6 +41,15 @@ describe('practiceBackupLocalIo', () => {
   it('builds export filename with timestamp', () => {
     const name = buildPracticeExportFilename(new Date('2026-08-28T15:04:05'));
     assert.match(name, /^focus-tiger-backup-2026-08-28-150405\.json$/);
+  });
+
+  it('strips confideTurnsJsonl from companion backup export bundle', () => {
+    const stripped = stripConfideTurnsFromCompanionBackup({
+      yinPersonalMemory: { memories: [] },
+      confideTurnsJsonl: '{"kind":"l3_generate","text":"secret"}\n'
+    });
+    assert.deepEqual(stripped, { yinPersonalMemory: { memories: [] } });
+    assert.equal(stripped?.confideTurnsJsonl, undefined);
   });
 
   it('exports empty whitelist without error', async () => {

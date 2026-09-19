@@ -59,6 +59,9 @@ export const PRACTICE_BACKUP_STORE_KEYS = PRACTICE_BACKUP_EXPORT_KEYS;
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
 
 /**
+ * Electron companion-l2 files carried in local backup snapshots.
+ * `confideTurnsJsonl` is accepted on **import** of legacy files only; export strips it.
+ *
  * @typedef {{
  *   yinPersonalMemory?: unknown | null,
  *   confideTurnsJsonl?: string | null
@@ -138,6 +141,19 @@ export function normalizePracticeBackupCompanionFiles(companionFiles) {
     return undefined;
   }
   return out;
+}
+
+/**
+ * Strip debug-only Confide turns log from backup export / restore apply paths.
+ * @param {PracticeBackupCompanionFiles | null | undefined} bundle
+ * @returns {PracticeBackupCompanionFiles | null | undefined}
+ */
+export function stripConfideTurnsFromCompanionBackup(bundle) {
+  if (!bundle || typeof bundle !== 'object') return bundle ?? undefined;
+  if (!('yinPersonalMemory' in bundle)) {
+    return undefined;
+  }
+  return { yinPersonalMemory: bundle.yinPersonalMemory ?? null };
 }
 
 /**

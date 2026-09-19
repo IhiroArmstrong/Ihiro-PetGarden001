@@ -32,9 +32,11 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 | Growth (v3–v4) | lotus-pond · tip-jar · sanctuary-entitlement · focus-coins |
 | Prefs + social (v5) | focus-duration-pref · intentions · quiet-together · focus-circle · focus-circle-witness-responded · focus-circle-passive-share · focus-circle-was-here-mark · focus-circle-identity · focus-circle-identity-hidden |
 
-**Companion fields** (Electron): `yinPersonalMemory` · `confideTurnsJsonl`
+**Companion fields** (Electron): `yinPersonalMemory`
 
 **Explicitly NOT exported**:
+
+- `companion-l2/turns.jsonl` (`confideTurnsJsonl`) — local debug log only; retention on device via `confideTurnsJsonlRetention.js` (see `confide-turns-jsonl-backup-exclude.md`)
 
 - `focus-tiger.entitlement-cache.v1` — recompute on import (`practiceBackupEntitlementReconcile.js`)
 - `focus-tiger.daily-completions.v1` — derive from practice-days (`practiceBackupDailyCompletionReconcile.js`)
