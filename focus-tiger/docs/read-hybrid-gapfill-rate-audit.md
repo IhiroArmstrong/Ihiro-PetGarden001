@@ -88,10 +88,10 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger 
 | #859 分类行记 `text`（截断 400） | 已合 develop（`128b344d`） |
 | #861 `shouldRunConfideReadHybridClassify` 正例门闩 | 已合 develop（`bdd167b1`）；明显闲聊跳过 classify |
 | 第一轮肉测（17 句 · 无 `text`） | **旁证**：14 条 classify · tool≠none **1/14 ≈ 7%**（`列出记忆`）；不可算假/真补漏 |
-| 带 `text` 的第二轮肉测 | **未完成**（本机 jsonl 仅 1 条带 `text`） |
+| 带 `text` 的第二轮肉测（2026-09-19 Electron · tip `db670f9`） | **已抽**：`analyzed 3`（since 当天 UTC；skipped no-text 24、before-since 88）。tool≠none **1/3=33.3%**；regex replay 命中 **0/3**；假补漏 **0**；真补漏 **1**（`列出记忆` → `query_memory_list`）；would skip classify **1**。样本仍偏少，但真补漏已钉在「列出记忆」regex 洞，不是 gloss 过宽。 |
 
-**我认为最合理的**：按 §5 再聊一轮 → `npm run audit:read-hybrid-gapfill` 出 tool≠none / 假补漏 / 真补漏三数；再决定扩 regex 或维持 #861 短路。P0 中文 aggression（#847）另线。
+**我认为最合理的**：下一刀运行时只补 `列出记忆` 进 `isMemoryListQuestion`（真补漏、无 #822 冲突），并收 `忙啥` 进与 `忙什么` 同一诚实桶。**不要**把 `我最近在忙什么` 改回 `memory_list`（与 #822 关单冲突，须 PO 先拍）。闲聊 3s 是 L3 generate，不是 Hybrid。P0 中文 aggression（#847）另线。
 
 ## 7. 不合理（仍作废）
 
-在带 `text` 样本仍为 0 时：把 E′ 挂上 send、或靠旧 generate 旁证扩 gloss、或凭第一轮无 `text` 行拍「跳过 Hybrid」产品决策。
+把 E′ 挂上 send、或把 `我最近在忙什么` 改回 `memory_list`（与 #822 关单冲突）而未先经 PO、或凭第一轮无 `text` 旁证扩 gloss。
