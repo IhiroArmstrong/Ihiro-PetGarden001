@@ -65,5 +65,6 @@ Gate 0.D / E′ **不在**这条链上。Read Hybrid 只在 fallback + 宽屏 + 
 1. **必做（无代码）**：用已含 `#841` 的 Electron（`origin/develop` tip）宽屏 Confide 再聊一轮（建议 ≥15 句 fallback 闲聊 + 几句「列出记忆 / 练了多久」），再抽 `kind=read_hybrid_classify`。这一步才能回答 **tool≠none 比例**。
 2. **若要回答「正则 vs 真补漏」**：只在 `classifyReadTool` 落盘里加 **用户原句**（可截断；仍禁止改 send / 禁止 E′）。没有原句，第 2 问永远算不出。
 3. **不合理**：在 n=0 时跳过 Hybrid、把 E′ 挂上 send、或靠旧 generate 旁证扩 gloss。
+4. **已批准（2026-09-19）**：`shouldRunConfideReadHybridClassify` 正例门闩——明显非查询闲聊跳过 L0 classify；合入前单测须覆盖列出记忆/你还记得什么/我最近在忙什么/为什么开始做这件事/我练了多久。
 
-**我认为最合理的**：先做第 1 步肉测出 tool≠none 比例；第 2 步作为紧随的小埋点（非 send）。扩 regex 只对已证实「假补漏」的字面动手（#523 同型），且与 P0 中文 aggression 分 PR。
+**我认为最合理的**：先做第 1 步肉测出 tool≠none 比例；第 2 步作为紧随的小埋点（非 send）。扩 regex 只对已证实「假补漏」的字面动手（#523 同型），且与 P0 中文 aggression 分 PR。跳过 classify 见 `fix/confide-skip-hybrid-classify`（正例门闩，非裸 skip）。

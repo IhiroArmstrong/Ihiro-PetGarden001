@@ -30,7 +30,11 @@ import {
   isConfideHybridExecutableReadTool,
   matchConfideExecutableTool
 } from '../core/confide/confideExecutableTools.js';
-import { mayUseConfideReadHybrid, resolveConfideReadHybridToolFromRaw } from '../core/confide/confideReadHybrid.js';
+import {
+  mayUseConfideReadHybrid,
+  resolveConfideReadHybridToolFromRaw,
+  shouldRunConfideReadHybridClassify
+} from '../core/confide/confideReadHybrid.js';
 import { listShippedConfideVerbalHintChips } from '../core/confide/confideVerbalHintChips.js';
 import {
   trackConfideChipTapped,
@@ -1071,7 +1075,11 @@ export class ConfideToYinUI {
         generateEnabled: Boolean(this._companionStatus?.generateEnabled)
       })
     ) {
-      void this._tryReadHybridThenContinue(routePayload);
+      if (shouldRunConfideReadHybridClassify(text)) {
+        void this._tryReadHybridThenContinue(routePayload);
+      } else {
+        this._continueAfterToolRouting(routePayload);
+      }
       return;
     }
     this._continueAfterToolRouting(routePayload);

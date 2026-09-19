@@ -22,7 +22,8 @@ import {
 import { isMemoryListQuestion } from './confideMemoryList.js';
 import {
   mayUseConfideReadHybrid,
-  resolveConfideReadHybridToolFromRaw
+  resolveConfideReadHybridToolFromRaw,
+  shouldRunConfideReadHybridClassify
 } from './confideReadHybrid.js';
 
 describe('confide read hybrid', () => {
@@ -116,6 +117,33 @@ describe('confide read hybrid', () => {
       ),
       null
     );
+  });
+
+  it('skips L0 classify only for clear non-query chitchat (2026-09-19)', () => {
+    const mustClassify = [
+      '列出记忆',
+      '你还记得什么',
+      '我最近在忙什么',
+      '为什么开始做这件事',
+      '我练了多久',
+      'Show me what you remember',
+      'Do you remember why I started doing this?'
+    ];
+    for (const text of mustClassify) {
+      assert.equal(
+        shouldRunConfideReadHybridClassify(text),
+        true,
+        `expected classify for: ${text}`
+      );
+    }
+    const maySkip = ['我想打游戏', '今天好累', 'I want to play video games'];
+    for (const text of maySkip) {
+      assert.equal(
+        shouldRunConfideReadHybridClassify(text),
+        false,
+        `expected skip for: ${text}`
+      );
+    }
   });
 
   it('narrows query_memory_list gloss with negative examples (2026-09-18)', () => {
