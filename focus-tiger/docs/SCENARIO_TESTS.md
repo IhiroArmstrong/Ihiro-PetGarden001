@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-18（P0 中文他人攻击锚点 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV；场景 V 禁止默写 removeItem）
+最近代码核对：2026-09-20（Confide L3 方案 B · Hybrid 闲聊跳过 · 语义向量 shadow Stage 1 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -1059,6 +1059,23 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **Seasonal Phase 4**（#751 Thanksgiving · #754 Halloween · #755 New Year/Eve）：`seasonalThemeEngine` wash + copy；**无**独立场景字母——冷启动/Idle 背景须见对应节日 wash（按 locale/日历 gate）；勿与场景 V 吹花日旗冲突。  
    - **官方清库**：文首已记 `__ftDebug.resetScenario`（#debug-scenario-reset）；场景 V 步 1 已引用，禁止默写 `removeItem`。  
 3. **仍须人工 / 勿当缺口**：D 系与 Seasonal 的 375 观感、金 tier 配色、节日 wash 与莲花/披毯叠层时序；C.1 关单行见 PR #753（待你 Merge）。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
+## 2026-09-18–20 增量核对摘要（Confide L3 B · Hybrid 闲聊 · 语义 shadow · 备份 · 三态可见性）
+
+1. **背景**：9/18–9/20 合入 develop 一批 Confide 路由/验收/备份与契约层改动（#823–#860 区间）；TRACKER 碎片本旁支 `tracker:assemble` 折入机器块；故事剧本文首仍停在 9/18 P0 中文攻击锚点。  
+2. **本次核对（增量，未升格新字母场景）**：  
+   - **场景 AE · L2**：`fix(confide): ship L3 scheme B with shuffle-match gate`（#823）——步 2 已记方案 B 打乱配对 ≥8/12；**禁止**幼虎套势互换；Concrete-word crutch 已移除。  
+   - **场景 AE · Electron**：`fix(confide): skip Hybrid classify for clear non-query chitchat`——明确闲聊句不再误走 Read Hybrid；`memory_list` 正则补 `列出记忆` / honest bucket。  
+   - **场景 AE · lab/验收（非 `?product=1`）**：语义向量 shadow Stage 1 · 30/100 句 acceptance 冻结 · terminal batch runner——走 `confide-round-acceptance.md` / L0 脚本，**不**升格用户故事字母。  
+   - **场景 AI · 练习备份**：`fix(backup): exclude Confide turns.jsonl from local export`——备份 6 key 不含 Confide 回合日志；恢复后 Confide 历史须为空或按产品政策单独处理。  
+   - **场景 O-04 / 契约**：`feat(contract): click-mutation timeout middleware for three-state visibility`——持久化 mutation 须挂起/成功/失败三态可见；对照 `mutation-three-state-visibility` Brief。  
+   - **场景 P · 提醒**：`fix(reminder): make confirm save feedback impossible to miss`——设时确认须见明确保存反馈，勿当静默成功。  
+   - **场景 Q · Membership**：`fix(rca): membership manage feedback and witness picker retry`——管理页内联反馈 + witness picker 重试；Checkout 仍走场景 Q 步 3。  
+   - **My Circle / JA**：`feat(circle,confide): My Circle peer traces + JA Electron session probe`——尚无独立场景字母；批量测时对照 TRACKER `focus-circle` 行与场景 AE Electron。  
+3. **仍须人工 / 勿当缺口**：L3 方案 B 12 句人工重配观感；语义 shadow 与线上路由对账；备份排除 turns 后恢复边界；三态 mutation 375 按压；Membership witness picker 弱网重试。  
 4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
