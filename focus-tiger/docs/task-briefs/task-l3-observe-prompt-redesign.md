@@ -1,9 +1,9 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-18）**：**第一刀已合入旁支** — 去掉「Name at least one concrete word…」点词拐杖；禁风景 / 空在场 / 内心贴标签 **本轮未动**。§4.2 八句实验室复测见 §11。  
+> **状态（2026-09-19）**：**方案 B 生产刀已开工** — 打乱配对验收入 Brief §12；`buildCompanionL2Prompt` 加「只贴本句」+ 禁可互换幼虎套势；sanitize 拒收四句田野套话。关单须 Electron 人工打乱配对 ≥8/12。  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
 > **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理；档 3/4 分流已进 develop（#834/#835）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
-> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（**已去掉**点词句；仍含禁风景 / 空在场 / 内心贴标签句）。  
+> **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（方案 B：只贴本句 + generic cub gesture；sanitize 拒收田野四句套势）。  
 > **实验室**：`/tmp/ft-l0-l3-observe-b-lab.mjs` · `compare-1789671570533.json`（baseline+B）· `compare-1789671689159.json`（A）· `compare-1789672356967.json`（B-neg+A-neg）
 
 ---
@@ -532,5 +532,28 @@ fur 未再现；shoulders/slight-tension 从 7/12 降到 0/12；中文 UI 与 fe
 
 - 套话维度（meta-copula / Your…seem）：**干净** → 可再议是否动其余禁令（须另开 Chat）。
 - 若日后复发 meta-copula → 开方案 B 完整减法，禁止 A/B 打地鼠词表。
+
+所属线: Epic #639 · 切片 #823
+
+---
+
+## 十二、生产方案 B · 打乱配对验收（2026-09-19）
+
+**病灶（分析师口径，已锁）**：不是「用了身体/环境描写」，是「不管你说什么，反应都差不多」。四句田野：`有点烦` / `睡不着` / `你想干啥？` / `你想吃啥？` 若打乱仍对不上，即拒收。幼虎肢体可以做对，但必须贴这一句。
+
+**生产改动**（本刀）：
+
+1. `buildCompanionL2Prompt`：正约束「只贴本句、读者不见原文也能猜主题」；禁令扩到 **generic cub gesture**；问句须当问句听。**不加** paw/moss 打地鼠词表进 prompt 主干（与 §十一决策一致）。
+2. `sanitizeCompanionL2Reply`：拒收田野四句可互换套势（`shifts its weight` / `stretches a paw` / `blinks slowly` / `nudges … moss`）及同族皮毛/空气空转。拒收后仍走既有 corpus fallback。
+3. 夹具：`desktop/companion/l3ObserveShuffleFixtures.js`（12 句 · 情绪 / 问寅 / 习惯）。
+
+**打乱配对（关单标准）**：
+
+1. Electron 宽屏 Confide ready。对夹具 12 句各发一次（空历史或关卡重开均可，须 `data-source=generate`；若某句被规则桶截走，记下路由，不计入配对分母）。
+2. 把 **用户句与答句拆开、打乱答句顺序**，交给未见对照表的人重新配对。
+3. **通过**：至少 **12** 条进 generate 的配对里 **≥8** 对正确（明显高于 1/12 瞎猜）。评分函数 `scoreL3ObserveShuffleMatches`。
+4. **不通过**：正确数 &lt; 8，或答句仍是可互换幼虎套势（sanitize 应已拦四句；若模型改写成新套话，记入本 Brief 不得关 #823）。
+
+**不测**：档 3 `reflective_honesty`、档 4 `companion_greeting`、`memory_list`、危机/情绪桶。实验室 Metal 大批次仍走系统终端 + `LAB_SCRIPT_CONVENTIONS.md`；**禁止**在 Agent Chat 连跑生成。
 
 所属线: Epic #639 · 切片 #823

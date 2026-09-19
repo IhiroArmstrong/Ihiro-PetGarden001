@@ -40,6 +40,17 @@ const HOLLOW_OBSERVE_PATTERNS = [
 const PRESENCE_ONLY_WORD =
   /^(?:still|here|watching|listening|quiet|yin|i|am|im|just)$/iu;
 
+/** Interchangeable cub-theater observes (scheme B field fails). */
+const GENERIC_CUB_THEATER_PATTERNS = [
+  /^the cub shifts its weight/iu,
+  /^the cub blinks slowly/iu,
+  /^the cub stretches a paw/iu,
+  /^the cub nudges its nose toward a patch of moss/iu,
+  /^a small twitch moves one ear/iu,
+  /^the air around me feels still/iu,
+  /^the soft fur (?:on my paws )?brushes/iu
+];
+
 /**
  * @param {unknown} text
  * @returns {string}
@@ -102,6 +113,21 @@ export function isHollowCompanionObserveReply(raw) {
 }
 
 /**
+ * Generic cub theater that can swap onto any user line.
+ * @param {unknown} raw
+ * @returns {boolean}
+ */
+export function isGenericCubTheaterReply(raw) {
+  const text = String(raw || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.!?。！？]+$/u, '');
+  if (!text) return false;
+  const first = text.split(/(?<=[.!?。！？])\s+/u)[0] || text;
+  return GENERIC_CUB_THEATER_PATTERNS.some((re) => re.test(first) || re.test(text));
+}
+
+/**
  * @param {unknown} raw
  * @param {{ priorReplies?: unknown, userText?: unknown }} [opts]
  * @returns {string | null}
@@ -120,6 +146,7 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   if (TRIVIAL_ONLY_REPLIES.test(text)) return null;
   if (BANNED.some((re) => re.test(text))) return null;
   if (isHollowCompanionObserveReply(text)) return null;
+  if (isGenericCubTheaterReply(text)) return null;
   const prior = Array.isArray(opts.priorReplies) ? opts.priorReplies : [];
   const normalized = normalizeCompanionL2Reply(text);
   if (
