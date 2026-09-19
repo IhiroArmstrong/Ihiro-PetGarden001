@@ -15,14 +15,17 @@
 | `companion_greeting` | 档 4 闲聊问候 | `data-source=companion_greeting` |
 | `generate_skip_classify` | #861 明显闲聊 | **无** `read_hybrid_classify`，可进 `generate` / corpus |
 
-## 人工验收协议
+## 验收协议（终端优先）
 
-1. **壳**：`origin/develop` tip · Electron 宽屏 · `npm run desktop:dev`。
-2. **顺序**：按 fixture `id` 排序逐句发送（空会话或固定单会话，全轮一致）。
-3. **记录**：每句记 `data-source`、秒表、是否出现 `read_hybrid_classify`。
-4. **过关线**：32/32 桶与上表一致；**不得**因即兴加句扩展本表（新漏洞 → 新 issue / 新冻表版本）。
-5. **自动化（必跑 · 取代逐句 Electron 点按）**：`npm run test:confide-acceptance -- --suites=meta`（或全量 100 句）——同脚本批量断言 `data-source` / generate 门闩；已接入 `npm run test:smoke` → CI `test:pr-smoke`。
-6. **人工（一次性）**：是否写入 `read_hybrid_classify` 的 DevTools/`turns.jsonl` 肉眼核对——抽 **1–2 句** hybrid 桶即可；竖线颜色另查 1–2 句。
+**过关线**：`npm run test:confide-acceptance -- --suites=meta` → **32/32**（非零 exit = 回归失败）。**不必**在 Electron 里逐句点 32 次。
+
+1. **必跑（终端 · 一条命令）**：`npm run test:confide-acceptance -- --suites=meta`  
+   - 方式：Node 直接 `import` 桌面路由模块（`confideClassify` → `resolveConfideDesktopSource`），**无** Electron UI、**无** GGUF。  
+   - 断言：`data-source` / generate 门闩 / 桶与冻表一致。  
+   - CI：`npm run test:smoke` → `test:pr-smoke` 已接入。
+2. **可选（全量）**：`npm run test:confide-acceptance` → 100/100（含 aggression 30 + supplement 38）。
+3. **人工（一次性 · 与句数无关）**：hybrid 桶是否写 `read_hybrid_classify` — 抽 **1–2 句** 查 `turns.jsonl`；竖线颜色另查 1–2 句。
+4. **禁止**即兴加句扩展本表（新漏洞 → 新 issue / 冻表 `v2`）。
 
 ## 与肉测审计的关系
 
