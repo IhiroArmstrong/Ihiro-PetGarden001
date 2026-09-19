@@ -97,12 +97,12 @@
 | `grayMargin` | `0.08` | `FT_CONFIDE_SEMANTIC_GRAY_MARGIN` | \|scoreA − scoreB\| 低于此值判 `gray` |
 | `topK` | `3` | `FT_CONFIDE_SEMANTIC_TOP_K` | 每库取 top-k 相似度均值 |
 
-**标定流程（Stage 1 后 · 人工）**：
+**标定流程（Stage 1 后 · 解耦，禁止绑死 D/N 比例）**：
 
-1. 跑 ≥50 条真实 Confide 句（含 ISSUE_LEDGER 误判集），读 `semantic_shadow_classify` 行。
-2. 统计「字面粗桶 ≠ 语义粗桶」且语义更符合 PO 意图的比例。
-3. 网格搜索 `grayMargin ∈ [0.04, 0.14]`，优先 **降功能句误判进 emotional**（A 库召回），其次控制 gray 率。
-4. 阈值只通过 env / config 调整，**禁止**写死在业务分支。
+1. **离线冻表（Prompt 7）**：`npm run test:confide-semantic-acceptance`（真 Qwen3-Embedding GGUF · leave-one-out · A/B 各 50 + 锚点 累积了多久 / 忙啥 / 忙什么）。实验室/夜间跑批；**禁止**接入 `test:smoke`。接入方式与六语闲聊探针相同：仓库内 npm script + `LAB_SCRIPT_CONVENTIONS.md`，**无** GitHub nightly job。
+2. **真实影子日志（Prompt 8）**：扫 `turns.jsonl` 的 `semantic_shadow_classify`（`ok:true`）。脚本只报 **N**（样本）、**D**（`literalCoarse ≠ semanticCoarse`）、**D÷N**，并导出分歧 CSV。 **不设 N 硬下限**，不在脚本里写「可以切 Stage 2」。
+3. **人工**：在 CSV 上标「有利分歧」（字面 ≠ 语义且语义更符合 PO 意图）。建议攒够 **≥30 条有利分歧** 后再由 **PO 拍板** 开切换 PR（80 条够 30 或 500 条才够 30 都行）。
+4. 网格搜索 `grayMargin ∈ [0.04, 0.14]` 仍可用 Prompt 7 的 FAIL 分数（scoreA / scoreB / 质心余弦）；优先 **降功能句误判进 emotional**，其次控制 gray 率。阈值只通过 env / config 调整，**禁止**写死在业务分支。
 
 ---
 
@@ -162,3 +162,4 @@ Electron 宽屏且面板内已有上一轮时，同一行会填 `hadPriorTurn: t
 - 结构：`desktopCompanionL2Route.test.js` 锁 IPC + `_showReply` 影子接线
 - 人工（Stage 2 前）：Electron 宽屏发「累积了多久」「忙啥」→ `turns.jsonl` 含 `semantic_shadow_classify` 且带 `text`
 - Prompt 6：同会话第二句「好累」→ 同行含 `semanticCoarse` 与 `semanticCoarseWithPrior`（见对照审计文档）
+- Prompt 7：`npm run test:confide-semantic-acceptance`（真 GGUF · 不进 smoke）· 单测 `confideSemanticAcceptanceEvaluate.test.js`
