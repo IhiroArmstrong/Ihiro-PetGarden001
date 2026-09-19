@@ -17,6 +17,7 @@ import { isCompanionL1Allowed } from './l1Capability.js';
 import {
   applyCompanionEvent,
   createCompanionStatus,
+  isEmbeddingShadowPhase,
   parseCompanionNdjsonLine
 } from './l1Status.js';
 import {
@@ -34,6 +35,7 @@ import { L0_SEMANTIC_SHADOW_TIMEOUT_MS } from './l0EmbeddingConfig.js';
 import { resolveCompanionModelDir } from './l0Download.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 import { buildSemanticShadowTurnLogRecord } from './l1SemanticShadowLog.js';
+import { createSemanticShadowEmbeddingGate } from './l1SemanticShadowEmbeddingGate.js';
 import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -96,6 +98,7 @@ export class CompanionL1Runtime {
     /** @type {Map<string, (ev: object) => void>} */
     this._semanticShadowWaiters = new Map();
     this._shadowQueue = Promise.resolve();
+    this._embeddingShadowGate = createSemanticShadowEmbeddingGate();
     this._turnLogAppendCount = 0;
     this._lastTurnLogPruneMs = 0;
     void pruneLocalConfideTurnsJsonl(this.userDataDir);
@@ -126,6 +129,7 @@ export class CompanionL1Runtime {
       const waiters = this._unloadedWaiters;
       this._unloadedWaiters = [];
       waiters.forEach((resolve) => resolve(this.snapshot()));
+      this._embeddingShadowGate.reset();
     }
     if (ev.event === 'generated' || ev.event === 'generate_error') {
       const id = typeof ev.id === 'string' ? ev.id : '';
@@ -151,6 +155,12 @@ export class CompanionL1Runtime {
         resolve(ev);
       }
     }
+    if (ev.event === 'embedding_ready' || ev.event === 'embedding_error') {
+      this._embeddingShadowGate.applyEvent(ev);
+    }
+    if (ev.event === 'status' && isEmbeddingShadowPhase(ev.phase)) {
+      this._embeddingShadowGate.markLoading();
+    }
     if (ev.event === 'error') {
       const waiters = [...this._readyWaiters, ...this._unloadedWaiters];
       this._readyWaiters = [];
@@ -171,6 +181,7 @@ export class CompanionL1Runtime {
         });
       }
       this._semanticShadowWaiters.clear();
+      this._embeddingShadowGate.reset();
     }
     this._push();
   }
@@ -534,6 +545,43 @@ export class CompanionL1Runtime {
   }
 
   /**
+   * @returns {Promise<{ ok: true } | { ok: false, reason: string, message?: string | null }>}
+   */
+  async _ensureShadowEmbeddingReady() {
+    const gate = this._embeddingShadowGate;
+    if (gate.isReady()) return { ok: true };
+    if (gate.hasError()) {
+      return {
+        ok: false,
+        reason: 'embed_unavailable',
+        message: gate.snapshot().errorMessage
+      };
+    }
+
+    const waitPromise = gate.waitForReady();
+    if (gate.shouldRequestEnsure()) {
+      if (!this.child) {
+        this._spawnIfNeeded();
+      }
+      try {
+        gate.markLoading();
+        this._write('ensure-embedding');
+      } catch {
+        return { ok: false, reason: 'embed_failed' };
+      }
+    }
+
+    const ready = await waitPromise;
+    return ready.ok
+      ? { ok: true }
+      : {
+          ok: false,
+          reason: ready.reason || 'embed_unavailable',
+          message: ready.message || null
+        };
+  }
+
+  /**
    * @param {{
    *   text: string,
    *   contextualText: string,
@@ -556,6 +604,20 @@ export class CompanionL1Runtime {
 
     if (!this.child) {
       this._spawnIfNeeded();
+    }
+
+    const readyResult = await this._ensureShadowEmbeddingReady();
+    if (!readyResult.ok) {
+      await this._appendTurnLog(
+        buildSemanticShadowTurnLogRecord({
+          ...baseRecord,
+          ok: false,
+          reason: readyResult.reason || 'embed_unavailable',
+          semanticResult: null,
+          timing: { wallMs: Date.now() - wallStarted }
+        })
+      );
+      return;
     }
 
     const id = randomUUID();

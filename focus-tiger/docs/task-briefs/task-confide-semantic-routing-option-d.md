@@ -140,7 +140,8 @@ Electron 宽屏且面板内已有上一轮时，同一行会填 `hadPriorTurn: t
 | 条件 | 行为 |
 |---|---|
 | 非 Electron / 无 `semanticShadowClassify` IPC | 不写日志或 `ok:false reason:unavailable` |
-| embedding 模型未下载 / 加载失败 | `ok:false`；Confide 主路径不变 |
+| embedding 模型未下载 / 加载失败 | `ok:false`（`embed_unavailable` / `embed_failed`）；Confide 主路径不变 |
+| embedding 冷启动尚未 ready | **Prompt 11**：shadow 排队等 `embedding_ready`，**不计入** 15s 分类超时；就绪后再跑相似度 |
 | embedding 下载/加载进度 | **仅 shadow phase**（`embedding_downloading` / `embedding_loading`）；`l1Status` 忽略，**不**驱动 Confide 状态条 |
 | `getEmbeddingFor` 抛错 | 捕获；`reason:embed_failed` |
 | `safety_redirect` / `aggression_toward_others` | `reason:skipped_safety`；不加载 embedding |
@@ -159,7 +160,7 @@ Electron 宽屏且面板内已有上一轮时，同一行会填 `hadPriorTurn: t
 
 ## 验收
 
-- 单测：`confideSemanticRouting.test.js` · `confideSemanticCoarseMap.test.js` · `confideSemanticShadowPriorTurn.test.js` · `l0EmbeddingProfiles.test.js`
+- 单测：`confideSemanticRouting.test.js` · `confideSemanticCoarseMap.test.js` · `confideSemanticShadowPriorTurn.test.js` · `l1SemanticShadowEmbeddingGate.test.js` · `l0EmbeddingProfiles.test.js`
 - 结构：`desktopCompanionL2Route.test.js` 锁 IPC + `_showReply` 影子接线
 - 人工（Stage 2 前）：Electron 宽屏发「累积了多久」「忙啥」→ `turns.jsonl` 含 `semantic_shadow_classify` 且带 `text`
 - Prompt 6：同会话第二句「好累」→ 同行含 `semanticCoarse` 与 `semanticCoarseWithPrior`（见对照审计文档）
