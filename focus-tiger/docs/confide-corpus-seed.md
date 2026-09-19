@@ -40,7 +40,8 @@
 
 > **SSOT**：`task-briefs/task-confide-aggression-toward-others.md` · 关键词：`confideAggressionKeywords.js`（EN 规则）。  
 > **红线**：禁 `Heard` / 点头描写 / 危机转介。`review: ok` 前不得对用户可见挂载。  
-> **扩池门禁**：上线前须 ≥4 条审定文案（03/04 为分析师方向草稿 · 2026-09-05，仍 `draft`）。
+> **扩池门禁**：上线前须 ≥4 条审定文案（03/04 为分析师方向草稿 · 2026-09-05，仍 `draft`）。  
+> **ja 母语审**：`task-briefs/task-confide-aggression-ja-native-review.md`（`aggression-02` 首选 · 含禁打/击词根约束）。
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
