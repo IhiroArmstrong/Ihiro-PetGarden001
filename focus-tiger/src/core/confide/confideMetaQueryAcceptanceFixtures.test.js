@@ -5,44 +5,12 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { CONFIDE_ROUTE } from './confideRoutes.js';
-import { shouldAnswerWithMemoryList } from './confideMemoryList.js';
-import { isPracticeFactsQuestion } from './confidePracticeFacts.js';
-import {
-  shouldHandleConfideReflectiveHonesty,
-  isConfideReflectiveOpenAsk
-} from './confideReflectiveHonesty.js';
-import { shouldHandleConfideCompanionGreeting } from './confideCompanionGreeting.js';
-import { shouldRunConfideReadHybridClassify } from './confideReadHybrid.js';
+import { runConfideAcceptanceBatch } from './confideAcceptanceEvaluate.js';
+import { isConfideReflectiveOpenAsk } from './confideReflectiveHonesty.js';
 import {
   CONFIDE_META_QUERY_ACCEPTANCE_FIXTURES,
   fixturesForMetaQueryBucket
 } from './confideMetaQueryAcceptanceFixtures.js';
-
-const FALLBACK = CONFIDE_ROUTE.FALLBACK;
-
-/**
- * @param {string} text
- * @returns {import('./confideMetaQueryAcceptanceFixtures.js').ConfideMetaQueryBucket}
- */
-function resolveConfideMetaQueryBucket(text) {
-  if (shouldHandleConfideCompanionGreeting({ route: FALLBACK, text })) {
-    return 'companion_greeting';
-  }
-  if (shouldAnswerWithMemoryList(FALLBACK, text, true)) {
-    return 'memory_list';
-  }
-  if (isPracticeFactsQuestion(text)) {
-    return 'practice_facts';
-  }
-  if (shouldHandleConfideReflectiveHonesty({ route: FALLBACK, text })) {
-    return 'reflective_honesty';
-  }
-  if (shouldRunConfideReadHybridClassify(text)) {
-    return 'hybrid_classify';
-  }
-  return 'generate_skip_classify';
-}
 
 describe('confideMetaQueryAcceptanceFixtures', () => {
   it('freezes exactly 32 acceptance utterances', () => {
@@ -69,15 +37,25 @@ describe('confideMetaQueryAcceptanceFixtures', () => {
   });
 
   it('routes every frozen utterance to its expected bucket', () => {
-    for (const row of CONFIDE_META_QUERY_ACCEPTANCE_FIXTURES) {
-      const actual = resolveConfideMetaQueryBucket(row.text);
-      assert.equal(actual, row.bucket, `${row.id}: ${row.text}`);
-    }
+    const results = runConfideAcceptanceBatch({ suites: ['meta'] });
+    assert.equal(results.length, CONFIDE_META_QUERY_ACCEPTANCE_FIXTURES.length);
+    assert.ok(
+      results.every((row) => row.pass),
+      () =>
+        results
+          .filter((row) => !row.pass)
+          .slice(0, 5)
+          .map((row) => `${row.id}: ${row.failures.join('; ')}`)
+          .join('\n')
+    );
   });
 
   it('locks 2026-09-19 regex gaps: 列出记忆 and 忙啥', () => {
-    assert.equal(resolveConfideMetaQueryBucket('列出记忆'), 'memory_list');
-    assert.equal(resolveConfideMetaQueryBucket('我最近在忙啥'), 'reflective_honesty');
+    const byId = Object.fromEntries(
+      runConfideAcceptanceBatch({ suites: ['meta'] }).map((row) => [row.id, row])
+    );
+    assert.equal(byId['meta-list-zh-canonical']?.actual.bucket, 'memory_list');
+    assert.equal(byId['meta-busy-zh-sha']?.actual.bucket, 'reflective_honesty');
     assert.equal(isConfideReflectiveOpenAsk('我最近在忙啥'), true);
   });
 });

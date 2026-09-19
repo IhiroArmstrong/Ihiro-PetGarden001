@@ -140,3 +140,9 @@ test('no match → fallback (not fuzzy guess)', () => {
     CONFIDE_ROUTE.FALLBACK
   );
 });
+
+test('practice facts duration beats tired substring (累积了多久)', () => {
+  assert.equal(confideClassify('累积了多久'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('我累计练习多久了'), CONFIDE_ROUTE.FALLBACK);
+  assert.notEqual(confideClassify('累积了多久'), CONFIDE_ROUTE.TIRED);
+});

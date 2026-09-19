@@ -23,6 +23,7 @@ import {
   textMatchesAnyPhrase
 } from './confideEmotionKeywords.js';
 import { matchesAggressionTowardOthers } from './confideAggressionKeywords.js';
+import { isPracticeFactsQuestion } from './confidePracticeFacts.js';
 import { matchesSafetyRedirect } from './confideSafetyKeywords.js';
 
 /**
@@ -43,7 +44,9 @@ export function confideClassify(text) {
 
   /** @type {string[]} */
   const hits = [];
+  const practiceFactsAsk = isPracticeFactsQuestion(raw);
   for (const bucket of CONFIDE_EMOTION_PRIORITY) {
+    if (bucket === CONFIDE_ROUTE.TIRED && practiceFactsAsk) continue;
     const phrases = EMOTION_PHRASES[bucket] || [];
     if (textMatchesAnyPhrase(raw, phrases)) hits.push(bucket);
   }

@@ -2,4 +2,4 @@
 
 | 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
-| Confide 元问题 regex 补洞 + 32/30 句验收冻表 | UI可见 | 待人工测试 | **Electron 宽屏 Confide ready · memory Allow。** **元问题 32 句**：按 `docs/confide-meta-query-acceptance.md` 冻表逐条核对 `data-source`。**攻击边界 30 句**：按 `docs/confide-aggression-acceptance.md` 冻表逐条核对 `data-route`（锚点：`我想打人` / `人を殴りたい` / `我要打游戏` / `ゲームで殴る` / `不想活`）。**过关线**：两表各 32/30 全绿 = 本轮 regex 肉测终止；**禁止**即兴加句扩展。**未改**：`我最近在忙什么` 有记忆仍诚实桶（#822）。自动化：`confideMetaQueryAcceptanceFixtures.test.js` · `confideAggressionAcceptanceFixtures.test.js` | **2026-09-19 用户书面**：批准固定问法清单作肉测终止条件（元问题 + aggression 各一表） | — | — | `fix/confide-meta-regex-and-acceptance` | 2026-09-19 |
+| Confide 本轮肉测验收冻表（100 句） | UI可见 | 待人工测试 | **功能回归（必跑）**：`npm run test:confide-acceptance` → **100/100**（CI 已接入 `test:smoke`）。**62 句子集**：`--suites=meta,aggression`。**人工（一次性）**：竖线颜色 · 点击手感 — 各 1–2 句，不必 100 句全点。SSOT：`docs/confide-round-acceptance.md` | **2026-09-19 用户书面**：62/100 句冻表须终端批量自动化，取代逐句 Electron 点按 | — | — | `fix/confide-meta-regex-and-acceptance` | 2026-09-19 |

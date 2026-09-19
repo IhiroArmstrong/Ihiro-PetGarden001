@@ -75,7 +75,14 @@ describe('confideReflectiveHonesty', () => {
   });
 
   it('matches 忙啥 as the same honest bucket as 忙什么 (2026-09-19)', () => {
-    const variants = ['我最近在忙什么', '我最近在忙啥', '最近在忙什么', '最近在忙啥'];
+    const variants = [
+      '我最近在忙什么',
+      '我最近在忙啥',
+      '最近在忙什么',
+      '最近在忙啥',
+      '忙啥',
+      '忙什么'
+    ];
     for (const text of variants) {
       assert.equal(isConfideReflectiveOpenAsk(text), true, text);
       assert.equal(

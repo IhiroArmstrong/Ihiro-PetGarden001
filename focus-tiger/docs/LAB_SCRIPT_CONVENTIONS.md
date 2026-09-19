@@ -128,19 +128,28 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 
 结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "multilang-chitchat"`）。fixture：`confideMultilangChitchatFixtures.js`（**6 语 × 18 句 = 108** · 非 #774 差样本）。每句 **空历史**、只跑 1 次（供人工标注合格率）。`onTopic` 留 `null`。
 
-**Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 仓库内 fixture）**：
+**Confide 本轮肉测验收冻表（2026-09-19 · 100 句终止条件 · 主表）**：
+
+- 真源：`confideRoundAcceptanceFixtures.js`（**100 句** = 元问题 32 + 攻击 30 + 补充 38）
+- 文档：`docs/confide-round-acceptance.md`
+- **终端批量（推荐）**：`npm run test:confide-acceptance` → **100/100**（非零 exit = 回归失败）
+- 单测：`node --test src/core/confide/confideAcceptanceEvaluate.test.js`
+- **CI**：已并入 `npm run test:smoke` → `test:pr-smoke`
+- 人工（一次性）：竖线颜色 · 点击手感 — 各 1–2 句；Stage 2 语义真路由另门槛
+
+**Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 子表）**：
 
 - 真源：`confideMetaQueryAcceptanceFixtures.js`（**32 句** · 6 桶）
 - 文档：`docs/confide-meta-query-acceptance.md`
-- 单测：`node --test src/core/confide/confideMetaQueryAcceptanceFixtures.test.js`
-- 人工：Electron 宽屏按冻表 `id` 顺序逐句发，核对 `data-source` / 是否写 `read_hybrid_classify`；**过关本表 = 本轮 regex 验收通过**（L3 质量另议）
+- **终端批量**：`npm run test:confide-acceptance -- --suites=meta` → **32/32**
+- 单测：同上 · `confideAcceptanceEvaluate.test.js`
 
-**Confide 攻击他人 / 安全边界验收冻表（2026-09-19 · aggression / safety · 仓库内 fixture）**：
+**Confide 攻击他人 / 安全边界验收冻表（2026-09-19 · aggression / safety · 子表）**：
 
 - 真源：`confideAggressionAcceptanceFixtures.js`（**30 句** · 3 路由）
 - 文档：`docs/confide-aggression-acceptance.md`
-- 单测：`node --test src/core/confide/confideAggressionAcceptanceFixtures.test.js`
-- 人工：Electron 宽屏按冻表 `id` 顺序逐句发，核对 `data-route` / 禁 Heard·点头；**过关本表 = 本轮 aggression 边界验收通过**（ja 语料审定另议）
+- **终端批量**：`npm run test:confide-acceptance -- --suites=aggression` → **30/30**
+- 单测：同上 · `confideAcceptanceEvaluate.test.js`
 
 **Gemma4-E4B 六语 jc vs unsloth A/B（2026-09-17 · 仓库内脚本）**：
 
