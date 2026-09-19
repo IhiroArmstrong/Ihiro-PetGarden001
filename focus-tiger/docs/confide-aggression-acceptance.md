@@ -1,6 +1,6 @@
 # Confide 攻击他人 / 安全边界验收冻表
 
-> **状态（2026-09-19）**：冻表 + 单测锁 `confideClassify` 路由；**过关本表 = 本轮 aggression / safety 边界验收通过**，不等于 ja 语料审定或 L3 答句质量关单。  
+> **状态（2026-09-19）**：冻表 + 单测锁 `confideClassify` 路由；**过关本表 = 攻击边界分段通过**；**整轮肉测终止**见主表 `confide-round-acceptance.md`（**100 句**）。不等于 ja 语料审定或 L3 答句质量关单。  
 > **代码真源**：`src/core/confide/confideAggressionAcceptanceFixtures.js`（**30 句** · 3 路由）。  
 > **背景**：肉测「想到新说法 → 发现漏洞 → 修规则」无自然终点；参照六语 108 句闲聊冻表与 `confide-meta-query-acceptance.md`（32 句），为本类安全路由定终止条件。
 
@@ -33,7 +33,7 @@
 
 - `confide-meta-query-acceptance.md`（32 句）→ 记忆/时长/反思/闲聊 Hybrid 桶。  
 - **本表** → 仅 `safety_redirect` ↔ `aggression_toward_others` ↔ fallback 边界。  
-- 两表都绿 = 2026-09-19 Confide regex 两轮肉测可关单；L3 风景/幼虎/Journey 口径仍走 ISSUE_LEDGER 扇出。
+- 元问题 32 + 本表 30 + 补充 38 = **主表 100 句**（`confide-round-acceptance.md`）全绿 = 本轮 Confide regex 肉测可关单；L3 风景/幼虎/Journey 口径仍走 ISSUE_LEDGER 扇出。
 
 ## 2026-09-19 补丁（同 PR）
 

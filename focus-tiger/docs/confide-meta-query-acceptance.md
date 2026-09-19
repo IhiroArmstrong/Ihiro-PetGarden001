@@ -1,6 +1,6 @@
 # Confide 元问题验收冻表（记忆 / 时长 / 反思）
 
-> **状态（2026-09-19）**：冻表 + 单测锁路由桶；**过关本表 = 本轮 regex / 诚实桶验收通过**，不等于 L3 答句质量关单。  
+> **状态（2026-09-19）**：冻表 + 单测锁路由桶；**过关本表 = 元问题分段通过**；**整轮肉测终止**见主表 `confide-round-acceptance.md`（**100 句**）。不等于 L3 答句质量关单。  
 > **代码真源**：`src/core/confide/confideMetaQueryAcceptanceFixtures.js`（**32 句** · 6 桶）。  
 > **背景**：第二轮肉测「想到新说法 → 发现漏洞 → 修规则」无自然终点；参照六语 108 句闲聊冻表，为本类元问题定终止条件。
 
@@ -26,7 +26,9 @@
 ## 与肉测审计的关系
 
 - `read-hybrid-gapfill-rate-audit.md` §5 闲聊 ≥15 + 正例 5 → **并入**本冻表（闲聊 5 + 正例覆盖 + 同义变体）。
-- 中文/日文 **aggression 边界** → **`docs/confide-aggression-acceptance.md`**（30 句冻表）；本表 **不**覆盖 L3 风景/幼虎句、Journey Log 口径争议——那些仍走 ISSUE_LEDGER 扇出项 4–6。
+- 中文/日文 **aggression 边界** → **`docs/confide-aggression-acceptance.md`**（30 句冻表）。  
+- **主表** → **`docs/confide-round-acceptance.md`**（32+30+38=100 句 · 肉测终止条件）。  
+- 本表 **不**覆盖 L3 风景/幼虎句、Journey Log 口径争议——那些仍走 ISSUE_LEDGER 扇出项 4–6。
 
 ## 2026-09-19 运行时补丁（`fix/confide-meta-regex-and-acceptance`）
 

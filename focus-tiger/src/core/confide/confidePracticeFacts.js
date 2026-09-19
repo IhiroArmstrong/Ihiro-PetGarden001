@@ -35,7 +35,7 @@ const DURATION_RES = [
   /\bhow\s+many\s+(days|minutes|hours)\s+have\s+i\s+(been\s+)?practi[cs]e(?:d|ing)?\b/i,
   /\b(?:total\s+)?sitting\s+time\b/i,
   /\b(?:total\s+)?sit(?:ting)?\s+(?:time|minutes|hours)\s+on\s+this\s+device\b/i,
-  /练了多久|坐了多久|练习了多久|練習多久|坐了几天|练了几天|練習了幾天|同坐多久|一共坐了多久/
+  /练了多久|坐了多久|练习了多久|練習多久|坐了几天|练了几天|練習了幾天|同坐多久|一共坐了多久|累积(?:了)?多久|累積(?:了)?多久|累计(?:练习|練習)?多久|我累计练习多久了|我累計練習多久了/
 ];
 
 const USUAL_TIME_RES = [
