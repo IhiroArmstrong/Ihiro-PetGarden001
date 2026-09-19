@@ -69,6 +69,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_CHITCHAT_RUNS` | 可选 · 整数 | #774 方差探针每条样本重复次数（**空历史**）；缺省 = 15，合法范围 10–20 |
 | `FT_CHITCHAT_REPEATS` | 可选 · 整数 | #774 同会话连发探针每句重复次数；缺省 = 3，合法范围 2–5 |
 | `FT_CHITCHAT_GGUF` | 可选 · 绝对路径 | #774 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
+| `FT_EMBEDDING_GGUF` | 可选 · 绝对路径 | Prompt 7 语义冻表 embedding GGUF；缺省 `companion-l0/Qwen3-Embedding-0.6B-Q8_0.gguf` |
+| `FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD` | 可选 · `1` | Prompt 7 缺省路径未缓存时禁止下载，exit 2 |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
 
@@ -135,7 +137,8 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 - **终端批量（推荐）**：`npm run test:confide-acceptance` → **100/100**（非零 exit = 回归失败）
 - 单测：`node --test src/core/confide/confideAcceptanceEvaluate.test.js`
 - **CI**：已并入 `npm run test:smoke` → `test:pr-smoke`
-- 人工（一次性）：竖线颜色 · 点击手感 — 各 1–2 句；Stage 2 语义真路由另门槛
+- 人工（一次性）：竖线颜色 · 点击手感 — 各 1–2 句
+- **Stage 2 离线语义冻表（Prompt 7 · 2026-09-20）**：`npm run test:confide-semantic-acceptance`（或 `cd desktop && npm run companion:semantic-acceptance`）。真源：`confideSemanticExamples.js`（A/B 各 50）+ `CONFIDE_SEMANTIC_KNOWN_MISCLASS_ANCHORS`。打分 **leave-one-out**，真 Qwen3-Embedding GGUF。**不进** `test:smoke`（同六语闲聊探针：系统终端 / 夜间实验室；GitHub 无 nightly job）。结果：`/tmp/ft-l0-lab/semantic-acceptance-<epoch>.json`。可选 `FT_EMBEDDING_GGUF`；缺省生产 `companion-l0/Qwen3-Embedding-0.6B-Q8_0.gguf`（缺失时脚本会下载，除非 `FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1`）。
 
 **Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 子表）**：
 

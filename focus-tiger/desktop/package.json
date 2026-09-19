@@ -16,7 +16,8 @@
     "companion:ja-chitchat-electron-session-repeat": "node scripts/l0-ja-chitchat-electron-session-repeat-probe.js",
     "companion:multilang-chitchat": "node scripts/l0-multilang-chitchat-probe.js",
     "companion:gemma4-multilang-ab": "node scripts/l0-gemma4-multilang-ab.js",
-    "companion:confide-latency": "node scripts/l0-confide-latency-probe.js"
+    "companion:confide-latency": "node scripts/l0-confide-latency-probe.js",
+    "companion:semantic-acceptance": "node scripts/l0-confide-semantic-acceptance.js"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",

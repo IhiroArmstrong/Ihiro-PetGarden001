@@ -264,6 +264,54 @@ describe('desktop companion L1 status reducer', () => {
     });
     assert.equal(status.phase, 'downloading');
   });
+
+  it('ignores shadow embedding phases without changing visible status', () => {
+    let status = applyCompanionEvent(createCompanionStatus(), {
+      event: 'status',
+      phase: 'downloading'
+    });
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'embedding_downloading'
+    });
+    assert.equal(status.phase, 'downloading');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'loading',
+      message: 'cached'
+    });
+    status = applyCompanionEvent(status, { event: 'ready' });
+    assert.equal(status.phase, 'ready');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'embedding_loading',
+      message: 'precomputeLibraryA'
+    });
+    assert.equal(status.phase, 'ready');
+    status = applyCompanionEvent(status, {
+      event: 'progress',
+      received: 900_000_000,
+      total: 900_000_000
+    });
+    assert.equal(status.phase, 'ready');
+    assert.equal(status.received, null);
+    assert.equal(status.total, null);
+  });
+
+  it('does not downgrade ready when a stray main download phase arrives', () => {
+    let status = applyCompanionEvent(createCompanionStatus(), { event: 'ready' });
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'downloading'
+    });
+    assert.equal(status.phase, 'ready');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'loading',
+      message: 'cached'
+    });
+    assert.equal(status.phase, 'ready');
+  });
 });
 
 

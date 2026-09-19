@@ -85,6 +85,9 @@ export async function loadEmbeddingHold(opts) {
   return {
     librarySizeA: vectorsA.length,
     librarySizeB: vectorsB.length,
+    vectorsA,
+    vectorsB,
+    embedText,
     /**
      * @param {string} text
      * @returns {Promise<ReturnType<typeof classifyConfideSemanticCoarse>>}

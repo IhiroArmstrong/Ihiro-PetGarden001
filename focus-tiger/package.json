@@ -10,6 +10,7 @@
     "test": "node scripts/run-src-unit-tests.js",
     "test:smoke": "node scripts/run-src-unit-tests.js && npm run test:confide-acceptance && npm run docs:check",
     "test:confide-acceptance": "node scripts/run-confide-acceptance.js",
+    "test:confide-semantic-acceptance": "npm --prefix desktop run companion:semantic-acceptance",
     "docs:check": "node scripts/docs-check.js",
     "copyright:header-check": "node scripts/copyright-header.js",
     "copyright:header-write": "node scripts/copyright-header.js --write",

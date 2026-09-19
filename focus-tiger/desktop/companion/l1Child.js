@@ -131,25 +131,20 @@ async function main() {
     const cached = isGgufCachedAt(embeddingPath, L0_EMBEDDING_MODEL_MIN_BYTES);
     await emit({
       event: 'status',
-      phase: 'loading',
+      phase: 'embedding_loading',
       message: cached ? 'embedding_cached' : 'embedding_checking'
     });
     const dl = await ensureGgufDownloaded(embeddingPath, L0_EMBEDDING_MODEL_URLS, {
       minBytes: L0_EMBEDDING_MODEL_MIN_BYTES,
-      onProgress: ({ received, total }) => {
-        void emit({ event: 'status', phase: 'downloading' });
-        void emit({
-          event: 'progress',
-          received,
-          total: Number.isFinite(total) ? total : null
-        });
+      onProgress: () => {
+        void emit({ event: 'status', phase: 'embedding_downloading' });
       }
     });
     embeddingSession = await loadEmbeddingHold({
       modelPath: dl.path,
       env: process.env,
       onProgress: (msg) => {
-        void emit({ event: 'status', phase: 'loading', message: msg });
+        void emit({ event: 'status', phase: 'embedding_loading', message: msg });
       }
     });
   }
