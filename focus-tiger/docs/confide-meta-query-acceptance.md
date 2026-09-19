@@ -26,7 +26,7 @@
 ## 与肉测审计的关系
 
 - `read-hybrid-gapfill-rate-audit.md` §5 闲聊 ≥15 + 正例 5 → **并入**本冻表（闲聊 5 + 正例覆盖 + 同义变体）。
-- 本表 **不**覆盖 L3 风景/幼虎句、中文 aggression、Journey Log 口径争议——那些仍走 ISSUE_LEDGER 扇出项 4–6。
+- 中文/日文 **aggression 边界** → **`docs/confide-aggression-acceptance.md`**（30 句冻表）；本表 **不**覆盖 L3 风景/幼虎句、Journey Log 口径争议——那些仍走 ISSUE_LEDGER 扇出项 4–6。
 
 ## 2026-09-19 运行时补丁（`fix/confide-meta-regex-and-acceptance`）
 

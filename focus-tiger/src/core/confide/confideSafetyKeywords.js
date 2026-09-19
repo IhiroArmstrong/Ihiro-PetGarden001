@@ -40,7 +40,9 @@ export const SAFETY_PHRASES_ZH = Object.freeze([
   '自残',
   '自殘',
   '割腕',
-  '活不下去'
+  '活不下去',
+  '想伤害自己',
+  '想傷害自己'
 ]);
 
 /** @type {readonly string[]} */

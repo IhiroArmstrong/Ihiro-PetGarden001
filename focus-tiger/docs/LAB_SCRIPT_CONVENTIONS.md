@@ -135,6 +135,13 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 - 单测：`node --test src/core/confide/confideMetaQueryAcceptanceFixtures.test.js`
 - 人工：Electron 宽屏按冻表 `id` 顺序逐句发，核对 `data-source` / 是否写 `read_hybrid_classify`；**过关本表 = 本轮 regex 验收通过**（L3 质量另议）
 
+**Confide 攻击他人 / 安全边界验收冻表（2026-09-19 · aggression / safety · 仓库内 fixture）**：
+
+- 真源：`confideAggressionAcceptanceFixtures.js`（**30 句** · 3 路由）
+- 文档：`docs/confide-aggression-acceptance.md`
+- 单测：`node --test src/core/confide/confideAggressionAcceptanceFixtures.test.js`
+- 人工：Electron 宽屏按冻表 `id` 顺序逐句发，核对 `data-route` / 禁 Heard·点头；**过关本表 = 本轮 aggression 边界验收通过**（ja 语料审定另议）
+
 **Gemma4-E4B 六语 jc vs unsloth A/B（2026-09-17 · 仓库内脚本）**：
 
 ```bash
