@@ -11,8 +11,14 @@
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  L0_EMBEDDING_MODEL_FILENAME,
+  L0_EMBEDDING_MODEL_MIN_BYTES,
+  L0_EMBEDDING_MODEL_URLS
+} from './l0EmbeddingConfig.js';
 import { L0_MODEL_FILENAME, L0_MODEL_URLS } from './l0Config.js';
 import { ensureGgufDownloaded, isGgufCachedAt } from './l0Download.js';
+import { errorMessage as embeddingErrorMessage, loadEmbeddingHold } from './l1EmbeddingHold.js';
 import { errorMessage, loadModelHold } from './l1Hold.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -66,7 +72,10 @@ async function main() {
   const modelPath = path.join(modelDir, L0_MODEL_FILENAME);
   /** @type {null | { dispose: () => Promise<void>, generate: Function }} */
   let session = null;
+  /** @type {null | { dispose: () => Promise<void>, classifyUserText: Function }} */
+  let embeddingSession = null;
   let chain = Promise.resolve();
+  let shadowChain = Promise.resolve();
 
   async function ensure() {
     if (session) {
@@ -100,8 +109,49 @@ async function main() {
       }
       session = null;
     }
+    if (embeddingSession) {
+      try {
+        await embeddingSession.dispose();
+      } catch (err) {
+        await emit({
+          event: 'status',
+          phase: 'unloading',
+          message: embeddingErrorMessage(err)
+        });
+      }
+      embeddingSession = null;
+    }
     await emit({ event: 'unloaded' });
     await emit({ event: 'status', phase: 'idle' });
+  }
+
+  async function ensureEmbedding() {
+    if (embeddingSession) return;
+    const embeddingPath = path.join(modelDir, L0_EMBEDDING_MODEL_FILENAME);
+    const cached = isGgufCachedAt(embeddingPath, L0_EMBEDDING_MODEL_MIN_BYTES);
+    await emit({
+      event: 'status',
+      phase: 'loading',
+      message: cached ? 'embedding_cached' : 'embedding_checking'
+    });
+    const dl = await ensureGgufDownloaded(embeddingPath, L0_EMBEDDING_MODEL_URLS, {
+      minBytes: L0_EMBEDDING_MODEL_MIN_BYTES,
+      onProgress: ({ received, total }) => {
+        void emit({ event: 'status', phase: 'downloading' });
+        void emit({
+          event: 'progress',
+          received,
+          total: Number.isFinite(total) ? total : null
+        });
+      }
+    });
+    embeddingSession = await loadEmbeddingHold({
+      modelPath: dl.path,
+      env: process.env,
+      onProgress: (msg) => {
+        void emit({ event: 'status', phase: 'loading', message: msg });
+      }
+    });
   }
 
   function enqueue(work) {
@@ -112,6 +162,16 @@ async function main() {
       });
     });
     return chain;
+  }
+
+  function enqueueShadow(work) {
+    shadowChain = shadowChain.then(work).catch(async (err) => {
+      await emit({
+        event: 'semantic_shadow_error',
+        message: embeddingErrorMessage(err)
+      });
+    });
+    return shadowChain;
   }
 
   process.stdin.setEncoding('utf8');
@@ -165,6 +225,57 @@ async function main() {
               event: 'generate_error',
               id,
               message: errorMessage(err)
+            });
+          }
+        });
+      } else if (line.startsWith('semantic-shadow-classify ')) {
+        enqueueShadow(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('semantic-shadow-classify '.length));
+          } catch {
+            await emit({
+              event: 'semantic_shadow_error',
+              id: '',
+              message: 'invalid_semantic_shadow_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          if (!text) {
+            await emit({
+              event: 'semantic_shadow_error',
+              id,
+              message: 'empty_text'
+            });
+            return;
+          }
+          const started = Date.now();
+          try {
+            await ensureEmbedding();
+            if (!embeddingSession || typeof embeddingSession.classifyUserText !== 'function') {
+              throw new Error('embedding_session_missing');
+            }
+            const result = await embeddingSession.classifyUserText(text);
+            await emit({
+              event: 'semantic_shadow_classified',
+              id,
+              bucket: result.bucket,
+              scoreA: result.scoreA,
+              scoreB: result.scoreB,
+              diff: result.diff,
+              grayMargin: result.grayMargin,
+              topK: result.topK,
+              embedMs: result.embedMs,
+              wallMs: Date.now() - started
+            });
+          } catch (err) {
+            await emit({
+              event: 'semantic_shadow_error',
+              id,
+              message: embeddingErrorMessage(err),
+              wallMs: Date.now() - started
             });
           }
         });

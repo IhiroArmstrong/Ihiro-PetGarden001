@@ -10,6 +10,10 @@
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import { canSubmitConfideText } from '../core/confide/confideClassify.js';
+import {
+  resolveConfideLiteralCoarseBucket,
+  shouldRunConfideSemanticShadow
+} from '../core/confide/confideSemanticCoarseMap.js';
 import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
@@ -630,6 +634,34 @@ export class ConfideToYinUI {
       source: shown.source
     });
     this._scrollReplyIntoView();
+    this._maybeScheduleSemanticShadow({
+      text: asked,
+      route: shown.route,
+      source: shown.source
+    });
+  }
+
+  /**
+   * Stage 1 shadow: async semantic coarse bucket audit after the user sees the reply.
+   * @param {{ text: string, route: string, source: string }} ctx
+   */
+  _maybeScheduleSemanticShadow(ctx) {
+    if (!shouldRunConfideSemanticShadow(ctx)) return;
+    if (
+      !this._companion ||
+      typeof this._companion.semanticShadowClassify !== 'function'
+    ) {
+      return;
+    }
+    const literalCoarse = resolveConfideLiteralCoarseBucket(ctx);
+    void Promise.resolve(
+      this._companion.semanticShadowClassify({
+        text: ctx.text,
+        route: ctx.route,
+        source: ctx.source,
+        literalCoarse
+      })
+    ).catch(() => {});
   }
 
   /** @returns {void} */
