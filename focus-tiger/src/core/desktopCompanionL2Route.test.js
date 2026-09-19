@@ -483,6 +483,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confide-to-yin-memory-consent-title/);
     assert.match(ui, /matchConfideExecutableTool/);
     assert.match(ui, /mayUseConfideReadHybrid/);
+    assert.match(ui, /shouldRunConfideReadHybridClassify/);
     assert.match(ui, /buildConfideReadHybridPrompt/);
     assert.match(ui, /resolveConfideReadHybridToolFromRaw/);
     assert.match(ui, /_tryReadHybridThenContinue/);
