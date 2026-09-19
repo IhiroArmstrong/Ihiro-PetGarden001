@@ -29,6 +29,41 @@ export const L3_OBSERVE_NO_SUBSTITUTE =
 export const L3_OBSERVE_HEAR_QUESTION =
   'If the latest line is a question to you, notice the question; do not treat it as a mood or fill the page with presence.';
 
+/** Chat-wing generate: answer the question instead of cub-theater observe. */
+export const L3_CHAT_ANSWER_THE_LINE =
+  'This latest User line is conversation, not a mood to observe. Answer that line in one or two short sentences, as a companion in the same chat.';
+
+export const L3_CHAT_UNKNOWN_NAMES =
+  'If they named a person Yin does not know, say you do not know them yet. Do not invent a job, a biography, or a food preference. Yin keeps no taste ledger.';
+
+export const L3_CHAT_NO_CUB_FILL =
+  'Do not fill the page with cub body motion (paws, licking, tilting a head, blinking, stretching, moss) or scenery instead of answering.';
+
+export const L3_CHAT_NO_PARROT =
+  'Do not repeat the user line back as the whole reply, including a word-for-word translation.';
+
+/**
+ * Unmatched Confide generate that is a question / companion chat,
+ * not an emotion or habit self-report.
+ * @param {unknown} text
+ * @returns {boolean}
+ */
+export function isCompanionChatGenerateLine(text = '') {
+  const t = String(text || '').trim();
+  if (!t) return false;
+  if (/[?？]/.test(t)) return true;
+  if (
+    /^(?:who|what|where|when|whom|why|how|do you|can we|should we|which)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  return /谁是|谁喜欢|你想干|你想吃|喜欢吃|我们今天|今天做什么|干啥|吃啥/.test(
+    t
+  );
+}
+
 const LANG = {
   zh: 'Chinese',
   ja: 'Japanese',
@@ -176,14 +211,28 @@ export function buildCompanionL2Prompt({
     .filter((line) => line.length > 6)
     .join('\n');
   const user = String(text || '').slice(0, 280);
+  const chat = isCompanionChatGenerateLine(user);
+  const stance = chat
+    ? [
+        'One or two short sentences only.',
+        L3_CHAT_ANSWER_THE_LINE,
+        L3_CHAT_UNKNOWN_NAMES,
+        L3_CHAT_NO_CUB_FILL,
+        L3_CHAT_NO_PARROT,
+        'If they ask what to do today, offer sitting together in quiet company; do not list chores.'
+      ]
+    : [
+        'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
+        L3_OBSERVE_STAY_SPECIFIC,
+        L3_OBSERVE_NO_SUBSTITUTE,
+        L3_OBSERVE_HEAR_QUESTION,
+        'Do not answer with only still, watching, here, quiet, or listening presence.'
+      ];
   return joinL3PromptLines(
     [
       `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
-      'One or two short sentences only. Observe; do not advise, diagnose, coach, or give breathing instructions.',
-      L3_OBSERVE_STAY_SPECIFIC,
-      L3_OBSERVE_NO_SUBSTITUTE,
-      L3_OBSERVE_HEAR_QUESTION,
-      'Do not answer with only still, watching, here, quiet, or listening presence.',
+      ...stance,
+      'Do not advise, diagnose, coach, or give breathing instructions.',
       'Never reply with I am curious, I am aware, or any label for the user\'s inner state.',
       'If they are unsure whether to speak, respect the boundary; do not probe.',
       'Answer the latest User line only. Do not repeat an earlier Yin sentence.',

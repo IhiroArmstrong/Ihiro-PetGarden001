@@ -40,7 +40,7 @@ const HOLLOW_OBSERVE_PATTERNS = [
 const PRESENCE_ONLY_WORD =
   /^(?:still|here|watching|listening|quiet|yin|i|am|im|just)$/iu;
 
-/** Interchangeable cub-theater observes (scheme B field fails). */
+/** Interchangeable cub-theater observes (scheme B field fails + zh/en fill). */
 const GENERIC_CUB_THEATER_PATTERNS = [
   /^the cub shifts its weight/iu,
   /^the cub blinks slowly/iu,
@@ -48,7 +48,18 @@ const GENERIC_CUB_THEATER_PATTERNS = [
   /^the cub nudges its nose toward a patch of moss/iu,
   /^a small twitch moves one ear/iu,
   /^the air around me feels still/iu,
-  /^the soft fur (?:on my paws )?brushes/iu
+  /^the soft fur (?:on my paws )?brushes/iu,
+  /拍(?:了拍)?爪子/,
+  /歪(?:了歪)?头/,
+  /舔(?:了舔)?爪子/,
+  /眨(?:了眨)?眼/,
+  /伸(?:了伸)?爪子/,
+  /挪(?:了挪)?重心/,
+  /小老虎.{0,12}(?:爪子|歪头|舔)/,
+  /\btilts (?:its |his |her )?head\b/i,
+  /\blicks (?:a |its |his |her )?paw\b/i,
+  /\bbats (?:a |its )?paw\b/i,
+  /\bpats (?:the |its )?paw\b/i
 ];
 
 /**
@@ -128,6 +139,34 @@ export function isGenericCubTheaterReply(raw) {
 }
 
 /**
+ * Whole-reply parrot of the user line (including compact / translation echo).
+ * @param {unknown} raw
+ * @param {unknown} userText
+ * @returns {boolean}
+ */
+export function isEchoOfUserLine(raw, userText) {
+  const replyNorm = normalizeCompanionL2Reply(raw);
+  const userNorm = normalizeCompanionL2Reply(userText);
+  if (!replyNorm || !userNorm) return false;
+  if (replyNorm === userNorm) return true;
+  const compact = (s) => s.replace(/[\s'",.!?。！？、]/gu, '');
+  const replyC = compact(replyNorm);
+  const userC = compact(userNorm);
+  if (userC.length >= 6 && (replyC === userC || replyC.includes(userC))) {
+    return true;
+  }
+  const userRaw = String(userText || '');
+  const replyRaw = String(raw || '');
+  if (/喜欢吃/.test(userRaw) && /likes to eat/i.test(replyRaw) && /[?？]/.test(replyRaw)) {
+    return true;
+  }
+  if (/谁是/.test(userRaw) && /\bwho is\b/i.test(replyRaw) && /[?？]/.test(replyRaw)) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * @param {unknown} raw
  * @param {{ priorReplies?: unknown, userText?: unknown }} [opts]
  * @returns {string | null}
@@ -147,6 +186,7 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   if (BANNED.some((re) => re.test(text))) return null;
   if (isHollowCompanionObserveReply(text)) return null;
   if (isGenericCubTheaterReply(text)) return null;
+  if (isEchoOfUserLine(text, opts.userText)) return null;
   const prior = Array.isArray(opts.priorReplies) ? opts.priorReplies : [];
   const normalized = normalizeCompanionL2Reply(text);
   if (
