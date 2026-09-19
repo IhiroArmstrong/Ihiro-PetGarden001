@@ -42,7 +42,7 @@ export const CONFIDE_CORPUS = Object.freeze([
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
     zh: '一定有什么让你很难受。',
     en: "Something's really gotten to you.",
-    ja: '何かが、とてもきつくのたたいている。',
+    ja: '何かが、ずいぶんこたえているんだね。',
     review: 'draft'
   }),
   Object.freeze({
@@ -50,13 +50,13 @@ export const CONFIDE_CORPUS = Object.freeze([
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
     zh: '听起来你背负了很多怒气。',
     en: 'That sounds like a lot of anger to carry.',
-    ja: '重い怒りを、抱えきれないほど持っているように聞こえる。',
+    ja: '重い怒りを抱えているように聞こえる。',
     review: 'draft'
   }),
   Object.freeze({
     id: 'aggression-03',
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
-    zh: '这确实是个沉重的念头。',
+    zh: '这确实是个沉重的心情。',
     en: "That's a heavy thing to be sitting with.",
     ja: '重い思いと、いま一緒にいるのだね。',
     review: 'draft'
