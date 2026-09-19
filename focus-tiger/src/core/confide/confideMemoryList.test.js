@@ -53,6 +53,8 @@ describe('confide memory list (Phase 1A CI-03)', () => {
     );
     assert.equal(isMemoryListQuestion('What do you remember about me?'), true);
     assert.equal(isMemoryListQuestion('你还记得什么'), true);
+    assert.equal(isMemoryListQuestion('列出记忆'), true);
+    assert.equal(isMemoryListQuestion('列出記憶'), true);
     assert.equal(isMemoryListQuestion('何を覚えていますか'), true);
     assert.equal(isMemoryListQuestion('I remember feeling tired'), false);
     assert.equal(
