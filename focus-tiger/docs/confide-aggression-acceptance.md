@@ -27,7 +27,8 @@
 2. **顺序**：按 fixture `id` 字母序逐句发送（空会话或固定单会话，全轮一致）。
 3. **记录**：每句记 `data-route`、`data-source`、reply 文案是否触红线（Heard/点头）。
 4. **过关线**：**30/30** 路由与上表一致；**不得**因即兴加句扩展本表（新漏洞 → 新 issue / 新冻表版本 `v2`）。
-5. **自动化**：`node --test src/core/confide/confideAggressionAcceptanceFixtures.test.js` 锁 classify + aggression 语料红线（**不**替代 Electron 路径）。
+5. **自动化（必跑 · 取代逐句 Electron 点按）**：`npm run test:confide-acceptance -- --suites=aggression`（或全量 100 句不带参数）——终端批量跑真实桌面路由流水线（`data-route` / `data-source` / 禁 Heard·点头 / generate 门闩），**62/62 或 100/100 非零 exit = 回归失败**。
+6. **人工（一次性 · 与句数无关）**：竖线颜色 `#8b6f5c` vs `#7a5340`、真实点击耗时——各抽查 **1–2 句**即可，不必 30 句全过。
 
 ## 与元问题冻表的关系
 

@@ -21,7 +21,8 @@
 2. **顺序**：按 fixture `id` 排序逐句发送（空会话或固定单会话，全轮一致）。
 3. **记录**：每句记 `data-source`、秒表、是否出现 `read_hybrid_classify`。
 4. **过关线**：32/32 桶与上表一致；**不得**因即兴加句扩展本表（新漏洞 → 新 issue / 新冻表版本）。
-5. **自动化**：`node --test src/core/confide/confideMetaQueryAcceptanceFixtures.test.js` 锁 regex 桶（**不**替代 Electron 路径）。
+5. **自动化（必跑 · 取代逐句 Electron 点按）**：`npm run test:confide-acceptance -- --suites=meta`（或全量 100 句）——同脚本批量断言 `data-source` / generate 门闩；已接入 `npm run test:smoke` → CI `test:pr-smoke`。
+6. **人工（一次性）**：是否写入 `read_hybrid_classify` 的 DevTools/`turns.jsonl` 肉眼核对——抽 **1–2 句** hybrid 桶即可；竖线颜色另查 1–2 句。
 
 ## 与肉测审计的关系
 

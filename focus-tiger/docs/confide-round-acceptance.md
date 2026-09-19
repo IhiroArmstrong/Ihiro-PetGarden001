@@ -33,8 +33,9 @@
 1. **壳**：`origin/develop` tip · Electron 宽屏 · `npm run desktop:dev`（或 `?product=1&confide=1`）。
 2. **顺序**：`CONFIDE_ROUND_ACCEPTANCE_FIXTURES` 按 `id` 字母序；可分段（先 32 元问题 → 30 攻击 → 38 补充），但关单须 **100/100**。
 3. **记录**：每句记 `data-route`、`data-source`、秒表；元问题句另记是否出现 `read_hybrid_classify`。
-4. **自动化（必跑）**：`node --test src/core/confide/confideRoundAcceptanceFixtures.test.js`（聚合 100 句；**不**替代 Electron 路径）。
-5. **子表单测**：仍可单独跑 `confideMetaQueryAcceptanceFixtures.test.js` · `confideAggressionAcceptanceFixtures.test.js` 做分段调试。
+4. **自动化（必跑 · 取代逐句 Electron 点按）**：`npm run test:confide-acceptance` → 默认 **100/100**；`--suites=meta,aggression` → **62/62**。真源：`confideAcceptanceEvaluate.js` + `scripts/run-confide-acceptance.js`；已接入 `npm run test:smoke` / CI。
+5. **人工（一次性 · 与句数无关）**：竖线颜色、点击耗时——各抽 1–2 句肉眼确认即可。
+6. **子表单测**：`confideMetaQueryAcceptanceFixtures.test.js` · `confideAggressionAcceptanceFixtures.test.js` 仍可分段调试。
 
 ## 与 Stage 2 语义影子分流的关系
 

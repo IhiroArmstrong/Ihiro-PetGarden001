@@ -5,17 +5,14 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import {
-  isConfideGenerateEligible,
-  resolveConfideDesktopSource,
-  resolveConfideMetaQueryBucket
-} from './confideAcceptanceResolve.js';
-import { confideClassify } from './confideClassify.js';
+import { runConfideAcceptanceBatch } from './confideAcceptanceEvaluate.js';
 import {
   CONFIDE_ROUND_ACCEPTANCE_COUNTS,
   CONFIDE_ROUND_ACCEPTANCE_FIXTURES,
   fixturesForRoundAcceptanceSuite
 } from './confideRoundAcceptanceFixtures.js';
+import { resolveConfideDesktopSource, resolveConfideMetaQueryBucket } from './confideAcceptanceResolve.js';
+import { confideClassify } from './confideClassify.js';
 
 describe('confideRoundAcceptanceFixtures', () => {
   it('freezes exactly 100 acceptance utterances across three suites', () => {
@@ -29,26 +26,11 @@ describe('confideRoundAcceptanceFixtures', () => {
   });
 
   it('routes every frozen utterance through its assertion kind', () => {
-    for (const row of CONFIDE_ROUND_ACCEPTANCE_FIXTURES) {
-      if (row.kind === 'meta_query') {
-        assert.equal(resolveConfideMetaQueryBucket(row.text), row.expect, row.id);
-        continue;
-      }
-      if (row.kind === 'aggression_route' || row.kind === 'classify_route') {
-        assert.equal(confideClassify(row.text), row.expect, row.id);
-        continue;
-      }
-      if (row.kind === 'desktop_source') {
-        assert.equal(resolveConfideDesktopSource(row.text), row.expect, row.id);
-        continue;
-      }
-      if (row.kind === 'generate_eligible') {
-        const eligible = isConfideGenerateEligible(row.text);
-        assert.equal(String(eligible), row.expect, row.id);
-        continue;
-      }
-      assert.fail(`unknown kind ${row.kind} for ${row.id}`);
-    }
+    const results = runConfideAcceptanceBatch();
+    const failed = results.filter((row) => !row.pass);
+    assert.equal(failed.length, 0, () =>
+      failed.slice(0, 5).map((row) => `${row.id}: ${row.failures.join('; ')}`).join('\n')
+    );
   });
 
   it('locks semantic anchor regressions: 累积了多久 · 忙啥', () => {
