@@ -64,7 +64,7 @@
 
 | 前置 | 说明 |
 |---|---|
-| **建议并行** | `task-journey-daily-card`（存图管线可复用卡面导出 helper） |
+| **硬前置** | 共享里程碑目录 `task-shared-milestone-catalog.md` 拍板 + Batch 1 数据模块。门槛数字禁止本任务手写第二份。 |
 | **同壳** | Collections 四页签壳：`task-yin-collections-four-tabs.md`（本任务占「勋章印记」页签） |
 | **素材** | 设计师出 3–5 枚静图（kebab-case 路径）；首版可用占位 + 芥子印章 reuse 一张 |
 
