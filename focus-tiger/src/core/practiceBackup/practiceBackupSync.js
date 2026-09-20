@@ -26,6 +26,7 @@ import {
 import { normalizeOwnershipState } from '../entitlement/entitlementOwnership.js';
 import { filterOwnershipForLocalImport } from './practiceBackupImportOwnershipGate.js';
 import { normalizeJourneyLogState } from '../journeyLogGate.js';
+import { normalizeMilestoneGlowState } from '../MilestoneGlowStore.js';
 import { normalizeRitualCompletionState } from '../RitualCompletionStore.js';
 import { reconcileDailyCompletionAfterRestore } from './practiceBackupDailyCompletionReconcile.js';
 import {
@@ -108,14 +109,7 @@ export function normalizeSnapshotStoresForApply(snapshot, opts = {}) {
       } else if (key === 'focus-tiger.ritual-completions.v1') {
         stores[key] = normalizeRitualCompletionState(val);
       } else if (key === 'focus-tiger.milestone-glow.v1') {
-        const played = Array.isArray(
-          /** @type {{ played?: unknown }} */ (val).played
-        )
-          ? /** @type {{ played: unknown[] }} */ (val).played.filter(
-              (x) => typeof x === 'string' && x
-            )
-          : [];
-        stores[key] = { played };
+        stores[key] = normalizeMilestoneGlowState(val);
       } else if (key === 'focus-tiger.practice-days.v1') {
         stores[key] = val;
       } else if (key === 'focus-tiger.mustard-seed-seal.v1') {

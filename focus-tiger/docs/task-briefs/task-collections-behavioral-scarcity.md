@@ -1,10 +1,11 @@
-# Task Brief · Collections 行为稀缺度展示（方案 · 待拍板）
+# Task Brief · Collections 行为稀缺度展示（V1 已拍板 · 未开工）
 
-> **状态（2026-09-20）**：**只读审计 + 方案**。无运行时、无 Worker、无 UI。  
-> **口令**：拍板后另开实现 Brief；禁止把本文件当开工许可。  
+> **状态（2026-09-20）**：**PO 已锁 V1 口径**。无运行时、无 Worker、无 UI。  
+> **口令**：实现须另开代码 Brief / 「开工」；禁止把本文件当开工许可。  
 > **父线**：Epic [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) Collection Value & Behavioral Scarcity；耦合 [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Focus Coin & Collections、[#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 账本口径、[#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution、[#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log。  
-> **原则**：`PRINCIPLES.md` 宁静型游戏化 / 不制造焦虑 / 诚实机制；PR [#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886)（待合）「稀缺度应来自真实行为统计」为概念储备，**不是**本回合要实现的全球排行。  
-> **硬排除**：算法随机稀有度；Focus Coin 兑换门槛或任何货币化；把自律本身做成付费墙。
+> **原则**：`PRINCIPLES.md`「数字资产 / Collection 价值原则」（[#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886) **已合** `ae0d2ec5`）· 宁静型游戏化 / 不制造焦虑 / 诚实机制 / **不商业化自律本身**。全球行为人数仍是原则里的**概念储备**；V1 **不**实现全球排行。  
+> **硬排除**：算法随机稀有度；Focus Coin 兑换门槛或任何货币化；把自律本身做成付费墙。  
+> **产品用词**：设计师提案里的「案上雅舍 / 多宝阁」**不是**产品名。已上船分组是 **案上陪伴 / 静候结缘**（寅币清供行）。对外只认 **Yin's Collections / 阿寅的珍藏**。
 
 ---
 
@@ -110,7 +111,7 @@ SSOT：`practice-aggregate-registry.md` 机器块（status `ok`）· `GROWTH_MET
 | 四页签 **勋章印记** | Brief `task-practice-imprint-badges.md` · **待开工** | **要。** 成就物的归档表面。 |
 | Journey Log | 叙事行；Yin Evolution 六条记忆的预定落点 | **不要**当稀缺货架；记忆句可与同一目录**共享谓词**，列表仍在 Journey。 |
 
-任务书里的「案上雅舍 / 多宝阁」：仓库**没有**这两个产品名。已上船的分组叫 **案上陪伴 / 静候结缘**。`FOCUS_COINS.md`：对外只认 **Yin's Collections / 阿寅的珍藏**；百宝箱 / 清供匣仅比喻。
+任务书草稿里的「案上雅舍 / 多宝阁」是**设计师提案用词**，仓库产品名**没有**这两词。已上船的分组叫 **案上陪伴 / 静候结缘**。`FOCUS_COINS.md`：对外只认 **Yin's Collections / 阿寅的珍藏**；百宝箱 / 清供匣仅比喻。
 
 ### 方案 D — 挂在清供「案上」专区
 
@@ -209,10 +210,12 @@ V1 无新购买。打开 Collections 既有 0–1s 淡入后，成就分区随�
 
 ---
 
-## 待 PO 拍板（实现闸）
+## PO 拍板（2026-09-20 · 实现闸已锁）
 
-1. 同意 **V1 = 本机说明 + 勋章印记/珍藏分区（方案 A + F）**，全球名次不做。  
-2. 同意成就物 **不进入「案上陪伴」清供行**。  
-3. 同意数据 **只** aggregate + 共享目录；Batch 1 视为已收口。  
-4. 同意 Journey 六条 **只共享谓词、不共享 UI**。  
-5. （可选）PR #886 合入后再实现，以便原则句与运行时同批权威。
+书面同意下列五项（分析师 Prompt 1 跟进）。实现仍须另口令，本锁 **不等于** 开工。
+
+1. **V1 = 本机说明 + 勋章印记 / 珍藏分区（方案 A + F）**；全球名次 / 「前 100」**不做**。理由：无可靠原子计数器、无稳定全球身份、须保持离线可用；假全球（清浏览器 / 换设备 / 恢复备份重占名额）比不做更伤可信度。  
+2. 成就标签 **不进入「案上陪伴」清供行**。与「不商业化自律本身」对齐：成就与用币香炉混排，容易读成「稀有度可以花钱换」。  
+3. 数据 **只**走 `resolvePracticeAggregate()` + 共享里程碑目录。Batch 1–4 已在 develop，**不再等**；禁止临时第二账本。  
+4. Journey 六条记忆 **只共享判定、不共享收藏界面**（账本共用、职责切开）。  
+5. 文档叙事顺序：原则 [#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886)（`ae0d2ec5` · 07:10Z）先于方案 [#887](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/887)（`a8d38e85` · 07:11Z）合入 develop。二者无技术依赖；此顺序便于回溯「照哪条原则设计」。

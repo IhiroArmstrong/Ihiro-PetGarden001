@@ -1,0 +1,1 @@
+| MilestoneGlow 记录占位字段（origin / journey_id / rarity_basis） | 纯后端 | 仅单元测试覆盖 | **无 UI / 无行为变化**。`MilestoneGlowStore` 每条已播节点可带可选占位：`origin` / `rarity_basis`（自由文本或 JSON）、`journey_id`（引用 Journey Log `entry.at`）。旧 `{ played: [] }` 可读、占位为空、不回填。自动化：`MilestoneGlowStore.test.js` + `practiceBackupSync` 归一化。 | — | — | `MilestoneGlowStore.js` · `practiceBackupSync.js` | 2026-09-20 |
