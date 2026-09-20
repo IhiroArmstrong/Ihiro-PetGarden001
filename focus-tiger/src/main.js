@@ -341,6 +341,13 @@ import {
   applyBreathPracticeFocusCoinsGrant,
   maybeResetFocusCoinsSession
 } from './core/focusCoinsAward.js';
+import { FocusEssenceStore } from './core/FocusEssenceStore.js';
+import {
+  applyFocusEssenceGrant,
+  applyBreathPracticeFocusEssenceGrant,
+  maybeResetFocusEssenceSession
+} from './core/focusEssenceAward.js';
+import { isFocusEssenceAwardEnabled } from './core/focusEssenceAwardGate.js';
 import {
   applyFocusCoinsRedeem,
   applyFocusCoinsEquipTitle,
@@ -1969,18 +1976,31 @@ async function init() {
   );
   confideToYinUI.bindPracticeDaysStore(practiceDaysStore);
   const focusCoinsStore = new FocusCoinsStore({ now });
+  const focusEssenceStore = new FocusEssenceStore({ now });
   function awardFocusCoins(event) {
-    return applyFocusCoinsGrant({
+    const result = applyFocusCoinsGrant({
       event,
       store: focusCoinsStore,
       practiceDaysStore,
       now,
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
     });
+    applyFocusEssenceGrant({
+      event,
+      store: focusEssenceStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusEssenceAwardEnabled({ search: location.search })
+    });
+    return result;
   }
   function resetFocusCoinsSession() {
     maybeResetFocusCoinsSession({
       store: focusCoinsStore,
+      search: location.search
+    });
+    maybeResetFocusEssenceSession({
+      store: focusEssenceStore,
       search: location.search
     });
   }
@@ -1996,6 +2016,7 @@ async function init() {
     lotusPondRuntime.boot();
     tipKindnessBadgesChrome.refresh();
     focusCoinsStore.reloadFromStorage();
+    focusEssenceStore.reloadFromStorage();
     syncFocusCoinsCosmetics();
     yinCoinPanelUI?.refresh?.();
   });
@@ -2066,6 +2087,10 @@ async function init() {
       return result;
     },
     playWave: () => playCollectionsWaveHello()
+  };
+  window.__focusEssence = {
+    getTotal: () => focusEssenceStore.getTotal(),
+    getSnapshot: () => focusEssenceStore.getSnapshot()
   };
   yinCoinPanelUI = new FocusCoinsPanelUI(
     document.body,
@@ -3003,6 +3028,13 @@ async function init() {
       practiceDaysStore,
       now,
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
+    });
+    applyBreathPracticeFocusEssenceGrant({
+      durationMinutes,
+      store: focusEssenceStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusEssenceAwardEnabled({ search: location.search })
     });
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {

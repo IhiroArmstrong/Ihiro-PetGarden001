@@ -1,0 +1,3 @@
+# feature/focus-essence-store-slice2
+
+| Focus Essence Slice 2 · main.js dual-write | 纯后端 | 仅单元测试覆盖 | **无 UI。** 完成路径 `awardFocusCoins` 并行 `applyFocusEssenceGrant`；`completeMicroRitual` 并行 `applyBreathPracticeFocusEssenceGrant`；会话重置并行 `maybeResetFocusEssenceSession`；练习备份导入 reload essence store。**DEV**：`window.__focusEssence.getTotal()` / `getSnapshot()`。**关闸**：`?focusEssence=0` 不写盘；Coin `markLifetime`（Honesty wake）仍仅 Coin 侧。**测**：`node --test src/core/focusEssenceAward.test.js`（含 main.js 接线锁）· `npm run test:smoke`。Brief `task-focus-essence-slice1.md` Slice 2 · 审计 `focus-essence-coin-split-audit.md`。 | — | — | — | `main.js` · `focusEssenceAward.test.js` | 2026-09-20 |
