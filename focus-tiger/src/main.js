@@ -219,6 +219,7 @@ import {
   resolvePracticeImprint,
   shouldOfferPracticeImprintAfterCeremony
 } from './core/practiceImprint.js';
+import { listCollectionsBehavioralScarcityRows } from './core/collectionsBehavioralScarcity.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
@@ -2108,6 +2109,16 @@ async function init() {
     playWave: () => window.__focusCoins.playWave(),
     onMessage: (message) =>
       mindfulToast.show(message, { placement: 'center' }),
+    getMemorialRows: () => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      return listCollectionsBehavioralScarcityRows({
+        storage,
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+    },
     isMemorialImprintOpenable: (catalogId) => {
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;

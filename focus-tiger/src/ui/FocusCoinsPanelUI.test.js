@@ -117,7 +117,7 @@ test('Collections D.4 uses object-card states and bond-only CTA', () => {
   assert.match(src, /YIN_COIN_NOT_YET/);
 });
 
-test("Yin's Collections four-tab shell: bond default, placeholders on other tabs", () => {
+test("Yin's Collections four-tab shell: bond default, placeholders on titles/scroll", () => {
   assert.deepEqual(YIN_COIN_COLLECTIONS_TABS, [
     'bond',
     'titles',
@@ -133,6 +133,11 @@ test("Yin's Collections four-tab shell: bond default, placeholders on other tabs
   assert.match(src, /YIN_COIN_TAB_COMING_SOON/);
   assert.match(src, /this\._setTab\('bond'/);
   assert.match(src, /yin-coin-panel__tab-placeholder/);
+  assert.match(src, /dataset\.testid = 'yin-coin-imprints-list'/);
+  assert.doesNotMatch(
+    src,
+    /yin-coin-tab-placeholder-imprints/
+  );
   const en = JSON.parse(
     readFileSync(join(here, '../locales/en.json'), 'utf8')
   );
@@ -146,8 +151,9 @@ test("Yin's Collections four-tab shell: bond default, placeholders on other tabs
   assert.equal(en.YIN_COIN_TAB_COMING_SOON, 'Coming soon');
 });
 
-test('Collections memorial section renders scarcity rows; imprint tiers reopen card', () => {
-  assert.match(src, /listCollectionsBehavioralScarcityRows/);
+test('Collections imprints tab renders memorial rows; imprint tiers reopen card', () => {
+  assert.match(src, /getMemorialRows/);
+  assert.match(src, /imprintsListEl/);
   assert.match(src, /COLLECTIONS_SCARCITY_SECTION/);
   assert.match(src, /yin-coin-panel__memorial-row/);
   assert.match(src, /formatCollectionsScarcityExplanation/);
@@ -155,4 +161,12 @@ test('Collections memorial section renders scarcity rows; imprint tiers reopen c
   assert.match(src, /onMemorialImprintOpen/);
   assert.match(src, /imprint-minutes-/);
   assert.match(src, /_memorialRowEl[\s\S]*addEventListener\('click'/);
+  assert.doesNotMatch(
+    src,
+    /this\.listEl\.append\(\s*this\._sectionHeader\('COLLECTIONS_SCARCITY_SECTION'\)/
+  );
+  assert.match(
+    src,
+    /this\.imprintsListEl\.append\(\s*this\._sectionHeader\('COLLECTIONS_SCARCITY_SECTION'\)/
+  );
 });

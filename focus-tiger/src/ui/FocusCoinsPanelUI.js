@@ -72,6 +72,7 @@ export class FocusCoinsPanelUI {
    * @param {(titleId: string) => { ok?: boolean }} [handlers.equipTitle]
    * @param {() => { ok?: boolean, reason?: string }} [handlers.playWave]
    * @param {(message: string) => void} [handlers.onMessage]
+   * @param {() => ReturnType<typeof listCollectionsBehavioralScarcityRows>} [handlers.getMemorialRows]
    * @param {(catalogId: string) => void} [handlers.onMemorialImprintOpen]
    * @param {(catalogId: string) => boolean} [handlers.isMemorialImprintOpenable]
    * @param {() => void} [handlers.onOpen]
@@ -199,6 +200,16 @@ export class FocusCoinsPanelUI {
       pane.dataset.testid = `yin-coin-tabpane-${tabId}`;
       pane.setAttribute('role', 'tabpanel');
       pane.hidden = true;
+
+      if (tabId === 'imprints') {
+        this.imprintsListEl = document.createElement('ul');
+        this.imprintsListEl.className =
+          'yin-coin-panel__list yin-coin-panel__imprints-list';
+        this.imprintsListEl.dataset.testid = 'yin-coin-imprints-list';
+        pane.append(this.imprintsListEl);
+        this.tabPanes.set(tabId, pane);
+        continue;
+      }
 
       const placeholder = document.createElement('p');
       placeholder.className = 'yin-coin-panel__tab-placeholder';
@@ -351,7 +362,9 @@ export class FocusCoinsPanelUI {
     }
     this._syncTabUi();
     this._renderSections(listFocusCoinSurfaceSections(ctx));
-    this._renderMemorialSection(listCollectionsBehavioralScarcityRows());
+    this._renderMemorialSection(
+      this.handlers.getMemorialRows?.() ?? listCollectionsBehavioralScarcityRows()
+    );
   }
 
   /**
@@ -402,14 +415,18 @@ export class FocusCoinsPanelUI {
   }
 
   /**
-   * Read-only achievement memorial rows (Epic #888 V1 · below curio sections).
+   * Read-only achievement memorial rows (Epic #888 V1 · 勋章印记 tab).
    * @param {ReturnType<typeof listCollectionsBehavioralScarcityRows>} rows
    */
   _renderMemorialSection(rows) {
+    if (!this.imprintsListEl) return;
+    this.imprintsListEl.replaceChildren();
     if (!rows.length) return;
-    this.listEl.append(this._sectionHeader('COLLECTIONS_SCARCITY_SECTION'));
+    this.imprintsListEl.append(
+      this._sectionHeader('COLLECTIONS_SCARCITY_SECTION')
+    );
     for (const row of rows) {
-      this.listEl.append(this._memorialRowEl(row));
+      this.imprintsListEl.append(this._memorialRowEl(row));
     }
   }
 
