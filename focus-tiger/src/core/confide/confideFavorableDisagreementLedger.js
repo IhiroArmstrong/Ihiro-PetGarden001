@@ -71,13 +71,56 @@ export const CONFIDE_STAGE2_HISTORICAL_KEEP = Object.freeze(
 );
 
 /**
+ * Prompt 8 shadow CSV row PO labeled yes. Kept as real even if later regex patches the hole.
+ * @type {readonly object[]}
+ */
+export const CONFIDE_STAGE2_REAL_SHADOW_KEEP = Object.freeze([
+  Object.freeze({
+    sample_id: 'real-shadow-unhappy',
+    text: '我有点不高兴',
+    language: 'zh',
+    golden_bucket: 'emotional',
+    golden_cluster: 'emotional_state',
+    seed_text: '我有点不高兴',
+    literal_bucket: 'gray',
+    semantic_bucket: 'emotional',
+    source: MILL_SOURCE.REAL,
+    source_method: 'R',
+    source_detail: 'R.shadow-csv',
+    difficulty: 'medium',
+    is_favorable_disagreement: 'yes',
+    drop_reason: null,
+    reviewer: MILL_PO_REVIEWER,
+    scoreA: 0.6016652221651158,
+    scoreB: 0.7276283311818403,
+    grayMargin: 0.08,
+    route: 'generate',
+    literal_source: 'generate'
+  })
+]);
+
+/**
+ * @param {object} row
+ */
+export function stampRealMeatReviewer(row) {
+  if (row.is_favorable_disagreement === 'yes' && row.source === MILL_SOURCE.REAL) {
+    return { ...row, reviewer: MILL_PO_REVIEWER };
+  }
+  return row;
+}
+
+/**
  * @param {readonly object[]} millRows
  */
 export function buildStage2FavorableInventory(millRows) {
   const millFavorable = millRows.filter(
     (row) => row.is_favorable_disagreement === 'yes' && row.reviewer === MILL_PO_REVIEWER
   );
-  return Object.freeze([...millFavorable, ...CONFIDE_STAGE2_HISTORICAL_KEEP]);
+  return Object.freeze([
+    ...millFavorable,
+    ...CONFIDE_STAGE2_HISTORICAL_KEEP,
+    ...CONFIDE_STAGE2_REAL_SHADOW_KEEP
+  ]);
 }
 
 function normalizeText(text) {

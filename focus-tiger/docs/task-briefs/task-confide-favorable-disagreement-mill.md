@@ -13,7 +13,7 @@ Favorable Disagreement = **Literal ≠ Golden AND Semantic = Golden**
 ## 三层计数
 
 - Layer 1 Synthetic：A + C（PO 已认 25）
-- Layer 2 Real：须从影子聊天 CSV 人工确认 5–10（当前导出仅 1 条分歧）
+- Layer 2 Real：Electron 肉测问句进制造机（`confideStage2RealMeatCandidates.js`）；影子 CSV「我有点不高兴」已勾 yes
 - Layer 3 Adversarial：B（PO 已认 20）
 - Historical：Prompt 12 KEEP 12（分开加）
 
@@ -30,7 +30,7 @@ Favorable Disagreement = **Literal ≠ Golden AND Semantic = Golden**
 | Adversarial（B） | 20 |
 | Historical | 12（Prompt 12 KEEP，分开加） |
 
-合计库存行 **57**（45 mill + 12 historical）；大小写归一后约 56 句。Literal baseline **0%** · Semantic accuracy **75%** · Real minimum：**FAIL**。
+合计库存行 **61**（45 mill + 12 historical + 3 现网肉测 KEEP + 1 影子 CSV）。Real **4 / 5** 门槛仍 FAIL。`我有点不高兴` 现网字面已能打中情绪桶，所以制造机今日 DROP；影子日志那一行仍按你的勾选计真实有利分歧。
 
 Literal baseline **0%** · Semantic accuracy **75%** · Real minimum：**FAIL**（本池无真实 CSV）。
 

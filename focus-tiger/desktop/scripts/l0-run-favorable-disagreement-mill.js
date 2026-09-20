@@ -29,8 +29,10 @@ import {
   millFavorableDisagreement,
   summarizeFavorableDisagreementMill
 } from '../../src/core/confide/confideFavorableDisagreementMill.js';
+import { CONFIDE_STAGE2_REAL_MEAT_CANDIDATES } from '../../src/core/confide/confideStage2RealMeatCandidates.js';
 import {
   buildStage2FavorableInventory,
+  stampRealMeatReviewer,
   summarizeStage2FavorableInventory
 } from '../../src/core/confide/confideFavorableDisagreementLedger.js';
 
@@ -81,15 +83,18 @@ async function main() {
   const milled = [];
 
   try {
-    for (const candidate of CONFIDE_STAGE2_CHALLENGE_CANDIDATES) {
+    const pool = [...CONFIDE_STAGE2_CHALLENGE_CANDIDATES, ...CONFIDE_STAGE2_REAL_MEAT_CANDIDATES];
+    for (const candidate of pool) {
       const scored = await hold.classifyUserText(candidate.text);
       milled.push(
-        millFavorableDisagreement(candidate, {
-          semanticCoarse: scored.bucket,
-          scoreA: scored.scoreA,
-          scoreB: scored.scoreB,
-          grayMargin: scored.grayMargin
-        })
+        stampRealMeatReviewer(
+          millFavorableDisagreement(candidate, {
+            semanticCoarse: scored.bucket,
+            scoreA: scored.scoreA,
+            scoreB: scored.scoreB,
+            grayMargin: scored.grayMargin
+          })
+        )
       );
     }
   } finally {

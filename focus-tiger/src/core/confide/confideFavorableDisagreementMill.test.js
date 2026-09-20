@@ -11,6 +11,7 @@ import {
   MILL_METHOD,
   MILL_SOURCE
 } from './confideStage2ChallengeCandidates.js';
+import { CONFIDE_STAGE2_REAL_MEAT_CANDIDATES } from './confideStage2RealMeatCandidates.js';
 import {
   favorableDisagreementMillCsvHeader,
   millFavorableDisagreement,
@@ -19,7 +20,8 @@ import {
 } from './confideFavorableDisagreementMill.js';
 import {
   buildStage2FavorableInventory,
-  CONFIDE_STAGE2_HISTORICAL_KEEP,
+    CONFIDE_STAGE2_HISTORICAL_KEEP,
+    CONFIDE_STAGE2_REAL_SHADOW_KEEP,
   summarizeStage2FavorableInventory
 } from './confideFavorableDisagreementLedger.js';
 import { CONFIDE_STAGE2_PATCHED_ANCHORS_EXCLUDED } from './confideStage2SynonymCandidates.js';
@@ -114,8 +116,26 @@ describe('favorable disagreement mill', () => {
     const inventory = buildStage2FavorableInventory(millRows);
     const summary = summarizeStage2FavorableInventory(inventory);
     assert.equal(summary.historical, 12);
-    assert.equal(summary.realCount, 0);
+    assert.ok(summary.realCount >= 1);
     assert.equal(summary.realMinimumPass, false);
     assert.ok(summary.uniqueTexts < inventory.length);
+  });
+
+  it('treats Electron meat-test utterances as real; shadow CSV 我有点不高兴 stays labeled yes', () => {
+    const unhappy = CONFIDE_STAGE2_REAL_MEAT_CANDIDATES.find(
+      (row) => row.text === '我有点不高兴'
+    );
+    assert.equal(unhappy.source, MILL_SOURCE.REAL);
+    const milled = millFavorableDisagreement(unhappy, {
+      semanticCoarse: unhappy.golden_bucket
+    });
+    assert.ok(
+      milled.drop_reason === 'literal_already_correct' ||
+        milled.is_favorable_disagreement === 'yes'
+    );
+    const shadow = CONFIDE_STAGE2_REAL_SHADOW_KEEP[0];
+    assert.equal(shadow.is_favorable_disagreement, 'yes');
+    assert.equal(shadow.reviewer, MILL_PO_REVIEWER);
+    assert.equal(shadow.literal_bucket, 'gray');
   });
 });
