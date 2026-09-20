@@ -29,6 +29,10 @@ import {
   millFavorableDisagreement,
   summarizeFavorableDisagreementMill
 } from '../../src/core/confide/confideFavorableDisagreementMill.js';
+import {
+  buildStage2FavorableInventory,
+  summarizeStage2FavorableInventory
+} from '../../src/core/confide/confideFavorableDisagreementLedger.js';
 
 const LAB_ROOT = '/tmp/ft-l0-lab';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -93,17 +97,35 @@ async function main() {
   }
 
   const summary = summarizeFavorableDisagreementMill(milled);
+  const inventory = buildStage2FavorableInventory(milled);
+  const inventorySummary = summarizeStage2FavorableInventory(inventory);
   const stamp = Date.now();
   const csvPath = path.join(LAB_ROOT, `favorable-disagreement-mill-${stamp}.csv`);
   const jsonPath = path.join(LAB_ROOT, `favorable-disagreement-mill-${stamp}.json`);
+  const inventoryCsvPath = path.join(LAB_ROOT, `favorable-disagreement-inventory-${stamp}.csv`);
   const csv = [
     favorableDisagreementMillCsvHeader(),
     ...milled.map((row) => formatFavorableDisagreementMillCsvRow(row))
   ].join('\n');
+  const inventoryCsv = [
+    favorableDisagreementMillCsvHeader(),
+    ...inventory.map((row) => formatFavorableDisagreementMillCsvRow(row))
+  ].join('\n');
   fs.writeFileSync(csvPath, `${csv}\n`);
+  fs.writeFileSync(inventoryCsvPath, `${inventoryCsv}\n`);
   fs.writeFileSync(
     jsonPath,
-    `${JSON.stringify({ probe: 'favorable-disagreement-mill', summary, rows: milled }, null, 2)}\n`
+    `${JSON.stringify(
+      {
+        probe: 'favorable-disagreement-mill',
+        summary,
+        inventorySummary,
+        rows: milled,
+        inventory
+      },
+      null,
+      2
+    )}\n`
   );
 
   process.stdout.write(
@@ -113,16 +135,19 @@ async function main() {
     `[favorable-disagreement-mill] synthetic=${summary.bySource.synthetic} real=${summary.bySource.real} adversarial=${summary.bySource.adversarial} historical=${summary.bySource.historical}\n`
   );
   process.stdout.write(
+    `[favorable-disagreement-mill] inventory rows=${inventorySummary.favorable} unique=${inventorySummary.uniqueTexts} millReviewed=${inventorySummary.millReviewed} historical=${inventorySummary.historical} real=${inventorySummary.realCount}\n`
+  );
+  process.stdout.write(
     `[favorable-disagreement-mill] methods A=${summary.byMethod.A} B=${summary.byMethod.B} C=${summary.byMethod.C}\n`
   );
   process.stdout.write(
     `[favorable-disagreement-mill] literal baseline ${pct(summary.literalBaselinePct)} · semantic accuracy ${pct(summary.semanticAccuracyPct)}\n`
   );
   process.stdout.write(
-    `[favorable-disagreement-mill] real minimum (${summary.realMinimum}): ${summary.realMinimumPass ? 'PASS' : 'FAIL'}\n`
+    `[favorable-disagreement-mill] real minimum (${summary.realMinimum}): ${inventorySummary.realMinimumPass ? 'PASS' : 'FAIL'}\n`
   );
   process.stdout.write(
-    '[favorable-disagreement-mill] reminder: machine yes is not PO confirmation; synthetic cannot replace real-chat CSV.\n'
+    '[favorable-disagreement-mill] reminder: mill KEEP reviewer=PO; historical KEEP are separate; neither replaces real-chat CSV.\n'
   );
   process.stdout.write('[favorable-disagreement-mill] MUST NOT print Stage 2 go-ahead.\n');
 
@@ -137,6 +162,7 @@ async function main() {
     );
   }
   process.stdout.write(`[favorable-disagreement-mill] csv ${csvPath}\n`);
+  process.stdout.write(`[favorable-disagreement-mill] inventory ${inventoryCsvPath}\n`);
   process.stdout.write(`[favorable-disagreement-mill] json ${jsonPath}\n`);
 }
 

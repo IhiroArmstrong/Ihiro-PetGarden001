@@ -14,8 +14,14 @@ import {
 import {
   favorableDisagreementMillCsvHeader,
   millFavorableDisagreement,
+  MILL_PO_REVIEWER,
   summarizeFavorableDisagreementMill
 } from './confideFavorableDisagreementMill.js';
+import {
+  buildStage2FavorableInventory,
+  CONFIDE_STAGE2_HISTORICAL_KEEP,
+  summarizeStage2FavorableInventory
+} from './confideFavorableDisagreementLedger.js';
 import { CONFIDE_STAGE2_PATCHED_ANCHORS_EXCLUDED } from './confideStage2SynonymCandidates.js';
 
 describe('favorable disagreement mill', () => {
@@ -80,5 +86,36 @@ describe('favorable disagreement mill', () => {
     assert.ok(summary.favorable >= 1);
     assert.match(favorableDisagreementMillCsvHeader(), /is_favorable_disagreement/);
     assert.match(favorableDisagreementMillCsvHeader(), /source_detail/);
+  });
+
+  it('stamps PO reviewer only on confirmed mill KEEP ids', () => {
+    const confirmed = CONFIDE_STAGE2_CHALLENGE_CANDIDATES.find((row) => row.sample_id === 'c01-01');
+    const kept = millFavorableDisagreement(confirmed, {
+      semanticCoarse: confirmed.golden_bucket
+    });
+    assert.equal(kept.reviewer, MILL_PO_REVIEWER);
+    const dropped = millFavorableDisagreement(confirmed, {
+      semanticCoarse: CONFIDE_SEMANTIC_BUCKET.GRAY
+    });
+    assert.equal(dropped.reviewer, '');
+  });
+
+  it('adds 12 historical KEEP separately and still fails real minimum', () => {
+    assert.equal(CONFIDE_STAGE2_HISTORICAL_KEEP.length, 12);
+    for (const row of CONFIDE_STAGE2_HISTORICAL_KEEP) {
+      assert.equal(row.source, MILL_SOURCE.HISTORICAL);
+      assert.equal(row.reviewer, MILL_PO_REVIEWER);
+      assert.equal(row.is_favorable_disagreement, 'yes');
+      assert.notEqual(row.literal_bucket, row.golden_bucket);
+    }
+    const millRows = CONFIDE_STAGE2_CHALLENGE_CANDIDATES.map((candidate) =>
+      millFavorableDisagreement(candidate, { semanticCoarse: candidate.golden_bucket })
+    );
+    const inventory = buildStage2FavorableInventory(millRows);
+    const summary = summarizeStage2FavorableInventory(inventory);
+    assert.equal(summary.historical, 12);
+    assert.equal(summary.realCount, 0);
+    assert.equal(summary.realMinimumPass, false);
+    assert.ok(summary.uniqueTexts < inventory.length);
   });
 });

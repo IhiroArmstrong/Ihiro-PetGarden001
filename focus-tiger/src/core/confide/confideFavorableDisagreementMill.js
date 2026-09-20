@@ -6,7 +6,7 @@
 /**
  * Favorable-disagreement mill: golden first, then literal vs semantic.
  * Formula: Literal ≠ Golden AND Semantic = Golden.
- * Does not write production routing. Machine "yes" still needs PO reviewer.
+ * Does not write production routing. PO-confirmed mill KEEP ids stamp reviewer=PO.
  */
 
 import { csvEscape } from './auditConfideSemanticShadow.js';
@@ -40,6 +40,57 @@ export const FAVORABLE_DISAGREEMENT_MILL_COLUMNS = Object.freeze([
 ]);
 
 const REAL_MINIMUM = 5;
+
+export const MILL_PO_REVIEWER = 'PO';
+
+/** Prompt 12 KEEP ids from mill run 1789927700271 that PO confirmed. */
+export const CONFIDE_MILL_PO_CONFIRMED_SAMPLE_IDS = Object.freeze([
+  'c01-01',
+  'c01-02',
+  'c01-03',
+  'c01-04',
+  'c02-01',
+  'c02-03',
+  'c02-05',
+  'c03-02',
+  'c03-03',
+  'c03-04',
+  'c03-05',
+  'c04-03',
+  'c04-05',
+  'c05-01',
+  'c05-02',
+  'c05-03',
+  'c05-05',
+  'c06-02',
+  'c06-03',
+  'c06-04',
+  'c07-01',
+  'c07-03',
+  'c08-01',
+  'c08-02',
+  'c08-03',
+  'c08-04',
+  'c08-05',
+  'c09-01',
+  'c09-02',
+  'c09-03',
+  'c09-05',
+  'c10-02',
+  'c10-03',
+  'c10-04',
+  'c10-05',
+  'c11-01',
+  'c11-02',
+  'c11-03',
+  'c11-04',
+  'c11-05',
+  'c12-01',
+  'c12-02',
+  'c12-03',
+  'c12-04',
+  'c12-05'
+]);
 
 /**
  * @param {import('./confideStage2ChallengeCandidates.js').Stage2ChallengeCandidate} candidate
@@ -77,7 +128,10 @@ export function millFavorableDisagreement(candidate, scored) {
     difficulty: candidate.difficulty,
     is_favorable_disagreement: dropReason ? '' : 'yes',
     drop_reason: dropReason,
-    reviewer: candidate.reviewer || '',
+    reviewer:
+      dropReason || !CONFIDE_MILL_PO_CONFIRMED_SAMPLE_IDS.includes(candidate.sample_id)
+        ? candidate.reviewer || ''
+        : MILL_PO_REVIEWER,
     scoreA: scored.scoreA ?? null,
     scoreB: scored.scoreB ?? null,
     grayMargin: scored.grayMargin ?? null,
@@ -97,7 +151,7 @@ export function summarizeFavorableDisagreementMill(rows) {
     [MILL_SOURCE.ADVERSARIAL]: 0,
     [MILL_SOURCE.HISTORICAL]: 0
   };
-  const byMethod = { A: 0, B: 0, C: 0 };
+  const byMethod = { A: 0, B: 0, C: 0, H: 0 };
   /** @type {Record<string, number>} */
   const byCluster = {};
   /** @type {Record<string, { n: number, semanticHit: number }>} */

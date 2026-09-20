@@ -8,13 +8,14 @@
 
 Favorable Disagreement = **Literal ≠ Golden AND Semantic = Golden**
 
-机器勾 `is_favorable_disagreement=yes` 仍须 PO 在 `reviewer` 列确认。C 类是真实表达的人工变体，**不得**标 `source=real`。
+机器勾 `is_favorable_disagreement=yes` 后，PO 已确认 45 条 mill KEEP（`reviewer=PO`）。Prompt 12 的 12 句 KEEP 另标 `historical`，**不得**算真实 CSV。C 类仍是合成。
 
 ## 三层计数
 
-- Layer 1 Synthetic：A + C  
-- Layer 2 Real：本池为 0；须另从聊天 CSV 人工确认 5–10  
-- Layer 3 Adversarial：B（字面规则边界）
+- Layer 1 Synthetic：A + C（PO 已认 25）
+- Layer 2 Real：须从影子聊天 CSV 人工确认 5–10（当前导出仅 1 条分歧）
+- Layer 3 Adversarial：B（PO 已认 20）
+- Historical：Prompt 12 KEEP 12（分开加）
 
 脚本**不得**输出「可以切 Stage 2」。
 
@@ -27,7 +28,9 @@ Favorable Disagreement = **Literal ≠ Golden AND Semantic = Golden**
 | Synthetic（A+C） | 25 |
 | Real | 0 |
 | Adversarial（B） | 20 |
-| Historical | 0 |
+| Historical | 12（Prompt 12 KEEP，分开加） |
+
+合计库存行 **57**（45 mill + 12 historical）；大小写归一后约 56 句。Literal baseline **0%** · Semantic accuracy **75%** · Real minimum：**FAIL**。
 
 Literal baseline **0%** · Semantic accuracy **75%** · Real minimum：**FAIL**（本池无真实 CSV）。
 
@@ -37,4 +40,4 @@ CSV：`/tmp/ft-l0-lab/favorable-disagreement-mill-1789927700271.csv`（本机实
 
 - 不改现网正则 / `confideClassify`
 - 不往 100 句冻表加句
-- 不把机器 KEEP 当成已关单
+- 不把 mill / historical KEEP 当成真实层，也不据此切 Stage 2
