@@ -6,7 +6,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
-import { resolveConfideReply, resolveCorpusFallbackAfterGenerateFailure } from './confideReplyFlow.js';
+import {
+  resolveConfideCorpusForRoute,
+  resolveConfideReply,
+  resolveCorpusFallbackAfterGenerateFailure
+} from './confideReplyFlow.js';
 import { firstConsecutiveDuplicateIndex } from './confideReplyUniqueness.js';
 
 test('resolveConfideReply: empty → null', () => {
@@ -51,6 +55,16 @@ test('resolveConfideReply: unmatched → fallback line', () => {
   const hit = resolveConfideReply({
     text: 'the weather is mild today',
     localDate: '2026-08-10'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.FALLBACK);
+  assert.equal(hit.line.route, CONFIDE_ROUTE.FALLBACK);
+});
+
+test('resolveConfideCorpusForRoute: Stage 2 coerced fallback keeps fallback jacket', () => {
+  const hit = resolveConfideCorpusForRoute({
+    route: CONFIDE_ROUTE.FALLBACK,
+    localDate: '2026-09-21'
   });
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.FALLBACK);

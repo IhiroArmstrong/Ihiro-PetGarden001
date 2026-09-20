@@ -65,6 +65,9 @@ export function attachCompanionL1Ipc(deps) {
   deps.ipcMain.handle('desktop:companion-semantic-shadow-classify', (_event, payload) =>
     runtime.semanticShadowClassify(payload && typeof payload === 'object' ? payload : {})
   );
+  deps.ipcMain.handle('desktop:companion-semantic-live-classify', (_event, payload) =>
+    runtime.semanticLiveClassify(payload && typeof payload === 'object' ? payload : {})
+  );
 
   deps.ipcMain.handle('desktop:yin-personal-memory-get', () =>
     readYinPersonalMemoryState(deps.app.getPath('userData'))

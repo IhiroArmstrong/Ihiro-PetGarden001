@@ -14,6 +14,8 @@ import {
   resolveConfideLiteralCoarseBucket,
   shouldRunConfideSemanticShadow
 } from '../core/confide/confideSemanticCoarseMap.js';
+import { applyConfideStage2Route } from '../core/confide/confideSemanticStage2.js';
+import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
   buildConfideShadowContextualText,
   priorConfideTurnForShadow
@@ -22,6 +24,7 @@ import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js'
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import {
+  resolveConfideCorpusForRoute,
   resolveConfideReply,
   resolveCorpusFallbackAfterGenerateFailure
 } from '../core/confide/confideReplyFlow.js';
@@ -1037,6 +1040,86 @@ export class ConfideToYinUI {
       locale: getLocale()
     });
     if (!hit) return;
+    if (
+      shouldRunConfideSemanticShadow({ route: hit.route }) &&
+      this._companion &&
+      typeof this._companion.semanticLiveClassify === 'function'
+    ) {
+      void this._applyLiveSemanticThenDispatch(text, hit);
+      return;
+    }
+    this._dispatchClassifiedSend(text, hit);
+  }
+
+  /**
+   * Stage 2 live: if embedding is already ready, take the coarse bucket then
+   * the same handler chain. If not ready, IPC returns immediately and the
+   * literal route is kept (no cold-load wait).
+   * @param {string} text
+   * @param {{ route: string, line: object }} hit
+   */
+  async _applyLiveSemanticThenDispatch(text, hit) {
+    this._sending = true;
+    const epoch = this._sendEpoch;
+    this.sendBtn.disabled = true;
+    this._showPendingReply(text);
+    const asked = text.trim();
+    const literalCoarse = resolveConfideLiteralCoarseBucket({
+      route: hit.route,
+      source: 'corpus'
+    });
+    const prior = priorConfideTurnForShadow(this._l2Turns);
+    const contextualText = buildConfideShadowContextualText(asked, prior);
+    let semanticCoarse = null;
+    try {
+      const result = await this._companion.semanticLiveClassify({
+        text: asked,
+        contextualText,
+        hadPriorTurn: Boolean(prior),
+        route: hit.route,
+        source: '',
+        literalCoarse
+      });
+      if (result?.ok && typeof result.bucket === 'string' && result.bucket) {
+        semanticCoarse = result.bucket;
+      }
+    } catch {
+      semanticCoarse = null;
+    }
+    if (!this._open || epoch !== this._sendEpoch) {
+      this._sending = false;
+      this._syncSendEnabled();
+      return;
+    }
+    const applied = applyConfideStage2Route({
+      literalRoute: hit.route,
+      semanticCoarse,
+      mode: CONFIDE_SEMANTIC_ROUTING_MODE.LIVE
+    });
+    let nextHit = hit;
+    if (applied.route && applied.route !== hit.route) {
+      nextHit =
+        resolveConfideCorpusForRoute({
+          route: applied.route,
+          localDate: formatLocalDateYmd(),
+          salt: this._l2Turns.length,
+          excludeIds: this._sessionExclude,
+          excludeNormalizedTexts: [lastRepeatableYinReplyText(this._l2Turns)].filter(
+            Boolean
+          ),
+          locale: getLocale()
+        }) || { ...hit, route: applied.route };
+    }
+    this._sending = false;
+    this._syncSendEnabled();
+    this._dispatchClassifiedSend(asked, nextHit);
+  }
+
+  /**
+   * @param {string} text
+   * @param {{ route: string, line: object }} hit
+   */
+  _dispatchClassifiedSend(text, hit) {
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
     const turnOrdinal = Math.floor(this._l2Turns.length / 2);

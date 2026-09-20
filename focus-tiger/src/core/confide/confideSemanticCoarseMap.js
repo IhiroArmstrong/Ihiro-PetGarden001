@@ -4,8 +4,8 @@
  */
 
 /**
- * Map existing Confide routing outcomes to coarse buckets for shadow comparison.
- * Does not alter production routing.
+ * Map existing Confide routing outcomes to coarse buckets for shadow comparison
+ * and Stage 2 live override input. Does not rewrite confideClassify itself.
  */
 
 import {

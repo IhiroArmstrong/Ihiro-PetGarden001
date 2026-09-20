@@ -44,6 +44,33 @@ export function resolveConfideReply({
 }
 
 /**
+ * Re-pick a corpus line after Stage 2 coerces the route (does not re-classify).
+ * @param {object} opts
+ * @param {string} opts.route
+ * @returns {{ route: string, line: import('./confideCorpus.js').ConfideLine } | null}
+ */
+export function resolveConfideCorpusForRoute({
+  route,
+  localDate = '',
+  salt = 0,
+  excludeIds = [],
+  excludeNormalizedTexts = [],
+  locale = 'en'
+} = {}) {
+  if (!route) return null;
+  const line = pickConfideLine({
+    route,
+    localDate,
+    salt,
+    excludeIds,
+    excludeNormalizedTexts,
+    locale
+  });
+  if (!line) return null;
+  return { route, line };
+}
+
+/**
  * After generate fails, show a fallback that is not the last visible jacket.
  * @param {object} opts
  * @param {string} [opts.locale]
