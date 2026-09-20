@@ -20,7 +20,7 @@
 | 修行纪念印 / Practice Imprint、岁月印记、静默画卷、同坐累计 | mint、wallet、token、NFT、SBT、区块链、铸币 |
 | 累计专注分钟 / practice score 门槛 | 「连坐 N 天」作徽章主文案（MilestoneGlow 动画节点可保留 streak id） |
 
-排期：`TASKS.md`「Web2 岁月印记」· Briefs `task-practice-imprint-badges` · `task-collections-behavioral-scarcity`（成就说明 · 待拍板）· `task-mindfulness-scroll-export` · `task-yin-collections-four-tabs` · `task-companion-merch-priority`。
+排期：`TASKS.md`「Web2 岁月印记」· Briefs `task-practice-imprint-badges` · `task-collections-behavioral-scarcity`（成就说明 · **V1 已拍** · 未开工）· `task-mindfulness-scroll-export` · `task-yin-collections-four-tabs` · `task-companion-merch-priority`。
 
 ---
 
