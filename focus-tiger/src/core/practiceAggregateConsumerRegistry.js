@@ -105,6 +105,17 @@ export const PRACTICE_AGGREGATE_CONSUMER_ROWS = Object.freeze([
     notes: 'Same score SSOT as mustard; directory thresholds in memorialSealDirectory.js'
   }),
   Object.freeze({
+    id: 'collections-behavioral-scarcity',
+    feature: "Collections · behavioral scarcity memorial copy",
+    priority: 'P1',
+    fixBatch: null,
+    coverageStatus: 'ok',
+    moduleRelPath: 'src/core/collectionsBehavioralScarcity.js',
+    codeAnchors: Object.freeze(['resolvePracticeAggregate(']),
+    reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS]),
+    notes: 'Read-only UI copy; MILESTONE_CATALOG predicates; no Journey reads'
+  }),
+  Object.freeze({
     id: 'mustard-seed-seal-ceremony',
     feature: 'Auto memorial card after baseline ceremony',
     priority: 'P1',

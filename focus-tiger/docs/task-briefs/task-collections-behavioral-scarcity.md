@@ -1,6 +1,6 @@
-# Task Brief · Collections 行为稀缺度展示（V1 已拍板 · 未开工）
+# Task Brief · Collections 行为稀缺度展示（V1 已拍板 · Slice 1 进行中）
 
-> **状态（2026-09-20）**：**PO 已锁 V1 口径**。无运行时、无 Worker、无 UI。  
+> **状态（2026-09-20）**：**PO 已锁 V1 口径**。**Slice 1 已开工**（`feature/collections-behavioral-scarcity`）：只读「修行纪念」分区 + 本机说明句；无 Worker、无全球名次。  
 > **硬前置**：共享里程碑目录 `task-shared-milestone-catalog.md`（**V1 已拍**）。未做目录 Batch 1 对照单测前，**禁止**开工本任务 UI / 接线。  
 > **口令**：实现须另开代码 Brief / 「开工」；禁止把本文件当开工许可。  
 > **父线**：Epic [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) Collection Value & Behavioral Scarcity；耦合 [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Focus Coin & Collections、[#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 账本口径、[#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution、[#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log。  

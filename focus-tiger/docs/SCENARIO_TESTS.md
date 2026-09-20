@@ -572,8 +572,8 @@
 ## 场景 AC：Yin's Collections 抽屉（L3 · 寅币珍藏表面）
 
 > **用户故事**：Kelly 想用坐来的寅币结缘一件钱买不到的案头雅物——宽屏 ⋯ / 窄屏抽屉在 Journey log **旁边**打开 **Yin's Collections**（汉语阿寅的珍藏 / 日语阿寅の蒐集），见可滚动商店目录，不是 Support 三卡、不是请茶、不是 HUD 钱包、不是第二座莲花池。  
-> **单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不**要求结缘 unlistable SKU）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`；≥480 靠右停；<480 42vh 短栏；Bond toast 中置；底栏 Play、清供行无挥手）。  
-> **仍须人工**：375 不挡三球；清供目录都能滚到；不足结缘 toast；已结缘 / Wear；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
+> **单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsBehavioralScarcity.test.js`（纪念分区 catalog 谓词 + 本机说明句）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不**要求结缘 unlistable SKU）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧挨 `journey-log`；`yinCoinVisible: false` 隐藏）；`FocusCoinsPanelUI.test.js`（z=18 / `:active`；≥480 靠右停；<480 42vh 短栏；Bond toast 中置；底栏 Play、清供行无挥手；**修行纪念**只读分区在清供下方）。  
+> **仍须人工**：375 不挡三球；清供目录都能滚到；不足结缘 toast；已结缘 / Wear；纪念分区 locale 与未解锁观察句；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。  
 > **禁止**：改场景 D；Support 入口卖点；常驻 HUD；用点满足 `isEntitled`；把器物叠回主坐席 / `#sprite-stage`；商店行出现挥手 SKU（底栏 Play 除外）；把挥手加回欢迎池。
 
 1. `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 **Yin's Collections / 阿寅的珍藏**（紧挨 Journey log）→ **0–1 秒内**：菜单行 `:active` 按压缩放 + ⋯/抽屉收起 + `#yin-coin-panel` 开始淡入（~220ms `is-visible`）。**≥480**：面板靠右停（与 ⋯ sheet 同族），中线阿寅须完整可见。**375**：短底栏（约 42vh），头顶不得被玻璃盖住。随后见抬头精致浮雕币标 + 寅币余额旁小 icon +「案头雅物皆由同坐日久所化」+ 商店行（青铜香薰炉 / 青瓷莲盏 / 紫檀念珠匣 / 青铜奁 / 座右小碑 / 归来青瓷小瓶 / 石镇纸 / 须弥小鼎）。SKU 行仍是占位色点。币标**不**出现在阿寅序列或蒲团上。商店行**不得**出现挥手 / 青瓷瓶 / 青铜礼器 / 单独的「久坐的人」，也**不得**用晨露滤镜盖莲花。底栏可见 **请阿寅挥挥手**。
@@ -584,6 +584,7 @@
 6. **对照 Support（场景 Q）**：右上角 Support Yin 三卡 / `$` **不**出现在本面板。付款仍只走 Support FAB。
 7. **关闸**：`?product=1&focusCoins=0` → 抽屉 / ⋯ **没有**珍藏这一行。
 8. **375**：卡可关、不挡 Sit 三球。
+9. **修行纪念分区（#888 V1）**：清供列表下方见 **Practice memorials / 修行纪念**（只读；**不得**混进「案上陪伴」行）。已解锁：本机 score / 累计分钟说明句（无全球名次、无进度条）。未解锁：观察句「尚未在本机走过」——**不是**可点按钮，也**不是**哑点击（行本身不可交互）。locale 切换后重开面板文案随语言变。
 
 ---
 

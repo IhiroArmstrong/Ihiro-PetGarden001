@@ -18,6 +18,10 @@ import {
   formatFocusCoinGapMessage,
   listFocusCoinSurfaceSections
 } from '../core/focusCoinsSurface.js';
+import {
+  formatCollectionsScarcityExplanation,
+  listCollectionsBehavioralScarcityRows
+} from '../core/collectionsBehavioralScarcity.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -264,6 +268,7 @@ export class FocusCoinsPanelUI {
     this.closeBtn.textContent = t('YIN_COIN_CLOSE');
     this.waveBtn.textContent = t('YIN_COIN_WAVE_PLAY');
     this._renderSections(listFocusCoinSurfaceSections(ctx));
+    this._renderMemorialSection(listCollectionsBehavioralScarcityRows());
   }
 
   /**
@@ -283,6 +288,42 @@ export class FocusCoinsPanelUI {
         this.listEl.append(this._rowEl(row));
       }
     }
+  }
+
+  /**
+   * Read-only achievement memorial rows (Epic #888 V1 · below curio sections).
+   * @param {ReturnType<typeof listCollectionsBehavioralScarcityRows>} rows
+   */
+  _renderMemorialSection(rows) {
+    if (!rows.length) return;
+    this.listEl.append(this._sectionHeader('COLLECTIONS_SCARCITY_SECTION'));
+    for (const row of rows) {
+      this.listEl.append(this._memorialRowEl(row));
+    }
+  }
+
+  /**
+   * @param {ReturnType<typeof listCollectionsBehavioralScarcityRows>[number]} row
+   * @returns {HTMLLIElement}
+   */
+  _memorialRowEl(row) {
+    const li = document.createElement('li');
+    li.className = row.unlocked
+      ? 'yin-coin-panel__memorial-row yin-coin-panel__memorial-row--unlocked'
+      : 'yin-coin-panel__memorial-row yin-coin-panel__memorial-row--locked';
+    li.dataset.catalogId = row.catalogId;
+    li.dataset.testid = `yin-coin-memorial-${row.catalogId}`;
+
+    const name = document.createElement('p');
+    name.className = 'yin-coin-panel__memorial-name';
+    name.textContent = t(row.nameKey);
+
+    const copy = document.createElement('p');
+    copy.className = 'yin-coin-panel__memorial-copy';
+    copy.textContent = formatCollectionsScarcityExplanation(row, t);
+
+    li.append(name, copy);
+    return li;
   }
 
   /**
@@ -824,6 +865,32 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__ceremonial.is-visible {
         opacity: 1;
+      }
+      .yin-coin-panel__memorial-row {
+        margin: 0 0 8px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(139, 115, 85, 0.12);
+        background: rgba(248, 246, 242, 0.72);
+        list-style: none;
+      }
+      .yin-coin-panel__memorial-row--unlocked {
+        background: rgba(255, 249, 240, 0.88);
+        border-color: rgba(139, 115, 85, 0.18);
+      }
+      .yin-coin-panel__memorial-row--locked {
+        opacity: 0.72;
+      }
+      .yin-coin-panel__memorial-name {
+        margin: 0 0 4px;
+        font-size: 0.84rem;
+        font-weight: 600;
+      }
+      .yin-coin-panel__memorial-copy {
+        margin: 0;
+        font-size: 0.78rem;
+        line-height: 1.4;
+        opacity: 0.86;
       }
     `;
     document.head.appendChild(style);

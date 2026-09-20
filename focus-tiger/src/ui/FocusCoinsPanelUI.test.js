@@ -115,3 +115,15 @@ test('Collections D.4 uses object-card states and bond-only CTA', () => {
   assert.match(src, /yin-coin-panel__faint/);
   assert.match(src, /YIN_COIN_NOT_YET/);
 });
+
+test('Collections memorial section renders read-only behavioral scarcity rows', () => {
+  assert.match(src, /listCollectionsBehavioralScarcityRows/);
+  assert.match(src, /COLLECTIONS_SCARCITY_SECTION/);
+  assert.match(src, /yin-coin-panel__memorial-row/);
+  assert.match(src, /formatCollectionsScarcityExplanation/);
+  const memorialBlock = src.slice(
+    src.indexOf('_memorialRowEl'),
+    src.indexOf('_rowEl(row)')
+  );
+  assert.doesNotMatch(memorialBlock, /addEventListener\('click'/);
+});
