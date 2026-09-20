@@ -158,22 +158,19 @@ export const MILESTONE_CATALOG = Object.freeze([
     id: 'imprint-minutes-600',
     predicate: { type: 'lifetime-minutes-at-least', minutes: 600 },
     origin: 'lifetime-minutes',
-    surfaces: Object.freeze(['imprint']),
-    status: 'proposed'
+    surfaces: Object.freeze(['imprint'])
   }),
   Object.freeze({
     id: 'imprint-minutes-3000',
     predicate: { type: 'lifetime-minutes-at-least', minutes: 3000 },
     origin: 'lifetime-minutes',
-    surfaces: Object.freeze(['imprint']),
-    status: 'proposed'
+    surfaces: Object.freeze(['imprint'])
   }),
   Object.freeze({
     id: 'imprint-minutes-10800',
     predicate: { type: 'lifetime-minutes-at-least', minutes: 10800 },
     origin: 'lifetime-minutes',
-    surfaces: Object.freeze(['imprint']),
-    status: 'proposed'
+    surfaces: Object.freeze(['imprint'])
   })
 ]);
 

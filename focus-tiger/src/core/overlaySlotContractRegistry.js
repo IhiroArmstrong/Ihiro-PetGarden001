@@ -27,6 +27,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   GROWTH_COMPASS: 'growth-compass',
   GROUND_EXERCISE_CHOICE: 'ground-exercise-choice',
   GROWTH_MUSTARD_SEED: 'growth-mustard-seed',
+  GROWTH_PRACTICE_IMPRINT: 'growth-practice-imprint',
   REMINDER_BANNER: 'reminder-banner',
   TEA_BUBBLE: 'tea-bubble',
   FLOWER_WELCOME: 'flower-welcome',
@@ -245,6 +246,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#mustard-seed-seal-card',
     snapshotField: 'mustardSeedOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.GROWTH_PRACTICE_IMPRINT,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 10,
+    readers: 'Practice Imprint memorial card; postSession + Collections re-read',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#practice-imprint-card',
+    snapshotField: 'practiceImprintOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.CONFIDE,
@@ -566,6 +578,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'FiveMomentsCompassUI.js': [OVERLAY_SOURCES.GROWTH_COMPASS],
   'GroundExerciseChoiceUI.js': [OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE],
   'MustardSeedSealCardUI.js': [OVERLAY_SOURCES.GROWTH_MUSTARD_SEED],
+  'PracticeImprintCardUI.js': [OVERLAY_SOURCES.GROWTH_PRACTICE_IMPRINT],
   'ConfideToYinUI.js': [OVERLAY_SOURCES.CONFIDE],
   'JourneyLogUI.js': [OVERLAY_SOURCES.JOURNEY_LOG],
   'FocusCoinsPanelUI.js': [OVERLAY_SOURCES.YIN_COIN],

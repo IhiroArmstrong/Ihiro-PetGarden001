@@ -119,7 +119,8 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
       'mustard-seed-seal-score',
       'contemplative-archive-seal-score',
       'focus-coins-redeem',
-      'collections-behavioral-scarcity'
+      'collections-behavioral-scarcity',
+      'practice-imprint-badges'
     ]),
     relatedPersonas: Object.freeze([
       'steady-light',
@@ -214,6 +215,24 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
       'qa-mustard-shortcut',
       'qa-seed-streak-15-legacy'
     ])
+  }),
+  Object.freeze({
+    id: 'practice-imprint',
+    displayName: 'Practice Imprint · lifetime minute badges',
+    purpose: 'unlock-gate',
+    inputSources: Object.freeze(['focus-tiger.lotus-pond.v1']),
+    aggregationWindow: 'lifetime',
+    dailyCapPolicy:
+      'MILESTONE_CATALOG lifetime-minutes-at-least tiers 600 / 3000 / 10800; awarded once, never revoked.',
+    formulaVersion: 'practiceImprint.v1',
+    formulaSummary:
+      'lotus lifetime minutes cross catalog thresholds; one auto card per unrevealed tier after baseline ceremony.',
+    formulaModule: 'src/core/practiceImprint.js',
+    authoritativeConsumers: Object.freeze([
+      'practice-imprint-badges',
+      'practice-imprint-ceremony'
+    ]),
+    relatedPersonas: Object.freeze(['rolling-veteran', 'deep-weekly'])
   }),
   Object.freeze({
     id: 'contemplative-archive',

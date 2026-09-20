@@ -137,6 +137,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
   glassCard('FiveMomentsCompassUI.js'),
   glassCard('GroundExerciseChoiceUI.js'),
   glassCard('MustardSeedSealCardUI.js'),
+  glassCard('PracticeImprintCardUI.js'),
   glassCard('ConfideToYinUI.js'),
   glassCard('JourneyLogUI.js'),
   glassCard('FocusCoinsPanelUI.js'),

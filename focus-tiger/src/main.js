@@ -202,6 +202,7 @@ import {
 } from './core/focusCircleMembership.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
+import { PracticeImprintCardUI } from './ui/PracticeImprintCardUI.js';
 import {
   MUSTARD_SEED_SEAL_CASES,
   resolveMustardSeedSeal,
@@ -213,6 +214,11 @@ import {
   resolveContemplativeArchiveSeal,
   shouldOfferContemplativeArchiveSealAfterCeremony
 } from './core/contemplativeArchiveSeal.js';
+import {
+  clearPracticeImprintState,
+  resolvePracticeImprint,
+  shouldOfferPracticeImprintAfterCeremony
+} from './core/practiceImprint.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
@@ -1302,20 +1308,24 @@ async function init() {
     onClose: () => {
       const pending = pendingAfterMustardSeed;
       pendingAfterMustardSeed = null;
-      if (pending?.sessionEndOpts) {
-        sessionEndFlow.onSessionEnded(pending.sessionEndOpts);
-      } else if (pending?.onContinue) {
-        pending.onContinue();
-      } else if (
-        !reflectionMoment?.isOpen?.() &&
-        !honestyBridge?.isVisible?.()
-      ) {
-        sessionUiGate.setPostSessionOverlayActive(false);
-        resyncSessionChrome();
-      }
+      continueAfterGrowthCeremony(pending);
+    }
+  });
+  const practiceImprintCardUI = new PracticeImprintCardUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'practice-imprint' });
+      sessionUiGate.setPostSessionOverlayActive(true);
+      resyncSessionChrome();
+    },
+    onClose: () => {
+      const pending = pendingAfterMustardSeed;
+      pendingAfterMustardSeed = null;
+      continueAfterGrowthCeremony(pending);
     }
   });
   window.__mustardSeedCard = mustardSeedSealCardUI;
+  window.__practiceImprintCard = practiceImprintCardUI;
   window.__mustardSeedSeal = {
     open: (opts) => mustardSeedSealCardUI.open(opts || { mode: 'force' }),
     close: () => mustardSeedSealCardUI.close(),
@@ -1697,6 +1707,7 @@ async function init() {
     if (except !== 'support') supportYinModalUI.close();
     if (except !== 'quote') dailyZenQuoteCardUI.close();
     if (except !== 'mustard-seed') mustardSeedSealCardUI.close();
+    if (except !== 'practice-imprint') practiceImprintCardUI.close();
     if (except !== 'wallpapers') digitalWallpapersCardUI.close();
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
     if (except !== 'membership') membershipUnlockUI.close();
@@ -2071,7 +2082,25 @@ async function init() {
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
     playWave: () => window.__focusCoins.playWave(),
     onMessage: (message) =>
-      mindfulToast.show(message, { placement: 'center' })
+      mindfulToast.show(message, { placement: 'center' }),
+    isMemorialImprintOpenable: (catalogId) => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const resolved = resolvePracticeImprint(storage, {
+        storage,
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+      return (
+        resolved.menuEntries.find((row) => row.catalogId === catalogId)
+          ?.awarded === true
+      );
+    },
+    onMemorialImprintOpen: (catalogId) => {
+      yinCoinPanelUI?.close?.();
+      practiceImprintCardUI.open({ catalogId, mode: 'menu' });
+    }
     })
   );
   window.__yinCoinPanel = yinCoinPanelUI;
@@ -2430,6 +2459,7 @@ async function init() {
       membershipUnlockUI?.isOpen?.() === true ||
       tipJarUI?.isOpen?.() === true ||
       mustardSeedSealCardUI?.isOpen?.() === true ||
+      practiceImprintCardUI?.isOpen?.() === true ||
       newsletterCaptureUI?.isOpen?.() === true
     );
   }
@@ -3486,6 +3516,25 @@ async function init() {
   window.__milestoneGlowStore = milestoneGlowStore;
   window.__practiceDaysStore = practiceDaysStore;
   window.__lotusPondStore = lotusPondStore;
+  window.__practiceImprint = {
+    open: (opts) => practiceImprintCardUI.open(opts || { mode: 'menu' }),
+    close: () => practiceImprintCardUI.close(),
+    resolve: () =>
+      resolvePracticeImprint(
+        typeof localStorage !== 'undefined' ? localStorage : null,
+        {
+          storage:
+            typeof localStorage !== 'undefined' ? localStorage : null,
+          practiceDaysStore,
+          lotusPondStore,
+          dailyCompletionStore
+        }
+      ),
+    clear: () =>
+      clearPracticeImprintState(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      )
+  };
 
   /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
   let pendingChoose = null;
@@ -4300,6 +4349,61 @@ async function init() {
   );
 
   /**
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [pending]
+   */
+  function continueAfterGrowthCeremony(pending) {
+    if (maybeOfferPracticeImprintAfterCeremony(pending)) return;
+    if (pending?.sessionEndOpts) {
+      sessionEndFlow.onSessionEnded(pending.sessionEndOpts);
+    } else if (pending?.onContinue) {
+      pending.onContinue();
+    } else if (
+      !reflectionMoment?.isOpen?.() &&
+      !honestyBridge?.isVisible?.()
+    ) {
+      sessionUiGate.setPostSessionOverlayActive(false);
+      resyncSessionChrome();
+    }
+  }
+
+  /**
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [opts]
+   * @returns {boolean}
+   */
+  function maybeOfferPracticeImprintAfterCeremony(opts = {}) {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const imprint = resolvePracticeImprint(storage, {
+      storage,
+      practiceDaysStore,
+      lotusPondStore,
+      dailyCompletionStore
+    });
+    if (
+      !shouldOfferPracticeImprintAfterCeremony({
+        completed: true,
+        shouldAutoReveal: imprint.shouldAutoReveal
+      }) ||
+      !imprint.nextCatalogId
+    ) {
+      return false;
+    }
+    pendingAfterMustardSeed = opts;
+    closeGrowthOverlayCards({ except: 'practice-imprint' });
+    practiceImprintCardUI.open({
+      catalogId: imprint.nextCatalogId,
+      mode: 'auto'
+    });
+    return true;
+  }
+
+  /**
    * After any baseline practice completion ceremony (timed Sit, Honesty, Breath),
    * offer mustard / contemplative archive seal before Reflection or Honesty bridge.
    * @param {{
@@ -4340,6 +4444,7 @@ async function init() {
       });
       return true;
     }
+    if (maybeOfferPracticeImprintAfterCeremony(opts)) return true;
     if (opts.sessionEndOpts) {
       sessionEndFlow.onSessionEnded(opts.sessionEndOpts);
     } else if (opts.onContinue) {

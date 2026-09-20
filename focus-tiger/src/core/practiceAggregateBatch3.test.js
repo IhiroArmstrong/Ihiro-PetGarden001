@@ -13,13 +13,15 @@ const here = dirname(fileURLToPath(import.meta.url));
 const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
 
 describe('practiceAggregate Batch 3 — mustard ceremony wiring', () => {
-  it('shared helper gates mustard/archive before post-session continuation', () => {
+  it('shared helper gates mustard/archive/imprint before post-session continuation', () => {
     assert.match(
       mainSrc,
       /function maybeOfferGrowthSealAfterBaselineCeremony\(/
     );
     assert.match(mainSrc, /shouldOfferMustardSeedSealAfterCeremony\(/);
     assert.match(mainSrc, /shouldOfferContemplativeArchiveSealAfterCeremony\(/);
+    assert.match(mainSrc, /maybeOfferPracticeImprintAfterCeremony/);
+    assert.match(mainSrc, /shouldOfferPracticeImprintAfterCeremony\(/);
   });
 
   it('timed Sit finish uses shared helper', () => {
