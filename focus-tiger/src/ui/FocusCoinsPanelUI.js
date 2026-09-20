@@ -57,6 +57,8 @@ export class FocusCoinsPanelUI {
    * @param {(titleId: string) => { ok?: boolean }} [handlers.equipTitle]
    * @param {() => { ok?: boolean, reason?: string }} [handlers.playWave]
    * @param {(message: string) => void} [handlers.onMessage]
+   * @param {(catalogId: string) => void} [handlers.onMemorialImprintOpen]
+   * @param {(catalogId: string) => boolean} [handlers.isMemorialImprintOpenable]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
    */
@@ -307,10 +309,21 @@ export class FocusCoinsPanelUI {
    * @returns {HTMLLIElement}
    */
   _memorialRowEl(row) {
-    const li = document.createElement('li');
+    const openable =
+      row.catalogId.startsWith('imprint-minutes-') &&
+      this.handlers.isMemorialImprintOpenable?.(row.catalogId) === true;
+    const li = document.createElement(openable ? 'button' : 'li');
+    li.type = openable ? 'button' : undefined;
     li.className = row.unlocked
       ? 'yin-coin-panel__memorial-row yin-coin-panel__memorial-row--unlocked'
       : 'yin-coin-panel__memorial-row yin-coin-panel__memorial-row--locked';
+    if (openable) {
+      li.classList.add('yin-coin-panel__memorial-row--openable');
+      li.setAttribute('aria-label', t('PRACTICE_IMPRINT_MEMORIAL_OPEN'));
+      li.addEventListener('click', () => {
+        this.handlers.onMemorialImprintOpen?.(row.catalogId);
+      });
+    }
     li.dataset.catalogId = row.catalogId;
     li.dataset.testid = `yin-coin-memorial-${row.catalogId}`;
 
@@ -880,6 +893,16 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__memorial-row--locked {
         opacity: 0.72;
+      }
+      .yin-coin-panel__memorial-row--openable {
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+      }
+      .yin-coin-panel__memorial-row--openable:hover,
+      .yin-coin-panel__memorial-row--openable:focus-visible {
+        border-color: rgba(139, 115, 85, 0.28);
+        outline: none;
       }
       .yin-coin-panel__memorial-name {
         margin: 0 0 4px;

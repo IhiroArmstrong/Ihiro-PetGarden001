@@ -57,6 +57,7 @@ Before changing any growth formula or adding a cumulative consumer:
 | `practice-badges-free` | presentation-feedback | mixed | badgeAward.v1 | target = min(9, max(1, 1 + floor(score/3))); 0 badges when no practice. |
 | `practice-badges-paid` | presentation-feedback | mixed | badgeAward.v1 | target = min(17, max(3, 3 + floor(score/3))) for Sanctuary; tip max 9. |
 | `mustard-seal` | unlock-gate | mixed | mustardUnlock.v1 | score ≥ 21; three verse cases revealed one per baseline completion. |
+| `practice-imprint` | unlock-gate | lifetime | practiceImprint.v1 | lotus lifetime minutes cross catalog thresholds; one auto card per unrevealed tier after baseline ceremony. |
 | `contemplative-archive` | unlock-gate | mixed | caUnlock.v1 | Each CA entry: score ≥ entry.scoreThreshold. |
 | `milestone-glow-streak` | presentation-feedback | consecutive-streak | milestoneGlow.v1 | resolveMilestoneGlowNodeId(recentStreakDays) — orthogonal to practice score. |
 | `focus-coins-earn` | currency | event-driven | focusCoinsL0.v1 | Event grants on completion hooks; Stay 5m=1pt; Across/Honesty 10m=1pt; echo +3. |

@@ -1,0 +1,3 @@
+# feature/practice-imprint-badges
+
+| Practice Imprint · 判定 + 出卡（Epic #888 Slice 2） | UI可见 | 待人工测试 | **门槛**：`MILESTONE_CATALOG` 终身分钟档 600 / 3000 / 10800（与修行纪念分区同源）。**自动出卡**：baseline 仪式（Sit / Honesty / Breath）完成后，若芥子/静思典藏卡未占用队列，且本机有未揭示的已得印 → `#practice-imprint-card` 一次淡入 → Continue → 再进 Reflection/桥接。**菜单重读**：`?product=1` → Yin's Collections → 修行纪念 → 已得分钟印行可点 → 同卡重开（无全球名次/无进度条）。**Honesty**：补登分钟计入判定。**375**：卡底留 home 区。**调试**：`__practiceImprint.resolve()` / `__practiceImprint.open({ catalogId:'imprint-minutes-600', mode:'menu' })`。自动化：`practiceImprint.test.js` · `PracticeImprintCardUI.test.js` · `practiceAggregateBatch3.test.js`。 | — | — | — | `#practice-imprint-card` · `data-testid=practice-imprint-card-*` | 2026-09-20 |

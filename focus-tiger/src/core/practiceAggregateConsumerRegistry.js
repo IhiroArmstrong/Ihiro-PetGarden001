@@ -125,7 +125,35 @@ export const PRACTICE_AGGREGATE_CONSUMER_ROWS = Object.freeze([
     codeAnchors: Object.freeze([
       'maybeOfferGrowthSealAfterBaselineCeremony',
       'shouldOfferMustardSeedSealAfterCeremony(',
-      'shouldOfferContemplativeArchiveSealAfterCeremony('
+      'shouldOfferContemplativeArchiveSealAfterCeremony(',
+      'shouldOfferPracticeImprintAfterCeremony('
+    ]),
+    reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS])
+  }),
+  Object.freeze({
+    id: 'practice-imprint-badges',
+    feature: 'Practice Imprint · lifetime minute awards',
+    priority: 'P1',
+    fixBatch: null,
+    coverageStatus: 'ok',
+    moduleRelPath: 'src/core/practiceImprint.js',
+    codeAnchors: Object.freeze([
+      'resolvePracticeImprint(',
+      'syncPracticeImprintAwards('
+    ]),
+    reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS]),
+    notes: 'MILESTONE_CATALOG imprint rows; monotonic imprintIds storage'
+  }),
+  Object.freeze({
+    id: 'practice-imprint-ceremony',
+    feature: 'Auto practice imprint card after baseline ceremony',
+    priority: 'P1',
+    fixBatch: null,
+    coverageStatus: 'ok',
+    moduleRelPath: 'src/main.js',
+    codeAnchors: Object.freeze([
+      'maybeOfferPracticeImprintAfterCeremony',
+      'practiceImprintCardUI.open'
     ]),
     reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS])
   }),
