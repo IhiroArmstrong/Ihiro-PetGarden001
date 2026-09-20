@@ -7,6 +7,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  buildGlowClaimProvenanceMeta,
   catalogComputePracticeScore,
   catalogDeriveComeBackDates,
   catalogJourneyMilestoneFirstHitDate,
@@ -161,6 +162,22 @@ describe('MILESTONE_CATALOG parity · score formula (90-day window + eligible mi
     assert.equal(aggregate.practiceDayCount, 5);
     assert.equal(aggregate.scoreEligibleLifetimeMinutes, 900);
     assert.equal(aggregate.lifetimeMinutes, 3600);
+  });
+});
+
+describe('MILESTONE_CATALOG · Glow claim provenance (scheme D)', () => {
+  it('buildGlowClaimProvenanceMeta maps legacy glow ids to catalog fields', () => {
+    assert.deepEqual(buildGlowClaimProvenanceMeta('streak-7'), {
+      rarity_basis: 'consecutive-practice-days-7',
+      origin: 'consecutive-practice-days',
+      journey_id: 'streak-7'
+    });
+    assert.deepEqual(buildGlowClaimProvenanceMeta('streak-21'), {
+      rarity_basis: 'consecutive-practice-days-21',
+      origin: 'consecutive-practice-days',
+      journey_id: 'streak-21'
+    });
+    assert.deepEqual(buildGlowClaimProvenanceMeta('unknown-node'), {});
   });
 });
 

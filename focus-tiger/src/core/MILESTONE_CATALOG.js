@@ -7,13 +7,11 @@
  * Shared milestone catalog V1 — static predicate SSOT (Batch 1).
  *
  * PO lock: `docs/task-briefs/task-shared-milestone-catalog.md` (#894).
- * Batch 1 adds this module + parity tests only; production callers still use
- * legacy helpers (`mustardSeedSeal`, `journeyPracticeMemory`, `MilestoneGlowStore`).
+ * Batch 1: module + parity tests. Batch 2: Glow resolve/claim wired to catalog.
  */
 
 import { computePracticeScore } from './practiceBadgeAward.js';
 import { MUSTARD_SEED_SEAL_SCORE_THRESHOLD } from './mustardSeedSeal.js';
-import { MILESTONE_GLOW_STREAK_NODES } from './MilestoneGlowStore.js';
 import { bloomCountForMinutes } from './lotusPondMath.js';
 import { PRACTICE_BASELINE_SOURCE_IDS } from './practiceAggregate.js';
 import {
@@ -178,6 +176,21 @@ export const MILESTONE_CATALOG = Object.freeze([
   })
 ]);
 
+/** Glow streak nodes derived from catalog (SSOT for 7/21/100 legacy ids). */
+export const MILESTONE_GLOW_STREAK_NODES = Object.freeze(
+  MILESTONE_CATALOG
+    .filter(
+      (row) =>
+        row.surfaces.includes('glow') &&
+        row.predicate.type === 'consecutive-practice-days'
+    )
+    .map((row) => ({
+      id: row.legacySurfaceIds?.glow ?? row.id,
+      streakDays: row.predicate.days ?? 0
+    }))
+    .sort((a, b) => a.streakDays - b.streakDays)
+);
+
 /**
  * @param {string} catalogId
  * @returns {MilestoneCatalogEntry | undefined}
@@ -195,6 +208,24 @@ export function getMilestoneCatalogEntryByLegacyId(surface, legacyId) {
   return MILESTONE_CATALOG.find(
     (row) => row.legacySurfaceIds?.[surface] === legacyId
   );
+}
+
+/**
+ * #890 scheme D provenance for Glow claim (Batch 2).
+ * @param {string} legacyGlowNodeId e.g. `streak-7`
+ * @returns {{ rarity_basis?: string, origin?: string, journey_id?: string }}
+ */
+export function buildGlowClaimProvenanceMeta(legacyGlowNodeId) {
+  const entry = getMilestoneCatalogEntryByLegacyId('glow', legacyGlowNodeId);
+  if (!entry) return {};
+  /** @type {{ rarity_basis: string, origin: string, journey_id?: string }} */
+  const meta = {
+    rarity_basis: entry.id,
+    origin: entry.origin
+  };
+  const journeyId = entry.legacySurfaceIds?.journey;
+  if (journeyId) meta.journey_id = journeyId;
+  return meta;
 }
 
 /**
