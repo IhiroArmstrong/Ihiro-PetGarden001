@@ -20,6 +20,7 @@
 - 不迁移 `reflective_honesty` / 情绪桶子串 / `memory_list` 快捷规则到语义匹配（下一阶段独立议题）。
 - 不接 EmbeddingGemma 或其他候选模型。
 - 不做设备分级 / 并行双通道生成。
+- **不**把观察翼 **答句** 陈词滥调检测并进用户句粗分桶。那是独立下一刀：`task-l3-observe-cliche-semantic-guard.md`（复用本 embedding，库与阈值分开）。
 
 ---
 

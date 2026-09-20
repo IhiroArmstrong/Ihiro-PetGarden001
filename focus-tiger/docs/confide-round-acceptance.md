@@ -54,4 +54,4 @@
 | `累积了多久` / `我累计练习多久了` | `累` 子串 → `tired` 语料 | `practice_facts`（classify 先过练习事实） |
 | `忙啥` / `忙什么`（裸句） | fallback → generate | `reflective_honesty` |
 
-**未改**（须 PO 另议）：`我最近在忙什么` 有记忆时是否列列表（#822）；L3 风景/幼虎/Journey 口径仍走 ISSUE_LEDGER 扇出。
+**未改**（须 PO 另议）：`我最近在忙什么` 有记忆时是否列列表（#822）；L3 风景/幼虎/Journey 口径仍走 ISSUE_LEDGER 扇出。**本表 100 句不锁套话质量**：观察翼陈词滥调下一刀见 `task-l3-observe-cliche-semantic-guard.md`，不必为耳/尾/爪改写重跑冻表。

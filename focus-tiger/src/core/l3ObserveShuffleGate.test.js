@@ -129,6 +129,15 @@ describe('L3 observe scheme B shuffle gate', () => {
       }),
       null
     );
+    assert.equal(isGenericCubTheaterReply('耳朵微微一动，像听见了什么。'), true);
+    assert.equal(
+      sanitizeCompanionL2Reply('耳朵一抖。', { userText: '有点烦' }),
+      null
+    );
+    assert.equal(
+      sanitizeCompanionL2Reply('尾巴一甩。', { userText: '睡不着' }),
+      null
+    );
     assert.equal(
       isHighOverlapWithUserLine(
         '喜欢吃胖粉。',

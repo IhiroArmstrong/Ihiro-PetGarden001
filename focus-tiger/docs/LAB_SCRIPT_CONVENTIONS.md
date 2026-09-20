@@ -34,6 +34,7 @@
 | 档案对照脚本（0.6B Q4 bartowski ↔ 4B） | `/tmp/ft-l0-qwen3-4b-lab.mjs` |
 | 新候选脚本（一次跑一个 key） | `/tmp/ft-l0-candidate-lab.mjs` |
 | L3 观察句对照（#823 · baseline / B / A） | `/tmp/ft-l0-l3-observe-b-lab.mjs` |
+| L3 观察翼陈词滥调语义护栏（#823 · Brief） | `focus-tiger/docs/task-briefs/task-l3-observe-cliche-semantic-guard.md` |
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
@@ -181,6 +182,8 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-q
 ```
 
 脚本：`/tmp/ft-l0-l3-observe-b-lab.mjs`。分数与句表只写 `task-briefs/task-l3-observe-prompt-redesign.md`，**不要**把答句抄进本文。变体名带 `neg2` 等后缀，避免覆盖既有 `compare-*.json`。
+
+**L3 观察翼陈词滥调语义护栏（2026-09-20 · Brief 已锁 · 运行时未开工）**：规格 `task-briefs/task-l3-observe-cliche-semantic-guard.md`。标定脚本尚未入库；开工后挂 Prompt 7 同款仓库 npm + `/tmp/ft-l0-lab/`，复用 `FT_EMBEDDING_GGUF` / Qwen3-Embedding-0.6B，**不进** `test:smoke`。
 
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
