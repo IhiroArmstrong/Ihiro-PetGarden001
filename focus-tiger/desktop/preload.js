@@ -47,6 +47,8 @@ if (companionAllowed) {
       ipcRenderer.invoke('desktop:companion-classify-read-tool', payload),
     semanticShadowClassify: (payload) =>
       ipcRenderer.invoke('desktop:companion-semantic-shadow-classify', payload),
+    semanticLiveClassify: (payload) =>
+      ipcRenderer.invoke('desktop:companion-semantic-live-classify', payload),
     onStatus: (cb) => {
       if (typeof cb !== 'function') return () => {};
       const wrapped = (_event, payload) => cb(payload);

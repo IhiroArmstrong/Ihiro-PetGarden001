@@ -102,6 +102,7 @@ export class CompanionL1Runtime {
     /** @type {Map<string, (ev: object) => void>} */
     this._observeClicheWaiters = new Map();
     this._shadowQueue = Promise.resolve();
+    this._liveSemanticCache = null;
     this._embeddingShadowGate = createSemanticShadowEmbeddingGate();
     this._turnLogAppendCount = 0;
     this._lastTurnLogPruneMs = 0;
@@ -589,6 +590,7 @@ export class CompanionL1Runtime {
 
   /**
    * Shadow-only semantic coarse classify. Never blocks production routing.
+   * Reuses a Stage 2 live cache when the same text was just classified.
    * @param {{
    *   text?: string,
    *   contextualText?: string,
@@ -597,7 +599,7 @@ export class CompanionL1Runtime {
    *   source?: string,
    *   literalCoarse?: string | null
    * }} [payload]
-   * @returns {Promise<{ ok: boolean, queued?: boolean, reason?: string }>}
+   * @returns {Promise<{ ok: boolean, queued?: boolean, reused?: boolean, reason?: string }>}
    */
   async semanticShadowClassify(payload = {}) {
     if (!this.allowed) {
@@ -613,6 +615,32 @@ export class CompanionL1Runtime {
       typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
     if (!text) return { ok: false, reason: 'empty_text' };
 
+    const cached = this._liveSemanticCache;
+    if (cached && cached.text === text && cached.ok) {
+      this._liveSemanticCache = null;
+      await this._appendTurnLog(
+        buildSemanticShadowTurnLogRecord({
+          text,
+          route,
+          source,
+          literalCoarse,
+          hadPriorTurn,
+          contextualText: contextualText || null,
+          ok: true,
+          reason: 'ok',
+          semanticResult: {
+            bucket: String(cached.bucket || ''),
+            scoreA: Number(cached.scoreA),
+            scoreB: Number(cached.scoreB),
+            grayMargin: Number(cached.grayMargin)
+          },
+          semanticResultWithPrior: cached.semanticResultWithPrior || null,
+          timing: cached.timing
+        })
+      );
+      return { ok: true, queued: false, reused: true };
+    }
+
     void (this._shadowQueue = this._shadowQueue.then(() =>
       this._runSemanticShadowClassify({
         text,
@@ -624,6 +652,58 @@ export class CompanionL1Runtime {
       })
     ));
     return { ok: true, queued: true };
+  }
+
+  /**
+   * Stage 2 live classify. Awaits embedding. Does not write turns.jsonl
+   * (post-reply shadow reuses the cache). Fail-open: caller keeps literal route.
+   * @returns {Promise<{
+   *   ok: boolean,
+   *   bucket: string | null,
+   *   scoreA?: number | null,
+   *   scoreB?: number | null,
+   *   grayMargin?: number | null,
+   *   reason?: string
+   * }>}
+   */
+  async semanticLiveClassify(payload = {}) {
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable', bucket: null };
+    }
+    const modeRaw = String(this.env.FT_CONFIDE_SEMANTIC_ROUTING || 'live')
+      .trim()
+      .toLowerCase();
+    if (modeRaw === 'shadow' || modeRaw === 'off' || modeRaw === 'stage1') {
+      return { ok: false, reason: 'shadow_mode', bucket: null };
+    }
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    const contextualText =
+      typeof payload.contextualText === 'string' ? payload.contextualText.trim() : '';
+    const hadPriorTurn = Boolean(payload.hadPriorTurn) && Boolean(contextualText);
+    const route = typeof payload.route === 'string' ? payload.route : '';
+    const source = typeof payload.source === 'string' ? payload.source : '';
+    const literalCoarse =
+      typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
+    if (!text) return { ok: false, reason: 'empty_text', bucket: null };
+
+    const pending = this._shadowQueue.then(() =>
+      this._runSemanticShadowClassify({
+        text,
+        contextualText,
+        hadPriorTurn,
+        route,
+        source,
+        literalCoarse,
+        skipLog: true
+      })
+    );
+    this._shadowQueue = pending.then(
+      () => undefined,
+      () => undefined
+    );
+    const result = await pending;
+    this._liveSemanticCache = { text, ...result };
+    return result;
   }
 
   /**
@@ -670,11 +750,33 @@ export class CompanionL1Runtime {
    *   hadPriorTurn: boolean,
    *   route: string,
    *   source: string,
-   *   literalCoarse: string | null
+   *   literalCoarse: string | null,
+   *   skipLog?: boolean
    * }} payload
+   * @returns {Promise<{
+   *   ok: boolean,
+   *   bucket: string | null,
+   *   scoreA: number | null,
+   *   scoreB: number | null,
+   *   grayMargin: number | null,
+   *   reason: string,
+   *   timing?: object,
+   *   semanticResultWithPrior?: object | null
+   * }>}
    */
   async _runSemanticShadowClassify(payload) {
     const wallStarted = Date.now();
+    const skipLog = Boolean(payload.skipLog);
+    const fail = (reason) => ({
+      ok: false,
+      bucket: null,
+      scoreA: null,
+      scoreB: null,
+      grayMargin: null,
+      reason,
+      timing: { wallMs: Date.now() - wallStarted },
+      semanticResultWithPrior: null
+    });
     const baseRecord = {
       text: payload.text,
       route: payload.route,
@@ -690,16 +792,19 @@ export class CompanionL1Runtime {
 
     const readyResult = await this._ensureShadowEmbeddingReady();
     if (!readyResult.ok) {
-      await this._appendTurnLog(
-        buildSemanticShadowTurnLogRecord({
-          ...baseRecord,
-          ok: false,
-          reason: readyResult.reason || 'embed_unavailable',
-          semanticResult: null,
-          timing: { wallMs: Date.now() - wallStarted }
-        })
-      );
-      return;
+      const result = fail(readyResult.reason || 'embed_unavailable');
+      if (!skipLog) {
+        await this._appendTurnLog(
+          buildSemanticShadowTurnLogRecord({
+            ...baseRecord,
+            ok: false,
+            reason: result.reason,
+            semanticResult: null,
+            timing: result.timing
+          })
+        );
+      }
+      return result;
     }
 
     const id = randomUUID();
@@ -729,59 +834,80 @@ export class CompanionL1Runtime {
 
       if (timed?.event === 'semantic_shadow_classified') {
         const priorBucket = timed.bucketWithPrior;
-        await this._appendTurnLog(
-          buildSemanticShadowTurnLogRecord({
-            ...baseRecord,
-            ok: true,
-            reason: 'ok',
-            semanticResult: {
-              bucket: String(timed.bucket || ''),
-              scoreA: Number(timed.scoreA),
-              scoreB: Number(timed.scoreB),
-              grayMargin: Number(timed.grayMargin)
-            },
-            semanticResultWithPrior:
-              typeof priorBucket === 'string' && priorBucket
-                ? {
-                    bucket: priorBucket,
-                    scoreA: Number(timed.scoreAWithPrior),
-                    scoreB: Number(timed.scoreBWithPrior),
-                    grayMargin: Number(timed.grayMarginWithPrior ?? timed.grayMargin)
-                  }
-                : null,
-            timing: {
-              wallMs: Number(timed.wallMs) || Date.now() - wallStarted,
-              embedMs: Number(timed.embedMs) || undefined,
-              embedMsWithPrior: Number(timed.embedMsWithPrior) || undefined
-            }
-          })
-        );
-        return;
+        const semanticResultWithPrior =
+          typeof priorBucket === 'string' && priorBucket
+            ? {
+                bucket: priorBucket,
+                scoreA: Number(timed.scoreAWithPrior),
+                scoreB: Number(timed.scoreBWithPrior),
+                grayMargin: Number(timed.grayMarginWithPrior ?? timed.grayMargin)
+              }
+            : null;
+        const timing = {
+          wallMs: Number(timed.wallMs) || Date.now() - wallStarted,
+          embedMs: Number(timed.embedMs) || undefined,
+          embedMsWithPrior: Number(timed.embedMsWithPrior) || undefined
+        };
+        if (!skipLog) {
+          await this._appendTurnLog(
+            buildSemanticShadowTurnLogRecord({
+              ...baseRecord,
+              ok: true,
+              reason: 'ok',
+              semanticResult: {
+                bucket: String(timed.bucket || ''),
+                scoreA: Number(timed.scoreA),
+                scoreB: Number(timed.scoreB),
+                grayMargin: Number(timed.grayMargin)
+              },
+              semanticResultWithPrior,
+              timing
+            })
+          );
+        }
+        return {
+          ok: true,
+          bucket: String(timed.bucket || ''),
+          scoreA: Number(timed.scoreA),
+          scoreB: Number(timed.scoreB),
+          grayMargin: Number(timed.grayMargin),
+          reason: 'ok',
+          timing,
+          semanticResultWithPrior
+        };
       }
 
       const reason =
         timed?.event === 'timeout'
           ? 'timeout'
           : timed?.message || 'embed_failed';
-      await this._appendTurnLog(
-        buildSemanticShadowTurnLogRecord({
-          ...baseRecord,
-          ok: false,
-          reason,
-          semanticResult: null,
-          timing: { wallMs: Date.now() - wallStarted }
-        })
-      );
+      const result = fail(reason);
+      if (!skipLog) {
+        await this._appendTurnLog(
+          buildSemanticShadowTurnLogRecord({
+            ...baseRecord,
+            ok: false,
+            reason,
+            semanticResult: null,
+            timing: result.timing
+          })
+        );
+      }
+      return result;
     } catch {
-      await this._appendTurnLog(
-        buildSemanticShadowTurnLogRecord({
-          ...baseRecord,
-          ok: false,
-          reason: 'embed_failed',
-          semanticResult: null,
-          timing: { wallMs: Date.now() - wallStarted }
-        })
-      );
+      const result = fail('embed_failed');
+      if (!skipLog) {
+        await this._appendTurnLog(
+          buildSemanticShadowTurnLogRecord({
+            ...baseRecord,
+            ok: false,
+            reason: 'embed_failed',
+            semanticResult: null,
+            timing: result.timing
+          })
+        );
+      }
+      return result;
     }
   }
 

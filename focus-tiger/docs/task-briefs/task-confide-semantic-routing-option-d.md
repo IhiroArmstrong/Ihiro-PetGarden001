@@ -1,8 +1,8 @@
 # Task Brief · Confide 语义向量前置分流（Option D · Stage 1 影子模式）
 
-> **状态（2026-09-20）**：Stage 1 已在 develop。Prompt 6 影子对照已开工：同一影子行同时记「只看当前句」与「看了上一轮」；**仍不切换**现网路由。  
+> **状态（2026-09-21）**：Stage 2 live 已开工（`task-confide-stage2-semantic-cutover.md`）。Electron 默认切真路由；`FT_CONFIDE_SEMANTIC_ROUTING=shadow` 回滚。Stage 1 影子日志仍写 `turns.jsonl`。  
 > **前置诊断**：字面子串堆叠（`textMatchesAnyPhrase` 等）造成多起误判（例：「累积了多久」里的「累」→ `tired`；「忙啥」未命中「忙什么」正则）。  
-> **权威实现**：`confideSemanticRouting.js` · `confideSemanticExamples.js` · `l1EmbeddingHold.js` · `l0EmbeddingProfiles.js` · `confideSemanticShadowPriorTurn.js`
+> **权威实现**：`confideSemanticRouting.js` · `confideSemanticStage2.js` · `confideSemanticExamples.js` · `l1EmbeddingHold.js` · `l0EmbeddingProfiles.js` · `confideSemanticShadowPriorTurn.js`
 
 ---
 
@@ -95,6 +95,7 @@
 
 | 参数 | 默认 | 环境变量 | 说明 |
 |---|---|---|---|
+| `mode` | `live` | `FT_CONFIDE_SEMANTIC_ROUTING` | Electron Stage 2：`live`（默认）切真路由；`shadow` / `off` / `stage1` 回滚只记日志 |
 | `grayMargin` | `0.08` | `FT_CONFIDE_SEMANTIC_GRAY_MARGIN` | \|scoreA − scoreB\| 低于此值判 `gray` |
 | `topK` | `3` | `FT_CONFIDE_SEMANTIC_TOP_K` | 每库取 top-k 相似度均值 |
 

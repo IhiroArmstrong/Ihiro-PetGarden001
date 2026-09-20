@@ -4,8 +4,9 @@
  */
 
 /**
- * Confide semantic pre-routing coarse buckets (Option D · shadow only in Stage 1).
- * Not emotion route ids — these are functional / emotional / gray trichotomy.
+ * Confide semantic pre-routing coarse buckets (Option D).
+ * Stage 2 live uses this trichotomy to unstick emotion false-positives.
+ * Not emotion route ids — these are functional / emotional / gray.
  */
 
 export const CONFIDE_SEMANTIC_BUCKET = Object.freeze({

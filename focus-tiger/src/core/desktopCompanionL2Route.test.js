@@ -527,6 +527,11 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /buildConfideShadowContextualText/);
     assert.match(ui, /contextualText/);
     assert.match(preload, /desktop:companion-semantic-shadow-classify/);
+    assert.match(preload, /desktop:companion-semantic-live-classify/);
+    assert.match(ipcSrc, /desktop:companion-semantic-live-classify/);
+    assert.match(ui, /semanticLiveClassify/);
+    assert.match(ui, /_applyLiveSemanticThenDispatch/);
+    assert.match(ui, /applyConfideStage2Route/);
     const runtime = readFileSync(
       join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
       'utf8'
