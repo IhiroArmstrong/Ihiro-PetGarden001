@@ -172,6 +172,46 @@ export function isEchoOfUserLine(raw, userText) {
 }
 
 /**
+ * Character-bigram overlap with the current user line (separate from echo).
+ * @param {unknown} raw
+ * @param {unknown} userText
+ * @returns {boolean}
+ */
+export function isHighOverlapWithUserLine(raw, userText) {
+  const replyNorm = normalizeCompanionL2Reply(raw);
+  const userNorm = normalizeCompanionL2Reply(userText);
+  if (!replyNorm || !userNorm) return false;
+  const compact = (s) => s.replace(/[\s'",.!?。！？、]/gu, '');
+  const replyC = compact(replyNorm);
+  const userC = compact(userNorm);
+  if (userC.length < 4 || replyC.length < 4) return false;
+  if (replyC.includes(userC) || userC.includes(replyC)) {
+    const shorter = Math.min(replyC.length, userC.length);
+    const longer = Math.max(replyC.length, userC.length);
+    if (shorter / longer >= 0.4) return true;
+  }
+  const grams = (s) => {
+    /** @type {Set<string>} */
+    const set = new Set();
+    if (s.length < 2) {
+      set.add(s);
+      return set;
+    }
+    for (let i = 0; i <= s.length - 2; i += 1) set.add(s.slice(i, i + 2));
+    return set;
+  };
+  const a = grams(userC);
+  const b = grams(replyC);
+  let inter = 0;
+  for (const g of a) {
+    if (b.has(g)) inter += 1;
+  }
+  const union = a.size + b.size - inter;
+  if (union <= 0) return false;
+  return inter / union >= 0.55;
+}
+
+/**
  * @param {unknown} raw
  * @param {{ priorReplies?: unknown, userText?: unknown }} [opts]
  * @returns {string | null}
@@ -192,6 +232,7 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   if (isHollowCompanionObserveReply(text)) return null;
   if (isGenericCubTheaterReply(text)) return null;
   if (isEchoOfUserLine(text, opts.userText)) return null;
+  if (isHighOverlapWithUserLine(text, opts.userText)) return null;
   const prior = Array.isArray(opts.priorReplies) ? opts.priorReplies : [];
   const normalized = normalizeCompanionL2Reply(text);
   if (

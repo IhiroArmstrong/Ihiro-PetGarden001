@@ -23,8 +23,10 @@ import {
 import {
   L2_GENERATE_TIMEOUT_MS,
   L2_MAX_TOKENS,
+  L3_OBSERVE_RETRY_AVOID_CLICHE,
   buildCompanionL2Prompt,
-  buildReflectionCompanionPrompt
+  buildReflectionCompanionPrompt,
+  isCompanionChatGenerateLine
 } from './l2Persona.js';
 import {
   priorRepeatableYinRepliesFromHistory,
@@ -97,6 +99,8 @@ export class CompanionL1Runtime {
     this._classifyWaiters = new Map();
     /** @type {Map<string, (ev: object) => void>} */
     this._semanticShadowWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._observeClicheWaiters = new Map();
     this._shadowQueue = Promise.resolve();
     this._embeddingShadowGate = createSemanticShadowEmbeddingGate();
     this._turnLogAppendCount = 0;
@@ -155,6 +159,14 @@ export class CompanionL1Runtime {
         resolve(ev);
       }
     }
+    if (ev.event === 'observe_cliche_scored' || ev.event === 'observe_cliche_error') {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._observeClicheWaiters.get(id);
+      if (resolve) {
+        this._observeClicheWaiters.delete(id);
+        resolve(ev);
+      }
+    }
     if (ev.event === 'embedding_ready' || ev.event === 'embedding_error') {
       this._embeddingShadowGate.applyEvent(ev);
     }
@@ -181,6 +193,13 @@ export class CompanionL1Runtime {
         });
       }
       this._semanticShadowWaiters.clear();
+      for (const resolve of this._observeClicheWaiters.values()) {
+        resolve({
+          event: 'observe_cliche_error',
+          message: ev.message || 'companion_error'
+        });
+      }
+      this._observeClicheWaiters.clear();
       this._embeddingShadowGate.reset();
     }
     this._push();
@@ -294,11 +313,6 @@ export class CompanionL1Runtime {
     return { ok: true, ...this.snapshot() };
   }
 
-  /**
-   * @param {{ text?: string, locale?: string, history?: unknown }} [payload]
-   * @returns {Promise<{ ok: boolean, text?: string, reason?: string }>}
-   */
-
   _modelTimingFromChildEvent(ev) {
     const timing = ev?.timing;
     if (!timing || typeof timing !== 'object') return null;
@@ -343,15 +357,14 @@ export class CompanionL1Runtime {
     if (!ready.ok || this.status.phase !== 'ready') {
       return { ok: false, reason: ready.reason || 'not_ready' };
     }
-    const id = randomUUID();
     const locale = typeof payload.locale === 'string' ? payload.locale : 'en';
-    /** @type {string} */
-    let prompt;
+    const observeWing =
+      !isReflectionCompanion && !isCompanionChatGenerateLine(text);
+    let retrievedSummaries = [];
+    let promptBuildMs;
+    let memoryRetrieveMsCaptured;
     if (isReflectionCompanion) {
-      prompt = buildReflectionCompanionPrompt({
-        answers: reflectionAnswers,
-        locale
-      });
+      /* prompt rebuilt per attempt below */
     } else {
       if (!Array.isArray(this._ypeSessionMemoryIds)) this._ypeSessionMemoryIds = [];
       const memoryStarted = Date.now();
@@ -365,45 +378,77 @@ export class CompanionL1Runtime {
         ...this._ypeSessionMemoryIds,
         ...retrieved.ids.filter((mid) => !this._ypeSessionMemoryIds.includes(mid))
       ];
-      const promptStarted = Date.now();
-      prompt = buildCompanionL2Prompt({
-        text,
-        locale,
-        history: Array.isArray(payload.history) ? payload.history : [],
-        memorySummaries: retrieved.summaries,
-        patternInsights: Array.isArray(payload.patternInsights)
-          ? payload.patternInsights
-          : []
-      });
-      var promptBuildMs = Date.now() - promptStarted;
-      var memoryRetrieveMsCaptured = memoryRetrieveMs;
+      retrievedSummaries = retrieved.summaries;
+      memoryRetrieveMsCaptured = memoryRetrieveMs;
     }
-    this._queue = this._queue.then(async () => {
-      const done = new Promise((resolve) => {
-        this._generateWaiters.set(id, resolve);
-      });
-      this._write(
-        `generate ${JSON.stringify({ id, prompt, maxTokens: L2_MAX_TOKENS })}`
-      );
-      const timed = await Promise.race([
-        done,
-        new Promise((resolve) => {
-          setTimeout(() => resolve({ event: 'timeout' }), L2_GENERATE_TIMEOUT_MS);
-        })
-      ]);
-      if (timed?.event === 'timeout') {
-        this._generateWaiters.delete(id);
+
+    const maxAttempts = observeWing ? 2 : 1;
+    let sanitized = null;
+    let raw = '';
+    let ev = null;
+    let lastReason = 'empty_or_banned';
+    let sanitizeMs = 0;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      const id = randomUUID();
+      /** @type {string} */
+      let prompt;
+      const promptStarted = Date.now();
+      if (isReflectionCompanion) {
+        prompt = buildReflectionCompanionPrompt({
+          answers: reflectionAnswers,
+          locale
+        });
+      } else {
+        prompt = buildCompanionL2Prompt({
+          text,
+          locale,
+          history: Array.isArray(payload.history) ? payload.history : [],
+          memorySummaries: retrievedSummaries,
+          patternInsights: Array.isArray(payload.patternInsights)
+            ? payload.patternInsights
+            : [],
+          observeRetryHint: attempt > 0 ? L3_OBSERVE_RETRY_AVOID_CLICHE : ''
+        });
       }
-      return timed;
-    });
-    const ev = await this._queue;
-    const raw = ev?.event === 'generated' ? ev.text : '';
-    const sanitizeStarted = Date.now();
-    const sanitized = sanitizeCompanionL2Reply(raw, {
-      priorReplies: priorRepeatableYinRepliesFromHistory(payload.history),
-      userText: text
-    });
-    const sanitizeMs = Date.now() - sanitizeStarted;
+      promptBuildMs = Date.now() - promptStarted;
+      this._queue = this._queue.then(async () => {
+        const done = new Promise((resolve) => {
+          this._generateWaiters.set(id, resolve);
+        });
+        this._write(
+          `generate ${JSON.stringify({ id, prompt, maxTokens: L2_MAX_TOKENS })}`
+        );
+        const timed = await Promise.race([
+          done,
+          new Promise((resolve) => {
+            setTimeout(() => resolve({ event: 'timeout' }), L2_GENERATE_TIMEOUT_MS);
+          })
+        ]);
+        if (timed?.event === 'timeout') {
+          this._generateWaiters.delete(id);
+        }
+        return timed;
+      });
+      ev = await this._queue;
+      raw = ev?.event === 'generated' ? ev.text : '';
+      const sanitizeStarted = Date.now();
+      sanitized = sanitizeCompanionL2Reply(raw, {
+        priorReplies: priorRepeatableYinRepliesFromHistory(payload.history),
+        userText: text
+      });
+      sanitizeMs = Date.now() - sanitizeStarted;
+      if (!sanitized) {
+        lastReason = ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned';
+        break;
+      }
+      if (!observeWing) break;
+      const cliche = await this._scoreObserveClicheReply(sanitized);
+      if (!cliche.flagged) break;
+      lastReason = 'observe_cliche';
+      sanitized = null;
+    }
+
     const model = this._modelTimingFromChildEvent(ev);
     const timing = {
       wallMs: Date.now() - wallStarted,
@@ -421,12 +466,49 @@ export class CompanionL1Runtime {
       raw: String(raw || '').slice(0, 400),
       reply: sanitized,
       ok: Boolean(sanitized),
-      reason: sanitized ? 'ok' : ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned',
+      reason: sanitized ? 'ok' : lastReason,
       timing
     };
     await this._appendTurnLog(record);
     if (!sanitized) return { ok: false, reason: record.reason, timing };
     return { ok: true, text: sanitized, timing };
+  }
+
+  /**
+   * Score an observe reply against the cliché bank. Skip if embedding is not ready
+   * so generate never waits on a cold download.
+   * @param {string} reply
+   * @returns {Promise<{ flagged: boolean, skipped?: boolean }>}
+   */
+  async _scoreObserveClicheReply(reply) {
+    if (!this._embeddingShadowGate.isReady()) {
+      return { flagged: false, skipped: true };
+    }
+    const id = randomUUID();
+    this._queue = this._queue.then(async () => {
+      const done = new Promise((resolve) => {
+        this._observeClicheWaiters.set(id, resolve);
+      });
+      this._write(`score-observe-cliche ${JSON.stringify({ id, text: reply })}`);
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(() => resolve({ event: 'timeout' }), 8_000);
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._observeClicheWaiters.delete(id);
+      }
+      return timed;
+    });
+    const scored = await this._queue;
+    if (scored?.event === 'observe_cliche_scored' && scored.skipped) {
+      return { flagged: false, skipped: true };
+    }
+    if (scored?.event === 'observe_cliche_scored') {
+      return { flagged: Boolean(scored.flagged), skipped: false };
+    }
+    return { flagged: false, skipped: true };
   }
 
   /**
