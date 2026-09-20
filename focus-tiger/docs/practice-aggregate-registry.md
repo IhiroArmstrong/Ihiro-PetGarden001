@@ -70,8 +70,8 @@ Sources that **should** feed cumulative practice metrics (via the shared write h
 | `confide-practice-facts-compare` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `tip-kindness-badges` | P0 | 2 | ok | `src/core/tipKindnessBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `sanctuary-badges` | P0 | 2 | ok | `src/core/sanctuaryBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `mustard-seed-seal-score` | P0 | 2 | ok | `src/core/mustardSeedSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `contemplative-archive-seal-score` | P0 | 2 | ok | `src/core/contemplativeArchiveSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `mustard-seed-seal-score` | P0 | 4 | ok | `src/core/mustardSeedSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `contemplative-archive-seal-score` | P0 | 4 | ok | `src/core/contemplativeArchiveSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `collections-behavioral-scarcity` | P1 | — | ok | `src/core/collectionsBehavioralScarcity.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `mustard-seed-seal-ceremony` | P1 | 3 | ok | `src/main.js` | `maybeOfferGrowthSealAfterBaselineCeremony` `shouldOfferMustardSeedSealAfterCeremony(` `shouldOfferContemplativeArchiveSealAfterCeremony(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `focus-coins-redeem` | P1 | 2 | wire-only | `src/core/focusCoinsRedeem.js` | `resolvePracticeAggregate(` | — |

@@ -11,6 +11,7 @@
  */
 
 import { CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES } from './memorialSealCatalogCa.js';
+import { PRACTICE_SCORE_21_THRESHOLD } from './MILESTONE_CATALOG.js';
 
 /** @typedef {'stillness' | 'smallness-vastness' | 'time-continuity' | 'imperfection-return'} MemorialSealToneTag */
 
@@ -57,7 +58,7 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     catalogId: 'MS-01',
     id: MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
-    scoreThreshold: 21,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
     poemZh: Object.freeze([
       '大鵬展翅九萬里，',
       '十方世界共菩提。',
@@ -87,7 +88,7 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     catalogId: 'MS-02',
     id: MEMORIAL_SEAL_ENTRY_HERO,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
-    scoreThreshold: 21,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
     poemZh: Object.freeze([
       '山海奇雲風幡舞，',
       '紅塵如電亦如露。',
@@ -117,7 +118,7 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     catalogId: 'MS-03',
     id: MEMORIAL_SEAL_ENTRY_NO_TRACE,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
-    scoreThreshold: 21,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
     poemZh: Object.freeze([
       '乾坤縱橫九萬里，',
       '芥子唯微納須彌。',

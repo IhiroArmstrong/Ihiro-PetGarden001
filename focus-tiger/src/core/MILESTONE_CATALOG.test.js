@@ -17,7 +17,13 @@ import {
   getMilestoneCatalogEntryByLegacyId,
   isCatalogMilestoneMet,
   MILESTONE_CATALOG,
+  PRACTICE_SCORE_21_THRESHOLD,
 } from './MILESTONE_CATALOG.js';
+import {
+  listMemorialSealEntriesForScene,
+  MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
+  memorialSealSceneUnlockThreshold
+} from './memorialSealDirectory.js';
 import { MILESTONE_GLOW_STREAK_NODES, resolveMilestoneGlowNodeId } from './MilestoneGlowStore.js';
 import {
   countRecentPracticeStreak,
@@ -90,14 +96,26 @@ describe('MILESTONE_CATALOG static rows', () => {
     }
   });
 
-  it('mustard score gate references the same threshold constant', () => {
+  it('mustard score gate references catalog SSOT threshold', () => {
     const entry = getMilestoneCatalogEntryByLegacyId(
       'mustard-seal',
       'mustard-seed-sumeru'
     );
     assert.equal(entry?.id, 'practice-score-21');
-    assert.equal(entry?.predicate.score, MUSTARD_SEED_SEAL_SCORE_THRESHOLD);
-    assert.equal(MUSTARD_SEED_SEAL_SCORE_THRESHOLD, 21);
+    assert.equal(entry?.predicate.score, PRACTICE_SCORE_21_THRESHOLD);
+    assert.equal(MUSTARD_SEED_SEAL_SCORE_THRESHOLD, PRACTICE_SCORE_21_THRESHOLD);
+  });
+
+  it('memorial directory mustard-seed scene reads catalog threshold (Batch 4)', () => {
+    const scene = listMemorialSealEntriesForScene(MEMORIAL_SEAL_SCENE_MUSTARD_SEED);
+    assert.ok(scene.length >= 1);
+    assert.ok(
+      scene.every((entry) => entry.scoreThreshold === PRACTICE_SCORE_21_THRESHOLD)
+    );
+    assert.equal(
+      memorialSealSceneUnlockThreshold(MEMORIAL_SEAL_SCENE_MUSTARD_SEED),
+      PRACTICE_SCORE_21_THRESHOLD
+    );
   });
 });
 

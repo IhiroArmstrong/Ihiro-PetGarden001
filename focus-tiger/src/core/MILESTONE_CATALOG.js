@@ -9,10 +9,10 @@
  * PO lock: `docs/task-briefs/task-shared-milestone-catalog.md` (#894).
  * Batch 1: module + parity tests. Batch 2: Glow resolve/claim wired to catalog.
  * Batch 3: Journey comments + sync/reconcile parity tests; legacy memory ids unchanged.
+ * Batch 4: mustard-seal / memorial directory read `PRACTICE_SCORE_21_THRESHOLD` from here.
  */
 
 import { computePracticeScore } from './practiceBadgeAward.js';
-import { MUSTARD_SEED_SEAL_SCORE_THRESHOLD } from './mustardSeedSeal.js';
 import { bloomCountForMinutes } from './lotusPondMath.js';
 import { PRACTICE_BASELINE_SOURCE_IDS } from './practiceAggregate.js';
 import {
@@ -81,6 +81,15 @@ export const MILESTONE_SURFACE_TAGS = Object.freeze([
  * }} MilestoneEvaluationContext
  */
 
+/** Catalog id for unified practice score unlock (mustard-seal + score surfaces). */
+export const PRACTICE_SCORE_21_CATALOG_ID = 'practice-score-21';
+
+/**
+ * SSOT numeric gate for mustard-seal scene and score scarcity copy.
+ * Memorial directory entries reference this constant — no third literal `21`.
+ */
+export const PRACTICE_SCORE_21_THRESHOLD = 21;
+
 /** @type {readonly MilestoneCatalogEntry[]} */
 export const MILESTONE_CATALOG = Object.freeze([
   Object.freeze({
@@ -108,10 +117,10 @@ export const MILESTONE_CATALOG = Object.freeze([
     copyPolicy: Object.freeze({ glow: 'ritual', journey: 'witness' })
   }),
   Object.freeze({
-    id: 'practice-score-21',
+    id: PRACTICE_SCORE_21_CATALOG_ID,
     predicate: {
       type: 'practice-score-at-least',
-      score: MUSTARD_SEED_SEAL_SCORE_THRESHOLD
+      score: PRACTICE_SCORE_21_THRESHOLD
     },
     origin: 'practice-score',
     surfaces: Object.freeze(['mustard-seal', 'score']),
