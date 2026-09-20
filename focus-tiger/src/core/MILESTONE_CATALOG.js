@@ -10,6 +10,7 @@
  * Batch 1: module + parity tests. Batch 2: Glow resolve/claim wired to catalog.
  * Batch 3: Journey comments + sync/reconcile parity tests; legacy memory ids unchanged.
  * Batch 4: mustard-seal / memorial directory read `PRACTICE_SCORE_21_THRESHOLD` from here.
+ * Batch 5: imprint + Collections scarcity derive catalog ids from surface tags (no parallel minute table).
  */
 
 import { computePracticeScore } from './practiceBadgeAward.js';
@@ -182,6 +183,29 @@ export const MILESTONE_CATALOG = Object.freeze([
     surfaces: Object.freeze(['imprint'])
   })
 ]);
+
+/** Surface tags for Yin's Collections scarcity memorial rows (score gate + imprint tiers). */
+export const COLLECTIONS_SCARCITY_SURFACE_TAGS = Object.freeze(['score', 'imprint']);
+
+/**
+ * Catalog ids for Collections scarcity memorial section — catalog order, no parallel list.
+ * @returns {readonly string[]}
+ */
+export function listMilestoneCatalogIdsForCollectionsScarcity() {
+  return MILESTONE_CATALOG.filter((row) =>
+    COLLECTIONS_SCARCITY_SURFACE_TAGS.some((tag) => row.surfaces.includes(tag))
+  ).map((row) => row.id);
+}
+
+/**
+ * Catalog ids for practice imprint awards (subset of scarcity imprint tiers).
+ * @returns {readonly string[]}
+ */
+export function listMilestoneCatalogIdsForImprint() {
+  return MILESTONE_CATALOG.filter((row) => row.surfaces.includes('imprint')).map(
+    (row) => row.id
+  );
+}
 
 /** Glow streak nodes derived from catalog (SSOT for 7/21/100 legacy ids). */
 export const MILESTONE_GLOW_STREAK_NODES = Object.freeze(

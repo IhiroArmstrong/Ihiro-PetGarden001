@@ -110,12 +110,13 @@ export const PRACTICE_AGGREGATE_CONSUMER_ROWS = Object.freeze([
     id: 'collections-behavioral-scarcity',
     feature: "Collections · behavioral scarcity memorial copy",
     priority: 'P1',
-    fixBatch: null,
+    fixBatch: 5,
     coverageStatus: 'ok',
     moduleRelPath: 'src/core/collectionsBehavioralScarcity.js',
     codeAnchors: Object.freeze(['resolvePracticeAggregate(']),
     reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS]),
-    notes: 'Read-only UI copy; MILESTONE_CATALOG predicates; no Journey reads'
+    notes:
+      'Batch 5: catalog ids from score+imprint surfaces; predicates via MILESTONE_CATALOG only'
   }),
   Object.freeze({
     id: 'mustard-seed-seal-ceremony',
@@ -136,7 +137,7 @@ export const PRACTICE_AGGREGATE_CONSUMER_ROWS = Object.freeze([
     id: 'practice-imprint-badges',
     feature: 'Practice Imprint · lifetime minute awards',
     priority: 'P1',
-    fixBatch: null,
+    fixBatch: 5,
     coverageStatus: 'ok',
     moduleRelPath: 'src/core/practiceImprint.js',
     codeAnchors: Object.freeze([
@@ -144,7 +145,8 @@ export const PRACTICE_AGGREGATE_CONSUMER_ROWS = Object.freeze([
       'syncPracticeImprintAwards('
     ]),
     reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS]),
-    notes: 'MILESTONE_CATALOG imprint rows; monotonic imprintIds storage'
+    notes:
+      'Batch 5: imprint catalog ids + minute thresholds from MILESTONE_CATALOG only'
   }),
   Object.freeze({
     id: 'practice-imprint-ceremony',

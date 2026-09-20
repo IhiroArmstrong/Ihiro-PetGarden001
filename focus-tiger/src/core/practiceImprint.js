@@ -6,14 +6,14 @@
 /**
  * Practice Imprint (修行纪念印) — cumulative lifetime-minute badges.
  *
- * SSOT thresholds: `MILESTONE_CATALOG` imprint rows (600 / 3000 / 10800 minutes).
+ * SSOT thresholds: `MILESTONE_CATALOG` imprint surface rows (`lifetime-minutes-at-least`).
  * Brief: `docs/task-briefs/task-practice-imprint-badges.md`.
  */
 
 import {
   getMilestoneCatalogEntry,
   isCatalogMilestoneMet,
-  MILESTONE_CATALOG
+  listMilestoneCatalogIdsForImprint
 } from './MILESTONE_CATALOG.js';
 import {
   buildCollectionsScarcityEvaluationContext,
@@ -32,9 +32,7 @@ export const PRACTICE_IMPRINT_BODY_CLASS = 'ft-practice-imprint-open';
 
 /** @type {readonly string[]} */
 export const PRACTICE_IMPRINT_CATALOG_IDS = Object.freeze(
-  MILESTONE_CATALOG.filter((row) => row.surfaces?.includes('imprint')).map(
-    (row) => row.id
-  )
+  listMilestoneCatalogIdsForImprint()
 );
 
 /** Reuse scarcity memorial name keys — no parallel minute table. */
