@@ -7,7 +7,8 @@
  * Stage 2 live coarse override. Safety / aggression never move.
  * Only production change: semantic functional + literal emotion → fallback
  * so practice_facts / hybrid / honesty can run. Emotional gray still generates
- * (observe wing). Embed failure keeps the literal route.
+ * (observe wing). Embed not-ready / failure keeps the literal route; live
+ * must not wait for cold load.
  */
 
 import {
@@ -23,6 +24,16 @@ import {
 export const CONFIDE_STAGE2_OVERRIDE = Object.freeze({
   EMOTION_FALSE_POSITIVE: 'emotion_false_positive'
 });
+
+/**
+ * Live classify may run only when the embedding gate is already ready.
+ * unknown / loading / error → fail-open to the literal route (no wait).
+ * @param {string | null | undefined} gateState
+ * @returns {boolean}
+ */
+export function shouldAwaitConfideSemanticLiveClassify(gateState) {
+  return gateState === 'ready';
+}
 
 /**
  * @param {{

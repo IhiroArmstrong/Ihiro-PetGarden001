@@ -95,7 +95,7 @@
 
 | 参数 | 默认 | 环境变量 | 说明 |
 |---|---|---|---|
-| `mode` | `live` | `FT_CONFIDE_SEMANTIC_ROUTING` | Electron Stage 2：`live`（默认）切真路由；`shadow` / `off` / `stage1` 回滚只记日志 |
+| `mode` | `live` | `FT_CONFIDE_SEMANTIC_ROUTING` | Electron Stage 2：`live`（默认）切真路由；embedding 未 ready 立刻字面 fail-open；`shadow` / `off` / `stage1` 回滚只记日志 |
 | `grayMargin` | `0.08` | `FT_CONFIDE_SEMANTIC_GRAY_MARGIN` | \|scoreA − scoreB\| 低于此值判 `gray` |
 | `topK` | `3` | `FT_CONFIDE_SEMANTIC_TOP_K` | 每库取 top-k 相似度均值 |
 

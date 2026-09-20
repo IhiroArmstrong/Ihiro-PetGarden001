@@ -13,10 +13,19 @@ import {
 } from './confideSemanticRoutingConfig.js';
 import {
   CONFIDE_STAGE2_OVERRIDE,
-  applyConfideStage2Route
+  applyConfideStage2Route,
+  shouldAwaitConfideSemanticLiveClassify
 } from './confideSemanticStage2.js';
 
 describe('confide semantic Stage 2 live override', () => {
+  it('does not await live classify until embedding is already ready', () => {
+    assert.equal(shouldAwaitConfideSemanticLiveClassify('ready'), true);
+    assert.equal(shouldAwaitConfideSemanticLiveClassify('unknown'), false);
+    assert.equal(shouldAwaitConfideSemanticLiveClassify('loading'), false);
+    assert.equal(shouldAwaitConfideSemanticLiveClassify('error'), false);
+    assert.equal(shouldAwaitConfideSemanticLiveClassify(null), false);
+  });
+
   it('defaults to live and rolls back with FT_CONFIDE_SEMANTIC_ROUTING=shadow', () => {
     assert.equal(resolveConfideSemanticRoutingMode({}), CONFIDE_SEMANTIC_ROUTING_MODE.LIVE);
     assert.equal(

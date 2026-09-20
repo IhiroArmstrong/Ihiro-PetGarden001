@@ -655,8 +655,9 @@ export class CompanionL1Runtime {
   }
 
   /**
-   * Stage 2 live classify. Awaits embedding. Does not write turns.jsonl
-   * (post-reply shadow reuses the cache). Fail-open: caller keeps literal route.
+   * Stage 2 live classify. Only awaits when embedding is already ready.
+   * Does not write turns.jsonl (post-reply shadow reuses the cache).
+   * Fail-open: not-ready / error keeps the literal route; does not wait for cold load.
    * @returns {Promise<{
    *   ok: boolean,
    *   bucket: string | null,
@@ -685,6 +686,20 @@ export class CompanionL1Runtime {
     const literalCoarse =
       typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
     if (!text) return { ok: false, reason: 'empty_text', bucket: null };
+
+    const gate = this._embeddingShadowGate;
+    if (!gate.isReady()) {
+      if (gate.shouldRequestEnsure()) {
+        try {
+          if (!this.child) this._spawnIfNeeded();
+          gate.markLoading();
+          this._write('ensure-embedding');
+        } catch {
+          return { ok: false, reason: 'embed_failed', bucket: null };
+        }
+      }
+      return { ok: false, reason: 'embed_not_ready', bucket: null };
+    }
 
     const pending = this._shadowQueue.then(() =>
       this._runSemanticShadowClassify({

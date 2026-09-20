@@ -1052,7 +1052,9 @@ export class ConfideToYinUI {
   }
 
   /**
-   * Stage 2 live: wait for embedding coarse bucket, then the same handler chain.
+   * Stage 2 live: if embedding is already ready, take the coarse bucket then
+   * the same handler chain. If not ready, IPC returns immediately and the
+   * literal route is kept (no cold-load wait).
    * @param {string} text
    * @param {{ route: string, line: object }} hit
    */
