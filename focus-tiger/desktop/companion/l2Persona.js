@@ -33,6 +33,13 @@ export const L3_OBSERVE_NO_FIRST_PERSON_CUB_BODY =
 export const L3_OBSERVE_HEAR_QUESTION =
   'If the latest line is a question to you, notice the question; do not treat it as a mood or fill the page with presence.';
 
+/** PO 2026-09-20: caring questions are legal observe-wing forms, not advice. */
+export const L3_OBSERVE_CARING_QUESTION =
+  'You may occasionally ask one short caring question (are you okay, want to say more) instead of only body-language. Not every turn. Still no advice, no you-should, no problem-solving.';
+
+export const L3_OBSERVE_RETRY_AVOID_CLICHE =
+  'This retry: do not use stock cub-body filler (ears, tail, paws, whiskers) or a stock are-you-okay line. Stay with THIS user line.';
+
 /** Chat-wing generate: answer the question instead of cub-theater observe. */
 export const L3_CHAT_ANSWER_THE_LINE =
   'This latest User line is conversation, not a mood to observe. Answer that line in one or two short sentences, as a companion in the same chat.';
@@ -183,7 +190,8 @@ export function buildCompanionL2Prompt({
   history = [],
   memorySummaries = [],
   patternInsights = [],
-  promptFamily = L0_PROMPT_FAMILY
+  promptFamily = L0_PROMPT_FAMILY,
+  observeRetryHint = ''
 } = {}) {
   const lang = LANG[locale] || LANG.en;
   const memories = Array.isArray(memorySummaries)
@@ -230,9 +238,11 @@ export function buildCompanionL2Prompt({
         L3_OBSERVE_STAY_SPECIFIC,
         L3_OBSERVE_NO_SUBSTITUTE,
         L3_OBSERVE_NO_FIRST_PERSON_CUB_BODY,
+        L3_OBSERVE_CARING_QUESTION,
         L3_OBSERVE_HEAR_QUESTION,
-        'Do not answer with only still, watching, here, quiet, or listening presence.'
-      ];
+        'Do not answer with only still, watching, here, quiet, or listening presence.',
+        typeof observeRetryHint === 'string' ? observeRetryHint.trim() : ''
+      ].filter(Boolean);
   return joinL3PromptLines(
     [
       `You are Yin, a young tiger cub sitting in quiet company. Reply in ${lang}.`,
