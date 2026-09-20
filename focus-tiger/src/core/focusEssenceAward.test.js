@@ -5,6 +5,9 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { COMPANION_MODE_STAY } from './FocusSession.js';
 import { PracticeDaysStore, shiftLocalDateKey } from './PracticeDaysStore.js';
 import { getLocalDateKey } from '../utils/localDate.js';
@@ -181,5 +184,27 @@ describe('focusEssenceAward L1', () => {
   it('storage key is distinct from focus coins', () => {
     assert.equal(FOCUS_ESSENCE_STORAGE_KEY, 'focus-tiger.focus-essence.v1');
     assert.notEqual(FOCUS_ESSENCE_STORAGE_KEY, FOCUS_COINS_STORAGE_KEY);
+  });
+
+  it('main.js dual-writes essence on awardFocusCoins and breath micro-ritual', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, '../main.js'), 'utf8');
+    const awardStart = src.indexOf('function awardFocusCoins(event)');
+    const awardEnd = src.indexOf('function resetFocusCoinsSession()');
+    assert.ok(awardStart >= 0 && awardEnd > awardStart);
+    const awardBody = src.slice(awardStart, awardEnd);
+    assert.ok(awardBody.includes('applyFocusEssenceGrant'));
+    assert.ok(awardBody.includes('isFocusEssenceAwardEnabled'));
+    const resetStart = awardEnd;
+    const resetEnd = src.indexOf('const lotusPondStore = new LotusPondStore()');
+    assert.ok(resetEnd > resetStart);
+    const resetBody = src.slice(resetStart, resetEnd);
+    assert.ok(resetBody.includes('maybeResetFocusEssenceSession'));
+    const microStart = src.indexOf('function completeMicroRitual()');
+    const microEnd = src.indexOf('function leaveMicroRitualQuietly()');
+    assert.ok(microStart >= 0 && microEnd > microStart);
+    const microBody = src.slice(microStart, microEnd);
+    assert.ok(microBody.includes('applyBreathPracticeFocusEssenceGrant'));
+    assert.equal(microBody.includes('markLifetime'), false);
   });
 });

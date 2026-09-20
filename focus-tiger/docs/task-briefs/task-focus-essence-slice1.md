@@ -1,6 +1,6 @@
 # Task Brief · Focus Essence Slice 1（L0 ledger + store + award helpers）
 
-> **状态**：Slice 1 实现中 · **无 UI · 不挂 main.js**  
+> **状态**：Slice 1 **已合**（#896）· Slice 2 **实现中**（`main.js` 双写，见 `feature-focus-essence-store-slice2.md`）· **无 UI**  
 > **权威**：[`planning/focus-essence-coin-split-audit.md`](../planning/focus-essence-coin-split-audit.md)（PO 2026-09-20 已锁）· `GROWTH_METRICS_CHARTER.md` · `FOCUS_COINS.md`（Coin 侧不动）  
 > **性质**：数据模型层 Essence 轨首片；与 Coin **同事件同点数同封顶**；**零用户可见面**  
 > **禁止**：Coin↔Essence 兑换 · Essence 消费 SKU · Essence UI/HUD/toast · 改 `evaluateFocusCoinRedeem` · 与 `?focusCoins=0` 共用 gate · 回溯历史 Coin grant
