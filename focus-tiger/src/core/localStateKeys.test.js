@@ -90,6 +90,10 @@ import { CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY } from './contemplativeArchiveSe
 import { DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY } from './dailyZenQuote.js';
 import { IDLE_COMPANION_PIP_STORAGE_KEY } from './idleCompanionPipGate.js';
 import { FOCUS_COINS_STORAGE_KEY, FocusCoinsStore } from './focusCoinsStore.js';
+import {
+  FOCUS_ESSENCE_STORAGE_KEY,
+  FocusEssenceStore
+} from './FocusEssenceStore.js';
 import { YPE_COMPANION_STYLE_STORAGE_KEY } from './yinPersonalizationEngine.js';
 import { YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY } from './ypeCloudPersonalizationConsent.js';
 import { YPE_PERSONALIZATION_PACK_STORAGE_KEY } from './ypePersonalizationPack.js';
@@ -200,6 +204,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
   IDLE_COMPANION_PIP_STORAGE_KEY,
   FOCUS_COINS_STORAGE_KEY,
+  FOCUS_ESSENCE_STORAGE_KEY,
   YPE_COMPANION_STYLE_STORAGE_KEY,
   YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY,
   YPE_PERSONALIZATION_PACK_STORAGE_KEY,
@@ -270,6 +275,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   const dirtyCoins = new FocusCoinsStore({ storage });
   dirtyCoins.commitGrant({ points: 5 });
   assert.equal(dirtyCoins.getBalance(), 5);
+
+  const dirtyEssence = new FocusEssenceStore({ storage });
+  dirtyEssence.commitGrant({ points: 7 });
+  assert.equal(dirtyEssence.getTotal(), 7);
 
   const dirtyBridge = new HonestyBridgeStore({ storage });
   dirtyBridge.markShown();
@@ -344,6 +353,9 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   assert.equal(freshCoins.getBalance(), 0);
   assert.deepEqual(freshCoins.getSnapshot().ownedIds, []);
   assert.equal(freshCoins.getSnapshot().equippedTitle, null);
+
+  const freshEssence = new FocusEssenceStore({ storage });
+  assert.equal(freshEssence.getTotal(), 0);
 
   const freshBridge = new HonestyBridgeStore({ storage });
   assert.equal(freshBridge.hasShownToday(), false);

@@ -25,6 +25,8 @@ import {
   applyBreathPracticeFocusEssenceGrant,
   maybeResetFocusEssenceSession
 } from './focusEssenceAward.js';
+import { FOCUS_TIGER_LOCAL_STORAGE_KEYS } from './localStateKeys.js';
+import { PRACTICE_BACKUP_STORE_KEYS } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   FOCUS_COINS_STORAGE_KEY,
   FocusCoinsStore
@@ -181,9 +183,11 @@ describe('focusEssenceAward L1', () => {
     assert.equal(store.getSnapshot().essenceTotal, 3);
   });
 
-  it('storage key is distinct from focus coins', () => {
+  it('storage key is distinct from focus coins and on L-01 + backup v6 whitelist', () => {
     assert.equal(FOCUS_ESSENCE_STORAGE_KEY, 'focus-tiger.focus-essence.v1');
     assert.notEqual(FOCUS_ESSENCE_STORAGE_KEY, FOCUS_COINS_STORAGE_KEY);
+    assert.equal(FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes(FOCUS_ESSENCE_STORAGE_KEY), true);
+    assert.equal(PRACTICE_BACKUP_STORE_KEYS.includes(FOCUS_ESSENCE_STORAGE_KEY), true);
   });
 
   it('main.js dual-writes essence on awardFocusCoins and breath micro-ritual', () => {

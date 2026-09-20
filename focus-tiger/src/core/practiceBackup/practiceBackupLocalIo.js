@@ -18,6 +18,7 @@ import {
   PRACTICE_BACKUP_V1_STORE_KEYS,
   PRACTICE_BACKUP_V3_STORE_KEYS,
   PRACTICE_BACKUP_V4_STORE_KEYS,
+  PRACTICE_BACKUP_V5_STORE_KEYS,
   practiceBackupStoreKeysForSchemaVersion,
   stringifyPracticeBackupStorageValue,
   parsePracticeBackupStorageRaw,
@@ -90,6 +91,7 @@ export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'tip_kindness_badges', storeKey: 'focus-tiger.tip-jar.v1' },
   { id: 'sanctuary_badges', storeKey: 'focus-tiger.sanctuary-entitlement.v1' },
   { id: 'focus_coins', storeKey: 'focus-tiger.focus-coins.v1' },
+  { id: 'focus_essence', storeKey: 'focus-tiger.focus-essence.v1' },
   { id: 'milestone_glow', storeKey: 'focus-tiger.milestone-glow.v1' },
   { id: 'entitlement_ownership', storeKey: 'focus-tiger.entitlement-ownership.v1' },
   { id: 'ritual_completions', storeKey: 'focus-tiger.ritual-completions.v1' },
@@ -305,13 +307,37 @@ export function migratePracticeSnapshot(snapshot, fromVersion, toVersion) {
         : {};
     /** @type {Record<string, unknown | null>} */
     const stores = {};
-    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+    for (const key of PRACTICE_BACKUP_V5_STORE_KEYS) {
       stores[key] = key in storesIn ? storesIn[key] ?? null : null;
     }
     return {
       ok: true,
       snapshot: {
         schemaVersion: 5,
+        savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
+        stores,
+        companionFiles: o.companionFiles ?? null
+      }
+    };
+  }
+  if (fromVersion === 5 && toVersion === 6) {
+    if (!snapshot || typeof snapshot !== 'object') {
+      return { ok: false, reason: 'not_object' };
+    }
+    const o = /** @type {Record<string, unknown>} */ (snapshot);
+    const storesIn =
+      o.stores && typeof o.stores === 'object' && !Array.isArray(o.stores)
+        ? /** @type {Record<string, unknown>} */ (o.stores)
+        : {};
+    /** @type {Record<string, unknown | null>} */
+    const stores = {};
+    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+      stores[key] = key in storesIn ? storesIn[key] ?? null : null;
+    }
+    return {
+      ok: true,
+      snapshot: {
+        schemaVersion: 6,
         savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
         stores,
         companionFiles: o.companionFiles ?? null
@@ -398,6 +424,10 @@ export function countPracticeStoreEntries(storeKey, val) {
       }
       const owned = /** @type {{ ownedIds?: unknown }} */ (val).ownedIds;
       return Array.isArray(owned) ? owned.length : 0;
+    }
+    case 'focus-tiger.focus-essence.v1': {
+      const total = Number(/** @type {{ essenceTotal?: unknown }} */ (val).essenceTotal);
+      return Number.isFinite(total) && total > 0 ? Math.floor(total) : 0;
     }
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':

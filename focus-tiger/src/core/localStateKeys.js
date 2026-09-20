@@ -62,6 +62,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.idle-companion-pip.v1',
   'focus-tiger.brand-yin-way-first-reflect.v1',
   'focus-tiger.focus-coins.v1',
+  'focus-tiger.focus-essence.v1',
   'focus-tiger.ype-companion-style.v1',
   'focus-tiger.ype-cloud-personalization-consent.v1',
   'focus-tiger.ype-personalization-pack.v1',
