@@ -40,13 +40,14 @@
 
 > **SSOT**：`task-briefs/task-confide-aggression-toward-others.md` · 关键词：`confideAggressionKeywords.js`（EN 规则）。  
 > **红线**：禁 `Heard` / 点头描写 / 危机转介。`review: ok` 前不得对用户可见挂载。  
-> **扩池门禁**：上线前须 ≥4 条审定文案（03/04 为分析师方向草稿 · 2026-09-05，仍 `draft`）。
+> **扩池门禁**：上线前须 ≥4 条审定文案（03/04 为分析师方向草稿 · 2026-09-05，仍 `draft`）。  
+> **ja 母语审**：`task-briefs/task-confide-aggression-ja-native-review.md`（`aggression-02` 首选 · 含禁打/击词根约束）。
 
 | id | zh | en | ja | review |
 |---|---|---|---|---|
-| aggression-02 | 一定有什么让你很难受。 | Something's really gotten to you. | 何かが、とてもきつくのたたいている。 | **draft（首选）** |
-| aggression-01 | 听起来你背负了很多怒气。 | That sounds like a lot of anger to carry. | 重い怒りを、抱えきれないほど持っているように聞こえる。 | **draft（备选）** |
-| aggression-03 | 这确实是个沉重的念头。 | That's a heavy thing to be sitting with. | 重い思いと、いま一緒にいるのだね。 | **draft（重量·不贴情绪标签）** |
+| aggression-02 | 一定有什么让你很难受。 | Something's really gotten to you. | 何かが、ずいぶんこたえているんだね。 | **draft（首选）· ja 2026-09-20 PO 改稿（避打/击词根）** |
+| aggression-01 | 听起来你背负了很多怒气。 | That sounds like a lot of anger to carry. | 重い怒りを抱えているように聞こえる。 | **draft（备选）· ja 2026-09-20 PO 收语气** |
+| aggression-03 | 这确实是个沉重的心情。 | That's a heavy thing to be sitting with. | 重い思いと、いま一緒にいるのだね。 | **draft（重量·不贴情绪标签）· zh 2026-09-20 PO 改稿** |
 | aggression-04 | 寅仍在这里，不会走开。 | Yin isn't going anywhere. | 寅は、どこにも行かない。 | **draft（纯在场·对齐动画 A）** |
 
 > 句库 overlay 白名单仍 19 条；本池 id **不进**云 overlay，直至产品审定。

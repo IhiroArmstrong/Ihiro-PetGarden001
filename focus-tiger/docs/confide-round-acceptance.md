@@ -42,7 +42,7 @@
 | 问题 | 建议 |
 |---|---|
 | Electron 聊 **100 句**够决定 Stage 2 切真路由吗？ | **不够。** 本表 100 句只锁 **regex 肉测终止**。Stage 2 另走两条自动化，**不与真实聊句数绑死**。 |
-| Stage 2 拍板看什么？ | **离线（Prompt 7）**：`npm run test:confide-semantic-acceptance` → A/B 库各 50 + 3 锚点全绿（实验室/夜间 · 真 GGUF · **不进** `test:smoke`）。**真实日志（Prompt 8）**：脚本报 N、D、D÷N 并导出分歧 CSV；**不设 N 硬下限**。人工标「有利分歧」建议 ≥30 后 **PO 拍板**。脚本与 Agent **不得**写「够不够切 Stage 2」。 |
+| Stage 2 拍板看什么？ | **离线（Prompt 7）**：`npm run test:confide-semantic-acceptance` → A/B 库各 50 + 3 锚点全绿（实验室/夜间 · 真 GGUF · **不进** `test:smoke`）。**真实日志（Prompt 8）**：`npm run audit:confide-semantic-shadow` 报 N、D、D÷N 并导出分歧 CSV；**不设 N 硬下限**。人工标「有利分歧」建议 ≥30 后 **PO 拍板**。脚本与 Agent **不得**写「够不够切 Stage 2」。 |
 | 有利分歧不够 30 怎么办？ | 继续后台攒影子日志。80 条里够 30、或 500 条才够 30，都可以；分歧本应是少数（约 5–15%），不是健康系统的多数事件。 |
 | 还要肉测吗？ | **regex 关单** = 本表 100/100；**语义离线** = Prompt 7 命令；**影子评估** = Prompt 8 导出 + 人工标注。三条线并行、门槛不同。 |
 | 影子锚点句 | 本表已含 **累积了多久** · **忙啥** · **忙什么** · **我累计练习多久了**。Prompt 7 对前三句单独标红；发过后也可查 `semantic_shadow_classify` 是否写入且 `text` 可读。 |
