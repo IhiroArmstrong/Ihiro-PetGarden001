@@ -12,6 +12,7 @@
     "test:confide-acceptance": "node scripts/run-confide-acceptance.js",
     "test:confide-semantic-acceptance": "npm --prefix desktop run companion:semantic-acceptance",
     "audit:stage2-synonym-screen": "npm --prefix desktop run companion:stage2-synonym-screen",
+    "audit:favorable-disagreement-mill": "npm --prefix desktop run companion:favorable-disagreement-mill",
     "docs:check": "node scripts/docs-check.js",
     "copyright:header-check": "node scripts/copyright-header.js",
     "copyright:header-write": "node scripts/copyright-header.js --write",
