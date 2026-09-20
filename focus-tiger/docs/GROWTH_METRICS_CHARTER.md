@@ -60,6 +60,7 @@ Before changing any growth formula or adding a cumulative consumer:
 | `contemplative-archive` | unlock-gate | mixed | caUnlock.v1 | Each CA entry: score ≥ entry.scoreThreshold. |
 | `milestone-glow-streak` | presentation-feedback | consecutive-streak | milestoneGlow.v1 | resolveMilestoneGlowNodeId(recentStreakDays) — orthogonal to practice score. |
 | `focus-coins-earn` | currency | event-driven | focusCoinsL0.v1 | Event grants on completion hooks; Stay 5m=1pt; Across/Honesty 10m=1pt; echo +3. |
+| `focus-essence-earn` | presentation-feedback | event-driven | focusEssenceL0.v1 | Same events/points/caps as focus-coins-earn; writes essenceTotal only; no UI. |
 | `focus-coins-redeem` | unlock-gate | mixed | focusCoinsRedeem.v1 | evaluateFocusCoinRedeem(skuId, context) — coins never satisfy isEntitled. |
 | `celebrating-today` | session-feedback | session | sessionFeedback.v1 | hasCelebratedToday() — not cumulative unlock. |
 
