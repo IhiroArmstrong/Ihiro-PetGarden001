@@ -8,6 +8,7 @@
  *
  * PO lock: `docs/task-briefs/task-shared-milestone-catalog.md` (#894).
  * Batch 1: module + parity tests. Batch 2: Glow resolve/claim wired to catalog.
+ * Batch 3: Journey comments + sync/reconcile parity tests; legacy memory ids unchanged.
  */
 
 import { computePracticeScore } from './practiceBadgeAward.js';

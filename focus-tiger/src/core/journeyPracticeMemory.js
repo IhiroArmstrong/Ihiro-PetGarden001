@@ -8,6 +8,16 @@
  *
  * SSOT: `docs/YIN_EVOLUTION.md` §5–6. Presentation only — no scoreFormula consumer,
  * no popups, no Stage HUD. Persisted inside `focus-tiger.journey-log.v1`.
+ *
+ * Shared milestone catalog (Batch 3): predicate SSOT lives in `MILESTONE_CATALOG.js`.
+ * This module still writes **legacy Journey memory ids** (`streak-7`, not catalog
+ * `consecutive-practice-days-7`) — persisted strings must not change without a remap
+ * Brief. Glow shares the same consecutive-day predicate (J1-a); copyPolicy differs
+ * (witness vs ritual). EN/ZH/JA locale keys may read as "returning" while math is
+ * consecutive practice days — known J-copy gap; do not fix here.
+ *
+ * Parity: `milestoneCatalogBatch3.test.js` + `MILESTONE_CATALOG.test.js` lock sync /
+ * reconcile gates against `catalogJourneyMilestoneMetOnSync` / `catalogJourneyMilestoneFirstHitDate`.
  */
 
 import { bloomCountForMinutes } from './lotusPondMath.js';
@@ -31,7 +41,11 @@ import { getLocalDateKey } from '../utils/localDate.js';
 
 /** @typedef {typeof PRACTICE_BASELINE_SOURCE_IDS[number]} PracticeBaselineSourceId */
 
-/** One-time milestone ids (YIN_EVOLUTION §6 + optional first lotus). */
+/**
+ * One-time milestone ids (YIN_EVOLUTION §6 + optional first lotus).
+ * Legacy surface aliases — each maps to a `MILESTONE_CATALOG` row via
+ * `legacySurfaceIds.journey` (e.g. `streak-7` → `consecutive-practice-days-7`).
+ */
 export const JOURNEY_PRACTICE_MILESTONE_IDS = Object.freeze([
   'first-practice',
   'streak-7',
@@ -42,8 +56,10 @@ export const JOURNEY_PRACTICE_MILESTONE_IDS = Object.freeze([
   'first-lotus'
 ]);
 
+/** Repeatable memory id; catalog row `come-back` (`repeatable-return` origin). */
 export const JOURNEY_COME_BACK_ID = 'come-back';
 
+/** Mirrors catalog consecutive-practice-days 7/21/100 rows; days must stay in sync. */
 const STREAK_MILESTONES = Object.freeze([
   { id: 'streak-7', days: 7 },
   { id: 'streak-21', days: 21 },
@@ -251,6 +267,7 @@ export function deriveComeBackDatesFromPracticeDays(sortedDayKeys) {
 
 /**
  * Idempotent backfill from practice-day / lotus history (existing users).
+ * Predicate gates mirror `catalogJourneyMilestoneFirstHitDate` (Batch 3 parity tests).
  *
  * @param {JourneyLogExtendedState} state
  * @param {object} deps
@@ -335,6 +352,7 @@ export function reconcileJourneyPracticeMemoriesFromHistory(state, deps) {
 
 /**
  * Record today's baseline practice and unlock any new Journey memories (silent).
+ * Unlock gates mirror `catalogJourneyMilestoneMetOnSync` (Batch 3 parity tests).
  *
  * @param {Storage | null | undefined} storage
  * @param {object} opts
