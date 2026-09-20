@@ -2,7 +2,7 @@
 
 > **Status**: Step 2–3 wired (2026-09-16) · registry SSOT + CI audit  
 > **Companion code**: `src/core/practiceBackup/localBackupStorageRegistry.js` · `practiceBackupSnapshot.js`  
-> **Reset whitelist**: `src/core/localStateKeys.js` (65 keys) · `docs/SHARED_RESOURCES.md` §1  
+> **Reset whitelist**: `src/core/localStateKeys.js` (66 keys) · `docs/SHARED_RESOURCES.md` §1  
 > **Related**: `practice-aggregate-registry.md` · `DEV_WORKFLOW_QUALITY.md` §6.25
 
 ---
@@ -22,15 +22,16 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 
 ---
 
-## Export whitelist (schema v5)
+## Export whitelist (schema v6)
 
-`PRACTICE_BACKUP_SCHEMA_VERSION = 5` · **28** localStorage keys + optional Electron `companionFiles`:
+`PRACTICE_BACKUP_SCHEMA_VERSION = 6` · **29** localStorage keys + optional Electron `companionFiles`:
 
 | Group | Keys |
 |---|---|
 | Practice memory (v1–v2) | journey-log · practice-days · milestone-glow · entitlement-ownership · ritual-completions · mustard-seed-seal · presence-* · reflections · locale · reminder · companion-mode · ambient-pref · session-cues · contemplative-archive-seals |
 | Growth (v3–v4) | lotus-pond · tip-jar · sanctuary-entitlement · focus-coins |
 | Prefs + social (v5) | focus-duration-pref · intentions · quiet-together · focus-circle · focus-circle-witness-responded · focus-circle-passive-share · focus-circle-was-here-mark · focus-circle-identity · focus-circle-identity-hidden |
+| Essence (v6) | focus-essence |
 
 **Companion fields** (Electron): `yinPersonalMemory`
 
@@ -60,3 +61,4 @@ npm run docs:check                    # includes audit above
 |---|---|
 | 2026-09-13 | Step 1 reverse-enumeration draft (61 reset / 19 export) |
 | 2026-09-16 | PO decisions: entitlement recompute on import; v5 +9 keys; orphan reset fix; `localBackupStorageRegistry.js` + CI |
+| 2026-09-20 | Focus Essence Slice 3: v6 +1 key (`focus-essence.v1`); reset whitelist 66 keys |

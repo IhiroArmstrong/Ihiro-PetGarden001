@@ -20,6 +20,11 @@
  * }} LocalBackupStorageRow
  */
 
+/** Keys added in schema v6 (2026-09-20). */
+export const PRACTICE_BACKUP_V6_ADDED_KEYS = Object.freeze([
+  'focus-tiger.focus-essence.v1'
+]);
+
 /** Keys added in schema v5 (2026-09-16). */
 export const PRACTICE_BACKUP_V5_ADDED_KEYS = Object.freeze([
   'focus-tiger.focus-duration-pref.v1',
@@ -34,7 +39,7 @@ export const PRACTICE_BACKUP_V5_ADDED_KEYS = Object.freeze([
 ]);
 
 /**
- * Full export whitelist (schema v5). Order stable for snapshots / diffs.
+ * Full export whitelist (schema v6). Order stable for snapshots / diffs.
  * @type {readonly string[]}
  */
 export const PRACTICE_BACKUP_EXPORT_KEYS = Object.freeze([
@@ -57,7 +62,8 @@ export const PRACTICE_BACKUP_EXPORT_KEYS = Object.freeze([
   'focus-tiger.tip-jar.v1',
   'focus-tiger.sanctuary-entitlement.v1',
   'focus-tiger.focus-coins.v1',
-  ...PRACTICE_BACKUP_V5_ADDED_KEYS
+  ...PRACTICE_BACKUP_V5_ADDED_KEYS,
+  ...PRACTICE_BACKUP_V6_ADDED_KEYS
 ]);
 
 /**

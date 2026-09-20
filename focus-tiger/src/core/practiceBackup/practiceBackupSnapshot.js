@@ -9,10 +9,11 @@
 
 import {
   PRACTICE_BACKUP_EXPORT_KEYS,
-  PRACTICE_BACKUP_V5_ADDED_KEYS
+  PRACTICE_BACKUP_V5_ADDED_KEYS,
+  PRACTICE_BACKUP_V6_ADDED_KEYS
 } from './localBackupStorageRegistry.js';
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 5;
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 6;
 
 /** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
 export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
@@ -54,6 +55,11 @@ export const PRACTICE_BACKUP_V5_STORE_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V5_ADDED_KEYS
 ]);
 
+export const PRACTICE_BACKUP_V6_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V5_STORE_KEYS,
+  ...PRACTICE_BACKUP_V6_ADDED_KEYS
+]);
+
 export const PRACTICE_BACKUP_STORE_KEYS = PRACTICE_BACKUP_EXPORT_KEYS;
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
@@ -86,6 +92,7 @@ export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   if (schemaVersion === 2) return PRACTICE_BACKUP_V2_STORE_KEYS;
   if (schemaVersion === 3) return PRACTICE_BACKUP_V3_STORE_KEYS;
   if (schemaVersion === 4) return PRACTICE_BACKUP_V4_STORE_KEYS;
+  if (schemaVersion === 5) return PRACTICE_BACKUP_V5_STORE_KEYS;
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
   }
@@ -316,6 +323,8 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       );
     case 'focus-tiger.focus-coins.v1':
       return Number(parsed.balance) <= 0 && (!Array.isArray(parsed.ownedIds) || parsed.ownedIds.length === 0);
+    case 'focus-tiger.focus-essence.v1':
+      return Number(parsed.essenceTotal) <= 0;
     case 'focus-tiger.focus-duration-pref.v1': {
       const minutes = Number(parsed.minutes);
       return !Number.isFinite(minutes) || minutes <= 0;

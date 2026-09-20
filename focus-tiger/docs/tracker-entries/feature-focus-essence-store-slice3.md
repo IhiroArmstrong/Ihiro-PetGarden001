@@ -1,0 +1,3 @@
+# feature/focus-essence-store-slice3
+
+| Focus Essence Slice 3 · localStateKeys + backup v6 | 纯后端 | 仅单元测试覆盖 | **无 UI。** `focus-tiger.focus-essence.v1` 进 `localStateKeys` 重置白名单；练习备份 schema **v6** 增 essence（v5 导入补 null slot）；`focusEssencePersonaRegression.js` 复用 coin 5 条 persona。**测**：`localStateKeys.test.js` · `practiceBackupLocalIo.test.js` · `focusEssencePersonaRegression.test.js` · `npm run audit:local-backup-coverage` · `npm run audit:growth-metrics` · `npm run test:smoke`。Brief `task-focus-essence-slice1.md` Slice 3 · 审计 `focus-essence-coin-split-audit.md`。 | — | — | — | `localStateKeys.js` · `localBackupStorageRegistry.js` · `practiceBackupSnapshot.js` · `practiceBackupLocalIo.js` | 2026-09-20 |
