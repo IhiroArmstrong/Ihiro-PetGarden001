@@ -157,7 +157,8 @@ Pre-Batch-2 reads summed **90-day practice-days minutes** as if they were lifeti
 | Lotus lifetime minutes **per day cap** | **Closed** — 180 min/day toward score only; blooms uncapped (`scoreFormula.v3`) | PO 2026-09-10 |
 | Honesty 5 min × 21 days → mustard unlock | Allowed by score (days dominate) | Persona `steady-light` locks intent until changed |
 | MilestoneGlow vs score | Orthogonal streak ladder | By design |
-| Shared milestone catalog | **Open** — static predicate table proposed (`task-shared-milestone-catalog.md`); Glow `streak-N` vs Journey `streak-N` vs mustard score 21 | PO；未拍板不得开稀缺 UI |
+| Shared milestone catalog | **Closed V1** — static local table; J1-a same consecutive-days predicate for Glow + Journey; #890 closed vocab (`task-shared-milestone-catalog.md`) | PO 2026-09-20；Batch 1 另口令 |
+| Journey streak copy vs consecutive days | **Open (J-copy)** — EN “days of returning” ≠ consecutive-day math; not Batch 1 | 另开产品拍板：改文案或改逻辑 |
 
 ---
 
@@ -180,4 +181,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 |---|---|
 | 2026-09-10 | Initial charter + registry schema + persona CI + TEST_TRACKER seed contract |
 | 2026-09-10 | scoreFormula.v3 — 180 min/day score cap; `single-binge-extreme` persona |
-| 2026-09-20 | Pointer: shared milestone catalog proposal (`task-shared-milestone-catalog.md`); Glow vs Journey vs mustard-21 still PO |
+| 2026-09-20 | Shared milestone catalog V1 locked (`task-shared-milestone-catalog.md`); J-copy Journey returning-copy vs consecutive days remains open |

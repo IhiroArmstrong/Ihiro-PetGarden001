@@ -127,6 +127,7 @@ Legend: **Gap** = baseline practice sources not reflected in current read path.
 | `arrival-practice` | Arrival flow | Not 同坐 (product) |
 | `ritual-flow-complete` | RitualFlow history | Not 同坐 (product) |
 | `sit-rise-journey-only` | Early Rise Journey row | Not a practice day |
+| `journey-streak-copy-drift` | Journey 7/21/100 memory **copy** vs consecutive-day **math** | **Known** · not an aggregate-read bug. EN `days of returning` / mixed ZH 连续. J1-a keeps one predicate. Fix copy **or** logic in a later PO拍板 — see `task-shared-milestone-catalog.md` **J-copy**. Do **not** treat as catalog Batch 1 work. |
 
 ---
 
@@ -172,3 +173,4 @@ Planned script: `npm run audit:practice-coverage` (wired in `docs:check` · Batc
 | 2026-09-09 | Batch 4: machine registry + `audit:practice-coverage` in docs:check; contemplative archive score on aggregate |
 | 2026-09-10 | Batch 5 (governance): `GROWTH_METRICS_CHARTER.md` + persona regression CI; TEST_TRACKER qaSeedStreak=21 |
 | 2026-09-14 | Remove `recover-reset-breath` exclude — legacy Recover breath path deleted (P5 S17) |
+| 2026-09-20 | Record `journey-streak-copy-drift` (J-copy): Journey returning copy vs consecutive-day math; not Batch 1 |
