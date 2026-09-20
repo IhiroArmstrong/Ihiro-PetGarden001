@@ -89,6 +89,44 @@ export function shouldRunConfideSemanticShadow({ route = null } = {}) {
  * }} payload
  * @returns {object}
  */
+/**
+ * Build a turns.jsonl row for Stage 2 live semantic classify (Prompt 8 extension).
+ * @param {{
+ *   text: string,
+ *   route: string,
+ *   source: string,
+ *   literalCoarse: string | null,
+ *   semanticResult?: {
+ *     bucket: string,
+ *     scoreA: number,
+ *     scoreB: number,
+ *     grayMargin: number
+ *   } | null,
+ *   ok: boolean,
+ *   reason: string,
+ *   timing?: { wallMs?: number, embedMs?: number }
+ * }} payload
+ * @returns {object}
+ */
+export function buildConfideSemanticLiveLogRecord(payload) {
+  const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+  return {
+    at: new Date().toISOString(),
+    kind: 'semantic_live_classify',
+    text: text.slice(0, 400),
+    route: payload.route,
+    source: payload.source,
+    literalCoarse: payload.literalCoarse,
+    semanticCoarse: payload.semanticResult?.bucket ?? null,
+    scoreA: payload.semanticResult?.scoreA ?? null,
+    scoreB: payload.semanticResult?.scoreB ?? null,
+    grayMargin: payload.semanticResult?.grayMargin ?? null,
+    ok: Boolean(payload.ok),
+    reason: payload.reason,
+    timing: payload.timing || undefined
+  };
+}
+
 export function buildConfideSemanticShadowLogRecord(payload) {
   const text = typeof payload.text === 'string' ? payload.text.trim() : '';
   const contextual =

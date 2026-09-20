@@ -11,6 +11,8 @@
 
 export const CONFIDE_SEMANTIC_SHADOW_KIND = 'semantic_shadow_classify';
 
+export const CONFIDE_SEMANTIC_LIVE_KIND = 'semantic_live_classify';
+
 export const SEMANTIC_SHADOW_CSV_COLUMNS = Object.freeze([
   'at',
   'text',
@@ -104,18 +106,85 @@ export function formatSemanticShadowRatio(sampleCount, disagreementCount) {
 }
 
 /**
+ * @param {unknown} row
+ * @returns {boolean}
+ */
+export function isConfideSemanticLiveFailOpen(row) {
+  if (!row || typeof row !== 'object') return false;
+  if (row.kind !== CONFIDE_SEMANTIC_LIVE_KIND) return false;
+  return row.ok !== true || row.reason !== 'ok';
+}
+
+/**
+ * @param {unknown} row
+ * @returns {boolean}
+ */
+export function isConfideSemanticLiveJudged(row) {
+  if (!row || typeof row !== 'object') return false;
+  if (row.kind !== CONFIDE_SEMANTIC_LIVE_KIND) return false;
+  return row.ok === true && row.reason === 'ok';
+}
+
+/**
+ * @param {object[]} rows
+ * @returns {{
+ *   liveCount: number,
+ *   failOpenCount: number,
+ *   semanticOkCount: number,
+ *   samples: object[]
+ * }}
+ */
+export function summarizeConfideSemanticLive(rows) {
+  const samples = [];
+  for (const row of rows) {
+    if (!row || typeof row !== 'object') continue;
+    if (row.kind !== CONFIDE_SEMANTIC_LIVE_KIND) continue;
+    samples.push(row);
+  }
+  const failOpenCount = samples.filter(isConfideSemanticLiveFailOpen).length;
+  const semanticOkCount = samples.filter(isConfideSemanticLiveJudged).length;
+  return {
+    liveCount: samples.length,
+    failOpenCount,
+    semanticOkCount,
+    samples
+  };
+}
+
+/**
+ * @param {{
+ *   liveCount: number,
+ *   failOpenCount: number,
+ *   semanticOkCount: number
+ * }} summary
+ * @returns {string}
+ */
+export function formatSemanticLiveAuditLines(summary) {
+  return [
+    `live=${summary.liveCount}`,
+    `failOpen=${summary.failOpenCount}`,
+    `semanticOk=${summary.semanticOkCount}`
+  ].join('\n');
+}
+
+/**
  * @param {{
  *   filePath: string,
  *   sampleCount: number,
  *   disagreementCount: number,
  *   skippedNotOk: number,
  *   skippedMalformed?: number,
- *   csvPath: string
+ *   csvPath: string,
+ *   liveSummary?: {
+ *     liveCount: number,
+ *     failOpenCount: number,
+ *     semanticOkCount: number
+ *   }
  * }} summary
  * @returns {string}
  */
 export function formatSemanticShadowReport(summary) {
-  return [
+  const lines = [
     'semantic shadow disagreement',
     `file: ${summary.filePath}`,
     `N=${summary.sampleCount}`,
@@ -124,7 +193,11 @@ export function formatSemanticShadowReport(summary) {
     `skippedNotOk=${summary.skippedNotOk}`,
     `skippedMalformed=${summary.skippedMalformed ?? 0}`,
     `csv: ${summary.csvPath}`
-  ].join('\n');
+  ];
+  if (summary.liveSummary) {
+    lines.push(formatSemanticLiveAuditLines(summary.liveSummary));
+  }
+  return lines.join('\n');
 }
 
 /**

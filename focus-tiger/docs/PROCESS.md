@@ -78,7 +78,7 @@
 
 - **L3 闲聊问句 chat 翼（2026-09-20）**：对不上规则桶的问句（胖墩是谁 / 今天做什么 / 胖粉）走 `buildCompanionL2Prompt` 对话提示，不再用观察幼虎句；sanitize 拒收拍爪子/歪头/舔爪子与照抄问句。问候仍 `companion_greeting`。关单须 Electron Confide ready。
 
-- **Confide 影子日志导出（2026-09-20 · Prompt 8）**：`npm run audit:confide-semantic-shadow` 扫本机 `turns.jsonl` 的 `semantic_shadow_classify`（`ok:true`），只报 N / D / D÷N 并写出分歧 CSV。不设样本下限，不据此宣称可切 Stage 2。人工标「有利分歧」仍须 PO 拍板。
+- **Confide 影子日志导出（2026-09-20 · Prompt 8）**：`npm run audit:confide-semantic-shadow` 扫本机 `turns.jsonl` 的 `semantic_shadow_classify`（`ok:true`），报 N / D / D÷N 并写出分歧 CSV；另扫 `semantic_live_classify` 报 live / failOpen / semanticOk（`reason`：`embed_not_ready` / `ok` / `timeout` 等）。不设样本下限，不据此宣称可切 Stage 2。人工标「有利分歧」仍须 PO 拍板。
 
 - **Confide 离线语义冻表（2026-09-20 · Prompt 7）**：`npm run test:confide-semantic-acceptance` 用真 embedding GGUF 跑 A/B 库各 50 + 3 锚点（leave-one-out）。不改现网回复。不进日常 smoke。Stage 2 切真路由仍等 Prompt 8 标注 CSV 后 PO 拍板。
 

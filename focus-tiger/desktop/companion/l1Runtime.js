@@ -36,7 +36,10 @@ import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Con
 import { L0_SEMANTIC_SHADOW_TIMEOUT_MS } from './l0EmbeddingConfig.js';
 import { resolveCompanionModelDir } from './l0Download.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
-import { buildSemanticShadowTurnLogRecord } from './l1SemanticShadowLog.js';
+import {
+  buildSemanticLiveTurnLogRecord,
+  buildSemanticShadowTurnLogRecord
+} from './l1SemanticShadowLog.js';
 import { createSemanticShadowEmbeddingGate } from './l1SemanticShadowEmbeddingGate.js';
 import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
 
@@ -656,7 +659,7 @@ export class CompanionL1Runtime {
 
   /**
    * Stage 2 live classify. Only awaits when embedding is already ready.
-   * Does not write turns.jsonl (post-reply shadow reuses the cache).
+   * Writes semantic_live_classify rows to turns.jsonl (Prompt 8 reason audit).
    * Fail-open: not-ready / error keeps the literal route; does not wait for cold load.
    * @returns {Promise<{
    *   ok: boolean,
@@ -668,6 +671,7 @@ export class CompanionL1Runtime {
    * }>}
    */
   async semanticLiveClassify(payload = {}) {
+    const wallStarted = Date.now();
     if (!this.allowed) {
       return { ok: false, reason: 'unavailable', bucket: null };
     }
@@ -687,6 +691,42 @@ export class CompanionL1Runtime {
       typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
     if (!text) return { ok: false, reason: 'empty_text', bucket: null };
 
+    const baseRecord = {
+      text,
+      route,
+      source,
+      literalCoarse,
+      hadPriorTurn,
+      contextualText: contextualText || null
+    };
+
+    const appendLiveLog = async (result) => {
+      const timing =
+        result.timing && typeof result.timing === 'object'
+          ? result.timing
+          : { wallMs: Date.now() - wallStarted };
+      await this._appendTurnLog(
+        buildSemanticLiveTurnLogRecord({
+          text: baseRecord.text,
+          route: baseRecord.route,
+          source: baseRecord.source,
+          literalCoarse: baseRecord.literalCoarse,
+          ok: Boolean(result.ok),
+          reason: typeof result.reason === 'string' ? result.reason : 'unknown',
+          semanticResult:
+            result.ok && typeof result.bucket === 'string' && result.bucket
+              ? {
+                  bucket: result.bucket,
+                  scoreA: Number(result.scoreA),
+                  scoreB: Number(result.scoreB),
+                  grayMargin: Number(result.grayMargin)
+                }
+              : null,
+          timing
+        })
+      );
+    };
+
     const gate = this._embeddingShadowGate;
     if (!gate.isReady()) {
       if (gate.shouldRequestEnsure()) {
@@ -695,10 +735,24 @@ export class CompanionL1Runtime {
           gate.markLoading();
           this._write('ensure-embedding');
         } catch {
-          return { ok: false, reason: 'embed_failed', bucket: null };
+          const result = {
+            ok: false,
+            reason: 'embed_failed',
+            bucket: null,
+            timing: { wallMs: Date.now() - wallStarted }
+          };
+          await appendLiveLog(result);
+          return result;
         }
       }
-      return { ok: false, reason: 'embed_not_ready', bucket: null };
+      const result = {
+        ok: false,
+        reason: 'embed_not_ready',
+        bucket: null,
+        timing: { wallMs: Date.now() - wallStarted }
+      };
+      await appendLiveLog(result);
+      return result;
     }
 
     const pending = this._shadowQueue.then(() =>
@@ -718,6 +772,7 @@ export class CompanionL1Runtime {
     );
     const result = await pending;
     this._liveSemanticCache = { text, ...result };
+    await appendLiveLog(result);
     return result;
   }
 

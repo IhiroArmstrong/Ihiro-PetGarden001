@@ -19,6 +19,23 @@ function row(kind, daysAgo) {
 }
 
 describe('confideTurnsJsonlRetention', () => {
+  it('drops live audit rows older than 7 days but keeps recent ones', () => {
+    assert.equal(
+      shouldKeepConfideTurnRow(
+        { at: new Date(NOW - 8 * 86400000).toISOString(), kind: 'semantic_live_classify' },
+        NOW
+      ),
+      false
+    );
+    assert.equal(
+      shouldKeepConfideTurnRow(
+        { at: new Date(NOW - 2 * 86400000).toISOString(), kind: 'semantic_live_classify' },
+        NOW
+      ),
+      true
+    );
+  });
+
   it('drops shadow audit rows older than 7 days but keeps recent ones', () => {
     assert.equal(
       shouldKeepConfideTurnRow(
