@@ -13,6 +13,7 @@ import {
   formatSemanticShadowRatio,
   formatSemanticShadowReport,
   parseTurnsJsonl,
+  summarizeConfideSemanticLive,
   summarizeConfideSemanticShadow
 } from './auditConfideSemanticShadow.js';
 
@@ -95,6 +96,30 @@ describe('auditConfideSemanticShadow', () => {
     assert.match(lines[1], /,$/);
   });
 
+  it('counts live fail-open vs semantic ok rows by reason', () => {
+    const liveSummary = summarizeConfideSemanticLive([
+      {
+        kind: 'semantic_live_classify',
+        ok: false,
+        reason: 'embed_not_ready'
+      },
+      {
+        kind: 'semantic_live_classify',
+        ok: false,
+        reason: 'timeout'
+      },
+      {
+        kind: 'semantic_live_classify',
+        ok: true,
+        reason: 'ok'
+      },
+      { kind: 'semantic_shadow_classify', ok: true, reason: 'ok' }
+    ]);
+    assert.equal(liveSummary.liveCount, 3);
+    assert.equal(liveSummary.failOpenCount, 2);
+    assert.equal(liveSummary.semanticOkCount, 1);
+  });
+
   it('prints N D D÷N without routing-switch language', () => {
     const report = formatSemanticShadowReport({
       filePath: '/tmp/turns.jsonl',
@@ -102,13 +127,19 @@ describe('auditConfideSemanticShadow', () => {
       disagreementCount: 1,
       skippedNotOk: 0,
       skippedMalformed: 0,
-      csvPath: '/tmp/out.csv'
+      csvPath: '/tmp/out.csv',
+      liveSummary: {
+        liveCount: 10,
+        failOpenCount: 7,
+        semanticOkCount: 3
+      }
     });
     assert.match(report, /^semantic shadow disagreement\n/);
     assert.match(report, /\nN=4\n/);
     assert.match(report, /\nD=1\n/);
     assert.match(report, /\nD÷N=0.2500 \(1÷4\)\n/);
     assert.match(report, /\nskippedMalformed=0\n/);
+    assert.match(report, /\nlive=10\nfailOpen=7\nsemanticOk=3$/);
     const src = readFileSync(path.join(SRC_DIR, 'auditConfideSemanticShadow.js'), 'utf8');
     const cli = readFileSync(
       path.join(SRC_DIR, '../../../scripts/audit-confide-semantic-shadow.js'),

@@ -12,7 +12,7 @@
  *   npm run audit:confide-semantic-shadow -- --file /path/to/turns.jsonl
  *   npm run audit:confide-semantic-shadow -- --out /tmp/disagreement.csv
  *
- * Prints N, D, D÷N. Writes disagreement CSV. Does not set a sample floor.
+ * Prints N, D, D÷N and live fail-open vs semantic-ok counts. Writes disagreement CSV.
  */
 
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -23,6 +23,7 @@ import {
   formatSemanticShadowDisagreementCsv,
   formatSemanticShadowReport,
   parseTurnsJsonl,
+  summarizeConfideSemanticLive,
   summarizeConfideSemanticShadow
 } from '../src/core/confide/auditConfideSemanticShadow.js';
 
@@ -89,6 +90,7 @@ async function main() {
 
   const parsed = parseTurnsJsonl(raw);
   const summary = summarizeConfideSemanticShadow(parsed.rows);
+  const liveSummary = summarizeConfideSemanticLive(parsed.rows);
   const csv = formatSemanticShadowDisagreementCsv(summary.disagreements);
 
   await mkdir(path.dirname(csvPath), { recursive: true });
@@ -106,6 +108,9 @@ async function main() {
         ratio: summary.sampleCount ? summary.disagreementCount / summary.sampleCount : null,
         skippedNotOk: summary.skippedNotOk,
         skippedMalformed: parsed.skippedMalformed,
+        liveCount: liveSummary.liveCount,
+        failOpenCount: liveSummary.failOpenCount,
+        semanticOkCount: liveSummary.semanticOkCount,
         csv: csvPath
       },
       null,
@@ -121,7 +126,8 @@ async function main() {
       disagreementCount: summary.disagreementCount,
       skippedNotOk: summary.skippedNotOk,
       skippedMalformed: parsed.skippedMalformed,
-      csvPath
+      csvPath,
+      liveSummary
     })
   );
   console.log(`json: ${jsonPath}`);

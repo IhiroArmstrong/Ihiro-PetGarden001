@@ -10,7 +10,8 @@
 
 /** @readonly */
 export const CONFIDE_TURNS_SHADOW_AUDIT_KINDS = Object.freeze([
-  'semantic_shadow_classify'
+  'semantic_shadow_classify',
+  'semantic_live_classify'
 ]);
 
 /** @readonly */

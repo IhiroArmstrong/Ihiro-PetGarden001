@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
 import {
+  buildConfideSemanticLiveLogRecord,
   buildConfideSemanticShadowLogRecord,
   resolveConfideLiteralCoarseBucket,
   shouldRunConfideSemanticShadow
@@ -55,6 +56,23 @@ describe('confideSemanticCoarseMap', () => {
       }),
       null
     );
+  });
+
+  it('builds live log rows with reason for Prompt 8 audit', () => {
+    const row = buildConfideSemanticLiveLogRecord({
+      text: '累积了多久',
+      route: CONFIDE_ROUTE.TIRED,
+      source: '',
+      literalCoarse: CONFIDE_SEMANTIC_BUCKET.EMOTIONAL,
+      semanticResult: null,
+      ok: false,
+      reason: 'embed_not_ready',
+      timing: { wallMs: 3 }
+    });
+    assert.equal(row.kind, 'semantic_live_classify');
+    assert.equal(row.reason, 'embed_not_ready');
+    assert.equal(row.ok, false);
+    assert.equal(row.semanticCoarse, null);
   });
 
   it('builds shadow log rows with required text field', () => {
