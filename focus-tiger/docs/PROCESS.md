@@ -749,6 +749,8 @@
 
 命名建议：`task{编号}-brief-{关键词}`
 
+**B 类开工门禁**：会改变用户实际看到的回复 / 等待 / 路由的任务（**B 类**），须有 PO 点头的 Brief 才能写代码；口令「立刻开工」**不能**跳过。A 类（影子 / 审计 / 后台，不改变用户可见结果）可直接「开工」。有疑问默认 B 类。全文见 [`WORKFLOW.md`](../../WORKFLOW.md)「用户可见改动：Brief 开工门禁」（`RULES_INDEX` → `brief-before-user-visible`）。
+
 **共用机制核对**：触及 overlayBusy / HUD 呼吸驱动 / 遮罩 dim 时，Brief 须写出点名消费者的结论句，禁止纯复选框。写法 SSOT：[`COLLAB.md`](./COLLAB.md)「七、Task Brief · 共用机制核对」。清单：`SHARED_RESOURCES.md` §4.1–4.2、`Z_INDEX.md` Idle 常驻 chrome。
 
 ---

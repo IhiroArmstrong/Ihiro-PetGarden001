@@ -42,6 +42,53 @@
 
 ---
 
+## 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `brief-before-user-visible`）。  
+> 与 `agent-tool-budget`（口令「开工」升探索预算档）**互补**：升档 **不等于** 可跳过 Brief。按需层执行摘要见 [`.cursor/rules/focus-tiger-brief-before-user-visible.mdc`](.cursor/rules/focus-tiger-brief-before-user-visible.mdc)。  
+> **背景**：Confide Stage 2 切真路由（`task-confide-stage2-semantic-cutover.md` · PR #908）是首次出现「用户下『立刻开工』→ Agent 无事先锁定 Brief 直接写代码 → 事后才补 Brief」的顺序；Stage 1 影子/审计类任务最坏只多一条错误调试日志，Stage 2 会改变用户实际收到的回复与等待时间——风险性质不同，须单独门禁。
+
+### 任务分类（硬）
+
+开工前（含用户口令「开工」「立刻开工」「马上做」「现在就要」等），**先**判定任务属于 **A 类** 还是 **B 类**：
+
+| 类 | 定义 | Brief 是否必须先锁 |
+|---|---|---|
+| **A 类（影子 / 审计 / 后台）** | 只写日志、只跑离线测试、只产出文档/报告；**不改变**任何用户会实际看到的路由结果 / 回复内容 / 等待时间 | **否**——用户下「开工」类轻量口令即可直接动代码 |
+| **B 类（用户可见行为）** | 任何会影响生产环境里用户看到的**回复内容**、**回复速度**、**路由决定**的改动 | **是**——须有 PO（用户）明确看过、点头过的 Brief，**代码才能动** |
+
+**有疑问时默认按 B 类处理**（需要 Brief）。**禁止**自行判断「这次应该问题不大」就跳过。
+
+### B 类硬规则（「立刻」不能跳过 Brief）
+
+1. **B 类任务**，不管用户口令多急（包括但不限于「立刻开工」「马上做」「现在就要」），都**必须先有一份 PO 明确看过、点头过的 Brief**，代码才能动。  
+2. **「立刻」这个词不能成为跳过 Brief 审批环节的理由。**  
+3. 若用户在对 **B 类**任务、且**尚无 Brief**（或未锁定 / 未点头）的情况下下了「立刻开工」类口令，Agent **必须先停下来**，在「待你决定」问一句：  
+   > 这是会改变用户可见行为的 B 类任务，需要先出一份 brief 给你看过再动代码吗？  
+   **禁止**直接开始写代码。  
+4. 用户书面点头 Brief（或明确「按这份 Brief 开工」）后，方可进入实现；此时「开工」口令生效。  
+5. 本条**优先于**「验证通过后默认 commit / push / 开 PR」与 `agent-tool-budget` 的「开工」升档——**未过 Brief 闸不得写产品运行时**（`focus-tiger/src/**` 等）。
+
+### 示范对照（Confide 语义路由 · 勿再混淆）
+
+| 任务 | Brief | 类 | 「立刻开工」时 Agent 应做什么 |
+|---|---|---|---|
+| **Stage 1 影子分流**（`task-confide-semantic-routing-option-d.md`） | 异步写本机影子日志（`semantic_shadow_classify`）；**不改**用户实际收到的回复与路由 | **A** | 可直接动工写影子日志与离线审计脚本 |
+| **Stage 2 切真路由**（`task-confide-stage2-semantic-cutover.md` · PR #908） | Electron 默认 `live`；embedding ready 时改路由；会改变用户实际看到的回复内容与等待 | **B** | **须先有 PO 点头的 Brief 再写代码**；2026-09-21 那次顺序反了（先代码后 Brief），属流程漏洞，不得以「已经开工」为由延续 |
+
+同一产品线的 **Stage 1 → Stage 2** 升级，分类**可能从 A 变为 B**；不得以「上一阶段可以直接开工」推断本阶段也可跳过 Brief。
+
+### 与相邻门禁的关系
+
+| 主题 | 关系 |
+|---|---|
+| `feature-conflict-review` | 冲突扫描在写代码**之前**；B 类还须 **Brief 已锁**——二者都满足才可实现 |
+| `risk-mitigation-playbook` | 中高风险落地仍须 Playbook；**不**替代 Brief 闸 |
+| `agent-tool-budget` | 「开工」只升探索预算；**不**豁免 B 类 Brief |
+| Task Brief 存放 | `focus-tiger/docs/task-briefs/`；书写规范见 `COLLAB.md` · `PROCESS.md`「Task Brief 存放约定」 |
+
+---
+
 ## 分支模型
 
 | 分支 | 含义 | 谁在上面改 |
@@ -649,7 +696,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** / **A/B 类 Brief 开工门禁** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 中高风险功能落地降险（四件套 + 架构红线） | [`RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（本文仅入口引用） |
@@ -664,6 +711,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 我想… | 做法 |
 |---|---|
+| 用户下「立刻开工」但会改用户可见行为 | 先判 B 类 → 须有 PO 点头的 Brief 再写代码；见「用户可见改动：Brief 开工门禁」（`brief-before-user-visible`） |
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
 | PR 引用任务线 | 统一 `Closes #NNN`（仓库已关 auto-close；见「PR 描述须引用所属任务线 Issue」） |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |

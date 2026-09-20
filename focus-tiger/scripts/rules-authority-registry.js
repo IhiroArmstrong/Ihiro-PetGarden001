@@ -40,6 +40,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
+  '.cursor/rules/focus-tiger-brief-before-user-visible.mdc',
   '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
   '.cursor/rules/focus-tiger-ui-bug-triage.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
@@ -1414,6 +1415,56 @@ export const RULE_AUTHORITY_TOPICS = [
           /交接摘要.{0,24}(?:即|就是|等于|当作).{0,16}(?:已验证|已修复|关单)/,
         note: '交接摘要不改变已验证须人工测 / 关单门禁'
       }
+    ],
+    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
+    id: 'brief-before-user-visible',
+    title:
+      'B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection:
+      '用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21）',
+    ssotMustContain: [
+      /brief-before-user-visible/,
+      /A 类/,
+      /B 类/,
+      /立刻开工/,
+      /有疑问时默认按 B 类/
+    ],
+    topicSignals: [
+      /brief-before-user-visible/,
+      /Brief 开工门禁/,
+      /A\/B 类任务/
+    ],
+    mustCite: [/WORKFLOW\.md|brief-before-user-visible/],
+    restatementFingerprints: [
+      /Stage 1 影子分流/,
+      /Stage 2 切真路由/,
+      /立刻开工.*不能成为跳过 Brief/,
+      /有疑问时默认按 B 类/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'urgent-start-skip-brief',
+        pattern:
+          /(?:立刻开工|马上做|现在就要).{0,32}(?:可以|允许|不必|无需).{0,24}(?:Brief|brief|任务书)/,
+        note: 'B 类「立刻开工」不能跳过 Brief'
+      },
+      {
+        id: 'self-downgrade-b-class',
+        pattern:
+          /(?:应该|大概|可能).{0,16}问题不大.{0,24}(?:跳过|不必|无需).{0,16}Brief/,
+        note: '有疑问默认 B 类；禁止自行降为 A 类跳过 Brief'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-brief-before-user-visible.mdc',
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md'
     ],
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
   },
