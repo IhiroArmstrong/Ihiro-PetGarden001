@@ -30,7 +30,7 @@ Favorable Disagreement = **Literal ≠ Golden AND Semantic = Golden**
 | Adversarial（B） | 20 |
 | Historical | 12（Prompt 12 KEEP，分开加） |
 
-合计库存行 **61**（45 mill + 12 historical + 3 现网肉测 KEEP + 1 影子 CSV）。Real **4 / 5** 门槛仍 FAIL。`我有点不高兴` 现网字面已能打中情绪桶，所以制造机今日 DROP；影子日志那一行仍按你的勾选计真实有利分歧。
+合计库存 **63 行 / 62 句**。Real **6**（影子 1 + 现网肉测 KEEP 5）→ Real minimum **PASS**。脚本仍不得据此写可以切 Stage 2。
 
 Literal baseline **0%** · Semantic accuracy **75%** · Real minimum：**FAIL**（本池无真实 CSV）。
 

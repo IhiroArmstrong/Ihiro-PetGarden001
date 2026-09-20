@@ -126,5 +126,75 @@ export const CONFIDE_STAGE2_REAL_MEAT_CANDIDATES = Object.freeze([
     golden_bucket: F,
     golden_cluster: 'activity_tracking',
     seed_text: '累积了多久'
+  }),
+  real({
+    sample_id: 'real-emo-no-practice',
+    text: '我今天不想练习了。',
+    golden_bucket: E,
+    golden_cluster: 'emotional_state',
+    seed_text: '我今天不想练习了。'
+  }),
+  real({
+    sample_id: 'real-emo-fatigue',
+    text: '我有点疲劳。',
+    golden_bucket: E,
+    golden_cluster: 'emotional_state',
+    seed_text: '我有点疲劳。'
+  }),
+  real({
+    sample_id: 'real-emo-phone',
+    text: 'I keep reaching for my phone without even thinking about it.',
+    golden_bucket: E,
+    golden_cluster: 'emotional_state',
+    seed_text: 'I keep reaching for my phone without even thinking about it.'
+  }),
+  real({
+    sample_id: 'real-emo-until-morning',
+    text: 'I was doing pretty well until this morning.',
+    golden_bucket: E,
+    golden_cluster: 'emotional_state',
+    seed_text: 'I was doing pretty well until this morning.'
+  }),
+  real({
+    sample_id: 'real-fn-spending-time',
+    text: 'What have I been spending my time on lately?',
+    golden_bucket: F,
+    golden_cluster: 'recent_activity',
+    seed_text: 'What have I been spending my time on lately?'
+  }),
+  real({
+    sample_id: 'real-fn-remember-why',
+    text: 'Do you remember why I started doing this?',
+    golden_bucket: F,
+    golden_cluster: 'memory_recall',
+    seed_text: 'Do you remember why I started doing this?'
+  }),
+  real({
+    sample_id: 'real-fn-busy-zh-noq',
+    text: '我最近在忙什么',
+    golden_bucket: F,
+    golden_cluster: 'recent_activity',
+    seed_text: '我最近在忙什么'
+  }),
+  real({
+    sample_id: 'real-fn-busy-lately-en',
+    text: 'What have I been busy with lately?',
+    golden_bucket: F,
+    golden_cluster: 'recent_activity',
+    seed_text: 'What have I been busy with lately?'
+  }),
+  real({
+    sample_id: 'real-fn-show-remember',
+    text: 'Show me what you remember',
+    golden_bucket: F,
+    golden_cluster: 'memory_recall',
+    seed_text: 'Show me what you remember'
+  }),
+  real({
+    sample_id: 'real-fn-need-practice',
+    text: 'I need some practice.',
+    golden_bucket: F,
+    golden_cluster: 'activity_tracking',
+    seed_text: 'I need some practice.'
   })
 ]);
