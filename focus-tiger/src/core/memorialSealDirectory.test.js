@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import {
   CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES
 } from './memorialSealCatalogCa.js';
+import { PRACTICE_SCORE_21_THRESHOLD } from './MILESTONE_CATALOG.js';
 import {
   MEMORIAL_SEAL_DIRECTORY,
   MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
@@ -18,11 +19,16 @@ import {
 } from './memorialSealDirectory.js';
 
 describe('memorialSealDirectory', () => {
-  it('mustard-seed scene has three enabled entries at score 21', () => {
+  it('mustard-seed scene has three enabled entries at catalog score threshold', () => {
     const scene = listMemorialSealEntriesForScene(MEMORIAL_SEAL_SCENE_MUSTARD_SEED);
     assert.equal(scene.length, 3);
-    assert.ok(scene.every((entry) => entry.scoreThreshold === 21));
-    assert.equal(memorialSealSceneUnlockThreshold(MEMORIAL_SEAL_SCENE_MUSTARD_SEED), 21);
+    assert.ok(
+      scene.every((entry) => entry.scoreThreshold === PRACTICE_SCORE_21_THRESHOLD)
+    );
+    assert.equal(
+      memorialSealSceneUnlockThreshold(MEMORIAL_SEAL_SCENE_MUSTARD_SEED),
+      PRACTICE_SCORE_21_THRESHOLD
+    );
   });
 
   it('catalog has twelve CA candidates plus three mustard cases', () => {

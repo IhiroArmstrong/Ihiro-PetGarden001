@@ -16,6 +16,7 @@
  * score = practiceDayCount + floor(lifetimeMinutes / 60) — same as practice badges.
  */
 
+import { PRACTICE_SCORE_21_THRESHOLD } from './MILESTONE_CATALOG.js';
 import { computePracticeScore } from './practiceBadgeAward.js';
 import {
   practiceAggregateBadgeSummary,
@@ -32,15 +33,13 @@ import {
   getMemorialSealEntry,
   listMemorialSealEntriesForScene,
   memorialSealEntryToVerseCase,
-  memorialSealSceneUnlockThreshold,
   nextUnrevealedMemorialSealEntry
 } from './memorialSealDirectory.js';
 
 export const MUSTARD_SEED_SEAL_STORAGE_KEY = 'focus-tiger.mustard-seed-seal.v1';
 
-/** Aligned with long-horizon memorial tier (~21 practice score units). */
-export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD =
-  memorialSealSceneUnlockThreshold(MEMORIAL_SEAL_SCENE_MUSTARD_SEED) ?? 21;
+/** Re-export catalog SSOT (`practice-score-21`); directory entries use the same value. */
+export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD = PRACTICE_SCORE_21_THRESHOLD;
 
 /** Dedicated seal badge dir (not tip / Sanctuary catalogs). */
 export const MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR = MEMORIAL_SEAL_BADGE_PUBLIC_DIR;

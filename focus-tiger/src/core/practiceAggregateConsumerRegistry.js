@@ -87,22 +87,24 @@ export const PRACTICE_AGGREGATE_CONSUMER_ROWS = Object.freeze([
     id: 'mustard-seed-seal-score',
     feature: 'Mustard Seed · Sumeru unlock score',
     priority: 'P0',
-    fixBatch: 2,
+    fixBatch: 4,
     coverageStatus: 'ok',
     moduleRelPath: 'src/core/mustardSeedSeal.js',
     codeAnchors: Object.freeze(['resolvePracticeAggregateFromStorage(']),
-    reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS])
+    reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS]),
+    notes: 'Batch 4: threshold from MILESTONE_CATALOG practice-score-21; directory entries aligned'
   }),
   Object.freeze({
     id: 'contemplative-archive-seal-score',
     feature: 'Contemplative Archive standalone seals',
     priority: 'P0',
-    fixBatch: 2,
+    fixBatch: 4,
     coverageStatus: 'ok',
     moduleRelPath: 'src/core/contemplativeArchiveSeal.js',
     codeAnchors: Object.freeze(['resolvePracticeAggregateFromStorage(']),
     reflectedSources: Object.freeze([...PRACTICE_BASELINE_SOURCE_IDS]),
-    notes: 'Same score SSOT as mustard; directory thresholds in memorialSealDirectory.js'
+    notes:
+      'Mustard scene gates via MILESTONE_CATALOG; CA per-entry thresholds stay in memorialSealCatalogCa.js'
   }),
   Object.freeze({
     id: 'collections-behavioral-scarcity',
