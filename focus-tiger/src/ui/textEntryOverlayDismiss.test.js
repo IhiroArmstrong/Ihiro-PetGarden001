@@ -38,6 +38,16 @@ test('Confide scrolls the card to the latest reply after Share', () => {
   assert.match(src, /_showReply[\s\S]*_scrollReplyIntoView/);
 });
 
+test('Confide shows a floating thinking pill while Local AI is pending', () => {
+  const src = readUi('ConfideToYinUI.js');
+  assert.match(src, /confide-to-yin-thinking/);
+  assert.match(src, /CONFIDE_PANEL_THINKING/);
+  assert.match(src, /_showPendingReply/);
+  assert.match(src, /_runL3Generate[\s\S]*_showPendingReply/);
+  assert.match(src, /_tryReadHybridThenContinue[\s\S]*_showPendingReply/);
+  assert.match(src, /_showReply[\s\S]*_hideThinkingIndicator/);
+});
+
 test('Tip jar and Sanctuary (always-visible email) do not close on outside pointer', () => {
   assert.doesNotMatch(readUi('TipJarUI.js'), /_onDocPointer/);
   assert.doesNotMatch(readUi('SanctuaryUnlockUI.js'), /_onDocPointer/);

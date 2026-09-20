@@ -456,6 +456,7 @@
   "CONFIDE_PANEL_SEND": "伝える",
   "CONFIDE_PANEL_CANCEL": "キャンセル",
   "CONFIDE_PANEL_CLOSE": "閉じる",
+  "CONFIDE_PANEL_THINKING": "考えています",
   "CONFIDE_PRACTICE_FACTS_NONE": "この端末には、まだ坐った日が記されていません。",
   "CONFIDE_PRACTICE_FACTS_DAYS_ONLY": "この端末には {days} 日の同坐が記されています。分数はまだ全部は残っていません。",
   "CONFIDE_PRACTICE_FACTS_DAYS_PARTIAL": "この端末には {days} 日の同坐があり、分数が残っている日はおよそ {minutes} 分です。",
