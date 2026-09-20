@@ -12,7 +12,8 @@
 
 import {
   getMilestoneCatalogEntry,
-  isCatalogMilestoneMet
+  isCatalogMilestoneMet,
+  listMilestoneCatalogIdsForCollectionsScarcity
 } from './MILESTONE_CATALOG.js';
 import {
   resolvePracticeAggregate
@@ -20,13 +21,10 @@ import {
 import { PracticeDaysStore } from './PracticeDaysStore.js';
 import { getLocalDateKey } from '../utils/localDate.js';
 
-/** Catalog ids shown in Yin's Collections memorial section (no parallel thresholds). */
-export const COLLECTIONS_BEHAVIORAL_SCARCITY_CATALOG_IDS = Object.freeze([
-  'practice-score-21',
-  'imprint-minutes-600',
-  'imprint-minutes-3000',
-  'imprint-minutes-10800'
-]);
+/** Catalog ids shown in Yin's Collections memorial section (derived from catalog surfaces). */
+export const COLLECTIONS_BEHAVIORAL_SCARCITY_CATALOG_IDS = Object.freeze(
+  listMilestoneCatalogIdsForCollectionsScarcity()
+);
 
 /** @typedef {'score' | 'minutes'} CollectionsScarcityExplainKind */
 
