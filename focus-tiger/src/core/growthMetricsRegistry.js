@@ -118,7 +118,8 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
       'sanctuary-badges',
       'mustard-seed-seal-score',
       'contemplative-archive-seal-score',
-      'focus-coins-redeem'
+      'focus-coins-redeem',
+      'collections-behavioral-scarcity'
     ]),
     relatedPersonas: Object.freeze([
       'steady-light',
