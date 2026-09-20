@@ -6,7 +6,7 @@
 
 仓库：https://github.com/IhiroArmstrong/Ihiro-PetGarden001
 
-## Epic（24，跳过已作废表行 #16）
+## Epic（25，跳过已作废表行 #16）
 
 | 表行 | slug | Issue | 标题 |
 |---|---|---|---|
@@ -35,6 +35,7 @@
 | 23 | `seasonal-theme-engine` | [#742](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/742) | 节日主题引擎（Seasonal Theme · B 轨全年氛围） |
 | 24 | `soundscape` | [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) | 音景（Soundscape · 曲库/上传/试听/音符） |
 | 25 | `habitat-shell` | [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) | 栖居壳层（Habitat Shell · 菜单/叠层/Esc/chrome） |
+| 26 | `collection-value-behavioral-scarcity` | [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) | Collection Value & Behavioral Scarcity · 数字资产原则 / 行为稀缺展示 |
 
 ## 审计与切片（真先后）
 
@@ -129,3 +130,12 @@
 | #646 子切片（批 2） | CREATE #851–#853（文档 #784 · 文档 #787 · infra 文档 #788；均已 CLOSED） |
 | Project 挂板 | #851–#853 加入 Focus Tiger 开发任务线看板 #1 |
 | Epic 正文 | #646 更新「已知子任务/PR」 |
+
+## 建库执行记录（2026-09-20 · #26 Collection Value & Behavioral Scarcity）
+
+| 步骤 | 结果 |
+|---|---|
+| label `line:collection-value-behavioral-scarcity` | CREATE（`--force`） |
+| Epic #26 | CREATE [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) |
+| Project 挂板 | #888 加入 Focus Tiger 开发任务线看板 #1 |
+| 已合文档归属 | PR [#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886) 原则 · PR [#887](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/887) 行为稀缺方案 |

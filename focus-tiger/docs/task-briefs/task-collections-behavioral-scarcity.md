@@ -2,7 +2,7 @@
 
 > **状态（2026-09-20）**：**只读审计 + 方案**。无运行时、无 Worker、无 UI。  
 > **口令**：拍板后另开实现 Brief；禁止把本文件当开工许可。  
-> **父线**：Epic [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Focus Coin & Collections；交叉 [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 账本口径、[#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution、[#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log。  
+> **父线**：Epic [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) Collection Value & Behavioral Scarcity；耦合 [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Focus Coin & Collections、[#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 账本口径、[#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution、[#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log。  
 > **原则**：`PRINCIPLES.md` 宁静型游戏化 / 不制造焦虑 / 诚实机制；PR [#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886)（待合）「稀缺度应来自真实行为统计」为概念储备，**不是**本回合要实现的全球排行。  
 > **硬排除**：算法随机稀有度；Focus Coin 兑换门槛或任何货币化；把自律本身做成付费墙。
 
