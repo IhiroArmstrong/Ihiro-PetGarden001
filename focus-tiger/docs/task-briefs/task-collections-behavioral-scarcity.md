@@ -2,7 +2,7 @@
 
 > **状态（2026-09-20）**：**PO 已锁 V1 口径**。无运行时、无 Worker、无 UI。  
 > **口令**：实现须另开代码 Brief / 「开工」；禁止把本文件当开工许可。  
-> **父线**：Epic [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Focus Coin & Collections；交叉 [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 账本口径、[#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution、[#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log。  
+> **父线**：Epic [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) Collection Value & Behavioral Scarcity；耦合 [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Focus Coin & Collections、[#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 账本口径、[#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution、[#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log。  
 > **原则**：`PRINCIPLES.md`「数字资产 / Collection 价值原则」（[#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886) **已合** `ae0d2ec5`）· 宁静型游戏化 / 不制造焦虑 / 诚实机制 / **不商业化自律本身**。全球行为人数仍是原则里的**概念储备**；V1 **不**实现全球排行。  
 > **硬排除**：算法随机稀有度；Focus Coin 兑换门槛或任何货币化；把自律本身做成付费墙。  
 > **产品用词**：设计师提案里的「案上雅舍 / 多宝阁」**不是**产品名。已上船分组是 **案上陪伴 / 静候结缘**（寅币清供行）。对外只认 **Yin's Collections / 阿寅的珍藏**。
