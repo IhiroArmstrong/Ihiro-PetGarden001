@@ -36,6 +36,7 @@
 | L3 观察句对照（#823 · baseline / B / A） | `/tmp/ft-l0-l3-observe-b-lab.mjs` |
 | L3 观察翼陈词滥调语义护栏（#823 · Brief） | `focus-tiger/docs/task-briefs/task-l3-observe-cliche-semantic-guard.md` |
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
+| 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
 | L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
 | 对照表（只追加，不另起格式） | `/tmp/ft-l0-lab/compare-tables.md` |
@@ -142,6 +143,8 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 - 人工（一次性）：竖线颜色 · 点击手感 — 各 1–2 句
 - **Stage 2 离线语义冻表（Prompt 7 · 2026-09-20）**：`npm run test:confide-semantic-acceptance`（或 `cd desktop && npm run companion:semantic-acceptance`）。真源：`confideSemanticExamples.js`（A/B 各 50）+ `CONFIDE_SEMANTIC_KNOWN_MISCLASS_ANCHORS`。打分 **leave-one-out**，真 Qwen3-Embedding GGUF。**不进** `test:smoke`（同六语闲聊探针：系统终端 / 夜间实验室；GitHub 无 nightly job）。结果：`/tmp/ft-l0-lab/semantic-acceptance-<epoch>.json`。可选 `FT_EMBEDDING_GGUF`；缺省生产 `companion-l0/Qwen3-Embedding-0.6B-Q8_0.gguf`（缺失时脚本会下载，除非 `FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1`）。
 - **真实影子日志导出（Prompt 8 · 2026-09-20）**：`cd focus-tiger && npm run audit:confide-semantic-shadow`（可选 `-- --file /path/to/turns.jsonl` · `--out /tmp/foo.csv`）。只扫 `kind:semantic_shadow_classify` 且 `ok:true`。终端只报 **N** / **D** / **D÷N**；分歧 CSV 默认 `/tmp/ft-l0-lab/semantic-shadow-disagreement-<epoch>.csv`（空列 `favorable_disagreement` 留给人工）。**不设 N 硬下限**；N=0 仍 exit 0。脚本**不得**写「可以切 Stage 2」。不进 `test:smoke`。缺日志时 exit 1。
+
+**有利分歧制造机（60 候选 · 2026-09-21）**：`cd focus-tiger/desktop && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run companion:favorable-disagreement-mill`（根目录 `npm run audit:favorable-disagreement-mill`）。真源：`confideStage2ChallengeCandidates.js`（12 簇 × 5）。公式：Literal ≠ Golden **且** Semantic = Golden。结果：`/tmp/ft-l0-lab/favorable-disagreement-mill-<epoch>.csv` + `.json`。终端报 pool / favorable / synthetic·real·adversarial / literal baseline / semantic accuracy / real minimum。`reviewer` 留空给 PO。**不得**写「可以切 Stage 2」。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
 
 **Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 子表）**：
 
