@@ -40,9 +40,24 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v4';
+const STYLE_ID = 'yin-coin-panel-styles-v5';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CEREMONIAL_MS = 2400;
+
+/** @type {readonly ['bond', 'titles', 'scroll', 'imprints']} */
+export const YIN_COIN_COLLECTIONS_TABS = [
+  'bond',
+  'titles',
+  'scroll',
+  'imprints'
+];
+
+const TAB_LABEL_KEYS = {
+  bond: 'YIN_COIN_TAB_BOND',
+  titles: 'YIN_COIN_TAB_TITLES',
+  scroll: 'YIN_COIN_TAB_SCROLL',
+  imprints: 'YIN_COIN_TAB_IMPRINTS'
+};
 /** Relief medallion — panel header / ceremonial. Not a sprite overlay. */
 const MARK_SRC = '/ui/focus-coins/yin-coin-mark.png';
 /** Flat 24px-class mark — balance and price. */
@@ -66,6 +81,7 @@ export class FocusCoinsPanelUI {
     this.handlers = handlers;
     this._open = false;
     this._ceremonialTimer = 0;
+    this._activeTab = 'bond';
 
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'yin-coin-panel-backdrop',
@@ -137,9 +153,66 @@ export class FocusCoinsPanelUI {
     this.balanceEl.dataset.testid = 'yin-coin-balance';
     this.balanceRow.append(this.balanceIcon, this.balanceEl);
 
+    this.tabBar = document.createElement('div');
+    this.tabBar.className = 'yin-coin-panel__tabs';
+    this.tabBar.setAttribute('role', 'tablist');
+    this.tabBar.dataset.testid = 'yin-coin-tabs';
+
+    this.tabButtons = new Map();
+    for (const tabId of YIN_COIN_COLLECTIONS_TABS) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'yin-coin-panel__tab';
+      btn.setAttribute('role', 'tab');
+      btn.dataset.tab = tabId;
+      btn.dataset.testid = `yin-coin-tab-${tabId}`;
+      btn.addEventListener('click', () => this._setTab(tabId));
+      this.tabButtons.set(tabId, btn);
+      this.tabBar.append(btn);
+    }
+
+    this.tabPanes = new Map();
+    this._placeholderEls = new Map();
+    this.bondPane = document.createElement('div');
+    this.bondPane.className = 'yin-coin-panel__tab-pane';
+    this.bondPane.dataset.tab = 'bond';
+    this.bondPane.dataset.testid = 'yin-coin-tabpane-bond';
+    this.bondPane.setAttribute('role', 'tabpanel');
+
     this.listEl = document.createElement('ul');
     this.listEl.className = 'yin-coin-panel__list';
     this.listEl.dataset.testid = 'yin-coin-list';
+
+    this.bondPane.append(
+      this.blurbEl,
+      this.notForSaleEl,
+      this.balanceRow,
+      this.listEl
+    );
+    this.tabPanes.set('bond', this.bondPane);
+
+    for (const tabId of YIN_COIN_COLLECTIONS_TABS) {
+      if (tabId === 'bond') continue;
+      const pane = document.createElement('div');
+      pane.className = 'yin-coin-panel__tab-pane';
+      pane.dataset.tab = tabId;
+      pane.dataset.testid = `yin-coin-tabpane-${tabId}`;
+      pane.setAttribute('role', 'tabpanel');
+      pane.hidden = true;
+
+      const placeholder = document.createElement('p');
+      placeholder.className = 'yin-coin-panel__tab-placeholder';
+      placeholder.dataset.testid = `yin-coin-tab-placeholder-${tabId}`;
+      pane.append(placeholder);
+      this.tabPanes.set(tabId, pane);
+      this._placeholderEls.set(tabId, placeholder);
+    }
+
+    this.bodyEl = document.createElement('div');
+    this.bodyEl.className = 'yin-coin-panel__body-area';
+    for (const tabId of YIN_COIN_COLLECTIONS_TABS) {
+      this.bodyEl.append(this.tabPanes.get(tabId));
+    }
 
     this.actions = document.createElement('div');
     this.actions.className = 'yin-coin-panel__actions';
@@ -177,14 +250,12 @@ export class FocusCoinsPanelUI {
     this.ceremonial.append(this.ceremonialMark, this.ceremonialText);
 
     this.actions.append(this.waveBtn, this.closeBtn);
+    this.bondPane.append(this.ceremonial);
     this.root.append(
       this.headingEl,
-      this.blurbEl,
-      this.notForSaleEl,
-      this.balanceRow,
-      this.listEl,
-      this.actions,
-      this.ceremonial
+      this.tabBar,
+      this.bodyEl,
+      this.actions
     );
     mountRoot.appendChild(this.root);
 
@@ -218,6 +289,7 @@ export class FocusCoinsPanelUI {
   open() {
     if (this._open) return;
     this._open = true;
+    this._setTab('bond', { focusTab: false });
     showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.getBoundingClientRect();
@@ -269,8 +341,45 @@ export class FocusCoinsPanelUI {
     );
     this.closeBtn.textContent = t('YIN_COIN_CLOSE');
     this.waveBtn.textContent = t('YIN_COIN_WAVE_PLAY');
+    for (const tabId of YIN_COIN_COLLECTIONS_TABS) {
+      const btn = this.tabButtons.get(tabId);
+      if (btn) btn.textContent = t(TAB_LABEL_KEYS[tabId]);
+      const placeholder = this._placeholderEls?.get(tabId);
+      if (placeholder) {
+        placeholder.textContent = t('YIN_COIN_TAB_COMING_SOON');
+      }
+    }
+    this._syncTabUi();
     this._renderSections(listFocusCoinSurfaceSections(ctx));
     this._renderMemorialSection(listCollectionsBehavioralScarcityRows());
+  }
+
+  /**
+   * @param {'bond' | 'titles' | 'scroll' | 'imprints'} tabId
+   * @param {{ focusTab?: boolean }} [options]
+   */
+  _setTab(tabId, options = {}) {
+    if (!YIN_COIN_COLLECTIONS_TABS.includes(tabId)) return;
+    this._activeTab = tabId;
+    this.root.dataset.activeTab = tabId;
+    this._syncTabUi();
+    if (options.focusTab !== false) {
+      this.tabButtons.get(tabId)?.focus({ preventScroll: true });
+    }
+  }
+
+  _syncTabUi() {
+    for (const tabId of YIN_COIN_COLLECTIONS_TABS) {
+      const active = tabId === this._activeTab;
+      const btn = this.tabButtons.get(tabId);
+      const pane = this.tabPanes.get(tabId);
+      if (btn) {
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        btn.tabIndex = active ? 0 : -1;
+      }
+      if (pane) pane.hidden = !active;
+    }
   }
 
   /**
@@ -671,6 +780,55 @@ export class FocusCoinsPanelUI {
         -webkit-backdrop-filter: blur(0);
         transition: opacity ${FADE_MS}ms ease, background ${FADE_MS}ms ease,
           backdrop-filter ${FADE_MS}ms ease, -webkit-backdrop-filter ${FADE_MS}ms ease;
+      }
+      .yin-coin-panel__tabs {
+        display: flex;
+        gap: 4px;
+        margin: 0 0 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .yin-coin-panel__tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .yin-coin-panel__tab {
+        flex: 1 0 auto;
+        min-width: 0;
+        appearance: none;
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        line-height: 1.25;
+        padding: 7px 8px;
+        border-radius: 12px;
+        border: 1px solid rgba(139, 115, 85, 0.18);
+        background: rgba(255, 255, 255, 0.42);
+        color: rgba(44, 31, 20, 0.72);
+        transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+      }
+      .yin-coin-panel__tab.is-active {
+        color: #2c1f14;
+        border-color: rgba(139, 46, 46, 0.35);
+        background: rgba(139, 46, 46, 0.08);
+      }
+      .yin-coin-panel__tab:active:not(:disabled) {
+        transform: translateY(1px) scale(0.98);
+      }
+      .yin-coin-panel__body-area {
+        min-width: 0;
+      }
+      .yin-coin-panel__tab-pane[hidden] {
+        display: none !important;
+      }
+      .yin-coin-panel__tab-placeholder {
+        margin: 12px 2px 4px;
+        font-size: 0.86rem;
+        line-height: 1.45;
+        text-align: center;
+        opacity: 0.78;
       }
       .yin-coin-panel__list {
         margin: 0 0 12px;

@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { listShopFocusCoinSkus } from '../core/focusCoinsLedger.js';
+import { YIN_COIN_COLLECTIONS_TABS } from './FocusCoinsPanelUI.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'FocusCoinsPanelUI.js'), 'utf8');
@@ -114,6 +115,35 @@ test('Collections D.4 uses object-card states and bond-only CTA', () => {
   assert.match(src, /yin-coin-panel__btn--bond/);
   assert.match(src, /yin-coin-panel__faint/);
   assert.match(src, /YIN_COIN_NOT_YET/);
+});
+
+test("Yin's Collections four-tab shell: bond default, placeholders on other tabs", () => {
+  assert.deepEqual(YIN_COIN_COLLECTIONS_TABS, [
+    'bond',
+    'titles',
+    'scroll',
+    'imprints'
+  ]);
+  assert.match(src, /YIN_COIN_COLLECTIONS_TABS/);
+  assert.match(src, /dataset\.testid = 'yin-coin-tabs'/);
+  assert.match(src, /YIN_COIN_TAB_BOND/);
+  assert.match(src, /YIN_COIN_TAB_TITLES/);
+  assert.match(src, /YIN_COIN_TAB_SCROLL/);
+  assert.match(src, /YIN_COIN_TAB_IMPRINTS/);
+  assert.match(src, /YIN_COIN_TAB_COMING_SOON/);
+  assert.match(src, /this\._setTab\('bond'/);
+  assert.match(src, /yin-coin-panel__tab-placeholder/);
+  const en = JSON.parse(
+    readFileSync(join(here, '../locales/en.json'), 'utf8')
+  );
+  const zh = JSON.parse(
+    readFileSync(join(here, '../locales/zh.json'), 'utf8')
+  );
+  assert.equal(zh.YIN_COIN_TAB_BOND, '结缘点缀');
+  assert.equal(zh.YIN_COIN_TAB_TITLES, '陪伴称号');
+  assert.equal(zh.YIN_COIN_TAB_SCROLL, '记忆小册');
+  assert.equal(zh.YIN_COIN_TAB_IMPRINTS, '勋章印记');
+  assert.equal(en.YIN_COIN_TAB_COMING_SOON, 'Coming soon');
 });
 
 test('Collections memorial section renders scarcity rows; imprint tiers reopen card', () => {
