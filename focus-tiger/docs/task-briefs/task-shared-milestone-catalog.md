@@ -1,16 +1,16 @@
-# Task Brief · 共享里程碑目录（方案 · 待拍板 · 无运行时）
+# Task Brief · 共享里程碑目录（V1 已拍板 · 无运行时）
 
-> **状态（2026-09-20）**：**只读审计 + 方案**。无运行时、无 Worker、无 UI。  
-> **口令**：实现（数据模块 / 接线 / Collections 稀缺说明）须另开 Brief / 「开工」；禁止把本文件当开工许可。  
+> **状态（2026-09-20）**：**PO 已锁 V1 口径**（方案 [#892](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/892) 已合）。无运行时、无 Worker、无 UI。  
+> **口令**：实现（数据模块 Batch 1 / 接线 / Collections 稀缺说明）须另开 Brief / 「开工」；禁止把本文件当开工许可。  
 > **前置**：Prompt 1 行为稀缺 V1 已拍（[#891](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/891)）· Prompt 3 provenance 占位已合（[#890](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/890)）——二者都点名本目录，但此前无人设计。  
 > **父线**：Epic [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Collections · [#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution · [#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log · 交叉 `GROWTH_METRICS_CHARTER.md` / `practice-aggregate-registry.md`。  
-> **硬排除**：改 `scoreFormula.v3`；改 Glow 节点 math；改 Journey 写入钩；Collections 稀缺 UI；全球名次；随机稀有；把目录做成运行时云服务。
+> **硬排除**：改 `scoreFormula.v3`；改 Glow 节点 math；改 Journey 写入钩；改 `JOURNEY_MEMORY_STREAK_*` locale（见 J-copy）；Collections 稀缺 UI；全球名次；随机稀有；把目录做成运行时云服务。
 
 ---
 
 ## 一句话
 
-先把「什么叫走到了某扇门」写成**一张本地静态目录**，让芥子印 / score / Journey 记忆 / Glow 占位字段读同一套谓词；**现在不写代码、不改画面**。
+先把「什么叫走到了某扇门」写成**一张本地静态目录**，让芥子印 / score / Journey 记忆 / Glow 占位字段读同一套谓词。**口径已锁；代码仍未写。**
 
 ---
 
@@ -107,7 +107,7 @@ Honesty **不写** Journey 行，但会写 practice-days → 记忆回填仍能�
 | **b. 人设** | 把 Journey 见证写成稀缺排行 | 目录可挂 `copyPolicy`：Glow=仪式、Journey=记忆、imprint=累计。禁止用同一句话打三处。 |
 | **c. 职责** | 四处「我走过一扇门」 | 目录 **不是第五个表面**。只共享谓词与 id；表面仍分家（#891 第 4 条）。 |
 
-**c 轴重叠是现状，不是本文件发明的。** 本文件是拍板材料。有疑点的两项见文末「PO 拍板」**J1 / F1**——**不能替你下结论**；未拍板前禁止开工数据模块或稀缺 UI。
+**c 轴重叠是现状，不是本文件发明的。** J1 / F1 已拍（见文末）。目录仍不是第五表面。Journey 英文「days of returning」与连续日算法不对齐 → **已知待办、不阻塞**（见下节）。
 
 ---
 
@@ -265,16 +265,40 @@ practiceMilestoneCatalog  （静态行 + 纯函数 evaluate）
 
 ---
 
-## PO 拍板（请书面勾选；未勾选 = 未锁）
+## 已知待办 · 不阻塞本次目录（J-copy）
 
-分析师建议如下；**你仍可推翻**。未拍板不得开工 Batch 1 代码，也不得开工 Collections 稀缺 UI。
+> 处理方式对齐 `practice-aggregate-registry.md` 对 Arrival / RitualFlow 的 **intentional-exclude**：先写进清单，**不**在本批「统一判定」里顺手改掉。
+
+**现象：** Journey 7/21/100 记忆的**产品叙事**是「回来的天数」；**运行时**与 MilestoneGlow 共用 `consecutive-practice-days`（连续日历练习日）。J1-a 如实承认这一算法现状，**不等于**承认文案已经诚实。
+
+**现网句子（勿在本任务改 locale）：**
+
+| 键 | EN | ZH | JA |
+|---|---|---|---|
+| `JOURNEY_MEMORY_STREAK_7` | Seven days of **returning** | **连续**七天归来 | 七日**続けて**戻った |
+| `JOURNEY_MEMORY_STREAK_21` | Twenty-one days of returning | 连续二十一天归来 | 二十一日続けて戻った |
+| `JOURNEY_MEMORY_STREAK_100` | A hundred days of returning | 一百天归来（未写「连续」） | 百日続けて戻った |
+
+EN「returning」可被读成累计归来次数；ZH/JA 7·21 已偏连续。三语也不齐。用户可能读错——这是**已知小缺口**，不是目录 Batch 1 的范围。
+
+**本目录任务禁止：** 改这些 locale、改 `syncJourneyPracticeMemories` 门槛、把 J1-b 偷运进数据模块。
+
+**另开产品拍板（口令另给）须二选一，禁止第三套数字：**
+
+- **改文案**：i18n 改成「连续 N 日同坐 / consecutive practice days」，算法不动。  
+- **改逻辑**：Journey 改用与 Glow 不同的「归来次数 / 窗口练习日数」谓词（即原 J1-b）。须独立 Brief；90 日窗口不能叫终身。
+
+登记：`practice-aggregate-registry.md` 行 `journey-streak-copy-drift`。未另拍板前，Batch 1 对照单测按 **连续日 = git 事实** 锁相等。
+
+---
+
+## PO 拍板（2026-09-20 · 实现闸已锁）
+
+书面同意（1–3 + J1-a + F1 + J-copy 待办）。**锁口径 ≠ 开工**；Batch 1 仍须另口令。
 
 1. **形态 = 方案 A**（本地静态目录）。全球 / Worker 门槛不做。  
 2. **迁移 = 方案 F**（先目录、对照单测、再分批接线）。  
 3. **#890 字段 = 方案 D**（`rarity_basis` = catalog id；`origin` = 谓词族闭集；`journey_id` = 可选 Journey alias）。旧行不回填。  
-4. **J1 · Glow 与 Journey 的 7/21/100**  
-   - **J1-a（建议）**：V1 **同一谓词** `consecutive-practice-days-N`，两处表面；差别只在文案策略。git 已是这样。稀缺 Brief「必须分谓词 id」改为「必须分 copyPolicy，主键相同」。  
-   - **J1-b**：拆开——Journey 改成「终身 / 窗口练习日数 ≥ N」。这是 **行为变更**，须另开 Journey Brief，不能藏在目录里。窗口仍是 90 日，不能诚实叫终身。  
-5. **F1 · 稀缺 UI 排期**：目录本方案拍板 → Batch 1 数据模块对照绿 → **然后**才允许 imprint / 稀缺说明 UI。禁止「先写说明句再补 id」。
-
-**我认为最合理的整包**：1+2+3+**J1-a**+**F1**。J1-b 只在你明确要改 Journey「回来的天数」语义时才用。
+4. **J1-a**：V1 **同一谓词** `consecutive-practice-days-N`，Glow 与 Journey 两处表面；只分 `copyPolicy`，**不分**第二套天数门槛。J1-b 不进本任务。  
+5. **F1**：Batch 1 数据模块对照绿之后，才允许 imprint / 稀缺说明 UI。禁止「先写说明句再补 id」。  
+6. **J-copy（不阻塞）**：上节文案/算法不对齐列为已知待办；改文案或改逻辑须**另开产品拍板**。禁止假装已随 J1-a 修好。

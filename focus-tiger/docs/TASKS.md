@@ -454,9 +454,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 采纳项 | 接哪条 Brief / 现网 | 排期 | 状态 |
 |---|---|---|---|
-| 高精度禅意徽章 · **累计**门槛 · 少连坐话术 | `task-practice-imprint-badges.md` + 壳 `task-yin-collections-four-tabs.md`（页签 **勋章印记**） | **P1** · **硬前置**共享目录拍板；四页签壳可与 imprint 同支 | 待开工 |
-| **共享里程碑目录**（谓词 SSOT） | `task-shared-milestone-catalog.md`（跨芥子 / score / Journey / Glow 占位字段） | **P0 设计** · 稀缺 UI / imprint 之前 | **方案待拍板** · 无运行时 |
-| 成就物 · **行为稀缺说明**（非随机、非货币） | `task-collections-behavioral-scarcity.md`（2026-09-20 **V1 已拍**：本机说明 + 勋章分区；不进「案上陪伴」；全球名次不做） | **P1** · 实现另口令；**等目录拍板 + Batch 1** | **口径已锁** · 无运行时 |
+| 高精度禅意徽章 · **累计**门槛 · 少连坐话术 | `task-practice-imprint-badges.md` + 壳 `task-yin-collections-four-tabs.md`（页签 **勋章印记**） | **P1** · **硬前置**目录 Batch 1；四页签壳可与 imprint 同支 | 待开工 |
+| **共享里程碑目录**（谓词 SSOT） | `task-shared-milestone-catalog.md`（跨芥子 / score / Journey / Glow 占位字段） | **P0** · Batch 1 数据模块另口令 | **口径已锁** · 无运行时 |
+| 成就物 · **行为稀缺说明**（非随机、非货币） | `task-collections-behavioral-scarcity.md`（2026-09-20 **V1 已拍**：本机说明 + 勋章分区；不进「案上陪伴」；全球名次不做） | **P1** · 实现另口令；**等目录 Batch 1** | **口径已锁** · 无运行时 |
 | 现网仪式/印（不重复立项） | `MilestoneGlow`（7/21/100 动画）· `mustardSeedSeal`（score≥21 诗稿）· Idle 练习徽章 | — | **已接线** · TRACKER 待人工 |
 | 纪念奖励环境细节（茶盏/香炉/蒲团） | `PROCESS.md` Backlog「纪念奖励系统」表 | **P2** · 2D 主线稳定后 | 未接线 |
 | 年终 / 深练 **Save image 画卷** | `task-mindfulness-scroll-export.md` ← 依赖 `task-journey-daily-card.md` | **P1b** · Daily Card 后 | 待排期 |
@@ -464,7 +464,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 实体周边优先权（账号+门槛） | `task-companion-merch-priority.md` | **P0 运营** Phase 0 手工可即刻；Phase 1 产品壳在 imprint 后 | Phase 0 文档锁 |
 | 用户感知句「岁月印记 / 修行纪念」 | 各 Brief + `FOCUS_COINS.md` §0.1；i18n 禁 Web3 词 | 随各 PR 文案 | 已写入 Brief |
 
-**我认为最合理的开工顺序**：① **共享里程碑目录拍板**（`task-shared-milestone-catalog.md`）→ ② 目录数据模块对照单测（Batch 1，另口令）→ ③ `feature/journey-daily-card`（存图管线，可并行）→ ④ `feature/yin-collections-four-tabs` + `feature/practice-imprint-badges` + 稀缺说明 V1（挂同一勋章分区）→ ⑤ `feature/mindfulness-scroll-export`；周边 Phase 0 不等代码。全球名次不做进 V1。禁止跳过①②直接写稀缺 UI。
+**我认为最合理的开工顺序**：① 共享目录口径 **已锁** → ② 目录数据模块对照单测（Batch 1，另口令）→ ③ `feature/journey-daily-card`（存图管线，可并行）→ ④ `feature/yin-collections-four-tabs` + `feature/practice-imprint-badges` + 稀缺说明 V1（挂同一勋章分区）→ ⑤ `feature/mindfulness-scroll-export`；周边 Phase 0 不等代码。全球名次不做进 V1。禁止跳过②直接写稀缺 UI。Journey「回来天数」文案 vs 连续日算法见目录 Brief **J-copy**（不阻塞 ②）。
 
 ---
 
