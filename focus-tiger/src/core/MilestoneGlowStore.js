@@ -3,23 +3,23 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
+import {
+  buildGlowClaimProvenanceMeta,
+  catalogResolveGlowNodeId,
+  MILESTONE_GLOW_STREAK_NODES
+} from './MILESTONE_CATALOG.js';
+
 /**
  * Which long-horizon MilestoneGlow nodes have already played (once each).
  * Only-add; quiet days never revoke. No Day-N scoreboard copy.
  *
- * Optional per-record placeholders (origin / journey_id / rarity_basis) reserve
- * space for future shared milestone catalog wiring (PR #887) without changing
- * product behavior today.
+ * Batch 2: `claimOffer` writes #890 scheme D provenance from `MILESTONE_CATALOG`.
  */
 
 export const MILESTONE_GLOW_STORAGE_KEY = 'focus-tiger.milestone-glow.v1';
 
-/** First product cut: consecutive practice streak days. */
-export const MILESTONE_GLOW_STREAK_NODES = Object.freeze([
-  { id: 'streak-7', streakDays: 7 },
-  { id: 'streak-21', streakDays: 21 },
-  { id: 'streak-100', streakDays: 100 }
-]);
+/** Re-exported from catalog SSOT (7/21/100 legacy glow ids). */
+export { MILESTONE_GLOW_STREAK_NODES };
 
 /**
  * @typedef {string | Record<string, unknown>} MilestoneGlowPlaceholderValue
@@ -130,18 +130,7 @@ function getDefaultStorage() {
  * @returns {string | null} node id to play, or null
  */
 export function resolveMilestoneGlowNodeId(streakDays, playedIds) {
-  const streak = Math.floor(Number(streakDays));
-  if (!Number.isFinite(streak) || streak <= 0) return null;
-  const played =
-    playedIds instanceof Set
-      ? playedIds
-      : new Set(playedIds ?? []);
-  for (const node of MILESTONE_GLOW_STREAK_NODES) {
-    if (streak < node.streakDays) continue;
-    if (played.has(node.id)) continue;
-    return node.id;
-  }
-  return null;
+  return catalogResolveGlowNodeId(streakDays, playedIds);
 }
 
 /**
@@ -222,7 +211,7 @@ export class MilestoneGlowStore {
   claimOffer(streakDays, meta = {}) {
     const id = this.peekOffer(streakDays);
     if (!id) return null;
-    this.markPlayed(id, meta);
+    this.markPlayed(id, { ...buildGlowClaimProvenanceMeta(id), ...meta });
     return id;
   }
 

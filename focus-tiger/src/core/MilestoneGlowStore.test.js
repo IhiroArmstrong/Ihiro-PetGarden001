@@ -78,10 +78,36 @@ describe('MilestoneGlowStore', () => {
     assert.equal(store.claimOffer(7), null);
     assert.equal(store.peekOffer(7), null);
     assert.ok(store.getPlayedIds().has('streak-7'));
-    assert.deepEqual(store.getRecords(), [{ id: 'streak-7' }]);
+    assert.deepEqual(store.getRecords(), [
+      {
+        id: 'streak-7',
+        rarity_basis: 'consecutive-practice-days-7',
+        origin: 'consecutive-practice-days',
+        journey_id: 'streak-7'
+      }
+    ]);
   });
 
-  it('persists optional placeholder fields when provided', () => {
+  it('persists scheme D provenance for streak-21 and streak-100', () => {
+    const store = new MilestoneGlowStore({ storage: null });
+    assert.equal(store.claimOffer(7), 'streak-7');
+    assert.equal(store.claimOffer(21), 'streak-21');
+    assert.deepEqual(store.getRecords()[1], {
+      id: 'streak-21',
+      rarity_basis: 'consecutive-practice-days-21',
+      origin: 'consecutive-practice-days',
+      journey_id: 'streak-21'
+    });
+    assert.equal(store.claimOffer(100), 'streak-100');
+    assert.deepEqual(store.getRecords().at(-1), {
+      id: 'streak-100',
+      rarity_basis: 'consecutive-practice-days-100',
+      origin: 'consecutive-practice-days',
+      journey_id: 'streak-100'
+    });
+  });
+
+  it('explicit meta overrides catalog provenance when provided', () => {
     const mem = new Map();
     const storage = {
       getItem: (k) => (mem.has(k) ? mem.get(k) : null),
@@ -91,20 +117,16 @@ describe('MilestoneGlowStore', () => {
     };
     const store = new MilestoneGlowStore({ storage });
     assert.equal(
-      store.claimOffer(7, {
-        origin: 'honesty-checkin',
-        journey_id: '2026-09-20T08:15:00.000Z',
-        rarity_basis: { streakDays: 7 }
-      }),
+      store.claimOffer(7, { journey_id: 'custom-journey-alias' }),
       'streak-7'
     );
     const persisted = JSON.parse(mem.get(MILESTONE_GLOW_STORAGE_KEY));
     assert.deepEqual(persisted.records, [
       {
         id: 'streak-7',
-        origin: 'honesty-checkin',
-        journey_id: '2026-09-20T08:15:00.000Z',
-        rarity_basis: { streakDays: 7 }
+        rarity_basis: 'consecutive-practice-days-7',
+        origin: 'consecutive-practice-days',
+        journey_id: 'custom-journey-alias'
       }
     ]);
   });
