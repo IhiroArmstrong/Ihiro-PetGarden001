@@ -283,6 +283,12 @@ export class ConfideToYinUI {
     this.replyEl.dataset.testid = 'confide-to-yin-reply';
     this.replyEl.hidden = true;
 
+    this.thinkingEl = document.createElement('p');
+    this.thinkingEl.className = 'confide-to-yin__thinking';
+    this.thinkingEl.dataset.testid = 'confide-to-yin-thinking';
+    this.thinkingEl.setAttribute('aria-live', 'polite');
+    this.thinkingEl.hidden = true;
+
     this.memoryListLink = document.createElement('button');
     this.memoryListLink.type = 'button';
     this.memoryListLink.className = 'confide-to-yin__memory-list-link';
@@ -324,6 +330,7 @@ export class ConfideToYinUI {
       this.memoryConsentWrap,
       this.inputEl,
       this.userEl,
+      this.thinkingEl,
       this.replyEl,
       this.memoryListLink,
       this.actions
@@ -367,6 +374,7 @@ export class ConfideToYinUI {
     this.replyEl.hidden = true;
     this.replyEl.textContent = '';
     this.replyEl.dataset.route = '';
+    this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
     this._generateFailStreak = 0;
@@ -392,6 +400,7 @@ export class ConfideToYinUI {
     this._open = false;
     this._sendEpoch += 1;
     this._sending = false;
+    this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
     this._generateFailStreak = 0;
@@ -533,6 +542,9 @@ export class ConfideToYinUI {
       this.memoryListLink.textContent = t('YIN_MEMORY_PANEL_LINK');
       this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
     }
+    if (this.thinkingEl && !this.thinkingEl.hidden) {
+      this.thinkingEl.textContent = t('CONFIDE_PANEL_THINKING');
+    }
     this._renderDesktopStatus();
   }
 
@@ -581,11 +593,39 @@ export class ConfideToYinUI {
     this.sendBtn.disabled = this._sending || !ok || consentPending;
   }
 
+  /** @returns {void} */
+  _hideThinkingIndicator() {
+    if (!this.thinkingEl) return;
+    this.thinkingEl.hidden = true;
+    this.thinkingEl.textContent = '';
+  }
+
+  /**
+   * Immediate feedback while Local AI is working (generate / read-hybrid classify).
+   * @param {string} userText
+   */
+  _showPendingReply(userText) {
+    const asked = typeof userText === 'string' ? userText.trim() : '';
+    this.userEl.textContent = asked;
+    this.userEl.hidden = !asked;
+    this.replyEl.hidden = true;
+    this.replyEl.textContent = '';
+    this.replyEl.dataset.route = '';
+    this.replyEl.dataset.lineId = '';
+    this.replyEl.dataset.source = '';
+    this.thinkingEl.textContent = t('CONFIDE_PANEL_THINKING');
+    this.thinkingEl.hidden = false;
+    this.inputEl.value = '';
+    this._syncSendEnabled();
+    this._scrollReplyIntoView();
+  }
+
   /**
    * @param {{ route: string, line?: { id?: string }, text: string, source: string }} shown
    * @param {string} userText
    */
   _showReply(shown, userText) {
+    this._hideThinkingIndicator();
     const asked = typeof userText === 'string' ? userText.trim() : '';
     this.userEl.textContent = asked;
     this.userEl.hidden = !asked;
@@ -805,6 +845,7 @@ export class ConfideToYinUI {
    */
   _offerMemoryConsentBeforeL3(payload) {
     this._pendingL3Send = payload;
+    this._hideThinkingIndicator();
     this.memoryConsentWrap.hidden = false;
     this.memoryConsentAllowBtn.disabled = this._memoryConsentSaving;
     this.memoryConsentDenyBtn.disabled = this._memoryConsentSaving;
@@ -911,6 +952,7 @@ export class ConfideToYinUI {
     this._sending = true;
     const epoch = this._sendEpoch;
     this.sendBtn.disabled = true;
+    this._showPendingReply(text);
     this._renderDesktopStatus();
     const history = this._l2Turns.slice();
     void Promise.resolve(
@@ -970,7 +1012,10 @@ export class ConfideToYinUI {
         });
       })
       .finally(() => {
-        if (epoch !== this._sendEpoch) return;
+        if (epoch !== this._sendEpoch) {
+          this._hideThinkingIndicator();
+          return;
+        }
         this._sending = false;
         this._syncSendEnabled();
         this._renderDesktopStatus();
@@ -1189,6 +1234,7 @@ export class ConfideToYinUI {
     this._sending = true;
     const epoch = this._sendEpoch;
     this.sendBtn.disabled = true;
+    this._showPendingReply(text);
     this._renderDesktopStatus();
     void Promise.resolve(
       this._companion.classifyReadTool({
@@ -1213,8 +1259,12 @@ export class ConfideToYinUI {
         return this._continueAfterToolRouting(payload);
       })
       .then((outcome) => {
-        if (epoch !== this._sendEpoch) return;
+        if (epoch !== this._sendEpoch) {
+          this._hideThinkingIndicator();
+          return;
+        }
         if (outcome === 'l3') return;
+        if (outcome === 'consent') this._hideThinkingIndicator();
         this._sending = false;
         this._syncSendEnabled();
         this._renderDesktopStatus();
@@ -1461,6 +1511,40 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__user[hidden] {
         display: none;
+      }
+      .confide-to-yin__thinking {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        margin: 0 0 12px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(44, 31, 20, 0.08);
+        border: 1px solid rgba(139, 115, 85, 0.18);
+        box-shadow: 0 6px 18px rgba(44, 31, 20, 0.08);
+        font-size: 0.84rem;
+        line-height: 1.35;
+        opacity: 0.92;
+        animation: confide-to-yin-thinking-float 2.4s ease-in-out infinite;
+      }
+      .confide-to-yin__thinking::after {
+        content: '…';
+        display: inline-block;
+        width: 1.1em;
+        overflow: hidden;
+        vertical-align: bottom;
+        animation: confide-to-yin-thinking-dots 1.2s steps(4, end) infinite;
+      }
+      .confide-to-yin__thinking[hidden] {
+        display: none !important;
+      }
+      @keyframes confide-to-yin-thinking-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+      }
+      @keyframes confide-to-yin-thinking-dots {
+        0% { width: 0.2em; }
+        100% { width: 1.1em; }
       }
       .confide-to-yin__reply {
         position: relative;

@@ -473,6 +473,7 @@
   "CONFIDE_PANEL_SEND": "Share",
   "CONFIDE_PANEL_CANCEL": "Cancel",
   "CONFIDE_PANEL_CLOSE": "Close",
+  "CONFIDE_PANEL_THINKING": "Thinking",
   "CONFIDE_PRACTICE_FACTS_NONE": "No sits are written down on this device yet.",
   "CONFIDE_PRACTICE_FACTS_DAYS_ONLY": "This device has {days} practiced days. Minute counts are not all written down.",
   "CONFIDE_PRACTICE_FACTS_DAYS_PARTIAL": "This device has {days} practiced days, about {minutes} minutes on the days that recorded time.",
