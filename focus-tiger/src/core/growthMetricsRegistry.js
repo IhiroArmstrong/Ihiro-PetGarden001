@@ -270,6 +270,30 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'focus-essence-earn',
+    displayName: 'Focus Essence · earn ledger',
+    purpose: 'presentation-feedback',
+    inputSources: Object.freeze([
+      'focus-tiger.focus-essence.v1',
+      'session completion hooks'
+    ]),
+    aggregationWindow: 'event-driven',
+    dailyCapPolicy:
+      'Slice 1 mirrors focus-coins-earn caps; essenceTotal monotonic; no redeem.',
+    formulaVersion: 'focusEssenceL0.v1',
+    formulaSummary:
+      'Same events/points/caps as focus-coins-earn; writes essenceTotal only; no UI.',
+    formulaModule: 'src/core/focusEssenceLedger.js',
+    authoritativeConsumers: Object.freeze(['src/core/focusEssenceAward.js']),
+    relatedPersonas: Object.freeze([
+      'light-stay-10',
+      'medium-stay-25',
+      'honesty-30',
+      'breath-1',
+      'binge-cap'
+    ])
+  }),
+  Object.freeze({
     id: 'focus-coins-redeem',
     displayName: "Yin's Collections · redeem gates",
     purpose: 'unlock-gate',
