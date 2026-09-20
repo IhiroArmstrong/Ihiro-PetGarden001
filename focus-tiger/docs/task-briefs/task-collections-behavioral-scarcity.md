@@ -1,6 +1,7 @@
 # Task Brief · Collections 行为稀缺度展示（V1 已拍板 · 未开工）
 
 > **状态（2026-09-20）**：**PO 已锁 V1 口径**。无运行时、无 Worker、无 UI。  
+> **硬前置**：共享里程碑目录 `task-shared-milestone-catalog.md`（方案待拍板）。未拍板 + 未做目录 Batch 1 对照单测前，**禁止**开工本任务 UI / 接线。  
 > **口令**：实现须另开代码 Brief / 「开工」；禁止把本文件当开工许可。  
 > **父线**：Epic [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) Collection Value & Behavioral Scarcity；耦合 [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) Focus Coin & Collections、[#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 账本口径、[#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) Yin Evolution、[#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) Journey Log。  
 > **原则**：`PRINCIPLES.md`「数字资产 / Collection 价值原则」（[#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886) **已合** `ae0d2ec5`）· 宁静型游戏化 / 不制造焦虑 / 诚实机制 / **不商业化自律本身**。全球行为人数仍是原则里的**概念储备**；V1 **不**实现全球排行。  
@@ -163,10 +164,10 @@ practiceAggregate（账本 SSOT）
 | 修行纪念印档 | `task-practice-imprint-badges.md`（建议 600 / 3000 / 10800 分 或 score 21 / 42 / 84） | 稀缺说明挂这些档，**不另起一套分钟表** |
 | Idle 徽章枚数 | `practiceBadgeAward` `score/3` | **不**当 Collections 稀缺文案（那是 chrome 密度） |
 | MilestoneGlow | **连续** 7 / 21 / 100 **仪式动画** | **正交**。对外稀缺句禁止改写成「连坐竞赛」 |
-| Journey / Evolution 六条 | First practice · 7/21/100 **days of returning** · First return after pause · First different practice · 可选 First lotus | **关系记忆**，落 Journey，**零公式消费者**、禁止 score→阶段。7/21/100 **returning** ≠ Glow 连坐节点，实现 Brief 必须分谓词 id |
+| Journey / Evolution 六条 | First practice · 7/21/100 **days of returning** · First return after pause · First different practice · 可选 First lotus | **关系记忆**，落 Journey，**零公式消费者**、禁止 score→阶段。git 上 7/21/100 与 Glow **同为连续日**；是否拆谓词见 `task-shared-milestone-catalog.md` **J1**，禁止实现人临场另造 id |
 | Confide / YPE / Personal Memory | 倾诉与 Pack | **不**进收藏稀缺 |
 
-建议新建（实现阶段，非本 PR）一份 **`practiceMilestoneCatalog`**（kebab-case id + 谓词指向 aggregate 字段 + `surfaces: imprint | journey | glow`）。没有这份目录，就会再出现「芥子一套、徽章一套、Journey 一套」。
+共享谓词表已单独立项：`task-shared-milestone-catalog.md`（2026-09-20 方案待拍板）。没有这份目录，就会再出现「芥子一套、徽章一套、Journey 一套」。本任务实现 **不得** 顺手发明第三套门槛数字。
 
 Yin Evolution 铁律仍然有效：**见证不得锁付费**；Collections 成就说明对所有练习者可见。
 
