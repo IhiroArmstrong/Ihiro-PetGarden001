@@ -351,6 +351,9 @@ export function countPracticeStoreEntries(storeKey, val) {
       return Array.isArray(days) ? days.length : 0;
     }
     case 'focus-tiger.milestone-glow.v1': {
+      const records = /** @type {{ records?: unknown, played?: unknown }} */ (val)
+        .records;
+      if (Array.isArray(records)) return records.length;
       const played = /** @type {{ played?: unknown }} */ (val).played;
       return Array.isArray(played) ? played.length : 0;
     }

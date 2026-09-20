@@ -281,6 +281,7 @@ export function isPracticeBackupStoreEmpty(storage, key) {
     case 'focus-tiger.practice-days.v1':
       return !Array.isArray(parsed.days) || parsed.days.length === 0;
     case 'focus-tiger.milestone-glow.v1':
+      if (Array.isArray(parsed.records)) return parsed.records.length === 0;
       return !Array.isArray(parsed.played) || parsed.played.length === 0;
     case 'focus-tiger.entitlement-ownership.v1': {
       const owned =
