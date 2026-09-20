@@ -34,6 +34,7 @@
 | 档案对照脚本（0.6B Q4 bartowski ↔ 4B） | `/tmp/ft-l0-qwen3-4b-lab.mjs` |
 | 新候选脚本（一次跑一个 key） | `/tmp/ft-l0-candidate-lab.mjs` |
 | L3 观察句对照（#823 · baseline / B / A） | `/tmp/ft-l0-l3-observe-b-lab.mjs` |
+| Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
 | 对照表（只追加，不另起格式） | `/tmp/ft-l0-lab/compare-tables.md` |

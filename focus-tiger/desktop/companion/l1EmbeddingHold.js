@@ -12,10 +12,15 @@ import {
   CONFIDE_SEMANTIC_LIBRARY_A,
   CONFIDE_SEMANTIC_LIBRARY_B
 } from '../../src/core/confide/confideSemanticExamples.js';
+import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
 import {
   classifyConfideSemanticCoarse,
   formatQwen3EmbeddingInput
 } from '../../src/core/confide/confideSemanticRouting.js';
+import {
+  maxObserveClicheCosine,
+  resolveObserveClicheCosineThreshold
+} from '../../src/core/confide/observeClicheGate.js';
 import { resolveConfideSemanticRoutingConfig } from '../../src/core/confide/confideSemanticRoutingConfig.js';
 import {
   L0_EMBEDDING_BATCH_SIZE,
@@ -37,6 +42,7 @@ function errorMessage(err) {
 export async function loadEmbeddingHold(opts) {
   const onProgress = opts.onProgress || (() => {});
   const routingConfig = resolveConfideSemanticRoutingConfig(opts.env);
+  const clicheThreshold = resolveObserveClicheCosineThreshold(opts.env);
 
   onProgress('import node-llama-cpp (embedding)');
   const { getLlama } = await import('node-llama-cpp');
@@ -80,6 +86,13 @@ export async function loadEmbeddingHold(opts) {
     vectorsB.push(await embedText(example));
   }
 
+  onProgress('precomputeObserveClicheBank');
+  /** @type {number[][]} */
+  const clicheVectors = [];
+  for (const example of OBSERVE_CLICHE_EXAMPLES) {
+    clicheVectors.push(await embedText(example));
+  }
+
   let disposed = false;
 
   return {
@@ -104,6 +117,22 @@ export async function loadEmbeddingHold(opts) {
         routingConfig
       );
       return { ...result, embedMs };
+    },
+    /**
+     * @param {string} text
+     * @returns {Promise<{ score: number, flagged: boolean, threshold: number, embedMs: number }>}
+     */
+    async scoreObserveCliche(text) {
+      if (disposed) throw new Error('embedding_session_disposed');
+      const embedStarted = Date.now();
+      const replyVector = await embedText(text);
+      const score = maxObserveClicheCosine(replyVector, clicheVectors);
+      return {
+        score,
+        flagged: score >= clicheThreshold,
+        threshold: clicheThreshold,
+        embedMs: Date.now() - embedStarted
+      };
     },
     async dispose() {
       if (disposed) return;

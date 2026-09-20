@@ -9,6 +9,7 @@ import { buildCompanionL2Prompt, isCompanionChatGenerateLine } from '../../deskt
 import {
   isGenericCubTheaterReply,
   isEchoOfUserLine,
+  isHighOverlapWithUserLine,
   sanitizeCompanionL2Reply
 } from '../../desktop/companion/l2Sanitize.js';
 import {
@@ -61,6 +62,7 @@ describe('L3 observe scheme B shuffle gate', () => {
     assert.match(prompt, /conversation, not a mood to observe/i);
     assert.match(prompt, /Do not invent a job/i);
     assert.match(prompt, /Do not repeat the user line/i);
+    assert.doesNotMatch(prompt, /short caring question/i);
     assert.doesNotMatch(prompt, /irritation vs sleeplessness/i);
     assert.doesNotMatch(prompt, /first-person cub body/i);
     const today = buildCompanionL2Prompt({
@@ -72,13 +74,21 @@ describe('L3 observe scheme B shuffle gate', () => {
     assert.equal(isCompanionChatGenerateLine('小姐姐喜欢吃胖粉吗？'), true);
   });
 
-  it('keeps emotion self-reports on the observe wing, not chat-answer', () => {
+  it('lets observe wing ask a short caring question without advising', () => {
     const mindAway = "I'm here, but my mind really isn't.";
     assert.equal(isCompanionChatGenerateLine(mindAway), false);
     const prompt = buildCompanionL2Prompt({ text: mindAway, locale: 'en' });
     assert.match(prompt, /first-person cub body/i);
+    assert.match(prompt, /short caring question/i);
+    assert.match(prompt, /no you-should/i);
     assert.match(prompt, /irritation vs sleeplessness/i);
     assert.doesNotMatch(prompt, /conversation, not a mood to observe/i);
+    const retry = buildCompanionL2Prompt({
+      text: mindAway,
+      locale: 'en',
+      observeRetryHint: 'This retry: do not use stock cub-body filler'
+    });
+    assert.match(retry, /stock cub-body filler/i);
   });
 
   it('rejects interchangeable cub-theater lines from field QA', () => {
@@ -118,6 +128,26 @@ describe('L3 observe scheme B shuffle gate', () => {
         userText: "I'm here, but my mind really isn't."
       }),
       null
+    );
+    assert.equal(
+      isHighOverlapWithUserLine(
+        '喜欢吃胖粉。',
+        '小姐姐喜欢吃胖粉吗？'
+      ),
+      true
+    );
+    assert.equal(
+      sanitizeCompanionL2Reply('喜欢吃胖粉。', {
+        userText: '小姐姐喜欢吃胖粉吗？'
+      }),
+      null
+    );
+    assert.equal(
+      isHighOverlapWithUserLine(
+        'The cub cannot settle into sleep tonight.',
+        '睡不着'
+      ),
+      false
     );
   });
 });

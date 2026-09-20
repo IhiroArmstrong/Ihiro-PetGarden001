@@ -307,6 +307,61 @@ async function main() {
             });
           }
         });
+      } else if (line.startsWith('score-observe-cliche ')) {
+        enqueue(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('score-observe-cliche '.length));
+          } catch {
+            await emit({
+              event: 'observe_cliche_error',
+              id: '',
+              message: 'invalid_observe_cliche_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          if (!text) {
+            await emit({
+              event: 'observe_cliche_error',
+              id,
+              message: 'empty_text'
+            });
+            return;
+          }
+          const started = Date.now();
+          try {
+            if (!embeddingSession || typeof embeddingSession.scoreObserveCliche !== 'function') {
+              await emit({
+                event: 'observe_cliche_scored',
+                id,
+                skipped: true,
+                reason: 'embedding_not_ready',
+                wallMs: Date.now() - started
+              });
+              return;
+            }
+            const result = await embeddingSession.scoreObserveCliche(text);
+            await emit({
+              event: 'observe_cliche_scored',
+              id,
+              skipped: false,
+              score: result.score,
+              flagged: result.flagged,
+              threshold: result.threshold,
+              embedMs: result.embedMs,
+              wallMs: Date.now() - started
+            });
+          } catch (err) {
+            await emit({
+              event: 'observe_cliche_error',
+              id,
+              message: embeddingErrorMessage(err),
+              wallMs: Date.now() - started
+            });
+          }
+        });
       } else if (line.startsWith('classify-read-tool ')) {
         enqueue(async () => {
           let payload = {};

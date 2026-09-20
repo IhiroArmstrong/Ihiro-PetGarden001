@@ -30,10 +30,16 @@ test('safety_redirect beats emotion and fallback', () => {
   assert.equal(confideClassify('死にたい'), CONFIDE_ROUTE.SAFETY_REDIRECT);
 });
 
-test('safety hit must never be fallback', () => {
-  const route = confideClassify('thinking about suicide tonight');
-  assert.equal(route, CONFIDE_ROUTE.SAFETY_REDIRECT);
-  assert.notEqual(route, CONFIDE_ROUTE.FALLBACK);
+test('safety and aggression still classify on the current user line only', () => {
+  const priorCaring = '你还好吗';
+  assert.notEqual(confideClassify(priorCaring), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.notEqual(confideClassify(priorCaring), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('我不想活了'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(confideClassify('我想打人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(
+    confideClassify(`${priorCaring} 我不想活了`.replace(priorCaring, '').trim()),
+    CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
 });
 
 test('emotion buckets: anxious / tired / stuck / sad / scattered', () => {
