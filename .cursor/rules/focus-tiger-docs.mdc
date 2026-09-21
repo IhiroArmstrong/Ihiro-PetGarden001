@@ -42,6 +42,7 @@ alwaysApply: false
 | `docs/YIN_PERSONALIZATION_ENGINE.md` | **Yin Personalization Engine V1**（方向锁；L0/L1 本地运行时；≠ Memory / 品味层 / Qwen；L2 已拍；ingest 已合；V2 见 `task-ype-v2-secret-transform.md`） |
 | `docs/CONFIDE_EXECUTABLE_INTENTS.md` | Confide 口头白名单 + Companion Tool Registry（≠ Operating Layer） |
 | `docs/LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划（Confide 轨道 A/B/C） |
+| `docs/product-knowledge-base.md` | **产品知识库**（三库拆分 / `yin_may_retrieve` / 功能短答；**无运行时**；≠ 开放 FAQ） |
 | `docs/LOCAL_AI_PHASE1_TASK_PLAN.md` | **Local AI Phase 1 执行计划**：门禁 · 口令 · #472 A/B/C 验收 · 分 PR 纪律 |
 | `docs/LOCAL_AI_OPERATING_LAYER.md` | **Local AI Operating Layer**（方向锁；Auto-Operating ≠ Yin；只设计无运行时） |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
