@@ -32,7 +32,12 @@ import {
   priorRepeatableYinRepliesFromHistory,
   sanitizeCompanionL2Reply
 } from './l2Sanitize.js';
-import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
+import {
+  L0_MAX_TOKENS,
+  L0_MODEL_ID,
+  L0_TOOL_CLASSIFY_TIMEOUT_MS,
+  L1_ENSURE_READY_TIMEOUT_MS
+} from './l0Config.js';
 import { L0_SEMANTIC_SHADOW_TIMEOUT_MS } from './l0EmbeddingConfig.js';
 import { resolveCompanionModelDir } from './l0Download.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
@@ -271,14 +276,34 @@ export class CompanionL1Runtime {
     if (this.status.focusing) {
       return Promise.resolve({ ok: false, reason: 'focusing', ...this.snapshot() });
     }
+    if (this.status.phase === 'ready' && this.child) {
+      return Promise.resolve({ ok: true, ...this.snapshot() });
+    }
     this._queue = this._queue.then(async () => {
       const ready = new Promise((resolve) => {
         this._readyWaiters.push(resolve);
       });
-      this._write('ensure');
-      return ready;
+      try {
+        this._write('ensure');
+      } catch {
+        return { ok: false, reason: 'companion_child_unavailable', ...this.snapshot() };
+      }
+      return Promise.race([
+        ready.then((snap) => ({ ok: true, ...snap })),
+        new Promise((resolve) => {
+          setTimeout(
+            () =>
+              resolve({
+                ok: false,
+                reason: 'timeout',
+                ...this.snapshot()
+              }),
+            L1_ENSURE_READY_TIMEOUT_MS
+          );
+        })
+      ]);
     });
-    return this._queue.then((snap) => ({ ok: true, ...snap }));
+    return this._queue;
   }
 
   /**

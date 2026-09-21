@@ -46,6 +46,10 @@ test('Confide shows a floating thinking pill while Local AI is pending', () => {
   assert.match(src, /_runL3Generate[\s\S]*_showPendingReply/);
   assert.match(src, /_tryReadHybridThenContinue[\s\S]*_showPendingReply/);
   assert.match(src, /_showReply[\s\S]*_hideThinkingIndicator/);
+  assert.match(src, /_armPendingReplyWatchdog/);
+  assert.match(src, /min-width: 1\.1em/);
+  assert.match(src, /opacity: 0\.35/);
+  assert.doesNotMatch(src, /keyframes confide-to-yin-thinking-dots[\s\S]*width: 0\.2em/);
 });
 
 test('Tip jar and Sanctuary (always-visible email) do not close on outside pointer', () => {
