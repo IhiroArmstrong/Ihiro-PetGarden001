@@ -204,6 +204,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；CI → Tool Registry；≠ 开放域 Agent） |
 | `LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划 V1（轨道 A/B/C；Tool Registry 演进；≠ Auto-Operating 入口） |
 | `LOCAL_AI_OPERATING_LAYER.md` | Local AI Operating Layer 方向锁（Auto-Operating ≠ Confide；只设计无运行时；Backup/Update/MCP 不进 Confide V1） |
+| `product-knowledge-base.md` | **产品知识库**分类/字段/三库拆分 + 第一周功能短答（**无运行时**；≠ Confide 语料、≠ 帮助中心、≠ 接地练习脚本） |
 | `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` | Local AI 扩场景会审输入（#462；已结案 → PO 决策） |
 | `LOCAL_AI_SCENARIO_EXPANSION_DESIGNER_PRE_REVIEW.md` | 设计师预审（#475；已由 PO 决策 supersede） |
 | `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` | **产品负责人正式拍板**（2026-08-28；Phase 1 · 非自动 runtime） |
@@ -258,6 +259,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-22 | 产品表：`product-knowledge-base.md`（三库拆分 + 5 条现网对照短答；急救型无固定心理审核人 → 不接入 Local AI）。不进 rules-authority 机器块 |
 | 2026-09-21 | 新增 `brief-before-user-visible`：B 类用户可见改动开工前须 PO 点头 Brief；「立刻开工」不能跳过；有疑问默认 B 类。SSOT `WORKFLOW.md`「用户可见改动：Brief 开工门禁」；按需层 `.cursor/rules/focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` / `focus-tiger-core` 一行引用。示范：Confide Stage 1（A）vs Stage 2 切真路由（B） |
 | 2026-09-16 | 产品表：`EPIC_COVERAGE_AUDIT.md`（存量线覆盖）+ `planning/task-lines-epic-draft.md` 指针；同日建库 #792 音景 / #793 栖居壳层。不进 rules-authority 机器块 |
 | 2026-09-16 | 产品表：`FOCUS_COINS.md` / `REMOTE_PARAM_CANDIDATES.md` 寅币日封顶 Step D = A 已锁（`task-yin-coin-daily-cap-economy`）；persona CI `focusCoinsPersonaRegression.js`。不进 rules-authority 机器块 |
