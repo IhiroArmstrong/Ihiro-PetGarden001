@@ -66,7 +66,9 @@
 
 - **Confide companion 工作闸（2026-09-22）**：`l1LlamaWorkGate` 串行化聊天 / embedding 的 `getLlama`；单测不加载原生 addon。不改 Stage 2 路由表；不加加载提示、不预加载。Brief `task-confide-embedding-work-gate.md`。
 
-- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。第一批 5 条对照 locale，**PO 人审已通过**（spot-check 0002/0003）。**第二批 11 条盘点草案**（0006–0016 · P0 速查表缺口 + P1 CI 指路互补 / 产品事实拆分）+ 急救型标题登记 3 条 + 内部排障草案 2 条；**待 PO spot-check**，不接线运行时。检索接线 Brief（Q1–Q5）已定稿；实现 Issue 等累计 ~15 条已通过。
+- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。第一批 5 条对照 locale，**PO 人审已通过**（spot-check 0002/0003）。**#923** 占 `KB-FUNC-0006` 呼吸练习试点（左球 · 未审核）。**第二批 10 条**（原 0006–0016 顺延为 0007–0017；**PO 书面放行 15 条可检索**，不含 `0009` 云备份专述）+ 急救型标题登记 3 条 + 内部排障草案 2 条；不接线运行时。
+
+- **Confide 知识库检索接线 Brief 已拍板（2026-09-22 · 纯文档）**：`task-confide-kb-retrieval-wiring.md`。Q1 原样/模板 · 单闸门 `yin_may_retrieve` ∧ `审核状态` · **15 条已通过，实现 Issue 可开工**。
 
 - **Confide with-prior 不对称规则回放（2026-09-21 · A 类）**：`npm run audit:confide-prior-asymmetric` 只读历史 jsonl；gray→明确桶保留、明确桶→gray 丢掉。不改 live。Prompt：`task-confide-prior-asymmetric-replay.md`。embedding 加载 UI / 预加载见 `task-confide-embedding-work-gate.md`，闸合入后再一起评。
 

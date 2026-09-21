@@ -1,6 +1,8 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **第二批 11 条盘点草案**（对照现网 locale / 菜单普查；**待 PO spot-check**）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
+**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923）+ **第二批 10 条**（原草案顺延为 0007–0017；**PO 书面放行 15 条可检索**，不含 0009 云备份专述）。**无运行时**；检索接线实现另 PR。  
+**权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · **15 条已通过，可拆实现 Issue**）· `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · 实现 Issue 待 ~15 条已通过）· `LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）· `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`（Web 不 ship 本机生成）
 
@@ -197,26 +199,48 @@
   检索关键词: [结束倾诉, Close, 关闭, キャンセル, Cancel, 退出, Esc]
 ```
 
-### 4.2 第二批盘点草案（对照现网 · 待 PO 人审）
+### 4.2 盘点第二批（对照现网 · PO 书面放行）
 
-来源：**只搬运 / 裁剪 / 打标**——P0 来自 §4.1 现网入口速查表缺口；P1 与 `CONFIDE_EXECUTABLE_INTENTS` 指路互补或拆出产品说明事实。全部 `审核状态: 未审核`，人审前不得当作可检索。
+来源：**只搬运 / 裁剪 / 打标**——#923 已占 `KB-FUNC-0006`（左球呼吸）；本批原 0006–0016 **顺延为 0007–0017**。`0009` 云备份专述因功能暂时禁用保持 **未审核**；其余 10 条与第一批合计 **15 条** `审核状态: 已通过`（可进检索闸门）。
 
-| 优先级 | id | 标题 | 盘点依据 |
-|---|---|---|---|
-| P0 | 0006 | 如何结束同坐（Rise） | 速查表 `BTN_FOCUS_STOP` |
-| P0 | 0007 | How shall we sit 在哪 | 速查表 `COMPANION_MODE_*` |
-| P0 | 0008 | Journey log 可选云备份 | 速查表 Journey log 行；`JOURNEY_LOG_BACKUP_*` |
-| P0 | 0009 | 倾诉从哪里开 | 速查表 Confide 行；`CONFIDE_*` |
-| P0 | 0010 | Breath practice 和 Sit 的区别 | 速查表 + `focus_duration.hint` / `HINT_QUICK_START` |
-| P1 | 0011 | 练习记录从哪看（Journey log） | CI-00 答数据；UI 指路 |
-| P1 | 0012 | Presence moments 从哪看 | CI-02 答趋势；`PRESENCE_SIGNALS_*` |
-| P1 | 0013 | What Yin remembers 从哪看 | CI-03 答列表；Confide 内链 |
-| P1 | 0014 | 本地备份是明文 JSON | `PRIVACY_SHEET_EXPORT_IMPORT`（从 0003 拆事实） |
-| P1 | 0015 | 同坐时本机模型会卸载 | `CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING`（从 0005 拆事实） |
-| P1 | 0016 | 浏览器里没有本机倾诉生成 | `SUPPORT_WEB_LOCAL_AI_NOTE` · `LOCAL_AI_WEB_MOUNT_PO_DECISION` |
+| 优先级 | id | 标题 | 盘点依据 | 审核 |
+|---|---|---|---|---|
+| P0 | 0006 | 呼吸练习从哪进（左球） | 速查表左球行 · `micro_ritual.*` | 未审核（#923 试点） |
+| P0 | 0007 | 如何结束同坐（Rise） | 速查表 `BTN_FOCUS_STOP` | 已通过 |
+| P0 | 0008 | How shall we sit 在哪 | 速查表 `COMPANION_MODE_*` | 已通过 |
+| P0 | 0009 | Journey log 可选云备份 | `JOURNEY_LOG_BACKUP_*` | **未审核（云备份暂禁用）** |
+| P0 | 0010 | 倾诉从哪里开 | 速查表 Confide 行 | 已通过 |
+| P0 | 0011 | Breath practice 和 Sit 的区别 | 速查表 + `focus_duration.hint` | 已通过 |
+| P1 | 0012 | 练习记录从哪看（Journey log） | CI-00 答数据；UI 指路 | 已通过 |
+| P1 | 0013 | Presence moments 从哪看 | CI-02 答趋势 | 已通过 |
+| P1 | 0014 | What Yin remembers 从哪看 | CI-03 答列表 | 已通过 |
+| P1 | 0015 | 本地备份是明文 JSON | `PRIVACY_SHEET_EXPORT_IMPORT` | 已通过 |
+| P1 | 0016 | 同坐时本机模型会卸载 | `CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING` | 已通过 |
+| P1 | 0017 | 浏览器里没有本机倾诉生成 | `LOCAL_AI_WEB_MOUNT_PO_DECISION` | 已通过 |
 
 ```yaml
 - id: KB-FUNC-0006
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 呼吸练习从哪进（左球）
+  适用场景: 想短暂陪阿寅坐一会儿，不确定该点左球还是底栏 Sit
+  内容正文: |
+    短答（en）：On the home seat, tap the left orb — Breath practice. Pick how long (chips from 1 minute up). It is a soft sit with Yin, not a full Focus session. Yin only points here and does not read the in-breath / out-breath coaching lines aloud.
+    指路：Idle 左球 `#ft-wide-home-quickstart` / `#ft-narrow-home-quickstart`（`QUICK_START_ARIA`）→ 时长 chip `micro_ritual.pick_duration` → 点选即开。Leave（`micro_ritual.leave`）结束、不记账、不进 Reflection、不写 Journey log；完成且关 Reflection 才入账（见 `MICRO_RITUAL_PLAN.md`）。**不在** ⋯ / 抽屉；Companion 三选一展开时宽屏左球隐藏（`ft-wide-stage-companion`）。
+    与 0001 分工：0001 = 主钮 Sit 完整同坐（10 分钟起）；本条 = 左球短坐入口。
+    禁止：把 `RESET_BREATH_*` / `BREATH_PHASE_*` 引导语写入本条或倾诉检索块（与 `KB-PSY-DRAFT-0002` 分工）。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Idle 左球主路径（Extended Breath Practice · 1/3/5/10/20 分钟）
+  更新时间: 2026-09-22
+  locale_keys: [QUICK_START_ARIA, HINT_QUICK_START, HINT_MICRO_RITUAL, micro_ritual.button, micro_ritual.pick_duration, micro_ritual.minutes_chip, micro_ritual.leave, focus_duration.hint]
+  检索关键词: [呼吸练习, Breath practice, 左球, quick start, 短坐, 一分钟, 从哪进, 怎么呼吸, 和 Sit 区别]
+
+- id: KB-FUNC-0007
   所属库: 陪伴可检索
   一级分类: 产品功能
   二级分类: 操作入口
@@ -227,15 +251,15 @@
     指路：同坐中主钮 `BTN_FOCUS_STOP`（Rise）→ 结束本场；非倾诉 Close、非 Esc 关叠层。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网 Idle 主路径
   更新时间: 2026-09-22
   locale_keys: [BTN_FOCUS_STOP, BTN_FOCUS_START]
   检索关键词: [结束同坐, Rise, 起身, 立つ, 怎么起来, stop sitting]
 
-- id: KB-FUNC-0007
+- id: KB-FUNC-0008
   所属库: 陪伴可检索
   一级分类: 产品功能
   二级分类: 操作入口
@@ -246,20 +270,20 @@
     禁止：把三张卡的 hint 全文写进短答；只指路 + 卡名。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网 Companion 模式卡
   更新时间: 2026-09-22
   locale_keys: [COMPANION_MODE_TITLE, COMPANION_MODE_STAY, COMPANION_MODE_STEP_AWAY, COMPANION_MODE_ACROSS_TOOLS, COMPANION_MODE_CONTINUE, HINT_COMPANION_MODE]
   检索关键词: [怎么陪, How shall we sit, 这次怎么陪你, 陪伴模式, Begin, Offline Space, Flow State]
 
-- id: KB-FUNC-0008
+- id: KB-FUNC-0009
   所属库: 产品说明事实
   一级分类: 产品功能
   二级分类: 数据管理
   标题: Journey log 可选云备份
-  适用场景: 想给练习轨迹留一份可选云端快照，或分不清和本地 JSON 导出的区别
+  适用场景: 想给练习轨迹留一份可选云端快照，或分不清和本地 JSON 导出的区别（**2026-09-22：云备份功能暂时禁用，本条保持未审核、不进检索索引**）
   内容正文: |
     短答（en）：Open More (⋯) or the drawer → Practice → Journey log. Bind email for optional cloud backup if you want a quiet snapshot of your practice trail on Focus Tiger's cloud. It does not run while you sit. Turning backup off deletes the cloud copy; local records stay on this device.
     与 0003 分工：0003 = 两个入口总览；本条 = Journey 云备份专述。
@@ -273,7 +297,7 @@
   locale_keys: [JOURNEY_LOG_MENU_LABEL, JOURNEY_LOG_BACKUP_LINK_OFF, JOURNEY_LOG_BACKUP_PRIVACY, JOURNEY_LOG_BACKUP_STATUS_DISABLED]
   检索关键词: [云备份, cloud backup, Journey log, 绑定邮箱, 旅程留痕, 练习轨迹备份]
 
-- id: KB-FUNC-0009
+- id: KB-FUNC-0010
   所属库: 陪伴可检索
   一级分类: 产品功能
   二级分类: 操作入口
@@ -281,18 +305,18 @@
   适用场景: 想跟阿寅说几句，不知道入口在哪
   内容正文: |
     短答（en）：Open More (⋯) or the drawer → Practice → Confide to Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.
-    窄屏：菜单有 Confide 行，无本机模型生成（见 0016）。
+    窄屏：菜单有 Confide 行，无本机模型生成（见 0017）。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网 Confide 叠层
   更新时间: 2026-09-22
   locale_keys: [CONFIDE_MENU_LABEL, CONFIDE_EAR_TOOLTIP, CONFIDE_PANEL_TITLE, CONFIDE_PANEL_BLURB, CONFIDE_PANEL_SEND]
   检索关键词: [倾诉, Confide, 向阿寅倾诉, 寅に打ち明ける, 从哪里说, Share, 耳朵]
 
-- id: KB-FUNC-0010
+- id: KB-FUNC-0011
   所属库: 陪伴可检索
   一级分类: 产品功能
   二级分类: 术语说明
@@ -303,15 +327,15 @@
     禁止：念 `RESET_BREATH_*` / `BREATH_PHASE_*` 引导语正文。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网底栏 / 左球
   更新时间: 2026-09-22
   locale_keys: [focus_duration.hint, HINT_QUICK_START, BTN_FOCUS_START]
   检索关键词: [呼吸练习, Breath practice, 短坐, 10分钟, quick start, 左球, 和 Sit 区别]
 
-- id: KB-FUNC-0011
+- id: KB-FUNC-0012
   所属库: 陪伴可检索
   一级分类: 产品功能
   二级分类: 操作入口
@@ -322,15 +346,15 @@
     与 CI-00 分工：CI-00 = 口头读数据；本条 = UI 指路。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网 Journey log
   更新时间: 2026-09-22
   locale_keys: [JOURNEY_LOG_MENU_LABEL, CONFIDE_CHIP_FILL_PRACTICE_DURATION]
   检索关键词: [练习记录, Journey log, 旅程留痕, 练了多久从哪看, practice trail, 日历]
 
-- id: KB-FUNC-0012
+- id: KB-FUNC-0013
   所属库: 陪伴可检索
   一级分类: 产品功能
   二级分类: 操作入口
@@ -341,15 +365,15 @@
     与 CI-02 分工：CI-02 = 口头读趋势；本条 = UI 指路。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网 Presence moments 面板
   更新时间: 2026-09-22
   locale_keys: [PRESENCE_SIGNALS_MENU_LABEL, PRESENCE_SIGNALS_PANEL_BLURB, PRESENCE_SIGNALS_DISCLOSURE, CONFIDE_CHIP_FILL_PRESENCE_RECENT]
   检索关键词: [Presence moments, 情绪记录, 签到, 从哪看情绪, mood check-in, 趋势从哪看]
 
-- id: KB-FUNC-0013
+- id: KB-FUNC-0014
   所属库: 陪伴可检索
   一级分类: 产品功能
   二级分类: 操作入口
@@ -360,15 +384,15 @@
     与 CI-03 分工：CI-03 = 口头列摘要；本条 = UI 指路 + Forget 入口。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网 Yin Personal Memory 1c 面板
   更新时间: 2026-09-22
   locale_keys: [YIN_MEMORY_PANEL_LINK, YIN_MEMORY_PANEL_TITLE, YIN_MEMORY_PANEL_BLURB, YIN_MEMORY_FORGET, CONFIDE_MEMORY_LIST_HEADER, CONFIDE_MEMORY_LIST_MORE]
   检索关键词: [阿寅记得什么, What Yin remembers, 记忆列表, 忘掉, Forget, Show me what you remember]
 
-- id: KB-FUNC-0014
+- id: KB-FUNC-0015
   所属库: 产品说明事实
   一级分类: 产品功能
   二级分类: 数据管理
@@ -379,15 +403,15 @@
     与 0003 分工：0003 = 入口指路；本条 = 格式与范围事实。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: 现网本地备份面板
   更新时间: 2026-09-22
   locale_keys: [LOCAL_BACKUP_PANEL_BLURB, PRIVACY_SHEET_EXPORT_IMPORT]
   检索关键词: [明文, plain JSON, 加密, 备份格式, 导出文件, unencrypted]
 
-- id: KB-FUNC-0015
+- id: KB-FUNC-0016
   所属库: 产品说明事实
   一级分类: 产品功能
   二级分类: 会话控制
@@ -398,15 +422,15 @@
     与 0005 分工：0005 = 怎么关倾诉叠层；本条 = 同坐期间的资源策略。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: Electron 宽屏本机模型
   更新时间: 2026-09-22
   locale_keys: [CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING, CONFIDE_DESKTOP_STATUS_UNLOADING]
   检索关键词: [同坐不能倾诉, 模型卸载, unloads while you sit, 坐着不能聊, 释放模型]
 
-- id: KB-FUNC-0016
+- id: KB-FUNC-0017
   所属库: 产品说明事实
   一级分类: 产品功能
   二级分类: 术语说明
@@ -417,15 +441,15 @@
     PO 决策：`LOCAL_AI_WEB_MOUNT_PO_DECISION.md`（暂不立项）。
   yin_may_retrieve: 是
   来源: 设计说明
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · PO 书面放行；常测路径）
   风险标记: 否
   适用产品版本: Web 产品壳 vs Electron
   更新时间: 2026-09-22
   locale_keys: [SUPPORT_WEB_LOCAL_AI_NOTE, RESET_OVERWHELMED_CONFIDE_UNAVAILABLE, CONFIDE_PANEL_BLURB]
   检索关键词: [网页不能聊, 浏览器没有本地 AI, Web Confide, 手机浏览器, desktop app, Safari]
 ```
-
+```
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
@@ -468,6 +492,7 @@
 
 ---
 
+
 ## 五、验收清单（文档层）
 
 **第一批**
@@ -475,22 +500,24 @@
 - [x] 5 条人审通过后，`审核状态` 改为已通过（2026-09-22 PO spot-check 0002/0003）
 - [x] `所属库` 与 `yin_may_retrieve` 与三库表一致（第一批）
 
-**第二批（待 PO spot-check 3–5 条后改「已通过」）**
+**第二批（2026-09-22 PO 书面放行）**
 
-- [ ] 11 条功能短答对照 §4.1 速查表与 locale，无另编路径
-- [ ] 0011–0013 与 CI-00/02/03 分工句保留，不重复教数据格式
-- [ ] 急救型草稿池仅标题登记，`yin_may_retrieve` 仍为否
-- [ ] KB-OPS 两条 `yin_may_retrieve: 否`，永不进倾诉索引
+- [x] 10 条功能短答（0007–0008、0010–0017）对照 §4.1 速查表与 locale，无另编路径
+- [x] 0012–0014 与 CI-00/02/03 分工句保留，不重复教数据格式
+- [x] `0009` 云备份专述保持未审核（功能暂禁用）
+- [x] 急救型草稿池仅标题登记，`yin_may_retrieve` 仍为否
+- [x] KB-OPS 两条 `yin_may_retrieve: 否`，永不进倾诉索引
+- [x] 累计 **15 条** `审核状态: 已通过`（0001–0005 + 0007–0008 + 0010–0017）→ 可拆检索接线实现 Issue
 
 **共通**
 
 - [ ] 未接线检索运行时之前，阿寅不得「按本库生成长文」
 - [ ] 改按钮文案时先改 locale，再改本文件正文与 `locale_keys`
-- [ ] 累计 ≥15 条「已通过」后再拆检索接线实现 Issue（Brief Q1–Q5 已定稿；不等 Brief）
 
 ---
 
 ## 六、流水线（仍建议，尚未建工具）
 
-存量权威文案（locale / 菜单普查 / 产品文档）→ 草稿池 → 人审打标 → 入库 →（以后）Local AI 只索引 `yin_may_retrieve: 是` 的短答 → 未命中回流。  
+存量权威文案（locale / 菜单普查 / 产品文档）→ 草稿池 → 人审打标 → 入库 → Local AI 只索引 `yin_may_retrieve: 是` ∧ `审核状态: 已通过` 的短答 → 未命中回流。  
+接线行为 SSOT：`task-briefs/task-confide-kb-retrieval-wiring.md`（原样/模板输出 · 不 L3 转述 · **15 条已通过，实现 Issue 可开工**）。  
 内部排障永不进入倾诉索引。
