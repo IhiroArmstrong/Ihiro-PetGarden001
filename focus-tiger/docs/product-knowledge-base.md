@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + 第一周 5 条产品功能短答（对照现网 locale / 菜单普查）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
+**状态（2026-09-22）**：仓内权威模板 + 第一周 5 条产品功能短答（对照现网 locale / 菜单普查；**PO 人审已通过**）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · 无运行时）· `LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）
 
@@ -68,10 +68,10 @@
 
 ---
 
-## 四、第一周样例（对照现网 · 待产品人审）
+## 四、第一周样例（对照现网 · 已通过）
 
 下列正文已按 `en.json` / `zh.json` / `ja.json` 与 `MENU_CHROME_CENSUS.md` 核对按钮名与路径。  
-**仍标「未审核」**：人审通过前不得当 Local AI 检索源上线。  
+**2026-09-22 PO 人审**：spot-check 0002（⋯ → Practice → Ground exercise）与 0003（⋯ → Preferences → Backup & restore）；其余 3 条沿用同一 locale / 菜单普查对照，规则层已核查。  
 阿寅若将来检索命中，只许复述「短答」段，禁止续写步骤或练习引导语。
 
 ### 现网入口速查（写条目时对照此表，勿另编路径）
@@ -101,7 +101,8 @@
     指路：Idle 主钮 `BTN_FOCUS_START` → 时长条 → 可选 `COMPANION_MODE_*` → `COMPANION_MODE_CONTINUE`。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
+  审核状态: 已通过
+  审核人: PO（2026-09-22）
   风险标记: 否
   适用产品版本: 现网产品壳（Idle 主路径）
   更新时间: 2026-09-22
@@ -119,7 +120,8 @@
     禁止：把 `RESET_GROUND_*` / `RESET_LOOK_*` 引导语写入本条或倾诉检索块。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · spot-check）
   风险标记: 否
   适用产品版本: 接地练习独立菜单已合入后的产品壳
   更新时间: 2026-09-22
@@ -137,7 +139,8 @@
     说明：本地导出是明文 JSON、未加密（`LOCAL_BACKUP_PANEL_BLURB` / 隐私「本地导出」节）。云备份是可选、同意后静默快照，打坐中不发送（`JOURNEY_LOG_BACKUP_PRIVACY`）。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · spot-check）
   风险标记: 否
   适用产品版本: 现网（本地备份菜单 + Journey 可选云备份）
   更新时间: 2026-09-22
@@ -155,7 +158,8 @@
     勿把实验室钮「一炷香完成」写成用户主路径。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
+  审核状态: 已通过
+  审核人: PO（2026-09-22）
   风险标记: 否
   适用产品版本: 现网 HUD；IncenseComplete 会话结束自动播仍为已放弃
   更新时间: 2026-09-22
@@ -172,7 +176,8 @@
     短答（en）：Tap Close on the Confide card, or Cancel if you have not sent. Esc closes the top overlay first. There is no voice command to exit. Yin does not judge why you stop. While you Sit, the local model unloads so sitting can stay smooth.
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 未审核
+  审核状态: 已通过
+  审核人: PO（2026-09-22）
   风险标记: 否
   适用产品版本: 现网倾诉叠层（桌面宽屏另有本机模型卸载）
   更新时间: 2026-09-22
@@ -184,7 +189,7 @@
 
 ## 五、第一周验收（文档层）
 
-- [ ] 5 条人审通过后，`审核状态` 改为已通过（本 PR **不**代标已通过）
+- [x] 5 条人审通过后，`审核状态` 改为已通过（2026-09-22 PO spot-check 0002/0003）
 - [ ] `所属库` 与 `yin_may_retrieve` 与三库表一致
 - [ ] 未接线检索运行时之前，阿寅不得「按本库生成长文」
 - [ ] 本周不把任何急救型心理练习写成 `yin_may_retrieve: 是`
