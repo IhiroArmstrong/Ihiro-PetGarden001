@@ -59,6 +59,7 @@
     "audit:local-backup-coverage": "node scripts/audit-local-backup-coverage.js",
     "audit:read-hybrid-gapfill": "node scripts/audit-read-hybrid-gapfill.js",
     "audit:confide-semantic-shadow": "node scripts/audit-confide-semantic-shadow.js",
+    "audit:confide-prior-asymmetric": "node scripts/audit-confide-prior-asymmetric.js",
     "test:observe-shuffle-screen": "npm --prefix desktop run companion:observe-shuffle-screen",
     "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe"
   },

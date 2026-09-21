@@ -40,6 +40,27 @@ Stage 2 live 若只按「回复已写入后」的影子助手去取上一轮，�
 
 **本轮不声称**真实模型已经救回「好累」。单测只证明对照日志和拼接逻辑成立。
 
+## 不对称规则回放（2026-09-21）
+
+分析师建议：只允许 gray→明确桶（help），不允许明确桶被拼回 gray（harm）。  
+命令：`npm run audit:confide-prior-asymmetric`。Prompt：`task-confide-prior-asymmetric-replay.md`。
+
+本机 `focus-tiger-desktop/.../turns.jsonl`（脚本摘要，未把整文件读进 Chat）：
+
+| | naive 一律 with-prior | 不对称规则后 |
+|---|---|---|
+| eligible（有上一轮且两列都有值） | 24 | 24 |
+| help（gray→emotional/functional） | 3 | 3 |
+| harm（emotional/functional→gray） | 3 | **0** |
+| other（桶对调等） | 0 | 0 |
+| same | 18 | — |
+| help÷(help+harm) | 0.50 | **1.00** |
+
+**harm 三条（规则会丢掉 with-prior、保住当前句）**：`我有点不高兴`；`今天什么都不想做，心里很闷」`；接在闷后面的 `好累`（与合成 F1 相反）。  
+**help 三条（规则会采用 with-prior）**：`I'm here, but my mind really isn't.`；`刚刚和甲方…心好累`；`好吧`。
+
+**读法**：这条规则能滤掉今天看到的稀释；本批 **没有** emotional↔functional / F2 功能污染样本。样本仍少，**不**据此改 live。若要进真路由须另开 Stage 2b Brief。
+
 ## 已知风险（轻量实验）
 
 把上一轮原文拼进当前句，可能让明确的功能短句被上一轮情绪（或反过来）带偏。这正是对照日志要回答的问题，不是本轮要修的生产路由。

@@ -34,6 +34,7 @@
 | 观察翼套话打分 | embedding 未就绪则跳过 | 已单点修 |
 | 聊天 `ensure` / hybrid / generate | **#912**：ready 则跳过重复 ensure；ensure 30s 超时；UI 45s 看门狗 | 仍不是统一调度 |
 | 用户可见回复 | 不得等 embedding 冷启动（Stage 2 Brief 不变量） | 须保持 |
+| 加载提示 / 面板并行预加载 | **现在不做**（ISSUE_LEDGER「等统一仲裁」） | 统一闸之后再评 |
 
 ## 建议（先说清楚，本刀不实现统一闸）
 
