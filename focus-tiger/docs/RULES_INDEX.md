@@ -74,6 +74,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
 | `plain-language-summary` | 用户可见汇报前置大白话总结（≤5 句、无技术术语） | `WORKFLOW.md` | 用户可见汇报：前置大白话总结（强制） |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
+| `brief-before-user-visible` | B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类） | `WORKFLOW.md` | 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
 | `companion-debug` | 调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档） | `.cursor/rules/focus-tiger-companion-debug.mdc` | Focus Tiger · 调试本地 AI companion |
@@ -120,6 +121,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用 Q1–Q2；第三问见 `feature-conflict-review` | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
+| `brief-before-user-visible` | 「B 类须 Brief 见 `WORKFLOW.md`」；按需层 `focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` Task Brief 节 / `focus-tiger-core` 可一行引用 | 主张「立刻开工」可跳过 Brief；主张 Agent 可自行把 B 类降为 A 类；平行复述 A/B 表与 Stage 1/2 对照全文 |
 | `ci-failure-triage` | 「CI/smoke 失败且缺日志见 `focus-tiger-ci-failure-triage.mdc`」；`agent-token-cost` §5–§6 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无日志先 grep；主张失败分析摘要可臆测；把合 develop / §7 关单门禁写进本条 |
 | `ui-bug-triage` | 「UI/交互回归且缺锚点见 `focus-tiger-ui-bug-triage.mdc`」；`agent-token-cost` §5 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无复现/锚点先全仓 grep；主张分析会话可无限探索；把合 develop / §7 关单门禁写进本条 |
 | `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；实验室脚本路径/命名/已测候选见 `LAB_SCRIPT_CONVENTIONS.md`（勿复述路径表）；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
@@ -140,7 +142,8 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 文档 | 角色 |
 |---|---|
-| [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、SemVer / 稳定 tag、跨会话冲突、并行 worktree、**固定 QA develop 树**、**合入 develop（CI 绿）**、**生产 Worker 部署口令** |
+| [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、SemVer / 稳定 tag、跨会话冲突、并行 worktree、**固定 QA develop 树**、**合入 develop（CI 绿）**、**生产 Worker 部署口令**、**A/B 类 Brief 开工门禁** |
+| [`.cursor/rules/focus-tiger-brief-before-user-visible.mdc`](../../.cursor/rules/focus-tiger-brief-before-user-visible.mdc) | **按需层**：B 类用户可见改动开工前须锁 Brief（`brief-before-user-visible`；条文 SSOT 在 `WORKFLOW.md`） |
 | [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7、**分支新鲜度**、**发布候选门禁**（open blockers）门禁条文 |
 | [`.cursor/rules/focus-tiger-browser-energy.mdc`](../../.cursor/rules/focus-tiger-browser-energy.mdc) | **SSOT**：预览浏览器与能耗（默认 Safari；硬禁 IDE Browser MCP + hooks；临时解禁有连续时长上限；Vite/Playwright 收尾；Cloud 独立会话；用户侧 `cd`/`npm run dev` 路径口径） |
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
@@ -255,6 +258,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-21 | 新增 `brief-before-user-visible`：B 类用户可见改动开工前须 PO 点头 Brief；「立刻开工」不能跳过；有疑问默认 B 类。SSOT `WORKFLOW.md`「用户可见改动：Brief 开工门禁」；按需层 `.cursor/rules/focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` / `focus-tiger-core` 一行引用。示范：Confide Stage 1（A）vs Stage 2 切真路由（B） |
 | 2026-09-16 | 产品表：`EPIC_COVERAGE_AUDIT.md`（存量线覆盖）+ `planning/task-lines-epic-draft.md` 指针；同日建库 #792 音景 / #793 栖居壳层。不进 rules-authority 机器块 |
 | 2026-09-16 | 产品表：`FOCUS_COINS.md` / `REMOTE_PARAM_CANDIDATES.md` 寅币日封顶 Step D = A 已锁（`task-yin-coin-daily-cap-economy`）；persona CI `focusCoinsPersonaRegression.js`。不进 rules-authority 机器块 |
 | 2026-09-10 | 修订 `agent-tool-budget`（#700 后补漏）：`Read` 计次对齐 `source-read-granularity`（200/400；大 `limit` 仍计）；连续 8 次探索无改文件先软停；软/硬顶与 `session-handoff` 强制探索快照；「大任务」开工须先列预期文件/函数清单。 |
