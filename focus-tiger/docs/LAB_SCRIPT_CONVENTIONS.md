@@ -37,6 +37,8 @@
 | L3 观察翼陈词滥调语义护栏（#823 · Brief） | `focus-tiger/docs/task-briefs/task-l3-observe-cliche-semantic-guard.md` |
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
+| L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |
+| Stage 2 live 冷启动探针（Prompt 8） | `focus-tiger/desktop/scripts/l0-semantic-live-coldstart-probe.js` |
 | L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
 | 对照表（只追加，不另起格式） | `/tmp/ft-l0-lab/compare-tables.md` |
@@ -145,6 +147,10 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 - **真实影子日志导出（Prompt 8 · 2026-09-20）**：`cd focus-tiger && npm run audit:confide-semantic-shadow`（可选 `-- --file /path/to/turns.jsonl` · `--out /tmp/foo.csv`）。只扫 `kind:semantic_shadow_classify` 且 `ok:true`。终端报 **N** / **D** / **D÷N**，以及 Stage 2 live 行 **live** / **failOpen** / **semanticOk**（`kind:semantic_live_classify` · `reason` 为 `embed_not_ready` / `ok` / `timeout` 等）。分歧 CSV 默认 `/tmp/ft-l0-lab/semantic-shadow-disagreement-<epoch>.csv`（空列 `favorable_disagreement` 留给人工）。**不设 N 硬下限**；N=0 仍 exit 0。脚本**不得**写「可以切 Stage 2」。不进 `test:smoke`。缺日志时 exit 1。
 
 **有利分歧制造机（60 候选 · 2026-09-21）**：`cd focus-tiger/desktop && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run companion:favorable-disagreement-mill`（根目录 `npm run audit:favorable-disagreement-mill`）。真源：`confideStage2ChallengeCandidates.js`（12 簇 × 5）+ Prompt 12 historical KEEP 12。公式：Literal ≠ Golden **且** Semantic = Golden。结果：`/tmp/ft-l0-lab/favorable-disagreement-mill-<epoch>.csv` + inventory CSV + `.json`。终端报 pool / favorable / inventory unique / synthetic·real·adversarial·historical / real minimum。PO 已认 mill KEEP `reviewer=PO`。**不得**写「可以切 Stage 2」。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
+
+**L3 观察翼打乱配对批量（Prompt 13 层 B · 2026-09-21）**：`cd focus-tiger && npm run test:observe-shuffle-screen`（或 `cd focus-tiger/desktop && npm run companion:observe-shuffle-screen`）。真源：`l3ObserveShuffleFixtures.js`（12 句）。真 Gemma4 L3 + Qwen3-Embedding：对每句 generate（观察翼含 sanitize + 套话守门）→ 用用户句 embedding 自动重配 → `scoreL3ObserveShuffleMatches` 报 `hits/12`（过关 **≥8/12**）。结果：`/tmp/ft-l0-lab/observe-shuffle-<epoch>.json`。单测：`node --test src/core/l3ObserveShuffleScreen.test.js`。不进 `test:smoke`。缺 L3 或 embedding GGUF 时 exit 2。
+
+**Stage 2 live 冷启动探针（Prompt 8 · 2026-09-21）**：`cd focus-tiger && npm run test:semantic-live-coldstart-probe`（或 `cd focus-tiger/desktop && npm run companion:semantic-live-coldstart-probe`）。模拟 embedding gate 未 ready → `embed_not_ready` 行；`embedding_ready` 后再 classify → `ok` 行。结果：`/tmp/ft-l0-lab/semantic-live-coldstart-<epoch>.json` + `semantic-live-coldstart-turns-<epoch>.jsonl`。终端另报 `live=` / `failOpen=` / `semanticOk=`（与 `audit:confide-semantic-shadow` 同口径）。可用 `npm run audit:confide-semantic-shadow -- --file /tmp/ft-l0-lab/semantic-live-coldstart-turns-<epoch>.jsonl` 复核。单测：`node --test src/core/confide/semanticLiveColdstartProbe.test.js`。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
 
 **Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 子表）**：
 

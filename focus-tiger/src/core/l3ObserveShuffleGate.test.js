@@ -13,11 +13,13 @@ import {
   sanitizeCompanionL2Reply
 } from '../../desktop/companion/l2Sanitize.js';
 import {
-  L3_GENERIC_CUB_THEATER_FAILS,
-  L3_OBSERVE_SHUFFLE_FIXTURES,
   L3_OBSERVE_SHUFFLE_MIN_N,
   L3_OBSERVE_SHUFFLE_PASS_HITS,
   scoreL3ObserveShuffleMatches
+} from './l3ObserveShuffleScreen.js';
+import {
+  L3_GENERIC_CUB_THEATER_FAILS,
+  L3_OBSERVE_SHUFFLE_FIXTURES
 } from '../../desktop/companion/l3ObserveShuffleFixtures.js';
 
 describe('L3 observe scheme B shuffle gate', () => {

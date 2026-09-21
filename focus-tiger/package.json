@@ -58,7 +58,9 @@
     "audit:growth-metrics:sync": "node scripts/audit-growth-metrics.js --write",
     "audit:local-backup-coverage": "node scripts/audit-local-backup-coverage.js",
     "audit:read-hybrid-gapfill": "node scripts/audit-read-hybrid-gapfill.js",
-    "audit:confide-semantic-shadow": "node scripts/audit-confide-semantic-shadow.js"
+    "audit:confide-semantic-shadow": "node scripts/audit-confide-semantic-shadow.js",
+    "test:observe-shuffle-screen": "npm --prefix desktop run companion:observe-shuffle-screen",
+    "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe"
   },
   "dependencies": {
     "lit": "^3.3.3",
