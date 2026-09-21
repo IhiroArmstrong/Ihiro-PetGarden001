@@ -1,8 +1,8 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + 第一周 5 条产品功能短答（对照现网 locale / 菜单普查；**PO 人审已通过**）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
+**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **第二批 11 条盘点草案**（对照现网 locale / 菜单普查；**待 PO spot-check**）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · 实现 Issue 待 ~15 条已通过）· `LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）· `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`（Web 不 ship 本机生成）
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 
@@ -20,6 +20,16 @@
 - 接地练习 **已有菜单入口**：知识库只指路，不入库可朗读长脚本
 
 有人审之前，禁止把急救型改成 `yin_may_retrieve: 是`。
+
+### 急救型草稿池（仅标题 / 场景登记 · 不进倾诉检索）
+
+下列只记「用户可能在倾诉里问到、但库里禁止念长脚本」的场景；正文留在 locale / 练习 UI，**不**写成 `yin_may_retrieve: 是`。
+
+| 登记 id | 标题 | 适用场景 | 现网入口 / 说明 |
+|---|---|---|---|
+| `KB-PSY-DRAFT-0001` | 接地练习引导语正文 | 想听阿寅念 5-4-3-2-1 步骤 | 已有 `⋯ → Ground exercise`；引导语见 `RESET_GROUND_*` / `RESET_LOOK_*` |
+| `KB-PSY-DRAFT-0002` | 呼吸复位引导语正文 | 想听阿寅带呼吸节拍 | 左球 Breath practice；引导语见 `RESET_BREATH_*` / `BREATH_PHASE_*` |
+| `KB-PSY-DRAFT-0003` | 压倒感时倾诉转接 | 坐不住且想被听见 | `RESET_OVERWHELMED_CONFIDE_OFFER` 指路到 Confide；非危机热线 |
 
 ---
 
@@ -68,7 +78,9 @@
 
 ---
 
-## 四、第一周样例（对照现网 · 已通过）
+## 四、功能短答条目
+
+### 4.1 第一批（对照现网 · 已通过）
 
 下列正文已按 `en.json` / `zh.json` / `ja.json` 与 `MENU_CHROME_CENSUS.md` 核对按钮名与路径。  
 **2026-09-22 PO 人审**：spot-check 0002（⋯ → Practice → Ground exercise）与 0003（⋯ → Preferences → Backup & restore）；其余 3 条沿用同一 locale / 菜单普查对照，规则层已核查。  
@@ -185,15 +197,296 @@
   检索关键词: [结束倾诉, Close, 关闭, キャンセル, Cancel, 退出, Esc]
 ```
 
+### 4.2 第二批盘点草案（对照现网 · 待 PO 人审）
+
+来源：**只搬运 / 裁剪 / 打标**——P0 来自 §4.1 现网入口速查表缺口；P1 与 `CONFIDE_EXECUTABLE_INTENTS` 指路互补或拆出产品说明事实。全部 `审核状态: 未审核`，人审前不得当作可检索。
+
+| 优先级 | id | 标题 | 盘点依据 |
+|---|---|---|---|
+| P0 | 0006 | 如何结束同坐（Rise） | 速查表 `BTN_FOCUS_STOP` |
+| P0 | 0007 | How shall we sit 在哪 | 速查表 `COMPANION_MODE_*` |
+| P0 | 0008 | Journey log 可选云备份 | 速查表 Journey log 行；`JOURNEY_LOG_BACKUP_*` |
+| P0 | 0009 | 倾诉从哪里开 | 速查表 Confide 行；`CONFIDE_*` |
+| P0 | 0010 | Breath practice 和 Sit 的区别 | 速查表 + `focus_duration.hint` / `HINT_QUICK_START` |
+| P1 | 0011 | 练习记录从哪看（Journey log） | CI-00 答数据；UI 指路 |
+| P1 | 0012 | Presence moments 从哪看 | CI-02 答趋势；`PRESENCE_SIGNALS_*` |
+| P1 | 0013 | What Yin remembers 从哪看 | CI-03 答列表；Confide 内链 |
+| P1 | 0014 | 本地备份是明文 JSON | `PRIVACY_SHEET_EXPORT_IMPORT`（从 0003 拆事实） |
+| P1 | 0015 | 同坐时本机模型会卸载 | `CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING`（从 0005 拆事实） |
+| P1 | 0016 | 浏览器里没有本机倾诉生成 | `SUPPORT_WEB_LOCAL_AI_NOTE` · `LOCAL_AI_WEB_MOUNT_PO_DECISION` |
+
+```yaml
+- id: KB-FUNC-0006
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 如何结束同坐（Rise）
+  适用场景: 正在同坐，想先起身或结束这一场
+  内容正文: |
+    短答（en）：While you are sitting, the main button at the bottom says Rise. Tap it to end this sit. You can start again anytime with Sit with Yin.
+    指路：同坐中主钮 `BTN_FOCUS_STOP`（Rise）→ 结束本场；非倾诉 Close、非 Esc 关叠层。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Idle 主路径
+  更新时间: 2026-09-22
+  locale_keys: [BTN_FOCUS_STOP, BTN_FOCUS_START]
+  检索关键词: [结束同坐, Rise, 起身, 立つ, 怎么起来, stop sitting]
+
+- id: KB-FUNC-0007
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: How shall we sit 在哪
+  适用场景: 开始同坐前想选「这次怎么陪」，或不知道三张模式卡是什么
+  内容正文: |
+    短答（en）：After you tap Sit with Yin, How Shall We Sit? may appear. Open More (⋯) or the drawer → Practice → How Shall We Sit? if you need it again. Pick Here & Now, Offline Space, or Flow State, then tap Begin.
+    禁止：把三张卡的 hint 全文写进短答；只指路 + 卡名。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Companion 模式卡
+  更新时间: 2026-09-22
+  locale_keys: [COMPANION_MODE_TITLE, COMPANION_MODE_STAY, COMPANION_MODE_STEP_AWAY, COMPANION_MODE_ACROSS_TOOLS, COMPANION_MODE_CONTINUE, HINT_COMPANION_MODE]
+  检索关键词: [怎么陪, How shall we sit, 这次怎么陪你, 陪伴模式, Begin, Offline Space, Flow State]
+
+- id: KB-FUNC-0008
+  所属库: 产品说明事实
+  一级分类: 产品功能
+  二级分类: 数据管理
+  标题: Journey log 可选云备份
+  适用场景: 想给练习轨迹留一份可选云端快照，或分不清和本地 JSON 导出的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Practice → Journey log. Bind email for optional cloud backup if you want a quiet snapshot of your practice trail on Focus Tiger's cloud. It does not run while you sit. Turning backup off deletes the cloud copy; local records stay on this device.
+    与 0003 分工：0003 = 两个入口总览；本条 = Journey 云备份专述。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Journey log + 可选云备份
+  更新时间: 2026-09-22
+  locale_keys: [JOURNEY_LOG_MENU_LABEL, JOURNEY_LOG_BACKUP_LINK_OFF, JOURNEY_LOG_BACKUP_PRIVACY, JOURNEY_LOG_BACKUP_STATUS_DISABLED]
+  检索关键词: [云备份, cloud backup, Journey log, 绑定邮箱, 旅程留痕, 练习轨迹备份]
+
+- id: KB-FUNC-0009
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 倾诉从哪里开
+  适用场景: 想跟阿寅说几句，不知道入口在哪
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Practice → Confide to Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.
+    窄屏：菜单有 Confide 行，无本机模型生成（见 0016）。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Confide 叠层
+  更新时间: 2026-09-22
+  locale_keys: [CONFIDE_MENU_LABEL, CONFIDE_EAR_TOOLTIP, CONFIDE_PANEL_TITLE, CONFIDE_PANEL_BLURB, CONFIDE_PANEL_SEND]
+  检索关键词: [倾诉, Confide, 向阿寅倾诉, 寅に打ち明ける, 从哪里说, Share, 耳朵]
+
+- id: KB-FUNC-0010
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 术语说明
+  标题: Breath practice 和 Sit 的区别
+  适用场景: 只想歇几分钟，不确定该点主钮 Sit 还是左边小球
+  内容正文: |
+    短答（en）：Sit with Yin is for a Focus sit — durations start at 10 minutes. For a shorter pause, use Breath practice on the left orb: a soft sit with Yin, not a full Focus session.
+    禁止：念 `RESET_BREATH_*` / `BREATH_PHASE_*` 引导语正文。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网底栏 / 左球
+  更新时间: 2026-09-22
+  locale_keys: [focus_duration.hint, HINT_QUICK_START, BTN_FOCUS_START]
+  检索关键词: [呼吸练习, Breath practice, 短坐, 10分钟, quick start, 左球, 和 Sit 区别]
+
+- id: KB-FUNC-0011
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 练习记录从哪看（Journey log）
+  适用场景: 想自己翻练习日历 / 场次，而不是只在倾诉里问「练了多久」
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Practice → Journey log to see your practice trail on this device. In Confide you can also ask how long you have practiced — Yin reads what is written down here, not a second ledger.
+    与 CI-00 分工：CI-00 = 口头读数据；本条 = UI 指路。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Journey log
+  更新时间: 2026-09-22
+  locale_keys: [JOURNEY_LOG_MENU_LABEL, CONFIDE_CHIP_FILL_PRACTICE_DURATION]
+  检索关键词: [练习记录, Journey log, 旅程留痕, 练了多久从哪看, practice trail, 日历]
+
+- id: KB-FUNC-0012
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Presence moments 从哪看
+  适用场景: 想翻自己在 Arrival / Reflection 留下的小记号，或对照倾诉里问到的情绪趋势
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Practice → Presence moments. These are small check-ins saved on this device. In Confide you can ask what your mood has looked like recently — Yin summarizes what is written here, not a diagnosis.
+    与 CI-02 分工：CI-02 = 口头读趋势；本条 = UI 指路。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Presence moments 面板
+  更新时间: 2026-09-22
+  locale_keys: [PRESENCE_SIGNALS_MENU_LABEL, PRESENCE_SIGNALS_PANEL_BLURB, PRESENCE_SIGNALS_DISCLOSURE, CONFIDE_CHIP_FILL_PRESENCE_RECENT]
+  检索关键词: [Presence moments, 情绪记录, 签到, 从哪看情绪, mood check-in, 趋势从哪看]
+
+- id: KB-FUNC-0013
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: What Yin remembers 从哪看
+  适用场景: 想逐条查看或删掉阿寅记住的观察，而不只是在倾诉里口头问「你还记得什么」
+  内容正文: |
+    短答（en）：Open Confide to Yin, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Confide lists a short summary — the full list is in that panel.
+    与 CI-03 分工：CI-03 = 口头列摘要；本条 = UI 指路 + Forget 入口。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Yin Personal Memory 1c 面板
+  更新时间: 2026-09-22
+  locale_keys: [YIN_MEMORY_PANEL_LINK, YIN_MEMORY_PANEL_TITLE, YIN_MEMORY_PANEL_BLURB, YIN_MEMORY_FORGET, CONFIDE_MEMORY_LIST_HEADER, CONFIDE_MEMORY_LIST_MORE]
+  检索关键词: [阿寅记得什么, What Yin remembers, 记忆列表, 忘掉, Forget, Show me what you remember]
+
+- id: KB-FUNC-0014
+  所属库: 产品说明事实
+  一级分类: 产品功能
+  二级分类: 数据管理
+  标题: 本地备份文件是明文 JSON
+  适用场景: 担心导出文件是否加密，或能否直接打开看内容
+  内容正文: |
+    短答（en）：Backup & restore exports a plain JSON file on this device — not encrypted. You can move it yourself; treat it like private data. Scope includes practice records, presence check-ins, reflections, Yin memory, and preferences — not ambient music uploads.
+    与 0003 分工：0003 = 入口指路；本条 = 格式与范围事实。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网本地备份面板
+  更新时间: 2026-09-22
+  locale_keys: [LOCAL_BACKUP_PANEL_BLURB, PRIVACY_SHEET_EXPORT_IMPORT]
+  检索关键词: [明文, plain JSON, 加密, 备份格式, 导出文件, unencrypted]
+
+- id: KB-FUNC-0015
+  所属库: 产品说明事实
+  一级分类: 产品功能
+  二级分类: 会话控制
+  标题: 同坐时本机模型会卸载
+  适用场景: 同坐中打不开倾诉、或看到「模型正在释放」类状态
+  内容正文: |
+    短答（en）：On desktop, the local companion model unloads while you Sit so focusing can stay smooth. Finish or Rise first, then open Confide again if you need to talk.
+    与 0005 分工：0005 = 怎么关倾诉叠层；本条 = 同坐期间的资源策略。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: Electron 宽屏本机模型
+  更新时间: 2026-09-22
+  locale_keys: [CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING, CONFIDE_DESKTOP_STATUS_UNLOADING]
+  检索关键词: [同坐不能倾诉, 模型卸载, unloads while you sit, 坐着不能聊, 释放模型]
+
+- id: KB-FUNC-0016
+  所属库: 产品说明事实
+  一级分类: 产品功能
+  二级分类: 术语说明
+  标题: 浏览器里没有本机倾诉生成
+  适用场景: 在手机浏览器或网页版里期待阿寅本地短生成，或看到「此设备不可用」
+  内容正文: |
+    短答（en）：On-device Local AI runs in the Focus Tiger desktop app on Mac or Windows — not in this browser. You can still practice and open Confide where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.
+    PO 决策：`LOCAL_AI_WEB_MOUNT_PO_DECISION.md`（暂不立项）。
+  yin_may_retrieve: 是
+  来源: 设计说明
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: Web 产品壳 vs Electron
+  更新时间: 2026-09-22
+  locale_keys: [SUPPORT_WEB_LOCAL_AI_NOTE, RESET_OVERWHELMED_CONFIDE_UNAVAILABLE, CONFIDE_PANEL_BLURB]
+  检索关键词: [网页不能聊, 浏览器没有本地 AI, Web Confide, 手机浏览器, desktop app, Safari]
+```
+
+### 4.3 内部排障草案（不进倾诉索引）
+
+```yaml
+- id: KB-OPS-0001
+  所属库: 内部排障
+  一级分类: 产品维护
+  二级分类: 上报路径
+  标题: Known Errors 修复通知（Stay in touch）
+  适用场景: Support / 研发查用户如何订阅已知问题修复邮件
+  内容正文: |
+    内部：Idle → Preferences → Stay in touch（Newsletter）→ 文案含 known-error 修复与版本说明。不进 Confide 检索。
+  yin_may_retrieve: 否
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Newsletter 留资
+  更新时间: 2026-09-22
+  locale_keys: [NEWSLETTER_CARD_BLURB]
+  检索关键词: [known error, newsletter, stay in touch]
+
+- id: KB-OPS-0002
+  所属库: 内部排障
+  一级分类: 故障排查
+  二级分类: 日志路径
+  标题: Confide 语义影子日志（研发）
+  适用场景: 研发导出 Stage 2 影子 / live 分类 CSV
+  内容正文: |
+    内部：`npm run audit:confide-semantic-shadow` 扫本机 `turns.jsonl`。不进 Confide 检索、不对用户口述路径。
+  yin_may_retrieve: 否
+  来源: 设计说明
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: Electron 实验室脚本
+  更新时间: 2026-09-22
+  locale_keys: []
+  检索关键词: [semantic shadow, turns.jsonl, audit]
+```
+
 ---
 
-## 五、第一周验收（文档层）
+## 五、验收清单（文档层）
+
+**第一批**
 
 - [x] 5 条人审通过后，`审核状态` 改为已通过（2026-09-22 PO spot-check 0002/0003）
-- [ ] `所属库` 与 `yin_may_retrieve` 与三库表一致
+- [x] `所属库` 与 `yin_may_retrieve` 与三库表一致（第一批）
+
+**第二批（待 PO spot-check 3–5 条后改「已通过」）**
+
+- [ ] 11 条功能短答对照 §4.1 速查表与 locale，无另编路径
+- [ ] 0011–0013 与 CI-00/02/03 分工句保留，不重复教数据格式
+- [ ] 急救型草稿池仅标题登记，`yin_may_retrieve` 仍为否
+- [ ] KB-OPS 两条 `yin_may_retrieve: 否`，永不进倾诉索引
+
+**共通**
+
 - [ ] 未接线检索运行时之前，阿寅不得「按本库生成长文」
-- [ ] 本周不把任何急救型心理练习写成 `yin_may_retrieve: 是`
 - [ ] 改按钮文案时先改 locale，再改本文件正文与 `locale_keys`
+- [ ] 累计 ≥15 条「已通过」后再拆检索接线实现 Issue（Brief Q1–Q5 已定稿；不等 Brief）
 
 ---
 
