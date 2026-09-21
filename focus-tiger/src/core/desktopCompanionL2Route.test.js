@@ -564,6 +564,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /shown\.source === 'boundary'/);
     assert.match(ui, /resolveCorpusFallbackAfterGenerateFailure/);
     assert.match(ui, /_showGenerateFailureFallback/);
+    assert.match(ui, /_armPendingReplyWatchdog/);
+    assert.match(ui, /CONFIDE_PENDING_REPLY_WATCHDOG_MS/);
     assert.match(ui, /salt: this\._l2Turns\.length/);
     assert.match(ui, /confide-to-yin-user/);
     assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);

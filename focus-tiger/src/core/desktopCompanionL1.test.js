@@ -354,6 +354,8 @@ describe('desktop companion L1 isolation', () => {
     );
     assert.match(runtimeSrc, /modelId: L0_MODEL_ID/);
     assert.match(runtimeSrc, /resolveCompanionModelDir/);
+    assert.match(runtimeSrc, /L1_ENSURE_READY_TIMEOUT_MS/);
+    assert.match(runtimeSrc, /status\.phase === 'ready' && this\.child/);
   });
 
   it('packs companion runtime JS and still keeps GGUF out of the file list', () => {

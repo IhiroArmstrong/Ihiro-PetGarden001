@@ -21,6 +21,7 @@ import {
   priorConfideTurnForShadow
 } from '../core/confide/confideSemanticShadowPriorTurn.js';
 import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
+import { CONFIDE_PENDING_REPLY_WATCHDOG_MS } from '../core/confide/confidePendingReplyWatchdog.js';
 import { confideLineText } from '../core/confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import {
@@ -157,6 +158,8 @@ export class ConfideToYinUI {
     this._companionStatus = null;
     this._sending = false;
     this._sendEpoch = 0;
+    this._pendingWatchdogTimer = 0;
+    this._pendingFallback = null;
     this._l2Turns = [];
     this._practiceDaysStore = handlers.practiceDaysStore || null;
     this._memoryState = null;
@@ -597,7 +600,44 @@ export class ConfideToYinUI {
   }
 
   /** @returns {void} */
+  _clearPendingReplyWatchdog() {
+    if (this._pendingWatchdogTimer) {
+      clearTimeout(this._pendingWatchdogTimer);
+      this._pendingWatchdogTimer = 0;
+    }
+    this._pendingFallback = null;
+  }
+
+  /**
+   * First arm wins for this send epoch so live classify + hybrid + generate
+   * share one 45s ceiling.
+   * @param {{ hit: object, locale: string, text: string, corpusText: string }} payload
+   * @returns {void}
+   */
+  _armPendingReplyWatchdog(payload) {
+    this._pendingFallback = payload;
+    if (this._pendingWatchdogTimer) return;
+    const epoch = this._sendEpoch;
+    this._pendingWatchdogTimer = setTimeout(() => {
+      this._pendingWatchdogTimer = 0;
+      if (!this._open || epoch !== this._sendEpoch) return;
+      this._sendEpoch += 1;
+      this._sending = false;
+      const fallback = this._pendingFallback;
+      this._pendingFallback = null;
+      if (fallback) {
+        this._showGenerateFailureFallback(fallback);
+      } else {
+        this._hideThinkingIndicator();
+      }
+      this._syncSendEnabled();
+      this._renderDesktopStatus();
+    }, CONFIDE_PENDING_REPLY_WATCHDOG_MS);
+  }
+
+  /** @returns {void} */
   _hideThinkingIndicator() {
+    this._clearPendingReplyWatchdog();
     if (!this.thinkingEl) return;
     this.thinkingEl.hidden = true;
     this.thinkingEl.textContent = '';
@@ -956,6 +996,7 @@ export class ConfideToYinUI {
     const epoch = this._sendEpoch;
     this.sendBtn.disabled = true;
     this._showPendingReply(text);
+    this._armPendingReplyWatchdog({ hit, locale, text, corpusText });
     this._renderDesktopStatus();
     const history = this._l2Turns.slice();
     void Promise.resolve(
@@ -1064,6 +1105,9 @@ export class ConfideToYinUI {
     this.sendBtn.disabled = true;
     this._showPendingReply(text);
     const asked = text.trim();
+    const locale = getLocale();
+    const corpusText = confideLineText(hit.line, locale);
+    this._armPendingReplyWatchdog({ hit, locale, text: asked, corpusText });
     const literalCoarse = resolveConfideLiteralCoarseBucket({
       route: hit.route,
       source: 'corpus'
@@ -1318,6 +1362,7 @@ export class ConfideToYinUI {
     const epoch = this._sendEpoch;
     this.sendBtn.disabled = true;
     this._showPendingReply(text);
+    this._armPendingReplyWatchdog({ hit, locale, text, corpusText });
     this._renderDesktopStatus();
     void Promise.resolve(
       this._companion.classifyReadTool({
@@ -1614,9 +1659,10 @@ export class ConfideToYinUI {
         content: '…';
         display: inline-block;
         width: 1.1em;
+        min-width: 1.1em;
         overflow: hidden;
         vertical-align: bottom;
-        animation: confide-to-yin-thinking-dots 1.2s steps(4, end) infinite;
+        animation: confide-to-yin-thinking-dots 1.2s ease-in-out infinite;
       }
       .confide-to-yin__thinking[hidden] {
         display: none !important;
@@ -1626,8 +1672,8 @@ export class ConfideToYinUI {
         50% { transform: translateY(-2px); }
       }
       @keyframes confide-to-yin-thinking-dots {
-        0% { width: 0.2em; }
-        100% { width: 1.1em; }
+        0%, 100% { opacity: 0.35; }
+        50% { opacity: 1; }
       }
       .confide-to-yin__reply {
         position: relative;
