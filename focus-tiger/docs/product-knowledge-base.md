@@ -1,10 +1,8 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923）+ **第二批 10 条**（原草案顺延为 0007–0017；**PO 书面放行 15 条可检索**，不含 0009 云备份专述）。**无运行时**；检索接线实现另 PR。  
+**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · 未审核）+ **第二批 10 条**（顺延 0007–0017；**15 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · **15 条已通过，可拆实现 Issue**）· `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
-**权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · 实现 Issue 待 ~15 条已通过）· `LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）· `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`（Web 不 ship 本机生成）
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板）· `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 

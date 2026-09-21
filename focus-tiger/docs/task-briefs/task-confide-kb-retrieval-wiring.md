@@ -2,7 +2,7 @@
 
 > **状态（2026-09-22）**：**已拍板**（Q1–Q5 见第三节）。方向锁 Brief；**无运行时**。  
 > **依赖**：`product-knowledge-base.md` 条目 `审核状态: 已通过`（#920 合入后 0001–0005 满足）。  
-> **实现 Issue**：盘点侧条目清单相对稳定后再拆（见 §五）；本 Brief 不定义向量索引 / embedding pipeline 选型。  
+> **实现**：`feature/confide-kb-retrieval-wiring`（关键词 catalog · 无 embedding v1）。向量索引另议。  
 > **交叉引用**：`product-knowledge-base.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_SCENARIOS_V1.md` · `confide-embedding-lifecycle-arbitration.md`（同坐卸载 / embedding 避让）
 
 ---

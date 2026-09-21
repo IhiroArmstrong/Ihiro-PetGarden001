@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "source": "focus-tiger/docs/product-knowledge-base.md",
+  "gate": "yin_may_retrieve:yes AND audit_status:approved",
+  "entries": [
+    {
+      "id": "KB-FUNC-0001",
+      "shortAnswerEn": "Tap Sit with Yin on the home seat. Pick how long — Focus sittings start at 10 minutes. If How Shall We Sit? appears, choose a way, then Begin. A shorter pause is Breath practice, not Sit.",
+      "keywords": [
+        "怎么开始",
+        "Sit with Yin",
+        "与阿寅同坐",
+        "阿寅と坐る",
+        "从哪坐",
+        "how to start",
+        "where to sit",
+        "begin sitting"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0002",
+      "shortAnswerEn": "Open More (⋯) or the bottom drawer. In Practice, tap Ground exercise (above Five Moments). Choose Feel the Ground or Look Around. Yin only points here and does not read the steps aloud.",
+      "keywords": [
+        "接地练习",
+        "Ground exercise",
+        "グラウンディング",
+        "感受地面",
+        "Feel the Ground",
+        "环顾四周",
+        "Look Around",
+        "5-4-3-2-1",
+        "grounding"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0003",
+      "shortAnswerEn": "For a file on this device: More (⋯) or the drawer → Backup & restore (Preferences). For optional cloud snapshot of the practice trail: Journey log → bind email. Yin only points; Yin does not back up for you.",
+      "keywords": [
+        "备份",
+        "Backup & restore",
+        "备份与恢复",
+        "导出",
+        "旅程留痕",
+        "Journey log",
+        "换设备",
+        "backup",
+        "restore"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0004",
+      "shortAnswerEn": "The bar at the top left is Today's shared sitting — how long you have sat today, with a quiet ~25 minute soft aim. The product does not label that bar「一炷香」. 「一炷香」is an internal / design name for that light daily sit; the old end-of-sit incense animation is not on the live completion path.",
+      "keywords": [
+        "一炷香",
+        "今日同坐",
+        "Today's shared sitting",
+        "25 minutes",
+        "香",
+        "progress bar",
+        "hud"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0005",
+      "shortAnswerEn": "Tap Close on the Confide card, or Cancel if you have not sent. Esc closes the top overlay first. There is no voice command to exit. Yin does not judge why you stop. While you Sit, the local model unloads so sitting can stay smooth.",
+      "keywords": [
+        "结束倾诉",
+        "Close",
+        "关闭",
+        "キャンセル",
+        "Cancel",
+        "退出",
+        "Esc",
+        "exit confide",
+        "close confide"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0007",
+      "shortAnswerEn": "While you are sitting, the main button at the bottom says Rise. Tap it to end this sit. You can start again anytime with Sit with Yin.",
+      "keywords": [
+        "结束同坐",
+        "Rise",
+        "起身",
+        "立つ",
+        "怎么起来",
+        "stop sitting",
+        "end sit",
+        "end this sit"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0008",
+      "shortAnswerEn": "After you tap Sit with Yin, How Shall We Sit? may appear. Open More (⋯) or the drawer → Practice → How Shall We Sit? if you need it again. Pick Here & Now, Offline Space, or Flow State, then tap Begin.",
+      "keywords": [
+        "怎么陪",
+        "How shall we sit",
+        "这次怎么陪你",
+        "陪伴模式",
+        "Begin",
+        "Offline Space",
+        "Flow State",
+        "companion mode",
+        "how shall we sit"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0010",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Confide to Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.",
+      "keywords": [
+        "倾诉",
+        "Confide",
+        "向阿寅倾诉",
+        "寅に打ち明ける",
+        "从哪里说",
+        "Share",
+        "耳朵",
+        "confide to yin",
+        "listening ear"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0011",
+      "shortAnswerEn": "Sit with Yin is for a Focus sit — durations start at 10 minutes. For a shorter pause, use Breath practice on the left orb: a soft sit with Yin, not a full Focus session.",
+      "keywords": [
+        "呼吸练习",
+        "Breath practice",
+        "短坐",
+        "10分钟",
+        "quick start",
+        "左球",
+        "和 Sit 区别",
+        "breath vs sit",
+        "difference between breath"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0012",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Journey log to see your practice trail on this device. In Confide you can also ask how long you have practiced — Yin reads what is written down here, not a second ledger.",
+      "keywords": [
+        "练习记录",
+        "Journey log",
+        "旅程留痕",
+        "练了多久从哪看",
+        "practice trail",
+        "日历",
+        "journey log",
+        "where to see practice"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0013",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Presence moments. These are small check-ins saved on this device. In Confide you can ask what your mood has looked like recently — Yin summarizes what is written here, not a diagnosis.",
+      "keywords": [
+        "Presence moments",
+        "情绪记录",
+        "签到",
+        "从哪看情绪",
+        "mood check-in",
+        "趋势从哪看",
+        "presence moments"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0014",
+      "shortAnswerEn": "Open Confide to Yin, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Confide lists a short summary — the full list is in that panel.",
+      "keywords": [
+        "阿寅记得什么",
+        "What Yin remembers",
+        "记忆列表",
+        "忘掉",
+        "Forget",
+        "Show me what you remember",
+        "what yin remembers"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0015",
+      "shortAnswerEn": "Backup & restore exports a plain JSON file on this device — not encrypted. You can move it yourself; treat it like private data. Scope includes practice records, presence check-ins, reflections, Yin memory, and preferences — not ambient music uploads.",
+      "keywords": [
+        "明文",
+        "plain JSON",
+        "加密",
+        "备份格式",
+        "导出文件",
+        "unencrypted",
+        "backup format",
+        "json file"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0016",
+      "shortAnswerEn": "On desktop, the local companion model unloads while you Sit so focusing can stay smooth. Finish or Rise first, then open Confide again if you need to talk.",
+      "keywords": [
+        "同坐不能倾诉",
+        "模型卸载",
+        "unloads while you sit",
+        "坐着不能聊",
+        "释放模型",
+        "model unload",
+        "while you sit"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0017",
+      "shortAnswerEn": "On-device Local AI runs in the Focus Tiger desktop app on Mac or Windows — not in this browser. You can still practice and open Confide where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.",
+      "keywords": [
+        "网页不能聊",
+        "浏览器没有本地 AI",
+        "Web Confide",
+        "手机浏览器",
+        "desktop app",
+        "Safari",
+        "browser",
+        "not in this browser"
+      ]
+    }
+  ]
+}

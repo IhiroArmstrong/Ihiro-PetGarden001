@@ -68,7 +68,7 @@
 
 - **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。第一批 5 条对照 locale，**PO 人审已通过**（spot-check 0002/0003）。**#923** 占 `KB-FUNC-0006` 呼吸练习试点（左球 · 未审核）。**第二批 10 条**（原 0006–0016 顺延为 0007–0017；**PO 书面放行 15 条可检索**，不含 `0009` 云备份专述）+ 急救型标题登记 3 条 + 内部排障草案 2 条；不接线运行时。
 
-- **Confide 知识库检索接线 Brief 已拍板（2026-09-22 · 纯文档）**：`task-confide-kb-retrieval-wiring.md`。Q1 原样/模板 · 单闸门 `yin_may_retrieve` ∧ `审核状态` · **15 条已通过，实现 Issue 可开工**。
+- **Confide 知识库检索接线（2026-09-22 · `feature/confide-kb-retrieval-wiring`）**：Electron 宽屏 fallback 产品功能问句 → `productKnowledgeCatalog.json` 关键词检索 · 原样短答 · 未命中走 corpus/generate · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚。Brief `task-confide-kb-retrieval-wiring.md`。
 
 - **Confide with-prior 不对称规则回放（2026-09-21 · A 类）**：`npm run audit:confide-prior-asymmetric` 只读历史 jsonl；gray→明确桶保留、明确桶→gray 丢掉。不改 live。Prompt：`task-confide-prior-asymmetric-replay.md`。embedding 加载 UI / 预加载见 `task-confide-embedding-work-gate.md`，闸合入后再一起评。
 

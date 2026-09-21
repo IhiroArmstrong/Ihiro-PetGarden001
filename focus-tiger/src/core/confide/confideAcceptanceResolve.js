@@ -18,6 +18,7 @@ import { shouldAnswerWithMemoryList } from './confideMemoryList.js';
 import { shouldAnswerWithPracticeFacts } from './confidePracticeFacts.js';
 import { shouldAnswerWithPresenceFacts } from './confidePresenceFacts.js';
 import { shouldRunConfideReadHybridClassify } from './confideReadHybrid.js';
+import { mayTryConfideProductKnowledge, retrieveProductKnowledge } from './confideProductKnowledge.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
 const FALLBACK = CONFIDE_ROUTE.FALLBACK;
@@ -64,6 +65,18 @@ export function resolveConfideMetaQueryBucket(text, route = confideClassify(text
   }
   if (shouldHandleConfideCompanionGreeting({ route, text })) {
     return 'companion_greeting';
+  }
+  if (
+    mayTryConfideProductKnowledge({
+      route,
+      text,
+      wideViewport: true,
+      hasBridge: true,
+      hasMemoryBridge: true
+    }) &&
+    retrieveProductKnowledge(text).hit
+  ) {
+    return 'product_knowledge';
   }
   if (shouldRunConfideReadHybridClassify(text)) {
     return 'hybrid_classify';

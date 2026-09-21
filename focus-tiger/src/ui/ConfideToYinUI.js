@@ -51,8 +51,14 @@ import {
 import { listShippedConfideVerbalHintChips } from '../core/confide/confideVerbalHintChips.js';
 import {
   trackConfideChipTapped,
-  trackConfideShare
+  trackConfideShare,
+  trackKbRetrievalMiss
 } from '../core/confide/confideObservationTelemetry.js';
+import {
+  buildKbRetrievalMissTurnLog,
+  mayTryConfideProductKnowledge,
+  retrieveProductKnowledge
+} from '../core/confide/confideProductKnowledge.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -711,6 +717,8 @@ export class ConfideToYinUI {
                             ? 'reflective_honesty'
                             : shown.source === 'companion_greeting'
                               ? 'companion_greeting'
+                              : shown.source === 'product_knowledge'
+                                ? 'product_knowledge'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -1276,6 +1284,9 @@ export class ConfideToYinUI {
       return;
     }
     const routePayload = { text, hit, locale, corpusText };
+    if (this._maybeAnswerProductKnowledge(text, hit)) {
+      return;
+    }
     if (
       mayUseConfideReadHybrid({
         route: hit.route,
@@ -1401,6 +1412,52 @@ export class ConfideToYinUI {
   }
 
   /**
+   * Product knowledge retrieval — retrieve-not-generate; miss falls through.
+   * @param {string} text
+   * @param {{ route: string }} hit
+   * @returns {boolean} true when a KB reply was shown
+   */
+  _maybeAnswerProductKnowledge(text, hit) {
+    if (
+      !mayTryConfideProductKnowledge({
+        route: hit.route,
+        text,
+        wideViewport: this._viewportAllowsGenerateLayer(),
+        hasBridge: Boolean(this._companion) || hasDesktopCompanionBridge(),
+        hasMemoryBridge: hasYinPersonalMemoryBridge()
+      })
+    ) {
+      return false;
+    }
+    const result = retrieveProductKnowledge(text);
+    if (result.hit && result.text) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: result.text,
+          source: 'product_knowledge',
+          kbId: result.id
+        },
+        text
+      );
+      return true;
+    }
+    if (result.attempted) {
+      trackKbRetrievalMiss({ reason: result.reason || 'miss' });
+      if (this._companion && typeof this._companion.appendTurnLog === 'function') {
+        void this._companion.appendTurnLog(
+          buildKbRetrievalMissTurnLog({
+            text,
+            reason: result.reason || 'miss',
+            locale: getLocale()
+          })
+        );
+      }
+    }
+    return false;
+  }
+
+  /**
    * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
    * @returns {'l3' | 'consent' | 'sync'}
    */
@@ -1426,6 +1483,9 @@ export class ConfideToYinUI {
         },
         text
       );
+      return 'sync';
+    }
+    if (this._maybeAnswerProductKnowledge(text, hit)) {
       return 'sync';
     }
     const wantGenerate = ypeMayUseCompanionGenerate({

@@ -16,7 +16,8 @@ export const CONFIDE_OBSERVATION_MAX_EVENTS = 500;
 
 export const CONFIDE_OBSERVATION_EVENTS = Object.freeze({
   CHIP_TAPPED: 'confide_chip_tapped',
-  SHARE: 'confide_share'
+  SHARE: 'confide_share',
+  KB_RETRIEVAL_MISS: 'kb_retrieval_miss'
 });
 
 /**
@@ -185,6 +186,21 @@ export function trackConfideShare(payload, options = {}) {
     {
       dataSource,
       matchedChipId
+    },
+    options
+  );
+}
+
+/**
+ * @param {{ reason: string, kbId?: string | null }} payload
+ * @param {Parameters<typeof trackConfideObservationEvent>[2]} [options]
+ */
+export function trackKbRetrievalMiss(payload, options) {
+  trackConfideObservationEvent(
+    CONFIDE_OBSERVATION_EVENTS.KB_RETRIEVAL_MISS,
+    {
+      reason: typeof payload?.reason === 'string' ? payload.reason : 'unknown',
+      kbId: payload?.kbId || null
     },
     options
   );
