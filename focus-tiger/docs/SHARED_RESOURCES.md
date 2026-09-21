@@ -16,6 +16,8 @@
 
 **Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
 
+**companion child `getLlama`（2026-09-22 · #919）**：子进程内原生 `getLlama` / `loadModel` 由 `l1LlamaWorkGate` 独占。消费者只有 `l1Hold`（聊天）与 `l1EmbeddingHold`（向量），经 `l1Child` 的 `run('chat'|'embedding')` 进入。**禁止**第三条产品路径再裸调。≠ `l1SemanticShadowEmbeddingGate`（影子分类超时）。实验室 `l0Probe` / `l0Spike17Probe` 不进本闸。
+
 **Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]` + `rememberOptOuts[]`；1b Remember；1c Forget；1e CI-01；**1f** `memory_suppress` / Don't save；**不进**云端练习备份 6 key；**本地** Preferences → Backup & restore **v2** 经 `companionFiles.yinPersonalMemory` 导出/导入；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
 **Yin Personalization Engine（2026-08-26 · L0/L1 · L2 Pack · V2 签发）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `src/core/yinPersonalizationEngine.js`。L1 key：`focus-tiger.ype-companion-style.v1`（quiet/default/warm；`default`＝关掉个人化）。L2 缓存 key：`focus-tiger.ype-personalization-pack.v1`。L2 逻辑身份 `ype_profile_id`（本机随机 opaque；**禁止**硬件指纹 / 备份 OTP；**禁止**写入练习备份 6 key）。Pack `companionStyle` 仍回声用户选档；V2 允许白名单 `patternInsights` 字符串（`returns_often` / `reflects_often`）；未知 Pack 键整包丢；`algorithmVersion` 只在 KV 行。关同意须丢弃本机 Pack 缓存并排队删云端该 profile 行。用户本机选档优先于过期 Pack。本刀 **不**把 insight 打进 Confide L3。

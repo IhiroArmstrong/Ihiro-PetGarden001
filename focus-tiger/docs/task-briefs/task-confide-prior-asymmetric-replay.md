@@ -47,6 +47,6 @@ Agent **禁止**把整份 `turns.jsonl` 读进 Chat；只汇报脚本终端摘�
 
 ## 不要做
 
-- 面板打开时预加载 embedding / 加 0.6B 加载 UI（见 `ISSUE_LEDGER` 对应行，等统一仲裁后再评）
+- 面板打开时预加载 embedding / 加 0.6B 加载 UI（见 `ISSUE_LEDGER`；等 `task-confide-embedding-work-gate` 合入后再一起评，禁止单独先上预加载）
 - 改 `applyConfideStage2Route` / 状态条 / Confide 文案
 - 为凑样本再让用户 Electron 连发 20 句
