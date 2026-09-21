@@ -132,6 +132,34 @@ describe('l3ObserveShuffleScreen', () => {
     assert.match(gray[0].note, /not a per-line whitelist/i);
   });
 
+  it('counts generate_error as fail, never as guard_pass', () => {
+    const scored = scoreObserveWingEffective(
+      [
+        { id: 'e-irritation', bucket: 'emotion', ok: false, reason: 'generate_error' },
+        { id: 'e-sleepless', bucket: 'emotion', ok: true, reason: 'ok' },
+        { id: 'e-mind-away', bucket: 'emotion', ok: true, reason: 'ok' },
+        { id: 'e-putting-off', bucket: 'emotion', ok: true, reason: 'ok' },
+        { id: 'e-motions', bucket: 'emotion', ok: true, reason: 'ok' },
+        { id: 'h-phone', bucket: 'habit', ok: true, reason: 'ok' },
+        { id: 'h-morning', bucket: 'habit', ok: true, reason: 'ok' },
+        { id: 'h-different', bucket: 'habit', ok: true, reason: 'ok' }
+      ],
+      [
+        { expectedId: 'e-sleepless', guessedId: 'e-sleepless' },
+        { expectedId: 'e-mind-away', guessedId: 'e-mind-away' },
+        { expectedId: 'e-putting-off', guessedId: 'e-putting-off' },
+        { expectedId: 'e-motions', guessedId: 'e-motions' },
+        { expectedId: 'h-phone', guessedId: 'h-phone' },
+        { expectedId: 'h-morning', guessedId: 'h-morning' },
+        { expectedId: 'h-different', guessedId: 'h-different' }
+      ]
+    );
+    assert.equal(scored.emptyOrErrorFail, 1);
+    assert.equal(scored.guardPass, 0);
+    assert.equal(scored.shuffleHit, 7);
+    assert.equal(scored.passes, 7);
+  });
+
   it('never counts embedding fail-open as guard_pass', () => {
     assert.equal(
       classifyObserveWingOutcome(

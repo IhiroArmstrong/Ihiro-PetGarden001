@@ -43,12 +43,31 @@ import {
   buildChatWingGrayRows,
   buildObserveShuffleGuessRows,
   evaluateObserveShuffleScreen,
+  evaluateObserveWingGuardStreak,
   scoreObserveWingEffective
 } from '../../src/core/l3ObserveShuffleScreen.js';
 import { resolveJaChitchatModelPath } from './l0-ja-chitchat-probe-shared.js';
 
 const LAB_ROOT = '/tmp/ft-l0-lab';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+function readPreviousObserveWingRates(labRoot) {
+  if (!fs.existsSync(labRoot)) return [];
+  return fs
+    .readdirSync(labRoot)
+    .filter((name) => /^observe-shuffle-\d+\.json$/.test(name))
+    .sort()
+    .map((name) => {
+      try {
+        const data = JSON.parse(fs.readFileSync(path.join(labRoot, name), 'utf8'));
+        const rate = data?.observeWing?.guardRejectRate;
+        return typeof rate === 'number' ? rate : null;
+      } catch {
+        return null;
+      }
+    })
+    .filter((rate) => typeof rate === 'number');
+}
 
 function defaultEmbeddingPath() {
   const fromEnv = String(process.env.FT_EMBEDDING_GGUF || '').trim();
@@ -185,12 +204,25 @@ async function main() {
 
     for (const fixture of L3_OBSERVE_SHUFFLE_FIXTURES) {
       const locale = resolveFixtureLocale(fixture.text);
-      const generated = await generateSanitizedReply({
-        hold,
-        embedHold,
-        text: fixture.text,
-        locale
-      });
+      let generated;
+      try {
+        generated = await generateSanitizedReply({
+          hold,
+          embedHold,
+          text: fixture.text,
+          locale
+        });
+      } catch {
+        generated = {
+          raw: '',
+          reply: null,
+          observeWing: !isCompanionChatGenerateLine(fixture.text),
+          ok: false,
+          reason: 'generate_error',
+          clicheSkipped: false,
+          clicheFlagged: false
+        };
+      }
       const replyVector = generated.reply ? await embedHold.embedText(generated.reply) : null;
       generatedRows.push({
         id: fixture.id,
@@ -223,6 +255,11 @@ async function main() {
   const summary = evaluateObserveShuffleScreen(guessRows);
   const observeWing = scoreObserveWingEffective(generatedRows, guessRows);
   const chatWingGray = buildChatWingGrayRows(generatedRows, guessRows);
+  const previousRates = readPreviousObserveWingRates(LAB_ROOT);
+  const guardStreak = evaluateObserveWingGuardStreak([
+    ...previousRates,
+    observeWing.guardRejectRate
+  ]);
   const observeById = new Map(observeWing.rows.map((row) => [row.id, row]));
 
   process.stdout.write(
@@ -252,7 +289,11 @@ async function main() {
   );
   const guardPct = Math.round(observeWing.guardRejectRate * 100);
   let guardLine = `guard_reject_rate ${observeWing.guardRejects}/${observeWing.n}=${guardPct}%`;
-  if (observeWing.guardRed) {
+  if (guardStreak.redStreak) {
+    guardLine += ' · RED consecutive 2× >50% · cannot close #823 (does not exit 1)';
+  } else if (guardStreak.yellowStreak) {
+    guardLine += ' · YELLOW consecutive 2× >25% · alert only';
+  } else if (observeWing.guardRed) {
     guardLine += ' · WARN red (single run; consecutive 2× >50% would block #823 close)';
   } else if (observeWing.guardYellow) {
     guardLine += ' · WARN yellow (single run; consecutive 2× >25% alerts, does not block)';
@@ -276,7 +317,8 @@ async function main() {
         guessRows,
         summary,
         observeWing,
-        chatWingGray
+        chatWingGray,
+        guardStreak
       },
       null,
       2

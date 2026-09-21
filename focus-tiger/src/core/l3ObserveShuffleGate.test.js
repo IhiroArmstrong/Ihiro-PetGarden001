@@ -15,6 +15,7 @@ import {
 import {
   L3_OBSERVE_SHUFFLE_MIN_N,
   L3_OBSERVE_SHUFFLE_PASS_HITS,
+  L3_OBSERVE_WING_DENOMINATOR,
   scoreL3ObserveShuffleMatches
 } from './l3ObserveShuffleScreen.js';
 import {
@@ -44,6 +45,12 @@ describe('L3 observe scheme B shuffle gate', () => {
       guessedId: L3_OBSERVE_SHUFFLE_FIXTURES[(i + 1) % 12].id
     }));
     assert.equal(scoreL3ObserveShuffleMatches(swapped).pass, false);
+    const observeWing = L3_OBSERVE_SHUFFLE_FIXTURES.filter(
+      (row) => row.bucket === 'emotion' || row.bucket === 'habit'
+    );
+    const askYin = L3_OBSERVE_SHUFFLE_FIXTURES.filter((row) => row.bucket === 'ask-yin');
+    assert.equal(observeWing.length, L3_OBSERVE_WING_DENOMINATOR);
+    assert.equal(askYin.length, 4);
   });
 
   it('asks the model for a reply that cannot swap onto another user line', () => {
