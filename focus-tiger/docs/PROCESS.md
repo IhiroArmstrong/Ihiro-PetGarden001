@@ -66,7 +66,7 @@
 
 - **Confide companion 工作闸（2026-09-22）**：`l1LlamaWorkGate` 串行化聊天 / embedding 的 `getLlama`；单测不加载原生 addon。不改 Stage 2 路由表；不加加载提示、不预加载。Brief `task-confide-embedding-work-gate.md`。
 
-- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。5 条功能短答对照 locale，**PO 人审已通过**（spot-check 0002/0003），不接线运行时。
+- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。第一批 5 条对照 locale，**PO 人审已通过**（spot-check 0002/0003）。**盘点试点 KB-FUNC-0006 呼吸练习**（左球主路径 · 速查表补行 · **待 PO spot-check**），不接线运行时。
 
 - **Confide 知识库检索接线 Brief 已拍板（2026-09-22 · 纯文档）**：`task-confide-kb-retrieval-wiring.md`。Q1 原样/模板 · 单闸门 `yin_may_retrieve` ∧ `审核状态` · 实现 Issue 等盘点清单稳定后拆。
 

@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + 第一周 5 条产品功能短答（对照现网 locale / 菜单普查；**PO 人审已通过**）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
+**状态（2026-09-22）**：仓内权威模板 + 第一批 5 条（**PO 人审已通过**）+ **盘点试点 KB-FUNC-0006 呼吸练习**（左球主路径 · 对照 locale / `MENU_CHROME_CENSUS` §2.3 · **待 PO spot-check**）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · 无运行时）· `LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）
 
@@ -68,17 +68,20 @@
 
 ---
 
-## 四、第一周样例（对照现网 · 已通过）
+## 四、功能短答条目
 
-下列正文已按 `en.json` / `zh.json` / `ja.json` 与 `MENU_CHROME_CENSUS.md` 核对按钮名与路径。  
-**2026-09-22 PO 人审**：spot-check 0002（⋯ → Practice → Ground exercise）与 0003（⋯ → Preferences → Backup & restore）；其余 3 条沿用同一 locale / 菜单普查对照，规则层已核查。  
-阿寅若将来检索命中，只许复述「短答」段，禁止续写步骤或练习引导语。
+下列正文须按 `en.json` / `zh.json` / `ja.json` 与 `MENU_CHROME_CENSUS.md` 核对按钮名与路径。阿寅若将来检索命中，只许复述「短答」段，禁止续写步骤或练习引导语。
+
+### 4.1 第一批（对照现网 · 已通过）
+
+**2026-09-22 PO 人审**：spot-check 0002（⋯ → Practice → Ground exercise）与 0003（⋯ → Preferences → Backup & restore）；其余 3 条沿用同一 locale / 菜单普查对照，规则层已核查。
 
 ### 现网入口速查（写条目时对照此表，勿另编路径）
 
 | 意图 | 宽屏 | 窄屏 | 主按钮文案 en / ja / zh-draft |
 |---|---|---|---|
 | 开始同坐 | Idle 底栏主钮 | 同左 | Sit with Yin / 阿寅と坐る / 与阿寅同坐（`BTN_FOCUS_START`） |
+| 呼吸练习 | Idle **左球**（`#ft-wide-home-quickstart` / `#ft-narrow-home-quickstart`） | 同左 | Breath practice / 呼吸の練習 / 呼吸练习（`QUICK_START_ARIA` · `HINT_QUICK_START`）；点选后 chip 1/3/5/10/20 分钟（`micro_ritual.pick_duration` · `micro_ritual.minutes_chip`）；**不在** ⋯ / 抽屉 |
 | 结束同坐 | 同坐中主钮 | 同左 | Rise / 立つ / 起身（`BTN_FOCUS_STOP`） |
 | 怎么陪 | ⋯ → Practice → How shall we sit? | 抽屉同组 | How Shall We Sit? / 这次怎么陪你？（`COMPANION_MODE_TITLE`）；确认钮 Begin / 开始（`COMPANION_MODE_CONTINUE`） |
 | 接地练习 | ⋯ → Practice → Ground exercise（Five Moments **上方**） | 抽屉同位置 | Ground exercise / グラウンディング / 接地练习；两钮 Feel the Ground / Look Around（ja：足元を感じる / 周りを見渡す；zh：感受地面 / 环顾四周） |
@@ -87,7 +90,7 @@
 | 倾诉 | ⋯ → Practice → Confide to Yin；宽屏另有倾听耳 | 抽屉有菜单行，**无**本机生成 | Confide to Yin / 寅に打ち明ける / 向阿寅倾诉。发送 Share / 伝える；关闭 Close / 閉じる / 关闭；取消 Cancel / キャンセル / 取消 |
 | 今日进度 | 左上 HUD 条 | 同左 | Today's shared sitting / 今日同坐（`HUD_PROGRESS_SHARED_SITTING`）；默认约 25 分钟软顶，**界面不写「一炷香」** |
 
-专注同坐时长从 **10 分钟**起选（`focus_duration.hint`）。更短的停顿走左球 **Breath practice**，不是主钮 Sit。
+专注同坐时长从 **10 分钟**起选（`focus_duration.hint`）。更短的停顿走上表左球 **Breath practice**，不是主钮 Sit。
 
 ```yaml
 - id: KB-FUNC-0001
@@ -183,6 +186,37 @@
   更新时间: 2026-09-22
   locale_keys: [CONFIDE_PANEL_CLOSE, CONFIDE_PANEL_CANCEL, CONFIDE_PANEL_SEND, CONFIDE_DESKTOP_STATUS_UNLOADED_FOCUSING]
   检索关键词: [结束倾诉, Close, 关闭, キャンセル, Cancel, 退出, Esc]
+```
+
+### 4.2 盘点试点 · 非菜单主路径（待 PO spot-check）
+
+来源：`task-confide-kb-retrieval-wiring.md` §五 第 3 步——先验证「只搬运 / 裁剪 / 打标」流程，不新造第二套真相。本条为 **左球主路径**（`MENU_CHROME_CENSUS.md` §2.3：主路径，不是次级功能）；**不是** ⋯ / 抽屉入口。全部 `审核状态: 未审核`，人审前不得当作可检索。
+
+| 优先级 | id | 标题 | 盘点依据 |
+|---|---|---|---|
+| P0 | 0006 | 呼吸练习从哪进（左球） | 速查表左球行 · `QUICK_START_ARIA` / `HINT_QUICK_START` / `micro_ritual.*` · `MICRO_RITUAL_PLAN.md` |
+
+```yaml
+- id: KB-FUNC-0006
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 呼吸练习从哪进（左球）
+  适用场景: 想短暂陪阿寅坐一会儿，不确定该点左球还是底栏 Sit
+  内容正文: |
+    短答（en）：On the home seat, tap the left orb — Breath practice. Pick how long (chips from 1 minute up). It is a soft sit with Yin, not a full Focus session. Yin only points here and does not read the in-breath / out-breath coaching lines aloud.
+    指路：Idle 左球 `#ft-wide-home-quickstart` / `#ft-narrow-home-quickstart`（`QUICK_START_ARIA`）→ 时长 chip `micro_ritual.pick_duration` → 点选即开。Leave（`micro_ritual.leave`）结束、不记账、不进 Reflection、不写 Journey log；完成且关 Reflection 才入账（见 `MICRO_RITUAL_PLAN.md`）。**不在** ⋯ / 抽屉；Companion 三选一展开时宽屏左球隐藏（`ft-wide-stage-companion`）。
+    与 0001 分工：0001 = 主钮 Sit 完整同坐（10 分钟起）；本条 = 左球短坐入口。
+    禁止：把 `RESET_BREATH_*` / `BREATH_PHASE_*` 引导语写入本条或倾诉检索块（与 `KB-PSY-DRAFT-0002` 分工）。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Idle 左球主路径（Extended Breath Practice · 1/3/5/10/20 分钟）
+  更新时间: 2026-09-22
+  locale_keys: [QUICK_START_ARIA, HINT_QUICK_START, HINT_MICRO_RITUAL, micro_ritual.button, micro_ritual.pick_duration, micro_ritual.minutes_chip, micro_ritual.leave, focus_duration.hint]
+  检索关键词: [呼吸练习, Breath practice, 左球, quick start, 短坐, 一分钟, 从哪进, 怎么呼吸, 和 Sit 区别]
 ```
 
 ---
