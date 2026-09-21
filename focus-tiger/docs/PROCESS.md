@@ -64,7 +64,8 @@
 
 **近期落地（待人工测试）**：
 
-- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。5 条功能短答对照 locale，待人审，不接线运行时。
+- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。5 条功能短答对照 locale，人审 PR #920 待合，不接线运行时。
+- **Confide 知识库检索接线 Brief 已拍板（2026-09-22 · 纯文档）**：`task-confide-kb-retrieval-wiring.md`。Q1 原样/模板 · 单闸门 `yin_may_retrieve` ∧ `审核状态` · 实现 Issue 等盘点清单稳定后拆。
 
 - **Confide with-prior 不对称规则回放（2026-09-21 · A 类）**：`npm run audit:confide-prior-asymmetric` 只读历史 jsonl；gray→明确桶保留、明确桶→gray 丢掉。不改 live。Prompt：`task-confide-prior-asymmetric-replay.md`。embedding 加载 UI / 预加载仍等统一仲裁，见 `ISSUE_LEDGER`。
 
