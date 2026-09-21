@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。5 条功能短答对照 locale，待人审，不接线运行时。
+- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。5 条功能短答对照 locale，**PO 人审已通过**（spot-check 0002/0003），不接线运行时。
 
 - **Confide with-prior 不对称规则回放（2026-09-21 · A 类）**：`npm run audit:confide-prior-asymmetric` 只读历史 jsonl；gray→明确桶保留、明确桶→gray 丢掉。不改 live。Prompt：`task-confide-prior-asymmetric-replay.md`。embedding 加载 UI / 预加载仍等统一仲裁，见 `ISSUE_LEDGER`。
 
