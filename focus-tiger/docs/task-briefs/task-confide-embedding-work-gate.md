@@ -1,6 +1,6 @@
 # Task Brief · Confide companion 工作闸（getLlama 一层互斥）
 
-> **状态（2026-09-22）**：已起草，**待 PO 点头后才改运行时**。本回合只锁规格。  
+> **状态（2026-09-22）**：PO 已点头；运行时在 #919（`l1LlamaWorkGate` + `l1Child` 接线）。对照实验仍可选，不挡合入。  
 > **实现类**：**B**（可能改变「等回复」的时长；不得改变 Stage 2 路由表与答句内容）。  
 > **对照**：`spriteChannelArbitration` 的形状（调用方只报意图、一处拍板），**不是**抄它的 500 行矩阵。目标体量：纯函数闸 **约百行级** + 单测；禁止做成 `overlaySlotArbitration` 那种大表。  
 > **现状说明**：`docs/confide-embedding-lifecycle-arbitration.md`。止血：#912（ensure 超时 + ready 跳过重复 ensure）+ #913（渲染进程 `process is not defined`）。**闸从未开工。**

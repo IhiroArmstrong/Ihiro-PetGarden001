@@ -33,12 +33,10 @@
 | Stage 2 live 分类 | 未就绪立刻 fail-open，后台继续加载 | 已单点修 |
 | Stage 2 路由决定（渲染进程） | **须**浏览器安全 env（禁止 `env = process.env` 默认参数） | `#908` 合入后至本刀前：每条消息必炸 |
 | 观察翼套话打分 | embedding 未就绪则跳过 | 已单点修 |
-| 聊天 `ensure` / hybrid / generate | **#912**：ready 则跳过重复 ensure；ensure 30s 超时；UI 45s 看门狗 | 仍不是统一调度 |
+| 聊天 `ensure` / hybrid / generate | **#912** 超时止血 + **#919 `l1LlamaWorkGate`** 禁止并行 `getLlama` | 聊天等 embedding 持闸不得超过 30s |
 | 用户可见回复 | 不得等 embedding 冷启动（Stage 2 Brief 不变量） | 须保持 |
-| 加载提示 / 面板并行预加载 | **现在不做**（ISSUE_LEDGER：待工作闸合入后再一起评） | Brief `task-confide-embedding-work-gate.md`；禁止单独先上预加载 |
+| 加载提示 / 面板并行预加载 | **现在不做**（闸合入后再一起评） | 加载提示可永远不做；禁止单独先上预加载 |
 
-## 建议（先说清楚，本刀不实现统一闸）
+## 工作闸（#919 · 已接线）
 
-**我认为最合理的**是照精灵占用 / 浮层仲裁那次：做一层很小的 **companion child 工作闸**（聊天 hold / embedding hold / 禁止并行 `getLlama`），生产者只报「我要加载哪边」，消费者只问「现在能不能跑」。不要再给每个调用方各写一套超时。
-
-规格：**`docs/task-briefs/task-confide-embedding-work-gate.md`**（2026-09-22 已起草，待 PO 点头后才改运行时）。#912 只止血。渲染进程 `process.env` 崩溃是独立实现缺陷（#913），不并进本闸。
+`l1Child` 在 `loadModelHold` / `loadEmbeddingHold` 外包一层 `l1LlamaWorkGate`。两条 stdin 队列仍分离。不改 Stage 2 路由表。实验室 `l0Probe` / `l0Spike17Probe` 不进本闸。#912 仍是超时止血；本闸是调度契约。渲染进程 `process.env` 崩溃已由 #913 单点修。
