@@ -4,8 +4,10 @@
  */
 
 /**
- * Lab: Prompt 13 layer B — generate 12 observe/chat lines, embed-match replies back
- * to user fixtures, and score shuffle-match pass (>=8/12).
+ * Lab: Prompt 13/14 layer B — generate 12 observe/chat lines, embed-match replies
+ * back to user fixtures. Two rulers:
+ *   §12 full: scoreL3ObserveShuffleMatches (ok rows, ≥8/12)
+ *   observe wing: scoreObserveWingEffective (emotion+habit / 8, ≥6/8)
  *
  *   cd focus-tiger && npm run test:observe-shuffle-screen
  *   cd focus-tiger/desktop && npm run companion:observe-shuffle-screen
@@ -34,11 +36,14 @@ import {
 import { sanitizeCompanionL2Reply } from '../companion/l2Sanitize.js';
 import {
   L3_OBSERVE_SHUFFLE_FIXTURES,
-  L3_OBSERVE_SHUFFLE_PASS_HITS
+  L3_OBSERVE_SHUFFLE_PASS_HITS,
+  L3_OBSERVE_WING_PASS_COUNT
 } from '../companion/l3ObserveShuffleFixtures.js';
 import {
+  buildChatWingGrayRows,
   buildObserveShuffleGuessRows,
-  evaluateObserveShuffleScreen
+  evaluateObserveShuffleScreen,
+  scoreObserveWingEffective
 } from '../../src/core/l3ObserveShuffleScreen.js';
 import { resolveJaChitchatModelPath } from './l0-ja-chitchat-probe-shared.js';
 
@@ -216,21 +221,44 @@ async function main() {
     }))
   );
   const summary = evaluateObserveShuffleScreen(guessRows);
+  const observeWing = scoreObserveWingEffective(generatedRows, guessRows);
+  const chatWingGray = buildChatWingGrayRows(generatedRows, guessRows);
+  const observeById = new Map(observeWing.rows.map((row) => [row.id, row]));
 
   process.stdout.write(
-    `[observe-shuffle-screen] generated=${generatedRows.length} scored=${scoredRows.length} hits=${summary.hits}/${summary.n} passBar=${L3_OBSERVE_SHUFFLE_PASS_HITS}\n\n`
+    `[observe-shuffle-screen] generated=${generatedRows.length} scored=${scoredRows.length} §12=${summary.hits}/${summary.n} observe=${observeWing.passes}/${observeWing.n} passBar12=${L3_OBSERVE_SHUFFLE_PASS_HITS} passBar8=${L3_OBSERVE_WING_PASS_COUNT}\n\n`
   );
   for (const row of generatedRows) {
     const guess = guessRows.find((item) => item.expectedId === row.id);
-    const status = row.ok ? (guess?.expectedId === guess?.guessedId ? 'HIT' : 'MISS') : 'SKIP';
+    const observe = observeById.get(row.id);
+    let status = 'SKIP';
+    if (observe) {
+      status = observe.outcome.toUpperCase();
+    } else if (row.ok) {
+      status = guess?.expectedId === guess?.guessedId ? 'CHAT_HIT' : 'CHAT_GRAY';
+    } else {
+      status = 'CHAT_SKIP';
+    }
     process.stdout.write(
       `${status}\t${row.id}\t${row.bucket}\t${row.text}\t${row.reply || row.reason}\n`
     );
   }
   process.stdout.write('\n--- summary ---\n');
   process.stdout.write(
-    `${summary.hits}/${summary.n} · pass=${summary.pass ? 'YES' : 'NO'} · bar=${summary.passBar}/${summary.minN}\n`
+    `§12 ${summary.hits}/${summary.n} · pass=${summary.pass ? 'YES' : 'NO'} · bar=${summary.passBar}/${summary.minN} (does not block this knife)\n`
   );
+  process.stdout.write(
+    `observe-wing ${observeWing.passes}/${observeWing.n} · pass=${observeWing.pass ? 'YES' : 'NO'} · bar=${observeWing.passBar}/${observeWing.n} · hit=${observeWing.shuffleHit} guard_pass=${observeWing.guardPass} shuffle_miss=${observeWing.shuffleMiss} fail=${observeWing.fail} guard_skipped=${observeWing.guardSkipped}\n`
+  );
+  const guardPct = Math.round(observeWing.guardRejectRate * 100);
+  let guardLine = `guard_reject_rate ${observeWing.guardRejects}/${observeWing.n}=${guardPct}%`;
+  if (observeWing.guardRed) {
+    guardLine += ' · WARN red (single run; consecutive 2× >50% would block #823 close)';
+  } else if (observeWing.guardYellow) {
+    guardLine += ' · WARN yellow (single run; consecutive 2× >25% alerts, does not block)';
+  }
+  process.stdout.write(`${guardLine}\n`);
+  process.stdout.write(`chat-wing gray ${chatWingGray.length} (ask-yin; not in 8-count)\n`);
 
   fs.mkdirSync(LAB_ROOT, { recursive: true });
   const outPath = path.join(LAB_ROOT, `observe-shuffle-${Date.now()}.json`);
@@ -246,7 +274,9 @@ async function main() {
           replyVector: undefined
         })),
         guessRows,
-        summary
+        summary,
+        observeWing,
+        chatWingGray
       },
       null,
       2
@@ -254,7 +284,7 @@ async function main() {
   );
   process.stderr.write(`[observe-shuffle-screen] wrote ${outPath}\n`);
 
-  if (!summary.pass || scoredRows.length < summary.minN) {
+  if (!observeWing.pass) {
     process.exitCode = 1;
   }
 }

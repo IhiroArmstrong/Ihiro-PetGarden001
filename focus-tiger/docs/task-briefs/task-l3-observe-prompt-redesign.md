@@ -1,6 +1,6 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-20）**：**方案 B 生产刀续作 + Prompt 13** — 独白仍观察翼；另加套话向量守门、用户句重合检测、允许偶尔关心式问句。语义规格 Brief `task-l3-observe-cliche-semantic-guard.md` 已锁（#877）。**禁止**把 §4.2 独白改去问答翼。关单仍须 Electron 打乱配对 ≥8/12。  
+> **状态（2026-09-21）**：**Prompt 14 口径已锁** — 层 B 拆观察翼 8 句 effective 与 chat 翼 4 句 gray 表；两把尺子并存（§12 ≥8/12 **不替代** 观察翼 ≥6/8）。独白仍观察翼。**禁止**把 §4.2 独白改去问答翼。观察翼 prompt 质量另批；本刀不关 #823。  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
 > **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理；档 3/4 分流已进 develop（#834/#835）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
 > **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（方案 B：只贴本句 + generic cub gesture + 禁第一人称耳/尾/爪空转；sanitize 拒收田野套势含 My ears/tail/paws）。  
@@ -556,4 +556,65 @@ fur 未再现；shoulders/slight-tension 从 7/12 降到 0/12；中文 UI 与 fe
 
 **不测**：档 3 `reflective_honesty`、档 4 `companion_greeting`、`memory_list`、危机/情绪桶。实验室 Metal 大批次仍走系统终端 + `LAB_SCRIPT_CONVENTIONS.md`；**禁止**在 Agent Chat 连跑生成。
 
+**与 Prompt 14 的关系**：§12 尺子保留。观察翼关单另看 §十三 `scoreObserveWingEffective`（≥6/8）。chat 翼 4 句 shuffle miss 进 gray 表，不进 8 句分母。
+
 所属线: Epic #639 · 切片 #823
+
+---
+
+## 十三、层 B 口径拆分 · 观察翼有效计分（Prompt 14 · 2026-09-21）
+
+**PO 拍板（2026-09-21）**。实现：`scoreObserveWingEffective` + 实验室双 summary + fixture 单测。**不**跑真 GGUF 关单。观察翼 prompt 质量另批。
+
+### 两把尺子（互不替代）
+
+| 尺子 | 函数 | 分母 | 过关 | 本刀是否阻塞 |
+|---|---|---|---|---|
+| §12 全量 | `scoreL3ObserveShuffleMatches` | 仅 `ok` 行进 shuffle；目标 12 | ≥8/12 | 否（未过是预期） |
+| 观察翼有效 | `scoreObserveWingEffective` | 固定 8（emotion+habit；ask-yin 不进） | ≥6/8（75%） | 是（实验室 exit 1 只看这把） |
+
+### 观察翼四类
+
+| 类 | 条件 | 是否计入 passes |
+|---|---|---|
+| `shuffle_hit` | `ok` 且 embedding 配对命中 | 是 |
+| `shuffle_miss` | `ok` 且 embedding 未配对 | 否（同时记 fail） |
+| `guard_pass` | `sanitize_rejected` 或 `observe_cliche` 拒收 | 是 |
+| `fail` | `empty` / `generate_error` / `shuffle_miss` | 否 |
+
+禁止把 `clicheSkipped`（embedding fail-open）算 `guard_pass`；summary 单独报 `guard_skipped`。
+
+### 监控（与 effective 分拆）
+
+`guard_reject_rate = (sanitize 拒收 + observe_cliche 拒收) / 8`
+
+- 黄灯：连续 2 次 **>25%**（>2/8）→ 告警，不阻断
+- 红灯：连续 2 次 **>50%**（>4/8）→ **不得关 #823**
+- 单次超线：仅 WARN，不 exit 1、不拦关单
+
+### 本次跑数（共识 JSON `observe-shuffle-1789976586199.json` · 与 …3039 同结果）
+
+函数复算（地面真相）：**5 shuffle_hit + 2 guard_pass + 1 shuffle_miss = 7/8 PASS**；`guard_reject_rate` 2/8=25%（不是 >25%，无黄灯）。§12 **5/10 pass=NO**（预期，不阻塞本刀）。
+
+PO 口述选项 2 记「4 shuffle_hit」；以 JSON + `scoreObserveWingEffective` 为准（habit 三句均 HIT，故为 5 不是 4）。
+
+### 观察翼质量清单（未修）
+
+| 夹具 | 答句 | 配对 | 说明 |
+|---|---|---|---|
+| `e-motions` | `Drifting attention.` | guessed `e-mind-away` | 与 `e-mind-away` **同句撞车**；本条 `shuffle_miss` = fail。质量项另批，**不得**假装已修好 |
+
+`e-mind-away` 同答句仍算 `shuffle_hit`（配对到自己）。本刀不算 fail 以外的独立开修。
+
+### chat 翼 gray 表（#874 · 不进 8 句分母）
+
+方法论根因（四条共用，**不是**这几句白名单例外）：**答句↔用户句最近邻对短事实答句天然测不准。**
+
+| id | 用户句 | 答句 | guessedId |
+|---|---|---|---|
+| `q-what-doing` | 你想干啥？ | 我们一起安静地坐着吧。 | `e-sleepless` |
+| `q-what-eat` | 你想吃啥？ | 我不知道。 | `e-mind-away` |
+| `q-whom-like` | Whom do you like? | I do not know anyone yet. | `e-mind-away` |
+| `q-pangfen` | 谁喜欢吃胖粉？ | 我不知道那是什么。 | `q-what-eat` |
+
+所属线: Epic #639 · 切片 #823 · 问句翼对照 #874

@@ -12,7 +12,10 @@
 export {
   L3_OBSERVE_SHUFFLE_MIN_N,
   L3_OBSERVE_SHUFFLE_PASS_HITS,
-  scoreL3ObserveShuffleMatches
+  L3_OBSERVE_WING_DENOMINATOR,
+  L3_OBSERVE_WING_PASS_COUNT,
+  scoreL3ObserveShuffleMatches,
+  scoreObserveWingEffective
 } from '../../src/core/l3ObserveShuffleScreen.js';
 
 /** Replies from 2026-09-19 / 2026-09-20 field QA — interchangeable cub theater. */

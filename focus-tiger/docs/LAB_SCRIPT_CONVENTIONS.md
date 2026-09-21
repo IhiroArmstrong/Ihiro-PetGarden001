@@ -148,7 +148,7 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 
 **有利分歧制造机（60 候选 · 2026-09-21）**：`cd focus-tiger/desktop && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run companion:favorable-disagreement-mill`（根目录 `npm run audit:favorable-disagreement-mill`）。真源：`confideStage2ChallengeCandidates.js`（12 簇 × 5）+ Prompt 12 historical KEEP 12。公式：Literal ≠ Golden **且** Semantic = Golden。结果：`/tmp/ft-l0-lab/favorable-disagreement-mill-<epoch>.csv` + inventory CSV + `.json`。终端报 pool / favorable / inventory unique / synthetic·real·adversarial·historical / real minimum。PO 已认 mill KEEP `reviewer=PO`。**不得**写「可以切 Stage 2」。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
 
-**L3 观察翼打乱配对批量（Prompt 13 层 B · 2026-09-21）**：`cd focus-tiger && npm run test:observe-shuffle-screen`（或 `cd focus-tiger/desktop && npm run companion:observe-shuffle-screen`）。真源：`l3ObserveShuffleFixtures.js`（12 句）。真 Gemma4 L3 + Qwen3-Embedding：对每句 generate（观察翼含 sanitize + 套话守门）→ 用用户句 embedding 自动重配 → `scoreL3ObserveShuffleMatches` 报 `hits/12`（过关 **≥8/12**）。结果：`/tmp/ft-l0-lab/observe-shuffle-<epoch>.json`。单测：`node --test src/core/l3ObserveShuffleScreen.test.js`。不进 `test:smoke`。缺 L3 或 embedding GGUF 时 exit 2。
+**L3 观察翼打乱配对批量（Prompt 13 层 B · Prompt 14 口径 · 2026-09-21）**：`cd focus-tiger && npm run test:observe-shuffle-screen`（或 `cd focus-tiger/desktop && npm run companion:observe-shuffle-screen`）。真源：`l3ObserveShuffleFixtures.js`（12 句）。真 Gemma4 L3 + Qwen3-Embedding：对每句 generate（观察翼含 sanitize + 套话守门）→ 用用户句 embedding 自动重配。JSON **双 summary**：`summary` = `scoreL3ObserveShuffleMatches`（仅 ok 行，**≥8/12**）；`observeWing` = `scoreObserveWingEffective`（emotion+habit 分母 8，**≥6/8**；exit 1 只看这把）。`chatWingGray` = ask-yin 4 句，不进 8 句分母。单次 `guard_reject_rate` 超线只 WARN，不 exit 1。结果：`/tmp/ft-l0-lab/observe-shuffle-<epoch>.json`。单测：`node --test src/core/l3ObserveShuffleScreen.test.js`。不进 `test:smoke`。缺 L3 或 embedding GGUF 时 exit 2。**禁止**在 Agent Chat 连跑真 GGUF。流程见上文「先分类再动刀」。
 
 **Stage 2 live 冷启动探针（Prompt 8 · 2026-09-21）**：`cd focus-tiger && npm run test:semantic-live-coldstart-probe`（或 `cd focus-tiger/desktop && npm run companion:semantic-live-coldstart-probe`）。模拟 embedding gate 未 ready → `embed_not_ready` 行；`embedding_ready` 后再 classify → `ok` 行。结果：`/tmp/ft-l0-lab/semantic-live-coldstart-<epoch>.json` + `semantic-live-coldstart-turns-<epoch>.jsonl`。终端另报 `live=` / `failOpen=` / `semanticOk=`（与 `audit:confide-semantic-shadow` 同口径）。可用 `npm run audit:confide-semantic-shadow -- --file /tmp/ft-l0-lab/semantic-live-coldstart-turns-<epoch>.jsonl` 复核。单测：`node --test src/core/confide/semanticLiveColdstartProbe.test.js`。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
 
@@ -227,6 +227,25 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 | 结果 JSON | `compare-<Date.now()>.json` / `intent-diag-<epoch>.json` | `compare-1787511745122.json` |
 | 对照表 | 固定名 `compare-tables.md`，只追加 | `/tmp/ft-l0-lab/compare-tables.md` |
 | 实验室 `id` | dest stem | `Qwen3-4B-Q4_K_M-unsloth` |
+
+---
+
+## 3.1 先分类再动刀（Prompt 14 · 2026-09-21）
+
+实验室 JSON 出来后，**先给每条夹具贴类，再决定改 prompt、sanitize、还是打分**。禁止拿 12 句混分去开观察翼修刀，也禁止把 chat 翼 miss 写成夹具白名单。
+
+1. **先分翼**：`emotion`/`habit` = 观察翼（分母固定 8）；`ask-yin` = chat 翼（#874，进 gray 表，**不进** 8 句分母）。
+2. **观察翼再贴四类**（函数 `classifyObserveWingOutcome` / `scoreObserveWingEffective`）：
+   - `shuffle_hit` / `shuffle_miss`：`ok` 且做了 embedding 配对
+   - `guard_pass`：`sanitize_rejected` 或 `observe_cliche` 拒收（算有效通过）
+   - `fail`：`empty` / `generate_error` / `shuffle_miss`
+   - **禁止**把 `clicheSkipped`（embedding fail-open）算 `guard_pass`；summary 单独报 `guard_skipped`
+3. **再选尺子**（两把并存，互不替代）：
+   - §12 全量：`scoreL3ObserveShuffleMatches`，仅 `ok` 行进 shuffle，**≥8/12**
+   - 观察翼有效：`scoreObserveWingEffective`，**≥6/8**。本刀关单看这把；§12 未过不阻塞口径刀
+4. **监控与 effective 分开报**：`guard_reject_rate = (sanitize + cliche 拒收) / 8`。单次 >25% 或 >50% 只 WARN，**不** exit 1。连续 2 次 >25% 告警不阻断；连续 2 次 >50% **不得关 #823**。
+5. **chat 翼 miss → gray 表**，备注写方法论根因（答句↔用户句最近邻对短事实答句天然测不准），不是这几句例外。
+6. **质量清单 ≠ 本刀 fail**：如同句撞车（`e-motions` ↔ `e-mind-away`）记 Brief 质量项，**不得**假装已修好，也**不得**本刀顺手改观察翼 prompt。
 
 ---
 
