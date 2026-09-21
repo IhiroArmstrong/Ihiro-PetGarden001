@@ -9,6 +9,7 @@ import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
 import {
   CONFIDE_SEMANTIC_ROUTING_MODE,
+  confideBrowserSafeEnv,
   resolveConfideSemanticRoutingMode
 } from './confideSemanticRoutingConfig.js';
 import {
@@ -71,6 +72,26 @@ describe('confide semantic Stage 2 live override', () => {
     });
     assert.equal(applied.route, CONFIDE_ROUTE.FALLBACK);
     assert.equal(applied.override, null);
+  });
+
+  it('does not throw when process is missing (Electron renderer)', () => {
+    const throwingGlobals = {
+      get process() {
+        throw new ReferenceError('process is not defined');
+      }
+    };
+    assert.deepEqual(confideBrowserSafeEnv(undefined, throwingGlobals), {});
+    const applied = applyConfideStage2Route({
+      literalRoute: CONFIDE_ROUTE.TIRED,
+      semanticCoarse: CONFIDE_SEMANTIC_BUCKET.FUNCTIONAL,
+      mode: CONFIDE_SEMANTIC_ROUTING_MODE.LIVE
+    });
+    assert.equal(applied.route, CONFIDE_ROUTE.FALLBACK);
+    assert.equal(applied.override, CONFIDE_STAGE2_OVERRIDE.EMOTION_FALSE_POSITIVE);
+    assert.equal(
+      resolveConfideSemanticRoutingMode(),
+      CONFIDE_SEMANTIC_ROUTING_MODE.LIVE
+    );
   });
 
   it('does nothing in shadow mode or when embedding is gray/unavailable', () => {
