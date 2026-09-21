@@ -56,7 +56,8 @@ describe('L3 observe scheme B shuffle gate', () => {
   it('asks the model for a reply that cannot swap onto another user line', () => {
     const prompt = buildCompanionL2Prompt({ text: '有点烦', locale: 'en' });
     assert.match(prompt, /fit only that line/i);
-    assert.match(prompt, /irritation vs sleeplessness/i);
+    assert.match(prompt, /attention elsewhere/i);
+    assert.match(prompt, /autopilot/i);
     assert.match(prompt, /generic cub gesture/i);
     assert.match(prompt, /first-person cub body/i);
     assert.match(prompt, /notice the question/i);
@@ -90,7 +91,8 @@ describe('L3 observe scheme B shuffle gate', () => {
     assert.match(prompt, /first-person cub body/i);
     assert.match(prompt, /short caring question/i);
     assert.match(prompt, /no you-should/i);
-    assert.match(prompt, /irritation vs sleeplessness/i);
+    assert.match(prompt, /attention elsewhere/i);
+    assert.match(prompt, /autopilot/i);
     assert.doesNotMatch(prompt, /conversation, not a mood to observe/i);
     const retry = buildCompanionL2Prompt({
       text: mindAway,
@@ -98,6 +100,16 @@ describe('L3 observe scheme B shuffle gate', () => {
       observeRetryHint: 'This retry: do not use stock cub-body filler'
     });
     assert.match(retry, /stock cub-body filler/i);
+  });
+
+  it('asks observe wing to separate mind-away from going-through-motions', () => {
+    const motions = "I feel like I'm just going through the motions today.";
+    assert.equal(isCompanionChatGenerateLine(motions), false);
+    const prompt = buildCompanionL2Prompt({ text: motions, locale: 'en' });
+    assert.match(prompt, /attention elsewhere/i);
+    assert.match(prompt, /autopilot/i);
+    assert.match(prompt, /one-line label/i);
+    assert.doesNotMatch(prompt, /conversation, not a mood to observe/i);
   });
 
   it('rejects interchangeable cub-theater lines from field QA', () => {

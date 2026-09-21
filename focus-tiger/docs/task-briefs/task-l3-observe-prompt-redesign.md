@@ -1,6 +1,6 @@
 # Task Brief · L3 情绪/反思 Prompt 重写
 
-> **状态（2026-09-21）**：**Prompt 14 口径已锁** — 层 B 拆观察翼 8 句 effective 与 chat 翼 4 句 gray 表；两把尺子并存（§12 ≥8/12 **不替代** 观察翼 ≥6/8）。独白仍观察翼。**禁止**把 §4.2 独白改去问答翼。观察翼 prompt 质量另批；本刀不关 #823。  
+> **状态（2026-09-21）**：**Prompt 15 观察翼质量刀已开工** — 拆 `e-motions` ↔ `e-mind-away` 同句撞车（§十三质量清单）；**Prompt 14 口径已锁** — 层 B 拆观察翼 8 句 effective 与 chat 翼 4 句 gray 表。本刀不关 #823。  
 > **任务线**：Epic [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) Confide · 切片 [#823](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/823)  
 > **前置**：Read Hybrid `memory_list` 误判已由 [#822](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/822) 处理；档 3/4 分流已进 develop（#834/#835）。本 Brief **禁止**再改 gloss / `confideEmotionKeywords.js`。  
 > **生产锚点**：`focus-tiger/desktop/companion/l2Persona.js` · `buildCompanionL2Prompt`（方案 B：只贴本句 + generic cub gesture + 禁第一人称耳/尾/爪空转；sanitize 拒收田野套势含 My ears/tail/paws）。  
@@ -618,3 +618,32 @@ PO 口述选项 2 记「4 shuffle_hit」；以 JSON + `scoreObserveWingEffective
 | `q-pangfen` | 谁喜欢吃胖粉？ | 我不知道那是什么。 | `q-what-eat` |
 
 所属线: Epic #639 · 切片 #823 · 问句翼对照 #874
+
+---
+
+## 十四、观察翼 prompt 质量 · `e-motions` ↔ `e-mind-away` 撞车（Prompt 15 · 2026-09-21）
+
+**PO 拍板（2026-09-21）**：与 Prompt 14（口径/scoring）**另批**。本刀只修观察翼 prompt 语义区分，**不改** scoring 函数、**不改** chat 翼、**不改** sanitize 词表。
+
+**病灶（§十三 质量清单）**：
+
+| 夹具 | 用户句 | 坏答句 | 根因 |
+|---|---|---|---|
+| `e-mind-away` | `I'm here, but my mind really isn't.` | `Drifting attention.` | 短标签可贴多句 |
+| `e-motions` | `I feel like I'm just going through the motions today.` | `Drifting attention.`（同句） | embedding 配到 `e-mind-away` → `shuffle_miss` |
+
+**设计（方案 B 延续 · 不加词表）**：
+
+1. 扩 `L3_OBSERVE_STAY_SPECIFIC` 示例槽：显式列出 **attention elsewhere** vs **going through the day on autopilot** 为不同主题。
+2. 扩 `L3_OBSERVE_NO_FIRST_PERSON_CUB_BODY`：要求点出 autopilot routine，禁止用可互换的 drifting-attention 标签糊弄两句。
+3. **禁止**：为这两句加 few-shot、禁词表、或把 `e-motions` 改走 chat 翼。
+
+**通过标准（本刀）**：
+
+- 单测：`l3ObserveShuffleGate.test.js` 锁 prompt 含上述区分。
+- 实验室：`npm run test:observe-shuffle-screen`（系统终端 · 真 GGUF）→ `e-motions` 须 `shuffle_hit` 且答句 ≠ `e-mind-away` 答句；观察翼 effective 仍 ≥6/8。
+- Electron 宽屏 Confide：§十三 §4.2 两句各发一次，肉眼确认不是同一句标签。
+
+**不测 / 不在本刀**：chat 翼 gray 表（#874）、§12 全量 8/12 关单、#823 关单。
+
+所属线: Epic #639 · 切片 #823

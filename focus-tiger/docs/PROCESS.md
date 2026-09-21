@@ -70,7 +70,7 @@
 
 - **Collections 行为稀缺度 V1 已拍板（2026-09-20 · 纯文档）**：`task-collections-behavioral-scarcity.md`。本机说明 + 勋章分区；不进「案上陪伴」；全球名次不做；只读 unify aggregate。原则 #886 先于方案 #887 合入。实现另口令。
 
-- **L3 层 B 口径拆分（2026-09-21 · Prompt 14）**：观察翼 8 句 `scoreObserveWingEffective`（≥6/8）与 §12 全量 ≥8/12 两把尺子并存；chat 翼 4 句进 #874 gray 表，不进 8 句分母。`guard_reject_rate` 与有效分拆开报。流程见 `LAB_SCRIPT_CONVENTIONS.md`「先分类再动刀」。观察翼 prompt 质量另批；**不**据此关 #823。
+- **L3 层 B 口径拆分（2026-09-21 · Prompt 14）**：观察翼 8 句 `scoreObserveWingEffective`（≥6/8）与 §12 全量 ≥8/12 两把尺子并存；chat 翼 4 句进 #874 gray 表，不进 8 句分母。`guard_reject_rate` 与有效分拆开报。流程见 `LAB_SCRIPT_CONVENTIONS.md`「先分类再动刀」。**Prompt 15** 观察翼 prompt 质量（`e-motions` ↔ `e-mind-away` 撞车）已开工；**不**据此关 #823。
 
 - **L3 观察翼陈词滥调语义护栏 Brief（2026-09-20 · #877）**：分析师确认 #874 后耳/尾/爪套势不是回归。#876 已收英文第一人称；#877 补中文「耳朵一抖 / 尾巴一甩 / 爪子搁地」并锁正式规格 `task-l3-observe-cliche-semantic-guard.md`（语义相似度 · 复用 Qwen3-Embedding · 禁止再无限扩字面清单）。Prompt 13 已按此规格开工。
 
