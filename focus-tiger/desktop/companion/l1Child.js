@@ -16,10 +16,11 @@ import {
   L0_EMBEDDING_MODEL_MIN_BYTES,
   L0_EMBEDDING_MODEL_URLS
 } from './l0EmbeddingConfig.js';
-import { L0_MODEL_FILENAME, L0_MODEL_URLS } from './l0Config.js';
+import { L0_MODEL_FILENAME, L0_MODEL_URLS, L1_ENSURE_READY_TIMEOUT_MS } from './l0Config.js';
 import { ensureGgufDownloaded, isGgufCachedAt } from './l0Download.js';
 import { errorMessage as embeddingErrorMessage, loadEmbeddingHold } from './l1EmbeddingHold.js';
 import { errorMessage, loadModelHold } from './l1Hold.js';
+import { createLlamaWorkGate } from './l1LlamaWorkGate.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -76,6 +77,9 @@ async function main() {
   let embeddingSession = null;
   let chain = Promise.resolve();
   let shadowChain = Promise.resolve();
+  const llamaWorkGate = createLlamaWorkGate({
+    chatWaitTimeoutMs: L1_ENSURE_READY_TIMEOUT_MS
+  });
 
   async function ensure() {
     if (session) {
@@ -89,12 +93,14 @@ async function main() {
       phase: 'loading',
       message: dl.path
     });
-    session = await loadModelHold({
-      modelPath: dl.path,
-      onProgress: (msg) => {
-        void emit({ event: 'status', phase: 'loading', message: msg });
-      }
-    });
+    session = await llamaWorkGate.run('chat', () =>
+      loadModelHold({
+        modelPath: dl.path,
+        onProgress: (msg) => {
+          void emit({ event: 'status', phase: 'loading', message: msg });
+        }
+      })
+    );
     await emit({ event: 'status', phase: 'ready' });
     await emit({ event: 'ready' });
   }
@@ -140,13 +146,15 @@ async function main() {
         void emit({ event: 'status', phase: 'embedding_downloading' });
       }
     });
-    embeddingSession = await loadEmbeddingHold({
-      modelPath: dl.path,
-      env: process.env,
-      onProgress: (msg) => {
-        void emit({ event: 'status', phase: 'embedding_loading', message: msg });
-      }
-    });
+    embeddingSession = await llamaWorkGate.run('embedding', () =>
+      loadEmbeddingHold({
+        modelPath: dl.path,
+        env: process.env,
+        onProgress: (msg) => {
+          void emit({ event: 'status', phase: 'embedding_loading', message: msg });
+        }
+      })
+    );
   }
 
   async function ensureEmbeddingReady() {
