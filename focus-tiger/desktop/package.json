@@ -19,7 +19,9 @@
     "companion:confide-latency": "node scripts/l0-confide-latency-probe.js",
     "companion:semantic-acceptance": "node scripts/l0-confide-semantic-acceptance.js",
     "companion:stage2-synonym-screen": "node scripts/l0-screen-stage2-synonyms.js",
-    "companion:favorable-disagreement-mill": "node scripts/l0-run-favorable-disagreement-mill.js"
+    "companion:favorable-disagreement-mill": "node scripts/l0-run-favorable-disagreement-mill.js",
+    "companion:observe-shuffle-screen": "node scripts/l0-observe-shuffle-screen.js",
+    "companion:semantic-live-coldstart-probe": "node scripts/l0-semantic-live-coldstart-probe.js"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",

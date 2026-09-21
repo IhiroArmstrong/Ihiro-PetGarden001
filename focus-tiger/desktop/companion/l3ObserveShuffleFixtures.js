@@ -9,9 +9,14 @@
  * This module is fixtures + scoring only — it does not call the model.
  */
 
-export const L3_OBSERVE_SHUFFLE_MIN_N = 12;
-
-export const L3_OBSERVE_SHUFFLE_PASS_HITS = 8;
+export {
+  L3_OBSERVE_SHUFFLE_MIN_N,
+  L3_OBSERVE_SHUFFLE_PASS_HITS,
+  L3_OBSERVE_WING_DENOMINATOR,
+  L3_OBSERVE_WING_PASS_COUNT,
+  scoreL3ObserveShuffleMatches,
+  scoreObserveWingEffective
+} from '../../src/core/l3ObserveShuffleScreen.js';
 
 /** Replies from 2026-09-19 / 2026-09-20 field QA — interchangeable cub theater. */
 export const L3_GENERIC_CUB_THEATER_FAILS = [
@@ -42,17 +47,3 @@ export const L3_OBSERVE_SHUFFLE_FIXTURES = [
   { id: 'q-pangfen', bucket: 'ask-yin', text: '谁喜欢吃胖粉？' }
 ];
 
-/**
- * @param {Array<{ expectedId?: string, guessedId?: string }>} pairs
- * @returns {{ n: number, hits: number, pass: boolean }}
- */
-export function scoreL3ObserveShuffleMatches(pairs = []) {
-  const rows = Array.isArray(pairs) ? pairs : [];
-  const n = rows.length;
-  const hits = rows.filter((row) => row && row.expectedId === row.guessedId).length;
-  return {
-    n,
-    hits,
-    pass: n >= L3_OBSERVE_SHUFFLE_MIN_N && hits >= L3_OBSERVE_SHUFFLE_PASS_HITS
-  };
-}
