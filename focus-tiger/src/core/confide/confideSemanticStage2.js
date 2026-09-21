@@ -18,6 +18,7 @@ import {
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
 import {
   CONFIDE_SEMANTIC_ROUTING_MODE,
+  confideBrowserSafeEnv,
   resolveConfideSemanticRoutingMode
 } from './confideSemanticRoutingConfig.js';
 
@@ -48,14 +49,14 @@ export function applyConfideStage2Route({
   literalRoute = null,
   semanticCoarse = null,
   mode = null,
-  env = process.env
+  env
 } = {}) {
   const route = typeof literalRoute === 'string' ? literalRoute : null;
   const resolvedMode =
     mode === CONFIDE_SEMANTIC_ROUTING_MODE.SHADOW ||
     mode === CONFIDE_SEMANTIC_ROUTING_MODE.LIVE
       ? mode
-      : resolveConfideSemanticRoutingMode(env);
+      : resolveConfideSemanticRoutingMode(confideBrowserSafeEnv(env));
 
   if (!route) return { route: null, override: null };
   if (resolvedMode !== CONFIDE_SEMANTIC_ROUTING_MODE.LIVE) {

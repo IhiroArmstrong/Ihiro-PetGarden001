@@ -17,11 +17,29 @@ export const CONFIDE_SEMANTIC_ROUTING_MODE = Object.freeze({
 });
 
 /**
+ * Renderer-safe env. Electron Confide UI has no Node `process`; a default
+ * parameter `env = process.env` throws ReferenceError before the body runs.
+ * @param {NodeJS.ProcessEnv | null | undefined} [env]
+ * @param {object} [globals]
+ * @returns {NodeJS.ProcessEnv | Record<string, never>}
+ */
+export function confideBrowserSafeEnv(env, globals = globalThis) {
+  if (env && typeof env === 'object') return env;
+  try {
+    const proc = globals.process;
+    if (proc && proc.env) return proc.env;
+  } catch {
+    /* process is not defined (Chromium renderer) */
+  }
+  return {};
+}
+
+/**
  * @param {NodeJS.ProcessEnv} [env]
  * @returns {'shadow' | 'live'}
  */
-export function resolveConfideSemanticRoutingMode(env = process.env) {
-  const raw = String(env.FT_CONFIDE_SEMANTIC_ROUTING || 'live')
+export function resolveConfideSemanticRoutingMode(env) {
+  const raw = String(confideBrowserSafeEnv(env).FT_CONFIDE_SEMANTIC_ROUTING || 'live')
     .trim()
     .toLowerCase();
   if (raw === 'shadow' || raw === 'off' || raw === 'stage1') {
@@ -34,9 +52,10 @@ export function resolveConfideSemanticRoutingMode(env = process.env) {
  * @param {NodeJS.ProcessEnv} [env]
  * @returns {{ grayMargin: number, topK: number }}
  */
-export function resolveConfideSemanticRoutingConfig(env = process.env) {
-  const grayRaw = Number(env.FT_CONFIDE_SEMANTIC_GRAY_MARGIN);
-  const topKRaw = Number(env.FT_CONFIDE_SEMANTIC_TOP_K);
+export function resolveConfideSemanticRoutingConfig(env) {
+  const resolved = confideBrowserSafeEnv(env);
+  const grayRaw = Number(resolved.FT_CONFIDE_SEMANTIC_GRAY_MARGIN);
+  const topKRaw = Number(resolved.FT_CONFIDE_SEMANTIC_TOP_K);
   return {
     grayMargin:
       Number.isFinite(grayRaw) && grayRaw > 0 && grayRaw < 1
