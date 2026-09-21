@@ -47,6 +47,7 @@ import {
 } from './l1SemanticShadowLog.js';
 import { createSemanticShadowEmbeddingGate } from './l1SemanticShadowEmbeddingGate.js';
 import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
+import { canReuseConfideSemanticLiveCache } from './l1SemanticLiveCache.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -618,7 +619,7 @@ export class CompanionL1Runtime {
 
   /**
    * Shadow-only semantic coarse classify. Never blocks production routing.
-   * Reuses a Stage 2 live cache when the same text was just classified.
+   * Reuses a Stage 2 live cache only when with-prior scores would not be dropped.
    * @param {{
    *   text?: string,
    *   contextualText?: string,
@@ -644,7 +645,13 @@ export class CompanionL1Runtime {
     if (!text) return { ok: false, reason: 'empty_text' };
 
     const cached = this._liveSemanticCache;
-    if (cached && cached.text === text && cached.ok) {
+    if (
+      canReuseConfideSemanticLiveCache(cached, {
+        text,
+        contextualText,
+        hadPriorTurn
+      })
+    ) {
       this._liveSemanticCache = null;
       await this._appendTurnLog(
         buildSemanticShadowTurnLogRecord({
@@ -783,8 +790,10 @@ export class CompanionL1Runtime {
     const pending = this._shadowQueue.then(() =>
       this._runSemanticShadowClassify({
         text,
-        contextualText,
-        hadPriorTurn,
+        // Live routing waits only on the current sentence. With-prior embed
+        // stays on the post-reply shadow path so Thinking time does not grow.
+        contextualText: '',
+        hadPriorTurn: false,
         route,
         source,
         literalCoarse,
@@ -796,7 +805,17 @@ export class CompanionL1Runtime {
       () => undefined
     );
     const result = await pending;
-    this._liveSemanticCache = { text, ...result };
+    this._liveSemanticCache = {
+      text,
+      contextualText,
+      ok: result.ok,
+      bucket: result.bucket,
+      scoreA: result.scoreA,
+      scoreB: result.scoreB,
+      grayMargin: result.grayMargin,
+      timing: result.timing,
+      semanticResultWithPrior: null
+    };
     await appendLiveLog(result);
     return result;
   }

@@ -10,6 +10,8 @@ import { classifyConfideSemanticCoarse } from './confideSemanticRouting.js';
 import { buildConfideSemanticShadowLogRecord } from './confideSemanticCoarseMap.js';
 import {
   buildConfideShadowContextualText,
+  canReuseConfideSemanticLiveCache,
+  priorConfideTurnForLiveClassify,
   priorConfideTurnForShadow
 } from './confideSemanticShadowPriorTurn.js';
 
@@ -31,6 +33,95 @@ describe('confideSemanticShadowPriorTurn', () => {
         { role: 'yin', text: 'Heard.', source: 'generate' }
       ]),
       null
+    );
+  });
+
+  it('live classify reads the last complete pair before the current turn is pushed', () => {
+    const shown = [
+      { role: 'user', text: EMOTIONAL_PRIOR },
+      { role: 'yin', text: 'Sitting with that.', source: 'generate' }
+    ];
+    assert.equal(priorConfideTurnForShadow(shown), null);
+    assert.deepEqual(priorConfideTurnForLiveClassify(shown), {
+      userText: EMOTIONAL_PRIOR,
+      yinText: 'Sitting with that.'
+    });
+    assert.equal(
+      buildConfideShadowContextualText(SHORT_TIRED, priorConfideTurnForLiveClassify(shown)),
+      buildConfideShadowContextualText(
+        SHORT_TIRED,
+        priorConfideTurnForShadow([
+          ...shown,
+          { role: 'user', text: SHORT_TIRED },
+          { role: 'yin', text: 'Mm.', source: 'generate' }
+        ])
+      )
+    );
+  });
+
+  it('does not reuse live cache when shadow has prior context the live embed skipped', () => {
+    const contextualText = buildConfideShadowContextualText(SHORT_TIRED, {
+      userText: EMOTIONAL_PRIOR,
+      yinText: 'Sitting with that.'
+    });
+    const liveOnlyCurrent = {
+      ok: true,
+      text: SHORT_TIRED,
+      contextualText,
+      bucket: CONFIDE_SEMANTIC_BUCKET.EMOTIONAL,
+      scoreA: 0.64,
+      scoreB: 0.82,
+      grayMargin: 0.08,
+      semanticResultWithPrior: null
+    };
+    assert.equal(
+      canReuseConfideSemanticLiveCache(liveOnlyCurrent, {
+        text: SHORT_TIRED,
+        contextualText,
+        hadPriorTurn: true
+      }),
+      false
+    );
+    assert.equal(
+      canReuseConfideSemanticLiveCache(
+        { ...liveOnlyCurrent, contextualText: '' },
+        { text: SHORT_TIRED, contextualText, hadPriorTurn: true }
+      ),
+      false
+    );
+    assert.equal(
+      canReuseConfideSemanticLiveCache(liveOnlyCurrent, {
+        text: SHORT_TIRED,
+        contextualText: '',
+        hadPriorTurn: false
+      }),
+      false
+    );
+    assert.equal(
+      canReuseConfideSemanticLiveCache(
+        {
+          ...liveOnlyCurrent,
+          contextualText: '',
+          semanticResultWithPrior: null
+        },
+        { text: SHORT_TIRED, contextualText: '', hadPriorTurn: false }
+      ),
+      true
+    );
+    assert.equal(
+      canReuseConfideSemanticLiveCache(
+        {
+          ...liveOnlyCurrent,
+          semanticResultWithPrior: {
+            bucket: CONFIDE_SEMANTIC_BUCKET.EMOTIONAL,
+            scoreA: 0.4,
+            scoreB: 0.7,
+            grayMargin: 0.08
+          }
+        },
+        { text: SHORT_TIRED, contextualText, hadPriorTurn: true }
+      ),
+      true
     );
   });
 

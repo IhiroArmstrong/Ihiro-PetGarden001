@@ -524,6 +524,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /_maybeRememberFromL3/);
     assert.match(ui, /onMemoryRemembered/);
     assert.match(ui, /priorConfideTurnForShadow/);
+    assert.match(ui, /priorConfideTurnForLiveClassify/);
     assert.match(ui, /buildConfideShadowContextualText/);
     assert.match(ui, /contextualText/);
     assert.match(preload, /desktop:companion-semantic-shadow-classify/);
@@ -544,6 +545,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(runtime, /priorRepeatableYinRepliesFromHistory/);
     assert.match(runtime, /classifyReadTool/);
     assert.match(runtime, /contextualText/);
+    assert.match(runtime, /canReuseConfideSemanticLiveCache/);
+    assert.match(runtime, /l1SemanticLiveCache/);
     assert.match(child, /classifyUserText\(contextualText\)/);
     assert.match(runtime, /kind: 'read_hybrid_classify'[\s\S]*?text: userText\.slice\(0, 400\)/);
     assert.match(ui, /classifyReadTool\(\{[\s\S]*?userText: text/);

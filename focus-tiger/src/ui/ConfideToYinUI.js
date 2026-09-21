@@ -18,6 +18,7 @@ import { applyConfideStage2Route } from '../core/confide/confideSemanticStage2.j
 import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
   buildConfideShadowContextualText,
+  priorConfideTurnForLiveClassify,
   priorConfideTurnForShadow
 } from '../core/confide/confideSemanticShadowPriorTurn.js';
 import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
@@ -1112,7 +1113,7 @@ export class ConfideToYinUI {
       route: hit.route,
       source: 'corpus'
     });
-    const prior = priorConfideTurnForShadow(this._l2Turns);
+    const prior = priorConfideTurnForLiveClassify(this._l2Turns);
     const contextualText = buildConfideShadowContextualText(asked, prior);
     let semanticCoarse = null;
     try {
