@@ -21,14 +21,14 @@ export const L2_PROMPT_HISTORY_MAX_ROWS = 8;
 
 /** Scheme B: reply must be unique to this user line (shuffle-match). */
 export const L3_OBSERVE_STAY_SPECIFIC =
-  'Stay with THIS latest User line. The reply must fit only that line so a reader who sees the reply without the user text can still guess the topic (irritation vs sleeplessness vs asking what you want vs asking what you eat). A cub gesture that could swap onto any other line fails.';
+  'Stay with THIS latest User line. The reply must fit only that line so a reader who sees the reply without the user text can still guess the topic (irritation vs sleeplessness vs attention elsewhere vs going through the day on autopilot vs asking what you want vs asking what you eat). A one-line label or cub gesture that could swap onto any other line fails.';
 
 export const L3_OBSERVE_NO_SUBSTITUTE =
   'If they did not name scenery, do not answer with river, mountain, or ground as a substitute for hearing them. Stay with their words; do not replace them with scenery, weather, season, light, or a generic cub gesture.';
 
 /** First-person ear/tail/paw fill can swap onto any mood line (2026-09-20 field). */
 export const L3_OBSERVE_NO_FIRST_PERSON_CUB_BODY =
-  'Do not answer with first-person cub body that could sit on any other line (my ears twitch, my tail flicks, my paws shift). Name what THIS line is about — drifting attention, a phone habit, a morning that broke the streak — not a limb.';
+  'Do not answer with first-person cub body that could sit on any other line (my ears twitch, my tail flicks, my paws shift). Name what THIS line is about — attention elsewhere, going through motions on autopilot, a phone habit, a morning that broke the streak — not a limb.';
 
 export const L3_OBSERVE_HEAR_QUESTION =
   'If the latest line is a question to you, notice the question; do not treat it as a mood or fill the page with presence.';
