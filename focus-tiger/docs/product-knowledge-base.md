@@ -2,7 +2,7 @@
 
 **状态（2026-09-22）**：仓内权威模板 + 第一周 5 条产品功能短答（对照现网 locale / 菜单普查；**PO 人审已通过**）。**无运行时**；不接线 Local AI 检索，不改倾诉生成。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线方向锁 · Q1–Q5 已拍板 · 无运行时）· `LOCAL_AI_SCENARIOS_V1.md`（阿寅不是开放问答）· `LOCAL_AI_OPERATING_LAYER.md`（备份/更新不进 Confide）· `CONFIDE_EXECUTABLE_INTENTS.md`（口头白名单）· `MENU_CHROME_CENSUS.md`（⋯ / 抽屉路径）· `ONBOARDING_HINTS.md`（不做目录式 FAQ）· `CALM_ACTION_WISDOM.md`（禁临床标签）· `PRODUCT_POSITIONING.md`（不承诺心理咨询）
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 
@@ -199,5 +199,6 @@
 
 ## 六、流水线（仍建议，尚未建工具）
 
-存量权威文案（locale / 菜单普查 / 产品文档）→ 草稿池 → 人审打标 → 入库 →（以后）Local AI 只索引 `yin_may_retrieve: 是` 的短答 → 未命中回流。  
+存量权威文案（locale / 菜单普查 / 产品文档）→ 草稿池 → 人审打标 → 入库 → Local AI 只索引 `yin_may_retrieve: 是` ∧ `审核状态: 已通过` 的短答 → 未命中回流。  
+接线行为 SSOT：`task-briefs/task-confide-kb-retrieval-wiring.md`（原样/模板输出 · 不 L3 转述 · 实现 Issue 待盘点清单稳定后拆）。  
 内部排障永不进入倾诉索引。
