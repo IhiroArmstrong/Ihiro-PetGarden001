@@ -1,13 +1,13 @@
 # Confide 语义影子 · 上一轮上下文实验（Prompt 6）
 
-> **状态（2026-09-20）**：影子模式接线已落地；**不改**用户看到的回复。  
+> **状态（2026-09-21）**：影子对照日志接线已落地；**不改**用户看到的回复与 Stage 2 路由。live 分类在发送前用 `priorConfideTurnForLiveClassify` 取上一轮；**不**在 Thinking 等待里做第二路 embedding。影子若需要 with-prior 而 live 缓存没有，则禁止复用缓存、回复后补跑。  
 > **不是**持久化会话摘要模块。Web / 窄屏 **无** 内存历史，本轮不覆盖。
 
 ## 覆盖缺口
 
 | 路径 | `_l2Turns` | 本轮行为 |
 |---|---|---|
-| Electron 宽屏 Confide | 有（面板开着；关面板清空） | 有上一轮时，影子分类 **再 embed 一次**「上一轮 user+yin + 当前句」 |
+| Electron 宽屏 Confide | 有（面板开着；关面板清空） | live：发送前看见上一完整轮，但仍只 embed 当前句做路由。影子：有上一轮时 **再 embed 一次**「上一轮 user+yin + 当前句」 |
 | Web / 窄屏 | 无可用历史给影子 | 不跑桌面影子 IPC（与 Stage 1 相同） |
 
 ## 日志怎么读
@@ -18,6 +18,8 @@
 - `hadPriorTurn` / `contextualText` / `semanticCoarseWithPrior` / `scoreAWithPrior` / `scoreBWithPrior` = **看了上一轮**
 
 第一轮或没有完整上一对 user+yin 时：`hadPriorTurn: false`，with-prior 字段为 `null`。
+
+Stage 2 live 若只按「回复已写入后」的影子助手去取上一轮，发送当下历史只有两行，会被当成没有上文；若再按当前句复用 live 缓存，影子行会出现 `hadPriorTurn: true` 但 with-prior 分数全空。修复：live 用发送前助手；缓存复用须上下文一致且（需要时）已有 with-prior。
 
 ## 对照样本（机制，不是 Qwen 实测）
 
