@@ -1,6 +1,6 @@
 # Task Brief · 产品知识库规模化生产（自动圈定 + 权威源起草 + 分级核验）
 
-> **状态（2026-09-22）**：**PO 已拍板**（第九节三默认）· **第 1 步静态圈定已开工**（`kbLiveEntryRegistry.js` · `audit:kb-live-entries` · `kb-live-entry-registry.md`）。本文件是 **A 类**生产算法 Brief（脚本与清单不改用户眼前回复）。把草稿标「已通过」并写入 `productKnowledgeCatalog.json` 才升为 **B 类**，须再发口令。  
+> **状态（2026-09-22）**：**PO 已拍板**（第九节三默认）· **第 1 步静态圈定已合 develop**（#929）· **第 2 步缺口审计已开工**（`audit:kb-live-gap` · `kb-live-gap-audit.md`）。本文件是 **A 类**生产算法 Brief（脚本与清单不改用户眼前回复）。把草稿标「已通过」并写入 `productKnowledgeCatalog.json` 才升为 **B 类**，须再发口令。  
 > **本轮禁止**：改 Confide 运行时、改检索接线、用 Epic / Test Tracker / PR 正文直接生成可念短答、自动把内部手册搬进 `product-knowledge-base.md`、把会随运营改的数字写进可念短答。  
 > **交叉引用**：`product-knowledge-base.md` · `task-confide-kb-retrieval-wiring.md` · `task-confide-kb-routing-gate.md` · `FOCUS_COINS.md` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AE
 
@@ -145,8 +145,8 @@ Sibling 旁支已做一部分：产品问门闩纳入「哪些/包不包含/装�
 
 ## 七、落地顺序（点头后分 PR，一次一刀）
 
-1. **静态圈定脚本** → 存活入口清单（地基）。  
-2. 清单对照现有已通过条目 → 「已上线未覆盖」第二批候选。  
+1. **静态圈定脚本** → 存活入口清单（地基）。**已合 develop** (#929)  
+2. 清单对照现有已通过条目 → 「已上线未覆盖」第二批候选。**已开工**（`kb-live-gap-audit.md` · 12 batch-2 · 6 registry 漂移）  
 3. **已审条目扩问法**（独立小 PR；验证「事实不变只扩门闩」）。  
 4. 缺口条目：权威源起草 → 机器核验 → PO 抽查语气 → 才标已通过并进 catalog（B 类）。  
 5. **内部手册**：等第 1 步清单出来再开（静态扫描产出即手册雏形，不提前用 Epic 另灌一版）。

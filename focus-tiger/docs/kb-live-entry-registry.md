@@ -72,7 +72,7 @@ CI / smoke: `npm run audit:kb-live-entries` (no write) is part of `npm run docs:
 
 | Step | Content | Status |
 |---|---|---|
-| 2 | Compare list vs existing `KB-FUNC-*` passed rows → gap candidates | 待口令 |
+| 2 | Compare list vs existing `KB-FUNC-*` passed rows → gap candidates | **本旁支** · `audit:kb-live-gap` · `kb-live-gap-audit.md` |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | 待口令 |
 | 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | B 类 · 待口令 |
 | 手册 | `docs/internal-handbook/` | 等本清单稳定后再开 |

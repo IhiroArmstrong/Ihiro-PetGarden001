@@ -415,11 +415,12 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 步 | 内容 | 状态 |
 |---|---|---|
 | **0** | 算法 Brief + 三默认 | **PO 已拍板**（2026-09-22） |
-| **1** | 静态圈定存活入口 | **本旁支** `docs/kb-scaled-production` · `kbLiveEntryRegistry.js` + `audit:kb-live-entries` · 25 行存活清单 · 无运行时 |
-| **2–4** | 权威源起草 + 机器核验 + 抽查语气 | 待口令（第 1 步之后） |
+| **1** | 静态圈定存活入口 | **已合 develop** (#929) · `kbLiveEntryRegistry.js` + `audit:kb-live-entries` · 25 行存活清单 · 无运行时 |
+| **2** | 存活清单 vs 已通过 KB 缺口 | **本旁支** `docs/kb-scaled-production-step2` · `audit:kb-live-gap` · 12 batch-2 候选 · 无运行时 |
+| **3–4** | 扩问法 + 权威源起草 + 机器核验 + 抽查语气 | 待口令（第 2 步之后） |
 | **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
 
-**我认为最合理的下一刀**：对照存活清单 vs 已通过 `KB-FUNC-*` 找缺口（第 2 步）；不要同刀灌手册或改 catalog。
+**我认为最合理的下一刀**：先修 registry 六处 `catalogKbIds` 漂移（纯 docs）；再对 batch-2 十二菜单按优先级开 Step 4 起草（Five Moments / Honesty 优先）；Step 3 扩问法可与 registry 修漂移同 PR 小刀。
 
 ---
 

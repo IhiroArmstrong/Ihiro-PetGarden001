@@ -62,6 +62,8 @@
     "audit:confide-prior-asymmetric": "node scripts/audit-confide-prior-asymmetric.js",
     "audit:kb-live-entries": "node scripts/audit-kb-live-entries.js",
     "audit:kb-live-entries:sync": "node scripts/audit-kb-live-entries.js --write",
+    "audit:kb-live-gap": "node scripts/audit-kb-live-gap.js",
+    "audit:kb-live-gap:sync": "node scripts/audit-kb-live-gap.js --write",
     "test:observe-shuffle-screen": "npm --prefix desktop run companion:observe-shuffle-screen",
     "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe"
   },
