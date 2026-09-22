@@ -1,6 +1,6 @@
 # Task Brief · 产品知识库规模化生产（自动圈定 + 权威源起草 + 分级核验）
 
-> **状态（2026-09-22）**：**PO 已拍板**（第九节三默认）。本文件是 **A 类**生产算法 Brief（脚本与清单不改用户眼前回复）。静态圈定脚本须另发「开工」口令。把草稿标「已通过」并写入 `productKnowledgeCatalog.json` 才升为 **B 类**，须再发口令。  
+> **状态（2026-09-22）**：**PO 已拍板**（第九节三默认）· **第 1 步静态圈定已开工**（`kbLiveEntryRegistry.js` · `audit:kb-live-entries` · `kb-live-entry-registry.md`）。本文件是 **A 类**生产算法 Brief（脚本与清单不改用户眼前回复）。把草稿标「已通过」并写入 `productKnowledgeCatalog.json` 才升为 **B 类**，须再发口令。  
 > **本轮禁止**：改 Confide 运行时、改检索接线、用 Epic / Test Tracker / PR 正文直接生成可念短答、自动把内部手册搬进 `product-knowledge-base.md`、把会随运营改的数字写进可念短答。  
 > **交叉引用**：`product-knowledge-base.md` · `task-confide-kb-retrieval-wiring.md` · `task-confide-kb-routing-gate.md` · `FOCUS_COINS.md` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AE
 
@@ -155,7 +155,7 @@ Sibling 旁支已做一部分：产品问门闩纳入「哪些/包不包含/装�
 
 ## 八、验收（实现 Issue 可直搬）
 
-- [ ] 脚本输出的「存活」项，抽查至少 3 条能在现网点到对应菜单/locale  
+- [x] 脚本输出的「存活」项，抽查至少 3 条能在现网点到对应菜单/locale（Ground exercise · Local backup · Yin Coin — 见 `kb-live-entry-registry.md`）  
 - [ ] 从 Tracker/Epic 抽出的候选，若无权威源 → 不进 catalog  
 - [ ] 机器核验失败的草稿不得标「已通过」  
 - [ ] 可检索短答不含 `RESET_GROUND_*` / `RESET_BREATH_*` 引导语正文  
