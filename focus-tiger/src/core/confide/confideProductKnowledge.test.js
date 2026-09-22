@@ -136,6 +136,9 @@ describe('confide product knowledge retrieval', () => {
     const contents = retrieveProductKnowledge('备份装了什么？');
     assert.equal(contents.hit, true);
     assert.equal(contents.id, 'KB-FUNC-0015');
+    const scope = retrieveProductKnowledge('备份能够备份哪些数据？');
+    assert.equal(scope.hit, true);
+    assert.equal(scope.id, 'KB-FUNC-0015');
     const where = retrieveProductKnowledge('备份从哪里进？');
     assert.equal(where.hit, true);
     assert.equal(where.id, 'KB-FUNC-0003');

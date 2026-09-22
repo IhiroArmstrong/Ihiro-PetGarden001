@@ -43,7 +43,7 @@ const PRODUCT_KNOWLEDGE_QUESTION_RES = Object.freeze([
 
 /** Content/scope of backup vs "where is Backup & restore". */
 const BACKUP_CONTENT_ASK_RE =
-  /装了什么|里面有什么|包不包含|包含哪些|明文|加密|json file|plain json|unencrypted|what(?:'s| is) (?:in|inside)|(?:does|will).{0,24}include/i;
+  /装了什么|里面有什么|包不包含|包含哪些|哪些数据|明文|加密|json file|plain json|unencrypted|what(?:'s| is) (?:in|inside)|(?:does|will).{0,24}include/i;
 
 /**
  * Step-detail asks still get pointer-only answers (semi-hit).
