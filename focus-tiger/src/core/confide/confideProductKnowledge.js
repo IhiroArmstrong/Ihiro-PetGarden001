@@ -5,7 +5,7 @@
 
 /**
  * Confide product knowledge retrieval — retrieve-not-generate short answers.
- * SSOT: docs/product-knowledge-base.md + task-confide-kb-retrieval-wiring.md
+ * SSOT: docs/product-knowledge-base.md + task-confide-kb-routing-gate.md
  * Only indexes catalog entries pre-filtered to yin_may_retrieve ∧ 审核已通过.
  */
 
@@ -16,30 +16,13 @@ import { confideBrowserSafeEnv } from './confideSemanticRoutingConfig.js';
 import { shouldAnswerWithPracticeFacts } from './confidePracticeFacts.js';
 import { shouldAnswerWithPresenceFacts } from './confidePresenceFacts.js';
 import { shouldAnswerWithMemoryList } from './confideMemoryList.js';
+import { isProductKnowledgeColdStartProbe } from './confideProductKnowledgeSemantic.js';
 
 /** Minimum keyword score to treat as a hit (high bar). */
 export const CONFIDE_KB_RETRIEVAL_MIN_SCORE = 2;
 
 /** Winner must beat runner-up by at least this margin when score < 3. */
 export const CONFIDE_KB_RETRIEVAL_MIN_MARGIN = 1;
-
-/**
- * @type {readonly RegExp[]}
- */
-const PRODUCT_KNOWLEDGE_QUESTION_RES = Object.freeze([
-  /\bhow\s+(?:do|can|to)\b/i,
-  /\bwhere\s+(?:is|are|do|can)\b/i,
-  /\bwhat\s+is\b/i,
-  /\bwhat\s+does\b/i,
-  /\bwhich\s+(?:button|menu|ones?|items?|fields?|data)\b/i,
-  /\bwhat(?:'s| is) (?:in|inside)\b/i,
-  /\b(?:does|will) (?:it|the (?:backup|export|file)) include\b/i,
-  /\bdifference\s+between\b/i,
-  /怎么|如何|在哪|从哪|哪里|是什么|什么意思|有什么区别|区别|从哪看|从哪里|能不能|可不可以/,
-  /哪些|包不包含|包含哪些|装了什么|里面有什么/,
-  /会不会(?:包含|备份|导出|加密|明文)/,
-  /どう|どこ|何|とは|違い/
-]);
 
 /** Content/scope of backup vs "where is Backup & restore". */
 const BACKUP_CONTENT_ASK_RE =
@@ -82,17 +65,12 @@ export function listRetrievableProductKnowledgeEntries() {
 }
 
 /**
+ * Lab fixture alias — cold-start probe only; not the live semantic gate.
  * @param {string} text
  * @returns {boolean}
  */
 export function isProductKnowledgeQuestion(text) {
-  const raw = normalizeConfideIntentText(text);
-  if (!raw) return false;
-  const spaced = raw.replace(/\s+/g, ' ').trim();
-  const compact = spaced.replace(/\s+/g, '');
-  return PRODUCT_KNOWLEDGE_QUESTION_RES.some(
-    (re) => re.test(spaced) || (compact !== spaced && re.test(compact))
-  );
+  return isProductKnowledgeColdStartProbe(text);
 }
 
 /**
@@ -107,20 +85,31 @@ export function isBackupContentQuestion(text) {
 }
 
 /**
+ * Structural eligibility for the KB path (excludes personal-fact tools).
  * @param {string | null | undefined} route
  * @param {string} text
  * @param {{ hasMemoryBridge?: boolean }} [opts]
  * @returns {boolean}
  */
-export function isConfideKbRetrievalCandidate(route, text, opts = {}) {
+export function isConfideKbPathEligible(route, text, opts = {}) {
   if (route !== CONFIDE_ROUTE.FALLBACK) return false;
-  if (!isProductKnowledgeQuestion(text)) return false;
   if (shouldAnswerWithPracticeFacts(route, text)) return false;
   if (shouldAnswerWithPresenceFacts(route, text)) return false;
   if (shouldAnswerWithMemoryList(route, text, Boolean(opts.hasMemoryBridge))) {
     return false;
   }
   return true;
+}
+
+/**
+ * @deprecated Use isConfideKbPathEligible + semantic gate.
+ * @param {string | null | undefined} route
+ * @param {string} text
+ * @param {{ hasMemoryBridge?: boolean }} [opts]
+ * @returns {boolean}
+ */
+export function isConfideKbRetrievalCandidate(route, text, opts = {}) {
+  return isConfideKbPathEligible(route, text, opts);
 }
 
 /**
@@ -144,7 +133,7 @@ export function mayTryConfideProductKnowledge({
 } = {}) {
   if (!enabled) return false;
   if (!wideViewport || !hasBridge) return false;
-  return isConfideKbRetrievalCandidate(route, text, { hasMemoryBridge });
+  return isConfideKbPathEligible(route, text, { hasMemoryBridge });
 }
 
 /**
@@ -220,6 +209,7 @@ export function productKnowledgeReplyPassesGuard(shortAnswerEn) {
 }
 
 /**
+ * Catalog keyword retrieval without the semantic gate.
  * @param {string} text
  * @returns {{
  *   attempted: boolean,
@@ -230,10 +220,7 @@ export function productKnowledgeReplyPassesGuard(shortAnswerEn) {
  *   semiHit?: boolean
  * }}
  */
-export function retrieveProductKnowledge(text) {
-  if (!isProductKnowledgeQuestion(text)) {
-    return { attempted: false, hit: false, reason: 'not_product_question' };
-  }
+export function probeProductKnowledgeCatalog(text) {
   const ranked = scoreProductKnowledgeEntries(text);
   const picked = pickProductKnowledgeHit(text, ranked);
   if (!picked) {
@@ -254,6 +241,18 @@ export function retrieveProductKnowledge(text) {
     text: picked.shortAnswerEn,
     semiHit
   };
+}
+
+/**
+ * @param {string} text
+ * @param {{ requireSemanticProduct?: boolean }} [opts]
+ * @returns {ReturnType<typeof probeProductKnowledgeCatalog>}
+ */
+export function retrieveProductKnowledge(text, opts = {}) {
+  if (opts.requireSemanticProduct && !isProductKnowledgeColdStartProbe(text)) {
+    return { attempted: false, hit: false, reason: 'not_product_question' };
+  }
+  return probeProductKnowledgeCatalog(text);
 }
 
 /**

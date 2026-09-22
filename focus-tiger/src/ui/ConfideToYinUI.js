@@ -57,8 +57,10 @@ import {
 import {
   buildKbRetrievalMissTurnLog,
   mayTryConfideProductKnowledge,
-  retrieveProductKnowledge
+  probeProductKnowledgeCatalog
 } from '../core/confide/confideProductKnowledge.js';
+import { formatConfideProductKnowledgeHonestyReply } from '../core/confide/confideProductKnowledgeHonesty.js';
+import { resolveProductKnowledgeGateAction } from '../core/confide/confideProductKnowledgeSemantic.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -719,6 +721,8 @@ export class ConfideToYinUI {
                               ? 'companion_greeting'
                               : shown.source === 'product_knowledge'
                                 ? 'product_knowledge'
+                                : shown.source === 'product_knowledge_honesty'
+                                  ? 'product_knowledge_honesty'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -1284,7 +1288,8 @@ export class ConfideToYinUI {
       return;
     }
     const routePayload = { text, hit, locale, corpusText };
-    if (this._maybeAnswerProductKnowledge(text, hit)) {
+    if (this._shouldRunProductKnowledgeGate(text, hit)) {
+      void this._tryProductKnowledgeThenContinue(routePayload);
       return;
     }
     if (
@@ -1412,49 +1417,118 @@ export class ConfideToYinUI {
   }
 
   /**
-   * Product knowledge retrieval — retrieve-not-generate; miss falls through.
    * @param {string} text
    * @param {{ route: string }} hit
-   * @returns {boolean} true when a KB reply was shown
+   * @returns {boolean}
    */
-  _maybeAnswerProductKnowledge(text, hit) {
-    if (
-      !mayTryConfideProductKnowledge({
-        route: hit.route,
-        text,
-        wideViewport: this._viewportAllowsGenerateLayer(),
-        hasBridge: Boolean(this._companion) || hasDesktopCompanionBridge(),
-        hasMemoryBridge: hasYinPersonalMemoryBridge()
+  _shouldRunProductKnowledgeGate(text, hit) {
+    return mayTryConfideProductKnowledge({
+      route: hit.route,
+      text,
+      wideViewport: this._viewportAllowsGenerateLayer(),
+      hasBridge: Boolean(this._companion) || hasDesktopCompanionBridge(),
+      hasMemoryBridge: hasYinPersonalMemoryBridge()
+    });
+  }
+
+  /**
+   * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
+   */
+  _tryProductKnowledgeThenContinue(payload) {
+    const { text, hit, locale, corpusText } = payload;
+    this._sending = true;
+    const epoch = this._sendEpoch;
+    this.sendBtn.disabled = true;
+    this._showPendingReply(text);
+    this._armPendingReplyWatchdog({ hit, locale, text, corpusText });
+    this._renderDesktopStatus();
+    void this._resolveProductKnowledgeRoute(text, hit)
+      .then((outcome) => {
+        if (!this._open || epoch !== this._sendEpoch) return 'aborted';
+        if (outcome === 'shown') return 'sync';
+        return this._continueAfterToolRouting(payload);
       })
+      .then((outcome) => {
+        if (epoch !== this._sendEpoch) {
+          this._hideThinkingIndicator();
+          return;
+        }
+        if (outcome === 'l3') return;
+        if (outcome === 'consent') this._hideThinkingIndicator();
+        this._sending = false;
+        this._syncSendEnabled();
+        this._renderDesktopStatus();
+      });
+  }
+
+  /**
+   * Semantic gate + catalog retrieval. Miss / embed-not-ready → honesty empty state.
+   * @param {string} text
+   * @param {{ route: string }} hit
+   * @returns {Promise<'shown' | 'continue'>}
+   */
+  async _resolveProductKnowledgeRoute(text, hit) {
+    const catalogResult = probeProductKnowledgeCatalog(text);
+    let embeddingState = 'not_ready';
+    let semanticIsProduct = false;
+    if (
+      this._companion &&
+      typeof this._companion.semanticProductKnowledgeGate === 'function'
     ) {
-      return false;
+      try {
+        const gate = await this._companion.semanticProductKnowledgeGate({ text });
+        if (gate?.ok) {
+          embeddingState = 'ready';
+          semanticIsProduct = Boolean(gate.isProduct);
+        } else if (gate?.reason === 'embed_not_ready') {
+          embeddingState = 'not_ready';
+        } else {
+          embeddingState = 'error';
+        }
+      } catch {
+        embeddingState = 'error';
+      }
     }
-    const result = retrieveProductKnowledge(text);
-    if (result.hit && result.text) {
+    const action = resolveProductKnowledgeGateAction({
+      text,
+      embeddingState,
+      semanticIsProduct,
+      catalogHit: Boolean(catalogResult.hit)
+    });
+    if (action === 'hit' && catalogResult.text) {
       this._showReply(
         {
           route: hit.route,
-          text: result.text,
+          text: catalogResult.text,
           source: 'product_knowledge',
-          kbId: result.id
+          kbId: catalogResult.id
         },
         text
       );
-      return true;
+      return 'shown';
     }
-    if (result.attempted) {
-      trackKbRetrievalMiss({ reason: result.reason || 'miss' });
+    if (action === 'honesty') {
+      trackKbRetrievalMiss({ reason: catalogResult.reason || 'semantic_miss' });
       if (this._companion && typeof this._companion.appendTurnLog === 'function') {
         void this._companion.appendTurnLog(
           buildKbRetrievalMissTurnLog({
             text,
-            reason: result.reason || 'miss',
+            reason: catalogResult.reason || 'semantic_miss',
             locale: getLocale()
           })
         );
       }
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideProductKnowledgeHonestyReply(t),
+          source: 'product_knowledge_honesty'
+        },
+        text
+      );
+      return 'shown';
     }
-    return false;
+    return 'continue';
   }
 
   /**
@@ -1483,9 +1557,6 @@ export class ConfideToYinUI {
         },
         text
       );
-      return 'sync';
-    }
-    if (this._maybeAnswerProductKnowledge(text, hit)) {
       return 'sync';
     }
     const wantGenerate = ypeMayUseCompanionGenerate({

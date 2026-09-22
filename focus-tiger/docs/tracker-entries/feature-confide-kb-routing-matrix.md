@@ -1,0 +1,1 @@
+| Confide KB 路由回归矩阵 | 纯后端 | 仅单元测试覆盖 | **不进 Electron。** `cd focus-tiger && node --test src/core/confide/confideKbRoutingMatrix.test.js`（亦进 `test:smoke`）。锁 `dataSource` + KB 编号，不锁短答正文。手测回归：寅币 / 备份内容 / 时长空格 / 观察翼诚实空态 / `会不会好一点` 不进 KB。`probe` 漏检率只作 embedding 信号，本条不据此改 live。 | — | — | — | `confideKbRoutingMatrix.js` · `task-confide-kb-routing-matrix.md` | 2026-09-22 |

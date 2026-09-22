@@ -59,3 +59,17 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 - **冷启动 / 未就绪**：companion 刚起、embedding 尚未 `ready` 时发一句若在 ready 后会走本刀的功能句（或测试替身：字面情绪桶 + 语义 functional），确认**立刻**字面路由、不卡在「正在听」数秒。回滚开关打开时同一句也必须是切前行为
 - **回滚开关实测**：主进程 `FT_CONFIDE_SEMANTIC_ROUTING=shadow` 后重跑上面三句，行为与 Stage 1 相同
 - **就绪延迟**：embedding 已 ready 时，记一条 live 粗桶墙钟（现成 `timing.wallMs` / `embedMs`）。只记录数字，不在本刀调阈值；15s 影子超时不得出现在用户可感知等待里
+
+## Stage 2b（gray→功能桶）重新评估触发点（2026-09-22）
+
+本刀只处理字面情绪桶 ∩ 语义 functional。gray→功能桶**不是** KB 问法矩阵能生成的证据。
+
+| 门闩 | 数字 |
+|---|---|
+| 日历 | 窄刀在 develop 满 **3 周**；与 with-prior 同日 **2026-10-12** 复核 |
+| 样本量 M | live/shadow jsonl 中 **literal=gray 且 semantic=functional** 的**互异句 ≥ 25** |
+| 不算 M | 制造机 45 条 KEEP（多数 literal=gray）只作候选池，**不**计入真实 M |
+| 人工 | PO 从 M 抽 **20** 条标 KEEP（该被功能桶接住）/ DROP（该留灰或 generate） |
+| 才开 Stage 2b 扩面 Brief | KEEP ≥ 12 **且** 误拉情绪/闲聊少于 2 |
+
+未到门闩：**按兵不动**，但日期已钉死，禁止无限期「等以后」。

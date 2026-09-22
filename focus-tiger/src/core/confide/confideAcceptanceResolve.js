@@ -18,7 +18,11 @@ import { shouldAnswerWithMemoryList } from './confideMemoryList.js';
 import { shouldAnswerWithPracticeFacts } from './confidePracticeFacts.js';
 import { shouldAnswerWithPresenceFacts } from './confidePresenceFacts.js';
 import { shouldRunConfideReadHybridClassify } from './confideReadHybrid.js';
-import { mayTryConfideProductKnowledge, retrieveProductKnowledge } from './confideProductKnowledge.js';
+import {
+  mayTryConfideProductKnowledge,
+  probeProductKnowledgeCatalog
+} from './confideProductKnowledge.js';
+import { resolveProductKnowledgeGateAction } from './confideProductKnowledgeSemantic.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
 const FALLBACK = CONFIDE_ROUTE.FALLBACK;
@@ -73,10 +77,17 @@ export function resolveConfideMetaQueryBucket(text, route = confideClassify(text
       wideViewport: true,
       hasBridge: true,
       hasMemoryBridge: true
-    }) &&
-    retrieveProductKnowledge(text).hit
+    })
   ) {
-    return 'product_knowledge';
+    const catalog = probeProductKnowledgeCatalog(text);
+    const action = resolveProductKnowledgeGateAction({
+      text,
+      embeddingState: 'not_ready',
+      semanticIsProduct: false,
+      catalogHit: Boolean(catalog.hit)
+    });
+    if (action === 'hit') return 'product_knowledge';
+    if (action === 'honesty') return 'product_knowledge_honesty';
   }
   if (shouldRunConfideReadHybridClassify(text)) {
     return 'hybrid_classify';
@@ -105,6 +116,7 @@ export function resolveConfideDesktopSource(text) {
   }
   if (bucket === 'memory_suppress') return 'memory_suppress';
   if (bucket === 'boundary') return 'boundary';
+  if (bucket === 'product_knowledge_honesty') return 'product_knowledge_honesty';
   return bucket;
 }
 

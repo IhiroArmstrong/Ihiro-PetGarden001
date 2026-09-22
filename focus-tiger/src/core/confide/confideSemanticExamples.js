@@ -117,6 +117,33 @@ export const CONFIDE_SEMANTIC_LIBRARY_B = Object.freeze([
 ]);
 
 /**
+ * Library C — product / how-to-use-the-app questions (KB routing gate · Brief scheme B).
+ * @type {readonly string[]}
+ */
+export const CONFIDE_SEMANTIC_LIBRARY_C = Object.freeze([
+  '怎么开始坐',
+  'Sit 在哪',
+  'Sit 按钮在哪',
+  '接地练习入口',
+  '接地练习在哪',
+  'Breath 和 Sit 区别',
+  '倾诉怎么关',
+  '备份在哪',
+  '这个按钮是干嘛的',
+  'How do I start a sitting',
+  'Where is Ground exercise',
+  'Where is Sit with Yin',
+  'How do I open Confide to Yin',
+  'What does this button do',
+  'Where is Backup and restore',
+  'How to get more focus coins',
+  '怎么获得寅币',
+  'What is the difference between Breath and Sit',
+  'Where is the Ground exercise menu',
+  'How do I start Sit with Yin'
+]);
+
+/**
  * Known misclassification anchors referenced in CI / ISSUE_LEDGER.
  * @type {readonly string[]}
  */

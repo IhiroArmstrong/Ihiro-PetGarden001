@@ -35,6 +35,7 @@
 | 新候选脚本（一次跑一个 key） | `/tmp/ft-l0-candidate-lab.mjs` |
 | L3 观察句对照（#823 · baseline / B / A） | `/tmp/ft-l0-l3-observe-b-lab.mjs` |
 | L3 观察翼陈词滥调语义护栏（#823 · Brief） | `focus-tiger/docs/task-briefs/task-l3-observe-cliche-semantic-guard.md` |
+| KB 路由回归矩阵（无 GGUF） | `focus-tiger/src/core/confide/confideKbRoutingMatrix.js` · `node --test src/core/confide/confideKbRoutingMatrix.test.js` |
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
 | L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |

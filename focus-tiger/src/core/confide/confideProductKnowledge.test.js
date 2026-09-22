@@ -16,9 +16,11 @@ import {
   listRetrievableProductKnowledgeEntries,
   mayTryConfideProductKnowledge,
   pickProductKnowledgeHit,
+  probeProductKnowledgeCatalog,
   retrieveProductKnowledge,
   scoreProductKnowledgeEntries
 } from './confideProductKnowledge.js';
+import { resolveProductKnowledgeGateAction } from './confideProductKnowledgeSemantic.js';
 
 const readyOpen = {
   generateEnabled: true,
@@ -76,9 +78,9 @@ describe('confide product knowledge retrieval', () => {
     assert.match(result.text || '', /does not read the steps aloud/i);
   });
 
-  it('misses unrelated fallback text and logs miss shape', () => {
-    const result = retrieveProductKnowledge('the weather feels heavy today');
-    assert.equal(result.attempted, false);
+  it('probes catalog without regex gate and logs miss shape', () => {
+    const result = probeProductKnowledgeCatalog('the weather feels heavy today');
+    assert.equal(result.attempted, true);
     assert.equal(result.hit, false);
     const miss = buildKbRetrievalMissTurnLog({
       text: 'how do I export my soul',
@@ -94,7 +96,7 @@ describe('confide product knowledge retrieval', () => {
     const route = confideClassify(text);
     assert.equal(route, CONFIDE_ROUTE.FALLBACK);
     assert.equal(isConfideKbRetrievalCandidate(route, text), false);
-    assert.equal(retrieveProductKnowledge(text).attempted, false);
+    assert.equal(probeProductKnowledgeCatalog(text).hit, false);
   });
 
   it('blocks generate when product knowledge hits on fallback', () => {
@@ -183,5 +185,15 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(honesty.id, 'KB-FUNC-0020');
     assert.match(honesty.text || '', /Honesty Check-in/i);
     assert.match(honesty.text || '', /optional/i);
+  });
+
+  it('semantic-ready miss on product ask resolves to honesty not generate path', () => {
+    const action = resolveProductKnowledgeGateAction({
+      text: 'What is the observation wing?',
+      embeddingState: 'ready',
+      semanticIsProduct: true,
+      catalogHit: false
+    });
+    assert.equal(action, 'honesty');
   });
 });

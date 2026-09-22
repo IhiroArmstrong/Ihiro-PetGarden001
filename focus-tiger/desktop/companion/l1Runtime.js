@@ -110,6 +110,8 @@ export class CompanionL1Runtime {
     this._semanticShadowWaiters = new Map();
     /** @type {Map<string, (ev: object) => void>} */
     this._observeClicheWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._productKnowledgeGateWaiters = new Map();
     this._shadowQueue = Promise.resolve();
     this._liveSemanticCache = null;
     this._embeddingShadowGate = createSemanticShadowEmbeddingGate();
@@ -177,6 +179,17 @@ export class CompanionL1Runtime {
         resolve(ev);
       }
     }
+    if (
+      ev.event === 'product_knowledge_gate_classified' ||
+      ev.event === 'product_knowledge_gate_error'
+    ) {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._productKnowledgeGateWaiters.get(id);
+      if (resolve) {
+        this._productKnowledgeGateWaiters.delete(id);
+        resolve(ev);
+      }
+    }
     if (ev.event === 'embedding_ready' || ev.event === 'embedding_error') {
       this._embeddingShadowGate.applyEvent(ev);
     }
@@ -210,6 +223,13 @@ export class CompanionL1Runtime {
         });
       }
       this._observeClicheWaiters.clear();
+      for (const resolve of this._productKnowledgeGateWaiters.values()) {
+        resolve({
+          event: 'product_knowledge_gate_error',
+          message: ev.message || 'companion_error'
+        });
+      }
+      this._productKnowledgeGateWaiters.clear();
       this._embeddingShadowGate.reset();
     }
     this._push();
@@ -818,6 +838,94 @@ export class CompanionL1Runtime {
     };
     await appendLiveLog(result);
     return result;
+  }
+
+  /**
+   * Product-knowledge semantic gate (Library C). Does not await cold embedding load.
+   * @param {{ text?: string }} [payload]
+   * @returns {Promise<{
+   *   ok: boolean,
+   *   isProduct?: boolean,
+   *   score?: number,
+   *   minScore?: number,
+   *   reason?: string
+   * }>}
+   */
+  async semanticProductKnowledgeGate(payload = {}) {
+    const wallStarted = Date.now();
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable', isProduct: false };
+    }
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    if (!text) return { ok: false, reason: 'empty_text', isProduct: false };
+
+    const gate = this._embeddingShadowGate;
+    if (!gate.isReady()) {
+      if (gate.shouldRequestEnsure()) {
+        try {
+          if (!this.child) this._spawnIfNeeded();
+          gate.markLoading();
+          this._write('ensure-embedding');
+        } catch {
+          return {
+            ok: false,
+            reason: 'embed_failed',
+            isProduct: false,
+            timing: { wallMs: Date.now() - wallStarted }
+          };
+        }
+      }
+      return {
+        ok: false,
+        reason: 'embed_not_ready',
+        isProduct: false,
+        timing: { wallMs: Date.now() - wallStarted }
+      };
+    }
+
+    const id = randomUUID();
+    const pending = this._shadowQueue.then(async () => {
+      const done = new Promise((resolve) => {
+        this._productKnowledgeGateWaiters.set(id, resolve);
+      });
+      this._write(`product-knowledge-gate ${JSON.stringify({ id, text })}`);
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(() => resolve({ event: 'timeout' }), L0_SEMANTIC_SHADOW_TIMEOUT_MS);
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._productKnowledgeGateWaiters.delete(id);
+      }
+      return timed;
+    });
+    this._shadowQueue = pending.then(
+      () => undefined,
+      () => undefined
+    );
+    const result = await pending;
+    const timing = { wallMs: Date.now() - wallStarted };
+
+    if (result?.event === 'product_knowledge_gate_classified') {
+      return {
+        ok: true,
+        isProduct: Boolean(result.isProduct),
+        score: Number(result.score),
+        minScore: Number(result.minScore),
+        reason: 'ok',
+        timing
+      };
+    }
+    return {
+      ok: false,
+      isProduct: false,
+      reason:
+        result?.event === 'timeout'
+          ? 'timeout'
+          : String(result?.message || 'embed_unavailable'),
+      timing
+    };
   }
 
   /**
