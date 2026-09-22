@@ -10,7 +10,6 @@ import {
   computeKbLiveGapReport,
   KB_CANONICAL_LIVE_APPROVED_MAP,
   KB_CROSS_CUTTING_APPROVED_IDS,
-  KB_UNAPPROVED_IDS,
   loadApprovedCatalogIds,
   renderKbLiveGapAuditMarkdownBlock,
   runKbLiveGapAudit
@@ -25,25 +24,14 @@ describe('audit-kb-live-gap helpers', () => {
     assert.equal(ids.includes('KB-FUNC-0009'), false);
   });
 
-  it('flags known registry drift rows', () => {
+  it('registry mapping drift is cleared after canonical catalogKbIds sync', () => {
     const report = computeKbLiveGapReport();
-    const driftIds = report.registryMappingDrift.map((row) => row.liveId);
-    assert.ok(driftIds.includes('kb-live-companion'));
-    assert.ok(driftIds.includes('kb-live-journey-log'));
-    assert.ok(driftIds.includes('kb-live-breath'));
-    assert.ok(driftIds.includes('kb-live-hud-progress'));
+    assert.equal(report.registryMappingDrift.length, 0);
   });
 
-  it('flags unapproved registry links', () => {
+  it('registry no longer links unapproved pilot ids', () => {
     const report = computeKbLiveGapReport();
-    const unapprovedIds = report.registryLinksUnapproved.map((row) => row.liveId);
-    assert.ok(unapprovedIds.includes('kb-live-breath'));
-    assert.ok(unapprovedIds.includes('kb-live-journey-log'));
-    for (const row of report.registryLinksUnapproved) {
-      for (const id of row.unapprovedKbIds) {
-        assert.ok(KB_UNAPPROVED_IDS.includes(id));
-      }
-    }
+    assert.equal(report.registryLinksUnapproved.length, 0);
   });
 
   it('lists batch-2 candidates for uncovered live menus', () => {

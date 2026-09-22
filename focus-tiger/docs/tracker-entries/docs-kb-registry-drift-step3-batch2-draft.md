@@ -1,0 +1,3 @@
+# TEST_TRACKER 碎片 · docs/kb-registry-drift-step3-batch2-draft
+
+| 产品知识库 · registry 漂移修复 + Step 3 扩问法 + Step 4 首批草稿 | 纯后端 | 仅单元测试覆盖 | **无用户路径、无运行时。** 核对 `npm run audit:kb-live-gap` 绿（6 处 drift → 0；unapproved links → 0）；`npm run audit:kb-live-entries` 绿。Step 3：`productKnowledgeCatalog.json` 扩 0011/0012/0013/0004/0008 问法（正文不变）。Step 4：`product-knowledge-base.md` §4.4 待审 **0019 Five Moments** + **0020 Honesty**（未进 catalog）。0006 试点仍未审核；registry 以 **0011** 为准。0009 云备份仍未审核；journey-log 改链 **0012**。 | — | — | — | `kbLiveEntryRegistry.js` · `productKnowledgeCatalog.json` · `product-knowledge-base.md` §4.4 | 2026-09-22 |

@@ -144,6 +144,24 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(where.id, 'KB-FUNC-0003');
   });
 
+  it('Step 3 expanded keywords hit approved registry-linked entries', () => {
+    const breath = retrieveProductKnowledge('左球在哪做呼吸练习？');
+    assert.equal(breath.hit, true);
+    assert.equal(breath.id, 'KB-FUNC-0011');
+
+    const journey = retrieveProductKnowledge('journey log 在哪看练习记录？');
+    assert.equal(journey.hit, true);
+    assert.equal(journey.id, 'KB-FUNC-0012');
+
+    const presence = retrieveProductKnowledge('presence signals 情绪面板在哪？');
+    assert.equal(presence.hit, true);
+    assert.equal(presence.id, 'KB-FUNC-0013');
+
+    const hud = retrieveProductKnowledge('top left progress bar 是什么？');
+    assert.equal(hud.hit, true);
+    assert.equal(hud.id, 'KB-FUNC-0004');
+  });
+
   it('hits focus-coins earn FAQ with the approved short answer', () => {
     const coins = retrieveProductKnowledge('怎么获得寅币？');
     assert.equal(coins.hit, true);

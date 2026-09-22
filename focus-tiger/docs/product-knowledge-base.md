@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · 未审核）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取**（PO 口径已过；**16 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · 未审核 · registry 已改链 **0011**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取**（PO 口径已过；**16 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）+ **batch-2 待审草稿 0019–0020**（Five Moments / Honesty · Step 4 本旁支 · 未进 catalog）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -176,7 +176,7 @@
   适用产品版本: 现网 HUD；IncenseComplete 会话结束自动播仍为已放弃
   更新时间: 2026-09-22
   locale_keys: [HUD_PROGRESS_SHARED_SITTING, HINT_FOCUS_HUD_PROGRESS]
-  检索关键词: [一炷香, 今日同坐, Today's shared sitting, 25 minutes, 香]
+  检索关键词: [一炷香, 今日同坐, Today's shared sitting, 25 minutes, 香, progress bar, hud, top left, 进度条, soft aim, today's sitting]
 
 - id: KB-FUNC-0005
   所属库: 产品说明事实
@@ -274,7 +274,7 @@
   适用产品版本: 现网 Companion 模式卡
   更新时间: 2026-09-22
   locale_keys: [COMPANION_MODE_TITLE, COMPANION_MODE_STAY, COMPANION_MODE_STEP_AWAY, COMPANION_MODE_ACROSS_TOOLS, COMPANION_MODE_CONTINUE, HINT_COMPANION_MODE]
-  检索关键词: [怎么陪, How shall we sit, 这次怎么陪你, 陪伴模式, Begin, Offline Space, Flow State]
+  检索关键词: [怎么陪, How shall we sit, 这次怎么陪你, 陪伴模式, Begin, Offline Space, Flow State, Here and Now, 三种陪法, companion mode where]
 
 - id: KB-FUNC-0009
   所属库: 产品说明事实
@@ -331,7 +331,7 @@
   适用产品版本: 现网底栏 / 左球
   更新时间: 2026-09-22
   locale_keys: [focus_duration.hint, HINT_QUICK_START, BTN_FOCUS_START]
-  检索关键词: [呼吸练习, Breath practice, 短坐, 10分钟, quick start, 左球, 和 Sit 区别]
+  检索关键词: [呼吸练习, Breath practice, 短坐, 10分钟, quick start, 左球, 和 Sit 区别, 怎么呼吸, 从哪进, 左球在哪, where is breath practice, how to breathe]
 
 - id: KB-FUNC-0012
   所属库: 陪伴可检索
@@ -350,7 +350,7 @@
   适用产品版本: 现网 Journey log
   更新时间: 2026-09-22
   locale_keys: [JOURNEY_LOG_MENU_LABEL, CONFIDE_CHIP_FILL_PRACTICE_DURATION]
-  检索关键词: [练习记录, Journey log, 旅程留痕, 练了多久从哪看, practice trail, 日历]
+  检索关键词: [练习记录, Journey log, 旅程留痕, 练了多久从哪看, practice trail, 日历, journey log 在哪, 查看练习, practice calendar]
 
 - id: KB-FUNC-0013
   所属库: 陪伴可检索
@@ -369,7 +369,7 @@
   适用产品版本: 现网 Presence moments 面板
   更新时间: 2026-09-22
   locale_keys: [PRESENCE_SIGNALS_MENU_LABEL, PRESENCE_SIGNALS_PANEL_BLURB, PRESENCE_SIGNALS_DISCLOSURE, CONFIDE_CHIP_FILL_PRESENCE_RECENT]
-  检索关键词: [Presence moments, 情绪记录, 签到, 从哪看情绪, mood check-in, 趋势从哪看]
+  检索关键词: [Presence moments, 情绪记录, 签到, 从哪看情绪, mood check-in, 趋势从哪看, presence signals, 情绪面板, mood record where]
 
 - id: KB-FUNC-0014
   所属库: 陪伴可检索
@@ -407,7 +407,7 @@
   适用产品版本: 现网本地备份面板
   更新时间: 2026-09-22
   locale_keys: [LOCAL_BACKUP_PANEL_BLURB, PRIVACY_SHEET_EXPORT_IMPORT]
-  检索关键词: [明文, plain JSON, 加密, 备份格式, 导出文件, unencrypted, 装了什么, 里面有什么, 包不包含]
+  检索关键词: [明文, plain JSON, 加密, 备份格式, 导出文件, unencrypted, 装了什么, 里面有什么, 包不包含, 包含哪些, 哪些数据, what's in the backup, what does backup include]
 
 - id: KB-FUNC-0016
   所属库: 产品说明事实
@@ -466,6 +466,53 @@
   更新时间: 2026-09-22
   locale_keys: [focus_coins.duration_hint]
   检索关键词: [寅币, Focus Coins, focus coins, 怎么获得寅币, earn coins, 攒币, 怎么攒]
+```
+
+### 4.4 batch-2 待审草稿（Step 4 · Five Moments / Honesty 优先）
+
+> **Status**: Step 4 权威源起草 · **未审核** · **未进** `productKnowledgeCatalog.json` · registry `catalogKbIds` 仍为空（待 PO tone spot-check 后入库）。  
+> **权威源**：`src/locales/en.json` · `fiveMomentsCompassGate.js` · `PRODUCT_MOMENTS.md` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md`
+
+```yaml
+- id: KB-FUNC-0019
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Five Moments 罗盘从哪开
+  适用场景: 想知道一天五个时刻是什么、从哪进 Arrive / Focus / Recover / Transition / Reflect
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Practice → The 5 Moments. On a wide screen you can also tap the right orb — Five moments with Yin. The compass shows Arrive → Focus → Recover → Transition → Reflect. Tap a moment to jump to that surface — for example Reflect opens Journey log. Yin only points; this is not a second timer.
+    指路：菜单 `FIVE_MOMENTS_MENU_LABEL` → `#five-moments-compass`；宽屏 Idle 右球 `FIVE_MOMENTS_IDLE_ENTRY`。芯片映射见 `resolveFiveMomentAction`（Arrive→Arrival · Focus→Companion · Recover→ritual-emotional-reset · Transition→C5 overlay · Reflect→Journey log）。
+    禁止：把 Five Moments 说成强制打卡；禁止念 `RESET_BREATH_*` / 引导语正文。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Five Moments Compass（B 轨）
+  更新时间: 2026-09-22
+  locale_keys: [FIVE_MOMENTS_MENU_LABEL, FIVE_MOMENTS_IDLE_ENTRY, FIVE_MOMENTS_CARD_TITLE, FIVE_MOMENTS_CARD_BLURB, FIVE_MOMENTS_ARRIVE, FIVE_MOMENTS_FOCUS, FIVE_MOMENTS_RECOVER, FIVE_MOMENTS_TRANSITION, FIVE_MOMENTS_REFLECT]
+  检索关键词: [Five Moments, 五个时刻, 五时刻, The 5 Moments, Arrive Focus Recover, 一天五个, five moments with yin, 罗盘, compass]
+
+- id: KB-FUNC-0020
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Honesty Check-in 从哪进
+  适用场景: 想把别处的静心时间诚实补登回来，或分不清和左球 Breath practice / 主钮 Sit 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Practice → Honesty Check-in — below The 5 Moments. Pick how long your quiet time elsewhere was, take one syncing breath, then Yin records it. This is optional; Sit with Yin still works without it. After check-in you may see a gentle bridge asking if you want to sit now too.
+    指路：菜单 `HONESTY_IDLE_ENTRY`（`#honesty-idle-entry` 宽屏 Idle 入口仍存在）。与 0011 分工：0011 = 左球短坐 Breath practice；本条 = 荣誉制补登别处的静心。与 Arrival 分工：Honesty 补登 ≠ 点 Sit 后的 Arrival Practice。
+    禁止：怀疑性文案；禁止把 Honesty 说成必须打卡；禁止念 `HONESTY_BREATH_*` 引导语正文。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 未审核
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Honesty Check-in + 桥接 CTA
+  更新时间: 2026-09-22
+  locale_keys: [HONESTY_IDLE_ENTRY, HONESTY_FEATURE_TITLE, HONESTY_DURATION_TITLE, HONESTY_DURATION_SUBTITLE, HONESTY_CHECKIN_PROMPT, HONESTY_CHECKIN_RECORDED, HONESTY_BRIDGE_PROMPT, HINT_HONESTY_OPTIONAL]
+  检索关键词: [Honesty Check-in, 诚实补登, 别处的静心, 荣誉制, 补登练习, honest check-in, quiet time elsewhere, 补登从哪进]
 ```
 
 ### 4.3 内部排障草案（不进倾诉索引）
