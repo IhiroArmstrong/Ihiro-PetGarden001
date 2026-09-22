@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-23）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行 · **18 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-23）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -472,7 +472,7 @@
 ### 4.4 batch-2 Step 4（Five Moments / Honesty · 已通过 · catalog 已入库）
 
 > **Status**: Step 4 权威源起草 · **PO 2026-09-22 书面放行**（无需 §4.4 语气 spot-check）· **已进** `productKnowledgeCatalog.json` · registry `catalogKbIds` 已链 **0019** / **0020**。  
-> **下一批 Inspiration 候选顺序（PO 同意）**：Daily quote → Zen Cinema → Wallpapers（待 0019/0020 本旁支合 develop 后按同流水线起草）。
+> **下一批 Inspiration 候选顺序（PO 同意）**：Zen Cinema → Wallpapers。**0019/0020 已合 develop**（#939）· **0021 Daily quote 已入库 catalog**（本旁支 · 闸门 **19 条**）· Zen Cinema / Wallpapers 仍待起草。
 
 ```yaml
 - id: KB-FUNC-0019
@@ -514,9 +514,29 @@
   更新时间: 2026-09-22
   locale_keys: [HONESTY_IDLE_ENTRY, HONESTY_FEATURE_TITLE, HONESTY_DURATION_TITLE, HONESTY_DURATION_SUBTITLE, HONESTY_CHECKIN_PROMPT, HONESTY_CHECKIN_RECORDED, HONESTY_BRIDGE_PROMPT, HINT_HONESTY_OPTIONAL]
   检索关键词: [Honesty Check-in, 诚实补登, 别处的静心, 荣誉制, 补登练习, honest check-in, quiet time elsewhere, 补登从哪进]
+
+- id: KB-FUNC-0021
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: A Quiet Line（今日静语）从哪开
+  适用场景: 想找每日一句静语、保存静语图片，或分不清和 Zen Cinema / Wallpapers 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Inspiration → A Quiet Line. One quiet line is chosen locally for today and stays the same until tomorrow. Tap Save image to keep a postcard on your device — no account needed. Yin only points; open the card to read today's words.
+    指路：菜单 `DAILY_ZEN_QUOTE_MENU_LABEL`（proxy `daily-quote`）→ `DailyZenQuoteCardUI`。同日锁定见 `dailyZenQuote.js`（`DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY` · 本地 YYYY-MM-DD 确定性抽取）。与 0012 分工：若当日句为 insight-spark 种子且用户当场打开过卡，Journey log 可能带 `insightSpark` 标记 — 本条只指路开卡，不念句库正文。与 Zen Cinema / Wallpapers 分工：本条 = 静语礼物卡 + 本地存图；不播外链视频、不下载壁纸包。
+    禁止：把静语说成必须每日打卡；禁止在短答里念 `DAILY_ZEN_QUOTE_*` / `DAILY_ZEN_QUOTE_INSIGHT_*` 句库正文；禁止说成社交分享或需登录。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-23 · tone spot-check）
+  风险标记: 否
+  适用产品版本: 现网 Daily quiet-line card（growth ③）
+  更新时间: 2026-09-23
+  locale_keys: [DAILY_ZEN_QUOTE_MENU_LABEL, DAILY_ZEN_QUOTE_CARD_TITLE, DAILY_ZEN_QUOTE_CARD_BLURB, DAILY_ZEN_QUOTE_SAVE_NOTE, DAILY_ZEN_QUOTE_CANCEL, DAILY_ZEN_QUOTE_SAVE]
+  检索关键词: [A Quiet Line, Daily quote, 一句静语, 今日静语, quiet line for today, 每日一句, daily quote menu, save image quote, 静语从哪开, quiet line card]
 ```
 
-> **权威源**：`src/locales/en.json` · `fiveMomentsCompassGate.js` · `PRODUCT_MOMENTS.md` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md`
+> **权威源（0019–0021）**：`src/locales/en.json` · `fiveMomentsCompassGate.js` · `PRODUCT_MOMENTS.md` · `dailyZenQuote.js` · `DailyZenQuoteCardUI.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 U2
 
 ### 4.3 内部排障草案（不进倾诉索引）
 
@@ -583,6 +603,12 @@
 - [x] registry `catalogKbIds` 已链 0019 / 0020；`productKnowledgeCatalog.json` 已入库
 - [x] 0006 PO spot-check 已通过（2026-09-23）；正文作盘点参考，`yin_may_retrieve: 否`，不进 catalog
 - [x] 累计 **18 条** `审核状态: 已通过`（0001–0005 + 0007–0008 + 0010–0020）→ 可检索
+
+**batch-2 Inspiration · Daily quote（2026-09-23 PO spot-check 已通过）**
+
+- [x] 0021 对照 `dailyZenQuote.js` + locale + `MENU_CHROME_CENSUS.md`，无另编路径
+- [x] PO tone spot-check → 标已通过并进 `productKnowledgeCatalog.json`
+- [x] registry `kb-live-daily-quote` 链 `KB-FUNC-0021`；闸门升至 **19 条**
 
 **共通**
 

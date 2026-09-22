@@ -39,7 +39,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-presence-signals` | menu | `presence-signals` | live | ⋯ → Practice → Presence signals | `PRESENCE_SIGNALS_MENU_LABEL` | `KB-FUNC-0013` |
 | `kb-live-yin-coin` | menu | `yin-coin` | gated-default-on | ⋯ → Practice → Yin Coin | `YIN_COIN_MENU_LABEL` | `KB-FUNC-0018` |
 | `kb-live-confide` | menu | `confide` | gated-default-off | ⋯ → Practice → Confide to Yin (wide ear shortcut) | `CONFIDE_MENU_LABEL` | `KB-FUNC-0005` `KB-FUNC-0010` |
-| `kb-live-daily-quote` | menu | `daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` | — |
+| `kb-live-daily-quote` | menu | `daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` | `KB-FUNC-0021` |
 | `kb-live-zen-cinema` | menu | `zen-cinema` | live | ⋯ → Inspiration → Zen Cinema | `ZEN_CINEMA_MENU_LABEL` | — |
 | `kb-live-wallpapers` | menu | `wallpapers` | live | ⋯ → Inspiration → Wallpapers | `WALLPAPER_MENU_LABEL` | — |
 | `kb-live-quiet-together` | menu | `quiet-together` | gated-default-on | ⋯ → Not alone → Quiet together | `QUIET_TOGETHER_MENU_LABEL` | — |
@@ -74,5 +74,5 @@ CI / smoke: `npm run audit:kb-live-entries` (no write) is part of `npm run docs:
 |---|---|---|
 | 2 | Compare list vs existing `KB-FUNC-*` passed rows → gap candidates | **已合 develop** (#931) · `catalogKbIds` drift cleared |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** |
-| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **本旁支** · 0019 / 0020 待审 |
+| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939) · **0021 Daily quote 已入库 catalog**（本旁支 · 闸门 **19**） |
 | 手册 | `docs/internal-handbook/` | 等本清单稳定后再开 |
