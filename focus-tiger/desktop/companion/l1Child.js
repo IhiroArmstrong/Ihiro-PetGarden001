@@ -315,6 +315,57 @@ async function main() {
             });
           }
         });
+      } else if (line.startsWith('product-knowledge-gate ')) {
+        enqueueShadow(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('product-knowledge-gate '.length));
+          } catch {
+            await emit({
+              event: 'product_knowledge_gate_error',
+              id: '',
+              message: 'invalid_product_knowledge_gate_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          if (!text) {
+            await emit({
+              event: 'product_knowledge_gate_error',
+              id,
+              message: 'empty_text'
+            });
+            return;
+          }
+          const started = Date.now();
+          try {
+            if (!embeddingSession) {
+              throw new Error('embedding_not_ready');
+            }
+            if (typeof embeddingSession.classifyProductKnowledgeGate !== 'function') {
+              throw new Error('embedding_session_missing');
+            }
+            const result = await embeddingSession.classifyProductKnowledgeGate(text);
+            await emit({
+              event: 'product_knowledge_gate_classified',
+              id,
+              isProduct: Boolean(result.isProduct),
+              score: result.score,
+              minScore: result.minScore,
+              topK: result.topK,
+              embedMs: result.embedMs,
+              wallMs: Date.now() - started
+            });
+          } catch (err) {
+            await emit({
+              event: 'product_knowledge_gate_error',
+              id,
+              message: embeddingErrorMessage(err),
+              wallMs: Date.now() - started
+            });
+          }
+        });
       } else if (line.startsWith('score-observe-cliche ')) {
         enqueue(async () => {
           let payload = {};

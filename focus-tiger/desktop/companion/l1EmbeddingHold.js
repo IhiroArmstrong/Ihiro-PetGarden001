@@ -10,8 +10,10 @@
 
 import {
   CONFIDE_SEMANTIC_LIBRARY_A,
-  CONFIDE_SEMANTIC_LIBRARY_B
+  CONFIDE_SEMANTIC_LIBRARY_B,
+  CONFIDE_SEMANTIC_LIBRARY_C
 } from '../../src/core/confide/confideSemanticExamples.js';
+import { classifyProductKnowledgeSemantic } from '../../src/core/confide/confideProductKnowledgeSemantic.js';
 import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
 import {
   classifyConfideSemanticCoarse,
@@ -86,6 +88,13 @@ export async function loadEmbeddingHold(opts) {
     vectorsB.push(await embedText(example));
   }
 
+  onProgress('precomputeLibraryC');
+  /** @type {number[][]} */
+  const vectorsC = [];
+  for (const example of CONFIDE_SEMANTIC_LIBRARY_C) {
+    vectorsC.push(await embedText(example));
+  }
+
   onProgress('precomputeObserveClicheBank');
   /** @type {number[][]} */
   const clicheVectors = [];
@@ -98,8 +107,10 @@ export async function loadEmbeddingHold(opts) {
   return {
     librarySizeA: vectorsA.length,
     librarySizeB: vectorsB.length,
+    librarySizeC: vectorsC.length,
     vectorsA,
     vectorsB,
+    vectorsC,
     embedText,
     /**
      * @param {string} text
@@ -117,6 +128,17 @@ export async function loadEmbeddingHold(opts) {
         routingConfig
       );
       return { ...result, embedMs };
+    },
+    /**
+     * @param {string} text
+     * @returns {Promise<ReturnType<typeof classifyProductKnowledgeSemantic> & { embedMs: number }>}
+     */
+    async classifyProductKnowledgeGate(text) {
+      if (disposed) throw new Error('embedding_session_disposed');
+      const embedStarted = Date.now();
+      const userVector = await embedText(text);
+      const result = classifyProductKnowledgeSemantic(userVector, vectorsC, { env: opts.env });
+      return { ...result, embedMs: Date.now() - embedStarted };
     },
     /**
      * @param {string} text

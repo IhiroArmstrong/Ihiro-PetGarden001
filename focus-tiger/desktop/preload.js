@@ -49,6 +49,8 @@ if (companionAllowed) {
       ipcRenderer.invoke('desktop:companion-semantic-shadow-classify', payload),
     semanticLiveClassify: (payload) =>
       ipcRenderer.invoke('desktop:companion-semantic-live-classify', payload),
+    semanticProductKnowledgeGate: (payload) =>
+      ipcRenderer.invoke('desktop:companion-product-knowledge-gate', payload),
     onStatus: (cb) => {
       if (typeof cb !== 'function') return () => {};
       const wrapped = (_event, payload) => cb(payload);
