@@ -16,7 +16,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 - Epic / Test Tracker / PR text may suggest topics; only rows with locale / rule SSOT may draft catalog entries.
 - Operational numbers stay out of recitable short answers.
-- `KB-FUNC-0006` (breath entry pilot) and `KB-FUNC-0009` (cloud backup) remain **未审核** in `product-knowledge-base.md` — live registry now links approved siblings (`0011` for breath · `0012` for journey-log UI, not cloud backup).
+- `KB-FUNC-0009` (cloud backup) remains **未审核** in `product-knowledge-base.md` — live registry links approved sibling **0012** for journey-log UI (not cloud backup). `KB-FUNC-0006` breath pilot is **已通过** as inventory reference only (`yin_may_retrieve: 否`; retrieval via **0011+0001**).
 
 ---
 

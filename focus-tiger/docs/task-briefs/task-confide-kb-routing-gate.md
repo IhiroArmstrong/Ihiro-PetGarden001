@@ -114,7 +114,7 @@ C 库起点（实现时写入 `confideSemanticExamples` 一类数据文件，本
 |---|---|---|
 | H1 | `怎么开始坐` / `Where is Sit with Yin?` | 命中 KB-FUNC-0001 短答（或同等已通过 Sit 入口条） |
 | H2 | `接地练习在哪` / `Where is the Ground exercise?` | 命中 KB-FUNC-0002 类入口短答 |
-| H3 | `Breath 和 Sit 有什么区别` | 命中已通过对照短答（0006 未审核则不得念 0006；应落到已通过的 Breath/Sit 条或未命中空态） |
+| H3 | `Breath 和 Sit 有什么区别` | 命中已通过对照短答（命中已通过对照短答 **0011**（0006 为盘点参考 · 不进 catalog）或未命中空态） |
 | S1 | `带我做一遍接地练习` / `Walk me through Ground exercise steps` | 半命中：只指路，不念引导语正文 |
 | M1 | `观察翼是什么` / `What is the observation wing?`（库未收录内部名） | 产品闸=是 → **诚实空态**；`data-source` 不得为 `generate` |
 | M2 | 问一项菜单里暂时没有、库也没有的功能 | 同上；禁止生成「可以去某某还不存在的按钮」 |
@@ -133,7 +133,7 @@ C 库起点（实现时写入 `confideSemanticExamples` 一类数据文件，本
 
 | 层 | 状态 |
 |---|---|
-| 条目权威 | `product-knowledge-base.md`：**18 条** `审核状态: 已通过` 可进检索闸门；0006 盘点参考（不进 catalog）、0009 云备份仍未审核 |
+| 条目权威 | `product-knowledge-base.md`：**18 条** `审核状态: 已通过` 可进检索闸门；0006 盘点参考（**PO spot-check 已通过** · `yin_may_retrieve: 否` · 不进 catalog）、0009 云备份仍未审核 |
 | 检索运行时 | **已合入 develop（#924）**：关键词 catalog（`confideProductKnowledge.js` + `productKnowledgeCatalog.json`） |
 | 问句闸门 | **仍是正则**，与本 Brief 目标冲突 |
 | 未命中 | #924 仍按旧 Q3 走 corpus / generate —— 本闸要堵的后门 |
