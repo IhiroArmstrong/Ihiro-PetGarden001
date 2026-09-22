@@ -138,6 +138,16 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 
 结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "multilang-chitchat"`）。fixture：`confideMultilangChitchatFixtures.js`（**6 语 × 18 句 = 108** · 非 #774 差样本）。每句 **空历史**、只跑 1 次（供人工标注合格率）。`onTopic` 留 `null`。
 
+**Confide generate 失败回落冻表（2026-09-22 · #930 · 观察/陪伴不得 privacy 套话）**：
+
+- 真源：`confideGenerateFailureFallbackFixtures.js`（generate_fail ≥20 + corpus_control 2）
+- 文档：`docs/confide-generate-failure-fallback-acceptance.md`
+- **终端批量（推荐 · 取代有限句肉眼）**：`npm run test:confide-generate-failure-fallback` → 全表 PASS + checks 通常 **600+**（每句 24 salt + 5 同面板连发）
+- 单测：`node --test src/core/confide/confideGenerateFailureFallbackEvaluate.test.js`
+- **CI**：已并入 `npm run test:smoke` → `test:pr-smoke`
+- 人工（一次性）：Electron 宽屏 spot-check 主路径「有点烦，不想练习」+ 对照 normal corpus 仍可用 fallback-02 — 各 1–2 句
+- **纪律**：见 `testing-strategy.mdc`「Confide 问题类验收：先批量、后肉眼」
+
 **Confide 本轮肉测验收冻表（2026-09-19 · 100 句终止条件 · 主表）**：
 
 - 真源：`confideRoundAcceptanceFixtures.js`（**100 句** = 元问题 32 + 攻击 30 + 补充 38）
