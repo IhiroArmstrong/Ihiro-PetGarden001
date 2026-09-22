@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **盘点参考 · 检索已并入 0011+0001 · 不进 catalog**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行 · **18 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-23）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行 · **18 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -203,7 +203,7 @@
 
 | 优先级 | id | 标题 | 盘点依据 | 审核 |
 |---|---|---|---|---|
-| P0 | 0006 | 呼吸练习从哪进（左球） | 速查表左球行 · `micro_ritual.*` | 盘点参考 · 检索已并入 0011+0001 · 不进 catalog |
+| P0 | 0006 | 呼吸练习从哪进（左球） | 速查表左球行 · `micro_ritual.*` | **已通过** · 盘点参考 · 检索走 0011+0001 · 不进 catalog |
 | P0 | 0007 | 如何结束同坐（Rise） | 速查表 `BTN_FOCUS_STOP` | 已通过 |
 | P0 | 0008 | How shall we sit 在哪 | 速查表 `COMPANION_MODE_*` | 已通过 |
 | P0 | 0009 | Journey log 可选云备份 | `JOURNEY_LOG_BACKUP_*` | **未审核（云备份暂禁用）** |
@@ -231,11 +231,11 @@
     禁止：把 `RESET_BREATH_*` / `BREATH_PHASE_*` 引导语写入本条或倾诉检索块（与 `KB-PSY-DRAFT-0002` 分工）。
   yin_may_retrieve: 否
   来源: 界面文案
-  审核状态: 未审核
-  审核人: —
+  审核状态: 已通过
+  审核人: PO（2026-09-23 · spot-check · Leave/入账分工与正文一致）
   风险标记: 否
   适用产品版本: 现网 Idle 左球主路径（Extended Breath Practice · 1/3/5/10/20 分钟）
-  更新时间: 2026-09-22
+  更新时间: 2026-09-23
   locale_keys: [QUICK_START_ARIA, HINT_QUICK_START, HINT_MICRO_RITUAL, micro_ritual.button, micro_ritual.pick_duration, micro_ritual.minutes_chip, micro_ritual.leave, focus_duration.hint]
   检索关键词: [呼吸练习, Breath practice, 左球, quick start, 短坐, 一分钟, 从哪进, 怎么呼吸, 和 Sit 区别]
 
@@ -581,7 +581,7 @@
 
 - [x] 0019 Five Moments / 0020 Honesty 对照 locale + `fiveMomentsCompassGate.js`，无另编路径
 - [x] registry `catalogKbIds` 已链 0019 / 0020；`productKnowledgeCatalog.json` 已入库
-- [x] 0006 正文保留为盘点参考；检索口径并入 0011+0001，`yin_may_retrieve: 否`，不进 catalog
+- [x] 0006 PO spot-check 已通过（2026-09-23）；正文作盘点参考，`yin_may_retrieve: 否`，不进 catalog
 - [x] 累计 **18 条** `审核状态: 已通过`（0001–0005 + 0007–0008 + 0010–0020）→ 可检索
 
 **共通**
