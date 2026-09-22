@@ -67,6 +67,12 @@ export {
   shouldHandleConfideCompanionGreeting
 } from './confideCompanionGreeting.js';
 export {
+  isConfideKbRetrievalEnabled,
+  mayTryConfideProductKnowledge,
+  retrieveProductKnowledge,
+  listRetrievableProductKnowledgeEntries
+} from './confideProductKnowledge.js';
+export {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideUserVisible,
   isConfideDevHarness,

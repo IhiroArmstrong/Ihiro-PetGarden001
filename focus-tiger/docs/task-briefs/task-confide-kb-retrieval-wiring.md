@@ -2,7 +2,7 @@
 
 > **状态（2026-09-22）**：**已拍板**（Q1–Q5 见第三节）。方向锁 Brief；**无运行时**。  
 > **依赖**：`product-knowledge-base.md` 条目 `审核状态: 已通过`（#920 合入后 0001–0005 满足）。  
-> **实现 Issue**：盘点侧条目清单相对稳定后再拆（见 §五）；本 Brief 不定义向量索引 / embedding pipeline 选型。  
+> **实现**：`feature/confide-kb-retrieval-wiring`（关键词 catalog · 无 embedding v1）。向量索引另议。  
 > **交叉引用**：`product-knowledge-base.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_SCENARIOS_V1.md` · `confide-embedding-lifecycle-arbitration.md`（同坐卸载 / embedding 避让）
 
 ---
@@ -38,11 +38,12 @@
 - 置信度不够 → **未命中**，宁可不答。
 - 问练习**步骤细节**、库里只有入口指路 → **半命中**，仍只输出指路短答；禁止 `RESET_GROUND_*` / `RESET_BREATH_*` 等引导语正文（与 KB-FUNC-0002 防呆一致）。
 
-### Q3 · 未命中 → **记日志；回应走现有 Confide 策略**
+### Q3 · 未命中 → **已被路由闸门 Brief 覆盖（产品问不得再滑回 generate）**
 
-- 未命中须可查（`turns.jsonl` 或专用 `kb_retrieval_miss` 事件——实现任务定 schema）。
-- 本轮怎么回用户：L3 / 沉默 / 如实不确定等**现有**策略；本 Brief 不新定义兜底话术。
-- 回流：建议双周或按未命中 Top N 复盘，决定是否补盘点条目。
+- **SSOT（待 PO 点头）**：`task-confide-kb-routing-gate.md`。产品/知识类提问一旦进闸且未命中 → 诚实空态，**禁止**观察翼 / 闲聊 generate 编说明书。  
+- 未命中仍须可查（`kb_retrieval_miss`）；日志不能代替对用户的空态回复。  
+- 未进本闸的情绪 / 闲聊 / 个人事实：仍走现有 Confide 策略（本条只管产品问）。  
+- 回流：双周或按未命中 Top N 补盘点条目。
 
 ### Q4 · 检索范围 → **单一闸门：`yin_may_retrieve: 是` ∧ `审核状态: 已通过`**
 
