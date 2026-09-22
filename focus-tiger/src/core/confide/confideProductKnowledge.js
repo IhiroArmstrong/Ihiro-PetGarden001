@@ -31,11 +31,19 @@ const PRODUCT_KNOWLEDGE_QUESTION_RES = Object.freeze([
   /\bwhere\s+(?:is|are|do|can)\b/i,
   /\bwhat\s+is\b/i,
   /\bwhat\s+does\b/i,
-  /\bwhich\s+(?:button|menu)\b/i,
+  /\bwhich\s+(?:button|menu|ones?|items?|fields?|data)\b/i,
+  /\bwhat(?:'s| is) (?:in|inside)\b/i,
+  /\b(?:does|will) (?:it|the (?:backup|export|file)) include\b/i,
   /\bdifference\s+between\b/i,
   /怎么|如何|在哪|从哪|哪里|是什么|什么意思|有什么区别|区别|从哪看|从哪里|能不能|可不可以/,
+  /哪些|包不包含|包含哪些|装了什么|里面有什么/,
+  /会不会(?:包含|备份|导出|加密|明文)/,
   /どう|どこ|何|とは|違い/
 ]);
+
+/** Content/scope of backup vs "where is Backup & restore". */
+const BACKUP_CONTENT_ASK_RE =
+  /装了什么|里面有什么|包不包含|包含哪些|明文|加密|json file|plain json|unencrypted|what(?:'s| is) (?:in|inside)|(?:does|will).{0,24}include/i;
 
 /**
  * Step-detail asks still get pointer-only answers (semi-hit).
@@ -80,7 +88,22 @@ export function listRetrievableProductKnowledgeEntries() {
 export function isProductKnowledgeQuestion(text) {
   const raw = normalizeConfideIntentText(text);
   if (!raw) return false;
-  return PRODUCT_KNOWLEDGE_QUESTION_RES.some((re) => re.test(raw));
+  const spaced = raw.replace(/\s+/g, ' ').trim();
+  const compact = spaced.replace(/\s+/g, '');
+  return PRODUCT_KNOWLEDGE_QUESTION_RES.some(
+    (re) => re.test(spaced) || (compact !== spaced && re.test(compact))
+  );
+}
+
+/**
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isBackupContentQuestion(text) {
+  const raw = normalizeConfideIntentText(text).replace(/\s+/g, ' ').trim();
+  if (!raw) return false;
+  const compact = raw.replace(/\s+/g, '');
+  return BACKUP_CONTENT_ASK_RE.test(raw) || BACKUP_CONTENT_ASK_RE.test(compact);
 }
 
 /**
@@ -168,6 +191,12 @@ export function scoreProductKnowledgeEntries(text, entries = listRetrievableProd
  */
 export function pickProductKnowledgeHit(text, ranked) {
   if (!ranked.length) return null;
+  if (isBackupContentQuestion(text)) {
+    const content = ranked.find((row) => row.id === 'KB-FUNC-0015');
+    if (content && content.score >= 1) {
+      return { id: content.id, shortAnswerEn: content.shortAnswerEn };
+    }
+  }
   const top = ranked[0];
   const runner = ranked[1];
   if (top.score < CONFIDE_KB_RETRIEVAL_MIN_SCORE) {
