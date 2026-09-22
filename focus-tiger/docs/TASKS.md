@@ -407,6 +407,22 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
+## 📍 产品知识库规模化生产（2026-09-22 · 方向锁）
+
+> **SSOT**：`task-briefs/task-kb-scaled-production.md`。条目字段仍以 `product-knowledge-base.md` 为准。检索接线 / 路由闸门另见对应 Brief。  
+> **硬规则**：Epic / Test Tracker / PR **只做候选主题**；可念短答只从 locale / 规则源码起草。内部手册 ≠ 阿寅可念库。Brief 入库 ≠ 开工脚本。
+
+| 步 | 内容 | 状态 |
+|---|---|---|
+| **0** | 算法 Brief 入库 | **本旁支** · 待 PO 点头 |
+| **1** | 静态圈定存活入口 | 待口令 |
+| **2–4** | 权威源起草 + 机器核验 + 抽查语气 | 待口令 |
+| **手册** | `docs/internal-handbook/` 内部版（过程性汇总） | 待拍是否现在启动 |
+
+**我认为最合理的下一刀**：PO 点头后先做静态圈定，再扩已审条目问法；不要先灌 Epic 成可念说明书。
+
+---
+
 ## 📍 Presence Signals（2026-08-25 · 陪伴观察账本）
 
 > **≠** Yin Memory · **≠** Journey Log · **≠** `reflections.v1` 趋势 SSOT。Arrival Notice（calm / stressed / sad 等）及后续 Ritual / Reflection 封闭标签入账 `focus-tiger.presence-signals.v1`。Confide 趋势问句 → **CI-02** `presence_facts`（描述性 breakdown，禁止诊断）。

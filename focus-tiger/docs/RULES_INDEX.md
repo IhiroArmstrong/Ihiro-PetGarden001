@@ -207,6 +207,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `product-knowledge-base.md` | **产品知识库**分类/字段/三库拆分 + 第一周功能短答（**无运行时**；≠ Confide 语料、≠ 帮助中心、≠ 接地练习脚本） |
 | `task-briefs/task-confide-kb-retrieval-wiring.md` | **Confide 知识库检索接线**方向锁（Q1/Q2/Q4/Q5 已拍板；Q3 未命中口径见下行闸门 Brief） |
 | `task-briefs/task-confide-kb-routing-gate.md` | **Confide 知识库路由闸门**（B 类 · **待 PO 点头** · 语义识别产品问 + 未命中诚实空态；**无运行时**；入库 ≠ 开工） |
+| `task-briefs/task-kb-scaled-production.md` | **产品知识库规模化生产**（自动圈定 + 权威源起草 + 分级核验；Epic/Tracker 只做候选主题；**无运行时**；入库 ≠ 开工脚本） |
 | `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` | Local AI 扩场景会审输入（#462；已结案 → PO 决策） |
 | `LOCAL_AI_SCENARIO_EXPANSION_DESIGNER_PRE_REVIEW.md` | 设计师预审（#475；已由 PO 决策 supersede） |
 | `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` | **产品负责人正式拍板**（2026-08-28；Phase 1 · 非自动 runtime） |
@@ -261,6 +262,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-22 | 产品表：`task-kb-scaled-production.md`（知识库规模化生产算法；过程性文档降为候选主题；正文只信 locale/规则源码）。不进 rules-authority 机器块 |
 | 2026-09-22 | 产品表：`product-knowledge-base.md`（三库拆分 + 5 条现网对照短答；急救型无固定心理审核人 → 不接入 Local AI）。不进 rules-authority 机器块 |
 | 2026-09-21 | 新增 `brief-before-user-visible`：B 类用户可见改动开工前须 PO 点头 Brief；「立刻开工」不能跳过；有疑问默认 B 类。SSOT `WORKFLOW.md`「用户可见改动：Brief 开工门禁」；按需层 `.cursor/rules/focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` / `focus-tiger-core` 一行引用。示范：Confide Stage 1（A）vs Stage 2 切真路由（B） |
 | 2026-09-16 | 产品表：`EPIC_COVERAGE_AUDIT.md`（存量线覆盖）+ `planning/task-lines-epic-draft.md` 指针；同日建库 #792 音景 / #793 栖居壳层。不进 rules-authority 机器块 |
