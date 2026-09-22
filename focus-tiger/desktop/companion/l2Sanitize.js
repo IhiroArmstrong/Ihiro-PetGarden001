@@ -8,6 +8,48 @@ import { L2_MAX_REPLY_CHARS } from './l2Persona.js';
 /** One-word model misfires (e.g. Qwen acknowledging a prompt) — fall back to corpus. */
 const TRIVIAL_ONLY_REPLIES = /^(?:yes|no|ok|okay|sure|yep|nope|是|嗯|好|对)\.?$/iu;
 
+/** Copula / light verbs that make a two-word observe, not a dumped noun tag. */
+const SHORT_OBSERVE_VERBISH =
+  /^(?:is|am|are|was|were|be|been|being|feel|feels|felt|sit|sits|hear|hears|drift|drifts)$/iu;
+
+/**
+ * Structural dump of a mood tag ("Irritation." / "Anger.") — not a word list.
+ * Observations are sentences; a 1-word alphabetic dump (or 2–4 isolated Han)
+ * is a label, including tomorrow's unseen synonym.
+ * @param {unknown} raw
+ * @returns {boolean}
+ */
+export function isBareEmotionLabelReply(raw) {
+  const text = String(raw || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.!?。！？…]+$/u, '')
+    .trim();
+  if (!text) return false;
+  if (/[,"“”‘’、;；:：]/.test(text)) return false;
+
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length === 1 && /^[A-Za-z][A-Za-z'-]{2,19}$/.test(words[0])) {
+    return true;
+  }
+  if (
+    words.length === 2 &&
+    /^(?:the|a|an)$/i.test(words[0]) &&
+    /^[A-Za-z][A-Za-z'-]{2,19}$/.test(words[1]) &&
+    !SHORT_OBSERVE_VERBISH.test(words[1])
+  ) {
+    return true;
+  }
+  const compact = text.replace(/\s+/g, '');
+  if (
+    /^[\u3400-\u9fff]{2,4}$/u.test(compact) &&
+    !/[的了着过在是想觉得吗呢吧啊]/.test(compact)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 const BANNED = [
   /you should/i,
   /try (to )?breathe/i,
@@ -231,6 +273,7 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   }
   if (!text) return null;
   if (TRIVIAL_ONLY_REPLIES.test(text)) return null;
+  if (isBareEmotionLabelReply(text)) return null;
   if (BANNED.some((re) => re.test(text))) return null;
   if (isHollowCompanionObserveReply(text)) return null;
   if (isGenericCubTheaterReply(text)) return null;

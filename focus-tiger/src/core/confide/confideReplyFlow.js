@@ -8,7 +8,11 @@
  */
 
 import { canSubmitConfideText, confideClassify } from './confideClassify.js';
-import { confideLineText, pickConfideLine } from './confideCorpus.js';
+import {
+  CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS,
+  confideLineText,
+  pickConfideLine
+} from './confideCorpus.js';
 import { lastRepeatableYinReplyText } from './confideReplyUniqueness.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
@@ -100,6 +104,7 @@ export function resolveCorpusFallbackAfterGenerateFailure({
     localDate,
     salt,
     excludeIds: extra,
+    hardExcludeIds: CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS,
     excludeNormalizedTexts: lastVisible ? [lastVisible] : [],
     locale
   });

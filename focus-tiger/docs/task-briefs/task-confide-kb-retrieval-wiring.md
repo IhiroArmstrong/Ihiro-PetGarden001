@@ -1,9 +1,9 @@
 # Task Brief · Confide 知识库检索接线（只检索短答，不生成长文）
 
-> **状态（2026-09-22）**：**已拍板**（Q1–Q5 见第三节）。方向锁 Brief；**无运行时**。  
+> **状态（2026-09-22）**：**已拍板**（Q1–Q5 见第三节）。方向锁 Brief。  
 > **依赖**：`product-knowledge-base.md` 条目 `审核状态: 已通过`（#920 合入后 0001–0005 满足）。  
-> **实现**：#924 已合 `origin/develop`（关键词 catalog · 无 embedding v1）。向量索引另议。Q3 未命中 / 冷启动口径见 `task-confide-kb-routing-gate.md`（PO 已锁）。  
-> **交叉引用**：`product-knowledge-base.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_SCENARIOS_V1.md` · `confide-embedding-lifecycle-arbitration.md`（同坐卸载 / embedding 避让）
+> **实现**：#924 已合 `origin/develop`（关键词 catalog）。**已知技术债（PO 2026-09-22 立项、本轮不实现）**：用已装 Qwen3-Embedding 对短答做近义匹配，替代无限加字面规则；正式产品问分类器见 `task-confide-kb-routing-gate.md`（方案 B · **PO 已锁**；未命中 / 冷启动同一套诚实空态）。  
+> **交叉引用**：`product-knowledge-base.md` · `task-kb-scaled-production.md`（扩目录算法；不改本接线）· `CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_SCENARIOS_V1.md` · `confide-embedding-lifecycle-arbitration.md`（同坐卸载 / embedding 避让）
 
 ---
 

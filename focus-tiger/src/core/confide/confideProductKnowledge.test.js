@@ -12,6 +12,7 @@ import {
   buildKbRetrievalMissTurnLog,
   isConfideKbRetrievalCandidate,
   isConfideKbRetrievalEnabled,
+  isProductKnowledgeQuestion,
   listRetrievableProductKnowledgeEntries,
   mayTryConfideProductKnowledge,
   pickProductKnowledgeHit,
@@ -26,13 +27,14 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 15 approved entries (excludes 0006 breath pilot and 0009 cloud backup)', () => {
+  it('indexes exactly 16 approved entries (excludes 0006 breath pilot and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 15);
+    assert.equal(ids.length, 16);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
     assert.equal(ids.includes('KB-FUNC-0017'), true);
+    assert.equal(ids.includes('KB-FUNC-0018'), true);
   });
 
   it('kill switch FT_CONFIDE_KB_RETRIEVAL=off disables retrieval', () => {
@@ -122,5 +124,31 @@ describe('confide product knowledge retrieval', () => {
       { id: 'KB-FUNC-0002', score: 2, shortAnswerEn: 'b' }
     ];
     assert.equal(pickProductKnowledgeHit('x', ranked), null);
+  });
+
+  it('treats 哪些 / 包不包含 as product questions without swallowing mood 会不会', () => {
+    assert.equal(isProductKnowledgeQuestion('备份里包不包含练习记录？'), true);
+    assert.equal(isProductKnowledgeQuestion('导出文件装了什么？'), true);
+    assert.equal(isProductKnowledgeQuestion('会不会好一点'), false);
+  });
+
+  it('routes backup contents asks to 0015 instead of the 0003 entry pointer', () => {
+    const contents = retrieveProductKnowledge('备份装了什么？');
+    assert.equal(contents.hit, true);
+    assert.equal(contents.id, 'KB-FUNC-0015');
+    const scope = retrieveProductKnowledge('备份能够备份哪些数据？');
+    assert.equal(scope.hit, true);
+    assert.equal(scope.id, 'KB-FUNC-0015');
+    const where = retrieveProductKnowledge('备份从哪里进？');
+    assert.equal(where.hit, true);
+    assert.equal(where.id, 'KB-FUNC-0003');
+  });
+
+  it('hits focus-coins earn FAQ with the approved short answer', () => {
+    const coins = retrieveProductKnowledge('怎么获得寅币？');
+    assert.equal(coins.hit, true);
+    assert.equal(coins.id, 'KB-FUNC-0018');
+    assert.match(coins.text || '', /focus coins/i);
+    assert.doesNotMatch(coins.text || '', /\b36\b|FOMO/i);
   });
 });

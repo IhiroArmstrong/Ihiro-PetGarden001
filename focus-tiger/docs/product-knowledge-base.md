@@ -1,8 +1,8 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · 未审核）+ **第二批 10 条**（顺延 0007–0017；**15 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。  
+**状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · 未审核）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取**（PO 口径已过；**16 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 
@@ -407,7 +407,7 @@
   适用产品版本: 现网本地备份面板
   更新时间: 2026-09-22
   locale_keys: [LOCAL_BACKUP_PANEL_BLURB, PRIVACY_SHEET_EXPORT_IMPORT]
-  检索关键词: [明文, plain JSON, 加密, 备份格式, 导出文件, unencrypted]
+  检索关键词: [明文, plain JSON, 加密, 备份格式, 导出文件, unencrypted, 装了什么, 里面有什么, 包不包含]
 
 - id: KB-FUNC-0016
   所属库: 产品说明事实
@@ -446,8 +446,28 @@
   更新时间: 2026-09-22
   locale_keys: [SUPPORT_WEB_LOCAL_AI_NOTE, RESET_OVERWHELMED_CONFIDE_UNAVAILABLE, CONFIDE_PANEL_BLURB]
   检索关键词: [网页不能聊, 浏览器没有本地 AI, Web Confide, 手机浏览器, desktop app, Safari]
+
+- id: KB-FUNC-0018
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 经济说明
+  标题: 寅币 / Focus Coins 怎么获得
+  适用场景: 问怎么攒寅币、focus coins 从哪来，而不是问珍藏目录价格
+  内容正文: |
+    短答（en）：Sit or breathe with Yin to earn more focus coins — longer, more consistent practice earns more. There is a quiet daily pause so you need not binge. Look under Yin's Collections.
+    中文对照：静坐或呼吸练习都能获得寅币，练得越久越规律，得到的越多。有温和的每日停顿，不必赶着刷。入口在阿寅的珍藏。
+    口径：PO 2026-09-22 批准粗粒度获取方式；**禁止**在短答里念日封顶数字或催促加练（不制造焦虑）。账本细则仍只在 `FOCUS_COINS.md`。
+  yin_may_retrieve: 是
+  来源: 产品设计 + PO 口径
+  审核状态: 已通过
+  审核人: PO（2026-09-22 · 获取口径书面批准）
+  风险标记: 否
+  适用产品版本: 现网寅币 / Yin's Collections
+  更新时间: 2026-09-22
+  locale_keys: [focus_coins.duration_hint]
+  检索关键词: [寅币, Focus Coins, focus coins, 怎么获得寅币, earn coins, 攒币, 怎么攒]
 ```
-```
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
@@ -505,7 +525,7 @@
 - [x] `0009` 云备份专述保持未审核（功能暂禁用）
 - [x] 急救型草稿池仅标题登记，`yin_may_retrieve` 仍为否
 - [x] KB-OPS 两条 `yin_may_retrieve: 否`，永不进倾诉索引
-- [x] 累计 **15 条** `审核状态: 已通过`（0001–0005 + 0007–0008 + 0010–0017）→ 可拆检索接线实现 Issue
+- [x] 累计 **16 条** `审核状态: 已通过`（0001–0005 + 0007–0008 + 0010–0018）→ 可检索；embedding 近义匹配另记技术债，本轮不实现
 
 **共通**
 

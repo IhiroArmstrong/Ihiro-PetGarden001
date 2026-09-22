@@ -185,7 +185,14 @@
         "导出文件",
         "unencrypted",
         "backup format",
-        "json file"
+        "json file",
+        "装了什么",
+        "里面有什么",
+        "包不包含",
+        "包含哪些",
+        "哪些数据",
+        "what's in the backup",
+        "what does backup include"
       ]
     },
     {
@@ -213,6 +220,20 @@
         "Safari",
         "browser",
         "not in this browser"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0018",
+      "shortAnswerEn": "Sit or breathe with Yin to earn more focus coins — longer, more consistent practice earns more. There is a quiet daily pause so you need not binge. Look under Yin's Collections.",
+      "keywords": [
+        "寅币",
+        "Focus Coins",
+        "focus coins",
+        "怎么获得寅币",
+        "earn coins",
+        "攒币",
+        "怎么攒",
+        "focus coin"
       ]
     }
   ]

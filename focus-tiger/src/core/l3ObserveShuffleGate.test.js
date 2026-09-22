@@ -10,6 +10,7 @@ import {
   isGenericCubTheaterReply,
   isEchoOfUserLine,
   isHighOverlapWithUserLine,
+  isBareEmotionLabelReply,
   sanitizeCompanionL2Reply
 } from '../../desktop/companion/l2Sanitize.js';
 import {
@@ -179,5 +180,19 @@ describe('L3 observe scheme B shuffle gate', () => {
       ),
       false
     );
+  });
+
+  it('rejects bare emotion-label dumps by shape, not a word list', () => {
+    for (const line of ['Irritation.', 'Anger.', 'Sadness.', 'Fatigue.', 'The irritation.']) {
+      assert.equal(isBareEmotionLabelReply(line), true);
+      assert.equal(sanitizeCompanionL2Reply(line, { userText: '有点烦' }), null);
+    }
+    assert.equal(isBareEmotionLabelReply('Clouds drift.'), false);
+    assert.equal(
+      sanitizeCompanionL2Reply('Clouds drift.', { userText: '有点烦' }),
+      'Clouds drift.'
+    );
+    assert.equal(isBareEmotionLabelReply('烦躁。'), true);
+    assert.equal(isBareEmotionLabelReply('茶还热着'), false);
   });
 });
