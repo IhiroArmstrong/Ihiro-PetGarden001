@@ -16,7 +16,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 - Epic / Test Tracker / PR text may suggest topics; only rows with locale / rule SSOT may draft catalog entries.
 - Operational numbers stay out of recitable short answers.
-- `KB-FUNC-0006` (breath entry pilot) and `KB-FUNC-0009` (cloud backup) remain **未审核** — registry may still point at them; this audit flags that separately from batch-2 gaps.
+- `KB-FUNC-0006` (breath entry pilot) and `KB-FUNC-0009` (cloud backup) remain **未审核** in `product-knowledge-base.md` — live registry now links approved siblings (`0011` for breath · `0012` for journey-log UI, not cloud backup).
 
 ---
 
@@ -38,15 +38,15 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-22 · 25 live rows · 16 approved catalog ids
+**Snapshot**: 2026-09-22 · 25 live rows · 18 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 12 | Step 4 authoritative draft → PO tone spot-check |
-| registry mapping drift | 6 | fix `catalogKbIds` on registry rows (docs-only) |
-| registry links unapproved | 2 | swap to approved ids or wait for PO on 0006/0009 |
+| batch-2 live-surface candidates | 10 | Step 4 authoritative draft → PO tone spot-check |
+| registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
+| registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 2 | PO scope before drafting |
 | cross-cutting approved (no live row) | 3 | keep as behavior/platform facts |
 
@@ -54,8 +54,6 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | menuPath | labelKeys |
 |---|---|---|---|
-| `kb-live-five-moments` | live | ⋯ → Practice → Five Moments | `FIVE_MOMENTS_MENU_LABEL` |
-| `kb-live-honesty` | live | ⋯ → Practice → Honest check-in | `HONESTY_IDLE_ENTRY` |
 | `kb-live-daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` |
 | `kb-live-zen-cinema` | live | ⋯ → Inspiration → Zen Cinema | `ZEN_CINEMA_MENU_LABEL` |
 | `kb-live-wallpapers` | live | ⋯ → Inspiration → Wallpapers | `WALLPAPER_MENU_LABEL` |
@@ -71,19 +69,11 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | registryKbIds | canonicalKbIds |
 |---|---|---|---|
-| `kb-live-breath` | live | `KB-FUNC-0006` | `KB-FUNC-0011` |
-| `kb-live-companion` | conditional | `KB-FUNC-0004` | `KB-FUNC-0008` |
-| `kb-live-journey-log` | live | `KB-FUNC-0009` | `KB-FUNC-0012` |
-| `kb-live-presence-signals` | live | — | `KB-FUNC-0013` |
-| `kb-live-confide` | gated-default-off | `KB-FUNC-0005` | `KB-FUNC-0005` `KB-FUNC-0010` |
-| `kb-live-hud-progress` | live | — | `KB-FUNC-0004` |
 
 ### Registry links to unapproved ids
 
 | liveId | liveStatus | registryKbIds | unapprovedKbIds |
 |---|---|---|---|
-| `kb-live-breath` | live | `KB-FUNC-0006` | `KB-FUNC-0006` |
-| `kb-live-journey-log` | live | `KB-FUNC-0009` | `KB-FUNC-0009` |
 
 ### Conditional / gated-off surfaces (no approved KB yet)
 
@@ -117,7 +107,7 @@ CI / smoke: `npm run audit:kb-live-gap` (no write) is part of `npm run docs:chec
 | Step | Content | Status |
 |---|---|---|
 | 1 | Static live-entry registry | **已合 develop** (#929) |
-| 2 | Gap audit (this doc) | **本旁支** |
-| 3 | Expand retrieval keywords on passed rows (fact unchanged) | 待口令 |
-| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | B 类 · 待口令 |
+| 2 | Gap audit (this doc) | **已合 develop** (#931) · registry drift cleared |
+| 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** · catalog keywords only |
+| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **本旁支** · 0019 / 0020 待审 · 未进 catalog |
 | 手册 | `docs/internal-handbook/` | 等缺口稳定后再开 |

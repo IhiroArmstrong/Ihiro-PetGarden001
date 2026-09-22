@@ -57,7 +57,11 @@
         "25 minutes",
         "香",
         "progress bar",
-        "hud"
+        "hud",
+        "top left",
+        "进度条",
+        "soft aim",
+        "today's sitting"
       ]
     },
     {
@@ -101,7 +105,10 @@
         "Offline Space",
         "Flow State",
         "companion mode",
-        "how shall we sit"
+        "how shall we sit",
+        "Here and Now",
+        "三种陪法",
+        "companion mode where"
       ]
     },
     {
@@ -131,7 +138,12 @@
         "左球",
         "和 Sit 区别",
         "breath vs sit",
-        "difference between breath"
+        "difference between breath",
+        "怎么呼吸",
+        "从哪进",
+        "左球在哪",
+        "where is breath practice",
+        "how to breathe"
       ]
     },
     {
@@ -145,7 +157,10 @@
         "practice trail",
         "日历",
         "journey log",
-        "where to see practice"
+        "where to see practice",
+        "journey log 在哪",
+        "查看练习",
+        "practice calendar"
       ]
     },
     {
@@ -158,7 +173,10 @@
         "从哪看情绪",
         "mood check-in",
         "趋势从哪看",
-        "presence moments"
+        "presence moments",
+        "presence signals",
+        "情绪面板",
+        "mood record where"
       ]
     },
     {
@@ -234,6 +252,39 @@
         "攒币",
         "怎么攒",
         "focus coin"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0019",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → The 5 Moments. On a wide screen you can also tap the right orb — Five moments with Yin. The compass shows Arrive → Focus → Recover → Transition → Reflect. Tap a moment to jump to that surface — for example Reflect opens Journey log. Yin only points; this is not a second timer.",
+      "keywords": [
+        "Five Moments",
+        "五个时刻",
+        "五时刻",
+        "The 5 Moments",
+        "Arrive Focus Recover",
+        "一天五个",
+        "five moments with yin",
+        "罗盘",
+        "compass",
+        "five moments",
+        "5 moments"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0020",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Honesty Check-in — below The 5 Moments. Pick how long your quiet time elsewhere was, take one syncing breath, then Yin records it. This is optional; Sit with Yin still works without it. After check-in you may see a gentle bridge asking if you want to sit now too.",
+      "keywords": [
+        "Honesty Check-in",
+        "诚实补登",
+        "别处的静心",
+        "荣誉制",
+        "补登练习",
+        "honest check-in",
+        "quiet time elsewhere",
+        "补登从哪进",
+        "honesty check-in",
+        "honest check in"
       ]
     }
   ]

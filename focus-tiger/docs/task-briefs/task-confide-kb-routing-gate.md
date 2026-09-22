@@ -133,7 +133,7 @@ C 库起点（实现时写入 `confideSemanticExamples` 一类数据文件，本
 
 | 层 | 状态 |
 |---|---|
-| 条目权威 | `product-knowledge-base.md`：15 条 `审核状态: 已通过` 可进检索闸门；0006 呼吸试点、0009 云备份仍未审核 |
+| 条目权威 | `product-knowledge-base.md`：**18 条** `审核状态: 已通过` 可进检索闸门；0006 盘点参考（不进 catalog）、0009 云备份仍未审核 |
 | 检索运行时 | **已合入 develop（#924）**：关键词 catalog（`confideProductKnowledge.js` + `productKnowledgeCatalog.json`） |
 | 问句闸门 | **仍是正则**，与本 Brief 目标冲突 |
 | 未命中 | #924 仍按旧 Q3 走 corpus / generate —— 本闸要堵的后门 |

@@ -478,6 +478,48 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0018' }
   },
   {
+    id: 'kb-0019-five-moments-zh',
+    text: 'Five Moments 罗盘从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0019' }
+  },
+  {
+    id: 'kb-0019-five-moments-short-zh',
+    text: 'Five Moments 从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0019' }
+  },
+  {
+    id: 'kb-0019-five-moments-en',
+    text: 'Where is the Five Moments compass?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0019' }
+  },
+  {
+    id: 'kb-0020-honesty-zh',
+    text: 'Honesty Check-in 怎么补登？',
+    dimensions: ['how'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0020' }
+  },
+  {
+    id: 'kb-0020-honesty-short-zh',
+    text: '诚实补登在哪',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0020' }
+  },
+  {
+    id: 'kb-0020-honesty-en',
+    text: 'How do I log an honest check-in?',
+    dimensions: ['how', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0020' }
+  },
+  {
     id: 'honesty-observe-wing-zh',
     text: '观察翼是什么？',
     dimensions: ['what'],

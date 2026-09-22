@@ -29,14 +29,16 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 16 approved entries (excludes 0006 breath pilot and 0009 cloud backup)', () => {
+  it('indexes exactly 18 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 16);
+    assert.equal(ids.length, 18);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
     assert.equal(ids.includes('KB-FUNC-0017'), true);
     assert.equal(ids.includes('KB-FUNC-0018'), true);
+    assert.equal(ids.includes('KB-FUNC-0019'), true);
+    assert.equal(ids.includes('KB-FUNC-0020'), true);
   });
 
   it('kill switch FT_CONFIDE_KB_RETRIEVAL=off disables retrieval', () => {
@@ -146,12 +148,43 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(where.id, 'KB-FUNC-0003');
   });
 
+  it('Step 3 expanded keywords hit approved registry-linked entries', () => {
+    const breath = retrieveProductKnowledge('左球在哪做呼吸练习？');
+    assert.equal(breath.hit, true);
+    assert.equal(breath.id, 'KB-FUNC-0011');
+
+    const journey = retrieveProductKnowledge('journey log 在哪看练习记录？');
+    assert.equal(journey.hit, true);
+    assert.equal(journey.id, 'KB-FUNC-0012');
+
+    const presence = retrieveProductKnowledge('presence signals 情绪面板在哪？');
+    assert.equal(presence.hit, true);
+    assert.equal(presence.id, 'KB-FUNC-0013');
+
+    const hud = retrieveProductKnowledge('top left progress bar 是什么？');
+    assert.equal(hud.hit, true);
+    assert.equal(hud.id, 'KB-FUNC-0004');
+  });
+
   it('hits focus-coins earn FAQ with the approved short answer', () => {
     const coins = retrieveProductKnowledge('怎么获得寅币？');
     assert.equal(coins.hit, true);
     assert.equal(coins.id, 'KB-FUNC-0018');
     assert.match(coins.text || '', /focus coins/i);
     assert.doesNotMatch(coins.text || '', /\b36\b|FOMO/i);
+  });
+
+  it('hits batch-2 Step 4 Five Moments and Honesty entry questions', () => {
+    const five = retrieveProductKnowledge('Five Moments 罗盘从哪开？');
+    assert.equal(five.hit, true);
+    assert.equal(five.id, 'KB-FUNC-0019');
+    assert.match(five.text || '', /The 5 Moments/i);
+
+    const honesty = retrieveProductKnowledge('Honesty Check-in 怎么补登？');
+    assert.equal(honesty.hit, true);
+    assert.equal(honesty.id, 'KB-FUNC-0020');
+    assert.match(honesty.text || '', /Honesty Check-in/i);
+    assert.match(honesty.text || '', /optional/i);
   });
 
   it('semantic-ready miss on product ask resolves to honesty not generate path', () => {
