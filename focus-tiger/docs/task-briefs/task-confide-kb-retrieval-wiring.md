@@ -2,7 +2,7 @@
 
 > **状态（2026-09-22）**：**已拍板**（Q1–Q5 见第三节）。方向锁 Brief。  
 > **依赖**：`product-knowledge-base.md` 条目 `审核状态: 已通过`（#920 合入后 0001–0005 满足）。  
-> **实现**：#924 已合 `origin/develop`（关键词 catalog）。**已知技术债（PO 2026-09-22 立项、本轮不实现）**：用已装 Qwen3-Embedding 对短答做近义匹配，替代无限加字面规则；正式产品问分类器方向见 `task-confide-kb-routing-gate.md`（方案 B）。  
+> **实现**：#924 已合 `origin/develop`（关键词 catalog）。**已知技术债（PO 2026-09-22 立项、本轮不实现）**：用已装 Qwen3-Embedding 对短答做近义匹配，替代无限加字面规则；正式产品问分类器见 `task-confide-kb-routing-gate.md`（方案 B · **PO 已锁**；未命中 / 冷启动同一套诚实空态）。  
 > **交叉引用**：`product-knowledge-base.md` · `task-kb-scaled-production.md`（扩目录算法；不改本接线）· `CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_SCENARIOS_V1.md` · `confide-embedding-lifecycle-arbitration.md`（同坐卸载 / embedding 避让）
 
 ---
@@ -40,7 +40,7 @@
 
 ### Q3 · 未命中 → **已被路由闸门 Brief 覆盖（产品问不得再滑回 generate）**
 
-- **SSOT（待 PO 点头）**：`task-confide-kb-routing-gate.md`。产品/知识类提问一旦进闸且未命中 → 诚实空态，**禁止**观察翼 / 闲聊 generate 编说明书。  
+- **SSOT（2026-09-22 PO 已点头）**：`task-confide-kb-routing-gate.md`。产品/知识类提问一旦进闸且未命中 → 诚实空态；embedding 未就绪窗口 **同一套空态**，**禁止**观察翼 / 闲聊 generate 编说明书。  
 - 未命中仍须可查（`kb_retrieval_miss`）；日志不能代替对用户的空态回复。  
 - 未进本闸的情绪 / 闲聊 / 个人事实：仍走现有 Confide 策略（本条只管产品问）。  
 - 回流：双周或按未命中 Top N 补盘点条目。
