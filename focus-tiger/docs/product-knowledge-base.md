@@ -2,7 +2,7 @@
 
 **状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · 未审核）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取**（PO 口径已过；**16 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · 严格排除具体引导 · **待 PO 点头**）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 
@@ -30,6 +30,17 @@
 | `KB-PSY-DRAFT-0001` | 接地练习引导语正文 | 想听阿寅念 5-4-3-2-1 步骤 | 已有 `⋯ → Ground exercise`；引导语见 `RESET_GROUND_*` / `RESET_LOOK_*` |
 | `KB-PSY-DRAFT-0002` | 呼吸复位引导语正文 | 想听阿寅带呼吸节拍 | 左球 Breath practice；引导语见 `RESET_BREATH_*` / `BREATH_PHASE_*` |
 | `KB-PSY-DRAFT-0003` | 压倒感时倾诉转接 | 坐不住且想被听见 | `RESET_OVERWHELMED_CONFIDE_OFFER` 指路到 Confide；非危机热线 |
+
+### 0.1 科普概念类（非引导 · 2026-09-22）
+
+「正念是什么 / 接地练习为什么常被认为有帮助」这类**读完即完整**的概念说明，与急救型引导语不是同一风险档，也**不能**套用寅币/备份那条「locale 盘点」流水线。
+
+- **可做**：通用健康概念、术语辨析；不绑定具体疾病/症状名；不对「你」下行动指令。
+- **不做**：任何读完还要跟着做的步骤（呼吸节拍、5-4-3-2-1、闭眼跟做）。菜单里已有入口的，只许指路到 `KB-FUNC-0002` / `0006`，禁止重写 `RESET_*`。
+- **审核**：不要求心理咨询资质；产品/内容团队按判定表自检即可。未审核不得 `yin_may_retrieve: 是`。
+- **判定口诀**：答案读完，用户要不要接着做动作？要做 → 一律不做。信源再权威也不松这条线。
+
+范围线、信源改写、字段与分批流程见 `task-briefs/task-kb-practice-edu-concepts.md`。**点头前零条 `KB-EDU-*` 进 catalog。**
 
 ---
 
