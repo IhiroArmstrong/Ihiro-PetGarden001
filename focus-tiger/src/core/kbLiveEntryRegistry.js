@@ -140,7 +140,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/locales/en.json'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0019'])
   }),
   Object.freeze({
     id: 'kb-live-honesty',
@@ -156,7 +157,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/locales/en.json'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0020'])
   }),
   Object.freeze({
     id: 'kb-live-journey-log',

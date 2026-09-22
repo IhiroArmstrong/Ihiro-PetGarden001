@@ -253,6 +253,39 @@
         "怎么攒",
         "focus coin"
       ]
+    },
+    {
+      "id": "KB-FUNC-0019",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → The 5 Moments. On a wide screen you can also tap the right orb — Five moments with Yin. The compass shows Arrive → Focus → Recover → Transition → Reflect. Tap a moment to jump to that surface — for example Reflect opens Journey log. Yin only points; this is not a second timer.",
+      "keywords": [
+        "Five Moments",
+        "五个时刻",
+        "五时刻",
+        "The 5 Moments",
+        "Arrive Focus Recover",
+        "一天五个",
+        "five moments with yin",
+        "罗盘",
+        "compass",
+        "five moments",
+        "5 moments"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0020",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Honesty Check-in — below The 5 Moments. Pick how long your quiet time elsewhere was, take one syncing breath, then Yin records it. This is optional; Sit with Yin still works without it. After check-in you may see a gentle bridge asking if you want to sit now too.",
+      "keywords": [
+        "Honesty Check-in",
+        "诚实补登",
+        "别处的静心",
+        "荣誉制",
+        "补登练习",
+        "honest check-in",
+        "quiet time elsewhere",
+        "补登从哪进",
+        "honesty check-in",
+        "honest check in"
+      ]
     }
   ]
 }

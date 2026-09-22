@@ -37,8 +37,9 @@ describe('audit-kb-live-gap helpers', () => {
   it('lists batch-2 candidates for uncovered live menus', () => {
     const report = computeKbLiveGapReport();
     const candidateIds = report.batch2Candidates.map((row) => row.liveId);
-    assert.ok(candidateIds.includes('kb-live-five-moments'));
-    assert.ok(candidateIds.includes('kb-live-honesty'));
+    assert.equal(candidateIds.includes('kb-live-five-moments'), false);
+    assert.equal(candidateIds.includes('kb-live-honesty'), false);
+    assert.ok(candidateIds.includes('kb-live-daily-quote'));
     assert.ok(candidateIds.includes('kb-live-ritual-morning'));
     assert.equal(candidateIds.includes('kb-live-sit'), false);
     assert.equal(candidateIds.includes('kb-live-ground'), false);

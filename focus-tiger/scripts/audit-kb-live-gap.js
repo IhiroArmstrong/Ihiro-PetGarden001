@@ -53,7 +53,9 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-yin-coin': Object.freeze(['KB-FUNC-0018']),
   'kb-live-confide': Object.freeze(['KB-FUNC-0010', 'KB-FUNC-0005']),
   'kb-live-local-backup': Object.freeze(['KB-FUNC-0003', 'KB-FUNC-0015']),
-  'kb-live-hud-progress': Object.freeze(['KB-FUNC-0004'])
+  'kb-live-hud-progress': Object.freeze(['KB-FUNC-0004']),
+  'kb-live-five-moments': Object.freeze(['KB-FUNC-0019']),
+  'kb-live-honesty': Object.freeze(['KB-FUNC-0020'])
 });
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform facts). */
