@@ -38,13 +38,13 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-22 · 25 live rows · 18 approved catalog ids
+**Snapshot**: 2026-09-22 · 25 live rows · 19 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 10 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 9 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 2 | PO scope before drafting |
@@ -54,7 +54,6 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | menuPath | labelKeys |
 |---|---|---|---|
-| `kb-live-daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` |
 | `kb-live-zen-cinema` | live | ⋯ → Inspiration → Zen Cinema | `ZEN_CINEMA_MENU_LABEL` |
 | `kb-live-wallpapers` | live | ⋯ → Inspiration → Wallpapers | `WALLPAPER_MENU_LABEL` |
 | `kb-live-quiet-together` | gated-default-on | ⋯ → Not alone → Quiet together | `QUIET_TOGETHER_MENU_LABEL` |
@@ -109,5 +108,5 @@ CI / smoke: `npm run audit:kb-live-gap` (no write) is part of `npm run docs:chec
 | 1 | Static live-entry registry | **已合 develop** (#929) |
 | 2 | Gap audit (this doc) | **已合 develop** (#931) · registry drift cleared |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** · catalog keywords only |
-| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **本旁支** · 0019 / 0020 待审 · 未进 catalog |
+| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939) · **0021 Daily quote 已入库 catalog**（本旁支 · 闸门 **19**）· Zen Cinema / Wallpapers 仍待起草 |
 | 手册 | `docs/internal-handbook/` | 等缺口稳定后再开 |

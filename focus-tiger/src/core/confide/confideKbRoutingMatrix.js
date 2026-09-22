@@ -520,6 +520,27 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0020' }
   },
   {
+    id: 'kb-0021-daily-quote-zh',
+    text: '今日静语从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0021' }
+  },
+  {
+    id: 'kb-0021-daily-quote-short-zh',
+    text: '一句静语在哪',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0021' }
+  },
+  {
+    id: 'kb-0021-daily-quote-en',
+    text: 'Where is the daily quote menu?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0021' }
+  },
+  {
     id: 'honesty-observe-wing-zh',
     text: '观察翼是什么？',
     dimensions: ['what'],

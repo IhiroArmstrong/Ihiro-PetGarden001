@@ -417,12 +417,12 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **0** | 算法 Brief + 三默认 | **PO 已拍板**（2026-09-22） |
 | **1** | 静态圈定存活入口 | **已合 develop** (#929) · `kbLiveEntryRegistry.js` + `audit:kb-live-entries` · 25 行存活清单 · 无运行时 |
 | **2** | 存活清单 vs 已通过 KB 缺口 | **已合 develop** (#931) · `audit:kb-live-gap` · 12 batch-2 候选 · 6 registry 漂移已修 |
-| **矩阵** | KB 路由回归夹具（意图×问法；断言 dataSource/KB 编号） | **本旁支** `feature/confide-kb-routing-matrix` · `confideKbRoutingMatrix.js` · 不改 live · 无 GGUF |
+| **矩阵** | KB 路由回归夹具（意图×问法；断言 dataSource/KB 编号） | **已合 develop** (#938) · `confideKbRoutingMatrix.js` · 不改 live · 无 GGUF |
 | **3** | 已审条目扩问法（0011/0012/0013/0004/0008 等） | **已合 develop** (#932) · 事实不变 · catalog 关键词 |
-| **4** | 权威源起草 → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939 · 闸门 18) · batch-2 余下 Inspiration 等待审 |
+| **4** | 权威源起草 → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939 · 闸门 18) · **0021 Daily quote 已入库 catalog**（本旁支 · 闸门 **19**） |
 | **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
 
-**我认为最合理的下一刀**：合入 **KB 路由矩阵**（#938）→ PO tone spot-check **0021 Daily quote** → 入库 catalog 并链 registry；再起草 Zen Cinema / Wallpapers。
+**我认为最合理的下一刀**：合入 **0021 Daily quote catalog**（本旁支）→ 起草 Zen Cinema → Wallpapers。
 
 ---
 

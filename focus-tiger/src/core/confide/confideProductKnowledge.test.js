@@ -29,9 +29,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 18 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 19 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 18);
+    assert.equal(ids.length, 19);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -39,6 +39,7 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0018'), true);
     assert.equal(ids.includes('KB-FUNC-0019'), true);
     assert.equal(ids.includes('KB-FUNC-0020'), true);
+    assert.equal(ids.includes('KB-FUNC-0021'), true);
   });
 
   it('kill switch FT_CONFIDE_KB_RETRIEVAL=off disables retrieval', () => {
@@ -185,6 +186,18 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(honesty.id, 'KB-FUNC-0020');
     assert.match(honesty.text || '', /Honesty Check-in/i);
     assert.match(honesty.text || '', /optional/i);
+  });
+
+  it('hits batch-2 Step 4 Daily quote entry questions', () => {
+    const quote = retrieveProductKnowledge('今日静语从哪开？');
+    assert.equal(quote.hit, true);
+    assert.equal(quote.id, 'KB-FUNC-0021');
+    assert.match(quote.text || '', /A Quiet Line/i);
+    assert.match(quote.text || '', /Save image/i);
+
+    const quoteEn = retrieveProductKnowledge('Where is the daily quote menu?');
+    assert.equal(quoteEn.hit, true);
+    assert.equal(quoteEn.id, 'KB-FUNC-0021');
   });
 
   it('semantic-ready miss on product ask resolves to honesty not generate path', () => {
