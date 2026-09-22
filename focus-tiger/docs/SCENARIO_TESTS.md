@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-20（Confide L3 方案 B · Hybrid 闲聊跳过 · 语义向量 shadow Stage 1 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-09-23（Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · KB-FUNC-0021 Daily quote 入 catalog · 路由矩阵单测冻结 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
@@ -1078,6 +1078,20 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **场景 Q · Membership**：`fix(rca): membership manage feedback and witness picker retry`——管理页内联反馈 + witness picker 重试；Checkout 仍走场景 Q 步 3。  
    - **My Circle / JA**：`feat(circle,confide): My Circle peer traces + JA Electron session probe`——尚无独立场景字母；批量测时对照 TRACKER `focus-circle` 行与场景 AE Electron。  
 3. **仍须人工 / 勿当缺口**：L3 方案 B 12 句人工重配观感；语义 shadow 与线上路由对账；备份排除 turns 后恢复边界；三态 mutation 375 按压；Membership witness picker 弱网重试。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
+## 2026-09-21–23 增量核对摘要（Confide KB 路由门闩 · getLlama work gate · catalog 19 条）
+
+1. **背景**：9/21–9/23 合入 develop 一批 Confide 产品知识库接线（#934 · #938 · #941）与 KB catalog 扩编；TRACKER 碎片本旁支 `tracker:assemble` 折入机器块（331 条）。  
+2. **本次核对（增量，未升格新字母场景）**：  
+   - **场景 AE · L2 · 步 1**（#934 `feat(confide): semantic KB gate + miss honesty empty state`）：产品问未命中 / embedding 未就绪 → **`data-source=product_knowledge_honesty`** 诚实空态，**禁止** generate；catalog 命中（如「接地练习在哪」「A Quiet Line 在哪」）→ **`data-source=product_knowledge`**。  
+   - **场景 AE · Electron · L2**：`feat(confide): serialize companion getLlama behind one work gate`——并发 Confide 请求须串行等 GGUF 就绪，**禁止** 双实例抢模型。  
+   - **场景 AE · lab/验收**：`test(confide): freeze KB routing matrix and sample-size gates`（#938）——路由矩阵与样本量门槛已单测冻结；批量测仍走 `confide-round-acceptance.md`，**不**升格用户故事字母。  
+   - **场景 AE · catalog**：KB-FUNC-0021 Daily quote（Inspiration · A Quiet Line）PO 点头入 `productKnowledgeCatalog.json`（#941 区间）——步 1 命中路径须 `product_knowledge`，勿误走 generate。  
+   - **场景 AE · 备份 scope**（#934 邻接）：`fix(confide): backup scope routing + generate-fail observe fallback`——备份范围路由与 generate 失败 observe 回退；与场景 AI 备份排除 turns 互补。  
+3. **仍须人工 / 勿当缺口**：KB miss 诚实空态文案观感；getLlama 串行等待时长；0021 Daily quote 中英文检索措辞；路由矩阵新条目回归。  
 4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
