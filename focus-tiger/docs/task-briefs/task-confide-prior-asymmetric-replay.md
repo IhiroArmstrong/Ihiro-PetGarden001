@@ -50,3 +50,17 @@ Agent **禁止**把整份 `turns.jsonl` 读进 Chat；只汇报脚本终端摘�
 - 面板打开时预加载 embedding / 加 0.6B 加载 UI（见 `ISSUE_LEDGER`；等 `task-confide-embedding-work-gate` 合入后再一起评，禁止单独先上预加载）
 - 改 `applyConfideStage2Route` / 状态条 / Confide 文案
 - 为凑样本再让用户 Electron 连发 20 句
+
+## 重新评估触发点（2026-09-22 · 不是问法矩阵）
+
+本债卡住的是**多轮真实样本**，不是「怎么/在哪」变体覆盖率。禁止用 KB 路由矩阵代替本回放。
+
+| 门闩 | 数字 |
+|---|---|
+| 日历 | Stage 2 窄刀在 `origin/develop` 满 **3 周**；首次复核日 **2026-10-12** |
+| 样本量 | `audit:confide-prior-asymmetric` **eligible ≥ 30** |
+| 人工 | PO 抽 **≥ 12** 条（help / harm / other；other 若很少则全看） |
+| 才开 Stage 2b with-prior Brief | ruleHarm 保持 0 **且** other（含 F2）不主导 |
+| 延期 | 满 **6 周** eligible 仍少于 15 → 必须书面汇报「样本不够」，不得当已遗忘 |
+
+回放脚本仍**不得**写「可以切 with-prior live」。

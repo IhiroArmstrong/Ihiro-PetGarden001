@@ -417,6 +417,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **0** | 算法 Brief + 三默认 | **PO 已拍板**（2026-09-22） |
 | **1** | 静态圈定存活入口 | **已合 develop** (#929) · `kbLiveEntryRegistry.js` + `audit:kb-live-entries` · 25 行存活清单 · 无运行时 |
 | **2** | 存活清单 vs 已通过 KB 缺口 | **本旁支** `docs/kb-scaled-production-step2` · `audit:kb-live-gap` · 12 batch-2 候选 · 无运行时 |
+| **矩阵** | KB 路由回归夹具（意图×问法；断言 dataSource/KB 编号） | **本旁支** `feature/confide-kb-routing-matrix` · `confideKbRoutingMatrix.js` · 不改 live · 无 GGUF |
 | **3–4** | 扩问法 + 权威源起草 + 机器核验 + 抽查语气 | 待口令（第 2 步之后） |
 | **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
 
