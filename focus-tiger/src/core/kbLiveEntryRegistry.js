@@ -90,7 +90,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/locales/en.json',
       'docs/MICRO_RITUAL_PLAN.md'
     ]),
-    catalogKbIds: Object.freeze(['KB-FUNC-0006'])
+    catalogKbIds: Object.freeze(['KB-FUNC-0011'])
   }),
   Object.freeze({
     id: 'kb-live-companion',
@@ -107,7 +107,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/locales/en.json'
     ]),
-    catalogKbIds: Object.freeze(['KB-FUNC-0004'])
+    catalogKbIds: Object.freeze(['KB-FUNC-0008'])
   }),
   Object.freeze({
     id: 'kb-live-ground',
@@ -173,7 +173,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/locales/en.json'
     ]),
-    catalogKbIds: Object.freeze(['KB-FUNC-0009'])
+    catalogKbIds: Object.freeze(['KB-FUNC-0012'])
   }),
   Object.freeze({
     id: 'kb-live-presence-signals',
@@ -189,7 +189,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/locales/en.json'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0013'])
   }),
   Object.freeze({
     id: 'kb-live-yin-coin',
@@ -242,7 +243,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/confide/confideUserVisibilityGate.js',
       'src/locales/en.json'
     ]),
-    catalogKbIds: Object.freeze(['KB-FUNC-0005'])
+    catalogKbIds: Object.freeze(['KB-FUNC-0005', 'KB-FUNC-0010'])
   }),
   Object.freeze({
     id: 'kb-live-daily-quote',
@@ -406,7 +407,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     menuPath: 'Top-left HUD · Today shared sitting',
     liveStatus: 'live',
     codeAnchors: Object.freeze(['HUD_PROGRESS_SHARED_SITTING']),
-    authoritativeSources: Object.freeze(['src/locales/en.json'])
+    authoritativeSources: Object.freeze(['src/locales/en.json']),
+    catalogKbIds: Object.freeze(['KB-FUNC-0004'])
   })
 ]);
 
