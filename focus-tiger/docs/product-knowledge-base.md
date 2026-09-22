@@ -2,7 +2,7 @@
 
 **状态（2026-09-22）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · 未审核）+ **第二批 10 条**（顺延 0007–0017；**15 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · 待 PO 点头 · 不写代码）· `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 
@@ -517,5 +517,5 @@
 ## 六、流水线（仍建议，尚未建工具）
 
 存量权威文案（locale / 菜单普查 / 产品文档）→ 草稿池 → 人审打标 → 入库 → Local AI 只索引 `yin_may_retrieve: 是` ∧ `审核状态: 已通过` 的短答 → 未命中回流。  
-接线行为 SSOT：`task-briefs/task-confide-kb-retrieval-wiring.md`（原样/模板输出 · 不 L3 转述）。产品问闸门与未命中空态：`task-briefs/task-confide-kb-routing-gate.md`（**待 PO 点头**；点头前不得当已实现）。  
+接线行为 SSOT：`task-briefs/task-confide-kb-retrieval-wiring.md`（原样/模板输出 · 不 L3 转述）。产品问闸门与未命中 / 未就绪空态：`task-briefs/task-confide-kb-routing-gate.md`（**PO 已点头**；本闸运行时未接线）。  
 内部排障永不进入倾诉索引。

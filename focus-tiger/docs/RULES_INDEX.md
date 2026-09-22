@@ -206,7 +206,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `LOCAL_AI_OPERATING_LAYER.md` | Local AI Operating Layer 方向锁（Auto-Operating ≠ Confide；只设计无运行时；Backup/Update/MCP 不进 Confide V1） |
 | `product-knowledge-base.md` | **产品知识库**分类/字段/三库拆分 + 第一周功能短答（**无运行时**；≠ Confide 语料、≠ 帮助中心、≠ 接地练习脚本） |
 | `task-briefs/task-confide-kb-retrieval-wiring.md` | **Confide 知识库检索接线**方向锁（Q1/Q2/Q4/Q5 已拍板；Q3 未命中口径见下行闸门 Brief） |
-| `task-briefs/task-confide-kb-routing-gate.md` | **Confide 知识库路由闸门**（B 类 · **待 PO 点头** · 语义识别产品问 + 未命中诚实空态；**无运行时**；入库 ≠ 开工） |
+| `task-briefs/task-confide-kb-routing-gate.md` | **Confide 知识库路由闸门**（B 类 · **PO 已点头 2026-09-22** · 语义二分类 + 未命中/未就绪诚实空态、禁止 generate；**无本闸运行时**；开工须新 Chat） |
 | `LOCAL_AI_SCENARIO_EXPANSION_REVIEW.md` | Local AI 扩场景会审输入（#462；已结案 → PO 决策） |
 | `LOCAL_AI_SCENARIO_EXPANSION_DESIGNER_PRE_REVIEW.md` | 设计师预审（#475；已由 PO 决策 supersede） |
 | `LOCAL_AI_SCENARIO_EXPANSION_PO_DECISION.md` | **产品负责人正式拍板**（2026-08-28；Phase 1 · 非自动 runtime） |

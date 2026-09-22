@@ -2,7 +2,7 @@
 
 > **状态（2026-09-22）**：**已拍板**（Q1–Q5 见第三节）。方向锁 Brief；**无运行时**。  
 > **依赖**：`product-knowledge-base.md` 条目 `审核状态: 已通过`（#920 合入后 0001–0005 满足）。  
-> **实现**：`feature/confide-kb-retrieval-wiring`（关键词 catalog · 无 embedding v1）。向量索引另议。  
+> **实现**：#924 已合 `origin/develop`（关键词 catalog · 无 embedding v1）。向量索引另议。Q3 未命中 / 冷启动口径见 `task-confide-kb-routing-gate.md`（PO 已锁）。  
 > **交叉引用**：`product-knowledge-base.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `LOCAL_AI_SCENARIOS_V1.md` · `confide-embedding-lifecycle-arbitration.md`（同坐卸载 / embedding 避让）
 
 ---
@@ -40,7 +40,7 @@
 
 ### Q3 · 未命中 → **已被路由闸门 Brief 覆盖（产品问不得再滑回 generate）**
 
-- **SSOT（待 PO 点头）**：`task-confide-kb-routing-gate.md`。产品/知识类提问一旦进闸且未命中 → 诚实空态，**禁止**观察翼 / 闲聊 generate 编说明书。  
+- **SSOT（2026-09-22 PO 已点头）**：`task-confide-kb-routing-gate.md`。产品/知识类提问一旦进闸且未命中 → 诚实空态；embedding 未就绪窗口 **同一套空态**，**禁止**观察翼 / 闲聊 generate 编说明书。  
 - 未命中仍须可查（`kb_retrieval_miss`）；日志不能代替对用户的空态回复。  
 - 未进本闸的情绪 / 闲聊 / 个人事实：仍走现有 Confide 策略（本条只管产品问）。  
 - 回流：双周或按未命中 Top N 补盘点条目。
