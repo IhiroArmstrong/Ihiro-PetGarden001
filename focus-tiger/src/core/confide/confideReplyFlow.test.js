@@ -133,6 +133,23 @@ test('resolveConfideReply: ZH beat-people phrase → aggression pool, never gene
   assert.doesNotMatch(hit.line.zh, /点头/);
 });
 
+test('resolveCorpusFallbackAfterGenerateFailure: never privacy disclaimer (fallback-02)', () => {
+  const ids = new Set();
+  for (let salt = 0; salt < 24; salt += 1) {
+    const hit = resolveCorpusFallbackAfterGenerateFailure({
+      locale: 'zh',
+      localDate: '2026-09-22',
+      salt,
+      excludeIds: ids,
+      history: []
+    });
+    assert.ok(hit);
+    assert.notEqual(hit.line.id, 'fallback-02');
+    assert.doesNotMatch(hit.text, /留在这里|stays here/i);
+    ids.add(hit.line.id);
+  }
+});
+
 test('resolveCorpusFallbackAfterGenerateFailure: 8 frozen-exclude fails are not consecutive-identical', () => {
   const excludeIds = new Set(['fallback-01', 'fallback-02', 'fallback-03']);
   const history = [];
