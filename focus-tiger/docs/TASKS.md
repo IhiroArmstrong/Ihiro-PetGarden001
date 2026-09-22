@@ -415,11 +415,11 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 步 | 内容 | 状态 |
 |---|---|---|
 | **0** | 算法 Brief + 三默认 | **PO 已拍板**（2026-09-22） |
-| **1** | 静态圈定存活入口 | 待「开工」口令 |
+| **1** | 静态圈定存活入口 | **本旁支** `docs/kb-scaled-production` · `kbLiveEntryRegistry.js` + `audit:kb-live-entries` · 25 行存活清单 · 无运行时 |
 | **2–4** | 权威源起草 + 机器核验 + 抽查语气 | 待口令（第 1 步之后） |
 | **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
 
-**我认为最合理的下一刀**：发「开工」只做静态圈定；不要同刀灌手册或改 catalog。
+**我认为最合理的下一刀**：对照存活清单 vs 已通过 `KB-FUNC-*` 找缺口（第 2 步）；不要同刀灌手册或改 catalog。
 
 ---
 
