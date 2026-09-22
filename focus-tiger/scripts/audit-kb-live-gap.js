@@ -55,7 +55,8 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-local-backup': Object.freeze(['KB-FUNC-0003', 'KB-FUNC-0015']),
   'kb-live-hud-progress': Object.freeze(['KB-FUNC-0004']),
   'kb-live-five-moments': Object.freeze(['KB-FUNC-0019']),
-  'kb-live-honesty': Object.freeze(['KB-FUNC-0020'])
+  'kb-live-honesty': Object.freeze(['KB-FUNC-0020']),
+  'kb-live-daily-quote': Object.freeze(['KB-FUNC-0021'])
 });
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform facts). */
