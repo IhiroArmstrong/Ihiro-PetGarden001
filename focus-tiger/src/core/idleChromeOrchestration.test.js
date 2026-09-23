@@ -103,12 +103,14 @@ describe('resolveShellChromeProjection', () => {
     assert.deepEqual(p.narrow, {
       idle: true,
       suppressed: false,
-      keepQuickStart: false
+      keepQuickStart: false,
+      honestyBridgeActive: false
     });
     assert.deepEqual(p.wide, {
       idle: true,
       suppressed: false,
-      keepQuickStart: false
+      keepQuickStart: false,
+      honestyBridgeActive: false
     });
   });
 
@@ -179,7 +181,9 @@ describe('resolveShellChromeProjection', () => {
     });
     assert.equal(p.narrow.suppressed, true);
     assert.equal(p.narrow.keepQuickStart, false);
+    assert.equal(p.narrow.honestyBridgeActive, false);
     assert.equal(p.wide.keepQuickStart, false);
+    assert.equal(p.wide.honestyBridgeActive, false);
   });
 
   it('bridge alone → both shells suppressed (narrow hides home balls over Yes/No)', () => {
@@ -192,7 +196,9 @@ describe('resolveShellChromeProjection', () => {
     });
     assert.equal(p.narrow.suppressed, true);
     assert.equal(p.narrow.keepQuickStart, false);
+    assert.equal(p.narrow.honestyBridgeActive, true);
     assert.equal(p.wide.suppressed, true);
+    assert.equal(p.wide.honestyBridgeActive, true);
   });
 
   it('Focusing → idle false on both', () => {

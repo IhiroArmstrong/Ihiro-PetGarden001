@@ -126,6 +126,7 @@ export class WideIdleMoreMenu {
     this._idle = true;
     this._suppressed = false;
     this._keepQuickStart = false;
+    this._honestyBridgeActive = false;
     this._menuOpen = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
@@ -182,13 +183,14 @@ export class WideIdleMoreMenu {
    * Arrival / Honesty / Reflection / bridge: hide ⋯.
    * Arrival `keepQuickStart`: keep Quick Start ball only.
    * @param {boolean} suppressed
-   * @param {{ keepQuickStart?: boolean }} [opts]
+   * @param {{ keepQuickStart?: boolean, honestyBridgeActive?: boolean }} [opts]
    * @returns {void}
    */
   setSuppressed(suppressed, opts = {}) {
     this._suppressed = Boolean(suppressed);
     this._keepQuickStart =
       Boolean(opts.keepQuickStart) && this._suppressed;
+    this._honestyBridgeActive = Boolean(opts.honestyBridgeActive);
     if (this._suppressed && !this._keepQuickStart) {
       this.closeMenu();
       this.clearStage();
@@ -202,7 +204,7 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   openMenu() {
-    if (!this._isWide() || !this._idle) return;
+    if (!this._isWide() || !this._idle || this._honestyBridgeActive) return;
     this._dismissIdleVisualPrimaryOverlays();
     this._menuOpen = true;
     this._popEscapeLayer?.();
@@ -595,8 +597,8 @@ export class WideIdleMoreMenu {
     const wide = this._isWide();
     const park = wide && this._idle;
     const keepQs = Boolean(this._keepQuickStart);
-    // Menu entry stays visible as an escape hatch even when overlays suppress home CTAs.
-    const showMore = park;
+    // Escape hatch (#757): overlay-suppress keeps ⋯; Honesty bridge must hide per contract.
+    const showMore = park && !this._honestyBridgeActive;
     // Full suppress (Reflection / duration picker / growth cards): hide home balls.
     // keepQuickStart: Quick Start only via `.is-arrival-quick` (matches narrow shell).
     const showHome = park && (!this._suppressed || keepQs);

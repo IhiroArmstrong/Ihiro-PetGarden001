@@ -176,11 +176,13 @@ export function createSessionChromeSync(deps) {
     // "⚡ only" latch and the Honesty home ball snaps back mid-Arrival.
     if (idleChrome?.wide?.setSuppressed) {
       idleChrome.wide.setSuppressed(wide.suppressed, {
-        keepQuickStart: Boolean(wide.keepQuickStart)
+        keepQuickStart: Boolean(wide.keepQuickStart),
+        honestyBridgeActive: bridgeVisible
       });
     } else {
       wideIdleMoreMenu.setSuppressed(wide.suppressed, {
-        keepQuickStart: Boolean(wide.keepQuickStart)
+        keepQuickStart: Boolean(wide.keepQuickStart),
+        honestyBridgeActive: bridgeVisible
       });
     }
   }
@@ -237,11 +239,13 @@ export function createSessionChromeSync(deps) {
       const { narrow, wide } = projection;
       narrowIdleShell.setIdle(narrow.idle);
       narrowIdleShell.setSuppressed(narrow.suppressed, {
-        keepQuickStart: Boolean(narrow.keepQuickStart)
+        keepQuickStart: Boolean(narrow.keepQuickStart),
+        honestyBridgeActive: bridgeVisible
       });
       wideIdleMoreMenu.setIdle(wide.idle);
       wideIdleMoreMenu.setSuppressed(wide.suppressed, {
-        keepQuickStart: Boolean(wide.keepQuickStart)
+        keepQuickStart: Boolean(wide.keepQuickStart),
+        honestyBridgeActive: bridgeVisible
       });
     }
     syncInAppReminderBanner();
