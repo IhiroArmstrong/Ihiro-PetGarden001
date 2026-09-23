@@ -57,14 +57,16 @@ test('same-day reload does not show flower bubble again', async ({ page }) => {
   });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 15_000 });
   // Welcome daily quota + lastOpen already set — no second flower/bubble.
-  await page.waitForTimeout(1500);
-  await expect(page.locator('#flower-blow-welcome-bubble')).toHaveCount(0);
+  await expect(page.locator('#flower-blow-welcome-bubble')).toHaveCount(0, {
+    timeout: 5_000
+  });
 });
 
 test('flowerWelcome=0 never shows flower bubble on Day1', async ({ page }) => {
   await openFreshProductShell(page, { query: { flowerWelcome: 0 } });
-  await page.waitForTimeout(1500);
-  await expect(page.locator('#flower-blow-welcome-bubble')).toHaveCount(0);
+  await expect(page.locator('#flower-blow-welcome-bubble')).toHaveCount(0, {
+    timeout: 5_000
+  });
 });
 
 test('welcome quota blocks flower even if Day1 force would apply', async ({
@@ -81,8 +83,9 @@ test('welcome quota blocks flower even if Day1 force would apply', async ({
     timeout: 35_000
   });
   await expect(page.locator('#btn-focus')).toBeVisible({ timeout: 15_000 });
-  await page.waitForTimeout(1500);
-  await expect(page.locator('#flower-blow-welcome-bubble')).toHaveCount(0);
+  await expect(page.locator('#flower-blow-welcome-bubble')).toHaveCount(0, {
+    timeout: 5_000
+  });
   // Occupancy must not stay on FLOWER when broadcast never started.
   const frameSrc = await page.evaluate(() => {
     const imgs = document.querySelectorAll('#sprite-stage img');

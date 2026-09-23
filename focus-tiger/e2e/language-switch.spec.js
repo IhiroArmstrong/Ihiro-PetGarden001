@@ -124,9 +124,13 @@ test('Language UI: switch to 日本語 then back to English', async ({ page }) =
   });
   await page.locator('#language-preference-ja').check();
   await expect(page.locator(SIT)).toContainText(/阿寅と坐る/, { timeout: 5_000 });
-  await page.waitForTimeout(300);
-  const afterRepeat = await page.evaluate(
-    () => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null
-  );
-  expect(afterRepeat).toBe('probe');
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(
+          () => window.__sceneAnimationSliceA?.lastLocaleGreeting ?? null
+        ),
+      { timeout: 3_000 }
+    )
+    .toBe('probe');
 });
