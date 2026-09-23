@@ -4,11 +4,14 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   clickWideMoreProxyOrDirect,
   openFreshProductShell,
   quickStartFocus
 } from './helpers/product-shell.js';
+
+test.use({ viewport: { width: 1280, height: 720 } });
 
 const REMINDER_KEY = 'focus-tiger.reminder-preference.v1';
 const TOGGLE = '#reminder-preference-toggle';
@@ -17,6 +20,11 @@ const ENABLED = '#reminder-preference-enabled';
 const TIME = '#reminder-preference-time';
 const BANNER = '#in-app-reminder-banner';
 const DISMISS = '#in-app-reminder-banner-dismiss';
+
+async function openIdleForReminderTests(page, opts) {
+  await openFreshProductShell(page, opts);
+  await dismissColdStartOverlay(page);
+}
 
 async function openReminderPanel(page) {
   await clickWideMoreProxyOrDirect(page, 'reminder');
@@ -39,7 +47,7 @@ async function simulateReturnToForeground(page) {
 test('idle: reminder entry opens panel with daily blurb (wide ⋯ or direct)', async ({
   page
 }) => {
-  await openFreshProductShell(page);
+  await openIdleForReminderTests(page);
 
   // Wide Idle parks the clock off-canvas; entry is via ⋯. Toggle still in DOM.
   await expect(page.locator(TOGGLE)).toBeAttached({ timeout: 15_000 });
@@ -67,7 +75,7 @@ test('idle: reminder entry opens panel with daily blurb (wide ⋯ or direct)', a
 test('enabled past time shows soft note; practiced today note keeps time editable', async ({
   page
 }) => {
-  await openFreshProductShell(page);
+  await openIdleForReminderTests(page);
   await expect(page.locator(TOGGLE)).toBeAttached({ timeout: 15_000 });
 
   await page.evaluate(() => {
@@ -116,7 +124,7 @@ test('enabled past time shows soft note; practiced today note keeps time editabl
 test('set reminder time → return to foreground → show banner → dismiss → no repeat this page session', async ({
   page
 }) => {
-  await openFreshProductShell(page);
+  await openIdleForReminderTests(page);
   await expect(page.locator(BANNER)).toBeHidden();
 
   // setNow BEFORE enabling：避免墙钟已过 09:00 时在填表瞬间就出横幅/信使，
@@ -166,7 +174,7 @@ test('set reminder time → return to foreground → show banner → dismiss →
 test('parrot messenger replays when banner reappears after silent hide', async ({
   page
 }) => {
-  await openFreshProductShell(page);
+  await openIdleForReminderTests(page);
   await page.evaluate(() => {
     window.__inAppReminder.setNow(new Date(2026, 6, 22, 8, 0, 0));
   });
@@ -212,7 +220,7 @@ test('parrot messenger replays when banner reappears after silent hide', async (
 });
 
 test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
-  await openFreshProductShell(page);
+  await openIdleForReminderTests(page);
   await page.evaluate(() => {
     window.__inAppReminder.setNow(new Date(2026, 6, 22, 8, 0, 0));
   });
@@ -237,7 +245,7 @@ test('banner hides while Focusing (suppress busy policy)', async ({ page }) => {
 test('reminder save stays clickable above an open hint bubble (z-index overlap)', async ({
   page
 }) => {
-  await openFreshProductShell(page);
+  await openIdleForReminderTests(page);
   await expect(page.locator(TOGGLE)).toBeAttached({ timeout: 15_000 });
 
   await page.evaluate(() => {

@@ -9,6 +9,7 @@ import { PRACTICE_DAYS_STORAGE_KEY } from '../src/core/PracticeDaysStore.js';
 import { JOURNEY_LOG_STORAGE_KEY } from '../src/core/journeyLogGate.js';
 import {
   clickBreathPracticeEntry,
+  clickHonestyCheckInEntry,
   clickWideMoreProxyOrDirect,
   openFreshProductShell
 } from './helpers/product-shell.js';
@@ -23,7 +24,10 @@ async function openMicroRitualPicker(page) {
   await expect(ritual).toBeVisible({ timeout: 5_000 });
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
   await expect(ritual.locator('#focus-coins-duration-hint')).toBeVisible();
-  await expect(ritual.locator('#focus-coins-duration-hint')).toContainText(/寅币/);
+  // Locale-neutral: focus_coins.duration_hint (en/zh/ja). Align fix/idle-chrome-five-moments-membership · TEST_TRACKER 2026-09-11.
+  await expect(ritual.locator('#focus-coins-duration-hint')).toContainText(
+    /Focus Coins|寅币|寅コイン/i
+  );
   return ritual;
 }
 
@@ -389,6 +393,32 @@ test('bridge CTA hides dock entries over Yes/No; No restores entries', async ({
   await expect(bridge).toBeHidden({ timeout: 5_000 });
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible({ timeout: 10_000 });
   await expect(honestyEntry).toBeAttached();
+});
+
+test('375 bridge real path: grabber hidden during Yes/No (not inject)', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  await openFreshProductShell(page, { query: { honestyBreathMs: 1500 } });
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible({
+    timeout: 15_000
+  });
+
+  await clickHonestyCheckInEntry(page);
+  const checkIn = page.locator('#honesty-check-in');
+  await expect(checkIn).toBeVisible({ timeout: 5_000 });
+  await checkIn
+    .getByRole('button', { name: /brief moment|片刻清静|~10m|约 10/i })
+    .click();
+  await expect(checkIn).toBeHidden({ timeout: 12_000 });
+
+  const bridge = page.locator('#honesty-bridge-cta');
+  await expect(bridge).toBeVisible({ timeout: 8_000 });
+  await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
+  await expect(page.locator('.ft-narrow-action-bar__time')).toBeVisible();
+  await expect(page.locator('#ft-narrow-home-ctas')).toBeHidden();
+  await expect(page.locator('.ft-narrow-grabber')).toBeHidden();
+  await expect(page.locator('#ft-narrow-home-honesty')).toBeHidden();
 });
 
 test('375 bridge: ActionBar time stays; tip click does not dismiss Yes/No', async ({

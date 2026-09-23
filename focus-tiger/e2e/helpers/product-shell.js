@@ -135,18 +135,70 @@ export async function openWideMoreMenuIfPresent(page) {
   return true;
 }
 
+/** @type {Readonly<Record<string, string>>} */
+const WIDE_MORE_PROXY_GROUP = Object.freeze({
+  reminder: 'MENU_GROUP_PREFERENCES',
+  language: 'MENU_GROUP_PREFERENCES'
+});
+
 /**
- * 经宽屏 ⋯（若有）打开提醒等代理入口；Breath 走首页左球；Honesty 走首页球。
+ * Expand a collapsible wide ⋯ section before clicking a parked row.
+ * @param {import('@playwright/test').Page} page
+ * @param {string} groupKey
+ */
+async function expandWideMoreMenuGroup(page, groupKey) {
+  const header = page.locator(
+    `#ft-wide-more-menu .ft-wide-more__section-header[data-group="${groupKey}"]`
+  );
+  if (!(await header.isVisible().catch(() => false))) return;
+  if ((await header.getAttribute('aria-expanded')) === 'true') return;
+  await header.click();
+  await expect(header).toHaveAttribute('aria-expanded', 'true', {
+    timeout: 3_000
+  });
+}
+
+/**
+ * Honesty Check-in（非 Five Moments 右球）：宽屏 ⋯ Practice 行 / 窄屏抽屉 Practice 行。
+ * Home `#ft-*-home-honesty` 已映射 Five Moments（TEST_TRACKER 2026-09-11）。
+ * @param {import('@playwright/test').Page} page
+ */
+export async function clickHonestyCheckInEntry(page) {
+  if (await openWideMoreMenuIfPresent(page)) {
+    const honestyRow = page.locator('#ft-wide-more-menu [data-proxy="honesty"]');
+    if ((await honestyRow.count()) > 0) {
+      await honestyRow.click();
+      return;
+    }
+  }
+  const grabber = page.locator(
+    '.ft-narrow-grabber, #ft-narrow-options-grabber, [data-proxy="sheet"]'
+  );
+  if (await grabber.first().isVisible().catch(() => false)) {
+    await grabber.first().click();
+    const drawerHonesty = page.locator(
+      '#ft-narrow-options-drawer [data-proxy="honesty"]'
+    );
+    if (await drawerHonesty.isVisible().catch(() => false)) {
+      await drawerHonesty.click();
+      return;
+    }
+  }
+  await page.locator('#honesty-idle-entry').evaluate((el) => {
+    el.style.pointerEvents = 'auto';
+    /** @type {HTMLElement} */ (el).click();
+  });
+}
+
+/**
+ * 经宽屏 ⋯（若有）打开提醒等代理入口；Breath 走首页左球；Honesty Check-in 走菜单。
  * @param {import('@playwright/test').Page} page
  * @param {'honesty'|'breath'|'reminder'|'sound'|'language'} proxy
  */
 export async function clickWideMoreProxyOrDirect(page, proxy) {
   if (proxy === 'honesty') {
-    const ball = page.locator('#ft-wide-home-honesty');
-    if (await ball.isVisible().catch(() => false)) {
-      await ball.click();
-      return;
-    }
+    await clickHonestyCheckInEntry(page);
+    return;
   }
   if (proxy === 'breath') {
     await clickBreathPracticeEntry(page);
@@ -160,7 +212,15 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
     language: '#language-preference-panel'
   }[proxy];
   if (await openWideMoreMenuIfPresent(page)) {
-    await page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`).click();
+    const groupKey = WIDE_MORE_PROXY_GROUP[proxy];
+    if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
+    const row = page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`);
+    await row.scrollIntoViewIfNeeded();
+    if (proxy === 'reminder') {
+      // Hover first: in-app-reminder tip used to steal the row click.
+      await row.hover();
+    }
+    await row.click();
     return;
   }
   if (proxy === 'reminder') {
@@ -338,6 +398,12 @@ export async function riseSkipReflectionToIdle(page) {
   const reflection = page.locator('#tiger-reflection-moment');
   await expect(reflection).toBeVisible({ timeout: 15_000 });
   await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
+  // Skip all → wisdom hold; only Continue dismisses (Reflection multi-stage · TEST_TRACKER).
+  const continueBtn = reflection.getByRole('button', {
+    name: /Continue|继续/i
+  });
+  await expect(continueBtn).toBeVisible({ timeout: 8_000 });
+  await continueBtn.click();
   await expect(reflection).toBeHidden({ timeout: 10_000 });
   await expectFocusSessionInactive(page);
 }

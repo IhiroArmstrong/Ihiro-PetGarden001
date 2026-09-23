@@ -104,6 +104,7 @@ export class NarrowIdleShell {
     this._idle = true;
     this._suppressed = false;
     this._keepQuickStart = false;
+    this._honestyBridgeActive = false;
     this._sheetOpen = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
@@ -243,13 +244,14 @@ export class NarrowIdleShell {
    *   Honesty, but **keep ActionBar + Quick Start** (W3 — ⚡ only).
    * Legacy dock stays parked either way.
    * @param {boolean} suppressed
-   * @param {{ keepQuickStart?: boolean }} [opts]
+   * @param {{ keepQuickStart?: boolean, honestyBridgeActive?: boolean }} [opts]
    * @returns {void}
    */
   setSuppressed(suppressed, opts = {}) {
     this._suppressed = Boolean(suppressed);
     this._keepQuickStart =
       Boolean(opts.keepQuickStart) && this._suppressed;
+    this._honestyBridgeActive = Boolean(opts.honestyBridgeActive);
     if (this._suppressed) {
       this.closeSheet();
       // Arrival / Honesty suppress must not park an already-expanded Companion
@@ -389,6 +391,10 @@ export class NarrowIdleShell {
         Boolean(this._suppressed) && !keepQs
       );
       this.shell.classList.toggle('is-arrival-quick', keepQs);
+      this.shell.classList.toggle(
+        'is-honesty-bridge',
+        Boolean(this._honestyBridgeActive)
+      );
     }
     if (!narrow || this._suppressed) this.closeSheet();
     if (narrow) {
@@ -1124,6 +1130,11 @@ export class NarrowIdleShell {
       /* Arrival: Quick Start ball stays (W3); ActionBar (? · clock · ♪) stays too */
       .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-grabber {
         display: none !important;
+      }
+      /* Honesty bridge: hide grabber (z30 covers Yes/No); overlay-suppress keeps escape hatch */
+      .ft-narrow-idle-shell.is-honesty-bridge .ft-narrow-grabber {
+        visibility: hidden;
+        pointer-events: none;
       }
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {

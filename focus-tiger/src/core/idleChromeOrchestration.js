@@ -32,6 +32,7 @@ import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
  * @property {boolean} idle
  * @property {boolean} suppressed
  * @property {boolean} [keepQuickStart]
+ * @property {boolean} [honestyBridgeActive]
  */
 
 /**
@@ -242,13 +243,15 @@ export function resolveShellChromeProjection(input) {
       // must full-suppress on bridge so Yes/No are not covered. ActionBar stays
       // (setSuppressed + !keepQuickStart → is-suppressed; ActionBar exempt).
       suppressed: Boolean(chromeSuppressed || bridgeVisible),
-      keepQuickStart
+      keepQuickStart,
+      honestyBridgeActive: bridgeVisible
     },
     wide: {
       idle: !focusing,
       // Wide ⋯ also suppresses on Honesty bridge (narrow ActionBar stays).
       suppressed: Boolean(chromeSuppressed || bridgeVisible),
-      keepQuickStart
+      keepQuickStart,
+      honestyBridgeActive: bridgeVisible
     }
   };
 }
