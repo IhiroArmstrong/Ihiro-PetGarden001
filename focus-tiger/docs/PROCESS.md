@@ -1411,7 +1411,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 - **距 visibility job 末次全绿**：**未知 / ≥200 run 无全绿**（2026-09-23 审计；更新时写 run 链接）
 - **目标**：**先** job 级全绿（failed=0，flaky 趋 0），**再** core 26 条 Required；全量 46 条仍非 Required。
 - **处理方向（优先序，可组合）**：
-  1. **Type C · 方案 A + workers:1（已批准 · 组合实施）**：GitHub Actions 按 3 spec **并行 3 job**（压墙钟、避 60min 顶）+ **每 job 内** Playwright `workers:1`（压 `:5199` preview 过载）；见 `WORKFLOW.md`「方案 A + workers:1」。**禁止**只做其一。
+  1. **Type C · 方案 A + workers:1（已批准 · 组合实施 · 2026-09-24 工程化）**：`focus-tiger-visibility-contract.yml` 拆 **3 并行 job**（`scenario-a` / `micro-ritual` / `weekly-heatmap`）+ `playwright.ci-visibility.config.js` **workers:1**；preflight 单独跑 doc-check/registry；summary 汇总 JUnit。**禁止**只做其一。待 CI 验证 flaky 降幅。
   2. **Type C · 导航策略**：suite 后半段 `goto`/`reload` 超时须先压再谈断言；一律 `openFreshProductShell` / `domcontentloaded`；禁止默默 `page.goto`/`reload` 走 `load`；4 workers 曾压垮 `vite preview` → 大量 `domcontentloaded` 超时。
   3. **Type B**：修选择器/文案漂移、测试债、时序不稳（如 Honesty → Five Moments）。
   4. **Type A**：retry 后仍红的 viewport/全流程类须 PO 确认 intentional change 后再改测试或产品。
