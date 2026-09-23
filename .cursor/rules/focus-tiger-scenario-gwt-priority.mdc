@@ -1,0 +1,22 @@
+---
+description: 场景剧本 E2E 优先级 P0/P1/P2 打标与 GWT 生成（改 SCENARIO_TESTS 或 GWT 时挂载）
+globs: "focus-tiger/docs/SCENARIO_TESTS.md,focus-tiger/docs/SCENARIO_TESTS_GWT.md,focus-tiger/scripts/generate-scenario-tests-gwt.py"
+alwaysApply: false
+---
+
+# Focus Tiger · 场景 E2E 优先级（Agent 摘要）
+
+> **SSOT**：`focus-tiger/docs/SCENARIO_TESTS_GWT.md` §「编写规范 · E2E 优先级」+ `focus-tiger/scripts/generate-scenario-tests-gwt.py`（`RULES_INDEX` → `scenario-gwt-priority`）。  
+> **区分**：本文 P0/P1/P2 = **E2E 关键路径**；`SCENARIO_TESTS.md` 文首「存量补句优先级」= **0–1 秒句排期**，二者不可混用。
+
+## 强制（本会话）
+
+新增 / 改写 `SCENARIO_TESTS.md` 场景时：
+
+1. **先按五维清单打 E2E 优先级**：收入/资金 · 不可逆/高代价 · 跨系统 · 高频大路径 · 历史事故 —— **命中任意一条 → P0**。
+2. **识别下沉信号**：纯表单校验、规则分支排列组合、纯 UI 文案/样式（非合规必展示）→ 正文注明「单测/集成覆盖」，E2E 只写一条主干。
+3. **未命中 P0 且非实验/废弃/展示为主 → P1**；实验切片 / 已废弃 / 展示文案为主 → **P2**。
+4. 改完权威剧本后 **须重跑** `python3 focus-tiger/scripts/generate-scenario-tests-gwt.py`，禁止手改 `SCENARIO_TESTS_GWT.md` 优先级列。
+5. 与 `SCENARIO_TESTS` 增量核对同批：若升格新场景，文首日期 + GWT 生成物一并更新。
+
+纯机械校对（错字、日期刷新）且未动场景步骤：写 **「无优先级重算」** 即可，可不重跑生成器。
