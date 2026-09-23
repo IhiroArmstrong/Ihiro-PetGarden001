@@ -41,6 +41,7 @@ alwaysApply: true
 | 触发场景 | 先 Read |
 |---|---|
 | 接任务 / 改产品语义 / 情绪·架构·文案 | `focus-tiger-docs.mdc` |
+| 新增/改写 `SCENARIO_TESTS` 场景 · 重跑 GWT 生成器 | `focus-tiger-scenario-gwt-priority.mdc` |
 | bug 修复·交互修复·完工·commit·push·§7 | `focus-tiger-regression-lock.mdc` |
 | 判断某功能是否已实现/已开工/已合入（含随口提问） | `focus-tiger-regression-lock.mdc` |
 | 起 Vite·预览·Safari 验收·IDE Browser | `focus-tiger-browser-energy.mdc` |

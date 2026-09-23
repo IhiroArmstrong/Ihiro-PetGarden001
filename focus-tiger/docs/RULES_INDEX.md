@@ -130,6 +130,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `infra-snapshot` | 「Worker/KV/entitlement 现状见 `INFRA_SNAPSHOT.md`」；`ENV_CONFIG` 只链规则；接云任务前可读摘要 | 在 `ENV_CONFIG` 再维护「仓库事实」大表；把 Secret 值写进摘要；未经「部署」口令更新 `prod_worker_version` |
 | `feature-conflict-review` | 「实现前冲突扫描见 `FEATURE_CONFLICT_REVIEW.md`」；PR 第三问 / Cursor 规则 / `SCENARIO_TESTS` 文首可一行引用 | 发现冲突仍先实现再问；主张文档改动可跳过扫描后默认执行；在非 SSOT 复述三轴全文；与 `risk-mitigation-playbook` / 已好清单混成同一条 |
 | `scenario-tests-eod-sync` | 「下班前 Git 同步须增量核对 `SCENARIO_TESTS.md` 见 regression-lock 第 7 条 / `PROCESS` Git 同步节奏」；`git-agent-commit` 可一行引用 | 下班前 sync 只 push 不更新场景剧本；整份重写 SCENARIO_TESTS；把 TEST_TRACKER 碎片复制进场景正文 |
+| `scenario-gwt-priority` | 「场景 E2E 优先级 P0/P1/P2 见 `SCENARIO_TESTS_GWT.md` §编写规范 + `generate-scenario-tests-gwt.py`」；`.cursor/rules/focus-tiger-scenario-gwt-priority.mdc` 可一行引用 | 把 0–1 秒补句排期表当 E2E 优先级；手改 GWT 优先级列；新增场景不打五维清单 |
 | `tracker-eod-sync` | 「下班前 Git 同步须拼装 `TEST_TRACKER` 碎片见 regression-lock 第 7 条 / `PROCESS` Git 同步节奏 step 0b」；`git-agent-commit` / `TEST_TRACKER.md`「拼装触发」P1 可一行引用 | 下班前 sync 只 push 不跑 `tracker:assemble`；在功能 PR 里拼装；把碎片直接复制进 `SCENARIO_TESTS` |
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
 
@@ -157,6 +158,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
 | [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`；**glob 注入，非 alwaysApply**） |
+| [`.cursor/rules/focus-tiger-scenario-gwt-priority.mdc`](../../.cursor/rules/focus-tiger-scenario-gwt-priority.mdc) | Agent 摘要：场景 E2E 优先级 P0/P1/P2 五维打标 + GWT 生成器重跑（**非** SSOT；全文见 `SCENARIO_TESTS_GWT.md` §编写规范；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-background-network.mdc`](../../.cursor/rules/focus-tiger-background-network.mdc) | Agent 摘要：非用户点击网络请求须答三问（**非** SSOT；全文见 `BACKGROUND_NETWORK.md`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-docs.mdc`](../../.cursor/rules/focus-tiger-docs.mdc) | Agent 摘要兜底（**非** SSOT；只摘要 + 指向权威） |
 | [`DEV_WORKFLOW_QUALITY.md`](./DEV_WORKFLOW_QUALITY.md) | 质量工作流**叙事**（why/how）；门禁条文以 regression-lock 为准 |
@@ -204,6 +206,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `YIN_PERSONALIZATION_ENGINE.md` | Yin Personalization Engine V1（方向锁；L0/L1 本地运行时；L2 契约/Consent/身份已拍、ingest 已合；V2 白名单 insight + 服务器 algorithmVersion；≠ 品味层 / Memory store / Qwen；同属防剽窃层） |
 | `CONFIDE_EXECUTABLE_INTENTS.md` | Confide 可执行意图白名单 V1（层 3 前规则路由；CI → Tool Registry；≠ 开放域 Agent） |
 | `LOCAL_AI_SCENARIOS_V1.md` | 本地 AI 场景规划 V1（轨道 A/B/C；Tool Registry 演进；≠ Auto-Operating 入口） |
+| `LOCAL_AI_SCENARIOS_E2E_MAPPING.md` | Local AI 意图表 E2E 抽取对照（能力规划 vs 场景 AS GWT；未抽条目建议单测层） |
 | `LOCAL_AI_OPERATING_LAYER.md` | Local AI Operating Layer 方向锁（Auto-Operating ≠ Confide；只设计无运行时；Backup/Update/MCP 不进 Confide V1） |
 | `product-knowledge-base.md` | **产品知识库**分类/字段/三库拆分 + 第一周功能短答（**无运行时**；≠ Confide 语料、≠ 帮助中心、≠ 接地练习脚本） |
 | `task-briefs/task-confide-kb-retrieval-wiring.md` | **Confide 知识库检索接线**方向锁（Q1/Q2/Q4/Q5 已拍板；Q3 未命中口径见下行闸门 Brief） |
@@ -288,6 +291,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-09-01 | 新增 `tracker-eod-sync`：口令「请安排下班前的 Git 同步」时若 `tracker-entries/` 有任意碎片须另开 `docs/*` PR 跑 `tracker:assemble`。SSOT `TEST_TRACKER.md`「拼装触发」P1 + regression-lock 第 7 条 + `PROCESS` step 0b。原「≥5 必拼」降为 P2 WARN |
 | 2026-09-01 | 扩展 `branch-freshness`：实现状态判断（含随口提问）须 freshness；新增「地面真相优先级」（git 事实 > Brief 措辞）；`agent-token-cost` 区分验证类 vs 探索类 git 检查不受省 token 约束。SSOT 仍 regression-lock + agent-token-cost |
 | 2026-08-27 | 新增 `LOCAL_AI_OPERATING_LAYER.md`：Auto-Operating ≠ Confide；只设计无运行时 |
+| 2026-09-23 | 新增 `scenario-gwt-priority`：`SCENARIO_TESTS_GWT.md` §编写规范 + `generate-scenario-tests-gwt.py` 五维 P0/P1/P2 自动打标；Agent 规则 `focus-tiger-scenario-gwt-priority.mdc` |
 | 2026-08-26 | 新增 `scenario-tests-eod-sync`：口令「请安排下班前的 Git 同步」须先增量核对并更新 `SCENARIO_TESTS.md`（文首日期 + 升格场景；勿整份重写）。SSOT regression-lock 第 7 条 + `PROCESS` Git 同步节奏 step 0。本次升格 **AF–AK**（Presence / Yin Memory / Overlay / Backup / Newsletter / PiP gate） |
 | 2026-08-24 | L0 实验室脚本约定 `LAB_SCRIPT_CONVENTIONS.md`（只指路：路径 / 调用 / 命名 / 陷阱 / 候选索引）。PROCESS 文首 + `companion-debug` 可检索。不锁生产默认 |
 | 2026-08-24 | 第一批 alwaysApply 收窄：`companion-debug` / `background-network` / `interaction-feedback` / `feature-conflict-review` 四份 Cursor 规则改为 `alwaysApply: false` + globs（打开匹配路径时注入）。regression-lock / docs 拆分另任务 |

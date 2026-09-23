@@ -5,14 +5,89 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "docs" / "SCENARIO_TESTS.md"
 OUT = ROOT / "docs" / "SCENARIO_TESTS_GWT.md"
 
-P0 = {"A", "A-ACCEPT", "B", "D", "I", "J", "K", "N", "Q", "Q1", "Q2", "Q3", "Q4", "AD"}
-P2 = {"H", "AA", "AL", "R", "M", "L", "AB", "AJ", "P3"}
+# --- E2E priority classification (SSOT for generator + SCENARIO_TESTS_GWT §编写规范) ---
+
+DIMENSION_LABELS = {
+    "revenue": "收入/资金相关",
+    "irreversible": "不可逆或高代价",
+    "cross_system": "跨系统链路",
+    "high_frequency": "高频且用户量大",
+    "historical": "历史上出过事故",
+}
+
+DIMENSION_KEYWORDS: dict[str, tuple[str, ...]] = {
+    "revenue": (
+        "stripe",
+        "checkout",
+        "buy yin a tea",
+        "buy a tea",
+        "yin's sanctuary",
+        "yins sanctuary",
+        "focus tiger pro",
+        "ai companion add-on",
+        "结账",
+        "lifetime checkout",
+        "membership 订阅",
+    ),
+    "irreversible": (
+        "forget",
+        "newsletter",
+        "resend",
+        "practice backup",
+        "practice-backup",
+        "留资",
+        "误删",
+        "群发",
+    ),
+    "cross_system": (
+        "electron",
+        "stripe",
+        "llama",
+        "confide",
+        "desktop:dev",
+        "zen cinema",
+        "focus circle",
+        "127.0.0.1",
+        "documentpictureinpicture",
+        "托盘",
+    ),
+    "high_frequency": (),
+    "historical": (
+        "stripe 回跳",
+        "付完先睡着",
+        "误睡",
+        "收进托盘误触发",
+    ),
+}
+
+DIMENSION_SCENARIOS: dict[str, frozenset[str]] = {
+    "revenue": frozenset({"Q", "Q1", "Q2", "Q3", "Q4", "AC", "AD"}),
+    "irreversible": frozenset({"AI", "AG", "AG-0", "AJ"}),
+    "cross_system": frozenset(
+        {"AB", "AE", "AG", "AG-0", "AK", "U", "U1", "U2", "U3", "AN", "AO", "AP", "AQ", "AR", "AJ", "AL", "AM"}
+    ),
+    "high_frequency": frozenset({"A", "A-ACCEPT", "B", "C", "D", "E", "F", "I", "J", "K"}),
+    "historical": frozenset({"AD", "Q", "Q1", "Q2", "Q3", "Q4", "B", "U", "U1", "U2", "U3", "AB", "D"}),
+}
+
+CRITICAL_P0_IDS = DIMENSION_SCENARIOS["revenue"] | DIMENSION_SCENARIOS["irreversible"] | DIMENSION_SCENARIOS["cross_system"]
+
+DOWNGRADE_KEYWORDS: dict[str, tuple[str, ...]] = {
+    "form_validation": ("格式校验", "必填", "validation only", "纯校验"),
+    "rule_branches": ("排列组合", "各分支", "权限判断", "价格计算"),
+    "ui_copy_only": ("热力图", "语言切换", "文案", "样式", "展示", "免责", "privacy", "locale"),
+}
+
+FORCE_P2 = frozenset({"H"})
+EXPERIMENTAL_P2 = frozenset({"AA", "AL", "AM", "R"})
+UI_DOMINANT_P2 = frozenset({"G", "O", "W", "V"})
 
 
 @dataclass
@@ -32,13 +107,125 @@ class Section:
     prose: list[str] = field(default_factory=list)
 
 
-def priority(sid: str) -> str:
-    b = sid.split("-")[0]
-    if sid in P0 or b in P0:
-        return "P0"
-    if sid in P2 or b in P2:
-        return "P2"
-    return "P1"
+def section_blob(sec: Section) -> str:
+    parts = [sec.title, sec.meta]
+    for st in sec.steps:
+        parts.append(st.raw)
+        parts.extend(st.subs)
+    return " ".join(parts).lower()
+
+
+def keyword_hit(blob: str, keyword: str) -> bool:
+    k = keyword.lower()
+    if len(k) <= 5 and k.replace("-", "").isalpha():
+        return re.search(rf"(?<![a-z0-9/]){re.escape(k)}(?![a-z0-9/])", blob) is not None
+    return k in blob
+
+
+def downgrade_hits(blob: str) -> list[str]:
+    found: list[str] = []
+    for label, keys in DOWNGRADE_KEYWORDS.items():
+        if any(keyword_hit(blob, k) for k in keys):
+            found.append(label)
+    return found
+
+
+def dimension_hits(sec: Section, *, keyword_dims: frozenset[str] | None = None) -> list[str]:
+    sid = sec.sid
+    base = sid.split("-")[0]
+    blob = section_blob(sec)
+    hits: list[str] = []
+    allow_kw = keyword_dims or frozenset(DIMENSION_LABELS)
+    for dim, label in DIMENSION_LABELS.items():
+        ids = DIMENSION_SCENARIOS.get(dim, frozenset())
+        keys = DIMENSION_KEYWORDS.get(dim, ())
+        id_hit = sid in ids or base in ids
+        kw_hit = dim in allow_kw and any(keyword_hit(blob, k) for k in keys)
+        if id_hit or kw_hit:
+            hits.append(label)
+    return list(dict.fromkeys(hits))
+
+
+def classify_priority(sec: Section) -> tuple[str, str]:
+    sid = sec.sid
+
+    if sid in FORCE_P2 or "已废弃" in sec.title:
+        return "P2", "已废弃；不进 E2E 必跑集"
+
+    base = sid.split("-")[0]
+    if sid in UI_DOMINANT_P2 or base in UI_DOMINANT_P2 or sid in EXPERIMENTAL_P2 or base in EXPERIMENTAL_P2:
+        if sid in CRITICAL_P0_IDS or base in CRITICAL_P0_IDS:
+            hits = dimension_hits(sec)
+            return "P0", "；".join(hits)
+        reason = "实验/回访/验证切片" if sid in EXPERIMENTAL_P2 or base in EXPERIMENTAL_P2 else "展示/文案/自动欢迎为主"
+        down = downgrade_hits(section_blob(sec))
+        if down:
+            reason += f"；下沉信号：{', '.join(down)}"
+        return "P2", reason + "；E2E 只保一条主干或人工"
+
+    hits = dimension_hits(sec, keyword_dims=frozenset({"revenue", "irreversible", "cross_system", "historical"}))
+    hf_ids = DIMENSION_SCENARIOS["high_frequency"]
+    if sid in hf_ids or base in hf_ids:
+        if DIMENSION_LABELS["high_frequency"] not in hits:
+            hits.append(DIMENSION_LABELS["high_frequency"])
+
+    if hits:
+        return "P0", "；".join(hits)
+
+    blob = section_blob(sec)
+    down = downgrade_hits(blob)
+    strong_down = [d for d in down if d in {"form_validation", "rule_branches"}]
+    if strong_down:
+        return "P2", f"下沉到单测/集成：{', '.join(strong_down)}"
+
+    return "P1", "正式用户路径；E2E 保一条主干，分支下沉单测/集成"
+
+
+def priority(sec: Section) -> str:
+    return classify_priority(sec)[0]
+
+
+def priority_rationale(sec: Section) -> str:
+    level, reason = classify_priority(sec)
+    return f"{level} · {reason}"
+
+
+def writing_standards() -> str:
+    return f"""## 编写规范 · E2E 优先级（P0 / P1 / P2）
+
+本文件步骤上的 **优先级** = **E2E 必须覆盖的关键路径分级**，不是「0–1 秒补句」排期表（后者仍见 `SCENARIO_TESTS.md` 文首「存量补句优先级」）。
+
+### 关键业务路径（满足 **任意一条** → **P0**）
+
+| 判断维度 | 具体标准 |
+|---|---|
+| 收入/资金相关 | 涉及支付、下单、退款、订阅计费 |
+| 不可逆或高代价 | 操作失败会导致数据丢失、误删、误发（如邮件群发、批量导入） |
+| 跨系统链路 | 需要多个服务/第三方协同才能完成；单元测试无法覆盖「接口对接是否真的通」 |
+| 高频且用户量大 | 日活用户中超过某阈值（如 50%+）会走到的路径，如登录、首页加载、Sit/Companion 主路径 |
+| 历史上出过事故 | 之前线上出过 bug 或客诉的功能点，优先回归覆盖 |
+
+### 不该进 E2E、应下沉到单元/集成测试的典型信号
+
+| 信号 | 处理方式 |
+|---|---|
+| 纯前端表单校验（必填、格式校验） | 单测 / 组件测试 |
+| 后端业务规则分支（价格计算、权限判断排列组合） | 集成测试覆盖全分支；E2E 只验证「走通一条主干路径」 |
+| UI 样式/文案类断言 | 除非该文案是法律/合规要求必须展示；否则不进 E2E 必跑集 |
+
+### 自动打标规则（生成器执行）
+
+1. 扫描场景 ID + 标题 + meta + 步骤正文，命中上表 **P0 五维任意一条** → **P0**（**高频**维仅认 curated 场景 ID 表，不用 loose 关键词）。
+2. 未命中 P0，且场景为 **实验/废弃/展示文案为主**，或命中 **下沉信号** 且无 P0 维度 → **P2**。
+3. 其余正式用户路径 → **P1**（E2E 保一条主干，细节分支下沉）。
+4. 每个场景区块文首输出 `> **E2E 优先级**：…` 判定依据，便于人工 override。
+5. 改 `SCENARIO_TESTS.md` 后须重跑：`python3 focus-tiger/scripts/generate-scenario-tests-gwt.py`。
+
+Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt-priority.mdc`（`RULES_INDEX` → `scenario-gwt-priority`）。
+
+---
+
+"""
 
 
 def parse_cov(t: str) -> str:
@@ -319,22 +506,33 @@ def parse(text: str) -> list[Section]:
 
 
 def render(sec: Section, clarify: list[str]) -> str:
+    pri = priority(sec)
+    rationale = priority_rationale(sec)
     o = [f"## 场景 {sec.sid}：{sec.title}", ""]
+    o.append(f"> **E2E 优先级**：{rationale}")
     if sec.meta:
-        o.append(f"> {sec.meta[:350]}{'…' if len(sec.meta)>350 else ''}\n")
-    o += ["### 步骤总览", "", "| 步骤 ID | 优先级 | 覆盖 | 摘要 |", "|---|---|---|---|"]
+        for line in sec.meta.splitlines():
+            o.append(f"> {line[:350]}{'…' if len(line) > 350 else ''}")
+    o += ["", "### 步骤总览", "", "| 步骤 ID | 优先级 | 覆盖 | 摘要 |", "|---|---|---|---|"]
     for st in sec.steps:
         o.append(
-            f"| {st.sid} | {priority(sec.sid)} | {cov_note(st.coverage, sec.meta)[:45]} | {clean(st.raw)[:50].replace('|','/')} |"
+            f"| {st.sid} | {pri} | {cov_note(st.coverage, sec.meta)[:45]} | {clean(st.raw)[:50].replace('|', '/')} |"
         )
     for i, p in enumerate(sec.prose, 1):
-        o.append(f"| {sec.sid}-P{i} | {priority(sec.sid)} | 人工 QA | {p[:40]} |")
+        o.append(f"| {sec.sid}-P{i} | {pri} | 人工 QA | {p[:40]} |")
     o += ["", "### Given-When-Then 明细", ""]
     for st in sec.steps:
         g, w, t, cl = gwt(sec, st)
         if cl:
             clarify.append(f"{st.sid} · {clean(st.raw)[:100]}")
-        o += [f"#### {st.sid}", "", f"- **优先级**：{priority(sec.sid)}", f"- **覆盖**：{cov_note(st.coverage, sec.meta)}", "", "**Given**"]
+        o += [
+            f"#### {st.sid}",
+            "",
+            f"- **优先级**：{pri}（{classify_priority(sec)[1]}）",
+            f"- **覆盖**：{cov_note(st.coverage, sec.meta)}",
+            "",
+            "**Given**",
+        ]
         o += [f"- {x}" for x in g]
         o += ["", "**When**", *[f"- {x}" for x in w], "", "**Then**", *[f"- {x}" for x in t], ""]
     for i, p in enumerate(sec.prose, 1):
@@ -342,7 +540,7 @@ def render(sec: Section, clarify: list[str]) -> str:
         o += [
             f"#### {sec.sid}-P{i}",
             "",
-            f"- **优先级**：{priority(sec.sid)}",
+            f"- **优先级**：{pri}（{classify_priority(sec)[1]}）",
             "- **覆盖**：人工 QA",
             "",
             "**Given**",
@@ -363,15 +561,14 @@ def render(sec: Section, clarify: list[str]) -> str:
 def main() -> None:
     sections = parse(SRC.read_text(encoding="utf-8"))
     clarify: list[str] = []
-    head = """# SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
+    today = date.today().isoformat()
+    head = f"""# SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-09-23  
+生成日期：{today}  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
----
-
-"""
+{writing_standards()}"""
     body = "".join(render(s, clarify) for s in sections)
     foot = "## 待澄清清单\n\n" + "\n".join(f"- {x}" for x in sorted(set(clarify))) + "\n"
     n = sum(len(s.steps) for s in sections)
