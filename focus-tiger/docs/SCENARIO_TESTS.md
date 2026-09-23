@@ -1,10 +1,10 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-23（Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · KB-FUNC-0021 Daily quote 入 catalog · 路由矩阵单测冻结 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-09-23（Local AI 意图 E2E 抽取 · 场景 AS · `LOCAL_AI_SCENARIOS_E2E_MAPPING.md` · Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · KB-FUNC-0021 Daily quote 入 catalog · 路由矩阵单测冻结 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
-**Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`）  
+**Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
@@ -909,6 +909,71 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 3. **危机负例**：末题写入 `I don't want to live` → 点 invite → **0–1 秒内** Listening… → observation **`data-source=corpus_safety`**，英文须含 crisis line；**禁止** generate。  
 4. **失败不挡**：companion 未 ready 时点 invite → **0–1 秒内** Listening… → observation **`data-source=corpus_fallback`**（已审语料）；卡仍可关，**禁止**空白卡死。  
 5. **回流**：关 Reflection → 再开一场 **无** lab → 无 invite。
+
+---
+
+## 场景 AS：Local AI 意图路由 · E2E 关键路径（抽取自 LOCAL_AI_SCENARIOS_V1.md）
+
+> **政策**：`LOCAL_AI_SCENARIOS_V1.md` 为能力规划 SSOT，**不整体转 GWT**；本场景只收录满足 E2E 关键路径的意图（路由错 = 用户可见异常，或 Phase 1A/1B CORE）。对照表：`LOCAL_AI_SCENARIOS_E2E_MAPPING.md`。  
+> **前提**：**仅 Electron 宽屏 L2 ready**（`npm run desktop:dev` · 非低配 ≥480）；Web harness **无** Yin Memory bridge，**不得**用 Safari `?confide=1` 代替 AS-1~3 / AS-2。  
+> **单元**：`confidePracticeFacts` · `confidePresenceFacts` · `yinPersonalMemoryVerbalForget` · `yinPersonalMemorySuppress` · `confideMemoryList` · `desktopCompanionL2Route`。  
+> **交叉**：安全 / 情绪桶 / boundary / L3 闲聊仍走 **场景 AE**；Consent / 面板 / 注入仍走 **场景 AG**；Presence 入账门槛仍走 **场景 AF**。  
+> **仍须人工**：答句数字与 Journey / presence ledger 手算一致；Temporal Compare 禁止「你更稳了/进步了」观感。
+
+1. **CI-01 口头 Forget**（来源：`LOCAL_AI_SCENARIOS_V1.md` §1 Phase 1A · Forget this；§3.1 CI-01）  
+   **Given**：Electron 宽屏 Idle · Confide L2 **ready** · Consent **Allow** · **What Yin remembers** 面板已有至少 1 条 active 记忆（例：Monday pattern）。  
+   **When**：输入 `Please forget what I said about Monday`（或 locale 等价「别再记周一的事了」）→ Share。  
+   **Then**：**0–1 秒内** `[data-testid=confide-to-yin-reply]` **`data-source=memory_forget`** 见确认短句；面板对应行消失；`yin-personal-memory.json` 该条已删。**负例**：空库同句 → 诚实「没有记得的」，**不算** CI-01 误删。
+
+2. **CI-03 Show memory**（来源：§1 Phase 1A · Show me what you remember；§3.1 CI-03）  
+   **Given**：同上 · Consent Allow · 面板已有 ≥1 条 active 摘要。  
+   **When**：输入 `Show me what you remember` / `你还记得什么` → Share。  
+   **Then**：**0–1 秒内** reply **`data-source=memory_list`**，正文摘要须与面板 `active` 行一致（**禁止** L3 编造条目）。**空态**：Allow 后无条目 → 诚实「还没有记下」。**Denied**：Not now 后再问 → 诚实「现在没有在记」。**负例**：`I feel depressed, show me what you remember` → **sad** 语料，非 `memory_list`。
+
+3. **Don't save · memory_suppress**（来源：§1 Phase 1A · Don't save this；§1.1 Slice 1f；**非 CI 表项**）  
+   **Given**：Electron 宽屏 Confide ready · Consent Allow。  
+   **When**：(T-1) 发 `I prefer quiet, short reflections. Don't save this.` → L3 正常回复。  
+   **Then**：`memories[]` **不增** · 同 turn `rememberOptOuts[]` 有记录。**(T-2)** 先发可抽取句入库 → 下一句 `Forget this` → **0–1 秒内** **`data-source=memory_suppress`** · JSON 上一 turn 条目已删。**(T-3)** 仅 `Don't save this` / `Don't keep this one.` → 诚实短句 · **即使尚未 Allow Consent**。**回归**：`Please forget about Monday` 仍 **CI-01** `memory_forget`（交叉 **AE** L2 步 8）。
+
+4. **CI-00 · 练习总时长**（来源：§3.1 CI-00 · 练了多久）  
+   **Given**：Electron 宽屏 Confide ready · Journey Log 有已知练习记录。  
+   **When**：输入 `How long have I practiced?` / `练了多久` / `Can you tell me my total sitting time on this device?` → Share。  
+   **Then**：**0–1 秒内** `[data-testid=confide-to-yin-reply]` **`data-source=practice_facts`**，天数/分钟与 Journey 手算一致。**危机优先**：`I feel depressed, how long have I practiced?` → **sad** 语料，非 practice_facts。
+
+5. **Phase 1B · 练习时段**（来源：§1 Phase 1B · When do I usually practice?）  
+   **Given**：Electron 宽屏 Confide ready · Journey **≥3** 条可审计记录。  
+   **When**：输入 `When do I usually practice?` → Share。  
+   **Then**：**0–1 秒内** **`data-source=practice_facts`** 见时段/模式描述（封闭标签，**禁止** L3 编造）。**&lt;3** 条 → insufficient 诚实短句。
+
+6. **Phase 1B · showing up**（来源：§1 Phase 1B · How have I been showing up?）  
+   **Given**：Electron 宽屏 Confide ready · Journey 有近期记录。  
+   **When**：输入 `How have I been showing up?` / `Have I been showing up consistently?` → Share。  
+   **Then**：**0–1 秒内** **`data-source=practice_facts`** 见出现频率/次数类事实句（**禁止**人格进步评判）。
+
+7. **CI-02 · 情绪趋势**（来源：§1 Phase 1B · What has my mood looked like recently?；§3.1 CI-02）  
+   **Given**：Electron 宽屏 Confide ready · 同设备 **≥3** 次 Arrival Notice 不同 `emotionTag`（交叉 **AF** 步 3–4）。  
+   **When**：输入 `What has my mood looked like recently?` / `最近两周我的情绪看起来怎样？` → Share。  
+   **Then**：**0–1 秒内** **`data-source=presence_facts`** 见 **14 日**描述性 breakdown（封闭标签）。**&lt;3** 条 → insufficient。**危机盖过**：`I feel depressed, what has my mood looked like recently?` → **sad**，**禁止** presence_facts 盖过情绪桶。
+
+8. **Temporal Compare · 练习两窗**（来源：§1 Phase 1B · Am I practicing longer than before? / §0.1 Temporal Compare）  
+   **Given**：Electron 宽屏 Confide ready · Journey 有近 14 日与前 14 日可对照数据。  
+   **When**：输入 `Am I practicing longer than before?` / `我是不是坚持得比以前久？` → Share。  
+   **Then**：**0–1 秒内** **`data-source=practice_facts`** 见**两段时期并列事实**（次数/时长/Arrival 等可审计字段）；**禁止**「你更好了 / 进步了 / 更久了吗」式评判句。
+
+9. **Temporal Compare · 情绪两窗**（来源：§1 Phase 1B · Have I been more steady lately?）  
+   **Given**：同 AS-7 门槛（≥3 次 Notice 打卡）。  
+   **When**：输入 `Have I been more steady lately?` / `我是不是最近比较稳定？` → Share。  
+   **Then**：**0–1 秒内** **`data-source=presence_facts`** 见两窗标签**并列**；**禁止**「你更稳了」。旧 *improved* 问法仅路由 alias，答句仍不得用 improved 收尾（交叉 **AF** 步 3 负例）。
+
+10. **Temporal Compare · 进入状态**（来源：§1 Phase 1B · Have I been getting into practice more easily?）  
+    **Given**：Electron 宽屏 Confide ready · Journey 有可审计 arrival / 进入状态字段。  
+    **When**：输入 `Have I been getting into practice more easily?` / `有没有更容易进入状态？` → Share。  
+    **Then**：**0–1 秒内** **`data-source=practice_facts`** 见两窗**并列事实**（仅可审计字段）；**禁止**人格/心理健康结论。
+
+11. **负例锚点 · observation-boundary**（来源：§1 Phase 1B · What have you noticed lately? — **不抽 E2E 主干，仅回归**）  
+    **Given**：Electron 宽屏 Confide ready。  
+    **When**：输入 `What have you noticed lately?` → Share。  
+    **Then**：**不得**走 CI-00/02 的 `practice_facts` / `presence_facts`；应走 **`observation_honesty`** 诚实空态（**禁止** L3 编「你傍晚常来」）。*单测主覆盖：`confideObservationHonesty.test.js`。*
 
 ---
 

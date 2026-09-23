@@ -4,12 +4,46 @@
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
+## 编写规范 · E2E 优先级（P0 / P1 / P2）
+
+本文件步骤上的 **优先级** = **E2E 必须覆盖的关键路径分级**，不是「0–1 秒补句」排期表（后者仍见 `SCENARIO_TESTS.md` 文首「存量补句优先级」）。
+
+### 关键业务路径（满足 **任意一条** → **P0**）
+
+| 判断维度 | 具体标准 |
+|---|---|
+| 收入/资金相关 | 涉及支付、下单、退款、订阅计费 |
+| 不可逆或高代价 | 操作失败会导致数据丢失、误删、误发（如邮件群发、批量导入） |
+| 跨系统链路 | 需要多个服务/第三方协同才能完成；单元测试无法覆盖「接口对接是否真的通」 |
+| 高频且用户量大 | 日活用户中超过某阈值（如 50%+）会走到的路径，如登录、首页加载、Sit/Companion 主路径 |
+| 历史上出过事故 | 之前线上出过 bug 或客诉的功能点，优先回归覆盖 |
+
+### 不该进 E2E、应下沉到单元/集成测试的典型信号
+
+| 信号 | 处理方式 |
+|---|---|
+| 纯前端表单校验（必填、格式校验） | 单测 / 组件测试 |
+| 后端业务规则分支（价格计算、权限判断排列组合） | 集成测试覆盖全分支；E2E 只验证「走通一条主干路径」 |
+| UI 样式/文案类断言 | 除非该文案是法律/合规要求必须展示；否则不进 E2E 必跑集 |
+
+### 自动打标规则（生成器执行）
+
+1. 扫描场景 ID + 标题 + meta + 步骤正文，命中上表 **P0 五维任意一条** → **P0**（**高频**维仅认 curated 场景 ID 表，不用 loose 关键词）。
+2. 未命中 P0，且场景为 **实验/废弃/展示文案为主**，或命中 **下沉信号** 且无 P0 维度 → **P2**。
+3. 其余正式用户路径 → **P1**（E2E 保一条主干，细节分支下沉）。
+4. 每个场景区块文首输出 `> **E2E 优先级**：…` 判定依据，便于人工 override。
+5. 改 `SCENARIO_TESTS.md` 后须重跑：`python3 focus-tiger/scripts/generate-scenario-tests-gwt.py`。
+
+Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt-priority.mdc`（`RULES_INDEX` → `scenario-gwt-priority`）。
+
 ---
 
 ## 场景 A：Kelly 的第一个早晨（全新用户，当日零完成 → Idle）
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > **单元 / 控制器集成**：A1 `HonestyCheckInController` 开局 Idle；A3–A4 `ArrivalPractice` 状态机步进 + `canBeginFocusOnCompanionModeSelect` 门闩；A7–A8 `triggerSessionCompletionFeedback` 分流；计时达标 `FocusSession.hasReachedTarget` → `scenario-smoke.test.js`。
-**DOM 用户链路**：Arrival 后 Here & Now 开表 / 预选+Skip — begin 开表 / Offline 开表 → `e2e/scenario-a.companion.spec.js`（**到开表为止*…
+> **DOM 用户链路**：Arrival 后 Here & Now 开表 / 预选+Skip — begin 开表 / Offline 开表 → `e2e/scenario-a.companion.spec.js`（**到开表为止**；**不含**达标 / Celebrating / Reflection）。
+> **仍须人工**：Idle 开场观感、Honesty 文案、背景音乐 opt-in 与开关按钮、Arrival 气泡时长、Ambient、Idle 呼吸观感、Celebrating 动画本身。
 
 ### 步骤总览
 
@@ -32,7 +66,7 @@
 
 #### A-1
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -48,7 +82,7 @@
 
 #### A-2
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -63,7 +97,7 @@
 
 #### A-3
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -78,7 +112,7 @@
 
 #### A-4
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -97,7 +131,7 @@
 
 #### A-5
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -120,7 +154,7 @@
 
 #### A-6
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -134,7 +168,7 @@
 
 #### A-7
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -151,7 +185,7 @@
 
 #### A-8
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -167,7 +201,7 @@
 
 #### A-9
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -181,7 +215,7 @@
 
 #### A-10
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -195,7 +229,7 @@
 
 #### A-11
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -209,7 +243,7 @@
 
 #### A-12
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-smoke.test.js` 覆盖；已在 `e2e/scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -226,6 +260,7 @@
 ---
 ## 场景 A-ACCEPT：验收脚本 · 30 秒 / 3 分钟（2026-08-20 · 端到端清单）
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > **不是新功能**：把专家稿当 QA 清单，顺带验 **场景 AD** 占用仲裁是否撑住 Kelly 第一眼与 3 分钟闭环。语感三句先按现稿；若改字只动 locale `COMPANION_MODE_*_HINT`，不必重开门闩。
 
 ### 步骤总览
@@ -240,7 +275,7 @@
 
 #### A-ACCEPT-P1
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：人工 QA
 
 **Given**
@@ -255,7 +290,7 @@
 
 #### A-ACCEPT-P2
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：人工 QA
 
 **Given**
@@ -270,7 +305,7 @@
 
 #### A-ACCEPT-P3
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：人工 QA
 
 **Given**
@@ -286,10 +321,11 @@
 ---
 ## 场景 B：分心后自己走神又回来（Recover / Re-focus Acknowledge）
 
+> **E2E 优先级**：P0 · 跨系统链路；高频且用户量大；历史上出过事故
 > **单元 / 控制器集成**：`shouldSuppressAwayReminders` 模式门闩 + `MindfulReminderController.handleAttentionReturn` 在 Here & Now 触发 emotion / Offline·Flow 抑制 → smoke B。
-**未覆盖**：真实切标签页、toast DOM、nod-bow 序列。
-**人工验收（用户路径，勿用控制台）**：真实切标签页 + toast + nod-bow。
-**对照**：用户**主动** Recover（Focusing 轻触阿寅）见 **场景 X**（Tiger Anchor）；勿与本被动 Re-focus 混验额度。
+> **未覆盖**：真实切标签页、toast DOM、nod-bow 序列。
+> **人工验收（用户路径，勿用控制台）**：真实切标签页 + toast + nod-bow。
+> **对照**：用户**主动** Recover（Focusing 轻触阿寅）见 **场景 X**（Tiger Anchor）；勿与本被动 Re-focus 混验额度。
 
 ### 步骤总览
 
@@ -308,7 +344,7 @@
 
 #### B-1
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -324,7 +360,7 @@
 
 #### B-2
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -339,7 +375,7 @@
 
 #### B-3
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -354,7 +390,7 @@
 
 #### B-4
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -369,7 +405,7 @@
 
 #### B-5
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -384,7 +420,7 @@
 
 #### B-6
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -399,7 +435,7 @@
 
 #### B-7
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -414,7 +450,7 @@
 
 #### B-8
 
-- **优先级**：P0
+- **优先级**：P0（跨系统链路；高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -430,24 +466,28 @@
 ---
 ## 场景 C：中途主动放弃（未达标）
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > **单元 / 控制器集成**：未达标不记账（`HonestyCheckInController.onIncompleteSessionEnded`）+ `MANUAL_END_PAUSE_MS` 后 `SessionEndFlow.onSessionEnded` 向 mock `ReflectionMoment.open` 传入 `intention` / `intentionSource` → smoke C（**仅**下游接线入参；**不**从 Choose 写入意图闩）。
-**DOM 用户链路**：Choose → Rise → Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显；Skip — begin → Ri…
+> **DOM 用户链路**：Choose → Rise → Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显；Skip — begin → Rise → 无回显 → e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁）。
+> **单元（Bug 回归锁）**：二次 beginFocus + 空 pending 不抹闩 → `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`。
+> **单元（回流门闩，非 Rise 集成）**：`resolveCompanionHintClick` → toggle → smoke J（**同** smoke I 纯函数；**不**模拟 Rise 后再点 hint 的 DOM）。
+> **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| C-1 | P1 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 开始新会话，进行到一半，点 Rise。 |
-| C-2 | P1 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 不应播放 Celebrating，不应播放 IncenseGreeting。 |
-| C-3 | P1 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 角色播 `rise-stretch-casual` pingpong（闭目坐禅→伸懒腰→随意坐→倒放 |
-| C-4 | P1 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。 |
-| C-5 | P1 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping）， |
+| C-1 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 开始新会话，进行到一半，点 Rise。 |
+| C-2 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 不应播放 Celebrating，不应播放 IncenseGreeting。 |
+| C-3 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 角色播 `rise-stretch-casual` pingpong（闭目坐禅→伸懒腰→随意坐→倒放 |
+| C-4 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。 |
+| C-5 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping）， |
 
 ### Given-When-Then 明细
 
 #### C-1
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `reflection-intention-echo.spec.js` 覆盖；已在 `SessionIntentionStore.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -461,7 +501,7 @@
 
 #### C-2
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `reflection-intention-echo.spec.js` 覆盖；已在 `SessionIntentionStore.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -475,7 +515,7 @@
 
 #### C-3
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `reflection-intention-echo.spec.js` 覆盖；已在 `SessionIntentionStore.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -490,7 +530,7 @@
 
 #### C-4
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `reflection-intention-echo.spec.js` 覆盖；已在 `SessionIntentionStore.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -504,7 +544,7 @@
 
 #### C-5
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `reflection-intention-echo.spec.js` 覆盖；已在 `SessionIntentionStore.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -521,9 +561,11 @@
 ---
 ## 场景 D：请假一天后的 Honesty Check-in（含桥接 CTA）
 
+> **E2E 优先级**：P0 · 高频且用户量大；历史上出过事故
 > **单元 / 控制器集成**：
-- **D sleep→wake**：距上次专注 ≥2h → `sync` 进 DORMANT（`cloakSleep`→`sleeping`）→ Honesty 选 20 → `dormantWake` → 离 DORMANT → 桥接 Yes 回调 → smoke `D sleep→wake` + `dormantIdle` chain（harness 调控制器；**非**披毯/睡姿 DOM）。
-- **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → `HonestyBridgeCtaController` Yes→`onAccept` / No→`onDecline` / 同日再 `onHonestyCheckInCompl…
+> - **D sleep→wake**：距上次专注 ≥2h → `sync` 进 DORMANT（`cloakSleep`→`sleeping`）→ Honesty 选 20 → `dormantWake` → 离 DORMANT → 桥接 Yes 回调 → smoke `D sleep→wake` + `dormantIdle` chain（harness 调控制器；**非**披毯/睡姿 DOM）。
+> - **D 桥接回流**：手工 DORMANT 起点 → 选 20 → wake → `HonestyBridgeCtaController` Yes→`onAccept` / No→`onDecline` / 同日再 `onHonestyCheckInComplete` → smoke D（**非**桥接按钮 DOM / Yes 后完整 Arrival UI）。
+> **仍须人工**：睡姿观感、10s 呼吸 UI、桥接文案排版、Yes 后完整 Arrival 动画。
 
 ### 步骤总览
 
@@ -540,7 +582,7 @@
 
 #### D-1
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -556,7 +598,7 @@
 
 #### D-2
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -571,7 +613,7 @@
 
 #### D-3
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -586,7 +628,7 @@
 
 #### D-4
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -601,7 +643,7 @@
 
 #### D-5
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -621,7 +663,7 @@
 
 #### D-6
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大；历史上出过事故）
 - **覆盖**：完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -639,24 +681,25 @@
 ---
 ## 场景 E：Offline Space（I'll step away）
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > **单元 / 控制器集成**：舒展活跃累计在 `attentionAway` 时暂停；墙钟 `getSessionElapsedSeconds` 仍可触发 mindful；`suppressAwayReminders` → 无 Re-focus → **smoke E** + `MindfulReminderController.test`（已入 `test:smoke`）。
-**DOM**：Offline 选中即开表 → e2e K（`scenario-a.companion.spec.js`）。
-**未覆盖 / 仍须人工**：真实离开墙钟、welcomeBack 未接线。
+> **DOM**：Offline 选中即开表 → e2e K（`scenario-a.companion.spec.js`）。
+> **未覆盖 / 仍须人工**：真实离开墙钟、welcomeBack 未接线。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| E-1 | P1 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | Companion 选 Offline Space → 选中即开计时，不出现 Arrival Not |
-| E-2 | P1 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | 离开电脑一段时间。 |
-| E-3 | P1 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | 已知缺口：约 10 分钟无互动自动 `welcomeBack` / wave-hello 未接线（仅 |
-| E-4 | P1 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | 回来后继续/结束： |
+| E-1 | P0 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | Companion 选 Offline Space → 选中即开计时，不出现 Arrival Not |
+| E-2 | P0 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | 离开电脑一段时间。 |
+| E-3 | P0 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | 已知缺口：约 10 分钟无互动自动 `welcomeBack` / wave-hello 未接线（仅 |
+| E-4 | P0 | 已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工 | 回来后继续/结束： |
 
 ### Given-When-Then 明细
 
 #### E-1
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -670,7 +713,7 @@
 
 #### E-2
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -684,7 +727,7 @@
 
 #### E-3
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -699,7 +742,7 @@
 
 #### E-4
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：已在 `scenario-a.companion.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -716,22 +759,23 @@
 ---
 ## 场景 F：Flow State（I'm working across tools）
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > **单元 / 控制器集成**：`AcrossToolsIdleGuard` 阈值后一次回调 + 键鼠活动重置计时；常量 `ACROSS_TOOLS_IDLE_THRESHOLD_MS = 1_800_000` → **smoke F** + `AcrossToolsIdleGuard.test`（已入 `test:smoke`）。Re-focus 抑制同 smoke B。
-**未覆盖 / 仍须人工**：toast DOM 文案、真实 30 分钟墙钟。
+> **未覆盖 / 仍须人工**：toast DOM 文案、真实 30 分钟墙钟。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| F-1 | P1 | 完整链路仍须人工 | Companion 选 Flow State → 选中即开计时。 |
-| F-2 | P1 | 完整链路仍须人工 | 频繁切标签（模拟多任务）；离开类 Re-focus 应全程抑制。 |
-| F-3 | P1 | 完整链路仍须人工 | 宽松 idle 兜底：同一页内无键鼠/触控活动达到 |
+| F-1 | P0 | 完整链路仍须人工 | Companion 选 Flow State → 选中即开计时。 |
+| F-2 | P0 | 完整链路仍须人工 | 频繁切标签（模拟多任务）；离开类 Re-focus 应全程抑制。 |
+| F-3 | P0 | 完整链路仍须人工 | 宽松 idle 兜底：同一页内无键鼠/触控活动达到 |
 
 ### Given-When-Then 明细
 
 #### F-1
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -745,7 +789,7 @@
 
 #### F-2
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -759,7 +803,7 @@
 
 #### F-3
 
-- **优先级**：P1
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -777,25 +821,26 @@
 ---
 ## 场景 G：语言切换
 
+> **E2E 优先级**：P2 · 展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工
 > **拍板（2026-07-30 修订）**：工程保留可点切语 + 六语槽；**v1.0.0 对外 English + Japanese**（`en`+`ja` ready；Language 可见）。中文延后（zh draft）。
-**自动化**：unit `i18n.test.js`；e2e `language-switch.spec.js`（en↔ja；draft 不出现）。
-**人工（v1.0）**：375 日文排版抽测；**不**要求 zh 过发布 checklist。
-**动画（2026-07-31 · Slice A）**：切到 **日本語** 应播合十（`intentionSet`）；切回 **English** 应播鞠躬（`mindfulAcknowledge`）；同日同语不重…
+> **自动化**：unit `i18n.test.js`；e2e `language-switch.spec.js`（en↔ja；draft 不出现）。
+> **人工（v1.0）**：375 日文排版抽测；**不**要求 zh 过发布 checklist。
+> **动画（2026-07-31 · Slice A）**：切到 **日本語** 应播合十（`intentionSet`）；切回 **English** 应播鞠躬（`mindfulAcknowledge`）；同日同语不重复。详规 `SCENE_ANIMATION_WIRING.md`（`feature/scene-animation-wiring-v1-slice-a`）。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| G-1 | P1 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | 打开 `?product=1` → ⋯ / 窄屏抽屉 → Language → 选 日本語。 |
-| G-2 | P1 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | 确认 Sit / Honesty / Arrival / Companion 等为日文、无 `{in |
-| G-3 | P1 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | 再切回 English（应播鞠躬）。刷新后语言保持（`focus-tiger.locale.v1`） |
-| G-4 | P1 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | （DEV 仍可挂 `__languagePreference` / `__i18n` / `__sc |
+| G-1 | P2 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | 打开 `?product=1` → ⋯ / 窄屏抽屉 → Language → 选 日本語。 |
+| G-2 | P2 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | 确认 Sit / Honesty / Arrival / Companion 等为日文、无 `{in |
+| G-3 | P2 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | 再切回 English（应播鞠躬）。刷新后语言保持（`focus-tiger.locale.v1`） |
+| G-4 | P2 | 已在 `i18n.test.js` 覆盖；已在 `language-switch.spec | （DEV 仍可挂 `__languagePreference` / `__i18n` / `__sc |
 
 ### Given-When-Then 明细
 
 #### G-1
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `i18n.test.js` 覆盖；已在 `language-switch.spec.js` 覆盖
 
 **Given**
@@ -809,7 +854,7 @@
 
 #### G-2
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `i18n.test.js` 覆盖；已在 `language-switch.spec.js` 覆盖
 
 **Given**
@@ -824,7 +869,7 @@
 
 #### G-3
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `i18n.test.js` 覆盖；已在 `language-switch.spec.js` 覆盖
 
 **Given**
@@ -838,7 +883,7 @@
 
 #### G-4
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `i18n.test.js` 覆盖；已在 `language-switch.spec.js` 覆盖
 
 **Given**
@@ -853,6 +898,7 @@
 ---
 ## 场景 H：正式瞳孔跟随（已废弃）
 
+> **E2E 优先级**：P2 · 已废弃；不进 E2E 必跑集
 > EyeTracking no-op
 
 ### 步骤总览
@@ -865,7 +911,7 @@
 
 #### H-1
 
-- **优先级**：P2
+- **优先级**：P2（已废弃；不进 E2E 必跑集）
 - **覆盖**： EyeTracking no-op
 
 **Given**
@@ -880,28 +926,31 @@
 ---
 ## 场景 O：Idle「本周陪伴」7 格热力图
 
+> **E2E 优先级**：P2 · 展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工
 > **用户故事**：Kelly 回到 Idle，quietly 看见最近 7 天「同坐」痕迹——亮格是来过的一天，暗格是安静日；**不是**断签惩罚、**不是**计分榜，也**不能**点开查详情。
-**DOM 用户链路**：`e2e/weekly-practice-heatmap.spec.js`（Idle 7 格；Focusing 隐藏；seed 亮/暗；**375 ActionBar + 主屏三主钮 + 抽屉次要项**）。
-**未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮、上滑手势物理滑动（e2e 点 grabber）。
-**仍须人工**：亮/暗「不羞辱」；**375 新壳观感**（ActionBar / 主屏 Sit·Quick·Honesty / Yin 居中放大 / …
+> **DOM 用户链路**：`e2e/weekly-practice-heatmap.spec.js`（Idle 7 格；Focusing 隐藏；seed 亮/暗；**375 ActionBar + 主屏三主钮 + 抽屉次要项**）。
+> **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮、上滑手势物理滑动（e2e 点 grabber）。
+> **仍须人工**：亮/暗「不羞辱」；**375 新壳观感**（ActionBar / 主屏 Sit·Quick·Honesty / Yin 居中放大 / 上滑抽屉 / 底栏干净）；宽屏仍左下簇。
+> **2026-07-24**：用户 DevTools 375 确认重叠 → 抬簇未过观感；同日改 **NarrowIdleShell**（ActionBar + BottomOptionsDrawer）。
+> **2026-07-26**：用户书面——窄屏首页底部太空；三主钮（Sit / Quick Start / Honesty）上屏，抽屉删之。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| O-1 | P1 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 打开 `?product=1`，处于 Idle。 |
-| O-2 | P1 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 宽屏：左下见 `#weekly-practice-heatmap-cluster`（7 格 + 时钟 |
-| O-3 | P1 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 读图：亮格 = `totalMinutes === null` 或 `> 0`；暗格 = 真零。无点 |
-| O-4 | P1 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | Hint（可选）：ActionBar 点 ? → tips（窄屏尖角目标可能变化）。 |
-| O-5 | P1 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 让格子变亮：完成计时 / Honesty / 一分钟呼吸 → 回 Idle → 抽屉内今日格亮。 |
-| O-6 | P1 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 回流：开 Focusing → 主钮/抽屉/grabber 收起，Rise 仍可见可点；Rise 回 |
-| O-7 | P1 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 已知边界：热力图仍不可下钻；与 HUD streak（宽屏卡内 7 点环）分工不同。 |
+| O-1 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 打开 `?product=1`，处于 Idle。 |
+| O-2 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 宽屏：左下见 `#weekly-practice-heatmap-cluster`（7 格 + 时钟 |
+| O-3 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 读图：亮格 = `totalMinutes === null` 或 `> 0`；暗格 = 真零。无点 |
+| O-4 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | Hint（可选）：ActionBar 点 ? → tips（窄屏尖角目标可能变化）。 |
+| O-5 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 让格子变亮：完成计时 / Honesty / 一分钟呼吸 → 回 Idle → 抽屉内今日格亮。 |
+| O-6 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 回流：开 Focusing → 主钮/抽屉/grabber 收起，Rise 仍可见可点；Rise 回 |
+| O-7 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 已知边界：热力图仍不可下钻；与 HUD streak（宽屏卡内 7 点环）分工不同。 |
 
 ### Given-When-Then 明细
 
 #### O-1
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -916,7 +965,7 @@
 
 #### O-2
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -931,7 +980,7 @@
 
 #### O-3
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -945,7 +994,7 @@
 
 #### O-4
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -959,7 +1008,7 @@
 
 #### O-5
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -974,7 +1023,7 @@
 
 #### O-6
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -989,7 +1038,7 @@
 
 #### O-7
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1004,6 +1053,8 @@
 ---
 ## 场景 P1：P1 · 设置提醒（Idle 左下时钟）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
@@ -1017,7 +1068,7 @@
 
 #### P1-1
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1032,7 +1083,7 @@
 
 #### P1-2
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1056,7 +1107,7 @@
 
 #### P1-3
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1070,7 +1121,7 @@
 
 #### P1-4
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1085,6 +1136,8 @@
 ---
 ## 场景 P2：P2 · 到点横幅（主路径 + 回流）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
@@ -1098,7 +1151,7 @@
 
 #### P2-5
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1113,7 +1166,7 @@
 
 #### P2-6
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1127,7 +1180,7 @@
 
 #### P2-7
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1141,7 +1194,7 @@
 
 #### P2-8
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1156,19 +1209,20 @@
 ---
 ## 场景 P3：P3 · 忙碌期策略（suppress · 对照）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > busyPolicy: suppress · SB-04
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| P3-1 | P2 | 已在 `e2e/in-app-reminder.spec.js` 覆盖 | 到点横幅已出现 → Sit 开 Focusing → 横幅立刻隐藏；Rise 回 Idle 且仍满足 |
+| P3-1 | P1 | 已在 `e2e/in-app-reminder.spec.js` 覆盖 | 到点横幅已出现 → Sit 开 Focusing → 横幅立刻隐藏；Rise 回 Idle 且仍满足 |
 
 ### Given-When-Then 明细
 
 #### P3-1
 
-- **优先级**：P2
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/in-app-reminder.spec.js` 覆盖
 
 **Given**
@@ -1184,6 +1238,8 @@
 ---
 ## 场景 Q1：Q1 · Support Modal（统一入口）
 
+> **E2E 优先级**：P0 · 收入/资金相关；跨系统链路；历史上出过事故
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
@@ -1198,7 +1254,7 @@
 
 #### Q1-1
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1213,7 +1269,7 @@
 
 #### Q1-2
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1234,7 +1290,7 @@
 
 #### Q1-3
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1249,7 +1305,7 @@
 
 #### Q1-4
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1263,7 +1319,7 @@
 
 #### Q1-5
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1279,6 +1335,8 @@
 ---
 ## 场景 Q2：Q2 · Buy Yin a Tea（tip · 不解锁）
 
+> **E2E 优先级**：P0 · 收入/资金相关；跨系统链路；历史上出过事故
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
@@ -1292,7 +1350,7 @@
 
 #### Q2-6
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1307,7 +1365,7 @@
 
 #### Q2-7
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1321,7 +1379,7 @@
 
 #### Q2-8
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1335,7 +1393,7 @@
 
 #### Q2-9
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1350,6 +1408,8 @@
 ---
 ## 场景 Q3：Q3 · Yin's Sanctuary（Lifetime · 零耦合）
 
+> **E2E 优先级**：P0 · 收入/资金相关；历史上出过事故
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
@@ -1362,7 +1422,7 @@
 
 #### Q3-10
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1376,7 +1436,7 @@
 
 #### Q3-11
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1391,7 +1451,7 @@
 
 #### Q3-12
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1406,6 +1466,8 @@
 ---
 ## 场景 Q4：Q4 · 统一练习徽章（免费路径 · #204）
 
+> **E2E 优先级**：P0 · 收入/资金相关；历史上出过事故
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
@@ -1419,7 +1481,7 @@
 
 #### Q4-13
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1434,7 +1496,7 @@
 
 #### Q4-14
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1448,7 +1510,7 @@
 
 #### Q4-15
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1463,7 +1525,7 @@
 
 #### Q4-16
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1478,9 +1540,12 @@
 ---
 ## 场景 S：首页左球 · Breath practice（可选时长正念）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > **用户故事**：Kelly 不想走完整 Arrival，只想先练几分钟呼吸——点首页左球 **Breath practice** → 选 1/3/5/10/20 → 吸↔呼 + **闭目坐禅呼吸（IdleOrchestrator）** + 光环 → 到点轻完成 → Reflection 浅出 → 关面板后 Journey log 有一行；Leave 不记账、不写 log。
-**DOM**：`e2e/micro-ritual.spec.js`（主路径 / Leave / Arrival 开着点球等；常用 `?microRitualMs=`）。
-**单元**：`MicroRitual.test.js` · `microRitualJourneyDraft` · `stopPlaybackEph…
+> **DOM**：`e2e/micro-ritual.spec.js`（主路径 / Leave / Arrival 开着点球等；常用 `?microRitualMs=`）。
+> **单元**：`MicroRitual.test.js` · `microRitualJourneyDraft` · `stopPlaybackEphemeral`；orchestration **无**抽屉 Breath 行。
+> **仍须人工**：听感（点时长 chip **立刻开始磬**；开始播 preferred / off→Mer-Ka-Ba；完成有结束铃、Leave 无结束铃；完成或 Leave **ephemeral 停播**）；间隔磬若在音符面板选了 3/5 分且时长够才响；之后 Sit→Focus 开坐即有乐+磬、Rise 停播、`ambient-pref` **不得**被改成 Off。
+> **对照**：正式 Focus 仍走 Sit→Arrival（或场景 T 时长 chip）；⚡ 旧 Quick Start「立刻 Focusing」已改为本球开 Breath。
 
 ### 步骤总览
 
@@ -1500,7 +1565,7 @@
 
 #### S-1
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1514,7 +1579,7 @@
 
 #### S-2
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1528,7 +1593,7 @@
 
 #### S-3
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1542,7 +1607,7 @@
 
 #### S-4
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1556,7 +1621,7 @@
 
 #### S-5
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1570,7 +1635,7 @@
 
 #### S-6
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1584,7 +1649,7 @@
 
 #### S-7
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1599,7 +1664,7 @@
 
 #### S-8
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1613,7 +1678,7 @@
 
 #### S-9
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `e2e/micro-ritual.spec.js` 覆盖；已在 `MicroRitual.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1628,10 +1693,11 @@
 ---
 ## 场景 T：Focus 开表前时长 chip（10 / 15 / 25 / 45）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > **用户故事**：Kelly 走完 Arrival、选好 Companion 模式后，再选本场专注时长，再开表。
-**单元**：`focusDuration.test.js`；偏好 `focus-tiger.focus-duration-pref.v1`。
-**DOM**：产品无 query 路径须人工；e2e helper 默认带 `?sessionMinutes=N` **跳过** picker（勿用跳过路径当本场景通过）。
-**仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
+> **单元**：`focusDuration.test.js`；偏好 `focus-tiger.focus-duration-pref.v1`。
+> **DOM**：产品无 query 路径须人工；e2e helper 默认带 `?sessionMinutes=N` **跳过** picker（勿用跳过路径当本场景通过）。
+> **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
 
 ### 步骤总览
 
@@ -1648,7 +1714,7 @@
 
 #### T-1
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `focusDuration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1662,7 +1728,7 @@
 
 #### T-2
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `focusDuration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1676,7 +1742,7 @@
 
 #### T-3
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `focusDuration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1691,7 +1757,7 @@
 
 #### T-4
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `focusDuration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1705,7 +1771,7 @@
 
 #### T-5
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `focusDuration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1719,7 +1785,7 @@
 
 #### T-6
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `focusDuration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1734,19 +1800,21 @@
 ---
 ## 场景 U1：U1 · Zen Cinema
 
+> **E2E 优先级**：P0 · 跨系统链路；历史上出过事故
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| U1-1 | P1 | 无自动化标注 | Idle → ⋯ / 抽屉 Zen Cinema → 0–1 秒内：菜单行按压 + `#zen-ci |
-| U1-2 | P1 | 无自动化标注 | Watch → 0–1 秒内：主钮按压 + 确认卡开始收起；结果（可延迟）：系统浏览器打开 `htt |
-| U1-3 | P1 | 无自动化标注 | 禁止：Reflection 边缘入口、App 内嵌播放器。 |
+| U1-1 | P0 | 无自动化标注 | Idle → ⋯ / 抽屉 Zen Cinema → 0–1 秒内：菜单行按压 + `#zen-ci |
+| U1-2 | P0 | 无自动化标注 | Watch → 0–1 秒内：主钮按压 + 确认卡开始收起；结果（可延迟）：系统浏览器打开 `htt |
+| U1-3 | P0 | 无自动化标注 | 禁止：Reflection 边缘入口、App 内嵌播放器。 |
 
 ### Given-When-Then 明细
 
 #### U1-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1761,7 +1829,7 @@
 
 #### U1-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1776,7 +1844,7 @@
 
 #### U1-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1791,20 +1859,22 @@
 ---
 ## 场景 U2：U2 · Quiet Line / 今日静语
 
+> **E2E 优先级**：P0 · 跨系统链路；历史上出过事故
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| U2-4 | P1 | 无自动化标注 | ⋯ / 抽屉 A Quiet Line / 今日のひとこと → 0–1 秒内：行按压 + `#dai |
-| U2-5 | P1 | 无自动化标注 | Save image → 0–1 秒内：钮按压（证明收到）；结果：下载 4:5 PNG（文件名含当日 |
-| U2-6 | P1 | 无自动化标注 | Not now 关卡；回流再开仍可。 |
-| U2-7 | P1 | 无自动化标注 | U2 子项 · 洞察种子池（Phase 1）：当日句从经典金句 ∪ 洞察种子 14 句（`INSIG |
+| U2-4 | P0 | 无自动化标注 | ⋯ / 抽屉 A Quiet Line / 今日のひとこと → 0–1 秒内：行按压 + `#dai |
+| U2-5 | P0 | 无自动化标注 | Save image → 0–1 秒内：钮按压（证明收到）；结果：下载 4:5 PNG（文件名含当日 |
+| U2-6 | P0 | 无自动化标注 | Not now 关卡；回流再开仍可。 |
+| U2-7 | P0 | 无自动化标注 | U2 子项 · 洞察种子池（Phase 1）：当日句从经典金句 ∪ 洞察种子 14 句（`INSIG |
 
 ### Given-When-Then 明细
 
 #### U2-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1818,7 +1888,7 @@
 
 #### U2-5
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1832,7 +1902,7 @@
 
 #### U2-6
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1846,7 +1916,7 @@
 
 #### U2-7
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1861,18 +1931,20 @@
 ---
 ## 场景 U3：U3 · Wallpapers
 
+> **E2E 优先级**：P0 · 跨系统链路；历史上出过事故
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| U3-8 | P1 | 无自动化标注 | ⋯ / 抽屉 Wallpapers → 0–1 秒内：行按压 + `#digital-wallpap |
-| U3-9 | P1 | 无自动化标注 | 禁止付费门 / 一键社交分享。 |
+| U3-8 | P0 | 无自动化标注 | ⋯ / 抽屉 Wallpapers → 0–1 秒内：行按压 + `#digital-wallpap |
+| U3-9 | P0 | 无自动化标注 | 禁止付费门 / 一键社交分享。 |
 
 ### Given-When-Then 明细
 
 #### U3-8
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1886,7 +1958,7 @@
 
 #### U3-9
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -1901,29 +1973,30 @@
 ---
 ## 场景 V：变花鼓励 · 冷启动欢迎（Day1 / 久别）
 
+> **E2E 优先级**：P2 · 展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工
 > **用户故事**：Kelly 首次打开（或 ≥3 日久别）→ 阿寅变花吹散 + 头顶白玉气泡（观察式、可点消）；同日再刷不得再吹花。深夜/清晨仍优先吹花（压过 wellness 斗篷）。
-**DOM**：`e2e/flower-welcome.spec.js` 锁 Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗。
-**仍须人工**：约 10 fps 弧线；末约 **1s CapCut** 回 Idle **不闪白**；窄屏气泡完整在 ActionBar **下方**；文案轮换不连出同一句。
-**负例**：`?flowerWelcome=0` → 永不吹花只走书/点头池；产品壳不得无故自动连播实验室按钮。
+> **DOM**：`e2e/flower-welcome.spec.js` 锁 Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗。
+> **仍须人工**：约 10 fps 弧线；末约 **1s CapCut** 回 Idle **不闪白**；窄屏气泡完整在 ActionBar **下方**；文案轮换不连出同一句。
+> **负例**：`?flowerWelcome=0` → 永不吹花只走书/点头池；产品壳不得无故自动连播实验室按钮。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| V-1 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | `?product=1` → DEV Console：`window.__ftDebug.reset |
-| V-2 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | Day1：见吹花 + `#flower-blow-welcome-bubble`（可点气泡/空白立刻 |
-| V-3 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 同日再刷 → 不得再吹花 / 再书或点头欢迎池抢播。 |
-| V-4 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 模拟 ≥3 日久别（拨 `lastOpen`）→ 再吹花（跟 locale）。 |
-| V-5 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 回流：吹花进行中仍可点 Sit。 |
-| V-6 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | Lab 对照（非产品故事）：无 `?product=1` 调试钮「变花吹散+气泡」。 |
-| V-7 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 组合 · 提醒已过时分（E12）：清库后设每日提醒为过去时分、今日零完成 → 硬刷新。0–1 秒内见 |
-| V-8 | P1 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 负例 · 配额拦截：先走完一次 Day1，再 `resetScenario('welcome-quo |
+| V-1 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | `?product=1` → DEV Console：`window.__ftDebug.reset |
+| V-2 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | Day1：见吹花 + `#flower-blow-welcome-bubble`（可点气泡/空白立刻 |
+| V-3 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 同日再刷 → 不得再吹花 / 再书或点头欢迎池抢播。 |
+| V-4 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 模拟 ≥3 日久别（拨 `lastOpen`）→ 再吹花（跟 locale）。 |
+| V-5 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 回流：吹花进行中仍可点 Sit。 |
+| V-6 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | Lab 对照（非产品故事）：无 `?product=1` 调试钮「变花吹散+气泡」。 |
+| V-7 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 组合 · 提醒已过时分（E12）：清库后设每日提醒为过去时分、今日零完成 → 硬刷新。0–1 秒内见 |
+| V-8 | P2 | 已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工 | 负例 · 配额拦截：先走完一次 Day1，再 `resetScenario('welcome-quo |
 
 ### Given-When-Then 明细
 
 #### V-1
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1938,7 +2011,7 @@
 
 #### V-2
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1952,7 +2025,7 @@
 
 #### V-3
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1966,7 +2039,7 @@
 
 #### V-4
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1980,7 +2053,7 @@
 
 #### V-5
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -1994,7 +2067,7 @@
 
 #### V-6
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2008,7 +2081,7 @@
 
 #### V-7
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2023,7 +2096,7 @@
 
 #### V-8
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/flower-welcome.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2038,28 +2111,30 @@
 ---
 ## 场景 W：点「?」· 产品简介、Privacy 与 Wellness 免责
 
+> **E2E 优先级**：P2 · 展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工
 > **用户故事**：Kelly 点「?」可查阅简介（no pressure / no ads / local-first）与「不是诊疗」声明，再点 **Privacy** 读本地优先说明（含交叉引用），Back 回简介。冷启动**不得**自动弹出免责警告牌。
-**DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy / Idle 不自动出卡 / `?wellnessFirst=1` QA 行；单元 `privacyNoticeCopy.test.js`、`wellnessDisclaimerGate.test.js`。
-**仍须人工**：375 简介与 Sheet 可滚、可关；Rise 后再走一遍「?」；**禁止**简介/隐私承诺具名云保…
+> **DOM**：`e2e/onboarding-remedy-contract.spec.js` Privacy / Idle 不自动出卡 / `?wellnessFirst=1` QA 行；单元 `privacyNoticeCopy.test.js`、`wellnessDisclaimerGate.test.js`。
+> **仍须人工**：375 简介与 Sheet 可滚、可关；Rise 后再走一遍「?」；**禁止**简介/隐私承诺具名云保管同步。
+> **产品面（2026-08-04）**：点「?」**只**出用途简介（+ Privacy），**不再**喷满页 tip；悬停薄荷绿脉冲仍可出 tip——与本故事分工，尖角乱象另见 TEST_TRACKER Hints 行。Focus HUD 三条无脉冲，悬停控件出 tip。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| W-1 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 冷启动（默认）：`?product=1`（可清 `focus-tiger.wellness-disc |
-| W-2 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 点「?」`#onboarding-hint-help` → 0–1 秒内见 `#onboarding |
-| W-3 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 点 Privacy → `#onboarding-privacy-sheet` 可读本地优先、不挖矿 |
-| W-4 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | （可选）点 The five moments → 打开与场景 Y 同一 `#five-moments |
-| W-5 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | Back → 回简介 → Got it 关闭。 |
-| W-6 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 回流：Rise 后再点 ? → Privacy → Back。 |
-| W-7 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 375：同路径；简介 / Sheet 不挡到无法关。 |
-| W-8 | P1 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | QA 例外：`?wellnessFirst=1&flowerWelcome=0` 仍可强制 Got  |
+| W-1 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 冷启动（默认）：`?product=1`（可清 `focus-tiger.wellness-disc |
+| W-2 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 点「?」`#onboarding-hint-help` → 0–1 秒内见 `#onboarding |
+| W-3 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 点 Privacy → `#onboarding-privacy-sheet` 可读本地优先、不挖矿 |
+| W-4 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | （可选）点 The five moments → 打开与场景 Y 同一 `#five-moments |
+| W-5 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | Back → 回简介 → Got it 关闭。 |
+| W-6 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 回流：Rise 后再点 ? → Privacy → Back。 |
+| W-7 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | 375：同路径；简介 / Sheet 不挡到无法关。 |
+| W-8 | P2 | 已在 `e2e/onboarding-remedy-contract.spec.js` 覆 | QA 例外：`?wellnessFirst=1&flowerWelcome=0` 仍可强制 Got  |
 
 ### Given-When-Then 明细
 
 #### W-1
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2074,7 +2149,7 @@
 
 #### W-2
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2088,7 +2163,7 @@
 
 #### W-3
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2102,7 +2177,7 @@
 
 #### W-4
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2116,7 +2191,7 @@
 
 #### W-5
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2130,7 +2205,7 @@
 
 #### W-6
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2144,7 +2219,7 @@
 
 #### W-7
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2158,7 +2233,7 @@
 
 #### W-8
 
-- **优先级**：P1
+- **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `e2e/onboarding-remedy-contract.spec.js` 覆盖；已在 `privacyNoticeCopy.test.js` 覆盖；已在 `wellnessDisclaimerGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2173,11 +2248,12 @@
 ---
 ## 场景 X：主动 Recover · Tiger Anchor（Focusing 轻触阿寅）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > **用户故事**：Kelly 专注中卡住了——不切页、不放弃；轻触阿寅（或幽灵提示）→ 点头鞠躬 + 中置观察式 toast + 光影 Recover 扰动；计时继续。与场景 B 被动 Re-focus（切走>60s）**分工**：本故事是**用户主动**；**不**占被动提醒日/会话额度。
-**单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却 / FB-01 微点头不延长冷却、无 toast）。
-**DOM**：尚无完整 e2e 故事锁；观感须人工。
-**仍须人工**：微光+文案可读；点击反馈链；冷却邀请隐退（微光/提示没了、hit 仍在）；**冷却期内再点阿寅（FB-01 微点头）**；375 不误触 Rise/HUD。
-**合入*…
+> **单元**：`MindfulReminderController.test`（不占额度 / 180s 冷却 / FB-01 微点头不延长冷却、无 toast）。
+> **DOM**：尚无完整 e2e 故事锁；观感须人工。
+> **仍须人工**：微光+文案可读；点击反馈链；冷却邀请隐退（微光/提示没了、hit 仍在）；**冷却期内再点阿寅（FB-01 微点头）**；375 不误触 Rise/HUD。
+> **合入**：#199。
 
 ### 步骤总览
 
@@ -2196,7 +2272,7 @@
 
 #### X-1
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2211,7 +2287,7 @@
 
 #### X-2
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2226,7 +2302,7 @@
 
 #### X-3
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2241,7 +2317,7 @@
 
 #### X-4
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2256,7 +2332,7 @@
 
 #### X-5
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2271,7 +2347,7 @@
 
 #### X-5b
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2286,7 +2362,7 @@
 
 #### X-6
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2301,7 +2377,7 @@
 
 #### X-7
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -2317,10 +2393,12 @@
 ---
 ## 场景 X2：Idle 轻点阿寅 · 摇耳摸头
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > **用户故事**：Kelly 打开产品、阿寅在坐禅——轻点它，它摸摸自己的头顶（已有 `earWiggleHeadTouch`），不是没反应。
-**单元**：`idleYinTapGate.test.js`（含 `wrapPlayEmotionWithIdleYinTapSync`：oneshot `onComplete` 仍见摸头键时须在回 Idle 后再武装）· `IdleYinTapAnchorUI.test.js`（额头 hit `top≤32%`）。
-**DOM**：`e2e/idle-yin-tap.spec.js`（testid + 视口额头点击 → `earWiggleHeadTouch`；Rise→Reflection skip 回流再武装）。
-**仍须人工**：正+倒一次…
+> **单元**：`idleYinTapGate.test.js`（含 `wrapPlayEmotionWithIdleYinTapSync`：oneshot `onComplete` 仍见摸头键时须在回 Idle 后再武装）· `IdleYinTapAnchorUI.test.js`（额头 hit `top≤32%`）。
+> **DOM**：`e2e/idle-yin-tap.spec.js`（testid + 视口额头点击 → `earWiggleHeadTouch`；Rise→Reflection skip 回流再武装）。
+> **仍须人工**：正+倒一次 + CapCut 回 Idle 观感；Focusing 不得走摸头。
+> **0–1 秒内**：点阿寅**额头**（或上半身 hit）→ CapCut 切入摸头序列开始（无 toast）。
 
 ### 步骤总览
 
@@ -2337,7 +2415,7 @@
 
 #### X2-1
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `idleYinTapGate.test.js` 覆盖；已在 `IdleYinTapAnchorUI.test.js` 覆盖；已在 `e2e/idle-yin-tap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2351,7 +2429,7 @@
 
 #### X2-2
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `idleYinTapGate.test.js` 覆盖；已在 `IdleYinTapAnchorUI.test.js` 覆盖；已在 `e2e/idle-yin-tap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2366,7 +2444,7 @@
 
 #### X2-3
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `idleYinTapGate.test.js` 覆盖；已在 `IdleYinTapAnchorUI.test.js` 覆盖；已在 `e2e/idle-yin-tap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2380,7 +2458,7 @@
 
 #### X2-4
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `idleYinTapGate.test.js` 覆盖；已在 `IdleYinTapAnchorUI.test.js` 覆盖；已在 `e2e/idle-yin-tap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2394,7 +2472,7 @@
 
 #### X2-5
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `idleYinTapGate.test.js` 覆盖；已在 `IdleYinTapAnchorUI.test.js` 覆盖；已在 `e2e/idle-yin-tap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2408,7 +2486,7 @@
 
 #### X2-6
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `idleYinTapGate.test.js` 覆盖；已在 `IdleYinTapAnchorUI.test.js` 覆盖；已在 `e2e/idle-yin-tap.spec.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2424,6 +2502,8 @@
 ---
 ## 场景 Y1：Y1 · Compass（B）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
@@ -2437,7 +2517,7 @@
 
 #### Y1-1
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2452,7 +2532,7 @@
 
 #### Y1-2
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2466,7 +2546,7 @@
 
 #### Y1-3
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2481,7 +2561,7 @@
 
 #### Y1-4
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2495,6 +2575,8 @@
 
 ---
 ## 场景 Y2：Y2 · Moment Whisper（A′）
+
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 
 ### 步骤总览
 
@@ -2511,7 +2593,7 @@
 
 #### Y2-5
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2525,7 +2607,7 @@
 
 #### Y2-6
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2539,7 +2621,7 @@
 
 #### Y2-7
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2553,7 +2635,7 @@
 
 #### Y2-8
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2567,7 +2649,7 @@
 
 #### Y2-9
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2581,7 +2663,7 @@
 
 #### Y2-10
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -2596,10 +2678,11 @@
 ---
 ## 场景 Z：Journey Log（D′ · 本地留痕）
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > **用户故事**：Kelly 走完一场有头有尾的专注后，想安静回顾——⋯ / 抽屉打开 **Journey log**，见日期+分钟+ arrived & reflected（或缺省降级），不是 Health 同步、不是 Tip 茶室账本。
-**单元**：`journeyLogGate.test.js`（含 `microRitualJourneyDraft`）；orchestration 含 `journey-log`。
-**仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在；开/关卡 0–1s；**洞察小符号观感**（抽中 Quiet Line 种子池并当场打开后）。
-**合入**：#205；洞察标记 #2…
+> **单元**：`journeyLogGate.test.js`（含 `microRitualJourneyDraft`）；orchestration 含 `journey-log`。
+> **仍须人工**：Skip Reflection 后 `reflect=false`；无 Arrival 路径降级；>30 裁旧；刷新仍在；开/关卡 0–1s；**洞察小符号观感**（抽中 Quiet Line 种子池并当场打开后）。
+> **合入**：#205；洞察标记 #292 Phase 1。**禁止**：写入 HealthKit；与 Tip Jar Tea Log / Sanctuary / 统一练习徽章 **零耦合**。
 
 ### 步骤总览
 
@@ -2619,7 +2702,7 @@
 
 #### Z-1
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2634,7 +2717,7 @@
 
 #### Z-2
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2648,7 +2731,7 @@
 
 #### Z-3
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2663,7 +2746,7 @@
 
 #### Z-4
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2677,7 +2760,7 @@
 
 #### Z-5
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2691,7 +2774,7 @@
 
 #### Z-6
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2705,7 +2788,7 @@
 
 #### Z-7
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2719,7 +2802,7 @@
 
 #### Z-8
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2733,7 +2816,7 @@
 
 #### Z-9
 
-- **优先级**：P1
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2748,29 +2831,32 @@
 ---
 ## 场景 AC：Yin's Collections 抽屉（L3 · 寅币珍藏表面）
 
+> **E2E 优先级**：P0 · 收入/资金相关
 > **用户故事**：Kelly 想用坐来的寅币结缘一件钱买不到的案头雅物——宽屏 ⋯ / 窄屏抽屉在 Journey log **旁边**打开 **Yin's Collections**（汉语阿寅的珍藏 / 日语阿寅の蒐集），见可滚动商店目录，不是 Support 三卡、不是请茶、不是 HUD 钱包、不是第二座莲花池。
-**单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsBehavioralScarcity.test.js`（纪念分区 catalog 谓词 + 本机说明句）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不*…
+> **单元**：`focusCoinsSurface.test.js`（商店 8 行清供；缺口句点名还差几枚/几分钟）；`collectionsBehavioralScarcity.test.js`（纪念分区 catalog 谓词 + 本机说明句）；`collectionsWaveHelloGate.test.js`（Focusing / celebrating 不得播；**不**要求结缘 unlistable SKU）；`EmotionController.test.js`（`collectionsWaveHello` → `waveHello` + CapCut；`welcomeBack` 仍空）；`idleChromeOrchestration.test.js`（`yin-coin` 紧…
+> **仍须人工**：375 不挡三球；清供目录都能滚到；不足结缘 toast；已结缘 / Wear；纪念分区 locale 与未解锁观察句；`?focusCoins=0` 该行消失。**无**完整用户链路 e2e（本切片）。
+> **禁止**：改场景 D；Support 入口卖点；常驻 HUD；用点满足 `isEntitled`；把器物叠回主坐席 / `#sprite-stage`；商店行出现挥手 SKU（底栏 Play 除外）；把挥手加回欢迎池。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AC-1 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 Yin's Collections  |
-| AC-2 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 挥手点播：点底栏 请阿寅挥挥手 → 0–1 秒内钮 `:active` 按压 + 阿寅开始 `wav |
-| AC-3 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 结缘成功（余额够、门槛够）：点 结缘 / Bond → 0–1 秒内钮 `:active` 按压；该 |
-| AC-4 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 不足 / 未达门槛：点结缘 → 0–1 秒内仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟  |
-| AC-5 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 回流：Close / Esc / 点外侧 → 0–1 秒内关钮 `:active` + 卡淡出；Si |
-| AC-6 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 对照 Support（场景 Q）：右上角 Support Yin 三卡 / `$` 不出现在本面板。 |
-| AC-7 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 关闸：`?product=1&focusCoins=0` → 抽屉 / ⋯ 没有珍藏这一行。 |
-| AC-8 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 375：卡可关、不挡 Sit 三球。 |
-| AC-9 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 修行纪念分区（#888 V1）：清供列表下方见 Practice memorials / 修行纪念（ |
-| AC-10 | P1 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 修行纪念印自动出卡（#888 Slice 2）：本机终身分钟首次跨 600/3000/10800 档 |
+| AC-1 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | `?product=1` Idle → 宽屏 ⋯ / 窄屏抽屉 Yin's Collections  |
+| AC-2 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 挥手点播：点底栏 请阿寅挥挥手 → 0–1 秒内钮 `:active` 按压 + 阿寅开始 `wav |
+| AC-3 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 结缘成功（余额够、门槛够）：点 结缘 / Bond → 0–1 秒内钮 `:active` 按压；该 |
+| AC-4 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 不足 / 未达门槛：点结缘 → 0–1 秒内仍有按压 + 行内具体缺口（还差 N 枚 / N 分钟  |
+| AC-5 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 回流：Close / Esc / 点外侧 → 0–1 秒内关钮 `:active` + 卡淡出；Si |
+| AC-6 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 对照 Support（场景 Q）：右上角 Support Yin 三卡 / `$` 不出现在本面板。 |
+| AC-7 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 关闸：`?product=1&focusCoins=0` → 抽屉 / ⋯ 没有珍藏这一行。 |
+| AC-8 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 375：卡可关、不挡 Sit 三球。 |
+| AC-9 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 修行纪念分区（#888 V1）：清供列表下方见 Practice memorials / 修行纪念（ |
+| AC-10 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 修行纪念印自动出卡（#888 Slice 2）：本机终身分钟首次跨 600/3000/10800 档 |
 
 ### Given-When-Then 明细
 
 #### AC-1
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2785,7 +2871,7 @@
 
 #### AC-2
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2799,7 +2885,7 @@
 
 #### AC-3
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2813,7 +2899,7 @@
 
 #### AC-4
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2827,7 +2913,7 @@
 
 #### AC-5
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2841,7 +2927,7 @@
 
 #### AC-6
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2855,7 +2941,7 @@
 
 #### AC-7
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2869,7 +2955,7 @@
 
 #### AC-8
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2883,7 +2969,7 @@
 
 #### AC-9
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2897,7 +2983,7 @@
 
 #### AC-10
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关）
 - **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -2912,9 +2998,12 @@
 ---
 ## 场景 AA：Idle Document PiP 陪伴浮窗（实验原型）
 
+> **E2E 优先级**：P2 · 实验/回访/验证切片；下沉信号：ui_copy_only；E2E 只保一条主干或人工
 > **地位**：**实验 / 非最终形态**。用来验证「切到其他窗口或 App 时，仍能看见阿寅安静呼吸」。**待观察使用数据后决定是否继续投入**（localStorage `focus-tiger.idle-companion-pip.v1` 只记是否曾打开，不用于提醒或激励）。
-**不是**系统托盘 / 关浏览器后仍常驻（电脑版壳已拍板 Electron，但 AA **仍不是**那条路径）；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时——见 **场景 AK**）。
-**单元**：`idleCompanionPipGate.test.js`（Document PiP 支持 → 入口可挂载；不支持 …
+> **不是**系统托盘 / 关浏览器后仍常驻（电脑版壳已拍板 Electron，但 AA **仍不是**那条路径）；**不是** Focusing 里的 Immersive Presence「Float Yin · experimental」（那个带计时——见 **场景 AK**）。
+> **单元**：`idleCompanionPipGate.test.js`（Document PiP 支持 → 入口可挂载；不支持 → 不挂载；Idle 才显示）。
+> **DOM e2e**：无（`requestWindow` 需真实用户手势 + Chromium）。
+> **仍须人工**：Chrome/Edge 开/关流畅与呼吸卡顿；切到其他窗口后是否置顶；Safari/Firefox 入口完全不出现且无报错。
 
 ### 步骤总览
 
@@ -2931,7 +3020,7 @@
 
 #### AA-1
 
-- **优先级**：P2
+- **优先级**：P2（实验/回访/验证切片；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `idleCompanionPipGate.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -2946,7 +3035,7 @@
 
 #### AA-2
 
-- **优先级**：P2
+- **优先级**：P2（实验/回访/验证切片；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `idleCompanionPipGate.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -2961,7 +3050,7 @@
 
 #### AA-3
 
-- **优先级**：P2
+- **优先级**：P2（实验/回访/验证切片；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `idleCompanionPipGate.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -2975,7 +3064,7 @@
 
 #### AA-4
 
-- **优先级**：P2
+- **优先级**：P2（实验/回访/验证切片；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `idleCompanionPipGate.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -2990,7 +3079,7 @@
 
 #### AA-5
 
-- **优先级**：P2
+- **优先级**：P2（实验/回访/验证切片；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `idleCompanionPipGate.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -3005,7 +3094,7 @@
 
 #### AA-6
 
-- **优先级**：P2
+- **优先级**：P2（实验/回访/验证切片；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
 - **覆盖**：已在 `idleCompanionPipGate.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
@@ -3020,25 +3109,26 @@
 ---
 ## 场景 AK：Focusing · Float Yin PiP 探针（Immersive Presence · #438）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **地位**：Focusing HUD 内 **Float Yin · experimental**（应用内沉浸 + Document PiP 小窗）。**≠** 场景 AA（Idle 热力图旁 Document PiP，无计时）。
-**#438 行为**：Electron 壳内须 **live 探针**——探针失败 **藏钮**（禁止可点却无反应）；Chrome 桌面仍可见并可开 PiP。
-**单元**：`immersivePresenceSupport.test.js`（Electron 探针红/绿）。
-**仍须人工**：Safari 入口不出现；Rise 后再 Focusing 行为一致。
+> **#438 行为**：Electron 壳内须 **live 探针**——探针失败 **藏钮**（禁止可点却无反应）；Chrome 桌面仍可见并可开 PiP。
+> **单元**：`immersivePresenceSupport.test.js`（Electron 探针红/绿）。
+> **仍须人工**：Safari 入口不出现；Rise 后再 Focusing 行为一致。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AK-1 | P1 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | Chrome 桌面 · `?product=1` → Sit → Focusing → 见 Floa |
-| AK-2 | P1 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | Electron `desktop:dev` 宽屏 · 同上路径 → Focusing → 不得见可 |
-| AK-3 | P1 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | 若壳内误显且点失败：中置短句 `IMMERSIVE_PIP_UNAVAILABLE`（非空 catc |
-| AK-4 | P1 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | 回流：Rise 后再 Focusing → Chrome 仍可见；Electron 仍按探针藏/显。 |
+| AK-1 | P0 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | Chrome 桌面 · `?product=1` → Sit → Focusing → 见 Floa |
+| AK-2 | P0 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | Electron `desktop:dev` 宽屏 · 同上路径 → Focusing → 不得见可 |
+| AK-3 | P0 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | 若壳内误显且点失败：中置短句 `IMMERSIVE_PIP_UNAVAILABLE`（非空 catc |
+| AK-4 | P0 | 已在 `immersivePresenceSupport.test.js` 覆盖；完整链路 | 回流：Rise 后再 Focusing → Chrome 仍可见；Electron 仍按探针藏/显。 |
 
 ### Given-When-Then 明细
 
 #### AK-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `immersivePresenceSupport.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3053,7 +3143,7 @@
 
 #### AK-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `immersivePresenceSupport.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3068,7 +3158,7 @@
 
 #### AK-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `immersivePresenceSupport.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3083,7 +3173,7 @@
 
 #### AK-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `immersivePresenceSupport.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3099,25 +3189,26 @@
 ---
 ## 场景 AM：Quiet Together 灯火（匿名同坐 · 2026-09-04）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **地位**：Idle / Arrive 背景级诚实人数。**≠** Presence Signals、**≠** Circle、**≠** 聊天。Focusing 内不画。
-**单元**：`quietTogetherPreference.test.js` · `quietTogetherPresence.test.js` · cloud `lanternPresenceKv.test.ts`。
-**生产**：Worker 未部署时灯火保持空白（诚实）。
-**点击**：灯火本身 `pointer-events: none`。Privacy 开关 0–1 秒内勾选变化；关掉则灯火消失。
+> **单元**：`quietTogetherPreference.test.js` · `quietTogetherPresence.test.js` · cloud `lanternPresenceKv.test.ts`。
+> **生产**：Worker 未部署时灯火保持空白（诚实）。
+> **点击**：灯火本身 `pointer-events: none`。Privacy 开关 0–1 秒内勾选变化；关掉则灯火消失。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AM-1 | P1 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | `?product=1` 硬刷新进 Idle 约 2.5s 起每 ~5s 自动 peek：若云端有人 |
-| AM-2 | P1 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | Sit 进 Focusing → 灯火 须消失（0–1 秒内淡出）。Rise 回 Idle → 可再 |
-| AM-3 | P1 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | ? → Privacy → 关掉 Quiet Together → 0–1 秒内灯火消失且不再 he |
-| AM-4 | P1 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | 回流：再打开开关；`?quietTogether=0` 永不请求。 |
+| AM-1 | P0 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | `?product=1` 硬刷新进 Idle 约 2.5s 起每 ~5s 自动 peek：若云端有人 |
+| AM-2 | P0 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | Sit 进 Focusing → 灯火 须消失（0–1 秒内淡出）。Rise 回 Idle → 可再 |
+| AM-3 | P0 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | ? → Privacy → 关掉 Quiet Together → 0–1 秒内灯火消失且不再 he |
+| AM-4 | P0 | 已在 `quietTogetherPreference.test.js` 覆盖；已在 `q | 回流：再打开开关；`?quietTogether=0` 永不请求。 |
 
 ### Given-When-Then 明细
 
 #### AM-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `quietTogetherPreference.test.js` 覆盖；已在 `quietTogetherPresence.test.js` 覆盖
 
 **Given**
@@ -3132,7 +3223,7 @@
 
 #### AM-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `quietTogetherPreference.test.js` 覆盖；已在 `quietTogetherPresence.test.js` 覆盖
 
 **Given**
@@ -3147,7 +3238,7 @@
 
 #### AM-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `quietTogetherPreference.test.js` 覆盖；已在 `quietTogetherPresence.test.js` 覆盖
 
 **Given**
@@ -3161,7 +3252,7 @@
 
 #### AM-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `quietTogetherPreference.test.js` 覆盖；已在 `quietTogetherPresence.test.js` 覆盖
 
 **Given**
@@ -3176,28 +3267,29 @@
 ---
 ## 场景 AN：Focus Circle（小圈暗号 · 2026-09-04）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **地位**：Privacy 内可选社交基础设施。**≠** 全球灯火（AM）、**≠** Presence Signals、**≠** 聊天。
-**单元**：`focusCircleMembership.test.js` · cloud `focusCircleKv.test.ts`。
-**生产**：Worker 未部署 `/api/focus-circle` 时 Create/Join 须见错误文案，不挡 Sit。
-**点击**：Create / Join / Leave / Copy 均 0–1 秒内 disabled 或状态句。Copy 后须见「已拷贝」类句，且面板仍开着、人数刷新时**不得立刻清掉**该句。Start a circle 若云端超过约 12 秒无响应，须出失败句并恢复…
+> **单元**：`focusCircleMembership.test.js` · cloud `focusCircleKv.test.ts`。
+> **生产**：Worker 未部署 `/api/focus-circle` 时 Create/Join 须见错误文案，不挡 Sit。
+> **点击**：Create / Join / Leave / Copy 均 0–1 秒内 disabled 或状态句。Copy 后须见「已拷贝」类句，且面板仍开着、人数刷新时**不得立刻清掉**该句。Start a circle 若云端超过约 12 秒无响应，须出失败句并恢复可点（禁止无限等待光标）。**Leave 挂起**见 WORKING + 钮 disabled；**Leave 超时/失败**须失败句且仍显示已入圈（禁止尚未离圈却报已离开）。Leave 成功后迟到的人数回写不得把人「加回去」。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AN-1 | P1 | 已在 `focusCircleMembership.test.js` 覆盖 | `?product=1` → ? → Privacy → Focus Circle → Start  |
-| AN-2 | P1 | 已在 `focusCircleMembership.test.js` 覆盖 | 另一标签 Join 同码 → 人数增至 2（满 8 时 Join 须见满员句）。 |
-| AN-3 | P1 | 已在 `focusCircleMembership.test.js` 覆盖 | Leave 成功 → 0–1 秒内回到未入圈态；Leave 超时/失败 → 失败句且仍为已入圈。错误 |
-| AN-4 | P1 | 已在 `focusCircleMembership.test.js` 覆盖 | `?circleJoin=XXXXXX` 打开 Privacy 时预填加入框。`?focusCirc |
-| AN-5 | P1 | 已在 `focusCircleMembership.test.js` 覆盖 | Copy invite code → 0–1 秒内见 copied 状态句；窗口再聚焦后该句仍在（剪 |
-| AN-6 | P1 | 已在 `focusCircleMembership.test.js` 覆盖 | Start a circle 云端卡住 → 约 12 秒内失败句 + 按钮可再点。 |
-| AN-7 | P1 | 已在 `focusCircleMembership.test.js` 覆盖 | Leave 后再 Join 同一六位码 → 须稳定显示已加入（暗号 + 人数 + Leave），不得 |
+| AN-1 | P0 | 已在 `focusCircleMembership.test.js` 覆盖 | `?product=1` → ? → Privacy → Focus Circle → Start  |
+| AN-2 | P0 | 已在 `focusCircleMembership.test.js` 覆盖 | 另一标签 Join 同码 → 人数增至 2（满 8 时 Join 须见满员句）。 |
+| AN-3 | P0 | 已在 `focusCircleMembership.test.js` 覆盖 | Leave 成功 → 0–1 秒内回到未入圈态；Leave 超时/失败 → 失败句且仍为已入圈。错误 |
+| AN-4 | P0 | 已在 `focusCircleMembership.test.js` 覆盖 | `?circleJoin=XXXXXX` 打开 Privacy 时预填加入框。`?focusCirc |
+| AN-5 | P0 | 已在 `focusCircleMembership.test.js` 覆盖 | Copy invite code → 0–1 秒内见 copied 状态句；窗口再聚焦后该句仍在（剪 |
+| AN-6 | P0 | 已在 `focusCircleMembership.test.js` 覆盖 | Start a circle 云端卡住 → 约 12 秒内失败句 + 按钮可再点。 |
+| AN-7 | P0 | 已在 `focusCircleMembership.test.js` 覆盖 | Leave 后再 Join 同一六位码 → 须稳定显示已加入（暗号 + 人数 + Leave），不得 |
 
 ### Given-When-Then 明细
 
 #### AN-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleMembership.test.js` 覆盖
 
 **Given**
@@ -3211,7 +3303,7 @@
 
 #### AN-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleMembership.test.js` 覆盖
 
 **Given**
@@ -3225,7 +3317,7 @@
 
 #### AN-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleMembership.test.js` 覆盖
 
 **Given**
@@ -3239,7 +3331,7 @@
 
 #### AN-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleMembership.test.js` 覆盖
 
 **Given**
@@ -3253,7 +3345,7 @@
 
 #### AN-5
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleMembership.test.js` 覆盖
 
 **Given**
@@ -3267,7 +3359,7 @@
 
 #### AN-6
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleMembership.test.js` 覆盖
 
 **Given**
@@ -3281,7 +3373,7 @@
 
 #### AN-7
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleMembership.test.js` 覆盖
 
 **Given**
@@ -3296,26 +3388,27 @@
 ---
 ## 场景 AO：Focus Circle Presence（圈内 sitting · 2026-09-04）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **地位**：Idle / Arrive 背景级圈内同伴 sitting。**≠** 全球灯火（AM）、**≠** Circle 管理（AN）、**≠** Presence Signals。Focusing 内不画。
-**单元**：`focusCirclePresence.test.js` · cloud `focusCirclePresenceKv.test.ts`。
-**生产**：Version `22326de3`（2026-09-05 · #572）已含 presence actions；未部署时 Idle 保持空白（诚实）。
-**点击**：银蓝 dots `pointer-events: none`；管理仍在菜单 / Privacy。
+> **单元**：`focusCirclePresence.test.js` · cloud `focusCirclePresenceKv.test.ts`。
+> **生产**：Version `22326de3`（2026-09-05 · #572）已含 presence actions；未部署时 Idle 保持空白（诚实）。
+> **点击**：银蓝 dots `pointer-events: none`；管理仍在菜单 / Privacy。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AO-1 | P1 | 已在 `focusCirclePresence.test.js` 覆盖 | A、B 均已入圈（两独立浏览器配置）→ A Sit 进 Focusing → B 硬刷新 Idle  |
-| AO-2 | P1 | 已在 `focusCirclePresence.test.js` 覆盖 | A Rise 回 Idle → B 约 5–10s 内 dots 消失（诚实 0）。 |
-| AO-3 | P1 | 已在 `focusCirclePresence.test.js` 覆盖 | A Breath practice 呼吸 ≥5s → B Idle 亦应见圈内 dots（A 练习窗 |
-| AO-4 | P1 | 已在 `focusCirclePresence.test.js` 覆盖 | A Leave circle → B 不再见 A 的圈内 presence；A 本地亦清 snaps |
-| AO-5 | P1 | 已在 `focusCirclePresence.test.js` 覆盖 | `?focusCircle=0` → 不请求、不画。 |
+| AO-1 | P0 | 已在 `focusCirclePresence.test.js` 覆盖 | A、B 均已入圈（两独立浏览器配置）→ A Sit 进 Focusing → B 硬刷新 Idle  |
+| AO-2 | P0 | 已在 `focusCirclePresence.test.js` 覆盖 | A Rise 回 Idle → B 约 5–10s 内 dots 消失（诚实 0）。 |
+| AO-3 | P0 | 已在 `focusCirclePresence.test.js` 覆盖 | A Breath practice 呼吸 ≥5s → B Idle 亦应见圈内 dots（A 练习窗 |
+| AO-4 | P0 | 已在 `focusCirclePresence.test.js` 覆盖 | A Leave circle → B 不再见 A 的圈内 presence；A 本地亦清 snaps |
+| AO-5 | P0 | 已在 `focusCirclePresence.test.js` 覆盖 | `?focusCircle=0` → 不请求、不画。 |
 
 ### Given-When-Then 明细
 
 #### AO-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCirclePresence.test.js` 覆盖
 
 **Given**
@@ -3330,7 +3423,7 @@
 
 #### AO-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCirclePresence.test.js` 覆盖
 
 **Given**
@@ -3345,7 +3438,7 @@
 
 #### AO-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCirclePresence.test.js` 覆盖
 
 **Given**
@@ -3360,7 +3453,7 @@
 
 #### AO-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCirclePresence.test.js` 覆盖
 
 **Given**
@@ -3374,7 +3467,7 @@
 
 #### AO-5
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCirclePresence.test.js` 覆盖
 
 **Given**
@@ -3389,26 +3482,27 @@
 ---
 ## 场景 AP：Focus Circle Gentle Witness（圈内痕迹 · 2026-09-05）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **地位**：Idle / Arrive 背景级匿名短句痕迹 + **每条最多一次**预设回应。**≠** sitting dots（AO）、**≠** 聊天、**≠** 点赞墙、**≠** was-here-today（2d）、**≠** 昵称（2e）。Focusing 内不画。
-**单元**：（开工后）`focusCircleWitness.test.js` · cloud `focusCircleWitnessKv.test.ts`。
-**生产**：Worker 未部署 witness actions 时 Idle **不画痕迹**（诚实）。
-**点击**：Rise 留痕条须 0–1s 反馈且无自动消失倒计时；Idle 回应须 0–1s disabled → picker。选句提交 *…
+> **单元**：（开工后）`focusCircleWitness.test.js` · cloud `focusCircleWitnessKv.test.ts`。
+> **生产**：Worker 未部署 witness actions 时 Idle **不画痕迹**（诚实）。
+> **点击**：Rise 留痕条须 0–1s 反馈且无自动消失倒计时；Idle 回应须 0–1s disabled → picker。选句提交 **挂起**见 `aria-busy` + 钮 disabled；**约 12 秒超时或失败**须见 `FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR` 且 picker 仍在（禁止无限转圈）。**仲裁**：Rise 条 = `FOCUS_CIRCLE_WITNESS_LEAVE` Tier26；回应 picker = Tier27；须过 `requestOverlaySlot`（场景 AH / AD 邻接）。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AP-1 | P1 | 已在 `focusCircleWitness.test.js` 覆盖 | A、B 均已入圈 → A Sit ≥60s → Rise → 约 3s 后（非 3s 限时关条）见可 |
-| AP-2 | P1 | 已在 `focusCircleWitness.test.js` 覆盖 | B 硬刷新 Idle 约 2.5–10s 见 1 条匿名痕迹 + 回应 入口；银蓝 dots（AO） |
-| AP-3 | P1 | 已在 `focusCircleWitness.test.js` 覆盖 | B 回应 → picker → 确认 → 0–1s 内消失；同 trace 不可二次回应。 |
-| AP-4 | P1 | 已在 `focusCircleWitness.test.js` 覆盖 | A 跳过 → B 不见 A 的痕迹。 |
-| AP-5 | P1 | 已在 `focusCircleWitness.test.js` 覆盖 | `?focusCircleWitness=0` / `?focusCircle=0` → 禁用。 |
+| AP-1 | P0 | 已在 `focusCircleWitness.test.js` 覆盖 | A、B 均已入圈 → A Sit ≥60s → Rise → 约 3s 后（非 3s 限时关条）见可 |
+| AP-2 | P0 | 已在 `focusCircleWitness.test.js` 覆盖 | B 硬刷新 Idle 约 2.5–10s 见 1 条匿名痕迹 + 回应 入口；银蓝 dots（AO） |
+| AP-3 | P0 | 已在 `focusCircleWitness.test.js` 覆盖 | B 回应 → picker → 确认 → 0–1s 内消失；同 trace 不可二次回应。 |
+| AP-4 | P0 | 已在 `focusCircleWitness.test.js` 覆盖 | A 跳过 → B 不见 A 的痕迹。 |
+| AP-5 | P0 | 已在 `focusCircleWitness.test.js` 覆盖 | `?focusCircleWitness=0` / `?focusCircle=0` → 禁用。 |
 
 ### Given-When-Then 明细
 
 #### AP-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWitness.test.js` 覆盖
 
 **Given**
@@ -3423,7 +3517,7 @@
 
 #### AP-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWitness.test.js` 覆盖
 
 **Given**
@@ -3438,7 +3532,7 @@
 
 #### AP-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWitness.test.js` 覆盖
 
 **Given**
@@ -3452,7 +3546,7 @@
 
 #### AP-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWitness.test.js` 覆盖
 
 **Given**
@@ -3466,7 +3560,7 @@
 
 #### AP-5
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWitness.test.js` 覆盖
 
 **Given**
@@ -3481,26 +3575,27 @@
 ---
 ## 场景 AQ：Focus Circle Was-Here-Today（圈内今日来过 · 2026-09-07）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **地位**：Idle / Arrive 背景级「今天有人来过」模糊印记（自动、无短语）。**≠** sitting dots（AO）、**≠** Witness 痕迹（AP）、**≠** 聊天、**≠** 精确人数榜。Focusing 内不画。
-**单元**：`focusCircleWasHere.test.js` · `focusCirclePassiveShare.test.js` · cloud `focusCircleWasHereKv.test.ts`。
-**生产**：Worker 未部署 was-here actions 时 Idle **不画 was-here**（诚实）；`presence_peek` 仍可有 sitting。
-**点击**：was-here 区 `poin…
+> **单元**：`focusCircleWasHere.test.js` · `focusCirclePassiveShare.test.js` · cloud `focusCircleWasHereKv.test.ts`。
+> **生产**：Worker 未部署 was-here actions 时 Idle **不画 was-here**（诚实）；`presence_peek` 仍可有 sitting。
+> **点击**：was-here 区 `pointer-events: none`；被动开关在 ⋯ → My circle 面板。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AQ-1 | P1 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | A、B 均已入圈 → A Sit ≥60s → Rise → B sitting=0 时 Idle  |
-| AQ-2 | P1 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | A 关 Share when I practiced today → 同上完成练习 → B 不见 A |
-| AQ-3 | P1 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | A Sit <60s → B 不见 was-here。 |
-| AQ-4 | P1 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | `?focusCircleWasHere=0` / `?focusCircle=0` / Leave |
-| AQ-5 | P1 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | 与 2c 并存：A 可自动 was-here + 自愿 Witness 痕；B Idle 可同时见  |
+| AQ-1 | P0 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | A、B 均已入圈 → A Sit ≥60s → Rise → B sitting=0 时 Idle  |
+| AQ-2 | P0 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | A 关 Share when I practiced today → 同上完成练习 → B 不见 A |
+| AQ-3 | P0 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | A Sit <60s → B 不见 was-here。 |
+| AQ-4 | P0 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | `?focusCircleWasHere=0` / `?focusCircle=0` / Leave |
+| AQ-5 | P0 | 已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusC | 与 2c 并存：A 可自动 was-here + 自愿 Witness 痕；B Idle 可同时见  |
 
 ### Given-When-Then 明细
 
 #### AQ-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusCirclePassiveShare.test.js` 覆盖
 
 **Given**
@@ -3516,7 +3611,7 @@
 
 #### AQ-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusCirclePassiveShare.test.js` 覆盖
 
 **Given**
@@ -3530,7 +3625,7 @@
 
 #### AQ-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusCirclePassiveShare.test.js` 覆盖
 
 **Given**
@@ -3544,7 +3639,7 @@
 
 #### AQ-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusCirclePassiveShare.test.js` 覆盖
 
 **Given**
@@ -3558,7 +3653,7 @@
 
 #### AQ-5
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleWasHere.test.js` 覆盖；已在 `focusCirclePassiveShare.test.js` 覆盖
 
 **Given**
@@ -3574,26 +3669,27 @@
 ---
 ## 场景 AR：Focus Circle Identity（认人层 · 2026-09-07）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **地位**：My circle 可选昵称 + Tiger/Yin 徽标；Witness Idle 文案 `{name}` 替换「一位同伴」；本机 Hide 回匿名。**≠** was-here 计数（AQ）· **≠** OTP 跨设备（后续 Brief）。
-**单元**：`focusCircleIdentity.test.js` · cloud `focusCircleIdentityKv.test.ts`。
-**生产**：Worker 未部署 `identity_set` / 合并 `witness_peek.identities` 时全员匿名（诚实）。
-**点击**：Save 0–1s 反馈；Hide name 立刻回匿名。
+> **单元**：`focusCircleIdentity.test.js` · cloud `focusCircleIdentityKv.test.ts`。
+> **生产**：Worker 未部署 `identity_set` / 合并 `witness_peek.identities` 时全员匿名（诚实）。
+> **点击**：Save 0–1s 反馈；Hide name 立刻回匿名。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AR-1 | P1 | 已在 `focusCircleIdentity.test.js` 覆盖 | A 设昵称 + 徽标 → Save → B Witness 痕见昵称（非匿名）。 |
-| AR-2 | P1 | 已在 `focusCircleIdentity.test.js` 覆盖 | B Hide this name → 本机回「一位同伴」/「A companion」。 |
-| AR-3 | P1 | 已在 `focusCircleIdentity.test.js` 覆盖 | A 清昵称 Save → B 见匿名。 |
-| AR-4 | P1 | 已在 `focusCircleIdentity.test.js` 覆盖 | `?focusCircleIdentity=0` → 不展示认人 UI、Witness 仍匿名。 |
-| AR-5 | P1 | 已在 `focusCircleIdentity.test.js` 覆盖 | 与 AQ 并存：was-here 仍无昵称。 |
+| AR-1 | P0 | 已在 `focusCircleIdentity.test.js` 覆盖 | A 设昵称 + 徽标 → Save → B Witness 痕见昵称（非匿名）。 |
+| AR-2 | P0 | 已在 `focusCircleIdentity.test.js` 覆盖 | B Hide this name → 本机回「一位同伴」/「A companion」。 |
+| AR-3 | P0 | 已在 `focusCircleIdentity.test.js` 覆盖 | A 清昵称 Save → B 见匿名。 |
+| AR-4 | P0 | 已在 `focusCircleIdentity.test.js` 覆盖 | `?focusCircleIdentity=0` → 不展示认人 UI、Witness 仍匿名。 |
+| AR-5 | P0 | 已在 `focusCircleIdentity.test.js` 覆盖 | 与 AQ 并存：was-here 仍无昵称。 |
 
 ### Given-When-Then 明细
 
 #### AR-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleIdentity.test.js` 覆盖
 
 **Given**
@@ -3607,7 +3703,7 @@
 
 #### AR-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleIdentity.test.js` 覆盖
 
 **Given**
@@ -3621,7 +3717,7 @@
 
 #### AR-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleIdentity.test.js` 覆盖
 
 **Given**
@@ -3635,7 +3731,7 @@
 
 #### AR-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleIdentity.test.js` 覆盖
 
 **Given**
@@ -3649,7 +3745,7 @@
 
 #### AR-5
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `focusCircleIdentity.test.js` 覆盖
 
 **Given**
@@ -3664,30 +3760,31 @@
 ---
 ## 场景 AB：Electron 托盘收起 ≠ 走神（电脑版 · 脚手架后测）
 
+> **E2E 优先级**：P0 · 跨系统链路；历史上出过事故
 > **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
-**对照**：场景 **B** = 用户把**另一个 App 或标签**带到前台；本场景 = 主窗口 hide 到菜单栏，进程仍在。
-**不是**场景 AA（浏览器 Document PiP）。
-**白名单**：**SB-18**（收进托盘无 Re-focus）。切到别的 App 仍走 B / SB-01–03。
-**冲突扫描**：职责与 B 拆开，不是加一条更重的回归仪式。
-**自动化**：脚手架须补「…
+> **对照**：场景 **B** = 用户把**另一个 App 或标签**带到前台；本场景 = 主窗口 hide 到菜单栏，进程仍在。
+> **不是**场景 AA（浏览器 Document PiP）。
+> **白名单**：**SB-18**（收进托盘无 Re-focus）。切到别的 App 仍走 B / SB-01–03。
+> **冲突扫描**：职责与 B 拆开，不是加一条更重的回归仪式。
+> **自动化**：脚手架须补「hide-to-tray ≠ away」门闩失败用例；完整托盘 DOM **须人工**（本机 Mac）。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AB-1 | P2 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 用 Here & Now 开一场足够长的 Focusing（建议 `?sessionMinutes= |
-| AB-2 | P2 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 点窗口红灯 / 关主窗口 → 0–1 秒内窗口消失，菜单栏托盘图标仍在；氛围乐与计时不停。不是 qu |
-| AB-3 | P2 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 保持收在托盘 约 70–90 秒（>60s）。 |
-| AB-4 | P2 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 再点托盘「显示」：窗口回来，不应出现 Re-focus 观察式 toast / `nod-bow`（ |
-| AB-5 | P2 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 对照（须仍走场景 B）：窗口可见时切到另一个 Mac App 停留 >60s 再回来 → Here  |
-| AB-6 | P2 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 退出：托盘菜单「退出」才结束进程。红灯不得充当退出。 |
-| AB-7 | P2 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 回流：Rise 后再开一场，重复 2–4。Offline / Flow 下收托盘仍无 Re-focu |
+| AB-1 | P0 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 用 Here & Now 开一场足够长的 Focusing（建议 `?sessionMinutes= |
+| AB-2 | P0 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 点窗口红灯 / 关主窗口 → 0–1 秒内窗口消失，菜单栏托盘图标仍在；氛围乐与计时不停。不是 qu |
+| AB-3 | P0 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 保持收在托盘 约 70–90 秒（>60s）。 |
+| AB-4 | P0 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 再点托盘「显示」：窗口回来，不应出现 Re-focus 观察式 toast / `nod-bow`（ |
+| AB-5 | P0 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 对照（须仍走场景 B）：窗口可见时切到另一个 Mac App 停留 >60s 再回来 → Here  |
+| AB-6 | P0 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 退出：托盘菜单「退出」才结束进程。红灯不得充当退出。 |
+| AB-7 | P0 |  **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 | 回流：Rise 后再开一场，重复 2–4。Offline / Flow 下收托盘仍无 Re-focu |
 
 ### Given-When-Then 明细
 
 #### AB-1
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**： **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
 **对照**：场景 **B
 
@@ -3703,7 +3800,7 @@
 
 #### AB-2
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**： **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
 **对照**：场景 **B
 
@@ -3719,7 +3816,7 @@
 
 #### AB-3
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**： **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
 **对照**：场景 **B
 
@@ -3735,7 +3832,7 @@
 
 #### AB-4
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**： **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
 **对照**：场景 **B
 
@@ -3751,7 +3848,7 @@
 
 #### AB-5
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**： **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
 **对照**：场景 **B
 
@@ -3767,7 +3864,7 @@
 
 #### AB-6
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**： **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
 **对照**：场景 **B
 
@@ -3783,7 +3880,7 @@
 
 #### AB-7
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路；历史上出过事故）
 - **覆盖**： **地位**：电脑版壳契约。Web / Safari **测不了**。排期 = **步骤 B**（Brief `task-electron-desktop-scaffold.md`）。**步骤 B 已接线**，请用本机 Mac `desktop:dev` 测；不要用纯 Safari 代替。
 **对照**：场景 **B
 
@@ -3800,8 +3897,11 @@
 ---
 ## 场景 AD：精灵占用仲裁（睡 / 欢迎 / 付款回跳）
 
+> **E2E 优先级**：P0 · 收入/资金相关；跨系统链路；历史上出过事故
 > **用户故事**：Kelly 冷启动、Welcome 后短切 tab、Reflection 开着切走、或 Stripe 付完回跳——阿寅「该不该睡 / 该不该播欢迎 / 该不该披毯」由 **`spriteChannelArbitration` 一处拍板**，不是 sleep / welcome / payment 各抢精灵。吸收 #341（Welcome 后短切 tab 不得披毯）与 #347（Reflect 开着不得 cloak）产品规则。
-**单元 / 控制器集成**：`spriteChannelArbitration.test.js`（冷启动 / overlayBusy / paymentThankYou / wellness 0–6 窗）+ `dormantIdle` overlay…
+> **单元 / 控制器集成**：`spriteChannelArbitration.test.js`（冷启动 / overlayBusy / paymentThankYou / wellness 0–6 窗）+ `dormantIdle` overlay 否决 + `companionRestPolicy` session-end 锚。
+> **DOM e2e**：无完整用户链路（须拨时钟 / 真 Stripe / 凌晨窗）。
+> **仍须人工**：凌晨 0–6 与 wellness 对齐的冷启动 / hidden≥2h 回前台可睡；Stripe Test 卡真付回跳；叠层开着 Arrival / Honesty / Reflection / Support 卡时切走再回。
 
 ### 步骤总览
 
@@ -3819,7 +3919,7 @@
 
 #### AD-1
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：已在 `spriteChannelArbitration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3836,7 +3936,7 @@
 
 #### AD-2
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：已在 `spriteChannelArbitration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3851,7 +3951,7 @@
 
 #### AD-3
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：已在 `spriteChannelArbitration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3865,7 +3965,7 @@
 
 #### AD-4
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：已在 `spriteChannelArbitration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3879,7 +3979,7 @@
 
 #### AD-5
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：已在 `spriteChannelArbitration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3893,7 +3993,7 @@
 
 #### AD-6
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：已在 `spriteChannelArbitration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3908,7 +4008,7 @@
 
 #### AD-7
 
-- **优先级**：P0
+- **优先级**：P0（收入/资金相关；跨系统链路；历史上出过事故）
 - **覆盖**：已在 `spriteChannelArbitration.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -3924,23 +4024,25 @@
 ---
 ## 场景 AE：AE · Web（Safari QA 树 · harness）
 
+> **E2E 优先级**：P0 · 不可逆或高代价；跨系统链路
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AE-1 | P1 | 无自动化标注 | 打开 `?product=1&confide=1` Idle → ⋯ / 抽屉出现 Confide  |
-| AE-2 | P1 | 无自动化标注 | 输入非空 → Share → 0–1 秒内发送钮按压 + `[data-testid=confide |
-| AE-3 | P1 | 无自动化标注 | 安全：`I don't want to live` → `data-route=safety_red |
-| AE-3b | P1 | 无自动化标注 | 他人攻击意图：`I want to beat people.` / `我想打人` / `人を殴りたい |
-| AE-4 | P1 | 无自动化标注 | 情绪桶：「太累了」→ tired；`I feel depressed. Can you help m |
-| AE-5 | P1 | 无自动化标注 | 回流：Close 后再开 harness；Focusing / Arrival 中 不得打开。禁止把 |
-| AE-6 | P1 | 无自动化标注 | 睡态唤醒（交叉 AD · #491）：在 DORMANT 或 `sleeping` / `cloak |
+| AE-1 | P0 | 无自动化标注 | 打开 `?product=1&confide=1` Idle → ⋯ / 抽屉出现 Confide  |
+| AE-2 | P0 | 无自动化标注 | 输入非空 → Share → 0–1 秒内发送钮按压 + `[data-testid=confide |
+| AE-3 | P0 | 无自动化标注 | 安全：`I don't want to live` → `data-route=safety_red |
+| AE-3b | P0 | 无自动化标注 | 他人攻击意图：`I want to beat people.` / `我想打人` / `人を殴りたい |
+| AE-4 | P0 | 无自动化标注 | 情绪桶：「太累了」→ tired；`I feel depressed. Can you help m |
+| AE-5 | P0 | 无自动化标注 | 回流：Close 后再开 harness；Focusing / Arrival 中 不得打开。禁止把 |
+| AE-6 | P0 | 无自动化标注 | 睡态唤醒（交叉 AD · #491）：在 DORMANT 或 `sleeping` / `cloak |
 
 ### Given-When-Then 明细
 
 #### AE-1
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -3955,7 +4057,7 @@
 
 #### AE-2
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -3969,7 +4071,7 @@
 
 #### AE-3
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -3983,7 +4085,7 @@
 
 #### AE-3b
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -3998,7 +4100,7 @@
 
 #### AE-4
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4012,7 +4114,7 @@
 
 #### AE-5
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4026,7 +4128,7 @@
 
 #### AE-6
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4042,22 +4144,24 @@
 ---
 ## 场景 AE：AE · Electron L1（宽屏壳 · #362 已合）
 
+> **E2E 优先级**：P0 · 不可逆或高代价；跨系统链路
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AE-1 | P1 | 无自动化标注 | Idle 宽窗 → ⋯ → Confide to Yin（`[data-testid=idle-co |
-| AE-2 | P1 | 无自动化标注 | Share 或 textarea 里 Enter（对得上情绪桶 / 安全阀）→ 0–1 秒内发送钮按 |
-| AE-3 | P1 | 无自动化标注 | Focusing 卸载：Sit→Focusing → companion 状态不再 ready；Sh |
-| AE-4 | P1 | 无自动化标注 | 拖窄关层：拖到 ≤479 → 生成层关掉；窄屏抽屉 无 Confide 行。 |
-| AE-5 | P1 | 无自动化标注 | 对照：低配 ≤8GB / Web `?product=1` → 无 companion key、无该 |
-| AE-6 | P1 | 无自动化标注 | 睡态唤醒（交叉 AD · #491）：DORMANT 或 sleeping 姿态下 → ⋯ Conf |
+| AE-1 | P0 | 无自动化标注 | Idle 宽窗 → ⋯ → Confide to Yin（`[data-testid=idle-co |
+| AE-2 | P0 | 无自动化标注 | Share 或 textarea 里 Enter（对得上情绪桶 / 安全阀）→ 0–1 秒内发送钮按 |
+| AE-3 | P0 | 无自动化标注 | Focusing 卸载：Sit→Focusing → companion 状态不再 ready；Sh |
+| AE-4 | P0 | 无自动化标注 | 拖窄关层：拖到 ≤479 → 生成层关掉；窄屏抽屉 无 Confide 行。 |
+| AE-5 | P0 | 无自动化标注 | 对照：低配 ≤8GB / Web `?product=1` → 无 companion key、无该 |
+| AE-6 | P0 | 无自动化标注 | 睡态唤醒（交叉 AD · #491）：DORMANT 或 sleeping 姿态下 → ⋯ Conf |
 
 ### Given-When-Then 明细
 
 #### AE-1
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4072,7 +4176,7 @@
 
 #### AE-2
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4086,7 +4190,7 @@
 
 #### AE-3
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4101,7 +4205,7 @@
 
 #### AE-4
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4115,7 +4219,7 @@
 
 #### AE-5
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4129,7 +4233,7 @@
 
 #### AE-6
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4145,26 +4249,28 @@
 ---
 ## 场景 AE：AE · Electron L2（宽屏 fallback 短生成 · 口令已执行）
 
+> **E2E 优先级**：P0 · 不可逆或高代价；跨系统链路
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AE-1 | P1 | 无自动化标注 | 等 status ready（型号行须为 1.7B）→ 输入对不上情绪桶的句子（如 `What's  |
-| AE-2 | P1 | 无自动化标注 | 关单栏杆：须接住该句意图；禁止不同问题吐同一句套话；连续 ≥3 次 unmatched 闲聊仍须生成 |
-| AE-3 | P1 | 无自动化标注 | 安全不生成：`I don't want to live` → safety-01 转介，一个字都不能 |
-| AE-3b | P1 | 无自动化标注 | 他人攻击意图：`I want to beat people.` / `我想打人` / `人を殴りたい |
-| AE-4 | P1 | 无自动化标注 | 情绪桶不生成：「太累了」/ `depressed`→sad → corpus only，禁止 gen |
-| AE-5 | P1 | 无自动化标注 | 视觉：闲聊/生成回复左侧 浅金竖线；危机回复 偏棕竖线。出答案时 `[data-testid=con |
-| AE-6 | P1 | 无自动化标注 | 回流：关卡再开；Focusing 卸载后 Share 不得 generate。 |
-| AE-7 | P1 | 无自动化标注 | 边界尊重：`I'm not sure whether I want to talk about it |
-| AE-8 | P1 | 无自动化标注 | Don't keep：首句或仅 `Don't keep this one.` → `data-sou |
-| AE-9 | P1 | 无自动化标注 | Phase 1B 事实（交叉 AG / AF）：`When do I usually practic |
+| AE-1 | P0 | 无自动化标注 | 等 status ready（型号行须为 1.7B）→ 输入对不上情绪桶的句子（如 `What's  |
+| AE-2 | P0 | 无自动化标注 | 关单栏杆：须接住该句意图；禁止不同问题吐同一句套话；连续 ≥3 次 unmatched 闲聊仍须生成 |
+| AE-3 | P0 | 无自动化标注 | 安全不生成：`I don't want to live` → safety-01 转介，一个字都不能 |
+| AE-3b | P0 | 无自动化标注 | 他人攻击意图：`I want to beat people.` / `我想打人` / `人を殴りたい |
+| AE-4 | P0 | 无自动化标注 | 情绪桶不生成：「太累了」/ `depressed`→sad → corpus only，禁止 gen |
+| AE-5 | P0 | 无自动化标注 | 视觉：闲聊/生成回复左侧 浅金竖线；危机回复 偏棕竖线。出答案时 `[data-testid=con |
+| AE-6 | P0 | 无自动化标注 | 回流：关卡再开；Focusing 卸载后 Share 不得 generate。 |
+| AE-7 | P0 | 无自动化标注 | 边界尊重：`I'm not sure whether I want to talk about it |
+| AE-8 | P0 | 无自动化标注 | Don't keep：首句或仅 `Don't keep this one.` → `data-sou |
+| AE-9 | P0 | 无自动化标注 | Phase 1B 事实（交叉 AG / AF）：`When do I usually practic |
 
 ### Given-When-Then 明细
 
 #### AE-1
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4178,7 +4284,7 @@
 
 #### AE-2
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4192,7 +4298,7 @@
 
 #### AE-3
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4206,7 +4312,7 @@
 
 #### AE-3b
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4221,7 +4327,7 @@
 
 #### AE-4
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4235,7 +4341,7 @@
 
 #### AE-5
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4249,7 +4355,7 @@
 
 #### AE-6
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4263,7 +4369,7 @@
 
 #### AE-7
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4277,7 +4383,7 @@
 
 #### AE-8
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4291,7 +4397,7 @@
 
 #### AE-9
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4306,20 +4412,22 @@
 ---
 ## 场景 AF：AF · Slice 0–1 + disclosure（Arrival Notice + Confide 趋势）
 
+> **E2E 优先级**：P0 · 跨系统链路
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AF-1 | P1 | 无自动化标注 | 首次披露：清 `focus-tiger.presence-signals-disclosure-se |
-| AF-2 | P1 | 无自动化标注 | 入账：DevTools `focus-tiger.presence-signals.v1` 应有 ` |
-| AF-3 | P1 | 无自动化标注 | Confide 趋势（交叉 AE）：同设备 ≥3 次不同 Notice 打卡 → Electron/ |
-| AF-4 | P1 | 无自动化标注 | 同日 3 次 Notice：同一天 3 次 Sit→Notice 不同选项 → 第 3 次后应满趋势 |
+| AF-1 | P0 | 无自动化标注 | 首次披露：清 `focus-tiger.presence-signals-disclosure-se |
+| AF-2 | P0 | 无自动化标注 | 入账：DevTools `focus-tiger.presence-signals.v1` 应有 ` |
+| AF-3 | P0 | 无自动化标注 | Confide 趋势（交叉 AE）：同设备 ≥3 次不同 Notice 打卡 → Electron/ |
+| AF-4 | P0 | 无自动化标注 | 同日 3 次 Notice：同一天 3 次 Sit→Notice 不同选项 → 第 3 次后应满趋势 |
 
 ### Given-When-Then 明细
 
 #### AF-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4333,7 +4441,7 @@
 
 #### AF-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4347,7 +4455,7 @@
 
 #### AF-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4361,7 +4469,7 @@
 
 #### AF-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4376,20 +4484,22 @@
 ---
 ## 场景 AF：AF · Slice 2（Ritual Leave 回顾 · 方案 C）
 
+> **E2E 优先级**：P0 · 跨系统链路
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AF-1 | P1 | 无自动化标注 | Morning Ritual → Continue → 选 arrival chip → Leave |
-| AF-2 | P1 | 无自动化标注 | 回顾：同类型第二次进入 → welcome 步顶栏见 `[data-testid=ritual-le |
-| AF-3 | P1 | 无自动化标注 | 完成：走完全程 → chip 行 `ritualCompleted:true`、无回顾。跨类型：Em |
-| AF-4 | P1 | 无自动化标注 | 趋势对照：Confide breakdown 仍只计 `emotionTag`（Ritual chi |
+| AF-1 | P0 | 无自动化标注 | Morning Ritual → Continue → 选 arrival chip → Leave |
+| AF-2 | P0 | 无自动化标注 | 回顾：同类型第二次进入 → welcome 步顶栏见 `[data-testid=ritual-le |
+| AF-3 | P0 | 无自动化标注 | 完成：走完全程 → chip 行 `ritualCompleted:true`、无回顾。跨类型：Em |
+| AF-4 | P0 | 无自动化标注 | 趋势对照：Confide breakdown 仍只计 `emotionTag`（Ritual chi |
 
 ### Given-When-Then 明细
 
 #### AF-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4403,7 +4513,7 @@
 
 #### AF-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4417,7 +4527,7 @@
 
 #### AF-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4431,7 +4541,7 @@
 
 #### AF-4
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4446,19 +4556,21 @@
 ---
 ## 场景 AF：AF · Slice 3（Reflection 双写 + 90 天对齐）
 
+> **E2E 优先级**：P0 · 跨系统链路
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AF-1 | P1 | 无自动化标注 | Focus 结束 → Reflection 填 Q1「注意到风」+ Q2「疲惫来访」→ 关面板 →  |
-| AF-2 | P1 | 无自动化标注 | 趋势对照：Reflection freeText 不抬高 Confide `totalTagged` |
-| AF-3 | P1 | 无自动化标注 | 90 天剥离（#440 · 无 UI）：`freeTextRetentionCutoffMs` 单源 |
+| AF-1 | P0 | 无自动化标注 | Focus 结束 → Reflection 填 Q1「注意到风」+ Q2「疲惫来访」→ 关面板 →  |
+| AF-2 | P0 | 无自动化标注 | 趋势对照：Reflection freeText 不抬高 Confide `totalTagged` |
+| AF-3 | P0 | 无自动化标注 | 90 天剥离（#440 · 无 UI）：`freeTextRetentionCutoffMs` 单源 |
 
 ### Given-When-Then 明细
 
 #### AF-1
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4472,7 +4584,7 @@
 
 #### AF-2
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4486,7 +4598,7 @@
 
 #### AF-3
 
-- **优先级**：P1
+- **优先级**：P0（跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4501,19 +4613,20 @@
 ---
 ## 场景 AG-0：AG · Slice 0（练习字段 · 已关单参考）
 
+> **E2E 优先级**：P0 · 不可逆或高代价；跨系统链路
 > confidePracticeFacts · desktopCompanionL2Route
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AG-0-1 | P1 | confidePracticeFacts confidePracticeFacts · d | Electron 宽屏 Confide 问 How long have I practiced? / |
+| AG-0-1 | P0 | confidePracticeFacts confidePracticeFacts · d | Electron 宽屏 Confide 问 How long have I practiced? / |
 
 ### Given-When-Then 明细
 
 #### AG-0-1
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：confidePracticeFacts confidePracticeFacts · desktopCompanionL2Route
 
 **Given**
@@ -4528,23 +4641,25 @@
 ---
 ## 场景 AG：AG · Slice 1a–1e（Consent → Remember → 面板 → 注入 → 口头 Forget）
 
+> **E2E 优先级**：P0 · 不可逆或高代价；跨系统链路
+
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AG-1 | P1 | 无自动化标注 | 1a Consent：首次 unmatched 句（非情绪桶/非练多久/非危机）→ L3 前应出现  |
-| AG-2 | P1 | 无自动化标注 | 1b Remember：Consent Allow → 发可抽取句（例：`I prefer quie |
-| AG-3 | P1 | 无自动化标注 | 1c 面板：点 What Yin remembers → 见类型/摘要/Why → 点 Forget |
-| AG-4 | P1 | 无自动化标注 | 1d 注入：已有 Monday 记忆 medium+ → 再发「Monday feels crowd |
-| AG-5 | P1 | 无自动化标注 | 1e 口头 Forget：须先在 What Yin remembers 见到条目（例：`I pref |
-| AG-6 | P1 | 无自动化标注 | 1f Don't save · memory suppress：Consent Allow → (T |
-| AG-7 | P1 | 无自动化标注 | Phase 1A Show memory（CI-03）：Consent Allow 且 What Y |
+| AG-1 | P0 | 无自动化标注 | 1a Consent：首次 unmatched 句（非情绪桶/非练多久/非危机）→ L3 前应出现  |
+| AG-2 | P0 | 无自动化标注 | 1b Remember：Consent Allow → 发可抽取句（例：`I prefer quie |
+| AG-3 | P0 | 无自动化标注 | 1c 面板：点 What Yin remembers → 见类型/摘要/Why → 点 Forget |
+| AG-4 | P0 | 无自动化标注 | 1d 注入：已有 Monday 记忆 medium+ → 再发「Monday feels crowd |
+| AG-5 | P0 | 无自动化标注 | 1e 口头 Forget：须先在 What Yin remembers 见到条目（例：`I pref |
+| AG-6 | P0 | 无自动化标注 | 1f Don't save · memory suppress：Consent Allow → (T |
+| AG-7 | P0 | 无自动化标注 | Phase 1A Show memory（CI-03）：Consent Allow 且 What Y |
 
 ### Given-When-Then 明细
 
 #### AG-1
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4558,7 +4673,7 @@
 
 #### AG-2
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4572,7 +4687,7 @@
 
 #### AG-3
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4586,7 +4701,7 @@
 
 #### AG-4
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4600,7 +4715,7 @@
 
 #### AG-5
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4614,7 +4729,7 @@
 
 #### AG-6
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4628,7 +4743,7 @@
 
 #### AG-7
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：无自动化标注
 
 **Given**
@@ -4643,25 +4758,27 @@
 ---
 ## 场景 AH：Overlay slot 首卡队列（PR2 · 与 AD 互补）
 
+> **E2E 优先级**：P0 · 收入/资金相关；跨系统链路
 > **用户故事**：Kelly 冷启动后吹花、Wellness 首卡、Compass 首卡、Honesty 呼吸、芥子印、in-app 提醒横幅——**同一 overlay slot** 按序排队，不与 postSession / busy 叠层抢屏。
-**与 AD 分工**：**AD** = 精灵睡/欢迎/Stripe **占用**；**AH** = Idle chrome **首卡 / suppress** 队列（`overlaySlotArbitration` · PR1 快照等价单测 **无 UI**）。
-**单元**：`overlaySlotArbitration.test.js`（108 cases + C1–C6）· `sessionChromeSync.test.js`（mus…
+> **与 AD 分工**：**AD** = 精灵睡/欢迎/Stripe **占用**；**AH** = Idle chrome **首卡 / suppress** 队列（`overlaySlotArbitration` · PR1 快照等价单测 **无 UI**）。
+> **单元**：`overlaySlotArbitration.test.js`（108 cases + C1–C6）· `sessionChromeSync.test.js`（mustard postSession）。
+> **仍须人工**：吹花 vs Compass 时序；375 首卡不挡 Sit；Rise→Idle 首卡不重入已 seen。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AH-1 | P1 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | 冷启动队列：`?product=1` Idle → 吹花气泡消失后 Compass 首卡仍按序出现（ |
-| AH-2 | P1 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | C1 · 芥子印 postSession：完成 score≥21 会话 → 芥子印卡开时 ⋯/Sit |
-| AH-3 | P1 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | C2 · Honesty busy：Honesty 呼吸/时长面板开时 contextual tea |
-| AH-4 | P1 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | C3 · 首卡 busy：Compass / 芥子印开时 in-app reminder banne |
-| AH-5 | P1 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | 回流：Wellness 首卡关后 Compass 首卡；Rise→Idle 首卡 不重入已 seen |
+| AH-1 | P0 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | 冷启动队列：`?product=1` Idle → 吹花气泡消失后 Compass 首卡仍按序出现（ |
+| AH-2 | P0 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | C1 · 芥子印 postSession：完成 score≥21 会话 → 芥子印卡开时 ⋯/Sit |
+| AH-3 | P0 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | C2 · Honesty busy：Honesty 呼吸/时长面板开时 contextual tea |
+| AH-4 | P0 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | C3 · 首卡 busy：Compass / 芥子印开时 in-app reminder banne |
+| AH-5 | P0 | 已在 `overlaySlotArbitration.test.js` 覆盖；已在 `se | 回流：Wellness 首卡关后 Compass 首卡；Rise→Idle 首卡 不重入已 seen |
 
 ### Given-When-Then 明细
 
 #### AH-1
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关；跨系统链路）
 - **覆盖**：已在 `overlaySlotArbitration.test.js` 覆盖；已在 `sessionChromeSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4676,7 +4793,7 @@
 
 #### AH-2
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关；跨系统链路）
 - **覆盖**：已在 `overlaySlotArbitration.test.js` 覆盖；已在 `sessionChromeSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4690,7 +4807,7 @@
 
 #### AH-3
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关；跨系统链路）
 - **覆盖**：已在 `overlaySlotArbitration.test.js` 覆盖；已在 `sessionChromeSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4704,7 +4821,7 @@
 
 #### AH-4
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关；跨系统链路）
 - **覆盖**：已在 `overlaySlotArbitration.test.js` 覆盖；已在 `sessionChromeSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4718,7 +4835,7 @@
 
 #### AH-5
 
-- **优先级**：P1
+- **优先级**：P0（收入/资金相关；跨系统链路）
 - **覆盖**：已在 `overlaySlotArbitration.test.js` 覆盖；已在 `sessionChromeSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4734,24 +4851,25 @@
 ---
 ## 场景 AI：练习备份恢复 · 热力图与提醒对齐（#437 · 方案 A）
 
+> **E2E 优先级**：P0 · 不可逆或高代价
 > **用户故事**：Kelly 开练习备份、在同设备练过、换机/清本地后自动恢复——**今日已练**须同时体现在热力图与提醒面板，而不是只恢复 `practice-days` 却继续催练横幅。
-**单元**：`practiceBackupDailyCompletionReconcile.test.js` · `practiceBackupSync.test.js`。
-**仍须人工**：等 `lastUploadAt` 更新；DEV 清 6 whitelist key 保留 `practice-backup.v1`；约 2.5s 自动恢复时序。
+> **单元**：`practiceBackupDailyCompletionReconcile.test.js` · `practiceBackupSync.test.js`。
+> **仍须人工**：等 `lastUploadAt` 更新；DEV 清 6 whitelist key 保留 `practice-backup.v1`；约 2.5s 自动恢复时序。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AI-1 | P1 | 已在 `practiceBackupDailyCompletionReconcile.te | 开启练习备份 → 完成一场同坐（或 Honesty）→ 等 `lastUploadAt` 更新。 |
-| AI-2 | P1 | 已在 `practiceBackupDailyCompletionReconcile.te | DEV 清 6 whitelist key（保留 `focus-tiger.practice-bac |
-| AI-3 | P1 | 已在 `practiceBackupDailyCompletionReconcile.te | 期望：热力图今日格亮 + 提醒设置面板出 `reminder.practiced_today_not |
-| AI-4 | P1 | 已在 `practiceBackupDailyCompletionReconcile.te | 边界：恢复日无 `practice-days` 今日条目 → 仍催练；已有本地 `daily-com |
+| AI-1 | P0 | 已在 `practiceBackupDailyCompletionReconcile.te | 开启练习备份 → 完成一场同坐（或 Honesty）→ 等 `lastUploadAt` 更新。 |
+| AI-2 | P0 | 已在 `practiceBackupDailyCompletionReconcile.te | DEV 清 6 whitelist key（保留 `focus-tiger.practice-bac |
+| AI-3 | P0 | 已在 `practiceBackupDailyCompletionReconcile.te | 期望：热力图今日格亮 + 提醒设置面板出 `reminder.practiced_today_not |
+| AI-4 | P0 | 已在 `practiceBackupDailyCompletionReconcile.te | 边界：恢复日无 `practice-days` 今日条目 → 仍催练；已有本地 `daily-com |
 
 ### Given-When-Then 明细
 
 #### AI-1
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价）
 - **覆盖**：已在 `practiceBackupDailyCompletionReconcile.test.js` 覆盖；已在 `practiceBackupSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4765,7 +4883,7 @@
 
 #### AI-2
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价）
 - **覆盖**：已在 `practiceBackupDailyCompletionReconcile.test.js` 覆盖；已在 `practiceBackupSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4779,7 +4897,7 @@
 
 #### AI-3
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价）
 - **覆盖**：已在 `practiceBackupDailyCompletionReconcile.test.js` 覆盖；已在 `practiceBackupSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4793,7 +4911,7 @@
 
 #### AI-4
 
-- **优先级**：P1
+- **优先级**：P0（不可逆或高代价）
 - **覆盖**：已在 `practiceBackupDailyCompletionReconcile.test.js` 覆盖；已在 `practiceBackupSync.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4808,25 +4926,26 @@
 ---
 ## 场景 AJ：Stay in touch · Newsletter 留资（#444 Resend **待合**）
 
+> **E2E 优先级**：P0 · 不可逆或高代价；跨系统链路
 > **用户故事**：Kelly 在 Idle 菜单可选留邮箱收产品更新——**不**挂钩 entitlement / tip / sanctuary；本地只记 `{ submitted }`，**不**存邮箱明文。Cloud 配好时 Worker + Resend 欢迎信；502 **不写** submitted。
-**状态**：#444（Newsletter Resend await/重发）**待合入 develop**——下列步骤以 TRACKER + `NEWSLETTER_CAPTURE.md` 为准；合入后须核对 welcomeSentAt 防重发口径。
-**仍须人工**：Gmail 垃圾箱；退订页；375·宽屏；`127.0.0.1` CORS（**不要** `localhost`…
+> **状态**：#444（Newsletter Resend await/重发）**待合入 develop**——下列步骤以 TRACKER + `NEWSLETTER_CAPTURE.md` 为准；合入后须核对 welcomeSentAt 防重发口径。
+> **仍须人工**：Gmail 垃圾箱；退订页；375·宽屏；`127.0.0.1` CORS（**不要** `localhost`）。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AJ-1 | P2 | 完整链路仍须人工 | 前置：`VITE_CLOUD_API_BASE_URL` 指向生产 Worker；Safari 用  |
-| AJ-2 | P2 | 完整链路仍须人工 | Idle → 宽屏 ⋯ / 窄屏抽屉 Stay in touch → 0–1 秒内 `#newsle |
-| AJ-3 | P2 | 完整链路仍须人工 | 提交同一真实邮箱 → 成功反馈才算发出；Gmail From `hello@twinsology.c |
-| AJ-4 | P2 | 完整链路仍须人工 | 本地只写 `submitted` → 退订链接可用 → 再开菜单 We'll keep in tou |
-| AJ-5 | P2 | 完整链路仍须人工 | 无 Cloud / `?newsletterMock=1`：仍 mock 成功、无发信。回流：关卡后 |
+| AJ-1 | P0 | 完整链路仍须人工 | 前置：`VITE_CLOUD_API_BASE_URL` 指向生产 Worker；Safari 用  |
+| AJ-2 | P0 | 完整链路仍须人工 | Idle → 宽屏 ⋯ / 窄屏抽屉 Stay in touch → 0–1 秒内 `#newsle |
+| AJ-3 | P0 | 完整链路仍须人工 | 提交同一真实邮箱 → 成功反馈才算发出；Gmail From `hello@twinsology.c |
+| AJ-4 | P0 | 完整链路仍须人工 | 本地只写 `submitted` → 退订链接可用 → 再开菜单 We'll keep in tou |
+| AJ-5 | P0 | 完整链路仍须人工 | 无 Cloud / `?newsletterMock=1`：仍 mock 成功、无发信。回流：关卡后 |
 
 ### Given-When-Then 明细
 
 #### AJ-1
 
-- **优先级**：P2
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -4840,7 +4959,7 @@
 
 #### AJ-2
 
-- **优先级**：P2
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -4855,7 +4974,7 @@
 
 #### AJ-3
 
-- **优先级**：P2
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -4869,7 +4988,7 @@
 
 #### AJ-4
 
-- **优先级**：P2
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -4883,7 +5002,7 @@
 
 #### AJ-5
 
-- **优先级**：P2
+- **优先级**：P0（不可逆或高代价；跨系统链路）
 - **覆盖**：完整链路仍须人工
 
 **Given**
@@ -4898,25 +5017,27 @@
 ---
 ## 场景 AL：Reflection Companion · validation only（lab · 非 shipping）
 
+> **E2E 优先级**：P0 · 跨系统链路
 > **政策**：`task-local-ai-reflection-companion-validation.md` · V3 validation ≠ shipping。**仅** Electron 非低配宽屏 + `?reflectionCompanion=1`。无 flag / Web / 375 **不得**出现 invite，也 **不得**自动 generate。
-**单元**：`reflectionCompanionValidation.test.js` · `buildReflectionCompanionPrompt`。
-**邻接**：场景 C 末题 echo hold · 场景 AE 危机语料 · 确定性 `[data-testid=reflection-companion…
+> **单元**：`reflectionCompanionValidation.test.js` · `buildReflectionCompanionPrompt`。
+> **邻接**：场景 C 末题 echo hold · 场景 AE 危机语料 · 确定性 `[data-testid=reflection-companion-echo]` 池（非 AI）。
+> **仍须人工**：one short observation 观感是否「照见」而非「指导」；Celebrating 不被空白挡住。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AL-1 | P2 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 主路径（Electron 宽屏）：`desktop:dev` + `?product=1&refle |
-| AL-2 | P2 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 无 lab：同一路径 无 `?reflectionCompanion=1` → 不得出现 invit |
-| AL-3 | P2 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 危机负例：末题写入 `I don't want to live` → 点 invite → 0–1  |
-| AL-4 | P2 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 失败不挡：companion 未 ready 时点 invite → 0–1 秒内 Listenin |
-| AL-5 | P2 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 回流：关 Reflection → 再开一场 无 lab → 无 invite。 |
+| AL-1 | P0 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 主路径（Electron 宽屏）：`desktop:dev` + `?product=1&refle |
+| AL-2 | P0 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 无 lab：同一路径 无 `?reflectionCompanion=1` → 不得出现 invit |
+| AL-3 | P0 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 危机负例：末题写入 `I don't want to live` → 点 invite → 0–1  |
+| AL-4 | P0 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 失败不挡：companion 未 ready 时点 invite → 0–1 秒内 Listenin |
+| AL-5 | P0 | 已在 `reflectionCompanionValidation.test.js` 覆盖 | 回流：关 Reflection → 再开一场 无 lab → 无 invite。 |
 
 ### Given-When-Then 明细
 
 #### AL-1
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `reflectionCompanionValidation.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4930,7 +5051,7 @@
 
 #### AL-2
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `reflectionCompanionValidation.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4944,7 +5065,7 @@
 
 #### AL-3
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `reflectionCompanionValidation.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4958,7 +5079,7 @@
 
 #### AL-4
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `reflectionCompanionValidation.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4972,7 +5093,7 @@
 
 #### AL-5
 
-- **优先级**：P2
+- **优先级**：P0（跨系统链路）
 - **覆盖**：已在 `reflectionCompanionValidation.test.js` 覆盖；完整链路仍须人工
 
 **Given**
@@ -4985,8 +5106,230 @@
 - 再开一场 无 lab → 无 invite。
 
 ---
+## 场景 AS：Local AI 意图路由 · E2E 关键路径（抽取自 LOCAL_AI_SCENARIOS_V1.md）
+
+> **E2E 优先级**：P0 · 不可逆或高代价；跨系统链路
+> **政策**：`LOCAL_AI_SCENARIOS_V1.md` 为能力规划 SSOT，**不整体转 GWT**；本场景只收录满足 E2E 关键路径的意图（路由错 = 用户可见异常，或 Phase 1A/1B CORE）。对照表：`LOCAL_AI_SCENARIOS_E2E_MAPPING.md`。
+> **前提**：**仅 Electron 宽屏 L2 ready**（`npm run desktop:dev` · 非低配 ≥480）；Web harness **无** Yin Memory bridge，**不得**用 Safari `?confide=1` 代替 AS-1~3 / AS-2。
+> **单元**：`confidePracticeFacts` · `confidePresenceFacts` · `yinPersonalMemoryVerbalForget` · `yinPersonalMemorySuppress` · `confideMemoryList` · `desktopCompanionL2Route`。
+> **交叉**：安全 / 情绪桶 / boundary / L3 闲聊仍走 **场景 AE**；Consent / 面板 / 注入仍走 **场景 AG**；Presence 入账门槛仍走 **场景 AF**。
+> **仍须人工**：答句数字与 Journey / presence ledger 手算一致；Temporal Compare 禁止「你更稳了/进步了」观感。
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AS-1 | P0 | 完整链路仍须人工 | CI-01 口头 Forget（来源：`LOCAL_AI_SCENARIOS_V1.md` §1 P |
+| AS-2 | P0 | 完整链路仍须人工 | CI-03 Show memory（来源：§1 Phase 1A · Show me what yo |
+| AS-3 | P0 | 完整链路仍须人工 | Don't save · memory_suppress（来源：§1 Phase 1A · Don' |
+| AS-4 | P0 | 完整链路仍须人工 | CI-00 · 练习总时长（来源：§3.1 CI-00 · 练了多久） |
+| AS-5 | P0 | 完整链路仍须人工 | Phase 1B · 练习时段（来源：§1 Phase 1B · When do I usually |
+| AS-6 | P0 | 完整链路仍须人工 | Phase 1B · showing up（来源：§1 Phase 1B · How have I  |
+| AS-7 | P0 | 完整链路仍须人工 | CI-02 · 情绪趋势（来源：§1 Phase 1B · What has my mood loo |
+| AS-8 | P0 | 完整链路仍须人工 | Temporal Compare · 练习两窗（来源：§1 Phase 1B · Am I prac |
+| AS-9 | P0 | 完整链路仍须人工 | Temporal Compare · 情绪两窗（来源：§1 Phase 1B · Have I be |
+| AS-10 | P0 | 完整链路仍须人工 | Temporal Compare · 进入状态（来源：§1 Phase 1B · Have I be |
+| AS-11 | P0 | 完整链路仍须人工 | 负例锚点 · observation-boundary（来源：§1 Phase 1B · What  |
+
+### Given-When-Then 明细
+
+#### AS-1
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `Please forget what I said about Monday`（或 locale 等价「别再记周一的事了」）
+- Then：0–1 秒内 `[data-testid=confide-to-yin-reply]` `data-source=memory_forget` 见确认短句；面板对应行消失；`yin-personal-memory.json` 该条已删。负例：空库同句
+
+**Then**
+- CI-01 口头 Forget（来源：`LOCAL_AI_SCENARIOS_V1.md` §1 Phase 1A · Forget this；§3.1 CI-01）
+- Given：Electron 宽屏 Idle · Confide L2 ready · Consent Allow · What Yin remembers 面板已有至少 1 条 active 记忆（例：Monday pattern）
+- Share。
+- 诚实「没有记得的」，不算 CI-01 误删。
+
+#### AS-2
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `Show me what you remember` / `你还记得什么`
+- Then：0–1 秒内 reply `data-source=memory_list`，正文摘要须与面板 `active` 行一致（禁止 L3 编造条目）。空态：Allow 后无条目
+
+**Then**
+- CI-03 Show memory（来源：§1 Phase 1A · Show me what you remember；§3.1 CI-03）
+- Given：同上 · Consent Allow · 面板已有 ≥1 条 active 摘要
+- Share。
+- 诚实「还没有记下」。Denied：Not now 后再问 → 诚实「现在没有在记」。负例：`I feel depressed, show me what you remember` → sad 语料，非 `memory_list`。
+
+#### AS-3
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：(T-1) 发 `I prefer quiet, short reflections. Don't save this.`
+- Then：`memories[]` 不增 · 同 turn `rememberOptOuts[]` 有记录。(T-2) 先发可抽取句入库
+
+**Then**
+- Don't save · memory_suppress（来源：§1 Phase 1A · Don't save this；§1.1 Slice 1f；非 CI 表项）
+- Given：Electron 宽屏 Confide ready · Consent Allow
+- L3 正常回复。
+- 下一句 `Forget this` → 0–1 秒内 `data-source=memory_suppress` · JSON 上一 turn 条目已删。(T-3) 仅 `Don't save this` / `Don't keep this one.` → 诚实短句 · 即使尚未 Allow Consent。回归：`Please forget about Monday` 仍 CI-01 `memory_forget`（交叉 AE L2 步 8）。
+
+#### AS-4
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `How long have I practiced?` / `练了多久` / `Can you tell me my total sitting time on this device?`
+- Then：0–1 秒内 `[data-testid=confide-to-yin-reply]` `data-source=practice_facts`，天数/分钟与 Journey 手算一致。危机优先：`I feel depressed, how long have I practiced?`
+
+**Then**
+- CI-00 · 练习总时长（来源：§3.1 CI-00 · 练了多久）
+- Given：Electron 宽屏 Confide ready · Journey Log 有已知练习记录
+- Share。
+- sad 语料，非 practice_facts。
+
+#### AS-5
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `When do I usually practice?`
+- Then：0–1 秒内 `data-source=practice_facts` 见时段/模式描述（封闭标签，禁止 L3 编造）。&lt;3 条
+
+**Then**
+- Phase 1B · 练习时段（来源：§1 Phase 1B · When do I usually practice?）
+- Given：Electron 宽屏 Confide ready · Journey ≥3 条可审计记录
+- Share。
+- insufficient 诚实短句。
+
+#### AS-6
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `How have I been showing up?` / `Have I been showing up consistently?`
+
+**Then**
+- Phase 1B · showing up（来源：§1 Phase 1B · How have I been showing up?）
+- Given：Electron 宽屏 Confide ready · Journey 有近期记录
+- Share。
+- Then：0–1 秒内 `data-source=practice_facts` 见出现频率/次数类事实句（禁止人格进步评判）
+
+#### AS-7
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `What has my mood looked like recently?` / `最近两周我的情绪看起来怎样？`
+- Then：0–1 秒内 `data-source=presence_facts` 见 14 日描述性 breakdown（封闭标签）。&lt;3 条
+
+**Then**
+- CI-02 · 情绪趋势（来源：§1 Phase 1B · What has my mood looked like recently?；§3.1 CI-02）
+- Given：Electron 宽屏 Confide ready · 同设备 ≥3 次 Arrival Notice 不同 `emotionTag`（交叉 AF 步 3–4）
+- Share。
+- insufficient。危机盖过：`I feel depressed, what has my mood looked like recently?` → sad，禁止 presence_facts 盖过情绪桶。
+
+#### AS-8
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `Am I practicing longer than before?` / `我是不是坚持得比以前久？`
+
+**Then**
+- Temporal Compare · 练习两窗（来源：§1 Phase 1B · Am I practicing longer than before? / §0.1 Temporal Compare）
+- Given：Electron 宽屏 Confide ready · Journey 有近 14 日与前 14 日可对照数据
+- Share。
+- Then：0–1 秒内 `data-source=practice_facts` 见两段时期并列事实（次数/时长/Arrival 等可审计字段）；禁止「你更好了 / 进步了 / 更久了吗」式评判句
+
+#### AS-9
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `Have I been more steady lately?` / `我是不是最近比较稳定？`
+
+**Then**
+- Temporal Compare · 情绪两窗（来源：§1 Phase 1B · Have I been more steady lately?）
+- Given：同 AS-7 门槛（≥3 次 Notice 打卡）
+- Share。
+- Then：0–1 秒内 `data-source=presence_facts` 见两窗标签并列；禁止「你更稳了」。旧 *improved* 问法仅路由 alias，答句仍不得用 improved 收尾（交叉 AF 步 3 负例）
+
+#### AS-10
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `Have I been getting into practice more easily?` / `有没有更容易进入状态？`
+
+**Then**
+- Temporal Compare · 进入状态（来源：§1 Phase 1B · Have I been getting into practice more easily?）
+- Given：Electron 宽屏 Confide ready · Journey 有可审计 arrival / 进入状态字段
+- Share。
+- Then：0–1 秒内 `data-source=practice_facts` 见两窗并列事实（仅可审计字段）；禁止人格/心理健康结论
+
+#### AS-11
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- When：输入 `What have you noticed lately?`
+
+**Then**
+- 负例锚点 · observation-boundary（来源：§1 Phase 1B · What have you noticed lately? — 不抽 E2E 主干，仅回归）
+- Given：Electron 宽屏 Confide ready
+- Share。
+- Then：不得走 CI-00/02 的 `practice_facts` / `presence_facts`；应走 `observation_honesty` 诚实空态（禁止 L3 编「你傍晚常来」）。*单测主覆盖：`confideObservationHonesty.test.js`。*
+
+---
 ## 场景 I：点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > 回归锁：禁静默无反馈 · **单元** smoke I（`resolveCompanionHintClick`→toggle）+ **DOM** e2e I（hint→`.session-start-dock__panel`，不出 Arrival）；**「Honesty 开着时仍可点」未自动化**（仍人工看文案/动效）
 
 ### 步骤总览
@@ -4999,7 +5342,7 @@
 
 #### I-1
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：回归锁：禁静默无反馈 · **单元** smoke I（`resolveCompanionHintClick`→toggle）+ **DOM** e2e I（hint→`.session-start-dock__panel`，不出 Arrival）；**「Honesty 开着时仍可点」未自动化**（仍人工看文案/动效）
 
 **Given**
@@ -5014,6 +5357,7 @@
 ---
 ## 场景 J：Rise 后再点 hint → **仍展开三选一**；再选 Here & Now → **立刻 Focusing**（不得再 Notice；门闩在 Arrival/⚡ 后跨会话保持）
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > 回流 · **DOM** e2e J；**单元** gate persist + smoke J hint toggle
 
 ### 步骤总览
@@ -5026,7 +5370,7 @@
 
 #### J-1
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：回流 · **DOM** e2e J；**单元** gate persist + smoke J hint toggle 回流 · **DOM** e2e J；**单元** gate persist + smoke J hint toggle
 
 **Given**
@@ -5042,6 +5386,7 @@
 ---
 ## 场景 K：Offline Space：点选 → **立刻 Focusing**，**不**出 Arrival（禁止再逼点 Sit / Notice/Choose）
 
+> **E2E 优先级**：P0 · 高频且用户量大
 > **DOM** e2e K（选中即开表且 Arrival hidden）；**单元** `shouldSkipArrivalOnModeSelect` / Offline canBegin 门闩
 
 ### 步骤总览
@@ -5054,7 +5399,7 @@
 
 #### K-1
 
-- **优先级**：P0
+- **优先级**：P0（高频且用户量大）
 - **覆盖**：**DOM** e2e K（选中即开表且 Arrival hidden）；**单元** `shouldSkipArrivalOnModeSelect` / Offline canBegin 门闩 **DOM** e2e K（选中即开表且 Arrival hidden）；**单元** `shouldSkipArrival
 
 **Given**
@@ -5069,19 +5414,20 @@
 ---
 ## 场景 L：同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incense
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > 纠正旧 A8/A9
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| L-1 | P2 | 纠正旧 A8/A9 纠正旧 A8/A9 | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incens |
+| L-1 | P1 | 纠正旧 A8/A9 纠正旧 A8/A9 | 同日第二场达标 → SessionComplete，无 Celebrating、无自动 Incens |
 
 ### Given-When-Then 明细
 
 #### L-1
 
-- **优先级**：P2
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：纠正旧 A8/A9 纠正旧 A8/A9
 
 **Given**
@@ -5096,19 +5442,20 @@
 ---
 ## 场景 M：产品壳 `?product=1`：无调试面板；实验室 `/`：有面板
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > 分清测「功能」还是测「产品表面」
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| M-1 | P2 | 分清测「功能」还是测「产品表面」 分清测「功能」还是测「产品表面」 | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 |
+| M-1 | P1 | 分清测「功能」还是测「产品表面」 分清测「功能」还是测「产品表面」 | 产品壳 `?product=1`：无调试面板；实验室 `/`：有面板 |
 
 ### Given-When-Then 明细
 
 #### M-1
 
-- **优先级**：P2
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：分清测「功能」还是测「产品表面」 分清测「功能」还是测「产品表面」
 
 **Given**
@@ -5123,19 +5470,20 @@
 ---
 ## 场景 N：Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 idle **不**自动点头
 
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > 2026-07-19/20 增量
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| N-1 | P0 | 2026-07-19/20 增量 2026-07-19/20 增量 | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 |
+| N-1 | P1 | 2026-07-19/20 增量 2026-07-19/20 增量 | Honesty 补登结束 → 桥接 Yes → 完整 Arrival；桥接 No → idle；靠近 |
 
 ### Given-When-Then 明细
 
 #### N-1
 
-- **优先级**：P0
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
 - **覆盖**：2026-07-19/20 增量 2026-07-19/20 增量
 
 **Given**
@@ -5150,6 +5498,7 @@
 ---
 ## 场景 R：跨日回访（dayN / 拨时钟）：与 `RETENTION_FUNNEL` R2–R3 对齐
 
+> **E2E 优先级**：P2 · 实验/回访/验证切片；E2E 只保一条主干或人工
 > **仍建议**；测回访须拨时钟或跨日真机；勿与 Q–Z 混关
 
 ### 步骤总览
@@ -5162,7 +5511,7 @@
 
 #### R-1
 
-- **优先级**：P2
+- **优先级**：P2（实验/回访/验证切片；E2E 只保一条主干或人工）
 - **覆盖**：**仍建议**；测回访须拨时钟或跨日真机；勿与 Q–Z 混关 **仍建议**；测回访须拨时钟或跨日真机；勿与 Q–Z 混关
 
 **Given**
@@ -5225,4 +5574,4 @@
 
 ---
 
-_场景 59 · 步骤 281 · 待澄清 45_
+_场景 60 · 步骤 292 · 待澄清 45_
