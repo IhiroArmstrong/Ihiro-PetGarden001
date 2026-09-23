@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-09-23  
+生成日期：2026-09-24  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -468,7 +468,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 > **E2E 优先级**：P0 · 高频且用户量大
 > **单元 / 控制器集成**：未达标不记账（`HonestyCheckInController.onIncompleteSessionEnded`）+ `MANUAL_END_PAUSE_MS` 后 `SessionEndFlow.onSessionEnded` 向 mock `ReflectionMoment.open` 传入 `intention` / `intentionSource` → smoke C（**仅**下游接线入参；**不**从 Choose 写入意图闩）。
-> **DOM 用户链路**：Choose → Rise → Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显；Skip — begin → Rise → 无回显 → e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁）。
+> **DOM 用户链路**：Choose → Rise → Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显；Skip — begin → Rise → 无回显 → e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁）。关 Reflection：**Skip all → Daily Wisdom 淡入（`[data-testid=reflection-daily-wisdom]` · `data-wisdom-hold`）→ Continue** → 卡片隐藏（`e2e/helpers/reflection-dismiss.js`）…
 > **单元（Bug 回归锁）**：二次 beginFocus + 空 pending 不抹闩 → `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`。
 > **单元（回流门闩，非 Rise 集成）**：`resolveCompanionHintClick` → toggle → smoke J（**同** smoke I 纯函数；**不**模拟 Rise 后再点 hint 的 DOM）。
 > **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
@@ -482,6 +482,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | C-3 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 角色播 `rise-stretch-casual` pingpong（闭目坐禅→伸懒腰→随意坐→倒放 |
 | C-4 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。 |
 | C-5 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping）， |
+| C-6 | P0 | 已在 `reflection-intention-echo.spec.js` 覆盖；已在  | C-5b · wisdom-hold 关 Reflection（GWT · Calm Action  |
 
 ### Given-When-Then 明细
 
@@ -557,6 +558,25 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 **Then**
 - 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。末题非空 Continue 后 0–1 秒内输入框下见共鸣且卡留下（输入只读）；再点 Continue / Skip / Esc 才关——禁止约 0.9s 自动关
+
+#### C-6
+
+- **优先级**：P0（高频且用户量大）
+- **覆盖**：已在 `reflection-intention-echo.spec.js` 覆盖；已在 `SessionIntentionStore.test.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- Then：0–1 秒内 `#tiger-reflection-moment` 隐藏，回 Idle。许可句时序细节
+
+**Then**
+- C-5b · wisdom-hold 关 Reflection（GWT · Calm Action Reflect · visibility Type B · `e2e/helpers/reflection-dismiss.js`）
+- Given：`#tiger-reflection-moment` 已开（Rise 未达标或达标后均可）
+- When：点 Skip all（`Skip all` / `全部跳过` / `すべてスキップ`）
+- Then：0–1 秒内 `[data-testid=reflection-daily-wisdom]` 可见、`[data-testid=daily-wisdom-text]` 非空；禁止与 Calm Action 许可句同框叠两句金句（见 TEST_TRACKER Calm Action Reflect 行）
+- When：再点 Continue（`Continue` / `继续` / `続ける`）
+- `reflectionQuoteDisclosure.test.js`（E2E 优先级 P1：保一条主干）。
 
 ---
 ## 场景 D：请假一天后的 Honesty Check-in（含桥接 CTA）
@@ -932,7 +952,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 > **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮、上滑手势物理滑动（e2e 点 grabber）。
 > **仍须人工**：亮/暗「不羞辱」；**375 新壳观感**（ActionBar / 主屏 Sit·Quick·Honesty / Yin 居中放大 / 上滑抽屉 / 底栏干净）；宽屏仍左下簇。
 > **2026-07-24**：用户 DevTools 375 确认重叠 → 抬簇未过观感；同日改 **NarrowIdleShell**（ActionBar + BottomOptionsDrawer）。
-> **2026-07-26**：用户书面——窄屏首页底部太空；三主钮（Sit / Quick Start / Honesty）上屏，抽屉删之。
+> **2026-07-26**：用户书面——窄屏首页底部太空；三主钮上屏，抽屉删之。**2026-09-11 起**：右球为 **Five Moments**（非 Honesty 文案）；Honesty Check-in 在抽屉 Practice 组（`clickHonestyCheckInEntry` · visibility Type B）。
 
 ### 步骤总览
 
@@ -951,7 +971,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### O-1
 
 - **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
-- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
+- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -966,22 +986,22 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### O-2
 
 - **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
-- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
+- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
 
 **When**
-- 375×667：见顶栏 ActionBar（? · 时间/Calm · ♪）；主画布下方三 PNG 图腾圆球（顺序 Quick · Sit · Honesty，全宽均匀；`public/icons/icon-*.png`）；Arrival 开着时仅留 Quick Start 球；底中「上滑打开选项」；上滑或点 grabber
+- 375×667：见顶栏 ActionBar（? · 时间/Calm · ♪）；主画布下方三 PNG 图腾圆球（顺序 Quick · Sit · Five Moments，全宽均匀；`public/icons/icon-*.png`；右球 aria 为 Five Moments，非 Honesty 补登文案）；Arrival 开着时仅留 Quick Start 球；底中「上滑打开选项」；上滑或点 grabber
 
 **Then**
 - 宽屏：左下见 `#weekly-practice-heatmap-cluster`（7 格 + 时钟）
-- 抽屉含 呼吸 / How shall we sit? / Sound / Reminder（不含 Sit / Quick Start / Honesty）；7 格在抽屉内只读展示。
+- 抽屉为次要项（不含 Sit / Quick Start / Five Moments 主球；含 Practice 组 Honesty Check-in 行 + How shall we sit? 等；Sound 走 ActionBar ♪）；7 格在抽屉内只读展示。
 
 #### O-3
 
 - **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
-- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
+- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -995,7 +1015,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### O-4
 
 - **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
-- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
+- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -1009,7 +1029,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### O-5
 
 - **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
-- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
+- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -1024,7 +1044,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### O-6
 
 - **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
-- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
+- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -1039,7 +1059,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### O-7
 
 - **优先级**：P2（展示/文案/自动欢迎为主；下沉信号：ui_copy_only；E2E 只保一条主干或人工）
-- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工
+- **覆盖**：已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完整链路仍须人工；E2E 未完整覆盖，此处 smoke/跳过
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5574,4 +5594,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 60 · 步骤 292 · 待澄清 45_
+_场景 60 · 步骤 293 · 待澄清 45_

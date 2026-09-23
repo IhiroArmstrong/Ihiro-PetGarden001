@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-23（Local AI 意图 E2E 抽取 · 场景 AS · `LOCAL_AI_SCENARIOS_E2E_MAPPING.md` · Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · KB-FUNC-0021 Daily quote 入 catalog · 路由矩阵单测冻结 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-09-24（GWT 改写 + E2E P0/P1/P2 自动打标 · visibility Type A/B/C 治理 · Type B wisdom-hold 关 Reflection · 375 Five Moments 右球 + Honesty Check-in 抽屉行 · Local AI 场景 AS · Confide KB 语义门闩 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -18,7 +18,9 @@
 - **浏览器 DOM 用户链路**（`npm run test:e2e`；本地硬顶单 spec，见 `e2e-local-budget`）：
   - `e2e/product-shell.smoke.spec.js` — 产品壳 Sit / 无调试条；实验室重置钮可见
   - `e2e/scenario-a.companion.spec.js` — **I** hint→三选一面板；**I2** 预选→开 Arrival；**A** Arrival 后 Here & Now 开表；**A2/A3** 预选+⚡ 开表；**K** Offline 选中即开表
-  - `e2e/reflection-intention-echo.spec.js` — Choose→Rise→Reflection 顶部回显有/无（主路径 DOM；**非**二次 beginFocus 抹闩 Bug）
+  - `e2e/reflection-intention-echo.spec.js` — Choose→Rise→Reflection 顶部回显有/无；**Skip all → Daily Wisdom（`data-wisdom-hold`）→ Continue 关 Reflection**（主路径 DOM；**非**二次 beginFocus 抹闩 Bug）
+  - `e2e/helpers/reflection-dismiss.js` — 共用 **wisdom-hold 关 Reflection** 链（`reflection-intention-echo` · `micro-ritual` · 其它需跳过三问后落地的 spec）
+  - `.github/workflows/focus-tiger-visibility-contract.yml` — **visibility 契约 E2E**（Type A/B/C 分类见 `WORKFLOW.md` §visibility CI 治理；**非**本地 `npm run test:e2e` 默认全集）
   - `e2e/weekly-practice-heatmap.spec.js` — Idle 7 格可见 / Focusing 隐藏 / localStorage seed 亮暗
   - `e2e/in-app-reminder.spec.js` — 时钟入口面板（含每日说明）+ 设时→回前台→横幅→关闭不重复 + Focusing 隐藏（suppress）+ 已过/已练软提示
   - `e2e/micro-ritual.spec.js` — **S** Breath / 微仪式主路径 / Leave 不记账 / 桥接叠层隐藏入口
@@ -174,7 +176,7 @@
 ## 场景 C：中途主动放弃（未达标）
 
 > **单元 / 控制器集成**：未达标不记账（`HonestyCheckInController.onIncompleteSessionEnded`）+ `MANUAL_END_PAUSE_MS` 后 `SessionEndFlow.onSessionEnded` 向 mock `ReflectionMoment.open` 传入 `intention` / `intentionSource` → smoke C（**仅**下游接线入参；**不**从 Choose 写入意图闩）。  
-> **DOM 用户链路**：Choose → Rise → Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显；Skip — begin → Rise → 无回显 → e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁）。  
+> **DOM 用户链路**：Choose → Rise → Reflection 顶部 `[data-testid=reflection-intention-echo]` 有/无回显；Skip — begin → Rise → 无回显 → e2e `reflection-intention-echo.spec.js`（**非**「二次 beginFocus 抹空」Bug 回归锁）。关 Reflection：**Skip all → Daily Wisdom 淡入（`[data-testid=reflection-daily-wisdom]` · `data-wisdom-hold`）→ Continue** → 卡片隐藏（`e2e/helpers/reflection-dismiss.js`）。  
 > **单元（Bug 回归锁）**：二次 beginFocus + 空 pending 不抹闩 → `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`。  
 > **单元（回流门闩，非 Rise 集成）**：`resolveCompanionHintClick` → toggle → smoke J（**同** smoke I 纯函数；**不**模拟 Rise 后再点 hint 的 DOM）。  
 > **仍须人工**：`rise-stretch-casual` 观感、面板淡入、回 Idle/Sleeping 衔接。
@@ -188,6 +190,12 @@
 4. 若本次 Choose 有内容，回显仍应出现（与是否达标无关）。  
    *[DOM 用户链路：Choose→Rise→Reflection 顶部回显 → e2e `reflection-intention-echo.spec.js`；Skip — begin 无回显 → 同文件反向用例；下游入参 → smoke C（非完整用户链）；**Bug 回归锁**（二次 beginFocus 空 pending 不抹闩）→ 单元 `SessionIntentionStore.test.js` · `resolveSessionIntentionLatch: pending wins; empty pending must not wipe latch`]*
 5. 三问正常可跳过；关闭 Reflection 后应回 Idle（或当日零完成时回 Sleeping），衔接勿硬切。末题非空 Continue 后 **0–1 秒内**输入框下见共鸣且卡留下（输入只读）；再点 Continue / Skip / Esc 才关——禁止约 0.9s 自动关。
+6. **C-5b · wisdom-hold 关 Reflection**（GWT · Calm Action Reflect · visibility Type B · `e2e/helpers/reflection-dismiss.js`）  
+   **Given**：`#tiger-reflection-moment` 已开（Rise 未达标或达标后均可）。  
+   **When**：点 **Skip all**（`Skip all` / `全部跳过` / `すべてスキップ`）。  
+   **Then**：**0–1 秒内** `[data-testid=reflection-daily-wisdom]` 可见、`[data-testid=daily-wisdom-text]` 非空；**禁止**与 Calm Action 许可句同框叠两句金句（见 TEST_TRACKER Calm Action Reflect 行）。  
+   **When**：再点 **Continue**（`Continue` / `继续` / `続ける`）。  
+   **Then**：**0–1 秒内** `#tiger-reflection-moment` 隐藏，回 Idle。许可句时序细节 → `reflectionQuoteDisclosure.test.js`（**E2E 优先级 P1**：保一条主干）。
 
 ---
 
@@ -274,7 +282,7 @@
 > **未覆盖**：Hint tip 文案/尖角、真实练习后格子变亮、上滑手势物理滑动（e2e 点 grabber）。  
 > **仍须人工**：亮/暗「不羞辱」；**375 新壳观感**（ActionBar / 主屏 Sit·Quick·Honesty / Yin 居中放大 / 上滑抽屉 / 底栏干净）；宽屏仍左下簇。  
 > **2026-07-24**：用户 DevTools 375 确认重叠 → 抬簇未过观感；同日改 **NarrowIdleShell**（ActionBar + BottomOptionsDrawer）。  
-> **2026-07-26**：用户书面——窄屏首页底部太空；三主钮（Sit / Quick Start / Honesty）上屏，抽屉删之。
+> **2026-07-26**：用户书面——窄屏首页底部太空；三主钮上屏，抽屉删之。**2026-09-11 起**：右球为 **Five Moments**（非 Honesty 文案）；Honesty Check-in 在抽屉 Practice 组（`clickHonestyCheckInEntry` · visibility Type B）。
 
 1. 打开 `?product=1`，处于 **Idle**。
 2. **宽屏**：左下见 `#weekly-practice-heatmap-cluster`（7 格 + 时钟）。  
@@ -1162,6 +1170,20 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ---
 
+## 2026-09-23–24 增量核对摘要（GWT 改写 · visibility Type A/B/C · wisdom-hold Type B）
+
+1. **背景**：#947 合入 **GWT 改写** + `generate-scenario-tests-gwt.py` P0/P1/P2 自动打标；#946/#948 visibility 治理；本旁支 **Type B** 对齐 wisdom-hold 关 Reflection 与 375 Five Moments/Honesty 抽屉文案。  
+2. **本次核对（增量；改权威剧本后须重跑 GWT 生成器）**：  
+   - **编写规范**：新增/改写场景步骤须 inline **Given / When / Then**（范本见 **场景 AS** · **场景 C · C-5b**）；E2E 优先级五维打标见 `SCENARIO_TESTS_GWT.md` §编写规范 · `scenario-gwt-priority`。  
+   - **场景 C · C-5b**：`Skip all → Daily Wisdom（data-wisdom-hold）→ Continue` 关 Reflection；共用 `e2e/helpers/reflection-dismiss.js`（#950 Type B）。  
+   - **场景 O · 375**：主屏三球 **Quick · Sit · Five Moments**；Honesty Check-in 在抽屉 Practice 组（**禁止**右球仍标 Honesty）。  
+   - **visibility CI**：`WORKFLOW.md` §visibility CI 治理 — **Type A** 产品变更待确认 · **Type B** 断言/选择器漂移 · **Type C** flaky/静态服过载；job 未稳定全绿前 **禁止**勾 Required。  
+   - **场景 AS**：Local AI 意图 E2E 关键路径已用 GWT 步（#947）；`LOCAL_AI_SCENARIOS_V1.md` **不整体转 GWT**。  
+3. **仍须人工 / 勿当缺口**：Calm Action 许可句与 Daily Wisdom 时序观感；visibility job 全绿前 develop Required 门禁；Type A 375 三球若 PO 再改须同步 e2e。  
+4. **生成物**：`python3 focus-tiger/scripts/generate-scenario-tests-gwt.py` → `SCENARIO_TESTS_GWT.md`（**禁止**手改 GWT 优先级列）。
+
+---
+
 ## 给 Cursor 的 Prompt（增量核对；勿整份重写）
 
 ```
@@ -1177,4 +1199,5 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 7. Agent 自测故事优先 ?product=1；回流至少测 Rise→再 Arrival / hint 一条。
 8. 2026-08 起正式场景含 Q/S/T/U/V/W 与 X/Y/Z 与 **AD/AE/AF–AK**；R（跨日回访）仍建议补充，勿占用字母改指付费或 Moments。
 9. **下班前 Git 同步**：若 develop 当日（或自文首核对日以来）有新用户面合入，须先更新本文再 push（`scenario-tests-eod-sync`）；无合入则只核对日期是否需要推进。
+10. **GWT（2026-09-23 起）**：改场景步骤后须重跑 `python3 focus-tiger/scripts/generate-scenario-tests-gwt.py`；新增步骤用 inline Given/When/Then + E2E 优先级（见 `scenario-gwt-priority`）；禁止手改 `SCENARIO_TESTS_GWT.md` 优先级列。
 ```
