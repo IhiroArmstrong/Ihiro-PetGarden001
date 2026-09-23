@@ -644,27 +644,42 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 | 前置步骤（`visibility:doc-check` · registry 单测 · Playwright install） | **能过** — 不是「CI 从根上没配对、跑不到 Playwright」 |
 | 典型单次 e2e 步（抽样 8 run · 2026-09-21～23） | **~14–22 passed · ~13–28 flaky · ~4–11 failed** · 墙钟 **~40–50 min** |
 
-**失败模式（三类 · 勿混为一谈）**
+**失败模式（Type A / B / C · 统一命名 · 勿混为一谈）**
 
 | 类 | 症状 | 占比（抽样日志） | 含义 |
 |---|---|---|---|
-| **E · 环境/导航** | `page.goto` / `page.reload` **Timeout** @ `openFreshProductShell`（`:5199`）；suite 后半段集中 | **高** | 静态服在 **2 workers × 46 用例 × retry** 下过载；**修 Type B/C 断言 alone 不够** |
-| **F · flaky** | Playwright 标 **flaky**（首轮红、retry 绿）；**含大量核心契约用例**（Arrival 藏 Sit、Honesty panel、桥接…） | **~50–65% 用例/轮** | 信号在发，但 **job 级不可信** |
-| **C · 硬失败（断言/漂移）** | retry 后仍红：如 `375 viewport` 三球、`micro ritual` 全流程、菜单文案/选择器漂移（Honesty → Five Moments） | **每轮 ~4–11** | Type B/C 测试债 + 偶发产品变更未同步 |
+| **Type C · CI 资源 / flaky** | Playwright 标 **flaky**（首轮红、retry 绿）；**含大量核心契约用例**（Arrival 藏 Sit、Honesty panel、桥接…） | **~50–65% 用例/轮** | 信号在发，但 **job 级不可信** |
+| **Type C · 静态服过载（导航超时子类）** | `page.goto` / `page.reload` **Timeout** @ `openFreshProductShell`（`:5199`）；suite 后半段集中 | **高** | 同属 Type C：静态 preview 在 **2 Playwright workers × 46 用例 × retry** 下过载；**只修 Type B 断言不够** |
+| **Type B · 测试代码 / 断言漂移** | retry 后仍红：选择器/文案漂移（Honesty → Five Moments）、测试债、时序不稳 | **每轮若干** | 测试未跟上 UI/契约 |
+| **Type A · 产品变更待确认** | retry 后仍红：如 `375 viewport` 三球、`micro ritual` 全流程——须 PO 确认是否为 intentional change | **每轮 ~4–11（与 B 重叠须逐条分）** | 产品改了测试未同步，或测试对了产品要改 |
 
-**因果（流程）**：「不等 visibility 就合 develop」是 **0% job 绿** 下的合理适应，不是根因。根因 = **E + F + C 叠加**。在 job 从未稳定绿之前，**禁止**把 core 26 条勾成 Required（Required 只会拖长合并、拦不住真回归）。
+**因果（流程）**：「不等 visibility 就合 develop」是 **0% job 绿** 下的合理适应，不是根因。根因 = **Type C（含导航子类）+ Type B + 少量 Type A 叠加**。在 job 从未稳定绿之前，**禁止**把 core 26 条勾成 Required（Required 只会拖长合并、拦不住真回归）。
 
 #### 修复与卡点顺序（拍板 · 不推翻 26/20 分层）
 
-1. **诊断**（本节）→ 2. **先压 E + F**（workers=1、导航/reload 策略、降 suite 噪声）→ 3. **Type B/C 修断言/漂移** → 4. **Type A**（若有）逐条确认产品 intentional change → 5. 抽 **`test:e2e:visibility:core`（26 条）** → 6. core **连续 5～10 次 workflow 全绿且 flaky≈0** → 7. **才**勾 develop Required → 8. 全量 46 条仍 path-triggered / nightly，**不进 Required**。
+1. **诊断**（本节）→ 2. **先压 Type C**（见下节「方案 A + workers:1」、导航/reload 策略、降 suite 噪声）→ 3. **Type B** 修断言/漂移 → 4. **Type A**（若有）逐条确认产品 intentional change → 5. 抽 **`test:e2e:visibility:core`（26 条）** → 6. core **连续 5～10 次 workflow 全绿且 flaky≈0** → 7. **才**勾 develop Required → 8. 全量 46 条仍 path-triggered / nightly，**不进 Required**。
+
+#### 方案 A + workers:1（已批准 · 2026-09-23 · 两者组合、不互斥）
+
+| 层 | 动作 | 解决什么 |
+|---|---|---|
+| **方案 A · GitHub Actions 并行** | 按 3 个 spec 拆 **3 个并行 job**（`scenario-a.companion` / `micro-ritual` / `weekly-practice-heatmap`） | 单 job 墙钟 ~48min+ 易触顶 `timeout-minutes: 60`；拆后最长单 job ~40min，**job 间并行**不抢墙钟 |
+| **workers:1 · Playwright 层** | **每个 job 内部** Playwright workers 从 **2 → 1**（workflow 或 config override） | 减轻**同一 `:5199` 静态 preview** 的 `goto`/`reload` 风暴（Type C 导航子类） |
+
+**组合关系（必须同时理解）**
+
+- **墙钟**靠 Actions 层并行（方案 A）缩短；**静态服过载**靠 job 内单 worker（workers:1）降压——**不冲突**。
+- **禁止**只做 workers:1 却不拆 job → 墙钟更长，更易再次触顶 60min。
+- **禁止**只拆 job 却保持 2 workers/job → 仍可能压垮 preview，导航超时子类复发。
+- **`retries: 2` 维持不动**（2026-09-23 拍板）：等 Type B/#351/#394 等在 CI 上稳定低 flaky 后，再评估是否降到 1；现在降会把「治理未生效」与「重试变少」信号搅在一起。
 
 #### 责任人与检查频率（书面 · 防「修完又没人看」）
 
 | 项 | 规则 |
 |---|---|
-| **责任人** | **项目负责人（PO）**；离岗时书面指定代班，禁止「无人认领」。 |
+| **责任人** | **项目负责人（PO）**（当前 = 你）；离岗时书面指定代班，禁止「无人认领」。 |
 | **频率** | **每周一次**（建议周一）；触发 visibility path 的 PR 合 develop **后 24h 内**加查一次。 |
-| **动作** | 打开 [Actions · focus-tiger visibility-contract e2e](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/workflows/focus-tiger-visibility-contract.yml) → 看 **最新一条已跑完** run（非 cancelled）→ 记录 **passed / flaky / failed** 与首条错误类（E/F/C）。 |
+| **动作** | 打开 [Actions · focus-tiger visibility-contract e2e](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/workflows/focus-tiger-visibility-contract.yml) → 看 **最新一条已跑完** run（非 cancelled）→ 记录 **passed / flaky / failed** 与首条错误类（Type A/B/C）。 |
 | **可见指标** | 在 `PROCESS.md` Backlog「降低 visibility CI flaky 率」条 **或** 本小节下维护一行：**「距 visibility job 末次全绿：__ 天（末次 run 链接）」** — 超过 **14 天**无全绿须开 `fix/visibility-ci-*` 或书面说明搁置原因。 |
 | **过渡期（Required 之前）** | 凡 PR 改动 `VISIBILITY_SUPPRESS_TRIGGER_PATHS`（见 registry）或 visibility 三 spec：**作者须**在 PR 描述贴 **当次** visibility run 链接 + 结论（✅/❌/cancelled + 数字）；**禁止**「反正从没绿过」直接合。Agent 开/更新此类 PR 时须 `@` 提醒 PO 或代班已查。 |
 | **Required 之后** | core 26 条绿 = 合并硬门槛；全量 46 条仍按上表周报，flaky 回升即开修，**不得**再静默合并。 |
