@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   openFreshProductShell,
   quickStartFocus,
@@ -22,6 +23,7 @@ test.describe('MilestoneGlow product path', () => {
     await openFreshProductShell(page, {
       query: { sessionMinutes: 1, qaSeedStreak: 6 }
     });
+    await dismissColdStartOverlay(page);
     await expect
       .poll(
         async () =>

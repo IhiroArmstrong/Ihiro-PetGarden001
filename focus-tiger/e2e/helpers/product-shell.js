@@ -135,6 +135,29 @@ export async function openWideMoreMenuIfPresent(page) {
   return true;
 }
 
+/** @type {Readonly<Record<string, string>>} */
+const WIDE_MORE_PROXY_GROUP = Object.freeze({
+  reminder: 'MENU_GROUP_PREFERENCES',
+  language: 'MENU_GROUP_PREFERENCES'
+});
+
+/**
+ * Expand a collapsible wide ⋯ section before clicking a parked row.
+ * @param {import('@playwright/test').Page} page
+ * @param {string} groupKey
+ */
+async function expandWideMoreMenuGroup(page, groupKey) {
+  const header = page.locator(
+    `#ft-wide-more-menu .ft-wide-more__section-header[data-group="${groupKey}"]`
+  );
+  if (!(await header.isVisible().catch(() => false))) return;
+  if ((await header.getAttribute('aria-expanded')) === 'true') return;
+  await header.click();
+  await expect(header).toHaveAttribute('aria-expanded', 'true', {
+    timeout: 3_000
+  });
+}
+
 /**
  * Honesty Check-in（非 Five Moments 右球）：宽屏 ⋯ Practice 行 / 窄屏抽屉 Practice 行。
  * Home `#ft-*-home-honesty` 已映射 Five Moments（TEST_TRACKER 2026-09-11）。
@@ -189,7 +212,15 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
     language: '#language-preference-panel'
   }[proxy];
   if (await openWideMoreMenuIfPresent(page)) {
-    await page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`).click();
+    const groupKey = WIDE_MORE_PROXY_GROUP[proxy];
+    if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
+    const row = page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`);
+    await row.scrollIntoViewIfNeeded();
+    if (proxy === 'reminder') {
+      // Hover first: in-app-reminder tip used to steal the row click.
+      await row.hover();
+    }
+    await row.click();
     return;
   }
   if (proxy === 'reminder') {
