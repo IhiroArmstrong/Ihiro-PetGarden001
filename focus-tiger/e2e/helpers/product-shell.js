@@ -5,6 +5,7 @@
 
 import { expect } from '@playwright/test';
 import { installExternalNetworkMocks } from './mock-external-network.js';
+import { dismissReflectionViaWisdomHold } from './reflection-dismiss.js';
 
 /** @type {WeakMap<import('@playwright/test').Page, true>} */
 const externalMocksByPage = new WeakMap();
@@ -397,14 +398,7 @@ export async function riseSkipReflectionToIdle(page) {
   await clickSitEntry(page);
   const reflection = page.locator('#tiger-reflection-moment');
   await expect(reflection).toBeVisible({ timeout: 15_000 });
-  await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
-  // Skip all → wisdom hold; only Continue dismisses (Reflection multi-stage · TEST_TRACKER).
-  const continueBtn = reflection.getByRole('button', {
-    name: /Continue|继续/i
-  });
-  await expect(continueBtn).toBeVisible({ timeout: 8_000 });
-  await continueBtn.click();
-  await expect(reflection).toBeHidden({ timeout: 10_000 });
+  await dismissReflectionViaWisdomHold(page, reflection);
   await expectFocusSessionInactive(page);
 }
 

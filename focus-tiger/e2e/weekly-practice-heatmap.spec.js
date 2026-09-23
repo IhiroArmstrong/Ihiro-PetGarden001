@@ -248,7 +248,8 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
     'aria-hidden',
     'false'
   );
-  // Sit / Quick Start / Honesty moved to home — must NOT remain in drawer
+  // Sit / Quick Start / Five Moments live on home canvas — must NOT remain in drawer.
+  // Honesty Check-in stays in Practice group (listSecondaryChromeEntries · KB-FUNC-0020).
   await expect(
     page.locator('.ft-narrow-sheet__item', {
       hasText: /Sit with Yin|与阿寅同坐/i
@@ -260,10 +261,8 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
     })
   ).toHaveCount(0);
   await expect(
-    page.locator('.ft-narrow-sheet__item', {
-      hasText: /Honesty Check-in|诚实补登/i
-    })
-  ).toHaveCount(0);
+    page.locator('.ft-narrow-sheet__item[data-proxy="honesty"]')
+  ).toHaveCount(1);
 
   // How shall we sit? must stage companion options (not silent)
   await page
@@ -298,10 +297,8 @@ test('375 home: Five Moments on canvas; drawer Soundscape + Reminder respond', a
     'false'
   );
   await expect(
-    page.locator('.ft-narrow-sheet__item', {
-      hasText: /Honesty Check-in|诚实补登/i
-    })
-  ).toHaveCount(0);
+    page.locator('.ft-narrow-sheet__item[data-proxy="honesty"]')
+  ).toHaveCount(1);
 
   // Sound row removed — music via ActionBar ♪
   await expect(
