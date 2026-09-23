@@ -4,7 +4,6 @@
 最近代码核对：2026-09-23（Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · KB-FUNC-0021 Daily quote 入 catalog · 路由矩阵单测冻结 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
-**Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`）  
 仓库根目录 `SCENARIO_TESTS.md` 仅为指针；旧稿 `有待核对-SCENARIO_TESTS720.md` 已归档，勿再改。
 
 定位：这份文档和 `focus-tiger/docs/TEST_TRACKER.md` 不是替代关系，是两个层级——TEST_TRACKER 是「每个功能点单独测试」的清单，本文档是「把功能点串成一次真实使用故事」的剧本。很多 bug 只有在功能连起来走的时候才会暴露。建议两份一起用：走完一个场景故事后，回头把涉及到的功能点在 TEST_TRACKER 里勾掉。
