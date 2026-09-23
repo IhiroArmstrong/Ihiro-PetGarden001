@@ -110,6 +110,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `agent-token-cost` | 「控 Fast Request / 禁子 Agent / `Merged` 须新开会话见 `focus-tiger-agent-token-cost.mdc`」 | 复述完整条款；主张默认可并行 Task/explore；主张 Agent 可自行轮询全量 CI；主张 `Merged` 后可在同会话继续 |
 | `agent-tool-budget` | 「工具调用预算分档 / 口令「开工」「继续」「大任务」见 `focus-tiger-agent-token-cost.mdc`」；执行：`session_gate.sh` / `tool_budget.sh` / `config.json`；只计探索；「继续」只留本 Chat；跨模块+单测+PR 用「大任务」；实现类冒烟见 `testing-strategy.mdc` | 平行写第二套软/硬上限数字；主张可无「继续」无限探索；主张每改一点就跑 smoke；主张硬顶后 New Agent / 新开 Chat 续同一任务；主张硬顶统计全部工具调用 |
 | `e2e-local-budget` | 「本地 e2e 硬顶见 `testing-strategy.mdc`；执行：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`」；regression-lock / agent-token-cost / WORKFLOW 可一行引用 | 主张本地可一次跑多个 changed spec；主张无 override 可跑全量；平行写第二套数字（如「最多 2 次」） |
+| `visibility-ci-governance` | 「visibility CI 诊断/责任人/Required 顺序见 `WORKFLOW.md` visibility CI 治理节」；`PROCESS` Backlog 同条可一行引用 | 在 job 0% 绿时勾 Required；把「不等就合」当根因而跳过 Type C 导航子类 / 方案 A+workers:1；无周报仍声称 visibility 已治理 |
 | `qa-develop-tip` | 「关单验收见 `TEST_TRACKER` 文首人工验收唯一基线」；可一句指向同文件「主干一次性关单验收」与 `KNOWN_RISKY_TEST_CHECKLIST` §0；`COLLAB` 可一行引用；须与 `git-feature-merge-preview` 两层验收并列理解；本机树见 `qa-develop-worktree` | 主张 feature/fix 试跑即正式关单验收；主张用过时 feature worktree / Support-only QA tree 代替当时 tip |
 | `qa-develop-worktree` | 「固定 QA 树见 `WORKFLOW.md`」；合入后 `sync:qa-develop` + ①重启/硬刷新 ②一句变化；`TEST_TRACKER` / KnownRisky / regression-lock / browser-energy 可一行引用 | 主张在 QA 树开发/commit；主张每次新建 `…-wt-qa-develop-tip`；Cloud 假装已在 Mac pull；为收尾停掉 QA `:5173` Vite；主张 `5173` 正在测时抢端口或 `git switch` 正在出码的目录 |
 | `qa-batch-human-test` | 「口令「批量人工测试」见 `TEST_TRACKER`」；PROCESS / COLLAB 可一行引用 | 让用户自己翻 PR 历史拼待测项；把清单当成已关单 |
@@ -297,6 +298,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-08-16 | 新增 `feature-conflict-review`：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等用户拍板（优先于默认执行）；SSOT `FEATURE_CONFLICT_REVIEW.md`；PR 三问 Q3；Cursor 规则 + `SCENARIO_TESTS` 文首索引 |
 | 2026-08-15 | 扩展 `git-parallel-worktree`：Cloud 旁支落到本机须 `worktree add`，禁止主仓 Apply / checkout migrated branch（超时 + 抢 5173/主仓检出）。SSOT `WORKFLOW.md` 并行 worktree 第 8 款 |
 | 2026-08-15 | 新增 `qa-develop-worktree`：固定 `…-wt-develop-qa` 关单/批量测树、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化；feature 开发树不变。SSOT `WORKFLOW.md` |
+| 2026-09-23 | 新增 `visibility-ci-governance`：visibility workflow 近 200 run 0 绿诊断（Type A/B/C；Type C 含静态服导航超时子类）、方案 A+workers:1 组合、26/20 分层修复顺序、周报责任人、Required 前过渡期 PR 须贴 run；SSOT `WORKFLOW.md`；刷新 `PROCESS` Backlog 条 |
 | 2026-08-14 | GitHub 默认分支改为 `develop`：`schedule` 读默认分支 YAML（现为 `develop`），不必再为 cron 把 workflow 同步到 `main`；见 `ENV_CONFIG.md` §3 |
 | 2026-08-14 | 新增 `recommend-most-reasonable`：列 ≥2 个开放方案时须同时给出「我认为最合理的」；SSOT `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`；N14b |
 | 2026-08-14 | 统一 Git/验收五档：任务完成后默认 push 旁支+开 PR（本机=Cloud）；合入 develop = CI 绿（`git-develop-small-pr-run-merge` 扩到运行时 PR）；人工测试与合入解耦；新增 `qa-batch-human-test`、`prod-worker-deploy`；§7「已修复」仍须人工测 |

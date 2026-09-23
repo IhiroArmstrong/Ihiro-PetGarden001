@@ -1,0 +1,45 @@
+---
+description: 需要用户配合时须给出简洁大白话操作步骤——禁止只写「贴结果回来」而不写怎么做
+alwaysApply: true
+---
+
+# Focus Tiger · 用户配合操作步骤（强制）
+
+> **SSOT 示例**：`WORKFLOW.md` →「需要用户配合时的操作步骤」；索引 `RULES_INDEX` → `user-action-steps`。
+
+## 何时必须写
+
+凡回复里出现以下任一情况，**必须**在同条回复里附 **「请你操作（大白话）」** 小节（3–7 步、每步一行、可照做）：
+
+- 请你去看 CI / GitHub Actions / PR checks  
+- 请你复测、截图、贴链接、选方案  
+- 请你手动触发 workflow、合并 PR、改设置  
+
+**禁止**：只写「结果出来后贴回来」「你去看看 CI」而不写具体点哪里、复制什么。
+
+## 步骤写法
+
+1. **先写最简单路径**（浏览器点 GitHub；终端命令放可选）。  
+2. 每步：**做什么 → 在哪里点 → 成功时看到什么**。  
+3. 结尾给 **「贴回什么」模板**（复制填空即可，≤5 行）。  
+4. 若有多条 run，写 **看哪一条**（例如「PR 里最新一条 visibility-contract」）。
+
+## 示例（CI 结论）
+
+```markdown
+### 请你操作（大白话）
+
+1. 打开 PR #946 页面 → 点 **Checks**（或 **Actions**）  
+2. 找到 **focus-tiger visibility-contract e2e** → 点最新一条  
+3. 等左上角变成 ✅ 或 ❌（还在转圈就晚点再看）  
+4. 点进 **visibility registry + e2e anchors** → 滚到最底  
+5. 复制最后一行（含 passed/failed/flaky）和是否 **cancelled**
+
+**贴回来（复制改字即可）：**
+- Run 链接：  
+- 结论：✅ / ❌ / cancelled  
+- 数字：__ passed · __ failed · __ flaky  
+- 我关心的：类型 B / #351 / artifact 是否绿：是/否/没跑到  
+```
+
+Agent 自己用 `gh` 能查的，**先自己查**；只有需要人工眼（复测观感、产品拍板）或账号在浏览器里更方便时，才请用户操作。
