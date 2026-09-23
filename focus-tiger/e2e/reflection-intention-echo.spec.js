@@ -11,6 +11,7 @@ import {
   openFreshProductShell,
   skipArrivalBegin
 } from './helpers/product-shell.js';
+import { dismissReflectionViaWisdomHold } from './helpers/reflection-dismiss.js';
 
 /**
  * 回归：Arrival Choose Reading → Rise → Reflection 顶部须回显意图（真实 DOM）。
@@ -28,12 +29,6 @@ async function riseAndAwaitReflection(page) {
   return reflection;
 }
 
-async function dismissReflection(page, reflection) {
-  await reflection.getByRole('button', { name: /Skip all|全部跳过/i }).click();
-  await reflection.getByRole('button', { name: /Continue|继续/i }).click();
-  await expect(reflection).toBeHidden({ timeout: 10_000 });
-}
-
 test('Quick Start then Rise does not show intention echo on Reflection', async ({
   page
 }) => {
@@ -45,7 +40,7 @@ test('Quick Start then Rise does not show intention echo on Reflection', async (
   const reflection = await riseAndAwaitReflection(page);
   const echo = reflection.locator('[data-testid="reflection-intention-echo"]');
   await expect(echo).toHaveCount(0);
-  await dismissReflection(page, reflection);
+  await dismissReflectionViaWisdomHold(page, reflection);
 });
 
 test('Reflection reveals Daily Wisdom on completion; Skip all then Continue dismisses', async ({
@@ -79,5 +74,5 @@ test('Choose Reading then Rise shows intention echo on Reflection', async ({
   await expect(echo).toBeVisible();
   await expect(echo).toContainText(/Chosen direction:|所选方向：/i);
   await expect(echo).toContainText(/Reading|阅读/i);
-  await dismissReflection(page, reflection);
+  await dismissReflectionViaWisdomHold(page, reflection);
 });
