@@ -69,6 +69,15 @@ jobs:
           CI: 'true'
           PLAYWRIGHT_CHANNEL: ''
 
+      - name: Upload Playwright failure artifacts
+        if: steps.paths.outputs.product == 'true' && (failure() || cancelled())
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-smoke-playwright-results
+          path: focus-tiger/test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Production build
         if: steps.paths.outputs.product == 'true'
         run: npm run build

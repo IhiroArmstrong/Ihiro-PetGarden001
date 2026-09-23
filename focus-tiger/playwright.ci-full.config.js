@@ -30,10 +30,10 @@ export default defineConfig({
   ],
   use: {
     ...base.use,
-    // Keep CI artifacts small (Plan A #15 traces were multi-GB). Screenshots
-    // on failure are enough for triage; JUnit carries the red/green list.
-    trace: 'off',
-    video: 'off',
+    // on-first-retry traces + retain-on-failure video (not every attempt).
+    // No HTML report — JUnit + slim test-results/ upload stay the size guard.
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
     screenshot: 'only-on-failure'
   }
 });

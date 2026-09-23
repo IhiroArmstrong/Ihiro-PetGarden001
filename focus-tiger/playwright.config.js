@@ -26,6 +26,8 @@ export default defineConfig({
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     baseURL: 'http://127.0.0.1:5199',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     navigationTimeout: process.env.CI ? 30_000 : 30_000,
     actionTimeout: process.env.CI ? 20_000 : 15_000
   },
