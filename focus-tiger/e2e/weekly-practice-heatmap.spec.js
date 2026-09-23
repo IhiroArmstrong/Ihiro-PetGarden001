@@ -276,7 +276,7 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   });
 });
 
-test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async ({
+test('375 home: Five Moments on canvas; drawer Soundscape + Reminder respond', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
@@ -285,11 +285,11 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
     timeout: 15_000
   });
 
-  // Honesty lives on home canvas as a ball (not in the drawer)
+  // Right orb = Five Moments (FIVE_MOMENTS_IDLE_ENTRY), not legacy Honesty label — TEST_TRACKER 2026-09-11.
   await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
     'aria-label',
-    /Honesty Check-in|诚实补登|Honesty/i
+    /Five moments with Yin|与阿寅的五个时刻|寅との五つの時間/i
   );
 
   await page.locator('.ft-narrow-grabber').click();
