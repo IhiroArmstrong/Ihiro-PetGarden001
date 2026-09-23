@@ -1405,14 +1405,17 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
 
-> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修 **visibility** workflow 稳定性；全量夜间+Plan A **已收口**（见上节），两边剩余工作都偏 **flaky 根因**。**决策优先级次于** Electron 脚手架（见上条「本地桌面 APP 打包」）。
+> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e 曾出现「**绿 + 高 flaky**」样本（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。  
+> **诊断刷新（2026-09-23）**：近 **200** 次 `focus-tiger-visibility-contract.yml` run → **0 success · 189 failure · 11 cancelled**。单次 e2e 步常见 **~14–22 passed · ~13–28 flaky · ~4–11 failed**（~40–50 min）。主因 = **导航超时（E）+ 高 flaky（F）+ 断言/漂移硬失败（C）** 叠加 — 详见 `WORKFLOW.md`「visibility CI 治理」。**在 job 未稳定全绿前禁止勾 Required**；责任流程（周报 + 过渡期 PR 须贴 run）同节。
 
-- **目标**：把 visibility suite 的 flaky（首轮红、retry 翻绿）压到可接受水平（建议目标：连续 2～3 次 CI run 上 flaky ≤ 约 20%，且无「仅靠 retry 才绿」的系统性风暴）；墙钟须稳定落在 job `timeout-minutes` 内。
+- **距 visibility job 末次全绿**：**未知 / ≥200 run 无全绿**（2026-09-23 审计；更新时写 run 链接）
+- **目标**：**先** job 级全绿（failed=0，flaky 趋 0），**再** core 26 条 Required；全量 46 条仍非 Required。
 - **处理方向（优先序，可组合）**：
-  1. **Workers**：先试 `workers: 1`（或保持 2 并对比）；4 workers 曾压垮 `vite preview` → 大量 `domcontentloaded` 超时。
-  2. **导航策略**：继续收紧——一律 `openFreshProductShell` / `domcontentloaded`；禁止默默 `page.goto`/`reload` 走 `load`；必要时对 `goto` 做有界重试（与 seed 不冲突：勿用会跨 reload 清 `focus-tiger.*` 的 `addInitScript`）。
-  3. **预算**：在「不靠无限拉长 timeout 掩盖」前提下，核对 `navigationTimeout` / 单测 `timeout` / job 上限是否匹配真实 preview 冷启动。
-  4. **可观测性**：区分「产品断言失败」vs「preview/导航环境噪声」；失败日志须一眼看出类别。
+  1. **E · 导航/静态服过载（2026-09-23 诊断主因）**：visibility workflow 用 `workers:1`（workflow 层 override 默认 2）；suite 后半段 `goto`/`reload` 超时须先压再谈断言；见 `WORKFLOW.md` visibility CI 治理。
+  2. **Workers**：先试 `workers: 1`（或保持 2 并对比）；4 workers 曾压垮 `vite preview` → 大量 `domcontentloaded` 超时。
+  3. **导航策略**：继续收紧——一律 `openFreshProductShell` / `domcontentloaded`；禁止默默 `page.goto`/`reload` 走 `load`；必要时对 `goto` 做有界重试（与 seed 不冲突：勿用会跨 reload 清 `focus-tiger.*` 的 `addInitScript`）。
+  4. **预算**：在「不靠无限拉长 timeout 掩盖」前提下，核对 `navigationTimeout` / 单测 `timeout` / job 上限是否匹配真实 preview 冷启动。
+  5. **可观测性**：区分「产品断言失败」vs「preview/导航环境噪声」；失败日志须一眼看出类别（E/F/C）。
 - **验收**：新 CI run 链接 + pass/flaky/fail 计数；文档写明是否仍依赖 `retries: 1`。
 - **不在范围**：不把「降 flaky」写成产品观感验收通过；不替代 Class-2 visibility gap（`honesty-bridge-entries-hidden` 等）的产品补锁。
 - **排期**：**PR #2 → `main` 合并后立刻开工**（可与「CI 全量 smoke + e2e」同周并行）；建议分支名 `fix/visibility-ci-flaky` 或并入全量 CI 工程 PR 的首个 commit 组。

@@ -626,9 +626,55 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 ### CI 与本地 e2e 边界（现状）
 
 - **PR→develop**：`pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）为轻量门闩。  
+- **visibility 契约 e2e**：`focus-tiger-visibility-contract.yml`（path 触发 + `workflow_dispatch`）；**不是** develop Required check（Required 仍只有 `test:pr-smoke` + `pre-merge with develop`）。  
 - **全量 e2e**：`focus-tiger-e2e-full.yml`（schedule + `workflow_dispatch`）；**禁止**默认本机 `npm run test:e2e`。  
 - **本地 Agent**：仅 `test:smoke` / `test:e2e:smoke` / `test:e2e:changed -- <单个 spec>`；多文件与全量见 `RULES_INDEX` → `e2e-local-budget`（`RUN_E2E_LOCAL=true` 逃生口会打警告）。  
 - 历史「临时接受本机全量」门槛（PR #2）**已废止**；细节见 `PROCESS.md` Backlog「CI 全量…」已落地节。
+
+### visibility CI 治理（2026-09-23 · 诊断 + 责任流程）
+
+> **索引**：`RULES_INDEX` → `visibility-ci-governance`（本小节 SSOT）。  
+> **契约 SSOT**：`visibilityContractRegistry.js` · 46 条 e2e / 13 条 locked 契约 · 26/20 核心/辅助分层见本会话分类（待 PO 拍板后工程化 `test:e2e:visibility:core`）。
+
+#### 诊断结论（2026-09-23 · `gh run list --workflow focus-tiger-visibility-contract.yml`）
+
+| 指标 | 数值 |
+|---|---|
+| 最近 **200** 次 workflow run | **189 failure · 11 cancelled · 0 success** |
+| 前置步骤（`visibility:doc-check` · registry 单测 · Playwright install） | **能过** — 不是「CI 从根上没配对、跑不到 Playwright」 |
+| 典型单次 e2e 步（抽样 8 run · 2026-09-21～23） | **~14–22 passed · ~13–28 flaky · ~4–11 failed** · 墙钟 **~40–50 min** |
+
+**失败模式（三类 · 勿混为一谈）**
+
+| 类 | 症状 | 占比（抽样日志） | 含义 |
+|---|---|---|---|
+| **E · 环境/导航** | `page.goto` / `page.reload` **Timeout** @ `openFreshProductShell`（`:5199`）；suite 后半段集中 | **高** | 静态服在 **2 workers × 46 用例 × retry** 下过载；**修 Type B/C 断言 alone 不够** |
+| **F · flaky** | Playwright 标 **flaky**（首轮红、retry 绿）；**含大量核心契约用例**（Arrival 藏 Sit、Honesty panel、桥接…） | **~50–65% 用例/轮** | 信号在发，但 **job 级不可信** |
+| **C · 硬失败（断言/漂移）** | retry 后仍红：如 `375 viewport` 三球、`micro ritual` 全流程、菜单文案/选择器漂移（Honesty → Five Moments） | **每轮 ~4–11** | Type B/C 测试债 + 偶发产品变更未同步 |
+
+**因果（流程）**：「不等 visibility 就合 develop」是 **0% job 绿** 下的合理适应，不是根因。根因 = **E + F + C 叠加**。在 job 从未稳定绿之前，**禁止**把 core 26 条勾成 Required（Required 只会拖长合并、拦不住真回归）。
+
+#### 修复与卡点顺序（拍板 · 不推翻 26/20 分层）
+
+1. **诊断**（本节）→ 2. **先压 E + F**（workers=1、导航/reload 策略、降 suite 噪声）→ 3. **Type B/C 修断言/漂移** → 4. **Type A**（若有）逐条确认产品 intentional change → 5. 抽 **`test:e2e:visibility:core`（26 条）** → 6. core **连续 5～10 次 workflow 全绿且 flaky≈0** → 7. **才**勾 develop Required → 8. 全量 46 条仍 path-triggered / nightly，**不进 Required**。
+
+#### 责任人与检查频率（书面 · 防「修完又没人看」）
+
+| 项 | 规则 |
+|---|---|
+| **责任人** | **项目负责人（PO）**；离岗时书面指定代班，禁止「无人认领」。 |
+| **频率** | **每周一次**（建议周一）；触发 visibility path 的 PR 合 develop **后 24h 内**加查一次。 |
+| **动作** | 打开 [Actions · focus-tiger visibility-contract e2e](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/workflows/focus-tiger-visibility-contract.yml) → 看 **最新一条已跑完** run（非 cancelled）→ 记录 **passed / flaky / failed** 与首条错误类（E/F/C）。 |
+| **可见指标** | 在 `PROCESS.md` Backlog「降低 visibility CI flaky 率」条 **或** 本小节下维护一行：**「距 visibility job 末次全绿：__ 天（末次 run 链接）」** — 超过 **14 天**无全绿须开 `fix/visibility-ci-*` 或书面说明搁置原因。 |
+| **过渡期（Required 之前）** | 凡 PR 改动 `VISIBILITY_SUPPRESS_TRIGGER_PATHS`（见 registry）或 visibility 三 spec：**作者须**在 PR 描述贴 **当次** visibility run 链接 + 结论（✅/❌/cancelled + 数字）；**禁止**「反正从没绿过」直接合。Agent 开/更新此类 PR 时须 `@` 提醒 PO 或代班已查。 |
+| **Required 之后** | core 26 条绿 = 合并硬门槛；全量 46 条仍按上表周报，flaky 回升即开修，**不得**再静默合并。 |
+
+**查 run 命令（Agent / 人）**
+
+```bash
+gh run list --workflow=focus-tiger-visibility-contract.yml --limit 10
+gh run view <run-id> --log-failed | tail -80
+```
 
 ---
 
