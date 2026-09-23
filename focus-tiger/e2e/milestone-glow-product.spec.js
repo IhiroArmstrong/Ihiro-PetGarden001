@@ -74,13 +74,17 @@ test.describe('MilestoneGlow product path', () => {
     }
 
     await quickStartFocus(page);
-    await page.waitForTimeout(1500);
-    const claims = await page.evaluate(
-      () =>
-        [...window.__milestoneGlowStore.getPlayedIds()].filter(
-          (id) => id === 'streak-7'
-        ).length
-    );
-    expect(claims).toBe(1);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () =>
+              [...window.__milestoneGlowStore.getPlayedIds()].filter(
+                (id) => id === 'streak-7'
+              ).length
+          ),
+        { timeout: 10_000 }
+      )
+      .toBe(1);
   });
 });

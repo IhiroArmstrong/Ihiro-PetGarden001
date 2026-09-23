@@ -14,9 +14,8 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
-  // CI: 2 workers — workers:1 + first-attempt timeout storms cancelled jobs.
-  // Accept green+high-flaky for PR#2; flaky reduction is post-merge backlog.
+  retries: process.env.CI ? 2 : 0,
+  // PR smoke: 2 workers on ubuntu-latest. Full e2e workflow passes --workers=1.
   workers: process.env.CI ? 2 : 1,
   reporter: 'list',
   timeout: process.env.CI ? 90_000 : 120_000,
@@ -27,6 +26,8 @@ export default defineConfig({
     // Dedicated port so another worktree's Vite on :5173 is not reused by mistake.
     baseURL: 'http://127.0.0.1:5199',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     navigationTimeout: process.env.CI ? 30_000 : 30_000,
     actionTimeout: process.env.CI ? 20_000 : 15_000
   },

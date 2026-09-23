@@ -67,3 +67,15 @@ jobs:
         run: npx playwright install chromium --with-deps
       - name: Full visibility e2e anchor set
         run: npm run test:e2e:visibility
+        env:
+          CI: 'true'
+          PLAYWRIGHT_CHANNEL: ''
+
+      - name: Upload Playwright failure artifacts
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visibility-contract-playwright-results
+          path: focus-tiger/test-results/
+          retention-days: 7
+          if-no-files-found: ignore

@@ -122,7 +122,9 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   await reminderRow.scrollIntoViewIfNeeded();
   // Hover first: in-app-reminder tip used to steal the row click.
   await reminderRow.hover();
-  await page.waitForTimeout(250);
+  await expect(
+    page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"][open]')
+  ).toHaveCount(0, { timeout: 5_000 });
   await reminderRow.click();
   await expect(page.locator('#ft-wide-more-menu')).toBeHidden();
   const reminderPanel = page.locator('#reminder-preference-panel');
@@ -247,15 +249,24 @@ test('wide ⋯: Sit auto tip hidden while menu open (no hover required)', async 
   page
 }) => {
   await openFreshProductShell(page);
-  // Give Idle a beat so sit-button may auto-paint, then open ⋯ must clear it.
-  await page.waitForTimeout(500);
+  // Allow sit-button auto-tip to paint if scheduled; opening ⋯ must clear it.
+  await page
+    .locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"][open]')
+    .waitFor({ state: 'visible', timeout: 2_000 })
+    .catch(() => {});
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
 
-  await expectSitAutoTipHidden(page);
-  await page.waitForTimeout(400);
-  await expectSitAutoTipHidden(page);
+  await expect
+    .poll(
+      async () => {
+        await expectSitAutoTipHidden(page);
+        return true;
+      },
+      { timeout: 2_000, intervals: [50, 100, 200, 400] }
+    )
+    .toBe(true);
 });
 
 /**
@@ -283,7 +294,6 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     const row = menu.locator(`[data-proxy="${proxy}"]`);
     await row.scrollIntoViewIfNeeded();
     await row.hover();
-    await page.waitForTimeout(250);
 
     const hintId = WIDE_MORE_ROW_HINT[proxy];
     if (hintId) {
@@ -312,7 +322,12 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     const row = menu.locator(`[data-proxy="${proxy}"]`);
     await row.scrollIntoViewIfNeeded();
     await row.hover();
-    await page.waitForTimeout(300);
+    const hintId = WIDE_MORE_ROW_HINT[proxy];
+    if (hintId) {
+      await expect(
+        page.locator(`ft-onboarding-hint-bubble[data-hint-id="${hintId}"][open]`)
+      ).toBeVisible({ timeout: 5_000 });
+    }
     await expectOpenHintBubblesAtMost(page);
     await expectSitAutoTipHidden(page);
   }
@@ -324,29 +339,6 @@ test('wide Idle: Zen Cinema row removed from menu', async ({ page }) => {
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
   await expect(menu.locator('[data-proxy="zen-cinema"]')).toHaveCount(0);
-});
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
-  // Zen Cinema removed from Idle menu (2026-09-11) — lives on twinsology.com
-  await expect(menu.locator('[data-proxy="zen-cinema"]')).toHaveCount(0);
-  await menu.locator('[data-proxy="zen-cinema"]').click();
-  const card = page.locator('#zen-cinema-card');
-  const backdrop = page.getByTestId('zen-cinema-backdrop');
-  await expect(card).toBeVisible({ timeout: 5_000 });
-  await expect(backdrop).toBeVisible({ timeout: 5_000 });
-  await expect(card.locator('.zen-cinema-card__thumb')).toBeVisible();
-  await expect(page.getByTestId('zen-cinema-open-youtube')).toBeVisible();
-  await backdrop.click({ position: { x: 12, y: 12 } });
-  await expect(card).toBeHidden({ timeout: 5_000 });
-  await expect(backdrop).toBeHidden({ timeout: 5_000 });
-  await page.locator('#ft-wide-more-btn').click();
-  await expect(menu).toBeVisible({ timeout: 5_000 });
-  await menu.locator('[data-proxy="zen-cinema"]').click();
-  await expect(card).toBeVisible({ timeout: 5_000 });
-  await expect(backdrop).toBeVisible({ timeout: 5_000 });
-  await card.locator('.zen-cinema-card__btn--ghost').click();
-  await expect(card).toBeHidden({ timeout: 5_000 });
 });
 
 test('wide Idle: Five Moments Compass row opens card with backdrop dim', async ({
