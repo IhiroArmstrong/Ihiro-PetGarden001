@@ -23,7 +23,10 @@ async function openMicroRitualPicker(page) {
   await expect(ritual).toBeVisible({ timeout: 5_000 });
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
   await expect(ritual.locator('#focus-coins-duration-hint')).toBeVisible();
-  await expect(ritual.locator('#focus-coins-duration-hint')).toContainText(/寅币/);
+  // Locale-neutral: focus_coins.duration_hint (en/zh/ja). Align fix/idle-chrome-five-moments-membership · TEST_TRACKER 2026-09-11.
+  await expect(ritual.locator('#focus-coins-duration-hint')).toContainText(
+    /Focus Coins|寅币|寅コイン/i
+  );
   return ritual;
 }
 

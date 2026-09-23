@@ -204,9 +204,10 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
     'aria-disabled',
     'false'
   );
+  // Right orb = Five Moments (FIVE_MOMENTS_IDLE_ENTRY), not legacy Honesty label — TEST_TRACKER 2026-09-11.
   await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
     'aria-label',
-    /Honesty Check-in|诚实补登/i
+    /Five moments with Yin|与阿寅的五个时刻|寅との五つの時間/i
   );
   await expect(page.locator('#ft-narrow-home-honesty')).toHaveCSS(
     'opacity',

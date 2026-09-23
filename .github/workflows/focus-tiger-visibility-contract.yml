@@ -3,6 +3,7 @@ name: focus-tiger visibility-contract e2e
 # When suppress / park / hide chrome changes, run the full Visibility Contract
 # e2e anchor set (not only the new feature's own tests).
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'focus-tiger/src/ui/NarrowIdleShell.js'
@@ -71,11 +72,18 @@ jobs:
           CI: 'true'
           PLAYWRIGHT_CHANNEL: ''
 
+      - name: List Playwright test-results (debug)
+        if: failure() || cancelled()
+        run: ls -laR test-results/ 2>/dev/null | head -200 || echo "no test-results dir"
       - name: Upload Playwright failure artifacts
         if: failure() || cancelled()
         uses: actions/upload-artifact@v4
         with:
           name: visibility-contract-playwright-results
-          path: focus-tiger/test-results/
+          # Playwright runs with working-directory focus-tiger; artifacts live at
+          # focus-tiger/test-results/ from the workspace root (not repo-root/test-results).
+          path: |
+            focus-tiger/test-results/
+            focus-tiger/playwright-report/
           retention-days: 7
-          if-no-files-found: ignore
+          if-no-files-found: warn
