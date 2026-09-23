@@ -4,6 +4,10 @@
  */
 
 import { expect } from '@playwright/test';
+import { installExternalNetworkMocks } from './mock-external-network.js';
+
+/** @type {WeakMap<import('@playwright/test').Page, true>} */
+const externalMocksByPage = new WeakMap();
 
 /**
  * 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。
@@ -45,6 +49,11 @@ export async function openFreshProductShell(page, opts = {}) {
 
   // Static dist server + single local attempt. Do NOT about:blank between
   // retries — that raced with in-flight goto ("interrupted by about:blank").
+  if (!externalMocksByPage.has(page)) {
+    await installExternalNetworkMocks(page);
+    externalMocksByPage.set(page, true);
+  }
+
   const isCi = Boolean(process.env.CI);
   const attempts = isCi ? 2 : 1;
   const gotoMs = isCi ? 40_000 : 45_000;
