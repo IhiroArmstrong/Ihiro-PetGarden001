@@ -13,6 +13,7 @@ import {
   clickWideMoreProxyOrDirect,
   openFreshProductShell
 } from './helpers/product-shell.js';
+import { dismissReflectionViaWisdomHold } from './helpers/reflection-dismiss.js';
 
 /**
  * Breath practice（原「一分钟呼吸」）DOM 主路径。
@@ -141,14 +142,8 @@ test('micro ritual: entry → pick → breath → complete → record + toast + 
     timeout: 8_000
   });
 
-  // Skip still commits Journey Log (arrive=false; chip minutes).
-  await page
-    .locator('#tiger-reflection-moment')
-    .getByRole('button', { name: /Skip all|全部跳过|すべてスキップ/i })
-    .click();
-  await expect(page.locator('#tiger-reflection-moment')).toBeHidden({
-    timeout: 8_000
-  });
+  // Skip all → wisdom-hold → Continue commits Journey Log (arrive=false; chip minutes).
+  await dismissReflectionViaWisdomHold(page);
 
   await expect
     .poll(async () => {
