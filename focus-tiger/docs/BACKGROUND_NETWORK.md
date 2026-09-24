@@ -15,6 +15,7 @@
 | [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) | 实现前用户路径冲突扫描 |
 | [`SILENT_BEHAVIORS.md`](./SILENT_BEHAVIORS.md) | 设计静默白名单 |
 | [`RISK_MITIGATION_PLAYBOOK.md`](./RISK_MITIGATION_PLAYBOOK.md) | 多模块穿透怎么切片；**不**代替本条三问 |
+| [`INFRA_SNAPSHOT.md`](./INFRA_SNAPSHOT.md) §10 | 本地 QA · curl 探活 SSOT（**不**进产品知识库检索） |
 
 ---
 
@@ -139,6 +140,33 @@ Brief：`task-quiet-together-lanterns-mvp.md`。
 | Q1 | 面板打开才轮询；与 Arrival/Honesty/Reflection 叠化无强制同窗。禁止每次 DOM refresh 重启 interval。 |
 | Q2 | 成员 JSON 相同则 `writeFocusCircleMembership` 已跳过。429 / 失败不把人数写成 1。迟到 status 不覆盖 leave/join。 |
 | Q3 | status 8s 超时；create/join/leave 12s 超时后恢复按钮。失败不挡 Sit / Idle 呼吸。 |
+
+---
+
+## Cloud 依赖分档（QA 视角）
+
+**目的**：人工 QA 时判断「网络抖动会不会污染结论」。实现前三问见上文；本节只答 **测什么会受实时网络影响**。
+
+**探活 SSOT**：[`INFRA_SNAPSHOT.md`](./INFRA_SNAPSHOT.md) §10（curl；测前 Step 0/1）。
+
+| 档 | 类型 | 典型 API | 平常 QA 会不会碰到 | 网络失败时用户感受 | 挡 Sit？ | 详细审计 |
+|---|---|---|---|---|---|---|
+| **A** | 后台轮询 | `/api/focus-circle` · `/api/lantern-presence` | 测 Focus Circle / 全球灯火时会 | 人数闪、灯火不更新、Witness stale | 否 | 上文 §5 · §6 |
+| **B** | 开机 prefetch | `/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy` · `/api/growth-metrics-config` | 几乎总有（冷启动） | 静默用本地冻表；文案/参数可能非最新 | 否 | 上文 §2 · §4 |
+| **C** | 用户点击才发 | Checkout · OTP · Practice backup Enable · Restore | 只测付费/备份/恢复时 | 该次操作失败或卡住 | 否（Sit 路径独立） | — |
+| **D** | opt-in 后台上传 | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` · `/api/membership-entitlement` | **通常碰不到**（默认关 / 无 device token） | 静默 skip；统计或权益可能 stale | 否 | 见下表 |
+
+### 档 D · 用户场景（为何平常测试看不见）
+
+| 功能 | 用户可见入口 | 默认 | 何时才会打 API |
+|---|---|---|---|
+| Monetization funnel | Privacy opt-in 开关 | **关** | 同意 + 走 Support/Checkout 路径 |
+| YPE personalization | Privacy 五键同意 | **关** / 样本不足不发 | 同意 + 练习窗口达标 |
+| Membership entitlement | 无（后台刷新） | 无 OTP 凭证则不请求 | 订阅 + 邮箱 OTP 验证后 |
+
+**QA 纪律**：档 A 专项测试前跑 `INFRA_SNAPSHOT` §10 Step 0；终端有 proxy error 的 session 不得对 Focus Circle 下关单结论。不测社交层时可用 `?focusCircle=0` / `?quietTogether=0` 减噪。
+
+**知识库**：用户向短答进 [`product-knowledge-base.md`](./product-knowledge-base.md)（PO 人审）；**本节与 INFRA §10 不进 KB 检索索引**。
 
 ---
 

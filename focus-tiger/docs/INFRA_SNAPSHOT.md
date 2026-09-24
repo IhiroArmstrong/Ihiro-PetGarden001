@@ -239,6 +239,72 @@
 | 新 localStorage key / 备份范围 | §7 | `localStateKeys.js` · `practiceBackupSnapshot.js` |
 | 分支 / CI / env 提交政策 | §8 | `WORKFLOW.md` · `ENV_CONFIG.md` §1 |
 | **生产是否已 deploy** | §1 生产漂移表 | **不得**只信摘要；须 `prod_worker_version` 行 + 用户口令「部署」 |
+| 本地 QA / 网络探活 / Vite proxy error | §10 | [`BACKGROUND_NETWORK.md`](./BACKGROUND_NETWORK.md) §「Cloud 依赖分档」 |
+
+---
+
+## §10 Local QA · Cloud probe（curl SSOT）
+
+`SSOT`: 本节（探活命令与判读）；路由表见 §1；触点审计见 [`BACKGROUND_NETWORK.md`](./BACKGROUND_NETWORK.md) §「Cloud 依赖分档」。
+
+**用途**：本地 `npm run dev` / `desktop:dev` 测 **Focus Circle、全球灯火、结账等云端功能之前**，确认本机到 Worker 的 TLS/HTTP 是否正常。**不**替代 `npm test`（单测 mock 网络）。
+
+**基址**：`https://focus-tiger-cloud.ihiro.workers.dev`（与 [`vite.config.js`](../vite.config.js) 代理 target · `DEFAULT_CLOUD_API_BASE_URL` 一致）。
+
+### Step 0 · TLS 握手（最轻）
+
+```bash
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
+  'https://focus-tiger-cloud.ihiro.workers.dev/api/growth-metrics-config' \
+  -X POST -H 'Content-Type: application/json' -d '{}'
+```
+
+| 结果 | 含义 |
+|---|---|
+| `HTTP 200` | 本机 → Cloudflare TLS 正常 |
+| `HTTP 000` / `curl: (35)` / `curl: (56)` | **环境/网络**；先查 VPN/防火墙/代理，再测产品 |
+
+### Step 1 · 只读探活（推荐日常）
+
+**全球灯火**（Idle 会轮询；见 `BACKGROUND_NETWORK` 档 A）：
+
+```bash
+curl -sS -X POST \
+  'https://focus-tiger-cloud.ihiro.workers.dev/api/lantern-presence' \
+  -H 'Content-Type: application/json' \
+  -d '{"schemaVersion":1,"action":"peek"}' \
+  -w "\nHTTP %{http_code}\n"
+```
+
+期望：`HTTP 200`，body 含 `"ok":true` 与 `"sitting"`。
+
+**Focus Circle 路由通**（不写 KV；缺 UUID 会 400，仍证明云端可达）：
+
+```bash
+curl -sS -X POST \
+  'https://focus-tiger-cloud.ihiro.workers.dev/api/focus-circle' \
+  -H 'Content-Type: application/json' \
+  -d '{"schemaVersion":1,"action":"status"}' \
+  -w "\nHTTP %{http_code}\n"
+```
+
+期望：`HTTP 400` + `bad_circle_id`（**正常**）。
+
+### Step 2 · 区分「云端 OK」vs「Vite 代理坏」
+
+`desktop:dev` 运行时，对本地代理发 Step 1 同条命令，把 URL 换成 `http://127.0.0.1:5173/api/...`。
+
+| Step 0 直连 | Step 2 经 :5173 | 结论 |
+|---|---|---|
+| 成功 | 失败 | **Vite 代理层**（终端 `[vite] http proxy error`） |
+| 失败 | 失败 | **本机网络/TLS** |
+| 成功 | 成功 | 网络环境干净；UI 仍异常 → 查代码/状态机 |
+
+### 与 Vite 终端红字对照
+
+终端出现 `[vite] http proxy error: /api/focus-circle` 且与操作时刻重合 → **该次 manual QA 结论应标注「网络干扰」**，不宜当代码回归 pass/fail。
+
+**Agent 读法**：网络/代理问题 → 读本节 + `BACKGROUND_NETWORK.md` 分档表；**不**扫 [`product-knowledge-base.md`](./product-knowledge-base.md) KB-FUNC 短答。
 
 ---
 

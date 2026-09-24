@@ -679,4 +679,5 @@
 
 存量权威文案（locale / 菜单普查 / 产品文档）→ 草稿池 → 人审打标 → 入库 → Local AI 只索引 `yin_may_retrieve: 是` ∧ `审核状态: 已通过` 的短答 → 未命中回流。  
 接线行为 SSOT：`task-briefs/task-confide-kb-retrieval-wiring.md`（原样/模板输出 · 不 L3 转述）。产品问闸门与未命中 / 未就绪空态：`task-briefs/task-confide-kb-routing-gate.md`（**PO 已点头**；本闸运行时未接线）。  
-内部排障永不进入倾诉索引。
+内部排障永不进入倾诉索引。  
+**运维/QA 探活与 Cloud 依赖分档**（curl · 网络判读）→ [`INFRA_SNAPSHOT.md`](./INFRA_SNAPSHOT.md) §10 · [`BACKGROUND_NETWORK.md`](./BACKGROUND_NETWORK.md) §「Cloud 依赖分档」；**不进本库条目**（不设 KB-OPS 指针条，除非日后有真实「须在 KB 内搜排障」需求）。
