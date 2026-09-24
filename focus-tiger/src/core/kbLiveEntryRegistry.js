@@ -357,6 +357,24 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'kb-live-today-direction',
+    surface: 'menu',
+    proxy: 'today-direction',
+    labelKeys: Object.freeze(['TODAY_DIRECTION_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Choose today\'s direction again',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'today-direction'",
+      'TODAY_DIRECTION_MENU_LABEL',
+      'open({ manual: true })'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/ui/ColdStartGoalCardUI.js',
+      'src/main.js'
+    ])
+  }),
+  Object.freeze({
     id: 'kb-live-local-backup',
     surface: 'menu',
     proxy: 'local-backup',

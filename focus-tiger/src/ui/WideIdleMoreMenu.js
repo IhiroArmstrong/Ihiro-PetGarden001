@@ -344,6 +344,9 @@ export class WideIdleMoreMenu {
     this.homeCtas.className = 'ft-wide-home-ctas';
     this.homeCtas.id = 'ft-wide-home-ctas';
     this.homeCtas.innerHTML = `
+      <button type="button" class="ft-wide-home-ctas__btn is-text" id="ft-wide-home-today-direction" data-proxy="today-direction" aria-label="">
+        <span class="ft-wide-home-ctas__text" data-role="today-direction-label"></span>
+      </button>
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-wide-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -354,6 +357,9 @@ export class WideIdleMoreMenu {
         <img class="ft-wide-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
     `;
+    this.todayDirectionHomeBtn = this.homeCtas.querySelector(
+      '#ft-wide-home-today-direction'
+    );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
     this.honestyHomeBtn = this.homeCtas.querySelector('#ft-wide-home-honesty');
@@ -455,6 +461,15 @@ export class WideIdleMoreMenu {
 
   /** @returns {void} */
   _attachHomeGlassTips() {
+    if (this.todayDirectionHomeBtn) {
+      this._todayDirectionHomeTip = attachGlassHoverTip(
+        this.todayDirectionHomeBtn,
+        {
+          placement: 'top',
+          tipId: 'ft-wide-home-today-direction-tip'
+        }
+      );
+    }
     if (this.quickHomeBtn) {
       this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
         placement: 'top',
@@ -483,6 +498,32 @@ export class WideIdleMoreMenu {
     if (!this.homeCtas || this._refreshingHomeCtas) return;
     this._refreshingHomeCtas = true;
     try {
+      if (this.todayDirectionHomeBtn) {
+        const directionLabel = t('TODAY_DIRECTION_MENU_LABEL');
+        const ballLabel = t('TODAY_DIRECTION_HOME_BALL_LABEL');
+        setAttrIfChanged(
+          this.todayDirectionHomeBtn,
+          'aria-label',
+          directionLabel
+        );
+        this._todayDirectionHomeTip?.setText(directionLabel);
+        const labelEl = this.todayDirectionHomeBtn.querySelector(
+          '[data-role="today-direction-label"]'
+        );
+        if (labelEl) labelEl.textContent = ballLabel;
+        setBoolPropIfChanged(
+          this.todayDirectionHomeBtn,
+          'hidden',
+          Boolean(this._keepQuickStart)
+        );
+        setBoolPropIfChanged(this.todayDirectionHomeBtn, 'disabled', false);
+        setAttrIfChanged(
+          this.todayDirectionHomeBtn,
+          'aria-disabled',
+          'false'
+        );
+      }
+
       const focusEl = document.getElementById('btn-focus');
       if (this.sitHomeBtn) {
         const sitLabel = focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
@@ -553,6 +594,10 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   _proxyHome(key) {
+    if (key === 'today-direction') {
+      this.handlers.onTodayDirection?.();
+      return;
+    }
     if (key === 'quickstart') {
       this.handlers.onQuickStart?.();
       return;
@@ -749,6 +794,12 @@ export class WideIdleMoreMenu {
       this.handlers.onLanguage?.();
       return;
     }
+    if (key === 'today-direction') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onTodayDirection?.();
+      return;
+    }
     if (key === 'ground-exercise') {
       this.clearStage();
       this.closeMenu();
@@ -941,6 +992,7 @@ export class WideIdleMoreMenu {
         display: none !important;
       }
       /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
+      .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-today-direction,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
         display: none !important;
@@ -990,6 +1042,25 @@ export class WideIdleMoreMenu {
         pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
+      }
+      .ft-wide-home-ctas__btn.is-text {
+        border-radius: 50%;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: rgba(255, 252, 245, 0.72);
+        line-height: 1.1;
+        color: rgba(74, 58, 40, 0.9);
+        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.08);
+      }
+      .ft-wide-home-ctas__text {
+        display: block;
+        max-width: 56px;
+        padding: 0 4px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-align: center;
+        pointer-events: none;
+        user-select: none;
       }
 
       .ft-wide-more {

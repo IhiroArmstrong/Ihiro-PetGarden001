@@ -434,6 +434,9 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
+      <button type="button" class="ft-narrow-home-ctas__btn is-text" id="ft-narrow-home-today-direction" data-proxy="today-direction" aria-label="">
+        <span class="ft-narrow-home-ctas__text" data-role="today-direction-label"></span>
+      </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -481,6 +484,9 @@ export class NarrowIdleShell {
     this.stateEl = this.actionBar.querySelector('[data-role="state"]');
     this.listEl = this.sheet.querySelector('[data-role="list"]');
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
+    this.todayDirectionHomeBtn = this.homeCtas.querySelector(
+      '#ft-narrow-home-today-direction'
+    );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
     this.honestyHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-honesty');
@@ -491,6 +497,15 @@ export class NarrowIdleShell {
 
   /** @returns {void} */
   _attachHomeGlassTips() {
+    if (this.todayDirectionHomeBtn) {
+      this._todayDirectionHomeTip = attachGlassHoverTip(
+        this.todayDirectionHomeBtn,
+        {
+          placement: 'top',
+          tipId: 'ft-narrow-home-today-direction-tip'
+        }
+      );
+    }
     if (this.quickHomeBtn) {
       this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
         placement: 'top',
@@ -733,11 +748,25 @@ export class NarrowIdleShell {
   /**
    * Keep home Quick Start / Sit / Honesty enablement in sync with
    * the parked legacy controls they proxy. Balls use icons + aria-label.
-   * Order on canvas: Quick Start · Sit with Yin · Honesty.
+   * Order on canvas: Today direction · Quick Start · Sit with Yin · Honesty.
    * @returns {void}
    */
   _refreshHomeCtas() {
     if (!this.homeCtas) return;
+
+    if (this.todayDirectionHomeBtn) {
+      const directionLabel = t('TODAY_DIRECTION_MENU_LABEL');
+      const ballLabel = t('TODAY_DIRECTION_HOME_BALL_LABEL');
+      this.todayDirectionHomeBtn.setAttribute('aria-label', directionLabel);
+      this._todayDirectionHomeTip?.setText(directionLabel);
+      const labelEl = this.todayDirectionHomeBtn.querySelector(
+        '[data-role="today-direction-label"]'
+      );
+      if (labelEl) labelEl.textContent = ballLabel;
+      this.todayDirectionHomeBtn.hidden = Boolean(this._keepQuickStart);
+      this.todayDirectionHomeBtn.disabled = false;
+      this.todayDirectionHomeBtn.setAttribute('aria-disabled', 'false');
+    }
 
     const focusEl = document.getElementById('btn-focus');
     if (this.sitHomeBtn) {
@@ -942,6 +971,12 @@ export class NarrowIdleShell {
       this.handlers.onLanguage?.();
       return;
     }
+    if (key === 'today-direction') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onTodayDirection?.();
+      return;
+    }
     if (key === 'ground-exercise') {
       this.closeSheet();
       this.clearStage();
@@ -1076,6 +1111,10 @@ export class NarrowIdleShell {
       this.handlers.onRitualFlow?.(key);
       return;
     }
+    if (key === 'today-direction') {
+      this.handlers.onTodayDirection?.();
+      return;
+    }
     if (key === 'quickstart') {
       this.handlers.onQuickStart?.();
       return;
@@ -1136,6 +1175,7 @@ export class NarrowIdleShell {
         visibility: hidden;
         pointer-events: none;
       }
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-today-direction,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
         display: none !important;
@@ -1309,6 +1349,25 @@ export class NarrowIdleShell {
         pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
+      }
+      .ft-narrow-home-ctas__btn.is-text {
+        border-radius: 50%;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: rgba(255, 252, 245, 0.72);
+        line-height: 1.1;
+        color: rgba(74, 58, 40, 0.9);
+        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.08);
+      }
+      .ft-narrow-home-ctas__text {
+        display: block;
+        max-width: 56px;
+        padding: 0 4px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-align: center;
+        pointer-events: none;
+        user-select: none;
       }
       .ft-narrow-grabber {
         position: absolute;
