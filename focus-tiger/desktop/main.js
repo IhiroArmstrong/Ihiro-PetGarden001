@@ -39,6 +39,7 @@ import { attachCompanionL1Ipc } from './companion/l1Ipc.js';
 import { appendConfideObservationLog } from './companion/confideObservationLog.js';
 import { createDesktopUpdaterRuntime } from './updater/updaterRuntime.js';
 import { attachDesktopUpdaterIpc } from './updater/updaterIpc.js';
+import { attachVoiceInputProbeIpc } from './voiceInput/voiceInputIpc.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -75,6 +76,14 @@ let shellHideReason = HIDE_REASON_NONE;
 
 function isDevMode() {
   return process.env.FT_DESKTOP_DEV === '1' || process.argv.includes('--dev');
+}
+
+function isVoiceInputProbeMode() {
+  return process.env.FT_VOICE_INPUT_PROBE === '1';
+}
+
+function voiceInputProbeHtmlPath() {
+  return path.join(__dirname, 'voiceInput', 'voice-input-probe.html');
 }
 
 /** Dev launcher (^C / SIGTERM) must quit even with Step B tray alive. */
@@ -389,7 +398,9 @@ function createMainWindow() {
     }
   });
 
-  if (isDevMode()) {
+  if (isVoiceInputProbeMode()) {
+    void win.loadFile(voiceInputProbeHtmlPath());
+  } else if (isDevMode()) {
     void win.loadURL(DEV_LOAD_URL);
   } else {
     void win.loadURL(`${DESKTOP_CUSTOM_ORIGIN}/index.html?product=1`);
@@ -468,6 +479,10 @@ if (gotSingleInstanceLock) {
   });
   ipcMain.handle('desktop:shell-visibility-get', () => visibilityPayload());
 
+  ipcMain.on('desktop:voice-input-probe-allowed', (event) => {
+    event.returnValue = isVoiceInputProbeMode();
+  });
+
   ipcMain.handle('desktop:confide-observation-append', (_event, record) =>
     appendConfideObservationLog(
       app.getPath('userData'),
@@ -489,6 +504,20 @@ if (gotSingleInstanceLock) {
       return;
     }
     app.quit();
+    return;
+  }
+
+  if (isVoiceInputProbeMode()) {
+    attachVoiceInputProbeIpc({
+      ipcMain,
+      getMainWindow: () => mainWindow
+    });
+    installMacApplicationMenu();
+    createTray();
+    mainWindow = createMainWindow();
+    app.on('activate', () => {
+      showMainWindow();
+    });
     return;
   }
 

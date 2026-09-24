@@ -40,6 +40,7 @@
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
 | L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |
 | Stage 2 live 冷启动探针（Prompt 8） | `focus-tiger/desktop/scripts/l0-semantic-live-coldstart-probe.js` |
+| Voice Input Slice 0 探针（Speak-to-type · macOS on-device STT） | `focus-tiger/desktop/scripts/voice-input-probe.js` · `focus-tiger/desktop/voiceInput/` · Brief `task-voice-input-v1.md` |
 | L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
 | 对照表（只追加，不另起格式） | `/tmp/ft-l0-lab/compare-tables.md` |
@@ -153,6 +154,22 @@ cd focus-tiger/desktop && npm run companion:multilang-chitchat
 **L3 观察翼打乱配对批量（Prompt 13 层 B · Prompt 14 口径 · 2026-09-21）**：`cd focus-tiger && npm run test:observe-shuffle-screen`（或 `cd focus-tiger/desktop && npm run companion:observe-shuffle-screen`）。真源：`l3ObserveShuffleFixtures.js`（12 句）。真 Gemma4 L3 + Qwen3-Embedding：对每句 generate（观察翼含 sanitize + 套话守门）→ 用用户句 embedding 自动重配。JSON **双 summary**：`summary` = `scoreL3ObserveShuffleMatches`（仅 ok 行，**≥8/12**）；`observeWing` = `scoreObserveWingEffective`（emotion+habit 分母 8，**≥6/8**；exit 1 只看这把）。`chatWingGray` = ask-yin 4 句，不进 8 句分母。单次 `guard_reject_rate` 超线只 WARN，不 exit 1。连续两次口径见 JSON `guardStreak`（读既有 `observe-shuffle-*.json` 的 rate，**不**因此再跑 GGUF）。结果：`/tmp/ft-l0-lab/observe-shuffle-<epoch>.json`。单测：`node --test src/core/l3ObserveShuffleScreen.test.js`。不进 `test:smoke`。缺 L3 或 embedding GGUF 时 exit 2。**禁止**在 Agent Chat 连跑真 GGUF。流程见上文「先分类再动刀」。
 
 **Stage 2 live 冷启动探针（Prompt 8 · 2026-09-21）**：`cd focus-tiger && npm run test:semantic-live-coldstart-probe`（或 `cd focus-tiger/desktop && npm run companion:semantic-live-coldstart-probe`）。模拟 embedding gate 未 ready → `embed_not_ready` 行；`embedding_ready` 后再 classify → `ok` 行。结果：`/tmp/ft-l0-lab/semantic-live-coldstart-<epoch>.json` + `semantic-live-coldstart-turns-<epoch>.jsonl`。终端另报 `live=` / `failOpen=` / `semanticOk=`（与 `audit:confide-semantic-shadow` 同口径）。可用 `npm run audit:confide-semantic-shadow -- --file /tmp/ft-l0-lab/semantic-live-coldstart-turns-<epoch>.jsonl` 复核。单测：`node --test src/core/confide/semanticLiveColdstartProbe.test.js`。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
+
+**Voice Input Slice 0 探针（2026-09-24 · Brief 已锁 · macOS on-device STT）**：
+
+```bash
+cd focus-tiger/desktop && npm run companion:voice-input-probe
+```
+
+Gate-only JSON：`/tmp/ft-l0-lab/voice-input-gate-<epoch>.json`（`gatePassed` = `onDeviceSupported` **且** `recognizerAvailable`；Swift 侧 `requiresOnDeviceRecognition = true`）。**须系统终端**（编译 `native/macos-speech-helper.swift` → `/tmp/ft-l0-lab/macos-speech-helper`）。
+
+实验室 UI（不改产品三处输入框）：
+
+```bash
+cd focus-tiger/desktop && npm run companion:voice-input-probe -- --ui
+```
+
+Speak → 0–1s 内 `Listening` → Stop → 转写进实验室 textarea。单测 mock Provider：`node --test voiceInput/speechProvider.test.js`（在 `desktop/` 目录）。**不进** `test:smoke`；**禁止**真麦绑 CI。Brief：`task-briefs/task-voice-input-v1.md` §Slice 0。
 
 **Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 子表）**：
 
