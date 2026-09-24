@@ -109,5 +109,5 @@ CI / smoke: `npm run audit:kb-live-gap` (no write) is part of `npm run docs:chec
 | 1 | Static live-entry registry | **已合 develop** (#929) |
 | 2 | Gap audit (this doc) | **已合 develop** (#931) · registry drift cleared |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** · catalog keywords only |
-| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939) · **0021 Daily quote 已入库 catalog**（本旁支 · 闸门 **19**）· Zen Cinema / Wallpapers 仍待起草 |
+| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939) · **0021 Daily quote 已入库 catalog**（闸门 **19**）· **0022 Zen Cinema 待审草稿**（PR #962）· **0023 Wallpapers 待审草稿**（`docs/kb-batch2-wallpapers-draft`） |
 | 手册 | `docs/internal-handbook/` | 等缺口稳定后再开 |
