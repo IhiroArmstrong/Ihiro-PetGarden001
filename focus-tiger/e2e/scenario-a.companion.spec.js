@@ -106,7 +106,7 @@ test('Arrival Notice: tip click dismisses tip only, not Arrival', async ({
 
 /**
  * §8 N18 / 场景 O 图1：点 tip 只关 tip，不得把 Notice 选择格一并外侧取消掉。
- * 375：主屏 Sit → Notice → 等 notice tip → 点 tip。
+ * 375：主屏 Sit → Notice → 注入 notice tip → 点 tip（auto Arrival tips 自 PR #122 起不再喷洒）。
  */
 test('375 Arrival Notice: tip click closes tip only (keeps Notice)', async ({
   page
@@ -124,10 +124,22 @@ test('375 Arrival Notice: tip click closes tip only (keeps Notice)', async ({
   });
   await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
 
-  const tip = page.locator(
-    'ft-onboarding-hint-bubble[data-hint-id="notice"][open]'
-  );
-  await expect(tip).toBeVisible({ timeout: 12_000 });
+  await page.evaluate(() => {
+    const tip = document.createElement('ft-onboarding-hint-bubble');
+    tip.id = 'ft-e2e-arrival-notice-tip-375';
+    tip.dataset.hintId = 'notice';
+    tip.setAttribute('open', '');
+    tip.message = 'A tap is enough — or skip ahead.';
+    tip.style.cssText =
+      'position:fixed;left:48px;top:200px;width:140px;height:44px;z-index:10000;';
+    tip.addEventListener('ft-hint-dismiss', () => {
+      tip.removeAttribute('open');
+    });
+    document.body.appendChild(tip);
+  });
+
+  const tip = page.locator('#ft-e2e-arrival-notice-tip-375');
+  await expect(tip).toBeVisible();
   await tip.click();
 
   await expect(tip).toBeHidden({ timeout: 5_000 });
