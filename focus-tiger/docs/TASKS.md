@@ -268,6 +268,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **—** | 脚手架步骤 A/B（窗口 + 托盘 + SB-18） | `task-electron-desktop-scaffold.md` | 步骤 A/B 已接线 · 待 Mac 场景 AB |
 | **P0** | **官网 DMG 自动更新器**（第一份收费包出门前） | `task-electron-desktop-updater.md` | **Brief 已锁 · 运行时待口令** |
 | **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期**（后于更新器） |
+| **P1b** | **Voice Input V1**（Speak to type · 倾诉强制本机） | `task-voice-input-v1.md` | **Brief 已锁 · 无运行时 · 先探针口令** |
 
 **官网 DMG 自动更新器 · 拍板摘要（2026-09-12）**：
 
@@ -276,6 +277,12 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 - 失败须有 Retry / Not now；`urgency: required` 只预留、MVP 当 optional。渠道 `direct` 才开自建更新；Setapp / MAS 编译期关掉。
 - 验收不得等两次正式发版：单测状态机 + DEV 假通路 + 本地 generic feed；公证双包是发版彩排。
 - 发布检查清单写在 Brief 内（可勾选），禁止只停留在散文。
+
+**Voice Input V1 · 拍板摘要（2026-09-24）**：
+
+- Speak to type，不是语音条 / 实时 Voice Agent。共享组件一次做成；首发只挂倾诉、Arrival 手写意图、Reflection 三问。
+- 仅 Electron 英语听写；界面英日切换不改。倾诉 **禁止**注入云 STT（硬约束）。
+- 第一口令「开工 Voice Input 探针」（系统听写 + 麦克风权限）；探针前不做云厂商对照表。
 
 **V8 字节码编译 · 拍板摘要（2026-09-10）**：
 
