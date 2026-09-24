@@ -363,6 +363,121 @@ h1 {
   text-align: center;
 }
 
+.zen-cinema {
+  width: 100%;
+  margin-top: clamp(2.5rem, 8vw, 3.5rem);
+  padding-top: 0.5rem;
+  scroll-margin-top: 1.5rem;
+  text-align: center;
+}
+
+.zen-cinema-heading {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.15rem, 3.5vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.zen-cinema-lead {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.zen-cinema-blurb {
+  margin: 0 auto 1.35rem;
+  max-width: 28rem;
+  line-height: 1.55;
+  font-size: 0.95rem;
+  color: var(--color-ink-muted);
+}
+
+.zen-cinema-feature {
+  margin: 0 auto 1.25rem;
+  padding: 0;
+  max-width: 20rem;
+}
+
+.zen-cinema-thumb-link {
+  display: block;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(44, 31, 20, 0.1);
+  transition:
+    transform 200ms var(--ease-calm),
+    box-shadow 200ms var(--ease-calm);
+}
+
+.zen-cinema-thumb-link:hover,
+.zen-cinema-thumb-link:focus-visible {
+  transform: scale(1.02);
+  box-shadow: 0 14px 32px rgba(44, 31, 20, 0.14);
+}
+
+.zen-cinema-thumb-link:active {
+  transform: scale(0.99);
+}
+
+.zen-cinema-thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #1a1520;
+}
+
+.zen-cinema-film-title {
+  margin: 0.75rem 0 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-ink);
+}
+
+.cta-zen-cinema {
+  display: inline-block;
+  padding: 0.72rem 1.45rem 0.78rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 1rem;
+  color: #fffaf4;
+  background: linear-gradient(180deg, var(--color-cta-top), var(--color-cta-bottom));
+  box-shadow:
+    0 1px 0 var(--color-cta-edge),
+    0 8px 18px rgba(44, 31, 20, 0.12);
+  transition:
+    transform 200ms var(--ease-calm),
+    box-shadow 200ms var(--ease-calm),
+    filter 200ms var(--ease-calm);
+}
+
+.cta-zen-cinema:hover,
+.cta-zen-cinema:focus-visible {
+  filter: brightness(1.04);
+  transform: scale(1.02);
+  box-shadow:
+    0 1px 0 var(--color-cta-edge),
+    0 10px 22px rgba(44, 31, 20, 0.14),
+    0 0 0 1px rgba(240, 195, 106, 0.35);
+}
+
+.cta-zen-cinema:active {
+  transform: scale(0.99);
+  filter: brightness(0.97);
+}
+
+.zen-cinema-note {
+  margin: 0.85rem auto 0;
+  width: 100%;
+  max-width: 26rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-ink-muted);
+  text-align: center;
+}
+
 .colophon {
   margin-top: clamp(3rem, 10vw, 4.5rem);
   padding-top: 1.5rem;
