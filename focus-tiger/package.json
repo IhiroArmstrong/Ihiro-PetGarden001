@@ -66,7 +66,8 @@
     "audit:kb-live-gap": "node scripts/audit-kb-live-gap.js",
     "audit:kb-live-gap:sync": "node scripts/audit-kb-live-gap.js --write",
     "test:observe-shuffle-screen": "npm --prefix desktop run companion:observe-shuffle-screen",
-    "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe"
+    "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe",
+    "test:voice-input-probe": "node --test desktop/voiceInput/speechProvider.test.js"
   },
   "dependencies": {
     "lit": "^3.3.3",
