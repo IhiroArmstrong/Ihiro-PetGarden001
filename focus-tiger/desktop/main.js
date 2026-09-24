@@ -39,7 +39,7 @@ import { attachCompanionL1Ipc } from './companion/l1Ipc.js';
 import { appendConfideObservationLog } from './companion/confideObservationLog.js';
 import { createDesktopUpdaterRuntime } from './updater/updaterRuntime.js';
 import { attachDesktopUpdaterIpc } from './updater/updaterIpc.js';
-import { attachVoiceInputProbeIpc } from './voiceInput/voiceInputIpc.js';
+import { attachVoiceInputIpc } from './voiceInput/voiceInputIpc.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -483,6 +483,10 @@ if (gotSingleInstanceLock) {
     event.returnValue = isVoiceInputProbeMode();
   });
 
+  ipcMain.on('desktop:voice-input-product-allowed', (event) => {
+    event.returnValue = process.platform === 'darwin';
+  });
+
   ipcMain.handle('desktop:confide-observation-append', (_event, record) =>
     appendConfideObservationLog(
       app.getPath('userData'),
@@ -508,7 +512,7 @@ if (gotSingleInstanceLock) {
   }
 
   if (isVoiceInputProbeMode()) {
-    attachVoiceInputProbeIpc({
+    attachVoiceInputIpc({
       ipcMain,
       getMainWindow: () => mainWindow
     });
@@ -520,6 +524,11 @@ if (gotSingleInstanceLock) {
     });
     return;
   }
+
+  attachVoiceInputIpc({
+    ipcMain,
+    getMainWindow: () => mainWindow
+  });
 
   companionRuntime = attachCompanionL1Ipc({
     ipcMain,

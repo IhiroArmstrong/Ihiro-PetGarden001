@@ -11,6 +11,24 @@ const { contextBridge, ipcRenderer } = require('electron');
 const companionAllowed = ipcRenderer.sendSync('desktop:companion-allowed') === true;
 const voiceInputProbeAllowed =
   ipcRenderer.sendSync('desktop:voice-input-probe-allowed') === true;
+const voiceInputProductAllowed =
+  ipcRenderer.sendSync('desktop:voice-input-product-allowed') === true;
+
+function createVoiceInputBridge() {
+  return {
+    getGate: () => ipcRenderer.invoke('desktop:voice-input-gate'),
+    start: () => ipcRenderer.invoke('desktop:voice-input-start'),
+    stop: () => ipcRenderer.invoke('desktop:voice-input-stop'),
+    snapshot: () => ipcRenderer.invoke('desktop:voice-input-snapshot'),
+    onStatus: (cb) => {
+      if (typeof cb !== 'function') return () => {};
+      const wrapped = (_event, payload) => cb(payload);
+      ipcRenderer.on('desktop:voice-input-status', wrapped);
+      return () =>
+        ipcRenderer.removeListener('desktop:voice-input-status', wrapped);
+    }
+  };
+}
 
 /** @type {Record<string, unknown>} */
 const desktopShell = {
@@ -88,19 +106,11 @@ desktopShell.confideObservation = {
 };
 
 if (voiceInputProbeAllowed) {
-  desktopShell.voiceInputProbe = {
-    getGate: () => ipcRenderer.invoke('desktop:voice-input-gate'),
-    start: () => ipcRenderer.invoke('desktop:voice-input-start'),
-    stop: () => ipcRenderer.invoke('desktop:voice-input-stop'),
-    snapshot: () => ipcRenderer.invoke('desktop:voice-input-snapshot'),
-    onStatus: (cb) => {
-      if (typeof cb !== 'function') return () => {};
-      const wrapped = (_event, payload) => cb(payload);
-      ipcRenderer.on('desktop:voice-input-status', wrapped);
-      return () =>
-        ipcRenderer.removeListener('desktop:voice-input-status', wrapped);
-    }
-  };
+  desktopShell.voiceInputProbe = createVoiceInputBridge();
+}
+
+if (voiceInputProductAllowed) {
+  desktopShell.voiceInput = createVoiceInputBridge();
 }
 
 desktopShell.updater = {

@@ -58,6 +58,7 @@ const WHITELIST_FILES = new Set([
   'YinPersonalMemoryUI.js',
   'SanctuaryEnsoMarkChrome.js',
   'TipKindnessBadgesChrome.js',
+  'VoiceInputChrome.js',
   'LotusPondChrome.js',
   'MindfulAcknowledgeToast.js',
   'RewardToast.js',

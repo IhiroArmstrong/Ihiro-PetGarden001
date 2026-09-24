@@ -93,6 +93,7 @@ import {
   hasDesktopCompanionBridge,
   shouldCloseDesktopCompanionGenerateLayer
 } from '../core/desktopCompanionGate.js';
+import { VoiceInputChrome } from './VoiceInputChrome.js';
 import {
   fetchYinPersonalMemoryState,
   forgetYinPersonalMemoryEntry,
@@ -276,6 +277,9 @@ export class ConfideToYinUI {
       this.memoryConsentActions
     );
 
+    this.inputWrap = document.createElement('div');
+    this.inputWrap.className = 'confide-to-yin__input-wrap';
+
     this.inputEl = document.createElement('textarea');
     this.inputEl.className = 'confide-to-yin__input';
     this.inputEl.dataset.testid = 'confide-to-yin-input';
@@ -286,6 +290,13 @@ export class ConfideToYinUI {
       if (!shouldSubmitConfideOnEnter(event)) return;
       event.preventDefault();
       this._onSend();
+    });
+    this.inputWrap.appendChild(this.inputEl);
+    this._voiceInputChrome = new VoiceInputChrome({
+      textarea: this.inputEl,
+      mountBefore: null,
+      testIdPrefix: 'confide-voice-input',
+      onInputApplied: () => this._syncSendEnabled()
     });
 
     this.userEl = document.createElement('p');
@@ -343,7 +354,7 @@ export class ConfideToYinUI {
       this.chipWrap,
       this.statusWrap,
       this.memoryConsentWrap,
-      this.inputEl,
+      this.inputWrap,
       this.userEl,
       this.thinkingEl,
       this.replyEl,
@@ -384,6 +395,7 @@ export class ConfideToYinUI {
     showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.inputEl.value = '';
+    this._voiceInputChrome?.reset();
     this.userEl.hidden = true;
     this.userEl.textContent = '';
     this.replyEl.hidden = true;
@@ -423,6 +435,7 @@ export class ConfideToYinUI {
     this._memoryConsentSaving = false;
     this._hideMemoryConsent();
     this.hideGenerateLayer({ unload: false });
+    this._voiceInputChrome?.reset();
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -537,6 +550,7 @@ export class ConfideToYinUI {
     }
     this._unsubCompanion?.();
     this._unsubLocale?.();
+    this._voiceInputChrome?.destroy();
     this.backdrop.remove();
     this.root.remove();
   }
@@ -1747,10 +1761,13 @@ export class ConfideToYinUI {
       .confide-to-yin__desktop-progress[hidden] {
         display: none;
       }
+      .confide-to-yin__input-wrap {
+        margin: 0 0 12px;
+      }
       .confide-to-yin__input {
         width: 100%;
         box-sizing: border-box;
-        margin: 0 0 12px;
+        margin: 0;
         padding: 10px 12px;
         border-radius: 12px;
         border: ${GLASS_BORDER};
