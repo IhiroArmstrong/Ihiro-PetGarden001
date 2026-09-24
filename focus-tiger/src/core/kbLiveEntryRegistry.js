@@ -90,7 +90,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/locales/en.json',
       'docs/MICRO_RITUAL_PLAN.md'
     ]),
-    catalogKbIds: Object.freeze(['KB-FUNC-0011'])
+    catalogKbIds: Object.freeze(['KB-FUNC-0006', 'KB-FUNC-0011'])
   }),
   Object.freeze({
     id: 'kb-live-companion',

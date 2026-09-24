@@ -37,7 +37,7 @@ describe('audit-kb-live-gap helpers', () => {
     const ids = loadApprovedCatalogIds();
     assert.ok(ids.includes('KB-FUNC-0001'));
     assert.ok(ids.includes('KB-FUNC-0018'));
-    assert.equal(ids.includes('KB-FUNC-0006'), false);
+    assert.ok(ids.includes('KB-FUNC-0006'));
     assert.equal(ids.includes('KB-FUNC-0009'), false);
   });
 

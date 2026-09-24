@@ -32,10 +32,7 @@ const END = '<!-- kb-live-gap-audit:end -->';
 const INSERT_AFTER = '## Gap audit (machine block)';
 
 /** Draft / unapproved ids documented in product-knowledge-base.md §4.2 */
-export const KB_UNAPPROVED_IDS = Object.freeze([
-  'KB-FUNC-0006',
-  'KB-FUNC-0009'
-]);
+export const KB_UNAPPROVED_IDS = Object.freeze(['KB-FUNC-0009']);
 
 /**
  * Expected approved catalog links per live row (locale / menu SSOT alignment).
@@ -45,7 +42,7 @@ export const KB_UNAPPROVED_IDS = Object.freeze([
 export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-sit': Object.freeze(['KB-FUNC-0001']),
   'kb-live-rise': Object.freeze(['KB-FUNC-0007']),
-  'kb-live-breath': Object.freeze(['KB-FUNC-0011']),
+  'kb-live-breath': Object.freeze(['KB-FUNC-0006', 'KB-FUNC-0011']),
   'kb-live-companion': Object.freeze(['KB-FUNC-0008']),
   'kb-live-ground': Object.freeze(['KB-FUNC-0002']),
   'kb-live-journey-log': Object.freeze(['KB-FUNC-0012']),

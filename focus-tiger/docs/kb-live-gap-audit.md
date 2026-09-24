@@ -16,7 +16,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 - Epic / Test Tracker / PR text may suggest topics; only rows with locale / rule SSOT may draft catalog entries.
 - Operational numbers stay out of recitable short answers.
-- `KB-FUNC-0009` (cloud backup) remains **未审核** in `product-knowledge-base.md` — live registry links approved sibling **0012** for journey-log UI (not cloud backup). `KB-FUNC-0006` breath pilot is **已通过** as inventory reference only (`yin_may_retrieve: 否`; retrieval via **0011+0001**).
+- `KB-FUNC-0009` (cloud backup) remains **未审核** in `product-knowledge-base.md` — live registry links approved sibling **0012** for journey-log UI (not cloud backup). `KB-FUNC-0006` left-orb breath entry is **已通过** and in catalog (`yin_may_retrieve: 是`; registry links **0006+0011**).
 
 ---
 
@@ -38,7 +38,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-24 · 26 live rows · 19 approved catalog ids
+**Snapshot**: 2026-09-24 · 26 live rows · 20 approved catalog ids
 
 ### Summary counts
 

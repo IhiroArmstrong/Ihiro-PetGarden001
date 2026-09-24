@@ -296,11 +296,25 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0011' }
   },
   {
-    id: 'kb-0011-where',
+    id: 'kb-0006-where',
     text: '呼吸练习在哪？短坐怎么开始？',
     dimensions: ['where', 'how'],
     lock: 'must-hit',
-    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0011' }
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0006' }
+  },
+  {
+    id: 'kb-0006-where-zh',
+    text: '左球在哪做呼吸练习？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0006' }
+  },
+  {
+    id: 'kb-0006-where-en',
+    text: 'Where is Breath practice on the home seat?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0006' }
   },
   {
     id: 'kb-0012-where-zh',

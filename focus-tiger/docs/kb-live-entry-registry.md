@@ -30,7 +30,7 @@ This table answers: **which product surfaces are live in code right now**, which
 |---|---|---|---|---|---|---|
 | `kb-live-sit` | home-ball | — | live | Idle bottom primary · Sit with Yin | `BTN_FOCUS_START` | `KB-FUNC-0001` |
 | `kb-live-rise` | home-ball | — | live | During sit · Rise (end session) | `BTN_FOCUS_STOP` | `KB-FUNC-0007` |
-| `kb-live-breath` | home-ball | — | live | Idle left orb · Breath practice (not in ⋯ menu) | `QUICK_START_ARIA` `micro_ritual.pick_duration` `micro_ritual.leave` | `KB-FUNC-0011` |
+| `kb-live-breath` | home-ball | — | live | Idle left orb · Breath practice (not in ⋯ menu) | `QUICK_START_ARIA` `micro_ritual.pick_duration` `micro_ritual.leave` | `KB-FUNC-0006` `KB-FUNC-0011` |
 | `kb-live-companion` | menu | `companion` | conditional | ⋯ → Practice → How shall we sit? | `COMPANION_MODE_HINT` `COMPANION_MODE_TITLE` | `KB-FUNC-0008` |
 | `kb-live-ground` | menu | `ground-exercise` | live | ⋯ → Practice → Ground exercise | `GROUND_EXERCISE_MENU_LABEL` | `KB-FUNC-0002` |
 | `kb-live-five-moments` | menu | `five-moments` | live | ⋯ → Practice → Five Moments | `FIVE_MOMENTS_MENU_LABEL` | `KB-FUNC-0019` |

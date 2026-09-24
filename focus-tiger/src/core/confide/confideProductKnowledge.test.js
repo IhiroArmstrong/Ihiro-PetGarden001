@@ -29,10 +29,10 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 19 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 20 approved entries (excludes 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 19);
-    assert.equal(ids.includes('KB-FUNC-0006'), false);
+    assert.equal(ids.length, 20);
+    assert.equal(ids.includes('KB-FUNC-0006'), true);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
     assert.equal(ids.includes('KB-FUNC-0017'), true);
@@ -152,7 +152,11 @@ describe('confide product knowledge retrieval', () => {
   it('Step 3 expanded keywords hit approved registry-linked entries', () => {
     const breath = retrieveProductKnowledge('左球在哪做呼吸练习？');
     assert.equal(breath.hit, true);
-    assert.equal(breath.id, 'KB-FUNC-0011');
+    assert.equal(breath.id, 'KB-FUNC-0006');
+
+    const breathDiff = retrieveProductKnowledge('Breath 和 Sit 有什么区别？');
+    assert.equal(breathDiff.hit, true);
+    assert.equal(breathDiff.id, 'KB-FUNC-0011');
 
     const journey = retrieveProductKnowledge('journey log 在哪看练习记录？');
     assert.equal(journey.hit, true);
