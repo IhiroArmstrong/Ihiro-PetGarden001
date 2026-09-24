@@ -6,14 +6,20 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  COLD_START_GOAL_OPTIONS_SEEN_KEY,
+  COLD_START_GOAL_OPTIONS_VERSION,
   COLD_START_GOAL_SEEN_KEY,
   COLD_START_GOAL_SESSION_KEY,
   getColdStartGoalSessionChoice,
+  getSeenColdStartGoalOptionsVersion,
   hasSeenColdStartGoalCard,
   markColdStartGoalSeen,
+  markColdStartGoalOptionsVersionSeen,
+  migrateColdStartGoalOptionsSeen,
   resolveColdStartGoalAction,
   setColdStartGoalSessionChoice,
-  shouldOfferColdStartGoalCard
+  shouldOfferColdStartGoalCard,
+  shouldOfferColdStartGoalOptionsRefresh
 } from './coldStartGoalGate.js';
 
 function makeStorage() {
@@ -34,6 +40,10 @@ describe('coldStartGoalGate', () => {
     assert.equal(shouldOfferColdStartGoalCard(storage), true);
     markColdStartGoalSeen(storage);
     assert.equal(storage.getItem(COLD_START_GOAL_SEEN_KEY), '1');
+    assert.equal(
+      storage.getItem(COLD_START_GOAL_OPTIONS_SEEN_KEY),
+      String(COLD_START_GOAL_OPTIONS_VERSION)
+    );
     assert.equal(hasSeenColdStartGoalCard(storage), true);
     assert.equal(shouldOfferColdStartGoalCard(storage), false);
   });
@@ -45,6 +55,32 @@ describe('coldStartGoalGate', () => {
     assert.equal(session.getItem(COLD_START_GOAL_SESSION_KEY), 'focus');
     setColdStartGoalSessionChoice(session, 'bogus');
     assert.equal(getColdStartGoalSessionChoice(session), 'focus');
+  });
+
+  it('options refresh: migrate legacy seen without options key', () => {
+    const storage = makeStorage();
+    storage.setItem(COLD_START_GOAL_SEEN_KEY, '1');
+    assert.equal(shouldOfferColdStartGoalOptionsRefresh(storage), true);
+    migrateColdStartGoalOptionsSeen(storage);
+    assert.equal(
+      getSeenColdStartGoalOptionsVersion(storage),
+      COLD_START_GOAL_OPTIONS_VERSION
+    );
+    assert.equal(shouldOfferColdStartGoalOptionsRefresh(storage), false);
+  });
+
+  it('options refresh: stale version offers until mark', () => {
+    const storage = makeStorage();
+    storage.setItem(COLD_START_GOAL_SEEN_KEY, '1');
+    storage.setItem(COLD_START_GOAL_OPTIONS_SEEN_KEY, '0');
+    assert.equal(shouldOfferColdStartGoalOptionsRefresh(storage), true);
+    markColdStartGoalOptionsVersionSeen(storage);
+    assert.equal(shouldOfferColdStartGoalOptionsRefresh(storage), false);
+  });
+
+  it('options refresh: first-run unseen card never offers', () => {
+    const storage = makeStorage();
+    assert.equal(shouldOfferColdStartGoalOptionsRefresh(storage), false);
   });
 
   it('resolveColdStartGoalAction maps to product surfaces', () => {

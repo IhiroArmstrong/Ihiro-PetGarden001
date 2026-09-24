@@ -174,6 +174,19 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     trackerCoverage: GAP
   }),
   surface({
+    file: 'TodayDirectionOptionsBannerUI.js',
+    slotRequest: deriveSlot(),
+    zIndexFloor: bodyMin(),
+    mount: 'ui-overlay',
+    mutationFeedback: MUTATION_GAP,
+    e2eOverlap: {
+      mode: 'spec',
+      path: 'e2e/today-direction-options-refresh.spec.js',
+      tokens: Object.freeze(['today-direction-options-banner'])
+    },
+    trackerCoverage: GAP
+  }),
+  surface({
     file: 'InAppReminderBannerUI.js',
     slotRequest: deriveSlot(),
     zIndexFloor: bodyMin(),

@@ -72,6 +72,7 @@ import {
 } from './ui/WeeklyPracticeHeatmap.js';
 import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
 import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
+import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import {
   InAppReminderBannerController
@@ -90,6 +91,7 @@ import {
   evaluateInAppReminderBanner,
   REMINDER_GENTLE_WAITING_MESSAGE_KEY
 } from './core/reminderPreference.js';
+import { evaluateTodayDirectionOptionsRefreshBanner } from './core/todayDirectionOptionsBanner.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from './utils/Constants.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
 import { LightProgression } from './effects/LightProgression.js';
@@ -121,7 +123,9 @@ import {
 } from './core/fiveMomentsCompassGate.js';
 import {
   resolveColdStartGoalAction,
-  shouldOfferColdStartGoalCard
+  shouldOfferColdStartGoalCard,
+  migrateColdStartGoalOptionsSeen,
+  markColdStartGoalOptionsVersionSeen
 } from './core/coldStartGoalGate.js';
 import {
   hasSeenWellnessDisclaimer,
@@ -528,6 +532,9 @@ async function init() {
   ensureOverlayEscapeListener();
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
+  migrateColdStartGoalOptionsSeen(
+    typeof localStorage !== 'undefined' ? localStorage : null
+  );
   // Taste overlay: do NOT fetch here — races `spritePlayer.preload()` and
   // Arrival/Honesty 1s CapCut (RB-20260820-L330). Kick after sprites + welcome/idle.
 
@@ -837,6 +844,9 @@ async function init() {
   let parrotMessengerPlayedThisPageSession = false;
   /** Assigned after Arrival / stores are ready. */
   let syncInAppReminderBanner = () => {};
+  /** Assigned after cold-start goal card wiring. */
+  let openTodayDirectionManual = () => {};
+  let syncTodayDirectionOptionsBanner = () => {};
   /** Occupancy winner for Yin sprites (sleep / welcome / payment / ceremony). */
   let spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
   /** Filled after Honesty exists — Stripe confirm may resolve after boot sleep. */
@@ -906,6 +916,24 @@ async function init() {
       onDismiss: () => {
         inAppReminderBannerController.dismiss();
         syncInAppReminderBanner();
+      }
+    }
+  );
+  const todayDirectionOptionsBannerUI = new TodayDirectionOptionsBannerUI(
+    document.getElementById('ui-overlay'),
+    {
+      onCta: () => {
+        markColdStartGoalOptionsVersionSeen(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        openTodayDirectionManual();
+        syncTodayDirectionOptionsBanner();
+      },
+      onDismiss: () => {
+        markColdStartGoalOptionsVersionSeen(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        syncTodayDirectionOptionsBanner();
       }
     }
   );
@@ -1736,6 +1764,11 @@ async function init() {
     syncIdleYinTap();
   }
 
+  openTodayDirectionManual = () => {
+    closeGrowthOverlayCards({ except: 'cold-start-goal' });
+    coldStartGoalCardUI.open({ manual: true });
+  };
+
   /**
    * Cold-start goal card → existing MicroRitual / Sit with Yin surfaces.
    * Choice is session-only; seen flag prevents re-offer on later visits.
@@ -1743,6 +1776,12 @@ async function init() {
    */
   function handleColdStartGoalSelect(choice) {
     const action = resolveColdStartGoalAction(choice);
+    if (choice !== 'browse') {
+      markColdStartGoalOptionsVersionSeen(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
+      syncTodayDirectionOptionsBanner();
+    }
     if (!action || action.type === 'browse') return;
     if (action.type === 'companion') {
       closeGrowthOverlayCards();
@@ -3266,8 +3305,7 @@ async function init() {
       languagePreferenceUI.openPanel();
     },
     onTodayDirection: () => {
-      closeGrowthOverlayCards({ except: 'cold-start-goal' });
-      coldStartGoalCardUI.open({ manual: true });
+      openTodayDirectionManual();
     },
     onGroundExercise: () => {
       closeGrowthOverlayCards({ except: 'ground-exercise' });
@@ -3514,6 +3552,9 @@ async function init() {
       syncIdleYinTap();
     },
     onPurposeClose: () => syncIdleYinTap(),
+    onTodayDirection: () => {
+      openTodayDirectionManual();
+    },
     onWellnessFirstDismiss: () => {
       scheduleFirstCardOffers();
     }
@@ -3818,6 +3859,23 @@ async function init() {
       inAppReminderBannerUI.hide({ silent: true });
     }
     syncSoftUpdatePrompt();
+    syncTodayDirectionOptionsBanner();
+  };
+
+  syncTodayDirectionOptionsBanner = () => {
+    const storage = typeof localStorage !== 'undefined' ? localStorage : null;
+    const candidate = evaluateTodayDirectionOptionsRefreshBanner(storage);
+    const snapshot = buildLiveOverlaySnapshot();
+    const busy = deriveReminderBusySessionTarget(snapshot);
+    const shouldShow =
+      candidate.shouldShow && !busy && !snapshot.coldStartGoalOpen;
+    if (shouldShow) {
+      todayDirectionOptionsBannerUI.show();
+    } else if (todayDirectionOptionsBannerUI.isVisible()) {
+      todayDirectionOptionsBannerUI.hide({
+        silent: busy || snapshot.coldStartGoalOpen
+      });
+    }
   };
 
   // E2E clocks the reminder via `__inAppReminder` (in-app-reminder.spec.js).
@@ -3850,6 +3908,15 @@ async function init() {
     },
     /** E2E（含 vite preview production）：观测信使开播后的 emotion key */
     getCurrentEmotionKey: () => emotionController.getCurrentEmotionKey()
+  };
+
+  window.__todayDirectionOptionsBanner = {
+    sync: () => syncTodayDirectionOptionsBanner(),
+    banner: todayDirectionOptionsBannerUI,
+    markSeen: () =>
+      markColdStartGoalOptionsVersionSeen(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      )
   };
 
   /**
