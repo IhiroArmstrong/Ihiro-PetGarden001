@@ -2,6 +2,7 @@
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
+| 技术债 | `kb-live-gap-audit.md` 等文档机器块过期导致 `docs:check` 挂 CI，须人工发现后跑 `audit:kb-live-gap:sync` | 2026-09-24 #951/#953 连续两次 · 分析师建议 | **不挡合并**（同步一行即可修）。候选：`pre-commit` 在改 registry/catalog 时自动 `--write`；或 CI 在 `docs:check` 前先跑 sync 再 diff。本轮不实现。 | 未跟进 |
 | 技术债 | KB 检索与观察翼套话都靠字面规则，新问法/新标签会漏 | 2026-09-22 PO 立项 · 分析师「根因的根因」 | **KB**：判断依据改为路由矩阵，不再手测一句补一句正则。夹具 `confideKbRoutingMatrix.js` · Brief `task-confide-kb-routing-matrix.md`。`must-*` 锁 2026-09-22 寅币/备份/时长空格/观察翼诚实空态；`probe` 漏检率 ≥10% 且连续两次扩面仍在 → 才开 embedding 近义 Brief（方向仍路由闸门方案 B）。**2026-09-22 首拍**：probe 14 条漏 10（约 71%），信号已亮，**本轮仍不加 embedding 运行时**。**观察翼**：极短标签拒收；语义护栏仍见 `task-l3-observe-cliche-semantic-guard.md`。 | 跟进中（矩阵已建 · embedding 未开工） |
 | 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | **两层**：(1) 存储隔离仍是产品事实——Safari 购买不会写入 Electron `localStorage`，**不**做跨浏览器同步。(2) **结账回跳**：**#530 已合 develop**（`fix/electron-checkout-return-shell`）。Safari 淡化 OK / Electron 本壳仍须 tip 复测。`canPlayIdleYinTap` 须 Idle+smiling。 | 跟进中（代码已合 · 待关单） |
 | 独立bug | Reflection 输入框下多余白条（companion invite 幽灵条） | 2026-09-02 用户书面 · Breath→Reflection | `TigerReflectionMoment` companion invite `display:block` 盖过 `[hidden]` | 已解决 |

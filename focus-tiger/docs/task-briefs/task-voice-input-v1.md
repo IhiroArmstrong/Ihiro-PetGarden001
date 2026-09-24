@@ -79,10 +79,11 @@ Provider 抽象从探针第一天就有（哪怕只有 `MacosSpeechProvider`）�
 必须验证：
 
 1. `Info.plist` `NSMicrophoneUsageDescription` + entitlements `com.apple.security.device.audio-input`（现网 `desktop/entitlements.mac.plist` **尚无**麦克风项；漏了会静默失败 = 交互 bug）。
-2. 点实验室「Speak」→ 0–1 秒内可见 Listening（或系统权限框）；拒绝权限 → **可见**失败，禁止哑点击。
-3. 英语短句 / 带人名或产品词的中长句 / 轻噪音：说完 → Stop → 出字。记下延迟与明显错词，不写选型表。
-4. 停录后麦关；不常驻进程。
-5. 与本机陪伴 **不同时**重载大模型；探针机若已加载 llama，只记 RSS 是否明显再跳一截。
+2. **macOS 本机听写硬约束（先于录音准确率）**：运行时探测 `SFSpeechRecognizer.supportsOnDeviceRecognition`；倾诉路径须设 `recognitionRequest.requiresOnDeviceRecognition = true`。未显式要求时，系统可能在有网时**静默走苹果云端**——转写结果看起来正常，录音却已出境。若本机模型不可用（系统版本 / 英语语言包未下载 / 用户清过模型）→ **可见失败**，禁止静默降级。`allowCloudStt: false` 只挡 Provider 抽象层，挡不住系统 API 默认行为；本条须在第一次「Speak」前过关。
+3. 点实验室「Speak」→ 0–1 秒内可见 Listening（或系统权限框）；拒绝权限 → **可见**失败，禁止哑点击。
+4. 英语短句 / 带人名或产品词的中长句 / 轻噪音：说完 → Stop → 出字。记下延迟与明显错词，不写选型表。
+5. 停录后麦关；不常驻进程。
+6. 与本机陪伴 **不同时**重载大模型；探针机若已加载 llama，只记 RSS 是否明显再跳一截。
 
 及格 → 才允许 Slice 1。不及格（英语短句系统性不可用）→ 停，把失败样本交给 PO，**再**评估本机 Whisper；仍 **禁止**给倾诉接云。
 
