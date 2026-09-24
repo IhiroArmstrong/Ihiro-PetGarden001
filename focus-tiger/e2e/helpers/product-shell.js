@@ -139,7 +139,8 @@ export async function openWideMoreMenuIfPresent(page) {
 /** @type {Readonly<Record<string, string>>} */
 const WIDE_MORE_PROXY_GROUP = Object.freeze({
   reminder: 'MENU_GROUP_PREFERENCES',
-  language: 'MENU_GROUP_PREFERENCES'
+  language: 'MENU_GROUP_PREFERENCES',
+  'today-direction': 'MENU_GROUP_PREFERENCES'
 });
 
 /**

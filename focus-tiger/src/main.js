@@ -3265,6 +3265,10 @@ async function init() {
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
+    onTodayDirection: () => {
+      closeGrowthOverlayCards({ except: 'cold-start-goal' });
+      coldStartGoalCardUI.open({ manual: true });
+    },
     onGroundExercise: () => {
       closeGrowthOverlayCards({ except: 'ground-exercise' });
       groundExerciseChoiceUI?.open();

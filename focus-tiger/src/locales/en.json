@@ -363,6 +363,8 @@
   "COLD_START_GOAL_STUDY": "Study or work",
   "COLD_START_GOAL_BROWSE": "Just looking around",
   "COLD_START_GOAL_OPTIONS_ARIA": "Choose what you would like to do today",
+  "TODAY_DIRECTION_MENU_LABEL": "Choose today's direction again",
+  "TODAY_DIRECTION_HOME_BALL_LABEL": "Today",
   "GROUND_EXERCISE_MENU_LABEL": "Ground exercise",
   "GROUND_EXERCISE_FEEL_LABEL": "Feel the Ground",
   "GROUND_EXERCISE_LOOK_LABEL": "Look Around",

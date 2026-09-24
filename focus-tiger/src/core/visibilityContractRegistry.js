@@ -255,12 +255,13 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     role: 'HomeCtas',
     must: 'visible',
     narrowSelector:
-      '#ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty',
+      '#ft-narrow-home-today-direction, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty',
     testAnchorNarrow:
       'e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…',
     lockStatus: 'locked',
-    source: 'L284 窄屏主屏三主钮',
-    notes: '顺序 Quick · Sit · Honesty；Honesty 不得 false-disabled'
+    source: 'L284 窄屏主屏 home CTAs',
+    notes:
+      '顺序 Today direction · Quick · Sit · Honesty；Honesty 不得 false-disabled'
   },
   {
     id: 'heatmap-hidden-when-focusing',

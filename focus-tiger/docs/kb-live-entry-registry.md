@@ -24,7 +24,7 @@ This table answers: **which product surfaces are live in code right now**, which
 
 > **机器块 · 勿手改**。真源：`src/core/kbLiveEntryRegistry.js`。刷新：`npm run audit:kb-live-entries -- --write`。
 
-**Row count**: 25 (21 menu/ritual · 3 home-ball · 1 hud)
+**Row count**: 26 (22 menu/ritual · 3 home-ball · 1 hud)
 
 | id | surface | proxy | liveStatus | menuPath | labelKeys | catalogKbIds |
 |---|---|---|---|---|---|---|
@@ -46,6 +46,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-focus-circle` | menu | `focus-circle` | live | ⋯ → Not alone → Focus circle | `FOCUS_CIRCLE_MENU_LABEL` | — |
 | `kb-live-reminder` | menu | `reminder` | conditional | ⋯ → Preferences → Reminder | `reminder.setting_title` | — |
 | `kb-live-language` | menu | `language` | conditional | ⋯ → Preferences → Language | `LANGUAGE_MENU_LABEL` | — |
+| `kb-live-today-direction` | menu | `today-direction` | live | ⋯ → Preferences → Choose today's direction again | `TODAY_DIRECTION_MENU_LABEL` | — |
 | `kb-live-local-backup` | menu | `local-backup` | live | ⋯ → Preferences → Backup & restore | `LOCAL_BACKUP_MENU_LABEL` | `KB-FUNC-0003` `KB-FUNC-0015` |
 | `kb-live-community` | menu | `community` | live | ⋯ → Preferences → Community | `COMMUNITY_MENU_LABEL` | — |
 | `kb-live-membership` | menu | `membership` | live | ⋯ → Membership CTA / Premium unlocked | `MEMBERSHIP_MENU_CTA` `MEMBERSHIP_MENU_UNLOCKED` | — |

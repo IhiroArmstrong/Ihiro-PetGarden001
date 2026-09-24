@@ -449,6 +449,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
     shouldOfferLanguagePicker()
       ? { proxy: 'language', labelKey: 'LANGUAGE_MENU_LABEL' }
       : null,
+    {
+      proxy: 'today-direction',
+      labelKey: 'TODAY_DIRECTION_MENU_LABEL',
+      testId: 'idle-today-direction'
+    },
     visibility.newsletterSubmitted
       ? {
           proxy: 'newsletter',
