@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-23（Local AI 意图 E2E 抽取 · 场景 AS · `LOCAL_AI_SCENARIOS_E2E_MAPPING.md` · Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · KB-FUNC-0021 Daily quote 入 catalog · 路由矩阵单测冻结 · 练习备份排除 turns.jsonl · 三态可见性 O-04 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-09-25（Voice Input Slice 0–2 · 场景 AT · Today direction 手动入口 + ? 次级链 + 选项版本轻提示 · KB practice-edu concepts 文档 · Local AI 意图 E2E 抽取 · 场景 AS · Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -977,6 +977,38 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ---
 
+## 场景 AT：Voice Input · Speak to type（Electron / macOS · Slice 0–2）
+
+> **政策**：`task-voice-input-v1.md` · **Speak to type**（转写进当前文本框，可编辑 / 再说一遍）· **不是**语音消息 / 实时对话 / Voice Agent。  
+> **壳**：**仅 Electron 宽屏 ≥480**；Web / PWA / 窄屏 **不露出**麦克风。  
+> **语言**：**仅英语**听写；日语界面仍用键盘。  
+> **倾诉**：**强制本机** STT（`MacosSpeechProvider`）；**禁止** Cloud STT 注入倾诉组件。  
+> **挂载（V1 三处）**：① Confide 输入框 ② Arrival Choose **Write your own**（`#arrival-choose-typed-input`）③ Reflection Q1–Q3 文本框。  
+> **单元**：`voiceInputBridge.test.js` · `VoiceInputChrome` · desktop probe 脚本。  
+> **交叉**：发送 / 危机阀 / L2 生成仍走 **场景 AE**；手写意图仍走 **场景 A**；Reflection 关卡仍走 **场景 C**；**禁止**新 overlay 源。  
+> **仍须人工**：英语专有词转写质量；Listening 波形观感；Focusing 中不得出现麦克风；日语 locale 下不得假装能听日语。
+
+### AT · Slice 0（探针 · lab only）
+
+1. **主路径（desktop:dev · 实验室）**：`npm run desktop:dev` → 实验室入口跑 macOS on-device STT 探针 → **0–1 秒内**见权限 / 录音 / 转写结果。**禁止**在产品 `?product=1` 壳验收 Slice 0。  
+2. **负例**：无 `voiceInput` bridge → `canShowVoiceInputChrome` 为 false，**不得**露出麦克风 chrome。
+
+### AT · Slice 1（Confide Speak to type）
+
+1. **主路径（Electron 宽屏 · Confide L2 ready）**：Idle → 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → **0–1 秒内**状态变 Listening → 说英语 → Stop → **0–1 秒内**转写文字进输入框（可编辑）→ 用户点 Share → 走既有 **AE** L2 路由（**禁止** `麦克风 → LLM` 直连）。  
+2. **倾诉不出设备**：转写路径须 `MacosSpeechProvider`；**禁止** Cloud STT provider 注入倾诉 UI。  
+3. **负例**：Web `?confide=1` / 窄屏 <480 → **不得**见麦克风。  
+4. **回流**：转写后改字再 Share → 以编辑后文本为准。
+
+### AT · Slice 2（Arrival 意图 + Reflection）
+
+1. **Arrival Choose 手写意图**：Electron 宽屏 → Arrival → Write your own 行见 🎙 → 点 → Listening → 说英语 → **0–1 秒内**字进 `#arrival-choose-typed-input` → Confirm → 走既有 Arrival 开表（**禁止**替代六个活动图标）。  
+2. **Reflection Q1–Q3**：Sit 达标 → Reflection → 任一问文本框见 🎙 → 点 → Listening → 转写进框 → Continue / Skip 关卡不变（**禁止**新模态压过 Reflection；`data-wisdom-hold` 契约不动）。  
+3. **负例**：图标点选意图 / Skip all / 末题 wisdom-hold → **不得**被听写 chrome 挡住或改写关卡。  
+4. **Today direction 邻接**：? 简介卡内「重新选择今日方向」链 + 选项版本 banner（见下方增量摘要）**不含**麦克风；勿与 AT 混验。
+
+---
+
 ## 建议补充的故事（相对 A–G；O/P/Q/S–W/X–Z 已升格为正式场景）
 
 
@@ -1011,6 +1043,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | **AJ** | Stay in touch / Newsletter | **已升格** → 见上文「场景 AJ」；#444 Resend **待合** |
 | **AK** | Focusing Float Yin PiP 探针 | **已升格** → 见上文「场景 AK」；#438；对照 AA Idle PiP |
 | **AL** | Reflection Companion validation（lab） | **已升格** → 见上文「场景 AL」；非 shipping；#486 原型 + 本旁支 fail-soft / crisis |
+| **AT** | Voice Input · Speak to type（Electron · Slice 0–2） | **已升格** → 见上文「场景 AT」；Confide + Arrival 手写 + Reflection；Web 不测 |
 
 ---
 
@@ -1144,6 +1177,18 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **场景 Q · Membership**：`fix(rca): membership manage feedback and witness picker retry`——管理页内联反馈 + witness picker 重试；Checkout 仍走场景 Q 步 3。  
    - **My Circle / JA**：`feat(circle,confide): My Circle peer traces + JA Electron session probe`——尚无独立场景字母；批量测时对照 TRACKER `focus-circle` 行与场景 AE Electron。  
 3. **仍须人工 / 勿当缺口**：L3 方案 B 12 句人工重配观感；语义 shadow 与线上路由对账；备份排除 turns 后恢复边界；三态 mutation 375 按压；Membership witness picker 弱网重试。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
+## 2026-09-24–25 增量核对摘要（Voice Input Slice 0–2 · Today direction 入口 · 选项版本提示）
+
+1. **背景**：9/24–9/25 合入 develop 一批 Electron Voice Input（#955 · #957 · #959）与 Today direction 手动/帮助入口（#952 · #956）；TRACKER 碎片本旁支 `tracker:assemble` 折入机器块（339 条）。  
+2. **本次核对（增量）**：  
+   - **升格场景 AT**（#955–#959）：Slice 0 macOS on-device STT 探针（lab only）· Slice 1 Confide Speak to type（本机 STT · 宽屏 ≥480）· Slice 2 Arrival Write your own + Reflection Q1–Q3。政策见 `task-voice-input-v1.md`；**禁止** Web 验收麦克风。  
+   - **场景 W / 冷启动四选卡（#952 · #956）**：`feature/today-direction-manual-entry`——Idle `⋯` Preferences「重新选择今日方向」+ 宽/窄首页最左文字球 → `open({ manual: true })`；`feature/today-direction-help-and-options-version`——? 简介卡内次级链（先关简介再开四选，**禁止**双层叠）+ 选项集合版本轻提示 banner（`today-direction-options-banner`；可跳过亦 mark 版本）。**不**升格新字母场景；批量测时对照场景 W + 冷启动四选卡回流。  
+   - **文档 only**：`docs/kb-practice-edu-concepts`（#936）——练习教育概念 brief 边界；**无**运行时用户故事。  
+3. **仍须人工 / 勿当缺口**：Voice Input 英语转写质量与 Focusing 无麦；Today direction ? 链与 purpose 卡淡出时序；选项版本 banner 375 按压；Arrival/Reflection 听写不挡 Skip / wisdom-hold。  
 4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
