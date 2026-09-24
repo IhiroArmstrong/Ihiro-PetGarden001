@@ -80,14 +80,17 @@ jobs:
           - spec: e2e/scenario-a.companion.spec.js
             label: scenario-a
             slug: scenario-a
+            timeout_minutes: 75
           - spec: e2e/micro-ritual.spec.js
             label: micro-ritual
             slug: micro-ritual
+            timeout_minutes: 45
           - spec: e2e/weekly-practice-heatmap.spec.js
             label: weekly-heatmap
             slug: weekly-heatmap
-    # Per-spec budget (~40min longest shard after Plan A split).
-    timeout-minutes: 45
+            timeout_minutes: 45
+    # Per-spec budget (scenario-a is the heaviest shard; see visibility CI 治理 · 2026-09-24).
+    timeout-minutes: ${{ matrix.timeout_minutes }}
     defaults:
       run:
         working-directory: focus-tiger
