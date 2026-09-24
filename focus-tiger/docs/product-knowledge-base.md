@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-23）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-25）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门）+ **0022 Zen Cinema**（batch-2 Inspiration · **§4.5 待审草稿** · 未进 catalog）· **下一刀 Wallpapers（0023 待起草）**；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -472,7 +472,7 @@
 ### 4.4 batch-2 Step 4（Five Moments / Honesty · 已通过 · catalog 已入库）
 
 > **Status**: Step 4 权威源起草 · **PO 2026-09-22 书面放行**（无需 §4.4 语气 spot-check）· **已进** `productKnowledgeCatalog.json` · registry `catalogKbIds` 已链 **0019** / **0020**。  
-> **下一批 Inspiration 候选顺序（PO 同意）**：Zen Cinema → Wallpapers。**0019/0020 已合 develop**（#939）· **0021 Daily quote 已入库 catalog**（本旁支 · 闸门 **19 条**）· Zen Cinema / Wallpapers 仍待起草。
+> **下一批 Inspiration 候选顺序（PO 同意）**：Zen Cinema → Wallpapers。**0019/0020 已合 develop**（#939）· **0021 Daily quote 已入库 catalog**（#940 · 闸门 **19 条**）· **0022 Zen Cinema 待审草稿见 §4.5** · Wallpapers（0023）仍待起草。
 
 ```yaml
 - id: KB-FUNC-0019
@@ -537,6 +537,35 @@
 ```
 
 > **权威源（0019–0021）**：`src/locales/en.json` · `fiveMomentsCompassGate.js` · `PRODUCT_MOMENTS.md` · `dailyZenQuote.js` · `DailyZenQuoteCardUI.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 U2
+
+### 4.5 batch-2 Step 4（Zen Cinema · 待审 · 未进 catalog）
+
+> **Status**: Step 4 权威源起草 · **待 PO tone spot-check** · **未进** `productKnowledgeCatalog.json` · registry `kb-live-zen-cinema` 仍无 `catalogKbIds` 链。  
+> **下一刀**：Wallpapers（0023 待起草）→ PO spot-check 通过后入库 catalog + registry 链 + 闸门 **20 条**。
+
+```yaml
+- id: KB-FUNC-0022
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Zen Cinema 从哪开
+  适用场景: 想找短片冥想视频、或分不清和 A Quiet Line / Wallpapers 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Inspiration → Zen Cinema. Yin offers one short visual meditation — tap Watch on YouTube to open a featured film in your browser (not inside the app). Yin only points; this is a small gift when you have a quiet minute.
+    指路：菜单 `ZEN_CINEMA_MENU_LABEL`（proxy `zen-cinema`）→ `ZenCinemaCardUI` → `openZenCinemaExternal`（`zenCinemaConfig.js` · 单支精选 YouTube 外链 · 无应用内播放器）。与 0021 分工：0021 = 本地每日静语卡 + Save image；本条 = 浏览器打开一支短片。与 Wallpapers 分工：本条 = 外链视频；Wallpapers = 阿寅静帧本地存图。
+    禁止：说成频道墙或需登录；禁止在短答里念 `ZEN_CINEMA_FILM_TITLE` 片名正文；禁止说成必须每日打卡；禁止与 Daily quote / Wallpapers 混为一谈。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 待审
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Zen Cinema gift card（growth ①）
+  更新时间: 2026-09-25
+  locale_keys: [ZEN_CINEMA_MENU_LABEL, ZEN_CINEMA_CARD_TITLE, ZEN_CINEMA_CARD_BLURB, ZEN_CINEMA_OPENS_YOUTUBE, ZEN_CINEMA_CANCEL, ZEN_CINEMA_WATCH]
+  检索关键词: [Zen Cinema, 禅意影院, mindful moments with yin, watch on youtube, 短片冥想, zen cinema menu, 影院从哪开, youtube meditation, visual meditation]
+```
+
+> **权威源（0022）**：`src/locales/en.json` · `zenCinemaConfig.js` · `ZenCinemaCardUI.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 U2
 
 ### 4.3 内部排障草案（不进倾诉索引）
 
