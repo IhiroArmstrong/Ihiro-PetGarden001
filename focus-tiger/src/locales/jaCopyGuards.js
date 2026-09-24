@@ -33,6 +33,8 @@ export function isJaProperNounAllowlisted(key) {
   if (String(key).startsWith('AMBIENT_TRACK_')) return true;
   // Legal / brand colophon stays English in every locale (indie About tone).
   if (String(key).startsWith('HINT_APP_PURPOSE_COLOPHON_')) return true;
+  // Voice Input V1: English-only Speak to type chrome (Brief task-voice-input-v1).
+  if (String(key).startsWith('VOICE_INPUT_')) return true;
   // Bilingual first-visit lines: EN primary + shared JA subtitle (same in en/ja).
   if (
     key === 'BRAND_YIN_WAY_TAGLINE_FIRST_VISIT_EN' ||

@@ -4,7 +4,7 @@
  */
 
 /**
- * Voice Input Slice 0 IPC — lab / probe only. No product textarea wiring.
+ * Voice Input IPC — macOS on-device STT (Slice 0 lab + Slice 1+ product mounts).
  */
 
 import { systemPreferences } from 'electron';
@@ -16,7 +16,7 @@ import { createSpeechProvider } from './speechProvider.js';
  *   getMainWindow: () => import('electron').BrowserWindow | null
  * }} deps
  */
-export function attachVoiceInputProbeIpc(deps) {
+export function attachVoiceInputIpc(deps) {
   const provider = createSpeechProvider({ allowCloudStt: false, locale: 'en-US' });
 
   const emitStatus = () => {
@@ -62,3 +62,6 @@ export function attachVoiceInputProbeIpc(deps) {
 
   return provider;
 }
+
+/** @deprecated Use attachVoiceInputIpc */
+export const attachVoiceInputProbeIpc = attachVoiceInputIpc;
