@@ -70,6 +70,7 @@
 
 ```bash
 cd focus-tiger
+npm run docs:sync       # 刷新全部 (a) 机器块（pre-commit 自动跑）
 npm run docs:check      # CI / test:smoke 末尾强制（含 visibility §6）
 npm run hints:doc-sync  # ONBOARDING_HINTS 机器块
 npm run gate:doc-sync   # SHARED_RESOURCES §4 机器块
@@ -128,6 +129,7 @@ npm run test:e2e:visibility  # 改 setSuppressed / park / hide 后：整表 e2e 
 
 ```bash
 node focus-tiger/scripts/gate-session-lock-precommit.js   # 外锁非陈旧 / 主仓 develop → reject；自有锁刷新 heartbeat
+cd focus-tiger && npm run docs:sync   # 刷新机器块（含 kb-live-gap-audit.md）；钩子自动 stage 变更
 cd focus-tiger && npm run test:smoke   # 含 docs:check + 门闩/场景契约测试
 ```
 
@@ -135,7 +137,7 @@ cd focus-tiger && npm run test:smoke   # 含 docs:check + 门闩/场景契约测
 |---|---|
 | **钩子文件** | `.husky/pre-commit`（仓库根） |
 | **启用方式** | 克隆后于仓库根执行一次 `npm install`（`prepare` 脚本会安装 husky 并注册钩子） |
-| **覆盖** | session-lock 技术闸 + 结构对齐 `docs:check` + 行为契约 `test:smoke` 主体（不含 `test:e2e`） |
+| **覆盖** | session-lock 技术闸 + `docs:sync`（机器块自动刷新并 stage）+ 结构对齐 `docs:check` + 行为契约 `test:smoke` 主体（不含 `test:e2e`） |
 | **session-lock** | 见 `WORKFLOW.md`（`git-worktree-occupancy`）：`last_heartbeat`、60m 陈旧、history 留痕、禁主仓 develop commit |
 
 **绕过（不推荐）**：

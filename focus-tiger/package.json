@@ -14,6 +14,7 @@
     "audit:stage2-synonym-screen": "npm --prefix desktop run companion:stage2-synonym-screen",
     "audit:favorable-disagreement-mill": "npm --prefix desktop run companion:favorable-disagreement-mill",
     "docs:check": "node scripts/docs-check.js",
+    "docs:sync": "node scripts/docs-sync.js",
     "copyright:header-check": "node scripts/copyright-header.js",
     "copyright:header-write": "node scripts/copyright-header.js --write",
     "docs:consistency-check": "node scripts/check-docs-consistency.js",
