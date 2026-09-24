@@ -3,4 +3,19 @@ cd "$(dirname "$0")/.." || exit 1
 # Session lock + primary-develop checkout gate (Prompt 3)
 node focus-tiger/scripts/gate-session-lock-precommit.js || exit $?
 
+# Refresh derived doc machine blocks before docs:check (kb-live-gap-audit drift guard)
+cd focus-tiger && npm run docs:sync || exit $?
+cd .. || exit 1
+git add \
+  focus-tiger/docs/ONBOARDING_HINTS.md \
+  focus-tiger/docs/HINTS_WIRING.md \
+  focus-tiger/docs/SHARED_RESOURCES.md \
+  focus-tiger/docs/ARCHITECTURE.md \
+  focus-tiger/docs/RULES_INDEX.md \
+  focus-tiger/docs/kb-live-entry-registry.md \
+  focus-tiger/docs/kb-live-gap-audit.md \
+  focus-tiger/docs/practice-aggregate-registry.md \
+  focus-tiger/docs/GROWTH_METRICS_CHARTER.md \
+  2>/dev/null || true
+
 cd focus-tiger && npm run test:smoke
