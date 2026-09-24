@@ -19,6 +19,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import { VoiceInputChrome } from './VoiceInputChrome.js';
 import {
   ARRIVAL_BREATH_MS,
   ARRIVAL_NOTICE_REPLY_MS,
@@ -147,6 +148,8 @@ export class ArrivalPracticeUI {
     this._showPresenceDisclosure = false;
     /** @type {boolean} Choose 是否显示自由输入 */
     this._showTyped = false;
+    /** @type {VoiceInputChrome | null} */
+    this._voiceInputChrome = null;
     /** @type {number | null} */
     this._timer = null;
     /** @type {number | null} */
@@ -252,6 +255,8 @@ export class ArrivalPracticeUI {
    */
   hide({ clearLight = true } = {}) {
     this._clearTimers();
+    this._voiceInputChrome?.destroy();
+    this._voiceInputChrome = null;
     if (clearLight) this.handlers.onClearLight?.();
     if (this.root) {
       this.root.remove();
@@ -347,6 +352,8 @@ export class ArrivalPracticeUI {
 
   _render() {
     if (!this.root) return;
+    this._voiceInputChrome?.destroy();
+    this._voiceInputChrome = null;
     this.root.replaceChildren();
 
     if (this.state.step === ARRIVAL_STEPS.WELCOME) {
@@ -478,7 +485,14 @@ export class ArrivalPracticeUI {
         hint.textContent = t('ARRIVAL_CHOOSE_CONFIRM_HINT');
 
         row.append(input, confirmBtn);
-        this.root.append(row, hint);
+        this.root.append(row);
+        this._voiceInputChrome = new VoiceInputChrome({
+          textarea: input,
+          mountParent: this.root,
+          mountBefore: hint,
+          testIdPrefix: 'arrival-voice-input'
+        });
+        this.root.append(hint);
         window.setTimeout(() => input.focus({ preventScroll: true }), 30);
       }
     }
