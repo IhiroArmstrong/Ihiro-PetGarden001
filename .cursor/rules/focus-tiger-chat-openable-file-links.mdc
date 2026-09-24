@@ -1,0 +1,17 @@
+---
+description: 用户可见回复里仓库文件必须可点开——禁止只把路径包在反引号里
+alwaysApply: true
+---
+
+# Focus Tiger · 仓库文件须可点开（强制）
+
+> **SSOT**：`WORKFLOW.md` →「用户可见回复：仓库文件须可点开」；索引 `RULES_INDEX.md` → `chat-openable-file-links`。
+
+请用户打开仓库里的 md / 源码 / 规则时：
+
+- **禁止**只写 `` `focus-tiger/docs/foo.md` ``（对话里点不开）。
+- **必须**写 Markdown：`[短名](相对仓库根的路径)`。
+- 已推到 GitHub 时再给 https 网页链接。
+- 要用户**立刻**看：同时 `open_resource`（`file://` 绝对路径）。
+
+引用代码块不是打开文件的替代。

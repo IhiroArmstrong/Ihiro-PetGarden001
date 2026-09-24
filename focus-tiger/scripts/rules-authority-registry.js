@@ -51,6 +51,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
   '.cursor/rules/focus-tiger-feature-conflict-review.mdc',
   '.cursor/rules/focus-tiger-background-network.mdc',
+  '.cursor/rules/focus-tiger-chat-openable-file-links.mdc',
+  '.cursor/rules/focus-tiger-user-action-steps.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -1797,6 +1799,47 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     restatementExemptFiles: [
       '.cursor/rules/focus-tiger-background-network.mdc'
+    ]
+  },
+  {
+    id: 'chat-openable-file-links',
+    title: '用户可见回复里仓库文件须可点开（禁止只写反引号路径）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '用户可见回复：仓库文件须可点开（强制）',
+    ssotMustContain: [
+      /chat-openable-file-links/,
+      /仓库文件须可点开/,
+      /禁止.*反引号/,
+      /Markdown 链接/,
+      /open_resource/
+    ],
+    topicSignals: [
+      /chat-openable-file-links/,
+      /仓库文件须可点开/,
+      /反引号里/
+    ],
+    mustCite: [/WORKFLOW\.md|chat-openable-file-links/],
+    restatementFingerprints: [
+      /禁止.*只把路径包在反引号/,
+      /open_resource.*file:\/\//
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'backtick-path-is-enough',
+        pattern:
+          /(?:可以|允许|应当)[^。\n]{0,20}只[^。\n]{0,12}反引号[^。\n]{0,16}路径/,
+        note: '禁止把反引号路径当成可点开链接'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-chat-openable-file-links.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      '.cursor/rules/focus-tiger-user-action-steps.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ],
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-chat-openable-file-links.mdc'
     ]
   }
 ];
