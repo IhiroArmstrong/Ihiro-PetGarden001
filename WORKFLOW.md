@@ -54,6 +54,22 @@
 
 ---
 
+## 用户可见回复：仓库文件须可点开（强制）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `chat-openable-file-links`）。按需层摘要见 `.cursor/rules/focus-tiger-chat-openable-file-links.mdc`（`alwaysApply: true`）。
+
+用户要点开某个仓库文件时，**禁止**只把路径包在反引号里（如 `` `focus-tiger/docs/foo.md` ``）——对话里这不是链接，点了打不开。
+
+**必须同时满足：**
+
+1. **Markdown 链接**，锚点用短名，地址用**相对仓库根**的路径：`[Voice Input V1 Brief](focus-tiger/docs/task-briefs/task-voice-input-v1.md)`
+2. 文件已在 GitHub 上（当前旁支或 `develop`）时，**再给一条 https 网页链接**（浏览器一定能开）。
+3. 这条回复就是要用户立刻看该文件时：Agent **还须**用 `open_resource` 打开 `file://` 绝对路径（工作区内）。
+
+代码引用围栏只用于摘录代码，**不能**代替「请打开这份文件」的链接。
+
+---
+
 ## 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21）
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `brief-before-user-visible`）。  
