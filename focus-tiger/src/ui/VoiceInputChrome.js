@@ -23,13 +23,20 @@ const STYLE_ID = 'voice-input-chrome-styles-v1';
 export class VoiceInputChrome {
   /**
    * @param {{
-   *   textarea: HTMLTextAreaElement,
+   *   textarea: HTMLTextAreaElement | HTMLInputElement,
+   *   mountParent?: HTMLElement | null,
    *   mountBefore?: HTMLElement | null,
    *   testIdPrefix?: string,
    *   onInputApplied?: () => void
    * }} opts
    */
-  constructor({ textarea, mountBefore = null, testIdPrefix = 'voice-input', onInputApplied }) {
+  constructor({
+    textarea,
+    mountParent = null,
+    mountBefore = null,
+    testIdPrefix = 'voice-input',
+    onInputApplied
+  }) {
     this.textarea = textarea;
     this.onInputApplied = onInputApplied;
     this._bridge = getVoiceInputBridge();
@@ -73,7 +80,7 @@ export class VoiceInputChrome {
     this.actions.append(this.speakBtn, this.stopBtn);
     this.root.append(this.statusEl, this.errorEl, this.actions);
 
-    const parent = textarea.parentElement;
+    const parent = mountParent || textarea.parentElement;
     if (parent) {
       parent.insertBefore(this.root, mountBefore);
     }
