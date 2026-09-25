@@ -1,8 +1,8 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-25）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门）+ **0022 Zen Cinema**（batch-2 Inspiration · **§4.5 待审草稿** · 未进 catalog）+ **0023 Wallpapers**（batch-2 Inspiration · **§4.6 待审草稿** · 未进 catalog）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门）+ **0022 Zen Cinema**（batch-2 Inspiration · **§4.5 待审草稿** · 未进 catalog）+ **0023 Wallpapers**（batch-2 Inspiration · **§4.6 待审草稿** · 未进 catalog）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 PO 已点头 · **待 PO 人审** · **零条进 catalog** · `yin_may_retrieve: 否`）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · 严格排除具体引导 · **待 PO 点头**）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · 严格排除具体引导 · Brief **PO 已点头** · §4.7 首批 4 条待审）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 
@@ -40,7 +40,7 @@
 - **审核**：不要求心理咨询资质；产品/内容团队按判定表自检即可。未审核不得 `yin_may_retrieve: 是`。
 - **判定口诀**：答案读完，用户要不要接着做动作？要做 → 一律不做。信源再权威也不松这条线。
 
-范围线、信源改写、字段与分批流程见 `task-briefs/task-kb-practice-edu-concepts.md`。**点头前零条 `KB-EDU-*` 进 catalog。**
+范围线、信源改写、字段与分批流程见 `task-briefs/task-kb-practice-edu-concepts.md`。首批待审草稿见 **§4.7**（`KB-EDU-0001`–`0004`）。**人审通过并进 catalog 前零条 `KB-EDU-*` 可检索。**
 
 ---
 
@@ -607,6 +607,128 @@
 
 > **权威源（0023）**：`src/locales/en.json` · `digitalWallpapersCatalog.js` · `saveDigitalWallpaper.js` · `DigitalWallpapersCardUI.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 U3
 
+### 4.7 科普概念首批（KB-EDU · 待 PO 人审 · 未进 catalog）
+
+> **Status**: Brief #936 PO 已点头 · 候选清单 PO 已筛选（①③ 不合并 · ④ 仅 Sit/Breath/Ground 三角 · 不含 Five Moments / Confide）· **4 条待审** · **零条**进 `productKnowledgeCatalog.json` · **不改** Confide 路由 / generate。  
+> **起草顺序**：② 接地 → ① 正念 → ③ 专注 vs 冥想 → ④ 概念→入口对照。  
+> **下一刀**：PO 对照 Brief §1 判定表 + 禁止事项核查逐条 spot-check → 通过后标「已通过」；catalog 写入须 **另发 B 类口令**。
+
+```yaml
+- id: KB-EDU-0001
+  所属库: 陪伴可检索
+  一级分类: 心理练习
+  二级分类: 科普概念
+  内容类型: 科普概念
+  标题: 接地练习是什么、为什么常被认为有帮助
+  适用场景: 想知道「接地 / grounding」这个说法指什么（不是正在求被带着做）
+  内容正文: |
+    短答（en）：Grounding is a simple name for noticing what you can see, hear, or feel in the present moment, so attention can rest with the body and the room instead of racing ahead in thought. Many people find that kind of present-moment noticing helpful for everyday calm and focus. It is a general wellness idea, not a medical treatment. Reading this is enough; you do not need to follow any steps here. If you want the in-app exercise, Yin only points to Ground exercise and does not read the steps aloud.
+    指路：复用 KB-FUNC-0002（⋯ → Practice → Ground exercise）。禁止写入 RESET_GROUND_* / RESET_LOOK_*。
+  禁止事项核查:
+    具体步骤指令: 否
+    治疗类表述: 否
+    具体数字: 否
+    具体疾病或症状名称: 否
+    针对你的行动指令: 否
+    照搬信源: 否
+  信源类型: 公共卫生机构科普材料
+  来源: AI生成待审
+  审核状态: 未审核
+  审核人: —
+  审核人角色: 产品/内容团队（待指定）
+  风险标记: 否
+  yin_may_retrieve: 否
+  适用产品版本: 接地练习独立菜单已合入后的产品壳
+  更新时间: 2026-09-26
+  检索关键词: [接地是什么, what is grounding, 接地练习原理, grounding 是什么意思, grounding meaning]
+
+- id: KB-EDU-0002
+  所属库: 陪伴可检索
+  一级分类: 心理练习
+  二级分类: 科普概念
+  内容类型: 科普概念
+  标题: 正念是什么
+  适用场景: 想知道「正念 / mindfulness」这个说法指什么（纯概念，不是正在求练习步骤或产品入口）
+  内容正文: |
+    短答（en）：Mindfulness is a general wellness word for noticing what is happening right now — thoughts, feelings, and body sensations — with a bit of openness instead of fighting or judging every moment. Many people find that kind of gentle awareness helpful for everyday stress and focus. It is not a medical treatment. Reading this is enough; you do not need to follow any steps here.
+    分工：「正念和冥想一样吗 / 专注和冥想差在哪」→ KB-EDU-0003；「在本产品里从哪练」→ KB-EDU-0004 或已有 KB-FUNC-* 指路条。
+  禁止事项核查:
+    具体步骤指令: 否
+    治疗类表述: 否
+    具体数字: 否
+    具体疾病或症状名称: 否
+    针对你的行动指令: 否
+    照搬信源: 否
+  信源类型: 公共卫生机构科普材料
+  来源: AI生成待审
+  审核状态: 未审核
+  审核人: —
+  审核人角色: 产品/内容团队（待指定）
+  风险标记: 否
+  yin_may_retrieve: 否
+  适用产品版本: 现网产品壳
+  更新时间: 2026-09-26
+  检索关键词: [正念是什么, what is mindfulness, 正念定义, mindfulness meaning, 什么是正念]
+
+- id: KB-EDU-0003
+  所属库: 陪伴可检索
+  一级分类: 心理练习
+  二级分类: 科普概念
+  内容类型: 科普概念
+  标题: Focus sit 和 meditation 在说法上差在哪
+  适用场景: 分不清 focus / meditation / 正念 在公众说法里各指什么，或问「我这是在冥想吗」（不是正在求被带着做）
+  内容正文: |
+    短答（en）：In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here.
+    分工：纯「正念是什么」→ KB-EDU-0002；菜单路径 → KB-FUNC-0001 / 0011 / KB-EDU-0004。
+  禁止事项核查:
+    具体步骤指令: 否
+    治疗类表述: 否
+    具体数字: 否
+    具体疾病或症状名称: 否
+    针对你的行动指令: 否
+    照搬信源: 否
+  信源类型: 同行综述转述 + 产品定位用语（PRODUCT_POSITIONING.md）
+  来源: AI生成待审
+  审核状态: 未审核
+  审核人: —
+  审核人角色: 产品/内容团队（待指定）
+  风险标记: 否
+  yin_may_retrieve: 否
+  适用产品版本: 现网产品壳（Sit 10 分钟起 · 左球 Breath practice）
+  更新时间: 2026-09-26
+  检索关键词: [专注和冥想有什么区别, focus vs meditation, 正念和冥想一样吗, 我这是在冥想吗, Focus sit and meditation, meditation vs focus sit, 专注和冥想, 正念和专注是一回事吗]
+
+- id: KB-EDU-0004
+  所属库: 陪伴可检索
+  一级分类: 心理练习
+  二级分类: 科普概念
+  内容类型: 科普概念
+  标题: 正念 / 接地 / 专注在本产品里各对应什么入口
+  适用场景: 已听懂概念，想知道 Focus Tiger 里哪一类练习对应哪条现网入口（不是正在求步骤或引导语）
+  内容正文: |
+    短答（en）：This is a concept-to-entry map only — Yin repeats the approved FUNC short answers for paths, never reads exercise scripts aloud. Focus / sitting with Yin → main button Sit with Yin (KB-FUNC-0001). A shorter breath pause → left orb Breath practice (KB-FUNC-0011; inventory detail KB-FUNC-0006). Grounding as a practice → More → Practice → Ground exercise (KB-FUNC-0002). Reading this map is enough; for exact taps Yin points to those entries, not a second menu manual.
+    范围：首批仅 Sit / Breath / Ground 三角；不含 Five Moments、Confide、Inspiration 礼物卡。
+  禁止事项核查:
+    具体步骤指令: 否
+    治疗类表述: 否
+    具体数字: 否
+    具体疾病或症状名称: 否
+    针对你的行动指令: 否
+    照搬信源: 否
+  信源类型: 界面文案 / 已有 KB-FUNC-* 指路条
+  来源: AI生成待审
+  审核状态: 未审核
+  审核人: —
+  审核人角色: 产品/内容团队（待指定）
+  风险标记: 否
+  yin_may_retrieve: 否
+  适用产品版本: 现网产品壳（§4.1 速查表）
+  更新时间: 2026-09-26
+  检索关键词: [正念在这app里从哪练, 接地功能在哪, 专注在这产品里怎么练, where is grounding in the app, mindfulness in this app, breath vs sit where, 概念对应入口, 从哪开始专注]
+```
+
+> **权威源（EDU-0001–0004）**：`task-kb-practice-edu-concepts.md` · `PRODUCT_POSITIONING.md` · §4.1 现网入口速查 · `KB-FUNC-0001` / `0002` / `0011` / `0006`
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
@@ -678,6 +800,13 @@
 - [x] 0021 对照 `dailyZenQuote.js` + locale + `MENU_CHROME_CENSUS.md`，无另编路径
 - [x] PO tone spot-check → 标已通过并进 `productKnowledgeCatalog.json`
 - [x] registry `kb-live-daily-quote` 链 `KB-FUNC-0021`；闸门升至 **19 条**
+
+**KB-EDU 科普概念首批（2026-09-26 · 待 PO spot-check）**
+
+- [x] Brief #936 PO 已点头；候选 4 条全留（①③ 不合并 · ④ 仅 Sit/Breath/Ground）
+- [x] §4.7 起草 `KB-EDU-0001`–`0004`；禁止事项核查全「否」；无 `RESET_*` 正文
+- [ ] PO 逐条 spot-check → 标已通过（catalog 写入须另发 B 类口令）
+- [x] **零条** `KB-EDU-*` 进 `productKnowledgeCatalog.json`
 
 **共通**
 
