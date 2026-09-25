@@ -9,6 +9,10 @@
  */
 
 import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
+import {
+  noteCloudPresenceNetworkFailure,
+  noteCloudPresenceNetworkSuccess
+} from './cloudPresenceDegradedHint.js';
 import { isQuietTogetherEnabled } from './quietTogetherPreference.js';
 
 export const LANTERN_PRESENCE_PATH = '/api/lantern-presence';
@@ -149,8 +153,12 @@ export async function postLanternPresence({
     if (sitting == null) {
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
+    noteCloudPresenceNetworkSuccess();
     return { ok: true, sitting, skipped: false };
   } catch {
+    if (action !== 'leave') {
+      noteCloudPresenceNetworkFailure();
+    }
     return { ok: false, reason: 'network', skipped: true };
   }
 }

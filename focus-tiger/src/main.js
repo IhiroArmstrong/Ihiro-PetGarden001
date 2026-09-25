@@ -177,6 +177,10 @@ import {
 } from './core/quietTogetherPresence.js';
 import { syncLanternIdleObserverPeek } from './core/quietTogetherIdleSchedule.js';
 import {
+  setCloudPresenceDegradedHintIdleProbe,
+  setCloudPresenceDegradedHintNotifier
+} from './core/cloudPresenceDegradedHint.js';
+import {
   bindFocusCirclePresencePageHide,
   bindFocusCirclePresenceVisibilityPeek,
   peekFocusCirclePresence,
@@ -5346,6 +5350,12 @@ async function init() {
       retry: overlay && !focusing
     };
   });
+  setCloudPresenceDegradedHintNotifier(() => {
+    mindfulToast.show(t('CLOUD_PRESENCE_NETWORK_HINT'));
+  });
+  setCloudPresenceDegradedHintIdleProbe(
+    () => stateManager.state === STATES.IDLE
+  );
   setLanternPresenceBusyProbe(() => {
     const s = stateManager.state;
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
