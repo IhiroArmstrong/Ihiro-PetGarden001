@@ -35,6 +35,21 @@ Cursor Model: Composer 2.5 / Fast OFF
 
 **2026-09-22 首拍**（本矩阵落地时）：`probe` 14 条、漏 10、漏检率约 **71%**。已超过 10% 阈值，但只算**第一次**快照；按上表须再扩一次 fixture 后仍 ≥10% 才开 embedding Brief。禁止本 PR 顺手改 live 正则去压 probe。
 
+## 第二轮 probe 来源（强制 · 2026-09-25）
+
+**禁止**靠团队头脑风暴凭空造问法补 `probe`。第二轮只允许两类来源：
+
+| 优先级 | 来源 | 怎么做 |
+|---|---|---|
+| 1 | **Electron `turns.jsonl` · `kind:kb_retrieval_miss`** | `cd focus-tiger && npm run audit:confide-kb-matrix-probes`。导出尚未进矩阵的**真实未命中**句到 `/tmp/ft-l0-lab/kb-matrix-probe-candidates-*.csv`。PO 标期望 `catalogId` / `product_knowledge_honesty` 后，以 `lock: probe` 写入矩阵。 |
+| 2 | **2026-09-22 手测种子** | 已在 `KB_ROUTING_MATRIX_REGRESSION_IDS`（寅币 / 备份 / 时长空格 / 观察翼诚实 / `会不会好一点`）。**不得重复收集**。 |
+
+**样本不够时**：`novel`（日志里、矩阵里还没有的未命中句）**少于 5** → **不硬开第二轮**；与 with-prior / Stage 2b 的 **2026-10-12** 复核合并看（同一回合拉 shadow + prior + 本脚本）。满 6 周仍不够须书面「样本不够」。
+
+**心理预期（PO / 分析师 2026-09-25）**：首拍 71% 漏检 → 第二轮走完流程后仍大概率 ≥10%，届时开 embedding 近义 Brief 是**审慎确认**而非悬念；真正要提前想的是**优先级排第几**（B 类改路由），不是「要不要开」。
+
+脚本**不得**打印「可以开工 embedding」。
+
 ## 不要做
 
 - 不改 `confideClassify` / Stage 2 / with-prior / 观察翼 generate 文案  
