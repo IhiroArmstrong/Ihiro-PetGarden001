@@ -55,9 +55,9 @@ describe('confideProductKnowledgeSemantic', () => {
         text: 'Sit 按钮在哪',
         embeddingState: 'not_ready',
         semanticIsProduct: false,
-        catalogHit: false
+        catalogHit: true
       }),
-      'honesty'
+      'hit'
     );
     assert.equal(
       resolveProductKnowledgeGateAction({

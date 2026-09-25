@@ -180,6 +180,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   var finalText = ""
   var failure: String? = nil
   var finished = false
+  var userStopped = false
 
   DispatchQueue.global(qos: .utility).async {
     while !finished {
@@ -188,7 +189,11 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
         let line = String(data: chunk, encoding: .utf8) ?? ""
         if line.contains("stop") {
           finished = true
+          userStopped = true
           request.endAudio()
+          DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2.5) {
+            sem.signal()
+          }
           break
         }
       }
@@ -229,7 +234,8 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     }
   }
 
-  _ = sem.wait(timeout: .now() + maxSeconds + 8)
+  let waitSeconds = userStopped ? 6.0 : maxSeconds + 8.0
+  _ = sem.wait(timeout: .now() + waitSeconds)
   finished = true
   engine.stop()
   inputNode.removeTap(onBus: 0)

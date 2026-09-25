@@ -68,6 +68,14 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(sit.hit, true);
     assert.equal(sit.id, 'KB-FUNC-0001');
     assert.match(sit.text || '', /Sit with Yin/i);
+
+    const sitButton = retrieveProductKnowledge('Sit 按钮在哪');
+    assert.equal(sitButton.hit, true);
+    assert.equal(sitButton.id, 'KB-FUNC-0001');
+
+    const breathDiff = retrieveProductKnowledge('Breath 和 Sit 有什么区别？');
+    assert.equal(breathDiff.hit, true);
+    assert.equal(breathDiff.id, 'KB-FUNC-0011');
   });
 
   it('semi-hit step detail still returns pointer-only answer', () => {
