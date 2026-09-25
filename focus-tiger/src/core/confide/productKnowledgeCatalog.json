@@ -133,6 +133,7 @@
       "shortAnswerEn": "Sit with Yin is for a Focus sit — durations start at 10 minutes. For a shorter pause, use Breath practice on the left orb: a soft sit with Yin, not a full Focus session.",
       "keywords": [
         "呼吸练习",
+        "呼吸练习在哪",
         "Breath practice",
         "短坐",
         "10分钟",
@@ -306,6 +307,43 @@
         "quiet line card",
         "a quiet line",
         "daily quote"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0022",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Inspiration → Zen Cinema. Yin offers one short visual meditation — tap Watch on YouTube to open a featured film in your browser (not inside the app). Yin only points; this is a small gift when you have a quiet minute.",
+      "keywords": [
+        "Zen Cinema",
+        "禅意影院",
+        "禅意影院在哪",
+        "mindful moments with yin",
+        "watch on youtube",
+        "短片冥想",
+        "zen cinema menu",
+        "影院从哪开",
+        "youtube meditation",
+        "visual meditation",
+        "zen cinema",
+        "where is zen cinema"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0023",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Inspiration → Wallpapers. Yin offers a few quiet still frames from her day — pick one and tap Save image to keep it on your device (lock screen or desktop). No account, tip, or Pass needed. Yin only points; this is a free gift.",
+      "keywords": [
+        "Wallpapers",
+        "壁纸",
+        "阿寅静帧",
+        "阿寅静帧从哪开",
+        "yin stills",
+        "save wallpaper",
+        "lock screen",
+        "静帧从哪开",
+        "digital wallpaper",
+        "free wallpaper",
+        "save image wallpaper",
+        "wallpapers menu",
+        "where are wallpapers"
       ]
     }
   ]

@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-25）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门）+ **0022 Zen Cinema**（batch-2 Inspiration · **§4.5 待审草稿** · 未进 catalog）+ **0023 Wallpapers**（batch-2 Inspiration · **§4.6 待审草稿** · 未进 catalog）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否` · **验收数据：「呼吸练习在哪」→ 0011 已够用 · #961 不合**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021–0023 Inspiration 三卡**（**PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` / `kb-live-zen-cinema` / `kb-live-wallpapers` · **21 条** `审核状态: 已通过` 可进检索闸门）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · 严格排除具体引导 · **待 PO 点头**）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -483,7 +483,7 @@
 ### 4.4 batch-2 Step 4（Five Moments / Honesty · 已通过 · catalog 已入库）
 
 > **Status**: Step 4 权威源起草 · **PO 2026-09-22 书面放行**（无需 §4.4 语气 spot-check）· **已进** `productKnowledgeCatalog.json` · registry `catalogKbIds` 已链 **0019** / **0020**。  
-> **下一批 Inspiration 候选顺序（PO 同意）**：Zen Cinema → Wallpapers。**0019/0020 已合 develop**（#939）· **0021 Daily quote 已入库 catalog**（#940 · 闸门 **19 条**）· **0022 Zen Cinema 待审草稿见 §4.5** · **0023 Wallpapers 待审草稿见 §4.6**。
+> **Inspiration 三卡**：Daily quote → Zen Cinema → Wallpapers 均已入库 catalog（闸门 **21 条**）。**0019/0020**（#939）· **0021**（#940）· **0022/0023**（本旁支）。
 
 ```yaml
 - id: KB-FUNC-0019
@@ -549,10 +549,9 @@
 
 > **权威源（0019–0021）**：`src/locales/en.json` · `fiveMomentsCompassGate.js` · `PRODUCT_MOMENTS.md` · `dailyZenQuote.js` · `DailyZenQuoteCardUI.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 U2
 
-### 4.5 batch-2 Step 4（Zen Cinema · 待审 · 未进 catalog）
+### 4.5 batch-2 Step 4（Zen Cinema · 已通过 · catalog 已入库）
 
-> **Status**: Step 4 权威源起草 · **待 PO tone spot-check** · **未进** `productKnowledgeCatalog.json` · registry `kb-live-zen-cinema` 仍无 `catalogKbIds` 链。  
-> **下一刀**：PO spot-check 通过后入库 catalog + registry 链 + 闸门 **20 条**（0023 草稿见 §4.6）。
+> **Status**: **PO spot-check 已通过** · **已进** `productKnowledgeCatalog.json` · registry `kb-live-zen-cinema` 链 `KB-FUNC-0022` · 闸门 **20 条**（与 0023 合入后 **21 条**）。
 
 ```yaml
 - id: KB-FUNC-0022
@@ -567,8 +566,8 @@
     禁止：说成频道墙或需登录；禁止在短答里念 `ZEN_CINEMA_FILM_TITLE` 片名正文；禁止说成必须每日打卡；禁止与 Daily quote / Wallpapers 混为一谈。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 待审
-  审核人: —
+  审核状态: 已通过
+  审核人: PO
   风险标记: 否
   适用产品版本: 现网 Zen Cinema gift card（growth ①）
   更新时间: 2026-09-25
@@ -578,10 +577,9 @@
 
 > **权威源（0022）**：`src/locales/en.json` · `zenCinemaConfig.js` · `ZenCinemaCardUI.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 U1
 
-### 4.6 batch-2 Step 4（Wallpapers · 待审 · 未进 catalog）
+### 4.6 batch-2 Step 4（Wallpapers · 已通过 · catalog 已入库）
 
-> **Status**: Step 4 权威源起草 · **待 PO tone spot-check** · **未进** `productKnowledgeCatalog.json` · registry `kb-live-wallpapers` 仍无 `catalogKbIds` 链。  
-> **下一刀**：PO spot-check **0022 + 0023** → 分别入库 catalog + registry 链 → 闸门 **20 条** / **21 条**。
+> **Status**: **PO spot-check 已通过** · **已进** `productKnowledgeCatalog.json` · registry `kb-live-wallpapers` 链 `KB-FUNC-0023` · 闸门 **21 条**。
 
 ```yaml
 - id: KB-FUNC-0023
@@ -596,8 +594,8 @@
     禁止：说成付费门或需登录；禁止在短答里念 `WALLPAPER_STILL_*` 静帧标题正文；禁止把 Save image 说成一键社交分享核心卖点；禁止与 Daily quote / Zen Cinema 混为一谈。
   yin_may_retrieve: 是
   来源: 界面文案
-  审核状态: 待审
-  审核人: —
+  审核状态: 已通过
+  审核人: PO
   风险标记: 否
   适用产品版本: 现网 Digital wallpapers gift card（growth ②）
   更新时间: 2026-09-25
