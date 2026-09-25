@@ -15,6 +15,8 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SWIFT_SOURCE = path.join(__dirname, '..', 'native', 'macos-speech-helper.swift');
+const OBJC_TRAP_SOURCE = path.join(__dirname, '..', 'native', 'macos-speech-exception-trap.m');
+const OBJC_TRAP_HEADER = path.join(__dirname, '..', 'native', 'macos-speech-exception-trap.h');
 const PLIST_SOURCE = path.join(__dirname, '..', 'native', 'macos-speech-helper-Info.plist');
 const ENTITLEMENTS_SOURCE = path.join(__dirname, '..', 'entitlements.mac.plist');
 const LAB_DIR = '/tmp/ft-l0-lab';
@@ -61,10 +63,18 @@ function newestMtimeMs(files) {
  */
 export function ensureMacosSpeechHelperBuilt() {
   if (process.platform !== 'darwin') return false;
-  if (!fs.existsSync(SWIFT_SOURCE) || !fs.existsSync(PLIST_SOURCE)) return false;
+  if (!fs.existsSync(SWIFT_SOURCE) || !fs.existsSync(PLIST_SOURCE) || !fs.existsSync(OBJC_TRAP_SOURCE)) {
+    return false;
+  }
   fs.mkdirSync(LAB_DIR, { recursive: true });
   const layout = macosSpeechHelperLayout();
-  const sourceMtime = newestMtimeMs([SWIFT_SOURCE, PLIST_SOURCE, ENTITLEMENTS_SOURCE]);
+  const sourceMtime = newestMtimeMs([
+    SWIFT_SOURCE,
+    PLIST_SOURCE,
+    ENTITLEMENTS_SOURCE,
+    OBJC_TRAP_SOURCE,
+    OBJC_TRAP_HEADER
+  ]);
   if (fs.existsSync(layout.binPath) && fs.statSync(layout.binPath).mtimeMs >= sourceMtime) {
     return true;
   }
@@ -74,9 +84,12 @@ export function ensureMacosSpeechHelperBuilt() {
     'swiftc',
     [
       '-O',
+      '-import-objc-header',
+      OBJC_TRAP_HEADER,
       '-o',
       layout.binPath,
       SWIFT_SOURCE,
+      OBJC_TRAP_SOURCE,
       '-Xlinker',
       '-sectcreate',
       '-Xlinker',
@@ -110,6 +123,32 @@ export function ensureMacosSpeechHelperBuilt() {
     );
   }
   return fs.existsSync(layout.binPath);
+}
+
+/**
+ * @param {string} stdout
+ * @param {number | null} code
+ * @param {string} [stderr]
+ * @returns {Record<string, unknown>}
+ */
+export function parseMacosSpeechHelperStdout(stdout, code, stderr = '') {
+  const line = String(stdout || '').trim().split('\n').filter(Boolean).pop() || '';
+  /** @type {Record<string, unknown> | null} */
+  let json = null;
+  try {
+    json = line ? JSON.parse(line) : null;
+  } catch {
+    return { ok: false, error: 'invalid_json', raw: line || String(stdout || '').trim() };
+  }
+  if (json && typeof json === 'object') {
+    return json;
+  }
+  return {
+    ok: false,
+    error: 'helper_crashed',
+    detail: String(stderr || '').trim() || `exit_${code ?? 'null'}`,
+    exitCode: code
+  };
 }
 
 /**
@@ -170,14 +209,7 @@ export function runMacosSpeechHelper(args, opts = {}) {
     }
     child.on('close', (code) => {
       if (timer) clearTimeout(timer);
-      const line = stdout.trim().split('\n').filter(Boolean).pop() || '';
-      /** @type {Record<string, unknown> | null} */
-      let json = null;
-      try {
-        json = line ? JSON.parse(line) : null;
-      } catch {
-        json = { ok: false, error: 'invalid_json', raw: line || stdout.trim() };
-      }
+      const json = parseMacosSpeechHelperStdout(stdout, code, stderr);
       resolve({
         ok: code === 0 && json?.ok !== false,
         json,
@@ -259,14 +291,7 @@ export function startMacosSpeechTranscribe(locale = 'en-US', maxSeconds = 30) {
 
   const finished = new Promise((resolve) => {
     child.on('close', (code) => {
-      const line = stdout.trim().split('\n').filter(Boolean).pop() || '';
-      /** @type {Record<string, unknown> | null} */
-      let json = null;
-      try {
-        json = line ? JSON.parse(line) : null;
-      } catch {
-        json = { ok: false, error: 'invalid_json', raw: line || stdout.trim() };
-      }
+      const json = parseMacosSpeechHelperStdout(stdout, code, stderr);
       resolve({
         ok: code === 0 && json?.ok !== false,
         json,

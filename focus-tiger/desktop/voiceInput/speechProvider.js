@@ -45,6 +45,14 @@ export function mapSpeechFailureReason(json) {
       return 'The microphone audio format could not be opened.';
     case 'audio_tap_empty':
       return 'The microphone opened, but no audio reached speech recognition.';
+    case 'audio_engine_start_failed':
+      return json.detail
+        ? `The microphone engine could not start (${json.detail}).`
+        : 'The microphone engine could not start.';
+    case 'helper_crashed':
+      return json.detail
+        ? `Speech helper crashed (${json.detail}).`
+        : 'Speech helper crashed before returning text.';
     default:
       return json.detail
         ? `${error}: ${String(json.detail)}`

@@ -5,6 +5,7 @@
  */
 
 import AVFoundation
+import Darwin
 import Foundation
 import Speech
 
@@ -19,6 +20,24 @@ func emitJson(_ payload: [String: Any]) {
     exit(2)
   }
   print(line)
+  fflush(stdout)
+}
+
+func runCatching(_ body: @escaping () -> Void) -> String? {
+  var reason: NSString?
+  let ok = FTRunCatching({ body() }, &reason)
+  return ok ? nil : (reason as String?)
+}
+
+func resolvedRecordingFormat(for node: AVAudioInputNode) -> AVAudioFormat? {
+  var format = node.outputFormat(forBus: 0)
+  if format.sampleRate <= 0 || format.channelCount == 0 {
+    format = node.inputFormat(forBus: 0)
+  }
+  if format.sampleRate <= 0 || format.channelCount == 0 {
+    return AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1)
+  }
+  return format
 }
 
 func speechAuthLabel(_ status: SFSpeechRecognizerAuthorizationStatus) -> String {
@@ -194,37 +213,6 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   }
 
   let engine = AVAudioEngine()
-  engine.prepare()
-  do {
-    try engine.start()
-  } catch {
-    emitJson([
-      "command": "transcribe",
-      "ok": false,
-      "error": "audio_engine_start_failed",
-      "detail": error.localizedDescription,
-      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
-    ])
-    exit(1)
-  }
-
-  let inputNode = engine.inputNode
-  var recordingFormat = inputNode.outputFormat(forBus: 0)
-  if recordingFormat.sampleRate <= 0 || recordingFormat.channelCount == 0 {
-    recordingFormat = inputNode.inputFormat(forBus: 0)
-  }
-  if recordingFormat.sampleRate <= 0 || recordingFormat.channelCount == 0 {
-    engine.stop()
-    emitJson([
-      "command": "transcribe",
-      "ok": false,
-      "error": "audio_format_invalid",
-      "detail": "input node sample rate is 0",
-      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
-    ])
-    exit(1)
-  }
-
   let sem = DispatchSemaphore(value: 0)
   var finalText = ""
   var failure: String? = nil
@@ -234,6 +222,9 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   var bufferCount = 0
   var peakRms: Float = 0
   let finalizeLock = NSLock()
+  var inputNode: AVAudioInputNode!
+  var recordingFormat: AVAudioFormat!
+  var engineStartError: String?
 
   func signalWhenReady() {
     finalizeLock.lock()
@@ -277,25 +268,60 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     }
   }
 
-  inputNode.installTap(onBus: 0, bufferSize: 4096, format: recordingFormat) { buffer, _ in
-    request.append(buffer)
-    finalizeLock.lock()
-    bufferCount += 1
-    if let channel = buffer.floatChannelData?[0] {
-      let frames = Int(buffer.frameLength)
-      if frames > 0 {
-        var sum: Float = 0
-        for i in 0..<frames {
-          let sample = channel[i]
-          sum += sample * sample
-        }
-        let rms = sqrt(sum / Float(frames))
-        if rms > peakRms {
-          peakRms = rms
+  let thrown = runCatching {
+    inputNode = engine.inputNode
+    guard let format = resolvedRecordingFormat(for: inputNode) else {
+      engineStartError = "input node sample rate is 0"
+      return
+    }
+    recordingFormat = format
+    inputNode.installTap(onBus: 0, bufferSize: 4096, format: format) { buffer, _ in
+      request.append(buffer)
+      finalizeLock.lock()
+      bufferCount += 1
+      if let channel = buffer.floatChannelData?[0] {
+        let frames = Int(buffer.frameLength)
+        if frames > 0 {
+          var sum: Float = 0
+          for i in 0..<frames {
+            let sample = channel[i]
+            sum += sample * sample
+          }
+          let rms = sqrt(sum / Float(frames))
+          if rms > peakRms {
+            peakRms = rms
+          }
         }
       }
+      finalizeLock.unlock()
     }
-    finalizeLock.unlock()
+    do {
+      try engine.start()
+    } catch {
+      engineStartError = error.localizedDescription
+    }
+  }
+  if let thrown {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "audio_engine_start_failed",
+      "detail": thrown,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+  if let engineStartError {
+    engine.stop()
+    let code = engineStartError.contains("sample rate") ? "audio_format_invalid" : "audio_engine_start_failed"
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": code,
+      "detail": engineStartError,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
   }
 
   let task = recognizer.recognitionTask(with: request) { result, error in
@@ -381,6 +407,8 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
 }
 
 let args = CommandLine.arguments
+setbuf(stdout, nil)
+setbuf(stderr, nil)
 guard args.count >= 2 else {
   emitJson(["ok": false, "error": "usage", "detail": "macos-speech-helper gate|transcribe [--max-seconds N]"])
   exit(2)
