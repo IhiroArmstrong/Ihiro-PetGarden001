@@ -41,6 +41,10 @@ export function mapSpeechFailureReason(json) {
       return 'Voice Input probe requires macOS.';
     case 'helper_build_failed':
       return 'Could not build the macOS speech helper.';
+    case 'audio_format_invalid':
+      return 'The microphone audio format could not be opened.';
+    case 'audio_tap_empty':
+      return 'The microphone opened, but no audio reached speech recognition.';
     default:
       return json.detail
         ? `${error}: ${String(json.detail)}`

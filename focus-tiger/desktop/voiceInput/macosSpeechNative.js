@@ -4,7 +4,8 @@
  */
 
 /**
- * Spawn the macOS Speech helper (Swift). Compiles once to /tmp/ft-l0-lab/.
+ * Spawn the macOS Speech helper (Swift). Compiles once into a tiny .app
+ * so TCC can attach microphone + speech-recognition usage strings.
  */
 
 import { spawn, spawnSync } from 'node:child_process';
@@ -14,14 +15,45 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SWIFT_SOURCE = path.join(__dirname, '..', 'native', 'macos-speech-helper.swift');
+const PLIST_SOURCE = path.join(__dirname, '..', 'native', 'macos-speech-helper-Info.plist');
+const ENTITLEMENTS_SOURCE = path.join(__dirname, '..', 'entitlements.mac.plist');
 const LAB_DIR = '/tmp/ft-l0-lab';
-const HELPER_BIN = path.join(LAB_DIR, 'macos-speech-helper');
+
+/**
+ * @param {string} [labDir]
+ * @returns {{
+ *   appDir: string,
+ *   macosDir: string,
+ *   plistPath: string,
+ *   binPath: string
+ * }}
+ */
+export function macosSpeechHelperLayout(labDir = LAB_DIR) {
+  const appDir = path.join(labDir, 'FocusTigerSpeechHelper.app');
+  return {
+    appDir,
+    macosDir: path.join(appDir, 'Contents', 'MacOS'),
+    plistPath: path.join(appDir, 'Contents', 'Info.plist'),
+    binPath: path.join(appDir, 'Contents', 'MacOS', 'macos-speech-helper')
+  };
+}
 
 /**
  * @returns {string}
  */
 export function macosSpeechHelperPath() {
-  return HELPER_BIN;
+  return macosSpeechHelperLayout().binPath;
+}
+
+/**
+ * @param {string[]} files
+ * @returns {number}
+ */
+function newestMtimeMs(files) {
+  return Math.max(
+    0,
+    ...files.filter((file) => fs.existsSync(file)).map((file) => fs.statSync(file).mtimeMs)
+  );
 }
 
 /**
@@ -29,16 +61,31 @@ export function macosSpeechHelperPath() {
  */
 export function ensureMacosSpeechHelperBuilt() {
   if (process.platform !== 'darwin') return false;
-  if (!fs.existsSync(SWIFT_SOURCE)) return false;
+  if (!fs.existsSync(SWIFT_SOURCE) || !fs.existsSync(PLIST_SOURCE)) return false;
   fs.mkdirSync(LAB_DIR, { recursive: true });
-  const sourceStat = fs.statSync(SWIFT_SOURCE);
-  if (fs.existsSync(HELPER_BIN)) {
-    const binStat = fs.statSync(HELPER_BIN);
-    if (binStat.mtimeMs >= sourceStat.mtimeMs) return true;
+  const layout = macosSpeechHelperLayout();
+  const sourceMtime = newestMtimeMs([SWIFT_SOURCE, PLIST_SOURCE, ENTITLEMENTS_SOURCE]);
+  if (fs.existsSync(layout.binPath) && fs.statSync(layout.binPath).mtimeMs >= sourceMtime) {
+    return true;
   }
+  fs.mkdirSync(layout.macosDir, { recursive: true });
+  fs.copyFileSync(PLIST_SOURCE, layout.plistPath);
   const compile = spawnSync(
     'swiftc',
-    ['-O', '-o', HELPER_BIN, SWIFT_SOURCE],
+    [
+      '-O',
+      '-o',
+      layout.binPath,
+      SWIFT_SOURCE,
+      '-Xlinker',
+      '-sectcreate',
+      '-Xlinker',
+      '__TEXT',
+      '-Xlinker',
+      '__info_plist',
+      '-Xlinker',
+      PLIST_SOURCE
+    ],
     { encoding: 'utf8' }
   );
   if (compile.status !== 0) {
@@ -46,7 +93,23 @@ export function ensureMacosSpeechHelperBuilt() {
       compile.stderr?.trim() || compile.stdout?.trim() || 'swiftc_failed'
     );
   }
-  return fs.existsSync(HELPER_BIN);
+  if (fs.existsSync(ENTITLEMENTS_SOURCE)) {
+    spawnSync(
+      'codesign',
+      [
+        '--force',
+        '--sign',
+        '-',
+        '--identifier',
+        'com.twinsology.focus-tiger.speech-helper',
+        '--entitlements',
+        ENTITLEMENTS_SOURCE,
+        layout.appDir
+      ],
+      { encoding: 'utf8' }
+    );
+  }
+  return fs.existsSync(layout.binPath);
 }
 
 /**
@@ -79,7 +142,7 @@ export function runMacosSpeechHelper(args, opts = {}) {
   }
 
   return new Promise((resolve) => {
-    const child = spawn(HELPER_BIN, args, {
+    const child = spawn(macosSpeechHelperPath(), args, {
       stdio: ['pipe', 'pipe', 'pipe']
     });
     let stdout = '';
@@ -179,7 +242,7 @@ export function startMacosSpeechTranscribe(locale = 'en-US', maxSeconds = 30) {
   }
 
   const child = spawn(
-    HELPER_BIN,
+    macosSpeechHelperPath(),
     ['transcribe', '--locale', locale, '--max-seconds', String(maxSeconds)],
     { stdio: ['pipe', 'pipe', 'pipe'] }
   );

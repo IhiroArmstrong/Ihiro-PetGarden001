@@ -28,6 +28,11 @@ describe('speechProvider', () => {
     assert.match(message, /On-device English/);
   });
 
+  it('maps empty audio tap to a visible user message', () => {
+    const message = mapSpeechFailureReason({ error: 'audio_tap_empty' });
+    assert.match(message, /no audio reached/i);
+  });
+
   it('refuses start when on-device gate fails (no silent cloud fallback)', async () => {
     const provider = createSpeechProvider({
       gateRunner: async () => ({
