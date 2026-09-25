@@ -1,8 +1,8 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门）+ **0022 Zen Cinema**（batch-2 Inspiration · **§4.5 待审草稿** · 未进 catalog）+ **0023 Wallpapers**（batch-2 Inspiration · **§4.6 待审草稿** · 未进 catalog）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 PO 已点头 · **待 PO 人审** · **零条进 catalog** · `yin_may_retrieve: 否`）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否`）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021 A Quiet Line / Daily quote**（batch-2 Inspiration · **PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` · **19 条** `审核状态: 已通过` 可进检索闸门）+ **0022 Zen Cinema**（batch-2 Inspiration · **§4.5 待审草稿** · 未进 catalog）+ **0023 Wallpapers**（batch-2 Inspiration · **§4.6 待审草稿** · 未进 catalog）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 · **PO spot-check 已通过 2026-09-26** · **零条进 catalog** · `yin_may_retrieve: 否` · catalog 写入待 B 类口令）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
-**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · 严格排除具体引导 · Brief **PO 已点头** · §4.7 首批 4 条待审）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
+**交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · Brief **PO 已点头** · §4.7 首批 4 条 **已通过** · 未进 catalog）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
 > 取代 Downloads 通用 RAG 草稿。知识库是后台检索源，不是帮助中心，也不是阿寅念稿机。
 
@@ -607,11 +607,11 @@
 
 > **权威源（0023）**：`src/locales/en.json` · `digitalWallpapersCatalog.js` · `saveDigitalWallpaper.js` · `DigitalWallpapersCardUI.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 U3
 
-### 4.7 科普概念首批（KB-EDU · 待 PO 人审 · 未进 catalog）
+### 4.7 科普概念首批（KB-EDU · PO spot-check 已通过 · 未进 catalog）
 
-> **Status**: Brief #936 PO 已点头 · 候选清单 PO 已筛选（①③ 不合并 · ④ 仅 Sit/Breath/Ground 三角 · 不含 Five Moments / Confide）· **4 条待审** · **零条**进 `productKnowledgeCatalog.json` · **不改** Confide 路由 / generate。  
+> **Status**: Brief #936 PO 已点头 · 候选清单 PO 已筛选（①③ 不合并 · ④ 仅 Sit/Breath/Ground 三角 · 不含 Five Moments / Confide）· **4 条已通过**（2026-09-26 PO spot-check §4.7）· **零条**进 `productKnowledgeCatalog.json` · `yin_may_retrieve: 否` · **不改** Confide 路由 / generate。  
 > **起草顺序**：② 接地 → ① 正念 → ③ 专注 vs 冥想 → ④ 概念→入口对照。  
-> **下一刀**：PO 对照 Brief §1 判定表 + 禁止事项核查逐条 spot-check → 通过后标「已通过」；catalog 写入须 **另发 B 类口令**。
+> **下一刀**：catalog 写入 + `yin_may_retrieve: 是` 须 **另发 B 类口令**。
 
 ```yaml
 - id: KB-EDU-0001
@@ -632,10 +632,10 @@
     针对你的行动指令: 否
     照搬信源: 否
   信源类型: 公共卫生机构科普材料
-  来源: AI生成待审
-  审核状态: 未审核
-  审核人: —
-  审核人角色: 产品/内容团队（待指定）
+  来源: AI生成已审
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · spot-check §4.7）
+  审核人角色: 产品/内容团队
   风险标记: 否
   yin_may_retrieve: 否
   适用产品版本: 接地练习独立菜单已合入后的产品壳
@@ -660,10 +660,10 @@
     针对你的行动指令: 否
     照搬信源: 否
   信源类型: 公共卫生机构科普材料
-  来源: AI生成待审
-  审核状态: 未审核
-  审核人: —
-  审核人角色: 产品/内容团队（待指定）
+  来源: AI生成已审
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · spot-check §4.7）
+  审核人角色: 产品/内容团队
   风险标记: 否
   yin_may_retrieve: 否
   适用产品版本: 现网产品壳
@@ -688,10 +688,10 @@
     针对你的行动指令: 否
     照搬信源: 否
   信源类型: 同行综述转述 + 产品定位用语（PRODUCT_POSITIONING.md）
-  来源: AI生成待审
-  审核状态: 未审核
-  审核人: —
-  审核人角色: 产品/内容团队（待指定）
+  来源: AI生成已审
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · spot-check §4.7）
+  审核人角色: 产品/内容团队
   风险标记: 否
   yin_may_retrieve: 否
   适用产品版本: 现网产品壳（Sit 10 分钟起 · 左球 Breath practice）
@@ -716,10 +716,10 @@
     针对你的行动指令: 否
     照搬信源: 否
   信源类型: 界面文案 / 已有 KB-FUNC-* 指路条
-  来源: AI生成待审
-  审核状态: 未审核
-  审核人: —
-  审核人角色: 产品/内容团队（待指定）
+  来源: AI生成已审
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · spot-check §4.7）
+  审核人角色: 产品/内容团队
   风险标记: 否
   yin_may_retrieve: 否
   适用产品版本: 现网产品壳（§4.1 速查表）
@@ -801,12 +801,13 @@
 - [x] PO tone spot-check → 标已通过并进 `productKnowledgeCatalog.json`
 - [x] registry `kb-live-daily-quote` 链 `KB-FUNC-0021`；闸门升至 **19 条**
 
-**KB-EDU 科普概念首批（2026-09-26 · 待 PO spot-check）**
+**KB-EDU 科普概念首批（2026-09-26 · PO spot-check 已通过）**
 
 - [x] Brief #936 PO 已点头；候选 4 条全留（①③ 不合并 · ④ 仅 Sit/Breath/Ground）
 - [x] §4.7 起草 `KB-EDU-0001`–`0004`；禁止事项核查全「否」；无 `RESET_*` 正文
-- [ ] PO 逐条 spot-check → 标已通过（catalog 写入须另发 B 类口令）
-- [x] **零条** `KB-EDU-*` 进 `productKnowledgeCatalog.json`
+- [x] PO 逐条 spot-check §4.7 → 标已通过（2026-09-26）
+- [x] **零条** `KB-EDU-*` 进 `productKnowledgeCatalog.json`（catalog 写入待 B 类口令）
+- [x] 四条 `yin_may_retrieve: 否`（catalog 前不可检索）
 
 **共通**
 
