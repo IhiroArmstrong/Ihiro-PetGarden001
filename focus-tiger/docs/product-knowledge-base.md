@@ -678,7 +678,7 @@
   标题: Focus sit 和 meditation 在说法上差在哪
   适用场景: 分不清 focus / meditation / 正念 在公众说法里各指什么，或问「我这是在冥想吗」（不是正在求被带着做）
   内容正文: |
-    短答（en）：In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here.
+    短答（en）：In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.
     分工：纯「正念是什么」→ KB-EDU-0002；菜单路径 → KB-FUNC-0001 / 0011 / KB-EDU-0004。
   禁止事项核查:
     具体步骤指令: 否
@@ -706,7 +706,7 @@
   标题: 正念 / 接地 / 专注在本产品里各对应什么入口
   适用场景: 已听懂概念，想知道 Focus Tiger 里哪一类练习对应哪条现网入口（不是正在求步骤或引导语）
   内容正文: |
-    短答（en）：This is a concept-to-entry map only — Yin repeats the approved FUNC short answers for paths, never reads exercise scripts aloud. Focus / sitting with Yin → main button Sit with Yin (KB-FUNC-0001). A shorter breath pause → left orb Breath practice (KB-FUNC-0011; inventory detail KB-FUNC-0006). Grounding as a practice → More → Practice → Ground exercise (KB-FUNC-0002). Reading this map is enough; for exact taps Yin points to those entries, not a second menu manual.
+    短答（en）：This is a concept-to-entry map only — Yin repeats the approved FUNC short answers for paths, never reads exercise scripts aloud. Focus / sitting with Yin → main button Sit with Yin (KB-FUNC-0001). A shorter breath pause → left orb Breath practice (KB-FUNC-0011; inventory detail KB-FUNC-0006). Grounding as a practice → Ground exercise (KB-FUNC-0002). Reading this map is enough; for exact taps Yin points to those entries, not a second menu manual.
     范围：首批仅 Sit / Breath / Ground 三角；不含 Five Moments、Confide、Inspiration 礼物卡。
   禁止事项核查:
     具体步骤指令: 否
