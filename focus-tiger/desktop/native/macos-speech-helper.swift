@@ -49,41 +49,59 @@ func microphoneAuthLabel() -> String {
   }
 }
 
-func requestSpeechAuthorization() -> SFSpeechRecognizerAuthorizationStatus {
-  let sem = DispatchSemaphore(value: 0)
-  var result = SFSpeechRecognizer.authorizationStatus()
-  if result == .notDetermined {
-    SFSpeechRecognizer.requestAuthorization { status in
-      result = status
-      sem.signal()
-    }
-    sem.wait()
+func pumpRunLoop(until shouldStop: () -> Bool, timeoutSeconds: Double) -> Bool {
+  let deadline = Date().addingTimeInterval(timeoutSeconds)
+  while !shouldStop() && Date() < deadline {
+    RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.05))
   }
+  return shouldStop()
+}
+
+func requestSpeechAuthorization() -> SFSpeechRecognizerAuthorizationStatus {
+  var result = SFSpeechRecognizer.authorizationStatus()
+  if result != .notDetermined {
+    return result
+  }
+  var finished = false
+  SFSpeechRecognizer.requestAuthorization { status in
+    result = status
+    finished = true
+  }
+  _ = pumpRunLoop(until: { finished }, timeoutSeconds: 60)
   return result
 }
 
 func requestMicrophoneAuthorization() -> String {
   if #available(macOS 14.0, *) {
-    let sem = DispatchSemaphore(value: 0)
-    var granted = AVAudioApplication.shared.recordPermission == .granted
-    if AVAudioApplication.shared.recordPermission == .undetermined {
-      AVAudioApplication.requestRecordPermission { ok in
-        granted = ok
-        sem.signal()
-      }
-      sem.wait()
+    if AVAudioApplication.shared.recordPermission == .granted {
+      return "granted"
     }
+    if AVAudioApplication.shared.recordPermission == .denied {
+      return "denied"
+    }
+    var granted = false
+    var finished = false
+    AVAudioApplication.requestRecordPermission { ok in
+      granted = ok
+      finished = true
+    }
+    _ = pumpRunLoop(until: { finished }, timeoutSeconds: 60)
     return granted ? "granted" : "denied"
   }
-  let sem = DispatchSemaphore(value: 0)
-  var granted = AVCaptureDevice.authorizationStatus(for: .audio) == .authorized
-  if AVCaptureDevice.authorizationStatus(for: .audio) == .notDetermined {
-    AVCaptureDevice.requestAccess(for: .audio) { ok in
-      granted = ok
-      sem.signal()
-    }
-    sem.wait()
+  let status = AVCaptureDevice.authorizationStatus(for: .audio)
+  if status == .authorized {
+    return "granted"
   }
+  if status == .denied || status == .restricted {
+    return "denied"
+  }
+  var granted = false
+  var finished = false
+  AVCaptureDevice.requestAccess(for: .audio) { ok in
+    granted = ok
+    finished = true
+  }
+  _ = pumpRunLoop(until: { finished }, timeoutSeconds: 60)
   return granted ? "granted" : "denied"
 }
 
@@ -98,6 +116,8 @@ func onDeviceSupported(for localeId: String) -> Bool {
 }
 
 func runGate(localeId: String) {
+  let speechStatus = requestSpeechAuthorization()
+  let micStatus = requestMicrophoneAuthorization()
   let recognizer = SFSpeechRecognizer(locale: Locale(identifier: localeId))
   emitJson([
     "command": "gate",
@@ -105,8 +125,8 @@ func runGate(localeId: String) {
     "locale": localeId,
     "onDeviceSupported": onDeviceSupported(for: localeId),
     "recognizerAvailable": recognizer?.isAvailable ?? false,
-    "speechAuthorization": speechAuthLabel(SFSpeechRecognizer.authorizationStatus()),
-    "microphoneAuthorization": microphoneAuthLabel(),
+    "speechAuthorization": speechAuthLabel(speechStatus),
+    "microphoneAuthorization": micStatus,
     "requiresOnDeviceRecognition": true
   ])
 }
@@ -167,13 +187,42 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   request.shouldReportPartialResults = true
   if #available(macOS 13.0, *) {
     request.requiresOnDeviceRecognition = true
+    request.addsPunctuation = true
+  }
+  if #available(macOS 14.0, *) {
+    request.taskHint = .dictation
   }
 
   let engine = AVAudioEngine()
+  engine.prepare()
+  do {
+    try engine.start()
+  } catch {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "audio_engine_start_failed",
+      "detail": error.localizedDescription,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+
   let inputNode = engine.inputNode
-  let recordingFormat = inputNode.outputFormat(forBus: 0)
-  inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
-    request.append(buffer)
+  var recordingFormat = inputNode.outputFormat(forBus: 0)
+  if recordingFormat.sampleRate <= 0 || recordingFormat.channelCount == 0 {
+    recordingFormat = inputNode.inputFormat(forBus: 0)
+  }
+  if recordingFormat.sampleRate <= 0 || recordingFormat.channelCount == 0 {
+    engine.stop()
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "audio_format_invalid",
+      "detail": "input node sample rate is 0",
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
   }
 
   let sem = DispatchSemaphore(value: 0)
@@ -182,6 +231,8 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   var finished = false
   var audioEnded = false
   var didSignal = false
+  var bufferCount = 0
+  var peakRms: Float = 0
   let finalizeLock = NSLock()
 
   func signalWhenReady() {
@@ -226,24 +277,33 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     }
   }
 
-  engine.prepare()
-  do {
-    try engine.start()
-  } catch {
-    emitJson([
-      "command": "transcribe",
-      "ok": false,
-      "error": "audio_engine_start_failed",
-      "detail": error.localizedDescription,
-      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
-    ])
-    exit(1)
+  inputNode.installTap(onBus: 0, bufferSize: 4096, format: recordingFormat) { buffer, _ in
+    request.append(buffer)
+    finalizeLock.lock()
+    bufferCount += 1
+    if let channel = buffer.floatChannelData?[0] {
+      let frames = Int(buffer.frameLength)
+      if frames > 0 {
+        var sum: Float = 0
+        for i in 0..<frames {
+          let sample = channel[i]
+          sum += sample * sample
+        }
+        let rms = sqrt(sum / Float(frames))
+        if rms > peakRms {
+          peakRms = rms
+        }
+      }
+    }
+    finalizeLock.unlock()
   }
 
   let task = recognizer.recognitionTask(with: request) { result, error in
     if let result {
-      finalText = result.bestTranscription.formattedString
-      // Ignore premature isFinal before capture ends — short speech was being dropped.
+      let text = result.bestTranscription.formattedString
+      if !text.isEmpty {
+        finalText = text
+      }
       if result.isFinal {
         signalWhenReady()
       } else if !finalText.isEmpty {
@@ -268,9 +328,28 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   finished = true
   engine.stop()
   inputNode.removeTap(onBus: 0)
+  let capturedBuffers: Int
+  let capturedPeak: Float
+  finalizeLock.lock()
+  capturedBuffers = bufferCount
+  capturedPeak = peakRms
+  finalizeLock.unlock()
   task.cancel()
 
   let latencyMs = Int(Date().timeIntervalSince(started) * 1000)
+  if capturedBuffers == 0 {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "audio_tap_empty",
+      "sampleRate": recordingFormat.sampleRate,
+      "channelCount": Int(recordingFormat.channelCount),
+      "bufferCount": capturedBuffers,
+      "peakRms": Double(capturedPeak),
+      "latencyMs": latencyMs
+    ])
+    exit(1)
+  }
   if let failure, finalText.isEmpty {
     emitJson([
       "command": "transcribe",
@@ -278,6 +357,9 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
       "error": "recognition_failed",
       "detail": failure,
       "requiresOnDeviceRecognition": true,
+      "sampleRate": recordingFormat.sampleRate,
+      "bufferCount": capturedBuffers,
+      "peakRms": Double(capturedPeak),
       "latencyMs": latencyMs
     ])
     exit(1)
@@ -290,6 +372,10 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     "transcript": finalText,
     "requiresOnDeviceRecognition": true,
     "onDeviceEnforced": true,
+    "sampleRate": recordingFormat.sampleRate,
+    "channelCount": Int(recordingFormat.channelCount),
+    "bufferCount": capturedBuffers,
+    "peakRms": Double(capturedPeak),
     "latencyMs": latencyMs
   ])
 }
