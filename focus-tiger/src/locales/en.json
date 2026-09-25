@@ -610,6 +610,7 @@
   "QUIET_TOGETHER_LANTERNS_MANY": "{n} are sitting quietly.",
   "QUIET_TOGETHER_LANTERNS_ARIA_ONE": "One other person is sitting with Yin right now",
   "QUIET_TOGETHER_LANTERNS_ARIA_MANY": "{n} people are sitting with Yin right now",
+  "CLOUD_PRESENCE_NETWORK_HINT": "Connection is weak. Quiet Together and Circle presence may not update. Your practice is unaffected.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_TITLE": "Focus Circle (optional)",
   "PRIVACY_SHEET_FOCUS_CIRCLE_HINT": "A quiet circle of up to eight. Share a six-character code outside the app to invite someone. No chat, no account, no names in this first version.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_MENU_POINTER": "You can also open this from ⋯ → You are not alone → My circle.",

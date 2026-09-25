@@ -605,6 +605,7 @@
   "QUIET_TOGETHER_LANTERNS_MANY": "{n} 人が静かに座っています。",
   "QUIET_TOGETHER_LANTERNS_ARIA_ONE": "いまもうひとりが寅とともに座っています",
   "QUIET_TOGETHER_LANTERNS_ARIA_MANY": "いま {n} 人が寅とともに座っています",
+  "CLOUD_PRESENCE_NETWORK_HINT": "接続が不安定です。静かな同席の灯と Circle の表示が更新されない場合があります。座る練習には影響しません。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_TITLE": "Focus Circle（任意）",
   "PRIVACY_SHEET_FOCUS_CIRCLE_HINT": "最大8人の静かな輪。アプリ外で6文字の合言葉を共有。チャットなし・アカウントなし。第一版では名前は表示しません。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_MENU_POINTER": "⋯ → You are not alone → 私の輪 からも開けます。",
