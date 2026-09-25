@@ -726,6 +726,75 @@
 
 > **权威源（EDU-0001–0004）**：`task-kb-practice-edu-concepts.md` · `PRODUCT_POSITIONING.md` · §4.1 现网入口速查 · `KB-FUNC-0001` / `0002` / `0011` / `0006`
 
+### 4.8 batch-2 Step 4（Rituals 三场景 · 待审 · 未进 catalog）
+
+> **Status**: Step 4 权威源起草 · **PO 2026-09-26 书面放行 tone spot-check** · **未进** `productKnowledgeCatalog.json` · registry `kb-live-ritual-*` 仍无 `catalogKbIds` 链。  
+> **下一刀**：入库 catalog + registry 链 → 闸门 **28 条**（25 + 0024–0026）。
+
+```yaml
+- id: KB-FUNC-0024
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Morning Ritual 从哪开
+  适用场景: 想找早晨仪式、或分不清和左球 Breath practice / Five Moments Arrive 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Rituals → Morning Ritual. This is one of Yin's advanced guided scenes — it unlocks with Yin Membership or Sanctuary Lifetime. If it is still locked, the menu shows Available with subscription. Yin walks you through a short morning check-in with chip choices; she only points here and does not read the steps aloud.
+    指路：菜单 `ritual.morning.menu`（proxy `ritual-morning`）→ `RitualFlow.js` / `RitualFlowUI.js`（welcome → chips → breath → chips → end）。与 0011 分工：0011 = 左球短坐 Breath practice；本条 = 多步 Morning Ritual。与 0019 分工：Five Moments **Arrive** 芯片 → Arrival Practice；本条 = Rituals 菜单独立场景。与 0025 分工：本条 = 早晨意图；0025 = 情绪重置（Recover 芯片也可直达 0025）。
+    禁止：把 Morning Ritual 说成必须每日打卡；禁止在短答里念 `ritual.morning.*` welcome/chip 正文；禁止念 `RESET_BREATH_*` / `ritual.shared.breath_guide` 引导语正文；禁止与 MicroRitual 混为一谈。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 待审
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 RitualFlow · Morning（entitlement-gated）
+  更新时间: 2026-09-26
+  locale_keys: [ritual.morning.menu, ritual.morning.welcome, ritual.morning.complete, ritual.shared.continue, ritual.shared.leave, ritual.menu_locked]
+  检索关键词: [Morning Ritual, 早晨仪式, morning ritual menu, 晨间仪式, ritual morning, 仪式从哪开, advanced ritual, morning check-in]
+
+- id: KB-FUNC-0025
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Emotional Reset 从哪开
+  适用场景: 想找情绪重置仪式、或分不清 Five Moments Recover 芯片与左球 Breath practice 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Rituals → Emotional Reset — or tap Recover on The 5 Moments compass when unlocked. This advanced scene unlocks with Yin Membership or Sanctuary Lifetime. Yin sits with what feels heavy through chip choices and a longer breath — no fixing, just company. She only points here and does not read the steps aloud.
+    指路：菜单 `ritual.emotional_reset.menu`（proxy `ritual-emotional-reset`）→ `RitualFlow.js` / `RitualFlowUI.js`。与 0019 分工：Five Moments **Recover** 芯片 → 同 proxy（`resolveFiveMomentAction`）；本条也覆盖菜单直达。与 0011 分工：0011 = 左球短坐；本条 = 多步 Emotional Reset。与 0024/0026 分工：0024 = 早晨；0026 = 下班过渡。
+    禁止：把 Emotional Reset 说成心理治疗或贴诊断标签；禁止在短答里念 `ritual.emotional_reset.*` 正文；禁止念 `RESET_BREATH_*` / 引导语正文；禁止说成必须打卡。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 待审
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 RitualFlow · Emotional Reset（entitlement-gated）
+  更新时间: 2026-09-26
+  locale_keys: [ritual.emotional_reset.menu, ritual.emotional_reset.welcome, ritual.emotional_reset.complete, ritual.shared.continue, ritual.shared.leave, ritual.menu_locked]
+  检索关键词: [Emotional Reset, 情绪重置, emotional reset ritual, recover moment, Five Moments Recover, 重置仪式, 情绪仪式, heavy today, reset ritual menu]
+
+- id: KB-FUNC-0026
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Work Transition 从哪开
+  适用场景: 想找下班过渡仪式、或分不清 Five Moments Transition 免费叠层与本条的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Rituals → Work Transition. This advanced scene unlocks with Yin Membership or Sanctuary Lifetime. Yin helps you mark what can stay at work and what you bring home — chip choices, not a lecture. She only points here and does not read the steps aloud.
+    指路：菜单 `ritual.work_transition.menu`（proxy `ritual-work-transition`）→ `RitualFlow.js` / `RitualFlowUI.js`。与 0019 分工：Five Moments **Transition** 芯片 → 免费 C5 Transition Moment 叠层（约 10s 边界标记）；**本条** = Rituals 菜单里的 Work Transition 多步场景，二者不同入口。与 0024/0025 分工：0024 = 早晨；0025 = 情绪重置。
+    禁止：把 Work Transition 与 Five Moments Transition 叠层混为一谈；禁止在短答里念 `ritual.work_transition.*` 正文；禁止念引导语正文；禁止说成必须打卡。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 待审
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 RitualFlow · Work Transition（entitlement-gated）
+  更新时间: 2026-09-26
+  locale_keys: [ritual.work_transition.menu, ritual.work_transition.welcome, ritual.work_transition.complete, ritual.shared.continue, ritual.shared.leave, ritual.menu_locked]
+  检索关键词: [Work Transition, 下班过渡, work transition ritual, transition ritual menu, 工作过渡, leave work ritual, after work ritual, 过渡仪式]
+```
+
+> **权威源（0024–0026）**：`src/locales/en.json` · `RitualFlow.js` · `RitualFlowUI.js` · `fiveMomentsCompassGate.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AF · Slice 2
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml

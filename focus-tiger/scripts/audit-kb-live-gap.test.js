@@ -36,6 +36,30 @@ const KB_DRAFT_LOCALE_KEYS = Object.freeze({
     'WALLPAPER_SAVE_NOTE',
     'WALLPAPER_CANCEL',
     'WALLPAPER_SAVE'
+  ]),
+  'KB-FUNC-0024': Object.freeze([
+    'ritual.morning.menu',
+    'ritual.morning.welcome',
+    'ritual.morning.complete',
+    'ritual.shared.continue',
+    'ritual.shared.leave',
+    'ritual.menu_locked'
+  ]),
+  'KB-FUNC-0025': Object.freeze([
+    'ritual.emotional_reset.menu',
+    'ritual.emotional_reset.welcome',
+    'ritual.emotional_reset.complete',
+    'ritual.shared.continue',
+    'ritual.shared.leave',
+    'ritual.menu_locked'
+  ]),
+  'KB-FUNC-0026': Object.freeze([
+    'ritual.work_transition.menu',
+    'ritual.work_transition.welcome',
+    'ritual.work_transition.complete',
+    'ritual.shared.continue',
+    'ritual.shared.leave',
+    'ritual.menu_locked'
   ])
 });
 
