@@ -278,7 +278,7 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     id: 'kb-0011-diff-zh',
     text: 'Breath 和 Sit 有什么区别？',
     dimensions: ['what'],
-    lock: 'probe',
+    lock: 'must-hit',
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0011' }
   },
   {
@@ -555,11 +555,11 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge_honesty', catalogId: null }
   },
   {
-    id: 'honesty-sit-button',
+    id: 'kb-0001-sit-button-zh',
     text: 'Sit 按钮在哪',
     dimensions: ['where'],
-    lock: 'probe',
-    expect: { dataSource: 'product_knowledge_honesty', catalogId: null }
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0001' }
   },
   {
     id: 'neg-mood-will-it-get-better',

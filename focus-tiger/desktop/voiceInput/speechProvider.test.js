@@ -87,6 +87,35 @@ describe('speechProvider', () => {
     assert.equal(provider.snapshot().allowCloudStt, false);
   });
 
+  it('returns ok with empty transcript when recognition yields no speech', async () => {
+    const provider = createSpeechProvider({
+      gateRunner: async () => ({
+        ok: true,
+        gatePassed: true,
+        json: {
+          ok: true,
+          onDeviceSupported: true,
+          recognizerAvailable: true
+        },
+        stderr: '',
+        exitCode: 0
+      }),
+      transcribeStarter: () => ({
+        child: { stdin: { destroyed: false, write() {}, end() {} } },
+        finished: Promise.resolve({
+          ok: true,
+          json: { ok: true, transcript: '', latencyMs: 400 },
+          stderr: '',
+          exitCode: 0
+        })
+      })
+    });
+    await provider.startListening();
+    const stop = await provider.stopListening();
+    assert.equal(stop.ok, true);
+    assert.equal(stop.transcript, '');
+  });
+
   it('surfaces non-darwin as visible failure', async () => {
     const provider = createSpeechProvider({ platform: 'linux' });
     const gate = await provider.probeOnDeviceGate();

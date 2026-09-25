@@ -125,7 +125,19 @@ export class VoiceInputChrome {
       const status = String(snapshot.status || '');
       if (status === 'listening') this._setState('listening', { skipButtons: true });
       else if (status === 'transcribing') this._setState('transcribing', { skipButtons: true });
-      else if (status === 'error') {
+      else if (status === 'done') {
+        const transcript = String(snapshot.transcript || '').trim();
+        if (transcript && this._state === 'transcribing') {
+          applyVoiceTranscriptToField(
+            this.textarea,
+            transcript,
+            this.textarea.maxLength > 0 ? this.textarea.maxLength : Infinity
+          );
+          this._hasTranscript = true;
+          this.onInputApplied?.();
+        }
+        this._setState('idle');
+      } else if (status === 'error') {
         this._errorMessage = String(snapshot.error || t('VOICE_INPUT_ERROR_GENERIC'));
         this._setState('error');
       }
@@ -199,17 +211,23 @@ export class VoiceInputChrome {
 
   async _onStop() {
     if (!this._bridge || typeof this._bridge.stop !== 'function') return;
+    this._errorMessage = '';
     this._setState('transcribing');
-    const result = await this._bridge.stop();
-    if (!result || result.ok !== true) {
-      this._errorMessage = String(
-        (result && result.userMessage) || t('VOICE_INPUT_ERROR_GENERIC')
-      );
-      this._setState('error');
-      return;
-    }
-    const transcript = String(result.transcript || '');
-    if (transcript) {
+    try {
+      const result = await this._bridge.stop();
+      if (!result || result.ok !== true) {
+        this._errorMessage = String(
+          (result && result.userMessage) || t('VOICE_INPUT_ERROR_GENERIC')
+        );
+        this._setState('error');
+        return;
+      }
+      const transcript = String(result.transcript || '').trim();
+      if (!transcript) {
+        this._errorMessage = t('VOICE_INPUT_ERROR_NO_SPEECH');
+        this._setState('error');
+        return;
+      }
       applyVoiceTranscriptToField(
         this.textarea,
         transcript,
@@ -217,8 +235,11 @@ export class VoiceInputChrome {
       );
       this._hasTranscript = true;
       this.onInputApplied?.();
+      this._setState('idle');
+    } catch {
+      this._errorMessage = t('VOICE_INPUT_ERROR_GENERIC');
+      this._setState('error');
     }
-    this._setState('idle');
   }
 
   async _cancelActiveSession() {
