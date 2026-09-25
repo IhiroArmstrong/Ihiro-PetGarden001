@@ -17,6 +17,29 @@ import {
   retrieveProductKnowledge
 } from './confideProductKnowledge.js';
 
+/** Frozen probe miss-rate snapshots (embedding-debt signal only; does not fail CI). */
+export const KB_ROUTING_MATRIX_PROBE_SNAPSHOTS = Object.freeze({
+  round1: Object.freeze({
+    at: '2026-09-22',
+    developTip: '7466b851',
+    probes: 14,
+    probeMiss: 10,
+    probeMissRate: 10 / 14
+  }),
+  round2: Object.freeze({
+    at: '2026-09-26',
+    developTip: '09d4b95c',
+    probes: 12,
+    probeMiss: 8,
+    probeMissRate: 8 / 12,
+    logAudit: Object.freeze({
+      novelCount: 0,
+      readyForRound2: false,
+      deferProbeExpansionTo: '2026-10-12'
+    })
+  })
+});
+
 /** Frozen Electron bugs from 2026-09-22 hand tests. */
 export const KB_ROUTING_MATRIX_REGRESSION_IDS = Object.freeze([
   'practice-duration-space-zh',

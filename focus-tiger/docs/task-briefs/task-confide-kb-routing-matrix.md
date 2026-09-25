@@ -35,6 +35,22 @@ Cursor Model: Composer 2.5 / Fast OFF
 
 **2026-09-22 首拍**（本矩阵落地时）：`probe` 14 条、漏 10、漏检率约 **71%**。已超过 10% 阈值，但只算**第一次**快照；按上表须再扩一次 fixture 后仍 ≥10% 才开 embedding Brief。禁止本 PR 顺手改 live 正则去压 probe。
 
+**2026-09-26 二拍**（`origin/develop` tip `09d4b95c` · 矩阵冻结夹具 + 日志审计）：
+
+| 项 | 值 |
+|---|---|
+| 冻结 `probe` | 12 条 |
+| 漏检 | 8 条 |
+| 漏检率 | **≈ 66.7%**（仍 ≥10%） |
+| `npm run audit:confide-kb-matrix-probes` | `missRows=0` · `novel=0` · `round2Ready=no` |
+| 日志路径 | `~/Library/Application Support/focus-tiger-desktop/companion-l2/turns.jsonl` |
+| 日志派生 probe | **未追加**（`novel<5` → 与 **2026-10-12** with-prior / Stage 2b 同回合再捞） |
+| 夹具扩面（非日志） | #939 0019/0020 · #940 0021 · catalog 问法 Step 3（`must-hit` 为主；`probe` 集合随晋升略缩） |
+
+**二拍结论**：漏检信号仍亮 → **可立项**条目级 embedding 近义 Brief（`task-confide-kb-entry-embedding.md`）。**禁止**本回合写运行时；日志派生 `probe` 追加仍等 10-12 或 `novel≥5`。
+
+单测锚：`KB_ROUTING_MATRIX_PROBE_SNAPSHOTS.round2` · `confideKbRoutingMatrix.test.js`。
+
 ## 第二轮 probe 来源（强制 · 2026-09-25）
 
 **禁止**靠团队头脑风暴凭空造问法补 `probe`。第二轮只允许两类来源：

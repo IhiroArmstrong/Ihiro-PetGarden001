@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import {
   evaluateKbRoutingMatrix,
   KB_ROUTING_MATRIX_FIXTURES,
+  KB_ROUTING_MATRIX_PROBE_SNAPSHOTS,
   KB_ROUTING_MATRIX_REGRESSION_IDS,
   kbRoutingMatrixSuggestsEmbeddingDebt,
   listLiveKbIdsForMatrix
@@ -53,5 +54,16 @@ describe('confide KB routing matrix', () => {
     assert.equal(report.probes >= 4, true);
     const flag = kbRoutingMatrixSuggestsEmbeddingDebt(report);
     assert.equal(typeof flag, 'boolean');
+  });
+
+  it('matches the frozen round-2 probe snapshot on develop tip', () => {
+    const report = evaluateKbRoutingMatrix();
+    const snap = KB_ROUTING_MATRIX_PROBE_SNAPSHOTS.round2;
+    assert.equal(report.probes, snap.probes);
+    assert.equal(report.probeMiss, snap.probeMiss);
+    assert.equal(report.probeMissRate, snap.probeMissRate);
+    assert.equal(kbRoutingMatrixSuggestsEmbeddingDebt(report), true);
+    assert.equal(snap.logAudit.novelCount, 0);
+    assert.equal(snap.logAudit.readyForRound2, false);
   });
 });

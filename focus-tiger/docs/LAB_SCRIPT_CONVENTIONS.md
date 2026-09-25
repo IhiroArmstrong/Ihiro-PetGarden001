@@ -36,7 +36,7 @@
 | L3 观察句对照（#823 · baseline / B / A） | `/tmp/ft-l0-l3-observe-b-lab.mjs` |
 | L3 观察翼陈词滥调语义护栏（#823 · Brief） | `focus-tiger/docs/task-briefs/task-l3-observe-cliche-semantic-guard.md` |
 | KB 路由回归矩阵（无 GGUF） | `focus-tiger/src/core/confide/confideKbRoutingMatrix.js` · `node --test src/core/confide/confideKbRoutingMatrix.test.js` |
-| KB 矩阵第二轮 probe 候选（真实未命中 · 无 GGUF） | `cd focus-tiger && npm run audit:confide-kb-matrix-probes`（扫 `kb_retrieval_miss` · CSV/JSON 在 `/tmp/ft-l0-lab/` · **禁止**头脑风暴造问法） |
+| KB 矩阵第二轮 probe 候选（真实未命中 · 无 GGUF） | `cd focus-tiger && npm run audit:confide-kb-matrix-probes`（扫 `kb_retrieval_miss` · CSV/JSON 在 `/tmp/ft-l0-lab/` · **禁止**头脑风暴造问法）。**2026-09-26 二拍**：`novel=0` → 日志 probe 延后 **2026-10-12**；冻结夹具漏检 ≈67% → 条目 embedding Brief `task-confide-kb-entry-embedding.md` 已立项。 |
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
 | L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |
