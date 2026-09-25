@@ -180,7 +180,29 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   var finalText = ""
   var failure: String? = nil
   var finished = false
-  var userStopped = false
+  var audioEnded = false
+  var didSignal = false
+  let finalizeLock = NSLock()
+
+  func signalWhenReady() {
+    finalizeLock.lock()
+    defer { finalizeLock.unlock() }
+    guard audioEnded, !didSignal else { return }
+    didSignal = true
+    sem.signal()
+  }
+
+  func endCapture() {
+    finalizeLock.lock()
+    defer { finalizeLock.unlock() }
+    guard !audioEnded else { return }
+    audioEnded = true
+    request.endAudio()
+    // On-device STT can need several seconds after endAudio for short utterances.
+    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 6.0) {
+      signalWhenReady()
+    }
+  }
 
   DispatchQueue.global(qos: .utility).async {
     while !finished {
@@ -189,11 +211,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
         let line = String(data: chunk, encoding: .utf8) ?? ""
         if line.contains("stop") {
           finished = true
-          userStopped = true
-          request.endAudio()
-          DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 2.5) {
-            sem.signal()
-          }
+          endCapture()
           break
         }
       }
@@ -204,10 +222,11 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + maxSeconds) {
     if !finished {
       finished = true
-      request.endAudio()
+      endCapture()
     }
   }
 
+  engine.prepare()
   do {
     try engine.start()
   } catch {
@@ -224,18 +243,28 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   let task = recognizer.recognitionTask(with: request) { result, error in
     if let result {
       finalText = result.bestTranscription.formattedString
+      // Ignore premature isFinal before capture ends — short speech was being dropped.
       if result.isFinal {
-        sem.signal()
+        signalWhenReady()
+      } else if !finalText.isEmpty {
+        finalizeLock.lock()
+        let ended = audioEnded
+        finalizeLock.unlock()
+        if ended {
+          signalWhenReady()
+        }
       }
     }
     if let error {
       failure = error.localizedDescription
-      sem.signal()
+      finalizeLock.lock()
+      audioEnded = true
+      finalizeLock.unlock()
+      signalWhenReady()
     }
   }
 
-  let waitSeconds = userStopped ? 6.0 : maxSeconds + 8.0
-  _ = sem.wait(timeout: .now() + waitSeconds)
+  _ = sem.wait(timeout: .now() + maxSeconds + 12.0)
   finished = true
   engine.stop()
   inputNode.removeTap(onBus: 0)
