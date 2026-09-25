@@ -33,6 +33,15 @@ describe('speechProvider', () => {
     assert.match(message, /no audio reached/i);
   });
 
+  it('maps helper crash without JSON to a visible user message', () => {
+    const message = mapSpeechFailureReason({
+      error: 'helper_crashed',
+      detail: 'exit_134'
+    });
+    assert.match(message, /Speech helper crashed/i);
+    assert.match(message, /exit_134/);
+  });
+
   it('refuses start when on-device gate fails (no silent cloud fallback)', async () => {
     const provider = createSpeechProvider({
       gateRunner: async () => ({
