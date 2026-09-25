@@ -640,3 +640,32 @@ export function kbRoutingMatrixSuggestsEmbeddingDebt(report) {
 export function listLiveKbIdsForMatrix() {
   return listRetrievableProductKnowledgeEntries().map((row) => row.id);
 }
+
+/**
+ * Normalize utterance text for matrix / log display (not confide intent normalize).
+ * @param {string} text
+ */
+export function normalizeKbMatrixProbeText(text) {
+  return String(text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+/**
+ * Dedupe key: collapse inner spaces so「怎么 获得 寅币」=「怎么获得寅币」.
+ * @param {string} text
+ */
+export function compactKbMatrixProbeText(text) {
+  return normalizeKbMatrixProbeText(text).replace(/\s+/g, '');
+}
+
+/**
+ * @param {readonly KbRoutingMatrixRow[]} [fixtures]
+ * @returns {Set<string>}
+ */
+export function buildKbMatrixFixtureTextSet(fixtures = KB_ROUTING_MATRIX_FIXTURES) {
+  const set = new Set();
+  for (const row of fixtures) {
+    set.add(normalizeKbMatrixProbeText(row.text));
+    set.add(compactKbMatrixProbeText(row.text));
+  }
+  return set;
+}

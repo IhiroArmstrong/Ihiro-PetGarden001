@@ -61,6 +61,7 @@
     "audit:read-hybrid-gapfill": "node scripts/audit-read-hybrid-gapfill.js",
     "audit:confide-semantic-shadow": "node scripts/audit-confide-semantic-shadow.js",
     "audit:confide-prior-asymmetric": "node scripts/audit-confide-prior-asymmetric.js",
+    "audit:confide-kb-matrix-probes": "node scripts/audit-confide-kb-matrix-probes.js",
     "audit:kb-live-entries": "node scripts/audit-kb-live-entries.js",
     "audit:kb-live-entries:sync": "node scripts/audit-kb-live-entries.js --write",
     "audit:kb-live-gap": "node scripts/audit-kb-live-gap.js",
