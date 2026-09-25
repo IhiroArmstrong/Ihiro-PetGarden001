@@ -426,10 +426,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **2** | 存活清单 vs 已通过 KB 缺口 | **已合 develop** (#931) · `audit:kb-live-gap` · 12 batch-2 候选 · 6 registry 漂移已修 |
 | **矩阵** | KB 路由回归夹具（意图×问法；断言 dataSource/KB 编号） | **已合 develop** (#938) · `confideKbRoutingMatrix.js` · 不改 live · 无 GGUF |
 | **3** | 已审条目扩问法（0011/0012/0013/0004/0008 等） | **已合 develop** (#932) · 事实不变 · catalog 关键词 |
-| **4** | 权威源起草 → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939 · 闸门 18) · **0021 Daily quote 已入库 catalog**（本旁支 · 闸门 **19**） |
+| **4** | 权威源起草 → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939 · 闸门 18) · **0021 Daily quote 已合 develop** (#940 · 闸门 **19**) · **0022 Zen Cinema 待审草稿**（`docs/kb-batch2-zen-cinema-draft` · PR #962）· **0023 Wallpapers 待审草稿**（`docs/kb-batch2-wallpapers-draft`） |
 | **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
 
-**我认为最合理的下一刀**：合入 **0021 Daily quote catalog**（本旁支）→ 起草 Zen Cinema → Wallpapers。
+**我认为最合理的下一刀**：PO spot-check **0022 + 0023** → 分别入库 catalog + registry 链 → 闸门 **20** / **21** 条。
 
 ---
 
