@@ -11,6 +11,21 @@ alwaysApply: false
 Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规模测试跑完"。
 凡是可以自动化执行、结果可结构化的大规模测试，一律优先交给 CI，而不是在当前会话里直接跑。
 
+## Confide 问题类验收：先批量、后肉眼（强制）
+
+针对**某一类 Confide 问答**（如 generate 失败回落、观察翼质量、KB 路由、闲聊方差等）的单个或有限句手工肉眼测试，**必须先**跑对应的**终端批量冻表**（样本量须覆盖现有 fixture 全集，通常 **≥20 句 × 多 salt / 同面板连发**），全绿后再做 Electron spot-check（UI 手感 / 竖线 / 秒表各 **1–2 句**即可）。
+
+**禁止**仅凭 1–3 句手工测试宣称该类「无限提问可能」已覆盖。
+
+| 场景 | 终端批量（SSOT） | 文档 |
+|---|---|---|
+| regex / 安全 / 事实桶 | `npm run test:confide-acceptance` | `docs/confide-round-acceptance.md` |
+| generate 失败不得 privacy 套话（#930） | `npm run test:confide-generate-failure-fallback` | `docs/confide-generate-failure-fallback-acceptance.md` |
+| 观察翼打乱配对（真模型） | `npm run test:observe-shuffle-screen` | `LAB_SCRIPT_CONVENTIONS.md` |
+| 日语闲聊方差 / 同会话连发 | `companion:ja-chitchat-variance` / `session-repeat` | `LAB_SCRIPT_CONVENTIONS.md` |
+
+新 Confide 问题类若无冻表 → **先建 fixture + 终端 runner**，再登记 tracker / 邀人工 spot-check。
+
 ## 必须交给 CI 执行的场景（不要在本会话直接跑）
 - 全量 E2E 测试套件（`npm run test:e2e`）
 - `test:e2e:visibility` 整表
