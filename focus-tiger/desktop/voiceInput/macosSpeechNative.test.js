@@ -6,7 +6,12 @@
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { describe, it } from 'node:test';
-import { macosSpeechHelperLayout, macosSpeechHelperPath, parseMacosSpeechHelperStdout } from './macosSpeechNative.js';
+import {
+  macosSpeechHelperLayout,
+  macosSpeechHelperPath,
+  parseMacosSpeechHelperJsonLines,
+  parseMacosSpeechHelperStdout
+} from './macosSpeechNative.js';
 
 describe('macosSpeechNative helper layout', () => {
   it('places the binary inside a .app so Speech TCC can attach', () => {
@@ -25,5 +30,16 @@ describe('macosSpeechNative helper layout', () => {
     assert.equal(json.error, 'helper_crashed');
     assert.equal(json.ok, false);
     assert.equal(json.exitCode, 134);
+  });
+
+  it('parses multi-line speak stdout for started/finished phases', () => {
+    const stdout = [
+      '{"command":"speak","ok":true,"phase":"started","startLatencyMs":120}',
+      '{"command":"speak","ok":true,"phase":"finished","startLatencyMs":120,"durationMs":1800}'
+    ].join('\n');
+    const lines = parseMacosSpeechHelperJsonLines(stdout);
+    assert.equal(lines.length, 2);
+    assert.equal(lines[0].phase, 'started');
+    assert.equal(lines[1].phase, 'finished');
   });
 });

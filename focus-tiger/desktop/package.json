@@ -22,7 +22,8 @@
     "companion:favorable-disagreement-mill": "node scripts/l0-run-favorable-disagreement-mill.js",
     "companion:observe-shuffle-screen": "node scripts/l0-observe-shuffle-screen.js",
     "companion:semantic-live-coldstart-probe": "node scripts/l0-semantic-live-coldstart-probe.js",
-    "companion:voice-input-probe": "node scripts/voice-input-probe.js"
+    "companion:voice-input-probe": "node scripts/voice-input-probe.js",
+    "companion:system-tts-probe": "node scripts/system-tts-probe.js"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",
@@ -50,6 +51,8 @@
       "trayPolicy.js",
       "voiceInput/**/*.js",
       "voiceInput/**/*.html",
+      "systemTts/**/*.js",
+      "systemTts/**/*.html",
       "native/**/*.swift",
       "updater/**/*.js",
       "../src/core/desktopUpdaterChannel.js",
