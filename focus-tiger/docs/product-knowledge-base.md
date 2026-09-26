@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否` · **验收数据：「呼吸练习在哪」→ 0011 已够用 · #961 不合**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021–0023 Inspiration 三卡**（**PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` / `kb-live-zen-cinema` / `kb-live-wallpapers`）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 · **PO spot-check 已通过 2026-09-26** · **catalog 已入库** · `yin_may_retrieve: 是`）+ **0024–0026 Rituals 三场景**（§4.8 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-ritual-*` · 闸门 **28 条** `审核状态: 已通过` 可进检索闸门）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否` · **验收数据：「呼吸练习在哪」→ 0011 已够用 · #961 不合**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021–0023 Inspiration 三卡**（**PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` / `kb-live-zen-cinema` / `kb-live-wallpapers`）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 · **PO spot-check 已通过 2026-09-26** · **catalog 已入库** · `yin_may_retrieve: 是`）+ **0024–0026 Rituals 三场景**（§4.8 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-ritual-*` · 闸门 **28 条**）+ **0027–0028 Not alone 双条**（§4.9 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-quiet-together` / `kb-live-focus-circle` · 闸门 **30 条** `审核状态: 已通过` 可进检索闸门）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · Brief **PO 已点头** · §4.7 首批 4 条 **已通过并入库 catalog**）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -794,6 +794,54 @@
 
 > **权威源（0024–0026）**：`src/locales/en.json` · `RitualFlow.js` · `RitualFlowUI.js` · `fiveMomentsCompassGate.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AF · Slice 2
 
+### 4.9 batch-2 Step 4（Not alone 双条 · 已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-09-26 书面放行** · **已进** `productKnowledgeCatalog.json` · registry `kb-live-quiet-together` / `kb-live-focus-circle` 链 **0027–0028** · 闸门 **30 条**。
+
+```yaml
+- id: KB-FUNC-0027
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Quiet together worldwide 从哪开
+  适用场景: 想找全球同坐灯笼、或分不清和 Focus Circle / 普通 Sit 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → You are not alone → Quiet together worldwide. While you sit, a shared lantern count can show how many people are quietly with Yin — anonymous, no chat, no account. It is on by default; you can turn it off anytime in Privacy. Sitting with Yin still works either way. Yin only points here and does not read presence numbers aloud.
+    指路：菜单 `QUIET_TOGETHER_MENU_LABEL`（proxy `quiet-together`）→ `quietTogetherPresence.js` / Privacy sheet `PRIVACY_SHEET_QUIET_TOGETHER_*`。与 0028 分工：本条 = 全球匿名灯笼（默认开 · `?quietTogether=0` 关闸）；0028 = 最多 8 人的私密小圈 + 邀请码。与 0001 分工：Sit 不依赖灯笼；灯笼只伴同坐感，不门闩练习。禁止在短答里念具体灯笼数字或制造 FOMO。
+    禁止：说成必须社交才算练习；禁止承诺实时人数准确到秒；禁止与 Focus Circle 混为一谈；禁止在短答里念 `QUIET_TOGETHER_LANTERNS_*` 动态文案正文。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · 书面放行）
+  风险标记: 否
+  适用产品版本: 现网 Quiet Together（gated-default-on · 需 cloud base URL）
+  更新时间: 2026-09-26
+  locale_keys: [QUIET_TOGETHER_MENU_LABEL, QUIET_TOGETHER_PANEL_TITLE, QUIET_TOGETHER_PANEL_BLURB, PRIVACY_SHEET_QUIET_TOGETHER_LABEL, PRIVACY_SHEET_QUIET_TOGETHER_HINT, QUIET_TOGETHER_PANEL_CLOSE]
+  检索关键词: [Quiet together, 全球同坐, quiet together worldwide, lantern count, 同坐灯笼, quiet together menu, 匿名同坐, worldwide lanterns]
+
+- id: KB-FUNC-0028
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Focus Circle（我的小圈）从哪开
+  适用场景: 想找 Focus Circle / 邀请码小圈、或分不清和 Quiet together / 普通 Sit 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → You are not alone → My circle. Up to eight people can share a quiet circle — invite someone with a six-character code outside the app. No chat, no account, and no names in this first version. It is optional; Sit with Yin works without it. Yin only points here and does not read circle codes aloud.
+    指路：菜单 `FOCUS_CIRCLE_MENU_LABEL`（proxy `focus-circle`）→ `focusCircleMembership.js` / Privacy sheet `PRIVACY_SHEET_FOCUS_CIRCLE_*`（Create · Join · Leave · Copy invite code）。与 0027 分工：本条 = 私密小圈 + 邀请码；0027 = 全球匿名灯笼。与 0001 分工：Focus Circle 不门闩 Sit。禁止在短答里念 witness / traces 句库正文。
+    禁止：说成必须拉满 8 人才算练习；禁止承诺聊天或账号体系；禁止在短答里念 `FOCUS_CIRCLE_PEER_TRACES_*` 动态正文；禁止与 Quiet together 灯笼混为一谈。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · 书面放行）
+  风险标记: 否
+  适用产品版本: 现网 Focus Circle MVP（live · 需 cloud base URL）
+  更新时间: 2026-09-26
+  locale_keys: [FOCUS_CIRCLE_MENU_LABEL, FOCUS_CIRCLE_PANEL_TITLE, FOCUS_CIRCLE_PANEL_BLURB, PRIVACY_SHEET_FOCUS_CIRCLE_TITLE, PRIVACY_SHEET_FOCUS_CIRCLE_HINT, PRIVACY_SHEET_FOCUS_CIRCLE_CREATE, PRIVACY_SHEET_FOCUS_CIRCLE_JOIN, PRIVACY_SHEET_FOCUS_CIRCLE_COPY]
+  检索关键词: [Focus Circle, 我的小圈, my circle menu, focus circle invite code, 邀请码, quiet circle, 小圈从哪开, circle join code, focus circle menu]
+```
+
+> **权威源（0027–0028）**：`src/locales/en.json` · `quietTogetherPresence.js` · `quietTogetherPreference.js` · `focusCircleMembership.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AG–AK
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
@@ -879,6 +927,12 @@
 - [x] §4.8 起草 `KB-FUNC-0024`–`0026`；locale_keys 机器核对绿
 - [x] PO 书面放行 tone → 标已通过并进 `productKnowledgeCatalog.json`
 - [x] registry `kb-live-ritual-*` 链 **0024–0026**；闸门升至 **28 条**
+
+**batch-2 Not alone（2026-09-26 · PO 书面放行）**
+
+- [x] §4.9 起草 `KB-FUNC-0027`–`0028`；locale_keys 机器核对绿
+- [x] PO 书面放行 tone → 标已通过并进 `productKnowledgeCatalog.json`
+- [x] registry `kb-live-quiet-together` / `kb-live-focus-circle` 链 **0027–0028**；闸门升至 **30 条**
 
 **共通**
 

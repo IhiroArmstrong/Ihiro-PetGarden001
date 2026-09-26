@@ -443,6 +443,38 @@
         "work transition",
         "where is work transition"
       ]
+    },
+    {
+      "id": "KB-FUNC-0027",
+      "shortAnswerEn": "Open More (⋯) or the drawer → You are not alone → Quiet together worldwide. While you sit, a shared lantern count can show how many people are quietly with Yin — anonymous, no chat, no account. It is on by default; you can turn it off anytime in Privacy. Sitting with Yin still works either way. Yin only points here and does not read presence numbers aloud.",
+      "keywords": [
+        "Quiet together",
+        "全球同坐",
+        "quiet together worldwide",
+        "lantern count",
+        "同坐灯笼",
+        "quiet together menu",
+        "匿名同坐",
+        "worldwide lanterns",
+        "quiet together",
+        "where is quiet together"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0028",
+      "shortAnswerEn": "Open More (⋯) or the drawer → You are not alone → My circle. Up to eight people can share a quiet circle — invite someone with a six-character code outside the app. No chat, no account, and no names in this first version. It is optional; Sit with Yin works without it. Yin only points here and does not read circle codes aloud.",
+      "keywords": [
+        "Focus Circle",
+        "我的小圈",
+        "my circle menu",
+        "focus circle invite code",
+        "邀请码",
+        "quiet circle",
+        "小圈从哪开",
+        "circle join code",
+        "focus circle menu",
+        "where is focus circle"
+      ]
     }
   ]
 }

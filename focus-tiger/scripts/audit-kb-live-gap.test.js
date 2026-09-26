@@ -60,6 +60,24 @@ const KB_DRAFT_LOCALE_KEYS = Object.freeze({
     'ritual.shared.continue',
     'ritual.shared.leave',
     'ritual.menu_locked'
+  ]),
+  'KB-FUNC-0027': Object.freeze([
+    'QUIET_TOGETHER_MENU_LABEL',
+    'QUIET_TOGETHER_PANEL_TITLE',
+    'QUIET_TOGETHER_PANEL_BLURB',
+    'PRIVACY_SHEET_QUIET_TOGETHER_LABEL',
+    'PRIVACY_SHEET_QUIET_TOGETHER_HINT',
+    'QUIET_TOGETHER_PANEL_CLOSE'
+  ]),
+  'KB-FUNC-0028': Object.freeze([
+    'FOCUS_CIRCLE_MENU_LABEL',
+    'FOCUS_CIRCLE_PANEL_TITLE',
+    'FOCUS_CIRCLE_PANEL_BLURB',
+    'PRIVACY_SHEET_FOCUS_CIRCLE_TITLE',
+    'PRIVACY_SHEET_FOCUS_CIRCLE_HINT',
+    'PRIVACY_SHEET_FOCUS_CIRCLE_CREATE',
+    'PRIVACY_SHEET_FOCUS_CIRCLE_JOIN',
+    'PRIVACY_SHEET_FOCUS_CIRCLE_COPY'
   ])
 });
 
@@ -114,6 +132,8 @@ describe('audit-kb-live-gap helpers', () => {
     assert.equal(candidateIds.includes('kb-live-ritual-morning'), false);
     assert.equal(candidateIds.includes('kb-live-ritual-emotional-reset'), false);
     assert.equal(candidateIds.includes('kb-live-ritual-work-transition'), false);
+    assert.equal(candidateIds.includes('kb-live-quiet-together'), false);
+    assert.equal(candidateIds.includes('kb-live-focus-circle'), false);
     assert.equal(candidateIds.includes('kb-live-sit'), false);
     assert.equal(candidateIds.includes('kb-live-ground'), false);
   });

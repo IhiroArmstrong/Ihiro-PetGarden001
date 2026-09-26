@@ -29,9 +29,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 25 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 30 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 28);
+    assert.equal(ids.length, 30);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -45,6 +45,8 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0024'), true);
     assert.equal(ids.includes('KB-FUNC-0025'), true);
     assert.equal(ids.includes('KB-FUNC-0026'), true);
+    assert.equal(ids.includes('KB-FUNC-0027'), true);
+    assert.equal(ids.includes('KB-FUNC-0028'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
@@ -267,6 +269,28 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(transition.hit, true);
     assert.equal(transition.id, 'KB-FUNC-0026');
     assert.match(transition.text || '', /Work Transition/i);
+  });
+
+  it('hits batch-2 Not alone entry questions', () => {
+    const quietTogether = retrieveProductKnowledge('全球同坐从哪开？');
+    assert.equal(quietTogether.hit, true);
+    assert.equal(quietTogether.id, 'KB-FUNC-0027');
+    assert.match(quietTogether.text || '', /Quiet together/i);
+    assert.match(quietTogether.text || '', /anonymous/i);
+
+    const quietTogetherEn = retrieveProductKnowledge('Where is Quiet together?');
+    assert.equal(quietTogetherEn.hit, true);
+    assert.equal(quietTogetherEn.id, 'KB-FUNC-0027');
+
+    const focusCircle = retrieveProductKnowledge('我的小圈从哪开');
+    assert.equal(focusCircle.hit, true);
+    assert.equal(focusCircle.id, 'KB-FUNC-0028');
+    assert.match(focusCircle.text || '', /My circle/i);
+    assert.match(focusCircle.text || '', /optional/i);
+
+    const focusCircleEn = retrieveProductKnowledge('Where is Focus Circle?');
+    assert.equal(focusCircleEn.hit, true);
+    assert.equal(focusCircleEn.id, 'KB-FUNC-0028');
   });
 
   it('hits KB-EDU batch1 concept questions without exercise scripts', () => {
