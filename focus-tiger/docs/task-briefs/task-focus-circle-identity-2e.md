@@ -1,7 +1,9 @@
 # Task Brief · Focus Circle Identity（刀 2e · 认人层）
 
 > **状态（2026-09-07）**：口令「开工 2e」。权威 `FROM_APP_TO_CULTURE.md` §13.5 · §13.4 刀 2 信封（**2d → 2e**）。  
-> **本文件无** 跨设备 OTP 绑定、头像上传、自由简介、圈内聊天、was-here 精确榜。
+> **本文件无** 跨设备 OTP 绑定、头像上传、自由简介、圈内聊天、was-here 精确榜。  
+> **源码（2026-09）**：认人层已合 `origin/develop`（#615）。  
+> **统一「轻量身份 / 账号与设备」Brief（2026-09-26 PO）**：**不要**把「2e 开工」当成补写该 Brief 的触发——2e 已经做过，且本 Brief 故意不含跨设备。下次该写统一 Brief 的时机见 [`MENU_CHROME_CENSUS.md`](../MENU_CHROME_CENSUS.md) §1 第 3 行：Circle **跨设备 OTP 绑人**开工，或换设备/清缓存找不回的具体投诉 ≥3。
 
 ## 一句话
 
