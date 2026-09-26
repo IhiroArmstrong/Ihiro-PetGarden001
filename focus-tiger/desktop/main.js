@@ -87,6 +87,16 @@ function isSystemTtsProbeMode() {
   return process.env.FT_SYSTEM_TTS_PROBE === '1';
 }
 
+/**
+ * Lab probes skip companion IPC. Preload always sendSync's this channel;
+ * with no listener Electron never replies and the window stays blank.
+ */
+function registerLabProbeCompanionDenied() {
+  ipcMain.on('desktop:companion-allowed', (event) => {
+    event.returnValue = false;
+  });
+}
+
 function voiceInputProbeHtmlPath() {
   return path.join(__dirname, 'voiceInput', 'voice-input-probe.html');
 }
@@ -527,6 +537,7 @@ if (gotSingleInstanceLock) {
   }
 
   if (isSystemTtsProbeMode()) {
+    registerLabProbeCompanionDenied();
     attachSystemTtsIpc({
       ipcMain,
       getMainWindow: () => mainWindow
@@ -541,6 +552,7 @@ if (gotSingleInstanceLock) {
   }
 
   if (isVoiceInputProbeMode()) {
+    registerLabProbeCompanionDenied();
     attachVoiceInputIpc({
       ipcMain,
       getMainWindow: () => mainWindow

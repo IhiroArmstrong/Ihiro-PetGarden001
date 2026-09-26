@@ -4,12 +4,41 @@
  */
 
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, it } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import {
   SYSTEM_TTS_PROBE_SAMPLES,
   createTtsProvider,
   mapTtsFailureReason
 } from './ttsProvider.js';
+
+const mainSrc = fs.readFileSync(
+  path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'main.js'),
+  'utf8'
+);
+
+function sourceBetween(startMarker, endMarker) {
+  const start = mainSrc.indexOf(startMarker);
+  const end = mainSrc.indexOf(endMarker, start + startMarker.length);
+  assert.ok(start >= 0 && end > start, `missing markers ${startMarker} / ${endMarker}`);
+  return mainSrc.slice(start, end);
+}
+
+describe('systemTts lab probe window', () => {
+  it('denies companion preload before either lab probe window opens', () => {
+    assert.match(mainSrc, /registerLabProbeCompanionDenied/);
+    assert.match(
+      mainSrc,
+      /function registerLabProbeCompanionDenied\(\) \{\s*ipcMain\.on\('desktop:companion-allowed', \(event\) => \{\s*event\.returnValue = false;/
+    );
+    for (const marker of ['if (isSystemTtsProbeMode()) {', 'if (isVoiceInputProbeMode()) {']) {
+      const block = sourceBetween(marker, 'createMainWindow()');
+      assert.match(block, /registerLabProbeCompanionDenied\(\)/);
+    }
+  });
+});
 
 describe('systemTts ttsProvider', () => {
   it('ships EN/JA probe samples', () => {
