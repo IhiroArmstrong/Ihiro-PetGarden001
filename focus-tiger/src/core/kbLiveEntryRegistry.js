@@ -318,7 +318,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/core/quietTogetherPresence.js',
       'src/core/quietTogetherPreference.js'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0027'])
   }),
   Object.freeze({
     id: 'kb-live-focus-circle',
@@ -334,7 +335,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/core/focusCircleMembership.js'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0028'])
   }),
   Object.freeze({
     id: 'kb-live-reminder',

@@ -653,6 +653,48 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0026' }
   },
   {
+    id: 'kb-0027-quiet-together-zh',
+    text: '全球同坐从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0027' }
+  },
+  {
+    id: 'kb-0027-quiet-together-en',
+    text: 'Where is Quiet together?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0027' }
+  },
+  {
+    id: 'kb-0027-quiet-together-short-zh',
+    text: 'Quiet together 从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0027' }
+  },
+  {
+    id: 'kb-0028-focus-circle-zh',
+    text: 'Focus Circle 从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0028' }
+  },
+  {
+    id: 'kb-0028-focus-circle-en',
+    text: 'Where is Focus Circle?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0028' }
+  },
+  {
+    id: 'kb-0028-focus-circle-short-zh',
+    text: '我的小圈从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0028' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],

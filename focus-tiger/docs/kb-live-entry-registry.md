@@ -42,8 +42,8 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-daily-quote` | menu | `daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` | `KB-FUNC-0021` |
 | `kb-live-zen-cinema` | menu | `zen-cinema` | live | ⋯ → Inspiration → Zen Cinema | `ZEN_CINEMA_MENU_LABEL` | `KB-FUNC-0022` |
 | `kb-live-wallpapers` | menu | `wallpapers` | live | ⋯ → Inspiration → Wallpapers | `WALLPAPER_MENU_LABEL` | `KB-FUNC-0023` |
-| `kb-live-quiet-together` | menu | `quiet-together` | gated-default-on | ⋯ → Not alone → Quiet together | `QUIET_TOGETHER_MENU_LABEL` | — |
-| `kb-live-focus-circle` | menu | `focus-circle` | live | ⋯ → Not alone → Focus circle | `FOCUS_CIRCLE_MENU_LABEL` | — |
+| `kb-live-quiet-together` | menu | `quiet-together` | gated-default-on | ⋯ → Not alone → Quiet together | `QUIET_TOGETHER_MENU_LABEL` | `KB-FUNC-0027` |
+| `kb-live-focus-circle` | menu | `focus-circle` | live | ⋯ → Not alone → Focus circle | `FOCUS_CIRCLE_MENU_LABEL` | `KB-FUNC-0028` |
 | `kb-live-reminder` | menu | `reminder` | conditional | ⋯ → Preferences → Reminder | `reminder.setting_title` | — |
 | `kb-live-language` | menu | `language` | conditional | ⋯ → Preferences → Language | `LANGUAGE_MENU_LABEL` | — |
 | `kb-live-today-direction` | menu | `today-direction` | live | ⋯ → Preferences → Choose today's direction again | `TODAY_DIRECTION_MENU_LABEL` | — |

@@ -132,6 +132,8 @@ describe('audit-kb-live-gap helpers', () => {
     assert.equal(candidateIds.includes('kb-live-ritual-morning'), false);
     assert.equal(candidateIds.includes('kb-live-ritual-emotional-reset'), false);
     assert.equal(candidateIds.includes('kb-live-ritual-work-transition'), false);
+    assert.equal(candidateIds.includes('kb-live-quiet-together'), false);
+    assert.equal(candidateIds.includes('kb-live-focus-circle'), false);
     assert.equal(candidateIds.includes('kb-live-sit'), false);
     assert.equal(candidateIds.includes('kb-live-ground'), false);
   });
