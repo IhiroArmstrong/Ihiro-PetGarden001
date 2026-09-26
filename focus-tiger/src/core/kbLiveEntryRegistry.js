@@ -377,6 +377,24 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'kb-live-sanctuary-nav',
+    surface: 'menu',
+    proxy: 'sanctuary-nav',
+    labelKeys: Object.freeze(['SANCTUARY_NAV_MENU_LABEL']),
+    menuPath: '⋯ → Practice → Navigate sanctuary (wide home compass ball shortcut)',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'sanctuary-nav'",
+      'SANCTUARY_NAV_MENU_LABEL',
+      'HomeSanctuaryNavFanUI'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/ui/HomeSanctuaryNavFanUI.js',
+      'src/main.js'
+    ])
+  }),
+  Object.freeze({
     id: 'kb-live-local-backup',
     surface: 'menu',
     proxy: 'local-backup',

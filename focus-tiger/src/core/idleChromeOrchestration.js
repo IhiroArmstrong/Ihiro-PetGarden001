@@ -396,6 +396,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
     surface === 'wide-more' && visibility.companionGeneration === true;
 
   pushLabeledGroup(out, 'MENU_GROUP_PRACTICE', [
+    { proxy: 'sanctuary-nav', labelKey: 'SANCTUARY_NAV_MENU_LABEL' },
     companionOk
       ? { proxy: 'companion', labelKey: 'COMPANION_MODE_HINT' }
       : null,

@@ -345,6 +345,56 @@
         "wallpapers menu",
         "where are wallpapers"
       ]
+    },
+    {
+      "id": "KB-EDU-0001",
+      "shortAnswerEn": "Grounding is a simple name for noticing what you can see, hear, or feel in the present moment, so attention can rest with the body and the room instead of racing ahead in thought. Many people find that kind of present-moment noticing helpful for everyday calm and focus. It is a general wellness idea, not a medical treatment. Reading this is enough; you do not need to follow any steps here. If you want the in-app exercise, Yin only points to Ground exercise and does not read the steps aloud.",
+      "keywords": [
+        "接地是什么",
+        "what is grounding",
+        "接地练习原理",
+        "grounding 是什么意思",
+        "grounding meaning"
+      ]
+    },
+    {
+      "id": "KB-EDU-0002",
+      "shortAnswerEn": "Mindfulness is a general wellness word for noticing what is happening right now — thoughts, feelings, and body sensations — with a bit of openness instead of fighting or judging every moment. Many people find that kind of gentle awareness helpful for everyday stress and focus. It is not a medical treatment. Reading this is enough; you do not need to follow any steps here.",
+      "keywords": [
+        "正念是什么",
+        "what is mindfulness",
+        "正念定义",
+        "mindfulness meaning",
+        "什么是正念"
+      ]
+    },
+    {
+      "id": "KB-EDU-0003",
+      "shortAnswerEn": "In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.",
+      "keywords": [
+        "专注和冥想有什么区别",
+        "focus vs meditation",
+        "正念和冥想一样吗",
+        "我这是在冥想吗",
+        "Focus sit and meditation",
+        "meditation vs focus sit",
+        "专注和冥想",
+        "正念和专注是一回事吗"
+      ]
+    },
+    {
+      "id": "KB-EDU-0004",
+      "shortAnswerEn": "This is a concept-to-entry map only — Yin repeats the approved FUNC short answers for paths, never reads exercise scripts aloud. Focus / sitting with Yin → main button Sit with Yin (KB-FUNC-0001). A shorter breath pause → left orb Breath practice (KB-FUNC-0011; inventory detail KB-FUNC-0006). Grounding as a practice → Ground exercise (KB-FUNC-0002). Reading this map is enough; for exact taps Yin points to those entries, not a second menu manual.",
+      "keywords": [
+        "正念在这app里从哪练",
+        "接地功能在哪",
+        "专注在这产品里怎么练",
+        "where is grounding in the app",
+        "mindfulness in this app",
+        "breath vs sit where",
+        "概念对应入口",
+        "从哪开始专注"
+      ]
     }
   ]
 }

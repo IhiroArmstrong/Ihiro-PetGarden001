@@ -52,6 +52,7 @@ const WHITELIST_FILES = new Set([
   'SoftUpdatePromptUI.js',
   'NarrowIdleShell.js',
   'WideIdleMoreMenu.js',
+  'HomeSanctuaryNavFanUI.js',
   'ReminderPreferenceUI.js',
   'ft-onboarding-hint-bubble.js',
   'HonestyBridgeCtaUI.js',

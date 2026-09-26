@@ -268,7 +268,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **—** | 脚手架步骤 A/B（窗口 + 托盘 + SB-18） | `task-electron-desktop-scaffold.md` | 步骤 A/B 已接线 · 待 Mac 场景 AB |
 | **P0** | **官网 DMG 自动更新器**（第一份收费包出门前） | `task-electron-desktop-updater.md` | **Brief 已锁 · 运行时待口令** |
 | **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期**（后于更新器） |
-| **P1b** | **Voice Input V1**（Speak to type · 倾诉强制本机） | `task-voice-input-v1.md` | **Brief 已锁 · 无运行时 · 先探针口令** |
+| **P1b** | **Voice Input V1**（Speak to type · 倾诉强制本机） | `task-voice-input-v1.md` | **Brief 已锁 · 探针/倾诉/意图回顾已合 develop** |
+| **P1c** | **System TTS V1**（系统播报 + 全局声音开关 · 默认关） | `task-system-tts-v1.md` | **Brief 已锁 · Slice 0 探针已开工 · 待人工听感** |
+| **P2** | **Confide 回复朗读**（倾诉文字 + 可选系统声） | `decisions/tts-v1-decision-memo.md` §决策 1 | **Backlog · 依赖原则文档已改完** |
 
 **官网 DMG 自动更新器 · 拍板摘要（2026-09-12）**：
 
@@ -283,6 +285,13 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 - Speak to type，不是语音条 / 实时 Voice Agent。共享组件一次做成；首发只挂倾诉、Arrival 手写意图、Reflection 三问。
 - 仅 Electron 英语听写；界面英日切换不改。倾诉 **禁止**注入云 STT（硬约束）。
 - 第一口令「开工 Voice Input 探针」（系统听写 + 麦克风权限）；探针前不做云厂商对照表。
+
+**System TTS V1 · 拍板摘要（2026-09-26）**：
+
+- 分两刀：本期只做**系统播报**（专注结束、仪式提示）+ **全局声音开关（默认关）**；倾诉回复朗读下一期。
+- macOS 本机 `AVSpeechSynthesizer`；在 `macos-speech-helper.swift` 加 `speak`，与 STT 共用桥、开关独立。
+- 朗读语言跟随界面语言（英/日）；危机句/安全转介不朗读。决策 `decisions/tts-v1-decision-memo.md`。
+- 第一口令「开工 System TTS 探针」；探针及格后再挂产品播报点。
 
 **V8 字节码编译 · 拍板摘要（2026-09-10）**：
 

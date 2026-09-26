@@ -1,0 +1,1 @@
+| 轻量身份 Brief 重新评估触发点（菜单占位第 3 条） | 文档 | 待人工测试 | **不测新交互。** 打开 `docs/MENU_CHROME_CENSUS.md` §1 第 3 行：灰行仍不可点；统一账号 Brief 现在不写；触发 = Circle 跨设备 OTP 绑人开工，或换设备/清缓存找不回投诉 ≥3。2e 昵称层 #615 已合、不是该触发。不要用本行关 #757/#759。 | — | — | — | `MENU_CHROME_CENSUS.md` · `FROM_APP_TO_CULTURE.md` §13.5 · `ISSUE_LEDGER.md` | 2026-09-26 |

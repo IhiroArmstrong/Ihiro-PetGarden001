@@ -1,6 +1,6 @@
 # Task Brief · 正念 / 专注 / 接地——科普概念类短答（严格排除具体引导）
 
-> **状态（2026-09-22）**：**方向锁草稿 · 待 PO 点头**。本文件是 **A 类**生产边界 Brief（只锁「能写什么 / 不能写什么」，不改 Confide 运行时、不把草稿标「已通过」、不写入 `productKnowledgeCatalog.json`）。点头后另发口令才可起草待审条目；把条目标「已通过」并进 catalog 才升为 **B 类**。  
+> **状态（2026-09-26）**：**PO 已点头**（Brief #936 · 2026-09-24）。首批 4 条 **PO spot-check 已通过**（§4.7 · 2026-09-26 · `KB-EDU-0001`–`0004` · **catalog 已入库** · `yin_may_retrieve: 是` · 闸门 **23 条**）。  
 > **本轮禁止**：改检索接线、改 generate、把引导语 / 呼吸节拍 / 5-4-3-2-1 写入可检索正文、用「信源权威」放松第一节的线、把商业冥想 App 营销页当原料。  
 > **交叉引用**：`product-knowledge-base.md` §0 / §0.1 · `task-kb-scaled-production.md`（功能短答流水线；**本 Brief 不套用**）· `task-confide-kb-retrieval-wiring.md` · `task-confide-kb-routing-gate.md` · `PRODUCT_POSITIONING.md` Wellness disclaimer · `PRINCIPLES.md`「一般身心练习，不是诊疗」· `SCENARIO_TESTS.md` 场景 AE
 
@@ -218,7 +218,10 @@
 
 - [x] 第一节含编辑口诀「读完要不要做动作」+ 三标准判定表 + 疾病名 / 「你现在应该」禁令  
 - [x] 「请心理专业人士校准边界」已从待拍板撤销  
-- [ ] PO 书面点头本 Brief（含第九节三默认，或给出修改）  
-- [ ] 点头前 **零条** `KB-EDU-*` 进 catalog、零条 `yin_may_retrieve: 是`  
-- [ ] 后续生产 PR **不改** Confide 路由 / generate  
-- [ ] 可检索短答不含 `RESET_GROUND_*` / `RESET_LOOK_*` / `RESET_BREATH_*` 正文
+- [x] PO 书面点头本 Brief（含第九节三默认，或给出修改）（2026-09-24 · #936；候选筛选 2026-09-26：①③ 不合并 · ④ 不含 Five Moments）
+- [x] 点头后首批 YAML 已起草并标已通过（§4.7 · 2026-09-26 PO spot-check）
+- [x] **零条** `KB-EDU-*` 进 catalog、零条 `yin_may_retrieve: 是`（catalog 前 · 2026-09-26 前）
+- [x] catalog 写入：`KB-EDU-0001`–`0004` 进 `productKnowledgeCatalog.json`（B 类口令 · 闸门 **23 条** · 2026-09-26）
+- [x] PO 逐条 spot-check §4.7 禁止事项核查 + 语气（2026-09-26）
+- [x] 后续生产 PR **不改** Confide 路由 / generate（本批仍遵守）
+- [x] 可检索短答不含 `RESET_GROUND_*` / `RESET_LOOK_*` / `RESET_BREATH_*` 正文（§4.7 已自查）

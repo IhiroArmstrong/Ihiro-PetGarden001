@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import {
   assertConfideSpeechProvider,
   createSpeechProvider,
+  formatSpeechCaptureDiagnostics,
   mapSpeechFailureReason
 } from './speechProvider.js';
 
@@ -26,6 +27,31 @@ describe('speechProvider', () => {
   it('maps on-device gate failure to a visible user message', () => {
     const message = mapSpeechFailureReason({ error: 'on_device_not_supported' });
     assert.match(message, /On-device English/);
+  });
+
+  it('formats capture diagnostics from helper json', () => {
+    const text = formatSpeechCaptureDiagnostics({
+      bufferCount: 42,
+      peakRms: 0.0123,
+      sampleRate: 48000
+    });
+    assert.match(text, /buffers=42/);
+    assert.match(text, /peak=1\.23e-2/);
+    assert.match(text, /48000Hz/);
+  });
+
+  it('maps empty audio tap to a visible user message', () => {
+    const message = mapSpeechFailureReason({ error: 'audio_tap_empty' });
+    assert.match(message, /no audio reached/i);
+  });
+
+  it('maps helper crash without JSON to a visible user message', () => {
+    const message = mapSpeechFailureReason({
+      error: 'helper_crashed',
+      detail: 'exit_134'
+    });
+    assert.match(message, /Speech helper crashed/i);
+    assert.match(message, /exit_134/);
   });
 
   it('refuses start when on-device gate fails (no silent cloud fallback)', async () => {
@@ -84,7 +110,37 @@ describe('speechProvider', () => {
     const stop = await provider.stopListening();
     assert.equal(stop.ok, true);
     assert.equal(stop.transcript, 'hello focus tiger');
+    assert.equal(stop.hypothesisShrunk, false);
     assert.equal(provider.snapshot().allowCloudStt, false);
+  });
+
+  it('forwards hypothesisShrunk when the helper kept a dropped prefix', async () => {
+    const provider = createSpeechProvider({
+      gateRunner: async () => ({
+        ok: true,
+        gatePassed: true,
+        json: { ok: true, onDeviceSupported: true, recognizerAvailable: true },
+        stderr: '',
+        exitCode: 0
+      }),
+      transcribeStarter: () => ({
+        child: { stdin: { destroyed: true, write() {}, end() {} }, kill() {} },
+        finished: Promise.resolve({
+          ok: true,
+          json: {
+            ok: true,
+            transcript: 'kept the beginning of a long line',
+            hypothesisShrunk: true
+          },
+          stderr: '',
+          exitCode: 0
+        })
+      })
+    });
+    await provider.startListening();
+    const stop = await provider.stopListening();
+    assert.equal(stop.ok, true);
+    assert.equal(stop.hypothesisShrunk, true);
   });
 
   it('returns ok with empty transcript when recognition yields no speech', async () => {
@@ -104,7 +160,14 @@ describe('speechProvider', () => {
         child: { stdin: { destroyed: false, write() {}, end() {} } },
         finished: Promise.resolve({
           ok: true,
-          json: { ok: true, transcript: '', latencyMs: 400 },
+          json: {
+            ok: true,
+            transcript: '',
+            latencyMs: 400,
+            bufferCount: 18,
+            peakRms: 0,
+            sampleRate: 48000
+          },
           stderr: '',
           exitCode: 0
         })
@@ -114,6 +177,11 @@ describe('speechProvider', () => {
     const stop = await provider.stopListening();
     assert.equal(stop.ok, true);
     assert.equal(stop.transcript, '');
+    assert.equal(stop.bufferCount, 18);
+    assert.equal(stop.peakRms, 0);
+    assert.equal(stop.sampleRate, 48000);
+    assert.match(stop.captureDiagnostics, /buffers=18/);
+    assert.match(stop.captureDiagnostics, /48000Hz/);
   });
 
   it('surfaces non-darwin as visible failure', async () => {

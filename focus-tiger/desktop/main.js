@@ -40,6 +40,7 @@ import { appendConfideObservationLog } from './companion/confideObservationLog.j
 import { createDesktopUpdaterRuntime } from './updater/updaterRuntime.js';
 import { attachDesktopUpdaterIpc } from './updater/updaterIpc.js';
 import { attachVoiceInputIpc } from './voiceInput/voiceInputIpc.js';
+import { attachSystemTtsIpc } from './systemTts/systemTtsIpc.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -82,8 +83,26 @@ function isVoiceInputProbeMode() {
   return process.env.FT_VOICE_INPUT_PROBE === '1';
 }
 
+function isSystemTtsProbeMode() {
+  return process.env.FT_SYSTEM_TTS_PROBE === '1';
+}
+
+/**
+ * Lab probes skip companion IPC. Preload always sendSync's this channel;
+ * with no listener Electron never replies and the window stays blank.
+ */
+function registerLabProbeCompanionDenied() {
+  ipcMain.on('desktop:companion-allowed', (event) => {
+    event.returnValue = false;
+  });
+}
+
 function voiceInputProbeHtmlPath() {
   return path.join(__dirname, 'voiceInput', 'voice-input-probe.html');
+}
+
+function systemTtsProbeHtmlPath() {
+  return path.join(__dirname, 'systemTts', 'system-tts-probe.html');
 }
 
 /** Dev launcher (^C / SIGTERM) must quit even with Step B tray alive. */
@@ -398,7 +417,9 @@ function createMainWindow() {
     }
   });
 
-  if (isVoiceInputProbeMode()) {
+  if (isSystemTtsProbeMode()) {
+    void win.loadFile(systemTtsProbeHtmlPath());
+  } else if (isVoiceInputProbeMode()) {
     void win.loadFile(voiceInputProbeHtmlPath());
   } else if (isDevMode()) {
     void win.loadURL(DEV_LOAD_URL);
@@ -483,6 +504,10 @@ if (gotSingleInstanceLock) {
     event.returnValue = isVoiceInputProbeMode();
   });
 
+  ipcMain.on('desktop:system-tts-probe-allowed', (event) => {
+    event.returnValue = isSystemTtsProbeMode();
+  });
+
   ipcMain.on('desktop:voice-input-product-allowed', (event) => {
     event.returnValue = process.platform === 'darwin';
   });
@@ -511,7 +536,23 @@ if (gotSingleInstanceLock) {
     return;
   }
 
+  if (isSystemTtsProbeMode()) {
+    registerLabProbeCompanionDenied();
+    attachSystemTtsIpc({
+      ipcMain,
+      getMainWindow: () => mainWindow
+    });
+    installMacApplicationMenu();
+    createTray();
+    mainWindow = createMainWindow();
+    app.on('activate', () => {
+      showMainWindow();
+    });
+    return;
+  }
+
   if (isVoiceInputProbeMode()) {
+    registerLabProbeCompanionDenied();
     attachVoiceInputIpc({
       ipcMain,
       getMainWindow: () => mainWindow

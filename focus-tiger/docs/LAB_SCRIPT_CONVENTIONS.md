@@ -42,6 +42,7 @@
 | L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |
 | Stage 2 live 冷启动探针（Prompt 8） | `focus-tiger/desktop/scripts/l0-semantic-live-coldstart-probe.js` |
 | Voice Input Slice 0 探针（Speak-to-type · macOS on-device STT） | `focus-tiger/desktop/scripts/voice-input-probe.js` · `focus-tiger/desktop/voiceInput/` · Brief `task-voice-input-v1.md` |
+| System TTS Slice 0 探针（macOS AVSpeechSynthesizer · 无麦） | `focus-tiger/desktop/scripts/system-tts-probe.js` · `focus-tiger/desktop/systemTts/` · Brief `task-system-tts-v1.md` |
 | L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
 | 对照表（只追加，不另起格式） | `/tmp/ft-l0-lab/compare-tables.md` |

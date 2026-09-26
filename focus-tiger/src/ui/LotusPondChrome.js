@@ -93,13 +93,20 @@ export class LotusPondChrome {
       `bottom:${slot.bottomPct}%`,
       `width:${slot.widthCss}`,
       'height:auto',
-      'transform:translate(-50%,0)',
+      'transform:translate(-50%,0) scale(0.58)',
       'transform-origin:50% 100%',
       'pointer-events:none',
       'user-select:none',
+      'opacity:0',
       'filter:drop-shadow(0 6px 14px rgba(120,80,40,.22))'
     ].join(';');
     this.root.appendChild(el);
+    requestAnimationFrame(() => {
+      el.style.transition =
+        'opacity 900ms cubic-bezier(0.22, 1, 0.36, 1), transform 900ms cubic-bezier(0.22, 1, 0.36, 1)';
+      el.style.opacity = '1';
+      el.style.transform = 'translate(-50%,0) scale(1)';
+    });
   }
 
   /** Recompute spiral slots when the overlay width crosses the wide breakpoint. */

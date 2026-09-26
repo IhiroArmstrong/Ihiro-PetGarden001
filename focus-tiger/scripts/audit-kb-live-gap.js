@@ -61,11 +61,15 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-wallpapers': Object.freeze(['KB-FUNC-0023'])
 });
 
-/** Approved catalog rows with no dedicated live surface (behavior / platform facts). */
+/** Approved catalog rows with no dedicated live surface (behavior / platform / concept facts). */
 export const KB_CROSS_CUTTING_APPROVED_IDS = Object.freeze([
   'KB-FUNC-0014',
   'KB-FUNC-0016',
-  'KB-FUNC-0017'
+  'KB-FUNC-0017',
+  'KB-EDU-0001',
+  'KB-EDU-0002',
+  'KB-EDU-0003',
+  'KB-EDU-0004'
 ]);
 
 /**

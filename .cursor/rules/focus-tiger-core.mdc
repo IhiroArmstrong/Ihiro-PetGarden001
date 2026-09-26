@@ -31,7 +31,7 @@ alwaysApply: true
 - **开头（强制）**：用户可见回复**最前面**须有一段 **大白话总结**（≤5 句、无分支名/commit/技术术语；交代做了什么、到哪一步、需你决定什么）。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `plain-language-summary`）；技术细节后移，不必精简。  
 - **末尾（N14）**：独立小节 **「待你决定 / 待你知道」**（无事项也须标题 +「无」）。  
 - 列 ≥2 个可执行开放方案时须写 **我认为最合理的**（细则按需读 `focus-tiger-recommend-most-reasonable.mdc`）。
-- 请用户打开仓库文件时须可点开（禁止只写反引号路径）。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `chat-openable-file-links`）；勿在本文件复述条款。
+- 请用户打开文件时须可点开、可定位（Markdown + 绝对路径；立刻看须 open_resource + Finder）。SSOT：`WORKFLOW.md`（`RULES_INDEX` → `chat-openable-file-links`）；勿在本文件复述条款。
 
 ## 测试输出卫生（强制）
 

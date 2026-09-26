@@ -44,4 +44,4 @@ alwaysApply: true
 
 Agent 自己用 `gh` 能查的，**先自己查**；只有需要人工眼（复测观感、产品拍板）或账号在浏览器里更方便时，才请用户操作。
 
-请用户打开仓库里的文件时，链接写法见 `WORKFLOW.md`（`RULES_INDEX` → `chat-openable-file-links`）。
+请用户打开文件时，链接 + 绝对路径 + 立刻定位写法见 `WORKFLOW.md`（`RULES_INDEX` → `chat-openable-file-links`）。

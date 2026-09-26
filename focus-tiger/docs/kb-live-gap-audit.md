@@ -38,17 +38,17 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-25 · 26 live rows · 21 approved catalog ids
+**Snapshot**: 2026-09-26 · 27 live rows · 25 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 8 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 9 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 2 | PO scope before drafting |
-| cross-cutting approved (no live row) | 3 | keep as behavior/platform facts |
+| cross-cutting approved (no live row) | 7 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
 
@@ -57,6 +57,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | `kb-live-quiet-together` | gated-default-on | ⋯ → Not alone → Quiet together | `QUIET_TOGETHER_MENU_LABEL` |
 | `kb-live-focus-circle` | live | ⋯ → Not alone → Focus circle | `FOCUS_CIRCLE_MENU_LABEL` |
 | `kb-live-today-direction` | live | ⋯ → Preferences → Choose today's direction again | `TODAY_DIRECTION_MENU_LABEL` |
+| `kb-live-sanctuary-nav` | live | ⋯ → Practice → Navigate sanctuary (wide home compass ball shortcut) | `SANCTUARY_NAV_MENU_LABEL` |
 | `kb-live-community` | live | ⋯ → Preferences → Community | `COMMUNITY_MENU_LABEL` |
 | `kb-live-membership` | live | ⋯ → Membership CTA / Premium unlocked | `MEMBERSHIP_MENU_CTA` `MEMBERSHIP_MENU_UNLOCKED` |
 | `kb-live-ritual-morning` | entitlement-gated | ⋯ → Rituals → ritual.morning.menu | `ritual.morning.menu` |
@@ -85,6 +86,10 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 - `KB-FUNC-0014`
 - `KB-FUNC-0016`
 - `KB-FUNC-0017`
+- `KB-EDU-0001`
+- `KB-EDU-0002`
+- `KB-EDU-0003`
+- `KB-EDU-0004`
 
 <!-- kb-live-gap-audit:end -->
 

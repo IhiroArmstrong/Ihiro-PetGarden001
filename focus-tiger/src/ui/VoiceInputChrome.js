@@ -11,7 +11,9 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   applyVoiceTranscriptToField,
   canShowVoiceInputChrome,
-  getVoiceInputBridge
+  getVoiceInputBridge,
+  voiceTranscriptNeedsTruncationNotice,
+  withVoiceCaptureDiagnostics
 } from '../core/voiceInputBridge.js';
 
 const STYLE_ID = 'voice-input-chrome-styles-v1';
@@ -45,6 +47,8 @@ export class VoiceInputChrome {
     this._hasTranscript = false;
     this._visible = false;
     this._errorMessage = '';
+    this._truncationMessage = '';
+    this._gateWarmed = false;
 
     this.root = document.createElement('div');
     this.root.className = 'voice-input-chrome';
@@ -60,6 +64,11 @@ export class VoiceInputChrome {
     this.errorEl.className = 'voice-input-chrome__error';
     this.errorEl.dataset.testid = `${testIdPrefix}-error`;
     this.errorEl.hidden = true;
+
+    this.truncationEl = document.createElement('p');
+    this.truncationEl.className = 'voice-input-chrome__truncation';
+    this.truncationEl.dataset.testid = `${testIdPrefix}-truncation`;
+    this.truncationEl.hidden = true;
 
     this.actions = document.createElement('div');
     this.actions.className = 'voice-input-chrome__actions';
@@ -78,7 +87,7 @@ export class VoiceInputChrome {
     this.stopBtn.addEventListener('click', () => void this._onStop());
 
     this.actions.append(this.speakBtn, this.stopBtn);
-    this.root.append(this.statusEl, this.errorEl, this.actions);
+    this.root.append(this.statusEl, this.errorEl, this.truncationEl, this.actions);
 
     const parent = mountParent || textarea.parentElement;
     if (parent) {
@@ -110,6 +119,7 @@ export class VoiceInputChrome {
     void this._cancelActiveSession();
     this._hasTranscript = false;
     this._errorMessage = '';
+    this._truncationMessage = '';
     this._setState('idle');
   }
 
@@ -126,16 +136,7 @@ export class VoiceInputChrome {
       if (status === 'listening') this._setState('listening', { skipButtons: true });
       else if (status === 'transcribing') this._setState('transcribing', { skipButtons: true });
       else if (status === 'done') {
-        const transcript = String(snapshot.transcript || '').trim();
-        if (transcript && this._state === 'transcribing') {
-          applyVoiceTranscriptToField(
-            this.textarea,
-            transcript,
-            this.textarea.maxLength > 0 ? this.textarea.maxLength : Infinity
-          );
-          this._hasTranscript = true;
-          this.onInputApplied?.();
-        }
+        // Transcript is applied in _onStop(); status events only sync chrome state.
         this._setState('idle');
       } else if (status === 'error') {
         this._errorMessage = String(snapshot.error || t('VOICE_INPUT_ERROR_GENERIC'));
@@ -151,7 +152,18 @@ export class VoiceInputChrome {
     this._visible = allowed;
     this.root.hidden = !allowed;
     if (!allowed) void this._cancelActiveSession();
+    if (allowed) void this._warmGateOnce();
     this._render();
+  }
+
+  async _warmGateOnce() {
+    if (this._gateWarmed || !this._bridge || typeof this._bridge.getGate !== 'function') return;
+    this._gateWarmed = true;
+    try {
+      await this._bridge.getGate();
+    } catch {
+      this._gateWarmed = false;
+    }
   }
 
   /**
@@ -180,6 +192,9 @@ export class VoiceInputChrome {
     this.errorEl.hidden = !error || !this._errorMessage;
     this.errorEl.textContent = error ? this._errorMessage : '';
 
+    this.truncationEl.hidden = !this._truncationMessage || error;
+    this.truncationEl.textContent = this._truncationMessage;
+
     this._applyCopy();
   }
 
@@ -196,9 +211,17 @@ export class VoiceInputChrome {
     this.stopBtn.setAttribute('aria-label', t('VOICE_INPUT_STOP_ARIA'));
   }
 
+  _clearFieldForNewCapture() {
+    this.textarea.value = '';
+    this.textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    this.onInputApplied?.();
+  }
+
   async _onSpeak() {
     if (!this._bridge || typeof this._bridge.start !== 'function') return;
     this._errorMessage = '';
+    this._truncationMessage = '';
+    this._clearFieldForNewCapture();
     this._setState('listening');
     const result = await this._bridge.start();
     if (!result || result.ok !== true) {
@@ -224,16 +247,27 @@ export class VoiceInputChrome {
       }
       const transcript = String(result.transcript || '').trim();
       if (!transcript) {
-        this._errorMessage = t('VOICE_INPUT_ERROR_NO_SPEECH');
+        this._errorMessage = withVoiceCaptureDiagnostics(
+          t('VOICE_INPUT_ERROR_NO_SPEECH'),
+          result.captureDiagnostics
+        );
         this._setState('error');
         return;
       }
-      applyVoiceTranscriptToField(
+      const { truncated } = applyVoiceTranscriptToField(
         this.textarea,
         transcript,
         this.textarea.maxLength > 0 ? this.textarea.maxLength : Infinity
       );
       this._hasTranscript = true;
+      if (
+        voiceTranscriptNeedsTruncationNotice({
+          truncated,
+          hypothesisShrunk: result.hypothesisShrunk === true
+        })
+      ) {
+        this._truncationMessage = t('VOICE_INPUT_TRUNCATED');
+      }
       this.onInputApplied?.();
       this._setState('idle');
     } catch {
@@ -261,7 +295,7 @@ export class VoiceInputChrome {
     style.id = STYLE_ID;
     style.textContent = `
       .voice-input-chrome {
-        margin: -4px 0 12px;
+        margin: 8px 0 12px;
       }
       .voice-input-chrome[hidden] {
         display: none !important;
@@ -282,6 +316,15 @@ export class VoiceInputChrome {
         color: #9a3b32;
       }
       .voice-input-chrome__error[hidden] {
+        display: none;
+      }
+      .voice-input-chrome__truncation {
+        margin: 0 0 6px;
+        font-size: 0.84rem;
+        line-height: 1.35;
+        color: rgba(122, 84, 24, 0.88);
+      }
+      .voice-input-chrome__truncation[hidden] {
         display: none;
       }
       .voice-input-chrome__actions {

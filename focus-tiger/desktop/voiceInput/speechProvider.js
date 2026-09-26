@@ -23,6 +23,24 @@ function isObject(value) {
 }
 
 /**
+ * Compact capture stats for empty-transcript diagnosis (not product copy).
+ *
+ * @param {unknown} json
+ * @returns {string}
+ */
+export function formatSpeechCaptureDiagnostics(json) {
+  if (!isObject(json)) return '';
+  const buffers = Number(json.bufferCount);
+  const peak = Number(json.peakRms);
+  const rate = Number(json.sampleRate);
+  const parts = [];
+  if (Number.isFinite(buffers)) parts.push(`buffers=${buffers}`);
+  if (Number.isFinite(peak)) parts.push(`peak=${peak.toExponential(2)}`);
+  if (Number.isFinite(rate) && rate > 0) parts.push(`${Math.round(rate)}Hz`);
+  return parts.join(', ');
+}
+
+/**
  * @param {Record<string, unknown>} json
  * @returns {string}
  */
@@ -41,6 +59,18 @@ export function mapSpeechFailureReason(json) {
       return 'Voice Input probe requires macOS.';
     case 'helper_build_failed':
       return 'Could not build the macOS speech helper.';
+    case 'audio_format_invalid':
+      return 'The microphone audio format could not be opened.';
+    case 'audio_tap_empty':
+      return 'The microphone opened, but no audio reached speech recognition.';
+    case 'audio_engine_start_failed':
+      return json.detail
+        ? `The microphone engine could not start (${json.detail}).`
+        : 'The microphone engine could not start.';
+    case 'helper_crashed':
+      return json.detail
+        ? `Speech helper crashed (${json.detail}).`
+        : 'Speech helper crashed before returning text.';
     default:
       return json.detail
         ? `${error}: ${String(json.detail)}`
@@ -180,12 +210,18 @@ export function createSpeechProvider(opts = {}) {
       }
       lastTranscript = String(result.json.transcript || '');
       status = 'done';
+      const captureDiagnostics = formatSpeechCaptureDiagnostics(result.json);
       return {
         ok: true,
         status: 'done',
         transcript: lastTranscript,
+        hypothesisShrunk: result.json.hypothesisShrunk === true,
         latencyMs: Number(result.json.latencyMs || 0),
         listeningMs: Date.now() - listeningStartedAt,
+        bufferCount: Number(result.json.bufferCount),
+        peakRms: Number(result.json.peakRms),
+        sampleRate: Number(result.json.sampleRate),
+        captureDiagnostics,
         result
       };
     },

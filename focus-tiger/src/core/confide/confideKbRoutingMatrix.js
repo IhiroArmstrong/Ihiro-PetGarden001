@@ -590,6 +590,90 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0023' }
   },
   {
+    id: 'kb-edu-0001-grounding-en',
+    text: 'what is grounding?',
+    dimensions: ['what', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0001' }
+  },
+  {
+    id: 'kb-edu-0001-grounding-zh',
+    text: '接地是什么',
+    dimensions: ['what'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0001' }
+  },
+  {
+    id: 'kb-edu-0001-grounding-meaning-en',
+    text: 'grounding meaning',
+    dimensions: ['what', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0001' }
+  },
+  {
+    id: 'kb-edu-0002-mindfulness-zh',
+    text: '正念是什么',
+    dimensions: ['what'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0002' }
+  },
+  {
+    id: 'kb-edu-0002-mindfulness-en',
+    text: 'what is mindfulness',
+    dimensions: ['what', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0002' }
+  },
+  {
+    id: 'kb-edu-0002-mindfulness-meaning-en',
+    text: 'mindfulness meaning',
+    dimensions: ['what', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0002' }
+  },
+  {
+    id: 'kb-edu-0003-focus-vs-meditation-en',
+    text: 'focus vs meditation',
+    dimensions: ['what', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0003' }
+  },
+  {
+    id: 'kb-edu-0003-am-i-meditating-zh',
+    text: '我这是在冥想吗',
+    dimensions: ['what'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0003' }
+  },
+  {
+    id: 'kb-edu-0003-mindfulness-meditation-zh',
+    text: '正念和冥想一样吗',
+    dimensions: ['what'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0003' }
+  },
+  {
+    id: 'kb-edu-0004-mindfulness-in-app-en',
+    text: 'mindfulness in this app',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0004' }
+  },
+  {
+    id: 'kb-edu-0004-grounding-in-app-zh',
+    text: '接地功能在哪',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0004' }
+  },
+  {
+    id: 'kb-edu-0004-focus-entry-zh',
+    text: '从哪开始专注',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-EDU-0004' }
+  },
+  {
     id: 'honesty-observe-wing-zh',
     text: '观察翼是什么？',
     dimensions: ['what'],
