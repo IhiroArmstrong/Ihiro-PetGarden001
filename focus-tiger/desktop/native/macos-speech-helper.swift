@@ -134,6 +134,21 @@ func onDeviceSupported(for localeId: String) -> Bool {
   return false
 }
 
+/// Keep in lockstep with `foldVoiceRecognitionHypothesis` in voiceInputBridge.js.
+func isMuchShorterVoiceHypothesis(previous: String, incoming: String) -> Bool {
+  previous.count >= 40 && incoming.count * 10 <= previous.count * 6
+}
+
+func foldVoiceRecognitionHypothesis(previous: String, incoming: String) -> (text: String, shrunk: Bool) {
+  let prev = previous.trimmingCharacters(in: .whitespacesAndNewlines)
+  let next = incoming.trimmingCharacters(in: .whitespacesAndNewlines)
+  if next.isEmpty { return (prev, false) }
+  if prev.isEmpty { return (next, false) }
+  if next.hasPrefix(prev) { return (next, false) }
+  if isMuchShorterVoiceHypothesis(previous: prev, incoming: next) { return (prev, true) }
+  return (next, false)
+}
+
 func runGate(localeId: String) {
   let speechStatus = requestSpeechAuthorization()
   let micStatus = requestMicrophoneAuthorization()
@@ -214,6 +229,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
 
   let engine = AVAudioEngine()
   var finalText = ""
+  var hypothesisShrunk = false
   var failure: String? = nil
   var finished = false
   var audioEnded = false
@@ -279,7 +295,11 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     if let result {
       let text = result.bestTranscription.formattedString
       if !text.isEmpty {
-        finalText = text
+        let folded = foldVoiceRecognitionHypothesis(previous: finalText, incoming: text)
+        if folded.shrunk {
+          hypothesisShrunk = true
+        }
+        finalText = folded.text
       }
       if result.isFinal {
         signalWhenReady()
@@ -405,6 +425,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     "ok": true,
     "locale": localeId,
     "transcript": finalText,
+    "hypothesisShrunk": hypothesisShrunk,
     "requiresOnDeviceRecognition": true,
     "onDeviceEnforced": true,
     "sampleRate": recordingFormat.sampleRate,

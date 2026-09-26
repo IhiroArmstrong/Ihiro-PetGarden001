@@ -215,6 +215,7 @@ export function createSpeechProvider(opts = {}) {
         ok: true,
         status: 'done',
         transcript: lastTranscript,
+        hypothesisShrunk: result.json.hypothesisShrunk === true,
         latencyMs: Number(result.json.latencyMs || 0),
         listeningMs: Date.now() - listeningStartedAt,
         bufferCount: Number(result.json.bufferCount),
