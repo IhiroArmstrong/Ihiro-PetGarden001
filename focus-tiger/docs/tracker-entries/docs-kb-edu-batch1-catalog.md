@@ -1,0 +1,3 @@
+# docs/kb-edu-batch1-catalog · 2026-09-26
+
+| KB-EDU-0001–0004 catalog 入库 + 闸门 23 条 | 纯后端 + UI文案 | 待人工测试 | **Electron 宽屏 Confide**（`?product=1&confide=1`）。Idle → ⋯ → Confide → 发「what is grounding?」「正念是什么」「focus vs meditation」「mindfulness in this app」→ **0–1 秒内** `data-source=product_knowledge`，正文为 catalog 短答（EDU-0001–0004）；**不含** `RESET_*` 引导语。**0006** 仍不进索引。**关**：`FT_CONFIDE_KB_RETRIEVAL=off` 后同句不再命中。**自动化**：`confideProductKnowledge.test.js` · `audit-kb-live-gap.test.js` · `npm run test:smoke`。 | — | — | — | `productKnowledgeCatalog.json` · `product-knowledge-base.md` §4.7 · `task-kb-practice-edu-concepts.md` | 2026-09-26 |
