@@ -332,6 +332,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'sanctuary-nav',
         'companion',
         'ground-exercise',
         'five-moments',
@@ -375,6 +376,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'sanctuary-nav',
         'companion',
         'ground-exercise',
         'five-moments',
@@ -419,6 +421,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'sanctuary-nav',
         'ground-exercise',
         'five-moments',
         'honesty',

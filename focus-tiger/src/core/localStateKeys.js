@@ -28,6 +28,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.companion-mode.v1',
   'focus-tiger.cold-start-goal-seen.v1',
   'focus-tiger.cold-start-goal-options-seen.v1',
+  'focus-tiger.home-sanctuary-nav-seen.v1',
   'focus-tiger.reminder-quota.v1',
   'focus-tiger.reminder-preference.v1',
   'focus-tiger.hints-seen.v1',

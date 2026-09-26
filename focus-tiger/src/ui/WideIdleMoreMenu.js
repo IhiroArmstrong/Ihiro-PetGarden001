@@ -22,6 +22,8 @@ import {
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
+import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
+import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v7';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
@@ -112,9 +114,11 @@ export class WideIdleMoreMenu {
      *     onRitualFlow?: (proxy: string) => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
-   *     onQuickStart?: () => void,
-   *     onClearCompanion?: () => void,
-   *     onClearStage?: () => void,
+     *     onQuickStart?: () => void,
+     *     onSanctuaryNav?: () => void,
+     *     shouldShowSanctuaryNavPulse?: () => boolean,
+     *     onClearCompanion?: () => void,
+     *     onClearStage?: () => void,
      *     onMenuChange?: (open: boolean) => void,
      *     isHintUnread?: (id: string) => boolean,
      *     isGrowthCardOverlayActive?: () => boolean,
@@ -164,6 +168,11 @@ export class WideIdleMoreMenu {
    */
   refreshSecondaryHintDots() {
     if (this._menuOpen) this._refreshItems();
+  }
+
+  /** Re-sync home ball labels + sanctuary nav pulse after first fan open. */
+  refreshHomeCtas() {
+    this._refreshHomeCtas();
   }
 
   /**
@@ -344,8 +353,8 @@ export class WideIdleMoreMenu {
     this.homeCtas.className = 'ft-wide-home-ctas';
     this.homeCtas.id = 'ft-wide-home-ctas';
     this.homeCtas.innerHTML = `
-      <button type="button" class="ft-wide-home-ctas__btn is-text" id="ft-wide-home-today-direction" data-proxy="today-direction" aria-label="">
-        <span class="ft-wide-home-ctas__text" data-role="today-direction-label"></span>
+      <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-sanctuary-nav" data-proxy="sanctuary-nav" aria-label="">
+        ${SANCTUARY_NAV_COMPASS_SVG}
       </button>
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-wide-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
@@ -357,8 +366,8 @@ export class WideIdleMoreMenu {
         <img class="ft-wide-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
     `;
-    this.todayDirectionHomeBtn = this.homeCtas.querySelector(
-      '#ft-wide-home-today-direction'
+    this.sanctuaryNavHomeBtn = this.homeCtas.querySelector(
+      '#ft-wide-home-sanctuary-nav'
     );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
@@ -461,14 +470,11 @@ export class WideIdleMoreMenu {
 
   /** @returns {void} */
   _attachHomeGlassTips() {
-    if (this.todayDirectionHomeBtn) {
-      this._todayDirectionHomeTip = attachGlassHoverTip(
-        this.todayDirectionHomeBtn,
-        {
-          placement: 'top',
-          tipId: 'ft-wide-home-today-direction-tip'
-        }
-      );
+    if (this.sanctuaryNavHomeBtn) {
+      this._sanctuaryNavHomeTip = attachGlassHoverTip(this.sanctuaryNavHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-wide-home-sanctuary-nav-tip'
+      });
     }
     if (this.quickHomeBtn) {
       this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
@@ -498,29 +504,20 @@ export class WideIdleMoreMenu {
     if (!this.homeCtas || this._refreshingHomeCtas) return;
     this._refreshingHomeCtas = true;
     try {
-      if (this.todayDirectionHomeBtn) {
-        const directionLabel = t('TODAY_DIRECTION_MENU_LABEL');
-        const ballLabel = t('TODAY_DIRECTION_HOME_BALL_LABEL');
-        setAttrIfChanged(
-          this.todayDirectionHomeBtn,
-          'aria-label',
-          directionLabel
-        );
-        this._todayDirectionHomeTip?.setText(directionLabel);
-        const labelEl = this.todayDirectionHomeBtn.querySelector(
-          '[data-role="today-direction-label"]'
-        );
-        if (labelEl) labelEl.textContent = ballLabel;
+      if (this.sanctuaryNavHomeBtn) {
+        const navLabel = t('SANCTUARY_NAV_ARIA');
+        setAttrIfChanged(this.sanctuaryNavHomeBtn, 'aria-label', navLabel);
+        this._sanctuaryNavHomeTip?.setText(navLabel);
         setBoolPropIfChanged(
-          this.todayDirectionHomeBtn,
+          this.sanctuaryNavHomeBtn,
           'hidden',
           Boolean(this._keepQuickStart)
         );
-        setBoolPropIfChanged(this.todayDirectionHomeBtn, 'disabled', false);
-        setAttrIfChanged(
-          this.todayDirectionHomeBtn,
-          'aria-disabled',
-          'false'
+        setBoolPropIfChanged(this.sanctuaryNavHomeBtn, 'disabled', false);
+        setAttrIfChanged(this.sanctuaryNavHomeBtn, 'aria-disabled', 'false');
+        syncHomeSanctuaryNavPulse(
+          this.sanctuaryNavHomeBtn,
+          this.handlers.shouldShowSanctuaryNavPulse?.() === true
         );
       }
 
@@ -594,8 +591,8 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   _proxyHome(key) {
-    if (key === 'today-direction') {
-      this.handlers.onTodayDirection?.();
+    if (key === 'sanctuary-nav') {
+      this.handlers.onSanctuaryNav?.();
       return;
     }
     if (key === 'quickstart') {
@@ -792,6 +789,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'sanctuary-nav') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onSanctuaryNav?.();
       return;
     }
     if (key === 'today-direction') {
@@ -992,7 +995,7 @@ export class WideIdleMoreMenu {
         display: none !important;
       }
       /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
-      .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-today-direction,
+      .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sanctuary-nav,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
         display: none !important;

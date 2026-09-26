@@ -24,6 +24,8 @@ import {
 } from './homeChromeClearance.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
+import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
+import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
@@ -159,6 +161,11 @@ export class NarrowIdleShell {
    */
   refreshSecondaryHintDots() {
     if (this._sheetOpen) this._refreshDrawerItems();
+  }
+
+  /** Re-sync home ball labels + sanctuary nav pulse after first fan open. */
+  refreshHomeCtas() {
+    this._refreshHomeCtas();
   }
 
   /**
@@ -434,8 +441,8 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
-      <button type="button" class="ft-narrow-home-ctas__btn is-text" id="ft-narrow-home-today-direction" data-proxy="today-direction" aria-label="">
-        <span class="ft-narrow-home-ctas__text" data-role="today-direction-label"></span>
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sanctuary-nav" data-proxy="sanctuary-nav" aria-label="">
+        ${SANCTUARY_NAV_COMPASS_SVG}
       </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
@@ -484,8 +491,8 @@ export class NarrowIdleShell {
     this.stateEl = this.actionBar.querySelector('[data-role="state"]');
     this.listEl = this.sheet.querySelector('[data-role="list"]');
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
-    this.todayDirectionHomeBtn = this.homeCtas.querySelector(
-      '#ft-narrow-home-today-direction'
+    this.sanctuaryNavHomeBtn = this.homeCtas.querySelector(
+      '#ft-narrow-home-sanctuary-nav'
     );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
@@ -497,14 +504,11 @@ export class NarrowIdleShell {
 
   /** @returns {void} */
   _attachHomeGlassTips() {
-    if (this.todayDirectionHomeBtn) {
-      this._todayDirectionHomeTip = attachGlassHoverTip(
-        this.todayDirectionHomeBtn,
-        {
-          placement: 'top',
-          tipId: 'ft-narrow-home-today-direction-tip'
-        }
-      );
+    if (this.sanctuaryNavHomeBtn) {
+      this._sanctuaryNavHomeTip = attachGlassHoverTip(this.sanctuaryNavHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-narrow-home-sanctuary-nav-tip'
+      });
     }
     if (this.quickHomeBtn) {
       this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
@@ -754,18 +758,17 @@ export class NarrowIdleShell {
   _refreshHomeCtas() {
     if (!this.homeCtas) return;
 
-    if (this.todayDirectionHomeBtn) {
-      const directionLabel = t('TODAY_DIRECTION_MENU_LABEL');
-      const ballLabel = t('TODAY_DIRECTION_HOME_BALL_LABEL');
-      this.todayDirectionHomeBtn.setAttribute('aria-label', directionLabel);
-      this._todayDirectionHomeTip?.setText(directionLabel);
-      const labelEl = this.todayDirectionHomeBtn.querySelector(
-        '[data-role="today-direction-label"]'
+    if (this.sanctuaryNavHomeBtn) {
+      const navLabel = t('SANCTUARY_NAV_ARIA');
+      this.sanctuaryNavHomeBtn.setAttribute('aria-label', navLabel);
+      this._sanctuaryNavHomeTip?.setText(navLabel);
+      this.sanctuaryNavHomeBtn.hidden = Boolean(this._keepQuickStart);
+      this.sanctuaryNavHomeBtn.disabled = false;
+      this.sanctuaryNavHomeBtn.setAttribute('aria-disabled', 'false');
+      syncHomeSanctuaryNavPulse(
+        this.sanctuaryNavHomeBtn,
+        this.handlers.shouldShowSanctuaryNavPulse?.() === true
       );
-      if (labelEl) labelEl.textContent = ballLabel;
-      this.todayDirectionHomeBtn.hidden = Boolean(this._keepQuickStart);
-      this.todayDirectionHomeBtn.disabled = false;
-      this.todayDirectionHomeBtn.setAttribute('aria-disabled', 'false');
     }
 
     const focusEl = document.getElementById('btn-focus');
@@ -971,6 +974,12 @@ export class NarrowIdleShell {
       this.handlers.onLanguage?.();
       return;
     }
+    if (key === 'sanctuary-nav') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onSanctuaryNav?.();
+      return;
+    }
     if (key === 'today-direction') {
       this.closeSheet();
       this.clearStage();
@@ -1111,7 +1120,13 @@ export class NarrowIdleShell {
       this.handlers.onRitualFlow?.(key);
       return;
     }
+    if (key === 'sanctuary-nav') {
+      this.handlers.onSanctuaryNav?.();
+      return;
+    }
     if (key === 'today-direction') {
+      this.closeSheet();
+      this.clearStage();
       this.handlers.onTodayDirection?.();
       return;
     }
@@ -1175,7 +1190,7 @@ export class NarrowIdleShell {
         visibility: hidden;
         pointer-events: none;
       }
-      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-today-direction,
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sanctuary-nav,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
         display: none !important;

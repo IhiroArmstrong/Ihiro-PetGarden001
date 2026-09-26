@@ -108,6 +108,7 @@ import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
+import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
@@ -127,6 +128,7 @@ import {
   migrateColdStartGoalOptionsSeen,
   markColdStartGoalOptionsVersionSeen
 } from './core/coldStartGoalGate.js';
+import { shouldShowHomeSanctuaryNavPulse } from './core/homeSanctuaryNavGate.js';
 import {
   hasSeenWellnessDisclaimer,
   markWellnessDisclaimerSeen,
@@ -850,6 +852,7 @@ async function init() {
   let syncInAppReminderBanner = () => {};
   /** Assigned after cold-start goal card wiring. */
   let openTodayDirectionManual = () => {};
+  let openHomeSanctuaryNav = () => {};
   let syncTodayDirectionOptionsBanner = () => {};
   /** Occupancy winner for Yin sprites (sleep / welcome / payment / ceremony). */
   let spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
@@ -1729,12 +1732,36 @@ async function init() {
     }
   });
   window.__confideEarChrome = confideEarChrome;
+  const homeSanctuaryNavFanUI = new HomeSanctuaryNavFanUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onHome: () => {
+      closeGrowthOverlayCards();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    onCalendar: () => {
+      closeGrowthOverlayCards();
+    },
+    onCollection: () => {
+      closeGrowthOverlayCards({ except: 'yin-coin' });
+      yinCoinPanelUI?.open();
+    },
+    onOpen: () => {
+      idleChrome.wide?.refreshHomeCtas?.();
+      idleChrome.narrow?.refreshHomeCtas?.();
+    }
+  });
+  window.__homeSanctuaryNavFan = homeSanctuaryNavFanUI;
+  const syncHomeSanctuaryNavPulseChrome = () => {
+    idleChrome.wide?.refreshHomeCtas?.();
+    idleChrome.narrow?.refreshHomeCtas?.();
+  };
   const syncConfideEarChrome = () => {
     confideEarChrome.sync();
     idleChrome.narrow?.setConfideEarVisible?.(canOpenConfideNow());
   };
   const syncEntitlementDependentIdleChrome = () => {
     syncConfideEarChrome();
+    syncHomeSanctuaryNavPulseChrome();
     idleChrome.wide.refreshSecondaryHintDots?.();
     idleChrome.narrow.refreshSecondaryHintDots?.();
     supportYinModalUI.syncEntitlementCards?.();
@@ -1771,6 +1798,17 @@ async function init() {
   openTodayDirectionManual = () => {
     closeGrowthOverlayCards({ except: 'cold-start-goal' });
     coldStartGoalCardUI.open({ manual: true });
+  };
+
+  openHomeSanctuaryNav = (anchorEl) => {
+    const anchor =
+      anchorEl ||
+      document.getElementById('ft-wide-home-sanctuary-nav') ||
+      document.getElementById('ft-narrow-home-sanctuary-nav') ||
+      document.getElementById('ft-wide-more-btn') ||
+      document.querySelector('.ft-narrow-grabber');
+    closeGrowthOverlayCards();
+    homeSanctuaryNavFanUI.open({ anchorEl: anchor });
   };
 
   /**
@@ -3311,6 +3349,13 @@ async function init() {
     onTodayDirection: () => {
       openTodayDirectionManual();
     },
+    onSanctuaryNav: () => {
+      openHomeSanctuaryNav();
+    },
+    shouldShowSanctuaryNavPulse: () =>
+      shouldShowHomeSanctuaryNavPulse(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
     onGroundExercise: () => {
       closeGrowthOverlayCards({ except: 'ground-exercise' });
       groundExerciseChoiceUI?.open();
