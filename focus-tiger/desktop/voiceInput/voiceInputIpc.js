@@ -54,6 +54,12 @@ export function attachVoiceInputIpc(deps) {
 
   deps.ipcMain.handle('desktop:voice-input-stop', async () => {
     const result = await provider.stopListening();
+    if (result && result.ok === true && !String(result.transcript || '').trim()) {
+      console.info(
+        '[voice-input] empty transcript',
+        result.captureDiagnostics || '(no capture diagnostics)'
+      );
+    }
     emitStatus();
     return result;
   });

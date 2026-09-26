@@ -8,7 +8,8 @@ import { describe, it } from 'node:test';
 import {
   applyVoiceTranscriptToField,
   canShowVoiceInputChrome,
-  hasVoiceInputBridge
+  hasVoiceInputBridge,
+  withVoiceCaptureDiagnostics
 } from './voiceInputBridge.js';
 
 describe('voiceInputBridge', () => {
@@ -26,6 +27,14 @@ describe('voiceInputBridge', () => {
 
   it('hides chrome on web builds without bridge', () => {
     assert.equal(canShowVoiceInputChrome({ widthPx: 1200, globalObj: {} }), false);
+  });
+
+  it('appends capture diagnostics to the no-speech sentence', () => {
+    assert.equal(
+      withVoiceCaptureDiagnostics('No speech was heard.', 'buffers=12, peak=1.00e-3, 48000Hz'),
+      'No speech was heard. (buffers=12, peak=1.00e-3, 48000Hz)'
+    );
+    assert.equal(withVoiceCaptureDiagnostics('No speech was heard.', ''), 'No speech was heard.');
   });
 
   it('appends transcript with a space when field already has text', () => {

@@ -53,6 +53,20 @@ export function canShowVoiceInputChrome({ widthPx = 0, globalObj = globalThis } 
 export { DESKTOP_COMPANION_WIDE_MIN_PX };
 
 /**
+ * Keep the locale sentence; append helper capture stats in parentheses.
+ *
+ * @param {string} baseCopy
+ * @param {unknown} diagnostics
+ * @returns {string}
+ */
+export function withVoiceCaptureDiagnostics(baseCopy, diagnostics) {
+  const diag = String(diagnostics || '').trim();
+  const base = String(baseCopy || '').trim();
+  if (!diag) return base;
+  return `${base} (${diag})`;
+}
+
+/**
  * Append or set transcript text on a textarea-like control.
  *
  * @param {HTMLTextAreaElement | HTMLInputElement} el

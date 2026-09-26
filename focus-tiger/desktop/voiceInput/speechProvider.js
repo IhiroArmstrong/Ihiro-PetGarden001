@@ -23,6 +23,24 @@ function isObject(value) {
 }
 
 /**
+ * Compact capture stats for empty-transcript diagnosis (not product copy).
+ *
+ * @param {unknown} json
+ * @returns {string}
+ */
+export function formatSpeechCaptureDiagnostics(json) {
+  if (!isObject(json)) return '';
+  const buffers = Number(json.bufferCount);
+  const peak = Number(json.peakRms);
+  const rate = Number(json.sampleRate);
+  const parts = [];
+  if (Number.isFinite(buffers)) parts.push(`buffers=${buffers}`);
+  if (Number.isFinite(peak)) parts.push(`peak=${peak.toExponential(2)}`);
+  if (Number.isFinite(rate) && rate > 0) parts.push(`${Math.round(rate)}Hz`);
+  return parts.join(', ');
+}
+
+/**
  * @param {Record<string, unknown>} json
  * @returns {string}
  */
@@ -192,12 +210,17 @@ export function createSpeechProvider(opts = {}) {
       }
       lastTranscript = String(result.json.transcript || '');
       status = 'done';
+      const captureDiagnostics = formatSpeechCaptureDiagnostics(result.json);
       return {
         ok: true,
         status: 'done',
         transcript: lastTranscript,
         latencyMs: Number(result.json.latencyMs || 0),
         listeningMs: Date.now() - listeningStartedAt,
+        bufferCount: Number(result.json.bufferCount),
+        peakRms: Number(result.json.peakRms),
+        sampleRate: Number(result.json.sampleRate),
+        captureDiagnostics,
         result
       };
     },
