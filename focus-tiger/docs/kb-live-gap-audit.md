@@ -38,13 +38,13 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-26 · 27 live rows · 30 approved catalog ids
+**Snapshot**: 2026-09-26 · 27 live rows · 34 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 4 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 0 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 2 | PO scope before drafting |
@@ -54,10 +54,6 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | menuPath | labelKeys |
 |---|---|---|---|
-| `kb-live-today-direction` | live | ⋯ → Preferences → Choose today's direction again | `TODAY_DIRECTION_MENU_LABEL` |
-| `kb-live-sanctuary-nav` | live | ⋯ → Practice → Navigate sanctuary (wide home compass ball shortcut) | `SANCTUARY_NAV_MENU_LABEL` |
-| `kb-live-community` | live | ⋯ → Preferences → Community | `COMMUNITY_MENU_LABEL` |
-| `kb-live-membership` | live | ⋯ → Membership CTA / Premium unlocked | `MEMBERSHIP_MENU_CTA` `MEMBERSHIP_MENU_UNLOCKED` |
 
 ### Registry mapping drift (registry `catalogKbIds` ≠ canonical approved map)
 
@@ -107,5 +103,5 @@ CI / smoke: `npm run audit:kb-live-gap` (no write) is part of `npm run docs:chec
 | 1 | Static live-entry registry | **已合 develop** (#929) |
 | 2 | Gap audit (this doc) | **已合 develop** (#931) · registry drift cleared |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** · catalog keywords only |
-| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939) · **0021 Daily quote 已入库 catalog**（闸门 **19**）· **0022/0023 待审草稿**（§4.5–4.6 · PR #971 入库旁支）· **0024–0026 Rituals 待审草稿**（§4.7 · 本旁支） |
+| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019–0032 已入库**（闸门 **34**）· batch-2 存活面候选清零 · Reminder / Language 仍 conditional |
 | 手册 | `docs/internal-handbook/` | 等缺口稳定后再开 |

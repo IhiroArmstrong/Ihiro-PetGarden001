@@ -29,9 +29,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 30 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 34 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 30);
+    assert.equal(ids.length, 34);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -47,6 +47,10 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0026'), true);
     assert.equal(ids.includes('KB-FUNC-0027'), true);
     assert.equal(ids.includes('KB-FUNC-0028'), true);
+    assert.equal(ids.includes('KB-FUNC-0029'), true);
+    assert.equal(ids.includes('KB-FUNC-0030'), true);
+    assert.equal(ids.includes('KB-FUNC-0031'), true);
+    assert.equal(ids.includes('KB-FUNC-0032'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
@@ -291,6 +295,46 @@ describe('confide product knowledge retrieval', () => {
     const focusCircleEn = retrieveProductKnowledge('Where is Focus Circle?');
     assert.equal(focusCircleEn.hit, true);
     assert.equal(focusCircleEn.id, 'KB-FUNC-0028');
+  });
+
+  it('hits batch-2 preferences and membership entry questions', () => {
+    const today = retrieveProductKnowledge('今日方向从哪开');
+    assert.equal(today.hit, true);
+    assert.equal(today.id, 'KB-FUNC-0029');
+    assert.match(today.text || '', /today's direction/i);
+
+    const todayEn = retrieveProductKnowledge("Where is today's direction?");
+    assert.equal(todayEn.hit, true);
+    assert.equal(todayEn.id, 'KB-FUNC-0029');
+
+    const nav = retrieveProductKnowledge('栖居导航从哪开');
+    assert.equal(nav.hit, true);
+    assert.equal(nav.id, 'KB-FUNC-0030');
+    assert.match(nav.text || '', /Navigate sanctuary/i);
+
+    const navEn = retrieveProductKnowledge('Where is sanctuary nav?');
+    assert.equal(navEn.hit, true);
+    assert.equal(navEn.id, 'KB-FUNC-0030');
+
+    const community = retrieveProductKnowledge('社区从哪开');
+    assert.equal(community.hit, true);
+    assert.equal(community.id, 'KB-FUNC-0031');
+    assert.match(community.text || '', /optional/i);
+    assert.doesNotMatch(community.text || '', /slack\.com/i);
+
+    const communityEn = retrieveProductKnowledge('Where is community?');
+    assert.equal(communityEn.hit, true);
+    assert.equal(communityEn.id, 'KB-FUNC-0031');
+
+    const membership = retrieveProductKnowledge('会员从哪开');
+    assert.equal(membership.hit, true);
+    assert.equal(membership.id, 'KB-FUNC-0032');
+    assert.match(membership.text || '', /optional/i);
+    assert.doesNotMatch(membership.text || '', /\$\{price\}|About \$/);
+
+    const membershipEn = retrieveProductKnowledge('Where is membership?');
+    assert.equal(membershipEn.hit, true);
+    assert.equal(membershipEn.id, 'KB-FUNC-0032');
   });
 
   it('hits KB-EDU batch1 concept questions without exercise scripts', () => {

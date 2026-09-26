@@ -63,7 +63,11 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-ritual-emotional-reset': Object.freeze(['KB-FUNC-0025']),
   'kb-live-ritual-work-transition': Object.freeze(['KB-FUNC-0026']),
   'kb-live-quiet-together': Object.freeze(['KB-FUNC-0027']),
-  'kb-live-focus-circle': Object.freeze(['KB-FUNC-0028'])
+  'kb-live-focus-circle': Object.freeze(['KB-FUNC-0028']),
+  'kb-live-today-direction': Object.freeze(['KB-FUNC-0029']),
+  'kb-live-sanctuary-nav': Object.freeze(['KB-FUNC-0030']),
+  'kb-live-community': Object.freeze(['KB-FUNC-0031']),
+  'kb-live-membership': Object.freeze(['KB-FUNC-0032'])
 });
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform / concept facts). */
