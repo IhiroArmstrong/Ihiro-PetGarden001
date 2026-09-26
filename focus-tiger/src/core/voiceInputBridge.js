@@ -67,21 +67,20 @@ export function withVoiceCaptureDiagnostics(baseCopy, diagnostics) {
 }
 
 /**
- * Append or set transcript text on a textarea-like control.
+ * Set transcript text on a textarea-like control (Speak-to-type replaces field content).
  *
  * @param {HTMLTextAreaElement | HTMLInputElement} el
  * @param {string} transcript
  * @param {number} [maxLength]
+ * @returns {{ truncated: boolean }}
  */
 export function applyVoiceTranscriptToField(el, transcript, maxLength = Infinity) {
   const next = String(transcript || '').trim();
-  if (!next) return;
-  const existing = String(el.value || '').trim();
-  const merged = existing ? `${existing} ${next}` : next;
+  if (!next) return { truncated: false };
   const capped =
-    Number.isFinite(maxLength) && maxLength > 0
-      ? merged.slice(0, maxLength)
-      : merged;
+    Number.isFinite(maxLength) && maxLength > 0 ? next.slice(0, maxLength) : next;
+  const truncated = capped.length < next.length;
   el.value = capped;
   el.dispatchEvent(new Event('input', { bubbles: true }));
+  return { truncated };
 }
