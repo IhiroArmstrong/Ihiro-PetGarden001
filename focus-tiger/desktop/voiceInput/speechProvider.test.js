@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import {
   assertConfideSpeechProvider,
   createSpeechProvider,
+  formatSpeechCaptureDiagnostics,
   mapSpeechFailureReason
 } from './speechProvider.js';
 
@@ -26,6 +27,17 @@ describe('speechProvider', () => {
   it('maps on-device gate failure to a visible user message', () => {
     const message = mapSpeechFailureReason({ error: 'on_device_not_supported' });
     assert.match(message, /On-device English/);
+  });
+
+  it('formats capture diagnostics from helper json', () => {
+    const text = formatSpeechCaptureDiagnostics({
+      bufferCount: 42,
+      peakRms: 0.0123,
+      sampleRate: 48000
+    });
+    assert.match(text, /buffers=42/);
+    assert.match(text, /peak=1\.23e-2/);
+    assert.match(text, /48000Hz/);
   });
 
   it('maps empty audio tap to a visible user message', () => {
@@ -118,7 +130,14 @@ describe('speechProvider', () => {
         child: { stdin: { destroyed: false, write() {}, end() {} } },
         finished: Promise.resolve({
           ok: true,
-          json: { ok: true, transcript: '', latencyMs: 400 },
+          json: {
+            ok: true,
+            transcript: '',
+            latencyMs: 400,
+            bufferCount: 18,
+            peakRms: 0,
+            sampleRate: 48000
+          },
           stderr: '',
           exitCode: 0
         })
@@ -128,6 +147,11 @@ describe('speechProvider', () => {
     const stop = await provider.stopListening();
     assert.equal(stop.ok, true);
     assert.equal(stop.transcript, '');
+    assert.equal(stop.bufferCount, 18);
+    assert.equal(stop.peakRms, 0);
+    assert.equal(stop.sampleRate, 48000);
+    assert.match(stop.captureDiagnostics, /buffers=18/);
+    assert.match(stop.captureDiagnostics, /48000Hz/);
   });
 
   it('surfaces non-darwin as visible failure', async () => {

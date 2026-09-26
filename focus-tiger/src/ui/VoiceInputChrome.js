@@ -11,7 +11,8 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   applyVoiceTranscriptToField,
   canShowVoiceInputChrome,
-  getVoiceInputBridge
+  getVoiceInputBridge,
+  withVoiceCaptureDiagnostics
 } from '../core/voiceInputBridge.js';
 
 const STYLE_ID = 'voice-input-chrome-styles-v1';
@@ -224,7 +225,10 @@ export class VoiceInputChrome {
       }
       const transcript = String(result.transcript || '').trim();
       if (!transcript) {
-        this._errorMessage = t('VOICE_INPUT_ERROR_NO_SPEECH');
+        this._errorMessage = withVoiceCaptureDiagnostics(
+          t('VOICE_INPUT_ERROR_NO_SPEECH'),
+          result.captureDiagnostics
+        );
         this._setState('error');
         return;
       }
