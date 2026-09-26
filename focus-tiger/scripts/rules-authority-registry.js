@@ -1803,12 +1803,13 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'chat-openable-file-links',
-    title: '用户可见回复里仓库文件须可点开（禁止只写反引号路径）',
+    title: '用户可见回复里文件须可点开、可定位（禁止只写反引号路径）',
     ssotPath: 'WORKFLOW.md',
-    ssotSection: '用户可见回复：仓库文件须可点开（强制）',
+    ssotSection: '用户可见回复：文件须可点开、可定位（强制）',
     ssotMustContain: [
       /chat-openable-file-links/,
       /仓库文件须可点开/,
+      /本机绝对路径/,
       /禁止.*反引号/,
       /Markdown 链接/,
       /open_resource/
