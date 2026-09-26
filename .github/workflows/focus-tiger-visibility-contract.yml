@@ -4,7 +4,7 @@ name: focus-tiger visibility-contract e2e
 # e2e anchor set (not only the new feature's own tests).
 #
 # Plan A + workers:1 (WORKFLOW.md visibility CI 治理 · 2026-09-23):
-# - 3 parallel jobs by spec (wall-clock budget per shard)
+# - parallel jobs by spec; scenario-a is two jobs (early / late, 2026-09-26)
 # - workers:1 per job (static :5199 preview load)
 on:
   workflow_dispatch:
@@ -77,15 +77,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # scenario-a split at the Type C goto cliff (test #8 / Arrival open).
+          # Each job gets its own :5199 static server.
           - spec: e2e/scenario-a.companion.spec.js
-            label: scenario-a
-            slug: scenario-a
-            timeout_minutes: 75
+            grep: scenario-a-early
+            label: scenario-a-early
+            slug: scenario-a-early
+            timeout_minutes: 25
+          - spec: e2e/scenario-a.companion.spec.js
+            grep: scenario-a-late
+            label: scenario-a-late
+            slug: scenario-a-late
+            timeout_minutes: 60
           - spec: e2e/micro-ritual.spec.js
+            grep: .*
             label: micro-ritual
             slug: micro-ritual
             timeout_minutes: 45
           - spec: e2e/weekly-practice-heatmap.spec.js
+            grep: .*
             label: weekly-heatmap
             slug: weekly-heatmap
             timeout_minutes: 45
@@ -109,6 +119,7 @@ jobs:
         run: >
           node scripts/e2e-ci-guard.js visibility &&
           npx playwright test ${{ matrix.spec }}
+          --grep "${{ matrix.grep }}"
           --config=playwright.ci-visibility.config.js
           --workers=1
         env:
