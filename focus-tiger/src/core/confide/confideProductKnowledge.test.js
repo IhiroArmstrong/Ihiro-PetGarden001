@@ -29,9 +29,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 23 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 25 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 23);
+    assert.equal(ids.length, 25);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -40,6 +40,8 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0019'), true);
     assert.equal(ids.includes('KB-FUNC-0020'), true);
     assert.equal(ids.includes('KB-FUNC-0021'), true);
+    assert.equal(ids.includes('KB-FUNC-0022'), true);
+    assert.equal(ids.includes('KB-FUNC-0023'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
@@ -78,6 +80,11 @@ describe('confide product knowledge retrieval', () => {
     const breathDiff = retrieveProductKnowledge('Breath 和 Sit 有什么区别？');
     assert.equal(breathDiff.hit, true);
     assert.equal(breathDiff.id, 'KB-FUNC-0011');
+
+    const breathWhere = retrieveProductKnowledge('呼吸练习在哪');
+    assert.equal(breathWhere.hit, true);
+    assert.equal(breathWhere.id, 'KB-FUNC-0011');
+    assert.match(breathWhere.text || '', /left orb/i);
   });
 
   it('semi-hit step detail still returns pointer-only answer', () => {
@@ -217,6 +224,28 @@ describe('confide product knowledge retrieval', () => {
     const quoteEn = retrieveProductKnowledge('Where is the daily quote menu?');
     assert.equal(quoteEn.hit, true);
     assert.equal(quoteEn.id, 'KB-FUNC-0021');
+  });
+
+  it('hits batch-2 Inspiration Zen Cinema and Wallpapers entry questions', () => {
+    const cinema = retrieveProductKnowledge('Zen Cinema 从哪开？');
+    assert.equal(cinema.hit, true);
+    assert.equal(cinema.id, 'KB-FUNC-0022');
+    assert.match(cinema.text || '', /Zen Cinema/i);
+    assert.match(cinema.text || '', /YouTube/i);
+
+    const cinemaEn = retrieveProductKnowledge('Where is Zen Cinema?');
+    assert.equal(cinemaEn.hit, true);
+    assert.equal(cinemaEn.id, 'KB-FUNC-0022');
+
+    const wallpapers = retrieveProductKnowledge('壁纸从哪开？');
+    assert.equal(wallpapers.hit, true);
+    assert.equal(wallpapers.id, 'KB-FUNC-0023');
+    assert.match(wallpapers.text || '', /Wallpapers/i);
+    assert.match(wallpapers.text || '', /Save image/i);
+
+    const wallpapersEn = retrieveProductKnowledge('Where are the wallpapers?');
+    assert.equal(wallpapersEn.hit, true);
+    assert.equal(wallpapersEn.id, 'KB-FUNC-0023');
   });
 
   it('hits KB-EDU batch1 concept questions without exercise scripts', () => {

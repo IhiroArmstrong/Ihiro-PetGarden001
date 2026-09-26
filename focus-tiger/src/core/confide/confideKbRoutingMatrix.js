@@ -303,6 +303,13 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0011' }
   },
   {
+    id: 'kb-0011-where-breath',
+    text: '呼吸练习在哪',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0011' }
+  },
+  {
     id: 'kb-0012-where-zh',
     text: '练习记录从哪看？',
     dimensions: ['where'],
@@ -539,6 +546,48 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     dimensions: ['where', 'en'],
     lock: 'must-hit',
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0021' }
+  },
+  {
+    id: 'kb-0022-zen-cinema-zh',
+    text: 'Zen Cinema 从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0022' }
+  },
+  {
+    id: 'kb-0022-zen-cinema-en',
+    text: 'Where is Zen Cinema?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0022' }
+  },
+  {
+    id: 'kb-0022-zen-cinema-short-zh',
+    text: '禅意影院在哪',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0022' }
+  },
+  {
+    id: 'kb-0023-wallpapers-zh',
+    text: '壁纸从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0023' }
+  },
+  {
+    id: 'kb-0023-wallpapers-en',
+    text: 'Where are the wallpapers?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0023' }
+  },
+  {
+    id: 'kb-0023-wallpapers-short-zh',
+    text: '阿寅静帧从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0023' }
   },
   {
     id: 'kb-edu-0001-grounding-en',

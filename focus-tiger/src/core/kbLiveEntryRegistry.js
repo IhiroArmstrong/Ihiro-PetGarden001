@@ -272,7 +272,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       "proxy: 'zen-cinema'",
       'ZEN_CINEMA_MENU_LABEL'
     ]),
-    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js'])
+    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js']),
+    catalogKbIds: Object.freeze(['KB-FUNC-0022'])
   }),
   Object.freeze({
     id: 'kb-live-wallpapers',
@@ -285,7 +286,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       "proxy: 'wallpapers'",
       'WALLPAPER_MENU_LABEL'
     ]),
-    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js'])
+    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js']),
+    catalogKbIds: Object.freeze(['KB-FUNC-0023'])
   }),
   Object.freeze({
     id: 'kb-live-quiet-together',

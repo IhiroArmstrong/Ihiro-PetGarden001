@@ -40,8 +40,8 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-yin-coin` | menu | `yin-coin` | gated-default-on | ⋯ → Practice → Yin Coin | `YIN_COIN_MENU_LABEL` | `KB-FUNC-0018` |
 | `kb-live-confide` | menu | `confide` | gated-default-off | ⋯ → Practice → Confide to Yin (wide ear shortcut) | `CONFIDE_MENU_LABEL` | `KB-FUNC-0005` `KB-FUNC-0010` |
 | `kb-live-daily-quote` | menu | `daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` | `KB-FUNC-0021` |
-| `kb-live-zen-cinema` | menu | `zen-cinema` | live | ⋯ → Inspiration → Zen Cinema | `ZEN_CINEMA_MENU_LABEL` | — |
-| `kb-live-wallpapers` | menu | `wallpapers` | live | ⋯ → Inspiration → Wallpapers | `WALLPAPER_MENU_LABEL` | — |
+| `kb-live-zen-cinema` | menu | `zen-cinema` | live | ⋯ → Inspiration → Zen Cinema | `ZEN_CINEMA_MENU_LABEL` | `KB-FUNC-0022` |
+| `kb-live-wallpapers` | menu | `wallpapers` | live | ⋯ → Inspiration → Wallpapers | `WALLPAPER_MENU_LABEL` | `KB-FUNC-0023` |
 | `kb-live-quiet-together` | menu | `quiet-together` | gated-default-on | ⋯ → Not alone → Quiet together | `QUIET_TOGETHER_MENU_LABEL` | — |
 | `kb-live-focus-circle` | menu | `focus-circle` | live | ⋯ → Not alone → Focus circle | `FOCUS_CIRCLE_MENU_LABEL` | — |
 | `kb-live-reminder` | menu | `reminder` | conditional | ⋯ → Preferences → Reminder | `reminder.setting_title` | — |
