@@ -213,7 +213,6 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   }
 
   let engine = AVAudioEngine()
-  let sem = DispatchSemaphore(value: 0)
   var finalText = ""
   var failure: String? = nil
   var finished = false
@@ -231,7 +230,13 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     defer { finalizeLock.unlock() }
     guard audioEnded, !didSignal else { return }
     didSignal = true
-    sem.signal()
+  }
+
+  func isReadyToFinalize() -> Bool {
+    finalizeLock.lock()
+    let ready = didSignal
+    finalizeLock.unlock()
+    return ready
   }
 
   func endCapture() {
@@ -265,6 +270,34 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     if !finished {
       finished = true
       endCapture()
+    }
+  }
+
+  // Recognition callbacks are delivered on the main run loop. Start the task
+  // before capture and pump the run loop while waiting — sem.wait would stall it.
+  let task = recognizer.recognitionTask(with: request) { result, error in
+    if let result {
+      let text = result.bestTranscription.formattedString
+      if !text.isEmpty {
+        finalText = text
+      }
+      if result.isFinal {
+        signalWhenReady()
+      } else if !finalText.isEmpty {
+        finalizeLock.lock()
+        let ended = audioEnded
+        finalizeLock.unlock()
+        if ended {
+          signalWhenReady()
+        }
+      }
+    }
+    if let error {
+      failure = error.localizedDescription
+      finalizeLock.lock()
+      audioEnded = true
+      finalizeLock.unlock()
+      signalWhenReady()
     }
   }
 
@@ -302,6 +335,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     }
   }
   if let thrown {
+    task.cancel()
     emitJson([
       "command": "transcribe",
       "ok": false,
@@ -312,6 +346,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     exit(1)
   }
   if let engineStartError {
+    task.cancel()
     engine.stop()
     let code = engineStartError.contains("sample rate") ? "audio_format_invalid" : "audio_engine_start_failed"
     emitJson([
@@ -324,33 +359,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     exit(1)
   }
 
-  let task = recognizer.recognitionTask(with: request) { result, error in
-    if let result {
-      let text = result.bestTranscription.formattedString
-      if !text.isEmpty {
-        finalText = text
-      }
-      if result.isFinal {
-        signalWhenReady()
-      } else if !finalText.isEmpty {
-        finalizeLock.lock()
-        let ended = audioEnded
-        finalizeLock.unlock()
-        if ended {
-          signalWhenReady()
-        }
-      }
-    }
-    if let error {
-      failure = error.localizedDescription
-      finalizeLock.lock()
-      audioEnded = true
-      finalizeLock.unlock()
-      signalWhenReady()
-    }
-  }
-
-  _ = sem.wait(timeout: .now() + maxSeconds + 12.0)
+  _ = pumpRunLoop(until: { isReadyToFinalize() }, timeoutSeconds: maxSeconds + 12.0)
   finished = true
   engine.stop()
   inputNode.removeTap(onBus: 0)
