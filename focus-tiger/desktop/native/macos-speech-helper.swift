@@ -436,8 +436,30 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   ])
 }
 
-func defaultSpeakRate() -> Float {
-  max(AVSpeechUtteranceMinimumSpeechRate, AVSpeechUtteranceDefaultSpeechRate - 0.08)
+func defaultSpeakRate(for localeId: String) -> Float {
+  let zenPace = max(
+    AVSpeechUtteranceMinimumSpeechRate,
+    AVSpeechUtteranceDefaultSpeechRate - 0.08
+  )
+  // Japanese system voices often read quieter at the zen pace; nudge slightly for probe parity.
+  if localeId.hasPrefix("ja") {
+    return min(AVSpeechUtteranceMaximumSpeechRate, zenPace + 0.05)
+  }
+  return zenPace
+}
+
+func preferredTtsVoice(for localeId: String) -> AVSpeechSynthesisVoice? {
+  let candidates = AVSpeechSynthesisVoice.speechVoices().filter { voice in
+    voice.language == localeId
+      || voice.language.hasPrefix(String(localeId.prefix(2)))
+  }
+  if candidates.isEmpty {
+    return AVSpeechSynthesisVoice(language: localeId)
+  }
+  if let enhanced = candidates.first(where: { $0.quality == .enhanced }) {
+    return enhanced
+  }
+  return candidates.first ?? AVSpeechSynthesisVoice(language: localeId)
 }
 
 func runTtsGate(localeId: String) {
@@ -495,7 +517,7 @@ func runSpeak(localeId: String, text: String, rate: Float) {
     exit(1)
   }
 
-  let voice = AVSpeechSynthesisVoice(language: localeId)
+  let voice = preferredTtsVoice(for: localeId)
   guard let voice else {
     emitJson([
       "command": "speak",
@@ -513,6 +535,7 @@ func runSpeak(localeId: String, text: String, rate: Float) {
   let utterance = AVSpeechUtterance(string: trimmed)
   utterance.voice = voice
   utterance.rate = rate
+  utterance.volume = 1.0
   utterance.preUtteranceDelay = 0
   utterance.postUtteranceDelay = 0
 
@@ -565,7 +588,7 @@ guard args.count >= 2 else {
 var localeId = defaultLocale
 var maxSeconds = 15.0
 var speakText = ""
-var speakRate = defaultSpeakRate()
+var speakRate = defaultSpeakRate(for: localeId)
 if let localeIndex = args.firstIndex(of: "--locale"), localeIndex + 1 < args.count {
   localeId = args[localeIndex + 1]
 }
