@@ -110,7 +110,37 @@ describe('speechProvider', () => {
     const stop = await provider.stopListening();
     assert.equal(stop.ok, true);
     assert.equal(stop.transcript, 'hello focus tiger');
+    assert.equal(stop.hypothesisShrunk, false);
     assert.equal(provider.snapshot().allowCloudStt, false);
+  });
+
+  it('forwards hypothesisShrunk when the helper kept a dropped prefix', async () => {
+    const provider = createSpeechProvider({
+      gateRunner: async () => ({
+        ok: true,
+        gatePassed: true,
+        json: { ok: true, onDeviceSupported: true, recognizerAvailable: true },
+        stderr: '',
+        exitCode: 0
+      }),
+      transcribeStarter: () => ({
+        child: { stdin: { destroyed: true, write() {}, end() {} }, kill() {} },
+        finished: Promise.resolve({
+          ok: true,
+          json: {
+            ok: true,
+            transcript: 'kept the beginning of a long line',
+            hypothesisShrunk: true
+          },
+          stderr: '',
+          exitCode: 0
+        })
+      })
+    });
+    await provider.startListening();
+    const stop = await provider.stopListening();
+    assert.equal(stop.ok, true);
+    assert.equal(stop.hypothesisShrunk, true);
   });
 
   it('returns ok with empty transcript when recognition yields no speech', async () => {

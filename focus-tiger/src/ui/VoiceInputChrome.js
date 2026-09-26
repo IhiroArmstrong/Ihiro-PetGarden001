@@ -12,6 +12,7 @@ import {
   applyVoiceTranscriptToField,
   canShowVoiceInputChrome,
   getVoiceInputBridge,
+  voiceTranscriptNeedsTruncationNotice,
   withVoiceCaptureDiagnostics
 } from '../core/voiceInputBridge.js';
 
@@ -259,7 +260,12 @@ export class VoiceInputChrome {
         this.textarea.maxLength > 0 ? this.textarea.maxLength : Infinity
       );
       this._hasTranscript = true;
-      if (truncated) {
+      if (
+        voiceTranscriptNeedsTruncationNotice({
+          truncated,
+          hypothesisShrunk: result.hypothesisShrunk === true
+        })
+      ) {
         this._truncationMessage = t('VOICE_INPUT_TRUNCATED');
       }
       this.onInputApplied?.();

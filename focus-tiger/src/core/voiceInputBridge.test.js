@@ -8,7 +8,9 @@ import { describe, it } from 'node:test';
 import {
   applyVoiceTranscriptToField,
   canShowVoiceInputChrome,
+  foldVoiceRecognitionHypothesis,
   hasVoiceInputBridge,
+  voiceTranscriptNeedsTruncationNotice,
   withVoiceCaptureDiagnostics
 } from './voiceInputBridge.js';
 
@@ -49,5 +51,36 @@ describe('voiceInputBridge', () => {
     const result = applyVoiceTranscriptToField(el, '1234567890', el.maxLength);
     assert.equal(el.value, '12345678');
     assert.equal(result.truncated, true);
+  });
+
+  it('keeps the longer hypothesis when a later result is only the tail', () => {
+    const previous = `${'I am going to ride bicycles and travel around outdoors. '.repeat(6)}end of the thought`;
+    const tail = 'end of the thought';
+    const folded = foldVoiceRecognitionHypothesis(previous, tail);
+    assert.equal(folded.shrunk, true);
+    assert.equal(folded.text, previous.trim());
+    assert.equal(
+      voiceTranscriptNeedsTruncationNotice({
+        truncated: false,
+        hypothesisShrunk: folded.shrunk
+      }),
+      true
+    );
+  });
+
+  it('still grows when the next hypothesis extends the previous one', () => {
+    const folded = foldVoiceRecognitionHypothesis('hello', 'hello world');
+    assert.equal(folded.text, 'hello world');
+    assert.equal(folded.shrunk, false);
+    assert.equal(voiceTranscriptNeedsTruncationNotice(folded), false);
+  });
+
+  it('accepts a similar-length correction instead of treating it as a dropped prefix', () => {
+    const folded = foldVoiceRecognitionHypothesis(
+      'I am going to the store today please and then home',
+      'I am going to the shop today please and then home'
+    );
+    assert.equal(folded.text, 'I am going to the shop today please and then home');
+    assert.equal(folded.shrunk, false);
   });
 });
