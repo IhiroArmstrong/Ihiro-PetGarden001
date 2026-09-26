@@ -475,6 +475,70 @@
         "focus circle menu",
         "where is focus circle"
       ]
+    },
+    {
+      "id": "KB-FUNC-0029",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Choose today's direction again. You can also tap the Today ball on the home screen. It reopens four quiet choices: Focus for a bit, Quiet down, Study or work, or Just looking around. Sitting with Yin still works if you skip it. Yin only points here and does not choose for you.",
+      "keywords": [
+        "today's direction",
+        "今日方向",
+        "Choose today's direction again",
+        "重新选择今日方向",
+        "today direction menu",
+        "What would you like to do today",
+        "Today ball",
+        "今日方向从哪开",
+        "choose today direction",
+        "where is today's direction"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0030",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice & moments → Navigate sanctuary. On a wide home screen you can also tap the compass ball. It opens Home, Calendar, and Collection — a way around the sanctuary, not a new practice. Yin only points here.",
+      "keywords": [
+        "Navigate sanctuary",
+        "栖居导航",
+        "sanctuary navigation",
+        "compass ball",
+        "指南针",
+        "sanctuary nav menu",
+        "Home Calendar Collection",
+        "导航从哪开",
+        "navigate the sanctuary",
+        "where is sanctuary nav"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0031",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Join our community. That opens the public community page in a new tab. It is optional; sitting with Yin does not require joining. Yin only points here and does not read invite links aloud.",
+      "keywords": [
+        "Join our community",
+        "社区",
+        "community menu",
+        "加入社区",
+        "community page",
+        "社区从哪开",
+        "where is community",
+        "join community",
+        "community link",
+        "our community"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0032",
+      "shortAnswerEn": "Open More (⋯) or the drawer. Just above Rituals the row says Subscribe for more scenes, or Premium unlocked if advanced scenes are already open. Membership is optional and can be canceled anytime — it opens the same advanced rituals and ambience as Sanctuary Lifetime. A tea tip does not unlock those. Sit with Yin works without it. Yin only points here and does not read prices aloud.",
+      "keywords": [
+        "Yin Membership",
+        "会员",
+        "Subscribe for more scenes",
+        "Premium unlocked",
+        "membership menu",
+        "订阅会员",
+        "where is membership",
+        "membership from menu",
+        "会员从哪开",
+        "cancel anytime membership"
+      ]
     }
   ]
 }
