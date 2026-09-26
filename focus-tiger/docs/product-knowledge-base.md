@@ -794,6 +794,55 @@
 
 > **权威源（0024–0026）**：`src/locales/en.json` · `RitualFlow.js` · `RitualFlowUI.js` · `fiveMomentsCompassGate.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AF · Slice 2
 
+### 4.9 batch-2 Step 4（Not alone 双条 · 待审 · 未进 catalog）
+
+> **Status**: Step 4 权威源起草 · **待 PO tone spot-check**（社交/付费语气敏感）· **未进** `productKnowledgeCatalog.json` · registry `kb-live-quiet-together` / `kb-live-focus-circle` 仍无 `catalogKbIds` 链。  
+> **下一刀**：PO spot-check **0027–0028** → 入库 catalog + registry 链 → 闸门 **30 条**。
+
+```yaml
+- id: KB-FUNC-0027
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Quiet together worldwide 从哪开
+  适用场景: 想找全球同坐灯笼、或分不清和 Focus Circle / 普通 Sit 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → You are not alone → Quiet together worldwide. While you sit, a shared lantern count can show how many people are quietly with Yin — anonymous, no chat, no account. It is on by default; you can turn it off anytime in Privacy. Sitting with Yin still works either way. Yin only points here and does not read presence numbers aloud.
+    指路：菜单 `QUIET_TOGETHER_MENU_LABEL`（proxy `quiet-together`）→ `quietTogetherPresence.js` / Privacy sheet `PRIVACY_SHEET_QUIET_TOGETHER_*`。与 0028 分工：本条 = 全球匿名灯笼（默认开 · `?quietTogether=0` 关闸）；0028 = 最多 8 人的私密小圈 + 邀请码。与 0001 分工：Sit 不依赖灯笼；灯笼只伴同坐感，不门闩练习。禁止在短答里念具体灯笼数字或制造 FOMO。
+    禁止：说成必须社交才算练习；禁止承诺实时人数准确到秒；禁止与 Focus Circle 混为一谈；禁止在短答里念 `QUIET_TOGETHER_LANTERNS_*` 动态文案正文。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 待审
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Quiet Together（gated-default-on · 需 cloud base URL）
+  更新时间: 2026-09-26
+  locale_keys: [QUIET_TOGETHER_MENU_LABEL, QUIET_TOGETHER_PANEL_TITLE, QUIET_TOGETHER_PANEL_BLURB, PRIVACY_SHEET_QUIET_TOGETHER_LABEL, PRIVACY_SHEET_QUIET_TOGETHER_HINT, QUIET_TOGETHER_PANEL_CLOSE]
+  检索关键词: [Quiet together, 全球同坐, quiet together worldwide, lantern count, 同坐灯笼, quiet together menu, 匿名同坐, worldwide lanterns]
+
+- id: KB-FUNC-0028
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Focus Circle（我的小圈）从哪开
+  适用场景: 想找 Focus Circle / 邀请码小圈、或分不清和 Quiet together / 普通 Sit 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → You are not alone → My circle. Up to eight people can share a quiet circle — invite someone with a six-character code outside the app. No chat, no account, and no names in this first version. It is optional; Sit with Yin works without it. Yin only points here and does not read circle codes aloud.
+    指路：菜单 `FOCUS_CIRCLE_MENU_LABEL`（proxy `focus-circle`）→ `focusCircleMembership.js` / Privacy sheet `PRIVACY_SHEET_FOCUS_CIRCLE_*`（Create · Join · Leave · Copy invite code）。与 0027 分工：本条 = 私密小圈 + 邀请码；0027 = 全球匿名灯笼。与 0001 分工：Focus Circle 不门闩 Sit。禁止在短答里念 witness / traces 句库正文。
+    禁止：说成必须拉满 8 人才算练习；禁止承诺聊天或账号体系；禁止在短答里念 `FOCUS_CIRCLE_PEER_TRACES_*` 动态正文；禁止与 Quiet together 灯笼混为一谈。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 待审
+  审核人: —
+  风险标记: 否
+  适用产品版本: 现网 Focus Circle MVP（live · 需 cloud base URL）
+  更新时间: 2026-09-26
+  locale_keys: [FOCUS_CIRCLE_MENU_LABEL, FOCUS_CIRCLE_PANEL_TITLE, FOCUS_CIRCLE_PANEL_BLURB, PRIVACY_SHEET_FOCUS_CIRCLE_TITLE, PRIVACY_SHEET_FOCUS_CIRCLE_HINT, PRIVACY_SHEET_FOCUS_CIRCLE_CREATE, PRIVACY_SHEET_FOCUS_CIRCLE_JOIN, PRIVACY_SHEET_FOCUS_CIRCLE_COPY]
+  检索关键词: [Focus Circle, 我的小圈, my circle menu, focus circle invite code, 邀请码, quiet circle, 小圈从哪开, circle join code, focus circle menu]
+```
+
+> **权威源（0027–0028）**：`src/locales/en.json` · `quietTogetherPresence.js` · `quietTogetherPreference.js` · `focusCircleMembership.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AG–AK
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
