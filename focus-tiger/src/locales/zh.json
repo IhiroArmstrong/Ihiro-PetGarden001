@@ -489,6 +489,7 @@
   "VOICE_INPUT_STOP_ARIA": "Stop listening",
   "VOICE_INPUT_ERROR_GENERIC": "Voice input didn’t work. Try again or type instead.",
   "VOICE_INPUT_ERROR_NO_SPEECH": "No speech was heard. Try again or type instead.",
+  "VOICE_INPUT_TRUNCATED": "Your speech was longer than this box allows. Only the first 280 characters were kept — say a shorter line or type the rest.",
   "CONFIDE_PRACTICE_FACTS_NONE": "这台设备上还没有记下同坐的日子。",
   "CONFIDE_PRACTICE_FACTS_DAYS_ONLY": "这台设备记下了 {days} 个同坐的日子。分钟数还没有全部写下。",
   "CONFIDE_PRACTICE_FACTS_DAYS_PARTIAL": "这台设备记下了 {days} 个同坐的日子，有记下时长的大约 {minutes} 分钟。",

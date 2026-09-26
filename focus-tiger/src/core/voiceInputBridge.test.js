@@ -37,15 +37,17 @@ describe('voiceInputBridge', () => {
     assert.equal(withVoiceCaptureDiagnostics('No speech was heard.', ''), 'No speech was heard.');
   });
 
-  it('appends transcript with a space when field already has text', () => {
+  it('replaces field content with the transcript', () => {
     const el = { value: 'hello', maxLength: 280, dispatchEvent() {} };
-    applyVoiceTranscriptToField(el, 'focus tiger');
-    assert.equal(el.value, 'hello focus tiger');
+    const result = applyVoiceTranscriptToField(el, 'focus tiger');
+    assert.equal(el.value, 'focus tiger');
+    assert.equal(result.truncated, false);
   });
 
-  it('respects maxLength when merging transcript', () => {
-    const el = { value: '12345', maxLength: 8, dispatchEvent() {} };
-    applyVoiceTranscriptToField(el, '67890', el.maxLength);
-    assert.equal(el.value, '12345 67');
+  it('respects maxLength and reports truncation', () => {
+    const el = { value: '', maxLength: 8, dispatchEvent() {} };
+    const result = applyVoiceTranscriptToField(el, '1234567890', el.maxLength);
+    assert.equal(el.value, '12345678');
+    assert.equal(result.truncated, true);
   });
 });
