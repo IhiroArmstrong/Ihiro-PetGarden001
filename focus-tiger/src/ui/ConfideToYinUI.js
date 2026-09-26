@@ -9,6 +9,12 @@
  */
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
+import {
+  canUseSystemTts,
+  getSystemTtsBridge,
+  mapLocaleToTtsLocale,
+  shouldSpeakConfideReply
+} from '../core/systemTtsBridge.js';
 import { canSubmitConfideText } from '../core/confide/confideClassify.js';
 import {
   resolveConfideLiteralCoarseBucket,
@@ -396,6 +402,7 @@ export class ConfideToYinUI {
     this.root.hidden = false;
     this.inputEl.value = '';
     this._voiceInputChrome?.reset();
+    this._stopConfideTts();
     this.userEl.hidden = true;
     this.userEl.textContent = '';
     this.replyEl.hidden = true;
@@ -436,6 +443,7 @@ export class ConfideToYinUI {
     this._hideMemoryConsent();
     this.hideGenerateLayer({ unload: false });
     this._voiceInputChrome?.reset();
+    this._stopConfideTts();
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -748,10 +756,34 @@ export class ConfideToYinUI {
       source: shown.source
     });
     this._scrollReplyIntoView();
+    this._maybeSpeakConfideReply(shown);
     this._maybeScheduleSemanticShadow({
       text: asked,
       route: shown.route,
       source: shown.source
+    });
+  }
+
+  _stopConfideTts() {
+    const bridge = getSystemTtsBridge();
+    if (!bridge || typeof bridge.stop !== 'function') return;
+    void bridge.stop();
+  }
+
+  /**
+   * @param {{ route: string, text: string }} shown
+   */
+  _maybeSpeakConfideReply(shown) {
+    if (!shouldSpeakConfideReply(shown.route)) return;
+    const text = String(shown.text || '').trim();
+    if (!text) return;
+    const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
+    if (!canUseSystemTts({ widthPx })) return;
+    const bridge = getSystemTtsBridge();
+    if (!bridge || typeof bridge.speak !== 'function') return;
+    void bridge.speak({
+      text,
+      locale: mapLocaleToTtsLocale(getLocale())
     });
   }
 
