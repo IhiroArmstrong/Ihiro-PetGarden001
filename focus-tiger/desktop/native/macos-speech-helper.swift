@@ -437,33 +437,46 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
 }
 
 func defaultSpeakRate(for localeId: String) -> Float {
-  let zenPace = max(
+  return max(
     AVSpeechUtteranceMinimumSpeechRate,
     AVSpeechUtteranceDefaultSpeechRate - 0.08
   )
-  // Japanese system voices often read quieter at the zen pace; nudge slightly for probe parity.
+}
+
+func normalizedTtsLocaleId(_ localeId: String) -> String {
   if localeId.hasPrefix("ja") {
-    return min(AVSpeechUtteranceMaximumSpeechRate, zenPace + 0.05)
+    return "ja-JP"
   }
-  return zenPace
+  if localeId.hasPrefix("en") {
+    return "en-US"
+  }
+  return localeId
+}
+
+func preferredTtsVoiceName(for localeId: String) -> String {
+  return normalizedTtsLocaleId(localeId).hasPrefix("ja") ? "Otoya" : "Joelle"
 }
 
 func preferredTtsVoice(for localeId: String) -> AVSpeechSynthesisVoice? {
+  let normalized = normalizedTtsLocaleId(localeId)
+  let preferredName = preferredTtsVoiceName(for: normalized)
   let candidates = AVSpeechSynthesisVoice.speechVoices().filter { voice in
-    voice.language == localeId
-      || voice.language.hasPrefix(String(localeId.prefix(2)))
+    voice.language == normalized
+      || voice.language.hasPrefix(String(normalized.prefix(2)))
   }
   if candidates.isEmpty {
-    return AVSpeechSynthesisVoice(language: localeId)
+    return AVSpeechSynthesisVoice(language: normalized)
   }
-  if let enhanced = candidates.first(where: { $0.quality == .enhanced }) {
+  let named = candidates.filter { $0.name.contains(preferredName) }
+  let pool = named.isEmpty ? candidates : named
+  if let enhanced = pool.first(where: { $0.quality == .enhanced }) {
     return enhanced
   }
-  return candidates.first ?? AVSpeechSynthesisVoice(language: localeId)
+  return pool.first ?? AVSpeechSynthesisVoice(language: normalized)
 }
 
 func runTtsGate(localeId: String) {
-  let voice = AVSpeechSynthesisVoice(language: localeId)
+  let voice = preferredTtsVoice(for: localeId)
   emitJson([
     "command": "tts-gate",
     "ok": true,

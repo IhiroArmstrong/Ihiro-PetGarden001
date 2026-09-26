@@ -1,6 +1,6 @@
 # Task Brief · System TTS V1（系统播报 + 全局声音开关 · macOS）
 
-> **状态（2026-09-26）**：产品口径已拍板；**Slice 0 探针已开工**（实验室 `companion:system-tts-probe`）；产品播报点仍待探针及格口令。  
+> **状态（2026-09-26 晚）**：Slice 0 探针已及格；**音色已锁 Joelle（英）+ Otoya（日），均优化音质**；产品第一挂载点改为 **Confide 出字同步念出**（见 `task-confide-tts-v1.md`）；专注结束播报后移。  
 > 决策纪要：`decisions/tts-v1-decision-memo.md`  
 > 挂线：Epic **#5** 苹果 DMG（与 Voice Input 同壳；**不**另开语音 Epic）。  
 > 实现须另口令。建议顺序：「开工 System TTS 探针」→（探针及格）「开工 System TTS 播报」。  
@@ -14,7 +14,8 @@
 |---|---|
 | **产品形态** | **System TTS**。把已有 i18n 系统短句用 macOS 本机合成念出来；**不是** Voice Agent、**不是**语音通话、**不是**阿寅对口型说话。 |
 | **本期范围** | 仅**功能性播报**（专注结束、仪式提示等）+ **全局声音开关（默认关）**。 |
-| **本期不做** | Confide 回复朗读 → 下一期 backlog（原则已改完，另开 Brief）。 |
+| **音色（Slice 0+）** | 英文 **Joelle（优化音质）**；日文 **Otoya（优化音质）**。实现于 `macos-speech-helper.swift` `preferredTtsVoice`。 |
+| **本期不做（父 Brief）** | 专注结束播报 → 待 Confide Slice 合入后再开 Slice 1b。Confide 朗读见 **`task-confide-tts-v1.md`**。 |
 | **壳** | **仅 Electron / macOS DMG。** Web / PWA / 窄屏 **不露出**朗读。 |
 | **语言** | 朗读语言 **跟随界面语言**（英/日优先）；不默认中文音色。 |
 | **安全** | 危机句、安全转介 **不朗读**，继续纯文字。 |
