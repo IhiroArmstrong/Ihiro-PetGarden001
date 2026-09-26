@@ -21,7 +21,13 @@ import {
 /**
  * SCENARIO_TESTS 场景 A / I / K · 产品壳 DOM 主路径（到 Companion 开表为止）。
  * 不跑到 1 分钟达标 / Celebrating；序列观感仍人工。
+ *
+ * visibility CI 拆成两个 job（同一文件、各自 webServer）：
+ * `scenario-a-early` = 本 describe 起至 Choose 外侧取消；
+ * `scenario-a-late` = Arrival 藏 Sit 起。切点对准 Type C goto 悬崖（#8）。
  */
+
+test.describe('scenario-a-early', () => {
 
 test('scenario I: hint opens companion panel when gate not ready (no silent no-op)', async ({
   page
@@ -165,6 +171,10 @@ test('Arrival Choose dismisses on outside click (back to Idle)', async ({
   await expect(arrival).toBeHidden({ timeout: 5_000 });
   await expectFocusSessionInactive(page);
 });
+
+});
+
+test.describe('scenario-a-late', () => {
 
 test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stays', async ({
   page
@@ -504,4 +514,6 @@ test('completionPending disables Sit (no silent no-op)', async ({ page }) => {
     window.__resyncSessionChrome();
   });
   await expect(page.locator('#btn-focus')).toBeEnabled();
+});
+
 });
