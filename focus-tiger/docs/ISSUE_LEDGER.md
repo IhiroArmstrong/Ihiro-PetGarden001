@@ -2,6 +2,7 @@
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
+| 优化建议 | 统一「轻量身份 / 账号与设备」Brief 现在不写；灰行占位维持 | 2026-09-26 PO 采纳分析师 · 菜单治理第 3 条 | **范围：** 不改运行时。**触发才写 Brief：**（1）开工 Circle 跨设备 OTP 绑人（2e #615 已合，不含此项）；（2）或「换设备/清缓存后东西找不回来」具体投诉 ≥3。SSOT [`MENU_CHROME_CENSUS.md`](./MENU_CHROME_CENSUS.md) §1·3。**禁止**无证据先做架构预判。 | 跟进中（触发未到） |
 | 技术债 | `kb-live-gap-audit.md` 等文档机器块过期导致 `docs:check` 挂 CI，须人工发现后跑 `audit:kb-live-gap:sync` | 2026-09-24 #951/#953 连续两次 · 分析师建议 | **不挡合并**（同步一行即可修）。候选：`pre-commit` 在改 registry/catalog 时自动 `--write`；或 CI 在 `docs:check` 前先跑 sync 再 diff。本轮不实现。 | 未跟进 |
 | 技术债 | KB 检索与观察翼套话都靠字面规则，新问法/新标签会漏 | 2026-09-22 PO 立项 · 分析师「根因的根因」 | **KB**：路由矩阵 `confideKbRoutingMatrix.js` · Brief `task-confide-kb-routing-matrix.md`。**第二轮 probe 强制**从 `npm run audit:confide-kb-matrix-probes` 捞 `kb_retrieval_miss` 真实未命中，**禁止**头脑风暴造问法；`novel<5` 则等到 **2026-10-12** 与 with-prior/Stage2 同看。首拍 probe 漏检约 71%；走完第二轮后仍 ≥10% → 开 embedding Brief（方案 B）。**观察翼**：极短标签拒收；语义护栏仍见 `task-l3-observe-cliche-semantic-guard.md`。 | 跟进中（矩阵已建 · 第二轮等日志/10-12） |
 | 独立bug | Electron 与 Safari 同端口但 Support 已购卡不淡化 / 摸头无反应（多为本机存储隔离或 Asleep 态） | 2026-09-02 用户书面 · 本会话 | **两层**：(1) 存储隔离仍是产品事实——Safari 购买不会写入 Electron `localStorage`，**不**做跨浏览器同步。(2) **结账回跳**：**#530 已合 develop**（`fix/electron-checkout-return-shell`）。Safari 淡化 OK / Electron 本壳仍须 tip 复测。`canPlayIdleYinTap` 须 Idle+smiling。 | 跟进中（代码已合 · 待关单） |
