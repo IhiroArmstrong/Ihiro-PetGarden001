@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-09-23  
+生成日期：2026-09-27  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -972,11 +972,11 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 页面 URL：http://localhost:5173/?product=1
 
 **When**
-- 375×667：见顶栏 ActionBar（? · 时间/Calm · ♪）；主画布下方三 PNG 图腾圆球（顺序 Quick · Sit · Honesty，全宽均匀；`public/icons/icon-*.png`）；Arrival 开着时仅留 Quick Start 球；底中「上滑打开选项」；上滑或点 grabber
+- 375×667：见顶栏 ActionBar（? · 时间/Calm · ♪）；主画布下方三 PNG 图腾圆球（顺序 Quick · Sit · Five Moments，全宽均匀；`public/icons/icon-*.png`；右球 aria 为 Five Moments，非 Honesty 补登文案）；Arrival 开着时仅留 Quick Start 球；底中「上滑打开选项」；上滑或点 grabber
 
 **Then**
 - 宽屏：左下见 `#weekly-practice-heatmap-cluster`（7 格 + 时钟）
-- 抽屉含 呼吸 / How shall we sit? / Sound / Reminder（不含 Sit / Quick Start / Honesty）；7 格在抽屉内只读展示。
+- 抽屉为次要项（不含 Sit / Quick Start / Five Moments 主球；含 Practice 组 Honesty Check-in 行 + How shall we sit? 等；Sound 走 ActionBar ♪）；7 格在抽屉内只读展示。
 
 #### O-3
 
@@ -5327,6 +5327,193 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Then：不得走 CI-00/02 的 `practice_facts` / `presence_facts`；应走 `observation_honesty` 诚实空态（禁止 L3 编「你傍晚常来」）。*单测主覆盖：`confideObservationHonesty.test.js`。*
 
 ---
+## 场景 AT：AT · Slice 0（探针 · lab only）
+
+> **E2E 优先级**：P0 · 跨系统链路
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AT-1 | P0 | 无自动化标注 | 主路径（desktop:dev · 实验室）：`npm run desktop:dev` → 实验室 |
+| AT-2 | P0 | 无自动化标注 | 负例：无 `voiceInput` bridge → `canShowVoiceInputChrom |
+
+### Given-When-Then 明细
+
+#### AT-1
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：Electron desktop:dev + ?product=1
+
+**When**
+- 主路径（desktop:dev · 实验室）：`npm run desktop:dev`
+
+**Then**
+- 实验室入口跑 macOS on-device STT 探针 → 0–1 秒内见权限 / 录音 / 转写结果。禁止在产品 `?product=1` 壳验收 Slice 0。
+
+#### AT-2
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 负例：无 `voiceInput` bridge
+
+**Then**
+- `canShowVoiceInputChrome` 为 false，不得露出麦克风 chrome。
+
+---
+## 场景 AT：AT · Slice 1（Confide Speak to type）
+
+> **E2E 优先级**：P0 · 跨系统链路
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AT-1 | P0 | 无自动化标注 | 主路径（Electron 宽屏 · Confide L2 ready）：Idle → 开 Confi |
+| AT-2 | P0 | 无自动化标注 | 倾诉不出设备：转写路径须 `MacosSpeechProvider`；禁止 Cloud STT pr |
+| AT-3 | P0 | 无自动化标注 | 负例：Web `?confide=1` / 窄屏 <480 → 不得见麦克风。 |
+| AT-4 | P0 | 无自动化标注 | 回流：转写后改字再 Share → 以编辑后文本为准。 |
+
+### Given-When-Then 明细
+
+#### AT-1
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+- Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
+
+**When**
+- 主路径（Electron 宽屏 · Confide L2 ready）：Idle
+
+**Then**
+- 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → 0–1 秒内状态变 Listening → 说英语 → Stop → 0–1 秒内转写文字进输入框（可编辑）→ 用户点 Share → 走既有 AE L2 路由（禁止 `麦克风 → LLM` 直连）。
+
+#### AT-2
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 倾诉不出设备：转写路径须 `MacosSpeechProvider`；禁止 Cloud STT provider 注入倾诉 UI
+
+#### AT-3
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1&confide=1
+
+**When**
+- 负例：Web `?confide=1` / 窄屏 <480
+
+**Then**
+- 不得见麦克风。
+
+#### AT-4
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 回流：转写后改字再 Share
+
+**Then**
+- 以编辑后文本为准。
+
+---
+## 场景 AT：AT · Slice 2（Arrival 意图 + Reflection）
+
+> **E2E 优先级**：P0 · 跨系统链路
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AT-1 | P0 | 无自动化标注 | Arrival Choose 手写意图：Electron 宽屏 → Arrival → Write  |
+| AT-2 | P0 | 无自动化标注 | Reflection Q1–Q3：Sit 达标 → Reflection → 任一问文本框见 🎙 → |
+| AT-3 | P0 | 无自动化标注 | 负例：图标点选意图 / Skip all / 末题 wisdom-hold → 不得被听写 chro |
+| AT-4 | P0 | 无自动化标注 | Today direction 邻接：? 简介卡内「重新选择今日方向」链 + 选项版本 banner |
+
+### Given-When-Then 明细
+
+#### AT-1
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- Arrival Choose 手写意图：Electron 宽屏
+
+**Then**
+- Arrival → Write your own 行见 🎙 → 点 → Listening → 说英语 → 0–1 秒内字进 `#arrival-choose-typed-input` → Confirm → 走既有 Arrival 开表（禁止替代六个活动图标）。
+
+#### AT-2
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- Reflection Q1–Q3：Sit 达标
+
+**Then**
+- Reflection → 任一问文本框见 🎙 → 点 → Listening → 转写进框 → Continue / Skip 关卡不变（禁止新模态压过 Reflection；`data-wisdom-hold` 契约不动）。
+
+#### AT-3
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 负例：图标点选意图 / Skip all / 末题 wisdom-hold
+
+**Then**
+- 不得被听写 chrome 挡住或改写关卡。
+
+#### AT-4
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- Today direction 邻接：? 简介卡内「重新选择今日方向」链 + 选项版本 banner（见下方增量摘要）不含麦克风；勿与 AT 混验
+
+---
 ## 场景 I：点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival
 
 > **E2E 优先级**：P0 · 高频且用户量大
@@ -5548,6 +5735,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - AP-1 · A、B 均已入圈 → A Sit ≥60s → Rise → 约 3s 后（非 3s 限时关条）见可忽略留痕条 → 留下 → 选预设句 → 条消失。对照：Celebrate / 芥子印 / 吹花首卡可
 - AP-2 · B 硬刷新 Idle 约 2.5–10s 见 1 条匿名痕迹 + 回应 入口；银蓝 dots（AO）可同时出现。
 - AQ-1 · A、B 均已入圈 → A Sit ≥60s → Rise → B sitting=0 时 Idle 约 2.5–10s 见轻文案「今天有人来过」（不显示精确人数）；A 再 Sit 时 B 见 sitt
+- AT-1 · 主路径（desktop:dev · 实验室）：`npm run desktop:dev` → 实验室入口跑 macOS on-device STT 探针 → 0–1 秒内见权限 / 录音 / 转写结果
 - B-4 · 切到 其它 Safari 标签，停留约 70–90 秒（必须 &gt;60s；不要只留 10s）。
 - B-5 · 切回 Focus Tiger：应见 非模态观察式文案 + `nod-bow` 点头鞠躬（不是摆尾）。
 - C-3 · 角色播 `rise-stretch-casual` pingpong（闭目坐禅→伸懒腰→随意坐→倒放回闭目）；约 `MANUAL_END_PAUSE_MS = 300` 后淡入 Reflection（
@@ -5574,4 +5762,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 60 · 步骤 292 · 待澄清 45_
+_场景 63 · 步骤 302 · 待澄清 46_
