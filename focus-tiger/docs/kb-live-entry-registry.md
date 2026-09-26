@@ -52,9 +52,9 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-community` | menu | `community` | live | ⋯ → Preferences → Community | `COMMUNITY_MENU_LABEL` | — |
 | `kb-live-membership` | menu | `membership` | live | ⋯ → Membership CTA / Premium unlocked | `MEMBERSHIP_MENU_CTA` `MEMBERSHIP_MENU_UNLOCKED` | — |
 | `kb-live-hud-progress` | hud | — | live | Top-left HUD · Today shared sitting | `HUD_PROGRESS_SHARED_SITTING` | `KB-FUNC-0004` |
-| `kb-live-ritual-morning` | ritual | `ritual-morning` | entitlement-gated | ⋯ → Rituals → ritual.morning.menu | `ritual.morning.menu` | — |
-| `kb-live-ritual-emotional-reset` | ritual | `ritual-emotional-reset` | entitlement-gated | ⋯ → Rituals → ritual.emotional_reset.menu | `ritual.emotional_reset.menu` | — |
-| `kb-live-ritual-work-transition` | ritual | `ritual-work-transition` | entitlement-gated | ⋯ → Rituals → ritual.work_transition.menu | `ritual.work_transition.menu` | — |
+| `kb-live-ritual-morning` | ritual | `ritual-morning` | entitlement-gated | ⋯ → Rituals → ritual.morning.menu | `ritual.morning.menu` | `KB-FUNC-0024` |
+| `kb-live-ritual-emotional-reset` | ritual | `ritual-emotional-reset` | entitlement-gated | ⋯ → Rituals → ritual.emotional_reset.menu | `ritual.emotional_reset.menu` | `KB-FUNC-0025` |
+| `kb-live-ritual-work-transition` | ritual | `ritual-work-transition` | entitlement-gated | ⋯ → Rituals → ritual.work_transition.menu | `ritual.work_transition.menu` | `KB-FUNC-0026` |
 
 <!-- kb-live-entry-registry:end -->
 

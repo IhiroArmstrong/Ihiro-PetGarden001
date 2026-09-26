@@ -31,7 +31,7 @@ const readyOpen = {
 describe('confide product knowledge retrieval', () => {
   it('indexes exactly 25 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 25);
+    assert.equal(ids.length, 28);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -42,6 +42,9 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0021'), true);
     assert.equal(ids.includes('KB-FUNC-0022'), true);
     assert.equal(ids.includes('KB-FUNC-0023'), true);
+    assert.equal(ids.includes('KB-FUNC-0024'), true);
+    assert.equal(ids.includes('KB-FUNC-0025'), true);
+    assert.equal(ids.includes('KB-FUNC-0026'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
@@ -246,6 +249,24 @@ describe('confide product knowledge retrieval', () => {
     const wallpapersEn = retrieveProductKnowledge('Where are the wallpapers?');
     assert.equal(wallpapersEn.hit, true);
     assert.equal(wallpapersEn.id, 'KB-FUNC-0023');
+  });
+
+  it('hits batch-2 Rituals entry questions', () => {
+    const morning = retrieveProductKnowledge('Morning Ritual 从哪开？');
+    assert.equal(morning.hit, true);
+    assert.equal(morning.id, 'KB-FUNC-0024');
+    assert.match(morning.text || '', /Morning Ritual/i);
+    assert.match(morning.text || '', /Membership|subscription/i);
+
+    const reset = retrieveProductKnowledge('情绪重置仪式从哪开？');
+    assert.equal(reset.hit, true);
+    assert.equal(reset.id, 'KB-FUNC-0025');
+    assert.match(reset.text || '', /Emotional Reset/i);
+
+    const transition = retrieveProductKnowledge('Where is Work Transition?');
+    assert.equal(transition.hit, true);
+    assert.equal(transition.id, 'KB-FUNC-0026');
+    assert.match(transition.text || '', /Work Transition/i);
   });
 
   it('hits KB-EDU batch1 concept questions without exercise scripts', () => {
