@@ -552,6 +552,7 @@
 - **禅意背景音 MVP 已落地（2026-07-16）**：角落展开 UI；**Mer-Ka-Ba**（Jesse Gallagher）/ **Meditation Impromptu 02**（Kevin MacLeod）等，YouTube Audio Library；`presenceBoost` 叠视觉；归因见 `public/audio/ambient/ATTRIBUTION.md`
 - **禅意背景音内置清单扩容（2026-08-05）**：PR #125 合入 tip **`dd09711`**——Mer-Ka-Ba 后 Jesse Gallagher×4 + Reed Mathis Somnia×2；合计 12 内置曲；ambient 目录约 188MB
 - **无角色语音原则已落档（2026-07-16）**：沟通仅文字（非模态文案等）；禁止真人配音与 lip-sync；长期原则、非 Backlog（见 `PRINCIPLES.md`）
+- **语音边界原则修订（2026-09-26）**：允许可选系统朗读（默认关）；永久禁止真人配音、对口型、语音通话；第一期系统播报 + 全局开关，倾诉朗读下一期。决策纪要 `decisions/tts-v1-decision-memo.md`；Brief `task-briefs/task-system-tts-v1.md`
 
 **下一步计划**：
 
