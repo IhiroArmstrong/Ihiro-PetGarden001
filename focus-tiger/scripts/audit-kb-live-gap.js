@@ -58,7 +58,10 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-honesty': Object.freeze(['KB-FUNC-0020']),
   'kb-live-daily-quote': Object.freeze(['KB-FUNC-0021']),
   'kb-live-zen-cinema': Object.freeze(['KB-FUNC-0022']),
-  'kb-live-wallpapers': Object.freeze(['KB-FUNC-0023'])
+  'kb-live-wallpapers': Object.freeze(['KB-FUNC-0023']),
+  'kb-live-ritual-morning': Object.freeze(['KB-FUNC-0024']),
+  'kb-live-ritual-emotional-reset': Object.freeze(['KB-FUNC-0025']),
+  'kb-live-ritual-work-transition': Object.freeze(['KB-FUNC-0026'])
 });
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform / concept facts). */

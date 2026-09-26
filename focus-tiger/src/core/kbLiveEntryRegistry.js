@@ -14,6 +14,13 @@
 
 import { listRitualConfigs } from './RitualFlow.js';
 
+/** Approved catalog ids for entitlement-gated RitualFlow menu proxies. */
+const RITUAL_CATALOG_KB_IDS = Object.freeze({
+  morning: 'KB-FUNC-0024',
+  'emotional-reset': 'KB-FUNC-0025',
+  'work-transition': 'KB-FUNC-0026'
+});
+
 /**
  * @typedef {'home-ball' | 'menu' | 'hud' | 'ritual'} KbLiveSurface
  */
@@ -478,7 +485,8 @@ export function listKbLiveRitualEntryRows() {
       authoritativeSources: Object.freeze([
         'src/core/RitualFlow.js',
         'src/core/idleChromeOrchestration.js'
-      ])
+      ]),
+      catalogKbIds: Object.freeze([RITUAL_CATALOG_KB_IDS[ritual.id]])
     })
   );
 }

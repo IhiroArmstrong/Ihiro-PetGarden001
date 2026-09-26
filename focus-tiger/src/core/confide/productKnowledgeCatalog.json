@@ -395,6 +395,54 @@
         "概念对应入口",
         "从哪开始专注"
       ]
+    },
+    {
+      "id": "KB-FUNC-0024",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Rituals → Morning Ritual. This is one of Yin's advanced guided scenes — it unlocks with Yin Membership or Sanctuary Lifetime. If it is still locked, the menu shows Available with subscription. Yin walks you through a short morning check-in with chip choices; she only points here and does not read the steps aloud.",
+      "keywords": [
+        "Morning Ritual",
+        "早晨仪式",
+        "morning ritual menu",
+        "晨间仪式",
+        "ritual morning",
+        "仪式从哪开",
+        "advanced ritual",
+        "morning check-in",
+        "morning ritual",
+        "where is morning ritual"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0025",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Rituals → Emotional Reset — or tap Recover on The 5 Moments compass when unlocked. This advanced scene unlocks with Yin Membership or Sanctuary Lifetime. Yin sits with what feels heavy through chip choices and a longer breath — no fixing, just company. She only points here and does not read the steps aloud.",
+      "keywords": [
+        "Emotional Reset",
+        "情绪重置",
+        "emotional reset ritual",
+        "recover moment",
+        "Five Moments Recover",
+        "重置仪式",
+        "情绪仪式",
+        "reset ritual menu",
+        "emotional reset",
+        "where is emotional reset"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0026",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Rituals → Work Transition. This advanced scene unlocks with Yin Membership or Sanctuary Lifetime. Yin helps you mark what can stay at work and what you bring home — chip choices, not a lecture. She only points here and does not read the steps aloud.",
+      "keywords": [
+        "Work Transition",
+        "下班过渡",
+        "work transition ritual",
+        "transition ritual menu",
+        "工作过渡",
+        "leave work ritual",
+        "after work ritual",
+        "过渡仪式",
+        "work transition",
+        "where is work transition"
+      ]
     }
   ]
 }

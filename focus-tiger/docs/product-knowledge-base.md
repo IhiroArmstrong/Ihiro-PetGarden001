@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否` · **验收数据：「呼吸练习在哪」→ 0011 已够用 · #961 不合**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021–0023 Inspiration 三卡**（**PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` / `kb-live-zen-cinema` / `kb-live-wallpapers`）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 · **PO spot-check 已通过 2026-09-26** · **catalog 已入库** · `yin_may_retrieve: 是` · 闸门 **25 条** `审核状态: 已通过` 可进检索闸门）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否` · **验收数据：「呼吸练习在哪」→ 0011 已够用 · #961 不合**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021–0023 Inspiration 三卡**（**PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` / `kb-live-zen-cinema` / `kb-live-wallpapers`）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 · **PO spot-check 已通过 2026-09-26** · **catalog 已入库** · `yin_may_retrieve: 是`）+ **0024–0026 Rituals 三场景**（§4.8 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-ritual-*` · 闸门 **28 条** `审核状态: 已通过` 可进检索闸门）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · Brief **PO 已点头** · §4.7 首批 4 条 **已通过并入库 catalog**）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -726,6 +726,74 @@
 
 > **权威源（EDU-0001–0004）**：`task-kb-practice-edu-concepts.md` · `PRODUCT_POSITIONING.md` · §4.1 现网入口速查 · `KB-FUNC-0001` / `0002` / `0011` / `0006`
 
+### 4.8 batch-2 Step 4（Rituals 三场景 · 已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-09-26 书面放行** · **已进** `productKnowledgeCatalog.json` · registry `kb-live-ritual-morning` / `kb-live-ritual-emotional-reset` / `kb-live-ritual-work-transition` 链 **0024–0026** · 闸门 **28 条**。
+
+```yaml
+- id: KB-FUNC-0024
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Morning Ritual 从哪开
+  适用场景: 想找早晨仪式、或分不清和左球 Breath practice / Five Moments Arrive 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Rituals → Morning Ritual. This is one of Yin's advanced guided scenes — it unlocks with Yin Membership or Sanctuary Lifetime. If it is still locked, the menu shows Available with subscription. Yin walks you through a short morning check-in with chip choices; she only points here and does not read the steps aloud.
+    指路：菜单 `ritual.morning.menu`（proxy `ritual-morning`）→ `RitualFlow.js` / `RitualFlowUI.js`（welcome → chips → breath → chips → end）。与 0011 分工：0011 = 左球短坐 Breath practice；本条 = 多步 Morning Ritual。与 0019 分工：Five Moments **Arrive** 芯片 → Arrival Practice；本条 = Rituals 菜单独立场景。与 0025 分工：本条 = 早晨意图；0025 = 情绪重置（Recover 芯片也可直达 0025）。
+    禁止：把 Morning Ritual 说成必须每日打卡；禁止在短答里念 `ritual.morning.*` welcome/chip 正文；禁止念 `RESET_BREATH_*` / `ritual.shared.breath_guide` 引导语正文；禁止与 MicroRitual 混为一谈。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · 书面放行）
+  风险标记: 否
+  适用产品版本: 现网 RitualFlow · Morning（entitlement-gated）
+  更新时间: 2026-09-26
+  locale_keys: [ritual.morning.menu, ritual.morning.welcome, ritual.morning.complete, ritual.shared.continue, ritual.shared.leave, ritual.menu_locked]
+  检索关键词: [Morning Ritual, 早晨仪式, morning ritual menu, 晨间仪式, ritual morning, 仪式从哪开, advanced ritual, morning check-in]
+
+- id: KB-FUNC-0025
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Emotional Reset 从哪开
+  适用场景: 想找情绪重置仪式、或分不清 Five Moments Recover 芯片与左球 Breath practice 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Rituals → Emotional Reset — or tap Recover on The 5 Moments compass when unlocked. This advanced scene unlocks with Yin Membership or Sanctuary Lifetime. Yin sits with what feels heavy through chip choices and a longer breath — no fixing, just company. She only points here and does not read the steps aloud.
+    指路：菜单 `ritual.emotional_reset.menu`（proxy `ritual-emotional-reset`）→ `RitualFlow.js` / `RitualFlowUI.js`。与 0019 分工：Five Moments **Recover** 芯片 → 同 proxy（`resolveFiveMomentAction`）；本条也覆盖菜单直达。与 0011 分工：0011 = 左球短坐；本条 = 多步 Emotional Reset。与 0024/0026 分工：0024 = 早晨；0026 = 下班过渡。
+    禁止：把 Emotional Reset 说成心理治疗或贴诊断标签；禁止在短答里念 `ritual.emotional_reset.*` 正文；禁止念 `RESET_BREATH_*` / 引导语正文；禁止说成必须打卡。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · 书面放行）
+  风险标记: 否
+  适用产品版本: 现网 RitualFlow · Emotional Reset（entitlement-gated）
+  更新时间: 2026-09-26
+  locale_keys: [ritual.emotional_reset.menu, ritual.emotional_reset.welcome, ritual.emotional_reset.complete, ritual.shared.continue, ritual.shared.leave, ritual.menu_locked]
+  检索关键词: [Emotional Reset, 情绪重置, emotional reset ritual, recover moment, Five Moments Recover, 重置仪式, 情绪仪式, reset ritual menu]
+
+- id: KB-FUNC-0026
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Work Transition 从哪开
+  适用场景: 想找下班过渡仪式、或分不清 Five Moments Transition 免费叠层与本条的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Rituals → Work Transition. This advanced scene unlocks with Yin Membership or Sanctuary Lifetime. Yin helps you mark what can stay at work and what you bring home — chip choices, not a lecture. She only points here and does not read the steps aloud.
+    指路：菜单 `ritual.work_transition.menu`（proxy `ritual-work-transition`）→ `RitualFlow.js` / `RitualFlowUI.js`。与 0019 分工：Five Moments **Transition** 芯片 → 免费 C5 Transition Moment 叠层（约 10s 边界标记）；**本条** = Rituals 菜单里的 Work Transition 多步场景，二者不同入口。与 0024/0025 分工：0024 = 早晨；0025 = 情绪重置。
+    禁止：把 Work Transition 与 Five Moments Transition 叠层混为一谈；禁止在短答里念 `ritual.work_transition.*` 正文；禁止念引导语正文；禁止说成必须打卡。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-26 · 书面放行）
+  风险标记: 否
+  适用产品版本: 现网 RitualFlow · Work Transition（entitlement-gated）
+  更新时间: 2026-09-26
+  locale_keys: [ritual.work_transition.menu, ritual.work_transition.welcome, ritual.work_transition.complete, ritual.shared.continue, ritual.shared.leave, ritual.menu_locked]
+  检索关键词: [Work Transition, 下班过渡, work transition ritual, transition ritual menu, 工作过渡, leave work ritual, after work ritual, 过渡仪式]
+```
+
+> **权威源（0024–0026）**：`src/locales/en.json` · `RitualFlow.js` · `RitualFlowUI.js` · `fiveMomentsCompassGate.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AF · Slice 2
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
@@ -805,6 +873,12 @@
 - [x] PO 逐条 spot-check §4.7 → 标已通过（2026-09-26）
 - [x] `KB-EDU-0001`–`0004` 进 `productKnowledgeCatalog.json`；四条 `yin_may_retrieve: 是`
 - [x] 闸门升至 **25 条**（21 FUNC + 4 EDU；0006 / 0009 仍不进 catalog）
+
+**batch-2 Rituals（2026-09-26 · PO 书面放行）**
+
+- [x] §4.8 起草 `KB-FUNC-0024`–`0026`；locale_keys 机器核对绿
+- [x] PO 书面放行 tone → 标已通过并进 `productKnowledgeCatalog.json`
+- [x] registry `kb-live-ritual-*` 链 **0024–0026**；闸门升至 **28 条**
 
 **共通**
 

@@ -590,6 +590,69 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0023' }
   },
   {
+    id: 'kb-0024-morning-ritual-zh',
+    text: 'Morning Ritual 从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0024' }
+  },
+  {
+    id: 'kb-0024-morning-ritual-en',
+    text: 'Where is Morning Ritual?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0024' }
+  },
+  {
+    id: 'kb-0024-morning-ritual-short-zh',
+    text: '早晨仪式从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0024' }
+  },
+  {
+    id: 'kb-0025-emotional-reset-zh',
+    text: '情绪重置仪式从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0025' }
+  },
+  {
+    id: 'kb-0025-emotional-reset-en',
+    text: 'Where is Emotional Reset?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0025' }
+  },
+  {
+    id: 'kb-0025-emotional-reset-short-zh',
+    text: '情绪重置从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0025' }
+  },
+  {
+    id: 'kb-0026-work-transition-zh',
+    text: 'Work Transition 从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0026' }
+  },
+  {
+    id: 'kb-0026-work-transition-en',
+    text: 'Where is Work Transition?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0026' }
+  },
+  {
+    id: 'kb-0026-work-transition-short-zh',
+    text: '下班过渡仪式从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0026' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],
