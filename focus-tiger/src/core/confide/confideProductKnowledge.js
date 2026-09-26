@@ -28,6 +28,10 @@ export const CONFIDE_KB_RETRIEVAL_MIN_MARGIN = 1;
 const BACKUP_CONTENT_ASK_RE =
   /装了什么|里面有什么|包不包含|包含哪些|哪些数据|明文|加密|json file|plain json|unencrypted|what(?:'s| is) (?:in|inside)|(?:does|will).{0,24}include/i;
 
+/** Concept asks (KB-EDU-*) vs menu pointers (KB-FUNC-*) when keyword scores tie. */
+const CONCEPT_ASK_RE =
+  /what is|what's|meaning|原理|是什么|什么意思|有什么区别|一样吗|vs\b|versus|difference|我这是在冥想吗/i;
+
 /**
  * Step-detail asks still get pointer-only answers (semi-hit).
  * @type {readonly RegExp[]}
@@ -175,6 +179,21 @@ export function scoreProductKnowledgeEntries(text, entries = listRetrievableProd
 
 /**
  * @param {string} text
+ * @param {{ id: string, score: number, shortAnswerEn: string }} top
+ * @param {{ id: string, score: number, shortAnswerEn: string } | undefined} runner
+ * @returns {{ id: string, shortAnswerEn: string } | null}
+ */
+function pickConceptKbOnFuncTie(text, top, runner) {
+  if (!runner || top.score !== runner.score) return null;
+  const topIsEdu = top.id.startsWith('KB-EDU-');
+  const runnerIsEdu = runner.id.startsWith('KB-EDU-');
+  if (topIsEdu === runnerIsEdu) return null;
+  if (!CONCEPT_ASK_RE.test(normalizeConfideIntentText(text))) return null;
+  return topIsEdu ? top : runner;
+}
+
+/**
+ * @param {string} text
  * @param {readonly { id: string, score: number, shortAnswerEn: string }[]} ranked
  * @returns {{ id: string, shortAnswerEn: string } | null}
  */
@@ -191,9 +210,17 @@ export function pickProductKnowledgeHit(text, ranked) {
   if (top.score < CONFIDE_KB_RETRIEVAL_MIN_SCORE) {
     if (top.score < 1) return null;
     if (runner && top.score - runner.score < CONFIDE_KB_RETRIEVAL_MIN_MARGIN) {
+      const conceptPick = pickConceptKbOnFuncTie(text, top, runner);
+      if (conceptPick) {
+        return { id: conceptPick.id, shortAnswerEn: conceptPick.shortAnswerEn };
+      }
       return null;
     }
   } else if (runner && top.score === runner.score) {
+    const conceptPick = pickConceptKbOnFuncTie(text, top, runner);
+    if (conceptPick) {
+      return { id: conceptPick.id, shortAnswerEn: conceptPick.shortAnswerEn };
+    }
     return null;
   }
   return { id: top.id, shortAnswerEn: top.shortAnswerEn };

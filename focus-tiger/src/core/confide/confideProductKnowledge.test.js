@@ -29,9 +29,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 19 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 23 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 19);
+    assert.equal(ids.length, 23);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -40,6 +40,8 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0019'), true);
     assert.equal(ids.includes('KB-FUNC-0020'), true);
     assert.equal(ids.includes('KB-FUNC-0021'), true);
+    assert.equal(ids.includes('KB-EDU-0001'), true);
+    assert.equal(ids.includes('KB-EDU-0004'), true);
   });
 
   it('kill switch FT_CONFIDE_KB_RETRIEVAL=off disables retrieval', () => {
@@ -139,6 +141,15 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(pickProductKnowledgeHit('x', ranked), null);
   });
 
+  it('prefers KB-EDU over KB-FUNC when concept ask ties on score', () => {
+    const ranked = [
+      { id: 'KB-FUNC-0002', score: 1, shortAnswerEn: 'menu pointer' },
+      { id: 'KB-EDU-0001', score: 1, shortAnswerEn: 'concept answer' }
+    ];
+    const hit = pickProductKnowledgeHit('what is grounding?', ranked);
+    assert.equal(hit?.id, 'KB-EDU-0001');
+  });
+
   it('treats 哪些 / 包不包含 as product questions without swallowing mood 会不会', () => {
     assert.equal(isProductKnowledgeQuestion('备份里包不包含练习记录？'), true);
     assert.equal(isProductKnowledgeQuestion('导出文件装了什么？'), true);
@@ -206,6 +217,29 @@ describe('confide product knowledge retrieval', () => {
     const quoteEn = retrieveProductKnowledge('Where is the daily quote menu?');
     assert.equal(quoteEn.hit, true);
     assert.equal(quoteEn.id, 'KB-FUNC-0021');
+  });
+
+  it('hits KB-EDU batch1 concept questions without exercise scripts', () => {
+    const grounding = retrieveProductKnowledge('what is grounding?');
+    assert.equal(grounding.hit, true);
+    assert.equal(grounding.id, 'KB-EDU-0001');
+    assert.match(grounding.text || '', /general wellness idea/i);
+    assert.doesNotMatch(grounding.text || '', /RESET_GROUND_/);
+
+    const mindfulness = retrieveProductKnowledge('正念是什么');
+    assert.equal(mindfulness.hit, true);
+    assert.equal(mindfulness.id, 'KB-EDU-0002');
+    assert.match(mindfulness.text || '', /Reading this is enough/i);
+
+    const focusVsMeditation = retrieveProductKnowledge('focus vs meditation');
+    assert.equal(focusVsMeditation.hit, true);
+    assert.equal(focusVsMeditation.id, 'KB-EDU-0003');
+    assert.match(focusVsMeditation.text || '', /does not coach breathing/i);
+
+    const entryMap = retrieveProductKnowledge('mindfulness in this app');
+    assert.equal(entryMap.hit, true);
+    assert.equal(entryMap.id, 'KB-EDU-0004');
+    assert.match(entryMap.text || '', /concept-to-entry map/i);
   });
 
   it('semantic-ready miss on product ask resolves to honesty not generate path', () => {
