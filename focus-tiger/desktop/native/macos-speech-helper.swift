@@ -1,7 +1,7 @@
 /**
  * Focus Tiger — macOS Speech helper (Slice 0 probe).
- * Commands: gate | transcribe [--max-seconds N]
- * Stop early: write "stop\n" to stdin during transcribe.
+ * Commands: gate | transcribe [--max-seconds N] | tts-gate | speak [--text T] [--rate R]
+ * Stop early: write "stop\n" to stdin during transcribe or speak.
  */
 
 import AVFoundation
@@ -415,21 +415,147 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   ])
 }
 
+func defaultSpeakRate() -> Float {
+  max(AVSpeechUtteranceMinimumSpeechRate, AVSpeechUtteranceDefaultSpeechRate - 0.08)
+}
+
+func runTtsGate(localeId: String) {
+  let voice = AVSpeechSynthesisVoice(language: localeId)
+  emitJson([
+    "command": "tts-gate",
+    "ok": true,
+    "locale": localeId,
+    "voiceAvailable": voice != nil,
+    "voiceName": voice?.name ?? "",
+    "requiresNetwork": false,
+    "requiresMicrophone": false
+  ])
+}
+
+final class SpeakDelegate: NSObject, AVSpeechSynthesizerDelegate {
+  let startedAt = Date()
+  var didEmitStart = false
+  var finished = false
+  var cancelled = false
+  var startLatencyMs = 0
+
+  func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+    guard !didEmitStart else { return }
+    didEmitStart = true
+    startLatencyMs = Int(Date().timeIntervalSince(startedAt) * 1000)
+    emitJson([
+      "command": "speak",
+      "ok": true,
+      "phase": "started",
+      "locale": utterance.voice?.language ?? "",
+      "startLatencyMs": startLatencyMs
+    ])
+  }
+
+  func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+    finished = true
+  }
+
+  func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+    cancelled = true
+    finished = true
+  }
+}
+
+func runSpeak(localeId: String, text: String, rate: Float) {
+  let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+  guard !trimmed.isEmpty else {
+    emitJson([
+      "command": "speak",
+      "ok": false,
+      "error": "empty_text",
+      "locale": localeId
+    ])
+    exit(1)
+  }
+
+  let voice = AVSpeechSynthesisVoice(language: localeId)
+  guard let voice else {
+    emitJson([
+      "command": "speak",
+      "ok": false,
+      "error": "voice_unavailable",
+      "locale": localeId
+    ])
+    exit(1)
+  }
+
+  let started = Date()
+  let synthesizer = AVSpeechSynthesizer()
+  let delegate = SpeakDelegate()
+  synthesizer.delegate = delegate
+  let utterance = AVSpeechUtterance(string: trimmed)
+  utterance.voice = voice
+  utterance.rate = rate
+  utterance.preUtteranceDelay = 0
+  utterance.postUtteranceDelay = 0
+
+  var stdinStop = false
+  DispatchQueue.global(qos: .utility).async {
+    while !delegate.finished {
+      let chunk = FileHandle.standardInput.availableData
+      if !chunk.isEmpty {
+        let line = String(data: chunk, encoding: .utf8) ?? ""
+        if line.contains("stop") {
+          stdinStop = true
+          synthesizer.stopSpeaking(at: .immediate)
+          break
+        }
+      }
+      Thread.sleep(forTimeInterval: 0.05)
+    }
+  }
+
+  synthesizer.speak(utterance)
+  _ = pumpRunLoop(until: { delegate.finished }, timeoutSeconds: 120)
+
+  let totalMs = Int(Date().timeIntervalSince(started) * 1000)
+  emitJson([
+    "command": "speak",
+    "ok": true,
+    "phase": stdinStop || delegate.cancelled ? "stopped" : "finished",
+    "locale": localeId,
+    "voiceName": voice.name,
+    "rate": Double(rate),
+    "startLatencyMs": delegate.startLatencyMs,
+    "durationMs": totalMs,
+    "requiresNetwork": false,
+    "requiresMicrophone": false
+  ])
+}
+
 let args = CommandLine.arguments
 setbuf(stdout, nil)
 setbuf(stderr, nil)
 guard args.count >= 2 else {
-  emitJson(["ok": false, "error": "usage", "detail": "macos-speech-helper gate|transcribe [--max-seconds N]"])
+  emitJson([
+    "ok": false,
+    "error": "usage",
+    "detail": "macos-speech-helper gate|transcribe|tts-gate|speak [--locale L] [--text T] [--rate R] [--max-seconds N]"
+  ])
   exit(2)
 }
 
 var localeId = defaultLocale
 var maxSeconds = 15.0
+var speakText = ""
+var speakRate = defaultSpeakRate()
 if let localeIndex = args.firstIndex(of: "--locale"), localeIndex + 1 < args.count {
   localeId = args[localeIndex + 1]
 }
 if let maxIndex = args.firstIndex(of: "--max-seconds"), maxIndex + 1 < args.count {
   maxSeconds = Double(args[maxIndex + 1]) ?? maxSeconds
+}
+if let textIndex = args.firstIndex(of: "--text"), textIndex + 1 < args.count {
+  speakText = args[textIndex + 1]
+}
+if let rateIndex = args.firstIndex(of: "--rate"), rateIndex + 1 < args.count {
+  speakRate = Float(args[rateIndex + 1]) ?? speakRate
 }
 
 switch args[1] {
@@ -437,6 +563,10 @@ case "gate":
   runGate(localeId: localeId)
 case "transcribe":
   runTranscribe(localeId: localeId, maxSeconds: maxSeconds)
+case "tts-gate":
+  runTtsGate(localeId: localeId)
+case "speak":
+  runSpeak(localeId: localeId, text: speakText, rate: speakRate)
 default:
   emitJson(["ok": false, "error": "unknown_command", "detail": args[1]])
   exit(2)

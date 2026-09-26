@@ -311,3 +311,154 @@ export function startMacosSpeechTranscribe(locale = 'en-US', maxSeconds = 30) {
 
   return { child, finished };
 }
+
+/**
+ * @param {string} stdout
+ * @returns {Record<string, unknown>[]}
+ */
+export function parseMacosSpeechHelperJsonLines(stdout) {
+  return String(stdout || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      try {
+        const json = JSON.parse(line);
+        return json && typeof json === 'object' ? json : null;
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean);
+}
+
+/**
+ * @param {string} [locale]
+ */
+export async function probeMacosTtsGate(locale = 'en-US') {
+  const result = await runMacosSpeechHelper(['tts-gate', '--locale', locale], {
+    timeoutMs: 10_000
+  });
+  return {
+    ...result,
+    gatePassed: result.ok && result.json?.voiceAvailable === true
+  };
+}
+
+/**
+ * @param {string} text
+ * @param {string} [locale]
+ * @param {number | null} [rate]
+ */
+export function startMacosSpeechSpeak(text, locale = 'en-US', rate = null) {
+  if (process.platform !== 'darwin') {
+    return {
+      child: null,
+      started: Promise.resolve({
+        ok: false,
+        json: { ok: false, error: 'platform_not_darwin' },
+        stderr: 'platform_not_darwin',
+        exitCode: 1
+      }),
+      finished: Promise.resolve({
+        ok: false,
+        json: { ok: false, error: 'platform_not_darwin' },
+        stderr: 'platform_not_darwin',
+        exitCode: 1
+      })
+    };
+  }
+  if (!ensureMacosSpeechHelperBuilt()) {
+    const failed = {
+      ok: false,
+      json: { ok: false, error: 'helper_build_failed' },
+      stderr: 'helper_build_failed',
+      exitCode: 1
+    };
+    return {
+      child: null,
+      started: Promise.resolve(failed),
+      finished: Promise.resolve(failed)
+    };
+  }
+
+  const args = ['speak', '--locale', locale, '--text', text];
+  if (rate != null && Number.isFinite(rate)) {
+    args.push('--rate', String(rate));
+  }
+
+  const child = spawn(macosSpeechHelperPath(), args, {
+    stdio: ['pipe', 'pipe', 'pipe']
+  });
+  let stdout = '';
+  let stderr = '';
+  child.stdout.setEncoding('utf8');
+  child.stderr.setEncoding('utf8');
+  child.stdout.on('data', (chunk) => {
+    stdout += chunk;
+  });
+  child.stderr.on('data', (chunk) => {
+    stderr += chunk;
+  });
+
+  /** @type {Promise<Record<string, unknown>>} */
+  const started = new Promise((resolve) => {
+    const onData = (chunk) => {
+      const lines = parseMacosSpeechHelperJsonLines(chunk);
+      const hit = lines.find((line) => line.phase === 'started');
+      if (hit) {
+        child.stdout.off('data', onData);
+        resolve(hit);
+      }
+    };
+    child.stdout.on('data', onData);
+    child.on('close', () => {
+      child.stdout.off('data', onData);
+      const lines = parseMacosSpeechHelperJsonLines(stdout);
+      resolve(
+        lines.find((line) => line.phase === 'started') || {
+          ok: false,
+          error: 'speak_never_started'
+        }
+      );
+    });
+  });
+
+  const finished = new Promise((resolve) => {
+    child.on('close', (code) => {
+      const lines = parseMacosSpeechHelperJsonLines(stdout);
+      const finalLine =
+        lines.find((line) => line.phase === 'finished' || line.phase === 'stopped') ||
+        parseMacosSpeechHelperStdout(stdout, code, stderr);
+      resolve({
+        ok: code === 0 && finalLine?.ok !== false,
+        json: finalLine,
+        stderr: stderr.trim(),
+        exitCode: code,
+        lines
+      });
+    });
+    child.on('error', (err) => {
+      resolve({
+        ok: false,
+        json: { ok: false, error: err.message },
+        stderr: err.message,
+        exitCode: 1,
+        lines: []
+      });
+    });
+  });
+
+  return { child, started, finished };
+}
+
+/**
+ * @param {import('node:child_process').ChildProcess | null} child
+ */
+export function stopMacosSpeechSpeak(child) {
+  if (!child || child.killed || !child.stdin || child.stdin.destroyed) {
+    return false;
+  }
+  child.stdin.write('stop\n');
+  return true;
+}

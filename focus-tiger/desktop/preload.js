@@ -11,6 +11,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 const companionAllowed = ipcRenderer.sendSync('desktop:companion-allowed') === true;
 const voiceInputProbeAllowed =
   ipcRenderer.sendSync('desktop:voice-input-probe-allowed') === true;
+const systemTtsProbeAllowed =
+  ipcRenderer.sendSync('desktop:system-tts-probe-allowed') === true;
 const voiceInputProductAllowed =
   ipcRenderer.sendSync('desktop:voice-input-product-allowed') === true;
 
@@ -26,6 +28,22 @@ function createVoiceInputBridge() {
       ipcRenderer.on('desktop:voice-input-status', wrapped);
       return () =>
         ipcRenderer.removeListener('desktop:voice-input-status', wrapped);
+    }
+  };
+}
+
+function createSystemTtsBridge() {
+  return {
+    getGate: (locale) => ipcRenderer.invoke('desktop:system-tts-gate', locale),
+    speak: (payload) => ipcRenderer.invoke('desktop:system-tts-speak', payload || {}),
+    stop: () => ipcRenderer.invoke('desktop:system-tts-stop'),
+    snapshot: () => ipcRenderer.invoke('desktop:system-tts-snapshot'),
+    onStatus: (cb) => {
+      if (typeof cb !== 'function') return () => {};
+      const wrapped = (_event, payload) => cb(payload);
+      ipcRenderer.on('desktop:system-tts-status', wrapped);
+      return () =>
+        ipcRenderer.removeListener('desktop:system-tts-status', wrapped);
     }
   };
 }
@@ -107,6 +125,10 @@ desktopShell.confideObservation = {
 
 if (voiceInputProbeAllowed) {
   desktopShell.voiceInputProbe = createVoiceInputBridge();
+}
+
+if (systemTtsProbeAllowed) {
+  desktopShell.systemTtsProbe = createSystemTtsBridge();
 }
 
 if (voiceInputProductAllowed) {

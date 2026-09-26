@@ -1,6 +1,6 @@
 # Task Brief · System TTS V1（系统播报 + 全局声音开关 · macOS）
 
-> **状态（2026-09-26）**：产品口径已拍板；**本回合只锁 Brief，无运行时。**  
+> **状态（2026-09-26）**：产品口径已拍板；**Slice 0 探针已开工**（实验室 `companion:system-tts-probe`）；产品播报点仍待探针及格口令。  
 > 决策纪要：`decisions/tts-v1-decision-memo.md`  
 > 挂线：Epic **#5** 苹果 DMG（与 Voice Input 同壳；**不**另开语音 Epic）。  
 > 实现须另口令。建议顺序：「开工 System TTS 探针」→（探针及格）「开工 System TTS 播报」。  
