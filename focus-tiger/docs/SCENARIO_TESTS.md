@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-25（Voice Input Slice 0–2 · 场景 AT · Today direction 手动入口 + ? 次级链 + 选项版本轻提示 · KB practice-edu concepts 文档 · Local AI 意图 E2E 抽取 · 场景 AS · Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-09-27（KB catalog 0024–0028 · System TTS Slice 0 探针 · Sanctuary 首页导航 chrome · Confide generate-failure fallback 测试门禁 · Voice Input Slice 0–2 · 场景 AT · Today direction · Confide KB 门闩 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -1177,6 +1177,19 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **场景 Q · Membership**：`fix(rca): membership manage feedback and witness picker retry`——管理页内联反馈 + witness picker 重试；Checkout 仍走场景 Q 步 3。  
    - **My Circle / JA**：`feat(circle,confide): My Circle peer traces + JA Electron session probe`——尚无独立场景字母；批量测时对照 TRACKER `focus-circle` 行与场景 AE Electron。  
 3. **仍须人工 / 勿当缺口**：L3 方案 B 12 句人工重配观感；语义 shadow 与线上路由对账；备份排除 turns 后恢复边界；三态 mutation 375 按压；Membership witness picker 弱网重试。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
+## 2026-09-26–27 增量核对摘要（KB catalog 0024–0028 · System TTS · Sanctuary nav · Confide fallback 测试）
+
+1. **背景**：9/26–9/27 合入 develop 一批 KB catalog 扩编（#996 · #998）、Electron System TTS Slice 0 探针（#989 · #994）、Sanctuary 首页导航 chrome（#986）、Confide generate-failure fallback 测试门禁（#974）；TRACKER 碎片本旁支 `tracker:assemble` 折入机器块（320 条）。  
+2. **本次核对（增量）**：  
+   - **场景 AE · catalog**（#996 · #998）：KB-FUNC-0024–0028（Rituals · Not alone）PO 点头入 `productKnowledgeCatalog.json`——步 1 命中路径须 `product_knowledge`，勿误走 generate；批量测仍走场景 AE 步 1 检索措辞。  
+   - **场景 AE · Electron · lab**（#989 · #994）：`feature/system-tts-probe` + `fix/system-tts-probe-blank-window`——System TTS Slice 0 探针（macOS AVSpeechSynthesizer · lab only）；**禁止** Web Safari 验收 TTS；探针窗口不得空白。  
+   - **场景 W / Idle chrome**（#986）：`feature/sanctuary-home-nav-chrome`——Sanctuary 首页 Compass 导航扇形与 chrome 抛光；批量测时对照场景 W 与 Idle 首屏，**不**升格新字母场景。  
+   - **场景 AE · 测试门禁**（#974）：`test/confide-generate-failure-fallback-batch`——generate 失败 observe 回退已批量单测冻结；批量测仍走 `confide-round-acceptance.md`，**不**升格用户故事字母。  
+3. **仍须人工 / 勿当缺口**：KB 0024–0028 中英文检索措辞；System TTS 探针 JA 音量与窗口空白；Sanctuary nav 375 按压；generate-failure fallback 弱网观感。  
 4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
