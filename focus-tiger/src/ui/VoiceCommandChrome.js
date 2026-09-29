@@ -11,9 +11,11 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { canShowVoiceCommandChrome } from '../core/voiceCommandGate.js';
 import {
+  VOICE_COMMAND_ASK_DURATION_MINUTES,
   resolveVoiceCommandOutcome,
   voiceCommandOutcomeLocaleKey
 } from '../core/voiceCommandOutcome.js';
+import { FOCUS_DURATION_MODE_OPEN } from '../core/focusDuration.js';
 import {
   getVoiceInputBridge,
   withVoiceCaptureDiagnostics
@@ -23,7 +25,7 @@ import { voiceLevelUnit } from '../core/voiceLevelMeter.js';
 const STYLE_ID = 'voice-command-chrome-styles-v1';
 
 /**
- * @typedef {'idle' | 'listening' | 'transcribing' | 'error'} VoiceCommandChromeState
+ * @typedef {'idle' | 'listening' | 'transcribing' | 'ask_duration' | 'error'} VoiceCommandChromeState
  * @typedef {import('../core/voiceCommandOutcome.js').VoiceCommandOutcome} VoiceCommandOutcome
  */
 
@@ -31,11 +33,18 @@ export class VoiceCommandChrome {
   /**
    * @param {{
    *   mountParent: HTMLElement,
+   *   askMountParent?: HTMLElement | null,
    *   showOpenEnded?: () => boolean,
    *   onOutcome?: (outcome: VoiceCommandOutcome) => void
    * }} opts
    */
-  constructor({ mountParent, showOpenEnded = () => true, onOutcome }) {
+  constructor({
+    mountParent,
+    askMountParent = null,
+    showOpenEnded = () => true,
+    onOutcome
+  }) {
+    this.askMountParent = askMountParent;
     this.showOpenEnded = showOpenEnded;
     this.onOutcome = onOutcome;
     this._bridge = getVoiceInputBridge();
@@ -84,6 +93,22 @@ export class VoiceCommandChrome {
     this.stopBtn.hidden = true;
     this.stopBtn.addEventListener('click', () => void this._onStop());
 
+    this.askPanel = document.createElement('div');
+    this.askPanel.className = 'voice-command-chrome__ask';
+    this.askPanel.dataset.testid = 'voice-command-ask-duration';
+    this.askPanel.hidden = true;
+
+    this.askPrompt = document.createElement('p');
+    this.askPrompt.className = 'voice-command-chrome__ask-prompt';
+    this.askPrompt.dataset.testid = 'voice-command-ask-prompt';
+
+    this.askChips = document.createElement('div');
+    this.askChips.className = 'voice-command-chrome__ask-chips';
+    this.askChips.dataset.testid = 'voice-command-ask-chips';
+
+    this.askPanel.append(this.askPrompt, this.askChips);
+    if (askMountParent) askMountParent.append(this.askPanel);
+
     this.actions.append(this.meter, this.speakBtn, this.stopBtn);
     this.root.append(this.errorEl, this.actions);
     mountParent.append(this.root);
@@ -110,6 +135,7 @@ export class VoiceCommandChrome {
     if (typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
       window.removeEventListener('resize', this._onResize);
     }
+    this.askPanel.remove();
     this.root.remove();
   }
 
@@ -184,6 +210,7 @@ export class VoiceCommandChrome {
   _render() {
     const listening = this._state === 'listening';
     const transcribing = this._state === 'transcribing';
+    const askDuration = this._state === 'ask_duration';
     const error = this._state === 'error';
 
     this.speakBtn.hidden = listening || transcribing;
@@ -196,7 +223,49 @@ export class VoiceCommandChrome {
     this.errorEl.hidden = !error || !this._errorMessage;
     this.errorEl.textContent = error ? this._errorMessage : '';
 
+    this.askPanel.hidden = !askDuration;
+    if (askDuration) this._renderAskChips();
+
     this._applyCopy();
+  }
+
+  _renderAskChips() {
+    this.askPrompt.textContent = t('VOICE_COMMAND_ASK_DURATION');
+    this.askChips.replaceChildren();
+
+    for (const minutes of VOICE_COMMAND_ASK_DURATION_MINUTES) {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'voice-command-chrome__ask-chip';
+      chip.dataset.testid = `voice-command-ask-chip-${minutes}`;
+      chip.dataset.voiceCommandAskMinutes = String(minutes);
+      chip.textContent = String(t('focus_duration.minutes_chip')).replace(
+        /\{n\}/g,
+        String(minutes)
+      );
+      chip.addEventListener('click', () => {
+        this.onOutcome?.({
+          kind: 'start_fixed',
+          minutes
+        });
+        this._setState('idle');
+      });
+      this.askChips.append(chip);
+    }
+
+    if (this.showOpenEnded() === true) {
+      const openChip = document.createElement('button');
+      openChip.type = 'button';
+      openChip.className = 'voice-command-chrome__ask-chip';
+      openChip.dataset.testid = 'voice-command-ask-chip-open';
+      openChip.dataset.focusDurationMode = FOCUS_DURATION_MODE_OPEN;
+      openChip.textContent = t('focus_duration.open_chip');
+      openChip.addEventListener('click', () => {
+        this.onOutcome?.({ kind: 'start_open' });
+        this._setState('idle');
+      });
+      this.askChips.append(openChip);
+    }
   }
 
   _applyCopy() {
@@ -248,6 +317,12 @@ export class VoiceCommandChrome {
       if (outcome.kind === 'start_fixed' || outcome.kind === 'start_open') {
         this.onOutcome?.(outcome);
         this._setState('idle');
+        return;
+      }
+      if (outcome.kind === 'ask_duration') {
+        this._errorMessage = '';
+        this._setState('ask_duration');
+        this.onOutcome?.(outcome);
         return;
       }
       this._errorMessage = t(voiceCommandOutcomeLocaleKey(outcome));
@@ -342,6 +417,42 @@ export class VoiceCommandChrome {
         border-radius: 2px;
         background: #8b5a2b;
         transition: height 80ms linear;
+      }
+      .voice-command-chrome__ask[hidden] {
+        display: none !important;
+      }
+      .voice-command-chrome__ask {
+        margin-top: 8px;
+        text-align: center;
+      }
+      .voice-command-chrome__ask-prompt {
+        margin: 0 0 8px;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #6b4a38;
+        font-weight: 520;
+      }
+      .voice-command-chrome__ask-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+      .voice-command-chrome__ask-chip {
+        appearance: none;
+        border: 1px solid rgba(139, 115, 85, 0.35);
+        border-radius: 999px;
+        padding: 8px 12px;
+        min-width: 4rem;
+        background: rgba(255, 252, 247, 0.92);
+        color: #4a3728;
+        font: 560 13px/1.2 "Noto Sans SC", system-ui, sans-serif;
+        cursor: pointer;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset,
+          0 2px 6px rgba(44, 31, 20, 0.08);
+      }
+      .voice-command-chrome__ask-chip:active {
+        transform: scale(0.98);
       }
     `;
     document.head.appendChild(style);

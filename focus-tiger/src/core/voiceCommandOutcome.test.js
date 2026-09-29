@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  VOICE_COMMAND_ASK_DURATION_MINUTES,
   resolveVoiceCommandOutcome,
   voiceCommandOutcomeLocaleKey
 } from './voiceCommandOutcome.js';
@@ -40,5 +41,13 @@ describe('voiceCommandOutcome', () => {
     const outcome = resolveVoiceCommandOutcome('Stop');
     assert.equal(outcome.kind, 'unsupported');
     assert.equal(voiceCommandOutcomeLocaleKey(outcome), 'VOICE_COMMAND_REFUSE_STOP');
+  });
+
+  it('exposes ask-duration chip minutes for Slice 2', () => {
+    assert.deepEqual([...VOICE_COMMAND_ASK_DURATION_MINUTES], [25, 50]);
+    assert.equal(
+      voiceCommandOutcomeLocaleKey({ kind: 'ask_duration' }),
+      'VOICE_COMMAND_ASK_DURATION'
+    );
   });
 });

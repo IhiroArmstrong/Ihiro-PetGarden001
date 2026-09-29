@@ -48,7 +48,7 @@
 |---|---|
 | 0 · RuleParser 单测 | 已合：`parseVoiceCommandDuration` 只判断坐多久 |
 | 1 · 入口 + STT + 开始专注 + 撤销 | **本分支**：`#focus-duration-picker` 标题行 🎙（英语 + Electron 宽屏）；STT → 规则 → `beginFocusWithMode` + Undo 条 |
-| 2 · 追问与失败文案 | 部分：缺时长 / 拒绝 / Stop 已有红字；追问 chip 引导待补 |
+| 2 · 追问与失败文案 | **本分支**：缺时长 → 追问句 + chip **25 / 50 / Open-ended**（点选即开表 + Undo）；拒绝 / Stop 仍红字 |
 | 3 · 更多动作 | 另口令 |
 
 ## 明确不做
