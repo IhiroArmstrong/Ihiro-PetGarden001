@@ -662,6 +662,8 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 | 最近 **200** 次 workflow run | **189 failure · 11 cancelled · 0 success** |
 | 前置步骤（`visibility:doc-check` · registry 单测 · Playwright install） | **能过** — 不是「CI 从根上没配对、跑不到 Playwright」 |
 | 典型单次 e2e 步（抽样 8 run · 2026-09-21～23） | **~14–22 passed · ~13–28 flaky · ~4–11 failed** · 墙钟 **~40–50 min** |
+| **合入后抽样（2026-09-24 · #949+#950）** | 旧单 job [#950](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35903085078)：**26p/19fl/1f**（50.1m）；并行首验 [#949](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35886079176)：micro **10p/1f**（4.5m）· weekly **6p/4fl/2f**（19.6m）· **仍无 job 级全绿** |
+| **距末次 job 全绿** | **无记录**（见 `PROCESS.md` Backlog「降低 visibility CI flaky 率」） |
 
 **失败模式（Type A / B / C · 统一命名 · 勿混为一谈）**
 

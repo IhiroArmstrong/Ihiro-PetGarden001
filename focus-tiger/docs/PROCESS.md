@@ -1410,8 +1410,17 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 > **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e 曾出现「**绿 + 高 flaky**」样本（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。  
 > **诊断刷新（2026-09-23）**：近 **200** 次 `focus-tiger-visibility-contract.yml` run → **0 success · 189 failure · 11 cancelled**。单次 e2e 步常见 **~14–22 passed · ~13–28 flaky · ~4–11 failed**（~40–50 min）。主因 = **Type C（高 flaky + 静态服导航超时子类）+ Type B 断言/漂移 + 少量 Type A 产品变更待确认** 叠加 — 详见 `WORKFLOW.md`「visibility CI 治理」。**在 job 未稳定全绿前禁止勾 Required**；责任流程（周报 + 过渡期 PR 须贴 run）同节。
+>
+> **合入后观测（2026-09-24 · #949 + #950 均已合 develop）**：
+>
+> | Run | 形态 | 结论 | 数字 |
+> |---|---|---|---|
+> | [#950 PR](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35903085078) | 旧单 job（合入前） | ❌ failure | **26 passed · 19 flaky · 1 failed** · 50.1m |
+> | [#949 PR](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35886079176) | 新 3 shard + workers:1（首验） | ❌ failure | micro **10p/1f**（4.5m）· weekly **6p/4fl/2f**（19.6m）· scenario-a **cancelled**（summary 计 3 failures） |
+>
+> develop 上 merge 触发的 run（#949/#950）曾被后续 push **cancelled**；须等下一次 path 触发跑完再记「合 develop 后首条并行 run」。相对 9/23 审计，passed 已从 ~14–22 升到 **26**（单 job）且 shard 墙钟已压到 **~5–20 min** — Type C 基建有效；**job 级仍无全绿**。
 
-- **距 visibility job 末次全绿**：**未知 / ≥200 run 无全绿**（2026-09-23 审计；更新时写 run 链接）
+- **距 visibility job 末次全绿**：**无记录（≥200 run 从未 job 级全绿）** · 末次观测 **2026-09-24** · 参考：[run 35903085078](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35903085078)（26p/19fl/1f）· [run 35886079176](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35886079176)（并行首验仍红）
 - **目标**：**先** job 级全绿（failed=0，flaky 趋 0），**再** core 26 条 Required；全量 46 条仍非 Required。
 - **处理方向（优先序，可组合）**：
   1. **Type C · 方案 A + workers:1（已批准 · 组合实施 · 2026-09-24 工程化）**：`focus-tiger-visibility-contract.yml` 拆 **3 并行 job**（`scenario-a` / `micro-ritual` / `weekly-heatmap`）+ `playwright.ci-visibility.config.js` **workers:1**；preflight 单独跑 doc-check/registry；summary 汇总 JUnit。**禁止**只做其一。待 CI 验证 flaky 降幅。
