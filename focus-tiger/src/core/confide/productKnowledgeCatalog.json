@@ -539,6 +539,27 @@
         "会员从哪开",
         "cancel anytime membership"
       ]
+    },
+    {
+      "id": "KB-FUNC-0033",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → When should I remind you. Turn on Remind me and pick a daily time. If you have not practiced yet that day, a gentle note appears at the top of the page — not a browser notification. This menu row only appears when reminders are available on your device. Yin only points here.",
+      "keywords": [
+        "提醒我练习",
+        "remind me to practice",
+        "提醒在哪",
+        "怎么设提醒",
+        "When should I remind you",
+        "practice reminder",
+        "daily reminder",
+        "什么时候提醒你",
+        "turn on reminders",
+        "reminder menu",
+        "提醒从哪开",
+        "where are reminders",
+        "set a reminder",
+        "Remind me",
+        "提醒时间"
+      ]
     }
   ]
 }

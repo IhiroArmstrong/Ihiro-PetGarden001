@@ -349,7 +349,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       "proxy: 'reminder'",
       'reminder.setting_title'
     ]),
-    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js'])
+    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js']),
+    catalogKbIds: Object.freeze(['KB-FUNC-0033'])
   }),
   Object.freeze({
     id: 'kb-live-language',

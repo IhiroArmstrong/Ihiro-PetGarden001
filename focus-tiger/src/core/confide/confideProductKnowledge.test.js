@@ -29,9 +29,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 34 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 35 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 34);
+    assert.equal(ids.length, 35);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -51,6 +51,7 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0030'), true);
     assert.equal(ids.includes('KB-FUNC-0031'), true);
     assert.equal(ids.includes('KB-FUNC-0032'), true);
+    assert.equal(ids.includes('KB-FUNC-0033'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
@@ -335,6 +336,22 @@ describe('confide product knowledge retrieval', () => {
     const membershipEn = retrieveProductKnowledge('Where is membership?');
     assert.equal(membershipEn.hit, true);
     assert.equal(membershipEn.id, 'KB-FUNC-0032');
+  });
+
+  it('hits reminder menu entry questions', () => {
+    const reminder = retrieveProductKnowledge('提醒我练习');
+    assert.equal(reminder.hit, true);
+    assert.equal(reminder.id, 'KB-FUNC-0033');
+    assert.match(reminder.text || '', /When should I remind you/i);
+    assert.match(reminder.text || '', /gentle note/i);
+
+    const reminderEn = retrieveProductKnowledge('Remind me to practice');
+    assert.equal(reminderEn.hit, true);
+    assert.equal(reminderEn.id, 'KB-FUNC-0033');
+
+    const reminderWhere = retrieveProductKnowledge('提醒在哪');
+    assert.equal(reminderWhere.hit, true);
+    assert.equal(reminderWhere.id, 'KB-FUNC-0033');
   });
 
   it('hits KB-EDU batch1 concept questions without exercise scripts', () => {

@@ -12,6 +12,7 @@ import {
   CONFIDE_EMOTION_BUCKETS,
   CONFIDE_ROUTE
 } from './confideRoutes.js';
+import { isConfideReminderFeatureQuestion } from './confideReminderFeatureQuestion.js';
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
 
 /** @type {ReadonlySet<string>} */
@@ -25,18 +26,30 @@ const FUNCTIONAL_REPLY_SOURCES = Object.freeze(
 );
 
 /**
- * @param {{ route?: string | null, source?: string | null }} ctx
+ * @param {{ route?: string | null, source?: string | null, text?: string | null }} ctx
  * @returns {string | null}
  */
-export function resolveConfideLiteralCoarseBucket({ route = null, source = null } = {}) {
+export function resolveConfideLiteralCoarseBucket({
+  route = null,
+  source = null,
+  text = null
+} = {}) {
   const routeId = typeof route === 'string' ? route : '';
   const sourceId = typeof source === 'string' ? source : '';
+  const rawText = typeof text === 'string' ? text : '';
 
   if (
     routeId === CONFIDE_ROUTE.SAFETY_REDIRECT ||
     routeId === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
   ) {
     return null;
+  }
+
+  if (
+    routeId === CONFIDE_ROUTE.FALLBACK &&
+    isConfideReminderFeatureQuestion(rawText)
+  ) {
+    return CONFIDE_SEMANTIC_BUCKET.FUNCTIONAL;
   }
 
   if (FUNCTIONAL_REPLY_SOURCES.has(sourceId)) {

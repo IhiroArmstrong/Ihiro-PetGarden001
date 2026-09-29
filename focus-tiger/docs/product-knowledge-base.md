@@ -930,6 +930,34 @@
 
 > **权威源（0029–0032）**：`src/locales/en.json` · `idleChromeOrchestration.js` · `ColdStartGoalCardUI.js` · `HomeSanctuaryNavFanUI.js` · `communityLink.js` · `kbLiveEntryRegistry.js`
 
+### 4.11 Reminder 菜单指路（已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-09-29 窄刀书面放行** · **已进** `productKnowledgeCatalog.json` · registry `kb-live-reminder` 已链 **0033** · 闸门 **35 条**。菜单行 conditional（设备/能力可用时才出现）；短答写明这一点。Language 仍 conditional、本批不起草。
+
+```yaml
+- id: KB-FUNC-0033
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 提醒从哪开
+  适用场景: 想设每天练习提醒，或分不清和浏览器通知、舒展提示的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Preferences → When should I remind you. Turn on Remind me and pick a daily time. If you have not practiced yet that day, a gentle note appears at the top of the page — not a browser notification. This menu row only appears when reminders are available on your device. Yin only points here.
+    指路：菜单 `reminder.setting_title`（proxy `reminder`）→ `ReminderPreferenceUI` / `#reminder-preference-toggle`。开关 `reminder.enable_label`；说明 `reminder.daily_blurb`。
+    禁止：说成必须开提醒才算练习；禁止与 Companion away reminders 或 stretch 舒展提示混成同一条；禁止承诺浏览器系统通知。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-29 · 窄刀书面放行）
+  风险标记: 否
+  适用产品版本: 现网应用内提醒（conditional · 菜单行可见时）
+  更新时间: 2026-09-29
+  locale_keys: [reminder.setting_title, reminder.enable_label, reminder.daily_blurb, MENU_GROUP_PREFERENCES]
+  检索关键词: [提醒我练习, remind me to practice, 提醒在哪, 怎么设提醒, When should I remind you, practice reminder, daily reminder, 什么时候提醒你, turn on reminders, reminder menu, 提醒从哪开]
+```
+
+> **权威源（0033）**：`src/locales/en.json` · `ReminderPreferenceUI.js` · `idleChromeOrchestration.js` · `kbLiveEntryRegistry.js` · `confideReminderFeatureQuestion.js`
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml

@@ -27,4 +27,10 @@ describe('previewConfideLiteralSource', () => {
     assert.equal(row.skipped, false);
     assert.equal(row.literalCoarse, CONFIDE_SEMANTIC_BUCKET.GRAY);
   });
+
+  it('maps a reminder feature ask to functional', () => {
+    const row = previewConfideLiteralSource('提醒我练习');
+    assert.equal(row.skipped, false);
+    assert.equal(row.literalCoarse, CONFIDE_SEMANTIC_BUCKET.FUNCTIONAL);
+  });
 });
