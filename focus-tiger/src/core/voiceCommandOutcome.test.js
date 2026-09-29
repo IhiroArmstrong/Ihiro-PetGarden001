@@ -43,6 +43,23 @@ describe('voiceCommandOutcome', () => {
     assert.equal(voiceCommandOutcomeLocaleKey(outcome), 'VOICE_COMMAND_REFUSE_STOP');
   });
 
+  it('ends a sit only while focusing', () => {
+    for (const phrase of ["I'm done", 'End focus', 'End this focus', 'Rise']) {
+      assert.equal(
+        resolveVoiceCommandOutcome(phrase, { focusing: true }).kind,
+        'end_focus'
+      );
+      const idle = resolveVoiceCommandOutcome(phrase, { focusing: false });
+      assert.equal(idle.kind, 'refuse');
+      assert.equal(idle.reason, 'not_focusing');
+      assert.equal(
+        voiceCommandOutcomeLocaleKey(idle),
+        'VOICE_COMMAND_REFUSE_NOT_FOCUSING'
+      );
+    }
+    assert.equal(resolveVoiceCommandOutcome('Stop', { focusing: true }).kind, 'unsupported');
+  });
+
   it('exposes ask-duration chip minutes for Slice 2', () => {
     assert.deepEqual([...VOICE_COMMAND_ASK_DURATION_MINUTES], [25, 50]);
     assert.equal(

@@ -40,7 +40,7 @@ const WORD_NUMBERS = Object.freeze({
 });
 
 /**
- * @typedef {'start' | 'ask_duration' | 'refuse' | 'unsupported'} VoiceCommandAction
+ * @typedef {'start' | 'end' | 'ask_duration' | 'refuse' | 'unsupported'} VoiceCommandAction
  * @typedef {'fixed' | 'open'} VoiceDurationMode
  * @typedef {{
  *   action: VoiceCommandAction,
@@ -59,6 +59,9 @@ export function parseVoiceCommandDuration(text) {
   if (!normalized) return { action: 'refuse', reason: 'empty' };
   if (isBareStopOrCancel(normalized)) {
     return { action: 'unsupported', reason: 'stop_not_in_v1' };
+  }
+  if (isEndSitPhrase(normalized)) {
+    return { action: 'end' };
   }
   if (!hasFocusIntent(normalized)) {
     return { action: 'refuse', reason: 'unknown' };
@@ -112,6 +115,19 @@ function normalizeUtterance(text) {
  */
 function isBareStopOrCancel(normalized) {
   return /^(please )?(stop|cancel)( please)?$/.test(normalized);
+}
+
+/**
+ * Whole-utterance end phrases (Brief Slice 3). Not a substring of a start command.
+ * @param {string} normalized
+ * @returns {boolean}
+ */
+function isEndSitPhrase(normalized) {
+  return (
+    /^(please )?(im done|i am done)( please)?$/.test(normalized) ||
+    /^(please )?end (this )?focus( please)?$/.test(normalized) ||
+    /^(please )?rise( please)?$/.test(normalized)
+  );
 }
 
 /**

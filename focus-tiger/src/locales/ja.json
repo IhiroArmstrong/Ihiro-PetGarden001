@@ -521,6 +521,8 @@
   "VOICE_COMMAND_REFUSE_OVER_CAP": "That duration is longer than 24 hours. Try a shorter focus.",
   "VOICE_COMMAND_REFUSE_AMBIGUOUS": "I heard more than one duration. Say one clear length.",
   "VOICE_COMMAND_REFUSE_OPEN_UNAVAILABLE": "Open-ended focus isn’t available here. Pick a duration below.",
+  "VOICE_COMMAND_REFUSE_NOT_FOCUSING": "That ends a sit. Say it after you have started focusing.",
+  "VOICE_COMMAND_REFUSE_ALREADY_SITTING": "This sit is already going. Say you’re done, or tap Rise.",
   "VOICE_COMMAND_STARTED_FIXED": "Starting a {n}-minute focus.",
   "VOICE_COMMAND_STARTED_OPEN": "Starting open-ended focus.",
   "VOICE_COMMAND_UNDO": "Undo",

@@ -70,6 +70,21 @@ export class FocusInput {
    * @param {HTMLElement | null} [buttonElement=this._button]
    * @returns {void}
    */
+  /**
+   * Same path as tapping Rise: complete if the sit already reached its time,
+   * otherwise the early-end stretch into Reflection.
+   * @returns {boolean} true when the sit actually ended
+   */
+  requestRise() {
+    if (!this._focusing) return false;
+    const cancelled = this.onStop() === false;
+    if (!cancelled) {
+      this._focusing = false;
+      if (this._button) this._button.textContent = this._buttonLabel();
+    }
+    return !cancelled;
+  }
+
   beginFocusing(buttonElement = this._button) {
     this._focusing = true;
     if (buttonElement) buttonElement.textContent = this._buttonLabel();

@@ -83,6 +83,12 @@ test('Stop and Cancel are not supported in this version', () => {
   });
 });
 
+test('done, end focus, and rise are end phrases', () => {
+  for (const phrase of ["I'm done", 'End focus', 'End this focus', 'Rise']) {
+    assert.deepEqual(parseVoiceCommandDuration(phrase), { action: 'end' });
+  }
+});
+
 test('more than 24 hours is refused', () => {
   assert.deepEqual(parseVoiceCommandDuration('Focus for 25 hours'), {
     action: 'refuse',
