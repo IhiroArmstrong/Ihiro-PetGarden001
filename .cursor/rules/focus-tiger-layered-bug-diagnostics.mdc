@@ -1,0 +1,62 @@
+---
+description: 多层系统集成 bug 排查——症状单一但根因可能分层时，第一刀加诊断、禁止猜测性修复；连续 2 次修复失败须停改逻辑
+globs: "focus-tiger/desktop/voiceInput/**,focus-tiger/**/*[Vv]oice*,focus-tiger/**/*[Ss]peech*,focus-tiger/**/*[Aa]udio*,focus-tiger/desktop/native/macos-speech*,focus-tiger/**/*[Pp]ermission*,focus-tiger/desktop/entitlements.mac.plist"
+alwaysApply: false
+---
+
+# Focus Tiger · 多层系统集成 bug 排查（layered-bug-diagnostics · 按需层）
+
+> **加载时机**：修复涉及**权限 / 进程 / 音频采集 / 系统 API 回调 / 后台服务**等多层集成的 bug；或 glob 命中语音输入相关路径。
+>
+> 索引：`RULES_INDEX.md` → `layered-bug-diagnostics`。
+>
+> **只管排查顺序**（诊断先于猜测性修复）；不改变 push/PR 默认、合 develop（CI 绿）、§7 人工关单。
+
+## 适用条件（满足任一即生效）
+
+1. 外部症状**单一**（如「识别结果为空」「麦克风没反应」「权限已开仍失败」），但根因可能分布在**多个独立层**（权限授予、进程存活、音频引擎、数据采集、IPC、系统回调、时序）。
+2. 用户或任务涉及 `voiceInput` / `speech` / `audio` / 麦克风权限 / macOS entitlements。
+3. 用户或任务涉及同一症状在本 Chat 已做过 **≥1 次**「逻辑修复」但复测仍失败。
+
+与 `ui-bug-triage` 并列：UI 交互回归先取 git/复现锚点；本条针对**跨进程 / 跨权限 / 跨系统 API** 的「表现一致、根因分层」类 bug。
+
+## 强制步骤
+
+### 1. 第一刀必须是可观测性，不是改逻辑
+
+禁止在第一轮直接猜测性修改业务逻辑。须先加**人类可读**的诊断输出（终端日志 / 界面提示 / IPC 回传字段），覆盖关键中间状态，例如：
+
+- 权限状态（`granted` / `denied` / `notDetermined`）
+- 子进程 / helper 是否存活、退出码
+- 音频引擎是否 `prepare` 成功、采样帧数 / RMS / 信噪比
+- 系统回调是否触发、耗时、空结果 vs 错误码
+- IPC 往返是否到达、payload 大小
+
+诊断须能**支持或排除**某一层的假设，而不是仅供开发者 `console.log` 自嗨。
+
+### 2. 至少一轮真实诊断数据后，才提根因假设
+
+提出「最可能根因」时须标明：**哪一层**、**哪条诊断数据**支持或排除它。纯猜测禁止进入修复。
+
+### 3. 连续 2 次修复仍失败 → 强制停改逻辑
+
+同一症状在本 Chat 内连续 **2 次**「修复」后复测仍失败：
+
+- **停止**继续猜测性改逻辑
+- **必须先**补诊断或扩大可观测面
+- 在「待你决定」列出：已排除的层、仍开放的层、下一轮需要用户配合采集的数据
+
+本条是硬闸，优先于「再试一个小改」的冲动。
+
+### 4. PR / commit 描述须写清
+
+- 本次改动针对**诊断数据支持的哪一层**（采集层 / 进程层 / 权限层 / 回调层 / IPC 层 / …）
+- 是否已有**真实复测数据**验证，还是仍为假设
+
+本次若只改规则文档、不改运行时逻辑：在 PR 描述写明「规则文档本身，无运行时层，无需复测数据」。
+
+## 与相关规则的关系
+
+- 完工门禁、§7 关单 → `focus-tiger-regression-lock.mdc`
+- UI/交互回归缺锚点 → `focus-tiger-ui-bug-triage.mdc`
+- 本地 AI companion 调试循环上限 → `focus-tiger-companion-debug.mdc`（不覆盖语音输入路径）

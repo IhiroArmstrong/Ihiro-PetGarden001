@@ -77,6 +77,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `brief-before-user-visible` | B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类） | `WORKFLOW.md` | 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
+| `layered-bug-diagnostics` | 多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑） | `.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc` | Focus Tiger · 多层系统集成 bug 排查（layered-bug-diagnostics · 按需层） |
 | `companion-debug` | 调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档） | `.cursor/rules/focus-tiger-companion-debug.mdc` | Focus Tiger · 调试本地 AI companion |
 | `infra-snapshot` | 基础设施现状摘要（Worker/KV/entitlement/locale 等低频配置快照） | `focus-tiger/docs/INFRA_SNAPSHOT.md` | INFRA_SNAPSHOT — 基础设施现状摘要（非 SSOT） |
 | `source-read-granularity` | 源码读取粒度（大文件先定位再片段读，控上下文 token） | `.cursor/rules/focus-tiger-source-read-granularity.mdc` | Focus Tiger · 源码读取粒度（控上下文 token · 按需层） |
@@ -126,6 +127,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `brief-before-user-visible` | 「B 类须 Brief 见 `WORKFLOW.md`」；按需层 `focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` Task Brief 节 / `focus-tiger-core` 可一行引用 | 主张「立刻开工」可跳过 Brief；主张 Agent 可自行把 B 类降为 A 类；平行复述 A/B 表与 Stage 1/2 对照全文 |
 | `ci-failure-triage` | 「CI/smoke 失败且缺日志见 `focus-tiger-ci-failure-triage.mdc`」；`agent-token-cost` §5–§6 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无日志先 grep；主张失败分析摘要可臆测；把合 develop / §7 关单门禁写进本条 |
 | `ui-bug-triage` | 「UI/交互回归且缺锚点见 `focus-tiger-ui-bug-triage.mdc`」；`agent-token-cost` §5 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无复现/锚点先全仓 grep；主张分析会话可无限探索；把合 develop / §7 关单门禁写进本条 |
+| `layered-bug-diagnostics` | 「多层系统集成 bug 见 `focus-tiger-layered-bug-diagnostics.mdc`」；`focus-tiger-core` 按需索引可一行引用；与 `ui-bug-triage` 并列（UI 先锚点，本条针对权限/进程/音频/系统 API） | 复述四步全文；主张可先猜测性改逻辑；主张连续 2 次失败后仍可盲试；把合 develop / §7 关单门禁写进本条 |
 | `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；实验室脚本路径/命名/已测候选见 `LAB_SCRIPT_CONVENTIONS.md`（勿复述路径表）；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
 | `source-read-granularity` | 「大文件片段读见 `focus-tiger-source-read-granularity.mdc`」；`agent-token-cost` §7 / `focus-tiger-core` 按需索引可一行引用 | 复述完整阈值表或流程；主张 ≥400 行源码默认可整文件 Read；平行写第二套行数门槛 |
 | `infra-snapshot` | 「Worker/KV/entitlement 现状见 `INFRA_SNAPSHOT.md`」；`ENV_CONFIG` 只链规则；接云任务前可读摘要 | 在 `ENV_CONFIG` 再维护「仓库事实」大表；把 Secret 值写进摘要；未经「部署」口令更新 `prod_worker_version` |
@@ -156,6 +158,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-session-handoff.mdc`](../../.cursor/rules/focus-tiger-session-handoff.mdc) | **SSOT**：会话交接（口令「生成交接」；`session-handoff`） |
 | [`.cursor/rules/focus-tiger-ci-failure-triage.mdc`](../../.cursor/rules/focus-tiger-ci-failure-triage.mdc) | **SSOT**：CI/Smoke 失败排查前置检查（先 gh 取日志、后探索；探索最多 5 轮；`ci-failure-triage`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-ui-bug-triage.mdc`](../../.cursor/rules/focus-tiger-ui-bug-triage.mdc) | **SSOT**：UI/交互回归排查前置检查（先取 git/复现锚点、后探索；探索最多 5 轮；`ui-bug-triage`；**按需加载，非 alwaysApply**） |
+| [`.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc`](../../.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc) | **SSOT**：多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑；`layered-bug-diagnostics`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-source-read-granularity.mdc`](../../.cursor/rules/focus-tiger-source-read-granularity.mdc) | **SSOT**：源码读取粒度（大文件先定位再片段读；`source-read-granularity`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
@@ -269,6 +272,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-29 | 新增 `layered-bug-diagnostics`：多层系统集成 bug（权限/进程/音频/系统 API）须先加可观测性、禁止第一轮猜测性改逻辑；连续 2 次修复失败须停改逻辑补诊断。SSOT `.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc`；glob 覆盖 voice/speech/audio/permission（含大小写）；与 `ui-bug-triage` 并列 |
 | 2026-09-26 | 扩展 `chat-openable-file-links`：须 Markdown + **本机绝对路径**；立刻看须 `open_resource` + Finder `open -R`；要单独一份须先问 Desktop/Downloads 或 commit+GitHub |
 | 2026-09-22 | 产品表：`task-kb-scaled-production.md`（知识库规模化生产算法；过程性文档降为候选主题；正文只信 locale/规则源码）。不进 rules-authority 机器块 |
 | 2026-09-22 | 产品表：`product-knowledge-base.md`（三库拆分 + 5 条现网对照短答；急救型无固定心理审核人 → 不接入 Local AI）。不进 rules-authority 机器块 |
