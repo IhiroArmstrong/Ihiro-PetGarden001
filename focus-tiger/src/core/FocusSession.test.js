@@ -37,6 +37,36 @@ test('elapsed time uses wall-clock timestamps, not tick accumulation', () => {
   assert.equal(session.getElapsedSeconds(), 30);
 });
 
+test('open-ended never reaches target before the 24h cap', () => {
+  let now = 0;
+  const session = new FocusSession(25);
+  session.setDurationMode('open');
+  session.start({ now: () => now, companionMode: COMPANION_MODE_STAY });
+
+  now += 3 * 60 * 60 * 1000;
+  assert.equal(session.hasReachedTarget(), false);
+  assert.ok(session.getFocusLevel() > 0 && session.getFocusLevel() < 1);
+});
+
+test('open-ended reaches target at the 24h cap', () => {
+  let now = 0;
+  const session = new FocusSession(25);
+  session.setDurationMode('open');
+  session.start({ now: () => now, companionMode: COMPANION_MODE_STAY });
+
+  now += 24 * 60 * 60 * 1000;
+  assert.equal(session.hasReachedTarget(), true);
+  assert.equal(session.getElapsedSeconds(), 24 * 60 * 60);
+});
+
+test('setTargetMinutes switches back to fixed mode', () => {
+  const session = new FocusSession(25);
+  session.setDurationMode('open');
+  session.setTargetMinutes(15);
+  assert.equal(session.isOpenEnded(), false);
+  assert.equal(session.targetMinutes, 15);
+});
+
 test('hasReachedTarget becomes true after target wall-clock duration', () => {
   let now = 0;
   const session = new FocusSession(1);

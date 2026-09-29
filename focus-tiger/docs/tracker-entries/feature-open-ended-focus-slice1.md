@@ -1,0 +1,3 @@
+# feature/open-ended-focus-slice1
+
+| Open-ended focus Slice 1（桌面时长 chip + HUD 正计时） | UI可见 | 待人工测试 | **仅 Electron / macOS DMG**（Web 不露出 Open-ended chip）。`?product=1` 无 `sessionMinutes` → Sit→Arrival→Here & Now → 时长面板应见 **Open-ended / 不限时长** chip（与 10/15/25/45 并列，不是更大数字）→ 点选 → Focusing；HUD `#hud-time` 正计时、`#hud-session-target` 显示 Open-ended（无「25 min」式目标）；Rise 提前结束走既有未完成收尾；固定 10 分钟 chip 零回归。自动化：`FocusSession.test.js` open 模式；`focusDuration.test.js` 偏好 mode。 | — | — | Web 浏览器验收路径不应要求看到 Open-ended chip | Electron DMG · `?product=1` · `#focus-duration-picker` · `#hud-session-target` · Brief [task-open-ended-focus.md](../task-briefs/task-open-ended-focus.md) | 2026-09-29 |
