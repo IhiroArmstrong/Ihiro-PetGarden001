@@ -13,7 +13,7 @@ import { parseVoiceCommandDuration, VOICE_DURATION_MODES } from './voiceCommandD
 export const VOICE_COMMAND_ASK_DURATION_MINUTES = Object.freeze([25, 50]);
 
 /**
- * @typedef {'start_fixed' | 'start_open' | 'ask_duration' | 'refuse' | 'unsupported' | 'empty'} VoiceCommandOutcomeKind
+ * @typedef {'start_fixed' | 'start_open' | 'end_focus' | 'ask_duration' | 'refuse' | 'unsupported' | 'empty'} VoiceCommandOutcomeKind
  * @typedef {{
  *   kind: VoiceCommandOutcomeKind,
  *   minutes?: number,
@@ -24,14 +24,23 @@ export const VOICE_COMMAND_ASK_DURATION_MINUTES = Object.freeze([25, 50]);
 
 /**
  * @param {unknown} transcript
- * @param {{ showOpenEnded?: boolean }} [opts]
+ * @param {{ showOpenEnded?: boolean, focusing?: boolean }} [opts]
  * @returns {VoiceCommandOutcome}
  */
-export function resolveVoiceCommandOutcome(transcript, { showOpenEnded = true } = {}) {
+export function resolveVoiceCommandOutcome(
+  transcript,
+  { showOpenEnded = true, focusing = false } = {}
+) {
   const text = String(transcript || '').trim();
   if (!text) return { kind: 'empty' };
 
   const parsed = parseVoiceCommandDuration(text);
+  if (parsed.action === 'end') {
+    if (!focusing) {
+      return { kind: 'refuse', reason: 'not_focusing', transcript: text };
+    }
+    return { kind: 'end_focus', transcript: text };
+  }
   if (parsed.action === 'start' && parsed.durationMode === VOICE_DURATION_MODES.open) {
     if (!showOpenEnded) {
       return { kind: 'refuse', reason: 'open_unavailable', transcript: text };
@@ -66,6 +75,8 @@ export function voiceCommandOutcomeLocaleKey(outcome) {
       if (outcome.reason === 'over_cap') return 'VOICE_COMMAND_REFUSE_OVER_CAP';
       if (outcome.reason === 'ambiguous') return 'VOICE_COMMAND_REFUSE_AMBIGUOUS';
       if (outcome.reason === 'open_unavailable') return 'VOICE_COMMAND_REFUSE_OPEN_UNAVAILABLE';
+      if (outcome.reason === 'not_focusing') return 'VOICE_COMMAND_REFUSE_NOT_FOCUSING';
+      if (outcome.reason === 'already_sitting') return 'VOICE_COMMAND_REFUSE_ALREADY_SITTING';
       return 'VOICE_COMMAND_REFUSE_UNKNOWN';
     case 'empty':
       return 'VOICE_INPUT_ERROR_NO_SPEECH';

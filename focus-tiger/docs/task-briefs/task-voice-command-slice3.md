@@ -1,6 +1,6 @@
 # Task Brief · Voice Command Slice 3（坐着时说一句，等于点 Rise）
 
-> **状态**：待 PO 点头。**无运行时。** 点头前禁止改解析器、麦克风、开始专注或结束专注。  
+> **状态**：PO 已点头（2026-09-30）。本分支实现：坐着说结束 = 点 Rise。  
 > **上游**：[`task-voice-command-routing.md`](./task-voice-command-routing.md) Slice 0–2 已在 `origin/develop`（#1008 规则、#1015 麦克风与开始专注、#1017 缺时长 chip）。本文件不改那些已拍板口径。
 
 ## 这一刀只做一件事

@@ -35,6 +35,7 @@ export class VoiceCommandChrome {
    *   mountParent: HTMLElement,
    *   askMountParent?: HTMLElement | null,
    *   showOpenEnded?: () => boolean,
+   *   mode?: 'start' | 'end',
    *   onOutcome?: (outcome: VoiceCommandOutcome) => void
    * }} opts
    */
@@ -42,10 +43,12 @@ export class VoiceCommandChrome {
     mountParent,
     askMountParent = null,
     showOpenEnded = () => true,
+    mode = 'start',
     onOutcome
   }) {
     this.askMountParent = askMountParent;
     this.showOpenEnded = showOpenEnded;
+    this.mode = mode === 'end' ? 'end' : 'start';
     this.onOutcome = onOutcome;
     this._bridge = getVoiceInputBridge();
     this._unsubStatus = null;
@@ -56,13 +59,18 @@ export class VoiceCommandChrome {
     this._gateWarmed = false;
 
     this.root = document.createElement('div');
-    this.root.className = 'voice-command-chrome';
-    this.root.dataset.testid = 'voice-command-chrome';
+    this.root.className =
+      this.mode === 'end'
+        ? 'voice-command-chrome voice-command-chrome--rise'
+        : 'voice-command-chrome';
+    this.root.dataset.testid =
+      this.mode === 'end' ? 'voice-command-rise-chrome' : 'voice-command-chrome';
     this.root.hidden = true;
 
     this.errorEl = document.createElement('p');
     this.errorEl.className = 'voice-command-chrome__error';
-    this.errorEl.dataset.testid = 'voice-command-error';
+    this.errorEl.dataset.testid =
+      this.mode === 'end' ? 'voice-command-rise-error' : 'voice-command-error';
     this.errorEl.hidden = true;
 
     this.actions = document.createElement('div');
@@ -70,7 +78,8 @@ export class VoiceCommandChrome {
 
     this.meter = document.createElement('span');
     this.meter.className = 'voice-command-chrome__meter';
-    this.meter.dataset.testid = 'voice-command-level';
+    this.meter.dataset.testid =
+      this.mode === 'end' ? 'voice-command-rise-level' : 'voice-command-level';
     this.meter.setAttribute('aria-hidden', 'true');
     this.meter.hidden = true;
     this.meterBars = [0, 1, 2].map(() => {
@@ -83,13 +92,15 @@ export class VoiceCommandChrome {
     this.speakBtn = document.createElement('button');
     this.speakBtn.type = 'button';
     this.speakBtn.className = 'voice-command-chrome__speak';
-    this.speakBtn.dataset.testid = 'voice-command-speak';
+    this.speakBtn.dataset.testid =
+      this.mode === 'end' ? 'voice-command-rise-speak' : 'voice-command-speak';
     this.speakBtn.addEventListener('click', () => void this._onSpeak());
 
     this.stopBtn = document.createElement('button');
     this.stopBtn.type = 'button';
     this.stopBtn.className = 'voice-command-chrome__stop';
-    this.stopBtn.dataset.testid = 'voice-command-stop';
+    this.stopBtn.dataset.testid =
+      this.mode === 'end' ? 'voice-command-rise-stop' : 'voice-command-stop';
     this.stopBtn.hidden = true;
     this.stopBtn.addEventListener('click', () => void this._onStop());
 
@@ -312,8 +323,28 @@ export class VoiceCommandChrome {
         return;
       }
       const outcome = resolveVoiceCommandOutcome(transcript, {
-        showOpenEnded: this.showOpenEnded() === true
+        showOpenEnded: this.showOpenEnded() === true,
+        focusing: this.mode === 'end'
       });
+      if (this.mode === 'end') {
+        if (outcome.kind === 'end_focus') {
+          this.onOutcome?.(outcome);
+          this._setState('idle');
+          return;
+        }
+        if (
+          outcome.kind === 'start_fixed' ||
+          outcome.kind === 'start_open' ||
+          outcome.kind === 'ask_duration'
+        ) {
+          this._errorMessage = t('VOICE_COMMAND_REFUSE_ALREADY_SITTING');
+          this._setState('error');
+          return;
+        }
+        this._errorMessage = t(voiceCommandOutcomeLocaleKey(outcome));
+        this._setState('error');
+        return;
+      }
       if (outcome.kind === 'start_fixed' || outcome.kind === 'start_open') {
         this.onOutcome?.(outcome);
         this._setState('idle');
@@ -353,6 +384,16 @@ export class VoiceCommandChrome {
     style.id = STYLE_ID;
     style.textContent = `
       .voice-command-chrome[hidden] {
+        display: none !important;
+      }
+      .voice-command-chrome--rise {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        vertical-align: middle;
+        margin-left: 8px;
+      }
+      .voice-command-chrome--rise[hidden] {
         display: none !important;
       }
       .voice-command-chrome__error {

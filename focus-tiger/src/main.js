@@ -334,6 +334,8 @@ import {
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
 } from './ui/MindfulAcknowledgeToast.js';
 import { VoiceCommandUndoToast } from './ui/VoiceCommandUndoToast.js';
+import { VoiceCommandChrome } from './ui/VoiceCommandChrome.js';
+import { canShowVoiceCommandChrome } from './core/voiceCommandGate.js';
 import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
@@ -4675,6 +4677,36 @@ async function init() {
       syncOnboardingAutoHints();
     }
   );
+
+  const voiceRiseSlot = document.createElement('span');
+  voiceRiseSlot.dataset.testid = 'voice-command-rise-slot';
+  focusButton.insertAdjacentElement('afterend', voiceRiseSlot);
+  /** @type {VoiceCommandChrome | null} */
+  let voiceRiseChrome = null;
+
+  function syncVoiceRiseMic() {
+    const show =
+      stateManager.state === STATES.FOCUSING &&
+      canShowVoiceCommandChrome({ widthPx: window.innerWidth });
+    if (!show) {
+      voiceRiseChrome?.destroy();
+      voiceRiseChrome = null;
+      return;
+    }
+    if (voiceRiseChrome) return;
+    voiceRiseChrome = new VoiceCommandChrome({
+      mountParent: voiceRiseSlot,
+      mode: 'end',
+      onOutcome: (outcome) => {
+        if (outcome.kind !== 'end_focus') return;
+        focusInput.requestRise();
+      }
+    });
+  }
+
+  stateManager.onChange(() => syncVoiceRiseMic());
+  window.addEventListener('resize', () => syncVoiceRiseMic());
+  syncVoiceRiseMic();
 
   /**
    * @param {{
