@@ -15,6 +15,8 @@ const systemTtsProbeAllowed =
   ipcRenderer.sendSync('desktop:system-tts-probe-allowed') === true;
 const voiceInputProductAllowed =
   ipcRenderer.sendSync('desktop:voice-input-product-allowed') === true;
+const systemTtsProductAllowed =
+  ipcRenderer.sendSync('desktop:system-tts-product-allowed') === true;
 
 function createVoiceInputBridge() {
   return {
@@ -133,6 +135,10 @@ if (systemTtsProbeAllowed) {
 
 if (voiceInputProductAllowed) {
   desktopShell.voiceInput = createVoiceInputBridge();
+}
+
+if (systemTtsProductAllowed) {
+  desktopShell.systemTts = createSystemTtsBridge();
 }
 
 desktopShell.updater = {

@@ -3,12 +3,52 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
+import http from 'node:http';
 import { expect } from '@playwright/test';
 import { installExternalNetworkMocks } from './mock-external-network.js';
 import { dismissReflectionViaWisdomHold } from './reflection-dismiss.js';
 
 /** @type {WeakMap<import('@playwright/test').Page, true>} */
 const externalMocksByPage = new WeakMap();
+
+const PREVIEW_ORIGIN = 'http://127.0.0.1:5199';
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+/**
+ * CI static :5199 can stop answering mid-suite. Probe before goto so a
+ * dead socket fails fast and the next attempt waits, instead of burning
+ * a 40s navigation timeout on a server that is not listening.
+ * @param {number} timeoutMs
+ * @returns {Promise<boolean>}
+ */
+function probePreviewOnce(timeoutMs) {
+  return new Promise((resolve) => {
+    const req = http.get(PREVIEW_ORIGIN + '/', { timeout: timeoutMs }, (res) => {
+      res.resume();
+      resolve(Boolean(res.statusCode && res.statusCode < 500));
+    });
+    req.on('timeout', () => {
+      req.destroy();
+      resolve(false);
+    });
+    req.on('error', () => resolve(false));
+  });
+}
+
+/** @returns {Promise<boolean>} */
+async function waitForPreviewHealthy() {
+  const gapsMs = [0, 2_000, 4_000];
+  for (const gapMs of gapsMs) {
+    if (gapMs) await sleep(gapMs);
+    if (await probePreviewOnce(3_000)) return true;
+  }
+  return false;
+}
 
 /**
  * 清 focus-tiger.* localStorage 并等待产品壳 Sit 可见。
@@ -64,6 +104,7 @@ export async function openFreshProductShell(page, opts = {}) {
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
+      if (isCi) await waitForPreviewHealthy();
       await page.goto(path, {
         waitUntil: 'domcontentloaded',
         timeout: gotoMs

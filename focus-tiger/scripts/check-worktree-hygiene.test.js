@@ -119,13 +119,24 @@ describe('classifyHygieneTier', () => {
       }).tier,
       'report_only'
     )
+    const dirtyMerged = classifyHygieneTier({
+      isPrimary: false,
+      isCurrent: false,
+      dirty: true,
+      tipInDevelop: true,
+      noUniquePatches: true,
+      lockOccupancy: 'absent',
+      lockStale: null
+    })
+    assert.equal(dirtyMerged.tier, 'propose_remove')
+    assert.ok(dirtyMerged.reasons.includes('dirty-but-content-merged'))
     assert.equal(
       classifyHygieneTier({
         isPrimary: false,
         isCurrent: false,
         dirty: true,
-        tipInDevelop: true,
-        noUniquePatches: true,
+        tipInDevelop: false,
+        noUniquePatches: false,
         lockOccupancy: 'absent',
         lockStale: null
       }).tier,

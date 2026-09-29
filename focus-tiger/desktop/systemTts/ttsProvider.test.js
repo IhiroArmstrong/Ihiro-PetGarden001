@@ -53,21 +53,44 @@ describe('systemTts ttsProvider', () => {
     );
   });
 
-  it('rejects overlapping speak sessions', async () => {
+  it('interrupts an in-flight speak session when a new one starts', async () => {
+    let stopCalls = 0;
+    let speakCalls = 0;
     const provider = createTtsProvider({
-      startSpeak: () => ({
-        child: {
-          stdin: { write() {}, destroyed: false },
-          killed: false
-        },
-        started: new Promise(() => {}),
-        finished: new Promise(() => {})
-      })
+      startSpeak: () => {
+        speakCalls += 1;
+        if (speakCalls === 1) {
+          return {
+            child: {
+              stdin: { write() {}, destroyed: false },
+              killed: false
+            },
+            started: Promise.resolve({ ok: true, phase: 'started', startLatencyMs: 10 }),
+            finished: new Promise(() => {})
+          };
+        }
+        return {
+          child: {
+            stdin: { write() {}, destroyed: false },
+            killed: false
+          },
+          started: Promise.resolve({ ok: true, phase: 'started', startLatencyMs: 10 }),
+          finished: Promise.resolve({
+            ok: true,
+            json: { ok: true, phase: 'finished', startLatencyMs: 10, durationMs: 20 }
+          })
+        };
+      },
+      stopSpeak: () => {
+        stopCalls += 1;
+        return true;
+      }
     });
-    void provider.speak('en-US');
+    void provider.speak('en-US', 'first line');
     await new Promise((resolve) => setTimeout(resolve, 0));
-    const result = await provider.speak('en-US');
-    assert.equal(result.ok, false);
-    assert.match(result.userMessage, /Already speaking/);
+    const result = await provider.speak('en-US', 'second line');
+    assert.equal(stopCalls, 1);
+    assert.equal(speakCalls, 2);
+    assert.equal(result.ok, true);
   });
 });

@@ -38,7 +38,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-26 · 27 live rows · 34 approved catalog ids
+**Snapshot**: 2026-09-29 · 27 live rows · 34 approved catalog ids
 
 ### Summary counts
 
@@ -103,5 +103,5 @@ CI / smoke: `npm run audit:kb-live-gap` (no write) is part of `npm run docs:chec
 | 1 | Static live-entry registry | **已合 develop** (#929) |
 | 2 | Gap audit (this doc) | **已合 develop** (#931) · registry drift cleared |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** · catalog keywords only |
-| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019–0032 已入库**（闸门 **34**）· batch-2 存活面候选清零 · Reminder / Language 仍 conditional |
+| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019–0032 已入库**（闸门 **34**）· batch-2 存活面候选清零 · 待人工审的项收在 `docs/kb-po-review-queue.md`，不逐条另请 |
 | 手册 | `docs/internal-handbook/` | 等缺口稳定后再开 |

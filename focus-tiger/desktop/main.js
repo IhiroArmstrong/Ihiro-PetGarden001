@@ -512,6 +512,10 @@ if (gotSingleInstanceLock) {
     event.returnValue = process.platform === 'darwin';
   });
 
+  ipcMain.on('desktop:system-tts-product-allowed', (event) => {
+    event.returnValue = process.platform === 'darwin';
+  });
+
   ipcMain.handle('desktop:confide-observation-append', (_event, record) =>
     appendConfideObservationLog(
       app.getPath('userData'),
@@ -567,6 +571,11 @@ if (gotSingleInstanceLock) {
   }
 
   attachVoiceInputIpc({
+    ipcMain,
+    getMainWindow: () => mainWindow
+  });
+
+  attachSystemTtsIpc({
     ipcMain,
     getMainWindow: () => mainWindow
   });

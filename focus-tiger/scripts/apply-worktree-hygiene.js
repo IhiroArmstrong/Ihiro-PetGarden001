@@ -67,10 +67,18 @@ export function planRemovals(rows) {
  * @param {string} repoRoot
  * @param {string} worktreePath
  */
-export function gitWorktreeRemoveArgs(repoRoot, worktreePath) {
+/**
+ * @param {string} repoRoot
+ * @param {string} worktreePath
+ * @param {{ force?: boolean }} [opts]
+ */
+export function gitWorktreeRemoveArgs(repoRoot, worktreePath, opts = {}) {
+  const args = ['worktree', 'remove']
+  if (opts.force) args.push('--force')
+  args.push(worktreePath)
   return {
     bin: 'git',
-    args: ['worktree', 'remove', worktreePath],
+    args,
     cwd: resolve(repoRoot)
   }
 }
@@ -102,7 +110,7 @@ function main() {
       return
     }
     for (const row of planned) {
-      const spec = gitWorktreeRemoveArgs(repoRoot, row.path)
+      const spec = gitWorktreeRemoveArgs(repoRoot, row.path, { force: row.dirty })
       execFileSync(spec.bin, spec.args, { cwd: spec.cwd, stdio: 'inherit' })
     }
     execFileSync('git', ['worktree', 'prune'], { cwd: repoRoot, stdio: 'inherit' })
