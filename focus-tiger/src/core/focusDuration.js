@@ -22,6 +22,10 @@ export const FOCUS_DURATION_STORAGE_KEY = 'focus-tiger.focus-duration-pref.v1';
 
 export const FOCUS_DURATION_DEFAULT_MINUTES = 10;
 
+/** Fixed chip (10/15/25/45) vs open-ended count-up — separate branches. */
+export const FOCUS_DURATION_MODE_FIXED = 'fixed';
+export const FOCUS_DURATION_MODE_OPEN = 'open';
+
 /**
  * Browser `localStorage` when available; Node/unit tests get null.
  * Prefer `window` gate so Node's experimental localStorage stub is never touched.
@@ -81,6 +85,37 @@ export function loadPreferredFocusDurationMinutes(storage) {
  * @param {number} minutes
  * @param {Storage | null | undefined} [storage]
  */
+/**
+ * @param {unknown} mode
+ * @returns {'fixed' | 'open'}
+ */
+export function normalizeFocusDurationMode(mode) {
+  return mode === FOCUS_DURATION_MODE_OPEN
+    ? FOCUS_DURATION_MODE_OPEN
+    : FOCUS_DURATION_MODE_FIXED;
+}
+
+/**
+ * @param {Storage | null | undefined} [storage]
+ * @returns {'fixed' | 'open'}
+ */
+export function loadPreferredFocusDurationMode(storage) {
+  const store = storage === undefined ? browserLocalStorageOrNull() : storage;
+  if (!store) return FOCUS_DURATION_MODE_FIXED;
+  try {
+    const raw = store.getItem(FOCUS_DURATION_STORAGE_KEY);
+    if (!raw) return FOCUS_DURATION_MODE_FIXED;
+    const parsed = JSON.parse(raw);
+    return normalizeFocusDurationMode(parsed?.mode);
+  } catch {
+    return FOCUS_DURATION_MODE_FIXED;
+  }
+}
+
+/**
+ * @param {number} minutes
+ * @param {Storage | null | undefined} [storage]
+ */
 export function savePreferredFocusDurationMinutes(minutes, storage) {
   const m = normalizeFocusDurationMinutes(minutes);
   const store = storage === undefined ? browserLocalStorageOrNull() : storage;
@@ -88,12 +123,29 @@ export function savePreferredFocusDurationMinutes(minutes, storage) {
   try {
     store.setItem(
       FOCUS_DURATION_STORAGE_KEY,
-      JSON.stringify({ minutes: m })
+      JSON.stringify({ minutes: m, mode: FOCUS_DURATION_MODE_FIXED })
     );
   } catch {
     /* ignore quota */
   }
   return m;
+}
+
+/**
+ * @param {Storage | null | undefined} [storage]
+ */
+export function savePreferredOpenEndedFocus(storage) {
+  const store = storage === undefined ? browserLocalStorageOrNull() : storage;
+  if (!store) return;
+  try {
+    const minutes = loadPreferredFocusDurationMinutes(store);
+    store.setItem(
+      FOCUS_DURATION_STORAGE_KEY,
+      JSON.stringify({ minutes, mode: FOCUS_DURATION_MODE_OPEN })
+    );
+  } catch {
+    /* ignore quota */
+  }
 }
 
 /**

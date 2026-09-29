@@ -1,9 +1,9 @@
 # Task Brief A · Open-ended Focus（开放式计时 · 正计时）
 
-> **状态**：PO 已拍板可开工的口径（2026-09-28）。Slice 0 纯逻辑已落地，**未接 UI**。  
+> **状态**：Slice 0–1 已合入 develop（#1003 + slice1 PR）。B/C 仍待语音与冷启动文案。  
 > **顺序**：A → B（命令路由）→ C（冷启动文案）。C 在 B 的解析器实测通过之前不得上线。
 
-## 已拍板（2026-09-28）
+## 已拍板（2026-09-28 · 2026-09-29 复核）
 
 | 项 | 口径 |
 |---|---|
@@ -14,41 +14,29 @@
 | 崩溃恢复 | 问一次：Resume，或 End at last active time。禁止按墙钟把死机空档补进时长。 |
 | 奖励封顶 | **20 小时**。只封奖励与成长计入，不缩短用户看见的计时。 |
 | 健康 | 24 小时是安全上限，文案不得夸奖「越久越好」。 |
+| **Web** | **先不做**。仅 Electron / macOS DMG 露出 Open-ended chip。 |
+| **Reflection** | **先不改**。超长会话仍走现有回顾关卡与文案。 |
+| **入口语义** | Open-ended 是**独立分支**（`durationMode: open`），不是把 90 分钟上限调大，也不复用分钟 chip 的数值语义。 |
 
-## 现网核对（2026-09-28）
+## 现网核对（2026-09-29）
 
-| 草案里的「待核对」 | 现网 |
+| 项 | 现网 |
 |---|---|
-| 计时驱动 | `FocusSession.getElapsedSeconds()` 已是墙钟减 `pausedAccumulatedMs`，不是 `setInterval` 累加。开放式应沿用这套，不另做 ticker。 |
-| 时长档 | `focusDuration.js`：chip **10 / 15 / 25 / 45**，默认 10。`setTargetMinutes` **夹在 1–90 分钟**。开放式不能走这个夹取。 |
-| 手动暂停 | `FocusSession.pause()` / `resume()` 存在，完成达标时 `main.js` 会 `pause()`。没有独立的「专注中暂停」产品按钮。扣除规则与休眠共用。 |
-| 休眠检测 | **没有** `powerMonitor`。Slice 0 只提供 `beginOpenGap` / `closeOpenGap`。Electron 休眠接线留到后面的 slice。 |
-| 奖励 | `focusCoinsLedger.js`：Stay 每 5 分钟 1 点，日时长池顶 **36** 点，日总顶 **48** 点。20 小时封顶是**本场计入分钟**的新闸，尚未接到发币。 |
-| HUD / overlay | Slice 0 **不**新增 overlay、不改呼吸计时。 |
-
-## 数据模型（Slice 0 已锁）
-
-```text
-elapsed = min(24h, now − startedAt − pausedTotal − openGap)
-rewardCredit = min(20h, elapsed)
-```
-
-实现：[`openEndedFocus.js`](../../src/core/openEndedFocus.js)。未接入 `FocusSession` 或界面。
+| 计时驱动 | `FocusSession.getElapsedSeconds()` 墙钟减 pause；open 模式封顶 24h。 |
+| 固定时长 | chip **10 / 15 / 25 / 45**；`setTargetMinutes` 仍夹 1–90，且会切回 `fixed`。 |
+| Slice 1 | 桌面壳时长选择器多 **Open-ended** chip；HUD 正计时（≥1h 显示 `H:MM:SS`）；目标行显示「Open-ended / 不限时长」。Rise 仍走未完成收尾；24h 自动达标收尾。 |
+| 休眠检测 | 仍未接线 `powerMonitor`（Slice 2+ 或后续）。 |
+| 奖励 | `resolveTimedAwardMinutes()` 在 open 完成时按 20h 封顶计分钟；日寅币池规则不变。 |
 
 ## Slices
 
 | Slice | 状态 | 内容 |
 |---|---|---|
-| **0 · 规则** | 已写单测 | 正计时、休眠/暂停扣除、跨午夜、24h 封顶、20h 奖励封顶、崩溃不补时、90 分钟与 3 小时提示点 |
-| **1 · 入口 + 正计时 UI** | 未做 | 时长选择加 Open-ended；HUD 正计时；结束走既有收尾。固定时长零回归。 |
-| **2 · 温和提示** | 未做 | 静态文案；可关闭并记住。无新 overlay。 |
-| **3 · 崩溃恢复** | 未做 | 重启后的 Resume / End 界面。逻辑已在 Slice 0。 |
+| **0 · 规则** | ✅ develop | `openEndedFocus.js` 单测 |
+| **1 · 入口 + 正计时 UI** | 🚧 slice1 分支 | 独立 Open-ended chip（仅桌面）；HUD 正计时；24h 自动结束 |
+| **2 · 温和提示** | 未做 | 90 分钟 / 3 小时静态提示 |
+| **3 · 崩溃恢复** | 未做 | Resume / End at last active time UI |
 
 ## 明确不做（V1）
 
-超过 24 小时；假倒计时；提示时调用陪伴模型；无封顶奖励；与语音命令联动（属于 Brief B）。
-
-## 仍待拍板
-
-1. Web 端是否也提供 Open-ended。（我认为最合理：先只做 Electron / macOS，与语音命令同一壳；Web 固定时长保持不变。）
-2. 超长会话结束后的 Reflection 文案是否区分。（我认为最合理：V1 不改 Reflection 关卡，文案不另写一套。）
+超过 24 小时；假倒计时；Web 端 Open-ended；Reflection 另写一套；提示时调用陪伴模型；与语音命令联动（Brief B）。

@@ -10,6 +10,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  FOCUS_DURATION_MODE_OPEN,
   FOCUS_DURATION_OPTIONS_MINUTES,
   normalizeFocusDurationMinutes
 } from '../core/focusDuration.js';
@@ -73,8 +74,11 @@ export class FocusDurationPickerUI {
   /**
    * @param {{
    *   onDurationSelected?: (minutes: number) => void,
+   *   onOpenEndedSelected?: () => void,
    *   onLeave?: () => void,
-   *   preferredMinutes?: () => number
+   *   preferredMinutes?: () => number,
+   *   preferredMode?: () => 'fixed' | 'open',
+   *   showOpenEnded?: () => boolean
    * }} [handlers]
    */
   constructor(handlers = {}) {
@@ -131,6 +135,12 @@ export class FocusDurationPickerUI {
     this.phase = 'hidden';
     this._teardown();
     this.handlers.onDurationSelected?.(mins);
+  }
+
+  selectOpenEnded() {
+    this.phase = 'hidden';
+    this._teardown();
+    this.handlers.onOpenEndedSelected?.();
   }
 
   _ensureRoot() {
@@ -195,13 +205,15 @@ export class FocusDurationPickerUI {
     const preferred = normalizeFocusDurationMinutes(
       this.handlers.preferredMinutes?.() ?? 25
     );
+    const preferredMode = this.handlers.preferredMode?.() ?? 'fixed';
+    const showOpenEnded = this.handlers.showOpenEnded?.() === true;
 
     for (const minutes of FOCUS_DURATION_OPTIONS_MINUTES) {
       const chip = document.createElement('button');
       chip.type = 'button';
       chip.style.cssText = CHIP_CSS;
       chip.dataset.focusDurationMinutes = String(minutes);
-      if (minutes === preferred) {
+      if (preferredMode !== FOCUS_DURATION_MODE_OPEN && minutes === preferred) {
         chip.dataset.focusDurationPreferred = '1';
         chip.style.borderColor = 'rgba(107,58,46,.55)';
         chip.style.fontWeight = '650';
@@ -212,6 +224,21 @@ export class FocusDurationPickerUI {
       );
       chip.addEventListener('click', () => this.selectDuration(minutes));
       row.appendChild(chip);
+    }
+
+    if (showOpenEnded) {
+      const openChip = document.createElement('button');
+      openChip.type = 'button';
+      openChip.style.cssText = CHIP_CSS;
+      openChip.dataset.focusDurationMode = FOCUS_DURATION_MODE_OPEN;
+      if (preferredMode === FOCUS_DURATION_MODE_OPEN) {
+        openChip.dataset.focusDurationPreferred = '1';
+        openChip.style.borderColor = 'rgba(107,58,46,.55)';
+        openChip.style.fontWeight = '650';
+      }
+      openChip.textContent = t('focus_duration.open_chip');
+      openChip.addEventListener('click', () => this.selectOpenEnded());
+      row.appendChild(openChip);
     }
 
     const leave = document.createElement('button');

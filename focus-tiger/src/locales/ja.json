@@ -234,6 +234,8 @@
   "focus_duration.pick": "どのくらい一緒に坐りますか？",
   "focus_duration.hint": "フォーカスは最短10分。より短い休みは、呼吸の練習を。",
   "focus_duration.minutes_chip": "{n} 分",
+  "focus_duration.open_chip": "時間制限なし",
+  "focus_duration.open_hud": "時間制限なし",
   "focus_duration.leave": "やめる",
   "focus_coins.duration_hint": "5分以上坐ると寅币が静かに増えます。称号や空間の変体など、お金では手に入らないものに。",
   "HONESTY_IDLE_ENTRY": "正直チェックイン",

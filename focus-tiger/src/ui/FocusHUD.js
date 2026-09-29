@@ -89,8 +89,13 @@ export class FocusHUD {
   }
 
   _formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
+    const total = Math.max(0, Math.floor(seconds));
+    const hrs = Math.floor(total / 3600);
+    const mins = Math.floor((total % 3600) / 60);
+    const secs = total % 60;
+    if (hrs > 0) {
+      return `${hrs}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   }
 
@@ -115,7 +120,8 @@ export class FocusHUD {
    *   liveElapsedSeconds?: number | null,
    *   treatAsFocusing?: boolean,
    *   focusLevelOverride?: number | null,
-   *   sessionTargetMinutes?: number | null
+   *   sessionTargetMinutes?: number | null,
+   *   sessionOpenEnded?: boolean
    * }} [opts]
    */
   render(focusSession, stateManager, opts = {}) {
@@ -146,7 +152,11 @@ export class FocusHUD {
     this.levelEl.textContent = `${Math.round(live.level * 100)}%`;
     this.timeEl.textContent = this._formatTime(live.elapsedSeconds);
     this.stateEl.textContent = this._stateLabel(live.displayState);
-    this._renderSessionTarget(live.focusing, opts.sessionTargetMinutes);
+    this._renderSessionTarget(
+      live.focusing,
+      opts.sessionTargetMinutes,
+      opts.sessionOpenEnded === true
+    );
 
     if (this.wrapEl) {
       this.wrapEl.dataset.focusing = live.focusing ? '1' : '0';
@@ -177,10 +187,20 @@ export class FocusHUD {
    * @param {boolean} focusing
    * @param {number | null | undefined} minutes
    */
-  _renderSessionTarget(focusing, minutes) {
+  _renderSessionTarget(focusing, minutes, openEnded = false) {
     if (!this.targetEl) return;
+    if (!focusing) {
+      this.targetEl.hidden = true;
+      this.targetEl.textContent = '';
+      return;
+    }
+    if (openEnded) {
+      this.targetEl.hidden = false;
+      this.targetEl.textContent = t('focus_duration.open_hud');
+      return;
+    }
     const n = Number(minutes);
-    const show = focusing && Number.isFinite(n) && n > 0;
+    const show = Number.isFinite(n) && n > 0;
     if (!show) {
       this.targetEl.hidden = true;
       this.targetEl.textContent = '';

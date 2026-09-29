@@ -13,10 +13,13 @@ import {
   FOCUS_DURATION_OPTIONS_MINUTES,
   FOCUS_DURATION_STORAGE_KEY,
   hasExplicitSessionMinutesQuery,
+  FOCUS_DURATION_MODE_OPEN,
   loadPreferredFocusDurationMinutes,
+  loadPreferredFocusDurationMode,
   normalizeFocusDurationMinutes,
   resolveFocusSessionTargetMinutes,
   savePreferredFocusDurationMinutes,
+  savePreferredOpenEndedFocus,
   shouldSkipFocusDurationPicker
 } from './focusDuration.js';
 
@@ -75,6 +78,23 @@ describe('focusDuration', () => {
       resolveFocusSessionTargetMinutes('?sessionMinutes=1', storage),
       1
     );
+  });
+
+  it('stores open-ended preference separately from minute chips', () => {
+    /** @type {Record<string, string>} */
+    const mem = {};
+    const storage = {
+      getItem: (k) => (k in mem ? mem[k] : null),
+      setItem: (k, v) => {
+        mem[k] = String(v);
+      }
+    };
+    savePreferredOpenEndedFocus(storage);
+    assert.equal(loadPreferredFocusDurationMode(storage), FOCUS_DURATION_MODE_OPEN);
+    assert.equal(loadPreferredFocusDurationMinutes(storage), 10);
+    savePreferredFocusDurationMinutes(25, storage);
+    assert.equal(loadPreferredFocusDurationMode(storage), 'fixed');
+    assert.equal(loadPreferredFocusDurationMinutes(storage), 25);
   });
 });
 

@@ -22,10 +22,13 @@ import {
 } from './core/FocusSession.js';
 import {
   loadPreferredFocusDurationMinutes,
+  loadPreferredFocusDurationMode,
   resolveFocusSessionTargetMinutes,
   savePreferredFocusDurationMinutes,
+  savePreferredOpenEndedFocus,
   shouldSkipFocusDurationPicker
 } from './core/focusDuration.js';
+import { OPEN_ENDED_HARD_CAP_MS } from './core/openEndedFocus.js';
 import { SessionUiGate } from './core/SessionUiGate.js';
 import {
   createSessionChromeSync,
@@ -2474,12 +2477,23 @@ async function init() {
 
   focusDurationPicker = new FocusDurationPickerUI({
     preferredMinutes: () => loadPreferredFocusDurationMinutes(),
+    preferredMode: () => loadPreferredFocusDurationMode(),
+    showOpenEnded: () => isDesktopShellRuntime(),
     onDurationSelected: (minutes) => {
       const mode =
         pendingFocusDurationMode || companionModePicker.getSelectedMode();
       pendingFocusDurationMode = null;
       savePreferredFocusDurationMinutes(minutes);
       focusSession.setTargetMinutes(minutes);
+      companionModePicker.setMicroRitualActive(false);
+      beginFocusWithMode(mode);
+    },
+    onOpenEndedSelected: () => {
+      const mode =
+        pendingFocusDurationMode || companionModePicker.getSelectedMode();
+      pendingFocusDurationMode = null;
+      savePreferredOpenEndedFocus();
+      focusSession.setDurationMode('open');
       companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);
     },
@@ -2839,7 +2853,9 @@ async function init() {
     pendingJourneyDraft = {
       minutes: resolveJourneyMinutes({
         completed: Boolean(completed),
-        targetMinutes: focusSession.targetMinutes,
+        targetMinutes: focusSession.isOpenEnded()
+          ? focusSession.resolveTimedAwardMinutes()
+          : focusSession.targetMinutes,
         elapsedSeconds
       }),
       arrive: Boolean(arrivalChoseThisRun)
@@ -4619,14 +4635,15 @@ async function init() {
   function finishCompletedSession() {
     if (!sessionUiGate.completionPending) return;
     const witnessElapsedSeconds = focusSession.getElapsedSeconds();
+    const timedAwardMinutes = focusSession.resolveTimedAwardMinutes();
     stashPendingJourneyDraft({ completed: true });
     focusSession.stop();
-    honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
+    honestyCheckIn.onTimedSessionCompleted(timedAwardMinutes);
     awardFocusCoins({
       kind: GRANT_KIND.TIMED,
       reachedTarget: true,
       companionMode: focusSession.companionMode,
-      durationMinutes: focusSession.targetMinutes
+      durationMinutes: timedAwardMinutes
     });
     awardFocusCoins({ kind: GRANT_KIND.REFLECT });
     lotusPondRuntime.releaseBirths();
@@ -5207,7 +5224,11 @@ async function init() {
           : focusSession.getFocusLevel();
     const presenceBoost =
       stateManager.state === STATES.FOCUSING
-        ? ambientSoundscape.getPresenceBoost(focusSession.targetMinutes)
+        ? ambientSoundscape.getPresenceBoost(
+            focusSession.isOpenEnded()
+              ? FOCUS_SESSION_DEFAULT_MINUTES
+              : focusSession.targetMinutes
+          )
         : 0;
     // 已烧录金光的叙事动画播放期归零实时光效，避免与帧内光环/粒子过曝。
     const visualLevel = emotionController.shouldSuppressRuntimeGlow()
@@ -5232,7 +5253,9 @@ async function init() {
     ) {
       sessionCues.tickInterval({
         elapsedSeconds: focusSession.getElapsedSeconds(),
-        targetSeconds: focusSession.targetMinutes * 60,
+        targetSeconds: focusSession.isOpenEnded()
+          ? OPEN_ENDED_HARD_CAP_MS / 1000
+          : focusSession.targetMinutes * 60,
         ambient: ambientSoundscape,
         onIntervalPlayed: () => {
           window.setTimeout(() => {
@@ -5269,7 +5292,11 @@ async function init() {
         ? microBreathing
           ? microRitualUI?.getDurationMinutes?.()
           : ritualFlowUI?.getDurationMinutes?.()
-        : focusSession.targetMinutes
+        : focusSession.isOpenEnded()
+          ? null
+          : focusSession.targetMinutes,
+      sessionOpenEnded:
+        !overlayBreathing && focusSession.isOpenEnded()
     });
     weeklyPracticeHeatmap.render({
       // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
