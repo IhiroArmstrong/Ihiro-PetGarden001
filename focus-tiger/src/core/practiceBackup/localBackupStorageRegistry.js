@@ -57,6 +57,7 @@ export const PRACTICE_BACKUP_EXPORT_KEYS = Object.freeze([
   'focus-tiger.companion-mode.v1',
   'focus-tiger.ambient-pref.v1',
   'focus-tiger.session-cues.v1',
+  'focus-tiger.system-tts-pref.v1',
   'focus-tiger.contemplative-archive-seals.v1',
   'focus-tiger.lotus-pond.v1',
   'focus-tiger.tip-jar.v1',

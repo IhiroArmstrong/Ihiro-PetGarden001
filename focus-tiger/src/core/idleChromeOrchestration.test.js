@@ -404,6 +404,24 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
+  it('wide more includes system-tts only when systemTtsAvailable', () => {
+    const off = listSecondaryChromeEntries('wide-more', allOn);
+    assert.ok(!off.some((e) => e.proxy === 'system-tts'));
+    const on = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      systemTtsAvailable: true
+    });
+    const proxies = on.filter((e) => e.proxy).map((e) => e.proxy);
+    assert.ok(proxies.includes('system-tts'));
+    assert.ok(proxies.indexOf('system-tts') > proxies.indexOf('language'));
+    assert.ok(proxies.indexOf('system-tts') < proxies.indexOf('today-direction'));
+    const narrow = listSecondaryChromeEntries('narrow-drawer', {
+      ...allOn,
+      systemTtsAvailable: true
+    });
+    assert.ok(!narrow.some((e) => e.proxy === 'system-tts'));
+  });
+
   it('wide companion requires enabled !== false', () => {
     const entries = listSecondaryChromeEntries('wide-more', {
       ...allOn,

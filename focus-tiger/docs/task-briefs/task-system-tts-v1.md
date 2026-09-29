@@ -1,6 +1,6 @@
 # Task Brief · System TTS V1（系统播报 + 全局声音开关 · macOS）
 
-> **状态（2026-09-26 晚）**：Slice 0 探针已及格；**音色已锁 Joelle（英）+ Otoya（日），均优化音质**；产品第一挂载点改为 **Confide 出字同步念出**（见 `task-confide-tts-v1.md`）；专注结束播报后移。  
+> **状态（2026-09-29）**：Slice 0 探针已及格；**音色已锁 Joelle（英）+ Otoya（日），均优化音质**；Confide 朗读已合（`task-confide-tts-v1.md`）；**Slice 1b 全局开关 + 专注结束播报** 已开工（`feature/system-tts-slice1` tracker）。  
 > 决策纪要：`decisions/tts-v1-decision-memo.md`  
 > 挂线：Epic **#5** 苹果 DMG（与 Voice Input 同壳；**不**另开语音 Epic）。  
 > 实现须另口令。建议顺序：「开工 System TTS 探针」→（探针及格）「开工 System TTS 播报」。  
