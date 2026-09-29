@@ -36,7 +36,7 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 2. **还没有脚本，但判定是分类、计数或对照已有记录**：先补批量入口，再请人。禁止把一批剧本直接写成手工点击清单。
 3. **口径要求真人客户端日志**：终端先筛。只把命中子集交给人去发。离线结果不能说成该口径已上涨。
 
-扩面样本 M（须本机真实 shadow 行，且字面 gray、语义 functional、文本互异）：先 `cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run audit:stage2-m-screen`（`-- --file` 一行一句）。终端打出 `M_CANDIDATE` 的句子才送去 Electron 真发。该命令不写入本机真实发送记录，不算产品路径 M。真计数仍用 `npm run audit:confide-semantic-shadow`。脚本约定见 `LAB_SCRIPT_CONVENTIONS.md`。
+扩面样本 M（须本机真实 shadow 行，且字面 gray、语义 functional、文本互异）：先 `cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run audit:stage2-m-screen`（`-- --file` 一行一句）。终端打出 `M_CANDIDATE` 的句子，再跑 `npm run audit:stage2-m-replay -- --file`（同一句文件或候选子集）。回放只加 live 路由规则，不含 Hybrid、不生成回复、不写真实发送记录，不算产品路径 M。`STABLE` 很多时，Electron 真发改为抽样，不必逐条全发。真计数仍用 `npm run audit:confide-semantic-shadow`。脚本约定见 `LAB_SCRIPT_CONVENTIONS.md`。
 
 仍请人时：回复先写一行「终端已覆盖什么 / 人只补什么」，再写「请你操作」。
 
