@@ -9,12 +9,27 @@
 
 const DEFAULT_VISIBLE_MS = 5_000;
 
+/**
+ * Inline `display:flex` overrides the `hidden` attribute, so a resting bar
+ * still sits in the hit-test tree and steals clicks (micro-ritual Leave).
+ * @param {'rest' | 'shown' | 'fading'} phase
+ * @returns {{ hidden: boolean, display: 'none' | 'flex', pointerEvents: 'none' | 'auto' }}
+ */
+export function undoToastHitStyle(phase) {
+  if (phase === 'shown') {
+    return { hidden: false, display: 'flex', pointerEvents: 'auto' };
+  }
+  if (phase === 'fading') {
+    return { hidden: false, display: 'flex', pointerEvents: 'none' };
+  }
+  return { hidden: true, display: 'none', pointerEvents: 'none' };
+}
+
 const BASE_CSS = [
   'position:absolute',
   'left:50%',
   'bottom:108px',
   'z-index:42',
-  'display:flex',
   'align-items:center',
   'gap:12px',
   'max-width:min(520px,calc(100vw - 40px))',
@@ -30,8 +45,7 @@ const BASE_CSS = [
   'line-height:1.45',
   'opacity:0',
   'transform:translate(-50%,10px)',
-  'transition:opacity 220ms ease,transform 220ms ease',
-  'pointer-events:auto'
+  'transition:opacity 220ms ease,transform 220ms ease'
 ].join(';');
 
 export class VoiceCommandUndoToast {
@@ -42,14 +56,15 @@ export class VoiceCommandUndoToast {
   constructor(container, { visibleMs = DEFAULT_VISIBLE_MS } = {}) {
     this.visibleMs = visibleMs;
     this.hideTimer = null;
+    this.fadeTimer = null;
     this._onUndo = null;
 
     this.element = document.createElement('div');
     this.element.id = 'voice-command-undo-toast';
     this.element.setAttribute('role', 'status');
     this.element.setAttribute('aria-live', 'polite');
-    this.element.hidden = true;
     this.element.style.cssText = BASE_CSS;
+    this._applyHit('rest');
 
     this.messageEl = document.createElement('span');
     this.messageEl.style.flex = '1';
@@ -88,10 +103,11 @@ export class VoiceCommandUndoToast {
   show(message, undoLabel, onUndo, options = {}) {
     if (!message) return false;
     window.clearTimeout(this.hideTimer);
+    window.clearTimeout(this.fadeTimer);
     this._onUndo = typeof onUndo === 'function' ? onUndo : null;
     this.messageEl.textContent = message;
     this.undoBtn.textContent = undoLabel;
-    this.element.hidden = false;
+    this._applyHit('shown');
     this.element.getBoundingClientRect();
     this.element.style.opacity = '1';
     this.element.style.transform = 'translate(-50%,0)';
@@ -106,10 +122,21 @@ export class VoiceCommandUndoToast {
   hide() {
     window.clearTimeout(this.hideTimer);
     this._onUndo = null;
+    this._applyHit('fading');
     this.element.style.opacity = '0';
     this.element.style.transform = 'translate(-50%,10px)';
-    window.setTimeout(() => {
-      if (this.element.style.opacity === '0') this.element.hidden = true;
+    this.fadeTimer = window.setTimeout(() => {
+      if (this.element.style.opacity === '0') this._applyHit('rest');
     }, 220);
+  }
+
+  /**
+   * @param {'rest' | 'shown' | 'fading'} phase
+   */
+  _applyHit(phase) {
+    const style = undoToastHitStyle(phase);
+    this.element.hidden = style.hidden;
+    this.element.style.display = style.display;
+    this.element.style.pointerEvents = style.pointerEvents;
   }
 }
