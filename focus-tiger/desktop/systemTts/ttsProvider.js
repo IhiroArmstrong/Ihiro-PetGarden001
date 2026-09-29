@@ -90,12 +90,11 @@ export function createTtsProvider(opts = {}) {
      * @param {string} [text]
      */
     async speak(locale = defaultLocale, text) {
-      if (status === 'speaking') {
-        return {
-          ok: false,
-          status: 'error',
-          userMessage: 'Already speaking.'
-        };
+      if (status === 'speaking' && activeChild) {
+        stopSpeakFn(activeChild);
+        activeChild = null;
+        activeFinished = null;
+        status = 'idle';
       }
 
       const sample = text || SYSTEM_TTS_PROBE_SAMPLES[locale] || SYSTEM_TTS_PROBE_SAMPLES['en-US'];
