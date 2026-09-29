@@ -132,7 +132,19 @@ export function ensureMacosSpeechHelperBuilt() {
  * @returns {Record<string, unknown>}
  */
 export function parseMacosSpeechHelperStdout(stdout, code, stderr = '') {
-  const line = String(stdout || '').trim().split('\n').filter(Boolean).pop() || '';
+  const lines = String(stdout || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const line =
+    [...lines].reverse().find((entry) => {
+      try {
+        const json = JSON.parse(entry);
+        return !(json && typeof json === 'object' && json.command === 'level');
+      } catch {
+        return true;
+      }
+    }) || '';
   /** @type {Record<string, unknown> | null} */
   let json = null;
   try {
@@ -249,7 +261,37 @@ export async function probeMacosOnDeviceGate(locale = 'en-US') {
  * @param {string} locale
  * @param {number} maxSeconds
  */
-export function startMacosSpeechTranscribe(locale = 'en-US', maxSeconds = 30) {
+/**
+ * Split helper stdout into complete JSON lines. Level lines are live mic loudness.
+ *
+ * @param {(json: Record<string, unknown>) => void} onJson
+ * @returns {(chunk: string) => void}
+ */
+export function createSpeechHelperLineReader(onJson) {
+  let pending = '';
+  return (chunk) => {
+    pending += String(chunk || '');
+    const parts = pending.split('\n');
+    pending = parts.pop() || '';
+    for (const part of parts) {
+      const line = part.trim();
+      if (!line) continue;
+      try {
+        const json = JSON.parse(line);
+        if (json && typeof json === 'object') onJson(json);
+      } catch {
+        // Incomplete or non-JSON noise. The final parser still sees the raw stdout.
+      }
+    }
+  };
+}
+
+/**
+ * @param {string} [locale]
+ * @param {number} [maxSeconds]
+ * @param {{ onLevel?: (rms: number) => void }} [hooks]
+ */
+export function startMacosSpeechTranscribe(locale = 'en-US', maxSeconds = 30, hooks = {}) {
   if (process.platform !== 'darwin') {
     return {
       child: null,
@@ -280,10 +322,18 @@ export function startMacosSpeechTranscribe(locale = 'en-US', maxSeconds = 30) {
   );
   let stdout = '';
   let stderr = '';
+  const onLevel = typeof hooks.onLevel === 'function' ? hooks.onLevel : null;
+  const readLines = createSpeechHelperLineReader((json) => {
+    if (!onLevel || json.command !== 'level') return;
+    const rms = Number(json.rms);
+    if (!Number.isFinite(rms)) return;
+    onLevel(rms);
+  });
   child.stdout.setEncoding('utf8');
   child.stderr.setEncoding('utf8');
   child.stdout.on('data', (chunk) => {
     stdout += chunk;
+    readLines(chunk);
   });
   child.stderr.on('data', (chunk) => {
     stderr += chunk;

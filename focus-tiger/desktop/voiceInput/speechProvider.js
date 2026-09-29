@@ -84,7 +84,8 @@ export function mapSpeechFailureReason(json) {
  *   locale?: string,
  *   platform?: NodeJS.Platform,
  *   gateRunner?: typeof probeMacosOnDeviceGate,
- *   transcribeStarter?: typeof startMacosSpeechTranscribe
+ *   transcribeStarter?: typeof startMacosSpeechTranscribe,
+ *   onLevel?: (rms: number) => void
  * }} [opts]
  */
 export function createSpeechProvider(opts = {}) {
@@ -93,6 +94,7 @@ export function createSpeechProvider(opts = {}) {
   const platform = opts.platform || process.platform;
   const gateRunner = opts.gateRunner || probeMacosOnDeviceGate;
   const transcribeStarter = opts.transcribeStarter || startMacosSpeechTranscribe;
+  const onLevel = typeof opts.onLevel === 'function' ? opts.onLevel : null;
 
   if (allowCloudStt) {
     throw new Error('cloud_stt_not_implemented_in_slice0');
@@ -161,7 +163,15 @@ export function createSpeechProvider(opts = {}) {
         return { ok: false, status: 'error', userMessage: lastError, gate };
       }
 
-      const session = transcribeStarter(locale, 45);
+      status = 'listening';
+      listeningStartedAt = Date.now();
+      lastTranscript = '';
+      lastError = '';
+      const session = transcribeStarter(locale, 45, {
+        onLevel: (rms) => {
+          if (status === 'listening' && onLevel) onLevel(rms);
+        }
+      });
       if (!session.child) {
         status = 'error';
         const pending = await session.finished;
@@ -173,10 +183,6 @@ export function createSpeechProvider(opts = {}) {
 
       activeChild = session.child;
       activeFinished = session.finished;
-      status = 'listening';
-      listeningStartedAt = Date.now();
-      lastTranscript = '';
-      lastError = '';
       return { ok: true, status: 'listening', gate };
     },
     async stopListening() {

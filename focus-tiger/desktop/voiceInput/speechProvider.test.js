@@ -114,6 +114,41 @@ describe('speechProvider', () => {
     assert.equal(provider.snapshot().allowCloudStt, false);
   });
 
+  it('forwards live microphone level only while listening', async () => {
+    const levels = [];
+    /** @type {((rms: number) => void) | null} */
+    let pushLevel = null;
+    const provider = createSpeechProvider({
+      onLevel: (rms) => levels.push(rms),
+      gateRunner: async () => ({
+        ok: true,
+        gatePassed: true,
+        json: { ok: true, onDeviceSupported: true, recognizerAvailable: true },
+        stderr: '',
+        exitCode: 0
+      }),
+      transcribeStarter: (_locale, _max, hooks) => {
+        pushLevel = hooks.onLevel;
+        return {
+          child: { stdin: { destroyed: false, write() {}, end() {} } },
+          finished: Promise.resolve({
+            ok: true,
+            json: { ok: true, transcript: 'hi' },
+            stderr: '',
+            exitCode: 0
+          })
+        };
+      }
+    });
+    pushLevel?.(0.9);
+    assert.deepEqual(levels, []);
+    await provider.startListening();
+    pushLevel?.(0.02);
+    await provider.stopListening();
+    pushLevel?.(0.4);
+    assert.deepEqual(levels, [0.02]);
+  });
+
   it('forwards hypothesisShrunk when the helper kept a dropped prefix', async () => {
     const provider = createSpeechProvider({
       gateRunner: async () => ({

@@ -15,6 +15,7 @@ import {
   voiceTranscriptNeedsTruncationNotice,
   withVoiceCaptureDiagnostics
 } from '../core/voiceInputBridge.js';
+import { voiceLevelUnit } from '../core/voiceLevelMeter.js';
 
 const STYLE_ID = 'voice-input-chrome-styles-v1';
 
@@ -43,6 +44,7 @@ export class VoiceInputChrome {
     this.onInputApplied = onInputApplied;
     this._bridge = getVoiceInputBridge();
     this._unsubStatus = null;
+    this._unsubLevel = null;
     this._state = /** @type {VoiceInputChromeState} */ ('idle');
     this._hasTranscript = false;
     this._visible = false;
@@ -86,7 +88,19 @@ export class VoiceInputChrome {
     this.stopBtn.hidden = true;
     this.stopBtn.addEventListener('click', () => void this._onStop());
 
-    this.actions.append(this.speakBtn, this.stopBtn);
+    this.meter = document.createElement('span');
+    this.meter.className = 'voice-input-chrome__meter';
+    this.meter.dataset.testid = `${testIdPrefix}-level`;
+    this.meter.setAttribute('aria-hidden', 'true');
+    this.meter.hidden = true;
+    this.meterBars = [0, 1, 2].map(() => {
+      const bar = document.createElement('span');
+      bar.className = 'voice-input-chrome__meter-bar';
+      this.meter.append(bar);
+      return bar;
+    });
+
+    this.actions.append(this.meter, this.speakBtn, this.stopBtn);
     this.root.append(this.statusEl, this.errorEl, this.truncationEl, this.actions);
 
     const parent = mountParent || textarea.parentElement;
@@ -109,6 +123,7 @@ export class VoiceInputChrome {
     void this._cancelActiveSession();
     if (typeof this._unsubLocale === 'function') this._unsubLocale();
     if (typeof this._unsubStatus === 'function') this._unsubStatus();
+    if (typeof this._unsubLevel === 'function') this._unsubLevel();
     if (typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
       window.removeEventListener('resize', this._onResize);
     }
@@ -142,6 +157,24 @@ export class VoiceInputChrome {
         this._errorMessage = String(snapshot.error || t('VOICE_INPUT_ERROR_GENERIC'));
         this._setState('error');
       }
+    });
+    if (!this._bridge || typeof this._bridge.onLevel !== 'function') return;
+    this._unsubLevel = this._bridge.onLevel((payload) => {
+      if (this._state !== 'listening') return;
+      const rms = payload && typeof payload === 'object' ? payload.rms : 0;
+      this._paintLevel(rms);
+    });
+  }
+
+  /**
+   * @param {unknown} rms
+   */
+  _paintLevel(rms) {
+    const unit = voiceLevelUnit(rms);
+    const weights = [0.72, 1, 0.84];
+    this.meterBars.forEach((bar, index) => {
+      const height = 4 + Math.round(unit * 12 * weights[index]);
+      bar.style.height = `${height}px`;
     });
   }
 
@@ -182,6 +215,8 @@ export class VoiceInputChrome {
 
     this.speakBtn.hidden = listening || transcribing;
     this.speakBtn.disabled = transcribing;
+    this.meter.hidden = !listening;
+    if (!listening) this._paintLevel(0);
     this.stopBtn.hidden = !listening;
     this.stopBtn.disabled = transcribing;
 
@@ -354,6 +389,24 @@ export class VoiceInputChrome {
       }
       .voice-input-chrome__stop {
         background: rgba(245, 194, 107, 0.35);
+      }
+      .voice-input-chrome__meter {
+        display: inline-flex;
+        align-items: flex-end;
+        gap: 3px;
+        width: 22px;
+        height: 18px;
+      }
+      .voice-input-chrome__meter[hidden] {
+        display: none !important;
+      }
+      .voice-input-chrome__meter-bar {
+        display: block;
+        width: 4px;
+        height: 4px;
+        border-radius: 2px;
+        background: #8b5a2b;
+        transition: height 80ms linear;
       }
       .voice-input-chrome__speak[hidden],
       .voice-input-chrome__stop[hidden] {

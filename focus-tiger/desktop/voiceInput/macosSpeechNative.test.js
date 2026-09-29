@@ -9,6 +9,7 @@ import { describe, it } from 'node:test';
 import {
   macosSpeechHelperLayout,
   macosSpeechHelperPath,
+  createSpeechHelperLineReader,
   parseMacosSpeechHelperJsonLines,
   parseMacosSpeechHelperStdout
 } from './macosSpeechNative.js';
@@ -41,5 +42,27 @@ describe('macosSpeechNative helper layout', () => {
     assert.equal(lines.length, 2);
     assert.equal(lines[0].phase, 'started');
     assert.equal(lines[1].phase, 'finished');
+  });
+
+  it('keeps the transcript when live level lines come first', () => {
+    const stdout = [
+      '{"command":"level","ok":true,"rms":0.02}',
+      '{"command":"transcribe","ok":true,"transcript":"hello"}'
+    ].join('\n');
+    const json = parseMacosSpeechHelperStdout(stdout, 0, '');
+    assert.equal(json.command, 'transcribe');
+    assert.equal(json.transcript, 'hello');
+  });
+
+  it('reads live level lines as they arrive', () => {
+    const seen = [];
+    const read = createSpeechHelperLineReader((json) => {
+      if (json.command === 'level' && Number.isFinite(Number(json.rms))) {
+        seen.push(Number(json.rms));
+      }
+    });
+    read('{"command":"level","ok":true,"rms":0.02}\n');
+    read('{"command":"level","rms":"nope"}\n{"command":"transcribe","ok":true}\n');
+    assert.deepEqual(seen, [0.02]);
   });
 });

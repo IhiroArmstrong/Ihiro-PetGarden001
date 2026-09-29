@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-09-25（Voice Input Slice 0–2 · 场景 AT · Today direction 手动入口 + ? 次级链 + 选项版本轻提示 · KB practice-edu concepts 文档 · Local AI 意图 E2E 抽取 · 场景 AS · Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-09-29（Voice Input 听写音量条 · 场景 AT · Today direction 手动入口 + ? 次级链 + 选项版本轻提示 · KB practice-edu concepts 文档 · Local AI 意图 E2E 抽取 · 场景 AS · Confide KB 语义门闩 + miss 诚实空态 · getLlama 串行 work gate · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -986,7 +986,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 > **挂载（V1 三处）**：① Confide 输入框 ② Arrival Choose **Write your own**（`#arrival-choose-typed-input`）③ Reflection Q1–Q3 文本框。  
 > **单元**：`voiceInputBridge.test.js` · `VoiceInputChrome` · desktop probe 脚本。  
 > **交叉**：发送 / 危机阀 / L2 生成仍走 **场景 AE**；手写意图仍走 **场景 A**；Reflection 关卡仍走 **场景 C**；**禁止**新 overlay 源。  
-> **仍须人工**：英语专有词转写质量；Listening 波形观感；Focusing 中不得出现麦克风；日语 locale 下不得假装能听日语。
+> **仍须人工**：英语专有词转写质量；Listening 时三条音量条是否跟着真实说话升高、安静时是否贴底；Focusing 中不得出现麦克风；日语 locale 下不得假装能听日语。
 
 ### AT · Slice 0（探针 · lab only）
 
@@ -995,7 +995,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ### AT · Slice 1（Confide Speak to type）
 
-1. **主路径（Electron 宽屏 · Confide L2 ready）**：Idle → 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → **0–1 秒内**状态变 Listening → 说英语 → Stop → **0–1 秒内**转写文字进输入框（可编辑）→ 用户点 Share → 走既有 **AE** L2 路由（**禁止** `麦克风 → LLM` 直连）。  
+1. **主路径（Electron 宽屏 · Confide L2 ready）**：Idle → 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → **0–1 秒内**状态变 Listening，Stop 旁出现 `[data-testid=voice-input-level]` 三条音量条并先贴底 → 安静时保持贴底（禁止自己上下跳）→ 说英语时条子随本机音量升高 → Stop → **0–1 秒内**条子消失且转写文字进输入框（可编辑）→ 用户点 Share → 走既有 **AE** L2 路由（**禁止** `麦克风 → LLM` 直连）。音量映射单测：`voiceLevelMeter.test.js`。  
 2. **倾诉不出设备**：转写路径须 `MacosSpeechProvider`；**禁止** Cloud STT provider 注入倾诉 UI。  
 3. **负例**：Web `?confide=1` / 窄屏 <480 → **不得**见麦克风。  
 4. **回流**：转写后改字再 Share → 以编辑后文本为准。
