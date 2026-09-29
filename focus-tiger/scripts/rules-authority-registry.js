@@ -1842,6 +1842,30 @@ export const RULE_AUTHORITY_TOPICS = [
     restatementExemptFiles: [
       '.cursor/rules/focus-tiger-chat-openable-file-links.mdc'
     ]
+  },
+  {
+    id: 'batch-before-human',
+    title: '减少人工测试与审核（能终端批量就不要整表请人）',
+    ssotPath: '.cursor/rules/testing-strategy.mdc',
+    ssotSection: '减少人工测试与审核（batch-before-human · 强制）',
+    ssotMustContain: [
+      /batch-before-human/,
+      /减少人工测试与审核/,
+      /audit:stage2-m-screen/,
+      /不算产品路径 M/,
+      /audit:confide-semantic-shadow/
+    ],
+    topicSignals: [/batch-before-human/, /减少人工测试与审核/],
+    mustCite: [/testing-strategy\.mdc|batch-before-human/],
+    restatementFingerprints: [/M_CANDIDATE/, /不算产品路径 M/],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'offline-screen-counts-as-m',
+        pattern: /离线[^。\n]{0,24}算进[^。\n]{0,8}M|M_CANDIDATE[^。\n]{0,16}就是\s*M/,
+        note: '离线筛选不能当成产品路径 M'
+      }
+    ]
   }
 ];
 

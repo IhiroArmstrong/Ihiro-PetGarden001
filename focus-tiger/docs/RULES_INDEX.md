@@ -83,6 +83,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `feature-conflict-review` | 实现前功能冲突扫描（强度 / 语气 / 职责） | `focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md` | 扫描三轴 |
 | `background-network` | 非用户点击的网络请求（时机 / 写盘 / 慢网动效） | `focus-tiger/docs/BACKGROUND_NETWORK.md` | 实现前三问（强制） |
 | `chat-openable-file-links` | 用户可见回复里文件须可点开、可定位（禁止只写反引号路径） | `WORKFLOW.md` | 用户可见回复：文件须可点开、可定位（强制） |
+| `batch-before-human` | 减少人工测试与审核（能终端批量就不要整表请人） | `.cursor/rules/testing-strategy.mdc` | 减少人工测试与审核（batch-before-human · 强制） |
 
 <!-- rules-authority-index:end -->
 
@@ -135,6 +136,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `tracker-eod-sync` | 「下班前 Git 同步须拼装 `TEST_TRACKER` 碎片见 regression-lock 第 7 条 / `PROCESS` Git 同步节奏 step 0b」；`git-agent-commit` / `TEST_TRACKER.md`「拼装触发」P1 可一行引用 | 下班前 sync 只 push 不跑 `tracker:assemble`；在功能 PR 里拼装；把碎片直接复制进 `SCENARIO_TESTS` |
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
 | `chat-openable-file-links` | 「文件须可点开、可定位见 `WORKFLOW.md`」；core / user-action-steps / alwaysApply 摘要可一行引用 | 主张反引号路径就算链接；只给链接不写绝对路径；完整复述四条必须；把代码围栏当打开文件的替代；静默复制到 Desktop 不先问 |
+| `batch-before-human` | 「减少人工测试与审核见 `testing-strategy.mdc`」；core 按需索引 / user-action-steps 可一行引用 | 已有批量命令仍把整表交给人逐条点；把离线筛选说成口径已上涨 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 
@@ -158,7 +160,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-ui-bug-triage.mdc`](../../.cursor/rules/focus-tiger-ui-bug-triage.mdc) | **SSOT**：UI/交互回归排查前置检查（先取 git/复现锚点、后探索；探索最多 5 轮；`ui-bug-triage`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-source-read-granularity.mdc`](../../.cursor/rules/focus-tiger-source-read-granularity.mdc) | **SSOT**：源码读取粒度（大文件先定位再片段读；`source-read-granularity`；**按需加载，非 alwaysApply**） |
-| [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶政策（`e2e-local-budget`；执行层：`run-e2e-changed` / `e2e-ci-guard` / `gate-local-heavy-e2e`） |
+| [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶（`e2e-local-budget`）与减少人工测试与审核（`batch-before-human`） |
 | [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-scenario-gwt-priority.mdc`](../../.cursor/rules/focus-tiger-scenario-gwt-priority.mdc) | Agent 摘要：场景 E2E 优先级 P0/P1/P2 五维打标 + GWT 生成器重跑（**非** SSOT；全文见 `SCENARIO_TESTS_GWT.md` §编写规范；**glob 注入，非 alwaysApply**） |
@@ -269,6 +271,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-29 | 新增 `batch-before-human`：能终端批量就不要整表请人；扩面先筛再真发。SSOT `.cursor/rules/testing-strategy.mdc` |
 | 2026-09-26 | 扩展 `chat-openable-file-links`：须 Markdown + **本机绝对路径**；立刻看须 `open_resource` + Finder `open -R`；要单独一份须先问 Desktop/Downloads 或 commit+GitHub |
 | 2026-09-22 | 产品表：`task-kb-scaled-production.md`（知识库规模化生产算法；过程性文档降为候选主题；正文只信 locale/规则源码）。不进 rules-authority 机器块 |
 | 2026-09-22 | 产品表：`product-knowledge-base.md`（三库拆分 + 5 条现网对照短答；急救型无固定心理审核人 → 不接入 Local AI）。不进 rules-authority 机器块 |
