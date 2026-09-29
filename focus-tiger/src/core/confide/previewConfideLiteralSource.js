@@ -55,7 +55,7 @@ export function previewConfideLiteralSource(text) {
     text: raw,
     route,
     source,
-    literalCoarse: resolveConfideLiteralCoarseBucket({ route, source }),
+    literalCoarse: resolveConfideLiteralCoarseBucket({ route, source, text: raw }),
     skipped: false
   };
 }

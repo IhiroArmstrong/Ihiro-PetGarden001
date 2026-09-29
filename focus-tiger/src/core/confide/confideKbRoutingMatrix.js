@@ -779,6 +779,27 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0032' }
   },
   {
+    id: 'kb-0033-reminder-zh',
+    text: '提醒我练习',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0033' }
+  },
+  {
+    id: 'kb-0033-reminder-en',
+    text: 'Remind me to practice',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0033' }
+  },
+  {
+    id: 'kb-0033-reminder-short-zh',
+    text: '提醒在哪',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0033' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],

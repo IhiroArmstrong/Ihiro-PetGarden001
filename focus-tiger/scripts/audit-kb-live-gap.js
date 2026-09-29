@@ -67,7 +67,8 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-today-direction': Object.freeze(['KB-FUNC-0029']),
   'kb-live-sanctuary-nav': Object.freeze(['KB-FUNC-0030']),
   'kb-live-community': Object.freeze(['KB-FUNC-0031']),
-  'kb-live-membership': Object.freeze(['KB-FUNC-0032'])
+  'kb-live-membership': Object.freeze(['KB-FUNC-0032']),
+  'kb-live-reminder': Object.freeze(['KB-FUNC-0033'])
 });
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform / concept facts). */

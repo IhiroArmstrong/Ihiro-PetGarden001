@@ -51,6 +51,14 @@ describe('confideSemanticCoarseMap', () => {
     );
     assert.equal(
       resolveConfideLiteralCoarseBucket({
+        route: CONFIDE_ROUTE.FALLBACK,
+        source: 'product_knowledge',
+        text: '提醒我练习'
+      }),
+      CONFIDE_SEMANTIC_BUCKET.FUNCTIONAL
+    );
+    assert.equal(
+      resolveConfideLiteralCoarseBucket({
         route: CONFIDE_ROUTE.SAFETY_REDIRECT,
         source: 'corpus'
       }),

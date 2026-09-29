@@ -103,6 +103,12 @@ const KB_DRAFT_LOCALE_KEYS = Object.freeze({
     'MEMBERSHIP_CARD_BLURB',
     'MEMBERSHIP_CLOSE',
     'SUPPORT_MODAL_SUBTITLE'
+  ]),
+  'KB-FUNC-0033': Object.freeze([
+    'reminder.setting_title',
+    'reminder.enable_label',
+    'reminder.daily_blurb',
+    'MENU_GROUP_PREFERENCES'
   ])
 });
 
