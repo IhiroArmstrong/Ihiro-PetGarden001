@@ -69,6 +69,16 @@ export function listRetrievableProductKnowledgeEntries() {
 }
 
 /**
+ * @param {string} id
+ * @returns {{ id: string, shortAnswerEn: string } | null}
+ */
+export function getRetrievableProductKnowledgeEntry(id) {
+  const entry = catalog.entries.find((row) => row.id === id);
+  if (!entry?.shortAnswerEn) return null;
+  return { id: entry.id, shortAnswerEn: entry.shortAnswerEn };
+}
+
+/**
  * Lab fixture alias — cold-start probe only; not the live semantic gate.
  * @param {string} text
  * @returns {boolean}

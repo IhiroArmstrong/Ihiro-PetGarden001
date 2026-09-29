@@ -354,6 +354,8 @@ async function main() {
               score: result.score,
               minScore: result.minScore,
               topK: result.topK,
+              nearestId: result.nearestId ?? null,
+              nearestScore: result.nearestScore ?? null,
               embedMs: result.embedMs,
               wallMs: Date.now() - started
             });

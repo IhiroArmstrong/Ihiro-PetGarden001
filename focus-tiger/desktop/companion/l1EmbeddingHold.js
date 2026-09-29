@@ -14,9 +14,12 @@ import {
   CONFIDE_SEMANTIC_LIBRARY_C
 } from '../../src/core/confide/confideSemanticExamples.js';
 import { classifyProductKnowledgeSemantic } from '../../src/core/confide/confideProductKnowledgeSemantic.js';
+import { listRetrievableProductKnowledgeEntries } from '../../src/core/confide/confideProductKnowledge.js';
+import { catalogEntryEmbeddingText } from '../../src/core/confide/kbNearMatch.js';
 import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
 import {
   classifyConfideSemanticCoarse,
+  cosineSimilarity,
   formatQwen3EmbeddingInput
 } from '../../src/core/confide/confideSemanticRouting.js';
 import {
@@ -95,6 +98,16 @@ export async function loadEmbeddingHold(opts) {
     vectorsC.push(await embedText(example));
   }
 
+  onProgress('precomputeCatalogEntries');
+  /** @type {{ id: string, vector: number[] }[]} */
+  const catalogVectors = [];
+  for (const entry of listRetrievableProductKnowledgeEntries()) {
+    const phrases = catalogEntryEmbeddingText(entry).split('\n').filter(Boolean);
+    for (const phrase of phrases) {
+      catalogVectors.push({ id: entry.id, vector: await embedText(phrase) });
+    }
+  }
+
   onProgress('precomputeObserveClicheBank');
   /** @type {number[][]} */
   const clicheVectors = [];
@@ -138,7 +151,21 @@ export async function loadEmbeddingHold(opts) {
       const embedStarted = Date.now();
       const userVector = await embedText(text);
       const result = classifyProductKnowledgeSemantic(userVector, vectorsC, { env: opts.env });
-      return { ...result, embedMs: Date.now() - embedStarted };
+      let nearestId = null;
+      let nearestScore = -1;
+      for (const row of catalogVectors) {
+        const score = cosineSimilarity(userVector, row.vector);
+        if (score > nearestScore) {
+          nearestScore = score;
+          nearestId = row.id;
+        }
+      }
+      return {
+        ...result,
+        nearestId,
+        nearestScore: nearestId ? nearestScore : null,
+        embedMs: Date.now() - embedStarted
+      };
     },
     /**
      * @param {string} text

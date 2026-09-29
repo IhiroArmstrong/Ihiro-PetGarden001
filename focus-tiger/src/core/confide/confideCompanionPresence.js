@@ -70,6 +70,8 @@ export function isConfideCompanionPresenceIntent(text) {
   const raw = normalizeConfideIntentText(text);
   if (!raw) return false;
   if (isConfideBeginActionIntent(raw)) return false;
+  // A practice ask that merely contains “坐一会儿” is not “stay with me”.
+  if (/练习/.test(raw)) return false;
   return PRESENCE_RES.some((re) => re.test(raw));
 }
 
