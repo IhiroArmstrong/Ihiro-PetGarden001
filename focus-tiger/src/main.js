@@ -21,6 +21,7 @@ import {
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
 import {
+  FOCUS_DURATION_OPTIONS_MINUTES,
   loadPreferredFocusDurationMinutes,
   loadPreferredFocusDurationMode,
   resolveFocusSessionTargetMinutes,
@@ -332,6 +333,7 @@ import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
 } from './ui/MindfulAcknowledgeToast.js';
+import { VoiceCommandUndoToast } from './ui/VoiceCommandUndoToast.js';
 import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
@@ -1056,8 +1058,12 @@ async function init() {
   const mindfulToast = new MindfulAcknowledgeToast(
     document.getElementById('ui-overlay')
   );
+  const voiceCommandUndoToast = new VoiceCommandUndoToast(
+    document.getElementById('ui-overlay')
+  );
   // E2E / lab: show bottom wellness toast without waiting for wall-clock late night.
   window.__mindfulToast = mindfulToast;
+  window.__voiceCommandUndoToast = voiceCommandUndoToast;
   /** Phase 2a Lab + Phase 2b 产品冷启动共用 */
   flowerBlowWelcomeBubble = new FlowerBlowWelcomeBubbleUI(
     document.getElementById('ui-overlay')
@@ -2550,6 +2556,60 @@ async function init() {
     window.__ritualCompletionStore = ritualCompletionStore;
   }
 
+  function cancelVoiceStartedFocus() {
+    if (stateManager.state !== STATES.FOCUSING) return;
+    sessionCues.cancelPending();
+    sessionCues.stopIntervalSession();
+    endFocusChrome();
+    focusSession.stop();
+    sessionUiGate.setCompletionPending(false);
+    honestyGlowLevel = null;
+    tigerCharacter.setFocusLevel(0);
+    honestyCheckIn.onIncompleteSessionEnded();
+    stateManager.setState(STATES.IDLE);
+    focusInput.resetButton(focusButton);
+    resyncSessionChrome();
+    companionModePicker.setIdleChromeVisible(true);
+    companionModePicker.setMicroRitualActive(true);
+    setFocusButtonEnabled(false);
+    focusDurationPicker?.open();
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
+  }
+
+  function showVoiceCommandUndoToast(message) {
+    voiceCommandUndoToast.show(message, t('VOICE_COMMAND_UNDO'), () => {
+      cancelVoiceStartedFocus();
+    });
+  }
+
+  function beginVoiceFocusFromPicker({ minutes, openEnded }) {
+    const mode =
+      pendingFocusDurationMode || companionModePicker.getSelectedMode();
+    pendingFocusDurationMode = null;
+    focusDurationPicker?.hide();
+    companionModePicker.setMicroRitualActive(false);
+    if (openEnded) {
+      savePreferredOpenEndedFocus();
+      focusSession.setDurationMode('open');
+      beginFocusWithMode(mode);
+      showVoiceCommandUndoToast(t('VOICE_COMMAND_STARTED_OPEN'));
+      return;
+    }
+    if (
+      Number.isFinite(minutes) &&
+      FOCUS_DURATION_OPTIONS_MINUTES.includes(/** @type {10|15|25|45} */ (minutes))
+    ) {
+      savePreferredFocusDurationMinutes(minutes);
+    }
+    focusSession.setDurationMode('fixed');
+    focusSession.setTargetMinutes(minutes);
+    beginFocusWithMode(mode);
+    showVoiceCommandUndoToast(
+      String(t('VOICE_COMMAND_STARTED_FIXED')).replace(/\{n\}/g, String(minutes))
+    );
+  }
+
   focusDurationPicker = new FocusDurationPickerUI({
     preferredMinutes: () => loadPreferredFocusDurationMinutes(),
     preferredMode: () => loadPreferredFocusDurationMode(),
@@ -2571,6 +2631,12 @@ async function init() {
       focusSession.setDurationMode('open');
       companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);
+    },
+    onVoiceStartFixed: (minutes) => {
+      beginVoiceFocusFromPicker({ minutes, openEnded: false });
+    },
+    onVoiceStartOpen: () => {
+      beginVoiceFocusFromPicker({ openEnded: true });
     },
     onLeave: () => {
       pendingFocusDurationMode = null;

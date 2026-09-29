@@ -1,0 +1,3 @@
+# feature/voice-command-slice1
+
+| Voice command · mic on duration picker title row | UI可见 | 待人工测试 | **仅 Electron 宽屏 ≥480 + 英语界面。** 停掉旧的 `desktop:dev`，`cd focus-tiger && npm run desktop:dev` → Sit→Arrival→Companion 后见 `#focus-duration-picker` → 标题「How long shall we sit together?」同一排右侧见 🎙 → 点 → 0–1s 内 Stop 旁三条音量条贴底 → 说 `Start a 25-minute focus` → Stop → 0–1s 内进入 Focusing，底部出现 Undo 条（约 5s）→ 点 Undo 回到时长面板。再说 `Focus with no time limit`（桌面）应开 Open-ended。说 `Start focusing` 应见红字追问、不开表。Web / 日语 / 窄屏 **无** 🎙。单测：`voiceCommandGate.test.js` · `voiceCommandOutcome.test.js` | — | — | Brief [task-voice-command-routing.md](../task-briefs/task-voice-command-routing.md) §Slice 1 | 2026-09-29 |

@@ -46,9 +46,9 @@
 
 | Slice | 状态 |
 |---|---|
-| 0 · RuleParser 单测 | 本分支：`parseVoiceCommandDuration` 只判断坐多久；无麦、无入口、不开始计时 |
-| 1 · 入口 + STT + 开始专注 + 撤销 | 未做 |
-| 2 · 追问与失败文案 | 未做 |
+| 0 · RuleParser 单测 | 已合：`parseVoiceCommandDuration` 只判断坐多久 |
+| 1 · 入口 + STT + 开始专注 + 撤销 | **本分支**：`#focus-duration-picker` 标题行 🎙（英语 + Electron 宽屏）；STT → 规则 → `beginFocusWithMode` + Undo 条 |
+| 2 · 追问与失败文案 | 部分：缺时长 / 拒绝 / Stop 已有红字；追问 chip 引导待补 |
 | 3 · 更多动作 | 另口令 |
 
 ## 明确不做
