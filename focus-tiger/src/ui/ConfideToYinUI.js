@@ -62,11 +62,14 @@ import {
 } from '../core/confide/confideObservationTelemetry.js';
 import {
   buildKbRetrievalMissTurnLog,
+  getRetrievableProductKnowledgeEntry,
   mayTryConfideProductKnowledge,
-  probeProductKnowledgeCatalog
+  probeProductKnowledgeCatalog,
+  productKnowledgeReplyPassesGuard
 } from '../core/confide/confideProductKnowledge.js';
 import { formatConfideProductKnowledgeHonestyReply } from '../core/confide/confideProductKnowledgeHonesty.js';
 import { resolveProductKnowledgeGateAction } from '../core/confide/confideProductKnowledgeSemantic.js';
+import { decideKbNearMatch } from '../core/confide/kbNearMatch.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -1517,12 +1520,13 @@ export class ConfideToYinUI {
     const catalogResult = probeProductKnowledgeCatalog(text);
     let embeddingState = 'not_ready';
     let semanticIsProduct = false;
+    let gate = null;
     if (
       this._companion &&
       typeof this._companion.semanticProductKnowledgeGate === 'function'
     ) {
       try {
-        const gate = await this._companion.semanticProductKnowledgeGate({ text });
+        gate = await this._companion.semanticProductKnowledgeGate({ text });
         if (gate?.ok) {
           embeddingState = 'ready';
           semanticIsProduct = Boolean(gate.isProduct);
@@ -1535,19 +1539,39 @@ export class ConfideToYinUI {
         embeddingState = 'error';
       }
     }
+    let nearHit = null;
+    if (
+      embeddingState === 'ready' &&
+      !catalogResult.hit &&
+      Number.isFinite(Number(gate?.nearestScore))
+    ) {
+      const near = decideKbNearMatch({
+        nearestId: gate.nearestId,
+        nearestScore: gate.nearestScore
+      });
+      if (near.action === 'hit' && near.id) {
+        const entry = getRetrievableProductKnowledgeEntry(near.id);
+        if (entry && productKnowledgeReplyPassesGuard(entry.shortAnswerEn)) {
+          nearHit = entry;
+        }
+      }
+    }
     const action = resolveProductKnowledgeGateAction({
       text,
       embeddingState,
       semanticIsProduct,
-      catalogHit: Boolean(catalogResult.hit)
+      catalogHit: Boolean(catalogResult.hit || nearHit)
     });
-    if (action === 'hit' && catalogResult.text) {
+    const shown = catalogResult.hit
+      ? { id: catalogResult.id, text: catalogResult.text }
+      : nearHit;
+    if (action === 'hit' && shown?.text) {
       this._showReply(
         {
           route: hit.route,
-          text: catalogResult.text,
+          text: shown.text,
           source: 'product_knowledge',
-          kbId: catalogResult.id
+          kbId: shown.id
         },
         text
       );

@@ -913,6 +913,10 @@ export class CompanionL1Runtime {
         isProduct: Boolean(result.isProduct),
         score: Number(result.score),
         minScore: Number(result.minScore),
+        nearestId: typeof result.nearestId === 'string' ? result.nearestId : null,
+        nearestScore: Number.isFinite(Number(result.nearestScore))
+          ? Number(result.nearestScore)
+          : null,
         reason: 'ok',
         timing
       };

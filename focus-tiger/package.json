@@ -15,6 +15,7 @@
     "audit:stage2-synonym-screen": "npm --prefix desktop run companion:stage2-synonym-screen",
     "audit:stage2-m-screen": "npm --prefix desktop run companion:stage2-m-screen --",
     "audit:stage2-m-replay": "npm --prefix desktop run companion:stage2-m-replay --",
+    "audit:kb-near-calibrate": "npm --prefix desktop run companion:kb-near-calibrate",
     "audit:favorable-disagreement-mill": "npm --prefix desktop run companion:favorable-disagreement-mill",
     "docs:check": "node scripts/docs-check.js",
     "docs:sync": "node scripts/docs-sync.js",
