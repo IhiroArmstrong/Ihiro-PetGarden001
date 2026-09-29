@@ -184,12 +184,12 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   });
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible();
-  // Canvas order: Today direction · Quick Start · Sit with Yin · Honesty
+  // Canvas order: Sanctuary nav · Quick Start · Sit with Yin · Honesty (PR #986)
   const homeOrder = await page
     .locator('#ft-narrow-home-ctas [data-proxy]')
     .evaluateAll((els) => els.map((el) => el.getAttribute('data-proxy')));
   expect(homeOrder).toEqual([
-    'today-direction',
+    'sanctuary-nav',
     'quickstart',
     'sit',
     'honesty'

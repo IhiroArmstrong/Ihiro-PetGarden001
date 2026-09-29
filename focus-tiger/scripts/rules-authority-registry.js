@@ -45,6 +45,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-ui-bug-triage.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
+  '.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc',
   '.cursor/rules/focus-tiger-source-read-granularity.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
@@ -1559,6 +1560,49 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     citeExemptFiles: [
       '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ],
+    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
+    id: 'layered-bug-diagnostics',
+    title:
+      '多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑）',
+    ssotPath: '.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc',
+    ssotSection:
+      'Focus Tiger · 多层系统集成 bug 排查（layered-bug-diagnostics · 按需层）',
+    ssotMustContain: [
+      /layered-bug-diagnostics/,
+      /第一刀必须是可观测性/,
+      /连续 2 次修复仍失败/,
+      /禁止在第一轮直接猜测性修改/
+    ],
+    topicSignals: [
+      /layered-bug-diagnostics/,
+      /多层系统集成/,
+      /诊断先于/,
+      /连续 2 次修复/
+    ],
+    mustCite: [
+      /focus-tiger-layered-bug-diagnostics\.mdc|layered-bug-diagnostics/
+    ],
+    restatementFingerprints: [
+      /第一刀必须是可观测性/,
+      /连续 2 次修复仍失败/,
+      /禁止在第一轮直接猜测性修改/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'layered-bug-guess-first',
+        pattern:
+          /(?:可以|允许|应当|先)[^。\n]{0,24}(?:直接|先)[^。\n]{0,24}(?:改逻辑|猜测性修复|盲试)/,
+        note:
+          '多层系统集成 bug 须先加诊断；禁止写成可先猜测性改逻辑'
+      }
+    ],
+    citeExemptFiles: [
       '.cursor/rules/focus-tiger-core.mdc',
       'focus-tiger/docs/RULES_INDEX.md'
     ],

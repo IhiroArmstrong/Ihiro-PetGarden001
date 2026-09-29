@@ -662,6 +662,8 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 | 最近 **200** 次 workflow run | **189 failure · 11 cancelled · 0 success** |
 | 前置步骤（`visibility:doc-check` · registry 单测 · Playwright install） | **能过** — 不是「CI 从根上没配对、跑不到 Playwright」 |
 | 典型单次 e2e 步（抽样 8 run · 2026-09-21～23） | **~14–22 passed · ~13–28 flaky · ~4–11 failed** · 墙钟 **~40–50 min** |
+| **合入后抽样（2026-09-24 · #949+#950）** | 旧单 job [#950](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35903085078)：**26p/19fl/1f**（50.1m）；并行首验 [#949](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35886079176)：micro **10p/1f**（4.5m）· weekly **6p/4fl/2f**（19.6m）· **仍无 job 级全绿** |
+| **距末次 job 全绿** | **无记录**（见 `PROCESS.md` Backlog「降低 visibility CI flaky 率」） |
 
 **失败模式（Type A / B / C · 统一命名 · 勿混为一谈）**
 
@@ -692,6 +694,7 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 - **禁止**只拆 job 却保持 2 workers/job → 仍可能压垮 preview，导航超时子类复发。
 - **`retries: 2` 维持不动**（2026-09-23 拍板）：等 Type B/#351/#394 等在 CI 上稳定低 flaky 后，再评估是否降到 1；现在降会把「治理未生效」与「重试变少」信号搅在一起。
 - **scenario-a 再拆（2026-09-26）**：同一 `scenario-a.companion.spec.js` 拆两个 job——`scenario-a-early`（Choose 外侧取消及之前）与 `scenario-a-late`（Arrival 藏 Sit 起）。各 job 独立 `:5199`。CI 上 `openFreshProductShell` 在 `goto` 前对 `:5199/` 做最多三次健康探测（0 / 2s / 4s），探测失败不代替导航错误。`retries: 2` 仍不动。
+- **2026-09-29 对照**（run `36542268807`）：健康探测能通时，浏览器整页 `domcontentloaded` 仍会超过 40 秒（重试才过）。visibility 配置关掉失败录像，避免失败录像拖住下一次整页打开。Choose「自己写」的提示句须先挂进页面，再插入语音条；否则 `insertBefore` 抛错，提示不会出现。
 
 #### 责任人与检查频率（书面 · 防「修完又没人看」）
 

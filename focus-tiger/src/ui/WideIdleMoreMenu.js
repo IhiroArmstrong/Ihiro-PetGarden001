@@ -19,6 +19,7 @@ import {
   canRegisterDesktopCompanionGeneration,
   hasDesktopCompanionBridge
 } from '../core/desktopCompanionGate.js';
+import { canUseSystemTts } from '../core/systemTtsBridge.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
@@ -96,7 +97,8 @@ export class WideIdleMoreMenu {
    *   handlers?: {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
-   *     onLanguage?: () => void,
+     *     onLanguage?: () => void,
+     *     onSystemTts?: () => void,
    *     onFiveMoments?: () => void,
      *     onJourneyLog?: () => void,
      *     onYinCoin?: () => void,
@@ -254,7 +256,8 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
-      WIDE_STAGE_CLASS.language
+      WIDE_STAGE_CLASS.language,
+      WIDE_STAGE_CLASS.systemTts
     );
   }
 
@@ -267,7 +270,8 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
-      WIDE_STAGE_CLASS.language
+      WIDE_STAGE_CLASS.language,
+      WIDE_STAGE_CLASS.systemTts
     );
   }
 
@@ -324,7 +328,8 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
-      WIDE_STAGE_CLASS.language
+      WIDE_STAGE_CLASS.language,
+      WIDE_STAGE_CLASS.systemTts
     );
   }
 
@@ -697,7 +702,10 @@ export class WideIdleMoreMenu {
         isCompanionEntitled({
           storage: typeof localStorage !== 'undefined' ? localStorage : null,
           search: typeof location !== 'undefined' ? location.search : ''
-        })
+        }),
+      systemTtsAvailable: canUseSystemTts({
+        widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+      })
     });
 
     this.listEl.innerHTML = '';
@@ -789,6 +797,13 @@ export class WideIdleMoreMenu {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'system-tts') {
+      this.clearStage();
+      this.closeMenu();
+      document.body.classList.add(WIDE_STAGE_CLASS.systemTts);
+      this.handlers.onSystemTts?.();
       return;
     }
     if (key === 'sanctuary-nav') {

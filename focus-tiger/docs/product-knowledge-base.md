@@ -1,6 +1,6 @@
 # 产品知识库 —— 分类体系与字段结构
 
-**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否` · **验收数据：「呼吸练习在哪」→ 0011 已够用 · #961 不合**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021–0023 Inspiration 三卡**（**PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` / `kb-live-zen-cinema` / `kb-live-wallpapers`）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 · **PO spot-check 已通过 2026-09-26** · **catalog 已入库** · `yin_may_retrieve: 是`）+ **0024–0026 Rituals 三场景**（§4.8 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-ritual-*` · 闸门 **28 条**）+ **0027–0028 Not alone 双条**（§4.9 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-quiet-together` / `kb-live-focus-circle` · 闸门 **30 条** `审核状态: 已通过` 可进检索闸门）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
+**状态（2026-09-26）**：仓内权威模板 + **第一批 5 条**（PO 人审已通过）+ **0006 呼吸练习试点**（#923 · **PO spot-check 已通过** · 盘点参考 · 检索走 0011+0001 · **不进 catalog** · `yin_may_retrieve: 否` · **验收数据：「呼吸练习在哪」→ 0011 已够用 · #961 不合**）+ **第二批 10 条**（顺延 0007–0017）+ **0018 寅币获取** + **0019 Five Moments / 0020 Honesty**（PO 书面放行）+ **0021–0023 Inspiration 三卡**（**PO spot-check 已通过** · catalog 已入库 · registry 已链 `kb-live-daily-quote` / `kb-live-zen-cinema` / `kb-live-wallpapers`）+ **KB-EDU-0001–0004 科普概念首批**（§4.7 · Brief #936 · **PO spot-check 已通过 2026-09-26** · **catalog 已入库** · `yin_may_retrieve: 是`）+ **0024–0026 Rituals 三场景**（§4.8 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-ritual-*` · 闸门 **28 条**）+ **0027–0028 Not alone 双条**（§4.9 · **PO 2026-09-26 书面放行** · **catalog 已入库** · registry 已链 `kb-live-quiet-together` / `kb-live-focus-circle`）+ **0029–0032 今日方向 / 栖居导航 / 社区 / 会员**（§4.10 · **PO 2026-09-27 书面放行成批入库** · **catalog 已入库** · registry 已链 `kb-live-today-direction` / `kb-live-sanctuary-nav` / `kb-live-community` / `kb-live-membership` · 闸门 **34 条** `审核状态: 已通过` 可进检索闸门）；0009 云备份禁用仍 **未审核** · registry 已改链 **0012**）。**运行时**：Electron 宽屏 Confide → `confideProductKnowledge.js` + `productKnowledgeCatalog.json`（关键词检索 · 原样短答 · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚）。**已知技术债（PO 已立项、本轮不实现）**：KB 检索加一层 Qwen3-Embedding 近义匹配（复用 Confide 已装 embedding，替代无限加正则）；正式分类器方向仍见 `task-confide-kb-routing-gate.md`。  
 **权威路径**：`focus-tiger/docs/product-knowledge-base.md`  
 **交叉引用**：`task-briefs/task-confide-kb-retrieval-wiring.md`（检索接线）· `task-briefs/task-confide-kb-routing-gate.md`（路由闸门 · **PO 已点头** · 开工另开 Chat）· `task-briefs/task-kb-scaled-production.md`（规模化生产算法 · **PO 已拍板** · 第 1 步已合 #929 · 第 2 步缺口审计 `kb-live-gap-audit.md`）· `task-briefs/task-kb-practice-edu-concepts.md`（正念/专注/接地**科普概念**短答 · Brief **PO 已点头** · §4.7 首批 4 条 **已通过并入库 catalog**）· 过程性文档只做候选主题 · `LOCAL_AI_SCENARIOS_V1.md` · `LOCAL_AI_OPERATING_LAYER.md` · `CONFIDE_EXECUTABLE_INTENTS.md` · `MENU_CHROME_CENSUS.md` · `ONBOARDING_HINTS.md` · `CALM_ACTION_WISDOM.md` · `PRODUCT_POSITIONING.md` · `LOCAL_AI_WEB_MOUNT_PO_DECISION.md`
 
@@ -842,6 +842,94 @@
 
 > **权威源（0027–0028）**：`src/locales/en.json` · `quietTogetherPresence.js` · `quietTogetherPreference.js` · `focusCircleMembership.js` · `kbLiveEntryRegistry.js` · `MENU_CHROME_CENSUS.md` · `SCENARIO_TESTS.md` 场景 AG–AK
 
+### 4.10 batch-2 Step 4（今日方向 / 栖居导航 / 社区 / 会员 · 已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-09-27 书面放行成批入库** · **已进** `productKnowledgeCatalog.json` · registry 四行已链 **0029–0032** · 闸门 **34 条**。batch-2 存活面候选清零；Reminder / Language 仍为 conditional，本批不起草。
+
+```yaml
+- id: KB-FUNC-0029
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 今日方向从哪开
+  适用场景: 想再选今天想做什么，或分不清和 Sit 的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Preferences → Choose today's direction again. You can also tap the Today ball on the home screen. It reopens four quiet choices: Focus for a bit, Quiet down, Study or work, or Just looking around. Sitting with Yin still works if you skip it. Yin only points here and does not choose for you.
+    指路：菜单 `TODAY_DIRECTION_MENU_LABEL`（proxy `today-direction`）与首页球 `TODAY_DIRECTION_HOME_BALL_LABEL` → `ColdStartGoalCardUI.js`。四选文案来自 `COLD_START_GOAL_*`。与 0001 分工：本条只重开方向卡，不代替 Sit。
+    禁止：说成必须每天选才算练习；禁止替用户选定方向；禁止念横幅刷新文案正文。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-27 · 书面放行成批入库）
+  风险标记: 否
+  适用产品版本: 现网今日方向（live）
+  更新时间: 2026-09-27
+  locale_keys: [TODAY_DIRECTION_MENU_LABEL, TODAY_DIRECTION_HOME_BALL_LABEL, COLD_START_GOAL_TITLE, COLD_START_GOAL_FOCUS, COLD_START_GOAL_CALM, COLD_START_GOAL_STUDY, COLD_START_GOAL_BROWSE]
+  检索关键词: [today's direction, 今日方向, Choose today's direction again, 重新选择今日方向, today direction menu, What would you like to do today, Today ball, 今日方向从哪开]
+
+- id: KB-FUNC-0030
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 栖居导航从哪开
+  适用场景: 想在 Home / Calendar / Collection 之间走，或分不清和练习菜单的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Practice & moments → Navigate sanctuary. On a wide home screen you can also tap the compass ball. It opens Home, Calendar, and Collection — a way around the sanctuary, not a new practice. Yin only points here.
+    指路：菜单 `SANCTUARY_NAV_MENU_LABEL`（proxy `sanctuary-nav`）与宽屏指南针球 → `HomeSanctuaryNavFanUI.js`。扇叶文案 `SANCTUARY_NAV_HOME` / `CALENDAR` / `COLLECTION`。
+    禁止：说成新的练习或仪式；禁止与 Journey log 混成同一条。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-27 · 书面放行成批入库）
+  风险标记: 否
+  适用产品版本: 现网栖居导航（live）
+  更新时间: 2026-09-27
+  locale_keys: [SANCTUARY_NAV_MENU_LABEL, SANCTUARY_NAV_ARIA, SANCTUARY_NAV_HOME, SANCTUARY_NAV_CALENDAR, SANCTUARY_NAV_COLLECTION]
+  检索关键词: [Navigate sanctuary, 栖居导航, sanctuary navigation, compass ball, 指南针, sanctuary nav menu, Home Calendar Collection, 导航从哪开]
+
+- id: KB-FUNC-0031
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 社区从哪开
+  适用场景: 想找 Join our community，或分不清和同坐 / 小圈的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Preferences → Join our community. That opens the public community page in a new tab. It is optional; sitting with Yin does not require joining. Yin only points here and does not read invite links aloud.
+    指路：菜单 `COMMUNITY_MENU_LABEL`（proxy `community`）→ `communityLink.js` 打开公开社区页。与 0027/0028 分工：本条 = 站外社区页；那两条 = 应用内同坐灯笼 / 小圈。
+    禁止：说成必须加入才算练习；禁止在短答里念 Slack 邀请链接。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-27 · 书面放行成批入库）
+  风险标记: 否
+  适用产品版本: 现网社区外链（live）
+  更新时间: 2026-09-27
+  locale_keys: [COMMUNITY_MENU_LABEL]
+  检索关键词: [Join our community, 社区, community menu, 加入社区, community page, 社区从哪开, where is community, join community]
+
+- id: KB-FUNC-0032
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 会员从哪开
+  适用场景: 想找订阅入口，或分不清会员、终身通行证和请茶的区别
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer. Just above Rituals the row says Subscribe for more scenes, or Premium unlocked if advanced scenes are already open. Membership is optional and can be canceled anytime — it opens the same advanced rituals and ambience as Sanctuary Lifetime. A tea tip does not unlock those. Sit with Yin works without it. Yin only points here and does not read prices aloud.
+    指路：菜单行 `MEMBERSHIP_MENU_CTA` / `MEMBERSHIP_MENU_UNLOCKED`（proxy `membership`，紧挨 Rituals 标题上方）→ `idleChromeOrchestration.js`。卡片文案 `MEMBERSHIP_CARD_BLURB`。与请茶分工：请茶不解锁场景。与 0024–0026 分工：本条只指路会员行，不念仪式步骤。
+    禁止：FOMO / 硬推销；禁止在短答里念价格；禁止说成不订阅就不能 Sit。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-27 · 书面放行成批入库）
+  风险标记: 否
+  适用产品版本: 现网会员菜单行（live · 未解锁为 CTA，已解锁为 Premium unlocked）
+  更新时间: 2026-09-27
+  locale_keys: [MEMBERSHIP_MENU_CTA, MEMBERSHIP_MENU_UNLOCKED, MEMBERSHIP_MENU_LABEL, MEMBERSHIP_CARD_BLURB, MEMBERSHIP_CLOSE, SUPPORT_MODAL_SUBTITLE]
+  检索关键词: [Yin Membership, 会员, Subscribe for more scenes, Premium unlocked, membership menu, 订阅会员, where is membership, 会员从哪开]
+```
+
+> **权威源（0029–0032）**：`src/locales/en.json` · `idleChromeOrchestration.js` · `ColdStartGoalCardUI.js` · `HomeSanctuaryNavFanUI.js` · `communityLink.js` · `kbLiveEntryRegistry.js`
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
@@ -933,6 +1021,12 @@
 - [x] §4.9 起草 `KB-FUNC-0027`–`0028`；locale_keys 机器核对绿
 - [x] PO 书面放行 tone → 标已通过并进 `productKnowledgeCatalog.json`
 - [x] registry `kb-live-quiet-together` / `kb-live-focus-circle` 链 **0027–0028**；闸门升至 **30 条**
+
+**batch-2 收尾四条（2026-09-27 · PO 书面放行成批入库）**
+
+- [x] §4.10 起草 `KB-FUNC-0029`–`0032`；locale_keys 机器核对绿
+- [x] PO 书面放行成批入库 → 标已通过并进 `productKnowledgeCatalog.json`
+- [x] registry 四行链 **0029–0032**；闸门升至 **34 条**；batch-2 候选清零（Reminder / Language 仍 conditional）
 
 **共通**
 

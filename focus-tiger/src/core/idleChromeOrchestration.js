@@ -54,6 +54,7 @@ import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
  * @property {Array<{ proxy: string, labelKey: string }>} [contemplativeArchiveSealMenus]
  * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
+ * @property {boolean} [systemTtsAvailable] macOS Electron wide System TTS menu row
  */
 
 /**
@@ -132,6 +133,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   reminder: 'ft-wide-stage-reminder',
   sound: 'ft-wide-stage-sound',
   language: 'ft-wide-stage-language',
+  systemTts: 'ft-wide-stage-system-tts',
   localBackup: 'ft-wide-stage-local-backup',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -449,6 +451,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : null,
     shouldOfferLanguagePicker()
       ? { proxy: 'language', labelKey: 'LANGUAGE_MENU_LABEL' }
+      : null,
+    surface === 'wide-more' && visibility.systemTtsAvailable
+      ? {
+          proxy: 'system-tts',
+          labelKey: 'system_tts.menu_label',
+          testId: 'idle-system-tts'
+        }
       : null,
     {
       proxy: 'today-direction',

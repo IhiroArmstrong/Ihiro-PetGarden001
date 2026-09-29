@@ -13,6 +13,7 @@
     "test:confide-generate-failure-fallback": "node scripts/run-confide-generate-failure-fallback.js",
     "test:confide-semantic-acceptance": "npm --prefix desktop run companion:semantic-acceptance",
     "audit:stage2-synonym-screen": "npm --prefix desktop run companion:stage2-synonym-screen",
+    "audit:stage2-m-screen": "npm --prefix desktop run companion:stage2-m-screen --",
     "audit:favorable-disagreement-mill": "npm --prefix desktop run companion:favorable-disagreement-mill",
     "docs:check": "node scripts/docs-check.js",
     "docs:sync": "node scripts/docs-sync.js",

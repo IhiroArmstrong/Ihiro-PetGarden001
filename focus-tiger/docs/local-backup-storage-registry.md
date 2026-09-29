@@ -24,11 +24,11 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 
 ## Export whitelist (schema v6)
 
-`PRACTICE_BACKUP_SCHEMA_VERSION = 6` · **29** localStorage keys + optional Electron `companionFiles`:
+`PRACTICE_BACKUP_SCHEMA_VERSION = 6` · **30** localStorage keys + optional Electron `companionFiles`:
 
 | Group | Keys |
 |---|---|
-| Practice memory (v1–v2) | journey-log · practice-days · milestone-glow · entitlement-ownership · ritual-completions · mustard-seed-seal · presence-* · reflections · locale · reminder · companion-mode · ambient-pref · session-cues · contemplative-archive-seals |
+| Practice memory (v1–v2) | journey-log · practice-days · milestone-glow · entitlement-ownership · ritual-completions · mustard-seed-seal · presence-* · reflections · locale · reminder · companion-mode · ambient-pref · session-cues · system-tts-pref · contemplative-archive-seals |
 | Growth (v3–v4) | lotus-pond · tip-jar · sanctuary-entitlement · focus-coins |
 | Prefs + social (v5) | focus-duration-pref · intentions · quiet-together · focus-circle · focus-circle-witness-responded · focus-circle-passive-share · focus-circle-was-here-mark · focus-circle-identity · focus-circle-identity-hidden |
 | Essence (v6) | focus-essence |

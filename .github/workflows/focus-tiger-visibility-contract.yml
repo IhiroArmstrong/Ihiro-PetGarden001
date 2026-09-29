@@ -77,18 +77,27 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # scenario-a split at the Type C goto cliff (test #8 / Arrival open).
-          # Each job gets its own :5199 static server.
+          # scenario-a: four jobs, each with its own :5199 static server (#993 + post-993 tail).
           - spec: e2e/scenario-a.companion.spec.js
             grep: scenario-a-early
             label: scenario-a-early
             slug: scenario-a-early
             timeout_minutes: 25
           - spec: e2e/scenario-a.companion.spec.js
+            grep: scenario-a-mid
+            label: scenario-a-mid
+            slug: scenario-a-mid
+            timeout_minutes: 35
+          - spec: e2e/scenario-a.companion.spec.js
             grep: scenario-a-late
             label: scenario-a-late
             slug: scenario-a-late
-            timeout_minutes: 60
+            timeout_minutes: 45
+          - spec: e2e/scenario-a.companion.spec.js
+            grep: scenario-a-tail
+            label: scenario-a-tail
+            slug: scenario-a-tail
+            timeout_minutes: 20
           - spec: e2e/micro-ritual.spec.js
             grep: .*
             label: micro-ritual

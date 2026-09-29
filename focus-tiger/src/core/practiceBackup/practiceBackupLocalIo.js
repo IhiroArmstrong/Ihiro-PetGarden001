@@ -108,6 +108,7 @@ export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'companion_mode', storeKey: 'focus-tiger.companion-mode.v1' },
   { id: 'ambient_pref', storeKey: 'focus-tiger.ambient-pref.v1' },
   { id: 'session_cues', storeKey: 'focus-tiger.session-cues.v1' },
+  { id: 'system_tts_pref', storeKey: 'focus-tiger.system-tts-pref.v1' },
   { id: 'focus_duration_pref', storeKey: 'focus-tiger.focus-duration-pref.v1' },
   { id: 'intentions', storeKey: 'focus-tiger.intentions.v1' },
   { id: 'quiet_together', storeKey: 'focus-tiger.quiet-together.v1' },
@@ -431,6 +432,7 @@ export function countPracticeStoreEntries(storeKey, val) {
     }
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':
+    case 'focus-tiger.system-tts-pref.v1':
       return Object.keys(val).length > 0 ? 1 : 0;
     default:
       return null;

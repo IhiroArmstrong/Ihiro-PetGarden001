@@ -22,9 +22,11 @@ import {
  * SCENARIO_TESTS 场景 A / I / K · 产品壳 DOM 主路径（到 Companion 开表为止）。
  * 不跑到 1 分钟达标 / Celebrating；序列观感仍人工。
  *
- * visibility CI 拆成两个 job（同一文件、各自 webServer）：
+ * visibility CI 拆成四个 job（同一文件、各自 webServer）：
  * `scenario-a-early` = 本 describe 起至 Choose 外侧取消；
- * `scenario-a-late` = Arrival 藏 Sit 起。切点对准 Type C goto 悬崖（#8）。
+ * `scenario-a-mid` = Arrival 藏 Sit 起至 375 Breath 时长选择；
+ * `scenario-a-late` = Choose / Companion 主路径；
+ * `scenario-a-tail` = write-your-own + completionPending（#993 后仍压垮 preview 的尾段）。
  */
 
 test.describe('scenario-a-early', () => {
@@ -174,7 +176,7 @@ test('Arrival Choose dismisses on outside click (back to Idle)', async ({
 
 });
 
-test.describe('scenario-a-late', () => {
+test.describe('scenario-a-mid', () => {
 
 test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stays', async ({
   page
@@ -290,6 +292,10 @@ test('375 Arrival: home Breath practice opens duration picker', async ({ page })
   await expect(ritual).toBeVisible({ timeout: 5_000 });
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
 });
+
+});
+
+test.describe('scenario-a-late', () => {
 
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
   page
@@ -449,6 +455,10 @@ test('scenario K: Offline Space starts focus without Arrival', async ({
   });
   await expectFocusSessionActive(page);
 });
+
+});
+
+test.describe('scenario-a-tail', () => {
 
 test('Choose write-your-own: → confirm commits typed text', async ({ page }) => {
   await openFreshProductShell(page);

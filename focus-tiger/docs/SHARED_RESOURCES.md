@@ -60,6 +60,7 @@
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 | `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（**Idle / 冷启动**默认关 / opt-in；曲目默认 Mer-Ka-Ba；可含 `user-*`）。**开坐**（Focusing `startSittingMusic` / Breath `playTrackEphemeral`）自动播但不把 `enabled:true` 写回此 key；**本地** Backup & restore v2 白名单（不含 IndexedDB 上传 blobs） |
 | `focus-tiger.session-cues.v1` | `sessionCuePreference` + `SessionCueController` + Soundscape | 开始/结束铃总开关（默认开）；**间隔节奏** `sessionIntervalMs`：`0`（默认）/ `180000` / `300000`；**觉察卡** `focusAwarenessCardEnabled`（默认开，可单独关）；**Focusing 与 Breath practice 共用**；音量跟 Soundscape volume bar（默认 0.45）再乘 **0.5 相对增益**（瞬态磬不得按 HTMLAudio 1.0 或与音乐同一数字就当「一样响」）；资产 `/audio/cues/`；**不**走 Ambient entitlement / Sound Gate；**本地** Backup & restore v2 白名单 |
+| `focus-tiger.system-tts-pref.v1` | `systemTtsPreference` + `SystemTtsPreferenceUI` + `systemTtsAnnouncements` | 全局系统播报开关（**默认关**）；仅 macOS Electron 宽屏 ⋯ 菜单；专注达标结束可念短句；**不**控制 Confide 倾诉朗读（Joelle/Otoya 保持独立）；**本地** Backup & restore v2 白名单 |
 | `focus-tiger.open-ended-nudge.v1` | `openEndedNudgePreference` + `OpenEndedNudgeUI` | 开放式专注 90 分钟 / 3 小时温和提示（缺省=开）。只存 `{ enabled }`。**不进**练习备份。关了之后本机不再出这两句 |
 | IndexedDB `focus-tiger.user-ambient.v1` | `UserAmbientLibrary` | 用户上传氛围乐 blobs（非 localStorage；重置须 `clearAllUserAmbientTracks`） |
 | `focus-tiger.locale.v1` | `localePreference` / `i18n.setLocale` | 上次选用的 **ready** 语言；**v1.0.0** ready = `en` / `ja`；draft（含 zh）不写入；**本地** Backup & restore v2 白名单 |
@@ -293,7 +294,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `focusing-focus-hud-visible` | focusing | both | FocusHUD | visible | `#focus-hud` | `#focus-hud` | **locked** | `e2e/helpers/product-shell.js › expectFocusSessionActive (#focus-hud visible)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
 | `choose-bow-companion-in-viewport` | after-choose-bow | both | CompanionPanel | in-viewport | `.session-start-dock__panel` | `.session-start-dock__panel` | **locked** | `e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible; 宽屏不 park)` | `e2e/scenario-a.companion.spec.js › 375 Choose bow: Companion staged in viewport…` |
 | `companion-stage-honesty-entry-hidden` | companion-staged-narrow | narrow | HonestyIdleEntry | hidden | — | `#honesty-idle-entry` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 companion stage: Honesty dock entry stays hidden` |
-| `idle-narrow-three-home-balls` | idle | narrow | HomeCtas | visible | — | `#ft-narrow-home-today-direction, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…` |
+| `idle-narrow-three-home-balls` | idle | narrow | HomeCtas | visible | — | `#ft-narrow-home-sanctuary-nav, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…` |
 | `heatmap-hidden-when-focusing` | focusing | both | WeeklyHeatmap | hidden | `#weekly-practice-heatmap` | `#weekly-practice-heatmap` | **locked** | `e2e/weekly-practice-heatmap.spec.js › non-Idle (Focusing) hides weekly heatmap` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing hides weekly heatmap` |
 
 ### 当前假绿缺口（须逐条补锚）

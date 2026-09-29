@@ -78,6 +78,31 @@ const KB_DRAFT_LOCALE_KEYS = Object.freeze({
     'PRIVACY_SHEET_FOCUS_CIRCLE_CREATE',
     'PRIVACY_SHEET_FOCUS_CIRCLE_JOIN',
     'PRIVACY_SHEET_FOCUS_CIRCLE_COPY'
+  ]),
+  'KB-FUNC-0029': Object.freeze([
+    'TODAY_DIRECTION_MENU_LABEL',
+    'TODAY_DIRECTION_HOME_BALL_LABEL',
+    'COLD_START_GOAL_TITLE',
+    'COLD_START_GOAL_FOCUS',
+    'COLD_START_GOAL_CALM',
+    'COLD_START_GOAL_STUDY',
+    'COLD_START_GOAL_BROWSE'
+  ]),
+  'KB-FUNC-0030': Object.freeze([
+    'SANCTUARY_NAV_MENU_LABEL',
+    'SANCTUARY_NAV_ARIA',
+    'SANCTUARY_NAV_HOME',
+    'SANCTUARY_NAV_CALENDAR',
+    'SANCTUARY_NAV_COLLECTION'
+  ]),
+  'KB-FUNC-0031': Object.freeze(['COMMUNITY_MENU_LABEL']),
+  'KB-FUNC-0032': Object.freeze([
+    'MEMBERSHIP_MENU_CTA',
+    'MEMBERSHIP_MENU_UNLOCKED',
+    'MEMBERSHIP_MENU_LABEL',
+    'MEMBERSHIP_CARD_BLURB',
+    'MEMBERSHIP_CLOSE',
+    'SUPPORT_MODAL_SUBTITLE'
   ])
 });
 
@@ -134,6 +159,10 @@ describe('audit-kb-live-gap helpers', () => {
     assert.equal(candidateIds.includes('kb-live-ritual-work-transition'), false);
     assert.equal(candidateIds.includes('kb-live-quiet-together'), false);
     assert.equal(candidateIds.includes('kb-live-focus-circle'), false);
+    assert.equal(candidateIds.includes('kb-live-today-direction'), false);
+    assert.equal(candidateIds.includes('kb-live-sanctuary-nav'), false);
+    assert.equal(candidateIds.includes('kb-live-community'), false);
+    assert.equal(candidateIds.includes('kb-live-membership'), false);
     assert.equal(candidateIds.includes('kb-live-sit'), false);
     assert.equal(candidateIds.includes('kb-live-ground'), false);
   });
