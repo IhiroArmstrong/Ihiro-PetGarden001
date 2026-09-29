@@ -208,6 +208,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-09-29 | 开放式专注温和提示：对照场景 T（时长 chip 仍是固定分钟）与中场觉察卡。强度是各一次的短句，不响铃、不挡计时；语气是可留下或起身，不夸奖久坐；职责不进觉察卡池、不调陪伴模型。无冲突 |
 | 2026-09-02 | 冻表 vs 现网可分叉：对照品味 overlay / Quiet Line / YPE Pack / 离线 Sit。无运行时。 |
 | 2026-09-01 | L3 prompt 禁风景顶替听见：对照 AE Confide / AG 1d 注入。强度仍短 generate；人设仍观察非建议；职责不写入 Memory / 情绪桶。无冲突 |
 | 2026-09-01 | Phase 1A Show memory：对照 AE Confide / AG 面板。口头列表为事实摘要、无新全屏；不替代 What Yin remembers；不抢 CI-01 Forget / Journey / Presence。危机仍情绪桶 |

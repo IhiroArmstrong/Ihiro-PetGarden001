@@ -4,8 +4,8 @@
  */
 
 /**
- * Open-ended focus clock (Brief A · Slice 0).
- * Pure functions. Not wired to FocusSession, HUD, or coin grants.
+ * Open-ended focus clock (Brief A).
+ * Pure functions. Session wiring lives in FocusSession / main.
  *
  * Elapsed = now − startedAt − pausedTotal − any open pause/suspend gap.
  * Downtime is never credited. Reward credit is capped separately from the clock.
@@ -105,6 +105,21 @@ export function nudgesReached(elapsedMs, options = {}) {
   return OPEN_ENDED_NUDGE_AT_MS.filter(
     (mark) => finiteMs(elapsedMs) >= mark && !seen.has(mark)
   );
+}
+
+/**
+ * One static note per crossing. If several marks are newly due, show the latest
+ * and treat the earlier ones as already shown.
+ * @param {number} elapsedMs
+ * @param {{ enabled?: boolean, alreadyShownMs?: readonly number[] }} [options]
+ * @returns {{ showMs: number | null, markShownMs: number[] }}
+ */
+export function takeOpenEndedNudges(elapsedMs, options = {}) {
+  const due = nudgesReached(elapsedMs, options);
+  if (due.length === 0) {
+    return { showMs: null, markShownMs: [] };
+  }
+  return { showMs: due[due.length - 1], markShownMs: due };
 }
 
 /**
