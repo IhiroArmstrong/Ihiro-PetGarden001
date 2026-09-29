@@ -10,7 +10,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { markHomeSanctuaryNavSeen } from '../core/homeSanctuaryNavGate.js';
-import { pushOverlayEscapeStack } from '../core/overlayEscapeStack.js';
+import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -131,7 +131,10 @@ export class HomeSanctuaryNavFanUI {
     });
 
     this._popEscapeLayer?.();
-    this._popEscapeLayer = pushOverlayEscapeLayer(() => this.close());
+    this._popEscapeLayer = pushOverlayEscapeLayer({
+      id: 'home-sanctuary-nav-fan',
+      dismiss: () => this.close()
+    });
   }
 
   /** @returns {void} */
