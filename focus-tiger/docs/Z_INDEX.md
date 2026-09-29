@@ -40,6 +40,7 @@
 | **12** | `src/ui/IdleYinTapAnchorUI.js` | Idle 轻点阿寅额头 `#idle-yin-tap-anchor`（invisible hit，`top:30%` 盖额头；无微光）；与 Active Recover **互斥**（Idle vs Focusing）；须低于 dock Sit(16) |
 | **12** | `src/ui/TransitionMomentTriggerUI.js` | Idle Transition 微入口 `#transition-moment-trigger`（热力图簇邻接；Focusing 隐藏；低于 dock Sit(16)） |
 | **14** | `src/ui/HonestyCheckInUI.js` | Idle「再补登」文字入口（在 Honesty 面板之下） |
+| **14** | `src/ui/OpenEndedNudgeUI.js` | 开放式专注温和提示（`#open-ended-nudge`；左上 HUD 下；非模态；不盖底部觉察卡） |
 | **14** | `src/ui/MicroRitualUI.js` | 微仪式 Idle 文字入口（对称 Honesty） |
 | **15** | `src/ui/HonestyCheckInUI.js` | Honesty Check-in 主面板 |
 | **15** | `src/ui/ArrivalPracticeUI.js` | Arrival Practice 底部叠层 |

@@ -28,7 +28,14 @@ import {
   savePreferredOpenEndedFocus,
   shouldSkipFocusDurationPicker
 } from './core/focusDuration.js';
-import { OPEN_ENDED_HARD_CAP_MS } from './core/openEndedFocus.js';
+import {
+  OPEN_ENDED_HARD_CAP_MS,
+  takeOpenEndedNudges
+} from './core/openEndedFocus.js';
+import {
+  isOpenEndedNudgeEnabled,
+  setOpenEndedNudgeEnabled
+} from './core/openEndedNudgePreference.js';
 import { SessionUiGate } from './core/SessionUiGate.js';
 import {
   createSessionChromeSync,
@@ -473,6 +480,7 @@ import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
 import { SessionCueController } from './audio/SessionCueController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
+import { OpenEndedNudgeUI } from './ui/OpenEndedNudgeUI.js';
 import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
 import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
 import { CalmActionArriveStore } from './core/CalmActionArriveStore.js';
@@ -1172,6 +1180,63 @@ async function init() {
     document.getElementById('ui-overlay') || document.body
   );
   window.__focusAwarenessCard = focusAwarenessCardUI;
+  const openEndedNudgeUI = new OpenEndedNudgeUI(
+    document.getElementById('ui-overlay') || document.body
+  );
+  const openEndedNudgeSession = {
+    shownMs: /** @type {number[]} */ ([]),
+    previewShown: false
+  };
+
+  function resetOpenEndedNudgeSession() {
+    openEndedNudgeSession.shownMs = [];
+    openEndedNudgeSession.previewShown = false;
+    openEndedNudgeUI.hide();
+  }
+
+  /**
+   * @param {number} markMs
+   */
+  function showOpenEndedNudge(markMs) {
+    openEndedNudgeUI.show(markMs, {
+      onDismiss: () => {
+        openEndedNudgeUI.hide();
+      },
+      onTurnOff: () => setOpenEndedNudgeEnabled(undefined, false)
+    });
+  }
+
+  function syncOpenEndedNudge() {
+    const focusing =
+      stateManager.state === STATES.FOCUSING &&
+      !sessionUiGate.completionPending &&
+      focusSession.isOpenEnded();
+    if (!focusing) {
+      openEndedNudgeUI.hide();
+      return;
+    }
+    const preview = new URLSearchParams(location.search).get(
+      'openEndedNudgePreview'
+    );
+    if (
+      (preview === '90' || preview === '3h') &&
+      !openEndedNudgeSession.previewShown &&
+      isOpenEndedNudgeEnabled()
+    ) {
+      openEndedNudgeSession.previewShown = true;
+      showOpenEndedNudge(
+        preview === '3h' ? 3 * 60 * 60 * 1000 : 90 * 60 * 1000
+      );
+      return;
+    }
+    const plan = takeOpenEndedNudges(focusSession.getElapsedSeconds() * 1000, {
+      enabled: isOpenEndedNudgeEnabled(),
+      alreadyShownMs: openEndedNudgeSession.shownMs
+    });
+    if (plan.showMs == null) return;
+    openEndedNudgeSession.shownMs.push(...plan.markShownMs);
+    showOpenEndedNudge(plan.showMs);
+  }
 
   /** @param {string} forKey */
   function isMomentWhisperBusy(forKey) {
@@ -4088,6 +4153,7 @@ async function init() {
     acrossToolsIdleGuard.stop();
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
+    openEndedNudgeUI.hide();
     calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
     transitionMomentUI.close();
@@ -4274,6 +4340,7 @@ async function init() {
     // Free core cue — not Ambient entitlement; sync play on this gesture.
     sessionCues.playStart({ ambient: ambientSoundscape });
     focusAwarenessCardUI.resetSession();
+    resetOpenEndedNudgeSession();
     calmActionRecoverStore.resetSession();
     calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
@@ -4481,6 +4548,7 @@ async function init() {
       sessionCues.cancelPending();
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
+    openEndedNudgeUI.hide();
       calmActionRecoverCardUI.hide({ immediate: true });
       calmActionArriveCardUI.hide({ immediate: true });
       transitionMomentUI.close();
@@ -5298,6 +5366,7 @@ async function init() {
       sessionOpenEnded:
         !overlayBreathing && focusSession.isOpenEnded()
     });
+    syncOpenEndedNudge();
     weeklyPracticeHeatmap.render({
       // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
       // Hide during Focusing / overlays / micro-ritual.
