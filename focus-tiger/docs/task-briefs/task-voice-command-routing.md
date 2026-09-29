@@ -46,7 +46,7 @@
 
 | Slice | 状态 |
 |---|---|
-| 0 · RuleParser 单测 | 未做 |
+| 0 · RuleParser 单测 | 本分支：`parseVoiceCommandDuration` 只判断坐多久；无麦、无入口、不开始计时 |
 | 1 · 入口 + STT + 开始专注 + 撤销 | 未做 |
 | 2 · 追问与失败文案 | 未做 |
 | 3 · 更多动作 | 另口令 |
