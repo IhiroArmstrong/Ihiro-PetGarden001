@@ -15,6 +15,7 @@ import {
   closeOpenGap,
   computeOpenEndedElapsedMs,
   nudgesReached,
+  takeOpenEndedNudges,
   planOpenEndedRestart,
   rewardCreditMsForElapsed,
   shouldAutoEndOpenEnded
@@ -122,6 +123,18 @@ test('nudges fire at 90 minutes and 3 hours, and can be turned off', () => {
     [OPEN_ENDED_NUDGE_AT_MS[1]]
   );
   assert.deepEqual(nudgesReached(5 * HOUR, { enabled: false }), []);
+  assert.deepEqual(takeOpenEndedNudges(89 * 60 * 1000), {
+    showMs: null,
+    markShownMs: []
+  });
+  assert.deepEqual(takeOpenEndedNudges(OPEN_ENDED_NUDGE_AT_MS[0]), {
+    showMs: OPEN_ENDED_NUDGE_AT_MS[0],
+    markShownMs: [OPEN_ENDED_NUDGE_AT_MS[0]]
+  });
+  assert.deepEqual(takeOpenEndedNudges(OPEN_ENDED_NUDGE_AT_MS[1]), {
+    showMs: OPEN_ENDED_NUDGE_AT_MS[1],
+    markShownMs: [...OPEN_ENDED_NUDGE_AT_MS]
+  });
 });
 
 test('a closed or fixed session is not an open-ended restart', () => {

@@ -25,7 +25,8 @@
 | 计时驱动 | `FocusSession.getElapsedSeconds()` 墙钟减 pause；open 模式封顶 24h。 |
 | 固定时长 | chip **10 / 15 / 25 / 45**；`setTargetMinutes` 仍夹 1–90，且会切回 `fixed`。 |
 | Slice 1 | 桌面壳时长选择器多 **Open-ended** chip；HUD 正计时（≥1h 显示 `H:MM:SS`）；目标行显示「Open-ended / 不限时长」。Rise 仍走未完成收尾；24h 自动达标收尾。 |
-| 休眠检测 | 仍未接线 `powerMonitor`（Slice 2+ 或后续）。 |
+| 休眠检测 | 仍未接线 `powerMonitor`（Slice 3 或后续）。 |
+| 温和提示 | 开放式 Focusing 满 90 分钟、3 小时各出一次静态短句。默认开，条上可关。不暂停计时，不调陪伴模型。验收可用 `?openEndedNudgePreview=90` 或 `=3h` 立刻看到对应一句，不替代正式时刻。 |
 | 奖励 | `resolveTimedAwardMinutes()` 在 open 完成时按 20h 封顶计分钟；日寅币池规则不变。 |
 
 ## Slices
@@ -33,8 +34,8 @@
 | Slice | 状态 | 内容 |
 |---|---|---|
 | **0 · 规则** | ✅ develop | `openEndedFocus.js` 单测 |
-| **1 · 入口 + 正计时 UI** | 🚧 slice1 分支 | 独立 Open-ended chip（仅桌面）；HUD 正计时；24h 自动结束 |
-| **2 · 温和提示** | 未做 | 90 分钟 / 3 小时静态提示 |
+| **1 · 入口 + 正计时 UI** | ✅ develop | 独立 Open-ended chip（仅桌面）；HUD 正计时；24h 自动结束 |
+| **2 · 温和提示** | 🚧 slice2 分支 | 90 分钟 / 3 小时各一次；默认可关；非模态 |
 | **3 · 崩溃恢复** | 未做 | Resume / End at last active time UI |
 
 ## 明确不做（V1）
