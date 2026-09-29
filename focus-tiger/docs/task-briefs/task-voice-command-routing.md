@@ -49,7 +49,7 @@
 | 0 · RuleParser 单测 | 已合：`parseVoiceCommandDuration` 只判断坐多久 |
 | 1 · 入口 + STT + 开始专注 + 撤销 | **本分支**：`#focus-duration-picker` 标题行 🎙（英语 + Electron 宽屏）；STT → 规则 → `beginFocusWithMode` + Undo 条 |
 | 2 · 追问与失败文案 | **本分支**：缺时长 → 追问句 + chip **25 / 50 / Open-ended**（点选即开表 + Undo）；拒绝 / Stop 仍红字 |
-| 3 · 更多动作 | 另口令 |
+| 3 · 更多动作 | 另开 Brief [`task-voice-command-slice3.md`](./task-voice-command-slice3.md)（待点头：坐着说结束 = 点 Rise；未写运行时） |
 
 ## 明确不做
 
