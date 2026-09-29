@@ -695,6 +695,90 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0028' }
   },
   {
+    id: 'kb-0029-today-direction-zh',
+    text: '今日方向从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0029' }
+  },
+  {
+    id: 'kb-0029-today-direction-en',
+    text: "Where is today's direction?",
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0029' }
+  },
+  {
+    id: 'kb-0029-today-direction-short-zh',
+    text: '重新选择今日方向',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0029' }
+  },
+  {
+    id: 'kb-0030-sanctuary-nav-zh',
+    text: '栖居导航从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0030' }
+  },
+  {
+    id: 'kb-0030-sanctuary-nav-en',
+    text: 'Where is sanctuary nav?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0030' }
+  },
+  {
+    id: 'kb-0030-sanctuary-nav-short-zh',
+    text: 'Navigate sanctuary 从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0030' }
+  },
+  {
+    id: 'kb-0031-community-zh',
+    text: '社区从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0031' }
+  },
+  {
+    id: 'kb-0031-community-en',
+    text: 'Where is community?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0031' }
+  },
+  {
+    id: 'kb-0031-community-short-zh',
+    text: 'Join our community 从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0031' }
+  },
+  {
+    id: 'kb-0032-membership-zh',
+    text: '会员从哪开？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0032' }
+  },
+  {
+    id: 'kb-0032-membership-en',
+    text: 'Where is membership?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0032' }
+  },
+  {
+    id: 'kb-0032-membership-short-zh',
+    text: 'Subscribe for more scenes 从哪开',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0032' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],

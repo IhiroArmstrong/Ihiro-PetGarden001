@@ -383,7 +383,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/ui/ColdStartGoalCardUI.js',
       'src/main.js'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0029'])
   }),
   Object.freeze({
     id: 'kb-live-sanctuary-nav',
@@ -401,7 +402,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/ui/HomeSanctuaryNavFanUI.js',
       'src/main.js'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0030'])
   }),
   Object.freeze({
     id: 'kb-live-local-backup',
@@ -432,7 +434,11 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       "proxy: 'community'",
       'COMMUNITY_MENU_LABEL'
     ]),
-    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js'])
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/core/communityLink.js'
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0031'])
   }),
   Object.freeze({
     id: 'kb-live-membership',
@@ -448,7 +454,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       "proxy: 'membership'",
       'MEMBERSHIP_MENU_CTA'
     ]),
-    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js'])
+    authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js']),
+    catalogKbIds: Object.freeze(['KB-FUNC-0032'])
   }),
   Object.freeze({
     id: 'kb-live-hud-progress',
