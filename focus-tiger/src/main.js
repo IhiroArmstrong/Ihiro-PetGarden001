@@ -112,6 +112,8 @@ import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
+import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
+import { maybeSpeakFocusEndAnnouncement } from './core/systemTtsAnnouncements.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -1047,6 +1049,8 @@ async function init() {
   let reminderPreferenceUI = null;
   /** @type {LanguagePreferenceUI | null} */
   let languagePreferenceUI = null;
+  /** @type {SystemTtsPreferenceUI | null} */
+  let systemTtsPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -1334,6 +1338,12 @@ async function init() {
   );
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
   window.__languagePreference = languagePreferenceUI;
+  systemTtsPreferenceUI = new SystemTtsPreferenceUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-system-tts');
+    }
+  });
+  window.__systemTtsPreference = systemTtsPreferenceUI;
   const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-local-backup');
@@ -3427,6 +3437,9 @@ async function init() {
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
+    onSystemTts: () => {
+      systemTtsPreferenceUI?.openPanel();
+    },
     onTodayDirection: () => {
       openTodayDirectionManual();
     },
@@ -3544,6 +3557,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
+      systemTtsPreferenceUI?.closePanel();
       localPracticeDataPanelUI.closePanel();
       quietTogetherPanelUI.closePanel();
       focusCirclePanelUI.closePanel();
@@ -4203,6 +4217,7 @@ async function init() {
     if (!playedEndCue) {
       stopAmbientAfterEndCue();
     }
+    maybeSpeakFocusEndAnnouncement();
     endFocusChrome({ stopAmbient: false });
     focusSession.pause();
     // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。

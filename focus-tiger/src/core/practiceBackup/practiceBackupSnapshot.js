@@ -35,6 +35,7 @@ export const PRACTICE_BACKUP_V2_STORE_KEYS = Object.freeze([
   'focus-tiger.companion-mode.v1',
   'focus-tiger.ambient-pref.v1',
   'focus-tiger.session-cues.v1',
+  'focus-tiger.system-tts-pref.v1',
   'focus-tiger.contemplative-archive-seals.v1'
 ]);
 
@@ -347,6 +348,7 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       return !parsed || typeof parsed !== 'object' || Object.keys(parsed).length === 0;
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':
+    case 'focus-tiger.system-tts-pref.v1':
       return Object.keys(parsed).length === 0;
     default:
       return true;
