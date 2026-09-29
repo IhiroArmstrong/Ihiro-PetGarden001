@@ -694,6 +694,7 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 - **禁止**只拆 job 却保持 2 workers/job → 仍可能压垮 preview，导航超时子类复发。
 - **`retries: 2` 维持不动**（2026-09-23 拍板）：等 Type B/#351/#394 等在 CI 上稳定低 flaky 后，再评估是否降到 1；现在降会把「治理未生效」与「重试变少」信号搅在一起。
 - **scenario-a 再拆（2026-09-26）**：同一 `scenario-a.companion.spec.js` 拆两个 job——`scenario-a-early`（Choose 外侧取消及之前）与 `scenario-a-late`（Arrival 藏 Sit 起）。各 job 独立 `:5199`。CI 上 `openFreshProductShell` 在 `goto` 前对 `:5199/` 做最多三次健康探测（0 / 2s / 4s），探测失败不代替导航错误。`retries: 2` 仍不动。
+- **2026-09-29 对照**（run `36542268807`）：健康探测能通时，浏览器整页 `domcontentloaded` 仍会超过 40 秒（重试才过）。visibility 配置关掉失败录像，避免失败录像拖住下一次整页打开。Choose「自己写」的提示句须先挂进页面，再插入语音条；否则 `insertBefore` 抛错，提示不会出现。
 
 #### 责任人与检查频率（书面 · 防「修完又没人看」）
 

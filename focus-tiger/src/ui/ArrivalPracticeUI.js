@@ -486,13 +486,15 @@ export class ArrivalPracticeUI {
 
         row.append(input, confirmBtn);
         this.root.append(row);
+        // Hint must already be a child before VoiceInputChrome insertBefore.
+        // Otherwise insertBefore throws and this hint never mounts.
+        this.root.append(hint);
         this._voiceInputChrome = new VoiceInputChrome({
           textarea: input,
           mountParent: this.root,
           mountBefore: hint,
           testIdPrefix: 'arrival-voice-input'
         });
-        this.root.append(hint);
         window.setTimeout(() => input.focus({ preventScroll: true }), 30);
       }
     }

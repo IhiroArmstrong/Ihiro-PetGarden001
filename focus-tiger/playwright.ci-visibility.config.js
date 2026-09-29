@@ -29,7 +29,9 @@ export default defineConfig({
   use: {
     ...base.use,
     trace: 'on-first-retry',
-    video: 'retain-on-failure',
+    // Video of a failed first goto keeps the runner busy and the next
+    // domcontentloaded often exceeds 40s. Screenshot + trace are enough.
+    video: 'off',
     screenshot: 'only-on-failure'
   }
 });
