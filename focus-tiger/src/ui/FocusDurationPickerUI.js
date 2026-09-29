@@ -26,6 +26,7 @@ import {
   createFocusCoinsDurationHint,
   readFocusCoinsHintSearch
 } from './focusCoinsDurationHint.js';
+import { VoiceCommandChrome } from './VoiceCommandChrome.js';
 
 const PANEL_CSS = [
   'position:absolute',
@@ -75,6 +76,8 @@ export class FocusDurationPickerUI {
    * @param {{
    *   onDurationSelected?: (minutes: number) => void,
    *   onOpenEndedSelected?: () => void,
+   *   onVoiceStartFixed?: (minutes: number) => void,
+   *   onVoiceStartOpen?: () => void,
    *   onLeave?: () => void,
    *   preferredMinutes?: () => number,
    *   preferredMode?: () => 'fixed' | 'open',
@@ -83,6 +86,8 @@ export class FocusDurationPickerUI {
    */
   constructor(handlers = {}) {
     this.handlers = handlers;
+    /** @type {VoiceCommandChrome | null} */
+    this.voiceCommandChrome = null;
     /** @type {'hidden' | 'pick'} */
     this.phase = 'hidden';
     /** @type {HTMLElement | null} */
@@ -124,6 +129,8 @@ export class FocusDurationPickerUI {
 
   dispose() {
     this._unsubLocale?.();
+    this.voiceCommandChrome?.destroy();
+    this.voiceCommandChrome = null;
     this._teardown();
   }
 
@@ -165,6 +172,8 @@ export class FocusDurationPickerUI {
   }
 
   _teardown() {
+    this.voiceCommandChrome?.destroy();
+    this.voiceCommandChrome = null;
     this.root?.remove();
     this.root = null;
   }
@@ -184,11 +193,31 @@ export class FocusDurationPickerUI {
         : 'focus-duration-floor-hint'
     );
 
+    const titleRow = document.createElement('div');
+    titleRow.style.cssText =
+      'display:flex;align-items:flex-start;justify-content:center;gap:10px;margin-bottom:6px;';
+
     const title = document.createElement('div');
     title.id = 'focus-duration-picker-title';
     title.style.cssText =
-      'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:6px;font-weight:560;';
+      'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;font-weight:560;flex:1 1 auto;';
     title.textContent = t('focus_duration.pick');
+    titleRow.append(title);
+
+    this.voiceCommandChrome?.destroy();
+    this.voiceCommandChrome = new VoiceCommandChrome({
+      mountParent: titleRow,
+      showOpenEnded: () => this.handlers.showOpenEnded?.() === true,
+      onOutcome: (outcome) => {
+        if (outcome.kind === 'start_fixed' && typeof outcome.minutes === 'number') {
+          this.handlers.onVoiceStartFixed?.(outcome.minutes);
+          return;
+        }
+        if (outcome.kind === 'start_open') {
+          this.handlers.onVoiceStartOpen?.();
+        }
+      }
+    });
 
     const hint = document.createElement('p');
     hint.id = 'focus-duration-floor-hint';
@@ -248,7 +277,7 @@ export class FocusDurationPickerUI {
     leave.textContent = t('focus_duration.leave');
     leave.addEventListener('click', () => this.leave());
 
-    const parts = [title, hint, row];
+    const parts = [titleRow, hint, row];
     if (coinsHint) parts.push(coinsHint);
     parts.push(leave);
     this.root.append(...parts);

@@ -35,6 +35,8 @@ export function isJaProperNounAllowlisted(key) {
   if (String(key).startsWith('HINT_APP_PURPOSE_COLOPHON_')) return true;
   // Voice Input V1: English-only Speak to type chrome (Brief task-voice-input-v1).
   if (String(key).startsWith('VOICE_INPUT_')) return true;
+  // Voice Command Routing: English-only command mic (Brief task-voice-command-routing).
+  if (String(key).startsWith('VOICE_COMMAND_')) return true;
   // Bilingual first-visit lines: EN primary + shared JA subtitle (same in en/ja).
   if (
     key === 'BRAND_YIN_WAY_TAGLINE_FIRST_VISIT_EN' ||
