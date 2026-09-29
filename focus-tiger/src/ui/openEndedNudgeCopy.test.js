@@ -40,4 +40,7 @@ test('nudge copy keys exist in en/zh/ja and do not praise sitting longer', () =>
     openEndedNudgeCopyKey(OPEN_ENDED_NUDGE_AT_MS[1]),
     'focus_duration.nudge_3h'
   );
+  const main = readFileSync(join(here, '../main.js'), 'utf8');
+  assert.match(main, /openEndedNudgePreview/);
+  assert.match(main, /takeOpenEndedNudges/);
 });

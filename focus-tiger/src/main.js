@@ -1183,11 +1183,27 @@ async function init() {
   const openEndedNudgeUI = new OpenEndedNudgeUI(
     document.getElementById('ui-overlay') || document.body
   );
-  const openEndedNudgeSession = { shownMs: /** @type {number[]} */ ([]) };
+  const openEndedNudgeSession = {
+    shownMs: /** @type {number[]} */ ([]),
+    previewShown: false
+  };
 
   function resetOpenEndedNudgeSession() {
     openEndedNudgeSession.shownMs = [];
+    openEndedNudgeSession.previewShown = false;
     openEndedNudgeUI.hide();
+  }
+
+  /**
+   * @param {number} markMs
+   */
+  function showOpenEndedNudge(markMs) {
+    openEndedNudgeUI.show(markMs, {
+      onDismiss: () => {
+        openEndedNudgeUI.hide();
+      },
+      onTurnOff: () => setOpenEndedNudgeEnabled(undefined, false)
+    });
   }
 
   function syncOpenEndedNudge() {
@@ -1199,18 +1215,27 @@ async function init() {
       openEndedNudgeUI.hide();
       return;
     }
+    const preview = new URLSearchParams(location.search).get(
+      'openEndedNudgePreview'
+    );
+    if (
+      (preview === '90' || preview === '3h') &&
+      !openEndedNudgeSession.previewShown &&
+      isOpenEndedNudgeEnabled()
+    ) {
+      openEndedNudgeSession.previewShown = true;
+      showOpenEndedNudge(
+        preview === '3h' ? 3 * 60 * 60 * 1000 : 90 * 60 * 1000
+      );
+      return;
+    }
     const plan = takeOpenEndedNudges(focusSession.getElapsedSeconds() * 1000, {
       enabled: isOpenEndedNudgeEnabled(),
       alreadyShownMs: openEndedNudgeSession.shownMs
     });
     if (plan.showMs == null) return;
     openEndedNudgeSession.shownMs.push(...plan.markShownMs);
-    openEndedNudgeUI.show(plan.showMs, {
-      onDismiss: () => {
-        openEndedNudgeUI.hide();
-      },
-      onTurnOff: () => setOpenEndedNudgeEnabled(undefined, false)
-    });
+    showOpenEndedNudge(plan.showMs);
   }
 
   /** @param {string} forKey */
