@@ -519,7 +519,7 @@
   "VOICE_INPUT_ERROR_NO_SPEECH": "No speech was heard. Try again or type instead.",
   "VOICE_INPUT_TRUNCATED": "Your speech was longer than this box allows. Only the first 280 characters were kept — say a shorter line or type the rest.",
   "VOICE_COMMAND_SPEAK_ARIA": "Say a focus command in English",
-  "VOICE_COMMAND_ASK_DURATION": "Say how long — for example, “Start a 25-minute focus.”",
+  "VOICE_COMMAND_ASK_DURATION": "How long would you like to focus?",
   "VOICE_COMMAND_REFUSE_UNKNOWN": "That didn’t sound like a focus command. Try again or pick a duration below.",
   "VOICE_COMMAND_REFUSE_STOP": "Stop and Cancel aren’t voice commands here. Pick a duration or try a focus phrase.",
   "VOICE_COMMAND_REFUSE_UNSUPPORTED": "That voice command isn’t supported yet.",

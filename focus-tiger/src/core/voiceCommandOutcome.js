@@ -9,6 +9,9 @@
 
 import { parseVoiceCommandDuration, VOICE_DURATION_MODES } from './voiceCommandDuration.js';
 
+/** Brief B · Slice 2 — tap-to-answer chips when voice omits duration. */
+export const VOICE_COMMAND_ASK_DURATION_MINUTES = Object.freeze([25, 50]);
+
 /**
  * @typedef {'start_fixed' | 'start_open' | 'ask_duration' | 'refuse' | 'unsupported' | 'empty'} VoiceCommandOutcomeKind
  * @typedef {{

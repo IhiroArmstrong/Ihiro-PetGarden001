@@ -193,9 +193,12 @@ export class FocusDurationPickerUI {
         : 'focus-duration-floor-hint'
     );
 
+    const titleBlock = document.createElement('div');
+    titleBlock.style.cssText = 'margin-bottom:6px;';
+
     const titleRow = document.createElement('div');
     titleRow.style.cssText =
-      'display:flex;align-items:flex-start;justify-content:center;gap:10px;margin-bottom:6px;';
+      'display:flex;align-items:flex-start;justify-content:center;gap:10px;';
 
     const title = document.createElement('div');
     title.id = 'focus-duration-picker-title';
@@ -204,9 +207,14 @@ export class FocusDurationPickerUI {
     title.textContent = t('focus_duration.pick');
     titleRow.append(title);
 
+    const voiceAskSlot = document.createElement('div');
+    voiceAskSlot.dataset.testid = 'voice-command-ask-slot';
+    titleBlock.append(titleRow, voiceAskSlot);
+
     this.voiceCommandChrome?.destroy();
     this.voiceCommandChrome = new VoiceCommandChrome({
       mountParent: titleRow,
+      askMountParent: voiceAskSlot,
       showOpenEnded: () => this.handlers.showOpenEnded?.() === true,
       onOutcome: (outcome) => {
         if (outcome.kind === 'start_fixed' && typeof outcome.minutes === 'number') {
@@ -277,7 +285,7 @@ export class FocusDurationPickerUI {
     leave.textContent = t('focus_duration.leave');
     leave.addEventListener('click', () => this.leave());
 
-    const parts = [titleRow, hint, row];
+    const parts = [titleBlock, hint, row];
     if (coinsHint) parts.push(coinsHint);
     parts.push(leave);
     this.root.append(...parts);
