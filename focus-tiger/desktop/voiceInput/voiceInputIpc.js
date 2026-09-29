@@ -17,7 +17,15 @@ import { createSpeechProvider } from './speechProvider.js';
  * }} deps
  */
 export function attachVoiceInputIpc(deps) {
-  const provider = createSpeechProvider({ allowCloudStt: false, locale: 'en-US' });
+  const provider = createSpeechProvider({
+    allowCloudStt: false,
+    locale: 'en-US',
+    onLevel: (rms) => {
+      const win = deps.getMainWindow?.();
+      if (!win || win.isDestroyed() || win.webContents.isDestroyed()) return;
+      win.webContents.send('desktop:voice-input-level', { rms: Number(rms) });
+    }
+  });
 
   const emitStatus = () => {
     const win = deps.getMainWindow?.();

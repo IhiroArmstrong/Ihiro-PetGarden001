@@ -30,6 +30,13 @@ function createVoiceInputBridge() {
       ipcRenderer.on('desktop:voice-input-status', wrapped);
       return () =>
         ipcRenderer.removeListener('desktop:voice-input-status', wrapped);
+    },
+    onLevel: (cb) => {
+      if (typeof cb !== 'function') return () => {};
+      const wrapped = (_event, payload) => cb(payload);
+      ipcRenderer.on('desktop:voice-input-level', wrapped);
+      return () =>
+        ipcRenderer.removeListener('desktop:voice-input-level', wrapped);
     }
   };
 }

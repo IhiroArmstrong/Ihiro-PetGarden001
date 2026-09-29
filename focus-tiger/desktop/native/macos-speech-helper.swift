@@ -11,6 +11,8 @@ import Speech
 
 let defaultLocale = "en-US"
 
+let emitLock = NSLock()
+
 func emitJson(_ payload: [String: Any]) {
   guard
     let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
@@ -19,8 +21,10 @@ func emitJson(_ payload: [String: Any]) {
     fputs("{\"ok\":false,\"error\":\"json_encode_failed\"}\n", stderr)
     exit(2)
   }
+  emitLock.lock()
   print(line)
   fflush(stdout)
+  emitLock.unlock()
 }
 
 func runCatching(_ body: @escaping () -> Void) -> String? {
@@ -236,6 +240,8 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   var didSignal = false
   var bufferCount = 0
   var peakRms: Float = 0
+  var latestRms: Float = 0
+  var emitLevels = false
   let finalizeLock = NSLock()
   var inputNode: AVAudioInputNode!
   var recordingFormat: AVAudioFormat!
@@ -341,6 +347,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
             sum += sample * sample
           }
           let rms = sqrt(sum / Float(frames))
+          latestRms = rms
           if rms > peakRms {
             peakRms = rms
           }
@@ -379,8 +386,33 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     exit(1)
   }
 
+  let levelQueue = DispatchQueue(label: "focus-tiger.speech-level")
+  let levelTimer = DispatchSource.makeTimerSource(queue: levelQueue)
+  levelTimer.schedule(deadline: .now() + .milliseconds(100), repeating: .milliseconds(100))
+  levelTimer.setEventHandler {
+    finalizeLock.lock()
+    let shouldEmit = emitLevels && !audioEnded
+    let level = latestRms
+    finalizeLock.unlock()
+    if !shouldEmit { return }
+    emitJson([
+      "command": "level",
+      "ok": true,
+      "rms": Double(level)
+    ])
+  }
+  finalizeLock.lock()
+  emitLevels = true
+  finalizeLock.unlock()
+  levelTimer.resume()
+
   _ = pumpRunLoop(until: { isReadyToFinalize() }, timeoutSeconds: maxSeconds + 12.0)
   finished = true
+  finalizeLock.lock()
+  emitLevels = false
+  finalizeLock.unlock()
+  levelTimer.cancel()
+  levelQueue.sync {}
   engine.stop()
   inputNode.removeTap(onBus: 0)
   let capturedBuffers: Int
