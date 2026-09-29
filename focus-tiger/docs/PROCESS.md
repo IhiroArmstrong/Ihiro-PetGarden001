@@ -1420,7 +1420,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 >
 > develop 上 merge 触发的 run（#949/#950）曾被后续 push **cancelled**；须等下一次 path 触发跑完再记「合 develop 后首条并行 run」。相对 9/23 审计，passed 已从 ~14–22 升到 **26**（单 job）且 shard 墙钟已压到 **~5–20 min** — Type C 基建有效；**job 级仍无全绿**。
 
-- **距 visibility job 末次全绿**：**无记录（≥200 run 从未 job 级全绿）** · 末次观测 **2026-09-24** · 参考：[run 35903085078](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35903085078)（26p/19fl/1f）· [run 35886079176](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35886079176)（并行首验仍红）
+- **距 visibility job 末次全绿**：**0 天** · **2026-09-30** · [run 36592506811](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/36592506811)（develop · workflow_dispatch · 六个分片全绿，含 micro-ritual）。9/23「近 200 次 0 成功」是当时诊断，不是现在的状态。
 - **目标**：**先** job 级全绿（failed=0，flaky 趋 0），**再** core 26 条 Required；全量 46 条仍非 Required。
 - **处理方向（优先序，可组合）**：
   1. **Type C · 方案 A + workers:1（已批准 · 组合实施 · 2026-09-24 工程化）**：`focus-tiger-visibility-contract.yml` 拆 **3 并行 job**（`scenario-a` / `micro-ritual` / `weekly-heatmap`）+ `playwright.ci-visibility.config.js` **workers:1**；preflight 单独跑 doc-check/registry；summary 汇总 JUnit。**禁止**只做其一。待 CI 验证 flaky 降幅。

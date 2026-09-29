@@ -695,6 +695,8 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 - **`retries: 2` 维持不动**（2026-09-23 拍板）：等 Type B/#351/#394 等在 CI 上稳定低 flaky 后，再评估是否降到 1；现在降会把「治理未生效」与「重试变少」信号搅在一起。
 - **scenario-a 再拆（2026-09-26）**：同一 `scenario-a.companion.spec.js` 拆两个 job——`scenario-a-early`（Choose 外侧取消及之前）与 `scenario-a-late`（Arrival 藏 Sit 起）。各 job 独立 `:5199`。CI 上 `openFreshProductShell` 在 `goto` 前对 `:5199/` 做最多三次健康探测（0 / 2s / 4s），探测失败不代替导航错误。`retries: 2` 仍不动。
 - **2026-09-29 对照**（run `36542268807`）：健康探测能通时，浏览器整页 `domcontentloaded` 仍会超过 40 秒（重试才过）。visibility 配置关掉失败录像，避免失败录像拖住下一次整页打开。Choose「自己写」的提示句须先挂进页面，再插入语音条；否则 `insertBefore` 抛错，提示不会出现。
+- **去哪看这条 workflow（2026-09-30）**：PR 的 Checks **只有**改动命中本 workflow 的 `paths` 时才会出现它。没命中时不要让人在 PR Checks 里找。打开 Actions 里的 [focus-tiger visibility-contract e2e](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/workflows/focus-tiger-visibility-contract.yml)，或对 `develop` 做 `workflow_dispatch`。`paths` 必须覆盖 `VISIBILITY_SUPPRESS_TRIGGER_PATHS` 的每一条（单测锁住）。始终挂在页面上、藏着仍可能挡住点击的撤销条 `VoiceCommandUndoToast.js` 在此列。面板内部的语音按钮不在此列。
+- **2026-09-30 合入后全绿**：[run 36592506811](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/36592506811)（#1018 撤销条不再挡点击之后，对 `develop` 手动触发）六个分片全绿，含 micro-ritual。
 
 #### 责任人与检查频率（书面 · 防「修完又没人看」）
 

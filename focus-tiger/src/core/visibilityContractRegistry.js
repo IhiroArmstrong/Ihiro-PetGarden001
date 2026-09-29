@@ -62,6 +62,7 @@ export const VISIBILITY_SUPPRESS_TRIGGER_PATHS = Object.freeze([
   'focus-tiger/src/ui/HonestyCheckInUI.js',
   'focus-tiger/src/ui/MicroRitualUI.js',
   'focus-tiger/src/ui/OnboardingHintsUI.js',
+  'focus-tiger/src/ui/VoiceCommandUndoToast.js',
   'focus-tiger/src/main.js',
   'focus-tiger/src/core/idleChromeOrchestration.js',
   'focus-tiger/src/core/IdleChromeFacade.js',
