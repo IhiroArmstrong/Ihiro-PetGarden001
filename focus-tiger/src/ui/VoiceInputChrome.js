@@ -91,7 +91,11 @@ export class VoiceInputChrome {
 
     const parent = mountParent || textarea.parentElement;
     if (parent) {
-      parent.insertBefore(this.root, mountBefore);
+      if (mountBefore && mountBefore.parentElement === parent) {
+        parent.insertBefore(this.root, mountBefore);
+      } else {
+        parent.append(this.root);
+      }
     }
 
     this._onResize = () => this._syncVisibility();
