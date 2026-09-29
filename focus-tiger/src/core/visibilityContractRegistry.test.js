@@ -5,6 +5,9 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   VISIBILITY_CONTRACTS,
   VISIBILITY_SUPPRESS_TRIGGER_PATHS,
@@ -94,4 +97,30 @@ test('suppress trigger paths include NarrowIdleShell and main', () => {
   assert.ok(
     VISIBILITY_SUPPRESS_TRIGGER_PATHS.some((p) => p.endsWith('main.js'))
   );
+});
+
+test('hidden undo bar is a visibility trigger', () => {
+  assert.ok(
+    VISIBILITY_SUPPRESS_TRIGGER_PATHS.includes(
+      'focus-tiger/src/ui/VoiceCommandUndoToast.js'
+    )
+  );
+});
+
+test('workflow path filters include every suppress trigger path', () => {
+  const ymlPath = join(
+    dirname(fileURLToPath(import.meta.url)),
+    '../../../.github/workflows/focus-tiger-visibility-contract.yml'
+  );
+  const yml = readFileSync(ymlPath, 'utf8');
+  const pullSplit = yml.split('pull_request:');
+  assert.equal(pullSplit.length, 2);
+  const listed = (block) =>
+    new Set([...block.matchAll(/- '([^']+)'/g)].map((match) => match[1]));
+  const pushPaths = listed(pullSplit[0]);
+  const prPaths = listed(pullSplit[1].split('\njobs:')[0]);
+  for (const path of VISIBILITY_SUPPRESS_TRIGGER_PATHS) {
+    assert.ok(pushPaths.has(path), `push paths missing ${path}`);
+    assert.ok(prPaths.has(path), `pull_request paths missing ${path}`);
+  }
 });
