@@ -50,6 +50,11 @@ describe('confideProductKnowledgeSemantic', () => {
       }),
       'skip'
     );
+    // Was asserted as 'skip' until 2026-09-30. That contradicted anchor A10 of
+    // task-confide-kb-embedding-near-match.md, which locks this exact sentence
+    // ("What is the observation wing?") to the honesty empty state. Distance
+    // may not overturn the gate: a product question the catalog cannot answer
+    // gets "no manual", never free generation.
     assert.equal(
       resolveProductKnowledgeGateAction({
         text: '观察翼是什么',
@@ -58,7 +63,7 @@ describe('confideProductKnowledgeSemantic', () => {
         catalogHit: false,
         nearAction: 'skip'
       }),
-      'skip'
+      'honesty'
     );
     assert.equal(
       resolveProductKnowledgeGateAction({
@@ -69,6 +74,39 @@ describe('confideProductKnowledgeSemantic', () => {
       }),
       'hit'
     );
+  });
+
+  it('never lets embedding distance send a product question to free generation (K-1)', () => {
+    for (const nearAction of ['hit', 'honesty', 'skip', null, undefined]) {
+      assert.notEqual(
+        resolveProductKnowledgeGateAction({
+          text: '观察翼是什么',
+          embeddingState: 'ready',
+          semanticIsProduct: true,
+          catalogHit: false,
+          nearAction
+        }),
+        'skip',
+        `nearAction ${String(nearAction)} must not reach free generation`
+      );
+    }
+  });
+
+  it('leaves non-product asks on their existing decision (K-1 blast radius)', () => {
+    const expected = { hit: 'skip', honesty: 'honesty', skip: 'skip' };
+    for (const [nearAction, want] of Object.entries(expected)) {
+      assert.equal(
+        resolveProductKnowledgeGateAction({
+          text: '今天想去骑车',
+          embeddingState: 'ready',
+          semanticIsProduct: false,
+          catalogHit: false,
+          nearAction
+        }),
+        want,
+        `nearAction ${nearAction}`
+      );
+    }
   });
 
   it('not-ready path allows catalog hit and cold-start honesty', () => {
