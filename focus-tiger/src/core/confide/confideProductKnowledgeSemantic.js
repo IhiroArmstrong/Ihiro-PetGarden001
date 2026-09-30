@@ -103,24 +103,44 @@ export function isConfideMoodAsideFromProductKnowledge(text) {
 }
 
 /**
+ * @param {number} productScore
+ * @param {number} lifeScore
+ * @returns {boolean}
+ */
+export function lifeChatOutranksProductLibrary(productScore, lifeScore) {
+  const product = Number(productScore);
+  const life = Number(lifeScore);
+  if (!Number.isFinite(product) || !Number.isFinite(life)) return false;
+  return life > product;
+}
+
+/**
  * @param {{
  *   text: string,
  *   embeddingState: 'ready' | 'not_ready' | 'error',
  *   semanticIsProduct?: boolean,
  *   catalogHit: boolean,
  *   catalogAttempted?: boolean,
- *   nearAction?: 'hit' | 'honesty' | 'skip' | null
+ *   nearAction?: 'hit' | 'honesty' | 'skip' | null,
+ *   lifeOutranksProduct?: boolean
  * }} input
  * @returns {'skip' | 'hit' | 'honesty'}
  */
 export function resolveProductKnowledgeGateAction(input) {
-  const { text, embeddingState, semanticIsProduct, catalogHit, nearAction } = input;
+  const { text, embeddingState, semanticIsProduct, catalogHit, nearAction, lifeOutranksProduct } =
+    input;
   if (catalogHit) return 'hit';
   if (isConfideMoodAsideFromProductKnowledge(text)) return 'skip';
 
   if (embeddingState === 'ready') {
     if (nearAction === 'skip') return 'skip';
-    if (nearAction === 'honesty') return 'honesty';
+    // Middle band stays a label in decideKbNearMatch.
+    // Life chat (everyday-ask library beats Library C) generates.
+    // Unanswered product questions in this band stay on the honesty line.
+    if (nearAction === 'honesty') {
+      if (lifeOutranksProduct) return 'skip';
+      return 'honesty';
+    }
     if (!semanticIsProduct) return 'skip';
     return 'honesty';
   }

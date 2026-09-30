@@ -917,6 +917,7 @@ export class CompanionL1Runtime {
         nearestScore: Number.isFinite(Number(result.nearestScore))
           ? Number(result.nearestScore)
           : null,
+        lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
         reason: 'ok',
         timing
       };

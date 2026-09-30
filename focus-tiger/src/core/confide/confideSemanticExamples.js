@@ -144,6 +144,22 @@ export const CONFIDE_SEMANTIC_LIBRARY_C = Object.freeze([
 ]);
 
 /**
+ * Everyday asks used only to split the KB middle band.
+ * A sentence in that band generates when this library outscores Library C.
+ * Measured 2026-09-30: noodle / talk-to-you outscore C; observation wing does not.
+ * Not a denylist of those user sentences.
+ * @type {readonly string[]}
+ */
+export const CONFIDE_SEMANTIC_LIBRARY_LIFE = Object.freeze([
+  'Where should we eat',
+  'Can we just talk',
+  'What is for dinner',
+  'How is the weather today',
+  '晚饭吃什么',
+  '想跟你聊聊天'
+]);
+
+/**
  * Known misclassification anchors referenced in CI / ISSUE_LEDGER.
  * @type {readonly string[]}
  */
