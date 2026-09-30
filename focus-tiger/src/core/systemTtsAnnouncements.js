@@ -9,11 +9,7 @@
  */
 
 import { t, getLocale } from '../locales/i18n.js';
-import {
-  canUseSystemTts,
-  getSystemTtsBridge,
-  mapLocaleToTtsLocale
-} from './systemTtsBridge.js';
+import { canUseSystemTts, mapLocaleToTtsLocale, speakSystemTts } from './systemTtsBridge.js';
 import { isSystemTtsAnnouncementsEnabled } from './systemTtsPreference.js';
 
 /**
@@ -31,13 +27,9 @@ export function maybeSpeakFocusEndAnnouncement({
 } = {}) {
   if (!isSystemTtsAnnouncementsEnabled(storage)) return false;
   if (!canUseSystemTts({ widthPx, globalObj })) return false;
-  const bridge = getSystemTtsBridge(globalObj);
-  if (!bridge || typeof bridge.speak !== 'function') return false;
-  const text = String(t('system_tts.focus_end') || '').trim();
-  if (!text) return false;
-  void bridge.speak({
-    text,
-    locale: mapLocaleToTtsLocale(getLocale())
+  return speakSystemTts({
+    text: t('system_tts.focus_end'),
+    locale: mapLocaleToTtsLocale(getLocale()),
+    globalObj
   });
-  return true;
 }

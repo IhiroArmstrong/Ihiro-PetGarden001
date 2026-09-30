@@ -11,8 +11,9 @@
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
   canUseSystemTts,
-  getSystemTtsBridge,
   mapLocaleToTtsLocale,
+  speakSystemTts,
+  stopSystemTts,
   shouldSpeakConfideReply
 } from '../core/systemTtsBridge.js';
 import { canSubmitConfideText } from '../core/confide/confideClassify.js';
@@ -771,9 +772,7 @@ export class ConfideToYinUI {
   }
 
   _stopConfideTts() {
-    const bridge = getSystemTtsBridge();
-    if (!bridge || typeof bridge.stop !== 'function') return;
-    void bridge.stop();
+    stopSystemTts();
   }
 
   /**
@@ -785,12 +784,7 @@ export class ConfideToYinUI {
     if (!text) return;
     const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
     if (!canUseSystemTts({ widthPx })) return;
-    const bridge = getSystemTtsBridge();
-    if (!bridge || typeof bridge.speak !== 'function') return;
-    void bridge.speak({
-      text,
-      locale: mapLocaleToTtsLocale(getLocale())
-    });
+    speakSystemTts({ text, locale: mapLocaleToTtsLocale(getLocale()) });
   }
 
   /**

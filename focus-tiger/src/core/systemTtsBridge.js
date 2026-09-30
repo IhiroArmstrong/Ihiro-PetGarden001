@@ -83,6 +83,56 @@ export function hasSystemTtsBridge(globalObj = globalThis) {
 }
 
 /**
+ * Single dispatch point for every product speech request.
+ *
+ * There are two independent speakers — Confide replies and the focus-end
+ * announcement — and the platform synthesizer will happily run both at once.
+ * Routing everything through here makes the newest request win: stop first,
+ * then speak.
+ *
+ * "Newest wins" is not a new product call. `task-confide-tts-v1` locks speech
+ * to within 0–1s of the text appearing, which rules out queueing; and letting
+ * the previous line finish while new text is already on screen would read the
+ * wrong thing aloud.
+ *
+ * Returns synchronously so callers keep their "did we dispatch" contract, while
+ * the stop→speak order is still guaranteed by chaining.
+ *
+ * @param {{ text?: string, locale?: string, globalObj?: object }} payload
+ * @returns {boolean} true when a speak request was dispatched
+ */
+export function speakSystemTts({ text, locale, globalObj = globalThis } = {}) {
+  const bridge = getSystemTtsBridge(globalObj);
+  if (!bridge || typeof bridge.speak !== 'function') return false;
+  const body = String(text || '').trim();
+  if (!body) return false;
+
+  const stopped =
+    typeof bridge.stop === 'function'
+      ? Promise.resolve()
+          .then(() => bridge.stop())
+          .catch(() => {})
+      : Promise.resolve();
+  void stopped.then(() => bridge.speak({ text: body, locale }));
+  return true;
+}
+
+/**
+ * Stop whatever is currently speaking, from any source.
+ *
+ * @param {object} [globalObj]
+ * @returns {boolean} true when a stop request was dispatched
+ */
+export function stopSystemTts(globalObj = globalThis) {
+  const bridge = getSystemTtsBridge(globalObj);
+  if (!bridge || typeof bridge.stop !== 'function') return false;
+  void Promise.resolve()
+    .then(() => bridge.stop())
+    .catch(() => {});
+  return true;
+}
+
+/**
  * Product chrome: Electron macOS wide viewport only (Brief task-confide-tts-v1).
  *
  * @param {{ widthPx?: number, globalObj?: object }} [opts]

@@ -15,7 +15,7 @@
 | A-2 | 安全路由 | `shouldSpeakConfideReply` 是**黑名单**；`'generate'` 不在枚举里，新路由默认「可朗读」 | 高 | 能 |
 | A-3 | 安全路由 | `matchesSafetyRedirect` 纯子串匹配，"suicide prevention" 误判为危机 | 中 | 能 |
 | K-1 | 知识库检索 | near-match 的 `farMax=0.62` **已经在现网生效**，把「产品问题但库里没有」从诚实空态改判成 generate；注释却写 "Unused by the live path" | 高 | 能 |
-| K-2 | 知识库检索 | 单关键词 score=1 且无并列时**直接命中**，绕过声明的 `MIN_SCORE = 2` | 中 | 能（已复现：`backup` → `KB-FUNC-0003`） |
+| K-2 | 知识库检索 | ~~单关键词 score=1 绕过 `MIN_SCORE = 2`~~ **定性错误，已更正**：分数 1 是 27 条已锁锚点的正常命中方式，缺陷只是常量注释在说谎 | ~~中~~ 低（文档） | 能（钉真实契约） |
 | K-3 | 知识库检索 | 36 条目录只有 `shortAnswerEn`；ja / zh 用户拿到英文短答 | 中 | 能（结构断言） |
 | K-4 | 知识库检索 | 未命中时把**用户原文前 200 字**写进 `turns.jsonl`，函数自己的注释说「不含用户自由文本」 | 高（隐私契约） | 能 |
 | Z-1 | 叠层 | `#ui-overlay`(z10) 内的 z42 / z40 toast 会被 body 上的 z35/z36 面板整体盖住 | 中 | 能（DOM 层级断言） |
@@ -154,6 +154,34 @@ export const DEFAULT_KB_NEAR_FAR_MAX = 0.62;
 `top.score === 1` 且**没有 runner-up** 时，两个 `if` 都不拦，直接落到最后一行返回命中。实测 `backup` → `KB-FUNC-0003`（score 1，无并列）。常量注释写的是 "Minimum keyword score to treat as a hit (high bar)"，实际下限是 1。
 
 影响：一个泛词就能触发一条被当成权威的短答，而且短答一旦命中就**优先于**语义闸（`resolveProductKnowledgeGateAction` 第一行 `if (catalogHit) return 'hit'`）。
+
+> **2026-09-30 更正（本节定性是错的）**：上面「实际下限是 1」的观察属实，但**「这是缺陷」的判断错了**，而且错在根子上——我把 `MIN_SCORE = 2` 读成了命中地板。
+>
+> 实现时按这个定性去执行，`confideKbRoutingMatrix` 里 **27 条已锁锚点**当场从命中知识库掉成诚实空态：
+>
+> ```
+> kb-0001-how-zh · kb-0001-how-en · kb-0002-where-zh · kb-0002-where-en ·
+> kb-0002-what-is · kb-0003-where-zh · kb-0004-what-hud · kb-0005-cancel ·
+> kb-0008-what · kb-0011-diff-zh · kb-0011-diff-en · kb-0012-where-zh ·
+> kb-0013-where-zh · kb-0014-where-zh · kb-0014-how · kb-0016-unload-zh ·
+> kb-0017-desktop · kb-0018-coins-word-order-spaces · kb-0020-honesty-short-zh ·
+> kb-0020-honesty-en · kb-0021-daily-quote-short-zh · kb-0023-wallpapers-zh ·
+> kb-0023-wallpapers-en · kb-0025-emotional-reset-short-zh ·
+> kb-0027-quiet-together-zh · kb-0028-focus-circle-zh · kb-0030-sanctuary-nav-en
+> ```
+>
+> 也就是说，**知识库绝大多数正常问法本来就靠分数 1 命中**。`MIN_SCORE` 从来不是命中地板，它是「有争议时才需要拉开差距」的线。真实规则：
+>
+> - 分数 ≥ 2 → 命中（完全并列时走科普 / 功能逃生口）
+> - 分数 = 1 且**无人争** → 命中（27 条锚点依赖）
+> - 分数 = 1 且**有人争**（差距 < `MIN_MARGIN`）→ 逃生口或 `null`
+> - 分数 < 1 → `null`
+>
+> 所以 K-2 不是逻辑缺陷，是**常量注释在说谎**，而审计跟着注释一起判错。已改为只修注释 + 加用例钉住真实契约，运行时零变化（PR #1040）。
+>
+> `backup` 这类裸产品名词仍返回短答。要不要压掉它是另一件事，判据不能是分数（分数拦不住它，也拦不住那 27 条），得是「这句话像不像一个问句」。PO 2026-09-30 决定**不做**，作为已知项记入 tracker。
+>
+> **给后来人的教训**：`MIN_SCORE`、`MAX_*`、`*_THRESHOLD` 这类名字加上一句自信的注释，很容易被当成契约读。下判断前先跑一次真实夹具，看它到底拦住了谁。
 
 ### K-3（中）短答只有英文
 

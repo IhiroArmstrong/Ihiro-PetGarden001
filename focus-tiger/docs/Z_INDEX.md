@@ -122,6 +122,24 @@
 | **40** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 中置/窄屏抬高层（Honesty 桥接等同带） |
 | **100** | `index.html` | `#loading-mask` 启动加载遮罩（最高产品层，加载完移除） |
 
+### 2026-09-30 补登（由 `z-index-registry-check` 扫出的漏登）
+
+> 这十条原本有 `position: fixed` 却不在表内。**只补登记，未改任何数值。**
+> 从此 `npm run docs:check` 会挡住漏登：新加 `position: fixed` 而不写行 → CI 红。
+
+| z-index | 文件 | 用途 |
+|---|---|---|
+| **16** | `src/ui/FocusCirclePanelUI.js` | `.focus-circle-panel` Focus Circle 面板；与 dock 同带 |
+| **16** | `src/ui/LocalPracticeDataPanelUI.js` | `.local-practice-data-panel` 本地练习数据面板（导出 / 重置） |
+| **16** | `src/ui/PresenceSignalsPanelUI.js` | `.presence-signals-panel` 在场信号面板（内含 z2 子层） |
+| **16** | `src/ui/QuietTogetherPanelUI.js` | `.quiet-together-panel` Quiet Together 面板 |
+| **18** | `src/ui/ColdStartGoalCardUI.js` | `.cold-start-goal-card` 冷启动目标卡 |
+| **18** | `src/ui/YinPersonalMemoryUI.js` | `.yin-personal-memory` 阿寅私人记忆面板 |
+| **18 / 19** | `src/ui/PracticeImprintCardUI.js` | 练习印记卡遮罩（18）+ 卡本体（19） |
+| **35 / 36** | `src/ui/HomeSanctuaryNavFanUI.js` | Home/Sanctuary 导航扇遮罩（35）+ 扇本体（36）；**挂 body**，与 `#ui-overlay`（10）整层比较，不与其子层同带 |
+| **12050** | `src/ui/SystemTtsPreferenceUI.js` | 系统朗读偏好。**数值异常**，比全表任何一层高两个数量级，来历不明；审计 Z-2 记在案，本次只登记不改，改动须单独评估 |
+| 无自有 z | `src/ui/overlayBackdrop.js` | 共享遮罩 CSS 基类（`position: fixed; inset: 0`）；z 由各调用方设定，见上文各 backdrop 行 |
+
 ### ui-kit 变量（未在主产品硬编码数值）
 
 | 符号 | 文件 | 说明 |

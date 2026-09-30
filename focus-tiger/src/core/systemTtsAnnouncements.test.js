@@ -23,7 +23,9 @@ function memoryStorage(seed = {}) {
   };
 }
 
-test('focus end announcement requires global switch and desktop wide bridge', () => {
+// Dispatch is chained behind a stop request now (see speakSystemTts), so the
+// speak call lands one microtask after the synchronous "did we dispatch" return.
+test('focus end announcement requires global switch and desktop wide bridge', async () => {
   let spoke = false;
   const globalObj = {
     desktopShell: {
@@ -56,10 +58,11 @@ test('focus end announcement requires global switch and desktop wide bridge', ()
     }),
     true
   );
+  await Promise.resolve();
   assert.equal(spoke, true);
 });
 
-test('focus end announcement stays off on narrow viewport', () => {
+test('focus end announcement stays off on narrow viewport', async () => {
   let spoke = false;
   const globalObj = {
     desktopShell: {
@@ -84,5 +87,6 @@ test('focus end announcement stays off on narrow viewport', () => {
     }),
     false
   );
+  await Promise.resolve();
   assert.equal(spoke, false);
 });

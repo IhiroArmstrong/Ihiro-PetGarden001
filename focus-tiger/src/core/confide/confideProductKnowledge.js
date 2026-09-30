@@ -18,7 +18,15 @@ import { shouldAnswerWithPresenceFacts } from './confidePresenceFacts.js';
 import { shouldAnswerWithMemoryList } from './confideMemoryList.js';
 import { isProductKnowledgeColdStartProbe } from './confideProductKnowledgeSemantic.js';
 
-/** Minimum keyword score to treat as a hit (high bar). */
+/**
+ * Score at or above which the winner needs no margin check.
+ *
+ * Not a floor: a score of 1 is still a hit when nothing else scored, and most
+ * of the locked `confideKbRoutingMatrix` anchors are answered that way. The
+ * bar this constant raises is on *contested* wins, not on lone ones — see
+ * `pickProductKnowledgeHit`. Named MIN_SCORE for history; read it as
+ * "uncontested threshold".
+ */
 export const CONFIDE_KB_RETRIEVAL_MIN_SCORE = 2;
 
 /** Winner must beat runner-up by at least this margin when score < 3. */
@@ -334,7 +342,29 @@ export function retrieveProductKnowledge(text, opts = {}) {
 }
 
 /**
- * turns.jsonl / observation miss row (no user free text beyond query hash).
+ * Stable non-crypto hash (FNV-1a), same shape as `DailyWisdomStore.hashDateKey`.
+ * Lets two misses be recognised as the same question without storing the
+ * question. Not a security primitive.
+ * @param {string} value
+ * @returns {string}
+ */
+function hashQueryText(value) {
+  const s = String(value || '');
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
+
+/**
+ * turns.jsonl / observation miss row.
+ *
+ * Carries no user free text: a miss is by definition something the catalog
+ * could not answer, which is exactly when the input is most likely to be
+ * personal. `queryHash` groups repeats and `textLength` keeps the one
+ * diagnostic signal worth having, without keeping the words. (Issue #1037.)
  * @param {{ text: string, reason: string, locale?: string }} payload
  * @returns {object}
  */
@@ -343,7 +373,8 @@ export function buildKbRetrievalMissTurnLog({ text, reason, locale = 'en' }) {
     at: new Date().toISOString(),
     kind: 'kb_retrieval_miss',
     locale,
-    text: String(text || '').slice(0, 200),
+    queryHash: hashQueryText(text),
+    textLength: String(text || '').length,
     reason,
     catalogSchemaVersion: catalog.schemaVersion
   };
