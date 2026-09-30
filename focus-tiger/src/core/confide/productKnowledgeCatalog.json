@@ -560,6 +560,17 @@
         "Remind me",
         "提醒时间"
       ]
+    },
+    {
+      "id": "KB-FUNC-0034",
+      "shortAnswerEn": "A pomodoro here is a 25-minute Sit with Yin. Tap Sit with Yin, then choose 25 minutes. It does not start a short-break cycle. When the duration microphone is available, you can also say Start a pomodoro.",
+      "keywords": [
+        "pomodoro",
+        "start a pomodoro",
+        "need a pomodoro",
+        "how to start a pomodoro",
+        "can i start a pomodoro"
+      ]
     }
   ]
 }

@@ -44,6 +44,7 @@ export const KB_UNAPPROVED_IDS = Object.freeze([
  */
 export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-sit': Object.freeze(['KB-FUNC-0001']),
+  'kb-live-pomodoro': Object.freeze(['KB-FUNC-0034']),
   'kb-live-rise': Object.freeze(['KB-FUNC-0007']),
   'kb-live-breath': Object.freeze(['KB-FUNC-0011']),
   'kb-live-companion': Object.freeze(['KB-FUNC-0008']),

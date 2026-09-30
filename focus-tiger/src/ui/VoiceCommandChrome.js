@@ -15,6 +15,7 @@ import {
   resolveVoiceCommandOutcome,
   voiceCommandOutcomeLocaleKey
 } from '../core/voiceCommandOutcome.js';
+import { parseFocusSitAdjust } from '../core/focusSitAdjust.js';
 import { FOCUS_DURATION_MODE_OPEN } from '../core/focusDuration.js';
 import {
   getVoiceInputBridge,
@@ -48,7 +49,7 @@ export class VoiceCommandChrome {
   }) {
     this.askMountParent = askMountParent;
     this.showOpenEnded = showOpenEnded;
-    this.mode = mode === 'end' ? 'end' : 'start';
+    this.mode = mode === 'end' ? 'end' : mode === 'adjust' ? 'adjust' : 'start';
     this.onOutcome = onOutcome;
     this._bridge = getVoiceInputBridge();
     this._unsubStatus = null;
@@ -62,15 +63,25 @@ export class VoiceCommandChrome {
     this.root.className =
       this.mode === 'end'
         ? 'voice-command-chrome voice-command-chrome--rise'
-        : 'voice-command-chrome';
+        : this.mode === 'adjust'
+          ? 'voice-command-chrome voice-command-chrome--adjust'
+          : 'voice-command-chrome';
     this.root.dataset.testid =
-      this.mode === 'end' ? 'voice-command-rise-chrome' : 'voice-command-chrome';
+      this.mode === 'end'
+        ? 'voice-command-rise-chrome'
+        : this.mode === 'adjust'
+          ? 'voice-command-adjust-chrome'
+          : 'voice-command-chrome';
     this.root.hidden = true;
 
     this.errorEl = document.createElement('p');
     this.errorEl.className = 'voice-command-chrome__error';
     this.errorEl.dataset.testid =
-      this.mode === 'end' ? 'voice-command-rise-error' : 'voice-command-error';
+      this.mode === 'end'
+        ? 'voice-command-rise-error'
+        : this.mode === 'adjust'
+          ? 'voice-command-adjust-error'
+          : 'voice-command-error';
     this.errorEl.hidden = true;
 
     this.actions = document.createElement('div');
@@ -281,8 +292,10 @@ export class VoiceCommandChrome {
 
   _applyCopy() {
     this.speakBtn.textContent = '🎙';
-    this.speakBtn.setAttribute('aria-label', t('VOICE_COMMAND_SPEAK_ARIA'));
-    this.speakBtn.title = t('VOICE_COMMAND_SPEAK_ARIA');
+    const speakKey =
+      this.mode === 'adjust' ? 'FOCUS_SIT_ADJUST_VOICE_ARIA' : 'VOICE_COMMAND_SPEAK_ARIA';
+    this.speakBtn.setAttribute('aria-label', t(speakKey));
+    this.speakBtn.title = t(speakKey);
     this.stopBtn.textContent = t('VOICE_INPUT_STOP');
     this.stopBtn.setAttribute('aria-label', t('VOICE_INPUT_STOP_ARIA'));
   }
@@ -318,6 +331,19 @@ export class VoiceCommandChrome {
         this._errorMessage = withVoiceCaptureDiagnostics(
           t('VOICE_INPUT_ERROR_NO_SPEECH'),
           result.captureDiagnostics
+        );
+        this._setState('error');
+        return;
+      }
+      if (this.mode === 'adjust') {
+        const parsed = parseFocusSitAdjust(transcript);
+        if (parsed.kind === 'pause' || parsed.kind === 'resume' || parsed.kind === 'add') {
+          this.onOutcome?.({ kind: 'sit_adjust', parsed, transcript });
+          this._setState('idle');
+          return;
+        }
+        this._errorMessage = t(
+          parsed.reason === 'use_rise' ? 'VOICE_ADJUST_USE_RISE' : 'VOICE_ADJUST_REFUSE'
         );
         this._setState('error');
         return;

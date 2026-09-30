@@ -29,9 +29,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 35 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 36 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 35);
+    assert.equal(ids.length, 36);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -52,6 +52,7 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0031'), true);
     assert.equal(ids.includes('KB-FUNC-0032'), true);
     assert.equal(ids.includes('KB-FUNC-0033'), true);
+    assert.equal(ids.includes('KB-FUNC-0034'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
