@@ -39,6 +39,11 @@ function focusTigerVersionPlugin() {
           ),
           'import.meta.env.VITE_APP_VERSION': JSON.stringify(
             versionManifest.version
+          ),
+          // E2E static-server builds set FT_QA_BOOT=1 so Playwright can use
+          // ?qaSeedStreak= / ?qaLotusBlooms= without shipping those hooks to users.
+          'import.meta.env.VITE_FT_QA_BOOT': JSON.stringify(
+            process.env.FT_QA_BOOT === '1' ? '1' : ''
           )
         }
       };
