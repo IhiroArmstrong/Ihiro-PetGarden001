@@ -51,6 +51,26 @@ describe('confideTurnsJsonlRetention', () => {
       ),
       true
     );
+    assert.equal(
+      shouldKeepConfideTurnRow(
+        {
+          at: new Date(NOW - 8 * 86400000).toISOString(),
+          kind: 'crisis_paraphrase_shadow'
+        },
+        NOW
+      ),
+      false
+    );
+    assert.equal(
+      shouldKeepConfideTurnRow(
+        {
+          at: new Date(NOW - 2 * 86400000).toISOString(),
+          kind: 'crisis_paraphrase_shadow'
+        },
+        NOW
+      ),
+      true
+    );
   });
 
   it('keeps l3_generate rows up to 30 days', () => {
