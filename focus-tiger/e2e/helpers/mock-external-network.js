@@ -11,8 +11,24 @@ const NEWSLETTER_RE = /newsletter|mailchimp|sendgrid|mailgun/i;
 const PAYMENT_RE = /stripe\.com|paypal\.com|checkout/i;
 
 /**
+ * Matches only non-loopback http(s) URLs.
+ * Local documents, scripts, images, and audio must not enter `page.route`,
+ * or Playwright proxies every sprite/audio byte and the next navigation stalls.
+ */
+const EXTERNAL_HTTP_RE =
+  /^https?:\/\/(?!(?:127\.0\.0\.1|localhost)(?::\d+)?(?:\/|$))/i;
+
+/**
+ * @param {string} url
+ * @returns {boolean}
+ */
+export function shouldMockExternalUrl(url) {
+  return EXTERNAL_HTTP_RE.test(url);
+}
+
+/**
  * Stub non-critical third-party traffic so CI network jitter cannot flake DOM tests.
- * Local static server + same-origin assets are always passed through.
+ * Same-origin assets are not routed; they go straight to the static server.
  *
  * Tag a spec `@integration` (grep) when it must hit a real backend; skip those in
  * default CI smoke via `--grep-invert @integration`.
@@ -22,21 +38,12 @@ const PAYMENT_RE = /stripe\.com|paypal\.com|checkout/i;
  */
 export async function installExternalNetworkMocks(page, opts = {}) {
   const allowCloud = opts.allowCloud === true;
-  await page.route('**/*', async (route) => {
+  await page.route(EXTERNAL_HTTP_RE, async (route) => {
     const req = route.request();
     const url = req.url();
+    if (!shouldMockExternalUrl(url)) return route.continue();
+
     const resourceType = req.resourceType();
-
-    if (resourceType === 'document' || resourceType === 'script' || resourceType === 'stylesheet') {
-      return route.continue();
-    }
-
-    const isLocal =
-      /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(url) ||
-      url.startsWith('data:') ||
-      url.startsWith('blob:');
-    if (isLocal) return route.continue();
-
     const kind = classifyExternalUrl(url);
     if (kind === 'cloud-api' && allowCloud) return route.continue();
     if (kind === 'other' && resourceType === 'fetch') {
