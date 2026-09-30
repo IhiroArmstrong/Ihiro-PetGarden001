@@ -1370,6 +1370,8 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 夜间自动跑 + Plan A 清单能力 **已完成**（PR #2 前工程护栏里「勿长期只靠本机手跑全量」的主目标已满足）。**2026-08-14**：GitHub 默认分支改为 `develop`；`schedule` 现读 **`develop` YAML**、checkout **`develop` tip**——以后改 timeout/shard **不必**再同步 `main`。
 
+**现状（2026-10-01）**：最近一次夜间全绿是 **2026-08-04**。9/28–9/30 两片都跑满 120 分钟被取消，JUnit 没留下；9/27 失败录像目录约 11GB，取消当夜的 job 日志也丢了。visibility 契约分片转绿 **不等于** 这条夜间全量转绿。本次改为 4 片、Playwright 100 分钟自行收尾写 JUnit、失败时只上传 `trace.zip`。合进 `develop` 之后，下一次 cron 才吃到新 YAML。
+
 #### 仍待办（非基建阻塞）
 
 1. ~~把 120m workflow 同步到 `main`~~ ✅ PR #47。
