@@ -30,7 +30,10 @@ import {
 import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
 import { CONFIDE_PENDING_REPLY_WATCHDOG_MS } from '../core/confide/confidePendingReplyWatchdog.js';
 import { confideLineText } from '../core/confide/confideCorpus.js';
-import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
+import {
+  CONFIDE_GENERATE_REPLY_ROUTE,
+  CONFIDE_ROUTE
+} from '../core/confide/confideRoutes.js';
 import {
   resolveConfideCorpusForRoute,
   resolveConfideReply,
@@ -1088,7 +1091,7 @@ export class ConfideToYinUI {
           );
           this._showReply(
             {
-              route: 'generate',
+              route: CONFIDE_GENERATE_REPLY_ROUTE,
               text: result.text,
               source: 'generate'
             },
