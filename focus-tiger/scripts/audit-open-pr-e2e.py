@@ -6,6 +6,9 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 Audit open PRs whose E2E-related CI checks are failure / pending / cancelled.
 
 Read-only report — never closes or merges PRs.
+Run on the existing biweekly branch-health pass (PROCESS.md「分支健康度」;
+WORKFLOW.md「陈旧 open PR」). A red check on an old PR is not evidence that
+develop's tests were skipped.
 
 Usage (from repo root or focus-tiger/):
   python3 focus-tiger/scripts/audit-open-pr-e2e.py
@@ -207,8 +210,17 @@ def classify_pr(
             return "建议关闭", "标题/描述含废弃信号"
         return "—", "E2E 全绿"
 
+    if is_dependabot and behind > stale_threshold and is_docs_or_dependency_only(diff_type):
+        return (
+            "建议关闭",
+            f"Dependabot 锁文件落后 develop {behind} commits，关掉这张；要升级就从今天的 develop 新开",
+        )
+
     if is_dependabot:
-        return "建议关闭", "Dependabot PR：等 bot 重开（不救）"
+        return (
+            "需人工判断:要不要做这次依赖升级",
+            f"Dependabot，落后 {behind} commits，未过陈旧线或不是纯锁文件，不要为了消红灯自动关",
+        )
 
     if merged_to_baseline:
         return "建议关闭", "分支已合入 baseline，PR 可关"
@@ -394,7 +406,10 @@ def print_markdown_report(rows: list[PrRow], baseline: str, stale_threshold: int
             print(f"- **#{r.num}** {r.title} — {r.reason}")
         print()
 
-    print("> 本脚本只输出报告，不执行关闭/合并。")
+    print("> 本脚本只输出报告，不执行关闭或合并。")
+    print("> 「建议关闭」只覆盖纯文档、纯依赖锁文件，以及落后超过阈值的 Dependabot。")
+    print("> 含产品源码且落后很多的 PR 停在「需人工判断」：当周必须改判成关掉或排期重做，不能再挂着。")
+    print("> 建议每 1～2 周随分支健康度一起跑。见 WORKFLOW.md「陈旧 open PR」。")
 
 
 def main() -> None:
