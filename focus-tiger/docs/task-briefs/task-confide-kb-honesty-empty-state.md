@@ -17,7 +17,7 @@
 
 这份 Brief 把两个口子都堵上：**判定为产品问题 + 没有够格的条目 = 诚实空态**，两种情况都不许滑回自由生成。
 
-代价是用户看得见的：像 `backup` 这种只丢一个产品名词进来的输入，今天会收到一条短答，改完之后会收到诚实空态。这一条 PO 已知悉并同意。
+> **实现后更新（同日）**：第 2 条真跑下来发现审计判错了——分数 1 不是漏网，而是知识库 **27 条已锁锚点赖以命中**的正常情况。所以第 2 条**只改注释、不改行为**，详见 4.3 节。最终落地的用户可见变化**只有第 1 条**：产品问题查不到时不再现编，改说没有手册。原先预告的「`backup` 从短答变诚实空态」没有发生。
 
 ---
 
@@ -28,7 +28,7 @@
 | 编号 | 位置 | 今天 | 改成 |
 |---|---|---|---|
 | K-1 | `confideProductKnowledgeSemantic.js` `resolveProductKnowledgeGateAction` | `embeddingState==='ready'` 时先看 `nearAction`，`'skip'` 直接返回 `'skip'`，`semanticIsProduct` 根本没被读到 | 先看 `semanticIsProduct`。语义闸说是产品问题 → 最差也只能到 `'honesty'`，不得返回 `'skip'` |
-| K-2 | `confideProductKnowledge.js` `pickProductKnowledgeHit` | `top.score < MIN_SCORE` 分支里，分数 1 且无并列会掉出分支、被当成命中 | 分数低于 `CONFIDE_KB_RETRIEVAL_MIN_SCORE` 一律 `null`，只保留既有的「科普 / 功能并列时挑科普」逃生口 |
+| K-2 | `confideProductKnowledge.js` `pickProductKnowledgeHit` | `top.score < MIN_SCORE` 分支里，分数 1 且无并列会掉出分支、被当成命中 | ~~分数低于 `MIN_SCORE` 一律 `null`~~ **实测后撤回，改为只修文档，见第 4.3 节** |
 
 ---
 
@@ -77,11 +77,35 @@
 `'有点烦'` 那条经 `isConfideMoodAsideFromProductKnowledge` 在更前面就被拦掉，不受影响。
 A10「观察翼是什么」从现写变成诚实空态——**这正是本次要的**。
 
-### K-2 的影响面
+### 4.3 K-2 的影响面 —— 实测后撤回运行时改动
 
-只影响「关键词只匹配上一个词、且没有第二名」的输入。`MIN_MARGIN` 是 1，所以并列（差 0）本来就已经返回 `null` 或走科普逃生口；真正漏出去的只有「孤零零一个分数 1」。
+**审计结论在这条上是错的，实现时被实测推翻，已按证据撤回。**
 
-用户可见的例子：`backup` 今天返回 `KB-FUNC-0003` 的短答，改完返回诚实空态。
+原计划是把 `MIN_SCORE = 2` 当成硬地板执行。真跑下来，`confideKbRoutingMatrix` 里 **27 条已锁锚点**当场从「命中知识库」掉成「诚实空态」：
+
+```
+kb-0001-how-zh / kb-0001-how-en / kb-0002-where-zh / kb-0002-where-en /
+kb-0002-what-is / kb-0003-where-zh / kb-0004-what-hud / kb-0005-cancel /
+kb-0008-what / kb-0011-diff-zh / kb-0011-diff-en / kb-0012-where-zh /
+kb-0013-where-zh / kb-0014-where-zh / kb-0014-how / kb-0016-unload-zh /
+kb-0017-desktop / kb-0018-coins-word-order-spaces / kb-0020-honesty-short-zh /
+kb-0020-honesty-en / kb-0021-daily-quote-short-zh / kb-0023-wallpapers-zh /
+kb-0023-wallpapers-en / kb-0025-emotional-reset-short-zh /
+kb-0027-quiet-together-zh / kb-0028-focus-circle-zh / kb-0030-sanctuary-nav-en
+```
+
+也就是说：知识库**绝大多数正常问法本来就是靠分数 1 命中的**。`MIN_SCORE = 2` 从来不是命中地板，它是「有争议时才需要拉开差距」的那条线。真正的规则是：
+
+- 分数 ≥ 2：直接命中（完全并列时走科普 / 功能逃生口）
+- 分数 = 1 且**无人争**：命中——27 条锚点依赖这条
+- 分数 = 1 且**有人争**（差距 < `MIN_MARGIN`）：逃生口或 `null`
+- 分数 < 1：`null`
+
+所以 K-2 不是逻辑 bug，是**常量的文档在说谎**（原注释写 "Minimum keyword score to treat as a hit (high bar)"）。修法相应改成：改正注释，并加一条用例把真实契约钉住，让下一个人不会再把它读成地板然后打穿知识库。**不动运行时行为。**
+
+`backup` 这类裸产品名词仍会返回短答。要不要压掉它是**另一件事**，需要的判据不是分数（分数拦不住它，也拦不住那 27 条），而是「这句话像不像一个问句」。留作独立任务，不在本 Brief 内。
+
+PO 原先同意的「`backup` 从短答变诚实空态」这一用户可见后果**因此没有发生**，本次没有任何知识库命中结果改变。
 
 ---
 
@@ -111,7 +135,7 @@ K-4：只留 query hash + 命中原因，去掉原文
 危机改写句分类范围：先补 Brief，不改规则
 ```
 
-K-2 的用户可见后果（`backup` 从短答变诚实空态）PO 已在同一条消息里书面确认知悉。
+K-2 的用户可见后果（`backup` 从短答变诚实空态）PO 已在同一条消息里书面确认知悉——但实测表明该改动会打穿知识库，已按 4.3 节撤回，**这个后果没有发生**。撤回属于「证据推翻计划」，不需要 PO 再拍一次板；若 PO 仍要压掉裸名词，按 4.3 节末尾另立任务。
 
 ---
 
