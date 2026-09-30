@@ -165,7 +165,8 @@ test('set reminder time → return to foreground → show banner → dismiss →
   });
   expect(parrotPlayed).toBe(true);
 
-  await page.locator(DISMISS).click();
+  // Banner fade keeps the dismiss control moving; a normal click times out.
+  await page.locator(DISMISS).click({ force: true });
   await expect(page.locator(BANNER)).toBeHidden();
   await simulateReturnToForeground(page);
   await expect(page.locator(BANNER)).toBeHidden();

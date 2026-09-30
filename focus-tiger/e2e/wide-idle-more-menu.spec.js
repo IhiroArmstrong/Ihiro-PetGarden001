@@ -6,6 +6,7 @@
 import { test, expect } from '@playwright/test';
 import { expectOpenHintBubblesAtMost } from './helpers/hints-concurrency.js';
 import {
+  expandWideMoreMenuGroup,
   openFreshProductShell,
   quickStartFocus
 } from './helpers/product-shell.js';
@@ -20,6 +21,14 @@ test.use({ viewport: { width: 1280, height: 720 } });
 const WIDE_MORE_ROW_HINT = Object.freeze({
   companion: 'how-shall-we-sit',
   reminder: 'in-app-reminder'
+});
+
+const WIDE_MORE_ROW_GROUP = Object.freeze({
+  companion: 'MENU_GROUP_PRACTICE',
+  reminder: 'MENU_GROUP_PREFERENCES',
+  language: 'MENU_GROUP_PREFERENCES',
+  'zen-cinema': 'MENU_GROUP_INSPIRATION',
+  'daily-quote': 'MENU_GROUP_INSPIRATION'
 });
 
 /**
@@ -83,12 +92,22 @@ test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
   await expect(page.locator('#ft-wide-more-backdrop')).toBeVisible();
-  await expect(menu.locator('[data-group="MENU_GROUP_PRACTICE"]')).toBeVisible();
-  await expect(menu.locator('[data-group="MENU_GROUP_INSPIRATION"]')).toBeVisible();
   await expect(
-    menu.locator('[data-group="MENU_GROUP_PREFERENCES"]')
+    menu.locator('.ft-wide-more__section-header[data-group="MENU_GROUP_PRACTICE"]')
   ).toBeVisible();
-  await expect(menu.locator('[data-group="ritual.menu_group"]')).toBeVisible();
+  await expect(
+    menu.locator(
+      '.ft-wide-more__section-header[data-group="MENU_GROUP_INSPIRATION"]'
+    )
+  ).toBeVisible();
+  await expect(
+    menu.locator(
+      '.ft-wide-more__section-header[data-group="MENU_GROUP_PREFERENCES"]'
+    )
+  ).toBeVisible();
+  await expect(
+    menu.locator('.ft-wide-more__section-header[data-group="ritual.menu_group"]')
+  ).toBeVisible();
   const box = await menu.boundingBox();
   const vp = page.viewportSize();
   expect(box).toBeTruthy();
@@ -118,6 +137,7 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
     timeout: 5_000
   });
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_PREFERENCES');
   const reminderRow = page.locator('#ft-wide-more-menu [data-proxy="reminder"]');
   await reminderRow.scrollIntoViewIfNeeded();
   // Hover first: in-app-reminder tip used to steal the row click.
@@ -140,7 +160,7 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   expect(box.y + box.height).toBeLessThanOrEqual((vp?.height || 800) + 2);
 });
 
-test('wide Arrival: only Quick Start ball; Sit / Honesty / ⋯ hidden', async ({
+test('wide Arrival: Quick Start stays; Sit and Honesty hide; ⋯ stays', async ({
   page
 }) => {
   await openFreshProductShell(page);
@@ -150,7 +170,8 @@ test('wide Arrival: only Quick Start ball; Sit / Honesty / ⋯ hidden', async ({
   });
   await expect(page.locator('#ft-wide-home-sit')).toBeHidden();
   await expect(page.locator('#ft-wide-home-honesty')).toBeHidden();
-  await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
+  // Escape hatch: ⋯ stays while Arrival is up (MENU_CHROME_CENSUS §3).
+  await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
   await expect(page.locator('#ft-wide-home-quickstart')).toBeVisible();
 });
 
@@ -185,15 +206,13 @@ test('wide Idle: top-right note opens Soundscape panel (same as ⋯ Sound)', asy
   );
 });
 
-test('wide Idle: ⋯ has no Sound or Honesty row; note opens Soundscape', async ({
+test('wide Idle: ⋯ has no Sound row; Honesty stays in Practice', async ({
   page
 }) => {
   await openFreshProductShell(page);
   const more = page.locator('#ft-wide-more-btn');
   await more.click();
-  await expect(page.locator('#ft-wide-more-menu [data-proxy="honesty"]')).toHaveCount(
-    0
-  );
+  await expect(page.locator('#ft-wide-more-menu [data-proxy="honesty"]')).toBeVisible();
   await expect(page.locator('#ft-wide-more-menu [data-proxy="sound"]')).toHaveCount(0);
   await expect(page.locator('#ft-wide-home-honesty')).toBeVisible();
   await expect(
@@ -220,6 +239,7 @@ test('wide ⋯: unread row mint only — no floating badge double', async ({
   await expect(
     menu.locator('[data-proxy="companion"] .ft-secondary-menu-hint-dot')
   ).toBeVisible({ timeout: 5_000 });
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_PREFERENCES');
   await expect(
     menu.locator('[data-proxy="reminder"] .ft-secondary-menu-hint-dot')
   ).toBeVisible();
@@ -292,6 +312,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   for (let i = 0; i < proxies.length; i++) {
     const proxy = proxies[i];
     const row = menu.locator(`[data-proxy="${proxy}"]`);
+    await expandWideMoreMenuGroup(page, WIDE_MORE_ROW_GROUP[proxy]);
     await row.scrollIntoViewIfNeeded();
     await row.hover();
 
@@ -320,6 +341,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   // Explicit switch path: companion → reminder → language (no Sit flash).
   for (const proxy of ['companion', 'reminder', 'language']) {
     const row = menu.locator(`[data-proxy="${proxy}"]`);
+    await expandWideMoreMenuGroup(page, WIDE_MORE_ROW_GROUP[proxy]);
     await row.scrollIntoViewIfNeeded();
     await row.hover();
     const hintId = WIDE_MORE_ROW_HINT[proxy];
@@ -333,12 +355,13 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   }
 });
 
-test('wide Idle: Zen Cinema row removed from menu', async ({ page }) => {
+test('wide Idle: Zen Cinema row lives in Inspiration', async ({ page }) => {
   await openFreshProductShell(page);
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expect(menu.locator('[data-proxy="zen-cinema"]')).toHaveCount(0);
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
+  await expect(menu.locator('[data-proxy="zen-cinema"]')).toBeVisible();
 });
 
 test('wide Idle: Five Moments Compass row opens card with backdrop dim', async ({
@@ -411,6 +434,7 @@ test('wide Idle: Quiet Line row opens quote card and save stays available', asyn
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
   await expect(menu.locator('[data-proxy="daily-quote"]')).toBeVisible();
   await menu.locator('[data-proxy="daily-quote"]').click();
   const card = page.locator('#daily-zen-quote-card');
@@ -425,6 +449,7 @@ test('wide Idle: Quiet Line row opens quote card and save stays available', asyn
   // Reflow: reopen menu → card again
   await page.locator('#ft-wide-more-btn').click();
   await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
   await menu.locator('[data-proxy="daily-quote"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
   await expect(backdrop).toBeVisible({ timeout: 5_000 });
@@ -437,6 +462,7 @@ test('wide Idle: Wallpapers row opens card with backdrop dim and blank dismiss',
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
   await expect(menu.locator('[data-proxy="wallpapers"]')).toBeVisible();
   await menu.locator('[data-proxy="wallpapers"]').click();
   const card = page.locator('#digital-wallpapers-card');
@@ -450,6 +476,7 @@ test('wide Idle: Wallpapers row opens card with backdrop dim and blank dismiss',
   await expect(backdrop).toBeHidden({ timeout: 5_000 });
   await page.locator('#ft-wide-more-btn').click();
   await expect(menu).toBeVisible({ timeout: 5_000 });
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
   await menu.locator('[data-proxy="wallpapers"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
   await expect(backdrop).toBeVisible({ timeout: 5_000 });

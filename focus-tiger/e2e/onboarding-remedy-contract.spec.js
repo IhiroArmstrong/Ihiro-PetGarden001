@@ -142,8 +142,8 @@ test.describe('wellness first-run card', () => {
       page.locator('[data-testid="onboarding-purpose-wellness"]')
     ).toBeVisible();
     await expect(
-      page.locator('.onboarding-app-purpose__wellness-title')
-    ).toContainText(/Not therapy or medical care/i);
+      page.locator('[data-testid="onboarding-purpose-wellness-summary"]')
+    ).toContainText(/mindfulness tool, not medical/i);
     await expect(
       page.locator('#onboarding-wellness-first:not([hidden])')
     ).toHaveCount(0);
