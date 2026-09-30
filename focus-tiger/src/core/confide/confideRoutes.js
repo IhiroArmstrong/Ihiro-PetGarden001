@@ -19,6 +19,13 @@ export const CONFIDE_ROUTE = Object.freeze({
   FALLBACK: 'fallback'
 });
 
+/**
+ * Reply route id the local-AI branch stamps on a generated reply
+ * (`ConfideToYinUI._showReply`). Not a classify output, so it is not part of
+ * `CONFIDE_ROUTE` — but consumers that switch on route id must still know it.
+ */
+export const CONFIDE_GENERATE_REPLY_ROUTE = 'generate';
+
 /** Emotion buckets only (excludes safety + fallback). */
 export const CONFIDE_EMOTION_BUCKETS = Object.freeze([
   CONFIDE_ROUTE.ANXIOUS,
