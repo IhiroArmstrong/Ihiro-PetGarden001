@@ -896,7 +896,7 @@ cd focus-tiger && npm run check:all-branches-health -- --topic <keywords>
 
 ### 例行（双周清单）
 
-每 **1～2 周**（可与下班前 Git 同步同日）跑一次：
+每 **1～2 周**（可与下班前 Git 同步同日）跑一次分支健康度。陈旧 open PR 不再靠这次想起来：每周一 11:30（北京时间）由 Actions「Stale open PR scan」自动跑审计并更新 Issue「陈旧 open PR 周扫」。本周做 Git 同步的人在下周一之前处理完并关掉该 Issue。规则见 `WORKFLOW.md`「陈旧 open PR」。
 
 ```bash
 cd focus-tiger && npm run check:all-branches-health

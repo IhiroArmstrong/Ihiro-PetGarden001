@@ -1,0 +1,56 @@
+name: Stale open PR scan
+
+# Monday 03:30 UTC = 11:30 Asia/Shanghai.
+# Report only. Never closes or merges pull requests.
+# Scheduled workflows run from the default branch (develop).
+on:
+  schedule:
+    - cron: '30 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  scan:
+    name: Audit open PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 focus-tiger/scripts/audit-open-pr-e2e.py > "$RUNNER_TEMP/stale-pr-audit.md"
+
+      - name: Publish the weekly issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          title='陈旧 open PR 周扫'
+          num=$(gh issue list --state open --limit 30 --json number,title \
+            --jq '.[] | select(.title == "陈旧 open PR 周扫") | .number' | head -n 1)
+          {
+            echo '机器已跑完。请本周做「下班前 Git 同步」的人，在下周一 11:30（北京时间）之前处理完，然后关掉本 Issue。Issue 还开着 = 这周还没做完。'
+            echo
+            echo '- 建议关闭：当周关掉，并写上理由。'
+            echo '- 含产品源码又落后很多：当周改判成关掉，或从今天的 develop 新开分支重做。不要为了变绿去重跑旧分支。'
+            echo '- 本工作流不会自动关闭或合并。'
+            echo
+            cat "$RUNNER_TEMP/stale-pr-audit.md"
+          } > "$RUNNER_TEMP/stale-pr-issue.md"
+          if [ -z "${num}" ]; then
+            gh issue create --title "$title" --body-file "$RUNNER_TEMP/stale-pr-issue.md"
+          else
+            gh issue comment "$num" --body-file "$RUNNER_TEMP/stale-pr-issue.md"
+          fi
