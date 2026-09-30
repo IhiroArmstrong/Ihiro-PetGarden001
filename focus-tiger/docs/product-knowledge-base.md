@@ -986,6 +986,55 @@
 
 > **权威源（0034）**：`src/core/voiceCommandDuration.js` · `src/core/confide/productKnowledgeCatalog.json` · `kbLiveEntryRegistry.js`
 
+### 4.13 徽章下载（已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-09-30 书面定措辞** · **已进** `productKnowledgeCatalog.json` · **0035 / 0036** 无独立菜单行，记入 cross-cutting · 闸门 **38 条**。不另写「寅币没有下载处」。问获得仍走 **0018**。倾诉念英文短答；中文为对照。
+
+```yaml
+- id: KB-FUNC-0035
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: How to download focus coins?
+  适用场景: 问怎么下载寅币 / focus coins，而不是问怎么获得
+  内容正文: |
+    短答（en）：What you can download right now is a badge that looks a lot like a Focus Coin. If you already have a badge, tap it in the badge display frame to download.
+    中文对照：目前可以下载的是酷似寅币的徽章；只要你已有徽章，就可以在徽章展示框里面直接点击下载。
+    禁止：另写一条「没有下载处」；禁止把本条并进 0018 获得说明；禁止在没有徽章时承诺也能下载。
+  yin_may_retrieve: 是
+  来源: 界面文案 + PO 口径
+  审核状态: 已通过
+  审核人: PO（2026-09-30 · 书面定措辞）
+  风险标记: 否
+  适用产品版本: 现网阿寅旁徽章条（点按下载高清图）
+  更新时间: 2026-09-30
+  locale_keys: [TIP_BADGES_CARD_NOTE, SANCTUARY_BADGES_CARD_NOTE, TIP_BADGES_DOWNLOAD_HINT]
+  检索关键词: [how to download focus coins, download focus coins, 下载寅币, 怎么下载寅币, 如何下载寅币]
+
+- id: KB-FUNC-0036
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: 我可以下载我的徽章吗？
+  适用场景: 已有徽章，问能不能下载徽章图片
+  内容正文: |
+    短答（en）：If you already have a badge, tap it in the badge display frame to download.
+    中文对照：只要你已有徽章，就可以在徽章展示框里面直接点击下载。
+    问法（en）：Can I download my badge?
+    禁止：改口去讲寅币怎么获得；禁止在没有徽章时承诺也能下载。
+  yin_may_retrieve: 是
+  来源: 界面文案 + PO 口径
+  审核状态: 已通过
+  审核人: PO（2026-09-30 · 书面定措辞）
+  风险标记: 否
+  适用产品版本: 现网阿寅旁徽章条（点按下载高清图）
+  更新时间: 2026-09-30
+  locale_keys: [TIP_BADGES_CARD_NOTE, SANCTUARY_BADGES_CARD_NOTE, TIP_BADGES_DOWNLOAD_HINT]
+  检索关键词: [can i download my badge, download my badge, 我可以下载我的徽章, 下载我的徽章]
+```
+
+> **权威源（0035–0036）**：`src/ui/TipKindnessBadgesChrome.js` · `src/locales/en.json` · `src/core/confide/productKnowledgeCatalog.json`
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml

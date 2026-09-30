@@ -575,6 +575,27 @@
         "how to start a pomodoro",
         "can i start a pomodoro"
       ]
+    },
+    {
+      "id": "KB-FUNC-0035",
+      "shortAnswerEn": "What you can download right now is a badge that looks a lot like a Focus Coin. If you already have a badge, tap it in the badge display frame to download.",
+      "keywords": [
+        "how to download focus coins",
+        "download focus coins",
+        "下载寅币",
+        "怎么下载寅币",
+        "如何下载寅币"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0036",
+      "shortAnswerEn": "If you already have a badge, tap it in the badge display frame to download.",
+      "keywords": [
+        "can i download my badge",
+        "download my badge",
+        "我可以下载我的徽章",
+        "下载我的徽章"
+      ]
     }
   ]
 }
