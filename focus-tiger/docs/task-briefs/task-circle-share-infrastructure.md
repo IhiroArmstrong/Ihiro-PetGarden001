@@ -1,6 +1,6 @@
 # Task Brief · Circle 可分享基建
 
-> **状态（2026-09-30）**：草案。只写范围，**不改运行时**。你看过并回复「按这份 Brief 开工」之后，才能改 Circle / Ritual 代码。  
+> **状态（2026-09-30）**：已点头。范围锁成「仪式做完走现有留一句痕迹，不另开一种帖子」。本文件仍不改运行时。  
 > **任务类**：B 类。分享会改变用户在圈子里看到的东西。  
 > **Issue**：[#649](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/649) 挡住 [#650](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/650)。父 Epic [#629](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/629)。自定义 Ritual 仍在 [#628](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/628)，不在本单。
 
@@ -32,7 +32,10 @@
 - 场景里已有的留痕（Rise 后 Leave a trace、Idle 上匿名痕、选句失败要有红字）保持原样。本管子只增加「仪式完成也能走到同一条」。
 - 测试清单里 Circle 见证、昵称、轮询那些待测行，不靠本 Brief 关单。
 
-## 三、开工前仍要你拍的一句
+## 三、已经拍板
 
-若你同意「仪式完成只复用现有留痕，不新建一种帖子」，回复：`按 Circle 可分享基建 Brief 开工`。  
-若你要的是另一种东西（例如圈子里单独一张仪式卡片），先说差别，再改本文件，仍然先不写代码。
+2026-09-30 你同意：仪式做完只复用现有留痕，不新建一种帖子，并说立刻开工。
+
+地面真相（`origin/develop`，`aaf515c3`）：一次仪式做完时，`completeRitualFlow` 已经调用和坐满后 Rise 相同的 `onFocusCircleRiseSideEffects` → `maybeOfferWitnessLeave`。中途安静离开（`leaveRitualFlowQuietly`）不会出这条。门槛仍是现有约 60 秒；时长用的是该仪式呼吸步的设定长度。
+
+因此本单不再新写一条社交时间线，也不再把 Ritual 完成另接一根管子。#650 的仪式选择界面仍不在本文件里写。
