@@ -5,6 +5,7 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { confideClassify } from './confide/confideClassify.js';
 import { CONFIDE_ROUTE } from './confide/confideRoutes.js';
 import {
   canUseSystemTts,
@@ -40,5 +41,79 @@ describe('systemTtsBridge', () => {
 
   it('hides TTS on web builds without bridge', () => {
     assert.equal(canUseSystemTts({ widthPx: 1200, globalObj: {} }), false);
+  });
+
+  it('keeps speaking the local-AI reply route (task-confide-tts-v1 挂载点)', () => {
+    // ConfideToYinUI._showReply passes a bare 'generate' string, not a
+    // CONFIDE_ROUTE member. Brief task-confide-tts-v1: every reply is spoken
+    // except the two crisis routes — so this must stay true through any
+    // deny-list → allow-list rework.
+    assert.equal(shouldSpeakConfideReply('generate'), true);
+  });
+
+  it('keeps every reachable route id on its existing speak decision', () => {
+    // 已好清单 for the deny-list → allow-list swap: these nine ids are every
+    // route value that reaches the gate today (the eight classify outputs plus
+    // the local-AI id), so the swap must not move any of them.
+    const expected = {
+      [CONFIDE_ROUTE.ANXIOUS]: true,
+      [CONFIDE_ROUTE.TIRED]: true,
+      [CONFIDE_ROUTE.STUCK]: true,
+      [CONFIDE_ROUTE.SAD]: true,
+      [CONFIDE_ROUTE.SCATTERED]: true,
+      [CONFIDE_ROUTE.FALLBACK]: true,
+      [CONFIDE_ROUTE.SAFETY_REDIRECT]: false,
+      [CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS]: false,
+      generate: true
+    };
+    for (const [route, speaks] of Object.entries(expected)) {
+      assert.equal(shouldSpeakConfideReply(route), speaks, `route ${route}`);
+    }
+    // Guards against a new classify output slipping in unreviewed.
+    assert.equal(Object.keys(CONFIDE_ROUTE).length, 8);
+  });
+
+  it('stays silent for route ids it does not recognise', () => {
+    // Fail-open gate: an unrecognised route id must not default to speech,
+    // otherwise a future crisis-adjacent route is read aloud until someone
+    // remembers to add it to the exclusion list.
+    assert.equal(shouldSpeakConfideReply(''), false);
+    assert.equal(shouldSpeakConfideReply(undefined), false);
+    assert.equal(shouldSpeakConfideReply(null), false);
+    assert.equal(shouldSpeakConfideReply('crisis_followup'), false);
+  });
+});
+
+describe('crisis paraphrases outside the keyword layer (audit A-1 gap)', () => {
+  /**
+   * Pinned gap, not desired behaviour. These reach CONFIDE_ROUTE.FALLBACK, so
+   * the local-AI branch answers them and — per the TTS v1 挂载点 — speaks the
+   * answer. Widening confideSafetyKeywords is deliberately NOT done here:
+   * it changes classifier scope and needs its own brief.
+   * @type {readonly string[]}
+   */
+  const PARAPHRASES = Object.freeze([
+    'I do not see the point of being here anymore',
+    'I want to disappear forever',
+    'maybe everyone would be better off without me',
+    '我撑不下去了',
+    '我不想醒来了',
+    'もう消えるしかない'
+  ]);
+
+  it('routes to fallback today, which is the open gap', () => {
+    for (const text of PARAPHRASES) {
+      assert.equal(
+        confideClassify(text),
+        CONFIDE_ROUTE.FALLBACK,
+        `expected the documented gap for: ${text}`
+      );
+    }
+  });
+
+  it('keyword layer still catches the explicit phrasings it claims to', () => {
+    assert.equal(confideClassify('I want to kill myself'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+    assert.equal(confideClassify('我不想活了'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+    assert.equal(confideClassify('死にたい'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   });
 });
