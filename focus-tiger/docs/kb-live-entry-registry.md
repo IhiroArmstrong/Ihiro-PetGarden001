@@ -24,11 +24,12 @@ This table answers: **which product surfaces are live in code right now**, which
 
 > **机器块 · 勿手改**。真源：`src/core/kbLiveEntryRegistry.js`。刷新：`npm run audit:kb-live-entries -- --write`。
 
-**Row count**: 27 (23 menu/ritual · 3 home-ball · 1 hud)
+**Row count**: 28 (23 menu/ritual · 4 home-ball · 1 hud)
 
 | id | surface | proxy | liveStatus | menuPath | labelKeys | catalogKbIds |
 |---|---|---|---|---|---|---|
 | `kb-live-sit` | home-ball | — | live | Idle bottom primary · Sit with Yin | `BTN_FOCUS_START` | `KB-FUNC-0001` |
+| `kb-live-pomodoro` | home-ball | — | live | Sit with Yin → 25 minutes (voice: Start a pomodoro) | `BTN_FOCUS_START` | `KB-FUNC-0034` |
 | `kb-live-rise` | home-ball | — | live | During sit · Rise (end session) | `BTN_FOCUS_STOP` | `KB-FUNC-0007` |
 | `kb-live-breath` | home-ball | — | live | Idle left orb · Breath practice (not in ⋯ menu) | `QUICK_START_ARIA` `micro_ritual.pick_duration` `micro_ritual.leave` | `KB-FUNC-0011` |
 | `kb-live-companion` | menu | `companion` | conditional | ⋯ → Practice → How shall we sit? | `COMPANION_MODE_HINT` `COMPANION_MODE_TITLE` | `KB-FUNC-0008` |

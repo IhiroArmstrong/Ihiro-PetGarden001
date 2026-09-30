@@ -6,9 +6,9 @@ Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
 Audit open PRs whose E2E-related CI checks are failure / pending / cancelled.
 
 Read-only report — never closes or merges PRs.
-Run on the existing biweekly branch-health pass (PROCESS.md「分支健康度」;
-WORKFLOW.md「陈旧 open PR」). A red check on an old PR is not evidence that
-develop's tests were skipped.
+Run by GitHub Actions every Monday 11:30 Asia/Shanghai (see WORKFLOW.md
+「陈旧 open PR」). A red check on an old PR is not evidence that develop's
+tests were skipped. The script never closes or merges.
 
 Usage (from repo root or focus-tiger/):
   python3 focus-tiger/scripts/audit-open-pr-e2e.py
@@ -409,7 +409,7 @@ def print_markdown_report(rows: list[PrRow], baseline: str, stale_threshold: int
     print("> 本脚本只输出报告，不执行关闭或合并。")
     print("> 「建议关闭」只覆盖纯文档、纯依赖锁文件，以及落后超过阈值的 Dependabot。")
     print("> 含产品源码且落后很多的 PR 停在「需人工判断」：当周必须改判成关掉或排期重做，不能再挂着。")
-    print("> 建议每 1～2 周随分支健康度一起跑。见 WORKFLOW.md「陈旧 open PR」。")
+    print("> 每周一 11:30（北京时间）由 Actions 自动跑，报告写入 Issue「陈旧 open PR 周扫」。见 WORKFLOW.md「陈旧 open PR」。")
 
 
 def main() -> None:

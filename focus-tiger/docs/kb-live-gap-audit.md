@@ -38,7 +38,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-30 · 27 live rows · 35 approved catalog ids
+**Snapshot**: 2026-09-30 · 28 live rows · 36 approved catalog ids
 
 ### Summary counts
 

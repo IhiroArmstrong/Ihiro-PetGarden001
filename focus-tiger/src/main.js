@@ -70,6 +70,7 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
+import { FocusSitAdjustUI } from './ui/FocusSitAdjustUI.js';
 import { ImmersivePresenceUI } from './ui/ImmersivePresenceUI.js';
 import {
   needsDocumentPictureInPictureProbe,
@@ -336,6 +337,10 @@ import {
 import { VoiceCommandUndoToast } from './ui/VoiceCommandUndoToast.js';
 import { VoiceCommandChrome } from './ui/VoiceCommandChrome.js';
 import { canShowVoiceCommandChrome } from './core/voiceCommandGate.js';
+import {
+  applyFocusSitAdjust,
+  focusSitAdjustStatus
+} from './core/focusSitAdjust.js';
 import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
@@ -2928,11 +2933,38 @@ async function init() {
     idleYinTapAnchor.setHintVisible(show);
   }
 
+  let focusSitAdjust = null;
+
+  function refreshFocusSitAdjust(result) {
+    if (!focusSitAdjust) return;
+    if (result) {
+      const status = focusSitAdjustStatus(result);
+      focusSitAdjust.setStatus(
+        String(t(status.key)).replace(/\{n\}/g, String(status.minutes ?? ''))
+      );
+    }
+    focusSitAdjust.sync({
+      visible:
+        stateManager.state === STATES.FOCUSING &&
+        !sessionUiGate.completionPending,
+      paused: focusSession.isPaused(),
+      openEnded: focusSession.isOpenEnded(),
+      voice: canShowVoiceCommandChrome({ widthPx: window.innerWidth })
+    });
+    if (
+      stateManager.state !== STATES.FOCUSING ||
+      sessionUiGate.completionPending
+    ) {
+      focusSitAdjust.setStatus('');
+    }
+  }
+
   function resyncSessionChrome() {
     sessionChromeSyncApi.resyncSessionChrome();
     syncIdleYinTap();
     syncConfideEarChrome();
     syncTransitionMomentTrigger();
+    refreshFocusSitAdjust();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -4707,6 +4739,24 @@ async function init() {
   stateManager.onChange(() => syncVoiceRiseMic());
   window.addEventListener('resize', () => syncVoiceRiseMic());
   syncVoiceRiseMic();
+
+  focusSitAdjust = new FocusSitAdjustUI(document.getElementById('focus-sit-adjust'), {
+    onPause: () => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'pause' }));
+    },
+    onResume: () => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'resume' }));
+    },
+    onAddFive: () => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 }));
+    },
+    onVoice: (parsed) => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, parsed));
+    }
+  });
+  stateManager.onChange(() => refreshFocusSitAdjust());
+  window.addEventListener('resize', () => refreshFocusSitAdjust());
+  refreshFocusSitAdjust();
 
   /**
    * @param {{

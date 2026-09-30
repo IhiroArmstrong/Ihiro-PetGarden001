@@ -69,6 +69,19 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0001'])
   }),
   Object.freeze({
+    id: 'kb-live-pomodoro',
+    surface: 'home-ball',
+    labelKeys: Object.freeze(['BTN_FOCUS_START']),
+    menuPath: 'Sit with Yin → 25 minutes (voice: Start a pomodoro)',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze(['POMODORO_MINUTES']),
+    authoritativeSources: Object.freeze([
+      'src/core/voiceCommandDuration.js',
+      'src/locales/en.json'
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0034'])
+  }),
+  Object.freeze({
     id: 'kb-live-rise',
     surface: 'home-ball',
     labelKeys: Object.freeze(['BTN_FOCUS_STOP']),

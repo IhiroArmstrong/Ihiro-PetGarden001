@@ -896,14 +896,11 @@ cd focus-tiger && npm run check:all-branches-health -- --topic <keywords>
 
 ### 例行（双周清单）
 
-每 **1～2 周**（可与下班前 Git 同步同日）跑一次：
+每 **1～2 周**（可与下班前 Git 同步同日）跑一次分支健康度。陈旧 open PR 不再靠这次想起来：每周一 11:30（北京时间）由 Actions「Stale open PR scan」自动跑审计并更新 Issue「陈旧 open PR 周扫」。本周做 Git 同步的人在下周一之前处理完并关掉该 Issue。规则见 `WORKFLOW.md`「陈旧 open PR」。
 
 ```bash
 cd focus-tiger && npm run check:all-branches-health
-python3 scripts/audit-open-pr-e2e.py
 ```
-
-第二条在仓库根也可以写成 `python3 focus-tiger/scripts/audit-open-pr-e2e.py`。它只报告还开着、端到端检查不绿的 PR，不关闭、不合并。处理规则见 `WORKFLOW.md`「陈旧 open PR」：纯文档 / 过期依赖锁文件当周关掉；含产品源码且落后很多的，当周改判成关掉或排期重做，不能再挂着。旧的可见性检查发红，不等于主线漏测。
 
 扫 `origin` 上 `feature/*` `fix/*` `docs/*` `chore/*`（排除 `archive/*` `backup/*` `main` `develop`）；附录列出仅本地同前缀分支。对每支输出：behind / ahead、最后提交、有无 open PR、需审查标记与（若可）主题重叠提示。
 
