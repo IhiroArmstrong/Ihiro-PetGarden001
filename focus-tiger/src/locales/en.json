@@ -79,6 +79,7 @@
   "system_tts.toggle_hint": "Uses your Mac's voice. Off by default. Does not affect Confide.",
   "system_tts.status_on": "On",
   "system_tts.status_off": "Off",
+  "system_tts.save_failed": "Couldn't save this setting. It will stay as it was.",
   "system_tts.close": "Close",
   "system_tts.focus_end": "Your sitting time is complete.",
   "HUD_LABEL_STATE": "Status",

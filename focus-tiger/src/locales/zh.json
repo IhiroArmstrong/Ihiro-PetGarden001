@@ -77,6 +77,7 @@
   "system_tts.toggle_hint": "使用 Mac 本机语音，默认关闭；不影响倾诉朗读。",
   "system_tts.status_on": "已开启",
   "system_tts.status_off": "已关闭",
+  "system_tts.save_failed": "这项设置没能存下来，维持原样。",
   "system_tts.close": "关闭",
   "system_tts.focus_end": "Your sitting time is complete.",
   "HUD_LABEL_STATE": "状态",

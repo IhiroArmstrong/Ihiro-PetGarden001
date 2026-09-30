@@ -123,7 +123,10 @@ export class SystemTtsPreferenceUI {
   _onToggleChange() {
     const enabled = this.toggleInput.checked;
     const result = setSystemTtsAnnouncementsEnabled(undefined, enabled);
-    if (!result.saved) {
+    // The switch used to snap back with nothing said, which reads as the app
+    // ignoring the tap rather than failing to write.
+    this._saveFailed = !result.saved;
+    if (this._saveFailed) {
       this.toggleInput.checked = !enabled;
     }
     this._render();
@@ -136,9 +139,13 @@ export class SystemTtsPreferenceUI {
     this.hintEl.textContent = t('system_tts.toggle_hint');
     this.closeBtn.textContent = t('system_tts.close');
     this.toggleInput.checked = enabled;
-    this.statusEl.textContent = enabled
-      ? t('system_tts.status_on')
-      : t('system_tts.status_off');
+    this.statusEl.textContent = this._saveFailed
+      ? t('system_tts.save_failed')
+      : enabled
+        ? t('system_tts.status_on')
+        : t('system_tts.status_off');
+    this.statusEl.dataset.state = this._saveFailed ? 'save-failed' : 'ok';
+    this.toggleInput.setAttribute('aria-invalid', this._saveFailed ? 'true' : 'false');
     this.toggleInput.setAttribute(
       'aria-describedby',
       `${this.hintEl.id} ${this.statusEl.id}`

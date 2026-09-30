@@ -77,6 +77,7 @@
   "system_tts.toggle_hint": "Mac の音声を使います。既定はオフ。Confide の読み上げには影響しません。",
   "system_tts.status_on": "オン",
   "system_tts.status_off": "オフ",
+  "system_tts.save_failed": "設定を保存できませんでした。元のままです。",
   "system_tts.close": "閉じる",
   "system_tts.focus_end": "お座りの時間が終わりました。",
   "HUD_LABEL_STATE": "状態",
