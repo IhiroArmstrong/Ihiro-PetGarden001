@@ -10,8 +10,11 @@ name: focus-tiger full e2e
 # just to refresh schedule. See docs/ENV_CONFIG.md §3.
 # No repository Secrets required for this local-shell Playwright suite.
 #
-# Plan A (2026-07-31): 2 shards + junit always + slim artifacts — so a wall-clock
-# cancel still leaves a pass/fail/flaky list instead of an empty/huge HTML report.
+# Plan A (2026-07-31): shards + junit always + slim artifacts.
+# 2026-10-01: 2×120m cancelled 9/28–9/30 with no JUnit (Playwright killed before
+# flush) and a multi-GB test-results upload that dropped the job log.
+# 4 shards; Playwright globalTimeout exits first so JUnit is written; traces
+# only (trace.zip), and only when the shard itself failed — not on cancel.
 on:
   workflow_dispatch:
     inputs:
@@ -25,13 +28,14 @@ on:
 
 jobs:
   e2e-full:
-    name: full e2e (${{ matrix.shard }}/2)
+    name: full e2e (${{ matrix.shard }}/4)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2]
-    # Per-shard budget. Dual jobs cut wall-clock vs one 120m single lane.
+        shard: [1, 2, 3, 4]
+    # Job cap stays above Playwright globalTimeout (100m in ci-full config)
+    # so the process can exit and the JUnit upload step still runs.
     # Not a flaky root-cause fix — goto jitter still tracked separately.
     timeout-minutes: 120
     defaults:
@@ -65,7 +69,7 @@ jobs:
           npx playwright test
           --config=playwright.ci-full.config.js
           --workers=1
-          --shard=${{ matrix.shard }}/2
+          --shard=${{ matrix.shard }}/4
         env:
           CI: 'true'
           PLAYWRIGHT_CHANNEL: ''
@@ -81,13 +85,14 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
-      # Traces/screenshots only — no HTML report (was ~14GB under flaky storms).
+      # trace.zip only. Whole test-results/ included retain-on-failure videos
+      # (~11GB on 2026-09-27) and, on cancel, never finished — job log blob gone.
       - name: Upload failure traces (slim)
-        if: ${{ failure() || cancelled() }}
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: test-results-full-e2e-shard-${{ matrix.shard }}
-          path: focus-tiger/test-results/
+          path: focus-tiger/test-results/**/trace.zip
           retention-days: 7
           if-no-files-found: ignore
 
