@@ -8,11 +8,86 @@ import { describe, it } from 'node:test';
 import { confideClassify } from './confide/confideClassify.js';
 import { CONFIDE_ROUTE } from './confide/confideRoutes.js';
 import {
+  speakSystemTts,
+  stopSystemTts,
   canUseSystemTts,
   hasSystemTtsBridge,
   mapLocaleToTtsLocale,
   shouldSpeakConfideReply
 } from './systemTtsBridge.js';
+
+/** Let the stop→speak chain settle; the bridge calls are async. */
+function flush() {
+  return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
+/**
+ * @param {{ stopThrows?: boolean }} [opts]
+ */
+function fakeShell({ stopThrows = false } = {}) {
+  const calls = [];
+  return {
+    calls,
+    globalObj: {
+      desktopShell: {
+        isDesktop: true,
+        systemTts: {
+          async stop() {
+            calls.push('stop');
+            if (stopThrows) throw new Error('stop failed');
+          },
+          async speak(payload) {
+            calls.push(`speak:${payload.text}`);
+          }
+        }
+      }
+    }
+  };
+}
+
+describe('systemTtsBridge speech coordination (audit T-1 / T-2)', () => {
+  it('stops whatever is speaking before starting the next line', async () => {
+    const shell = fakeShell();
+    assert.equal(speakSystemTts({ text: 'first', globalObj: shell.globalObj }), true);
+    await flush();
+    assert.equal(speakSystemTts({ text: 'second', globalObj: shell.globalObj }), true);
+    await flush();
+    assert.deepEqual(shell.calls, ['stop', 'speak:first', 'stop', 'speak:second']);
+  });
+
+  it('keeps the newest line even when the two sources are different features', async () => {
+    // Confide reply and the focus-end announcement both land here now, so the
+    // ordering guarantee is the same regardless of who asked.
+    const shell = fakeShell();
+    speakSystemTts({ text: 'confide reply', globalObj: shell.globalObj });
+    speakSystemTts({ text: 'your sitting time is complete', globalObj: shell.globalObj });
+    await flush();
+    assert.equal(shell.calls.filter((c) => c === 'stop').length, 2);
+    assert.equal(shell.calls[shell.calls.length - 1], 'speak:your sitting time is complete');
+  });
+
+  it('still speaks when stopping fails', async () => {
+    const shell = fakeShell({ stopThrows: true });
+    assert.equal(speakSystemTts({ text: 'hello', globalObj: shell.globalObj }), true);
+    await flush();
+    assert.deepEqual(shell.calls, ['stop', 'speak:hello']);
+  });
+
+  it('dispatches nothing without a bridge or without text', () => {
+    const shell = fakeShell();
+    assert.equal(speakSystemTts({ text: '   ', globalObj: shell.globalObj }), false);
+    assert.equal(speakSystemTts({ text: 'hi', globalObj: {} }), false);
+    assert.equal(stopSystemTts({}), false);
+    assert.deepEqual(shell.calls, []);
+  });
+
+  it('stopSystemTts reports dispatch and reaches the bridge', async () => {
+    const shell = fakeShell();
+    assert.equal(stopSystemTts(shell.globalObj), true);
+    await flush();
+    assert.deepEqual(shell.calls, ['stop']);
+  });
+});
 
 describe('systemTtsBridge', () => {
   it('maps product locales to AVSpeech locale ids', () => {
