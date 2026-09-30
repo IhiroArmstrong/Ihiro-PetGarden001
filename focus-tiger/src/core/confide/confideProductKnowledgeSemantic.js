@@ -90,20 +90,37 @@ export function isProductKnowledgeColdStartProbe(text) {
 }
 
 /**
+ * Locked matrix negatives (mood / not a product ask). Semantic "looks like
+ * product" must not pull these into the honesty empty state.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isConfideMoodAsideFromProductKnowledge(text) {
+  const raw = normalizeConfideIntentText(text);
+  if (!raw) return false;
+  if (/怎么|如何|在哪|哪里|提醒/.test(raw)) return false;
+  return /有点烦|有點煩|会不会好一点|會不會好一點/.test(raw);
+}
+
+/**
  * @param {{
  *   text: string,
  *   embeddingState: 'ready' | 'not_ready' | 'error',
  *   semanticIsProduct?: boolean,
  *   catalogHit: boolean,
- *   catalogAttempted?: boolean
+ *   catalogAttempted?: boolean,
+ *   nearAction?: 'hit' | 'honesty' | 'skip' | null
  * }} input
  * @returns {'skip' | 'hit' | 'honesty'}
  */
 export function resolveProductKnowledgeGateAction(input) {
-  const { text, embeddingState, semanticIsProduct, catalogHit } = input;
+  const { text, embeddingState, semanticIsProduct, catalogHit, nearAction } = input;
   if (catalogHit) return 'hit';
+  if (isConfideMoodAsideFromProductKnowledge(text)) return 'skip';
 
   if (embeddingState === 'ready') {
+    if (nearAction === 'skip') return 'skip';
+    if (nearAction === 'honesty') return 'honesty';
     if (!semanticIsProduct) return 'skip';
     return 'honesty';
   }

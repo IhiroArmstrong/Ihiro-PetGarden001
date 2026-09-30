@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   classifyProductKnowledgeSemantic,
+  isConfideMoodAsideFromProductKnowledge,
   isProductKnowledgeColdStartProbe,
   resolveProductKnowledgeGateAction
 } from './confideProductKnowledgeSemantic.js';
@@ -35,6 +36,27 @@ describe('confideProductKnowledgeSemantic', () => {
         embeddingState: 'ready',
         semanticIsProduct: false,
         catalogHit: false
+      }),
+      'skip'
+    );
+    assert.equal(isConfideMoodAsideFromProductKnowledge('有点烦'), true);
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: '有点烦',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        nearAction: 'honesty'
+      }),
+      'skip'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: '观察翼是什么',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        nearAction: 'skip'
       }),
       'skip'
     );

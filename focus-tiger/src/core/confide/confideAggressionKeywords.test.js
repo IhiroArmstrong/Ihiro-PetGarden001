@@ -28,6 +28,8 @@ test('aggression positives ZH: toward-others violence intent', () => {
   assert.equal(matchesAggressionTowardOthers('想打别人'), true);
   assert.equal(matchesAggressionTowardOthers('想伤害他'), true);
   assert.equal(matchesAggressionTowardOthers('想傷害別人'), true);
+  assert.equal(matchesAggressionTowardOthers('我想揍别人'), true);
+  assert.equal(matchesAggressionTowardOthers('俺企图收拾别人一顿'), true);
 });
 
 test('aggression positives JA: toward-others violence intent', () => {
@@ -53,6 +55,8 @@ test('aggression negatives ZH: games, sports idioms, self-harm phrasing', () => 
   assert.equal(matchesAggressionTowardOthers('打字'), false);
   assert.equal(matchesAggressionTowardOthers('我要打游戏'), false);
   assert.equal(matchesAggressionTowardOthers('想打一架结果输了'), false);
+  assert.equal(matchesAggressionTowardOthers('收拾房间'), false);
+  assert.equal(matchesAggressionTowardOthers('收拾心情'), false);
   assert.equal(matchesAggressionTowardOthers('想伤害自己'), false);
   assert.equal(matchesAggressionTowardOthers('自残'), false);
 });

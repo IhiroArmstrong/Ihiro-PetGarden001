@@ -40,6 +40,8 @@ export function resolveConfideReply({
     localDate,
     salt,
     excludeIds,
+    hardExcludeIds:
+      route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS ? ['aggression-04'] : [],
     excludeNormalizedTexts,
     locale
   });

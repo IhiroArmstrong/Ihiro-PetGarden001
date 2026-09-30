@@ -1540,6 +1540,7 @@ export class ConfideToYinUI {
       }
     }
     let nearHit = null;
+    let nearAction = null;
     if (
       embeddingState === 'ready' &&
       !catalogResult.hit &&
@@ -1549,6 +1550,7 @@ export class ConfideToYinUI {
         nearestId: gate.nearestId,
         nearestScore: gate.nearestScore
       });
+      nearAction = near.action;
       if (near.action === 'hit' && near.id) {
         const entry = getRetrievableProductKnowledgeEntry(near.id);
         if (entry && productKnowledgeReplyPassesGuard(entry.shortAnswerEn)) {
@@ -1560,7 +1562,8 @@ export class ConfideToYinUI {
       text,
       embeddingState,
       semanticIsProduct,
-      catalogHit: Boolean(catalogResult.hit || nearHit)
+      catalogHit: Boolean(catalogResult.hit || nearHit),
+      nearAction
     });
     const shown = catalogResult.hit
       ? { id: catalogResult.id, text: catalogResult.text }
