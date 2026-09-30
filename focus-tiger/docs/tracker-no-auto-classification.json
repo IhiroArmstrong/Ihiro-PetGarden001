@@ -1,0 +1,807 @@
+{
+  "generatedAt": "2026-09-30T11:43:21.443Z",
+  "source": "docs/TEST_TRACKER.md",
+  "totals": {
+    "tableRows": 637,
+    "pendingHuman": 350,
+    "pendingWithAutomationMention": 223,
+    "pendingNoAutomationMention": 127,
+    "uiPendingHuman": 315
+  },
+  "classificationCounts": {
+    "automatable": 22,
+    "human-eye": 76,
+    "model-wording": 20,
+    "skip-doc": 9
+  },
+  "tonightBatchCandidates": [
+    {
+      "line": 411,
+      "name": "My Circle 同伴痕迹列表（24h）"
+    },
+    {
+      "line": 588,
+      "name": "Allow 后 What Yin remembers 空态文案"
+    },
+    {
+      "line": 645,
+      "name": "Yin Personal Memory Slice 1a（Consent + store 骨架）"
+    },
+    {
+      "line": 647,
+      "name": "Yin Personal Memory Slice 1c（What Yin remembers + Forget）"
+    }
+  ],
+  "classification": {
+    "automatable": [
+      {
+        "line": 411,
+        "name": "My Circle 同伴痕迹列表（24h）",
+        "type": "UI可见",
+        "accessPath": "`feature/my-circle-peer-traces` · `FocusCirclePanelUI` · `focusCirclePeerTraces.js`"
+      },
+      {
+        "line": 427,
+        "name": "Gemma4-E4B 生产 L0 接线（Mac 优先 · L3 换模）",
+        "type": "纯后端/桌面",
+        "accessPath": "`l0ModelProfiles.js` · `l0Config.js`"
+      },
+      {
+        "line": 450,
+        "name": "P5 开工 3 · RitualFlow 早退回顾变轻（S09）",
+        "type": "UI/交互",
+        "accessPath": "`RitualFlowUI.js` · `MODAL_USAGE_AUDIT` S09"
+      },
+      {
+        "line": 453,
+        "name": "Support 结账错误内联提示（NA4/NA5 · P4）",
+        "type": "UI可见",
+        "accessPath": "`http://127.0.0.1:5173/?product=1` · `#yin-support-modal` · `[data-testid=yin-support-pro-checkout-status]`"
+      },
+      {
+        "line": 491,
+        "name": "冷启动「目标」问答首卡",
+        "type": "UI/交互",
+        "accessPath": "`coldStartGoalGate.js` · `ColdStartGoalCardUI.js` · `main.js` defer 队"
+      },
+      {
+        "line": 494,
+        "name": "Focus Circle Witness Idle · 左下痕迹条玻璃换肤（二期）",
+        "type": "UI可见",
+        "accessPath": "`FocusCircleWitnessChrome.js` · `glassPanelStyles.js`"
+      },
+      {
+        "line": 521,
+        "name": "Growth 面板 · 背景 dim（Slice 2）",
+        "type": "UI可见",
+        "accessPath": "`#yin-coin-panel-backdrop` · `#yin-support-fab` · `.ambient-soundscape__mute`"
+      },
+      {
+        "line": 525,
+        "name": "今日静语 Quiet Line · 背景 dim（Slice 1a）",
+        "type": "UI可见",
+        "accessPath": "`#daily-zen-quote-card` · `#daily-zen-quote-backdrop`"
+      },
+      {
+        "line": 526,
+        "name": "阿寅静帧壁纸 · 背景 dim（Slice 1b）",
+        "type": "UI可见",
+        "accessPath": "`#digital-wallpapers-card` · `#digital-wallpapers-backdrop` · `data-testid=digital-wallpapers-backdrop`"
+      },
+      {
+        "line": 545,
+        "name": "Quiet Together ∪ Global Lanterns MVP",
+        "type": "UI可见",
+        "accessPath": "`fix/quiet-together-lanterns-idle-peek-layout`"
+      },
+      {
+        "line": 579,
+        "name": "Confide E′ 规则预筛（软边界 / 陪伴字面 / 窄 OTHER）",
+        "type": "UI / 路由",
+        "accessPath": "Electron Confide · 场景 AE L2 步 7–9"
+      },
+      {
+        "line": 588,
+        "name": "Allow 后 What Yin remembers 空态文案",
+        "type": "UI可见",
+        "accessPath": "`npm run desktop:dev` · Confide · What Yin remembers"
+      },
+      {
+        "line": 596,
+        "name": "叠层占用三问接 registry（摸头 / 进睡）",
+        "type": "UI可见",
+        "accessPath": "Idle · Confide · Support · Journey Log · `#idle-yin-tap-anchor`"
+      },
+      {
+        "line": 597,
+        "name": "Privacy 点空白关 sheet（父卡 hidden）",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#onboarding-privacy-sheet`"
+      },
+      {
+        "line": 645,
+        "name": "Yin Personal Memory Slice 1a（Consent + store 骨架）",
+        "type": "UI可见",
+        "accessPath": "—"
+      },
+      {
+        "line": 647,
+        "name": "Yin Personal Memory Slice 1c（What Yin remembers + Forget）",
+        "type": "UI可见",
+        "accessPath": "—"
+      },
+      {
+        "line": 662,
+        "name": "Yin's Collections「years of sitting」文案",
+        "type": "UI可见",
+        "accessPath": "`#yin-coin-panel` · `YIN_COIN_NOT_FOR_SALE`"
+      },
+      {
+        "line": 675,
+        "name": "Companion 三选一下藏 Breath 左球",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `.session-start-dock__panel` · `#ft-wide-home-quickstart`"
+      },
+      {
+        "line": 777,
+        "name": "FocusHUD · 无脉冲点宿主悬停出 tip",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#focus-hud` · e2e `focus-hud-hover.spec.js`「hosts show hint copy」"
+      },
+      {
+        "line": 812,
+        "name": "RitualFlow 三进阶仪式（Morning / Emotional Reset / Work Transition）",
+        "type": "UI可见",
+        "accessPath": "`#ritual-flow` · `?product=1` · `?entitlementMock=` · `?ritualBreathMs=`"
+      },
+      {
+        "line": 873,
+        "name": "UI 叠层玻璃泡统一（Arrival 式半透明）",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · Honesty/Companion/⋯/抽屉/Sound"
+      },
+      {
+        "line": 974,
+        "name": "375 · How shall we sit 不得再出 Honesty dock pill",
+        "type": "UI可见",
+        "accessPath": "DevTools 375 · `?product=1` · e2e `375 companion stage: Honesty…`"
+      }
+    ],
+    "human-eye": [
+      {
+        "line": 429,
+        "name": "fix/circle-locale-ui-batch · 日语漏译 + 收藏避让 + 坐中纸面 + Witness 429",
+        "type": "UI可见",
+        "accessPath": "`daily-wisdom.ja.js` · `MustardSeedSealCardUI` · `FocusCoinsPanelUI` · `ImmersivePresenceUI` · `focusCircleWitness.js`"
+      },
+      {
+        "line": 430,
+        "name": "Safari My Circle 昵称 Saving 卡死 + 重复 Join 涨人数",
+        "type": "UI可见",
+        "accessPath": "`fix/circle-safari-identity-membership`"
+      },
+      {
+        "line": 431,
+        "name": "Focus Circle 成员态轮询互踩（拷贝提示 / Start 卡死 / Leave 闪 / 人数 1↔2）",
+        "type": "UI可见",
+        "accessPath": "`fix/focus-circle-membership-refresh`"
+      },
+      {
+        "line": 464,
+        "name": "菜单治理第二刀（普查 + Login 占位 + Esc 顶层）",
+        "type": "UI可见",
+        "accessPath": "`idleChromeOrchestration` · `overlayEscapeStack` · `WideIdleMoreMenu` · `NarrowIdleShell`"
+      },
+      {
+        "line": 487,
+        "name": "冷启动目标卡后 Yin 消失（吹花日）",
+        "type": "UI/交互",
+        "accessPath": "`main.js`（吹花 onComplete/气泡 onHidden + **四选 onOpen** `ensureIdleBaselineAfterWelcome` + 微仪式 `onBreathStart` 门闩）"
+      },
+      {
+        "line": 489,
+        "name": "#727 合入后仍无吹花（临时日志取证，不改逻辑）",
+        "type": "UI/交互",
+        "accessPath": "旁支 Vite，勿抢 QA 5173"
+      },
+      {
+        "line": 493,
+        "name": "切语问候动画（语言面板开着）",
+        "type": "UI可见",
+        "accessPath": "`__sceneAnimationSliceA` · `focus-tiger.locale-greeting.v1`"
+      },
+      {
+        "line": 495,
+        "name": "Focus Circle Witness Leave · 玻璃换肤 + 选句点击修复",
+        "type": "UI可见",
+        "accessPath": "`FocusCircleWitnessLeaveUI.js` · `glassPanelStyles.js`"
+      },
+      {
+        "line": 496,
+        "name": "Idle chrome · Five Moments 球 / Honesty 菜单 / Premium unlocked / 悬停 label",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#ft-wide-home-honesty` · `[data-testid=idle-membership-unlocked]`"
+      },
+      {
+        "line": 514,
+        "name": "备份 Import 可折叠卡片",
+        "type": "UI可见",
+        "accessPath": "`#local-practice-data-import-head` · `#local-practice-data-import-body`"
+      },
+      {
+        "line": 515,
+        "name": "宽屏倾听耳与 FocusHUD 间距",
+        "type": "UI可见",
+        "accessPath": "`#confide-ear-chrome` · `#focus-hud`"
+      },
+      {
+        "line": 524,
+        "name": "付费族 · SB-19 视觉-only dim（Slice 3）",
+        "type": "UI可见",
+        "accessPath": "`#newsletter-capture-backdrop` · `#confide-to-yin-backdrop` · `#yin-tip-jar-backdrop` · `#yin-sanctuary-backdrop`"
+      },
+      {
+        "line": 528,
+        "name": "Focus Circle Identity（刀 2e · 认人层）",
+        "type": "UI可见",
+        "accessPath": "`feature/focus-circle-identity-2e`"
+      },
+      {
+        "line": 529,
+        "name": "Focus Circle Was-Here-Today（刀 2d）",
+        "type": "UI可见",
+        "accessPath": "`feature/focus-circle-was-here-2d`"
+      },
+      {
+        "line": 541,
+        "name": "Focus Circle Gentle Witness（刀 2c）",
+        "type": "UI可见",
+        "accessPath": "`feature/focus-circle-witness-2c`"
+      },
+      {
+        "line": 543,
+        "name": "Focus Circle MVP（刀 2a）",
+        "type": "UI可见",
+        "accessPath": "`feature/not-alone-menu-group`"
+      },
+      {
+        "line": 544,
+        "name": "Focus Circle Presence（刀 2b）",
+        "type": "UI可见",
+        "accessPath": "`feature/focus-circle-presence-2b`"
+      },
+      {
+        "line": 583,
+        "name": "Sanctuary Unlock Lifetime 结账（Support 卡）",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#yin-sanctuary-buy` · `#yin-sanctuary-card`"
+      },
+      {
+        "line": 584,
+        "name": "Stripe 回跳端口 + Support 第五卡 Add-on",
+        "type": "UI可见",
+        "accessPath": "Support `#yin-support-companion-addon-cta` · Stripe Test"
+      },
+      {
+        "line": 585,
+        "name": "Idle 冷启动额头发现提示",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `[data-testid=idle-yin-tap-hint]`"
+      },
+      {
+        "line": 599,
+        "name": "覆盖确认标题/说明/多于本机 info/`savedAt`",
+        "type": "UI可见",
+        "accessPath": "`#privacy-local-data-mount`"
+      },
+      {
+        "line": 600,
+        "name": "Privacy sheet 可滚 + 点空白关闭",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#onboarding-privacy-sheet` · `#onboarding-app-purpose-backdrop`"
+      },
+      {
+        "line": 602,
+        "name": "Soundscape Chimes 独立音量（默认 25%）",
+        "type": "UI可见",
+        "accessPath": "Soundscape → Chimes · `focus-tiger.session-cues.v1` `cueVolume`"
+      },
+      {
+        "line": 632,
+        "name": "YPE L2 UI（第四条同意 + 本机 profile id）",
+        "type": "UI可见",
+        "accessPath": "—"
+      },
+      {
+        "line": 650,
+        "name": "Confide Enter 发送 + 1.7B 型号行 + 0.6B 残留清理（#419）",
+        "type": "UI可见",
+        "accessPath": "PR #419 · `l0SpikeSeed.retireLegacyProductionGgufs`"
+      },
+      {
+        "line": 667,
+        "name": "练习记忆云备份 · 后台网络错峰",
+        "type": "UI可见",
+        "accessPath": "http://127.0.0.1:5173/?product=1 （须在本 worktree focus-tiger 起 Vite；勿用 QA 5173）"
+      },
+      {
+        "line": 673,
+        "name": "坐禅磬声相对音乐减半",
+        "type": "UI可见",
+        "accessPath": "`#ambient-session-cues-toggle` · `/audio/cues/`"
+      },
+      {
+        "line": 674,
+        "name": "莲花池前景 + 宽屏外扩",
+        "type": "UI可见",
+        "accessPath": "`?qaLotusBlooms=12` · `#lotus-pond`"
+      },
+      {
+        "line": 676,
+        "name": "Idle 二级面板互斥（? / Soundscape / Membership）",
+        "type": "UI可见",
+        "accessPath": "`idleSecondaryPanels.js` · `#onboarding-app-purpose-backdrop`"
+      },
+      {
+        "line": 677,
+        "name": "Membership 已订阅状态卡（分离 Restore）",
+        "type": "UI可见",
+        "accessPath": "`#yin-membership-active-section` · `#yin-membership-restore-link`"
+      },
+      {
+        "line": 679,
+        "name": "Soundscape Tab（Ambience / Chimes）",
+        "type": "UI可见",
+        "accessPath": "`.ambient-soundscape__tabs` · `AMBIENT_TAB_*`"
+      },
+      {
+        "line": 720,
+        "name": "Cloudflare Workers API 骨架（cloud/ stub）",
+        "type": "纯后端",
+        "accessPath": "`http://127.0.0.1:8787` · `cloud/README.md`"
+      },
+      {
+        "line": 721,
+        "name": "UI Kit 设计实验（tokens + Web Components）",
+        "type": "UI可见",
+        "accessPath": "`/` · `/?product=1` · demo `?v=20260721f`"
+      },
+      {
+        "line": 723,
+        "name": "Arrival Practice / Choose 点头 pingpong→idle",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · Sit → Choose · `?tasteLayer=0`"
+      },
+      {
+        "line": 724,
+        "name": "Arrival Practice / 抵达练习（Welcome → Notice → Breath → Choose）",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · Sit → Notice → Breath → Choose"
+      },
+      {
+        "line": 728,
+        "name": "调试面板 · 全入库素材试播",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui`（勿加 `?product=1`）"
+      },
+      {
+        "line": 729,
+        "name": "一次性情绪时长标准（ack / light）",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui`"
+      },
+      {
+        "line": 733,
+        "name": "Immersive Presence / 全屏陪伴 + Document PiP 探针",
+        "type": "UI可见",
+        "accessPath": "`#immersive-presence` · `?product=1` · Safari + Chrome · 375"
+      },
+      {
+        "line": 734,
+        "name": "Companion · Offline 禁止二次 Sit / 跳过 Arrival",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · e2e K · `#arrival-practice`"
+      },
+      {
+        "line": 751,
+        "name": "stretchReminder / 舒展提醒",
+        "type": "UI可见",
+        "accessPath": "调试面板 / 生产长计时 · DEV：`__mindfulReminderController`"
+      },
+      {
+        "line": 764,
+        "name": "PointerInteraction · 静止好奇 curiousTilt",
+        "type": "UI可见",
+        "accessPath": "全屏命中层 · DEV：`__pointerInteraction`"
+      },
+      {
+        "line": 767,
+        "name": "FocusSession + Focus HUD（Sit with Yin / Rise）",
+        "type": "UI可见",
+        "accessPath": "`#focus-hud` · `#btn-focus`"
+      },
+      {
+        "line": 774,
+        "name": "Onboarding hints · click 圆点 tier（peeked/static/done）",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `.onboarding-hint-badge[data-ack]` · `ONBOARDING_HINTS.md` §〇"
+      },
+      {
+        "line": 776,
+        "name": "FocusHUD · Idle Calm 圆点可点（原钢蓝 discovery-dot）",
+        "type": "UI可见",
+        "accessPath": "`#focus-hud .ft-hud__gauge` / `.ft-hud__bar` / `.ft-hud__streak` · `e2e/focus-hud-hover.spec.js`"
+      },
+      {
+        "line": 783,
+        "name": "候选陪伴手势 · 逐条试播",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui` · 入库素材 / 组合试播"
+      },
+      {
+        "line": 788,
+        "name": "wakeUp 调试键删除",
+        "type": "纯后端+调试",
+        "accessPath": "`#emotion-debug-ui`"
+      },
+      {
+        "line": 789,
+        "name": "冷启动首屏呼吸感（Yin 留白 + HUD/球区收纳）",
+        "type": "UI可见",
+        "accessPath": "worktree · `http://127.0.0.1:5175/?product=1`"
+      },
+      {
+        "line": 795,
+        "name": "AcrossToolsIdleGuard / Flow State 闲置 toast",
+        "type": "UI可见",
+        "accessPath": "生产长等待 · DEV：`__acrossToolsIdleGuard` · **单元** `AcrossToolsIdleGuard.test.js`（阈值后触发一次；**非** 30min 真实墙钟 DOM）"
+      },
+      {
+        "line": 807,
+        "name": "Tip Jar · 任务 5 部署（Stripe / Worker / KV）",
+        "type": "纯后端+运维",
+        "accessPath": "`ihiro.workers.dev` · KnownRisky #25 · checklist §A"
+      },
+      {
+        "line": 810,
+        "name": "Yin Membership 订阅 Checkout（B）",
+        "type": "UI可见",
+        "accessPath": "checklist §C · `#yin-membership-restore`"
+      },
+      {
+        "line": 815,
+        "name": "Yin's Sanctuary Lifetime Unlock UI（B）",
+        "type": "UI可见",
+        "accessPath": "checklist §B · `#yin-sanctuary-restore`"
+      },
+      {
+        "line": 865,
+        "name": "场景动画 · Slice A（切语看书/喝茶 + Honesty Idle 点头）",
+        "type": "UI可见",
+        "accessPath": "`sceneAnimationDispatcher` · `__sceneAnimationSliceA` · `__sceneAnimationDispatch` · `e2e/language-switch.spec.js`"
+      },
+      {
+        "line": 871,
+        "name": "Emotion debug UI（右上角调试面板）",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui`"
+      },
+      {
+        "line": 872,
+        "name": "smiling / blink-smile（欢迎与调试）",
+        "type": "UI可见",
+        "accessPath": "Arrival / 调试面板"
+      },
+      {
+        "line": 875,
+        "name": "book-reading / 单程看书（日语切语）",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#emotion-debug-ui` · `book-reading`"
+      },
+      {
+        "line": 876,
+        "name": "magic-book-reading / 开场魔法书",
+        "type": "UI可见",
+        "accessPath": "清 `focus-tiger.scene-anim-daily.v1` · `?product=1` 硬刷新 · 或调试钮"
+      },
+      {
+        "line": 877,
+        "name": "golden-halo-palms / Honesty 长补登金环合掌",
+        "type": "UI可见",
+        "accessPath": "Honesty ≥30 · `#emotion-debug-ui`"
+      },
+      {
+        "line": 880,
+        "name": "haloBreathing / 光环呼吸奖励",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui`"
+      },
+      {
+        "line": 882,
+        "name": "tPose / 显示 3D 垫底（调试）",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui`"
+      },
+      {
+        "line": 901,
+        "name": "「一分钟呼吸」· HUD 墙钟与完成 toast 中置",
+        "type": "UI可见",
+        "accessPath": "同上"
+      },
+      {
+        "line": 902,
+        "name": "「一分钟呼吸」· Idle 入口立体钮与 dock 间距",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#session-start-dock`"
+      },
+      {
+        "line": 903,
+        "name": "「一分钟呼吸」· SessionComplete 摆尾（禁 Celebrating）",
+        "type": "UI可见",
+        "accessPath": "同上"
+      },
+      {
+        "line": 907,
+        "name": "conjure-flowers-blow-away / 变花吹散 Lab 入库",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui` · tip `a50c507` · Brief"
+      },
+      {
+        "line": 909,
+        "name": "变花鼓励 · Phase 2b 产品冷启动",
+        "type": "UI可见",
+        "accessPath": "`flowerWelcomeGate` · Dispatcher WELCOME_APP · `#flower-blow-welcome-bubble`"
+      },
+      {
+        "line": 910,
+        "name": "变花鼓励气泡 · Phase 2a Lab",
+        "type": "UI可见",
+        "accessPath": "`#flower-blow-welcome-bubble` · Brief"
+      },
+      {
+        "line": 924,
+        "name": "轻完成池撤出 curiousTilt",
+        "type": "UI可见",
+        "accessPath": "`?product=1&microRitualMs=2800` · 完成 toast 后看 Yin"
+      },
+      {
+        "line": 931,
+        "name": "门闩一体包 · Companion 点选→真实开表",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · e2e A/A4/A4b/J + `375 Choose bow` · `#btn-focus` / `#ft-narrow-home-sit`"
+      },
+      {
+        "line": 950,
+        "name": "窄屏 ActionBar · 常显本机墙钟（非会话计时）",
+        "type": "UI可见",
+        "accessPath": "`.ft-narrow-action-bar` · `#focus-hud` · `NarrowIdleShell`"
+      },
+      {
+        "line": 960,
+        "name": "产品壳链接 ?product=1（隐藏调试面板）",
+        "type": "UI可见",
+        "accessPath": "`http://127.0.0.1:5173/?product=1` vs `/`"
+      },
+      {
+        "line": 963,
+        "name": "窄屏 · Sit with Yin 主 CTA 不截断",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `#btn-focus`"
+      },
+      {
+        "line": 964,
+        "name": "Hints · 背景音乐 opt-in 提示锚右上 mute（非右下 Sound）",
+        "type": "UI可见",
+        "accessPath": "`HINT_AMBIENT_SOUNDSCAPE` · `.ambient-soundscape__mute` · `#ft-narrow-mute-btn`"
+      },
+      {
+        "line": 968,
+        "name": "Companion · Offline Space 说明文案（桌面优先）",
+        "type": "UI可见",
+        "accessPath": "`?product=1` · `.session-start-dock__option` Offline"
+      },
+      {
+        "line": 971,
+        "name": "窄屏 · 主屏三主钮（Sit / Quick Start / Honesty）",
+        "type": "UI可见",
+        "accessPath": "DevTools 375 · `/icons/icon-*.png` · `#ft-narrow-home-*`"
+      },
+      {
+        "line": 973,
+        "name": "3D Idle GLB 换装（无红边单色灰棉麻）",
+        "type": "UI可见",
+        "accessPath": "`http://127.0.0.1:5173/` · `#emotion-debug-ui` T-Pose · 源：`yin-meditate-closed-monochrome-grey-cotton-linen-robe.source.glb`"
+      },
+      {
+        "line": 977,
+        "name": "PWA · 发版后内容更新（SW 不卡旧版）",
+        "type": "UI可见",
+        "accessPath": "生产 / `vite preview` · Application → Service Workers"
+      },
+      {
+        "line": 984,
+        "name": "坐禅磬声音量 + Soundscape 音量条辨识",
+        "type": "UI可见",
+        "accessPath": "`#ambient-volume-slider` · `.ambient-soundscape__volume-caption`"
+      }
+    ],
+    "model-wording": [
+      {
+        "line": 435,
+        "name": "#774 日语 Confide：同一会话 5 句连发（验证去重回落）",
+        "type": "UI可见",
+        "accessPath": "`npm run desktop:dev` · `#confide-to-yin-reply`"
+      },
+      {
+        "line": 456,
+        "name": "C5 · Transition Moment（Compass 入口 + CAW-T whisper · S21）",
+        "type": "UI可见",
+        "accessPath": "`TransitionMomentUI.js` · `CalmActionTransitionStore.js`"
+      },
+      {
+        "line": 476,
+        "name": "节日主题 · Phase 4 万圣节放出（wash + 文案）",
+        "type": "UI可见",
+        "accessPath": "`?product=1&mockDate=2026-10-30` · Safari · 375"
+      },
+      {
+        "line": 477,
+        "name": "节日主题 · Phase 4 元旦与跨年放出（wash + 文案）",
+        "type": "UI可见",
+        "accessPath": "`?product=1&mockDate=2026-12-31` · Safari · 375"
+      },
+      {
+        "line": 480,
+        "name": "节日主题 · Phase 4 感恩节放出（US/CA · wash + 文案）",
+        "type": "UI可见",
+        "accessPath": "`?product=1&mockDate=2026-11-25` · Safari · 375"
+      },
+      {
+        "line": 482,
+        "name": "Label / Hint / Tip 机制审计清单",
+        "type": "文档",
+        "accessPath": "文档审阅"
+      },
+      {
+        "line": 561,
+        "name": "YPE V2 秘密变换（白名单 insight + algorithmVersion）",
+        "type": "纯后端 + 缓存",
+        "accessPath": "Privacy 第四条 ON；Worker 须已绑定并部署 V2"
+      },
+      {
+        "line": 614,
+        "name": "导入覆盖确认与错误态",
+        "type": "UI可见",
+        "accessPath": "`#privacy-local-data-mount`"
+      },
+      {
+        "line": 631,
+        "name": "Yin Personalization Engine L1 本地智能",
+        "type": "UI可见",
+        "accessPath": "勿当已有云端个人化"
+      },
+      {
+        "line": 633,
+        "name": "YPE L2 Worker（ingest / 关即删 / Pack）",
+        "type": "UI可见 + 后端",
+        "accessPath": "Worker 部署须 `YPE_PERSONALIZATION_KV`"
+      },
+      {
+        "line": 638,
+        "name": "1.7B Focusing hitch（双终端 · M5）",
+        "type": "UI可见",
+        "accessPath": "`task-desktop-on-device-companion.md` §1.7B hitch"
+      },
+      {
+        "line": 646,
+        "name": "Yin Personal Memory Slice 1b（Remember 管道）",
+        "type": "纯后端/逻辑",
+        "accessPath": "—"
+      },
+      {
+        "line": 663,
+        "name": "录入叠层点空白不关 + Stay in touch Cancel",
+        "type": "UI可见",
+        "accessPath": "`#newsletter-capture-card` · `[data-testid=newsletter-capture-cancel]`"
+      },
+      {
+        "line": 670,
+        "name": "Electron preload CJS（桌面壳桥）",
+        "type": "UI可见",
+        "accessPath": "Electron 桌面窗 · `#ft-wide-more-menu [data-testid=idle-confide-desktop]`"
+      },
+      {
+        "line": 730,
+        "name": "14 套新抠图算法整批替换",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui` · 路径见 `ASSET_INVENTORY.md` 增量表"
+      },
+      {
+        "line": 745,
+        "name": "MilestoneGlow · 琉璃星石变体（meditation-star-reward）",
+        "type": "UI可见",
+        "accessPath": "PR #89 · `#emotion-debug-ui`"
+      },
+      {
+        "line": 747,
+        "name": "MindfulAcknowledge / 20 分钟阶段确认",
+        "type": "UI可见",
+        "accessPath": "生产长计时 / 调试面板正念确认 · DEV：`__mindfulReminderController` · `__reminderQuotaManager`"
+      },
+      {
+        "line": 792,
+        "name": "MilestoneGlow 备选 breath-halo-hq",
+        "type": "UI可见",
+        "accessPath": "`#emotion-debug-ui`"
+      },
+      {
+        "line": 912,
+        "name": "场景 B · 鹦鹉稀有彩蛋（轻完成池）",
+        "type": "UI可见",
+        "accessPath": "调试面板 · `__milestoneGlowStore` · Dispatcher 单测"
+      },
+      {
+        "line": 980,
+        "name": "节日主题 · Phase 3 圣诞放出（wash + 文案 + 翻开关）",
+        "type": "UI可见",
+        "accessPath": "`?product=1&mockDate=2026-12-20` · Safari · 375 · `origin/develop`"
+      }
+    ],
+    "skip-doc": [
+      {
+        "line": 416,
+        "name": "工作流 RCA · Reminder Save / Membership Manage / Work Transition 離れる",
+        "type": "纯文档",
+        "accessPath": "`MembershipUnlockUI._openPortal` · `FocusCircleWitnessLeaveUI._acquireRespondSlotWithRetry`"
+      },
+      {
+        "line": 438,
+        "name": "远程参数化候选 PO 拍板（#717 后）",
+        "type": "纯文档",
+        "accessPath": "`docs/REMOTE_PARAM_CANDIDATES.md`"
+      },
+      {
+        "line": 439,
+        "name": "远程参数化 §6 本批收口（纯文档）",
+        "type": "纯文档",
+        "accessPath": "`docs/REMOTE_PARAM_CANDIDATES.md` §6 · `docs/PROCESS.md` 速览"
+      },
+      {
+        "line": 449,
+        "name": "工作流 RCA · 鹦鹉硬闪 / 芥子印 15 陷阱 / 久别 Recover",
+        "type": "纯文档",
+        "accessPath": "`ISSUE_LEDGER.md` · §6.26"
+      },
+      {
+        "line": 454,
+        "name": "菜单治理四条进度表 + 逃生舱原则句",
+        "type": "文档",
+        "accessPath": "`MENU_CHROME_CENSUS.md` · `PRINCIPLES.md`"
+      },
+      {
+        "line": 455,
+        "name": "全项目阻断式确认审计 + 决策权锁定",
+        "type": "纯文档",
+        "accessPath": "文档审阅"
+      },
+      {
+        "line": 465,
+        "name": "Recover 冻屏 + 呼吸引导 + 菜单逃生舱",
+        "type": "UI可见",
+        "accessPath": "`RecoverResetPracticeUI` · `breath-pacer` · `FocusCircleWitnessLeaveUI` · `QuietTogetherLanternsChrome` · `idleChromeOrchestration`"
+      },
+      {
+        "line": 483,
+        "name": "全项目远程参数化候选审计",
+        "type": "纯文档",
+        "accessPath": "`docs/REMOTE_PARAM_CANDIDATES.md`"
+      },
+      {
+        "line": 867,
+        "name": "用户指南 + 隐私短文（发版向）",
+        "type": "纯文档",
+        "accessPath": "`README.md` · `USER_GUIDE.md` · `PRIVACY_NOTICE.md`"
+      }
+    ]
+  }
+}
