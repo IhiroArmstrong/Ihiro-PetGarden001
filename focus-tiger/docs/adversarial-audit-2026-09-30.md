@@ -65,7 +65,9 @@
 
 > 注：这不是说要把关键词表扩到能覆盖所有改写——扩表会带来 A-3 那类误判。可确定性测试的是**结构**：`'generate'` 路由在朗读闸里必须显式出现，而不是靠没被列进黑名单。
 
-### A-2（高）朗读闸是黑名单，且漏掉了 `'generate'`
+### A-2（高）朗读闸是黑名单，默认允许未知路由
+
+> **2026-09-30 更正**：本节初稿把 `'generate'` 写成「漏掉了」，暗示它不该朗读。这是错的，见下方「更正与落地记录」A-2。`'generate'` 确实该朗读；真正的缺陷只是**默认值**。
 
 ```34:39:focus-tiger/src/core/systemTtsBridge.js
 export function shouldSpeakConfideReply(route) {
@@ -81,7 +83,7 @@ export function shouldSpeakConfideReply(route) {
 - **默认允许**。以后任何新增路由（危机相邻、边界拒绝、未成年保护等）不改这里就自动可朗读。
 - **`'generate'` 不是 `CONFIDE_ROUTE` 的成员**，是 `ConfideToYinUI.js:1091` 里的裸字符串。枚举上加一条安全路由不会自动覆盖它。
 
-改成白名单（只有语料 / 短答 / 诚实空态这三类可朗读）是结构性修法，但**今晚不改**，先用测试把现状钉住。
+改成白名单是结构性修法。**已于当晚落地**（PR #1036 · `dee156cc`）：白名单 = 五个情绪桶 + `fallback` + `generate`，两条危机路由仍纯文字，未登记 id 默认静音。九个现存 route id 行为零变化。
 
 ### A-3（中）子串匹配造成误判
 
@@ -127,6 +129,13 @@ export const DEFAULT_KB_NEAR_FAR_MAX = 0.62;
 `skip` 的含义是**放行去 generate**。所以：语义闸已经判定「这是一个产品问题」，但最近邻低于 0.62 时，系统不再说「这个我没有经过审核的答案」，而是让本地模型即兴编一个产品答案。这正好是 `product-knowledge-base.md`「检索不生成」要挡的情况，也是你今晚点名想锁的「知识库未命中时的诚实空态」。
 
 `farMax` 那行注释与代码直接矛盾——注释说不参与现网，代码里它就是现网第一道分支。
+
+> **2026-09-30 更正（重要，影响能不能改）**：本节初稿把 K-1 写成「疏漏」。复核后它不是疏漏，而是一处**被已提交测试锁住的、且与自己的 Brief 相矛盾的设计**：
+>
+> - `confideProductKnowledgeSemantic.test.js:53-62` 已经在断言 `nearAction: 'skip'` + `semanticIsProduct: true` → `'skip'`。也就是说现在这个行为是有人特意写用例钉住的，不是忘了。
+> - 而 `task-briefs/task-confide-kb-embedding-near-match.md` 自己前后不一致：§三 第 3 行写「都远 → 不当成产品问题，去现写」（支持现有代码），但同文件 2026-09-30 的状态行和 §五 写「对不上就诚实空态，不改回自由生成」「禁止滑回自由生成」，§二 非目标又写「不把『查不到』改回自由生成」（支持改）。
+>
+> 因此 K-1 **不能按「修 bug」直接动**：改它会让那条已提交断言变红，等于推翻上一位作者的显式决定。按 `feature-conflict-review`，这是文档 vs 测试的冲突，需要你先拍板哪一边算数，再动代码。已在「待你决定」列出两个选项。
 
 ### K-2（中）单关键词 score=1 直接命中，绕过 `MIN_SCORE = 2`
 
@@ -287,7 +296,7 @@ Confide 的输入正是用户情绪与私事。这条虽然不在你点名的四
 
 | 批次 | 锁什么 | 形态 | 失败即证明有 bug |
 |---|---|---|---|
-| 批 1 | `shouldSpeakConfideReply('generate') === false`；`confideClassify` 对六条危机改写句的现状快照 | `src/core/systemTtsBridge.test.js` + `confideClassify` 新增用例 | 是 |
+| 批 1 | ~~`shouldSpeakConfideReply('generate') === false`~~ → 见下方更正；实际锁的是「已好清单 + 未登记 id 静音」；`confideClassify` 对六条危机改写句的现状快照 | `src/core/systemTtsBridge.test.js` + `confideClassify` 新增用例 | 是 |
 | 批 2 | `resolveProductKnowledgeGateAction` 在 `semanticIsProduct=true` + `nearAction='skip'` 时必须回 `honesty` 而非 `skip`；`pickProductKnowledgeHit` 对 score=1 无并列必须回 `null` | `confideProductKnowledgeSemantic.test.js` + `confideProductKnowledge.test.js` | 是 |
 
 Z-1 / Z-2 / Z-3 更适合做**静态扫描**（新增 `position: fixed` 且未登记 `Z_INDEX.md` 则 CI 红），不适合铺 e2e：选择器一变就红，且覆盖的是已有 visibility 套件重复过的区域。
@@ -298,4 +307,53 @@ Z-4 与「节日四行 / 坐姿练习会不会被挡住」留给人眼。
 
 ---
 
-*审计人：Agent · 2026-09-30 · 只读，无运行时改动*
+## 6. 更正与落地记录（2026-09-30 当晚）
+
+初稿写完后按你的排序去落地，落地过程中发现初稿有两处措辞会**误导修法**。这里逐条更正，原文保留不删，便于对照。
+
+### A-2 更正：`'generate'` 该朗读，缺陷只在默认值
+
+初稿写「朗读闸漏掉了 `'generate'`」，第 5 节又把批 1 的断言写成 `shouldSpeakConfideReply('generate') === false`。**按这个断言改会把语音朗读整体变静**：
+
+`task-briefs/task-confide-tts-v1.md`（2026-09-26 PO 锁定）写的挂载点是「每条回复在文字出现后 0–1s 内朗读」，安全例外只有 `safety_redirect` / `aggression_toward_others` 两条纯文字，本期非目标明确是「危机句以外的新路由特殊逻辑」。本地生成的回复正是 TTS v1 的主用例。
+
+所以真正的缺陷不是「`generate` 被朗读」，而是「**没被列进黑名单的东西一律被朗读**」——空串、`undefined`、以及将来任何新增路由。落地的修法（`dee156cc`）保持九个现存 route id 行为零变化，只把默认值从「出声」翻成「静音」，并新增一条「已好清单」用例逐个锁住这九条，确保这次改动本身不动产品语义。
+
+A-1 的另外半边（危机改写句的**分类范围**）没动，按你的要求先补 Brief。批 1 的第 3 组用例把这个缺口钉成快照，注释写明钉的是现状不是期望。
+
+### K-1 更正：不是疏漏，是文档与已提交测试对打
+
+详见 §K-1 内的更正块。结论：需要你先决定「Brief §五 算数」还是「已提交断言算数」，代码才能动。
+
+### K-2：红用例已写并验红，但修复属用户可见改动
+
+两条用例已写好并确认变红（`confideProductKnowledge.test.js`，25 用例 23 通过 2 失败），但**没有随批 1 提交**：修好之后 `backup` 这类裸产品名词会从「返回短答」变成「诚实空态」，是用户能看见的行为变化，按 `brief-before-user-visible` 属 B 类，要先有 Brief。用例原文存档如下，拍板后可一步贴回：
+
+```js
+it('honors CONFIDE_KB_RETRIEVAL_MIN_SCORE when nothing ties (audit K-2)', () => {
+  assert.equal(CONFIDE_KB_RETRIEVAL_MIN_SCORE, 2);
+  assert.equal(
+    pickProductKnowledgeHit('x', [
+      { id: 'KB-FUNC-0001', score: 1, shortAnswerEn: 'single keyword' }
+    ]),
+    null
+  );
+});
+
+it('a bare product noun is not an approved match (audit K-2)', () => {
+  const probe = probeProductKnowledgeCatalog('backup');
+  assert.equal(probe.attempted, true);
+  assert.equal(probe.hit, false);
+  assert.equal(probe.reason, 'below_threshold');
+});
+```
+
+（`CONFIDE_KB_RETRIEVAL_MIN_SCORE` 需加进该文件的 import 列表。）
+
+### 一并记录
+
+`focus-tiger/scripts/classify-tracker-no-auto.cjs` 当时缺版权头、卡住了报告提交。复核时分类会话已自行提交该文件（`89c8c47c`），版权头已在，无需代劳。
+
+---
+
+*审计人：Agent · 2026-09-30 · 初稿只读无运行时改动；§6 记录当晚落地的 A-2 修复（PR #1036）*
