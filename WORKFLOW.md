@@ -711,6 +711,7 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 - **2026-09-29 对照**（run `36542268807`）：健康探测能通时，浏览器整页 `domcontentloaded` 仍会超过 40 秒（重试才过）。visibility 配置关掉失败录像，避免失败录像拖住下一次整页打开。Choose「自己写」的提示句须先挂进页面，再插入语音条；否则 `insertBefore` 抛错，提示不会出现。
 - **去哪看这条 workflow（2026-09-30）**：PR 的 Checks **只有**改动命中本 workflow 的 `paths` 时才会出现它。没命中时不要让人在 PR Checks 里找。打开 Actions 里的 [focus-tiger visibility-contract e2e](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/workflows/focus-tiger-visibility-contract.yml)，或对 `develop` 做 `workflow_dispatch`。`paths` 必须覆盖 `VISIBILITY_SUPPRESS_TRIGGER_PATHS` 的每一条（单测锁住）。始终挂在页面上、藏着仍可能挡住点击的撤销条 `VoiceCommandUndoToast.js` 在此列。面板内部的语音按钮不在此列。
 - **2026-09-30 合入后全绿**：[run 36592506811](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/36592506811)（#1018 撤销条不再挡点击之后，对 `develop` 手动触发）六个分片全绿，含 micro-ritual。
+- **2026-09-30 打开页 40 秒**：健康探测能通、`page.goto` 仍等满 40 秒时，先看是不是上一页还在拉几十 MB 的环境音。visibility 分片（`FT_VISIBILITY_SPEC`）把本机音视频在 Playwright 里换成一小段静音；页面、脚本、图片仍走静态服务。不要再把 `gotoMs` 往上加。
 
 #### 责任人与检查频率（书面 · 防「修完又没人看」）
 
