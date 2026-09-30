@@ -214,6 +214,37 @@ export class FocusSession {
   }
 
   /**
+   * Add minutes to a fixed sit. Open-ended sits and the 90-minute cap do not grow.
+   * @param {number} extraMinutes
+   * @returns {{ applied: boolean, kind: 'add', reason?: string, minutes?: number, clamped?: boolean }}
+   */
+  extendTargetMinutes(extraMinutes) {
+    if (this.isOpenEnded()) {
+      return { applied: false, kind: 'add', reason: 'open_ended' };
+    }
+    const extra = Math.round(Number(extraMinutes));
+    if (!Number.isFinite(extra) || extra < 1) {
+      return { applied: false, kind: 'add', reason: 'bad_delta' };
+    }
+    if (this.targetMinutes >= 90) {
+      return {
+        applied: false,
+        kind: 'add',
+        reason: 'at_cap',
+        minutes: this.targetMinutes
+      };
+    }
+    const before = this.targetMinutes;
+    this.targetMinutes = Math.min(90, before + extra);
+    return {
+      applied: true,
+      kind: 'add',
+      minutes: this.targetMinutes,
+      clamped: this.targetMinutes < before + extra
+    };
+  }
+
+  /**
    * Open-ended count-up: not a larger minute chip; does not touch targetMinutes.
    * @param {'fixed' | 'open'} mode
    */
@@ -250,6 +281,11 @@ export class FocusSession {
     this._pauseStartedAtMs = null;
     this.startedAtMs = this._now();
     this.isRunning = true;
+  }
+
+  /** @returns {boolean} */
+  isPaused() {
+    return this._pauseStartedAtMs !== null;
   }
 
   pause() {

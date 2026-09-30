@@ -800,6 +800,27 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0033' }
   },
   {
+    id: 'kb-0034-pomodoro-how-en',
+    text: 'How to start a Pomodoro?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0034' }
+  },
+  {
+    id: 'kb-0034-pomodoro-need-en',
+    text: 'I need a Pomodoro',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0034' }
+  },
+  {
+    id: 'kb-0034-pomodoro-can-en',
+    text: 'Can I start a Pomodoro?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0034' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],

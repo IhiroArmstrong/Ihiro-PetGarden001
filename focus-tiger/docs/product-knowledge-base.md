@@ -958,6 +958,34 @@
 
 > **权威源（0033）**：`src/locales/en.json` · `ReminderPreferenceUI.js` · `idleChromeOrchestration.js` · `kbLiveEntryRegistry.js` · `confideReminderFeatureQuestion.js`
 
+### 4.12 Pomodoro 一词（已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-09-30 书面：写 Brief 以及开发** · **已进** `productKnowledgeCatalog.json` · registry `kb-live-pomodoro` 已链 **0034** · 闸门 **36 条**。不改菜单名。不教 5 分钟休息循环。
+
+```yaml
+- id: KB-FUNC-0034
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Pomodoro 在这里是什么
+  适用场景: 用户用 Pomodoro 这个词问怎么开始
+  内容正文: |
+    短答（en）：A pomodoro here is a 25-minute Sit with Yin. Tap Sit with Yin, then choose 25 minutes. It does not start a short-break cycle. When the duration microphone is available, you can also say Start a pomodoro.
+    指路：Idle 主钮 Sit with Yin → 时长 chip 25。语音同义词见 `POMODORO_MINUTES`。
+    禁止：把整次同坐改名叫 Pomodoro；禁止承诺短休息循环。
+  yin_may_retrieve: 是
+  来源: 界面文案
+  审核状态: 已通过
+  审核人: PO（2026-09-30 · 书面放行）
+  风险标记: 否
+  适用产品版本: 现网 Sit 时长 25 分钟档 + 语音 pomodoro 同义词
+  更新时间: 2026-09-30
+  locale_keys: [BTN_FOCUS_START, focus_duration.minutes_chip]
+  检索关键词: [pomodoro, start a pomodoro, need a pomodoro, how to start a pomodoro, can i start a pomodoro]
+```
+
+> **权威源（0034）**：`src/core/voiceCommandDuration.js` · `src/core/confide/productKnowledgeCatalog.json` · `kbLiveEntryRegistry.js`
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml
