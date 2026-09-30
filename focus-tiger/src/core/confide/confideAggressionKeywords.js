@@ -40,7 +40,8 @@ const EN_AGGRESSION_POSITIVE_RES = Object.freeze([
 /** @type {readonly RegExp[]} */
 const ZH_AGGRESSION_POSITIVE_RES = Object.freeze([
   /(?:想|要|准备|打算|想要).{0,8}?(?:打|揍|伤害|傷害|杀|殺|砍|刺).{0,6}?(?:人|他|她|他们|他們|别人|別人|某人|大家)/,
-  /(?:打|揍|伤害|傷害|杀|殺).{0,3}?(?:人|他|她|他们|他們|别人|別人)/
+  /(?:打|揍|伤害|傷害|杀|殺).{0,3}?(?:人|他|她|他们|他們|别人|別人)/,
+  /(?:收拾|揍).{0,8}?(?:别人|別人|他人|他|她|一顿|一頓)/
 ]);
 
 /** @type {readonly string[]} */
@@ -60,7 +61,12 @@ const ZH_AGGRESSION_POSITIVE_PHRASES = Object.freeze([
   '想伤害别人',
   '想傷害他',
   '想傷害她',
-  '想傷害別人'
+  '想傷害別人',
+  '揍别人',
+  '我想揍别人',
+  '收拾别人',
+  '收拾别人一顿',
+  '收拾別人'
 ]);
 
 /** @type {readonly RegExp[]} */

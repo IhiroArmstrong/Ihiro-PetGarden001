@@ -204,6 +204,13 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(hud.id, 'KB-FUNC-0004');
   });
 
+  it('hits Sit entry for "I need to practice focus"', () => {
+    const sit = retrieveProductKnowledge('I need to practice focus.');
+    assert.equal(sit.hit, true);
+    assert.equal(sit.id, 'KB-FUNC-0001');
+    assert.match(sit.text || '', /Sit with Yin/);
+  });
+
   it('hits focus-coins earn FAQ with the approved short answer', () => {
     const coins = retrieveProductKnowledge('怎么获得寅币？');
     assert.equal(coins.hit, true);

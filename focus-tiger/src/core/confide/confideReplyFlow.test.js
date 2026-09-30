@@ -79,9 +79,7 @@ test('resolveConfideReply: beat people → aggression pool, never nods quietly',
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
   assert.ok(
-    ['aggression-01', 'aggression-02', 'aggression-03', 'aggression-04'].includes(
-      hit.line.id
-    )
+    ['aggression-01', 'aggression-02', 'aggression-03'].includes(hit.line.id)
   );
   assert.doesNotMatch(hit.line.en, /heard/i);
   assert.doesNotMatch(hit.line.en, /nod/i);
@@ -117,6 +115,16 @@ test('resolveConfideReply: ja aggression → corpus pool without Heard or nod co
   assert.doesNotMatch(hit.line.en, /nod/i);
 });
 
+test('resolveConfideReply: colloquial ZH beating stays in acknowledging pool', () => {
+  for (const text of ['我想揍别人', '俺企图收拾别人一顿']) {
+    const hit = resolveConfideReply({ text, locale: 'zh', localDate: '2026-09-30' });
+    assert.ok(hit, text);
+    assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+    assert.notEqual(hit.line.id, 'aggression-04');
+    assert.doesNotMatch(hit.line.en, /manual/i);
+  }
+});
+
 test('resolveConfideReply: ZH beat-people phrase → aggression pool, never generate nod', () => {
   const hit = resolveConfideReply({
     text: '我想打人',
@@ -126,9 +134,7 @@ test('resolveConfideReply: ZH beat-people phrase → aggression pool, never gene
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
   assert.ok(
-    ['aggression-01', 'aggression-02', 'aggression-03', 'aggression-04'].includes(
-      hit.line.id
-    )
+    ['aggression-01', 'aggression-02', 'aggression-03'].includes(hit.line.id)
   );
   assert.doesNotMatch(hit.line.zh, /点头/);
 });

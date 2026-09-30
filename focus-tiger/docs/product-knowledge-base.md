@@ -130,7 +130,7 @@
   适用产品版本: 现网产品壳（Idle 主路径）
   更新时间: 2026-09-22
   locale_keys: [BTN_FOCUS_START, COMPANION_MODE_TITLE, COMPANION_MODE_CONTINUE, focus_duration.hint, HINT_QUICK_START]
-  检索关键词: [怎么开始, Sit with Yin, 与阿寅同坐, 阿寅と坐る, 从哪坐, Begin]
+  检索关键词: [怎么开始, Sit with Yin, 与阿寅同坐, 阿寅と坐る, 从哪坐, Begin, practice focus, need to practice focus]
 
 - id: KB-FUNC-0002
   所属库: 陪伴可检索
