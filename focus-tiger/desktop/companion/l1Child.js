@@ -356,6 +356,7 @@ async function main() {
               topK: result.topK,
               nearestId: result.nearestId ?? null,
               nearestScore: result.nearestScore ?? null,
+              lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
               embedMs: result.embedMs,
               wallMs: Date.now() - started
             });

@@ -9,6 +9,7 @@ import {
   classifyProductKnowledgeSemantic,
   isConfideMoodAsideFromProductKnowledge,
   isProductKnowledgeColdStartProbe,
+  lifeChatOutranksProductLibrary,
   resolveProductKnowledgeGateAction
 } from './confideProductKnowledgeSemantic.js';
 
@@ -69,6 +70,46 @@ describe('confideProductKnowledgeSemantic', () => {
       }),
       'hit'
     );
+  });
+
+  it('splits the cosine middle band: life chat generates, unanswered product stays honest', () => {
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'Where can I eat noodle?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        nearAction: 'honesty',
+        lifeOutranksProduct: true
+      }),
+      'skip'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'So can I talk to you?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        nearAction: 'honesty',
+        lifeOutranksProduct: true
+      }),
+      'skip'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'What is the observation wing?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        nearAction: 'honesty',
+        lifeOutranksProduct: false
+      }),
+      'honesty'
+    );
+    assert.equal(lifeChatOutranksProductLibrary(0.508, 0.652), true);
+    assert.equal(lifeChatOutranksProductLibrary(0.632, 0.762), true);
+    assert.equal(lifeChatOutranksProductLibrary(0.453, 0.404), false);
+    assert.equal(lifeChatOutranksProductLibrary(0.457, 0.425), false);
   });
 
   it('not-ready path allows catalog hit and cold-start honesty', () => {

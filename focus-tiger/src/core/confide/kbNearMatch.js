@@ -7,7 +7,8 @@
  * One similarity ruler for the product-knowledge gate and the catalog entry.
  * Brief: task-confide-kb-embedding-near-match.md
  * Close enough → that entry. Far from every entry → generate.
- * In between → honesty (product-like, no approved entry close enough).
+ * In between → labeled honesty. The product gate keeps that label only when
+ * Library C says it is a product question; life chat in this band generates.
  */
 
 /**
