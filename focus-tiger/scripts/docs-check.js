@@ -27,6 +27,7 @@ import { runLocalBackupCoverageAudit } from './audit-local-backup-coverage.js';
 import { runKbLiveEntryAudit } from './audit-kb-live-entries.js';
 import { runKbLiveGapAudit } from './audit-kb-live-gap.js';
 import { runMutationM01Check } from './mutation-m01-check.js';
+import { runZIndexRegistryCheck } from './z-index-registry-check.js';
 
 function main() {
   let ok = true;
@@ -40,6 +41,7 @@ function main() {
   if (!runCopyrightHeaderCheck()) ok = false;
   if (!runTrackerFragmentCheck()) ok = false;
   if (!runOverlayContractUiCheck()) ok = false;
+  if (!runZIndexRegistryCheck()) ok = false;
   if (!runPracticeAggregateCoverageAudit()) ok = false;
   if (!runGrowthMetricsAudit()) ok = false;
   if (!runLocalBackupCoverageAudit()) ok = false;

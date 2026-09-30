@@ -1566,7 +1566,8 @@ export class ConfideToYinUI {
       embeddingState,
       semanticIsProduct,
       catalogHit: Boolean(catalogResult.hit || nearHit),
-      nearAction
+      nearAction,
+      lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct)
     });
     const shown = catalogResult.hit
       ? { id: catalogResult.id, text: catalogResult.text }

@@ -19,6 +19,7 @@
     "audit:kb-near-calibrate": "npm --prefix desktop run companion:kb-near-calibrate",
     "audit:favorable-disagreement-mill": "npm --prefix desktop run companion:favorable-disagreement-mill",
     "docs:check": "node scripts/docs-check.js",
+    "check:z-index": "node scripts/z-index-registry-check.js",
     "docs:sync": "node scripts/docs-sync.js",
     "copyright:header-check": "node scripts/copyright-header.js",
     "copyright:header-write": "node scripts/copyright-header.js --write",

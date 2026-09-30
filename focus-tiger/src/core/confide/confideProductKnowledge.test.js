@@ -93,6 +93,11 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(breathDiff.hit, true);
     assert.equal(breathDiff.id, 'KB-FUNC-0011');
 
+    const breathHow = retrieveProductKnowledge('How can I take a breath for three minutes');
+    assert.equal(breathHow.hit, true);
+    assert.equal(breathHow.id, 'KB-FUNC-0011');
+    assert.match(breathHow.text || '', /Breath practice/i);
+
     const breathWhere = retrieveProductKnowledge('呼吸练习在哪');
     assert.equal(breathWhere.hit, true);
     assert.equal(breathWhere.id, 'KB-FUNC-0011');

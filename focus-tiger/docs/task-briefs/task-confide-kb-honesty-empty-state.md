@@ -77,6 +77,20 @@
 `'有点烦'` 那条经 `isConfideMoodAsideFromProductKnowledge` 在更前面就被拦掉，不受影响。
 A10「观察翼是什么」从现写变成诚实空态——**这正是本次要的**。
 
+### 4.2 与 `lifeOutranksProduct` 的交互（2026-09-30 合并 develop 时补）
+
+本 Brief 实现期间，develop 合入了 `6a95fb92`「split the KB middle band so life chat can be written」：在中段（`nearAction === 'honesty'`）若日常生活语料的相似度压过产品库（`lifeChatOutranksProductLibrary`），就放去现写。
+
+这和 K-1 是**同一个风险的两面**：K-1 收紧「像产品问题就不许现编」，而 `lifeOutranksProduct` 正是「看着像产品问题、其实是生活闲聊」的逃生口——恰好是 K-1 收紧后最容易误伤的那一类。
+
+合并后的最终顺序（`resolveProductKnowledgeGateAction`，`embeddingState === 'ready'`）：
+
+1. `nearAction === 'honesty'` → 生活闲聊压过产品库就现写，否则诚实空态（**develop 原样保留**）
+2. `semanticIsProduct` → 生活闲聊压过产品库就现写，否则诚实空态（**K-1 在这里生效**）
+3. 其余 → 现写
+
+也就是说，逃生口在**所有段**一致生效，而不只在中段。与 develop 相比唯一的行为变化仍是 K-1 那一条：`semanticIsProduct=true` + `nearAction='skip'` + 非生活闲聊，由现写改为诚实空态。已加用例 `lets life chat out of the honesty line in every band` 逐段锁住逃生口。
+
 ### 4.3 K-2 的影响面 —— 实测后撤回运行时改动
 
 **审计结论在这条上是错的，实现时被实测推翻，已按证据撤回。**

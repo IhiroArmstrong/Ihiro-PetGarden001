@@ -11,16 +11,21 @@
 import {
   CONFIDE_SEMANTIC_LIBRARY_A,
   CONFIDE_SEMANTIC_LIBRARY_B,
-  CONFIDE_SEMANTIC_LIBRARY_C
+  CONFIDE_SEMANTIC_LIBRARY_C,
+  CONFIDE_SEMANTIC_LIBRARY_LIFE
 } from '../../src/core/confide/confideSemanticExamples.js';
-import { classifyProductKnowledgeSemantic } from '../../src/core/confide/confideProductKnowledgeSemantic.js';
+import {
+  classifyProductKnowledgeSemantic,
+  lifeChatOutranksProductLibrary
+} from '../../src/core/confide/confideProductKnowledgeSemantic.js';
 import { listRetrievableProductKnowledgeEntries } from '../../src/core/confide/confideProductKnowledge.js';
 import { catalogEntryEmbeddingText } from '../../src/core/confide/kbNearMatch.js';
 import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
 import {
   classifyConfideSemanticCoarse,
   cosineSimilarity,
-  formatQwen3EmbeddingInput
+  formatQwen3EmbeddingInput,
+  scoreLibraryTopK
 } from '../../src/core/confide/confideSemanticRouting.js';
 import {
   maxObserveClicheCosine,
@@ -98,6 +103,13 @@ export async function loadEmbeddingHold(opts) {
     vectorsC.push(await embedText(example));
   }
 
+  onProgress('precomputeLibraryLife');
+  /** @type {number[][]} */
+  const vectorsLife = [];
+  for (const example of CONFIDE_SEMANTIC_LIBRARY_LIFE) {
+    vectorsLife.push(await embedText(example));
+  }
+
   onProgress('precomputeCatalogEntries');
   /** @type {{ id: string, vector: number[] }[]} */
   const catalogVectors = [];
@@ -151,6 +163,7 @@ export async function loadEmbeddingHold(opts) {
       const embedStarted = Date.now();
       const userVector = await embedText(text);
       const result = classifyProductKnowledgeSemantic(userVector, vectorsC, { env: opts.env });
+      const lifeScore = scoreLibraryTopK(userVector, vectorsLife, result.topK);
       let nearestId = null;
       let nearestScore = -1;
       for (const row of catalogVectors) {
@@ -164,6 +177,8 @@ export async function loadEmbeddingHold(opts) {
         ...result,
         nearestId,
         nearestScore: nearestId ? nearestScore : null,
+        lifeScore,
+        lifeOutranksProduct: lifeChatOutranksProductLibrary(result.score, lifeScore),
         embedMs: Date.now() - embedStarted
       };
     },
