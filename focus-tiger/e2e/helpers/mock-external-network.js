@@ -27,6 +27,46 @@ export function shouldMockExternalUrl(url) {
 }
 
 /**
+ * Local ambient tracks are tens of megabytes. Chromium keeps that download
+ * on the only sockets to :5199, so the next visibility `page.goto` waits
+ * until the 40s navigation timeout. Images and scripts stay on the static server.
+ */
+const HEAVY_LOCAL_MEDIA_RE =
+  /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?\/[^?#]*\.(?:mp3|m4a|ogg|wav|mp4|webm)(?:[?#]|$)/i;
+
+/** 44-byte silent wav. Enough for a media element; not a product asset. */
+const SILENT_WAV = Buffer.from(
+  'UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=',
+  'base64'
+);
+
+/**
+ * @param {string} url
+ * @returns {boolean}
+ */
+export function isHeavyLocalMediaUrl(url) {
+  return HEAVY_LOCAL_MEDIA_RE.test(String(url));
+}
+
+/**
+ * Fulfill local audio/video inside Playwright so visibility never pulls
+ * the ambient library. Other specs keep the real files.
+ * @param {import('@playwright/test').Page} page
+ */
+export async function installHeavyLocalMediaStubs(page) {
+  await page.route(HEAVY_LOCAL_MEDIA_RE, async (route) => {
+    const url = route.request().url();
+    if (!isHeavyLocalMediaUrl(url)) return route.continue();
+    const video = /\.(?:mp4|webm)(?:[?#]|$)/i.test(url);
+    return route.fulfill({
+      status: 200,
+      contentType: video ? 'video/webm' : 'audio/wav',
+      body: video ? Buffer.alloc(0) : SILENT_WAV
+    });
+  });
+}
+
+/**
  * Stub non-critical third-party traffic so CI network jitter cannot flake DOM tests.
  * Same-origin assets are not routed; they go straight to the static server.
  *

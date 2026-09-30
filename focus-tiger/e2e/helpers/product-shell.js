@@ -5,7 +5,10 @@
 
 import http from 'node:http';
 import { expect } from '@playwright/test';
-import { installExternalNetworkMocks } from './mock-external-network.js';
+import {
+  installExternalNetworkMocks,
+  installHeavyLocalMediaStubs
+} from './mock-external-network.js';
 import { dismissReflectionViaWisdomHold } from './reflection-dismiss.js';
 
 /** @type {WeakMap<import('@playwright/test').Page, true>} */
@@ -92,6 +95,11 @@ export async function openFreshProductShell(page, opts = {}) {
   // retries — that raced with in-flight goto ("interrupted by about:blank").
   if (!externalMocksByPage.has(page)) {
     await installExternalNetworkMocks(page);
+    // Visibility shards only. A real ambient mp3 (up to ~40MB) holds
+    // Chromium's sockets to :5199 and the next page.goto hits 40s.
+    if (process.env.FT_VISIBILITY_SPEC) {
+      await installHeavyLocalMediaStubs(page);
+    }
     externalMocksByPage.set(page, true);
   }
 
