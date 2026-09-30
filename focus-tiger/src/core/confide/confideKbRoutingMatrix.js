@@ -821,6 +821,48 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0034' }
   },
   {
+    id: 'kb-0035-download-focus-coins-en',
+    text: 'How to download focus coins?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0035' }
+  },
+  {
+    id: 'kb-0035-download-focus-coins-zh',
+    text: '怎么下载寅币',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0035' }
+  },
+  {
+    id: 'kb-0035-download-focus-coins-zh-how',
+    text: '如何下载寅币',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0035' }
+  },
+  {
+    id: 'kb-0036-download-my-badge-zh',
+    text: '我可以下载我的徽章吗？',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0036' }
+  },
+  {
+    id: 'kb-0036-download-my-badge-en',
+    text: 'Can I download my badge?',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0036' }
+  },
+  {
+    id: 'kb-0036-download-my-badge-zh-short',
+    text: '下载我的徽章',
+    dimensions: ['where'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0036' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],

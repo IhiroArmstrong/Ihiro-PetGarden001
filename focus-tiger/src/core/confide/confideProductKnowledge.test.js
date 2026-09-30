@@ -30,9 +30,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 36 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 38 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 36);
+    assert.equal(ids.length, 38);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -54,6 +54,8 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0032'), true);
     assert.equal(ids.includes('KB-FUNC-0033'), true);
     assert.equal(ids.includes('KB-FUNC-0034'), true);
+    assert.equal(ids.includes('KB-FUNC-0035'), true);
+    assert.equal(ids.includes('KB-FUNC-0036'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
@@ -270,6 +272,32 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(coins.id, 'KB-FUNC-0018');
     assert.match(coins.text || '', /focus coins/i);
     assert.doesNotMatch(coins.text || '', /\b36\b|FOMO/i);
+
+    const earnEn = retrieveProductKnowledge('How to get more focus coins?');
+    assert.equal(earnEn.hit, true);
+    assert.equal(earnEn.id, 'KB-FUNC-0018');
+  });
+
+  it('answers focus-coin download and badge download as two different entries', () => {
+    const coins = retrieveProductKnowledge('How to download focus coins?');
+    assert.equal(coins.hit, true);
+    assert.equal(coins.id, 'KB-FUNC-0035');
+    assert.match(coins.text || '', /looks a lot like a Focus Coin/);
+    assert.match(coins.text || '', /badge display frame/);
+
+    const coinsZh = retrieveProductKnowledge('怎么下载寅币？');
+    assert.equal(coinsZh.hit, true);
+    assert.equal(coinsZh.id, 'KB-FUNC-0035');
+
+    const badge = retrieveProductKnowledge('我可以下载我的徽章吗？');
+    assert.equal(badge.hit, true);
+    assert.equal(badge.id, 'KB-FUNC-0036');
+    assert.match(badge.text || '', /badge display frame/);
+    assert.doesNotMatch(badge.text || '', /Focus Coin/);
+
+    const badgeEn = retrieveProductKnowledge('Can I download my badge?');
+    assert.equal(badgeEn.hit, true);
+    assert.equal(badgeEn.id, 'KB-FUNC-0036');
   });
 
   it('hits batch-2 Step 4 Five Moments and Honesty entry questions', () => {

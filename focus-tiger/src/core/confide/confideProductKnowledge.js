@@ -107,6 +107,35 @@ export function isBackupContentQuestion(text) {
 }
 
 /**
+ * Download asks must not lose to the earn-coins entry (0018), which shares “focus coin”.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isFocusCoinDownloadQuestion(text) {
+  const raw = normalizeConfideIntentText(text).replace(/\s+/g, ' ').trim().toLowerCase();
+  if (!raw) return false;
+  const compact = raw.replace(/\s+/g, '');
+  const en = /\bdownload\b/.test(raw) && /focus coins?/.test(raw);
+  const zh = compact.includes('下载') && compact.includes('寅币');
+  return en || zh;
+}
+
+/**
+ * Badge-image download. Coin-download asks stay on 0035.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isOwnBadgeDownloadQuestion(text) {
+  if (isFocusCoinDownloadQuestion(text)) return false;
+  const raw = normalizeConfideIntentText(text).replace(/\s+/g, ' ').trim().toLowerCase();
+  if (!raw) return false;
+  const compact = raw.replace(/\s+/g, '');
+  const en = /\bdownload\b/.test(raw) && /\bbadge\b/.test(raw);
+  const zh = compact.includes('下载') && compact.includes('徽章');
+  return en || zh;
+}
+
+/**
  * Structural eligibility for the KB path (excludes personal-fact tools).
  * @param {string | null | undefined} route
  * @param {string} text
@@ -221,6 +250,18 @@ export function pickProductKnowledgeHit(text, ranked) {
     const content = ranked.find((row) => row.id === 'KB-FUNC-0015');
     if (content && content.score >= 1) {
       return { id: content.id, shortAnswerEn: content.shortAnswerEn };
+    }
+  }
+  if (isFocusCoinDownloadQuestion(text)) {
+    const download = ranked.find((row) => row.id === 'KB-FUNC-0035');
+    if (download && download.score >= 1) {
+      return { id: download.id, shortAnswerEn: download.shortAnswerEn };
+    }
+  }
+  if (isOwnBadgeDownloadQuestion(text)) {
+    const badge = ranked.find((row) => row.id === 'KB-FUNC-0036');
+    if (badge && badge.score >= 1) {
+      return { id: badge.id, shortAnswerEn: badge.shortAnswerEn };
     }
   }
   const top = ranked[0];

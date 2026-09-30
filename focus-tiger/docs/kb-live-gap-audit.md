@@ -38,7 +38,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-09-30 · 28 live rows · 36 approved catalog ids
+**Snapshot**: 2026-09-30 · 28 live rows · 38 approved catalog ids
 
 ### Summary counts
 
@@ -48,7 +48,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 1 | PO scope before drafting |
-| cross-cutting approved (no live row) | 7 | keep as behavior/platform facts |
+| cross-cutting approved (no live row) | 9 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
 
@@ -80,6 +80,8 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 - `KB-EDU-0002`
 - `KB-EDU-0003`
 - `KB-EDU-0004`
+- `KB-FUNC-0035`
+- `KB-FUNC-0036`
 
 <!-- kb-live-gap-audit:end -->
 
