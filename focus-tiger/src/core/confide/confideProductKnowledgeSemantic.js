@@ -119,10 +119,14 @@ export function resolveProductKnowledgeGateAction(input) {
   if (isConfideMoodAsideFromProductKnowledge(text)) return 'skip';
 
   if (embeddingState === 'ready') {
+    // Distance may decide that a non-product ask is worth retrieving, but it
+    // may not overturn the gate: once this reads as a product question, the
+    // worst outcome is the honesty empty state, never free generation.
+    // (`task-confide-kb-honesty-empty-state.md` §三, anchor A10.)
+    if (semanticIsProduct) return 'honesty';
     if (nearAction === 'skip') return 'skip';
     if (nearAction === 'honesty') return 'honesty';
-    if (!semanticIsProduct) return 'skip';
-    return 'honesty';
+    return 'skip';
   }
 
   if (isProductKnowledgeColdStartProbe(text)) {
