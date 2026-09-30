@@ -263,12 +263,13 @@
 
 > **路径**：`public/ui/support/mustard-seed-seal/`（1024×1024 RGBA · 入库 2026-08-12）。  
 > **来源**：根目录「芥子须弥纪念印所用的金章-yin-badge-square-gold-on-silver-alt.png」→ kebab-case 入库。  
-> **用途**：芥子须弥纪念印卡同伴金章；**不**写入 tip / Sanctuary `badgeIds`。  
-> **接线**：`mustardSeedSeal.js` → `mustardSeedSealBadgeSrc()`；`#mustard-seed-seal-card`。
+> **用途**：芥子须弥纪念印卡同伴纪念章；**不**写入 tip / Sanctuary `badgeIds`。  
+> **接线**：`mustardSeedSeal.js` → `mustardSeedSealBadgeSrc()`；`#mustard-seed-seal-card`。  
+> **2026-09-26**：#977 换为青瓷三足鼎透明底（文件名不变）。
 
 | 文件 | 说明 |
 |---|---|
-| `yin-badge-square-gold-on-silver-alt.png` | 方章金/银（纪念印专用目录） |
+| `yin-badge-square-gold-on-silver-alt.png` | 青瓷三足鼎纪念章（透明底 · 纪念印专用目录） |
 
 ---
 
