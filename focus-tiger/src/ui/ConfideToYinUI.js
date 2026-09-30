@@ -71,6 +71,7 @@ import {
   probeProductKnowledgeCatalog,
   productKnowledgeReplyPassesGuard
 } from '../core/confide/confideProductKnowledge.js';
+import { buildCrisisParaphraseShadowTurnLog } from '../core/confide/confideCrisisParaphraseShadow.js';
 import { formatConfideProductKnowledgeHonestyReply } from '../core/confide/confideProductKnowledgeHonesty.js';
 import { resolveProductKnowledgeGateAction } from '../core/confide/confideProductKnowledgeSemantic.js';
 import { decideKbNearMatch } from '../core/confide/kbNearMatch.js';
@@ -1140,6 +1141,17 @@ export class ConfideToYinUI {
       locale: getLocale()
     });
     if (!hit) return;
+    const shadowRow = buildCrisisParaphraseShadowTurnLog({
+      text,
+      locale: getLocale()
+    });
+    if (
+      shadowRow &&
+      this._companion &&
+      typeof this._companion.appendTurnLog === 'function'
+    ) {
+      void this._companion.appendTurnLog(shadowRow);
+    }
     if (
       shouldRunConfideSemanticShadow({ route: hit.route }) &&
       this._companion &&

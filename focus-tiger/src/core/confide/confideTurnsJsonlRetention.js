@@ -8,10 +8,13 @@
  * Shadow audit rows expire sooner than generation / classify rows.
  */
 
+import { CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND } from './confideCrisisParaphraseShadow.js';
+
 /** @readonly */
 export const CONFIDE_TURNS_SHADOW_AUDIT_KINDS = Object.freeze([
   'semantic_shadow_classify',
-  'semantic_live_classify'
+  'semantic_live_classify',
+  CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND
 ]);
 
 /** @readonly */

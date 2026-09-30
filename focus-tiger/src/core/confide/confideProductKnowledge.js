@@ -17,6 +17,7 @@ import { shouldAnswerWithPracticeFacts } from './confidePracticeFacts.js';
 import { shouldAnswerWithPresenceFacts } from './confidePresenceFacts.js';
 import { shouldAnswerWithMemoryList } from './confideMemoryList.js';
 import { isProductKnowledgeColdStartProbe } from './confideProductKnowledgeSemantic.js';
+import { hashConfidePrivateText } from './confidePrivacy.js';
 
 /**
  * Score at or above which the winner needs no margin check.
@@ -342,23 +343,6 @@ export function retrieveProductKnowledge(text, opts = {}) {
 }
 
 /**
- * Stable non-crypto hash (FNV-1a), same shape as `DailyWisdomStore.hashDateKey`.
- * Lets two misses be recognised as the same question without storing the
- * question. Not a security primitive.
- * @param {string} value
- * @returns {string}
- */
-function hashQueryText(value) {
-  const s = String(value || '');
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return (h >>> 0).toString(16).padStart(8, '0');
-}
-
-/**
  * turns.jsonl / observation miss row.
  *
  * Carries no user free text: a miss is by definition something the catalog
@@ -373,7 +357,7 @@ export function buildKbRetrievalMissTurnLog({ text, reason, locale = 'en' }) {
     at: new Date().toISOString(),
     kind: 'kb_retrieval_miss',
     locale,
-    queryHash: hashQueryText(text),
+    queryHash: hashConfidePrivateText(text),
     textLength: String(text || '').length,
     reason,
     catalogSchemaVersion: catalog.schemaVersion
