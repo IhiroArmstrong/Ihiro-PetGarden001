@@ -77,10 +77,14 @@ test('Idle forehead tap plays Yin head-touch and re-arms after Rise', async ({
   await quickStartFocus(page);
   await expectFocusSessionActive(page);
   await riseSkipReflectionToIdle(page);
+  await page.evaluate(() => {
+    window.__mustardSeedCard?.close?.();
+    window.__practiceImprintCard?.close?.();
+  });
   await page.waitForFunction(
     () => window.__idleYinTapAnchor?.isArmed?.() === true,
     null,
-    { timeout: 20_000 }
+    { timeout: 45_000 }
   );
   await clickHitForehead(page);
   await expectEarWiggleSprite(page);

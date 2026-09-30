@@ -244,7 +244,9 @@ test.describe('Mustard Seed memorial seal', () => {
     await expect(card).toBeHidden({ timeout: 5_000 });
   });
 
-  test('locale keeps English poem primary for en and ja', async ({ page }) => {
+  test('en keeps the English poem primary; ja keeps the Japanese poem primary', async ({
+    page
+  }) => {
     await openFreshProductShell(page);
     await page.setViewportSize({ width: 1100, height: 720 });
 
@@ -280,8 +282,11 @@ test.describe('Mustard Seed memorial seal', () => {
       window.__mustardSeedSeal.open({ mode: 'force', caseId: 'mustard-seed-sumeru' });
     });
     await expect(card).toBeVisible({ timeout: 10_000 });
-    await expect(card).toHaveClass(/locale-en-primary/);
-    await expect(poemEn).toHaveClass(/is-poem-primary/);
+    await expect(card).toHaveClass(/locale-ja-primary/);
+    await expect(
+      page.locator('[data-testid="mustard-seed-seal-poem-zh"]')
+    ).toHaveClass(/is-poem-primary/);
+    await expect(poemEn).toHaveClass(/is-poem-secondary/);
 
     await page.evaluate(() => window.__mustardSeedCard.close());
     await expect(card).toBeHidden({ timeout: 5_000 });

@@ -95,9 +95,9 @@ export async function openFreshProductShell(page, opts = {}) {
   // retries — that raced with in-flight goto ("interrupted by about:blank").
   if (!externalMocksByPage.has(page)) {
     await installExternalNetworkMocks(page);
-    // Visibility shards only. A real ambient mp3 (up to ~40MB) holds
-    // Chromium's sockets to :5199 and the next page.goto hits 40s.
-    if (process.env.FT_VISIBILITY_SPEC) {
+    // A real ambient file (tens of MB) holds Chromium's socket to the
+    // shared preview port, and the next page.goto dies at 40s.
+    if (process.env.CI || process.env.FT_VISIBILITY_SPEC) {
       await installHeavyLocalMediaStubs(page);
     }
     externalMocksByPage.set(page, true);
@@ -197,7 +197,7 @@ const WIDE_MORE_PROXY_GROUP = Object.freeze({
  * @param {import('@playwright/test').Page} page
  * @param {string} groupKey
  */
-async function expandWideMoreMenuGroup(page, groupKey) {
+export async function expandWideMoreMenuGroup(page, groupKey) {
   const header = page.locator(
     `#ft-wide-more-menu .ft-wide-more__section-header[data-group="${groupKey}"]`
   );
