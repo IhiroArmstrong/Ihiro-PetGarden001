@@ -133,7 +133,6 @@ export function resolveProductKnowledgeGateAction(input) {
   if (isConfideMoodAsideFromProductKnowledge(text)) return 'skip';
 
   if (embeddingState === 'ready') {
-    if (nearAction === 'skip') return 'skip';
     // Middle band stays a label in decideKbNearMatch.
     // Life chat (everyday-ask library beats Library C) generates.
     // Unanswered product questions in this band stay on the honesty line.
@@ -141,8 +140,14 @@ export function resolveProductKnowledgeGateAction(input) {
       if (lifeOutranksProduct) return 'skip';
       return 'honesty';
     }
-    if (!semanticIsProduct) return 'skip';
-    return 'honesty';
+    // Distance may decide that a non-product ask is worth retrieving, but it
+    // may not overturn the gate: once this reads as a product question the
+    // catalog cannot answer, the worst outcome is the honesty empty state,
+    // never free generation. Life chat keeps the same escape hatch it has in
+    // the middle band above. (`task-confide-kb-honesty-empty-state.md` §三,
+    // anchor A10.)
+    if (semanticIsProduct) return lifeOutranksProduct ? 'skip' : 'honesty';
+    return 'skip';
   }
 
   if (isProductKnowledgeColdStartProbe(text)) {

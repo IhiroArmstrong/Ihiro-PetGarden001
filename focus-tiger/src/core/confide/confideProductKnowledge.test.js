@@ -9,6 +9,7 @@ import { confideClassify } from './confideClassify.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { shouldUseDesktopCompanionGenerate } from '../desktopCompanionL2Route.js';
 import {
+  CONFIDE_KB_RETRIEVAL_MIN_SCORE,
   buildKbRetrievalMissTurnLog,
   isConfideKbRetrievalCandidate,
   isConfideKbRetrievalEnabled,
@@ -123,6 +124,53 @@ describe('confide product knowledge retrieval', () => {
     });
     assert.equal(miss.kind, 'kb_retrieval_miss');
     assert.equal(miss.reason, 'below_threshold');
+  });
+
+  it('keeps the user question out of the miss log (K-4 · #1037)', () => {
+    const secret = 'how do I stop thinking about my divorce';
+    const miss = buildKbRetrievalMissTurnLog({
+      text: secret,
+      reason: 'semantic_miss',
+      locale: 'en'
+    });
+    const serialized = JSON.stringify(miss);
+    for (const word of secret.split(' ')) {
+      assert.equal(serialized.includes(word), false, `leaked "${word}"`);
+    }
+    assert.equal(Object.prototype.hasOwnProperty.call(miss, 'text'), false);
+    assert.equal(miss.textLength, secret.length);
+    assert.match(miss.queryHash, /^[0-9a-f]{8}$/);
+    assert.equal(
+      miss.queryHash,
+      buildKbRetrievalMissTurnLog({ text: secret, reason: 'other' }).queryHash,
+      'same question must group across misses'
+    );
+    assert.notEqual(
+      miss.queryHash,
+      buildKbRetrievalMissTurnLog({ text: 'something else', reason: 'semantic_miss' }).queryHash
+    );
+  });
+
+  it('answers uncontested score-1 asks, and MIN_SCORE only gates contested ones (audit K-2)', () => {
+    // The audit read MIN_SCORE = 2 as a floor and proposed enforcing it.
+    // Doing that turned 27 locked confideKbRoutingMatrix anchors into empty
+    // states, so the real contract is the one pinned here: a lone keyword wins,
+    // a contested one must clear the margin or be resolved by the concept
+    // tie-break. The constant's docstring was corrected to match.
+    assert.equal(CONFIDE_KB_RETRIEVAL_MIN_SCORE, 2);
+    assert.deepEqual(
+      pickProductKnowledgeHit('x', [
+        { id: 'KB-FUNC-0001', score: 1, shortAnswerEn: 'lone keyword' }
+      ]),
+      { id: 'KB-FUNC-0001', shortAnswerEn: 'lone keyword' }
+    );
+    assert.equal(
+      pickProductKnowledgeHit('x', [
+        { id: 'KB-FUNC-0001', score: 1, shortAnswerEn: 'contested' },
+        { id: 'KB-FUNC-0002', score: 1, shortAnswerEn: 'contested too' }
+      ]),
+      null
+    );
   });
 
   it('does not steal CI-00 practice duration asks', () => {
