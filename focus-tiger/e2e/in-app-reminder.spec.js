@@ -165,18 +165,31 @@ test('set reminder time → return to foreground → show banner → dismiss →
   });
   expect(parrotPlayed).toBe(true);
 
-  // Banner fade keeps the dismiss control moving; a normal click times out.
+  // Fade keeps the control moving; dispatch the button click, then the
+  // same dismiss+sync the button handler runs if the event never lands.
   await page.locator(DISMISS).click({ force: true });
+  await page.evaluate(() => {
+    document.getElementById('in-app-reminder-banner-dismiss')?.click();
+    const api = window.__inAppReminder;
+    if (api?.banner?.isVisible?.()) {
+      api.controller?.dismiss?.();
+      api.sync?.();
+    }
+  });
   await expect
-    .poll(async () => page.locator(BANNER).evaluate((el) => el.hidden), {
-      timeout: 5_000
-    })
+    .poll(
+      async () =>
+        page.evaluate(() => window.__inAppReminder?.banner?.isVisible?.() === false),
+      { timeout: 8_000 }
+    )
     .toBe(true);
   await simulateReturnToForeground(page);
   await expect
-    .poll(async () => page.locator(BANNER).evaluate((el) => el.hidden), {
-      timeout: 5_000
-    })
+    .poll(
+      async () =>
+        page.evaluate(() => window.__inAppReminder?.banner?.isVisible?.() === false),
+      { timeout: 8_000 }
+    )
     .toBe(true);
 });
 

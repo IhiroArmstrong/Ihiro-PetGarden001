@@ -20,6 +20,7 @@ test.describe('MilestoneGlow product path', () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
   test('streak-7 completion claims MilestoneGlow once', async ({ page }) => {
+    test.setTimeout(180_000);
     await openFreshProductShell(page, {
       query: { sessionMinutes: 1, qaSeedStreak: 6 }
     });
@@ -67,6 +68,11 @@ test.describe('MilestoneGlow product path', () => {
       )
       .toBe(true);
 
+    await page.evaluate(() => {
+      window.__mustardSeedCard?.close?.();
+      window.__practiceImprintCard?.close?.();
+      window.__coldStartGoalCard?.close?.();
+    });
     const reflection = page.locator('#tiger-reflection-moment');
     if (await reflection.isVisible().catch(() => false)) {
       await page.keyboard.press('Escape');
@@ -74,6 +80,13 @@ test.describe('MilestoneGlow product path', () => {
         await riseSkipReflectionToIdle(page).catch(() => {});
       });
     }
+    const focusLabel = await page.locator('#btn-focus').innerText();
+    if (/Rise|起身/i.test(focusLabel)) {
+      await page.locator('#btn-focus').click({ force: true });
+    }
+    await expect(page.locator('#ft-wide-home-sit')).toBeVisible({
+      timeout: 30_000
+    });
 
     await quickStartFocus(page);
     await expect

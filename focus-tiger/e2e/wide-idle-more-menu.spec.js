@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import { expectOpenHintBubblesAtMost } from './helpers/hints-concurrency.js';
 import {
   expandWideMoreMenuGroup,
@@ -297,6 +298,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   page
 }) => {
   await openFreshProductShell(page);
+  await dismissColdStartOverlay(page);
   await page.evaluate(() => {
     window.__onboardingHints?.store?.clear?.();
     window.__onboardingHints?.syncDiscoveryDots?.();
@@ -316,8 +318,10 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     const proxy = proxies[i];
     const row = menu.locator(`[data-proxy="${proxy}"]`);
     await expandWideMoreMenuGroup(page, WIDE_MORE_ROW_GROUP[proxy]);
+    await page.evaluate(() => window.__onboardingHints?.syncDiscoveryDots?.());
     await row.scrollIntoViewIfNeeded();
     await row.hover();
+    await row.dispatchEvent('pointerenter');
 
     const hintId = WIDE_MORE_ROW_HINT[proxy];
     if (hintId) {
@@ -345,8 +349,10 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   for (const proxy of ['companion', 'reminder', 'language']) {
     const row = menu.locator(`[data-proxy="${proxy}"]`);
     await expandWideMoreMenuGroup(page, WIDE_MORE_ROW_GROUP[proxy]);
+    await page.evaluate(() => window.__onboardingHints?.syncDiscoveryDots?.());
     await row.scrollIntoViewIfNeeded();
     await row.hover();
+    await row.dispatchEvent('pointerenter');
     const hintId = WIDE_MORE_ROW_HINT[proxy];
     if (hintId) {
       await expect(
