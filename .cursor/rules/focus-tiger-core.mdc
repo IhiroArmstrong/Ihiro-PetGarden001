@@ -21,7 +21,7 @@ alwaysApply: true
 
 ## 任务纪律
 
-- **一次一任务**；新文件/目录路径须英文 ASCII、`kebab-case`（全文见 `PRINCIPLES.md`）。
+- **一 PR 一任务**（改动范围）；同一会话可连续多任务见 `focus-tiger-multi-task-session.mdc`（`RULES_INDEX` → `multi-task-session`）；新文件/目录路径须英文 ASCII、`kebab-case`（全文见 `PRINCIPLES.md`）。
 - 接**实现类**任务前 → 先 `Read` **`focus-tiger-docs.mdc`**。
 - 声称修好 / 交互修复收尾 / commit·push 前 → 先 `Read` **`focus-tiger-regression-lock.mdc`**。
 - 回答某功能是否已实现 / 已开工 / 已合入（**含随口提问**）→ 先 `Read` **`focus-tiger-regression-lock.mdc`**（「分支新鲜度」+「地面真相优先级」）；**禁止**只凭 Brief/计划文档措辞下结论。细则勿在本文件复述。
