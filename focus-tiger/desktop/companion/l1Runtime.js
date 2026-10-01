@@ -11,6 +11,7 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { appendFile, mkdir } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isCompanionL1Allowed } from './l1Capability.js';
@@ -39,7 +40,7 @@ import {
   L1_ENSURE_READY_TIMEOUT_MS
 } from './l0Config.js';
 import { L0_SEMANTIC_SHADOW_TIMEOUT_MS } from './l0EmbeddingConfig.js';
-import { resolveCompanionModelDir } from './l0Download.js';
+import { resolveCompanionL0ModelDir } from './l0ModelDir.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
 import {
   buildSemanticLiveTurnLogRecord,
@@ -248,8 +249,12 @@ export class CompanionL1Runtime {
       execPath: this.execPath,
       env: {
         ...this.env,
-        FT_COMPANION_L1_MODEL_DIR: resolveCompanionModelDir({
-          userDataDir: this.userDataDir
+        FT_COMPANION_L1_MODEL_DIR: resolveCompanionL0ModelDir({
+          env: this.env,
+          platform: process.platform,
+          homedir: os.homedir(),
+          userDataDir: this.userDataDir,
+          desktopRoot: path.join(__dirname, '..')
         })
       }
     });

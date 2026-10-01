@@ -18,6 +18,7 @@ import {
 } from './l0EmbeddingConfig.js';
 import { L0_MODEL_FILENAME, L0_MODEL_URLS, L1_ENSURE_READY_TIMEOUT_MS } from './l0Config.js';
 import { ensureGgufDownloaded, isGgufCachedAt } from './l0Download.js';
+import { resolveCompanionL0ModelDir } from './l0ModelDir.js';
 import { errorMessage as embeddingErrorMessage, loadEmbeddingHold } from './l1EmbeddingHold.js';
 import { errorMessage, loadModelHold } from './l1Hold.js';
 import { createLlamaWorkGate } from './l1LlamaWorkGate.js';
@@ -31,22 +32,12 @@ function emit(obj) {
 }
 
 function defaultModelDir() {
-  if (process.env.FT_COMPANION_L1_MODEL_DIR) {
-    return process.env.FT_COMPANION_L1_MODEL_DIR;
-  }
-  if (process.env.FT_COMPANION_L0_MODEL_DIR) {
-    return process.env.FT_COMPANION_L0_MODEL_DIR;
-  }
-  if (process.platform === 'darwin') {
-    return path.join(
-      os.homedir(),
-      'Library',
-      'Application Support',
-      'Focus Tiger',
-      'companion-l0'
-    );
-  }
-  return path.join(__dirname, '..', '.l0-cache');
+  return resolveCompanionL0ModelDir({
+    env: process.env,
+    platform: process.platform,
+    homedir: os.homedir(),
+    desktopRoot: path.join(__dirname, '..')
+  });
 }
 
 async function downloadModel(modelPath) {

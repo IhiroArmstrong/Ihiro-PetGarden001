@@ -305,10 +305,11 @@ FT_LATENCY_ROUNDS=15 npm run companion:confide-latency
 
 结果：`/tmp/ft-l0-lab/confide-latency-<epoch>.json`（`probe: "confide-latency"`）。
 10. **实验室 dest ≠ 生产缓存。** 不要把 `/tmp/ft-l0-lab/` 和下到 `~/Library/Application Support/Focus Tiger/companion-l0/` 的文件当成同一份。
-11. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
-12. **intent diagnostic ≠ 生产 L3。** `companion:intent-diagnostic` 禁止 Yin 口吻；结论只拆模型 vs routing，**不得**据此改默认 GGUF。
-13. **换模后 `No sequences left`。** Qwen 用每轮 `disposeSequence` 清 KV；Gemma-4-E4B 会在下一次 `getSequence()` 抛错，探针/面板就会整段茶句回落。产品 `loadModelHold`、intent/tool-call 探针、1.7B spike 一律走 `openFreshChatSession`（池空则 `createContext` 重建）。**不要**只 `resetChatHistory`。不要为迁就某一 GGUF 改生产 `l2Persona` 提示词。
-14. **Gemma4 须关思考模式。** `node-llama-cpp` 的 `Gemma4ChatWrapper` 默认 `reasoning: true`；未读 thought 段时 generate 会空输出。产品 `openFreshChatSession` 在 `promptFamily: 'gemma'` 时传 `new Gemma4ChatWrapper({ reasoning: false })`（等效 `enable_thinking: false`）。换 Gemma4 GGUF 源（jc-builds vs unsloth QAT 等）时，对照须在此配置下重跑完整 A/B（variance + session-repeat + tool-call），**不得**把空输出误判为量化源问题。
+11. **Electron `userData` ≠ 生产 GGUF 目录。** 开发态 Electron 的 `app.getPath('userData')` 是 `~/Library/Application Support/focus-tiger-desktop/`。L1 必须与探针共用 `Focus Tiger/companion-l0/`；若指到 `focus-tiger-desktop/companion-l0/`，已装好的 Gemma 会再下一遍，面板会一直显示「ダウンロード」。
+12. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
+13. **intent diagnostic ≠ 生产 L3。** `companion:intent-diagnostic` 禁止 Yin 口吻；结论只拆模型 vs routing，**不得**据此改默认 GGUF。
+14. **换模后 `No sequences left`。** Qwen 用每轮 `disposeSequence` 清 KV；Gemma-4-E4B 会在下一次 `getSequence()` 抛错，探针/面板就会整段茶句回落。产品 `loadModelHold`、intent/tool-call 探针、1.7B spike 一律走 `openFreshChatSession`（池空则 `createContext` 重建）。**不要**只 `resetChatHistory`。不要为迁就某一 GGUF 改生产 `l2Persona` 提示词。
+15. **Gemma4 须关思考模式。** `node-llama-cpp` 的 `Gemma4ChatWrapper` 默认 `reasoning: true`；未读 thought 段时 generate 会空输出。产品 `openFreshChatSession` 在 `promptFamily: 'gemma'` 时传 `new Gemma4ChatWrapper({ reasoning: false })`（等效 `enable_thinking: false`）。换 Gemma4 GGUF 源（jc-builds vs unsloth QAT 等）时，对照须在此配置下重跑完整 A/B（variance + session-repeat + tool-call），**不得**把空输出误判为量化源问题。
 
 ---
 
