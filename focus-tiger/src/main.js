@@ -427,6 +427,7 @@ import {
   prefetchTasteLayer,
   resetTasteLayerSyncForTests
 } from './core/tasteLayerSync.js';
+import { nextBootNetworkDelayMs } from './core/tasteLayerBootSchedule.js';
 import {
   getGrowthMetricsStatus,
   prefetchGrowthMetricsConfig,
@@ -4956,10 +4957,19 @@ async function init() {
     spriteOccupancy = bootDecision.occupy;
   }
 
-  let tastePrefetchStarted = false;
+  let tastePrefetchFirstWaitDone = false;
   function startTastePrefetchOnce() {
-    if (tastePrefetchStarted) return;
-    tastePrefetchStarted = true;
+    const delayMs = nextBootNetworkDelayMs({
+      overlayBusy: isSceneAnimOverlayBusy(),
+      firstWaitDone: tastePrefetchFirstWaitDone
+    });
+    if (delayMs > 0) {
+      if (!tastePrefetchFirstWaitDone && delayMs >= 12000) {
+        tastePrefetchFirstWaitDone = true;
+      }
+      window.setTimeout(startTastePrefetchOnce, delayMs);
+      return;
+    }
     void prefetchTasteLayer({
       search: location.search,
       locale: getLocale(),
@@ -4969,8 +4979,9 @@ async function init() {
       search: location.search,
       canApply: () => !isSceneAnimOverlayBusy()
     });
+    void refreshSoftUpdateAvailability();
   }
-  window.setTimeout(startTastePrefetchOnce, 12000);
+  startTastePrefetchOnce();
 
   /** After welcome / flower first paint: occupancy resets but idle loop may not. */
   function ensureIdleBaselineAfterWelcome() {
@@ -5252,8 +5263,6 @@ async function init() {
     syncInAppReminderBanner();
     void refreshSoftUpdateAvailability();
   });
-
-  void refreshSoftUpdateAvailability();
 
   // Lab chrome: vite `serve` (DEV) or local Playwright `vite build --mode development`
   // (MODE=development but DEV still false on any `build`). Product shell / CI prod build: off.
