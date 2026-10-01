@@ -36,6 +36,13 @@
 
 Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt-priority.mdc`（`RULES_INDEX` → `scenario-gwt-priority`）。
 
+### 本地录像验收（`local-acceptance` project · `playwright.config.js`）
+
+- **用途**：P0 场景本地验收时，成败都留 `video` + `trace`，供产品/负责人**用眼睛看流程**（不同于 CI `chromium` 的 `retain-on-failure` / `on-first-retry` 工程师排障留证）。
+- **跑法**：`npx playwright test <spec> --project=local-acceptance`（例：场景 A 主干 `--grep "scenario A: Arrival"`）。
+- **观感类 Then**（Celebrating 动画、Idle 呼吸等；见 `COVERAGE_GAP_AUDIT.md`）：**不写脆弱视觉 assert**；用本 project 录像 + 人工验收。
+- **清理**：看完确认无问题的 `test-results/` 录像可删，勿提交 git。
+
 ---
 
 ## 场景 A：Kelly 的第一个早晨（全新用户，当日零完成 → Idle）
