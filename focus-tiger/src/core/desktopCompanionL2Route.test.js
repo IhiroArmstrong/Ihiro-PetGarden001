@@ -42,6 +42,15 @@ describe('desktop companion L2 route', () => {
     );
   });
 
+  it('ZH beat-people classifies as aggression_toward_others and never generates', () => {
+    const route = confideClassify('我想打人');
+    assert.equal(route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }),
+      false
+    );
+  });
+
   it('depressed self-report classifies as sad and never generates', () => {
     const route = confideClassify('I feel depressed. Can you help me?');
     assert.equal(route, CONFIDE_ROUTE.SAD);
@@ -190,8 +199,8 @@ describe('desktop companion L2 persona / sanitize', () => {
     assert.doesNotMatch(prompt, /\/no_think/);
     assert.match(prompt, /do not advise/i);
     assert.match(prompt, /do not answer with river, mountain, or ground/i);
-    assert.match(prompt, /do not replace them with scenery, weather, season, or light/i);
-    assert.match(prompt, /Name at least one concrete word or idea from their latest message/i);
+    assert.match(prompt, /do not replace them with scenery, weather, season, light, or a generic cub gesture/i);
+    assert.doesNotMatch(prompt, /Name at least one concrete word or idea from their latest message/i);
     assert.match(prompt, /Do not answer with only still, watching, here, quiet, or listening presence/i);
     assert.match(prompt, /Never reply with I am curious/i);
     assert.match(prompt, /respect the boundary/i);
@@ -474,6 +483,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confide-to-yin-memory-consent-title/);
     assert.match(ui, /matchConfideExecutableTool/);
     assert.match(ui, /mayUseConfideReadHybrid/);
+    assert.match(ui, /shouldRunConfideReadHybridClassify/);
     assert.match(ui, /buildConfideReadHybridPrompt/);
     assert.match(ui, /resolveConfideReadHybridToolFromRaw/);
     assert.match(ui, /_tryReadHybridThenContinue/);
@@ -498,18 +508,48 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /confideObservationHonesty/);
     assert.match(ui, /shouldHandleConfideObservationHonesty/);
     assert.match(ui, /source: 'observation_honesty'/);
+    assert.match(ui, /confideCompanionGreeting/);
+    assert.match(ui, /shouldHandleConfideCompanionGreeting/);
+    assert.match(ui, /source: 'companion_greeting'/);
+    assert.match(ui, /confideReflectiveHonesty/);
+    assert.match(ui, /shouldHandleConfideReflectiveHonesty/);
+    assert.match(ui, /source: 'reflective_honesty'/);
+    assert.match(
+      ui,
+      /matchConfideExecutableTool[\s\S]*shouldHandleConfideCompanionGreeting[\s\S]*shouldHandleConfideReflectiveHonesty[\s\S]*mayUseConfideReadHybrid/
+    );
     assert.match(ui, /shouldHandlePostRecallMemorySuppress\(\{[\s\S]*?state: this\._memoryState/);
     assert.match(ui, /confide-to-yin-memory-consent/);
     assert.match(ui, /rememberYinPersonalMemoryFromConfide/);
     assert.match(ui, /_maybeRememberFromL3/);
     assert.match(ui, /onMemoryRemembered/);
+    assert.match(ui, /priorConfideTurnForShadow/);
+    assert.match(ui, /priorConfideTurnForLiveClassify/);
+    assert.match(ui, /buildConfideShadowContextualText/);
+    assert.match(ui, /contextualText/);
+    assert.match(preload, /desktop:companion-semantic-shadow-classify/);
+    assert.match(preload, /desktop:companion-semantic-live-classify/);
+    assert.match(ipcSrc, /desktop:companion-semantic-live-classify/);
+    assert.match(ui, /semanticLiveClassify/);
+    assert.match(ui, /_applyLiveSemanticThenDispatch/);
+    assert.match(ui, /applyConfideStage2Route/);
     const runtime = readFileSync(
       join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
+      'utf8'
+    );
+    const child = readFileSync(
+      join(focusTigerRoot, 'desktop/companion/l1Child.js'),
       'utf8'
     );
     assert.match(runtime, /retrieveYpeMemoriesForL3Generate/);
     assert.match(runtime, /priorRepeatableYinRepliesFromHistory/);
     assert.match(runtime, /classifyReadTool/);
+    assert.match(runtime, /contextualText/);
+    assert.match(runtime, /canReuseConfideSemanticLiveCache/);
+    assert.match(runtime, /l1SemanticLiveCache/);
+    assert.match(child, /classifyUserText\(contextualText\)/);
+    assert.match(runtime, /kind: 'read_hybrid_classify'[\s\S]*?text: userText\.slice\(0, 400\)/);
+    assert.match(ui, /classifyReadTool\(\{[\s\S]*?userText: text/);
     assert.equal(runtime.includes('buildConfideReadHybridPrompt'), false);
     
     assert.match(ui, /ypeMayUseCompanionGenerate/);
@@ -527,6 +567,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /shown\.source === 'boundary'/);
     assert.match(ui, /resolveCorpusFallbackAfterGenerateFailure/);
     assert.match(ui, /_showGenerateFailureFallback/);
+    assert.match(ui, /_armPendingReplyWatchdog/);
+    assert.match(ui, /CONFIDE_PENDING_REPLY_WATCHDOG_MS/);
     assert.match(ui, /salt: this\._l2Turns\.length/);
     assert.match(ui, /confide-to-yin-user/);
     assert.match(ui, /data-route='\$\{CONFIDE_ROUTE\.FALLBACK\}'/);
@@ -546,6 +588,7 @@ describe('desktop companion L2 isolation', () => {
       'utf8'
     );
     assert.match(hold, /openFreshChatSession/);
+    assert.match(hold, /promptFamily:\s*L0_PROMPT_FAMILY/);
     assert.match(sequence, /disposeSequence:\s*true/);
     assert.match(sequence, /isNoSequencesLeftError/);
     assert.match(sequence, /createContext/);

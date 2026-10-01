@@ -16,6 +16,7 @@
  * score = practiceDayCount + floor(lifetimeMinutes / 60) — same as practice badges.
  */
 
+import { PRACTICE_SCORE_21_THRESHOLD } from './MILESTONE_CATALOG.js';
 import { computePracticeScore } from './practiceBadgeAward.js';
 import {
   practiceAggregateBadgeSummary,
@@ -32,15 +33,13 @@ import {
   getMemorialSealEntry,
   listMemorialSealEntriesForScene,
   memorialSealEntryToVerseCase,
-  memorialSealSceneUnlockThreshold,
   nextUnrevealedMemorialSealEntry
 } from './memorialSealDirectory.js';
 
 export const MUSTARD_SEED_SEAL_STORAGE_KEY = 'focus-tiger.mustard-seed-seal.v1';
 
-/** Aligned with long-horizon memorial tier (~21 practice score units). */
-export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD =
-  memorialSealSceneUnlockThreshold(MEMORIAL_SEAL_SCENE_MUSTARD_SEED) ?? 21;
+/** Re-export catalog SSOT (`practice-score-21`); directory entries use the same value. */
+export const MUSTARD_SEED_SEAL_SCORE_THRESHOLD = PRACTICE_SCORE_21_THRESHOLD;
 
 /** Dedicated seal badge dir (not tip / Sanctuary catalogs). */
 export const MUSTARD_SEED_SEAL_BADGE_PUBLIC_DIR = MEMORIAL_SEAL_BADGE_PUBLIC_DIR;
@@ -64,6 +63,30 @@ export const MUSTARD_SEED_SEAL_BODY_CLASS = 'ft-mustard-seed-seal-open';
  */
 export function mustardSeedSealZhIsPrimaryLocale(locale) {
   return locale === 'zh';
+}
+
+/**
+ * @param {string} locale
+ * @returns {boolean}
+ */
+export function mustardSeedSealJaIsPrimaryLocale(locale) {
+  return locale === 'ja';
+}
+
+/**
+ * @param {{ poemZh: readonly string[], poemJa?: readonly string[], poemEn: readonly string[] }} verse
+ * @param {string} locale
+ * @returns {{ primary: readonly string[], secondary: readonly string[] }}
+ */
+export function resolveMustardSeedPoemPresentation(verse, locale) {
+  if (mustardSeedSealZhIsPrimaryLocale(locale)) {
+    return { primary: verse.poemZh, secondary: verse.poemEn };
+  }
+  if (mustardSeedSealJaIsPrimaryLocale(locale)) {
+    const primary = verse.poemJa?.length ? verse.poemJa : verse.poemEn;
+    return { primary, secondary: verse.poemEn };
+  }
+  return { primary: verse.poemEn, secondary: verse.poemZh };
 }
 
 const sumeruEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_SUMERU);

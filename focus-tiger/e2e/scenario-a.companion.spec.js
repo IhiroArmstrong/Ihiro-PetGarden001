@@ -21,7 +21,15 @@ import {
 /**
  * SCENARIO_TESTS 场景 A / I / K · 产品壳 DOM 主路径（到 Companion 开表为止）。
  * 不跑到 1 分钟达标 / Celebrating；序列观感仍人工。
+ *
+ * visibility CI 拆成四个 job（同一文件、各自 webServer）：
+ * `scenario-a-early` = 本 describe 起至 Choose 外侧取消；
+ * `scenario-a-mid` = Arrival 藏 Sit 起至 375 Breath 时长选择；
+ * `scenario-a-late` = Choose / Companion 主路径；
+ * `scenario-a-tail` = write-your-own + completionPending（#993 后仍压垮 preview 的尾段）。
  */
+
+test.describe('scenario-a-early', () => {
 
 test('scenario I: hint opens companion panel when gate not ready (no silent no-op)', async ({
   page
@@ -106,7 +114,7 @@ test('Arrival Notice: tip click dismisses tip only, not Arrival', async ({
 
 /**
  * §8 N18 / 场景 O 图1：点 tip 只关 tip，不得把 Notice 选择格一并外侧取消掉。
- * 375：主屏 Sit → Notice → 等 notice tip → 点 tip。
+ * 375：主屏 Sit → Notice → 注入 notice tip → 点 tip（auto Arrival tips 自 PR #122 起不再喷洒）。
  */
 test('375 Arrival Notice: tip click closes tip only (keeps Notice)', async ({
   page
@@ -124,10 +132,22 @@ test('375 Arrival Notice: tip click closes tip only (keeps Notice)', async ({
   });
   await expect(noticePick.first()).toBeVisible({ timeout: 8_000 });
 
-  const tip = page.locator(
-    'ft-onboarding-hint-bubble[data-hint-id="notice"][open]'
-  );
-  await expect(tip).toBeVisible({ timeout: 12_000 });
+  await page.evaluate(() => {
+    const tip = document.createElement('ft-onboarding-hint-bubble');
+    tip.id = 'ft-e2e-arrival-notice-tip-375';
+    tip.dataset.hintId = 'notice';
+    tip.setAttribute('open', '');
+    tip.message = 'A tap is enough — or skip ahead.';
+    tip.style.cssText =
+      'position:fixed;left:48px;top:200px;width:140px;height:44px;z-index:10000;';
+    tip.addEventListener('ft-hint-dismiss', () => {
+      tip.removeAttribute('open');
+    });
+    document.body.appendChild(tip);
+  });
+
+  const tip = page.locator('#ft-e2e-arrival-notice-tip-375');
+  await expect(tip).toBeVisible();
   await tip.click();
 
   await expect(tip).toBeHidden({ timeout: 5_000 });
@@ -153,6 +173,10 @@ test('Arrival Choose dismisses on outside click (back to Idle)', async ({
   await expect(arrival).toBeHidden({ timeout: 5_000 });
   await expectFocusSessionInactive(page);
 });
+
+});
+
+test.describe('scenario-a-mid', () => {
 
 test('Arrival open: Sit hidden so Notice icons are not covered; Quick Start stays', async ({
   page
@@ -268,6 +292,10 @@ test('375 Arrival: home Breath practice opens duration picker', async ({ page })
   await expect(ritual).toBeVisible({ timeout: 5_000 });
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'pick');
 });
+
+});
+
+test.describe('scenario-a-late', () => {
 
 test('scenario A: Arrival Choose → Companion → Here & Now starts timer', async ({
   page
@@ -428,6 +456,10 @@ test('scenario K: Offline Space starts focus without Arrival', async ({
   await expectFocusSessionActive(page);
 });
 
+});
+
+test.describe('scenario-a-tail', () => {
+
 test('Choose write-your-own: → confirm commits typed text', async ({ page }) => {
   await openFreshProductShell(page);
   await clickSitEntry(page);
@@ -492,4 +524,6 @@ test('completionPending disables Sit (no silent no-op)', async ({ page }) => {
     window.__resyncSessionChrome();
   });
   await expect(page.locator('#btn-focus')).toBeEnabled();
+});
+
 });

@@ -53,6 +53,9 @@ export function getCloudApiBaseUrl(globalObj = globalThis, flags = {}) {
   return '';
 }
 
+/** Click-mutation default. Callers may pass `deps.timeoutMs`; `0` disables (tests only). */
+export const CLOUD_JSON_DEFAULT_TIMEOUT_MS = 12000;
+
 /**
  * @param {unknown} err
  * @param {number} [status]
@@ -67,11 +70,55 @@ function attachCloudError(err, status, body) {
 }
 
 /**
+ * @param {Promise<unknown>} promise
+ * @param {number} timeoutMs
+ */
+export async function withCloudJsonTimeout(promise, timeoutMs) {
+  if (!(timeoutMs > 0)) return promise;
+  let timer = null;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          reject(attachCloudError(new Error('timeout'), 408));
+        }, timeoutMs);
+      })
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+/**
+ * @param {{ timeoutMs?: number }} [deps]
+ */
+export function resolveCloudJsonTimeoutMs(deps = {}) {
+  if (deps.timeoutMs === 0) return 0;
+  if (Number.isFinite(deps.timeoutMs) && /** @type {number} */ (deps.timeoutMs) > 0) {
+    return /** @type {number} */ (deps.timeoutMs);
+  }
+  return CLOUD_JSON_DEFAULT_TIMEOUT_MS;
+}
+
+/**
  * @param {string} path e.g. "/api/create-tip-checkout-session"
+ * @param {RequestInit} [init]
+ * @param {{ desktopShell?: ReturnType<typeof getDesktopShellBridge>, timeoutMs?: number }} [deps]
+ */
+export async function postCloudJson(path, init = {}, deps = {}) {
+  return withCloudJsonTimeout(
+    postCloudJsonOnce(path, init, deps),
+    resolveCloudJsonTimeoutMs(deps)
+  );
+}
+
+/**
+ * @param {string} path
  * @param {RequestInit} [init]
  * @param {{ desktopShell?: ReturnType<typeof getDesktopShellBridge> }} [deps]
  */
-export async function postCloudJson(path, init = {}, deps = {}) {
+async function postCloudJsonOnce(path, init = {}, deps = {}) {
   const shell = deps.desktopShell ?? getDesktopShellBridge();
   if (shell && typeof shell.cloudPostJson === 'function') {
     let result;

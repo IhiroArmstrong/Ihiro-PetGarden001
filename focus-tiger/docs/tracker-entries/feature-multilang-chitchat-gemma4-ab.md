@@ -1,0 +1,3 @@
+# Tracker fragment · feature/multilang-chitchat-gemma4-ab
+
+| 六语闲聊冻表 + Gemma4 jc/un A/B 标注表 | PO 拍板换 unsloth 默认 · de-12 已修 | 待人工测试 | **不在 Cursor 跑**；须系统终端.app + Metal + jc/un GGUF 均已就位。`cd focus-tiger/desktop && npm run companion:gemma4-multilang-ab`。验收：`focus-tiger/docs/lab-artifacts/multilang-chitchat-annotate-1789637343276-claude-firstpass.csv` + `gemma4-multilang-ab-conclusion-2026-09-17.md`。单测：`node --test src/core/confide/confideMultilangChitchatFixtures.test.js`。**生产**：默认 `gemma4-e4b` → unsloth QAT；回退 `FT_COMPANION_L0_MODEL=gemma4-e4b-jc` | PO 2026-09-17：A/B 平手后 PO 推翻分析师结论 — unsloth 五问更贴切、无语法错、95% yes → **换 unsloth 默认**；jc 保留 companion-l0 可快速回退 | — | — | `l0ModelProfiles.js` · `confideMultilangChitchatFixtures.js` | 2026-09-17 |

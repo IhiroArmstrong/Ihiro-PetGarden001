@@ -1,0 +1,59 @@
+---
+description: B类用户可见改动开工前必须先锁定Brief——口令「立刻开工」不能跳过；A类影子/审计可直接开工
+alwaysApply: false
+---
+
+# Focus Tiger · 用户可见改动 Brief 开工门禁（brief-before-user-visible · 按需层）
+
+> **加载时机**：用户下「开工」「立刻开工」「马上做」「现在就要」等口令，且任务可能改用户实际看到的回复 / 等待 / 路由；或 Agent 准备写 `focus-tiger/src/**` 等产品运行时。
+>
+> 索引：`RULES_INDEX.md` → `brief-before-user-visible`。  
+> **条文 SSOT**：[`WORKFLOW.md`](../WORKFLOW.md)「用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21）」。  
+> **只管开工前分类与 Brief 闸**；不改变 push/PR 默认、合 develop、§7 关单、探索预算分档。
+
+## 适用条件
+
+用户意图是**开始实现**（含「立刻开工」），且改动**可能**触及用户可见行为（回复内容、回复速度、路由决定）。
+
+纯文档 / 规则 / 影子日志 / 离线审计 / 只读报告 → 先按 A/B 表判定；**有疑问默认 B 类**。
+
+## Step A — 分类（硬闸 · 优先于写代码）
+
+在**第一次** `StrReplace` / `Write` 落盘产品运行时之前，须判定：
+
+| 类 | 能否无 Brief 直接写代码 |
+|---|---|
+| **A 类**（影子 / 审计 / 后台；不改变用户实际看到的路由/回复/等待） | **可以**（「开工」口令即可） |
+| **B 类**（会改变用户可见回复 / 速度 / 路由） | **不可以**——须 PO 已看过并点头的 Brief |
+
+**禁止**凭「应该问题不大」自行降为 A 类。
+
+## Step B — B 类且无 Brief 时（硬闸）
+
+同时满足：
+
+1. 判定为 **B 类**（或无法确信为 A 类），且  
+2. **没有** PO 明确看过、点头过的 Task Brief（`docs/task-briefs/` 中无对应稿，或状态未锁 / 用户未书面确认）
+
+→ **立刻停止写代码**。在「待你决定」问：
+
+> 这是会改变用户可见行为的 B 类任务，需要先出一份 brief 给你看过再动代码吗？
+
+**禁止**因用户说了「立刻」「马上」「现在就要」而跳过本问。
+
+可先起草 Brief 或整理方案，但**不得**并行改产品运行时。
+
+## Step C — Brief 已锁后
+
+用户书面点头 Brief（或「按这份 Brief 开工」）→ 方可实现；此时「开工」与 `agent-tool-budget` 升档生效。
+
+仍须按需 Read：`focus-tiger-feature-conflict-review.mdc`（冲突扫描）、`focus-tiger-docs.mdc`（产品语义）。
+
+## 示范（勿混淆）
+
+| 任务 | 类 | 无 Brief 时 |
+|---|---|---|
+| Confide Stage 1 影子分流（`task-confide-semantic-routing-option-d.md`） | **A** | 可直接开工 |
+| Confide Stage 2 切真路由（`task-confide-stage2-semantic-cutover.md`） | **B** | **必须先 Brief**；2026-09-21 先代码后 Brief 为反面教材 |
+
+同一线 **Stage 1 → Stage 2** 可能从 A 升为 B；不得以 Stage 1 可直接开工推断 Stage 2 也可跳过 Brief。

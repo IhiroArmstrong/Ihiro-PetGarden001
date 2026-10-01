@@ -15,6 +15,8 @@
 
 本应用中与习惯、打卡、练习陪伴相关的 AI 对话功能，使用**设备端（本地）模型**进行推理。你输入的相关内容仅在你的设备上完成计算，**不会发送给第三方大模型服务商**。
 
+Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别把你说的话转成文字；**不是语音消息**，录音**不会上传**。
+
 ### 2. 默认数据存储
 
 除非你使用下文第 3 节的导出/导入自行迁移，你的习惯打卡、练习记录等数据默认**仅保存在你的设备本地**，本应用**不会自动将其上传到开发者服务器**。
@@ -55,6 +57,8 @@
 
 AI companion features related to habits, check-ins, and practice guidance run **on your device (on-device model)**. Your related inputs are processed entirely on your device and are **never sent to a third-party large language model provider**.
 
+On the Mac app, **Speak to type** in Confide uses **on-device speech recognition** only to turn speech into text. It is **not a voice message**; audio is **not uploaded**.
+
 ### 2. Default Data Storage
 
 Unless you use local export/import (Section 3), your habit check-ins, practice records, and similar data are stored **only on your local device by default**. This app **does not automatically upload this data to our servers**.
@@ -94,6 +98,8 @@ If we introduce cloud backup later, we will update this notice before launch, ex
 ### 1. AI推論による入力の取り扱い
 
 習慣、チェックイン、練習サポートに関連するAI対話機能は、**端末上（オンデバイス）のモデル**で推論を行います。関連する入力内容はすべてお使いの端末上で処理され、**第三者の大規模言語モデル提供事業者へ送信されることはありません**。
+
+Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声認識のみで話した内容を文字にします。**音声メッセージではありません**。音声は**アップロードされません**。
 
 ### 2. デフォルトのデータ保存
 

@@ -70,9 +70,12 @@ Sources that **should** feed cumulative practice metrics (via the shared write h
 | `confide-practice-facts-compare` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `tip-kindness-badges` | P0 | 2 | ok | `src/core/tipKindnessBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `sanctuary-badges` | P0 | 2 | ok | `src/core/sanctuaryBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `mustard-seed-seal-score` | P0 | 2 | ok | `src/core/mustardSeedSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `contemplative-archive-seal-score` | P0 | 2 | ok | `src/core/contemplativeArchiveSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `mustard-seed-seal-ceremony` | P1 | 3 | ok | `src/main.js` | `maybeOfferGrowthSealAfterBaselineCeremony` `shouldOfferMustardSeedSealAfterCeremony(` `shouldOfferContemplativeArchiveSealAfterCeremony(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `mustard-seed-seal-score` | P0 | 4 | ok | `src/core/mustardSeedSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `contemplative-archive-seal-score` | P0 | 4 | ok | `src/core/contemplativeArchiveSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `collections-behavioral-scarcity` | P1 | 5 | ok | `src/core/collectionsBehavioralScarcity.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `mustard-seed-seal-ceremony` | P1 | 3 | ok | `src/main.js` | `maybeOfferGrowthSealAfterBaselineCeremony` `shouldOfferMustardSeedSealAfterCeremony(` `shouldOfferContemplativeArchiveSealAfterCeremony(` `shouldOfferPracticeImprintAfterCeremony(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `practice-imprint-badges` | P1 | 5 | ok | `src/core/practiceImprint.js` | `resolvePracticeImprint(` `syncPracticeImprintAwards(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `practice-imprint-ceremony` | P1 | — | ok | `src/main.js` | `maybeOfferPracticeImprintAfterCeremony` `practiceImprintCardUI.open` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
 | `focus-coins-redeem` | P1 | 2 | wire-only | `src/core/focusCoinsRedeem.js` | `resolvePracticeAggregate(` | — |
 | `support-modal-tea-first` | P1 | 2 | wire-only | `src/main.js` | `resolvePracticeAggregate(` | — |
 | `lotus-pond-bloom` | P1 | — | wire-only | `src/core/LotusPondStore.js` | `addMinutes(` | — |
@@ -127,6 +130,7 @@ Legend: **Gap** = baseline practice sources not reflected in current read path.
 | `arrival-practice` | Arrival flow | Not 同坐 (product) |
 | `ritual-flow-complete` | RitualFlow history | Not 同坐 (product) |
 | `sit-rise-journey-only` | Early Rise Journey row | Not a practice day |
+| `journey-streak-copy-drift` | Journey 7/21/100 memory **copy** vs consecutive-day **math** | **Known** · not an aggregate-read bug. EN `days of returning` / mixed ZH 连续. J1-a keeps one predicate. Fix copy **or** logic in a later PO拍板 — see `task-shared-milestone-catalog.md` **J-copy**. Do **not** treat as catalog Batch 1 work. |
 
 ---
 
@@ -172,3 +176,5 @@ Planned script: `npm run audit:practice-coverage` (wired in `docs:check` · Batc
 | 2026-09-09 | Batch 4: machine registry + `audit:practice-coverage` in docs:check; contemplative archive score on aggregate |
 | 2026-09-10 | Batch 5 (governance): `GROWTH_METRICS_CHARTER.md` + persona regression CI; TEST_TRACKER qaSeedStreak=21 |
 | 2026-09-14 | Remove `recover-reset-breath` exclude — legacy Recover breath path deleted (P5 S17) |
+| 2026-09-20 | Record `journey-streak-copy-drift` (J-copy): Journey returning copy vs consecutive-day math; not Batch 1 |
+| 2026-09-20 | Milestone catalog Batch 5: `collectionsBehavioralScarcity` + `practiceImprint` derive ids from catalog surfaces only |

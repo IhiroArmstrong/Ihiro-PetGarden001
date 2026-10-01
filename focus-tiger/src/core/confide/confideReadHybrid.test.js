@@ -12,11 +12,18 @@ import {
 } from './confideExecutableTools.js';
 import {
   buildConfideReadHybridPrompt,
+  CONFIDE_READ_HYBRID_MEMORY_LIST_GLOSS_LINES,
   parseConfideReadHybridJson
 } from './confideToolCallParse.js';
 import {
+  CONFIDE_READ_HYBRID_MEMORY_LIST_NEG_FIXTURES,
+  CONFIDE_READ_HYBRID_MEMORY_LIST_POS_FIXTURES
+} from './confideReadHybridGlossFixtures.js';
+import { isMemoryListQuestion } from './confideMemoryList.js';
+import {
   mayUseConfideReadHybrid,
-  resolveConfideReadHybridToolFromRaw
+  resolveConfideReadHybridToolFromRaw,
+  shouldRunConfideReadHybridClassify
 } from './confideReadHybrid.js';
 
 describe('confide read hybrid', () => {
@@ -110,5 +117,61 @@ describe('confide read hybrid', () => {
       ),
       null
     );
+  });
+
+  it('skips L0 classify only for clear non-query chitchat (2026-09-19)', () => {
+    const mustClassify = [
+      '列出记忆',
+      '你还记得什么',
+      '我最近在忙什么',
+      '为什么开始做这件事',
+      '我练了多久',
+      'Show me what you remember',
+      'Do you remember why I started doing this?'
+    ];
+    for (const text of mustClassify) {
+      assert.equal(
+        shouldRunConfideReadHybridClassify(text),
+        true,
+        `expected classify for: ${text}`
+      );
+    }
+    const maySkip = ['我想打游戏', '今天好累', 'I want to play video games'];
+    for (const text of maySkip) {
+      assert.equal(
+        shouldRunConfideReadHybridClassify(text),
+        false,
+        `expected skip for: ${text}`
+      );
+    }
+  });
+
+  it('narrows query_memory_list gloss with negative examples (2026-09-18)', () => {
+    const prompt = buildConfideReadHybridPrompt(
+      'What have I been spending my time on lately?'
+    );
+    assert.match(prompt, /ONLY when the user explicitly asks to see, list, recall, or review/);
+    assert.match(prompt, /Do NOT classify as query_memory_list/);
+    assert.match(prompt, /Do you remember why I started doing this/);
+    assert.match(prompt, /What have I been busy with lately/);
+    assert.match(prompt, /Show me what you remember/);
+    assert.equal(
+      prompt.includes('list what Yin remembers on this device'),
+      false,
+      'old one-line gloss must be gone'
+    );
+    assert.ok(CONFIDE_READ_HYBRID_MEMORY_LIST_GLOSS_LINES.length >= 8);
+    for (const row of CONFIDE_READ_HYBRID_MEMORY_LIST_NEG_FIXTURES) {
+      assert.equal(
+        isMemoryListQuestion(row.text),
+        false,
+        `${row.id} must stay regex miss`
+      );
+      if (row.note.includes('observe-only')) continue;
+      assert.match(prompt, new RegExp(row.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    }
+    for (const row of CONFIDE_READ_HYBRID_MEMORY_LIST_POS_FIXTURES) {
+      assert.match(prompt, new RegExp(row.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    }
   });
 });

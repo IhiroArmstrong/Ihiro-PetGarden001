@@ -9,10 +9,12 @@
 
 import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
 import {
+  FOCUS_CIRCLE_MUTATION_TIMEOUT_MS,
   FOCUS_CIRCLE_PATH,
   FOCUS_CIRCLE_SCHEMA_VERSION,
   isFocusCircleClientEnabled,
-  readFocusCircleMembership
+  readFocusCircleMembership,
+  withFocusCircleRequestTimeout
 } from './focusCircleMembership.js';
 
 export const FOCUS_CIRCLE_IDENTITY_QUERY_PARAM = 'focusCircleIdentity';
@@ -270,13 +272,13 @@ export async function postFocusCircleIdentitySet({
   circleId = '',
   memberId = '',
   nickname = null,
-  badgeKey = null
+  badgeKey = null,
+  timeoutMs = FOCUS_CIRCLE_MUTATION_TIMEOUT_MS
 } = {}) {
-  const base = getBaseUrl();
-  if (!base || !circleId || !memberId) {
+  if (!getBaseUrl() || !circleId || !memberId) {
     return { ok: false, reason: 'missing_config' };
   }
-  const body = {
+  const payload = {
     schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
     action: 'identity_set',
     circleId,
@@ -284,13 +286,25 @@ export async function postFocusCircleIdentitySet({
     nickname: nickname ?? null,
     badgeKey: badgeKey ?? null
   };
-  const res = await postJson(`${base}${FOCUS_CIRCLE_PATH}`, body);
-  if (!res.ok) {
-    return { ok: false, reason: res.error ?? 'network' };
+  try {
+    const body = await withFocusCircleRequestTimeout(
+      postJson(FOCUS_CIRCLE_PATH, {
+        body: JSON.stringify(payload)
+      }),
+      timeoutMs
+    );
+    if (!body || typeof body !== 'object') {
+      return { ok: false, reason: 'bad_response' };
+    }
+    if (body.schemaVersion !== FOCUS_CIRCLE_SCHEMA_VERSION || body.ok !== true) {
+      return { ok: false, reason: 'bad_response' };
+    }
+    return { ok: true };
+  } catch (err) {
+    const status = err && typeof err === 'object' ? Number(err.status) : 0;
+    if (status === 403) return { ok: false, reason: 'not_member' };
+    if (status === 408) return { ok: false, reason: 'timeout' };
+    if (status === 429) return { ok: false, reason: 'rate_limited' };
+    return { ok: false, reason: 'network' };
   }
-  const data = res.data;
-  if (!data || data.schemaVersion !== FOCUS_CIRCLE_SCHEMA_VERSION || data.ok !== true) {
-    return { ok: false, reason: 'bad_response' };
-  }
-  return { ok: true };
 }

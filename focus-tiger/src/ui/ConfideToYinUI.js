@@ -9,11 +9,34 @@
  */
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
-import { canSubmitConfideText } from '../core/confide/confideClassify.js';
-import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
-import { confideLineText } from '../core/confide/confideCorpus.js';
-import { CONFIDE_ROUTE } from '../core/confide/confideRoutes.js';
 import {
+  canUseSystemTts,
+  mapLocaleToTtsLocale,
+  speakSystemTts,
+  stopSystemTts,
+  shouldSpeakConfideReply
+} from '../core/systemTtsBridge.js';
+import { canSubmitConfideText } from '../core/confide/confideClassify.js';
+import {
+  resolveConfideLiteralCoarseBucket,
+  shouldRunConfideSemanticShadow
+} from '../core/confide/confideSemanticCoarseMap.js';
+import { applyConfideStage2Route } from '../core/confide/confideSemanticStage2.js';
+import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
+import {
+  buildConfideShadowContextualText,
+  priorConfideTurnForLiveClassify,
+  priorConfideTurnForShadow
+} from '../core/confide/confideSemanticShadowPriorTurn.js';
+import { shouldSubmitConfideOnEnter } from '../core/confide/confideEnterSend.js';
+import { CONFIDE_PENDING_REPLY_WATCHDOG_MS } from '../core/confide/confidePendingReplyWatchdog.js';
+import { confideLineText } from '../core/confide/confideCorpus.js';
+import {
+  CONFIDE_GENERATE_REPLY_ROUTE,
+  CONFIDE_ROUTE
+} from '../core/confide/confideRoutes.js';
+import {
+  resolveConfideCorpusForRoute,
   resolveConfideReply,
   resolveCorpusFallbackAfterGenerateFailure
 } from '../core/confide/confideReplyFlow.js';
@@ -30,12 +53,28 @@ import {
   isConfideHybridExecutableReadTool,
   matchConfideExecutableTool
 } from '../core/confide/confideExecutableTools.js';
-import { mayUseConfideReadHybrid, resolveConfideReadHybridToolFromRaw } from '../core/confide/confideReadHybrid.js';
+import {
+  mayUseConfideReadHybrid,
+  resolveConfideReadHybridToolFromRaw,
+  shouldRunConfideReadHybridClassify
+} from '../core/confide/confideReadHybrid.js';
 import { listShippedConfideVerbalHintChips } from '../core/confide/confideVerbalHintChips.js';
 import {
   trackConfideChipTapped,
-  trackConfideShare
+  trackConfideShare,
+  trackKbRetrievalMiss
 } from '../core/confide/confideObservationTelemetry.js';
+import {
+  buildKbRetrievalMissTurnLog,
+  getRetrievableProductKnowledgeEntry,
+  mayTryConfideProductKnowledge,
+  probeProductKnowledgeCatalog,
+  productKnowledgeReplyPassesGuard
+} from '../core/confide/confideProductKnowledge.js';
+import { buildCrisisParaphraseShadowTurnLog } from '../core/confide/confideCrisisParaphraseShadow.js';
+import { formatConfideProductKnowledgeHonestyReply } from '../core/confide/confideProductKnowledgeHonesty.js';
+import { resolveProductKnowledgeGateAction } from '../core/confide/confideProductKnowledgeSemantic.js';
+import { decideKbNearMatch } from '../core/confide/kbNearMatch.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -68,6 +107,7 @@ import {
   hasDesktopCompanionBridge,
   shouldCloseDesktopCompanionGenerateLayer
 } from '../core/desktopCompanionGate.js';
+import { VoiceInputChrome } from './VoiceInputChrome.js';
 import {
   fetchYinPersonalMemoryState,
   forgetYinPersonalMemoryEntry,
@@ -102,6 +142,14 @@ import {
   shouldHandleConfideObservationHonesty
 } from '../core/confide/confideObservationHonesty.js';
 import {
+  formatConfideReflectiveHonestyReply,
+  shouldHandleConfideReflectiveHonesty
+} from '../core/confide/confideReflectiveHonesty.js';
+import {
+  formatConfideCompanionGreetingReply,
+  shouldHandleConfideCompanionGreeting
+} from '../core/confide/confideCompanionGreeting.js';
+import {
   buildConfideTurnId,
   formatMemorySuppressReply,
   shouldHandlePostRecallMemorySuppress,
@@ -134,6 +182,8 @@ export class ConfideToYinUI {
     this._companionStatus = null;
     this._sending = false;
     this._sendEpoch = 0;
+    this._pendingWatchdogTimer = 0;
+    this._pendingFallback = null;
     this._l2Turns = [];
     this._practiceDaysStore = handlers.practiceDaysStore || null;
     this._memoryState = null;
@@ -241,6 +291,9 @@ export class ConfideToYinUI {
       this.memoryConsentActions
     );
 
+    this.inputWrap = document.createElement('div');
+    this.inputWrap.className = 'confide-to-yin__input-wrap';
+
     this.inputEl = document.createElement('textarea');
     this.inputEl.className = 'confide-to-yin__input';
     this.inputEl.dataset.testid = 'confide-to-yin-input';
@@ -252,6 +305,13 @@ export class ConfideToYinUI {
       event.preventDefault();
       this._onSend();
     });
+    this.inputWrap.appendChild(this.inputEl);
+    this._voiceInputChrome = new VoiceInputChrome({
+      textarea: this.inputEl,
+      mountBefore: null,
+      testIdPrefix: 'confide-voice-input',
+      onInputApplied: () => this._syncSendEnabled()
+    });
 
     this.userEl = document.createElement('p');
     this.userEl.className = 'confide-to-yin__user';
@@ -262,6 +322,12 @@ export class ConfideToYinUI {
     this.replyEl.className = 'confide-to-yin__reply';
     this.replyEl.dataset.testid = 'confide-to-yin-reply';
     this.replyEl.hidden = true;
+
+    this.thinkingEl = document.createElement('p');
+    this.thinkingEl.className = 'confide-to-yin__thinking';
+    this.thinkingEl.dataset.testid = 'confide-to-yin-thinking';
+    this.thinkingEl.setAttribute('aria-live', 'polite');
+    this.thinkingEl.hidden = true;
 
     this.memoryListLink = document.createElement('button');
     this.memoryListLink.type = 'button';
@@ -302,8 +368,9 @@ export class ConfideToYinUI {
       this.chipWrap,
       this.statusWrap,
       this.memoryConsentWrap,
-      this.inputEl,
+      this.inputWrap,
       this.userEl,
+      this.thinkingEl,
       this.replyEl,
       this.memoryListLink,
       this.actions
@@ -342,11 +409,14 @@ export class ConfideToYinUI {
     showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.inputEl.value = '';
+    this._voiceInputChrome?.reset();
+    this._stopConfideTts();
     this.userEl.hidden = true;
     this.userEl.textContent = '';
     this.replyEl.hidden = true;
     this.replyEl.textContent = '';
     this.replyEl.dataset.route = '';
+    this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
     this._generateFailStreak = 0;
@@ -372,6 +442,7 @@ export class ConfideToYinUI {
     this._open = false;
     this._sendEpoch += 1;
     this._sending = false;
+    this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
     this._generateFailStreak = 0;
@@ -379,6 +450,8 @@ export class ConfideToYinUI {
     this._memoryConsentSaving = false;
     this._hideMemoryConsent();
     this.hideGenerateLayer({ unload: false });
+    this._voiceInputChrome?.reset();
+    this._stopConfideTts();
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -493,6 +566,7 @@ export class ConfideToYinUI {
     }
     this._unsubCompanion?.();
     this._unsubLocale?.();
+    this._voiceInputChrome?.destroy();
     this.backdrop.remove();
     this.root.remove();
   }
@@ -512,6 +586,9 @@ export class ConfideToYinUI {
     if (this.memoryListLink) {
       this.memoryListLink.textContent = t('YIN_MEMORY_PANEL_LINK');
       this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
+    }
+    if (this.thinkingEl && !this.thinkingEl.hidden) {
+      this.thinkingEl.textContent = t('CONFIDE_PANEL_THINKING');
     }
     this._renderDesktopStatus();
   }
@@ -561,11 +638,76 @@ export class ConfideToYinUI {
     this.sendBtn.disabled = this._sending || !ok || consentPending;
   }
 
+  /** @returns {void} */
+  _clearPendingReplyWatchdog() {
+    if (this._pendingWatchdogTimer) {
+      clearTimeout(this._pendingWatchdogTimer);
+      this._pendingWatchdogTimer = 0;
+    }
+    this._pendingFallback = null;
+  }
+
+  /**
+   * First arm wins for this send epoch so live classify + hybrid + generate
+   * share one 45s ceiling.
+   * @param {{ hit: object, locale: string, text: string, corpusText: string }} payload
+   * @returns {void}
+   */
+  _armPendingReplyWatchdog(payload) {
+    this._pendingFallback = payload;
+    if (this._pendingWatchdogTimer) return;
+    const epoch = this._sendEpoch;
+    this._pendingWatchdogTimer = setTimeout(() => {
+      this._pendingWatchdogTimer = 0;
+      if (!this._open || epoch !== this._sendEpoch) return;
+      this._sendEpoch += 1;
+      this._sending = false;
+      const fallback = this._pendingFallback;
+      this._pendingFallback = null;
+      if (fallback) {
+        this._showGenerateFailureFallback(fallback);
+      } else {
+        this._hideThinkingIndicator();
+      }
+      this._syncSendEnabled();
+      this._renderDesktopStatus();
+    }, CONFIDE_PENDING_REPLY_WATCHDOG_MS);
+  }
+
+  /** @returns {void} */
+  _hideThinkingIndicator() {
+    this._clearPendingReplyWatchdog();
+    if (!this.thinkingEl) return;
+    this.thinkingEl.hidden = true;
+    this.thinkingEl.textContent = '';
+  }
+
+  /**
+   * Immediate feedback while Local AI is working (generate / read-hybrid classify).
+   * @param {string} userText
+   */
+  _showPendingReply(userText) {
+    const asked = typeof userText === 'string' ? userText.trim() : '';
+    this.userEl.textContent = asked;
+    this.userEl.hidden = !asked;
+    this.replyEl.hidden = true;
+    this.replyEl.textContent = '';
+    this.replyEl.dataset.route = '';
+    this.replyEl.dataset.lineId = '';
+    this.replyEl.dataset.source = '';
+    this.thinkingEl.textContent = t('CONFIDE_PANEL_THINKING');
+    this.thinkingEl.hidden = false;
+    this.inputEl.value = '';
+    this._syncSendEnabled();
+    this._scrollReplyIntoView();
+  }
+
   /**
    * @param {{ route: string, line?: { id?: string }, text: string, source: string }} shown
    * @param {string} userText
    */
   _showReply(shown, userText) {
+    this._hideThinkingIndicator();
     const asked = typeof userText === 'string' ? userText.trim() : '';
     this.userEl.textContent = asked;
     this.userEl.hidden = !asked;
@@ -603,6 +745,14 @@ export class ConfideToYinUI {
                         ? 'preference_honesty'
                         : shown.source === 'observation_honesty'
                           ? 'observation_honesty'
+                          : shown.source === 'reflective_honesty'
+                            ? 'reflective_honesty'
+                            : shown.source === 'companion_greeting'
+                              ? 'companion_greeting'
+                              : shown.source === 'product_knowledge'
+                                ? 'product_knowledge'
+                                : shown.source === 'product_knowledge_honesty'
+                                  ? 'product_knowledge_honesty'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -614,6 +764,56 @@ export class ConfideToYinUI {
       source: shown.source
     });
     this._scrollReplyIntoView();
+    this._maybeSpeakConfideReply(shown);
+    this._maybeScheduleSemanticShadow({
+      text: asked,
+      route: shown.route,
+      source: shown.source
+    });
+  }
+
+  _stopConfideTts() {
+    stopSystemTts();
+  }
+
+  /**
+   * @param {{ route: string, text: string }} shown
+   */
+  _maybeSpeakConfideReply(shown) {
+    if (!shouldSpeakConfideReply(shown.route)) return;
+    const text = String(shown.text || '').trim();
+    if (!text) return;
+    const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
+    if (!canUseSystemTts({ widthPx })) return;
+    speakSystemTts({ text, locale: mapLocaleToTtsLocale(getLocale()) });
+  }
+
+  /**
+   * Stage 1 shadow: async semantic coarse bucket audit after the user sees the reply.
+   * May include the previous `_l2Turns` pair in a second embedding (still not production routing).
+   * @param {{ text: string, route: string, source: string }} ctx
+   */
+  _maybeScheduleSemanticShadow(ctx) {
+    if (!shouldRunConfideSemanticShadow(ctx)) return;
+    if (
+      !this._companion ||
+      typeof this._companion.semanticShadowClassify !== 'function'
+    ) {
+      return;
+    }
+    const literalCoarse = resolveConfideLiteralCoarseBucket(ctx);
+    const prior = priorConfideTurnForShadow(this._l2Turns);
+    const contextualText = buildConfideShadowContextualText(ctx.text, prior);
+    void Promise.resolve(
+      this._companion.semanticShadowClassify({
+        text: ctx.text,
+        contextualText,
+        hadPriorTurn: Boolean(prior),
+        route: ctx.route,
+        source: ctx.source,
+        literalCoarse
+      })
+    ).catch(() => {});
   }
 
   /** @returns {void} */
@@ -748,6 +948,7 @@ export class ConfideToYinUI {
    */
   _offerMemoryConsentBeforeL3(payload) {
     this._pendingL3Send = payload;
+    this._hideThinkingIndicator();
     this.memoryConsentWrap.hidden = false;
     this.memoryConsentAllowBtn.disabled = this._memoryConsentSaving;
     this.memoryConsentDenyBtn.disabled = this._memoryConsentSaving;
@@ -854,6 +1055,8 @@ export class ConfideToYinUI {
     this._sending = true;
     const epoch = this._sendEpoch;
     this.sendBtn.disabled = true;
+    this._showPendingReply(text);
+    this._armPendingReplyWatchdog({ hit, locale, text, corpusText });
     this._renderDesktopStatus();
     const history = this._l2Turns.slice();
     void Promise.resolve(
@@ -883,7 +1086,7 @@ export class ConfideToYinUI {
           );
           this._showReply(
             {
-              route: 'generate',
+              route: CONFIDE_GENERATE_REPLY_ROUTE,
               text: result.text,
               source: 'generate'
             },
@@ -913,7 +1116,10 @@ export class ConfideToYinUI {
         });
       })
       .finally(() => {
-        if (epoch !== this._sendEpoch) return;
+        if (epoch !== this._sendEpoch) {
+          this._hideThinkingIndicator();
+          return;
+        }
         this._sending = false;
         this._syncSendEnabled();
         this._renderDesktopStatus();
@@ -935,6 +1141,100 @@ export class ConfideToYinUI {
       locale: getLocale()
     });
     if (!hit) return;
+    const shadowRow = buildCrisisParaphraseShadowTurnLog({
+      text,
+      locale: getLocale()
+    });
+    if (
+      shadowRow &&
+      this._companion &&
+      typeof this._companion.appendTurnLog === 'function'
+    ) {
+      void this._companion.appendTurnLog(shadowRow);
+    }
+    if (
+      shouldRunConfideSemanticShadow({ route: hit.route }) &&
+      this._companion &&
+      typeof this._companion.semanticLiveClassify === 'function'
+    ) {
+      void this._applyLiveSemanticThenDispatch(text, hit);
+      return;
+    }
+    this._dispatchClassifiedSend(text, hit);
+  }
+
+  /**
+   * Stage 2 live: if embedding is already ready, take the coarse bucket then
+   * the same handler chain. If not ready, IPC returns immediately and the
+   * literal route is kept (no cold-load wait).
+   * @param {string} text
+   * @param {{ route: string, line: object }} hit
+   */
+  async _applyLiveSemanticThenDispatch(text, hit) {
+    this._sending = true;
+    const epoch = this._sendEpoch;
+    this.sendBtn.disabled = true;
+    this._showPendingReply(text);
+    const asked = text.trim();
+    const locale = getLocale();
+    const corpusText = confideLineText(hit.line, locale);
+    this._armPendingReplyWatchdog({ hit, locale, text: asked, corpusText });
+    const literalCoarse = resolveConfideLiteralCoarseBucket({
+      route: hit.route,
+      source: 'corpus'
+    });
+    const prior = priorConfideTurnForLiveClassify(this._l2Turns);
+    const contextualText = buildConfideShadowContextualText(asked, prior);
+    let semanticCoarse = null;
+    try {
+      const result = await this._companion.semanticLiveClassify({
+        text: asked,
+        contextualText,
+        hadPriorTurn: Boolean(prior),
+        route: hit.route,
+        source: '',
+        literalCoarse
+      });
+      if (result?.ok && typeof result.bucket === 'string' && result.bucket) {
+        semanticCoarse = result.bucket;
+      }
+    } catch {
+      semanticCoarse = null;
+    }
+    if (!this._open || epoch !== this._sendEpoch) {
+      this._sending = false;
+      this._syncSendEnabled();
+      return;
+    }
+    const applied = applyConfideStage2Route({
+      literalRoute: hit.route,
+      semanticCoarse,
+      mode: CONFIDE_SEMANTIC_ROUTING_MODE.LIVE
+    });
+    let nextHit = hit;
+    if (applied.route && applied.route !== hit.route) {
+      nextHit =
+        resolveConfideCorpusForRoute({
+          route: applied.route,
+          localDate: formatLocalDateYmd(),
+          salt: this._l2Turns.length,
+          excludeIds: this._sessionExclude,
+          excludeNormalizedTexts: [lastRepeatableYinReplyText(this._l2Turns)].filter(
+            Boolean
+          ),
+          locale: getLocale()
+        }) || { ...hit, route: applied.route };
+    }
+    this._sending = false;
+    this._syncSendEnabled();
+    this._dispatchClassifiedSend(asked, nextHit);
+  }
+
+  /**
+   * @param {string} text
+   * @param {{ route: string, line: object }} hit
+   */
+  _dispatchClassifiedSend(text, hit) {
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
     const turnOrdinal = Math.floor(this._l2Turns.length / 2);
@@ -1023,7 +1323,33 @@ export class ConfideToYinUI {
       this._executeConfideTool(tool, hit, text);
       return;
     }
+    if (shouldHandleConfideCompanionGreeting({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideCompanionGreetingReply(t),
+          source: 'companion_greeting'
+        },
+        text
+      );
+      return;
+    }
+    if (shouldHandleConfideReflectiveHonesty({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideReflectiveHonestyReply(t),
+          source: 'reflective_honesty'
+        },
+        text
+      );
+      return;
+    }
     const routePayload = { text, hit, locale, corpusText };
+    if (this._shouldRunProductKnowledgeGate(text, hit)) {
+      void this._tryProductKnowledgeThenContinue(routePayload);
+      return;
+    }
     if (
       mayUseConfideReadHybrid({
         route: hit.route,
@@ -1037,7 +1363,11 @@ export class ConfideToYinUI {
         generateEnabled: Boolean(this._companionStatus?.generateEnabled)
       })
     ) {
-      void this._tryReadHybridThenContinue(routePayload);
+      if (shouldRunConfideReadHybridClassify(text)) {
+        void this._tryReadHybridThenContinue(routePayload);
+      } else {
+        this._continueAfterToolRouting(routePayload);
+      }
       return;
     }
     this._continueAfterToolRouting(routePayload);
@@ -1106,10 +1436,13 @@ export class ConfideToYinUI {
     this._sending = true;
     const epoch = this._sendEpoch;
     this.sendBtn.disabled = true;
+    this._showPendingReply(text);
+    this._armPendingReplyWatchdog({ hit, locale, text, corpusText });
     this._renderDesktopStatus();
     void Promise.resolve(
       this._companion.classifyReadTool({
-        prompt: buildConfideReadHybridPrompt(text)
+        prompt: buildConfideReadHybridPrompt(text),
+        userText: text
       })
     )
       .then((result) => {
@@ -1129,12 +1462,156 @@ export class ConfideToYinUI {
         return this._continueAfterToolRouting(payload);
       })
       .then((outcome) => {
-        if (epoch !== this._sendEpoch) return;
+        if (epoch !== this._sendEpoch) {
+          this._hideThinkingIndicator();
+          return;
+        }
         if (outcome === 'l3') return;
+        if (outcome === 'consent') this._hideThinkingIndicator();
         this._sending = false;
         this._syncSendEnabled();
         this._renderDesktopStatus();
       });
+  }
+
+  /**
+   * @param {string} text
+   * @param {{ route: string }} hit
+   * @returns {boolean}
+   */
+  _shouldRunProductKnowledgeGate(text, hit) {
+    return mayTryConfideProductKnowledge({
+      route: hit.route,
+      text,
+      wideViewport: this._viewportAllowsGenerateLayer(),
+      hasBridge: Boolean(this._companion) || hasDesktopCompanionBridge(),
+      hasMemoryBridge: hasYinPersonalMemoryBridge()
+    });
+  }
+
+  /**
+   * @param {{ text: string, hit: object, locale: string, corpusText: string }} payload
+   */
+  _tryProductKnowledgeThenContinue(payload) {
+    const { text, hit, locale, corpusText } = payload;
+    this._sending = true;
+    const epoch = this._sendEpoch;
+    this.sendBtn.disabled = true;
+    this._showPendingReply(text);
+    this._armPendingReplyWatchdog({ hit, locale, text, corpusText });
+    this._renderDesktopStatus();
+    void this._resolveProductKnowledgeRoute(text, hit)
+      .then((outcome) => {
+        if (!this._open || epoch !== this._sendEpoch) return 'aborted';
+        if (outcome === 'shown') return 'sync';
+        return this._continueAfterToolRouting(payload);
+      })
+      .then((outcome) => {
+        if (epoch !== this._sendEpoch) {
+          this._hideThinkingIndicator();
+          return;
+        }
+        if (outcome === 'l3') return;
+        if (outcome === 'consent') this._hideThinkingIndicator();
+        this._sending = false;
+        this._syncSendEnabled();
+        this._renderDesktopStatus();
+      });
+  }
+
+  /**
+   * Semantic gate + catalog retrieval. Miss / embed-not-ready → honesty empty state.
+   * @param {string} text
+   * @param {{ route: string }} hit
+   * @returns {Promise<'shown' | 'continue'>}
+   */
+  async _resolveProductKnowledgeRoute(text, hit) {
+    const catalogResult = probeProductKnowledgeCatalog(text);
+    let embeddingState = 'not_ready';
+    let semanticIsProduct = false;
+    let gate = null;
+    if (
+      this._companion &&
+      typeof this._companion.semanticProductKnowledgeGate === 'function'
+    ) {
+      try {
+        gate = await this._companion.semanticProductKnowledgeGate({ text });
+        if (gate?.ok) {
+          embeddingState = 'ready';
+          semanticIsProduct = Boolean(gate.isProduct);
+        } else if (gate?.reason === 'embed_not_ready') {
+          embeddingState = 'not_ready';
+        } else {
+          embeddingState = 'error';
+        }
+      } catch {
+        embeddingState = 'error';
+      }
+    }
+    let nearHit = null;
+    let nearAction = null;
+    if (
+      embeddingState === 'ready' &&
+      !catalogResult.hit &&
+      Number.isFinite(Number(gate?.nearestScore))
+    ) {
+      const near = decideKbNearMatch({
+        nearestId: gate.nearestId,
+        nearestScore: gate.nearestScore
+      });
+      nearAction = near.action;
+      if (near.action === 'hit' && near.id) {
+        const entry = getRetrievableProductKnowledgeEntry(near.id);
+        if (entry && productKnowledgeReplyPassesGuard(entry.shortAnswerEn)) {
+          nearHit = entry;
+        }
+      }
+    }
+    const action = resolveProductKnowledgeGateAction({
+      text,
+      embeddingState,
+      semanticIsProduct,
+      catalogHit: Boolean(catalogResult.hit || nearHit),
+      nearAction,
+      lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct)
+    });
+    const shown = catalogResult.hit
+      ? { id: catalogResult.id, text: catalogResult.text }
+      : nearHit;
+    if (action === 'hit' && shown?.text) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: shown.text,
+          source: 'product_knowledge',
+          kbId: shown.id
+        },
+        text
+      );
+      return 'shown';
+    }
+    if (action === 'honesty') {
+      trackKbRetrievalMiss({ reason: catalogResult.reason || 'semantic_miss' });
+      if (this._companion && typeof this._companion.appendTurnLog === 'function') {
+        void this._companion.appendTurnLog(
+          buildKbRetrievalMissTurnLog({
+            text,
+            reason: catalogResult.reason || 'semantic_miss',
+            locale: getLocale()
+          })
+        );
+      }
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideProductKnowledgeHonestyReply(t),
+          source: 'product_knowledge_honesty'
+        },
+        text
+      );
+      return 'shown';
+    }
+    return 'continue';
   }
 
   /**
@@ -1143,6 +1620,28 @@ export class ConfideToYinUI {
    */
   _continueAfterToolRouting(payload) {
     const { text, hit, locale, corpusText } = payload;
+    if (shouldHandleConfideCompanionGreeting({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideCompanionGreetingReply(t),
+          source: 'companion_greeting'
+        },
+        text
+      );
+      return 'sync';
+    }
+    if (shouldHandleConfideReflectiveHonesty({ route: hit.route, text })) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideReflectiveHonestyReply(t),
+          source: 'reflective_honesty'
+        },
+        text
+      );
+      return 'sync';
+    }
     const wantGenerate = ypeMayUseCompanionGenerate({
       route: hit.route,
       generateEnabled: Boolean(this._companionStatus?.generateEnabled),
@@ -1331,10 +1830,13 @@ export class ConfideToYinUI {
       .confide-to-yin__desktop-progress[hidden] {
         display: none;
       }
+      .confide-to-yin__input-wrap {
+        margin: 0 0 12px;
+      }
       .confide-to-yin__input {
         width: 100%;
         box-sizing: border-box;
-        margin: 0 0 12px;
+        margin: 0;
         padding: 10px 12px;
         border-radius: 12px;
         border: ${GLASS_BORDER};
@@ -1355,6 +1857,41 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__user[hidden] {
         display: none;
+      }
+      .confide-to-yin__thinking {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        margin: 0 0 12px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(44, 31, 20, 0.08);
+        border: 1px solid rgba(139, 115, 85, 0.18);
+        box-shadow: 0 6px 18px rgba(44, 31, 20, 0.08);
+        font-size: 0.84rem;
+        line-height: 1.35;
+        opacity: 0.92;
+        animation: confide-to-yin-thinking-float 2.4s ease-in-out infinite;
+      }
+      .confide-to-yin__thinking::after {
+        content: '…';
+        display: inline-block;
+        width: 1.1em;
+        min-width: 1.1em;
+        overflow: hidden;
+        vertical-align: bottom;
+        animation: confide-to-yin-thinking-dots 1.2s ease-in-out infinite;
+      }
+      .confide-to-yin__thinking[hidden] {
+        display: none !important;
+      }
+      @keyframes confide-to-yin-thinking-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+      }
+      @keyframes confide-to-yin-thinking-dots {
+        0%, 100% { opacity: 0.35; }
+        50% { opacity: 1; }
       }
       .confide-to-yin__reply {
         position: relative;
@@ -1381,6 +1918,8 @@ export class ConfideToYinUI {
       .confide-to-yin__reply[data-source='companion_presence']::before,
       .confide-to-yin__reply[data-source='preference_honesty']::before,
       .confide-to-yin__reply[data-source='observation_honesty']::before,
+      .confide-to-yin__reply[data-source='reflective_honesty']::before,
+      .confide-to-yin__reply[data-source='companion_greeting']::before,
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;

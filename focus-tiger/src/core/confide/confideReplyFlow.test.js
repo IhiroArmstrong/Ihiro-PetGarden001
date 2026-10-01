@@ -6,7 +6,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
-import { resolveConfideReply, resolveCorpusFallbackAfterGenerateFailure } from './confideReplyFlow.js';
+import {
+  resolveConfideCorpusForRoute,
+  resolveConfideReply,
+  resolveCorpusFallbackAfterGenerateFailure
+} from './confideReplyFlow.js';
 import { firstConsecutiveDuplicateIndex } from './confideReplyUniqueness.js';
 
 test('resolveConfideReply: empty → null', () => {
@@ -57,6 +61,16 @@ test('resolveConfideReply: unmatched → fallback line', () => {
   assert.equal(hit.line.route, CONFIDE_ROUTE.FALLBACK);
 });
 
+test('resolveConfideCorpusForRoute: Stage 2 coerced fallback keeps fallback jacket', () => {
+  const hit = resolveConfideCorpusForRoute({
+    route: CONFIDE_ROUTE.FALLBACK,
+    localDate: '2026-09-21'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.FALLBACK);
+  assert.equal(hit.line.route, CONFIDE_ROUTE.FALLBACK);
+});
+
 test('resolveConfideReply: beat people → aggression pool, never nods quietly', () => {
   const hit = resolveConfideReply({
     text: 'I want to beat people.',
@@ -65,14 +79,81 @@ test('resolveConfideReply: beat people → aggression pool, never nods quietly',
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
   assert.ok(
-    ['aggression-01', 'aggression-02', 'aggression-03', 'aggression-04'].includes(
-      hit.line.id
-    )
+    ['aggression-01', 'aggression-02', 'aggression-03'].includes(hit.line.id)
   );
   assert.doesNotMatch(hit.line.en, /heard/i);
   assert.doesNotMatch(hit.line.en, /nod/i);
   assert.doesNotMatch(hit.line.zh, /点头/);
   assert.doesNotMatch(hit.line.zh, /听见了/);
+});
+
+test('resolveConfideReply: zh aggression → corpus pool without Heard or nod copy', () => {
+  const hit = resolveConfideReply({
+    text: '我想打人',
+    locale: 'zh',
+    localDate: '2026-09-19'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.doesNotMatch(hit.line.zh, /听见了/);
+  assert.doesNotMatch(hit.line.zh, /点头/);
+  assert.doesNotMatch(hit.line.en, /heard/i);
+  assert.doesNotMatch(hit.line.en, /nod/i);
+});
+
+test('resolveConfideReply: ja aggression → corpus pool without Heard or nod copy', () => {
+  const hit = resolveConfideReply({
+    text: '人を殴りたい',
+    locale: 'ja',
+    localDate: '2026-09-19'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.doesNotMatch(hit.line.ja, /聴いた/);
+  assert.doesNotMatch(hit.line.ja, /うなず/);
+  assert.doesNotMatch(hit.line.en, /heard/i);
+  assert.doesNotMatch(hit.line.en, /nod/i);
+});
+
+test('resolveConfideReply: colloquial ZH beating stays in acknowledging pool', () => {
+  for (const text of ['我想揍别人', '俺企图收拾别人一顿']) {
+    const hit = resolveConfideReply({ text, locale: 'zh', localDate: '2026-09-30' });
+    assert.ok(hit, text);
+    assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+    assert.notEqual(hit.line.id, 'aggression-04');
+    assert.doesNotMatch(hit.line.en, /manual/i);
+  }
+});
+
+test('resolveConfideReply: ZH beat-people phrase → aggression pool, never generate nod', () => {
+  const hit = resolveConfideReply({
+    text: '我想打人',
+    locale: 'zh',
+    localDate: '2026-09-18'
+  });
+  assert.ok(hit);
+  assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.ok(
+    ['aggression-01', 'aggression-02', 'aggression-03'].includes(hit.line.id)
+  );
+  assert.doesNotMatch(hit.line.zh, /点头/);
+});
+
+test('resolveCorpusFallbackAfterGenerateFailure: never privacy disclaimer (fallback-02)', () => {
+  const ids = new Set();
+  for (let salt = 0; salt < 24; salt += 1) {
+    const hit = resolveCorpusFallbackAfterGenerateFailure({
+      locale: 'zh',
+      localDate: '2026-09-22',
+      salt,
+      excludeIds: ids,
+      history: []
+    });
+    assert.ok(hit);
+    assert.notEqual(hit.line.id, 'fallback-02');
+    assert.doesNotMatch(hit.text, /留在这里|stays here/i);
+    ids.add(hit.line.id);
+  }
 });
 
 test('resolveCorpusFallbackAfterGenerateFailure: 8 frozen-exclude fails are not consecutive-identical', () => {

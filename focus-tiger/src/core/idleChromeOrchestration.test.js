@@ -103,12 +103,14 @@ describe('resolveShellChromeProjection', () => {
     assert.deepEqual(p.narrow, {
       idle: true,
       suppressed: false,
-      keepQuickStart: false
+      keepQuickStart: false,
+      honestyBridgeActive: false
     });
     assert.deepEqual(p.wide, {
       idle: true,
       suppressed: false,
-      keepQuickStart: false
+      keepQuickStart: false,
+      honestyBridgeActive: false
     });
   });
 
@@ -179,7 +181,9 @@ describe('resolveShellChromeProjection', () => {
     });
     assert.equal(p.narrow.suppressed, true);
     assert.equal(p.narrow.keepQuickStart, false);
+    assert.equal(p.narrow.honestyBridgeActive, false);
     assert.equal(p.wide.keepQuickStart, false);
+    assert.equal(p.wide.honestyBridgeActive, false);
   });
 
   it('bridge alone → both shells suppressed (narrow hides home balls over Yes/No)', () => {
@@ -192,7 +196,9 @@ describe('resolveShellChromeProjection', () => {
     });
     assert.equal(p.narrow.suppressed, true);
     assert.equal(p.narrow.keepQuickStart, false);
+    assert.equal(p.narrow.honestyBridgeActive, true);
     assert.equal(p.wide.suppressed, true);
+    assert.equal(p.wide.honestyBridgeActive, true);
   });
 
   it('Focusing → idle false on both', () => {
@@ -326,6 +332,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'sanctuary-nav',
         'companion',
         'ground-exercise',
         'five-moments',
@@ -340,6 +347,7 @@ describe('listSecondaryChromeEntries', () => {
         'focus-circle',
         'reminder',
         'language',
+        'today-direction',
         'newsletter',
         'account',
         'community',
@@ -368,6 +376,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'sanctuary-nav',
         'companion',
         'ground-exercise',
         'five-moments',
@@ -382,6 +391,7 @@ describe('listSecondaryChromeEntries', () => {
         'focus-circle',
         'reminder',
         'language',
+        'today-direction',
         'newsletter',
         'account',
         'community',
@@ -392,6 +402,24 @@ describe('listSecondaryChromeEntries', () => {
         'ritual-work-transition'
       ]
     );
+  });
+
+  it('wide more includes system-tts only when systemTtsAvailable', () => {
+    const off = listSecondaryChromeEntries('wide-more', allOn);
+    assert.ok(!off.some((e) => e.proxy === 'system-tts'));
+    const on = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      systemTtsAvailable: true
+    });
+    const proxies = on.filter((e) => e.proxy).map((e) => e.proxy);
+    assert.ok(proxies.includes('system-tts'));
+    assert.ok(proxies.indexOf('system-tts') > proxies.indexOf('language'));
+    assert.ok(proxies.indexOf('system-tts') < proxies.indexOf('today-direction'));
+    const narrow = listSecondaryChromeEntries('narrow-drawer', {
+      ...allOn,
+      systemTtsAvailable: true
+    });
+    assert.ok(!narrow.some((e) => e.proxy === 'system-tts'));
   });
 
   it('wide companion requires enabled !== false', () => {
@@ -411,6 +439,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'sanctuary-nav',
         'ground-exercise',
         'five-moments',
         'honesty',
@@ -423,6 +452,7 @@ describe('listSecondaryChromeEntries', () => {
         'quiet-together',
         'focus-circle',
         'language',
+        'today-direction',
         'newsletter',
         'account',
         'community',

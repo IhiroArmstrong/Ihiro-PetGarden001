@@ -146,4 +146,11 @@ describe('wide more menu click reception', () => {
     assert.match(src, /_quickHomeTip\?\.setText/);
     assert.doesNotMatch(src, /sitHomeBtn\.title\s*=/);
   });
+
+  it('hides ⋯ during Honesty bridge but keeps escape hatch for overlay suppress', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /showMore = park && !this\._honestyBridgeActive/);
+    assert.match(src, /_honestyBridgeActive/);
+  });
 });

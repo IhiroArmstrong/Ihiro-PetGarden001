@@ -22,6 +22,7 @@ import {
   isFocusCoinsPersonaFixture
 } from './growthPersonaFixtures.js';
 import { runFocusCoinsPersonaRegression } from './focusCoinsPersonaRegression.js';
+import { runFocusEssencePersonaRegression } from './focusEssencePersonaRegression.js';
 import { resolvePersonaScoreEligibleMinutes } from './scoreDailyCap.js';
 
 /**
@@ -143,6 +144,10 @@ export function runGrowthPersonaRegression() {
   const focusCoins = runFocusCoinsPersonaRegression();
   if (!focusCoins.ok) {
     failures.push(...focusCoins.failures);
+  }
+  const focusEssence = runFocusEssencePersonaRegression();
+  if (!focusEssence.ok) {
+    failures.push(...focusEssence.failures);
   }
   return { ok: failures.length === 0, failures };
 }

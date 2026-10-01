@@ -32,6 +32,7 @@ import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
  * @property {boolean} idle
  * @property {boolean} suppressed
  * @property {boolean} [keepQuickStart]
+ * @property {boolean} [honestyBridgeActive]
  */
 
 /**
@@ -53,6 +54,7 @@ import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
  * @property {Array<{ proxy: string, labelKey: string }>} [contemplativeArchiveSealMenus]
  * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
+ * @property {boolean} [systemTtsAvailable] macOS Electron wide System TTS menu row
  */
 
 /**
@@ -131,6 +133,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   reminder: 'ft-wide-stage-reminder',
   sound: 'ft-wide-stage-sound',
   language: 'ft-wide-stage-language',
+  systemTts: 'ft-wide-stage-system-tts',
   localBackup: 'ft-wide-stage-local-backup',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -242,13 +245,15 @@ export function resolveShellChromeProjection(input) {
       // must full-suppress on bridge so Yes/No are not covered. ActionBar stays
       // (setSuppressed + !keepQuickStart → is-suppressed; ActionBar exempt).
       suppressed: Boolean(chromeSuppressed || bridgeVisible),
-      keepQuickStart
+      keepQuickStart,
+      honestyBridgeActive: bridgeVisible
     },
     wide: {
       idle: !focusing,
       // Wide ⋯ also suppresses on Honesty bridge (narrow ActionBar stays).
       suppressed: Boolean(chromeSuppressed || bridgeVisible),
-      keepQuickStart
+      keepQuickStart,
+      honestyBridgeActive: bridgeVisible
     }
   };
 }
@@ -393,6 +398,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
     surface === 'wide-more' && visibility.companionGeneration === true;
 
   pushLabeledGroup(out, 'MENU_GROUP_PRACTICE', [
+    { proxy: 'sanctuary-nav', labelKey: 'SANCTUARY_NAV_MENU_LABEL' },
     companionOk
       ? { proxy: 'companion', labelKey: 'COMPANION_MODE_HINT' }
       : null,
@@ -446,6 +452,18 @@ export function listSecondaryChromeEntries(surface, visibility) {
     shouldOfferLanguagePicker()
       ? { proxy: 'language', labelKey: 'LANGUAGE_MENU_LABEL' }
       : null,
+    surface === 'wide-more' && visibility.systemTtsAvailable
+      ? {
+          proxy: 'system-tts',
+          labelKey: 'system_tts.menu_label',
+          testId: 'idle-system-tts'
+        }
+      : null,
+    {
+      proxy: 'today-direction',
+      labelKey: 'TODAY_DIRECTION_MENU_LABEL',
+      testId: 'idle-today-direction'
+    },
     visibility.newsletterSubmitted
       ? {
           proxy: 'newsletter',

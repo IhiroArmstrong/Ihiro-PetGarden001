@@ -11,6 +11,7 @@
  */
 
 import { CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES } from './memorialSealCatalogCa.js';
+import { PRACTICE_SCORE_21_THRESHOLD } from './MILESTONE_CATALOG.js';
 
 /** @typedef {'stillness' | 'smallness-vastness' | 'time-continuity' | 'imperfection-return'} MemorialSealToneTag */
 
@@ -57,7 +58,7 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     catalogId: 'MS-01',
     id: MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
-    scoreThreshold: 21,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
     poemZh: Object.freeze([
       '大鵬展翅九萬里，',
       '十方世界共菩提。',
@@ -70,6 +71,12 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
       'Who says this heart is not immeasurable?',
       'A mustard seed can hold Mount Sumeru.'
     ]),
+    poemJa: Object.freeze([
+      '大鵬は九万里に翅を広げ、',
+      '十方の世界はひとつの菩提を分かつ。',
+      '誰がこの心を無量でないと言うだろう、',
+      '芥子もまた須弥を納め足りる。'
+    ]),
     attributionZh: '樂五齋詩稿',
     attributionEn: 'Verses of Le Wu Zhai',
     badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
@@ -81,7 +88,7 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     catalogId: 'MS-02',
     id: MEMORIAL_SEAL_ENTRY_HERO,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
-    scoreThreshold: 21,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
     poemZh: Object.freeze([
       '山海奇雲風幡舞，',
       '紅塵如電亦如露。',
@@ -94,6 +101,12 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
       'Immeasurable, a mustard seed holds Mount Sumeru.',
       'How could a hero remain a creature of the pond?'
     ]),
+    poemJa: Object.freeze([
+      '山海に奇雲、風幡は舞う、',
+      '紅塵は電のごとく露のごとし。',
+      '無量の芥子、須弥を納む、',
+      '英雄は豈（いずくんぞ）池中の物ならん。'
+    ]),
     attributionZh: '樂五齋七言歌行',
     attributionEn: 'Song Verse of Le Wu Zhai',
     badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
@@ -105,7 +118,7 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     catalogId: 'MS-03',
     id: MEMORIAL_SEAL_ENTRY_NO_TRACE,
     sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
-    scoreThreshold: 21,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
     poemZh: Object.freeze([
       '乾坤縱橫九萬里，',
       '芥子唯微納須彌。',
@@ -117,6 +130,12 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
       'Minute as a mustard seed, it still holds Mount Sumeru.',
       "Why would a hero need the Azure Dragon's hand?",
       'Wherever one goes, unmarked, all yield.'
+    ]),
+    poemJa: Object.freeze([
+      '乾坤は縦横九万里、',
+      '芥子は微にして須弥を納む。',
+      '英雄何ぞ青龍の手を要らん、',
+      '所向に痕なし、皆靡く。'
     ]),
     attributionZh: '樂五齋詩稿',
     attributionEn: 'Verses of Le Wu Zhai · 0902',
@@ -229,7 +248,8 @@ export function nextUnrevealedMemorialSealEntry(entries, revealedIds, score) {
 export function memorialSealEntryToVerseCase(entry) {
   return {
     id: entry.id,
-    poemZh: entry.poemZh ?? entry.poemJa ?? [],
+    poemZh: entry.poemZh ?? [],
+    poemJa: entry.poemJa ?? [],
     poemEn: entry.poemEn,
     attributionZh: entry.attributionZh,
     attributionEn: entry.attributionEn

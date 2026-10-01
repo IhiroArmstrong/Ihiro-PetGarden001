@@ -57,6 +57,24 @@ export {
   shouldHandleConfideObservationHonesty
 } from './confideObservationHonesty.js';
 export {
+  formatConfideReflectiveHonestyReply,
+  isConfideReflectiveOpenAsk,
+  shouldHandleConfideReflectiveHonesty
+} from './confideReflectiveHonesty.js';
+export {
+  formatConfideCompanionGreetingReply,
+  isConfideCompanionGreetingIntent,
+  shouldHandleConfideCompanionGreeting
+} from './confideCompanionGreeting.js';
+export {
+  isConfideKbRetrievalEnabled,
+  mayTryConfideProductKnowledge,
+  probeProductKnowledgeCatalog,
+  retrieveProductKnowledge,
+  listRetrievableProductKnowledgeEntries
+} from './confideProductKnowledge.js';
+export { formatConfideProductKnowledgeHonestyReply } from './confideProductKnowledgeHonesty.js';
+export {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideUserVisible,
   isConfideDevHarness,

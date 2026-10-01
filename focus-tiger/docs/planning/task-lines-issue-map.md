@@ -6,7 +6,7 @@
 
 仓库：https://github.com/IhiroArmstrong/Ihiro-PetGarden001
 
-## Epic（24，跳过已作废表行 #16）
+## Epic（25，跳过已作废表行 #16）
 
 | 表行 | slug | Issue | 标题 |
 |---|---|---|---|
@@ -35,6 +35,7 @@
 | 23 | `seasonal-theme-engine` | [#742](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/742) | 节日主题引擎（Seasonal Theme · B 轨全年氛围） |
 | 24 | `soundscape` | [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) | 音景（Soundscape · 曲库/上传/试听/音符） |
 | 25 | `habitat-shell` | [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) | 栖居壳层（Habitat Shell · 菜单/叠层/Esc/chrome） |
+| 26 | `collection-value-behavioral-scarcity` | [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) | Collection Value & Behavioral Scarcity · 数字资产原则 / 行为稀缺展示 |
 
 ## 审计与切片（真先后）
 
@@ -46,6 +47,36 @@
 | 切片 | [#743](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/743) | Phase 4 · 感恩节氛围放出（US/CA） | 父 #742；波次 1 |
 | 切片 | [#744](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/744) | Phase 4 · 万圣节氛围放出 | 父 #742；波次 1 |
 | 切片 | [#745](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/745) | Phase 4 · 元旦与跨年氛围放出 | 父 #742；波次 1 |
+
+## 防剽窃层 · 远程参数化 §6 切片（2026-09-18 回填）
+
+> 父 Epic **#646**（防剽窃层）。Runtime/文档已合项 **CLOSED** 作看板索引；人工验收仍见 `TEST_TRACKER` 碎片。
+
+| 类型 | Issue | 标题 | PR / 备注 | 父 Epic |
+|---|---|---|---|---|
+| 切片（文档 · CLOSED） | [#844](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/844) | 远程参数化候选全项目审计 | [#717](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/717) · `REMOTE_PARAM_CANDIDATES.md` | #646 |
+| 切片（runtime · CLOSED） | [#845](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/845) | 品味权重 + Honesty 30 → `TASTE_LAYER_KV` | [#722](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/722) · binding [#724](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/724) · 生产分叉 [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) | #646 |
+| 切片（runtime · CLOSED） | [#846](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/846) | 莲花阶梯系数 → `GROWTH_METRICS_KV` | [#725](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/725) · 生产分叉 [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) | #646 |
+| 切片（文档 · CLOSED） | [#851](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/851) | 寅币日封顶经济评估 · Step D = A | [#784](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/784) · Brief `task-yin-coin-daily-cap-economy.md` | #646 |
+| 切片（文档 · CLOSED） | [#852](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/852) | 远程参数化 §6 本批收口文档 | [#787](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/787) | #646 |
+| 切片（infra 文档 · CLOSED） | [#853](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/853) | §6 KV 生产分叉部署记录 | [#788](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/788) · Worker `f0ddf1b4` | #646 |
+
+## Local AI Phase 1 切片（2026-09-17 回填）
+
+> 父 Epic **#639**（Confide 与 AI 仪式应用）· 验收轨 **#647**（Phase 1A/1B/1C 验收）。Runtime 已合项在 #639 下 **CLOSED** 作索引；开放 QA 在 #647。
+
+| 类型 | Issue | 标题 | PR / 备注 | 父 Epic |
+|---|---|---|---|---|
+| 切片（runtime · CLOSED） | [#807](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/807) | Gate 0.2 · Read Hybrid L0 | [#472](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/472) · 关单 2026-09-01 | #639 |
+| 切片（runtime · CLOSED） | [#808](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/808) | Phase 1A · Show memory CI-03 | [#506](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/506) | #639 |
+| 切片（runtime · CLOSED） | [#809](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/809) | Phase 1B · Ask Journey/Presence | [#503](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/503) | #639 |
+| 切片（runtime · CLOSED） | [#810](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/810) | Phase 1C · Reflection Companion lab | [#486](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/486) · [#507](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/507) | #639 |
+| 切片（shipping · OPEN） | [#811](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/811) | Reflection Companion shipping | Brief `task-local-ai-reflection-companion-shipping.md` | #639 |
+| 切片（验收 · OPEN） | [#812](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/812) | 验收 · Gate 0.2 Read Hybrid A/B/C | 关单 2026-09-01 | #647 |
+| 切片（验收 · OPEN） | [#813](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/813) | 验收 · Phase 1A Show memory | 待人工 | #647 |
+| 切片（验收 · OPEN） | [#814](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/814) | 验收 · Phase 1B Journey/Presence | 待人工 | #647 |
+| 切片（验收 · OPEN） | [#815](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/815) | 验收 · Phase 1C Reflection lab 场景 AL | 待人工 | #647 |
+| 切片（验收 · OPEN） | [#816](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/816) | 验收 · Reflection Companion shipping | 阻塞 PO Brief | #647 |
 
 ## 建库执行记录（2026-09-07）
 
@@ -73,3 +104,38 @@
 | #773 改挂 `line:habitat-shell` | 移除 `line:core-practice` |
 | Project 挂板 | #792 #793 加入 Focus Tiger 开发任务线看板 #1 |
 | guard | `task-line-ref-check.yml` 认 `type:process` PR 豁免 + `Closes` 目标校验 |
+
+## 建库执行记录（2026-09-17 · Local AI Phase 1 Epic 回填）
+
+| 步骤 | 结果 |
+|---|---|
+| #639 子切片 | CREATE #807–#811（#807–#810 runtime 已 CLOSED；#811 shipping OPEN） |
+| #647 验收切片 | CREATE #812–#816（#812 Gate 0.2 关单注记；#813–#815 待人工；#816 阻塞 shipping Brief） |
+| Brief 骨架 | `task-briefs/task-local-ai-reflection-companion-shipping.md` |
+| Epic 正文 | #639 · #647 更新「已知子任务/PR」 |
+
+## 建库执行记录（2026-09-18 · #646 远程参数化 §6 切片回填）
+
+| 步骤 | 结果 |
+|---|---|
+| #646 子切片（批 1） | CREATE #844–#846（文档 #717 · runtime #722 · runtime #725；均已 CLOSED） |
+| Project 挂板 | #844–#846 加入 Focus Tiger 开发任务线看板 #1 |
+| Epic 正文 | #646 更新「已知子任务/PR」 |
+| PR 对照表 | [#848](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/848) 合 develop |
+
+## 建库执行记录（2026-09-18 · #646 §6 切片补全）
+
+| 步骤 | 结果 |
+|---|---|
+| #646 子切片（批 2） | CREATE #851–#853（文档 #784 · 文档 #787 · infra 文档 #788；均已 CLOSED） |
+| Project 挂板 | #851–#853 加入 Focus Tiger 开发任务线看板 #1 |
+| Epic 正文 | #646 更新「已知子任务/PR」 |
+
+## 建库执行记录（2026-09-20 · #26 Collection Value & Behavioral Scarcity）
+
+| 步骤 | 结果 |
+|---|---|
+| label `line:collection-value-behavioral-scarcity` | CREATE（`--force`） |
+| Epic #26 | CREATE [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) |
+| Project 挂板 | #888 加入 Focus Tiger 开发任务线看板 #1 |
+| 已合文档归属 | PR [#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886) 原则 · PR [#887](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/887) 行为稀缺方案 |

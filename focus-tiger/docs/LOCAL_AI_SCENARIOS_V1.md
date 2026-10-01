@@ -225,3 +225,9 @@ Slice 0 → 1e **已合**。Reflection **validation** 见 Phase 1C；**非**全�
 3. `SCENARIO_TESTS.md` 冲突扫描  
 4. 更新 **本文件** + `CONFIDE_EXECUTABLE_INTENTS.md` + Brief + tracker  
 5. 系统操作 → `LOCAL_AI_OPERATING_LAYER.md`，不进 Confide 表
+
+---
+
+## 8. E2E 抽取对照（2026-09-23）
+
+能力表 **不整体转 GWT**。哪些意图须进 Playwright / Electron 用户链路、哪些留单测 → **`LOCAL_AI_SCENARIOS_E2E_MAPPING.md`**。已抽 E2E 的 GWT 步骤 → **`SCENARIO_TESTS.md` 场景 AS**（生成物 `SCENARIO_TESTS_GWT.md`）。

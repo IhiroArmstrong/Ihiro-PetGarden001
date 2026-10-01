@@ -77,4 +77,9 @@ describe('gitWorktreeRemoveArgs', () => {
     assert.deepEqual(spec.args, ['worktree', 'remove', '/repo-wt-foo'])
     assert.equal(spec.cwd, '/repo')
   })
+
+  it('adds --force when dirty merged trees are removed', () => {
+    const spec = gitWorktreeRemoveArgs('/repo', '/repo-wt-foo', { force: true })
+    assert.deepEqual(spec.args, ['worktree', 'remove', '--force', '/repo-wt-foo'])
+  })
 })

@@ -129,6 +129,10 @@ describe('desktop companion L1 renderer gates', () => {
     );
     assert.equal(desktopCompanionDownloadPercent({ received: 1, total: null }), null);
     assert.equal(
+      desktopCompanionModelLabel({ modelId: 'Gemma-4-E4B-it-UD-Q4_K_XL' }),
+      'Model4E4'
+    );
+    assert.equal(
       desktopCompanionModelLabel({ modelId: 'Gemma-4-E4B-it-Q4_K_M' }),
       'Model4E4'
     );
@@ -242,6 +246,73 @@ describe('desktop companion L1 status reducer', () => {
     assert.equal(status.received, null);
     assert.equal(status.total, null);
   });
+
+  it('does not keep a stale download bar after loading status', () => {
+    let status = applyCompanionEvent(createCompanionStatus(), {
+      event: 'status',
+      phase: 'loading',
+      message: 'checking'
+    });
+    assert.equal(status.phase, 'loading');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'downloading'
+    });
+    status = applyCompanionEvent(status, {
+      event: 'progress',
+      received: 10,
+      total: 100
+    });
+    assert.equal(status.phase, 'downloading');
+  });
+
+  it('ignores shadow embedding phases without changing visible status', () => {
+    let status = applyCompanionEvent(createCompanionStatus(), {
+      event: 'status',
+      phase: 'downloading'
+    });
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'embedding_downloading'
+    });
+    assert.equal(status.phase, 'downloading');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'loading',
+      message: 'cached'
+    });
+    status = applyCompanionEvent(status, { event: 'ready' });
+    assert.equal(status.phase, 'ready');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'embedding_loading',
+      message: 'precomputeLibraryA'
+    });
+    assert.equal(status.phase, 'ready');
+    status = applyCompanionEvent(status, {
+      event: 'progress',
+      received: 900_000_000,
+      total: 900_000_000
+    });
+    assert.equal(status.phase, 'ready');
+    assert.equal(status.received, null);
+    assert.equal(status.total, null);
+  });
+
+  it('does not downgrade ready when a stray main download phase arrives', () => {
+    let status = applyCompanionEvent(createCompanionStatus(), { event: 'ready' });
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'downloading'
+    });
+    assert.equal(status.phase, 'ready');
+    status = applyCompanionEvent(status, {
+      event: 'status',
+      phase: 'loading',
+      message: 'cached'
+    });
+    assert.equal(status.phase, 'ready');
+  });
 });
 
 
@@ -323,6 +394,8 @@ describe('desktop companion L1 isolation', () => {
       runtimeSrc.includes("path.join(this.userDataDir, 'companion-l0')"),
       false
     );
+    assert.match(runtimeSrc, /L1_ENSURE_READY_TIMEOUT_MS/);
+    assert.match(runtimeSrc, /status\.phase === 'ready' && this\.child/);
   });
 
   it('packs companion runtime JS and still keeps GGUF out of the file list', () => {

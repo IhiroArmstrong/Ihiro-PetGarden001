@@ -12,6 +12,7 @@ import electronPath from 'electron';
 const desktopDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const focusTigerRoot = path.join(desktopDir, '..');
 const VITE_URL = 'http://127.0.0.1:5173';
+const FORCE_EXIT_MS = 3000;
 
 function probeVite() {
   return new Promise((resolve) => {
@@ -47,6 +48,42 @@ function waitForVite(timeoutMs = 90_000) {
   });
 }
 
+/**
+ * @param {import('node:child_process').ChildProcess | null | undefined} child
+ * @param {NodeJS.Signals} signal
+ */
+function killChildTree(child, signal = 'SIGTERM') {
+  if (!child?.pid || child.killed) return;
+  if (process.platform === 'win32') {
+    spawn('taskkill', ['/pid', String(child.pid), '/T', '/F'], {
+      stdio: 'ignore',
+      windowsHide: true
+    });
+    return;
+  }
+  try {
+    process.kill(-child.pid, signal);
+  } catch {
+    try {
+      child.kill(signal);
+    } catch {
+      /* already exited */
+    }
+  }
+}
+
+/**
+ * @param {string} command
+ * @param {string[]} args
+ * @param {import('node:child_process').SpawnOptions} options
+ */
+function spawnDevChild(command, args, options) {
+  return spawn(command, args, {
+    ...options,
+    detached: process.platform !== 'win32'
+  });
+}
+
 const viteAlreadyUp = await probeVite();
 /** @type {import('node:child_process').ChildProcess | null} */
 let vite = null;
@@ -55,7 +92,7 @@ if (viteAlreadyUp) {
     'Vite already on 127.0.0.1:5173 — attaching Electron only (did not start a second Vite).'
   );
 } else {
-  vite = spawn('npm', ['run', 'dev'], {
+  vite = spawnDevChild('npm', ['run', 'dev'], {
     cwd: focusTigerRoot,
     stdio: 'inherit',
     env: process.env,
@@ -64,35 +101,69 @@ if (viteAlreadyUp) {
   try {
     await waitForVite();
   } catch (err) {
-    vite.kill();
+    killChildTree(vite, 'SIGTERM');
     console.error(err);
     process.exit(1);
   }
 }
 
 const electronBin = String(electronPath || '').trim();
-const electron = spawn(electronBin, ['.', '--dev'], {
+const electron = spawnDevChild(electronBin, ['.', '--dev'], {
   cwd: desktopDir,
   stdio: 'inherit',
   env: { ...process.env, FT_DESKTOP_DEV: '1' }
 });
 
-function shutdown() {
-  electron.kill();
-  vite?.kill();
+let shuttingDown = false;
+/** @type {NodeJS.Timeout | null} */
+let forceExitTimer = null;
+
+function clearForceExitTimer() {
+  if (!forceExitTimer) return;
+  clearTimeout(forceExitTimer);
+  forceExitTimer = null;
 }
 
+function exitFromSignal(signal) {
+  process.exit(signal === 'SIGINT' ? 130 : 143);
+}
+
+function shutdown(signal = 'SIGINT') {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
+  killChildTree(electron, 'SIGTERM');
+  killChildTree(vite, 'SIGTERM');
+
+  forceExitTimer = setTimeout(() => {
+    killChildTree(electron, 'SIGKILL');
+    killChildTree(vite, 'SIGKILL');
+    exitFromSignal(signal);
+  }, FORCE_EXIT_MS);
+  forceExitTimer.unref();
+}
+
+electron.on('error', (err) => {
+  clearForceExitTimer();
+  console.error(err);
+  killChildTree(vite, 'SIGTERM');
+  process.exit(1);
+});
+
 electron.on('exit', (code) => {
-  vite?.kill();
+  clearForceExitTimer();
+  killChildTree(vite, 'SIGTERM');
   process.exit(code ?? 0);
 });
+
 if (vite) {
   vite.on('exit', (code) => {
     if (code && code !== 0) {
-      electron.kill();
+      killChildTree(electron, 'SIGTERM');
       process.exit(code);
     }
   });
 }
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));

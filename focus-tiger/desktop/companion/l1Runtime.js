@@ -18,21 +18,37 @@ import { isCompanionL1Allowed } from './l1Capability.js';
 import {
   applyCompanionEvent,
   createCompanionStatus,
+  isEmbeddingShadowPhase,
   parseCompanionNdjsonLine
 } from './l1Status.js';
 import {
   L2_GENERATE_TIMEOUT_MS,
   L2_MAX_TOKENS,
+  L3_OBSERVE_RETRY_AVOID_CLICHE,
   buildCompanionL2Prompt,
-  buildReflectionCompanionPrompt
+  buildReflectionCompanionPrompt,
+  isCompanionChatGenerateLine
 } from './l2Persona.js';
 import {
   priorRepeatableYinRepliesFromHistory,
   sanitizeCompanionL2Reply
 } from './l2Sanitize.js';
-import { L0_MAX_TOKENS, L0_MODEL_ID, L0_TOOL_CLASSIFY_TIMEOUT_MS } from './l0Config.js';
+import {
+  L0_MAX_TOKENS,
+  L0_MODEL_ID,
+  L0_TOOL_CLASSIFY_TIMEOUT_MS,
+  L1_ENSURE_READY_TIMEOUT_MS
+} from './l0Config.js';
+import { L0_SEMANTIC_SHADOW_TIMEOUT_MS } from './l0EmbeddingConfig.js';
 import { resolveCompanionL0ModelDir } from './l0ModelDir.js';
 import { retrieveYpeMemoriesForL3Generate } from './yinPersonalMemoryPersistence.js';
+import {
+  buildSemanticLiveTurnLogRecord,
+  buildSemanticShadowTurnLogRecord
+} from './l1SemanticShadowLog.js';
+import { createSemanticShadowEmbeddingGate } from './l1SemanticShadowEmbeddingGate.js';
+import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
+import { canReuseConfideSemanticLiveCache } from './l1SemanticLiveCache.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -91,6 +107,18 @@ export class CompanionL1Runtime {
     this._generateWaiters = new Map();
     /** @type {Map<string, (ev: object) => void>} */
     this._classifyWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._semanticShadowWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._observeClicheWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._productKnowledgeGateWaiters = new Map();
+    this._shadowQueue = Promise.resolve();
+    this._liveSemanticCache = null;
+    this._embeddingShadowGate = createSemanticShadowEmbeddingGate();
+    this._turnLogAppendCount = 0;
+    this._lastTurnLogPruneMs = 0;
+    void pruneLocalConfideTurnsJsonl(this.userDataDir);
   }
 
   snapshot() {
@@ -118,6 +146,7 @@ export class CompanionL1Runtime {
       const waiters = this._unloadedWaiters;
       this._unloadedWaiters = [];
       waiters.forEach((resolve) => resolve(this.snapshot()));
+      this._embeddingShadowGate.reset();
     }
     if (ev.event === 'generated' || ev.event === 'generate_error') {
       const id = typeof ev.id === 'string' ? ev.id : '';
@@ -135,6 +164,39 @@ export class CompanionL1Runtime {
         resolve(ev);
       }
     }
+    if (ev.event === 'semantic_shadow_classified' || ev.event === 'semantic_shadow_error') {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._semanticShadowWaiters.get(id);
+      if (resolve) {
+        this._semanticShadowWaiters.delete(id);
+        resolve(ev);
+      }
+    }
+    if (ev.event === 'observe_cliche_scored' || ev.event === 'observe_cliche_error') {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._observeClicheWaiters.get(id);
+      if (resolve) {
+        this._observeClicheWaiters.delete(id);
+        resolve(ev);
+      }
+    }
+    if (
+      ev.event === 'product_knowledge_gate_classified' ||
+      ev.event === 'product_knowledge_gate_error'
+    ) {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._productKnowledgeGateWaiters.get(id);
+      if (resolve) {
+        this._productKnowledgeGateWaiters.delete(id);
+        resolve(ev);
+      }
+    }
+    if (ev.event === 'embedding_ready' || ev.event === 'embedding_error') {
+      this._embeddingShadowGate.applyEvent(ev);
+    }
+    if (ev.event === 'status' && isEmbeddingShadowPhase(ev.phase)) {
+      this._embeddingShadowGate.markLoading();
+    }
     if (ev.event === 'error') {
       const waiters = [...this._readyWaiters, ...this._unloadedWaiters];
       this._readyWaiters = [];
@@ -148,6 +210,28 @@ export class CompanionL1Runtime {
         resolve({ event: 'classify_error', message: ev.message || 'companion_error' });
       }
       this._classifyWaiters.clear();
+      for (const resolve of this._semanticShadowWaiters.values()) {
+        resolve({
+          event: 'semantic_shadow_error',
+          message: ev.message || 'companion_error'
+        });
+      }
+      this._semanticShadowWaiters.clear();
+      for (const resolve of this._observeClicheWaiters.values()) {
+        resolve({
+          event: 'observe_cliche_error',
+          message: ev.message || 'companion_error'
+        });
+      }
+      this._observeClicheWaiters.clear();
+      for (const resolve of this._productKnowledgeGateWaiters.values()) {
+        resolve({
+          event: 'product_knowledge_gate_error',
+          message: ev.message || 'companion_error'
+        });
+      }
+      this._productKnowledgeGateWaiters.clear();
+      this._embeddingShadowGate.reset();
     }
     this._push();
   }
@@ -218,14 +302,34 @@ export class CompanionL1Runtime {
     if (this.status.focusing) {
       return Promise.resolve({ ok: false, reason: 'focusing', ...this.snapshot() });
     }
+    if (this.status.phase === 'ready' && this.child) {
+      return Promise.resolve({ ok: true, ...this.snapshot() });
+    }
     this._queue = this._queue.then(async () => {
       const ready = new Promise((resolve) => {
         this._readyWaiters.push(resolve);
       });
-      this._write('ensure');
-      return ready;
+      try {
+        this._write('ensure');
+      } catch {
+        return { ok: false, reason: 'companion_child_unavailable', ...this.snapshot() };
+      }
+      return Promise.race([
+        ready.then((snap) => ({ ok: true, ...snap })),
+        new Promise((resolve) => {
+          setTimeout(
+            () =>
+              resolve({
+                ok: false,
+                reason: 'timeout',
+                ...this.snapshot()
+              }),
+            L1_ENSURE_READY_TIMEOUT_MS
+          );
+        })
+      ]);
     });
-    return this._queue.then((snap) => ({ ok: true, ...snap }));
+    return this._queue;
   }
 
   /**
@@ -264,11 +368,21 @@ export class CompanionL1Runtime {
     return { ok: true, ...this.snapshot() };
   }
 
-  /**
-   * @param {{ text?: string, locale?: string, history?: unknown }} [payload]
-   * @returns {Promise<{ ok: boolean, text?: string, reason?: string }>}
-   */
+  _modelTimingFromChildEvent(ev) {
+    const timing = ev?.timing;
+    if (!timing || typeof timing !== 'object') return null;
+    const ttftMs = Number(timing.ttftMs);
+    const totalMs = Number(timing.totalMs);
+    const decodeMs = Number(timing.decodeMs);
+    return {
+      ttftMs: Number.isFinite(ttftMs) ? ttftMs : undefined,
+      totalMs: Number.isFinite(totalMs) ? totalMs : undefined,
+      decodeMs: Number.isFinite(decodeMs) ? decodeMs : undefined
+    };
+  }
+
   async generate(payload = {}) {
+    const wallStarted = Date.now();
     if (!this.allowed) {
       return { ok: false, reason: 'unavailable' };
     }
@@ -298,80 +412,167 @@ export class CompanionL1Runtime {
     if (!ready.ok || this.status.phase !== 'ready') {
       return { ok: false, reason: ready.reason || 'not_ready' };
     }
-    const id = randomUUID();
     const locale = typeof payload.locale === 'string' ? payload.locale : 'en';
-    /** @type {string} */
-    let prompt;
+    const observeWing =
+      !isReflectionCompanion && !isCompanionChatGenerateLine(text);
+    let retrievedSummaries = [];
+    let promptBuildMs;
+    let memoryRetrieveMsCaptured;
     if (isReflectionCompanion) {
-      prompt = buildReflectionCompanionPrompt({
-        answers: reflectionAnswers,
-        locale
-      });
+      /* prompt rebuilt per attempt below */
     } else {
       if (!Array.isArray(this._ypeSessionMemoryIds)) this._ypeSessionMemoryIds = [];
+      const memoryStarted = Date.now();
       const retrieved = await retrieveYpeMemoriesForL3Generate(this.userDataDir, text, {
         companionStyle: payload.companionStyle,
         sessionExcludeIds: this._ypeSessionMemoryIds,
         skipYpeOnSafety: Boolean(payload.skipYpeOnSafety)
       });
+      const memoryRetrieveMs = Date.now() - memoryStarted;
       this._ypeSessionMemoryIds = [
         ...this._ypeSessionMemoryIds,
         ...retrieved.ids.filter((mid) => !this._ypeSessionMemoryIds.includes(mid))
       ];
-      prompt = buildCompanionL2Prompt({
-        text,
-        locale,
-        history: Array.isArray(payload.history) ? payload.history : [],
-        memorySummaries: retrieved.summaries,
-        patternInsights: Array.isArray(payload.patternInsights)
-          ? payload.patternInsights
-          : []
-      });
+      retrievedSummaries = retrieved.summaries;
+      memoryRetrieveMsCaptured = memoryRetrieveMs;
     }
-    this._queue = this._queue.then(async () => {
-      const done = new Promise((resolve) => {
-        this._generateWaiters.set(id, resolve);
-      });
-      this._write(
-        `generate ${JSON.stringify({ id, prompt, maxTokens: L2_MAX_TOKENS })}`
-      );
-      const timed = await Promise.race([
-        done,
-        new Promise((resolve) => {
-          setTimeout(() => resolve({ event: 'timeout' }), L2_GENERATE_TIMEOUT_MS);
-        })
-      ]);
-      if (timed?.event === 'timeout') {
-        this._generateWaiters.delete(id);
+
+    const maxAttempts = observeWing ? 2 : 1;
+    let sanitized = null;
+    let raw = '';
+    let ev = null;
+    let lastReason = 'empty_or_banned';
+    let sanitizeMs = 0;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      const id = randomUUID();
+      /** @type {string} */
+      let prompt;
+      const promptStarted = Date.now();
+      if (isReflectionCompanion) {
+        prompt = buildReflectionCompanionPrompt({
+          answers: reflectionAnswers,
+          locale
+        });
+      } else {
+        prompt = buildCompanionL2Prompt({
+          text,
+          locale,
+          history: Array.isArray(payload.history) ? payload.history : [],
+          memorySummaries: retrievedSummaries,
+          patternInsights: Array.isArray(payload.patternInsights)
+            ? payload.patternInsights
+            : [],
+          observeRetryHint: attempt > 0 ? L3_OBSERVE_RETRY_AVOID_CLICHE : ''
+        });
       }
-      return timed;
-    });
-    const ev = await this._queue;
-    const raw = ev?.event === 'generated' ? ev.text : '';
-    const sanitized = sanitizeCompanionL2Reply(raw, {
-      priorReplies: priorRepeatableYinRepliesFromHistory(payload.history),
-      userText: text
-    });
+      promptBuildMs = Date.now() - promptStarted;
+      this._queue = this._queue.then(async () => {
+        const done = new Promise((resolve) => {
+          this._generateWaiters.set(id, resolve);
+        });
+        this._write(
+          `generate ${JSON.stringify({ id, prompt, maxTokens: L2_MAX_TOKENS })}`
+        );
+        const timed = await Promise.race([
+          done,
+          new Promise((resolve) => {
+            setTimeout(() => resolve({ event: 'timeout' }), L2_GENERATE_TIMEOUT_MS);
+          })
+        ]);
+        if (timed?.event === 'timeout') {
+          this._generateWaiters.delete(id);
+        }
+        return timed;
+      });
+      ev = await this._queue;
+      raw = ev?.event === 'generated' ? ev.text : '';
+      const sanitizeStarted = Date.now();
+      sanitized = sanitizeCompanionL2Reply(raw, {
+        priorReplies: priorRepeatableYinRepliesFromHistory(payload.history),
+        userText: text
+      });
+      sanitizeMs = Date.now() - sanitizeStarted;
+      if (!sanitized) {
+        lastReason = ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned';
+        break;
+      }
+      if (!observeWing) break;
+      const cliche = await this._scoreObserveClicheReply(sanitized);
+      if (!cliche.flagged) break;
+      lastReason = 'observe_cliche';
+      sanitized = null;
+    }
+
+    const model = this._modelTimingFromChildEvent(ev);
+    const timing = {
+      wallMs: Date.now() - wallStarted,
+      promptBuildMs: typeof promptBuildMs === 'number' ? promptBuildMs : undefined,
+      memoryRetrieveMs:
+        typeof memoryRetrieveMsCaptured === 'number' ? memoryRetrieveMsCaptured : undefined,
+      sanitizeMs,
+      model
+    };
     const record = {
       at: new Date().toISOString(),
+      kind: 'l3_generate',
       locale: payload.locale || 'en',
       text,
       raw: String(raw || '').slice(0, 400),
       reply: sanitized,
       ok: Boolean(sanitized),
-      reason: sanitized ? 'ok' : ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned'
+      reason: sanitized ? 'ok' : lastReason,
+      timing
     };
     await this._appendTurnLog(record);
-    if (!sanitized) return { ok: false, reason: record.reason };
-    return { ok: true, text: sanitized };
+    if (!sanitized) return { ok: false, reason: record.reason, timing };
+    return { ok: true, text: sanitized, timing };
+  }
+
+  /**
+   * Score an observe reply against the cliché bank. Skip if embedding is not ready
+   * so generate never waits on a cold download.
+   * @param {string} reply
+   * @returns {Promise<{ flagged: boolean, skipped?: boolean }>}
+   */
+  async _scoreObserveClicheReply(reply) {
+    if (!this._embeddingShadowGate.isReady()) {
+      return { flagged: false, skipped: true };
+    }
+    const id = randomUUID();
+    this._queue = this._queue.then(async () => {
+      const done = new Promise((resolve) => {
+        this._observeClicheWaiters.set(id, resolve);
+      });
+      this._write(`score-observe-cliche ${JSON.stringify({ id, text: reply })}`);
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(() => resolve({ event: 'timeout' }), 8_000);
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._observeClicheWaiters.delete(id);
+      }
+      return timed;
+    });
+    const scored = await this._queue;
+    if (scored?.event === 'observe_cliche_scored' && scored.skipped) {
+      return { flagged: false, skipped: true };
+    }
+    if (scored?.event === 'observe_cliche_scored') {
+      return { flagged: Boolean(scored.flagged), skipped: false };
+    }
+    return { flagged: false, skipped: true };
   }
 
   /**
    * Regex-miss read hybrid: run constrained L0 JSON prompt; resolution stays in renderer.
-   * @param {{ prompt?: string }} [payload]
+   * @param {{ prompt?: string, userText?: string }} [payload]
    * @returns {Promise<{ ok: boolean, raw?: string, reason?: string }>}
    */
   async classifyReadTool(payload = {}) {
+    const wallStarted = Date.now();
     if (!this.allowed) {
       return { ok: false, reason: 'unavailable' };
     }
@@ -379,6 +580,12 @@ export class CompanionL1Runtime {
       return { ok: false, reason: 'focusing' };
     }
     const prompt = typeof payload.prompt === 'string' ? payload.prompt.trim() : '';
+    const userText =
+      typeof payload.userText === 'string'
+        ? payload.userText.trim()
+        : typeof payload.text === 'string'
+          ? payload.text.trim()
+          : '';
     if (!prompt) return { ok: false, reason: 'empty_prompt' };
     const ready = await this.ensureReady();
     if (!ready.ok || this.status.phase !== 'ready') {
@@ -412,13 +619,528 @@ export class CompanionL1Runtime {
     });
     const ev = await this._queue;
     const raw = ev?.event === 'classified' ? String(ev.text || '') : '';
+    const timing = {
+      wallMs: Date.now() - wallStarted,
+      model: this._modelTimingFromChildEvent(ev)
+    };
+    await this._appendTurnLog({
+      at: new Date().toISOString(),
+      kind: 'read_hybrid_classify',
+      text: userText.slice(0, 400),
+      promptChars: prompt.length,
+      raw: raw.slice(0, 400),
+      ok: Boolean(raw),
+      timing
+    });
     if (!raw) {
       return {
         ok: false,
-        reason: ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_unparsed'
+        reason: ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_unparsed',
+        timing
       };
     }
-    return { ok: true, raw };
+    return { ok: true, raw, timing };
+  }
+
+  /**
+   * Shadow-only semantic coarse classify. Never blocks production routing.
+   * Reuses a Stage 2 live cache only when with-prior scores would not be dropped.
+   * @param {{
+   *   text?: string,
+   *   contextualText?: string,
+   *   hadPriorTurn?: boolean,
+   *   route?: string,
+   *   source?: string,
+   *   literalCoarse?: string | null
+   * }} [payload]
+   * @returns {Promise<{ ok: boolean, queued?: boolean, reused?: boolean, reason?: string }>}
+   */
+  async semanticShadowClassify(payload = {}) {
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable' };
+    }
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    const contextualText =
+      typeof payload.contextualText === 'string' ? payload.contextualText.trim() : '';
+    const hadPriorTurn = Boolean(payload.hadPriorTurn) && Boolean(contextualText);
+    const route = typeof payload.route === 'string' ? payload.route : '';
+    const source = typeof payload.source === 'string' ? payload.source : '';
+    const literalCoarse =
+      typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
+    if (!text) return { ok: false, reason: 'empty_text' };
+
+    const cached = this._liveSemanticCache;
+    if (
+      canReuseConfideSemanticLiveCache(cached, {
+        text,
+        contextualText,
+        hadPriorTurn
+      })
+    ) {
+      this._liveSemanticCache = null;
+      await this._appendTurnLog(
+        buildSemanticShadowTurnLogRecord({
+          text,
+          route,
+          source,
+          literalCoarse,
+          hadPriorTurn,
+          contextualText: contextualText || null,
+          ok: true,
+          reason: 'ok',
+          semanticResult: {
+            bucket: String(cached.bucket || ''),
+            scoreA: Number(cached.scoreA),
+            scoreB: Number(cached.scoreB),
+            grayMargin: Number(cached.grayMargin)
+          },
+          semanticResultWithPrior: cached.semanticResultWithPrior || null,
+          timing: cached.timing
+        })
+      );
+      return { ok: true, queued: false, reused: true };
+    }
+
+    void (this._shadowQueue = this._shadowQueue.then(() =>
+      this._runSemanticShadowClassify({
+        text,
+        contextualText,
+        hadPriorTurn,
+        route,
+        source,
+        literalCoarse
+      })
+    ));
+    return { ok: true, queued: true };
+  }
+
+  /**
+   * Stage 2 live classify. Only awaits when embedding is already ready.
+   * Writes semantic_live_classify rows to turns.jsonl (Prompt 8 reason audit).
+   * Fail-open: not-ready / error keeps the literal route; does not wait for cold load.
+   * @returns {Promise<{
+   *   ok: boolean,
+   *   bucket: string | null,
+   *   scoreA?: number | null,
+   *   scoreB?: number | null,
+   *   grayMargin?: number | null,
+   *   reason?: string
+   * }>}
+   */
+  async semanticLiveClassify(payload = {}) {
+    const wallStarted = Date.now();
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable', bucket: null };
+    }
+    const modeRaw = String(this.env.FT_CONFIDE_SEMANTIC_ROUTING || 'live')
+      .trim()
+      .toLowerCase();
+    if (modeRaw === 'shadow' || modeRaw === 'off' || modeRaw === 'stage1') {
+      return { ok: false, reason: 'shadow_mode', bucket: null };
+    }
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    const contextualText =
+      typeof payload.contextualText === 'string' ? payload.contextualText.trim() : '';
+    const hadPriorTurn = Boolean(payload.hadPriorTurn) && Boolean(contextualText);
+    const route = typeof payload.route === 'string' ? payload.route : '';
+    const source = typeof payload.source === 'string' ? payload.source : '';
+    const literalCoarse =
+      typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
+    if (!text) return { ok: false, reason: 'empty_text', bucket: null };
+
+    const baseRecord = {
+      text,
+      route,
+      source,
+      literalCoarse,
+      hadPriorTurn,
+      contextualText: contextualText || null
+    };
+
+    const appendLiveLog = async (result) => {
+      const timing =
+        result.timing && typeof result.timing === 'object'
+          ? result.timing
+          : { wallMs: Date.now() - wallStarted };
+      await this._appendTurnLog(
+        buildSemanticLiveTurnLogRecord({
+          text: baseRecord.text,
+          route: baseRecord.route,
+          source: baseRecord.source,
+          literalCoarse: baseRecord.literalCoarse,
+          ok: Boolean(result.ok),
+          reason: typeof result.reason === 'string' ? result.reason : 'unknown',
+          semanticResult:
+            result.ok && typeof result.bucket === 'string' && result.bucket
+              ? {
+                  bucket: result.bucket,
+                  scoreA: Number(result.scoreA),
+                  scoreB: Number(result.scoreB),
+                  grayMargin: Number(result.grayMargin)
+                }
+              : null,
+          timing
+        })
+      );
+    };
+
+    const gate = this._embeddingShadowGate;
+    if (!gate.isReady()) {
+      if (gate.shouldRequestEnsure()) {
+        try {
+          if (!this.child) this._spawnIfNeeded();
+          gate.markLoading();
+          this._write('ensure-embedding');
+        } catch {
+          const result = {
+            ok: false,
+            reason: 'embed_failed',
+            bucket: null,
+            timing: { wallMs: Date.now() - wallStarted }
+          };
+          await appendLiveLog(result);
+          return result;
+        }
+      }
+      const result = {
+        ok: false,
+        reason: 'embed_not_ready',
+        bucket: null,
+        timing: { wallMs: Date.now() - wallStarted }
+      };
+      await appendLiveLog(result);
+      return result;
+    }
+
+    const pending = this._shadowQueue.then(() =>
+      this._runSemanticShadowClassify({
+        text,
+        // Live routing waits only on the current sentence. With-prior embed
+        // stays on the post-reply shadow path so Thinking time does not grow.
+        contextualText: '',
+        hadPriorTurn: false,
+        route,
+        source,
+        literalCoarse,
+        skipLog: true
+      })
+    );
+    this._shadowQueue = pending.then(
+      () => undefined,
+      () => undefined
+    );
+    const result = await pending;
+    this._liveSemanticCache = {
+      text,
+      contextualText,
+      ok: result.ok,
+      bucket: result.bucket,
+      scoreA: result.scoreA,
+      scoreB: result.scoreB,
+      grayMargin: result.grayMargin,
+      timing: result.timing,
+      semanticResultWithPrior: null
+    };
+    await appendLiveLog(result);
+    return result;
+  }
+
+  /**
+   * Product-knowledge semantic gate (Library C). Does not await cold embedding load.
+   * @param {{ text?: string }} [payload]
+   * @returns {Promise<{
+   *   ok: boolean,
+   *   isProduct?: boolean,
+   *   score?: number,
+   *   minScore?: number,
+   *   reason?: string
+   * }>}
+   */
+  async semanticProductKnowledgeGate(payload = {}) {
+    const wallStarted = Date.now();
+    if (!this.allowed) {
+      return { ok: false, reason: 'unavailable', isProduct: false };
+    }
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    if (!text) return { ok: false, reason: 'empty_text', isProduct: false };
+
+    const gate = this._embeddingShadowGate;
+    if (!gate.isReady()) {
+      if (gate.shouldRequestEnsure()) {
+        try {
+          if (!this.child) this._spawnIfNeeded();
+          gate.markLoading();
+          this._write('ensure-embedding');
+        } catch {
+          return {
+            ok: false,
+            reason: 'embed_failed',
+            isProduct: false,
+            timing: { wallMs: Date.now() - wallStarted }
+          };
+        }
+      }
+      return {
+        ok: false,
+        reason: 'embed_not_ready',
+        isProduct: false,
+        timing: { wallMs: Date.now() - wallStarted }
+      };
+    }
+
+    const id = randomUUID();
+    const pending = this._shadowQueue.then(async () => {
+      const done = new Promise((resolve) => {
+        this._productKnowledgeGateWaiters.set(id, resolve);
+      });
+      this._write(`product-knowledge-gate ${JSON.stringify({ id, text })}`);
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(() => resolve({ event: 'timeout' }), L0_SEMANTIC_SHADOW_TIMEOUT_MS);
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._productKnowledgeGateWaiters.delete(id);
+      }
+      return timed;
+    });
+    this._shadowQueue = pending.then(
+      () => undefined,
+      () => undefined
+    );
+    const result = await pending;
+    const timing = { wallMs: Date.now() - wallStarted };
+
+    if (result?.event === 'product_knowledge_gate_classified') {
+      return {
+        ok: true,
+        isProduct: Boolean(result.isProduct),
+        score: Number(result.score),
+        minScore: Number(result.minScore),
+        nearestId: typeof result.nearestId === 'string' ? result.nearestId : null,
+        nearestScore: Number.isFinite(Number(result.nearestScore))
+          ? Number(result.nearestScore)
+          : null,
+        lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
+        reason: 'ok',
+        timing
+      };
+    }
+    return {
+      ok: false,
+      isProduct: false,
+      reason:
+        result?.event === 'timeout'
+          ? 'timeout'
+          : String(result?.message || 'embed_unavailable'),
+      timing
+    };
+  }
+
+  /**
+   * @returns {Promise<{ ok: true } | { ok: false, reason: string, message?: string | null }>}
+   */
+  async _ensureShadowEmbeddingReady() {
+    const gate = this._embeddingShadowGate;
+    if (gate.isReady()) return { ok: true };
+    if (gate.hasError()) {
+      return {
+        ok: false,
+        reason: 'embed_unavailable',
+        message: gate.snapshot().errorMessage
+      };
+    }
+
+    const waitPromise = gate.waitForReady();
+    if (gate.shouldRequestEnsure()) {
+      if (!this.child) {
+        this._spawnIfNeeded();
+      }
+      try {
+        gate.markLoading();
+        this._write('ensure-embedding');
+      } catch {
+        return { ok: false, reason: 'embed_failed' };
+      }
+    }
+
+    const ready = await waitPromise;
+    return ready.ok
+      ? { ok: true }
+      : {
+          ok: false,
+          reason: ready.reason || 'embed_unavailable',
+          message: ready.message || null
+        };
+  }
+
+  /**
+   * @param {{
+   *   text: string,
+   *   contextualText: string,
+   *   hadPriorTurn: boolean,
+   *   route: string,
+   *   source: string,
+   *   literalCoarse: string | null,
+   *   skipLog?: boolean
+   * }} payload
+   * @returns {Promise<{
+   *   ok: boolean,
+   *   bucket: string | null,
+   *   scoreA: number | null,
+   *   scoreB: number | null,
+   *   grayMargin: number | null,
+   *   reason: string,
+   *   timing?: object,
+   *   semanticResultWithPrior?: object | null
+   * }>}
+   */
+  async _runSemanticShadowClassify(payload) {
+    const wallStarted = Date.now();
+    const skipLog = Boolean(payload.skipLog);
+    const fail = (reason) => ({
+      ok: false,
+      bucket: null,
+      scoreA: null,
+      scoreB: null,
+      grayMargin: null,
+      reason,
+      timing: { wallMs: Date.now() - wallStarted },
+      semanticResultWithPrior: null
+    });
+    const baseRecord = {
+      text: payload.text,
+      route: payload.route,
+      source: payload.source,
+      literalCoarse: payload.literalCoarse,
+      hadPriorTurn: payload.hadPriorTurn,
+      contextualText: payload.contextualText || null
+    };
+
+    if (!this.child) {
+      this._spawnIfNeeded();
+    }
+
+    const readyResult = await this._ensureShadowEmbeddingReady();
+    if (!readyResult.ok) {
+      const result = fail(readyResult.reason || 'embed_unavailable');
+      if (!skipLog) {
+        await this._appendTurnLog(
+          buildSemanticShadowTurnLogRecord({
+            ...baseRecord,
+            ok: false,
+            reason: result.reason,
+            semanticResult: null,
+            timing: result.timing
+          })
+        );
+      }
+      return result;
+    }
+
+    const id = randomUUID();
+    try {
+      const done = new Promise((resolve) => {
+        this._semanticShadowWaiters.set(id, resolve);
+      });
+      this._write(
+        `semantic-shadow-classify ${JSON.stringify({
+          id,
+          text: payload.text,
+          contextualText: payload.contextualText || ''
+        })}`
+      );
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(
+            () => resolve({ event: 'timeout' }),
+            L0_SEMANTIC_SHADOW_TIMEOUT_MS
+          );
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._semanticShadowWaiters.delete(id);
+      }
+
+      if (timed?.event === 'semantic_shadow_classified') {
+        const priorBucket = timed.bucketWithPrior;
+        const semanticResultWithPrior =
+          typeof priorBucket === 'string' && priorBucket
+            ? {
+                bucket: priorBucket,
+                scoreA: Number(timed.scoreAWithPrior),
+                scoreB: Number(timed.scoreBWithPrior),
+                grayMargin: Number(timed.grayMarginWithPrior ?? timed.grayMargin)
+              }
+            : null;
+        const timing = {
+          wallMs: Number(timed.wallMs) || Date.now() - wallStarted,
+          embedMs: Number(timed.embedMs) || undefined,
+          embedMsWithPrior: Number(timed.embedMsWithPrior) || undefined
+        };
+        if (!skipLog) {
+          await this._appendTurnLog(
+            buildSemanticShadowTurnLogRecord({
+              ...baseRecord,
+              ok: true,
+              reason: 'ok',
+              semanticResult: {
+                bucket: String(timed.bucket || ''),
+                scoreA: Number(timed.scoreA),
+                scoreB: Number(timed.scoreB),
+                grayMargin: Number(timed.grayMargin)
+              },
+              semanticResultWithPrior,
+              timing
+            })
+          );
+        }
+        return {
+          ok: true,
+          bucket: String(timed.bucket || ''),
+          scoreA: Number(timed.scoreA),
+          scoreB: Number(timed.scoreB),
+          grayMargin: Number(timed.grayMargin),
+          reason: 'ok',
+          timing,
+          semanticResultWithPrior
+        };
+      }
+
+      const reason =
+        timed?.event === 'timeout'
+          ? 'timeout'
+          : timed?.message || 'embed_failed';
+      const result = fail(reason);
+      if (!skipLog) {
+        await this._appendTurnLog(
+          buildSemanticShadowTurnLogRecord({
+            ...baseRecord,
+            ok: false,
+            reason,
+            semanticResult: null,
+            timing: result.timing
+          })
+        );
+      }
+      return result;
+    } catch {
+      const result = fail('embed_failed');
+      if (!skipLog) {
+        await this._appendTurnLog(
+          buildSemanticShadowTurnLogRecord({
+            ...baseRecord,
+            ok: false,
+            reason: 'embed_failed',
+            semanticResult: null,
+            timing: result.timing
+          })
+        );
+      }
+      return result;
+    }
   }
 
   /**
@@ -433,6 +1155,15 @@ export class CompanionL1Runtime {
         `${JSON.stringify(record)}\n`,
         'utf8'
       );
+      this._turnLogAppendCount += 1;
+      const now = Date.now();
+      const pruneDue =
+        this._turnLogAppendCount % 25 === 0 ||
+        now - this._lastTurnLogPruneMs > 6 * 60 * 60 * 1000;
+      if (pruneDue) {
+        this._lastTurnLogPruneMs = now;
+        void pruneLocalConfideTurnsJsonl(this.userDataDir, now);
+      }
     } catch {
       /* local log must not break Share */
     }

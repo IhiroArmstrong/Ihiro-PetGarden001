@@ -90,6 +90,10 @@ import { CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY } from './contemplativeArchiveSe
 import { DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY } from './dailyZenQuote.js';
 import { IDLE_COMPANION_PIP_STORAGE_KEY } from './idleCompanionPipGate.js';
 import { FOCUS_COINS_STORAGE_KEY, FocusCoinsStore } from './focusCoinsStore.js';
+import {
+  FOCUS_ESSENCE_STORAGE_KEY,
+  FocusEssenceStore
+} from './FocusEssenceStore.js';
 import { YPE_COMPANION_STYLE_STORAGE_KEY } from './yinPersonalizationEngine.js';
 import { YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY } from './ypeCloudPersonalizationConsent.js';
 import { YPE_PERSONALIZATION_PACK_STORAGE_KEY } from './ypePersonalizationPack.js';
@@ -108,9 +112,11 @@ import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.j
 import { FOCUS_DURATION_STORAGE_KEY } from './focusDuration.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
+  COLD_START_GOAL_OPTIONS_SEEN_KEY,
   COLD_START_GOAL_SEEN_KEY,
   COLD_START_GOAL_SESSION_KEY
 } from './coldStartGoalGate.js';
+import { HOME_SANCTUARY_NAV_SEEN_KEY } from './homeSanctuaryNavGate.js';
 import {
   FOCUS_TIGER_LOCAL_STORAGE_KEYS,
   clearAllFocusTigerLocalState,
@@ -146,6 +152,7 @@ function createMapStorage(seed = {}) {
 const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
 const AMBIENT_PREF_STORAGE_KEY = 'focus-tiger.ambient-pref.v1';
 const SESSION_CUE_PREF_STORAGE_KEY = 'focus-tiger.session-cues.v1';
+const SYSTEM_TTS_PREF_STORAGE_KEY = 'focus-tiger.system-tts-pref.v1';
 
 /** 各模块导出的 localStorage key —— 与白名单必须集合相等。 */
 const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
@@ -165,12 +172,15 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   PRESENCE_FREETEXT_L3_CONSENT_KEY,
   COMPANION_MODE_STORAGE_KEY,
   COLD_START_GOAL_SEEN_KEY,
+  COLD_START_GOAL_OPTIONS_SEEN_KEY,
+  HOME_SANCTUARY_NAV_SEEN_KEY,
   REMINDER_QUOTA_STORAGE_KEY,
   REMINDER_PREFERENCE_STORAGE_KEY,
   HINTS_SEEN_STORAGE_KEY,
   AMBIENT_NUDGE_STORAGE_KEY,
   AMBIENT_PREF_STORAGE_KEY,
   SESSION_CUE_PREF_STORAGE_KEY,
+  SYSTEM_TTS_PREF_STORAGE_KEY,
   LOCALE_PREFERENCE_STORAGE_KEY,
   LOCALE_GREETING_STORAGE_KEY,
   SCENE_ANIM_COOLDOWN_STORAGE_KEY,
@@ -200,6 +210,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DAILY_ZEN_QUOTE_POOL_V2_STORAGE_KEY,
   IDLE_COMPANION_PIP_STORAGE_KEY,
   FOCUS_COINS_STORAGE_KEY,
+  FOCUS_ESSENCE_STORAGE_KEY,
   YPE_COMPANION_STYLE_STORAGE_KEY,
   YPE_CLOUD_PERSONALIZATION_CONSENT_STORAGE_KEY,
   YPE_PERSONALIZATION_PACK_STORAGE_KEY,
@@ -270,6 +281,10 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   const dirtyCoins = new FocusCoinsStore({ storage });
   dirtyCoins.commitGrant({ points: 5 });
   assert.equal(dirtyCoins.getBalance(), 5);
+
+  const dirtyEssence = new FocusEssenceStore({ storage });
+  dirtyEssence.commitGrant({ points: 7 });
+  assert.equal(dirtyEssence.getTotal(), 7);
 
   const dirtyBridge = new HonestyBridgeStore({ storage });
   dirtyBridge.markShown();
@@ -344,6 +359,9 @@ test('clearAllFocusTigerLocalState → stores read as new user (zero / unseen)',
   assert.equal(freshCoins.getBalance(), 0);
   assert.deepEqual(freshCoins.getSnapshot().ownedIds, []);
   assert.equal(freshCoins.getSnapshot().equippedTitle, null);
+
+  const freshEssence = new FocusEssenceStore({ storage });
+  assert.equal(freshEssence.getTotal(), 0);
 
   const freshBridge = new HonestyBridgeStore({ storage });
   assert.equal(freshBridge.hasShownToday(), false);

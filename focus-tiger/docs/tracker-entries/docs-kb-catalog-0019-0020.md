@@ -1,0 +1,3 @@
+# TEST_TRACKER 碎片 · docs/kb-catalog-0019-0020
+
+| KB-FUNC-0019/0020 catalog 入库 + registry 链 + 闸门 18 条 | 纯后端 + UI文案 | 待人工测试 | **Electron 宽屏 Confide**（`?product=1&confide=1`）。Idle → ⋯ → Confide → 发「Five Moments 从哪开」「Honesty Check-in 怎么补登」→ **0–1 秒内** `data-source=product_knowledge`，正文为 catalog 短答（0019/0020）。**0006** 仍不进索引（盘点参考 · 检索走 0011+0001）。**关**：`FT_CONFIDE_KB_RETRIEVAL=off` 后同句不再命中。**自动化**：`confideProductKnowledge.test.js` · `audit-kb-live-gap.test.js` · `npm run test:smoke`。 | — | — | — | `productKnowledgeCatalog.json` · `kbLiveEntryRegistry.js` · `product-knowledge-base.md` §4.4 | 2026-09-22 |

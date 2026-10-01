@@ -11,10 +11,17 @@
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { L0_MODEL_FILENAME, L0_MODEL_URLS } from './l0Config.js';
+import {
+  L0_EMBEDDING_MODEL_FILENAME,
+  L0_EMBEDDING_MODEL_MIN_BYTES,
+  L0_EMBEDDING_MODEL_URLS
+} from './l0EmbeddingConfig.js';
+import { L0_MODEL_FILENAME, L0_MODEL_URLS, L1_ENSURE_READY_TIMEOUT_MS } from './l0Config.js';
 import { ensureGgufDownloaded, isGgufCachedAt } from './l0Download.js';
 import { resolveCompanionL0ModelDir } from './l0ModelDir.js';
+import { errorMessage as embeddingErrorMessage, loadEmbeddingHold } from './l1EmbeddingHold.js';
 import { errorMessage, loadModelHold } from './l1Hold.js';
+import { createLlamaWorkGate } from './l1LlamaWorkGate.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -37,11 +44,12 @@ async function downloadModel(modelPath) {
   const cached = isGgufCachedAt(modelPath);
   await emit({
     event: 'status',
-    phase: cached ? 'loading' : 'downloading',
-    message: cached ? 'cached' : undefined
+    phase: 'loading',
+    message: cached ? 'cached' : 'checking'
   });
   return ensureGgufDownloaded(modelPath, L0_MODEL_URLS, {
     onProgress: ({ received, total }) => {
+      void emit({ event: 'status', phase: 'downloading' });
       void emit({
         event: 'progress',
         received,
@@ -56,7 +64,13 @@ async function main() {
   const modelPath = path.join(modelDir, L0_MODEL_FILENAME);
   /** @type {null | { dispose: () => Promise<void>, generate: Function }} */
   let session = null;
+  /** @type {null | { dispose: () => Promise<void>, classifyUserText: Function }} */
+  let embeddingSession = null;
   let chain = Promise.resolve();
+  let shadowChain = Promise.resolve();
+  const llamaWorkGate = createLlamaWorkGate({
+    chatWaitTimeoutMs: L1_ENSURE_READY_TIMEOUT_MS
+  });
 
   async function ensure() {
     if (session) {
@@ -70,12 +84,14 @@ async function main() {
       phase: 'loading',
       message: dl.path
     });
-    session = await loadModelHold({
-      modelPath: dl.path,
-      onProgress: (msg) => {
-        void emit({ event: 'status', phase: 'loading', message: msg });
-      }
-    });
+    session = await llamaWorkGate.run('chat', () =>
+      loadModelHold({
+        modelPath: dl.path,
+        onProgress: (msg) => {
+          void emit({ event: 'status', phase: 'loading', message: msg });
+        }
+      })
+    );
     await emit({ event: 'status', phase: 'ready' });
     await emit({ event: 'ready' });
   }
@@ -90,8 +106,58 @@ async function main() {
       }
       session = null;
     }
+    if (embeddingSession) {
+      try {
+        await embeddingSession.dispose();
+      } catch (err) {
+        await emit({
+          event: 'status',
+          phase: 'unloading',
+          message: embeddingErrorMessage(err)
+        });
+      }
+      embeddingSession = null;
+    }
     await emit({ event: 'unloaded' });
     await emit({ event: 'status', phase: 'idle' });
+  }
+
+  async function ensureEmbedding() {
+    if (embeddingSession) return;
+    const embeddingPath = path.join(modelDir, L0_EMBEDDING_MODEL_FILENAME);
+    const cached = isGgufCachedAt(embeddingPath, L0_EMBEDDING_MODEL_MIN_BYTES);
+    await emit({
+      event: 'status',
+      phase: 'embedding_loading',
+      message: cached ? 'embedding_cached' : 'embedding_checking'
+    });
+    const dl = await ensureGgufDownloaded(embeddingPath, L0_EMBEDDING_MODEL_URLS, {
+      minBytes: L0_EMBEDDING_MODEL_MIN_BYTES,
+      onProgress: () => {
+        void emit({ event: 'status', phase: 'embedding_downloading' });
+      }
+    });
+    embeddingSession = await llamaWorkGate.run('embedding', () =>
+      loadEmbeddingHold({
+        modelPath: dl.path,
+        env: process.env,
+        onProgress: (msg) => {
+          void emit({ event: 'status', phase: 'embedding_loading', message: msg });
+        }
+      })
+    );
+  }
+
+  async function ensureEmbeddingReady() {
+    try {
+      await ensureEmbedding();
+      await emit({ event: 'embedding_ready' });
+    } catch (err) {
+      await emit({
+        event: 'embedding_error',
+        message: embeddingErrorMessage(err)
+      });
+    }
   }
 
   function enqueue(work) {
@@ -102,6 +168,16 @@ async function main() {
       });
     });
     return chain;
+  }
+
+  function enqueueShadow(work) {
+    shadowChain = shadowChain.then(work).catch(async (err) => {
+      await emit({
+        event: 'semantic_shadow_error',
+        message: embeddingErrorMessage(err)
+      });
+    });
+    return shadowChain;
   }
 
   process.stdin.setEncoding('utf8');
@@ -115,6 +191,8 @@ async function main() {
       if (!line) continue;
       if (line === 'ensure') {
         enqueue(ensure);
+      } else if (line === 'ensure-embedding') {
+        enqueueShadow(ensureEmbeddingReady);
       } else if (line === 'unload') {
         enqueue(unload);
       } else if (line === 'quit') {
@@ -141,15 +219,199 @@ async function main() {
             if (!session || typeof session.generate !== 'function') {
               throw new Error('companion_session_missing');
             }
+            /** @type {{ ttftMs?: number, totalMs?: number, decodeMs?: number } | null} */
+            let timing = null;
             const text = await session.generate(payload.prompt, {
-              maxTokens: payload.maxTokens
+              maxTokens: payload.maxTokens,
+              onTiming(metrics) {
+                timing = metrics;
+              }
             });
-            await emit({ event: 'generated', id, text });
+            await emit({ event: 'generated', id, text, timing });
           } catch (err) {
             await emit({
               event: 'generate_error',
               id,
               message: errorMessage(err)
+            });
+          }
+        });
+      } else if (line.startsWith('semantic-shadow-classify ')) {
+        enqueueShadow(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('semantic-shadow-classify '.length));
+          } catch {
+            await emit({
+              event: 'semantic_shadow_error',
+              id: '',
+              message: 'invalid_semantic_shadow_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          const contextualText =
+            typeof payload.contextualText === 'string'
+              ? payload.contextualText.trim()
+              : '';
+          if (!text) {
+            await emit({
+              event: 'semantic_shadow_error',
+              id,
+              message: 'empty_text'
+            });
+            return;
+          }
+          const started = Date.now();
+          try {
+            if (!embeddingSession) {
+              throw new Error('embedding_not_ready');
+            }
+            if (typeof embeddingSession.classifyUserText !== 'function') {
+              throw new Error('embedding_session_missing');
+            }
+            const result = await embeddingSession.classifyUserText(text);
+            let withPrior = null;
+            if (contextualText) {
+              try {
+                withPrior = await embeddingSession.classifyUserText(contextualText);
+              } catch {
+                withPrior = null;
+              }
+            }
+            await emit({
+              event: 'semantic_shadow_classified',
+              id,
+              bucket: result.bucket,
+              scoreA: result.scoreA,
+              scoreB: result.scoreB,
+              diff: result.diff,
+              grayMargin: result.grayMargin,
+              topK: result.topK,
+              embedMs: result.embedMs,
+              bucketWithPrior: withPrior?.bucket ?? null,
+              scoreAWithPrior: withPrior?.scoreA ?? null,
+              scoreBWithPrior: withPrior?.scoreB ?? null,
+              grayMarginWithPrior: withPrior?.grayMargin ?? null,
+              embedMsWithPrior: withPrior?.embedMs ?? null,
+              wallMs: Date.now() - started
+            });
+          } catch (err) {
+            await emit({
+              event: 'semantic_shadow_error',
+              id,
+              message: embeddingErrorMessage(err),
+              wallMs: Date.now() - started
+            });
+          }
+        });
+      } else if (line.startsWith('product-knowledge-gate ')) {
+        enqueueShadow(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('product-knowledge-gate '.length));
+          } catch {
+            await emit({
+              event: 'product_knowledge_gate_error',
+              id: '',
+              message: 'invalid_product_knowledge_gate_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          if (!text) {
+            await emit({
+              event: 'product_knowledge_gate_error',
+              id,
+              message: 'empty_text'
+            });
+            return;
+          }
+          const started = Date.now();
+          try {
+            if (!embeddingSession) {
+              throw new Error('embedding_not_ready');
+            }
+            if (typeof embeddingSession.classifyProductKnowledgeGate !== 'function') {
+              throw new Error('embedding_session_missing');
+            }
+            const result = await embeddingSession.classifyProductKnowledgeGate(text);
+            await emit({
+              event: 'product_knowledge_gate_classified',
+              id,
+              isProduct: Boolean(result.isProduct),
+              score: result.score,
+              minScore: result.minScore,
+              topK: result.topK,
+              nearestId: result.nearestId ?? null,
+              nearestScore: result.nearestScore ?? null,
+              lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
+              embedMs: result.embedMs,
+              wallMs: Date.now() - started
+            });
+          } catch (err) {
+            await emit({
+              event: 'product_knowledge_gate_error',
+              id,
+              message: embeddingErrorMessage(err),
+              wallMs: Date.now() - started
+            });
+          }
+        });
+      } else if (line.startsWith('score-observe-cliche ')) {
+        enqueue(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('score-observe-cliche '.length));
+          } catch {
+            await emit({
+              event: 'observe_cliche_error',
+              id: '',
+              message: 'invalid_observe_cliche_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          if (!text) {
+            await emit({
+              event: 'observe_cliche_error',
+              id,
+              message: 'empty_text'
+            });
+            return;
+          }
+          const started = Date.now();
+          try {
+            if (!embeddingSession || typeof embeddingSession.scoreObserveCliche !== 'function') {
+              await emit({
+                event: 'observe_cliche_scored',
+                id,
+                skipped: true,
+                reason: 'embedding_not_ready',
+                wallMs: Date.now() - started
+              });
+              return;
+            }
+            const result = await embeddingSession.scoreObserveCliche(text);
+            await emit({
+              event: 'observe_cliche_scored',
+              id,
+              skipped: false,
+              score: result.score,
+              flagged: result.flagged,
+              threshold: result.threshold,
+              embedMs: result.embedMs,
+              wallMs: Date.now() - started
+            });
+          } catch (err) {
+            await emit({
+              event: 'observe_cliche_error',
+              id,
+              message: embeddingErrorMessage(err),
+              wallMs: Date.now() - started
             });
           }
         });
@@ -172,10 +434,15 @@ async function main() {
             if (!session || typeof session.generate !== 'function') {
               throw new Error('companion_session_missing');
             }
+            /** @type {{ ttftMs?: number, totalMs?: number, decodeMs?: number } | null} */
+            let timing = null;
             const text = await session.generate(payload.prompt, {
-              maxTokens: payload.maxTokens
+              maxTokens: payload.maxTokens,
+              onTiming(metrics) {
+                timing = metrics;
+              }
             });
-            await emit({ event: 'classified', id, text });
+            await emit({ event: 'classified', id, text, timing });
           } catch (err) {
             await emit({
               event: 'classify_error',

@@ -8,7 +8,11 @@
  */
 
 import { canSubmitConfideText, confideClassify } from './confideClassify.js';
-import { confideLineText, pickConfideLine } from './confideCorpus.js';
+import {
+  CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS,
+  confideLineText,
+  pickConfideLine
+} from './confideCorpus.js';
 import { lastRepeatableYinReplyText } from './confideReplyUniqueness.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
@@ -30,6 +34,35 @@ export function resolveConfideReply({
 } = {}) {
   if (!canSubmitConfideText(text)) return null;
   const route = confideClassify(text);
+  if (!route) return null;
+  const line = pickConfideLine({
+    route,
+    localDate,
+    salt,
+    excludeIds,
+    hardExcludeIds:
+      route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS ? ['aggression-04'] : [],
+    excludeNormalizedTexts,
+    locale
+  });
+  if (!line) return null;
+  return { route, line };
+}
+
+/**
+ * Re-pick a corpus line after Stage 2 coerces the route (does not re-classify).
+ * @param {object} opts
+ * @param {string} opts.route
+ * @returns {{ route: string, line: import('./confideCorpus.js').ConfideLine } | null}
+ */
+export function resolveConfideCorpusForRoute({
+  route,
+  localDate = '',
+  salt = 0,
+  excludeIds = [],
+  excludeNormalizedTexts = [],
+  locale = 'en'
+} = {}) {
   if (!route) return null;
   const line = pickConfideLine({
     route,
@@ -73,6 +106,7 @@ export function resolveCorpusFallbackAfterGenerateFailure({
     localDate,
     salt,
     excludeIds: extra,
+    hardExcludeIds: CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS,
     excludeNormalizedTexts: lastVisible ? [lastVisible] : [],
     locale
   });

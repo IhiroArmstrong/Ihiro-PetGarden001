@@ -4,7 +4,7 @@
  */
 
 /**
- * Shared routing + L2 helpers for #774 ja chitchat lab probes.
+ * Shared routing + L2 helpers for Confide chitchat lab probes (#774 ja · six-lang A/B).
  */
 
 import fs from 'node:fs';
@@ -149,7 +149,7 @@ export function appendJaChitchatTurn(history, userText, outcome) {
  * }} [ctx]
  * @returns {object | null}
  */
-export function resolveJaChitchatHit(text, ctx = {}) {
+export function resolveChitchatHit(text, locale = JA_CHITCHAT_LOCALE, ctx = {}) {
   const history = Array.isArray(ctx.history) ? ctx.history : [];
   const sessionExclude =
     ctx.sessionExclude instanceof Set ? ctx.sessionExclude : new Set();
@@ -159,8 +159,13 @@ export function resolveJaChitchatHit(text, ctx = {}) {
     salt: history.length,
     excludeIds: sessionExclude,
     excludeNormalizedTexts: [lastRepeatableYinReplyText(history)].filter(Boolean),
-    locale: JA_CHITCHAT_LOCALE
+    locale
   });
+}
+
+/** @deprecated use resolveChitchatHit */
+export function resolveJaChitchatHit(text, ctx = {}) {
+  return resolveChitchatHit(text, JA_CHITCHAT_LOCALE, ctx);
 }
 
 /**
@@ -171,8 +176,8 @@ export function resolveJaChitchatHit(text, ctx = {}) {
  *   sessionExclude?: Set<string>
  * }} [ctx]
  */
-export function resolveJaChitchatLabRoute(text, ctx = {}) {
-  const hit = resolveJaChitchatHit(text, ctx);
+export function resolveChitchatLabRoute(text, locale = JA_CHITCHAT_LOCALE, ctx = {}) {
+  const hit = resolveChitchatHit(text, locale, ctx);
   if (!hit) {
     return {
       route: '',
@@ -183,7 +188,7 @@ export function resolveJaChitchatLabRoute(text, ctx = {}) {
       hit: null
     };
   }
-  const corpusText = confideLineText(hit.line, JA_CHITCHAT_LOCALE);
+  const corpusText = confideLineText(hit.line, locale);
   const route = hit.route;
 
   if (shouldHandleConfideBoundary({ route, text })) {
@@ -293,8 +298,14 @@ export function resolveJaChitchatLabRoute(text, ctx = {}) {
   };
 }
 
+/** @deprecated use resolveChitchatLabRoute */
+export function resolveJaChitchatLabRoute(text, ctx = {}) {
+  return resolveChitchatLabRoute(text, JA_CHITCHAT_LOCALE, ctx);
+}
+
 /**
  * @param {string} text
+ * @param {string} locale
  * @param {string} corpusText
  * @param {object} hit
  * @param {{ generate: (prompt: string, opts?: object) => Promise<string> }} hold
@@ -303,13 +314,20 @@ export function resolveJaChitchatLabRoute(text, ctx = {}) {
  *   sessionExclude?: Set<string>
  * }} [ctx]
  */
-export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx = {}) {
+export async function runChitchatL2Generate(
+  text,
+  locale,
+  corpusText,
+  hit,
+  hold,
+  ctx = {}
+) {
   const history = Array.isArray(ctx.history) ? ctx.history : [];
   const sessionExclude =
     ctx.sessionExclude instanceof Set ? ctx.sessionExclude : new Set();
   const prompt = buildCompanionL2Prompt({
     text,
-    locale: JA_CHITCHAT_LOCALE,
+    locale,
     history,
     memorySummaries: [],
     patternInsights: []
@@ -319,7 +337,7 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
     raw = await hold.generate(prompt, { maxTokens: L2_MAX_TOKENS });
   } catch (err) {
     const picked = resolveCorpusFallbackAfterGenerateFailure({
-      locale: JA_CHITCHAT_LOCALE,
+      locale,
       localDate: formatLocalDateYmd(),
       salt: history.length,
       excludeIds: sessionExclude,
@@ -371,7 +389,7 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
   }
 
   const picked = resolveCorpusFallbackAfterGenerateFailure({
-    locale: JA_CHITCHAT_LOCALE,
+    locale,
     localDate: formatLocalDateYmd(),
     salt: history.length,
     excludeIds: sessionExclude,
@@ -416,7 +434,7 @@ export async function runJaChitchatL2Generate(text, corpusText, hit, hold, ctx =
  * @param {object} base
  * @param {object} outcome
  */
-export function buildJaChitchatProbeRow(base, outcome) {
+export function buildChitchatProbeRow(base, outcome) {
   return {
     ...base,
     route: outcome.route,
@@ -432,8 +450,13 @@ export function buildJaChitchatProbeRow(base, outcome) {
   };
 }
 
-export async function processJaChitchatSend(text, ctx = {}) {
-  const routed = resolveJaChitchatLabRoute(text, ctx);
+/** @deprecated use buildChitchatProbeRow */
+export function buildJaChitchatProbeRow(base, outcome) {
+  return buildChitchatProbeRow(base, outcome);
+}
+
+export async function processChitchatSend(text, locale = JA_CHITCHAT_LOCALE, ctx = {}) {
+  const routed = resolveChitchatLabRoute(text, locale, ctx);
   if (!routed.needsGenerate || !ctx.hold) {
     return {
       ...routed,
@@ -443,8 +466,11 @@ export async function processJaChitchatSend(text, ctx = {}) {
       generateError: null
     };
   }
-  const corpusText = routed.hit
-    ? confideLineText(routed.hit.line, JA_CHITCHAT_LOCALE)
-    : '';
-  return runJaChitchatL2Generate(text, corpusText, routed.hit, ctx.hold, ctx);
+  const corpusText = routed.hit ? confideLineText(routed.hit.line, locale) : '';
+  return runChitchatL2Generate(text, locale, corpusText, routed.hit, ctx.hold, ctx);
+}
+
+/** @deprecated use processChitchatSend */
+export async function processJaChitchatSend(text, ctx = {}) {
+  return processChitchatSend(text, JA_CHITCHAT_LOCALE, ctx);
 }

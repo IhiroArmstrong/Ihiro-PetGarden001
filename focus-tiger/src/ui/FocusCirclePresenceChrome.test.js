@@ -15,7 +15,7 @@ const src = readFileSync(join(here, 'FocusCirclePresenceChrome.js'), 'utf8');
 test('refresh prefers live sittingOthers snapshot over cached chrome count', () => {
   assert.match(
     src,
-    /const snapshot = getFocusCircleSittingOthersSnapshot\(\);\s*const sittingOthers = snapshot != null \? snapshot : this\._sittingOthers;/
+    /const snapshot = getFocusCircleSittingOthersSnapshot\(\);\s*let sittingOthers = snapshot != null \? snapshot : this\._sittingOthers;/
   );
 });
 
@@ -33,4 +33,15 @@ test('was-here mode shows when sitting is zero', () => {
 test('pointer-events none and stacks above lanterns', () => {
   assert.match(src, /pointer-events:\s*none/);
   assert.match(src, /IDLE_LANTERN_BOTTOM_WIDE_CSS/);
+});
+
+test('uses svg lantern shells instead of css dots', () => {
+  assert.match(src, /createPresenceLanternShell/);
+  assert.match(src, /focus-circle-presence__lantern/);
+  assert.doesNotMatch(src, /focus-circle-presence__dot/);
+});
+
+test('debugLanterns preview bypasses circle membership gates', () => {
+  assert.match(src, /readDebugLanternsQueryFlag/);
+  assert.match(src, /DEBUG_LANTERNS_CIRCLE_MOCK_COUNT/);
 });

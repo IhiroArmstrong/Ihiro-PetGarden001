@@ -1,0 +1,41 @@
+---
+description: Agent 会话内多任务连贯执行——准入/停止条件、一 PR 一任务、stacked PR、衍生任务登记
+alwaysApply: true
+---
+
+# Focus Tiger · 会话内多任务连贯执行
+
+> 索引：`RULES_INDEX.md` → `multi-task-session`。  
+> **与「一 PR 一任务」的关系**：`PRINCIPLES.md` / `PROCESS.md` 的「一次一任务」管**单次改动的范围**（一个 PR 只做一件事），**不**强制一会话只能做一个任务。本文件管**同一会话内**可否连续做多个已排期任务。
+
+## 原则
+
+允许在同一会话中连续执行多个任务并产出多个 PR，前提是满足准入条件，且未触发停止条件。合理则办，不强制一会话一任务。
+
+## 准入条件（每个任务开始前自检，缺一则先问人）
+
+- 目标与验收标准明确，已写入 [`focus-tiger/docs/TASKS.md`](../../focus-tiger/docs/TASKS.md)
+- 依赖任务已完成或已合并 / 已有分支可叠加
+- 无需人工决策（产品取舍、方案二选一等；B 类用户可见改动须 Brief，见 `brief-before-user-visible`）
+- 影响范围可预估，预计 diff 在一个 PR 可审范围内
+
+## 执行约束
+
+- 每个任务：**独立分支、独立 PR**；一个 PR 只做一件事
+- 有依赖的任务使用 stacked PR，并在 PR 描述中注明依赖链
+- 执行中发现的衍生任务：只登记到 `TASKS.md`（标注来源任务），**不得顺手实现**；仅当其阻塞当前任务时才可提升优先级
+- 每个任务完成后必须：测试通过 → commit → 默认 push 旁支 + 开 PR（见 `focus-tiger-core.mdc`）→ 更新 `TASKS.md` 状态 → 输出**任务交接小结**（完成内容 / PR 链接 / 遗留 / 新增衍生任务）
+- 任务交接小结可复用 `focus-tiger-session-handoff.mdc` 模板字段；口令「生成交接」时仍只输出模板、不新开任务
+
+## 停止条件（触发任一项，立即停下并向我汇报，不得继续下一个任务）
+
+- 同一问题修复两次仍失败 / 测试持续红（与 `layered-bug-diagnostics` 一致）
+- 需求或逻辑出现歧义，需要人决策
+- 涉及数据迁移、权限/安全、删除数据等不可逆或高风险操作
+- 单个 PR diff 明显超出预期，或需要跨多个模块大改
+- 发现前面已完成任务的假设有误
+- 已连续完成 5 个任务，或上下文明显变长（此时应 `Read` `focus-tiger-session-handoff.mdc` 并输出交接摘要）
+
+## 会话交接
+
+停止或收尾时，输出当前队列状态与下一步建议，便于新会话直接接续。模板 SSOT：`focus-tiger-session-handoff.mdc`（`session-handoff`）。

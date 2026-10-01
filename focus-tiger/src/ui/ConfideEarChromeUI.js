@@ -115,6 +115,25 @@ export class ConfideEarChromeUI {
         opacity: 0.3;
         transition: transform 120ms ease, box-shadow 160ms ease, opacity 180ms ease;
       }
+      .confide-ear-chrome::before {
+        content: '';
+        position: absolute;
+        inset: -7px;
+        border-radius: 50%;
+        border: 1px solid rgba(198, 156, 120, 0.28);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+      }
+      .confide-ear-chrome:hover::before,
+      .confide-ear-chrome:focus-visible::before {
+        opacity: 1;
+        animation: confide-ear-warm-ring 2.4s ease-in-out infinite;
+      }
+      @keyframes confide-ear-warm-ring {
+        0%, 100% { transform: scale(1); opacity: 0.85; }
+        50% { transform: scale(1.06); opacity: 0.45; }
+      }
       .confide-ear-chrome[hidden] {
         display: none !important;
       }
@@ -132,6 +151,8 @@ export class ConfideEarChromeUI {
       }
       .confide-ear-chrome__img {
         display: block;
+        position: relative;
+        z-index: 1;
         width: 52px;
         height: 52px;
         border-radius: 50%;

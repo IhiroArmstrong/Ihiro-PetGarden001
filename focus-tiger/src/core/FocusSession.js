@@ -6,6 +6,15 @@
 // 职责：专注会话的计时与 focusLevel 计算。
 // 经过时长以墙钟时间戳差值为真值，不依赖后台被节流的 interval / rAF 累加。
 
+import {
+  FOCUS_DURATION_MODE_FIXED,
+  FOCUS_DURATION_MODE_OPEN
+} from './focusDuration.js';
+import {
+  OPEN_ENDED_HARD_CAP_MS,
+  rewardCreditMsForElapsed
+} from './openEndedFocus.js';
+
 export const COMPANION_MODE_STAY = 'stay';
 export const COMPANION_MODE_STEP_AWAY = 'stepAway';
 export const COMPANION_MODE_ACROSS_TOOLS = 'acrossTools';
@@ -174,6 +183,8 @@ export function resolveRiseClickDuringFocus({
 export class FocusSession {
   constructor(targetMinutes = 25) {
     this.targetMinutes = targetMinutes;
+    /** @type {'fixed' | 'open'} */
+    this.durationMode = FOCUS_DURATION_MODE_FIXED;
     /** @type {CompanionMode} */
     this.companionMode = COMPANION_MODE_STAY;
     this.isRunning = false;
@@ -199,6 +210,66 @@ export class FocusSession {
     const n = Number(minutes);
     if (!Number.isFinite(n) || n <= 0) return;
     this.targetMinutes = Math.min(90, Math.max(1, Math.round(n)));
+    this.durationMode = FOCUS_DURATION_MODE_FIXED;
+  }
+
+  /**
+   * Add minutes to a fixed sit. Open-ended sits and the 90-minute cap do not grow.
+   * @param {number} extraMinutes
+   * @returns {{ applied: boolean, kind: 'add', reason?: string, minutes?: number, clamped?: boolean }}
+   */
+  extendTargetMinutes(extraMinutes) {
+    if (this.isOpenEnded()) {
+      return { applied: false, kind: 'add', reason: 'open_ended' };
+    }
+    const extra = Math.round(Number(extraMinutes));
+    if (!Number.isFinite(extra) || extra < 1) {
+      return { applied: false, kind: 'add', reason: 'bad_delta' };
+    }
+    if (this.targetMinutes >= 90) {
+      return {
+        applied: false,
+        kind: 'add',
+        reason: 'at_cap',
+        minutes: this.targetMinutes
+      };
+    }
+    const before = this.targetMinutes;
+    this.targetMinutes = Math.min(90, before + extra);
+    return {
+      applied: true,
+      kind: 'add',
+      minutes: this.targetMinutes,
+      clamped: this.targetMinutes < before + extra
+    };
+  }
+
+  /**
+   * Open-ended count-up: not a larger minute chip; does not touch targetMinutes.
+   * @param {'fixed' | 'open'} mode
+   */
+  setDurationMode(mode) {
+    this.durationMode =
+      mode === FOCUS_DURATION_MODE_OPEN
+        ? FOCUS_DURATION_MODE_OPEN
+        : FOCUS_DURATION_MODE_FIXED;
+  }
+
+  /** @returns {boolean} */
+  isOpenEnded() {
+    return this.durationMode === FOCUS_DURATION_MODE_OPEN;
+  }
+
+  /**
+   * Minutes that may count toward timed awards / honesty (reward cap for open-ended).
+   * @returns {number}
+   */
+  resolveTimedAwardMinutes() {
+    if (!this.isOpenEnded()) {
+      return this.targetMinutes;
+    }
+    const creditMs = rewardCreditMsForElapsed(this.getElapsedSeconds() * 1000);
+    return Math.max(1, Math.floor(creditMs / 60000));
   }
 
   start({ companionMode = COMPANION_MODE_STAY, now } = {}) {
@@ -210,6 +281,11 @@ export class FocusSession {
     this._pauseStartedAtMs = null;
     this.startedAtMs = this._now();
     this.isRunning = true;
+  }
+
+  /** @returns {boolean} */
+  isPaused() {
+    return this._pauseStartedAtMs !== null;
   }
 
   pause() {
@@ -233,6 +309,7 @@ export class FocusSession {
     this.pausedAccumulatedMs = 0;
     this._pauseStartedAtMs = null;
     this.companionMode = COMPANION_MODE_STAY;
+    this.durationMode = FOCUS_DURATION_MODE_FIXED;
   }
 
   /** @returns {boolean} */
@@ -255,7 +332,10 @@ export class FocusSession {
     if (this._pauseStartedAtMs !== null) {
       paused += this._now() - this._pauseStartedAtMs;
     }
-    const elapsedMs = Math.max(0, this._now() - this.startedAtMs - paused);
+    let elapsedMs = Math.max(0, this._now() - this.startedAtMs - paused);
+    if (this.isOpenEnded()) {
+      elapsedMs = Math.min(elapsedMs, OPEN_ENDED_HARD_CAP_MS);
+    }
     return elapsedMs / 1000;
   }
 
@@ -265,12 +345,21 @@ export class FocusSession {
   }
 
   getFocusLevel() {
+    if (this.isOpenEnded()) {
+      const capSeconds = OPEN_ENDED_HARD_CAP_MS / 1000;
+      if (capSeconds <= 0) return 0;
+      return Math.min(this.getElapsedSeconds() / capSeconds, 1);
+    }
     const targetSeconds = this.targetMinutes * 60;
     if (targetSeconds <= 0) return 0;
     return Math.min(this.getElapsedSeconds() / targetSeconds, 1);
   }
 
   hasReachedTarget() {
-    return this.startedAtMs !== null && this.getFocusLevel() >= 1;
+    if (this.startedAtMs === null) return false;
+    if (this.isOpenEnded()) {
+      return this.getElapsedSeconds() >= OPEN_ENDED_HARD_CAP_MS / 1000;
+    }
+    return this.getFocusLevel() >= 1;
   }
 }

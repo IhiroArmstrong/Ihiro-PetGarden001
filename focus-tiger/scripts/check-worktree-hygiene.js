@@ -147,12 +147,10 @@ export function classifyHygieneTier(input) {
     reasons.push('current-session-cwd')
     return { tier: 'report_only', reasons }
   }
-  if (input.dirty) {
-    reasons.push('dirty-worktree')
-    return { tier: 'report_only', reasons }
-  }
+  const contentMerged = Boolean(input.tipInDevelop) || Boolean(input.noUniquePatches)
   if (input.lockOccupancy === 'active' && input.lockStale === false) {
     reasons.push('lock-active-non-stale')
+    if (input.dirty) reasons.push('dirty-worktree')
     return { tier: 'report_only', reasons }
   }
   if (
@@ -173,14 +171,18 @@ export function classifyHygieneTier(input) {
     reasons.push('lock-absent')
   }
 
-  const contentMerged = Boolean(input.tipInDevelop) || Boolean(input.noUniquePatches)
   if (!contentMerged) {
     if (!input.tipInDevelop) reasons.push('tip-not-in-origin-develop')
     if (!input.noUniquePatches) reasons.push('cherry-has-unique-patches')
+    if (input.dirty) reasons.push('dirty-worktree')
     return { tier: 'report_only', reasons }
   }
   if (input.tipInDevelop) reasons.push('tip-in-origin-develop')
   if (input.noUniquePatches) reasons.push('cherry-empty-vs-develop')
+  if (input.dirty) {
+    reasons.push('dirty-but-content-merged')
+    return { tier: 'propose_remove', reasons }
+  }
   reasons.push('clean')
   return { tier: 'propose_remove', reasons }
 }

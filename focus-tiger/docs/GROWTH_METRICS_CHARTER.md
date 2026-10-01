@@ -57,9 +57,11 @@ Before changing any growth formula or adding a cumulative consumer:
 | `practice-badges-free` | presentation-feedback | mixed | badgeAward.v1 | target = min(9, max(1, 1 + floor(score/3))); 0 badges when no practice. |
 | `practice-badges-paid` | presentation-feedback | mixed | badgeAward.v1 | target = min(17, max(3, 3 + floor(score/3))) for Sanctuary; tip max 9. |
 | `mustard-seal` | unlock-gate | mixed | mustardUnlock.v1 | score ≥ 21; three verse cases revealed one per baseline completion. |
+| `practice-imprint` | unlock-gate | lifetime | practiceImprint.v1 | lotus lifetime minutes cross catalog thresholds; one auto card per unrevealed tier after baseline ceremony. |
 | `contemplative-archive` | unlock-gate | mixed | caUnlock.v1 | Each CA entry: score ≥ entry.scoreThreshold. |
 | `milestone-glow-streak` | presentation-feedback | consecutive-streak | milestoneGlow.v1 | resolveMilestoneGlowNodeId(recentStreakDays) — orthogonal to practice score. |
 | `focus-coins-earn` | currency | event-driven | focusCoinsL0.v1 | Event grants on completion hooks; Stay 5m=1pt; Across/Honesty 10m=1pt; echo +3. |
+| `focus-essence-earn` | presentation-feedback | event-driven | focusEssenceL0.v1 | Same events/points/caps as focus-coins-earn; writes essenceTotal only; no UI. |
 | `focus-coins-redeem` | unlock-gate | mixed | focusCoinsRedeem.v1 | evaluateFocusCoinRedeem(skuId, context) — coins never satisfy isEntitled. |
 | `celebrating-today` | session-feedback | session | sessionFeedback.v1 | hasCelebratedToday() — not cumulative unlock. |
 
@@ -157,6 +159,8 @@ Pre-Batch-2 reads summed **90-day practice-days minutes** as if they were lifeti
 | Lotus lifetime minutes **per day cap** | **Closed** — 180 min/day toward score only; blooms uncapped (`scoreFormula.v3`) | PO 2026-09-10 |
 | Honesty 5 min × 21 days → mustard unlock | Allowed by score (days dominate) | Persona `steady-light` locks intent until changed |
 | MilestoneGlow vs score | Orthogonal streak ladder | By design |
+| Shared milestone catalog | **Closed V1** — static local table; J1-a same consecutive-days predicate for Glow + Journey; #890 closed vocab (`task-shared-milestone-catalog.md`) | PO 2026-09-20；Batch 1 另口令 |
+| Journey streak copy vs consecutive days | **Open (J-copy)** — EN “days of returning” ≠ consecutive-day math; not Batch 1 | 另开产品拍板：改文案或改逻辑 |
 
 ---
 
@@ -179,4 +183,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 |---|---|
 | 2026-09-10 | Initial charter + registry schema + persona CI + TEST_TRACKER seed contract |
 | 2026-09-10 | scoreFormula.v3 — 180 min/day score cap; `single-binge-extreme` persona |
-| 2026-09-10 | Pointer: relationship layer is presentation/memory, not a growth formula (`YIN_EVOLUTION.md`) |
+| 2026-09-20 | Shared milestone catalog V1 locked (`task-shared-milestone-catalog.md`); J-copy Journey returning-copy vs consecutive days remains open |

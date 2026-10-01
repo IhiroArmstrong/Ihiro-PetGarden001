@@ -118,7 +118,9 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
       'sanctuary-badges',
       'mustard-seed-seal-score',
       'contemplative-archive-seal-score',
-      'focus-coins-redeem'
+      'focus-coins-redeem',
+      'collections-behavioral-scarcity',
+      'practice-imprint-badges'
     ]),
     relatedPersonas: Object.freeze([
       'steady-light',
@@ -215,6 +217,24 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'practice-imprint',
+    displayName: 'Practice Imprint · lifetime minute badges',
+    purpose: 'unlock-gate',
+    inputSources: Object.freeze(['focus-tiger.lotus-pond.v1']),
+    aggregationWindow: 'lifetime',
+    dailyCapPolicy:
+      'MILESTONE_CATALOG lifetime-minutes-at-least tiers 600 / 3000 / 10800; awarded once, never revoked.',
+    formulaVersion: 'practiceImprint.v1',
+    formulaSummary:
+      'lotus lifetime minutes cross catalog thresholds; one auto card per unrevealed tier after baseline ceremony.',
+    formulaModule: 'src/core/practiceImprint.js',
+    authoritativeConsumers: Object.freeze([
+      'practice-imprint-badges',
+      'practice-imprint-ceremony'
+    ]),
+    relatedPersonas: Object.freeze(['rolling-veteran', 'deep-weekly'])
+  }),
+  Object.freeze({
     id: 'contemplative-archive',
     displayName: 'Contemplative Archive standalone seals',
     purpose: 'unlock-gate',
@@ -261,6 +281,30 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
       'Event grants on completion hooks; Stay 5m=1pt; Across/Honesty 10m=1pt; echo +3.',
     formulaModule: 'src/core/focusCoinsLedger.js',
     authoritativeConsumers: Object.freeze(['src/core/focusCoinsAward.js']),
+    relatedPersonas: Object.freeze([
+      'light-stay-10',
+      'medium-stay-25',
+      'honesty-30',
+      'breath-1',
+      'binge-cap'
+    ])
+  }),
+  Object.freeze({
+    id: 'focus-essence-earn',
+    displayName: 'Focus Essence · earn ledger',
+    purpose: 'presentation-feedback',
+    inputSources: Object.freeze([
+      'focus-tiger.focus-essence.v1',
+      'session completion hooks'
+    ]),
+    aggregationWindow: 'event-driven',
+    dailyCapPolicy:
+      'Slice 1 mirrors focus-coins-earn caps; essenceTotal monotonic; no redeem.',
+    formulaVersion: 'focusEssenceL0.v1',
+    formulaSummary:
+      'Same events/points/caps as focus-coins-earn; writes essenceTotal only; no UI.',
+    formulaModule: 'src/core/focusEssenceLedger.js',
+    authoritativeConsumers: Object.freeze(['src/core/focusEssenceAward.js']),
     relatedPersonas: Object.freeze([
       'light-stay-10',
       'medium-stay-25',

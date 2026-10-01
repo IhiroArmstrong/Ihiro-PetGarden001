@@ -445,7 +445,7 @@ Ambient：**Private → Export/Share → Curated Community**。公开层会立�
 
 - **进圈**：第一版邀请 = 外部渠道上的 **6 位暗号 / 深链**。无账号也能进。
 - **认出人（可选、晚于进圈）**：本机不透明 ID + 可选限长昵称 + 预设 Tiger/Yin 徽标。**不是**可登录账号。禁止头像上传与自由简介。
-- **跨设备**：不是必须；若做，**复用**现有邮箱 OTP（备份 / Membership restore 同一套基础设施），不为 Circle 另造账号。
+- **跨设备**：不是必须；若做，**复用**现有邮箱 OTP（备份 / Membership restore 同一套基础设施），不为 Circle 另造账号。**2026-09-26 PO**：在跨设备绑人真正开工（或换设备/清缓存找不回投诉 ≥3）之前，**不写**统一 Login /「账号与设备」Brief；菜单灰行占位维持。进度表 [`MENU_CHROME_CENSUS.md`](./MENU_CHROME_CENSUS.md) §1 第 3 行。2e 昵称层（#615）**不等于**跨设备身份。
 - **审核**：8 人暗号圈；先不做主动审核管线；举报 + 本机把昵称显示成「一位同伴」。
 - **Practice Identity** 仍走刀 4（14 天规则反射、无收集条）。**Collective Echo** 仍走刀 5，**不是** Circle 或刀 1 的开工门闩。
 

@@ -40,16 +40,20 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
+  '.cursor/rules/focus-tiger-brief-before-user-visible.mdc',
   '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
   '.cursor/rules/focus-tiger-ui-bug-triage.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
+  '.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc',
   '.cursor/rules/focus-tiger-source-read-granularity.mdc',
   '.cursor/rules/focus-tiger-qa-develop-worktree.mdc',
   '.cursor/rules/testing-strategy.mdc',
   '.cursor/rules/focus-tiger-interaction-feedback.mdc',
   '.cursor/rules/focus-tiger-feature-conflict-review.mdc',
   '.cursor/rules/focus-tiger-background-network.mdc',
+  '.cursor/rules/focus-tiger-chat-openable-file-links.mdc',
+  '.cursor/rules/focus-tiger-user-action-steps.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -1263,6 +1267,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /功能测试通过/,
       /接收反馈/,
       /结果反馈/,
+      /持久化三态可见性/,
+      /挂起是单独一档/,
       /SILENT_BEHAVIORS\.md/,
       /点击后 0–1 秒内用户会看到什么/,
       /不在白名单里的沉默视为 bug/
@@ -1416,6 +1422,56 @@ export const RULE_AUTHORITY_TOPICS = [
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
   },
   {
+    id: 'brief-before-user-visible',
+    title:
+      'B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection:
+      '用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21）',
+    ssotMustContain: [
+      /brief-before-user-visible/,
+      /A 类/,
+      /B 类/,
+      /立刻开工/,
+      /有疑问时默认按 B 类/
+    ],
+    topicSignals: [
+      /brief-before-user-visible/,
+      /Brief 开工门禁/,
+      /A\/B 类任务/
+    ],
+    mustCite: [/WORKFLOW\.md|brief-before-user-visible/],
+    restatementFingerprints: [
+      /Stage 1 影子分流/,
+      /Stage 2 切真路由/,
+      /立刻开工.*不能成为跳过 Brief/,
+      /有疑问时默认按 B 类/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'urgent-start-skip-brief',
+        pattern:
+          /(?:立刻开工|马上做|现在就要).{0,32}(?:可以|允许|不必|无需).{0,24}(?:Brief|brief|任务书)/,
+        note: 'B 类「立刻开工」不能跳过 Brief'
+      },
+      {
+        id: 'self-downgrade-b-class',
+        pattern:
+          /(?:应该|大概|可能).{0,16}问题不大.{0,24}(?:跳过|不必|无需).{0,16}Brief/,
+        note: '有疑问默认 B 类；禁止自行降为 A 类跳过 Brief'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-brief-before-user-visible.mdc',
+      '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PROCESS.md'
+    ],
+    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
     id: 'ci-failure-triage',
     title:
       'CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮）',
@@ -1504,6 +1560,49 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     citeExemptFiles: [
       '.cursor/rules/focus-tiger-agent-token-cost.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ],
+    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
+    id: 'layered-bug-diagnostics',
+    title:
+      '多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑）',
+    ssotPath: '.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc',
+    ssotSection:
+      'Focus Tiger · 多层系统集成 bug 排查（layered-bug-diagnostics · 按需层）',
+    ssotMustContain: [
+      /layered-bug-diagnostics/,
+      /第一刀必须是可观测性/,
+      /连续 2 次修复仍失败/,
+      /禁止在第一轮直接猜测性修改/
+    ],
+    topicSignals: [
+      /layered-bug-diagnostics/,
+      /多层系统集成/,
+      /诊断先于/,
+      /连续 2 次修复/
+    ],
+    mustCite: [
+      /focus-tiger-layered-bug-diagnostics\.mdc|layered-bug-diagnostics/
+    ],
+    restatementFingerprints: [
+      /第一刀必须是可观测性/,
+      /连续 2 次修复仍失败/,
+      /禁止在第一轮直接猜测性修改/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'layered-bug-guess-first',
+        pattern:
+          /(?:可以|允许|应当|先)[^。\n]{0,24}(?:直接|先)[^。\n]{0,24}(?:改逻辑|猜测性修复|盲试)/,
+        note:
+          '多层系统集成 bug 须先加诊断；禁止写成可先猜测性改逻辑'
+      }
+    ],
+    citeExemptFiles: [
       '.cursor/rules/focus-tiger-core.mdc',
       'focus-tiger/docs/RULES_INDEX.md'
     ],
@@ -1744,6 +1843,72 @@ export const RULE_AUTHORITY_TOPICS = [
     ],
     restatementExemptFiles: [
       '.cursor/rules/focus-tiger-background-network.mdc'
+    ]
+  },
+  {
+    id: 'chat-openable-file-links',
+    title: '用户可见回复里文件须可点开、可定位（禁止只写反引号路径）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '用户可见回复：文件须可点开、可定位（强制）',
+    ssotMustContain: [
+      /chat-openable-file-links/,
+      /仓库文件须可点开/,
+      /本机绝对路径/,
+      /禁止.*反引号/,
+      /Markdown 链接/,
+      /open_resource/
+    ],
+    topicSignals: [
+      /chat-openable-file-links/,
+      /仓库文件须可点开/,
+      /反引号里/
+    ],
+    mustCite: [/WORKFLOW\.md|chat-openable-file-links/],
+    restatementFingerprints: [
+      /禁止.*只把路径包在反引号/,
+      /open_resource.*file:\/\//
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'backtick-path-is-enough',
+        pattern:
+          /(?:可以|允许|应当)[^。\n]{0,20}只[^。\n]{0,12}反引号[^。\n]{0,16}路径/,
+        note: '禁止把反引号路径当成可点开链接'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-chat-openable-file-links.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      '.cursor/rules/focus-tiger-user-action-steps.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ],
+    restatementExemptFiles: [
+      '.cursor/rules/focus-tiger-chat-openable-file-links.mdc'
+    ]
+  },
+  {
+    id: 'batch-before-human',
+    title: '减少人工测试与审核（能终端批量就不要整表请人）',
+    ssotPath: '.cursor/rules/testing-strategy.mdc',
+    ssotSection: '减少人工测试与审核（batch-before-human · 强制）',
+    ssotMustContain: [
+      /batch-before-human/,
+      /减少人工测试与审核/,
+      /audit:stage2-m-screen/,
+      /不算产品路径 M/,
+      /audit:confide-semantic-shadow/
+    ],
+    topicSignals: [/batch-before-human/, /减少人工测试与审核/],
+    mustCite: [/testing-strategy\.mdc|batch-before-human/],
+    restatementFingerprints: [/M_CANDIDATE/, /不算产品路径 M/],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'offline-screen-counts-as-m',
+        pattern: /离线[^。\n]{0,24}算进[^。\n]{0,8}M|M_CANDIDATE[^。\n]{0,16}就是\s*M/,
+        note: '离线筛选不能当成产品路径 M'
+      }
     ]
   }
 ];

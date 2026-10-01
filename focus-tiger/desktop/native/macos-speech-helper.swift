@@ -1,0 +1,662 @@
+/**
+ * Focus Tiger — macOS Speech helper (Slice 0 probe).
+ * Commands: gate | transcribe [--max-seconds N] | tts-gate | speak [--text T] [--rate R]
+ * Stop early: write "stop\n" to stdin during transcribe or speak.
+ */
+
+import AVFoundation
+import Darwin
+import Foundation
+import Speech
+
+let defaultLocale = "en-US"
+
+let emitLock = NSLock()
+
+func emitJson(_ payload: [String: Any]) {
+  guard
+    let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
+    let line = String(data: data, encoding: .utf8)
+  else {
+    fputs("{\"ok\":false,\"error\":\"json_encode_failed\"}\n", stderr)
+    exit(2)
+  }
+  emitLock.lock()
+  print(line)
+  fflush(stdout)
+  emitLock.unlock()
+}
+
+func runCatching(_ body: @escaping () -> Void) -> String? {
+  var reason: NSString?
+  let ok = FTRunCatching({ body() }, &reason)
+  return ok ? nil : (reason as String?)
+}
+
+func resolvedRecordingFormat(for node: AVAudioInputNode) -> AVAudioFormat? {
+  var format = node.outputFormat(forBus: 0)
+  if format.sampleRate <= 0 || format.channelCount == 0 {
+    format = node.inputFormat(forBus: 0)
+  }
+  if format.sampleRate <= 0 || format.channelCount == 0 {
+    return AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1)
+  }
+  return format
+}
+
+func speechAuthLabel(_ status: SFSpeechRecognizerAuthorizationStatus) -> String {
+  switch status {
+  case .authorized: return "authorized"
+  case .denied: return "denied"
+  case .restricted: return "restricted"
+  case .notDetermined: return "notDetermined"
+  @unknown default: return "unknown"
+  }
+}
+
+func microphoneAuthLabel() -> String {
+  if #available(macOS 14.0, *) {
+    switch AVAudioApplication.shared.recordPermission {
+    case .granted: return "granted"
+    case .denied: return "denied"
+    case .undetermined: return "notDetermined"
+    @unknown default: return "unknown"
+    }
+  }
+  switch AVCaptureDevice.authorizationStatus(for: .audio) {
+  case .authorized: return "granted"
+  case .denied: return "denied"
+  case .notDetermined: return "notDetermined"
+  case .restricted: return "restricted"
+  @unknown default: return "unknown"
+  }
+}
+
+func pumpRunLoop(until shouldStop: () -> Bool, timeoutSeconds: Double) -> Bool {
+  let deadline = Date().addingTimeInterval(timeoutSeconds)
+  while !shouldStop() && Date() < deadline {
+    RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.05))
+  }
+  return shouldStop()
+}
+
+func requestSpeechAuthorization() -> SFSpeechRecognizerAuthorizationStatus {
+  var result = SFSpeechRecognizer.authorizationStatus()
+  if result != .notDetermined {
+    return result
+  }
+  var finished = false
+  SFSpeechRecognizer.requestAuthorization { status in
+    result = status
+    finished = true
+  }
+  _ = pumpRunLoop(until: { finished }, timeoutSeconds: 60)
+  return result
+}
+
+func requestMicrophoneAuthorization() -> String {
+  if #available(macOS 14.0, *) {
+    if AVAudioApplication.shared.recordPermission == .granted {
+      return "granted"
+    }
+    if AVAudioApplication.shared.recordPermission == .denied {
+      return "denied"
+    }
+    var granted = false
+    var finished = false
+    AVAudioApplication.requestRecordPermission { ok in
+      granted = ok
+      finished = true
+    }
+    _ = pumpRunLoop(until: { finished }, timeoutSeconds: 60)
+    return granted ? "granted" : "denied"
+  }
+  let status = AVCaptureDevice.authorizationStatus(for: .audio)
+  if status == .authorized {
+    return "granted"
+  }
+  if status == .denied || status == .restricted {
+    return "denied"
+  }
+  var granted = false
+  var finished = false
+  AVCaptureDevice.requestAccess(for: .audio) { ok in
+    granted = ok
+    finished = true
+  }
+  _ = pumpRunLoop(until: { finished }, timeoutSeconds: 60)
+  return granted ? "granted" : "denied"
+}
+
+func onDeviceSupported(for localeId: String) -> Bool {
+  guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: localeId)) else {
+    return false
+  }
+  if #available(macOS 13.0, *) {
+    return recognizer.supportsOnDeviceRecognition
+  }
+  return false
+}
+
+/// Keep in lockstep with `foldVoiceRecognitionHypothesis` in voiceInputBridge.js.
+func isMuchShorterVoiceHypothesis(previous: String, incoming: String) -> Bool {
+  previous.count >= 40 && incoming.count * 10 <= previous.count * 6
+}
+
+func foldVoiceRecognitionHypothesis(previous: String, incoming: String) -> (text: String, shrunk: Bool) {
+  let prev = previous.trimmingCharacters(in: .whitespacesAndNewlines)
+  let next = incoming.trimmingCharacters(in: .whitespacesAndNewlines)
+  if next.isEmpty { return (prev, false) }
+  if prev.isEmpty { return (next, false) }
+  if next.hasPrefix(prev) { return (next, false) }
+  if isMuchShorterVoiceHypothesis(previous: prev, incoming: next) { return (prev, true) }
+  return (next, false)
+}
+
+func runGate(localeId: String) {
+  let speechStatus = requestSpeechAuthorization()
+  let micStatus = requestMicrophoneAuthorization()
+  let recognizer = SFSpeechRecognizer(locale: Locale(identifier: localeId))
+  emitJson([
+    "command": "gate",
+    "ok": true,
+    "locale": localeId,
+    "onDeviceSupported": onDeviceSupported(for: localeId),
+    "recognizerAvailable": recognizer?.isAvailable ?? false,
+    "speechAuthorization": speechAuthLabel(speechStatus),
+    "microphoneAuthorization": micStatus,
+    "requiresOnDeviceRecognition": true
+  ])
+}
+
+func runTranscribe(localeId: String, maxSeconds: Double) {
+  let started = Date()
+  let speechStatus = requestSpeechAuthorization()
+  if speechStatus != .authorized {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "speech_authorization_denied",
+      "speechAuthorization": speechAuthLabel(speechStatus),
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+
+  let micStatus = requestMicrophoneAuthorization()
+  if micStatus != "granted" {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "microphone_authorization_denied",
+      "microphoneAuthorization": micStatus,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+
+  guard onDeviceSupported(for: localeId) else {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "on_device_not_supported",
+      "locale": localeId,
+      "requiresOnDeviceRecognition": true,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+
+  guard
+    let recognizer = SFSpeechRecognizer(locale: Locale(identifier: localeId)),
+    recognizer.isAvailable
+  else {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "recognizer_unavailable",
+      "locale": localeId,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+
+  let request = SFSpeechAudioBufferRecognitionRequest()
+  request.shouldReportPartialResults = true
+  if #available(macOS 13.0, *) {
+    request.requiresOnDeviceRecognition = true
+    request.addsPunctuation = true
+  }
+  if #available(macOS 14.0, *) {
+    request.taskHint = .dictation
+  }
+
+  let engine = AVAudioEngine()
+  var finalText = ""
+  var hypothesisShrunk = false
+  var failure: String? = nil
+  var finished = false
+  var audioEnded = false
+  var didSignal = false
+  var bufferCount = 0
+  var peakRms: Float = 0
+  var latestRms: Float = 0
+  var emitLevels = false
+  let finalizeLock = NSLock()
+  var inputNode: AVAudioInputNode!
+  var recordingFormat: AVAudioFormat!
+  var engineStartError: String?
+
+  func signalWhenReady() {
+    finalizeLock.lock()
+    defer { finalizeLock.unlock() }
+    guard audioEnded, !didSignal else { return }
+    didSignal = true
+  }
+
+  func isReadyToFinalize() -> Bool {
+    finalizeLock.lock()
+    let ready = didSignal
+    finalizeLock.unlock()
+    return ready
+  }
+
+  func endCapture() {
+    finalizeLock.lock()
+    defer { finalizeLock.unlock() }
+    guard !audioEnded else { return }
+    audioEnded = true
+    request.endAudio()
+    // On-device STT can need several seconds after endAudio for short utterances.
+    DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 6.0) {
+      signalWhenReady()
+    }
+  }
+
+  DispatchQueue.global(qos: .utility).async {
+    while !finished {
+      let chunk = FileHandle.standardInput.availableData
+      if !chunk.isEmpty {
+        let line = String(data: chunk, encoding: .utf8) ?? ""
+        if line.contains("stop") {
+          finished = true
+          endCapture()
+          break
+        }
+      }
+      Thread.sleep(forTimeInterval: 0.05)
+    }
+  }
+
+  DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + maxSeconds) {
+    if !finished {
+      finished = true
+      endCapture()
+    }
+  }
+
+  // Recognition callbacks are delivered on the main run loop. Start the task
+  // before capture and pump the run loop while waiting — sem.wait would stall it.
+  let task = recognizer.recognitionTask(with: request) { result, error in
+    if let result {
+      let text = result.bestTranscription.formattedString
+      if !text.isEmpty {
+        let folded = foldVoiceRecognitionHypothesis(previous: finalText, incoming: text)
+        if folded.shrunk {
+          hypothesisShrunk = true
+        }
+        finalText = folded.text
+      }
+      if result.isFinal {
+        signalWhenReady()
+      } else if !finalText.isEmpty {
+        finalizeLock.lock()
+        let ended = audioEnded
+        finalizeLock.unlock()
+        if ended {
+          signalWhenReady()
+        }
+      }
+    }
+    if let error {
+      failure = error.localizedDescription
+      finalizeLock.lock()
+      audioEnded = true
+      finalizeLock.unlock()
+      signalWhenReady()
+    }
+  }
+
+  let thrown = runCatching {
+    inputNode = engine.inputNode
+    guard let format = resolvedRecordingFormat(for: inputNode) else {
+      engineStartError = "input node sample rate is 0"
+      return
+    }
+    recordingFormat = format
+    inputNode.installTap(onBus: 0, bufferSize: 4096, format: format) { buffer, _ in
+      request.append(buffer)
+      finalizeLock.lock()
+      bufferCount += 1
+      if let channel = buffer.floatChannelData?[0] {
+        let frames = Int(buffer.frameLength)
+        if frames > 0 {
+          var sum: Float = 0
+          for i in 0..<frames {
+            let sample = channel[i]
+            sum += sample * sample
+          }
+          let rms = sqrt(sum / Float(frames))
+          latestRms = rms
+          if rms > peakRms {
+            peakRms = rms
+          }
+        }
+      }
+      finalizeLock.unlock()
+    }
+    do {
+      try engine.start()
+    } catch {
+      engineStartError = error.localizedDescription
+    }
+  }
+  if let thrown {
+    task.cancel()
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "audio_engine_start_failed",
+      "detail": thrown,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+  if let engineStartError {
+    task.cancel()
+    engine.stop()
+    let code = engineStartError.contains("sample rate") ? "audio_format_invalid" : "audio_engine_start_failed"
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": code,
+      "detail": engineStartError,
+      "latencyMs": Int(Date().timeIntervalSince(started) * 1000)
+    ])
+    exit(1)
+  }
+
+  let levelQueue = DispatchQueue(label: "focus-tiger.speech-level")
+  let levelTimer = DispatchSource.makeTimerSource(queue: levelQueue)
+  levelTimer.schedule(deadline: .now() + .milliseconds(100), repeating: .milliseconds(100))
+  levelTimer.setEventHandler {
+    finalizeLock.lock()
+    let shouldEmit = emitLevels && !audioEnded
+    let level = latestRms
+    finalizeLock.unlock()
+    if !shouldEmit { return }
+    emitJson([
+      "command": "level",
+      "ok": true,
+      "rms": Double(level)
+    ])
+  }
+  finalizeLock.lock()
+  emitLevels = true
+  finalizeLock.unlock()
+  levelTimer.resume()
+
+  _ = pumpRunLoop(until: { isReadyToFinalize() }, timeoutSeconds: maxSeconds + 12.0)
+  finished = true
+  finalizeLock.lock()
+  emitLevels = false
+  finalizeLock.unlock()
+  levelTimer.cancel()
+  levelQueue.sync {}
+  engine.stop()
+  inputNode.removeTap(onBus: 0)
+  let capturedBuffers: Int
+  let capturedPeak: Float
+  finalizeLock.lock()
+  capturedBuffers = bufferCount
+  capturedPeak = peakRms
+  finalizeLock.unlock()
+  task.cancel()
+
+  let latencyMs = Int(Date().timeIntervalSince(started) * 1000)
+  if capturedBuffers == 0 {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "audio_tap_empty",
+      "sampleRate": recordingFormat.sampleRate,
+      "channelCount": Int(recordingFormat.channelCount),
+      "bufferCount": capturedBuffers,
+      "peakRms": Double(capturedPeak),
+      "latencyMs": latencyMs
+    ])
+    exit(1)
+  }
+  if let failure, finalText.isEmpty {
+    emitJson([
+      "command": "transcribe",
+      "ok": false,
+      "error": "recognition_failed",
+      "detail": failure,
+      "requiresOnDeviceRecognition": true,
+      "sampleRate": recordingFormat.sampleRate,
+      "bufferCount": capturedBuffers,
+      "peakRms": Double(capturedPeak),
+      "latencyMs": latencyMs
+    ])
+    exit(1)
+  }
+
+  emitJson([
+    "command": "transcribe",
+    "ok": true,
+    "locale": localeId,
+    "transcript": finalText,
+    "hypothesisShrunk": hypothesisShrunk,
+    "requiresOnDeviceRecognition": true,
+    "onDeviceEnforced": true,
+    "sampleRate": recordingFormat.sampleRate,
+    "channelCount": Int(recordingFormat.channelCount),
+    "bufferCount": capturedBuffers,
+    "peakRms": Double(capturedPeak),
+    "latencyMs": latencyMs
+  ])
+}
+
+func defaultSpeakRate(for localeId: String) -> Float {
+  return max(
+    AVSpeechUtteranceMinimumSpeechRate,
+    AVSpeechUtteranceDefaultSpeechRate - 0.08
+  )
+}
+
+func normalizedTtsLocaleId(_ localeId: String) -> String {
+  if localeId.hasPrefix("ja") {
+    return "ja-JP"
+  }
+  if localeId.hasPrefix("en") {
+    return "en-US"
+  }
+  return localeId
+}
+
+func preferredTtsVoiceName(for localeId: String) -> String {
+  return normalizedTtsLocaleId(localeId).hasPrefix("ja") ? "Otoya" : "Joelle"
+}
+
+func preferredTtsVoice(for localeId: String) -> AVSpeechSynthesisVoice? {
+  let normalized = normalizedTtsLocaleId(localeId)
+  let preferredName = preferredTtsVoiceName(for: normalized)
+  let candidates = AVSpeechSynthesisVoice.speechVoices().filter { voice in
+    voice.language == normalized
+      || voice.language.hasPrefix(String(normalized.prefix(2)))
+  }
+  if candidates.isEmpty {
+    return AVSpeechSynthesisVoice(language: normalized)
+  }
+  let named = candidates.filter { $0.name.contains(preferredName) }
+  let pool = named.isEmpty ? candidates : named
+  if let enhanced = pool.first(where: { $0.quality == .enhanced }) {
+    return enhanced
+  }
+  return pool.first ?? AVSpeechSynthesisVoice(language: normalized)
+}
+
+func runTtsGate(localeId: String) {
+  let voice = preferredTtsVoice(for: localeId)
+  emitJson([
+    "command": "tts-gate",
+    "ok": true,
+    "locale": localeId,
+    "voiceAvailable": voice != nil,
+    "voiceName": voice?.name ?? "",
+    "requiresNetwork": false,
+    "requiresMicrophone": false
+  ])
+}
+
+final class SpeakDelegate: NSObject, AVSpeechSynthesizerDelegate {
+  let startedAt = Date()
+  var didEmitStart = false
+  var finished = false
+  var cancelled = false
+  var startLatencyMs = 0
+
+  func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+    guard !didEmitStart else { return }
+    didEmitStart = true
+    startLatencyMs = Int(Date().timeIntervalSince(startedAt) * 1000)
+    emitJson([
+      "command": "speak",
+      "ok": true,
+      "phase": "started",
+      "locale": utterance.voice?.language ?? "",
+      "startLatencyMs": startLatencyMs
+    ])
+  }
+
+  func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+    finished = true
+  }
+
+  func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+    cancelled = true
+    finished = true
+  }
+}
+
+func runSpeak(localeId: String, text: String, rate: Float) {
+  let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+  guard !trimmed.isEmpty else {
+    emitJson([
+      "command": "speak",
+      "ok": false,
+      "error": "empty_text",
+      "locale": localeId
+    ])
+    exit(1)
+  }
+
+  let voice = preferredTtsVoice(for: localeId)
+  guard let voice else {
+    emitJson([
+      "command": "speak",
+      "ok": false,
+      "error": "voice_unavailable",
+      "locale": localeId
+    ])
+    exit(1)
+  }
+
+  let started = Date()
+  let synthesizer = AVSpeechSynthesizer()
+  let delegate = SpeakDelegate()
+  synthesizer.delegate = delegate
+  let utterance = AVSpeechUtterance(string: trimmed)
+  utterance.voice = voice
+  utterance.rate = rate
+  utterance.volume = 1.0
+  utterance.preUtteranceDelay = 0
+  utterance.postUtteranceDelay = 0
+
+  var stdinStop = false
+  DispatchQueue.global(qos: .utility).async {
+    while !delegate.finished {
+      let chunk = FileHandle.standardInput.availableData
+      if !chunk.isEmpty {
+        let line = String(data: chunk, encoding: .utf8) ?? ""
+        if line.contains("stop") {
+          stdinStop = true
+          synthesizer.stopSpeaking(at: .immediate)
+          break
+        }
+      }
+      Thread.sleep(forTimeInterval: 0.05)
+    }
+  }
+
+  synthesizer.speak(utterance)
+  _ = pumpRunLoop(until: { delegate.finished }, timeoutSeconds: 120)
+
+  let totalMs = Int(Date().timeIntervalSince(started) * 1000)
+  emitJson([
+    "command": "speak",
+    "ok": true,
+    "phase": stdinStop || delegate.cancelled ? "stopped" : "finished",
+    "locale": localeId,
+    "voiceName": voice.name,
+    "rate": Double(rate),
+    "startLatencyMs": delegate.startLatencyMs,
+    "durationMs": totalMs,
+    "requiresNetwork": false,
+    "requiresMicrophone": false
+  ])
+}
+
+let args = CommandLine.arguments
+setbuf(stdout, nil)
+setbuf(stderr, nil)
+guard args.count >= 2 else {
+  emitJson([
+    "ok": false,
+    "error": "usage",
+    "detail": "macos-speech-helper gate|transcribe|tts-gate|speak [--locale L] [--text T] [--rate R] [--max-seconds N]"
+  ])
+  exit(2)
+}
+
+var localeId = defaultLocale
+var maxSeconds = 15.0
+var speakText = ""
+var speakRate = defaultSpeakRate(for: localeId)
+if let localeIndex = args.firstIndex(of: "--locale"), localeIndex + 1 < args.count {
+  localeId = args[localeIndex + 1]
+}
+if let maxIndex = args.firstIndex(of: "--max-seconds"), maxIndex + 1 < args.count {
+  maxSeconds = Double(args[maxIndex + 1]) ?? maxSeconds
+}
+if let textIndex = args.firstIndex(of: "--text"), textIndex + 1 < args.count {
+  speakText = args[textIndex + 1]
+}
+if let rateIndex = args.firstIndex(of: "--rate"), rateIndex + 1 < args.count {
+  speakRate = Float(args[rateIndex + 1]) ?? speakRate
+}
+
+switch args[1] {
+case "gate":
+  runGate(localeId: localeId)
+case "transcribe":
+  runTranscribe(localeId: localeId, maxSeconds: maxSeconds)
+case "tts-gate":
+  runTtsGate(localeId: localeId)
+case "speak":
+  runSpeak(localeId: localeId, text: speakText, rate: speakRate)
+default:
+  emitJson(["ok": false, "error": "unknown_command", "detail": args[1]])
+  exit(2)
+}

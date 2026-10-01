@@ -8,7 +8,11 @@
  * No account. Optional social layer under Privacy.
  */
 
-import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
+import {
+  getCloudApiBaseUrl,
+  postCloudJson,
+  withCloudJsonTimeout
+} from './cloudApiClient.js';
 
 export const FOCUS_CIRCLE_STORAGE_KEY = 'focus-tiger.focus-circle.v1';
 export const FOCUS_CIRCLE_PATH = '/api/focus-circle';
@@ -19,6 +23,11 @@ export const FOCUS_CIRCLE_CHANGE_EVENT = 'focus-tiger:focus-circle-change';
 export const FOCUS_CIRCLE_MAX_MEMBERS = 8;
 /** While Privacy / circle UI is open, poll cloud status for memberCount changes. */
 export const FOCUS_CIRCLE_STATUS_POLL_MS = 5000;
+/** Create / join / leave must fail out so buttons are not stuck on wait cursor. */
+export const FOCUS_CIRCLE_MUTATION_TIMEOUT_MS = 12000;
+/** In-flight status must not hang the next poll forever. */
+export const FOCUS_CIRCLE_STATUS_TIMEOUT_MS = 8000;
+export const FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS = 20000;
 
 const CODE_RE = /^[A-HJ-NP-Z2-9]{6}$/;
 
@@ -26,6 +35,28 @@ const CODE_RE = /^[A-HJ-NP-Z2-9]{6}$/;
 let statusPollTimer = null;
 /** @type {(() => void) | null} */
 let statusPollOnVisible = null;
+let membershipGeneration = 0;
+let statusRequestSeq = 0;
+let lastAppliedStatusSeq = 0;
+let statusPollInFlight = false;
+let statusPollBackoffUntil = 0;
+
+export function bumpFocusCircleMembershipGeneration() {
+  membershipGeneration += 1;
+  return membershipGeneration;
+}
+
+export function readFocusCircleMembershipGeneration() {
+  return membershipGeneration;
+}
+
+/**
+ * @param {Promise<unknown>} promise
+ * @param {number} timeoutMs
+ */
+export async function withFocusCircleRequestTimeout(promise, timeoutMs) {
+  return withCloudJsonTimeout(promise, timeoutMs);
+}
 
 /**
  * @param {unknown} raw
@@ -108,6 +139,16 @@ export function writeFocusCircleMembership(storage, membership) {
     store.setItem(FOCUS_CIRCLE_STORAGE_KEY, nextJson);
   } catch {
     // quota / private mode
+    return null;
+  }
+  const readBack = readFocusCircleMembership(store);
+  if (
+    !readBack ||
+    readBack.circleId !== normalized.circleId ||
+    readBack.memberId !== normalized.memberId ||
+    readBack.code !== normalized.code
+  ) {
+    return null;
   }
   dispatchFocusCircleChange();
   return normalized;
@@ -203,6 +244,7 @@ function parseCircleResponse(body) {
  * @param {string} [opts.memberId]
  * @param {typeof postCloudJson} [opts.postJson]
  * @param {() => string} [opts.getBaseUrl]
+ * @param {number} [opts.timeoutMs]
  */
 export async function postFocusCircle({
   postJson = postCloudJson,
@@ -210,7 +252,8 @@ export async function postFocusCircle({
   action = 'status',
   code = '',
   circleId = '',
-  memberId = ''
+  memberId = '',
+  timeoutMs
 } = {}) {
   if (!getBaseUrl()) {
     return { ok: false, reason: 'cloud_api_unconfigured', skipped: true };
@@ -227,10 +270,22 @@ export async function postFocusCircle({
   if (action === 'create' || action === 'join') {
     payload.memberId = memberId;
   }
+  const waitMs =
+    timeoutMs ??
+    (action === 'status'
+      ? FOCUS_CIRCLE_STATUS_TIMEOUT_MS
+      : FOCUS_CIRCLE_MUTATION_TIMEOUT_MS);
   try {
-    const body = await postJson(FOCUS_CIRCLE_PATH, {
-      body: JSON.stringify(payload)
-    });
+    const body = await withFocusCircleRequestTimeout(
+      postJson(
+        FOCUS_CIRCLE_PATH,
+        {
+          body: JSON.stringify(payload)
+        },
+        { timeoutMs: waitMs }
+      ),
+      waitMs
+    );
     if (action === 'leave') {
       if (!body || body.ok !== true) {
         return { ok: false, reason: 'bad_payload', skipped: true };
@@ -246,6 +301,8 @@ export async function postFocusCircle({
     const status = err && typeof err === 'object' ? Number(err.status) : 0;
     if (status === 404) return { ok: false, reason: 'not_found', skipped: true };
     if (status === 409) return { ok: false, reason: 'circle_full', skipped: true };
+    if (status === 408) return { ok: false, reason: 'timeout', skipped: true };
+    if (status === 429) return { ok: false, reason: 'rate_limited', skipped: true };
     return { ok: false, reason: 'network', skipped: true };
   }
 }
@@ -258,6 +315,7 @@ export async function createFocusCircle(opts = {}) {
   if (!isFocusCircleClientEnabled({ search: opts.search, cloudBaseUrl: opts.getBaseUrl?.() })) {
     return { ok: false, reason: 'disabled' };
   }
+  bumpFocusCircleMembershipGeneration();
   const existing = readFocusCircleMembership(storage);
   if (existing) {
     const left = await leaveFocusCircle({ ...opts, membership: existing });
@@ -268,7 +326,9 @@ export async function createFocusCircle(opts = {}) {
   const memberId = newFocusCircleMemberId();
   const result = await postFocusCircle({ ...opts, action: 'create', memberId });
   if (!result.ok || !result.membership) return result;
-  writeFocusCircleMembership(storage, result.membership);
+  if (!writeFocusCircleMembership(storage, result.membership)) {
+    return { ok: false, reason: 'storage_failed', membership: result.membership };
+  }
   return result;
 }
 
@@ -283,6 +343,7 @@ export async function joinFocusCircle(opts = {}) {
   if (!isFocusCircleClientEnabled({ search: opts.search, cloudBaseUrl: opts.getBaseUrl?.() })) {
     return { ok: false, reason: 'disabled' };
   }
+  bumpFocusCircleMembershipGeneration();
   const existing = readFocusCircleMembership(storage);
   if (existing) {
     const left = await leaveFocusCircle({ ...opts, membership: existing });
@@ -293,7 +354,9 @@ export async function joinFocusCircle(opts = {}) {
   const memberId = newFocusCircleMemberId();
   const result = await postFocusCircle({ ...opts, action: 'join', code, memberId });
   if (!result.ok || !result.membership) return result;
-  writeFocusCircleMembership(storage, result.membership);
+  if (!writeFocusCircleMembership(storage, result.membership)) {
+    return { ok: false, reason: 'storage_failed', membership: result.membership };
+  }
   return result;
 }
 
@@ -301,11 +364,12 @@ export async function joinFocusCircle(opts = {}) {
  * @param {object} [opts]
  */
 export async function leaveFocusCircle(opts = {}) {
+  bumpFocusCircleMembershipGeneration();
   const storage = opts.storage ?? getDefaultStorage();
   const membership = opts.membership ?? readFocusCircleMembership(storage);
   if (!membership) return { ok: true, reason: 'no_membership' };
-  clearFocusCircleMembership(storage);
   if (!isFocusCircleClientEnabled({ search: opts.search, cloudBaseUrl: opts.getBaseUrl?.() })) {
+    clearFocusCircleMembership(storage);
     return { ok: true, reason: 'local_only' };
   }
   const result = await postFocusCircle({
@@ -314,8 +378,9 @@ export async function leaveFocusCircle(opts = {}) {
     circleId: membership.circleId,
     memberId: membership.memberId
   });
-  if (!result.ok && result.reason === 'not_found') {
-    return { ok: true, reason: 'not_found' };
+  if (result.ok || result.reason === 'not_found') {
+    clearFocusCircleMembership(storage);
+    return result.ok ? result : { ok: true, reason: 'not_found' };
   }
   return result;
 }
@@ -330,23 +395,48 @@ export async function refreshFocusCircleStatus(opts = {}) {
   if (!isFocusCircleClientEnabled({ search: opts.search, cloudBaseUrl: opts.getBaseUrl?.() })) {
     return { ok: true, membership };
   }
+  const requestGen = membershipGeneration;
+  const requestCircleId = membership.circleId;
+  const requestMemberId = membership.memberId;
+  const requestSeq = ++statusRequestSeq;
   const result = await postFocusCircle({
     ...opts,
     action: 'status',
-    circleId: membership.circleId,
-    memberId: membership.memberId
+    circleId: requestCircleId,
+    memberId: requestMemberId
   });
+  if (membershipGeneration !== requestGen) {
+    return {
+      ok: true,
+      membership: readFocusCircleMembership(storage),
+      stale: true
+    };
+  }
+  const current = readFocusCircleMembership(storage);
+  if (
+    !current ||
+    current.circleId !== requestCircleId ||
+    current.memberId !== requestMemberId
+  ) {
+    return { ok: true, membership: current, stale: true };
+  }
+  if (requestSeq < lastAppliedStatusSeq) {
+    return { ok: true, membership: current, stale: true };
+  }
   if (!result.ok || !result.membership) {
     if (result.reason === 'not_found') {
+      lastAppliedStatusSeq = requestSeq;
       clearFocusCircleMembership(storage);
       return { ok: true, membership: null, reason: 'not_found' };
     }
-    return { ok: false, reason: result.reason ?? 'network', membership };
+    return { ok: false, reason: result.reason ?? 'network', membership: current };
   }
   if (result.membership.isMember === false) {
+    lastAppliedStatusSeq = requestSeq;
     clearFocusCircleMembership(storage);
     return { ok: true, membership: null, reason: 'not_member' };
   }
+  lastAppliedStatusSeq = requestSeq;
   writeFocusCircleMembership(storage, result.membership);
   return { ok: true, membership: result.membership };
 }
@@ -364,15 +454,25 @@ export async function refreshFocusCircleStatus(opts = {}) {
  * @param {(result: Awaited<ReturnType<typeof refreshFocusCircleStatus>>) => void} [opts.onUpdate]
  */
 export function startFocusCircleStatusPolling(opts = {}) {
-  stopFocusCircleStatusPolling();
+  if (statusPollTimer) return;
   const tick = () => {
     if (!readFocusCircleMembership(opts.storage ?? getDefaultStorage())) {
       stopFocusCircleStatusPolling();
       return;
     }
-    void refreshFocusCircleStatus(opts).then((result) => {
-      opts.onUpdate?.(result);
-    });
+    if (Date.now() < statusPollBackoffUntil) return;
+    if (statusPollInFlight) return;
+    statusPollInFlight = true;
+    void refreshFocusCircleStatus(opts)
+      .then((result) => {
+        if (result.reason === 'rate_limited') {
+          statusPollBackoffUntil = Date.now() + FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS;
+        }
+        if (!result.stale) opts.onUpdate?.(result);
+      })
+      .finally(() => {
+        statusPollInFlight = false;
+      });
   };
   tick();
   statusPollTimer = setInterval(
@@ -392,6 +492,7 @@ export function startFocusCircleStatusPolling(opts = {}) {
 export function stopFocusCircleStatusPolling() {
   if (statusPollTimer) clearInterval(statusPollTimer);
   statusPollTimer = null;
+  statusPollInFlight = false;
   if (
     statusPollOnVisible &&
     typeof globalThis.removeEventListener === 'function'

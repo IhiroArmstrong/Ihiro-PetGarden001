@@ -131,6 +131,19 @@ export class SanctuaryEnsoMarkChrome {
         user-select: none;
         -webkit-user-select: none;
       }
+      .yin-sanctuary-enso-mark::after {
+        content: '';
+        position: absolute;
+        inset: -5px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 35% 28%,
+          rgba(255, 220, 140, 0.28),
+          transparent 68%
+        );
+        pointer-events: none;
+        opacity: 0.75;
+      }
       @media (max-width: ${ENSO_NARROW_MQ_MAX_PX}px) {
         .yin-sanctuary-enso-mark {
           left: max(${ENSO_CORNER_LEFT_NARROW_PX}px, env(safe-area-inset-left, 0px));
@@ -148,7 +161,11 @@ export class SanctuaryEnsoMarkChrome {
         object-fit: contain;
         display: block;
         pointer-events: none;
-        filter: drop-shadow(0 1px 2px rgba(40, 28, 16, 0.22));
+        filter:
+          drop-shadow(0 1px 2px rgba(40, 28, 16, 0.22))
+          saturate(1.1)
+          contrast(1.06)
+          brightness(1.03);
       }
     `;
     document.head.appendChild(style);

@@ -1,0 +1,37 @@
+{
+  "at": "2026-09-17T09:33:07.917Z",
+  "config": "openFreshChatSession promptFamily=gemma -> Gemma4ChatWrapper({ reasoning:false })",
+  "locales": [
+    "ja",
+    "en",
+    "it",
+    "de",
+    "es",
+    "fr"
+  ],
+  "samplesPerLocale": 18,
+  "jc": {
+    "label": "jc-builds Q4_K_M",
+    "modelPath": "/Users/armstronghesapplelaptop/Library/Application Support/Focus Tiger/companion-l0/Gemma-4-E4B-it-Q4_K_M.gguf",
+    "reportPath": "/tmp/ft-l0-lab/compare-1789637343276-jc.json",
+    "rowCount": 108,
+    "generateRows": 108,
+    "emptyRawGenerate": 0,
+    "corpusFallbackRows": 0,
+    "generateErrors": 0
+  },
+  "un": {
+    "label": "unsloth UD-Q4_K_XL (QAT)",
+    "modelPath": "/tmp/ft-l0-lab/Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf",
+    "reportPath": "/tmp/ft-l0-lab/compare-1789637343276-un.json",
+    "rowCount": 108,
+    "generateRows": 108,
+    "emptyRawGenerate": 0,
+    "corpusFallbackRows": 0,
+    "generateErrors": 0
+  },
+  "annotation": {
+    "mdPath": "/tmp/ft-l0-lab/multilang-chitchat-annotate-1789637343276.md",
+    "csvPath": "/tmp/ft-l0-lab/multilang-chitchat-annotate-1789637343276.csv"
+  }
+}

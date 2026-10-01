@@ -8,6 +8,48 @@ import { L2_MAX_REPLY_CHARS } from './l2Persona.js';
 /** One-word model misfires (e.g. Qwen acknowledging a prompt) — fall back to corpus. */
 const TRIVIAL_ONLY_REPLIES = /^(?:yes|no|ok|okay|sure|yep|nope|是|嗯|好|对)\.?$/iu;
 
+/** Copula / light verbs that make a two-word observe, not a dumped noun tag. */
+const SHORT_OBSERVE_VERBISH =
+  /^(?:is|am|are|was|were|be|been|being|feel|feels|felt|sit|sits|hear|hears|drift|drifts)$/iu;
+
+/**
+ * Structural dump of a mood tag ("Irritation." / "Anger.") — not a word list.
+ * Observations are sentences; a 1-word alphabetic dump (or 2–4 isolated Han)
+ * is a label, including tomorrow's unseen synonym.
+ * @param {unknown} raw
+ * @returns {boolean}
+ */
+export function isBareEmotionLabelReply(raw) {
+  const text = String(raw || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.!?。！？…]+$/u, '')
+    .trim();
+  if (!text) return false;
+  if (/[,"“”‘’、;；:：]/.test(text)) return false;
+
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length === 1 && /^[A-Za-z][A-Za-z'-]{2,19}$/.test(words[0])) {
+    return true;
+  }
+  if (
+    words.length === 2 &&
+    /^(?:the|a|an)$/i.test(words[0]) &&
+    /^[A-Za-z][A-Za-z'-]{2,19}$/.test(words[1]) &&
+    !SHORT_OBSERVE_VERBISH.test(words[1])
+  ) {
+    return true;
+  }
+  const compact = text.replace(/\s+/g, '');
+  if (
+    /^[\u3400-\u9fff]{2,4}$/u.test(compact) &&
+    !/[的了着过在是想觉得吗呢吧啊]/.test(compact)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 const BANNED = [
   /you should/i,
   /try (to )?breathe/i,
@@ -39,6 +81,36 @@ const HOLLOW_OBSERVE_PATTERNS = [
 
 const PRESENCE_ONLY_WORD =
   /^(?:still|here|watching|listening|quiet|yin|i|am|im|just)$/iu;
+
+/** Interchangeable cub-theater observes (scheme B field fails + zh/en fill). */
+const GENERIC_CUB_THEATER_PATTERNS = [
+  /^the cub shifts its weight/iu,
+  /^the cub blinks slowly/iu,
+  /^the cub stretches a paw/iu,
+  /^the cub nudges its nose toward a patch of moss/iu,
+  /^a small twitch moves one ear/iu,
+  /^the air around me feels still/iu,
+  /^the soft fur (?:on my paws )?brushes/iu,
+  /\bmy ears?\b.{0,48}\b(?:twitch|flick)/iu,
+  /\bmy tail\b.{0,72}\b(?:flick|twitch|swish|restless)/iu,
+  /\bmy paws?\b.{0,72}\b(?:shift|twitch|restless|ground)/iu,
+  /^my (?:ears?|tail|paws?)\b/iu,
+  /我的(?:耳朵|尾巴|爪子)/,
+  /耳朵.{0,12}(?:一抖|抖动|微微)/,
+  /尾巴.{0,12}(?:一甩|轻甩)/,
+  /爪子.{0,12}搁地/,
+  /拍(?:了拍)?爪子/,
+  /歪(?:了歪)?头/,
+  /舔(?:了舔)?爪子/,
+  /眨(?:了眨)?眼/,
+  /伸(?:了伸)?爪子/,
+  /挪(?:了挪)?重心/,
+  /小老虎.{0,12}(?:爪子|歪头|舔)/,
+  /\btilts (?:its |his |her )?head\b/i,
+  /\blicks (?:a |its |his |her )?paw\b/i,
+  /\bbats (?:a |its )?paw\b/i,
+  /\bpats (?:the |its )?paw\b/i
+];
 
 /**
  * @param {unknown} text
@@ -102,6 +174,89 @@ export function isHollowCompanionObserveReply(raw) {
 }
 
 /**
+ * Generic cub theater that can swap onto any user line.
+ * @param {unknown} raw
+ * @returns {boolean}
+ */
+export function isGenericCubTheaterReply(raw) {
+  const text = String(raw || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.!?。！？]+$/u, '');
+  if (!text) return false;
+  const first = text.split(/(?<=[.!?。！？])\s+/u)[0] || text;
+  return GENERIC_CUB_THEATER_PATTERNS.some((re) => re.test(first) || re.test(text));
+}
+
+/**
+ * Whole-reply parrot of the user line (including compact / translation echo).
+ * @param {unknown} raw
+ * @param {unknown} userText
+ * @returns {boolean}
+ */
+export function isEchoOfUserLine(raw, userText) {
+  const replyNorm = normalizeCompanionL2Reply(raw);
+  const userNorm = normalizeCompanionL2Reply(userText);
+  if (!replyNorm || !userNorm) return false;
+  if (replyNorm === userNorm) return true;
+  const compact = (s) => s.replace(/[\s'",.!?。！？、]/gu, '');
+  const replyC = compact(replyNorm);
+  const userC = compact(userNorm);
+  if (userC.length >= 6 && (replyC === userC || replyC.includes(userC))) {
+    return true;
+  }
+  const userRaw = String(userText || '');
+  const replyRaw = String(raw || '');
+  if (/喜欢吃/.test(userRaw) && /likes to eat/i.test(replyRaw) && /[?？]/.test(replyRaw)) {
+    return true;
+  }
+  if (/谁是/.test(userRaw) && /\bwho is\b/i.test(replyRaw) && /[?？]/.test(replyRaw)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Character-bigram overlap with the current user line (separate from echo).
+ * @param {unknown} raw
+ * @param {unknown} userText
+ * @returns {boolean}
+ */
+export function isHighOverlapWithUserLine(raw, userText) {
+  const replyNorm = normalizeCompanionL2Reply(raw);
+  const userNorm = normalizeCompanionL2Reply(userText);
+  if (!replyNorm || !userNorm) return false;
+  const compact = (s) => s.replace(/[\s'",.!?。！？、]/gu, '');
+  const replyC = compact(replyNorm);
+  const userC = compact(userNorm);
+  if (userC.length < 4 || replyC.length < 4) return false;
+  if (replyC.includes(userC) || userC.includes(replyC)) {
+    const shorter = Math.min(replyC.length, userC.length);
+    const longer = Math.max(replyC.length, userC.length);
+    if (shorter / longer >= 0.4) return true;
+  }
+  const grams = (s) => {
+    /** @type {Set<string>} */
+    const set = new Set();
+    if (s.length < 2) {
+      set.add(s);
+      return set;
+    }
+    for (let i = 0; i <= s.length - 2; i += 1) set.add(s.slice(i, i + 2));
+    return set;
+  };
+  const a = grams(userC);
+  const b = grams(replyC);
+  let inter = 0;
+  for (const g of a) {
+    if (b.has(g)) inter += 1;
+  }
+  const union = a.size + b.size - inter;
+  if (union <= 0) return false;
+  return inter / union >= 0.55;
+}
+
+/**
  * @param {unknown} raw
  * @param {{ priorReplies?: unknown, userText?: unknown }} [opts]
  * @returns {string | null}
@@ -118,8 +273,12 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   }
   if (!text) return null;
   if (TRIVIAL_ONLY_REPLIES.test(text)) return null;
+  if (isBareEmotionLabelReply(text)) return null;
   if (BANNED.some((re) => re.test(text))) return null;
   if (isHollowCompanionObserveReply(text)) return null;
+  if (isGenericCubTheaterReply(text)) return null;
+  if (isEchoOfUserLine(text, opts.userText)) return null;
+  if (isHighOverlapWithUserLine(text, opts.userText)) return null;
   const prior = Array.isArray(opts.priorReplies) ? opts.priorReplies : [];
   const normalized = normalizeCompanionL2Reply(text);
   if (

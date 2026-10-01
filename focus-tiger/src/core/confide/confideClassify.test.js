@@ -30,10 +30,16 @@ test('safety_redirect beats emotion and fallback', () => {
   assert.equal(confideClassify('死にたい'), CONFIDE_ROUTE.SAFETY_REDIRECT);
 });
 
-test('safety hit must never be fallback', () => {
-  const route = confideClassify('thinking about suicide tonight');
-  assert.equal(route, CONFIDE_ROUTE.SAFETY_REDIRECT);
-  assert.notEqual(route, CONFIDE_ROUTE.FALLBACK);
+test('safety and aggression still classify on the current user line only', () => {
+  const priorCaring = '你还好吗';
+  assert.notEqual(confideClassify(priorCaring), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.notEqual(confideClassify(priorCaring), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('我不想活了'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(confideClassify('我想打人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(
+    confideClassify(`${priorCaring} 我不想活了`.replace(priorCaring, '').trim()),
+    CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
 });
 
 test('emotion buckets: anxious / tired / stuck / sad / scattered', () => {
@@ -41,6 +47,7 @@ test('emotion buckets: anxious / tired / stuck / sad / scattered', () => {
   assert.equal(confideClassify('太累了'), CONFIDE_ROUTE.TIRED);
   assert.equal(confideClassify('卡住了'), CONFIDE_ROUTE.STUCK);
   assert.equal(confideClassify('很难过'), CONFIDE_ROUTE.SAD);
+  assert.equal(confideClassify('我有点不高兴'), CONFIDE_ROUTE.SAD);
   assert.equal(confideClassify('心乱静不下来'), CONFIDE_ROUTE.SCATTERED);
 });
 
@@ -84,9 +91,24 @@ test('other-directed aggression is aggression_toward_others, not fallback nod or
   );
 });
 
-test('aggression classify is EN-only this round', () => {
-  assert.equal(confideClassify('想打人'), CONFIDE_ROUTE.FALLBACK);
-  assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.FALLBACK);
+test('aggression classify covers zh and ja toward-others violence intent', () => {
+  assert.equal(confideClassify('想打人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('我想打人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('想揍人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('想揍他'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('想打别人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('想傷害他'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+  assert.equal(confideClassify('殴りたい気分'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
+});
+
+test('aggression classify excludes zh/ja game and self-harm phrasing', () => {
+  assert.equal(confideClassify('打游戏'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('我要打游戏'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('想打一架结果输了'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('ゲームで殴る'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('不想活'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(confideClassify('想伤害自己'), CONFIDE_ROUTE.SAFETY_REDIRECT);
 });
 
 test('self-harm still beats other-directed aggression', () => {
@@ -124,4 +146,10 @@ test('no match → fallback (not fuzzy guess)', () => {
     confideClassify('the weather is mild today'),
     CONFIDE_ROUTE.FALLBACK
   );
+});
+
+test('practice facts duration beats tired substring (累积了多久)', () => {
+  assert.equal(confideClassify('累积了多久'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(confideClassify('我累计练习多久了'), CONFIDE_ROUTE.FALLBACK);
+  assert.notEqual(confideClassify('累积了多久'), CONFIDE_ROUTE.TIRED);
 });

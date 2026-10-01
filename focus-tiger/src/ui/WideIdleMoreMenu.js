@@ -19,9 +19,12 @@ import {
   canRegisterDesktopCompanionGeneration,
   hasDesktopCompanionBridge
 } from '../core/desktopCompanionGate.js';
+import { canUseSystemTts } from '../core/systemTtsBridge.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
+import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
+import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v7';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
@@ -94,7 +97,8 @@ export class WideIdleMoreMenu {
    *   handlers?: {
    *     onCompanion?: () => void,
    *     onReminder?: () => void,
-   *     onLanguage?: () => void,
+     *     onLanguage?: () => void,
+     *     onSystemTts?: () => void,
    *     onFiveMoments?: () => void,
      *     onJourneyLog?: () => void,
      *     onYinCoin?: () => void,
@@ -112,9 +116,11 @@ export class WideIdleMoreMenu {
      *     onRitualFlow?: (proxy: string) => void,
    *     onSound?: () => void,
    *     onHonesty?: () => void,
-   *     onQuickStart?: () => void,
-   *     onClearCompanion?: () => void,
-   *     onClearStage?: () => void,
+     *     onQuickStart?: () => void,
+     *     onSanctuaryNav?: () => void,
+     *     shouldShowSanctuaryNavPulse?: () => boolean,
+     *     onClearCompanion?: () => void,
+     *     onClearStage?: () => void,
      *     onMenuChange?: (open: boolean) => void,
      *     isHintUnread?: (id: string) => boolean,
      *     isGrowthCardOverlayActive?: () => boolean,
@@ -126,6 +132,7 @@ export class WideIdleMoreMenu {
     this._idle = true;
     this._suppressed = false;
     this._keepQuickStart = false;
+    this._honestyBridgeActive = false;
     this._menuOpen = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
@@ -165,6 +172,11 @@ export class WideIdleMoreMenu {
     if (this._menuOpen) this._refreshItems();
   }
 
+  /** Re-sync home ball labels + sanctuary nav pulse after first fan open. */
+  refreshHomeCtas() {
+    this._refreshHomeCtas();
+  }
+
   /**
    * @param {boolean} idle true when not Focusing (Arrival still counts as idle chrome)
    * @returns {void}
@@ -182,13 +194,14 @@ export class WideIdleMoreMenu {
    * Arrival / Honesty / Reflection / bridge: hide ⋯.
    * Arrival `keepQuickStart`: keep Quick Start ball only.
    * @param {boolean} suppressed
-   * @param {{ keepQuickStart?: boolean }} [opts]
+   * @param {{ keepQuickStart?: boolean, honestyBridgeActive?: boolean }} [opts]
    * @returns {void}
    */
   setSuppressed(suppressed, opts = {}) {
     this._suppressed = Boolean(suppressed);
     this._keepQuickStart =
       Boolean(opts.keepQuickStart) && this._suppressed;
+    this._honestyBridgeActive = Boolean(opts.honestyBridgeActive);
     if (this._suppressed && !this._keepQuickStart) {
       this.closeMenu();
       this.clearStage();
@@ -202,7 +215,7 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   openMenu() {
-    if (!this._isWide() || !this._idle) return;
+    if (!this._isWide() || !this._idle || this._honestyBridgeActive) return;
     this._dismissIdleVisualPrimaryOverlays();
     this._menuOpen = true;
     this._popEscapeLayer?.();
@@ -243,7 +256,8 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
-      WIDE_STAGE_CLASS.language
+      WIDE_STAGE_CLASS.language,
+      WIDE_STAGE_CLASS.systemTts
     );
   }
 
@@ -256,7 +270,8 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
-      WIDE_STAGE_CLASS.language
+      WIDE_STAGE_CLASS.language,
+      WIDE_STAGE_CLASS.systemTts
     );
   }
 
@@ -313,7 +328,8 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
-      WIDE_STAGE_CLASS.language
+      WIDE_STAGE_CLASS.language,
+      WIDE_STAGE_CLASS.systemTts
     );
   }
 
@@ -342,6 +358,9 @@ export class WideIdleMoreMenu {
     this.homeCtas.className = 'ft-wide-home-ctas';
     this.homeCtas.id = 'ft-wide-home-ctas';
     this.homeCtas.innerHTML = `
+      <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-sanctuary-nav" data-proxy="sanctuary-nav" aria-label="">
+        ${SANCTUARY_NAV_COMPASS_SVG}
+      </button>
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-wide-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -352,6 +371,9 @@ export class WideIdleMoreMenu {
         <img class="ft-wide-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
     `;
+    this.sanctuaryNavHomeBtn = this.homeCtas.querySelector(
+      '#ft-wide-home-sanctuary-nav'
+    );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
     this.honestyHomeBtn = this.homeCtas.querySelector('#ft-wide-home-honesty');
@@ -453,6 +475,12 @@ export class WideIdleMoreMenu {
 
   /** @returns {void} */
   _attachHomeGlassTips() {
+    if (this.sanctuaryNavHomeBtn) {
+      this._sanctuaryNavHomeTip = attachGlassHoverTip(this.sanctuaryNavHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-wide-home-sanctuary-nav-tip'
+      });
+    }
     if (this.quickHomeBtn) {
       this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
         placement: 'top',
@@ -481,6 +509,23 @@ export class WideIdleMoreMenu {
     if (!this.homeCtas || this._refreshingHomeCtas) return;
     this._refreshingHomeCtas = true;
     try {
+      if (this.sanctuaryNavHomeBtn) {
+        const navLabel = t('SANCTUARY_NAV_ARIA');
+        setAttrIfChanged(this.sanctuaryNavHomeBtn, 'aria-label', navLabel);
+        this._sanctuaryNavHomeTip?.setText(navLabel);
+        setBoolPropIfChanged(
+          this.sanctuaryNavHomeBtn,
+          'hidden',
+          Boolean(this._keepQuickStart)
+        );
+        setBoolPropIfChanged(this.sanctuaryNavHomeBtn, 'disabled', false);
+        setAttrIfChanged(this.sanctuaryNavHomeBtn, 'aria-disabled', 'false');
+        syncHomeSanctuaryNavPulse(
+          this.sanctuaryNavHomeBtn,
+          this.handlers.shouldShowSanctuaryNavPulse?.() === true
+        );
+      }
+
       const focusEl = document.getElementById('btn-focus');
       if (this.sitHomeBtn) {
         const sitLabel = focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
@@ -551,6 +596,10 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   _proxyHome(key) {
+    if (key === 'sanctuary-nav') {
+      this.handlers.onSanctuaryNav?.();
+      return;
+    }
     if (key === 'quickstart') {
       this.handlers.onQuickStart?.();
       return;
@@ -595,8 +644,8 @@ export class WideIdleMoreMenu {
     const wide = this._isWide();
     const park = wide && this._idle;
     const keepQs = Boolean(this._keepQuickStart);
-    // Menu entry stays visible as an escape hatch even when overlays suppress home CTAs.
-    const showMore = park;
+    // Escape hatch (#757): overlay-suppress keeps ⋯; Honesty bridge must hide per contract.
+    const showMore = park && !this._honestyBridgeActive;
     // Full suppress (Reflection / duration picker / growth cards): hide home balls.
     // keepQuickStart: Quick Start only via `.is-arrival-quick` (matches narrow shell).
     const showHome = park && (!this._suppressed || keepQs);
@@ -653,7 +702,10 @@ export class WideIdleMoreMenu {
         isCompanionEntitled({
           storage: typeof localStorage !== 'undefined' ? localStorage : null,
           search: typeof location !== 'undefined' ? location.search : ''
-        })
+        }),
+      systemTtsAvailable: canUseSystemTts({
+        widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+      })
     });
 
     this.listEl.innerHTML = '';
@@ -745,6 +797,25 @@ export class WideIdleMoreMenu {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.language);
       this.handlers.onLanguage?.();
+      return;
+    }
+    if (key === 'system-tts') {
+      this.clearStage();
+      this.closeMenu();
+      document.body.classList.add(WIDE_STAGE_CLASS.systemTts);
+      this.handlers.onSystemTts?.();
+      return;
+    }
+    if (key === 'sanctuary-nav') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onSanctuaryNav?.();
+      return;
+    }
+    if (key === 'today-direction') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onTodayDirection?.();
       return;
     }
     if (key === 'ground-exercise') {
@@ -939,6 +1010,7 @@ export class WideIdleMoreMenu {
         display: none !important;
       }
       /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
+      .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sanctuary-nav,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
         display: none !important;
@@ -988,6 +1060,25 @@ export class WideIdleMoreMenu {
         pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
+      }
+      .ft-wide-home-ctas__btn.is-text {
+        border-radius: 50%;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: rgba(255, 252, 245, 0.72);
+        line-height: 1.1;
+        color: rgba(74, 58, 40, 0.9);
+        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.08);
+      }
+      .ft-wide-home-ctas__text {
+        display: block;
+        max-width: 56px;
+        padding: 0 4px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-align: center;
+        pointer-events: none;
+        user-select: none;
       }
 
       .ft-wide-more {

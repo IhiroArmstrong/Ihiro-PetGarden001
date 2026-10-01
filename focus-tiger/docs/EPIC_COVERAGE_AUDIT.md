@@ -9,7 +9,7 @@
 | 类型 | 数量 | 编号 |
 |---|---|---|
 | `type:epic` | 24 | #627–#647、#742、#792（音景）、#793（栖居壳层）（原草案 1–22 里 #16 已并入 #8，后补 #23=#742、#24–#25 于 2026-09-16） |
-| `type:slice` | 7 | #649 #650 #743–#745 #773 #774 |
+| `type:slice` | 7（审计日基线） | #649 #650 #743–#745 #773 #774 |
 | `type:audit` | 1 | #648 冷启动第一幕 |
 
 线名权威：`docs/planning/task-lines-epic-draft.md`。
@@ -213,9 +213,75 @@ A.2 那 7 条「有 #号无关键字」建议只补一句 `Relates to`，不必�
 
 ---
 
+## 口令二 curated 回填（2026-09-16 · 已执行）
+
+已合并 PR 正文追加 `Relates to #792` / `#793`（各 15 条；非 Closes）。
+
+### 音景 #792（15）
+
+| PR | 主题 |
+|---|---|
+| #258 | Deep 15s 试听 |
+| #125 | 曲库扩充（6 tracks） |
+| #51 | 用户上传音轨 v1 |
+| #116 | Soundscape 面板 / hover / Focusing |
+| #36 | 默认 ambient 曲库 |
+| #24 | 右上音符 → Soundscape |
+| #251 | 免费 warmth + Deep 权益 |
+| #151 | 音符 label / hover 残影 |
+| #131 | Rise 曲目记忆 / seek-resume |
+| #55 | mute/resume / Focusing e2e |
+| #35 | 菜单 Sound 移除 / 音符 mute |
+| #30 | 首次登录音符 hint |
+| #314 | 坐禅铃 / 自动音乐 / 音量 |
+| #275 | Focus 起止 cue bells |
+| #312 | 15min 下限 + Soundscape 字幕 |
+
+### 栖居壳层 #793（15）
+
+| PR | 主题 |
+|---|---|
+| #775 | 菜单开 dismiss Idle 叠层（#773） |
+| #759 | 菜单治理 wave 2 / Esc 栈 |
+| #760 | MENU_CHROME_CENSUS 文档 |
+| #533 | growth 门闩（Quiet Line 不闪没） |
+| #500 | overlay 占用 registry 派生 |
+| #433 | slot arbitration PR-2 |
+| #346 | 宽屏 ⋯ 右缘 sheet |
+| #33 | IdleChromeFacade |
+| #421 | Electron 空白右键 → ⋯ |
+| #757 | menu escape hatch |
+| #656 | Quiet Line backdrop dim |
+| #659 | Wallpapers backdrop dim |
+| #660 | Growth panels backdrop dim |
+| #713 | presence dismiss / head tap |
+| #388 | overlay panel exclusivity |
+
+同期：**#773 Issue 已关**（#775 已合；正文删 stale `Closes #627`）；**#793 Epic 正文**已更新 #773 交付状态。
+
+---
+
+## 切片回填附录（2026-09-18 · 不推翻上文基线）
+
+审计日（2026-09-16）之后，**#646 远程参数化 §6** 已补 slice 索引（均 CLOSED · parent #646）：
+
+| Issue | PR | 说明 |
+|---|---|---|
+| #844 | #717 | 候选全项目审计 |
+| #845 | #722 | `TASTE_LAYER_KV` runtime |
+| #846 | #725 | 莲花阶梯 `GROWTH_METRICS_KV` runtime |
+| #851 | #784 | 寅币日封顶 Step D = A（冻表不远程） |
+| #852 | #787 | §6 收口文档 |
+| #853 | #788 | 生产 KV 分叉部署记录 |
+
+对照表：`docs/planning/task-lines-issue-map.md` §「防剽窃层 · 远程参数化 §6 切片」。  
+**2026-09-18 地面**：`type:slice` 共 **24** 条（含 #807–#816 Local AI、#823 等）；本附录只记 #646 补全，不重扫 698 PR。
+
+---
+
 ## 本轮未做
 
 - ~~未创建任何 GitHub Issue/Epic~~ → **2026-09-16 口令一已建** #792 音景 · #793 栖居壳层 · `type:process` label · guard 豁免 · #773 改挂壳层线  
-- 未修改已合并 PR 正文（口令二：按主题堆 curated 回填，另口令）  
+- ~~未修改已合并 PR 正文（口令二）~~ → **2026-09-16 已回填** 上表 30 条 `Relates to`  
 - 未对 660 条无主 PR 做 files 抽查（若要加深 A，下一批可按主题堆各抽 3 个 PR 看路径）  
 - 未把 129 份 brief 全文精读（文件名+文首标题）

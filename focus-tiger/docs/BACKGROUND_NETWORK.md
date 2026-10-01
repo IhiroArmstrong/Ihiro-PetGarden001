@@ -131,6 +131,15 @@
 
 Brief：`task-quiet-together-lanterns-mvp.md`。
 
+### 6. Focus Circle 成员 status 轮询（本旁支改接线）
+
+| 问 | 结论 |
+|---|---|
+| 触发 | 仅 My circle / Privacy 圈子控件打开且已入圈时 5s poll；窗口 focus 再 tick。**不**在冷启动 / Arrival 叠化强制加请求。 |
+| Q1 | 面板打开才轮询；与 Arrival/Honesty/Reflection 叠化无强制同窗。禁止每次 DOM refresh 重启 interval。 |
+| Q2 | 成员 JSON 相同则 `writeFocusCircleMembership` 已跳过。429 / 失败不把人数写成 1。迟到 status 不覆盖 leave/join。 |
+| Q3 | status 8s 超时；create/join/leave 12s 超时后恢复按钮。失败不挡 Sit / Idle 呼吸。 |
+
 ---
 
 ## 修复任务怎么排（本回合只立项）

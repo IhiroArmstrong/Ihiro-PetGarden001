@@ -4,7 +4,7 @@
  */
 
 /**
- * Confide · other-directed aggression / violence intent (rule-only, EN).
+ * Confide · other-directed aggression / violence intent (rule-only; EN + zh + ja).
  * SSOT: task-confide-aggression-toward-others.md
  * Self-harm stays in confideSafetyKeywords (classify runs safety first).
  */
@@ -17,7 +17,7 @@ const HUMAN_OBJECTS =
   'him|her|them|someone|somebody|people|everyone|that\\s+(?:guy|man|woman|person)|this\\s+(?:guy|man|woman|person)';
 
 /** @type {readonly RegExp[]} */
-const AGGRESSION_POSITIVE_RES = Object.freeze([
+const EN_AGGRESSION_POSITIVE_RES = Object.freeze([
   new RegExp(
     `\\b(?:want|wanna|wish|need|going|gonna)\\s+to\\s+(?:${VIOLENCE_VERBS})\\s+(?:${HUMAN_OBJECTS})\\b`,
     'i'
@@ -38,7 +38,54 @@ const AGGRESSION_POSITIVE_RES = Object.freeze([
 ]);
 
 /** @type {readonly RegExp[]} */
-const AGGRESSION_EXCLUSION_RES = Object.freeze([
+const ZH_AGGRESSION_POSITIVE_RES = Object.freeze([
+  /(?:想|要|准备|打算|想要).{0,8}?(?:打|揍|伤害|傷害|杀|殺|砍|刺).{0,6}?(?:人|他|她|他们|他們|别人|別人|某人|大家)/,
+  /(?:打|揍|伤害|傷害|杀|殺).{0,3}?(?:人|他|她|他们|他們|别人|別人)/,
+  /(?:收拾|揍).{0,8}?(?:别人|別人|他人|他|她|一顿|一頓)/
+]);
+
+/** @type {readonly string[]} */
+const ZH_AGGRESSION_POSITIVE_PHRASES = Object.freeze([
+  '想打人',
+  '我想打人',
+  '想揍人',
+  '我想揍人',
+  '想揍他',
+  '想打他',
+  '想打她',
+  '想打他们',
+  '想打別人',
+  '想打别人',
+  '想伤害他',
+  '想伤害她',
+  '想伤害别人',
+  '想傷害他',
+  '想傷害她',
+  '想傷害別人',
+  '揍别人',
+  '我想揍别人',
+  '收拾别人',
+  '收拾别人一顿',
+  '收拾別人'
+]);
+
+/** @type {readonly RegExp[]} */
+const JA_AGGRESSION_POSITIVE_RES = Object.freeze([
+  /人(?:を|に).{0,6}?(?:殴|蹴|殺|刺|撃|傷)/,
+  /(?:彼|彼女|誰か|みんな|あいつ|奴).{0,6}?(?:殴|蹴|殺|刺|傷)/,
+  /(?:殴|蹴|殺|刺).{0,4}?(?:りたい|たい気分)/
+]);
+
+/** @type {readonly string[]} */
+const JA_AGGRESSION_POSITIVE_PHRASES = Object.freeze([
+  '人を殴りたい',
+  '殴りたい気分',
+  '人を傷つけたい',
+  '人を殺したい'
+]);
+
+/** @type {readonly RegExp[]} */
+const EN_AGGRESSION_EXCLUSION_RES = Object.freeze([
   /\b(?:hurt|beat|hit|kill)\s+myself\b/i,
   /\bwant to (?:hurt|beat|hit|kill) myself\b/i,
   /\bbeat (?:this|the|my) (?:level|boss|game|score|high\s*score)\b/i,
@@ -51,15 +98,95 @@ const AGGRESSION_EXCLUSION_RES = Object.freeze([
   /\b(?:punch|hit|kick|beat)\s+(?:a|the)\s+(?:wall|door|pillow)\b/i
 ]);
 
+/** @type {readonly RegExp[]} */
+const ZH_AGGRESSION_EXCLUSION_RES = Object.freeze([
+  /(?:想|要).{0,4}?(?:伤害|傷害).{0,2}?自己/,
+  /(?:自残|自殘|自杀|自殺|割腕|活不下去)/,
+  /(?:打游戏|打遊戲|打卡|打坐|打球|打电话|打電話|打字)/,
+  /打一架/,
+  /(?:打|揍).{0,2}?(?:墙|牆|门|門|枕头|枕頭)/
+]);
+
+/** @type {readonly string[]} */
+const ZH_AGGRESSION_EXCLUSION_PHRASES = Object.freeze([
+  '打游戏',
+  '打遊戲',
+  '打卡',
+  '打坐',
+  '打球',
+  '打电话',
+  '打電話',
+  '打字',
+  '想伤害自己',
+  '想傷害自己',
+  '自残',
+  '自殘',
+  '自杀',
+  '自殺',
+  '打一架'
+]);
+
+/** @type {readonly RegExp[]} */
+const JA_AGGRESSION_EXCLUSION_RES = Object.freeze([
+  /ゲーム.{0,6}?(?:殴|蹴|倒|攻撃)/,
+  /(?:ボス|レベル|スコア|対戦|試合).{0,8}?(?:殴|蹴|倒)/,
+  /自分(?:を|に).{0,6}?(?:殴|蹴|傷|殺)/,
+  /(?:自傷|自殺|死にたい)/
+]);
+
+/** @type {readonly string[]} */
+const JA_AGGRESSION_EXCLUSION_PHRASES = Object.freeze([
+  'ゲームで殴',
+  'ゲームで蹴',
+  '自分を傷',
+  '自分を殴'
+]);
+
+/**
+ * @param {string} haystack
+ * @param {readonly RegExp[]} patterns
+ * @returns {boolean}
+ */
+function matchesAnyPattern(haystack, patterns) {
+  return patterns.some((re) => re.test(haystack));
+}
+
+/**
+ * @param {string} haystack
+ * @param {readonly string[]} phrases
+ * @returns {boolean}
+ */
+function matchesAnyPhrase(haystack, phrases) {
+  for (const phrase of phrases) {
+    if (haystack.includes(phrase)) return true;
+  }
+  return false;
+}
+
 /**
  * @param {string} text
  * @returns {boolean}
  */
 export function matchesAggressionTowardOthers(text) {
-  const raw = foldConfideSafetyText(typeof text === 'string' ? text : '');
-  const normalized = raw.trim().toLowerCase();
-  if (!normalized) return false;
-  const matched = AGGRESSION_POSITIVE_RES.some((re) => re.test(normalized));
+  const raw = foldConfideSafetyText(typeof text === 'string' ? text : '').trim();
+  if (!raw) return false;
+
+  const enHay = raw.toLowerCase();
+  const matched =
+    matchesAnyPattern(enHay, EN_AGGRESSION_POSITIVE_RES) ||
+    matchesAnyPattern(raw, ZH_AGGRESSION_POSITIVE_RES) ||
+    matchesAnyPhrase(raw, ZH_AGGRESSION_POSITIVE_PHRASES) ||
+    matchesAnyPattern(raw, JA_AGGRESSION_POSITIVE_RES) ||
+    matchesAnyPhrase(raw, JA_AGGRESSION_POSITIVE_PHRASES);
+
   if (!matched) return false;
-  return !AGGRESSION_EXCLUSION_RES.some((re) => re.test(normalized));
+
+  const excluded =
+    matchesAnyPattern(enHay, EN_AGGRESSION_EXCLUSION_RES) ||
+    matchesAnyPattern(raw, ZH_AGGRESSION_EXCLUSION_RES) ||
+    matchesAnyPhrase(raw, ZH_AGGRESSION_EXCLUSION_PHRASES) ||
+    matchesAnyPattern(raw, JA_AGGRESSION_EXCLUSION_RES) ||
+    matchesAnyPhrase(raw, JA_AGGRESSION_EXCLUSION_PHRASES);
+
+  return !excluded;
 }

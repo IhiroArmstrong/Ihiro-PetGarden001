@@ -28,6 +28,15 @@ on:
       - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/scripts/docs-sync.js'
+      - 'focus-tiger/scripts/docs-sync.test.js'
+      - 'focus-tiger/scripts/audit-kb-live-gap.js'
+      - 'focus-tiger/scripts/audit-kb-live-gap.test.js'
+      - 'focus-tiger/scripts/audit-kb-live-entries.js'
+      - 'focus-tiger/src/core/kbLiveEntryRegistry.js'
+      - 'focus-tiger/src/core/confide/productKnowledgeCatalog.json'
+      - 'focus-tiger/docs/kb-live-gap-audit.md'
+      - 'focus-tiger/docs/kb-live-entry-registry.md'
       - 'focus-tiger/scripts/audit-practice-coverage.js'
       - 'focus-tiger/scripts/audit-practice-coverage.test.js'
       - 'focus-tiger/scripts/audit-growth-metrics.js'
@@ -76,6 +85,15 @@ on:
       - '.husky/pre-commit'
       - 'focus-tiger/scripts/rules-authority-registry.js'
       - 'focus-tiger/scripts/docs-check.js'
+      - 'focus-tiger/scripts/docs-sync.js'
+      - 'focus-tiger/scripts/docs-sync.test.js'
+      - 'focus-tiger/scripts/audit-kb-live-gap.js'
+      - 'focus-tiger/scripts/audit-kb-live-gap.test.js'
+      - 'focus-tiger/scripts/audit-kb-live-entries.js'
+      - 'focus-tiger/src/core/kbLiveEntryRegistry.js'
+      - 'focus-tiger/src/core/confide/productKnowledgeCatalog.json'
+      - 'focus-tiger/docs/kb-live-gap-audit.md'
+      - 'focus-tiger/docs/kb-live-entry-registry.md'
       - 'focus-tiger/scripts/audit-practice-coverage.js'
       - 'focus-tiger/scripts/audit-practice-coverage.test.js'
       - 'focus-tiger/scripts/audit-growth-metrics.js'
@@ -118,6 +136,8 @@ jobs:
         run: npm ci
       - name: Structural alignment (registry ↔ markdown)
         run: npm run docs:check
+      - name: Docs-sync machine-block unit smoke
+        run: node --test scripts/docs-sync.test.js
       - name: Rules-authority contradiction unit smoke
         run: node --test scripts/rules-authority-doc-check.test.js
       - name: Docs-consistency numeric-restatement unit smoke

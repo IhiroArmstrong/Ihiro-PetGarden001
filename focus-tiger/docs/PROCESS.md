@@ -58,13 +58,66 @@
 
 > **维护规则**：每次完成具有实质性进展的 Task（不含纯粹的 debug / 微调）后，主动更新本速览对应部分，尤其是「已完成功能」「下一步计划」；若产生新的「待确认事项」，同步补入列表。本章节置于靠前位置，便于新对话快速对齐，无需每次加载全部文档。
 
-**最后更新时间**：2026-09-16（UTC+8） · **全项目 Epic 覆盖度审计入库**（`EPIC_COVERAGE_AUDIT.md` · 只报告不建 Issue） · **远程参数化 §6 本批收口**（① #722 · ② #725 · ③ Step D = A · `REMOTE_PARAM_CANDIDATES.md`） · **寅币日封顶 Step D = A 已锁 + persona CI**（`task-yin-coin-daily-cap-economy.md` · 冻表不远程 · `focusCoinsPersonaRegression.js` · PR #784 评估） · **全项目阻断式确认审计入库**（`MODAL_USAGE_AUDIT.md` = 拍板 SSOT；PR #763 15 行清单已吸收勿重复打勾；批准 G02/G06/G08 ≠ PR #762 开工） · **官网 DMG 自动更新器 Brief 已锁**（`task-electron-desktop-updater.md` · Epic #5 P0 · 无运行时） · **远程参数化候选 PO 拍板**（`REMOTE_PARAM_CANDIDATES.md` §6 · ①权重KV→②莲花并入花园KV→③寅币单独经济评估 · Stretch/好奇/冷却这次不做） · **远程参数化全项目审计**（同日 #717 · 无运行时 · 品味层权重=伪远程） · **Yin Evolution 意义层方向锁**（`YIN_EVOLUTION.md` · 重写 Epic #640 · 无运行时） · **共用机制 Brief 核对须写结论句**（`COLLAB.md` 第七节 · 清单 `SHARED_RESOURCES` §4.1–4.2 / `Z_INDEX` Idle chrome · 不另起总册） · **防剽窃层兑现清单**（`ANTI_PLAGIARISM_LAYER.md` §3.2.2 · 现网≠冻表才算真保护） · **开发任务线 Epic 建库**（`docs/planning/task-lines-epic-draft.md` · Epic 之间不设 blocked by） · **品味层×Calm Action 落地排期表**（`taste-layer-calm-action-roadmap.md` · Recover 第一刀 / Arrive 第二刀 / 权重暂不分叉） · **静思典藏层入库**（`CONTEMPLATIVE_ARCHIVE.md` · 12 候选 · 芥子须弥 = 第一枚纪念印 · 无新运行时） · **防剽窃层值得保护四测入库**（`ANTI_PLAGIARISM_LAYER.md` §3.2 · 准入≠值得） · **产品待办每周盘点机制**（`WEEKLY_PRODUCT_BACKLOG_AUDIT.md` · 口令「产品盘点」· 首盘 A1 倾听耳 HUD 已开修） · **冷启动目标问答 PO 拍板**（方向采纳·现在不实现·blocked）· **冷启动第一幕 11 入口审计 Brief + 清单草案**（硬前置·待开工） · **5173 Electron QA**：吹花+摸头提示书面 OK；Confide 时长/危机/在场书面 OK；茶句复读 + 耳钮叠 HUD 记入 TRACKER（§6.23） · **废除「证据后才产品化」**（`FROM_APP_TO_CULTURE.md` §4.2/§13；App 社交塑造 Slack） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；证据门已废除；Lanterns 优先切片待口令） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单） · Support 将来五卡 Price 已记、Checkout 未接
+**最后更新时间**：2026-09-24（UTC+8） · **Voice Input V1 Brief 已锁**（`task-voice-input-v1.md` · Speak to type · 倾诉强制本机 · 英听写 · 无运行时） · **KB 路由回归矩阵已落地**（`task-confide-kb-routing-matrix.md` · 纯单测 · 首拍 probe 漏检约 71% 作 embedding 信号 · 不改 live） · **with-prior / Stage 2b 样本量触发已钉**（首次复核 2026-10-12 · eligible≥30 / gray∩functional M≥25） · **知识库规模化生产 Brief 已拍板**（`task-kb-scaled-production.md` · 三默认已锁 · 待开工脚本 · 无运行时） · **KB 字面容错 + 寅币短答 + 观察翼裸词标签** · **产品知识库第二批 11 条盘点草案**（`KB-FUNC-0006`–`0016` · 待 PO spot-check · 无运行时） · **Confide companion 工作闸已接线**（`l1LlamaWorkGate` · `l1Child` 一层 `getLlama` 互斥 · #919 · 不改 Stage 2） · **产品知识库仓内权威模板**（`product-knowledge-base.md` · 三库拆分 · 5 条现网对照短答 · 无运行时） · **with-prior 不对称规则回放** · **L3 层 B 口径拆分 Prompt 14**（观察翼 8 句 effective ≥6/8 + §12 8/12 并存 · chat 4 句 gray 表 · 不改 prompt） · **Confide Stage 2 切真路由已开工**（Electron 默认 live · 未 ready 立刻字面 fail-open · `FT_CONFIDE_SEMANTIC_ROUTING=shadow` 回滚 · `task-confide-stage2-semantic-cutover.md`） · **共享里程碑目录 V1 已拍板**（`task-shared-milestone-catalog.md` · 静态谓词表 · 无运行时） · **Collections 行为稀缺度 V1 已拍板**（`task-collections-behavioral-scarcity.md` · V1 本机说明+勋章分区 · 全球名次不做 · 无运行时） · **L3 观察翼陈词滥调语义护栏 Brief 已锁**（`task-l3-observe-cliche-semantic-guard.md` · #877） · **观察翼套话守门 + 关心式问句 Prompt 13** · **Stage 2 未修补同义变体 Prompt 12** · **Confide 影子日志导出 Prompt 8** · **L3 闲聊问句 chat 翼**（问句 generate 当对话答，拒收爪子套势与照抄；情绪自述仍观察翼） · **Confide 离线语义冻表 Prompt 7**（`test:confide-semantic-acceptance` · 真 GGUF · 不进 smoke） · **L3 观察句方案 B 生产刀**（打乱配对验收 · #823） · **P0 中文他人攻击短语表**（`想打人` → `aggression_toward_others` · 不改 send / Hybrid / E′ · #847 · PR #855） · **Read Hybrid 分类落盘记原句**（#859 已合） · **状态变更三态可见性 Slice 3 中间件**（`postCloudJson` 默认 12s 超时 · M-01 扫描 · #839 关单 AND 待 CI 后手关） · **#834/#835 Confide 档3/4分流已关单**（tip `f4b1d127` · `reflective_honesty` / `companion_greeting` · Show me 仍 `memory_list`） · **#822 Read Hybrid memory_list 路由已关单**（tip `2347384f`） · **L3 观察句 Prompt 重写 Brief 已锁**（`task-l3-observe-prompt-redesign.md` · 先沙盒方案 B · 不改生产） · **全项目 Epic 覆盖度审计入库**（`EPIC_COVERAGE_AUDIT.md` · 只报告不建 Issue） · **远程参数化 §6 本批收口**（① #722 · ② #725 · ③ Step D = A · `REMOTE_PARAM_CANDIDATES.md`） · **寅币日封顶 Step D = A 已锁 + persona CI**（`task-yin-coin-daily-cap-economy.md` · 冻表不远程 · `focusCoinsPersonaRegression.js` · PR #784 评估） · **全项目阻断式确认审计入库**（`MODAL_USAGE_AUDIT.md` = 拍板 SSOT；PR #763 15 行清单已吸收勿重复打勾；批准 G02/G06/G08 ≠ PR #762 开工） · **官网 DMG 自动更新器 Brief 已锁**（`task-electron-desktop-updater.md` · Epic #5 P0 · 无运行时） · **远程参数化候选 PO 拍板**（`REMOTE_PARAM_CANDIDATES.md` §6 · ①权重KV→②莲花并入花园KV→③寅币单独经济评估 · Stretch/好奇/冷却这次不做） · **远程参数化全项目审计**（同日 #717 · 无运行时 · 品味层权重=伪远程） · **Yin Evolution 意义层方向锁**（`YIN_EVOLUTION.md` · 重写 Epic #640 · 无运行时） · **共用机制 Brief 核对须写结论句**（`COLLAB.md` 第七节 · 清单 `SHARED_RESOURCES` §4.1–4.2 / `Z_INDEX` Idle chrome · 不另起总册） · **防剽窃层兑现清单**（`ANTI_PLAGIARISM_LAYER.md` §3.2.2 · 现网≠冻表才算真保护） · **开发任务线 Epic 建库**（`docs/planning/task-lines-epic-draft.md` · Epic 之间不设 blocked by） · **品味层×Calm Action 落地排期表**（`taste-layer-calm-action-roadmap.md` · Recover 第一刀 / Arrive 第二刀 / 权重暂不分叉） · **静思典藏层入库**（`CONTEMPLATIVE_ARCHIVE.md` · 12 候选 · 芥子须弥 = 第一枚纪念印 · 无新运行时） · **防剽窃层值得保护四测入库**（`ANTI_PLAGIARISM_LAYER.md` §3.2 · 准入≠值得） · **产品待办每周盘点机制**（`WEEKLY_PRODUCT_BACKLOG_AUDIT.md` · 口令「产品盘点」· 首盘 A1 倾听耳 HUD 已开修） · **冷启动目标问答 PO 拍板**（方向采纳·现在不实现·blocked）· **冷启动第一幕 11 入口审计 Brief + 清单草案**（硬前置·待开工） · **5173 Electron QA**：吹花+摸头提示书面 OK；Confide 时长/危机/在场书面 OK；茶句复读 + 耳钮叠 HUD 记入 TRACKER（§6.23） · **废除「证据后才产品化」**（`FROM_APP_TO_CULTURE.md` §4.2/§13；App 社交塑造 Slack） · **Confide boundary EN 生产分叉 Redeploy**（`CONFIDE_BOUNDARY_RESPECT` · Version `78199a3b`） · **Confide boundary EN 审定句 #551** · **Confide 在场 EN 生产分叉 #550** · **Confide 句库 overlay #548** · **冻表 vs 现网可分叉**（`ANTI_PLAGIARISM_LAYER.md` §3.1） · **YPE V2 签发**（#545 已合 · 白名单 patternInsights + KV algorithmVersion · 生产须部署） · **Quiet Line overlay #543 已合** · **防剽窃层方向锁**（品味云∪YPE 云∪句包 overlay） · **Sanctuary UI Art Direction 唯一美术 SSOT**（`SANCTUARY_UI_ART_DIRECTION.md` · A–D 四层 · 无运行时 · C/D 待分 PR） · **Gate 0.D PO 否决 Phase 3 / 不换模**（#526 后 · 语用残差不另开生产任务 · 切片 4 仍禁） · **Gate 0.D Tier 2 盲测入库**（v3.1 · `FT_INTENT_TIER2=1` · `passTier2` ❌ · **#526**） · **Gate 0.D 切片 3 双命中 FORGET 让路**（**#525**；#524 为架构锁文档） · **Gate 0.D 三门禁 + 三级 intent 文档锁**（#524 · #523 字面预筛第一刀） · **E′ 优先级落地为 Confide 规则预筛**（不接 diagnostic prompt / 不换 GGUF） · **Gate 0.D hard-5 第四刀 E 5/5 Metal**（#518 · `passHard5` · 非容量定论） · **Phase 2B A/C/D Metal 已跑**（#516/#517 · §6.1） · **Confide 陪伴在场 / OTHER 层序**（sit≠begin · 不换 GGUF · 不改 L3 prompt） · **Gate 0.D Phase 2 Metal 20 条** `reading=model_can_label_boundary_check_pipeline`（#509 已合 · 不换 GGUF） · **Web 本地 AI 挂载 PO 拍板（暂不立项）** · **口令 1C lab 本旁支**（非 shipping） · **1A Show memory #506 已合** · **1B Ask Journey/Presence #503 已合** · **叠层占用三问接 registry**（`fix/overlay-three-questions` · #500 已合 develop：摸头/进睡派生，禁止 main OR） · **Privacy 溢出/点空白关闭 + Idle 摸头 overlay busy 含 ?/Privacy + Chimes 独立音量 25%**（`fix/privacy-idle-tap-chimes-volume`） · **Confide 边界尊重 + Don't keep suppress 层序已改运行时**（不换 GGUF） · **Gate 0.D 已合 #495**（intent JSON 探针） · **用户体验优先写入 PRINCIPLES**（Confide 禁止对边界句贴心理标签） · **Local AI Phase 1 PO 正式拍板**（Brief 三份 · 非自动 runtime） · **Local AI Operating Layer 方向锁**· **From App to Culture 方向锁已入库**（`FROM_APP_TO_CULTURE.md`；无运行时；证据门已废除；Lanterns 优先切片待口令） · **YPE L2 算法契约已锁**（五键→Pack 闭包；ingest 已合；**V2 #545 已合**）· **YPE L2 身份键已拍**（#456）· **YPE L2 Consent 附录有条件通过** · **YPE L2 契约 #454 已合** · **YPE L1 已合 #453** · **Yin Personal Memory Slice 0 开工**（Confide 练习时长读 `PracticeDaysStore`）· **AE 能聊已关单** · **Slice 0 已排期**（文档 #423） · **Yin Personal Memory Architecture V1 方向锁入库**（只设计；无 store；≠ 练习云备份） · **练习备份后台网络错峰本旁支已改运行时**（Idle flush 2.5s + Arrival/Honesty busy + 同内容跳过写盘；慢网流畅度仍待人工） · Focusing Recover 幽灵文案抬进微光带并提高对比度（`DEV_WORKFLOW_QUALITY` §6.20；待人工复测） · 后台网络三问门禁已入库（`background-network`） · Breath 闭目坐禅 / 磬声 ×0.5 / 莲花前景+宽屏间距 / Companion 下藏 Breath 球（#385 已合） · Arrival Choose 鞠躬回落暖幕与 1s CapCut 同拍淡出（#386 已合） · overlay 开着 Arrival/Honesty 叠化用户书面有效（#376；`RB-20260820-L330` 品味层 overlay） · Companion 模式卡一句话 + 冷启动 30s/3min 验收脚本（#379 已合 tip `5352356`） · 意愿漏斗 layout=tea-first|sanctuary-first（#378 已合；现网 ingest **尚未** Redeploy，仍 Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`） · Support Modal 未练习请茶优先 · 精灵占用仲裁层（睡/欢迎/付款一处拍板）· 宣传站 Slice 0 已入库 `marketing-site/`（现网 DNS 未绑）· Welcome 后短切 tab 不得披毯 / Reflection 日签抬离三球（#341）· Reflect 开着不得 cloakSleep（#347）· 口令「开工桌面陪伴 L2」已接线（fallback 短生成；Checkout 未接）· #362 L1 已合 · 关单能聊仍待 Electron 人工 · 品味层四问筛选尺已拍板 · 生产 Worker **品味层**已 Redeploy Version `5b5b3451-4c35-4d9b-b27b-622b72ed673e`（现网 schemaVersion 1；**不含** #378 layout 白名单） · Support 将来五卡 Price 已记、Checkout 未接
 
 **当前技术路线**：主线为 **2D PNG 序列帧动画**（素材来源：图生视频 + 抽帧，见 `ARCHITECTURE.md`）；既有 **3D 多姿态 GLB** 资产与 `PoseManager` / `DynamicMotion` 等代码**完整保留**，改用于未来「奖励系统」塑胶公仔展示，不再作为主界面情绪表现载体。
 
 **近期落地（待人工测试）**：
 
-- **全项目 Epic 覆盖度审计（2026-09-16 · 纯文档 · 无运行时）**：`EPIC_COVERAGE_AUDIT.md`。已合并 PR 698 条里规范挂线仅 31 条；任务书/SSOT/代码仲裁层已对照 24 条 Epic。**同日口令一已建库**：音景 Epic [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) · 栖居壳层 Epic [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793)；`type:process` 标签 + guard 豁免；#773 改挂 `line:habitat-shell`。口令二（历史 PR 回填 Closes）另开。
+- **Voice Input V1 Brief（2026-09-24 · 纯文档）**：`task-voice-input-v1.md`。共用 Speak to type；首发只挂倾诉 / Arrival 手写意图 / Reflection 三问；Electron 英语；倾诉禁止注入云 STT。拍板 ≠ 开工；第一口令「开工 Voice Input 探针」。
+
+- **KB 路由回归矩阵（2026-09-22 · A 类单测）**：`confideKbRoutingMatrix.js` 锁寅币 / 备份内容 / 时长空格 / 观察翼诚实空态；拉伸变体记 `probe` 漏检率，不手测一句补一条正则。with-prior 与 Stage 2 gray→功能桶**不**套本矩阵，改走 2026-10-12 样本量复核。Brief `task-confide-kb-routing-matrix.md`。
+
+- **产品知识库规模化生产算法 Brief（2026-09-22 · 纯文档 · PO 已拍板）**：`task-kb-scaled-production.md`。三默认已锁：先静态圈定、寅币以账本为准且短答不念封顶数字、内部手册等清单后再开。Epic/Tracker/PR 只发现缺口。拍板 ≠ 开工脚本。
+
+- **KB 字面容错 + 寅币短答 + 观察翼裸词（2026-09-22）**：时长问句去空格；产品问门闩纳入「哪些/包不包含/装了什么」；备份内容问打到 0015；新增 KB-FUNC-0018 寅币获取短答。观察翼拒收极短情绪标签（非词表）。embedding 近义匹配已记技术债，本轮不实现。
+
+- **Confide companion 工作闸（2026-09-22）**：`l1LlamaWorkGate` 串行化聊天 / embedding 的 `getLlama`；单测不加载原生 addon。不改 Stage 2 路由表；不加加载提示、不预加载。Brief `task-confide-embedding-work-gate.md`。
+
+- **产品知识库模板入库（2026-09-22 · 纯文档）**：`product-knowledge-base.md`。三库不混检索；急救型无固定心理审核人，不接入阿寅。第一批 5 条对照 locale，**PO 人审已通过**（spot-check 0002/0003）。**#923** 占 `KB-FUNC-0006` 呼吸练习试点（左球 · **PO spot-check 2026-09-23 已通过** · 盘点参考 · 检索走 0011+0001）。**第二批 10 条**（原 0006–0016 顺延为 0007–0017；**PO 书面放行 15 条可检索**，不含 `0009` 云备份专述）+ 急救型标题登记 3 条 + 内部排障草案 2 条；不接线运行时。
+
+- **Confide 知识库检索接线（2026-09-22 · `feature/confide-kb-retrieval-wiring`）**：Electron 宽屏 fallback 产品功能问句 → `productKnowledgeCatalog.json` 关键词检索 · 原样短答 · 未命中走 corpus/generate · `FT_CONFIDE_KB_RETRIEVAL=off` 回滚。Brief `task-confide-kb-retrieval-wiring.md`。
+
+- **Confide with-prior 不对称规则回放（2026-09-21 · A 类）**：`npm run audit:confide-prior-asymmetric` 只读历史 jsonl；gray→明确桶保留、明确桶→gray 丢掉。不改 live。Prompt：`task-confide-prior-asymmetric-replay.md`。embedding 加载 UI / 预加载见 `task-confide-embedding-work-gate.md`，闸合入后再一起评。
+
+
+- **Confide Stage 2 语义切真路由（2026-09-21）**：Electron 宽屏在 handler 前等 embedding。只纠正「字面情绪 × 语义功能」；灰区情绪自述仍可 generate。权威 `task-confide-stage2-semantic-cutover.md`。
+
+- **共享里程碑目录 V1 已拍板（2026-09-20 · 纯文档）**：`task-shared-milestone-catalog.md`。静态表 + 分批接线 + #890 字段闭集 + J1-a 同谓词。Journey EN「days of returning」与连续日算法不对齐列为 **J-copy** 已知待办（不阻塞 Batch 1）。实现另口令。
+
+- **Collections 行为稀缺度 V1 已拍板（2026-09-20 · 纯文档）**：`task-collections-behavioral-scarcity.md`。本机说明 + 勋章分区；不进「案上陪伴」；全球名次不做；只读 unify aggregate。原则 #886 先于方案 #887 合入。实现另口令。
+
+- **L3 层 B 口径拆分（2026-09-21 · Prompt 14）**：观察翼 8 句 `scoreObserveWingEffective`（≥6/8）与 §12 全量 ≥8/12 两把尺子并存；chat 翼 4 句进 #874 gray 表，不进 8 句分母。`guard_reject_rate` 与有效分拆开报。流程见 `LAB_SCRIPT_CONVENTIONS.md`「先分类再动刀」。**Prompt 15** 观察翼 prompt 质量（`e-motions` ↔ `e-mind-away` 撞车）已开工；**不**据此关 #823。
+
+- **L3 观察翼陈词滥调语义护栏 Brief（2026-09-20 · #877）**：分析师确认 #874 后耳/尾/爪套势不是回归。#876 已收英文第一人称；#877 补中文「耳朵一抖 / 尾巴一甩 / 爪子搁地」并锁正式规格 `task-l3-observe-cliche-semantic-guard.md`（语义相似度 · 复用 Qwen3-Embedding · 禁止再无限扩字面清单）。Prompt 13 已按此规格开工。
+
+- **观察翼套话守门 + 关心式问句（2026-09-20 · Prompt 13）**：独白仍 generate。答句过拒收后再和已知套话向量比对，太像重试一次；允许偶尔「你还好吗」，禁止建议。安全分类仍只看当前句。
+
+- **Stage 2 未修补同义变体（2026-09-20 · Prompt 12）**：加速有利分歧候选，不含已修好的累积/忙啥/列出记忆。真实聊天 CSV 底线 5–10 条。PO 逐条确认。
+
+- **L3 闲聊问句 chat 翼（2026-09-20）**：对不上规则桶的问句（胖墩是谁 / 今天做什么 / 胖粉）走 `buildCompanionL2Prompt` 对话提示，不再用观察幼虎句；sanitize 拒收拍爪子/歪头/舔爪子与照抄问句。问候仍 `companion_greeting`。关单须 Electron Confide ready。
+
+- **Confide 影子日志导出（2026-09-20 · Prompt 8）**：`npm run audit:confide-semantic-shadow` 扫本机 `turns.jsonl` 的 `semantic_shadow_classify`（`ok:true`），报 N / D / D÷N 并写出分歧 CSV；另扫 `semantic_live_classify` 报 live / failOpen / semanticOk（`reason`：`embed_not_ready` / `ok` / `timeout` 等）。不设样本下限，不据此宣称可切 Stage 2。人工标「有利分歧」仍须 PO 拍板。
+
+- **Confide 离线语义冻表（2026-09-20 · Prompt 7）**：`npm run test:confide-semantic-acceptance` 用真 embedding GGUF 跑 A/B 库各 50 + 3 锚点（leave-one-out）。不改现网回复。不进日常 smoke。Stage 2 切真路由仍等 Prompt 8 标注 CSV 后 PO 拍板。
+
+- **P0 中文他人攻击（2026-09-18 · #847）**：`想打人` / `我想打人` 等进 `aggression_toward_others` corpus；禁 L3 generate；`打游戏` / `不想活` 对照不变。不改 send / Hybrid / E′。关单须 Electron 中文句。
+
+- **Confide 档3/4分流（2026-09-18 · #834/#835 关单）**：busy/why/我最近在忙什么 → `reflective_honesty`；问候/天气 → `companion_greeting`；`Show me what you remember` 仍 `memory_list`；走神自述仍可走 generate。L3 观察翼减法（#823）不在本单。
+
+- **Confide Read Hybrid memory_list 误判（2026-09-18 · #822 关单）**：生活/动机问句不再进列表；`Show me what you remember` 仍列表。L3 答句质量不在本单。权威账本 `ISSUE_LEDGER` 该行「已解决」。
+
+- **状态变更三态可见性 Slice 3（2026-09-18 · 中间件）**：`postCloudJson` 默认 12s 超时映射 408；Circle witness/was-here 对齐；Leave 先云后本地且控件读失败；Support 不再先关卡再挂起。M-01 `mutation-m01-check.js`。跨模块回归：提醒成功 token + Circle 超时失败。#839 待 CI 绿后手关。
+
+- **状态变更三态可见性 Slice 2（2026-09-18 · 只读审计）**：`MUTATION_THREE_STATE_SLICE2_AUDIT.md` 按 O-04 36 行 + `postCloudJson` 族对照。**无**产品 UI。关单 AND 第 4 条已满足。
+
+- **状态变更三态可见性 Slice 1（2026-09-18 · 原则 + O-04 三键骨架）**：点击原则承载「持久化三态可见性」；O-04 / M-01 只引用。`failureFeedback` → `mutationFeedback.{pending,success,fail}`；`reminder-preference-saved` 改挂 success。**无**产品 UI。
+
+- **L3 情绪/反思 Prompt 重写 Brief（2026-09-19 · 方案 B 生产刀）**：`task-l3-observe-prompt-redesign.md` §12。打乱配对 ≥8/12；禁可互换幼虎套势。关单须 Electron 人工。切片 #823。
+
+- **Collection Value & Behavioral Scarcity Epic 建库（2026-09-20 · 纯文档 · 无运行时）**：Epic [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888)（slug `collection-value-behavioral-scarcity`）；已合 PR [#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886) 数字资产原则 · [#887](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/887) 行为稀缺方案 Brief。V1 口径已拍板；实现另口令。
+
+- **全项目 Epic 覆盖度审计（2026-09-16 · 纯文档 · 无运行时）**：`EPIC_COVERAGE_AUDIT.md`。已合并 PR 698 条里规范挂线仅 31 条；任务书/SSOT/代码仲裁层已对照 24 条 Epic。**同日口令一已建库**：音景 Epic [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) · 栖居壳层 Epic [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793)；`type:process` 标签 + guard 豁免；#773 改挂 `line:habitat-shell`。**口令二已执行**：各 15 条 curated PR 正文 `Relates to #792/#793`；#773 已关（#775 已合）。
 
 - **寅币日封顶 Step D = A + persona CI（2026-09-16）**：`task-yin-coin-daily-cap-economy.md`（PR #784 评估 · PO 拍 A：冻表 36/3/12/48、不远程、不改价）。5 条 persona 已进 `focus-coins-earn` 夹具（`focusCoinsPersonaRegression.js` · `npm run audit:growth-metrics`）。拍板 ≠ 改 ledger。
 
@@ -259,7 +312,7 @@
 - **Yin Membership 订阅 Checkout（2026-08-10 · #224 已合）**：Worker `mode: subscription` + `MEMBERSHIP_KV` + create/confirm/verify；成功页非乐观 confirm 后写统一 entitlement cache。权威 `YIN_MEMBERSHIP.md`。
 - **Yin Membership webhook 生命周期（2026-08-10 · Prompt 9 · `feature/yin-membership-webhook`）**：扩展既有 `/api/stripe-webhook`（subscription checkout / invoice.paid|payment_failed / subscription.updated|deleted）写 `MEMBERSHIP_KV`；`verify-membership` 按 `periodEndsAt+7d` 收紧；`subscription_data.metadata`；反查 `membership-sub:`。Test Mode + Stripe CLI 验收；TRACKER 待人工。
 - **Stay in touch / Join our community（2026-08-10 · PR #215 已合 tip `d280a1a`）**：Idle ⋯ / 抽屉紧邻 tip-jar；可选邮件留资（本地只记 `submitted`、不存邮箱）+ 社群 Slack 邀请外链（2026-08-29 接线 `communityLink.js`）；提交后菜单行 **We'll keep in touch** 不可再开。**不**挂钩 entitlement / tip / sanctuary；情境软提示 Phase 2。真实发信见文首 2026-08-13 条。
-- **芥子须弥纪念印（#246 + 金章 #256 已合 tip `5440a53`；2026-08-17 第二 case；2026-09-02 第三 case）**：统一练习 score≥21；完成仪式后出卡；三首乐五斋诗分三次完成揭示；菜单可重读轮换；章 = `mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`；EN 译维持现稿。Brief `task-mustard-seed-seal.md`。TRACKER 待人工（须验方章 + 七言歌行 + 诗稿〇九〇二）。
+- **芥子须弥纪念印（#246 + 金章 #256 已合 tip `5440a53`；2026-08-17 第二 case；2026-09-02 第三 case；2026-09-26 青瓷鼎章 #977 已合 tip `9249401f`）**：统一练习 score≥21；完成仪式后出卡；三首乐五斋诗分三次完成揭示；菜单可重读轮换；章 = `mustard-seed-seal/yin-badge-square-gold-on-silver-alt.png`（青瓷三足鼎透明底）；EN 译维持现稿。Brief `task-mustard-seed-seal.md`。TRACKER：青瓷鼎章素材已通过；整行仪式主路径仍待人工（七言歌行 + 诗稿〇九〇二）。
 - **Daily Wisdom / Yin 每日一句（2026-08-10 · PR #212 已合 tip `62f15a9`；古典扩库本支）**：内容池 `src/content/daily-wisdom/`（en/ja；Yin 短句 + 可选 `attribution` 古典/文学句同池）+ `DailyWisdomStore`（同日锁 + `recentIds`）+ 可插拔 Lit `<daily-wisdom>`（有署名时 `<cite>`）；entitlement **`content.daily-wisdom`**（`free` / `ongoing`，`resolveTodayWisdom` 内 `isEntitled` 姿势）。**Phase A 挂 Reflection 底部**（本支 `feature/daily-wisdom-reflection-mount`；与 Quiet Line 分池；**Phase B 印花未做**）。TRACKER 待人工。
 - **统一 entitlement gate 地基（2026-08-10 · PR #210 已合 tip `623aec0`）**：`src/core/entitlement/` — catalog（ongoing/persistent）+ `isEntitled` / `getFeatureAccess` + lifetime ∪ subscription 互相覆盖 + 双宽限 7 天 + ownership + mock provider；只读 `isSanctuaryUnlocked`；**不**迁 Sanctuary、**不**接 Stripe/Worker。产品 UI 尚未接线。TRACKER「仅单元测试覆盖」。
 - **Immersive Presence / 全屏陪伴 + Document PiP 探针（2026-08-09 · `feature/immersive-companion-mvp`）**：Focusing 可选进入应用内沉浸壳（计时+阿寅+Rise）；Chromium 桌面可选实验浮动小窗。**≠** Companion Mode 三选一。见 `DESIGN.md`；TRACKER 新行待人工。
@@ -499,8 +552,11 @@
 - **禅意背景音 MVP 已落地（2026-07-16）**：角落展开 UI；**Mer-Ka-Ba**（Jesse Gallagher）/ **Meditation Impromptu 02**（Kevin MacLeod）等，YouTube Audio Library；`presenceBoost` 叠视觉；归因见 `public/audio/ambient/ATTRIBUTION.md`
 - **禅意背景音内置清单扩容（2026-08-05）**：PR #125 合入 tip **`dd09711`**——Mer-Ka-Ba 后 Jesse Gallagher×4 + Reed Mathis Somnia×2；合计 12 内置曲；ambient 目录约 188MB
 - **无角色语音原则已落档（2026-07-16）**：沟通仅文字（非模态文案等）；禁止真人配音与 lip-sync；长期原则、非 Backlog（见 `PRINCIPLES.md`）
+- **语音边界原则修订（2026-09-26）**：允许可选系统朗读（默认关）；永久禁止真人配音、对口型、语音通话；第一期系统播报 + 全局开关，倾诉朗读下一期。决策纪要 `decisions/tts-v1-decision-memo.md`；Brief `task-briefs/task-system-tts-v1.md`
 
 **下一步计划**：
+
+- **L3 观察翼陈词滥调 · 语义护栏（2026-09-20 · 已锁 Brief · 待口令）**：`task-l3-observe-cliche-semantic-guard.md`。字面拒收只止血；下一刀复用 Qwen3-Embedding-0.6B 对观察翼 generate 做坏例子相似度，命中则再生成一次或 corpus。不改问句翼、不切 Stage 2 用户句路由。口令：「开工观察翼语义陈词滥调护栏」。
 
 - **冷启动第一幕 11 入口审计（2026-09-06 · blocked backlog · 优先于目标问答）**：分散仲裁收口专项。Brief `task-cold-start-first-scene-audit.md`；清单 SSOT `cold-start-first-scene-audit-inventory.md`（草案已出）。须逐条标 ok/gap/risk → gap 另开 fix PR → PO 拍板 gate SSOT → 方可解除 goal-onboarding blocked。
 - **冷启动目标问答（2026-09-06 · blocked · 依赖上行审计）**：Brief `task-cold-start-goal-onboarding.md`。**禁止**在审计收口前合并 develop。解除 blocked 口令：「开工冷启动目标问答」。
@@ -715,6 +771,8 @@
 
 命名建议：`task{编号}-brief-{关键词}`
 
+**B 类开工门禁**：会改变用户实际看到的回复 / 等待 / 路由的任务（**B 类**），须有 PO 点头的 Brief 才能写代码；口令「立刻开工」**不能**跳过。A 类（影子 / 审计 / 后台，不改变用户可见结果）可直接「开工」。有疑问默认 B 类。全文见 [`WORKFLOW.md`](../../WORKFLOW.md)「用户可见改动：Brief 开工门禁」（`RULES_INDEX` → `brief-before-user-visible`）。
+
 **共用机制核对**：触及 overlayBusy / HUD 呼吸驱动 / 遮罩 dim 时，Brief 须写出点名消费者的结论句，禁止纯复选框。写法 SSOT：[`COLLAB.md`](./COLLAB.md)「七、Task Brief · 共用机制核对」。清单：`SHARED_RESOURCES.md` §4.1–4.2、`Z_INDEX.md` Idle 常驻 chrome。
 
 ---
@@ -838,7 +896,7 @@ cd focus-tiger && npm run check:all-branches-health -- --topic <keywords>
 
 ### 例行（双周清单）
 
-每 **1～2 周**（可与下班前 Git 同步同日）跑一次：
+每 **1～2 周**（可与下班前 Git 同步同日）跑一次分支健康度。陈旧 open PR 不再靠这次想起来：每周一 11:30（北京时间）由 Actions「Stale open PR scan」自动跑审计并更新 Issue「陈旧 open PR 周扫」。本周做 Git 同步的人在下周一之前处理完并关掉该 Issue。规则见 `WORKFLOW.md`「陈旧 open PR」。
 
 ```bash
 cd focus-tiger && npm run check:all-branches-health
@@ -1312,6 +1370,8 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 夜间自动跑 + Plan A 清单能力 **已完成**（PR #2 前工程护栏里「勿长期只靠本机手跑全量」的主目标已满足）。**2026-08-14**：GitHub 默认分支改为 `develop`；`schedule` 现读 **`develop` YAML**、checkout **`develop` tip**——以后改 timeout/shard **不必**再同步 `main`。
 
+**现状（2026-10-01）**：最近一次夜间全绿是 **2026-08-04**。9/28–9/30 两片都跑满 120 分钟被取消，JUnit 没留下；9/27 失败录像目录约 11GB，取消当夜的 job 日志也丢了。visibility 契约分片转绿 **不等于** 这条夜间全量转绿。本次改为 4 片、Playwright 100 分钟自行收尾写 JUnit、失败时只上传 `trace.zip`。合进 `develop` 之后，下一次 cron 才吃到新 YAML。
+
 #### 仍待办（非基建阻塞）
 
 1. ~~把 120m workflow 同步到 `main`~~ ✅ PR #47。
@@ -1350,14 +1410,26 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 ### Backlog:降低 visibility CI flaky 率（PR #2 合并后立刻处理）
 
-> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e（`test:e2e:visibility`）在 CI 上已能 **job 绿**，但接受「**绿 + 高 flaky**」（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。不挡 PR #2 合并进 `main`；**合并后立刻**作为下一任务处理，禁止因合并完成而搁置遗忘。与「CI 全量 smoke + e2e」互补：本项修 **visibility** workflow 稳定性；全量夜间+Plan A **已收口**（见上节），两边剩余工作都偏 **flaky 根因**。**决策优先级次于** Electron 脚手架（见上条「本地桌面 APP 打包」）。
+> **背景（2026-07-26/27 · 用户拍板）**：visibility 契约 e2e 曾出现「**绿 + 高 flaky**」样本（例：[run 30207794029](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30207794029) ≈ `7 passed` + `25 flaky` / 32）。  
+> **诊断刷新（2026-09-23）**：近 **200** 次 `focus-tiger-visibility-contract.yml` run → **0 success · 189 failure · 11 cancelled**。单次 e2e 步常见 **~14–22 passed · ~13–28 flaky · ~4–11 failed**（~40–50 min）。主因 = **Type C（高 flaky + 静态服导航超时子类）+ Type B 断言/漂移 + 少量 Type A 产品变更待确认** 叠加 — 详见 `WORKFLOW.md`「visibility CI 治理」。**在 job 未稳定全绿前禁止勾 Required**；责任流程（周报 + 过渡期 PR 须贴 run）同节。
+>
+> **合入后观测（2026-09-24 · #949 + #950 均已合 develop）**：
+>
+> | Run | 形态 | 结论 | 数字 |
+> |---|---|---|---|
+> | [#950 PR](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35903085078) | 旧单 job（合入前） | ❌ failure | **26 passed · 19 flaky · 1 failed** · 50.1m |
+> | [#949 PR](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35886079176) | 新 3 shard + workers:1（首验） | ❌ failure | micro **10p/1f**（4.5m）· weekly **6p/4fl/2f**（19.6m）· scenario-a **cancelled**（summary 计 3 failures） |
+>
+> develop 上 merge 触发的 run（#949/#950）曾被后续 push **cancelled**；须等下一次 path 触发跑完再记「合 develop 后首条并行 run」。相对 9/23 审计，passed 已从 ~14–22 升到 **26**（单 job）且 shard 墙钟已压到 **~5–20 min** — Type C 基建有效；**job 级仍无全绿**。
 
-- **目标**：把 visibility suite 的 flaky（首轮红、retry 翻绿）压到可接受水平（建议目标：连续 2～3 次 CI run 上 flaky ≤ 约 20%，且无「仅靠 retry 才绿」的系统性风暴）；墙钟须稳定落在 job `timeout-minutes` 内。
+- **距 visibility job 末次全绿**：**0 天** · **2026-09-30** · [run 36592506811](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/36592506811)（develop · workflow_dispatch · 六个分片全绿，含 micro-ritual）。9/23「近 200 次 0 成功」是当时诊断，不是现在的状态。
+- **目标**：**先** job 级全绿（failed=0，flaky 趋 0），**再** core 26 条 Required；全量 46 条仍非 Required。
 - **处理方向（优先序，可组合）**：
-  1. **Workers**：先试 `workers: 1`（或保持 2 并对比）；4 workers 曾压垮 `vite preview` → 大量 `domcontentloaded` 超时。
-  2. **导航策略**：继续收紧——一律 `openFreshProductShell` / `domcontentloaded`；禁止默默 `page.goto`/`reload` 走 `load`；必要时对 `goto` 做有界重试（与 seed 不冲突：勿用会跨 reload 清 `focus-tiger.*` 的 `addInitScript`）。
-  3. **预算**：在「不靠无限拉长 timeout 掩盖」前提下，核对 `navigationTimeout` / 单测 `timeout` / job 上限是否匹配真实 preview 冷启动。
-  4. **可观测性**：区分「产品断言失败」vs「preview/导航环境噪声」；失败日志须一眼看出类别。
+  1. **Type C · 方案 A + workers:1（已批准 · 组合实施 · 2026-09-24 工程化）**：`focus-tiger-visibility-contract.yml` 拆 **3 并行 job**（`scenario-a` / `micro-ritual` / `weekly-heatmap`）+ `playwright.ci-visibility.config.js` **workers:1**；preflight 单独跑 doc-check/registry；summary 汇总 JUnit。**禁止**只做其一。待 CI 验证 flaky 降幅。
+  2. **Type C · 导航策略**：suite 后半段 `goto`/`reload` 超时须先压再谈断言；一律 `openFreshProductShell` / `domcontentloaded`；禁止默默 `page.goto`/`reload` 走 `load`；4 workers 曾压垮 `vite preview` → 大量 `domcontentloaded` 超时。
+  3. **Type B**：修选择器/文案漂移、测试债、时序不稳（如 Honesty → Five Moments）。
+  4. **Type A**：retry 后仍红的 viewport/全流程类须 PO 确认 intentional change 后再改测试或产品。
+  5. **预算 / 可观测性**：不靠无限拉长 timeout 掩盖；失败日志须一眼看出 Type A/B/C（含 Type C 导航子类 vs flaky）。
 - **验收**：新 CI run 链接 + pass/flaky/fail 计数；文档写明是否仍依赖 `retries: 1`。
 - **不在范围**：不把「降 flaky」写成产品观感验收通过；不替代 Class-2 visibility gap（`honesty-bridge-entries-hidden` 等）的产品补锁。
 - **排期**：**PR #2 → `main` 合并后立刻开工**（可与「CI 全量 smoke + e2e」同周并行）；建议分支名 `fix/visibility-ci-flaky` 或并入全量 CI 工程 PR 的首个 commit 组。

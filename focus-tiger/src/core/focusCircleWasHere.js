@@ -10,10 +10,12 @@
 import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
 import { toLocalDayKey, getViewerTimeZone } from './focusCircleDayKey.js';
 import {
+  FOCUS_CIRCLE_MUTATION_TIMEOUT_MS,
   FOCUS_CIRCLE_PATH,
   FOCUS_CIRCLE_SCHEMA_VERSION,
   isFocusCircleClientEnabled,
-  readFocusCircleMembership
+  readFocusCircleMembership,
+  withFocusCircleRequestTimeout
 } from './focusCircleMembership.js';
 import { isFocusCirclePassiveShareEnabled } from './focusCirclePassiveShare.js';
 import { FOCUS_CIRCLE_WITNESS_MIN_SESSION_SECONDS } from './focusCircleWitness.js';
@@ -124,9 +126,16 @@ export async function postFocusCircleWasHereMark({
     markedAtMs
   };
   try {
-    const body = await postJson(FOCUS_CIRCLE_PATH, {
-      body: JSON.stringify(payload)
-    });
+    const body = await withFocusCircleRequestTimeout(
+      postJson(
+        FOCUS_CIRCLE_PATH,
+        {
+          body: JSON.stringify(payload)
+        },
+        { timeoutMs: FOCUS_CIRCLE_MUTATION_TIMEOUT_MS }
+      ),
+      FOCUS_CIRCLE_MUTATION_TIMEOUT_MS
+    );
     if (!body || body.schemaVersion !== FOCUS_CIRCLE_SCHEMA_VERSION) {
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
@@ -134,7 +143,9 @@ export async function postFocusCircleWasHereMark({
       return { ok: false, reason: 'server_rejected', skipped: true };
     }
     return { ok: true, skipped: false };
-  } catch {
+  } catch (err) {
+    const status = err && typeof err === 'object' ? Number(err.status) : 0;
+    if (status === 408) return { ok: false, reason: 'timeout', skipped: true };
     return { ok: false, reason: 'network', skipped: true };
   }
 }

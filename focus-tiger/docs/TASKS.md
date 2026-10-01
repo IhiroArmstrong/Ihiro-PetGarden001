@@ -268,6 +268,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **—** | 脚手架步骤 A/B（窗口 + 托盘 + SB-18） | `task-electron-desktop-scaffold.md` | 步骤 A/B 已接线 · 待 Mac 场景 AB |
 | **P0** | **官网 DMG 自动更新器**（第一份收费包出门前） | `task-electron-desktop-updater.md` | **Brief 已锁 · 运行时待口令** |
 | **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期**（后于更新器） |
+| **P1b** | **Voice Input V1**（Speak to type · 倾诉强制本机） | `task-voice-input-v1.md` | **Brief 已锁 · 探针/倾诉/意图回顾已合 develop** |
+| **P1c** | **System TTS V1**（系统播报 + 全局声音开关 · 默认关） | `task-system-tts-v1.md` | **Brief 已锁 · Slice 0 探针已开工 · 待人工听感** |
+| **P2** | **Confide 回复朗读**（倾诉文字 + 可选系统声） | `decisions/tts-v1-decision-memo.md` §决策 1 | **Backlog · 依赖原则文档已改完** |
 
 **官网 DMG 自动更新器 · 拍板摘要（2026-09-12）**：
 
@@ -276,6 +279,19 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 - 失败须有 Retry / Not now；`urgency: required` 只预留、MVP 当 optional。渠道 `direct` 才开自建更新；Setapp / MAS 编译期关掉。
 - 验收不得等两次正式发版：单测状态机 + DEV 假通路 + 本地 generic feed；公证双包是发版彩排。
 - 发布检查清单写在 Brief 内（可勾选），禁止只停留在散文。
+
+**Voice Input V1 · 拍板摘要（2026-09-24）**：
+
+- Speak to type，不是语音条 / 实时 Voice Agent。共享组件一次做成；首发只挂倾诉、Arrival 手写意图、Reflection 三问。
+- 仅 Electron 英语听写；界面英日切换不改。倾诉 **禁止**注入云 STT（硬约束）。
+- 第一口令「开工 Voice Input 探针」（系统听写 + 麦克风权限）；探针前不做云厂商对照表。
+
+**System TTS V1 · 拍板摘要（2026-09-26）**：
+
+- 分两刀：本期只做**系统播报**（专注结束、仪式提示）+ **全局声音开关（默认关）**；倾诉回复朗读下一期。
+- macOS 本机 `AVSpeechSynthesizer`；在 `macos-speech-helper.swift` 加 `speak`，与 STT 共用桥、开关独立。
+- 朗读语言跟随界面语言（英/日）；危机句/安全转介不朗读。决策 `decisions/tts-v1-decision-memo.md`。
+- 第一口令「开工 System TTS 探针」；探针及格后再挂产品播报点。
 
 **V8 字节码编译 · 拍板摘要（2026-09-10）**：
 
@@ -395,7 +411,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|---|
 | **1A** | NL Actions MVP：Forget（CI-01）+ Show memory read | `task-local-ai-phase1-nl-actions-mvp.md` | **CORE** | **#506 已合** |
 | **1B** | Ask Journey / Presence · Retrieve + bounded Describe + **Temporal Compare** | `task-local-ai-phase1-ask-journey-presence-mvp.md` | **CORE** | **#503 已合** |
-| **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | **本旁支** · lab `?reflectionCompanion=1` · 非 shipping · tracker 待人工 |
+| **1C** | Reflection Companion · 用户点 → one observation | `task-local-ai-reflection-companion-validation.md` | **Candidate · validation only** | lab `?reflectionCompanion=1` · PR #486/#507 已合 · tracker 待人工 · Epic #810/#815 |
+| **1C-ship** | Reflection Companion · shipping（去 lab） | `task-local-ai-reflection-companion-shipping.md` | **骨架 · 未批准** | Issue **#811** / QA **#816** · 待 PO 口令 |
 | **V2** | `DELETE_TODAY_JOURNEY_ENTRY` | — | Future Candidate · **NOT MVP** | **无** implementation task |
 | **—** | Don't save this | `YIN_PERSONAL_MEMORY_PERSISTENCE_POLICY.md` | ✅ Slice 1f | tracker 待人工 |
 | **0.D** | Yin Intent Diagnostic（只输出 intent JSON） | `LOCAL_AI_PHASE1_TASK_PLAN.md` §6.1 | **换模型前必做** | Phase 1–2B/E′ **#495–#520** · 字面预筛 **#523** · 三门禁 **#524** · 切片 3 **#525** · Tier 2 **#526** · **PO 不立项 Phase 3 / 不换模**；语用残差不另开生产任务 |
@@ -403,6 +420,25 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 **Ceiling**：C2 + 少量 C3 · **C4 NO** · V4 MUST NOT ENTER 已锁 · V5 全禁。
 
 **我认为最合理的 Phase 1 开工顺序**：① #472 **已关单** → ② **1B #503 已合** → ③ **1A #506 已合** → ④ **1C validation 本旁支**（非 shipping）。Forget 端到端补测不挡。较弱：未 validation 就 ship Reflection generate；0.D 后再 Benchmark Llama。
+
+---
+
+## 📍 产品知识库规模化生产（2026-09-22 · PO 已拍板）
+
+> **SSOT**：`task-briefs/task-kb-scaled-production.md`。条目字段仍以 `product-knowledge-base.md` 为准。检索接线 / 路由闸门另见对应 Brief。  
+> **硬规则**：Epic / Test Tracker / PR **只做候选主题**；可念短答只从 locale / 规则源码起草；运营数字不进短答正文。内部手册 ≠ 阿寅可念库。拍板 ≠ 开工脚本。
+
+| 步 | 内容 | 状态 |
+|---|---|---|
+| **0** | 算法 Brief + 三默认 | **PO 已拍板**（2026-09-22） |
+| **1** | 静态圈定存活入口 | **已合 develop** (#929) · `kbLiveEntryRegistry.js` + `audit:kb-live-entries` · 25 行存活清单 · 无运行时 |
+| **2** | 存活清单 vs 已通过 KB 缺口 | **已合 develop** (#931) · `audit:kb-live-gap` · 12 batch-2 候选 · 6 registry 漂移已修 |
+| **矩阵** | KB 路由回归夹具（意图×问法；断言 dataSource/KB 编号） | **已合 develop** (#938) · `confideKbRoutingMatrix.js` · 不改 live · 无 GGUF |
+| **3** | 已审条目扩问法（0011/0012/0013/0004/0008 等） | **已合 develop** (#932) · 事实不变 · catalog 关键词 |
+| **4** | 权威源起草 → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939 · 闸门 18) · **0021 Daily quote 已合 develop** (#940 · 闸门 **19**) · **0022 Zen Cinema 待审草稿**（`docs/kb-batch2-zen-cinema-draft` · PR #962）· **0023 Wallpapers 待审草稿**（`docs/kb-batch2-wallpapers-draft`） |
+| **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
+
+**我认为最合理的下一刀**：PO spot-check **0022 + 0023** → 分别入库 catalog + registry 链 → 闸门 **20** / **21** 条。
 
 ---
 
@@ -453,7 +489,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 采纳项 | 接哪条 Brief / 现网 | 排期 | 状态 |
 |---|---|---|---|
-| 高精度禅意徽章 · **累计**门槛 · 少连坐话术 | `task-practice-imprint-badges.md` + 壳 `task-yin-collections-four-tabs.md`（页签 **勋章印记**） | **P1** · 四页签壳可与 imprint 同支 | 待开工 |
+| 高精度禅意徽章 · **累计**门槛 · 少连坐话术 | `task-practice-imprint-badges.md` + 壳 `task-yin-collections-four-tabs.md`（页签 **勋章印记**） | **P1** · **硬前置**目录 Batch 1；四页签壳可与 imprint 同支 | 待开工 |
+| **共享里程碑目录**（谓词 SSOT） | `task-shared-milestone-catalog.md`（跨芥子 / score / Journey / Glow 占位字段） | **P0** · Batch 1 数据模块另口令 | **口径已锁** · 无运行时 |
+| 成就物 · **行为稀缺说明**（非随机、非货币） | `task-collections-behavioral-scarcity.md`（2026-09-20 **V1 已拍**：本机说明 + 勋章分区；不进「案上陪伴」；全球名次不做） | **P1** · 实现另口令；**等目录 Batch 1** | **口径已锁** · 无运行时 |
 | 现网仪式/印（不重复立项） | `MilestoneGlow`（7/21/100 动画）· `mustardSeedSeal`（score≥21 诗稿）· Idle 练习徽章 | — | **已接线** · TRACKER 待人工 |
 | 纪念奖励环境细节（茶盏/香炉/蒲团） | `PROCESS.md` Backlog「纪念奖励系统」表 | **P2** · 2D 主线稳定后 | 未接线 |
 | 年终 / 深练 **Save image 画卷** | `task-mindfulness-scroll-export.md` ← 依赖 `task-journey-daily-card.md` | **P1b** · Daily Card 后 | 待排期 |
@@ -461,7 +499,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 实体周边优先权（账号+门槛） | `task-companion-merch-priority.md` | **P0 运营** Phase 0 手工可即刻；Phase 1 产品壳在 imprint 后 | Phase 0 文档锁 |
 | 用户感知句「岁月印记 / 修行纪念」 | 各 Brief + `FOCUS_COINS.md` §0.1；i18n 禁 Web3 词 | 随各 PR 文案 | 已写入 Brief |
 
-**我认为最合理的开工顺序**：① `feature/journey-daily-card`（存图管线）→ ② `feature/yin-collections-four-tabs` + `feature/practice-imprint-badges` → ③ `feature/mindfulness-scroll-export`；周边 Phase 0 不等代码。
+**我认为最合理的开工顺序**：① 共享目录口径 **已锁** → ② 目录数据模块对照单测（Batch 1，另口令）→ ③ `feature/journey-daily-card`（存图管线，可并行）→ ④ `feature/yin-collections-four-tabs` + `feature/practice-imprint-badges` + 稀缺说明 V1（挂同一勋章分区）→ ⑤ `feature/mindfulness-scroll-export`；周边 Phase 0 不等代码。全球名次不做进 V1。禁止跳过②直接写稀缺 UI。Journey「回来天数」文案 vs 连续日算法见目录 Brief **J-copy**（不阻塞 ②）。
 
 ---
 

@@ -48,6 +48,8 @@ describe('confide practice facts (Slice 0)', () => {
     );
     assert.equal(isPracticeDurationQuestion('the weather is mild today'), false);
     assert.equal(isPracticeDurationQuestion('I practiced too long and feel tired'), false);
+    assert.equal(isPracticeDurationQuestion('累积了 多久'), true);
+    assert.equal(isPracticeDurationQuestion('我已经累积了多久的练习？'), true);
   });
 
   it('total sitting time paraphrase blocks generate on fallback', () => {

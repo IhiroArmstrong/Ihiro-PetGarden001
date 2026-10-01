@@ -23,6 +23,9 @@ export default defineConfig({
   ...base,
   // Workflow passes --workers=1; keep 1 here so accidental bare runs stay safe.
   workers: 1,
+  // Exit before the 120m Actions kill so the JUnit reporter can flush.
+  // A hard cancel on 2026-09-28..30 left zero XML and no job log.
+  globalTimeout: 100 * 60 * 1000,
   reporter: [
     ['list'],
     ['github'],
@@ -30,10 +33,10 @@ export default defineConfig({
   ],
   use: {
     ...base.use,
-    // Keep CI artifacts small (Plan A #15 traces were multi-GB). Screenshots
-    // on failure are enough for triage; JUnit carries the red/green list.
-    trace: 'off',
-    video: 'off',
+    // on-first-retry traces + retain-on-failure video (not every attempt).
+    // No HTML report. Workflow uploads JUnit always and trace.zip only on failure.
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
     screenshot: 'only-on-failure'
   }
 });

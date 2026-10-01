@@ -24,6 +24,14 @@ import { normalizeVisibleConfideReply } from './confideReplyUniqueness.js';
  * }} ConfideLine
  */
 
+/**
+ * Privacy disclaimer jackets — not for L3 generate-failure observe fallback.
+ * @type {readonly string[]}
+ */
+export const CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS = Object.freeze([
+  'fallback-02'
+]);
+
 /** @type {readonly ConfideLine[]} */
 export const CONFIDE_CORPUS = Object.freeze([
   // —— safety (draft; not user-visible until review=ok + gate flip) ——
@@ -42,7 +50,7 @@ export const CONFIDE_CORPUS = Object.freeze([
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
     zh: '一定有什么让你很难受。',
     en: "Something's really gotten to you.",
-    ja: '[TBD]',
+    ja: '何かが、ずいぶんこたえているんだね。',
     review: 'draft'
   }),
   Object.freeze({
@@ -50,15 +58,15 @@ export const CONFIDE_CORPUS = Object.freeze([
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
     zh: '听起来你背负了很多怒气。',
     en: 'That sounds like a lot of anger to carry.',
-    ja: '[TBD]',
+    ja: '重い怒りを抱えているように聞こえる。',
     review: 'draft'
   }),
   Object.freeze({
     id: 'aggression-03',
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
-    zh: '这确实是个沉重的念头。',
+    zh: '这确实是个沉重的心情。',
     en: "That's a heavy thing to be sitting with.",
-    ja: '[TBD]',
+    ja: '重い思いと、いま一緒にいるのだね。',
     review: 'draft'
   }),
   Object.freeze({
@@ -66,7 +74,7 @@ export const CONFIDE_CORPUS = Object.freeze([
     route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
     zh: '寅仍在这里，不会走开。',
     en: "Yin isn't going anywhere.",
-    ja: '[TBD]',
+    ja: '寅は、どこにも行かない。',
     review: 'draft'
   }),
 
@@ -264,6 +272,7 @@ export function confideDateSeed(isoDate) {
  * @param {string} [opts.localDate]
  * @param {number} [opts.salt]
  * @param {ReadonlySet<string> | string[]} [opts.excludeIds]
+ * @param {ReadonlySet<string> | string[]} [opts.hardExcludeIds]
  * @param {readonly string[]} [opts.excludeNormalizedTexts]
  * @param {string} [opts.locale]
  * @param {readonly ConfideLine[]} [opts.corpus]
@@ -274,6 +283,7 @@ export function pickConfideLine({
   localDate = '',
   salt = 0,
   excludeIds = [],
+  hardExcludeIds = [],
   excludeNormalizedTexts = [],
   locale = 'en',
   corpus = CONFIDE_CORPUS
@@ -283,7 +293,13 @@ export function pickConfideLine({
     excludeIds instanceof Set
       ? excludeIds
       : new Set(Array.isArray(excludeIds) ? excludeIds : []);
+  const hardExclude =
+    hardExcludeIds instanceof Set
+      ? hardExcludeIds
+      : new Set(Array.isArray(hardExcludeIds) ? hardExcludeIds : []);
   const withoutIds = (lines) => lines.filter((line) => !exclude.has(line.id));
+  const withoutHardExclude = (lines) =>
+    lines.filter((line) => !hardExclude.has(line.id));
   const withoutLastVisible = (lines) => {
     const banned = new Set(
       (Array.isArray(excludeNormalizedTexts) ? excludeNormalizedTexts : [])
@@ -297,9 +313,11 @@ export function pickConfideLine({
     );
     return filtered.length ? filtered : lines;
   };
-  let pool = withoutLastVisible(withoutIds(linesForRoute(route, corpus)));
+  let pool = withoutLastVisible(
+    withoutIds(withoutHardExclude(linesForRoute(route, corpus)))
+  );
   if (pool.length === 0) {
-    pool = withoutLastVisible(linesForRoute(route, corpus));
+    pool = withoutLastVisible(withoutHardExclude(linesForRoute(route, corpus)));
   }
   if (pool.length === 0) {
     // Safety / aggression must never fall through to zen fallback at retrieve time.
@@ -309,7 +327,9 @@ export function pickConfideLine({
     ) {
       return null;
     }
-    pool = withoutLastVisible(linesForRoute(CONFIDE_ROUTE.FALLBACK, corpus));
+    pool = withoutLastVisible(
+      withoutHardExclude(linesForRoute(CONFIDE_ROUTE.FALLBACK, corpus))
+    );
   }
   if (pool.length === 0) return null;
   const idx =

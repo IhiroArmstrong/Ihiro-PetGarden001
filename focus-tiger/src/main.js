@@ -21,11 +21,22 @@ import {
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
 import {
+  FOCUS_DURATION_OPTIONS_MINUTES,
   loadPreferredFocusDurationMinutes,
+  loadPreferredFocusDurationMode,
   resolveFocusSessionTargetMinutes,
   savePreferredFocusDurationMinutes,
+  savePreferredOpenEndedFocus,
   shouldSkipFocusDurationPicker
 } from './core/focusDuration.js';
+import {
+  OPEN_ENDED_HARD_CAP_MS,
+  takeOpenEndedNudges
+} from './core/openEndedFocus.js';
+import {
+  isOpenEndedNudgeEnabled,
+  setOpenEndedNudgeEnabled
+} from './core/openEndedNudgePreference.js';
 import { SessionUiGate } from './core/SessionUiGate.js';
 import {
   createSessionChromeSync,
@@ -59,6 +70,7 @@ import { Ambience } from './feedback/Ambience.js';
 import { FocusInput } from './input/FocusInput.js';
 import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
+import { FocusSitAdjustUI } from './ui/FocusSitAdjustUI.js';
 import { ImmersivePresenceUI } from './ui/ImmersivePresenceUI.js';
 import {
   needsDocumentPictureInPictureProbe,
@@ -72,6 +84,7 @@ import {
 } from './ui/WeeklyPracticeHeatmap.js';
 import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
 import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
+import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import {
   InAppReminderBannerController
@@ -90,6 +103,7 @@ import {
   evaluateInAppReminderBanner,
   REMINDER_GENTLE_WAITING_MESSAGE_KEY
 } from './core/reminderPreference.js';
+import { evaluateTodayDirectionOptionsRefreshBanner } from './core/todayDirectionOptionsBanner.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from './utils/Constants.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
 import { LightProgression } from './effects/LightProgression.js';
@@ -100,12 +114,15 @@ import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
+import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
+import { maybeSpeakFocusEndAnnouncement } from './core/systemTtsAnnouncements.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
+import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
@@ -121,8 +138,11 @@ import {
 } from './core/fiveMomentsCompassGate.js';
 import {
   resolveColdStartGoalAction,
-  shouldOfferColdStartGoalCard
+  shouldOfferColdStartGoalCard,
+  migrateColdStartGoalOptionsSeen,
+  markColdStartGoalOptionsVersionSeen
 } from './core/coldStartGoalGate.js';
+import { shouldShowHomeSanctuaryNavPulse } from './core/homeSanctuaryNavGate.js';
 import {
   hasSeenWellnessDisclaimer,
   markWellnessDisclaimerSeen,
@@ -173,6 +193,10 @@ import {
 } from './core/quietTogetherPresence.js';
 import { syncLanternIdleObserverPeek } from './core/quietTogetherIdleSchedule.js';
 import {
+  setCloudPresenceDegradedHintIdleProbe,
+  setCloudPresenceDegradedHintNotifier
+} from './core/cloudPresenceDegradedHint.js';
+import {
   bindFocusCirclePresencePageHide,
   bindFocusCirclePresenceVisibilityPeek,
   peekFocusCirclePresence,
@@ -202,6 +226,7 @@ import {
 } from './core/focusCircleMembership.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
+import { PracticeImprintCardUI } from './ui/PracticeImprintCardUI.js';
 import {
   MUSTARD_SEED_SEAL_CASES,
   resolveMustardSeedSeal,
@@ -213,6 +238,12 @@ import {
   resolveContemplativeArchiveSeal,
   shouldOfferContemplativeArchiveSealAfterCeremony
 } from './core/contemplativeArchiveSeal.js';
+import {
+  clearPracticeImprintState,
+  resolvePracticeImprint,
+  shouldOfferPracticeImprintAfterCeremony
+} from './core/practiceImprint.js';
+import { listCollectionsBehavioralScarcityRows } from './core/collectionsBehavioralScarcity.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
@@ -303,6 +334,13 @@ import {
   MindfulAcknowledgeToast,
   MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
 } from './ui/MindfulAcknowledgeToast.js';
+import { VoiceCommandUndoToast } from './ui/VoiceCommandUndoToast.js';
+import { VoiceCommandChrome } from './ui/VoiceCommandChrome.js';
+import { canShowVoiceCommandChrome } from './core/voiceCommandGate.js';
+import {
+  applyFocusSitAdjust,
+  focusSitAdjustStatus
+} from './core/focusSitAdjust.js';
 import { FlowerBlowWelcomeBubbleUI } from './ui/FlowerBlowWelcomeBubbleUI.js';
 import { resolveFlowerBlowWelcomeMessage } from './ui/flowerBlowWelcomeCopy.js';
 import {
@@ -326,7 +364,6 @@ import {
   MilestoneGlowStore,
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
-import { applyQaPracticeSeedFromSearch } from './core/qaPracticeSeed.js';
 import { LotusPondStore } from './core/LotusPondStore.js';
 import { GRANT_KIND } from './core/focusCoinsLedger.js';
 import { FocusCoinsStore } from './core/focusCoinsStore.js';
@@ -335,6 +372,13 @@ import {
   applyBreathPracticeFocusCoinsGrant,
   maybeResetFocusCoinsSession
 } from './core/focusCoinsAward.js';
+import { FocusEssenceStore } from './core/FocusEssenceStore.js';
+import {
+  applyFocusEssenceGrant,
+  applyBreathPracticeFocusEssenceGrant,
+  maybeResetFocusEssenceSession
+} from './core/focusEssenceAward.js';
+import { isFocusEssenceAwardEnabled } from './core/focusEssenceAwardGate.js';
 import {
   applyFocusCoinsRedeem,
   applyFocusCoinsEquipTitle,
@@ -346,7 +390,6 @@ import {
   COLLECTIONS_WAVE_HELLO_EMOTION_KEY,
   evaluateCollectionsWaveHelloPlay
 } from './core/collectionsWaveHelloGate.js';
-import { applyQaLotusPondSeedFromSearch } from './core/qaLotusPondSeed.js';
 import { LotusPondRuntime } from './ui/LotusPondRuntime.js';
 import { triggerSessionCompletionFeedback } from './core/session-completion-feedback.js';
 import {
@@ -446,6 +489,7 @@ import { parseAmbientAuditionMs } from './audio/ambientAudition.js';
 import { SessionCueController } from './audio/SessionCueController.js';
 import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
+import { OpenEndedNudgeUI } from './ui/OpenEndedNudgeUI.js';
 import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
 import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
 import { CalmActionArriveStore } from './core/CalmActionArriveStore.js';
@@ -514,6 +558,9 @@ async function init() {
   ensureOverlayEscapeListener();
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
+  migrateColdStartGoalOptionsSeen(
+    typeof localStorage !== 'undefined' ? localStorage : null
+  );
   // Taste overlay: do NOT fetch here — races `spritePlayer.preload()` and
   // Arrival/Honesty 1s CapCut (RB-20260820-L330). Kick after sprites + welcome/idle.
 
@@ -823,6 +870,10 @@ async function init() {
   let parrotMessengerPlayedThisPageSession = false;
   /** Assigned after Arrival / stores are ready. */
   let syncInAppReminderBanner = () => {};
+  /** Assigned after cold-start goal card wiring. */
+  let openTodayDirectionManual = () => {};
+  let openHomeSanctuaryNav = () => {};
+  let syncTodayDirectionOptionsBanner = () => {};
   /** Occupancy winner for Yin sprites (sleep / welcome / payment / ceremony). */
   let spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
   /** Filled after Honesty exists — Stripe confirm may resolve after boot sleep. */
@@ -892,6 +943,24 @@ async function init() {
       onDismiss: () => {
         inAppReminderBannerController.dismiss();
         syncInAppReminderBanner();
+      }
+    }
+  );
+  const todayDirectionOptionsBannerUI = new TodayDirectionOptionsBannerUI(
+    document.getElementById('ui-overlay'),
+    {
+      onCta: () => {
+        markColdStartGoalOptionsVersionSeen(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        openTodayDirectionManual();
+        syncTodayDirectionOptionsBanner();
+      },
+      onDismiss: () => {
+        markColdStartGoalOptionsVersionSeen(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        syncTodayDirectionOptionsBanner();
       }
     }
   );
@@ -987,13 +1056,19 @@ async function init() {
   let reminderPreferenceUI = null;
   /** @type {LanguagePreferenceUI | null} */
   let languagePreferenceUI = null;
+  /** @type {SystemTtsPreferenceUI | null} */
+  let systemTtsPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
     document.getElementById('ui-overlay')
   );
+  const voiceCommandUndoToast = new VoiceCommandUndoToast(
+    document.getElementById('ui-overlay')
+  );
   // E2E / lab: show bottom wellness toast without waiting for wall-clock late night.
   window.__mindfulToast = mindfulToast;
+  window.__voiceCommandUndoToast = voiceCommandUndoToast;
   /** Phase 2a Lab + Phase 2b 产品冷启动共用 */
   flowerBlowWelcomeBubble = new FlowerBlowWelcomeBubbleUI(
     document.getElementById('ui-overlay')
@@ -1120,6 +1195,63 @@ async function init() {
     document.getElementById('ui-overlay') || document.body
   );
   window.__focusAwarenessCard = focusAwarenessCardUI;
+  const openEndedNudgeUI = new OpenEndedNudgeUI(
+    document.getElementById('ui-overlay') || document.body
+  );
+  const openEndedNudgeSession = {
+    shownMs: /** @type {number[]} */ ([]),
+    previewShown: false
+  };
+
+  function resetOpenEndedNudgeSession() {
+    openEndedNudgeSession.shownMs = [];
+    openEndedNudgeSession.previewShown = false;
+    openEndedNudgeUI.hide();
+  }
+
+  /**
+   * @param {number} markMs
+   */
+  function showOpenEndedNudge(markMs) {
+    openEndedNudgeUI.show(markMs, {
+      onDismiss: () => {
+        openEndedNudgeUI.hide();
+      },
+      onTurnOff: () => setOpenEndedNudgeEnabled(undefined, false)
+    });
+  }
+
+  function syncOpenEndedNudge() {
+    const focusing =
+      stateManager.state === STATES.FOCUSING &&
+      !sessionUiGate.completionPending &&
+      focusSession.isOpenEnded();
+    if (!focusing) {
+      openEndedNudgeUI.hide();
+      return;
+    }
+    const preview = new URLSearchParams(location.search).get(
+      'openEndedNudgePreview'
+    );
+    if (
+      (preview === '90' || preview === '3h') &&
+      !openEndedNudgeSession.previewShown &&
+      isOpenEndedNudgeEnabled()
+    ) {
+      openEndedNudgeSession.previewShown = true;
+      showOpenEndedNudge(
+        preview === '3h' ? 3 * 60 * 60 * 1000 : 90 * 60 * 1000
+      );
+      return;
+    }
+    const plan = takeOpenEndedNudges(focusSession.getElapsedSeconds() * 1000, {
+      enabled: isOpenEndedNudgeEnabled(),
+      alreadyShownMs: openEndedNudgeSession.shownMs
+    });
+    if (plan.showMs == null) return;
+    openEndedNudgeSession.shownMs.push(...plan.markShownMs);
+    showOpenEndedNudge(plan.showMs);
+  }
 
   /** @param {string} forKey */
   function isMomentWhisperBusy(forKey) {
@@ -1217,6 +1349,12 @@ async function init() {
   );
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
   window.__languagePreference = languagePreferenceUI;
+  systemTtsPreferenceUI = new SystemTtsPreferenceUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-system-tts');
+    }
+  });
+  window.__systemTtsPreference = systemTtsPreferenceUI;
   const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-local-backup');
@@ -1302,20 +1440,24 @@ async function init() {
     onClose: () => {
       const pending = pendingAfterMustardSeed;
       pendingAfterMustardSeed = null;
-      if (pending?.sessionEndOpts) {
-        sessionEndFlow.onSessionEnded(pending.sessionEndOpts);
-      } else if (pending?.onContinue) {
-        pending.onContinue();
-      } else if (
-        !reflectionMoment?.isOpen?.() &&
-        !honestyBridge?.isVisible?.()
-      ) {
-        sessionUiGate.setPostSessionOverlayActive(false);
-        resyncSessionChrome();
-      }
+      continueAfterGrowthCeremony(pending);
+    }
+  });
+  const practiceImprintCardUI = new PracticeImprintCardUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'practice-imprint' });
+      sessionUiGate.setPostSessionOverlayActive(true);
+      resyncSessionChrome();
+    },
+    onClose: () => {
+      const pending = pendingAfterMustardSeed;
+      pendingAfterMustardSeed = null;
+      continueAfterGrowthCeremony(pending);
     }
   });
   window.__mustardSeedCard = mustardSeedSealCardUI;
+  window.__practiceImprintCard = practiceImprintCardUI;
   window.__mustardSeedSeal = {
     open: (opts) => mustardSeedSealCardUI.open(opts || { mode: 'force' }),
     close: () => mustardSeedSealCardUI.close(),
@@ -1679,12 +1821,36 @@ async function init() {
     }
   });
   window.__confideEarChrome = confideEarChrome;
+  const homeSanctuaryNavFanUI = new HomeSanctuaryNavFanUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onHome: () => {
+      closeGrowthOverlayCards();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    onCalendar: () => {
+      closeGrowthOverlayCards();
+    },
+    onCollection: () => {
+      closeGrowthOverlayCards({ except: 'yin-coin' });
+      yinCoinPanelUI?.open();
+    },
+    onOpen: () => {
+      idleChrome.wide?.refreshHomeCtas?.();
+      idleChrome.narrow?.refreshHomeCtas?.();
+    }
+  });
+  window.__homeSanctuaryNavFan = homeSanctuaryNavFanUI;
+  const syncHomeSanctuaryNavPulseChrome = () => {
+    idleChrome.wide?.refreshHomeCtas?.();
+    idleChrome.narrow?.refreshHomeCtas?.();
+  };
   const syncConfideEarChrome = () => {
     confideEarChrome.sync();
     idleChrome.narrow?.setConfideEarVisible?.(canOpenConfideNow());
   };
   const syncEntitlementDependentIdleChrome = () => {
     syncConfideEarChrome();
+    syncHomeSanctuaryNavPulseChrome();
     idleChrome.wide.refreshSecondaryHintDots?.();
     idleChrome.narrow.refreshSecondaryHintDots?.();
     supportYinModalUI.syncEntitlementCards?.();
@@ -1697,6 +1863,7 @@ async function init() {
     if (except !== 'support') supportYinModalUI.close();
     if (except !== 'quote') dailyZenQuoteCardUI.close();
     if (except !== 'mustard-seed') mustardSeedSealCardUI.close();
+    if (except !== 'practice-imprint') practiceImprintCardUI.close();
     if (except !== 'wallpapers') digitalWallpapersCardUI.close();
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
     if (except !== 'membership') membershipUnlockUI.close();
@@ -1717,6 +1884,22 @@ async function init() {
     syncIdleYinTap();
   }
 
+  openTodayDirectionManual = () => {
+    closeGrowthOverlayCards({ except: 'cold-start-goal' });
+    coldStartGoalCardUI.open({ manual: true });
+  };
+
+  openHomeSanctuaryNav = (anchorEl) => {
+    const anchor =
+      anchorEl ||
+      document.getElementById('ft-wide-home-sanctuary-nav') ||
+      document.getElementById('ft-narrow-home-sanctuary-nav') ||
+      document.getElementById('ft-wide-more-btn') ||
+      document.querySelector('.ft-narrow-grabber');
+    closeGrowthOverlayCards();
+    homeSanctuaryNavFanUI.open({ anchorEl: anchor });
+  };
+
   /**
    * Cold-start goal card → existing MicroRitual / Sit with Yin surfaces.
    * Choice is session-only; seen flag prevents re-offer on later visits.
@@ -1724,6 +1907,12 @@ async function init() {
    */
   function handleColdStartGoalSelect(choice) {
     const action = resolveColdStartGoalAction(choice);
+    if (choice !== 'browse') {
+      markColdStartGoalOptionsVersionSeen(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
+      syncTodayDirectionOptionsBanner();
+    }
     if (!action || action.type === 'browse') return;
     if (action.type === 'companion') {
       closeGrowthOverlayCards();
@@ -1944,32 +2133,44 @@ async function init() {
     }, 2500);
   }
   const focusSessionEndStore = new FocusSessionEndStore({ now });
-  applyQaPracticeSeedFromSearch({
-    search: window.location.search,
-    storage: typeof localStorage !== 'undefined' ? localStorage : null
-  });
-  applyQaLotusPondSeedFromSearch({
-    search: window.location.search,
-    storage: typeof localStorage !== 'undefined' ? localStorage : null
-  });
+  if (import.meta.env.DEV || import.meta.env.VITE_FT_QA_BOOT === '1') {
+    const { applyQaBootSeedFromSearch } = await import('./core/qaBootSeed.js');
+    applyQaBootSeedFromSearch({
+      search: window.location.search,
+      storage: typeof localStorage !== 'undefined' ? localStorage : null
+    });
+  }
   const practiceDaysStore = new PracticeDaysStore();
   weeklyPracticeHeatmap.bindPracticeImportRefresh(() =>
     practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
   );
   confideToYinUI.bindPracticeDaysStore(practiceDaysStore);
   const focusCoinsStore = new FocusCoinsStore({ now });
+  const focusEssenceStore = new FocusEssenceStore({ now });
   function awardFocusCoins(event) {
-    return applyFocusCoinsGrant({
+    const result = applyFocusCoinsGrant({
       event,
       store: focusCoinsStore,
       practiceDaysStore,
       now,
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
     });
+    applyFocusEssenceGrant({
+      event,
+      store: focusEssenceStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusEssenceAwardEnabled({ search: location.search })
+    });
+    return result;
   }
   function resetFocusCoinsSession() {
     maybeResetFocusCoinsSession({
       store: focusCoinsStore,
+      search: location.search
+    });
+    maybeResetFocusEssenceSession({
+      store: focusEssenceStore,
       search: location.search
     });
   }
@@ -1985,6 +2186,7 @@ async function init() {
     lotusPondRuntime.boot();
     tipKindnessBadgesChrome.refresh();
     focusCoinsStore.reloadFromStorage();
+    focusEssenceStore.reloadFromStorage();
     syncFocusCoinsCosmetics();
     yinCoinPanelUI?.refresh?.();
   });
@@ -2056,6 +2258,10 @@ async function init() {
     },
     playWave: () => playCollectionsWaveHello()
   };
+  window.__focusEssence = {
+    getTotal: () => focusEssenceStore.getTotal(),
+    getSnapshot: () => focusEssenceStore.getSnapshot()
+  };
   yinCoinPanelUI = new FocusCoinsPanelUI(
     document.body,
     withIdleOverlayOccupancySync({
@@ -2071,7 +2277,35 @@ async function init() {
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
     playWave: () => window.__focusCoins.playWave(),
     onMessage: (message) =>
-      mindfulToast.show(message, { placement: 'center' })
+      mindfulToast.show(message, { placement: 'center' }),
+    getMemorialRows: () => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      return listCollectionsBehavioralScarcityRows({
+        storage,
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+    },
+    isMemorialImprintOpenable: (catalogId) => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const resolved = resolvePracticeImprint(storage, {
+        storage,
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+      return (
+        resolved.menuEntries.find((row) => row.catalogId === catalogId)
+          ?.awarded === true
+      );
+    },
+    onMemorialImprintOpen: (catalogId) => {
+      yinCoinPanelUI?.close?.();
+      practiceImprintCardUI.open({ catalogId, mode: 'menu' });
+    }
     })
   );
   window.__yinCoinPanel = yinCoinPanelUI;
@@ -2326,8 +2560,64 @@ async function init() {
     window.__ritualCompletionStore = ritualCompletionStore;
   }
 
+  function cancelVoiceStartedFocus() {
+    if (stateManager.state !== STATES.FOCUSING) return;
+    sessionCues.cancelPending();
+    sessionCues.stopIntervalSession();
+    endFocusChrome();
+    focusSession.stop();
+    sessionUiGate.setCompletionPending(false);
+    honestyGlowLevel = null;
+    tigerCharacter.setFocusLevel(0);
+    honestyCheckIn.onIncompleteSessionEnded();
+    stateManager.setState(STATES.IDLE);
+    focusInput.resetButton(focusButton);
+    resyncSessionChrome();
+    companionModePicker.setIdleChromeVisible(true);
+    companionModePicker.setMicroRitualActive(true);
+    setFocusButtonEnabled(false);
+    focusDurationPicker?.open();
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
+  }
+
+  function showVoiceCommandUndoToast(message) {
+    voiceCommandUndoToast.show(message, t('VOICE_COMMAND_UNDO'), () => {
+      cancelVoiceStartedFocus();
+    });
+  }
+
+  function beginVoiceFocusFromPicker({ minutes, openEnded }) {
+    const mode =
+      pendingFocusDurationMode || companionModePicker.getSelectedMode();
+    pendingFocusDurationMode = null;
+    focusDurationPicker?.hide();
+    companionModePicker.setMicroRitualActive(false);
+    if (openEnded) {
+      savePreferredOpenEndedFocus();
+      focusSession.setDurationMode('open');
+      beginFocusWithMode(mode);
+      showVoiceCommandUndoToast(t('VOICE_COMMAND_STARTED_OPEN'));
+      return;
+    }
+    if (
+      Number.isFinite(minutes) &&
+      FOCUS_DURATION_OPTIONS_MINUTES.includes(/** @type {10|15|25|45} */ (minutes))
+    ) {
+      savePreferredFocusDurationMinutes(minutes);
+    }
+    focusSession.setDurationMode('fixed');
+    focusSession.setTargetMinutes(minutes);
+    beginFocusWithMode(mode);
+    showVoiceCommandUndoToast(
+      String(t('VOICE_COMMAND_STARTED_FIXED')).replace(/\{n\}/g, String(minutes))
+    );
+  }
+
   focusDurationPicker = new FocusDurationPickerUI({
     preferredMinutes: () => loadPreferredFocusDurationMinutes(),
+    preferredMode: () => loadPreferredFocusDurationMode(),
+    showOpenEnded: () => isDesktopShellRuntime(),
     onDurationSelected: (minutes) => {
       const mode =
         pendingFocusDurationMode || companionModePicker.getSelectedMode();
@@ -2336,6 +2626,21 @@ async function init() {
       focusSession.setTargetMinutes(minutes);
       companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);
+    },
+    onOpenEndedSelected: () => {
+      const mode =
+        pendingFocusDurationMode || companionModePicker.getSelectedMode();
+      pendingFocusDurationMode = null;
+      savePreferredOpenEndedFocus();
+      focusSession.setDurationMode('open');
+      companionModePicker.setMicroRitualActive(false);
+      beginFocusWithMode(mode);
+    },
+    onVoiceStartFixed: (minutes) => {
+      beginVoiceFocusFromPicker({ minutes, openEnded: false });
+    },
+    onVoiceStartOpen: () => {
+      beginVoiceFocusFromPicker({ openEnded: true });
     },
     onLeave: () => {
       pendingFocusDurationMode = null;
@@ -2430,6 +2735,7 @@ async function init() {
       membershipUnlockUI?.isOpen?.() === true ||
       tipJarUI?.isOpen?.() === true ||
       mustardSeedSealCardUI?.isOpen?.() === true ||
+      practiceImprintCardUI?.isOpen?.() === true ||
       newsletterCaptureUI?.isOpen?.() === true
     );
   }
@@ -2624,11 +2930,38 @@ async function init() {
     idleYinTapAnchor.setHintVisible(show);
   }
 
+  let focusSitAdjust = null;
+
+  function refreshFocusSitAdjust(result) {
+    if (!focusSitAdjust) return;
+    if (result) {
+      const status = focusSitAdjustStatus(result);
+      focusSitAdjust.setStatus(
+        String(t(status.key)).replace(/\{n\}/g, String(status.minutes ?? ''))
+      );
+    }
+    focusSitAdjust.sync({
+      visible:
+        stateManager.state === STATES.FOCUSING &&
+        !sessionUiGate.completionPending,
+      paused: focusSession.isPaused(),
+      openEnded: focusSession.isOpenEnded(),
+      voice: canShowVoiceCommandChrome({ widthPx: window.innerWidth })
+    });
+    if (
+      stateManager.state !== STATES.FOCUSING ||
+      sessionUiGate.completionPending
+    ) {
+      focusSitAdjust.setStatus('');
+    }
+  }
+
   function resyncSessionChrome() {
     sessionChromeSyncApi.resyncSessionChrome();
     syncIdleYinTap();
     syncConfideEarChrome();
     syncTransitionMomentTrigger();
+    refreshFocusSitAdjust();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -2692,7 +3025,9 @@ async function init() {
     pendingJourneyDraft = {
       minutes: resolveJourneyMinutes({
         completed: Boolean(completed),
-        targetMinutes: focusSession.targetMinutes,
+        targetMinutes: focusSession.isOpenEnded()
+          ? focusSession.resolveTimedAwardMinutes()
+          : focusSession.targetMinutes,
         elapsedSeconds
       }),
       arrive: Boolean(arrivalChoseThisRun)
@@ -2974,6 +3309,13 @@ async function init() {
       now,
       enabled: isFocusCoinsAwardEnabled({ search: location.search })
     });
+    applyBreathPracticeFocusEssenceGrant({
+      durationMinutes,
+      store: focusEssenceStore,
+      practiceDaysStore,
+      now,
+      enabled: isFocusEssenceAwardEnabled({ search: location.search })
+    });
     tipKindnessBadgesChrome.refresh();
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
@@ -3192,6 +3534,19 @@ async function init() {
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
+    onSystemTts: () => {
+      systemTtsPreferenceUI?.openPanel();
+    },
+    onTodayDirection: () => {
+      openTodayDirectionManual();
+    },
+    onSanctuaryNav: () => {
+      openHomeSanctuaryNav();
+    },
+    shouldShowSanctuaryNavPulse: () =>
+      shouldShowHomeSanctuaryNavPulse(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
     onGroundExercise: () => {
       closeGrowthOverlayCards({ except: 'ground-exercise' });
       groundExerciseChoiceUI?.open();
@@ -3299,6 +3654,7 @@ async function init() {
       companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
+      systemTtsPreferenceUI?.closePanel();
       localPracticeDataPanelUI.closePanel();
       quietTogetherPanelUI.closePanel();
       focusCirclePanelUI.closePanel();
@@ -3437,6 +3793,9 @@ async function init() {
       syncIdleYinTap();
     },
     onPurposeClose: () => syncIdleYinTap(),
+    onTodayDirection: () => {
+      openTodayDirectionManual();
+    },
     onWellnessFirstDismiss: () => {
       scheduleFirstCardOffers();
     }
@@ -3486,6 +3845,25 @@ async function init() {
   window.__milestoneGlowStore = milestoneGlowStore;
   window.__practiceDaysStore = practiceDaysStore;
   window.__lotusPondStore = lotusPondStore;
+  window.__practiceImprint = {
+    open: (opts) => practiceImprintCardUI.open(opts || { mode: 'menu' }),
+    close: () => practiceImprintCardUI.close(),
+    resolve: () =>
+      resolvePracticeImprint(
+        typeof localStorage !== 'undefined' ? localStorage : null,
+        {
+          storage:
+            typeof localStorage !== 'undefined' ? localStorage : null,
+          practiceDaysStore,
+          lotusPondStore,
+          dailyCompletionStore
+        }
+      ),
+    clear: () =>
+      clearPracticeImprintState(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      )
+  };
 
   /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
   let pendingChoose = null;
@@ -3722,6 +4100,23 @@ async function init() {
       inAppReminderBannerUI.hide({ silent: true });
     }
     syncSoftUpdatePrompt();
+    syncTodayDirectionOptionsBanner();
+  };
+
+  syncTodayDirectionOptionsBanner = () => {
+    const storage = typeof localStorage !== 'undefined' ? localStorage : null;
+    const candidate = evaluateTodayDirectionOptionsRefreshBanner(storage);
+    const snapshot = buildLiveOverlaySnapshot();
+    const busy = deriveReminderBusySessionTarget(snapshot);
+    const shouldShow =
+      candidate.shouldShow && !busy && !snapshot.coldStartGoalOpen;
+    if (shouldShow) {
+      todayDirectionOptionsBannerUI.show();
+    } else if (todayDirectionOptionsBannerUI.isVisible()) {
+      todayDirectionOptionsBannerUI.hide({
+        silent: busy || snapshot.coldStartGoalOpen
+      });
+    }
   };
 
   // E2E clocks the reminder via `__inAppReminder` (in-app-reminder.spec.js).
@@ -3754,6 +4149,15 @@ async function init() {
     },
     /** E2E（含 vite preview production）：观测信使开播后的 emotion key */
     getCurrentEmotionKey: () => emotionController.getCurrentEmotionKey()
+  };
+
+  window.__todayDirectionOptionsBanner = {
+    sync: () => syncTodayDirectionOptionsBanner(),
+    banner: todayDirectionOptionsBannerUI,
+    markSeen: () =>
+      markColdStartGoalOptionsVersionSeen(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      )
   };
 
   /**
@@ -3860,6 +4264,7 @@ async function init() {
     acrossToolsIdleGuard.stop();
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
+    openEndedNudgeUI.hide();
     calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
     transitionMomentUI.close();
@@ -3909,6 +4314,7 @@ async function init() {
     if (!playedEndCue) {
       stopAmbientAfterEndCue();
     }
+    maybeSpeakFocusEndAnnouncement();
     endFocusChrome({ stopAmbient: false });
     focusSession.pause();
     // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。
@@ -4046,6 +4452,7 @@ async function init() {
     // Free core cue — not Ambient entitlement; sync play on this gesture.
     sessionCues.playStart({ ambient: ambientSoundscape });
     focusAwarenessCardUI.resetSession();
+    resetOpenEndedNudgeSession();
     calmActionRecoverStore.resetSession();
     calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
@@ -4253,6 +4660,7 @@ async function init() {
       sessionCues.cancelPending();
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
+    openEndedNudgeUI.hide();
       calmActionRecoverCardUI.hide({ immediate: true });
       calmActionArriveCardUI.hide({ immediate: true });
       transitionMomentUI.close();
@@ -4299,6 +4707,109 @@ async function init() {
     }
   );
 
+  const voiceRiseSlot = document.createElement('span');
+  voiceRiseSlot.dataset.testid = 'voice-command-rise-slot';
+  focusButton.insertAdjacentElement('afterend', voiceRiseSlot);
+  /** @type {VoiceCommandChrome | null} */
+  let voiceRiseChrome = null;
+
+  function syncVoiceRiseMic() {
+    const show =
+      stateManager.state === STATES.FOCUSING &&
+      canShowVoiceCommandChrome({ widthPx: window.innerWidth });
+    if (!show) {
+      voiceRiseChrome?.destroy();
+      voiceRiseChrome = null;
+      return;
+    }
+    if (voiceRiseChrome) return;
+    voiceRiseChrome = new VoiceCommandChrome({
+      mountParent: voiceRiseSlot,
+      mode: 'end',
+      onOutcome: (outcome) => {
+        if (outcome.kind !== 'end_focus') return;
+        focusInput.requestRise();
+      }
+    });
+  }
+
+  stateManager.onChange(() => syncVoiceRiseMic());
+  window.addEventListener('resize', () => syncVoiceRiseMic());
+  syncVoiceRiseMic();
+
+  focusSitAdjust = new FocusSitAdjustUI(document.getElementById('focus-sit-adjust'), {
+    onPause: () => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'pause' }));
+    },
+    onResume: () => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'resume' }));
+    },
+    onAddFive: () => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 }));
+    },
+    onVoice: (parsed) => {
+      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, parsed));
+    }
+  });
+  stateManager.onChange(() => refreshFocusSitAdjust());
+  window.addEventListener('resize', () => refreshFocusSitAdjust());
+  refreshFocusSitAdjust();
+
+  /**
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [pending]
+   */
+  function continueAfterGrowthCeremony(pending) {
+    if (maybeOfferPracticeImprintAfterCeremony(pending)) return;
+    if (pending?.sessionEndOpts) {
+      sessionEndFlow.onSessionEnded(pending.sessionEndOpts);
+    } else if (pending?.onContinue) {
+      pending.onContinue();
+    } else if (
+      !reflectionMoment?.isOpen?.() &&
+      !honestyBridge?.isVisible?.()
+    ) {
+      sessionUiGate.setPostSessionOverlayActive(false);
+      resyncSessionChrome();
+    }
+  }
+
+  /**
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [opts]
+   * @returns {boolean}
+   */
+  function maybeOfferPracticeImprintAfterCeremony(opts = {}) {
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const imprint = resolvePracticeImprint(storage, {
+      storage,
+      practiceDaysStore,
+      lotusPondStore,
+      dailyCompletionStore
+    });
+    if (
+      !shouldOfferPracticeImprintAfterCeremony({
+        completed: true,
+        shouldAutoReveal: imprint.shouldAutoReveal
+      }) ||
+      !imprint.nextCatalogId
+    ) {
+      return false;
+    }
+    pendingAfterMustardSeed = opts;
+    closeGrowthOverlayCards({ except: 'practice-imprint' });
+    practiceImprintCardUI.open({
+      catalogId: imprint.nextCatalogId,
+      mode: 'auto'
+    });
+    return true;
+  }
+
   /**
    * After any baseline practice completion ceremony (timed Sit, Honesty, Breath),
    * offer mustard / contemplative archive seal before Reflection or Honesty bridge.
@@ -4340,6 +4851,7 @@ async function init() {
       });
       return true;
     }
+    if (maybeOfferPracticeImprintAfterCeremony(opts)) return true;
     if (opts.sessionEndOpts) {
       sessionEndFlow.onSessionEnded(opts.sessionEndOpts);
     } else if (opts.onContinue) {
@@ -4351,14 +4863,15 @@ async function init() {
   function finishCompletedSession() {
     if (!sessionUiGate.completionPending) return;
     const witnessElapsedSeconds = focusSession.getElapsedSeconds();
+    const timedAwardMinutes = focusSession.resolveTimedAwardMinutes();
     stashPendingJourneyDraft({ completed: true });
     focusSession.stop();
-    honestyCheckIn.onTimedSessionCompleted(focusSession.targetMinutes);
+    honestyCheckIn.onTimedSessionCompleted(timedAwardMinutes);
     awardFocusCoins({
       kind: GRANT_KIND.TIMED,
       reachedTarget: true,
       companionMode: focusSession.companionMode,
-      durationMinutes: focusSession.targetMinutes
+      durationMinutes: timedAwardMinutes
     });
     awardFocusCoins({ kind: GRANT_KIND.REFLECT });
     lotusPondRuntime.releaseBirths();
@@ -4939,7 +5452,11 @@ async function init() {
           : focusSession.getFocusLevel();
     const presenceBoost =
       stateManager.state === STATES.FOCUSING
-        ? ambientSoundscape.getPresenceBoost(focusSession.targetMinutes)
+        ? ambientSoundscape.getPresenceBoost(
+            focusSession.isOpenEnded()
+              ? FOCUS_SESSION_DEFAULT_MINUTES
+              : focusSession.targetMinutes
+          )
         : 0;
     // 已烧录金光的叙事动画播放期归零实时光效，避免与帧内光环/粒子过曝。
     const visualLevel = emotionController.shouldSuppressRuntimeGlow()
@@ -4964,7 +5481,9 @@ async function init() {
     ) {
       sessionCues.tickInterval({
         elapsedSeconds: focusSession.getElapsedSeconds(),
-        targetSeconds: focusSession.targetMinutes * 60,
+        targetSeconds: focusSession.isOpenEnded()
+          ? OPEN_ENDED_HARD_CAP_MS / 1000
+          : focusSession.targetMinutes * 60,
         ambient: ambientSoundscape,
         onIntervalPlayed: () => {
           window.setTimeout(() => {
@@ -5001,8 +5520,13 @@ async function init() {
         ? microBreathing
           ? microRitualUI?.getDurationMinutes?.()
           : ritualFlowUI?.getDurationMinutes?.()
-        : focusSession.targetMinutes
+        : focusSession.isOpenEnded()
+          ? null
+          : focusSession.targetMinutes,
+      sessionOpenEnded:
+        !overlayBreathing && focusSession.isOpenEnded()
     });
+    syncOpenEndedNudge();
     weeklyPracticeHeatmap.render({
       // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
       // Hide during Focusing / overlays / micro-ritual.
@@ -5127,6 +5651,12 @@ async function init() {
       retry: overlay && !focusing
     };
   });
+  setCloudPresenceDegradedHintNotifier(() => {
+    mindfulToast.show(t('CLOUD_PRESENCE_NETWORK_HINT'));
+  });
+  setCloudPresenceDegradedHintIdleProbe(
+    () => stateManager.state === STATES.IDLE
+  );
   setLanternPresenceBusyProbe(() => {
     const s = stateManager.state;
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;

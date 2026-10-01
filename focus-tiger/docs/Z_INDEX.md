@@ -40,6 +40,7 @@
 | **12** | `src/ui/IdleYinTapAnchorUI.js` | Idle 轻点阿寅额头 `#idle-yin-tap-anchor`（invisible hit，`top:30%` 盖额头；无微光）；与 Active Recover **互斥**（Idle vs Focusing）；须低于 dock Sit(16) |
 | **12** | `src/ui/TransitionMomentTriggerUI.js` | Idle Transition 微入口 `#transition-moment-trigger`（热力图簇邻接；Focusing 隐藏；低于 dock Sit(16)） |
 | **14** | `src/ui/HonestyCheckInUI.js` | Idle「再补登」文字入口（在 Honesty 面板之下） |
+| **14** | `src/ui/OpenEndedNudgeUI.js` | 开放式专注温和提示（`#open-ended-nudge`；左上 HUD 下；非模态；不盖底部觉察卡） |
 | **14** | `src/ui/MicroRitualUI.js` | 微仪式 Idle 文字入口（对称 Honesty） |
 | **15** | `src/ui/HonestyCheckInUI.js` | Honesty Check-in 主面板 |
 | **15** | `src/ui/ArrivalPracticeUI.js` | Arrival Practice 底部叠层 |
@@ -120,6 +121,24 @@
 | **35** | `src/ui/FocusCircleWitnessLeaveUI.js` | 留痕/回应短语 picker（自底条向上展开 · `#focus-circle-witness-picker` / `#focus-circle-witness-respond-shell`；Tier27；挂 `body`） |
 | **40** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 中置/窄屏抬高层（Honesty 桥接等同带） |
 | **100** | `index.html` | `#loading-mask` 启动加载遮罩（最高产品层，加载完移除） |
+
+### 2026-09-30 补登（由 `z-index-registry-check` 扫出的漏登）
+
+> 这十条原本有 `position: fixed` 却不在表内。**只补登记，未改任何数值。**
+> 从此 `npm run docs:check` 会挡住漏登：新加 `position: fixed` 而不写行 → CI 红。
+
+| z-index | 文件 | 用途 |
+|---|---|---|
+| **16** | `src/ui/FocusCirclePanelUI.js` | `.focus-circle-panel` Focus Circle 面板；与 dock 同带 |
+| **16** | `src/ui/LocalPracticeDataPanelUI.js` | `.local-practice-data-panel` 本地练习数据面板（导出 / 重置） |
+| **16** | `src/ui/PresenceSignalsPanelUI.js` | `.presence-signals-panel` 在场信号面板（内含 z2 子层） |
+| **16** | `src/ui/QuietTogetherPanelUI.js` | `.quiet-together-panel` Quiet Together 面板 |
+| **18** | `src/ui/ColdStartGoalCardUI.js` | `.cold-start-goal-card` 冷启动目标卡 |
+| **18** | `src/ui/YinPersonalMemoryUI.js` | `.yin-personal-memory` 阿寅私人记忆面板 |
+| **18 / 19** | `src/ui/PracticeImprintCardUI.js` | 练习印记卡遮罩（18）+ 卡本体（19） |
+| **35 / 36** | `src/ui/HomeSanctuaryNavFanUI.js` | Home/Sanctuary 导航扇遮罩（35）+ 扇本体（36）；**挂 body**，与 `#ui-overlay`（10）整层比较，不与其子层同带 |
+| **12050** | `src/ui/SystemTtsPreferenceUI.js` | 系统朗读偏好。**数值异常**，比全表任何一层高两个数量级，来历不明；审计 Z-2 记在案，本次只登记不改，改动须单独评估 |
+| 无自有 z | `src/ui/overlayBackdrop.js` | 共享遮罩 CSS 基类（`position: fixed; inset: 0`）；z 由各调用方设定，见上文各 backdrop 行 |
 
 ### ui-kit 变量（未在主产品硬编码数值）
 

@@ -13,10 +13,13 @@ import {
   resetFocusCircleIdentityForTests
 } from './focusCircleIdentity.js';
 import {
+  FOCUS_CIRCLE_MUTATION_TIMEOUT_MS,
   FOCUS_CIRCLE_PATH,
+  FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS,
   FOCUS_CIRCLE_SCHEMA_VERSION,
   isFocusCircleClientEnabled,
-  readFocusCircleMembership
+  readFocusCircleMembership,
+  withFocusCircleRequestTimeout
 } from './focusCircleMembership.js';
 import {
   LANTERN_BUSY_RETRY_MS,
@@ -47,6 +50,7 @@ let idleObserverActive = false;
 /** @type {object | null} */
 let idleObserverOpts = null;
 let peekInFlight = false;
+let witnessPeekBackoffUntil = 0;
 /** @type {{ traceId: string, phraseKey: string, authorMemberId?: string, hasResponded: boolean, respondPhraseKey?: string } | null} */
 let witnessPeekSnapshot = null;
 let witnessPromptedThisSession = false;
@@ -123,6 +127,7 @@ export function resetFocusCircleWitnessForTests() {
   peekInFlight = false;
   witnessPeekSnapshot = null;
   witnessPromptedThisSession = false;
+  witnessPeekBackoffUntil = 0;
   busyProbe = () => false;
   resetFocusCircleIdentityForTests();
 }
@@ -243,7 +248,8 @@ export async function postFocusCircleWitness({
   memberId = '',
   phraseKey = '',
   traceId = '',
-  storage = globalThis.localStorage
+  storage = globalThis.localStorage,
+  updateIdleSnapshot = true
 } = {}) {
   if (!getBaseUrl()) {
     return { ok: false, reason: 'cloud_api_unconfigured', skipped: true };
@@ -261,9 +267,16 @@ export async function postFocusCircleWitness({
     ...(traceId ? { traceId } : {})
   };
   try {
-    const body = await postJson(FOCUS_CIRCLE_PATH, {
-      body: JSON.stringify(payload)
-    });
+    const body = await withFocusCircleRequestTimeout(
+      postJson(
+        FOCUS_CIRCLE_PATH,
+        {
+          body: JSON.stringify(payload)
+        },
+        { timeoutMs: FOCUS_CIRCLE_MUTATION_TIMEOUT_MS }
+      ),
+      FOCUS_CIRCLE_MUTATION_TIMEOUT_MS
+    );
     if (!body || typeof body !== 'object') {
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
@@ -273,7 +286,10 @@ export async function postFocusCircleWitness({
     if (action === 'witness_peek') {
       const traces = parseWitnessPeekBody(body);
       if (!traces) return { ok: false, reason: 'bad_payload', skipped: true };
-      const remembered = rememberWitnessPeek(traces, storage);
+      const remembered =
+        updateIdleSnapshot === false
+          ? { changed: false, trace: witnessPeekSnapshot }
+          : rememberWitnessPeek(traces, storage);
       return { ok: true, traces, ...remembered, skipped: false };
     }
     if (action === 'witness_leave') {
@@ -292,7 +308,15 @@ export async function postFocusCircleWitness({
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
     return { ok: false, reason: 'bad_action', skipped: true };
-  } catch {
+  } catch (err) {
+    const status = err && typeof err === 'object' ? Number(err.status) : 0;
+    if (status === 429) {
+      if (action === 'witness_peek') {
+        witnessPeekBackoffUntil = Date.now() + FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS;
+      }
+      return { ok: false, reason: 'rate_limited', skipped: true };
+    }
+    if (status === 408) return { ok: false, reason: 'timeout', skipped: true };
     return { ok: false, reason: 'network', skipped: true };
   }
 }
@@ -301,6 +325,9 @@ export async function postFocusCircleWitness({
  * @param {object} [opts]
  */
 export async function peekFocusCircleWitness(opts = {}) {
+  if (Date.now() < witnessPeekBackoffUntil) {
+    return { ok: false, reason: 'rate_limited', skipped: true };
+  }
   if (peekInFlight) return { ok: false, reason: 'in_flight', skipped: true };
   if (
     !isFocusCircleWitnessClientEnabled({
@@ -325,7 +352,11 @@ export async function peekFocusCircleWitness(opts = {}) {
   }
   peekInFlight = true;
   try {
-    return await postFocusCircleWitness({ ...opts, action: 'witness_peek' });
+    const result = await postFocusCircleWitness({ ...opts, action: 'witness_peek' });
+    if (result.reason === 'rate_limited') {
+      witnessPeekBackoffUntil = Date.now() + FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS;
+    }
+    return result;
   } finally {
     peekInFlight = false;
   }
@@ -336,6 +367,7 @@ export async function peekFocusCircleWitness(opts = {}) {
  * @param {number} [opts.delayMs]
  */
 export function scheduleFocusCircleWitnessPeek(opts = {}) {
+  if (Date.now() < witnessPeekBackoffUntil) return;
   if (peekTimer) clearTimeout(peekTimer);
   const delayMs = opts.delayMs ?? LANTERN_PEEK_IDLE_MS;
   peekTimer = setTimeout(() => {
@@ -357,6 +389,18 @@ export function stopFocusCircleWitnessIdleObserverPeek() {
 
 async function runIdleObserverPeekTick() {
   if (!idleObserverActive) return;
+  if (Date.now() < witnessPeekBackoffUntil) {
+    clearIdleObserverTimer();
+    const waitMs = Math.max(
+      250,
+      witnessPeekBackoffUntil - Date.now() + 50
+    );
+    idleObserverTimer = setTimeout(() => {
+      idleObserverTimer = null;
+      void runIdleObserverPeekTick();
+    }, waitMs);
+    return;
+  }
   await peekFocusCircleWitness(idleObserverOpts ?? {});
   if (!idleObserverActive) return;
   clearIdleObserverTimer();

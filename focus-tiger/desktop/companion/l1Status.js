@@ -16,6 +16,19 @@ export const COMPANION_L1_PHASES = Object.freeze([
   'error'
 ]);
 
+/** Shadow semantic routing only — must not drive Confide status strip copy. */
+export const COMPANION_L1_EMBEDDING_SHADOW_PHASES = Object.freeze([
+  'embedding_downloading',
+  'embedding_loading'
+]);
+
+/** @param {string} phase */
+export function isEmbeddingShadowPhase(phase) {
+  return typeof phase === 'string' && phase.startsWith('embedding_');
+}
+
+const MAIN_PHASES_THAT_MUST_NOT_REPLACE_READY = new Set(['downloading', 'loading']);
+
 /**
  * @returns {{
  *   phase: string,
@@ -49,6 +62,10 @@ export function applyCompanionEvent(status, ev) {
   };
   const event = ev && ev.event;
   if (event === 'progress') {
+    // Guard B: shadow embedding must not touch progress while main model is ready.
+    if (status.phase === 'ready') {
+      return status;
+    }
     const received = Number(ev.received);
     const total = Number(ev.total);
     next.received = Number.isFinite(received) ? received : next.received;
@@ -57,6 +74,17 @@ export function applyCompanionEvent(status, ev) {
     return next;
   }
   if (event === 'status' && typeof ev.phase === 'string') {
+    // Guard A: embedding lifecycle is shadow-only — ignore for visible status.
+    if (isEmbeddingShadowPhase(ev.phase)) {
+      return status;
+    }
+    // Guard B: main model ready must not be downgraded by late download/load events.
+    if (
+      status.phase === 'ready' &&
+      MAIN_PHASES_THAT_MUST_NOT_REPLACE_READY.has(ev.phase)
+    ) {
+      return status;
+    }
     next.phase = ev.phase;
     if (ev.phase === 'error' && ev.message) next.error = String(ev.message);
     if (ev.phase !== 'error') next.error = null;

@@ -17,8 +17,10 @@ import {
   markMustardSeedSealRevealed,
   mustardSeedSealBadgeSrc,
   mustardSeedSealNavMeta,
+  mustardSeedSealJaIsPrimaryLocale,
   mustardSeedSealZhIsPrimaryLocale,
   navigateMustardSeedSealCase,
+  resolveMustardSeedPoemPresentation,
   readMustardSeedSealState,
   rememberMustardSeedSealLastShown,
   resolveMustardSeedSeal
@@ -46,7 +48,7 @@ const STYLE_ID = 'mustard-seed-seal-card-styles-v4';
 const LEGACY_STYLE_ID = 'mustard-seed-seal-card-styles-v2';
 const FADE_MS = 220;
 
-export { mustardSeedSealZhIsPrimaryLocale };
+export { mustardSeedSealJaIsPrimaryLocale, mustardSeedSealZhIsPrimaryLocale };
 
 export class MustardSeedSealCardUI {
   /**
@@ -480,13 +482,16 @@ export class MustardSeedSealCardUI {
     this.blurbEl.hidden = !showBlurb;
     this.root.classList.toggle('has-blurb', showBlurb);
 
-    const zhPrimary = mustardSeedSealZhIsPrimaryLocale(getLocale());
+    const locale = getLocale();
+    const zhPrimary = mustardSeedSealZhIsPrimaryLocale(locale);
+    const jaPrimary = mustardSeedSealJaIsPrimaryLocale(locale);
     this.root.classList.toggle('locale-zh-primary', zhPrimary);
-    this.root.classList.toggle('locale-en-primary', !zhPrimary);
-    this.poemZhEl.classList.toggle('is-poem-primary', zhPrimary);
-    this.poemZhEl.classList.toggle('is-poem-secondary', !zhPrimary);
-    this.poemEnEl.classList.toggle('is-poem-primary', !zhPrimary);
-    this.poemEnEl.classList.toggle('is-poem-secondary', zhPrimary);
+    this.root.classList.toggle('locale-ja-primary', jaPrimary);
+    this.root.classList.toggle('locale-en-primary', !zhPrimary && !jaPrimary);
+    this.poemZhEl.classList.toggle('is-poem-primary', zhPrimary || jaPrimary);
+    this.poemZhEl.classList.toggle('is-poem-secondary', !zhPrimary && !jaPrimary);
+    this.poemEnEl.classList.toggle('is-poem-primary', !zhPrimary && !jaPrimary);
+    this.poemEnEl.classList.toggle('is-poem-secondary', zhPrimary || jaPrimary);
   }
 
   _injectStyles() {
@@ -634,10 +639,12 @@ export class MustardSeedSealCardUI {
         color: rgba(92, 67, 48, 0.78);
         margin-bottom: 2px;
       }
-      .mustard-seed-seal-card.locale-zh-primary .mustard-seed-seal-card__poem-zh {
+      .mustard-seed-seal-card.locale-zh-primary .mustard-seed-seal-card__poem-zh,
+      .mustard-seed-seal-card.locale-ja-primary .mustard-seed-seal-card__poem-zh {
         order: 1;
       }
-      .mustard-seed-seal-card.locale-zh-primary .mustard-seed-seal-card__poem-en {
+      .mustard-seed-seal-card.locale-zh-primary .mustard-seed-seal-card__poem-en,
+      .mustard-seed-seal-card.locale-ja-primary .mustard-seed-seal-card__poem-en {
         order: 2;
       }
       .mustard-seed-seal-card.locale-en-primary .mustard-seed-seal-card__poem-en {

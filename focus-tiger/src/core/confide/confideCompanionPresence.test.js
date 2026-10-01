@@ -100,6 +100,14 @@ describe('confideCompanionPresence', () => {
     );
   });
 
+  it('does not treat a practice ask that mentions sitting a while as presence', () => {
+    assert.equal(
+      isConfideCompanionPresenceIntent('有没有适合现在坐一会儿的练习？'),
+      false
+    );
+    assert.equal(isConfideCompanionPresenceIntent('坐一会儿'), true);
+  });
+
   it('formats locale key only', () => {
     assert.equal(
       formatConfideCompanionPresenceReply((key) => key),

@@ -58,6 +58,8 @@ export const EMOTION_PHRASES = Object.freeze({
     'depression',
     '难过',
     '難過',
+    '不高兴',
+    '不開心',
     '失落',
     '心里沉',
     '心裡沉',

@@ -35,7 +35,7 @@ const DURATION_RES = [
   /\bhow\s+many\s+(days|minutes|hours)\s+have\s+i\s+(been\s+)?practi[cs]e(?:d|ing)?\b/i,
   /\b(?:total\s+)?sitting\s+time\b/i,
   /\b(?:total\s+)?sit(?:ting)?\s+(?:time|minutes|hours)\s+on\s+this\s+device\b/i,
-  /练了多久|坐了多久|练习了多久|練習多久|坐了几天|练了几天|練習了幾天|同坐多久|一共坐了多久/
+  /练了多久|坐了多久|练习了多久|練習多久|坐了几天|练了几天|練習了幾天|同坐多久|一共坐了多久|累积(?:了)?多久|累積(?:了)?多久|累计(?:练习|練習)?多久|我累计练习多久了|我累計練習多久了/
 ];
 
 const USUAL_TIME_RES = [
@@ -103,19 +103,32 @@ export function isConfidePracticePatternObservationQuery(text) {
  * @param {string} text
  * @returns {(typeof PRACTICE_FACTS_KIND)[keyof typeof PRACTICE_FACTS_KIND] | null}
  */
+/**
+ * Extra inner spaces must not drop duration asks ("累积了 多久" == "累积了多久").
+ * English patterns still see a single-space form; CJK also tries a compact form.
+ * @param {readonly RegExp[]} res
+ * @param {string} raw
+ * @returns {boolean}
+ */
+function matchesAnyPracticeFactsRes(res, raw) {
+  const spaced = raw.replace(/\s+/g, ' ').trim();
+  const compact = spaced.replace(/\s+/g, '');
+  return res.some((re) => re.test(spaced) || (compact !== spaced && re.test(compact)));
+}
+
 export function classifyPracticeFactsKind(text) {
   const raw = typeof text === 'string' ? text.trim() : '';
   if (!raw) return null;
   if (isConfidePracticePatternObservationQuery(raw)) {
     return PRACTICE_FACTS_KIND.SHOWING_UP;
   }
-  if (COMPARE_EASE_RES.some((re) => re.test(raw))) return PRACTICE_FACTS_KIND.COMPARE_EASE;
-  if (USUAL_TIME_RES.some((re) => re.test(raw))) return PRACTICE_FACTS_KIND.USUAL_TIME;
-  if (SHOWING_UP_RES.some((re) => re.test(raw))) return PRACTICE_FACTS_KIND.SHOWING_UP;
-  if (COMPARE_VOLUME_RES.some((re) => re.test(raw))) {
+  if (matchesAnyPracticeFactsRes(COMPARE_EASE_RES, raw)) return PRACTICE_FACTS_KIND.COMPARE_EASE;
+  if (matchesAnyPracticeFactsRes(USUAL_TIME_RES, raw)) return PRACTICE_FACTS_KIND.USUAL_TIME;
+  if (matchesAnyPracticeFactsRes(SHOWING_UP_RES, raw)) return PRACTICE_FACTS_KIND.SHOWING_UP;
+  if (matchesAnyPracticeFactsRes(COMPARE_VOLUME_RES, raw)) {
     return PRACTICE_FACTS_KIND.COMPARE_VOLUME;
   }
-  if (DURATION_RES.some((re) => re.test(raw))) return PRACTICE_FACTS_KIND.DURATION;
+  if (matchesAnyPracticeFactsRes(DURATION_RES, raw)) return PRACTICE_FACTS_KIND.DURATION;
   return null;
 }
 

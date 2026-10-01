@@ -95,4 +95,25 @@ describe('focusCircleWasHere', () => {
     });
     assert.equal(result.reason, 'already_marked_today');
   });
+
+  it('maps 408 to timeout instead of hanging', async () => {
+    const storage = memoryStorage({
+      [FOCUS_CIRCLE_STORAGE_KEY]: JSON.stringify({
+        circleId: '11111111-1111-4111-8111-111111111111',
+        memberId: '22222222-2222-4222-8222-222222222222',
+        code: 'ABCD23'
+      })
+    });
+    const result = await postFocusCircleWasHereMark({
+      storage,
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        const err = new Error('timeout');
+        /** @type {any} */ (err).status = 408;
+        throw err;
+      }
+    });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, 'timeout');
+  });
 });

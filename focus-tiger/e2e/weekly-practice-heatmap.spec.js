@@ -184,11 +184,16 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   });
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible();
-  // Canvas order: Quick Start · Sit with Yin · Honesty
+  // Canvas order: Sanctuary nav · Quick Start · Sit with Yin · Honesty (PR #986)
   const homeOrder = await page
     .locator('#ft-narrow-home-ctas [data-proxy]')
     .evaluateAll((els) => els.map((el) => el.getAttribute('data-proxy')));
-  expect(homeOrder).toEqual(['quickstart', 'sit', 'honesty']);
+  expect(homeOrder).toEqual([
+    'sanctuary-nav',
+    'quickstart',
+    'sit',
+    'honesty'
+  ]);
   await expect(page.locator('#ft-narrow-home-sit')).toHaveAttribute(
     'aria-label',
     /Sit with Yin|与阿寅同坐/i
@@ -204,9 +209,10 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
     'aria-disabled',
     'false'
   );
+  // Right orb = Five Moments (FIVE_MOMENTS_IDLE_ENTRY), not legacy Honesty label — TEST_TRACKER 2026-09-11.
   await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
     'aria-label',
-    /Honesty Check-in|诚实补登/i
+    /Five moments with Yin|与阿寅的五个时刻|寅との五つの時間/i
   );
   await expect(page.locator('#ft-narrow-home-honesty')).toHaveCSS(
     'opacity',
@@ -247,7 +253,8 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
     'aria-hidden',
     'false'
   );
-  // Sit / Quick Start / Honesty moved to home — must NOT remain in drawer
+  // Sit / Quick Start / Five Moments live on home canvas — must NOT remain in drawer.
+  // Honesty Check-in stays in Practice group (listSecondaryChromeEntries · KB-FUNC-0020).
   await expect(
     page.locator('.ft-narrow-sheet__item', {
       hasText: /Sit with Yin|与阿寅同坐/i
@@ -259,10 +266,8 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
     })
   ).toHaveCount(0);
   await expect(
-    page.locator('.ft-narrow-sheet__item', {
-      hasText: /Honesty Check-in|诚实补登/i
-    })
-  ).toHaveCount(0);
+    page.locator('.ft-narrow-sheet__item[data-proxy="honesty"]')
+  ).toHaveCount(1);
 
   // How shall we sit? must stage companion options (not silent)
   await page
@@ -275,7 +280,7 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   });
 });
 
-test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async ({
+test('375 home: Five Moments on canvas; drawer Soundscape + Reminder respond', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 667 });
@@ -284,11 +289,11 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
     timeout: 15_000
   });
 
-  // Honesty lives on home canvas as a ball (not in the drawer)
+  // Right orb = Five Moments (FIVE_MOMENTS_IDLE_ENTRY), not legacy Honesty label — TEST_TRACKER 2026-09-11.
   await expect(page.locator('#ft-narrow-home-honesty')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-honesty')).toHaveAttribute(
     'aria-label',
-    /Honesty Check-in|诚实补登|Honesty/i
+    /Five moments with Yin|与阿寅的五个时刻|寅との五つの時間/i
   );
 
   await page.locator('.ft-narrow-grabber').click();
@@ -297,10 +302,8 @@ test('375 home: Honesty on canvas; drawer Soundscape + Reminder respond', async 
     'false'
   );
   await expect(
-    page.locator('.ft-narrow-sheet__item', {
-      hasText: /Honesty Check-in|诚实补登/i
-    })
-  ).toHaveCount(0);
+    page.locator('.ft-narrow-sheet__item[data-proxy="honesty"]')
+  ).toHaveCount(1);
 
   // Sound row removed — music via ActionBar ♪
   await expect(

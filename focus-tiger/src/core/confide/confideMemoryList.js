@@ -26,6 +26,8 @@ const LIST_QUESTION_RES = [
   /\blist\s+what\s+you\s+remember\b/i,
   /\bwhat\s+do\s+you\s+keep\s+(in\s+memory|about\s+me)\b/i,
   /你还?记得(?:我)?(?:些什么|什么|哪些)/,
+  /列出记忆/,
+  /列出記憶/,
   /给我看(?:看)?你记(?:得|住)的/,
   /你记住了什么/,
   /你記(?:得|住)了?什麼/,

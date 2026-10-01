@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   openFreshProductShell,
   quickStartFocus,
@@ -22,6 +23,7 @@ test.describe('MilestoneGlow product path', () => {
     await openFreshProductShell(page, {
       query: { sessionMinutes: 1, qaSeedStreak: 6 }
     });
+    await dismissColdStartOverlay(page);
     await expect
       .poll(
         async () =>
@@ -74,13 +76,17 @@ test.describe('MilestoneGlow product path', () => {
     }
 
     await quickStartFocus(page);
-    await page.waitForTimeout(1500);
-    const claims = await page.evaluate(
-      () =>
-        [...window.__milestoneGlowStore.getPlayedIds()].filter(
-          (id) => id === 'streak-7'
-        ).length
-    );
-    expect(claims).toBe(1);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () =>
+              [...window.__milestoneGlowStore.getPlayedIds()].filter(
+                (id) => id === 'streak-7'
+              ).length
+          ),
+        { timeout: 10_000 }
+      )
+      .toBe(1);
   });
 });

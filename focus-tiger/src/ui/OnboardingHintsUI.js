@@ -28,6 +28,7 @@ import {
 import {
   markWellnessDisclaimerSeen
 } from '../core/wellnessDisclaimerGate.js';
+import { hasSeenColdStartGoalCard } from '../core/coldStartGoalGate.js';
 import {
   HINT_LOCALE_KEYS,
   createHintsSeenStore
@@ -448,6 +449,9 @@ export class OnboardingHintsUI {
    * @param {ReturnType<typeof createHintsSeenStore>} [options.store]
    * @param {() => object} [options.getScene]
    * @param {() => void} [options.onWellnessFirstDismiss]
+   * @param {() => void} [options.onPurposeOpen]
+   * @param {() => void} [options.onPurposeClose]
+   * @param {() => void} [options.onTodayDirection]
    * @param {Storage | null} [options.storage]
    */
   constructor(
@@ -458,6 +462,7 @@ export class OnboardingHintsUI {
       onWellnessFirstDismiss = null,
       onPurposeOpen = null,
       onPurposeClose = null,
+      onTodayDirection = null,
       storage = null
     } = {}
   ) {
@@ -466,6 +471,7 @@ export class OnboardingHintsUI {
     this.onWellnessFirstDismiss = onWellnessFirstDismiss;
     this.onPurposeOpen = onPurposeOpen;
     this.onPurposeClose = onPurposeClose;
+    this.onTodayDirection = onTodayDirection;
     this._storage =
       storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -1902,6 +1908,17 @@ export class OnboardingHintsUI {
 
     desktopRam.append(desktopRamTitle, desktopRamBody);
 
+    const todayDirection = document.createElement('button');
+    todayDirection.type = 'button';
+    todayDirection.className = 'onboarding-app-purpose__today-direction';
+    todayDirection.dataset.testid = 'onboarding-purpose-today-direction';
+    todayDirection.hidden = true;
+    todayDirection.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._openTodayDirectionFromPurpose();
+    });
+
     const actions = document.createElement('div');
     actions.className = 'onboarding-app-purpose__actions';
 
@@ -1939,7 +1956,15 @@ export class OnboardingHintsUI {
     colophon.append(colophonMark, colophonByline, colophonCopy);
 
     actions.append(privacy, dismiss);
-    card.append(title, body, wellness, desktopRam, actions, colophon);
+    card.append(
+      title,
+      body,
+      wellness,
+      desktopRam,
+      todayDirection,
+      actions,
+      colophon
+    );
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
@@ -1949,6 +1974,7 @@ export class OnboardingHintsUI {
     this._purposeDesktopRamEl = desktopRam;
     this._purposeDesktopRamTitleEl = desktopRamTitle;
     this._purposeDesktopRamBodyEl = desktopRamBody;
+    this._purposeTodayDirectionEl = todayDirection;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
     this._purposeColophonMarkEl = colophonMark;
@@ -1990,6 +2016,21 @@ export class OnboardingHintsUI {
       this._purposeDesktopRamBodyEl.textContent = t(
         'HINT_APP_PURPOSE_DESKTOP_RAM_BODY'
       );
+    }
+    if (this._purposeTodayDirectionEl) {
+      const showTodayDirection =
+        typeof this.onTodayDirection === 'function' &&
+        hasSeenColdStartGoalCard(this._storage);
+      this._purposeTodayDirectionEl.hidden = !showTodayDirection;
+      if (showTodayDirection) {
+        this._purposeTodayDirectionEl.textContent = t(
+          'TODAY_DIRECTION_MENU_LABEL'
+        );
+        this._purposeTodayDirectionEl.setAttribute(
+          'aria-label',
+          t('TODAY_DIRECTION_MENU_LABEL')
+        );
+      }
     }
     if (this._purposePrivacyEl) {
       this._purposePrivacyEl.textContent = t('HINT_APP_PURPOSE_PRIVACY');
@@ -2440,6 +2481,14 @@ export class OnboardingHintsUI {
     this.onPurposeOpen?.();
   }
 
+  _openTodayDirectionFromPurpose() {
+    if (typeof this.onTodayDirection !== 'function') return;
+    this._hidePurposeCard();
+    window.requestAnimationFrame(() => {
+      this.onTodayDirection?.();
+    });
+  }
+
   _hidePurposeCard() {
     this._cancelPurposeHoverHide();
     if (this.purposeBackdrop) {
@@ -2833,6 +2882,29 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose__wellness-link:hover {
         color: #2f463c;
+      }
+      .onboarding-app-purpose__today-direction {
+        appearance: none;
+        display: block;
+        width: 100%;
+        margin: 0 0 10px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.45;
+        color: #3f5c50;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        cursor: pointer;
+      }
+      .onboarding-app-purpose__today-direction:hover {
+        color: #2f463c;
+      }
+      .onboarding-app-purpose__today-direction[hidden] {
+        display: none !important;
       }
       .onboarding-wellness-detail {
         position: fixed;

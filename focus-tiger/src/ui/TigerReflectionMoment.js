@@ -64,6 +64,7 @@ import {
   REFLECTION_COMPANION_GENERATE_PURPOSE
 } from '../core/reflectionCompanionValidation.js';
 import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
+import { VoiceInputChrome } from './VoiceInputChrome.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
@@ -248,6 +249,8 @@ export class TigerReflectionMoment {
     this._reflectionCompanionSettled = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
+    /** @type {VoiceInputChrome | null} */
+    this._voiceInputChrome = null;
 
     this._unsubscribeLocale = onLocaleChange(() => this._refreshTexts());
   }
@@ -467,6 +470,11 @@ export class TigerReflectionMoment {
     this.questionBlockEl.appendChild(this.questionEl);
     this.questionBlockEl.appendChild(this.benefitHintEl);
     this.questionBlockEl.appendChild(this.inputEl);
+    this._voiceInputChrome = new VoiceInputChrome({
+      textarea: this.inputEl,
+      mountParent: this.questionBlockEl,
+      testIdPrefix: 'reflection-voice-input'
+    });
     this.questionBlockEl.appendChild(this.companionEchoEl);
     this.questionBlockEl.appendChild(this.companionObservationEl);
     this.questionBlockEl.appendChild(this.companionInviteBtn);
@@ -715,6 +723,7 @@ export class TigerReflectionMoment {
     const applyStep = () => {
       this._refreshTexts();
       this.inputEl.value = '';
+      this._voiceInputChrome?.reset();
       this.dotEls.forEach((dot, i) => {
         dot.style.background =
           i === this.flow.stepIndex
@@ -797,6 +806,7 @@ export class TigerReflectionMoment {
   /** Completion landing: Calm Action out, Daily Wisdom in; footer stays for dismiss. */
   _enterWisdomHold() {
     this._awaitingWisdomHold = true;
+    this._voiceInputChrome?.reset();
     if (this.root) this.root.dataset.wisdomHold = 'true';
     if (this.questionBlockEl) {
       this.questionBlockEl.hidden = true;
@@ -824,6 +834,7 @@ export class TigerReflectionMoment {
   /** Keep last-question echo on screen; input becomes read-only. */
   _enterLastEchoHold() {
     this._awaitingLastEchoHold = true;
+    this._voiceInputChrome?.reset();
     if (this.root) this.root.dataset.lastEchoHold = 'true';
     if (this.inputEl) {
       this.inputEl.readOnly = true;
@@ -913,6 +924,8 @@ export class TigerReflectionMoment {
   _teardownDom() {
     this._popEscapeLayer?.();
     this._popEscapeLayer = null;
+    this._voiceInputChrome?.destroy();
+    this._voiceInputChrome = null;
     this.root?.remove();
     this.root = null;
     this.echoEl = null;

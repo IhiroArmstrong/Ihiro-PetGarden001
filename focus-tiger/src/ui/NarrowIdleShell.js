@@ -24,6 +24,8 @@ import {
 } from './homeChromeClearance.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
+import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
+import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
@@ -104,6 +106,7 @@ export class NarrowIdleShell {
     this._idle = true;
     this._suppressed = false;
     this._keepQuickStart = false;
+    this._honestyBridgeActive = false;
     this._sheetOpen = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
@@ -158,6 +161,11 @@ export class NarrowIdleShell {
    */
   refreshSecondaryHintDots() {
     if (this._sheetOpen) this._refreshDrawerItems();
+  }
+
+  /** Re-sync home ball labels + sanctuary nav pulse after first fan open. */
+  refreshHomeCtas() {
+    this._refreshHomeCtas();
   }
 
   /**
@@ -243,13 +251,14 @@ export class NarrowIdleShell {
    *   Honesty, but **keep ActionBar + Quick Start** (W3 — ⚡ only).
    * Legacy dock stays parked either way.
    * @param {boolean} suppressed
-   * @param {{ keepQuickStart?: boolean }} [opts]
+   * @param {{ keepQuickStart?: boolean, honestyBridgeActive?: boolean }} [opts]
    * @returns {void}
    */
   setSuppressed(suppressed, opts = {}) {
     this._suppressed = Boolean(suppressed);
     this._keepQuickStart =
       Boolean(opts.keepQuickStart) && this._suppressed;
+    this._honestyBridgeActive = Boolean(opts.honestyBridgeActive);
     if (this._suppressed) {
       this.closeSheet();
       // Arrival / Honesty suppress must not park an already-expanded Companion
@@ -389,6 +398,10 @@ export class NarrowIdleShell {
         Boolean(this._suppressed) && !keepQs
       );
       this.shell.classList.toggle('is-arrival-quick', keepQs);
+      this.shell.classList.toggle(
+        'is-honesty-bridge',
+        Boolean(this._honestyBridgeActive)
+      );
     }
     if (!narrow || this._suppressed) this.closeSheet();
     if (narrow) {
@@ -428,6 +441,9 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
+      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sanctuary-nav" data-proxy="sanctuary-nav" aria-label="">
+        ${SANCTUARY_NAV_COMPASS_SVG}
+      </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -475,6 +491,9 @@ export class NarrowIdleShell {
     this.stateEl = this.actionBar.querySelector('[data-role="state"]');
     this.listEl = this.sheet.querySelector('[data-role="list"]');
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
+    this.sanctuaryNavHomeBtn = this.homeCtas.querySelector(
+      '#ft-narrow-home-sanctuary-nav'
+    );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
     this.honestyHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-honesty');
@@ -485,6 +504,12 @@ export class NarrowIdleShell {
 
   /** @returns {void} */
   _attachHomeGlassTips() {
+    if (this.sanctuaryNavHomeBtn) {
+      this._sanctuaryNavHomeTip = attachGlassHoverTip(this.sanctuaryNavHomeBtn, {
+        placement: 'top',
+        tipId: 'ft-narrow-home-sanctuary-nav-tip'
+      });
+    }
     if (this.quickHomeBtn) {
       this._quickHomeTip = attachGlassHoverTip(this.quickHomeBtn, {
         placement: 'top',
@@ -727,11 +752,24 @@ export class NarrowIdleShell {
   /**
    * Keep home Quick Start / Sit / Honesty enablement in sync with
    * the parked legacy controls they proxy. Balls use icons + aria-label.
-   * Order on canvas: Quick Start · Sit with Yin · Honesty.
+   * Order on canvas: Today direction · Quick Start · Sit with Yin · Honesty.
    * @returns {void}
    */
   _refreshHomeCtas() {
     if (!this.homeCtas) return;
+
+    if (this.sanctuaryNavHomeBtn) {
+      const navLabel = t('SANCTUARY_NAV_ARIA');
+      this.sanctuaryNavHomeBtn.setAttribute('aria-label', navLabel);
+      this._sanctuaryNavHomeTip?.setText(navLabel);
+      this.sanctuaryNavHomeBtn.hidden = Boolean(this._keepQuickStart);
+      this.sanctuaryNavHomeBtn.disabled = false;
+      this.sanctuaryNavHomeBtn.setAttribute('aria-disabled', 'false');
+      syncHomeSanctuaryNavPulse(
+        this.sanctuaryNavHomeBtn,
+        this.handlers.shouldShowSanctuaryNavPulse?.() === true
+      );
+    }
 
     const focusEl = document.getElementById('btn-focus');
     if (this.sitHomeBtn) {
@@ -936,6 +974,18 @@ export class NarrowIdleShell {
       this.handlers.onLanguage?.();
       return;
     }
+    if (key === 'sanctuary-nav') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onSanctuaryNav?.();
+      return;
+    }
+    if (key === 'today-direction') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onTodayDirection?.();
+      return;
+    }
     if (key === 'ground-exercise') {
       this.closeSheet();
       this.clearStage();
@@ -1070,6 +1120,16 @@ export class NarrowIdleShell {
       this.handlers.onRitualFlow?.(key);
       return;
     }
+    if (key === 'sanctuary-nav') {
+      this.handlers.onSanctuaryNav?.();
+      return;
+    }
+    if (key === 'today-direction') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onTodayDirection?.();
+      return;
+    }
     if (key === 'quickstart') {
       this.handlers.onQuickStart?.();
       return;
@@ -1125,6 +1185,12 @@ export class NarrowIdleShell {
       .ft-narrow-idle-shell.is-arrival-quick .ft-narrow-grabber {
         display: none !important;
       }
+      /* Honesty bridge: hide grabber (z30 covers Yes/No); overlay-suppress keeps escape hatch */
+      .ft-narrow-idle-shell.is-honesty-bridge .ft-narrow-grabber {
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sanctuary-nav,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
         display: none !important;
@@ -1298,6 +1364,25 @@ export class NarrowIdleShell {
         pointer-events: none;
         user-select: none;
         -webkit-user-drag: none;
+      }
+      .ft-narrow-home-ctas__btn.is-text {
+        border-radius: 50%;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: rgba(255, 252, 245, 0.72);
+        line-height: 1.1;
+        color: rgba(74, 58, 40, 0.9);
+        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.08);
+      }
+      .ft-narrow-home-ctas__text {
+        display: block;
+        max-width: 56px;
+        padding: 0 4px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-align: center;
+        pointer-events: none;
+        user-select: none;
       }
       .ft-narrow-grabber {
         position: absolute;

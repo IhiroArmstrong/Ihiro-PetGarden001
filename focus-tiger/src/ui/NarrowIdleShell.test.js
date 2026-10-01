@@ -49,6 +49,16 @@ test('narrow grabber keeps swipe aria-label but hides visible hint text', () => 
   assert.match(src, /\.ft-narrow-grabber::before/);
 });
 
+test('narrow home CTAs lead with sanctuary-nav compass ball', () => {
+  assert.match(src, /id="ft-narrow-home-sanctuary-nav"/);
+  assert.match(src, /data-proxy="sanctuary-nav"/);
+  assert.match(src, /SANCTUARY_NAV_ARIA/);
+  assert.match(
+    src,
+    /#ft-narrow-home-sanctuary-nav[\s\S]*#ft-narrow-home-quickstart/
+  );
+});
+
 test('openSheet dismisses idle visual-primary overlays before opening drawer', () => {
   assert.match(src, /_dismissIdleVisualPrimaryOverlays/);
   assert.match(

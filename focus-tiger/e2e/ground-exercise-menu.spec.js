@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import { openFreshProductShell } from './helpers/product-shell.js';
 
 test('idle more menu opens ground exercise choice and starts feel-the-ground', async ({
@@ -11,20 +12,7 @@ test('idle more menu opens ground exercise choice and starts feel-the-ground', a
 }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await openFreshProductShell(page);
-  await page.evaluate(() => {
-    try {
-      localStorage.setItem('focus-tiger.cold-start-goal-seen.v1', '1');
-      localStorage.setItem('focus-tiger.five-moments-compass-seen.v1', '1');
-    } catch {
-      /* ignore */
-    }
-    window.__coldStartGoalCard?.close?.();
-    window.__fiveMomentsCompass?.close?.();
-    window.__flowerBlowWelcomeBubble?.hide?.({ immediate: true });
-  });
-  await expect(page.locator('#cold-start-goal-card')).toBeHidden({
-    timeout: 25_000
-  });
+  await dismissColdStartOverlay(page);
 
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');

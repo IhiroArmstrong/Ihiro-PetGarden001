@@ -1,0 +1,1 @@
+| Confide 知识库路由闸门 Brief PO 锁（第4条改空态） | 纯文档 | 仅单元测试覆盖 | **无用户路径。** 本条验收的是 Brief 已按 PO 点头改锁：冷启动未就绪与未命中同一套诚实空态，禁止 fail-open 到 generate。不代表闸门已接线。 | — | — | — | `docs/task-briefs/task-confide-kb-routing-gate.md` | 2026-09-22 |

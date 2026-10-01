@@ -10,6 +10,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  FOCUS_DURATION_MODE_OPEN,
   FOCUS_DURATION_OPTIONS_MINUTES,
   normalizeFocusDurationMinutes
 } from '../core/focusDuration.js';
@@ -25,6 +26,7 @@ import {
   createFocusCoinsDurationHint,
   readFocusCoinsHintSearch
 } from './focusCoinsDurationHint.js';
+import { VoiceCommandChrome } from './VoiceCommandChrome.js';
 
 const PANEL_CSS = [
   'position:absolute',
@@ -73,12 +75,19 @@ export class FocusDurationPickerUI {
   /**
    * @param {{
    *   onDurationSelected?: (minutes: number) => void,
+   *   onOpenEndedSelected?: () => void,
+   *   onVoiceStartFixed?: (minutes: number) => void,
+   *   onVoiceStartOpen?: () => void,
    *   onLeave?: () => void,
-   *   preferredMinutes?: () => number
+   *   preferredMinutes?: () => number,
+   *   preferredMode?: () => 'fixed' | 'open',
+   *   showOpenEnded?: () => boolean
    * }} [handlers]
    */
   constructor(handlers = {}) {
     this.handlers = handlers;
+    /** @type {VoiceCommandChrome | null} */
+    this.voiceCommandChrome = null;
     /** @type {'hidden' | 'pick'} */
     this.phase = 'hidden';
     /** @type {HTMLElement | null} */
@@ -120,6 +129,8 @@ export class FocusDurationPickerUI {
 
   dispose() {
     this._unsubLocale?.();
+    this.voiceCommandChrome?.destroy();
+    this.voiceCommandChrome = null;
     this._teardown();
   }
 
@@ -131,6 +142,12 @@ export class FocusDurationPickerUI {
     this.phase = 'hidden';
     this._teardown();
     this.handlers.onDurationSelected?.(mins);
+  }
+
+  selectOpenEnded() {
+    this.phase = 'hidden';
+    this._teardown();
+    this.handlers.onOpenEndedSelected?.();
   }
 
   _ensureRoot() {
@@ -155,6 +172,8 @@ export class FocusDurationPickerUI {
   }
 
   _teardown() {
+    this.voiceCommandChrome?.destroy();
+    this.voiceCommandChrome = null;
     this.root?.remove();
     this.root = null;
   }
@@ -174,11 +193,39 @@ export class FocusDurationPickerUI {
         : 'focus-duration-floor-hint'
     );
 
+    const titleBlock = document.createElement('div');
+    titleBlock.style.cssText = 'margin-bottom:6px;';
+
+    const titleRow = document.createElement('div');
+    titleRow.style.cssText =
+      'display:flex;align-items:flex-start;justify-content:center;gap:10px;';
+
     const title = document.createElement('div');
     title.id = 'focus-duration-picker-title';
     title.style.cssText =
-      'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:6px;font-weight:560;';
+      'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;font-weight:560;flex:1 1 auto;';
     title.textContent = t('focus_duration.pick');
+    titleRow.append(title);
+
+    const voiceAskSlot = document.createElement('div');
+    voiceAskSlot.dataset.testid = 'voice-command-ask-slot';
+    titleBlock.append(titleRow, voiceAskSlot);
+
+    this.voiceCommandChrome?.destroy();
+    this.voiceCommandChrome = new VoiceCommandChrome({
+      mountParent: titleRow,
+      askMountParent: voiceAskSlot,
+      showOpenEnded: () => this.handlers.showOpenEnded?.() === true,
+      onOutcome: (outcome) => {
+        if (outcome.kind === 'start_fixed' && typeof outcome.minutes === 'number') {
+          this.handlers.onVoiceStartFixed?.(outcome.minutes);
+          return;
+        }
+        if (outcome.kind === 'start_open') {
+          this.handlers.onVoiceStartOpen?.();
+        }
+      }
+    });
 
     const hint = document.createElement('p');
     hint.id = 'focus-duration-floor-hint';
@@ -195,13 +242,15 @@ export class FocusDurationPickerUI {
     const preferred = normalizeFocusDurationMinutes(
       this.handlers.preferredMinutes?.() ?? 25
     );
+    const preferredMode = this.handlers.preferredMode?.() ?? 'fixed';
+    const showOpenEnded = this.handlers.showOpenEnded?.() === true;
 
     for (const minutes of FOCUS_DURATION_OPTIONS_MINUTES) {
       const chip = document.createElement('button');
       chip.type = 'button';
       chip.style.cssText = CHIP_CSS;
       chip.dataset.focusDurationMinutes = String(minutes);
-      if (minutes === preferred) {
+      if (preferredMode !== FOCUS_DURATION_MODE_OPEN && minutes === preferred) {
         chip.dataset.focusDurationPreferred = '1';
         chip.style.borderColor = 'rgba(107,58,46,.55)';
         chip.style.fontWeight = '650';
@@ -214,6 +263,21 @@ export class FocusDurationPickerUI {
       row.appendChild(chip);
     }
 
+    if (showOpenEnded) {
+      const openChip = document.createElement('button');
+      openChip.type = 'button';
+      openChip.style.cssText = CHIP_CSS;
+      openChip.dataset.focusDurationMode = FOCUS_DURATION_MODE_OPEN;
+      if (preferredMode === FOCUS_DURATION_MODE_OPEN) {
+        openChip.dataset.focusDurationPreferred = '1';
+        openChip.style.borderColor = 'rgba(107,58,46,.55)';
+        openChip.style.fontWeight = '650';
+      }
+      openChip.textContent = t('focus_duration.open_chip');
+      openChip.addEventListener('click', () => this.selectOpenEnded());
+      row.appendChild(openChip);
+    }
+
     const leave = document.createElement('button');
     leave.type = 'button';
     leave.style.cssText = `${QUIET_BTN_CSS};display:block;margin:0 auto;`;
@@ -221,7 +285,7 @@ export class FocusDurationPickerUI {
     leave.textContent = t('focus_duration.leave');
     leave.addEventListener('click', () => this.leave());
 
-    const parts = [title, hint, row];
+    const parts = [titleBlock, hint, row];
     if (coinsHint) parts.push(coinsHint);
     parts.push(leave);
     this.root.append(...parts);

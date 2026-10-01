@@ -33,6 +33,17 @@
 | 实验室根目录 | `/tmp/ft-l0-lab/` |
 | 档案对照脚本（0.6B Q4 bartowski ↔ 4B） | `/tmp/ft-l0-qwen3-4b-lab.mjs` |
 | 新候选脚本（一次跑一个 key） | `/tmp/ft-l0-candidate-lab.mjs` |
+| L3 观察句对照（#823 · baseline / B / A） | `/tmp/ft-l0-l3-observe-b-lab.mjs` |
+| L3 观察翼陈词滥调语义护栏（#823 · Brief） | `focus-tiger/docs/task-briefs/task-l3-observe-cliche-semantic-guard.md` |
+| KB 路由回归矩阵（无 GGUF） | `focus-tiger/src/core/confide/confideKbRoutingMatrix.js` · `node --test src/core/confide/confideKbRoutingMatrix.test.js` |
+| KB 矩阵第二轮 probe 候选（真实未命中 · 无 GGUF） | `cd focus-tiger && npm run audit:confide-kb-matrix-probes`（扫 `kb_retrieval_miss` · CSV/JSON 在 `/tmp/ft-l0-lab/` · **禁止**头脑风暴造问法） |
+| Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
+| 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
+| L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |
+| Stage 2 live 冷启动探针（Prompt 8） | `focus-tiger/desktop/scripts/l0-semantic-live-coldstart-probe.js` |
+| Voice Input Slice 0 探针（Speak-to-type · macOS on-device STT） | `focus-tiger/desktop/scripts/voice-input-probe.js` · `focus-tiger/desktop/voiceInput/` · Brief `task-voice-input-v1.md` |
+| System TTS Slice 0 探针（macOS AVSpeechSynthesizer · 无麦） | `focus-tiger/desktop/scripts/system-tts-probe.js` · `focus-tiger/desktop/systemTts/` · Brief `task-system-tts-v1.md` |
+| L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |
 | 每次跑完的机器 JSON | `/tmp/ft-l0-lab/compare-<epoch-ms>.json` |
 | 对照表（只追加，不另起格式） | `/tmp/ft-l0-lab/compare-tables.md` |
 | 必须 `cd`、必须从这里 `import` | `/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop` |
@@ -55,8 +66,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_LAB_ONLY` | `0.6` 或 `4b` | 档案脚本只跑 0.6B 或只跑 4B |
 | `FT_LAB_4B_SOURCE` | `unsloth`（缺省 = bartowski dest） | 档案脚本换 4B 的 URL / dest |
 | `FT_LAB_CANDIDATE` | `0.6q5` 或 `1.7q4` | 候选脚本选哪一条 |
-| `FT_TOOL_CALL_GGUF` | 可选 · 绝对路径 | tool-call 探针 GGUF；缺省 = 生产 `l0Config.js` 当前 filename（默认 `…/companion-l0/Gemma-4-E4B-it-Q4_K_M.gguf`；回退 `qwen3-1.7b` 时为 `Qwen3-1.7B-Q4_K_M.gguf`） |
-| `FT_COMPANION_L0_MODEL` | 可选 | 生产 L0 profile：`gemma4-e4b`（默认）· `qwen3-1.7b`（回退）。实验室 intent/tool-call 仍可用 `FT_*_GGUF` 指向旧 1.7B。 |
+| `FT_TOOL_CALL_GGUF` | 可选 · 绝对路径 | tool-call 探针 GGUF；缺省 = 生产 `l0Config.js` 当前 filename（默认 `…/companion-l0/Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf`；回退 `gemma4-e4b-jc` 时为 `Gemma-4-E4B-it-Q4_K_M.gguf`；`qwen3-1.7b` 时为 `Qwen3-1.7B-Q4_K_M.gguf`） |
+| `FT_COMPANION_L0_MODEL` | 可选 | 生产 L0 profile：`gemma4-e4b`（默认 · unsloth QAT）· `gemma4-e4b-jc`（回退 jc-builds）· `qwen3-1.7b`（回退 1.7B）。实验室 intent/tool-call 仍可用 `FT_*_GGUF` 指向旧 1.7B。 |
 | `FT_TOOL_CALL_MAX_TOKENS` | 可选 · 整数 | tool-call 探针 `maxTokens`；缺省 = `L0_MAX_TOKENS` |
 | `FT_INTENT_GGUF` | 可选 · 绝对路径 | Gate 0.D 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
 | `FT_INTENT_MAX_TOKENS` | 可选 · 整数 | Gate 0.D `maxTokens`；缺省 = 96 |
@@ -67,6 +78,8 @@ QA `desktop/` 里要 import 的模块：`companion/l0Probe.js`、`l0Metrics.js`�
 | `FT_CHITCHAT_RUNS` | 可选 · 整数 | #774 方差探针每条样本重复次数（**空历史**）；缺省 = 15，合法范围 10–20 |
 | `FT_CHITCHAT_REPEATS` | 可选 · 整数 | #774 同会话连发探针每句重复次数；缺省 = 3，合法范围 2–5 |
 | `FT_CHITCHAT_GGUF` | 可选 · 绝对路径 | #774 探针 GGUF；缺省同 `FT_TOOL_CALL_GGUF` / 生产 1.7B |
+| `FT_EMBEDDING_GGUF` | 可选 · 绝对路径 | Prompt 7 语义冻表 embedding GGUF；缺省 `companion-l0/Qwen3-Embedding-0.6B-Q8_0.gguf` |
+| `FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD` | 可选 · `1` | Prompt 7 缺省路径未缓存时禁止下载，exit 2 |
 
 脚本判断：`FT_LAB_ONLY !== '4b'` 才跑 0.6B；`!== '0.6'` 才跑 4B。两个都不设 = 两个都跑。
 
@@ -116,6 +129,108 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-q
 
 结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "session-repeat"`）。同一虚拟会话内对 5 条差样本**各连发 2–5 次**（同句、累积 `_l2Turns`）；第 2 次起 `priorRepeatableYinRepliesFromHistory` 去重 + 带 history 的 `resolveCorpusFallbackAfterGenerateFailure`。与方差探针共用 fixture，**不能**用方差命令代替本探针。JSON 行字段同方差探针（含 `rawGenerate` / `sanitizePassed` / `generateError`）。
 
+**六语日常闲聊首问探针（2026-09-17 · PO 拍板 ja/en/it/de/es/fr · 仓库内脚本）**：
+
+```bash
+cd focus-tiger/desktop && npm run companion:multilang-chitchat
+```
+
+可选：`FT_MULTILANG_LOCALE=de` 只跑一种语言；`FT_CHITCHAT_GGUF` 指定 GGUF。
+
+结果：`/tmp/ft-l0-lab/compare-<epoch>.json`（`probe: "multilang-chitchat"`）。fixture：`confideMultilangChitchatFixtures.js`（**6 语 × 18 句 = 108** · 非 #774 差样本）。每句 **空历史**、只跑 1 次（供人工标注合格率）。`onTopic` 留 `null`。
+
+**Confide generate 失败回落冻表（2026-09-22 · #930 · 观察/陪伴不得 privacy 套话）**：
+
+- 真源：`confideGenerateFailureFallbackFixtures.js`（generate_fail ≥20 + corpus_control 2）
+- 文档：`docs/confide-generate-failure-fallback-acceptance.md`
+- **终端批量（推荐 · 取代有限句肉眼）**：`npm run test:confide-generate-failure-fallback` → 全表 PASS + checks 通常 **600+**（每句 24 salt + 5 同面板连发）
+- 单测：`node --test src/core/confide/confideGenerateFailureFallbackEvaluate.test.js`
+- **CI**：已并入 `npm run test:smoke` → `test:pr-smoke`
+- 人工（一次性）：Electron 宽屏 spot-check 主路径「有点烦，不想练习」+ 对照 normal corpus 仍可用 fallback-02 — 各 1–2 句
+- **纪律**：见 `testing-strategy.mdc`「Confide 问题类验收：先批量、后肉眼」
+
+**Confide 本轮肉测验收冻表（2026-09-19 · 100 句终止条件 · 主表）**：
+
+- 真源：`confideRoundAcceptanceFixtures.js`（**100 句** = 元问题 32 + 攻击 30 + 补充 38）
+- 文档：`docs/confide-round-acceptance.md`
+- **终端批量（推荐）**：`npm run test:confide-acceptance` → **100/100**（非零 exit = 回归失败）
+- 单测：`node --test src/core/confide/confideAcceptanceEvaluate.test.js`
+- **CI**：已并入 `npm run test:smoke` → `test:pr-smoke`
+- 人工（一次性）：竖线颜色 · 点击手感 — 各 1–2 句
+- **Stage 2 离线语义冻表（Prompt 7 · 2026-09-20）**：`npm run test:confide-semantic-acceptance`（或 `cd desktop && npm run companion:semantic-acceptance`）。真源：`confideSemanticExamples.js`（A/B 各 50）+ `CONFIDE_SEMANTIC_KNOWN_MISCLASS_ANCHORS`。打分 **leave-one-out**，真 Qwen3-Embedding GGUF。**不进** `test:smoke`（同六语闲聊探针：系统终端 / 夜间实验室；GitHub 无 nightly job）。结果：`/tmp/ft-l0-lab/semantic-acceptance-<epoch>.json`。可选 `FT_EMBEDDING_GGUF`；缺省生产 `companion-l0/Qwen3-Embedding-0.6B-Q8_0.gguf`（缺失时脚本会下载，除非 `FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1`）。
+- **真实影子日志导出（Prompt 8 · 2026-09-20）**：`cd focus-tiger && npm run audit:confide-semantic-shadow`（可选 `-- --file /path/to/turns.jsonl` · `--out /tmp/foo.csv`）。只扫 `kind:semantic_shadow_classify` 且 `ok:true`。终端报 **N** / **D** / **D÷N**，以及 Stage 2 live 行 **live** / **failOpen** / **semanticOk**（`kind:semantic_live_classify` · `reason` 为 `embed_not_ready` / `ok` / `timeout` 等）。分歧 CSV 默认 `/tmp/ft-l0-lab/semantic-shadow-disagreement-<epoch>.csv`（空列 `favorable_disagreement` 留给人工）。**不设 N 硬下限**；N=0 仍 exit 0。脚本**不得**写「可以切 Stage 2」。不进 `test:smoke`。缺日志时 exit 1。
+- **with-prior 不对称规则回放（2026-09-21）**：`cd focus-tiger && npm run audit:confide-prior-asymmetric`（可选 `-- --file /path/to/turns.jsonl`）。只读既有 jsonl：gray→明确桶算 help，明确桶→gray 丢掉。终端报 naive/rule help·harm。JSON：`/tmp/ft-l0-lab/semantic-prior-asymmetric-<epoch>.json`。Prompt：`task-confide-prior-asymmetric-replay.md`。不进 `test:smoke`。脚本**不得**写「可以切 Stage 2」。缺日志时 exit 1。
+
+**Stage 2 扩面候选筛选（2026-09-29）**：`cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run audit:stage2-m-screen`（可选 `-- --file sentences.txt`，一行一句）。字面桶走 `previewConfideLiteralSource`（与发送链同一套 classify + 功能工具 / 反思诚实；不含 Hybrid 大模型、不含记忆）。语义桶走真 embedding。终端标 `M_CANDIDATE` = 字面 gray 且语义 functional。JSON：`/tmp/ft-l0-lab/stage2-m-screen-<epoch>.json`。**不写** Electron `turns.jsonl`，**不算**产品路径 M。不进 `test:smoke`。缺 GGUF 时 exit 2。无 `--file` 时只跑三条自检句。
+
+**知识库近义标定（2026-09-30）**：`cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run audit:kb-near-calibrate`。对 A1–A11 和 6 句抽样打印最近条目与分数。不写 `turns.jsonl`。不进 `test:smoke`。缺 GGUF 时 exit 2。
+
+**Stage 2 小回放（2026-09-29）**：`cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run audit:stage2-m-replay`（同样 `-- --file`，一行一句；路径须是脚本能读到的绝对路径）。先走与筛选相同的字面桶 + 真 embedding，再只套 `applyConfideStage2Route`（live）。终端 `STABLE` = 仍是字面 gray 且语义 functional，且路由没被改。`ROUTE_CHANGED` = 桶仍是候选，但 live 路由被改掉。JSON：`/tmp/ft-l0-lab/stage2-m-replay-<epoch>.json`。**不含** Hybrid、**不生成回复**、**不写** `turns.jsonl`、**不算**产品路径 M。不进 `test:smoke`。缺 GGUF 时 exit 2。单测：`node --test src/core/confide/stage2MReplayDecide.test.js`。
+
+**有利分歧制造机（60 候选 · 2026-09-21）**：`cd focus-tiger/desktop && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run companion:favorable-disagreement-mill`（根目录 `npm run audit:favorable-disagreement-mill`）。真源：`confideStage2ChallengeCandidates.js`（12 簇 × 5）+ Prompt 12 historical KEEP 12。公式：Literal ≠ Golden **且** Semantic = Golden。结果：`/tmp/ft-l0-lab/favorable-disagreement-mill-<epoch>.csv` + inventory CSV + `.json`。终端报 pool / favorable / inventory unique / synthetic·real·adversarial·historical / real minimum。PO 已认 mill KEEP `reviewer=PO`。**不得**写「可以切 Stage 2」。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
+
+**L3 观察翼打乱配对批量（Prompt 13 层 B · Prompt 14 口径 · 2026-09-21）**：`cd focus-tiger && npm run test:observe-shuffle-screen`（或 `cd focus-tiger/desktop && npm run companion:observe-shuffle-screen`）。真源：`l3ObserveShuffleFixtures.js`（12 句）。真 Gemma4 L3 + Qwen3-Embedding：对每句 generate（观察翼含 sanitize + 套话守门）→ 用用户句 embedding 自动重配。JSON **双 summary**：`summary` = `scoreL3ObserveShuffleMatches`（仅 ok 行，**≥8/12**）；`observeWing` = `scoreObserveWingEffective`（emotion+habit 分母 8，**≥6/8**；exit 1 只看这把）。`chatWingGray` = ask-yin 4 句，不进 8 句分母。单次 `guard_reject_rate` 超线只 WARN，不 exit 1。连续两次口径见 JSON `guardStreak`（读既有 `observe-shuffle-*.json` 的 rate，**不**因此再跑 GGUF）。结果：`/tmp/ft-l0-lab/observe-shuffle-<epoch>.json`。单测：`node --test src/core/l3ObserveShuffleScreen.test.js`。不进 `test:smoke`。缺 L3 或 embedding GGUF 时 exit 2。**禁止**在 Agent Chat 连跑真 GGUF。流程见上文「先分类再动刀」。
+
+**Stage 2 live 冷启动探针（Prompt 8 · 2026-09-21）**：`cd focus-tiger && npm run test:semantic-live-coldstart-probe`（或 `cd focus-tiger/desktop && npm run companion:semantic-live-coldstart-probe`）。模拟 embedding gate 未 ready → `embed_not_ready` 行；`embedding_ready` 后再 classify → `ok` 行。结果：`/tmp/ft-l0-lab/semantic-live-coldstart-<epoch>.json` + `semantic-live-coldstart-turns-<epoch>.jsonl`。终端另报 `live=` / `failOpen=` / `semanticOk=`（与 `audit:confide-semantic-shadow` 同口径）。可用 `npm run audit:confide-semantic-shadow -- --file /tmp/ft-l0-lab/semantic-live-coldstart-turns-<epoch>.jsonl` 复核。单测：`node --test src/core/confide/semanticLiveColdstartProbe.test.js`。不进 `test:smoke`。缺 embedding GGUF 时 exit 2。
+
+**Voice Input Slice 0 探针（2026-09-24 · Brief 已锁 · macOS on-device STT）**：
+
+```bash
+cd focus-tiger/desktop && npm run companion:voice-input-probe
+```
+
+Gate-only JSON：`/tmp/ft-l0-lab/voice-input-gate-<epoch>.json`（`gatePassed` = `onDeviceSupported` **且** `recognizerAvailable`；Swift 侧 `requiresOnDeviceRecognition = true`）。**须系统终端**（编译 `native/macos-speech-helper.swift` → `/tmp/ft-l0-lab/macos-speech-helper`）。
+
+实验室 UI（不改产品三处输入框）：
+
+```bash
+cd focus-tiger/desktop && npm run companion:voice-input-probe -- --ui
+```
+
+Speak → 0–1s 内 `Listening` → Stop → 转写进实验室 textarea。单测 mock Provider：`node --test voiceInput/speechProvider.test.js`（在 `desktop/` 目录）。**不进** `test:smoke`；**禁止**真麦绑 CI。Brief：`task-briefs/task-voice-input-v1.md` §Slice 0。
+
+**Confide 元问题验收冻表（2026-09-19 · 记忆/时长/反思路由 · 子表）**：
+
+- 真源：`confideMetaQueryAcceptanceFixtures.js`（**32 句** · 6 桶）
+- 文档：`docs/confide-meta-query-acceptance.md`
+- **终端批量**：`npm run test:confide-acceptance -- --suites=meta` → **32/32**
+- 单测：同上 · `confideAcceptanceEvaluate.test.js`
+
+**Confide 攻击他人 / 安全边界验收冻表（2026-09-19 · aggression / safety · 子表）**：
+
+- 真源：`confideAggressionAcceptanceFixtures.js`（**30 句** · 3 路由）
+- 文档：`docs/confide-aggression-acceptance.md`
+- **终端批量**：`npm run test:confide-acceptance -- --suites=aggression` → **30/30**
+- 单测：同上 · `confideAcceptanceEvaluate.test.js`
+
+**Gemma4-E4B 六语 jc vs unsloth A/B（2026-09-17 · 仓库内脚本）**：
+
+```bash
+cd focus-tiger/desktop && npm run companion:gemma4-multilang-ab
+```
+
+jc 默认：`~/Library/Application Support/Focus Tiger/companion-l0/Gemma-4-E4B-it-Q4_K_M.gguf`。unsloth 默认：`/tmp/ft-l0-lab/Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf`（或 `FT_GEMMA4_UNSLOTH_GGUF`）。须 `reasoning:false`（#802 已合 · 陷阱 #14）。
+
+输出：`compare-<epoch>-jc.json` · `compare-<epoch>-un.json` · `gemma4-multilang-ab-summary-<epoch>.json` · `multilang-chitchat-annotate-<epoch>.md` · `.csv`（人工标 `onTopic_jc` / `onTopic_un`）。
+
+**L3 观察句对照（2026-09-18 · #823 · 仓库外脚本）**：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && node /tmp/ft-l0-l3-observe-b-lab.mjs
+```
+
+`FT_L3_VARIANTS=baseline,scheme-b`（缺省）或 `scheme-a` / `scheme-b-neg,scheme-a-neg`。直 `buildCompanionL2Prompt` + `loadModelHold.generate`，**不走** Confide 路由。结果：`compare-<epoch>.json`。打分写 Brief `task-l3-observe-prompt-redesign.md` §7–§8，本文不抄原句。
+
+**L3 观察句沙盒（#823 · `/tmp` 脚本，不改生产 prompt）**：
+
+```bash
+cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger/desktop && FT_L3_VARIANTS=scheme-b-neg2,scheme-a-neg2 node /tmp/ft-l0-l3-observe-b-lab.mjs
+```
+
+脚本：`/tmp/ft-l0-l3-observe-b-lab.mjs`。分数与句表只写 `task-briefs/task-l3-observe-prompt-redesign.md`，**不要**把答句抄进本文。变体名带 `neg2` 等后缀，避免覆盖既有 `compare-*.json`。
+
+**L3 观察翼陈词滥调语义护栏（2026-09-20 · Brief 已锁 · 运行时未开工）**：规格 `task-briefs/task-l3-observe-cliche-semantic-guard.md`。标定脚本尚未入库；开工后挂 Prompt 7 同款仓库 npm + `/tmp/ft-l0-lab/`，复用 `FT_EMBEDDING_GGUF` / Qwen3-Embedding-0.6B，**不进** `test:smoke`。
+
 **Yin Intent Diagnostic（2026-08-31 · Gate 0.D · 仓库内脚本）**：
 
 合 develop 后先同步 QA worktree：`cd focus-tiger && npm run sync:qa-develop`。
@@ -152,6 +267,25 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 
 ---
 
+## 3.1 先分类再动刀（Prompt 14 · 2026-09-21）
+
+实验室 JSON 出来后，**先给每条夹具贴类，再决定改 prompt、sanitize、还是打分**。禁止拿 12 句混分去开观察翼修刀，也禁止把 chat 翼 miss 写成夹具白名单。
+
+1. **先分翼**：`emotion`/`habit` = 观察翼（分母固定 8）；`ask-yin` = chat 翼（#874，进 gray 表，**不进** 8 句分母）。
+2. **观察翼再贴四类**（函数 `classifyObserveWingOutcome` / `scoreObserveWingEffective`）：
+   - `shuffle_hit` / `shuffle_miss`：`ok` 且做了 embedding 配对
+   - `guard_pass`：`sanitize_rejected` 或 `observe_cliche` 拒收（算有效通过）
+   - `fail`：`empty` / `generate_error` / `shuffle_miss`
+   - **禁止**把 `clicheSkipped`（embedding fail-open）算 `guard_pass`；summary 单独报 `guard_skipped`
+3. **再选尺子**（两把并存，互不替代）：
+   - §12 全量：`scoreL3ObserveShuffleMatches`，仅 `ok` 行进 shuffle，**≥8/12**
+   - 观察翼有效：`scoreObserveWingEffective`，**≥6/8**。本刀关单看这把；§12 未过不阻塞口径刀
+4. **监控与 effective 分开报**：`guard_reject_rate = (sanitize + cliche 拒收) / 8`。单次 >25% 或 >50% 只 WARN，**不** exit 1。连续 2 次 >25% 告警不阻断；连续 2 次 >50% **不得关 #823**。
+5. **chat 翼 miss → gray 表**，备注写方法论根因（答句↔用户句最近邻对短事实答句天然测不准），不是这几句例外。
+6. **质量清单 ≠ 本刀 fail**：如同句撞车（`e-motions` ↔ `e-mind-away`）记 Brief 质量项，**不得**假装已修好，也**不得**本刀顺手改观察翼 prompt。
+
+---
+
 ## 4. 已知技术陷阱
 
 1. **bartowski 与 unsloth 不得写同一 dest。** 两份 4B Q4 只差几百字节；混用同一文件名会把换源对照作废。unsloth 必须用 `*-unsloth.gguf`。
@@ -162,12 +296,20 @@ L0 闸值以 `l0Config.js` 为准（TTFT / decode）。实验室脚本把 `rafP9
 6. **从 QA 树 import，不要从主仓。** 主仓 `desktop/companion` 导出名曾和 QA 树对不上。档案脚本里 `l0Download.js` 若仍指向主仓，改回 QA `DESKTOP`。
 7. **Cursor 沙箱没有 Metal。** 会 `ggml_metal_init: failed to create command queue`；CPU 回退还可能去编 llama。只在系统终端跑。
 8. **`'</s>'` 控制符警告不是质量失败证据。** 0.6B 与 4B 都出现过；有警告仍可能出正常句子。
-9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。`companion:ja-chitchat-variance` = 空历史方差；`companion:ja-chitchat-session-repeat` = 同会话连发去重/回落——二者不可互换。
+9. **实验室七问 ≠ 产品面板。** 空历史 + `LlamaChatSession`；不能用实验室句子宣称面板已修好。`companion:ja-chitchat-variance` = 空历史方差；`companion:ja-chitchat-session-repeat` = 同会话连发去重/回落——二者不可互换。`companion:confide-latency` = 多轮 L3 延迟（TTFT+total+promptChars · 生产 `loadModelHold`）；**不能**代替 Electron 全栈秒表，须对照面板 IPC 开销。
+
+```bash
+cd focus-tiger/desktop && npm run companion:confide-latency
+FT_LATENCY_ROUNDS=15 npm run companion:confide-latency
+```
+
+结果：`/tmp/ft-l0-lab/confide-latency-<epoch>.json`（`probe: "confide-latency"`）。
 10. **实验室 dest ≠ 生产缓存。** 不要把 `/tmp/ft-l0-lab/` 和下到 `~/Library/Application Support/Focus Tiger/companion-l0/` 的文件当成同一份。
 11. **Electron `userData` ≠ 生产 GGUF 目录。** 开发态 Electron 的 `app.getPath('userData')` 是 `~/Library/Application Support/focus-tiger-desktop/`。L1 必须与探针共用 `Focus Tiger/companion-l0/`；若指到 `focus-tiger-desktop/companion-l0/`，已装好的 Gemma 会再下一遍，面板会一直显示「ダウンロード」。
 12. **tool-call 探针 ≠ 生产路由。** 探针评全量 id 假阳性；生产 Read Hybrid 用 `buildConfideReadHybridPrompt`（无 forget），见 `confideReadHybrid.js`。
 13. **intent diagnostic ≠ 生产 L3。** `companion:intent-diagnostic` 禁止 Yin 口吻；结论只拆模型 vs routing，**不得**据此改默认 GGUF。
 14. **换模后 `No sequences left`。** Qwen 用每轮 `disposeSequence` 清 KV；Gemma-4-E4B 会在下一次 `getSequence()` 抛错，探针/面板就会整段茶句回落。产品 `loadModelHold`、intent/tool-call 探针、1.7B spike 一律走 `openFreshChatSession`（池空则 `createContext` 重建）。**不要**只 `resetChatHistory`。不要为迁就某一 GGUF 改生产 `l2Persona` 提示词。
+15. **Gemma4 须关思考模式。** `node-llama-cpp` 的 `Gemma4ChatWrapper` 默认 `reasoning: true`；未读 thought 段时 generate 会空输出。产品 `openFreshChatSession` 在 `promptFamily: 'gemma'` 时传 `new Gemma4ChatWrapper({ reasoning: false })`（等效 `enable_thinking: false`）。换 Gemma4 GGUF 源（jc-builds vs unsloth QAT 等）时，对照须在此配置下重跑完整 A/B（variance + session-repeat + tool-call），**不得**把空输出误判为量化源问题。
 
 ---
 

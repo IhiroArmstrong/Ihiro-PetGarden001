@@ -1,0 +1,3 @@
+# feature/voice-command-end-sit
+
+| Voice command · say you’re done = Rise | UI可见 | 待人工测试 | **仅 Electron 宽屏 ≥480 + 英语界面。** `npm run desktop:dev` → 开始一场专注（可 `?sessionMinutes=5`）→ Rise 按钮旁见 `[data-testid=voice-command-rise-speak]` 🎙。点 🎙 → **0–1 秒内** Listening 与音量条 → 说 `I'm done` / `End focus` / `End this focus` / `Rise` → Stop → **0–1 秒内**与点 Rise 相同：伸懒腰开始，未达标不庆祝，随后 Reflection。说 `Stop` 或 `Cancel`：红字，这场继续。时长板仍开着、还没开表时说 `I'm done`：红字，不开表也不结束。Web / 日语 / 窄屏无这颗麦。单测：`voiceCommandDuration.test.js` · `voiceCommandOutcome.test.js` · `npm run test:smoke`。 | — | — | — | `[data-testid=voice-command-rise-speak]` · Brief [task-voice-command-slice3.md](../task-briefs/task-voice-command-slice3.md) | 2026-09-30 |

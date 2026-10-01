@@ -31,7 +31,7 @@ Worker 绑定、KV id、HTTP 路由、生产 `prod_worker_version`、Stripe Pric
 ## 3. 与 CI 的关系
 
 - **PR smoke**（`pr-smoke.yml`）：PR→`develop` 自动跑；解放本地 Agent；**无** Secret 依赖。
-- **全量 e2e**（`focus-tiger-e2e-full.yml`）：`schedule`（UTC 02:00）+ `workflow_dispatch`；测本地静态壳，**无** Secret。Plan A（`matrix` 2 shards + JUnit always + slim traces；`playwright.ci-full.config.js`；历史上 #63 先合入当时的默认分支 `main`）。job checkout **`develop` tip**（或 dispatch `ref`）。**2026-08-02**：#15 稳定红修合 develop（#74）；dispatch 验绿 [run 30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)。见 `PROCESS.md` Backlog「CI 全量」。
+- **全量 e2e**（`focus-tiger-e2e-full.yml`）：`schedule`（UTC 02:00）+ `workflow_dispatch`；测本地静态壳，**无** Secret。Plan A（`matrix` **4** shards + JUnit always + 只上传 `trace.zip`；`playwright.ci-full.config.js` 里 `globalTimeout` 100 分钟，早于 Actions 120 分钟硬掐，避免清单写不出来；历史上 #63 先合入当时的默认分支 `main`，当时是 2 shards）。job checkout **`develop` tip**（或 dispatch `ref`）。**2026-08-02**：#15 稳定红修合 develop（#74）；dispatch 验绿 [run 30712008401](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30712008401)。**2026-10-01**：自 8/4 夜间全绿后再无 success；9/28–9/30 两片都在 120 分钟被取消且无 JUnit。visibility 契约转绿不等于这条夜间全量转绿。见 `PROCESS.md` Backlog「CI 全量」。
 - **注意（2026-08-14）**：GitHub `schedule` 使用**当前默认分支**上的 workflow 文件。默认分支已改为 **`develop`**，故改 timeout / workers / **shards** 合进 `develop` 即可作用于夜间 cron，**不必**再为定时任务把 YAML 同步到 `main`。`main` 仍是发布线，与 cron 无关。
 
 ## 4. 自检清单（接云 / 加 Key 前）

@@ -58,6 +58,8 @@ export class ColdStartGoalCardUI {
       handlers.sessionStorage ??
       (typeof sessionStorage !== 'undefined' ? sessionStorage : null);
     this._open = false;
+    /** @type {boolean} Manual re-open from menu/home — skip seen; browse dismisses only. */
+    this._manual = false;
 
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'cold-start-goal-backdrop',
@@ -118,7 +120,11 @@ export class ColdStartGoalCardUI {
     return this._open;
   }
 
-  open() {
+  /**
+   * @param {{ manual?: boolean }} [options]
+   */
+  open(options = {}) {
+    this._manual = Boolean(options.manual);
     if (this._open) {
       this._refreshTexts();
       return;
@@ -137,6 +143,7 @@ export class ColdStartGoalCardUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._manual = false;
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -150,7 +157,14 @@ export class ColdStartGoalCardUI {
    */
   _dismissWithChoice(choice) {
     if (!this._open) return;
-    markColdStartGoalSeen(this._storage);
+    const manual = this._manual;
+    if (manual && choice === 'browse') {
+      this.close();
+      return;
+    }
+    if (!manual) {
+      markColdStartGoalSeen(this._storage);
+    }
     setColdStartGoalSessionChoice(this._sessionStorage, choice);
     this.close();
     this.handlers.onChoice?.(choice);

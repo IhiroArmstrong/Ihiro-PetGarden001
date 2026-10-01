@@ -44,7 +44,7 @@ export const DAILY_WISDOM_JA = Object.freeze([
   },
   {
     id: 'sengcan-no-preferences',
-    text: '至道無難、唯嫌揀擇。',
+    text: '至道は難からず、ただ選好を嫌うのみ。',
     attribution: '僧璨『信心銘』'
   },
   {

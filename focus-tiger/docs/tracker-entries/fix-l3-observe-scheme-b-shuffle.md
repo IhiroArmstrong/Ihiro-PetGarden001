@@ -1,0 +1,3 @@
+# fix/l3-observe-scheme-b-shuffle · 2026-09-19
+
+| L3 观察句方案 B：打乱配对 | UI可见 | 待人工测试 | **仅 Electron 非低配宽屏 · Confide ready。** **改动**：prompt 要求答句只贴本句；sanitize 拒收可互换幼虎套势。**主路径（打乱配对）**：夹具 12 句（`有点烦` / `睡不着` / `你想干啥？` / `你想吃啥？` + 另 8 句，见 `l3ObserveShuffleFixtures.js`）各发一次 → `data-source=generate` → 把答句打乱、人工重配原文，**≥8/12** 才算过。**对照拒收**：四句套势（挪重心 / 伸爪子 / 慢眨眼 / 拱青苔）不得作为可见 generate（应 fallback）。**回流**：关卡再开后再发 `睡不着`，不得再出慢眨眼套话。**回归**：档 3 仍 `reflective_honesty`；档 4 `Good morning.` 仍 `companion_greeting`；`Show me what you remember` 仍 `memory_list`。自动化：prompt 字符串 + sanitize 四句拒收 + 评分函数；**不**锁模型服从。 | — | — | — | `l2Persona.js` · `l2Sanitize.js` · `l3ObserveShuffleFixtures.js` · #823 | 2026-09-19 |

@@ -42,6 +42,84 @@
 
 ---
 
+## 需要用户配合时的操作步骤（强制）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `user-action-steps`）。按需层摘要见 `.cursor/rules/focus-tiger-user-action-steps.mdc`（`alwaysApply: true`）。
+
+凡 Agent 请你**亲自做某事**（看 CI、复测、贴链接、选方案、点合并等），同一条回复里**必须**附 **「请你操作（大白话）」**：**3–7 步**、每步可照做，并给 **「贴回来」填空模板**。
+
+**禁止**：只写「结果出来后贴回来 / 你去看看 CI」而不写具体点哪里、复制什么。
+
+步骤须：**先浏览器路径**（终端可选）；每步写清 **做什么 → 点哪里 → 成功时长什么样**；若有多条 run，写明 **看哪一条**。
+
+---
+
+## 用户可见回复：文件须可点开、可定位（强制）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `chat-openable-file-links`）。按需层摘要见 `.cursor/rules/focus-tiger-chat-openable-file-links.mdc`（`alwaysApply: true`）。
+
+仓库文件须可点开。Agent 交付或请用户打开的**任何文件**，**禁止**只把路径包在反引号里（如 `` `focus-tiger/docs/foo.md` ``）——对话里这不是链接，点了打不开；也**禁止**只给链接而不写本机绝对路径——用户在 Cursor / Finder 里很难找。
+
+**必须同时满足：**
+
+1. **Markdown 链接**，锚点用短名，地址用**相对仓库根**的路径：`[Voice Input V1 Brief](focus-tiger/docs/task-briefs/task-voice-input-v1.md)`
+2. **本机绝对路径**（单独一行）：`/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/docs/task-briefs/task-voice-input-v1.md`
+3. 文件已在 GitHub 上（当前旁支或 `develop`）时，**再给一条 https 网页链接**（浏览器一定能开）。
+4. 这条回复就是要用户**立刻**看该文件时：Agent **还须** `open_resource`（`file://` 绝对路径）在编辑器打开，**并**执行 `open -R '<绝对路径>'` 在 Finder 定位。
+
+用户要「单独一份」时：主动问是否复制到 **Desktop / Downloads**，或 **commit + push** 后给 GitHub 网页链接——不要静默假设。
+
+代码引用围栏只用于摘录代码，**不能**代替「请打开这份文件」的链接。
+
+---
+
+## 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `brief-before-user-visible`）。  
+> 与 `agent-tool-budget`（口令「开工」升探索预算档）**互补**：升档 **不等于** 可跳过 Brief。按需层执行摘要见 [`.cursor/rules/focus-tiger-brief-before-user-visible.mdc`](.cursor/rules/focus-tiger-brief-before-user-visible.mdc)。  
+> **背景**：Confide Stage 2 切真路由（`task-confide-stage2-semantic-cutover.md` · PR #908）是首次出现「用户下『立刻开工』→ Agent 无事先锁定 Brief 直接写代码 → 事后才补 Brief」的顺序；Stage 1 影子/审计类任务最坏只多一条错误调试日志，Stage 2 会改变用户实际收到的回复与等待时间——风险性质不同，须单独门禁。
+
+### 任务分类（硬）
+
+开工前（含用户口令「开工」「立刻开工」「马上做」「现在就要」等），**先**判定任务属于 **A 类** 还是 **B 类**：
+
+| 类 | 定义 | Brief 是否必须先锁 |
+|---|---|---|
+| **A 类（影子 / 审计 / 后台）** | 只写日志、只跑离线测试、只产出文档/报告；**不改变**任何用户会实际看到的路由结果 / 回复内容 / 等待时间 | **否**——用户下「开工」类轻量口令即可直接动代码 |
+| **B 类（用户可见行为）** | 任何会影响生产环境里用户看到的**回复内容**、**回复速度**、**路由决定**的改动 | **是**——须有 PO（用户）明确看过、点头过的 Brief，**代码才能动** |
+
+**有疑问时默认按 B 类处理**（需要 Brief）。**禁止**自行判断「这次应该问题不大」就跳过。
+
+### B 类硬规则（「立刻」不能跳过 Brief）
+
+1. **B 类任务**，不管用户口令多急（包括但不限于「立刻开工」「马上做」「现在就要」），都**必须先有一份 PO 明确看过、点头过的 Brief**，代码才能动。  
+2. **「立刻」这个词不能成为跳过 Brief 审批环节的理由。**  
+3. 若用户在对 **B 类**任务、且**尚无 Brief**（或未锁定 / 未点头）的情况下下了「立刻开工」类口令，Agent **必须先停下来**，在「待你决定」问一句：  
+   > 这是会改变用户可见行为的 B 类任务，需要先出一份 brief 给你看过再动代码吗？  
+   **禁止**直接开始写代码。  
+4. 用户书面点头 Brief（或明确「按这份 Brief 开工」）后，方可进入实现；此时「开工」口令生效。  
+5. 本条**优先于**「验证通过后默认 commit / push / 开 PR」与 `agent-tool-budget` 的「开工」升档——**未过 Brief 闸不得写产品运行时**（`focus-tiger/src/**` 等）。
+
+### 示范对照（Confide 语义路由 · 勿再混淆）
+
+| 任务 | Brief | 类 | 「立刻开工」时 Agent 应做什么 |
+|---|---|---|---|
+| **Stage 1 影子分流**（`task-confide-semantic-routing-option-d.md`） | 异步写本机影子日志（`semantic_shadow_classify`）；**不改**用户实际收到的回复与路由 | **A** | 可直接动工写影子日志与离线审计脚本 |
+| **Stage 2 切真路由**（`task-confide-stage2-semantic-cutover.md` · PR #908） | Electron 默认 `live`；embedding ready 时改路由；会改变用户实际看到的回复内容与等待 | **B** | **须先有 PO 点头的 Brief 再写代码**；2026-09-21 那次顺序反了（先代码后 Brief），属流程漏洞，不得以「已经开工」为由延续 |
+
+同一产品线的 **Stage 1 → Stage 2** 升级，分类**可能从 A 变为 B**；不得以「上一阶段可以直接开工」推断本阶段也可跳过 Brief。
+
+### 与相邻门禁的关系
+
+| 主题 | 关系 |
+|---|---|
+| `feature-conflict-review` | 冲突扫描在写代码**之前**；B 类还须 **Brief 已锁**——二者都满足才可实现 |
+| `risk-mitigation-playbook` | 中高风险落地仍须 Playbook；**不**替代 Brief 闸 |
+| `agent-tool-budget` | 「开工」只升探索预算；**不**豁免 B 类 Brief |
+| Task Brief 存放 | `focus-tiger/docs/task-briefs/`；书写规范见 `COLLAB.md` · `PROCESS.md`「Task Brief 存放约定」 |
+
+---
+
 ## 分支模型
 
 | 分支 | 含义 | 谁在上面改 |
@@ -427,6 +505,20 @@ done
 
 **对比**：合进 **`main`** 的发版 PR 仍可能要求 up-to-date（`main` 的 strict 与 `develop` 不同）；本条只管 **base = `develop`** 的日常 PR。
 
+### 陈旧 open PR（每周一自动出清单）
+
+已经合进主线的 PR，历史 Checks 发红不用再管。还开着、检查仍是红的，也不等于主线漏了测试：旧任务名（可见性检查还没拆成六个分片）不能当成现在主线的身体。不要为了「看起来全绿」去重跑旧 PR。
+
+**触发点（固定，不靠人想起）**：GitHub Actions「Stale open PR scan」在**每周一 11:30（北京时间）**自动跑 `focus-tiger/scripts/audit-open-pr-e2e.py`（cron `30 3 * * 1`，UTC）。跑完把报告写进标题为「陈旧 open PR 周扫」的 Issue：没有开着的就新建，有开着的就在下面追加一条评论。脚本**不关、不合**。也可在 Actions 页手动点 Run。
+
+**谁来做完**：本周做「下班前 Git 同步」的人（你，或那次会话里的 Agent）。期限是**下周一再次自动跑之前**。做完后关掉该 Issue；Issue 还开着 = 这周还没处理完。
+
+读报告时：
+
+1. **建议关闭**（纯文档、纯依赖锁文件，或落后主线超过 100 个提交的 Dependabot）→ 当周关掉，评论里写清理由。依赖还想升的，从**今天的** `develop` 新开，不要在旧锁文件上续命。
+2. **含产品源码、又落后很多** → 当周必须二选一：确认已被后续 PR 盖掉就关掉；功能还在、主线上没有，就排期从今天的 `develop` 新开分支重做，再按现在的六个分片跑。禁止再写成「先放着」，也禁止在落后几百个提交的旧分支上硬重跑。
+3. **落后不多的依赖大版本** → 先由人决定要不要升，不要为了看起来全绿去自动关或自动重跑。
+
 ---
 
 ## 何时可以把 `develop` 合并进 `main`？
@@ -567,9 +659,77 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 ### CI 与本地 e2e 边界（现状）
 
 - **PR→develop**：`pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）为轻量门闩。  
+- **visibility 契约 e2e**：`focus-tiger-visibility-contract.yml`（path 触发 + `workflow_dispatch`）；**不是** develop Required check（Required 仍只有 `test:pr-smoke` + `pre-merge with develop`）。  
 - **全量 e2e**：`focus-tiger-e2e-full.yml`（schedule + `workflow_dispatch`）；**禁止**默认本机 `npm run test:e2e`。  
 - **本地 Agent**：仅 `test:smoke` / `test:e2e:smoke` / `test:e2e:changed -- <单个 spec>`；多文件与全量见 `RULES_INDEX` → `e2e-local-budget`（`RUN_E2E_LOCAL=true` 逃生口会打警告）。  
 - 历史「临时接受本机全量」门槛（PR #2）**已废止**；细节见 `PROCESS.md` Backlog「CI 全量…」已落地节。
+
+### visibility CI 治理（2026-09-23 · 诊断 + 责任流程）
+
+> **索引**：`RULES_INDEX` → `visibility-ci-governance`（本小节 SSOT）。  
+> **契约 SSOT**：`visibilityContractRegistry.js` · 46 条 e2e / 13 条 locked 契约 · 26/20 核心/辅助分层见本会话分类（待 PO 拍板后工程化 `test:e2e:visibility:core`）。
+
+#### 诊断结论（2026-09-23 · `gh run list --workflow focus-tiger-visibility-contract.yml`）
+
+| 指标 | 数值 |
+|---|---|
+| 最近 **200** 次 workflow run | **189 failure · 11 cancelled · 0 success** |
+| 前置步骤（`visibility:doc-check` · registry 单测 · Playwright install） | **能过** — 不是「CI 从根上没配对、跑不到 Playwright」 |
+| 典型单次 e2e 步（抽样 8 run · 2026-09-21～23） | **~14–22 passed · ~13–28 flaky · ~4–11 failed** · 墙钟 **~40–50 min** |
+| **合入后抽样（2026-09-24 · #949+#950）** | 旧单 job [#950](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35903085078)：**26p/19fl/1f**（50.1m）；并行首验 [#949](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/35886079176)：micro **10p/1f**（4.5m）· weekly **6p/4fl/2f**（19.6m）· **仍无 job 级全绿** |
+| **距末次 job 全绿** | **无记录**（见 `PROCESS.md` Backlog「降低 visibility CI flaky 率」） |
+
+**失败模式（Type A / B / C · 统一命名 · 勿混为一谈）**
+
+| 类 | 症状 | 占比（抽样日志） | 含义 |
+|---|---|---|---|
+| **Type C · CI 资源 / flaky** | Playwright 标 **flaky**（首轮红、retry 绿）；**含大量核心契约用例**（Arrival 藏 Sit、Honesty panel、桥接…） | **~50–65% 用例/轮** | 信号在发，但 **job 级不可信** |
+| **Type C · 静态服过载（导航超时子类）** | `page.goto` / `page.reload` **Timeout** @ `openFreshProductShell`（`:5199`）；suite 后半段集中 | **高** | 同属 Type C：静态 preview 在 **2 Playwright workers × 46 用例 × retry** 下过载；**只修 Type B 断言不够** |
+| **Type B · 测试代码 / 断言漂移** | retry 后仍红：选择器/文案漂移（Honesty → Five Moments）、测试债、时序不稳 | **每轮若干** | 测试未跟上 UI/契约 |
+| **Type A · 产品变更待确认** | retry 后仍红：如 `375 viewport` 三球、`micro ritual` 全流程——须 PO 确认是否为 intentional change | **每轮 ~4–11（与 B 重叠须逐条分）** | 产品改了测试未同步，或测试对了产品要改 |
+
+**因果（流程）**：「不等 visibility 就合 develop」是 **0% job 绿** 下的合理适应，不是根因。根因 = **Type C（含导航子类）+ Type B + 少量 Type A 叠加**。在 job 从未稳定绿之前，**禁止**把 core 26 条勾成 Required（Required 只会拖长合并、拦不住真回归）。
+
+#### 修复与卡点顺序（拍板 · 不推翻 26/20 分层）
+
+1. **诊断**（本节）→ 2. **先压 Type C**（见下节「方案 A + workers:1」、导航/reload 策略、降 suite 噪声）→ 3. **Type B** 修断言/漂移 → 4. **Type A**（若有）逐条确认产品 intentional change → 5. 抽 **`test:e2e:visibility:core`（26 条）** → 6. core **连续 5～10 次 workflow 全绿且 flaky≈0** → 7. **才**勾 develop Required → 8. 全量 46 条仍 path-triggered / nightly，**不进 Required**。
+
+#### 方案 A + workers:1（已批准 · 2026-09-23 · 两者组合、不互斥）
+
+| 层 | 动作 | 解决什么 |
+|---|---|---|
+| **方案 A · GitHub Actions 并行** | 按 3 个 spec 拆 **3 个并行 job**（`scenario-a.companion` / `micro-ritual` / `weekly-practice-heatmap`） | 单 job 墙钟 ~48min+ 易触顶 `timeout-minutes: 60`；拆后最长单 job ~40min，**job 间并行**不抢墙钟 |
+| **workers:1 · Playwright 层** | **每个 job 内部** Playwright workers 从 **2 → 1**（workflow 或 config override） | 减轻**同一 `:5199` 静态 preview** 的 `goto`/`reload` 风暴（Type C 导航子类） |
+
+**组合关系（必须同时理解）**
+
+- **墙钟**靠 Actions 层并行（方案 A）缩短；**静态服过载**靠 job 内单 worker（workers:1）降压——**不冲突**。
+- **禁止**只做 workers:1 却不拆 job → 墙钟更长，更易再次触顶 60min。
+- **禁止**只拆 job 却保持 2 workers/job → 仍可能压垮 preview，导航超时子类复发。
+- **`retries: 2` 维持不动**（2026-09-23 拍板）：等 Type B/#351/#394 等在 CI 上稳定低 flaky 后，再评估是否降到 1；现在降会把「治理未生效」与「重试变少」信号搅在一起。
+- **scenario-a 再拆（2026-09-26）**：同一 `scenario-a.companion.spec.js` 拆两个 job——`scenario-a-early`（Choose 外侧取消及之前）与 `scenario-a-late`（Arrival 藏 Sit 起）。各 job 独立 `:5199`。CI 上 `openFreshProductShell` 在 `goto` 前对 `:5199/` 做最多三次健康探测（0 / 2s / 4s），探测失败不代替导航错误。`retries: 2` 仍不动。
+- **2026-09-29 对照**（run `36542268807`）：健康探测能通时，浏览器整页 `domcontentloaded` 仍会超过 40 秒（重试才过）。visibility 配置关掉失败录像，避免失败录像拖住下一次整页打开。Choose「自己写」的提示句须先挂进页面，再插入语音条；否则 `insertBefore` 抛错，提示不会出现。
+- **去哪看这条 workflow（2026-09-30）**：PR 的 Checks **只有**改动命中本 workflow 的 `paths` 时才会出现它。没命中时不要让人在 PR Checks 里找。打开 Actions 里的 [focus-tiger visibility-contract e2e](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/workflows/focus-tiger-visibility-contract.yml)，或对 `develop` 做 `workflow_dispatch`。`paths` 必须覆盖 `VISIBILITY_SUPPRESS_TRIGGER_PATHS` 的每一条（单测锁住）。始终挂在页面上、藏着仍可能挡住点击的撤销条 `VoiceCommandUndoToast.js` 在此列。面板内部的语音按钮不在此列。
+- **2026-09-30 合入后全绿**：[run 36592506811](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/36592506811)（#1018 撤销条不再挡点击之后，对 `develop` 手动触发）六个分片全绿，含 micro-ritual。
+- **2026-09-30 打开页 40 秒**：健康探测能通、`page.goto` 仍等满 40 秒时，先看是不是上一页还在拉几十 MB 的环境音。visibility 分片（`FT_VISIBILITY_SPEC`）把本机音视频在 Playwright 里换成一小段静音；页面、脚本、图片仍走静态服务。不要再把 `gotoMs` 往上加。
+
+#### 责任人与检查频率（书面 · 防「修完又没人看」）
+
+| 项 | 规则 |
+|---|---|
+| **责任人** | **项目负责人（PO）**（当前 = 你）；离岗时书面指定代班，禁止「无人认领」。 |
+| **频率** | **每周一次**（建议周一）；触发 visibility path 的 PR 合 develop **后 24h 内**加查一次。 |
+| **动作** | 打开 [Actions · focus-tiger visibility-contract e2e](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/workflows/focus-tiger-visibility-contract.yml) → 看 **最新一条已跑完** run（非 cancelled）→ 记录 **passed / flaky / failed** 与首条错误类（Type A/B/C）。 |
+| **可见指标** | 在 `PROCESS.md` Backlog「降低 visibility CI flaky 率」条 **或** 本小节下维护一行：**「距 visibility job 末次全绿：__ 天（末次 run 链接）」** — 超过 **14 天**无全绿须开 `fix/visibility-ci-*` 或书面说明搁置原因。 |
+| **过渡期（Required 之前）** | 凡 PR 改动 `VISIBILITY_SUPPRESS_TRIGGER_PATHS`（见 registry）或 visibility 三 spec：**作者须**在 PR 描述贴 **当次** visibility run 链接 + 结论（✅/❌/cancelled + 数字）；**禁止**「反正从没绿过」直接合。Agent 开/更新此类 PR 时须 `@` 提醒 PO 或代班已查。 |
+| **Required 之后** | core 26 条绿 = 合并硬门槛；全量 46 条仍按上表周报，flaky 回升即开修，**不得**再静默合并。 |
+
+**查 run 命令（Agent / 人）**
+
+```bash
+gh run list --workflow=focus-tiger-visibility-contract.yml --limit 10
+gh run view <run-id> --log-failed | tail -80
+```
 
 ---
 
@@ -649,7 +809,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** / **A/B 类 Brief 开工门禁** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 中高风险功能落地降险（四件套 + 架构红线） | [`RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（本文仅入口引用） |
@@ -664,6 +824,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 我想… | 做法 |
 |---|---|
+| 用户下「立刻开工」但会改用户可见行为 | 先判 B 类 → 须有 PO 点头的 Brief 再写代码；见「用户可见改动：Brief 开工门禁」（`brief-before-user-visible`） |
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
 | PR 引用任务线 | 统一 `Closes #NNN`（仓库已关 auto-close；见「PR 描述须引用所属任务线 Issue」） |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |

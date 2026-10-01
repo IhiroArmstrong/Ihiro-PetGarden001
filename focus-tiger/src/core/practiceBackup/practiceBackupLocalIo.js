@@ -18,9 +18,11 @@ import {
   PRACTICE_BACKUP_V1_STORE_KEYS,
   PRACTICE_BACKUP_V3_STORE_KEYS,
   PRACTICE_BACKUP_V4_STORE_KEYS,
+  PRACTICE_BACKUP_V5_STORE_KEYS,
   practiceBackupStoreKeysForSchemaVersion,
   stringifyPracticeBackupStorageValue,
-  parsePracticeBackupStorageRaw
+  parsePracticeBackupStorageRaw,
+  stripConfideTurnsFromCompanionBackup
 } from './practiceBackupSnapshot.js';
 import {
   readCompanionBackupBundle,
@@ -89,6 +91,7 @@ export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'tip_kindness_badges', storeKey: 'focus-tiger.tip-jar.v1' },
   { id: 'sanctuary_badges', storeKey: 'focus-tiger.sanctuary-entitlement.v1' },
   { id: 'focus_coins', storeKey: 'focus-tiger.focus-coins.v1' },
+  { id: 'focus_essence', storeKey: 'focus-tiger.focus-essence.v1' },
   { id: 'milestone_glow', storeKey: 'focus-tiger.milestone-glow.v1' },
   { id: 'entitlement_ownership', storeKey: 'focus-tiger.entitlement-ownership.v1' },
   { id: 'ritual_completions', storeKey: 'focus-tiger.ritual-completions.v1' },
@@ -100,12 +103,12 @@ export const PRACTICE_DATA_CATEGORY_DEFS = Object.freeze([
   { id: 'presence_signals', storeKey: 'focus-tiger.presence-signals.v1' },
   { id: 'reflections', storeKey: 'focus-tiger.reflections.v1' },
   { id: 'yin_memory', companionField: 'yinPersonalMemory' },
-  { id: 'confide_turns', companionField: 'confideTurnsJsonl' },
   { id: 'locale_pref', storeKey: 'focus-tiger.locale.v1' },
   { id: 'reminder_pref', storeKey: 'focus-tiger.reminder-preference.v1' },
   { id: 'companion_mode', storeKey: 'focus-tiger.companion-mode.v1' },
   { id: 'ambient_pref', storeKey: 'focus-tiger.ambient-pref.v1' },
   { id: 'session_cues', storeKey: 'focus-tiger.session-cues.v1' },
+  { id: 'system_tts_pref', storeKey: 'focus-tiger.system-tts-pref.v1' },
   { id: 'focus_duration_pref', storeKey: 'focus-tiger.focus-duration-pref.v1' },
   { id: 'intentions', storeKey: 'focus-tiger.intentions.v1' },
   { id: 'quiet_together', storeKey: 'focus-tiger.quiet-together.v1' },
@@ -150,8 +153,9 @@ export function buildPracticeExportFilename(now = new Date()) {
 export async function createPracticeExportPayload(storage, now = () => new Date()) {
   const snapshot = serializePracticeBackupSnapshot(storage, now);
   const companionFiles = await readCompanionBackupBundle();
-  if (companionFiles) {
-    snapshot.companionFiles = companionFiles;
+  const exportCompanion = stripConfideTurnsFromCompanionBackup(companionFiles);
+  if (exportCompanion) {
+    snapshot.companionFiles = exportCompanion;
   }
   return {
     snapshot,
@@ -304,13 +308,37 @@ export function migratePracticeSnapshot(snapshot, fromVersion, toVersion) {
         : {};
     /** @type {Record<string, unknown | null>} */
     const stores = {};
-    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+    for (const key of PRACTICE_BACKUP_V5_STORE_KEYS) {
       stores[key] = key in storesIn ? storesIn[key] ?? null : null;
     }
     return {
       ok: true,
       snapshot: {
         schemaVersion: 5,
+        savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
+        stores,
+        companionFiles: o.companionFiles ?? null
+      }
+    };
+  }
+  if (fromVersion === 5 && toVersion === 6) {
+    if (!snapshot || typeof snapshot !== 'object') {
+      return { ok: false, reason: 'not_object' };
+    }
+    const o = /** @type {Record<string, unknown>} */ (snapshot);
+    const storesIn =
+      o.stores && typeof o.stores === 'object' && !Array.isArray(o.stores)
+        ? /** @type {Record<string, unknown>} */ (o.stores)
+        : {};
+    /** @type {Record<string, unknown | null>} */
+    const stores = {};
+    for (const key of PRACTICE_BACKUP_STORE_KEYS) {
+      stores[key] = key in storesIn ? storesIn[key] ?? null : null;
+    }
+    return {
+      ok: true,
+      snapshot: {
+        schemaVersion: 6,
         savedAt: typeof o.savedAt === 'string' ? o.savedAt : new Date().toISOString(),
         stores,
         companionFiles: o.companionFiles ?? null
@@ -350,6 +378,9 @@ export function countPracticeStoreEntries(storeKey, val) {
       return Array.isArray(days) ? days.length : 0;
     }
     case 'focus-tiger.milestone-glow.v1': {
+      const records = /** @type {{ records?: unknown, played?: unknown }} */ (val)
+        .records;
+      if (Array.isArray(records)) return records.length;
       const played = /** @type {{ played?: unknown }} */ (val).played;
       return Array.isArray(played) ? played.length : 0;
     }
@@ -395,8 +426,13 @@ export function countPracticeStoreEntries(storeKey, val) {
       const owned = /** @type {{ ownedIds?: unknown }} */ (val).ownedIds;
       return Array.isArray(owned) ? owned.length : 0;
     }
+    case 'focus-tiger.focus-essence.v1': {
+      const total = Number(/** @type {{ essenceTotal?: unknown }} */ (val).essenceTotal);
+      return Number.isFinite(total) && total > 0 ? Math.floor(total) : 0;
+    }
     case 'focus-tiger.ambient-pref.v1':
     case 'focus-tiger.session-cues.v1':
+    case 'focus-tiger.system-tts-pref.v1':
       return Object.keys(val).length > 0 ? 1 : 0;
     default:
       return null;
@@ -413,13 +449,6 @@ export function countCompanionBackupEntries(companionField, val) {
     if (!val || typeof val !== 'object') return 0;
     const memories = /** @type {{ memories?: unknown }} */ (val).memories;
     return Array.isArray(memories) ? memories.length : 0;
-  }
-  if (companionField === 'confideTurnsJsonl') {
-    if (val == null || val === '') return 0;
-    if (typeof val !== 'string') return null;
-    const trimmed = val.trim();
-    if (!trimmed) return 0;
-    return trimmed.split('\n').filter((line) => line.trim()).length;
   }
   return null;
 }
@@ -551,7 +580,7 @@ export async function importPracticeSnapshotAtomic(storage, snapshot) {
     reconcileDailyCompletionAfterRestore(storage, new Date());
     await reconcileEntitlementAfterPracticeRestore(storage);
     const companionResult = await writeCompanionBackupBundle(
-      snapshot.companionFiles ?? null
+      stripConfideTurnsFromCompanionBackup(snapshot.companionFiles ?? null) ?? null
     );
     if (!companionResult.ok) {
       throw new Error(companionResult.reason || 'companion_import_failed');

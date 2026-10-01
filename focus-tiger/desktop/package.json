@@ -12,7 +12,21 @@
     "companion:tool-call": "node scripts/l0-tool-call-probe.js",
     "companion:intent-diagnostic": "node scripts/l0-intent-diagnostic-probe.js",
     "companion:ja-chitchat-variance": "node scripts/l0-ja-chitchat-variance-probe.js",
-    "companion:ja-chitchat-session-repeat": "node scripts/l0-ja-chitchat-session-repeat-probe.js"
+    "companion:ja-chitchat-session-repeat": "node scripts/l0-ja-chitchat-session-repeat-probe.js",
+    "companion:ja-chitchat-electron-session-repeat": "node scripts/l0-ja-chitchat-electron-session-repeat-probe.js",
+    "companion:multilang-chitchat": "node scripts/l0-multilang-chitchat-probe.js",
+    "companion:gemma4-multilang-ab": "node scripts/l0-gemma4-multilang-ab.js",
+    "companion:confide-latency": "node scripts/l0-confide-latency-probe.js",
+    "companion:semantic-acceptance": "node scripts/l0-confide-semantic-acceptance.js",
+    "companion:stage2-synonym-screen": "node scripts/l0-screen-stage2-synonyms.js",
+    "companion:stage2-m-screen": "node scripts/l0-screen-stage2-m-candidates.js",
+    "companion:stage2-m-replay": "node scripts/l0-replay-stage2-m-candidates.js",
+    "companion:kb-near-calibrate": "node scripts/l0-kb-near-calibrate.js",
+    "companion:favorable-disagreement-mill": "node scripts/l0-run-favorable-disagreement-mill.js",
+    "companion:observe-shuffle-screen": "node scripts/l0-observe-shuffle-screen.js",
+    "companion:semantic-live-coldstart-probe": "node scripts/l0-semantic-live-coldstart-probe.js",
+    "companion:voice-input-probe": "node scripts/voice-input-probe.js",
+    "companion:system-tts-probe": "node scripts/system-tts-probe.js"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",
@@ -38,6 +52,11 @@
       "preload.js",
       "ipcGuard.js",
       "trayPolicy.js",
+      "voiceInput/**/*.js",
+      "voiceInput/**/*.html",
+      "systemTts/**/*.js",
+      "systemTts/**/*.html",
+      "native/**/*.swift",
       "updater/**/*.js",
       "../src/core/desktopUpdaterChannel.js",
       "../src/core/desktopUpdaterState.js",
@@ -68,6 +87,10 @@
       "gatekeeperAssess": false,
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Focus Tiger uses the microphone only when you tap Speak to type in Confide, Arrival, or Reflection.",
+        "NSSpeechRecognitionUsageDescription": "Focus Tiger transcribes your speech on device when you tap Speak to type."
+      },
       "target": [
         {
           "target": "dmg",

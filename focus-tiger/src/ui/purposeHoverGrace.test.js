@@ -38,6 +38,8 @@ describe('purpose card hover grace + left-ball no mint', () => {
     assert.match(hintsSrc, /onboarding-app-purpose--pinned/);
     assert.match(hintsSrc, /ft-purpose-pinned/);
     assert.match(hintsSrc, /_positionPurposeCard\(\)/);
+    assert.match(hintsSrc, /onboarding-purpose-today-direction/);
+    assert.match(hintsSrc, /_openTodayDirectionFromPurpose/);
     assert.match(hintsSrc, /G02 non-modal: full-screen backdrop is Privacy-only/);
     assert.match(hintsSrc, /purposeBackdrop\.hidden = true/);
   });

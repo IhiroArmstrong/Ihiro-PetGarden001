@@ -83,6 +83,7 @@ export class IdleChromeFacade {
       onCompanion: h.onCompanion,
       onReminder: h.onReminder,
       onLanguage: h.onLanguage,
+      onTodayDirection: h.onTodayDirection,
       onGroundExercise: h.onGroundExercise,
       onFiveMoments: h.onFiveMoments,
       onJourneyLog: h.onJourneyLog,
@@ -116,6 +117,7 @@ export class IdleChromeFacade {
       onClearCompanion: h.onClearCompanion,
       onReminder: h.onReminder,
       onLanguage: h.onLanguage,
+      onTodayDirection: h.onTodayDirection,
       onGroundExercise: h.onGroundExercise,
       onFiveMoments: h.onFiveMoments,
       onJourneyLog: h.onJourneyLog,
@@ -156,11 +158,13 @@ export class IdleChromeFacade {
     const { narrow, wide } = projection;
     this.narrow.setIdle(narrow.idle);
     this.narrow.setSuppressed(narrow.suppressed, {
-      keepQuickStart: Boolean(narrow.keepQuickStart)
+      keepQuickStart: Boolean(narrow.keepQuickStart),
+      honestyBridgeActive: Boolean(narrow.honestyBridgeActive)
     });
     this.wide.setIdle(wide.idle);
     this.wide.setSuppressed(wide.suppressed, {
-      keepQuickStart: Boolean(wide.keepQuickStart)
+      keepQuickStart: Boolean(wide.keepQuickStart),
+      honestyBridgeActive: Boolean(wide.honestyBridgeActive)
     });
   }
 

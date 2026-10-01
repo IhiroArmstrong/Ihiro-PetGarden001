@@ -384,7 +384,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 文案是「观照者而非情绪本身」原则成本最低、影响最深的落地层。`MindfulAcknowledge`、`stretchReminder`、`SessionComplete`、未来 `Re-focus Acknowledge` 及所有非模态提示均须遵守本节。
 
-**通道约束（长期原则）**：角色与系统对用户的沟通**仅限文字**；禁止角色语音、真人配音与 lip-sync 口型动画。技术上即使可复用「图生视频 + 抽帧」预生成带声口型序列，亦不采用。原则全文与四条理由见 `PRINCIPLES.md`「无角色语音原则」。
+**通道约束（长期原则）**：文字仍是主通道；**禁止**真人配音、lip-sync 口型动画与语音通话。**允许**用户主动打开全局开关后的可选系统朗读（功能性播报；倾诉朗读见下一期 Brief）。危机句与安全转介继续纯文字。原则全文见 `PRINCIPLES.md`「语音边界原则」。
 
 ### 观察式（要求）与定性式（禁止）
 
@@ -690,4 +690,5 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 | 0.96 | 2026-08-20 | `CollectionsWaveHello`：珍藏底栏点播已入库 `waveHello`；不要求结缘 unlistable SKU；`welcomeBack` 仍停接线 |
 | 0.97 | 2026-08-18 | 回前台披毯须 **hiddenMs ≥2h**（Welcome 后短切 tab 不得睡）；Rise 后 2h 戳仍可进 DORMANT |
 | 0.98 | 2026-08-18 | **收回 Expand B**：Rise / 计时达标进 Reflection 不得 `cloakSleep`；Reflect 开着须醒着同坐。深夜休息仍 Expand A Idle→DORMANT / 2h live / wellness 冷启动 |
+| 0.99 | 2026-09-26 | 交叉引用 PRINCIPLES「语音边界原则」：文字仍主通道；允许可选系统朗读（默认关）；禁止真人配音 / lip-sync / 语音通话；危机句不朗读 |
 **变更原则**：新增情绪状态须先在本文档立项并说明触发/优先级，再进入技术选型与实现；不得仅在代码中「悄悄」增加未文档化的状态。UI 文案须走语言字典，不得硬编码进触发逻辑。

@@ -16,6 +16,8 @@
 
 **Electron L1 companion（2026-08-20）**：`window.desktopShell.companion` 仅非低配 Electron preload 注入（`desktop:companion-allowed`）。渲染层只经 `desktopCompanionGate`（**禁止** `import` `desktop/companion`）。**无** localStorage key。Idle 宽屏同一 Confide 行；Focusing → `setFocusing(true)` 卸载。**不**进 `FEATURE_CATALOG`。L1 **无** generate IPC。
 
+**companion child `getLlama`（2026-09-22 · #919）**：子进程内原生 `getLlama` / `loadModel` 由 `l1LlamaWorkGate` 独占。消费者只有 `l1Hold`（聊天）与 `l1EmbeddingHold`（向量），经 `l1Child` 的 `run('chat'|'embedding')` 进入。**禁止**第三条产品路径再裸调。≠ `l1SemanticShadowEmbeddingGate`（影子分类超时）。实验室 `l0Probe` / `l0Spike17Probe` 不进本闸。
+
 **Yin Personal Memory（2026-08-25 · Slice 1a–1e）**：架构 SSOT `YIN_PERSONAL_MEMORY.md`。**无** localStorage key。Electron **userData** 见下表 `companion-l2/yin-personal-memory.json`（consent + `memories[]` + `rememberOptOuts[]`；1b Remember；1c Forget；1e CI-01；**1f** `memory_suppress` / Don't save；**不进**云端练习备份 6 key；**本地** Preferences → Backup & restore **v2** 经 `companionFiles.yinPersonalMemory` 导出/导入；**禁止** 与 `turns.jsonl` / Journey Log 混桶）。
 
 **Yin Personalization Engine（2026-08-26 · L0/L1 · L2 Pack · V2 签发）**：编排 SSOT `YIN_PERSONALIZATION_ENGINE.md`。运行时 `src/core/yinPersonalizationEngine.js`。L1 key：`focus-tiger.ype-companion-style.v1`（quiet/default/warm；`default`＝关掉个人化）。L2 缓存 key：`focus-tiger.ype-personalization-pack.v1`。L2 逻辑身份 `ype_profile_id`（本机随机 opaque；**禁止**硬件指纹 / 备份 OTP；**禁止**写入练习备份 6 key）。Pack `companionStyle` 仍回声用户选档；V2 允许白名单 `patternInsights` 字符串（`returns_often` / `reflects_often`）；未知 Pack 键整包丢；`algorithmVersion` 只在 KV 行。关同意须丢弃本机 Pack 缓存并排队删云端该 profile 行。用户本机选档优先于过期 Pack。本刀 **不**把 insight 打进 Confide L3。
@@ -24,13 +26,13 @@
 |---|---|---|
 
 | `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent；1b Remember；1c Forget；1f `rememberOptOuts[]` + suppress）；**不进**云端 6 key；**本地** Backup & restore v2 `companionFiles`；Web 无此文件 |
-| `userData/companion-l2/turns.jsonl` | `CompanionL1Runtime._appendTurnLog` | Confide 调试 jsonl（**非** Personal Memory）；**本地** Backup & restore v2 `companionFiles.confideTurnsJsonl`（Electron）；**不进**云端 6 key |
+| `userData/companion-l2/turns.jsonl` | `CompanionL1Runtime._appendTurnLog` | Confide 调试 jsonl（**非** Personal Memory）；**不进**本地 Backup & restore v2（2026-09-19 · 见 `confide-turns-jsonl-backup-exclude.md`）；本机滚动清理（影子 7d / 生成 30d）；**不进**云端 6 key |
 | `userData/companion-l2/confide-observation.jsonl` | `confideObservationTelemetry` / IPC `desktop:confide-observation-append` | Batch 0 观察本地打点（chip tap / Share `data-source` + chip 匹配；**不含**用户自由文本）；Electron jsonl + 渲染层 `focus-tiger.confide-observation.v1` localStorage 环缓；汇总 `node scripts/dump-confide-observation.js`；**不进**云端 6 key / 练习备份 |
 | `focus-tiger.daily-completions.v1` | `DailyCompletionStore` | **仅保留当日**（换本地日后惰性整表重置）；Honesty / 计时 / **微仪式**共用 `sessions[]`（无 source）；`celebrated` 戳（Celebrating vs SessionComplete；Honesty / 微仪式 **不**置戳）。字段见下 §1.1。**不足以**直接画「本周 7 格」热力图。**「今日已同坐」语义 SSOT**：`hasCompletedToday()` — 全表见 `TODAY_PRACTICE_SEMANTICS_AUDIT.md` |
 | `focus-tiger.focus-session-end.v1` | `FocusSessionEndStore` | 最近一次专注结束 epoch ms；DORMANT 滚动窗口起点（达标 / Rise 写入；Honesty **不**写） |
-| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉）。**QA**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js`。**只读消费者**：Support Modal 请茶优先（与莲花分钟并上；有练习日则不再 Tea 打头） |
-| `focus-tiger.lotus-pond.v1` | `LotusPondStore` | **独立只增**终身练习分钟 `{ lifetimeMinutes }`；可见朵数 `min(earned, 12)`。计时 / Honesty / 微仪式与 `markToday` **同一钩**写入，**不**走付费 RitualFlow、**不**走未达标 Rise。**QA**：`?qaLotusBlooms=N`。**不**在练习记忆备份 v1 六 key 白名单（Slice A 已知缺口）。贴图：一炷香 `/textures/lotus.png`。**只读消费者**：Support Modal 请茶优先（`lifetimeMinutes > 0` 则 Sanctuary 打头） |
-| `focus-tiger.milestone-glow.v1` | `MilestoneGlowStore` | 已播里程碑节点 id（如 `streak-7`）；只增不减；产品壳 `MilestoneGlow` 接线。**QA**：带 `qaSeedStreak` 时默认清本 key（`qaKeepMilestones=1` 可保留）；亦可单独 `qaResetMilestones=1` |
+| `focus-tiger.practice-days.v1` | `PracticeDaysStore` | 近日同坐（最多 **90** 条）；条目 `{ date, totalMinutes }`（见 §1.2）；HUD `streak-meter` + Idle `#weekly-practice-heatmap`（`getLastNDays`）；计时 / Honesty / **微仪式**经 `markToday(minutes)`；无断签惩罚文案。与 DailyCompletion **分 key**。**不足以**作为莲花池终身累计（窗口会滚掉）。**QA（仅 dev 或 `FT_QA_BOOT=1` 构建）**：`?qaSeedStreak=N` 启动时覆盖为本日前 N 日（不含今天；默认每天 25 分，可用 `qaSeedMinutes`）；见 `qaPracticeSeed.js`。**生产构建剔除**（`build:verify-no-qa-boot`）。**只读消费者**：Support Modal 请茶优先（与莲花分钟并上；有练习日则不再 Tea 打头） |
+| `focus-tiger.lotus-pond.v1` | `LotusPondStore` | **独立只增**终身练习分钟 `{ lifetimeMinutes }`；可见朵数 `min(earned, 12)`。计时 / Honesty / 微仪式与 `markToday` **同一钩**写入，**不**走付费 RitualFlow、**不**走未达标 Rise。**QA（仅 dev 或 `FT_QA_BOOT=1` 构建）**：`?qaLotusBlooms=N`。**生产构建剔除**。**不**在练习记忆备份 v1 六 key 白名单（Slice A 已知缺口）。贴图：一炷香 `/textures/lotus.png`。**只读消费者**：Support Modal 请茶优先（`lifetimeMinutes > 0` 则 Sanctuary 打头） |
+| `focus-tiger.milestone-glow.v1` | `MilestoneGlowStore` | 已播里程碑节点记录 `{ records: [{ id, origin?, journey_id?, rarity_basis? }] }`（legacy `played[]` 仍可读）；只增不减；占位字段暂不接 UI / 判定。**QA（仅 dev 或 `FT_QA_BOOT=1` 构建）**：带 `qaSeedStreak` 时默认清本 key（`qaKeepMilestones=1` 可保留）；亦可单独 `qaResetMilestones=1` |
 | `focus-tiger.ritual-completions.v1` | `RitualCompletionStore` | 进阶 RitualFlow（Morning / Emotional Reset / Work Transition）完成记录；**不**走 MicroRitual / Focus / Journey Log / Reflection |)
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
@@ -46,7 +48,7 @@
 | `focus-tiger.ype-cloud-personalization-consent.v1` | `ypeCloudPersonalizationConsent` | L2 第四条同意 + 本机 `ype_profile_id`；默认关；OFF 排队删云；**不进**练习备份 |
 | `focus-tiger.ype-personalization-pack.v1` | `ypePersonalizationPack` | L2 云端 Pack 缓存（schema v1）；关同意须丢弃；相同 JSON 跳过重写；**不进**练习备份 |
 | `focus-tiger.quiet-together.v1` | `quietTogetherPreference` | Quiet Together 可关（缺省=开）。只存 `{ enabled }`。会话 UUID **不**进 localStorage |
-| `focus-tiger.focus-circle.v1` | `focusCircleMembership` | 本机入圈 `{ circleId, memberId, code, memberCount? }`；无账号 |
+| `focus-tiger.focus-circle.v1` | `focusCircleMembership` | 本机入圈 `{ circleId, memberId, code, memberCount? }`；无账号。Privacy / My circle 开着时轮询 `status`；**禁止**用迟到的 status 覆盖更新的 leave/join；429 保持上次人数、不回落到 1 |
 | `focus-tiger.focus-circle-witness-responded.v1` | `focusCircleWitness` | 本机已回应 traceId 列表（防重复 picker） |
 | `focus-tiger.focus-circle-passive-share.v1` | `focusCirclePassiveShare` | was-here 被动分享开关（默认 on） |
 | `focus-tiger.focus-circle-was-here-mark.v1` | `focusCircleWasHere` | 本机当日是否已 fire-and-forget mark（防重复） |
@@ -58,6 +60,8 @@
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 | `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（**Idle / 冷启动**默认关 / opt-in；曲目默认 Mer-Ka-Ba；可含 `user-*`）。**开坐**（Focusing `startSittingMusic` / Breath `playTrackEphemeral`）自动播但不把 `enabled:true` 写回此 key；**本地** Backup & restore v2 白名单（不含 IndexedDB 上传 blobs） |
 | `focus-tiger.session-cues.v1` | `sessionCuePreference` + `SessionCueController` + Soundscape | 开始/结束铃总开关（默认开）；**间隔节奏** `sessionIntervalMs`：`0`（默认）/ `180000` / `300000`；**觉察卡** `focusAwarenessCardEnabled`（默认开，可单独关）；**Focusing 与 Breath practice 共用**；音量跟 Soundscape volume bar（默认 0.45）再乘 **0.5 相对增益**（瞬态磬不得按 HTMLAudio 1.0 或与音乐同一数字就当「一样响」）；资产 `/audio/cues/`；**不**走 Ambient entitlement / Sound Gate；**本地** Backup & restore v2 白名单 |
+| `focus-tiger.system-tts-pref.v1` | `systemTtsPreference` + `SystemTtsPreferenceUI` + `systemTtsAnnouncements` | 全局系统播报开关（**默认关**）；仅 macOS Electron 宽屏 ⋯ 菜单；专注达标结束可念短句；**不**控制 Confide 倾诉朗读（Joelle/Otoya 保持独立）；**本地** Backup & restore v2 白名单 |
+| `focus-tiger.open-ended-nudge.v1` | `openEndedNudgePreference` + `OpenEndedNudgeUI` | 开放式专注 90 分钟 / 3 小时温和提示（缺省=开）。只存 `{ enabled }`。**不进**练习备份。关了之后本机不再出这两句 |
 | IndexedDB `focus-tiger.user-ambient.v1` | `UserAmbientLibrary` | 用户上传氛围乐 blobs（非 localStorage；重置须 `clearAllUserAmbientTracks`） |
 | `focus-tiger.locale.v1` | `localePreference` / `i18n.setLocale` | 上次选用的 **ready** 语言；**v1.0.0** ready = `en` / `ja`；draft（含 zh）不写入；**本地** Backup & restore v2 白名单 |
 | `focus-tiger.locale-greeting.v1` | `localeGreeting` / Dispatcher `LANGUAGE_CHANGED` | 切语问候同日限频：`{ dateKey, locales[] }`；ja→`bookReading`；en→`teaDrinking`（皆单程+CapCut）。**写入时机**：`playEmotion` 开播成功后 `markLocaleGreetingPlayed`（resolve 不预扣） |
@@ -66,6 +70,8 @@
 | `focus-tiger.idle-yin-tap-hint.v1` | `idleYinTapHintGate` | 冷启动额头发现气泡已读：`'1'` 后不再出现 |
 | `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
 | `focus-tiger.cold-start-goal-seen.v1` | `coldStartGoalGate` | 冷启动四选卡已读（`'1'`）；二次打开不再出卡；DEV 重置清 |
+| `focus-tiger.cold-start-goal-options-seen.v1` | `coldStartGoalGate` | 用户已知晓的四选卡选项集合版本（number string）；`COLD_START_GOAL_OPTIONS_VERSION` bump 时用于轻横幅 gate；与 seen 分工 |
+| `focus-tiger.home-sanctuary-nav-seen.v1` | `homeSanctuaryNavGate` | 栖居总导航扇形（Home/Calendar/Collection）已首次打开（`'1'`）；控制指南针蓝脉冲 |
 | `focus-tiger.tip-jar.v1` | `tipJarGate` | Buy Yin a Tea 本地 tip 状态：`{ tipped, tipCount, lastTippedAt, email?, source?, badgeIds[], tipLog[] }`；`badgeIds` = 善意/练习徽章（付费起 3，免费练习起 1，只增不减；练习上涨可 sync）；`tipLog` = 茶室留痕；**不**解锁内容；与 Sanctuary **零耦合** |
 | `focus-tiger.contextual-tea-tip.v1` | `contextualTeaTipGate` | 场景化请茶气泡：`{ lastShownLocalDay, lastShownReason, lastShownAt, dismissedCount }`；本地日一次；达标 / 里程碑触发；**不**解锁内容 |
 | `focus-tiger.monetization-funnel.v1` | `MonetizationFunnelStore` | 付费意愿漏斗：`{ counts, events[] }`（事件含可选 `layout=tea-first\|sanctuary-first`）；Support→CTA→Checkout→完成；本地 + 可选 Privacy opt-in 回传。**不**在练习备份 6 key 内。见 `MONETIZATION_INTENT_FUNNEL.md` |
@@ -88,7 +94,8 @@
 | `focus-tiger.contemplative-archive-seals.v1` | `contemplativeArchiveSeal` / `MustardSeedSealCardUI`（`archiveEntryId`） | 静思典藏 **独立纪念印**（CA-01…CA-12；配置 `memorialSealCatalogCa.js`）：`{ revealedEntryIds }`；**现网 enabled = 全部 12 条**（CA-01 score ≥ 30；CA-02 ≥ 60；其余按表内 `scoreThreshold`）；仪式在芥子须弥队列之后、Reflection 之前；菜单按门槛解锁 |
 | `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
 | `focus-tiger.idle-companion-pip.v1` | `idleCompanionPipGate` / `IdleCompanionPipUI` | Idle Document PiP 实验原型：`{ used, usedAt }`。只记是否曾打开过浮窗，供后续是否加大投入参考；**不得**用于提醒 / 激励 / 限频。Safari 等不支持时入口不挂载 |
-| `focus-tiger.focus-coins.v1` | `FocusCoinsStore` / `applyFocusCoinsGrant` / `applyBreathPracticeFocusCoinsGrant` / `applyFocusCoinsRedeem` / `FocusCoinsPanelUI` | 寅币钱包：`{ balance, ownedIds, equippedTitle, lifetimeMarks, dateKey, day, session }`。L1 发点（Stay 达标 + **Breath 坐满按 Stay 档**）；L2 `__focusCoins.redeem(skuId)` 花点留下只增不减 `ownedIds`。清供 8 可兑为珍藏卡；晨露/须弥滤镜已拆（不点亮莲花/蒲团）。L3 `#yin-coin-panel` 只列 `listShopFocusCoinSkus()` = `FOCUS_COIN_CURIO_SHOP_IDS`。币标：`/ui/focus-coins/yin-coin-mark.png` 抬头、`yin-coin-mark-icon.png` 余额/价格（#354 定稿）；SKU 仍占位色点；**不**叠 `#sprite-stage`。时长 chip `#focus-coins-duration-hint`。`?focusCoins=0` 关闸完全不写、菜单行隐藏。**本地** Preferences 备份 **v4 whitelist**（2026-09-13）；**不**满足 `isEntitled`；**不**写 Tea / Sanctuary `badgeIds`；**不**改莲花池自动开花 |
+| `focus-tiger.focus-coins.v1` | `FocusCoinsStore` / `applyFocusCoinsGrant` / `applyBreathPracticeFocusCoinsGrant` / `applyFocusCoinsRedeem` / `FocusCoinsPanelUI` | 寅币钱包：`{ balance, ownedIds, equippedTitle, lifetimeMarks, dateKey, day, session }`。L1 发点（Stay 达标 + **Breath 坐满按 Stay 档**）；L2 `__focusCoins.redeem(skuId)` 花点留下只增不减 `ownedIds`。清供 8 可兑为珍藏卡；晨露/须弥滤镜已拆（不点亮莲花/蒲团）。L3 `#yin-coin-panel` 只列 `listShopFocusCoinSkus()` = `FOCUS_COIN_CURIO_SHOP_IDS`。币标：`/ui/focus-coins/yin-coin-mark.png` 抬头、`yin-coin-mark-icon.png` 余额/价格（#354 定稿）；SKU 仍占位色点；**不**叠 `#sprite-stage`。时长 chip `#focus-coins-duration-hint`。`?focusCoins=0` 关闸完全不写、菜单行隐藏。**本地** Preferences 备份 **v4+ whitelist**（2026-09-13 起 coin；v6 见 essence）；**不**满足 `isEntitled`；**不**写 Tea / Sanctuary `badgeIds`；**不**改莲花池自动开花 |
+| `focus-tiger.focus-essence.v1` | `FocusEssenceStore` / `applyFocusEssenceGrant` / `applyBreathPracticeFocusEssenceGrant` | Focus Essence（精進）只增账本：`{ essenceTotal, dateKey, day, session }`。与 Coin **同事件同点数同封顶**；**无** balance/ownedIds/redeem/UI。`?focusEssence=0` 独立关闸（**不**与 `?focusCoins=0` 共用）。`essenceTotal` 从 0 起、不回溯历史 Coin。**本地** Preferences 备份 **v6 whitelist**（2026-09-20）；导入后 `main.js` reload essence store |
 
 一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
@@ -287,7 +294,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `focusing-focus-hud-visible` | focusing | both | FocusHUD | visible | `#focus-hud` | `#focus-hud` | **locked** | `e2e/helpers/product-shell.js › expectFocusSessionActive (#focus-hud visible)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
 | `choose-bow-companion-in-viewport` | after-choose-bow | both | CompanionPanel | in-viewport | `.session-start-dock__panel` | `.session-start-dock__panel` | **locked** | `e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible; 宽屏不 park)` | `e2e/scenario-a.companion.spec.js › 375 Choose bow: Companion staged in viewport…` |
 | `companion-stage-honesty-entry-hidden` | companion-staged-narrow | narrow | HonestyIdleEntry | hidden | — | `#honesty-idle-entry` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 companion stage: Honesty dock entry stays hidden` |
-| `idle-narrow-three-home-balls` | idle | narrow | HomeCtas | visible | — | `#ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…` |
+| `idle-narrow-three-home-balls` | idle | narrow | HomeCtas | visible | — | `#ft-narrow-home-sanctuary-nav, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…` |
 | `heatmap-hidden-when-focusing` | focusing | both | WeeklyHeatmap | hidden | `#weekly-practice-heatmap` | `#weekly-practice-heatmap` | **locked** | `e2e/weekly-practice-heatmap.spec.js › non-Idle (Focusing) hides weekly heatmap` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing hides weekly heatmap` |
 
 ### 当前假绿缺口（须逐条补锚）
@@ -302,6 +309,7 @@ _（无）_
 - `focus-tiger/src/ui/HonestyCheckInUI.js`
 - `focus-tiger/src/ui/MicroRitualUI.js`
 - `focus-tiger/src/ui/OnboardingHintsUI.js`
+- `focus-tiger/src/ui/VoiceCommandUndoToast.js`
 - `focus-tiger/src/main.js`
 - `focus-tiger/src/core/idleChromeOrchestration.js`
 - `focus-tiger/src/core/IdleChromeFacade.js`

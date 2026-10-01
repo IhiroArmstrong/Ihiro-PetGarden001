@@ -1,0 +1,3 @@
+| 功能 | 类型 | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 相关文件 | 完成日期 |
+|---|---|---|---|---|---|---|---|---|
+| Confide generate 失败不得回落隐私套话 | UI可见 | 待人工测试 | **先终端批量**：`npm run test:confide-generate-failure-fallback`（≥20 句 × 24 salt × 5 连发 · 见 `confide-generate-failure-fallback-acceptance.md`）全绿后再 Electron spot-check。**主路径**：「有点烦，不想练习」→ generate/sanitize 失败须回落 fallback-01/03，**禁止** fallback-02。**对照**：正常 corpus 仍可用 fallback-02。**回流**：同面板再发复合情绪句，连续失败仍不得 privacy 套话。自动化：`confideReplyFlow.test.js` · `confideGenerateFailureFallbackEvaluate.test.js` · smoke。 | 2026-09-22 分析师：复合句 generate 失败掉进隐私免责声明 | — | — | `confideReplyFlow.js` · `confideCorpus.js` · `confideGenerateFailureFallbackFixtures.js` | 2026-09-22 |

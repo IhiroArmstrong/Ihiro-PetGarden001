@@ -10,6 +10,10 @@
 
 import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
 import {
+  noteCloudPresenceNetworkFailure,
+  noteCloudPresenceNetworkSuccess
+} from './cloudPresenceDegradedHint.js';
+import {
   FOCUS_CIRCLE_PATH,
   FOCUS_CIRCLE_SCHEMA_VERSION,
   isFocusCircleClientEnabled,
@@ -186,6 +190,7 @@ export async function postFocusCirclePresence({
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
     const hereTodayOthers = parseHereTodayOthers(body);
+    noteCloudPresenceNetworkSuccess();
     return {
       ok: true,
       sittingOthers,
@@ -193,6 +198,9 @@ export async function postFocusCirclePresence({
       skipped: false
     };
   } catch {
+    if (action !== 'presence_leave') {
+      noteCloudPresenceNetworkFailure({ storage });
+    }
     return { ok: false, reason: 'network', skipped: true };
   }
 }

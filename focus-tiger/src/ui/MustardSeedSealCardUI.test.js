@@ -8,7 +8,11 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
-import { mustardSeedSealZhIsPrimaryLocale } from '../core/mustardSeedSeal.js';
+import {
+  mustardSeedSealJaIsPrimaryLocale,
+  mustardSeedSealZhIsPrimaryLocale,
+  resolveMustardSeedPoemPresentation
+} from '../core/mustardSeedSeal.js';
 
 const src = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), 'MustardSeedSealCardUI.js'),
@@ -20,9 +24,21 @@ describe('mustardSeedSealZhIsPrimaryLocale', () => {
     assert.equal(mustardSeedSealZhIsPrimaryLocale('zh'), true);
   });
 
-  it('en and ja use English poem as primary', () => {
+  it('en uses English poem as primary', () => {
     assert.equal(mustardSeedSealZhIsPrimaryLocale('en'), false);
-    assert.equal(mustardSeedSealZhIsPrimaryLocale('ja'), false);
+    assert.equal(mustardSeedSealJaIsPrimaryLocale('en'), false);
+  });
+
+  it('ja uses Japanese poem as primary when present', () => {
+    assert.equal(mustardSeedSealJaIsPrimaryLocale('ja'), true);
+    const verse = {
+      poemZh: ['zh'],
+      poemJa: ['ja'],
+      poemEn: ['en']
+    };
+    const lines = resolveMustardSeedPoemPresentation(verse, 'ja');
+    assert.deepEqual(lines.primary, ['ja']);
+    assert.deepEqual(lines.secondary, ['en']);
   });
 });
 

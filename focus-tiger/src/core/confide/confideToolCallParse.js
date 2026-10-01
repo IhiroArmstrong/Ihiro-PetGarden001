@@ -150,6 +150,31 @@ export function buildConfideToolCallLabPrompt(userText) {
   ].join('\n');
 }
 
+/** Production Read Hybrid gloss for query_memory_list (2026-09-18 narrow). */
+export const CONFIDE_READ_HYBRID_MEMORY_LIST_GLOSS_LINES = Object.freeze([
+  `${CONFIDE_TOOL_ID.QUERY_MEMORY_LIST}: ONLY when the user explicitly asks to see, list, recall, or review`,
+  'the specific things Yin has recorded/remembered about them (e.g. "what do you remember',
+  'about me", "show me what you\'ve noted", "what have you recorded"). This is a request',
+  'to retrieve a list of stored observations — not a request to reflect on feelings,',
+  'recent activity, or personal history in open-ended terms.',
+  'Do NOT classify as query_memory_list when the user is:',
+  '- Describing or asking about their own recent state/activity in open-ended terms',
+  '  ("what have I been busy with", "what have I been up to lately")',
+  '- Asking WHY they did something / started something (reflective/emotional — use none, not list retrieval)',
+  '- Making small talk that happens to mention time-related words (today, morning, lately,',
+  '  started, been doing) without asking Yin to enumerate stored memories',
+  '- Asking Yin to remember something NEW (different intent, not retrieval)',
+  'Examples → none (not query_memory_list):',
+  '- "What have I been spending my time on lately?"',
+  '- "Do you remember why I started doing this?"',
+  '- "What have I been busy with lately?"',
+  '- "Why did I start practicing?"',
+  'Examples → query_memory_list:',
+  '- "Show me what you remember"',
+  '- "What do you remember about me?"',
+  '- "Can you list what you\'ve noted about me?"'
+]);
+
 /**
  * Production read hybrid prompt: read tools only; forget is never offered.
  * @param {string} userText
@@ -164,7 +189,7 @@ export function buildConfideReadHybridPrompt(userText) {
     `- ${CONFIDE_LAB_NONE_TOOL_ID}: chit-chat, crisis, mood labels, or anything else`,
     `- ${CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION}: how long they practiced, when they usually sit, how they have been showing up, comparing two practice windows, or Arrival counts across windows`,
     `- ${CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND}: what mood looked like, presence tag counts, or comparing two check-in windows (not diagnoses)`,
-    `- ${CONFIDE_TOOL_ID.QUERY_MEMORY_LIST}: list what Yin remembers on this device`,
+    ...CONFIDE_READ_HYBRID_MEMORY_LIST_GLOSS_LINES,
     'Never invent backup, update, forget, or delete-all tools.',
     'If unsure, use none.',
     `User: ${utterance}`
