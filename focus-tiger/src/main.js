@@ -86,6 +86,7 @@ import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
 import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
+import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
 import {
   InAppReminderBannerController
 } from './core/InAppReminderBannerController.js';
@@ -969,6 +970,18 @@ async function init() {
   let softUpdateVersionLabel = '';
   let syncSoftUpdatePrompt = () => {};
   const softUpdatePromptUI = new SoftUpdatePromptUI(document.body);
+  const landscapeSuggestUI = new LandscapeSuggestUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
+  const syncLandscapeSuggest = () => {
+    const narrow = window.matchMedia('(max-width: 479px)').matches;
+    const portrait = window.matchMedia('(orientation: portrait)').matches;
+    landscapeSuggestUI.sync({ narrow, portrait });
+  };
+  syncLandscapeSuggest();
+  window.matchMedia('(max-width: 479px)').addEventListener('change', syncLandscapeSuggest);
+  window.matchMedia('(orientation: portrait)').addEventListener('change', syncLandscapeSuggest);
+  window.addEventListener('resize', syncLandscapeSuggest);
   const isDesktopShell = Boolean(globalThis.desktopShell?.isDesktop);
   /** @type {ReturnType<typeof attachDesktopUpdater> | null} */
   let desktopUpdaterController = null;

@@ -226,6 +226,8 @@
   "ARRIVAL_SKIP_STEP": "跳过",
   "ARRIVAL_SKIP_BEGIN": "跳过，直接开始",
   "QUICK_START_ARIA": "呼吸练习",
+  "HINT_LANDSCAPE_SUGGEST_BODY": "横屏看可能会更舒展一些，你可以试着把手机转过来。",
+  "HINT_LANDSCAPE_SUGGEST_DISMISS": "知道了",
   "HINT_HELP_ARIA": "查看此刻的一小句提示",
   "HINT_DISMISS_ARIA": "点击即可关闭",
   "HINT_BADGE_ARIA": "有新提示，点击查看",

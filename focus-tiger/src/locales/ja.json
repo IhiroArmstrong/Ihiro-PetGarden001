@@ -226,6 +226,8 @@
   "ARRIVAL_SKIP_STEP": "スキップ",
   "ARRIVAL_SKIP_BEGIN": "スキップ — はじめる",
   "QUICK_START_ARIA": "呼吸の練習",
+  "HINT_LANDSCAPE_SUGGEST_BODY": "横にすると、少し見やすいかもしれません。スマホを横にしてみてください。",
+  "HINT_LANDSCAPE_SUGGEST_DISMISS": "わかった",
   "HINT_HELP_ARIA": "この瞬間の静かなヒントを表示",
   "HINT_DISMISS_ARIA": "クリックで閉じる",
   "HINT_BADGE_ARIA": "新しいヒントがあります — クリックして見る",

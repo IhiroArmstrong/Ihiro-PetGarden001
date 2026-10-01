@@ -473,7 +473,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 顺序 | Task | Brief | 状态 |
 |---|---|---|---|
 | **1** | 窄屏 Onboarding 互斥 + Sit 主 CTA 不截断 | `task-briefs/task-responsive-narrow-onboarding-sit.md` | **代码已落地** · 待人工复测 |
-| **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | 待开发 · Task 1 人工验收后开工 |
+| **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | **代码已落地** · 2026-10-01 PO 取消人工验收门闩 · 真机可测时再关单 |
 | **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | `task-briefs/task-responsive-single-chrome-line.md` | **代码已落地 · 待双视口人工验收**（2026-07-30）。PR #31（Brief/阶段0）· #32（编排）· #33（facade）已合 `develop`。阶段 3：文档收口 + main 去掉分壳别名。关单须 **§8 + §9** 分测（见 TEST_TRACKER「Task 3 单代码线」行）；**禁止**与场景 O 混验。 |
 
 **共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。Task 3 另须 §8 + §9 故事最小集（见 Brief）。
