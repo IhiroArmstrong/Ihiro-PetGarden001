@@ -125,6 +125,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用 Q1–Q2；第三问见 `feature-conflict-review` | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
+| `multi-task-session` | 「同一会话连续多任务见 `focus-tiger-multi-task-session.mdc`」；`focus-tiger-core` / `PROCESS`「一次一任务管改动范围」可一行引用 | 主张一会话只能做一个任务；主张衍生任务可顺手实现；主张多任务可共用一个 PR；把「一次一任务」误解为一会话一任务；完整复述准入/停止条件全文 |
 | `brief-before-user-visible` | 「B 类须 Brief 见 `WORKFLOW.md`」；按需层 `focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` Task Brief 节 / `focus-tiger-core` 可一行引用 | 主张「立刻开工」可跳过 Brief；主张 Agent 可自行把 B 类降为 A 类；平行复述 A/B 表与 Stage 1/2 对照全文 |
 | `ci-failure-triage` | 「CI/smoke 失败且缺日志见 `focus-tiger-ci-failure-triage.mdc`」；`agent-token-cost` §5–§6 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无日志先 grep；主张失败分析摘要可臆测；把合 develop / §7 关单门禁写进本条 |
 | `ui-bug-triage` | 「UI/交互回归且缺锚点见 `focus-tiger-ui-bug-triage.mdc`」；`agent-token-cost` §5 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无复现/锚点先全仓 grep；主张分析会话可无限探索；把合 develop / §7 关单门禁写进本条 |
@@ -158,6 +159,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
 | [`.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`](../../.cursor/rules/focus-tiger-recommend-most-reasonable.mdc) | **SSOT**：列多个方案时须同时给出「我认为最合理的」（`recommend-most-reasonable` / N14b） |
 | [`.cursor/rules/focus-tiger-session-handoff.mdc`](../../.cursor/rules/focus-tiger-session-handoff.mdc) | **SSOT**：会话交接（口令「生成交接」；`session-handoff`） |
+| [`.cursor/rules/focus-tiger-multi-task-session.mdc`](../../.cursor/rules/focus-tiger-multi-task-session.mdc) | **SSOT**：会话内多任务连贯执行（准入/停止条件；`multi-task-session`；**alwaysApply**） |
 | [`.cursor/rules/focus-tiger-ci-failure-triage.mdc`](../../.cursor/rules/focus-tiger-ci-failure-triage.mdc) | **SSOT**：CI/Smoke 失败排查前置检查（先 gh 取日志、后探索；探索最多 5 轮；`ci-failure-triage`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-ui-bug-triage.mdc`](../../.cursor/rules/focus-tiger-ui-bug-triage.mdc) | **SSOT**：UI/交互回归排查前置检查（先取 git/复现锚点、后探索；探索最多 5 轮；`ui-bug-triage`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc`](../../.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc) | **SSOT**：多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑；`layered-bug-diagnostics`；**glob 注入，非 alwaysApply**） |
@@ -274,6 +276,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-10-01 | 新增 `multi-task-session`：同一会话可连续多任务（准入/停止条件、一 PR 一任务、stacked PR、衍生任务只登记）；澄清「一次一任务」= 改动范围非一会话一任务。SSOT `.cursor/rules/focus-tiger-multi-task-session.mdc`；`focus-tiger-core` 一行引用 |
 | 2026-09-29 | 新增 `batch-before-human`：能终端批量就不要整表请人；扩面先筛再真发。SSOT `.cursor/rules/testing-strategy.mdc` |
 | 2026-09-29 | 新增 `layered-bug-diagnostics`：多层系统集成 bug（权限/进程/音频/系统 API）须先加可观测性、禁止第一轮猜测性改逻辑；连续 2 次修复失败须停改逻辑补诊断。SSOT `.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc`；glob 覆盖 voice/speech/audio/permission（含大小写）；与 `ui-bug-triage` 并列 |
 | 2026-09-26 | 扩展 `chat-openable-file-links`：须 Markdown + **本机绝对路径**；立刻看须 `open_resource` + Finder `open -R`；要单独一份须先问 Desktop/Downloads 或 commit+GitHub |
