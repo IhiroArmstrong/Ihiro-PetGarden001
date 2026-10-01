@@ -14,7 +14,7 @@ This table answers: **which product surfaces are live in code right now**, which
 
 - Operational numbers (daily caps, point values) **must not** appear in recitable short answers.
 - When retesting whether a KB entry hits, confirm the test build already contains that catalog commit — do not blame the algorithm for a stale directory.
-- Internal handbook (`docs/internal-handbook/`) waits until this list exists; do not run both in parallel.
+- Internal handbook (`docs/internal-handbook/`) is generated from this list. Do not paste it into the recitable catalog.
 
 ---
 
@@ -78,4 +78,4 @@ CI / smoke: `npm run audit:kb-live-entries` (no write) is part of `npm run docs:
 | 2 | Compare list vs existing `KB-FUNC-*` passed rows → gap candidates | **已合 develop** (#931) · `catalogKbIds` drift cleared |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** |
 | 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019–0032 已入库**（闸门 **34**）· batch-2 存活面候选清零 |
-| 手册 | `docs/internal-handbook/` | 等本清单稳定后再开 |
+| 手册 | `docs/internal-handbook/` | **雏形已开**（2026-10-01）· 只从本清单生成 |
