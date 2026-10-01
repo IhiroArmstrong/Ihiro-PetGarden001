@@ -16,6 +16,7 @@ import {
   arbitrateSpriteChannel,
   resolveBootSpriteOccupancy,
   resolveSessionEndSpriteOccupancy,
+  releaseRiseHoldOccupancy,
   resolveVisibilitySpriteOccupancy
 } from './spriteChannelArbitration.js';
 
@@ -152,6 +153,17 @@ test('visibility: long hide + 2h stamp enters DORMANT in the afternoon', () => {
     lateNight: false
   });
   assert.equal(d.sessionDelta, 'enter-dormant');
+});
+
+test('reflection close releases rise-hold so Idle tap can re-arm', () => {
+  assert.equal(
+    releaseRiseHoldOccupancy(SPRITE_OCCUPANCY.RISE_HOLD),
+    SPRITE_OCCUPANCY.IDLE_BASELINE
+  );
+  assert.equal(
+    releaseRiseHoldOccupancy(SPRITE_OCCUPANCY.CELEBRATE),
+    SPRITE_OCCUPANCY.CELEBRATE
+  );
 });
 
 test('session-end never returns dormant-enter', () => {

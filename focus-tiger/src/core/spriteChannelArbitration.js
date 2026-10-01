@@ -491,6 +491,17 @@ export function resolveVisibilitySpriteOccupancy(context = {}) {
 }
 
 /**
+ * Reflection closed: Rise hold must not keep blocking the Idle forehead tap.
+ * @param {string | null | undefined} occupancy
+ * @returns {string | null | undefined}
+ */
+export function releaseRiseHoldOccupancy(occupancy) {
+  return occupancy === SPRITE_OCCUPANCY.RISE_HOLD
+    ? SPRITE_OCCUPANCY.IDLE_BASELINE
+    : occupancy;
+}
+
+/**
  * Timed complete / Rise pose. Never cloakSleep.
  *
  * @param {object} opts

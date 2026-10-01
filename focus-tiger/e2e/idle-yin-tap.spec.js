@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   expectFocusSessionActive,
   openFreshProductShell,
@@ -21,11 +22,16 @@ async function waitForIdleYinTapArmed(page, timeoutMs = 45_000) {
     .poll(
       async () => {
         await page.evaluate(() => {
+          window.__coldStartGoalCard?.close?.();
           window.__mustardSeedCard?.close?.();
           window.__practiceImprintCard?.close?.();
           window.__fiveMomentsCompass?.close?.();
           window.__calmActionRecoverCard?.close?.();
           window.__calmActionArriveCard?.close?.();
+          window.__flowerBlowWelcomeBubble?.hide?.({ immediate: true });
+          window.__todayDirectionOptionsBanner?.markSeen?.();
+          window.__todayDirectionOptionsBanner?.banner?.hide?.({ immediate: true });
+          window.__todayDirectionOptionsBanner?.sync?.();
         });
         return page.evaluate(() => {
           const key = window.__emotionController?.getCurrentEmotionKey?.();
@@ -34,11 +40,8 @@ async function waitForIdleYinTapArmed(page, timeoutMs = 45_000) {
           const gateReady =
             gate?.completionPending !== true &&
             gate?.postSessionOverlayActive !== true;
-          return (
-            emotionReady &&
-            gateReady &&
-            window.__idleYinTapAnchor?.isArmed?.() === true
-          );
+          const armed = window.__idleYinTapAnchor?.isArmed?.() === true;
+          return emotionReady && gateReady && armed;
         });
       },
       { timeout: timeoutMs, intervals: [250, 500, 1000, 2000] }
@@ -47,19 +50,12 @@ async function waitForIdleYinTapArmed(page, timeoutMs = 45_000) {
 }
 
 async function settleIdleTapReady(page) {
-  await page.evaluate(() => {
-    try {
-      localStorage.setItem('focus-tiger.five-moments-compass-seen.v1', '1');
-    } catch {
-      /* ignore */
-    }
-    window.__fiveMomentsCompass?.close?.();
-  });
+  await dismissColdStartOverlay(page);
   const skip = page.locator('[data-testid="five-moments-compass-skip"]');
   if (await skip.isVisible().catch(() => false)) {
     await skip.click();
   }
-  await waitForIdleYinTapArmed(page, 20_000);
+  await waitForIdleYinTapArmed(page, 45_000);
 }
 
 async function clickHitForehead(page) {

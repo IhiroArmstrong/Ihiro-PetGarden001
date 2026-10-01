@@ -413,6 +413,7 @@ import {
   dormantDeltaFromDecision,
   resolveBootSpriteOccupancy,
   resolveSessionEndSpriteOccupancy,
+  releaseRiseHoldOccupancy,
   resolveVisibilitySpriteOccupancy
 } from './core/spriteChannelArbitration.js';
 import {
@@ -3402,13 +3403,15 @@ async function init() {
     onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
     // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
+    // RISE_HOLD 会挡住额头点击；关面板时释放，即使 emotion key 已空。
     const riseKey = emotionController.getCurrentEmotionKey();
-    if (
+    const released = releaseRiseHoldOccupancy(spriteOccupancy);
+    const heldRise =
+      released !== spriteOccupancy ||
       isRiseInterruptHoldEmotion(riseKey) ||
-      isLateNightCloakHoldEmotion(riseKey)
-    ) {
-      emotionController.playEmotion('idle');
-    }
+      isLateNightCloakHoldEmotion(riseKey);
+    if (released !== spriteOccupancy) spriteOccupancy = released;
+    if (heldRise) emotionController.playEmotion('idle');
     syncOnboardingAutoHints();
     syncHonestyIdleEntry();
   };

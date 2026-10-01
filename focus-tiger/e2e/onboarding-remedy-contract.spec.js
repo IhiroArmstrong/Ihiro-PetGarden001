@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   openFreshProductShell,
   quickStartFocus,
@@ -136,6 +137,8 @@ test.describe('wellness first-run card', () => {
     await expect(
       page.locator('#onboarding-wellness-first:not([hidden])')
     ).toHaveCount(0);
+    await dismissColdStartOverlay(page);
+    await expect(page.locator('#cold-start-goal-backdrop')).toBeHidden();
     await page.locator('#onboarding-hint-help').click();
     await expect(purposeCardVisible(page)).toBeVisible({ timeout: 8_000 });
     await expect(
