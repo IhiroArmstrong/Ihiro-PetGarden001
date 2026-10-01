@@ -10,7 +10,7 @@
 | 页签 | 对外名 | 首版内容任务 |
 |---|---|---|
 | 1 | 结缘点缀 | **已合** — 清供 8 商店（现 `#yin-coin-panel` 主体） |
-| 2 | 陪伴称号 | **已部分合** — `title.*` equip；本壳统一 Tab |
+| 2 | 陪伴称号 | **本旁支** — 页签列出三条称号并可佩戴；结缘行 Wear 保留 |
 | 3 | 记忆小册 | **`task-mindfulness-scroll-export.md`** |
 | 4 | 勋章印记 | **`task-practice-imprint-badges.md`** |
 

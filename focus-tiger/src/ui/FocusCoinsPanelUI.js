@@ -22,6 +22,7 @@ import {
   formatCollectionsScarcityExplanation,
   listCollectionsBehavioralScarcityRows
 } from '../core/collectionsBehavioralScarcity.js';
+import { listCompanionTitleRows } from '../core/collectionsTitles.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -201,6 +202,16 @@ export class FocusCoinsPanelUI {
       pane.setAttribute('role', 'tabpanel');
       pane.hidden = true;
 
+      if (tabId === 'titles') {
+        this.titlesListEl = document.createElement('ul');
+        this.titlesListEl.className =
+          'yin-coin-panel__list yin-coin-panel__titles-list';
+        this.titlesListEl.dataset.testid = 'yin-coin-titles-list';
+        pane.append(this.titlesListEl);
+        this.tabPanes.set(tabId, pane);
+        continue;
+      }
+
       if (tabId === 'imprints') {
         this.imprintsListEl = document.createElement('ul');
         this.imprintsListEl.className =
@@ -365,6 +376,7 @@ export class FocusCoinsPanelUI {
     this._renderMemorialSection(
       this.handlers.getMemorialRows?.() ?? listCollectionsBehavioralScarcityRows()
     );
+    this._renderTitlesSection(listCompanionTitleRows(ctx));
   }
 
   /**
@@ -411,6 +423,49 @@ export class FocusCoinsPanelUI {
       for (const row of sections.pending) {
         this.listEl.append(this._rowEl(row));
       }
+    }
+  }
+
+  /**
+   * Companion titles already in the catalog. Unowned rows stay text-only.
+   * @param {ReturnType<typeof listCompanionTitleRows>} rows
+   */
+  _renderTitlesSection(rows) {
+    if (!this.titlesListEl) return;
+    this.titlesListEl.replaceChildren();
+    for (const row of rows) {
+      const li = document.createElement('li');
+      li.className = 'yin-coin-panel__title-row';
+      li.dataset.testid = `yin-coin-title-${row.id}`;
+      const name = document.createElement('p');
+      name.className = 'yin-coin-panel__memorial-name';
+      name.textContent = t(row.nameKey);
+      const copy = document.createElement('p');
+      copy.className = 'yin-coin-panel__memorial-copy';
+      if (!row.owned) {
+        copy.textContent = t('YIN_COIN_TITLE_NOT_YET');
+        li.append(name, copy);
+      } else if (row.equipped) {
+        copy.textContent = t('YIN_COIN_WEARING');
+        li.append(name, copy);
+      } else {
+        const wear = document.createElement('button');
+        wear.type = 'button';
+        wear.className = 'yin-coin-panel__btn yin-coin-panel__btn--bond';
+        wear.dataset.testid = `yin-coin-title-wear-${row.id}`;
+        wear.textContent = t('YIN_COIN_WEAR');
+        wear.addEventListener('click', () => {
+          const result = this.handlers.equipTitle?.(row.id);
+          this.handlers.onMessage?.(
+            result?.ok === false
+              ? t('YIN_COIN_TITLE_NOT_YET')
+              : t('YIN_COIN_WEARING')
+          );
+          this._refresh();
+        });
+        li.append(name, wear);
+      }
+      this.titlesListEl.append(li);
     }
   }
 

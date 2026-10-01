@@ -117,7 +117,7 @@ test('Collections D.4 uses object-card states and bond-only CTA', () => {
   assert.match(src, /YIN_COIN_NOT_YET/);
 });
 
-test("Yin's Collections four-tab shell: bond default, placeholders on titles/scroll", () => {
+test("Yin's Collections four-tab shell: titles list, scroll still a placeholder", () => {
   assert.deepEqual(YIN_COIN_COLLECTIONS_TABS, [
     'bond',
     'titles',
@@ -138,6 +138,8 @@ test("Yin's Collections four-tab shell: bond default, placeholders on titles/scr
     src,
     /yin-coin-tab-placeholder-imprints/
   );
+  assert.match(src, /yin-coin-titles-list/);
+  assert.doesNotMatch(src, /yin-coin-tab-placeholder-titles/);
   const en = JSON.parse(
     readFileSync(join(here, '../locales/en.json'), 'utf8')
   );
