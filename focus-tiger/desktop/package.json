@@ -26,13 +26,15 @@
     "companion:observe-shuffle-screen": "node scripts/l0-observe-shuffle-screen.js",
     "companion:semantic-live-coldstart-probe": "node scripts/l0-semantic-live-coldstart-probe.js",
     "companion:voice-input-probe": "node scripts/voice-input-probe.js",
-    "companion:system-tts-probe": "node scripts/system-tts-probe.js"
+    "companion:system-tts-probe": "node scripts/system-tts-probe.js",
+    "bytecode:compile": "electron scripts/compile-v8-bytecode.js"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",
     "node-llama-cpp": "^3.14.4"
   },
   "devDependencies": {
+    "bytenode": "^1.7.0",
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12"
   },
