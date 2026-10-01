@@ -3,6 +3,7 @@
 > **状态：方向锁（2026-08-20 · 清供 8 表）** — 花园 vs 珍藏切开仍有效；叠层**视觉**废止；旧 8 个 SKU id **按清供器物改名、现价现门槛可兑**。L0–L3 已接线；L3 抽屉入口是 **Yin's Collections / 阿寅的珍藏**。`?focusCoins=0` 关闸完全不写。Breath 坐满按 Stay 档发时长点 + 时长 chip 静默 hint。  
 > **内部名**：Focus Coins。**货币对外名（硬）**：**寅币** / **Focus Coins**（2026-08-19 取代「同坐点」；旧文案可视为别名，新产品面只用寅币）。禁止金币 / 积分 / Shop / Purchase 口吻。  
 > **个人中心对外名（硬）**：**阿寅的珍藏** / **Yin's Collections**（日文 **阿寅の蒐集**）。不要 Desk / Study / Sanctuary（后者已是 Lifetime 买断名）。百宝箱 / 清供匣只作气质比喻，不作产品名。  
+> **三分法（2026-10-01 · 硬）**：本抽屉只表示 **Earned**（实践 / 寅币 / 成长，钱买不到）。付费艺术品走独立的 **Yin's Art Collection**（尚未接线）；请茶仍是 **Supported**，不解锁本抽屉。三者不得混进 `#yin-coin-panel`。口径：`PRINCIPLES.md`「三分法」。  
 > **工程 Brief**：[`task-briefs/task-focus-coins.md`](./task-briefs/task-focus-coins.md)。  
 > **日封顶经济评估（2026-09-16 · Step D = A 已锁）**：[`task-briefs/task-yin-coin-daily-cap-economy.md`](./task-briefs/task-yin-coin-daily-cap-economy.md)（冻表 36/3/12/48、不远程、不改价；**禁止**与品味/莲花 KV 同批改封顶）。  
 > **禁止**：用寅币满足任何 `isEntitled(featureKey)`；不建 entitlement gate key；**禁止**修改或覆盖已有 PNG 序列 / 蒲团 / 莲花朵（铁律见 `PRINCIPLES.md`）。  
