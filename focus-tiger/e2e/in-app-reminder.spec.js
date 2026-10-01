@@ -167,9 +167,17 @@ test('set reminder time → return to foreground → show banner → dismiss →
 
   // Banner fade keeps the dismiss control moving; a normal click times out.
   await page.locator(DISMISS).click({ force: true });
-  await expect(page.locator(BANNER)).toBeHidden();
+  await expect
+    .poll(async () => page.locator(BANNER).evaluate((el) => el.hidden), {
+      timeout: 5_000
+    })
+    .toBe(true);
   await simulateReturnToForeground(page);
-  await expect(page.locator(BANNER)).toBeHidden();
+  await expect
+    .poll(async () => page.locator(BANNER).evaluate((el) => el.hidden), {
+      timeout: 5_000
+    })
+    .toBe(true);
 });
 
 test('parrot messenger replays when banner reappears after silent hide', async ({

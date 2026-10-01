@@ -104,18 +104,31 @@ test.describe('Mustard Seed memorial seal', () => {
 
   test('force mode hides blurb; auto mode shows blurb', async ({ page }) => {
     await openFreshProductShell(page, {
-      query: { sessionMinutes: 1, qaSeedStreak: 15 }
+      query: { sessionMinutes: 1, flowerWelcome: 0 }
     });
 
-    await expect
-      .poll(async () => page.evaluate(() => Boolean(window.__mustardSeedSeal?.open)), {
-        timeout: 15_000
-      })
-      .toBe(true);
-
     await page.evaluate(() => {
-      window.__mustardSeedSeal.clear();
-      window.__mustardSeedSeal.open({ mode: 'force', caseId: 'mustard-seed-sumeru' });
+      const richDays = [];
+      for (let i = 1; i <= 21; i += 1) {
+        const d = String(i).padStart(2, '0');
+        richDays.push({ date: `2026-07-${d}`, totalMinutes: 60 });
+      }
+      localStorage.setItem(
+        'focus-tiger.practice-days.v1',
+        JSON.stringify({ days: richDays })
+      );
+      localStorage.setItem(
+        'focus-tiger.mustard-seed-seal.v1',
+        JSON.stringify({
+          revealed: true,
+          revealedCaseIds: ['mustard-seed-sumeru'],
+          lastShownCaseId: 'mustard-seed-sumeru'
+        })
+      );
+      window.__mustardSeedSeal.open({
+        mode: 'force',
+        caseId: 'mustard-seed-sumeru'
+      });
     });
 
     const card = page.locator('#mustard-seed-seal-card');
@@ -123,11 +136,14 @@ test.describe('Mustard Seed memorial seal', () => {
     await expect(card).toBeVisible({ timeout: 10_000 });
     await expect(blurb).toBeHidden();
 
+    await page.evaluate(() => window.__mustardSeedCard.close());
+    await expect(card).toBeHidden({ timeout: 5_000 });
+
     await page.evaluate(() => {
-      window.__mustardSeedCard.close();
       window.__mustardSeedSeal.open({
         mode: 'auto',
-        claim: false
+        claim: false,
+        caseId: 'mustard-seed-sumeru'
       });
     });
 

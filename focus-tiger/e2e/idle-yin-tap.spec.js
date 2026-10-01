@@ -13,9 +13,38 @@ import {
 
 /**
  * Scene X2 — Idle tap forehead / Yin hit → earWiggleHeadTouch.
- * Preview builds have no `__emotionController` (DEV-only); assert sprite src
- * + hit disarm. One navigation: main path then Rise reflow (avoid 2× goto flake).
+ * Assert sprite src + hit disarm. One navigation: main path then Rise reflow.
  */
+
+async function waitForIdleYinTapArmed(page, timeoutMs = 45_000) {
+  await expect
+    .poll(
+      async () => {
+        await page.evaluate(() => {
+          window.__mustardSeedCard?.close?.();
+          window.__practiceImprintCard?.close?.();
+          window.__fiveMomentsCompass?.close?.();
+          window.__calmActionRecoverCard?.close?.();
+          window.__calmActionArriveCard?.close?.();
+        });
+        return page.evaluate(() => {
+          const key = window.__emotionController?.getCurrentEmotionKey?.();
+          const emotionReady = !key || key === 'idle' || key === 'smiling';
+          const gate = window.__sessionUiGate;
+          const gateReady =
+            gate?.completionPending !== true &&
+            gate?.postSessionOverlayActive !== true;
+          return (
+            emotionReady &&
+            gateReady &&
+            window.__idleYinTapAnchor?.isArmed?.() === true
+          );
+        });
+      },
+      { timeout: timeoutMs, intervals: [250, 500, 1000, 2000] }
+    )
+    .toBe(true);
+}
 
 async function settleIdleTapReady(page) {
   await page.evaluate(() => {
@@ -30,11 +59,7 @@ async function settleIdleTapReady(page) {
   if (await skip.isVisible().catch(() => false)) {
     await skip.click();
   }
-  await page.waitForFunction(
-    () => window.__idleYinTapAnchor?.isArmed?.() === true,
-    null,
-    { timeout: 20_000 }
-  );
+  await waitForIdleYinTapArmed(page, 20_000);
 }
 
 async function clickHitForehead(page) {
@@ -77,15 +102,7 @@ test('Idle forehead tap plays Yin head-touch and re-arms after Rise', async ({
   await quickStartFocus(page);
   await expectFocusSessionActive(page);
   await riseSkipReflectionToIdle(page);
-  await page.evaluate(() => {
-    window.__mustardSeedCard?.close?.();
-    window.__practiceImprintCard?.close?.();
-  });
-  await page.waitForFunction(
-    () => window.__idleYinTapAnchor?.isArmed?.() === true,
-    null,
-    { timeout: 45_000 }
-  );
+  await waitForIdleYinTapArmed(page);
   await clickHitForehead(page);
   await expectEarWiggleSprite(page);
 });

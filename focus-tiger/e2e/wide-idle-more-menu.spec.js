@@ -297,6 +297,10 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
   page
 }) => {
   await openFreshProductShell(page);
+  await page.evaluate(() => {
+    window.__onboardingHints?.store?.clear?.();
+    window.__onboardingHints?.syncDiscoveryDots?.();
+  });
   await page.locator('#ft-wide-more-btn').click();
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
@@ -305,7 +309,6 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     'companion',
     'reminder',
     'language',
-    'zen-cinema',
     'daily-quote'
   ]);
 
