@@ -24,6 +24,7 @@ import {
 } from '../core/collectionsBehavioralScarcity.js';
 import { listCompanionTitleRows } from '../core/collectionsTitles.js';
 import { describeCompanionMerch } from '../core/companionMerch.js';
+import { buildMindfulnessScrollDraft } from '../core/mindfulnessScroll.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -79,6 +80,8 @@ export class FocusCoinsPanelUI {
    * @param {() => ReturnType<typeof listCollectionsBehavioralScarcityRows>} [handlers.getMemorialRows]
    * @param {(catalogId: string) => void} [handlers.onMemorialImprintOpen]
    * @param {(catalogId: string) => boolean} [handlers.isMemorialImprintOpenable]
+   * @param {() => ReturnType<typeof buildMindfulnessScrollDraft>} [handlers.getScrollDraft]
+   * @param {() => Promise<{ ok?: boolean, reason?: string }>} [handlers.saveScroll]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
    */
@@ -215,6 +218,15 @@ export class FocusCoinsPanelUI {
         this.merchEl.className = 'yin-coin-panel__merch';
         this.merchEl.dataset.testid = 'yin-coin-merch';
         pane.append(this.merchEl);
+        this.tabPanes.set(tabId, pane);
+        continue;
+      }
+
+      if (tabId === 'scroll') {
+        this.scrollPaneBody = document.createElement('div');
+        this.scrollPaneBody.className = 'yin-coin-panel__scroll-body';
+        this.scrollPaneBody.dataset.testid = 'yin-coin-scroll-body';
+        pane.append(this.scrollPaneBody);
         this.tabPanes.set(tabId, pane);
         continue;
       }
@@ -388,6 +400,16 @@ export class FocusCoinsPanelUI {
       this.handlers.getMerchState?.() ?? {
         status: 'not-yet',
         contactLater: false
+      }
+    );
+    this._renderScrollSection(
+      this.handlers.getScrollDraft?.() ?? {
+        eligible: false,
+        lifetimeMinutes: 0,
+        from: '',
+        to: '',
+        line: '',
+        history: []
       }
     );
   }
@@ -585,6 +607,57 @@ export class FocusCoinsPanelUI {
 
     li.append(name, copy);
     return li;
+  }
+
+  /**
+   * Memory booklet tab — Save image when the period gate is met.
+   * @param {ReturnType<typeof buildMindfulnessScrollDraft>} draft
+   */
+  _renderScrollSection(draft) {
+    if (!this.scrollPaneBody) return;
+    this.scrollPaneBody.replaceChildren();
+    const title = document.createElement('p');
+    title.className = 'yin-coin-panel__scroll-title';
+    title.textContent = t('MINDFULNESS_SCROLL_TITLE');
+
+    const copy = document.createElement('p');
+    copy.className = 'yin-coin-panel__scroll-copy';
+    copy.dataset.testid = 'yin-coin-scroll-copy';
+    copy.textContent = draft.eligible
+      ? t('MINDFULNESS_SCROLL_READY')
+      : t('MINDFULNESS_SCROLL_NOT_YET');
+
+    const save = document.createElement('button');
+    save.type = 'button';
+    save.className = 'yin-coin-panel__btn yin-coin-panel__btn--bond';
+    save.dataset.testid = 'yin-coin-scroll-save';
+    save.textContent = t('MINDFULNESS_SCROLL_SAVE');
+    save.disabled = !draft.eligible;
+    save.addEventListener('click', () => {
+      if (!draft.eligible) return;
+      save.disabled = true;
+      Promise.resolve(this.handlers.saveScroll?.()).finally(() => {
+        save.disabled = !draft.eligible;
+        this._refresh();
+      });
+    });
+
+    this.scrollPaneBody.append(title, copy, save);
+
+    const history = draft.history || [];
+    if (!history.length) return;
+    const list = document.createElement('ul');
+    list.className = 'yin-coin-panel__scroll-history';
+    list.dataset.testid = 'yin-coin-scroll-history';
+    for (const row of history) {
+      const li = document.createElement('li');
+      li.textContent = t('MINDFULNESS_SCROLL_SAVED_ROW')
+        .replaceAll('{from}', row.from || '—')
+        .replaceAll('{to}', row.to || '—')
+        .replaceAll('{min}', String(row.lifetimeMinutes ?? 0));
+      list.append(li);
+    }
+    this.scrollPaneBody.append(list);
   }
 
   /**
@@ -968,6 +1041,23 @@ export class FocusCoinsPanelUI {
         line-height: 1.45;
         text-align: center;
         opacity: 0.78;
+      }
+      .yin-coin-panel__scroll-body {
+        margin: 8px 2px 4px;
+      }
+      .yin-coin-panel__scroll-title,
+      .yin-coin-panel__scroll-copy {
+        margin: 0 0 8px;
+        font-size: 0.86rem;
+        line-height: 1.45;
+      }
+      .yin-coin-panel__scroll-history {
+        margin: 10px 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.78rem;
+        line-height: 1.4;
+        opacity: 0.8;
       }
       .yin-coin-panel__list {
         margin: 0 0 12px;
