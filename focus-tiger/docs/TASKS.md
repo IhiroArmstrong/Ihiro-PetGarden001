@@ -267,7 +267,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **—** | 脚手架步骤 A/B（窗口 + 托盘 + SB-18） | `task-electron-desktop-scaffold.md` | 步骤 A/B 已接线 · 待 Mac 场景 AB |
 | **P0** | **官网 DMG 自动更新器**（第一份收费包出门前） | `task-electron-desktop-updater.md` | **#758 已合** |
-| **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期**（后于更新器） |
+| **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **编译脚本已加**（2026-10-01）· 须用 Electron 的 V8 编译 · 默认打包仍是可读 JS |
 | **P1b** | **Voice Input V1**（Speak to type · 倾诉强制本机） | `task-voice-input-v1.md` | **Brief 已锁 · 探针/倾诉/意图回顾已合 develop** |
 | **P1c** | **System TTS V1**（系统播报 + 全局声音开关 · 默认关） | `task-system-tts-v1.md` | **#1013 已合** · 听感仍待人工 |
 | **P2** | **Confide 回复朗读**（倾诉文字 + 可选系统声） | `decisions/tts-v1-decision-memo.md` §决策 1 | **#995 已合** |
@@ -436,7 +436,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **矩阵** | KB 路由回归夹具（意图×问法；断言 dataSource/KB 编号） | **已合 develop** (#938) · `confideKbRoutingMatrix.js` · 不改 live · 无 GGUF |
 | **3** | 已审条目扩问法（0011/0012/0013/0004/0008 等） | **已合 develop** (#932) · 事实不变 · catalog 关键词 |
 | **4** | 权威源起草 → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939 · 闸门 18) · **0021 Daily quote 已合 develop** (#940 · 闸门 **19**) · **0022 Zen Cinema 待审草稿**（`docs/kb-batch2-zen-cinema-draft` · PR #962）· **0023 Wallpapers 待审草稿**（`docs/kb-batch2-wallpapers-draft`） |
-| **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
+| **手册** | `docs/internal-handbook/` 内部版 | **雏形已开**（2026-10-01）· 只从存活清单生成 |
 
 **0022 / 0023** 已入库 catalog（见 `product-knowledge-base.md`）。不要再按「待审草稿」重开。
 
@@ -473,7 +473,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 顺序 | Task | Brief | 状态 |
 |---|---|---|---|
 | **1** | 窄屏 Onboarding 互斥 + Sit 主 CTA 不截断 | `task-briefs/task-responsive-narrow-onboarding-sit.md` | **代码已落地** · 待人工复测 |
-| **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | 待开发 · Task 1 人工验收后开工 |
+| **2** | 竖屏横屏建议 UI（§6.4） | `task-briefs/task-responsive-landscape-suggest.md` | **代码已落地** · 2026-10-01 PO 取消人工验收门闩 · 真机可测时再关单 |
 | **3** | **窄宽屏合并为响应式单代码线**（消分叉漏修） | `task-briefs/task-responsive-single-chrome-line.md` | **代码已落地 · 待双视口人工验收**（2026-07-30）。PR #31（Brief/阶段0）· #32（编排）· #33（facade）已合 `develop`。阶段 3：文档收口 + main 去掉分壳别名。关单须 **§8 + §9** 分测（见 TEST_TRACKER「Task 3 单代码线」行）；**禁止**与场景 O 混验。 |
 
 **共同验收**：375×667 竖屏 + 横屏各走通 `RESPONSIVE_LAYOUT.md` §五 相关路径；`TEST_TRACKER` 分列登记。Task 3 另须 §8 + §9 故事最小集（见 Brief）。
@@ -495,7 +495,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 现网仪式/印（不重复立项） | `MilestoneGlow`（7/21/100 动画）· `mustardSeedSeal`（score≥21 诗稿）· Idle 练习徽章 | — | **已接线** · TRACKER 待人工 |
 | 纪念奖励环境细节（茶盏/香炉/蒲团） | `PROCESS.md` Backlog「纪念奖励系统」表 | **P2** · 2D 主线稳定后 | 未接线 |
 | 年终 / 深练 **Save image 画卷** | `task-mindfulness-scroll-export.md` ← 依赖 `task-journey-daily-card.md` | **P1b** · Daily Card 后 | 待排期 |
-| 单日日記卡（存图管线） | `task-journey-daily-card.md` | **P1a** · 无链依赖，可先开 | 待排期（Brief 已有） |
+| 单日日記卡（存图管线） | `task-journey-daily-card.md` | **P1a** · 无链依赖，可先开 | **代码已落地** · 2026-10-01 · 待人工关单 |
 | 实体周边优先权（账号+门槛） | `task-companion-merch-priority.md` | **P0 运营** Phase 0 手工可即刻；Phase 1 产品壳在 imprint 后 | Phase 0 文档锁 |
 | 用户感知句「岁月印记 / 修行纪念」 | 各 Brief + `FOCUS_COINS.md` §0.1；i18n 禁 Web3 词 | 随各 PR 文案 | 已写入 Brief |
 

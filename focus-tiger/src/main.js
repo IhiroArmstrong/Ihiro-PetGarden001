@@ -86,6 +86,7 @@ import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
 import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
+import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
 import {
   InAppReminderBannerController
 } from './core/InAppReminderBannerController.js';
@@ -426,6 +427,7 @@ import {
   prefetchTasteLayer,
   resetTasteLayerSyncForTests
 } from './core/tasteLayerSync.js';
+import { nextBootNetworkDelayMs } from './core/tasteLayerBootSchedule.js';
 import {
   getGrowthMetricsStatus,
   prefetchGrowthMetricsConfig,
@@ -969,6 +971,18 @@ async function init() {
   let softUpdateVersionLabel = '';
   let syncSoftUpdatePrompt = () => {};
   const softUpdatePromptUI = new SoftUpdatePromptUI(document.body);
+  const landscapeSuggestUI = new LandscapeSuggestUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
+  const syncLandscapeSuggest = () => {
+    const narrow = window.matchMedia('(max-width: 479px)').matches;
+    const portrait = window.matchMedia('(orientation: portrait)').matches;
+    landscapeSuggestUI.sync({ narrow, portrait });
+  };
+  syncLandscapeSuggest();
+  window.matchMedia('(max-width: 479px)').addEventListener('change', syncLandscapeSuggest);
+  window.matchMedia('(orientation: portrait)').addEventListener('change', syncLandscapeSuggest);
+  window.addEventListener('resize', syncLandscapeSuggest);
   const isDesktopShell = Boolean(globalThis.desktopShell?.isDesktop);
   /** @type {ReturnType<typeof attachDesktopUpdater> | null} */
   let desktopUpdaterController = null;
@@ -4943,10 +4957,19 @@ async function init() {
     spriteOccupancy = bootDecision.occupy;
   }
 
-  let tastePrefetchStarted = false;
+  let tastePrefetchFirstWaitDone = false;
   function startTastePrefetchOnce() {
-    if (tastePrefetchStarted) return;
-    tastePrefetchStarted = true;
+    const delayMs = nextBootNetworkDelayMs({
+      overlayBusy: isSceneAnimOverlayBusy(),
+      firstWaitDone: tastePrefetchFirstWaitDone
+    });
+    if (delayMs > 0) {
+      if (!tastePrefetchFirstWaitDone && delayMs >= 12000) {
+        tastePrefetchFirstWaitDone = true;
+      }
+      window.setTimeout(startTastePrefetchOnce, delayMs);
+      return;
+    }
     void prefetchTasteLayer({
       search: location.search,
       locale: getLocale(),
@@ -4956,8 +4979,9 @@ async function init() {
       search: location.search,
       canApply: () => !isSceneAnimOverlayBusy()
     });
+    void refreshSoftUpdateAvailability();
   }
-  window.setTimeout(startTastePrefetchOnce, 12000);
+  startTastePrefetchOnce();
 
   /** After welcome / flower first paint: occupancy resets but idle loop may not. */
   function ensureIdleBaselineAfterWelcome() {
@@ -5239,8 +5263,6 @@ async function init() {
     syncInAppReminderBanner();
     void refreshSoftUpdateAvailability();
   });
-
-  void refreshSoftUpdateAvailability();
 
   // Lab chrome: vite `serve` (DEV) or local Playwright `vite build --mode development`
   // (MODE=development but DEV still false on any `build`). Product shell / CI prod build: off.

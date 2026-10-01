@@ -10,6 +10,13 @@
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
+  JOURNEY_DAILY_CARD_STILL,
+  loadDailyCardStill,
+  quoteForJourneyDailyCard,
+  sameDayQuietLineText,
+  saveJourneyDailyCard
+} from '../core/journeyDailyCard.js';
+import {
   journeyLogDateKey,
   journeyLogLineKind,
   readJourneyLog
@@ -334,9 +341,23 @@ export class JourneyLogUI {
           li.className = 'journey-log__row';
           const kind = journeyLogLineKind(row.entry);
           const key = `JOURNEY_LOG_ENTRY_${kind}`;
-          li.textContent = t(key)
+          const label = document.createElement('span');
+          label.textContent = t(key)
             .replaceAll('{date}', journeyLogDateKey(row.entry.at))
             .replaceAll('{n}', String(row.entry.minutes));
+          li.append(label);
+          const saveBtn = document.createElement('button');
+          saveBtn.type = 'button';
+          saveBtn.className = 'journey-log__save-card';
+          saveBtn.dataset.testid = 'journey-log-save-daily-card';
+          saveBtn.textContent = t('JOURNEY_DAILY_CARD_SAVE');
+          const entry = row.entry;
+          saveBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void this._saveDailyCard(saveBtn, entry);
+          });
+          li.append(' ', saveBtn);
           if (row.entry.insightSpark === true) {
             const mark = document.createElement('span');
             mark.className = 'journey-log__insight-spark';
@@ -350,6 +371,32 @@ export class JourneyLogUI {
       }
     }
     this._refreshBackupPanel();
+  }
+
+  /**
+   * @param {HTMLButtonElement} button
+   * @param {{ at: string, minutes: number }} entry
+   */
+  async _saveDailyCard(button, entry) {
+    if (button.disabled) return;
+    button.disabled = true;
+    button.textContent = t('JOURNEY_DAILY_CARD_SAVING');
+    const dateKey = journeyLogDateKey(entry.at);
+    const quote = quoteForJourneyDailyCard({
+      dateKey,
+      sameDayQuietLine: sameDayQuietLineText(this._storage, dateKey, t)
+    });
+    const image = await loadDailyCardStill(JOURNEY_DAILY_CARD_STILL);
+    const ok = await saveJourneyDailyCard({
+      dateKey,
+      minutes: entry.minutes,
+      quote,
+      image
+    });
+    button.disabled = false;
+    button.textContent = ok
+      ? t('JOURNEY_DAILY_CARD_SAVED')
+      : t('JOURNEY_DAILY_CARD_FAILED');
   }
 
   _refreshBackupPanel() {
@@ -564,6 +611,18 @@ export class JourneyLogUI {
       .journey-log__row:last-child {
         margin-bottom: 0;
       }
+      .journey-log__save-card {
+        appearance: none;
+        margin-left: 8px;
+        border: 0;
+        border-radius: 8px;
+        padding: 4px 8px;
+        background: #f7f1e8;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+      .journey-log__save-card:active { transform: scale(0.98); }
       .journey-log__insight-spark {
         display: inline-block;
         margin-left: 2px;
