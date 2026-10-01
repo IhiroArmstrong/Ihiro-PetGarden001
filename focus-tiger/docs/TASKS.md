@@ -199,7 +199,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Brief** | 免费 A：静默快照 + 空库恢复；复用邮箱 OTP | `task-practice-memory-cloud-backup-a.md` | **已立项**（#270） |
 | **实现** | Worker put/get/delete + 客户端 debounce / Idle flush / 空库恢复 / Journey 角落 | `feature/practice-memory-cloud-backup-a` | **#272 已合** tip `a195584`；Worker redeploy `f9755950-…` |
 | **关单前置** | 生产 OTP secrets + TRACKER 端到端 | — | **secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip） |
-| **A′ 恢复派生** | v1 快照恢复后从 `practice-days` 派生 `daily-completions`（提醒与热力图对齐） | `fix/practice-backup-daily-completion-reconcile` | **本旁支** |
+| **A′ 恢复派生** | v1 快照恢复后从 `practice-days` 派生 `daily-completions`（提醒与热力图对齐） | `fix/practice-backup-daily-completion-reconcile` | **#437 已合** |
 | **B schema v2** | 白名单第 7 key + Worker redeploy；完整保留 `celebrated` / `sessions` | Backlog | 非前置；仅当需跨恢复保留 Celebrating 戳 |
 
 ---
@@ -216,7 +216,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L1** | 完成钩子写入钱包 | `feature/focus-coins-l1-award` | **#338 已合**（TRACKER 待人工） |
 | **L2** | 清供卡面可兑；叠层视觉拆掉 | `feature/focus-coins-l2-redeem` | **#339 已合**；2026-08-20 清供改名 |
 | **L3** | **Yin's Collections** 抽屉；挥手点播走珍藏底栏 | `feature/yin-coin-l3-surface` | **#352+#353+#354 已合** |
-| **本旁支** | 珍藏挥手点播 Play；抽屉仍清供 8 | `feature/focus-coins-wave-playback` | 进行中 |
+| **挥手点播** | 珍藏挥手点播 Play；抽屉仍清供 8 | `feature/focus-coins-wave-playback` | **#356 已合** |
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。文化 meaning layer / Practice Identity **不**在本表开工，见 `FROM_APP_TO_CULTURE.md` §13。
 
@@ -266,11 +266,11 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 序 | 内容 | Brief / 权威 | 状态 |
 |---|---|---|---|
 | **—** | 脚手架步骤 A/B（窗口 + 托盘 + SB-18） | `task-electron-desktop-scaffold.md` | 步骤 A/B 已接线 · 待 Mac 场景 AB |
-| **P0** | **官网 DMG 自动更新器**（第一份收费包出门前） | `task-electron-desktop-updater.md` | **Brief 已锁 · 运行时待口令** |
+| **P0** | **官网 DMG 自动更新器**（第一份收费包出门前） | `task-electron-desktop-updater.md` | **#758 已合** |
 | **P1** | **V8 字节码编译**（bytenode） | `ANTI_PLAGIARISM_LAYER.md` §7 | **待排期**（后于更新器） |
 | **P1b** | **Voice Input V1**（Speak to type · 倾诉强制本机） | `task-voice-input-v1.md` | **Brief 已锁 · 探针/倾诉/意图回顾已合 develop** |
-| **P1c** | **System TTS V1**（系统播报 + 全局声音开关 · 默认关） | `task-system-tts-v1.md` | **Brief 已锁 · Slice 0 探针已开工 · 待人工听感** |
-| **P2** | **Confide 回复朗读**（倾诉文字 + 可选系统声） | `decisions/tts-v1-decision-memo.md` §决策 1 | **Backlog · 依赖原则文档已改完** |
+| **P1c** | **System TTS V1**（系统播报 + 全局声音开关 · 默认关） | `task-system-tts-v1.md` | **#1013 已合** · 听感仍待人工 |
+| **P2** | **Confide 回复朗读**（倾诉文字 + 可选系统声） | `decisions/tts-v1-decision-memo.md` §决策 1 | **#995 已合** |
 
 **官网 DMG 自动更新器 · 拍板摘要（2026-09-12）**：
 
@@ -308,7 +308,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **C1** | **Recover**（打断后 S/M；不替换 toast） | `task-briefs/task-calm-action-recover-runtime.md` | **#625 已合**（TRACKER 待人工） |
 | **C2** | **Arrive**（C1 §7 关单后立刻排；建议 B1 冷启动 gate 已拍板） | `task-briefs/task-calm-action-arrive-runtime.md` | **#665 已合**（TRACKER 待人工） |
-| **C4** | **Reflect 完成页** | `task-briefs/task-calm-action-reflect-runtime.md` | **本旁支开工** |
+| **C4** | **Reflect 完成页** | `task-briefs/task-calm-action-reflect-runtime.md` | **#672 / #675 已合** |
 | C3+ | Focus S 标语 / Transition | 另 Brief | 未立项 |
 | **D** | Calm Action overlay | `task-briefs/task-calm-action-copy-overlay.md` | **#670 已合**（生产已部署） |
 | **—** | 日签 14→N | 另 PR · 另口令 | 后排（≠ Calm Action） |
@@ -341,7 +341,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **1a** | Quiet Line 背景 dim | `task-quiet-line-backdrop-dim.md` | #637 · #645 | **已合 #656** |
 | **1b** | Wallpapers 背景 dim | `task-wallpapers-backdrop-dim.md` | #645 | **已合 #659** |
 | **2** | Compass + Yin Coin + Zen Cinema | `task-growth-panels-backdrop-dim.md` | #633 · #632 | **已合 #660** |
-| **3** | 付费族 SB-19 视觉-only dim | `task-paid-panels-backdrop-dim.md` | #630 · #639 | **`feature/paid-panels-backdrop-dim` 开工** |
+| **3** | 付费族 SB-19 视觉-only dim | `task-paid-panels-backdrop-dim.md` | #630 · #639 | **#661 已合** |
 
 **已有 dim（不必重做）**：纪念印 · Journey Log · Support · Membership · ? 钉住 + Privacy · 宽/窄菜单抽屉。
 
@@ -373,7 +373,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L0** | 现有沉默/层序收成政策接口（行为不变） | `task-yin-personalization-engine-l0.md` | **已合 #452** |
 | **L1** | 本地检索契约 ≤3 条；计数型 insight；三档政策 | `task-yin-personalization-engine-l1.md` | **已合 #453** |
 | **L2 契约** | H.3 V1 五键；Pack 无 rankHint / 无 memoryHints；异步增强 | `YIN_PERSONALIZATION_ENGINE.md` | **已拍板（文档）** |
-| **L2 同意 UI** | 第四条独立同意；Privacy 开关；本机 `ype_profile_id`；无 Worker | `task-l2-personalization-consent.md` | **本支 `feature/ype-l2-ui-consent` 开工** |
+| **L2 同意 UI** | 第四条独立同意；Privacy 开关；本机 `ype_profile_id`；无 Worker | `task-l2-personalization-consent.md` | **#458 已合** |
 | **L2 同意文案** | 关即删；HINT+DETAIL 附录 | 同上 | **已进 locale（en/ja/zh）** |
 | **L2 身份键** | 本机随机 `ype_profile_id`；第二设备新档案；删除不连带 | `task-l2-personalization-identity.md` | **已拍（#456）** |
 | **L2 算法 V1** | 五键 → Pack 闭包；回声选档；`patternInsights=[]`；不按完成率改档 | `task-l2-personalization-algorithm.md` | **契约已锁** · Worker 签发已合 |
@@ -395,7 +395,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **Slice 1c** | What Yin remembers 列表 + Forget UI | `task-yin-memory-slice-1c-list-forget.md` | **已合 #430** |
 | **Slice 1d** | 层 3 注入 | `task-yin-memory-slice-1d-l3-inject.md` | **已合 #431** · tracker 待人工；仪式 generate **仍未拍板** |
 | **Slice 1e** | 口头 Forget Confide 路由 | `task-yin-memory-slice-1e-verbal-forget.md` | **已合 #434** · tracker 待人工 |
-| **Slice 1f** | Don't save this · memory suppress | `task-yin-memory-slice-1f-dont-save-this.md` | **本旁支** · tracker 待人工 |
+| **Slice 1f** | Don't save this · memory suppress | `task-yin-memory-slice-1f-dont-save-this.md` | **#489 已合** · tracker 待人工 |
 
 **我认为最合理的下一刀运行时**：**口令 1C validation**（非 shipping）。Gate 0.2 #472 已关单；**1B #503 已合**；**1A 本旁支**。Phase 1 仍须**分项口令**。较弱：把 validation 当 shipping；V2 Journey Delete · Reflection **shipping**。
 
@@ -438,7 +438,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **4** | 权威源起草 → PO tone spot-check → catalog | **0019/0020 已合 develop** (#939 · 闸门 18) · **0021 Daily quote 已合 develop** (#940 · 闸门 **19**) · **0022 Zen Cinema 待审草稿**（`docs/kb-batch2-zen-cinema-draft` · PR #962）· **0023 Wallpapers 待审草稿**（`docs/kb-batch2-wallpapers-draft`） |
 | **手册** | `docs/internal-handbook/` 内部版 | **已拍：等第 1 步清单后再开** |
 
-**我认为最合理的下一刀**：PO spot-check **0022 + 0023** → 分别入库 catalog + registry 链 → 闸门 **20** / **21** 条。
+**0022 / 0023** 已入库 catalog（见 `product-knowledge-base.md`）。不要再按「待审草稿」重开。
 
 ---
 
@@ -448,12 +448,12 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 级 | 内容 | Brief | 状态 |
 |---|---|---|---|
-| **Slice 0–1 + 4** | 文档 + Arrival Notice 写入 + Confide 只读趋势 | `task-presence-signals-slice-0-1.md` | **本旁支** `feature/presence-signals-slice-0-1` · tracker 待人工 |
+| **Slice 0–1 + 4** | 文档 + Arrival Notice 写入 + Confide 只读趋势 | `task-presence-signals-slice-0-1.md` | **已合 develop** · tracker 待人工 |
 | **Slice 2** | Ritual chip 入账 + Leave 弱提示 | 见 Brief §后续 | 排期 |
 | **Slice 3** | Reflection Q1–Q3 双写 | 见 Brief §后续 | 排期 |
-| **Slice 5–6** | 查看/删除 UI · L3 freeText（读取 Consent） | 见 Brief §后续 | 排期 |
+| **Slice 5–6** | 查看/删除 UI · L3 freeText（读取 Consent） | 见 Brief §后续 | **#487 已合** |
 
-**我认为最合理的下一刀**：合本旁支 + 关 CI-02 tracker；再 Slice 2 或 Slice 5。
+**我认为最合理的下一刀**：Slice 0–1 与 Slice 6 已在主干。剩下的是 Slice 2 或 Slice 3，另口令。
 
 ---
 
@@ -489,7 +489,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 | 采纳项 | 接哪条 Brief / 现网 | 排期 | 状态 |
 |---|---|---|---|
-| 高精度禅意徽章 · **累计**门槛 · 少连坐话术 | `task-practice-imprint-badges.md` + 壳 `task-yin-collections-four-tabs.md`（页签 **勋章印记**） | **P1** · **硬前置**目录 Batch 1；四页签壳可与 imprint 同支 | 待开工 |
+| 高精度禅意徽章 · **累计**门槛 · 少连坐话术 | `task-practice-imprint-badges.md` + 壳 `task-yin-collections-four-tabs.md`（页签 **勋章印记**） | **P1** | **#906 已合** · 四页签壳 **#905 已合** |
 | **共享里程碑目录**（谓词 SSOT） | `task-shared-milestone-catalog.md`（跨芥子 / score / Journey / Glow 占位字段） | **P0** · Batch 1 数据模块另口令 | **口径已锁** · 无运行时 |
 | 成就物 · **行为稀缺说明**（非随机、非货币） | `task-collections-behavioral-scarcity.md`（2026-09-20 **V1 已拍**：本机说明 + 勋章分区；不进「案上陪伴」；全球名次不做） | **P1** · 实现另口令；**等目录 Batch 1** | **口径已锁** · 无运行时 |
 | 现网仪式/印（不重复立项） | `MilestoneGlow`（7/21/100 动画）· `mustardSeedSeal`（score≥21 诗稿）· Idle 练习徽章 | — | **已接线** · TRACKER 待人工 |
