@@ -196,10 +196,10 @@
 - 禁止窄屏隐藏主路径必需控件而不提供等价入口。  
 - 文案：主按钮英文在 320px 下实测；必要时 `BTN_FOCUS_START_SHORT` 等 i18n 分键。
 
-### 6.4 横屏建议 UI（Task 2 · 待实现）
+### 6.4 横屏建议 UI（Task 2 · 已实现代码 · 待真机复测）
 
 > **立项**：2026-07-21 · Brief：`task-briefs/task-responsive-landscape-suggest.md`  
-> **前置**：Task 1（窄屏 onboarding 互斥 + Sit 不截断）验收通过后开工。
+> **2026-10-01**：PO 书面取消「须等 Task 1 人工验收」门闩——电脑窄屏模拟测不了旋转，真机安装包还没有；结果无悬念，先合代码。真机浏览器能测时再关单。
 
 - 触发：仅 `narrow` 且检测到竖屏（`matchMedia('(orientation: portrait)')`）+ 可选「底部拥挤」启发式。  
 - 文案：观察式、可关；例 EN *「A wider view may feel easier here—you can turn your phone sideways.」* / ZH 对应。  
