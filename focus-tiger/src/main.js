@@ -262,6 +262,10 @@ import { FocusCircleWitnessLeaveUI } from './ui/FocusCircleWitnessLeaveUI.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { resolvePracticeAggregate } from './core/practiceAggregate.js';
+import {
+  buildMindfulnessScrollDraft,
+  saveMindfulnessScroll
+} from './core/mindfulnessScroll.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
@@ -2320,6 +2324,37 @@ async function init() {
     onMemorialImprintOpen: (catalogId) => {
       yinCoinPanelUI?.close?.();
       practiceImprintCardUI.open({ catalogId, mode: 'menu' });
+    },
+    getScrollDraft: () => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const aggregate = resolvePracticeAggregate({
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+      return buildMindfulnessScrollDraft(storage, aggregate, t);
+    },
+    saveScroll: async () => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const aggregate = resolvePracticeAggregate({
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+      const draft = buildMindfulnessScrollDraft(storage, aggregate, t);
+      const result = await saveMindfulnessScroll({
+        draft,
+        storage,
+        title: t('MINDFULNESS_SCROLL_TITLE'),
+        subtitle: t('MINDFULNESS_SCROLL_SUBTITLE')
+      });
+      mindfulToast.show(
+        result.ok ? t('MINDFULNESS_SCROLL_SAVED') : t('MINDFULNESS_SCROLL_FAILED'),
+        { placement: 'center' }
+      );
+      return result;
     }
     })
   );

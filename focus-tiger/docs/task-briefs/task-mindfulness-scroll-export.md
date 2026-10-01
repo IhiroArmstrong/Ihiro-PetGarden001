@@ -1,6 +1,6 @@
 # Task Brief · 静默画卷 · 深练 / 年终纪念卡（Web2 导出）
 
-> **状态（2026-08-24）**：待排期 · 排在 **`task-journey-daily-card`** 之后。  
+> **状态（2026-10-01）**：首刀 B 已开工（记忆小册页签 · 主动 Save image）。年末自动触发 A 仍不做。Daily Card 管线已在 develop。  
 > **接哪里**：C 轨 **记忆小册** 页签（`FOCUS_COINS.md` §7）+ 增长包「永久档案靠 Save image 带出 App」（`task-journey-daily-card.md`）。  
 > **拒 Web3**：用户感知为「保存一幅修行纪念画卷」，**不是** mint / 上链所有权。
 
