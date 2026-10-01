@@ -23,6 +23,7 @@ import {
   listCollectionsBehavioralScarcityRows
 } from '../core/collectionsBehavioralScarcity.js';
 import { listCompanionTitleRows } from '../core/collectionsTitles.js';
+import { describeCompanionMerch } from '../core/companionMerch.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -71,6 +72,8 @@ export class FocusCoinsPanelUI {
    * @param {() => object} [handlers.getContext]
    * @param {(skuId: string) => { ok?: boolean, reason?: string }} [handlers.redeem]
    * @param {(titleId: string) => { ok?: boolean }} [handlers.equipTitle]
+   * @param {() => ReturnType<typeof describeCompanionMerch>} [handlers.getMerchState]
+   * @param {(contactLater: boolean) => { ok?: boolean, reason?: string }} [handlers.registerMerch]
    * @param {() => { ok?: boolean, reason?: string }} [handlers.playWave]
    * @param {(message: string) => void} [handlers.onMessage]
    * @param {() => ReturnType<typeof listCollectionsBehavioralScarcityRows>} [handlers.getMemorialRows]
@@ -208,6 +211,10 @@ export class FocusCoinsPanelUI {
           'yin-coin-panel__list yin-coin-panel__titles-list';
         this.titlesListEl.dataset.testid = 'yin-coin-titles-list';
         pane.append(this.titlesListEl);
+        this.merchEl = document.createElement('div');
+        this.merchEl.className = 'yin-coin-panel__merch';
+        this.merchEl.dataset.testid = 'yin-coin-merch';
+        pane.append(this.merchEl);
         this.tabPanes.set(tabId, pane);
         continue;
       }
@@ -377,6 +384,12 @@ export class FocusCoinsPanelUI {
       this.handlers.getMemorialRows?.() ?? listCollectionsBehavioralScarcityRows()
     );
     this._renderTitlesSection(listCompanionTitleRows(ctx));
+    this._renderMerch(
+      this.handlers.getMerchState?.() ?? {
+        status: 'not-yet',
+        contactLater: false
+      }
+    );
   }
 
   /**
@@ -424,6 +437,60 @@ export class FocusCoinsPanelUI {
         this.listEl.append(this._rowEl(row));
       }
     }
+  }
+
+  /**
+   * Local merch waitlist. No upload.
+   * @param {ReturnType<typeof describeCompanionMerch>} state
+   */
+  _renderMerch(state) {
+    if (!this.merchEl) return;
+    this.merchEl.replaceChildren();
+    const title = document.createElement('p');
+    title.className = 'yin-coin-panel__scroll-title';
+    title.textContent = t('COMPANION_MERCH_TITLE');
+    const copy = document.createElement('p');
+    copy.className = 'yin-coin-panel__scroll-copy';
+    copy.dataset.testid = 'yin-coin-merch-copy';
+    const copyKey = {
+      'need-email': 'COMPANION_MERCH_NEED_EMAIL',
+      'not-yet': 'COMPANION_MERCH_NOT_YET',
+      eligible: 'COMPANION_MERCH_ELIGIBLE',
+      registered: 'COMPANION_MERCH_REGISTERED'
+    }[state.status] || 'COMPANION_MERCH_NOT_YET';
+    copy.textContent = t(copyKey);
+    const privacy = document.createElement('p');
+    privacy.className = 'yin-coin-panel__scroll-copy';
+    privacy.textContent = t('COMPANION_MERCH_PRIVACY');
+    this.merchEl.append(title, copy, privacy);
+    if (state.status !== 'eligible' && state.status !== 'registered') return;
+    const contact = document.createElement('label');
+    contact.className = 'yin-coin-panel__merch-contact';
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.dataset.testid = 'yin-coin-merch-contact';
+    box.checked = state.contactLater === true;
+    contact.append(box, document.createTextNode(t('COMPANION_MERCH_CONTACT')));
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'yin-coin-panel__btn yin-coin-panel__btn--bond';
+    button.dataset.testid = 'yin-coin-merch-register';
+    button.textContent = t(
+      state.status === 'registered'
+        ? 'COMPANION_MERCH_UPDATE'
+        : 'COMPANION_MERCH_REGISTER'
+    );
+    button.addEventListener('click', () => {
+      button.disabled = true;
+      const result = this.handlers.registerMerch?.(box.checked);
+      this.handlers.onMessage?.(
+        result?.ok
+          ? t('COMPANION_MERCH_SAVED')
+          : t('COMPANION_MERCH_NEED_EMAIL')
+      );
+      this._refresh();
+    });
+    this.merchEl.append(contact, button);
   }
 
   /**
