@@ -139,6 +139,7 @@ test("Yin's Collections four-tab shell: titles list, scroll still a placeholder"
     /yin-coin-tab-placeholder-imprints/
   );
   assert.match(src, /yin-coin-titles-list/);
+  assert.match(src, /yin-coin-merch/);
   assert.doesNotMatch(src, /yin-coin-tab-placeholder-titles/);
   const en = JSON.parse(
     readFileSync(join(here, '../locales/en.json'), 'utf8')

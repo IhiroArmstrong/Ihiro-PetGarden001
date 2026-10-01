@@ -84,6 +84,7 @@ import { FIVE_MOMENTS_COMPASS_SEEN_KEY } from './fiveMomentsCompassGate.js';
 import { WELLNESS_DISCLAIMER_SEEN_KEY } from './wellnessDisclaimerGate.js';
 import { MOMENT_WHISPERS_SEEN_KEY } from './momentWhispersGate.js';
 import { JOURNEY_LOG_STORAGE_KEY } from './journeyLogGate.js';
+import { COMPANION_MERCH_STORAGE_KEY } from './companionMerch.js';
 import { DAILY_WISDOM_STORAGE_KEY } from './DailyWisdomStore.js';
 import { MUSTARD_SEED_SEAL_STORAGE_KEY } from './mustardSeedSeal.js';
 import { CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY } from './contemplativeArchiveSeal.js';
@@ -203,6 +204,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   WELLNESS_DISCLAIMER_SEEN_KEY,
   MOMENT_WHISPERS_SEEN_KEY,
   JOURNEY_LOG_STORAGE_KEY,
+  COMPANION_MERCH_STORAGE_KEY,
   PRACTICE_BACKUP_OPT_IN_KEY,
   DAILY_WISDOM_STORAGE_KEY,
   MUSTARD_SEED_SEAL_STORAGE_KEY,

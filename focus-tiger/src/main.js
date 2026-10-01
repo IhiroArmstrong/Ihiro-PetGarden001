@@ -262,6 +262,13 @@ import { FocusCircleWitnessLeaveUI } from './ui/FocusCircleWitnessLeaveUI.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { resolvePracticeAggregate } from './core/practiceAggregate.js';
+import {
+  describeCompanionMerch,
+  listRevealedMustardSeedCaseIds,
+  registerCompanionMerch
+} from './core/companionMerch.js';
+import { readMustardSeedSealState } from './core/mustardSeedSeal.js';
+import { readPracticeBackupOptIn } from './core/practiceBackup/practiceBackupOptIn.js';
 import { ActiveRecoverAnchorUI } from './ui/ActiveRecoverAnchorUI.js';
 import { IdleYinTapAnchorUI } from './ui/IdleYinTapAnchorUI.js';
 import {
@@ -2290,6 +2297,44 @@ async function init() {
     }),
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
+    getMerchState: () => {
+      const storage = typeof localStorage !== 'undefined' ? localStorage : null;
+      const aggregate = resolvePracticeAggregate({
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+      const backup = readPracticeBackupOptIn(storage);
+      return describeCompanionMerch({
+        storage,
+        lifetimeMinutes: aggregate.lifetimeMinutes,
+        score: aggregate.score,
+        practiceDayCount: aggregate.practiceDayCount,
+        revealedCaseIds: listRevealedMustardSeedCaseIds(
+          readMustardSeedSealState(storage)
+        ),
+        email: backup.email
+      });
+    },
+    registerMerch: (contactLater) => {
+      const storage = typeof localStorage !== 'undefined' ? localStorage : null;
+      const aggregate = resolvePracticeAggregate({
+        practiceDaysStore,
+        lotusPondStore,
+        dailyCompletionStore
+      });
+      const backup = readPracticeBackupOptIn(storage);
+      return registerCompanionMerch(storage, {
+        lifetimeMinutes: aggregate.lifetimeMinutes,
+        score: aggregate.score,
+        practiceDayCount: aggregate.practiceDayCount,
+        revealedCaseIds: listRevealedMustardSeedCaseIds(
+          readMustardSeedSealState(storage)
+        ),
+        email: backup.email,
+        contactLater: contactLater === true
+      });
+    },
     playWave: () => window.__focusCoins.playWave(),
     onMessage: (message) =>
       mindfulToast.show(message, { placement: 'center' }),
