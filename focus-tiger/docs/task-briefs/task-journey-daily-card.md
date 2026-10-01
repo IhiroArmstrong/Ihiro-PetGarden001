@@ -1,6 +1,6 @@
 # Task Brief · Journey Log × Quiet Line · Daily Card（存图）
 
-> **状态（2026-08-11；2026-08-12 敲定上限；2026-08-24 纳入 Web2 岁月印记排期 P1a）**：待排期 · 用户拍板要做。  
+> **状态（2026-10-01）**：代码已落地 · `feature/journey-daily-card`。坐席行「Save image」出 PNG。真机/浏览器关单仍待人工。  
 > **目的**：在 Journey Log 历史行上，一键生成极简日记卡（时长 + 阿寅静帧 + Quiet Line 当日句气质），**Save image** 下载——增强免费层成长获得感，并自然服务社交传播（用户自行发图）。  
 > **下游**：`task-mindfulness-scroll-export.md`（深练/年终画卷）**依赖**本任务 canvas 管线。  
 > **原则**：经济可持续；增长包分享口径修订——**不是**「不做社交」，而是**暂无一键发到指定 App**。
