@@ -8,7 +8,7 @@
 
 ## Song Porcelain · 宋瓷
 
-`song-porcelain/` · nine sheets
+`song-porcelain/` · eight sheets. The garlic-mouth bottle was withdrawn (a generator mark stayed on the neck).
 
 | File | Name | Story |
 |---|---|---|
@@ -16,7 +16,6 @@
 | `celadon-taotie-zun.png` | Celadon taotie zun · 青瓷兽面纹尊 | A zun with a wide trumpet mouth and a taotie frieze around the waist. |
 | `celadon-floral-ring-hu.png` | Celadon floral ring hu · 青瓷卷草纹衔环壶 | A round hu. Animal masks hold loose rings; the body carries scrolling flowers. |
 | `celadon-dragon-ring-fanghu.png` | Celadon dragon-ring fanghu · 青瓷龙耳衔环方壶 | A square jar. Dragons on the shoulder hold rings. |
-| `celadon-garlic-mouth-ring-bottle.png` | Celadon garlic-mouth bottle · 青瓷蒜头衔环长颈瓶 | A long neck rises from a round belly to a garlic-shaped mouth, with small ring lugs. A faint generator mark still sits on the neck; cutting it out smeared the glaze, so the mark stays until a clean repaint. |
 | `celadon-taotie-gui.png` | Celadon taotie gui · 青瓷兽面纹簋 | A gui: round bowl, flared rim, two handles, and a taotie band. |
 | `celadon-taotie-ding.png` | Celadon taotie ding · 青瓷兽面纹鼎 | A round ding on three legs, with a lid and upright flanges. |
 | `celadon-beast-foot-pan.png` | Celadon beast-foot pan · 青瓷兽足盘 | A wide pan on a ring foot. Small beasts stand under the rim. |
@@ -24,13 +23,12 @@
 
 ## Song Ge Ware · 宋代哥窑
 
-`song-ge-ware/` · seven sheets. Gray-white glaze, crackle. Gold lines appear on some sheets and not others; the story does not pretend every piece has gold thread.
+`song-ge-ware/` · six sheets. Gray-white glaze, crackle. Gold lines appear on some sheets and not others; the story does not pretend every piece has gold thread. The dragon-handle he was withdrawn (the lid had a hole from the cutout).
 
 | File | Name | Story |
 |---|---|---|
 | `ge-taotie-li.png` | Ge taotie li · 哥窑兽面纹鬲 | A li: three hollow legs, a taotie band, and crackle across the glaze. |
 | `ge-dragon-zun.png` | Ge dragon zun · 哥窑龙纹尊 | A trumpet-mouth zun with raised dragons on the body. |
-| `ge-dragon-handle-he.png` | Ge dragon-handle he · 哥窑龙梁盉 | A he with a dragon handle, a spout, three animal feet, and a chain on the lid. The flat of the lid still has a small transparent gap from the cutout. |
 | `ge-hunting-stem-bowl.png` | Ge hunting-scene dou · 哥窑狩猎纹豆 | A stemmed bowl with a lid and two ring handles. Animals run around the bowl. |
 | `ge-beast-ring-hu.png` | Ge beast-ring hu · 哥窑兽首衔环壶 | A globular hu. Beast heads at the shoulder hold rings. |
 | `ge-upright-ear-ding.png` | Ge upright-ear ding · 哥窑立耳兽面鼎 | A ding with two upright handles and three legs shaped as animal masks. |
