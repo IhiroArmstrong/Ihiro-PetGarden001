@@ -1,0 +1,19 @@
+{
+  "csvSource": {
+    "localPath": "/path/to/your/cursor-usage-export.csv",
+    "url": null,
+    "urlHeaders": {}
+  },
+  "thresholds": {
+    "singleRecordTokens": 1000000,
+    "hourlyCostUsd": 5,
+    "hourlyWindowMs": 3600000,
+    "hourlyAlertCooldownMs": 3600000
+  },
+  "webhook": {
+    "url": "https://example.com/webhook/placeholder",
+    "timeoutMs": 15000
+  },
+  "stateFile": "./state.json",
+  "costField": "costToYou"
+}

@@ -1,0 +1,5 @@
+config.json
+state.json
+fixtures/.test-state.json
+fixtures/test-config-hourly.json
+*.log
