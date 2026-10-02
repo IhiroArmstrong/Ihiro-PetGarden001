@@ -28,6 +28,33 @@ const CATALOG_PATH = join(ROOT, 'src/core/confide/productKnowledgeCatalog.json')
 const MD_PATH = join(ROOT, 'docs/kb-live-gap-audit.md');
 
 const BEGIN = '<!-- kb-live-gap-audit:begin -->';
+
+/**
+ * The snapshot line carries the runner's calendar date. Counts and rows are the
+ * contract; a date-only change must not fail CI.
+ * @param {string} text
+ * @returns {string}
+ */
+export function normalizeKbLiveGapSnapshotDate(text) {
+  return text.replace(
+    /\*\*Snapshot\*\*: \d{4}-\d{2}-\d{2}/g,
+    '**Snapshot**: date'
+  );
+}
+
+/**
+ * @param {string} markdown
+ * @param {string} rendered
+ * @returns {boolean}
+ */
+export function kbLiveGapMachineBlocksMatch(markdown, rendered) {
+  return (
+    markdown.includes(BEGIN) &&
+    normalizeKbLiveGapSnapshotDate(markdown).includes(
+      normalizeKbLiveGapSnapshotDate(rendered)
+    )
+  );
+}
 const END = '<!-- kb-live-gap-audit:end -->';
 const INSERT_AFTER = '## Gap audit (machine block)';
 
@@ -365,7 +392,7 @@ export function runKbLiveGapAudit({ write = false } = {}) {
   } else {
     const md = readFileSync(MD_PATH, 'utf8');
     const rendered = renderKbLiveGapAuditMarkdownBlock(report);
-    if (!md.includes(BEGIN) || md.indexOf(rendered) === -1) {
+    if (!kbLiveGapMachineBlocksMatch(md, rendered)) {
       console.error(
         '[audit:kb-live-gap] docs/kb-live-gap-audit.md machine block out of sync (run with --write)'
       );
