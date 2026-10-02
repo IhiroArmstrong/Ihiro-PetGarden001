@@ -1022,6 +1022,12 @@ export class NarrowIdleShell {
       this.handlers.onYinCoin?.();
       return;
     }
+    if (key === 'yin-art') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onYinArt?.();
+      return;
+    }
     if (key === 'confide') {
       this.closeSheet();
       this.clearStage();

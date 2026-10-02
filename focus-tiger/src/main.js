@@ -127,6 +127,7 @@ import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
+import { YinArtCollectionPanelUI } from './ui/YinArtCollectionPanelUI.js';
 import {
   acquireYinCoinWaveFocus,
   releaseYinCoinWaveFocus
@@ -1443,6 +1444,8 @@ async function init() {
   window.__yinPersonalMemory = yinPersonalMemoryUI;
   /** @type {FocusCoinsPanelUI | null} */
   let yinCoinPanelUI = null;
+  /** @type {YinArtCollectionPanelUI | null} */
+  let yinArtPanelUI = null;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1904,6 +1907,7 @@ async function init() {
     if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
+    if (except !== 'yin-art') yinArtPanelUI?.close();
     if (except !== 'local-backup') localPracticeDataPanelUI.closePanel();
     if (except !== 'quiet-together') quietTogetherPanelUI.closePanel();
     if (except !== 'focus-circle') focusCirclePanelUI.closePanel();
@@ -2404,6 +2408,8 @@ async function init() {
     })
   );
   window.__yinCoinPanel = yinCoinPanelUI;
+  yinArtPanelUI = new YinArtCollectionPanelUI(document.body, {});
+  window.__yinArtPanel = yinArtPanelUI;
   syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
@@ -2818,6 +2824,7 @@ async function init() {
     return (
       journeyLogUI?.isOpen?.() === true ||
       yinCoinPanelUI?.isOpen?.() === true ||
+      yinArtPanelUI?.isOpen?.() === true ||
       dailyZenQuoteCardUI?.isOpen?.() === true ||
       digitalWallpapersCardUI?.isOpen?.() === true ||
       zenCinemaCardUI?.isOpen?.() === true ||
@@ -2886,6 +2893,7 @@ async function init() {
       confideOpen: window.__confideToYin?.isOpen?.() === true,
       journeyOpen: window.__journeyLog?.isOpen?.() === true,
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
+      artPanelOpen: window.__yinArtPanel?.isOpen?.() === true,
       quoteOpen: window.__dailyZenQuoteCard?.isOpen?.() === true,
       wallpapersOpen: window.__digitalWallpapersCard?.isOpen?.() === true,
       cinemaOpen: window.__zenCinemaCard?.isOpen?.() === true,
@@ -3663,6 +3671,10 @@ async function init() {
     onYinCoin: () => {
       closeGrowthOverlayCards({ except: 'yin-coin' });
       yinCoinPanelUI?.open();
+    },
+    onYinArt: () => {
+      closeGrowthOverlayCards({ except: 'yin-art' });
+      yinArtPanelUI?.open();
     },
     onConfide: () => {
       closeGrowthOverlayCards({ except: 'confide' });
