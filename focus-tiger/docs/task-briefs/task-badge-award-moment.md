@@ -1,6 +1,6 @@
 # Task Brief · 徽章颁发那一下（Idle 身旁练习章）
 
-> **状态（2026-10-02）**：待排期 · 产品口径已拍板；动作参考见本机原型（**不进仓库**）。  
+> **状态（2026-10-03）**：实现中 · 产品口径已拍板（2026-10-02）；动作参考见本机原型（**不进仓库**）。  
 > **性质**：B 类用户可见 · 仅「颁发瞬间」动效；**不**做奖章墙、**不**改修行纪念印卡、**不**改授章规则。  
 > **接哪里**：`TipKindnessBadgesChrome`（`#yin-tip-kindness-badges`）+ 会话结束庆祝链（`main.js` · `practiceBadgeAward` / `idlePracticeBadges`）。
 
@@ -118,3 +118,9 @@
 ## 验收一句话
 
 身旁练习章新授时，前台用户能看见 **短暂、可跳过** 的颁发飞入，且不与庆祝、金辉、成长出卡打架；后台 / 减动效 / 条不可量时静默落位。
+
+## 共用机制核对
+
+- 本次不新增 sceneAnim `overlayBusy` 源，也不接 HUD 呼吸驱动：飞入发生在庆祝 / 金辉 `onComplete` 之后、Reflection 之前，由 `offerBadgeAwardMoment` 等飞入结束再往下走。核对 `SHARED_RESOURCES.md` §4.1–4.2 后，切语问候与左上计时呼吸不受这 2.5 秒影响。
+- 本次新增 z=19 轻 dim 与 z=23 飞层（低于菜单，也低于 Support FAB z=24）。核对 Idle 常驻 chrome：Support FAB、Ambient mute、倾听耳走已有 `ft-idle-overlay-chrome-dim` 变暗且仍可点；左下 `?`、软更新芯片、窄屏 ActionBar Confide 保持全亮，避免短仪式改掉帮助入口和菜单逃生舱。
+- `OVERLAY_UI_SURFACE` 新增 `BadgeAwardMomentUI.js`（`occupancy: false`）。点击或 Esc 只跳过飞入，不写盘；`mutationFeedback` 三态均为 `na`（无持久化）。不进叠层仲裁。
