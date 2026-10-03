@@ -296,14 +296,55 @@ export class FocusCoinsPanelUI {
       this.headingEl,
       this.tabBar,
       this.bodyEl,
-      this.actions
+      this.actions,
+      this.detail
     );
     mountRoot.appendChild(this.root);
+
+    this.detail = document.createElement('div');
+    this.detail.className = 'yin-coin-panel__detail';
+    this.detail.hidden = true;
+    this.detail.dataset.testid = 'yin-coin-curio-detail';
+    this.detail.setAttribute('role', 'dialog');
+    this.detail.setAttribute('aria-modal', 'true');
+
+    this.detailImg = document.createElement('img');
+    this.detailImg.className = 'yin-coin-panel__detail-img';
+    this.detailImg.alt = '';
+    this.detailImg.decoding = 'async';
+    this.detailImg.draggable = false;
+
+    this.detailName = document.createElement('p');
+    this.detailName.className = 'yin-coin-panel__detail-name';
+    this.detailName.dataset.testid = 'yin-coin-curio-detail-name';
+
+    this.detailNote = document.createElement('p');
+    this.detailNote.className = 'yin-coin-panel__detail-note';
+    this.detailNote.dataset.testid = 'yin-coin-curio-detail-note';
+
+    this.detailClose = document.createElement('button');
+    this.detailClose.type = 'button';
+    this.detailClose.className =
+      'yin-coin-panel__btn yin-coin-panel__btn--ghost';
+    this.detailClose.dataset.testid = 'yin-coin-curio-detail-close';
+    this.detailClose.addEventListener('click', () => this._hideCurio());
+    this.detail.append(
+      this.detailImg,
+      this.detailName,
+      this.detailNote,
+      this.detailClose
+    );
+    this._detailSkuId = null;
 
     this._onKeyDown = (event) => {
       if (!this._open) return;
       if (event.key === 'Escape') {
         event.preventDefault();
+        event.stopPropagation();
+        if (!this.detail.hidden) {
+          this._hideCurio();
+          return;
+        }
         this.close();
       }
     };
@@ -344,6 +385,7 @@ export class FocusCoinsPanelUI {
     if (!this._open) return;
     this._open = false;
     this._hideCeremonial();
+    this._hideCurio();
     releaseYinCoinWaveFocus();
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
@@ -790,23 +832,59 @@ export class FocusCoinsPanelUI {
    * @returns {HTMLElement}
    */
   _thumbEl(row) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'yin-coin-panel__thumb-btn';
+    btn.dataset.testid = `yin-coin-thumb-${row.id}`;
+    btn.setAttribute('aria-label', t(row.nameKey));
+    btn.addEventListener('click', () => this._showCurio(row));
+
     if (row.thumbSrc) {
       const img = document.createElement('img');
-      img.className = 'yin-coin-panel__thumb-img';
+      img.className = row.owned
+        ? 'yin-coin-panel__thumb-img'
+        : 'yin-coin-panel__thumb-img yin-coin-panel__thumb-img--pending';
       img.src = row.thumbSrc;
       img.alt = '';
       img.width = 40;
       img.height = 40;
       img.decoding = 'async';
       img.draggable = false;
-      img.setAttribute('aria-hidden', 'true');
       img.addEventListener('error', () => {
         const fallback = this._gradientThumb(row);
         img.replaceWith(fallback);
       });
-      return img;
+      btn.append(img);
+      return btn;
     }
-    return this._gradientThumb(row);
+    btn.append(this._gradientThumb(row));
+    return btn;
+  }
+
+  /**
+   * @param {ReturnType<typeof listFocusCoinSurfaceRows>[number]} row
+   */
+  _showCurio(row) {
+    this._detailSkuId = row.id;
+    this.detail.dataset.state = row.owned ? 'collected' : 'pending';
+    this.detailImg.src = row.thumbSrc || '';
+    this.detailImg.hidden = !row.thumbSrc;
+    this.detailName.textContent = t(row.nameKey);
+    this.detailNote.textContent = row.noteKey ? t(row.noteKey) : '';
+    this.detailClose.textContent = t('YIN_COIN_CLOSE');
+    this.detail.hidden = false;
+    this.root.scrollTop = 0;
+    this.root.classList.add('yin-coin-panel--detail');
+    this.detailClose.focus({ preventScroll: true });
+  }
+
+  _hideCurio() {
+    this._detailSkuId = null;
+    this.detail.hidden = true;
+    this.detailImg.removeAttribute('src');
+    this.detailName.textContent = '';
+    this.detailNote.textContent = '';
+    this.root.classList.remove('yin-coin-panel--detail');
   }
 
   /**
@@ -908,6 +986,54 @@ export class FocusCoinsPanelUI {
         opacity: 1;
         transform: translate(-50%, 0);
         pointer-events: auto;
+      }
+      .yin-coin-panel--detail {
+        overflow: hidden;
+      }
+      .yin-coin-panel__thumb-btn {
+        width: 40px;
+        height: 40px;
+        margin-top: 0;
+        padding: 0;
+        flex-shrink: 0;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        cursor: pointer;
+      }
+      .yin-coin-panel__thumb-img--pending {
+        filter: brightness(0.42) saturate(0.65);
+      }
+      .yin-coin-panel__detail {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+        box-sizing: border-box;
+        background: rgba(248, 246, 242, 0.98);
+        border-radius: ${GLASS_RADIUS};
+      }
+      .yin-coin-panel__detail-img {
+        width: 100%;
+        flex: 1 1 auto;
+        min-height: 0;
+        object-fit: contain;
+      }
+      .yin-coin-panel__detail[data-state='pending'] .yin-coin-panel__detail-img {
+        filter: brightness(0.5) saturate(0.7);
+      }
+      .yin-coin-panel__detail-name {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      .yin-coin-panel__detail-note {
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.45;
       }
       @media (min-width: 480px) {
         .yin-coin-panel {

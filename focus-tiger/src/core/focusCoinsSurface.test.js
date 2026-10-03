@@ -124,7 +124,20 @@ test('surface sections partition owned vs pending shop rows', () => {
   assert.equal(sections.obtained.every((row) => row.owned), true);
   assert.equal(sections.pending.every((row) => !row.owned), true);
   for (const row of sections.obtained) {
-    assert.equal(row.thumbSrc, null);
+    assert.match(row.thumbSrc, /^\/ui\/collection-objects\/.+\.png$/);
+    assert.equal(typeof row.noteKey, 'string');
+  }
+});
+
+test('shop stills keep prices and point at files on disk', () => {
+  const rows = listFocusCoinSurfaceRows({ balance: 0 });
+  assert.deepEqual(
+    rows.map((row) => row.price),
+    [24, 48, 36, 60, 18, 30, 72, 360]
+  );
+  for (const row of rows) {
+    assert.match(row.thumbSrc, /^\/ui\/collection-objects\/.+\.png$/);
+    assert.equal(typeof row.noteKey, 'string');
   }
 });
 

@@ -17,7 +17,24 @@ import {
  * Optional curio still paths — mount designer assets here; absent ids use gradients.
  * @type {Readonly<Record<string, string>>}
  */
-export const FOCUS_COIN_CURIO_THUMB_SRC = Object.freeze({});
+export const FOCUS_COIN_CURIO_THUMB_SRC = Object.freeze({
+  'space.incense-tint-warm':
+    '/ui/collection-objects/silver-gilt-openwork-lotus-censer.png',
+  'space.lotus-dew': '/ui/collection-objects/celadon-beast-foot-pan.png',
+  'yin-accent.wood-beads': '/ui/collection-objects/silver-gilt-beast-box.png',
+  'yin-accent.folded-cloak':
+    '/ui/collection-objects/bronze-gilt-hunting-stem-bowl.png',
+  'title.sits-with-yin': '/ui/collection-objects/celadon-cong-vessel.png',
+  'title.returned-gently':
+    '/ui/collection-objects/celadon-garlic-mouth-vase.png',
+  'badge.rare.quiet-pebble':
+    '/ui/collection-objects/ge-crackle-tripod-ding.png',
+  'bundle.sumeru-seat': '/ui/collection-objects/blue-white-taotie-ding.png',
+  'collection.porcelain.qing-vase':
+    '/ui/collection-objects/celadon-flared-gu.png',
+  'collection.bronze.ritual-vessel':
+    '/ui/collection-objects/silver-gilt-bird-zun.png'
+});
 
 /**
  * @param {string} skuId
@@ -42,6 +59,20 @@ export const FOCUS_COIN_SKU_NAME_KEYS = Object.freeze({
   'collection.porcelain.qing-vase': 'YIN_COIN_SKU_QING_VASE',
   'collection.bronze.ritual-vessel': 'YIN_COIN_SKU_BRONZE_VESSEL',
   'gesture.wave-hello': 'YIN_COIN_SKU_WAVE_HELLO'
+});
+
+/** One observational line per curio still. Shop eight plus two catalog stills. */
+export const FOCUS_COIN_CURIO_NOTE_KEYS = Object.freeze({
+  'space.incense-tint-warm': 'YIN_COIN_NOTE_INCENSE_TINT',
+  'space.lotus-dew': 'YIN_COIN_NOTE_LOTUS_DEW',
+  'yin-accent.wood-beads': 'YIN_COIN_NOTE_WOOD_BEADS',
+  'yin-accent.folded-cloak': 'YIN_COIN_NOTE_FOLDED_CLOAK',
+  'title.sits-with-yin': 'YIN_COIN_NOTE_SITS_WITH_YIN',
+  'title.returned-gently': 'YIN_COIN_NOTE_RETURNED_GENTLY',
+  'badge.rare.quiet-pebble': 'YIN_COIN_NOTE_QUIET_PEBBLE',
+  'bundle.sumeru-seat': 'YIN_COIN_NOTE_SUMERU_SEAT',
+  'collection.porcelain.qing-vase': 'YIN_COIN_NOTE_QING_VASE',
+  'collection.bronze.ritual-vessel': 'YIN_COIN_NOTE_BRONZE_VESSEL'
 });
 
 /**
@@ -184,6 +215,7 @@ export function listFocusCoinSurfaceRows(ctx = {}) {
       kind: sku.kind,
       price: sku.price,
       nameKey: FOCUS_COIN_SKU_NAME_KEYS[sku.id],
+      noteKey: FOCUS_COIN_CURIO_NOTE_KEYS[sku.id] ?? null,
       thumbSrc: getFocusCoinCurioThumbSrc(sku.id),
       owned,
       canRedeem: evaluated.ok === true,

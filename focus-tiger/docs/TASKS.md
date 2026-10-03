@@ -220,6 +220,13 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。文化 meaning layer / Practice Identity **不**在本表开工，见 `FROM_APP_TO_CULTURE.md` §13。
 
+## 📍 Yin's Art Collection（购买 · 与寅币珍藏分开）
+
+| 级 | 内容 | Brief | 状态 |
+|---|---|---|---|
+| **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
+| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **待书面点头** · 点头前不写代码 |
+
 ---
 
 ## 📍 From App to Culture（2026-08-27 · 方向锁 · 2026-09-04 修订）

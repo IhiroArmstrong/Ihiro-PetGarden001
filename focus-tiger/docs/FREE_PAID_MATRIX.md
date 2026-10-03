@@ -132,7 +132,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | 寅币钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
-| 兑换：清供器物卡（旧 8 id） | 练习兑换 | **不可现金购买** | 抽屉 `FOCUS_COIN_CURIO_SHOP_IDS`；catalog 另留 `title.long-sitter` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；清供 8；抬头浮雕币标 + 余额小 icon；SKU 占位色点）；叠层滤镜已拆 | `bundle.sumeru-seat` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
+| 兑换：清供器物卡（旧 8 id） | 练习兑换 | **不可现金购买** | 抽屉 `FOCUS_COIN_CURIO_SHOP_IDS`；catalog 另留 `title.long-sitter` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；清供 8；抬头浮雕币标 + 余额小 icon；SKU 卡面为 collection-objects 透明图）；叠层滤镜已拆 | `bundle.sumeru-seat` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
 | 用寅币换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
 
 ### A6 · Focus Tiger Pro（B 轨升级 + 桌面本地智能体）+ Lifetime AI 加购

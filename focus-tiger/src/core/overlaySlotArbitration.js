@@ -126,6 +126,7 @@ export function buildOverlaySnapshot(input = {}) {
     confideOpen: Boolean(input.confideOpen),
     journeyOpen: Boolean(input.journeyOpen),
     coinPanelOpen: Boolean(input.coinPanelOpen),
+    artPanelOpen: Boolean(input.artPanelOpen),
     quoteOpen: Boolean(input.quoteOpen),
     wallpapersOpen: Boolean(input.wallpapersOpen),
     artCollectionOpen: Boolean(input.artCollectionOpen),

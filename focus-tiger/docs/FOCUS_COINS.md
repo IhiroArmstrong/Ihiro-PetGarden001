@@ -71,7 +71,7 @@
 | 把旧 8 个 SKU id 原价原门槛改名成清供器物 | **已锁（2026-08-20）**。工程继续用现有 id；只改展示名；抽屉 = `FOCUS_COIN_CURIO_SHOP_IDS` 八条 |
 | 产品名叫清供匣 / Yin Coin / Yin's Desk | **不要**。对外只认 **Yin's Collections / 阿寅的珍藏**。清供匣、百宝箱仅比喻 |
 | 寅币 8 件并进 `#yin-tip-kindness-badges` 或提前做成就墙 | **不要**。练习章条继续只管练习/请茶/Sanctuary；成就墙仍是 Backlog |
-| `yin-coin-flat-draft.png` 0.5–1 日手绘精修 | **未批准**。占位 24px 色点继续用；看见线稿再另拍板 |
+| `yin-coin-flat-draft.png` 0.5–1 日手绘精修 | **未批准**。2026-10-03 起抽屉八件用 `public/ui/collection-objects/` 透明器物图，不再用 24px 色点 |
 | #353 商店 7 行（久坐的人 / 青瓷瓶 / 青铜礼器 / 挥手 上架） | **抽屉改回清供 8**。上述 id **留在 catalog**（已兑有效）；挥手 SKU **不**进商店行，点播放珍藏底栏 |
 
 L3 抽屉 `#yin-coin-panel` **留下当珍藏的门**。目录 = 清供 8。底栏 Play 点播 `wave-hello`（不列挥手 SKU）。四页签壳仍后置，不是再开第二座花园。
@@ -194,17 +194,17 @@ Honesty **不是**挂机检测，是别处练习的信任补登。完整 Focus C
 
 | ID | 类型 | 名称 | 价格 | 门槛 | 状态 |
 |---|---|---|---|---|---|
-| `space.incense-tint-warm` | 清供 | 青铜香薰炉 | 24 | 香炉纪念 **或** 练习日 ≥ 3 | **抽屉可兑**；不上序列 |
-| `space.lotus-dew` | 清供 | 青瓷莲盏 | 48 | 已有第一朵莲花（匣中物，**不**给池加光） | **抽屉可兑** |
-| `yin-accent.wood-beads` | 清供 | 紫檀念珠匣 | 36 | — | **抽屉可兑** |
-| `yin-accent.folded-cloak` | 清供 | 青铜奁 | 60 | Honesty 睡醒 | **抽屉可兑** |
-| `title.sits-with-yin` | 清供 | 座右小碑 | 18 | 练习日 ≥ 3 | **抽屉可兑**；Wear 为称号数据，不叠帧 |
-| `title.returned-gently` | 清供 | 归来青瓷小瓶 | 30 | 至少 1 次主动 Recover | **抽屉可兑** |
-| `badge.rare.quiet-pebble` | 清供 | 石镇纸 | 72 | — | **抽屉可兑** |
-| `bundle.sumeru-seat` | 清供 | 须弥小鼎 | 360 | `lifetimeMinutes ≥ 600` | **抽屉可兑**；写入 `space.sumeru-cushion` + `title.long-sitter`；无金线蒲团 |
+| `space.incense-tint-warm` | 清供 | 错金银镂空莲纹香薰 | 24 | 香炉纪念 **或** 练习日 ≥ 3 | **抽屉可兑**；卡面图；不上序列 |
+| `space.lotus-dew` | 清供 | 青瓷兽足盘 | 48 | 已有第一朵莲花（匣中物，**不**给池加光） | **抽屉可兑** |
+| `yin-accent.wood-beads` | 清供 | 错金银瑞兽纹匣 | 36 | — | **抽屉可兑** |
+| `yin-accent.folded-cloak` | 清供 | 错金狩猎纹豆 | 60 | Honesty 睡醒 | **抽屉可兑** |
+| `title.sits-with-yin` | 清供 | 青瓷琮式尊 | 18 | 练习日 ≥ 3 | **抽屉可兑**；Wear 为称号数据，不叠帧 |
+| `title.returned-gently` | 清供 | 青瓷蒜头长颈瓶 | 30 | 至少 1 次主动 Recover | **抽屉可兑** |
+| `badge.rare.quiet-pebble` | 清供 | 哥窑开片三足鼎 | 72 | — | **抽屉可兑** |
+| `bundle.sumeru-seat` | 清供 | 青花饕餮纹鼎 | 360 | `lifetimeMinutes ≥ 600` | **抽屉可兑**；写入 `space.sumeru-cushion` + `title.long-sitter`；无金线蒲团 |
 | `title.long-sitter` | 称号 | 「久坐的人」 | 360 | 同上双门槛 | **catalog 保留、抽屉不列**（bundle 会写入） |
-| `collection.porcelain.qing-vase` | 静物 | 青瓷瓶 | 40 | — | **catalog 保留、抽屉不列** |
-| `collection.bronze.ritual-vessel` | 静物 | 青铜礼器 | 56 | — | **catalog 保留、抽屉不列** |
+| `collection.porcelain.qing-vase` | 静物 | 青瓷出戟觚 | 40 | — | **catalog 保留、抽屉不列** |
+| `collection.bronze.ritual-vessel` | 静物 | 错金银鸟尊 | 56 | — | **catalog 保留、抽屉不列** |
 | `gesture.wave-hello` | 闲笔 | 挥手 | 48 | — | **catalog 保留、抽屉不列**；点播走珍藏底栏 Play，不要求先结缘该 SKU |
 
 信件 / 静默小册：**后置**（须静态文案 + Quiet Line 历史归档）。抛三色球：**未入库，后置**。
@@ -285,7 +285,7 @@ Tea / Sanctuary `badgeIds` **禁止**被点写入。稀有章走 `badge.rare.*`�
 - **L1（已合 #338）**：`FocusCoinsStore` + `applyFocusCoinsGrant` 挂计时达标 / Honesty 呼吸成功 / Choose / 达标 Reflect / 主动 Recover / 微仪式。已进 `localStateKeys`（L-01）。`?focusCoins=0` 关闸。  
 - **本支（#348）**：Breath 坐满按 Stay 档发时长点（`applyBreathPracticeFocusCoinsGrant`）；Leave 仍 0。Focus / Breath picker 下 `#focus-coins-duration-hint`。  
 - **L2（已合 #339）**：`applyFocusCoinsRedeem` 写入 `ownedIds`。清供 id 可兑为卡面；晨露/金线滤镜已拆、不再上主画面。`title.long-sitter` 仍双门槛。控制台 `__focusCoins.redeem(skuId)`。Tea / Sanctuary `badgeIds` 不写。  
-- **L3（#352+#353+#354 已合；清供 8）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18；**≥480 靠右停、中线留给阿寅/挥手**；<480 短底栏）。目录只列 `listShopFocusCoinSkus()` = 清供八条。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行仍占位色点。不足/未达门槛：按压 + 具体缺口句 + **中置** toast（不得被面板盖住）。座右小碑 / 归来小瓶 / 须弥小鼎 可 Wear 称号。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
+- **L3（#352+#353+#354 已合；清供 8）**：⋯ / 抽屉 **Yin's Collections / 阿寅的珍藏** → `#yin-coin-panel`（Journey 同族玻璃，z=18；**≥480 靠右停、中线留给阿寅/挥手**；<480 短底栏）。目录只列 `listShopFocusCoinSkus()` = 清供八条。抬头精致浮雕币标、余额/价格旁小 icon（仅 UI chrome，**不**贴序列帧；2026-08-20 用户书面定稿）。SKU 行用 `collection-objects` 透明图（未结缘偏暗，结缘全彩，点开大图与短句）。不足/未达门槛：按压 + 具体缺口句 + **中置** toast（不得被面板盖住）。座右小碑 / 归来小瓶 / 须弥小鼎 可 Wear 称号。结缘动词 Bond。`?focusCoins=0` 隐藏菜单行。练习备份 6 key **仍不扩**。  
 - **本旁支（#356）**：珍藏底栏 Play 点播已入库 `waveHello`（`collectionsWaveHello`）。抽屉**不**列 `gesture.wave-hello`。不要求先结缘该 SKU。`welcomeBack` 仍空。  
 
 - Feature flag：`FOCUS_COINS_AWARD_ENABLED`（默认开）+ 查询串覆盖；关 = 完全不写钱包（发点与兑换），L3 菜单行亦不出现。  

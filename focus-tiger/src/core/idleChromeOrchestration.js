@@ -415,6 +415,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
           testId: 'idle-yin-coin'
         }
       : null,
+    {
+      proxy: 'yin-art',
+      labelKey: 'YIN_ART_MENU_LABEL',
+      testId: 'idle-yin-art'
+    },
     confideVisible || companionGeneration
       ? {
           proxy: 'confide',
