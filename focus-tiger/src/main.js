@@ -253,6 +253,7 @@ import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
 import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
 import { bootProReturnConfirm } from './core/proCheckout.js';
 import { bootCompanionAddonReturnConfirm } from './core/companionAddonCheckout.js';
+import { bootYinArtReturnConfirm } from './core/yinArtCollectionCheckout.js';
 import { bootSeasonalThemeChrome } from './core/seasonal/bootSeasonalThemeChrome.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
@@ -2116,6 +2117,7 @@ async function init() {
       syncEntitlementDependentIdleChrome();
     }
   });
+  void bootYinArtReturnConfirm({});
 
   let resumeDesktopCheckoutInFlight = false;
   async function resumeDesktopCheckoutAfterExternal() {

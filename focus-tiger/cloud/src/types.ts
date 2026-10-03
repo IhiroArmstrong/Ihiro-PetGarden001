@@ -60,6 +60,10 @@ export interface Env {
 	COMPANION_ADDON_CHECKOUT_SUCCESS_URL?: string;
 	COMPANION_ADDON_CHECKOUT_CANCEL_URL?: string;
 
+	/** Yin's Art Collection one-time Checkout return URLs. Prices live in code. */
+	ART_COLLECTION_CHECKOUT_SUCCESS_URL?: string;
+	ART_COLLECTION_CHECKOUT_CANCEL_URL?: string;
+
 	/** Exact browser Origin allowed for CORS, or comma-separated list. */
 	ALLOWED_ORIGIN?: string;
 	/** Optional alias of ALLOWED_ORIGIN (comma-separated). */

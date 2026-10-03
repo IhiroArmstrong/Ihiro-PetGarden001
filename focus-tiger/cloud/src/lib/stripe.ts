@@ -147,6 +147,46 @@ export async function createCompanionAddonCheckoutSession(opts: {
 	});
 }
 
+export async function createArtCollectionCheckoutSession(opts: {
+	secretKey: string;
+	artId: string;
+	productName: string;
+	unitAmount: number;
+	successUrl: string;
+	cancelUrl: string;
+}): Promise<StripeCheckoutSession> {
+	const params: Record<string, string> = {
+		mode: "payment",
+		"line_items[0][quantity]": "1",
+		"line_items[0][price_data][currency]": "usd",
+		"line_items[0][price_data][unit_amount]": String(opts.unitAmount),
+		"line_items[0][price_data][product_data][name]": opts.productName,
+		success_url: opts.successUrl,
+		cancel_url: opts.cancelUrl,
+		"metadata[product]": "art-collection",
+		"metadata[artId]": opts.artId,
+	};
+	const res = await fetch(`${STRIPE_API}/checkout/sessions`, {
+		method: "POST",
+		headers: {
+			authorization: `Bearer ${opts.secretKey}`,
+			"content-type": "application/x-www-form-urlencoded",
+		},
+		body: formBody(params),
+	});
+	const data = (await res.json()) as StripeCheckoutSession & {
+		error?: { message?: string };
+	};
+	if (!res.ok) {
+		const msg = data.error?.message || `Stripe HTTP ${res.status}`;
+		throw new Error(msg);
+	}
+	if (!data.id || !data.url) {
+		throw new Error("Stripe session missing id or url");
+	}
+	return data;
+}
+
 /**
  * Shared Checkout Session create — Tip/Sanctuary use payment; Membership uses subscription.
  */

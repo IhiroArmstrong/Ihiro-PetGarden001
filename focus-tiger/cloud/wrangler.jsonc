@@ -133,6 +133,8 @@
 		"STRIPE_COMPANION_ADDON_PRICE_ID": "price_1U6GnXFuIhgJPGLiNlXs0IKe",
 		"COMPANION_ADDON_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&companion_addon_session={CHECKOUT_SESSION_ID}",
 		"COMPANION_ADDON_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&companion_addon=cancel",
+		"ART_COLLECTION_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&art_session={CHECKOUT_SESSION_ID}",
+		"ART_COLLECTION_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&art=cancel",
 		"ALLOWED_ORIGIN": "http://127.0.0.1:5173",
 		"RESEND_FROM": "Yin <restore@twinsology.com>",
 		"NEWSLETTER_FROM": "Yin <hello@twinsology.com>"

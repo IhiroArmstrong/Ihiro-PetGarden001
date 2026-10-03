@@ -13,6 +13,13 @@ import {
 } from "../lib/sanctuaryKv";
 import { writeCompanionAddon } from "../lib/companionAddonKv";
 import {
+	grantArtPiece,
+	normalizeArtEmail,
+	readArtCollection,
+	writeArtCollection,
+} from "../lib/artCollectionKv";
+import { findArtCollectionWork } from "../lib/artCollectionCatalog";
+import {
 	handleMembershipCheckoutCompleted,
 	handleMembershipInvoicePaid,
 	handleMembershipInvoicePaymentFailed,
@@ -147,6 +154,26 @@ async function handleCheckoutSessionCompleted(
 			itemId: session.metadata?.itemId || "companion.addon.lifetime",
 		});
 		return json({ received: true, stored: true, product: "companion-addon" });
+	}
+
+	if (product === "art-collection") {
+		if (!env.SANCTUARY_KV) {
+			return errorJson(503, "misconfigured", "SANCTUARY_KV not bound");
+		}
+		const artId = session.metadata?.artId || "";
+		if (!findArtCollectionWork(artId)) {
+			return json({ received: true, ignored: true, reason: "unknown_art" });
+		}
+		const email = normalizeArtEmail(emailRaw);
+		const existing = await readArtCollection(env.SANCTUARY_KV, email);
+		const next = grantArtPiece(
+			existing,
+			artId,
+			new Date().toISOString(),
+			typeof session.id === "string" ? session.id : "unknown",
+		);
+		await writeArtCollection(env.SANCTUARY_KV, email, next);
+		return json({ received: true, stored: true, product: "art-collection" });
 	}
 
 	if (product === "sanctuary") {

@@ -225,7 +225,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 级 | 内容 | Brief | 状态 |
 |---|---|---|---|
 | **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
-| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **待书面点头** · 点头前不写代码 |
+| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **实现中** · 2026-10-03 按 Brief 开工 |
 
 ---
 
