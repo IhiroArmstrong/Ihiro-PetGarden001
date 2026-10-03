@@ -55,18 +55,22 @@ export default defineConfig({
           : {})
       }
     },
-    {
-      name: 'local-acceptance',
-      use: {
-        ...devices['Desktop Chrome'],
-        // 本地场景验收：成败都留 video + trace，供人工看流程（非 CI 失败留证）。
-        // 例：playwright test e2e/scenario-a.companion.spec.js --grep "scenario A: Arrival" --project=local-acceptance
-        video: 'on',
-        trace: 'on',
-        ...(process.env.PLAYWRIGHT_CHANNEL
-          ? { channel: process.env.PLAYWRIGHT_CHANNEL }
-          : {})
-      }
-    }
+    // 本地留证。CI 不列入：与 chromium 抢同一 :5199，冒烟会打开超时。
+    // 本地：playwright test … --project=local-acceptance
+    ...(process.env.CI
+      ? []
+      : [
+          {
+            name: 'local-acceptance',
+            use: {
+              ...devices['Desktop Chrome'],
+              video: 'on',
+              trace: 'on',
+              ...(process.env.PLAYWRIGHT_CHANNEL
+                ? { channel: process.env.PLAYWRIGHT_CHANNEL }
+                : {})
+            }
+          }
+        ])
   ]
 });

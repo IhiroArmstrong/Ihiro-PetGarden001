@@ -325,13 +325,34 @@
 
 > **路径**：`public/ui/focus-coins/`（入库 2026-08-19）。  
 > **用途**：寅币在 **Yin's Collections** 抽屉里的货币识别——抬头浮雕标 + 余额/价格小 icon。  
-> **禁止**：叠到 `#sprite-stage` / 序列帧 / 蒲团；不要当 SKU 静物图（瓷器/青铜器仍待另出）。  
+> **禁止**：叠到 `#sprite-stage` / 序列帧 / 蒲团；不要当艺术品静物图。器物静物在 `public/ui/art-collection/`，与本币标无关。  
 > **接线**：`FocusCoinsPanelUI.js` `MARK_SRC` / `ICON_SRC`。用户 2026-08-19 书面：精致版与小 icon 版都看过、没问题。
 
 | 文件 | 尺寸 | 角色 |
 |---|---|---|
 | `yin-coin-mark.png` | 192×192 | 精致浮雕 · 面板抬头 / 仪式层 |
 | `yin-coin-mark-icon.png` | 64×64 | 扁平小标 · 余额 24px、价格 16px |
+
+---
+
+## Yin's Art Collection stills（非序列帧 · 未接线）
+
+> **路径**：`public/ui/art-collection/`（入库 2026-10-03）。透明底 PNG。根目录原 `jimeng-*` 文件名不得入库。  
+> **用途**：将来 **Yin's Art Collection** 的 Digital Artwork 静物。与寅币珍藏、请茶分开。  
+> **接线**：**无**。不进 `#yin-coin-panel`，不进 Support，不做购买。第一批上架建议见 `task-briefs/task-yin-art-collection-stills.md`。  
+> **禁止**：叠到序列帧 / 蒲团；当作寅币清供；文件名含 jimeng。
+
+| 文件 | 画面 |
+|---|---|
+| `celadon-square-dragon-jar.png` | 青瓷方盖瓶，龙耳，兽面 |
+| `amber-glaze-phoenix-ewer.png` | 黄釉凤形壶 |
+| `amber-glaze-hu-vase.png` | 黄釉兽面壶 |
+| `gold-inlaid-silver-ge.png` | 错金铜戈 |
+| `celadon-jade-taotie-ding.png` | 青白玉沁色鼎 |
+| `amber-glaze-taotie-gui.png` | 黄釉双耳簋 |
+| `amber-glaze-elephant-vessel.png` | 黄釉象形器 |
+| `amber-glaze-dragon-handled-he.png` | 黄釉龙提梁盉 |
+| `tixi-lacquer-elephant-vessel.png` | 剔犀象形器 |
 
 ---
 
