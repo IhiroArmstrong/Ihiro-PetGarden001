@@ -8,6 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { kbLiveGapMachineBlocksMatch } from './audit-kb-live-gap.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -198,5 +199,19 @@ describe('audit-kb-live-gap live audit', () => {
   it('passes when markdown block is in sync', () => {
     assert.equal(runKbLiveGapAudit({ write: true }), true);
     assert.equal(runKbLiveGapAudit(), true);
+  });
+});
+
+describe('kb live gap snapshot date', () => {
+  it('treats a calendar-only snapshot change as still in sync', () => {
+    const older = '<!-- kb-live-gap-audit:begin -->\n**Snapshot**: 2026-10-01 · 28 live rows\n';
+    const today = '<!-- kb-live-gap-audit:begin -->\n**Snapshot**: 2026-10-03 · 28 live rows\n';
+    assert.equal(kbLiveGapMachineBlocksMatch(older, today), true);
+  });
+
+  it('still fails when the live-row count changes', () => {
+    const older = '<!-- kb-live-gap-audit:begin -->\n**Snapshot**: 2026-10-01 · 28 live rows\n';
+    const drifted = '<!-- kb-live-gap-audit:begin -->\n**Snapshot**: 2026-10-01 · 29 live rows\n';
+    assert.equal(kbLiveGapMachineBlocksMatch(older, drifted), false);
   });
 });
