@@ -1,24 +1,16 @@
 import { errorJson, json } from "../lib/http";
 import {
+	chargeIdFromPaymentIntent,
 	emailFromCheckoutSession,
+	paymentIntentIdFromCheckoutSession,
+	retrievePaymentIntent,
 	verifyStripeWebhookSignatureDetailed,
+	type StripeCharge,
 	type StripeCheckoutSession,
 	type StripeInvoice,
 	type StripeSubscription,
 } from "../lib/stripe";
-import { normalizeEmail as normalizeTipEmail, writeTip } from "../lib/tipKv";
-import {
-	normalizeEmail as normalizeSanctuaryEmail,
-	writeSanctuary,
-} from "../lib/sanctuaryKv";
-import { writeCompanionAddon } from "../lib/companionAddonKv";
-import {
-	grantArtPiece,
-	normalizeArtEmail,
-	readArtCollection,
-	writeArtCollection,
-} from "../lib/artCollectionKv";
-import { findArtCollectionWork } from "../lib/artCollectionCatalog";
+import { handleArtCollectionChargeRefunded } from "./artCollectionStripeWebhook";
 import {
 	handleMembershipCheckoutCompleted,
 	handleMembershipInvoicePaid,
@@ -103,6 +95,11 @@ export async function handleStripeWebhook(
 				env,
 				subscription: (object || {}) as StripeSubscription,
 			});
+		case "charge.refunded":
+			return handleArtCollectionChargeRefunded(
+				env,
+				(object || {}) as StripeCharge,
+			);
 		default:
 			return json({ received: true, ignored: true, reason: "unhandled_type" });
 	}
@@ -166,13 +163,17 @@ async function handleCheckoutSessionCompleted(
 		}
 		const email = normalizeArtEmail(emailRaw);
 		const existing = await readArtCollection(env.SANCTUARY_KV, email);
-		const next = grantArtPiece(
-			existing,
-			artId,
-			new Date().toISOString(),
-			typeof session.id === "string" ? session.id : "unknown",
-		);
+		const receiptId = typeof session.id === "string" ? session.id : "unknown";
+		const ownedAt = new Date().toISOString();
+		const next = grantArtPiece(existing, artId, ownedAt, receiptId);
 		await writeArtCollection(env.SANCTUARY_KV, email, next);
+		const chargeId = await resolveArtCollectionChargeId(env, session);
+		await indexArtCollectionPurchase(env.SANCTUARY_KV, {
+			email,
+			artId,
+			receiptId,
+			chargeId,
+		});
 		return json({ received: true, stored: true, product: "art-collection" });
 	}
 
@@ -231,4 +232,22 @@ async function handleCheckoutSessionCompleted(
 	});
 
 	return json({ received: true, stored: true, product: "tip" });
+}
+
+async function resolveArtCollectionChargeId(
+	env: Env,
+	session: StripeCheckoutSession,
+): Promise<string | undefined> {
+	const secret = (env.STRIPE_SECRET_KEY || "").trim();
+	const paymentIntentId = paymentIntentIdFromCheckoutSession(session);
+	if (!secret || !paymentIntentId) return undefined;
+	try {
+		const paymentIntent = await retrievePaymentIntent({
+			secretKey: secret,
+			paymentIntentId,
+		});
+		return chargeIdFromPaymentIntent(paymentIntent) || undefined;
+	} catch {
+		return undefined;
+	}
 }

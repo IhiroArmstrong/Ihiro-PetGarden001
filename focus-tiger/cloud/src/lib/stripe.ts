@@ -15,10 +15,24 @@ export type StripeCheckoutSession = {
 	url: string | null;
 	mode?: string;
 	payment_status?: string;
+	payment_intent?: string | { id?: string } | null;
 	subscription?: string | { id?: string } | null;
 	customer_email?: string | null;
 	customer_details?: { email?: string | null } | null;
 	metadata?: Record<string, string> | null;
+};
+
+export type StripePaymentIntent = {
+	id: string;
+	latest_charge?: string | { id?: string } | null;
+	metadata?: Record<string, string> | null;
+};
+
+export type StripeCharge = {
+	id?: string;
+	payment_intent?: string | { id?: string } | null;
+	metadata?: Record<string, string> | null;
+	refunded?: boolean;
 };
 
 export type StripeSubscriptionItem = {
@@ -165,6 +179,8 @@ export async function createArtCollectionCheckoutSession(opts: {
 		cancel_url: opts.cancelUrl,
 		"metadata[product]": "art-collection",
 		"metadata[artId]": opts.artId,
+		"payment_intent_data[metadata][product]": "art-collection",
+		"payment_intent_data[metadata][artId]": opts.artId,
 	};
 	const res = await fetch(`${STRIPE_API}/checkout/sessions`, {
 		method: "POST",
@@ -263,6 +279,102 @@ export async function createOneTimeCheckoutSession(opts: {
 /**
  * Retrieve a Checkout Session (server-side confirm for Sanctuary / Membership).
  */
+export function paymentIntentIdFromCheckoutSession(
+	session: StripeCheckoutSession,
+): string | null {
+	const raw = session.payment_intent;
+	if (typeof raw === "string" && raw.startsWith("pi_")) return raw;
+	if (raw && typeof raw === "object" && typeof raw.id === "string") {
+		return raw.id.startsWith("pi_") ? raw.id : null;
+	}
+	return null;
+}
+
+export function paymentIntentIdFromCharge(
+	charge: Pick<StripeCharge, "payment_intent">,
+): string | null {
+	const raw = charge.payment_intent;
+	if (typeof raw === "string" && raw.startsWith("pi_")) return raw;
+	if (raw && typeof raw === "object" && typeof raw.id === "string") {
+		return raw.id.startsWith("pi_") ? raw.id : null;
+	}
+	return null;
+}
+
+export function chargeIdFromPaymentIntent(
+	pi: StripePaymentIntent,
+): string | null {
+	const raw = pi.latest_charge;
+	if (typeof raw === "string" && raw.startsWith("ch_")) return raw;
+	if (raw && typeof raw === "object" && typeof raw.id === "string") {
+		return raw.id.startsWith("ch_") ? raw.id : null;
+	}
+	return null;
+}
+
+export async function retrievePaymentIntent(opts: {
+	secretKey: string;
+	paymentIntentId: string;
+}): Promise<StripePaymentIntent> {
+	const id = opts.paymentIntentId.trim();
+	if (!id.startsWith("pi_")) {
+		throw new Error("invalid_payment_intent_id");
+	}
+	const res = await fetch(
+		`${STRIPE_API}/payment_intents/${encodeURIComponent(id)}`,
+		{
+			method: "GET",
+			headers: {
+				authorization: `Bearer ${opts.secretKey}`,
+			},
+		},
+	);
+	const data = (await res.json()) as StripePaymentIntent & {
+		error?: { message?: string };
+	};
+	if (!res.ok) {
+		const msg = data.error?.message || `Stripe HTTP ${res.status}`;
+		throw new Error(msg);
+	}
+	if (!data.id) {
+		throw new Error("Stripe payment intent missing id");
+	}
+	return data;
+}
+
+export async function retrieveCheckoutSessionByPaymentIntent(opts: {
+	secretKey: string;
+	paymentIntentId: string;
+}): Promise<
+	(StripeCheckoutSession & { metadata?: Record<string, string> | null }) | null
+> {
+	const id = opts.paymentIntentId.trim();
+	if (!id.startsWith("pi_")) {
+		throw new Error("invalid_payment_intent_id");
+	}
+	const res = await fetch(
+		`${STRIPE_API}/checkout/sessions?payment_intent=${encodeURIComponent(id)}&limit=1`,
+		{
+			method: "GET",
+			headers: {
+				authorization: `Bearer ${opts.secretKey}`,
+			},
+		},
+	);
+	const data = (await res.json()) as {
+		data?: Array<
+			StripeCheckoutSession & { metadata?: Record<string, string> | null }
+		>;
+		error?: { message?: string };
+	};
+	if (!res.ok) {
+		const msg = data.error?.message || `Stripe HTTP ${res.status}`;
+		throw new Error(msg);
+	}
+	const session = data.data?.[0];
+	return session?.id ? session : null;
+}
+
 export async function retrieveCheckoutSession(opts: {
 	secretKey: string;
 	sessionId: string;

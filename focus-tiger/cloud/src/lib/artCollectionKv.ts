@@ -2,6 +2,8 @@
  * Yin's Art Collection ownership.
  * Key: art-collection:{normalizedEmail}
  * Stored in SANCTUARY_KV. Separate prefix from sanctuary and companion add-on.
+ *
+ * Refund keeps the purchase row with revokedAt set; HD must not be served after revoke.
  */
 
 import { findArtCollectionWork } from "./artCollectionCatalog.ts";
@@ -9,10 +11,17 @@ import { findArtCollectionWork } from "./artCollectionCatalog.ts";
 export type ArtCollectionPiece = {
 	ownedAt: string;
 	receiptId: string;
+	revokedAt?: string;
 };
 
 export type ArtCollectionRecord = {
 	items: Record<string, ArtCollectionPiece>;
+};
+
+export type ArtCollectionPurchaseIndex = {
+	email: string;
+	artId: string;
+	receiptId?: string;
 };
 
 export function normalizeArtEmail(email: string): string {
@@ -23,8 +32,40 @@ export function artCollectionKvKey(email: string): string {
 	return `art-collection:${normalizeArtEmail(email)}`;
 }
 
+export function artCollectionReceiptIndexKey(receiptId: string): string {
+	return `art-collection-receipt:${receiptId}`;
+}
+
+export function artCollectionChargeIndexKey(chargeId: string): string {
+	return `art-collection-charge:${chargeId}`;
+}
+
 export function emptyArtCollectionRecord(): ArtCollectionRecord {
 	return { items: {} };
+}
+
+export function parseArtCollectionPurchaseIndex(
+	raw: string | null,
+): ArtCollectionPurchaseIndex | null {
+	if (!raw) return null;
+	try {
+		const parsed = JSON.parse(raw) as {
+			email?: unknown;
+			artId?: unknown;
+			receiptId?: unknown;
+		};
+		const email =
+			typeof parsed.email === "string" ? normalizeArtEmail(parsed.email) : "";
+		const artId = typeof parsed.artId === "string" ? parsed.artId : "";
+		if (!email || !findArtCollectionWork(artId)) return null;
+		const receiptId =
+			typeof parsed.receiptId === "string" && parsed.receiptId.startsWith("cs_")
+				? parsed.receiptId
+				: undefined;
+		return receiptId ? { email, artId, receiptId } : { email, artId };
+	} catch {
+		return null;
+	}
 }
 
 export function parseArtCollectionRecord(raw: string | null): ArtCollectionRecord {
@@ -44,14 +85,27 @@ export function parseArtCollectionRecord(raw: string | null): ArtCollectionRecor
 					typeof (value as { receiptId?: unknown }).receiptId === "string"
 						? (value as { receiptId: string }).receiptId
 						: "";
+				const revokedAtRaw = (value as { revokedAt?: unknown }).revokedAt;
+				const revokedAt =
+					typeof revokedAtRaw === "string" && revokedAtRaw.trim()
+						? revokedAtRaw
+						: undefined;
 				if (!ownedAt || !receiptId) continue;
-				items[id] = { ownedAt, receiptId };
+				items[id] = revokedAt ? { ownedAt, receiptId, revokedAt } : { ownedAt, receiptId };
 			}
 		}
 		return { items };
 	} catch {
 		return emptyArtCollectionRecord();
 	}
+}
+
+export function isArtPieceOwned(
+	record: ArtCollectionRecord,
+	artId: string,
+): boolean {
+	const piece = record.items[artId];
+	return Boolean(piece && !piece.revokedAt);
 }
 
 export function grantArtPiece(
@@ -61,11 +115,29 @@ export function grantArtPiece(
 	receiptId: string,
 ): ArtCollectionRecord {
 	if (!findArtCollectionWork(artId) || !ownedAt || !receiptId) return record;
-	if (record.items[artId]) return record;
+	const existing = record.items[artId];
+	if (existing && !existing.revokedAt) return record;
 	return {
 		items: {
 			...record.items,
 			[artId]: { ownedAt, receiptId },
+		},
+	};
+}
+
+export function revokeArtPiece(
+	record: ArtCollectionRecord,
+	artId: string,
+	revokedAt: string,
+	receiptId?: string,
+): ArtCollectionRecord {
+	const piece = record.items[artId];
+	if (!piece || piece.revokedAt) return record;
+	if (receiptId && piece.receiptId !== receiptId) return record;
+	return {
+		items: {
+			...record.items,
+			[artId]: { ...piece, revokedAt },
 		},
 	};
 }
@@ -86,6 +158,44 @@ export async function writeArtCollection(
 	await kv.put(artCollectionKvKey(email), JSON.stringify(record));
 }
 
+export async function indexArtCollectionPurchase(
+	kv: KVNamespace,
+	opts: { email: string; artId: string; receiptId: string; chargeId?: string },
+): Promise<void> {
+	const email = normalizeArtEmail(opts.email);
+	const receiptPayload = JSON.stringify({ email, artId: opts.artId });
+	await kv.put(artCollectionReceiptIndexKey(opts.receiptId), receiptPayload);
+	if (opts.chargeId?.startsWith("ch_")) {
+		await kv.put(
+			artCollectionChargeIndexKey(opts.chargeId),
+			JSON.stringify({
+				email,
+				artId: opts.artId,
+				receiptId: opts.receiptId,
+			}),
+		);
+	}
+}
+
+export async function applyArtCollectionRevoke(
+	kv: KVNamespace,
+	opts: { email: string; artId: string; receiptId?: string; revokedAt: string },
+): Promise<{ stored: boolean; reason?: string }> {
+	const email = normalizeArtEmail(opts.email);
+	const record = await readArtCollection(kv, email);
+	const next = revokeArtPiece(
+		record,
+		opts.artId,
+		opts.revokedAt,
+		opts.receiptId,
+	);
+	if (next === record) {
+		return { stored: false, reason: "not_found_or_already_revoked" };
+	}
+	await writeArtCollection(kv, email, next);
+	return { stored: true };
+}
+
 export function artCollectionHasPieces(record: ArtCollectionRecord): boolean {
-	return Object.keys(record.items).length > 0;
+	return Object.values(record.items).some((piece) => piece && !piece.revokedAt);
 }
