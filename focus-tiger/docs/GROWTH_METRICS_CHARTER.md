@@ -161,7 +161,7 @@ Pre-Batch-2 reads summed **90-day practice-days minutes** as if they were lifeti
 | MilestoneGlow vs score | Orthogonal streak ladder | By design |
 | Shared milestone catalog | **Closed V1** — static local table; J1-a same consecutive-days predicate for Glow + Journey; #890 closed vocab (`task-shared-milestone-catalog.md`) | PO 2026-09-20；Batch 1 另口令 |
 | Journey streak copy vs consecutive days | **Open (J-copy)** — EN “days of returning” ≠ consecutive-day math; not Batch 1 | 另开产品拍板：改文案或改逻辑 |
-| Growth Journey 圆点 | **Closed as presentation** — 只读 `scoreEligibleLifetimeMinutes`；禁止用 `practiceDayCount` 或合成 `score`（90 日窗口会回退）。不新造公式。门槛见 `GROWTH_JOURNEY_IMPLEMENTATION.md` | PO 2026-10-03 |
+| Growth Journey 圆点 | **Closed as presentation** — 只读莲花 `scoreEligibleLifetimeMinutes`（旧账 grandfather 为终身分钟，只增）。禁止用 `practiceDayCount`、合成 `score`，或人格夹具的天数兜底。练习日最多保留 90 **条**，不是日历过期。显示阶段另有本地最高阶段下限。门槛见 `GROWTH_JOURNEY_IMPLEMENTATION.md` | PO 2026-10-03 |
 
 ---
 
@@ -187,3 +187,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 | 2026-09-20 | Shared milestone catalog V1 locked (`task-shared-milestone-catalog.md`); J-copy Journey returning-copy vs consecutive days remains open |
 | 2026-10-03 | Growth Journey V1 direction lock: dot reads `scoreEligibleLifetimeMinutes` only (`GROWTH_JOURNEY.md`). No new formula |
 | 2026-10-03 | Growth Journey implementation brief: client stage gates + persona landings (`GROWTH_JOURNEY_IMPLEMENTATION.md`). No second input |
+| 2026-10-03 | Growth Journey display floor: live dot is lotus minutes, not the persona day-count fallback. Local highest stage is a floor. Ninety-day count removed from the detail facts (`GROWTH_JOURNEY.md`) |
