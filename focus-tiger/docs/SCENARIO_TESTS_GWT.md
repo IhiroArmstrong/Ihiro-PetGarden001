@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-09-29  
+生成日期：2026-10-03  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -35,13 +35,6 @@
 5. 改 `SCENARIO_TESTS.md` 后须重跑：`python3 focus-tiger/scripts/generate-scenario-tests-gwt.py`。
 
 Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt-priority.mdc`（`RULES_INDEX` → `scenario-gwt-priority`）。
-
-### 本地录像验收（`local-acceptance` project · `playwright.config.js`）
-
-- **用途**：P0 场景本地验收时，成败都留 `video` + `trace`，供产品/负责人**用眼睛看流程**（不同于 CI `chromium` 的 `retain-on-failure` / `on-first-retry` 工程师排障留证）。
-- **跑法**：`npx playwright test <spec> --project=local-acceptance`（例：场景 A 主干 `--grep "scenario A: Arrival"`）。
-- **观感类 Then**（Celebrating 动画、Idle 呼吸等；见 `COVERAGE_GAP_AUDIT.md`）：**不写脆弱视觉 assert**；用本 project 录像 + 人工验收。
-- **清理**：看完确认无问题的 `test-results/` 录像可删，勿提交 git。
 
 ---
 
@@ -1483,6 +1476,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | Q4-14 | P0 | 无自动化标注 | 付 Tea 后升到 ≥3；练习天数/`practice-days` 抬高后刷新，枚数可按 `scor |
 | Q4-15 | P0 | 无自动化标注 | Membership 订阅 confirm（或 `?entitlementMock=subscrip |
 | Q4-16 | P0 | 无自动化标注 | 回流：Rise 后再见徽章条；关 Tip/Sanctuary/Membership 卡再开仍在。 |
+| Q4-17 | P0 | 无自动化标注 | 颁发那一下：记账后身旁新多一枚，且没有纪念印 / 诗稿 / 静思典藏自动出卡、窗口在前台、徽章条可见 |
 
 ### Given-When-Then 明细
 
@@ -1543,6 +1537,20 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 **Then**
 - 回流：Rise 后再见徽章条；关 Tip/Sanctuary/Membership 卡再开仍在
+
+#### Q4-17
+
+- **优先级**：P0（收入/资金相关；历史上出过事故）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 颁发那一下：记账后身旁新多一枚，且没有纪念印 / 诗稿 / 静思典藏自动出卡、窗口在前台、徽章条可见
+
+**Then**
+- 庆祝或金辉结束后 0–1 秒内 背景轻暗，新枚从中心弹出再飞回 `#yin-tip-kindness-badges`（点一下或 Esc 立刻落位）。同轮多枚只飞目录序最新的一枚。出卡要开、条被藏、窗口在后台、或系统减少动效 → 不飞，枚直接在那一排。单测锁门禁；飞入观感仍须人工。
 
 ---
 ## 场景 S：首页左球 · Breath practice（可选时长正念）
@@ -4103,7 +4111,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 他人攻击意图：`I want to beat people.` / `我想打人` / `人を殴りたい`
 
 **Then**
-- 0–1 秒内 `data-route=aggression_toward_others`、语料池 aggression-02/01/03/04（禁止 `Heard` / 点头句 / safety-01 / generate）；竖线 `#8b6f5c`；Yin 不播 oneshot（Idle 呼吸）。对照：`I don't want to live` / `不想活` 仍 safety-01 + `#7a5340`；`打游戏` / `ゲームで殴る` 不得进 aggression。
+- 0–1 秒内 `data-route=aggression_toward_others`、语料池 aggression-02/01/03（不轮到仅在场句 aggression-04）（禁止 `Heard` / 点头句 / safety-01 / generate）；竖线 `#8b6f5c`；Yin 不播 oneshot（Idle 呼吸）。对照：`I don't want to live` / `不想活` 仍 safety-01 + `#7a5340`；`打游戏` / `ゲームで殴る` 不得进 aggression。
 
 #### AE-4
 
@@ -4330,7 +4338,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 他人攻击意图：`I want to beat people.` / `我想打人` / `人を殴りたい`
 
 **Then**
-- 0–1 秒内 reply `data-route=aggression_toward_others`、corpus aggression 池（禁止 `Heard` / `Yin nods quietly` / safety-01 / generate）；竖线 `#8b6f5c`；Yin 保持 Idle（禁止 nodBow / mindfulAcknowledge）。连续发 3+ 条同类句不得只在 2 句间 ping-pong。对照：`不想活` 仍 safety；`打游戏` / `ゲームで殴る` 不得 aggression。
+- 0–1 秒内 reply `data-route=aggression_toward_others`、corpus aggression 池 02/01/03（不轮到 aggression-04；禁止 `Heard` / `Yin nods quietly` / safety-01 / generate）；竖线 `#8b6f5c`；Yin 保持 Idle（禁止 nodBow / mindfulAcknowledge）。连续发 3+ 条同类句不得只在 2 句间 ping-pong。对照：`不想活` 仍 safety；`打游戏` / `ゲームで殴る` 不得 aggression。
 
 #### AE-4
 
@@ -5769,4 +5777,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 63 · 步骤 302 · 待澄清 46_
+_场景 63 · 步骤 303 · 待澄清 46_

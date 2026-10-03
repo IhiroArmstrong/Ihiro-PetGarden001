@@ -282,5 +282,34 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       tokens: Object.freeze(['ft-onboarding-hint-bubble', 'reminder-preference-saved'])
     },
     trackerCoverage: GAP
+  }),
+  surface({
+    file: 'BadgeAwardMomentUI.js',
+    occupancy: false,
+    slotRequest: Object.freeze({
+      mode: 'na',
+      reason: 'transient-ceremony-not-occupancy-card'
+    }),
+    zIndexFloor: Object.freeze({
+      mode: 'na',
+      reason: 'fixed-z-19-dim-and-z-23-fly-below-menu'
+    }),
+    mount: 'body',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'no-persistence' }),
+      success: Object.freeze({ mode: 'na', reason: 'no-persistence' }),
+      fail: Object.freeze({ mode: 'na', reason: 'no-persistence' })
+    }),
+    e2eOverlap: Object.freeze({
+      mode: 'na',
+      reason: 'gates-covered-by-badgeAwardMoment-unit-test'
+    }),
+    trackerCoverage: Object.freeze({
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-badge-award-moment.md'
+      ]),
+      tokens: Object.freeze(['待人工测试', 'badge-award-moment'])
+    })
   })
 ]);
