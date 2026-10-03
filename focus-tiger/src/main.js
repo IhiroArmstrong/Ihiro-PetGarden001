@@ -246,6 +246,7 @@ import {
 } from './core/practiceImprint.js';
 import { listCollectionsBehavioralScarcityRows } from './core/collectionsBehavioralScarcity.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
+import { ArtCollectionPanelUI } from './ui/ArtCollectionPanelUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
 import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
@@ -1510,6 +1511,11 @@ async function init() {
     withIdleOverlayOccupancySync({})
   );
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
+  const artCollectionPanelUI = new ArtCollectionPanelUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
+  window.__artCollectionPanel = artCollectionPanelUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
   const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {});
@@ -1891,6 +1897,7 @@ async function init() {
     if (except !== 'mustard-seed') mustardSeedSealCardUI.close();
     if (except !== 'practice-imprint') practiceImprintCardUI.close();
     if (except !== 'wallpapers') digitalWallpapersCardUI.close();
+    if (except !== 'art-collection') artCollectionPanelUI.close();
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
     if (except !== 'membership') membershipUnlockUI.close();
     if (except !== 'tip') tipJarUI.close();
@@ -2820,6 +2827,7 @@ async function init() {
       yinCoinPanelUI?.isOpen?.() === true ||
       dailyZenQuoteCardUI?.isOpen?.() === true ||
       digitalWallpapersCardUI?.isOpen?.() === true ||
+      artCollectionPanelUI?.isOpen?.() === true ||
       zenCinemaCardUI?.isOpen?.() === true ||
       presenceSignalsPanelUI?.isOpen?.() === true ||
       confideToYinUI?.isOpen?.() === true ||
@@ -2888,6 +2896,7 @@ async function init() {
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
       quoteOpen: window.__dailyZenQuoteCard?.isOpen?.() === true,
       wallpapersOpen: window.__digitalWallpapersCard?.isOpen?.() === true,
+      artCollectionOpen: window.__artCollectionPanel?.isOpen?.() === true,
       cinemaOpen: window.__zenCinemaCard?.isOpen?.() === true,
       newsletterOpen: window.__newsletterCapture?.isOpen?.() === true,
       presenceOpen: window.__presenceSignalsPanel?.isOpen?.() === true,
@@ -3687,6 +3696,10 @@ async function init() {
     onWallpapers: () => {
       closeGrowthOverlayCards({ except: 'wallpapers' });
       digitalWallpapersCardUI.open();
+    },
+    onArtCollection: () => {
+      closeGrowthOverlayCards({ except: 'art-collection' });
+      artCollectionPanelUI.open();
     },
     onSanctuary: () => {
       closeGrowthOverlayCards({ except: 'sanctuary' });

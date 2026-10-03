@@ -50,6 +50,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   YIN_COIN: 'yin-coin',
   DAILY_QUOTE: 'daily-quote',
   WALLPAPERS: 'wallpapers',
+  ART_COLLECTION: 'art-collection',
   ZEN_CINEMA: 'zen-cinema',
   NEWSLETTER: 'newsletter',
   PRESENCE_SIGNALS: 'presence-signals',
@@ -314,6 +315,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#digital-wallpapers-card',
     snapshotField: 'wallpapersOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.ART_COLLECTION,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 12,
+    readers: "Yin's Art Collection panel",
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#art-collection-panel',
+    snapshotField: 'artCollectionOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.ZEN_CINEMA,
@@ -592,6 +604,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'FocusCoinsPanelUI.js': [OVERLAY_SOURCES.YIN_COIN],
   'DailyZenQuoteCardUI.js': [OVERLAY_SOURCES.DAILY_QUOTE],
   'DigitalWallpapersCardUI.js': [OVERLAY_SOURCES.WALLPAPERS],
+  'ArtCollectionPanelUI.js': [OVERLAY_SOURCES.ART_COLLECTION],
   'ZenCinemaCardUI.js': [OVERLAY_SOURCES.ZEN_CINEMA],
   'NewsletterCaptureUI.js': [OVERLAY_SOURCES.NEWSLETTER],
   'PresenceSignalsPanelUI.js': [OVERLAY_SOURCES.PRESENCE_SIGNALS],
