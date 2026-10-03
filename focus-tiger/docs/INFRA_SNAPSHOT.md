@@ -57,6 +57,7 @@
 | Membership | `/api/create-membership-checkout-session` · `/api/confirm-membership-session` · `/api/verify-membership` · `/api/membership-entitlement` · `/api/create-membership-portal-session` |
 | Pro | `/api/create-pro-checkout-session` · `/api/confirm-pro-session` |
 | Companion Add-on | `/api/create-companion-addon-checkout-session` · `/api/confirm-companion-addon-session` · `/api/verify-companion-addon` |
+| Art Collection | `/api/create-art-collection-checkout-session` · `/api/confirm-art-collection-session` · `/api/verify-art-collection` · Stripe `price_data`（无单独 Price id） |
 | Restore OTP | `/api/restore/request-otp` |
 | Practice backup | `/api/practice-backup/request-otp` · `verify` · `put` · `get` · `delete` |
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |

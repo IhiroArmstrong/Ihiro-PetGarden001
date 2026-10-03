@@ -1,0 +1,3 @@
+# feature/yin-art-collection-checkout
+
+| Yin's Art Collection 五件单独结账 | UI可见 | 待人工测试 | **主路径（`http://127.0.0.1:5173/?product=1`）**：⋯ 里打开 **Yin's Art Collection**。货架是月白青瓷方罐、琥珀凤壶、琥珀壶、错金鬲、淡玉色鼎。点开一张，看到图、名字、一句故事和价格。点购买，1 秒内出现「正在打开结账」。付款成功前不是「已收藏」。成功并登录后能看到日期。未登录时，即使本机有缓存，也不显示已收藏。断网或结账失败不会多出一件。请茶和寅币珍藏里没有这五件的购买。自动化：`yinArtCollection.test.js`、`artCollectionKv.test.ts`。 | — | — | — | `http://127.0.0.1:5173/?product=1` · `#yin-art-panel` · `[data-testid=yin-art-payment-note]` | 2026-10-03 |

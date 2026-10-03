@@ -10,6 +10,7 @@
 
 import { postCloudJson } from './cloudApiClient.js';
 import { confirmCompanionAddonReturnQuery } from './companionAddonCheckout.js';
+import { confirmYinArtReturnQuery } from './yinArtCollectionCheckout.js';
 import { confirmProReturnQuery } from './proCheckout.js';
 import { confirmMembershipReturnQuery } from './membershipCheckout.js';
 import { confirmSanctuaryReturnQuery, isSanctuaryUnlocked } from './sanctuaryEntitlementGate.js';
@@ -141,6 +142,17 @@ export async function resumePendingDesktopCheckout({
     return resumeConfirmableKind({
       confirm: confirmMembershipReturnQuery,
       sessionParam: 'membership_session',
+      sessionId: pending.sessionId,
+      storage,
+      search,
+      postJson
+    });
+  }
+
+  if (pending.kind === 'art-collection') {
+    return resumeConfirmableKind({
+      confirm: confirmYinArtReturnQuery,
+      sessionParam: 'art_session',
       sessionId: pending.sessionId,
       storage,
       search,

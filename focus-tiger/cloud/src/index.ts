@@ -21,10 +21,12 @@ import { handleCreateSanctuaryCheckoutSession } from "./routes/createSanctuaryCh
 import { handleCreateMembershipCheckoutSession } from "./routes/createMembershipCheckoutSession";
 import { handleCreateProCheckoutSession } from "./routes/createProCheckoutSession";
 import { handleCreateCompanionAddonCheckoutSession } from "./routes/createCompanionAddonCheckoutSession";
+import { handleCreateArtCollectionCheckoutSession } from "./routes/createArtCollectionCheckoutSession";
 import { handleConfirmSanctuarySession } from "./routes/confirmSanctuarySession";
 import { handleConfirmMembershipSession } from "./routes/confirmMembershipSession";
 import { handleConfirmProSession } from "./routes/confirmProSession";
 import { handleConfirmCompanionAddonSession } from "./routes/confirmCompanionAddonSession";
+import { handleConfirmArtCollectionSession } from "./routes/confirmArtCollectionSession";
 import { handleCreateMembershipPortalSession } from "./routes/createMembershipPortalSession";
 import { handleMembershipEntitlement } from "./routes/membershipEntitlement";
 import { handleRequestRestoreOtp } from "./routes/requestRestoreOtp";
@@ -36,6 +38,7 @@ import { handleDeletePracticeBackup } from "./routes/deletePracticeBackup";
 import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleVerifyCompanionAddon } from "./routes/verifyCompanionAddon";
+import { handleVerifyArtCollection } from "./routes/verifyArtCollection";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
 import { handleVerifyTip } from "./routes/verifyTip";
 import { handleSubscribeNewsletter } from "./routes/subscribeNewsletter";
@@ -335,6 +338,39 @@ export default {
 			);
 		}
 
+		if (url.pathname === "/api/confirm-art-collection-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const confirmLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "confirm-art-collection",
+			});
+			if (confirmLimited) return withCors(confirmLimited, origin);
+			return withCors(
+				await handleConfirmArtCollectionSession(request, env),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/verify-art-collection") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			const verifyLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "verify-art-collection",
+			});
+			if (verifyLimited) return withCors(verifyLimited, origin);
+			return withCors(await handleVerifyArtCollection(request, env), origin);
+		}
+
 		if (url.pathname === "/api/confirm-pro-session") {
 			if (request.method !== "POST") {
 				return withCors(
@@ -438,6 +474,19 @@ export default {
 			}
 			return withCors(
 				await handleCreateCompanionAddonCheckoutSession(request, env),
+				origin,
+			);
+		}
+
+		if (url.pathname === "/api/create-art-collection-checkout-session") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(
+				await handleCreateArtCollectionCheckoutSession(request, env),
 				origin,
 			);
 		}

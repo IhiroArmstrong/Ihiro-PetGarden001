@@ -2,6 +2,7 @@ import { errorJson, json } from "../lib/http";
 import { isPlausibleEmail, normalizeEmail } from "../lib/tipKv";
 import { readSanctuary } from "../lib/sanctuaryKv";
 import { readCompanionAddon } from "../lib/companionAddonKv";
+import { artCollectionHasPieces, readArtCollection } from "../lib/artCollectionKv";
 import { readMembership, isMembershipWithinVerifyWindow } from "../lib/membershipKv";
 import {
 	isRestorePurpose,
@@ -53,7 +54,7 @@ export async function handleRequestRestoreOtp(
 		return errorJson(
 			400,
 			"invalid_purpose",
-			'purpose must be "sanctuary", "membership", or "companion-addon"',
+			'purpose must be "sanctuary", "membership", "companion-addon", or "art-collection"',
 		);
 	}
 	const purpose: RestorePurpose = purposeRaw;
@@ -70,6 +71,12 @@ export async function handleRequestRestoreOtp(
 			return errorJson(503, "misconfigured", "SANCTUARY_KV not bound");
 		}
 		hasEntitlement = Boolean(await readCompanionAddon(env.SANCTUARY_KV, email));
+	} else if (purpose === "art-collection") {
+		if (!env.SANCTUARY_KV) {
+			return errorJson(503, "misconfigured", "SANCTUARY_KV not bound");
+		}
+		const rec = await readArtCollection(env.SANCTUARY_KV, email);
+		hasEntitlement = artCollectionHasPieces(rec);
 	} else if (purpose === "membership") {
 		if (!env.MEMBERSHIP_KV) {
 			return errorJson(503, "misconfigured", "MEMBERSHIP_KV not bound");

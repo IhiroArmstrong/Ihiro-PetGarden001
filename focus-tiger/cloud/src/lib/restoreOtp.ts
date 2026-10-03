@@ -9,7 +9,7 @@ export const RESTORE_OTP_MAX_ATTEMPTS = 5;
 export const RESTORE_OTP_RESEND_COOLDOWN_SEC = 60;
 export const RESTORE_OTP_HOURLY_CAP = 5;
 
-export type RestorePurpose = "sanctuary" | "membership" | "practice-backup" | "companion-addon";
+export type RestorePurpose = "sanctuary" | "membership" | "practice-backup" | "companion-addon" | "art-collection";
 
 export type RestoreOtpRecord = {
 	codeHash: string;
@@ -26,7 +26,8 @@ export function isRestorePurpose(v: unknown): v is RestorePurpose {
 		v === "sanctuary" ||
 		v === "membership" ||
 		v === "practice-backup" ||
-		v === "companion-addon"
+		v === "companion-addon" ||
+		v === "art-collection"
 	);
 }
 
@@ -91,7 +92,8 @@ export function parseRestoreOtpRecord(raw: string | null): RestoreOtpRecord | nu
 			o.purpose !== "sanctuary" &&
 			o.purpose !== "membership" &&
 			o.purpose !== "practice-backup" &&
-			o.purpose !== "companion-addon"
+			o.purpose !== "companion-addon" &&
+			o.purpose !== "art-collection"
 		) {
 			return null;
 		}

@@ -18,10 +18,11 @@ export const DESKTOP_CHECKOUT_KINDS = Object.freeze([
   'companion-addon',
   'sanctuary',
   'membership',
-  'tea'
+  'tea',
+  'art-collection'
 ]);
 
-/** @typedef {'pro' | 'companion-addon' | 'sanctuary' | 'membership' | 'tea'} DesktopCheckoutKind */
+/** @typedef {'pro' | 'companion-addon' | 'sanctuary' | 'membership' | 'tea' | 'art-collection'} DesktopCheckoutKind */
 
 const PENDING_MAX_MS = 2 * 60 * 60 * 1000;
 

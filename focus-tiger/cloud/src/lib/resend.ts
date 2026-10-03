@@ -60,7 +60,7 @@ export async function sendTransactionalEmail(opts: {
 }
 
 export function restoreOtpEmailCopy(opts: {
-	purpose: "sanctuary" | "membership" | "practice-backup";
+	purpose: "sanctuary" | "membership" | "practice-backup" | "companion-addon" | "art-collection";
 	code: string;
 	ttlMinutes: number;
 }): { subject: string; text: string } {
@@ -76,7 +76,11 @@ export function restoreOtpEmailCopy(opts: {
 		};
 	}
 	const product =
-		opts.purpose === "sanctuary" ? "Yin's Sanctuary" : "Yin Membership";
+		opts.purpose === "sanctuary"
+			? "Yin's Sanctuary"
+			: opts.purpose === "art-collection"
+				? "Yin's Art Collection"
+				: "Yin Membership";
 	return {
 		subject: `${product} restore code`,
 		text: [
