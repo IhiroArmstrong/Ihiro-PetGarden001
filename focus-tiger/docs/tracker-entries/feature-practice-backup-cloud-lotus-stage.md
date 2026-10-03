@@ -1,0 +1,1 @@
+| 云端练习备份 v2（莲花 + 阶段下限） | 纯后端 | 仅单元测试覆盖 | **新增**：云端 schema v2 = 原六 key + `lotus-pond` + `growth-journey-stage`；上传一律 v2；仍接受读回 v1 六 key。阶段下限合并规则与本机一致（只升不降）。**未做**：Worker 生产 redeploy（须口令「部署」）。**测**：`practiceBackupSnapshot.test.js` · `practiceBackupSync.test.js` · `cloud/practiceBackupKv.test.ts`。 | — | — | — | `practiceBackupKv.ts` · `practiceBackupSync.js` | 2026-10-03 |

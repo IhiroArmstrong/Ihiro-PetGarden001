@@ -16,9 +16,10 @@ import {
 } from './practiceBackupSync.js';
 import { readPracticeBackupOptIn } from './practiceBackupOptIn.js';
 import {
-  PRACTICE_BACKUP_STORE_KEYS,
+  PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS,
   PRACTICE_BACKUP_V1_STORE_KEYS
 } from './practiceBackupSnapshot.js';
+import { GROWTH_JOURNEY_STAGE_FLOOR_KEY } from '../growthJourneyStage.js';
 import {
   setPracticeBackupCloudEnabledForTests,
   practiceBackupCloudEnabled
@@ -87,7 +88,7 @@ describe('practiceBackupSync', () => {
     assert.equal(calls, 0);
   });
 
-  it('uploads whole snapshot when consented', async () => {
+  it('uploads cloud v2 snapshot when consented', async () => {
     const storage = memStorage({
       'focus-tiger.journey-log.v1': JSON.stringify({
         entries: [
@@ -98,7 +99,10 @@ describe('practiceBackupSync', () => {
             reflect: true
           }
         ]
-      })
+      }),
+      'focus-tiger.lotus-pond.v1': JSON.stringify({ lifetimeMinutes: 120 }),
+      [GROWTH_JOURNEY_STAGE_FLOOR_KEY]: JSON.stringify({ highestStage: 'notice' }),
+      'focus-tiger.tip-jar.v1': JSON.stringify({ tipped: true, badgeIds: ['silver-mono'] })
     });
     enablePracticeBackupOptIn(storage, {
       email: 'a@example.com',
@@ -116,13 +120,16 @@ describe('practiceBackupSync', () => {
     });
     assert.equal(result.ok, true);
     assert.ok(body && typeof body === 'object');
-    const snap = /** @type {{ snapshot: { stores: Record<string, unknown> } }} */ (
+    const snap = /** @type {{ snapshot: { schemaVersion: number, stores: Record<string, unknown> } }} */ (
       body
     ).snapshot;
+    assert.equal(snap.schemaVersion, 2);
     assert.deepEqual(
       Object.keys(snap.stores).sort(),
-      [...PRACTICE_BACKUP_STORE_KEYS].sort()
+      [...PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS].sort()
     );
+    assert.equal('focus-tiger.tip-jar.v1' in snap.stores, false);
+    assert.equal(snap.stores[GROWTH_JOURNEY_STAGE_FLOOR_KEY]?.highestStage, 'notice');
   });
 
   it('debounce gate: only one flush from overlapping schedules within window', async () => {
@@ -232,6 +239,38 @@ describe('practiceBackupSync', () => {
     });
     assert.equal(skipped.reason, 'local_not_empty');
     assert.equal(getCalls, 0);
+  });
+
+  it('auto-restore cloud v2 writes lotus and stage floor', async () => {
+    const empty = memStorage();
+    enablePracticeBackupOptIn(empty, {
+      email: 'a@example.com',
+      deviceToken: 'tok_abcdefghijklmnopqrstuvwxyz012345'
+    });
+    const snap = {
+      schemaVersion: 2,
+      savedAt: '2026-08-12T00:00:00.000Z',
+      stores: Object.fromEntries(
+        PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS.map((k) => {
+          if (k === 'focus-tiger.lotus-pond.v1') {
+            return [k, { lifetimeMinutes: 720 }];
+          }
+          if (k === GROWTH_JOURNEY_STAGE_FLOOR_KEY) {
+            return [k, { highestStage: 'steady' }];
+          }
+          return [k, null];
+        })
+      )
+    };
+    const restored = await maybeRestorePracticeBackupOnBoot({
+      storage: empty,
+      postJson: async () => ({ ok: true, snapshot: snap })
+    });
+    assert.equal(restored.ok, true);
+    const lotus = JSON.parse(empty.getItem('focus-tiger.lotus-pond.v1'));
+    assert.equal(lotus.lifetimeMinutes, 720);
+    const floor = JSON.parse(empty.getItem(GROWTH_JOURNEY_STAGE_FLOOR_KEY));
+    assert.equal(floor.highestStage, 'steady');
   });
 
   it('upload failure does not clear local journey data', async () => {
