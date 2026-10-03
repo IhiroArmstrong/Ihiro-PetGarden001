@@ -32,8 +32,8 @@
 
 ---
 
-## 下一步（未开工）
+## 下一步
 
-另开任务才做：Artwork 详情、一次性购买、Payment 与 Ownership 分开、登录后恢复、独立入口 **Yin's Art Collection**。
+单独结账写在 `task-yin-art-collection-checkout.md`。**待书面点头**之后才写付款。
 
 不做：把图放进阿寅的珍藏；用请茶换这些图；预埋链字段。
