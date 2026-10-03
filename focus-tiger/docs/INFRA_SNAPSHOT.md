@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `f72a4c10-150d-4b74-ae41-d1d710bb2b07` |
-| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `3dcfa0af` · Worker 已含 #1086 `charge.refunded` 撤销拥有。Stripe Dashboard 的 endpoint 事件列表本机未能改：Stripe CLI 没有 API key。） |
+| `prod_worker_version` | `98d2360d-4191-4d1f-8573-40508075822a` |
+| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `9b1ee0f1` · #1090 22 张 Art Collection 结账 `$1.99` · `POST /api/create-art-collection-checkout-session` smoke `celadon-taotie-gu` → Stripe Checkout URL OK） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
