@@ -45,7 +45,7 @@
 
 | 组 | 菜单 proxy（可见时） |
 |---|---|
-| Practice | companion、ground-exercise、five-moments、honesty、journey-log、presence-signals、yin-coin、confide |
+| Practice | companion、ground-exercise、five-moments、honesty、journey-log、presence-signals、yin-coin、yin-art、confide |
 | Inspiration | daily-quote、**zen-cinema**（#759 补漏）、mustard-seed-seal（解锁后）、静思印、wallpapers |
 | Not alone | quiet-together、focus-circle |
 | Preferences | reminder、language、newsletter、**account 占位**（#759）、community、local-backup |

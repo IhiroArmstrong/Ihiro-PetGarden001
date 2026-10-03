@@ -24,7 +24,7 @@ This table answers: **which product surfaces are live in code right now**, which
 
 > **机器块 · 勿手改**。真源：`src/core/kbLiveEntryRegistry.js`。刷新：`npm run audit:kb-live-entries -- --write`。
 
-**Row count**: 28 (23 menu/ritual · 4 home-ball · 1 hud)
+**Row count**: 29 (24 menu/ritual · 4 home-ball · 1 hud)
 
 | id | surface | proxy | liveStatus | menuPath | labelKeys | catalogKbIds |
 |---|---|---|---|---|---|---|
@@ -39,6 +39,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-journey-log` | menu | `journey-log` | live | ⋯ → Practice → Journey log | `JOURNEY_LOG_MENU_LABEL` | `KB-FUNC-0012` |
 | `kb-live-presence-signals` | menu | `presence-signals` | live | ⋯ → Practice → Presence signals | `PRESENCE_SIGNALS_MENU_LABEL` | `KB-FUNC-0013` |
 | `kb-live-yin-coin` | menu | `yin-coin` | gated-default-on | ⋯ → Practice → Yin Coin | `YIN_COIN_MENU_LABEL` | `KB-FUNC-0018` |
+| `kb-live-yin-art` | menu | `yin-art` | live | ⋯ → Practice → Yin's Art Collection | `YIN_ART_MENU_LABEL` | — |
 | `kb-live-confide` | menu | `confide` | gated-default-off | ⋯ → Practice → Confide to Yin (wide ear shortcut) | `CONFIDE_MENU_LABEL` | `KB-FUNC-0005` `KB-FUNC-0010` |
 | `kb-live-daily-quote` | menu | `daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` | `KB-FUNC-0021` |
 | `kb-live-zen-cinema` | menu | `zen-cinema` | live | ⋯ → Inspiration → Zen Cinema | `ZEN_CINEMA_MENU_LABEL` | `KB-FUNC-0022` |
