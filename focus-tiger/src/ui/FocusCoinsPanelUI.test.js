@@ -46,6 +46,12 @@ test('Collections Bond / busy copy uses the center toast so the panel cannot bur
   );
 });
 
+test('curio thumb opens a still and a short note inside the panel', () => {
+  assert.match(src, /yin-coin-curio-detail/);
+  assert.match(src, /yin-coin-panel__thumb-img--pending/);
+  assert.match(src, /_showCurio\(row\)/);
+});
+
 test('panel source maps shop SKUs via listFocusCoinSurfaceSections', () => {
   assert.equal(listShopFocusCoinSkus().length, 8);
   assert.match(src, /listFocusCoinSurfaceSections\(ctx\)/);

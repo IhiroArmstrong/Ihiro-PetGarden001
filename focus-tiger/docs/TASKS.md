@@ -220,6 +220,13 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。文化 meaning layer / Practice Identity **不**在本表开工，见 `FROM_APP_TO_CULTURE.md` §13。
 
+## 📍 Yin's Art Collection（购买 · 与寅币珍藏分开）
+
+| 级 | 内容 | Brief | 状态 |
+|---|---|---|---|
+| **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
+| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **待书面点头** · 点头前不写代码 |
+
 ---
 
 ## 📍 From App to Culture（2026-08-27 · 方向锁 · 2026-09-04 修订）
@@ -503,6 +510,11 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 **我认为最合理的开工顺序**：① 共享目录口径 **已锁** → ② 目录数据模块对照单测（Batch 1，另口令）→ ③ `feature/journey-daily-card`（存图管线，可并行）→ ④ `feature/yin-collections-four-tabs` + `feature/practice-imprint-badges` + 稀缺说明 V1（挂同一勋章分区）→ ⑤ `feature/mindfulness-scroll-export`；周边 Phase 0 不等代码。全球名次不做进 V1。禁止跳过②直接写稀缺 UI。Journey「回来天数」文案 vs 连续日算法见目录 Brief **J-copy**（不阻塞 ②）。
 
 ---
+
+## 未开工 · 艺术品退款撤销拥有（2026-10-03）
+
+- [ ] 退款完成后撤销艺术品拥有，并停止再发高清。Brief：`docs/task-briefs/task-art-collection-refund-revoke.md`。
+- 这是接通艺术品真实收款的前置条件。购买按钮这一刀不收款。
 
 ## 📍 Phase 2 及以后：待评估
 

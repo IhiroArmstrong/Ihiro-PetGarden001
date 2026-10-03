@@ -15,7 +15,7 @@
  */
 export function createIdleSecondaryPanelCoordinator(deps) {
   /**
-   * @param {{ except?: 'membership' | 'purpose' | 'soundscape' | 'support' | 'sanctuary' | 'tip' | 'newsletter' | 'moments' | 'quote' | 'mustard-seed' | 'wallpapers' | 'confide' | 'cinema' | 'journey' | 'yin-coin' | null }} [opts]
+   * @param {{ except?: 'membership' | 'purpose' | 'soundscape' | 'support' | 'sanctuary' | 'tip' | 'newsletter' | 'moments' | 'quote' | 'mustard-seed' | 'wallpapers' | 'art-collection' | 'confide' | 'cinema' | 'journey' | 'yin-coin' | null }} [opts]
    */
   function closeIdleSecondaryPanels(opts = {}) {
     const except = opts.except ?? null;
@@ -34,6 +34,7 @@ export function createIdleSecondaryPanelCoordinator(deps) {
       except === 'quote' ||
       except === 'mustard-seed' ||
       except === 'wallpapers' ||
+      except === 'art-collection' ||
       except === 'confide' ||
       except === 'cinema' ||
       except === 'journey' ||

@@ -23,7 +23,7 @@
 | **A · Buy Yin a Tea** | 打赏；可选徽章 / 茶室留痕；**不解锁任何内容** |
 | **B · 进阶内容解锁** | 深度音效 / 高级表现 / 尊贵徽章 / 进阶仪式等 |
 
-**2026-10-01 · 三分法（原则锁，无运行时）**：这不是第三套 B 轨内容包，也不改上表双轨。阿寅的珍藏 = Earned（寅币，钱买不到）；**Yin's Art Collection** = 购买的 Digital Artwork（只卖美）；请茶 = Supported（打赏，不因此得到商品或成长优势）。Art Collection **未接线**。禁止把付费艺术品塞进 `#yin-coin-panel`，也禁止用请茶解锁它。硬原则与分期见 `PRINCIPLES.md`「钱可以买美，但不能买成长」「三分法」。
+**2026-10-01 · 三分法（原则锁，无运行时）**：这不是第三套 B 轨内容包，也不改上表双轨。阿寅的珍藏 = Earned（寅币，钱买不到）；**Yin's Art Collection** = 购买的 Digital Artwork（只卖美）；请茶 = Supported（打赏，不因此得到商品或成长优势）。Art Collection **未接线**。2026-10-03 只入库三组透明底图和目录（`YIN_ART_COLLECTION.md`），没有购买页。禁止把付费艺术品塞进 `#yin-coin-panel`，也禁止用请茶解锁它。硬原则与分期见 `PRINCIPLES.md`「钱可以买美，但不能买成长」「三分法」。
 
 B 下两种**付费方式**（同一套进阶权益，不是两套内容层级）：
 
@@ -132,7 +132,7 @@ B 下两种**付费方式**（同一套进阶权益，不是两套内容层级�
 | 功能 / 资产 | 产品档位 | 付费方式备注 | Catalog / gate | 文档口径 | 代码落地 | 差距说明 |
 |---|---|---|---|---|---|---|
 | 寅币钱包 / 发点 | `free` 练习所得 | **禁止**请茶或会员充点 | **无** FEATURE_CATALOG key；禁止 `isEntitled` 读余额 | 只在入账完成时发；Honesty 半额+日限 1 次 | **L1 完成钩子已合 #338**；`?focusCoins=0` 关闸 | Brief `task-focus-coins.md`。不进练习备份 6 key |
-| 兑换：清供器物卡（旧 8 id） | 练习兑换 | **不可现金购买** | 抽屉 `FOCUS_COIN_CURIO_SHOP_IDS`；catalog 另留 `title.long-sitter` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；清供 8；抬头浮雕币标 + 余额小 icon；SKU 占位色点）；叠层滤镜已拆 | `bundle.sumeru-seat` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
+| 兑换：清供器物卡（旧 8 id） | 练习兑换 | **不可现金购买** | 抽屉 `FOCUS_COIN_CURIO_SHOP_IDS`；catalog 另留 `title.long-sitter` / `collection.*` / `gesture.*` | 花园自动；珍藏结缘；禁止叠 PNG | **L3 抽屉已接线**（`#yin-coin-panel`；清供 8；抬头浮雕币标 + 余额小 icon；SKU 卡面为 collection-objects 透明图）；叠层滤镜已拆 | `bundle.sumeru-seat` = 360 点 **且** `lifetimeMinutes ≥ 600`；不可现金 / 会员跳过 |
 | 用寅币换 B 权益（仪式 / Deep Ambient / Seasonal / 多端同步 / Enso / 付费章包等） | — | — | — | **禁止** | **不适用** | 对照表 A3 逐条排除；见 `FOCUS_COINS.md` §3 |
 
 ### A6 · Focus Tiger Pro（B 轨升级 + 桌面本地智能体）+ Lifetime AI 加购

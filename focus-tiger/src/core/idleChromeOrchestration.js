@@ -415,6 +415,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
           testId: 'idle-yin-coin'
         }
       : null,
+    {
+      proxy: 'yin-art',
+      labelKey: 'YIN_ART_MENU_LABEL',
+      testId: 'idle-yin-art'
+    },
     confideVisible || companionGeneration
       ? {
           proxy: 'confide',
@@ -437,7 +442,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
       proxy: row.proxy,
       labelKey: row.labelKey
     })),
-    { proxy: 'wallpapers', labelKey: 'WALLPAPER_MENU_LABEL' }
+    { proxy: 'wallpapers', labelKey: 'WALLPAPER_MENU_LABEL' },
+    {
+      proxy: 'art-collection',
+      labelKey: 'ART_COLLECTION_MENU_LABEL',
+      testId: 'idle-art-collection'
+    }
   ]);
 
   pushLabeledGroup(out, 'MENU_GROUP_NOT_ALONE', [

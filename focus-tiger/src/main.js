@@ -127,6 +127,7 @@ import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
+import { YinArtCollectionPanelUI } from './ui/YinArtCollectionPanelUI.js';
 import {
   acquireYinCoinWaveFocus,
   releaseYinCoinWaveFocus
@@ -246,6 +247,7 @@ import {
 } from './core/practiceImprint.js';
 import { listCollectionsBehavioralScarcityRows } from './core/collectionsBehavioralScarcity.js';
 import { DigitalWallpapersCardUI } from './ui/DigitalWallpapersCardUI.js';
+import { ArtCollectionPanelUI } from './ui/ArtCollectionPanelUI.js';
 import { SanctuaryUnlockUI, bootSanctuaryReturnConfirm } from './ui/SanctuaryUnlockUI.js';
 import { MembershipUnlockUI } from './ui/MembershipUnlockUI.js';
 import { bootMembershipReturnConfirm } from './core/membershipCheckout.js';
@@ -1443,6 +1445,8 @@ async function init() {
   window.__yinPersonalMemory = yinPersonalMemoryUI;
   /** @type {FocusCoinsPanelUI | null} */
   let yinCoinPanelUI = null;
+  /** @type {YinArtCollectionPanelUI | null} */
+  let yinArtPanelUI = null;
   const dailyZenQuoteCardUI = new DailyZenQuoteCardUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1510,6 +1514,11 @@ async function init() {
     withIdleOverlayOccupancySync({})
   );
   window.__digitalWallpapersCard = digitalWallpapersCardUI;
+  const artCollectionPanelUI = new ArtCollectionPanelUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
+  window.__artCollectionPanel = artCollectionPanelUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
   const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {});
@@ -1891,6 +1900,7 @@ async function init() {
     if (except !== 'mustard-seed') mustardSeedSealCardUI.close();
     if (except !== 'practice-imprint') practiceImprintCardUI.close();
     if (except !== 'wallpapers') digitalWallpapersCardUI.close();
+    if (except !== 'art-collection') artCollectionPanelUI.close();
     if (except !== 'sanctuary') sanctuaryUnlockUI.close();
     if (except !== 'membership') membershipUnlockUI.close();
     if (except !== 'tip') tipJarUI.close();
@@ -1904,6 +1914,7 @@ async function init() {
     if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
+    if (except !== 'yin-art') yinArtPanelUI?.close();
     if (except !== 'local-backup') localPracticeDataPanelUI.closePanel();
     if (except !== 'quiet-together') quietTogetherPanelUI.closePanel();
     if (except !== 'focus-circle') focusCirclePanelUI.closePanel();
@@ -2404,6 +2415,8 @@ async function init() {
     })
   );
   window.__yinCoinPanel = yinCoinPanelUI;
+  yinArtPanelUI = new YinArtCollectionPanelUI(document.body, {});
+  window.__yinArtPanel = yinArtPanelUI;
   syncFocusCoinsCosmetics();
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
@@ -2818,8 +2831,10 @@ async function init() {
     return (
       journeyLogUI?.isOpen?.() === true ||
       yinCoinPanelUI?.isOpen?.() === true ||
+      yinArtPanelUI?.isOpen?.() === true ||
       dailyZenQuoteCardUI?.isOpen?.() === true ||
       digitalWallpapersCardUI?.isOpen?.() === true ||
+      artCollectionPanelUI?.isOpen?.() === true ||
       zenCinemaCardUI?.isOpen?.() === true ||
       presenceSignalsPanelUI?.isOpen?.() === true ||
       confideToYinUI?.isOpen?.() === true ||
@@ -2886,8 +2901,10 @@ async function init() {
       confideOpen: window.__confideToYin?.isOpen?.() === true,
       journeyOpen: window.__journeyLog?.isOpen?.() === true,
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
+      artPanelOpen: window.__yinArtPanel?.isOpen?.() === true,
       quoteOpen: window.__dailyZenQuoteCard?.isOpen?.() === true,
       wallpapersOpen: window.__digitalWallpapersCard?.isOpen?.() === true,
+      artCollectionOpen: window.__artCollectionPanel?.isOpen?.() === true,
       cinemaOpen: window.__zenCinemaCard?.isOpen?.() === true,
       newsletterOpen: window.__newsletterCapture?.isOpen?.() === true,
       presenceOpen: window.__presenceSignalsPanel?.isOpen?.() === true,
@@ -3664,6 +3681,10 @@ async function init() {
       closeGrowthOverlayCards({ except: 'yin-coin' });
       yinCoinPanelUI?.open();
     },
+    onYinArt: () => {
+      closeGrowthOverlayCards({ except: 'yin-art' });
+      yinArtPanelUI?.open();
+    },
     onConfide: () => {
       closeGrowthOverlayCards({ except: 'confide' });
       confideToYinUI.open();
@@ -3687,6 +3708,10 @@ async function init() {
     onWallpapers: () => {
       closeGrowthOverlayCards({ except: 'wallpapers' });
       digitalWallpapersCardUI.open();
+    },
+    onArtCollection: () => {
+      closeGrowthOverlayCards({ except: 'art-collection' });
+      artCollectionPanelUI.open();
     },
     onSanctuary: () => {
       closeGrowthOverlayCards({ except: 'sanctuary' });

@@ -64,6 +64,7 @@
 | **18** | `src/ui/GroundExerciseChoiceUI.js` | `#ground-exercise-choice` Idle「更多」→ 接地练习两按钮选择卡 |
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
+| **18** | `src/ui/YinArtCollectionPanelUI.js` | `#yin-art-panel` Yin's Art Collection（与珍藏抽屉分开；购买未开通时不记拥有） |
 | **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
 | **17** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass-backdrop` Five Moments Compass 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **17** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel-backdrop` Yin's Collections 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
@@ -75,6 +76,8 @@
 | **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换；保存 PNG） |
 | **17** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-backdrop` 阿寅静帧壁纸卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
+| **17** | `src/ui/ArtCollectionPanelUI.js` | `#art-collection-backdrop` Yin's Art Collection 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **18** | `src/ui/ArtCollectionPanelUI.js` | `#art-collection-panel` Yin's Art Collection（⋯ / 抽屉灵感组；与珍藏分开；购买只提示付款未开通） |
 | **17** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-backdrop` Stay in touch 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
 | **17** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-backdrop` 向阿寅倾诉遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
 | **17** | `src/ui/TipJarUI.js` | `#yin-tip-jar-backdrop` Buy Yin a Tea 遮罩（`overlayBackdrop` · `SB19_HOLD` · 视觉-only） |
