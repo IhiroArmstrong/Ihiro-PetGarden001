@@ -46,10 +46,10 @@
 | Begin | 起始 |
 | Notice | 看见 |
 | Practice | 练习 |
-| Steady | 安住 |
+| Steady | 安稳 |
 | Integrated | 融入 |
 
-阶段只向前。门槛是客户端常量，**不上远程参数**（与 `REMOTE_PARAM_CANDIDATES.md`「没有反复调整证据的产品判断先不搬」一致）。具体分钟数不在本锁里发明，实现 Brief 再写成常量。实现时若成长章程把「只读展示」也算一条消费者，只补 `presentation-feedback` 一行，persona 只锁一件事：九十天窗口滚掉之后，圆点不回退。不新造加权指数。
+阶段只向前。门槛是客户端常量，**不上远程参数**（与 `REMOTE_PARAM_CANDIDATES.md`「没有反复调整证据的产品判断先不搬」一致）。中文「安稳」不用「安住」：后者带佛教语感，产品是世俗化的练习。具体分钟数见 [`GROWTH_JOURNEY_IMPLEMENTATION.md`](./GROWTH_JOURNEY_IMPLEMENTATION.md)。实现时若成长章程把「只读展示」也算一条消费者，只补 `presentation-feedback` 一行，persona 只锁一件事：九十天窗口滚掉之后，圆点不回退。不新造加权指数。
 
 ---
 
