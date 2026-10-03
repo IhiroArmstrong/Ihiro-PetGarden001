@@ -515,7 +515,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ## 未开工 · 艺术品退款撤销拥有（2026-10-03）
 
-- [ ] 退款完成后撤销艺术品拥有，并停止再发高清。Brief：`docs/task-briefs/task-art-collection-refund-revoke.md`。
+- [x] 退款完成后撤销艺术品拥有，并停止再发高清。Brief：`docs/task-briefs/task-art-collection-refund-revoke.md`。
 - 这是接通艺术品真实收款的前置条件。购买按钮这一刀不收款。
 
 ## 📍 Phase 2 及以后：待评估
