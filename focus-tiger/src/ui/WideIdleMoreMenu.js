@@ -854,6 +854,12 @@ export class WideIdleMoreMenu {
       this.handlers.onYinCoin?.();
       return;
     }
+    if (key === 'yin-art') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onYinArt?.();
+      return;
+    }
     if (key === 'confide') {
       this.clearStage();
       this.closeMenu();

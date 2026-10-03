@@ -48,6 +48,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   PURPOSE_CARD: 'purpose-card',
   JOURNEY_LOG: 'journey-log',
   YIN_COIN: 'yin-coin',
+  YIN_ART: 'yin-art',
   DAILY_QUOTE: 'daily-quote',
   WALLPAPERS: 'wallpapers',
   ZEN_CINEMA: 'zen-cinema',
@@ -292,6 +293,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#yin-coin-panel',
     snapshotField: 'coinPanelOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.YIN_ART,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 12,
+    readers: "Yin's Art Collection glass card",
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#yin-art-panel',
+    snapshotField: 'artPanelOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.DAILY_QUOTE,
@@ -590,6 +602,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'ConfideToYinUI.js': [OVERLAY_SOURCES.CONFIDE],
   'JourneyLogUI.js': [OVERLAY_SOURCES.JOURNEY_LOG],
   'FocusCoinsPanelUI.js': [OVERLAY_SOURCES.YIN_COIN],
+  'YinArtCollectionPanelUI.js': [OVERLAY_SOURCES.YIN_ART],
   'DailyZenQuoteCardUI.js': [OVERLAY_SOURCES.DAILY_QUOTE],
   'DigitalWallpapersCardUI.js': [OVERLAY_SOURCES.WALLPAPERS],
   'ZenCinemaCardUI.js': [OVERLAY_SOURCES.ZEN_CINEMA],
