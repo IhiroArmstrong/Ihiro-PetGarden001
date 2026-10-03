@@ -168,6 +168,7 @@ export async function createArtCollectionCheckoutSession(opts: {
 	unitAmount: number;
 	successUrl: string;
 	cancelUrl: string;
+	customerEmail: string;
 }): Promise<StripeCheckoutSession> {
 	const params: Record<string, string> = {
 		mode: "payment",
@@ -181,6 +182,7 @@ export async function createArtCollectionCheckoutSession(opts: {
 		"metadata[artId]": opts.artId,
 		"payment_intent_data[metadata][product]": "art-collection",
 		"payment_intent_data[metadata][artId]": opts.artId,
+		customer_email: opts.customerEmail,
 	};
 	const res = await fetch(`${STRIPE_API}/checkout/sessions`, {
 		method: "POST",

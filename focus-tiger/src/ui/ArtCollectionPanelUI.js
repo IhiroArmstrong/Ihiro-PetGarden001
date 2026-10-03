@@ -5,7 +5,7 @@
 
 /**
  * Yin's Art Collection — separate from Yin's Collections.
- * Buy shows a notice. It does not record ownership.
+ * Buy opens Stripe checkout. It does not record ownership.
  */
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
@@ -17,6 +17,9 @@ import {
   artSheetStory
 } from '../core/artCollectionCatalog.js';
 import { requestArtPurchase } from '../core/artCollectionPurchase.js';
+import { postCloudJson } from '../core/cloudApiClient.js';
+import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
+import { openCheckoutUrl } from '../core/desktopShell.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -43,6 +46,7 @@ export class ArtCollectionPanelUI {
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._open = false;
+    this._busy = false;
 
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'art-collection-backdrop',
@@ -186,19 +190,54 @@ export class ArtCollectionPanelUI {
   /**
    * @param {string} sheetId
    */
-  _buy(sheetId) {
+  async _buy(sheetId) {
     const card = this._cards.get(sheetId);
-    if (!card) return;
+    if (!card || this._busy) return;
     const result = requestArtPurchase({
       sheetId,
       email: this.emailInput.value
     });
-    const key =
-      result.reason === 'email_required'
-        ? 'ART_COLLECTION_EMAIL_REQUIRED'
-        : 'ART_COLLECTION_PAYMENT_NOT_OPEN';
+    if (!result.ok) {
+      const key =
+        result.reason === 'email_required'
+          ? 'ART_COLLECTION_EMAIL_REQUIRED'
+          : 'ART_COLLECTION_BUY_ERROR';
+      card.notice.hidden = false;
+      card.notice.textContent = t(key);
+      return;
+    }
+    this._busy = true;
+    this._setBusy(true);
     card.notice.hidden = false;
-    card.notice.textContent = t(key);
+    card.notice.textContent = t('ART_COLLECTION_BUY_PENDING');
+    try {
+      const data = await postCloudJson('/api/create-art-collection-checkout-session', {
+        body: JSON.stringify(
+          buildCheckoutSessionBody({ artId: result.sheetId, email: result.email })
+        )
+      });
+      const url =
+        data && typeof data === 'object' && typeof data.url === 'string' ? data.url : '';
+      if (!url) throw new Error('missing_checkout_url');
+      const mode = await openCheckoutUrl(url);
+      if (mode === 'external') {
+        this._busy = false;
+        this._setBusy(false);
+      }
+    } catch (err) {
+      const offline = err instanceof Error && err.message === 'cloud_api_unconfigured';
+      card.notice.textContent = t(
+        offline ? 'ART_COLLECTION_CLOUD_OFFLINE' : 'ART_COLLECTION_BUY_ERROR'
+      );
+      this._busy = false;
+      this._setBusy(false);
+    }
+  }
+
+  _setBusy(busy) {
+    for (const card of this._cards.values()) {
+      card.buy.disabled = busy;
+    }
   }
 
   _refreshTexts() {

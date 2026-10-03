@@ -15,17 +15,17 @@ import {
 test("grant keeps the first owned date and ignores off-shelf ids", () => {
 	const first = grantArtPiece(
 		emptyArtCollectionRecord(),
-		"pale-jade-ding",
+		"celadon-taotie-gu",
 		"2026-10-03T00:00:00.000Z",
 		"cs_test_a",
 	);
 	const again = grantArtPiece(
 		first,
-		"pale-jade-ding",
+		"celadon-taotie-gu",
 		"2026-11-01T00:00:00.000Z",
 		"cs_test_b",
 	);
-	assert.equal(again.items["pale-jade-ding"]?.receiptId, "cs_test_a");
+	assert.equal(again.items["celadon-taotie-gu"]?.receiptId, "cs_test_a");
 	const stray = grantArtPiece(
 		again,
 		"jun-glaze-saddled-horse",
@@ -34,34 +34,34 @@ test("grant keeps the first owned date and ignores off-shelf ids", () => {
 	);
 	assert.equal(stray.items["jun-glaze-saddled-horse"], undefined);
 	const parsed = parseArtCollectionRecord(JSON.stringify(stray));
-	assert.deepEqual(Object.keys(parsed.items), ["pale-jade-ding"]);
+	assert.deepEqual(Object.keys(parsed.items), ["celadon-taotie-gu"]);
 });
 
 test("revoke keeps the purchase row and stops active ownership", () => {
 	const owned = grantArtPiece(
 		emptyArtCollectionRecord(),
-		"pale-jade-ding",
+		"celadon-taotie-gu",
 		"2026-10-03T00:00:00.000Z",
 		"cs_test_a",
 	);
 	const revoked = revokeArtPiece(
 		owned,
-		"pale-jade-ding",
+		"celadon-taotie-gu",
 		"2026-10-04T00:00:00.000Z",
 		"cs_test_a",
 	);
-	assert.equal(revoked.items["pale-jade-ding"]?.revokedAt, "2026-10-04T00:00:00.000Z");
-	assert.equal(isArtPieceOwned(revoked, "pale-jade-ding"), false);
+	assert.equal(revoked.items["celadon-taotie-gu"]?.revokedAt, "2026-10-04T00:00:00.000Z");
+	assert.equal(isArtPieceOwned(revoked, "celadon-taotie-gu"), false);
 	assert.equal(artCollectionHasPieces(revoked), false);
 	const repurchased = grantArtPiece(
 		revoked,
-		"pale-jade-ding",
+		"celadon-taotie-gu",
 		"2026-10-05T00:00:00.000Z",
 		"cs_test_b",
 	);
-	assert.equal(repurchased.items["pale-jade-ding"]?.receiptId, "cs_test_b");
-	assert.equal(repurchased.items["pale-jade-ding"]?.revokedAt, undefined);
-	assert.equal(isArtPieceOwned(repurchased, "pale-jade-ding"), true);
+	assert.equal(repurchased.items["celadon-taotie-gu"]?.receiptId, "cs_test_b");
+	assert.equal(repurchased.items["celadon-taotie-gu"]?.revokedAt, undefined);
+	assert.equal(isArtPieceOwned(repurchased, "celadon-taotie-gu"), true);
 });
 
 test("purchase index round-trips receipt and charge keys", async () => {
@@ -75,13 +75,13 @@ test("purchase index round-trips receipt and charge keys", async () => {
 
 	await indexArtCollectionPurchase(kv, {
 		email: "Buyer@Example.com",
-		artId: "pale-jade-ding",
+		artId: "celadon-taotie-gu",
 		receiptId: "cs_test_a",
 		chargeId: "ch_test_a",
 	});
 	const owned = grantArtPiece(
 		emptyArtCollectionRecord(),
-		"pale-jade-ding",
+		"celadon-taotie-gu",
 		"2026-10-03T00:00:00.000Z",
 		"cs_test_a",
 	);
@@ -92,13 +92,13 @@ test("purchase index round-trips receipt and charge keys", async () => {
 	);
 	assert.deepEqual(chargeIndex, {
 		email: "buyer@example.com",
-		artId: "pale-jade-ding",
+		artId: "celadon-taotie-gu",
 		receiptId: "cs_test_a",
 	});
 
 	const result = await applyArtCollectionRevoke(kv, {
 		email: "buyer@example.com",
-		artId: "pale-jade-ding",
+		artId: "celadon-taotie-gu",
 		receiptId: "cs_test_a",
 		revokedAt: "2026-10-04T00:00:00.000Z",
 	});
@@ -106,5 +106,5 @@ test("purchase index round-trips receipt and charge keys", async () => {
 	const record = parseArtCollectionRecord(
 		await kv.get("art-collection:buyer@example.com"),
 	);
-	assert.equal(record.items["pale-jade-ding"]?.revokedAt, "2026-10-04T00:00:00.000Z");
+	assert.equal(record.items["celadon-taotie-gu"]?.revokedAt, "2026-10-04T00:00:00.000Z");
 });

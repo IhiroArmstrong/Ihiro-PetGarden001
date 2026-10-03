@@ -5,9 +5,8 @@
 
 /**
  * Artwork purchase rules for this slice.
- * Checkout is not open. Nothing here writes ownership.
+ * A valid email may start checkout. Nothing here writes ownership.
  * Email is required; there is no device-only ownership path.
- * Refund revocation is a separate task and a precondition before live charges.
  */
 
 import { findArtSheet } from './artCollectionCatalog.js';
@@ -31,18 +30,25 @@ export function normalizeArtPurchaseEmail(email) {
  * @param {{ sheetId?: string, email?: unknown }} [input]
  * @returns {{
  *   ok: false,
- *   reason: 'unknown_sheet' | 'email_required' | 'payment_not_open',
+ *   reason: 'unknown_sheet' | 'email_required',
+ *   wroteOwnership: false
+ * } | {
+ *   ok: true,
+ *   sheetId: string,
+ *   email: string,
  *   wroteOwnership: false
  * }}
  */
 export function requestArtPurchase(input = {}) {
-  if (!findArtSheet(String(input.sheetId || ''))) {
+  const sheet = findArtSheet(String(input.sheetId || ''));
+  if (!sheet) {
     return { ok: false, reason: 'unknown_sheet', wroteOwnership: false };
   }
-  if (!normalizeArtPurchaseEmail(input.email)) {
+  const email = normalizeArtPurchaseEmail(input.email);
+  if (!email) {
     return { ok: false, reason: 'email_required', wroteOwnership: false };
   }
-  return { ok: false, reason: 'payment_not_open', wroteOwnership: false };
+  return { ok: true, sheetId: sheet.id, email, wroteOwnership: false };
 }
 
 /**
