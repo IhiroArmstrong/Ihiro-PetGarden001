@@ -2,9 +2,9 @@
 
 > **Status:** sheets on disk, not for sale in the app (2026-10-03).  
 > Boundary: `YIN_ART_COLLECTION.md`.  
-> Files: `focus-tiger/public/ui/art-collection/`. Transparent PNG, 1536×1536. Corner generator badge removed.  
-> Suggested price for every sheet: **$1.99** (inside the locked $0.99–$2.99 band). Not a live checkout price.  
-> These are illustrations of vessel types, not museum objects and not edition numbers.
+> Files: `focus-tiger/public/ui/art-collection/` is a temporary shelf. Before any purchase page, the transparent masters leave the public folder; the public folder may keep a low-resolution preview only.  
+> Suggested price for every sheet: **$1.99** (inside the locked $0.99–$2.99 band). Not a live checkout price. Twenty-two sheets bought one by one are about $44. A set bundle price is later.  
+> These are illustrations inspired by vessel types, made with image-generation assistance. They are not museum objects and not edition numbers. Copy must say so.
 
 ## Song Porcelain · 宋瓷
 
