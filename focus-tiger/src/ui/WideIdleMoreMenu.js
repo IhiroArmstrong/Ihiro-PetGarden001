@@ -107,6 +107,7 @@ export class WideIdleMoreMenu {
    *     onDailyQuote?: () => void,
    *     onMustardSeedSeal?: () => void,
    *     onWallpapers?: () => void,
+     *     onArtCollection?: () => void,
      *     onSanctuary?: () => void,
      *     onMembership?: () => void,
      *     onTipJar?: () => void,
@@ -889,6 +890,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onWallpapers?.();
+      return;
+    }
+    if (key === 'art-collection') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onArtCollection?.();
       return;
     }
     if (key === 'sanctuary') {

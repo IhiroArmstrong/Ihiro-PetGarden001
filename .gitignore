@@ -61,3 +61,6 @@ focus-tiger/art-reference/models/sources/*
 
 # Cursor Agent hook runtime session state (per-chat; never commit)
 .cursor/hooks/state/
+
+# Art-collection masters are not part of the public repo.
+focus-tiger/private/art-collection-hd/

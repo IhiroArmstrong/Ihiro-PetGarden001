@@ -78,6 +78,7 @@ export class NarrowIdleShell {
    *     onDailyQuote?: () => void,
    *     onMustardSeedSeal?: () => void,
    *     onWallpapers?: () => void,
+   *     onArtCollection?: () => void,
      *     onSanctuary?: () => void,
      *     onMembership?: () => void,
      *     onTipJar?: () => void,
@@ -1051,6 +1052,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onContemplativeArchiveSeal?.(archiveSealId);
+      return;
+    }
+    if (key === 'art-collection') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onArtCollection?.();
       return;
     }
     if (key === 'wallpapers') {

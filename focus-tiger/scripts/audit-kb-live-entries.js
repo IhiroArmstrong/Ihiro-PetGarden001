@@ -116,7 +116,8 @@ export function diffMenuProxyCoverage(registryRows, menuRows) {
     'confide',
     'mustard-seed-seal',
     'newsletter',
-    'account'
+    'account',
+    'art-collection'
   ]);
 
   const missingFromMenu = [...registryProxies].filter(
