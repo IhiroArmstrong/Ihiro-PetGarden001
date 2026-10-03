@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `255167a4` |
-| `snapshot_date` | 2026-09-16 |
+| `snapshot_base` | `origin/develop` tip `2f2cc7ae` |
+| `snapshot_date` | 2026-10-03 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -25,12 +25,12 @@
 | Public URL | `https://focus-tiger-cloud.ihiro.workers.dev`（163 / ihiro Cloudflare；**勿**用旁路 `*.focus-tiger.workers.dev`） |
 | `ALLOWED_ORIGIN`（vars） | `http://127.0.0.1:5173`（支持逗号列表；可含 `focus-tiger://app`；**生产名单变更须 redeploy**）。本地旁支 `:5174` 不在名单内 → 浏览器 CORS 拦结账；Vite dev 用同源 `/api` 代理，不扩生产 Origin。Checkout POST `pageOrigin` 仅改写 loopback success/cancel；生产 Version `2e94d4c0`（2026-09-01）已含。 |
 | KV bindings（9） | 见下表 |
-| Checkout `vars` 接线 | Tip ✓ · Sanctuary ✓ · Membership ✓ · **Pro ✓** · **Companion Add-on ✓** |
+| Checkout `vars` 接线 | Tip ✓ · Sanctuary ✓ · Membership ✓ · **Pro ✓** · **Companion Add-on ✓** · **Art Collection ✓** |
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
 | 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
-| 生产 Worker Version | `f0ddf1b4-05b4-4c87-a277-cb292ecddc18`（2026-09-16 · §6 KV 分叉验 redeploy） |
+| 生产 Worker Version | `3f4e376b-d334-470c-94f3-cd4e62dcc414`（2026-10-03 · #1081 Art Collection checkout redeploy） |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `0ef2b77a-6815-431b-ab8d-593988e56193` |
-| `prod_verified_at` | 2026-09-08（本机 `wrangler deploy` · Quiet Line schema 2 · 29 键 mixed pool · #602） |
+| `prod_worker_version` | `3f4e376b-d334-470c-94f3-cd4e62dcc414` |
+| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · #1081 Art Collection checkout · `POST /api/create-art-collection-checkout-session` → Stripe Test `cs_test_*`） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
