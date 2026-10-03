@@ -8,13 +8,19 @@ import { describe, it } from 'node:test';
 import {
   PRACTICE_BACKUP_STORE_KEYS,
   PRACTICE_BACKUP_V1_STORE_KEYS,
+  PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS,
+  PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION,
   PRACTICE_BACKUP_SCHEMA_VERSION,
   serializePracticeBackupSnapshot,
+  serializePracticeBackupCloudSnapshot,
   parsePracticeBackupSnapshotClient,
+  parsePracticeBackupCloudSnapshotClient,
   isPracticeBackupWhitelistCompletelyEmpty,
   isPracticeBackupStoreEmpty,
-  writePracticeBackupStoresRaw
+  writePracticeBackupStoresRaw,
+  writePracticeBackupCloudStoresRaw
 } from './practiceBackupSnapshot.js';
+import { GROWTH_JOURNEY_STAGE_FLOOR_KEY } from '../growthJourneyStage.js';
 
 function memStorage(initial = {}) {
   const map = new Map(Object.entries(initial));
@@ -92,6 +98,65 @@ describe('practiceBackupSnapshot', () => {
       false
     );
     assert.equal(isPracticeBackupWhitelistCompletelyEmpty(storage), false);
+  });
+
+  it('cloud serialize includes v2 whitelist only (lotus + stage floor)', () => {
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': JSON.stringify({
+        entries: [{ at: '2026-01-01T00:00:00.000Z', minutes: 10, arrive: true, reflect: false }]
+      }),
+      'focus-tiger.lotus-pond.v1': JSON.stringify({ lifetimeMinutes: 360 }),
+      [GROWTH_JOURNEY_STAGE_FLOOR_KEY]: JSON.stringify({ highestStage: 'practice' }),
+      'focus-tiger.tip-jar.v1': JSON.stringify({ tipped: true, badgeIds: ['silver-mono'] })
+    });
+    const snap = serializePracticeBackupCloudSnapshot(
+      storage,
+      () => new Date('2026-08-12T00:00:00.000Z')
+    );
+    assert.equal(snap.schemaVersion, PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION);
+    assert.deepEqual(
+      Object.keys(snap.stores).sort(),
+      [...PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS].sort()
+    );
+    assert.equal('focus-tiger.tip-jar.v1' in snap.stores, false);
+    assert.equal(snap.stores[GROWTH_JOURNEY_STAGE_FLOOR_KEY]?.highestStage, 'practice');
+    const parsed = parsePracticeBackupCloudSnapshotClient(snap);
+    assert.equal(parsed.ok, true);
+  });
+
+  it('cloud restore merges stage floor without lowering', () => {
+    const storage = memStorage({
+      [GROWTH_JOURNEY_STAGE_FLOOR_KEY]: JSON.stringify({ highestStage: 'steady' })
+    });
+    const snap = {
+      schemaVersion: PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION,
+      savedAt: '2026-08-12T00:00:00.000Z',
+      stores: Object.fromEntries(
+        PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS.map((k) => {
+          if (k === GROWTH_JOURNEY_STAGE_FLOOR_KEY) {
+            return [k, { highestStage: 'practice' }];
+          }
+          if (k === 'focus-tiger.lotus-pond.v1') {
+            return [k, { lifetimeMinutes: 360 }];
+          }
+          return [k, null];
+        })
+      )
+    };
+    writePracticeBackupCloudStoresRaw(storage, snap);
+    const floor = JSON.parse(storage.getItem(GROWTH_JOURNEY_STAGE_FLOOR_KEY));
+    assert.equal(floor.highestStage, 'steady');
+    const lotus = JSON.parse(storage.getItem('focus-tiger.lotus-pond.v1'));
+    assert.equal(lotus.lifetimeMinutes, 360);
+  });
+
+  it('parsePracticeBackupCloudSnapshotClient accepts legacy v1', () => {
+    const snap = {
+      schemaVersion: 1,
+      savedAt: '2026-08-12T00:00:00.000Z',
+      stores: Object.fromEntries(PRACTICE_BACKUP_V1_STORE_KEYS.map((k) => [k, null]))
+    };
+    assert.equal(parsePracticeBackupCloudSnapshotClient(snap).ok, true);
   });
 
   it('skips setItem when store JSON is unchanged', () => {

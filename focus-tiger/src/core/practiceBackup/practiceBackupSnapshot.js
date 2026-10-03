@@ -14,8 +14,10 @@ import {
 } from './localBackupStorageRegistry.js';
 import {
   attachStageFloorToLotusValue,
+  GROWTH_JOURNEY_STAGE_FLOOR_KEY,
   mergeGrowthJourneyStageFloorFromLotus,
   lotusValueWithoutStageFloor,
+  normalizeGrowthJourneyStage,
   readGrowthJourneyStageFloor
 } from '../growthJourneyStage.js';
 
@@ -71,6 +73,19 @@ export const PRACTICE_BACKUP_STORE_KEYS = PRACTICE_BACKUP_EXPORT_KEYS;
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
 
+/** Cloud practice-backup schema (separate from local file schema v1–v6). */
+export const PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION = 2;
+
+/** Legacy cloud snapshot (6 keys). Restore still accepted. */
+export const PRACTICE_BACKUP_CLOUD_V1_STORE_KEYS = PRACTICE_BACKUP_V1_STORE_KEYS;
+
+/** Current cloud snapshot: v1 keys + lotus + Journey stage floor. */
+export const PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V1_STORE_KEYS,
+  'focus-tiger.lotus-pond.v1',
+  GROWTH_JOURNEY_STAGE_FLOOR_KEY
+]);
+
 /**
  * Electron companion-l2 files carried in local backup snapshots.
  * `confideTurnsJsonl` is accepted on **import** of legacy files only; export strips it.
@@ -102,6 +117,18 @@ export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   if (schemaVersion === 5) return PRACTICE_BACKUP_V5_STORE_KEYS;
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
+  }
+  return null;
+}
+
+/**
+ * @param {number} cloudSchemaVersion
+ * @returns {readonly string[] | null}
+ */
+export function practiceBackupCloudStoreKeysForSchemaVersion(cloudSchemaVersion) {
+  if (cloudSchemaVersion === 1) return PRACTICE_BACKUP_CLOUD_V1_STORE_KEYS;
+  if (cloudSchemaVersion === PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION) {
+    return PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS;
   }
   return null;
 }
@@ -210,6 +237,45 @@ export function serializePracticeBackupSnapshot(
 }
 
 /**
+ * Cloud upload: v2 whitelist only (8 keys). Stage floor is a separate key, not embedded in lotus.
+ * @param {Storage | null | undefined} storage
+ * @param {() => Date} [now]
+ * @returns {PracticeBackupSnapshot}
+ */
+export function serializePracticeBackupCloudSnapshot(
+  storage,
+  now = () => new Date()
+) {
+  /** @type {Record<string, unknown | null>} */
+  const stores = {};
+  for (const key of PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS) {
+    if (!storage) {
+      stores[key] = null;
+      continue;
+    }
+    try {
+      const raw = storage.getItem(key);
+      if (!raw) {
+        stores[key] = null;
+        continue;
+      }
+      stores[key] = parsePracticeBackupStorageRaw(raw);
+    } catch {
+      stores[key] = null;
+    }
+  }
+  const lotusKey = 'focus-tiger.lotus-pond.v1';
+  if (stores[lotusKey] && typeof stores[lotusKey] === 'object') {
+    stores[lotusKey] = lotusValueWithoutStageFloor(stores[lotusKey]);
+  }
+  return {
+    schemaVersion: PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION,
+    savedAt: now().toISOString(),
+    stores
+  };
+}
+
+/**
  * Reject unknown keys; require exact whitelist for schema version.
  * @param {unknown} raw
  * @returns {{ ok: true, snapshot: PracticeBackupSnapshot } | { ok: false, reason: string }}
@@ -260,6 +326,56 @@ export function parsePracticeBackupSnapshotClient(raw) {
       savedAt: o.savedAt,
       stores,
       ...(companionFiles ? { companionFiles } : {})
+    }
+  };
+}
+
+/**
+ * Parse cloud practice-backup snapshot (schema v1 or v2).
+ * @param {unknown} raw
+ * @returns {{ ok: true, snapshot: PracticeBackupSnapshot } | { ok: false, reason: string }}
+ */
+export function parsePracticeBackupCloudSnapshotClient(raw) {
+  if (!raw || typeof raw !== 'object') {
+    return { ok: false, reason: 'not_object' };
+  }
+  const o = /** @type {Record<string, unknown>} */ (raw);
+  const schemaVersion = o.schemaVersion;
+  if (typeof schemaVersion !== 'number') {
+    return { ok: false, reason: 'schema' };
+  }
+  const expectedKeys = practiceBackupCloudStoreKeysForSchemaVersion(schemaVersion);
+  if (!expectedKeys) {
+    return { ok: false, reason: 'schema' };
+  }
+  if (typeof o.savedAt !== 'string' || !o.savedAt) {
+    return { ok: false, reason: 'savedAt' };
+  }
+  if (!o.stores || typeof o.stores !== 'object' || Array.isArray(o.stores)) {
+    return { ok: false, reason: 'stores' };
+  }
+  const storesIn = /** @type {Record<string, unknown>} */ (o.stores);
+  const keys = Object.keys(storesIn);
+  if (keys.length !== expectedKeys.length) {
+    return { ok: false, reason: 'key_count' };
+  }
+  /** @type {Record<string, unknown | null>} */
+  const stores = {};
+  for (const key of expectedKeys) {
+    if (!(key in storesIn)) return { ok: false, reason: `missing:${key}` };
+    stores[key] = storesIn[key] ?? null;
+  }
+  for (const key of keys) {
+    if (!expectedKeys.includes(key)) {
+      return { ok: false, reason: `extra:${key}` };
+    }
+  }
+  return {
+    ok: true,
+    snapshot: {
+      schemaVersion,
+      savedAt: o.savedAt,
+      stores
     }
   };
 }
@@ -326,6 +442,8 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       );
     case 'focus-tiger.lotus-pond.v1':
       return Number(parsed.lifetimeMinutes) <= 0;
+    case GROWTH_JOURNEY_STAGE_FLOOR_KEY:
+      return !normalizeGrowthJourneyStage(parsed.highestStage);
     case 'focus-tiger.tip-jar.v1':
       return !Array.isArray(parsed.badgeIds) || parsed.badgeIds.length === 0;
     case 'focus-tiger.sanctuary-entitlement.v1':
@@ -418,6 +536,58 @@ export function writePracticeBackupStoresRaw(storage, snapshot) {
       if (key === 'focus-tiger.lotus-pond.v1' && val && typeof val === 'object') {
         mergeGrowthJourneyStageFloorFromLotus(storage, val);
         val = lotusValueWithoutStageFloor(val);
+      }
+      if (val == null) {
+        if (storage.getItem(key) == null) {
+          skipped += 1;
+        } else {
+          storage.removeItem(key);
+          wrote += 1;
+        }
+      } else {
+        const next = stringifyPracticeBackupStorageValue(val);
+        if (storageTextUnchanged(storage.getItem(key), next)) {
+          skipped += 1;
+        } else {
+          storage.setItem(key, next);
+          wrote += 1;
+        }
+      }
+    } catch {
+      // ignore quota
+    }
+  }
+  return { wrote, skipped };
+}
+
+/**
+ * Write cloud snapshot keys only (v1 or v2). Stage floor merges max(local, cloud).
+ * @param {Storage | null | undefined} storage
+ * @param {PracticeBackupSnapshot} snapshot
+ */
+export function writePracticeBackupCloudStoresRaw(storage, snapshot) {
+  if (!storage) return { wrote: 0, skipped: 0 };
+  let wrote = 0;
+  let skipped = 0;
+  const keys =
+    practiceBackupCloudStoreKeysForSchemaVersion(snapshot.schemaVersion) ??
+    PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS;
+  for (const key of keys) {
+    let val = snapshot.stores[key];
+    try {
+      if (key === 'focus-tiger.lotus-pond.v1' && val && typeof val === 'object') {
+        val = lotusValueWithoutStageFloor(val);
+      }
+      if (key === GROWTH_JOURNEY_STAGE_FLOOR_KEY && val && typeof val === 'object') {
+        const incoming = normalizeGrowthJourneyStage(
+          /** @type {{ highestStage?: unknown }} */ (val).highestStage
+        );
+        if (incoming) {
+          mergeGrowthJourneyStageFloorFromLotus(storage, {
+            growthJourneyStageFloor: incoming
+          });
+        }
+        continue;
       }
       if (val == null) {
         if (storage.getItem(key) == null) {

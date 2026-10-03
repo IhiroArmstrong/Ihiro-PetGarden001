@@ -9,11 +9,13 @@
 
 import { postCloudJson, getCloudApiBaseUrl } from '../cloudApiClient.js';
 import {
-  serializePracticeBackupSnapshot,
-  parsePracticeBackupSnapshotClient,
+  serializePracticeBackupCloudSnapshot,
+  parsePracticeBackupCloudSnapshotClient,
   isPracticeBackupWhitelistCompletelyEmpty,
   writePracticeBackupStoresRaw,
+  writePracticeBackupCloudStoresRaw,
   practiceBackupStoresFingerprint,
+  practiceBackupCloudStoreKeysForSchemaVersion,
   PRACTICE_BACKUP_STORE_KEYS
 } from './practiceBackupSnapshot.js';
 import {
@@ -143,6 +145,59 @@ export function applyPracticeBackupSnapshot(storage, snapshot, opts = {}) {
 }
 
 /**
+ * Normalize cloud snapshot stores (v1/v2 whitelist only).
+ * @param {import('./practiceBackupSnapshot.js').PracticeBackupSnapshot} snapshot
+ */
+export function normalizeCloudSnapshotStoresForApply(snapshot) {
+  const keys =
+    practiceBackupCloudStoreKeysForSchemaVersion(snapshot.schemaVersion) ?? [];
+  /** @type {Record<string, unknown | null>} */
+  const stores = {};
+  for (const key of keys) {
+    const val = snapshot.stores[key];
+    if (val == null) {
+      stores[key] = null;
+      continue;
+    }
+    try {
+      if (key === 'focus-tiger.journey-log.v1') {
+        stores[key] = normalizeJourneyLogState(val);
+      } else if (key === 'focus-tiger.entitlement-ownership.v1') {
+        stores[key] = normalizeOwnershipState(val);
+      } else if (key === 'focus-tiger.ritual-completions.v1') {
+        stores[key] = normalizeRitualCompletionState(val);
+      } else if (key === 'focus-tiger.milestone-glow.v1') {
+        stores[key] = normalizeMilestoneGlowState(val);
+      } else {
+        stores[key] = val;
+      }
+    } catch {
+      stores[key] = null;
+    }
+  }
+  return { ...snapshot, stores };
+}
+
+/**
+ * Apply cloud snapshot (v1 or v2) — only cloud whitelist keys.
+ * @param {Storage | null | undefined} storage
+ * @param {import('./practiceBackupSnapshot.js').PracticeBackupSnapshot} snapshot
+ * @param {object} [opts]
+ * @param {Date} [opts.now]
+ */
+export function applyPracticeBackupCloudSnapshot(storage, snapshot, opts = {}) {
+  const normalized = normalizeCloudSnapshotStoresForApply(snapshot);
+  writePracticeBackupCloudStoresRaw(storage, normalized);
+  reconcileDailyCompletionAfterRestore(
+    storage,
+    opts.now instanceof Date ? opts.now : new Date()
+  );
+  reconcileEntitlementCacheAfterRestore(storage, {
+    now: opts.now instanceof Date ? opts.now : undefined
+  });
+}
+
+/**
  * Schedule a debounced whole-snapshot upload after local whitelist mutation.
  * @param {object} [opts]
  * @param {Storage | null} [opts.storage]
@@ -216,7 +271,7 @@ export async function flushPracticeBackupUpload(opts = {}) {
 
   inFlight = true;
   lastFlushAttemptMs = now;
-  const snapshot = serializePracticeBackupSnapshot(storage);
+  const snapshot = serializePracticeBackupCloudSnapshot(storage);
   const fingerprint = practiceBackupStoresFingerprint(snapshot);
   if (fingerprint && state.lastUploadFingerprint === fingerprint) {
     writePracticeBackupOptIn(storage, {
@@ -298,7 +353,7 @@ export async function maybeRestorePracticeBackupOnBoot(opts = {}) {
     if (!snapRaw) {
       return { ok: false, reason: 'no_snapshot', skipped: true };
     }
-    const parsed = parsePracticeBackupSnapshotClient(snapRaw);
+    const parsed = parsePracticeBackupCloudSnapshotClient(snapRaw);
     if (!parsed.ok) {
       return { ok: false, reason: parsed.reason };
     }
@@ -306,7 +361,7 @@ export async function maybeRestorePracticeBackupOnBoot(opts = {}) {
     if (!isPracticeBackupWhitelistCompletelyEmpty(storage)) {
       return { ok: false, reason: 'local_not_empty_race', skipped: true };
     }
-    applyPracticeBackupSnapshot(storage, parsed.snapshot, {
+    applyPracticeBackupCloudSnapshot(storage, parsed.snapshot, {
       now: opts.now instanceof Date ? opts.now : undefined
     });
     await reconcileEntitlementAfterPracticeRestore(storage, {
