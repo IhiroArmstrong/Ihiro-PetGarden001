@@ -72,13 +72,14 @@ describe('art collection purchase', () => {
       reason: 'email_required',
       wroteOwnership: false
     });
-    const closed = requestArtPurchase({
+    const ready = requestArtPurchase({
       sheetId: 'celadon-taotie-gu',
-      email: 'buyer@example.com'
+      email: 'Buyer@Example.com'
     });
-    assert.deepEqual(closed, {
-      ok: false,
-      reason: 'payment_not_open',
+    assert.deepEqual(ready, {
+      ok: true,
+      sheetId: 'celadon-taotie-gu',
+      email: 'buyer@example.com',
       wroteOwnership: false
     });
     assert.equal(

@@ -2,11 +2,12 @@ import { errorJson, json } from "../lib/http";
 import { resolveSessionReturnUrls } from "../lib/checkoutReturnUrls";
 import { createArtCollectionCheckoutSession } from "../lib/stripe";
 import { findArtCollectionWork } from "../lib/artCollectionCatalog";
+import { isPlausibleEmail, normalizeEmail } from "../lib/tipKv";
 import type { Env } from "../types";
 
 /**
  * POST /api/create-art-collection-checkout-session
- * Body: { artId: string, returnSurface?: "desktop", pageOrigin?: string }
+ * Body: { artId: string, email: string, returnSurface?: "desktop", pageOrigin?: string }
  */
 export async function handleCreateArtCollectionCheckoutSession(
 	request: Request,
@@ -24,14 +25,20 @@ export async function handleCreateArtCollectionCheckoutSession(
 	}
 
 	let artId = "";
+	let customerEmail = "";
 	let parsedBody: unknown = null;
 	try {
 		parsedBody = await request.json();
-		const body = parsedBody as { artId?: unknown };
+		const body = parsedBody as { artId?: unknown; email?: unknown };
 		if (typeof body?.artId === "string") artId = body.artId.trim();
+		if (typeof body?.email === "string") customerEmail = body.email;
 	} catch {
 		return errorJson(400, "invalid_json", "JSON body required");
 	}
+	if (!isPlausibleEmail(customerEmail)) {
+		return errorJson(400, "invalid_email", "A purchase needs an email");
+	}
+	customerEmail = normalizeEmail(customerEmail);
 	const work = findArtCollectionWork(artId);
 	if (!work) {
 		return errorJson(400, "unknown_art", "That piece is not for sale");
@@ -50,8 +57,9 @@ export async function handleCreateArtCollectionCheckoutSession(
 			artId: work.id,
 			productName: work.name,
 			unitAmount: work.unitAmount,
+			customerEmail,
 			successUrl: returns.successUrl,
-			cancelUrl: returns.cancelUrl,
+			cancelUrl: returns.cancelUrl
 		});
 		return json({ url: session.url, sessionId: session.id });
 	} catch (err) {

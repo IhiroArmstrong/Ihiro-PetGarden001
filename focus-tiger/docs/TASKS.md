@@ -227,7 +227,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 级 | 内容 | Brief | 状态 |
 |---|---|---|---|
 | **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
-| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **#1081 已合** · 当前生产 Worker `f72a4c10-…`（货架仍是旧五件） |
+| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **#1081 已合** · 生产 Worker `f72a4c10-…`（旧五件货架；菜单入口已撤） |
+| **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **#1090 本支** · 生产须另说「部署」 |
 
 ---
 

@@ -76,7 +76,9 @@ const WHITELIST_FILES = new Set([
   'hintDiscoveryDots.js',
   'privacyNoticeCopy.js',
   'IdleChromeFacade.js',
-  'IdleCompanionPipUI.js'
+  'IdleCompanionPipUI.js',
+  // Legacy five-piece shelf — menu entry removed; file kept for return-url wiring only.
+  'YinArtCollectionPanelUI.js'
 ]);
 
 /**

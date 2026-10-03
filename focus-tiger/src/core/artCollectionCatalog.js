@@ -9,7 +9,7 @@
  * `hdId` is a new filename stem. The bytes stay out of this public repo.
  */
 
-/** @type {number} Suggested price. Not a live charge. */
+/** @type {number} Live charge in US dollars. Cloud charges the same amount in cents. */
 export const ART_COLLECTION_PRICE_USD = 1.99;
 
 export const ART_COLLECTION_SETS = Object.freeze([

@@ -242,22 +242,6 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0018'])
   }),
   Object.freeze({
-    id: 'kb-live-yin-art',
-    surface: 'menu',
-    proxy: 'yin-art',
-    labelKeys: Object.freeze(['YIN_ART_MENU_LABEL']),
-    menuPath: "⋯ → Practice → Yin's Art Collection",
-    liveStatus: 'live',
-    codeAnchors: Object.freeze([
-      "proxy: 'yin-art'",
-      'YIN_ART_MENU_LABEL'
-    ]),
-    authoritativeSources: Object.freeze([
-      'src/core/idleChromeOrchestration.js',
-      'src/locales/en.json'
-    ])
-  }),
-  Object.freeze({
     id: 'kb-live-confide',
     surface: 'menu',
     proxy: 'confide',

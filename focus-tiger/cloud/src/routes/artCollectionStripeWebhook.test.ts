@@ -18,21 +18,21 @@ test("charge.refunded revokes ownership via charge index", async () => {
 
 	const record = grantArtPiece(
 		{ items: {} },
-		"pale-jade-ding",
+		"celadon-taotie-gu",
 		"2026-10-03T00:00:00.000Z",
 		"cs_test_a",
 	);
 	await kv.put("art-collection:buyer@example.com", JSON.stringify(record));
 	await indexArtCollectionPurchase(kv, {
 		email: "buyer@example.com",
-		artId: "pale-jade-ding",
+		artId: "celadon-taotie-gu",
 		receiptId: "cs_test_a",
 		chargeId: "ch_test_a",
 	});
 
 	const response = await handleArtCollectionChargeRefunded(
 		{ SANCTUARY_KV: kv } as import("../types.ts").Env,
-		{ id: "ch_test_a", metadata: { product: "art-collection", artId: "pale-jade-ding" } },
+		{ id: "ch_test_a", metadata: { product: "art-collection", artId: "celadon-taotie-gu" } },
 	);
 	assert.equal(response.status, 200);
 	const body = (await response.json()) as { stored?: boolean; via?: string };
@@ -42,7 +42,7 @@ test("charge.refunded revokes ownership via charge index", async () => {
 	const saved = parseArtCollectionRecord(
 		await kv.get("art-collection:buyer@example.com"),
 	);
-	assert.ok(saved.items["pale-jade-ding"]?.revokedAt);
+	assert.ok(saved.items["celadon-taotie-gu"]?.revokedAt);
 });
 
 test("charge.refunded ignores non-art charges", async () => {
