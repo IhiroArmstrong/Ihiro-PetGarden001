@@ -55,7 +55,7 @@ export default defineConfig({
           : {})
       }
     },
-    // 本地留证。CI 不列入：与 chromium 抢同一 :5199，页面会打开超时。
+    // 本地留证。CI 不列入：与 chromium 抢同一 :5199，冒烟会打开超时。
     // 本地：playwright test … --project=local-acceptance
     ...(process.env.CI
       ? []
