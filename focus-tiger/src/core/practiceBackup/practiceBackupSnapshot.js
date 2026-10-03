@@ -12,6 +12,12 @@ import {
   PRACTICE_BACKUP_V5_ADDED_KEYS,
   PRACTICE_BACKUP_V6_ADDED_KEYS
 } from './localBackupStorageRegistry.js';
+import {
+  attachStageFloorToLotusValue,
+  mergeGrowthJourneyStageFloorFromLotus,
+  lotusValueWithoutStageFloor,
+  readGrowthJourneyStageFloor
+} from '../growthJourneyStage.js';
 
 export const PRACTICE_BACKUP_SCHEMA_VERSION = 6;
 
@@ -190,6 +196,11 @@ export function serializePracticeBackupSnapshot(
     } catch {
       stores[key] = null;
     }
+  }
+  const lotusKey = 'focus-tiger.lotus-pond.v1';
+  const floor = readGrowthJourneyStageFloor(storage);
+  if (floor && stores[lotusKey] && typeof stores[lotusKey] === 'object') {
+    stores[lotusKey] = attachStageFloorToLotusValue(stores[lotusKey], floor);
   }
   return {
     schemaVersion: PRACTICE_BACKUP_SCHEMA_VERSION,
@@ -402,8 +413,12 @@ export function writePracticeBackupStoresRaw(storage, snapshot) {
     practiceBackupStoreKeysForSchemaVersion(snapshot.schemaVersion) ??
     PRACTICE_BACKUP_STORE_KEYS;
   for (const key of keys) {
-    const val = snapshot.stores[key];
+    let val = snapshot.stores[key];
     try {
+      if (key === 'focus-tiger.lotus-pond.v1' && val && typeof val === 'object') {
+        mergeGrowthJourneyStageFloorFromLotus(storage, val);
+        val = lotusValueWithoutStageFloor(val);
+      }
       if (val == null) {
         if (storage.getItem(key) == null) {
           skipped += 1;

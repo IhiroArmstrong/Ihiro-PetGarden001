@@ -54,6 +54,7 @@ Before changing any growth formula or adding a cumulative consumer:
 |---|---|---|---|---|
 | `practice-score` | unlock-gate | mixed | scoreFormula.v3 | practiceDayCount + floor(scoreEligibleLifetimeMinutes / 60); per-day lotus cap 180m |
 | `lotus-bloom` | presentation-feedback | lifetime | lotusPondSliceA.v1 | Piecewise thresholds: bloom1=25m; blooms2–5 +25m each; blooms6–12 +45m each; max 12 visible. |
+| `growth-journey-stage` | presentation-feedback | lifetime | growthJourneyStage.v1 | Thresholds 35 / 360 / 720 / 2160 on frozen 180. Display stage is max(computed, local floor). |
 | `practice-badges-free` | presentation-feedback | mixed | badgeAward.v1 | target = min(9, max(1, 1 + floor(score/3))); 0 badges when no practice. |
 | `practice-badges-paid` | presentation-feedback | mixed | badgeAward.v1 | target = min(17, max(3, 3 + floor(score/3))) for Sanctuary; tip max 9. |
 | `mustard-seal` | unlock-gate | mixed | mustardUnlock.v1 | score ≥ 21; three verse cases revealed one per baseline completion. |
@@ -188,3 +189,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 | 2026-10-03 | Growth Journey V1 direction lock: dot reads `scoreEligibleLifetimeMinutes` only (`GROWTH_JOURNEY.md`). No new formula |
 | 2026-10-03 | Growth Journey implementation brief: client stage gates + persona landings (`GROWTH_JOURNEY_IMPLEMENTATION.md`). No second input |
 | 2026-10-03 | Growth Journey display floor: live dot is lotus minutes, not the persona day-count fallback. Local highest stage is a floor. Ninety-day count removed from the detail facts (`GROWTH_JOURNEY.md`) |
+| 2026-10-03 | Growth Journey stage module: floor travels in the local lotus export and import keeps the higher stage. Cloud six-key backup still omits lotus |

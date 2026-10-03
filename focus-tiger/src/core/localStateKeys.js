@@ -16,6 +16,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.focus-session-end.v1',
   'focus-tiger.practice-days.v1',
   'focus-tiger.lotus-pond.v1',
+  'focus-tiger.growth-journey-stage.v1',
   'focus-tiger.milestone-glow.v1',
   'focus-tiger.ritual-completions.v1',
   'focus-tiger.honesty-bridge.v1',

@@ -155,6 +155,29 @@ export const GROWTH_METRIC_TRACK_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'growth-journey-stage',
+    displayName: 'Growth Journey stage (presentation)',
+    purpose: 'presentation-feedback',
+    inputSources: Object.freeze([
+      'focus-tiger.lotus-pond.v1',
+      'focus-tiger.growth-journey-stage.v1'
+    ]),
+    aggregationWindow: 'lifetime',
+    dailyCapPolicy:
+      'Reads scoreEligibleLifetimeMinutes only. Stage floor in growth-journey-stage.v1 only rises. Not the persona day-count fallback.',
+    formulaVersion: 'growthJourneyStage.v1',
+    formulaSummary:
+      'Thresholds 35 / 360 / 720 / 2160 on frozen 180. Display stage is max(computed, local floor).',
+    formulaModule: 'src/core/growthJourneyStage.js',
+    authoritativeConsumers: Object.freeze(['growth-journey-stage-display']),
+    relatedPersonas: Object.freeze([
+      'steady-light',
+      'single-binge',
+      'deep-weekly',
+      'rolling-veteran'
+    ])
+  }),
+  Object.freeze({
     id: 'practice-badges-free',
     displayName: 'Idle practice badges (free path)',
     purpose: 'presentation-feedback',

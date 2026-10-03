@@ -1,0 +1,1 @@
+| Growth Journey 阶段逻辑（无界面） | 纯后端 | 仅单元测试覆盖 | **新增**：`growthJourneyStage.js` 按莲花计入分钟算阶段；本地下限只升不降；本机导出把下限挂在莲花对象上，导入取较大值。改天数不改变已传入的莲花分钟对应的阶段。**未做**：首页短轨迹、详情页、云端六项备份。**测**：`node --test src/core/growthJourneyStage.test.js`。 | — | — | — | `src/core/growthJourneyStage.js` | 2026-10-03 |
