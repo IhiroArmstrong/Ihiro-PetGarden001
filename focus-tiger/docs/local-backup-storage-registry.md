@@ -2,7 +2,7 @@
 
 > **Status**: Step 2–3 wired (2026-09-16) · registry SSOT + CI audit  
 > **Companion code**: `src/core/practiceBackup/localBackupStorageRegistry.js` · `practiceBackupSnapshot.js`  
-> **Reset whitelist**: `src/core/localStateKeys.js` (66 keys) · `docs/SHARED_RESOURCES.md` §1  
+> **Reset whitelist**: `src/core/localStateKeys.js` (72 keys) · `docs/SHARED_RESOURCES.md` §1  
 > **Related**: `practice-aggregate-registry.md` · `DEV_WORKFLOW_QUALITY.md` §6.25
 
 ---

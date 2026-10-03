@@ -30,7 +30,7 @@
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
 | 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
-| 生产 Worker Version | `3f4e376b-d334-470c-94f3-cd4e62dcc414`（2026-10-03 · #1081 Art Collection checkout redeploy） |
+| 生产 Worker Version | `f72a4c10-150d-4b74-ae41-d1d710bb2b07`（2026-10-03 · `origin/develop` `3dcfa0af` · 含 #1086 `charge.refunded`） |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `3f4e376b-d334-470c-94f3-cd4e62dcc414` |
-| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · #1081 Art Collection checkout · `POST /api/create-art-collection-checkout-session` → Stripe Test `cs_test_*`） |
+| `prod_worker_version` | `f72a4c10-150d-4b74-ae41-d1d710bb2b07` |
+| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `3dcfa0af` · Worker 已含 #1086 `charge.refunded` 撤销拥有。Stripe Dashboard 的 endpoint 事件列表本机未能改：Stripe CLI 没有 API key。） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|

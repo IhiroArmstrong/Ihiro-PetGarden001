@@ -227,8 +227,8 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | 级 | 内容 | Brief | 状态 |
 |---|---|---|---|
 | **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
-| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **#1081 已合 + 生产已部署**（Worker `3f4e376b-…`）· 货架是旧五件 |
-| **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **本支** · 生产仍是旧货架，须另说「部署」 |
+| **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **#1081 已合** · 生产 Worker `f72a4c10-…`（旧五件货架；菜单入口已撤） |
+| **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **#1090 本支** · 生产须另说「部署」 |
 
 ---
 
@@ -514,10 +514,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 ---
 
-## 未开工 · 艺术品退款撤销拥有（2026-10-03）
+## 艺术品退款撤销拥有（2026-10-03）
 
-- [x] 退款完成后撤销艺术品拥有，并停止再发高清。Brief：`docs/task-briefs/task-art-collection-refund-revoke.md`。
-- 这是接通艺术品真实收款的前置条件。购买按钮这一刀不收款。
+- [x] 退款完成后撤销艺术品拥有，并停止再发高清。Brief：`docs/task-briefs/task-art-collection-refund-revoke.md`。**#1086 已合** · 生产 Worker `f72a4c10-150d-4b74-ae41-d1d710bb2b07`。Stripe 那边还要勾上 `charge.refunded`，代码才会收到退款。
+- 这是接通艺术品真实收款的前置条件。22 张方案的购买按钮这一刀仍不收款。
 
 ## 📍 Phase 2 及以后：待评估
 
