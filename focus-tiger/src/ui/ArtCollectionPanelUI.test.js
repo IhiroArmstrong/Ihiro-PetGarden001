@@ -23,6 +23,10 @@ test('art collection panel is its own glass card', () => {
   assert.match(src, /requestArtPurchase/);
   assert.match(src, /create-art-collection-checkout-session/);
   assert.match(src, /ART_COLLECTION_BUY_PENDING/);
+  assert.match(src, /art-collection-save-/);
+  assert.match(src, /saveArtChosenPieceCard/);
+  assert.match(src, /ART_CHOSEN_PIECE_SAVING/);
+  assert.doesNotMatch(src, /YIN_COIN_PIECE_CARD/);
   assert.doesNotMatch(src, /localStorage/);
   assert.doesNotMatch(src, /永久拥有/);
   assert.doesNotMatch(src, /登录/);
@@ -34,6 +38,8 @@ test('art collection copy asks for an email and does not say the purchase is per
     assert.match(text, /ART_COLLECTION_BUY_ERROR/);
     assert.match(text, /ART_COLLECTION_EMAIL_REQUIRED/);
     assert.match(text, /ART_COLLECTION_MENU_LABEL/);
+    assert.match(text, /ART_CHOSEN_PIECE_CARD_LINE/);
+    assert.match(text, /ART_CHOSEN_PIECE_SAVE/);
     assert.doesNotMatch(text, /ART_COLLECTION_[A-Z0-9_]+": "[^"]*永久拥有/);
     assert.doesNotMatch(text, /ART_COLLECTION_[A-Z0-9_]+": "[^"]*log in/i);
   }

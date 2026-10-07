@@ -5,7 +5,8 @@
 
 /**
  * Yin's Art Collection — separate from Yin's Collections.
- * Buy opens Stripe checkout. It does not record ownership.
+ * Buy opens Stripe checkout and does not itself mark a piece owned.
+ * A piece already confirmed in this browser session can save a quiet card.
  */
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
@@ -16,7 +17,9 @@ import {
   artSheetName,
   artSheetStory
 } from '../core/artCollectionCatalog.js';
+import { saveArtChosenPieceCard } from '../core/artChosenPieceCard.js';
 import { requestArtPurchase } from '../core/artCollectionPurchase.js';
+import { visibleYinArtOwnershipFromPage } from '../core/yinArtCollection.js';
 import { postCloudJson } from '../core/cloudApiClient.js';
 import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
 import { openCheckoutUrl } from '../core/desktopShell.js';
@@ -87,7 +90,7 @@ export class ArtCollectionPanelUI {
     this.listEl.className = 'art-collection-panel__list';
     this.listEl.dataset.testid = 'art-collection-list';
 
-    /** @type {Map<string, { name: HTMLElement, story: HTMLElement, notice: HTMLElement, buy: HTMLButtonElement }>} */
+    /** @type {Map<string, { name: HTMLElement, story: HTMLElement, notice: HTMLElement, buy: HTMLButtonElement, save: HTMLButtonElement }>} */
     this._cards = new Map();
 
     for (const set of ART_COLLECTION_SETS) {
@@ -154,9 +157,30 @@ export class ArtCollectionPanelUI {
     buy.dataset.testid = `art-collection-buy-${row.id}`;
     buy.addEventListener('click', () => this._buy(row.id));
 
-    card.append(img, name, story, notice, buy);
-    this._cards.set(row.id, { name, story, notice, buy });
+    const save = document.createElement('button');
+    save.type = 'button';
+    save.className = 'art-collection-panel__btn art-collection-panel__btn--buy';
+    save.dataset.testid = `art-collection-save-${row.id}`;
+    save.hidden = true;
+    save.addEventListener('click', () => {
+      void this._save(row.id);
+    });
+
+    card.append(img, name, story, notice, buy, save);
+    this._cards.set(row.id, { name, story, notice, buy, save });
     return card;
+  }
+
+  /**
+   * Pieces this session may save. Tests may pass a stand-in.
+   * @returns {Record<string, { ownedAt?: string, receiptId?: string }>}
+   */
+  _ownedPieces() {
+    if (typeof this.handlers.ownedPieces === 'function') {
+      const rows = this.handlers.ownedPieces();
+      return rows && typeof rows === 'object' ? rows : {};
+    }
+    return visibleYinArtOwnershipFromPage();
   }
 
   /** @returns {boolean} */
@@ -237,7 +261,33 @@ export class ArtCollectionPanelUI {
   _setBusy(busy) {
     for (const card of this._cards.values()) {
       card.buy.disabled = busy;
+      card.save.disabled = busy;
     }
+  }
+
+  /**
+   * @param {string} sheetId
+   */
+  async _save(sheetId) {
+    const card = this._cards.get(sheetId);
+    const row = ART_COLLECTION_SHEETS.find((item) => item.id === sheetId);
+    if (!card || !row || card.save.hidden || card.save.disabled) return;
+    const piece = this._ownedPieces()[sheetId];
+    if (!piece?.ownedAt || !piece?.receiptId) return;
+    card.save.disabled = true;
+    card.save.textContent = t('ART_CHOSEN_PIECE_SAVING');
+    const saveFn = this.handlers.savePiece || saveArtChosenPieceCard;
+    const ok = await saveFn({
+      sheetId,
+      owned: true,
+      name: artSheetName(getLocale(), row),
+      ownedAt: piece.ownedAt,
+      previewSrc: row.previewSrc
+    });
+    card.save.disabled = false;
+    card.save.textContent = ok
+      ? t('ART_CHOSEN_PIECE_SAVED')
+      : t('ART_CHOSEN_PIECE_FAILED');
   }
 
   _refreshTexts() {
@@ -252,12 +302,21 @@ export class ArtCollectionPanelUI {
     this.emailInput.placeholder = t('ART_COLLECTION_EMAIL_PLACEHOLDER');
     this.closeBtn.textContent = t('ART_COLLECTION_CLOSE');
     const price = `$${ART_COLLECTION_PRICE_USD.toFixed(2)}`;
+    const owned = this._ownedPieces();
     for (const row of ART_COLLECTION_SHEETS) {
       const card = this._cards.get(row.id);
       if (!card) continue;
       card.name.textContent = artSheetName(locale, row);
       card.story.textContent = artSheetStory(locale, row);
       card.buy.textContent = `${t('ART_COLLECTION_BUY')} · ${price}`;
+      const piece = owned[row.id];
+      const hasPiece = Boolean(piece?.ownedAt && piece?.receiptId);
+      card.buy.hidden = hasPiece;
+      card.save.hidden = !hasPiece;
+      if (hasPiece) {
+        card.save.disabled = false;
+        card.save.textContent = t('ART_CHOSEN_PIECE_SAVE');
+      }
     }
     for (const heading of this.listEl.querySelectorAll('[data-label-key]')) {
       const key = heading.getAttribute('data-label-key');
@@ -339,7 +398,7 @@ export class ArtCollectionPanelUI {
         border-bottom: 1px solid rgba(139,115,85,.15);
       }
       .art-collection-panel__card img {
-        grid-row: 1 / span 4;
+        grid-row: 1 / span 5;
         width: 72px;
         height: 72px;
         object-fit: contain;

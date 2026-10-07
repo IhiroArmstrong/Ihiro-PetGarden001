@@ -202,3 +202,17 @@ test('server cache write ignores pieces that are not on this shelf', () => {
   writeYinArtSession(session, 'yin@example.com');
   assert.deepEqual(visibleYinArtOwnership(local, session), {});
 });
+
+test('a paid live sheet is remembered after this session signs in', () => {
+  const local = memoryStorage();
+  mergeYinArtOwnedPiece(local, {
+    email: 'yin@example.com',
+    artId: 'celadon-taotie-gu',
+    ownedAt: '2026-10-07T12:00:00.000Z',
+    receiptId: 'cs_test_sheet'
+  });
+  const session = memoryStorage();
+  writeYinArtSession(session, 'yin@example.com');
+  const owned = visibleYinArtOwnership(local, session);
+  assert.equal(owned['celadon-taotie-gu'].receiptId, 'cs_test_sheet');
+});
