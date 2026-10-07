@@ -61,10 +61,31 @@ export function unionOwnedIds(prev, next) {
 /**
  * @param {string} dateKey
  */
+/**
+ * Calendar day a piece was redeemed. Missing key = owned before dates were kept.
+ * @param {unknown} raw
+ * @param {string[]} ownedIds
+ * @returns {Record<string, string>}
+ */
+export function parseFocusCoinsAcquiredOn(raw, ownedIds) {
+  if (!raw || typeof raw !== 'object') return {};
+  const owned = new Set(ownedIds);
+  /** @type {Record<string, string>} */
+  const out = {};
+  for (const [id, value] of Object.entries(raw)) {
+    if (!owned.has(id)) continue;
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      out[id] = value;
+    }
+  }
+  return out;
+}
+
 export function emptyFocusCoinsWallet(dateKey) {
   return {
     balance: 0,
     ownedIds: [],
+    acquiredOn: {},
     equippedTitle: null,
     lifetimeMarks: emptyFocusCoinsLifetimeMarks(),
     dateKey,
@@ -96,6 +117,7 @@ export function parseFocusCoinsWallet(raw, todayKey) {
   return {
     balance: nonNegInt(o.balance),
     ownedIds: owned,
+    acquiredOn: parseFocusCoinsAcquiredOn(o.acquiredOn, owned),
     equippedTitle:
       typeof o.equippedTitle === 'string' ? o.equippedTitle : null,
     lifetimeMarks: parseFocusCoinsLifetimeMarks(o.lifetimeMarks),
@@ -178,10 +200,19 @@ export class FocusCoinsStore {
       redeem?.equippedTitle === undefined
         ? snap.equippedTitle
         : redeem.equippedTitle;
+    const ownedIds = unionOwnedIds(snap.ownedIds, redeem?.ownedIds || []);
+    const acquiredOn = { ...snap.acquiredOn };
+    const today = this._today();
+    for (const id of ownedIds) {
+      if (snap.ownedIds.includes(id)) continue;
+      if (acquiredOn[id]) continue;
+      acquiredOn[id] = today;
+    }
     this._write({
       ...snap,
       balance: nonNegInt(redeem?.balance),
-      ownedIds: unionOwnedIds(snap.ownedIds, redeem?.ownedIds || []),
+      ownedIds,
+      acquiredOn,
       equippedTitle:
         typeof nextTitle === 'string' ? nextTitle : null
     });
@@ -236,6 +267,7 @@ export class FocusCoinsStore {
         day: { ...this._memory.day },
         session: { ...this._memory.session },
         ownedIds: [...this._memory.ownedIds],
+        acquiredOn: { ...this._memory.acquiredOn },
         lifetimeMarks: { ...this._memory.lifetimeMarks }
       };
     }
@@ -258,6 +290,7 @@ export class FocusCoinsStore {
       day: { ...parsed.day },
       session: { ...parsed.session },
       ownedIds: [...parsed.ownedIds],
+      acquiredOn: { ...parsed.acquiredOn },
       lifetimeMarks: { ...parsed.lifetimeMarks }
     };
   }
@@ -271,6 +304,10 @@ export class FocusCoinsStore {
       day: { ...emptyFocusCoinsDayState(), ...state.day },
       session: { ...emptyFocusCoinsSessionState(), ...state.session },
       ownedIds: [...(state.ownedIds || [])],
+      acquiredOn: parseFocusCoinsAcquiredOn(
+        state.acquiredOn,
+        state.ownedIds || []
+      ),
       lifetimeMarks: parseFocusCoinsLifetimeMarks(state.lifetimeMarks)
     };
     if (!this.storage) return;

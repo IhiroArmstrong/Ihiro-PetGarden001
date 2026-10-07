@@ -219,6 +219,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **L2** | 清供卡面可兑；叠层视觉拆掉 | `feature/focus-coins-l2-redeem` | **#339 已合**；2026-08-20 清供改名 |
 | **L3** | **Yin's Collections** 抽屉；挥手点播走珍藏底栏 | `feature/yin-coin-l3-surface` | **#352+#353+#354 已合** |
 | **挥手点播** | 珍藏挥手点播 Play；抽屉仍清供 8 | `feature/focus-coins-wave-playback` | **#356 已合** |
+| **凭证卡** | 已拥有清供存一张竖图（器物、日期、累计分钟） | `task-collection-earned-piece-card.md` | **本支** · 待人工 |
 
 合计 L0–L2 ≈ **10–16 人日**。与桌面智能体对照见 `FOCUS_COINS.md` §10。文化 meaning layer / Practice Identity **不**在本表开工，见 `FROM_APP_TO_CULTURE.md` §13。
 
@@ -229,6 +230,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
 | **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **#1081 已合** · 生产 Worker `f72a4c10-…`（旧五件货架；菜单入口已撤） |
 | **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **#1090 本支** · 生产须另说「部署」 |
+| **收藏卡** | 已买下的一张存图；句子是「我选的」 | `task-art-collection-chosen-piece-card.md` | **只登记** · 等珍藏凭证卡之后另说开工 |
 
 ---
 
