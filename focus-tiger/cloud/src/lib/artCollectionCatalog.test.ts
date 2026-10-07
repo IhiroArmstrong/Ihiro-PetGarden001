@@ -14,10 +14,10 @@ const clientCatalog = readFileSync(
 	"utf8",
 );
 
-test("charges the 22 client sheets at $1.99 and refuses the old five", () => {
-	assert.equal(ART_COLLECTION_WORKS.length, 22);
+test("charges the 25 client sheets at $1.99 and refuses the old five", () => {
+	assert.equal(ART_COLLECTION_WORKS.length, 25);
 	const ids = ART_COLLECTION_WORKS.map((row) => row.id);
-	assert.equal(new Set(ids).size, 22);
+	assert.equal(new Set(ids).size, 25);
 	for (const row of ART_COLLECTION_WORKS) {
 		assert.equal(row.unitAmount, ART_COLLECTION_UNIT_AMOUNT);
 		assert.equal(ART_COLLECTION_UNIT_AMOUNT, 199);

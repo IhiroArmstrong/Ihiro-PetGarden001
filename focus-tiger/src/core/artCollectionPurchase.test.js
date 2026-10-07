@@ -24,15 +24,15 @@ const publicRoot = join(here, '../../public/ui/art-collection');
 const coinsPanel = readFileSync(join(here, '../ui/FocusCoinsPanelUI.js'), 'utf8');
 
 describe('art collection purchase', () => {
-  it('lists 22 sheets and omits the two withdrawn files', () => {
-    assert.equal(ART_COLLECTION_SHEETS.length, 22);
+  it('lists 25 sheets and omits the two withdrawn files', () => {
+    assert.equal(ART_COLLECTION_SHEETS.length, 25);
     assert.equal(
       ART_COLLECTION_SHEETS.filter((row) => row.setId === 'song-porcelain').length,
-      8
+      10
     );
     assert.equal(
       ART_COLLECTION_SHEETS.filter((row) => row.setId === 'song-ge-ware').length,
-      6
+      7
     );
     assert.equal(
       ART_COLLECTION_SHEETS.filter((row) => row.setId === 'tixi-lacquer').length,
@@ -121,7 +121,7 @@ describe('art collection purchase', () => {
       }
     };
     walk(publicRoot);
-    assert.ok(pngs.length >= 22);
+    assert.ok(pngs.length >= 25);
     for (const name of pngs) {
       assert.match(name, /^preview-/);
     }

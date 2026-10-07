@@ -3,12 +3,12 @@
 > **Status:** purchase page started (2026-10-03). Payment is not open.  
 > Boundary: `YIN_ART_COLLECTION.md`.  
 > Files: `public/ui/art-collection/` holds watermarked low-resolution previews named `preview-*.png`. The transparent masters are already in the public git history and are treated as exposed. New high-resolution files use `hd-*` names and are not committed.  
-> Suggested price for every sheet: **$1.99** (inside the locked $0.99–$2.99 band). Not a live checkout price. Twenty-two sheets bought one by one are about $44. A set bundle price is later.  
+> Suggested price for every sheet: **$1.99** (inside the locked $0.99–$2.99 band). Not a live checkout price. Twenty-five sheets bought one by one are about $50. A set bundle price is later.  
 > These are illustrations inspired by vessel types, made with image-generation assistance. They are not museum objects and not edition numbers. Copy must say so.
 
 ## Song Porcelain · 宋瓷
 
-`song-porcelain/` · eight sheets. The garlic-mouth bottle was withdrawn (a generator mark stayed on the neck).
+`song-porcelain/` · ten sheets. The garlic-mouth bottle was withdrawn (a generator mark stayed on the neck).
 
 | File | Name | Story |
 |---|---|---|
@@ -19,11 +19,13 @@
 | `preview-celadon-taotie-gui.png` | Celadon taotie gui · 青瓷兽面纹簋 | A gui: round bowl, flared rim, two handles, and a taotie band. |
 | `preview-celadon-taotie-ding.png` | Celadon taotie ding · 青瓷兽面纹鼎 | A round ding on three legs, with a lid and upright flanges. |
 | `preview-celadon-beast-foot-pan.png` | Celadon beast-foot pan · 青瓷兽足盘 | A wide pan on a ring foot. Small beasts stand under the rim. |
-| `preview-jun-moon-white-dragon-fanghu.png` | Jun moon-white dragon fanghu · 月白釉龙耳方壶 | Moon-white Jun glaze, not Longquan celadon. A lidded square jar with dragon handles. It stays in this Song set because it was drawn with them. |
+| `preview-jun-moon-white-dragon-fanghu.png` | Jun moon-white dragon fanghu · 月白釉龙耳方壶 | Moon-white Jun glaze on a Shang–Zhou lidded square fanghu. Dragon handles; geometric relief on the belly. |
+| `preview-ru-crackle-fanghu.png` | Ru crackle fanghu · 汝窑开片方壶 | Ru-style crackle on a Shang–Zhou lidded square fanghu. Pale celadon glaze and geometric relief bands. |
+| `preview-amber-glaze-fanghu.png` | Amber glaze fanghu · 黄釉方壶 | Amber glaze on a Shang–Zhou lidded square fanghu. Dragon handles and carved geometric panels. |
 
 ## Song Ge Ware · 宋代哥窑
 
-`song-ge-ware/` · six sheets. Gray-white glaze, crackle. Gold lines appear on some sheets and not others; the story does not pretend every piece has gold thread. The dragon-handle he was withdrawn (the lid had a hole from the cutout).
+`song-ge-ware/` · seven sheets. Gray-white glaze, crackle. Gold lines appear on some sheets and not others; the story does not pretend every piece has gold thread. The dragon-handle he was withdrawn (the lid had a hole from the cutout).
 
 | File | Name | Story |
 |---|---|---|
@@ -33,6 +35,7 @@
 | `preview-ge-beast-ring-hu.png` | Ge beast-ring hu · 哥窑兽首衔环壶 | A globular hu. Beast heads at the shoulder hold rings. |
 | `preview-ge-upright-ear-ding.png` | Ge upright-ear ding · 哥窑立耳兽面鼎 | A ding with two upright handles and three legs shaped as animal masks. |
 | `preview-ge-taotie-gu.png` | Ge taotie gu · 哥窑兽面纹觚 | A gu in crackled glaze, with a square taotie knop on the stem. |
+| `preview-ge-crackle-fanghu.png` | Ge crackle fanghu · 哥窑开片方壶 | Ge crackle on a Shang–Zhou lidded square fanghu. Dragon handles and geometric relief on the belly. |
 
 ## Tixi Lacquer · 剔犀漆器
 
