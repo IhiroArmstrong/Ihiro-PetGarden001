@@ -7,6 +7,13 @@
  */
 
 import { findArtCollectionWork } from "./artCollectionCatalog.ts";
+import {
+	artGrantIds,
+	decideEditionRelease,
+	decideEditionSale,
+	editionSoldKey,
+	findArtEditionSet,
+} from "./artEditionCatalog.ts";
 
 export type ArtCollectionPiece = {
 	ownedAt: string;
@@ -125,6 +132,50 @@ export function grantArtPiece(
 	};
 }
 
+export function grantArtPurchase(
+	record: ArtCollectionRecord,
+	artId: string,
+	ownedAt: string,
+	receiptId: string,
+): ArtCollectionRecord {
+	const ids = artGrantIds(artId, Boolean(findArtCollectionWork(artId)));
+	let next = record;
+	for (const id of ids) {
+		next = grantArtPiece(next, id, ownedAt, receiptId);
+	}
+	return next;
+}
+
+export async function noteEditionSale(
+	kv: KVNamespace,
+	artId: string,
+	alreadyOwned: boolean,
+): Promise<"ok" | "closed" | "skip"> {
+	const set = findArtEditionSet(artId);
+	if (!set || alreadyOwned) return "skip";
+	const raw = await kv.get(editionSoldKey(set.id));
+	const sold = raw ? Number(raw) : 0;
+	const decision = decideEditionSale(Number.isFinite(sold) ? sold : 0, set.editionLimit);
+	if (!decision.ok) return "closed";
+	await kv.put(editionSoldKey(set.id), String(decision.next));
+	return "ok";
+}
+
+export async function noteEditionRelease(
+	kv: KVNamespace,
+	artId: string,
+	wasOwned: boolean,
+): Promise<void> {
+	const set = findArtEditionSet(artId);
+	if (!set || !wasOwned) return;
+	const raw = await kv.get(editionSoldKey(set.id));
+	const sold = raw ? Number(raw) : 0;
+	await kv.put(
+		editionSoldKey(set.id),
+		String(decideEditionRelease(Number.isFinite(sold) ? sold : 0)),
+	);
+}
+
 export function revokeArtPiece(
 	record: ArtCollectionRecord,
 	artId: string,
@@ -183,16 +234,17 @@ export async function applyArtCollectionRevoke(
 ): Promise<{ stored: boolean; reason?: string }> {
 	const email = normalizeArtEmail(opts.email);
 	const record = await readArtCollection(kv, email);
-	const next = revokeArtPiece(
-		record,
-		opts.artId,
-		opts.revokedAt,
-		opts.receiptId,
-	);
+	const wasOwned = isArtPieceOwned(record, opts.artId);
+	const ids = artGrantIds(opts.artId, Boolean(findArtCollectionWork(opts.artId)));
+	let next = record;
+	for (const id of ids) {
+		next = revokeArtPiece(next, id, opts.revokedAt, opts.receiptId);
+	}
 	if (next === record) {
 		return { stored: false, reason: "not_found_or_already_revoked" };
 	}
 	await writeArtCollection(kv, email, next);
+	await noteEditionRelease(kv, opts.artId, wasOwned);
 	return { stored: true };
 }
 

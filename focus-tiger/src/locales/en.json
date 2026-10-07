@@ -964,6 +964,8 @@
   "ART_COLLECTION_BUY_ERROR": "Checkout could not open. This piece is not marked as yours.",
   "ART_COLLECTION_CLOUD_OFFLINE": "Checkout is unavailable right now. This piece is not marked as yours.",
   "ART_COLLECTION_BUY": "Buy",
+  "ART_COLLECTION_BUY_SET": "Buy the set",
+  "ART_EDITION_CLOSED": "This edition is closed.",
   "ART_COLLECTION_CLOSE": "Close",
   "ART_SET_SONG_PORCELAIN": "Song porcelain",
   "ART_SET_SONG_GE": "Song Ge ware",

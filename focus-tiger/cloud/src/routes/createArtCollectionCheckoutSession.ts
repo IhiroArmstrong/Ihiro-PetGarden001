@@ -1,7 +1,12 @@
 import { errorJson, json } from "../lib/http";
 import { resolveSessionReturnUrls } from "../lib/checkoutReturnUrls";
 import { createArtCollectionCheckoutSession } from "../lib/stripe";
-import { findArtCollectionWork } from "../lib/artCollectionCatalog";
+import { findArtForSale } from "../lib/artCollectionCatalog";
+import {
+	decideEditionSale,
+	editionSoldKey,
+	findArtEditionSet,
+} from "../lib/artEditionCatalog";
 import { isPlausibleEmail, normalizeEmail } from "../lib/tipKv";
 import type { Env } from "../types";
 
@@ -39,9 +44,17 @@ export async function handleCreateArtCollectionCheckoutSession(
 		return errorJson(400, "invalid_email", "A purchase needs an email");
 	}
 	customerEmail = normalizeEmail(customerEmail);
-	const work = findArtCollectionWork(artId);
+	const work = findArtForSale(artId);
 	if (!work) {
 		return errorJson(400, "unknown_art", "That piece is not for sale");
+	}
+	const edition = findArtEditionSet(work.id);
+	if (edition && env.SANCTUARY_KV) {
+		const raw = await env.SANCTUARY_KV.get(editionSoldKey(edition.id));
+		const sold = raw ? Number(raw) : 0;
+		if (!decideEditionSale(Number.isFinite(sold) ? sold : 0, edition.editionLimit).ok) {
+			return errorJson(409, "edition_closed", "This edition is closed");
+		}
 	}
 
 	const returns = resolveSessionReturnUrls(

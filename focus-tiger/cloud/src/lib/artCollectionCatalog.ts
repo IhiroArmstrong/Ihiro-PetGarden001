@@ -4,6 +4,8 @@
  * The old five-work draft is not for sale.
  */
 
+import { findArtEditionSet, findArtEditionSheet } from "./artEditionCatalog.ts";
+
 export const ART_COLLECTION_PRODUCT = "art-collection";
 export const ART_COLLECTION_UNIT_AMOUNT = 199;
 
@@ -50,5 +52,20 @@ export const ART_COLLECTION_WORKS: readonly ArtCollectionWork[] = Object.freeze(
 ]);
 
 export function findArtCollectionWork(artId: string): ArtCollectionWork | null {
-	return ART_COLLECTION_WORKS.find((row) => row.id === artId) || null;
+	const listed = ART_COLLECTION_WORKS.find((row) => row.id === artId);
+	if (listed) return listed;
+	const set = findArtEditionSet(artId);
+	if (set) {
+		return { id: set.id, unitAmount: set.unitAmount, name: set.name };
+	}
+	const sheet = findArtEditionSheet(artId);
+	if (sheet) return { id: sheet.id, unitAmount: 0, name: sheet.id };
+	return null;
+}
+
+/** New checkout may start only for a whole edition set. */
+export function findArtForSale(artId: string): ArtCollectionWork | null {
+	const set = findArtEditionSet(artId);
+	if (!set) return null;
+	return { id: set.id, unitAmount: set.unitAmount, name: set.name };
 }

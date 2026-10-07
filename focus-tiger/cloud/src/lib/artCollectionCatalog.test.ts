@@ -7,7 +7,9 @@ import {
 	ART_COLLECTION_UNIT_AMOUNT,
 	ART_COLLECTION_WORKS,
 	findArtCollectionWork,
+	findArtForSale,
 } from "./artCollectionCatalog.ts";
+import { decideEditionSale } from "./artEditionCatalog.ts";
 
 const clientCatalog = readFileSync(
 	join(dirname(fileURLToPath(import.meta.url)), "../../../src/core/artCollectionCatalog.js"),
@@ -37,4 +39,14 @@ test("charges the 25 client sheets at $1.99 and refuses the old five", () => {
 	for (const id of ["celadon-garlic-mouth-ring-bottle", "ge-dragon-handle-he"]) {
 		assert.equal(findArtCollectionWork(id), null);
 	}
+});
+
+test("new checkout sells the five-piece edition and not a single sheet", () => {
+	const set = findArtForSale("celadon-relief-five");
+	assert.ok(set);
+	assert.equal(set?.unitAmount, 995);
+	assert.equal(findArtForSale("celadon-taotie-gu"), null);
+	assert.equal(findArtForSale("celadon-relief-dragon-gu"), null);
+	assert.equal(decideEditionSale(99, 100).ok, true);
+	assert.equal(decideEditionSale(100, 100).ok, false);
 });
