@@ -1,9 +1,10 @@
 # Art Collection catalog · three sets
 
-> **Status:** purchase page started (2026-10-03). Payment is not open.  
+> **Status (2026-10-07):** purchase page and Stripe checkout are on develop. High-resolution files are still not delivered after payment.  
 > Boundary: `YIN_ART_COLLECTION.md`.  
-> Files: `public/ui/art-collection/` holds watermarked low-resolution previews named `preview-*.png`. The transparent masters are already in the public git history and are treated as exposed. New high-resolution files use `hd-*` names and are not committed.  
-> Suggested price for every sheet: **$1.99** (inside the locked $0.99–$2.99 band). Not a live checkout price. Twenty-five sheets bought one by one are about $50. A set bundle price is later.  
+> Files: `public/ui/art-collection/` holds watermarked low-resolution previews named `preview-*.png` only. Do not rewrite public git history. New high-resolution files stay out of this repo and out of the install bundle. After a verified purchase they are downloaded once, cached on the device, and may carry a light buyer mark. That download is not built yet (`task-briefs/task-art-collection-hd-delivery.md`).  
+> Each sheet already has `nameEn`, `nameZh`, `storyEn`, and `storyZh` in `src/core/artCollectionCatalog.js`. The panel reads them. There is no separate entry form.  
+> Suggested price for every sheet: **$1.99** (inside the locked $0.99–$2.99 band). Checkout uses this amount. Whether production is charging depends on a separate deploy. Twenty-five sheets bought one by one are about $50. A set bundle price is later.  
 > These are illustrations inspired by vessel types, made with image-generation assistance. They are not museum objects and not edition numbers. Copy must say so.
 
 ## Song Porcelain · 宋瓷
