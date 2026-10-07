@@ -2303,14 +2303,18 @@ async function init() {
   yinCoinPanelUI = new FocusCoinsPanelUI(
     document.body,
     withIdleOverlayOccupancySync({
-    getContext: () => ({
-      ...buildFocusCoinRedeemContext({
-        store: focusCoinsStore,
-        practiceDaysStore,
-        lotusPondStore
-      }),
-      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle
-    }),
+    getContext: () => {
+      const snap = focusCoinsStore.getSnapshot();
+      return {
+        ...buildFocusCoinRedeemContext({
+          store: focusCoinsStore,
+          practiceDaysStore,
+          lotusPondStore
+        }),
+        equippedTitle: snap.equippedTitle,
+        acquiredOn: snap.acquiredOn
+      };
+    },
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
     getMerchState: () => {
