@@ -25,6 +25,10 @@
  *   npx wrangler secret put RESEND_API_KEY
  *   npx wrangler secret put RESTORE_OTP_PEPPER
  *
+ * Private art originals (do not commit the files):
+ *   npx wrangler r2 bucket create focus-tiger-art-hd
+ *   Bind it as ART_COLLECTION_HD. Keys: private/art-hd/{hdId}.png
+ *
  * Prices (Dashboard):
  *   Tip → STRIPE_PRICE_ID (one-time)
  *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID (one-time)

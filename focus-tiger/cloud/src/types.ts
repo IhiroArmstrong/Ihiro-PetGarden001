@@ -63,6 +63,11 @@ export interface Env {
 	/** Yin's Art Collection one-time Checkout return URLs. Prices live in code. */
 	ART_COLLECTION_CHECKOUT_SUCCESS_URL?: string;
 	ART_COLLECTION_CHECKOUT_CANCEL_URL?: string;
+	/**
+	 * Private high-resolution PNGs. Not the public install bundle.
+	 * Object keys are `private/art-hd/{hdId}.png`.
+	 */
+	ART_COLLECTION_HD?: R2Bucket;
 
 	/** Exact browser Origin allowed for CORS, or comma-separated list. */
 	ALLOWED_ORIGIN?: string;
