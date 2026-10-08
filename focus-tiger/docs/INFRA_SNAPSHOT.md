@@ -30,7 +30,7 @@
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
 | 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
-| 生产 Worker Version | `f72a4c10-150d-4b74-ae41-d1d710bb2b07`（2026-10-03 · `origin/develop` `3dcfa0af` · 含 #1086 `charge.refunded`） |
+| 生产 Worker Version | `7093e10b-cbea-4ac3-ae5c-093e45625785`（2026-10-03 · `origin/develop` `9af0abff` · 含 #1091 练习备份 v2 莲花与阶段下限。客户端 `practiceBackupCloudEnabled` 仍为 false，不向用户打开上传或恢复。） |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -71,13 +71,14 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `f72a4c10-150d-4b74-ae41-d1d710bb2b07` |
-| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `3dcfa0af` · Worker 已含 #1086 `charge.refunded` 撤销拥有。Stripe Dashboard 的 endpoint 事件列表本机未能改：Stripe CLI 没有 API key。） |
+| `prod_worker_version` | `7093e10b-cbea-4ac3-ae5c-093e45625785` |
+| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `9af0abff` · Worker `focus-tiger-cloud` · `https://focus-tiger-cloud.ihiro.workers.dev` · 已含 #1091 练习备份 v2。客户端云备份仍关。`9af0abff` 之后的艺术品高清下载与套装结账 **未** 进这次部署。） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
 | （本 Version `2e94d4c0` 起）漏斗 ingest layout / YPE L2 ingest / Pro+Add-on Checkout / `pageOrigin` 回跳 | 2026-09-01 本机 Redeploy 已从 `fix/overlay-three-questions` 上传；Safari 结账回跳仍须人工 |
 | 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 起已在生产 vars |
+| 艺术品高清下载、套装结账，以及 `9af0abff` 之后的其它云端改动 | 生产停在 Version `7093e10b`（源 `9af0abff`）。这些改动还在 `develop` 源码里，**未** redeploy |
 
 ---
 
