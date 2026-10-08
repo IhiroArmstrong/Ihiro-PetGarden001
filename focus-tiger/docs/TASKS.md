@@ -4,7 +4,7 @@
 - 文化探索方向锁(From App to Culture；App 社交塑造 Slack；废除证据门): /docs/FROM_APP_TO_CULTURE.md
 - 陪伴成长意义层(Yin Evolution；关系叙事；不改分数公式): /docs/YIN_EVOLUTION.md
 - 成长旅程方向锁(首页短轨迹 + 阶段下限；无运行时): /docs/GROWTH_JOURNEY.md
-- 成长旅程实现说明(阶段门槛 / 落点 / 短轨迹 / 下一小步；无运行时): /docs/GROWTH_JOURNEY_IMPLEMENTATION.md
+- 成长旅程实现说明(阶段门槛已落地；首页短轨迹本刀；详情未接): /docs/GROWTH_JOURNEY_IMPLEMENTATION.md
 - 项目原则(硬性红线): /docs/PRINCIPLES.md
 - 架构设计(模块职责边界): /docs/ARCHITECTURE.md
 - 产品设计(角色设定与状态语义): /docs/DESIGN.md
@@ -229,9 +229,9 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 |---|---|---|---|
 | **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
 | **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **#1081 已合** · 生产 Worker `f72a4c10-…`（旧五件货架；菜单入口已撤） |
-| **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **#1090 已合** · 生产须另说「部署」 |
-| **高清下发** | 付清后下载、本机离线缓存、轻购买者标记；预览仍进包 | `task-art-collection-hd-delivery.md` | **实现中**（2026-10-08 · `feature/art-collection-hd-delivery`） |
-| **收藏卡** | 已买下的一张存图；句子是「我选的」 | `task-art-collection-chosen-piece-card.md` | **只登记** · 等珍藏凭证卡之后另说开工 |
+| **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **#1090 已合** · 生产 Worker `3a028faf-…`（2026-10-08 部署） |
+| **高清下发** | 付清后下载、本机离线缓存、轻购买者标记；预览仍进包 | `task-art-collection-hd-delivery.md` | **#1098 已合** · 生产 Worker `3a028faf-…`（2026-10-08 部署） |
+| **收藏卡** | 已买下的一张存图；句子是「我选的」 | `task-art-collection-chosen-piece-card.md` | **本支** · 待人工 |
 | **限量套装** | 一套 5 件；一版 100 套（500 件）；请茶谢礼在套外 | `task-art-collection-limited-sets.md` | **#1099 已合** · 生产 Worker `3a028faf-…`（用户口令「部署」· 2026-10-08） |
 
 ---

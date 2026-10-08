@@ -11,6 +11,7 @@
  * Each cell shows a weekday abbrev; today gets a soft outline ring.
  */
 
+import { growthJourneyHomeLineModel } from '../core/growthJourneyHomeLine.js';
 import { t } from '../locales/i18n.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 
@@ -84,7 +85,7 @@ export function buildWeeklyHeatmapCells(days, todayDate) {
   });
 }
 
-const STYLE_ID = 'weekly-practice-heatmap-styles-v5';
+const STYLE_ID = 'weekly-practice-heatmap-styles-v6';
 
 export class WeeklyPracticeHeatmap {
   /**
@@ -102,7 +103,18 @@ export class WeeklyPracticeHeatmap {
     this.cellEls = [];
     /** @type {HTMLElement[]} */
     this.dowEls = [];
+    /** @type {HTMLElement | null} */
+    this.journeyRow = null;
+    /** @type {HTMLElement | null} */
+    this.journeyText = null;
+    /** @type {HTMLElement | null} */
+    this.journeyDot = null;
+    /** @type {HTMLElement | null} */
+    this.furnitureRow = null;
     this._visible = false;
+    this._journeyMinutes = 0;
+    /** @type {unknown} */
+    this._journeyFloor = null;
     /** @type {(() => { date: string, totalMinutes: number | null }[]) | null} */
     this._getImportDays = null;
     this._unsubPracticeImport = null;
@@ -131,9 +143,9 @@ export class WeeklyPracticeHeatmap {
     this._unsubPracticeImport = null;
   }
 
-  /** 供提醒设置等旁挂控件加入同一左下角簇。 */
+  /** 供提醒设置等旁挂控件加入热力图那一排，不压到上面的旅程行。 */
   getClusterEl() {
-    return this.cluster;
+    return this.furnitureRow;
   }
 
   /** @returns {boolean} */
@@ -146,15 +158,27 @@ export class WeeklyPracticeHeatmap {
    * @param {boolean} opts.visible  only Idle
    * @param {{ date: string, totalMinutes: number | null }[]} opts.days
    * @param {string} [opts.todayDate]
+   * @param {unknown} [opts.eligibleMinutes]
+   * @param {unknown} [opts.stageFloor]
    */
-  render({ visible, days, todayDate }) {
-    if (!this.root) return;
+  render(opts) {
+    const { visible, days, todayDate } = opts;
+    if (!this.root || !this.journeyRow || !this.journeyText || !this.journeyDot) {
+      return;
+    }
     const show = Boolean(visible);
+    if (Object.prototype.hasOwnProperty.call(opts, 'eligibleMinutes')) {
+      this._journeyMinutes = opts.eligibleMinutes;
+    }
+    if (Object.prototype.hasOwnProperty.call(opts, 'stageFloor')) {
+      this._journeyFloor = opts.stageFloor;
+    }
     if (show !== this._visible) {
       this._visible = show;
       this.root.hidden = !show;
       this.root.setAttribute('aria-hidden', show ? 'false' : 'true');
     }
+    this._paintJourney(show);
     if (!show) return;
 
     this.root.setAttribute('aria-label', t('HEATMAP_ARIA_WEEK'));
@@ -232,8 +256,46 @@ export class WeeklyPracticeHeatmap {
       this.dowEls.push(dow);
     }
 
-    this.cluster.appendChild(this.root);
+    this.journeyRow = document.createElement('div');
+    this.journeyRow.className = 'growth-journey-home-line';
+    this.journeyRow.hidden = true;
+    this.journeyRow.setAttribute('aria-hidden', 'true');
+
+    this.journeyText = document.createElement('span');
+    this.journeyText.className = 'growth-journey-home-line__text';
+
+    const track = document.createElement('span');
+    track.className = 'growth-journey-home-line__track';
+    track.setAttribute('aria-hidden', 'true');
+
+    this.journeyDot = document.createElement('span');
+    this.journeyDot.className = 'growth-journey-home-line__dot';
+    track.appendChild(this.journeyDot);
+    this.journeyRow.append(this.journeyText, track);
+
+    this.furnitureRow = document.createElement('div');
+    this.furnitureRow.className = 'weekly-practice-heatmap-cluster__row';
+    this.furnitureRow.appendChild(this.root);
+
+    this.cluster.append(this.journeyRow, this.furnitureRow);
     this.container.appendChild(this.cluster);
+  }
+
+  /**
+   * @param {boolean} show
+   */
+  _paintJourney(show) {
+    if (!this.journeyRow || !this.journeyText || !this.journeyDot) return;
+    this.journeyRow.hidden = !show;
+    this.journeyRow.setAttribute('aria-hidden', show ? 'false' : 'true');
+    if (!show) return;
+    const line = growthJourneyHomeLineModel(
+      this._journeyMinutes,
+      this._journeyFloor,
+      t
+    );
+    this.journeyText.textContent = line.text;
+    this.journeyDot.style.left = `${line.position * 100}%`;
   }
 
   _injectStyles() {
@@ -252,9 +314,11 @@ export class WeeklyPracticeHeatmap {
         bottom: calc(36px + 88px + 20px);
         z-index: 12;
         display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
+        flex-direction: column;
+        align-items: stretch;
+        width: max-content;
+        max-width: calc(100vw - 28px);
+        gap: 6px;
         padding: 8px 10px 8px 12px;
         border-radius: 18px;
         background: rgba(255, 252, 245, 0.42);
@@ -275,8 +339,53 @@ export class WeeklyPracticeHeatmap {
           bottom: auto;
           left: 12px;
           padding: 6px 8px;
+          gap: 4px;
+        }
+        .weekly-practice-heatmap-cluster__row {
           gap: 8px;
         }
+      }
+      .weekly-practice-heatmap-cluster__row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .growth-journey-home-line {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        width: 0;
+        min-width: 100%;
+        box-sizing: border-box;
+        pointer-events: none;
+      }
+      .growth-journey-home-line[hidden] {
+        display: none !important;
+      }
+      .growth-journey-home-line__text {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: 12px;
+        line-height: 1.35;
+        color: rgba(44, 31, 20, 0.72);
+      }
+      .growth-journey-home-line__track {
+        position: relative;
+        flex: 0 0 44px;
+        height: 1px;
+        background: rgba(44, 31, 20, 0.28);
+      }
+      .growth-journey-home-line__dot {
+        position: absolute;
+        top: 50%;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(44, 31, 20, 0.72);
+        transform: translate(-50%, -50%);
       }
       .weekly-practice-heatmap {
         position: relative;

@@ -13,7 +13,7 @@ import {
 
 describe('quietTogetherLanternLayout', () => {
   it('wide lantern bottom anchors above heatmap cluster shell', () => {
-    assert.match(IDLE_LANTERN_BOTTOM_WIDE_CSS, /36px \+ 88px \+ 20px \+ 58px/);
+    assert.match(IDLE_LANTERN_BOTTOM_WIDE_CSS, /36px \+ 88px \+ 20px \+ 94px/);
     assert.match(IDLE_HEATMAP_CLUSTER_BOTTOM_CSS, /36px \+ 88px \+ 20px/);
     assert.notEqual(IDLE_LANTERN_BOTTOM_WIDE_CSS, IDLE_HEATMAP_CLUSTER_BOTTOM_CSS);
   });
