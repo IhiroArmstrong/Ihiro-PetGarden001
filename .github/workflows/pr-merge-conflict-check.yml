@@ -26,6 +26,12 @@ jobs:
       - name: Fetch latest develop
         run: git fetch origin develop:refs/remotes/origin/develop
 
+      - name: Refuse edits to the shared task list
+        env:
+          TASKS_GUARD_BASE: origin/develop
+          TASKS_GUARD_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: node focus-tiger/scripts/assemble-tasks.js --guard
+
       - name: Attempt merge with origin/develop
         id: merge
         run: |

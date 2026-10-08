@@ -539,6 +539,16 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 ```
 
 ---
+
+## 📍 状态片（2026-10-09）
+
+上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
+
+<!-- task-entries:begin -->
+（尚无状态片。）
+<!-- task-entries:end -->
+
+---
 *版本：5.1 · 性能原则调整为"设底线内放心追求视觉效果"，新增首屏Poster过渡
 策略，目录结构补充docs/art-reference/public三个根目录；v5.2 文档结构拆分为
 PRINCIPLES / ARCHITECTURE / DESIGN / PROCESS + 本任务清单*

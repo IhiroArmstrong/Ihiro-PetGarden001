@@ -121,6 +121,10 @@ alwaysApply: false
 - 实现前冲突扫描 → `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）；勿在本文件复述三轴。
 - 非用户点击的网络请求 → `BACKGROUND_NETWORK.md`（`RULES_INDEX` → `background-network`）；勿在本文件复述三问。
 
+## 任务状态不要改总表
+
+新的任务状态，以及「已部署 / 已备份」，写 `focus-tiger/docs/task-entries/<id>.md`。不要改 `TASKS.md` 里已有的段落，也不要在功能 PR 里跑 `tasks:assemble`。格式与原因见该目录 `readme.md`。
+
 ## TEST_TRACKER 日常维护（Part 2）
 
 每次完成一项任务后：

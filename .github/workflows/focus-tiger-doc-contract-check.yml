@@ -52,6 +52,10 @@ on:
       - 'focus-tiger/src/core/practiceAggregateConsumerRegistry.js'
       - 'focus-tiger/docs/practice-aggregate-registry.md'
       - 'focus-tiger/scripts/assemble-tracker.js'
+      - 'focus-tiger/scripts/assemble-tasks.js'
+      - 'focus-tiger/scripts/assemble-tasks.test.js'
+      - 'focus-tiger/docs/TASKS.md'
+      - 'focus-tiger/docs/task-entries/**'
       - 'focus-tiger/docs/TEST_TRACKER.md'
       - 'focus-tiger/docs/tracker-entries/**'
       - 'focus-tiger/package.json'
@@ -109,6 +113,10 @@ on:
       - 'focus-tiger/src/core/practiceAggregateConsumerRegistry.js'
       - 'focus-tiger/docs/practice-aggregate-registry.md'
       - 'focus-tiger/scripts/assemble-tracker.js'
+      - 'focus-tiger/scripts/assemble-tasks.js'
+      - 'focus-tiger/scripts/assemble-tasks.test.js'
+      - 'focus-tiger/docs/TASKS.md'
+      - 'focus-tiger/docs/task-entries/**'
       - 'focus-tiger/docs/TEST_TRACKER.md'
       - 'focus-tiger/docs/tracker-entries/**'
       - 'focus-tiger/package.json'
@@ -148,6 +156,8 @@ jobs:
         run: node --test scripts/sync-qa-develop-worktree.test.js scripts/check-worktree-hygiene.test.js
       - name: TEST_TRACKER fragment assemble unit smoke
         run: node --test scripts/assemble-tracker.test.js
+      - name: TASKS status fragment unit smoke
+        run: node --test scripts/assemble-tasks.test.js
       - name: Practice aggregate coverage audit unit smoke
         run: node --test scripts/audit-practice-coverage.test.js
       - name: Growth metrics persona regression unit smoke
