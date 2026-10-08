@@ -11,8 +11,8 @@
 /** Same as `.weekly-practice-heatmap-cluster` wide `bottom`. */
 export const IDLE_HEATMAP_CLUSTER_BOTTOM_CSS = 'calc(36px + 88px + 20px)';
 
-/** Cluster shell (~48px) + gap (10px) above heatmap cluster on wide Idle. */
-export const IDLE_HEATMAP_CLUSTER_SHELL_GAP_PX = 58;
+/** Cluster shell (~48px) + gap (10px) + Growth Journey home line (~36px). */
+export const IDLE_HEATMAP_CLUSTER_SHELL_GAP_PX = 94;
 
 /** Wide: lanterns sit fully above heatmap caption area (left cluster). */
 export const IDLE_LANTERN_BOTTOM_WIDE_CSS = `calc(36px + 88px + 20px + ${IDLE_HEATMAP_CLUSTER_SHELL_GAP_PX}px)`;

@@ -385,6 +385,7 @@ import {
   projectedStreakIncludingToday
 } from './core/MilestoneGlowStore.js';
 import { LotusPondStore } from './core/LotusPondStore.js';
+import { readGrowthJourneyStageFloor } from './core/growthJourneyStage.js';
 import { GRANT_KIND } from './core/focusCoinsLedger.js';
 import { FocusCoinsStore } from './core/focusCoinsStore.js';
 import {
@@ -5720,7 +5721,9 @@ async function init() {
         (stateManager.state === STATES.IDLE ||
           stateManager.state === STATES.DORMANT) &&
         !microOpen,
-      days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS)
+      days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS),
+      eligibleMinutes: lotusPondStore.getScoreEligibleLifetimeMinutes(),
+      stageFloor: readGrowthJourneyStageFloor(globalThis.localStorage)
     });
     reminderPreferenceUI.setVisible(
       stateManager.state === STATES.IDLE && !microOpen
