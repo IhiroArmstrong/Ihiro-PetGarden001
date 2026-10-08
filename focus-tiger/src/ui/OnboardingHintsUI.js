@@ -532,7 +532,12 @@ export class OnboardingHintsUI {
 
     // 收纳进左下热力簇（若已建），避免角落散落；窄屏 park 只认簇即可
     const cluster = document.getElementById('weekly-practice-heatmap-cluster');
-    if (cluster) {
+    const furnitureRow = cluster?.querySelector(
+      '.weekly-practice-heatmap-cluster__row'
+    );
+    if (furnitureRow) {
+      furnitureRow.appendChild(this.helpBtn);
+    } else if (cluster) {
       cluster.appendChild(this.helpBtn);
     } else {
       mountRoot.append(this.helpBtn);
