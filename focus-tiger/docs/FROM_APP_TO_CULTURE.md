@@ -443,7 +443,7 @@ Ambient：**Private → Export/Share → Curated Community**。公开层会立�
 
 > 2026-09-04：与「Practice Identity（行为反射）」**不是**同一物。本小节只锁信封，**不**开工 Circle。
 
-- **进圈**：第一版邀请 = 外部渠道上的 **6 位暗号 / 深链**。无账号也能进。**2026-10-08**：另加一次码「请你坐在旁边」（同时最多 3 张未使用、成功加入即废、进同一圈）。不取代 6 位暗号。规则 [`task-briefs/task-beside-seat-invite.md`](./task-briefs/task-beside-seat-invite.md)。本段无新运行时。
+- **进圈**：第一版邀请 = 外部渠道上的 **6 位暗号 / 深链**。无账号也能进。**2026-10-08**：另加一次码「请你坐在旁边」（同时最多 5 张未使用、成功加入即废、进同一圈）。不取代 6 位暗号。规则 [`task-briefs/task-beside-seat-invite.md`](./task-briefs/task-beside-seat-invite.md)。本段无新运行时。
 - **认出人（可选、晚于进圈）**：本机不透明 ID + 可选限长昵称 + 预设 Tiger/Yin 徽标。**不是**可登录账号。禁止头像上传与自由简介。
 - **跨设备**：不是必须；若做，**复用**现有邮箱 OTP（备份 / Membership restore 同一套基础设施），不为 Circle 另造账号。**2026-09-26 PO**：在跨设备绑人真正开工（或换设备/清缓存找不回投诉 ≥3）之前，**不写**统一 Login /「账号与设备」Brief；菜单灰行占位维持。进度表 [`MENU_CHROME_CENSUS.md`](./MENU_CHROME_CENSUS.md) §1 第 3 行。2e 昵称层（#615）**不等于**跨设备身份。
 - **审核**：8 人暗号圈；先不做主动审核管线；举报 + 本机把昵称显示成「一位同伴」。
