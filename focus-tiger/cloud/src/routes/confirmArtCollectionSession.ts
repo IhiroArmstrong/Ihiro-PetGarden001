@@ -3,8 +3,9 @@ import { emailFromCheckoutSession, retrieveCheckoutSession } from "../lib/stripe
 import { ART_COLLECTION_PRODUCT, findArtCollectionWork } from "../lib/artCollectionCatalog";
 import { issueArtHdGrant } from "../lib/artCollectionHdGrant";
 import {
-	grantArtPiece,
+	grantArtPurchase,
 	indexArtCollectionPurchase,
+	noteEditionSale,
 	isArtPieceOwned,
 	normalizeArtEmail,
 	readArtCollection,
@@ -89,7 +90,15 @@ export async function handleConfirmArtCollectionSession(
 	}
 	const ownedAt = new Date().toISOString();
 	const receiptId = session.id;
-	const next = grantArtPiece(existing, artId, ownedAt, receiptId);
+	const editionNote = await noteEditionSale(
+		env.SANCTUARY_KV,
+		artId,
+		isArtPieceOwned(existing, artId),
+	);
+	if (editionNote === "closed") {
+		return json({ owned: false, pending: false, reason: "edition_closed", artId });
+	}
+	const next = grantArtPurchase(existing, artId, ownedAt, receiptId);
 	await writeArtCollection(env.SANCTUARY_KV, email, next);
 	await indexArtCollectionPurchase(env.SANCTUARY_KV, {
 		email,

@@ -232,6 +232,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **#1090 已合** · 生产须另说「部署」 |
 | **高清下发** | 付清后下载、本机离线缓存、轻购买者标记；预览仍进包 | `task-art-collection-hd-delivery.md` | **实现中**（2026-10-08 · `feature/art-collection-hd-delivery`） |
 | **收藏卡** | 已买下的一张存图；句子是「我选的」 | `task-art-collection-chosen-piece-card.md` | **只登记** · 等珍藏凭证卡之后另说开工 |
+| **限量套装** | 一套 5 件；一版 100 套（500 件）；请茶谢礼在套外 | `task-art-collection-limited-sets.md` | **本支开工 · 2026-10-08 · 未部署** |
 
 ---
 

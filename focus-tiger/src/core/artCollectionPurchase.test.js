@@ -62,9 +62,9 @@ describe('art collection purchase', () => {
     assert.equal(coinsPanel.includes('ART_COLLECTION'), false);
   });
 
-  it('refuses a purchase without an email and never writes ownership', () => {
+  it('sells the five-piece set and refuses a single old sheet', () => {
     const missing = requestArtPurchase({
-      sheetId: 'celadon-taotie-gu',
+      sheetId: 'celadon-relief-five',
       email: ''
     });
     assert.deepEqual(missing, {
@@ -73,15 +73,23 @@ describe('art collection purchase', () => {
       wroteOwnership: false
     });
     const ready = requestArtPurchase({
-      sheetId: 'celadon-taotie-gu',
+      sheetId: 'celadon-relief-five',
       email: 'Buyer@Example.com'
     });
     assert.deepEqual(ready, {
       ok: true,
-      sheetId: 'celadon-taotie-gu',
+      sheetId: 'celadon-relief-five',
       email: 'buyer@example.com',
       wroteOwnership: false
     });
+    assert.equal(
+      requestArtPurchase({ sheetId: 'celadon-taotie-gu', email: 'a@b.co' }).reason,
+      'unknown_sheet'
+    );
+    assert.equal(
+      requestArtPurchase({ sheetId: 'celadon-relief-dragon-gu', email: 'a@b.co' }).reason,
+      'unknown_sheet'
+    );
     assert.equal(
       requestArtPurchase({ sheetId: 'celadon-garlic-mouth-ring-bottle', email: 'a@b.co' })
         .reason,

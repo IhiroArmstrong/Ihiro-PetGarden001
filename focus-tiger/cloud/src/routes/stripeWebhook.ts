@@ -10,6 +10,16 @@ import {
 	type StripeInvoice,
 	type StripeSubscription,
 } from "../lib/stripe";
+import { findArtCollectionWork } from "../lib/artCollectionCatalog";
+import {
+	grantArtPurchase,
+	indexArtCollectionPurchase,
+	isArtPieceOwned,
+	normalizeArtEmail,
+	noteEditionSale,
+	readArtCollection,
+	writeArtCollection,
+} from "../lib/artCollectionKv";
 import { handleArtCollectionChargeRefunded } from "./artCollectionStripeWebhook";
 import {
 	handleMembershipCheckoutCompleted,
@@ -165,7 +175,15 @@ async function handleCheckoutSessionCompleted(
 		const existing = await readArtCollection(env.SANCTUARY_KV, email);
 		const receiptId = typeof session.id === "string" ? session.id : "unknown";
 		const ownedAt = new Date().toISOString();
-		const next = grantArtPiece(existing, artId, ownedAt, receiptId);
+		const editionNote = await noteEditionSale(
+			env.SANCTUARY_KV,
+			artId,
+			isArtPieceOwned(existing, artId),
+		);
+		if (editionNote === "closed") {
+			return json({ received: true, stored: false, reason: "edition_closed" });
+		}
+		const next = grantArtPurchase(existing, artId, ownedAt, receiptId);
 		await writeArtCollection(env.SANCTUARY_KV, email, next);
 		const chargeId = await resolveArtCollectionChargeId(env, session);
 		await indexArtCollectionPurchase(env.SANCTUARY_KV, {
