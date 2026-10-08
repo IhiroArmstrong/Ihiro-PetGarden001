@@ -22,8 +22,9 @@ import {
   sanctuaryBadgeSrc
 } from '../core/sanctuaryBadges.js';
 import { GLASS_BLUR_CSS, GLASS_FILL, GLASS_RADIUS } from './glassPanelStyles.js';
+import { pickNewestAwardedId } from '../core/badgeAwardMoment.js';
 
-const STYLE_ID = 'yin-tip-kindness-badges-chrome-v5';
+const STYLE_ID = 'yin-tip-kindness-badges-chrome-v6';
 
 export class TipKindnessBadgesChrome {
   /**
@@ -37,6 +38,15 @@ export class TipKindnessBadgesChrome {
       handlers.storage ??
       (typeof globalThis !== 'undefined' ? globalThis.localStorage : null);
     this._visibleAllowed = true;
+    this._awardHoldArmed = false;
+    /** @type {Set<string>} */
+    this._settledIds = new Set();
+    /** @type {string[]} */
+    this._pendingNewIds = [];
+    /** @type {string[]} */
+    this._lastRenderedIds = [];
+    /** @type {HTMLButtonElement | null} */
+    this._heldButton = null;
 
     this.root = document.createElement('div');
     this.root.id = 'yin-tip-kindness-badges';
@@ -66,6 +76,48 @@ export class TipKindnessBadgesChrome {
     this.refresh();
   }
 
+  /** Hold the next newly rendered badge until the award moment decides. */
+  armAwardHold() {
+    this._awardHoldArmed = true;
+  }
+
+  /**
+   * @param {{ fade?: boolean }} [opts]
+   */
+  releaseAwardHold({ fade = false, settle = false } = {}) {
+    this._awardHoldArmed = false;
+    const btn = this._heldButton;
+    this._heldButton = null;
+    this._pendingNewIds = [];
+    if (btn?.isConnected) {
+      btn.style.opacity = '';
+      btn.classList.remove(
+        'yin-tip-kindness-badges__btn--award-fade',
+        'yin-tip-kindness-badges__btn--award-settle'
+      );
+      if (fade) btn.classList.add('yin-tip-kindness-badges__btn--award-fade');
+      if (settle) btn.classList.add('yin-tip-kindness-badges__btn--award-settle');
+    }
+    this._settledIds = new Set(this._lastRenderedIds);
+  }
+
+  /**
+   * Facts for resolveBadgeAwardPresentation. Call after the practice sync refresh.
+   */
+  readAwardHoldFacts() {
+    const btn = this._heldButton;
+    const rect = btn?.isConnected ? btn.getBoundingClientRect() : null;
+    const img = btn?.querySelector('img');
+    return {
+      newlyAddedIds: [...this._pendingNewIds],
+      orderedIds: [...this._lastRenderedIds],
+      stripVisible: this._visibleAllowed === true && this.root.hidden === false,
+      landingMeasurable: Boolean(rect && rect.width > 0 && rect.height > 0),
+      landingEl: btn,
+      src: img?.currentSrc || img?.src || ''
+    };
+  }
+
   refresh() {
     const pack = syncAndReadIdleBadgePack(this._storage);
     if (pack.kind === 'sanctuary') {
@@ -80,6 +132,8 @@ export class TipKindnessBadgesChrome {
     }
 
     this.row.replaceChildren();
+    const renderedIds = [];
+    const buttons = new Map();
     for (const id of pack.ids) {
       const meta =
         pack.kind === 'sanctuary'
@@ -114,11 +168,33 @@ export class TipKindnessBadgesChrome {
         this._download(file, kind);
       });
       this.row.appendChild(btn);
+      renderedIds.push(id);
+      buttons.set(id, btn);
     }
 
     const show =
       this._visibleAllowed && pack.ids.length > 0;
     this.root.hidden = !show;
+    this._lastRenderedIds = renderedIds;
+
+    const newcomers = renderedIds.filter((id) => !this._settledIds.has(id));
+    const holdId =
+      this._awardHoldArmed && show
+        ? pickNewestAwardedId(newcomers, renderedIds)
+        : null;
+    this._heldButton = null;
+    this._pendingNewIds = holdId ? newcomers : [];
+    if (holdId) {
+      const held = buttons.get(holdId);
+      if (held) {
+        held.style.opacity = '0';
+        this._heldButton = held;
+      }
+      this._settledIds = new Set(renderedIds.filter((id) => id !== holdId));
+    } else if (!this._awardHoldArmed || !show) {
+      this._settledIds = new Set(renderedIds);
+      this._pendingNewIds = [];
+    }
   }
 
   /**
@@ -151,6 +227,7 @@ export class TipKindnessBadgesChrome {
     document.getElementById('yin-tip-kindness-badges-chrome-v2')?.remove();
     document.getElementById('yin-tip-kindness-badges-chrome-v3')?.remove();
     document.getElementById('yin-tip-kindness-badges-chrome-v4')?.remove();
+    document.getElementById('yin-tip-kindness-badges-chrome-v5')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -189,6 +266,20 @@ export class TipKindnessBadgesChrome {
       }
       .yin-tip-kindness-badges__btn:hover {
         transform: scale(1.06);
+      }
+      .yin-tip-kindness-badges__btn--award-fade {
+        animation: yin-badge-award-fade 280ms ease;
+      }
+      .yin-tip-kindness-badges__btn--award-settle {
+        animation: yin-badge-award-settle 450ms cubic-bezier(.3,1.6,.5,1);
+      }
+      @keyframes yin-badge-award-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes yin-badge-award-settle {
+        from { transform: scale(1.18); }
+        to { transform: none; }
       }
       .yin-tip-kindness-badges__img {
         width: 40px;

@@ -256,6 +256,8 @@ import { bootYinArtReturnConfirm } from './core/yinArtCollectionCheckout.js';
 import { bootSeasonalThemeChrome } from './core/seasonal/bootSeasonalThemeChrome.js';
 import { TipJarUI } from './ui/TipJarUI.js';
 import { TipKindnessBadgesChrome } from './ui/TipKindnessBadgesChrome.js';
+import { BadgeAwardMomentUI } from './ui/BadgeAwardMomentUI.js';
+import { resolveBadgeAwardPresentation } from './core/badgeAwardMoment.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { QuietTogetherLanternsChrome } from './ui/QuietTogetherLanternsChrome.js';
 import { FocusCirclePresenceChrome } from './ui/FocusCirclePresenceChrome.js';
@@ -1519,6 +1521,7 @@ async function init() {
   window.__artCollectionPanel = artCollectionPanelUI;
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
+  const badgeAwardMomentUI = new BadgeAwardMomentUI(document.body);
   const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {});
   window.__sanctuaryEnsoMark = sanctuaryEnsoMarkChrome;
   const quietTogetherLanternsChrome = new QuietTogetherLanternsChrome(
@@ -2300,14 +2303,18 @@ async function init() {
   yinCoinPanelUI = new FocusCoinsPanelUI(
     document.body,
     withIdleOverlayOccupancySync({
-    getContext: () => ({
-      ...buildFocusCoinRedeemContext({
-        store: focusCoinsStore,
-        practiceDaysStore,
-        lotusPondStore
-      }),
-      equippedTitle: focusCoinsStore.getSnapshot().equippedTitle
-    }),
+    getContext: () => {
+      const snap = focusCoinsStore.getSnapshot();
+      return {
+        ...buildFocusCoinRedeemContext({
+          store: focusCoinsStore,
+          practiceDaysStore,
+          lotusPondStore
+        }),
+        equippedTitle: snap.equippedTitle,
+        acquiredOn: snap.acquiredOn
+      };
+    },
     redeem: (skuId) => window.__focusCoins.redeem(skuId),
     equipTitle: (titleId) => window.__focusCoins.equipTitle(titleId),
     getMerchState: () => {
@@ -2480,6 +2487,7 @@ async function init() {
     onPracticeDay: ({ durationMinutes, sourceId } = {}) => {
       practiceDaysStore.markToday(durationMinutes);
       lotusPondRuntime.notePracticeMinutes(durationMinutes);
+      tipKindnessBadgesChrome.armAwardHold();
       tipKindnessBadgesChrome.refresh();
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
@@ -3399,6 +3407,7 @@ async function init() {
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
+    tipKindnessBadgesChrome.armAwardHold();
     syncJourneyPracticeMemories(
       typeof localStorage !== 'undefined' ? localStorage : null,
       {
@@ -4873,8 +4882,7 @@ async function init() {
    *   onContinue?: () => void
    * }} [pending]
    */
-  function continueAfterGrowthCeremony(pending) {
-    if (maybeOfferPracticeImprintAfterCeremony(pending)) return;
+  function resumeAfterBadgeAward(pending) {
     if (pending?.sessionEndOpts) {
       sessionEndFlow.onSessionEnded(pending.sessionEndOpts);
     } else if (pending?.onContinue) {
@@ -4886,6 +4894,49 @@ async function init() {
       sessionUiGate.setPostSessionOverlayActive(false);
       resyncSessionChrome();
     }
+  }
+
+  /**
+   * Growth cards already declined. Fly the newest new badge, or let it appear.
+   * @param {Parameters<typeof resumeAfterBadgeAward>[0]} pending
+   */
+  function offerBadgeAwardMoment(pending) {
+    const facts = tipKindnessBadgesChrome.readAwardHoldFacts();
+    const reducedMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches === true;
+    const decision = resolveBadgeAwardPresentation({
+      newlyAddedIds: facts.newlyAddedIds,
+      orderedIds: facts.orderedIds,
+      growthCardOpening: false,
+      documentVisible: document.visibilityState === 'visible',
+      windowFocused:
+        typeof document.hasFocus === 'function' ? document.hasFocus() : true,
+      stripVisible: facts.stripVisible,
+      landingMeasurable: facts.landingMeasurable,
+      reducedMotion
+    });
+    if (decision.kind === 'fly' && facts.landingEl && facts.src) {
+      badgeAwardMomentUI.play({
+        src: facts.src,
+        landingEl: facts.landingEl,
+        onSettled: () => {
+          tipKindnessBadgesChrome.releaseAwardHold({ settle: true });
+          resumeAfterBadgeAward(pending);
+        }
+      });
+      return;
+    }
+    tipKindnessBadgesChrome.releaseAwardHold({
+      fade: decision.kind === 'fade'
+    });
+    resumeAfterBadgeAward(pending);
+  }
+
+  function continueAfterGrowthCeremony(pending) {
+    if (maybeOfferPracticeImprintAfterCeremony(pending)) return;
+    tipKindnessBadgesChrome.releaseAwardHold();
+    resumeAfterBadgeAward(pending);
   }
 
   /**
@@ -4913,6 +4964,7 @@ async function init() {
     ) {
       return false;
     }
+    tipKindnessBadgesChrome.releaseAwardHold();
     pendingAfterMustardSeed = opts;
     closeGrowthOverlayCards({ except: 'practice-imprint' });
     practiceImprintCardUI.open({
@@ -4942,6 +4994,7 @@ async function init() {
         hasUnrevealedCase: Boolean(seal.nextCase)
       })
     ) {
+      tipKindnessBadgesChrome.releaseAwardHold();
       pendingAfterMustardSeed = opts;
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({ mode: 'auto' });
@@ -4955,6 +5008,7 @@ async function init() {
       }) &&
       archive.nextEntry
     ) {
+      tipKindnessBadgesChrome.releaseAwardHold();
       pendingAfterMustardSeed = opts;
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({
@@ -4964,11 +5018,7 @@ async function init() {
       return true;
     }
     if (maybeOfferPracticeImprintAfterCeremony(opts)) return true;
-    if (opts.sessionEndOpts) {
-      sessionEndFlow.onSessionEnded(opts.sessionEndOpts);
-    } else if (opts.onContinue) {
-      opts.onContinue();
-    }
+    offerBadgeAwardMoment(opts);
     return false;
   }
 

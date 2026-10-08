@@ -86,6 +86,38 @@ describe('focusCoinsRedeem L2', () => {
     assert.equal(store.getBalance(), 0);
     assert.equal(store.getSnapshot().ownedIds.includes(LOTUS_DEW_OWNED_ID), true);
     assert.equal(lotus.getVisibleBloomCount(), 1);
+    assert.match(
+      store.getSnapshot().acquiredOn[LOTUS_DEW_OWNED_ID],
+      /^\d{4}-\d{2}-\d{2}$/
+    );
+  });
+
+  it('stamps today only on a new redeem and leaves older pieces undated', () => {
+    const storage = memoryStorage();
+    storage.setItem(
+      FOCUS_COINS_STORAGE_KEY,
+      JSON.stringify({
+        balance: 80,
+        ownedIds: ['title.sits-with-yin'],
+        dateKey: '2026-10-07'
+      })
+    );
+    const store = new FocusCoinsStore({
+      storage,
+      now: () => new Date(2026, 9, 7)
+    });
+    assert.equal(store.getSnapshot().acquiredOn['title.sits-with-yin'], undefined);
+    const bonded = applyFocusCoinsRedeem({
+      skuId: 'badge.rare.quiet-pebble',
+      store,
+      practiceDaysStore: new PracticeDaysStore({ storage }),
+      lotusPondStore: new LotusPondStore({ storage }),
+      enabled: true
+    });
+    assert.equal(bonded.ok, true);
+    const snap = store.getSnapshot();
+    assert.equal(snap.acquiredOn['title.sits-with-yin'], undefined);
+    assert.equal(snap.acquiredOn['badge.rare.quiet-pebble'], '2026-10-07');
   });
 
   it('rare pebble does not write Tea or Sanctuary badgeIds', () => {

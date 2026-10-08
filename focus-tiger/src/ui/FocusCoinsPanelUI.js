@@ -25,6 +25,7 @@ import {
 import { listCompanionTitleRows } from '../core/collectionsTitles.js';
 import { describeCompanionMerch } from '../core/companionMerch.js';
 import { buildMindfulnessScrollDraft } from '../core/mindfulnessScroll.js';
+import { saveCollectionPieceCard } from '../core/collectionPieceCard.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -754,6 +755,17 @@ export class FocusCoinsPanelUI {
       owned.className = 'yin-coin-panel__owned yin-coin-panel__owned-seal';
       owned.textContent = t('YIN_COIN_OWNED');
       meta.append(owned);
+      if (row.thumbSrc) {
+        const saveBtn = document.createElement('button');
+        saveBtn.type = 'button';
+        saveBtn.className = 'yin-coin-panel__btn yin-coin-panel__btn--bond';
+        saveBtn.dataset.testid = 'yin-coin-save-piece';
+        saveBtn.textContent = t('YIN_COIN_PIECE_SAVE');
+        saveBtn.addEventListener('click', () => {
+          void this._savePiece(saveBtn, row);
+        });
+        meta.append(saveBtn);
+      }
       if (row.showWear) {
         const wearBtn = document.createElement('button');
         wearBtn.type = 'button';
@@ -905,6 +917,31 @@ export class FocusCoinsPanelUI {
     thumb.dataset.kind = row.kind;
     thumb.setAttribute('aria-hidden', 'true');
     return thumb;
+  }
+
+  /**
+   * @param {HTMLButtonElement} button
+   * @param {ReturnType<typeof listFocusCoinSurfaceSections>['obtained'][number]} row
+   */
+  async _savePiece(button, row) {
+    if (button.disabled || !row.owned) return;
+    button.disabled = true;
+    button.textContent = t('YIN_COIN_PIECE_SAVING');
+    const ctx = this._context();
+    const recorded = ctx.acquiredOn?.[row.id];
+    const saveFn = this.handlers.savePiece || saveCollectionPieceCard;
+    const ok = await saveFn({
+      skuId: row.id,
+      owned: true,
+      name: t(row.nameKey),
+      lifetimeMinutes: ctx.lifetimeMinutes,
+      acquiredOn: typeof recorded === 'string' ? recorded : null,
+      thumbSrc: row.thumbSrc
+    });
+    button.disabled = false;
+    button.textContent = ok
+      ? t('YIN_COIN_PIECE_SAVED')
+      : t('YIN_COIN_PIECE_FAILED');
   }
 
   _onPlayWave() {

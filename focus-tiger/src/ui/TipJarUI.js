@@ -8,7 +8,8 @@
  * Badge + memorial copy only. Purchase → Stripe Checkout; restore by email.
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { TEA_GIFT_ART } from '../core/artEditionCatalog.js';
+import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
   TIP_JAR_PRICE_USD,
   consumeTipReturnQuery,
@@ -99,6 +100,22 @@ export class TipJarUI {
     this.logEl.dataset.testid = 'yin-tip-jar-tea-log';
     this.logEl.hidden = true;
 
+    this.giftEl = document.createElement('div');
+    this.giftEl.className = 'yin-tip-jar__gift';
+    this.giftEl.dataset.testid = 'yin-tip-jar-gift';
+    this.giftEl.hidden = true;
+    this.giftImg = document.createElement('img');
+    this.giftImg.className = 'yin-tip-jar__gift-img';
+    this.giftImg.alt = '';
+    this.giftImg.draggable = false;
+    this.giftCaption = document.createElement('p');
+    this.giftCaption.className = 'yin-tip-jar__gift-caption';
+    this.giftName = document.createElement('p');
+    this.giftName.className = 'yin-tip-jar__gift-name';
+    this.giftStory = document.createElement('p');
+    this.giftStory.className = 'yin-tip-jar__gift-story';
+    this.giftEl.append(this.giftImg, this.giftCaption, this.giftName, this.giftStory);
+
     this.statusEl = document.createElement('p');
     this.statusEl.className = 'yin-tip-jar__status';
     this.statusEl.dataset.testid = 'yin-tip-jar-status';
@@ -165,6 +182,7 @@ export class TipJarUI {
       this.titleEl,
       this.badgeWrap,
       this.logEl,
+      this.giftEl,
       this.statusEl,
       this.memorialEl,
       this.blurbEl,
@@ -360,6 +378,19 @@ export class TipJarUI {
     this.logEl.append(title, list);
   }
 
+  /**
+   * @param {boolean} tipped
+   */
+  _renderTeaGift(tipped) {
+    this.giftEl.hidden = !tipped;
+    if (!tipped) return;
+    const zh = getLocale() === 'zh';
+    this.giftImg.src = TEA_GIFT_ART.previewSrc;
+    this.giftCaption.textContent = zh ? TEA_GIFT_ART.captionZh : TEA_GIFT_ART.captionEn;
+    this.giftName.textContent = zh ? TEA_GIFT_ART.nameZh : TEA_GIFT_ART.nameEn;
+    this.giftStory.textContent = zh ? TEA_GIFT_ART.storyZh : TEA_GIFT_ART.storyEn;
+  }
+
   _refresh() {
     const backfill = ensureTipBadgesAwarded(this._storage);
     if (backfill.newlyAddedIds.length) {
@@ -392,6 +423,7 @@ export class TipJarUI {
     this.badgeWrap.classList.toggle('is-active', tipped);
     this._renderBadges(tipped ? status.badgeIds : []);
     this._renderTeaLog(tipped ? status.tipLog : []);
+    this._renderTeaGift(tipped);
 
     // Tips may repeat; do not permanently disable after first tip.
     this.buyBtn.disabled = this._busy || !cloudOk;
@@ -611,6 +643,19 @@ export class TipJarUI {
         line-height: 1.4;
         color: rgba(92, 67, 48, 0.72);
         text-align: center;
+      }
+      .yin-tip-jar__gift {
+        margin: 8px 0 4px;
+      }
+      .yin-tip-jar__gift-img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+      }
+      .yin-tip-jar__gift-caption,
+      .yin-tip-jar__gift-name,
+      .yin-tip-jar__gift-story {
+        margin: 2px 0;
       }
       .yin-tip-jar__tea-log {
         margin: 0 0 10px;

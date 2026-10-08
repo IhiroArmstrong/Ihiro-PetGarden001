@@ -1,9 +1,11 @@
 import { errorJson, json } from "../lib/http";
 import { emailFromCheckoutSession, retrieveCheckoutSession } from "../lib/stripe";
 import { ART_COLLECTION_PRODUCT, findArtCollectionWork } from "../lib/artCollectionCatalog";
+import { issueArtHdGrant } from "../lib/artCollectionHdGrant";
 import {
-	grantArtPiece,
+	grantArtPurchase,
 	indexArtCollectionPurchase,
+	noteEditionSale,
 	isArtPieceOwned,
 	normalizeArtEmail,
 	readArtCollection,
@@ -68,17 +70,35 @@ export async function handleConfirmArtCollectionSession(
 	const existing = await readArtCollection(env.SANCTUARY_KV, email);
 	const already = existing.items[artId];
 	if (already && isArtPieceOwned(existing, artId)) {
+		const hd = env.ART_COLLECTION_HD
+			? await issueArtHdGrant({
+					kv: env.SANCTUARY_KV,
+					pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
+					email,
+					artId,
+					receiptId: already.receiptId,
+				})
+			: null;
 		return json({
 			owned: true,
 			email,
 			artId,
 			ownedAt: already.ownedAt,
 			receiptId: already.receiptId,
+			hd,
 		});
 	}
 	const ownedAt = new Date().toISOString();
 	const receiptId = session.id;
-	const next = grantArtPiece(existing, artId, ownedAt, receiptId);
+	const editionNote = await noteEditionSale(
+		env.SANCTUARY_KV,
+		artId,
+		isArtPieceOwned(existing, artId),
+	);
+	if (editionNote === "closed") {
+		return json({ owned: false, pending: false, reason: "edition_closed", artId });
+	}
+	const next = grantArtPurchase(existing, artId, ownedAt, receiptId);
 	await writeArtCollection(env.SANCTUARY_KV, email, next);
 	await indexArtCollectionPurchase(env.SANCTUARY_KV, {
 		email,
@@ -86,11 +106,22 @@ export async function handleConfirmArtCollectionSession(
 		receiptId,
 	});
 	const saved = next.items[artId];
+	const savedReceipt = saved?.receiptId || receiptId;
+	const hd = env.ART_COLLECTION_HD
+		? await issueArtHdGrant({
+				kv: env.SANCTUARY_KV,
+				pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
+				email,
+				artId,
+				receiptId: savedReceipt,
+			})
+		: null;
 	return json({
 		owned: true,
 		email,
 		artId,
 		ownedAt: saved?.ownedAt || ownedAt,
-		receiptId: saved?.receiptId || receiptId,
+		receiptId: savedReceipt,
+		hd,
 	});
 }

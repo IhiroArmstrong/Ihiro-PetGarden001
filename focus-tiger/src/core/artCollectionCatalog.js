@@ -116,8 +116,26 @@ export const ART_COLLECTION_SHEETS = Object.freeze([
     'hd-sp-08',
     'Jun moon-white dragon fanghu',
     '月白釉龙耳方壶',
-    'Moon-white Jun glaze, not Longquan celadon. A lidded square jar with dragon handles.',
-    '月白釉钧窑，不是龙泉青瓷。带盖方壶，龙形耳。'
+    'Moon-white Jun glaze on a Shang–Zhou style lidded square fanghu. Dragon handles; geometric relief on the belly.',
+    '月白釉钧窑。仿商周带盖方壶，龙形耳，腹上几何浮雕纹。'
+  ),
+  sheet(
+    'song-porcelain',
+    'ru-crackle-fanghu',
+    'hd-sp-09',
+    'Ru crackle fanghu',
+    '汝窑开片方壶',
+    'Ru-style crackle on a Shang–Zhou lidded square fanghu. Pale celadon glaze and geometric relief bands.',
+    '汝窑开片釉。仿商周带盖方壶，淡青釉，腹上几何浮雕纹。'
+  ),
+  sheet(
+    'song-porcelain',
+    'amber-glaze-fanghu',
+    'hd-sp-10',
+    'Amber glaze fanghu',
+    '黄釉方壶',
+    'Amber glaze on a Shang–Zhou lidded square fanghu. Dragon handles and carved geometric panels.',
+    '黄釉。仿商周带盖方壶，龙形耳，腹上几何浮雕纹。'
   ),
   sheet(
     'song-ge-ware',
@@ -172,6 +190,15 @@ export const ART_COLLECTION_SHEETS = Object.freeze([
     '哥窑兽面纹觚',
     'A gu in crackled glaze, with a square taotie knop on the stem.',
     '开片釉觚，腰间一方兽面节。'
+  ),
+  sheet(
+    'song-ge-ware',
+    'ge-crackle-fanghu',
+    'hd-sg-07',
+    'Ge crackle fanghu',
+    '哥窑开片方壶',
+    'Ge crackle on a Shang–Zhou lidded square fanghu. Dragon handles and geometric relief on the belly.',
+    '哥窑开片釉。仿商周带盖方壶，龙形耳，腹上几何浮雕纹。'
   ),
   sheet(
     'tixi-lacquer',

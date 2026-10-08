@@ -60,6 +60,8 @@ test('panel source maps shop SKUs via listFocusCoinSurfaceSections', () => {
   assert.match(src, /YIN_COIN_SECTION_PENDING/);
   assert.match(src, /yin-coin-panel__row--owned/);
   assert.match(src, /yin-coin-panel__owned-seal/);
+  assert.match(src, /dataset\.testid = 'yin-coin-save-piece'/);
+  assert.match(src, /if \(row\.thumbSrc\) \{[\s\S]*yin-coin-save-piece/);
 });
 
 test('Collections wave play eases backdrop blur via body class', () => {

@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-01（Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-10-03（Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -387,6 +387,7 @@
 14. 付 Tea 后升到 ≥3；练习天数/`practice-days` 抬高后刷新，枚数可按 `score = 天数 + floor(累计分/60)`、`min + floor(score/3)` **只增不减**（无需再 tip）。
 15. **Membership 订阅** confirm（或 `?entitlementMock=subscription`）后 Idle 右侧 `#yin-tip-kindness-badges` ≥ **3** 枚尊贵章；Sanctuary 卡仍可显示未买 Lifetime（不把 SKU 标已买）。
 16. **回流**：Rise 后再见徽章条；关 Tip/Sanctuary/Membership 卡再开仍在。
+17. **颁发那一下**：记账后身旁新多一枚，且没有纪念印 / 诗稿 / 静思典藏自动出卡、窗口在前台、徽章条可见 → 庆祝或金辉结束后 **0–1 秒内** 背景轻暗，新枚从中心弹出再飞回 `#yin-tip-kindness-badges`（点一下或 Esc 立刻落位）。同轮多枚只飞目录序最新的一枚。出卡要开、条被藏、窗口在后台、或系统减少动效 → 不飞，枚直接在那一排。单测锁门禁；飞入观感仍须人工。
 
 ---
 
