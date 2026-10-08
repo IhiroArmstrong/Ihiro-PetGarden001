@@ -44,7 +44,7 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v5';
+const STYLE_ID = 'yin-coin-panel-styles-v6';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CEREMONIAL_MS = 2400;
 
@@ -85,6 +85,9 @@ export class FocusCoinsPanelUI {
    * @param {() => Promise<{ ok?: boolean, reason?: string }>} [handlers.saveScroll]
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
+   * @param {() => boolean} [handlers.shouldShowArtBridge]
+   * @param {() => void} [handlers.markArtBridgeSeen]
+   * @param {() => void} [handlers.onOpenArtCollection]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -289,7 +292,41 @@ export class FocusCoinsPanelUI {
 
     this.ceremonialText = document.createElement('p');
     this.ceremonialText.className = 'yin-coin-panel__ceremonial-text';
-    this.ceremonial.append(this.ceremonialMark, this.ceremonialText);
+
+    this.artBridge = document.createElement('div');
+    this.artBridge.className = 'yin-coin-panel__art-bridge';
+    this.artBridge.hidden = true;
+    this.artBridge.dataset.testid = 'yin-coin-art-bridge';
+    this.artBridgeText = document.createElement('p');
+    this.artBridgeText.className = 'yin-coin-panel__art-bridge-text';
+    this.artBridgeActions = document.createElement('div');
+    this.artBridgeActions.className = 'yin-coin-panel__art-bridge-actions';
+    this.artBridgeOpen = document.createElement('button');
+    this.artBridgeOpen.type = 'button';
+    this.artBridgeOpen.className =
+      'yin-coin-panel__btn yin-coin-panel__btn--primary';
+    this.artBridgeOpen.dataset.testid = 'yin-coin-art-bridge-open';
+    this.artBridgeDismiss = document.createElement('button');
+    this.artBridgeDismiss.type = 'button';
+    this.artBridgeDismiss.className =
+      'yin-coin-panel__btn yin-coin-panel__btn--ghost';
+    this.artBridgeDismiss.dataset.testid = 'yin-coin-art-bridge-dismiss';
+    this.artBridgeOpen.addEventListener('click', () => {
+      const open = this.handlers.onOpenArtCollection;
+      if (typeof open === 'function') {
+        open();
+        return;
+      }
+      this._hideCeremonial();
+    });
+    this.artBridgeDismiss.addEventListener('click', () => this._hideCeremonial());
+    this.artBridgeActions.append(this.artBridgeOpen, this.artBridgeDismiss);
+    this.artBridge.append(this.artBridgeText, this.artBridgeActions);
+    this.ceremonial.append(
+      this.ceremonialMark,
+      this.ceremonialText,
+      this.artBridge
+    );
 
     this.actions.append(this.waveBtn, this.closeBtn);
     this.bondPane.append(this.ceremonial);
@@ -416,6 +453,9 @@ export class FocusCoinsPanelUI {
   _refresh() {
     const ctx = this._context();
     this.titleEl.textContent = t('YIN_COIN_PANEL_TITLE');
+    if (this.artBridge && !this.artBridge.hidden) {
+      this._fillArtBridgeCopy();
+    }
     this.taglineEl.textContent = t('BRAND_YIN_WAY_TAGLINE');
     this.blurbEl.textContent = t('YIN_COIN_PANEL_BLURB');
     this.notForSaleEl.textContent = t('YIN_COIN_NOT_FOR_SALE');
@@ -962,7 +1002,8 @@ export class FocusCoinsPanelUI {
     }
     const result = this.handlers.redeem?.(row.id);
     this._refresh();
-    if (result?.ok && row.ceremonial) {
+    if (!result?.ok) return;
+    if (row.ceremonial || this.handlers.shouldShowArtBridge?.() === true) {
       this._showCeremonial(row);
     }
   }
@@ -981,16 +1022,36 @@ export class FocusCoinsPanelUI {
     this.ceremonial.hidden = false;
     this.ceremonial.classList.add('is-visible');
     window.clearTimeout(this._ceremonialTimer);
+    const showBridge = this.handlers.shouldShowArtBridge?.() === true;
+    this.ceremonial.classList.toggle(
+      'yin-coin-panel__ceremonial--bridge',
+      showBridge
+    );
+    if (showBridge) {
+      this.artBridge.hidden = false;
+      this._fillArtBridgeCopy();
+      this.handlers.markArtBridgeSeen?.();
+      return;
+    }
+    this.artBridge.hidden = true;
     this._ceremonialTimer = window.setTimeout(() => {
       this._hideCeremonial();
     }, CEREMONIAL_MS);
   }
 
+  _fillArtBridgeCopy() {
+    this.artBridgeText.textContent = t('YIN_COIN_ART_BRIDGE');
+    this.artBridgeOpen.textContent = t('YIN_COIN_ART_BRIDGE_OPEN');
+    this.artBridgeDismiss.textContent = t('YIN_COIN_CLOSE');
+  }
+
   _hideCeremonial() {
     window.clearTimeout(this._ceremonialTimer);
     this.ceremonial.classList.remove('is-visible');
+    this.ceremonial.classList.remove('yin-coin-panel__ceremonial--bridge');
     this.ceremonial.hidden = true;
     this.ceremonialText.textContent = '';
+    if (this.artBridge) this.artBridge.hidden = true;
   }
 
   _injectStyles() {
@@ -1428,6 +1489,27 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__ceremonial.is-visible {
         opacity: 1;
+      }
+      .yin-coin-panel__ceremonial--bridge {
+        pointer-events: auto;
+      }
+      .yin-coin-panel__art-bridge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .yin-coin-panel__art-bridge-text {
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.45;
+      }
+      .yin-coin-panel__art-bridge-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
       }
       .yin-coin-panel__memorial-row {
         margin: 0 0 8px;

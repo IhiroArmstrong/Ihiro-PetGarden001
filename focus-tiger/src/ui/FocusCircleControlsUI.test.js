@@ -26,6 +26,13 @@ test('create and join map timeout to a recoverable error key', () => {
   assert.match(src, /result\.reason === 'timeout'/);
 });
 
+test('beside seat controls stay inside the circle panel', () => {
+	assert.match(src, /focus-circle-beside-issue/);
+  assert.match(src, /BESIDE_SEAT_COPIED/);
+  assert.match(src, /BESIDE_SEAT_ERROR_USED/);
+  assert.match(src, /isBesideSeatClientEnabled/);
+});
+
 test('leave maps timeout to fail copy and reads result.ok', () => {
   assert.match(src, /async _handleLeave\(\)/);
   assert.match(src, /result\.ok/);

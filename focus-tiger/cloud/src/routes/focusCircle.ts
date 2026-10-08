@@ -58,6 +58,23 @@ import {
 	parseFocusCircleWasHereRecord,
 	toLocalDayKey,
 } from "../lib/focusCircleWasHereKv";
+import {
+	besideCodeKvKey,
+	besideStatusFields,
+	consumeBesideJoin,
+	deleteBesideCircle,
+	generateBesideCode,
+	invitedWasHereToday,
+	issueBesideCode,
+	loadBeside,
+	normalizeBesideCode,
+	previewBesideJoin,
+	revokeBesideCode,
+	revokeInviterUnusedStored,
+	saveBeside,
+	stampBesideSittingStored,
+	tryAddBesideMember,
+} from "../lib/focusCircleBesideKv";
 import type { Env } from "../types";
 
 const ACTIONS = new Set([
@@ -73,6 +90,9 @@ const ACTIONS = new Set([
 	"witness_respond",
 	"was_here_mark",
 	"identity_set",
+	"beside_issue",
+	"beside_join",
+	"beside_revoke",
 ]);
 const MAX_CODE_RETRIES = 12;
 
@@ -99,6 +119,7 @@ async function deleteCircle(kv: KvLike, record: NonNullable<Awaited<ReturnType<t
 	await kv.delete(circleWitnessKvKey(record.circleId));
 	await kv.delete(circleWasHereKvKey(record.circleId));
 	await kv.delete(circleIdentityKvKey(record.circleId));
+	await deleteBesideCircle(kv, record.circleId);
 }
 
 async function loadCirclePresence(kv: KvLike, circleId: string) {
@@ -188,6 +209,47 @@ async function saveCircleIdentity(
 	);
 }
 
+function readViewerClock(o: Record<string, unknown>, nowMs: number) {
+	const viewerDayKey =
+		typeof o.viewerDayKey === "string" && isWasHereDayKey(o.viewerDayKey.trim())
+			? o.viewerDayKey.trim()
+			: toLocalDayKey(nowMs, "UTC");
+	const viewerTimeZone =
+		typeof o.viewerTimeZone === "string" && o.viewerTimeZone.trim()
+			? o.viewerTimeZone.trim()
+			: "UTC";
+	return { viewerDayKey, viewerTimeZone };
+}
+
+async function besideFieldsForMember(
+	kv: KvLike,
+	record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>,
+	memberId: string,
+	nowMs: number,
+	viewerDayKey: string,
+	viewerTimeZone: string,
+) {
+	const beside = await loadBeside(kv, record.circleId);
+	const wasHere = await loadCircleWasHere(kv, record.circleId);
+	const sitting = await loadCirclePresence(kv, record.circleId);
+	const identity = await loadCircleIdentity(kv, record.circleId);
+	const view = invitedWasHereToday({
+		record: beside,
+		inviterMemberId: memberId,
+		circle: record,
+		wasHere,
+		sitting,
+		nowMs,
+		viewerDayKey,
+		viewerTimeZone,
+		nicknameOf: (id) => {
+			const nick = identity[id]?.nickname;
+			return typeof nick === "string" && nick.trim() ? nick.trim() : null;
+		},
+	});
+	return besideStatusFields(beside, memberId, view);
+}
+
 function circlePayload(record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>, memberId: string) {
 	return {
 		ok: true as const,
@@ -226,7 +288,7 @@ export async function handleFocusCircle(
 		return errorJson(
 			400,
 			"bad_action",
-			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, witness_respond, was_here_mark, or identity_set",
+			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, witness_respond, was_here_mark, identity_set, beside_issue, beside_join, or beside_revoke",
 		);
 	}
 
@@ -285,6 +347,51 @@ export async function handleFocusCircle(
 			return json(circlePayload(added.record, memberId));
 		}
 
+		if (action === "beside_join") {
+			const code = normalizeBesideCode(o.code);
+			if (!code) {
+				return errorJson(400, "bad_beside_code", "code must be 8 characters");
+			}
+			const memberId =
+				typeof o.memberId === "string" ? o.memberId.trim() : "";
+			if (!isFocusCircleMemberId(memberId)) {
+				return errorJson(400, "bad_member_id", "memberId must be a UUID");
+			}
+			const circleId = await kv.get(besideCodeKvKey(code));
+			if (!circleId || !isFocusCircleId(circleId)) {
+				return errorJson(404, "beside_not_found", "No seat code");
+			}
+			const record = await loadCircle(kv, circleId);
+			if (!record) {
+				return errorJson(404, "beside_not_found", "No seat code");
+			}
+			const beside = await loadBeside(kv, record.circleId);
+			if (record.members[memberId]) {
+				return json(circlePayload(record, memberId));
+			}
+			const preview = previewBesideJoin(beside, code, memberId, record);
+			if (!preview.ok && preview.reason === "used") {
+				return errorJson(409, "beside_used", "That seat code was already used");
+			}
+			if (!preview.ok && preview.reason === "self") {
+				return errorJson(400, "beside_self", "Use this code for someone else");
+			}
+			if (!preview.ok) {
+				return errorJson(404, "beside_not_found", "No seat code");
+			}
+			const added = tryAddBesideMember(record, memberId, nowMs);
+			if (!added.ok) {
+				return errorJson(409, "circle_full", "This circle is full");
+			}
+			await saveCircle(kv, added.record);
+			await saveBeside(
+				kv,
+				record.circleId,
+				consumeBesideJoin(beside, code, memberId, nowMs),
+			);
+			return json(circlePayload(added.record, memberId));
+		}
+
 		const circleId =
 			typeof o.circleId === "string" ? o.circleId.trim() : "";
 		const memberId =
@@ -299,6 +406,66 @@ export async function handleFocusCircle(
 		const record = await loadCircle(kv, circleId);
 		if (!record) {
 			return errorJson(404, "circle_not_found", "Circle not found");
+		}
+
+		if (action === "beside_issue" || action === "beside_revoke") {
+			if (!record.members[memberId]) {
+				return errorJson(403, "not_member", "Not a member of this circle");
+			}
+			const beside = await loadBeside(kv, circleId);
+			if (action === "beside_revoke") {
+				const code = normalizeBesideCode(o.code);
+				if (!code) {
+					return errorJson(400, "bad_beside_code", "code must be 8 characters");
+				}
+				const revoked = revokeBesideCode(beside, memberId, code);
+				if (!revoked.ok) {
+					return errorJson(404, "beside_not_found", "No unused seat code");
+				}
+				await saveBeside(kv, circleId, revoked.record);
+				const clock = readViewerClock(o, nowMs);
+				const fields = await besideFieldsForMember(
+					kv,
+					record,
+					memberId,
+					nowMs,
+					clock.viewerDayKey,
+					clock.viewerTimeZone,
+				);
+				return json({ ...circlePayload(record, memberId), ...fields });
+			}
+			let issued: ReturnType<typeof issueBesideCode> | null = null;
+			let issuedCode = "";
+			for (let attempt = 0; attempt < MAX_CODE_RETRIES; attempt += 1) {
+				const code = generateBesideCode();
+				if (await kv.get(besideCodeKvKey(code))) continue;
+				issued = issueBesideCode(beside, memberId, code, nowMs);
+				if (!issued.ok) break;
+				issuedCode = code;
+				break;
+			}
+			if (!issued || !issued.ok) {
+				if (issued && issued.reason === "quota") {
+					return errorJson(409, "beside_quota", "Unused seat codes are full");
+				}
+				return errorJson(500, "code_collision", "Could not allocate seat code");
+			}
+			await saveBeside(kv, circleId, issued.record);
+			await kv.put(besideCodeKvKey(issuedCode), circleId);
+			const clock = readViewerClock(o, nowMs);
+			const fields = await besideFieldsForMember(
+				kv,
+				record,
+				memberId,
+				nowMs,
+				clock.viewerDayKey,
+				clock.viewerTimeZone,
+			);
+			return json({
+				...circlePayload(record, memberId),
+				...fields,
+				besideCode: issuedCode,
+			});
 		}
 
 		if (
@@ -448,6 +615,14 @@ export async function handleFocusCircle(
 					? applyCirclePresenceHeartbeat(sessions, memberId, nowMs)
 					: applyCirclePresenceLeave(sessions, memberId, nowMs);
 			await saveCirclePresence(kv, circleId, next);
+			if (action === "presence_heartbeat") {
+				await stampBesideSittingStored(
+					kv,
+					circleId,
+					memberId,
+					toLocalDayKey(nowMs, "UTC"),
+				);
+			}
 			const sittingOthers = countCircleSittingSessions(next, nowMs, memberId);
 			return json({
 				ok: true,
@@ -508,6 +683,22 @@ export async function handleFocusCircle(
 
 		if (action === "status") {
 			const isMember = Boolean(record.members[memberId]);
+			const clock = readViewerClock(o, nowMs);
+			const fields = isMember
+				? await besideFieldsForMember(
+						kv,
+						record,
+						memberId,
+						nowMs,
+						clock.viewerDayKey,
+						clock.viewerTimeZone,
+					)
+				: {
+						besideUnused: [] as string[],
+						besideRemaining: 0,
+						invitedWasHere: false,
+						invitedWasHereName: null as string | null,
+					};
 			return json({
 				ok: true,
 				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
@@ -516,9 +707,11 @@ export async function handleFocusCircle(
 				memberId,
 				memberCount: countFocusCircleMembers(record),
 				isMember,
+				...fields,
 			});
 		}
 
+		await revokeInviterUnusedStored(kv, circleId, memberId);
 		const next = removeFocusCircleMember(record, memberId);
 		await clearCircleMemberPresence(kv, circleId, memberId, nowMs);
 		if (!next) {
