@@ -247,6 +247,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | Slack 实验室接线 Join our community | ✅ **已接线**（2026-08-29 · `communityLink.js`） |
 | Global Lanterns / Quiet Together MVP | **本旁支开工** · Brief `task-quiet-together-lanterns-mvp.md` · 生产须部署 |
 | Circle / Identity Runtime / 公开 Ambient | Circle **刀 2a #556 已合 + 生产已部署** · Brief `task-focus-circle-mvp.md` |
+| 请你坐在旁边（一次码） | **规则已锁 · 运行时未写** · Brief `task-beside-seat-invite.md` · 口令「大任务」再写代码 |
 
 ---
 
