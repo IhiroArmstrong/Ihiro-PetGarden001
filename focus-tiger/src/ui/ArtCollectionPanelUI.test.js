@@ -26,6 +26,8 @@ test('art collection panel is its own glass card', () => {
   assert.match(src, /art-collection-save-/);
   assert.match(src, /saveArtChosenPieceCard/);
   assert.match(src, /ART_CHOSEN_PIECE_SAVING/);
+  assert.match(src, /readArtHd/);
+  assert.match(src, /row\.previewSrc/);
   assert.doesNotMatch(src, /YIN_COIN_PIECE_CARD/);
   assert.doesNotMatch(src, /localStorage/);
   assert.doesNotMatch(src, /永久拥有/);

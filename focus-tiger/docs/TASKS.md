@@ -230,7 +230,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **静物** | 九张透明底；第一批五件与价格 | `task-yin-art-collection-stills.md` | **#1076 已合** · 无购买 |
 | **结账** | 独立入口、详情、单独付款、登录后恢复 | `task-yin-art-collection-checkout.md` | **#1081 已合** · 生产 Worker `f72a4c10-…`（旧五件货架；菜单入口已撤） |
 | **22 张收款** | 每张 $1.99；购买打开 Stripe；不卖旧五件 | `task-art-collection-live-checkout.md` | **#1090 已合** · 生产须另说「部署」 |
-| **高清下发** | 付清后下载、本机离线缓存、轻购买者标记；预览仍进包 | `task-art-collection-hd-delivery.md` | **已点头，未开工**（2026-10-07） |
+| **高清下发** | 付清后下载、本机离线缓存、轻购买者标记；预览仍进包 | `task-art-collection-hd-delivery.md` | **#1098 已合** |
 | **收藏卡** | 已买下的一张存图；句子是「我选的」 | `task-art-collection-chosen-piece-card.md` | **本支** · 待人工 |
 
 ---

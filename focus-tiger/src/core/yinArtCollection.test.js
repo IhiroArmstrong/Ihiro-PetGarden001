@@ -216,3 +216,35 @@ test('a paid live sheet is remembered after this session signs in', () => {
   const owned = visibleYinArtOwnership(local, session);
   assert.equal(owned['celadon-taotie-gu'].receiptId, 'cs_test_sheet');
 });
+
+test('a paid confirm stores high resolution only when the server sends a link', async () => {
+  const { createMemoryArtHdCache, readArtHd } = await import('./artCollectionHd.js');
+  const cache = createMemoryArtHdCache();
+  let fetches = 0;
+  const local = memoryStorage();
+  const session = memoryStorage();
+  const result = await confirmYinArtReturnQuery({
+    localStorage: local,
+    sessionStorage: session,
+    getSearch: () => '?art_session=cs_test_hd',
+    replaceUrl: () => {},
+    hdCache: cache,
+    fetchHd: async () => {
+      fetches += 1;
+      return { ok: true, blob: async () => new Blob([new Uint8Array(24)]) };
+    },
+    postJson: async () => ({
+      owned: true,
+      email: 'yin@example.com',
+      artId: 'moonlit-celadon-jar',
+      ownedAt: '2026-10-08T00:00:00.000Z',
+      receiptId: 'cs_test_hd',
+      hd: { url: '/api/art-collection-hd?t=once', expiresAt: 1 }
+    })
+  });
+  assert.equal(result.outcome, 'success');
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.equal(fetches, 1);
+  const saved = await readArtHd('moonlit-celadon-jar', cache);
+  assert.equal(saved.blob.size, 24);
+});

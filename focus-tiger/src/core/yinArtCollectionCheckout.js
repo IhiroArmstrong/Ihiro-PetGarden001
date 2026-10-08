@@ -8,10 +8,43 @@
  * Ownership is written only after the server says the payment is paid.
  */
 
-import { postCloudJson } from './cloudApiClient.js';
+import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
+import { cacheIssuedArtHd } from './artCollectionHd.js';
 import { openCheckoutUrl } from './desktopShell.js';
 import { buildCheckoutSessionBody } from './desktopCheckoutReturn.js';
 import { noteDesktopCheckoutOpened } from './desktopCheckoutPending.js';
+
+function artHdUrl(path) {
+  const value = String(path || '');
+  if (/^https?:\/\//.test(value)) return value;
+  const base = String(getCloudApiBaseUrl() || '').replace(/\/$/, '');
+  return `${base}${value.startsWith('/') ? value : `/${value}`}`;
+}
+
+/**
+ * @param {Array<{ artId?: string, receiptId?: string, url?: string }>} grants
+ * @param {{ fetchHd?: typeof fetch, hdCache?: object }} [deps]
+ */
+function saveGrantedArtHd(grants, deps = {}) {
+  const rows = Array.isArray(grants) ? grants : [];
+  if (!rows.length) return;
+  void (async () => {
+    let saved = false;
+    for (const row of rows) {
+      const result = await cacheIssuedArtHd({
+        artId: row && row.artId,
+        receiptId: row && row.receiptId,
+        url: row && row.url,
+        fetchImpl: deps.fetchHd,
+        cache: deps.hdCache,
+        resolveUrl: artHdUrl
+      });
+      if (result.ok) saved = true;
+    }
+    if (saved) notifyYinArtOwnership('hd-ready');
+  })();
+}
+
 import {
   clearYinArtSession,
   findYinArtWork,
@@ -75,7 +108,9 @@ export async function confirmYinArtReturnQuery({
       history.replaceState(null, '', path);
     }
   },
-  postJson
+  postJson,
+  fetchHd,
+  hdCache
 } = {}) {
   const params = new URLSearchParams(String(getSearch() || '').replace(/^\?/, ''));
   const cancel = params.get('art') === 'cancel';
@@ -145,6 +180,12 @@ export async function confirmYinArtReturnQuery({
       writeYinArtSession(sessionStorage, record.email);
       writeYinArtNotice(sessionStorage, { kind: 'success', artId: record.artId });
       notifyYinArtOwnership('success');
+      if (record.hd && typeof record.hd.url === 'string') {
+        saveGrantedArtHd(
+          [{ artId: record.artId, receiptId: record.receiptId, url: record.hd.url }],
+          { fetchHd, hdCache }
+        );
+      }
       return { consumed: true, owned: true, outcome: 'success', artId: record.artId };
     }
     writeYinArtNotice(sessionStorage, { kind: 'failed' });
@@ -190,7 +231,9 @@ export async function verifyYinArtSignIn({
   code,
   localStorage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null,
   sessionStorage = typeof globalThis !== 'undefined' ? globalThis.sessionStorage : null,
-  postJson = postCloudJson
+  postJson = postCloudJson,
+  fetchHd,
+  hdCache
 }) {
   try {
     const body = await postJson('/api/verify-art-collection', {
@@ -206,6 +249,9 @@ export async function verifyYinArtSignIn({
     });
     writeYinArtSession(sessionStorage, record.email);
     notifyYinArtOwnership('signed-in');
+    if (Array.isArray(record.downloads)) {
+      saveGrantedArtHd(record.downloads, { fetchHd, hdCache });
+    }
     return { ok: true, email: record.email };
   } catch {
     return { ok: false, reason: 'rejected' };
