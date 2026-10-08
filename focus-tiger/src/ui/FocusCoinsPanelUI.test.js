@@ -46,6 +46,18 @@ test('Collections Bond / busy copy uses the center toast so the panel cannot bur
   );
 });
 
+test('first bonded piece keeps a one-time art bridge on the success card', () => {
+  assert.match(src, /dataset\.testid = 'yin-coin-art-bridge'/);
+  assert.match(src, /dataset\.testid = 'yin-coin-art-bridge-open'/);
+  assert.match(src, /dataset\.testid = 'yin-coin-art-bridge-dismiss'/);
+  assert.match(src, /shouldShowArtBridge/);
+  assert.match(src, /markArtBridgeSeen/);
+  assert.match(src, /onOpenArtCollection/);
+  assert.match(src, /YIN_COIN_ART_BRIDGE/);
+  assert.match(src, /yin-coin-panel__ceremonial--bridge/);
+  assert.match(src, /if \(showBridge\) \{[\s\S]*markArtBridgeSeen\?\.[\s\S]*return;/);
+});
+
 test('curio thumb opens a still and a short note inside the panel', () => {
   assert.match(src, /yin-coin-curio-detail/);
   assert.match(src, /yin-coin-panel__thumb-img--pending/);

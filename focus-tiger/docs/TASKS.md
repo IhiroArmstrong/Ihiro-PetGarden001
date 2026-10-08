@@ -233,6 +233,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **高清下发** | 付清后下载、本机离线缓存、轻购买者标记；预览仍进包 | `task-art-collection-hd-delivery.md` | **实现中**（2026-10-08 · `feature/art-collection-hd-delivery`） |
 | **收藏卡** | 已买下的一张存图；句子是「我选的」 | `task-art-collection-chosen-piece-card.md` | **只登记** · 等珍藏凭证卡之后另说开工 |
 | **限量套装** | 一套 5 件；一版 100 套（500 件）；请茶谢礼在套外 | `task-art-collection-limited-sets.md` | **本支开工 · 2026-10-08 · 未部署** |
+| **珍藏过渡** | 第一次结缘器物后，成功卡上一句安静英文，打开 Yin's Art Collection，只一次 | `task-collections-art-bridge.md` | **本支** |
 
 ---
 
