@@ -12,6 +12,8 @@ import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import { artSheetName, artSheetStory } from '../core/artCollectionCatalog.js';
 import { ART_EDITION_PRICE_USD, ART_EDITION_SETS } from '../core/artEditionCatalog.js';
 import { requestArtPurchase } from '../core/artCollectionPurchase.js';
+import { readArtHd } from '../core/artCollectionHd.js';
+import { subscribeYinArtOwnership } from '../core/yinArtCollection.js';
 import { postCloudJson } from '../core/cloudApiClient.js';
 import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
 import { openCheckoutUrl } from '../core/desktopShell.js';
@@ -82,7 +84,7 @@ export class ArtCollectionPanelUI {
     this.listEl.className = 'art-collection-panel__list';
     this.listEl.dataset.testid = 'art-collection-list';
 
-    /** @type {Map<string, { name: HTMLElement, story: HTMLElement, notice: HTMLElement, buy: HTMLButtonElement }>} */
+    /** @type {Map<string, { name: HTMLElement, story: HTMLElement, notice: HTMLElement, buy: HTMLButtonElement, sheetImgs: Map<string, { img: HTMLImageElement, hdUrl: string, hdReceiptId?: string }> }>} */
     this._cards = new Map();
 
     for (const set of ART_EDITION_SETS) {
@@ -108,7 +110,11 @@ export class ArtCollectionPanelUI {
     document.addEventListener('keydown', this._onKeyDown);
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this._refreshTexts());
+    this._unsubHd = subscribeYinArtOwnership(() => {
+      void this._applyCachedHd();
+    });
     this._refreshTexts();
+    void this._applyCachedHd();
   }
 
   /**
@@ -121,6 +127,8 @@ export class ArtCollectionPanelUI {
 
     const gallery = document.createElement('div');
     gallery.className = 'art-collection-panel__gallery';
+    /** @type {Map<string, { img: HTMLImageElement, hdUrl: string, hdReceiptId?: string }>} */
+    const sheetImgs = new Map();
     for (const piece of row.sheets) {
       const img = document.createElement('img');
       img.src = piece.previewSrc;
@@ -129,6 +137,7 @@ export class ArtCollectionPanelUI {
       img.loading = 'lazy';
       img.draggable = false;
       gallery.appendChild(img);
+      sheetImgs.set(piece.id, { img, hdUrl: '' });
     }
 
     const name = document.createElement('p');
@@ -147,7 +156,7 @@ export class ArtCollectionPanelUI {
     buy.addEventListener('click', () => this._buy(row.id));
 
     card.append(gallery, name, story, notice, buy);
-    this._cards.set(row.id, { name, story, notice, buy });
+    this._cards.set(row.id, { name, story, notice, buy, sheetImgs });
     return card;
   }
 
@@ -156,9 +165,29 @@ export class ArtCollectionPanelUI {
     return this._open;
   }
 
+  async _applyCachedHd() {
+    for (const set of ART_EDITION_SETS) {
+      const card = this._cards.get(set.id);
+      if (!card) continue;
+      for (const piece of set.sheets) {
+        const slot = card.sheetImgs.get(piece.id);
+        if (!slot) continue;
+        const saved = await readArtHd(piece.id);
+        if (!saved?.blob) continue;
+        if (slot.hdReceiptId === saved.receiptId && slot.hdUrl) continue;
+        const next = URL.createObjectURL(saved.blob);
+        if (slot.hdUrl) URL.revokeObjectURL(slot.hdUrl);
+        slot.hdUrl = next;
+        slot.hdReceiptId = saved.receiptId;
+        slot.img.src = next;
+      }
+    }
+  }
+
   open() {
     if (this._open) return;
     this._open = true;
+    void this._applyCachedHd();
     showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.root.getBoundingClientRect();

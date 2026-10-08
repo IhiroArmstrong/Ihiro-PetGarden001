@@ -39,6 +39,7 @@ import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleVerifyCompanionAddon } from "./routes/verifyCompanionAddon";
 import { handleVerifyArtCollection } from "./routes/verifyArtCollection";
+import { handleGetArtCollectionHd } from "./routes/getArtCollectionHd";
 import { handleStripeWebhook } from "./routes/stripeWebhook";
 import { handleVerifyTip } from "./routes/verifyTip";
 import { handleSubscribeNewsletter } from "./routes/subscribeNewsletter";
@@ -369,6 +370,21 @@ export default {
 			});
 			if (verifyLimited) return withCors(verifyLimited, origin);
 			return withCors(await handleVerifyArtCollection(request, env), origin);
+		}
+
+		if (url.pathname === "/api/art-collection-hd") {
+			if (request.method !== "GET") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use GET"),
+					origin,
+				);
+			}
+			const hdLimited = enforceRateLimit(request, {
+				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "art-collection-hd",
+			});
+			if (hdLimited) return withCors(hdLimited, origin);
+			return withCors(await handleGetArtCollectionHd(request, env), origin);
 		}
 
 		if (url.pathname === "/api/confirm-pro-session") {

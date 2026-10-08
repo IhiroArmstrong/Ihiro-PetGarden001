@@ -24,6 +24,8 @@ test("charges the 25 client sheets at $1.99 and refuses the old five", () => {
 		assert.equal(row.unitAmount, ART_COLLECTION_UNIT_AMOUNT);
 		assert.equal(ART_COLLECTION_UNIT_AMOUNT, 199);
 		assert.match(clientCatalog, new RegExp(`'${row.id}'`));
+		assert.match(row.hdId, /^hd-[a-z]{2}-\d{2}$/);
+		assert.match(clientCatalog, new RegExp(`'${row.hdId}'`));
 		assert.match(clientCatalog, new RegExp(`'${row.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}'`));
 	}
 	for (const id of [
