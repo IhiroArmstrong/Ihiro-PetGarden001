@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `2f2cc7ae` |
-| `snapshot_date` | 2026-10-03 |
+| `snapshot_base` | `origin/develop` tip `d9840245` |
+| `snapshot_date` | 2026-10-08 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `f72a4c10-150d-4b74-ae41-d1d710bb2b07` |
-| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `3dcfa0af` · Worker 已含 #1086 `charge.refunded` 撤销拥有。Stripe Dashboard 的 endpoint 事件列表本机未能改：Stripe CLI 没有 API key。） |
+| `prod_worker_version` | `3a028faf-f760-4fdf-9b83-8b39b45a6848` |
+| `prod_verified_at` | 2026-10-08（本机 `wrangler deploy` · 源 `origin/develop` `d9840245` · #1094 二十五张方壶目录 · #1099 青瓷浮雕五件套限量结账 `$9.95` · `GET /health` OK · `POST /api/create-art-collection-checkout-session` `celadon-relief-five` → Stripe Checkout URL OK） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
