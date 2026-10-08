@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `3a028faf-f760-4fdf-9b83-8b39b45a6848` |
-| `prod_verified_at` | 2026-10-08（本机 `wrangler deploy` · 源 `origin/develop` `d9840245` · #1094 二十五张方壶 · #1098 高清下发 · #1099 青瓷浮雕五件套 `$9.95` · `GET /health` OK · `POST /api/create-art-collection-checkout-session` `celadon-relief-five` → Stripe Checkout URL OK） |
+| `prod_worker_version` | `e019f799-bffd-44c5-8f6a-1fc9b90f0de1` |
+| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 源 `origin/docs/beside-seat-invite` `6a540dbc` · #1105 请坐一次码 `beside_issue` / `beside_join` / `beside_revoke` · `GET /health` OK · `beside_issue` → 8 位码 · `beside_join` 成功 · 复用同码 `409 beside_used`） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
