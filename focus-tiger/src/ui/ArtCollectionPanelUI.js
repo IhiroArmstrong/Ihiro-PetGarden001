@@ -10,14 +10,9 @@
  */
 
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
-import {
-  ART_COLLECTION_PRICE_USD,
-  ART_COLLECTION_SETS,
-  ART_COLLECTION_SHEETS,
-  artSheetName,
-  artSheetStory
-} from '../core/artCollectionCatalog.js';
+import { artSheetName, artSheetStory } from '../core/artCollectionCatalog.js';
 import { saveArtChosenPieceCard } from '../core/artChosenPieceCard.js';
+import { ART_EDITION_PRICE_USD, ART_EDITION_SETS } from '../core/artEditionCatalog.js';
 import { requestArtPurchase } from '../core/artCollectionPurchase.js';
 import { readArtHd } from '../core/artCollectionHd.js';
 import {
@@ -94,19 +89,11 @@ export class ArtCollectionPanelUI {
     this.listEl.className = 'art-collection-panel__list';
     this.listEl.dataset.testid = 'art-collection-list';
 
-    /** @type {Map<string, { name: HTMLElement, story: HTMLElement, notice: HTMLElement, buy: HTMLButtonElement, save: HTMLButtonElement }>} */
+    /** @type {Map<string, { name: HTMLElement, story: HTMLElement, notice: HTMLElement, buy: HTMLButtonElement, save: HTMLButtonElement, sheetImgs: Map<string, { img: HTMLImageElement, hdUrl: string, hdReceiptId?: string }> }>} */
     this._cards = new Map();
 
-    for (const set of ART_COLLECTION_SETS) {
-      const heading = document.createElement('p');
-      heading.className = 'art-collection-panel__set';
-      heading.dataset.setId = set.id;
-      heading.dataset.labelKey = set.labelKey;
-      this.listEl.appendChild(heading);
-      for (const row of ART_COLLECTION_SHEETS) {
-        if (row.setId !== set.id) continue;
-        this.listEl.appendChild(this._card(row));
-      }
+    for (const set of ART_EDITION_SETS) {
+      this.listEl.appendChild(this._card(set));
     }
 
     this.closeBtn = document.createElement('button');
@@ -136,19 +123,27 @@ export class ArtCollectionPanelUI {
   }
 
   /**
-   * @param {(typeof ART_COLLECTION_SHEETS)[number]} row
+   * @param {(typeof ART_EDITION_SETS)[number]} row
    */
   _card(row) {
     const card = document.createElement('article');
     card.className = 'art-collection-panel__card';
     card.dataset.testid = `art-collection-card-${row.id}`;
 
-    const img = document.createElement('img');
-    img.src = row.previewSrc;
-    img.alt = '';
-    img.decoding = 'async';
-    img.loading = 'lazy';
-    img.draggable = false;
+    const gallery = document.createElement('div');
+    gallery.className = 'art-collection-panel__gallery';
+    /** @type {Map<string, { img: HTMLImageElement, hdUrl: string, hdReceiptId?: string }>} */
+    const sheetImgs = new Map();
+    for (const piece of row.sheets) {
+      const img = document.createElement('img');
+      img.src = piece.previewSrc;
+      img.alt = '';
+      img.decoding = 'async';
+      img.loading = 'lazy';
+      img.draggable = false;
+      gallery.appendChild(img);
+      sheetImgs.set(piece.id, { img, hdUrl: '' });
+    }
 
     const name = document.createElement('p');
     name.className = 'art-collection-panel__name';
@@ -174,8 +169,8 @@ export class ArtCollectionPanelUI {
       void this._save(row.id);
     });
 
-    card.append(img, name, story, notice, buy, save);
-    this._cards.set(row.id, { name, story, notice, buy, save, img, hdUrl: '' });
+    card.append(gallery, name, story, notice, buy, save);
+    this._cards.set(row.id, { name, story, notice, buy, save, sheetImgs });
     return card;
   }
 
@@ -197,17 +192,21 @@ export class ArtCollectionPanelUI {
   }
 
   async _applyCachedHd() {
-    for (const row of ART_COLLECTION_SHEETS) {
-      const card = this._cards.get(row.id);
+    for (const set of ART_EDITION_SETS) {
+      const card = this._cards.get(set.id);
       if (!card) continue;
-      const saved = await readArtHd(row.id);
-      if (!saved?.blob) continue;
-      if (card.hdReceiptId === saved.receiptId && card.hdUrl) continue;
-      const next = URL.createObjectURL(saved.blob);
-      if (card.hdUrl) URL.revokeObjectURL(card.hdUrl);
-      card.hdUrl = next;
-      card.hdReceiptId = saved.receiptId;
-      card.img.src = next;
+      for (const piece of set.sheets) {
+        const slot = card.sheetImgs.get(piece.id);
+        if (!slot) continue;
+        const saved = await readArtHd(piece.id);
+        if (!saved?.blob) continue;
+        if (slot.hdReceiptId === saved.receiptId && slot.hdUrl) continue;
+        const next = URL.createObjectURL(saved.blob);
+        if (slot.hdUrl) URL.revokeObjectURL(slot.hdUrl);
+        slot.hdUrl = next;
+        slot.hdReceiptId = saved.receiptId;
+        slot.img.src = next;
+      }
     }
   }
 
@@ -274,8 +273,13 @@ export class ArtCollectionPanelUI {
       }
     } catch (err) {
       const offline = err instanceof Error && err.message === 'cloud_api_unconfigured';
+      const closed = err && typeof err === 'object' && err.body && err.body.code === 'edition_closed';
       card.notice.textContent = t(
-        offline ? 'ART_COLLECTION_CLOUD_OFFLINE' : 'ART_COLLECTION_BUY_ERROR'
+        offline
+          ? 'ART_COLLECTION_CLOUD_OFFLINE'
+          : closed
+            ? 'ART_EDITION_CLOSED'
+            : 'ART_COLLECTION_BUY_ERROR'
       );
       this._busy = false;
       this._setBusy(false);
@@ -292,22 +296,27 @@ export class ArtCollectionPanelUI {
   /**
    * @param {string} sheetId
    */
-  async _save(sheetId) {
-    const card = this._cards.get(sheetId);
-    const row = ART_COLLECTION_SHEETS.find((item) => item.id === sheetId);
-    if (!card || !row || card.save.hidden || card.save.disabled) return;
-    const piece = this._ownedPieces()[sheetId];
+  async _save(setId) {
+    const card = this._cards.get(setId);
+    const set = ART_EDITION_SETS.find((item) => item.id === setId);
+    if (!card || !set || card.save.hidden || card.save.disabled) return;
+    const piece = this._ownedPieces()[setId];
     if (!piece?.ownedAt || !piece?.receiptId) return;
     card.save.disabled = true;
     card.save.textContent = t('ART_CHOSEN_PIECE_SAVING');
     const saveFn = this.handlers.savePiece || saveArtChosenPieceCard;
-    const ok = await saveFn({
-      sheetId,
-      owned: true,
-      name: artSheetName(getLocale(), row),
-      ownedAt: piece.ownedAt,
-      previewSrc: card.hdUrl || row.previewSrc
-    });
+    let ok = true;
+    for (const sheet of set.sheets) {
+      const slot = card.sheetImgs.get(sheet.id);
+      const saved = await saveFn({
+        sheetId: sheet.id,
+        owned: true,
+        name: artSheetName(getLocale(), sheet),
+        ownedAt: piece.ownedAt,
+        previewSrc: slot?.hdUrl || sheet.previewSrc
+      });
+      if (!saved) ok = false;
+    }
     card.save.disabled = false;
     card.save.textContent = ok
       ? t('ART_CHOSEN_PIECE_SAVED')
@@ -325,14 +334,14 @@ export class ArtCollectionPanelUI {
       );
     this.emailInput.placeholder = t('ART_COLLECTION_EMAIL_PLACEHOLDER');
     this.closeBtn.textContent = t('ART_COLLECTION_CLOSE');
-    const price = `$${ART_COLLECTION_PRICE_USD.toFixed(2)}`;
+    const price = `$${ART_EDITION_PRICE_USD.toFixed(2)}`;
     const owned = this._ownedPieces();
-    for (const row of ART_COLLECTION_SHEETS) {
+    for (const row of ART_EDITION_SETS) {
       const card = this._cards.get(row.id);
       if (!card) continue;
       card.name.textContent = artSheetName(locale, row);
       card.story.textContent = artSheetStory(locale, row);
-      card.buy.textContent = `${t('ART_COLLECTION_BUY')} · ${price}`;
+      card.buy.textContent = `${t('ART_COLLECTION_BUY_SET')} · ${price}`;
       const piece = owned[row.id];
       const hasPiece = Boolean(piece?.ownedAt && piece?.receiptId);
       card.buy.hidden = hasPiece;
@@ -341,10 +350,6 @@ export class ArtCollectionPanelUI {
         card.save.disabled = false;
         card.save.textContent = t('ART_CHOSEN_PIECE_SAVE');
       }
-    }
-    for (const heading of this.listEl.querySelectorAll('[data-label-key]')) {
-      const key = heading.getAttribute('data-label-key');
-      if (key) heading.textContent = t(key);
     }
   }
 
@@ -413,21 +418,22 @@ export class ArtCollectionPanelUI {
         letter-spacing: 0.04em;
         color: #7a624c;
       }
-      .art-collection-panel__card {
+      .art-collection-panel__gallery {
         display: grid;
-        grid-template-columns: 72px 1fr;
-        gap: 4px 10px;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 4px;
+      }
+      .art-collection-panel__gallery img {
+        width: 100%;
+        height: 72px;
+        object-fit: contain;
+        background: rgba(255, 252, 245, 0.72);
+      }
+      .art-collection-panel__card {
+        display: block;
         margin: 0 0 12px;
         padding-bottom: 10px;
         border-bottom: 1px solid rgba(139,115,85,.15);
-      }
-      .art-collection-panel__card img {
-        grid-row: 1 / span 5;
-        width: 72px;
-        height: 72px;
-        object-fit: contain;
-        background: #f6f1e8;
-        border-radius: 10px;
       }
       .art-collection-panel__name {
         margin: 0;

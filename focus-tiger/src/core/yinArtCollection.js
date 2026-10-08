@@ -11,6 +11,7 @@
  */
 
 import { findArtSheet } from './artCollectionCatalog.js';
+import { ART_EDITION_SETS, findArtEditionSet } from './artEditionCatalog.js';
 
 export const YIN_ART_SESSION_KEY = 'focus-tiger.yin-art-session.v1';
 export const YIN_ART_CACHE_KEY = 'focus-tiger.yin-art-ownership.v1';
@@ -290,7 +291,8 @@ export function visibleYinArtOwnershipFromPage() {
  * @param {string} id
  */
 function isRememberedArtId(id) {
-  return Boolean(findYinArtWork(id) || findArtSheet(id));
+  if (findYinArtWork(id) || findArtSheet(id) || findArtEditionSet(id)) return true;
+  return ART_EDITION_SETS.some((set) => set.sheets.some((sheet) => sheet.id === id));
 }
 
 /**

@@ -959,6 +959,8 @@
   "ART_COLLECTION_BUY_ERROR": "支払い画面を開けませんでした。この作品は未購入のままです。",
   "ART_COLLECTION_CLOUD_OFFLINE": "支払いを今は開けません。この作品は未購入のままです。",
   "ART_COLLECTION_BUY": "購入",
+  "ART_COLLECTION_BUY_SET": "この一組を購入",
+  "ART_EDITION_CLOSED": "この版は終わりました。",
   "ART_COLLECTION_CLOSE": "閉じる",
   "ART_CHOSEN_PIECE_SAVE": "画像を保存",
   "ART_CHOSEN_PIECE_SAVING": "保存しています…",

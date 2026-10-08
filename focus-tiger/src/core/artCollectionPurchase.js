@@ -10,6 +10,7 @@
  */
 
 import { findArtSheet } from './artCollectionCatalog.js';
+import { findArtEditionSet } from './artEditionCatalog.js';
 
 export const ART_PURCHASE_REQUIRES_EMAIL = true;
 
@@ -40,15 +41,15 @@ export function normalizeArtPurchaseEmail(email) {
  * }}
  */
 export function requestArtPurchase(input = {}) {
-  const sheet = findArtSheet(String(input.sheetId || ''));
-  if (!sheet) {
+  const set = findArtEditionSet(String(input.sheetId || ''));
+  if (!set) {
     return { ok: false, reason: 'unknown_sheet', wroteOwnership: false };
   }
   const email = normalizeArtPurchaseEmail(input.email);
   if (!email) {
     return { ok: false, reason: 'email_required', wroteOwnership: false };
   }
-  return { ok: true, sheetId: sheet.id, email, wroteOwnership: false };
+  return { ok: true, sheetId: set.id, email, wroteOwnership: false };
 }
 
 /**

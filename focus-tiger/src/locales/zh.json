@@ -959,6 +959,8 @@
   "ART_COLLECTION_BUY_ERROR": "结账没有打开。这张还不是你的。",
   "ART_COLLECTION_CLOUD_OFFLINE": "结账暂时不可用。这张还不是你的。",
   "ART_COLLECTION_BUY": "购买",
+  "ART_COLLECTION_BUY_SET": "购买这一套",
+  "ART_EDITION_CLOSED": "这一版已经印满。",
   "ART_COLLECTION_CLOSE": "关闭",
   "ART_CHOSEN_PIECE_SAVE": "保存图片",
   "ART_CHOSEN_PIECE_SAVING": "正在保存…",
