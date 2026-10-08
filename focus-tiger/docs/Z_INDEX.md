@@ -66,6 +66,8 @@
 | **18** | `src/ui/GroundExerciseChoiceUI.js` | `#ground-exercise-choice` Idle「更多」→ 接地练习两按钮选择卡 |
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
+| **18** | `src/ui/GrowthJourneyDetailUI.js` | `#growth-journey-detail` 成长旅程详情（点首页短轨迹；下半屏只读纸；Esc / 点外关掉） |
+| **17** | `src/ui/GrowthJourneyDetailUI.js` | `#growth-journey-detail-backdrop` 详情遮罩（`overlayBackdrop` · 打开时 Support / 静音 / 倾听耳走 idle-chrome dim） |
 | **18** | `src/ui/YinArtCollectionPanelUI.js` | `#yin-art-panel` Yin's Art Collection（与珍藏抽屉分开；购买未开通时不记拥有） |
 | **18** | `src/ui/FocusCoinsPanelUI.js` | `#yin-coin-panel` Yin's Collections 轻面板（⋯ / 抽屉；≥480 靠右停、中线留给阿寅/挥手；<480 短底栏不盖头；Journey 同族玻璃；不可现金；清供 8；币标仅 UI chrome）。结缘缺口 toast 走中置 z40，避免被本面板盖住 |
 | **17** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass-backdrop` Five Moments Compass 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
