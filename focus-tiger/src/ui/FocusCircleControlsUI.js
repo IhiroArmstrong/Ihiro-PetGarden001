@@ -8,6 +8,15 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { getViewerTimeZone, toLocalDayKey } from '../core/focusCircleDayKey.js';
+import {
+  isBesideSeatClientEnabled,
+  issueBesideSeat,
+  joinBesideSeat,
+  readBesideJoinQueryCode,
+  readBesideSnapshot,
+  revokeBesideSeat
+} from '../core/focusCircleBeside.js';
 import {
   FOCUS_CIRCLE_CHANGE_EVENT,
   createFocusCircle,
@@ -101,12 +110,59 @@ export class FocusCircleControlsUI {
 
     this.inPanel.append(this.codeEl, this.countEl, this.copyBtn, this.leaveBtn);
 
+    this.besideRoot = document.createElement('div');
+    this.besideRoot.className = 'focus-circle-controls__beside';
+    this.besideRoot.dataset.testid = 'focus-circle-beside';
+    this.besideNote = document.createElement('p');
+    this.besideNote.className = 'focus-circle-controls__count';
+    this.besideWasHere = document.createElement('p');
+    this.besideWasHere.className = 'focus-circle-controls__count';
+    this.besideWasHere.dataset.testid = 'focus-circle-beside-was-here';
+    this.besideWasHere.hidden = true;
+    this.besideRemaining = document.createElement('p');
+    this.besideRemaining.className = 'focus-circle-controls__count';
+    this.besideRemaining.dataset.testid = 'focus-circle-beside-remaining';
+    this.besideIssueBtn = document.createElement('button');
+    this.besideIssueBtn.type = 'button';
+    this.besideIssueBtn.className = 'focus-circle-controls__btn';
+    this.besideIssueBtn.dataset.testid = 'focus-circle-beside-issue';
+    this.besideIssueBtn.addEventListener('click', () => {
+      void this._handleBesideIssue();
+    });
+    this.besideList = document.createElement('div');
+    this.besideList.dataset.testid = 'focus-circle-beside-list';
+    this.besideJoinInput = document.createElement('input');
+    this.besideJoinInput.type = 'text';
+    this.besideJoinInput.maxLength = 8;
+    this.besideJoinInput.autocomplete = 'off';
+    this.besideJoinInput.spellcheck = false;
+    this.besideJoinInput.className = 'focus-circle-controls__input';
+    this.besideJoinInput.dataset.testid = 'focus-circle-beside-join-input';
+    this.besideJoinBtn = document.createElement('button');
+    this.besideJoinBtn.type = 'button';
+    this.besideJoinBtn.className = 'focus-circle-controls__btn';
+    this.besideJoinBtn.dataset.testid = 'focus-circle-beside-join';
+    this.besideJoinBtn.addEventListener('click', () => {
+      void this._handleBesideJoin();
+    });
+    this.besideJoinRow = document.createElement('div');
+    this.besideJoinRow.className = 'focus-circle-controls__join-row';
+    this.besideJoinRow.append(this.besideJoinInput, this.besideJoinBtn);
+    this.besideRoot.append(
+      this.besideNote,
+      this.besideWasHere,
+      this.besideRemaining,
+      this.besideIssueBtn,
+      this.besideList,
+      this.besideJoinRow
+    );
+
     this.statusEl = document.createElement('p');
     this.statusEl.className = 'focus-circle-controls__status';
     this.statusEl.dataset.testid = 'focus-circle-status';
     this.statusEl.hidden = true;
 
-    this.root.append(this.notIn, this.inPanel, this.statusEl);
+    this.root.append(this.notIn, this.inPanel, this.besideRoot, this.statusEl);
     this.mountRoot.appendChild(this.root);
 
     this._onCircleChange = () => this.refresh();
@@ -165,6 +221,7 @@ export class FocusCircleControlsUI {
     if (wasInCircle !== inCircle) {
       this._setStatus('', false);
     }
+    this._renderBeside(inCircle);
     this._syncStatusPolling();
   }
 
@@ -187,6 +244,12 @@ export class FocusCircleControlsUI {
     startFocusCircleStatusPolling({
       storage: globalThis.localStorage,
       search: globalThis.location?.search ?? '',
+      get viewerDayKey() {
+        return toLocalDayKey();
+      },
+      get viewerTimeZone() {
+        return getViewerTimeZone();
+      },
       onUpdate: () => this.refresh()
     });
   }
@@ -208,6 +271,164 @@ export class FocusCircleControlsUI {
     this.leaveBtn.disabled = disabled;
     this.copyBtn.disabled = disabled;
     this.joinInput.disabled = disabled;
+    this.besideIssueBtn.disabled = disabled;
+    this.besideJoinBtn.disabled = disabled;
+    this.besideJoinInput.disabled = disabled;
+    if (!disabled) {
+      const snap = readBesideSnapshot(globalThis.localStorage);
+      this.besideIssueBtn.disabled = (snap?.remaining ?? 5) <= 0;
+    }
+    this.besideList.querySelectorAll('button').forEach((btn) => {
+      btn.disabled = disabled;
+    });
+  }
+
+  _renderBeside(inCircle) {
+    const search = globalThis.location?.search ?? '';
+    const enabled = isBesideSeatClientEnabled(search);
+    this.besideRoot.hidden = !enabled;
+    if (!enabled) return;
+    this.besideNote.textContent = t('BESIDE_SEAT_NOTE');
+    this.besideIssueBtn.textContent = t('BESIDE_SEAT_ISSUE');
+    this.besideIssueBtn.hidden = !inCircle;
+    this.besideRemaining.hidden = !inCircle;
+    this.besideList.hidden = !inCircle;
+    this.besideJoinRow.hidden = inCircle;
+    this.besideJoinBtn.textContent = t('BESIDE_SEAT_JOIN');
+    this.besideJoinInput.placeholder = t('BESIDE_SEAT_CODE_PLACEHOLDER');
+    this.besideJoinInput.setAttribute('aria-label', t('BESIDE_SEAT_CODE_PLACEHOLDER'));
+    const pending = readBesideJoinQueryCode(search);
+    if (pending && !this.besideJoinInput.value) {
+      this.besideJoinInput.value = pending;
+    }
+    const snap = readBesideSnapshot(globalThis.localStorage);
+    if (inCircle) {
+      const remaining = snap?.remaining ?? 5;
+      this.besideRemaining.textContent = t('BESIDE_SEAT_REMAINING').replace(
+        '{n}',
+        String(remaining)
+      );
+      this.besideIssueBtn.disabled = remaining <= 0;
+      if (snap?.invitedWasHere) {
+        this.besideWasHere.hidden = false;
+        this.besideWasHere.textContent = snap.invitedWasHereName
+          ? t('BESIDE_SEAT_WAS_HERE_NAME').replace('{name}', snap.invitedWasHereName)
+          : t('BESIDE_SEAT_WAS_HERE');
+      } else {
+        this.besideWasHere.hidden = true;
+        this.besideWasHere.textContent = '';
+      }
+      this.besideList.replaceChildren();
+      for (const code of snap?.unused ?? []) {
+        const row = document.createElement('div');
+        row.className = 'focus-circle-controls__join-row';
+        const label = document.createElement('span');
+        label.textContent = code;
+        const copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'focus-circle-controls__btn';
+        copy.dataset.testid = 'focus-circle-beside-copy';
+        copy.textContent = t('BESIDE_SEAT_COPY');
+        copy.addEventListener('click', () => {
+          void this._handleBesideCopy(code);
+        });
+        const revoke = document.createElement('button');
+        revoke.type = 'button';
+        revoke.className = 'focus-circle-controls__btn';
+        revoke.dataset.testid = 'focus-circle-beside-revoke';
+        revoke.textContent = t('BESIDE_SEAT_REVOKE');
+        revoke.addEventListener('click', () => {
+          void this._handleBesideRevoke(code);
+        });
+        row.append(label, copy, revoke);
+        this.besideList.append(row);
+      }
+    } else {
+      this.besideWasHere.hidden = true;
+      this.besideList.replaceChildren();
+    }
+  }
+
+  async _handleBesideIssue() {
+    this._setBusy(true);
+    this._setStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
+    try {
+      const result = await issueBesideSeat({
+        storage: globalThis.localStorage,
+        search: globalThis.location?.search ?? ''
+      });
+      if (!result.ok) {
+        this._setStatus(this._besideErrorKey(result.reason), true);
+        return;
+      }
+      this.refresh();
+      this._setStatus('BESIDE_SEAT_ISSUED', true);
+    } finally {
+      this._setBusy(false);
+    }
+  }
+
+  async _handleBesideCopy(code) {
+    try {
+      await globalThis.navigator?.clipboard?.writeText(code);
+      this._setStatus('BESIDE_SEAT_COPIED', true);
+    } catch {
+      this._setStatus('PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC', true);
+    }
+  }
+
+  async _handleBesideRevoke(code) {
+    this._setBusy(true);
+    this._setStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
+    try {
+      const result = await revokeBesideSeat({
+        storage: globalThis.localStorage,
+        search: globalThis.location?.search ?? '',
+        code
+      });
+      if (!result.ok) {
+        this._setStatus(this._besideErrorKey(result.reason), true);
+        return;
+      }
+      this.refresh();
+      this._setStatus('BESIDE_SEAT_REVOKED', true);
+    } finally {
+      this._setBusy(false);
+    }
+  }
+
+  async _handleBesideJoin() {
+    this._setBusy(true);
+    this._setStatus('PRIVACY_SHEET_FOCUS_CIRCLE_WORKING', true);
+    try {
+      const result = await joinBesideSeat({
+        storage: globalThis.localStorage,
+        search: globalThis.location?.search ?? '',
+        code: this.besideJoinInput.value ?? ''
+      });
+      if (!result.ok || !result.membership) {
+        this._setStatus(this._besideErrorKey(result.reason), true);
+        return;
+      }
+      this.besideJoinInput.value = '';
+      this.refresh();
+      this._setStatus('BESIDE_SEAT_JOINED', true);
+    } finally {
+      this._setBusy(false);
+    }
+  }
+
+  _besideErrorKey(reason) {
+    if (reason === 'need_circle') return 'BESIDE_SEAT_ERROR_NEED_CIRCLE';
+    if (reason === 'beside_quota') return 'BESIDE_SEAT_ERROR_QUOTA';
+    if (reason === 'beside_used') return 'BESIDE_SEAT_ERROR_USED';
+    if (reason === 'circle_full') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_FULL';
+    if (reason === 'beside_not_found') return 'BESIDE_SEAT_ERROR_NOT_FOUND';
+    if (reason === 'bad_beside_code') return 'BESIDE_SEAT_ERROR_CODE';
+    if (reason === 'timeout') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT';
+    if (reason === 'disabled') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED';
+    if (reason === 'storage_failed') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_STORAGE';
+    return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC';
   }
 
   async _handleCreate() {
@@ -348,6 +569,11 @@ export class FocusCircleControlsUI {
       .focus-circle-controls__btn:disabled {
         opacity: 0.55;
         cursor: wait;
+      }
+      .focus-circle-controls__beside {
+        margin-top: 0.75rem;
+        padding-top: 0.65rem;
+        border-top: 1px solid rgba(90, 107, 74, 0.2);
       }
       .focus-circle-controls__btn--leave {
         margin-top: 0.65rem;
