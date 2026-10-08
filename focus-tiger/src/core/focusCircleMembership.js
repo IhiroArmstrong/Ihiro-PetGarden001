@@ -217,6 +217,39 @@ export function newFocusCircleMemberId() {
 /**
  * @param {unknown} body
  */
+/**
+ * @param {unknown} body
+ */
+function parseBesideFields(body) {
+  if (!body || typeof body !== 'object') return null;
+  const o = /** @type {Record<string, unknown>} */ (body);
+  if (!Array.isArray(o.besideUnused) && o.besideRemaining == null && o.invitedWasHere == null) {
+    return null;
+  }
+  const unused = Array.isArray(o.besideUnused)
+    ? o.besideUnused.filter((code) => typeof code === 'string' && code.length === 8)
+    : [];
+  const remaining = Number(o.besideRemaining);
+  const name = o.invitedWasHereName;
+  return {
+    unused,
+    remaining: Number.isFinite(remaining) ? remaining : null,
+    invitedWasHere: o.invitedWasHere === true,
+    invitedWasHereName: typeof name === 'string' && name.trim() ? name.trim() : null,
+    besideCode: typeof o.besideCode === 'string' ? o.besideCode : null
+  };
+}
+
+/** @type {((fields: ReturnType<typeof parseBesideFields>) => void) | null} */
+let besideSink = null;
+
+/**
+ * @param {(fields: ReturnType<typeof parseBesideFields>) => void} fn
+ */
+export function setFocusCircleBesideSink(fn) {
+  besideSink = fn;
+}
+
 function parseCircleResponse(body) {
   if (!body || typeof body !== 'object') return null;
   if (body.schemaVersion !== FOCUS_CIRCLE_SCHEMA_VERSION) return null;
@@ -253,7 +286,9 @@ export async function postFocusCircle({
   code = '',
   circleId = '',
   memberId = '',
-  timeoutMs
+  timeoutMs,
+  viewerDayKey = '',
+  viewerTimeZone = ''
 } = {}) {
   if (!getBaseUrl()) {
     return { ok: false, reason: 'cloud_api_unconfigured', skipped: true };
@@ -263,6 +298,8 @@ export async function postFocusCircle({
     action
   };
   if (action === 'join') payload.code = code;
+  if (viewerDayKey) payload.viewerDayKey = viewerDayKey;
+  if (viewerTimeZone) payload.viewerTimeZone = viewerTimeZone;
   if (action !== 'create' && action !== 'join') {
     payload.circleId = circleId;
     payload.memberId = memberId;
@@ -296,7 +333,12 @@ export async function postFocusCircle({
     if (!parsed) {
       return { ok: false, reason: 'bad_payload', skipped: true };
     }
-    return { ok: true, membership: parsed, skipped: false };
+    return {
+      ok: true,
+      membership: parsed,
+      beside: parseBesideFields(body),
+      skipped: false
+    };
   } catch (err) {
     const status = err && typeof err === 'object' ? Number(err.status) : 0;
     if (status === 404) return { ok: false, reason: 'not_found', skipped: true };
@@ -380,6 +422,7 @@ export async function leaveFocusCircle(opts = {}) {
   });
   if (result.ok || result.reason === 'not_found') {
     clearFocusCircleMembership(storage);
+    besideSink?.(null);
     return result.ok ? result : { ok: true, reason: 'not_found' };
   }
   return result;
@@ -403,7 +446,9 @@ export async function refreshFocusCircleStatus(opts = {}) {
     ...opts,
     action: 'status',
     circleId: requestCircleId,
-    memberId: requestMemberId
+    memberId: requestMemberId,
+    viewerDayKey: opts.viewerDayKey,
+    viewerTimeZone: opts.viewerTimeZone
   });
   if (membershipGeneration !== requestGen) {
     return {
@@ -438,7 +483,8 @@ export async function refreshFocusCircleStatus(opts = {}) {
   }
   lastAppliedStatusSeq = requestSeq;
   writeFocusCircleMembership(storage, result.membership);
-  return { ok: true, membership: result.membership };
+  if (result.beside) besideSink?.(result.beside);
+  return { ok: true, membership: result.membership, beside: result.beside ?? null };
 }
 
 /**
