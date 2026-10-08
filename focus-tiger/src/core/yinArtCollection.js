@@ -7,7 +7,11 @@
  * Yin's Art Collection — five digital artworks, separate from Focus Coins and tea.
  * Local storage is a cache. A piece is shown as owned only while this browser
  * session is signed in as the email the server confirmed.
+ * Live sheet ids from the current shelf are remembered too.
  */
+
+import { findArtSheet } from './artCollectionCatalog.js';
+import { ART_EDITION_SETS, findArtEditionSet } from './artEditionCatalog.js';
 
 export const YIN_ART_SESSION_KEY = 'focus-tiger.yin-art-session.v1';
 export const YIN_ART_CACHE_KEY = 'focus-tiger.yin-art-ownership.v1';
@@ -176,7 +180,7 @@ function normalizeItems(raw) {
   /** @type {Record<string, { ownedAt: string, receiptId: string }>} */
   const items = {};
   for (const [id, value] of Object.entries(raw)) {
-    if (!findYinArtWork(id)) continue;
+    if (!isRememberedArtId(id)) continue;
     if (!value || typeof value !== 'object') continue;
     const ownedAt =
       typeof value.ownedAt === 'string' && value.ownedAt ? value.ownedAt : '';
@@ -249,7 +253,7 @@ export function mergeYinArtOwnedPiece(storage, piece) {
   const artId = String(piece?.artId || '');
   const ownedAt = String(piece?.ownedAt || '');
   const receiptId = String(piece?.receiptId || '');
-  if (!email || !findYinArtWork(artId) || !ownedAt || !receiptId) return;
+  if (!email || !isRememberedArtId(artId) || !ownedAt || !receiptId) return;
   const cache = readYinArtCache(storage);
   const items = cache.email === email ? { ...cache.items } : {};
   if (!items[artId]) {
@@ -271,6 +275,24 @@ export function visibleYinArtOwnership(localStorage, sessionStorage) {
   const cache = readYinArtCache(localStorage);
   if (cache.email !== session.email) return {};
   return cache.items;
+}
+
+/**
+ * Same gate, reading this page's storages. Callers stay free of storage names.
+ * @returns {Record<string, { ownedAt: string, receiptId: string }>}
+ */
+export function visibleYinArtOwnershipFromPage() {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  return visibleYinArtOwnership(root.localStorage, root.sessionStorage);
+}
+
+/**
+ * Old five-work ids and the live sheet list. Anything else is dropped.
+ * @param {string} id
+ */
+function isRememberedArtId(id) {
+  if (findYinArtWork(id) || findArtSheet(id) || findArtEditionSet(id)) return true;
+  return ART_EDITION_SETS.some((set) => set.sheets.some((sheet) => sheet.id === id));
 }
 
 /**
