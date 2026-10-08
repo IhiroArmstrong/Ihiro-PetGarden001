@@ -47,6 +47,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   PRIVACY_SHEET: 'privacy-sheet',
   PURPOSE_CARD: 'purpose-card',
   JOURNEY_LOG: 'journey-log',
+  GROWTH_JOURNEY_DETAIL: 'growth-journey-detail',
   YIN_COIN: 'yin-coin',
   DAILY_QUOTE: 'daily-quote',
   WALLPAPERS: 'wallpapers',
@@ -282,6 +283,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#journey-log',
     snapshotField: 'journeyOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.GROWTH_JOURNEY_DETAIL,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 12,
+    readers: 'Growth Journey detail card opened from the home line',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#growth-journey-detail',
+    snapshotField: 'growthJourneyDetailOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.YIN_COIN,
@@ -601,6 +613,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'PracticeImprintCardUI.js': [OVERLAY_SOURCES.GROWTH_PRACTICE_IMPRINT],
   'ConfideToYinUI.js': [OVERLAY_SOURCES.CONFIDE],
   'JourneyLogUI.js': [OVERLAY_SOURCES.JOURNEY_LOG],
+  'GrowthJourneyDetailUI.js': [OVERLAY_SOURCES.GROWTH_JOURNEY_DETAIL],
   'FocusCoinsPanelUI.js': [OVERLAY_SOURCES.YIN_COIN],
   'DailyZenQuoteCardUI.js': [OVERLAY_SOURCES.DAILY_QUOTE],
   'DigitalWallpapersCardUI.js': [OVERLAY_SOURCES.WALLPAPERS],

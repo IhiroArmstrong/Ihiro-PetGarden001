@@ -59,6 +59,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [secondaryMenuOpen]
  * @property {boolean} [confideOpen]
  * @property {boolean} [journeyOpen]
+ * @property {boolean} [growthJourneyDetailOpen]
  * @property {boolean} [coinPanelOpen]
  * @property {boolean} [quoteOpen]
  * @property {boolean} [wallpapersOpen]
@@ -84,7 +85,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  *   'compassOpen' | 'coldStartGoalOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
  *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' |
  *   'welcomeSequencePlaying' | 'secondaryMenuOpen' |
- *   'confideOpen' | 'journeyOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' | 'artCollectionOpen' |
+ *   'confideOpen' | 'journeyOpen' | 'growthJourneyDetailOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' | 'artCollectionOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
  *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' |
@@ -125,6 +126,7 @@ export function buildOverlaySnapshot(input = {}) {
     secondaryMenuOpen: Boolean(input.secondaryMenuOpen),
     confideOpen: Boolean(input.confideOpen),
     journeyOpen: Boolean(input.journeyOpen),
+    growthJourneyDetailOpen: Boolean(input.growthJourneyDetailOpen),
     coinPanelOpen: Boolean(input.coinPanelOpen),
     quoteOpen: Boolean(input.quoteOpen),
     wallpapersOpen: Boolean(input.wallpapersOpen),

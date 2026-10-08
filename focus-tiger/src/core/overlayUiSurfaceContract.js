@@ -140,6 +140,28 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
   glassCard('PracticeImprintCardUI.js'),
   glassCard('ConfideToYinUI.js'),
   glassCard('JourneyLogUI.js'),
+  surface({
+    file: 'GrowthJourneyDetailUI.js',
+    slotRequest: deriveSlot(),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'no-persistence' }),
+      success: Object.freeze({ mode: 'na', reason: 'no-persistence' }),
+      fail: Object.freeze({ mode: 'na', reason: 'no-persistence' })
+    }),
+    e2eOverlap: Object.freeze({
+      mode: 'na',
+      reason: 'read-only-detail-covered-by-growthJourneyDetail-unit-test'
+    }),
+    trackerCoverage: Object.freeze({
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-growth-journey-detail.md'
+      ]),
+      tokens: Object.freeze(['待人工测试'])
+    })
+  }),
   glassCard('FocusCoinsPanelUI.js'),
   glassCard('DailyZenQuoteCardUI.js'),
   glassCard('DigitalWallpapersCardUI.js'),

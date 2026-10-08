@@ -125,6 +125,7 @@ import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
+import { GrowthJourneyDetailUI } from './ui/GrowthJourneyDetailUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
 import {
@@ -870,8 +871,16 @@ async function init() {
     window.__narrowIdleShell = idleChrome.narrow;
     window.__wideIdleMoreMenu = idleChrome.wide;
   }
+  /** @type {GrowthJourneyDetailUI | null} */
+  let growthJourneyDetailUI = null;
   const weeklyPracticeHeatmap = new WeeklyPracticeHeatmap(
-    document.getElementById('ui-overlay')
+    document.getElementById('ui-overlay'),
+    {
+      onOpenJourney: () => {
+        closeGrowthOverlayCards({ except: 'growth-journey' });
+        growthJourneyDetailUI?.open();
+      }
+    }
   );
   /** @type {Date | null} */
   let reminderNowOverride = null;
@@ -1913,6 +1922,7 @@ async function init() {
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'cold-start-goal') coldStartGoalCardUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'growth-journey') growthJourneyDetailUI?.close();
     if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
     if (except !== 'yin-coin') yinCoinPanelUI?.close();
@@ -2214,6 +2224,20 @@ async function init() {
     });
   }
   const lotusPondStore = new LotusPondStore();
+  growthJourneyDetailUI = new GrowthJourneyDetailUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      getEligibleMinutes: () =>
+        lotusPondStore.getScoreEligibleLifetimeMinutes(),
+      getLifetimeMinutes: () => lotusPondStore.getLifetimeMinutes(),
+      getStageFloor: () =>
+        readGrowthJourneyStageFloor(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        ),
+      getPracticeDates: () => practiceDaysStore.getPracticedDateKeys()
+    })
+  );
+  window.__growthJourneyDetail = growthJourneyDetailUI;
   const lotusPondRuntime = new LotusPondRuntime({
     store: lotusPondStore,
     overlayEl: spritePlayer.overlayEl,
@@ -2835,6 +2859,7 @@ async function init() {
   function isGrowthCardOverlayActive() {
     return (
       journeyLogUI?.isOpen?.() === true ||
+      growthJourneyDetailUI?.isOpen?.() === true ||
       yinCoinPanelUI?.isOpen?.() === true ||
       dailyZenQuoteCardUI?.isOpen?.() === true ||
       digitalWallpapersCardUI?.isOpen?.() === true ||
@@ -2904,6 +2929,8 @@ async function init() {
       welcomeSequencePlaying: isWelcomeFirstPaintPlaying(),
       confideOpen: window.__confideToYin?.isOpen?.() === true,
       journeyOpen: window.__journeyLog?.isOpen?.() === true,
+      growthJourneyDetailOpen:
+        window.__growthJourneyDetail?.isOpen?.() === true,
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
       quoteOpen: window.__dailyZenQuoteCard?.isOpen?.() === true,
       wallpapersOpen: window.__digitalWallpapersCard?.isOpen?.() === true,
@@ -5698,13 +5725,15 @@ async function init() {
         !overlayBreathing && focusSession.isOpenEnded()
     });
     syncOpenEndedNudge();
+    const growthJourneyDetailAllowed =
+      (stateManager.state === STATES.IDLE ||
+        stateManager.state === STATES.DORMANT) &&
+      !microOpen;
+    if (!growthJourneyDetailAllowed) growthJourneyDetailUI?.close();
     weeklyPracticeHeatmap.render({
       // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
       // Hide during Focusing / overlays / micro-ritual.
-      visible:
-        (stateManager.state === STATES.IDLE ||
-          stateManager.state === STATES.DORMANT) &&
-        !microOpen,
+      visible: growthJourneyDetailAllowed,
       days: practiceDaysStore.getLastNDays(WEEKLY_PRACTICE_HEATMAP_DAYS),
       eligibleMinutes: lotusPondStore.getScoreEligibleLifetimeMinutes(),
       stageFloor: readGrowthJourneyStageFloor(globalThis.localStorage)

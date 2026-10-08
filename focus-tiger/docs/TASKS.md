@@ -4,7 +4,7 @@
 - 文化探索方向锁(From App to Culture；App 社交塑造 Slack；废除证据门): /docs/FROM_APP_TO_CULTURE.md
 - 陪伴成长意义层(Yin Evolution；关系叙事；不改分数公式): /docs/YIN_EVOLUTION.md
 - 成长旅程方向锁(首页短轨迹 + 阶段下限；无运行时): /docs/GROWTH_JOURNEY.md
-- 成长旅程实现说明(阶段门槛已落地；首页短轨迹本刀；详情未接): /docs/GROWTH_JOURNEY_IMPLEMENTATION.md
+- 成长旅程实现说明(阶段门槛与首页短轨迹已落地；详情本刀): /docs/GROWTH_JOURNEY_IMPLEMENTATION.md
 - 项目原则(硬性红线): /docs/PRINCIPLES.md
 - 架构设计(模块职责边界): /docs/ARCHITECTURE.md
 - 产品设计(角色设定与状态语义): /docs/DESIGN.md

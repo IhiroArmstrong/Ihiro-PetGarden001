@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-03  
+生成日期：2026-10-09  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -944,7 +944,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | O-4 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | Hint（可选）：ActionBar 点 ? → tips（窄屏尖角目标可能变化）。 |
 | O-5 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 让格子变亮：完成计时 / Honesty / 一分钟呼吸 → 回 Idle → 抽屉内今日格亮。 |
 | O-6 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 回流：开 Focusing → 主钮/抽屉/grabber 收起，Rise 仍可见可点；Rise 回 |
-| O-7 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 已知边界：热力图仍不可下钻；与 HUD streak（宽屏卡内 7 点环）分工不同。 |
+| O-7 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 已知边界：热力格子仍不可下钻。格子上面那一行可点，0–1 秒内打开一张只读的「走到哪」纸（阶段线、你 |
 
 ### Given-When-Then 明细
 
@@ -1048,7 +1048,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - （无额外用户操作）
 
 **Then**
-- 已知边界：热力图仍不可下钻；与 HUD streak（宽屏卡内 7 点环）分工不同
+- 已知边界：热力格子仍不可下钻。格子上面那一行可点，0–1 秒内打开一张只读的「走到哪」纸（阶段线、你在这里、累计时间、节奏点）。与 HUD streak（宽屏卡内 7 点环）分工不同。与 ⋯ Journey log 也不同：那是留痕列表，这张纸不写九十天天数
 
 ---
 ## 场景 P1：P1 · 设置提醒（Idle 左下时钟）

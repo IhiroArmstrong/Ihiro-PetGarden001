@@ -85,14 +85,16 @@ export function buildWeeklyHeatmapCells(days, todayDate) {
   });
 }
 
-const STYLE_ID = 'weekly-practice-heatmap-styles-v6';
+const STYLE_ID = 'weekly-practice-heatmap-styles-v7';
 
 export class WeeklyPracticeHeatmap {
   /**
    * @param {HTMLElement} container
+   * @param {{ onOpenJourney?: () => void }} [handlers]
    */
-  constructor(container) {
+  constructor(container, handlers = {}) {
     this.container = container;
+    this._onOpenJourney = handlers.onOpenJourney ?? null;
     /** @type {HTMLElement | null} */
     this.cluster = null;
     /** @type {HTMLElement | null} */
@@ -256,10 +258,16 @@ export class WeeklyPracticeHeatmap {
       this.dowEls.push(dow);
     }
 
-    this.journeyRow = document.createElement('div');
+    this.journeyRow = document.createElement('button');
+    this.journeyRow.type = 'button';
     this.journeyRow.className = 'growth-journey-home-line';
     this.journeyRow.hidden = true;
+    this.journeyRow.dataset.testid = 'growth-journey-home-line';
     this.journeyRow.setAttribute('aria-hidden', 'true');
+    this.journeyRow.addEventListener('click', () => {
+      if (this.journeyRow?.hidden) return;
+      this._onOpenJourney?.();
+    });
 
     this.journeyText = document.createElement('span');
     this.journeyText.className = 'growth-journey-home-line__text';
@@ -360,7 +368,15 @@ export class WeeklyPracticeHeatmap {
         width: 0;
         min-width: 100%;
         box-sizing: border-box;
-        pointer-events: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        font: inherit;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        pointer-events: auto;
       }
       .growth-journey-home-line[hidden] {
         display: none !important;
