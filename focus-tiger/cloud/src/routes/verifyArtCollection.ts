@@ -1,7 +1,8 @@
 import { errorJson, json } from "../lib/http";
 import { isPlausibleEmail, normalizeEmail } from "../lib/companionAddonKv";
 import { consumeRestoreOtp } from "../lib/restoreOtp";
-import { readArtCollection } from "../lib/artCollectionKv";
+import { issueArtHdGrant } from "../lib/artCollectionHdGrant";
+import { isArtPieceOwned, readArtCollection } from "../lib/artCollectionKv";
 import type { Env } from "../types";
 
 /**
@@ -55,9 +56,24 @@ export async function handleVerifyArtCollection(
 
 	const normalized = normalizeEmail(email);
 	const record = await readArtCollection(env.SANCTUARY_KV, normalized);
+	const downloads = [];
+	if (env.ART_COLLECTION_HD) {
+		for (const [artId, piece] of Object.entries(record.items)) {
+			if (!isArtPieceOwned(record, artId)) continue;
+			const hd = await issueArtHdGrant({
+				kv: env.SANCTUARY_KV,
+				pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
+				email: normalized,
+				artId,
+				receiptId: piece.receiptId,
+			});
+			if (hd) downloads.push({ artId, receiptId: piece.receiptId, ...hd });
+		}
+	}
 	return json({
 		signedIn: true,
 		email: normalized,
 		items: record.items,
+		downloads,
 	});
 }
