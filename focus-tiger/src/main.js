@@ -129,6 +129,10 @@ import { GrowthJourneyDetailUI } from './ui/GrowthJourneyDetailUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
 import {
+  markCollectionsArtBridgeSeen,
+  shouldShowCollectionsArtBridge
+} from './core/collectionsArtBridgeGate.js';
+import {
   acquireYinCoinWaveFocus,
   releaseYinCoinWaveFocus
 } from './ui/overlayBackdrop.js';
@@ -2381,6 +2385,18 @@ async function init() {
       });
     },
     playWave: () => window.__focusCoins.playWave(),
+    shouldShowArtBridge: () =>
+      shouldShowCollectionsArtBridge(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    markArtBridgeSeen: () =>
+      markCollectionsArtBridgeSeen(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
+    onOpenArtCollection: () => {
+      closeGrowthOverlayCards({ except: 'art-collection' });
+      artCollectionPanelUI.open();
+    },
     onMessage: (message) =>
       mindfulToast.show(message, { placement: 'center' }),
     getMemorialRows: () => {

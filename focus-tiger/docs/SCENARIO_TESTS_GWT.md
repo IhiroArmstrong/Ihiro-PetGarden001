@@ -5529,6 +5529,82 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Today direction 邻接：? 简介卡内「重新选择今日方向」链 + 选项版本 banner（见下方增量摘要）不含麦克风；勿与 AT 混验
 
 ---
+## 场景 AU：请你坐在旁边（一次码 · 2026-10-08）
+
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
+> **地位**：小圈面板里的一次座位。**≠** 六位暗号门锁（AN）、**≠** Idle 在坐点（AO）、**≠** 痕迹（AP）。坐禅不读这张码。
+> **单元**：`focusCircleBeside.test.js` · cloud `focusCircleBesideKv.test.ts`。E2E 不单开浏览器故事；主干以单测锁配额、用过即废、满员不消耗。
+> **生产**：Worker 未部署 beside 动作时，发码 / 加入见失败句，不挡 Sit。
+> **点击**：发码 / 复制 / 作废 / 用请坐码加入均 **0–1 秒内** disabled 或状态句。复制句在人数刷新后仍留着。失败须见句子，不静默。
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AU-1 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 已入圈 → 小圈面板「请你坐在旁边」→ 0–1 秒内见 8 位码；「还可以请」从 5 变为 4。文案 |
+| AU-2 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 另一配置用该码加入 → 圈人数 +1；再用同一码 → 「已经用过」，人数不增加。邀请人在对方今日满足 |
+| AU-3 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 圈已满 8 人时用一张未消耗的码加入 → 满员句，该码仍可在有人离开后使用。 |
+| AU-4 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 未入圈点发码 → 先有小圈的短句，不产生码。无圈用户 Sit 照旧。`?besideSeat=0`  |
+
+### Given-When-Then 明细
+
+#### AU-1
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `focusCircleBeside.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 已入圈
+
+**Then**
+- 小圈面板「请你坐在旁边」→ 0–1 秒内见 8 位码；「还可以请」从 5 变为 4。文案含「给一个人。对方坐下后，这张码就作废。」
+
+#### AU-2
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `focusCircleBeside.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 另一配置用该码加入
+
+**Then**
+- 圈人数 +1；再用同一码 → 「已经用过」，人数不增加。邀请人在对方今日满足 was-here 后，面板见「你请来的人来过」（两人及以上仍是这一句）。
+
+#### AU-3
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `focusCircleBeside.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 圈已满 8 人时用一张未消耗的码加入
+
+**Then**
+- 满员句，该码仍可在有人离开后使用。
+
+#### AU-4
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `focusCircleBeside.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 未入圈点发码
+
+**Then**
+- 先有小圈的短句，不产生码。无圈用户 Sit 照旧。`?besideSeat=0` 不见请坐控件。六位暗号 Create / Join / Copy / Leave 仍按场景 AN。
+
+---
 ## 场景 I：点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival
 
 > **E2E 优先级**：P0 · 高频且用户量大
@@ -5777,4 +5853,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 63 · 步骤 303 · 待澄清 46_
+_场景 64 · 步骤 307 · 待澄清 46_

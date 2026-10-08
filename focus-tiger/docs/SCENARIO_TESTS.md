@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-03（Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-10-08（请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -1007,6 +1007,20 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 2. **Reflection Q1–Q3**：Sit 达标 → Reflection → 任一问文本框见 🎙 → 点 → Listening → 转写进框 → Continue / Skip 关卡不变（**禁止**新模态压过 Reflection；`data-wisdom-hold` 契约不动）。  
 3. **负例**：图标点选意图 / Skip all / 末题 wisdom-hold → **不得**被听写 chrome 挡住或改写关卡。  
 4. **Today direction 邻接**：? 简介卡内「重新选择今日方向」链 + 选项版本 banner（见下方增量摘要）**不含**麦克风；勿与 AT 混验。
+
+---
+
+## 场景 AU：请你坐在旁边（一次码 · 2026-10-08）
+
+> **地位**：小圈面板里的一次座位。**≠** 六位暗号门锁（AN）、**≠** Idle 在坐点（AO）、**≠** 痕迹（AP）。坐禅不读这张码。  
+> **单元**：`focusCircleBeside.test.js` · cloud `focusCircleBesideKv.test.ts`。E2E 不单开浏览器故事；主干以单测锁配额、用过即废、满员不消耗。  
+> **生产**：Worker 未部署 beside 动作时，发码 / 加入见失败句，不挡 Sit。  
+> **点击**：发码 / 复制 / 作废 / 用请坐码加入均 **0–1 秒内** disabled 或状态句。复制句在人数刷新后仍留着。失败须见句子，不静默。
+
+1. 已入圈 → 小圈面板「请你坐在旁边」→ **0–1 秒内**见 8 位码；「还可以请」从 5 变为 4。文案含「给一个人。对方坐下后，这张码就作废。」  
+2. 另一配置用该码加入 → 圈人数 +1；再用同一码 → 「已经用过」，人数不增加。邀请人在对方今日满足 was-here 后，面板见「你请来的人来过」（两人及以上仍是这一句）。  
+3. 圈已满 8 人时用一张未消耗的码加入 → 满员句，该码仍可在有人离开后使用。  
+4. 未入圈点发码 → 先有小圈的短句，不产生码。无圈用户 Sit 照旧。`?besideSeat=0` 不见请坐控件。六位暗号 Create / Join / Copy / Leave 仍按场景 AN。
 
 ---
 

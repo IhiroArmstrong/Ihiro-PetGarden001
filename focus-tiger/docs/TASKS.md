@@ -233,6 +233,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | **高清下发** | 付清后下载、本机离线缓存、轻购买者标记；预览仍进包 | `task-art-collection-hd-delivery.md` | **#1098 已合** · 生产 Worker `3a028faf-…`（2026-10-08 部署） |
 | **收藏卡** | 已买下的一张存图；句子是「我选的」 | `task-art-collection-chosen-piece-card.md` | **本支** · 待人工 |
 | **限量套装** | 一套 5 件；一版 100 套（500 件）；请茶谢礼在套外 | `task-art-collection-limited-sets.md` | **#1099 已合** · 生产 Worker `3a028faf-…`（用户口令「部署」· 2026-10-08） |
+| **珍藏过渡** | 第一次结缘器物后，成功卡上一句安静英文，打开 Yin's Art Collection，只一次 | `task-collections-art-bridge.md` | **本支** |
 
 ---
 
@@ -247,6 +248,7 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 | Slack 实验室接线 Join our community | ✅ **已接线**（2026-08-29 · `communityLink.js`） |
 | Global Lanterns / Quiet Together MVP | **本旁支开工** · Brief `task-quiet-together-lanterns-mvp.md` · 生产须部署 |
 | Circle / Identity Runtime / 公开 Ambient | Circle **刀 2a #556 已合 + 生产已部署** · Brief `task-focus-circle-mvp.md` |
+| 请你坐在旁边（一次码） | **运行时本旁支** · 同时最多 5 张未使用 · Brief `task-beside-seat-invite.md` |
 
 ---
 
