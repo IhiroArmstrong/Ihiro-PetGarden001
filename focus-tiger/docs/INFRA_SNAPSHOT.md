@@ -71,14 +71,14 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `7093e10b-cbea-4ac3-ae5c-093e45625785` |
-| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `9af0abff` · Worker `focus-tiger-cloud` · `https://focus-tiger-cloud.ihiro.workers.dev` · 已含 #1091 练习备份 v2。客户端云备份仍关。`9af0abff` 之后的艺术品高清下载与套装结账 **未** 进这次部署。） |
+| `prod_worker_version` | `98d2360d-4191-4d1f-8573-40508075822a` |
+| `prod_verified_at` | 2026-10-03（本机 `wrangler deploy` · 源 `origin/develop` `9b1ee0f1` · 后继 `7093e10b`（`9af0abff`）· Worker `focus-tiger-cloud` · `https://focus-tiger-cloud.ihiro.workers.dev` · 已含 #1091 练习备份 v2 + #1090 22 张 Art Collection 结账 `$1.99` · smoke `celadon-taotie-gu` → Stripe Checkout URL OK · 客户端云备份仍关） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
 | （本 Version `2e94d4c0` 起）漏斗 ingest layout / YPE L2 ingest / Pro+Add-on Checkout / `pageOrigin` 回跳 | 2026-09-01 本机 Redeploy 已从 `fix/overlay-three-questions` 上传；Safari 结账回跳仍须人工 |
 | 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 起已在生产 vars |
-| 艺术品高清下载、套装结账，以及 `9af0abff` 之后的其它云端改动 | 生产停在 Version `7093e10b`（源 `9af0abff`）。这些改动还在 `develop` 源码里，**未** redeploy |
+| 艺术品高清下载、套装结账，以及 `9b1ee0f1` 之后的其它云端改动 | 生产停在 Version `98d2360d`（源 `9b1ee0f1`）。这些改动还在 `develop` 源码里，**未** redeploy |
 
 ---
 
