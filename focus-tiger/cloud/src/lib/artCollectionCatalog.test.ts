@@ -47,8 +47,13 @@ test("new checkout sells the five-piece edition and not a single sheet", () => {
 	const set = findArtForSale("celadon-relief-five");
 	assert.ok(set);
 	assert.equal(set?.unitAmount, 995);
+	const cizhou = findArtForSale("cizhou-red-green-five");
+	assert.ok(cizhou);
+	assert.equal(cizhou?.unitAmount, 995);
+	assert.equal(findArtCollectionWork("cizhou-twin-fanghu")?.hdId, "hd-cz-01");
 	assert.equal(findArtForSale("celadon-taotie-gu"), null);
 	assert.equal(findArtForSale("celadon-relief-dragon-gu"), null);
+	assert.equal(findArtForSale("cizhou-dragon-fish-gu"), null);
 	assert.equal(decideEditionSale(99, 100).ok, true);
 	assert.equal(decideEditionSale(100, 100).ok, false);
 });

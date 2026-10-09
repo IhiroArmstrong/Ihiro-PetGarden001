@@ -28,24 +28,44 @@ export const CELADON_RELIEF_FIVE: ArtEditionSet = Object.freeze({
 	]),
 });
 
+export const CIZHOU_RED_GREEN_FIVE: ArtEditionSet = Object.freeze({
+	id: "cizhou-red-green-five",
+	name: "Cizhou red-green five",
+	unitAmount: ART_EDITION_PRICE_CENTS,
+	editionLimit: ART_EDITION_LIMIT,
+	sheetIds: Object.freeze([
+		"cizhou-twin-fanghu",
+		"cizhou-covered-ding",
+		"cizhou-flower-rim-plate",
+		"cizhou-dragon-fish-gu",
+		"cizhou-changchun-square-plate",
+	]),
+});
+
 export const ART_EDITION_SETS: readonly ArtEditionSet[] = Object.freeze([
 	CELADON_RELIEF_FIVE,
+	CIZHOU_RED_GREEN_FIVE,
 ]);
 
 export function findArtEditionSet(artId: string): ArtEditionSet | null {
 	return ART_EDITION_SETS.find((row) => row.id === artId) || null;
 }
 
-const RELIEF_HD_ID: Readonly<Record<string, string>> = Object.freeze({
+const EDITION_SHEET_HD_ID: Readonly<Record<string, string>> = Object.freeze({
 	"celadon-relief-dragon-gu": "hd-rf-01",
 	"moon-white-floral-tiered-box": "hd-rf-02",
 	"celadon-cloud-square-box": "hd-rf-03",
 	"celadon-peony-vase": "hd-rf-04",
 	"celadon-ice-crack-hu": "hd-rf-05",
+	"cizhou-twin-fanghu": "hd-cz-01",
+	"cizhou-covered-ding": "hd-cz-02",
+	"cizhou-flower-rim-plate": "hd-cz-03",
+	"cizhou-dragon-fish-gu": "hd-cz-04",
+	"cizhou-changchun-square-plate": "hd-cz-05",
 });
 
 export function editionSheetHdId(artId: string): string {
-	return RELIEF_HD_ID[artId] || "";
+	return EDITION_SHEET_HD_ID[artId] || "";
 }
 
 /** Tea gift. Not a shelf sheet and not part of the 100-set count. */
