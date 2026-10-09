@@ -420,6 +420,36 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0030'])
   }),
   Object.freeze({
+    id: 'kb-live-help-center',
+    surface: 'menu',
+    proxy: 'help-center',
+    labelKeys: Object.freeze(['HELP_CENTER_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Help Center',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'help-center'",
+      'HELP_CENTER_MENU_LABEL',
+      'idle-help-center'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/core/helpCenterCatalog.js',
+      'src/ui/HelpCenterUI.js',
+      'docs/task-briefs/task-user-help-center.md'
+    ]),
+    catalogKbIds: Object.freeze([
+      'KB-FUNC-0001',
+      'KB-FUNC-0002',
+      'KB-FUNC-0003',
+      'KB-FUNC-0004',
+      'KB-FUNC-0005',
+      'KB-FUNC-0006',
+      'KB-FUNC-0020',
+      'KB-EDU-0001',
+      'KB-EDU-0002'
+    ])
+  }),
+  Object.freeze({
     id: 'kb-live-local-backup',
     surface: 'menu',
     proxy: 'local-backup',

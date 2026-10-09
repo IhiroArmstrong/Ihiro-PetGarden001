@@ -113,6 +113,7 @@ export class WideIdleMoreMenu {
      *     onTipJar?: () => void,
      *     onNewsletter?: () => void,
      *     onCommunity?: () => void,
+     *     onHelpCenter?: () => void,
      *     onLocalBackup?: () => void,
      *     onRitualFlow?: (proxy: string) => void,
    *     onSound?: () => void,
@@ -926,6 +927,12 @@ export class WideIdleMoreMenu {
       this.clearStage();
       this.closeMenu();
       this.handlers.onCommunity?.();
+      return;
+    }
+    if (key === 'help-center') {
+      this.clearStage();
+      this.closeMenu();
+      this.handlers.onHelpCenter?.();
       return;
     }
     if (key === 'local-backup') {

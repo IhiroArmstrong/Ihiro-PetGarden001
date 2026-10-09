@@ -25,6 +25,7 @@ export const M01_CLICK_MUTATION_FILES = Object.freeze([
   'src/ui/MembershipUnlockUI.js',
   'src/ui/NewsletterCaptureUI.js',
   'src/ui/JourneyLogUI.js',
+  'src/ui/HelpCenterUI.js',
   'src/core/newsletter/workerNewsletterProvider.js',
   'src/core/practiceBackup/practiceBackupSync.js',
   'src/core/membershipCheckout.js'

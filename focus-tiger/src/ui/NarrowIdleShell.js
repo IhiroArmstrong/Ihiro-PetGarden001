@@ -84,6 +84,7 @@ export class NarrowIdleShell {
      *     onTipJar?: () => void,
    *     onNewsletter?: () => void,
    *     onCommunity?: () => void,
+   *     onHelpCenter?: () => void,
    *     onLocalBackup?: () => void,
    *     onRitualFlow?: (proxy: string) => void,
    *     onHonesty?: () => void,
@@ -1094,6 +1095,12 @@ export class NarrowIdleShell {
       this.closeSheet();
       this.clearStage();
       this.handlers.onCommunity?.();
+      return;
+    }
+    if (key === 'help-center') {
+      this.closeSheet();
+      this.clearStage();
+      this.handlers.onHelpCenter?.();
       return;
     }
     if (key === 'local-backup') {

@@ -125,6 +125,7 @@ import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
+import { HelpCenterUI } from './ui/HelpCenterUI.js';
 import { GrowthJourneyDetailUI } from './ui/GrowthJourneyDetailUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
@@ -1452,6 +1453,11 @@ async function init() {
     withIdleOverlayOccupancySync({})
   );
   window.__journeyLog = journeyLogUI;
+  const helpCenterUI = new HelpCenterUI(
+    document.body,
+    withIdleOverlayOccupancySync({})
+  );
+  window.__helpCenter = helpCenterUI;
   const presenceSignalsPanelUI = new PresenceSignalsPanelUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1926,6 +1932,7 @@ async function init() {
     if (except !== 'moments') fiveMomentsCompassUI.close();
     if (except !== 'cold-start-goal') coldStartGoalCardUI.close();
     if (except !== 'journey') journeyLogUI.close();
+    if (except !== 'help-center') helpCenterUI.close();
     if (except !== 'growth-journey') growthJourneyDetailUI?.close();
     if (except !== 'presence') presenceSignalsPanelUI.close();
     if (except !== 'yin-memory') yinPersonalMemoryUI.close();
@@ -1939,6 +1946,11 @@ async function init() {
   openTodayDirectionManual = () => {
     closeGrowthOverlayCards({ except: 'cold-start-goal' });
     coldStartGoalCardUI.open({ manual: true });
+  };
+
+  const openHelpCenter = () => {
+    closeGrowthOverlayCards({ except: 'help-center' });
+    helpCenterUI.open();
   };
 
   openHomeSanctuaryNav = (anchorEl) => {
@@ -2875,6 +2887,7 @@ async function init() {
   function isGrowthCardOverlayActive() {
     return (
       journeyLogUI?.isOpen?.() === true ||
+      helpCenterUI?.isOpen?.() === true ||
       growthJourneyDetailUI?.isOpen?.() === true ||
       yinCoinPanelUI?.isOpen?.() === true ||
       dailyZenQuoteCardUI?.isOpen?.() === true ||
@@ -2945,6 +2958,7 @@ async function init() {
       welcomeSequencePlaying: isWelcomeFirstPaintPlaying(),
       confideOpen: window.__confideToYin?.isOpen?.() === true,
       journeyOpen: window.__journeyLog?.isOpen?.() === true,
+      helpCenterOpen: window.__helpCenter?.isOpen?.() === true,
       growthJourneyDetailOpen:
         window.__growthJourneyDetail?.isOpen?.() === true,
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
@@ -3776,6 +3790,9 @@ async function init() {
       closeGrowthOverlayCards();
       openCommunityExternalLink();
     },
+    onHelpCenter: () => {
+      openHelpCenter();
+    },
     onLocalBackup: () => {
       closeGrowthOverlayCards({ except: 'local-backup' });
       localPracticeDataPanelUI.openPanel();
@@ -3960,6 +3977,9 @@ async function init() {
     onPurposeClose: () => syncIdleYinTap(),
     onTodayDirection: () => {
       openTodayDirectionManual();
+    },
+    onHelpCenter: () => {
+      openHelpCenter();
     },
     onWellnessFirstDismiss: () => {
       scheduleFirstCardOffers();

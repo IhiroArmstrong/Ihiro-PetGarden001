@@ -429,6 +429,7 @@ export class ImmersivePresenceUI {
       body.ft-immersive-presence #moment-whisper,
       body.ft-immersive-presence #five-moments-compass,
       body.ft-immersive-presence #journey-log,
+      body.ft-immersive-presence #help-center,
       body.ft-immersive-presence #yin-coin-panel,
       body.ft-immersive-presence #art-collection-panel,
       body.ft-immersive-presence #zen-cinema-card,

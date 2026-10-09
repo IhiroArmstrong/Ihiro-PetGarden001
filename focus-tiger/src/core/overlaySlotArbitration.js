@@ -59,6 +59,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [secondaryMenuOpen]
  * @property {boolean} [confideOpen]
  * @property {boolean} [journeyOpen]
+ * @property {boolean} [helpCenterOpen]
  * @property {boolean} [growthJourneyDetailOpen]
  * @property {boolean} [coinPanelOpen]
  * @property {boolean} [quoteOpen]
@@ -85,7 +86,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  *   'compassOpen' | 'coldStartGoalOpen' | 'mustardSeedOpen' | 'tipJarOpen' | 'supportModalOpen' |
  *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' |
  *   'welcomeSequencePlaying' | 'secondaryMenuOpen' |
- *   'confideOpen' | 'journeyOpen' | 'growthJourneyDetailOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' | 'artCollectionOpen' |
+ *   'confideOpen' | 'journeyOpen' | 'helpCenterOpen' | 'growthJourneyDetailOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' | 'artCollectionOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
  *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' |
@@ -126,6 +127,7 @@ export function buildOverlaySnapshot(input = {}) {
     secondaryMenuOpen: Boolean(input.secondaryMenuOpen),
     confideOpen: Boolean(input.confideOpen),
     journeyOpen: Boolean(input.journeyOpen),
+    helpCenterOpen: Boolean(input.helpCenterOpen),
     growthJourneyDetailOpen: Boolean(input.growthJourneyDetailOpen),
     coinPanelOpen: Boolean(input.coinPanelOpen),
     quoteOpen: Boolean(input.quoteOpen),
@@ -605,6 +607,7 @@ function collectTransitionMomentYield(snapshot) {
   }
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
   if (snapshot.journeyOpen) blockers.push(OVERLAY_SOURCES.JOURNEY_LOG);
+  if (snapshot.helpCenterOpen) blockers.push(OVERLAY_SOURCES.HELP_CENTER);
   if (snapshot.recoverResetPracticeOpen) {
     blockers.push(OVERLAY_SOURCES.RECOVER_RESET_PRACTICE);
   }
