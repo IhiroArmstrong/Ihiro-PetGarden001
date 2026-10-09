@@ -28,11 +28,11 @@
 
 /** @type {readonly HelpCenterSection[]} */
 export const HELP_CENTER_SECTIONS = Object.freeze([
-  Object.freeze({ id: 'start', labelKey: 'help_center.section.start' }),
-  Object.freeze({ id: 'practice', labelKey: 'help_center.section.practice' }),
-  Object.freeze({ id: 'data', labelKey: 'help_center.section.data' }),
-  Object.freeze({ id: 'companion', labelKey: 'help_center.section.companion' }),
-  Object.freeze({ id: 'learn', labelKey: 'help_center.section.learn' })
+  Object.freeze({ id: 'start', labelKey: 'HELP_CENTER_SECTION_START' }),
+  Object.freeze({ id: 'practice', labelKey: 'HELP_CENTER_SECTION_PRACTICE' }),
+  Object.freeze({ id: 'data', labelKey: 'HELP_CENTER_SECTION_DATA' }),
+  Object.freeze({ id: 'companion', labelKey: 'HELP_CENTER_SECTION_COMPANION' }),
+  Object.freeze({ id: 'learn', labelKey: 'HELP_CENTER_SECTION_LEARN' })
 ]);
 
 /** @type {readonly HelpCenterArticle[]} */
@@ -40,64 +40,64 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
   Object.freeze({
     id: 'KB-FUNC-0001',
     sectionId: 'start',
-    titleKey: 'help_center.article.kb_func_0001.title',
-    bodyKey: 'help_center.article.kb_func_0001.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0001_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0001_BODY',
     kbTraceId: 'KB-FUNC-0001'
   }),
   Object.freeze({
     id: 'KB-FUNC-0004',
     sectionId: 'start',
-    titleKey: 'help_center.article.kb_func_0004.title',
-    bodyKey: 'help_center.article.kb_func_0004.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0004_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0004_BODY',
     kbTraceId: 'KB-FUNC-0004'
   }),
   Object.freeze({
     id: 'KB-FUNC-0006',
     sectionId: 'practice',
-    titleKey: 'help_center.article.kb_func_0006.title',
-    bodyKey: 'help_center.article.kb_func_0006.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0006_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0006_BODY',
     kbTraceId: 'KB-FUNC-0006'
   }),
   Object.freeze({
     id: 'KB-FUNC-0002',
     sectionId: 'practice',
-    titleKey: 'help_center.article.kb_func_0002.title',
-    bodyKey: 'help_center.article.kb_func_0002.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0002_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0002_BODY',
     kbTraceId: 'KB-FUNC-0002'
   }),
   Object.freeze({
     id: 'KB-FUNC-0020',
     sectionId: 'practice',
-    titleKey: 'help_center.article.kb_func_0020.title',
-    bodyKey: 'help_center.article.kb_func_0020.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0020_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0020_BODY',
     kbTraceId: 'KB-FUNC-0020'
   }),
   Object.freeze({
     id: 'KB-FUNC-0003',
     sectionId: 'data',
-    titleKey: 'help_center.article.kb_func_0003.title',
-    bodyKey: 'help_center.article.kb_func_0003.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0003_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0003_BODY',
     kbTraceId: 'KB-FUNC-0003'
   }),
   Object.freeze({
     id: 'KB-FUNC-0005',
     sectionId: 'companion',
-    titleKey: 'help_center.article.kb_func_0005.title',
-    bodyKey: 'help_center.article.kb_func_0005.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0005_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0005_BODY',
     kbTraceId: 'KB-FUNC-0005'
   }),
   Object.freeze({
     id: 'KB-EDU-0001',
     sectionId: 'learn',
-    titleKey: 'help_center.article.kb_edu_0001.title',
-    bodyKey: 'help_center.article.kb_edu_0001.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0001_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_EDU_0001_BODY',
     kbTraceId: 'KB-EDU-0001'
   }),
   Object.freeze({
     id: 'KB-EDU-0002',
     sectionId: 'learn',
-    titleKey: 'help_center.article.kb_edu_0002.title',
-    bodyKey: 'help_center.article.kb_edu_0002.body',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0002_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_EDU_0002_BODY',
     kbTraceId: 'KB-EDU-0002'
   })
 ]);

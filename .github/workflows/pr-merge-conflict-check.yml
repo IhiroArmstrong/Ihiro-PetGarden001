@@ -32,6 +32,12 @@ jobs:
           TASKS_GUARD_HEAD: ${{ github.event.pull_request.head.sha }}
         run: node focus-tiger/scripts/assemble-tasks.js --guard
 
+      - name: Refuse edits to the shared locale dictionaries
+        env:
+          LOCALE_GUARD_BASE: origin/develop
+          LOCALE_GUARD_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: node focus-tiger/scripts/check-locale-slices.js
+
       - name: Attempt merge with origin/develop
         id: merge
         run: |

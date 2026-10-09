@@ -2174,7 +2174,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 点「?」`#onboarding-hint-help`
 
 **Then**
-- 0–1 秒内见 `#onboarding-app-purpose`（no pressure / no ads / stays on this device）+ 免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent；日语切语后见「心理療法・医療ではありません」）+ 卡末 colophon（Focus Tiger™ / Created by Ihiro Armstrong Hao Hoh / Twinsology / © 2026）。Electron 另见 `#onboarding-purpose-desktop-ram`（8 GB · Mac and Windows）；Web / 手机 Safari 不见该块。
+- 0–1 秒内见 `#onboarding-app-purpose`（no pressure / no ads / stays on this device）+ 免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent；日语切语后见「心理療法・医療ではありません」）+ 卡末 colophon（Focus Tiger™ / Created by Ihiro Armstrong / Twinsology / © 2026）。Electron 另见 `#onboarding-purpose-desktop-ram`（8 GB · Mac and Windows）；Web / 手机 Safari 不见该块。
 
 #### W-3
 

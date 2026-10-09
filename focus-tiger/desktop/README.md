@@ -1,7 +1,7 @@
 # Focus Tiger desktop (Electron)
 
 Focus Tiger™ is a product of Twinsology.
-Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
 
 Install and run from `focus-tiger/`:
 

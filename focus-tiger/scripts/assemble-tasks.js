@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 /**
@@ -268,7 +268,7 @@ function refExists(baseRef) {
 function changedPathsAgainst(baseRef) {
   const committed = execFileSync(
     'git',
-    ['diff', '--name-only', baseRef, 'HEAD'],
+    ['diff', '--name-only', `${baseRef}...HEAD`],
     { cwd: REPO_ROOT, encoding: 'utf8' }
   )
   const unstaged = execFileSync('git', ['diff', '--name-only'], {
@@ -387,7 +387,7 @@ export function runTasksFragmentCheck() {
   const otherPaths = [
     ...new Set(
       (headRev
-        ? execFileSync('git', ['diff', '--name-only', baseRef, headRev], {
+        ? execFileSync('git', ['diff', '--name-only', `${baseRef}...${headRev}`], {
             cwd: REPO_ROOT,
             encoding: 'utf8'
           })

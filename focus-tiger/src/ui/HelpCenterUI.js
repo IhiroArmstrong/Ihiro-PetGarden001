@@ -182,20 +182,20 @@ export class HelpCenterUI {
         this._showIndex();
         return;
       }
-      this.titleEl.textContent = t('help_center.title');
-      this.backBtn.textContent = t('help_center.back_to_topics');
-      this.closeBtn.textContent = t('help_center.close');
+      this.titleEl.textContent = t('HELP_CENTER_TITLE');
+      this.backBtn.textContent = t('HELP_CENTER_BACK_TO_TOPICS');
+      this.closeBtn.textContent = t('HELP_CENTER_CLOSE');
       this.introEl.hidden = true;
       this.articleTitleEl.textContent = t(row.titleKey);
       this.articleBodyEl.textContent = t(row.bodyKey);
       return;
     }
 
-    this.titleEl.textContent = t('help_center.title');
-    this.closeBtn.textContent = t('help_center.close');
+    this.titleEl.textContent = t('HELP_CENTER_TITLE');
+    this.closeBtn.textContent = t('HELP_CENTER_CLOSE');
     this.introEl.hidden = false;
-    this.introEl.textContent = t('help_center.intro');
-    this.confideNoteEl.textContent = t('help_center.confide_note');
+    this.introEl.textContent = t('HELP_CENTER_INTRO');
+    this.confideNoteEl.textContent = t('HELP_CENTER_CONFIDE_NOTE');
 
     this.indexEl.replaceChildren();
     for (const section of HELP_CENTER_SECTIONS) {

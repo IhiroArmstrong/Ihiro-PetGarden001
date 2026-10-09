@@ -1,6 +1,6 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 /**
@@ -15,6 +15,7 @@
  *   node scripts/locale-pack.js import-ja [path.tsv]
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { loadMergedFromDisk } from './check-locale-slices.js';
 import { dirname, join, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -117,8 +118,12 @@ function loadJson(name) {
  * @param {string} packPath
  */
 function exportJa(packPath) {
-  const en = loadJson('en.json');
-  const ja = loadJson('ja.json');
+  const merged = loadMergedFromDisk();
+  if (merged.errors.length > 0) {
+    throw new Error(merged.errors.join('\n'));
+  }
+  const en = merged.dictionaries.en;
+  const ja = merged.dictionaries.ja;
   const keys = Object.keys(en);
   const lines = ['key\ten\tja'];
   for (const key of keys) {

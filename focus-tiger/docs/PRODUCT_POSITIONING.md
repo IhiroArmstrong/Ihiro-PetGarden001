@@ -292,15 +292,15 @@ Focus Tiger™ is a product of Twinsology.
 
 **公开营销域（2026-08-20 拍板 · 2026-09-03 现网上线）**：`https://twinsology.com`（Slice 0 静态页在 `marketing-site/`；Cloudflare Pages `twinsology-marketing`；练习壳不因本条搬家）。详见 `task-briefs/task-marketing-site.md`。
 
-Created by Ihiro Armstrong Hao Hoh / Twinsology.
+Created by Ihiro Armstrong / Twinsology.
 
-Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
 
 应用内「?」简介卡末尾用 **creator-first colophon**（欧美独立产品 About 气质；专有名词保持英文，不随语种翻译）：
 
 > Focus Tiger™  
-> Created by Ihiro Armstrong Hao Hoh / Twinsology  
-> © 2026 Ihiro Armstrong Hao Hoh. All rights reserved.
+> Created by Ihiro Armstrong / Twinsology  
+> © 2026 Ihiro Armstrong. All rights reserved.
 
 源码文件头与 `LICENSE` 用公司+作者并列的所有权句（见 `src/core/copyrightNotice.js`）。
 

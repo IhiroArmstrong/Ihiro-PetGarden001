@@ -1,14 +1,23 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+import { spawnSync } from 'node:child_process';
 import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
+const sliceIndex = spawnSync(
+  process.execPath,
+  [path.join(rootDir, 'scripts/write-locale-slice-index.js')],
+  { stdio: 'inherit' }
+);
+if (sliceIndex.status !== 0) {
+  throw new Error('write-locale-slice-index failed');
+}
 const pkg = JSON.parse(
   readFileSync(path.join(rootDir, 'package.json'), 'utf8')
 );

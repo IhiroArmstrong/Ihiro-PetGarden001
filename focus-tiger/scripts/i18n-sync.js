@@ -1,6 +1,6 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 /**
@@ -14,26 +14,13 @@
  *
  * Does NOT call LLMs or write machine translations — product copy stays 审完再露.
  */
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import {
   listExtraJaKeys,
   listJaEqualToEn,
   listJaMissingJapaneseScript,
   listMissingJaKeys
 } from '../src/locales/jaCopyGuards.js';
-
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const localesDir = join(root, 'src', 'locales');
-
-/**
- * @param {string} name
- * @returns {Record<string, string>}
- */
-function loadDict(name) {
-  return JSON.parse(readFileSync(join(localesDir, name), 'utf8'));
-}
+import { loadMergedFromDisk } from './check-locale-slices.js';
 
 /**
  * @param {string} title
@@ -57,8 +44,14 @@ function printSection(title, keys, sampleFrom) {
 }
 
 function main() {
-  const en = loadDict('en.json');
-  const ja = loadDict('ja.json');
+  const merged = loadMergedFromDisk();
+  if (merged.errors.length > 0) {
+    console.error('[i18n:sync] FAIL — locale slices');
+    for (const err of merged.errors) console.error(`  - ${err}`);
+    process.exit(1);
+  }
+  const en = merged.dictionaries.en;
+  const ja = merged.dictionaries.ja;
 
   const missing = listMissingJaKeys(en, ja);
   const extra = listExtraJaKeys(en, ja);

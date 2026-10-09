@@ -1,6 +1,6 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 import test from 'node:test';
@@ -26,7 +26,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 test('file-header ownership names Twinsology and the author', () => {
   assert.match(FILE_HEADER_OWNERSHIP, /Focus Tiger™ is a product of Twinsology/);
-  assert.match(FILE_HEADER_OWNERSHIP, /Twinsology & Ihiro Armstrong Hao Hoh/);
+  assert.match(FILE_HEADER_OWNERSHIP, /Twinsology & Ihiro Armstrong/);
   assert.equal(
     FILE_HEADER_OWNERSHIP,
     `${FILE_HEADER_PRODUCT_LINE} ${FILE_HEADER_COPYRIGHT_LINE}`
@@ -37,11 +37,11 @@ test('in-app colophon is creator-first (not the file-header legal line)', () => 
   assert.equal(PURPOSE_COLOPHON_MARK, 'Focus Tiger™');
   assert.equal(
     PURPOSE_COLOPHON_BYLINE,
-    'Created by Ihiro Armstrong Hao Hoh / Twinsology'
+    'Created by Ihiro Armstrong / Twinsology'
   );
   assert.equal(
     PURPOSE_COLOPHON_COPYRIGHT,
-    '© 2026 Ihiro Armstrong Hao Hoh. All rights reserved.'
+    '© 2026 Ihiro Armstrong. All rights reserved.'
   );
   assert.deepEqual(PURPOSE_COLOPHON_KEYS, [
     'HINT_APP_PURPOSE_COLOPHON_MARK',
