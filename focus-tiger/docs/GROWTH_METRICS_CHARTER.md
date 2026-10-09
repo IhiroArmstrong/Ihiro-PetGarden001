@@ -158,6 +158,7 @@ Pre-Batch-2 reads summed **90-day practice-days minutes** as if they were lifeti
 | Topic | Current state | Decision owner |
 |---|---|---|
 | Lotus lifetime minutes **per day cap** | **Closed** — 180 min/day toward score only; blooms uncapped (`scoreFormula.v3`) | PO 2026-09-10 |
+| **scoreFormula fairness** (binge vs light practice) | **Resolved · under observation** — v3 + persona CI lock `single-binge` / `single-binge-extreme` at score 4 and `steady-light` at 22 (mustard ok). **No v4 candidate deliberation** until: (1) real user/CS signal that depth users are too slow or light users too fast; (2) a new feature is more score-sensitive than mustard unlock; or (3) mustard threshold (21) changes — then rerun the persona table (`steady-light` vs `single-binge` first). Do **not** raise minute weight or add AND gates without that trigger. | PO 2026-09-10 |
 | Honesty 5 min × 21 days → mustard unlock | Allowed by score (days dominate) | Persona `steady-light` locks intent until changed |
 | MilestoneGlow vs score | Orthogonal streak ladder | By design |
 | Shared milestone catalog | **Closed V1** — static local table; J1-a same consecutive-days predicate for Glow + Journey; #890 closed vocab (`task-shared-milestone-catalog.md`) | PO 2026-09-20；Batch 1 另口令 |
@@ -190,3 +191,4 @@ Optional mustard path with lotus supplement: `qaSeedStreak=15&qaLotusBlooms=12` 
 | 2026-10-03 | Growth Journey implementation brief: client stage gates + persona landings (`GROWTH_JOURNEY_IMPLEMENTATION.md`). No second input |
 | 2026-10-03 | Growth Journey display floor: live dot is lotus minutes, not the persona day-count fallback. Local highest stage is a floor. Ninety-day count removed from the detail facts (`GROWTH_JOURNEY.md`) |
 | 2026-10-03 | Growth Journey stage module: floor travels in the local lotus export and import keeps the higher stage. Cloud six-key backup still omits lotus |
+| 2026-10-09 | Open questions: scoreFormula fairness marked **resolved · under observation** (PO 2026-09-10). Old conflicting PR #695 closed; this row is the record. No formula change |
