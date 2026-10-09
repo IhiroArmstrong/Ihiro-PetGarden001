@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-09（首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-10-10（帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -33,6 +33,8 @@
   - `overlaySlotArbitration.test.js` + `sessionChromeSync.test.js` — **AH** 首卡队列 / postSession suppress / C1–C3 busy（**非**完整 Compass 故事 e2e）
   - `practiceBackupDailyCompletionReconcile.test.js` · `practiceBackupSync.test.js` — **AI** 恢复后从 `practice-days` 派生 `daily-completions`（**非**完整备份 UI e2e）
   - `immersivePresenceSupport.test.js` — **AK** Electron PiP 探针红/绿（**非**真 PiP DOM e2e）
+  - `helpCenterCatalog.test.js` · `HelpCenterUI.test.js` — **AX** 帮助中心目录与按压样式（**非**从菜单点开的完整故事）
+  - `teaGiftHd.test.js` — **AW** 请茶核销后把金鸭预览换成本机已有的原图（**非**真付、**非**观感）
   - `confidePracticeFacts` · `yinPersonalMemory*` · `desktopCompanionL2Route` — **AG** 练习事实 / Consent / Remember / 注入 / 口头 Forget（**非**完整 Confide 故事 e2e）
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感、Presence 披露时长、Electron memory 面板等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
@@ -73,7 +75,7 @@
 | 链接 | 用途 |
 |---|---|
 | [http://localhost:5173/](http://localhost:5173/) | **实验室**：右上角情绪调试面板常驻；DEV 下有 `window.__*` |
-| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA–AL** / **AF–AJ** / **AV–AW** |
+| [http://localhost:5173/?product=1](http://localhost:5173/?product=1) | **产品壳预览**：隐藏 `#emotion-debug-ui`，更接近真实用户界面；适合走场景 A–H / I–P / **Q–W** / **X–Z** / **AA–AL** / **AF–AJ** / **AV–AX** |
 | [http://localhost:5173/?product=1&entitlementMock=subscription](http://localhost:5173/?product=1&entitlementMock=subscription) | **Presence Slice 2 QA**：Morning Ritual chip / Leave 回顾（见 **场景 AF · Slice 2**） |
 | [http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6](http://localhost:5173/?product=1&sessionMinutes=1&qaSeedStreak=6) | **长周期 QA**：播种昨天往前 6 个练习日；Sit 满 1 分钟可测 MilestoneGlow（不必真等 7 天） |
 | [http://localhost:5173/?product=1&confide=1](http://localhost:5173/?product=1&confide=1) | **Confide QA harness**（产品挂载仍关）：Idle ⋯/抽屉见 Confide 行；**仍检索不生成**；见 **场景 AE · Web** |
@@ -1037,18 +1039,34 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ---
 
-## 场景 AW：艺术收藏 · 凭证、选画、高清、五件套、珍藏桥（#1096–#1100 · #1098 · #1099 · 2026-10-08/09）
+## 场景 AW：艺术收藏 · 凭证、选画、高清、五件套、珍藏桥（#1096–#1100 · #1098 · #1099 · #1118 · #1123 · #1124 · 2026-10-08/10）
 
-> **地位**：Yin's Art Collection 是付费画页。**≠** 寅币商店行（场景 AC）、**≠** Support 三卡（场景 Q）。  
-> **单元**：`artCollectionPurchase.test.js` · `artCollectionHd.test.js` · `collectionsArtBridgeGate.test.js` · `collectionPieceCard` 相关单测。**非** Stripe 真付 DOM。  
+> **地位**：Yin's Art Collection 是付费画页。**≠** 寅币商店行（场景 AC）、**≠** Support 三卡（场景 Q）。请茶礼物图在 Support 的茶卡上，核销后才换成原图。  
+> **单元**：`artCollectionPurchase.test.js` · `artCollectionHd.test.js` · `teaGiftHd.test.js` · `collectionsArtBridgeGate.test.js` · `collectionPieceCard` 相关单测。**非** Stripe 真付 DOM。  
 > **点击**：菜单行 / Buy / Save / 桥上的 Open 均 **0–1 秒内**有面板、Checkout 句或失败句。失败不得把这张标成已拥有，也不得静默。
 
 1. Idle ⋯ / 抽屉 **Yin's Art Collection** → **0–1 秒内** `#art-collection-panel` 可见。无邮箱点 Buy → 「A purchase needs an email.」Checkout 打不开 → 失败句，且这张**不是**你的。  
 2. **高清**：没有核销过的购买记录时，保存不得在本机落下高清文件（单测锁）。已拥有才见 Save image；保存中见 Saving…，成功见 Saved。  
 3. **选画卡**：买下并保存后，卡上见 “This is a piece I chose.” / “Chosen, and kept here”。  
 4. **结缘凭证**：寅币结缘一件器物并保存后，卡上见 “This piece came after I had sat these {n} minutes.” **≠** 买来的画。  
-5. **五件套**：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is closed.”，不得再开 Checkout。  
-6. **珍藏桥（只一次）**：第一次用寅币结缘并走出仪式句时，若还没看过桥，仪式卡上见 `[data-testid=yin-coin-art-bridge]` 与 “Open Yin's Art Collection”。出现即记为看过；再结缘不再出现。点 Open → 艺术收藏面板。
+5. **五件套**：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is closed.”，不得再开 Checkout。磁州窑红绿彩五件同样是一套（Cizhou red-green five），也是 Buy the set；售罄同一句，不得再开 Checkout。  
+6. **货架预览**：青瓷冰裂纹壶、青瓷牡丹瓶、金鸭彝这三张预览不得再带生成器水印。  
+7. **请茶原图**：茶已核销、且原图已在本机时，茶卡上的金鸭图换成那张原图。原图还没落到本机时，预览先留着，不得假装已经换成高清。  
+8. **珍藏桥（只一次）**：第一次用寅币结缘并走出仪式句时，若还没看过桥，仪式卡上见 `[data-testid=yin-coin-art-bridge]` 与 “Open Yin's Art Collection”。出现即记为看过；再结缘不再出现。点 Open → 艺术收藏面板。
+
+---
+
+## 场景 AX：帮助中心（菜单 + 问号卡 · #1120 / #1122 · 2026-10-10）
+
+> **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。  
+> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录；不碰付款、不改练习记录）。  
+> **点击**：菜单行与问号卡上的链，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
+
+1. `?product=1` Idle → ⋯ Preferences **Help Center**（窄屏抽屉同一行，`data-testid=idle-help-center`）→ **0–1 秒内** `[data-testid=help-center]` 可见，标题 Help Center，下面是分好组的主题。  
+2. 点任一主题 → **0–1 秒内**见该篇标题和正文（`data-testid=help-center-article`）。Back **0–1 秒内**回到目录。  
+3. Close 或点背板 → **0–1 秒内**面板收起，Sit 仍在。  
+4. 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Center” 同样打开这一页，不得和简介卡叠成两层。  
+5. 目录是说明，不是对阿寅说话。这里的句子不得冒充倾诉面板里的回复。
 
 ---
 
@@ -1089,6 +1107,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | **AT** | Voice Input · Speak to type（Electron · Slice 0–2） | **已升格** → 见上文「场景 AT」；Confide + Arrival 手写 + Reflection；Web 不测 |
 | **AV** | 首页旅程短行点开 Where you are | **已升格** → 见上文「场景 AV」；#1102 / #1107；单测锁短行与详情，**非** DOM |
 | **AW** | 艺术收藏凭证 / 选画 / 高清 / 五件套 / 珍藏桥 | **已升格** → 见上文「场景 AW」；#1096–#1100 · #1098 · #1099；真付与高清观感仍人工 |
+| **AX** | 帮助中心（菜单 + 问号卡） | **已升格** → 见上文「场景 AX」；#1120 / #1122；单测锁目录，**非**菜单 DOM |
 
 ---
 
@@ -1235,6 +1254,17 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **升格场景 AW**：艺术收藏与寅币商店分开；高清只在核销购买之后；珍藏桥只出现一次。  
    - **场景 AU**：文首日期拨到 10/09；步骤未改。Worker 已有 beside 部署记录时，发码失败句不再当成「功能未做」。  
 3. **仍须人工 / 勿当缺口**：旅程短行在窄屏与热力图的叠放；Stripe 真付后 Save 的高清文件；五件套售罄句；珍藏桥只在第一次仪式结缘出现。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
+## 2026-10-09–10 增量核对摘要（帮助中心 · 磁州窑五件 · 请茶原图）
+
+1. **背景**：10/09 晚合入 develop 的用户面还有帮助中心（#1120 · #1122）、磁州窑红绿彩五件（#1124）、请茶核销后还原金鸭原图（#1123）、三张货架预览去掉生成印（#1118）。版权署名与宣传站「练习和倾诉留在本机」不进产品壳故事。依赖升级、任务表碎片规则、成长分数观察记录不升格。  
+2. **本次核对（增量）**：  
+   - **升格场景 AX**：菜单和问号卡都能打开帮助中心；点主题见正文。  
+   - **场景 AW**：补磁州窑五件套、请茶原图、三张预览无生成印。青瓷五件套步骤仍在。  
+3. **仍须人工 / 勿当缺口**：帮助中心 375 下列表是否被底栏挡住；磁州窑五件售罄句；请茶原图在文件还没下到本机时是否仍停在预览。  
 4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
