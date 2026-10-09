@@ -1,6 +1,6 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 // Tiger Reflection Moment 的纯逻辑状态机：逐题推进、每题独立可跳、

@@ -1,6 +1,6 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 // 直接复制 TASKS.md v5.0 "原则三：视觉风格规范" 的色板，

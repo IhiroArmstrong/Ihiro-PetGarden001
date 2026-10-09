@@ -1,6 +1,6 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 // 入口文件：只做"拼装 + 主循环调度"，不允许直接创建 THREE.Scene() /
