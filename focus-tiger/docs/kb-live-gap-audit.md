@@ -64,7 +64,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | registryKbIds | unapprovedKbIds |
 |---|---|---|---|
-| `kb-live-help-center` | live | `KB-EDU-0001` `KB-EDU-0002` `KB-FUNC-0001` `KB-FUNC-0002` `KB-FUNC-0003` `KB-FUNC-0004` `KB-FUNC-0005` `KB-FUNC-0006` `KB-FUNC-0020` | `KB-FUNC-0006` |
+| `kb-live-help-center` | live | `KB-EDU-0001` `KB-EDU-0002` `KB-EDU-0003` `KB-EDU-0004` `KB-FUNC-0001` `KB-FUNC-0002` `KB-FUNC-0003` `KB-FUNC-0004` `KB-FUNC-0005` `KB-FUNC-0006` `KB-FUNC-0007` `KB-FUNC-0008` `KB-FUNC-0010` `KB-FUNC-0011` `KB-FUNC-0012` `KB-FUNC-0013` `KB-FUNC-0014` `KB-FUNC-0015` `KB-FUNC-0016` `KB-FUNC-0017` `KB-FUNC-0018` `KB-FUNC-0019` `KB-FUNC-0020` `KB-FUNC-0021` `KB-FUNC-0022` `KB-FUNC-0023` `KB-FUNC-0024` `KB-FUNC-0025` `KB-FUNC-0026` `KB-FUNC-0027` `KB-FUNC-0028` `KB-FUNC-0029` `KB-FUNC-0030` `KB-FUNC-0031` `KB-FUNC-0032` `KB-FUNC-0033` `KB-FUNC-0034` `KB-FUNC-0035` `KB-FUNC-0036` | `KB-FUNC-0006` |
 
 ### Conditional / gated-off surfaces (no approved KB yet)
 
