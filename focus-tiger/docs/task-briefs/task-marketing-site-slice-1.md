@@ -14,6 +14,7 @@
 | 次 CTA | **Write to Yin** → `mailto:hello@twinsology.com` |
 | Hero 视觉 | 2D 阿寅闭目坐禅静帧（`idle-breathing` · 与 App 主线一致；**不用** 3D） |
 | 副标 | `Walking the Yin Way?`（品牌精神句问句版） |
+| 信任句（2026-10-09） | Hero 里、次要说明之下、按钮之上：`Your practice and what you tell Yin stay on this device.` 不替换副标。 |
 | 三截图 | 陪伴 / 微仪式与音景 / Quiet Line 或珍藏意象（仅已有能力） |
 | 页脚 | Privacy + Medical disclaimer 静态摘录 + 版权；**Slice 1 不含** Slack 入口 |
 | 视觉微调 | 极浅纸感纹理 + 主钮 hover 微放大 / 金色光晕 |
