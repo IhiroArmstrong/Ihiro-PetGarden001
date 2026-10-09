@@ -36,6 +36,18 @@ export function findArtEditionSet(artId: string): ArtEditionSet | null {
 	return ART_EDITION_SETS.find((row) => row.id === artId) || null;
 }
 
+const RELIEF_HD_ID: Readonly<Record<string, string>> = Object.freeze({
+	"celadon-relief-dragon-gu": "hd-rf-01",
+	"moon-white-floral-tiered-box": "hd-rf-02",
+	"celadon-cloud-square-box": "hd-rf-03",
+	"celadon-peony-vase": "hd-rf-04",
+	"celadon-ice-crack-hu": "hd-rf-05",
+});
+
+export function editionSheetHdId(artId: string): string {
+	return RELIEF_HD_ID[artId] || "";
+}
+
 export function findArtEditionSheet(artId: string): { id: string; setId: string } | null {
 	for (const set of ART_EDITION_SETS) {
 		if (set.sheetIds.includes(artId)) return { id: artId, setId: set.id };
