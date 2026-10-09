@@ -242,7 +242,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `RETENTION_FUNNEL.md` | 留存漏斗事件 |
 | `MONETIZATION_INTENT_FUNNEL.md` | 付费意愿漏斗事件（本地） |
 | `ONBOARDING_HINTS.md` / `HONESTY_BRIDGE_CTA.md` 等 | 对应功能详规（Hints 文案/tier；接线见 `HINTS_WIRING.md`） |
-| `TASKS.md` | 任务序列（排期，非门禁） |
+| `TASKS.md` | 任务序列（排期，非门禁）。新状态不改本文件，见 `docs/task-entries/readme.md` |
 | `EPIC_COVERAGE_AUDIT.md` | **存量 Epic 覆盖度审计**（已合并 PR / 任务书与 SSOT / 代码仲裁层 ↔ #627–#647+#742+#792+#793+#648 切片） |
 | `planning/task-lines-epic-draft.md` | 开发任务线 Epic 建库草案（线名与关系；Issue 编号以 GitHub 为准） |
 
