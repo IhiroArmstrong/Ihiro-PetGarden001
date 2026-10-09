@@ -21,6 +21,7 @@ import { runDocsConsistencyCheck } from './check-docs-consistency.js';
 import { runCopyrightHeaderCheck } from './copyright-header.js';
 import { runTrackerFragmentCheck } from './assemble-tracker.js';
 import { runTasksFragmentCheck } from './assemble-tasks.js';
+import { runLocaleSliceCheck } from './check-locale-slices.js';
 import { runOverlayContractUiCheck } from './overlay-contract-ui-check.js';
 import { runPracticeAggregateCoverageAudit } from './audit-practice-coverage.js';
 import { runGrowthMetricsAudit } from './audit-growth-metrics.js';
@@ -42,6 +43,7 @@ function main() {
   if (!runCopyrightHeaderCheck()) ok = false;
   if (!runTrackerFragmentCheck()) ok = false;
   if (!runTasksFragmentCheck()) ok = false;
+  if (!runLocaleSliceCheck()) ok = false;
   if (!runOverlayContractUiCheck()) ok = false;
   if (!runZIndexRegistryCheck()) ok = false;
   if (!runPracticeAggregateCoverageAudit()) ok = false;

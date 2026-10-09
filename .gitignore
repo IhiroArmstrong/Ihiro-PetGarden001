@@ -1,5 +1,6 @@
 # Dependencies & build
 node_modules/
+focus-tiger/src/locales/localeSliceModules.js
 dist/
 .vite/
 *.local
