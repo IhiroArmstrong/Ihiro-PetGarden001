@@ -1,4 +1,5 @@
 import { errorJson, json } from "../lib/http";
+import { issueTeaGiftHdGrant } from "../lib/artCollectionHdGrant";
 import { requireJsonFields } from "../lib/validate";
 import {
 	isPlausibleEmail,
@@ -33,9 +34,19 @@ export async function handleVerifyTip(
 		return json({ tipped: false });
 	}
 
+	let hd = null;
+	if (env.ART_COLLECTION_HD && env.SANCTUARY_KV) {
+		hd = await issueTeaGiftHdGrant({
+			kv: env.SANCTUARY_KV,
+			tipKv: env.TIP_KV,
+			pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
+			email,
+		});
+	}
 	return json({
 		tipped: true,
 		tipCount: record.tipCount,
 		lastTippedAt: record.lastTippedAt,
+		hd,
 	});
 }
