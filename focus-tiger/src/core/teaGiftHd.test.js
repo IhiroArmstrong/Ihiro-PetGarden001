@@ -1,3 +1,8 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
+ */
+
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createMemoryArtHdCache } from './artCollectionHd.js';
