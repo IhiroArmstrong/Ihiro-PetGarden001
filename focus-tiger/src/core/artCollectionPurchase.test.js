@@ -90,6 +90,16 @@ describe('art collection purchase', () => {
       requestArtPurchase({ sheetId: 'celadon-relief-dragon-gu', email: 'a@b.co' }).reason,
       'unknown_sheet'
     );
+    const cizhou = requestArtPurchase({
+      sheetId: 'cizhou-red-green-five',
+      email: 'buyer@example.com'
+    });
+    assert.equal(cizhou.ok, true);
+    assert.equal(cizhou.sheetId, 'cizhou-red-green-five');
+    assert.equal(
+      requestArtPurchase({ sheetId: 'cizhou-changchun-square-plate', email: 'a@b.co' }).reason,
+      'unknown_sheet'
+    );
     assert.equal(
       requestArtPurchase({ sheetId: 'celadon-garlic-mouth-ring-bottle', email: 'a@b.co' })
         .reason,

@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `e019f799-bffd-44c5-8f6a-1fc9b90f0de1` |
-| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 源 `origin/docs/beside-seat-invite` `6a540dbc` · #1105 请坐一次码 `beside_issue` / `beside_join` / `beside_revoke` · `GET /health` OK · `beside_issue` → 8 位码 · `beside_join` 成功 · 复用同码 `409 beside_used`） |
+| `prod_worker_version` | `445454fe-afca-4edf-bdb5-49a937a59e28` |
+| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 源 `feature/cizhou-red-green-five`（待 PR）· 磁州窑红绿彩五件 `cizhou-red-green-five` 结账 + `hd-cz-01`…`05` 高清键 · `GET /health` OK · `POST /api/create-art-collection-checkout-session` → Stripe URL OK） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
