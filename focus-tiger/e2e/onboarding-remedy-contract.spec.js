@@ -1,6 +1,6 @@
 /**
  * Focus Tiger™ is a product of Twinsology.
- * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
 import { test, expect } from '@playwright/test';
@@ -95,10 +95,10 @@ test.describe('wide ? purpose only', () => {
     ).toHaveText('Focus Tiger™');
     await expect(
       page.locator('.onboarding-app-purpose__colophon-byline')
-    ).toContainText('Ihiro Armstrong Hao Hoh / Twinsology');
+    ).toContainText('Ihiro Armstrong / Twinsology');
     await expect(
       page.locator('.onboarding-app-purpose__colophon-copy')
-    ).toContainText(/© 2026 Ihiro Armstrong Hao Hoh/i);
+    ).toContainText(/© 2026 Ihiro Armstrong/i);
     await page.locator('.onboarding-app-purpose__privacy').click();
     await expect(
       page.locator('#onboarding-privacy-sheet:not([hidden])')
