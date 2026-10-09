@@ -140,6 +140,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
   glassCard('PracticeImprintCardUI.js'),
   glassCard('ConfideToYinUI.js'),
   glassCard('JourneyLogUI.js'),
+  glassCard('HelpCenterUI.js'),
   surface({
     file: 'GrowthJourneyDetailUI.js',
     slotRequest: deriveSlot(),

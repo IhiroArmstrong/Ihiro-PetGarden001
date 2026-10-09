@@ -22,6 +22,7 @@ import {
   listKbLiveMenuProxyRows
 } from '../src/core/kbLiveEntryRegistry.js';
 import { listSecondaryChromeEntries } from '../src/core/idleChromeOrchestration.js';
+import { loadMergedFromDisk } from './check-locale-slices.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -195,7 +196,14 @@ export function replaceKbLiveEntryRegistryBlock(md) {
  */
 export function runKbLiveEntryAudit({ write = false } = {}) {
   let ok = true;
-  const en = JSON.parse(readFileSync(EN_LOCALE_PATH, 'utf8'));
+  const mergedLocales = loadMergedFromDisk();
+  if (mergedLocales.errors.length > 0) {
+    for (const err of mergedLocales.errors) {
+      console.error(`[audit:kb-live-entries] locale slices: ${err}`);
+    }
+    return false;
+  }
+  const en = mergedLocales.dictionaries.en;
   /** @type {Map<string, string>} */
   const moduleCache = new Map();
 

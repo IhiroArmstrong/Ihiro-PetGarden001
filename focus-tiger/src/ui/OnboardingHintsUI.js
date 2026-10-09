@@ -452,6 +452,7 @@ export class OnboardingHintsUI {
    * @param {() => void} [options.onPurposeOpen]
    * @param {() => void} [options.onPurposeClose]
    * @param {() => void} [options.onTodayDirection]
+   * @param {() => void} [options.onHelpCenter]
    * @param {Storage | null} [options.storage]
    */
   constructor(
@@ -463,6 +464,7 @@ export class OnboardingHintsUI {
       onPurposeOpen = null,
       onPurposeClose = null,
       onTodayDirection = null,
+      onHelpCenter = null,
       storage = null
     } = {}
   ) {
@@ -472,6 +474,7 @@ export class OnboardingHintsUI {
     this.onPurposeOpen = onPurposeOpen;
     this.onPurposeClose = onPurposeClose;
     this.onTodayDirection = onTodayDirection;
+    this.onHelpCenter = onHelpCenter;
     this._storage =
       storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -1924,6 +1927,17 @@ export class OnboardingHintsUI {
       this._openTodayDirectionFromPurpose();
     });
 
+    const helpCenter = document.createElement('button');
+    helpCenter.type = 'button';
+    helpCenter.className = 'onboarding-app-purpose__help-center';
+    helpCenter.dataset.testid = 'onboarding-purpose-help-center';
+    helpCenter.hidden = true;
+    helpCenter.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this._openHelpCenterFromPurpose();
+    });
+
     const actions = document.createElement('div');
     actions.className = 'onboarding-app-purpose__actions';
 
@@ -1967,6 +1981,7 @@ export class OnboardingHintsUI {
       wellness,
       desktopRam,
       todayDirection,
+      helpCenter,
       actions,
       colophon
     );
@@ -1980,6 +1995,7 @@ export class OnboardingHintsUI {
     this._purposeDesktopRamTitleEl = desktopRamTitle;
     this._purposeDesktopRamBodyEl = desktopRamBody;
     this._purposeTodayDirectionEl = todayDirection;
+    this._purposeHelpCenterEl = helpCenter;
     this._purposePrivacyEl = privacy;
     this._purposeDismissEl = dismiss;
     this._purposeColophonMarkEl = colophonMark;
@@ -2034,6 +2050,19 @@ export class OnboardingHintsUI {
         this._purposeTodayDirectionEl.setAttribute(
           'aria-label',
           t('TODAY_DIRECTION_MENU_LABEL')
+        );
+      }
+    }
+    if (this._purposeHelpCenterEl) {
+      const showHelpCenter = typeof this.onHelpCenter === 'function';
+      this._purposeHelpCenterEl.hidden = !showHelpCenter;
+      if (showHelpCenter) {
+        this._purposeHelpCenterEl.textContent = t(
+          'HINT_APP_PURPOSE_HELP_CENTER_LINK'
+        );
+        this._purposeHelpCenterEl.setAttribute(
+          'aria-label',
+          t('HINT_APP_PURPOSE_HELP_CENTER_LINK_ARIA')
         );
       }
     }
@@ -2494,6 +2523,14 @@ export class OnboardingHintsUI {
     });
   }
 
+  _openHelpCenterFromPurpose() {
+    if (typeof this.onHelpCenter !== 'function') return;
+    this._hidePurposeCard();
+    window.requestAnimationFrame(() => {
+      this.onHelpCenter?.();
+    });
+  }
+
   _hidePurposeCard() {
     this._cancelPurposeHoverHide();
     if (this.purposeBackdrop) {
@@ -2909,6 +2946,27 @@ export class OnboardingHintsUI {
         color: #2f463c;
       }
       .onboarding-app-purpose__today-direction[hidden] {
+        display: none !important;
+      }
+      .onboarding-app-purpose__help-center {
+        display: block;
+        width: 100%;
+        margin: 0 0 10px;
+        padding: 8px 10px;
+        border: 0;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.35);
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.45;
+        color: #3f5c50;
+        text-align: left;
+        cursor: pointer;
+      }
+      .onboarding-app-purpose__help-center:hover {
+        background: rgba(255, 255, 255, 0.5);
+      }
+      .onboarding-app-purpose__help-center[hidden] {
         display: none !important;
       }
       .onboarding-wellness-detail {

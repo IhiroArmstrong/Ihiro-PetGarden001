@@ -483,6 +483,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
       testId: 'idle-account-placeholder'
     },
     { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' },
+    {
+      proxy: 'help-center',
+      labelKey: 'HELP_CENTER_MENU_LABEL',
+      testId: 'idle-help-center'
+    },
     { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' }
   ]);
 

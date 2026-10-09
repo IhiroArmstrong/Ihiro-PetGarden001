@@ -48,7 +48,7 @@
 | Practice | companion、ground-exercise、five-moments、honesty、journey-log、presence-signals、yin-coin、yin-art、confide |
 | Inspiration | daily-quote、**zen-cinema**（#759 补漏）、mustard-seed-seal（解锁后）、静思印、wallpapers |
 | Not alone | quiet-together、focus-circle |
-| Preferences | reminder、language、newsletter、**account 占位**（#759）、community、local-backup |
+| Preferences | reminder、language、newsletter、**account 占位**（#759）、community、**help-center**、local-backup |
 | 其它 | membership CTA/unlocked；Rituals 场景（按 entitlement 锁） |
 
 ### 2.3 故意不进菜单（不是漏项）
