@@ -42,6 +42,7 @@ Custom domains: `twinsology.com` and `www.twinsology.com`. **www must 301 to ape
 ## Slice 1 (2026-09-08)
 
 - Hero: 2D Yin idle still + `Walking the Yin Way?`
+- Trust line under the hero: `Your practice and what you tell Yin stay on this device.`
 - Primary CTA: **See the companion** → `#companion` showcase
 - Secondary CTA: **Write to Yin** → mailto
 - Three in-app stills under `assets/`

@@ -66,6 +66,10 @@ describe('marketing-site Slice 0 contract', () => {
 describe('marketing-site Slice 1 contract', () => {
   it('shows Yin hero, brand tagline, and honest primary CTA', () => {
     assert.match(html, /Walking the Yin Way\?/);
+    assert.match(
+      html,
+      /Your practice and what you tell Yin stay on this device\./
+    );
     assert.match(html, /hero-yin-idle\.png/);
     assert.match(html, /href="#companion"[^>]*>See the companion</);
     assert.match(html, /class="cta-secondary"[^>]*href="mailto:hello@twinsology\.com"[^>]*>Write to Yin</);

@@ -129,6 +129,14 @@ h1 {
   color: var(--color-ink-muted);
 }
 
+.trust {
+  margin: 1.15rem 0 0;
+  max-width: 28rem;
+  line-height: 1.55;
+  font-size: 1.02rem;
+  color: var(--color-ink);
+}
+
 .cta-row {
   display: flex;
   flex-wrap: wrap;
