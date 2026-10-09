@@ -10,16 +10,14 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import {
   t,
   setLocale,
   getLocale,
   onLocaleChange,
   bootLocaleFromPreference,
-  listLoadedDictionaryKeys
+  listLoadedDictionaryKeys,
+  listLoadedDictionaries
 } from './i18n.js';
 import { listReadyLocaleIds, isReadyLocale } from './localeRegistry.js';
 import {
@@ -36,9 +34,9 @@ import {
   shouldOfferLanguagePicker
 } from './localePreference.js';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const enDict = JSON.parse(readFileSync(join(here, 'en.json'), 'utf8'));
-const jaDict = JSON.parse(readFileSync(join(here, 'ja.json'), 'utf8'));
+const loadedDicts = listLoadedDictionaries();
+const enDict = loadedDicts.en;
+const jaDict = loadedDicts.ja;
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -184,7 +182,7 @@ test('read/write locale preference round-trip (ready only)', () => {
 });
 
 test('backup privacy copy names restore purpose, not a bald never-lost disclaimer', () => {
-  const zhDict = JSON.parse(readFileSync(join(here, 'zh.json'), 'utf8'));
+  const zhDict = loadedDicts.zh;
   const anxiety = [/never be lost/i, /永不丢失/, /決して失われない/];
   for (const [id, dict] of [
     ['en', enDict],
@@ -214,7 +212,7 @@ test('backup privacy copy names restore purpose, not a bald never-lost disclaime
 });
 
 test('backup enabled copy points at this Journey log, not a second archive', () => {
-  const zhDict = JSON.parse(readFileSync(join(here, 'zh.json'), 'utf8'));
+  const zhDict = loadedDicts.zh;
   assert.equal(
     /Open Journey log anytime/i.test(enDict.JOURNEY_LOG_BACKUP_STATUS_ENABLED),
     false

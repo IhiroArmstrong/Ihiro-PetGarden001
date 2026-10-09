@@ -12,6 +12,9 @@ import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { writeLocaleSliceIndex } from './write-locale-slice-index.js';
+
+writeLocaleSliceIndex();
 
 const srcRoot = join(fileURLToPath(new URL('.', import.meta.url)), '..', 'src');
 

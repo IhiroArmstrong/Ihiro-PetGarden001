@@ -7,6 +7,9 @@ import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeLocaleSliceIndex } from './scripts/write-locale-slice-index.js';
+
+writeLocaleSliceIndex();
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(

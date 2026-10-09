@@ -15,6 +15,8 @@
 import zh from './zh.json' with { type: 'json' };
 import en from './en.json' with { type: 'json' };
 import ja from './ja.json' with { type: 'json' };
+import { LOCALE_SLICES } from './localeSliceModules.js';
+import { mergeLocalePack } from './mergeLocaleSlices.js';
 import {
   DEFAULT_LOCALE,
   isReadyLocale
@@ -24,12 +26,14 @@ import {
   writeLocalePreference
 } from './localePreference.js';
 
+const mergedPack = mergeLocalePack({ en, zh, ja }, LOCALE_SLICES);
+if (mergedPack.errors.length > 0) {
+  throw new Error(`[i18n] ${mergedPack.errors.join('\n')}`);
+}
+
 /** @type {Record<string, Record<string, string>>} */
-const DICTIONARIES = {
-  zh,
-  en,
-  ja
-};
+const DICTIONARIES = mergedPack.dictionaries;
+const enDict = DICTIONARIES.en;
 
 /** @type {import('./localeRegistry.js').LocaleId} */
 let currentLocale = DEFAULT_LOCALE;
@@ -165,7 +169,7 @@ export function getLocale() {
 export function t(key) {
   const dict = DICTIONARIES[currentLocale] || {};
   if (dict[key]) return dict[key];
-  if (currentLocale !== 'en' && en[key]) return en[key];
+  if (currentLocale !== 'en' && enDict[key]) return enDict[key];
   console.warn(`[i18n] 缺少文案键 "${key}"（locale=${currentLocale}）`);
   return key;
 }
@@ -179,7 +183,7 @@ export function t(key) {
 export function tInLocale(locale, key) {
   const dict = DICTIONARIES[locale] || {};
   if (dict[key]) return dict[key];
-  if (locale !== 'en' && en[key]) return en[key];
+  if (locale !== 'en' && enDict[key]) return enDict[key];
   console.warn(`[i18n] 缺少文案键 "${key}"（locale=${locale}）`);
   return key;
 }
@@ -209,4 +213,12 @@ export function listLoadedDictionaryKeys() {
     out[id] = Object.keys(dict).sort();
   }
   return out;
+}
+
+/**
+ * Merged dictionaries (base JSON plus slices). Read-only for tests.
+ * @returns {Record<string, Record<string, string>>}
+ */
+export function listLoadedDictionaries() {
+  return DICTIONARIES;
 }

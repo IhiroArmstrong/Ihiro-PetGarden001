@@ -58,6 +58,8 @@
     "tracker:assemble": "node scripts/assemble-tracker.js --write",
     "tasks:check": "node scripts/assemble-tasks.js",
     "tasks:assemble": "node scripts/assemble-tasks.js --write",
+    "locale:slices": "node scripts/write-locale-slice-index.js",
+    "postinstall": "node scripts/write-locale-slice-index.js",
     "locale:export-ja": "node scripts/locale-pack.js export-ja",
     "locale:import-ja": "node scripts/locale-pack.js import-ja",
     "i18n:sync": "node scripts/i18n-sync.js",
