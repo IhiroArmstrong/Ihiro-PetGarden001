@@ -17,6 +17,7 @@ export async function handleGetArtCollectionHd(
 	const token = new URL(request.url).searchParams.get("t") || "";
 	const taken = await takeArtHdGrant({
 		kv: env.SANCTUARY_KV,
+		tipKv: env.TIP_KV,
 		pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
 		token,
 	});

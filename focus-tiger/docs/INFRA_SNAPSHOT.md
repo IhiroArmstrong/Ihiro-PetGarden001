@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `e019f799-bffd-44c5-8f6a-1fc9b90f0de1` |
-| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 源 `origin/docs/beside-seat-invite` `6a540dbc` · #1105 请坐一次码 `beside_issue` / `beside_join` / `beside_revoke` · `GET /health` OK · `beside_issue` → 8 位码 · `beside_join` 成功 · 复用同码 `409 beside_used`） |
+| `prod_worker_version` | `5984dd8d-ef12-4512-80bb-89dc007f6c18` |
+| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 源 `feature/art-hd-shelf-and-tea-gift` `00eacb75` · #1123 请茶 `hd-tg-01` · R2 全量 `private/art-hd/*` · `GET /health` OK） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|

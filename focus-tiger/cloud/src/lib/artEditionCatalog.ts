@@ -48,6 +48,10 @@ export function editionSheetHdId(artId: string): string {
 	return RELIEF_HD_ID[artId] || "";
 }
 
+/** Tea gift. Not a shelf sheet and not part of the 100-set count. */
+export const TEA_GIFT_ART_ID = "gold-duck-yi";
+export const TEA_GIFT_HD_ID = "hd-tg-01";
+
 export function findArtEditionSheet(artId: string): { id: string; setId: string } | null {
 	for (const set of ART_EDITION_SETS) {
 		if (set.sheetIds.includes(artId)) return { id: artId, setId: set.id };

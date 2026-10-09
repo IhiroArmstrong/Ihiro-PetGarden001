@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { grantArtPiece, revokeArtPiece, writeArtCollection } from "../lib/artCollectionKv.ts";
-import { issueArtHdGrant } from "../lib/artCollectionHdGrant.ts";
+import { issueArtHdGrant, issueTeaGiftHdGrant } from "../lib/artCollectionHdGrant.ts";
+import { writeTip } from "../lib/tipKv.ts";
 import { pngHasReceipt } from "../lib/pngBuyerMark.ts";
 import { handleGetArtCollectionHd } from "./getArtCollectionHd.ts";
 
@@ -106,4 +107,47 @@ test("local ownership is not enough, and a refund stops a new file", async () =>
 		{ SANCTUARY_KV: kv, RESTORE_OTP_PEPPER: "pepper" } as never,
 	);
 	assert.equal(denied.status, 403);
+});
+
+test("a verified tea gift downloads hd-tg-01 and stops after a refund clears the tip", async () => {
+	const kv = memoryKv();
+	const tipKv = memoryKv();
+	await writeTip(tipKv, "tea@example.com", {
+		tipped: true,
+		tipCount: 1,
+		lastTippedAt: "2026-10-09T00:00:00.000Z",
+		receiptId: "cs_test_tea",
+	});
+	const grant = await issueTeaGiftHdGrant({
+		kv,
+		tipKv,
+		pepper: "pepper",
+		email: "tea@example.com",
+	});
+	assert.ok(grant);
+	assert.equal(grant?.artId, "gold-duck-yi");
+	const bucket = {
+		get: async (key: string) => {
+			assert.equal(key, "private/art-hd/hd-tg-01.png");
+			return { arrayBuffer: async () => TINY_PNG.buffer.slice(0) };
+		},
+	} as unknown as R2Bucket;
+	const ok = await handleGetArtCollectionHd(
+		new Request(`https://cloud.test${grant?.url}`),
+		{
+			SANCTUARY_KV: kv,
+			TIP_KV: tipKv,
+			RESTORE_OTP_PEPPER: "pepper",
+			ART_COLLECTION_HD: bucket,
+		} as never,
+	);
+	assert.equal(ok.status, 200);
+	await tipKv.delete("tip:tea@example.com");
+	const again = await issueTeaGiftHdGrant({
+		kv,
+		tipKv,
+		pepper: "pepper",
+		email: "tea@example.com",
+	});
+	assert.equal(again, null);
 });
