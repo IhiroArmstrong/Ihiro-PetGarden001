@@ -4,7 +4,7 @@
  * The old five-work draft is not for sale.
  */
 
-import { findArtEditionSet, findArtEditionSheet } from "./artEditionCatalog.ts";
+import { editionSheetHdId, findArtEditionSet, findArtEditionSheet } from "./artEditionCatalog.ts";
 
 export const ART_COLLECTION_PRODUCT = "art-collection";
 export const ART_COLLECTION_UNIT_AMOUNT = 199;
@@ -62,7 +62,11 @@ export function findArtCollectionWork(artId: string): ArtCollectionWork | null {
 		return { id: set.id, unitAmount: set.unitAmount, name: set.name };
 	}
 	const sheet = findArtEditionSheet(artId);
-	if (sheet) return { id: sheet.id, unitAmount: 0, name: sheet.id };
+	if (sheet) {
+		const hdId = editionSheetHdId(sheet.id);
+		if (!hdId) return null;
+		return { id: sheet.id, unitAmount: 0, name: sheet.id, hdId };
+	}
 	return null;
 }
 

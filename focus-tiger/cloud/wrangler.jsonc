@@ -72,6 +72,12 @@
 	"observability": {
 		"enabled": true
 	},
+	"r2_buckets": [
+		{
+			"binding": "ART_COLLECTION_HD",
+			"bucket_name": "focus-tiger-art-hd"
+		}
+	],
 	"kv_namespaces": [
 		{
 			"binding": "TIP_KV",

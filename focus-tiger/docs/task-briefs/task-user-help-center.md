@@ -1,6 +1,6 @@
 # Task Brief · 用户帮助中心（可浏览 · 独立入口）
 
-> **状态（2026-10-09）**：**已合 #1120**（菜单 + ? 链）· **本批**：已审 catalog **38** 条 + 呼吸盘点 **0006** → 帮助中心 **39** 主题（`help-center.json` + `helpCenterCatalog.js`）  
+> **状态（2026-10-09）**：**壳已合 develop（#1120）** · **#1122**：已审 catalog **38** 条 + 呼吸盘点 **0006** → 帮助中心 **39** 主题（`help-center.json` + `helpCenterCatalog.js`）
 > **分支建议**：`feature/user-help-center`
 
 ## 产品拍板
