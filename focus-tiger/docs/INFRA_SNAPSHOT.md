@@ -72,7 +72,7 @@
 | 字段 | 值 |
 |---|---|
 | `prod_worker_version` | `445454fe-afca-4edf-bdb5-49a937a59e28` |
-| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 源 `feature/cizhou-red-green-five`（待 PR）· 磁州窑红绿彩五件 `cizhou-red-green-five` 结账 + `hd-cz-01`…`05` 高清键 · `GET /health` OK · `POST /api/create-art-collection-checkout-session` → Stripe URL OK） |
+| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 磁州窑 `cizhou-red-green-five` + `hd-cz-01`…`05` · checkout smoke OK）。develop 已合 **#1123**（请茶 `hd-tg-01`、R2 全量 HD，曾部署 `5984dd8d`）。当前线上 Version **新于** `5984dd8d`；**#1124 合入 develop 后建议再部署一次**，使请茶 HD 与磁州窑上架同版。 |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|

@@ -26,7 +26,8 @@ export const TEA_GIFT_ART = Object.freeze({
   storyZh: '鸭首金匜。它留在请茶这边，不进任何在售套装。',
   captionEn: 'A piece left with the tea',
   captionZh: '请茶留下的一张',
-  previewSrc: '/ui/tea-gift/preview-gold-duck-yi.png'
+  previewSrc: '/ui/tea-gift/preview-gold-duck-yi.png',
+  hdId: 'hd-tg-01'
 });
 
 /**

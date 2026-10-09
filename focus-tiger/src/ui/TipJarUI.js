@@ -9,6 +9,7 @@
  */
 
 import { TEA_GIFT_ART } from '../core/artEditionCatalog.js';
+import { applyTeaGiftPicture } from '../core/teaGiftHd.js';
 import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import {
   TIP_JAR_PRICE_USD,
@@ -386,6 +387,9 @@ export class TipJarUI {
     if (!tipped) return;
     const zh = getLocale() === 'zh';
     this.giftImg.src = TEA_GIFT_ART.previewSrc;
+    const grant = this._teaGiftGrant;
+    this._teaGiftGrant = null;
+    void applyTeaGiftPicture(this.giftImg, grant);
     this.giftCaption.textContent = zh ? TEA_GIFT_ART.captionZh : TEA_GIFT_ART.captionEn;
     this.giftName.textContent = zh ? TEA_GIFT_ART.nameZh : TEA_GIFT_ART.nameEn;
     this.giftStory.textContent = zh ? TEA_GIFT_ART.storyZh : TEA_GIFT_ART.storyEn;
@@ -544,6 +548,14 @@ export class TipJarUI {
         lastTippedAt,
         tipCount
       });
+      const hd =
+        data && typeof data === 'object' ? /** @type {{ hd?: unknown }} */ (data).hd : null;
+      if (hd && typeof hd === 'object' && typeof hd.url === 'string') {
+        this._teaGiftGrant = {
+          url: hd.url,
+          receiptId: typeof hd.receiptId === 'string' ? hd.receiptId : ''
+        };
+      }
       this._setFeedback(t('TIP_RESTORE_OK'), false);
       this.handlers.onBadgesChanged?.();
     } catch (err) {

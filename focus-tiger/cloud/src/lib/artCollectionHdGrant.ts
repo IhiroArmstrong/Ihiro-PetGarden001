@@ -4,7 +4,9 @@
  */
 
 import { findArtCollectionWork } from "./artCollectionCatalog.ts";
+import { TEA_GIFT_ART_ID, TEA_GIFT_HD_ID } from "./artEditionCatalog.ts";
 import { isArtPieceOwned, readArtCollection } from "./artCollectionKv.ts";
+import { readTip } from "./tipKv.ts";
 
 export const ART_HD_GRANT_TTL_SEC = 10 * 60;
 
@@ -96,8 +98,47 @@ export async function issueArtHdGrant(opts: {
 	return { url: `/api/art-collection-hd?t=${token}`, expiresAt };
 }
 
+/** Same short link as a paid sheet. Ownership is the tea receipt, not the art shelf. */
+export async function issueTeaGiftHdGrant(opts: {
+	kv: KVNamespace;
+	tipKv: KVNamespace;
+	pepper: string;
+	email: string;
+	nowSec?: number;
+}): Promise<{ url: string; expiresAt: number; artId: string; receiptId: string } | null> {
+	const pepper = (opts.pepper || "").trim();
+	const email = opts.email.trim().toLowerCase();
+	if (!pepper || !email) return null;
+	const tip = await readTip(opts.tipKv, email);
+	const receiptId = tip?.receiptId || "";
+	if (!tip || !receiptId.startsWith("cs_")) return null;
+	const tokenBytes = new Uint8Array(32);
+	crypto.getRandomValues(tokenBytes);
+	const token = bytesToToken(tokenBytes);
+	const tokenHash = await hmacSha256Hex(pepper, `art-hd-grant:${token}`);
+	const now = opts.nowSec ?? Math.floor(Date.now() / 1000);
+	const expiresAt = now + ART_HD_GRANT_TTL_SEC;
+	const stored: ArtHdGrantRecord = {
+		email,
+		artId: TEA_GIFT_ART_ID,
+		hdId: TEA_GIFT_HD_ID,
+		receiptId,
+		expiresAt,
+	};
+	await opts.kv.put(grantKvKey(tokenHash), JSON.stringify(stored), {
+		expirationTtl: ART_HD_GRANT_TTL_SEC,
+	});
+	return {
+		url: `/api/art-collection-hd?t=${token}`,
+		expiresAt,
+		artId: TEA_GIFT_ART_ID,
+		receiptId,
+	};
+}
+
 export async function takeArtHdGrant(opts: {
 	kv: KVNamespace;
+	tipKv?: KVNamespace;
 	pepper: string;
 	token: string;
 	nowSec?: number;
@@ -117,6 +158,19 @@ export async function takeArtHdGrant(opts: {
 	if (grant.expiresAt < now) {
 		await opts.kv.delete(key);
 		return { ok: false, reason: "expired" };
+	}
+	if (grant.artId === TEA_GIFT_ART_ID) {
+		if (grant.hdId !== TEA_GIFT_HD_ID) {
+			await opts.kv.delete(key);
+			return { ok: false, reason: "revoked" };
+		}
+		if (!opts.tipKv) return { ok: false, reason: "misconfigured" };
+		const tip = await readTip(opts.tipKv, grant.email);
+		if (!tip || tip.receiptId !== grant.receiptId) {
+			await opts.kv.delete(key);
+			return { ok: false, reason: "revoked" };
+		}
+		return { ok: true, grant, tokenHash };
 	}
 	const record = await readArtCollection(opts.kv, grant.email);
 	const piece = record.items[grant.artId];
