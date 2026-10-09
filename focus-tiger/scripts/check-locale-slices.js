@@ -114,7 +114,7 @@ function baseFromRev(rev, name) {
  */
 function changedPaths(baseRef, headRev) {
   if (headRev) {
-    return execFileSync('git', ['diff', '--name-only', baseRef, headRev], {
+    return execFileSync('git', ['diff', '--name-only', `${baseRef}...${headRev}`], {
       cwd: repoRoot,
       encoding: 'utf8'
     })
@@ -123,7 +123,7 @@ function changedPaths(baseRef, headRev) {
       .filter(Boolean);
   }
   const chunks = [
-    execFileSync('git', ['diff', '--name-only', baseRef, 'HEAD'], {
+    execFileSync('git', ['diff', '--name-only', `${baseRef}...HEAD`], {
       cwd: repoRoot,
       encoding: 'utf8'
     }),
