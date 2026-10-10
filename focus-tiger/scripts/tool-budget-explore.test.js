@@ -180,17 +180,17 @@ describe('tool_budget explore-only', () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it('soft-stops after 8 consecutive explores without StrReplace/Write', () => {
-    writeFileSync(join(stateDir, 'explore_streak'), '7\n');
+  it('soft-stops after 12 consecutive explores without StrReplace/Write', () => {
+    writeFileSync(join(stateDir, 'explore_streak'), '11\n');
     const { json } = runHook(hook, {
       conversation_id: CID,
       tool_name: 'Grep',
       tool_input: { pattern: 'streak' }
     });
     assert.equal(json.permission, 'ask');
-    assert.equal(readStreak(), 8);
+    assert.equal(readStreak(), 12);
     assert.match(String(json.agentMessage || json.agent_message || ''), /探索快照/);
-    assert.match(String(json.agentMessage || json.agent_message || ''), /连续 8 次探索/);
+    assert.match(String(json.agentMessage || json.agent_message || ''), /连续 12 次探索/);
   });
 
   it('resets explore streak on StrReplace', () => {
@@ -206,21 +206,21 @@ describe('tool_budget explore-only', () => {
   });
 
   it('hard-denies further Grep but still allows StrReplace', () => {
-    writeFileSync(join(stateDir, 'tool_count'), '27\n');
+    writeFileSync(join(stateDir, 'tool_count'), '39\n');
     const deny = runHook(hook, {
       conversation_id: CID,
       tool_name: 'Grep',
       tool_input: { pattern: 'bar' }
     });
     assert.equal(deny.json.permission, 'deny');
-    assert.equal(readCount(), 28);
+    assert.equal(readCount(), 40);
     const write = runHook(hook, {
       conversation_id: CID,
       tool_name: 'StrReplace',
       tool_input: { path: 'x', old_string: 'a', new_string: 'b' }
     });
     assert.equal(write.json.permission, 'allow');
-    assert.equal(readCount(), 28);
+    assert.equal(readCount(), 40);
     assert.match(String(deny.json.agentMessage || deny.json.agent_message || ''), /不要新开 Chat/);
   });
 });

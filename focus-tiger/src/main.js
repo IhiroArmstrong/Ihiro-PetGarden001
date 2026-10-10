@@ -137,7 +137,7 @@ import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
 import {
   markCollectionsArtBridgeSeen,
-  shouldShowCollectionsArtBridge
+  shouldPresentCollectionsArtBridge
 } from './core/collectionsArtBridgeGate.js';
 import {
   acquireYinCoinWaveFocus,
@@ -2450,9 +2450,10 @@ async function init() {
       });
     },
     playWave: () => window.__focusCoins.playWave(),
-    shouldShowArtBridge: () =>
-      shouldShowCollectionsArtBridge(
-        typeof localStorage !== 'undefined' ? localStorage : null
+    shouldShowArtBridge: (ownedPieceCount) =>
+      shouldPresentCollectionsArtBridge(
+        typeof localStorage !== 'undefined' ? localStorage : null,
+        ownedPieceCount
       ),
     markArtBridgeSeen: () =>
       markCollectionsArtBridgeSeen(

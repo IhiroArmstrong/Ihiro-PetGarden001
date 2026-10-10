@@ -33,6 +33,33 @@ export function shouldShowCollectionsArtBridge(storage) {
 }
 
 /**
+ * Open Collections with at least one bonded desk piece, and this device
+ * has not yet seen the sentence.
+ * @param {Storage | null | undefined} storage
+ * @param {number} ownedPieceCount
+ * @returns {boolean}
+ */
+export function shouldPresentCollectionsArtBridge(storage, ownedPieceCount) {
+  const count = Math.floor(Number(ownedPieceCount) || 0);
+  if (count < 1) return false;
+  return shouldShowCollectionsArtBridge(storage);
+}
+
+/**
+ * Below the fold, or not laid out yet, does not count as seen.
+ * @param {{ top: number, bottom: number, height: number, width: number } | null | undefined} bridgeRect
+ * @param {{ top: number, bottom: number } | null | undefined} panelRect
+ * @returns {boolean}
+ */
+export function isCollectionsArtBridgeInView(bridgeRect, panelRect) {
+  if (!bridgeRect || !panelRect) return false;
+  const height = Number(bridgeRect.height) || 0;
+  const width = Number(bridgeRect.width) || 0;
+  if (height <= 0 || width <= 0) return false;
+  return bridgeRect.bottom > panelRect.top && bridgeRect.top < panelRect.bottom;
+}
+
+/**
  * @param {Storage | null | undefined} storage
  * @returns {void}
  */
