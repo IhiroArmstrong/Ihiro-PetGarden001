@@ -11,7 +11,7 @@ const GOAL_CARD = '#cold-start-goal-card';
 const PURPOSE_CARD = '#onboarding-app-purpose';
 const PURPOSE_LINK = '[data-testid="onboarding-purpose-today-direction"]';
 
-test('wide ? purpose link opens goal card after purpose closes', async ({
+test('wide ? purpose card does not repeat today-direction', async ({
   page
 }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
@@ -20,11 +20,8 @@ test('wide ? purpose link opens goal card after purpose closes', async ({
 
   await page.locator('#onboarding-hint-help').click();
   await expect(page.locator(PURPOSE_CARD)).toBeVisible({ timeout: 8_000 });
-  await expect(page.locator(PURPOSE_LINK)).toBeVisible();
-
-  await page.locator(PURPOSE_LINK).click();
-  await expect(page.locator(PURPOSE_CARD)).toBeHidden({ timeout: 5_000 });
-  await expect(page.locator(GOAL_CARD)).toBeVisible({ timeout: 5_000 });
+  await expect(page.locator(PURPOSE_LINK)).toBeHidden();
+  await expect(page.locator(GOAL_CARD)).toBeHidden();
 });
 
 test('375 ? purpose hides today-direction link before first seen', async ({
