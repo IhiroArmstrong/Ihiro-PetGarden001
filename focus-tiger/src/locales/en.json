@@ -789,6 +789,7 @@
   "BESIDE_SEAT_ERROR_USED": "That seat code was already used.",
   "BESIDE_SEAT_ERROR_NOT_FOUND": "No seat code matches that.",
   "BESIDE_SEAT_ERROR_CODE": "Enter an eight-character seat code.",
+  "BESIDE_SEAT_ERROR_ALREADY_IN": "Leave this circle before you sit in another.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC": "Could not reach the circle service. Try again in a moment.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT": "The circle service is taking too long. You can try again.",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED": "Circles need the cloud service. Check your connection or try later.",

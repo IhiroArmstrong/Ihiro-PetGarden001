@@ -126,6 +126,12 @@ import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { HelpCenterUI } from './ui/HelpCenterUI.js';
+import {
+  bringGlassCardToFront,
+  glassCardIdsToClose,
+  installGlassCardDeck
+} from './ui/glassCardDeck.js';
+import { startFocusCircleOnlinePresence } from './core/focusCircleOnline.js';
 import { GrowthJourneyDetailUI } from './ui/GrowthJourneyDetailUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
@@ -1421,6 +1427,7 @@ async function init() {
     }
   });
   window.__focusCirclePanel = focusCirclePanelUI;
+  startFocusCircleOnlinePresence();
   const zenCinemaCardUI = new ZenCinemaCardUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1915,31 +1922,58 @@ async function init() {
   syncConfideEarChrome();
   syncTransitionMomentTrigger();
 
+  /** @type {string[]} */
+  const glassOpenOrder = [];
+  const glassOverlayCards = [
+    { id: 'support', ui: supportYinModalUI, close: () => supportYinModalUI.close() },
+    { id: 'quote', ui: dailyZenQuoteCardUI, close: () => dailyZenQuoteCardUI.close() },
+    { id: 'mustard-seed', ui: mustardSeedSealCardUI, close: () => mustardSeedSealCardUI.close() },
+    { id: 'practice-imprint', ui: practiceImprintCardUI, close: () => practiceImprintCardUI.close() },
+    { id: 'wallpapers', ui: digitalWallpapersCardUI, close: () => digitalWallpapersCardUI.close() },
+    { id: 'art-collection', ui: artCollectionPanelUI, close: () => artCollectionPanelUI.close() },
+    { id: 'sanctuary', ui: sanctuaryUnlockUI, close: () => sanctuaryUnlockUI.close() },
+    { id: 'membership', ui: membershipUnlockUI, close: () => membershipUnlockUI.close() },
+    { id: 'tip', ui: tipJarUI, close: () => tipJarUI.close() },
+    { id: 'newsletter', ui: newsletterCaptureUI, close: () => newsletterCaptureUI.close() },
+    { id: 'confide', ui: confideToYinUI, close: () => confideToYinUI.close() },
+    { id: 'cinema', ui: zenCinemaCardUI, close: () => zenCinemaCardUI.close() },
+    { id: 'ground-exercise', ui: groundExerciseChoiceUI, close: () => groundExerciseChoiceUI?.close() },
+    { id: 'moments', ui: fiveMomentsCompassUI, close: () => fiveMomentsCompassUI.close() },
+    { id: 'cold-start-goal', ui: coldStartGoalCardUI, close: () => coldStartGoalCardUI.close() },
+    { id: 'journey', ui: journeyLogUI, close: () => journeyLogUI.close() },
+    { id: 'help-center', ui: helpCenterUI, close: () => helpCenterUI.close() },
+    { id: 'growth-journey', ui: growthJourneyDetailUI, close: () => growthJourneyDetailUI?.close() },
+    { id: 'presence', ui: presenceSignalsPanelUI, close: () => presenceSignalsPanelUI.close() },
+    { id: 'yin-memory', ui: yinPersonalMemoryUI, close: () => yinPersonalMemoryUI.close() },
+    { id: 'yin-coin', ui: yinCoinPanelUI, close: () => yinCoinPanelUI?.close() },
+    { id: 'local-backup', ui: localPracticeDataPanelUI, close: () => localPracticeDataPanelUI.closePanel() },
+    { id: 'quiet-together', ui: quietTogetherPanelUI, close: () => quietTogetherPanelUI.closePanel() },
+    { id: 'focus-circle', ui: focusCirclePanelUI, close: () => focusCirclePanelUI.closePanel() }
+  ];
+
   function closeGrowthOverlayCards({ except = null } = {}) {
-    if (except !== 'support') supportYinModalUI.close();
-    if (except !== 'quote') dailyZenQuoteCardUI.close();
-    if (except !== 'mustard-seed') mustardSeedSealCardUI.close();
-    if (except !== 'practice-imprint') practiceImprintCardUI.close();
-    if (except !== 'wallpapers') digitalWallpapersCardUI.close();
-    if (except !== 'art-collection') artCollectionPanelUI.close();
-    if (except !== 'sanctuary') sanctuaryUnlockUI.close();
-    if (except !== 'membership') membershipUnlockUI.close();
-    if (except !== 'tip') tipJarUI.close();
-    if (except !== 'newsletter') newsletterCaptureUI.close();
-    if (except !== 'confide') confideToYinUI.close();
-    if (except !== 'cinema') zenCinemaCardUI.close();
-    if (except !== 'ground-exercise') groundExerciseChoiceUI?.close();
-    if (except !== 'moments') fiveMomentsCompassUI.close();
-    if (except !== 'cold-start-goal') coldStartGoalCardUI.close();
-    if (except !== 'journey') journeyLogUI.close();
-    if (except !== 'help-center') helpCenterUI.close();
-    if (except !== 'growth-journey') growthJourneyDetailUI?.close();
-    if (except !== 'presence') presenceSignalsPanelUI.close();
-    if (except !== 'yin-memory') yinPersonalMemoryUI.close();
-    if (except !== 'yin-coin') yinCoinPanelUI?.close();
-    if (except !== 'local-backup') localPracticeDataPanelUI.closePanel();
-    if (except !== 'quiet-together') quietTogetherPanelUI.closePanel();
-    if (except !== 'focus-circle') focusCirclePanelUI.closePanel();
+    installGlassCardDeck(document);
+    const openIds = glassOverlayCards
+      .filter((card) => card.id !== except)
+      .filter((card) =>
+        typeof card.ui?.isOpen === 'function' ? card.ui.isOpen() === true : true
+      )
+      .map((card) => card.id);
+    if (except) {
+      const prior = glassOpenOrder.indexOf(except);
+      if (prior >= 0) glassOpenOrder.splice(prior, 1);
+      glassOpenOrder.push(except);
+    }
+    const { closeIds } = glassCardIdsToClose({
+      order: glassOpenOrder,
+      openIds,
+      exceptId: except
+    });
+    const closing = new Set(closeIds);
+    for (const card of glassOverlayCards) {
+      if (closing.has(card.id)) card.close();
+    }
+    bringGlassCardToFront(except);
     syncIdleYinTap();
   }
 

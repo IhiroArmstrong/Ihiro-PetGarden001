@@ -257,7 +257,9 @@ function parseCircleResponse(body) {
   const circleId = typeof body.circleId === 'string' ? body.circleId.trim() : '';
   const memberId = typeof body.memberId === 'string' ? body.memberId.trim() : '';
   const code = normalizeFocusCircleCode(body.code);
-  const memberCount = Number(body.memberCount);
+  const rosterCount = Number(body.memberCount);
+  const onlineCount = Number(body.onlineCount);
+  const memberCount = Number.isFinite(onlineCount) ? onlineCount : rosterCount;
   if (!circleId || !memberId || !code || !Number.isFinite(memberCount)) return null;
   const isMember = body.isMember === undefined ? true : body.isMember === true;
   return {
@@ -323,10 +325,11 @@ export async function postFocusCircle({
       ),
       waitMs
     );
-    if (action === 'leave') {
+    if (action === 'leave' || action === 'online_leave') {
       if (!body || body.ok !== true) {
         return { ok: false, reason: 'bad_payload', skipped: true };
       }
+      if (action === 'online_leave') return { ok: true, skipped: false };
       return { ok: true, left: true, skipped: false };
     }
     const parsed = parseCircleResponse(body);

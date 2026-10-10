@@ -146,9 +146,8 @@ export class HelpCenterUI {
     if (!this._open) return;
     this._open = false;
     this._activeArticleId = null;
-    hideOverlayBackdrop(this.backdrop, FADE_MS, () => {
-      this.root.hidden = true;
-    });
+    this.root.hidden = true;
+    hideOverlayBackdrop(this.backdrop, { fadeMs: FADE_MS });
     this.handlers.onClose?.();
   }
 

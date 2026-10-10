@@ -784,6 +784,7 @@
   "BESIDE_SEAT_ERROR_USED": "その符号は、すでに使われました。",
   "BESIDE_SEAT_ERROR_NOT_FOUND": "その席の符号はありません。",
   "BESIDE_SEAT_ERROR_CODE": "8文字の席の符号を入れてください。",
+  "BESIDE_SEAT_ERROR_ALREADY_IN": "別の輪に入る前に、この輪を出てください。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_GENERIC": "輪のサービスに届きませんでした。しばらくしてからお試しください。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT": "輪のサービスが時間内に戻りませんでした。もう一度試せます。",
   "PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED": "輪にはクラウド接続が必要です。",
