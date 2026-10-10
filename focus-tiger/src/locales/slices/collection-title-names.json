@@ -1,0 +1,17 @@
+{
+  "en": {
+    "YIN_COIN_TITLE_NAME_SITS_WITH_YIN": "Desk-side stele",
+    "YIN_COIN_TITLE_NAME_RETURNED_GENTLY": "Returned celadon vial",
+    "YIN_COIN_TITLE_NAME_LONG_SITTER": "Long sitter"
+  },
+  "zh": {
+    "YIN_COIN_TITLE_NAME_SITS_WITH_YIN": "座右小碑",
+    "YIN_COIN_TITLE_NAME_RETURNED_GENTLY": "归来青瓷小瓶",
+    "YIN_COIN_TITLE_NAME_LONG_SITTER": "久坐的人"
+  },
+  "ja": {
+    "YIN_COIN_TITLE_NAME_SITS_WITH_YIN": "座右の小碑",
+    "YIN_COIN_TITLE_NAME_RETURNED_GENTLY": "帰りの青磁小瓶",
+    "YIN_COIN_TITLE_NAME_LONG_SITTER": "長く坐った人"
+  }
+}

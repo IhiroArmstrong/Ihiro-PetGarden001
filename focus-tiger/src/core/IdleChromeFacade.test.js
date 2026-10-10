@@ -71,6 +71,43 @@ describe('IdleChromeFacade', () => {
     facade.destroy();
   });
 
+  it('forwards sanctuary nav and voice handlers that the shells actually call', () => {
+    const narrow = mockShell();
+    const wide = mockShell();
+    const facade = new IdleChromeFacade({
+      narrow: /** @type {any} */ (narrow),
+      wide: /** @type {any} */ (wide),
+      matchMedia: () => ({
+        matches: false,
+        addEventListener() {},
+        removeEventListener() {}
+      })
+    });
+    let nav = 0;
+    let voice = 0;
+    facade.setHandlers({
+      onSanctuaryNav: () => {
+        nav += 1;
+      },
+      onSystemTts: () => {
+        voice += 1;
+      },
+      shouldShowSanctuaryNavPulse: () => true
+    });
+    assert.equal(typeof narrow.state.handlers.onSanctuaryNav, 'function');
+    assert.equal(typeof wide.state.handlers.onSanctuaryNav, 'function');
+    assert.equal(typeof wide.state.handlers.onSystemTts, 'function');
+    assert.equal(typeof narrow.state.handlers.shouldShowSanctuaryNavPulse, 'function');
+    assert.equal(typeof wide.state.handlers.shouldShowSanctuaryNavPulse, 'function');
+    narrow.state.handlers.onSanctuaryNav();
+    wide.state.handlers.onSanctuaryNav();
+    wide.state.handlers.onSystemTts();
+    assert.equal(nav, 2);
+    assert.equal(voice, 1);
+    assert.equal(wide.state.handlers.shouldShowSanctuaryNavPulse(), true);
+    facade.destroy();
+  });
+
   it('applyShellProjection fans idle/suppress flags', () => {
     const narrow = mockShell();
     const wide = mockShell();
