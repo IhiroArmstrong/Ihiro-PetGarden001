@@ -330,6 +330,7 @@ export class FocusCoinsPanelUI {
 
     this.actions.append(this.waveBtn, this.closeBtn);
     this.bondPane.append(this.ceremonial);
+    this.detail = document.createElement('div');
     this.root.append(
       this.headingEl,
       this.tabBar,
@@ -339,7 +340,6 @@ export class FocusCoinsPanelUI {
     );
     mountRoot.appendChild(this.root);
 
-    this.detail = document.createElement('div');
     this.detail.className = 'yin-coin-panel__detail';
     this.detail.hidden = true;
     this.detail.dataset.testid = 'yin-coin-curio-detail';
