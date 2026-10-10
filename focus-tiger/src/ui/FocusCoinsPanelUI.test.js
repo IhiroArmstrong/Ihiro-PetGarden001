@@ -62,6 +62,9 @@ test('curio thumb opens a still and a short note inside the panel', () => {
   assert.match(src, /yin-coin-curio-detail/);
   assert.match(src, /yin-coin-panel__thumb-img--pending/);
   assert.match(src, /_showCurio\(row\)/);
+  const created = src.indexOf("this.detail = document.createElement('div')");
+  const mounted = src.indexOf('this.actions,\n      this.detail');
+  assert.ok(created > 0 && mounted > created);
 });
 
 test('panel source maps shop SKUs via listFocusCoinSurfaceSections', () => {

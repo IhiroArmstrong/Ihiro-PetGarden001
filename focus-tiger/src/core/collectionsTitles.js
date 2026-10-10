@@ -9,7 +9,13 @@
  */
 
 import { FOCUS_COIN_CATALOG } from './focusCoinsLedger.js';
-import { FOCUS_COIN_SKU_NAME_KEYS } from './focusCoinsSurface.js';
+
+/** Desk rows keep the object names. The titles tab uses these. */
+const COMPANION_TITLE_NAME_KEYS = Object.freeze({
+  'title.sits-with-yin': 'YIN_COIN_TITLE_NAME_SITS_WITH_YIN',
+  'title.returned-gently': 'YIN_COIN_TITLE_NAME_RETURNED_GENTLY',
+  'title.long-sitter': 'YIN_COIN_TITLE_NAME_LONG_SITTER'
+});
 
 /**
  * @typedef {{
@@ -29,7 +35,7 @@ export function listCompanionTitleRows(ctx = {}) {
   const equipped = typeof ctx.equippedTitle === 'string' ? ctx.equippedTitle : '';
   return FOCUS_COIN_CATALOG.filter((sku) => sku.kind === 'title').map((sku) => ({
     id: sku.id,
-    nameKey: FOCUS_COIN_SKU_NAME_KEYS[sku.id] || sku.id,
+    nameKey: COMPANION_TITLE_NAME_KEYS[sku.id] || sku.id,
     owned: owned.has(sku.id) || sku.grants.every((id) => owned.has(id)),
     equipped: equipped === sku.id
   }));
