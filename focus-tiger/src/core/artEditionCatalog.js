@@ -154,7 +154,118 @@ export const CIZHOU_RED_GREEN_FIVE = Object.freeze({
   ])
 });
 
-export const ART_EDITION_SETS = Object.freeze([CELADON_RELIEF_FIVE, CIZHOU_RED_GREEN_FIVE]);
+export const GE_CRACKLE_1010_G1 = Object.freeze({
+  id: 'ge-crackle-1010-g1',
+  editionLimit: ART_EDITION_LIMIT,
+  priceUsd: ART_EDITION_PRICE_USD,
+  nameEn: 'Ge crackle five (I)',
+  nameZh: '哥窑开片五件（壹）',
+  storyEn:
+    'Five Ge-crackle vessels from grouping G1. Bought together. This edition records 100 sets, then stops adding more.',
+  storyZh: '哥窑开片五件·分组壹，一次买齐。这一版记下 100 套之后，不再加印。',
+  sheets: Object.freeze([
+    editionSheet(
+      'ge-crackle-1010-g1',
+      'ge-g1-hunting-stem-bowl',
+      'Ge hunting-scene dou',
+      '哥窑狩猎纹豆',
+      'A stemmed bowl with a lid and two ring handles. Animals run around the bowl.',
+      '带盖豆，双环耳，一圈奔走的动物。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g1',
+      'ge-g1-taotie-gu',
+      'Ge taotie gu',
+      '哥窑兽面纹觚',
+      'A gu in crackled glaze, with a square taotie knop on the stem.',
+      '开片釉觚，腰间一方兽面节。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g1',
+      'ge-g1-beast-ring-hu',
+      'Ge beast-ring hu',
+      '哥窑兽首衔环壶',
+      'A globular hu. Beast heads at the shoulder hold rings.',
+      '圆腹壶。肩上兽首衔环。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g1',
+      'ge-g1-upright-ear-ding',
+      'Ge upright-ear ding',
+      '哥窑立耳兽面鼎',
+      'A ding with two upright handles and three legs shaped as animal masks.',
+      '鼎，双立耳，三足做成兽面。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g1',
+      'ge-g1-dragon-zun',
+      'Ge dragon zun',
+      '哥窑龙纹尊',
+      'A trumpet-mouth zun with raised dragons on the body.',
+      '喇叭口尊，身上有凸起的龙。'
+    )
+  ])
+});
+
+export const GE_CRACKLE_1010_G2 = Object.freeze({
+  id: 'ge-crackle-1010-g2',
+  editionLimit: ART_EDITION_LIMIT,
+  priceUsd: ART_EDITION_PRICE_USD,
+  nameEn: 'Ge crackle five (II)',
+  nameZh: '哥窑开片五件（贰）',
+  storyEn:
+    'Five Ge-crackle vessels from grouping G2. Bought together. This edition records 100 sets, then stops adding more.',
+  storyZh: '哥窑开片五件·分组贰，一次买齐。这一版记下 100 套之后，不再加印。',
+  sheets: Object.freeze([
+    editionSheet(
+      'ge-crackle-1010-g2',
+      'ge-g2-taotie-li',
+      'Ge taotie li',
+      '哥窑兽面纹鬲',
+      'A li: three hollow legs, a taotie band, and crackle across the glaze.',
+      '鬲：三只袋足，兽面纹，釉上开片。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g2',
+      'ge-g2-dragon-zun',
+      'Ge dragon zun',
+      '哥窑龙纹尊',
+      'A trumpet-mouth zun with raised dragons on the body.',
+      '喇叭口尊，身上有凸起的龙。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g2',
+      'ge-g2-hunting-stem-bowl',
+      'Ge hunting-scene dou',
+      '哥窑狩猎纹豆',
+      'A stemmed bowl with a lid and two ring handles. Animals run around the bowl.',
+      '带盖豆，双环耳，一圈奔走的动物。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g2',
+      'ge-g2-taotie-gu',
+      'Ge taotie gu',
+      '哥窑兽面纹觚',
+      'A gu in crackled glaze, with a square taotie knop on the stem.',
+      '开片釉觚，腰间一方兽面节。'
+    ),
+    editionSheet(
+      'ge-crackle-1010-g2',
+      'ge-g2-crackle-fanghu',
+      'Ge crackle fanghu',
+      '哥窑开片方壶',
+      'Ge crackle on a Shang–Zhou lidded square fanghu. Dragon handles and geometric relief on the belly.',
+      '哥窑开片釉。仿商周带盖方壶，龙形耳，腹上几何浮雕纹。'
+    )
+  ])
+});
+
+export const ART_EDITION_SETS = Object.freeze([
+  CELADON_RELIEF_FIVE,
+  CIZHOU_RED_GREEN_FIVE,
+  GE_CRACKLE_1010_G1,
+  GE_CRACKLE_1010_G2
+]);
 
 /**
  * @param {string} id
