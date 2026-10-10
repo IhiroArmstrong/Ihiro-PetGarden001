@@ -16,8 +16,10 @@
  *
  * Content-merged gate (squash-friendly): tip is ancestor of origin/develop
  *   OR `git cherry origin/develop HEAD` has no `+` lines (no unique patches).
- * Ancestor-only checks false-negative squash merges and leftover local tips whose
- * patches already landed on develop.
+ * Dirty worktrees with merged content → propose_remove (dirty-but-content-merged);
+ * apply uses `git worktree remove --force`. When cherry still shows `+` after squash
+ * merge, or rows are `primary` (no `-wt-` in basename / `.wt-*` under main), see
+ * WORKFLOW.md「扩大清点」+ GitHub MERGED PR — not this script alone.
  *
  * Usage: cd focus-tiger && npm run check:worktree-hygiene
  * Apply (after passphrase / 按清单清): cd focus-tiger && npm run worktree:hygiene-remove [-- --apply]
