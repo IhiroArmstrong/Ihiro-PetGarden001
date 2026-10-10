@@ -76,82 +76,11 @@ export class IdleChromeFacade {
    */
   setHandlers(handlers) {
     this._handlers = { ...this._handlers, ...handlers };
-    const h = this._handlers;
-    this.narrow.setHandlers({
-      onSound: h.onSound,
-      onSoundHover: h.onSoundHover,
-      onCompanion: h.onCompanion,
-      onReminder: h.onReminder,
-      onLanguage: h.onLanguage,
-      onTodayDirection: h.onTodayDirection,
-      onGroundExercise: h.onGroundExercise,
-      onFiveMoments: h.onFiveMoments,
-      onJourneyLog: h.onJourneyLog,
-      onPresenceSignals: h.onPresenceSignals,
-      onYinCoin: h.onYinCoin,
-      onConfide: h.onConfide,
-      onZenCinema: h.onZenCinema,
-      onDailyQuote: h.onDailyQuote,
-      onMustardSeedSeal: h.onMustardSeedSeal,
-      onContemplativeArchiveSeal: h.onContemplativeArchiveSeal,
-      onWallpapers: h.onWallpapers,
-      onSanctuary: h.onSanctuary,
-      onMembership: h.onMembership,
-      onTipJar: h.onTipJar,
-      onNewsletter: h.onNewsletter,
-      onCommunity: h.onCommunity,
-      onHelpCenter: h.onHelpCenter,
-      onLocalBackup: h.onLocalBackup,
-      onQuietTogether: h.onQuietTogether,
-      onFocusCircle: h.onFocusCircle,
-      onRitualFlow: h.onRitualFlow,
-      onHonesty: h.onHonesty,
-      onQuickStart: h.onQuickStart,
-      onClearStage: h.onClearStage,
-      onSheetChange: h.onSheetChange,
-      onSanctuaryNav: h.onSanctuaryNav,
-      shouldShowSanctuaryNavPulse: h.shouldShowSanctuaryNavPulse,
-      isHintUnread: h.isHintUnread,
-      isGrowthCardOverlayActive: h.isGrowthCardOverlayActive
-    });
-    this.wide.setHandlers({
-      onSound: h.onSound,
-      onCompanion: h.onCompanion,
-      onClearCompanion: h.onClearCompanion,
-      onReminder: h.onReminder,
-      onLanguage: h.onLanguage,
-      onTodayDirection: h.onTodayDirection,
-      onGroundExercise: h.onGroundExercise,
-      onFiveMoments: h.onFiveMoments,
-      onJourneyLog: h.onJourneyLog,
-      onPresenceSignals: h.onPresenceSignals,
-      onYinCoin: h.onYinCoin,
-      onConfide: h.onConfide,
-      onZenCinema: h.onZenCinema,
-      onDailyQuote: h.onDailyQuote,
-      onMustardSeedSeal: h.onMustardSeedSeal,
-      onContemplativeArchiveSeal: h.onContemplativeArchiveSeal,
-      onWallpapers: h.onWallpapers,
-      onSanctuary: h.onSanctuary,
-      onMembership: h.onMembership,
-      onTipJar: h.onTipJar,
-      onNewsletter: h.onNewsletter,
-      onCommunity: h.onCommunity,
-      onHelpCenter: h.onHelpCenter,
-      onLocalBackup: h.onLocalBackup,
-      onQuietTogether: h.onQuietTogether,
-      onFocusCircle: h.onFocusCircle,
-      onRitualFlow: h.onRitualFlow,
-      onHonesty: h.onHonesty,
-      onQuickStart: h.onQuickStart,
-      onClearStage: h.onClearStage,
-      onMenuChange: h.onMenuChange,
-      onSanctuaryNav: h.onSanctuaryNav,
-      onSystemTts: h.onSystemTts,
-      shouldShowSanctuaryNavPulse: h.shouldShowSanctuaryNavPulse,
-      isHintUnread: h.isHintUnread,
-      isGrowthCardOverlayActive: h.isGrowthCardOverlayActive
-    });
+    // Pass the whole bag. A copied name list dropped newer menu callbacks
+    // (Yin's Art Collection, sanctuary nav, voice). The menu still closed,
+    // then the shell called a missing function and nothing appeared.
+    this.narrow.setHandlers(this._handlers);
+    this.wide.setHandlers(this._handlers);
   }
 
   /**

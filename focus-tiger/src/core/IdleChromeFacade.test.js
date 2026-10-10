@@ -108,6 +108,32 @@ describe('IdleChromeFacade', () => {
     facade.destroy();
   });
 
+  it('forwards a new menu callback instead of dropping it off a name list', () => {
+    const narrow = mockShell();
+    const wide = mockShell();
+    const facade = new IdleChromeFacade({
+      narrow: /** @type {any} */ (narrow),
+      wide: /** @type {any} */ (wide),
+      matchMedia: () => ({
+        matches: false,
+        addEventListener() {},
+        removeEventListener() {}
+      })
+    });
+    let opened = 0;
+    facade.setHandlers({
+      onArtCollection: () => {
+        opened += 1;
+      }
+    });
+    assert.equal(typeof narrow.state.handlers.onArtCollection, 'function');
+    assert.equal(typeof wide.state.handlers.onArtCollection, 'function');
+    narrow.state.handlers.onArtCollection();
+    wide.state.handlers.onArtCollection();
+    assert.equal(opened, 2);
+    facade.destroy();
+  });
+
   it('applyShellProjection fans idle/suppress flags', () => {
     const narrow = mockShell();
     const wide = mockShell();
