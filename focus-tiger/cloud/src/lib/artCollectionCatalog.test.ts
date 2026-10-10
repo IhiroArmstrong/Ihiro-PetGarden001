@@ -54,6 +54,13 @@ test("new checkout sells the five-piece edition and not a single sheet", () => {
 	assert.equal(findArtForSale("celadon-taotie-gu"), null);
 	assert.equal(findArtForSale("celadon-relief-dragon-gu"), null);
 	assert.equal(findArtForSale("cizhou-dragon-fish-gu"), null);
+	const geG1 = findArtForSale("ge-crackle-1010-g1");
+	assert.ok(geG1);
+	assert.equal(geG1?.unitAmount, 995);
+	assert.equal(findArtCollectionWork("ge-g1-beast-ring-hu")?.hdId, "hd-g1-03");
+	assert.equal(findArtForSale("ge-g1-taotie-gu"), null);
+	assert.equal(findArtForSale("ge-crackle-1010-g2")?.unitAmount, 995);
+	assert.equal(findArtCollectionWork("ge-g2-crackle-fanghu")?.hdId, "hd-g2-05");
 	assert.equal(decideEditionSale(99, 100).ok, true);
 	assert.equal(decideEditionSale(100, 100).ok, false);
 });
