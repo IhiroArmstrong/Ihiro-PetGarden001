@@ -365,6 +365,7 @@ describe('listSecondaryChromeEntries', () => {
       entries.filter((e) => e.kind === 'group-label').map((e) => e.labelKey),
       [
         'MENU_GROUP_PRACTICE',
+        'MENU_GROUP_RECORDS',
         'MENU_GROUP_INSPIRATION',
         'MENU_GROUP_NOT_ALONE',
         'MENU_GROUP_PREFERENCES',

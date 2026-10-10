@@ -6,8 +6,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `snapshot_base` | `origin/develop` tip `d9840245` |
-| `snapshot_date` | 2026-10-08 |
+| `snapshot_base` | `origin/develop` tip `2fb19eaf` |
+| `snapshot_date` | 2026-10-11 |
 | `generated_by` | `manual`（首期纯手工；`infra:snapshot-sync` 第二期） |
 
 **过期判定**：`git diff <snapshot_base>..HEAD -- <stale_after_paths>` 非空 → 本节摘要过期，须读 SSOT 或重填摘要。
@@ -30,7 +30,7 @@
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
 | 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
-| 生产 Worker Version | `7093e10b-cbea-4ac3-ae5c-093e45625785`（2026-10-03 · `origin/develop` `9af0abff` · 含 #1091 练习备份 v2 莲花与阶段下限。客户端 `practiceBackupCloudEnabled` 仍为 false，不向用户打开上传或恢复。） |
+| 生产 Worker Version | 见下表 **`prod_worker_version`**（`2ac135c3-…` · 2026-10-11 · `2fb19eaf`）。客户端 `practiceBackupCloudEnabled` 仍为 false。 |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `445454fe-afca-4edf-bdb5-49a937a59e28` |
-| `prod_verified_at` | 2026-10-09（本机 `wrangler deploy` · 磁州窑 `cizhou-red-green-five` + `hd-cz-01`…`05` · checkout smoke OK）。develop 已合 **#1123**（请茶 `hd-tg-01`、R2 全量 HD，曾部署 `5984dd8d`）。当前线上 Version **新于** `5984dd8d`；**#1124 合入 develop 后建议再部署一次**，使请茶 HD 与磁州窑上架同版。 |
+| `prod_worker_version` | `2ac135c3-8cf2-4f7e-a6fc-1d6deecf2759` |
+| `prod_verified_at` | 2026-10-11（本机 `wrangler deploy` · 源 `origin/develop` `2fb19eaf` · **#1126** 哥窑 `ge-crackle-1010-g1` / `g2` + `hd-g1-01`…`05` / `hd-g2-01`…`05`（R2 已存）· `POST create-art-collection-checkout-session` → Stripe URL OK · `GET /health` OK）。与 develop 对齐：含 **#1123** 请茶 `hd-tg-01`、**#1124** 磁州窑 `cizhou-red-green-five`、**#1126** 哥窑两套五件。 |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|

@@ -1953,13 +1953,32 @@ async function init() {
     helpCenterUI.open();
   };
 
+  const visibleSanctuaryAnchor = (el) => {
+    if (!el || el.hidden) return null;
+    const style = window.getComputedStyle?.(el);
+    if (style && (style.display === 'none' || style.visibility === 'hidden')) {
+      return null;
+    }
+    const rect = el.getBoundingClientRect?.();
+    if (!rect || rect.width < 8 || rect.height < 8) return null;
+    if (rect.bottom < 8 || rect.right < 8) return null;
+    if (rect.top > window.innerHeight - 8 || rect.left > window.innerWidth - 8) {
+      return null;
+    }
+    return el;
+  };
+
   openHomeSanctuaryNav = (anchorEl) => {
     const anchor =
-      anchorEl ||
-      document.getElementById('ft-wide-home-sanctuary-nav') ||
-      document.getElementById('ft-narrow-home-sanctuary-nav') ||
-      document.getElementById('ft-wide-more-btn') ||
-      document.querySelector('.ft-narrow-grabber');
+      visibleSanctuaryAnchor(anchorEl) ||
+      visibleSanctuaryAnchor(
+        document.getElementById('ft-wide-home-sanctuary-nav')
+      ) ||
+      visibleSanctuaryAnchor(
+        document.getElementById('ft-narrow-home-sanctuary-nav')
+      ) ||
+      visibleSanctuaryAnchor(document.getElementById('ft-wide-more-btn')) ||
+      visibleSanctuaryAnchor(document.querySelector('.ft-narrow-grabber'));
     closeGrowthOverlayCards();
     homeSanctuaryNavFanUI.open({ anchorEl: anchor });
   };
@@ -3716,8 +3735,12 @@ async function init() {
     onTodayDirection: () => {
       openTodayDirectionManual();
     },
-    onSanctuaryNav: () => {
-      openHomeSanctuaryNav();
+    onSanctuaryNav: (fromMenu) => {
+      const menuAnchor = fromMenu
+        ? document.getElementById('ft-wide-more-btn') ||
+          document.querySelector('.ft-narrow-grabber')
+        : null;
+      openHomeSanctuaryNav(menuAnchor);
     },
     shouldShowSanctuaryNavPulse: () =>
       shouldShowHomeSanctuaryNavPulse(

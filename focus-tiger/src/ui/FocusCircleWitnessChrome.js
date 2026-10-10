@@ -39,8 +39,8 @@ import {
 } from './glassPanelStyles.js';
 
 const STYLE_ID = 'focus-circle-witness-chrome-v2';
-/** Above presence dots (~42px) + caption (~18px). */
-const WITNESS_ABOVE_PRESENCE_CSS = '62px';
+/** Clear the was-here caption. Presence grows up from +46px; 62px let the hide-name line cover it. */
+const WITNESS_ABOVE_PRESENCE_CSS = '108px';
 const TEXT_PRIMARY = '#3c3c3c';
 const TEXT_SECONDARY = 'rgba(60, 60, 60, 0.72)';
 

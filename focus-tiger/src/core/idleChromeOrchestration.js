@@ -406,6 +406,16 @@ export function listSecondaryChromeEntries(surface, visibility) {
     { proxy: 'ground-exercise', labelKey: 'GROUND_EXERCISE_MENU_LABEL' },
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
     { proxy: 'honesty', labelKey: 'HONESTY_IDLE_ENTRY' },
+    confideVisible || companionGeneration
+      ? {
+          proxy: 'confide',
+          labelKey: 'CONFIDE_MENU_LABEL',
+          testId: companionGeneration ? 'idle-confide-desktop' : undefined
+        }
+      : null
+  ]);
+
+  pushLabeledGroup(out, 'MENU_GROUP_RECORDS', [
     { proxy: 'journey-log', labelKey: 'JOURNEY_LOG_MENU_LABEL' },
     { proxy: 'presence-signals', labelKey: 'PRESENCE_SIGNALS_MENU_LABEL' },
     yinCoinVisible
@@ -413,13 +423,6 @@ export function listSecondaryChromeEntries(surface, visibility) {
           proxy: 'yin-coin',
           labelKey: 'YIN_COIN_MENU_LABEL',
           testId: 'idle-yin-coin'
-        }
-      : null,
-    confideVisible || companionGeneration
-      ? {
-          proxy: 'confide',
-          labelKey: 'CONFIDE_MENU_LABEL',
-          testId: companionGeneration ? 'idle-confide-desktop' : undefined
         }
       : null
   ]);

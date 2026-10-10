@@ -979,7 +979,7 @@ export class NarrowIdleShell {
     if (key === 'sanctuary-nav') {
       this.closeSheet();
       this.clearStage();
-      this.handlers.onSanctuaryNav?.();
+      this.handlers.onSanctuaryNav?.(true);
       return;
     }
     if (key === 'today-direction') {

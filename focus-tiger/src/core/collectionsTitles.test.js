@@ -13,6 +13,14 @@ test('titles tab lists the three catalog titles and no shop objects', () => {
     rows.map((row) => row.id),
     ['title.sits-with-yin', 'title.returned-gently', 'title.long-sitter']
   );
+  assert.deepEqual(
+    rows.map((row) => row.nameKey),
+    [
+      'YIN_COIN_TITLE_NAME_SITS_WITH_YIN',
+      'YIN_COIN_TITLE_NAME_RETURNED_GENTLY',
+      'YIN_COIN_TITLE_NAME_LONG_SITTER'
+    ]
+  );
   assert.equal(rows.every((row) => row.owned === false), true);
 });
 

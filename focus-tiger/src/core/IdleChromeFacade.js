@@ -109,6 +109,8 @@ export class IdleChromeFacade {
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
       onSheetChange: h.onSheetChange,
+      onSanctuaryNav: h.onSanctuaryNav,
+      shouldShowSanctuaryNavPulse: h.shouldShowSanctuaryNavPulse,
       isHintUnread: h.isHintUnread,
       isGrowthCardOverlayActive: h.isGrowthCardOverlayActive
     });
@@ -144,6 +146,9 @@ export class IdleChromeFacade {
       onQuickStart: h.onQuickStart,
       onClearStage: h.onClearStage,
       onMenuChange: h.onMenuChange,
+      onSanctuaryNav: h.onSanctuaryNav,
+      onSystemTts: h.onSystemTts,
+      shouldShowSanctuaryNavPulse: h.shouldShowSanctuaryNavPulse,
       isHintUnread: h.isHintUnread,
       isGrowthCardOverlayActive: h.isGrowthCardOverlayActive
     });
