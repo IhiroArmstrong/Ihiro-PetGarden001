@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-10（帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-10-11（哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -562,7 +562,7 @@
 > **合入**：#205；洞察标记 #292 Phase 1。**禁止**：写入 HealthKit；与 Tip Jar Tea Log / Sanctuary / 统一练习徽章 **零耦合**。
 
 1. `?product=1` → Sit→Arrival→Focus（可用 `?sessionMinutes=1` DEMO）→ Rise→Reflection（答或 Skip）→ Idle。**等价路径**：首页左球 Breath practice → 到点 → Reflection（含 Skip）→ 同样写入（`arrive: false`）。Honesty / 付费仪式 **不**入账。
-2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → **0–1 秒内**：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
+2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → **0–1 秒内**：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。菜单里 Journey log / Presence moments / Yin's Collections 上面有抬头 **Records**（中文「记录」，#1128）。同一天两行各点 Save image，须落下两个不同文件名，系统不得问是否替换。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
 3. **回流**：Close / 点外侧 / Esc → **0–1 秒内**：关钮 `:active` 按压 + 卡开始淡出；Idle Sit / ⋯ 或抽屉 grabber **仍可见**。刷新后条目仍在；再完成一场 → 新行在列表（上限约 30，裁旧）。
 4. **Compass Reflect**（与场景 Y 交叉）：点 Reflect 芯片 → **0–1 秒内**：芯片 `:active` 按压 + `#five-moments-compass` 收起 + 同一张 `#journey-log` 淡入。
 5. **备份角**（开卡之后；与开卡反馈分开验）：角落备份链 → **0–1 秒内**：链 `:active` 下压 + `#journey-log-backup-panel` 展开或收起。**Send code** → 立刻见 Sending…（`JOURNEY_LOG_BACKUP_STATUS_SENDING`）再变成发到邮箱的说明。**Enable** 成功须换一句可见状态（勿再用同一句 Backup enabled 让人以为没反应）。详测见 TRACKER 练习记忆备份行。
@@ -590,6 +590,8 @@
 8. **375**：卡可关、不挡 Sit 三球。
 9. **修行纪念分区（#888 V1）**：清供列表下方见 **Practice memorials / 修行纪念**（**不得**混进「案上陪伴」行）。已解锁：本机 score / 累计分钟说明句（无全球名次、无进度条）。未解锁：观察句「尚未在本机走过」——行不可交互。**已得分钟印**（600/3000/10800）行可点 → **0–1 秒内** `#practice-imprint-card` 淡入，Continue 关闭；芥子 score 行仍只读。locale 切换后重开面板文案随语言变。
 10. **修行纪念印自动出卡（#888 Slice 2）**：本机终身分钟首次跨 600/3000/10800 档后，完成 baseline 仪式（Sit / Honesty / Breath）→ 若芥子/静思典藏未占队列 → **先**见 `#practice-imprint-card`（方章占位 + 累计分钟 + 季语）→ Continue → 再进 Reflection/桥接。同场若多档同时满足，**一次只出最低未揭示档**；已揭示档不再自动弹出，仅菜单重读。
+11. **称号名（#1130）**：结缘页器物名仍是青瓷琮式尊 / 青瓷蒜头长颈瓶。打开 Companion titles：三条是 Desk-side stele / Returned celadon vial / Long sitter（中文：座右小碑 / 归来青瓷小瓶 / 久坐的人）。称号页不得再出现青瓷琮式瓶或蒜头瓶的名字。
+12. **点开原图（#1129）**：结缘页点一件器物的小图 → **0–1 秒内**同一面板盖上大图、名字和一句短文，底部没有 `undefined`。Close 或 Esc 收起大图，列表能继续滚。
 
 ---
 
@@ -1034,7 +1036,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 > **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
 
 1. `?product=1` Idle，热力图可见 → 其上方见 `[data-testid=growth-journey-home-line]`（阶段句 + 轨道点）。  
-2. 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。  
+2. 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。  
 3. Close 或点背板 → 卡收起，热力图与 Sit 仍在。
 
 ---
@@ -1045,14 +1047,14 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 > **单元**：`artCollectionPurchase.test.js` · `artCollectionHd.test.js` · `teaGiftHd.test.js` · `collectionsArtBridgeGate.test.js` · `collectionPieceCard` 相关单测。**非** Stripe 真付 DOM。  
 > **点击**：菜单行 / Buy / Save / 桥上的 Open 均 **0–1 秒内**有面板、Checkout 句或失败句。失败不得把这张标成已拥有，也不得静默。
 
-1. Idle ⋯ / 抽屉 **Yin's Art Collection** → **0–1 秒内** `#art-collection-panel` 可见。无邮箱点 Buy → 「A purchase needs an email.」Checkout 打不开 → 失败句，且这张**不是**你的。  
+1. Idle 宽屏 ⋯ / 窄屏抽屉 **Yin's Art Collection**（#1138）→ **0–1 秒内**菜单收起且 `#art-collection-panel` 可见（不得只关菜单、面板不出现）。无邮箱点 Buy → 「A purchase needs an email.」Checkout 打不开 → 失败句，且这张**不是**你的。  
 2. **高清**：没有核销过的购买记录时，保存不得在本机落下高清文件（单测锁）。已拥有才见 Save image；保存中见 Saving…，成功见 Saved。  
 3. **选画卡**：买下并保存后，卡上见 “This is a piece I chose.” / “Chosen, and kept here”。  
 4. **结缘凭证**：寅币结缘一件器物并保存后，卡上见 “This piece came after I had sat these {n} minutes.” **≠** 买来的画。  
-5. **五件套**：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is closed.”，不得再开 Checkout。磁州窑红绿彩五件同样是一套（Cizhou red-green five），也是 Buy the set；售罄同一句，不得再开 Checkout。  
+5. **五件套**：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is closed.”，不得再开 Checkout。磁州窑红绿彩五件同样是一套（Cizhou red-green five），也是 Buy the set；售罄同一句，不得再开 Checkout。哥窑冰裂纹 1010 的 G1、G2 各是一套（#1126），同样 Buy the set；售罄同一句。  
 6. **货架预览**：青瓷冰裂纹壶、青瓷牡丹瓶、金鸭彝这三张预览不得再带生成器水印。  
 7. **请茶原图**：茶已核销、且原图已在本机时，茶卡上的金鸭图换成那张原图。原图还没落到本机时，预览先留着，不得假装已经换成高清。  
-8. **珍藏桥（只一次）**：第一次用寅币结缘并走出仪式句时，若还没看过桥，仪式卡上见 `[data-testid=yin-coin-art-bridge]` 与 “Open Yin's Art Collection”。出现即记为看过；再结缘不再出现。点 Open → 艺术收藏面板。
+8. **珍藏桥（只一次）**：第一次用寅币结缘并走出仪式句时，若还没看过桥，仪式卡上见 `[data-testid=yin-coin-art-bridge]` 与 “Open Yin's Art Collection”。出现即记为看过；再结缘不再出现。点 Open → 艺术收藏面板。结缘页已有至少一件藏品、且这台设备还没看过那句时，打开 Yin's Collections 须在标题下看见 “If you enjoy pieces like this…”、Open 与 Close（#1132），不用滚到列表底才算看见；句子若在可视区域外，关掉再开仍应出现。没有藏品不出现这句。
 
 ---
 
@@ -1064,8 +1066,8 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 1. `?product=1` Idle → ⋯ Preferences **Help Center**（窄屏抽屉同一行，`data-testid=idle-help-center`）→ **0–1 秒内** `[data-testid=help-center]` 可见，标题 Help Center，下面是分好组的主题。  
 2. 点任一主题 → **0–1 秒内**见该篇标题和正文（`data-testid=help-center-article`）。Back **0–1 秒内**回到目录。  
-3. Close 或点背板 → **0–1 秒内**面板收起，Sit 仍在。  
-4. 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Center” 同样打开这一页，不得和简介卡叠成两层。  
+3. Close 或点背板 → **0–1 秒内**面板收起，Sit 仍在。收起后闲置页右侧、徽章卡片外面不得留下黑字 `undefined`（#1137）。  
+4. 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Center” 同样打开这一页，不得和简介卡叠成两层。问号卡不再重复菜单里的「重新选择今日方向」（#1131）；那条只留在 Preferences。  
 5. 目录是说明，不是对阿寅说话。这里的句子不得冒充倾诉面板里的回复。
 
 ---
@@ -1106,7 +1108,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | **AL** | Reflection Companion validation（lab） | **已升格** → 见上文「场景 AL」；非 shipping；#486 原型 + 本旁支 fail-soft / crisis |
 | **AT** | Voice Input · Speak to type（Electron · Slice 0–2） | **已升格** → 见上文「场景 AT」；Confide + Arrival 手写 + Reflection；Web 不测 |
 | **AV** | 首页旅程短行点开 Where you are | **已升格** → 见上文「场景 AV」；#1102 / #1107；单测锁短行与详情，**非** DOM |
-| **AW** | 艺术收藏凭证 / 选画 / 高清 / 五件套 / 珍藏桥 | **已升格** → 见上文「场景 AW」；#1096–#1100 · #1098 · #1099；真付与高清观感仍人工 |
+| **AW** | 艺术收藏凭证 / 选画 / 高清 / 五件套 / 珍藏桥 | **已升格** → 见上文「场景 AW」；#1096–#1100 · #1098 · #1099 · #1126 · #1132 · #1138；真付与高清观感仍人工 |
 | **AX** | 帮助中心（菜单 + 问号卡） | **已升格** → 见上文「场景 AX」；#1120 / #1122；单测锁目录，**非**菜单 DOM |
 
 ---
@@ -1265,6 +1267,24 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **升格场景 AX**：菜单和问号卡都能打开帮助中心；点主题见正文。  
    - **场景 AW**：补磁州窑五件套、请茶原图、三张预览无生成印。青瓷五件套步骤仍在。  
 3. **仍须人工 / 勿当缺口**：帮助中心 375 下列表是否被底栏挡住；磁州窑五件售罄句；请茶原图在文件还没下到本机时是否仍停在预览。  
+4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
+
+---
+
+
+## 2026-10-10–11 增量核对摘要（哥窑五件 · 菜单打开收藏与扇形 · 记录抬头 · 称号与原图）
+
+1. **背景**：自文首上次核对（2026-10-10，#1125）之后，合入 develop 的用户面是哥窑冰裂纹两组五件（#1126）、Honesty 选项描边（#1127）、旅程同日存图与 Records 抬头（#1128）、清供原图（#1129）、称号名与青瓷名分开（#1130）、旅程节奏刻度 / 圈子痕迹 / 问号卡不再重复今日方向（#1131）、珍藏桥句子放到看得到的标题下（#1132）、宽屏菜单打开庇护扇形和语音开关（#1136）、闲置页去掉 undefined（#1137）、宽屏菜单打开艺术收藏（#1138）。生产部署记录、探索预算、worktree 卫生手册不升格。帮助圈在线人数（#1139）尚未合入，不写进已上线故事。
+2. **本次核对（增量，未升格新字母场景）**：
+   - **场景 AW**：补 G1/G2 五件套；宽屏 ⋯ 点 Yin's Art Collection 必须打开面板；已有藏品时珍藏标题下即见桥句。
+   - **场景 Z / 菜单**：Journey log、Presence moments、Yin's Collections 上面有 Records；同一天两张日卡存图不得互相覆盖。
+   - **场景 AV**：详情轨道上回来与暂停是分开的刻度。
+   - **场景 AC**：称号三条用自己的名字；点器物小图先见大图，底部没有 undefined。
+   - **场景 D**：Honesty 时长选项与桥接按钮恢复安静玻璃描边。单测 `honestyChoiceButtonChrome.test.js`，**非**完整补登观感。
+   - **场景 W / AX**：问号卡不再重复「重新选择今日方向」；关掉帮助中心后页面上不得留下黑字 undefined。
+   - **宽屏菜单**：点 Navigate the sanctuary，1 秒内在 ⋯ 旁见 Home / Calendar / Collection。桌面壳才有 Voice announcements，点开右下角开关卡。网页预览没有语音这一行。
+   - **圈子**：来过那一行不得被见证痕迹盖住。仍走既有小圈故事，不新开字母。
+3. **仍须人工 / 勿当缺口**：哥窑五件售罄句；宽屏菜单连续开关收藏面板；Records 抬头在窄屏抽屉；同日两张存图的文件名；称号中日文；原图大图不挡滚动；Honesty 描边在 375 上是否还在；扇形与语音卡只在宽屏 / 桌面壳。
 4. **TEST_TRACKER** 场景行仍为准；本文只串故事，不重复登记碎片。
 
 ---
