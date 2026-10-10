@@ -54,8 +54,12 @@ test('first bonded piece keeps a one-time art bridge on the success card', () =>
   assert.match(src, /markArtBridgeSeen/);
   assert.match(src, /onOpenArtCollection/);
   assert.match(src, /YIN_COIN_ART_BRIDGE/);
-  assert.match(src, /yin-coin-panel__ceremonial--bridge/);
-  assert.match(src, /if \(showBridge\) \{[\s\S]*markArtBridgeSeen\?\.[\s\S]*return;/);
+  assert.match(src, /_presentArtBridge\(\)/);
+  assert.match(src, /isCollectionsArtBridgeInView/);
+  assert.doesNotMatch(
+    src,
+    /if \(showBridge\) \{[\s\S]*markArtBridgeSeen/
+  );
 });
 
 test('curio thumb opens a still and a short note inside the panel', () => {
