@@ -118,7 +118,7 @@ export class HelpCenterUI {
       this.confideNoteEl
     );
 
-    mountRoot.append(this.backdrop.element, this.root);
+    mountRoot.append(this.root);
     this._localeOff = onLocaleChange(() => {
       if (this._open) this._render();
     });
@@ -350,6 +350,6 @@ export class HelpCenterUI {
     this._localeOff?.();
     this.close();
     this.root.remove();
-    this.backdrop.element?.remove();
+    this.backdrop?.remove();
   }
 }
