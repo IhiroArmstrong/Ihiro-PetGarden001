@@ -29,7 +29,7 @@ const PANEL_CSS = [
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'padding:14px 18px 12px',
-  GLASS_BORDER,
+  `border:${GLASS_BORDER}`,
   `border-radius:${GLASS_RADIUS}`,
   `background:${GLASS_FILL}`,
   GLASS_BLUR_CSS,
@@ -44,12 +44,14 @@ const PANEL_CSS = [
 
 /** Reflection 同级按钮权重（不做主次强调）；略实一点以保持可点可读。 */
 const EQUAL_BTN_CSS = [
+  'appearance:none',
+  '-webkit-appearance:none',
   'flex:1',
   'padding:7px 16px',
   'font-size:13px',
   'color:#4a3a28',
   `background:${GLASS_FILL_STRONG}`,
-  GLASS_BORDER_STRONG,
+  `border:${GLASS_BORDER_STRONG}`,
   'border-radius:16px',
   'cursor:pointer',
   'box-shadow:0 1px 0 rgba(255,255,255,.7) inset'

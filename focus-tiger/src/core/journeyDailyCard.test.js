@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  journeyDailyCardFilename,
   paintJourneyDailyCard,
   quoteForJourneyDailyCard,
   saveJourneyDailyCard
@@ -57,7 +58,19 @@ describe('journeyDailyCard', () => {
       }
     });
     assert.equal(ok, true);
-    assert.equal(calls[0], 'focus-tiger-daily-card-2026-10-01.png');
+    assert.match(calls[0], /^focus-tiger-daily-card-2026-10-01-\d{9}\.png$/);
+    const named = journeyDailyCardFilename({
+      dateKey: '2026-10-10',
+      at: '2026-10-10T06:30:01.000Z',
+      kind: 'focus'
+    });
+    const namedAgain = journeyDailyCardFilename({
+      dateKey: '2026-10-10',
+      at: '2026-10-10T06:30:01.000Z',
+      kind: 'reflected'
+    });
+    assert.notEqual(named, namedAgain);
+    assert.match(named, /^focus-tiger-daily-card-2026-10-10-focus-\d{9}\.png$/);
 
     const empty = await saveJourneyDailyCard({
       dateKey: '2026-10-02',

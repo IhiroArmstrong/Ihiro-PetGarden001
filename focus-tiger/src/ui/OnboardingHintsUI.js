@@ -28,7 +28,6 @@ import {
 import {
   markWellnessDisclaimerSeen
 } from '../core/wellnessDisclaimerGate.js';
-import { hasSeenColdStartGoalCard } from '../core/coldStartGoalGate.js';
 import {
   HINT_LOCALE_KEYS,
   createHintsSeenStore
@@ -2039,19 +2038,8 @@ export class OnboardingHintsUI {
       );
     }
     if (this._purposeTodayDirectionEl) {
-      const showTodayDirection =
-        typeof this.onTodayDirection === 'function' &&
-        hasSeenColdStartGoalCard(this._storage);
-      this._purposeTodayDirectionEl.hidden = !showTodayDirection;
-      if (showTodayDirection) {
-        this._purposeTodayDirectionEl.textContent = t(
-          'TODAY_DIRECTION_MENU_LABEL'
-        );
-        this._purposeTodayDirectionEl.setAttribute(
-          'aria-label',
-          t('TODAY_DIRECTION_MENU_LABEL')
-        );
-      }
+      // Menu → Preferences already has this. Do not repeat it on the ? card.
+      this._purposeTodayDirectionEl.hidden = true;
     }
     if (this._purposeHelpCenterEl) {
       const showHelpCenter = typeof this.onHelpCenter === 'function';

@@ -115,10 +115,12 @@ export class HomeSanctuaryNavFanUI {
 
     const anchor = opts.anchorEl;
     const rect = anchor?.getBoundingClientRect?.();
-    const cx = rect
+    const rawX = rect
       ? rect.left + rect.width / 2
       : window.innerWidth / 2;
-    const cy = rect ? rect.top + rect.height / 2 : window.innerHeight * 0.78;
+    const rawY = rect ? rect.top + rect.height / 2 : window.innerHeight * 0.78;
+    const cx = Math.min(window.innerWidth - 128, Math.max(128, rawX));
+    const cy = Math.min(window.innerHeight - 56, Math.max(128, rawY));
 
     this.root.style.setProperty('--fan-anchor-x', `${cx}px`);
     this.root.style.setProperty('--fan-anchor-y', `${cy}px`);

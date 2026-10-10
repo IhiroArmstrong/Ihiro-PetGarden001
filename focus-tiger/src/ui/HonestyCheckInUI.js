@@ -38,7 +38,7 @@ const PANEL_CSS = [
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'padding:14px 18px 12px',
-  GLASS_BORDER,
+  `border:${GLASS_BORDER}`,
   `border-radius:${GLASS_RADIUS}`,
   `background:${GLASS_FILL}`,
   GLASS_BLUR_CSS,
@@ -51,6 +51,8 @@ const PANEL_CSS = [
 ].join(';');
 
 const CHOICE_BTN_CSS = [
+  'appearance:none',
+  '-webkit-appearance:none',
   'width:100%',
   'padding:12px 14px',
   'font-size:14px',
@@ -58,7 +60,7 @@ const CHOICE_BTN_CSS = [
   'font-weight:560',
   'color:#3a2a1c',
   `background:${GLASS_FILL_STRONG}`,
-  GLASS_BORDER_STRONG,
+  `border:${GLASS_BORDER_STRONG}`,
   'border-radius:14px',
   'cursor:pointer',
   'text-align:center',
