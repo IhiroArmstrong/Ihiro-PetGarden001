@@ -100,6 +100,16 @@ describe('art collection purchase', () => {
       requestArtPurchase({ sheetId: 'cizhou-changchun-square-plate', email: 'a@b.co' }).reason,
       'unknown_sheet'
     );
+    const geG1 = requestArtPurchase({
+      sheetId: 'ge-crackle-1010-g1',
+      email: 'buyer@example.com'
+    });
+    assert.equal(geG1.ok, true);
+    assert.equal(geG1.sheetId, 'ge-crackle-1010-g1');
+    assert.equal(
+      requestArtPurchase({ sheetId: 'ge-g1-dragon-zun', email: 'a@b.co' }).reason,
+      'unknown_sheet'
+    );
     assert.equal(
       requestArtPurchase({ sheetId: 'celadon-garlic-mouth-ring-bottle', email: 'a@b.co' })
         .reason,

@@ -42,9 +42,39 @@ export const CIZHOU_RED_GREEN_FIVE: ArtEditionSet = Object.freeze({
 	]),
 });
 
+export const GE_CRACKLE_1010_G1: ArtEditionSet = Object.freeze({
+	id: "ge-crackle-1010-g1",
+	name: "Ge crackle five (I)",
+	unitAmount: ART_EDITION_PRICE_CENTS,
+	editionLimit: ART_EDITION_LIMIT,
+	sheetIds: Object.freeze([
+		"ge-g1-hunting-stem-bowl",
+		"ge-g1-taotie-gu",
+		"ge-g1-beast-ring-hu",
+		"ge-g1-upright-ear-ding",
+		"ge-g1-dragon-zun",
+	]),
+});
+
+export const GE_CRACKLE_1010_G2: ArtEditionSet = Object.freeze({
+	id: "ge-crackle-1010-g2",
+	name: "Ge crackle five (II)",
+	unitAmount: ART_EDITION_PRICE_CENTS,
+	editionLimit: ART_EDITION_LIMIT,
+	sheetIds: Object.freeze([
+		"ge-g2-taotie-li",
+		"ge-g2-dragon-zun",
+		"ge-g2-hunting-stem-bowl",
+		"ge-g2-taotie-gu",
+		"ge-g2-crackle-fanghu",
+	]),
+});
+
 export const ART_EDITION_SETS: readonly ArtEditionSet[] = Object.freeze([
 	CELADON_RELIEF_FIVE,
 	CIZHOU_RED_GREEN_FIVE,
+	GE_CRACKLE_1010_G1,
+	GE_CRACKLE_1010_G2,
 ]);
 
 export function findArtEditionSet(artId: string): ArtEditionSet | null {
@@ -62,6 +92,16 @@ const EDITION_SHEET_HD_ID: Readonly<Record<string, string>> = Object.freeze({
 	"cizhou-flower-rim-plate": "hd-cz-03",
 	"cizhou-dragon-fish-gu": "hd-cz-04",
 	"cizhou-changchun-square-plate": "hd-cz-05",
+	"ge-g1-hunting-stem-bowl": "hd-g1-01",
+	"ge-g1-taotie-gu": "hd-g1-02",
+	"ge-g1-beast-ring-hu": "hd-g1-03",
+	"ge-g1-upright-ear-ding": "hd-g1-04",
+	"ge-g1-dragon-zun": "hd-g1-05",
+	"ge-g2-taotie-li": "hd-g2-01",
+	"ge-g2-dragon-zun": "hd-g2-02",
+	"ge-g2-hunting-stem-bowl": "hd-g2-03",
+	"ge-g2-taotie-gu": "hd-g2-04",
+	"ge-g2-crackle-fanghu": "hd-g2-05",
 });
 
 export function editionSheetHdId(artId: string): string {
