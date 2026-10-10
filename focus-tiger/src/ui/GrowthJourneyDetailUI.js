@@ -195,24 +195,27 @@ export class GrowthJourneyDetailUI {
 
     this.rhythmEl.replaceChildren();
     for (const mark of model.rhythm) {
+      const item = document.createElement('span');
+      item.className = 'growth-journey-detail__mark';
+      item.dataset.kind = mark.kind;
       if (mark.kind === 'paused') {
         const paused = document.createElement('span');
         paused.className = 'growth-journey-detail__paused';
         paused.textContent = t('GROWTH_JOURNEY_PAUSED');
-        this.rhythmEl.appendChild(paused);
-        continue;
-      }
-      const dot = document.createElement('span');
-      dot.className = 'growth-journey-detail__day';
-      dot.dataset.kind = mark.kind;
-      if (mark.kind === 'returned') {
-        const returned = document.createElement('span');
-        returned.className = 'growth-journey-detail__returned';
-        returned.textContent = t('GROWTH_JOURNEY_RETURNED');
-        this.rhythmEl.append(dot, returned);
+        item.appendChild(paused);
       } else {
-        this.rhythmEl.appendChild(dot);
+        const dot = document.createElement('span');
+        dot.className = 'growth-journey-detail__day';
+        dot.dataset.kind = mark.kind;
+        item.appendChild(dot);
+        if (mark.kind === 'returned') {
+          const returned = document.createElement('span');
+          returned.className = 'growth-journey-detail__returned';
+          returned.textContent = t('GROWTH_JOURNEY_RETURNED');
+          item.appendChild(returned);
+        }
       }
+      this.rhythmEl.appendChild(item);
     }
   }
 
@@ -303,9 +306,19 @@ export class GrowthJourneyDetailUI {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 4px;
+        gap: 6px 0;
         margin: 0 0 12px;
         min-height: 12px;
+      }
+      .growth-journey-detail__mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .growth-journey-detail__mark + .growth-journey-detail__mark::before {
+        content: "·";
+        margin: 0 6px;
+        color: rgba(44, 31, 20, 0.35);
       }
       .growth-journey-detail__day {
         width: 6px;
