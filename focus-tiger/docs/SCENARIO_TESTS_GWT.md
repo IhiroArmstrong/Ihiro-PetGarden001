@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-09  
+生成日期：2026-10-10  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -5605,6 +5605,294 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 先有小圈的短句，不产生码。无圈用户 Sit 照旧。`?besideSeat=0` 不见请坐控件。六位暗号 Create / Join / Copy / Leave 仍按场景 AN。
 
 ---
+## 场景 AV：首页旅程短行 · 点开「Where you are」（#1102 / #1107 · 2026-10-09）
+
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
+> **地位**：Idle 本周陪伴热力图**上方**的一行旅程。**≠** Journey log（场景 Z）、**≠** 莲花池分钟。
+> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js`。**非**完整浏览器故事。
+> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AV-1 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | `?product=1` Idle，热力图可见 → 其上方见 `[data-testid=growt |
+| AV-2 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。 |
+| AV-3 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | Close 或点背板 → 卡收起，热力图与 Sit 仍在。 |
+
+### Given-When-Then 明细
+
+#### AV-1
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+- Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
+
+**When**
+- `?product=1` Idle，热力图可见
+
+**Then**
+- 其上方见 `[data-testid=growth-journey-home-line]`（阶段句 + 轨道点）。
+
+#### AV-2
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 点短行
+
+**Then**
+- 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。
+
+#### AV-3
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- Close 或点背板
+
+**Then**
+- 卡收起，热力图与 Sit 仍在。
+
+---
+## 场景 AW：艺术收藏 · 凭证、选画、高清、五件套、珍藏桥（#1096–#1100 · #1098 · #1099 · #1118 · #1123 · #1124 · 2026-10-08/10）
+
+> **E2E 优先级**：P0 · 收入/资金相关；跨系统链路
+> **地位**：Yin's Art Collection 是付费画页。**≠** 寅币商店行（场景 AC）、**≠** Support 三卡（场景 Q）。请茶礼物图在 Support 的茶卡上，核销后才换成原图。
+> **单元**：`artCollectionPurchase.test.js` · `artCollectionHd.test.js` · `teaGiftHd.test.js` · `collectionsArtBridgeGate.test.js` · `collectionPieceCard` 相关单测。**非** Stripe 真付 DOM。
+> **点击**：菜单行 / Buy / Save / 桥上的 Open 均 **0–1 秒内**有面板、Checkout 句或失败句。失败不得把这张标成已拥有，也不得静默。
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AW-1 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | Idle ⋯ / 抽屉 Yin's Art Collection → 0–1 秒内 `#art-co |
+| AW-2 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 高清：没有核销过的购买记录时，保存不得在本机落下高清文件（单测锁）。已拥有才见 Save image |
+| AW-3 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 选画卡：买下并保存后，卡上见 “This is a piece I chose.” / “Chose |
+| AW-4 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 结缘凭证：寅币结缘一件器物并保存后，卡上见 “This piece came after I had |
+| AW-5 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 五件套：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is |
+| AW-6 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 货架预览：青瓷冰裂纹壶、青瓷牡丹瓶、金鸭彝这三张预览不得再带生成器水印。 |
+| AW-7 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 请茶原图：茶已核销、且原图已在本机时，茶卡上的金鸭图换成那张原图。原图还没落到本机时，预览先留着，不 |
+| AW-8 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 珍藏桥（只一次）：第一次用寅币结缘并走出仪式句时，若还没看过桥，仪式卡上见 `[data-testi |
+
+### Given-When-Then 明细
+
+#### AW-1
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+- Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
+
+**When**
+- Idle ⋯ / 抽屉 Yin's Art Collection
+
+**Then**
+- 0–1 秒内 `#art-collection-panel` 可见。无邮箱点 Buy → 「A purchase needs an email.」Checkout 打不开 → 失败句，且这张不是你的。
+
+#### AW-2
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 高清：没有核销过的购买记录时，保存不得在本机落下高清文件（单测锁）。已拥有才见 Save image；保存中见 Saving…，成功见 Saved
+
+#### AW-3
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 选画卡：买下并保存后，卡上见 “This is a piece I chose.” / “Chosen, and kept here”
+
+#### AW-4
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 结缘凭证：寅币结缘一件器物并保存后，卡上见 “This piece came after I had sat these {n} minutes.” ≠ 买来的画
+
+#### AW-5
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 五件套：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is closed.”，不得再开 Checkout。磁州窑红绿彩五件同样是一套（Cizhou red-green five），也是 Buy the set；售罄同一句，不得再开 Checkout
+
+#### AW-6
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 货架预览：青瓷冰裂纹壶、青瓷牡丹瓶、金鸭彝这三张预览不得再带生成器水印
+
+#### AW-7
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 请茶原图：茶已核销、且原图已在本机时，茶卡上的金鸭图换成那张原图。原图还没落到本机时，预览先留着，不得假装已经换成高清
+
+#### AW-8
+
+- **优先级**：P0（收入/资金相关；跨系统链路）
+- **覆盖**：已在 `artCollectionPurchase.test.js` 覆盖；已在 `artCollectionHd.test.js` 覆盖；已在 `teaGiftHd.test.js` 覆盖；已在 `collectionsArtBridgeGate.test.js` 覆盖；E2E 未完整覆盖，此处 smoke/跳过
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 珍藏桥（只一次）：第一次用寅币结缘并走出仪式句时，若还没看过桥，仪式卡上见 `[data-testid=yin-coin-art-bridge]` 与 “Open Yin's Art Collection”。出现即记为看过；再结缘不再出现。点 Open
+
+**Then**
+- 艺术收藏面板。
+
+---
+## 场景 AX：帮助中心（菜单 + 问号卡 · #1120 / #1122 · 2026-10-10）
+
+> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
+> **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。
+> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录；不碰付款、不改练习记录）。
+> **点击**：菜单行与问号卡上的链，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
+
+### 步骤总览
+
+| 步骤 ID | 优先级 | 覆盖 | 摘要 |
+|---|---|---|---|
+| AX-1 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | `?product=1` Idle → ⋯ Preferences Help Center（窄屏抽屉 |
+| AX-2 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 点任一主题 → 0–1 秒内见该篇标题和正文（`data-testid=help-center-ar |
+| AX-3 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | Close 或点背板 → 0–1 秒内面板收起，Sit 仍在。 |
+| AX-4 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Ce |
+| AX-5 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 目录是说明，不是对阿寅说话。这里的句子不得冒充倾诉面板里的回复。 |
+
+### Given-When-Then 明细
+
+#### AX-1
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+- Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
+
+**When**
+- `?product=1` Idle
+
+**Then**
+- ⋯ Preferences Help Center（窄屏抽屉同一行，`data-testid=idle-help-center`）→ 0–1 秒内 `[data-testid=help-center]` 可见，标题 Help Center，下面是分好组的主题。
+
+#### AX-2
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 点任一主题
+
+**Then**
+- 0–1 秒内见该篇标题和正文（`data-testid=help-center-article`）。Back 0–1 秒内回到目录。
+
+#### AX-3
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- Close 或点背板
+
+**Then**
+- 0–1 秒内面板收起，Sit 仍在。
+
+#### AX-4
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 场景 W 的问号简介卡里，次级链 “Browse all topics
+
+**Then**
+- open Help Center” 同样打开这一页，不得和简介卡叠成两层。
+
+#### AX-5
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 目录是说明，不是对阿寅说话。这里的句子不得冒充倾诉面板里的回复
+
+---
 ## 场景 I：点 **How shall we sit?**（未过 Arrival）→ **立刻展开三选一**；Honesty 提示开着时仍可点；**不**启动 Arrival
 
 > **E2E 优先级**：P0 · 高频且用户量大
@@ -5853,4 +6141,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 64 · 步骤 307 · 待澄清 46_
+_场景 67 · 步骤 323 · 待澄清 46_
