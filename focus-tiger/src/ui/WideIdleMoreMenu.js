@@ -28,6 +28,10 @@ import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v7';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
+const DEFAULT_EXPANDED_MENU_GROUPS = [
+  DEFAULT_EXPANDED_MENU_GROUP,
+  'MENU_GROUP_RECORDS'
+];
 const WIDE_MQ = '(min-width: 480px)';
 /** Match narrow home totems (`NarrowIdleShell` HOME_CTA_PX). */
 const HOME_CTA_PX = 72;
@@ -138,7 +142,7 @@ export class WideIdleMoreMenu {
     this._menuOpen = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
-    this._expandedGroups = new Set([DEFAULT_EXPANDED_MENU_GROUP]);
+    this._expandedGroups = new Set(DEFAULT_EXPANDED_MENU_GROUPS);
     this._localeUnsub = null;
     this._refreshingHomeCtas = false;
 
@@ -811,7 +815,7 @@ export class WideIdleMoreMenu {
     if (key === 'sanctuary-nav') {
       this.clearStage();
       this.closeMenu();
-      this.handlers.onSanctuaryNav?.();
+      this.handlers.onSanctuaryNav?.(true);
       return;
     }
     if (key === 'today-direction') {

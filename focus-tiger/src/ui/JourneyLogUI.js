@@ -389,6 +389,8 @@ export class JourneyLogUI {
     const image = await loadDailyCardStill(JOURNEY_DAILY_CARD_STILL);
     const ok = await saveJourneyDailyCard({
       dateKey,
+      at: entry.at,
+      kind: journeyLogLineKind(entry),
       minutes: entry.minutes,
       quote,
       image
@@ -613,14 +615,19 @@ export class JourneyLogUI {
       }
       .journey-log__save-card {
         appearance: none;
+        display: inline-block;
         margin-left: 8px;
-        border: 0;
-        border-radius: 8px;
-        padding: 4px 8px;
-        background: #f7f1e8;
-        color: inherit;
+        border: 1px solid rgba(139, 115, 85, 0.38);
+        border-radius: 999px;
+        padding: 4px 12px;
+        background: #f3e6d0;
+        color: #2c1f14;
         font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.3;
         cursor: pointer;
+        vertical-align: baseline;
       }
       .journey-log__save-card:active { transform: scale(0.98); }
       .journey-log__insight-spark {

@@ -11,7 +11,7 @@
 import { downloadCanvasPng, readDailyZenQuotePoolV2 } from './dailyZenQuote.js';
 
 export const JOURNEY_DAILY_CARD_STILL =
-  '/sprites/tiger-cub/monk-robe-default/idle-breathing/frame_024.png';
+  '/ui/tiger-badge-silver-gold-rim-sparkle.png';
 
 /** Independent of the Daily Wisdom pool. */
 export const JOURNEY_DAILY_CARD_FALLBACK_LINES = Object.freeze([
@@ -61,33 +61,47 @@ export function paintJourneyDailyCard(ctx, card) {
   const h = ctx.canvas.height;
   ctx.fillStyle = '#e8dfd2';
   ctx.fillRect(0, 0, w, h);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  let textTop = 180;
   if (card.image) {
-    const size = Math.min(w - 120, 420);
-    ctx.drawImage(card.image, (w - size) / 2, 80, size, size);
+    const iw = card.image.naturalWidth || card.image.width || 420;
+    const ih = card.image.naturalHeight || card.image.height || 420;
+    const maxW = Math.min(w - 160, 360);
+    const maxH = 340;
+    const scale = Math.min(maxW / iw, maxH / ih);
+    const dw = Math.max(1, iw * scale);
+    const dh = Math.max(1, ih * scale);
+    const y = 64;
+    ctx.drawImage(card.image, (w - dw) / 2, y, dw, dh);
+    textTop = y + dh + 64;
   }
+  const cx = w / 2;
   ctx.fillStyle = '#2c1f14';
   ctx.font = '600 42px system-ui, sans-serif';
-  ctx.fillText(String(card.dateKey || ''), 60, card.image ? 560 : 180);
+  ctx.fillText(String(card.dateKey || ''), cx, textTop);
   ctx.font = '400 32px system-ui, sans-serif';
-  ctx.fillText(`${Number(card.minutes) || 0} min`, 60, card.image ? 620 : 240);
+  ctx.fillText(`${Number(card.minutes) || 0} min`, cx, textTop + 58);
   ctx.font = '400 28px "Iowan Old Style", Palatino, serif';
   const quote = String(card.quote || '');
-  const max = w - 120;
+  const max = w - 140;
   let line = '';
-  let y = card.image ? 700 : 340;
+  let y = textTop + 128;
   for (const word of quote.split(/\s+/)) {
+    if (!word) continue;
     const next = line ? `${line} ${word}` : word;
-    if (ctx.measureText(next).width > max) {
-      ctx.fillText(line, 60, y);
+    if (line && ctx.measureText(next).width > max) {
+      ctx.fillText(line, cx, y);
       y += 40;
       line = word;
     } else {
       line = next;
     }
   }
-  if (line) ctx.fillText(line, 60, y);
+  if (line) ctx.fillText(line, cx, y);
   ctx.font = '400 22px system-ui, sans-serif';
-  ctx.fillText('Focus Tiger', 60, h - 70);
+  ctx.fillText('Focus Tiger', cx, h - 70);
+  ctx.textAlign = 'left';
 }
 
 /**
@@ -127,7 +141,24 @@ export async function saveJourneyDailyCard(opts) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return false;
   paintJourneyDailyCard(ctx, opts);
-  const filename = `focus-tiger-daily-card-${opts.dateKey || 'day'}.png`;
+  const filename = journeyDailyCardFilename(opts);
   const download = opts.download || downloadCanvasPng;
   return download(canvas, filename);
+}
+
+/**
+ * Same calendar day can hold more than one sitting. The clock stamp keeps
+ * the second download from replacing the first file.
+ * @param {{ dateKey?: string, at?: string, kind?: string }} opts
+ */
+export function journeyDailyCardFilename(opts = {}) {
+  const day = String(opts.dateKey || 'day').replace(/[^\d-]/g, '') || 'day';
+  const kind = String(opts.kind || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '');
+  const when = opts.at ? new Date(opts.at) : new Date();
+  const d = Number.isNaN(when.getTime()) ? new Date() : when;
+  const pad = (n, width = 2) => String(n).padStart(width, '0');
+  const stamp = `${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}${pad(d.getMilliseconds(), 3)}`;
+  return `focus-tiger-daily-card-${day}${kind ? `-${kind}` : ''}-${stamp}.png`;
 }
