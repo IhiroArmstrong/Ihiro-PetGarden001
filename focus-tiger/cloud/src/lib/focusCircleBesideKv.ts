@@ -413,9 +413,10 @@ export function tryAddBesideMember(
 	circle: FocusCircleRecord,
 	memberId: string,
 	nowMs: number,
+	opts?: { skipRosterCap?: boolean },
 ) {
-	if (isFocusCircleFull(circle) && !circle.members[memberId]) {
+	if (!opts?.skipRosterCap && isFocusCircleFull(circle) && !circle.members[memberId]) {
 		return { ok: false as const, reason: "full" as const };
 	}
-	return addFocusCircleMember(circle, memberId, nowMs);
+	return addFocusCircleMember(circle, memberId, nowMs, opts);
 }

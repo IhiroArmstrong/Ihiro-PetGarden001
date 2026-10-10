@@ -278,11 +278,14 @@ export async function joinBesideSeat(opts = {}) {
   const storage = opts.storage ?? globalThis.localStorage;
   const search = opts.search ?? '';
   const code = normalizeBesideCode(opts.code);
+  if (!code) return { ok: false, reason: 'bad_beside_code', skipped: true };
+  if (readFocusCircleMembership(storage)) {
+    return { ok: false, reason: 'already_in_circle', skipped: true };
+  }
   if (!isBesideSeatClientEnabled(search)) {
     return { ok: false, reason: 'disabled', skipped: true };
   }
-  if (!code) return { ok: false, reason: 'bad_beside_code', skipped: true };
-  const memberId = readFocusCircleMembership(storage)?.memberId ?? newFocusCircleMemberId();
+  const memberId = newFocusCircleMemberId();
   const result = await postBeside({
     ...opts,
     action: 'beside_join',
@@ -295,11 +298,13 @@ export async function joinBesideSeat(opts = {}) {
   const circleId = typeof result.body?.circleId === 'string' ? result.body.circleId : '';
   const savedMemberId =
     typeof result.body?.memberId === 'string' ? result.body.memberId : memberId;
+  const onlineCount = Number(result.body?.onlineCount);
+  const rosterCount = Number(result.body?.memberCount);
   const saved = writeFocusCircleMembership(storage, {
     circleId,
     memberId: savedMemberId,
     code: circleCode,
-    memberCount: Number(result.body?.memberCount)
+    memberCount: Number.isFinite(onlineCount) ? onlineCount : rosterCount
   });
   if (!saved) return { ok: false, reason: 'storage_failed', skipped: true };
   return { ok: true, membership: saved, skipped: false };
