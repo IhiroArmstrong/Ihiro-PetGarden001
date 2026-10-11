@@ -599,3 +599,19 @@ test('startSittingMusic plays default when preferred is Off without persisting e
   assert.equal(ctrl.getTrackId(), DEFAULT_AMBIENT_TRACK_ID);
   assert.equal(storage.getItem(AMBIENT_PREF_STORAGE_KEY), prefBefore);
 });
+
+test('a sit pause holds the track and resume continues it', async () => {
+  const audio = createMockAudio();
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage: createMapStorage(),
+    mountToDocument: false
+  });
+  ctrl.startSession();
+  await ctrl.setTrack(AMBIENT_TRACK_SINGING_BOWL);
+  assert.equal(ctrl.holdForSitPause(), true);
+  assert.equal(audio.paused, true);
+  assert.equal(ctrl.releaseSitPause(), true);
+  assert.equal(audio.paused, false);
+  ctrl.clearSitPauseHold();
+});

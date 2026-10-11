@@ -54,3 +54,13 @@ export function resolveFocusHudLiveView({
     liveSessionMinutes
   };
 }
+
+/**
+ * Open-ended sits measure elapsed time against a 24h cap, so the percent
+ * stays at 0% for a long while. Hide it. The clock remains.
+ * @param {{ focusing?: boolean, openEnded?: boolean }} input
+ * @returns {boolean}
+ */
+export function shouldShowFocusLevelPercent({ focusing = false, openEnded = false } = {}) {
+  return !(focusing === true && openEnded === true);
+}

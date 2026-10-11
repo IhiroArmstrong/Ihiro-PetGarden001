@@ -4508,6 +4508,7 @@ async function init() {
   }
 
   function endFocusChrome({ stopAmbient = true } = {}) {
+    ambientSoundscape.clearSitPauseHold();
     attentionSignals.setEnabled(false);
     mindfulReminderController.stopSession();
     acrossToolsIdleGuard.stop();
@@ -4963,23 +4964,10 @@ async function init() {
   let voiceRiseChrome = null;
 
   function syncVoiceRiseMic() {
-    const show =
-      stateManager.state === STATES.FOCUSING &&
-      canShowVoiceCommandChrome({ widthPx: window.innerWidth });
-    if (!show) {
-      voiceRiseChrome?.destroy();
-      voiceRiseChrome = null;
-      return;
-    }
-    if (voiceRiseChrome) return;
-    voiceRiseChrome = new VoiceCommandChrome({
-      mountParent: voiceRiseSlot,
-      mode: 'end',
-      onOutcome: (outcome) => {
-        if (outcome.kind !== 'end_focus') return;
-        focusInput.requestRise();
-      }
-    });
+    // One microphone during a sit: the adjust row. A second mic beside Rise
+    // stacked "Stop" on top of Rise and painted start-sit copy over Leave.
+    voiceRiseChrome?.destroy();
+    voiceRiseChrome = null;
   }
 
   stateManager.onChange(() => syncVoiceRiseMic());
@@ -4988,16 +4976,27 @@ async function init() {
 
   focusSitAdjust = new FocusSitAdjustUI(document.getElementById('focus-sit-adjust'), {
     onPause: () => {
-      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'pause' }));
+      const result = applyFocusSitAdjust(focusSession, { kind: 'pause' });
+      if (result.applied) ambientSoundscape.holdForSitPause();
+      refreshFocusSitAdjust(result);
     },
     onResume: () => {
-      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'resume' }));
+      const result = applyFocusSitAdjust(focusSession, { kind: 'resume' });
+      if (result.applied) ambientSoundscape.releaseSitPause();
+      refreshFocusSitAdjust(result);
     },
     onAddFive: () => {
       refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 }));
     },
     onVoice: (parsed) => {
-      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, parsed));
+      if (parsed?.kind === 'end') {
+        focusInput.requestRise();
+        return;
+      }
+      const result = applyFocusSitAdjust(focusSession, parsed);
+      if (result.applied && result.kind === 'pause') ambientSoundscape.holdForSitPause();
+      if (result.applied && result.kind === 'resume') ambientSoundscape.releaseSitPause();
+      refreshFocusSitAdjust(result);
     }
   });
   stateManager.onChange(() => refreshFocusSitAdjust());

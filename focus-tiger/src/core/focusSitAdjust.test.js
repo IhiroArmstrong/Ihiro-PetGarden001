@@ -29,10 +29,11 @@ test('add five or ten minutes only', () => {
   assert.equal(parseFocusSitAdjust('Add twenty minutes').reason, 'unknown');
 });
 
-test('ending phrases stay on Rise', () => {
-  assert.equal(parseFocusSitAdjust("I'm done").reason, 'use_rise');
-  assert.equal(parseFocusSitAdjust('Stop').reason, 'use_rise');
-  assert.equal(parseFocusSitAdjust('Rise').reason, 'use_rise');
+test('ending phrases finish the sit instead of pausing it', () => {
+  assert.equal(parseFocusSitAdjust("I'm done").kind, 'end');
+  assert.equal(parseFocusSitAdjust('Stop').kind, 'end');
+  assert.equal(parseFocusSitAdjust('Rise').kind, 'end');
+  assert.equal(parseFocusSitAdjust('Pause').kind, 'pause');
 });
 
 test('pause freezes and add grows a fixed sit up to 90', () => {
