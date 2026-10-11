@@ -135,8 +135,8 @@ export class SystemTtsPreferenceUI {
   _render() {
     const enabled = isSystemTtsAnnouncementsEnabled();
     this.titleEl.textContent = t('system_tts.panel_title');
-    this.toggleText.textContent = t('system_tts.toggle_label');
-    this.hintEl.textContent = t('system_tts.toggle_hint');
+    this.toggleText.textContent = t('SYSTEM_TTS_TOGGLE_LABEL');
+    this.hintEl.textContent = t('SYSTEM_TTS_TOGGLE_HINT');
     this.closeBtn.textContent = t('system_tts.close');
     this.toggleInput.checked = enabled;
     this.statusEl.textContent = this._saveFailed

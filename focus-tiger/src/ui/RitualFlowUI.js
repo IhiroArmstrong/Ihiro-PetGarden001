@@ -10,6 +10,11 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  maybeSpeakBreathPhaseCue,
+  maybeSpeakPracticeAnnouncement,
+  resetPracticeAnnouncementCue
+} from '../core/systemTtsAnnouncements.js';
+import {
   createRitualFlowState,
   getCurrentStep,
   getRitualConfig,
@@ -394,6 +399,10 @@ export class RitualFlowUI {
     body.style.cssText =
       'font-size:15px;line-height:1.55;color:#4a3a28;text-align:center;margin-bottom:14px;';
     body.textContent = t(step.bodyKey);
+    maybeSpeakPracticeAnnouncement({
+      text: t(step.bodyKey),
+      cueId: `ritual:${step.bodyKey}`
+    });
 
     const row = document.createElement('div');
     row.style.cssText =
@@ -420,6 +429,10 @@ export class RitualFlowUI {
     prompt.style.cssText =
       'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:12px;font-weight:560;';
     prompt.textContent = t(step.promptKey);
+    maybeSpeakPracticeAnnouncement({
+      text: t(step.promptKey),
+      cueId: `ritual:${step.promptKey}`
+    });
 
     const row = document.createElement('div');
     row.style.cssText =
@@ -448,6 +461,11 @@ export class RitualFlowUI {
     title.style.cssText =
       'font-size:15px;line-height:1.5;color:#2c1f14;text-align:center;margin-bottom:10px;font-weight:560;';
     title.textContent = t(guideKey);
+    resetPracticeAnnouncementCue();
+    maybeSpeakPracticeAnnouncement({
+      text: t(guideKey),
+      cueId: `ritual-breath:${guideKey}`
+    });
 
     const phaseEl = document.createElement('div');
     phaseEl.dataset.ritualBreathPhase = '1';
@@ -480,6 +498,12 @@ export class RitualFlowUI {
       phaseEl.textContent = t(
         inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE'
       );
+      maybeSpeakBreathPhaseCue({
+        inhale,
+        elapsedMs: elapsed,
+        phaseMs: MICRO_RITUAL_BREATH_PHASE_MS,
+        scope: 'ritual-breath'
+      });
     }, 200);
     this._breathTimer = window.setTimeout(() => {
       this._fireBreathComplete();
@@ -535,6 +559,10 @@ export class RitualFlowUI {
     body.style.cssText =
       'font-size:15px;line-height:1.55;color:#4a3a28;text-align:center;margin-bottom:14px;';
     body.textContent = t(key);
+    maybeSpeakPracticeAnnouncement({
+      text: t(key),
+      cueId: `ritual-prompt:${key}`
+    });
 
     const row = document.createElement('div');
     row.style.cssText =
@@ -570,6 +598,10 @@ export class RitualFlowUI {
     body.style.cssText =
       'font-size:15px;line-height:1.55;color:#4a3a28;text-align:center;margin-bottom:14px;';
     body.textContent = t(step.bodyKey || 'ritual.shared.end');
+    maybeSpeakPracticeAnnouncement({
+      text: t(step.bodyKey || 'ritual.shared.end'),
+      cueId: `ritual-end:${step.bodyKey || 'ritual.shared.end'}`
+    });
 
     const done = document.createElement('button');
     done.type = 'button';

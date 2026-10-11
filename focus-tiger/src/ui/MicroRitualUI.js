@@ -10,6 +10,11 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  maybeSpeakBreathPhaseCue,
+  maybeSpeakPracticeAnnouncement,
+  resetPracticeAnnouncementCue
+} from '../core/systemTtsAnnouncements.js';
+import {
   MICRO_RITUAL_BREATH_PHASE_MS,
   MICRO_RITUAL_DURATION_OPTIONS_MINUTES,
   MICRO_RITUAL_MS_DEFAULT,
@@ -339,6 +344,11 @@ export class MicroRitualUI {
   _runBreathTimer(durationMs) {
     this._clearTimers();
     this._startedAt = Date.now();
+    resetPracticeAnnouncementCue();
+    maybeSpeakPracticeAnnouncement({
+      text: t('ARRIVAL_BREATH_GUIDE'),
+      cueId: 'micro-ritual:guide'
+    });
     this._bindVisibility();
     this._breathInterval = window.setInterval(() => {
       const phaseEl = this.root?.querySelector('[data-micro-ritual-breath-phase]');
@@ -348,6 +358,12 @@ export class MicroRitualUI {
       phaseEl.textContent = t(
         inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE'
       );
+      maybeSpeakBreathPhaseCue({
+        inhale,
+        elapsedMs: elapsed,
+        phaseMs: MICRO_RITUAL_BREATH_PHASE_MS,
+        scope: 'micro-ritual'
+      });
     }, 200);
 
     this._breathTimer = window.setTimeout(() => {

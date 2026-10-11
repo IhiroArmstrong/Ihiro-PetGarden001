@@ -192,7 +192,10 @@ export class ColdStartGoalCardUI {
       btn.setAttribute('role', 'option');
       btn.textContent = t(CHOICE_LABEL_KEYS[id]);
       btn.disabled = !canChoose;
-      btn.addEventListener('click', () => this._dismissWithChoice(id));
+      btn.addEventListener('click', () => {
+        if (id === 'browse') this.handlers.onBrowse?.();
+        this._dismissWithChoice(id);
+      });
       this.optionsEl.appendChild(btn);
     }
   }
