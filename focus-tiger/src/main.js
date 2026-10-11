@@ -2026,10 +2026,7 @@ async function init() {
     const anchor =
       visibleSanctuaryAnchor(anchorEl) ||
       visibleSanctuaryAnchor(
-        document.getElementById('ft-wide-home-sanctuary-nav')
-      ) ||
-      visibleSanctuaryAnchor(
-        document.getElementById('ft-narrow-home-sanctuary-nav')
+        document.getElementById('ft-sanctuary-nav-compass-fab')
       ) ||
       visibleSanctuaryAnchor(document.getElementById('ft-wide-more-btn')) ||
       visibleSanctuaryAnchor(document.querySelector('.ft-narrow-grabber'));

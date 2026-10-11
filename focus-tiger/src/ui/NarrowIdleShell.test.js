@@ -49,13 +49,13 @@ test('narrow grabber keeps swipe aria-label but hides visible hint text', () => 
   assert.match(src, /\.ft-narrow-grabber::before/);
 });
 
-test('narrow home CTAs lead with sanctuary-nav compass ball', () => {
-  assert.match(src, /id="ft-narrow-home-sanctuary-nav"/);
-  assert.match(src, /data-proxy="sanctuary-nav"/);
+test('narrow home CTAs keep Quick · Sit · Honesty; compass lives on the corner FAB', () => {
+  assert.doesNotMatch(src, /id="ft-narrow-home-sanctuary-nav"/);
+  assert.match(src, /ft-sanctuary-nav-compass-fab/);
   assert.match(src, /SANCTUARY_NAV_ARIA/);
   assert.match(
     src,
-    /#ft-narrow-home-sanctuary-nav[\s\S]*#ft-narrow-home-quickstart/
+    /#ft-narrow-home-quickstart[\s\S]*#ft-narrow-home-sit/
   );
 });
 
