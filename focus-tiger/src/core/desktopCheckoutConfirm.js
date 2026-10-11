@@ -24,6 +24,24 @@ import {
   clearDesktopCheckoutPending,
   readDesktopCheckoutPending
 } from './desktopCheckoutPending.js';
+import { peekCheckoutReturnThanksKind } from './paymentCheckoutThanks.js';
+
+/**
+ * @param {string} [search]
+ * @returns {import('./desktopCheckoutPending.js').DesktopCheckoutKind | null}
+ */
+export function checkoutKindFromSearch(search = '') {
+  const raw = String(search || '');
+  const params = new URLSearchParams(raw.startsWith('?') ? raw.slice(1) : raw);
+  if ((params.get('art_session') || '').startsWith('cs_')) return 'art-collection';
+  const thanks = peekCheckoutReturnThanksKind(raw);
+  if (thanks === 'tip') return 'tea';
+  if (thanks === 'sanctuary') return 'sanctuary';
+  if (thanks === 'membership') return 'membership';
+  if (thanks === 'pro') return 'pro';
+  if (thanks === 'companion-addon') return 'companion-addon';
+  return null;
+}
 
 /**
  * @param {object} opts
@@ -83,84 +101,86 @@ export async function resumePendingDesktopCheckout({
   postJson = postCloudJson
 } = {}) {
   const pending = readDesktopCheckoutPending();
-  if (!pending) return 'idle';
+  const kind = pending?.kind || checkoutKindFromSearch(search);
+  if (!kind) return 'idle';
+  const sessionId = pending?.sessionId || null;
 
-  if (pending.kind === 'sanctuary' && isSanctuaryUnlocked({ storage })) {
+  if (kind === 'sanctuary' && isSanctuaryUnlocked({ storage })) {
     clearDesktopCheckoutPending();
     return 'success';
   }
-  if (pending.kind === 'pro' && isProSubscriptionActive({ storage, search })) {
+  if (kind === 'pro' && isProSubscriptionActive({ storage, search })) {
     clearDesktopCheckoutPending();
     return 'success';
   }
-  if (pending.kind === 'companion-addon' && isCompanionAddonActive({ storage })) {
+  if (kind === 'companion-addon' && isCompanionAddonActive({ storage })) {
     clearDesktopCheckoutPending();
     return 'success';
   }
   if (
-    pending.kind === 'membership' &&
+    kind === 'membership' &&
     getEntitlementState({ storage }).subscription.entitled === true
   ) {
     clearDesktopCheckoutPending();
     return 'success';
   }
 
-  if (pending.kind === 'pro') {
+  if (kind === 'pro') {
     return resumeConfirmableKind({
       confirm: confirmProReturnQuery,
       sessionParam: 'pro_session',
-      sessionId: pending.sessionId,
+      sessionId,
       storage,
       search,
       postJson
     });
   }
 
-  if (pending.kind === 'companion-addon') {
+  if (kind === 'companion-addon') {
     return resumeConfirmableKind({
       confirm: confirmCompanionAddonReturnQuery,
       sessionParam: 'companion_addon_session',
-      sessionId: pending.sessionId,
+      sessionId,
       storage,
       search,
       postJson
     });
   }
 
-  if (pending.kind === 'sanctuary') {
+  if (kind === 'sanctuary') {
     return resumeConfirmableKind({
       confirm: confirmSanctuaryReturnQuery,
       sessionParam: 'sanctuary_session',
-      sessionId: pending.sessionId,
+      sessionId,
       storage,
       search,
       postJson
     });
   }
 
-  if (pending.kind === 'membership') {
+  if (kind === 'membership') {
     return resumeConfirmableKind({
       confirm: confirmMembershipReturnQuery,
       sessionParam: 'membership_session',
-      sessionId: pending.sessionId,
+      sessionId,
       storage,
       search,
       postJson
     });
   }
 
-  if (pending.kind === 'art-collection') {
+  if (kind === 'art-collection') {
     return resumeConfirmableKind({
       confirm: confirmYinArtReturnQuery,
       sessionParam: 'art_session',
-      sessionId: pending.sessionId,
+      sessionId,
       storage,
       search,
       postJson
     });
   }
 
-  if (pending.kind === 'tea') {
+  if (kind === 'tea') {
     const tip = consumeTipReturnQuery({
       storage,
       search,

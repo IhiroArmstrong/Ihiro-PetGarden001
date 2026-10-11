@@ -1,0 +1,20 @@
+{
+  "en": {
+    "ART_PICK_ONE": "Choose one picture first.",
+    "ART_HD_SAVING": "Saving this picture…",
+    "ART_HD_SAVED": "Saved this picture.",
+    "ART_HD_FAILED": "Could not save this picture."
+  },
+  "zh": {
+    "ART_PICK_ONE": "先选一件。",
+    "ART_HD_SAVING": "正在保存这一张…",
+    "ART_HD_SAVED": "这一张已保存。",
+    "ART_HD_FAILED": "这一张没能保存。"
+  },
+  "ja": {
+    "ART_PICK_ONE": "先に一枚を選んでください。",
+    "ART_HD_SAVING": "この一枚を保存しています…",
+    "ART_HD_SAVED": "この一枚を保存しました。",
+    "ART_HD_FAILED": "この一枚を保存できませんでした。"
+  }
+}

@@ -1,7 +1,7 @@
 import { errorJson, json } from "../lib/http";
 import { emailFromCheckoutSession, retrieveCheckoutSession } from "../lib/stripe";
 import { ART_COLLECTION_PRODUCT, findArtCollectionWork } from "../lib/artCollectionCatalog";
-import { issueArtHdGrant } from "../lib/artCollectionHdGrant";
+import { issueOwnedArtDownloads } from "../lib/artCollectionHdGrant";
 import {
 	grantArtPurchase,
 	indexArtCollectionPurchase,
@@ -70,22 +70,24 @@ export async function handleConfirmArtCollectionSession(
 	const existing = await readArtCollection(env.SANCTUARY_KV, email);
 	const already = existing.items[artId];
 	if (already && isArtPieceOwned(existing, artId)) {
-		const hd = env.ART_COLLECTION_HD
-			? await issueArtHdGrant({
+		const downloads = env.ART_COLLECTION_HD
+			? await issueOwnedArtDownloads({
 					kv: env.SANCTUARY_KV,
 					pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
 					email,
 					artId,
 					receiptId: already.receiptId,
 				})
-			: null;
+			: [];
+		const only = downloads.length === 1 && downloads[0].artId === artId ? downloads[0] : null;
 		return json({
 			owned: true,
 			email,
 			artId,
 			ownedAt: already.ownedAt,
 			receiptId: already.receiptId,
-			hd,
+			downloads,
+			hd: only ? { url: only.url, expiresAt: only.expiresAt } : null,
 		});
 	}
 	const ownedAt = new Date().toISOString();
@@ -107,21 +109,23 @@ export async function handleConfirmArtCollectionSession(
 	});
 	const saved = next.items[artId];
 	const savedReceipt = saved?.receiptId || receiptId;
-	const hd = env.ART_COLLECTION_HD
-		? await issueArtHdGrant({
+	const downloads = env.ART_COLLECTION_HD
+		? await issueOwnedArtDownloads({
 				kv: env.SANCTUARY_KV,
 				pepper: (env.RESTORE_OTP_PEPPER || "").trim(),
 				email,
 				artId,
 				receiptId: savedReceipt,
 			})
-		: null;
+		: [];
+	const only = downloads.length === 1 && downloads[0].artId === artId ? downloads[0] : null;
 	return json({
 		owned: true,
 		email,
 		artId,
 		ownedAt: saved?.ownedAt || ownedAt,
 		receiptId: savedReceipt,
-		hd,
+		downloads,
+		hd: only ? { url: only.url, expiresAt: only.expiresAt } : null,
 	});
 }
