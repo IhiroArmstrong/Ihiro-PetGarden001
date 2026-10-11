@@ -5,14 +5,20 @@
 
 /**
  * Corner fan: round Home · Calendar · Collection icons.
- * The hinge stays under the language globe, whichever control opened it.
+ * Compass FAB sits at the bottom-right corner (left of the language globe
+ * on wide). The fan hinges on that FAB.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { markHomeSanctuaryNavSeen } from '../core/homeSanctuaryNavGate.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
+import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
-const STYLE_ID = 'home-sanctuary-nav-fan-styles-v1';
+const STYLE_ID = 'home-sanctuary-nav-fan-styles-v2';
+const COMPASS_FAB_PX = Math.round(44 * 1.5);
+const HELP_IN_CLUSTER_PX = 40;
+const CLUSTER_BOTTOM_EXPR = '36px + 88px + 20px';
+const CLUSTER_PAD_BOTTOM_PX = 8;
 
 const FAN_ICON = {
   home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2 4 11h2.2v7.2h4.3v-4.4h3v4.4h4.3V11H20L12 4.2z"/></svg>',
@@ -89,7 +95,18 @@ export class HomeSanctuaryNavFanUI {
     }
     this._layoutArc();
 
-    mountRoot.append(this.backdrop, this.root);
+    this.fab = document.createElement('button');
+    this.fab.type = 'button';
+    this.fab.id = 'ft-sanctuary-nav-compass-fab';
+    this.fab.className = 'ft-sanctuary-nav-compass-fab';
+    this.fab.dataset.testid = 'ft-sanctuary-nav-compass-fab';
+    this.fab.innerHTML = SANCTUARY_NAV_COMPASS_SVG;
+    this.fab.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      this.open();
+    });
+
+    mountRoot.append(this.backdrop, this.root, this.fab);
 
     this.backdrop.addEventListener('click', () => this.close());
     this._onKeyDown = (event) => {
@@ -104,6 +121,7 @@ export class HomeSanctuaryNavFanUI {
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this._refreshLabels());
     this._refreshLabels();
+    window.addEventListener('resize', this._onResize = () => this._placeCorner());
   }
 
   /** @returns {boolean} */
@@ -158,8 +176,10 @@ export class HomeSanctuaryNavFanUI {
     this.close();
     this._unsubLocale?.();
     document.removeEventListener('keydown', this._onKeyDown, true);
+    window.removeEventListener('resize', this._onResize);
     this.backdrop.remove();
     this.root.remove();
+    this.fab.remove();
   }
 
   /**
@@ -197,6 +217,9 @@ export class HomeSanctuaryNavFanUI {
   /** @returns {void} */
   _refreshLabels() {
     this.root.setAttribute('aria-label', t('SANCTUARY_NAV_FAN_ARIA'));
+    if (this.fab) {
+      this.fab.setAttribute('aria-label', t('SANCTUARY_NAV_ARIA'));
+    }
     const labels = {
       home: t('SANCTUARY_NAV_HOME'),
       calendar: t('SANCTUARY_NAV_CALENDAR'),
@@ -211,11 +234,11 @@ export class HomeSanctuaryNavFanUI {
   }
 
   /**
-   * Hinge sits under the language globe. Every entry opens this same corner.
+   * Hinge sits on the compass FAB (bottom-right, left of the globe on wide).
    * @returns {void}
    */
   _placeCorner() {
-    const fab = document.getElementById('language-preference-fab');
+    const fab = this.fab || document.getElementById('ft-sanctuary-nav-compass-fab');
     const rect = fab?.getBoundingClientRect?.();
     const shown = fab ? getComputedStyle(fab) : null;
     const visible = Boolean(
@@ -227,7 +250,7 @@ export class HomeSanctuaryNavFanUI {
         shown.visibility !== 'hidden'
     );
     const x = visible ? rect.left + rect.width / 2 : window.innerWidth - 28;
-    const y = visible ? rect.bottom + 30 : window.innerHeight - 28;
+    const y = visible ? rect.top + rect.height / 2 : window.innerHeight - 28;
     const cx = Math.min(window.innerWidth - 24, Math.max(24, x));
     const cy = Math.min(window.innerHeight - 20, Math.max(96, y));
     this.root.style.setProperty('--fan-anchor-x', `${cx}px`);
@@ -255,6 +278,7 @@ export class HomeSanctuaryNavFanUI {
   /** @returns {void} */
   _ackHome() {
     const ball =
+      document.getElementById('ft-sanctuary-nav-compass-fab') ||
       document.getElementById('ft-wide-home-sanctuary-nav') ||
       document.getElementById('ft-narrow-home-sanctuary-nav');
     if (!ball) return;
@@ -388,6 +412,45 @@ export class HomeSanctuaryNavFanUI {
       @keyframes ft-home-sanctuary-nav-pulse {
         0%, 100% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.5; transform: scale(0.82); }
+      }
+      .ft-sanctuary-nav-compass-fab {
+        position: fixed;
+        right: calc(16px + ${COMPASS_FAB_PX}px + 12px);
+        bottom: calc(
+          ${CLUSTER_BOTTOM_EXPR} + ${CLUSTER_PAD_BOTTOM_PX}px +
+            (${HELP_IN_CLUSTER_PX}px - ${COMPASS_FAB_PX}px) / 2
+        );
+        z-index: 16;
+        width: ${COMPASS_FAB_PX}px;
+        height: ${COMPASS_FAB_PX}px;
+        padding: 0;
+        border: 1.5px solid rgba(139, 115, 85, 0.42);
+        border-radius: 50%;
+        background: rgba(255, 252, 245, 0.92);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: rgba(74, 58, 40, 0.95);
+        cursor: pointer;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.85) inset,
+          0 2px 10px rgba(44, 31, 20, 0.12);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        pointer-events: auto;
+      }
+      body.ft-wide-home-ctas .ft-sanctuary-nav-compass-fab,
+      body.ft-narrow-shell.ft-narrow-park.ft-narrow-idle .ft-sanctuary-nav-compass-fab {
+        display: flex;
+      }
+      @media (max-width: 479px) {
+        .ft-sanctuary-nav-compass-fab {
+          right: 16px;
+        }
+      }
+      .ft-sanctuary-nav-compass-fab .ft-sanctuary-nav-compass {
+        width: 78%;
+        height: 78%;
       }
       .ft-sanctuary-nav-compass {
         width: 100%;

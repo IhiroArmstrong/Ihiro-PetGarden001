@@ -25,7 +25,6 @@ import {
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
-import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
@@ -443,9 +442,6 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
-      <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-sanctuary-nav" data-proxy="sanctuary-nav" aria-label="">
-        ${SANCTUARY_NAV_COMPASS_SVG}
-      </button>
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -493,8 +489,8 @@ export class NarrowIdleShell {
     this.stateEl = this.actionBar.querySelector('[data-role="state"]');
     this.listEl = this.sheet.querySelector('[data-role="list"]');
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
-    this.sanctuaryNavHomeBtn = this.homeCtas.querySelector(
-      '#ft-narrow-home-sanctuary-nav'
+    this.sanctuaryNavHomeBtn = document.getElementById(
+      'ft-sanctuary-nav-compass-fab'
     );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
@@ -1204,7 +1200,6 @@ export class NarrowIdleShell {
         visibility: hidden;
         pointer-events: none;
       }
-      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sanctuary-nav,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
         display: none !important;

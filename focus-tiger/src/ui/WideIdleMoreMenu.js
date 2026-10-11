@@ -24,7 +24,6 @@ import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
-import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v7';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
@@ -364,9 +363,6 @@ export class WideIdleMoreMenu {
     this.homeCtas.className = 'ft-wide-home-ctas';
     this.homeCtas.id = 'ft-wide-home-ctas';
     this.homeCtas.innerHTML = `
-      <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-sanctuary-nav" data-proxy="sanctuary-nav" aria-label="">
-        ${SANCTUARY_NAV_COMPASS_SVG}
-      </button>
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-wide-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -377,8 +373,8 @@ export class WideIdleMoreMenu {
         <img class="ft-wide-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
     `;
-    this.sanctuaryNavHomeBtn = this.homeCtas.querySelector(
-      '#ft-wide-home-sanctuary-nav'
+    this.sanctuaryNavHomeBtn = document.getElementById(
+      'ft-sanctuary-nav-compass-fab'
     );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
@@ -1028,7 +1024,6 @@ export class WideIdleMoreMenu {
         display: none !important;
       }
       /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
-      .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sanctuary-nav,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
         display: none !important;

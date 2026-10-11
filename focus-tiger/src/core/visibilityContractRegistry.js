@@ -256,13 +256,13 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     role: 'HomeCtas',
     must: 'visible',
     narrowSelector:
-      '#ft-narrow-home-sanctuary-nav, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty',
+      '#ft-sanctuary-nav-compass-fab, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty',
     testAnchorNarrow:
       'e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…',
     lockStatus: 'locked',
     source: 'L284 窄屏主屏 home CTAs · PR #986 sanctuary-nav compass',
     notes:
-      '顺序 Sanctuary nav · Quick · Sit · Honesty；Honesty 不得 false-disabled'
+      '指南针在右下角 FAB；主球 Quick · Sit · Honesty；Honesty 不得 false-disabled'
   },
   {
     id: 'heatmap-hidden-when-focusing',
