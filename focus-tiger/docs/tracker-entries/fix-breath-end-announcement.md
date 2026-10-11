@@ -1,0 +1,1 @@
+| 呼吸练习结束念出同一句结束语 | UI可见 | 待人工测试 | **Electron 宽屏**：⋯ → Voice announcements → 打开开关，0–1 秒内见 On。做一场短呼吸练习（Breath practice），结束时听到 “Your sitting time is complete.”（界面语言是中文或日文时念对应句）。开关关掉再做一场，结束时不出声。倾诉回复仍照常念，不受这个开关影响。卡片文案写明坐够或呼吸结束都会出声。 | **2026-10-11 用户书面**：Voice announcements 打开后，呼吸练习结束没有语音，应该要有。 | — | — | — | `?product=1` · `#system-tts-announcements-toggle` | 2026-10-11 |
