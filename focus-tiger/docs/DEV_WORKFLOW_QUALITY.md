@@ -46,6 +46,7 @@
 | 2026-09-13 | 手动复测用错 Console 清库，症状像真 bug：官方配方应收进代码 | **§6.24** |
 | 2026-09-06 | 冷启动吹花后鹦鹉无叠化：第一幕占用未拦鹦鹉 + 平行情绪键白名单漏 `conjureFlowersBlowAway` | **§6.10 补记 / §6.17 Y6** |
 | 2026-09-13 | PR #713 备份 v3：莲花导入 OK、徽章少 2、寅币未导入——storage 扩了但展示/whitelist 未闭环 | **§6.25** |
+| 2026-10-11 | 玻璃卡叠层把 Support 付款钮压到遮罩下；单测绿、人手点才发现 | **§6.26** |
 
 **一句话（整套机制）**：  
 回归锁 = 防假修好（回流 + 门闩 + 冒烟 + **文档同步** + 自动 commit）+ 防改坏（已好清单 + 继承契约 + 高风险面）+ **汇报可扫读**（末尾决策/知情清单；**伪选项标（不合理）**）+ **姊妹分支不漏修**（§6.6）+ **开场契约勿用另案假关闭**（§6.7）+ **冷启动第一幕互斥**（§6.9 / §6.10）+ **长挂页第一眼 ≠ 冷启动**（§6.11）+ **CapCut 关单须列具体情绪键**（§6.12）+ **Hints 补救须锁窄屏同时可见条数**（§6.13）+ **Arrival 抗闪须锁 `clear:false` 不只 options 数字**（§6.15）+ **testid 可点不得用 Pointer 难锁免 e2e**（§6.16）+ **精灵占用须一处仲裁**（§6.17）+ **成长纪念物须锁「空池第一件可见」**（§6.18）+ **计时练习不得抄短拍 / 瞬态 cue 不得只锁 slider**（§6.19）+ **幽灵 chrome 错开须锁对比度/底色，不只 `top%`**（§6.20）+ **悬停预览不得盖住点击钉住；feature detect 不得把「函数在」写成「能打开」；合入邻接 PR ≠ 已修用户点名的另一入口**（§6.21）+ **验收须写覆盖范围**（自动化锁了什么 / 人工测了什么 / 明确未测；ISSUE_LEDGER 已解决不得早于 TRACKER 关单；§6.23）+ **手动复测清库须官方 `resetScenario`，禁止默写 Console**（§6.24）。  
@@ -130,6 +131,7 @@
 - Honesty / Reflection / Arrival 底部叠层与 `setPostSessionOverlayActive`  
 - `FocusInput.beginFocusing` / Sit↔Rise 文案  
 - `playEmotion` 优先级与 `holdPose` / 回落路径  
+- **付费主按钮**（Support Subscribe / 加入会员 / 解锁 Sanctuary / 请茶 / 加购 / 关闭）：改共享 `z-index` / 玻璃卡叠层 / `pointer-events` 须跑 `e2e/support-cta-hit.spec.js`（§6.26）  
 
 **序列衔接**
 
@@ -918,6 +920,33 @@
 | I5 | TRACKER 备份行 schema 版本号与 `PRACTICE_BACKUP_SCHEMA_VERSION` 同步（v3→v4），避免文档仍写 v2/6 key |
 
 **本回合落地**：`idlePracticeBadges` honor restored sanctuary marks；backup **v4** 纳入 `focus-tiger.focus-coins.v1` + import refresh；`fix-backup-import-badge-restore` tracker 行 + 本 §6.25。
+
+### 6.26 钱的路径没有机器守门 · 叠层绿 ≠ 付款可点（2026-10-11 · #1139/#1144 → #1155）
+
+**现象**：Support「Subscribe to Pro」点下去卡片淡出、没有付款页。几小时前同一路径还好。用户是最后一道检测。
+
+**不是**结账接口坏了，也不是「已订阅后淡化会员卡」。查证：
+
+| 层 | 事实 |
+|---|---|
+| A · 直接 | `bringGlassCardToFront` 给所有居中玻璃卡写死 inline `z-index` 18/19。Support 大卡样式表是 26，遮罩 25。inline 压过 CSS 后，点按钮等于点遮罩 → `close()`。 |
+| B · 结构 | 层级是散落魔法数字；「默认全选所有居中卡」把付款卡误伤。安全方向是显式加入叠层，付款卡默认不进。 |
+| C · 流程 | `glassCardDeck.test.js` 当时只锁叠层张数；`test:smoke` 绿。没有「按钮中心 `elementFromPoint` 命中 CTA、点击后发出结账请求」的门。场景 Q / Q3 冲突扫描写在修 bug 时，而不是改共享层之前。#1139 与 #1144 短间隔连合，中间没有关键路径回归。 |
+| D · 假绿 | 叠层单测绿 ≠ 付款可点。人手点才发现 = 拿线上当测试环境。 |
+
+**因果一句话**：**钱的路径没有自动化保护，只靠人记得它存在。**
+
+**工作流补丁（须遵守）**：
+
+| # | 要求 |
+|---|---|
+| M1 | 改全局选择器 / `z-index` / `pointer-events` / 玻璃卡叠层：实现前扫场景 Q / Q3；PR 模板叠层节须答是否波及付款 |
+| M2 | 付款可点击是 PR 冒烟项：`e2e/support-cta-hit.spec.js`（`elementFromPoint` + mock 结账请求，不碰真 Stripe） |
+| M3 | 叠层单测须锁「付款卡 > 遮罩 > 玻璃卡 18/19」；把付款卡压回 19 必须红 |
+| M4 | 同类共享 UI 改动一次只合一条；合完先跑 M2，再合下一条。新交互（可拖）可先放开关后 |
+| M5 | 修这类 bug 须同时交一条会先失败的回归测试。叠层逻辑优先显式加入（`data-ft-glass-card` 白名单），付款大卡默认不进 |
+
+**本回合落地**：#1155 把 Support 大卡移回遮罩之上；本 §6.26 + `support-cta-hit.spec.js` 进 `test:e2e:smoke`。显式加入叠层的运行时翻转另开 Brief（B 类），本刀不改拖卡名单。
 
 ### 6.13 窄屏 Focusing 点「?」tip 叠成一团 · 记入 ≠ 开修（2026-08-04）
 

@@ -17,7 +17,7 @@
 | 命令 | 实际锁住什么 | 缺口 |
 |---|---|---|
 | `npm run test:smoke` | 门闩/控制器 + Idle chrome 编排 + HUD/热力图/hint 契约等（`package.json` 列出的文件） | 不含 Emotion/Idle 序列、Ambient 行为契约、多数业务 `*.test.js` |
-| `npm run test:e2e:smoke` | **2 个 spec 的少数用例**（产品壳 + scenario A 开表一小撮） | 不含热力图 / 提醒 / Reflection / 微仪式 / 宽屏 ⋯ |
+| `npm run test:e2e:smoke` | **3 个 spec 的少数用例**（产品壳 + scenario A 开表一小撮 + Support 付款命中） | 不含热力图 / 提醒 / Reflection / 微仪式 / 宽屏 ⋯ |
 | `npm run test:e2e`（CI 全量） | `e2e/*.spec.js` 全量 DOM | 仍不到达标庆祝动画、真实切页 Recover、完整 Honesty 链、Ambient 播放 |
 
 **图例**
@@ -69,6 +69,7 @@
 | **Cloudflare Workers stub** | ❌ | ❌ | ❌ | — | **零（前端未接线）** | curl 人工 / 独立包 |
 | **Retention 遥测占位** | ❌ | ❌ | ❌ | `RetentionTelemetry`\* | **仅 unit\*** | 无产品可见验收依赖 |
 | **Sit 误开 Honesty（z-index）** | 门闩间接 | ❌ 无专条 | ❌ | — | **历史已过人工；无 e2e** | 回归靠门闩+人工 |
+| **Support 付款主按钮（场景 Q）** | ✅ `glassCardDeck.test.js` 层级 | ✅ `support-cta-hit` | ✅ 命中+mock 结账 | Support 单测 | **DOM 命中已锁** | 真 Stripe / Safari 仍人工 |
 
 ### 覆盖热力图（粗粒度）
 

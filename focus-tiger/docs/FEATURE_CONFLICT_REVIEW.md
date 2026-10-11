@@ -54,6 +54,16 @@
 
 **正面案例（Confide 睡态唤醒 · #491）**：Confide MVP 只锁发送后点头，未扫 AD；深夜 DORMANT 下开倾诉面板 Yin 仍睡。修复 = `onOpen` → `wakeYinIfSleeping`（`wakeYinForConfideCompanion` 别名；与 Honesty 睡态选时长对称）。以后新 Idle 叠层：**先写接线表 + 场景步，再写 UI**。
 
+### 邻接扫描提示 · 付费主按钮 × 共享叠层（2026-10-11 · Support CTA 被遮罩吃掉）
+
+改 **全局选择器、`z-index`、`pointer-events`、玻璃卡叠层**（`glassCardDeck` 一类「所有居中卡都……」）时，实现前还须对照：
+
+1. **场景 Q**（Support 结账）：Subscribe to Pro / 加入会员 / 请茶 / 关闭钮是否仍点到按钮本身？
+2. **场景 Q3**（已买 Lifetime 不再开 Stripe）：解锁钮被压到遮罩下时，看起来像「点了没反应」，也会被误判成 Q3。
+3. 契约：`e2e/support-cta-hit.spec.js` + `glassCardDeck.test.js`。叠层逻辑优先 **显式加入**，付款大卡默认不进；禁止再给所有居中卡写死低于 Support 遮罩的 inline `z-index`。
+
+共享 UI 层改动：**一次只合一条**；合完先跑上述契约，再合下一条同类 PR。
+
 ### b. 人设 / 语气不一致
 
 新文案的语气是否和相邻场景的角色定位冲突（观照式 vs 指导式、伙伴 vs 教练、允许补登 vs 怀疑质问等）。
@@ -235,4 +245,5 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 | 2026-08-20 | Lifetime 要本地 AI：同日稍后书面改价为一次性 `companion.addon.lifetime` US$29.99（取代稍早「另订 Pro」）。无 Electron 壳则无本地 AI；QA Safari 5173 ≠ 本地 AI 测试。Pro 含 Base（B 轨）+ 本地智能体（非 Lifetime）。Safari 可测付款、模型仍 Electron；Price ID 已记、Checkout 未接。08-19 晚「互不含 / 只有 Electron 能买」废止 |
 | 2026-08-18 | 正面案例：检索不生成 vs 桌面陪伴——窄例外拍板后再改定位稿；禁止把批准扩大到 Web / 仪式文案。同日补：本地智能体仅宽屏，与原则 A 故意不对等 |
 | 2026-08-17 | 正面案例：托盘 vs 旧 Brief——先摆冲突再等拍板；分析师分层后改文档。同日第二份：两步执行（窗口先、托盘+走神后），禁止绑成一次验收 |
+| 2026-10-11 | 邻接扫描：改全局 z-index / 玻璃卡叠层须先对照场景 Q / Q3；付款可点击契约 `support-cta-hit.spec.js` |
 | 2026-08-16 | 初版：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等拍板（优先于默认执行）；PR 第三问；索引 `feature-conflict-review` |

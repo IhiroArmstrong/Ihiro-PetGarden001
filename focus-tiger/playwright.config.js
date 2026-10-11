@@ -50,6 +50,9 @@ export default defineConfig({
         // 触发 macOS TransformProcessType abort 弹窗）。
         // 需要真实系统 Chrome 时：PLAYWRIGHT_CHANNEL=chrome npm run test:e2e
         // （CI 兜底可显式设该环境变量。）
+        launchOptions: {
+          args: ['--disable-gpu']
+        },
         ...(process.env.PLAYWRIGHT_CHANNEL
           ? { channel: process.env.PLAYWRIGHT_CHANNEL }
           : {})
@@ -66,6 +69,9 @@ export default defineConfig({
               ...devices['Desktop Chrome'],
               video: 'on',
               trace: 'on',
+              launchOptions: {
+                args: ['--disable-gpu']
+              },
               ...(process.env.PLAYWRIGHT_CHANNEL
                 ? { channel: process.env.PLAYWRIGHT_CHANNEL }
                 : {})
