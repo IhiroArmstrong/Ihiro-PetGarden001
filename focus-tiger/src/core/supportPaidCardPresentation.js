@@ -13,10 +13,12 @@
  * @param {boolean} [opts.lifetimeActive]
  * @param {boolean} [opts.addonActive]
  * @param {boolean} [opts.proActive]
+ * @param {boolean} [opts.membershipActive]
  * @param {boolean} [opts.companionEntitled]
  * @param {boolean} [opts.isDesktopShell]
  * @returns {{
  *   sanctuarySettled: boolean,
+ *   membershipSettled: boolean,
  *   showPro: boolean,
  *   showAddon: boolean,
  *   addonSettled: boolean,
@@ -27,10 +29,12 @@ export function supportPaidCardPresentation({
   lifetimeActive = false,
   addonActive = false,
   proActive = false,
+  membershipActive = false,
   companionEntitled = false,
   isDesktopShell = false
 } = {}) {
   const sanctuarySettled = lifetimeActive === true;
+  const membershipSettled = membershipActive === true;
   const showPro =
     lifetimeActive !== true &&
     proActive !== true &&
@@ -41,6 +45,7 @@ export function supportPaidCardPresentation({
     isDesktopShell !== true && (showPro === true || showAddon === true);
   return {
     sanctuarySettled,
+    membershipSettled,
     showPro,
     showAddon,
     addonSettled,

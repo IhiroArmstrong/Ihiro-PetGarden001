@@ -15,7 +15,10 @@ import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import { buildCheckoutSessionBody } from '../core/desktopCheckoutReturn.js';
 import { noteDesktopCheckoutOpened } from '../core/desktopCheckoutPending.js';
 import { TIP_JAR_PRICE_USD } from '../core/tipJarGate.js';
-import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
+import {
+  MEMBERSHIP_PRICE_DISPLAY,
+  isMembershipActiveLocally
+} from '../core/membershipCheckout.js';
 import { FOCUS_TIGER_PRO_PRICE_DISPLAY } from '../core/proCheckout.js';
 import { COMPANION_ADDON_LIFETIME_PRICE_USD } from '../core/companionAddonCheckout.js';
 import {
@@ -502,6 +505,12 @@ export class SupportYinModalUI {
     ) {
       return;
     }
+    if (
+      kind === 'membership' &&
+      this.membershipCard.classList.contains('is-settled')
+    ) {
+      return;
+    }
     this._busy = true;
     this._setCheckoutBusy(true);
     const inlineCheckout =
@@ -548,7 +557,8 @@ export class SupportYinModalUI {
    * @param {boolean} busy
    */
   _setCheckoutBusy(busy) {
-    this.membershipCta.disabled = busy;
+    this.membershipCta.disabled =
+      busy || this.membershipCard.classList.contains('is-settled');
     this.teaCta.disabled = busy;
     this.proCta.disabled = busy;
     this.sanctuaryCta.disabled =
@@ -676,7 +686,11 @@ export class SupportYinModalUI {
       t('SUPPORT_MEMBERSHIP_PRICE'),
       MEMBERSHIP_PRICE_DISPLAY
     );
-    this.membershipCta.textContent = t('SUPPORT_MEMBERSHIP_CTA');
+    this.membershipCta.textContent = this.membershipCard.classList.contains(
+      'is-settled'
+    )
+      ? t('SUPPORT_MEMBERSHIP_CTA_OWNED')
+      : t('SUPPORT_MEMBERSHIP_CTA');
 
     this.teaImg.alt = t('SUPPORT_TEA_IMG_ALT');
     this.teaTitle.textContent = t('SUPPORT_TEA_TITLE');
@@ -733,6 +747,7 @@ export class SupportYinModalUI {
       lifetimeActive: isLifetimeActiveForAddonOffer({ storage }),
       addonActive: isCompanionAddonActive({ storage }),
       proActive: isProSubscriptionActive({ storage }),
+      membershipActive: isMembershipActiveLocally({ storage }),
       companionEntitled: isCompanionEntitled({ storage }),
       isDesktopShell: isDesktopShellRuntime()
     });
@@ -744,6 +759,13 @@ export class SupportYinModalUI {
       p.sanctuarySettled,
       'SUPPORT_SANCTUARY_CTA_OWNED',
       'SUPPORT_SANCTUARY_CTA'
+    );
+    this._setCardSettled(
+      this.membershipCard,
+      this.membershipCta,
+      p.membershipSettled,
+      'SUPPORT_MEMBERSHIP_CTA_OWNED',
+      'SUPPORT_MEMBERSHIP_CTA'
     );
     this._setCardSettled(
       this.companionAddonCard,
