@@ -425,6 +425,7 @@ export class FocusCircleControlsUI {
     if (reason === 'circle_full') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_FULL';
     if (reason === 'beside_not_found') return 'BESIDE_SEAT_ERROR_NOT_FOUND';
     if (reason === 'bad_beside_code') return 'BESIDE_SEAT_ERROR_CODE';
+    if (reason === 'already_in_circle') return 'BESIDE_SEAT_ERROR_ALREADY_IN';
     if (reason === 'timeout') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_TIMEOUT';
     if (reason === 'disabled') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_DISABLED';
     if (reason === 'storage_failed') return 'PRIVACY_SHEET_FOCUS_CIRCLE_ERROR_STORAGE';
@@ -537,6 +538,9 @@ export class FocusCircleControlsUI {
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
+      .focus-circle-controls [hidden] {
+        display: none !important;
+      }
       .focus-circle-controls__join-row {
         display: flex;
         gap: 0.45rem;

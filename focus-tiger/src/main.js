@@ -116,7 +116,7 @@ import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFr
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
-import { maybeSpeakFocusEndAnnouncement } from './core/systemTtsAnnouncements.js';
+import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -131,6 +131,7 @@ import {
   glassCardIdsToClose,
   installGlassCardDeck
 } from './ui/glassCardDeck.js';
+import { startFocusCircleOnlinePresence } from './core/focusCircleOnline.js';
 import { GrowthJourneyDetailUI } from './ui/GrowthJourneyDetailUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
 import { FocusCoinsPanelUI } from './ui/FocusCoinsPanelUI.js';
@@ -1426,6 +1427,7 @@ async function init() {
     }
   });
   window.__focusCirclePanel = focusCirclePanelUI;
+  startFocusCircleOnlinePresence();
   const zenCinemaCardUI = new ZenCinemaCardUI(
     document.body,
     withIdleOverlayOccupancySync({})
@@ -1444,6 +1446,7 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
       onChoice: (choice) => handleColdStartGoalSelect(choice),
+      onBrowse: () => playBrowseLookAround(),
       onOpen: () => {
         // Flower welcome can finish before idle loop starts; goal card may open
         // from the boot defer queue while occupancy is already IDLE_BASELINE.
@@ -1676,7 +1679,20 @@ async function init() {
   recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
     requestSlot: requestRecoverResetPracticeOverlaySlot,
     releaseSlot: releaseRecoverResetPracticeOverlaySlot,
-    onClose: () => syncIdleYinTap()
+    onClose: () => syncIdleYinTap(),
+    onPracticeStart: () => {
+      void (async () => {
+        const preferred = ambientSoundscape.getPreferredTrackId();
+        const trackId =
+          preferred === AMBIENT_TRACK_OFF
+            ? DEFAULT_AMBIENT_TRACK_ID
+            : preferred;
+        await ambientSoundscape.playTrackEphemeral(trackId);
+      })();
+    },
+    onPracticeEnd: () => {
+      ambientSoundscape.stopPlaybackEphemeral();
+    }
   });
   groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
     onSelect: (route) => {
@@ -1922,7 +1938,8 @@ async function init() {
 
   /** @type {string[]} */
   const glassOpenOrder = [];
-  const glassOverlayCards = [
+  // Built on close, not at startup. supportYinModalUI is created later in init.
+  const glassOverlayCards = () => [
     { id: 'support', ui: supportYinModalUI, close: () => supportYinModalUI.close() },
     { id: 'quote', ui: dailyZenQuoteCardUI, close: () => dailyZenQuoteCardUI.close() },
     { id: 'mustard-seed', ui: mustardSeedSealCardUI, close: () => mustardSeedSealCardUI.close() },
@@ -1951,7 +1968,8 @@ async function init() {
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     installGlassCardDeck(document);
-    const openIds = glassOverlayCards
+    const cards = glassOverlayCards();
+    const openIds = cards
       .filter((card) => card.id !== except)
       .filter((card) =>
         typeof card.ui?.isOpen === 'function' ? card.ui.isOpen() === true : true
@@ -1968,7 +1986,7 @@ async function init() {
       exceptId: except
     });
     const closing = new Set(closeIds);
-    for (const card of glassOverlayCards) {
+    for (const card of cards) {
       if (closing.has(card.id)) card.close();
     }
     bringGlassCardToFront(except);
@@ -2020,6 +2038,20 @@ async function init() {
    * Choice is session-only; seen flag prevents re-offer on later visits.
    * @param {string} choice
    */
+  function playBrowseLookAround() {
+    if (
+      stateManager.state === STATES.FOCUSING ||
+      stateManager.state === STATES.CELEBRATE
+    ) {
+      return;
+    }
+    emotionController.playEmotion('gazeLookAround', {
+      crossFadeMs: 0,
+      returnCrossFadeMs: CAPCUT_DISSOLVE_MS,
+      freezeUntilCrossFadeEnds: true
+    });
+  }
+
   function handleColdStartGoalSelect(choice) {
     const action = resolveColdStartGoalAction(choice);
     if (choice !== 'browse') {
@@ -3450,9 +3482,16 @@ async function init() {
       ritualId,
       selections
     });
-    mindfulToast.show(t(config?.completeToastKey || 'ritual.shared.complete'), {
+    const ritualCompleteLine = t(
+      config?.completeToastKey || 'ritual.shared.complete'
+    );
+    mindfulToast.show(ritualCompleteLine, {
       placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
       visibleMs: 4_500
+    });
+    maybeSpeakPracticeAnnouncement({
+      text: ritualCompleteLine,
+      cueId: `ritual-complete:${ritualId}:${Date.now()}`
     });
     endRitualFlowChrome();
     spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
@@ -3545,9 +3584,14 @@ async function init() {
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
     });
-    mindfulToast.show(t('micro_ritual.complete'), {
+    const breathCompleteLine = t('micro_ritual.complete');
+    mindfulToast.show(breathCompleteLine, {
       placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
       visibleMs: 4_500
+    });
+    maybeSpeakPracticeAnnouncement({
+      text: t('system_tts.focus_end'),
+      cueId: `breath-complete:${Date.now()}`
     });
     endMicroRitualChrome();
     spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
@@ -4500,6 +4544,7 @@ async function init() {
   }
 
   function endFocusChrome({ stopAmbient = true } = {}) {
+    ambientSoundscape.clearSitPauseHold();
     attentionSignals.setEnabled(false);
     mindfulReminderController.stopSession();
     acrossToolsIdleGuard.stop();
@@ -4955,23 +5000,10 @@ async function init() {
   let voiceRiseChrome = null;
 
   function syncVoiceRiseMic() {
-    const show =
-      stateManager.state === STATES.FOCUSING &&
-      canShowVoiceCommandChrome({ widthPx: window.innerWidth });
-    if (!show) {
-      voiceRiseChrome?.destroy();
-      voiceRiseChrome = null;
-      return;
-    }
-    if (voiceRiseChrome) return;
-    voiceRiseChrome = new VoiceCommandChrome({
-      mountParent: voiceRiseSlot,
-      mode: 'end',
-      onOutcome: (outcome) => {
-        if (outcome.kind !== 'end_focus') return;
-        focusInput.requestRise();
-      }
-    });
+    // One microphone during a sit: the adjust row. A second mic beside Rise
+    // stacked "Stop" on top of Rise and painted start-sit copy over Leave.
+    voiceRiseChrome?.destroy();
+    voiceRiseChrome = null;
   }
 
   stateManager.onChange(() => syncVoiceRiseMic());
@@ -4980,16 +5012,27 @@ async function init() {
 
   focusSitAdjust = new FocusSitAdjustUI(document.getElementById('focus-sit-adjust'), {
     onPause: () => {
-      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'pause' }));
+      const result = applyFocusSitAdjust(focusSession, { kind: 'pause' });
+      if (result.applied) ambientSoundscape.holdForSitPause();
+      refreshFocusSitAdjust(result);
     },
     onResume: () => {
-      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'resume' }));
+      const result = applyFocusSitAdjust(focusSession, { kind: 'resume' });
+      if (result.applied) ambientSoundscape.releaseSitPause();
+      refreshFocusSitAdjust(result);
     },
     onAddFive: () => {
       refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 }));
     },
     onVoice: (parsed) => {
-      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, parsed));
+      if (parsed?.kind === 'end') {
+        focusInput.requestRise();
+        return;
+      }
+      const result = applyFocusSitAdjust(focusSession, parsed);
+      if (result.applied && result.kind === 'pause') ambientSoundscape.holdForSitPause();
+      if (result.applied && result.kind === 'resume') ambientSoundscape.releaseSitPause();
+      refreshFocusSitAdjust(result);
     }
   });
   stateManager.onChange(() => refreshFocusSitAdjust());

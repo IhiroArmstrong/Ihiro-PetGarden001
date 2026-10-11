@@ -14,6 +14,14 @@ import {
   setSystemTtsAnnouncementsEnabled
 } from '../core/systemTtsPreference.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_FILL_STRONG,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 
 const STYLE_ID = 'system-tts-preference-styles-v1';
 
@@ -135,8 +143,8 @@ export class SystemTtsPreferenceUI {
   _render() {
     const enabled = isSystemTtsAnnouncementsEnabled();
     this.titleEl.textContent = t('system_tts.panel_title');
-    this.toggleText.textContent = t('system_tts.toggle_label');
-    this.hintEl.textContent = t('system_tts.toggle_hint');
+    this.toggleText.textContent = t('SYSTEM_TTS_TOGGLE_LABEL');
+    this.hintEl.textContent = t('SYSTEM_TTS_TOGGLE_HINT');
     this.closeBtn.textContent = t('system_tts.close');
     this.toggleInput.checked = enabled;
     this.statusEl.textContent = this._saveFailed
@@ -164,11 +172,12 @@ export class SystemTtsPreferenceUI {
         z-index: 12050;
         width: min(320px, calc(100vw - 32px));
         padding: 16px 16px 12px;
-        border-radius: 16px;
-        background: rgba(28, 26, 24, 0.94);
-        color: #f5f0e8;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: ${GLASS_RADIUS};
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        color: #3d3229;
+        box-shadow: ${GLASS_SHADOW};
+        border: ${GLASS_BORDER};
       }
       .system-tts-pref__title {
         margin: 0 0 12px;
@@ -212,14 +221,14 @@ export class SystemTtsPreferenceUI {
         width: 100%;
         padding: 8px 12px;
         border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(255, 255, 255, 0.06);
+        border: ${GLASS_BORDER};
+        background: ${GLASS_FILL_STRONG};
         color: inherit;
         font-size: 13px;
         cursor: pointer;
       }
       .system-tts-pref__close:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 252, 245, 0.9);
       }
     `;
     document.head.appendChild(style);

@@ -132,7 +132,7 @@ export class VoiceCommandChrome {
     if (askMountParent) askMountParent.append(this.askPanel);
 
     this.actions.append(this.meter, this.speakBtn, this.stopBtn);
-    this.root.append(this.errorEl, this.actions);
+    this.root.append(this.actions, this.errorEl);
     mountParent.append(this.root);
 
     this._onResize = () => this._syncVisibility();
@@ -296,8 +296,13 @@ export class VoiceCommandChrome {
       this.mode === 'adjust' ? 'FOCUS_SIT_ADJUST_VOICE_ARIA' : 'VOICE_COMMAND_SPEAK_ARIA';
     this.speakBtn.setAttribute('aria-label', t(speakKey));
     this.speakBtn.title = t(speakKey);
-    this.stopBtn.textContent = t('VOICE_INPUT_STOP');
-    this.stopBtn.setAttribute('aria-label', t('VOICE_INPUT_STOP_ARIA'));
+    const listeningLabel =
+      this.mode === 'start' ? t('VOICE_INPUT_STOP') : t('VOICE_LISTEN_FINISH');
+    this.stopBtn.textContent = listeningLabel;
+    this.stopBtn.setAttribute(
+      'aria-label',
+      this.mode === 'start' ? t('VOICE_INPUT_STOP_ARIA') : listeningLabel
+    );
   }
 
   async _onSpeak() {
@@ -320,9 +325,13 @@ export class VoiceCommandChrome {
     try {
       const result = await this._bridge.stop();
       if (!result || result.ok !== true) {
-        this._errorMessage = String(
-          (result && result.userMessage) || t('VOICE_INPUT_ERROR_GENERIC')
-        );
+        const msg = String((result && result.userMessage) || '');
+        if (msg === 'Not listening.' || msg === 'Tap Speak first.') {
+          this._errorMessage = '';
+          this._setState('idle');
+          return;
+        }
+        this._errorMessage = msg || t('VOICE_INPUT_ERROR_GENERIC');
         this._setState('error');
         return;
       }
@@ -337,7 +346,12 @@ export class VoiceCommandChrome {
       }
       if (this.mode === 'adjust') {
         const parsed = parseFocusSitAdjust(transcript);
-        if (parsed.kind === 'pause' || parsed.kind === 'resume' || parsed.kind === 'add') {
+        if (
+          parsed.kind === 'pause' ||
+          parsed.kind === 'resume' ||
+          parsed.kind === 'add' ||
+          parsed.kind === 'end'
+        ) {
           this.onOutcome?.({ kind: 'sit_adjust', parsed, transcript });
           this._setState('idle');
           return;
@@ -367,7 +381,7 @@ export class VoiceCommandChrome {
           this._setState('error');
           return;
         }
-        this._errorMessage = t(voiceCommandOutcomeLocaleKey(outcome));
+        this._errorMessage = t('VOICE_COMMAND_REFUSE_ALREADY_SITTING');
         this._setState('error');
         return;
       }

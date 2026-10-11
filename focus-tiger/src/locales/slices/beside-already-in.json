@@ -1,0 +1,11 @@
+{
+  "en": {
+    "BESIDE_SEAT_ERROR_ALREADY_IN": "Leave this circle before you sit in another."
+  },
+  "zh": {
+    "BESIDE_SEAT_ERROR_ALREADY_IN": "先离开这个小圈，再进另一个。"
+  },
+  "ja": {
+    "BESIDE_SEAT_ERROR_ALREADY_IN": "別の輪に入る前に、この輪を出てください。"
+  }
+}

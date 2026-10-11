@@ -109,7 +109,8 @@ export function buildWitnessPeekTraces(
 	const pruned = pruneWitnessTraces(traces, nowMs);
 	const out: WitnessPeekTrace[] = [];
 	for (const row of pruned) {
-		if (excludeMemberId && row.memberId === excludeMemberId) continue;
+		const ownTrace = Boolean(excludeMemberId) && row.memberId === excludeMemberId;
+		if (ownTrace && !row.respond) continue;
 		out.push({
 			traceId: row.traceId,
 			phraseKey: row.phraseKey,
