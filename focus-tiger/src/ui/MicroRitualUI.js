@@ -351,6 +351,7 @@ export class MicroRitualUI {
     });
     this._bindVisibility();
     this._breathInterval = window.setInterval(() => {
+      if (this._completionFired || this.phase !== 'breath') return;
       const phaseEl = this.root?.querySelector('[data-micro-ritual-breath-phase]');
       if (!phaseEl) return;
       const elapsed = Date.now() - (this._startedAt ?? Date.now());

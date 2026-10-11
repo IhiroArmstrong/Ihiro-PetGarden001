@@ -3590,7 +3590,7 @@ async function init() {
       visibleMs: 4_500
     });
     maybeSpeakPracticeAnnouncement({
-      text: breathCompleteLine,
+      text: t('system_tts.focus_end'),
       cueId: `breath-complete:${Date.now()}`
     });
     endMicroRitualChrome();
