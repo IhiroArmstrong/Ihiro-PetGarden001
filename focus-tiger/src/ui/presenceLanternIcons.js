@@ -30,8 +30,8 @@ function el(doc, tag, attrs = {}) {
  */
 export function createGlobalLanternIcon(doc, gradId) {
   const svg = el(doc, 'svg', {
-    width: '14',
-    height: '16',
+    width: '28',
+    height: '32',
     viewBox: '0 0 14 16',
     fill: 'none',
     'aria-hidden': 'true',
@@ -102,8 +102,8 @@ export function createGlobalLanternIcon(doc, gradId) {
 export function createCircleLanternIcon(doc, gradId, variant = 'default') {
   const muted = variant === 'was-here';
   const svg = el(doc, 'svg', {
-    width: '12',
-    height: '14',
+    width: '24',
+    height: '28',
     viewBox: '0 0 12 14',
     fill: 'none',
     'aria-hidden': 'true',

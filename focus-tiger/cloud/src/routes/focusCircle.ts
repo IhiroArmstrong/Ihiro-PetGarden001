@@ -7,6 +7,7 @@
 import { errorJson, json } from "../lib/http";
 import {
 	FOCUS_CIRCLE_SCHEMA_VERSION,
+	FOCUS_CIRCLE_MAX_MEMBERS,
 	addFocusCircleMember,
 	circleCodeKvKey,
 	circleIdKvKey,
@@ -27,6 +28,12 @@ import {
 	countCircleSittingSessions,
 	parseFocusCirclePresenceRecord,
 } from "../lib/focusCirclePresenceKv";
+import {
+	applyCircleOnlineHeartbeat,
+	applyCircleOnlineLeave,
+	circleOnlineKvKey,
+	countCircleOnline,
+} from "../lib/focusCircleOnlineKv";
 import {
 	isWitnessLeavePhraseKey,
 	isWitnessRespondPhraseKey,
@@ -93,6 +100,8 @@ const ACTIONS = new Set([
 	"beside_issue",
 	"beside_join",
 	"beside_revoke",
+	"online_heartbeat",
+	"online_leave",
 ]);
 const MAX_CODE_RETRIES = 12;
 
@@ -119,6 +128,7 @@ async function deleteCircle(kv: KvLike, record: NonNullable<Awaited<ReturnType<t
 	await kv.delete(circleWitnessKvKey(record.circleId));
 	await kv.delete(circleWasHereKvKey(record.circleId));
 	await kv.delete(circleIdentityKvKey(record.circleId));
+	await kv.delete(circleOnlineKvKey(record.circleId));
 	await deleteBesideCircle(kv, record.circleId);
 }
 
@@ -141,6 +151,37 @@ async function saveCirclePresence(
 	);
 }
 
+async function loadCircleOnline(kv: KvLike, circleId: string) {
+	const raw = await kv.get(circleOnlineKvKey(circleId));
+	return parseFocusCirclePresenceRecord(raw).sessions;
+}
+
+async function saveCircleOnline(
+	kv: KvLike,
+	circleId: string,
+	sessions: Record<string, number>,
+) {
+	await kv.put(
+		circleOnlineKvKey(circleId),
+		JSON.stringify({
+			schemaVersion: FOCUS_CIRCLE_PRESENCE_SCHEMA_VERSION,
+			sessions,
+		}),
+	);
+}
+
+async function touchCircleOnline(
+	kv: KvLike,
+	circleId: string,
+	memberId: string,
+	nowMs: number,
+) {
+	const sessions = await loadCircleOnline(kv, circleId);
+	const next = applyCircleOnlineHeartbeat(sessions, memberId, nowMs);
+	await saveCircleOnline(kv, circleId, next);
+	return countCircleOnline(next, nowMs);
+}
+
 async function clearCircleMemberPresence(
 	kv: KvLike,
 	circleId: string,
@@ -150,6 +191,8 @@ async function clearCircleMemberPresence(
 	const sessions = await loadCirclePresence(kv, circleId);
 	const next = applyCirclePresenceLeave(sessions, memberId, nowMs);
 	await saveCirclePresence(kv, circleId, next);
+	const online = await loadCircleOnline(kv, circleId);
+	await saveCircleOnline(kv, circleId, applyCircleOnlineLeave(online, memberId, nowMs));
 }
 
 async function loadCircleWitness(kv: KvLike, circleId: string) {
@@ -250,7 +293,11 @@ async function besideFieldsForMember(
 	return besideStatusFields(beside, memberId, view);
 }
 
-function circlePayload(record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>, memberId: string) {
+function circlePayload(
+	record: NonNullable<Awaited<ReturnType<typeof loadCircle>>>,
+	memberId: string,
+	onlineCount?: number,
+) {
 	return {
 		ok: true as const,
 		schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
@@ -258,6 +305,7 @@ function circlePayload(record: NonNullable<Awaited<ReturnType<typeof loadCircle>
 		code: record.code,
 		memberId,
 		memberCount: countFocusCircleMembers(record),
+		...(typeof onlineCount === "number" ? { onlineCount } : {}),
 	};
 }
 
@@ -288,7 +336,7 @@ export async function handleFocusCircle(
 		return errorJson(
 			400,
 			"bad_action",
-			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, witness_respond, was_here_mark, identity_set, beside_issue, beside_join, or beside_revoke",
+			"action must be create, join, leave, status, presence_peek, presence_heartbeat, presence_leave, witness_leave, witness_peek, witness_respond, was_here_mark, identity_set, beside_issue, beside_join, beside_revoke, online_heartbeat, or online_leave",
 		);
 	}
 
@@ -316,7 +364,8 @@ export async function handleFocusCircle(
 					nowMs,
 				);
 				await saveCircle(kv, record);
-				return json(circlePayload(record, memberId));
+				const onlineCount = await touchCircleOnline(kv, circleId, memberId, nowMs);
+				return json(circlePayload(record, memberId, onlineCount));
 			}
 			return errorJson(500, "code_collision", "Could not allocate invite code");
 		}
@@ -339,12 +388,22 @@ export async function handleFocusCircle(
 			if (!record || record.code !== code) {
 				return errorJson(404, "circle_not_found", "No circle for that code");
 			}
-			const added = addFocusCircleMember(record, memberId, nowMs);
+			const alreadyMember = Boolean(record.members[memberId]);
+			if (!alreadyMember) {
+				const onlineNow = countCircleOnline(await loadCircleOnline(kv, circleId), nowMs);
+				if (onlineNow >= FOCUS_CIRCLE_MAX_MEMBERS) {
+					return errorJson(409, "circle_full", "This circle is full");
+				}
+			}
+			const added = addFocusCircleMember(record, memberId, nowMs, {
+				skipRosterCap: !alreadyMember,
+			});
 			if (!added.ok) {
 				return errorJson(409, "circle_full", "This circle is full");
 			}
 			await saveCircle(kv, added.record);
-			return json(circlePayload(added.record, memberId));
+			const onlineCount = await touchCircleOnline(kv, circleId, memberId, nowMs);
+			return json(circlePayload(added.record, memberId, onlineCount));
 		}
 
 		if (action === "beside_join") {
@@ -367,7 +426,8 @@ export async function handleFocusCircle(
 			}
 			const beside = await loadBeside(kv, record.circleId);
 			if (record.members[memberId]) {
-				return json(circlePayload(record, memberId));
+				const onlineCount = await touchCircleOnline(kv, record.circleId, memberId, nowMs);
+				return json(circlePayload(record, memberId, onlineCount));
 			}
 			const preview = previewBesideJoin(beside, code, memberId, record);
 			if (!preview.ok && preview.reason === "used") {
@@ -379,7 +439,14 @@ export async function handleFocusCircle(
 			if (!preview.ok) {
 				return errorJson(404, "beside_not_found", "No seat code");
 			}
-			const added = tryAddBesideMember(record, memberId, nowMs);
+			const onlineNow = countCircleOnline(
+				await loadCircleOnline(kv, record.circleId),
+				nowMs,
+			);
+			if (onlineNow >= FOCUS_CIRCLE_MAX_MEMBERS) {
+				return errorJson(409, "circle_full", "This circle is full");
+			}
+			const added = tryAddBesideMember(record, memberId, nowMs, { skipRosterCap: true });
 			if (!added.ok) {
 				return errorJson(409, "circle_full", "This circle is full");
 			}
@@ -389,7 +456,8 @@ export async function handleFocusCircle(
 				record.circleId,
 				consumeBesideJoin(beside, code, memberId, nowMs),
 			);
-			return json(circlePayload(added.record, memberId));
+			const onlineCount = await touchCircleOnline(kv, record.circleId, memberId, nowMs);
+			return json(circlePayload(added.record, memberId, onlineCount));
 		}
 
 		const circleId =
@@ -406,6 +474,23 @@ export async function handleFocusCircle(
 		const record = await loadCircle(kv, circleId);
 		if (!record) {
 			return errorJson(404, "circle_not_found", "Circle not found");
+		}
+
+		if (action === "online_heartbeat" || action === "online_leave") {
+			if (action === "online_heartbeat" && !record.members[memberId]) {
+				return errorJson(403, "not_member", "Not a member of this circle");
+			}
+			if (action === "online_leave") {
+				await clearCircleMemberPresence(kv, circleId, memberId, nowMs);
+				const onlineCount = countCircleOnline(await loadCircleOnline(kv, circleId), nowMs);
+				return json({
+					ok: true,
+					schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
+					onlineCount,
+				});
+			}
+			const onlineCount = await touchCircleOnline(kv, circleId, memberId, nowMs);
+			return json(circlePayload(record, memberId, onlineCount));
 		}
 
 		if (action === "beside_issue" || action === "beside_revoke") {
@@ -699,6 +784,9 @@ export async function handleFocusCircle(
 						invitedWasHere: false,
 						invitedWasHereName: null as string | null,
 					};
+			const onlineCount = isMember
+				? await touchCircleOnline(kv, record.circleId, memberId, nowMs)
+				: countCircleOnline(await loadCircleOnline(kv, record.circleId), nowMs);
 			return json({
 				ok: true,
 				schemaVersion: FOCUS_CIRCLE_SCHEMA_VERSION,
@@ -706,6 +794,7 @@ export async function handleFocusCircle(
 				code: record.code,
 				memberId,
 				memberCount: countFocusCircleMembers(record),
+				onlineCount,
 				isMember,
 				...fields,
 			});

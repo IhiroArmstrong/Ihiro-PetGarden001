@@ -75,5 +75,17 @@ describe("focusCircleWitnessKv", () => {
 		assert.equal(peekB[0].hasResponded, false);
 		const peekA = buildWitnessPeekTraces(traces, NOW, MEMBER_A);
 		assert.equal(peekA.length, 0);
+		const responded = applyWitnessRespond(
+			traces,
+			"trace-a",
+			MEMBER_B,
+			"FOCUS_CIRCLE_WITNESS_RESPOND_1",
+			NOW + 1000,
+		);
+		assert.equal(responded.outcome, "ok");
+		const peekAnswered = buildWitnessPeekTraces(responded.traces, NOW + 1000, MEMBER_A);
+		assert.equal(peekAnswered.length, 1);
+		assert.equal(peekAnswered[0].hasResponded, true);
+		assert.equal(peekAnswered[0].respondPhraseKey, "FOCUS_CIRCLE_WITNESS_RESPOND_1");
 	});
 });

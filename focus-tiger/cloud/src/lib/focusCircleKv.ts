@@ -77,11 +77,12 @@ export function addFocusCircleMember(
 	record: FocusCircleRecord,
 	memberId: string,
 	nowMs: number,
+	opts?: { skipRosterCap?: boolean },
 ): AddMemberResult {
 	if (record.members[memberId]) {
 		return { ok: true, record };
 	}
-	if (isFocusCircleFull(record)) {
+	if (!opts?.skipRosterCap && isFocusCircleFull(record)) {
 		return { ok: false, reason: "full" };
 	}
 	return {

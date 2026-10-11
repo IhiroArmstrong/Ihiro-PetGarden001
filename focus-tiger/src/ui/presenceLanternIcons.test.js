@@ -23,7 +23,7 @@ test('global lantern uses warm gold palette and paper-lantern silhouette', () =>
   assert.match(src, /#FFE9B8/);
   assert.match(src, /#D4A24A/);
   assert.match(src, /stroke-dasharray': '1 1'/);
-  assert.match(src, /width: '14'/);
+  assert.match(src, /width: '28'/);
 });
 
 test('circle lantern supports was-here muted palette', () => {
