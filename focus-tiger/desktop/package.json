@@ -54,6 +54,7 @@
       "preload.js",
       "ipcGuard.js",
       "trayPolicy.js",
+      "checkoutReturnDelivery.js",
       "voiceInput/**/*.js",
       "voiceInput/**/*.html",
       "systemTts/**/*.js",

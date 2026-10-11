@@ -79,6 +79,12 @@ const desktopShell = {
     const wrapped = () => cb();
     ipcRenderer.on('desktop:open-preferences', wrapped);
     return () => ipcRenderer.removeListener('desktop:open-preferences', wrapped);
+  },
+  onCheckoutReturn: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = (_event, search) => cb(search);
+    ipcRenderer.on('desktop:checkout-return', wrapped);
+    return () => ipcRenderer.removeListener('desktop:checkout-return', wrapped);
   }
 };
 

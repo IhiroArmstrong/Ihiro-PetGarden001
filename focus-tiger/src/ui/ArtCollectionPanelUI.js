@@ -15,6 +15,7 @@ import { saveArtChosenPieceCard } from '../core/artChosenPieceCard.js';
 import { ART_EDITION_PRICE_USD, ART_EDITION_SETS } from '../core/artEditionCatalog.js';
 import { requestArtPurchase } from '../core/artCollectionPurchase.js';
 import { readArtHd } from '../core/artCollectionHd.js';
+import { ensureArtSheetHd } from '../core/yinArtCollectionCheckout.js';
 import {
   subscribeYinArtOwnership,
   visibleYinArtOwnershipFromPage
@@ -91,6 +92,8 @@ export class ArtCollectionPanelUI {
 
     /** @type {Map<string, { name: HTMLElement, story: HTMLElement, notice: HTMLElement, buy: HTMLButtonElement, save: HTMLButtonElement, sheetImgs: Map<string, { img: HTMLImageElement, hdUrl: string, hdReceiptId?: string }> }>} */
     this._cards = new Map();
+    /** @type {Map<string, string>} */
+    this._chosen = new Map();
 
     for (const set of ART_EDITION_SETS) {
       this.listEl.appendChild(this._card(set));
@@ -141,6 +144,9 @@ export class ArtCollectionPanelUI {
       img.decoding = 'async';
       img.loading = 'lazy';
       img.draggable = false;
+      img.addEventListener('click', () => {
+        void this._onSheetClick(row.id, piece.id);
+      });
       gallery.appendChild(img);
       sheetImgs.set(piece.id, { img, hdUrl: '' });
     }
@@ -211,6 +217,21 @@ export class ArtCollectionPanelUI {
   }
 
   open() {
+    if (this._open) return;
+    this._show();
+  }
+
+  /** Open, or refresh an already open shelf after a purchase lands. */
+  reveal() {
+    if (this._open) {
+      void this._applyCachedHd();
+      this._refreshTexts();
+      return;
+    }
+    this._show();
+  }
+
+  _show() {
     if (this._open) return;
     this._open = true;
     void this._applyCachedHd();
@@ -299,28 +320,74 @@ export class ArtCollectionPanelUI {
   async _save(setId) {
     const card = this._cards.get(setId);
     const set = ART_EDITION_SETS.find((item) => item.id === setId);
-    if (!card || !set || card.save.hidden || card.save.disabled) return;
+    const sheetId = this._chosen.get(setId) || '';
+    const sheet = set?.sheets.find((item) => item.id === sheetId);
+    if (!card || !set || !sheet || card.save.hidden || card.save.disabled) return;
     const piece = this._ownedPieces()[setId];
     if (!piece?.ownedAt || !piece?.receiptId) return;
     card.save.disabled = true;
     card.save.textContent = t('ART_CHOSEN_PIECE_SAVING');
     const saveFn = this.handlers.savePiece || saveArtChosenPieceCard;
-    let ok = true;
-    for (const sheet of set.sheets) {
-      const slot = card.sheetImgs.get(sheet.id);
-      const saved = await saveFn({
-        sheetId: sheet.id,
-        owned: true,
-        name: artSheetName(getLocale(), sheet),
-        ownedAt: piece.ownedAt,
-        previewSrc: slot?.hdUrl || sheet.previewSrc
-      });
-      if (!saved) ok = false;
-    }
+    const slot = card.sheetImgs.get(sheet.id);
+    const saved = await saveFn({
+      sheetId: sheet.id,
+      owned: true,
+      name: artSheetName(getLocale(), sheet),
+      ownedAt: piece.ownedAt,
+      previewSrc: slot?.hdUrl || sheet.previewSrc
+    });
     card.save.disabled = false;
-    card.save.textContent = ok
+    card.save.textContent = saved
       ? t('ART_CHOSEN_PIECE_SAVED')
       : t('ART_CHOSEN_PIECE_FAILED');
+  }
+
+  /**
+   * @param {string} setId
+   * @param {string} sheetId
+   */
+  async _onSheetClick(setId, sheetId) {
+    const card = this._cards.get(setId);
+    const piece = this._ownedPieces()[setId];
+    if (!card || !piece?.ownedAt || !piece?.receiptId) return;
+    this._chosen.set(setId, sheetId);
+    this._markChosen(setId);
+    card.save.disabled = false;
+    card.notice.hidden = false;
+    card.notice.textContent = t('ART_HD_SAVING');
+    let blob = (await readArtHd(sheetId))?.blob || null;
+    if (!blob) {
+      const refresh = this.handlers.refreshHd || ensureArtSheetHd;
+      const ok = await refresh({ receiptId: piece.receiptId, sheetId });
+      blob = (await readArtHd(sheetId))?.blob || null;
+      if (!ok && !blob) {
+        card.notice.textContent = t('ART_HD_FAILED');
+        return;
+      }
+    }
+    if (!blob) {
+      card.notice.textContent = t('ART_HD_FAILED');
+      return;
+    }
+    const filename = `focus-tiger-art-${sheetId}.png`;
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    a.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+    card.notice.textContent = t('ART_HD_SAVED');
+  }
+
+  /** @param {string} setId */
+  _markChosen(setId) {
+    const card = this._cards.get(setId);
+    if (!card) return;
+    const chosen = this._chosen.get(setId) || '';
+    for (const [id, slot] of card.sheetImgs) {
+      slot.img.classList.toggle('is-chosen', id === chosen);
+    }
   }
 
   _refreshTexts() {
@@ -346,9 +413,18 @@ export class ArtCollectionPanelUI {
       const hasPiece = Boolean(piece?.ownedAt && piece?.receiptId);
       card.buy.hidden = hasPiece;
       card.save.hidden = !hasPiece;
+      const chosen = this._chosen.get(row.id) || '';
+      for (const [id, slot] of card.sheetImgs) {
+        slot.img.classList.toggle('is-owned', hasPiece);
+        slot.img.classList.toggle('is-chosen', hasPiece && id === chosen);
+      }
       if (hasPiece) {
-        card.save.disabled = false;
+        card.save.disabled = !chosen;
         card.save.textContent = t('ART_CHOSEN_PIECE_SAVE');
+        if (!chosen) {
+          card.notice.hidden = false;
+          card.notice.textContent = t('ART_PICK_ONE');
+        }
       }
     }
   }
@@ -428,6 +504,13 @@ export class ArtCollectionPanelUI {
         height: 72px;
         object-fit: contain;
         background: rgba(255, 252, 245, 0.72);
+      }
+      .art-collection-panel__gallery img.is-owned {
+        cursor: pointer;
+      }
+      .art-collection-panel__gallery img.is-chosen {
+        outline: 2px solid #6b5344;
+        outline-offset: 2px;
       }
       .art-collection-panel__card {
         display: block;

@@ -22,6 +22,7 @@ import {
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
+import { planDesktopCheckoutReturn } from './checkoutReturnDelivery.js';
 import {
   DESKTOP_CUSTOM_ORIGIN,
   desktopCheckoutReturnSearch,
@@ -222,8 +223,9 @@ function showMainWindow() {
 }
 
 /**
- * Stripe success/cancel deep-link → reload shell with session query so
- * `bootProReturnConfirm` / companion-addon confirm runs in Electron storage.
+ * Stripe success/cancel deep-link.
+ * An already open window stays put and hears the query in-page.
+ * Cold start loads once so confirm can read the query.
  *
  * @param {string} rawUrl `focus-tiger://app/?product=1&pro_session=cs_…`
  */
@@ -232,9 +234,16 @@ function navigateDesktopCheckoutReturn(rawUrl) {
   showMainWindow();
   const win = mainWindow;
   if (!win || win.isDestroyed()) return;
-  const params = new URLSearchParams(search.replace(/^\?/, ''));
-  if (!params.has('product')) params.set('product', '1');
-  const qs = params.toString();
+  const plan = planDesktopCheckoutReturn({
+    pageUrl: win.webContents.getURL(),
+    isLoading: win.webContents.isLoading(),
+    search
+  });
+  if (plan.mode === 'in-page') {
+    win.webContents.send('desktop:checkout-return', plan.search);
+    return;
+  }
+  const qs = plan.search;
   if (isDevMode()) {
     const base = DEV_LOAD_URL.split('?')[0];
     void win.loadURL(`${base}?${qs}`);

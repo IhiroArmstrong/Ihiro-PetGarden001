@@ -355,6 +355,7 @@ import {
   readDesktopCheckoutPending
 } from './core/desktopCheckoutPending.js';
 import {
+  checkoutKindFromSearch,
   paymentThanksKindFromDesktopPending,
   resumePendingDesktopCheckout
 } from './core/desktopCheckoutConfirm.js';
@@ -2226,12 +2227,25 @@ async function init() {
       syncEntitlementDependentIdleChrome();
     }
   });
-  void bootYinArtReturnConfirm({});
+  void bootYinArtReturnConfirm({}).then((ret) => {
+    if (ret?.outcome === 'success') {
+      closeGrowthOverlayCards({ except: 'art-collection' });
+      artCollectionPanelUI.reveal();
+    }
+  });
 
   let resumeDesktopCheckoutInFlight = false;
-  async function resumeDesktopCheckoutAfterExternal() {
+  async function resumeDesktopCheckoutAfterExternal(searchOverride) {
     if (!isDesktopShellRuntime() || resumeDesktopCheckoutInFlight) return;
-    if (!readDesktopCheckoutPending()) {
+    const search =
+      typeof searchOverride === 'string' && searchOverride
+        ? searchOverride.startsWith('?')
+          ? searchOverride
+          : `?${searchOverride}`
+        : location.search;
+    const pendingKind =
+      readDesktopCheckoutPending()?.kind || checkoutKindFromSearch(search);
+    if (!pendingKind) {
       if (isCompanionEntitled({
         storage: typeof localStorage !== 'undefined' ? localStorage : null,
         search: location.search
@@ -2241,12 +2255,16 @@ async function init() {
       return;
     }
     resumeDesktopCheckoutInFlight = true;
-    const pendingKind = readDesktopCheckoutPending()?.kind;
     try {
       const outcome = await resumePendingDesktopCheckout({
         storage: typeof localStorage !== 'undefined' ? localStorage : null,
-        search: location.search
+        search
       });
+      if (outcome === 'success' && pendingKind === 'art-collection') {
+        closeGrowthOverlayCards({ except: 'art-collection' });
+        artCollectionPanelUI.reveal();
+        return;
+      }
       if (outcome === 'success' && pendingKind) {
         const thanksKind = paymentThanksKindFromDesktopPending(pendingKind);
         monetizationFunnelStore.checkoutComplete(
@@ -2273,6 +2291,9 @@ async function init() {
     const checkoutShell = getDesktopShellBridge();
     checkoutShell?.onShellVisibility?.((payload) => {
       if (payload?.hidden === false) tickDesktopCheckoutResume();
+    });
+    checkoutShell?.onCheckoutReturn?.((search) => {
+      void resumeDesktopCheckoutAfterExternal(search);
     });
     tickDesktopCheckoutResume();
     window.setInterval(() => {
@@ -2491,7 +2512,7 @@ async function init() {
       ),
     onOpenArtCollection: () => {
       closeGrowthOverlayCards({ except: 'art-collection' });
-      artCollectionPanelUI.open();
+      artCollectionPanelUI.reveal();
     },
     onMessage: (message) =>
       mindfulToast.show(message, { placement: 'center' }),
@@ -3868,7 +3889,7 @@ async function init() {
     },
     onArtCollection: () => {
       closeGrowthOverlayCards({ except: 'art-collection' });
-      artCollectionPanelUI.open();
+      artCollectionPanelUI.reveal();
     },
     onSanctuary: () => {
       closeGrowthOverlayCards({ except: 'sanctuary' });

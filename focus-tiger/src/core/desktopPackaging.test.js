@@ -74,6 +74,7 @@ describe('desktop packaging contract (Step B tray)', () => {
 
   it('packs trayPolicy.js with the shell', () => {
     assert.ok(desktopPkg.build.files.includes('trayPolicy.js'));
+    assert.ok(desktopPkg.build.files.includes('checkoutReturnDelivery.js'));
   });
 
   it('preload exposes hide/show and shell visibility (Step B)', () => {

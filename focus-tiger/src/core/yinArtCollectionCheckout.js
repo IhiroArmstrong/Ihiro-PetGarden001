@@ -25,24 +25,47 @@ function artHdUrl(path) {
  * @param {Array<{ artId?: string, receiptId?: string, url?: string }>} grants
  * @param {{ fetchHd?: typeof fetch, hdCache?: object }} [deps]
  */
-function saveGrantedArtHd(grants, deps = {}) {
+export async function cacheArtHdGrants(grants, deps = {}) {
   const rows = Array.isArray(grants) ? grants : [];
-  if (!rows.length) return;
-  void (async () => {
-    let saved = false;
-    for (const row of rows) {
-      const result = await cacheIssuedArtHd({
-        artId: row && row.artId,
-        receiptId: row && row.receiptId,
-        url: row && row.url,
-        fetchImpl: deps.fetchHd,
-        cache: deps.hdCache,
-        resolveUrl: artHdUrl
-      });
-      if (result.ok) saved = true;
-    }
-    if (saved) notifyYinArtOwnership('hd-ready');
-  })();
+  if (!rows.length) return false;
+  let saved = false;
+  for (const row of rows) {
+    const result = await cacheIssuedArtHd({
+      artId: row && row.artId,
+      receiptId: row && row.receiptId,
+      url: row && row.url,
+      fetchImpl: deps.fetchHd,
+      cache: deps.hdCache,
+      resolveUrl: artHdUrl
+    });
+    if (result.ok) saved = true;
+  }
+  if (saved) notifyYinArtOwnership('hd-ready');
+  return saved;
+}
+
+function saveGrantedArtHd(grants, deps = {}) {
+  void cacheArtHdGrants(grants, deps);
+}
+
+export async function ensureArtSheetHd({
+  receiptId,
+  sheetId,
+  postJson = postCloudJson,
+  fetchHd,
+  hdCache
+} = {}) {
+  const id = String(sheetId || '').trim();
+  const sessionId = String(receiptId || '').trim();
+  if (!id || !sessionId.startsWith('cs_')) return false;
+  const body = await postJson('/api/confirm-art-collection-session', {
+    body: JSON.stringify({ sessionId })
+  });
+  const record = body && typeof body === 'object' ? body : {};
+  const downloads = Array.isArray(record.downloads) ? record.downloads : [];
+  if (!downloads.length) return false;
+  await cacheArtHdGrants(downloads, { fetchHd, hdCache });
+  return downloads.some((row) => row && row.artId === id);
 }
 
 import {
@@ -180,7 +203,10 @@ export async function confirmYinArtReturnQuery({
       writeYinArtSession(sessionStorage, record.email);
       writeYinArtNotice(sessionStorage, { kind: 'success', artId: record.artId });
       notifyYinArtOwnership('success');
-      if (record.hd && typeof record.hd.url === 'string') {
+      const downloads = Array.isArray(record.downloads) ? record.downloads : [];
+      if (downloads.length) {
+        saveGrantedArtHd(downloads, { fetchHd, hdCache });
+      } else if (record.hd && typeof record.hd.url === 'string') {
         saveGrantedArtHd(
           [{ artId: record.artId, receiptId: record.receiptId, url: record.hd.url }],
           { fetchHd, hdCache }

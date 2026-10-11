@@ -4,7 +4,13 @@
  */
 
 import { findArtCollectionWork } from "./artCollectionCatalog.ts";
-import { TEA_GIFT_ART_ID, TEA_GIFT_HD_ID } from "./artEditionCatalog.ts";
+import {
+	editionSheetHdId,
+	findArtEditionSet,
+	findArtEditionSheet,
+	TEA_GIFT_ART_ID,
+	TEA_GIFT_HD_ID,
+} from "./artEditionCatalog.ts";
 import { isArtPieceOwned, readArtCollection } from "./artCollectionKv.ts";
 import { readTip } from "./tipKv.ts";
 
@@ -38,8 +44,26 @@ async function hmacSha256Hex(secret: string, payload: string): Promise<string> {
 }
 
 export function artHdObjectKey(hdId: string): string {
-	if (!/^hd-[a-z]{2}-\d{2}$/.test(hdId)) return "";
+	if (!/^hd-[a-z][a-z0-9]-\d{2}$/.test(hdId)) return "";
 	return `private/art-hd/${hdId}.png`;
+}
+
+/**
+ * A set is owned once. Each sheet still has its own file.
+ * @param {string} artId
+ * @returns {{ ownerId: string, hdId: string } | null}
+ */
+export function artHdTarget(artId: string): { ownerId: string; hdId: string } | null {
+	const sheet = findArtEditionSheet(artId);
+	if (sheet) {
+		const hdId = editionSheetHdId(sheet.id);
+		if (!hdId) return null;
+		return { ownerId: sheet.setId, hdId };
+	}
+	if (findArtEditionSet(artId)) return null;
+	const work = findArtCollectionWork(artId);
+	if (!work?.hdId) return null;
+	return { ownerId: work.id, hdId: work.hdId };
 }
 
 function grantKvKey(tokenHash: string): string {
@@ -71,12 +95,12 @@ export async function issueArtHdGrant(opts: {
 	nowSec?: number;
 }): Promise<{ url: string; expiresAt: number } | null> {
 	const pepper = (opts.pepper || "").trim();
-	const work = findArtCollectionWork(opts.artId);
+	const target = artHdTarget(opts.artId);
 	const receiptId = String(opts.receiptId || "");
-	if (!pepper || !work || !receiptId.startsWith("cs_")) return null;
+	if (!pepper || !target || !receiptId.startsWith("cs_")) return null;
 	const record = await readArtCollection(opts.kv, opts.email);
-	const piece = record.items[work.id];
-	if (!isArtPieceOwned(record, work.id) || !piece || piece.receiptId !== receiptId) {
+	const piece = record.items[target.ownerId];
+	if (!isArtPieceOwned(record, target.ownerId) || !piece || piece.receiptId !== receiptId) {
 		return null;
 	}
 	const tokenBytes = new Uint8Array(32);
@@ -87,8 +111,8 @@ export async function issueArtHdGrant(opts: {
 	const expiresAt = now + ART_HD_GRANT_TTL_SEC;
 	const stored: ArtHdGrantRecord = {
 		email: opts.email.trim().toLowerCase(),
-		artId: work.id,
-		hdId: work.hdId,
+		artId: target.ownerId,
+		hdId: target.hdId,
 		receiptId,
 		expiresAt,
 	};
@@ -96,6 +120,34 @@ export async function issueArtHdGrant(opts: {
 		expirationTtl: ART_HD_GRANT_TTL_SEC,
 	});
 	return { url: `/api/art-collection-hd?t=${token}`, expiresAt };
+}
+
+/**
+ * One short link per sheet. A bought set returns five, not one set-level file.
+ */
+export async function issueOwnedArtDownloads(opts: {
+	kv: KVNamespace;
+	pepper: string;
+	email: string;
+	artId: string;
+	receiptId: string;
+	nowSec?: number;
+}): Promise<Array<{ artId: string; receiptId: string; url: string; expiresAt: number }>> {
+	const set = findArtEditionSet(opts.artId);
+	const ids = set ? [...set.sheetIds] : [opts.artId];
+	const downloads: Array<{ artId: string; receiptId: string; url: string; expiresAt: number }> =
+		[];
+	for (const id of ids) {
+		const hd = await issueArtHdGrant({ ...opts, artId: id });
+		if (!hd) continue;
+		downloads.push({
+			artId: id,
+			receiptId: opts.receiptId,
+			url: hd.url,
+			expiresAt: hd.expiresAt,
+		});
+	}
+	return downloads;
 }
 
 /** Same short link as a paid sheet. Ownership is the tea receipt, not the art shelf. */
