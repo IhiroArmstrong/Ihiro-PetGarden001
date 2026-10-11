@@ -189,7 +189,7 @@ export class QuietTogetherLanternsChrome {
         position: fixed;
         left: 18px;
         bottom: ${IDLE_LANTERN_BOTTOM_WIDE_CSS};
-        z-index: 2;
+        z-index: 12;
         pointer-events: none;
         display: flex;
         flex-direction: column;

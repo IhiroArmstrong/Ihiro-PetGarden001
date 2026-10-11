@@ -262,7 +262,7 @@ export class FocusCircleWitnessChrome {
         position: fixed;
         left: 18px;
         bottom: calc(${IDLE_LANTERN_BOTTOM_WIDE_CSS} + ${WITNESS_ABOVE_PRESENCE_CSS});
-        z-index: 3;
+        z-index: 14;
         pointer-events: none;
         display: flex;
         flex-direction: column;

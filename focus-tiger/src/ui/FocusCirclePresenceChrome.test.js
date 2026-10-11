@@ -35,6 +35,12 @@ test('pointer-events none and stacks above lanterns', () => {
   assert.match(src, /IDLE_LANTERN_BOTTOM_WIDE_CSS/);
 });
 
+test('sits above the arrive notice glass with a readable caption', () => {
+  assert.match(src, /z-index:\s*13/);
+  assert.match(src, /color:\s*rgba\(58,\s*46,\s*34,\s*0\.88\)/);
+  assert.doesNotMatch(src, /rgba\(220,\s*228,\s*240/);
+});
+
 test('uses svg lantern shells instead of css dots', () => {
   assert.match(src, /createPresenceLanternShell/);
   assert.match(src, /focus-circle-presence__lantern/);
