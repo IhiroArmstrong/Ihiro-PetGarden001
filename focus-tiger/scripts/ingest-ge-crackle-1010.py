@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Ingest 哥窑分组1010G1/G2 into edition previews + HD masters (repo root folders)."""
+"""Ingest 哥窑分组1010G1/G2 into edition previews + HD masters (repo root folders).
+
+Sources are Jimeng exports with flat backgrounds (文件名含「去掉背景」). Use
+``--watermark-only`` on the ingest script — chroma cutout fails on Ge crackle glaze.
+After run, upload ``.staging/ge-hd-masters/hd-g*.png`` to R2 ``private/art-hd/``.
+"""
 
 from __future__ import annotations
 
@@ -8,7 +13,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]  # focus-tiger/
-REPO = Path(__file__).resolve().parents[3]  # main repo (哥窑分组1010G*)
+REPO = Path(__file__).resolve().parents[2]  # repo root (哥窑分组1010G*)
 INGEST = ROOT / "scripts" / "process-art-collection-ingest.py"
 
 G1 = REPO / "哥窑分组1010G1"
@@ -52,7 +57,15 @@ def run_row(folder: Path, stem: str, set_id: str, sheet_id: str, hd_id: str) -> 
     )
     master = HD_STAGING / f"{hd_id}.png"
     subprocess.run(
-        [sys.executable, str(INGEST), str(src), str(preview), "--master-out", str(master)],
+        [
+            sys.executable,
+            str(INGEST),
+            str(src),
+            str(preview),
+            "--master-out",
+            str(master),
+            "--watermark-only",
+        ],
         check=True,
     )
 
