@@ -63,7 +63,7 @@
 | Taste layer | `/api/daily-message` · `/api/emotion-weight` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
 | Quiet Together | `/api/lantern-presence`（`TIP_KV` `lantern:v1:live` · TTL 120s） |
-| Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` + `circle:v1:here:{id}` + `circle:v1:witness:{id}` · 最多 8 人 · presence TTL 120s · was-here 日历日 · witness 滚动 24h） |
+| Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` + `circle:v1:here:{id}` + `circle:v1:online:{id}` + `circle:v1:witness:{id}` · 最多 8 人 · presence TTL 120s · `online_*` TTL 120s · was-here 日历日 · witness 滚动 24h） |
 | Newsletter | `/api/newsletter/subscribe` · `/api/newsletter/unsubscribe` |
 | Stripe | `POST /api/stripe-webhook` |
 
@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `2ac135c3-8cf2-4f7e-a6fc-1d6deecf2759` |
-| `prod_verified_at` | 2026-10-11（本机 `wrangler deploy` · 源 `origin/develop` `2fb19eaf` · **#1126** 哥窑 `ge-crackle-1010-g1` / `g2` + `hd-g1-01`…`05` / `hd-g2-01`…`05`（R2 已存）· `POST create-art-collection-checkout-session` → Stripe URL OK · `GET /health` OK）。与 develop 对齐：含 **#1123** 请茶 `hd-tg-01`、**#1124** 磁州窑 `cizhou-red-green-five`、**#1126** 哥窑两套五件。**2026-10-11 晚**：哥窑 1010 预览与 R2 `hd-g1-*` / `hd-g2-*` 已用「只去水印」重导（见 `fix/ge-crackle-1010-watermark-reingest`），覆盖 #1126 误跑透明抠图版。 |
+| `prod_worker_version` | `fe48e9f2-92d4-402e-8523-5e3187067a99` |
+| `prod_verified_at` | 2026-10-11 晚（本机 `wrangler deploy` · 源 `origin/develop` `8398c840` · **#1153** Focus Circle `onlineCount` + `online_heartbeat` / `online_leave`（`circle:v1:online:*`）· `POST /api/focus-circle` `create` → `onlineCount: 1` OK · `GET /health` OK）。与 develop 对齐：含 **#1153** 陪坐轮廓云端人数、**#1126** 哥窑两套五件等已合 develop 项。 |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
