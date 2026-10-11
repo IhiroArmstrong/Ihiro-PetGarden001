@@ -5,7 +5,11 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { glassCardIdsToClose } from './glassCardDeck.js';
+import {
+  glassCardIdsToClose,
+  glassCardInlineZIndex,
+  GLASS_CARD_KEEP_STYLESHEET_Z
+} from './glassCardDeck.js';
 
 test('a third glass card closes the older open card and keeps the newer one', () => {
   const { keepIds, closeIds } = glassCardIdsToClose({
@@ -34,4 +38,15 @@ test('opening nothing keeps no cards', () => {
     exceptId: null
   });
   assert.deepEqual(closeIds, ['help-center', 'moments']);
+});
+
+test('Support modal keeps stylesheet z-index so the dim layer cannot eat Subscribe', () => {
+  assert.equal(GLASS_CARD_KEEP_STYLESHEET_Z.has('yin-support-modal'), true);
+  assert.equal(glassCardInlineZIndex('yin-support-modal', { isFront: true }), null);
+  assert.equal(glassCardInlineZIndex('yin-support-modal', { isFront: false }), null);
+  const front = glassCardInlineZIndex('help-center', { isFront: true });
+  const back = glassCardInlineZIndex('help-center', { isFront: false });
+  assert.equal(front, '19');
+  assert.equal(back, '18');
+  assert.ok(Number(front) < 25, 'deck stack stays below Support dim (25)');
 });

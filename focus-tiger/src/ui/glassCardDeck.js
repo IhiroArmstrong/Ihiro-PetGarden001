@@ -41,6 +41,21 @@ export const GLASS_CARD_ELEMENT_IDS = Object.freeze({
 const INTERACTIVE =
   'button, a, input, textarea, select, label, summary, [role="button"], [role="checkbox"], [role="radio"], [contenteditable="true"]';
 
+/** Support modal is z 26 above its dim (z 25). The 18/19 deck must not pull it under. */
+export const GLASS_CARD_KEEP_STYLESHEET_Z = Object.freeze(
+  new Set(['yin-support-modal'])
+);
+
+/**
+ * @param {string} elementId
+ * @param {{ isFront?: boolean }} [opts]
+ * @returns {'19' | '18' | null} null = leave stylesheet z-index
+ */
+export function glassCardInlineZIndex(elementId, { isFront = false } = {}) {
+  if (GLASS_CARD_KEEP_STYLESHEET_Z.has(elementId)) return null;
+  return isFront ? '19' : '18';
+}
+
 /**
  * @param {object} opts
  * @param {string[]} opts.order Newest at the end.
@@ -88,7 +103,14 @@ export function bringGlassCardToFront(handleId, doc = document) {
   for (const elementId of Object.values(GLASS_CARD_ELEMENT_IDS)) {
     const el = doc.getElementById(elementId);
     if (!el) continue;
-    el.style.zIndex = elementId === frontId ? '19' : '18';
+    const next = glassCardInlineZIndex(elementId, {
+      isFront: elementId === frontId
+    });
+    if (next == null) {
+      el.style.removeProperty('z-index');
+      continue;
+    }
+    el.style.zIndex = next;
   }
 }
 
@@ -125,6 +147,7 @@ export function installGlassCardDeck(doc = document) {
     const card = target?.closest?.('[data-ft-glass-card="1"]');
     if (!(card instanceof HTMLElement)) return;
     if (target.closest(INTERACTIVE)) return;
+    if (GLASS_CARD_KEEP_STYLESHEET_Z.has(card.id)) return;
     const rect = card.getBoundingClientRect();
     card.style.left = `${rect.left}px`;
     card.style.top = `${rect.top}px`;
