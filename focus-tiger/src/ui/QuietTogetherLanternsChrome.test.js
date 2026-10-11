@@ -25,6 +25,11 @@ test('uses svg lantern shells instead of css dots', () => {
   assert.doesNotMatch(src, /quiet-together-lanterns__dot/);
 });
 
+test('sits above the arrive notice glass and still cannot be clicked', () => {
+  assert.match(src, /z-index:\s*12/);
+  assert.match(src, /pointer-events:\s*none/);
+});
+
 test('debugLanterns preview bypasses presence gates', () => {
   assert.match(src, /readDebugLanternsQueryFlag/);
   assert.match(src, /DEBUG_LANTERNS_GLOBAL_MOCK_COUNT/);

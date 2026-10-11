@@ -241,14 +241,14 @@ export class FocusCirclePresenceChrome {
         position: fixed;
         left: 18px;
         bottom: calc(${IDLE_LANTERN_BOTTOM_WIDE_CSS} + ${PRESENCE_ABOVE_LANTERNS_CSS});
-        z-index: 2;
+        z-index: 13;
         pointer-events: none;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
         max-width: 42vw;
-        opacity: 0.78;
+        opacity: 0.94;
         transition: opacity 280ms ease;
       }
       .focus-circle-presence.is-focusing,
@@ -273,17 +273,21 @@ export class FocusCirclePresenceChrome {
         opacity: 0.62;
       }
       .focus-circle-presence.is-was-here .focus-circle-presence__caption {
-        color: rgba(210, 218, 228, 0.58);
+        color: rgba(58, 46, 34, 0.62);
       }
       .focus-circle-presence__lantern--was-here svg {
         filter: drop-shadow(0 0 4px rgba(150, 168, 188, 0.28));
       }
       .focus-circle-presence__caption {
         margin: 0;
-        font-size: 10.5px;
-        letter-spacing: 0.02em;
-        color: rgba(220, 228, 240, 0.68);
-        text-shadow: 0 1px 2px rgba(20, 16, 10, 0.45);
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: rgba(58, 46, 34, 0.88);
+        background: rgba(255, 252, 245, 0.88);
+        text-shadow: none;
       }
       @media (max-width: ${IDLE_LANTERN_NARROW_MQ_MAX_PX}px) {
         .focus-circle-presence {
