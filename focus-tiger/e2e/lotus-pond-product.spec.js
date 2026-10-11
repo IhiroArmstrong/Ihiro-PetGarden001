@@ -11,7 +11,7 @@ import {
 
 /**
  * Product-path lotus pond Slice A: seed 11 blooms, complete 1 minute,
- * 12th bloom plants after the completion ceremony (not during it).
+ * 12th bloom plants on Where you are after the completion ceremony.
  */
 
 test.describe('Lotus pond product path', () => {
@@ -34,20 +34,15 @@ test.describe('Lotus pond product path', () => {
       )
       .toBe(11);
 
-    await expect
-      .poll(
-        async () =>
-          page.locator('#lotus-pond .lotus-pond-bloom').count(),
-        { timeout: 10_000 }
-      )
-      .toBe(11);
+    await expect(page.locator('#lotus-pond')).toHaveCount(0);
 
-    const firstSrc = await page
-      .locator('#lotus-pond .lotus-pond-bloom')
-      .first()
-      .getAttribute('src');
+    await page.getByTestId('growth-journey-home-line').click();
+    const row = page.getByTestId('growth-journey-lotus-row');
+    await expect(row.locator('.lotus-pond-bloom')).toHaveCount(11);
+    const firstSrc = await row.locator('.lotus-pond-bloom').first().getAttribute('src');
     expect(firstSrc || '').not.toContain('lotus-front-rising');
     expect(firstSrc || '').not.toContain('lotus-chest-halo');
+    await page.getByTestId('growth-journey-detail-close').click();
 
     await quickStartFocus(page);
 
@@ -61,12 +56,10 @@ test.describe('Lotus pond product path', () => {
       )
       .toBe(12);
 
-    await expect
-      .poll(
-        async () =>
-          page.locator('#lotus-pond .lotus-pond-bloom').count(),
-        { timeout: 20_000 }
-      )
-      .toBe(12);
+    await expect(page.locator('#sprite-overlay .lotus-pond-bloom')).toHaveCount(
+      0
+    );
+    await page.getByTestId('growth-journey-home-line').click();
+    await expect(row.locator('.lotus-pond-bloom')).toHaveCount(12);
   });
 });

@@ -5638,9 +5638,9 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 ## 场景 AV：首页旅程短行 · 点开「Where you are」（#1102 / #1107 · 2026-10-09）
 
 > **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
-> **地位**：Idle 本周陪伴热力图**上方**的一行旅程。**≠** Journey log（场景 Z）、**≠** 莲花池分钟。
-> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js`。**非**完整浏览器故事。
-> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
+> **地位**：Idle 本周陪伴热力图**上方**的一行旅程。**≠** Journey log（场景 Z）。圆点分钟 **≠** 莲花朵数；花只画在这张纸上。
+> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js` · `LotusPondRuntime.test.js`。**非**完整浏览器故事。
+> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、有朵时见横排莲花（下一句与累计分钟之间）、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
 
 ### 步骤总览
 
@@ -5655,7 +5655,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AV-1
 
 - **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5670,21 +5670,22 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AV-2
 
 - **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
+- Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
 
 **When**
 - 点短行
 
 **Then**
-- 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。
+- 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。`qaLotusBlooms=0` 不见莲花行；`qaLotusBlooms≥1` 见 `#growth-journey-lotus-row` 横排。Idle 阿寅身前 无 `#lotus-pond`。
 
 #### AV-3
 
 - **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1

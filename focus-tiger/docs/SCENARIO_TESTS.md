@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-11（哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
+最近代码核对：2026-10-11（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -1031,12 +1031,12 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ## 场景 AV：首页旅程短行 · 点开「Where you are」（#1102 / #1107 · 2026-10-09）
 
-> **地位**：Idle 本周陪伴热力图**上方**的一行旅程。**≠** Journey log（场景 Z）、**≠** 莲花池分钟。  
-> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js`。**非**完整浏览器故事。  
-> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
+> **地位**：Idle 本周陪伴热力图**上方**的一行旅程。**≠** Journey log（场景 Z）。圆点分钟 **≠** 莲花朵数；花只画在这张纸上。  
+> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js` · `LotusPondRuntime.test.js`。**非**完整浏览器故事。  
+> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、有朵时见横排莲花（下一句与累计分钟之间）、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
 
 1. `?product=1` Idle，热力图可见 → 其上方见 `[data-testid=growth-journey-home-line]`（阶段句 + 轨道点）。  
-2. 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。  
+2. 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。`qaLotusBlooms=0` 不见莲花行；`qaLotusBlooms≥1` 见 `#growth-journey-lotus-row` 横排。Idle 阿寅身前 **无** `#lotus-pond`。  
 3. Close 或点背板 → 卡收起，热力图与 Sit 仍在。
 
 ---
@@ -1121,7 +1121,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | Celebrating / SessionComplete / 合十 / 挥手 / 舒展 / 正念鞠躬 / 点头致意 | 实验室对应按钮（点头**仅**调试，非靠近自动） |
 | 一炷香莲花 | 实验室钮 **「一炷香完成」**（**不要** `?product=1`；会话结束自动播放未接线；池出生见下行） |
 | 连续 7 天金辉 | `?product=1&sessionMinutes=1&qaSeedStreak=6` → Sit 等到达标（`qaPracticeSeed`） |
-| 莲花池（持久螺旋） | **空池第一朵（左侧可见）**：`?product=1&sessionMinutes=1&qaLotusBlooms=0` 或快捷 `qaLotusBlooms=1`。花在阿寅左侧身旁、不得被蒲团挡住。满池对照：`qaLotusBlooms=11`（`qaLotusPondSeed`） |
+| 莲花池（Where you are 横排） | **空池**：`qaLotusBlooms=0` 打开 Where you are 无莲花行。**第一朵**：`qaLotusBlooms=1` → 点首页短行，花在下一小步与累计分钟之间。Idle 阿寅身前无花。满池对照：`qaLotusBlooms=12` |
 | Honesty 睡醒 / 桥接 | 实验室「Honesty唤醒」或走 Honesty UI；桥接注入：`__honestyBridge`（**生产构建也挂载**，供 CI `vite preview` e2e） |
 | gaze / yawn / tea / ear 等候选序列 | **仅 DEV**：`__spritePlayer.play('gazeP1CenterBlinkLeft')` 等（**不**在 IdleOrchestrator 随机池） |
 | Re-focus | DEV：`__mindfulReminderController.handleAttentionReturn({ durationMs: 90000, displayEligible: true })`（须 FOCUSING 且未 suppress） |

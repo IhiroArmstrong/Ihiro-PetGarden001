@@ -1,0 +1,1 @@
+| 莲花迁入 Where you are | 界面 | 待人工测试 | **新增**：Idle 阿寅身前不再画莲花。点首页旅程短行打开 Where you are，有朵时在「下一小步」和累计分钟之间见一排缩小约一半的花（最多 12）。0 朵不占空行。达标开新朵时主屏无出生特效；再打开纸面见新朵。**测**：`node --test src/ui/LotusPondRuntime.test.js src/ui/growthJourneyDetailRhythm.test.js`。人工：`?product=1&qaLotusBlooms=0` 打开纸无花；`qaLotusBlooms=1` / `12` 见横排；375 仍一排。 | — | — | — | `src/ui/LotusPondChrome.js` | 2026-10-11 |

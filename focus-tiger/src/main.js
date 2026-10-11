@@ -2363,9 +2363,9 @@ async function init() {
   window.__growthJourneyDetail = growthJourneyDetailUI;
   const lotusPondRuntime = new LotusPondRuntime({
     store: lotusPondStore,
-    overlayEl: spritePlayer.overlayEl,
     incenseGreeting
   });
+  lotusPondRuntime.attach(growthJourneyDetailUI.lotusRow);
   lotusPondRuntime.boot();
   subscribePracticeDataImported(() => {
     lotusPondStore.reloadFromStorage();

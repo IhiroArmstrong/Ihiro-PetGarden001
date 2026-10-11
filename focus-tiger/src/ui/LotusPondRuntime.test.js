@@ -22,58 +22,42 @@ function createStorage() {
 describe('LotusPondRuntime birth queue', () => {
   it('does not plant until releaseBirths (ceremony-after-glow contract)', () => {
     const planted = [];
-    const births = [];
     const chrome = {
-      birthRoot: null,
-      mount() {},
+      attach() {},
       renderQuiet() {},
       plantBloom(index) {
         planted.push(index);
       }
     };
-    const incenseGreeting = {
-      getLotusDomSrc: () => 'data:lotus',
-      playBirthAt(slot, opts) {
-        births.push(slot.index);
-        opts?.onPlanted?.();
-      }
-    };
     const runtime = new LotusPondRuntime({
       store: new LotusPondStore({ storage: createStorage() }),
-      incenseGreeting,
+      incenseGreeting: { getLotusDomSrc: () => 'data:lotus' },
       chrome
     });
     runtime.notePracticeMinutes(25);
     assert.deepEqual(planted, []);
-    assert.deepEqual(births, []);
     runtime.releaseBirths();
-    assert.deepEqual(births, [0]);
     assert.deepEqual(planted, [0]);
   });
 
   it('queues nothing past the visual cap', () => {
     const store = new LotusPondStore({ storage: createStorage() });
     store.replaceLifetimeMinutes(440);
-    const births = [];
+    const planted = [];
     const runtime = new LotusPondRuntime({
       store,
-      incenseGreeting: {
-        getLotusDomSrc: () => 'data:lotus',
-        playBirthAt(slot, opts) {
-          births.push(slot.index);
-          opts?.onPlanted?.();
-        }
-      },
+      incenseGreeting: { getLotusDomSrc: () => 'data:lotus' },
       chrome: {
-        birthRoot: null,
-        mount() {},
+        attach() {},
         renderQuiet() {},
-        plantBloom() {}
+        plantBloom(index) {
+          planted.push(index);
+        }
       }
     });
     runtime.notePracticeMinutes(25);
     runtime.releaseBirths();
-    assert.deepEqual(births, []);
+    assert.deepEqual(planted, []);
     assert.equal(store.getLifetimeMinutes(), 465);
   });
 
@@ -93,16 +77,22 @@ describe('LotusPondRuntime birth queue', () => {
     }
   });
 
-  it('persistent pond sits in front of Yin (z 2 > stage 1)', () => {
+  it('does not mount a persistent pond on the Idle sprite overlay', () => {
     const chromeSrc = fs.readFileSync(
       fileURLToPath(new URL('./LotusPondChrome.js', import.meta.url)),
       'utf8'
     );
-    assert.match(chromeSrc, /pond.id = 'lotus-pond'[\s\S]*?z-index:2/);
-    assert.match(chromeSrc, /stage.style.zIndex = '1'/);
-    assert.match(
-      chromeSrc,
-      /birth.id = 'lotus-pond-birth-fx'[\s\S]*?z-index:3/
+    const runtimeSrc = fs.readFileSync(
+      fileURLToPath(new URL('./LotusPondRuntime.js', import.meta.url)),
+      'utf8'
     );
+    assert.equal(chromeSrc.includes("pond.id = 'lotus-pond'"), false);
+    assert.equal(chromeSrc.includes('lotus-pond-birth-fx'), false);
+    assert.equal(chromeSrc.includes('insertBefore'), false);
+    assert.equal(chromeSrc.includes('sprite-stage'), false);
+    assert.equal(runtimeSrc.includes('playBirthAt'), false);
+    assert.equal(runtimeSrc.includes('overlayEl'), false);
+    assert.match(chromeSrc, /growth-journey-lotus-row/);
+    assert.match(chromeSrc, /min\(6vw, 48px\)/);
   });
 });
