@@ -31,11 +31,16 @@ test("Yin's Collections panel is Journey-log glass family (z-index 18, 220ms fad
   assert.match(src, /listFocusCoinSurfaceSections/);
 });
 
-test("Yin's Collections docks right on ≥480 and stays a short sheet on narrow", () => {
-  assert.match(src, /@media \(min-width: 480px\)/);
-  assert.match(src, /left: max\(56vw, calc\(100vw - 360px\)\)/);
-  assert.match(src, /max-height: min\(42vh, 380px\)/);
-  assert.doesNotMatch(src, /max-height: min\(70vh, 520px\)/);
+test("Yin's Collections is a compact readable card, not a full-height frost slab", () => {
+  assert.match(src, /yin-coin-panel-styles-v7/);
+  assert.match(src, /GLASS_FILL_STRONG/);
+  assert.match(src, /max-height: min\(72vh, 640px\)/);
+  assert.match(src, /yin-coin-panel__btn--chrome-close/);
+  assert.match(src, /dataset\.testid = 'yin-coin-empty'/);
+  assert.match(src, /YIN_COIN_EMPTY_SHELF/);
+  assert.match(src, /color: #2c1f14;\s*opacity: 1;/);
+  assert.doesNotMatch(src, /left: max\(56vw, calc\(100vw - 360px\)\)/);
+  assert.doesNotMatch(src, /max-height: none;/);
 });
 
 test('Collections Bond / busy copy uses the center toast so the panel cannot bury it', () => {
