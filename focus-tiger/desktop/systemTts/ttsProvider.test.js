@@ -41,6 +41,24 @@ describe('systemTts lab probe window', () => {
 });
 
 describe('systemTts ttsProvider', () => {
+  it('uses the system default speech rate without a slowdown offset', () => {
+    const helperSrc = fs.readFileSync(
+      path.join(
+        path.dirname(fileURLToPath(import.meta.url)),
+        '..',
+        'native',
+        'macos-speech-helper.swift'
+      ),
+      'utf8'
+    );
+    assert.match(helperSrc, /func defaultSpeakRate/);
+    assert.match(helperSrc, /return AVSpeechUtteranceDefaultSpeechRate/);
+    assert.doesNotMatch(
+      helperSrc,
+      /AVSpeechUtteranceDefaultSpeechRate\s*-\s*0\.08/
+    );
+  });
+
   it('ships EN/JA probe samples', () => {
     assert.equal(SYSTEM_TTS_PROBE_SAMPLES['en-US'], 'Return to a single breath.');
     assert.equal(SYSTEM_TTS_PROBE_SAMPLES['ja-JP'], '一つの呼吸に戻りましょう。');

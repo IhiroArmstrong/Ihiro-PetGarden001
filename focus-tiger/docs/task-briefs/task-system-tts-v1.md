@@ -1,6 +1,7 @@
 # Task Brief · System TTS V1（系统播报 + 全局声音开关 · macOS）
 
-> **状态（2026-09-29）**：Slice 0 探针已及格；**音色已锁 Joelle（英）+ Otoya（日），均优化音质**；Confide 朗读已合（`task-confide-tts-v1.md`）；**Slice 1b 全局开关 + 专注结束播报** 已开工（`feature/system-tts-slice1` tracker）。  
+> **状态（2026-09-29）**：Slice 0 探针已及格；**音色已锁 Joelle（英）+ Otoya（日），均优化音质**；Confide 朗读已合（`task-confide-tts-v1.md`）；**Slice 1b 全局开关 + 专注结束播报** 已开工（`feature/system-tts-slice1` tracker）。
+> **语速修订（2026-10-12 · PO）**：不再刻意放慢；默认用 `AVSpeechUtteranceDefaultSpeechRate`。音色仍是 Joelle / Otoya 优化音质。  
 > 决策纪要：`decisions/tts-v1-decision-memo.md`  
 > 挂线：Epic **#5** 苹果 DMG（与 Voice Input 同壳；**不**另开语音 Epic）。  
 > 实现须另口令。建议顺序：「开工 System TTS 探针」→（探针及格）「开工 System TTS 播报」。  
@@ -62,7 +63,7 @@
 必须验证：
 
 1. 实验室「Speak test」→ 0–1 秒内开始朗读；英/日各一句样本。
-2. 语速偏慢（禅意、不机械）；可停/可打断（`stopSpeaking`）。
+2. 语速用系统默认（`AVSpeechUtteranceDefaultSpeechRate`，不再 −0.08）；可停/可打断（`stopSpeaking`）。
 3. 无网络依赖；文字不出设备。
 4. 与 STT 探针 **不同时**抢麦；TTS **不需要**麦克风 entitlement。
 5. 与本机陪伴模型同时存在时记 RSS；Focusing 中不偷偷常驻 TTS 进程。

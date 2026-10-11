@@ -13,6 +13,7 @@
 |---|---|
 | **挂载点** | **Confide 出字**：Yin 回复文字出现在面板时 **0–1s 内**开始本机朗读（与文字同步，非对口型）。 |
 | **音色** | 英文 **Joelle（优化音质）**；日文 **Otoya（优化音质）**。两语言均须 `.enhanced` 档；无则同名最接近，仍禁止靠加快语速冒充音量。 |
+| **语速（2026-10-12 · PO）** | 系统默认（`AVSpeechUtteranceDefaultSpeechRate`）。不再用 −0.08 放慢。 |
 | **语言** | 跟随界面语言（`en` → `en-US`，`ja` → `ja-JP`）；不默认中文音色。 |
 | **壳** | **仅 Electron / macOS DMG 宽屏 ≥480px。** Web / PWA / 窄屏 **不露出**。 |
 | **安全** | `safety_redirect` · `aggression_toward_others` **不朗读**，继续纯文字。 |
