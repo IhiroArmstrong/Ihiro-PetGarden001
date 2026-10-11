@@ -574,6 +574,46 @@ export class AmbientSoundscapeController {
   }
 
   /**
+   * Pause the current track for a sit pause. Does not change the saved preference.
+   * @returns {boolean}
+   */
+  holdForSitPause() {
+    if (this._sitPauseHeld) return false;
+    if (!this.isAudiblePlaying()) return false;
+    this._sitPauseHeld = true;
+    try {
+      this._audio?.pause();
+    } catch {
+      /* ignore */
+    }
+    return true;
+  }
+
+  /**
+   * Continue a track that a sit pause held.
+   * @returns {boolean}
+   */
+  releaseSitPause() {
+    if (!this._sitPauseHeld) return false;
+    this._sitPauseHeld = false;
+    const audio = this._audio;
+    if (!audio) return false;
+    audio.muted = false;
+    try {
+      const played = audio.play();
+      if (played && typeof played.catch === 'function') played.catch(() => {});
+    } catch {
+      /* ignore */
+    }
+    return true;
+  }
+
+  /** Drop the hold without starting the track again. */
+  clearSitPauseHold() {
+    this._sitPauseHeld = false;
+  }
+
+  /**
    * 同步静音：可闻时软暂停（保留 src + currentTime）；否则只关偏好。
    * 下次 unmute / 同曲 setTrack 从断点续播（非从头）。
    */

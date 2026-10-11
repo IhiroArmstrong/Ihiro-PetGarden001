@@ -9,7 +9,7 @@
  */
 
 /**
- * @typedef {'pause' | 'resume' | 'add' | 'refuse'} FocusSitAdjustKind
+ * @typedef {'pause' | 'resume' | 'add' | 'end' | 'refuse'} FocusSitAdjustKind
  * @typedef {{
  *   kind: FocusSitAdjustKind,
  *   minutes?: number,
@@ -43,7 +43,7 @@ export function parseFocusSitAdjust(text) {
       normalized
     )
   ) {
-    return { kind: 'refuse', reason: 'use_rise' };
+    return { kind: 'end' };
   }
   if (/^(please )?(pause|pause the timer|pause this sit)( please)?$/.test(normalized)) {
     return { kind: 'pause' };

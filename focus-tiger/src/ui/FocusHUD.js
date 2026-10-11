@@ -6,7 +6,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { focusLevelToHaloVars } from './focusHudHalo.js';
 import { sharedSittingProgressPercent } from './sharedSittingProgress.js';
-import { resolveFocusHudLiveView } from './focusHudLive.js';
+import { resolveFocusHudLiveView, shouldShowFocusLevelPercent } from './focusHudLive.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from '../utils/Constants.js';
 import {
   PRACTICE_STREAK_RING_TOTAL
@@ -150,6 +150,13 @@ export class FocusHUD {
     );
 
     this.levelEl.textContent = `${Math.round(live.level * 100)}%`;
+    const detail = this.root.querySelector('.ft-hud__detail');
+    if (detail) {
+      detail.hidden = !shouldShowFocusLevelPercent({
+        focusing: live.focusing,
+        openEnded: opts.sessionOpenEnded === true
+      });
+    }
     this.timeEl.textContent = this._formatTime(live.elapsedSeconds);
     this.stateEl.textContent = this._stateLabel(live.displayState);
     this._renderSessionTarget(
