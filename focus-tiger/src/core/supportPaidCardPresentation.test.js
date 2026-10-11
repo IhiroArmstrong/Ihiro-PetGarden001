@@ -11,6 +11,7 @@ describe('supportPaidCardPresentation', () => {
   it('hides Pro and add-on before Lifetime, with no settled cards', () => {
     const p = supportPaidCardPresentation({});
     assert.equal(p.sanctuarySettled, false);
+    assert.equal(p.membershipSettled, false);
     assert.equal(p.showPro, true);
     assert.equal(p.showAddon, false);
     assert.equal(p.addonSettled, false);
@@ -34,6 +35,12 @@ describe('supportPaidCardPresentation', () => {
     assert.equal(p.showAddon, true);
     assert.equal(p.addonSettled, true);
     assert.equal(p.sanctuarySettled, true);
+  });
+
+  it('fades the Membership card after an active subscription on device', () => {
+    const p = supportPaidCardPresentation({ membershipActive: true });
+    assert.equal(p.membershipSettled, true);
+    assert.equal(p.sanctuarySettled, false);
   });
 
   it('omits the web Local AI note inside the Electron shell', () => {
