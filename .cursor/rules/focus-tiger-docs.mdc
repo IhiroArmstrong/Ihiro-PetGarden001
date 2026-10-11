@@ -110,6 +110,7 @@ alwaysApply: false
 ## 开发时勿踩
 
 - 不要在情绪主线任务里实现纪念奖励/成就墙 / 3D 公仔柜 / 数字木鱼等 Backlog。
+- **卡片不许另起炉灶**：浮动设置卡 / 菜单卡 / 说明卡必须用 `glassPanelStyles.js` 暖米玻璃。禁止深色底、禁止近乎不透明厚卡片。SSOT：`SANCTUARY_UI_ART_DIRECTION.md` 与 `glassPanelStyles.js`。
 - 不要把负面「惩罚用户」叙事写回睡眠/中断反馈。  
 - 改情绪表现先改 `EMOTION_BIBLE.md`（或本任务已书面确认），再写代码。
 - 预览浏览器与能耗 / 进程收尾 / Cloud 独立会话提醒 → `focus-tiger-browser-energy.mdc`（`RULES_INDEX` → `browser-energy`）；勿在本文件复述条款。
