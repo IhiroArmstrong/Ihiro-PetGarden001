@@ -4,22 +4,22 @@
  */
 
 /**
- * Radial fan: Home · Calendar · Collection.
- * Anchors to compass chrome or ⋯ menu button.
+ * Corner fan: round Home · Calendar · Collection icons.
+ * The hinge stays under the language globe, whichever control opened it.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { markHomeSanctuaryNavSeen } from '../core/homeSanctuaryNavGate.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
-import {
-  GLASS_BLUR_CSS,
-  GLASS_BORDER,
-  GLASS_FILL,
-  GLASS_RADIUS,
-  GLASS_SHADOW
-} from './glassPanelStyles.js';
 
 const STYLE_ID = 'home-sanctuary-nav-fan-styles-v1';
+
+const FAN_ICON = {
+  home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2 4 11h2.2v7.2h4.3v-4.4h3v4.4h4.3V11H20L12 4.2z"/></svg>',
+  calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 3.5h2V6h6V3.5h2V6H19a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V3.5zM5 11v8h14v-8H5z"/></svg>',
+  collection: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2c2.8 2.2 4.6 3.4 4.6 6.1 0 2.6-2 4.7-4.6 4.7S7.4 11.9 7.4 9.3c0-2.7 1.8-3.9 4.6-6.1zM6.2 16.2h11.6c.7 1.2.4 2.6-.8 3.2-1.5.8-3.4 1.1-5 1.1s-3.5-.3-5-1.1c-1.2-.6-1.5-2-.8-3.2z"/></svg>'
+};
+
 const HEATMAP_HIGHLIGHT_CLASS = 'is-sanctuary-nav-highlight';
 const HEATMAP_HIGHLIGHT_MS = 2200;
 
@@ -73,6 +73,13 @@ export class HomeSanctuaryNavFanUI {
       btn.dataset.dest = dest;
       btn.dataset.testid = `home-sanctuary-nav-${dest}`;
       btn.setAttribute('role', 'menuitem');
+      const disc = document.createElement('span');
+      disc.className = 'home-sanctuary-nav-fan__disc';
+      disc.setAttribute('aria-hidden', 'true');
+      disc.innerHTML = FAN_ICON[dest];
+      const label = document.createElement('span');
+      label.className = 'home-sanctuary-nav-fan__label';
+      btn.append(disc, label);
       btn.addEventListener('click', (ev) => {
         ev.stopPropagation();
         this._choose(dest);
@@ -80,6 +87,7 @@ export class HomeSanctuaryNavFanUI {
       this.items[dest] = btn;
       this.root.appendChild(btn);
     }
+    this._layoutArc();
 
     mountRoot.append(this.backdrop, this.root);
 
@@ -113,17 +121,8 @@ export class HomeSanctuaryNavFanUI {
     markHomeSanctuaryNavSeen(this._storage);
     this.handlers.onOpen?.();
 
-    const anchor = opts.anchorEl;
-    const rect = anchor?.getBoundingClientRect?.();
-    const rawX = rect
-      ? rect.left + rect.width / 2
-      : window.innerWidth / 2;
-    const rawY = rect ? rect.top + rect.height / 2 : window.innerHeight * 0.78;
-    const cx = Math.min(window.innerWidth - 128, Math.max(128, rawX));
-    const cy = Math.min(window.innerHeight - 56, Math.max(128, rawY));
-
-    this.root.style.setProperty('--fan-anchor-x', `${cx}px`);
-    this.root.style.setProperty('--fan-anchor-y', `${cy}px`);
+    void opts;
+    this._placeCorner();
 
     this.backdrop.hidden = false;
     this.root.hidden = false;
@@ -184,7 +183,10 @@ export class HomeSanctuaryNavFanUI {
   _choose(dest) {
     this.close();
     requestAnimationFrame(() => {
-      if (dest === 'home') this.handlers.onHome?.();
+      if (dest === 'home') {
+        this._ackHome();
+        this.handlers.onHome?.();
+      }
       else if (dest === 'calendar') {
         this.handlers.onCalendar?.();
         HomeSanctuaryNavFanUI.highlightPracticeCalendar();
@@ -195,12 +197,71 @@ export class HomeSanctuaryNavFanUI {
   /** @returns {void} */
   _refreshLabels() {
     this.root.setAttribute('aria-label', t('SANCTUARY_NAV_FAN_ARIA'));
-    this.items.home.textContent = t('SANCTUARY_NAV_HOME');
-    this.items.home.setAttribute('aria-label', t('SANCTUARY_NAV_HOME'));
-    this.items.calendar.textContent = t('SANCTUARY_NAV_CALENDAR');
-    this.items.calendar.setAttribute('aria-label', t('SANCTUARY_NAV_CALENDAR'));
-    this.items.collection.textContent = t('SANCTUARY_NAV_COLLECTION');
-    this.items.collection.setAttribute('aria-label', t('SANCTUARY_NAV_COLLECTION'));
+    const labels = {
+      home: t('SANCTUARY_NAV_HOME'),
+      calendar: t('SANCTUARY_NAV_CALENDAR'),
+      collection: t('SANCTUARY_NAV_COLLECTION')
+    };
+    for (const dest of Object.keys(labels)) {
+      const btn = this.items[dest];
+      const label = btn.querySelector('.home-sanctuary-nav-fan__label');
+      if (label) label.textContent = labels[dest];
+      btn.setAttribute('aria-label', labels[dest]);
+    }
+  }
+
+  /**
+   * Hinge sits under the language globe. Every entry opens this same corner.
+   * @returns {void}
+   */
+  _placeCorner() {
+    const fab = document.getElementById('language-preference-fab');
+    const rect = fab?.getBoundingClientRect?.();
+    const shown = fab ? getComputedStyle(fab) : null;
+    const visible = Boolean(
+      rect &&
+        rect.width >= 8 &&
+        rect.height >= 8 &&
+        shown &&
+        shown.display !== 'none' &&
+        shown.visibility !== 'hidden'
+    );
+    const x = visible ? rect.left + rect.width / 2 : window.innerWidth - 28;
+    const y = visible ? rect.bottom + 30 : window.innerHeight - 28;
+    const cx = Math.min(window.innerWidth - 24, Math.max(24, x));
+    const cy = Math.min(window.innerHeight - 20, Math.max(96, y));
+    this.root.style.setProperty('--fan-anchor-x', `${cx}px`);
+    this.root.style.setProperty('--fan-anchor-y', `${cy}px`);
+    this.root.dataset.fanAnchor = 'corner';
+    this._layoutArc();
+  }
+
+  /** @returns {void} */
+  _layoutArc() {
+    const spots = {
+      home: { deg: 135, r: 132 },
+      calendar: { deg: 172, r: 108 },
+      collection: { deg: 100, r: 108 }
+    };
+    for (const dest of Object.keys(spots)) {
+      const spot = spots[dest];
+      const rad = (spot.deg * Math.PI) / 180;
+      const btn = this.items[dest];
+      btn.style.left = `${Math.cos(rad) * spot.r}px`;
+      btn.style.top = `${-Math.sin(rad) * spot.r}px`;
+    }
+  }
+
+  /** @returns {void} */
+  _ackHome() {
+    const ball =
+      document.getElementById('ft-wide-home-sanctuary-nav') ||
+      document.getElementById('ft-narrow-home-sanctuary-nav');
+    if (!ball) return;
+    ball.classList.remove('is-home-ack');
+    void ball.offsetWidth;
+    ball.classList.add('is-home-ack');
+    window.setTimeout(() => ball.classList.remove('is-home-ack'), 700);
   }
 
   _injectStyles() {
@@ -247,42 +308,52 @@ export class HomeSanctuaryNavFanUI {
       }
       .home-sanctuary-nav-fan__item {
         position: absolute;
-        pointer-events: auto;
-        min-width: 88px;
-        padding: 10px 14px;
-        border-radius: ${GLASS_RADIUS};
-        border: ${GLASS_BORDER};
-        background: ${GLASS_FILL};
-        backdrop-filter: ${GLASS_BLUR_CSS};
-        -webkit-backdrop-filter: ${GLASS_BLUR_CSS};
-        box-shadow: ${GLASS_SHADOW};
-        color: rgba(74, 58, 40, 0.92);
-        font-size: 0.78rem;
-        font-weight: 650;
-        letter-spacing: 0.01em;
+        width: 72px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #2c1f14;
+        font: 600 11px/1.15 var(--ft-font-ui, system-ui, sans-serif);
         cursor: pointer;
-        white-space: nowrap;
-        transform: translate(-50%, -50%);
-        transition: transform 120ms ease, filter 120ms ease;
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        transform: translate(-50%, -50%) scale(0.55);
+        opacity: 0;
+        transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
       }
-      .home-sanctuary-nav-fan__item:hover {
-        filter: brightness(1.03);
+      .home-sanctuary-nav-fan.is-visible .home-sanctuary-nav-fan__item {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
       }
-      .home-sanctuary-nav-fan__item:active {
-        transform: translate(-50%, -50%) scale(0.96);
+      .home-sanctuary-nav-fan__item[data-dest="calendar"] { transition-delay: 40ms; }
+      .home-sanctuary-nav-fan__item[data-dest="collection"] { transition-delay: 70ms; }
+      .home-sanctuary-nav-fan__item:active .home-sanctuary-nav-fan__disc {
+        transform: scale(0.96);
       }
-      .home-sanctuary-nav-fan__item[data-dest="home"] {
-        left: 0;
-        top: -92px;
+      .home-sanctuary-nav-fan__disc {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: radial-gradient(circle at 32% 28%, #fffdf8, #f4ecdf 58%, #e6d7c2);
+        border: 1px solid rgba(139, 115, 85, 0.28);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 10px 18px rgba(44, 31, 20, 0.16);
+        color: #4a3a28;
       }
-      .home-sanctuary-nav-fan__item[data-dest="calendar"] {
-        left: -96px;
-        top: -36px;
+      .home-sanctuary-nav-fan__disc svg { width: 26px; height: 26px; display: block; }
+      .home-sanctuary-nav-fan__label {
+        max-width: 76px;
+        text-align: center;
+        text-shadow: 0 1px 0 rgba(255, 252, 245, 0.95);
       }
-      .home-sanctuary-nav-fan__item[data-dest="collection"] {
-        left: 96px;
-        top: -36px;
-      }
+
       #weekly-practice-heatmap-cluster.${HEATMAP_HIGHLIGHT_CLASS} {
         outline: 2px solid rgba(74, 143, 212, 0.55);
         outline-offset: 4px;
@@ -304,6 +375,15 @@ export class HomeSanctuaryNavFanUI {
         box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.95);
         pointer-events: none;
         animation: ft-home-sanctuary-nav-pulse 1.45s ease-in-out infinite;
+      }
+      #ft-wide-home-sanctuary-nav.is-home-ack,
+      #ft-narrow-home-sanctuary-nav.is-home-ack {
+        animation: ft-home-ack 640ms ease;
+      }
+      @keyframes ft-home-ack {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.08); }
+        100% { transform: scale(1); }
       }
       @keyframes ft-home-sanctuary-nav-pulse {
         0%, 100% { opacity: 1; transform: scale(1); }
