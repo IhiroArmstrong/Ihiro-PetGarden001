@@ -150,6 +150,22 @@ describe('privacyNoticeCopy', () => {
     assert.match(support, /SUPPORT_DESKTOP_RAM_NOTE/);
   });
 
+  it('purpose card stacks brand, desktop note, link rows, then colophon', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const purpose = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
+    assert.match(
+      purpose,
+      /card\.append\(brand, desktopRam, links, colophon, actions\)/
+    );
+    assert.match(
+      purpose,
+      /links\.append\(helpCenter, wellness, privacy, todayDirection\)/
+    );
+    assert.match(purpose, /onboarding-app-purpose__links/);
+    assert.match(purpose, /onboarding-app-purpose__row::after/);
+    assert.match(purpose, /\.onboarding-app-purpose__body \{[^}]*font-style: normal/);
+  });
+
   it('en + ja + zh YPE consent copy avoids forbidden terms', () => {
     for (const file of ['en.json', 'ja.json', 'zh.json']) {
       const map = loadLocale(file);

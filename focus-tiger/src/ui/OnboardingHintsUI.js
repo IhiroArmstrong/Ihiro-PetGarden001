@@ -7,10 +7,11 @@
  * Hint 产品面（2026-08-04 收窄）：只保留两件事——
  * 1) 薄荷绿脉冲点悬停 → 看该条 tip；指针离开 → 立刻收起
  *    （Focus HUD 三条例外：不画脉冲点，悬停控件本身出 tip，同「?」）
- * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips
- *    （含 wellness 非诊疗免责区块 `.onboarding-app-purpose__wellness`
- *     + Electron 桌面内存说明 `.onboarding-app-purpose__desktop-ram`
- *     + 末尾 colophon `.onboarding-app-purpose__colophon`）
+ * 2) 「?」点击或悬停 → 只出产品简介卡（`#onboarding-app-purpose`），绝不喷本页其它 tips。
+ *    卡内四块：品牌 `.onboarding-app-purpose__brand`、
+ *    Electron 桌面内存说明 `.onboarding-app-purpose__desktop-ram`、
+ *    列表 `.onboarding-app-purpose__links`（帮助中心 / 免责 / Privacy）、
+ *    末尾 colophon `.onboarding-app-purpose__colophon` + Got it。
  * 默认不自动弹出 `#onboarding-wellness-first`（吓跑用户）；QA 仅 `?wellnessFirst=1`。
  * 不再：自动 tip 喷洒、点「?」补救铺开、More tips 芯片。
  * @see ONBOARDING_HINTS.md
@@ -1874,12 +1875,17 @@ export class OnboardingHintsUI {
     card.setAttribute('role', 'dialog');
     card.setAttribute('aria-labelledby', 'onboarding-app-purpose-title');
 
+    const brand = document.createElement('div');
+    brand.className = 'onboarding-app-purpose__brand';
+
     const title = document.createElement('h2');
     title.id = 'onboarding-app-purpose-title';
     title.className = 'onboarding-app-purpose__title';
 
     const body = document.createElement('p');
     body.className = 'onboarding-app-purpose__body';
+
+    brand.append(title, body);
 
     const wellness = document.createElement('div');
     wellness.className = 'onboarding-app-purpose__wellness';
@@ -1891,7 +1897,8 @@ export class OnboardingHintsUI {
 
     const wellnessLink = document.createElement('button');
     wellnessLink.type = 'button';
-    wellnessLink.className = 'onboarding-app-purpose__wellness-link';
+    wellnessLink.className =
+      'onboarding-app-purpose__row onboarding-app-purpose__wellness-link';
     wellnessLink.dataset.testid = 'onboarding-purpose-wellness-link';
     wellnessLink.addEventListener('click', (event) => {
       event.preventDefault();
@@ -1917,7 +1924,8 @@ export class OnboardingHintsUI {
 
     const todayDirection = document.createElement('button');
     todayDirection.type = 'button';
-    todayDirection.className = 'onboarding-app-purpose__today-direction';
+    todayDirection.className =
+      'onboarding-app-purpose__row onboarding-app-purpose__today-direction';
     todayDirection.dataset.testid = 'onboarding-purpose-today-direction';
     todayDirection.hidden = true;
     todayDirection.addEventListener('click', (event) => {
@@ -1928,7 +1936,8 @@ export class OnboardingHintsUI {
 
     const helpCenter = document.createElement('button');
     helpCenter.type = 'button';
-    helpCenter.className = 'onboarding-app-purpose__help-center';
+    helpCenter.className =
+      'onboarding-app-purpose__row onboarding-app-purpose__help-center';
     helpCenter.dataset.testid = 'onboarding-purpose-help-center';
     helpCenter.hidden = true;
     helpCenter.addEventListener('click', (event) => {
@@ -1940,9 +1949,13 @@ export class OnboardingHintsUI {
     const actions = document.createElement('div');
     actions.className = 'onboarding-app-purpose__actions';
 
+    const links = document.createElement('div');
+    links.className = 'onboarding-app-purpose__links';
+
     const privacy = document.createElement('button');
     privacy.type = 'button';
-    privacy.className = 'onboarding-app-purpose__privacy';
+    privacy.className =
+      'onboarding-app-purpose__row onboarding-app-purpose__privacy';
     privacy.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -1973,17 +1986,9 @@ export class OnboardingHintsUI {
 
     colophon.append(colophonMark, colophonByline, colophonCopy);
 
-    actions.append(privacy, dismiss);
-    card.append(
-      title,
-      body,
-      wellness,
-      desktopRam,
-      todayDirection,
-      helpCenter,
-      actions,
-      colophon
-    );
+    links.append(helpCenter, wellness, privacy, todayDirection);
+    actions.append(dismiss);
+    card.append(brand, desktopRam, links, colophon, actions);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
@@ -2864,6 +2869,11 @@ export class OnboardingHintsUI {
       .ft-hint-catalog-chip:active {
         transform: scale(0.97);
       }
+      .onboarding-app-purpose__brand {
+        margin: 0 0 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(92, 122, 108, 0.18);
+      }
       .onboarding-app-purpose__title {
         margin: 0 0 8px;
         font-size: 15px;
@@ -2873,88 +2883,70 @@ export class OnboardingHintsUI {
         color: #2f463c;
       }
       .onboarding-app-purpose__body {
-        margin: 0 0 12px;
+        margin: 0;
         font-size: 13px;
-        font-style: italic;
+        font-style: normal;
         font-weight: 500;
         line-height: 1.5;
         color: #3a5348;
         white-space: pre-line;
       }
+      .onboarding-app-purpose__links {
+        margin: 4px 0 0;
+        border-top: 1px solid rgba(92, 122, 108, 0.18);
+      }
       .onboarding-app-purpose__wellness {
-        margin: 0 0 12px;
-        padding: 0;
+        margin: 0;
+        padding: 8px 2px 0;
         border: 0;
         background: transparent;
       }
       .onboarding-app-purpose__wellness-summary {
-        margin: 0 0 6px;
+        margin: 0;
         font-size: 12px;
         font-style: normal;
         font-weight: 500;
         line-height: 1.5;
         color: #4a6358;
       }
-      .onboarding-app-purpose__wellness-link {
+      .onboarding-app-purpose__row {
         appearance: none;
-        display: inline;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        column-gap: 8px;
+        width: 100%;
         margin: 0;
-        padding: 0;
+        padding: 10px 2px;
         border: 0;
+        border-bottom: 1px solid rgba(92, 122, 108, 0.12);
         background: transparent;
-        font-size: 12px;
+        font-family: inherit;
+        font-size: 13px;
         font-weight: 600;
-        line-height: 1.45;
-        color: #3f5c50;
-        text-decoration: underline;
-        text-underline-offset: 2px;
-        cursor: pointer;
-      }
-      .onboarding-app-purpose__wellness-link:hover {
+        font-style: normal;
+        line-height: 1.4;
         color: #2f463c;
-      }
-      .onboarding-app-purpose__today-direction {
-        appearance: none;
-        display: block;
-        width: 100%;
-        margin: 0 0 10px;
-        padding: 0;
-        border: 0;
-        background: transparent;
         text-align: left;
-        font-size: 12px;
-        font-weight: 600;
-        line-height: 1.45;
-        color: #3f5c50;
-        text-decoration: underline;
-        text-underline-offset: 2px;
+        text-decoration: none;
         cursor: pointer;
       }
-      .onboarding-app-purpose__today-direction:hover {
-        color: #2f463c;
+      .onboarding-app-purpose__row::after {
+        content: "→";
+        font-weight: 500;
+        opacity: 0.55;
       }
-      .onboarding-app-purpose__today-direction[hidden] {
-        display: none !important;
+      .onboarding-app-purpose__row:hover {
+        color: #1f332b;
       }
-      .onboarding-app-purpose__help-center {
-        display: block;
-        width: 100%;
-        margin: 0 0 10px;
-        padding: 8px 10px;
-        border: 0;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.35);
-        font-size: 12px;
-        font-weight: 600;
-        line-height: 1.45;
-        color: #3f5c50;
-        text-align: left;
-        cursor: pointer;
+      .onboarding-app-purpose__row:active {
+        background: rgba(255, 255, 255, 0.45);
       }
-      .onboarding-app-purpose__help-center:hover {
-        background: rgba(255, 255, 255, 0.5);
+      .onboarding-app-purpose__row:focus-visible {
+        outline: 2px solid #5c7a6c;
+        outline-offset: 2px;
       }
-      .onboarding-app-purpose__help-center[hidden] {
+      .onboarding-app-purpose__row[hidden] {
         display: none !important;
       }
       .onboarding-wellness-detail {
@@ -3006,10 +2998,10 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose__desktop-ram {
         margin: 0 0 12px;
-        padding: 10px 10px 8px;
-        border-radius: 10px;
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        background: rgba(255, 252, 245, 0.42);
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(139, 115, 85, 0.18);
+        background: rgba(255, 252, 245, 0.55);
       }
       .onboarding-app-purpose__desktop-ram[hidden] {
         display: none;
@@ -3032,31 +3024,12 @@ export class OnboardingHintsUI {
       }
       .onboarding-app-purpose__actions {
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px 12px;
-      }
-      .onboarding-app-purpose__privacy {
-        margin: 0;
-        padding: 0;
-        border: none;
-        background: transparent;
-        color: #3a5348;
-        font-family: inherit;
-        font-size: 12.5px;
-        font-weight: 600;
-        font-style: normal;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-        cursor: pointer;
-      }
-      .onboarding-app-purpose__privacy:hover {
-        color: #2f463c;
+        justify-content: center;
+        margin-top: 12px;
       }
       .onboarding-app-purpose__dismiss {
         display: inline-block;
-        margin: 0 0 0 auto;
+        margin: 0;
         padding: 6px 14px;
         border-radius: 999px;
         border: 1px solid rgba(92, 122, 108, 0.45);
@@ -3067,6 +3040,9 @@ export class OnboardingHintsUI {
         font-weight: 600;
         font-style: normal;
         cursor: pointer;
+      }
+      .onboarding-app-purpose__dismiss:active {
+        background: rgba(255, 255, 255, 0.85);
       }
       .onboarding-app-purpose__dismiss:hover {
         background: rgba(255, 255, 255, 0.8);
