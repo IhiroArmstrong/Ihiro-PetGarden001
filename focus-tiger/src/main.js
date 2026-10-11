@@ -1552,7 +1552,9 @@ async function init() {
   const tipKindnessBadgesChrome = new TipKindnessBadgesChrome(document.body, {});
   window.__tipKindnessBadges = tipKindnessBadgesChrome;
   const badgeAwardMomentUI = new BadgeAwardMomentUI(document.body);
-  const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {});
+  const sanctuaryEnsoMarkChrome = new SanctuaryEnsoMarkChrome(document.body, {
+    getDisplayRect: () => spritePlayer.getDisplayRect()
+  });
   window.__sanctuaryEnsoMark = sanctuaryEnsoMarkChrome;
   const quietTogetherLanternsChrome = new QuietTogetherLanternsChrome(
     document.body,
@@ -4773,7 +4775,7 @@ async function init() {
     sessionCues.startIntervalSession();
     supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
-    // Enso stays in the page corner during Focusing — fade only (Brief opacity 0.45–0.55).
+    // Enso stays on cushion during Focusing — fade only (Brief opacity 0.45–0.55).
     sanctuaryEnsoMarkChrome.setVisible(true);
     sanctuaryEnsoMarkChrome.setFocusing(true);
     activeRecoverAnchor.setFocusing(true);
