@@ -35,10 +35,7 @@ def _subject_mask(rgb: np.ndarray, bg: np.ndarray) -> np.ndarray:
     diff = np.sqrt(np.sum((rgb.astype(np.float32) - bg) ** 2, axis=2))
     mask = diff > 20
 
-    # Top-left AI watermark band
-    watermark = np.zeros((h, w), dtype=bool)
-    watermark[: int(h * 0.09), : int(w * 0.2)] = True
-    mask &= ~watermark
+    mask &= ~_watermark_band_shape(h, w)
 
     # Drop isolated specks
     from scipy import ndimage
@@ -46,6 +43,26 @@ def _subject_mask(rgb: np.ndarray, bg: np.ndarray) -> np.ndarray:
     mask = ndimage.binary_opening(mask, iterations=1)
     mask = ndimage.binary_closing(mask, iterations=2)
     return mask
+
+
+def _watermark_band_shape(h: int, w: int) -> np.ndarray:
+    band = np.zeros((h, w), dtype=bool)
+    band[: int(h * 0.09), : int(w * 0.2)] = True
+    return band
+
+
+def ingest_master_watermark_only(src: Path) -> Image.Image:
+    """Keep Jimeng flat background; paint over top-left AI watermark with corner bg."""
+    im = Image.open(src).convert("RGBA")
+    arr = np.array(im)
+    rgb = arr[:, :, :3].copy()
+    h, w = rgb.shape[:2]
+    bg = _corner_bg(rgb)
+    rgb[_watermark_band_shape(h, w)] = bg.astype(np.uint8)
+    out = np.zeros((h, w, 4), dtype=np.uint8)
+    out[:, :, :3] = rgb
+    out[:, :, 3] = 255
+    return Image.fromarray(out)
 
 
 def ingest_master(src: Path) -> Image.Image:
@@ -92,8 +109,14 @@ def to_preview(master: Image.Image, size: int = PREVIEW_SIZE) -> Image.Image:
     return canvas
 
 
-def process_file(src: Path, preview_out: Path, master_out: Path | None = None) -> None:
-    master = ingest_master(src)
+def process_file(
+    src: Path,
+    preview_out: Path,
+    master_out: Path | None = None,
+    *,
+    watermark_only: bool = False,
+) -> None:
+    master = ingest_master_watermark_only(src) if watermark_only else ingest_master(src)
     preview = to_preview(master)
     preview_out.parent.mkdir(parents=True, exist_ok=True)
     preview.save(preview_out, "PNG", optimize=True)
@@ -109,11 +132,17 @@ def main() -> None:
     parser.add_argument("src")
     parser.add_argument("preview_out")
     parser.add_argument("--master-out")
+    parser.add_argument(
+        "--watermark-only",
+        action="store_true",
+        help="flat background sources: paint over AI watermark only (no chroma cutout)",
+    )
     args = parser.parse_args()
     process_file(
         Path(args.src),
         Path(args.preview_out),
         Path(args.master_out) if args.master_out else None,
+        watermark_only=args.watermark_only,
     )
 
 

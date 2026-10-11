@@ -72,7 +72,7 @@
 | 字段 | 值 |
 |---|---|
 | `prod_worker_version` | `2ac135c3-8cf2-4f7e-a6fc-1d6deecf2759` |
-| `prod_verified_at` | 2026-10-11（本机 `wrangler deploy` · 源 `origin/develop` `2fb19eaf` · **#1126** 哥窑 `ge-crackle-1010-g1` / `g2` + `hd-g1-01`…`05` / `hd-g2-01`…`05`（R2 已存）· `POST create-art-collection-checkout-session` → Stripe URL OK · `GET /health` OK）。与 develop 对齐：含 **#1123** 请茶 `hd-tg-01`、**#1124** 磁州窑 `cizhou-red-green-five`、**#1126** 哥窑两套五件。 |
+| `prod_verified_at` | 2026-10-11（本机 `wrangler deploy` · 源 `origin/develop` `2fb19eaf` · **#1126** 哥窑 `ge-crackle-1010-g1` / `g2` + `hd-g1-01`…`05` / `hd-g2-01`…`05`（R2 已存）· `POST create-art-collection-checkout-session` → Stripe URL OK · `GET /health` OK）。与 develop 对齐：含 **#1123** 请茶 `hd-tg-01`、**#1124** 磁州窑 `cizhou-red-green-five`、**#1126** 哥窑两套五件。**2026-10-11 晚**：哥窑 1010 预览与 R2 `hd-g1-*` / `hd-g2-*` 已用「只去水印」重导（见 `fix/ge-crackle-1010-watermark-reingest`），覆盖 #1126 误跑透明抠图版。 |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
