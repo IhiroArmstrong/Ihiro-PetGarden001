@@ -1,0 +1,64 @@
+---
+description: 受保护路径（付款/解锁/请茶等）的底线。每次对话都生效。
+alwaysApply: true
+---
+
+# 受保护路径（Protected Paths）
+
+索引：`RULES_INDEX.md` → `protected-paths`。层级数字 SSOT 仍是 [`focus-tiger/docs/Z_INDEX.md`](../../focus-tiger/docs/Z_INDEX.md)，本文件不另造 z-index 表。
+
+以下入口涉及钱或已付费权益，**不能被其它改动误伤**（选择器 / 文件以代码为准）：
+
+- 右上 Support FAB：`#yin-support-fab` · `[data-testid=yin-support-fab]` · `src/ui/SupportYinModalUI.js`
+- Support 三卡模态：`#yin-support-modal` · 遮罩 `#yin-support-backdrop`
+- Focus Tiger Pro / Subscribe：`[data-testid=yin-support-pro-cta]`（卡 `[data-testid=yin-support-pro-card]`）
+- 加入会员：`[data-testid=yin-support-membership-cta]` → `#yin-membership-card` · `MembershipUnlockUI.js`
+- 解锁 Sanctuary：`[data-testid=yin-support-sanctuary-cta]` → `#yin-sanctuary-card` · `SanctuaryUnlockUI.js`
+- 请茶：`[data-testid=yin-support-tea-cta]` → `#yin-tip-jar-card` · `TipJarUI.js`
+- Lifetime 后加购：`[data-testid=yin-support-companion-addon-cta]`
+- Support 关闭钮：`[data-testid=yin-support-close]`
+- 结账发起：`/api/create-pro-checkout-session` · `create-membership-checkout-session` · `create-sanctuary-checkout-session` · `create-tip-checkout-session` · `create-companion-addon-checkout-session` · `create-art-collection-checkout-session`
+- 已购淡化：`supportPaidCardPresentation.js`（Lifetime 已购不得再开 Stripe）
+- 玻璃卡叠层例外：`glassCardDeck.js` 的 `GLASS_CARD_KEEP_STYLESHEET_Z`（`#yin-support-modal` 不得被写成 inline 18/19）
+
+## 动手前必须做
+
+改动碰到下列任一项时，**先在回复里列出影响面，再写代码**：
+
+1. 共享层：`z-index`、`position`、`pointer-events`、遮罩/overlay、全局 CSS、`document`/`body` 级监听
+2. 通用函数（如 `bringGlassCardToFront`）会作用于多张卡片/弹窗
+3. 拖拽、叠层、动画会改变位置或层级
+
+影响面格式：
+
+- 作用于哪些元素？（选择器或范围）
+- 是否包含受保护路径？是 / 否，依据
+- 若可能包含：怎么排除
+
+## 显式加入，不要默认全选
+
+- 新增通用行为只作用于带明确标记的元素（`[data-ft-glass-card]` / 将来的 `data-glass-deck`）。
+- **禁止**「所有居中卡片都……」。
+- 受保护路径默认不进这类标记；`#yin-support-modal` 即便曾进过玻璃卡名单，也必须走 `GLASS_CARD_KEEP_STYLESHEET_Z` 豁免，不得拖移、不得 inline 压到遮罩下。
+
+## 完成前必须做
+
+动了受保护路径或上面「共享层」时，必须跑付款可点击契约测试，并在回复里贴命令和结果：
+
+```bash
+cd focus-tiger && npm run test:payment-contract
+```
+
+该命令会进 `test:e2e:smoke` / `test:pr-smoke`，PR 的 `test:pr-smoke` check 不过不能合。
+
+测试没跑、跑不了或失败 → 必须写「未验证」，**禁止**写「已修好」。CI 没绿、用户没在真实环境点过之前，状态只能是「待验证」。
+
+## 修 bug
+
+- 每个 bug 修复必须带一条**撤掉修复就会红**的回归测试。
+- 回复说明：「这条测试在没修之前会红，因为……」。
+- 不允许只改代码、不加测试。
+
+## 范围克制
+
+只改完成任务所需的文件。顺手发现的无关问题记下来告诉用户，不要顺手改。一个 PR 只做一件事。

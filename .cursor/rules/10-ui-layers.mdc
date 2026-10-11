@@ -1,0 +1,38 @@
+---
+description: UI 层级与遮罩。改样式、弹窗、卡片、遮罩时生效。
+globs:
+  - "focus-tiger/src/ui/**"
+  - "focus-tiger/index.html"
+  - "focus-tiger/**/*.css"
+---
+
+# UI 层级规则
+
+层级数字的**唯一登记表**是 [`focus-tiger/docs/Z_INDEX.md`](../../focus-tiger/docs/Z_INDEX.md)（`RULES_INDEX` → `z-index-registry`）。本文件不另造分配表。
+
+机器检查：`cd focus-tiger && npm run check:z-index`（未登记的 `position: fixed` 会红）。受保护栈顺序另见 `scripts/protected-path-layer-check.js`（进 `docs:check`）。
+
+## 1. 数字 z-index 必须能在登记表对上
+
+- **禁止**在 `Z_INDEX.md` 以外新增未登记的层。
+- **禁止**对受保护路径写 JS inline `z-index`（`el.style.zIndex = 19` 这类）。需要改层级时切换 class / `data-`，或走 `glassCardInlineZIndex`（Support 模态必须返回 `null`，保留样式表 26）。
+- 全仓 CSS 变量化（`--z-support-modal` 等）是后续任务，**本规则不要求**顺手把现有数字改成变量。现网仍是文件内数字 + 登记表。
+
+## 2. 受保护栈顺序（硬约束）
+
+```
+玻璃卡叠层 18/19  <  Support 遮罩 25  <  Support 大卡 26  <  Sanctuary 解锁卡 27
+```
+
+任何改动让 Support 大卡落到遮罩下面，视为严重错误（点 Subscribe 等于点关卡）。
+
+## 3. 遮罩与点击
+
+- 新增或修改 dim/overlay 时，必须检查会不会盖住受保护主按钮。
+- 验证：按钮中心点 `document.elementFromPoint` 命中按钮本身或其子元素。命令：`npm run test:payment-contract`。
+- 遮罩 `pointer-events` 不得拦截受保护路径点击（Support 遮罩仅在 `.is-visible` 时 `auto`）。
+
+## 4. 通用行为作用范围
+
+- 叠层、拖拽、最多保留 N 张：选择器必须是显式标记（`[data-ft-glass-card="1"]`），不得用「所有居中卡片」。
+- 同一共享层不要连续合并多条；一条合入并通过付款契约后再开下一条。

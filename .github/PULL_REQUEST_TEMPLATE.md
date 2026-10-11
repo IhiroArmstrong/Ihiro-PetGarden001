@@ -113,3 +113,19 @@
 ## 关联
 
 <!-- Task / TEST_TRACKER 行号 / 用户反馈原文（如有） -->
+
+---
+
+## 受保护路径 / 付款契约（触及 Support、z-index、遮罩、玻璃卡则必填）
+
+> 权威：`.cursor/rules/00-protected-paths.mdc`（`RULES_INDEX` → `protected-paths`）· 层级登记：`focus-tiger/docs/Z_INDEX.md`
+
+- [ ] **未**改 `z-index` / `pointer-events` / overlay / 全局选择器 / 玻璃卡通用函数 / Support 结账 → 勾此项并跳过下面
+- [ ] 影响面：作用于哪些元素？其中是否含 `#yin-support-modal` 及 Pro/会员/解锁/请茶/加购/关闭 CTA？隔离措施：________
+- [ ] 新增通用行为是显式加入（`[data-ft-glass-card]` 等），不是「所有居中卡片」
+- [ ] 已跑付款可点击契约：`cd focus-tiger && npm run test:payment-contract` → ✅ / ❌ / 未跑（原因）
+- [ ] 修 bug：回归测试文件/用例 + 「没修之前会红，因为……」
+- [ ] 状态：**待验证**（默认） / 已验证（仅当 CI 绿且真实环境点过）
+
+> 动了共享层或受保护路径时，`test:payment-contract` 必须是 ✅（已并入 `test:pr-smoke`）。没跑或失败不要写「已修好」。
+

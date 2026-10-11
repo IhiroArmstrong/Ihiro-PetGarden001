@@ -54,6 +54,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-background-network.mdc',
   '.cursor/rules/focus-tiger-chat-openable-file-links.mdc',
   '.cursor/rules/focus-tiger-user-action-steps.mdc',
+  '.cursor/rules/00-protected-paths.mdc',
+  '.cursor/rules/10-ui-layers.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
@@ -1081,7 +1083,43 @@ export const RULE_AUTHORITY_TOPICS = [
     forbiddenOutsideSsot: []
   },
   {
+    id: 'protected-paths',
+    title: '受保护路径（付款/解锁/请茶）与付款可点击契约',
+    ssotPath: '.cursor/rules/00-protected-paths.mdc',
+    ssotSection: '受保护路径（Protected Paths）',
+    ssotMustContain: [
+      /#yin-support-modal/,
+      /yin-support-pro-cta/,
+      /test:payment-contract/,
+      /GLASS_CARD_KEEP_STYLESHEET_Z/
+    ],
+    topicSignals: [
+      /protected-paths/,
+      /付款可点击契约/
+    ],
+    mustCite: [/00-protected-paths\.mdc|protected-paths/],
+    restatementFingerprints: [
+      /GLASS_CARD_KEEP_STYLESHEET_Z/,
+      /test:payment-contract/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [],
+    citeExemptFiles: [
+      '.cursor/rules/00-protected-paths.mdc',
+      '.cursor/rules/10-ui-layers.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md',
+      '.github/PULL_REQUEST_TEMPLATE.md'
+    ],
+    restatementExemptFiles: [
+      '.cursor/rules/00-protected-paths.mdc',
+      '.cursor/rules/10-ui-layers.mdc',
+      '.github/PULL_REQUEST_TEMPLATE.md'
+    ]
+  },
+  {
     id: 'agent-token-cost',
+
     title: 'Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e）',
     ssotPath: '.cursor/rules/focus-tiger-agent-token-cost.mdc',
     ssotSection: 'Focus Tiger · Agent Token Cost（控 Fast Request）',

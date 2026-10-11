@@ -66,6 +66,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `branch-freshness` | Agent 邀测 / 声称 develop 行为 / 判断实现状态前须 check:branch-freshness | `.cursor/rules/focus-tiger-regression-lock.mdc` | 分支新鲜度（强制 · 任何「代码现状」判断之前） |
 | `release-blocker-ledger` | 缺陷分级 / open-blockers / 发布候选清算 | `focus-tiger/docs/TEST_TRACKER.md` | 缺陷分级与处理承诺 |
 | `z-index-registry` | 产品 z-index 层叠登记 | `focus-tiger/docs/Z_INDEX.md` | Z_INDEX.md — 产品层叠登记 |
+| `protected-paths` | 受保护路径（付款/解锁/请茶）与付款可点击契约 | `.cursor/rules/00-protected-paths.mdc` | 受保护路径（Protected Paths） |
 | `agent-token-cost` | Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e） | `.cursor/rules/focus-tiger-agent-token-cost.mdc` | Focus Tiger · Agent Token Cost（控 Fast Request） |
 | `agent-tool-budget` | 工具调用预算分档（qa/impl/large + 口令「开工」「继续」「大任务」；hook 可执行） | `.cursor/rules/focus-tiger-agent-token-cost.mdc` | 工具调用预算分档（agent-tool-budget · 可执行） |
 | `e2e-local-budget` | 本地 e2e 硬顶（≤1 spec/次；全量/visibility/多文件禁本地；RUN_E2E_LOCAL 逃生口） | `.cursor/rules/testing-strategy.mdc` | 本地 e2e 硬顶（e2e-local-budget · 可执行） |
@@ -121,6 +122,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `branch-freshness` | 「freshness / 实现状态判断见 regression-lock「分支新鲜度」」 | 落后 >0 仍声称代表 develop / 正式邀测或状态判断却不报落后数；把 Brief 措辞当 git 事实 |
 | `release-blocker-ledger` | 「缺陷分级 / `check:open-blockers` 见 `TEST_TRACKER`；发版硬闸见 regression-lock「发布候选门禁」」 | 平行发明第二套逾期/分级口径；发版前省略 legacy 提醒；把漏标 `Fixes:` 的技术性补正当成产品向「降级放行」 |
 | `z-index-registry` | 「层叠见 `Z_INDEX.md`」 | 平行另造第二份 z-index 分配表 |
+| `protected-paths` | 「付款/解锁/请茶入口见 `00-protected-paths.mdc`」 | 把 Support CTA 写成可被叠层默认全选；合入前不跑 `test:payment-contract` |
 | `risk-mitigation-playbook` | 「中高风险落地降险见 `RISK_MITIGATION_PLAYBOOK.md`」；`WORKFLOW` 可一行入口 | 把降险切片写成可跳过 Dispatcher / 可先挂产品钩子再补动画 / 可另造简化兜底；在非 SSOT 完整复述四件套+红线 |
 | `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用 Q1–Q2；第三问见 `feature-conflict-review` | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
@@ -327,6 +329,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-08-11 | 扩展 `git-worktree-hygiene`：`propose_remove` 接受 `git cherry origin/develop HEAD` 无独有补丁（squash 友好），不再仅靠 tip 祖先检查 |
 | 2026-08-11 | 新增 `git-worktree-hygiene`：口令「请清理闲置 worktree」+ 只读 `check:worktree-hygiene`（含最后 commit 时间）；N14 会话结束须报锁态；与 occupancy Prompt 3 对齐「客观依据 + 不可逆须人工确认」 |
 | 2026-08-11 | 强化 `git-worktree-occupancy`：`last_heartbeat` + 默认 60m 陈旧阈值（`FT_SESSION_LOCK_STALE_MS`）；陈旧/releasable 可接管须 history 留痕；husky pre-commit `gate-session-lock-precommit`；**禁止主仓 develop 检出写/commit** |
+| 2026-10-12 | 新增 `protected-paths`：付款/解锁/请茶受保护入口 + 付款可点击契约 `test:payment-contract`（进 `test:pr-smoke`）。SSOT：`.cursor/rules/00-protected-paths.mdc`；层级数字仍只认 `z-index-registry` / `Z_INDEX.md` |
 | 2026-08-27 | 新增 `source-read-granularity`：大源码文件（≥400 行）先 Grep 定位再片段 Read；SSOT 在 `focus-tiger-source-read-granularity.mdc`；`agent-token-cost` §7 交叉引用 |
 | 2026-08-11 | 新增 docs 数值复述一致性门禁：`check-docs-consistency.js` 并入 `docs:check` / `test:smoke`；首条 claim=`browser-energy-duration`（下游复述 SSOT 连续开放时长数字须红；回归见 `check-docs-consistency.test.js`）；PR 模板补 `.cursor/rules/*.mdc` 强制项 |
 | 2026-08-11 | 定稿 `browser-energy` 临时解禁路径：连续开放时长上限 + 续开不清零 + 精确时间戳汇报；下游文档（含 PROCESS）**禁止复述具体分钟数**，只指针引用 SSOT（`focus-tiger-browser-energy.mdc`） |
