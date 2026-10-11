@@ -116,7 +116,7 @@ import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFr
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
-import { maybeSpeakFocusEndAnnouncement } from './core/systemTtsAnnouncements.js';
+import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -1439,6 +1439,7 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
       onChoice: (choice) => handleColdStartGoalSelect(choice),
+      onBrowse: () => playBrowseLookAround(),
       onOpen: () => {
         // Flower welcome can finish before idle loop starts; goal card may open
         // from the boot defer queue while occupancy is already IDLE_BASELINE.
@@ -1671,7 +1672,20 @@ async function init() {
   recoverResetPracticeUI = new RecoverResetPracticeUI(overlayRoot, {
     requestSlot: requestRecoverResetPracticeOverlaySlot,
     releaseSlot: releaseRecoverResetPracticeOverlaySlot,
-    onClose: () => syncIdleYinTap()
+    onClose: () => syncIdleYinTap(),
+    onPracticeStart: () => {
+      void (async () => {
+        const preferred = ambientSoundscape.getPreferredTrackId();
+        const trackId =
+          preferred === AMBIENT_TRACK_OFF
+            ? DEFAULT_AMBIENT_TRACK_ID
+            : preferred;
+        await ambientSoundscape.playTrackEphemeral(trackId);
+      })();
+    },
+    onPracticeEnd: () => {
+      ambientSoundscape.stopPlaybackEphemeral();
+    }
   });
   groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
     onSelect: (route) => {
@@ -1988,6 +2002,20 @@ async function init() {
    * Choice is session-only; seen flag prevents re-offer on later visits.
    * @param {string} choice
    */
+  function playBrowseLookAround() {
+    if (
+      stateManager.state === STATES.FOCUSING ||
+      stateManager.state === STATES.CELEBRATE
+    ) {
+      return;
+    }
+    emotionController.playEmotion('gazeLookAround', {
+      crossFadeMs: 0,
+      returnCrossFadeMs: CAPCUT_DISSOLVE_MS,
+      freezeUntilCrossFadeEnds: true
+    });
+  }
+
   function handleColdStartGoalSelect(choice) {
     const action = resolveColdStartGoalAction(choice);
     if (choice !== 'browse') {
@@ -3418,9 +3446,16 @@ async function init() {
       ritualId,
       selections
     });
-    mindfulToast.show(t(config?.completeToastKey || 'ritual.shared.complete'), {
+    const ritualCompleteLine = t(
+      config?.completeToastKey || 'ritual.shared.complete'
+    );
+    mindfulToast.show(ritualCompleteLine, {
       placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
       visibleMs: 4_500
+    });
+    maybeSpeakPracticeAnnouncement({
+      text: ritualCompleteLine,
+      cueId: `ritual-complete:${ritualId}:${Date.now()}`
     });
     endRitualFlowChrome();
     spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
@@ -3513,9 +3548,14 @@ async function init() {
     trackRetentionEvent(RETENTION_EVENTS.MICRO_RITUAL_COMPLETE, {
       durationMinutes
     });
-    mindfulToast.show(t('micro_ritual.complete'), {
+    const breathCompleteLine = t('micro_ritual.complete');
+    mindfulToast.show(breathCompleteLine, {
       placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
       visibleMs: 4_500
+    });
+    maybeSpeakPracticeAnnouncement({
+      text: breathCompleteLine,
+      cueId: `breath-complete:${Date.now()}`
     });
     endMicroRitualChrome();
     spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;

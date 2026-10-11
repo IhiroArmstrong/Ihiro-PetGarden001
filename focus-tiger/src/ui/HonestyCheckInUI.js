@@ -9,6 +9,11 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import {
+  maybeSpeakBreathPhaseCue,
+  maybeSpeakPracticeAnnouncement,
+  resetPracticeAnnouncementCue
+} from '../core/systemTtsAnnouncements.js';
 import { HONESTY_BREATH_MS } from '../core/HonestyCheckInController.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
@@ -168,6 +173,12 @@ export class HonestyCheckInUI {
         phaseEl.textContent = t(
           inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE'
         );
+        maybeSpeakBreathPhaseCue({
+          inhale,
+          elapsedMs: elapsed,
+          phaseMs: 4000,
+          scope: 'honesty'
+        });
       }
     }, 200);
 
@@ -344,6 +355,11 @@ export class HonestyCheckInUI {
       title.style.cssText =
         'font-size:17px;line-height:1.45;color:#2c1f14;text-align:center;margin-bottom:10px;font-weight:650;';
       title.textContent = t('HONESTY_BREATH_GUIDE');
+      resetPracticeAnnouncementCue();
+      maybeSpeakPracticeAnnouncement({
+        text: t('HONESTY_BREATH_GUIDE'),
+        cueId: 'honesty:breath-guide'
+      });
 
       const phaseEl = document.createElement('div');
       phaseEl.dataset.honestyBreathPhase = '1';
@@ -366,6 +382,10 @@ export class HonestyCheckInUI {
       msg.style.cssText =
         'font-size:16px;line-height:1.6;color:#2c1f14;text-align:center;font-weight:600;';
       msg.textContent = t('HONESTY_CHECKIN_THANKS');
+      maybeSpeakPracticeAnnouncement({
+        text: t('HONESTY_CHECKIN_THANKS'),
+        cueId: 'honesty:thanks'
+      });
       this.root.appendChild(msg);
     }
   }

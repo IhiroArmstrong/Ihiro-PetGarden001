@@ -8,6 +8,10 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import {
+  maybeSpeakPracticeAnnouncement,
+  resetPracticeAnnouncementCue
+} from '../core/systemTtsAnnouncements.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import { RESET_ROUTES } from './resetPracticeRoutes.js';
@@ -45,11 +49,13 @@ export class RecoverResetPracticeUI {
    * @param {() => void} deps.releaseSlot
    * @param {() => void} [deps.onClose]
    */
-  constructor(container, { requestSlot, releaseSlot, onClose }) {
+  constructor(container, { requestSlot, releaseSlot, onClose, onPracticeStart, onPracticeEnd }) {
     this.container = container;
     this.requestSlot = requestSlot;
     this.releaseSlot = releaseSlot;
     this.onClose = onClose;
+    this.onPracticeStart = onPracticeStart;
+    this.onPracticeEnd = onPracticeEnd;
     /** @type {HTMLElement | null} */
     this.root = null;
     /** @type {ReturnType<typeof setTimeout> | null} */
@@ -118,6 +124,8 @@ export class RecoverResetPracticeUI {
     this.root = root;
     this._visible = true;
     this._activeRoute = route;
+    resetPracticeAnnouncementCue();
+    this.onPracticeStart?.();
 
     document.addEventListener('pointerdown', this._boundOutsideDismiss, true);
     root.getBoundingClientRect();
@@ -149,7 +157,10 @@ export class RecoverResetPracticeUI {
     const wasVisible = this._visible;
     this._visible = false;
     this._activeRoute = null;
-    if (wasVisible) this.releaseSlot();
+    if (wasVisible) {
+      this.releaseSlot();
+      this.onPracticeEnd?.();
+    }
     if (!root) return;
     if (opts.immediate) {
       root.remove();
@@ -180,10 +191,15 @@ export class RecoverResetPracticeUI {
       const phase = GROUND_PHASES[this._groundPhaseIndex];
       if (!phase) {
         panel.innerHTML = `<p class="recover-reset-practice__copy">${t('RESET_GROUND_OUTRO')}</p>`;
+        maybeSpeakPracticeAnnouncement({
+          text: t('RESET_GROUND_OUTRO'),
+          cueId: 'RESET_GROUND_OUTRO'
+        });
         this._phaseTimer = window.setTimeout(() => this._finishPractice(), 2_500);
         return;
       }
       panel.innerHTML = `<p class="recover-reset-practice__copy">${t(phase.key)}</p>`;
+      maybeSpeakPracticeAnnouncement({ text: t(phase.key), cueId: phase.key });
       this._phaseTimer = window.setTimeout(() => {
         this._groundPhaseIndex += 1;
         renderPhase();
@@ -201,6 +217,10 @@ export class RecoverResetPracticeUI {
       const key = LOOK_STEPS[this._lookStepIndex];
       if (!key) {
         panel.innerHTML = `<p class="recover-reset-practice__copy">${t('RESET_LOOK_OUTRO')}</p>`;
+        maybeSpeakPracticeAnnouncement({
+          text: t('RESET_LOOK_OUTRO'),
+          cueId: 'RESET_LOOK_OUTRO'
+        });
         this._phaseTimer = window.setTimeout(() => this._finishPractice(), 2_500);
         return;
       }
@@ -209,6 +229,7 @@ export class RecoverResetPracticeUI {
         <p class="recover-reset-practice__copy">${t(key)}</p>
         ${isLast ? '' : `<button type="button" class="recover-reset-practice__next" data-testid="recover-reset-look-next">${t('RESET_LOOK_NEXT')}</button>`}
       `;
+      maybeSpeakPracticeAnnouncement({ text: t(key), cueId: key });
       const nextBtn = panel.querySelector('.recover-reset-practice__next');
       nextBtn?.addEventListener('click', (ev) => {
         ev.preventDefault();

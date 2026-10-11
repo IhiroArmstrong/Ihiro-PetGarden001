@@ -18,6 +18,11 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import {
+  maybeSpeakBreathPhaseCue,
+  maybeSpeakPracticeAnnouncement,
+  resetPracticeAnnouncementCue
+} from '../core/systemTtsAnnouncements.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import { VoiceInputChrome } from './VoiceInputChrome.js';
 import {
@@ -340,6 +345,12 @@ export class ArrivalPracticeUI {
       phaseEl.textContent = t(
         inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE'
       );
+      maybeSpeakBreathPhaseCue({
+        inhale,
+        elapsedMs: elapsed,
+        phaseMs: MICRO_RITUAL_BREATH_PHASE_MS,
+        scope: 'arrival'
+      });
     }, 200);
     this._timer = window.setTimeout(() => {
       this._clearTimers();
@@ -358,12 +369,20 @@ export class ArrivalPracticeUI {
 
     if (this.state.step === ARRIVAL_STEPS.WELCOME) {
       this.root.append(this._subtitle(t('ARRIVAL_WELCOME')));
+      maybeSpeakPracticeAnnouncement({
+        text: t('ARRIVAL_WELCOME'),
+        cueId: 'arrival:welcome'
+      });
       return;
     }
 
     if (this.state.step === ARRIVAL_STEPS.NOTICE) {
       if (this._noticeReply) {
         this.root.append(this._subtitle(this._noticeReply));
+        maybeSpeakPracticeAnnouncement({
+          text: this._noticeReply,
+          cueId: `arrival:notice:${this._noticeReply}`
+        });
         if (this._showPresenceDisclosure) {
           const hint = document.createElement('p');
           hint.className = 'arrival-practice__presence-disclosure';
@@ -391,6 +410,11 @@ export class ArrivalPracticeUI {
 
     if (this.state.step === ARRIVAL_STEPS.BREATH) {
       this.root.append(this._subtitle(t('ARRIVAL_BREATH_GUIDE')));
+      resetPracticeAnnouncementCue();
+      maybeSpeakPracticeAnnouncement({
+        text: t('ARRIVAL_BREATH_GUIDE'),
+        cueId: 'arrival:breath-guide'
+      });
       const phaseEl = document.createElement('div');
       phaseEl.dataset.arrivalBreathPhase = '1';
       phaseEl.className = 'arrival-practice__breath-phase';

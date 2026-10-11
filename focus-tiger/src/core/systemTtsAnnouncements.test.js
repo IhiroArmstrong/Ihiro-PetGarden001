@@ -5,7 +5,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { maybeSpeakFocusEndAnnouncement } from './systemTtsAnnouncements.js';
+import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement, resetPracticeAnnouncementCue } from './systemTtsAnnouncements.js';
 import { SYSTEM_TTS_PREF_STORAGE_KEY } from './systemTtsPreference.js';
 
 /**
@@ -89,4 +89,67 @@ test('focus end announcement stays off on narrow viewport', async () => {
   );
   await Promise.resolve();
   assert.equal(spoke, false);
+});
+
+test('practice line needs the switch, and the same cue is not repeated until reset', async () => {
+  let spoken = [];
+  const globalObj = {
+    desktopShell: {
+      isDesktop: true,
+      systemTts: {
+        speak({ text }) {
+          spoken.push(text);
+        }
+      }
+    }
+  };
+  const storage = memoryStorage();
+  resetPracticeAnnouncementCue();
+  assert.equal(
+    maybeSpeakPracticeAnnouncement({
+      text: 'Let the eyes land on what is actually here.',
+      cueId: 'RESET_LOOK_INTRO',
+      widthPx: 480,
+      storage,
+      globalObj
+    }),
+    false
+  );
+  storage.setItem(
+    SYSTEM_TTS_PREF_STORAGE_KEY,
+    JSON.stringify({ announcementsEnabled: true })
+  );
+  assert.equal(
+    maybeSpeakPracticeAnnouncement({
+      text: 'Let the eyes land on what is actually here.',
+      cueId: 'RESET_LOOK_INTRO',
+      widthPx: 480,
+      storage,
+      globalObj
+    }),
+    true
+  );
+  assert.equal(
+    maybeSpeakPracticeAnnouncement({
+      text: 'Let the eyes land on what is actually here.',
+      cueId: 'RESET_LOOK_INTRO',
+      widthPx: 480,
+      storage,
+      globalObj
+    }),
+    false
+  );
+  resetPracticeAnnouncementCue();
+  assert.equal(
+    maybeSpeakPracticeAnnouncement({
+      text: 'Let the eyes land on what is actually here.',
+      cueId: 'RESET_LOOK_INTRO',
+      widthPx: 480,
+      storage,
+      globalObj
+    }),
+    true
+  );
+  await Promise.resolve();
+  assert.equal(spoken.length, 2);
 });
