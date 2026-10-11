@@ -363,6 +363,7 @@ export function besideStatusFields(
 		besideRemaining: Math.max(0, BESIDE_UNUSED_QUOTA - besideUnused.length),
 		invitedWasHere: wasHereView.invitedWasHere,
 		invitedWasHereName: wasHereView.invitedWasHereName,
+		besideSeatedCount: Object.keys(record.invitees).length,
 	};
 }
 

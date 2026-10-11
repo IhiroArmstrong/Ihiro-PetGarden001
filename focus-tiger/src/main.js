@@ -273,6 +273,7 @@ import { resolveBadgeAwardPresentation } from './core/badgeAwardMoment.js';
 import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { QuietTogetherLanternsChrome } from './ui/QuietTogetherLanternsChrome.js';
 import { FocusCirclePresenceChrome } from './ui/FocusCirclePresenceChrome.js';
+import { FocusCircleBesideSeatsChrome } from './ui/FocusCircleBesideSeatsChrome.js';
 import { FocusCircleWitnessChrome } from './ui/FocusCircleWitnessChrome.js';
 import { FocusCircleWitnessLeaveUI } from './ui/FocusCircleWitnessLeaveUI.js';
 import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
@@ -1562,6 +1563,8 @@ async function init() {
     {}
   );
   window.__focusCirclePresence = focusCirclePresenceChrome;
+  const focusCircleBesideSeatsChrome = new FocusCircleBesideSeatsChrome(document.body, {});
+  window.__focusCircleBesideSeats = focusCircleBesideSeatsChrome;
 
   let witnessLeaveSlotHeld = false;
   let witnessRespondSlotHeld = false;
@@ -3391,6 +3394,7 @@ async function init() {
   function beginBreathLanternPresence() {
     quietTogetherLanternsChrome.setContributing(true);
     focusCirclePresenceChrome.setFocusing(false);
+    focusCircleBesideSeatsChrome.setFocusing(false);
     focusCircleWitnessChrome.setFocusing(false);
     setFocusCirclePresenceContributing(true);
     startLanternHeartbeat();
@@ -4568,6 +4572,7 @@ async function init() {
     immersivePresenceUI.setFocusing(false);
     quietTogetherLanternsChrome.setFocusing(false);
     focusCirclePresenceChrome.setFocusing(false);
+    focusCircleBesideSeatsChrome.setFocusing(false);
     focusCircleWitnessChrome.setFocusing(false);
     void stopLanternHeartbeat();
     void stopFocusCircleHeartbeat();
@@ -4754,6 +4759,7 @@ async function init() {
     immersivePresenceUI.setFocusing(true);
     quietTogetherLanternsChrome.setFocusing(true);
     focusCirclePresenceChrome.setFocusing(true);
+    focusCircleBesideSeatsChrome.setFocusing(true);
     focusCircleWitnessChrome.setFocusing(true);
     startLanternHeartbeat();
     startFocusCircleHeartbeat();

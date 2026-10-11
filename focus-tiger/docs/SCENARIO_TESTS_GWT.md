@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-10  
+生成日期：2026-10-11  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -2742,7 +2742,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 宽屏 ⋯ / 窄屏抽屉 Journey log
 
 **Then**
-- 0–1 秒内：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
+- 0–1 秒内：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。菜单里 Journey log / Presence moments / Yin's Collections 上面有抬头 Records（中文「记录」，#1128）。同一天两行各点 Save image，须落下两个不同文件名，系统不得问是否替换。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
 
 #### Z-3
 
@@ -2866,6 +2866,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | AC-8 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 375：卡可关、不挡 Sit 三球。 |
 | AC-9 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 修行纪念分区（#888 V1）：清供列表下方见 Practice memorials / 修行纪念（ |
 | AC-10 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 修行纪念印自动出卡（#888 Slice 2）：本机终身分钟首次跨 600/3000/10800 档 |
+| AC-11 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 称号名（#1130）：结缘页器物名仍是青瓷琮式尊 / 青瓷蒜头长颈瓶。打开 Companion ti |
+| AC-12 | P0 | 已在 `focusCoinsSurface.test.js` 覆盖；已在 `collect | 点开原图（#1129）：结缘页点一件器物的小图 → 0–1 秒内同一面板盖上大图、名字和一句短文，底 |
 
 ### Given-When-Then 明细
 
@@ -3009,6 +3011,34 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 **Then**
 - 若芥子/静思典藏未占队列 → 先见 `#practice-imprint-card`（方章占位 + 累计分钟 + 季语）→ Continue → 再进 Reflection/桥接。同场若多档同时满足，一次只出最低未揭示档；已揭示档不再自动弹出，仅菜单重读。
+
+#### AC-11
+
+- **优先级**：P0（收入/资金相关）
+- **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 称号名（#1130）：结缘页器物名仍是青瓷琮式尊 / 青瓷蒜头长颈瓶。打开 Companion titles：三条是 Desk-side stele / Returned celadon vial / Long sitter（中文：座右小碑 / 归来青瓷小瓶 / 久坐的人）。称号页不得再出现青瓷琮式瓶或蒜头瓶的名字
+
+#### AC-12
+
+- **优先级**：P0（收入/资金相关）
+- **覆盖**：已在 `focusCoinsSurface.test.js` 覆盖；已在 `collectionsBehavioralScarcity.test.js` 覆盖；已在 `collectionsWaveHelloGate.test.js` 覆盖；已在 `EmotionController.test.js` 覆盖；已在 `idleChromeOrchestration.test.js` 覆盖；已在 `FocusCoinsPanelUI.test.js` 覆盖；完整链路仍须人工
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 点开原图（#1129）：结缘页点一件器物的小图
+
+**Then**
+- 0–1 秒内同一面板盖上大图、名字和一句短文，底部没有 `undefined`。Close 或 Esc 收起大图，列表能继续滚。
 
 ---
 ## 场景 AA：Idle Document PiP 陪伴浮窗（实验原型）
@@ -5542,7 +5572,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
 | AU-1 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 已入圈 → 小圈面板「请你坐在旁边」→ 0–1 秒内见 8 位码；「还可以请」从 5 变为 4。文案 |
-| AU-2 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 另一配置用该码加入 → 圈人数 +1；再用同一码 → 「已经用过」，人数不增加。邀请人在对方今日满足 |
+| AU-2 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 另一配置用该码加入 → 0–1 秒内左侧出现一行 Yin 打坐轮廓，人数与圈内人数相同（5 人即 5 |
 | AU-3 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 圈已满 8 人时用一张未消耗的码加入 → 满员句，该码仍可在有人离开后使用。 |
 | AU-4 | P1 | 已在 `focusCircleBeside.test.js` 覆盖 | 未入圈点发码 → 先有小圈的短句，不产生码。无圈用户 Sit 照旧。`?besideSeat=0`  |
 
@@ -5574,7 +5604,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 另一配置用该码加入
 
 **Then**
-- 圈人数 +1；再用同一码 → 「已经用过」，人数不增加。邀请人在对方今日满足 was-here 后，面板见「你请来的人来过」（两人及以上仍是这一句）。
+- 0–1 秒内左侧出现一行 Yin 打坐轮廓，人数与圈内人数相同（5 人即 5 个）；用请坐码入座的轮廓内为淡金，其余只留线条。圈人数 +1；再用同一码 → 「已经用过」，人数不增加。邀请人在对方今日满足 was-here 后，面板见「你请来的人来过」（两人及以上仍是这一句）。
 
 #### AU-3
 
@@ -5617,7 +5647,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
 | AV-1 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | `?product=1` Idle，热力图可见 → 其上方见 `[data-testid=growt |
-| AV-2 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。 |
+| AV-2 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来 |
 | AV-3 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | Close 或点背板 → 卡收起，热力图与 Sit 仍在。 |
 
 ### Given-When-Then 明细
@@ -5649,7 +5679,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 点短行
 
 **Then**
-- 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。
+- 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。
 
 #### AV-3
 
@@ -5677,7 +5707,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AW-1 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | Idle ⋯ / 抽屉 Yin's Art Collection → 0–1 秒内 `#art-co |
+| AW-1 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | Idle 宽屏 ⋯ / 窄屏抽屉 Yin's Art Collection（#1138）→ 0–1  |
 | AW-2 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 高清：没有核销过的购买记录时，保存不得在本机落下高清文件（单测锁）。已拥有才见 Save image |
 | AW-3 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 选画卡：买下并保存后，卡上见 “This is a piece I chose.” / “Chose |
 | AW-4 | P0 | 已在 `artCollectionPurchase.test.js` 覆盖；已在 `art | 结缘凭证：寅币结缘一件器物并保存后，卡上见 “This piece came after I had |
@@ -5698,10 +5728,10 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
 
 **When**
-- Idle ⋯ / 抽屉 Yin's Art Collection
+- Idle 宽屏 ⋯ / 窄屏抽屉 Yin's Art Collection（#1138）
 
 **Then**
-- 0–1 秒内 `#art-collection-panel` 可见。无邮箱点 Buy → 「A purchase needs an email.」Checkout 打不开 → 失败句，且这张不是你的。
+- 0–1 秒内菜单收起且 `#art-collection-panel` 可见（不得只关菜单、面板不出现）。无邮箱点 Buy → 「A purchase needs an email.」Checkout 打不开 → 失败句，且这张不是你的。
 
 #### AW-2
 
@@ -5757,7 +5787,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - （无额外用户操作）
 
 **Then**
-- 五件套：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is closed.”，不得再开 Checkout。磁州窑红绿彩五件同样是一套（Cizhou red-green five），也是 Buy the set；售罄同一句，不得再开 Checkout
+- 五件套：青瓷浮雕五件是一套，按钮是 Buy the set。售罄见 “This edition is closed.”，不得再开 Checkout。磁州窑红绿彩五件同样是一套（Cizhou red-green five），也是 Buy the set；售罄同一句，不得再开 Checkout。哥窑冰裂纹 1010 的 G1、G2 各是一套（#1126），同样 Buy the set；售罄同一句
 
 #### AW-6
 
@@ -5799,7 +5829,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 珍藏桥（只一次）：第一次用寅币结缘并走出仪式句时，若还没看过桥，仪式卡上见 `[data-testid=yin-coin-art-bridge]` 与 “Open Yin's Art Collection”。出现即记为看过；再结缘不再出现。点 Open
 
 **Then**
-- 艺术收藏面板。
+- 艺术收藏面板。结缘页已有至少一件藏品、且这台设备还没看过那句时，打开 Yin's Collections 须在标题下看见 “If you enjoy pieces like this…”、Open 与 Close（#1132），不用滚到列表底才算看见；句子若在可视区域外，关掉再开仍应出现。没有藏品不出现这句。
 
 ---
 ## 场景 AX：帮助中心（菜单 + 问号卡 · #1120 / #1122 · 2026-10-10）
@@ -5815,7 +5845,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 |---|---|---|---|
 | AX-1 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | `?product=1` Idle → ⋯ Preferences Help Center（窄屏抽屉 |
 | AX-2 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 点任一主题 → 0–1 秒内见该篇标题和正文（`data-testid=help-center-ar |
-| AX-3 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | Close 或点背板 → 0–1 秒内面板收起，Sit 仍在。 |
+| AX-3 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | Close 或点背板 → 0–1 秒内面板收起，Sit 仍在。收起后闲置页右侧、徽章卡片外面不得留下 |
 | AX-4 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Ce |
 | AX-5 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 目录是说明，不是对阿寅说话。这里的句子不得冒充倾诉面板里的回复。 |
 
@@ -5862,7 +5892,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Close 或点背板
 
 **Then**
-- 0–1 秒内面板收起，Sit 仍在。
+- 0–1 秒内面板收起，Sit 仍在。收起后闲置页右侧、徽章卡片外面不得留下黑字 `undefined`（#1137）。
 
 #### AX-4
 
@@ -5876,7 +5906,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 场景 W 的问号简介卡里，次级链 “Browse all topics
 
 **Then**
-- open Help Center” 同样打开这一页，不得和简介卡叠成两层。
+- open Help Center” 同样打开这一页，不得和简介卡叠成两层。问号卡不再重复菜单里的「重新选择今日方向」（#1131）；那条只留在 Preferences。
 
 #### AX-5
 
@@ -6141,4 +6171,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 67 · 步骤 323 · 待澄清 46_
+_场景 67 · 步骤 325 · 待澄清 46_

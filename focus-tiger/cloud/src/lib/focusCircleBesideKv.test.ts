@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
 	BESIDE_UNUSED_QUOTA,
+	besideStatusFields,
 	consumeBesideJoin,
 	countUnusedBesideCodes,
 	emptyBesideRecord,
@@ -110,5 +111,16 @@ describe("focusCircleBesideKv", () => {
 		});
 		assert.equal(many.invitedWasHere, true);
 		assert.equal(many.invitedWasHereName, null);
+	});
+
+	it("counts people who sat down with a seat code", () => {
+		const record = emptyBesideRecord();
+		record.invitees[B] = { inviterMemberId: A, joinedAt: 1, sawSittingOn: [] };
+		record.invitees[C] = { inviterMemberId: A, joinedAt: 2, sawSittingOn: [] };
+		const fields = besideStatusFields(record, A, {
+			invitedWasHere: false,
+			invitedWasHereName: null,
+		});
+		assert.equal(fields.besideSeatedCount, 2);
 	});
 });
