@@ -4,36 +4,37 @@
  */
 
 /**
- * Persist minutes immediately; play incense birth FX only when
- * `releaseBirths()` runs (after MilestoneGlow / Celebrating / sessionComplete).
+ * Persist minutes immediately; plant visible blooms on the Where you are
+ * row only when `releaseBirths()` runs (after MilestoneGlow / Celebrating).
+ * Idle overlay is never a pond host.
  */
 
-import { spiralSlotForBloomIndex } from '../core/lotusPondMath.js';
 import { LotusPondChrome } from './LotusPondChrome.js';
 
 export class LotusPondRuntime {
   /**
    * @param {{
    *   store: import('../core/LotusPondStore.js').LotusPondStore,
-   *   overlayEl?: HTMLElement | null,
-   *   incenseGreeting: {
-   *     getLotusDomSrc: () => string,
-   *     playBirthAt: (slot: object, opts?: { container?: HTMLElement | null, onPlanted?: () => void }) => void
-   *   },
+   *   incenseGreeting: { getLotusDomSrc: () => string },
    *   chrome?: LotusPondChrome
    * }} opts
    */
   constructor(opts) {
     this.store = opts.store;
     this.incenseGreeting = opts.incenseGreeting;
-    this.chrome = opts.chrome ?? new LotusPondChrome(opts.overlayEl ?? null);
+    this.chrome = opts.chrome ?? new LotusPondChrome();
     /** @type {number[]} */
     this._pending = [];
-    this._playing = false;
+  }
+
+  /**
+   * @param {HTMLElement | null} rowEl
+   */
+  attach(rowEl) {
+    this.chrome.attach(rowEl);
   }
 
   boot() {
-    this.chrome.mount();
     this.chrome.renderQuiet(
       this.store.getVisibleBloomCount(),
       this.incenseGreeting.getLotusDomSrc()
@@ -52,30 +53,12 @@ export class LotusPondRuntime {
     return result;
   }
 
-  /** Play queued births sequentially (incense FX → persist). */
+  /** Plant queued blooms on the Where you are row (fade if the row is attached). */
   releaseBirths() {
-    if (this._playing) return;
-    this._playNext();
-  }
-
-  _playNext() {
-    const index = this._pending.shift();
-    if (index == null) {
-      this._playing = false;
-      return;
-    }
-    this._playing = true;
-    const slot = this.chrome.slotForIndex
-      ? this.chrome.slotForIndex(index)
-      : spiralSlotForBloomIndex(index);
     const src = this.incenseGreeting.getLotusDomSrc();
-    const onPlanted = () => {
+    const pending = this._pending.splice(0);
+    for (const index of pending) {
       this.chrome.plantBloom(index, src);
-      this._playNext();
-    };
-    this.incenseGreeting.playBirthAt(slot, {
-      container: this.chrome.birthRoot,
-      onPlanted
-    });
+    }
   }
 }
