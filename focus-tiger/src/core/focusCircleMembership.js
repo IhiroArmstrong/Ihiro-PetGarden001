@@ -70,12 +70,17 @@ export function normalizeFocusCircleMembership(raw) {
   const code = normalizeFocusCircleCode(o.code);
   if (!circleId || !memberId || !code) return null;
   const memberCount = Number(o.memberCount);
-  return {
+  const rosterCount = Number(o.rosterCount);
+  const normalized = {
     circleId,
     memberId,
     code,
     memberCount: Number.isFinite(memberCount) ? Math.max(0, Math.floor(memberCount)) : undefined
   };
+  if (Number.isFinite(rosterCount)) {
+    normalized.rosterCount = Math.max(0, Math.floor(rosterCount));
+  }
+  return normalized;
 }
 
 /**
@@ -223,7 +228,12 @@ export function newFocusCircleMemberId() {
 function parseBesideFields(body) {
   if (!body || typeof body !== 'object') return null;
   const o = /** @type {Record<string, unknown>} */ (body);
-  if (!Array.isArray(o.besideUnused) && o.besideRemaining == null && o.invitedWasHere == null) {
+  if (
+    !Array.isArray(o.besideUnused) &&
+    o.besideRemaining == null &&
+    o.invitedWasHere == null &&
+    o.besideSeatedCount == null
+  ) {
     return null;
   }
   const unused = Array.isArray(o.besideUnused)
@@ -231,12 +241,14 @@ function parseBesideFields(body) {
     : [];
   const remaining = Number(o.besideRemaining);
   const name = o.invitedWasHereName;
+  const seated = Number(o.besideSeatedCount);
   return {
     unused,
     remaining: Number.isFinite(remaining) ? remaining : null,
     invitedWasHere: o.invitedWasHere === true,
     invitedWasHereName: typeof name === 'string' && name.trim() ? name.trim() : null,
-    besideCode: typeof o.besideCode === 'string' ? o.besideCode : null
+    besideCode: typeof o.besideCode === 'string' ? o.besideCode : null,
+    besideSeatedCount: Number.isFinite(seated) ? Math.max(0, Math.floor(seated)) : null
   };
 }
 
@@ -267,6 +279,9 @@ function parseCircleResponse(body) {
     memberId,
     code,
     memberCount: Math.max(0, Math.floor(memberCount)),
+    ...(Number.isFinite(rosterCount)
+      ? { rosterCount: Math.max(0, Math.floor(rosterCount)) }
+      : {}),
     isMember
   };
 }

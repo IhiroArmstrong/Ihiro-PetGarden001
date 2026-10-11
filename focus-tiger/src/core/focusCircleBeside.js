@@ -10,6 +10,7 @@
 import { getCloudApiBaseUrl, postCloudJson } from './cloudApiClient.js';
 import { getViewerTimeZone, toLocalDayKey } from './focusCircleDayKey.js';
 import {
+  FOCUS_CIRCLE_CHANGE_EVENT,
   FOCUS_CIRCLE_MUTATION_TIMEOUT_MS,
   FOCUS_CIRCLE_PATH,
   FOCUS_CIRCLE_SCHEMA_VERSION,
@@ -96,6 +97,7 @@ export function readBesideSnapshot(storage) {
       ? parsed.unused.map((code) => normalizeBesideCode(code)).filter(Boolean)
       : [];
     const remaining = Number(parsed.remaining);
+    const seated = Number(parsed.besideSeatedCount);
     return {
       unused,
       remaining: Number.isFinite(remaining) ? remaining : BESIDE_UNUSED_QUOTA,
@@ -103,7 +105,8 @@ export function readBesideSnapshot(storage) {
       invitedWasHereName:
         typeof parsed.invitedWasHereName === 'string' && parsed.invitedWasHereName.trim()
           ? parsed.invitedWasHereName.trim()
-          : null
+          : null,
+      besideSeatedCount: Number.isFinite(seated) ? Math.max(0, Math.floor(seated)) : 0
     };
   } catch {
     return null;
@@ -119,11 +122,16 @@ export function writeBesideSnapshot(storage, snapshot) {
   try {
     if (!snapshot) {
       storage.removeItem(BESIDE_SNAPSHOT_STORAGE_KEY);
-      return;
+    } else {
+      storage.setItem(BESIDE_SNAPSHOT_STORAGE_KEY, JSON.stringify(snapshot));
     }
-    storage.setItem(BESIDE_SNAPSHOT_STORAGE_KEY, JSON.stringify(snapshot));
   } catch {
     // quota
+  }
+  try {
+    globalThis.dispatchEvent?.(new Event(FOCUS_CIRCLE_CHANGE_EVENT));
+  } catch {
+    // non-DOM tests
   }
 }
 
@@ -138,9 +146,45 @@ setFocusCircleBesideSink((fields) => {
     unused: fields.unused,
     remaining: fields.remaining ?? BESIDE_UNUSED_QUOTA,
     invitedWasHere: fields.invitedWasHere,
-    invitedWasHereName: fields.invitedWasHereName
+    invitedWasHereName: fields.invitedWasHereName,
+    besideSeatedCount: Number.isFinite(Number(fields.besideSeatedCount))
+      ? Math.max(0, Math.floor(Number(fields.besideSeatedCount)))
+      : (readBesideSnapshot(storage)?.besideSeatedCount ?? 0)
   });
 });
+
+/** Circle drawings stay a single quiet row. Matches the circle cap of 8. */
+export const BESIDE_SEAT_FIGURE_CAP = 8;
+
+/**
+ * How many sitting outlines to draw, and how many of them accepted a seat code.
+ * @param {{ memberCount?: number, seatedCount?: number }} input
+ * @returns {{ total: number, seated: number }}
+ */
+export function besideSeatFigures({ memberCount = 0, seatedCount = 0 } = {}) {
+  const total = Math.max(
+    0,
+    Math.min(BESIDE_SEAT_FIGURE_CAP, Math.floor(Number(memberCount) || 0))
+  );
+  const seated = Math.max(0, Math.min(total, Math.floor(Number(seatedCount) || 0)));
+  return { total, seated };
+}
+
+/**
+ * This browser just sat down with a seat code. At least one figure is pale gold
+ * before the next status poll arrives.
+ * @param {Storage | null | undefined} storage
+ */
+export function noteBesideSelfSeated(storage) {
+  const prev = readBesideSnapshot(storage);
+  writeBesideSnapshot(storage, {
+    unused: prev?.unused ?? [],
+    remaining: prev?.remaining ?? BESIDE_UNUSED_QUOTA,
+    invitedWasHere: prev?.invitedWasHere === true,
+    invitedWasHereName: prev?.invitedWasHereName ?? null,
+    besideSeatedCount: Math.max(1, prev?.besideSeatedCount ?? 0)
+  });
+}
 
 /**
  * @param {unknown} err
@@ -304,8 +348,10 @@ export async function joinBesideSeat(opts = {}) {
     circleId,
     memberId: savedMemberId,
     code: circleCode,
-    memberCount: Number.isFinite(onlineCount) ? onlineCount : rosterCount
+    memberCount: Number.isFinite(onlineCount) ? onlineCount : rosterCount,
+    rosterCount: Number.isFinite(rosterCount) ? rosterCount : undefined
   });
   if (!saved) return { ok: false, reason: 'storage_failed', skipped: true };
+  noteBesideSelfSeated(storage);
   return { ok: true, membership: saved, skipped: false };
 }

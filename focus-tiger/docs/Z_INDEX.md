@@ -24,6 +24,7 @@
 | **2** | `index.html` | FocusHUD 连胜环（`.ft-hud__streak`）相对 HUD 卡 |
 | **12** | `src/ui/QuietTogetherLanternsChrome.js` | Quiet Together 灯火（`#quiet-together-lanterns`，挂 `body`，`pointer-events: none`；宽屏锚在热力图簇上方；Idle/Arrive；Focusing 隐藏）。**高于** `#ui-overlay`(10)，Arrive Notice 毛玻璃不再糊住金灯；仍低于圈子灯(13)、?(22)、Support(24) |
 | **13** | `src/ui/FocusCirclePresenceChrome.js` | Focus Circle 圈内 sitting（`#focus-circle-presence`，银蓝灯 + 深色短句胶囊；挂 `body`；叠在全球灯火上方；Idle/Arrive；Focusing 隐藏；**含 was-here-today 轻文案轨 · 刀 2d**）。高于 Arrive 毛玻璃，短句不再用浅色字 |
+| **13** | `src/ui/FocusCircleBesideSeatsChrome.js` | 圈子陪坐轮廓（`#focus-circle-beside-seats`，挂 `body`，`pointer-events: none`；左侧一行；用请坐码入座的填淡金；Focusing 隐藏）。与圈子灯同带，高于 Arrive 毛玻璃 |
 | **14** | `src/ui/FocusCircleWitnessChrome.js` | Focus Circle Gentle Witness 匿名痕迹（`#focus-circle-witness`；叠在 presence 上方；pointer-events none；回应钮可点；Focusing 隐藏）。与灯火同带抬高，避免痕迹卡被 Notice 压住后又被灯火盖住 |
 | **2** | `src/ui/OnboardingHintsUI.js` | 提示发现小圆点（`.ft-hint-discovery-dot`）相对宿主按钮角标 |
 | **2** | `ui-kit/components/streak-meter.js` | `<streak-meter>` host 相对邻居 |
