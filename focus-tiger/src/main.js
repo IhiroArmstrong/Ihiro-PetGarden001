@@ -1924,7 +1924,8 @@ async function init() {
 
   /** @type {string[]} */
   const glassOpenOrder = [];
-  const glassOverlayCards = [
+  // Built on close, not at startup. supportYinModalUI is created later in init.
+  const glassOverlayCards = () => [
     { id: 'support', ui: supportYinModalUI, close: () => supportYinModalUI.close() },
     { id: 'quote', ui: dailyZenQuoteCardUI, close: () => dailyZenQuoteCardUI.close() },
     { id: 'mustard-seed', ui: mustardSeedSealCardUI, close: () => mustardSeedSealCardUI.close() },
@@ -1953,7 +1954,8 @@ async function init() {
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     installGlassCardDeck(document);
-    const openIds = glassOverlayCards
+    const cards = glassOverlayCards();
+    const openIds = cards
       .filter((card) => card.id !== except)
       .filter((card) =>
         typeof card.ui?.isOpen === 'function' ? card.ui.isOpen() === true : true
@@ -1970,7 +1972,7 @@ async function init() {
       exceptId: except
     });
     const closing = new Set(closeIds);
-    for (const card of glassOverlayCards) {
+    for (const card of cards) {
       if (closing.has(card.id)) card.close();
     }
     bringGlassCardToFront(except);
