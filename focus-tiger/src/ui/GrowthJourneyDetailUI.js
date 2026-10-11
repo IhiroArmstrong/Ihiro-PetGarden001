@@ -85,6 +85,13 @@ export class GrowthJourneyDetailUI {
     this.nextEl.className = 'growth-journey-detail__next';
     this.nextEl.dataset.testid = 'growth-journey-detail-next';
 
+    this.lotusRow = document.createElement('div');
+    this.lotusRow.id = 'growth-journey-lotus-row';
+    this.lotusRow.className = 'growth-journey-detail__lotus-row';
+    this.lotusRow.dataset.testid = 'growth-journey-lotus-row';
+    this.lotusRow.setAttribute('aria-hidden', 'true');
+    this.lotusRow.hidden = true;
+
     this.lifetimeEl = document.createElement('p');
     this.lifetimeEl.className = 'growth-journey-detail__lifetime';
     this.lifetimeEl.dataset.testid = 'growth-journey-detail-lifetime';
@@ -106,6 +113,7 @@ export class GrowthJourneyDetailUI {
       this.track,
       this.hereEl,
       this.nextEl,
+      this.lotusRow,
       this.lifetimeEl,
       this.rhythmEl,
       this.closeBtn
@@ -301,6 +309,20 @@ export class GrowthJourneyDetailUI {
       }
       .growth-journey-detail__next {
         opacity: 0.84;
+      }
+      .growth-journey-detail__lotus-row {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-end;
+        justify-content: flex-start;
+        gap: 2px;
+        width: 100%;
+        margin: 0 0 8px;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .growth-journey-detail__lotus-row[hidden] {
+        display: none;
       }
       .growth-journey-detail__rhythm {
         display: flex;
