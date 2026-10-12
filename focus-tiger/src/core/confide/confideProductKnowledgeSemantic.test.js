@@ -41,6 +41,13 @@ describe('confideProductKnowledgeSemantic', () => {
       'skip'
     );
     assert.equal(isConfideMoodAsideFromProductKnowledge('有点烦'), true);
+    assert.equal(isConfideMoodAsideFromProductKnowledge('会不会好一点？'), true);
+    for (const text of ['最近老是想起以前', '我今天练习的太久啦。', '我不想练习，想喝酒。']) {
+      assert.equal(isConfideMoodAsideFromProductKnowledge(text), true, text);
+    }
+    for (const text of ['以前的记录在哪', '我练了多久', '练太久会不会累？', '想起以前的练习记录']) {
+      assert.equal(isConfideMoodAsideFromProductKnowledge(text), false, text);
+    }
     assert.equal(
       resolveProductKnowledgeGateAction({
         text: '有点烦',

@@ -62,6 +62,41 @@ describe('confideDesktopRoutingAnchors · 2026-09-30 user report', () => {
     assert.notEqual(resolveConfideMetaQueryBucket('有点烦'), 'product_knowledge_honesty');
   });
 
+  it('2026-10-13 mood asides skip KB honesty when embedding says product-like', () => {
+    for (const text of ['最近老是想起以前', '我今天练习的太久啦。', '我不想练习，想喝酒。']) {
+      assert.equal(isConfideMoodAsideFromProductKnowledge(text), true, text);
+      for (const nearAction of [undefined, 'honesty']) {
+        assert.equal(
+          resolveProductKnowledgeGateAction({
+            text,
+            embeddingState: 'ready',
+            semanticIsProduct: true,
+            catalogHit: false,
+            nearAction
+          }),
+          'skip',
+          `${text} nearAction=${nearAction}`
+        );
+      }
+      assert.equal(resolveConfideDesktopSource(text), 'generate', text);
+    }
+  });
+
+  it('ask-shaped neighbours of the 2026-10-13 mood asides stay product asks', () => {
+    for (const text of ['想起以前那些事，练习记录在哪里', '我练了多久', '练太久了怎么办？']) {
+      assert.equal(isConfideMoodAsideFromProductKnowledge(text), false, text);
+    }
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: '想起以前那些事，练习记录在哪里',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false
+      }),
+      'honesty'
+    );
+  });
+
   it('reminder functional asks hit product_knowledge not honesty empty state', () => {
     for (const text of ['提醒我练习', 'How to remind me to practice?']) {
       assert.equal(resolveConfideDesktopSource(text), 'product_knowledge', text);

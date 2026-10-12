@@ -17,7 +17,7 @@ import {
   retrieveProductKnowledge
 } from './confideProductKnowledge.js';
 
-/** Frozen Electron bugs from 2026-09-22 hand tests. */
+/** Frozen Electron bugs from 2026-09-22 and 2026-10-13 hand tests. */
 export const KB_ROUTING_MATRIX_REGRESSION_IDS = Object.freeze([
   'practice-duration-space-zh',
   'kb-0015-backup-what-inside',
@@ -28,7 +28,10 @@ export const KB_ROUTING_MATRIX_REGRESSION_IDS = Object.freeze([
   'kb-0018-coins-en',
   'honesty-observe-wing-zh',
   'honesty-observe-wing-en',
-  'neg-mood-will-it-get-better'
+  'neg-mood-will-it-get-better',
+  'neg-mood-recall-past',
+  'neg-mood-practiced-too-long',
+  'neg-mood-want-a-drink'
 ]);
 
 /**
@@ -977,6 +980,27 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
   {
     id: 'neg-mood-annoyed',
     text: '有点烦',
+    dimensions: ['mood'],
+    lock: 'must-miss',
+    expect: { dataSource: 'generate', catalogId: null }
+  },
+  {
+    id: 'neg-mood-recall-past',
+    text: '最近老是想起以前',
+    dimensions: ['mood'],
+    lock: 'must-miss',
+    expect: { dataSource: 'generate', catalogId: null }
+  },
+  {
+    id: 'neg-mood-practiced-too-long',
+    text: '我今天练习的太久啦。',
+    dimensions: ['mood'],
+    lock: 'must-miss',
+    expect: { dataSource: 'generate', catalogId: null }
+  },
+  {
+    id: 'neg-mood-want-a-drink',
+    text: '我不想练习，想喝酒。',
     dimensions: ['mood'],
     lock: 'must-miss',
     expect: { dataSource: 'generate', catalogId: null }

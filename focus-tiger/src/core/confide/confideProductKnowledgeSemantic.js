@@ -99,7 +99,14 @@ export function isConfideMoodAsideFromProductKnowledge(text) {
   const raw = normalizeConfideIntentText(text);
   if (!raw) return false;
   if (/怎么|如何|在哪|哪里|提醒/.test(raw)) return false;
-  return /有点烦|有點煩|会不会好一点|會不會好一點/.test(raw);
+  if (/有点烦|有點煩|会不会好一点|會不會好一點/.test(raw)) return true;
+  // 2026-10-13 families: any ask shape (records, duration, yes/no) stays a product ask.
+  if (/记录|記錄|多久|吗|嗎|？|\?/.test(raw)) return false;
+  return (
+    /想起以前|想起過去|想起过去|怀念以前|懷念以前|以前的事/.test(raw) ||
+    /想喝酒|喝一杯|不想练|不想練/.test(raw) ||
+    /[练練](?:习|習)?(?:的|得)?太久|太累|好累|累了/.test(raw)
+  );
 }
 
 /**
