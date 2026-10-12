@@ -1,0 +1,3 @@
+# feature/confide-stage2b-po-seeded-audit
+
+| Confide Stage 2b po_seeded 门闩审计脚本 | 纯后端 | 仅单元测试覆盖 | **无用户路径。不进 smoke。不改 live 路由。** 本条验收的是：对 `turns.jsonl` 里 `seedSource=po_seeded` 的影子行，终端能报互异句数 / 意图族数 / 误拉数，且不得写出「可以切 Stage 2b」。复跑：`cd focus-tiger && npm run audit:stage2b-po-seeded-gate`。字面预览候选：`npm run audit:stage2b-po-seeded-gate -- --preview-literal docs/lab-inputs/stage2b-po-seeded-confirm-candidates.txt`。单测：`node --test src/core/confide/auditConfideStage2bPoSeeded.test.js`。**不代表**正例 M 已达标，也不代表可以切 live。 | — | — | — | `auditConfideStage2bPoSeeded.js` · `task-confide-stage2-semantic-cutover.md` | 2026-10-12 |

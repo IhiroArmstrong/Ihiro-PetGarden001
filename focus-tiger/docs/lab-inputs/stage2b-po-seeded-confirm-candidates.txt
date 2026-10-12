@@ -1,0 +1,33 @@
+# Stage 2b confirmation candidates from past PO Confide questions.
+# Not M until PO confirms and re-sends them in Electron with
+# FT_CONFIDE_SEED_SOURCE=po_seeded. Lab 57-row table is not listed here.
+# Lines starting with # are comments.
+
+# family: start-sit
+怎么开始坐？
+
+# family: find-control
+Sit 按钮在哪
+
+# family: coins
+俺 如何 能够 获得 更多的 寅币？
+How to get more focus coins?
+
+# family: backup-content
+备份能够 备份 哪些数据？
+
+# family: find-practice
+接地练习在哪
+
+# family: reminder
+提醒我练习
+Remind me to practice
+
+# family: start-breath (lab-adjacent phrasing PO may confirm)
+想做一下呼吸练习
+
+# family: end-practice
+想结束刚才的练习
+
+# family: past-records
+想看看之前做过的练习
