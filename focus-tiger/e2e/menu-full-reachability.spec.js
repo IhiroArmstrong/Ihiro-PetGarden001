@@ -19,9 +19,11 @@ import {
  * real result (visible panel + non-empty text, or an external open).
  * Stay on one page (Escape between rows). Per-row reload saturated CI
  * preview (:5199) on #1173 — page.reload 30s, then later smoke goto hung.
+ * Wide + narrow share one openFreshProductShell: a second goto after the
+ * wide walk killed preview on CI (narrow TimeoutError 40s).
  */
 
-test.setTimeout(180_000);
+test.setTimeout(240_000);
 test.describe.configure({ retries: 0 });
 
 const FORBIDDEN = MENU_RESULT_FORBIDDEN_TEXT;
@@ -57,8 +59,12 @@ async function stubPopups(page) {
  */
 async function prepareIdle(page) {
   await dismissColdStartOverlay(page);
+  const landscape = page.getByTestId('landscape-suggest-dismiss');
+  if (await landscape.isVisible().catch(() => false)) await landscape.click();
   const dismiss = page.getByTestId('today-direction-options-banner-dismiss');
-  if (await dismiss.isVisible().catch(() => false)) await dismiss.click();
+  if (await dismiss.isVisible().catch(() => false)) {
+    await dismiss.click({ timeout: 8_000 });
+  }
   await stubPopups(page);
 }
 
@@ -251,14 +257,16 @@ async function walkMenu(page, surface, menuSelector) {
   expect(opened).toEqual(clickable.map((r) => r.proxy));
 }
 
-test('menu full reachability · wide Idle ⋯', async ({ page }) => {
+test('menu full reachability · wide Idle ⋯ then narrow drawer', async ({
+  page
+}) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await openFreshProductShell(page);
   await walkMenu(page, 'wide-more', '#ft-wide-more-menu');
-});
-
-test('menu full reachability · narrow Idle drawer', async ({ page }) => {
+  await settleAfterRow(page);
   await page.setViewportSize({ width: 375, height: 667 });
-  await openFreshProductShell(page);
+  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
+    timeout: 15_000
+  });
   await walkMenu(page, 'narrow-drawer', '#ft-narrow-options-drawer');
 });
