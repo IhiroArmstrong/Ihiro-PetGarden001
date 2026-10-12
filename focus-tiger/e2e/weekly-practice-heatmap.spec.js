@@ -184,16 +184,14 @@ test('375 viewport: narrow ActionBar + home CTAs; no dock canvas chrome', async 
   });
   await expect(page.locator('.ft-narrow-action-bar')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-ctas')).toBeVisible();
-  // Canvas order: Sanctuary nav · Quick Start · Sit with Yin · Honesty (PR #986)
+  // Home band is Quick · Sit · Honesty. Compass is the corner FAB
+  // (#ft-sanctuary-nav-compass-fab), not a fourth [data-proxy] in the band
+  // (PR compass-at-fan-corner; NarrowIdleShell.test.js).
   const homeOrder = await page
     .locator('#ft-narrow-home-ctas [data-proxy]')
     .evaluateAll((els) => els.map((el) => el.getAttribute('data-proxy')));
-  expect(homeOrder).toEqual([
-    'sanctuary-nav',
-    'quickstart',
-    'sit',
-    'honesty'
-  ]);
+  expect(homeOrder).toEqual(['quickstart', 'sit', 'honesty']);
+  await expect(page.locator('#ft-sanctuary-nav-compass-fab')).toBeVisible();
   await expect(page.locator('#ft-narrow-home-sit')).toHaveAttribute(
     'aria-label',
     /Sit with Yin|与阿寅同坐/i
