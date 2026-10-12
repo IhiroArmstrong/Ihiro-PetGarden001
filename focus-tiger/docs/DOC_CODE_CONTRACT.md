@@ -123,9 +123,9 @@ npm run test:e2e:visibility  # 改 setSuppressed / park / hide 后：整表 e2e 
 | Store 单元 | `npm test` → 各 `*Store.test.js` | D-01～D-04 |
 | 浏览器壳 | `npm run test:e2e` | DOM 门闩（hint 可点、Offline 开表）— **不替代** G-01 逻辑锁 |
 
-### 本地 pre-commit（husky）
+### 本地 pre-commit（`.husky`）
 
-仓库根目录已配置 **husky**，每次 `git commit` 前自动执行：
+仓库根目录每次 `git commit` 前自动执行（`core.hooksPath=.husky`）：
 
 ```bash
 node focus-tiger/scripts/gate-session-lock-precommit.js   # 外锁非陈旧 / 主仓 develop → reject；自有锁刷新 heartbeat
@@ -135,8 +135,8 @@ cd focus-tiger && npm run test:smoke   # 含 docs:check + 门闩/场景契约测
 
 | 项 | 说明 |
 |---|---|
-| **钩子文件** | `.husky/pre-commit`（仓库根） |
-| **启用方式** | 克隆后于仓库根执行一次 `npm install`（`prepare` 脚本会安装 husky 并注册钩子） |
+| **钩子文件** | `.husky/pre-commit`（仓库根，已进 git） |
+| **启用方式** | `core.hooksPath` 必须指向已进 git 的 `.husky`。根目录 `npm install` 的 `prepare` 会写入本机 git config。新 `git worktree add` **不必**再 install：worktree 共用这份 config，检出里已有 `.husky/pre-commit` 就会跑。禁止再指向 husky 生成的 `.husky/_`（该目录被 gitignore；缺失时 git **静默跳过**全部钩子）。`check:worktree-occupancy` 发现钩子目录或 `pre-commit` 缺失时报 BLOCK。 |
 | **覆盖** | session-lock 技术闸 + `docs:sync`（机器块自动刷新并 stage）+ 结构对齐 `docs:check` + 行为契约 `test:smoke` 主体（不含 `test:e2e`） |
 | **session-lock** | 见 `WORKFLOW.md`（`git-worktree-occupancy`）：`last_heartbeat`、60m 陈旧、history 留痕、禁主仓 develop commit |
 

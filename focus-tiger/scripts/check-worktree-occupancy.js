@@ -33,8 +33,10 @@ import {
   isOwnSession,
   readSessionIdentity
 } from './session-lock-lib.js'
+import { evaluateGitHooksPresence } from './git-hooks-presence.js'
 
 export { parseLockOccupancy } from './session-lock-lib.js'
+export { evaluateGitHooksPresence } from './git-hooks-presence.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const FOCUS_TIGER = join(__dirname, '..')
@@ -146,6 +148,20 @@ function main() {
   } else {
     console.log('lock: absent')
     console.log('lock_occupancy: absent')
+  }
+
+  let hooksPath = ''
+  try {
+    hooksPath = run('git config --get core.hooksPath')
+  } catch {
+    hooksPath = ''
+  }
+  const hooks = evaluateGitHooksPresence({ repoRoot: REPO_ROOT, hooksPath })
+  console.log(`hooks_path: ${hooksPath || '(unset)'}`)
+  console.log(`hooks_presence: ${hooks.code}`)
+  if (!hooks.ok) {
+    console.log(hooks.message)
+    exitCode = 2
   }
 
   if (dirtyLines.length > 0) {

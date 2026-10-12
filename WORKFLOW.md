@@ -291,10 +291,10 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
    3. 非本会话 stash → 只读汇报；禁 pop/drop/再压。
 7. **强制清锁（非陈旧）**：禁因「看起来过期」清非陈旧外锁；须「我确认要强制清除锁」。`releasable` / **已陈旧**走自动接管 + history。
 8. **检测 / 技术闸**：
-   - `npm run check:worktree-occupancy`（occupancy、heartbeat、stale、主仓 develop BLOCK）
+   - `npm run check:worktree-occupancy`（occupancy、heartbeat、stale、主仓 develop BLOCK、**git 钩子目录缺失 BLOCK**）
    - `npm run check:worktree-hygiene`（**只读**全 worktree 候选清单；拆盘口令数据源；见 `git-worktree-hygiene`）
    - `npm run session-lock:heartbeat` / `session-lock:gate`
-   - **husky** `.husky/pre-commit` → `gate-session-lock-precommit.js` 先于 `test:smoke`
+   - **git hooks** `.husky/pre-commit`（`core.hooksPath=.husky`，已进 git；A22）→ `gate-session-lock-precommit.js` 先于 `test:smoke`
 9. **辅助闸（shell，可选）**：`beforeShellExecution` 可查锁。**不能**替代 Edit/Write 自觉 + pre-commit。**禁止**为实施本条改动 deny-subagent / gate-full-e2e / gate-destructive-shell。
 
 ### 固定 develop 验收 worktree（关单 / 批量人工测试）

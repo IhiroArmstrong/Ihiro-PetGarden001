@@ -141,7 +141,7 @@
 | 编号 | 做什么 | 完成标准 |
 |---|---|---|
 | **A5** | 新增 husky `pre-push`：跑一条启动冒烟（单个 Playwright spec，断言 `__FT_APP_READY__ === true` 且无页面错误），本地约 1 分钟内结束；仅文档改动可跳过。 | 在 #1139 的崩溃提交上推送被拦（红）；正常提交通过（绿）。`WORKFLOW.md` / `testing-strategy.mdc` 同步说明。 |
-| **A22** | 让钩子在任何检出里都生效：把 `core.hooksPath` 改指向已进 git 的目录（或在建工作目录的脚本里自动装钩子）；`check:worktree-occupancy` 发现钩子目录缺失时报 BLOCK。**须在 A5 之前或同时落地**，否则 A5 的 `pre-push` 在新工作目录里同样不会跑。 | 新开一个工作目录、不跑 `npm install` 直接提交，`pre-commit` 也会执行；删掉钩子目录时占用检查报错。 |
+| **A22** | 让钩子在任何检出里都生效：把 `core.hooksPath` 改指向已进 git 的目录（或在建工作目录的脚本里自动装钩子）；`check:worktree-occupancy` 发现钩子目录缺失时报 BLOCK。**须在 A5 之前或同时落地**，否则 A5 的 `pre-push` 在新工作目录里同样不会跑。 | **本支** `chore/committed-git-hooks`：`prepare` 写 `core.hooksPath=.husky`；占用检查对缺失 / 仍指向 `.husky/_` 报 BLOCK。新开工作目录、不跑 `npm install`，只要本机已设 hooksPath，`pre-commit` 会执行。 |
 | **A6** | 对 `src/main.js` 开启「先用后定义」静态检查（ESLint `no-use-before-define`，仅变量；函数声明豁免），接进 `test:smoke`。 | 把 #1139 崩溃那一版的写法放进测试夹具能报错；现存违例清零或逐条豁免并登记。 |
 | **A8** | 页面防呆：① e2e 冒烟与 A1 每步检查可见文字中不含 `undefined` / `NaN` / `[object Object]`；② 提供安全拼装辅助（子节点为空即开发报错），新代码用它。 | ① 在 #1129 / #1137 修复前提交上红；② 单测。 |
 

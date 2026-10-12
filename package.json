@@ -2,7 +2,7 @@
   "name": "zen-tiger-pet-garden",
   "private": true,
   "scripts": {
-    "prepare": "husky",
+    "prepare": "git config core.hooksPath .husky",
     "dev": "cd focus-tiger && npm run dev",
     "build": "cd focus-tiger && npm run build",
     "preview": "cd focus-tiger && npm run preview",
@@ -25,8 +25,5 @@
     "rules:doc-check": "cd focus-tiger && npm run rules:doc-check",
     "rules:doc-sync": "cd focus-tiger && npm run rules:doc-sync",
     "check:branch-freshness": "cd focus-tiger && npm run check:branch-freshness"
-  },
-  "devDependencies": {
-    "husky": "^9.1.7"
   }
 }

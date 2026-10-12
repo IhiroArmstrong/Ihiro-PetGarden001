@@ -10,6 +10,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { parseLockOccupancy } from './check-worktree-occupancy.js'
+import { evaluateGitHooksPresence } from './git-hooks-presence.js'
 
 describe('parseLockOccupancy', () => {
   it('reads active / releasable', () => {
@@ -46,5 +47,62 @@ describe('parseLockOccupancy', () => {
     )
     assert.equal(parseLockOccupancy('not-json').kind, 'unparseable')
     assert.equal(parseLockOccupancy('').kind, 'unparseable')
+  })
+})
+
+describe('evaluateGitHooksPresence (A22 / R19)', () => {
+  const repoRoot = '/repo'
+  const present = new Set(['/repo/.husky', '/repo/.husky/pre-commit'])
+  const exists = (p) => present.has(p)
+
+  it('ok when core.hooksPath is committed .husky with pre-commit', () => {
+    const r = evaluateGitHooksPresence({
+      repoRoot,
+      hooksPath: '.husky',
+      exists
+    })
+    assert.equal(r.ok, true)
+    assert.equal(r.code, 'ok')
+  })
+
+  it('blocks when the configured hooks directory is missing', () => {
+    const r = evaluateGitHooksPresence({
+      repoRoot,
+      hooksPath: '.husky/_',
+      exists
+    })
+    assert.equal(r.ok, false)
+    assert.equal(r.code, 'hooks_dir_missing')
+  })
+
+  it('blocks when hooksPath is unset', () => {
+    const r = evaluateGitHooksPresence({ repoRoot, hooksPath: '', exists })
+    assert.equal(r.ok, false)
+    assert.equal(r.code, 'hooks_path_unset')
+  })
+
+  it('blocks when hooksPath is husky _ even if that dir exists', () => {
+    const withUnderscore = new Set([
+      '/repo/.husky/_',
+      '/repo/.husky/_/pre-commit'
+    ])
+    const r = evaluateGitHooksPresence({
+      repoRoot,
+      hooksPath: '.husky/_',
+      exists: (p) => withUnderscore.has(p)
+    })
+    assert.equal(r.ok, false)
+    assert.equal(r.code, 'hooks_path_not_committed')
+  })
+
+  it('blocks when pre-commit file is missing', () => {
+    const dirOnly = new Set(['/repo/.husky'])
+    const r = evaluateGitHooksPresence({
+      repoRoot,
+      hooksPath: '.husky',
+      exists: (p) => dirOnly.has(p)
+    })
+    assert.equal(r.ok, false)
+    assert.equal(r.code, 'pre_commit_missing')
   })
 })
