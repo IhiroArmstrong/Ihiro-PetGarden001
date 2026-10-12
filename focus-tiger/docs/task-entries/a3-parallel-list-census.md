@@ -1,7 +1,7 @@
 ---
 id: a3-parallel-list-census
 kind: feature
-status: 进行中 · 分支 docs/a3-parallel-list-census
+status: PR #1181 · 待 CI 合 develop
 updated: 2026-10-13
 ---
 
