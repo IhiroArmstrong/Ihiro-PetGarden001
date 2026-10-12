@@ -1,0 +1,1 @@
+| A4 开发环境缺 handler 即抛错 | 纯后端 | 仅单元测试覆盖 | 无用户可见变化（接线正确时）。核对 `idleChromeOrchestration.test.js`：缺 handler 开发抛错；生产 `handlerStrict:false` 只打日志、不关菜单。 | — | — | — | `invokeHandler` · `dispatchSecondaryChromeProxy` | 2026-10-13 |

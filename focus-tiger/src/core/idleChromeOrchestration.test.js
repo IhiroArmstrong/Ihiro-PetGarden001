@@ -14,7 +14,9 @@ import {
   SECONDARY_PROXY_DISPATCH,
   secondaryProxyForHintId,
   resolveSecondaryChromeDispatch,
-  dispatchSecondaryChromeProxy
+  dispatchSecondaryChromeProxy,
+  invokeHandler,
+  resolveHandlerStrictEnv
 } from './idleChromeOrchestration.js';
 
 describe('resolveIdleChromeStage', () => {
@@ -645,23 +647,66 @@ describe('dispatchSecondaryChromeProxy', () => {
     assert.equal(called, 0);
   });
 
-  it('missing handler does not close chrome or throw', () => {
+  it('missing handler throws in dev/test and does not close chrome', () => {
+    const calls = [];
+    assert.throws(
+      () =>
+        dispatchSecondaryChromeProxy('membership', {
+          handlers: {},
+          clearStage: () => calls.push('clear'),
+          close: () => calls.push('close')
+        }),
+      /missing handler onMembership/
+    );
+    assert.deepEqual(calls, []);
+  });
+
+  it('missing handler in production logs and keeps chrome open', () => {
     const calls = [];
     const errors = [];
     const orig = console.error;
     console.error = (...args) => errors.push(args.join(' '));
     try {
-      const result = dispatchSecondaryChromeProxy('membership', {
+      const result = invokeHandler({}, 'onMembership', [], { strict: false });
+      assert.equal(result, undefined);
+      const dispatched = dispatchSecondaryChromeProxy('membership', {
         handlers: {},
+        handlerStrict: false,
         clearStage: () => calls.push('clear'),
         close: () => calls.push('close')
       });
-      assert.equal(result, 'missing-handler');
+      assert.equal(dispatched, 'missing-handler');
     } finally {
       console.error = orig;
     }
     assert.deepEqual(calls, []);
-    assert.ok(String(errors[0] || '').includes('onMembership'));
+    assert.ok(errors.some((line) => String(line).includes('onMembership')));
+  });
+
+  it('invokeHandler throws by default in the test runner', () => {
+    assert.equal(resolveHandlerStrictEnv({ nodeEnv: 'test' }), true);
+    assert.equal(
+      resolveHandlerStrictEnv({ nodeEnv: 'production', viteProd: true }),
+      false
+    );
+    assert.throws(() => invokeHandler({}, 'onSound'), /missing handler onSound/);
+    let called = 0;
+    invokeHandler({ onSound: () => called++ }, 'onSound');
+    assert.equal(called, 1);
+  });
+
+  it('missing prelude throws in dev/test before the main handler', () => {
+    let companion = 0;
+    assert.throws(
+      () =>
+        dispatchSecondaryChromeProxy('companion', {
+          handlers: { onCompanion: () => companion++ },
+          clearStage: () => {},
+          addStage: () => {}
+        }),
+      /missing handler onClearCompanion/
+    );
+    assert.equal(companion, 0);
   });
 
   it('companion keeps menu open and runs prelude when present', () => {

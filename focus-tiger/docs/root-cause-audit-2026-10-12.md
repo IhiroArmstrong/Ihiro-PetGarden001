@@ -134,7 +134,7 @@
 | **A1** | 新增 e2e「菜单全量可达」：从 `idleChromeOrchestration.js` 菜单目录**自动**列出宽屏、窄屏每一项，逐项点击，断言对应面板或结果**真实可见**（DOM 可见 + 非空文字）。静默项须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx` 才可豁免。 | 先在 #1136 / #1138 修复前的提交上跑出**红**；修复后**绿**；进 `test:pr-smoke` 或 PR CI 必跑。新增菜单项不改测试即被覆盖。 |
 | **A2** | 菜单接线单一来源：目录每行声明 `proxy → handler 名`；宽屏、窄屏点击分派改为查表，删掉两条 `if (key === …)` 链。 | **本支** `feature/menu-single-source-dispatch`：`SECONDARY_PROXY_DISPATCH` + `dispatchSecondaryChromeProxy`；宽/窄次级菜单不再按 key 分派；单测断言目录每个可点 `proxy` 都有处理函数。 |
 | **A3** | 全仓平行名单普查：列出所有「同一事实在多处登记」的位置（已知：菜单目录/分派/转发、`glassOverlayCards`、冷启动欢迎键、付款回跳商品表、支持页已购表、高清编号规则），每处要么改单一来源，要么加「漏登即失败」的测试。 | 普查表写入本文件 §5；表内每行状态为「已收口」或「已加失败测试」。 |
-| **A4** | 开发模式下处理函数缺失直接报错：把菜单与 chrome 的 `handlers.onX?.()` 换成统一的 `invokeHandler(name)`，开发和测试环境缺失时 `throw`，生产环境 `console.error` 并保持菜单不关。 | 单测：缺失处理函数时开发模式抛错（先红后绿）。 |
+| **A4** | 开发模式下处理函数缺失直接报错：把菜单与 chrome 的 `handlers.onX?.()` 换成统一的 `invokeHandler(name)`，开发和测试环境缺失时 `throw`，生产环境 `console.error` 并保持菜单不关。 | **本支** `feat/a4-missing-handler-throw`：`invokeHandler` + 分派缺 handler 抛错；单测先红后绿。生命周期 `onMenuChange` 等仍 `?.()`。 |
 
 ### 阶段二 · 堵住「一启动就崩」和「页面出 undefined」
 
@@ -206,5 +206,5 @@
 | `supportPaidCardPresentation.js` + `SupportYinModalUI.js` | 已购变淡 vs Support 卡 DOM | A9 合并 SSOT | **已加失败测试** | `supportPaidCardParallelListContract.test.js` |
 | `artCollectionCatalog.js` + `cloud/.../artCollectionCatalog.ts` | 可发放 `hdId` | A9 练习/商品总表 | **已加失败测试** | `artCollectionHdParallelListContract.test.js` |
 | `src/ui/glassCardDeck.js` `GLASS_CARD_KEEP_STYLESHEET_Z` | 哪些卡不得 inline 压 z-index | 与 `Z_INDEX.md` / 受保护路径 | **已加失败测试** | `npm run test:payment-contract` |
-| `handlers.onX?.()` 宽/窄 / `main` | 缺失 handler 是否静默 | **A4**（本刀不做） | **待 A4** | — |
+| `handlers.onX?.()` 宽/窄 / `main` | 缺失 handler 是否静默 | **A4** `invokeHandler`（点击路径） | **已加失败测试** | `idleChromeOrchestration.test.js`（缺 handler 开发抛错） |
 | `main.js` `init()` 顺序依赖 | 启动段先后 | **A7 Brief** | **待 A7** | A5 启动冒烟（未合） |

@@ -9,6 +9,7 @@ import {
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
   dispatchSecondaryChromeProxy,
+  invokeHandler,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
@@ -603,11 +604,11 @@ export class WideIdleMoreMenu {
    */
   _proxyHome(key) {
     if (key === 'sanctuary-nav') {
-      this.handlers.onSanctuaryNav?.();
+      invokeHandler(this.handlers, 'onSanctuaryNav');
       return;
     }
     if (key === 'quickstart') {
-      this.handlers.onQuickStart?.();
+      invokeHandler(this.handlers, 'onQuickStart');
       return;
     }
     if (key === 'sit') {
@@ -621,7 +622,7 @@ export class WideIdleMoreMenu {
     }
     if (key === 'honesty') {
       this.clearStage();
-      this.handlers.onFiveMoments?.();
+      invokeHandler(this.handlers, 'onFiveMoments');
       return;
     }
   }
@@ -806,7 +807,7 @@ export class WideIdleMoreMenu {
     if (key === 'sound') {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.sound);
-      this.handlers.onSound?.();
+      invokeHandler(this.handlers, 'onSound');
       return;
     }
 

@@ -10,6 +10,7 @@ import {
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
   dispatchSecondaryChromeProxy,
+  invokeHandler,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
@@ -955,7 +956,7 @@ export class NarrowIdleShell {
         this.clearStage();
         document.body.classList.add(NARROW_STAGE_CLASS.sound);
       }
-      this.handlers.onSound?.();
+      invokeHandler(this.handlers, 'onSound');
       return;
     }
 
@@ -977,7 +978,7 @@ export class NarrowIdleShell {
     if (result !== 'unknown') return;
 
     if (key === 'quickstart') {
-      this.handlers.onQuickStart?.();
+      invokeHandler(this.handlers, 'onQuickStart');
       return;
     }
 
