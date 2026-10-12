@@ -283,6 +283,13 @@ export function findArtSheet(id) {
 }
 
 /**
+ * @returns {string[]}
+ */
+export function listArtCollectionHdIds() {
+  return ART_COLLECTION_SHEETS.map((row) => row.hdId);
+}
+
+/**
  * @param {'en' | 'zh' | string} locale
  * @param {{ nameEn: string, nameZh: string }} sheetRow
  * @returns {string}

@@ -704,3 +704,26 @@ export function listSecondaryChromeEntries(surface, visibility) {
 
   return out;
 }
+
+/**
+ * Proxies under ⋯ → Preferences (A3 desktop shortcut parity).
+ *
+ * @param {'narrow-drawer' | 'wide-more'} surface
+ * @param {SecondaryEntryVisibility} visibility
+ * @returns {string[]}
+ */
+export function listPreferencesGroupProxies(surface, visibility) {
+  const entries = listSecondaryChromeEntries(surface, visibility);
+  /** @type {string[]} */
+  const proxies = [];
+  let inGroup = false;
+  for (const entry of entries) {
+    if (entry.kind === 'group-label') {
+      inGroup = entry.labelKey === 'MENU_GROUP_PREFERENCES';
+      continue;
+    }
+    if (!inGroup || !entry.proxy) continue;
+    proxies.push(entry.proxy);
+  }
+  return proxies;
+}

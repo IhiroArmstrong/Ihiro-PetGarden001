@@ -1,0 +1,1 @@
+| A3 平行名单普查（§5 + 契约单测） | 纯后端 | 仅单元测试覆盖 | 无用户可见变化。核对 `npm run test:smoke` 含 `*ParallelListContract*`、`glassGrowthOverlayCardRegistry.test.js`；§5 每行已收口或已加失败测试。 | — | — | — | `root-cause-audit-2026-10-12.md` §5 | 2026-10-13 |

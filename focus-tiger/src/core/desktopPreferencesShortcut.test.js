@@ -5,7 +5,11 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { resolvePrimaryPreferenceProxy } from './desktopPreferencesShortcut.js';
+import {
+  DESKTOP_PREFERENCES_SHORTCUT_CANDIDATES,
+  resolvePrimaryPreferenceProxy
+} from './desktopPreferencesShortcut.js';
+import { listPreferencesGroupProxies } from './idleChromeOrchestration.js';
 
 describe('resolvePrimaryPreferenceProxy', () => {
   it('prefers reminder when available', () => {
@@ -50,5 +54,30 @@ describe('resolvePrimaryPreferenceProxy', () => {
       }),
       'local-backup'
     );
+  });
+
+  it('shortcut candidates stay in Preferences menu order (A3)', () => {
+    const menuOrder = listPreferencesGroupProxies('wide-more', {
+      microRitualVisible: true,
+      companionVisible: true,
+      companionEnabled: true,
+      reminderAvailable: true,
+      confideUserVisible: true,
+      companionGeneration: true,
+      mustardSeedSealUnlocked: true,
+      systemTtsAvailable: true,
+      newsletterSubmitted: false,
+      scenesEntitled: true
+    });
+    const positions = DESKTOP_PREFERENCES_SHORTCUT_CANDIDATES.map((proxy) =>
+      menuOrder.indexOf(proxy)
+    );
+    assert.ok(positions.every((i) => i >= 0));
+    for (let i = 1; i < positions.length; i += 1) {
+      assert.ok(
+        positions[i] > positions[i - 1],
+        'desktop shortcut order must follow menu Preferences order'
+      );
+    }
   });
 });
