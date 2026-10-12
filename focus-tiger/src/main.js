@@ -83,7 +83,10 @@ import {
   WEEKLY_PRACTICE_HEATMAP_DAYS
 } from './ui/WeeklyPracticeHeatmap.js';
 import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
-import { InAppReminderBannerUI } from './ui/InAppReminderBannerUI.js';
+import {
+  createBootSceneAnimState,
+  mountInAppReminderBanner
+} from './boot/boot-scene-anim.js';
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
@@ -703,6 +706,8 @@ async function init() {
   const focusVisualizer = new FocusVisualizer(composer);
   await focusVisualizer.init(mounts.tiger);
 
+  const bootSceneAnim = createBootSceneAnimState();
+
   /** Shared overlay-busy for scene Animation Dispatcher */
   function isSceneAnimOverlayBusy() {
     return deriveSceneAnimOverlayBusy(buildLiveOverlaySnapshot());
@@ -749,7 +754,7 @@ async function init() {
       ...resolveOpts
     });
     if (!decision.play || !decision.emotionKey) return decision;
-    sceneAnimationDispatch.lastPlay = {
+    bootSceneAnim.sceneAnimationDispatch.lastPlay = {
       event,
       emotionKey: decision.emotionKey,
       reason: decision.reason
@@ -764,7 +769,7 @@ async function init() {
           context: {
             sessionState: stateManager.state,
             overlayBusy: isSceneAnimOverlayBusy(),
-            occupancy: spriteOccupancy,
+            occupancy: bootSceneAnim.spriteOccupancy,
             now: new Date()
           }
         })
@@ -814,13 +819,8 @@ async function init() {
     return decision;
   }
 
-  const sceneAnimationDispatch = {
-    lastPlay: /** @type {{ event: string, emotionKey: string, reason: string } | null} */ (
-      null
-    ),
-    tryPlay: tryPlaySceneAnim
-  };
-  window.__sceneAnimationDispatch = sceneAnimationDispatch;
+  bootSceneAnim.sceneAnimationDispatch.tryPlay = tryPlaySceneAnim;
+  window.__sceneAnimationDispatch = bootSceneAnim.sceneAnimationDispatch;
 
   const pointerInteraction = new PointerInteraction({
     canvas,
@@ -917,14 +917,13 @@ async function init() {
   let openHomeSanctuaryNav = () => {};
   let syncTodayDirectionOptionsBanner = () => {};
   /** Occupancy winner for Yin sprites (sleep / welcome / payment / ceremony). */
-  let spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
   /** Filled after Honesty exists — Stripe confirm may resolve after boot sleep. */
   let applyPaymentThanksSprite = (kind) => {
     emotionController.playEmotion(emotionKeyForPaymentThanks(kind));
   };
 
   function isColdStartWelcomePlaying() {
-    if (occupancyHoldsParrotMessenger(spriteOccupancy)) return true;
+    if (occupancyHoldsParrotMessenger(bootSceneAnim.spriteOccupancy)) return true;
     return isColdStartWelcomeEmotionKey(
       emotionController.getCurrentEmotionKey()
     );
@@ -937,7 +936,7 @@ async function init() {
       context: {
         sessionState: stateManager.state,
         overlayBusy: isSceneAnimOverlayBusy(),
-        occupancy: spriteOccupancy,
+        occupancy: bootSceneAnim.spriteOccupancy,
         now: new Date()
       }
     });
@@ -947,23 +946,23 @@ async function init() {
       }
       return;
     }
-    spriteOccupancy = decision.occupy;
+    bootSceneAnim.spriteOccupancy = decision.occupy;
     parrotMessengerPlayedThisPageSession = true;
     pendingParrotMessengerAfterWelcome = false;
     emotionController.playEmotion('parrotEarVisit', {
       crossFadeMs: CAPCUT_DISSOLVE_MS,
       freezeUntilCrossFadeEnds: true,
       onComplete: () => {
-        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+        bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
       }
     });
   }
   /** 第一幕结束后：等 CapCut 叠化再补播挂起的信使（不依赖 sticky latch） */
   function scheduleParrotAfterFirstPaintRelease() {
-    spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+    bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
     const playMessenger =
       pendingParrotMessengerAfterWelcome &&
-      inAppReminderBannerUI.isVisible();
+      bootSceneAnim.inAppReminderBannerUI.isVisible();
     window.setTimeout(() => {
       if (playMessenger) {
         playParrotMessengerNow();
@@ -976,10 +975,11 @@ async function init() {
   function flushPendingParrotMessengerAfterWelcome() {
     if (!pendingParrotMessengerAfterWelcome) return;
     if (isColdStartWelcomePlaying()) return;
-    if (!inAppReminderBannerUI.isVisible()) return;
+    if (!bootSceneAnim.inAppReminderBannerUI.isVisible()) return;
     playParrotMessengerNow();
   }
-  const inAppReminderBannerUI = new InAppReminderBannerUI(
+  mountInAppReminderBanner(
+    bootSceneAnim,
     document.getElementById('ui-overlay'),
     {
       onDismiss: () => {
@@ -2746,7 +2746,7 @@ async function init() {
       decision.occupy &&
       decision.occupy !== SPRITE_OCCUPANCY.KEEP
     ) {
-      spriteOccupancy = decision.occupy;
+      bootSceneAnim.spriteOccupancy = decision.occupy;
     }
     if (decision.play?.emotionKey) {
       emotionController.playEmotion(decision.play.emotionKey, {
@@ -2767,7 +2767,7 @@ async function init() {
         context: {
           sessionState: stateManager.state,
           overlayBusy: isSceneAnimOverlayBusy(),
-          occupancy: spriteOccupancy,
+          occupancy: bootSceneAnim.spriteOccupancy,
           now: new Date()
         }
       })
@@ -3187,7 +3187,7 @@ async function init() {
         if (stateManager.state === STATES.DORMANT) {
           stateManager.setState(STATES.IDLE);
         }
-        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+        bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
         emotionController.playEmotion('idle', {
           crossFadeMs: CAPCUT_DISSOLVE_MS
         });
@@ -3250,7 +3250,7 @@ async function init() {
         focusing: stateManager.state === STATES.FOCUSING,
         overlayBusy: isIdleYinTapOverlayBusy(),
         emotionKey: emotionController.getCurrentEmotionKey(),
-        occupancy: spriteOccupancy
+        occupancy: bootSceneAnim.spriteOccupancy
       })
     );
     maybeOfferIdleYinTapHint();
@@ -3314,7 +3314,7 @@ async function init() {
             focusing: stateManager.state === STATES.FOCUSING,
             overlayBusy: isIdleYinTapOverlayBusy(),
             emotionKey: emotionController.getCurrentEmotionKey(),
-            occupancy: spriteOccupancy
+            occupancy: bootSceneAnim.spriteOccupancy
           })
         ) {
           syncIdleYinTap();
@@ -3579,12 +3579,12 @@ async function init() {
       cueId: `ritual-complete:${ritualId}:${Date.now()}`
     });
     endRitualFlowChrome();
-    spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
+    bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
     emotionController.playEmotion('sessionComplete', {
       crossFadeMs: CAPCUT_DISSOLVE_MS,
       freezeUntilCrossFadeEnds: true,
       onComplete: () => {
-        spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+        bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
         syncHonestyIdleEntry();
       }
     });
@@ -3679,7 +3679,7 @@ async function init() {
       cueId: `breath-complete:${Date.now()}`
     });
     endMicroRitualChrome();
-    spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
+    bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.LIGHT_COMPLETE;
     const decision = tryPlaySceneAnim(SCENE_ANIM_EVENTS.MICRO_RITUAL_COMPLETE, {
       playOptions: {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
@@ -3744,12 +3744,12 @@ async function init() {
     // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
     // RISE_HOLD 会挡住额头点击；关面板时释放，即使 emotion key 已空。
     const riseKey = emotionController.getCurrentEmotionKey();
-    const released = releaseRiseHoldOccupancy(spriteOccupancy);
+    const released = releaseRiseHoldOccupancy(bootSceneAnim.spriteOccupancy);
     const heldRise =
-      released !== spriteOccupancy ||
+      released !== bootSceneAnim.spriteOccupancy ||
       isRiseInterruptHoldEmotion(riseKey) ||
       isLateNightCloakHoldEmotion(riseKey);
-    if (released !== spriteOccupancy) spriteOccupancy = released;
+    if (released !== bootSceneAnim.spriteOccupancy) bootSceneAnim.spriteOccupancy = released;
     if (heldRise) emotionController.playEmotion('idle');
     syncOnboardingAutoHints();
     syncHonestyIdleEntry();
@@ -4444,9 +4444,9 @@ async function init() {
     const decision = inAppReminderBannerController.resolve(candidate, {
       isBusySession: busy
     });
-    const bannerWasVisible = inAppReminderBannerUI.isVisible();
+    const bannerWasVisible = bootSceneAnim.inAppReminderBannerUI.isVisible();
     if (decision.action === 'show') {
-      inAppReminderBannerUI.show(
+      bootSceneAnim.inAppReminderBannerUI.show(
         decision.messageKey || REMINDER_GENTLE_WAITING_MESSAGE_KEY
       );
       const holdForWelcome = isColdStartWelcomePlaying();
@@ -4466,8 +4466,8 @@ async function init() {
         // 欢迎还在播：记下，等欢迎 onComplete / 下次 sync flush
         pendingParrotMessengerAfterWelcome = true;
       }
-    } else if (inAppReminderBannerUI.isVisible()) {
-      inAppReminderBannerUI.hide({ silent: true });
+    } else if (bootSceneAnim.inAppReminderBannerUI.isVisible()) {
+      bootSceneAnim.inAppReminderBannerUI.hide({ silent: true });
     }
     syncSoftUpdatePrompt();
     syncTodayDirectionOptionsBanner();
@@ -4502,7 +4502,7 @@ async function init() {
     },
     controller: inAppReminderBannerController,
     settings: reminderPreferenceUI,
-    banner: inAppReminderBannerUI,
+    banner: bootSceneAnim.inAppReminderBannerUI,
     /** DEV/E2E：清观测戳（不重置横幅 dismiss） */
     resetParrotMessenger: () => {
       parrotMessengerPlayedThisPageSession = false;
@@ -4707,7 +4707,7 @@ async function init() {
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday()
     });
     if (endDec.occupy !== SPRITE_OCCUPANCY.KEEP) {
-      spriteOccupancy = endDec.occupy;
+      bootSceneAnim.spriteOccupancy = endDec.occupy;
     }
     triggerSessionCompletionFeedback({
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
@@ -5057,7 +5057,7 @@ async function init() {
       // MoodController 在 IDLE 时不覆盖池内 hold 键。
       const riseOccupy = resolveSessionEndSpriteOccupancy({ completed: false });
       if (riseOccupy.occupy !== SPRITE_OCCUPANCY.KEEP) {
-        spriteOccupancy = riseOccupy.occupy;
+        bootSceneAnim.spriteOccupancy = riseOccupy.occupy;
       }
       const riseEmotion = resolveSessionEndHoldEmotion({
         date: now(),
@@ -5352,7 +5352,7 @@ async function init() {
     bootDecision.occupy &&
     bootDecision.occupy !== SPRITE_OCCUPANCY.KEEP
   ) {
-    spriteOccupancy = bootDecision.occupy;
+    bootSceneAnim.spriteOccupancy = bootDecision.occupy;
   }
 
   let tastePrefetchFirstWaitDone = false;
@@ -5386,7 +5386,7 @@ async function init() {
     // 第一幕还在播 → 交给它自己的 onComplete 回 idle。抢跑这一刀会把吹散尾段
     // 定格 + 叠化掉（气泡 ≈3.6s vs 序列 ≈6.5s），观感等于吹花压根没播。
     if (isWelcomeFirstPaintPlaying()) return;
-    spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+    bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
     if (!idleOrchestrator.isActive()) {
       emotionController.playEmotion('idle', {
         crossFadeMs: CAPCUT_DISSOLVE_MS,
@@ -5445,7 +5445,7 @@ async function init() {
     const broadcastNeverStarted =
       welcomeStarted?.play !== true || welcomeFirstPaintSequence == null;
     if (broadcastNeverStarted) {
-      spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+      bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
       if (!idleOrchestrator.isActive()) {
         emotionController.playEmotion('idle');
       }
@@ -5630,16 +5630,16 @@ async function init() {
         context: {
           sessionState: stateManager.state,
           overlayBusy: isSceneAnimOverlayBusy(),
-          occupancy: spriteOccupancy,
+          occupancy: bootSceneAnim.spriteOccupancy,
           now: new Date()
         }
       });
       if (wake.occupy === SPRITE_OCCUPANCY.LONG_AWAY_WAKE) {
-        spriteOccupancy = wake.occupy;
+        bootSceneAnim.spriteOccupancy = wake.occupy;
         emotionController.playEmotion('dormantWake', {
           holdPose: true,
           onComplete: () => {
-            spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
+            bootSceneAnim.spriteOccupancy = SPRITE_OCCUPANCY.IDLE_BASELINE;
             emotionController.playEmotion('idle', {
               crossFadeMs: CAPCUT_DISSOLVE_MS
             });
@@ -5651,7 +5651,7 @@ async function init() {
         resolveVisibilitySpriteOccupancy({
           sessionState: stateManager.state,
           overlayBusy: isSceneAnimOverlayBusy(),
-          occupancy: spriteOccupancy,
+          occupancy: bootSceneAnim.spriteOccupancy,
           hiddenMs,
           lastEndedAt: focusSessionEndStore.getLastEndedAt(),
           now: new Date()

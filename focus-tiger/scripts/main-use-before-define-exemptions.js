@@ -6,7 +6,7 @@
 /**
  * A6 / R3: remaining `no-use-before-define` (variables) hits in `src/main.js`.
  * Caps only shrink. New names or extra hits fail `lint:main-use-before-define`.
- * Do not hoist here — that is A7 (`init()` split).
+ * Caps shrink via A7 boot extracts (A7.1: scene-anim state bag).
  */
 
 export const MAIN_JS_USE_BEFORE_DEFINE_EXEMPTIONS = Object.freeze([
@@ -42,11 +42,6 @@ export const MAIN_JS_USE_BEFORE_DEFINE_EXEMPTIONS = Object.freeze([
     reason: 'Support FAB helpers close over the modal before `new SupportYinModalUI`.'
   },
   {
-    name: 'inAppReminderBannerUI',
-    maxHits: 2,
-    reason: 'Reminder helpers close over the banner before construct.'
-  },
-  {
     name: 'honestyCheckInUI',
     maxHits: 2,
     reason: 'Predeclared null after some Honesty callers (ear TDZ pair lives earlier).'
@@ -55,16 +50,6 @@ export const MAIN_JS_USE_BEFORE_DEFINE_EXEMPTIONS = Object.freeze([
     name: 'focusInput',
     maxHits: 2,
     reason: 'Focus HUD helpers close over input constructed near end of init.'
-  },
-  {
-    name: 'sceneAnimationDispatch',
-    maxHits: 1,
-    reason: 'tryPlaySceneAnim sits above the dispatch object literal.'
-  },
-  {
-    name: 'spriteOccupancy',
-    maxHits: 1,
-    reason: 'Occupancy readers sit above the occupancy let.'
   },
   {
     name: 'calmActionRecoverCardUI',

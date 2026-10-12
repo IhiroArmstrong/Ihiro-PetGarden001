@@ -1,0 +1,1 @@
+| A7.1 boot scene-anim 状态袋 | 纯后端 | 仅单元测试覆盖 | 不是产品功能。验收的是启动仍 `__FT_APP_READY__`、A6 lint 帽子少 3 名，不代表冷启动画面变了。`npm run lint:main-use-before-define`；`npm run test:e2e:startup`。不覆盖 Sit/Arrival 观感。 | — | — | — | `src/boot/boot-scene-anim.js` · `src/main.js` `init()` | 2026-10-13 |
