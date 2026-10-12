@@ -30,6 +30,8 @@ import {
   KB_MOOD_VETO_LAB_MOOD_MIN_N,
   KB_MOOD_VETO_LAB_MOOD_ROWS,
   KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP,
+  KB_MOOD_VETO_LAB_REVERSE_RISK_MIN_N,
+  KB_MOOD_VETO_LAB_REVERSE_RISK_PULLED_FROM_STAGE2B,
   kbMoodVetoLabLanguage
 } from './confideKbMoodVetoLabSet.js';
 import { simulateKbMoodVetoGate, summarizeKbMoodVetoLab } from './confideKbMoodVetoLabScore.js';
@@ -114,8 +116,10 @@ describe('simulateKbMoodVetoGate', () => {
       baseline: 'honesty',
       withVeto: 'skip',
       withVetoAskGuard: 'skip',
+      withVetoNarrowAskGuard: 'skip',
       moodOutranksProduct: true,
-      functionAsk: false
+      functionAsk: false,
+      libraryCPointsAtProduct: true
     });
     assert.equal(simulateKbMoodVetoGate({ ...base, moodScore: 0.4 }).withVeto, 'honesty');
   });
@@ -134,6 +138,26 @@ describe('simulateKbMoodVetoGate', () => {
     const plain = simulateKbMoodVetoGate(base);
     assert.equal(plain.functionAsk, false);
     assert.equal(plain.withVetoAskGuard, 'skip');
+  });
+
+  it('narrow rule 1 releases the veto only when the ask also points at Library C', () => {
+    const mixed = simulateKbMoodVetoGate({ ...base, text: '太累了，怎么关提醒？' });
+    assert.equal(mixed.libraryCPointsAtProduct, true);
+    assert.equal(mixed.withVetoNarrowAskGuard, 'honesty');
+
+    const exclamation = simulateKbMoodVetoGate({
+      ...base,
+      text: '怎么又这样……',
+      semanticIsProduct: false,
+      productScore: 0.2,
+      nearAction: 'honesty'
+    });
+    assert.equal(exclamation.baseline, 'honesty');
+    assert.equal(exclamation.functionAsk, true);
+    assert.equal(exclamation.libraryCPointsAtProduct, false);
+    assert.equal(exclamation.withVeto, 'skip');
+    assert.equal(exclamation.withVetoAskGuard, 'honesty');
+    assert.equal(exclamation.withVetoNarrowAskGuard, 'skip');
   });
 });
 
@@ -172,7 +196,10 @@ describe('KB mood veto lab set', () => {
     const rows = KB_MOOD_VETO_LAB_MOOD_ROWS.filter(
       (r) => r.group === KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP
     );
+    assert.ok(rows.length >= KB_MOOD_VETO_LAB_REVERSE_RISK_MIN_N, String(rows.length));
     assert.ok(rows.some((r) => r.text === '练着练着就想问怎么放弃'));
+    assert.ok(rows.some((r) => r.text === '怎么又这样……'));
+    assert.ok(rows.some((r) => r.text === '怎么才能不难过'));
     for (const lang of ['zh', 'en', 'ja']) {
       assert.ok(rows.some((r) => r.lang === lang), lang);
     }
@@ -180,6 +207,10 @@ describe('KB mood veto lab set', () => {
       rows.filter((r) => !isProductKnowledgeColdStartProbe(r.text)).map((r) => r.text),
       []
     );
+    const stage2b = KB_MOOD_VETO_LAB_MOOD_ROWS.filter((r) => r.group === 'stage2b_negative_control');
+    for (const text of KB_MOOD_VETO_LAB_REVERSE_RISK_PULLED_FROM_STAGE2B) {
+      assert.equal(stage2b.some((r) => r.text === text), false, text);
+    }
   });
 
   it('drops the practice-fact line whose real path the routing matrix locks', () => {

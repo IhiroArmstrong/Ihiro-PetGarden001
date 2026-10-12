@@ -22,9 +22,13 @@ import {
 
 /**
  * Today's gate action vs the stage-two rule (honesty + mood outranks → skip).
- * `withVetoAskGuard` adds PO round two rule 1: a function-ask shape
+ * `withVetoAskGuard` is PO round two rule 1: a function-ask shape
  * (`isProductKnowledgeColdStartProbe`) is never vetoed.
- * Embedding is assumed ready, as in the lab.
+ * `withVetoNarrowAskGuard` is PO round three narrow rule 1: skip the veto
+ * only when that ask shape AND Library C both say yes. Library C is the
+ * live semantic flag (`semanticIsProduct`, score at or above the Library C
+ * minimum), not a handwritten noun list.
+ * Embedding is assumed ready, as in the lab. Neither guard is on the send path.
  * @param {{
  *   text: string,
  *   catalogHit: boolean,
@@ -39,8 +43,10 @@ import {
  *   baseline: 'skip' | 'hit' | 'honesty',
  *   withVeto: 'skip' | 'hit' | 'honesty',
  *   withVetoAskGuard: 'skip' | 'hit' | 'honesty',
+ *   withVetoNarrowAskGuard: 'skip' | 'hit' | 'honesty',
  *   moodOutranksProduct: boolean,
- *   functionAsk: boolean
+ *   functionAsk: boolean,
+ *   libraryCPointsAtProduct: boolean
  * }}
  */
 export function simulateKbMoodVetoGate(input) {
@@ -59,8 +65,19 @@ export function simulateKbMoodVetoGate(input) {
   );
   const withVeto = baseline === 'honesty' && moodOutranksProduct ? 'skip' : baseline;
   const functionAsk = isProductKnowledgeColdStartProbe(input.text);
+  const libraryCPointsAtProduct = input.semanticIsProduct === true;
   const withVetoAskGuard = functionAsk ? baseline : withVeto;
-  return { baseline, withVeto, withVetoAskGuard, moodOutranksProduct, functionAsk };
+  const withVetoNarrowAskGuard =
+    functionAsk && libraryCPointsAtProduct ? baseline : withVeto;
+  return {
+    baseline,
+    withVeto,
+    withVetoAskGuard,
+    withVetoNarrowAskGuard,
+    moodOutranksProduct,
+    functionAsk,
+    libraryCPointsAtProduct
+  };
 }
 
 /**
