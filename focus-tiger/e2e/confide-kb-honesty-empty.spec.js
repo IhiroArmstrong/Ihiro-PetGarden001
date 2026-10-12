@@ -70,6 +70,11 @@ async function shareExpectSource(page, text, source) {
   await expect(reply).toBeVisible();
   const body = (await reply.innerText()).trim();
   expect(body.length).toBeGreaterThan(0);
+  if (source === 'product_knowledge_honesty') {
+    expect(body).toMatch(/Help Center/i);
+    expect(body).toMatch(/hello@twinsology\.com/);
+    expect(body).not.toMatch(/Practice or Preferences/i);
+  }
   return reply;
 }
 

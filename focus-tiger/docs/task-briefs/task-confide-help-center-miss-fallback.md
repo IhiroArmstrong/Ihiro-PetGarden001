@@ -1,6 +1,6 @@
 # Task Brief · 短答未命中时：Help Center + 客服邮箱（不整库灌倾诉）
 
-> **状态（2026-10-13）**：草稿 · **待 PO 点头**。无运行时。口令「按这份 Brief 开工」后才改回复。
+> **状态（2026-10-13）**：PO 已点头 · **第一刀**（诚实空态文案）`fix/confide-honesty-help-center-copy`。第二刀 Help Center 文章、第三刀 Confide 检索仍待另开。
 > **分支建议**：先 `docs/*` 合入计划；实现拆两刀 `fix/confide-honesty-help-center-copy`（文案）→ `feature/help-center-gap-articles`（目录补篇）。Confide 检索 Help Center 正文须**第三刀另 Brief**。
 
 ## 背景
