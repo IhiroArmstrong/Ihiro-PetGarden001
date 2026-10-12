@@ -732,14 +732,19 @@ export class CompanionL1Runtime {
    */
   async semanticLiveClassify(payload = {}) {
     const wallStarted = Date.now();
+    const stage2bRaw = String(this.env.FT_CONFIDE_STAGE2B_ROUTING || 'shadow')
+      .trim()
+      .toLowerCase();
+    const stage2bRouting =
+      stage2bRaw === 'live' ? 'live' : stage2bRaw === 'off' ? 'off' : 'shadow';
     if (!this.allowed) {
-      return { ok: false, reason: 'unavailable', bucket: null };
+      return { ok: false, reason: 'unavailable', bucket: null, stage2bRouting };
     }
     const modeRaw = String(this.env.FT_CONFIDE_SEMANTIC_ROUTING || 'live')
       .trim()
       .toLowerCase();
     if (modeRaw === 'shadow' || modeRaw === 'off' || modeRaw === 'stage1') {
-      return { ok: false, reason: 'shadow_mode', bucket: null };
+      return { ok: false, reason: 'shadow_mode', bucket: null, stage2bRouting };
     }
     const text = typeof payload.text === 'string' ? payload.text.trim() : '';
     const contextualText =
@@ -749,7 +754,7 @@ export class CompanionL1Runtime {
     const source = typeof payload.source === 'string' ? payload.source : '';
     const literalCoarse =
       typeof payload.literalCoarse === 'string' ? payload.literalCoarse : null;
-    if (!text) return { ok: false, reason: 'empty_text', bucket: null };
+    if (!text) return { ok: false, reason: 'empty_text', bucket: null, stage2bRouting };
 
     const baseRecord = {
       text,
@@ -802,7 +807,7 @@ export class CompanionL1Runtime {
             timing: { wallMs: Date.now() - wallStarted }
           };
           await appendLiveLog(result);
-          return result;
+          return { ...result, stage2bRouting };
         }
       }
       const result = {
@@ -812,7 +817,7 @@ export class CompanionL1Runtime {
         timing: { wallMs: Date.now() - wallStarted }
       };
       await appendLiveLog(result);
-      return result;
+      return { ...result, stage2bRouting };
     }
 
     const pending = this._shadowQueue.then(() =>
@@ -845,7 +850,7 @@ export class CompanionL1Runtime {
       semanticResultWithPrior: null
     };
     await appendLiveLog(result);
-    return result;
+    return { ...result, stage2bRouting };
   }
 
   /**

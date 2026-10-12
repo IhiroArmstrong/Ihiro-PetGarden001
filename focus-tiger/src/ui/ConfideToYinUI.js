@@ -22,6 +22,7 @@ import {
   shouldRunConfideSemanticShadow
 } from '../core/confide/confideSemanticCoarseMap.js';
 import { applyConfideStage2Route } from '../core/confide/confideSemanticStage2.js';
+import { applyConfideStage2bLive } from '../core/confide/confideSemanticStage2b.js';
 import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
   buildConfideShadowContextualText,
@@ -1186,8 +1187,9 @@ export class ConfideToYinUI {
     const prior = priorConfideTurnForLiveClassify(this._l2Turns);
     const contextualText = buildConfideShadowContextualText(asked, prior);
     let semanticCoarse = null;
+    let liveClassify = null;
     try {
-      const result = await this._companion.semanticLiveClassify({
+      liveClassify = await this._companion.semanticLiveClassify({
         text: asked,
         contextualText,
         hadPriorTurn: Boolean(prior),
@@ -1195,11 +1197,16 @@ export class ConfideToYinUI {
         source: '',
         literalCoarse
       });
-      if (result?.ok && typeof result.bucket === 'string' && result.bucket) {
-        semanticCoarse = result.bucket;
+      if (
+        liveClassify?.ok &&
+        typeof liveClassify.bucket === 'string' &&
+        liveClassify.bucket
+      ) {
+        semanticCoarse = liveClassify.bucket;
       }
     } catch {
       semanticCoarse = null;
+      liveClassify = null;
     }
     if (!this._open || epoch !== this._sendEpoch) {
       this._sending = false;
@@ -1224,6 +1231,21 @@ export class ConfideToYinUI {
           ),
           locale: getLocale()
         }) || { ...hit, route: applied.route };
+    }
+    const stage2b = applyConfideStage2bLive({
+      text: asked,
+      route: applied.route || hit.route,
+      source: 'generate',
+      literalCoarse,
+      semanticCoarse,
+      semanticMode: CONFIDE_SEMANTIC_ROUTING_MODE.LIVE,
+      stage2bMode:
+        typeof liveClassify?.stage2bRouting === 'string'
+          ? liveClassify.stage2bRouting
+          : 'shadow'
+    });
+    if (stage2b.promote) {
+      nextHit = { ...nextHit, stage2bLivePromote: true };
     }
     this._sending = false;
     this._syncSendEnabled();
@@ -1363,7 +1385,7 @@ export class ConfideToYinUI {
         generateEnabled: Boolean(this._companionStatus?.generateEnabled)
       })
     ) {
-      if (shouldRunConfideReadHybridClassify(text)) {
+      if (shouldRunConfideReadHybridClassify(text) || hit.stage2bLivePromote) {
         void this._tryReadHybridThenContinue(routePayload);
       } else {
         this._continueAfterToolRouting(routePayload);
@@ -1637,6 +1659,17 @@ export class ConfideToYinUI {
           route: hit.route,
           text: formatConfideReflectiveHonestyReply(t),
           source: 'reflective_honesty'
+        },
+        text
+      );
+      return 'sync';
+    }
+    if (hit.stage2bLivePromote) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideProductKnowledgeHonestyReply(t),
+          source: 'product_knowledge_honesty'
         },
         text
       );

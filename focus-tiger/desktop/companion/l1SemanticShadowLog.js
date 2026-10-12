@@ -83,7 +83,8 @@ export function buildSemanticShadowTurnLogRecord(payload) {
     source: payload.source,
     literalCoarse: payload.literalCoarse,
     semanticCoarse: payload.semanticResult?.bucket ?? null,
-    seedSource: payload.seedSource
+    seedSource: payload.seedSource,
+    text: payload.text
   });
   return {
     at: new Date().toISOString(),
