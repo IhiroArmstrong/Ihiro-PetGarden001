@@ -18,6 +18,7 @@ import { listRitualConfigs } from './RitualFlow.js';
 import { isEntitled } from './entitlement/entitlementGate.js';
 import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
+import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -60,6 +61,7 @@ import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 /**
  * @typedef {object} SecondaryChromeEntry
  * @property {string} [proxy]
+ * @property {string} [handler]
  * @property {string} labelKey
  * @property {'item' | 'group-label'} [kind]
  * @property {string} [featureKey]
@@ -94,6 +96,166 @@ export function secondaryProxyForHintId(hintId) {
     }
   }
   return null;
+}
+
+/**
+ * Secondary Idle menu proxy → handler. Home balls / ♪ stay out (A2).
+ * `close: false` keeps the sheet/menu for in-place panels (companion, language).
+ *
+ * @typedef {{
+ *   handler: string,
+ *   close?: boolean,
+ *   stage?: string,
+ *   prelude?: string,
+ *   arg?: true
+ * }} SecondaryProxyDispatchSpec
+ */
+
+export const SECONDARY_PROXY_DISPATCH = Object.freeze({
+  'sanctuary-nav': { handler: 'onSanctuaryNav', close: true, arg: true },
+  companion: {
+    handler: 'onCompanion',
+    close: false,
+    stage: 'companion',
+    prelude: 'onClearCompanion'
+  },
+  reminder: { handler: 'onReminder', close: true, stage: 'reminder' },
+  language: { handler: 'onLanguage', close: false, stage: 'language' },
+  'system-tts': { handler: 'onSystemTts', close: true, stage: 'systemTts' },
+  'today-direction': { handler: 'onTodayDirection', close: true },
+  'ground-exercise': { handler: 'onGroundExercise', close: true },
+  'five-moments': { handler: 'onFiveMoments', close: true },
+  honesty: { handler: 'onHonesty', close: true },
+  'journey-log': { handler: 'onJourneyLog', close: true },
+  'presence-signals': { handler: 'onPresenceSignals', close: true },
+  'yin-coin': { handler: 'onYinCoin', close: true },
+  confide: { handler: 'onConfide', close: true },
+  'zen-cinema': { handler: 'onZenCinema', close: true },
+  'daily-quote': { handler: 'onDailyQuote', close: true },
+  'mustard-seed-seal': { handler: 'onMustardSeedSeal', close: true },
+  wallpapers: { handler: 'onWallpapers', close: true },
+  'art-collection': { handler: 'onArtCollection', close: true },
+  sanctuary: { handler: 'onSanctuary', close: true },
+  membership: { handler: 'onMembership', close: true },
+  'tip-jar': { handler: 'onTipJar', close: true },
+  newsletter: { handler: 'onNewsletter', close: true },
+  community: { handler: 'onCommunity', close: true },
+  'help-center': { handler: 'onHelpCenter', close: true },
+  'local-backup': {
+    handler: 'onLocalBackup',
+    close: true,
+    stage: 'localBackup'
+  },
+  'quiet-together': {
+    handler: 'onQuietTogether',
+    close: true,
+    stage: 'quietTogether'
+  },
+  'focus-circle': {
+    handler: 'onFocusCircle',
+    close: true,
+    stage: 'focusCircle'
+  }
+});
+
+/**
+ * @param {string | null | undefined} proxy
+ * @returns {{
+ *   proxy: string,
+ *   handler: string,
+ *   close: boolean,
+ *   stage?: string,
+ *   prelude?: string,
+ *   arg?: true | string
+ * } | null}
+ */
+export function resolveSecondaryChromeDispatch(proxy) {
+  if (typeof proxy !== 'string' || !proxy) return null;
+  const staticSpec = SECONDARY_PROXY_DISPATCH[proxy];
+  if (staticSpec) {
+    return {
+      proxy,
+      handler: staticSpec.handler,
+      close: staticSpec.close !== false,
+      stage: staticSpec.stage,
+      prelude: staticSpec.prelude,
+      arg: staticSpec.arg === true ? true : undefined
+    };
+  }
+  for (const ritual of listRitualConfigs()) {
+    if (ritual.menuProxy === proxy) {
+      return {
+        proxy,
+        handler: 'onRitualFlow',
+        close: true,
+        arg: proxy
+      };
+    }
+  }
+  const sealId = contemplativeArchiveSealIdFromProxy(proxy);
+  if (sealId) {
+    return {
+      proxy,
+      handler: 'onContemplativeArchiveSeal',
+      close: true,
+      arg: sealId
+    };
+  }
+  return null;
+}
+
+/**
+ * @param {SecondaryChromeEntry} item
+ * @returns {SecondaryChromeEntry}
+ */
+function attachSecondaryHandler(item) {
+  if (!item || item.kind === 'group-label' || !item.proxy || item.handler) {
+    return item;
+  }
+  const spec = resolveSecondaryChromeDispatch(item.proxy);
+  if (!spec) return item;
+  return { ...item, handler: spec.handler };
+}
+
+/**
+ * Look up proxy → handler and run chrome prep. Does not call `handler?.()`.
+ *
+ * @param {string | null | undefined} proxy
+ * @param {{
+ *   handlers: Record<string, unknown>,
+ *   closeFirst?: boolean,
+ *   runPrelude?: boolean,
+ *   clearStage?: () => void,
+ *   close?: () => void,
+ *   addStage?: (stage: string) => void
+ * }} host
+ * @param {{ locked?: boolean, interactive?: boolean }} [entryMeta]
+ * @returns {'blocked' | 'missing-handler' | 'invoked' | 'unknown'}
+ */
+export function dispatchSecondaryChromeProxy(proxy, host, entryMeta = {}) {
+  if (entryMeta.locked === true || entryMeta.interactive === false) {
+    return 'blocked';
+  }
+  const spec = resolveSecondaryChromeDispatch(proxy);
+  if (!spec) return 'unknown';
+  const fn = host.handlers?.[spec.handler];
+  if (typeof fn !== 'function') {
+    console.error(
+      `[idle-chrome] missing handler ${spec.handler} for proxy ${proxy}`
+    );
+    return 'missing-handler';
+  }
+  if (host.closeFirst && spec.close) host.close?.();
+  host.clearStage?.();
+  if (!host.closeFirst && spec.close) host.close?.();
+  if (spec.stage) host.addStage?.(spec.stage);
+  if (spec.prelude && host.runPrelude !== false) {
+    const prelude = host.handlers[spec.prelude];
+    if (typeof prelude === 'function') prelude();
+  }
+  if (spec.arg === undefined) fn();
+  else fn(spec.arg);
+  return 'invoked';
 }
 
 /**
@@ -355,7 +517,7 @@ function pushLabeledGroup(out, labelKey, items) {
   }
   if (rows.length === 0) return;
   out.push({ kind: 'group-label', labelKey });
-  for (const row of rows) out.push(row);
+  for (const row of rows) out.push(attachSecondaryHandler(row));
 }
 
 /**
@@ -436,10 +598,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
           labelKey: 'MUSTARD_SEED_SEAL_MENU_LABEL'
         }
       : null,
-    ...(visibility.contemplativeArchiveSealMenus ?? []).map((row) => ({
-      proxy: row.proxy,
-      labelKey: row.labelKey
-    })),
+    ...(visibility.contemplativeArchiveSealMenus ?? []).map((row) =>
+      attachSecondaryHandler({
+        proxy: row.proxy,
+        labelKey: row.labelKey,
+        handler: 'onContemplativeArchiveSeal'
+      })
+    ),
     { proxy: 'wallpapers', labelKey: 'WALLPAPER_MENU_LABEL' },
     {
       proxy: 'art-collection',
@@ -500,18 +665,22 @@ export function listSecondaryChromeEntries(surface, visibility) {
   // “Premium unlocked” when entitled (Membership ∪ Sanctuary Lifetime).
   const scenesEntitled = hasUnlockedAdvancedScenes(visibility);
   if (scenesEntitled) {
-    out.push({
-      proxy: 'membership',
-      labelKey: 'MEMBERSHIP_MENU_UNLOCKED',
-      testId: 'idle-membership-unlocked'
-    });
+    out.push(
+      attachSecondaryHandler({
+        proxy: 'membership',
+        labelKey: 'MEMBERSHIP_MENU_UNLOCKED',
+        testId: 'idle-membership-unlocked'
+      })
+    );
   } else {
-    out.push({
-      proxy: 'membership',
-      labelKey: 'MEMBERSHIP_MENU_CTA',
-      emphasis: 'beige-cta',
-      testId: 'idle-membership-cta'
-    });
+    out.push(
+      attachSecondaryHandler({
+        proxy: 'membership',
+        labelKey: 'MEMBERSHIP_MENU_CTA',
+        emphasis: 'beige-cta',
+        testId: 'idle-membership-cta'
+      })
+    );
   }
 
   // Advanced RitualFlow scenes (entitlement-gated; free Breath stays home left ball).
@@ -521,13 +690,16 @@ export function listSecondaryChromeEntries(surface, visibility) {
   });
   for (const ritual of listRitualConfigs()) {
     const locked = !isEntitled(ritual.accessFeatureKey);
-    out.push({
-      kind: 'item',
-      proxy: ritual.menuProxy,
-      labelKey: ritual.menuLabelKey,
-      featureKey: ritual.accessFeatureKey,
-      locked
-    });
+    out.push(
+      attachSecondaryHandler({
+        kind: 'item',
+        proxy: ritual.menuProxy,
+        labelKey: ritual.menuLabelKey,
+        featureKey: ritual.accessFeatureKey,
+        locked,
+        handler: 'onRitualFlow'
+      })
+    );
   }
 
   return out;

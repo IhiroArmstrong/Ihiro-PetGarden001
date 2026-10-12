@@ -9,12 +9,12 @@ import {
   NARROW_STAGE_CLASS,
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
+  dispatchSecondaryChromeProxy,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
-import { contemplativeArchiveSealIdFromProxy } from '../core/memorialSealDirectory.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
   NARROW_COPY_ABOVE_HOME_GAP_PX,
@@ -630,9 +630,13 @@ export class NarrowIdleShell {
       const item = e.target.closest('[data-proxy]');
       if (!item || item.disabled) return;
       const key = item.getAttribute('data-proxy');
+      const entryMeta = {
+        locked: item.classList.contains('is-locked'),
+        interactive: item.classList.contains('is-static') ? false : undefined
+      };
       this.closeSheet();
       // Let close paint, then trigger underlying control
-      requestAnimationFrame(() => this._proxy(key));
+      requestAnimationFrame(() => this._proxy(key, entryMeta));
     });
 
     this._onTouchStart = (e) => {
@@ -933,9 +937,10 @@ export class NarrowIdleShell {
 
   /**
    * @param {string | null} key
+   * @param {{ locked?: boolean, interactive?: boolean }} [entryMeta]
    * @returns {void}
    */
-  _proxy(key) {
+  _proxy(key, entryMeta) {
     if (key === 'mute' || key === 'sound' || key === 'music') {
       // Close drawer first so Soundscape is not under the sheet; ActionBar ♪
       // stays above the backdrop (z-index) so this click is not blocked.
@@ -953,199 +958,26 @@ export class NarrowIdleShell {
       this.handlers.onSound?.();
       return;
     }
-    if (key === 'companion') {
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.companion);
-      this.handlers.onCompanion?.();
-      return;
-    }
-    if (key === 'reminder') {
-      this.closeSheet();
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.reminder);
-      this.handlers.onReminder?.();
-      return;
-    }
-    if (key === 'language') {
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.language);
-      this.handlers.onLanguage?.();
-      return;
-    }
-    if (key === 'sanctuary-nav') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onSanctuaryNav?.(true);
-      return;
-    }
-    if (key === 'today-direction') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onTodayDirection?.();
-      return;
-    }
-    if (key === 'ground-exercise') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onGroundExercise?.();
-      return;
-    }
-    if (key === 'five-moments') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onFiveMoments?.();
-      return;
-    }
-    if (key === 'honesty') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onHonesty?.();
-      return;
-    }
-    if (key === 'journey-log') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onJourneyLog?.();
-      return;
-    }
-    if (key === 'presence-signals') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onPresenceSignals?.();
-      return;
-    }
-    if (key === 'yin-coin') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onYinCoin?.();
-      return;
-    }
-    if (key === 'confide') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onConfide?.();
-      return;
-    }
-    if (key === 'zen-cinema') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onZenCinema?.();
-      return;
-    }
-    if (key === 'daily-quote') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onDailyQuote?.();
-      return;
-    }
-    if (key === 'mustard-seed-seal') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onMustardSeedSeal?.();
-      return;
-    }
-    const archiveSealId = contemplativeArchiveSealIdFromProxy(key);
-    if (archiveSealId) {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onContemplativeArchiveSeal?.(archiveSealId);
-      return;
-    }
-    if (key === 'art-collection') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onArtCollection?.();
-      return;
-    }
-    if (key === 'wallpapers') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onWallpapers?.();
-      return;
-    }
-    if (key === 'sanctuary') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onSanctuary?.();
-      return;
-    }
-    if (key === 'membership') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onMembership?.();
-      return;
-    }
-    if (key === 'tip-jar') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onTipJar?.();
-      return;
-    }
-    if (key === 'newsletter') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onNewsletter?.();
-      return;
-    }
-    if (key === 'community') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onCommunity?.();
-      return;
-    }
-    if (key === 'help-center') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onHelpCenter?.();
-      return;
-    }
-    if (key === 'local-backup') {
-      this.closeSheet();
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.localBackup);
-      this.handlers.onLocalBackup?.();
-      return;
-    }
-    if (key === 'quiet-together') {
-      this.closeSheet();
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.quietTogether);
-      this.handlers.onQuietTogether?.();
-      return;
-    }
-    if (key === 'focus-circle') {
-      this.closeSheet();
-      this.clearStage();
-      document.body.classList.add(NARROW_STAGE_CLASS.focusCircle);
-      this.handlers.onFocusCircle?.();
-      return;
-    }
-    if (
-      key === 'ritual-morning' ||
-      key === 'ritual-emotional-reset' ||
-      key === 'ritual-work-transition'
-    ) {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onRitualFlow?.(key);
-      return;
-    }
-    if (key === 'sanctuary-nav') {
-      this.handlers.onSanctuaryNav?.();
-      return;
-    }
-    if (key === 'today-direction') {
-      this.closeSheet();
-      this.clearStage();
-      this.handlers.onTodayDirection?.();
-      return;
-    }
+
+    const result = dispatchSecondaryChromeProxy(
+      key,
+      {
+        handlers: this.handlers,
+        closeFirst: true,
+        runPrelude: false,
+        clearStage: () => this.clearStage(),
+        close: () => this.closeSheet(),
+        addStage: (stage) => {
+          const cls = NARROW_STAGE_CLASS[stage];
+          if (cls) document.body.classList.add(cls);
+        }
+      },
+      entryMeta
+    );
+    if (result !== 'unknown') return;
+
     if (key === 'quickstart') {
       this.handlers.onQuickStart?.();
-      return;
-    }
-    if (key === 'honesty') {
-      this.handlers.onFiveMoments?.();
       return;
     }
 

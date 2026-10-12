@@ -132,7 +132,7 @@
 | 编号 | 做什么 | 完成标准（验收） |
 |---|---|---|
 | **A1** | 新增 e2e「菜单全量可达」：从 `idleChromeOrchestration.js` 菜单目录**自动**列出宽屏、窄屏每一项，逐项点击，断言对应面板或结果**真实可见**（DOM 可见 + 非空文字）。静默项须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx` 才可豁免。 | 先在 #1136 / #1138 修复前的提交上跑出**红**；修复后**绿**；进 `test:pr-smoke` 或 PR CI 必跑。新增菜单项不改测试即被覆盖。 |
-| **A2** | 菜单接线单一来源：目录每行声明 `proxy → handler 名`；宽屏、窄屏点击分派改为查表，删掉两条 `if (key === …)` 链。 | `WideIdleMoreMenu.js` / `NarrowIdleShell.js` 不再有按 key 分支的分派链；单测断言目录里每个 `proxy` 都有处理函数。 |
+| **A2** | 菜单接线单一来源：目录每行声明 `proxy → handler 名`；宽屏、窄屏点击分派改为查表，删掉两条 `if (key === …)` 链。 | **本支** `feature/menu-single-source-dispatch`：`SECONDARY_PROXY_DISPATCH` + `dispatchSecondaryChromeProxy`；宽/窄次级菜单不再按 key 分派；单测断言目录每个可点 `proxy` 都有处理函数。 |
 | **A3** | 全仓平行名单普查：列出所有「同一事实在多处登记」的位置（已知：菜单目录/分派/转发、`glassOverlayCards`、冷启动欢迎键、付款回跳商品表、支持页已购表、高清编号规则），每处要么改单一来源，要么加「漏登即失败」的测试。 | 普查表写入本文件 §5；表内每行状态为「已收口」或「已加失败测试」。 |
 | **A4** | 开发模式下处理函数缺失直接报错：把菜单与 chrome 的 `handlers.onX?.()` 换成统一的 `invokeHandler(name)`，开发和测试环境缺失时 `throw`，生产环境 `console.error` 并保持菜单不关。 | 单测：缺失处理函数时开发模式抛错（先红后绿）。 |
 
@@ -185,7 +185,7 @@
 | 位置 | 登记的是什么 | 处理方式 | 状态 |
 |---|---|---|---|
 | `src/core/IdleChromeFacade.js` | 转发哪些菜单回调 | 已改整包透传（#1138） | 已收口 |
-| `src/ui/WideIdleMoreMenu.js` / `src/ui/NarrowIdleShell.js` | 按 key 分派菜单点击 | A2 改查表 | 未跟进 |
+| `src/ui/WideIdleMoreMenu.js` / `src/ui/NarrowIdleShell.js` | 按 key 分派菜单点击 | A2 改查表 | 本支 |
 | `src/main.js` `glassOverlayCards` | 哪些卡片参与「最多两张」 | 待定 | 未跟进 |
 | 冷启动欢迎键白名单 | 哪些动画属于第一幕 | 已改 occupancy KEEP（9 月） | 跟进中 |
 | 付款结果页商品表 | 哪些商品付款后去哪 | A9 | 未跟进 |
