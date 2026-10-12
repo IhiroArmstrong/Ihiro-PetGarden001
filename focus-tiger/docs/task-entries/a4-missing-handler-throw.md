@@ -1,7 +1,7 @@
 ---
 id: a4-missing-handler-throw
 kind: feature
-status: 本支 feat/a4-missing-handler-throw
+status: PR #1184 · 待 CI 合 develop
 updated: 2026-10-13
 ---
 
