@@ -1,4 +1,4 @@
-# text<TAB>family  — only counted after the same text appears in po_seeded jsonl.
+# text<TAB>family  — only counted after the same text appears in lab_seeded (or legacy po_seeded) jsonl.
 # Suggested families for confirmation candidates (edit freely).
 怎么开始坐？	start-sit
 Sit 按钮在哪	find-control

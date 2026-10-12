@@ -60,26 +60,28 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 - **回滚开关实测**：主进程 `FT_CONFIDE_SEMANTIC_ROUTING=shadow` 后重跑上面三句，行为与 Stage 1 相同
 - **就绪延迟**：embedding 已 ready 时，记一条 live 粗桶墙钟（现成 `timing.wallMs` / `embedMs`）。只记录数字，不在本刀调阈值；15s 影子超时不得出现在用户可感知等待里
 
-## Stage 2b（gray→功能桶）门闩（2026-10-12 · PO 书面改锁）
+## Stage 2b（gray→功能桶）门闩（2026-10-12 · 分析师改锁：不要求手打）
 
 本刀只处理字面情绪桶 ∩ 语义 functional。gray→功能桶**不是** KB 问法矩阵能生成的证据。
 
-**2026-10-12 PO**：旧门闩「自然对话互异句 ≥25」卡在偶遇上，且把实验室筛出的正例连发进 Confide 是循环论证（同一套分类器同意自己）+ 意图族过少，测不出误拉。改为下面这张表。**切 live 才受本表约束。影子模式实现不改用户可见回复，可另开会话开工，不需要等本表数字。**
+**2026-10-12**：旧门闩「自然对话互异句 ≥25」卡在偶遇上；「必须 PO 手打」也不是门闩真正需要的东西。门闩要防的是**误拉**（把本该留在情绪/闲聊的句子抬进功能桶）。能识别误拉的是人工 KEEP/DROP，不是句子由谁打出来。终端生成或筛选均可。**切 live 才受本表约束。影子模式已合入，不改用户可见回复。**
 
 | 项 | 门闩 |
 |---|---|
-| 正例 M | PO 手打或确认的互异句 **≥25**，覆盖 **至少 6 个意图族**；日志标 `source: po_seeded`，**不与自然样本混算** |
-| 负例对照 | 另备 **≥20** 条本该留在情绪 / 闲聊 / gray 的句子（如「有点烦」「今天想去骑车」「累死了」），**误拉 <2** |
-| 抽审 | 从正例抽 **20** 条标 KEEP（该被功能桶接住）/ DROP（该留灰或 generate）；KEEP ≥ 12 **且** 误拉情绪/闲聊少于 2（与负例对照并列，负例误拉 <2） |
+| 候选句来源 | 终端生成或筛选均可；日志标 `seedSource: lab_seeded`（旧 `po_seeded` 仍计入，不与 `natural` 混算） |
+| 候选池构成 | 正例（gray∩functional）**加**负例（本该留在情绪、闲聊、gray）；两者都要有 |
+| 意图覆盖 | 正例覆盖 **至少 6 个意图族**，避免同一族换说法凑数 |
+| 负例对照 | **≥20** 条，**误拉 <2** |
+| 抽审 | 抽 **20** 条标 KEEP / DROP；**KEEP ≥ 12** **且** 误拉情绪/闲聊少于 2（误拉看负例对照，不看纯正例抽审） |
 | 自然样本 | 继续攒，作为 **上线后验证**，不再作为开工 / 切 live 门槛 |
-| 不算 M | 制造机 KEEP、实验室 `M_CANDIDATE` 整表连发进 Confide、未标 `po_seeded` 的刷词句 |
+| 不算 M | 制造机 KEEP、实验室 `M_CANDIDATE` 整表连发进 Confide 当产品路径、未标 `lab_seeded`/`po_seeded` 的自然句 |
 | 回滚 | 切 live 后仍保留 `FT_CONFIDE_SEMANTIC_ROUTING=shadow` |
 
-57 句实验室正例：不整表连发进 Confide；由脚本批量跑 + PO 手标 KEEP/DROP。负例从历史 jsonl 情绪/闲聊句挑，再补缺。
+57 句实验室正例：不整表连发进 Confide；由脚本批量跑 + KEEP/DROP 抽审。负例从历史 jsonl 情绪/闲聊句挑，再补缺。
 
-**2026-10-12 首批**：负例 31 句、误拉 1（实验室口径）；正例 20 条抽审表待 PO 标。见 [`confide-stage2b-negative-control-sheet.md`](../confide-stage2b-negative-control-sheet.md)。
+**2026-10-12 抽审**：KEEP **19**、空白 1（第 7 行看不懂未标）、DROP **0**。20 条抽自 57 句纯正例，**不含负例**。误拉以负例 31 句为准：**1**（「最近老是想起以前」）。见 [`confide-stage2b-negative-control-sheet.md`](../confide-stage2b-negative-control-sheet.md)。
 
-**才切 Stage 2b live**：正例门闩 + 负例误拉 <2 + 抽审 KEEP≥12。任一项不够 → 书面 defer，禁止默默悬着。
+**才切 Stage 2b live**：负例误拉 <2 + 抽审 KEEP≥12 + 正例覆盖 ≥6 个意图族。任一项不够 → 书面 defer，禁止默默悬着。
 
 ### Stage 2b 影子（2026-10-12 · 只写日志 · 不改回复）
 
@@ -89,8 +91,8 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 |---|---|
 | `stage2bWouldPromote` | 若切 2b，这一句会不会离开现在的回复。只有 **literal=gray ∧ semantic=functional ∧ 最终来源是 `generate` / `corpus`**（Yin 在聊、没在答）才为真 |
 | `stage2bReason` | `gray_to_functional` / `already_handled`（KB、练习账本等已接住）/ `semantic_not_functional` / `semantic_missing`（embedding 未就绪）/ `literal_not_gray`（归窄刀 Stage 2）/ `protected_route`（安全、他人攻击，永不动） |
-| `seedSource` | `po_seeded` 或 `natural`。**只有主进程**环境变量 `FT_CONFIDE_SEED_SOURCE=po_seeded` 能打上；renderer 无法伪造。门闩里的 `source: po_seeded` 即本栏 |
+| `seedSource` | `lab_seeded` 或 `natural`。**只有主进程**环境变量 `FT_CONFIDE_SEED_SOURCE=lab_seeded`（旧值 `po_seeded` 视为同义，写入 `lab_seeded`）能打上；renderer 无法伪造 |
 
-PO 手打正例：`FT_CONFIDE_SEED_SOURCE=po_seeded npm run desktop:dev`，在 Confide 里逐句发；平常启动不带这个变量，行即为 `natural`（上线后验证用）。
+实验室句：`FT_CONFIDE_SEED_SOURCE=lab_seeded npm run desktop:dev`，或终端脚本批量跑后只把需要区分的行标 `lab_seeded`。平常启动不带这个变量，行即为 `natural`（上线后验证用）。**不要求**人手在 Confide 里打字。
 
-实现：`desktop/companion/l1SemanticStage2bShadow.js`（打包内自含，不引 `src/`）· 镜像 `src/core/confide/confideSemanticStage2b.js` · 单测 `confideSemanticStage2b.test.js`（含两份一致、shadow/live 模式均不改路由）。门闩计数：`npm run audit:stage2b-po-seeded-gate`（`auditConfideStage2bPoSeeded.js`；不得打印「可以切 live」）。
+实现：`desktop/companion/l1SemanticStage2bShadow.js`（打包内自含，不引 `src/`）· 镜像 `src/core/confide/confideSemanticStage2b.js` · 单测 `confideSemanticStage2b.test.js`（含两份一致、shadow/live 模式均不改路由）。门闩计数：`npm run audit:stage2b-lab-seeded-gate`（`auditConfideStage2bPoSeeded.js`；不得打印「可以切 live」）。

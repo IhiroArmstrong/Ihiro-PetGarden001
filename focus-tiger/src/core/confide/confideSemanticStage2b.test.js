@@ -99,7 +99,7 @@ describe('decideConfideStage2bShadow', () => {
 
   it('desktop copy agrees with src on every matrix row', () => {
     for (const row of MATRIX) {
-      for (const seedSource of ['po_seeded', 'natural', 'spoof', null]) {
+      for (const seedSource of ['lab_seeded', 'po_seeded', 'natural', 'spoof', null]) {
         assert.deepEqual(
           buildStage2bShadowFields({ ...row.ctx, seedSource }),
           buildConfideStage2bShadowFields({ ...row.ctx, seedSource }),
@@ -125,14 +125,16 @@ describe('decideConfideStage2bShadow', () => {
 });
 
 describe('Stage 2b seed source', () => {
-  it('only FT_CONFIDE_SEED_SOURCE=po_seeded marks PO rows', () => {
+  it('FT_CONFIDE_SEED_SOURCE=lab_seeded (or legacy po_seeded) marks lab rows', () => {
     for (const resolve of [resolveConfideStage2bSeedSource, resolveStage2bSeedSource]) {
-      assert.equal(resolve({ FT_CONFIDE_SEED_SOURCE: 'po_seeded' }), 'po_seeded');
-      assert.equal(resolve({ FT_CONFIDE_SEED_SOURCE: ' PO_SEEDED ' }), 'po_seeded');
+      assert.equal(resolve({ FT_CONFIDE_SEED_SOURCE: 'lab_seeded' }), 'lab_seeded');
+      assert.equal(resolve({ FT_CONFIDE_SEED_SOURCE: 'po_seeded' }), 'lab_seeded');
+      assert.equal(resolve({ FT_CONFIDE_SEED_SOURCE: ' PO_SEEDED ' }), 'lab_seeded');
       assert.equal(resolve({ FT_CONFIDE_SEED_SOURCE: 'lab' }), 'natural');
       assert.equal(resolve({}), 'natural');
       assert.equal(resolve(undefined), 'natural');
     }
+    assert.equal(CONFIDE_STAGE2B_SEED_SOURCE.LAB_SEEDED, 'lab_seeded');
     assert.equal(CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED, 'po_seeded');
   });
 });
@@ -158,10 +160,14 @@ describe('semantic_shadow_classify rows carry Stage 2b fields', () => {
     assert.equal(row.source, 'generate');
   });
 
-  it('desktop row keeps po_seeded only when the runtime passes it', () => {
+  it('desktop row keeps lab_seeded when the runtime passes lab or legacy po', () => {
+    assert.equal(
+      buildSemanticShadowTurnLogRecord({ ...payload, seedSource: 'lab_seeded' }).seedSource,
+      'lab_seeded'
+    );
     assert.equal(
       buildSemanticShadowTurnLogRecord({ ...payload, seedSource: 'po_seeded' }).seedSource,
-      'po_seeded'
+      'lab_seeded'
     );
     assert.equal(
       buildSemanticShadowTurnLogRecord({ ...payload, seedSource: 'anything' }).seedSource,

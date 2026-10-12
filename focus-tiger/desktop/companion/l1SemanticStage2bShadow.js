@@ -13,15 +13,16 @@ const PROTECTED_ROUTES = Object.freeze(['safety_redirect', 'aggression_toward_ot
 const PROMOTABLE_SOURCES = Object.freeze(['generate', 'corpus']);
 
 /**
- * Only the Electron main process may mark a session as PO-seeded.
+ * Only the Electron main process may mark a session as lab-seeded.
+ * `po_seeded` is a legacy alias and writes `lab_seeded`.
  * @param {NodeJS.ProcessEnv | Record<string, string | undefined> | null | undefined} env
- * @returns {'po_seeded' | 'natural'}
+ * @returns {'lab_seeded' | 'natural'}
  */
 export function resolveStage2bSeedSource(env) {
   const raw = String(env?.FT_CONFIDE_SEED_SOURCE || '')
     .trim()
     .toLowerCase();
-  return raw === 'po_seeded' ? 'po_seeded' : 'natural';
+  return raw === 'lab_seeded' || raw === 'po_seeded' ? 'lab_seeded' : 'natural';
 }
 
 /**
@@ -32,10 +33,13 @@ export function resolveStage2bSeedSource(env) {
  *   semanticCoarse?: string | null,
  *   seedSource?: string | null
  * }} ctx
- * @returns {{ stage2bWouldPromote: boolean, stage2bReason: string, seedSource: 'po_seeded' | 'natural' }}
+ * @returns {{ stage2bWouldPromote: boolean, stage2bReason: string, seedSource: 'lab_seeded' | 'natural' }}
  */
 export function buildStage2bShadowFields(ctx = {}) {
-  const seedSource = ctx.seedSource === 'po_seeded' ? 'po_seeded' : 'natural';
+  const seedSource =
+    ctx.seedSource === 'lab_seeded' || ctx.seedSource === 'po_seeded'
+      ? 'lab_seeded'
+      : 'natural';
   const no = (reason) => ({ stage2bWouldPromote: false, stage2bReason: reason, seedSource });
   if (PROTECTED_ROUTES.includes(String(ctx.route || ''))) return no('protected_route');
   if (ctx.literalCoarse !== 'gray') return no('literal_not_gray');

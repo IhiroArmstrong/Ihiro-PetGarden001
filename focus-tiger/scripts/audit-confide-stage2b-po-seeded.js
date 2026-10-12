@@ -5,14 +5,15 @@
  */
 
 /**
- * Stage 2b po_seeded gate counters (unique sentences / families / false pulls).
+ * Stage 2b lab_seeded gate counters (unique sentences / families / false pulls).
+ * Legacy `po_seeded` log rows still count.
  *
  * Usage:
- *   npm run audit:stage2b-po-seeded-gate
- *   npm run audit:stage2b-po-seeded-gate -- --file /path/to/turns.jsonl
- *   npm run audit:stage2b-po-seeded-gate -- --families docs/lab-inputs/stage2b-po-seeded-families.tsv
- *   npm run audit:stage2b-po-seeded-gate -- --negatives docs/lab-inputs/stage2b-negative-control.txt
- *   npm run audit:stage2b-po-seeded-gate -- --preview-literal docs/lab-inputs/stage2b-po-seeded-confirm-candidates.txt
+ *   npm run audit:stage2b-lab-seeded-gate
+ *   npm run audit:stage2b-lab-seeded-gate -- --file /path/to/turns.jsonl
+ *   npm run audit:stage2b-lab-seeded-gate -- --families docs/lab-inputs/stage2b-po-seeded-families.tsv
+ *   npm run audit:stage2b-lab-seeded-gate -- --negatives docs/lab-inputs/stage2b-negative-control.txt
+ *   npm run audit:stage2b-lab-seeded-gate -- --preview-literal docs/lab-inputs/stage2b-po-seeded-confirm-candidates.txt
  *
  * Does not write "can cut Stage 2b". Does not change replies.
  */

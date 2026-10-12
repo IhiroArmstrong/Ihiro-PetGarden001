@@ -15,21 +15,21 @@ import {
 } from './auditConfideStage2bPoSeeded.js';
 
 describe('auditConfideStage2bPoSeeded', () => {
-  it('counts unique po_seeded texts, families, and false pulls', () => {
+  it('counts unique lab_seeded texts, families, and false pulls', () => {
     const summary = summarizeConfideStage2bPoSeededGate(
       [
         { kind: 'semantic_shadow_classify', ok: true, seedSource: 'natural', text: 'ignore' },
         {
           kind: 'semantic_shadow_classify',
           ok: false,
-          seedSource: 'po_seeded',
+          seedSource: 'lab_seeded',
           text: '想试试那个一起坐的练习',
           stage2bWouldPromote: true
         },
         {
           kind: 'semantic_shadow_classify',
           ok: true,
-          seedSource: 'po_seeded',
+          seedSource: 'lab_seeded',
           text: '想试试那个一起坐的练习',
           stage2bWouldPromote: true
         },
@@ -43,14 +43,14 @@ describe('auditConfideStage2bPoSeeded', () => {
         {
           kind: 'semantic_shadow_classify',
           ok: true,
-          seedSource: 'po_seeded',
+          seedSource: 'lab_seeded',
           text: '最近老是想起以前',
           stage2bWouldPromote: true
         },
         {
           kind: 'semantic_shadow_classify',
           ok: true,
-          seedSource: 'po_seeded',
+          seedSource: 'lab_seeded',
           text: '有点烦',
           stage2bWouldPromote: false
         }
