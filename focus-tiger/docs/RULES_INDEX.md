@@ -280,6 +280,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-10-13 | A6：`src/main.js` ESLint `no-use-before-define`（仅变量）进 `test:smoke`（`lint:main-use-before-define`）；#1139 夹具必须红。SSOT `DOC_CODE_CONTRACT.md` |
 | 2026-10-13 | A5：husky `pre-push` 强制 `test:e2e:startup`（`__FT_APP_READY__` + 无 pageerror）；仅 `.md`/`.mdc` 可跳过。SSOT `.cursor/rules/testing-strategy.mdc` + `WORKFLOW.md` git-worktree-occupancy 钩子行 |
 | 2026-10-01 | 新增 `multi-task-session`：同一会话可连续多任务（准入/停止条件、一 PR 一任务、stacked PR、衍生任务只登记）；澄清「一次一任务」= 改动范围非一会话一任务。SSOT `.cursor/rules/focus-tiger-multi-task-session.mdc`；`focus-tiger-core` 一行引用 |
 | 2026-09-29 | 新增 `batch-before-human`：能终端批量就不要整表请人；扩面先筛再真发。SSOT `.cursor/rules/testing-strategy.mdc` |

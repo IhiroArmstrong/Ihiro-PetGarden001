@@ -9,7 +9,8 @@
     "build:verify-no-qa-boot": "node scripts/verify-no-qa-boot-in-dist.js",
     "preview": "vite preview",
     "test": "node scripts/run-src-unit-tests.js",
-    "test:smoke": "node scripts/run-src-unit-tests.js && npm run test:confide-acceptance && npm run test:confide-generate-failure-fallback && npm run docs:check",
+    "test:smoke": "node scripts/run-src-unit-tests.js && npm run test:confide-acceptance && npm run test:confide-generate-failure-fallback && npm run docs:check && npm run lint:main-use-before-define",
+    "lint:main-use-before-define": "node --test scripts/check-main-use-before-define.test.js && node scripts/check-main-use-before-define.js",
     "test:confide-acceptance": "node scripts/run-confide-acceptance.js",
     "test:confide-generate-failure-fallback": "node scripts/run-confide-generate-failure-fallback.js",
     "test:confide-semantic-acceptance": "npm --prefix desktop run companion:semantic-acceptance",
@@ -92,6 +93,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
+    "eslint": "^10.12.0",
     "vite": "^6.3.5"
   }
 }

@@ -1,0 +1,1 @@
+| A6 main.js 先用后定义静态检查（ESLint） | 纯后端 | 仅单元测试覆盖 | 不是产品功能。`npm run lint:main-use-before-define`（已进 `test:smoke`）：#1139 夹具必须报 `onboardingHints` 先用后定义；函数声明豁免；`src/main.js` 现存 23 名 / 67 次封顶，只减不增。不覆盖 App 画面。 | — | — | — | `scripts/check-main-use-before-define.js` · `scripts/fixtures/tdz-onboarding-hints-1139.js` · `src/main.js` | 2026-10-13 |
