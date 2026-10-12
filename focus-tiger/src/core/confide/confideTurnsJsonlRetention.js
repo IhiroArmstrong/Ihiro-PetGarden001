@@ -14,6 +14,7 @@ import { CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND } from './confideCrisisParaphrase
 export const CONFIDE_TURNS_SHADOW_AUDIT_KINDS = Object.freeze([
   'semantic_shadow_classify',
   'semantic_live_classify',
+  'kb_product_gate_shadow',
   CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND
 ]);
 

@@ -86,6 +86,10 @@ export function buildSemanticShadowTurnLogRecord(payload) {
     seedSource: payload.seedSource,
     text: payload.text
   });
+  const kbMood = payload.kbMood && typeof payload.kbMood === 'object' ? payload.kbMood : null;
+  const kbMoodScore = Number.isFinite(Number(kbMood?.moodScore)) ? Number(kbMood.moodScore) : null;
+  const kbMoodOutranks =
+    kbMoodScore === null ? null : Boolean(kbMood?.moodOutranksProduct);
   return {
     at: new Date().toISOString(),
     kind: 'semantic_shadow_classify',
@@ -105,6 +109,14 @@ export function buildSemanticShadowTurnLogRecord(payload) {
     ok: Boolean(payload.ok),
     reason: payload.reason,
     ...stage2b,
+    kbProductScore: Number.isFinite(Number(kbMood?.productScore))
+      ? Number(kbMood.productScore)
+      : null,
+    kbMoodScore,
+    kbMoodOutranks,
+    // Would the KB mood veto stop this 2b promote? Shadow only; 2b behaviour unchanged.
+    stage2bMoodVeto:
+      kbMoodOutranks === null ? null : Boolean(stage2b.stage2bWouldPromote && kbMoodOutranks),
     timing: payload.timing || undefined
   };
 }
