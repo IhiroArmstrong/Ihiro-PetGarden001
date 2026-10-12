@@ -218,7 +218,65 @@ function attachSecondaryHandler(item) {
 }
 
 /**
- * Look up proxy → handler and run chrome prep. Does not call `handler?.()`.
+ * Dev / test: missing chrome handlers must fail loudly (A4).
+ * Production: log and leave the menu open.
+ *
+ * @param {{
+ *   nodeEnv?: string,
+ *   viteDev?: boolean,
+ *   viteProd?: boolean,
+ *   viteMode?: string
+ * }} [env]
+ * @returns {boolean}
+ */
+export function resolveHandlerStrictEnv(env = {}) {
+  const nodeEnv =
+    env.nodeEnv ??
+    (typeof process !== 'undefined' ? process.env?.NODE_ENV : undefined);
+  let viteDev = env.viteDev;
+  let viteProd = env.viteProd;
+  let viteMode = env.viteMode;
+  if (viteDev === undefined || viteProd === undefined || viteMode === undefined) {
+    try {
+      if (viteDev === undefined) viteDev = import.meta.env?.DEV;
+      if (viteProd === undefined) viteProd = import.meta.env?.PROD;
+      if (viteMode === undefined) viteMode = import.meta.env?.MODE;
+    } catch {
+      /* node:test without Vite env */
+    }
+  }
+  if (viteDev === true) return true;
+  if (viteMode === 'test') return true;
+  if (viteProd === true) return false;
+  if (nodeEnv === 'production') return false;
+  return true;
+}
+
+/**
+ * Call a named chrome handler. Missing names throw in dev/test.
+ *
+ * @param {Record<string, unknown> | null | undefined} handlers
+ * @param {string} name
+ * @param {unknown[]} [args]
+ * @param {{ strict?: boolean }} [opts]
+ * @returns {unknown}
+ */
+export function invokeHandler(handlers, name, args = [], opts) {
+  if (typeof name !== 'string' || !name) {
+    throw new Error('[idle-chrome] invokeHandler requires a handler name');
+  }
+  const fn = handlers?.[name];
+  if (typeof fn === 'function') return fn(...args);
+  const message = `[idle-chrome] missing handler ${name}`;
+  const strict = (opts ?? {}).strict ?? resolveHandlerStrictEnv();
+  if (strict) throw new Error(message);
+  console.error(message);
+  return undefined;
+}
+
+/**
+ * Look up proxy → handler and run chrome prep. Uses `invokeHandler`
+ * (dev/test throw; production log). Does not close chrome when missing.
  *
  * @param {string | null | undefined} proxy
  * @param {{
@@ -227,7 +285,8 @@ function attachSecondaryHandler(item) {
  *   runPrelude?: boolean,
  *   clearStage?: () => void,
  *   close?: () => void,
- *   addStage?: (stage: string) => void
+ *   addStage?: (stage: string) => void,
+ *   handlerStrict?: boolean
  * }} host
  * @param {{ locked?: boolean, interactive?: boolean }} [entryMeta]
  * @returns {'blocked' | 'missing-handler' | 'invoked' | 'unknown'}
@@ -238,11 +297,13 @@ export function dispatchSecondaryChromeProxy(proxy, host, entryMeta = {}) {
   }
   const spec = resolveSecondaryChromeDispatch(proxy);
   if (!spec) return 'unknown';
+  const strictOpt =
+    host.handlerStrict === undefined
+      ? undefined
+      : { strict: host.handlerStrict };
   const fn = host.handlers?.[spec.handler];
   if (typeof fn !== 'function') {
-    console.error(
-      `[idle-chrome] missing handler ${spec.handler} for proxy ${proxy}`
-    );
+    invokeHandler(host.handlers, spec.handler, [], strictOpt);
     return 'missing-handler';
   }
   if (host.closeFirst && spec.close) host.close?.();
@@ -250,8 +311,7 @@ export function dispatchSecondaryChromeProxy(proxy, host, entryMeta = {}) {
   if (!host.closeFirst && spec.close) host.close?.();
   if (spec.stage) host.addStage?.(spec.stage);
   if (spec.prelude && host.runPrelude !== false) {
-    const prelude = host.handlers[spec.prelude];
-    if (typeof prelude === 'function') prelude();
+    invokeHandler(host.handlers, spec.prelude, [], strictOpt);
   }
   if (spec.arg === undefined) fn();
   else fn(spec.arg);
