@@ -371,6 +371,8 @@ describe('desktop companion L1 isolation', () => {
     assert.match(preload, /if \(companionAllowed\)/);
     assert.match(preload, /desktopShell\.companion/);
     assert.equal(preload.includes('desktop:companion-generate'), true);
+    assert.match(preload, /appendTurnLog/);
+    assert.match(preload, /desktop:companion-append-turn-log/);
     assert.match(preload, /require\(\s*['"]electron['"]\s*\)/);
   });
 
@@ -382,6 +384,8 @@ describe('desktop companion L1 isolation', () => {
     );
     assert.match(mainSrc, /attachCompanionL1Ipc/);
     assert.match(ipcSrc, /desktop:companion-generate/);
+    assert.match(ipcSrc, /desktop:companion-append-turn-log/);
+    assert.match(ipcSrc, /appendTurnLogFromRenderer/);
     assert.match(ipcSrc, /desktop:companion-ensure/);
     assert.match(ipcSrc, /desktop:companion-set-focusing/);
     const runtimeSrc = readFileSync(
