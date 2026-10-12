@@ -77,4 +77,6 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 
 57 句实验室正例：不整表连发进 Confide；由脚本批量跑 + PO 手标 KEEP/DROP。负例从历史 jsonl 情绪/闲聊句挑，再补缺。
 
+**2026-10-12 首批**：负例 31 句、误拉 1（实验室口径）；正例 20 条抽审表待 PO 标。见 [`confide-stage2b-negative-control-sheet.md`](../confide-stage2b-negative-control-sheet.md)。
+
 **才切 Stage 2b live**：正例门闩 + 负例误拉 <2 + 抽审 KEEP≥12。任一项不够 → 书面 defer，禁止默默悬着。

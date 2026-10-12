@@ -1,0 +1,42 @@
+# Stage 2b negative control (2026-10-12). Lab replay input only.
+# Each line should stay emotion / chitchat / gray. Gate: false pull < 2.
+# H = from turns-unique-texts-1011 (historical jsonl, names removed).
+# F = filled to cover a positive family's neighbourhood (hard negative).
+
+# emotion · H
+有点烦
+睡不着
+我有点疲劳
+我有点 心不在焉。
+今天什么都不想做，心里很闷
+这几个Bug改得我头大，服务器又崩了。
+今天从早到晚开了7个会，脑子转不动了。
+怎么又这样……
+I keep putting off things I know I should do.
+I feel like I'm just going through the motions today.
+I was doing pretty well until this morning.
+# emotion · F (Brief example + family neighbours)
+累死了
+呼吸有点急，心跳也快
+专注不了，脑子很乱
+以前的事不想再提了
+最近老是想起以前
+
+# chitchat · H
+今天想去骑车
+我想打游戏
+我想吃草莓
+随便聊聊。
+有点无聊。
+今天天气不错。
+I made soup for lunch.
+Do you like rainy days?
+I took a short walk after lunch.
+I read a few pages before bed.
+Can we just chat for a while?
+
+# gray · H
+就这样吧。
+I'm just sitting here for a bit.
+The evening feels calm.
+That made me smile.
