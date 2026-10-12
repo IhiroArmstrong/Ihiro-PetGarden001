@@ -1,7 +1,7 @@
 ---
 id: confide-help-center-miss-fallback
 kind: feature
-status: Brief 草稿待点头
+status: 第一刀进行中（诚实空态文案）
 updated: 2026-10-13
 ---
 
