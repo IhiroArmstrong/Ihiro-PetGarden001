@@ -12,11 +12,13 @@ import {
   CONFIDE_SEMANTIC_LIBRARY_A,
   CONFIDE_SEMANTIC_LIBRARY_B,
   CONFIDE_SEMANTIC_LIBRARY_C,
-  CONFIDE_SEMANTIC_LIBRARY_LIFE
+  CONFIDE_SEMANTIC_LIBRARY_LIFE,
+  CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE
 } from '../../src/core/confide/confideSemanticExamples.js';
 import {
   classifyProductKnowledgeSemantic,
-  lifeChatOutranksProductLibrary
+  lifeChatOutranksProductLibrary,
+  moodAsideOutranksProductLibrary
 } from '../../src/core/confide/confideProductKnowledgeSemantic.js';
 import { listRetrievableProductKnowledgeEntries } from '../../src/core/confide/confideProductKnowledge.js';
 import { catalogEntryEmbeddingText } from '../../src/core/confide/kbNearMatch.js';
@@ -110,6 +112,29 @@ export async function loadEmbeddingHold(opts) {
     vectorsLife.push(await embedText(example));
   }
 
+  onProgress('precomputeLibraryMoodAside');
+  const moodStarted = Date.now();
+  /** @type {number[][]} */
+  const vectorsMood = [];
+  for (const example of CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE) {
+    vectorsMood.push(await embedText(example));
+  }
+  const moodPrecomputeMs = Date.now() - moodStarted;
+
+  /**
+   * Shadow-only mood veto scores (`task-confide-kb-gate-mood-veto.md` stage one).
+   * @param {number[]} userVector
+   * @param {number} productScore
+   * @param {number} topK
+   */
+  function scoreMoodVeto(userVector, productScore, topK) {
+    const moodScore = scoreLibraryTopK(userVector, vectorsMood, topK);
+    return {
+      moodScore,
+      moodOutranksProduct: moodAsideOutranksProductLibrary(productScore, moodScore)
+    };
+  }
+
   onProgress('precomputeCatalogEntries');
   /** @type {{ id: string, vector: number[] }[]} */
   const catalogVectors = [];
@@ -133,6 +158,8 @@ export async function loadEmbeddingHold(opts) {
     librarySizeA: vectorsA.length,
     librarySizeB: vectorsB.length,
     librarySizeC: vectorsC.length,
+    librarySizeMood: vectorsMood.length,
+    moodPrecomputeMs,
     vectorsA,
     vectorsB,
     vectorsC,
@@ -152,7 +179,15 @@ export async function loadEmbeddingHold(opts) {
         vectorsB,
         routingConfig
       );
-      return { ...result, embedMs };
+      const product = classifyProductKnowledgeSemantic(userVector, vectorsC, { env: opts.env });
+      const mood = scoreMoodVeto(userVector, product.score, product.topK);
+      return {
+        ...result,
+        kbProductScore: product.score,
+        kbMoodScore: mood.moodScore,
+        kbMoodOutranksProduct: mood.moodOutranksProduct,
+        embedMs
+      };
     },
     /**
      * @param {string} text
@@ -164,6 +199,7 @@ export async function loadEmbeddingHold(opts) {
       const userVector = await embedText(text);
       const result = classifyProductKnowledgeSemantic(userVector, vectorsC, { env: opts.env });
       const lifeScore = scoreLibraryTopK(userVector, vectorsLife, result.topK);
+      const mood = scoreMoodVeto(userVector, result.score, result.topK);
       let nearestId = null;
       let nearestScore = -1;
       for (const row of catalogVectors) {
@@ -179,6 +215,8 @@ export async function loadEmbeddingHold(opts) {
         nearestScore: nearestId ? nearestScore : null,
         lifeScore,
         lifeOutranksProduct: lifeChatOutranksProductLibrary(result.score, lifeScore),
+        moodScore: mood.moodScore,
+        moodOutranksProduct: mood.moodOutranksProduct,
         embedMs: Date.now() - embedStarted
       };
     },

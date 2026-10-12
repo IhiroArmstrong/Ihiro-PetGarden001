@@ -121,6 +121,29 @@ export function lifeChatOutranksProductLibrary(productScore, lifeScore) {
   return life > product;
 }
 
+/** Stage one logs only; the lab sets the live margin (`task-confide-kb-gate-mood-veto.md`). */
+export const DEFAULT_CONFIDE_KB_MOOD_VETO_MARGIN = 0;
+
+/**
+ * @param {number} productScore
+ * @param {number} moodScore
+ * @param {number} [margin]
+ * @returns {boolean}
+ */
+export function moodAsideOutranksProductLibrary(
+  productScore,
+  moodScore,
+  margin = DEFAULT_CONFIDE_KB_MOOD_VETO_MARGIN
+) {
+  const product = Number(productScore);
+  const mood = Number(moodScore);
+  const gap = Number(margin);
+  if (!Number.isFinite(product) || !Number.isFinite(mood) || !Number.isFinite(gap)) {
+    return false;
+  }
+  return mood > product + gap;
+}
+
 /**
  * @param {{
  *   text: string,

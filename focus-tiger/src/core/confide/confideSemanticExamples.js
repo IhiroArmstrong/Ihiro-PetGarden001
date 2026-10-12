@@ -160,6 +160,67 @@ export const CONFIDE_SEMANTIC_LIBRARY_LIFE = Object.freeze([
 ]);
 
 /**
+ * Mood / life self-reports scored only by the KB product gate
+ * (`task-confide-kb-gate-mood-veto.md`). Stage 2 coarse routing never reads it.
+ * Must not contain any line of `confideKbMoodVetoLabSet.js` (test enforced).
+ * Japanese lines are provisional until a native speaker reviews them.
+ * @type {readonly string[]}
+ */
+export const CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE = Object.freeze([
+  '撑不住了',
+  '好焦虑',
+  '很难过',
+  '心乱静不下来',
+  '情绪很低落',
+  '今天压力好大',
+  '好孤单',
+  '心好累',
+  '今天特别丧',
+  '又想起小时候的事了',
+  '这几天老做噩梦',
+  '坐了一会儿就想走',
+  '真的不想坚持了',
+  '鼻子一酸差点哭出来',
+  '好想喝点东西麻痹一下',
+  '想躲起来谁也不见',
+  '今天打坐坐得腿都麻了',
+  '一闭眼就想起那个人',
+  'I feel so tired',
+  'burned out today',
+  'I feel anxious',
+  'heartbroken today',
+  'feeling lonely tonight',
+  'emotionally drained',
+  'feeling down',
+  'overwhelmed by everything',
+  'Old memories keep coming back tonight',
+  'I had a bad dream about home again',
+  'I sat for ages and my legs went numb',
+  'I almost quit halfway through today',
+  'I got teary in the middle of sitting',
+  'I just want to hide from everyone',
+  'I really want a beer tonight',
+  'My chest feels heavy',
+  'I keep replaying that conversation',
+  'くたくただ',
+  'もう限界かも',
+  '不安でたまらない',
+  '悲しくて仕方ない',
+  '今夜はひとりぼっちな気がする',
+  '気持ちが沈んでる',
+  '昔の夢をまた見た',
+  '子どもの頃のことを思い出してしまう',
+  '座っていたら足がしびれた',
+  '途中でやめたくなった',
+  'なんだか涙が出そう',
+  '誰にも会いたくない',
+  'ビールが飲みたい気分',
+  '全部投げ出したい',
+  '胸が重い',
+  '頭の中がざわざわする'
+]);
+
+/**
  * Known misclassification anchors referenced in CI / ISSUE_LEDGER.
  * @type {readonly string[]}
  */
