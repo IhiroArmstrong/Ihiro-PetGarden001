@@ -120,6 +120,8 @@ try {
       moodOutranksProduct: sim.moodOutranksProduct,
       baseline: sim.baseline,
       withVeto: sim.withVeto,
+      functionAsk: sim.functionAsk,
+      withVetoAskGuard: sim.withVetoAskGuard,
       sweep
     });
   }
@@ -129,6 +131,11 @@ try {
 
 const jaNativeReviewed = process.env.FT_KB_MOOD_VETO_JA_REVIEWED === '1';
 const summary = summarizeKbMoodVetoLab(scored, { jaNativeReviewed });
+// PO round two rule 1 (function-ask guard). Reference only: thresholds are judged on `summary`.
+const askGuardSummary = summarizeKbMoodVetoLab(
+  scored.map((r) => ({ ...r, withVeto: r.withVetoAskGuard })),
+  { jaNativeReviewed }
+);
 /** @type {Record<string, object>} */
 const sweepSummary = {};
 for (const margin of MARGIN_SWEEP) {
@@ -150,7 +157,7 @@ const coldStart = {
 };
 await writeFile(
   jsonPath,
-  `${JSON.stringify({ probe: 'kb-mood-veto-lab', coldStart, summary, sweepSummary, rows: scored }, null, 2)}\n`,
+  `${JSON.stringify({ probe: 'kb-mood-veto-lab', coldStart, summary, askGuardSummary, sweepSummary, rows: scored }, null, 2)}\n`,
   'utf8'
 );
 
@@ -160,25 +167,33 @@ const lines = [
   `Cold start: mood library ${coldStart.moodLibrarySize} lines, +${coldStart.moodPrecomputeMs} ms (hold load ${loadMs} ms).`,
   `Japanese: ${jaNativeReviewed ? 'native-reviewed' : 'provisional (not native-reviewed)'}.`,
   '',
-  '| set | group | lang | productScore | moodScore | lifeScore | today | with veto | text |',
-  '|---|---|---|---|---|---|---|---|---|'
+  '| set | group | lang | productScore | moodScore | lifeScore | today | with veto | + rule 1 | text |',
+  '|---|---|---|---|---|---|---|---|---|---|'
 ];
 for (const r of scored) {
   lines.push(
-    `| ${r.set} | ${r.group} | ${r.lang} | ${fmt(r.productScore)} | ${fmt(r.moodScore)} | ${fmt(r.lifeScore)} | ${r.baseline} | ${r.withVeto} | ${String(r.text).replace(/\|/g, '\\|')} |`
+    `| ${r.set} | ${r.group} | ${r.lang} | ${fmt(r.productScore)} | ${fmt(r.moodScore)} | ${fmt(r.lifeScore)} | ${r.baseline} | ${r.withVeto} | ${r.withVetoAskGuard} | ${String(r.text).replace(/\|/g, '\\|')} |`
   );
 }
 await writeFile(mdPath, `${lines.join('\n')}\n`, 'utf8');
 
-for (const lang of ['zh', 'en', 'ja']) {
-  const m = summary.mood[lang];
+for (const [label, s] of [
+  ['veto', summary],
+  ['veto + rule 1', askGuardSummary]
+]) {
+  for (const lang of ['zh', 'en', 'ja']) {
+    const m = s.mood[lang];
+    process.stdout.write(
+      `[${label}] mood ${lang}: ${m.vetoSkip}/${m.n} = ${(m.rate * 100).toFixed(1)}% (need ${(m.minRate * 100).toFixed(0)}%, n≥${m.minN}) baselineSkip=${m.baselineSkip} ${m.passed ? 'PASS' : 'FAIL'}${lang === 'ja' && s.jaProvisional ? ' (provisional)' : ''}\n`
+    );
+  }
   process.stdout.write(
-    `mood ${lang}: ${m.vetoSkip}/${m.n} = ${(m.rate * 100).toFixed(1)}% (need ${(m.minRate * 100).toFixed(0)}%) baselineSkip=${m.baselineSkip} ${m.passed ? 'PASS' : 'FAIL'}${lang === 'ja' && summary.jaProvisional ? ' (provisional)' : ''}\n`
+    `[${label}] reverse risk: vetoed ${s.reverseRisk.vetoSkip}/${s.reverseRisk.n}, missed ${s.reverseRisk.missed.length}\n`
+  );
+  process.stdout.write(
+    `[${label}] control: n=${s.control.n} (need ${s.control.minN}) falseVetoes=${s.control.falseVetoes.length} baselineSkips=${s.control.baselineSkips.length} mixedNotProduct=${s.control.mixedNotProduct.length} ${s.control.passed ? 'PASS' : 'FAIL'}\n`
   );
 }
-process.stdout.write(
-  `control: n=${summary.control.n} (need ${summary.control.minN}) falseVetoes=${summary.control.falseVetoes.length} baselineSkips=${summary.control.baselineSkips.length} mixedNotProduct=${summary.control.mixedNotProduct.length} ${summary.control.passed ? 'PASS' : 'FAIL'}\n`
-);
 for (const margin of MARGIN_SWEEP) {
   const s = sweepSummary[String(margin)];
   process.stdout.write(

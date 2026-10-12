@@ -15,13 +15,21 @@ import {
 } from './confideSemanticExamples.js';
 import {
   DEFAULT_CONFIDE_KB_MOOD_VETO_MARGIN,
+  isProductKnowledgeColdStartProbe,
   moodAsideOutranksProductLibrary,
   resolveProductKnowledgeGateAction
 } from './confideProductKnowledgeSemantic.js';
 import {
+  KB_ROUTING_MATRIX_FIXTURES,
+  KB_ROUTING_MATRIX_REGRESSION_IDS
+} from './confideKbRoutingMatrix.js';
+import {
+  KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS,
   KB_MOOD_VETO_LAB_CONTROL_ROWS,
   KB_MOOD_VETO_LAB_MIN_CONTROL_ROWS,
+  KB_MOOD_VETO_LAB_MOOD_MIN_N,
   KB_MOOD_VETO_LAB_MOOD_ROWS,
+  KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP,
   kbMoodVetoLabLanguage
 } from './confideKbMoodVetoLabSet.js';
 import { simulateKbMoodVetoGate, summarizeKbMoodVetoLab } from './confideKbMoodVetoLabScore.js';
@@ -105,7 +113,9 @@ describe('simulateKbMoodVetoGate', () => {
     assert.deepEqual(simulateKbMoodVetoGate(base), {
       baseline: 'honesty',
       withVeto: 'skip',
-      moodOutranksProduct: true
+      withVetoAskGuard: 'skip',
+      moodOutranksProduct: true,
+      functionAsk: false
     });
     assert.equal(simulateKbMoodVetoGate({ ...base, moodScore: 0.4 }).withVeto, 'honesty');
   });
@@ -114,6 +124,16 @@ describe('simulateKbMoodVetoGate', () => {
     const sim = simulateKbMoodVetoGate({ ...base, text: '备份在哪', catalogHit: true });
     assert.equal(sim.baseline, 'hit');
     assert.equal(sim.withVeto, 'hit');
+  });
+
+  it('rule 1 keeps a function-ask shape on the product answer', () => {
+    const mixed = simulateKbMoodVetoGate({ ...base, text: '太累了，怎么关提醒？' });
+    assert.equal(mixed.functionAsk, true);
+    assert.equal(mixed.withVeto, 'skip');
+    assert.equal(mixed.withVetoAskGuard, 'honesty');
+    const plain = simulateKbMoodVetoGate(base);
+    assert.equal(plain.functionAsk, false);
+    assert.equal(plain.withVetoAskGuard, 'skip');
   });
 });
 
@@ -140,17 +160,44 @@ describe('KB mood veto lab set', () => {
       assert.ok(KB_MOOD_VETO_LAB_MOOD_ROWS.some((r) => r.lang === lang), lang);
     }
   });
+
+  it('English mood lines reach 40 without the reverse-risk group', () => {
+    const en = KB_MOOD_VETO_LAB_MOOD_ROWS.filter(
+      (r) => r.lang === 'en' && r.group !== KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP
+    );
+    assert.ok(en.length >= KB_MOOD_VETO_LAB_MOOD_MIN_N.en, String(en.length));
+  });
+
+  it('reverse-risk lines sit in the mood set and all look like function asks', () => {
+    const rows = KB_MOOD_VETO_LAB_MOOD_ROWS.filter(
+      (r) => r.group === KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP
+    );
+    assert.ok(rows.some((r) => r.text === '练着练着就想问怎么放弃'));
+    for (const lang of ['zh', 'en', 'ja']) {
+      assert.ok(rows.some((r) => r.lang === lang), lang);
+    }
+    assert.deepEqual(
+      rows.filter((r) => !isProductKnowledgeColdStartProbe(r.text)).map((r) => r.text),
+      []
+    );
+  });
+
+  it('drops the practice-fact line whose real path the routing matrix locks', () => {
+    assert.ok(!KB_MOOD_VETO_LAB_CONTROL_ROWS.some((r) => r.text === '累积了 多久'));
+    for (const id of KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS) {
+      const row = KB_ROUTING_MATRIX_FIXTURES.find((r) => r.id === id);
+      assert.equal(row?.lock, 'must-hit', id);
+      assert.equal(row?.expect.dataSource, 'practice_facts', id);
+      assert.ok(KB_ROUTING_MATRIX_REGRESSION_IDS.includes(id), id);
+    }
+  });
 });
 
 describe('summarizeKbMoodVetoLab', () => {
-  const moodRows = ['zh', 'en', 'ja'].map((lang) => ({
-    set: 'mood',
-    group: 'g',
-    lang,
-    text: lang,
-    baseline: 'honesty',
-    withVeto: 'skip'
-  }));
+  const moodRows = [
+    ...['zh', 'ja'].map((lang) => ({ lang, text: lang })),
+    ...Array.from({ length: 40 }, (_, i) => ({ lang: 'en', text: `en${i}` }))
+  ].map((r) => ({ ...r, set: 'mood', group: 'g', baseline: 'honesty', withVeto: 'skip' }));
   const controlRows = Array.from({ length: 40 }, (_, i) => ({
     set: 'control',
     group: i === 0 ? 'mixed' : 'library_c',
@@ -168,9 +215,29 @@ describe('summarizeKbMoodVetoLab', () => {
     assert.equal(summarizeKbMoodVetoLab([...moodRows, ...controlRows], { jaNativeReviewed: true }).gateFinal, true);
   });
 
+  it('English under 40 lines fails even at 100%', () => {
+    const s = summarizeKbMoodVetoLab([...moodRows.slice(0, -1), ...controlRows]);
+    assert.equal(s.mood.en.n, 39);
+    assert.equal(s.mood.en.rate, 1);
+    assert.equal(s.mood.en.passed, false);
+    assert.equal(s.gatePassed, false);
+  });
+
+  it('reverse-risk rows are counted apart and report misses', () => {
+    const risk = [
+      { set: 'mood', group: KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP, lang: 'zh', text: 'r0', baseline: 'honesty', withVeto: 'honesty' },
+      { set: 'mood', group: KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP, lang: 'zh', text: 'r1', baseline: 'honesty', withVeto: 'skip' }
+    ];
+    const s = summarizeKbMoodVetoLab([...moodRows, ...risk, ...controlRows]);
+    assert.equal(s.mood.zh.n, 1);
+    assert.equal(s.mood.zh.passed, true);
+    assert.deepEqual(s.reverseRisk, { n: 2, vetoSkip: 1, missed: ['r0'] });
+  });
+
   it('one false veto in the control group fails the gate', () => {
     const rows = [...moodRows, ...controlRows];
-    rows[3] = { ...rows[3], withVeto: 'skip' };
+    const i = moodRows.length;
+    rows[i] = { ...rows[i], withVeto: 'skip' };
     const s = summarizeKbMoodVetoLab(rows);
     assert.deepEqual(s.control.falseVetoes, ['c0']);
     assert.deepEqual(s.control.mixedNotProduct, ['c0']);
