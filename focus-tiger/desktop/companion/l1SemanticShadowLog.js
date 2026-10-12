@@ -8,6 +8,8 @@
  * Schema kept in sync with confideSemanticCoarseMap.js unit tests.
  */
 
+import { buildStage2bShadowFields } from './l1SemanticStage2bShadow.js';
+
 /**
  * @param {{
  *   text: string,
@@ -76,6 +78,13 @@ export function buildSemanticShadowTurnLogRecord(payload) {
   const contextual =
     typeof payload.contextualText === 'string' ? payload.contextualText.trim() : '';
   const withPrior = payload.semanticResultWithPrior;
+  const stage2b = buildStage2bShadowFields({
+    route: payload.route,
+    source: payload.source,
+    literalCoarse: payload.literalCoarse,
+    semanticCoarse: payload.semanticResult?.bucket ?? null,
+    seedSource: payload.seedSource
+  });
   return {
     at: new Date().toISOString(),
     kind: 'semantic_shadow_classify',
@@ -94,6 +103,7 @@ export function buildSemanticShadowTurnLogRecord(payload) {
     scoreBWithPrior: withPrior?.scoreB ?? null,
     ok: Boolean(payload.ok),
     reason: payload.reason,
+    ...stage2b,
     timing: payload.timing || undefined
   };
 }

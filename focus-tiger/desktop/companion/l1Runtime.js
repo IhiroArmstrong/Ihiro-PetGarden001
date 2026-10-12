@@ -50,6 +50,7 @@ import { createSemanticShadowEmbeddingGate } from './l1SemanticShadowEmbeddingGa
 import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
 import { canReuseConfideSemanticLiveCache } from './l1SemanticLiveCache.js';
 import { sanitizeRendererTurnLogRecord } from './confideRendererTurnLogAllowlist.js';
+import { resolveStage2bSeedSource } from './l1SemanticStage2bShadow.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -687,6 +688,7 @@ export class CompanionL1Runtime {
           literalCoarse,
           hadPriorTurn,
           contextualText: contextualText || null,
+          seedSource: resolveStage2bSeedSource(this.env),
           ok: true,
           reason: 'ok',
           semanticResult: {
@@ -1016,7 +1018,8 @@ export class CompanionL1Runtime {
       source: payload.source,
       literalCoarse: payload.literalCoarse,
       hadPriorTurn: payload.hadPriorTurn,
-      contextualText: payload.contextualText || null
+      contextualText: payload.contextualText || null,
+      seedSource: resolveStage2bSeedSource(this.env)
     };
 
     if (!this.child) {

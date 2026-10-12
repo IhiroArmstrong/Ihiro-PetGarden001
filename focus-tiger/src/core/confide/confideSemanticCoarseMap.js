@@ -14,6 +14,7 @@ import {
 } from './confideRoutes.js';
 import { isConfideReminderFeatureQuestion } from './confideReminderFeatureQuestion.js';
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
+import { buildConfideStage2bShadowFields } from './confideSemanticStage2b.js';
 
 /** @type {ReadonlySet<string>} */
 const FUNCTIONAL_REPLY_SOURCES = Object.freeze(
@@ -145,6 +146,13 @@ export function buildConfideSemanticShadowLogRecord(payload) {
   const contextual =
     typeof payload.contextualText === 'string' ? payload.contextualText.trim() : '';
   const withPrior = payload.semanticResultWithPrior;
+  const stage2b = buildConfideStage2bShadowFields({
+    route: payload.route,
+    source: payload.source,
+    literalCoarse: payload.literalCoarse,
+    semanticCoarse: payload.semanticResult?.bucket ?? null,
+    seedSource: payload.seedSource
+  });
   return {
     at: new Date().toISOString(),
     kind: 'semantic_shadow_classify',
@@ -163,6 +171,7 @@ export function buildConfideSemanticShadowLogRecord(payload) {
     scoreBWithPrior: withPrior?.scoreB ?? null,
     ok: Boolean(payload.ok),
     reason: payload.reason,
+    ...stage2b,
     timing: payload.timing || undefined
   };
 }
