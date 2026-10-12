@@ -142,7 +142,7 @@
 |---|---|---|
 | **A5** | 新增 husky `pre-push`：跑一条启动冒烟（单个 Playwright spec，断言 `__FT_APP_READY__ === true` 且无页面错误），本地约 1 分钟内结束；仅文档改动可跳过。 | **本支** `chore/a5-pre-push-startup-smoke`：`.husky/pre-push` → `test:e2e:startup`（Vite `:5198`）。单测锁 docs-only 跳过 / 代码推送跑冒烟 / 冒烟红则拒绝。正常启动绿；#1139 类 TDZ 会让 ready 永不置位 → spec 红。 |
 | **A22** | 让钩子在任何检出里都生效：把 `core.hooksPath` 改指向已进 git 的目录（或在建工作目录的脚本里自动装钩子）；`check:worktree-occupancy` 发现钩子目录缺失时报 BLOCK。**须在 A5 之前或同时落地**，否则 A5 的 `pre-push` 在新工作目录里同样不会跑。 | **本支** `chore/committed-git-hooks`：`prepare` 写 `core.hooksPath=.husky`；占用检查对缺失 / 仍指向 `.husky/_` 报 BLOCK。新开工作目录、不跑 `npm install`，只要本机已设 hooksPath，`pre-commit` 会执行。 |
-| **A6** | 对 `src/main.js` 开启「先用后定义」静态检查（ESLint `no-use-before-define`，仅变量；函数声明豁免），接进 `test:smoke`。 | **本支** `chore/a6-main-use-before-define`：`lint:main-use-before-define` 进 `test:smoke`。夹具 `tdz-onboarding-hints-1139.js` 必须报 `onboardingHints`；现存 23 名 / 67 次封顶（只减不增）。不拆 `init()`（A7）。 |
+| **A6** | 对 `src/main.js` 开启「先用后定义」静态检查（ESLint `no-use-before-define`，仅变量；函数声明豁免），接进 `test:smoke`。 | **已合** [#1189](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1189)：`lint:main-use-before-define` 进 `test:smoke`。夹具 `tdz-onboarding-hints-1139.js` 必须报 `onboardingHints`；现存 23 名 / 67 次封顶（只减不增）。不拆 `init()`（A7）。 |
 | **A8** | 页面防呆：① e2e 冒烟与 A1 每步检查可见文字中不含 `undefined` / `NaN` / `[object Object]`；② 提供安全拼装辅助（子节点为空即开发报错），新代码用它。 | ① 在 #1129 / #1137 修复前提交上红；② 单测。 |
 
 ### 阶段三 · 堵住「只做了第一种」（第 2 类）
@@ -159,7 +159,7 @@
 | **A11** | 浮动卡片只能经共享 `createGlassCard()`（基于 `glassPanelStyles.js`）生成；静态检查禁止浮动卡片自写背景色。 | 检查覆盖全部浮动卡片；#1147 前的深色语音卡写法会被拦。 |
 | **A12** | 层级常量化：新建层级常量模块（与 `Z_INDEX.md` 一一对应），扫描脚本禁止 `src/` 出现表外 `z-index` 数字；现存 208 处先列豁免清单，逐批收口。 | `DOC_CODE_CONTRACT.md` Z-dim 行的 (a) 从「暂无」改为指向该扫描；豁免清单只减不增。 |
 | **A13** | 关键卡片截图比对：语音卡、帮助中心、支持页、收藏面板、问号卡、修行卡、扇形、灯笼区等约 12 处，进 CI。 | 故意改一处背景色，CI 红。 |
-| **A7** | `main.js` `init()` 分段拆分：先写 Brief（分段顺序、每段依赖、已好清单），再按段分刀，每刀单独 PR；**不与功能 PR 混线**（沿用 2026-09-06 盘点结论）。 | Brief 锁定后开刀；每刀 A5 启动冒烟 + 全量 e2e CI 绿。 |
+| **A7** | `main.js` `init()` 分段拆分：先写 Brief（分段顺序、每段依赖、已好清单），再按段分刀，每刀单独 PR；**不与功能 PR 混线**（沿用 2026-09-06 盘点结论）。 | **本支** Brief [`task-briefs/task-a7-init-split.md`](./task-briefs/task-a7-init-split.md)。PO 点头后按段 A7.1–A7.6 分刀；每刀 A5 启动冒烟 + `lint:main-use-before-define` 帽子只减 + 全量 e2e CI 绿。 |
 
 ### 阶段五 · 流程与工具（文档类合并 PR + 两个小工具 PR）
 
@@ -207,4 +207,4 @@
 | `artCollectionCatalog.js` + `cloud/.../artCollectionCatalog.ts` | 可发放 `hdId` | A9 练习/商品总表 | **已加失败测试** | `artCollectionHdParallelListContract.test.js` |
 | `src/ui/glassCardDeck.js` `GLASS_CARD_KEEP_STYLESHEET_Z` | 哪些卡不得 inline 压 z-index | 与 `Z_INDEX.md` / 受保护路径 | **已加失败测试** | `npm run test:payment-contract` |
 | `handlers.onX?.()` 宽/窄 / `main` | 缺失 handler 是否静默 | **A4** `invokeHandler`（点击路径） | **已加失败测试** | `idleChromeOrchestration.test.js`（缺 handler 开发抛错） |
-| `main.js` `init()` 顺序依赖 | 启动段先后 | **A7 Brief** | **待 A7** | A5 启动冒烟（已合 #1186）+ A6 先用后定义静态检查（本支） |
+| `main.js` `init()` 顺序依赖 | 启动段先后 | **A7 Brief** | **Brief 本支** [`task-a7-init-split.md`](./task-briefs/task-a7-init-split.md) | A5 启动冒烟（已合 #1186）+ A6 先用后定义（已合 #1189） |

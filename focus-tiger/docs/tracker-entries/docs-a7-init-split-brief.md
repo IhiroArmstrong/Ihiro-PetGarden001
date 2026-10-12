@@ -1,0 +1,1 @@
+| A7 `init()` 拆分 Brief（文档） | 纯文档 | 仅单元测试覆盖 | 不是产品功能。验收的是 Brief 是否锁定分段顺序 / 依赖 / 豁免清零地图，不代表 `init()` 已拆、也不代表冷启动画面变了。读 [`task-briefs/task-a7-init-split.md`](../task-briefs/task-a7-init-split.md)。 | — | — | — | `docs/task-briefs/task-a7-init-split.md` | 2026-10-13 |
