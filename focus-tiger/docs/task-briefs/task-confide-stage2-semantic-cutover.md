@@ -60,16 +60,21 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 - **回滚开关实测**：主进程 `FT_CONFIDE_SEMANTIC_ROUTING=shadow` 后重跑上面三句，行为与 Stage 1 相同
 - **就绪延迟**：embedding 已 ready 时，记一条 live 粗桶墙钟（现成 `timing.wallMs` / `embedMs`）。只记录数字，不在本刀调阈值；15s 影子超时不得出现在用户可感知等待里
 
-## Stage 2b（gray→功能桶）重新评估触发点（2026-09-22）
+## Stage 2b（gray→功能桶）门闩（2026-10-12 · PO 书面改锁）
 
 本刀只处理字面情绪桶 ∩ 语义 functional。gray→功能桶**不是** KB 问法矩阵能生成的证据。
 
-| 门闩 | 数字 |
-|---|---|
-| 日历 | 窄刀在 develop 满 **3 周**；与 with-prior 同日 **2026-10-12** 复核 |
-| 样本量 M | live/shadow jsonl 中 **literal=gray 且 semantic=functional** 的**互异句 ≥ 25** |
-| 不算 M | 制造机 45 条 KEEP（多数 literal=gray）只作候选池，**不**计入真实 M |
-| 人工 | PO 从 M 抽 **20** 条标 KEEP（该被功能桶接住）/ DROP（该留灰或 generate） |
-| 才开 Stage 2b 扩面 Brief | KEEP ≥ 12 **且** 误拉情绪/闲聊少于 2 |
+**2026-10-12 PO**：旧门闩「自然对话互异句 ≥25」卡在偶遇上，且把实验室筛出的正例连发进 Confide 是循环论证（同一套分类器同意自己）+ 意图族过少，测不出误拉。改为下面这张表。**切 live 才受本表约束。影子模式实现不改用户可见回复，可另开会话开工，不需要等本表数字。**
 
-未到门闩：**按兵不动**，但日期已钉死，禁止无限期「等以后」。
+| 项 | 门闩 |
+|---|---|
+| 正例 M | PO 手打或确认的互异句 **≥25**，覆盖 **至少 6 个意图族**；日志标 `source: po_seeded`，**不与自然样本混算** |
+| 负例对照 | 另备 **≥20** 条本该留在情绪 / 闲聊 / gray 的句子（如「有点烦」「今天想去骑车」「累死了」），**误拉 <2** |
+| 抽审 | 从正例抽 **20** 条标 KEEP（该被功能桶接住）/ DROP（该留灰或 generate）；KEEP ≥ 12 **且** 误拉情绪/闲聊少于 2（与负例对照并列，负例误拉 <2） |
+| 自然样本 | 继续攒，作为 **上线后验证**，不再作为开工 / 切 live 门槛 |
+| 不算 M | 制造机 KEEP、实验室 `M_CANDIDATE` 整表连发进 Confide、未标 `po_seeded` 的刷词句 |
+| 回滚 | 切 live 后仍保留 `FT_CONFIDE_SEMANTIC_ROUTING=shadow` |
+
+57 句实验室正例：不整表连发进 Confide；由脚本批量跑 + PO 手标 KEEP/DROP。负例从历史 jsonl 情绪/闲聊句挑，再补缺。
+
+**才切 Stage 2b live**：正例门闩 + 负例误拉 <2 + 抽审 KEEP≥12。任一项不够 → 书面 defer，禁止默默悬着。
