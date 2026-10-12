@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# core.hooksPath=.husky (tracked). Do not point at gitignored .husky/_.
+# A5: startup smoke before push. Docs-only (.md/.mdc) skips.
+cd "$(dirname "$0")/.." || exit 1
+exec node focus-tiger/scripts/pre-push-startup-smoke.js
