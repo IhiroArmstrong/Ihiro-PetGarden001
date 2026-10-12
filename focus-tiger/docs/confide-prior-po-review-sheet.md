@@ -98,7 +98,7 @@ Brief 要求 help/harm **全看**；本批 `naiveOther=0`，无 other 叉。下�
 
 ## 5. 与 Stage 2 扩面（gray→功能桶）的关系
 
-- **独立债**：扩面看 **M**。**2026-10-12 PO 改锁**：正例改为 PO 手打/确认互异句 ≥25、覆盖 ≥6 意图族、日志 `source: po_seeded`；另备负例 ≥20、误拉 <2；自然样本改为上线后验证。禁止把实验室 57 句整表连发进 Confide 凑数。权威：`task-confide-stage2-semantic-cutover.md` Stage 2b 节。
+- **独立债**：扩面看 **M**。**2026-10-12 改锁**：不要求手打；日志 `lab_seeded`（旧 `po_seeded` 同计）；负例 ≥20、误拉 <2；抽审 KEEP≥12；正例 ≥6 意图族。自然样本改为上线后验证。禁止把实验室 57 句整表连发进 Confide 凑数。权威：`task-confide-stage2-semantic-cutover.md` Stage 2b 节。
 - **可能同根**：A 区 H4/H5、D4/D5 与 KB 路由「字面 gray、语义 functional」同族——with-prior 抽审里标到的 KB 句，可记下来给 10-12 的 M 标注用，但**不合并**两次门闩。
 
 ## 6. 10-12 当天复核清单（到日再跑）

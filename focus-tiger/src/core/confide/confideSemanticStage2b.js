@@ -14,9 +14,23 @@ import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
 
 export const CONFIDE_STAGE2B_SEED_SOURCE = Object.freeze({
+  LAB_SEEDED: 'lab_seeded',
+  /** Legacy alias. New rows write `lab_seeded`; audit still counts both. */
   PO_SEEDED: 'po_seeded',
   NATURAL: 'natural'
 });
+
+/**
+ * Lab / seeded rows as opposed to natural chat. `po_seeded` is a legacy alias.
+ * @param {unknown} source
+ * @returns {boolean}
+ */
+export function isConfideStage2bLabSeeded(source) {
+  return (
+    source === CONFIDE_STAGE2B_SEED_SOURCE.LAB_SEEDED ||
+    source === CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED
+  );
+}
 
 export const CONFIDE_STAGE2B_REASON = Object.freeze({
   GRAY_TO_FUNCTIONAL: 'gray_to_functional',
@@ -31,7 +45,8 @@ export const CONFIDE_STAGE2B_REASON = Object.freeze({
 const STAGE2B_PROMOTABLE_SOURCES = Object.freeze(new Set(['generate', 'corpus']));
 
 /**
- * Only the Electron main process may mark a session as PO-seeded.
+ * Only the Electron main process may mark a session as lab-seeded.
+ * `FT_CONFIDE_SEED_SOURCE=po_seeded` is a legacy alias and writes `lab_seeded`.
  * @param {NodeJS.ProcessEnv | Record<string, string | undefined> | null | undefined} env
  * @returns {string}
  */
@@ -39,8 +54,8 @@ export function resolveConfideStage2bSeedSource(env) {
   const raw = String(env?.FT_CONFIDE_SEED_SOURCE || '')
     .trim()
     .toLowerCase();
-  return raw === CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED
-    ? CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED
+  return isConfideStage2bLabSeeded(raw)
+    ? CONFIDE_STAGE2B_SEED_SOURCE.LAB_SEEDED
     : CONFIDE_STAGE2B_SEED_SOURCE.NATURAL;
 }
 
@@ -97,9 +112,8 @@ export function buildConfideStage2bShadowFields(ctx) {
   return {
     stage2bWouldPromote: decided.wouldPromote,
     stage2bReason: decided.reason,
-    seedSource:
-      ctx?.seedSource === CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED
-        ? CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED
-        : CONFIDE_STAGE2B_SEED_SOURCE.NATURAL
+    seedSource: isConfideStage2bLabSeeded(ctx?.seedSource)
+      ? CONFIDE_STAGE2B_SEED_SOURCE.LAB_SEEDED
+      : CONFIDE_STAGE2B_SEED_SOURCE.NATURAL
   };
 }

@@ -9,7 +9,7 @@
  */
 
 import { CONFIDE_SEMANTIC_SHADOW_KIND } from './auditConfideSemanticShadow.js';
-import { CONFIDE_STAGE2B_SEED_SOURCE } from './confideSemanticStage2b.js';
+import { isConfideStage2bLabSeeded } from './confideSemanticStage2b.js';
 import { previewConfideLiteralSource } from './previewConfideLiteralSource.js';
 
 export const STAGE2B_PO_SEEDED_GATE = Object.freeze({
@@ -74,7 +74,7 @@ export function isOkPoSeededShadowRow(row) {
   if (!row || typeof row !== 'object') return false;
   if (row.kind !== CONFIDE_SEMANTIC_SHADOW_KIND) return false;
   if (row.ok !== true) return false;
-  return row.seedSource === CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED;
+  return isConfideStage2bLabSeeded(row.seedSource);
 }
 
 /**
@@ -113,7 +113,7 @@ export function summarizeConfideStage2bPoSeededGate(rows, opts = {}) {
   for (const row of rows || []) {
     if (!row || typeof row !== 'object') continue;
     if (row.kind !== CONFIDE_SEMANTIC_SHADOW_KIND) continue;
-    if (row.seedSource !== CONFIDE_STAGE2B_SEED_SOURCE.PO_SEEDED) continue;
+    if (!isConfideStage2bLabSeeded(row.seedSource)) continue;
     if (row.ok !== true) {
       skippedNotOkPoSeeded += 1;
       continue;
@@ -199,9 +199,9 @@ export function previewStage2bConfirmCandidates(texts) {
  */
 export function formatStage2bPoSeededGateReport(summary) {
   return [
-    'stage2b po_seeded gate',
+    'stage2b lab_seeded gate',
     `file: ${summary.filePath}`,
-    `uniquePoSeeded=${summary.uniqueTextCount} (need ≥${STAGE2B_PO_SEEDED_GATE.MIN_UNIQUE_TEXTS}) ${yn(summary.meetsUniqueTexts)}`,
+    `uniqueLabSeeded=${summary.uniqueTextCount} (need ≥${STAGE2B_PO_SEEDED_GATE.MIN_UNIQUE_TEXTS}) ${yn(summary.meetsUniqueTexts)}`,
     `uniqueWouldPromote=${summary.uniqueWouldPromoteCount}`,
     `uniqueFamilies=${summary.uniqueFamilyCount} (need ≥${STAGE2B_PO_SEEDED_GATE.MIN_FAMILIES}) ${yn(summary.meetsFamilies)}`,
     `unlabeled=${summary.unlabeledCount}`,
