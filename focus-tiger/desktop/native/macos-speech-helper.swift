@@ -468,11 +468,8 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   ])
 }
 
-func defaultSpeakRate(for localeId: String) -> Float {
-  return max(
-    AVSpeechUtteranceMinimumSpeechRate,
-    AVSpeechUtteranceDefaultSpeechRate - 0.08
-  )
+func defaultSpeakRate(for _: String) -> Float {
+  return AVSpeechUtteranceDefaultSpeechRate
 }
 
 func normalizedTtsLocaleId(_ localeId: String) -> String {
