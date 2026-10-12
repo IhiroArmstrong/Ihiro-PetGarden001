@@ -1,7 +1,7 @@
 ---
 id: help-center-gap-articles
 kind: feature
-status: Brief 草稿待点头
+status: 待合 PR
 updated: 2026-10-13
 ---
 

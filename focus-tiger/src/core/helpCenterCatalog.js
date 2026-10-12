@@ -199,6 +199,18 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     kbTraceId: 'KB-FUNC-0028'
   }),
   Object.freeze({
+    id: 'HELP-BREATH-DURATION',
+    sectionId: 'practice',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-LOTUS-BLOOMS',
+    sectionId: 'practice',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY'
+  }),
+  Object.freeze({
     id: 'KB-FUNC-0003',
     sectionId: 'data',
     titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0003_TITLE',
@@ -246,6 +258,18 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0036_TITLE',
     bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0036_BODY',
     kbTraceId: 'KB-FUNC-0036'
+  }),
+  Object.freeze({
+    id: 'HELP-BUY-COLLECTIONS',
+    sectionId: 'data',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-BADGE-NOT-COIN',
+    sectionId: 'data',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY'
   }),
   Object.freeze({
     id: 'KB-FUNC-0005',

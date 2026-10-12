@@ -1,6 +1,6 @@
 # Task Brief · Help Center 补篇（呼吸时长 / Collections / 莲花 / 徽章≠寅币）
 
-> **状态（2026-10-13）**：草稿 · **待 PO 点头**。未改运行时。口令「按这份 Brief 开工」后才写 catalog / locale。
+> **状态（2026-10-13）**：**已锁** · PO 书面「按这份 Brief 开工」。实现旁支 `feature/help-center-gap-articles`。
 > **分支**：`feature/help-center-gap-articles`（worktree `…-wt-help-center-gap`）
 > **类**：B（用户可见帮助正文）
 > **父计划**：[`task-confide-help-center-miss-fallback.md`](./task-confide-help-center-miss-fallback.md) **第二刀**
