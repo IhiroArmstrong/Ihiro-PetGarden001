@@ -10,6 +10,7 @@
     "test:smoke": "cd focus-tiger && npm run test:smoke",
     "test:e2e": "cd focus-tiger && npm run test:e2e",
     "test:e2e:smoke": "cd focus-tiger && npm run test:e2e:smoke",
+    "test:e2e:startup": "cd focus-tiger && npm run test:e2e:startup",
     "test:e2e:changed": "cd focus-tiger && node scripts/run-e2e-changed.js",
     "test:e2e:visibility": "cd focus-tiger && npm run test:e2e:visibility",
     "test:pr-smoke": "cd focus-tiger && npm run test:pr-smoke",

@@ -52,10 +52,14 @@ describe('parseLockOccupancy', () => {
 
 describe('evaluateGitHooksPresence (A22 / R19)', () => {
   const repoRoot = '/repo'
-  const present = new Set(['/repo/.husky', '/repo/.husky/pre-commit'])
+  const present = new Set([
+    '/repo/.husky',
+    '/repo/.husky/pre-commit',
+    '/repo/.husky/pre-push'
+  ])
   const exists = (p) => present.has(p)
 
-  it('ok when core.hooksPath is committed .husky with pre-commit', () => {
+  it('ok when core.hooksPath is committed .husky with pre-commit and pre-push', () => {
     const r = evaluateGitHooksPresence({
       repoRoot,
       hooksPath: '.husky',
@@ -84,7 +88,8 @@ describe('evaluateGitHooksPresence (A22 / R19)', () => {
   it('blocks when hooksPath is husky _ even if that dir exists', () => {
     const withUnderscore = new Set([
       '/repo/.husky/_',
-      '/repo/.husky/_/pre-commit'
+      '/repo/.husky/_/pre-commit',
+      '/repo/.husky/_/pre-push'
     ])
     const r = evaluateGitHooksPresence({
       repoRoot,
@@ -104,5 +109,16 @@ describe('evaluateGitHooksPresence (A22 / R19)', () => {
     })
     assert.equal(r.ok, false)
     assert.equal(r.code, 'pre_commit_missing')
+  })
+
+  it('blocks when pre-push file is missing (A5)', () => {
+    const noPush = new Set(['/repo/.husky', '/repo/.husky/pre-commit'])
+    const r = evaluateGitHooksPresence({
+      repoRoot,
+      hooksPath: '.husky',
+      exists: (p) => noPush.has(p)
+    })
+    assert.equal(r.ok, false)
+    assert.equal(r.code, 'pre_push_missing')
   })
 })

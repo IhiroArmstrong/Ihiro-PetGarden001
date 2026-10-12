@@ -53,6 +53,8 @@ if re.search(r"\bRUN_E2E_LOCAL\s*=\s*true\b", cmd):
 # Always-allowed local smoke paths
 if re.search(r"\bnpm\s+run\s+test:e2e:smoke\b", cmd):
     allow()
+if re.search(r"\bnpm\s+run\s+test:e2e:startup\b", cmd):
+    allow()
 if re.search(r"\bnpm\s+run\s+test:pr-smoke\b", cmd):
     allow()
 if re.search(r"\bnpm\s+run\s+test:e2e:install\b", cmd):

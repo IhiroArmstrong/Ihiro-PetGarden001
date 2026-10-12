@@ -11,7 +11,7 @@
  * - full → npm run test:e2e (focus-tiger-e2e-full.yml: workflow_dispatch + daily schedule)
  * - visibility → npm run test:e2e:visibility (focus-tiger-visibility-contract.yml)
  *
- * Local light paths: test:e2e:smoke / test:e2e:changed -- <one *.spec.*>
+ * Local light paths: test:e2e:smoke / test:e2e:startup / test:e2e:changed -- <one *.spec.*>
  * (see RULES_INDEX → e2e-local-budget).
  */
 const suite = process.argv[2];

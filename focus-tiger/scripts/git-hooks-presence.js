@@ -10,7 +10,7 @@
  *
  * Husky 9 sets core.hooksPath to `.husky/_`, which is gitignored. A fresh
  * `git worktree add` has no `_/` until `npm install`, so git skips hooks
- * with no error. Committed hooks live in `.husky/` (pre-commit is tracked).
+ * with no error. Committed hooks live in `.husky/` (pre-commit and pre-push are tracked).
  */
 
 import { existsSync } from 'node:fs'
@@ -57,6 +57,15 @@ export function evaluateGitHooksPresence({ repoRoot, hooksPath = '', exists = ex
     }
   }
 
+  const prePush = join(resolvedDir, 'pre-push')
+  if (!exists(prePush)) {
+    return {
+      ok: false,
+      code: 'pre_push_missing',
+      message: `BLOCK: pre-push hook missing at ${prePush}`
+    }
+  }
+
   const committedDir = normalize(join(repoRoot, COMMITTED_HOOKS_PATH))
   if (resolvedDir !== committedDir) {
     return {
@@ -69,7 +78,7 @@ export function evaluateGitHooksPresence({ repoRoot, hooksPath = '', exists = ex
   return {
     ok: true,
     code: 'ok',
-    message: `hooks_path: ${COMMITTED_HOOKS_PATH} (pre-commit present)`,
+    message: `hooks_path: ${COMMITTED_HOOKS_PATH} (pre-commit and pre-push present)`,
     hooksDir: resolvedDir
   }
 }
