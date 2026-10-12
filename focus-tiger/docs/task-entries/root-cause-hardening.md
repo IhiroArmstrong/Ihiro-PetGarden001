@@ -1,7 +1,7 @@
 ---
 id: root-cause-hardening
 kind: feature
-status: 盘点已落 · 阶段一 A1 待开工
+status: 盘点已落 · A22 本支（钩子进 git）· 下一刀 A1
 updated: 2026-10-12
 ---
 

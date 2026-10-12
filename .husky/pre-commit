@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+# core.hooksPath=.husky (tracked). Do not point at gitignored .husky/_.
 cd "$(dirname "$0")/.." || exit 1
 
 # Session lock + primary-develop checkout gate (Prompt 3)
