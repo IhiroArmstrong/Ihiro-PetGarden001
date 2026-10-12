@@ -49,6 +49,7 @@ import {
 import { createSemanticShadowEmbeddingGate } from './l1SemanticShadowEmbeddingGate.js';
 import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
 import { canReuseConfideSemanticLiveCache } from './l1SemanticLiveCache.js';
+import { sanitizeRendererTurnLogRecord } from './confideRendererTurnLogAllowlist.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -1141,6 +1142,21 @@ export class CompanionL1Runtime {
       }
       return result;
     }
+  }
+
+  /**
+   * Renderer-originated audit rows (kb miss / crisis paraphrase shadow).
+   * Semantic classify rows must not use this path.
+   * @param {unknown} payload
+   * @returns {Promise<{ ok: boolean, reason?: string }>}
+   */
+  async appendTurnLogFromRenderer(payload) {
+    const sanitized = sanitizeRendererTurnLogRecord(payload);
+    if (!sanitized.ok) {
+      return { ok: false, reason: sanitized.reason };
+    }
+    await this._appendTurnLog(sanitized.record);
+    return { ok: true };
   }
 
   /**

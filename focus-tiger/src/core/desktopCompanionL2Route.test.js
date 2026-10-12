@@ -529,7 +529,9 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /contextualText/);
     assert.match(preload, /desktop:companion-semantic-shadow-classify/);
     assert.match(preload, /desktop:companion-semantic-live-classify/);
+    assert.match(preload, /desktop:companion-append-turn-log/);
     assert.match(ipcSrc, /desktop:companion-semantic-live-classify/);
+    assert.match(ipcSrc, /desktop:companion-append-turn-log/);
     assert.match(ui, /semanticLiveClassify/);
     assert.match(ui, /_applyLiveSemanticThenDispatch/);
     assert.match(ui, /applyConfideStage2Route/);
