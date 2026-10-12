@@ -85,7 +85,7 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 
 **才切 Stage 2b live**：负例误拉 <2 + 抽审 KEEP≥12 + 正例覆盖 ≥6 个意图族。任一项不够 → 书面 defer，禁止默默悬着。
 
-**2026-10-12 门闩已过 · 切 live Brief**：[`task-confide-stage2b-semantic-cutover.md`](task-confide-stage2b-semantic-cutover.md)（待 PO 点头；默认仍 shadow 灰度；运行时另开会话）。
+**2026-10-12 门闩已过 · 切 live Brief**：[`task-confide-stage2b-semantic-cutover.md`](task-confide-stage2b-semantic-cutover.md)（已点头；默认仍 shadow 灰度；运行时另开会话）。
 
 ### Stage 2b 影子（2026-10-12 · 只写日志 · 不改回复）
 

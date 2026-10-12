@@ -1,7 +1,7 @@
 ---
 id: stage2b-live-brief
 kind: note
-status: Brief 待 PO 点头（2026-10-12）
+status: Brief 已点头（补三处后锁 · 2026-10-12）
 updated: 2026-10-12
 ---
 
