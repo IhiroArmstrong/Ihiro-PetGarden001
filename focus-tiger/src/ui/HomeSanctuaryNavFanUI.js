@@ -49,6 +49,7 @@ export class HomeSanctuaryNavFanUI {
       handlers.storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
     this._open = false;
+    this._ignoreOpeningPointer = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
 
@@ -108,7 +109,10 @@ export class HomeSanctuaryNavFanUI {
 
     mountRoot.append(this.backdrop, this.root, this.fab);
 
-    this.backdrop.addEventListener('click', () => this.close());
+    this.backdrop.addEventListener('click', () => {
+      if (this._ignoreOpeningPointer) return;
+      this.close();
+    });
     this._onKeyDown = (event) => {
       if (!this._open) return;
       if (event.key === 'Escape') {
@@ -144,6 +148,7 @@ export class HomeSanctuaryNavFanUI {
 
     this.backdrop.hidden = false;
     this.root.hidden = false;
+    this._ignoreOpeningPointer = true;
     requestAnimationFrame(() => {
       this.backdrop.classList.add('is-visible');
       this.root.classList.add('is-visible');
@@ -154,6 +159,9 @@ export class HomeSanctuaryNavFanUI {
       id: 'home-sanctuary-nav-fan',
       dismiss: () => this.close()
     });
+    window.setTimeout(() => {
+      this._ignoreOpeningPointer = false;
+    }, 0);
   }
 
   /** @returns {void} */
