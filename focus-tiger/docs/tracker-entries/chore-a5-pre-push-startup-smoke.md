@@ -1,0 +1,1 @@
+| A5 推送前启动冒烟（husky pre-push） | 纯后端 | 仅单元测试覆盖 | 不是产品功能。推代码时钩子跑 `npm run test:e2e:startup`：须 `__FT_APP_READY__ === true` 且无 pageerror。只改 `.md`/`.mdc` 可跳过。单测：`pre-push-startup-smoke.test.js` + occupancy 缺 `pre-push` 即 BLOCK。不覆盖 App 画面。 | — | — | — | `.husky/pre-push` · `e2e/startup-ready.smoke.spec.js` · `scripts/pre-push-startup-smoke.js` | 2026-10-13 |

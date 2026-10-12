@@ -135,15 +135,27 @@ cd focus-tiger && npm run test:smoke   # 含 docs:check + 门闩/场景契约测
 
 | 项 | 说明 |
 |---|---|
-| **钩子文件** | `.husky/pre-commit`（仓库根，已进 git） |
-| **启用方式** | `core.hooksPath` 必须指向已进 git 的 `.husky`。根目录 `npm install` 的 `prepare` 会写入本机 git config。新 `git worktree add` **不必**再 install：worktree 共用这份 config，检出里已有 `.husky/pre-commit` 就会跑。禁止再指向 husky 生成的 `.husky/_`（该目录被 gitignore；缺失时 git **静默跳过**全部钩子）。`check:worktree-occupancy` 发现钩子目录或 `pre-commit` 缺失时报 BLOCK。 |
-| **覆盖** | session-lock 技术闸 + `docs:sync`（机器块自动刷新并 stage）+ 结构对齐 `docs:check` + 行为契约 `test:smoke` 主体（不含 `test:e2e`） |
+| **钩子文件** | `.husky/pre-commit` + `.husky/pre-push`（仓库根，已进 git） |
+| **启用方式** | `core.hooksPath` 必须指向已进 git 的 `.husky`。根目录 `npm install` 的 `prepare` 会写入本机 git config。新 `git worktree add` **不必**再 install：worktree 共用这份 config，检出里已有 `.husky/pre-commit` 就会跑。禁止再指向 husky 生成的 `.husky/_`（该目录被 gitignore；缺失时 git **静默跳过**全部钩子）。`check:worktree-occupancy` 发现钩子目录、`pre-commit` 或 `pre-push` 缺失时报 BLOCK。 |
+| **覆盖** | session-lock 技术闸 + `docs:sync`（机器块自动刷新并 stage）+ 结构对齐 `docs:check` + 行为契约 `test:smoke` 主体（不含全量 `test:e2e`）。**push** 另跑 A5 `test:e2e:startup`（见下） |
 | **session-lock** | 见 `WORKFLOW.md`（`git-worktree-occupancy`）：`last_heartbeat`、60m 陈旧、history 留痕、禁主仓 develop commit |
+
+### 本地 pre-push（A5 启动冒烟）
+
+仓库根目录每次 `git push` 前自动执行：
+
+```bash
+node focus-tiger/scripts/pre-push-startup-smoke.js
+# → 非文档改动：cd focus-tiger && npm run test:e2e:startup
+```
+
+断言 `window.__FT_APP_READY__ === true` 且无 `pageerror`（Vite `:5198`，约 1 分钟）。仅全部为 `.md` / `.mdc` 的推送可跳过。紧急：`FT_SKIP_PRE_PUSH_STARTUP=1`（须在 PR 写明）。`git push --no-verify` 同样会跳过，禁止习惯性使用。
 
 **绕过（不推荐）**：
 
 ```bash
 git commit --no-verify -m "…"
+git push --no-verify
 ```
 
 仅用于：紧急热修、已知局部 WIP 且你**主动承担**未跑回归的风险。  
