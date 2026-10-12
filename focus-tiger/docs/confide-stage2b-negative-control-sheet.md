@@ -1,7 +1,7 @@
 # Confide Stage 2b · 负例对照 + 正例 20 条 KEEP/DROP 抽审表
 
 > **日期**：2026-10-12（UTC+8）  
-> **门闩 SSOT**：[`task-confide-stage2-semantic-cutover.md`](task-briefs/task-confide-stage2-semantic-cutover.md) Stage 2b 节（#1167 改锁）。  
+> **门闩 SSOT**：[`task-confide-stage2-semantic-cutover.md`](task-briefs/task-confide-stage2-semantic-cutover.md) Stage 2b 节（#1175 `lab_seeded`）。  
 > **性质**：实验室脚本批量跑，**不进 Confide、不写 `turns.jsonl`、不改运行时**。本表的数字只说明「分类器在这些句子上怎么判」，**不等于**切 live 的产品路径证据。
 
 ## 怎么跑出来的
@@ -12,15 +12,16 @@ export FT_EMBEDDING_GGUF="$HOME/Library/Application Support/Focus Tiger/companio
 export FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1
 npm run audit:stage2-m-screen -- --file "$PWD/docs/lab-inputs/stage2b-negative-control.txt"
 npm run audit:stage2-m-screen -- --file "$PWD/docs/lab-inputs/stage2-m-kb-gray-80-v2-candidates.txt"
+npm run audit:stage2-m-screen -- --file "$PWD/docs/lab-inputs/stage2b-lab-families-round2.txt"
 ```
 
 「误拉」= Stage 2b 规则会把它抬进功能桶 = **literal=gray 且 semantic=functional**（脚本里的 `M_CANDIDATE`）。字面情绪桶 ∩ semantic=functional 归窄刀 Stage 2 管，本批负例里 0 条。
 
-## 1. 负例对照（31 句 · 误拉 1 · 门闩 <2 ✅ 实验室口径）
+## 1. 负例对照（41 句 · 误拉 1 · 门闩 <2 ✅ 实验室口径）
 
 输入：[`lab-inputs/stage2b-negative-control.txt`](lab-inputs/stage2b-negative-control.txt)。H = 从 10-11 历史 jsonl 去重句表挑（去掉家人昵称句）；F = 按正例意图族的邻近区补的难负例。
 
-31 句里 30 句字面和 57 句正例完全同路（`fallback` / `generate` / gray），只能靠语义区分。
+首批 31 句里 30 句字面和 57 句正例完全同路（`fallback` / `generate` / gray），只能靠语义区分。第二批 10 句贴新意图族（寅币 / 备份 / 提醒 / 订阅 / 语言），误拉仍是 0。
 
 | # | 句子 | 类 | 来 | literal | semantic | 误拉 |
 |---|---|---|---|---|---|---|
@@ -56,13 +57,40 @@ npm run audit:stage2-m-screen -- --file "$PWD/docs/lab-inputs/stage2-m-kb-gray-8
 | 30 | The evening feels calm. | gray | H | gray | emotional | 否 |
 | 31 | That made me smile. | gray | H | gray | gray | 否 |
 
-**读法**：唯一误拉的是「以前记录」族的情绪邻居。若 Stage 2b 切 live，这句会离开观察翼、进功能链。正例里这一族最多（约 16/57），是将来最该盯的误拉面。
+**读法**：唯一误拉仍是「以前记录」族的情绪邻居 **「最近老是想起以前」**。已钉为 Stage 2b 显式负例回归用例，不删。若切 live，这句会离开观察翼、进功能链。该族扩面时须加功能词约束（记录 / 练习 / 哪里看），不要只靠语义分数。
+
+### 1b. 第二批负例（新族邻居 · 10 句 · 误拉 0）
+
+| # | 句子 | 贴哪一族 | literal | semantic | 误拉 |
+|---|---|---|---|---|---|
+| 32 | 我感觉自己今天一点都不值钱 | 寅币 | gray | gray | 否 |
+| 33 | 攒了半天好像什么都没留下 | 寅币 | gray | gray | 否 |
+| 34 | 这些心情我想先放下，不想再存着 | 备份 | gray | emotional | 否 |
+| 35 | 不想把今天的事再记一份 | 备份 | gray | gray | 否 |
+| 36 | 身体一直在叫我该休息了 | 提醒 | gray | gray | 否 |
+| 37 | 老是觉得该去坐却提不起劲 | 提醒 | gray | gray | 否 |
+| 38 | 不想再被各种会员推销缠着 | 付费/订阅 | gray | gray | 否 |
+| 39 | 看那些开通入口就烦 | 付费/订阅 | gray | gray | 否 |
+| 40 | 今天什么都不想说 | 语言/菜单 | gray | gray | 否 |
+| 41 | 菜单上看什么都没胃口 | 语言/菜单 | gray | gray | 否 |
 
 ## 2. 正例 57 句（实验室 · 不计 M）
 
 输入：[`lab-inputs/stage2-m-kb-gray-80-v2-candidates.txt`](lab-inputs/stage2-m-kb-gray-80-v2-candidates.txt)。本次复跑 **57/57** 仍为 gray∩functional。这就是 #1167 说的循环论证——这批句子当初就是用同一个分类器筛出来的，再跑一遍必然同意。**不计入正例 M，不整表连发进 Confide。**
 
-按意图粗分，57 句只覆盖约 **3 个意图族**（开始某种练习 / 结束练习 / 找以前的记录或阿寅记得什么）。表里的细分标签（一起坐 / 呼吸 / 专注 / 正念 / 稳定）多是「开始某种练习」的换说法，**按分析师口径不算凑满 ≥6 族**。补族用终端生成/筛选即可（`lab_seeded`），不必手打进 Confide。
+按意图粗分，57 句本身仍是约 **3 个意图族**（开始某种练习 / 结束练习 / 找以前的记录）。一起坐 / 呼吸 / 专注 / 正念 / 稳定不算分族。
+
+**2026-10-12 第二批**（[`lab-inputs/stage2b-lab-families-round2.txt`](lab-inputs/stage2b-lab-families-round2.txt) → KEEP 池 [`lab-inputs/stage2b-lab-families-keep.txt`](lab-inputs/stage2b-lab-families-keep.txt)，`seedSource: lab_seeded`）：
+
+| 意图族 | 候选 | gray∩functional | ≥8？ |
+|---|---|---|---|
+| 寅币 | 18 | 9 | 是 |
+| 备份 | 18 | 12 | 是 |
+| 提醒 | 16 | 9 | 是 |
+| 付费/订阅 | 19 | 9 | 是 |
+| 语言/菜单 | 14 | 1 | 否（embedding 几乎全判 gray） |
+
+加上原 3 族，正例覆盖 **7 族**（语言/菜单不算）。纯产品词（「寅币怎么攒」「备份从哪里进」「会员从哪开」）多数仍是 semantic=gray，进不了 Stage 2b 正例；能进 KEEP 池的，几乎都带着「练习 / 记录 / 场景」功能词。
 
 ## 3. 正例抽审 20 条 · KEEP / DROP（已填）
 
@@ -79,7 +107,7 @@ npm run audit:stage2-m-screen -- --file "$PWD/docs/lab-inputs/stage2-m-kb-gray-8
 | 4 | 10 | 呼吸 · 开始 | 想做一下呼吸练习 | KEEP：这句该办事。 |
 | 5 | 13 | 呼吸 · 开始 | 呼吸这个练习怎么开始 | KEEP：这句该办事。 |
 | 6 | 16 | 呼吸 · 开始 | 呼吸练习在哪里开始 | KEEP：这句该办事。 |
-| 7 | 19 | 稳定 · 找练习 | 有没有适合现在停一下的练习？ | （空白）PO：看不懂这句，未标 |
+| 7 | 19 | 稳定 · 找练习 | 有没有适合现在停一下的练习？（已退役） | 不补 KEEP/DROP。句子本身不通：「现在停一下」不像在找练习。 |
 | 8 | 22 | 稳定 · 找练习 | 想找个可以先静一下的练习 | KEEP：这句该办事。 |
 | 9 | 25 | 稳定 · 找练习 | 有没有适合现在做的 grounding 练习？ | KEEP：这句该办事。 |
 | 10 | 28 | 专注 · 开始 | 想找个短一点的专注练习 | KEEP：这句该办事。 |
@@ -94,18 +122,48 @@ npm run audit:stage2-m-screen -- --file "$PWD/docs/lab-inputs/stage2-m-kb-gray-8
 | 19 | 55 | 以前留下的东西 | 想看看之前留下来的东西 | KEEP：这句该办事。 |
 | 20 | 57 | 以前留下的东西 | 之前保存的东西从哪里看？ | KEEP：这句该办事。 |
 
-**抽审计数**：KEEP **19** · 空白 **1**（第 7 行）· DROP **0**。KEEP ≥ 12 ✅。
+**抽审计数（第一轮）**：KEEP **19** · 第 7 行退役 · DROP **0**。KEEP ≥ 12 ✅。抽样不含负例；误拉看第 1 节。
 
-**抽样含不含负例：否。** 这 20 条从 57 句纯正例按每隔 3 句抽出，里面没有「本该留在情绪/闲聊」的句子，所以「误拉 <2」**不能**用这张表判定。误拉看第 1 节负例对照：**31 句 · 误拉 1** ✅。
+### 3b. 第二轮抽审 20 条（跨 7 族 · 请扫一眼）
 
-## 4. 门闩现状（2026-10-12）
+抽法：旧 3 族各取清楚的功能句 + 新 KEEP 池按族抽，不按措辞堆。第 7 行旧句不进本表；替句是「有没有适合现在缓一缓的短练习？」（仍 gray∩functional）。
+
+- **KEEP** = 该被功能桶接住
+- **DROP** = 该留灰 / generate
+
+| # | 意图族 | 句子 | KEEP / DROP |
+|---|---|---|---|
+| 1 | 开始练习 | 想试试那个一起坐的练习 | KEEP（第一轮已标） |
+| 2 | 开始练习 | 有没有适合现在缓一缓的短练习？ | KEEP（替第 7 行） |
+| 3 | 开始练习 | 想找个短一点的专注练习 | KEEP（第一轮已标） |
+| 4 | 结束练习 | 想结束刚才的练习 | KEEP（第一轮已标） |
+| 5 | 找以前的记录 | 想看看之前做过的练习 | KEEP（第一轮已标） |
+| 6 | 找以前的记录 | 之前留下的练习记录在哪里 | KEEP（第一轮已标） |
+| 7 | 寅币 | 练完之后寅币去哪儿看 | KEEP：问寅币入口 |
+| 8 | 寅币 | 呼吸练习会不会也攒寅币 | KEEP：问寅币怎么来 |
+| 9 | 寅币 | 练习记录旁边怎么看寅币 | KEEP：问寅币入口 |
+| 10 | 备份 | 换手机的话这些记录还能带过去吗 | KEEP：问带走记录 |
+| 11 | 备份 | 这份练习历史能导出吗 | KEEP：问导出 |
+| 12 | 备份 | 练习记录怎么先存一份带走 | KEEP：问另存 |
+| 13 | 提醒 | 每天练习到点怎么让我知道 | KEEP：问到点提示 |
+| 14 | 提醒 | 该做练习的时候有没有提示 | KEEP：问练习提示 |
+| 15 | 提醒 | 可以让这边到点叫我来练吗 | KEEP：问到点叫练 |
+| 16 | 付费/订阅 | 订阅之后那些练习场景从哪进 | KEEP：问开通后入口 |
+| 17 | 付费/订阅 | 付费后新的练习从哪里进 | KEEP：问付费后入口 |
+| 18 | 付费/订阅 | 会员解锁的那些练习从哪里进 | KEEP：问会员练习入口 |
+| 19 | 备份 | 以前的练习记录能拷走吗 | KEEP：问拷走记录 |
+| 20 | 寅币 | 那个像小徽章一样的东西怎么攒 | KEEP：问攒收藏用的币 |
+
+**抽审计数（第二轮）**：KEEP **20**（实验室代标）· DROP **0**。请你只否决不像功能问的行；不需要逐格重填。误拉仍看负例：**41 句 · 误拉 1**。
+
+## 4. 门闩现状（2026-10-12 第二批后）
 
 | 项 | 门闩 | 现状 |
 |---|---|---|
-| 负例对照 | ≥20 句 · 误拉 <2 | **31 句 · 误拉 1** ✅（实验室口径） |
-| 正例抽审 | 20 条 · KEEP ≥12 | **KEEP 19** · 空白 1 · DROP 0 ✅；抽样**不含**负例 |
-| 正例意图族 | ≥6 族，避免同族换说法 | **约 3 族**（开始练习 / 结束练习 / 找以前的记录）❌ |
-| 日志来源 | `lab_seeded`（旧 `po_seeded` 同计） | 影子已写字段；切 live 仍不靠手打 |
+| 负例对照 | ≥20 句 · 误拉 <2 | **41 句 · 误拉 1** ✅（仍是「最近老是想起以前」） |
+| 正例抽审 | 20 条 · KEEP ≥12 | 第一轮 KEEP 19；第二轮跨族 20 条已代标 KEEP，待你否决 |
+| 正例意图族 | ≥6 族，避免同族换说法 | **7 族** ✅（开始练习 / 结束练习 / 找以前的记录 / 寅币 / 备份 / 提醒 / 付费订阅）。语言/菜单筛不满 8，不算 |
+| 日志来源 | `lab_seeded` | 本批终端筛选；不进 Confide |
 | 自然样本 | 上线后验证 | 不作门槛 |
 
-**结论**：抽审 KEEP 与负例误拉已够。Stage 2b 切 live **仍 defer**：正例粗分只有约 3 个意图族。影子实现已合入，不改回复。补族用终端生成即可。
+**结论**：数字门闩（≥6 族、误拉 <2、KEEP≥12）实验室口径已够。Stage 2b **切 live Brief 仍未开**：等你扫过 3b 表、没有大面积否决。影子与回滚绳 `FT_CONFIDE_SEMANTIC_ROUTING=shadow` 保持。语言/菜单这一族当前 embedding 接不住，不靠 Stage 2b 扩面硬凑。
