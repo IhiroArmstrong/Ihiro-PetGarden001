@@ -49,6 +49,26 @@ const MOOD_EN = Object.freeze([
   'I just want something sweet to escape for a bit'
 ]);
 
+/**
+ * PO round three decision 5: add more English mood lines. The one-line miss
+ * from round two stays a catalog / near misfire (separate task); do not tune
+ * the veto to cover it.
+ */
+const MOOD_EN_ROUND_THREE = Object.freeze([
+  'I woke up already dreading the day',
+  "My chest feels tight and I can't name why",
+  'I keep snapping at people I care about',
+  'The quiet makes me feel lonelier',
+  'I cried in the car on the way home',
+  "I don't recognize myself lately",
+  'Sundays make me anxious for no clear reason',
+  'I feel numb more than sad',
+  'I keep replaying a conversation from years ago',
+  'I want to disappear into a book and not come out',
+  "My hands won't stop shaking",
+  'I feel guilty for resting'
+]);
+
 /** PO round two decision 4: English mood set ≥40 lines before judging the threshold. */
 const MOOD_EN_ROUND_TWO = Object.freeze([
   'I dreamed about my old house again last night',
@@ -82,18 +102,51 @@ const MOOD_EN_ROUND_TWO = Object.freeze([
 ]);
 
 /**
- * PO round two decision 5: mood + how-shaped words. Expected veto; rule 1
- * (function-ask guard) is likely to let these through, so they are counted apart.
+ * Lines that also sit on the Stage 2b negative-control list. This lab counts
+ * them only in `reverse_risk` (PO round three: 「怎么」 can be an exclamation).
+ */
+export const KB_MOOD_VETO_LAB_REVERSE_RISK_PULLED_FROM_STAGE2B = Object.freeze([
+  '怎么又这样……'
+]);
+
+/**
+ * PO round two decision 5, expanded in round three to ≥30 lines (zh / en / ja).
+ * Mood plus a how-shaped word. Expected veto. Counted apart from language rates.
+ * 「怎么」 here may be a question or an exclamation.
  */
 const MOOD_REVERSE_RISK = Object.freeze([
   '练着练着就想问怎么放弃',
   '我不知道怎么才能不难过',
   '怎么才能不再想起以前',
+  '怎么又这样……',
+  '怎么才能不难过',
+  '怎么又睡不着了',
+  '怎么这么难过',
+  '怎么老是想起以前',
+  '怎么办，我好累',
+  '我怎么才能不哭',
+  '怎么才能不想喝酒',
+  '怎么心里这么空',
   'How do I stop feeling like this',
   'how do I stop thinking about the past',
   "I don't know how to keep going today",
+  'How can I stop crying over this',
+  'How do I make this heaviness go away',
+  "I don't know how to sit with this feeling",
+  'How do I stop missing them so much',
+  'How can I stop wanting a drink tonight',
+  'I have no idea how to feel okay today',
+  'How do I stop replaying that argument',
   'どうしたらこの気持ちが消えるの',
-  'もうどうでもいい'
+  'もうどうでもいい',
+  'どうしてこんなに悲しいの',
+  'どうしたら泣かずにいられる',
+  '今日はどうしても練習したくない',
+  'どうしてまた昔のことを思い出すんだろう',
+  'もうどうしたらいいかわからない',
+  '気持ちがどうしても落ち着かない',
+  'どうしてこんなに疲れているの',
+  'どうしたらこの寂しさが消える'
 ]);
 
 /** Group name of {@link MOOD_REVERSE_RISK}; excluded from the per-language rates. */
@@ -181,13 +234,18 @@ const matrixPracticeLines = KB_ROUTING_MATRIX_FIXTURES.filter(
 ).map((row) => row.text);
 
 /** Expected: veto → observation wing. */
+const stage2bMoodLines = STAGE2B_NEGATIVE_CONTROL_TEXTS.filter(
+  (line) => !KB_MOOD_VETO_LAB_REVERSE_RISK_PULLED_FROM_STAGE2B.includes(line)
+);
+
 export const KB_MOOD_VETO_LAB_MOOD_ROWS = buildRows([
-  { set: 'mood', group: 'stage2b_negative_control', lines: STAGE2B_NEGATIVE_CONTROL_TEXTS },
+  { set: 'mood', group: 'stage2b_negative_control', lines: stage2bMoodLines },
   { set: 'mood', group: 'tonight', lines: MOOD_TONIGHT },
   { set: 'mood', group: 'uncovered_zh', lines: MOOD_UNCOVERED_ZH },
   { set: 'mood', group: 'kb_matrix_generate', lines: matrixMoodLines },
   { set: 'mood', group: 'family_en', lines: MOOD_EN },
   { set: 'mood', group: 'family_en_r2', lines: MOOD_EN_ROUND_TWO },
+  { set: 'mood', group: 'family_en_r3', lines: MOOD_EN_ROUND_THREE },
   { set: 'mood', group: 'family_ja', lines: MOOD_JA },
   { set: 'mood', group: KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP, lines: MOOD_REVERSE_RISK }
 ]);
@@ -210,3 +268,6 @@ export const KB_MOOD_VETO_LAB_MOOD_MIN_RATE = Object.freeze({ zh: 0.9, en: 0.9, 
 
 /** PO round two decision 4: English is only judged at ≥40 lines (reverse-risk not counted). */
 export const KB_MOOD_VETO_LAB_MOOD_MIN_N = Object.freeze({ zh: 0, en: 40, ja: 0 });
+
+/** PO round three decision 4: reverse-risk group size. Not a pass/fail gate. */
+export const KB_MOOD_VETO_LAB_REVERSE_RISK_MIN_N = 30;

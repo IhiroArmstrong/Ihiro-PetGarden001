@@ -121,7 +121,9 @@ try {
       baseline: sim.baseline,
       withVeto: sim.withVeto,
       functionAsk: sim.functionAsk,
+      libraryCPointsAtProduct: sim.libraryCPointsAtProduct,
       withVetoAskGuard: sim.withVetoAskGuard,
+      withVetoNarrowAskGuard: sim.withVetoNarrowAskGuard,
       sweep
     });
   }
@@ -134,6 +136,11 @@ const summary = summarizeKbMoodVetoLab(scored, { jaNativeReviewed });
 // PO round two rule 1 (function-ask guard). Reference only: thresholds are judged on `summary`.
 const askGuardSummary = summarizeKbMoodVetoLab(
   scored.map((r) => ({ ...r, withVeto: r.withVetoAskGuard })),
+  { jaNativeReviewed }
+);
+// PO round three narrow rule 1 (ask shape AND Library C). Reference only.
+const narrowAskGuardSummary = summarizeKbMoodVetoLab(
+  scored.map((r) => ({ ...r, withVeto: r.withVetoNarrowAskGuard })),
   { jaNativeReviewed }
 );
 /** @type {Record<string, object>} */
@@ -157,7 +164,7 @@ const coldStart = {
 };
 await writeFile(
   jsonPath,
-  `${JSON.stringify({ probe: 'kb-mood-veto-lab', coldStart, summary, askGuardSummary, sweepSummary, rows: scored }, null, 2)}\n`,
+  `${JSON.stringify({ probe: 'kb-mood-veto-lab', coldStart, summary, askGuardSummary, narrowAskGuardSummary, sweepSummary, rows: scored }, null, 2)}\n`,
   'utf8'
 );
 
@@ -167,19 +174,20 @@ const lines = [
   `Cold start: mood library ${coldStart.moodLibrarySize} lines, +${coldStart.moodPrecomputeMs} ms (hold load ${loadMs} ms).`,
   `Japanese: ${jaNativeReviewed ? 'native-reviewed' : 'provisional (not native-reviewed)'}.`,
   '',
-  '| set | group | lang | productScore | moodScore | lifeScore | today | with veto | + rule 1 | text |',
-  '|---|---|---|---|---|---|---|---|---|---|'
+  '| set | group | lang | productScore | moodScore | lifeScore | today | with veto | + rule 1 | + narrow rule 1 | text |',
+  '|---|---|---|---|---|---|---|---|---|---|---|'
 ];
 for (const r of scored) {
   lines.push(
-    `| ${r.set} | ${r.group} | ${r.lang} | ${fmt(r.productScore)} | ${fmt(r.moodScore)} | ${fmt(r.lifeScore)} | ${r.baseline} | ${r.withVeto} | ${r.withVetoAskGuard} | ${String(r.text).replace(/\|/g, '\\|')} |`
+    `| ${r.set} | ${r.group} | ${r.lang} | ${fmt(r.productScore)} | ${fmt(r.moodScore)} | ${fmt(r.lifeScore)} | ${r.baseline} | ${r.withVeto} | ${r.withVetoAskGuard} | ${r.withVetoNarrowAskGuard} | ${String(r.text).replace(/\|/g, '\\|')} |`
   );
 }
 await writeFile(mdPath, `${lines.join('\n')}\n`, 'utf8');
 
 for (const [label, s] of [
   ['veto', summary],
-  ['veto + rule 1', askGuardSummary]
+  ['veto + rule 1', askGuardSummary],
+  ['veto + narrow rule 1', narrowAskGuardSummary]
 ]) {
   for (const lang of ['zh', 'en', 'ja']) {
     const m = s.mood[lang];
