@@ -3,16 +3,28 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
-import { CONFIDE_SEMANTIC_ROUTING_MODE } from './confideSemanticRoutingConfig.js';
+import {
+  CONFIDE_SEMANTIC_ROUTING_MODE,
+  CONFIDE_STAGE2B_ROUTING_MODE,
+  resolveConfideSemanticRoutingMode,
+  resolveConfideStage2bRoutingMode
+} from './confideSemanticRoutingConfig.js';
 import { applyConfideStage2Route } from './confideSemanticStage2.js';
+import { resolveConfideDesktopSource } from './confideAcceptanceResolve.js';
 import { buildConfideSemanticShadowLogRecord } from './confideSemanticCoarseMap.js';
+import { STAGE2B_NEGATIVE_CONTROL_TEXTS } from './stage2bNegativeControlTexts.js';
+import { STAGE2B_NEGATIVE_CONTROL_TEXTS as DESKTOP_NEGATIVE_CONTROL_TEXTS } from '../../../desktop/companion/stage2bNegativeControlTexts.js';
 import {
   CONFIDE_STAGE2B_REASON,
   CONFIDE_STAGE2B_SEED_SOURCE,
+  applyConfideStage2bLive,
   buildConfideStage2bShadowFields,
   decideConfideStage2bShadow,
   resolveConfideStage2bSeedSource
@@ -192,5 +204,148 @@ describe('semantic_shadow_classify rows carry Stage 2b fields', () => {
     for (const key of ['stage2bWouldPromote', 'stage2bReason', 'seedSource']) {
       assert.equal(mirror[key], desktop[key], key);
     }
+  });
+});
+
+function loadStage2bNegativeControlLines() {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const raw = readFileSync(
+    join(here, '../../../docs/lab-inputs/stage2b-negative-control.txt'),
+    'utf8'
+  );
+  return raw
+    .split(/\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'));
+}
+
+const ADVERSARIAL_FUNCTIONAL = Object.freeze({
+  route: CONFIDE_ROUTE.FALLBACK,
+  source: 'generate',
+  literalCoarse: GRAY,
+  semanticCoarse: FUNCTIONAL
+});
+
+const HARD_CONSTRAINT_NEIGHBORS = Object.freeze([
+  '呼吸有点急，心跳也快',
+  '专注不了，脑子很乱',
+  '刚停下来心里还是空',
+  '练完了还是静不下来',
+  '最近老是想起以前',
+  '以前的事不想再提了',
+  '想打开心扉聊聊以前的事',
+  '我感觉自己今天一点都不值钱',
+  '攒了半天好像什么都没留下',
+  '这些心情我想先放下，不想再存着',
+  '不想把今天的事再记一份',
+  '身体一直在叫我该休息了',
+  '最近总忘了提醒自己休息',
+  '不想再被各种会员推销缠着',
+  '看那些开通入口就烦'
+]);
+
+describe('Stage 2b hard constraints and live apply', () => {
+  it('negative-control txt lines lockstep with src and desktop arrays', () => {
+    const fromTxt = loadStage2bNegativeControlLines();
+    assert.deepEqual(STAGE2B_NEGATIVE_CONTROL_TEXTS, fromTxt);
+    assert.deepEqual(DESKTOP_NEGATIVE_CONTROL_TEXTS, fromTxt);
+  });
+
+  it('every non-comment negative-control line refuses promote (adversarial functional)', () => {
+    const lines = loadStage2bNegativeControlLines();
+    assert.ok(lines.length >= 20, `expected ≥20 negatives, got ${lines.length}`);
+    for (const text of lines) {
+      const decided = decideConfideStage2bShadow({ ...ADVERSARIAL_FUNCTIONAL, text });
+      assert.equal(decided.wouldPromote, false, text);
+      assert.deepEqual(
+        buildStage2bShadowFields({ ...ADVERSARIAL_FUNCTIONAL, text }),
+        buildConfideStage2bShadowFields({ ...ADVERSARIAL_FUNCTIONAL, text }),
+        text
+      );
+    }
+  });
+
+  it('hard-constraint-2 family neighbour lines refuse promote', () => {
+    for (const text of HARD_CONSTRAINT_NEIGHBORS) {
+      const decided = decideConfideStage2bShadow({ ...ADVERSARIAL_FUNCTIONAL, text });
+      assert.equal(decided.wouldPromote, false, text);
+    }
+  });
+
+  it('nearby function word allows past-record family; bare 打开 does not', () => {
+    const allow = decideConfideStage2bShadow({
+      ...ADVERSARIAL_FUNCTIONAL,
+      text: '之前留下的练习记录在哪里'
+    });
+    assert.equal(allow.wouldPromote, true);
+    assert.equal(allow.reason, CONFIDE_STAGE2B_REASON.GRAY_TO_FUNCTIONAL);
+    const look = decideConfideStage2bShadow({
+      ...ADVERSARIAL_FUNCTIONAL,
+      text: '想看看之前做过的练习'
+    });
+    assert.equal(look.wouldPromote, true);
+    const heart = decideConfideStage2bShadow({
+      ...ADVERSARIAL_FUNCTIONAL,
+      text: '想打开心扉聊聊以前的事'
+    });
+    assert.equal(heart.wouldPromote, false);
+    const far = decideConfideStage2bShadow({
+      ...ADVERSARIAL_FUNCTIONAL,
+      text: '想起以前那些事，过了很久才问练习记录在哪里'
+    });
+    assert.equal(far.wouldPromote, false);
+    assert.equal(far.reason, CONFIDE_STAGE2B_REASON.PAST_RECALL_WITHOUT_FUNCTION_WORD);
+  });
+
+  it('有点烦 does not promote and 累积了多久 stays practice_facts', () => {
+    const annoyed = decideConfideStage2bShadow({
+      ...ADVERSARIAL_FUNCTIONAL,
+      semanticCoarse: EMOTIONAL,
+      text: '有点烦'
+    });
+    assert.equal(annoyed.wouldPromote, false);
+    assert.equal(resolveConfideDesktopSource('累积了多久'), 'practice_facts');
+  });
+
+  it('default env and shadow 2b do not change a gray live reply', () => {
+    assert.equal(
+      resolveConfideStage2bRoutingMode({}),
+      CONFIDE_STAGE2B_ROUTING_MODE.SHADOW
+    );
+    const grayApply = applyConfideStage2bLive({
+      ...ADVERSARIAL_FUNCTIONAL,
+      text: '想看看之前做过的练习',
+      semanticMode: CONFIDE_SEMANTIC_ROUTING_MODE.LIVE,
+      env: {}
+    });
+    assert.equal(grayApply.promote, false);
+    assert.equal(grayApply.route, CONFIDE_ROUTE.FALLBACK);
+    const live2b = applyConfideStage2bLive({
+      ...ADVERSARIAL_FUNCTIONAL,
+      text: '想看看之前做过的练习',
+      semanticMode: CONFIDE_SEMANTIC_ROUTING_MODE.LIVE,
+      stage2bMode: CONFIDE_STAGE2B_ROUTING_MODE.LIVE
+    });
+    assert.equal(live2b.promote, true);
+  });
+
+  it('FT_CONFIDE_SEMANTIC_ROUTING=shadow blocks Stage 2 and Stage 2b live together', () => {
+    assert.equal(
+      resolveConfideSemanticRoutingMode({ FT_CONFIDE_SEMANTIC_ROUTING: 'shadow' }),
+      CONFIDE_SEMANTIC_ROUTING_MODE.SHADOW
+    );
+    const stage2 = applyConfideStage2Route({
+      literalRoute: CONFIDE_ROUTE.TIRED,
+      semanticCoarse: FUNCTIONAL,
+      mode: CONFIDE_SEMANTIC_ROUTING_MODE.SHADOW
+    });
+    assert.equal(stage2.route, CONFIDE_ROUTE.TIRED);
+    const stage2b = applyConfideStage2bLive({
+      ...ADVERSARIAL_FUNCTIONAL,
+      text: '想看看之前做过的练习',
+      semanticMode: CONFIDE_SEMANTIC_ROUTING_MODE.SHADOW,
+      stage2bMode: CONFIDE_STAGE2B_ROUTING_MODE.LIVE
+    });
+    assert.equal(stage2b.promote, false);
   });
 });

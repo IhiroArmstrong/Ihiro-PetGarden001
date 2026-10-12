@@ -535,6 +535,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /semanticLiveClassify/);
     assert.match(ui, /_applyLiveSemanticThenDispatch/);
     assert.match(ui, /applyConfideStage2Route/);
+    assert.match(ui, /applyConfideStage2bLive/);
+    assert.match(ui, /stage2bLivePromote/);
     const runtime = readFileSync(
       join(focusTigerRoot, 'desktop/companion/l1Runtime.js'),
       'utf8'
@@ -547,6 +549,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(runtime, /priorRepeatableYinRepliesFromHistory/);
     assert.match(runtime, /classifyReadTool/);
     assert.match(runtime, /contextualText/);
+    assert.match(runtime, /stage2bRouting/);
     assert.match(runtime, /canReuseConfideSemanticLiveCache/);
     assert.match(runtime, /l1SemanticLiveCache/);
     assert.match(child, /classifyUserText\(contextualText\)/);

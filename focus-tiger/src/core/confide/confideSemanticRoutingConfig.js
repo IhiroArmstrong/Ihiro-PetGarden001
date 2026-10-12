@@ -48,6 +48,26 @@ export function resolveConfideSemanticRoutingMode(env) {
   return CONFIDE_SEMANTIC_ROUTING_MODE.LIVE;
 }
 
+/** Stage 2b gray→functional. Default shadow; PO grayscale sets live on the Electron main process. */
+export const CONFIDE_STAGE2B_ROUTING_MODE = Object.freeze({
+  SHADOW: 'shadow',
+  LIVE: 'live',
+  OFF: 'off'
+});
+
+/**
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {'shadow' | 'live' | 'off'}
+ */
+export function resolveConfideStage2bRoutingMode(env) {
+  const raw = String(confideBrowserSafeEnv(env).FT_CONFIDE_STAGE2B_ROUTING || 'shadow')
+    .trim()
+    .toLowerCase();
+  if (raw === 'live') return CONFIDE_STAGE2B_ROUTING_MODE.LIVE;
+  if (raw === 'off') return CONFIDE_STAGE2B_ROUTING_MODE.OFF;
+  return CONFIDE_STAGE2B_ROUTING_MODE.SHADOW;
+}
+
 /**
  * @param {NodeJS.ProcessEnv} [env]
  * @returns {{ grayMargin: number, topK: number }}

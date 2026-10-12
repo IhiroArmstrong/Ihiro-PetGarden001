@@ -4,14 +4,20 @@
  */
 
 /**
- * Stage 2b shadow (gray → functional). Log-only: never changes the route or
- * reply. A turn counts only when Yin talked (generate / corpus) although the
- * embedding says the user asked a functional question. Live cutover is gated
- * by task-confide-stage2-semantic-cutover.md (Stage 2b section).
+ * Stage 2b (gray → functional). Shadow logs wouldPromote; live apply is gated
+ * by FT_CONFIDE_STAGE2B_ROUTING=live plus the master semantic rope.
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { CONFIDE_SEMANTIC_BUCKET } from './confideSemanticBuckets.js';
+import { evaluateConfideStage2bTextConstraints } from './confideStage2bTextConstraints.js';
+import {
+  CONFIDE_SEMANTIC_ROUTING_MODE,
+  CONFIDE_STAGE2B_ROUTING_MODE,
+  confideBrowserSafeEnv,
+  resolveConfideSemanticRoutingMode,
+  resolveConfideStage2bRoutingMode
+} from './confideSemanticRoutingConfig.js';
 
 export const CONFIDE_STAGE2B_SEED_SOURCE = Object.freeze({
   LAB_SEEDED: 'lab_seeded',
@@ -32,13 +38,20 @@ export function isConfideStage2bLabSeeded(source) {
   );
 }
 
+export const CONFIDE_STAGE2B_OVERRIDE = Object.freeze({
+  GRAY_TO_FUNCTIONAL: 'gray_to_functional'
+});
+
 export const CONFIDE_STAGE2B_REASON = Object.freeze({
   GRAY_TO_FUNCTIONAL: 'gray_to_functional',
   PROTECTED_ROUTE: 'protected_route',
   LITERAL_NOT_GRAY: 'literal_not_gray',
   SEMANTIC_MISSING: 'semantic_missing',
   SEMANTIC_NOT_FUNCTIONAL: 'semantic_not_functional',
-  ALREADY_HANDLED: 'already_handled'
+  ALREADY_HANDLED: 'already_handled',
+  PAST_RECALL_WITHOUT_FUNCTION_WORD: 'past_recall_without_function_word',
+  NEGATIVE_CONTROL: 'negative_control',
+  ROUTING_OFF: 'routing_off'
 });
 
 /** Reply sources where Yin talked instead of answering. */
@@ -64,7 +77,9 @@ export function resolveConfideStage2bSeedSource(env) {
  *   route?: string | null,
  *   source?: string | null,
  *   literalCoarse?: string | null,
- *   semanticCoarse?: string | null
+ *   semanticCoarse?: string | null,
+ *   text?: string | null,
+ *   stage2bMode?: string | null
  * }} [ctx]
  * @returns {{ wouldPromote: boolean, reason: string }}
  */
@@ -72,9 +87,14 @@ export function decideConfideStage2bShadow({
   route = null,
   source = null,
   literalCoarse = null,
-  semanticCoarse = null
+  semanticCoarse = null,
+  text = null,
+  stage2bMode = null
 } = {}) {
   const no = (reason) => ({ wouldPromote: false, reason });
+  if (stage2bMode === CONFIDE_STAGE2B_ROUTING_MODE.OFF) {
+    return no(CONFIDE_STAGE2B_REASON.ROUTING_OFF);
+  }
   if (
     route === CONFIDE_ROUTE.SAFETY_REDIRECT ||
     route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
@@ -93,7 +113,73 @@ export function decideConfideStage2bShadow({
   if (!STAGE2B_PROMOTABLE_SOURCES.has(String(source || ''))) {
     return no(CONFIDE_STAGE2B_REASON.ALREADY_HANDLED);
   }
+  const gated = evaluateConfideStage2bTextConstraints(text);
+  if (!gated.ok) return no(gated.reason);
   return { wouldPromote: true, reason: CONFIDE_STAGE2B_REASON.GRAY_TO_FUNCTIONAL };
+}
+
+/**
+ * Live gray→functional. Default env is shadow: does not change the reply.
+ * Master rope FT_CONFIDE_SEMANTIC_ROUTING=shadow also blocks Stage 2b live.
+ * @param {{
+ *   text?: string | null,
+ *   route?: string | null,
+ *   source?: string | null,
+ *   literalCoarse?: string | null,
+ *   semanticCoarse?: string | null,
+ *   semanticMode?: string | null,
+ *   stage2bMode?: string | null,
+ *   env?: NodeJS.ProcessEnv
+ * }} [opts]
+ * @returns {{
+ *   route: string | null,
+ *   promote: boolean,
+ *   override: string | null,
+ *   reason: string
+ * }}
+ */
+export function applyConfideStage2bLive({
+  text = null,
+  route = null,
+  source = 'generate',
+  literalCoarse = null,
+  semanticCoarse = null,
+  semanticMode = null,
+  stage2bMode = null,
+  env
+} = {}) {
+  const safeEnv = confideBrowserSafeEnv(env);
+  const resolvedSemantic =
+    semanticMode === CONFIDE_SEMANTIC_ROUTING_MODE.SHADOW ||
+    semanticMode === CONFIDE_SEMANTIC_ROUTING_MODE.LIVE
+      ? semanticMode
+      : resolveConfideSemanticRoutingMode(safeEnv);
+  const resolved2b =
+    stage2bMode === CONFIDE_STAGE2B_ROUTING_MODE.LIVE ||
+    stage2bMode === CONFIDE_STAGE2B_ROUTING_MODE.SHADOW ||
+    stage2bMode === CONFIDE_STAGE2B_ROUTING_MODE.OFF
+      ? stage2bMode
+      : resolveConfideStage2bRoutingMode(safeEnv);
+  const decided = decideConfideStage2bShadow({
+    route,
+    source,
+    literalCoarse,
+    semanticCoarse,
+    text,
+    stage2bMode: resolved2b
+  });
+  if (resolvedSemantic !== CONFIDE_SEMANTIC_ROUTING_MODE.LIVE) {
+    return { route, promote: false, override: null, reason: decided.reason };
+  }
+  if (resolved2b !== CONFIDE_STAGE2B_ROUTING_MODE.LIVE || !decided.wouldPromote) {
+    return { route, promote: false, override: null, reason: decided.reason };
+  }
+  return {
+    route,
+    promote: true,
+    override: CONFIDE_STAGE2B_OVERRIDE.GRAY_TO_FUNCTIONAL,
+    reason: decided.reason
+  };
 }
 
 /**
