@@ -38,8 +38,51 @@ export const GLASS_CARD_ELEMENT_IDS = Object.freeze({
   'focus-circle': 'focus-circle-panel'
 });
 
-const INTERACTIVE =
+export const GLASS_CARD_INTERACTIVE =
   'button, a, input, textarea, select, label, summary, [role="button"], [role="checkbox"], [role="radio"], [contenteditable="true"]';
+
+/** Copyable lines keep the I-beam; empty chrome stays grab-to-drag. */
+export const GLASS_CARD_TEXT_SELECT =
+  'p, h1, h2, h3, h4, h5, h6, li, dt, dd, blockquote, pre, code, small, time, figcaption, caption, th, td, legend, address, span';
+
+export const GLASS_CARD_DECK_STYLE = `
+    [data-ft-glass-card="1"] { cursor: grab; }
+    [data-ft-glass-card="1"]:active { cursor: grabbing; }
+    [data-ft-glass-card="1"] :is(${GLASS_CARD_TEXT_SELECT}) {
+      cursor: text;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    [data-ft-glass-card="1"] :is(${GLASS_CARD_TEXT_SELECT}):active {
+      cursor: text;
+    }
+    [data-ft-glass-card="1"] :is(button, a, label),
+    [data-ft-glass-card="1"] :is(button, a, label) * { cursor: pointer; }
+    [data-ft-glass-card="1"] :is(input, textarea),
+    [data-ft-glass-card="1"] :is(input, textarea) * { cursor: text; }
+  `;
+
+/**
+ * Text (not controls) should stay selectable, including during QA copy.
+ * @param {Element | null | undefined} target
+ */
+export function glassCardAllowsTextSelect(target) {
+  if (!(target && typeof target.closest === 'function')) return false;
+  if (target.closest(GLASS_CARD_INTERACTIVE)) return false;
+  return Boolean(target.closest(GLASS_CARD_TEXT_SELECT));
+}
+
+/**
+ * @param {Element | null | undefined} target
+ * @param {{ id?: string } | null | undefined} card
+ */
+export function glassCardAllowsDrag(target, card) {
+  if (!card?.id || GLASS_CARD_KEEP_STYLESHEET_Z.has(card.id)) return false;
+  if (!(target && typeof target.closest === 'function')) return false;
+  if (target.closest(GLASS_CARD_INTERACTIVE)) return false;
+  if (glassCardAllowsTextSelect(target)) return false;
+  return true;
+}
 
 /** Support modal is z 26 above its dim (z 25). The 18/19 deck must not pull it under. */
 export const GLASS_CARD_KEEP_STYLESHEET_Z = Object.freeze(
@@ -127,15 +170,7 @@ export function installGlassCardDeck(doc = document) {
   doc.body.dataset.ftGlassDeck = '1';
   const style = doc.createElement('style');
   style.id = 'ft-glass-card-deck';
-  style.textContent = `
-    [data-ft-glass-card="1"] { cursor: grab; }
-    [data-ft-glass-card="1"]:active { cursor: grabbing; }
-    [data-ft-glass-card="1"] button,
-    [data-ft-glass-card="1"] a,
-    [data-ft-glass-card="1"] label { cursor: pointer; }
-    [data-ft-glass-card="1"] input,
-    [data-ft-glass-card="1"] textarea { cursor: text; }
-  `;
+  style.textContent = GLASS_CARD_DECK_STYLE;
   doc.head.append(style);
 
   /** @type {{ card: HTMLElement, dx: number, dy: number, pointerId: number } | null} */
@@ -146,8 +181,7 @@ export function installGlassCardDeck(doc = document) {
     const target = /** @type {Element | null} */ (event.target);
     const card = target?.closest?.('[data-ft-glass-card="1"]');
     if (!(card instanceof HTMLElement)) return;
-    if (target.closest(INTERACTIVE)) return;
-    if (GLASS_CARD_KEEP_STYLESHEET_Z.has(card.id)) return;
+    if (!glassCardAllowsDrag(target, card)) return;
     const rect = card.getBoundingClientRect();
     card.style.left = `${rect.left}px`;
     card.style.top = `${rect.top}px`;
