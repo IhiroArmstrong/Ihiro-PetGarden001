@@ -17,10 +17,12 @@ import {
 /**
  * A1: click every Idle ⋯ / drawer row from the shared catalog and assert a
  * real result (visible panel + non-empty text, or an external open).
- * Reload between clickable rows so leftover overlays cannot swallow ⋯.
+ * Stay on one page (Escape between rows). Per-row reload saturated CI
+ * preview (:5199) on #1173 — page.reload 30s, then later smoke goto hung.
  */
 
-test.setTimeout(300_000);
+test.setTimeout(180_000);
+test.describe.configure({ retries: 0 });
 
 const FORBIDDEN = MENU_RESULT_FORBIDDEN_TEXT;
 
@@ -79,21 +81,93 @@ async function expandAllWideGroups(page) {
  * @param {import('@playwright/test').Page} page
  * @param {'wide-more' | 'narrow-drawer'} surface
  */
+async function settleAfterRow(page) {
+  await page.evaluate(() => {
+    const names = [
+      '__coldStartGoalCard',
+      '__fiveMomentsCompass',
+      '__companionModePicker',
+      '__homeSanctuaryNavFan',
+      '__helpCenter',
+      '__journeyLog',
+      '__languagePreference',
+      '__localPracticeDataPanel',
+      '__quietTogetherPanel',
+      '__focusCirclePanel',
+      '__zenCinemaCard',
+      '__presenceSignalsPanel',
+      '__dailyZenQuoteCard',
+      '__mustardSeedCard',
+      '__artCollectionPanel',
+      '__digitalWallpapersCard',
+      '__yinCoinPanel',
+      '__groundExerciseChoice',
+      '__membershipUnlock',
+      '__newsletterCapture',
+      '__honestyCheckInUI',
+      '__ritualFlowUI',
+      '__inAppReminder'
+    ];
+    for (const name of names) {
+      const ui = window[name];
+      if (!ui) continue;
+      try {
+        ui.close?.();
+      } catch {
+        /* some close() assumes handlers.onClose */
+      }
+      try {
+        ui.hide?.();
+      } catch {
+        /* ignore */
+      }
+      try {
+        ui.closePanel?.();
+      } catch {
+        /* ignore */
+      }
+    }
+    window.__inAppReminder?.settings?.closePanel?.();
+    window.__inAppReminder?.settings?.close?.();
+    window.__wideIdleMoreMenu?.setSuppressed?.(false);
+    window.__wideIdleMoreMenu?.setIdle?.(true);
+    window.__narrowIdleShell?.setSuppressed?.(false);
+    window.__narrowIdleShell?.setIdle?.(true);
+  });
+  for (let n = 0; n < 2; n++) {
+    await page.keyboard.press('Escape');
+  }
+}
+
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {'wide-more' | 'narrow-drawer'} surface
+ */
 async function openMenu(page, surface) {
+  await settleAfterRow(page);
   if (surface === 'wide-more') {
-    await page.locator('#ft-wide-more-btn').click();
+    const btn = page.locator('#ft-wide-more-btn');
+    await expect(btn, '⋯ available').toBeVisible({ timeout: 8_000 });
+    if (
+      !(await page.locator('#ft-wide-more-menu').isVisible().catch(() => false))
+    ) {
+      await btn.click();
+    }
     await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
       timeout: 8_000
     });
     await expandAllWideGroups(page);
     return;
   }
-  await page.locator('.ft-narrow-grabber').click();
-  await expect(page.locator('#ft-narrow-options-drawer')).toHaveAttribute(
-    'aria-hidden',
-    'false',
-    { timeout: 8_000 }
-  );
+  const grabber = page.locator('.ft-narrow-grabber');
+  await expect(grabber, 'drawer grabber').toBeVisible({ timeout: 8_000 });
+  const drawer = page.locator('#ft-narrow-options-drawer');
+  if ((await drawer.getAttribute('aria-hidden')) !== 'false') {
+    await grabber.click();
+  }
+  await expect(drawer).toHaveAttribute('aria-hidden', 'false', {
+    timeout: 8_000
+  });
 }
 
 /**
@@ -151,15 +225,8 @@ async function walkMenu(page, surface, menuSelector) {
 
   /** @type {string[]} */
   const opened = [];
-  for (let i = 0; i < clickable.length; i++) {
-    const row = clickable[i];
-    if (i > 0) {
-      await page.reload({ waitUntil: 'domcontentloaded' });
-      await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
-        timeout: 35_000
-      });
-    }
-    await prepareIdle(page);
+  await prepareIdle(page);
+  for (const row of clickable) {
     await openMenu(page, surface);
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
     await item.scrollIntoViewIfNeeded();
@@ -170,13 +237,9 @@ async function walkMenu(page, surface, menuSelector) {
     await item.click();
     await assertOpenedResult(page, row.contract, row.proxy);
     opened.push(row.proxy);
+    await settleAfterRow(page);
   }
 
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
-    timeout: 35_000
-  });
-  await prepareIdle(page);
   await openMenu(page, surface);
   for (const row of inert) {
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
