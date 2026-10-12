@@ -11,6 +11,14 @@ import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 import { isDesktopShellRuntime } from './desktopShell.js';
 import { hasSubmittedNewsletter } from './newsletter/newsletterCaptureGate.js';
 
+/** ⌘+, shortcut candidates in menu order (subset of Preferences group). */
+export const DESKTOP_PREFERENCES_SHORTCUT_CANDIDATES = Object.freeze([
+  'reminder',
+  'language',
+  'newsletter',
+  'local-backup'
+]);
+
 /**
  * Mirrors ⋯ → Preferences group order in `idleChromeOrchestration.js`.
  *

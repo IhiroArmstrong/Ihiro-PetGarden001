@@ -182,13 +182,29 @@
 
 ## 5. 平行名单普查表（A3 填写）
 
-| 位置 | 登记的是什么 | 处理方式 | 状态 |
-|---|---|---|---|
-| `src/core/IdleChromeFacade.js` | 转发哪些菜单回调 | 已改整包透传（#1138） | 已收口 |
-| `src/ui/WideIdleMoreMenu.js` / `src/ui/NarrowIdleShell.js` | 按 key 分派菜单点击 | A2 改查表 | 本支 |
-| `src/main.js` `glassOverlayCards` | 哪些卡片参与「最多两张」 | 待定 | 未跟进 |
-| 冷启动欢迎键白名单 | 哪些动画属于第一幕 | 已改 occupancy KEEP（9 月） | 跟进中 |
-| 付款结果页商品表 | 哪些商品付款后去哪 | A9 | 未跟进 |
-| 支持页已购表 | 哪些商品显示「已购变淡」 | A9 | 未跟进 |
-| 高清编号规则 | 哪些编号可发放 | A9 | 未跟进 |
-| （普查时补齐） | | | |
+> **A3 完成口径（2026-10-13）**：每行 **已收口** 或 **已加失败测试**。全表登记见下；A4 / A9 全量收口不在本刀范围。
+
+### 文件地图（A / B）
+
+| 类 | 本刀触及 |
+|---|---|
+| **A** | 普查表 §5、`task-entries/a3-parallel-list-census.md`、契约单测（见下表「失败测试」列） |
+| **B** | 无（`main.js` 仅接入 SSOT 断言，不改变用户可见路由/文案） |
+
+| 位置 | 登记的是什么 | 处理方式 | 状态 | 失败测试 / SSOT |
+|---|---|---|---|---|
+| `src/core/idleChromeOrchestration.js` | 次级菜单目录 + `SECONDARY_PROXY_DISPATCH` | A2 查表分派（#1179） | **已收口** | `idleChromeOrchestration.test.js` · `menuReachabilityContract.test.js` · A1 e2e #1173 |
+| `src/ui/WideIdleMoreMenu.js` / `NarrowIdleShell.js` | 菜单点击 → handler | A2 `dispatchSecondaryChromeProxy`（#1179） | **已收口** | 同上 |
+| `src/core/menuReachabilityContract.js` | 目录 proxy → 点击后可见结果 | 与目录对齐；漏登抛错 | **已收口** | `menuReachabilityContract.test.js` |
+| `src/core/IdleChromeFacade.js` | 菜单回调转发 | 整包透传（#1138） | **已收口** | `IdleChromeFacade.test.js` |
+| `src/main.js` `glassOverlayCards` | 哪些玻璃卡参与 `closeGrowthOverlayCards` | SSOT：`glassGrowthOverlayCardRegistry.js` | **已收口** | `glassGrowthOverlayCardRegistry.test.js` + `main` 运行时顺序断言 |
+| `glassGrowthOverlayCardRegistry.js` | 菜单 proxy → 叠层卡 id | 与 `MENU_REACHABILITY` 对齐 | **已加失败测试** | `glassGrowthOverlayCardRegistry.test.js` |
+| `src/core/spriteChannelArbitration.js` `FIRST_PAINT_OCCUPANCY` | 冷启动第一幕占用（欢迎/吹花/付款致谢等） | occupancy KEEP（2026-09） | **已收口** | `spriteChannelArbitration.test.js` |
+| `src/core/desktopPreferencesShortcut.js` | ⌘+, 打开哪一项偏好 | 须落在 Preferences 组顺序内 | **已加失败测试** | `desktopPreferencesShortcut.test.js` + `listPreferencesGroupProxies` |
+| `src/core/kbLiveEntryRegistry.js` | Confide 可检索入口 vs ⋯ 菜单路径 | `audit-kb-live-entries` | **已加失败测试** | `npm run audit:kb-live-entries`（`docs:check`） |
+| `paymentCheckoutThanks.js` + `desktopCheckoutConfirm.js` | 付款回跳 query / thanks 情绪 / Desktop resume | A9 全商品登记表 | **已加失败测试** | `paymentCheckoutReturnParallelListContract.test.js` |
+| `supportPaidCardPresentation.js` + `SupportYinModalUI.js` | 已购变淡 vs Support 卡 DOM | A9 合并 SSOT | **已加失败测试** | `supportPaidCardParallelListContract.test.js` |
+| `artCollectionCatalog.js` + `cloud/.../artCollectionCatalog.ts` | 可发放 `hdId` | A9 练习/商品总表 | **已加失败测试** | `artCollectionHdParallelListContract.test.js` |
+| `src/ui/glassCardDeck.js` `GLASS_CARD_KEEP_STYLESHEET_Z` | 哪些卡不得 inline 压 z-index | 与 `Z_INDEX.md` / 受保护路径 | **已加失败测试** | `npm run test:payment-contract` |
+| `handlers.onX?.()` 宽/窄 / `main` | 缺失 handler 是否静默 | **A4**（本刀不做） | **待 A4** | — |
+| `main.js` `init()` 顺序依赖 | 启动段先后 | **A7 Brief** | **待 A7** | A5 启动冒烟（未合） |
