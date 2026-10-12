@@ -49,6 +49,56 @@ const MOOD_EN = Object.freeze([
   'I just want something sweet to escape for a bit'
 ]);
 
+/** PO round two decision 4: English mood set ≥40 lines before judging the threshold. */
+const MOOD_EN_ROUND_TWO = Object.freeze([
+  'I dreamed about my old house again last night',
+  'My mom keeps reminding me of how things used to be',
+  "I can't sit still today and I want to quit",
+  'I started crying halfway through practice',
+  'I really want to smoke right now',
+  'Rough day at work, I just need a minute',
+  "I'm so tired I could fall asleep sitting here",
+  "I've been feeling really low all week",
+  'Nobody texted me back today',
+  'I miss my dad',
+  "I'm nervous about tomorrow's interview",
+  'I ate way too much junk food tonight',
+  "Honestly I'm just bored",
+  'My back hurts from sitting at a desk all day',
+  'I had a fight with my partner',
+  'I keep scrolling my phone and hating myself for it',
+  'I want to order a pizza and forget about everything',
+  'Practice felt pointless today',
+  "I sat down and my mind just wouldn't stop racing",
+  "I couldn't sleep last night",
+  "I'm angry and I don't even know why",
+  'Everything feels heavy lately',
+  'I feel like nobody really gets me',
+  'I skipped practice three days in a row and feel bad about it',
+  'I just want to lie on the couch all day',
+  'Work has been eating me alive',
+  "I keep thinking I'm not good enough",
+  "It's raining and I feel kind of sad"
+]);
+
+/**
+ * PO round two decision 5: mood + how-shaped words. Expected veto; rule 1
+ * (function-ask guard) is likely to let these through, so they are counted apart.
+ */
+const MOOD_REVERSE_RISK = Object.freeze([
+  '练着练着就想问怎么放弃',
+  '我不知道怎么才能不难过',
+  '怎么才能不再想起以前',
+  'How do I stop feeling like this',
+  'how do I stop thinking about the past',
+  "I don't know how to keep going today",
+  'どうしたらこの気持ちが消えるの',
+  'もうどうでもいい'
+]);
+
+/** Group name of {@link MOOD_REVERSE_RISK}; excluded from the per-language rates. */
+export const KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP = 'reverse_risk';
+
 const MOOD_JA = Object.freeze([
   '最近昔のことばかり思い出す',
   '今日は練習しすぎた',
@@ -116,8 +166,18 @@ const matrixProductLines = KB_ROUTING_MATRIX_FIXTURES.filter((row) =>
   String(row.expect.dataSource).startsWith('product_knowledge')
 ).map((row) => row.text);
 
+/**
+ * PO round two decision 2: practice-fact routing takes this line before the KB
+ * gate; its real path is locked by the routing matrix row of the same id.
+ */
+export const KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS = Object.freeze([
+  'practice-duration-space-zh'
+]);
+
 const matrixPracticeLines = KB_ROUTING_MATRIX_FIXTURES.filter(
-  (row) => row.expect.dataSource === 'practice_facts'
+  (row) =>
+    row.expect.dataSource === 'practice_facts' &&
+    !KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS.includes(row.id)
 ).map((row) => row.text);
 
 /** Expected: veto → observation wing. */
@@ -127,7 +187,9 @@ export const KB_MOOD_VETO_LAB_MOOD_ROWS = buildRows([
   { set: 'mood', group: 'uncovered_zh', lines: MOOD_UNCOVERED_ZH },
   { set: 'mood', group: 'kb_matrix_generate', lines: matrixMoodLines },
   { set: 'mood', group: 'family_en', lines: MOOD_EN },
-  { set: 'mood', group: 'family_ja', lines: MOOD_JA }
+  { set: 'mood', group: 'family_en_r2', lines: MOOD_EN_ROUND_TWO },
+  { set: 'mood', group: 'family_ja', lines: MOOD_JA },
+  { set: 'mood', group: KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP, lines: MOOD_REVERSE_RISK }
 ]);
 
 /** Expected: no veto → short answer or honesty empty state. */
@@ -145,3 +207,6 @@ export const KB_MOOD_VETO_LAB_MIN_CONTROL_ROWS = 40;
 
 /** Brief §过关门槛 + PO decision 3. */
 export const KB_MOOD_VETO_LAB_MOOD_MIN_RATE = Object.freeze({ zh: 0.9, en: 0.9, ja: 0.8 });
+
+/** PO round two decision 4: English is only judged at ≥40 lines (reverse-risk not counted). */
+export const KB_MOOD_VETO_LAB_MOOD_MIN_N = Object.freeze({ zh: 0, en: 40, ja: 0 });

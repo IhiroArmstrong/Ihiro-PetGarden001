@@ -9,16 +9,21 @@
  */
 
 import {
+  isProductKnowledgeColdStartProbe,
   moodAsideOutranksProductLibrary,
   resolveProductKnowledgeGateAction
 } from './confideProductKnowledgeSemantic.js';
 import {
   KB_MOOD_VETO_LAB_MIN_CONTROL_ROWS,
-  KB_MOOD_VETO_LAB_MOOD_MIN_RATE
+  KB_MOOD_VETO_LAB_MOOD_MIN_N,
+  KB_MOOD_VETO_LAB_MOOD_MIN_RATE,
+  KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP
 } from './confideKbMoodVetoLabSet.js';
 
 /**
  * Today's gate action vs the stage-two rule (honesty + mood outranks → skip).
+ * `withVetoAskGuard` adds PO round two rule 1: a function-ask shape
+ * (`isProductKnowledgeColdStartProbe`) is never vetoed.
  * Embedding is assumed ready, as in the lab.
  * @param {{
  *   text: string,
@@ -30,7 +35,13 @@ import {
  *   moodScore: number,
  *   margin?: number
  * }} input
- * @returns {{ baseline: 'skip' | 'hit' | 'honesty', withVeto: 'skip' | 'hit' | 'honesty', moodOutranksProduct: boolean }}
+ * @returns {{
+ *   baseline: 'skip' | 'hit' | 'honesty',
+ *   withVeto: 'skip' | 'hit' | 'honesty',
+ *   withVetoAskGuard: 'skip' | 'hit' | 'honesty',
+ *   moodOutranksProduct: boolean,
+ *   functionAsk: boolean
+ * }}
  */
 export function simulateKbMoodVetoGate(input) {
   const baseline = resolveProductKnowledgeGateAction({
@@ -47,7 +58,9 @@ export function simulateKbMoodVetoGate(input) {
     input.margin
   );
   const withVeto = baseline === 'honesty' && moodOutranksProduct ? 'skip' : baseline;
-  return { baseline, withVeto, moodOutranksProduct };
+  const functionAsk = isProductKnowledgeColdStartProbe(input.text);
+  const withVetoAskGuard = functionAsk ? baseline : withVeto;
+  return { baseline, withVeto, withVetoAskGuard, moodOutranksProduct, functionAsk };
 }
 
 /**
@@ -62,20 +75,27 @@ export function simulateKbMoodVetoGate(input) {
  * @param {{ jaNativeReviewed?: boolean }} [opts]
  */
 export function summarizeKbMoodVetoLab(rows, opts = {}) {
-  /** @type {Record<string, { n: number, vetoSkip: number, baselineSkip: number, rate: number, minRate: number, passed: boolean }>} */
+  const reverseRisk = rows.filter(
+    (r) => r.set === 'mood' && r.group === KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP
+  );
+  /** @type {Record<string, { n: number, minN: number, vetoSkip: number, baselineSkip: number, rate: number, minRate: number, passed: boolean }>} */
   const mood = {};
   for (const lang of /** @type {const} */ (['zh', 'en', 'ja'])) {
-    const group = rows.filter((r) => r.set === 'mood' && r.lang === lang);
+    const group = rows.filter(
+      (r) => r.set === 'mood' && r.lang === lang && r.group !== KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP
+    );
     const vetoSkip = group.filter((r) => r.withVeto === 'skip').length;
     const rate = group.length ? vetoSkip / group.length : 0;
     const minRate = KB_MOOD_VETO_LAB_MOOD_MIN_RATE[lang];
+    const minN = KB_MOOD_VETO_LAB_MOOD_MIN_N[lang];
     mood[lang] = {
       n: group.length,
+      minN,
       vetoSkip,
       baselineSkip: group.filter((r) => r.baseline === 'skip').length,
       rate,
       minRate,
-      passed: group.length > 0 && rate >= minRate
+      passed: group.length > 0 && group.length >= minN && rate >= minRate
     };
   }
 
@@ -89,6 +109,11 @@ export function summarizeKbMoodVetoLab(rows, opts = {}) {
     control.length >= KB_MOOD_VETO_LAB_MIN_CONTROL_ROWS && falseVetoes.length === 0;
   return {
     mood,
+    reverseRisk: {
+      n: reverseRisk.length,
+      vetoSkip: reverseRisk.filter((r) => r.withVeto === 'skip').length,
+      missed: reverseRisk.filter((r) => r.withVeto !== 'skip').map((r) => r.text)
+    },
     control: {
       n: control.length,
       minN: KB_MOOD_VETO_LAB_MIN_CONTROL_ROWS,
