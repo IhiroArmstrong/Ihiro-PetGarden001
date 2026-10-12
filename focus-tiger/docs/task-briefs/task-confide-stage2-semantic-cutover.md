@@ -93,4 +93,4 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 
 PO 手打正例：`FT_CONFIDE_SEED_SOURCE=po_seeded npm run desktop:dev`，在 Confide 里逐句发；平常启动不带这个变量，行即为 `natural`（上线后验证用）。
 
-实现：`desktop/companion/l1SemanticStage2bShadow.js`（打包内自含，不引 `src/`）· 镜像 `src/core/confide/confideSemanticStage2b.js` · 单测 `confideSemanticStage2b.test.js`（含两份一致、shadow/live 模式均不改路由）。未做：按 `po_seeded` 统计门闩的审计脚本（另登记）。
+实现：`desktop/companion/l1SemanticStage2bShadow.js`（打包内自含，不引 `src/`）· 镜像 `src/core/confide/confideSemanticStage2b.js` · 单测 `confideSemanticStage2b.test.js`（含两份一致、shadow/live 模式均不改路由）。门闩计数：`npm run audit:stage2b-po-seeded-gate`（`auditConfideStage2bPoSeeded.js`；不得打印「可以切 live」）。

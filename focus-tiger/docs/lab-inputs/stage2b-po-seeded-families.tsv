@@ -1,0 +1,13 @@
+# text<TAB>family  — only counted after the same text appears in po_seeded jsonl.
+# Suggested families for confirmation candidates (edit freely).
+怎么开始坐？	start-sit
+Sit 按钮在哪	find-control
+俺 如何 能够 获得 更多的 寅币？	coins
+How to get more focus coins?	coins
+备份能够 备份 哪些数据？	backup-content
+接地练习在哪	find-practice
+提醒我练习	reminder
+Remind me to practice	reminder
+想做一下呼吸练习	start-breath
+想结束刚才的练习	end-practice
+想看看之前做过的练习	past-records
