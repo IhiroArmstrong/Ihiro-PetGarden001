@@ -79,7 +79,9 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 
 57 句实验室正例：不整表连发进 Confide；由脚本批量跑 + KEEP/DROP 抽审。负例从历史 jsonl 情绪/闲聊句挑，再补缺。
 
-**2026-10-12 抽审**：KEEP **19**、空白 1（第 7 行看不懂未标）、DROP **0**。20 条抽自 57 句纯正例，**不含负例**。误拉以负例 31 句为准：**1**（「最近老是想起以前」）。见 [`confide-stage2b-negative-control-sheet.md`](../confide-stage2b-negative-control-sheet.md)。
+**2026-10-12 抽审**：KEEP **19**、第 7 行旧句退役（「有没有适合现在停一下的练习？」不通，不补 KEEP）、DROP **0**。误拉以负例为准。
+
+**2026-10-12 第二批**：终端补族 `lab_seeded`。负例 **41** 句、误拉仍 **1**（「最近老是想起以前」，显式回归）。正例覆盖 **7 族**（开始练习 / 结束练习 / 找以前的记录 / 寅币 / 备份 / 提醒 / 付费订阅）。语言/菜单筛不满 8，不算。见 [`confide-stage2b-negative-control-sheet.md`](../confide-stage2b-negative-control-sheet.md) §3b。
 
 **才切 Stage 2b live**：负例误拉 <2 + 抽审 KEEP≥12 + 正例覆盖 ≥6 个意图族。任一项不够 → 书面 defer，禁止默默悬着。
 
