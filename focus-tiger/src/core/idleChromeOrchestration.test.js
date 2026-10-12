@@ -11,7 +11,10 @@ import {
   resolveRoleVisibility,
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
-  secondaryProxyForHintId
+  SECONDARY_PROXY_DISPATCH,
+  secondaryProxyForHintId,
+  resolveSecondaryChromeDispatch,
+  dispatchSecondaryChromeProxy
 } from './idleChromeOrchestration.js';
 
 describe('resolveIdleChromeStage', () => {
@@ -573,5 +576,149 @@ describe('listSecondaryChromeEntries', () => {
     );
     assert.equal(rituals.length, 3);
     assert.ok(rituals.every((e) => e.locked === true));
+  });
+
+  it('every clickable catalog proxy declares a handler that resolves', () => {
+    const maxVis = {
+      ...allOn,
+      mustardSeedSealUnlocked: true,
+      systemTtsAvailable: true,
+      confideUserVisible: true,
+      companionGeneration: true
+    };
+    for (const surface of /** @type {const} */ (['wide-more', 'narrow-drawer'])) {
+      const entries = listSecondaryChromeEntries(surface, maxVis);
+      for (const row of entries) {
+        if (!row.proxy) continue;
+        if (row.interactive === false) {
+          if (row.proxy === 'account') {
+            assert.equal(row.handler, undefined);
+          }
+          continue;
+        }
+        assert.equal(
+          typeof row.handler,
+          'string',
+          `${surface} ${row.proxy} missing handler`
+        );
+        const spec = resolveSecondaryChromeDispatch(row.proxy);
+        assert.ok(spec, `${surface} ${row.proxy} missing dispatch spec`);
+        assert.equal(spec.handler, row.handler);
+      }
+    }
+  });
+});
+
+describe('dispatchSecondaryChromeProxy', () => {
+  it('maps honesty to onHonesty (not onFiveMoments)', () => {
+    const calls = [];
+    const result = dispatchSecondaryChromeProxy('honesty', {
+      handlers: {
+        onHonesty: () => calls.push('honesty'),
+        onFiveMoments: () => calls.push('five-moments')
+      },
+      clearStage: () => calls.push('clear'),
+      close: () => calls.push('close')
+    });
+    assert.equal(result, 'invoked');
+    assert.deepEqual(calls, ['clear', 'close', 'honesty']);
+  });
+
+  it('does not invoke locked or static rows', () => {
+    let called = 0;
+    assert.equal(
+      dispatchSecondaryChromeProxy(
+        'ritual-morning',
+        { handlers: { onRitualFlow: () => called++ } },
+        { locked: true }
+      ),
+      'blocked'
+    );
+    assert.equal(
+      dispatchSecondaryChromeProxy(
+        'newsletter',
+        { handlers: { onNewsletter: () => called++ } },
+        { interactive: false }
+      ),
+      'blocked'
+    );
+    assert.equal(called, 0);
+  });
+
+  it('missing handler does not close chrome or throw', () => {
+    const calls = [];
+    const errors = [];
+    const orig = console.error;
+    console.error = (...args) => errors.push(args.join(' '));
+    try {
+      const result = dispatchSecondaryChromeProxy('membership', {
+        handlers: {},
+        clearStage: () => calls.push('clear'),
+        close: () => calls.push('close')
+      });
+      assert.equal(result, 'missing-handler');
+    } finally {
+      console.error = orig;
+    }
+    assert.deepEqual(calls, []);
+    assert.ok(String(errors[0] || '').includes('onMembership'));
+  });
+
+  it('companion keeps menu open and runs prelude when present', () => {
+    const calls = [];
+    const result = dispatchSecondaryChromeProxy('companion', {
+      handlers: {
+        onClearCompanion: () => calls.push('clear-companion'),
+        onCompanion: () => calls.push('companion')
+      },
+      clearStage: () => calls.push('clear'),
+      close: () => calls.push('close'),
+      addStage: (stage) => calls.push(`stage:${stage}`)
+    });
+    assert.equal(result, 'invoked');
+    assert.deepEqual(calls, [
+      'clear',
+      'stage:companion',
+      'clear-companion',
+      'companion'
+    ]);
+  });
+
+  it('narrow surface skips companion prelude', () => {
+    const calls = [];
+    dispatchSecondaryChromeProxy('companion', {
+      handlers: {
+        onClearCompanion: () => calls.push('clear-companion'),
+        onCompanion: () => calls.push('companion')
+      },
+      runPrelude: false,
+      clearStage: () => calls.push('clear'),
+      addStage: (stage) => calls.push(`stage:${stage}`)
+    });
+    assert.deepEqual(calls, ['clear', 'stage:companion', 'companion']);
+  });
+
+  it('sanctuary-nav passes true; rituals pass proxy', () => {
+    const args = [];
+    dispatchSecondaryChromeProxy('sanctuary-nav', {
+      handlers: { onSanctuaryNav: (v) => args.push(['nav', v]) },
+      clearStage: () => {}
+    });
+    dispatchSecondaryChromeProxy('ritual-morning', {
+      handlers: { onRitualFlow: (v) => args.push(['ritual', v]) },
+      clearStage: () => {}
+    });
+    assert.deepEqual(args, [
+      ['nav', true],
+      ['ritual', 'ritual-morning']
+    ]);
+  });
+
+  it('unknown proxy is not consumed', () => {
+    assert.equal(
+      dispatchSecondaryChromeProxy('sit', { handlers: {} }),
+      'unknown'
+    );
+    assert.equal(SECONDARY_PROXY_DISPATCH.membership.handler, 'onMembership');
   });
 });

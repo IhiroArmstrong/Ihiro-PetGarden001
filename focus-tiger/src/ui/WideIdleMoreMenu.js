@@ -8,12 +8,12 @@ import {
   WIDE_STAGE_CLASS,
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
+  dispatchSecondaryChromeProxy,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
-import { contemplativeArchiveSealIdFromProxy } from '../core/memorialSealDirectory.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   canRegisterDesktopCompanionGeneration,
@@ -438,8 +438,12 @@ export class WideIdleMoreMenu {
       const item = e.target.closest('[data-proxy]');
       if (!item || item.disabled) return;
       const key = item.getAttribute('data-proxy');
+      const entryMeta = {
+        locked: item.classList.contains('is-locked'),
+        interactive: item.classList.contains('is-static') ? false : undefined
+      };
       this.closeMenu();
-      requestAnimationFrame(() => this._proxy(key));
+      requestAnimationFrame(() => this._proxy(key, entryMeta));
     });
   }
 
@@ -778,194 +782,27 @@ export class WideIdleMoreMenu {
 
   /**
    * @param {string | null} key
+   * @param {{ locked?: boolean, interactive?: boolean }} [entryMeta]
    * @returns {void}
    */
-  _proxy(key) {
-    if (key === 'companion') {
-      this.clearStage();
-      document.body.classList.add(WIDE_STAGE_CLASS.companion);
-      this.handlers.onClearCompanion?.();
-      this.handlers.onCompanion?.();
-      return;
-    }
-    if (key === 'reminder') {
-      this.clearStage();
-      this.closeMenu();
-      document.body.classList.add(WIDE_STAGE_CLASS.reminder);
-      this.handlers.onReminder?.();
-      return;
-    }
-    if (key === 'language') {
-      this.clearStage();
-      document.body.classList.add(WIDE_STAGE_CLASS.language);
-      this.handlers.onLanguage?.();
-      return;
-    }
-    if (key === 'system-tts') {
-      this.clearStage();
-      this.closeMenu();
-      document.body.classList.add(WIDE_STAGE_CLASS.systemTts);
-      this.handlers.onSystemTts?.();
-      return;
-    }
-    if (key === 'sanctuary-nav') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onSanctuaryNav?.(true);
-      return;
-    }
-    if (key === 'today-direction') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onTodayDirection?.();
-      return;
-    }
-    if (key === 'ground-exercise') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onGroundExercise?.();
-      return;
-    }
-    if (key === 'five-moments') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onFiveMoments?.();
-      return;
-    }
-    if (key === 'honesty') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onHonesty?.();
-      return;
-    }
-    if (key === 'journey-log') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onJourneyLog?.();
-      return;
-    }
-    if (key === 'presence-signals') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onPresenceSignals?.();
-      return;
-    }
-    if (key === 'yin-coin') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onYinCoin?.();
-      return;
-    }
-    if (key === 'confide') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onConfide?.();
-      return;
-    }
-    if (key === 'zen-cinema') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onZenCinema?.();
-      return;
-    }
-    if (key === 'daily-quote') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onDailyQuote?.();
-      return;
-    }
-    if (key === 'mustard-seed-seal') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onMustardSeedSeal?.();
-      return;
-    }
-    const archiveSealId = contemplativeArchiveSealIdFromProxy(key);
-    if (archiveSealId) {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onContemplativeArchiveSeal?.(archiveSealId);
-      return;
-    }
-    if (key === 'wallpapers') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onWallpapers?.();
-      return;
-    }
-    if (key === 'art-collection') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onArtCollection?.();
-      return;
-    }
-    if (key === 'sanctuary') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onSanctuary?.();
-      return;
-    }
-    if (key === 'membership') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onMembership?.();
-      return;
-    }
-    if (key === 'tip-jar') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onTipJar?.();
-      return;
-    }
-    if (key === 'newsletter') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onNewsletter?.();
-      return;
-    }
-    if (key === 'community') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onCommunity?.();
-      return;
-    }
-    if (key === 'help-center') {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onHelpCenter?.();
-      return;
-    }
-    if (key === 'local-backup') {
-      this.clearStage();
-      this.closeMenu();
-      document.body.classList.add(WIDE_STAGE_CLASS.localBackup);
-      this.handlers.onLocalBackup?.();
-      return;
-    }
-    if (key === 'quiet-together') {
-      this.clearStage();
-      this.closeMenu();
-      document.body.classList.add(WIDE_STAGE_CLASS.quietTogether);
-      this.handlers.onQuietTogether?.();
-      return;
-    }
-    if (key === 'focus-circle') {
-      this.clearStage();
-      this.closeMenu();
-      document.body.classList.add(WIDE_STAGE_CLASS.focusCircle);
-      this.handlers.onFocusCircle?.();
-      return;
-    }
-    if (
-      key === 'ritual-morning' ||
-      key === 'ritual-emotional-reset' ||
-      key === 'ritual-work-transition'
-    ) {
-      this.clearStage();
-      this.closeMenu();
-      this.handlers.onRitualFlow?.(key);
-      return;
-    }
+  _proxy(key, entryMeta) {
+    const result = dispatchSecondaryChromeProxy(
+      key,
+      {
+        handlers: this.handlers,
+        closeFirst: false,
+        runPrelude: true,
+        clearStage: () => this.clearStage(),
+        close: () => this.closeMenu(),
+        addStage: (stage) => {
+          const cls = WIDE_STAGE_CLASS[stage];
+          if (cls) document.body.classList.add(cls);
+        }
+      },
+      entryMeta
+    );
+    if (result !== 'unknown') return;
+
     if (key === 'sound') {
       this.clearStage();
       document.body.classList.add(WIDE_STAGE_CLASS.sound);
