@@ -1,0 +1,3 @@
+# feature/confide-stage2b-shadow
+
+| Confide Stage 2b 影子（gray→功能桶 · 只记日志） | 纯后端/逻辑 | 待人工测试 | **仅 Electron 宽屏**（勿用 5173 网页）。`FT_CONFIDE_SEED_SOURCE=po_seeded npm run desktop:dev` 启动，embedding ready 后在 Confide 发「想做一下呼吸练习」「有点烦」「今天想去骑车」。三句回复须与改前同类（本刀不改路由）。查 `userData/companion-l2/turns.jsonl` 最近 3 条 `semantic_shadow_classify`（只看这 3 行）：均有 `seedSource: "po_seeded"`；「有点烦」`stage2bWouldPromote:false`；呼吸那句若最终来源是 `generate` 且 semantic=functional 则为 `true`，若已被 KB 接住则为 `false` + `already_handled`。不带变量重启再发一句 → `seedSource: "natural"`。单测：`node --test src/core/confide/confideSemanticStage2b.test.js`。**本条验收的是**影子字段有没有写对，**不代表** Stage 2b 已切 live 或门闩已过。 | — | — | — | `feature/confide-stage2b-shadow` | 2026-10-12 |

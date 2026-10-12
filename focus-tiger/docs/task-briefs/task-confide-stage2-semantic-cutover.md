@@ -78,3 +78,17 @@ Electron 主进程环境变量 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`（或 `off` 
 57 句实验室正例：不整表连发进 Confide；由脚本批量跑 + PO 手标 KEEP/DROP。负例从历史 jsonl 情绪/闲聊句挑，再补缺。
 
 **才切 Stage 2b live**：正例门闩 + 负例误拉 <2 + 抽审 KEEP≥12。任一项不够 → 书面 defer，禁止默默悬着。
+
+### Stage 2b 影子（2026-10-12 · 只写日志 · 不改回复）
+
+每条 `semantic_shadow_classify` 行多三栏（回复已显示之后才写，路由与回复不变）：
+
+| 字段 | 含义 |
+|---|---|
+| `stage2bWouldPromote` | 若切 2b，这一句会不会离开现在的回复。只有 **literal=gray ∧ semantic=functional ∧ 最终来源是 `generate` / `corpus`**（Yin 在聊、没在答）才为真 |
+| `stage2bReason` | `gray_to_functional` / `already_handled`（KB、练习账本等已接住）/ `semantic_not_functional` / `semantic_missing`（embedding 未就绪）/ `literal_not_gray`（归窄刀 Stage 2）/ `protected_route`（安全、他人攻击，永不动） |
+| `seedSource` | `po_seeded` 或 `natural`。**只有主进程**环境变量 `FT_CONFIDE_SEED_SOURCE=po_seeded` 能打上；renderer 无法伪造。门闩里的 `source: po_seeded` 即本栏 |
+
+PO 手打正例：`FT_CONFIDE_SEED_SOURCE=po_seeded npm run desktop:dev`，在 Confide 里逐句发；平常启动不带这个变量，行即为 `natural`（上线后验证用）。
+
+实现：`desktop/companion/l1SemanticStage2bShadow.js`（打包内自含，不引 `src/`）· 镜像 `src/core/confide/confideSemanticStage2b.js` · 单测 `confideSemanticStage2b.test.js`（含两份一致、shadow/live 模式均不改路由）。未做：按 `po_seeded` 统计门闩的审计脚本（另登记）。
