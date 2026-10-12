@@ -35,7 +35,7 @@
     "rules:doc-check": "node scripts/rules-authority-doc-check.js",
     "rules:doc-sync": "node scripts/rules-authority-doc-check.js --write",
     "test:e2e": "node scripts/e2e-ci-guard.js full && playwright test",
-    "test:e2e:smoke": "playwright test e2e/product-shell.smoke.spec.js e2e/scenario-a.companion.spec.js e2e/payment-click-contract.spec.js --grep \"product shell shows|lab shell exposes|scenario A: Arrival|payment click contract\"",
+    "test:e2e:smoke": "playwright test e2e/product-shell.smoke.spec.js e2e/scenario-a.companion.spec.js e2e/payment-click-contract.spec.js e2e/menu-full-reachability.spec.js --grep \"product shell shows|lab shell exposes|scenario A: Arrival|payment click contract|menu full reachability\"",
     "test:payment-contract": "playwright test e2e/payment-click-contract.spec.js --project=chromium",
     "test:e2e:local-acceptance": "playwright test --project=local-acceptance",
     "test:e2e:changed": "node scripts/run-e2e-changed.js",
