@@ -172,7 +172,17 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 ## 「按这份 Brief 开工」后的下一刀（分 PR）
 
 1. ~~`PRINCIPLES` + `testing-strategy` + `RULES_INDEX`~~（**已完成** · 本旁支）。
-2. Holdout 实验室（安全先行 + 汇总输出 + 不打印盲测原文 + `interrogative_positive_pass_rate` + `crisis-edge-grey` 只报告）。
+2. ~~Holdout 实验室~~（**本旁支** · 安全先行 + 只输出分栏计数与 `interrogative_positive_pass_rate` + 不打印句子 + 工作区外路径 / 「未封存」+ 每 Brief 版本最多 2 次 + 「样本不足」）。
 3. ~~开发集入库 + 泄漏扫描~~（**已完成** · `docs/confide-mood-veto-devset-ingest`）。
 4. 会话 A / B 生成 + PO 5 句/类 → PO 封存第一批盲测（**生成仍须在 PO 回「按这份 Brief 开工」之后**）。
 5. 消融与拆 #1188：独立 Brief + 新盲测批次。
+
+## Holdout 实验室读口（已接线）
+
+- 命令：`cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 FT_CONFIDE_MOOD_HOLDOUT_PATH=<工作区外绝对路径> npm run audit:mood-veto-holdout`
+- 路径在工作区内、或未设、或文件不存在 → **未封存**（工作区内改报「必须在工作区外」）；**不得**改读 `fixtures/confide-mood-veto-devset-zh-v1.json`
+- 同一 `CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION` 最多 2 次（计数在 `/tmp/ft-l0-lab/mood-veto-holdout-runs.json`）；先过路径与 GGUF 检查再计数
+- 输出：`safety_handled` · `safety_leak_to_gate` · `veto_would_skip` · `veto_false_positive` · 每类 `interrogative_positive_pass_rate`；`crisis-edge-grey` 只报告。安全层未达标时标注「其他栏不作验收」
+- 单类正例 < 60 或反例 < 20 或 interrogative-positive < 5 → **样本不足**
+- 实现 Agent **禁止** Read/Grep `FT_CONFIDE_MOOD_HOLDOUT_PATH` 下的句子
+- 登记：`LAB_SCRIPT_CONVENTIONS.md`

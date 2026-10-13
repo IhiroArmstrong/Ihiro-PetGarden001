@@ -1,0 +1,1 @@
+| Confide 情绪否决 holdout 实验室读口 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 本条验收的是工作区外路径、未封存、每 Brief 两次上限、stdout 不含句子、安全层先行。不代表盲测已封存，也不改倾诉回复。 | — | — | — | `npm run audit:mood-veto-holdout` · `confideMoodVetoHoldoutLab.test.js` | 2026-10-13 |
