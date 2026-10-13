@@ -1,3 +1,3 @@
 # docs-confide-class-blind-acceptance
 
-| Confide 按类盲测验收 Brief | 纯文档 | 仅单元测试覆盖 | **无运行时。** 本条验收的是 Brief 写清：R-Confide-Class 落 PRINCIPLES 一句 + testing-strategy 细则（本刀尚未改这两份）；盲测不进仓、PO 本机实验室真模型、CI 不承担盲测；中文五类定义与变体维度；每类盲测/反例 ≥20、≥85%、反例误伤 0、混合句进反例；逃避类安全层优先；#1188 消融才许拆正则。点头前不生成盲测句、不改回复。读 `task-confide-class-blind-acceptance.md`。 | — | — | — | `task-confide-class-blind-acceptance.md` | 2026-10-13 |
+| Confide 按类盲测验收 Brief | 纯文档 | 仅单元测试覆盖 | **无运行时。** 读 `task-confide-class-blind-acceptance.md`：含 PO 补 4 处（安全层先于否决测法与 leak→安全 issue、通过定义逐集、类 5 不写开放式健康反例、盲测看过失败即作废+关单新批次）；双会话生成盲测/开发集、PO 每类 5 句混入盲测；路由仲裁稿沿用 R-Confide-Class。PO 条件点头后须再回「按这份 Brief 开工」才落 PRINCIPLES/脚本。不生成盲测句、不改回复。 | — | — | — | `task-confide-class-blind-acceptance.md` · PR #1204 | 2026-10-13 |
