@@ -1,0 +1,273 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
+ */
+
+/**
+ * Validation set for the KB product gate mood veto lab (stage one, shadow only).
+ * SSOT: task-confide-kb-gate-mood-veto.md §验证集 + PO decisions 2026-10-13.
+ * None of these lines may seed CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE.
+ * Japanese lines are provisional until a native speaker reviews them.
+ */
+
+import { CONFIDE_SEMANTIC_LIBRARY_C } from './confideSemanticExamples.js';
+import { KB_ROUTING_MATRIX_FIXTURES } from './confideKbRoutingMatrix.js';
+import { STAGE2B_NEGATIVE_CONTROL_TEXTS } from './stage2bNegativeControlTexts.js';
+
+/**
+ * @param {string} text
+ * @returns {'zh' | 'en' | 'ja'}
+ */
+export function kbMoodVetoLabLanguage(text) {
+  const raw = String(text || '');
+  if (/[\u3040-\u30ff]/.test(raw)) return 'ja';
+  if (/[\u4e00-\u9fff]/.test(raw)) return 'zh';
+  return 'en';
+}
+
+const MOOD_TONIGHT = Object.freeze([
+  '最近老是想起以前',
+  '我今天练习的太久啦。',
+  '我不想练习，想喝酒。'
+]);
+
+const MOOD_UNCOVERED_ZH = Object.freeze([
+  '昨晚又梦到以前的事',
+  '我妈总让我想起以前',
+  '今天坐不住，想放弃',
+  '练着练着就想哭',
+  '想抽烟',
+  '想吃点甜的逃避一下'
+]);
+
+const MOOD_EN = Object.freeze([
+  'I keep thinking about the past lately',
+  'I practiced way too long today',
+  "I don't want to practice, I want a drink",
+  'I feel like giving up today',
+  'I want a cigarette',
+  'I just want something sweet to escape for a bit'
+]);
+
+/**
+ * PO round three decision 5: add more English mood lines. The one-line miss
+ * from round two stays a catalog / near misfire (separate task); do not tune
+ * the veto to cover it.
+ */
+const MOOD_EN_ROUND_THREE = Object.freeze([
+  'I woke up already dreading the day',
+  "My chest feels tight and I can't name why",
+  'I keep snapping at people I care about',
+  'The quiet makes me feel lonelier',
+  'I cried in the car on the way home',
+  "I don't recognize myself lately",
+  'Sundays make me anxious for no clear reason',
+  'I feel numb more than sad',
+  'I keep replaying a conversation from years ago',
+  'I want to disappear into a book and not come out',
+  "My hands won't stop shaking",
+  'I feel guilty for resting'
+]);
+
+/** PO round two decision 4: English mood set ≥40 lines before judging the threshold. */
+const MOOD_EN_ROUND_TWO = Object.freeze([
+  'I dreamed about my old house again last night',
+  'My mom keeps reminding me of how things used to be',
+  "I can't sit still today and I want to quit",
+  'I started crying halfway through practice',
+  'I really want to smoke right now',
+  'Rough day at work, I just need a minute',
+  "I'm so tired I could fall asleep sitting here",
+  "I've been feeling really low all week",
+  'Nobody texted me back today',
+  'I miss my dad',
+  "I'm nervous about tomorrow's interview",
+  'I ate way too much junk food tonight',
+  "Honestly I'm just bored",
+  'My back hurts from sitting at a desk all day',
+  'I had a fight with my partner',
+  'I keep scrolling my phone and hating myself for it',
+  'I want to order a pizza and forget about everything',
+  'Practice felt pointless today',
+  "I sat down and my mind just wouldn't stop racing",
+  "I couldn't sleep last night",
+  "I'm angry and I don't even know why",
+  'Everything feels heavy lately',
+  'I feel like nobody really gets me',
+  'I skipped practice three days in a row and feel bad about it',
+  'I just want to lie on the couch all day',
+  'Work has been eating me alive',
+  "I keep thinking I'm not good enough",
+  "It's raining and I feel kind of sad"
+]);
+
+/**
+ * Lines that also sit on the Stage 2b negative-control list. This lab counts
+ * them only in `reverse_risk` (PO round three: 「怎么」 can be an exclamation).
+ */
+export const KB_MOOD_VETO_LAB_REVERSE_RISK_PULLED_FROM_STAGE2B = Object.freeze([
+  '怎么又这样……'
+]);
+
+/**
+ * PO round two decision 5, expanded in round three to ≥30 lines (zh / en / ja).
+ * Mood plus a how-shaped word. Expected veto. Counted apart from language rates.
+ * 「怎么」 here may be a question or an exclamation.
+ */
+const MOOD_REVERSE_RISK = Object.freeze([
+  '练着练着就想问怎么放弃',
+  '我不知道怎么才能不难过',
+  '怎么才能不再想起以前',
+  '怎么又这样……',
+  '怎么才能不难过',
+  '怎么又睡不着了',
+  '怎么这么难过',
+  '怎么老是想起以前',
+  '怎么办，我好累',
+  '我怎么才能不哭',
+  '怎么才能不想喝酒',
+  '怎么心里这么空',
+  'How do I stop feeling like this',
+  'how do I stop thinking about the past',
+  "I don't know how to keep going today",
+  'How can I stop crying over this',
+  'How do I make this heaviness go away',
+  "I don't know how to sit with this feeling",
+  'How do I stop missing them so much',
+  'How can I stop wanting a drink tonight',
+  'I have no idea how to feel okay today',
+  'How do I stop replaying that argument',
+  'どうしたらこの気持ちが消えるの',
+  'もうどうでもいい',
+  'どうしてこんなに悲しいの',
+  'どうしたら泣かずにいられる',
+  '今日はどうしても練習したくない',
+  'どうしてまた昔のことを思い出すんだろう',
+  'もうどうしたらいいかわからない',
+  '気持ちがどうしても落ち着かない',
+  'どうしてこんなに疲れているの',
+  'どうしたらこの寂しさが消える'
+]);
+
+/** Group name of {@link MOOD_REVERSE_RISK}; excluded from the per-language rates. */
+export const KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP = 'reverse_risk';
+
+const MOOD_JA = Object.freeze([
+  '最近昔のことばかり思い出す',
+  '今日は練習しすぎた',
+  '練習したくない、お酒が飲みたい',
+  '今日はもう諦めたい',
+  '練習してたら泣きたくなった',
+  'タバコが吸いたい'
+]);
+
+const CONTROL_COMPLAINT = Object.freeze([
+  'Sit 按钮不见了',
+  '备份失败了',
+  'The Sit button disappeared',
+  'Backup failed',
+  '座るボタンが消えた',
+  'バックアップに失敗した'
+]);
+
+/** PO decision 5: mood + concrete feature ask must stay a product answer. */
+const CONTROL_MIXED = Object.freeze([
+  '太累了，怎么关提醒？',
+  "I'm exhausted, how do I turn off reminders?",
+  '疲れた、リマインダーはどう消す？'
+]);
+
+const CONTROL_PRACTICE_FACTS = Object.freeze([
+  '我练了多久',
+  'how long have I been practicing',
+  'どれくらい練習した？'
+]);
+
+/**
+ * @typedef {{
+ *   set: 'mood' | 'control',
+ *   group: string,
+ *   lang: 'zh' | 'en' | 'ja',
+ *   text: string
+ * }} KbMoodVetoLabRow
+ */
+
+/**
+ * @param {readonly { set: 'mood' | 'control', group: string, lines: readonly string[] }[]} sources
+ * @returns {readonly KbMoodVetoLabRow[]}
+ */
+function buildRows(sources) {
+  const seen = new Set();
+  /** @type {KbMoodVetoLabRow[]} */
+  const rows = [];
+  for (const { set, group, lines } of sources) {
+    for (const line of lines) {
+      const text = String(line || '').trim();
+      if (!text || seen.has(text)) continue;
+      seen.add(text);
+      rows.push({ set, group, lang: kbMoodVetoLabLanguage(text), text });
+    }
+  }
+  return Object.freeze(rows);
+}
+
+const matrixMoodLines = KB_ROUTING_MATRIX_FIXTURES.filter(
+  (row) => row.expect.dataSource === 'generate'
+).map((row) => row.text);
+
+const matrixProductLines = KB_ROUTING_MATRIX_FIXTURES.filter((row) =>
+  String(row.expect.dataSource).startsWith('product_knowledge')
+).map((row) => row.text);
+
+/**
+ * PO round two decision 2: practice-fact routing takes this line before the KB
+ * gate; its real path is locked by the routing matrix row of the same id.
+ */
+export const KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS = Object.freeze([
+  'practice-duration-space-zh'
+]);
+
+const matrixPracticeLines = KB_ROUTING_MATRIX_FIXTURES.filter(
+  (row) =>
+    row.expect.dataSource === 'practice_facts' &&
+    !KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS.includes(row.id)
+).map((row) => row.text);
+
+/** Expected: veto → observation wing. */
+const stage2bMoodLines = STAGE2B_NEGATIVE_CONTROL_TEXTS.filter(
+  (line) => !KB_MOOD_VETO_LAB_REVERSE_RISK_PULLED_FROM_STAGE2B.includes(line)
+);
+
+export const KB_MOOD_VETO_LAB_MOOD_ROWS = buildRows([
+  { set: 'mood', group: 'stage2b_negative_control', lines: stage2bMoodLines },
+  { set: 'mood', group: 'tonight', lines: MOOD_TONIGHT },
+  { set: 'mood', group: 'uncovered_zh', lines: MOOD_UNCOVERED_ZH },
+  { set: 'mood', group: 'kb_matrix_generate', lines: matrixMoodLines },
+  { set: 'mood', group: 'family_en', lines: MOOD_EN },
+  { set: 'mood', group: 'family_en_r2', lines: MOOD_EN_ROUND_TWO },
+  { set: 'mood', group: 'family_en_r3', lines: MOOD_EN_ROUND_THREE },
+  { set: 'mood', group: 'family_ja', lines: MOOD_JA },
+  { set: 'mood', group: KB_MOOD_VETO_LAB_REVERSE_RISK_GROUP, lines: MOOD_REVERSE_RISK }
+]);
+
+/** Expected: no veto → short answer or honesty empty state. */
+export const KB_MOOD_VETO_LAB_CONTROL_ROWS = buildRows([
+  { set: 'control', group: 'library_c', lines: CONFIDE_SEMANTIC_LIBRARY_C },
+  { set: 'control', group: 'kb_matrix_product', lines: matrixProductLines },
+  { set: 'control', group: 'complaint', lines: CONTROL_COMPLAINT },
+  { set: 'control', group: 'mixed', lines: CONTROL_MIXED },
+  { set: 'control', group: 'practice_facts', lines: CONTROL_PRACTICE_FACTS },
+  { set: 'control', group: 'kb_matrix_practice', lines: matrixPracticeLines }
+]);
+
+/** PO decision 4. */
+export const KB_MOOD_VETO_LAB_MIN_CONTROL_ROWS = 40;
+
+/** Brief §过关门槛 + PO decision 3. */
+export const KB_MOOD_VETO_LAB_MOOD_MIN_RATE = Object.freeze({ zh: 0.9, en: 0.9, ja: 0.8 });
+
+/** PO round two decision 4: English is only judged at ≥40 lines (reverse-risk not counted). */
+export const KB_MOOD_VETO_LAB_MOOD_MIN_N = Object.freeze({ zh: 0, en: 40, ja: 0 });
+
+/** PO round three decision 4: reverse-risk group size. Not a pass/fail gate. */
+export const KB_MOOD_VETO_LAB_REVERSE_RISK_MIN_N = 30;

@@ -75,6 +75,7 @@ import {
 import { buildCrisisParaphraseShadowTurnLog } from '../core/confide/confideCrisisParaphraseShadow.js';
 import { formatConfideProductKnowledgeHonestyReply } from '../core/confide/confideProductKnowledgeHonesty.js';
 import { resolveProductKnowledgeGateAction } from '../core/confide/confideProductKnowledgeSemantic.js';
+import { buildKbCatalogNearReviewShadowTurnLog } from '../core/confide/confideKbCatalogNearReview.js';
 import { decideKbNearMatch } from '../core/confide/kbNearMatch.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
@@ -1595,12 +1596,30 @@ export class ConfideToYinUI {
       semanticIsProduct,
       catalogHit: Boolean(catalogResult.hit || nearHit),
       nearAction,
-      lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct)
+      lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct),
+      moodOutranksProduct: gate?.moodOutranksProduct === true,
+      moodVetoLive: gate?.moodVetoLive === true
     });
     const shown = catalogResult.hit
       ? { id: catalogResult.id, text: catalogResult.text }
       : nearHit;
     if (action === 'hit' && shown?.text) {
+      const reviewRow = buildKbCatalogNearReviewShadowTurnLog({
+        text,
+        locale: getLocale(),
+        hitKind: catalogResult.hit ? 'catalog' : 'near',
+        kbId: shown.id,
+        moodScore: gate?.moodScore,
+        moodOutranksProduct: gate?.moodOutranksProduct,
+        action
+      });
+      if (
+        reviewRow &&
+        this._companion &&
+        typeof this._companion.appendTurnLog === 'function'
+      ) {
+        void this._companion.appendTurnLog(reviewRow);
+      }
       this._showReply(
         {
           route: hit.route,

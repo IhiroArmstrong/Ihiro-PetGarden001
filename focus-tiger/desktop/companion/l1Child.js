@@ -289,6 +289,12 @@ async function main() {
               diff: result.diff,
               grayMargin: result.grayMargin,
               topK: result.topK,
+              kbProductScore: result.kbProductScore ?? null,
+              kbMoodScore: result.kbMoodScore ?? null,
+              kbMoodOutranksProduct:
+                typeof result.kbMoodOutranksProduct === 'boolean'
+                  ? result.kbMoodOutranksProduct
+                  : null,
               embedMs: result.embedMs,
               bucketWithPrior: withPrior?.bucket ?? null,
               scoreAWithPrior: withPrior?.scoreA ?? null,
@@ -348,6 +354,9 @@ async function main() {
               nearestId: result.nearestId ?? null,
               nearestScore: result.nearestScore ?? null,
               lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
+              lifeScore: result.lifeScore ?? null,
+              moodScore: result.moodScore ?? null,
+              moodOutranksProduct: Boolean(result.moodOutranksProduct),
               embedMs: result.embedMs,
               wallMs: Date.now() - started
             });

@@ -51,8 +51,38 @@ import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
 import { canReuseConfideSemanticLiveCache } from './l1SemanticLiveCache.js';
 import { sanitizeRendererTurnLogRecord } from './confideRendererTurnLogAllowlist.js';
 import { resolveStage2bSeedSource } from './l1SemanticStage2bShadow.js';
+import { buildKbProductGateShadowTurnLogRecord } from './l1KbProductGateShadowLog.js';
+
+/**
+ * @param {Record<string, unknown> | null | undefined} ev
+ * @returns {{ productScore: number, moodScore: number, moodOutranksProduct: boolean } | null}
+ */
+function kbMoodFromShadowEvent(ev) {
+  const moodScore = Number(ev?.kbMoodScore);
+  const productScore = Number(ev?.kbProductScore);
+  if (ev?.kbMoodScore == null || !Number.isFinite(moodScore) || !Number.isFinite(productScore)) {
+    return null;
+  }
+  return { productScore, moodScore, moodOutranksProduct: Boolean(ev.kbMoodOutranksProduct) };
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Same rule as `isConfideKbMoodVetoLive` in confideProductKnowledgeSemantic.js.
+ * Kept here so the Electron runtime does not import renderer src.
+ * @param {NodeJS.ProcessEnv} [env]
+ * @param {boolean} electronUnpackaged
+ * @returns {boolean}
+ */
+function isConfideKbMoodVetoLive(env, electronUnpackaged) {
+  const raw = String(env?.FT_CONFIDE_KB_MOOD_VETO || '')
+    .trim()
+    .toLowerCase();
+  if (raw === 'shadow' || raw === 'off' || raw === 'log') return false;
+  if (!electronUnpackaged) return false;
+  return raw === 'live';
+}
 
 /**
  * @param {{
@@ -698,6 +728,7 @@ export class CompanionL1Runtime {
             grayMargin: Number(cached.grayMargin)
           },
           semanticResultWithPrior: cached.semanticResultWithPrior || null,
+          kbMood: cached.kbMood || null,
           timing: cached.timing
         })
       );
@@ -847,10 +878,13 @@ export class CompanionL1Runtime {
       scoreB: result.scoreB,
       grayMargin: result.grayMargin,
       timing: result.timing,
-      semanticResultWithPrior: null
+      semanticResultWithPrior: null,
+      kbMood: result.kbMood || null
     };
     await appendLiveLog(result);
-    return { ...result, stage2bRouting };
+    const liveResult = { ...result };
+    delete liveResult.kbMood;
+    return { ...liveResult, stage2bRouting };
   }
 
   /**
@@ -921,6 +955,7 @@ export class CompanionL1Runtime {
     const timing = { wallMs: Date.now() - wallStarted };
 
     if (result?.event === 'product_knowledge_gate_classified') {
+      await this._appendTurnLog(buildKbProductGateShadowTurnLogRecord({ text, result, timing }));
       return {
         ok: true,
         isProduct: Boolean(result.isProduct),
@@ -931,6 +966,11 @@ export class CompanionL1Runtime {
           ? Number(result.nearestScore)
           : null,
         lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
+        moodScore: Number.isFinite(Number(result.moodScore)) ? Number(result.moodScore) : null,
+        moodOutranksProduct: Number.isFinite(Number(result.moodScore))
+          ? Boolean(result.moodOutranksProduct)
+          : null,
+        moodVetoLive: isConfideKbMoodVetoLive(this.env, !this.isPackaged),
         reason: 'ok',
         timing
       };
@@ -1089,6 +1129,7 @@ export class CompanionL1Runtime {
           embedMs: Number(timed.embedMs) || undefined,
           embedMsWithPrior: Number(timed.embedMsWithPrior) || undefined
         };
+        const kbMood = kbMoodFromShadowEvent(timed);
         if (!skipLog) {
           await this._appendTurnLog(
             buildSemanticShadowTurnLogRecord({
@@ -1102,6 +1143,7 @@ export class CompanionL1Runtime {
                 grayMargin: Number(timed.grayMargin)
               },
               semanticResultWithPrior,
+              kbMood,
               timing
             })
           );
@@ -1114,7 +1156,8 @@ export class CompanionL1Runtime {
           grayMargin: Number(timed.grayMargin),
           reason: 'ok',
           timing,
-          semanticResultWithPrior
+          semanticResultWithPrior,
+          kbMood
         };
       }
 
