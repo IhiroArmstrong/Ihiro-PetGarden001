@@ -94,6 +94,12 @@ import {
   mountFocusCircleWitnessChrome,
   mountSupportYinModal
 } from './boot/boot-moment-hosts.js';
+import {
+  createBootHonestyCompanionState,
+  mountHonestyCheckInUI,
+  mountCompanionModePicker,
+  mountMicroRitualUI
+} from './boot/boot-honesty-companion.js';
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
@@ -479,7 +485,6 @@ import {
   HonestyCheckInController,
   resolveHonestyBreathMs
 } from './core/HonestyCheckInController.js';
-import { HonestyCheckInUI } from './ui/HonestyCheckInUI.js';
 import { HonestyBridgeStore } from './core/HonestyBridgeStore.js';
 import { HonestyBridgeCtaController } from './core/HonestyBridgeCtaController.js';
 import {
@@ -488,9 +493,7 @@ import {
   trackRetentionEvent
 } from './core/RetentionTelemetry.js';
 import { HonestyBridgeCtaUI } from './ui/HonestyBridgeCtaUI.js';
-import { CompanionModePicker } from './ui/CompanionModePicker.js';
 import { ArrivalPracticeUI } from './ui/ArrivalPracticeUI.js';
-import { MicroRitualUI } from './ui/MicroRitualUI.js';
 import {
   RitualFlowUI,
   resolveRitualBreathMsOverride
@@ -992,6 +995,7 @@ async function init() {
     }
   );
   const bootMomentHosts = createBootMomentHostsState();
+  const bootHonestyCompanion = createBootHonestyCompanionState();
   const todayDirectionOptionsBannerUI = new TodayDirectionOptionsBannerUI(
     document.getElementById('ui-overlay'),
     {
@@ -1316,17 +1320,17 @@ async function init() {
   function isMomentWhisperBusy(forKey) {
     if (bootMomentHosts.fiveMomentsCompassUI.isOpen()) return true;
     if (stateManager.state === STATES.CELEBRATE) return true;
-    if (microRitualUI?.isOpen?.() === true) return true;
+    if (bootHonestyCompanion.microRitualUI?.isOpen?.() === true) return true;
     // Arrive may open while Honesty idle entry is still painted — do not block Arrive.
     if (
       forKey !== 'arrive' &&
-      honestyCheckInUI?.phase &&
-      honestyCheckInUI.phase !== 'hidden'
+      bootHonestyCompanion.honestyCheckInUI?.phase &&
+      bootHonestyCompanion.honestyCheckInUI.phase !== 'hidden'
     ) {
       return true;
     }
-    if (companionModePicker?.isOpen?.() === true) return true;
-    if (forKey !== 'arrive' && arrivalPractice?.isOpen?.() === true) {
+    if (bootHonestyCompanion.companionModePicker?.isOpen?.() === true) return true;
+    if (forKey !== 'arrive' && bootHonestyCompanion.arrivalPractice?.isOpen?.() === true) {
       return true;
     }
     if (forKey !== 'reflect' && reflectionMoment?.isOpen?.() === true) {
@@ -1359,12 +1363,6 @@ async function init() {
   let honestyGlowLevel = null;
   /** @type {HonestyBridgeCtaController | null} */
   let honestyBridge = null;
-  /** @type {HonestyCheckInUI | null} */
-  let honestyCheckInUI = null;
-  /** @type {ArrivalPracticeUI | null} */
-  let arrivalPractice = null;
-  /** @type {MicroRitualUI | null} */
-  let microRitualUI = null;
   /** @type {RitualFlowUI | null} */
   let ritualFlowUI = null;
   /** @type {FocusDurationPickerUI | null} */
@@ -1845,11 +1843,11 @@ async function init() {
   const canOpenConfideNow = () => {
     const busy =
       stateManager.state === STATES.FOCUSING ||
-      Boolean(arrivalPractice?.isOpen?.()) ||
+      Boolean(bootHonestyCompanion.arrivalPractice?.isOpen?.()) ||
       Boolean(reflectionMoment?.isOpen?.()) ||
-      Boolean(microRitualUI?.isOpen?.()) ||
+      Boolean(bootHonestyCompanion.microRitualUI?.isOpen?.()) ||
       Boolean(honestyBridge?.isVisible?.()) ||
-      (honestyCheckInUI?.phase && honestyCheckInUI.phase !== 'hidden');
+      (bootHonestyCompanion.honestyCheckInUI?.phase && bootHonestyCompanion.honestyCheckInUI.phase !== 'hidden');
     if (busy) return false;
     return canOpenConfideEntitled();
   };
@@ -2134,7 +2132,7 @@ async function init() {
     if (!action || action.type === 'browse') return;
     if (action.type === 'companion') {
       closeGrowthOverlayCards();
-      companionModePicker.open();
+      bootHonestyCompanion.companionModePicker.open();
       resyncSessionChrome();
       syncOnboardingAutoHints();
       return;
@@ -2142,14 +2140,14 @@ async function init() {
     if (action.type === 'micro-ritual') {
       if (
         reflectionMoment?.isOpen?.() ||
-        microRitualUI?.isOpen?.() ||
+        bootHonestyCompanion.microRitualUI?.isOpen?.() ||
         focusDurationPicker?.isOpen?.() ||
         honestyBridge?.isVisible?.()
       ) {
         return;
       }
-      if (arrivalPractice?.isOpen?.()) {
-        arrivalPractice.hide();
+      if (bootHonestyCompanion.arrivalPractice?.isOpen?.()) {
+        bootHonestyCompanion.arrivalPractice.hide();
         pendingAutoStartMode = null;
         arrivalChoseThisRun = false;
         suppressCompanionOpenAfterNod = false;
@@ -2159,14 +2157,14 @@ async function init() {
       }
       sessionEndFlow.cancelPending();
       honestyBridge?.hide();
-      honestyCheckInUI.hide();
-      companionModePicker.hide();
+      bootHonestyCompanion.honestyCheckInUI.hide();
+      bootHonestyCompanion.companionModePicker.hide();
       focusDurationPicker?.hide();
       pendingFocusDurationMode = null;
       onboardingHints?.markSeen('quick-start');
       onboardingHints?.markSeen('micro-ritual');
       beginMicroRitualChrome();
-      microRitualUI.selectDurationAndStart(action.minutes);
+      bootHonestyCompanion.microRitualUI.selectDurationAndStart(action.minutes);
       resyncSessionChrome();
       syncOnboardingAutoHints();
     }
@@ -2185,7 +2183,7 @@ async function init() {
       if (
         !sessionUiGate.canStartArrivalFromChrome({
           isFocusing: stateManager.state === STATES.FOCUSING,
-          arrivalOpen: arrivalPractice?.isOpen?.() === true,
+          arrivalOpen: bootHonestyCompanion.arrivalPractice?.isOpen?.() === true,
           microRitualOpen: isMicroRitualSitLatchActive()
         })
       ) {
@@ -2197,7 +2195,7 @@ async function init() {
     }
     if (action.type === 'companion') {
       closeGrowthOverlayCards();
-      companionModePicker.open();
+      bootHonestyCompanion.companionModePicker.open();
       return;
     }
     if (action.type === 'ritual') {
@@ -2653,16 +2651,17 @@ async function init() {
   const milestoneGlowStore = new MilestoneGlowStore();
   const honestyBridgeStore = new HonestyBridgeStore();
   const retentionFunnelStore = new RetentionFunnelStore({ now });
-  honestyCheckInUI = new HonestyCheckInUI(
+  mountHonestyCheckInUI(
+    bootHonestyCompanion,
     document.getElementById('ui-overlay')
   );
-  window.__honestyCheckInUI = honestyCheckInUI;
+  window.__honestyCheckInUI = bootHonestyCompanion.honestyCheckInUI;
   const honestyCheckIn = new HonestyCheckInController({
     store: dailyCompletionStore,
     focusSessionEndStore,
     stateManager,
     emotionController,
-    ui: honestyCheckInUI,
+    ui: bootHonestyCompanion.honestyCheckInUI,
     breathMs: HONESTY_BREATH_MS_RESOLVED,
     applyFocusGlow: (level) => {
       honestyGlowLevel = level;
@@ -2676,9 +2675,9 @@ async function init() {
     },
     isIdleEntryBlocked: () =>
       honestyBridge?.isVisible?.() === true ||
-      arrivalPractice?.isOpen?.() === true ||
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() === true ||
       reflectionMoment?.isOpen?.() === true ||
-      microRitualUI?.isOpen?.() === true,
+      bootHonestyCompanion.microRitualUI?.isOpen?.() === true,
     onCheckInComplete: ({ durationMinutes, wokeFromDormant } = {}) => {
       awardFocusCoins({
         kind: GRANT_KIND.HONESTY,
@@ -2690,7 +2689,7 @@ async function init() {
       ) {
         focusCoinsStore.markLifetime({ honestyWake: true });
       }
-      honestyCheckInUI.hideIdleEntry();
+      bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
       onboardingHints?.markSeen('honesty-optional');
       const streak = practiceDaysStore.getRecentStreakDays();
       const nodeId = milestoneGlowStore.claimOffer(streak);
@@ -2784,28 +2783,29 @@ async function init() {
 
   /** 在 beginFocusWithMode 定义后填入 onModeSelected / onAutoStartNeedsArrival / onExpandedChange */
   const companionModeHandlers = {};
-  const companionModePicker = new CompanionModePicker(
+  mountCompanionModePicker(
+    bootHonestyCompanion,
     document.getElementById('ui-overlay'),
     focusButton,
     companionModeHandlers
   );
-  window.__companionModePicker = companionModePicker;
+  window.__companionModePicker = bootHonestyCompanion.companionModePicker;
 
-  microRitualUI = new MicroRitualUI(document.getElementById('ui-overlay'), {
+  mountMicroRitualUI(bootHonestyCompanion, document.getElementById('ui-overlay'), {
     onIdleEntryClick: () => {
       if (
         stateManager.state === STATES.FOCUSING ||
         stateManager.state === STATES.CELEBRATE ||
-        arrivalPractice?.isOpen?.() ||
+        bootHonestyCompanion.arrivalPractice?.isOpen?.() ||
         reflectionMoment?.isOpen?.() ||
-        microRitualUI?.isOpen?.() ||
+        bootHonestyCompanion.microRitualUI?.isOpen?.() ||
         ritualFlowUI?.isOpen?.()
       ) {
         return;
       }
       onboardingHints?.markSeen('micro-ritual');
       beginMicroRitualChrome();
-      microRitualUI.openDurationPicker();
+      bootHonestyCompanion.microRitualUI.openDurationPicker();
       resyncSessionChrome();
       syncOnboardingAutoHints();
     },
@@ -2853,7 +2853,7 @@ async function init() {
     }
   });
   if (import.meta.env.DEV) {
-    window.__microRitualUI = microRitualUI;
+    window.__microRitualUI = bootHonestyCompanion.microRitualUI;
   }
 
   ritualFlowUI = new RitualFlowUI(document.getElementById('ui-overlay'), {
@@ -2914,8 +2914,8 @@ async function init() {
     stateManager.setState(STATES.IDLE);
     focusInput.resetButton(focusButton);
     resyncSessionChrome();
-    companionModePicker.setIdleChromeVisible(true);
-    companionModePicker.setMicroRitualActive(true);
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
     focusDurationPicker?.open();
     resyncSessionChrome();
@@ -2930,10 +2930,10 @@ async function init() {
 
   function beginVoiceFocusFromPicker({ minutes, openEnded }) {
     const mode =
-      pendingFocusDurationMode || companionModePicker.getSelectedMode();
+      pendingFocusDurationMode || bootHonestyCompanion.companionModePicker.getSelectedMode();
     pendingFocusDurationMode = null;
     focusDurationPicker?.hide();
-    companionModePicker.setMicroRitualActive(false);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
     if (openEnded) {
       savePreferredOpenEndedFocus();
       focusSession.setDurationMode('open');
@@ -2961,20 +2961,20 @@ async function init() {
     showOpenEnded: () => isDesktopShellRuntime(),
     onDurationSelected: (minutes) => {
       const mode =
-        pendingFocusDurationMode || companionModePicker.getSelectedMode();
+        pendingFocusDurationMode || bootHonestyCompanion.companionModePicker.getSelectedMode();
       pendingFocusDurationMode = null;
       savePreferredFocusDurationMinutes(minutes);
       focusSession.setTargetMinutes(minutes);
-      companionModePicker.setMicroRitualActive(false);
+      bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);
     },
     onOpenEndedSelected: () => {
       const mode =
-        pendingFocusDurationMode || companionModePicker.getSelectedMode();
+        pendingFocusDurationMode || bootHonestyCompanion.companionModePicker.getSelectedMode();
       pendingFocusDurationMode = null;
       savePreferredOpenEndedFocus();
       focusSession.setDurationMode('open');
-      companionModePicker.setMicroRitualActive(false);
+      bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);
     },
     onVoiceStartFixed: (minutes) => {
@@ -2985,8 +2985,8 @@ async function init() {
     },
     onLeave: () => {
       pendingFocusDurationMode = null;
-      companionModePicker.setIdleChromeVisible(true);
-      companionModePicker.setMicroRitualActive(false);
+      bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
+      bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
       setFocusButtonEnabled(true);
       resyncSessionChrome();
       syncOnboardingAutoHints();
@@ -3032,7 +3032,7 @@ async function init() {
     {
       getIsIdle: () =>
         stateManager.state === STATES.IDLE &&
-        !Boolean(microRitualUI?.isOpen?.()),
+        !Boolean(bootHonestyCompanion.microRitualUI?.isOpen?.()),
       getSpriteFrameSrc: readSpriteFrameSrc
     }
   );
@@ -3086,15 +3086,15 @@ async function init() {
 
   const sessionChromeSyncApi = createSessionChromeSync({
     getHonestyBridge: () => honestyBridge,
-    getArrivalPractice: () => arrivalPractice,
+    getArrivalPractice: () => bootHonestyCompanion.arrivalPractice,
     getReflectionMoment: () => reflectionMoment,
-    getMicroRitualUI: () => microRitualUI,
+    getMicroRitualUI: () => bootHonestyCompanion.microRitualUI,
     getRitualFlowUI: () => ritualFlowUI,
     getFocusDurationPicker: () => focusDurationPicker,
     getMustardSeedSealUI: () => mustardSeedSealCardUI,
-    honestyCheckInUI,
+    honestyCheckInUI: bootHonestyCompanion.honestyCheckInUI,
     honestyCheckIn,
-    companionModePicker,
+    companionModePicker: bootHonestyCompanion.companionModePicker,
     idleChrome,
     stateManager,
     sessionUiGate,
@@ -3418,8 +3418,8 @@ async function init() {
   /** S11：M1 时长板 / 呼吸叠层占用中（含 pick 窗 begin→open 闩）。 */
   function isMicroRitualSitLatchActive() {
     return (
-      microRitualUI?.isOpen?.() === true ||
-      companionModePicker?.isMicroRitualActive?.() === true
+      bootHonestyCompanion.microRitualUI?.isOpen?.() === true ||
+      bootHonestyCompanion.companionModePicker?.isMicroRitualActive?.() === true
     );
   }
 
@@ -3429,13 +3429,13 @@ async function init() {
   function beginMicroRitualChrome() {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
-    honestyCheckInUI.hide();
-    honestyCheckInUI.hideIdleEntry();
-    companionModePicker.hide();
-    companionModePicker.setIdleChromeVisible(false);
-    companionModePicker.setMicroRitualActive(true);
+    bootHonestyCompanion.honestyCheckInUI.hide();
+    bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
+    bootHonestyCompanion.companionModePicker.hide();
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
-    microRitualUI?.hideIdleEntry();
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     resyncSessionChrome();
     // openDurationPicker 后 isOpen()=true；onBreathStart 再 sync tips 防 breath 前误出 sit-button。
   }
@@ -3443,9 +3443,9 @@ async function init() {
   function endMicroRitualChrome() {
     lightProgression.endBreath({ releaseDolly: true });
     lightProgression.clearArrivalEffects();
-    companionModePicker.setMicroRitualActive(false);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
     setFocusButtonEnabled(true);
-    companionModePicker.setIdleChromeVisible(true);
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
     resyncSessionChrome();
     syncHonestyIdleEntry();
     syncOnboardingAutoHints();
@@ -3458,13 +3458,13 @@ async function init() {
   function beginRitualFlowChrome() {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
-    honestyCheckInUI.hide();
-    honestyCheckInUI.hideIdleEntry();
-    companionModePicker.hide();
-    companionModePicker.setIdleChromeVisible(false);
-    companionModePicker.setMicroRitualActive(true);
+    bootHonestyCompanion.honestyCheckInUI.hide();
+    bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
+    bootHonestyCompanion.companionModePicker.hide();
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
-    microRitualUI?.hideIdleEntry();
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     resyncSessionChrome();
   }
 
@@ -3472,9 +3472,9 @@ async function init() {
     ambientSoundscape.stopPlaybackEphemeral();
     lightProgression.endBreath({ releaseDolly: true });
     lightProgression.clearArrivalEffects();
-    companionModePicker.setMicroRitualActive(false);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
     setFocusButtonEnabled(true);
-    companionModePicker.setIdleChromeVisible(true);
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
     resyncSessionChrome();
     syncHonestyIdleEntry();
     syncOnboardingAutoHints();
@@ -3527,9 +3527,9 @@ async function init() {
     if (
       stateManager.state === STATES.FOCUSING ||
       stateManager.state === STATES.CELEBRATE ||
-      arrivalPractice?.isOpen?.() ||
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() ||
       reflectionMoment?.isOpen?.() ||
-      microRitualUI?.isOpen?.() ||
+      bootHonestyCompanion.microRitualUI?.isOpen?.() ||
       ritualFlowUI?.isOpen?.() ||
       focusDurationPicker?.isOpen?.()
     ) {
@@ -3645,7 +3645,7 @@ async function init() {
       stopAmbientAfterEndCue();
     }
     const durationMinutes =
-      microRitualUI?.getDurationMinutes?.() ?? 1;
+      bootHonestyCompanion.microRitualUI?.getDurationMinutes?.() ?? 1;
     dailyCompletionStore.recordCompletion(durationMinutes);
     practiceDaysStore.markToday(durationMinutes);
     lotusPondRuntime.notePracticeMinutes(durationMinutes);
@@ -3733,8 +3733,8 @@ async function init() {
 
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
   reflectionMoment.open = (options) => {
-    companionModePicker.hide();
-    honestyCheckInUI.hideIdleEntry();
+    bootHonestyCompanion.companionModePicker.hide();
+    bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
     reflectionOpen(options);
     resyncSessionChrome();
     // 关掉 Rise/Sound 等会话中提示，只留 Reflection（锚在面板上方）
@@ -3763,37 +3763,37 @@ async function init() {
     syncHonestyIdleEntry();
   };
 
-  const honestyShowPrompt = honestyCheckInUI.showPrompt.bind(honestyCheckInUI);
-  honestyCheckInUI.showPrompt = () => {
-    companionModePicker.hide();
-    microRitualUI?.hideIdleEntry();
+  const honestyShowPrompt = bootHonestyCompanion.honestyCheckInUI.showPrompt.bind(bootHonestyCompanion.honestyCheckInUI);
+  bootHonestyCompanion.honestyCheckInUI.showPrompt = () => {
+    bootHonestyCompanion.companionModePicker.hide();
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     honestyShowPrompt();
     resyncSessionChrome();
     syncOnboardingAutoHints();
   };
-  const honestyShowDuration = honestyCheckInUI.showDurationChoices.bind(
-    honestyCheckInUI
+  const honestyShowDuration = bootHonestyCompanion.honestyCheckInUI.showDurationChoices.bind(
+    bootHonestyCompanion.honestyCheckInUI
   );
-  honestyCheckInUI.showDurationChoices = () => {
-    companionModePicker.hide();
-    microRitualUI?.hideIdleEntry();
+  bootHonestyCompanion.honestyCheckInUI.showDurationChoices = () => {
+    bootHonestyCompanion.companionModePicker.hide();
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     onboardingHints?.markSeen('honesty-optional');
     honestyShowDuration();
     resyncSessionChrome();
     syncOnboardingAutoHints();
   };
-  const honestyHide = honestyCheckInUI.hide.bind(honestyCheckInUI);
-  honestyCheckInUI.hide = () => {
+  const honestyHide = bootHonestyCompanion.honestyCheckInUI.hide.bind(bootHonestyCompanion.honestyCheckInUI);
+  bootHonestyCompanion.honestyCheckInUI.hide = () => {
     honestyHide();
     resyncSessionChrome();
     syncHonestyIdleEntry();
   };
 
-  const honestyStartBreath = honestyCheckInUI.startBreathGuide.bind(
-    honestyCheckInUI
+  const honestyStartBreath = bootHonestyCompanion.honestyCheckInUI.startBreathGuide.bind(
+    bootHonestyCompanion.honestyCheckInUI
   );
-  honestyCheckInUI.startBreathGuide = (durationMs) => {
-    microRitualUI?.hideIdleEntry();
+  bootHonestyCompanion.honestyCheckInUI.startBreathGuide = (durationMs) => {
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     honestyStartBreath(durationMs);
   };
 
@@ -3887,10 +3887,10 @@ async function init() {
       return !store.isSeen(hintId);
     },
     onCompanion: () => {
-      companionModePicker.open();
+      bootHonestyCompanion.companionModePicker.open();
     },
     onClearCompanion: () => {
-      companionModePicker.hide();
+      bootHonestyCompanion.companionModePicker.hide();
     },
     onReminder: () => {
       reminderPreferenceUI.openPanel();
@@ -4026,7 +4026,7 @@ async function init() {
       companionModeHandlers.onQuickStart?.();
     },
     onClearStage: () => {
-      companionModePicker.hide();
+      bootHonestyCompanion.companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
       systemTtsPreferenceUI?.closePanel();
@@ -4053,11 +4053,11 @@ async function init() {
     getIsIdleContextMenuAllowed: () => {
       if (stateManager.state !== STATES.IDLE) return false;
       if (idleChrome.isSecondaryMenuOpen?.()) return false;
-      if (arrivalPractice?.isOpen?.()) return false;
+      if (bootHonestyCompanion.arrivalPractice?.isOpen?.()) return false;
       if (reflectionMoment?.isOpen?.()) return false;
-      if (microRitualUI?.isOpen?.()) return false;
-      if (isHonestyUiBusy(honestyCheckInUI?.phase)) return false;
-      if (companionModePicker?.isOpen?.()) return false;
+      if (bootHonestyCompanion.microRitualUI?.isOpen?.()) return false;
+      if (isHonestyUiBusy(bootHonestyCompanion.honestyCheckInUI?.phase)) return false;
+      if (bootHonestyCompanion.companionModePicker?.isOpen?.()) return false;
       return true;
     },
     onOpenSecondaryMenu: () => {
@@ -4092,10 +4092,10 @@ async function init() {
   let onboardingHints = null;
 
   function getOnboardingScene() {
-    const arrivalPhase = arrivalPractice?.getStep?.() ?? null;
+    const arrivalPhase = bootHonestyCompanion.arrivalPractice?.getStep?.() ?? null;
     const honestyEntry = document.getElementById('honesty-idle-entry');
     return {
-      honestyVisible: honestyCheckInUI.phase === 'prompt',
+      honestyVisible: bootHonestyCompanion.honestyCheckInUI.phase === 'prompt',
       honestyIdleEntryVisible: Boolean(
         honestyEntry && !honestyEntry.hidden && honestyEntry.isConnected
       ),
@@ -4118,16 +4118,16 @@ async function init() {
         return false;
       })(),
       honestyBridgeVisible: honestyBridge?.isVisible?.() === true,
-      arrivalOpen: arrivalPractice?.isOpen?.() ?? false,
+      arrivalOpen: bootHonestyCompanion.arrivalPractice?.isOpen?.() ?? false,
       arrivalPhase:
         arrivalPhase === 'welcome'
           ? 'notice'
           : arrivalPhase === 'ready'
             ? null
             : arrivalPhase,
-      companionExpanded: companionModePicker?.isOpen?.() ?? false,
+      companionExpanded: bootHonestyCompanion.companionModePicker?.isOpen?.() ?? false,
       isFocusing: stateManager.state === STATES.FOCUSING,
-      microRitualOpen: microRitualUI?.isOpen?.() === true,
+      microRitualOpen: bootHonestyCompanion.microRitualUI?.isOpen?.() === true,
       reflectionOpen: reflectionMoment?.isOpen?.() ?? false,
       ambientPanelOpen: ambientSoundscapeUI?.isPanelOpen?.() ?? false,
       isDormant: stateManager.state === STATES.DORMANT,
@@ -4135,7 +4135,7 @@ async function init() {
       hasEverCompletedSession: hasEndedAnySession,
       weeklyHeatmapVisible: weeklyPracticeHeatmap?.isVisible?.() === true,
       languageFabVisible: languagePreferenceUI?.isFabVisible?.() === true,
-      microRitualEntryVisible: microRitualUI?.isIdleEntryVisible?.() === true,
+      microRitualEntryVisible: bootHonestyCompanion.microRitualUI?.isIdleEntryVisible?.() === true,
       narrowPark: document.body.classList.contains('ft-narrow-park'),
       narrowSheetOpen: idleChrome?.isSheetOpen?.() === true,
       wideParkSecondary: document.body.classList.contains('ft-wide-park-secondary'),
@@ -4204,7 +4204,7 @@ async function init() {
   // Reminder / companion e2e hooks — must work in `vite preview` (DEV=false),
   // same contract as `__honestyBridge`.
   window.__dailyCompletionStore = dailyCompletionStore;
-  window.__companionModePicker = companionModePicker;
+  window.__companionModePicker = bootHonestyCompanion.companionModePicker;
   // Ambient e2e (mute↔resume / Focusing track audible) needs these in
   // `vite preview` production builds — same contract as `__honestyBridge`.
   window.__ambientSoundscape = ambientSoundscape;
@@ -4250,7 +4250,7 @@ async function init() {
   /** @type {'icon' | 'typed'} */
   let currentIntentionSource = 'typed';
 
-  arrivalPractice = new ArrivalPracticeUI(
+  bootHonestyCompanion.arrivalPractice = new ArrivalPracticeUI(
     document.getElementById('ui-overlay'),
     {
       onNoticeSelected: (noticeId) => {
@@ -4314,7 +4314,7 @@ async function init() {
               sessionUiGate.arrivalGateReady &&
               !sessionUiGate.completionPending
             ) {
-              companionModePicker.open({ afterArrivalChoose: true });
+              bootHonestyCompanion.companionModePicker.open({ afterArrivalChoose: true });
             }
             suppressCompanionOpenAfterNod = false;
             arrivalChoseThisRun = false;
@@ -4345,7 +4345,7 @@ async function init() {
         emotionController.playEmotion('idle');
       },
       onReady: (info = {}) => {
-        pendingChoose = arrivalPractice.getChooseResult();
+        pendingChoose = bootHonestyCompanion.arrivalPractice.getChooseResult();
         // 本轮 Arrival 结果立刻闩上：有 Choose 则锁定；Skip/未选则清空。
         // 勿等到 beginFocus 才写入——二次 beginFocus 曾用 `?? ''` 把已选意图抹掉。
         const latched = resolveSessionIntentionLatch(
@@ -4387,11 +4387,11 @@ async function init() {
           }
           calmActionArriveCardUI.hide({ immediate: true });
           requestBeginFocusWithMode(
-            resumeMode || companionModePicker.getSelectedMode()
+            resumeMode || bootHonestyCompanion.companionModePicker.getSelectedMode()
           );
         } else if (!info.chose) {
           calmActionArriveCardUI.tryShowAfterArrival();
-          companionModePicker.open();
+          bootHonestyCompanion.companionModePicker.open();
         } else {
           calmActionArriveCardUI.tryShowAfterArrival();
         }
@@ -4401,7 +4401,7 @@ async function init() {
   );
   // E2e skip Arrival → Focus (home left ball is Breath practice, not skip).
   // Must work in vite preview (DEV=false), same as `__honestyBridge`.
-  window.__arrivalPractice = arrivalPractice;
+  window.__arrivalPractice = bootHonestyCompanion.arrivalPractice;
   // Seasonal Theme (Phase 3): soft wash + once-per-day line for entitled B users.
   const seasonalThemeBoot = bootSeasonalThemeChrome({
     appEl: app,
@@ -4409,9 +4409,9 @@ async function init() {
     storage: typeof localStorage !== 'undefined' ? localStorage : null,
     search: window.location.search,
     isBusy: () =>
-      arrivalPractice?.isOpen?.() === true ||
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() === true ||
       reflectionMoment?.isOpen?.() === true ||
-      microRitualUI?.isOpen?.() === true
+      bootHonestyCompanion.microRitualUI?.isOpen?.() === true
   });
   window.__seasonalTheme = seasonalThemeBoot;
   if (import.meta.env.DEV) {
@@ -4546,9 +4546,9 @@ async function init() {
   function startArrivalPracticeFromChrome({ autoStartMode = null } = {}) {
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
-    honestyCheckInUI.hide();
-    honestyCheckInUI.hideIdleEntry();
-    microRitualUI?.hideIdleEntry();
+    bootHonestyCompanion.honestyCheckInUI.hide();
+    bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     // 新一轮 Arrival：清掉上场未消费的 Choose，避免错挂到本场 Reflection
     pendingChoose = null;
     currentSessionIntention = '';
@@ -4562,12 +4562,12 @@ async function init() {
     suppressCompanionOpenAfterNod = false;
     postChooseChrome.pending = false;
     syncArrivalGateReady(false);
-    companionModePicker.hide();
+    bootHonestyCompanion.companionModePicker.hide();
     onboardingHints?.markSeen('sit-button');
     onboardingHints?.markSeen('how-shall-we-sit');
     onboardingHints?.markSeen('dormant-open');
     onboardingHints?.markSeen('honesty-optional');
-    arrivalPractice.start();
+    bootHonestyCompanion.arrivalPractice.start();
     calmActionArriveStore.arm();
     onboardingHints?.hideWellnessFirstCard({ markSeen: true, notify: false });
     resyncSessionChrome();
@@ -4611,14 +4611,14 @@ async function init() {
       if (
         !sessionUiGate.canStartArrivalFromChrome({
           isFocusing: stateManager.state === STATES.FOCUSING,
-          arrivalOpen: arrivalPractice.isOpen(),
+          arrivalOpen: bootHonestyCompanion.arrivalPractice.isOpen(),
           microRitualOpen: isMicroRitualSitLatchActive()
         })
       ) {
         mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
         return;
       }
-      honestyCheckInUI.hideIdleEntry();
+      bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
       startArrivalPracticeFromChrome();
     },
     onDecline: () => {
@@ -4665,7 +4665,7 @@ async function init() {
     bootMomentHosts.focusCircleWitnessChrome.setFocusing(false);
     void stopLanternHeartbeat();
     void stopFocusCircleHeartbeat();
-    companionModePicker.setIdleChromeVisible(true);
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
   }
 
   function beginSessionCompleteIfNeeded() {
@@ -4745,7 +4745,7 @@ async function init() {
    */
   function requestBeginFocusWithMode(companionMode) {
     focusDurationPicker?.hide();
-    microRitualUI?.hide();
+    bootHonestyCompanion.microRitualUI?.hide();
     if (shouldSkipFocusDurationPicker(location.search)) {
       focusSession.setTargetMinutes(
         resolveDemoSessionMinutes(location.search)
@@ -4756,14 +4756,14 @@ async function init() {
     pendingFocusDurationMode = companionMode;
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
-    honestyCheckInUI.hide();
-    honestyCheckInUI.hideIdleEntry();
-    companionModePicker.hide();
-    companionModePicker.setIdleChromeVisible(false);
+    bootHonestyCompanion.honestyCheckInUI.hide();
+    bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
+    bootHonestyCompanion.companionModePicker.hide();
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     // Reuse micro-ritual chrome latch so Sit stays disabled while picking.
-    companionModePicker.setMicroRitualActive(true);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
-    microRitualUI?.hideIdleEntry();
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     sessionCues.preload();
     focusDurationPicker.open();
     resyncSessionChrome();
@@ -4778,13 +4778,13 @@ async function init() {
     focusCircleWitnessLeaveUI.cancelScheduledOffer();
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
-    honestyCheckInUI.hide();
-    honestyCheckInUI.hideIdleEntry();
-    microRitualUI?.hideIdleEntry();
-    microRitualUI?.hide();
+    bootHonestyCompanion.honestyCheckInUI.hide();
+    bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
+    bootHonestyCompanion.microRitualUI?.hideIdleEntry();
+    bootHonestyCompanion.microRitualUI?.hide();
     focusDurationPicker?.hide();
     pendingFocusDurationMode = null;
-    companionModePicker.setMicroRitualActive(false);
+    bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
     honestyGlowLevel = null;
     // 只在仍有 pending Choose 时写入；空 pending 不得把已闩意图抹成 ''（二次 beginFocus 回归锁）
     const latched = resolveSessionIntentionLatch(
@@ -4804,7 +4804,7 @@ async function init() {
         source: currentIntentionSource
       });
     }
-    companionModePicker.setIdleChromeVisible(false);
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     postChooseChrome.pending = false;
     focusSession.start({ companionMode });
     onboardingHints?.markSeen('sit-button');
@@ -4871,13 +4871,13 @@ async function init() {
 
   companionModeHandlers.canBeginFocus = (mode) =>
     sessionUiGate.canBeginFocusOnCompanionModeSelect(mode, {
-      arrivalOpen: arrivalPractice.isOpen(),
+      arrivalOpen: bootHonestyCompanion.arrivalPractice.isOpen(),
       isFocusing: stateManager.state === STATES.FOCUSING
     });
 
   companionModeHandlers.resolveNeedsArrival = (mode) =>
     sessionUiGate.resolveAutoStartNeedsArrival(mode, {
-      arrivalOpen: arrivalPractice.isOpen(),
+      arrivalOpen: bootHonestyCompanion.arrivalPractice.isOpen(),
       isFocusing: stateManager.state === STATES.FOCUSING
     });
 
@@ -4897,7 +4897,7 @@ async function init() {
     }
     if (
       !sessionUiGate.canBeginFocusOnCompanionModeSelect(mode, {
-        arrivalOpen: arrivalPractice.isOpen(),
+        arrivalOpen: bootHonestyCompanion.arrivalPractice.isOpen(),
         isFocusing: stateManager.state === STATES.FOCUSING
       })
     ) {
@@ -4919,15 +4919,15 @@ async function init() {
     }
     if (
       reflectionMoment?.isOpen?.() ||
-      microRitualUI?.isOpen?.() ||
+      bootHonestyCompanion.microRitualUI?.isOpen?.() ||
       focusDurationPicker?.isOpen?.() ||
       honestyBridge?.isVisible?.()
     ) {
       return;
     }
     // Arrival 开着：收仪式回 Idle 门闩，再开呼吸练习（不再 skip→Focus）
-    if (arrivalPractice?.isOpen?.()) {
-      arrivalPractice.hide();
+    if (bootHonestyCompanion.arrivalPractice?.isOpen?.()) {
+      bootHonestyCompanion.arrivalPractice.hide();
       pendingAutoStartMode = null;
       arrivalChoseThisRun = false;
       suppressCompanionOpenAfterNod = false;
@@ -4937,14 +4937,14 @@ async function init() {
     }
     sessionEndFlow.cancelPending();
     honestyBridge?.hide();
-    honestyCheckInUI.hide();
-    companionModePicker.hide();
+    bootHonestyCompanion.honestyCheckInUI.hide();
+    bootHonestyCompanion.companionModePicker.hide();
     focusDurationPicker?.hide();
     pendingFocusDurationMode = null;
     onboardingHints?.markSeen('quick-start');
     onboardingHints?.markSeen('micro-ritual');
     beginMicroRitualChrome();
-    microRitualUI.openDurationPicker();
+    bootHonestyCompanion.microRitualUI.openDurationPicker();
     resyncSessionChrome();
     syncOnboardingAutoHints();
   };
@@ -4954,7 +4954,7 @@ async function init() {
     if (
       !sessionUiGate.canStartArrivalFromChrome({
         isFocusing: stateManager.state === STATES.FOCUSING,
-        arrivalOpen: arrivalPractice.isOpen(),
+        arrivalOpen: bootHonestyCompanion.arrivalPractice.isOpen(),
         microRitualOpen: isMicroRitualSitLatchActive()
       })
     ) {
@@ -4999,9 +4999,9 @@ async function init() {
       if (sessionUiGate.completionPending) return false;
       sessionEndFlow.cancelPending();
       honestyBridge?.hide();
-      honestyCheckInUI.hide();
+      bootHonestyCompanion.honestyCheckInUI.hide();
 
-      if (arrivalPractice.isOpen()) {
+      if (bootHonestyCompanion.arrivalPractice.isOpen()) {
         // 仪式进行中：Sit 不再充当 Skip — begin；快速开表请用 ⚡ Quick Start
         return false;
       }
@@ -5016,7 +5016,7 @@ async function init() {
         return false;
       }
 
-      requestBeginFocusWithMode(companionModePicker.getSelectedMode());
+      requestBeginFocusWithMode(bootHonestyCompanion.companionModePicker.getSelectedMode());
       return true;
     },
     () => {
@@ -5030,8 +5030,8 @@ async function init() {
         return false;
       }
 
-      companionModePicker.hide();
-      arrivalPractice.hide();
+      bootHonestyCompanion.companionModePicker.hide();
+      bootHonestyCompanion.arrivalPractice.hide();
       // 保持 arrivalGateReady：本场若经 Arrival/⚡ 解锁，回流 Companion 可直接开表
       pendingChoose = null;
       pendingAutoStartMode = null;
@@ -5059,7 +5059,7 @@ async function init() {
       // layout and #btn-focus briefly shows Sit (Rise flash of old orange pill).
       honestyCheckIn.onIncompleteSessionEnded();
       resyncSessionChrome();
-      companionModePicker.setIdleChromeVisible(true);
+      bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
       // Rise：加权池（伸懒腰 60% / 喝茶 25% / 单程看书 15%）hold 进 Reflection；
       // 关面板后再回 idle。深夜亦同——不得披斗篷睡着问「今天注意到什么」。
       // MoodController 在 IDLE 时不覆盖池内 hold 键。
@@ -5301,7 +5301,7 @@ async function init() {
     focusInput.resetButton(focusButton);
     sessionUiGate.setCompletionPending(false);
     resyncSessionChrome();
-    companionModePicker.setIdleChromeVisible(true);
+    bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
     const endOpts = {
       completed: true,
       intention: currentSessionIntention,
@@ -5685,8 +5685,8 @@ async function init() {
 
       if (consumeDevBootIdle()) {
         stateManager.setState(STATES.IDLE);
-        honestyCheckInUI.hide();
-        honestyCheckInUI.hideIdleEntry();
+        bootHonestyCompanion.honestyCheckInUI.hide();
+        bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
         honestyBridge?.hide();
         emotionController.playEmotion('idle', { restart: true });
         resyncSessionChrome();
@@ -5857,16 +5857,16 @@ async function init() {
     focusSession.tick(delta);
     mindfulReminderController.update(delta);
 
-    const microOpen = microRitualUI?.isOpen() === true;
-    const microBreathing = microRitualUI?.phase === 'breath';
+    const microOpen = bootHonestyCompanion.microRitualUI?.isOpen() === true;
+    const microBreathing = bootHonestyCompanion.microRitualUI?.phase === 'breath';
     const ritualBreathing = ritualFlowUI?.isBreathing?.() === true;
     const microElapsed = microBreathing
-      ? microRitualUI.getElapsedSeconds()
+      ? bootHonestyCompanion.microRitualUI.getElapsedSeconds()
       : null;
     const ritualElapsed = ritualBreathing
       ? ritualFlowUI.getElapsedSeconds()
       : null;
-    const microProgress = microBreathing ? microRitualUI.getProgress() : null;
+    const microProgress = microBreathing ? bootHonestyCompanion.microRitualUI.getProgress() : null;
     const ritualProgress = ritualBreathing ? ritualFlowUI.getProgress() : null;
     const overlayBreathing = microBreathing || ritualBreathing;
     const overlayElapsed = microBreathing ? microElapsed : ritualElapsed;
@@ -5930,7 +5930,7 @@ async function init() {
         elapsedSeconds: overlayElapsed ?? 0,
         targetSeconds:
           ((microBreathing
-            ? microRitualUI?.getDurationMinutes?.()
+            ? bootHonestyCompanion.microRitualUI?.getDurationMinutes?.()
             : ritualFlowUI?.getDurationMinutes?.()) ?? 1) * 60,
         ambient: ambientSoundscape
       });
@@ -5946,7 +5946,7 @@ async function init() {
       focusLevelOverride: overlayProgress,
       sessionTargetMinutes: overlayBreathing
         ? microBreathing
-          ? microRitualUI?.getDurationMinutes?.()
+          ? bootHonestyCompanion.microRitualUI?.getDurationMinutes?.()
           : ritualFlowUI?.getDurationMinutes?.()
         : focusSession.isOpenEnded()
           ? null
@@ -6064,8 +6064,8 @@ async function init() {
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
     const overlay =
       Boolean(sessionUiGate?.postSessionOverlayActive) ||
-      arrivalPractice?.isOpen?.() === true ||
-      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() === true ||
+      isHonestyPhaseBusy(bootHonestyCompanion.honestyCheckInUI?.phase);
     return {
       busy: focusing || overlay,
       retry: overlay && !focusing
@@ -6076,8 +6076,8 @@ async function init() {
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
     const overlay =
       Boolean(sessionUiGate?.postSessionOverlayActive) ||
-      arrivalPractice?.isOpen?.() === true ||
-      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() === true ||
+      isHonestyPhaseBusy(bootHonestyCompanion.honestyCheckInUI?.phase);
     return {
       busy: focusing || overlay,
       retry: overlay && !focusing
@@ -6094,7 +6094,7 @@ async function init() {
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
     const overlay =
       Boolean(sessionUiGate?.postSessionOverlayActive) ||
-      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+      isHonestyPhaseBusy(bootHonestyCompanion.honestyCheckInUI?.phase);
     return {
       busy: focusing || overlay,
       retry: overlay && !focusing
@@ -6105,7 +6105,7 @@ async function init() {
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
     const overlay =
       Boolean(sessionUiGate?.postSessionOverlayActive) ||
-      isHonestyPhaseBusy(honestyCheckInUI?.phase);
+      isHonestyPhaseBusy(bootHonestyCompanion.honestyCheckInUI?.phase);
     return {
       busy: focusing || overlay,
       retry: overlay && !focusing
@@ -6116,7 +6116,7 @@ async function init() {
     const focusing = s === STATES.FOCUSING || s === STATES.CELEBRATE;
     const overlay =
       Boolean(sessionUiGate?.postSessionOverlayActive) ||
-      isHonestyPhaseBusy(honestyCheckInUI?.phase) ||
+      isHonestyPhaseBusy(bootHonestyCompanion.honestyCheckInUI?.phase) ||
       focusCircleWitnessLeaveUI?.isLeaveVisible?.() === true ||
       focusCircleWitnessLeaveUI?.isRespondOpen?.() === true;
     return {
