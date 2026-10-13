@@ -96,7 +96,7 @@
 | 冻结 / 开发集 | 调参；调过后只回归。`product_minus_mood_margin` 只在这里定 | 仓内实验室夹具（现有 `confideKbMoodVetoLabSet.js` 等） | 逐句两列：今天走哪层 / 新函数走哪层 |
 | 封存盲测集 | 上线关卡。混合句、产品高于情绪各自成类、每类约 60 句 | 另一个会话；实现 Chat **不看句子** | **仅**按类别汇总通过率；禁止逐句两列 |
 
-**每个本 Brief 版本最多跑 2 次盲测。** 用过的盲测集作废，由另一个会话重出。细则 `task-confide-class-blind-acceptance.md`。
+**每个盲测集版本最多跑 2 次盲测。** 换一套新句子才重置；改本 Brief 不重置。用过的盲测集作废，由另一个会话重出。细则 `task-confide-class-blind-acceptance.md`。
 
 第二轮那 8 句反向风险句已经用来调规则 1，**不能再当唯一验收**。英文 88.9% 差 1 句过线，说明冻结集太小，一句就能翻转结论。
 
@@ -138,7 +138,7 @@ with-prior / KB 第二轮 probe：改认「实验室冻结不退步 + 盲测达�
 ```
 开工
 按 focus-tiger/docs/task-briefs/task-confide-routing-arbitration-v1.md 做第一段影子对照。不要改用户看到的回复。不要切 live。
-盲测只输出按类别汇总的通过率，禁止输出盲测逐句两列或原句。逐句两列只对冻结集。本 Brief 版本最多跑 2 次盲测。
+盲测只输出按类别汇总的通过率，禁止输出盲测逐句两列或原句。逐句两列只对冻结集。每个盲测集版本最多跑 2 次盲测。
 Cursor Model: Grok 4.6 / Fast OFF
 ```
 
