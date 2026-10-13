@@ -950,6 +950,10 @@ export class CompanionL1Runtime {
           ? Number(result.nearestScore)
           : null,
         lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
+        moodScore: Number.isFinite(Number(result.moodScore)) ? Number(result.moodScore) : null,
+        moodOutranksProduct: Number.isFinite(Number(result.moodScore))
+          ? Boolean(result.moodOutranksProduct)
+          : null,
         reason: 'ok',
         timing
       };

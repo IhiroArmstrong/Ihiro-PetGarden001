@@ -9,13 +9,15 @@
  */
 
 import { CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND } from './confideCrisisParaphraseShadow.js';
+import { KB_CATALOG_NEAR_REVIEW_SHADOW_KIND } from './confideKbCatalogNearReview.js';
 
 /** @readonly */
 export const CONFIDE_TURNS_SHADOW_AUDIT_KINDS = Object.freeze([
   'semantic_shadow_classify',
   'semantic_live_classify',
   'kb_product_gate_shadow',
-  CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND
+  CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND,
+  KB_CATALOG_NEAR_REVIEW_SHADOW_KIND
 ]);
 
 /** @readonly */
