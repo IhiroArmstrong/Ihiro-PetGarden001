@@ -59,6 +59,8 @@ focus-tiger/art-reference/models/sources/*
 
 # Local scratch notes at repo root (authoritative text belongs under focus-tiger/docs/)
 /*.rtf
+# Mood-veto zh devset SSOT is focus-tiger/fixtures/ — never a second copy at repo root
+/confide-mood-veto-devset-zh-v1.json
 
 # Worktree session occupancy lock (Agent; never commit)
 .ft-session-lock
