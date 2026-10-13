@@ -56,7 +56,7 @@
 | 集合 | 作用 | 谁能看 | 进仓库？ | 谁生成 |
 |---|---|---|---|---|
 | **回归冻表** | 防退步。#1200 五句、62 句验收、实验室验证集、路由矩阵负例。 | 都能看 | 是 | 仓库既有 |
-| **开发集** | 按类修补对照。每类 ≥15 句变体 + 该类反例。 | 实现会话可看 | 是（开工后落地 PR） | **会话 A**（与盲测不同会话） |
+| **开发集** | 按类修补对照。每类 ≥15 句变体 + 该类反例。 | 实现会话可看 | 是 · SSOT `fixtures/confide-mood-veto-devset-zh-v1.json` + `confideMoodVetoDevsetZhV1.js` | **会话 A**（与盲测不同会话） |
 | **盲测集** | 同类不同说法；修补时没见过。 | 实现会话看不到原文 | **否**（PO 本机、工作区外） | **会话 B** + PO 每类 **5 句**口语混入 |
 
 **禁止**把冻表五句写成 PR「成功标准」后声称「根本解决」。Electron 抽查冻表句，结论只能写「未退步」，不能写「已泛化」。
@@ -103,7 +103,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 
 - **是**：对练习 / 坐下来 / 打坐本身的厌恶、抵触、不想开始。
 - **不是**：怎么开始坐、记录在哪、练了多久；也不是单次身体累（→ 类 5，重叠句标主类即可）。
-- **反例方向**：讨厌的对象不是练习；「怎么开始练习？」等真产品问。
+- **反例方向**：「怎么开始练习？」等真产品问。**不写**「讨厌的对象不是练习」类反例——对练习以外对象的厌恶仍是情绪自述（`present-discomfort` 正例 · `dim=offtopic-object`），期望被否决进观察翼。
 
 ### 2. 当下不适 `present-discomfort`
 
@@ -140,7 +140,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 2. PO 封存到工作区外（建议 `~/Documents/ft-private/confide-mood-blind-zh/`；禁止进本仓库与 `…-wt-*`）。
 3. 本机：`FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1` + 点头后的 holdout 脚本（在 `l0-kb-mood-veto-lab.js` 上扩展或并列新入口，**必须**含安全层先行的流水线）。`LAB_SCRIPT_CONVENTIONS.md` 登记后为准。
 4. 实现 Agent **禁止** `Read` / `Grep` holdout 路径下句子文件。
-5. CI：不跑盲测；继续跑冻表与开发集/冻表**完整原句**泄漏扫描（不含 holdout）。
+5. CI：`npm run audit:confide-acceptance-leak`（`docs:check` 内）——情绪否决实验室冻表 + 开发集**完整原句**不得出现在 `confideProductKnowledgeSemantic.js` 等修补面（#1188 既有四字面见 `CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS`，消融后须清空）。不扫 holdout。
 
 ## #1188 消融（拆正则的条件）
 
@@ -173,6 +173,6 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 
 1. ~~`PRINCIPLES` + `testing-strategy` + `RULES_INDEX`~~（**已完成** · 本旁支）。
 2. Holdout 实验室（安全先行 + 汇总输出 + 不打印盲测原文 + `interrogative_positive_pass_rate` + `crisis-edge-grey` 只报告）。
-3. 开发集入库 + 泄漏扫描。
+3. ~~开发集入库 + 泄漏扫描~~（**已完成** · `docs/confide-mood-veto-devset-ingest`）。
 4. 会话 A / B 生成 + PO 5 句/类 → PO 封存第一批盲测（**生成仍须在 PO 回「按这份 Brief 开工」之后**）。
 5. 消融与拆 #1188：独立 Brief + 新盲测批次。

@@ -26,6 +26,7 @@ import {
   KB_ROUTING_MATRIX_FIXTURES,
   KB_ROUTING_MATRIX_REGRESSION_IDS
 } from './confideKbRoutingMatrix.js';
+import { CONFIDE_MOOD_VETO_DEVSET_ZH_V1_ITEMS } from './confideMoodVetoDevsetZhV1.js';
 import {
   KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS,
   KB_MOOD_VETO_LAB_CONTROL_ROWS,
@@ -62,6 +63,12 @@ describe('CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE', () => {
       [...KB_MOOD_VETO_LAB_MOOD_ROWS, ...KB_MOOD_VETO_LAB_CONTROL_ROWS].map((r) => r.text)
     );
     const leaked = CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE.filter((line) => lab.has(line));
+    assert.deepEqual(leaked, []);
+  });
+
+  it('never seeds from the zh v1 development set', () => {
+    const dev = new Set(CONFIDE_MOOD_VETO_DEVSET_ZH_V1_ITEMS.map((r) => r.text));
+    const leaked = CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE.filter((line) => dev.has(line));
     assert.deepEqual(leaked, []);
   });
 
