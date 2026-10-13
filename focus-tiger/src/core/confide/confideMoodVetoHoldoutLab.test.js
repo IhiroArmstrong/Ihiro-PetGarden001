@@ -14,8 +14,11 @@ import {
   CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT,
   CONFIDE_MOOD_HOLDOUT_UNSEALED,
   authorizeHoldoutRun,
+  canonicalizeHoldoutClassId,
   formatHoldoutSummaryStdout,
   formatHoldoutValidateStdout,
+  hashHoldoutFile,
+  inventoryHoldoutCounts,
   holdoutSafeError,
   parseHoldoutFile,
   readHoldoutRunCount,
@@ -63,29 +66,61 @@ describe('confide mood-veto holdout lab gates', () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it('caps the same holdout set version at two runs, before a third read', () => {
+  function writeMeta(dir, name, body) {
+    const filePath = path.join(dir, name);
+    writeFileSync(filePath, body);
+    return { filePath, contentSha256: hashHoldoutFile(filePath) };
+  }
+
+  it('caps the same holdout set version at two files, one run each', () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), 'ft-holdout-runs-'));
     const logPath = path.join(dir, 'runs.json');
-    assert.equal(authorizeHoldoutRun(logPath, SET_V1), 1);
-    assert.equal(authorizeHoldoutRun(logPath, SET_V1), 2);
+    const a = writeMeta(dir, 'a.json', '{"n":1}\n');
+    const b = writeMeta(dir, 'b.json', '{"n":2}\n');
+    const c = writeMeta(dir, 'c.json', '{"n":3}\n');
+    assert.equal(authorizeHoldoutRun(logPath, SET_V1, a), 1);
     assert.throws(
-      () => authorizeHoldoutRun(logPath, SET_V1),
-      (err) => /同一盲测集版本最多跑 2 次/.test(err.message)
+      () => authorizeHoldoutRun(logPath, SET_V1, a),
+      (err) => /同一盲测文件只能跑分一次/.test(err.message)
     );
+    assert.equal(authorizeHoldoutRun(logPath, SET_V1, b), 2);
+    assert.throws(
+      () => authorizeHoldoutRun(logPath, SET_V1, c),
+      (err) => /最多 2 个过关文件/.test(err.message)
+    );
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('refuses the same version when file bytes change', () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'ft-holdout-runs-'));
+    const logPath = path.join(dir, 'runs.json');
+    const filePath = path.join(dir, 'sealed.json');
+    writeFileSync(filePath, '{"n":1}\n');
+    const first = { filePath, contentSha256: hashHoldoutFile(filePath) };
+    authorizeHoldoutRun(logPath, SET_V1, first);
+    writeFileSync(filePath, '{"n":1,"changed":true}\n');
+    const changed = { filePath, contentSha256: hashHoldoutFile(filePath) };
+    assert.throws(
+      () => authorizeHoldoutRun(logPath, SET_V1, changed),
+      (err) => /内容已变/.test(err.message)
+    );
+    const v2 = writeMeta(dir, 'v2.json', '{"n":2}\n');
+    assert.equal(authorizeHoldoutRun(logPath, 'confide-routing-blind-zh/v2', v2), 1);
     rmSync(dir, { recursive: true, force: true });
   });
 
   it('does not reset the cap when Brief version changes but the set does not', () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), 'ft-holdout-runs-'));
     const logPath = path.join(dir, 'runs.json');
-    authorizeHoldoutRun(logPath, SET_V1);
-    authorizeHoldoutRun(logPath, SET_V1);
+    const a = writeMeta(dir, 'a.json', '{"n":1}\n');
+    const b = writeMeta(dir, 'b.json', '{"n":2}\n');
+    authorizeHoldoutRun(logPath, SET_V1, a);
+    authorizeHoldoutRun(logPath, SET_V1, b);
     assert.equal(readHoldoutRunCount(logPath, SET_V1), 2);
     assert.throws(
-      () => authorizeHoldoutRun(logPath, SET_V1),
-      (err) => /同一盲测集版本最多跑 2 次/.test(err.message)
+      () => authorizeHoldoutRun(logPath, SET_V1, writeMeta(dir, 'c.json', '{"n":3}\n')),
+      (err) => /最多 2 个过关文件/.test(err.message)
     );
-    assert.equal(authorizeHoldoutRun(logPath, 'confide-routing-blind-zh/v2'), 1);
     rmSync(dir, { recursive: true, force: true });
   });
 
@@ -135,6 +170,31 @@ describe('confide mood-veto holdout lab gates', () => {
     const noisy = new Error(`parse failed near ${SECRET}`);
     assert.equal(redactHoldoutError(noisy).includes(SECRET), false);
     assert.equal(redactHoldoutError(holdoutSafeError(CONFIDE_MOOD_HOLDOUT_UNSEALED)).includes(SECRET), false);
+  });
+
+  it('maps Brief class ids onto sealed-file ids', () => {
+    assert.equal(canonicalizeHoldoutClassId('mixed-mood-product'), 'mixed');
+    assert.equal(canonicalizeHoldoutClassId('product-outranks-mood'), 'product-over-emotion');
+    assert.equal(canonicalizeHoldoutClassId('mixed-emotion-dominant'), 'mixed-emotion-dominant');
+  });
+
+  it('inventories counts without echoing dummy text', () => {
+    const bag = inventoryHoldoutCounts([
+      { class: 'mixed-mood-product', dim: 'aversion+reminder', expect: 'product_short_answer', text: SECRET },
+      { class: 'product-outranks-mood', dim: 'weak+sit', expect: 'product_short_answer', text: SECRET },
+      { class: 'mixed-emotion-dominant', dim: 'product-word-aside', expect: 'emotion', text: SECRET },
+      { class: 'escape-urge', dim: '仅报告', expect: 'emotion', text: SECRET },
+      { class: 'escape-urge', dim: 'crisis-edge', expect: 'safety', text: SECRET },
+      { class: 'escape-urge', dim: 'interrogative-positive', expect: 'emotion', text: SECRET }
+    ]);
+    assert.equal(bag.mixed.n_counter, 1);
+    assert.equal(bag['product-over-emotion'].n_counter, 1);
+    assert.equal(bag['mixed-emotion-dominant'].n_positive, 1);
+    assert.equal(bag['escape-urge'].n_crisis_grey, 1);
+    assert.equal(bag['escape-urge'].n_crisis_edge, 1);
+    assert.equal(bag['escape-urge'].n_noncrisis_positive, 1);
+    assert.equal(bag['escape-urge'].n_interrogative_positive, 1);
+    assert.equal(JSON.stringify(bag).includes(SECRET), false);
   });
 
   it('parses items without keeping the utterance on the stripped row', () => {

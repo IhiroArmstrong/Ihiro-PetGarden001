@@ -23,8 +23,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   authorizeHoldoutRun,
+  defaultHoldoutRunLogPath,
   formatHoldoutSummaryStdout,
   formatHoldoutValidateStdout,
+  hashHoldoutFile,
   parseHoldoutFile,
   redactHoldoutError,
   resolveHoldoutFilePath,
@@ -37,7 +39,7 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FOCUS_TIGER = path.resolve(__dirname, '../..');
 const LAB_DIR = '/tmp/ft-l0-lab';
-const RUN_LOG = path.join(LAB_DIR, 'mood-veto-holdout-runs.json');
+const RUN_LOG = process.env.FT_CONFIDE_MOOD_HOLDOUT_RUN_LOG || defaultHoldoutRunLogPath();
 
 function isValidateOnly() {
   return (
@@ -109,7 +111,10 @@ async function main() {
   }
 
   try {
-    authorizeHoldoutRun(RUN_LOG, parsed.holdoutSetVersion);
+    authorizeHoldoutRun(RUN_LOG, parsed.holdoutSetVersion, {
+      filePath: holdoutPath,
+      contentSha256: hashHoldoutFile(holdoutPath)
+    });
   } catch (err) {
     process.stderr.write(`[mood-veto-holdout] ${redactHoldoutError(err)}\n`);
     process.exit(1);

@@ -9,7 +9,9 @@
  * Not product-path. CI must not run the GGUF CLI.
  */
 
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
@@ -30,6 +32,27 @@ export const CONFIDE_MOOD_HOLDOUT_CLASS_IDS = Object.freeze([
   'escape-urge',
   'practice-fatigue'
 ]);
+
+/** Brief id → sealed-file id. Merge / validate-only must apply this before scoring. */
+export const CONFIDE_HOLDOUT_CLASS_ALIASES = Object.freeze({
+  'mixed-mood-product': 'mixed',
+  'product-outranks-mood': 'product-over-emotion'
+});
+
+export const CONFIDE_HOLDOUT_ROUTING_CLASS_IDS = Object.freeze([
+  'mixed',
+  'product-over-emotion',
+  'mixed-emotion-dominant'
+]);
+
+/**
+ * @param {unknown} raw
+ * @returns {string}
+ */
+export function canonicalizeHoldoutClassId(raw) {
+  const id = String(raw || '').trim();
+  return CONFIDE_HOLDOUT_CLASS_ALIASES[id] || id;
+}
 
 export const CONFIDE_MOOD_HOLDOUT_UNSEALED = '未封存';
 export const CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT = '样本不足';
@@ -97,15 +120,39 @@ export function resolveHoldoutFilePath(envPath, workspaceRoot) {
 }
 
 /**
+ * Durable run log (not /tmp). Override with FT_CONFIDE_MOOD_HOLDOUT_RUN_LOG in tests.
+ * @returns {string}
+ */
+export function defaultHoldoutRunLogPath() {
+  return path.join(os.homedir(), 'Documents', 'ft-private', 'mood-veto-holdout-runs.json');
+}
+
+/**
+ * @param {string} absPath
+ * @returns {string} hex sha256 of file bytes
+ */
+export function hashHoldoutFile(absPath) {
+  return createHash('sha256').update(readFileSync(absPath)).digest('hex');
+}
+
+function scoredFileCount(slot) {
+  if (typeof slot === 'number') return Number.isFinite(slot) && slot > 0 ? Math.floor(slot) : 0;
+  if (!slot || typeof slot !== 'object') return 0;
+  const legacy = Number(slot.legacyRuns);
+  const files = slot.files && typeof slot.files === 'object' ? slot.files : {};
+  const hashed = Object.values(files).filter((f) => Number(f?.runs) > 0).length;
+  return hashed + (Number.isFinite(legacy) && legacy > 0 ? Math.floor(legacy) : 0);
+}
+
+/**
  * @param {string} logPath
  * @param {string} holdoutSetVersion
- * @returns {number} runs already recorded (before this attempt)
+ * @returns {number} distinct scoring files already recorded
  */
 export function readHoldoutRunCount(logPath, holdoutSetVersion) {
   try {
     const raw = JSON.parse(readFileSync(logPath, 'utf8'));
-    const n = Number(raw?.byHoldoutSetVersion?.[holdoutSetVersion]);
-    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+    return scoredFileCount(raw?.byHoldoutSetVersion?.[holdoutSetVersion]);
   } catch {
     return 0;
   }
@@ -113,23 +160,24 @@ export function readHoldoutRunCount(logPath, holdoutSetVersion) {
 
 /**
  * Authorize then increment. Call after envelope parse, never in validate-only.
- * Quota is per **holdout set version** (new sentences), not Brief version.
+ * Quota is per holdout **file** (one scoring run); max two files per `holdout_set_version`.
+ * First run records content SHA-256; same version with changed bytes is refused.
  * @param {string} logPath
  * @param {string} holdoutSetVersion
- * @returns {number} count after increment
+ * @param {{ filePath: string, contentSha256: string }} fileMeta
+ * @returns {number} distinct scoring files after this increment
  */
-export function authorizeHoldoutRun(logPath, holdoutSetVersion) {
+export function authorizeHoldoutRun(logPath, holdoutSetVersion, fileMeta) {
   const version = String(holdoutSetVersion || '').trim();
   if (!version) {
     throw holdoutSafeError('缺少盲测集版本', 'NO_SET_VERSION');
   }
-  const used = readHoldoutRunCount(logPath, version);
-  if (used >= CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET) {
-    throw holdoutSafeError(
-      `同一盲测集版本最多跑 ${CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET} 次`,
-      'RUN_CAP'
-    );
+  const filePath = path.resolve(String(fileMeta?.filePath || ''));
+  const sha = String(fileMeta?.contentSha256 || '').trim().toLowerCase();
+  if (!filePath || filePath === path.sep || !sha) {
+    throw holdoutSafeError('缺少盲测文件哈希', 'NO_FILE_HASH');
   }
+
   mkdirSync(path.dirname(logPath), { recursive: true });
   let bag = { byHoldoutSetVersion: {} };
   try {
@@ -141,10 +189,36 @@ export function authorizeHoldoutRun(logPath, holdoutSetVersion) {
   } catch {
     bag = { byHoldoutSetVersion: {} };
   }
-  const next = used + 1;
-  bag.byHoldoutSetVersion[version] = next;
+
+  let slot = bag.byHoldoutSetVersion[version];
+  if (typeof slot === 'number') {
+    slot = { files: {}, legacyRuns: slot };
+  }
+  if (!slot || typeof slot !== 'object') slot = { files: {} };
+  if (!slot.files || typeof slot.files !== 'object') slot.files = {};
+
+  const rec = slot.files[filePath];
+  if (rec) {
+    if (String(rec.sha256 || '').toLowerCase() !== sha) {
+      throw holdoutSafeError('同一 holdout_set_version 内容已变，须升版本号', 'HASH_CHANGED');
+    }
+    if (Number(rec.runs) >= 1) {
+      throw holdoutSafeError('同一盲测文件只能跑分一次', 'FILE_SCORED');
+    }
+  }
+
+  const used = scoredFileCount(slot);
+  if (!rec && used >= CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET) {
+    throw holdoutSafeError(
+      `同一盲测集版本最多 ${CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET} 个过关文件`,
+      'RUN_CAP'
+    );
+  }
+
+  slot.files[filePath] = { sha256: sha, runs: 1 };
+  bag.byHoldoutSetVersion[version] = slot;
   writeFileSync(logPath, `${JSON.stringify(bag)}\n`, 'utf8');
-  return next;
+  return scoredFileCount(slot);
 }
 
 function itemTags(item) {
@@ -266,18 +340,79 @@ export function formatHoldoutValidateStdout(report) {
  */
 export function stripHoldoutItem(item) {
   if (!item || typeof item !== 'object') return null;
-  const classId = String(item.class_id || item.classId || '').trim();
+  const classId = canonicalizeHoldoutClassId(item.class_id || item.classId || item.class);
   const role = String(item.role || '').trim();
+  const dim = String(item.dim || '').trim();
   const tags = Array.isArray(item.tags) ? item.tags.map((t) => String(t)) : [];
   if (item.tag) tags.push(String(item.tag));
+  if (dim) tags.push(dim);
+  const source = String(item.source || '').trim();
+  const expect = String(item.expect || '').trim();
   return {
     classId,
     role,
     tags,
-    crisisEdge: tags.includes('crisis-edge') || role === 'crisis-edge',
-    crisisGrey: tags.includes('crisis-edge-grey') || role === 'crisis-edge-grey',
-    interrogativePositive: tags.includes('interrogative-positive')
+    source,
+    expect,
+    crisisEdge: tags.includes('crisis-edge') || role === 'crisis-edge' || dim === 'crisis-edge',
+    crisisGrey:
+      tags.includes('crisis-edge-grey') ||
+      role === 'crisis-edge-grey' ||
+      dim === 'crisis-edge-grey' ||
+      dim === '仅报告',
+    interrogativePositive: tags.includes('interrogative-positive') || dim === 'interrogative-positive'
   };
+}
+
+/**
+ * Counts only. Never reads or returns utterance text.
+ * @param {object[]} items
+ * @returns {Record<string, { n: number, n_positive: number, n_counter: number, n_interrogative_positive: number, n_po_spoken: number, n_crisis_edge: number, n_crisis_grey: number, n_noncrisis_positive: number }>}
+ */
+export function inventoryHoldoutCounts(items) {
+  /** @type {Record<string, ReturnType<typeof emptyInventory>>} */
+  const byClass = {};
+  function emptyInventory() {
+    return {
+      n: 0,
+      n_positive: 0,
+      n_counter: 0,
+      n_interrogative_positive: 0,
+      n_po_spoken: 0,
+      n_crisis_edge: 0,
+      n_crisis_grey: 0,
+      n_noncrisis_positive: 0
+    };
+  }
+  function slot(id) {
+    const key = canonicalizeHoldoutClassId(id) || '(missing-class)';
+    if (!byClass[key]) byClass[key] = emptyInventory();
+    return byClass[key];
+  }
+  for (const raw of items || []) {
+    const meta = stripHoldoutItem(raw);
+    if (!meta) continue;
+    const s = slot(meta.classId);
+    s.n += 1;
+    if (meta.source === 'po-spoken') s.n_po_spoken += 1;
+    if (meta.crisisGrey) {
+      s.n_crisis_grey += 1;
+      continue;
+    }
+    if (meta.crisisEdge) {
+      s.n_crisis_edge += 1;
+      continue;
+    }
+    const productExpect = meta.expect.startsWith('product') || meta.expect === 'chitchat';
+    if (meta.role === 'counter' || productExpect) {
+      s.n_counter += 1;
+    } else {
+      s.n_positive += 1;
+      s.n_noncrisis_positive += 1;
+      if (meta.interrogativePositive) s.n_interrogative_positive += 1;
+    }
+  }
+  return byClass;
 }
 
 function isSafetyPriority(route) {
