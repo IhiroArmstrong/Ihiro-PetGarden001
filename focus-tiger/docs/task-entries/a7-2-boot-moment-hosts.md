@@ -1,7 +1,7 @@
 ---
 id: a7-2-boot-moment-hosts
 kind: feature
-status: 本支 chore/a7-2-boot-moment-hosts
+status: 已合 #1199
 updated: 2026-10-13
 ---
 

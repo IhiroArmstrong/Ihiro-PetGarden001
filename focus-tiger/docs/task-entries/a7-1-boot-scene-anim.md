@@ -1,7 +1,7 @@
 ---
 id: a7-1-boot-scene-anim
 kind: feature
-status: 本支 chore/a7-1-boot-scene-anim
+status: 已合 #1192
 updated: 2026-10-13
 ---
 
