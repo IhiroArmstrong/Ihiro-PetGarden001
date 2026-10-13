@@ -1,6 +1,6 @@
 # Task Brief · 知识库产品闸加「情绪 / 生活自述」否决（根因方案 · 中英日）
 
-> **状态（2026-10-13）**：**第一段已点头**（PO 决定见下文「PO 决定（2026-10-13 · 第一段已点头）」）。实验室第一轮、第二轮、第三轮均未过关（第三轮英文 51/57 = 89.5%）。第三轮后 PO 决定见「PO 决定（实验室第三轮后）」：**第二段不点头**，不再跑 Library C 分数同类实验室；否决形态保持「只加否决、不加规则 1」，第二段仍不上线。
+> **状态（2026-10-13）**：实验室三轮与「第二段已点头」口径仍保留在下文供追溯。**盘点拍板（同日稍后）**：情绪否决改为 **路由仲裁 v1 的前两刀之一**，切 live 改走 [`task-confide-routing-arbitration-v1.md`](./task-confide-routing-arbitration-v1.md)；本文件不再单独作为切真路由的开工令。问法收窄 = 产品分明显高于情绪分，**不是**新正则。评测加盲测分层（R-0）。日语本轮放过。
 > **类别**：分两段。第一段影子 + 实验室 = **A 类**（不改用户看到的回复）；第二段切 live = **B 类**（改变回复来源），须本 Brief 第二段单独点头。
 > **分支建议**：第一段 `feature/confide-kb-gate-mood-veto-shadow`；第二段另开 `feature/confide-kb-gate-mood-veto-live`。各一 PR。
 > **来源**：`ISSUE_LEDGER.md`「根因扇出 · Confide 把生活/情绪句判成产品问」；#1188 只补了三族中文字面豁免（`task-confide-mood-aside-product-gate.md`），根因未解。
@@ -56,11 +56,13 @@
 | 实验室 | 复用 `desktop/scripts/l0-kb-near-calibrate.js`（或同目录新脚本，按 `LAB_SCRIPT_CONVENTIONS.md` 命名），对下方验证集出表：每句 productScore / moodScore / lifeScore / 是否否决 |
 | 冷启动成本 | 多算约 45–60 个向量，与 C / LIFE 同一批预计算，走现有 `l1LlamaWorkGate`；实验室须报冷启动多出的毫秒数 |
 
-### 第二段（B 类 · 切 live · 第一段数据过关后再点头）
+### 第二段（B 类 · 中文 live · 2026-10-13 已点头）
 
-`resolveProductKnowledgeGateAction`：`semanticIsProduct` 或 `nearAction === 'honesty'` 时，若 `moodOutranksProduct` → `skip`（走观察翼），与现有 `lifeOutranksProduct` 同一处、同一写法。`catalogHit` 仍最先判，命中短答照常答。
+`resolveProductKnowledgeGateAction`：仅当 `moodVetoLive` 为真、句子判为中文（有汉字、无假名）、且 `moodOutranksProduct` 时，在 `semanticIsProduct` 或 `nearAction === 'honesty'` 处改为 `skip`，与 `lifeOutranksProduct` 同一处。英文、日文即使开关打开也不改回复。`catalogHit` 仍最先判。#1188 字面豁免仍在 embedding 判断之前。
 
-#1188 的字面豁免**保留**作冷启动 / embedding 未就绪时的兜底，不删。
+开关：`isConfideKbMoodVetoLive`。未设置变量 = 关。`FT_CONFIDE_KB_MOOD_VETO=live` 且 Electron **未打包**才把 `moodVetoLive` 传进发送链（`semanticProductKnowledgeGate` 的返回字段）。`shadow` / `off` = 只记日志。
+
+`classifyProductKnowledgeGate` 继续只算 `moodScore` / `moodOutranksProduct`，不在那里决定回复。2b 不读这个开关。
 
 ## 验证集（实验室 · 过关门槛）
 
@@ -183,7 +185,7 @@
 - 对照组今天就走观察翼的仍是「坐着 能不能 聊」1 句。
 - margin 扫描（0 / 0.02 / 0.05）：误否决 2 / 2 / 2，中文否决 40 / 39 / 37，英文 51 / 51 / 48。**调 margin 仍解决不了。**
 
-窄规则用的是现网「过不过 0.42」这一刀，切不开「功能问」和「带怎么的情绪句」。第二段仍不点头。本轮没有改阈值，也没有接发送链。第三轮之后的决定见下节：不再跑 Library C 分数同类实验室。
+窄规则用的是现网「过不过 0.42」这一刀，切不开「功能问」和「带怎么的情绪句」。第三轮当时第二段不点头。本轮没有改阈值。第三轮之后的决定见下节；再往下是后来的第二段点头。
 
 ### PO 决定（实验室第三轮后 · 2026-10-13）
 
@@ -198,6 +200,28 @@
 | 5 | **2b 继续 shadow** |
 | 6 | 目录 / 近邻误命中情绪句升级为正式 Brief，含「徽章≠寅币」。方向：目录或近邻命中之后，再过一道「这句是不是情绪自述」的复核。本决定只锁 Brief，不实现。见 [`task-confide-kb-catalog-near-misfire.md`](./task-confide-kb-catalog-near-misfire.md) |
 
+### PO 决定（第二段已点头 · 2026-10-13）
+
+PO 在第三轮「先不点头」之后另行点头，切中文 live。覆盖上面「第二段不点头 / 第二段仍不上线」，以及验证集旧门槛「对照组误否决必须 0」。不再跑 Library C 分数同类实验室。不加规则 1。
+
+| # | 决定 |
+|---|---|
+| 1 | **只加否决，不加规则 1。** 旧规则 1 与窄规则 1 都不进发送链 |
+| 2 | **中文先上。** 英文这次不改回复（次之，影子继续记分）。**日文等母语审，审前不上日语路径** |
+| 3 | 混合句 2 句误否决（「太累了，怎么关提醒？」「疲れた、リマインダーはどう消す？」）**接受**。影子继续数。日文那句因决定 2 这次仍不会被否决改道 |
+| 4 | **开关默认关。** `FT_CONFIDE_KB_MOOD_VETO=live` 只在**未打包**的本机 Electron 把中文否决接到回复上。打包版和网页忽略 `live`。回滚 = 设成 `shadow` 或 `off`（或删掉变量），回到只记日志 |
+| 5 | **2b 继续 shadow**，不接否决 |
+| 6 | 「I'm just sitting here for a bit」**不单独处理**（目录 / 近邻先命中仍先答，归 #1198） |
+| 7 | 徽章改代码前再确认。本刀**不改**目录 / 近邻复核（#1198），继续只记日志 |
+| 8 | **#1188 字面豁免保留**（冷启动 / embedding 未就绪兜底） |
+
+**本刀验收集（开关打开、embedding 就绪、情绪分压过产品分时）**
+
+| 句子 | 期望 |
+|---|---|
+| 我讨厌练习 / 今天感觉不爽 / 想起以前 / 想喝酒 / 练太久 | 观察翼（`skip` → generate） |
+| 观察翼是什么 | 仍诚实空态（产品分不低于情绪分时不得被否决带走） |
+
 ## 拍板（已由上文「PO 决定」定案；本表保留当时选项供追溯）
 
 | 项 | 选项 | 我认为最合理的 |
@@ -208,13 +232,13 @@
 
 ## 冲突扫描（对照 `SCENARIO_TESTS.md`）
 
-- **场景 AE · KB 诚实空态**：真产品问未命中、产品抱怨仍诚实空态；验证集「误否决 0」锁住，强度不变。
+- **场景 AE · KB 诚实空态**：真产品问未命中、产品抱怨仍诚实空态。PO 已接受混合句 2 句在中文开关打开时会进观察翼，覆盖旧「误否决必须 0」。`观察翼是什么` 在情绪分没有压过产品分时仍诚实空态。
 - **CI-00/02 练习事实**：「我练了多久」类在验证集里要求不否决；且练习事实路由在产品闸之前，本刀不碰。
 - **观察翼语气**：否决后走现有 generate + sanitize，与 #1188 三族同路，不新增人设句。
 - **Stage 2 粗分流**：不改 Library A / B，不改 `applyConfideStage2Route`。
 - **Stage 2b**：若选「一并接」，只会让 2b **少**抬桶，不会多抬；负例表要求本就是不抬。
 
-**结论**：无未拍板冲突（上表三项是方案选择，不是冲突）。第三轮后第二段不点头，现网回复不变；实验室里那 2 句混合句误否决只留在影子观察，不改场景 AE。
+**结论**：无未拍板冲突。第二段已点头只改中文、且默认关；场景 AE 上那 2 句混合句的强度变化已由 PO 接受。目录近邻与徽章仍只记日志。
 
 ## 明确不做
 
@@ -226,4 +250,4 @@
 
 ## 回滚
 
-第二段：去掉 `resolveProductKnowledgeGateAction` 里的 `moodOutranksProduct` 分支即回到 #1188 行为；第一段只多打日志，可直接留着。
+第二段回滚：把 `FT_CONFIDE_KB_MOOD_VETO` 设成 `shadow` 或 `off`（或删掉），中文回复回到只记日志。第一段日志可留着。不删 #1188。

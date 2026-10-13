@@ -86,6 +86,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `background-network` | 非用户点击的网络请求（时机 / 写盘 / 慢网动效） | `focus-tiger/docs/BACKGROUND_NETWORK.md` | 实现前三问（强制） |
 | `chat-openable-file-links` | 用户可见回复里文件须可点开、可定位（禁止只写反引号路径） | `WORKFLOW.md` | 用户可见回复：文件须可点开、可定位（强制） |
 | `batch-before-human` | 减少人工测试与审核（能终端批量就不要整表请人） | `.cursor/rules/testing-strategy.mdc` | 减少人工测试与审核（batch-before-human · 强制） |
+| `confide-class-blind` | Confide 按类盲测与冻表分工（R-Confide-Class） | `.cursor/rules/testing-strategy.mdc` | Confide 按类盲测与冻表分工（confide-class-blind · 强制） |
 
 <!-- rules-authority-index:end -->
 
@@ -209,7 +210,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
-| `PRINCIPLES.md` | 硬性红线（**用户体验优先** / 经济可持续 / **菜单逃生舱** / 非 MVP-only） |
+| `PRINCIPLES.md` | 硬性红线（**用户体验优先** / **Confide 评测 R-0** / 经济可持续 / **菜单逃生舱** / 非 MVP-only） |
 | `MENU_CHROME_CENSUS.md` | **角落按钮 vs ⋯/抽屉对照** + 菜单治理四条进度（从属 PRINCIPLES 逃生舱；**无新运行时**） |
 | `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收反馈 vs 结果反馈 vs 已知静默（`interaction-feedback`） |
 | `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |

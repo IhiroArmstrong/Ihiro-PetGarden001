@@ -1,7 +1,7 @@
 ---
 id: a6-main-use-before-define
 kind: feature
-status: 本支 chore/a6-main-use-before-define
+status: 已合 #1189
 updated: 2026-10-13
 ---
 

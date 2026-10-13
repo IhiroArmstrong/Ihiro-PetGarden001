@@ -27,6 +27,7 @@
     "companion:semantic-live-coldstart-probe": "node scripts/l0-semantic-live-coldstart-probe.js",
     "companion:voice-input-probe": "node scripts/voice-input-probe.js",
     "companion:system-tts-probe": "node scripts/system-tts-probe.js",
+    "companion:mood-veto-holdout": "node scripts/l0-kb-mood-veto-holdout-lab.js",
     "bytecode:compile": "electron scripts/compile-v8-bytecode.js"
   },
   "dependencies": {

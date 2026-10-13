@@ -13,8 +13,11 @@ import {
   CONFIDE_SEMANTIC_LIBRARY_C,
   CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE
 } from './confideSemanticExamples.js';
+import { readFileSync } from 'node:fs';
 import {
   DEFAULT_CONFIDE_KB_MOOD_VETO_MARGIN,
+  confideKbMoodVetoUtteranceLang,
+  isConfideKbMoodVetoLive,
   isProductKnowledgeColdStartProbe,
   moodAsideOutranksProductLibrary,
   resolveProductKnowledgeGateAction
@@ -23,6 +26,7 @@ import {
   KB_ROUTING_MATRIX_FIXTURES,
   KB_ROUTING_MATRIX_REGRESSION_IDS
 } from './confideKbRoutingMatrix.js';
+import { CONFIDE_MOOD_VETO_DEVSET_ZH_V1_ITEMS } from './confideMoodVetoDevsetZhV1.js';
 import {
   KB_MOOD_VETO_LAB_CONTROL_EXCLUDED_MATRIX_IDS,
   KB_MOOD_VETO_LAB_CONTROL_ROWS,
@@ -62,6 +66,12 @@ describe('CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE', () => {
     assert.deepEqual(leaked, []);
   });
 
+  it('never seeds from the zh v1 development set', () => {
+    const dev = new Set(CONFIDE_MOOD_VETO_DEVSET_ZH_V1_ITEMS.map((r) => r.text));
+    const leaked = CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE.filter((line) => dev.has(line));
+    assert.deepEqual(leaked, []);
+  });
+
   it('is a separate library from A / B / C', () => {
     assert.notEqual(CONFIDE_SEMANTIC_LIBRARY_MOOD_ASIDE, CONFIDE_SEMANTIC_LIBRARY_B);
     const ja = (line) => kbMoodVetoLabLanguage(line) === 'ja';
@@ -83,8 +93,7 @@ describe('moodAsideOutranksProductLibrary', () => {
 });
 
 describe('stage one leaves the live gate action alone', () => {
-  it('a mood-shaped semantic product hit still goes to honesty today', () => {
-    // Stage two (separate PO nod) would turn this into skip.
+  it('a mood-shaped semantic product hit still goes to honesty when the switch is off', () => {
     assert.equal(
       resolveProductKnowledgeGateAction({
         text: 'I want a cigarette',
@@ -97,6 +106,146 @@ describe('stage one leaves the live gate action alone', () => {
       }),
       'honesty'
     );
+  });
+});
+
+describe('live Chinese mood veto', () => {
+  const liveProduct = {
+    embeddingState: 'ready',
+    semanticIsProduct: true,
+    catalogHit: false,
+    nearAction: null,
+    lifeOutranksProduct: false,
+    moodOutranksProduct: true,
+    moodVetoLive: true
+  };
+
+  it('keeps the switch off unless unpackaged Electron explicitly asks for live', () => {
+    assert.equal(isConfideKbMoodVetoLive({}), false);
+    assert.equal(isConfideKbMoodVetoLive({ FT_CONFIDE_KB_MOOD_VETO: 'live' }), false);
+    assert.equal(
+      isConfideKbMoodVetoLive(
+        { FT_CONFIDE_KB_MOOD_VETO: 'live' },
+        { electronUnpackaged: true }
+      ),
+      true
+    );
+    assert.equal(
+      isConfideKbMoodVetoLive(
+        { FT_CONFIDE_KB_MOOD_VETO: 'shadow' },
+        { electronUnpackaged: true }
+      ),
+      false
+    );
+    assert.equal(
+      isConfideKbMoodVetoLive({ FT_CONFIDE_KB_MOOD_VETO: 'off' }, { electronUnpackaged: true }),
+      false
+    );
+  });
+
+  it('sends the Chinese acceptance lines to the observe wing only while live', () => {
+    for (const text of ['我讨厌练习', '今天感觉不爽']) {
+      assert.equal(confideKbMoodVetoUtteranceLang(text), 'zh');
+      assert.equal(
+        resolveProductKnowledgeGateAction({ ...liveProduct, text, moodVetoLive: false }),
+        'honesty'
+      );
+      assert.equal(resolveProductKnowledgeGateAction({ ...liveProduct, text }), 'skip');
+    }
+    for (const text of ['想起以前', '想喝酒', '练太久']) {
+      assert.equal(
+        resolveProductKnowledgeGateAction({ ...liveProduct, text, moodVetoLive: false }),
+        'skip'
+      );
+      assert.equal(resolveProductKnowledgeGateAction({ ...liveProduct, text }), 'skip');
+    }
+  });
+
+  it('keeps 观察翼是什么 on the honesty empty state when mood does not outrank', () => {
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        ...liveProduct,
+        text: '观察翼是什么',
+        moodOutranksProduct: false
+      }),
+      'honesty'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: '观察翼是什么',
+        embeddingState: 'not_ready',
+        semanticIsProduct: false,
+        catalogHit: false,
+        moodOutranksProduct: true,
+        moodVetoLive: true
+      }),
+      'honesty'
+    );
+  });
+
+  it('does not live-route English or Japanese, and does not special-case the sitting line', () => {
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        ...liveProduct,
+        text: "I'm just sitting here for a bit"
+      }),
+      'honesty'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        ...liveProduct,
+        text: "I'm just sitting here for a bit",
+        catalogHit: true
+      }),
+      'hit'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        ...liveProduct,
+        text: '練習したくない、お酒が飲みたい'
+      }),
+      'honesty'
+    );
+  });
+
+  it('accepts the Chinese mixed-sentence false veto and still answers a catalog hit', () => {
+    assert.equal(
+      resolveProductKnowledgeGateAction({ ...liveProduct, text: '太累了，怎么关提醒？' }),
+      'skip'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        ...liveProduct,
+        text: '太累了，怎么关提醒？',
+        catalogHit: true
+      }),
+      'hit'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        ...liveProduct,
+        text: '我讨厌练习',
+        nearAction: 'honesty',
+        semanticIsProduct: false
+      }),
+      'skip'
+    );
+  });
+
+  it('wires the switch through the product-gate send chain', () => {
+    const ui = readFileSync(new URL('../../ui/ConfideToYinUI.js', import.meta.url), 'utf8');
+    const runtime = readFileSync(
+      new URL('../../../desktop/companion/l1Runtime.js', import.meta.url),
+      'utf8'
+    );
+    const hold = readFileSync(
+      new URL('../../../desktop/companion/l1EmbeddingHold.js', import.meta.url),
+      'utf8'
+    );
+    assert.match(ui, /moodVetoLive: gate\?\.moodVetoLive === true/);
+    assert.match(runtime, /isConfideKbMoodVetoLive\(this\.env/);
+    assert.match(hold, /moodOutranksProduct: mood\.moodOutranksProduct/);
+    assert.doesNotMatch(ui, /stage2bLivePromote[\s\S]{0,80}moodVetoLive/);
   });
 });
 

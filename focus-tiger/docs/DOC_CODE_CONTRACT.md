@@ -159,7 +159,7 @@ node focus-tiger/scripts/pre-push-startup-smoke.js
 cd focus-tiger && npm run lint:main-use-before-define
 ```
 
-ESLint `no-use-before-define` 只开变量规则、只打 `src/main.js`。#1139 夹具（`scripts/fixtures/tdz-onboarding-hints-1139.js`）必须报 `onboardingHints`。现存违例见 `scripts/main-use-before-define-exemptions.js`（帽子只减不增；A7.3 已去掉 `honestyCheckInUI` / `companionModePicker` / `microRitualUI` / `arrivalPractice`）。函数声明豁免。拆 `init()` 按 A7 分段分刀，不得与功能 PR 混线。
+ESLint `no-use-before-define` 只开变量规则、只打 `src/main.js`。#1139 夹具（`scripts/fixtures/tdz-onboarding-hints-1139.js`）必须报 `onboardingHints`。现存违例见 `scripts/main-use-before-define-exemptions.js`（帽子只减不增；A7.3 已去掉 `honestyCheckInUI` / `companionModePicker` / `microRitualUI` / `arrivalPractice`，现 **12 名 / 49 次**）。函数声明豁免。拆 `init()` 见 A7 Brief [`task-briefs/task-a7-init-split.md`](./task-briefs/task-a7-init-split.md)，按分段分刀，不得与功能 PR 混线。
 
 **绕过（不推荐）**：
 

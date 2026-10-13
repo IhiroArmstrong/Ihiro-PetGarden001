@@ -1,5 +1,7 @@
 # Confide · embedding 生命周期与其它工作的避让（现状说明）
 
+> **命名（2026-10-13）**：本文是 **生命周期仲裁**（谁先 `getLlama` / 加载排队）。**不是**路由仲裁（一句话走产品还是情绪）。路由规格：`task-briefs/task-confide-routing-arbitration-v1.md`。禁止混用「统一仲裁」。
+>
 > **2026-09-21** · 说明文档，**无新运行时**。三次症状不同、同窗：embedding 正在加载或刚加载完。  
 > **2026-09-22**：工作闸规格见 `task-briefs/task-confide-embedding-work-gate.md`（待 PO 点头）。  
 > **同日补正**：Confide 桌面状态条**没有**「向量就绪 / embedding ready」文案。`Model4E4` / `Model317` 只表示**主聊天 GGUF** 就绪（Prompt 10 / #872 故意过滤 `embedding_*`，避免幽灵 Downloading）。
