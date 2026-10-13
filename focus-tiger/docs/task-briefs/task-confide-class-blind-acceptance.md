@@ -140,7 +140,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 2. PO 封存到工作区外（建议 `~/Documents/ft-private/confide-mood-blind-zh/`；禁止进本仓库与 `…-wt-*`）。
 3. 本机：`FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1` + 点头后的 holdout 脚本（在 `l0-kb-mood-veto-lab.js` 上扩展或并列新入口，**必须**含安全层先行的流水线）。`LAB_SCRIPT_CONVENTIONS.md` 登记后为准。
 4. 实现 Agent **禁止** `Read` / `Grep` holdout 路径下句子文件。
-5. CI：`npm run audit:confide-acceptance-leak`（`docs:check` 内）——情绪否决实验室冻表 + 开发集**完整原句**不得出现在 `confideProductKnowledgeSemantic.js` 等修补面（#1188 既有四字面见 `CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS`，消融后须清空）。不扫 holdout。
+5. CI：`npm run audit:confide-acceptance-leak`（`docs:check` 内）——情绪否决实验室冻表 + 开发集**完整原句**不得出现在 `confideProductKnowledgeSemantic.js` 等修补面（#1188 既有四字面见 `CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS`，**仅收缩**，消融拆正则后清空，新增须 PO 书面点头）。扫描只防整句照抄，不防改字后复制；防过拟合靠盲测。不扫 holdout。开发集 SSOT 只在 `focus-tiger/fixtures/confide-mood-veto-devset-zh-v1.json`——禁止在仓库根再放一份同名 JSON。
 
 ## #1188 消融（拆正则的条件）
 

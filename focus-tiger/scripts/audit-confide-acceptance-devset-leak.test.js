@@ -5,7 +5,10 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { listConfideMoodVetoFrozenAndDevsetFullLines } from '../src/core/confide/confideAcceptanceFrozenSentenceCorpus.js';
+import {
+  CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS,
+  listConfideMoodVetoFrozenAndDevsetFullLines
+} from '../src/core/confide/confideAcceptanceFrozenSentenceCorpus.js';
 import { runConfideAcceptanceDevsetLeakAudit } from './audit-confide-acceptance-devset-leak.js';
 
 describe('audit:confide-acceptance-leak', () => {
@@ -17,5 +20,9 @@ describe('audit:confide-acceptance-leak', () => {
 
   it('passes on the current tree (no frozen lines in production Confide code)', () => {
     assert.equal(runConfideAcceptanceDevsetLeakAudit(), true);
+  });
+
+  it('keeps the #1188 leak grandfather list shrink-only (four literals)', () => {
+    assert.equal(CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS.length, 4);
   });
 });

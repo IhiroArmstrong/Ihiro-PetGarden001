@@ -21,6 +21,9 @@ export const CONFIDE_ACCEPTANCE_LEAK_MIN_CHARS = 6;
 /**
  * Pre–R-Confide-Class literals already embedded in #1188 `isConfideMoodAsideFromProductKnowledge`.
  * Audit ignores these until ablation removes the regex (task-confide-class-blind-acceptance.md).
+ *
+ * Shrink-only: after ablation this list must be emptied. New entries require
+ * written PO approval — do not grow this table as a leak back-door.
  * @type {readonly string[]}
  */
 export const CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS = Object.freeze([

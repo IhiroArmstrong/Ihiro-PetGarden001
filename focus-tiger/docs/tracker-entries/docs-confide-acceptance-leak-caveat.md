@@ -1,0 +1,1 @@
+| Confide 泄漏扫描口径补丁（整句 / 豁免仅收缩） | 纯文档 + 审计注释 | 仅单元测试覆盖 | **无运行时。** 扫描仍只打 mood-veto 修补面整句；豁免表不得增长。不代表盲测已封存。 | — | — | — | `audit:confide-acceptance-leak` · `CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS` | 2026-10-13 |
