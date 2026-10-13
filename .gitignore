@@ -21,6 +21,10 @@ Thumbs.db
 .env.*
 !.env.example
 
+# Confide sealed blind holdout (R-0). Originals stay out of git.
+focus-tiger/.secrets/confide-blind-holdout/*
+!focus-tiger/.secrets/confide-blind-holdout/README.md
+
 # Logs & caches
 *.log
 npm-debug.log*

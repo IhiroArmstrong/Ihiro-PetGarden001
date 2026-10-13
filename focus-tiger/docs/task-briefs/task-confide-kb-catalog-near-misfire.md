@@ -1,6 +1,7 @@
 # Task Brief · 目录 / 近邻命中后再核「是不是情绪自述」
 
-> **状态（2026-10-13）**：PO 已点头立本 Brief，并点头第一段（只记日志 + 实验室，不改回复）。第一段已开工。把复核接到发送链、改用户看到的短答 = **B 类**，须另点头。
+> **状态（2026-10-13）**：PO 已点头立本 Brief，并点头第一段（只记日志 + 实验室，不改回复）。第一段已开工。  
+> **盘点拍板（同日稍后）**：目录 / 近邻误命中并入 [`task-confide-routing-arbitration-v1.md`](./task-confide-routing-arbitration-v1.md) 前两刀，不再另开第二份 Brief。接到发送链仍须路由仲裁 v1 的 live 点头。
 > **类别**：影子日志 = **A 类**。改短答 = **B 类**。
 > **分支建议**：实现时另开 `feature/confide-kb-catalog-near-misfire-shadow`，不要叠在情绪否决分支上。
 > **来源**：[`task-confide-kb-gate-mood-veto.md`](./task-confide-kb-gate-mood-veto.md) 第一轮后决定 3、第二轮后决定 5、第三轮后决定 6；[`ISSUE_LEDGER.md`](../ISSUE_LEDGER.md)「徽章能否当寅币用 → 误命中寅币短答」。登记片：[`task-entries/confide-kb-catalog-near-misfire.md`](../task-entries/confide-kb-catalog-near-misfire.md)。
