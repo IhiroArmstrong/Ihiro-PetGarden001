@@ -545,9 +545,89 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `a3-parallel-list-census` · feature · PR #1181 · 待 CI 合 develop · 2026-10-13
+
+根因盘点 A3：全仓平行名单普查表写入 `root-cause-audit-2026-10-12.md` §5；玻璃叠层 SSOT + 契约单测；不做 A4、不做 A9 总表。
+
+### `a4-missing-handler-throw` · feature · PR #1184 · 待 CI 合 develop · 2026-10-13
+
+根因盘点 A4：菜单与 chrome 缺 handler 时开发/测试 `throw`，生产 `console.error` 且菜单不关。不做 A12。
+
+### `a6-main-use-before-define` · feature · 已合 #1189 · 2026-10-13
+
+根因盘点 A6：`src/main.js` ESLint `no-use-before-define`（仅变量）进 `test:smoke`。#1139 夹具必须红；现存 23 名封顶。不拆 `init()`（A7）。
+
+### `a7-1-boot-scene-anim` · feature · 已合 #1192 · 2026-10-13
+
+A7.1：抽出 `src/boot/boot-scene-anim.js` 状态袋（dispatch / occupancy / 提醒横幅）。清掉 A6 豁免 `sceneAnimationDispatch` · `spriteOccupancy` · `inAppReminderBannerUI`。不改第一幕占用与 Loading 遮罩时机。
+
+### `a7-2-boot-moment-hosts` · feature · 已合 #1199 · 2026-10-13
+
+A7.2：抽出 `src/boot/boot-moment-hosts.js` 状态袋（Recover 卡 / 罗盘 / 见证圈 / Support 实例）。清掉 A6 豁免 `calmActionRecoverCardUI` · `fiveMomentsCompassUI` · `focusCircleWitnessChrome` · `supportYinModalUI`。不改 Support 构造相对遮罩/欢迎的时机，不改付款路径。
+
+### `a7-3-boot-honesty-companion` · feature · 本支 chore/a7-3-boot-honesty-companion · 2026-10-13
+
+A7.3：抽出 `src/boot/boot-honesty-companion.js` 状态袋（Honesty UI / Companion 点选 / 微仪式 / Arrival 占位 null）。清掉 A6 豁免 `honestyCheckInUI` · `companionModePicker` · `microRitualUI` · `arrivalPractice`。Arrival 仍在段 7 赋值。不改付款路径、不改第一幕占用与 Loading 遮罩时机。
+
+### `a7-init-split` · feature · Brief #1190 对齐 develop · A7.1 已合 #1192 · A7.2 已合 #1199 · A7.3 #1201 · 2026-10-13
+
+根因盘点 A7：`main.js` `init()` 分段拆分。Brief 已锁；A7.1–A7.2 已合 develop。余下 A7.3–A7.6 按 `task-briefs/task-a7-init-split.md` 分刀。不与功能 PR 混线。
+
+### `confide-class-blind-acceptance` · feature · holdout 已接线 · 额度按文件+哈希 · 盲测仍须按缺口补句 · 2026-10-13
+
+Confide 问答按类验收（R-Confide-Class）。开发集已入库。holdout 真跑：`npm run audit:mood-veto-holdout`。信封校验：`npm run audit:mood-veto-holdout:validate`（#1213）。缺口计数：`npm run validate:confide-holdout-counts`（#1214）。额度按文件，计数在 `~/Documents/ft-private/`。见 `task-briefs/task-confide-class-blind-acceptance.md`.
+
+### `confide-help-center-miss-fallback` · feature · 第一刀已合 #1183 · 第二刀 Brief 待点头 · 2026-10-13
+
+短答未命中时诚实空态改指 Help Center + hello@twinsology.com（#1183）。缺口主题第二刀见 `task-help-center-gap-articles.md`。Confide 检索帮助中心须第三刀另 Brief。
+
+### `confide-kb-catalog-near-misfire` · feature · 第一段影子已开工（不改回复） · 2026-10-13
+
+知识库目录 / 近邻误命中：句子先被目录或近邻接成某条短答，答非所问。正式 Brief：`task-briefs/task-confide-kb-catalog-near-misfire.md`。方向已锁：目录或近邻命中之后，再过一道「这句是不是情绪自述」的复核。第一段只记 `kb_catalog_near_review_shadow`，实验室出表，不改回复。徽章句 PO 倾向诚实空态，改回复前再确认；本段不特判。来源：`confide-kb-gate-mood-veto` 第三轮后 PO 决定 6。
+
+### `confide-kb-gate-mood-veto` · feature · 第二段已点头；中文否决已接发送链，开关默认关，本机未打包 Electron 设 FT_CONFIDE_KB_MOOD_VETO=live 才改回复 · 2026-10-13
+
+知识库产品闸加情绪否决。第一段影子与三轮实验室已合 #1193 / #1194 / #1196。第二段（本分支）只在开关打开时，把中文情绪自述从诚实空态改到观察翼；英文仍只记日志，日文等母语审。不加规则 1。混合句 2 句误否决接受。2b 继续 shadow。#1188 字面豁免保留。目录 / 近邻复核与徽章（#1198）继续只记日志。回滚：`FT_CONFIDE_KB_MOOD_VETO=shadow`。口径见 `task-briefs/task-confide-kb-gate-mood-veto.md`。
+
+### `confide-kb-honesty-emotion-misroute` · feature · 根因已记 · 运行时未修 · 2b 本机已 shadow · 2026-10-13
+
+Electron 灰度：情绪/生活句被知识库诚实空态接走。日志证明 2b `wouldPromote=false`。见 ISSUE_LEDGER 2026-10-13 扇出项。
+
+### `confide-r0-eval-gate` · note · R-0 已写入 PRINCIPLES · CI 原句扫描已进 smoke · 2026-10-13
+
+冻结集不退步且盲测达标才许切 live。机器闸 `confideEvalGate.js`。扫描 `npm run lint:confide-original-utterance`。
+
+### `confide-routing-arbitration-v1` · feature · Brief 已合 #1208 · 类名映射补丁待合 · 禁止写发送链 · 切 live 另点头 · 2026-10-13
+
+路由仲裁 v1：一次打分、一个决定。合并 Prompt 16 / 18、情绪否决、目录误命中。#1200 本机开关仅对照臂，切 live 时删除。权威 `task-briefs/task-confide-routing-arbitration-v1.md`。R-0 评测见 `PRINCIPLES.md`。
+
+### `confide-routing-followup` · feature · 清单在 develop（#1202）· R-0 与路由仲裁 v1 Brief 已出 · 日语项本轮放过 · 2026-10-13
+
+Confide 路由、语义和向量路由的依次跟进清单，编号 CR-01 至 CR-42。见 `docs/confide-routing-followup.md`。本片不代表其中任何一条修复已经开工。CR-42 只登记 #1200 的中文本机开关（默认关），不把英文、日文、2b 或目录命中写成已上线。
+
+### `confide-stage2b-live` · feature · 进行中（灰度 live 已接线 · 默认仍 shadow） · 2026-10-13
+
+Stage 2b 灰度 live：`FT_CONFIDE_STAGE2B_ROUTING` 默认 `shadow`，本机主进程 `live` 才改回复。硬约束：找记录族同小句邻近功能词；负例 txt 整表不抬桶。总绳仍是 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`。
+
+### `help-center-gap-articles` · feature · 待合 PR · 2026-10-13
+
+Help Center 补四篇：呼吸时长、两扇收藏怎么买、莲花含义、徽章≠寅币。不进倾诉短答库。见 `task-help-center-gap-articles.md`。
+
+### `menu-single-source` · feature · 实现中 · A2 本支（菜单查表分派） · 2026-10-13
+
+A2：次级菜单 `proxy → handler` 单一来源；宽/窄点击查表。依赖 A1 已合 #1173。Brief `task-briefs/task-menu-single-source.md`。
+
+### `root-cause-hardening` · feature · 盘点已落 · A22 已合 #1171 · A1 已合 #1173 · A2 已合 #1179 · A3 已合 #1181 · A4 已合 #1184 · A5 已合 #1186 · A6 已合 #1189 · A7.1 已合 #1192 · A7.2 已合 #1199 · Brief #1190 · 2026-10-13
+
+2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首七行。A7：Brief `task-briefs/task-a7-init-split.md`；A7.1–A7.2 已合 develop；余下 A7.3–A7.6 分刀。
+
 ### `chore-payment-click-contract` · feature · 进行中 · 旁支待合 · 2026-10-12
 
 付款可点击契约测试进 PR 冒烟；受保护路径规则与层级登记对齐，避免玻璃卡再把 Subscribe 压到遮罩下。
+
+### `confide-append-turn-log` · feature · 旁支待合 · 2026-10-12
+
+Renderer `appendTurnLog` 接到 preload + `desktop:companion-append-turn-log`。白名单仅 `kb_retrieval_miss` / `crisis_paraphrase_shadow`，写入前剥掉 `text`。不改用户可见回复。
 
 ### `confide-jsonl-gates-2026-10-12` · note · 10/12 书面 defer（Stage 2b / with-prior live / KB 第二轮均不开） · 2026-10-12
 
@@ -582,6 +662,52 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 - 「有点烦」→ `a feeling of irritation.`（情绪观察句，不是说教）
 
 不据此关 TEST_TRACKER 主表行（须用户明示关单）。
+
+### `confide-stage2b-po-seeded-audit` · feature · 进行中（审计脚本已接 · 切 live 仍 defer） · 2026-10-12
+
+Stage 2b 门闩审计：`npm run audit:stage2b-po-seeded-gate` 数 `seedSource=po_seeded` 互异句、意图族（需 `--families` TSV）、误拉（与负例表求交且 `wouldPromote`）。不改回复，不得打印「可以切 live」。字面预览：`--preview-literal`。
+
+### `confide-stage2b-shadow` · feature · 进行中（影子字段已接 · 待 Electron 人工看 jsonl · 切 live 仍 defer） · 2026-10-12
+
+Stage 2b（gray→功能桶）影子：`semantic_shadow_classify` 行加 `stage2bWouldPromote` / `stage2bReason` / `seedSource`。只写日志，不改路由与回复。PO 手打正例用主进程 `FT_CONFIDE_SEED_SOURCE=po_seeded`。
+
+衍生（来源本任务）：按 `seedSource=po_seeded` 统计互异句数 / 意图族 / 误拉 → 见 `confide-stage2b-po-seeded-audit.md`。
+
+### `glass-card-text-select` · feature · PR 待开 · 2026-10-12
+
+玻璃功能卡：正文恢复文字选择光标；空白处仍可拖动。
+
+### `stage2b-lab-families` · note · 实验室补族已筛（2026-10-12） · 2026-10-12
+
+Stage 2b 终端补 寅币 / 备份 / 提醒 / 付费订阅 四族，`lab_seeded`。负例 41、误拉仍 1（「最近老是想起以前」）。语言/菜单筛不满 8。切 live Brief 未开。见 `confide-stage2b-negative-control-sheet.md`。
+
+### `stage2b-lab-seeded-gate` · note · 进行中（门闩已改 lab_seeded · 切 live 仍 defer） · 2026-10-12
+
+Stage 2b 切 live 不要求手打。候选句终端生成/筛选均可，日志 `lab_seeded`（旧 `po_seeded` 同计）。抽审 KEEP 19、负例误拉 1。切 live 仍缺 ≥6 意图族。影子已合，不改回复。
+
+### `stage2b-live-brief` · note · Brief 已点头（补三处后锁 · 2026-10-12） · 2026-10-12
+
+Stage 2b 灰度 live Brief 已起草，未改运行时。点头后另开会话写代码。见 `task-confide-stage2b-semantic-cutover.md`。
+
+### `stage2b-negative-control` · feature · 进行中（负例 31 句误拉 1 · 正例 20 条待 PO 标 KEEP/DROP） · 2026-10-12
+
+Stage 2b 负例对照集 + 正例 20 条抽审表入库。实验室脚本跑，不进 Confide。切 live 仍 defer：缺 PO 手打正例 ≥25 / ≥6 族。见 `confide-stage2b-negative-control-sheet.md`。
+
+### `stage2b-po-seeded-gate` · note · Brief 已锁（2026-10-12 PO） · 2026-10-12
+
+Stage 2b 切 live 门闩改为 PO 手打正例 + 负例对照。影子模式实现另开会话、换模型再开工。不改运行时。
+
+### `test-menu-full-reachability` · feature · 旁支 PR #1173 · 2026-10-12
+
+Idle 菜单全量可达 e2e：同一页关掉面板再点下一行；宽屏与窄屏共用一次打开预览。
+
+### `test-narrow-home-cta-compass-lock` · feature · 旁支进行中 · 2026-10-12
+
+375 热力图 e2e：主球带只锁 Quick · Sit · Honesty；栖居指南针锁角上 FAB，不再当前成第四颗球。
+
+### `tts-default-speech-rate` · feature · 进行中 · 旁支 fix/tts-default-speech-rate · 2026-10-12
+
+朗读改回系统默认语速。英文仍用 Joelle 优化音质，日文仍用 Otoya 优化音质。
 
 ### `beside-seat-figures` · feature · 进行中 · 旁支待合 · 2026-10-11
 
