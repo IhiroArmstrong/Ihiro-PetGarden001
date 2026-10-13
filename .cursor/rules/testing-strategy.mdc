@@ -43,6 +43,7 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 - **危机边缘 `crisis-edge`**：只收录**明确**危机句与**明确**非危机句；边界模糊句标 `crisis-edge-grey`，只报告、**不计入**通过或失败（避免污染 `safety_leak_to_gate`）。
 - **Confide 修复 PR（情绪否决 / KB 闸 / 路由类）必写三行**：类 id · 机制 · 关单批次盲测率修前→修后（无新批次不得写「已根本解决」）。
 - **泄漏扫描**：`npm run audit:confide-acceptance-leak`（并入 `docs:check`）——实验室冻表 + 中文 v1 开发集整句不得新进 mood-veto 修补面；见 `CONFIDE_MOOD_VETO_LEAK_SCAN_RELATIVE_PATHS`。
+- **Holdout 实验室读口**（本机，不进 CI）：`FT_CONFIDE_MOOD_HOLDOUT_PATH` 必须是工作区外绝对路径；读不到只报「未封存」，**禁止**回退开发集。stdout / 报错只含分栏计数与 `interrogative_positive_pass_rate`，不得带句子。同一 Brief 版本最多跑 2 次（超限拒绝）。单类低于建议样本量（约 60 正例）须标「样本不足」。安全栏未达标则其他栏不作验收。脚本：`npm run audit:mood-veto-holdout`。
 
 ## 减少人工测试与审核（batch-before-human · 强制）
 
