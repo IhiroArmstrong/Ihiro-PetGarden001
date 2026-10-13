@@ -1,6 +1,7 @@
 # Task Brief · Confide 知识库路由闸门（语义识别 + 未命中诚实空态）
 
 > **状态（2026-09-22）**：**PO 已点头**（方案 B + 未命中空态 + 同刀上线 + 授权改场景 AE；**第 4 条改锁**：冷启动未就绪 **不得** fail-open 到 generate）。  
+> **2026-10-13**：路由顺序与闸门职责并入 [`task-confide-routing-arbitration-v1.md`](./task-confide-routing-arbitration-v1.md)，不再另开第二份路由 Brief。本文件仍是方案 B / 诚实空态的历史锁。  
 > **仍禁止在本 Chat / 未见开工口令时写运行时。** Brief 已锁 ≠ 已接线。实现须 **新开 Chat**，口令「按知识库路由闸门 Brief 开工」。  
 > **任务类**：B 类。`WORKFLOW.md`「用户可见改动：Brief 开工门禁」。  
 > **交叉引用**：`task-confide-kb-retrieval-wiring.md`（Q1/Q2/Q4/Q5 仍有效；**本文件覆盖该 Brief 的 Q3**）· `product-knowledge-base.md` · `task-confide-semantic-routing-option-d.md` · `task-confide-stage2-semantic-cutover.md` · `SCENARIO_TESTS.md` 场景 AE

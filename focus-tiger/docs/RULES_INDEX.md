@@ -210,7 +210,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
-| `PRINCIPLES.md` | 硬性红线（**用户体验优先** / 经济可持续 / **菜单逃生舱** / 非 MVP-only） |
+| `PRINCIPLES.md` | 硬性红线（**用户体验优先** / **Confide 评测 R-0** / 经济可持续 / **菜单逃生舱** / 非 MVP-only） |
 | `MENU_CHROME_CENSUS.md` | **角落按钮 vs ⋯/抽屉对照** + 菜单治理四条进度（从属 PRINCIPLES 逃生舱；**无新运行时**） |
 | `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收反馈 vs 结果反馈 vs 已知静默（`interaction-feedback`） |
 | `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |

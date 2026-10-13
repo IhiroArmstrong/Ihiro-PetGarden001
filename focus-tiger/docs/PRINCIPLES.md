@@ -33,6 +33,20 @@
 
 ---
 
+## Confide 评测红线（R-0 · 硬 · 2026-10-13）
+
+> **冻结集不能单独当上线关卡。** 调过参的句子只证明回归；没见过的句子才证明泛化。
+
+- **不存原句**：倾诉日志只许 `queryHash` + 长度或按天汇总的计数。禁止把 Electron `turns.jsonl` 原文、从哈希还原的原句、或「为了凑样本编出来的问法」写进仓库、备份或长期遥测。滚动清理与备份排除仍守 Prompt 9（`confide-turns-jsonl-backup-exclude.md`）。补计数时**不得**因此放宽「不存原文」。读日志须遵守 `companion-debug`（`.cursor/rules/focus-tiger-companion-debug.mdc`）：只读最近一条、限行，禁止整份 `turns.jsonl` 进 Chat。
+- **实验室里加盲测分层，不另建一套框架。** 路径与命名仍看 `LAB_SCRIPT_CONVENTIONS.md`（`RULES_INDEX` → `companion-debug`）。现有情绪否决 / 目录复核 / Stage 2b 实验室继续用。每套评测分成：
+  1. **冻结 / 开发集**：可以调规则。一旦用来调过，就只许当回归（不退步）。
+  2. **封存盲测集**：另一个会话生成并封存。Cursor 实现会话只看通过率，不看句子。目录：`focus-tiger/.secrets/confide-blind-holdout/`（gitignore）。
+- **上线 / 切 live 两个条件都要满足**：冻结集不退步 **且** 盲测集通过率达标。只拿冻结集的 88.9%「差 1 句过线」过关 = 违反本条。已经拿来调规则的反向风险句，不得再当唯一验收。
+- **CI 原句扫描**：`npm run lint:confide-original-utterance`（已进 `test:smoke`）。仓库里不得出现 `turns.jsonl`、同一行 `queryHash`+原文、或未封存的盲测原句文件。
+- 机器闸：`src/core/confide/confideEvalGate.js`。跟进顺序见 `confide-routing-followup.md` CR-03 / CR-10。
+
+---
+
 ## 产品阶段与经济可持续原则（2026-08-11）
 
 > **阶段澄清**：当前发布与排期**已远不止「最小可验证 MVP」**。产品须尽可能覆盖用户刚需与完备陪伴体验；「先只验证核心再谈变现」不得再当作默认推迟商业闭环的借口。`MVP_PRODUCT_DEFINITION.md` 仍保留用户 / JTBD / 假设基线，但**不得**被误读为「现在还不能认真做付费价值」。
