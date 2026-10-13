@@ -7,6 +7,10 @@
 /**
  * Fail if production Confide code embeds a full frozen acceptance or devset line.
  *
+ * Scope: exact full-line copy into mood-veto patch surfaces only (not the
+ * product-knowledge catalog). This does **not** catch paraphrase / near-copy.
+ * Generalization is the sealed holdout's job, not this scan.
+ *
  *   npm run audit:confide-acceptance-leak
  */
 
@@ -47,7 +51,7 @@ export function runConfideAcceptanceDevsetLeakAudit() {
 
   if (hits.length === 0) {
     console.log(
-      `[audit:confide-acceptance-leak] OK — ${corpus.length} full lines; ${files.length} mood-veto patch surfaces scanned`
+      `[audit:confide-acceptance-leak] OK — ${corpus.length} full lines; ${files.length} mood-veto patch surfaces scanned (exact copy only; paraphrase is holdout)`
     );
     return true;
   }
