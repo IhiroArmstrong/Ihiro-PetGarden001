@@ -21,7 +21,8 @@ Thumbs.db
 .env.*
 !.env.example
 
-# Confide sealed blind holdout (R-0). Originals stay out of git.
+# Confide sealed blind holdout (R-0). Seal under ~/Documents/ft-private/ — not here.
+# Keep this ignore so a mistaken drop inside the worktree still never lands in git.
 focus-tiger/.secrets/confide-blind-holdout/*
 !focus-tiger/.secrets/confide-blind-holdout/README.md
 

@@ -5,7 +5,8 @@
  */
 
 /**
- * Fail if production Confide code embeds a full frozen acceptance or devset line.
+ * Fail if production Confide code embeds a **full** frozen acceptance or devset line
+ * (整句照抄 only — not paraphrases, not shared short tokens).
  *
  *   npm run audit:confide-acceptance-leak
  */

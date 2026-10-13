@@ -20,6 +20,7 @@ export const CONFIDE_ACCEPTANCE_LEAK_MIN_CHARS = 6;
 
 /**
  * Pre–R-Confide-Class literals already embedded in #1188 `isConfideMoodAsideFromProductKnowledge`.
+ * Exemption list: **shrink only**; new literals need a PO nod.
  * Audit ignores these until ablation removes the regex (task-confide-class-blind-acceptance.md).
  * @type {readonly string[]}
  */
