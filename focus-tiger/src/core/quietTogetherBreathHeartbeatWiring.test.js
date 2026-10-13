@@ -18,7 +18,7 @@ const chromeSrc = readFileSync(
 
 test('Breath practice contributes lantern heartbeat and leaves on end', () => {
   const micro = mainSrc.match(
-    /microRitualUI = new MicroRitualUI\([\s\S]*?onBreathStart: \(\) => \{([\s\S]*?)\},\s*onComplete:/
+    /mountMicroRitualUI\(bootHonestyCompanion,[\s\S]*?onBreathStart: \(\) => \{([\s\S]*?)\},\s*onComplete:/
   );
   assert.ok(micro, 'MicroRitual onBreathStart block');
   assert.match(micro[1], /beginBreathLanternPresence\(\)/);

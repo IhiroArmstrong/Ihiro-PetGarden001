@@ -26,7 +26,7 @@ test('Breath practice wires start / interval / end sitting cues', () => {
 
 test('Breath practice does not override Idle with blink-smile', () => {
   const micro = mainSrc.match(
-    /microRitualUI = new MicroRitualUI\([\s\S]*?onBreathStart: \(\) => \{([\s\S]*?)\},\s*onComplete:/
+    /mountMicroRitualUI\(bootHonestyCompanion,[\s\S]*?onBreathStart: \(\) => \{([\s\S]*?)\},\s*onComplete:/
   );
   assert.ok(micro, 'MicroRitual onBreathStart block');
   assert.equal(/playEmotion\(\s*'smiling'/.test(micro[1]), false);

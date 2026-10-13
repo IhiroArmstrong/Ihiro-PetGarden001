@@ -1,0 +1,1 @@
+| A7.3 boot Honesty / Companion / 微仪式状态袋 | 纯后端 | 仅单元测试覆盖 | 不是产品功能。验收的是启动仍 `__FT_APP_READY__`、A6 lint 帽子少 4 名，不代表 Honesty / Sit / 微仪式画面变了。`npm run lint:main-use-before-define`；`npm run test:e2e:startup`。不覆盖补登/Companion/Breath 点测观感。 | — | — | — | `src/boot/boot-honesty-companion.js` · `src/main.js` `init()` | 2026-10-13 |

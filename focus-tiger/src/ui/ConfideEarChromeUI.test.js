@@ -36,8 +36,14 @@ test('constructor does not call canShow (boot must not touch later overlay refs)
 
 test('main.js predeclares Arrival / Honesty UI so ear canOpen cannot TDZ', () => {
   const main = readFileSync(join(here, '../main.js'), 'utf8');
-  assert.match(main, /let honestyCheckInUI = null;/);
-  assert.match(main, /let arrivalPractice = null;/);
+  assert.match(main, /createBootHonestyCompanionState\(\)/);
+  assert.doesNotMatch(main, /let honestyCheckInUI = null;/);
+  assert.doesNotMatch(main, /let arrivalPractice = null;/);
+  const bagIdx = main.indexOf('createBootHonestyCompanionState()');
+  const honestyUseIdx = main.search(/bootHonestyCompanion\.honestyCheckInUI\?\.phase/);
+  const arrivalUseIdx = main.search(/bootHonestyCompanion\.arrivalPractice\?\.isOpen/);
+  assert.ok(bagIdx >= 0 && honestyUseIdx > bagIdx);
+  assert.ok(arrivalUseIdx > bagIdx);
 });
 
 test('wide ear chrome stays ghost-quiet until hover or keyboard focus', () => {
