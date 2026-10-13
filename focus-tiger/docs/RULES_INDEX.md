@@ -86,6 +86,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `background-network` | 非用户点击的网络请求（时机 / 写盘 / 慢网动效） | `focus-tiger/docs/BACKGROUND_NETWORK.md` | 实现前三问（强制） |
 | `chat-openable-file-links` | 用户可见回复里文件须可点开、可定位（禁止只写反引号路径） | `WORKFLOW.md` | 用户可见回复：文件须可点开、可定位（强制） |
 | `batch-before-human` | 减少人工测试与审核（能终端批量就不要整表请人） | `.cursor/rules/testing-strategy.mdc` | 减少人工测试与审核（batch-before-human · 强制） |
+| `confide-class-blind` | Confide 按类盲测与冻表分工（R-Confide-Class） | `.cursor/rules/testing-strategy.mdc` | Confide 按类盲测与冻表分工（confide-class-blind · 强制） |
 
 <!-- rules-authority-index:end -->
 

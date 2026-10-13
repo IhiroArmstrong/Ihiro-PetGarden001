@@ -26,6 +26,23 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 
 新 Confide 问题类若无冻表 → **先建 fixture + 终端 runner**，再登记 tracker / 邀人工 spot-check。本表是命令索引；何时不许把整表交给人，见下一节。
 
+### Confide 按类盲测与冻表分工（confide-class-blind · 强制）
+
+索引：`RULES_INDEX.md` → `confide-class-blind`。原则编号 **R-Confide-Class** 见 [`PRINCIPLES.md`](../focus-tiger/docs/PRINCIPLES.md)；流程 SSOT：[`task-confide-class-blind-acceptance.md`](../focus-tiger/docs/task-briefs/task-confide-class-blind-acceptance.md)。
+
+| 集合 | 进 CI？ | 作用 |
+|---|---|---|
+| **回归冻表** | 是（`test:confide-acceptance` 等） | 防退步；**不能**单独证明「已泛化」 |
+| **开发集** | 是（入库后 + 泄漏扫描） | 按类修补对照；实现会话可看 |
+| **盲测 holdout** | **否** | PO 本机、工作区外封存；真 embedding；**实现 Agent 禁止 Read/Grep holdout 原文** |
+
+- **冻表先跑、肉眼后补**：与本节上文一致；冻表绿只能写「未退步」。
+- **盲测证泛化**：关单或声称「该类根本解决」须**未参与调参的新盲测批次**；看过任一句失败原文 → 该份盲测文件作废；调参过程只读汇总数字，禁止对着失败句逐条改码再重跑同一文件。
+- **安全层先于否决**：holdout 实验室须走与真发送同序流水线（先安全分类，再知识库闸情绪否决）；`safety_leak_to_gate` ≥1 → 单开安全 issue，**禁止**靠调否决 margin / 扩 #1188 遮住。
+- **正例 vs 混合反例**：正例可为带疑问形式的情绪自述，判据是**无具体产品对象**（问的是自己的感受或状态）；反例混合句判据是**含具体产品对象**（提醒、记录、备份、按钮、时长等）。每类正例须含 ≥5 句「带疑问形式的情绪句」；实验室单独一栏 **interrogative-positive 通过率**（与类总通过率并列）。
+- **危机边缘 `crisis-edge`**：只收录**明确**危机句与**明确**非危机句；边界模糊句标 `crisis-edge-grey`，只报告、**不计入**通过或失败（避免污染 `safety_leak_to_gate`）。
+- **Confide 修复 PR（情绪否决 / KB 闸 / 路由类）必写三行**：类 id · 机制 · 关单批次盲测率修前→修后（无新批次不得写「已根本解决」）。
+
 ## 减少人工测试与审核（batch-before-human · 强制）
 
 索引：`RULES_INDEX.md` → `batch-before-human`。
