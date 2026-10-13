@@ -81,6 +81,7 @@
     "audit:confide-kb-matrix-probes": "node scripts/audit-confide-kb-matrix-probes.js",
     "audit:confide-acceptance-leak": "node scripts/audit-confide-acceptance-devset-leak.js",
     "audit:mood-veto-holdout": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js",
+    "validate:confide-holdout-counts": "node scripts/validate-confide-holdout-counts.js",
     "audit:kb-live-entries": "node scripts/audit-kb-live-entries.js",
     "audit:kb-live-entries:sync": "node scripts/audit-kb-live-entries.js --write",
     "audit:kb-live-gap": "node scripts/audit-kb-live-gap.js",

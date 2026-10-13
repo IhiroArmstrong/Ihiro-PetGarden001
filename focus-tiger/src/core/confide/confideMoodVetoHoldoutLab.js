@@ -29,6 +29,27 @@ export const CONFIDE_MOOD_HOLDOUT_CLASS_IDS = Object.freeze([
   'practice-fatigue'
 ]);
 
+/** Brief id → sealed-file id. Merge / validate-only must apply this before scoring. */
+export const CONFIDE_HOLDOUT_CLASS_ALIASES = Object.freeze({
+  'mixed-mood-product': 'mixed',
+  'product-outranks-mood': 'product-over-emotion'
+});
+
+export const CONFIDE_HOLDOUT_ROUTING_CLASS_IDS = Object.freeze([
+  'mixed',
+  'product-over-emotion',
+  'mixed-emotion-dominant'
+]);
+
+/**
+ * @param {unknown} raw
+ * @returns {string}
+ */
+export function canonicalizeHoldoutClassId(raw) {
+  const id = String(raw || '').trim();
+  return CONFIDE_HOLDOUT_CLASS_ALIASES[id] || id;
+}
+
 export const CONFIDE_MOOD_HOLDOUT_UNSEALED = '未封存';
 export const CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT = '样本不足';
 
@@ -170,18 +191,79 @@ export function parseHoldoutFile(data) {
  */
 export function stripHoldoutItem(item) {
   if (!item || typeof item !== 'object') return null;
-  const classId = String(item.class_id || item.classId || '').trim();
+  const classId = canonicalizeHoldoutClassId(item.class_id || item.classId || item.class);
   const role = String(item.role || '').trim();
+  const dim = String(item.dim || '').trim();
   const tags = Array.isArray(item.tags) ? item.tags.map((t) => String(t)) : [];
   if (item.tag) tags.push(String(item.tag));
+  if (dim) tags.push(dim);
+  const source = String(item.source || '').trim();
+  const expect = String(item.expect || '').trim();
   return {
     classId,
     role,
     tags,
-    crisisEdge: tags.includes('crisis-edge') || role === 'crisis-edge',
-    crisisGrey: tags.includes('crisis-edge-grey') || role === 'crisis-edge-grey',
-    interrogativePositive: tags.includes('interrogative-positive')
+    source,
+    expect,
+    crisisEdge: tags.includes('crisis-edge') || role === 'crisis-edge' || dim === 'crisis-edge',
+    crisisGrey:
+      tags.includes('crisis-edge-grey') ||
+      role === 'crisis-edge-grey' ||
+      dim === 'crisis-edge-grey' ||
+      dim === '仅报告',
+    interrogativePositive: tags.includes('interrogative-positive') || dim === 'interrogative-positive'
   };
+}
+
+/**
+ * Counts only. Never reads or returns utterance text.
+ * @param {object[]} items
+ * @returns {Record<string, { n: number, n_positive: number, n_counter: number, n_interrogative_positive: number, n_po_spoken: number, n_crisis_edge: number, n_crisis_grey: number, n_noncrisis_positive: number }>}
+ */
+export function inventoryHoldoutCounts(items) {
+  /** @type {Record<string, ReturnType<typeof emptyInventory>>} */
+  const byClass = {};
+  function emptyInventory() {
+    return {
+      n: 0,
+      n_positive: 0,
+      n_counter: 0,
+      n_interrogative_positive: 0,
+      n_po_spoken: 0,
+      n_crisis_edge: 0,
+      n_crisis_grey: 0,
+      n_noncrisis_positive: 0
+    };
+  }
+  function slot(id) {
+    const key = canonicalizeHoldoutClassId(id) || '(missing-class)';
+    if (!byClass[key]) byClass[key] = emptyInventory();
+    return byClass[key];
+  }
+  for (const raw of items || []) {
+    const meta = stripHoldoutItem(raw);
+    if (!meta) continue;
+    const s = slot(meta.classId);
+    s.n += 1;
+    if (meta.source === 'po-spoken') s.n_po_spoken += 1;
+    if (meta.crisisGrey) {
+      s.n_crisis_grey += 1;
+      continue;
+    }
+    if (meta.crisisEdge) {
+      s.n_crisis_edge += 1;
+      continue;
+    }
+    const productExpect = meta.expect.startsWith('product') || meta.expect === 'chitchat';
+    if (meta.role === 'counter' || productExpect) {
+      s.n_counter += 1;
+    } else {
+      s.n_positive += 1;
+      s.n_noncrisis_positive += 1;
+      if (meta.interrogativePositive) s.n_interrogative_positive += 1;
+    }
+  }
+  return byClass;
 }
 
 function isSafetyPriority(route) {

@@ -14,7 +14,9 @@ import {
   CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT,
   CONFIDE_MOOD_HOLDOUT_UNSEALED,
   authorizeHoldoutRun,
+  canonicalizeHoldoutClassId,
   formatHoldoutSummaryStdout,
+  inventoryHoldoutCounts,
   holdoutSafeError,
   parseHoldoutFile,
   redactHoldoutError,
@@ -74,6 +76,31 @@ describe('confide mood-veto holdout lab gates', () => {
     const noisy = new Error(`parse failed near ${SECRET}`);
     assert.equal(redactHoldoutError(noisy).includes(SECRET), false);
     assert.equal(redactHoldoutError(holdoutSafeError(CONFIDE_MOOD_HOLDOUT_UNSEALED)).includes(SECRET), false);
+  });
+
+  it('maps Brief class ids onto sealed-file ids', () => {
+    assert.equal(canonicalizeHoldoutClassId('mixed-mood-product'), 'mixed');
+    assert.equal(canonicalizeHoldoutClassId('product-outranks-mood'), 'product-over-emotion');
+    assert.equal(canonicalizeHoldoutClassId('mixed-emotion-dominant'), 'mixed-emotion-dominant');
+  });
+
+  it('inventories counts without echoing dummy text', () => {
+    const bag = inventoryHoldoutCounts([
+      { class: 'mixed-mood-product', dim: 'aversion+reminder', expect: 'product_short_answer', text: SECRET },
+      { class: 'product-outranks-mood', dim: 'weak+sit', expect: 'product_short_answer', text: SECRET },
+      { class: 'mixed-emotion-dominant', dim: 'product-word-aside', expect: 'emotion', text: SECRET },
+      { class: 'escape-urge', dim: '仅报告', expect: 'emotion', text: SECRET },
+      { class: 'escape-urge', dim: 'crisis-edge', expect: 'safety', text: SECRET },
+      { class: 'escape-urge', dim: 'interrogative-positive', expect: 'emotion', text: SECRET }
+    ]);
+    assert.equal(bag.mixed.n_counter, 1);
+    assert.equal(bag['product-over-emotion'].n_counter, 1);
+    assert.equal(bag['mixed-emotion-dominant'].n_positive, 1);
+    assert.equal(bag['escape-urge'].n_crisis_grey, 1);
+    assert.equal(bag['escape-urge'].n_crisis_edge, 1);
+    assert.equal(bag['escape-urge'].n_noncrisis_positive, 1);
+    assert.equal(bag['escape-urge'].n_interrogative_positive, 1);
+    assert.equal(JSON.stringify(bag).includes(SECRET), false);
   });
 
   it('parses items without keeping the utterance on the stripped row', () => {

@@ -1,7 +1,7 @@
 ---
 id: confide-routing-arbitration-v1
 kind: feature
-status: Brief 已出 · 四处补丁待合 · 禁止写发送链 · 切 live 另点头
+status: Brief 已合 #1208 · 类名映射补丁待合 · 禁止写发送链 · 切 live 另点头
 updated: 2026-10-13
 ---
 
