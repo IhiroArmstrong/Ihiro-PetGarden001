@@ -11,6 +11,9 @@
  *     FT_CONFIDE_MOOD_HOLDOUT_PATH=/absolute/path/outside/workspace.json \\
  *     node desktop/scripts/l0-kb-mood-veto-holdout-lab.js
  *
+ * Validate-only (no quota, no embedding):
+ *   ... node desktop/scripts/l0-kb-mood-veto-holdout-lab.js --validate-only
+ *
  * Missing / unreadable path → 未封存 (never falls back to the in-repo devset).
  */
 
@@ -19,76 +22,37 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  L0_EMBEDDING_MODEL_FILENAME,
-  L0_EMBEDDING_MODEL_MIN_BYTES
-} from '../companion/l0EmbeddingConfig.js';
-import { isGgufCachedAt } from '../companion/l0Download.js';
-import { loadEmbeddingHold } from '../companion/l1EmbeddingHold.js';
-import {
-  getRetrievableProductKnowledgeEntry,
-  probeProductKnowledgeCatalog,
-  productKnowledgeReplyPassesGuard
-} from '../../src/core/confide/confideProductKnowledge.js';
-import { decideKbNearMatch } from '../../src/core/confide/kbNearMatch.js';
-import { confideClassify } from '../../src/core/confide/confideClassify.js';
-import { CONFIDE_ROUTE } from '../../src/core/confide/confideRoutes.js';
-import {
-  moodAsideOutranksProductLibrary,
-  resolveProductKnowledgeGateAction
-} from '../../src/core/confide/confideProductKnowledgeSemantic.js';
-import {
-  CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION,
   authorizeHoldoutRun,
+  defaultHoldoutRunLogPath,
   formatHoldoutSummaryStdout,
+  formatHoldoutValidateStdout,
+  hashHoldoutFile,
   parseHoldoutFile,
   redactHoldoutError,
   resolveHoldoutFilePath,
   scoreHoldoutRow,
   stripHoldoutItem,
-  summarizeHoldoutScores
+  summarizeHoldoutScores,
+  validateHoldoutCounts
 } from '../../src/core/confide/confideMoodVetoHoldoutLab.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FOCUS_TIGER = path.resolve(__dirname, '../..');
 const LAB_DIR = '/tmp/ft-l0-lab';
-const RUN_LOG = path.join(LAB_DIR, 'mood-veto-holdout-runs.json');
+const RUN_LOG = process.env.FT_CONFIDE_MOOD_HOLDOUT_RUN_LOG || defaultHoldoutRunLogPath();
 
-function defaultEmbeddingPath() {
-  if (process.env.FT_EMBEDDING_GGUF) return process.env.FT_EMBEDDING_GGUF;
-  if (process.platform === 'darwin') {
-    return path.join(
-      os.homedir(),
-      'Library',
-      'Application Support',
-      'Focus Tiger',
-      'companion-l0',
-      L0_EMBEDDING_MODEL_FILENAME
-    );
-  }
-  return path.join(__dirname, '..', '.l0-cache', L0_EMBEDDING_MODEL_FILENAME);
-}
-
-function isSafetyPriority(route) {
-  return route === CONFIDE_ROUTE.SAFETY_REDIRECT || route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS;
+function isValidateOnly() {
+  return (
+    process.argv.includes('--validate-only') ||
+    process.env.FT_CONFIDE_MOOD_HOLDOUT_VALIDATE_ONLY === '1'
+  );
 }
 
 async function main() {
+  const validateOnly = isValidateOnly();
   let holdoutPath;
   try {
     holdoutPath = resolveHoldoutFilePath(process.env.FT_CONFIDE_MOOD_HOLDOUT_PATH, FOCUS_TIGER);
-  } catch (err) {
-    process.stderr.write(`[mood-veto-holdout] ${redactHoldoutError(err)}\n`);
-    process.exit(1);
-  }
-
-  const destPath = defaultEmbeddingPath();
-  if (!isGgufCachedAt(destPath, L0_EMBEDDING_MODEL_MIN_BYTES)) {
-    process.stderr.write('[mood-veto-holdout] missing embedding GGUF\n');
-    process.exit(2);
-  }
-
-  try {
-    authorizeHoldoutRun(RUN_LOG, CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION);
   } catch (err) {
     process.stderr.write(`[mood-veto-holdout] ${redactHoldoutError(err)}\n`);
     process.exit(1);
@@ -102,6 +66,62 @@ async function main() {
     process.stderr.write(`[mood-veto-holdout] ${redactHoldoutError(err)}\n`);
     process.exit(1);
   }
+
+  if (validateOnly) {
+    const report = validateHoldoutCounts(parsed);
+    process.stdout.write(formatHoldoutValidateStdout(report));
+    process.exit(report.ok ? 0 : 1);
+  }
+
+  const {
+    L0_EMBEDDING_MODEL_FILENAME,
+    L0_EMBEDDING_MODEL_MIN_BYTES
+  } = await import('../companion/l0EmbeddingConfig.js');
+  const { isGgufCachedAt } = await import('../companion/l0Download.js');
+  const { loadEmbeddingHold } = await import('../companion/l1EmbeddingHold.js');
+  const {
+    getRetrievableProductKnowledgeEntry,
+    probeProductKnowledgeCatalog,
+    productKnowledgeReplyPassesGuard
+  } = await import('../../src/core/confide/confideProductKnowledge.js');
+  const { decideKbNearMatch } = await import('../../src/core/confide/kbNearMatch.js');
+  const { confideClassify } = await import('../../src/core/confide/confideClassify.js');
+  const { CONFIDE_ROUTE } = await import('../../src/core/confide/confideRoutes.js');
+  const {
+    moodAsideOutranksProductLibrary,
+    resolveProductKnowledgeGateAction
+  } = await import('../../src/core/confide/confideProductKnowledgeSemantic.js');
+
+  const destPath = process.env.FT_EMBEDDING_GGUF
+    ? process.env.FT_EMBEDDING_GGUF
+    : process.platform === 'darwin'
+      ? path.join(
+          os.homedir(),
+          'Library',
+          'Application Support',
+          'Focus Tiger',
+          'companion-l0',
+          L0_EMBEDDING_MODEL_FILENAME
+        )
+      : path.join(__dirname, '..', '.l0-cache', L0_EMBEDDING_MODEL_FILENAME);
+
+  if (!isGgufCachedAt(destPath, L0_EMBEDDING_MODEL_MIN_BYTES)) {
+    process.stderr.write('[mood-veto-holdout] missing embedding GGUF\n');
+    process.exit(2);
+  }
+
+  try {
+    authorizeHoldoutRun(RUN_LOG, parsed.holdoutSetVersion, {
+      filePath: holdoutPath,
+      contentSha256: hashHoldoutFile(holdoutPath)
+    });
+  } catch (err) {
+    process.stderr.write(`[mood-veto-holdout] ${redactHoldoutError(err)}\n`);
+    process.exit(1);
+  }
+
+  const isSafetyPriority = (route) =>
+    route === CONFIDE_ROUTE.SAFETY_REDIRECT || route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS;
 
   const hold = await loadEmbeddingHold({
     modelPath: destPath,
@@ -173,7 +193,8 @@ async function main() {
     `${JSON.stringify(
       {
         probe: 'kb-mood-veto-holdout',
-        brief_version: CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION,
+        brief_version: parsed.briefVersion,
+        holdout_set_version: parsed.holdoutSetVersion,
         summary
       },
       null,

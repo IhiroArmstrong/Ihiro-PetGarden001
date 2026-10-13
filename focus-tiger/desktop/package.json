@@ -28,6 +28,7 @@
     "companion:voice-input-probe": "node scripts/voice-input-probe.js",
     "companion:system-tts-probe": "node scripts/system-tts-probe.js",
     "companion:mood-veto-holdout": "node scripts/l0-kb-mood-veto-holdout-lab.js",
+    "companion:mood-veto-holdout:validate": "node scripts/l0-kb-mood-veto-holdout-lab.js --validate-only",
     "bytecode:compile": "electron scripts/compile-v8-bytecode.js"
   },
   "dependencies": {

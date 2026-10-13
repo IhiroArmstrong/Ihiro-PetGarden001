@@ -37,13 +37,13 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 | **盲测 holdout** | **否** | PO 本机、工作区外封存；真 embedding；**实现 Agent 禁止 Read/Grep holdout 原文** |
 
 - **冻表先跑、肉眼后补**：与本节上文一致；冻表绿只能写「未退步」。
-- **盲测证泛化**：关单或声称「该类根本解决」须**未参与调参的新盲测批次**；看过任一句失败原文 → 该份盲测文件作废；调参过程只读汇总数字，禁止对着失败句逐条改码再重跑同一文件。**额度按盲测文件计**（每文件一次有效跑分；同一 Brief 版本过关卡最多 2 个文件；文档小改不重置）；实现会话对盲测只输出按类别汇总通过率，逐句两列只对冻结/开发集。只校验计数：`npm run validate:confide-holdout-counts`（不占跑分额度）。细则 SSOT 仍是 `task-confide-class-blind-acceptance.md`。
+- **盲测证泛化**：关单或声称「该类根本解决」须**未参与调参的新盲测批次**；看过任一句失败原文 → 该份盲测文件作废；调参过程只读汇总数字，禁止对着失败句逐条改码再重跑同一文件。**额度按盲测文件计**（每文件一次有效跑分；同一 `holdout_set_version` 过关卡最多 2 个文件；改 Brief / Prompt 18 不重置；同版本内容变了须升版本号）。实现会话对盲测只输出按类别汇总通过率，逐句两列只对冻结/开发集。细则 SSOT 仍是 `task-confide-class-blind-acceptance.md`。
 - **安全层先于否决**：holdout 实验室须走与真发送同序流水线（先安全分类，再知识库闸情绪否决）；`safety_leak_to_gate` ≥1 → 单开安全 issue，**禁止**靠调否决 margin / 扩 #1188 遮住。
 - **正例 vs 混合反例**：正例可为带疑问形式的情绪自述，判据是**无具体产品对象**（问的是自己的感受或状态）；反例混合句判据是**含具体产品对象**（提醒、记录、备份、按钮、时长等）。每类正例须含 ≥5 句「带疑问形式的情绪句」；实验室单独一栏 **interrogative-positive 通过率**（与类总通过率并列）。
 - **危机边缘 `crisis-edge`**：只收录**明确**危机句与**明确**非危机句；边界模糊句标 `crisis-edge-grey`，只报告、**不计入**通过或失败（避免污染 `safety_leak_to_gate`）。
 - **Confide 修复 PR（情绪否决 / KB 闸 / 路由类）必写三行**：类 id · 机制 · 关单批次盲测率修前→修后（无新批次不得写「已根本解决」）。
 - **泄漏扫描**：`npm run audit:confide-acceptance-leak`（并入 `docs:check`）——实验室冻表 + 中文 v1 开发集**整句照抄**不得新进 mood-veto 修补面；见 `CONFIDE_MOOD_VETO_LEAK_SCAN_RELATIVE_PATHS`。只防整句嵌入，**不防改几个字再抄**；防过拟合靠封存盲测，不靠本扫描。`#1188` 豁免表 `CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS` **仅收缩**（消融拆正则后清空；新增条目须 PO 书面点头）。
-- **Holdout 实验室读口**（本机，不进 CI）：`FT_CONFIDE_MOOD_HOLDOUT_PATH` 必须是工作区外绝对路径；读不到只报「未封存」，**禁止**回退开发集。stdout / 报错只含分栏计数与 `interrogative_positive_pass_rate`，不得带句子。同一 Brief 版本最多跑 2 次（超限拒绝）。单类低于建议样本量（约 60 正例）须标「样本不足」。安全栏未达标则其他栏不作验收。脚本：`npm run audit:mood-veto-holdout`。
+- **Holdout 实验室读口**（本机，不进 CI）：`FT_CONFIDE_MOOD_HOLDOUT_PATH` 必须是工作区外绝对路径；读不到只报「未封存」，**禁止**回退开发集。stdout / 报错只含分栏计数与 `interrogative_positive_pass_rate`，不得带句子。额度按盲测文件计；计数在 `~/Documents/ft-private/mood-veto-holdout-runs.json`（按 `holdout_set_version`；首次跑分记内容哈希；同版本内容变了则拒绝）。`#1213` `--validate-only` / `npm run audit:mood-veto-holdout:validate` 只查信封/字段/灰区标签，**不增加运行计数、不跑 embedding**。本仓 `npm run validate:confide-holdout-counts` 只计缺口（正例/反例/口语），同样不占额度。单类低于建议样本量（约 60 正例）须标「样本不足」（提醒，不是不及格）。安全栏未达标则其他栏不作验收。脚本：`npm run audit:mood-veto-holdout`。实验室只汇总五类情绪否决；路由类不进该读口通过率。
 
 ## 减少人工测试与审核（batch-before-human · 强制）
 

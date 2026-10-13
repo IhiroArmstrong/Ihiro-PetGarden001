@@ -1,0 +1,1 @@
+| Confide holdout 只校验模式 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 本条验收的是 `--validate-only` 不增加运行计数、不跑 embedding，以及额度按盲测集版本计。不代表盲测已封存，也不改倾诉回复。 | — | — | — | `npm run audit:mood-veto-holdout:validate` · `confideMoodVetoHoldoutLab.test.js` | 2026-10-13 |
