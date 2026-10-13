@@ -1,0 +1,1 @@
+| A7.2 boot Recover / 罗盘 / 见证圈 / Support 状态袋 | 纯后端 | 仅单元测试覆盖 | 不是产品功能。验收的是启动仍 `__FT_APP_READY__`、A6 lint 帽子少 4 名，不代表 Recover / 罗盘 / Support 画面变了。`npm run lint:main-use-before-define`；`npm run test:e2e:startup`。不覆盖 Sit/Arrival/Support 点测观感。 | — | — | — | `src/boot/boot-moment-hosts.js` · `src/main.js` `init()` | 2026-10-13 |
