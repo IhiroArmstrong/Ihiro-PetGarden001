@@ -122,7 +122,7 @@ export async function loadEmbeddingHold(opts) {
   const moodPrecomputeMs = Date.now() - moodStarted;
 
   /**
-   * Shadow-only mood veto scores (`task-confide-kb-gate-mood-veto.md` stage one).
+   * Mood-aside scores. Live Chinese routing is the resolver switch, not this score.
    * @param {number[]} userVector
    * @param {number} productScore
    * @param {number} topK

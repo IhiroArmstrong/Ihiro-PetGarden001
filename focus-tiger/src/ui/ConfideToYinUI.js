@@ -1596,7 +1596,9 @@ export class ConfideToYinUI {
       semanticIsProduct,
       catalogHit: Boolean(catalogResult.hit || nearHit),
       nearAction,
-      lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct)
+      lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct),
+      moodOutranksProduct: gate?.moodOutranksProduct === true,
+      moodVetoLive: gate?.moodVetoLive === true
     });
     const shown = catalogResult.hit
       ? { id: catalogResult.id, text: catalogResult.text }
