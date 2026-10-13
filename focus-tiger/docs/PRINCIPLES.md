@@ -18,6 +18,7 @@
 
 - **法律与健康声明**：不是诊疗、不诊断、不替代持证专业人士；危机路径固定转介。
 - **开发工作基本原则**：诚实机制与诚实工程（不假修好、不静默失败、文档与代码同批）；不泄密；一次一任务；路径 ASCII `kebab-case`。
+- **R-Confide-Class（禁止头痛医头）**：Confide 问答类 bug，禁止只针对触发它的具体句子修补。修复必须落在「类」和机制上（语义判断、桶定义、路由顺序），并以修补时未见过的盲测句验收。固定句只作回归，不作「已解决」的证据。细则与冻表 / 盲测分工见 `task-briefs/task-confide-class-blind-acceptance.md`；测试纪律 SSOT：`.cursor/rules/testing-strategy.mdc`（`RULES_INDEX` → `confide-class-blind`）。编号不与路由仲裁稿 `confide-r0-routing-arbitration-v1` 的「R-0」简称混用。
 - **对用户的保护性红线**：不制造焦虑、永不消失、不 FOMO 逼付费、观照者不贴人格标签。
 
 ### 禁止用红线当挡箭牌

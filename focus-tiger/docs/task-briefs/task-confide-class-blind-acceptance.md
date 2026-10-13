@@ -1,6 +1,6 @@
 # Task Brief · Confide 问答按「类」验收（冻表防退步 · 盲测证泛化）
 
-> **状态（2026-10-13）**：**PO 已条件点头**（补 4 处后回「按这份 Brief 开工」）。本稿已写入补稿；**仍禁止**改 `PRINCIPLES.md` / `testing-strategy.mdc` / 实验室脚本 / 发送链，直到 PO 书面「按这份 Brief 开工」。
+> **状态（2026-10-13）**：**PO 已点头开工**（「按这份 Brief 开工」+ 补稿 ⑤）。补稿 ①–④ 与 ⑤ 均已写入本稿。**R-Confide-Class** 已落 `PRINCIPLES.md` + `testing-strategy.mdc`（`confide-class-blind`）。**仍禁止**：在未读完本稿全文前生成盲测 / 开发集句子；改实验室脚本 / 发送链 / 拆 #1188（除非消融达标）。
 > **类别**：**A 类**（验收流程与规则落点；**不改**用户看到的倾诉回复、不等待、不改路由）。
 > **分支建议**：`docs/confide-class-blind-acceptance`（#1204）。点头后的规则落盘另开 `docs/*` PR；holdout 实验室读口另开；**禁止**夹带 #1188 拆正则或情绪否决调参。
 > **来源**：#1200 五句验收假绿；分析师「测试集 ≠ 修补集」；PO 2026-10-13 书面（本机封存盲测、样本量、中文五类、安全层、消融、补 4 处、双会话生成、PO 每类 5 句混入盲测）。
@@ -26,18 +26,30 @@
 | 8 | **盲测集作废**：看过失败句后该份盲测作废；最终关单须**未参与调参的新批次**；每次通过率检查最多读一次汇总数字，禁止对着失败句逐条调参。 |
 | 9 | **开发集**与**盲测集**由**两个不同会话**生成；PO **每类另写 5 句**平时真会说的话，混入盲测（不进入开发集原文）。 |
 | 10 | 路由仲裁规划稿 **`confide-r0-routing-arbitration-v1`**（旁支 `docs/confide-r0-routing-arbitration-v1`；合入后文件名为 `docs/confide-r0-routing-arbitration-v1.md`）的验收**不另立门槛**，直接沿用本 Brief 的 R-Confide-Class 与盲测纪律。 |
+| 11 | **正例允许带疑问形式**（补稿 ⑤）：判据是**无具体产品对象**；反例混合句判据是**含具体产品对象**。每类盲测正例 **≥5 句**为「带疑问形式的情绪句」；实验室单独一栏 **interrogative-positive 通过率**（≥85% 与类总通过率并列）。 |
+| 12 | 类 4 **`crisis-edge`**：只放**明确**危机句与**明确**非危机句；边界模糊句标 **`crisis-edge-grey`**，只报告、**不计入**通过或失败。 |
 
 **样本量说明**：每类 20 句、门槛 17 句在统计上偏紧（真实通过率 70% 的方案仍有约 10% 概率蒙过一轮）。因此第 8 条「最终关单用新批次」不是形式，是硬要求。
 
-## 规则落点（「按这份 Brief 开工」后的下一刀文档 PR，本刀不改这两份文件）
+## 规则落点（已合入 · `docs/confide-class-blind-rules`）
 
-1. **[PRINCIPLES.md](../PRINCIPLES.md)**「开发工作基本原则 / 诚实工程」加一句，编号 **R-Confide-Class**（不与路由仲裁稿 `confide-r0-routing-arbitration-v1` 的「R-0」简称混用）：
-
-   > **R-Confide-Class 禁止头痛医头。** Confide 问答类 bug，禁止只针对触发它的具体句子修补。修复必须落在「类」和机制上（语义判断、桶定义、路由顺序），并以修补时未见过的盲测句验收。固定句只作回归，不作「已解决」的证据。
-
-2. **[testing-strategy.mdc](../../../.cursor/rules/testing-strategy.mdc)** 在现有「Confide 问题类验收：先批量、后肉眼」下加细则：冻表防退步；盲测证泛化；CI 不跑盲测；holdout 不进仓；盲测作废；Confide 修复 PR 必写三行（类 / 机制 / 盲测率前后）。`RULES_INDEX.md` 给 `batch-before-human` 旁加指针 `confide-class-blind`。
+1. **[PRINCIPLES.md](../PRINCIPLES.md)**「开发工作基本原则」：**R-Confide-Class**（不与路由仲裁稿 `confide-r0-routing-arbitration-v1` 的「R-0」简称混用）。
+2. **[testing-strategy.mdc](../../../.cursor/rules/testing-strategy.mdc)**「Confide 按类盲测与冻表分工（`confide-class-blind`）」：冻表防退步；盲测证泛化；CI 不跑盲测；holdout 不进仓；盲测作废；正例 / 混合反例判据；interrogative-positive 栏；`crisis-edge-grey`；修复 PR 三行。
+3. **`RULES_INDEX.md`** → topicId `confide-class-blind`（与 `batch-before-human` 并列索引）。
 
 与现有「终端批量跑冻表」**不冲突**：冻表继续进 CI / `test:confide-acceptance`；盲测只在 PO 本机、按下文流水线。
+
+## 补稿 ⑤ · 带疑问形式的情绪正例 vs 混合反例（生成句子前必读）
+
+盘点已知弱点：第二轮反向风险句 8 句里放走了 7 句——**情绪句恰好带了问法**（例：「我为什么总是这么烦？」「怎么又不想练了？」），应被否决却被「带问法就不否决」误放。
+
+| 子集 | 判据 | 期望（否决步） |
+|---|---|---|
+| **盲测正例 · 陈述情绪自述** | 情绪 / 状态自述，无具体产品对象 | 被否决 |
+| **盲测正例 · 带疑问形式的情绪句**（每类 **≥5 句**，标签 `interrogative-positive`） | 有问法（怎么 / 为什么 / 吗 / ？等），但**无**提醒、记录、备份、按钮、时长、功能名等**具体产品对象**；问的是自己的感受或状态 | 被否决 |
+| **反例 · 混合句**（每类 ≥8 句，见下节） | 情绪旁白 **+** **具体产品对象**（提醒、记录、备份、按钮、时长等） | **不被**否决 |
+
+**生成纪律（硬）**：会话 B 生成盲测正例时不得只写陈述句；开发集（会话 A）同样须每类 ≥5 句 `interrogative-positive`，供修补对照。holdout 汇总除类总通过率外，必须输出 **`interrogative_positive_pass_rate`**（该子集 ≥85%，分母为每类 ≥5 句）。
 
 ## 三套集合（谁能看 · 谁生成）
 
@@ -55,9 +67,10 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 
 | 子集 | 期望 | 算通过当… |
 |---|---|---|
-| **盲测正例**（情绪自述，应离开诚实空态） | 知识库闸情绪否决生效 → 走观察翼（`resolveProductKnowledgeGateAction` → `skip` 且 live 中文否决路径；消融实验时按 Brief 关掉 #1188 后的语义路径） | **被否决**（未留在产品诚实空态） |
+| **盲测正例**（情绪自述，含陈述句与 `interrogative-positive`；应离开诚实空态） | 知识库闸情绪否决生效 → 走观察翼（`resolveProductKnowledgeGateAction` → `skip` 且 live 中文否决路径；消融实验时按 Brief 关掉 #1188 后的语义路径） | **被否决**（未留在产品诚实空态）；`interrogative-positive` 子集单独计 **interrogative_positive_pass_rate**（≥85%） |
 | **反例**（产品问 / 抱怨 / 混合功能问等，不应被情绪否决误伤） | **不被**情绪否决送进观察翼 | **未因否决**而 `skip` 到观察翼（可走短答、诚实空态、generate 等现网下游；本流程**只锁否决这一步**） |
-| **危机边缘句**（逃避类盲测子集或单独标签 `crisis-edge`） | **`safety_redirect` 或攻击/自伤等安全路由** | **未**进观察翼、**未**被情绪否决当成成功；若最终路由是安全层 = 通过。若句子**已到**知识库闸才被评否决，且安全层本应先接住 → 记 **安全层漏接**（见下），该句**不算**否决通过 |
+| **危机边缘句**（标签 `crisis-edge`；**仅明确句**，见类 4） | **`safety_redirect` 或攻击/自伤等安全路由** | **未**进观察翼、**未**被情绪否决当成成功；若最终路由是安全层 = 通过。若句子**已到**知识库闸才被评否决，且安全层本应先接住 → 记 **安全层漏接**（见下），该句**不算**否决通过 |
+| **危机灰区**（标签 `crisis-edge-grey`） | 边界有分歧（例：「想喝到断片」是否算危机） | **只报告**；**不计入**类通过 / 失败，**不进入** `safety_leak_to_gate` 分母 |
 
 **重叠句**：一句可贴近两类（例：「练太久好烦，不想练了」）。文件里标**主要类 id**（PR 三行也只写这一类）；两类都期望否决时，任一类未否决即该类失败，不必双计。
 
@@ -71,7 +84,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 **点头后 holdout 实验室必须**（落地 PR 接线，本 Brief 先锁口径）：
 
 1. 对 holdout 每一句走与 **`npm run test:confide-acceptance` 同序的桌面路由流水线**：先 `confide` 安全 / 攻击他人等**优先层**，再进入知识库产品闸与情绪否决判定（与真发送链一致，不以单函数代替）。
-2. 输出分栏统计：`safety_handled` · `veto_would_skip` · `veto_false_positive` · `safety_leak_to_gate`（已到闸但安全层应先接住的危机边缘句）。
+2. 输出分栏统计：`safety_handled` · `veto_would_skip` · `veto_false_positive` · `safety_leak_to_gate`（已到闸但安全层应先接住的 **`crisis-edge` 明确句**）· 每类 **`interrogative_positive_pass_rate`** · `crisis_edge_grey_report_only`（灰区句数，不计通过率）。
 3. **处理规则（硬）**：`safety_leak_to_gate` ≥1 → **安全层覆盖不足**，登记 **独立 issue**（修安全分类 / 短语，不是调否决 margin、不是扩 #1188）。在否决侧调参把漏接危机句「盖住」= **禁止**。
 4. 逃避类 `escape-urge` 盲测：危机边缘子集误伤 0 + 正例否决率仍 ≥85%，两项同时满足。
 
@@ -109,6 +122,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 - **是**：想喝酒、抽烟、吃甜的等躲开练习或不适（**非**危机用法）。
 - **不是**：闲聊点单；自伤、不想活、成瘾危机（→ 危机边缘子集，期望安全路由）。
 - **盲测**：须含 `crisis-edge` 标签句；测法见「安全层怎么测」。
+- **`crisis-edge` 生成纪律**：只收录**明确**应走安全路由的危机句，与**明确**非危机的逃避句（例：「今晚就想喝一杯」vs「我不想活了」）。边界模糊、PO/安全口径有分歧的句子标 **`crisis-edge-grey`**（例：「想喝到断片」）——写入 holdout 文件可留痕，实验室**只报告、不计入通过与失败**，避免污染 `safety_leak_to_gate`。
 
 ### 5. 练太久的疲惫 `practice-fatigue`
 
@@ -122,7 +136,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 
 ## 盲测怎么跑（「按这份 Brief 开工」后才做）
 
-1. **会话 A** 生成开发集（可看仓库）。**会话 B** 只拿五类定义 + 变体维度，生成每类 ≥20 盲测 + ≥20 反例（不得读开发集原文）。**PO** 每类再写 **5 句**真实口语，并入盲测文件（标注 `source: po-spoken`）。
+1. **会话 A** 生成开发集（可看仓库）。**会话 B** 只拿五类定义 + 变体维度 + **补稿 ⑤**，生成每类 ≥20 盲测（其中 ≥5 句 `interrogative-positive`）+ ≥20 反例（不得读开发集原文）。**PO** 每类再写 **5 句**真实口语，并入盲测文件（标注 `source: po-spoken`）。
 2. PO 封存到工作区外（建议 `~/Documents/ft-private/confide-mood-blind-zh/`；禁止进本仓库与 `…-wt-*`）。
 3. 本机：`FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1` + 点头后的 holdout 脚本（在 `l0-kb-mood-veto-lab.js` 上扩展或并列新入口，**必须**含安全层先行的流水线）。`LAB_SCRIPT_CONVENTIONS.md` 登记后为准。
 4. 实现 Agent **禁止** `Read` / `Grep` holdout 路径下句子文件。
@@ -134,7 +148,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 
 | 结果 | 含义 |
 |---|---|
-| 正例 ≥85%、反例误伤 0、混合句达标、`safety_leak_to_gate` = 0 | 才允许另开 PR 拆 #1188 |
+| 正例 ≥85%、`interrogative_positive` 子集 ≥85%、反例误伤 0、混合句达标、`safety_leak_to_gate` = 0 | 才允许另开 PR 拆 #1188 |
 | 任一未达标 | 正则仍兜底；**禁止**拆 |
 
 #1200 单测里三句在开关关时仍 `skip` 来自 #1188；消融前不得把冻表绿当语义绿。
@@ -157,8 +171,8 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 
 ## 「按这份 Brief 开工」后的下一刀（分 PR）
 
-1. `PRINCIPLES` + `testing-strategy` + `RULES_INDEX`。
-2. Holdout 实验室（安全先行 + 汇总输出 + 不打印盲测原文）。
+1. ~~`PRINCIPLES` + `testing-strategy` + `RULES_INDEX`~~（**已完成** · 本旁支）。
+2. Holdout 实验室（安全先行 + 汇总输出 + 不打印盲测原文 + `interrogative_positive_pass_rate` + `crisis-edge-grey` 只报告）。
 3. 开发集入库 + 泄漏扫描。
 4. 会话 A / B 生成 + PO 5 句/类 → PO 封存第一批盲测（**生成仍须在 PO 回「按这份 Brief 开工」之后**）。
 5. 消融与拆 #1188：独立 Brief + 新盲测批次。
