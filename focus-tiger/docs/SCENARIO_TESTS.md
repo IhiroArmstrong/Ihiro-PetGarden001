@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-12（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161）
+最近代码核对：2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -25,6 +25,7 @@
   - `e2e/honesty-bridge-real-path.spec.js` — **真实** Honesty 补登→桥接 Yes→Arrival / No→Idle（`?honestyBreathMs=`；**非**注入）
   - `e2e/flower-welcome.spec.js` — **V** Day1 / 同日不重播 / `?flowerWelcome=0` / 欢迎日旗
   - `e2e/onboarding-remedy-contract.spec.js` — **W** Privacy 交叉引用 + Idle 不自动出免责卡 + `?` 仍见免责 + `?wellnessFirst=1` QA 卡 + Focusing/? 主条契约（不全覆盖 W 观感）
+  - `e2e/menu-full-reachability.spec.js` — Idle 菜单各行须点到真实结果（#1173；**非**每行观感）
   - 另：`wide-idle-more-menu` 等含 **U** Zen Cinema / Quiet Line 行开卡（非整故事）；Compass / Journey 行开卡见 orchestration 单测，**非**完整 X–Z 故事
   - `desktopCompanionL1.test.js` / `desktopCompanionL2Route.test.js` + `confideClassify` / `confideReplyFlow` — **AE** Electron Confide 壳 / 生成路由 / **DORMANT 开 Confide → dormantWake 契约**（**非** Web Safari `?product=1` · **非** CapCut 观感 DOM）
   - `spriteChannelArbitration.test.js` + `dormantIdle` overlayBusy — **AD** 睡/欢迎/付款仲裁门闩（**非**完整用户链路 e2e）
@@ -1304,6 +1305,19 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **场景 AE**：Confide KB 诚实空态与产品短答仍走 9/21–23 增量；本批只补 Electron 四门手测 TRACKER 行（见 `qa-2026-10-12-confide-electron-four`），不升格新字母。
 3. **仍须人工 / 勿当缺口**：旁席剪影在 375 与见证痕迹叠层；莲花横排与热力图间距；Collections 空白路径若仍见须带 DOM 路径回报；指南针+扇形在窄屏；#1158/#1162/#1163 合入后再测一轮。
 4. **TEST_TRACKER** 场景行仍为准；本旁支 `tracker:assemble` + `tasks:assemble` 折入机器块。
+
+---
+
+## 2026-10-13–14 增量核对摘要（Confide 诚实空态 / mood veto · Help Center 补篇 · Idle 菜单代理 · Stage 2b 灰度 · boot A7 · holdout lab）
+
+1. **背景**：自文首上次核对（2026-10-12）之后，合入 develop 的用户面与验收门禁包括：Honesty 空态链 Help Center 与支持邮箱（#1183）· 情绪旁白不得进入 KB `product_knowledge_honesty` 空态（#1188）· Help Center 四篇缺口文（呼吸 / 收藏 / 莲花 / 徽章）（#1185）· Idle 菜单行统一经单行代理表分发（#1179）· Stage 2b live 默认 shadow 灰度闸（#1180）· Electron 中文 mood veto **本地开关**（#1200）· Confide mood-veto / catalog-near **影子 lab**（#1193–#1198，**不改回复**）· holdout lab 密封路径与配额闸（#1210 · #1213）· boot `init()` 绑定外提 A7.1–A7.3（#1192 · #1199 · #1201，**行为应不变**）· 全菜单可达 e2e（#1173）· 375 首页三球 + 角上指南针 e2e 锁（#1177，改 `weekly-practice-heatmap.spec.js`）。其余 #1202–#1214 多为 brief / ledger / holdout 文档，**不写进已上线故事**。
+2. **本次核对（增量，未升格新字母场景）**：
+   - **场景 AE · Electron · L2**：产品问未命中仍 **`data-source=product_knowledge_honesty`**；诚实空态须链到 **Help Center** 与支持邮箱（#1183）。**情绪旁白**不得误占诚实空态（#1188）。**mood veto** 仅在本机开关打开时影响中文情绪行（#1200）；影子 lab / holdout **不得**当作用户可见回复变更验收。
+   - **场景 AX**：Help Center 新增四主题（#1185）；仍从菜单与问号卡进入，0–1 秒内见目录。
+   - **场景 Z / 菜单 / 宽屏**：Idle 各行仍须点到真实结果；`e2e/menu-full-reachability.spec.js`（#1173）。375 首页仅三球 + 角上指南针，热力图 e2e 已对齐（#1177）。
+   - **场景 A / boot**：A7 外提 Honesty / Companion / micro-ritual / Recover / compass 等绑定（#1192–#1201）——批量测仍走原故事，**禁止**因 refactor 单独升格字母。
+3. **仍须人工 / 勿当缺口**：mood veto 开关默认关时的回归；Stage 2b 灰度开闸后观感；诚实空态文案与 Help Center 深链；holdout lab 仅 sealed 路径；boot 外提后冷启动 30s/3min 清单。
+4. **TEST_TRACKER** 场景行仍为准；本旁支 `tracker:assemble`（485 行碎片）折入机器块；`tasks:assemble`（43 片）另开仅改 `TASKS.md` 的 `docs/*` PR（门禁禁止与本文同提交）。
 
 ---
 
