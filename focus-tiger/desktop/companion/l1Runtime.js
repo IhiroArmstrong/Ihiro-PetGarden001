@@ -69,6 +69,22 @@ function kbMoodFromShadowEvent(ev) {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
+ * Same rule as `isConfideKbMoodVetoLive` in confideProductKnowledgeSemantic.js.
+ * Kept here so the Electron runtime does not import renderer src.
+ * @param {NodeJS.ProcessEnv} [env]
+ * @param {boolean} electronUnpackaged
+ * @returns {boolean}
+ */
+function isConfideKbMoodVetoLive(env, electronUnpackaged) {
+  const raw = String(env?.FT_CONFIDE_KB_MOOD_VETO || '')
+    .trim()
+    .toLowerCase();
+  if (raw === 'shadow' || raw === 'off' || raw === 'log') return false;
+  if (!electronUnpackaged) return false;
+  return raw === 'live';
+}
+
+/**
  * @param {{
  *   isPackaged?: boolean,
  *   execPath?: string,
@@ -954,6 +970,7 @@ export class CompanionL1Runtime {
         moodOutranksProduct: Number.isFinite(Number(result.moodScore))
           ? Boolean(result.moodOutranksProduct)
           : null,
+        moodVetoLive: isConfideKbMoodVetoLive(this.env, !this.isPackaged),
         reason: 'ok',
         timing
       };

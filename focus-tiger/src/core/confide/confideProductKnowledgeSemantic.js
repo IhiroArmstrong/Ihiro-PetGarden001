@@ -121,8 +121,54 @@ export function lifeChatOutranksProductLibrary(productScore, lifeScore) {
   return life > product;
 }
 
-/** Stage one logs only; the lab sets the live margin (`task-confide-kb-gate-mood-veto.md`). */
+/** Live margin stays 0 (`task-confide-kb-gate-mood-veto.md`). */
 export const DEFAULT_CONFIDE_KB_MOOD_VETO_MARGIN = 0;
+
+/**
+ * Utterance language for the live veto. Chinese ships first; English is next
+ * and stays log-only; Japanese waits for a native review.
+ * Kana marks Japanese even when kanji are present.
+ * @param {string} text
+ * @returns {'zh' | 'en' | 'ja' | 'other'}
+ */
+export function confideKbMoodVetoUtteranceLang(text) {
+  const raw = String(text || '');
+  if (/[\u3040-\u30ff]/.test(raw)) return 'ja';
+  if (/[\u4e00-\u9fff]/.test(raw)) return 'zh';
+  if (/[A-Za-z]/.test(raw)) return 'en';
+  return 'other';
+}
+
+/**
+ * Live Chinese mood veto. Unset = off.
+ * `FT_CONFIDE_KB_MOOD_VETO=live` is honored only for unpackaged local Electron.
+ * `shadow` / `off` is the rollback (log only). Packaged and web stay off.
+ * @param {NodeJS.ProcessEnv} [env]
+ * @param {{ electronUnpackaged?: boolean }} [opts]
+ * @returns {boolean}
+ */
+export function isConfideKbMoodVetoLive(env, opts = {}) {
+  const raw = String(confideBrowserSafeEnv(env).FT_CONFIDE_KB_MOOD_VETO || '')
+    .trim()
+    .toLowerCase();
+  if (raw === 'shadow' || raw === 'off' || raw === 'log') return false;
+  if (opts.electronUnpackaged !== true) return false;
+  return raw === 'live';
+}
+
+/**
+ * @param {{
+ *   text?: string,
+ *   moodVetoLive?: boolean,
+ *   moodOutranksProduct?: boolean | null
+ * }} input
+ * @returns {boolean}
+ */
+function moodVetoReleasesChineseToObserve(input) {
+  if (input.moodVetoLive !== true) return false;
+  if (input.moodOutranksProduct !== true) return false;
+  return confideKbMoodVetoUtteranceLang(input.text) === 'zh';
+}
 
 /**
  * @param {number} productScore
@@ -152,7 +198,9 @@ export function moodAsideOutranksProductLibrary(
  *   catalogHit: boolean,
  *   catalogAttempted?: boolean,
  *   nearAction?: 'hit' | 'honesty' | 'skip' | null,
- *   lifeOutranksProduct?: boolean
+ *   lifeOutranksProduct?: boolean,
+ *   moodOutranksProduct?: boolean | null,
+ *   moodVetoLive?: boolean
  * }} input
  * @returns {'skip' | 'hit' | 'honesty'}
  */
@@ -167,7 +215,7 @@ export function resolveProductKnowledgeGateAction(input) {
     // Life chat (everyday-ask library beats Library C) generates.
     // Unanswered product questions in this band stay on the honesty line.
     if (nearAction === 'honesty') {
-      if (lifeOutranksProduct) return 'skip';
+      if (lifeOutranksProduct || moodVetoReleasesChineseToObserve(input)) return 'skip';
       return 'honesty';
     }
     // Distance may decide that a non-product ask is worth retrieving, but it
@@ -176,7 +224,9 @@ export function resolveProductKnowledgeGateAction(input) {
     // never free generation. Life chat keeps the same escape hatch it has in
     // the middle band above. (`task-confide-kb-honesty-empty-state.md` §三,
     // anchor A10.)
-    if (semanticIsProduct) return lifeOutranksProduct ? 'skip' : 'honesty';
+    if (semanticIsProduct) {
+      return lifeOutranksProduct || moodVetoReleasesChineseToObserve(input) ? 'skip' : 'honesty';
+    }
     return 'skip';
   }
 
