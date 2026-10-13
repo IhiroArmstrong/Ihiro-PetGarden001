@@ -15,7 +15,9 @@ import { CONFIDE_ROUTE } from './confideRoutes.js';
 
 export const CONFIDE_MOOD_HOLDOUT_BRIEF_ID = 'task-confide-class-blind-acceptance';
 export const CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION = 'task-confide-class-blind-acceptance/v1';
-export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_BRIEF = 2;
+export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET = 2;
+/** @deprecated Quota is per holdout set version; alias kept for older imports. */
+export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_BRIEF = CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET;
 export const CONFIDE_MOOD_HOLDOUT_RECOMMENDED_N_PER_CLASS = 60;
 export const CONFIDE_MOOD_HOLDOUT_MIN_COUNTER_PER_CLASS = 20;
 export const CONFIDE_MOOD_HOLDOUT_MIN_INTERROGATIVE_PER_CLASS = 5;
@@ -96,13 +98,13 @@ export function resolveHoldoutFilePath(envPath, workspaceRoot) {
 
 /**
  * @param {string} logPath
- * @param {string} briefVersion
+ * @param {string} holdoutSetVersion
  * @returns {number} runs already recorded (before this attempt)
  */
-export function readHoldoutRunCount(logPath, briefVersion) {
+export function readHoldoutRunCount(logPath, holdoutSetVersion) {
   try {
     const raw = JSON.parse(readFileSync(logPath, 'utf8'));
-    const n = Number(raw?.byBriefVersion?.[briefVersion]);
+    const n = Number(raw?.byHoldoutSetVersion?.[holdoutSetVersion]);
     return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
   } catch {
     return 0;
@@ -110,43 +112,61 @@ export function readHoldoutRunCount(logPath, briefVersion) {
 }
 
 /**
- * Authorize then increment. Call **before** parsing holdout JSON.
+ * Authorize then increment. Call after envelope parse, never in validate-only.
+ * Quota is per **holdout set version** (new sentences), not Brief version.
  * @param {string} logPath
- * @param {string} briefVersion
+ * @param {string} holdoutSetVersion
  * @returns {number} count after increment
  */
-export function authorizeHoldoutRun(logPath, briefVersion) {
-  const version = String(briefVersion || '').trim();
+export function authorizeHoldoutRun(logPath, holdoutSetVersion) {
+  const version = String(holdoutSetVersion || '').trim();
   if (!version) {
-    throw holdoutSafeError('缺少 Brief 版本', 'NO_BRIEF_VERSION');
+    throw holdoutSafeError('缺少盲测集版本', 'NO_SET_VERSION');
   }
   const used = readHoldoutRunCount(logPath, version);
-  if (used >= CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_BRIEF) {
+  if (used >= CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET) {
     throw holdoutSafeError(
-      `同一 Brief 版本最多跑 ${CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_BRIEF} 次`,
+      `同一盲测集版本最多跑 ${CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET} 次`,
       'RUN_CAP'
     );
   }
   mkdirSync(path.dirname(logPath), { recursive: true });
-  let bag = { byBriefVersion: {} };
+  let bag = { byHoldoutSetVersion: {} };
   try {
     bag = JSON.parse(readFileSync(logPath, 'utf8'));
-    if (!bag || typeof bag !== 'object') bag = { byBriefVersion: {} };
-    if (!bag.byBriefVersion || typeof bag.byBriefVersion !== 'object') {
-      bag.byBriefVersion = {};
+    if (!bag || typeof bag !== 'object') bag = { byHoldoutSetVersion: {} };
+    if (!bag.byHoldoutSetVersion || typeof bag.byHoldoutSetVersion !== 'object') {
+      bag.byHoldoutSetVersion = {};
     }
   } catch {
-    bag = { byBriefVersion: {} };
+    bag = { byHoldoutSetVersion: {} };
   }
   const next = used + 1;
-  bag.byBriefVersion[version] = next;
+  bag.byHoldoutSetVersion[version] = next;
   writeFileSync(logPath, `${JSON.stringify(bag)}\n`, 'utf8');
   return next;
 }
 
+function itemTags(item) {
+  const tags = Array.isArray(item?.tags) ? item.tags.map((t) => String(t)) : [];
+  if (item?.tag) tags.push(String(item.tag));
+  return tags;
+}
+
+function itemGreyTagged(item) {
+  const tags = itemTags(item);
+  const role = String(item?.role || '').trim();
+  return tags.includes('crisis-edge-grey') || role === 'crisis-edge-grey';
+}
+
+function itemGreyIntent(item) {
+  const dim = String(item?.dim || '').trim();
+  return itemGreyTagged(item) || dim === '仅报告';
+}
+
 /**
  * @param {unknown} data
- * @returns {{ briefVersion: string, items: object[] }}
+ * @returns {{ briefVersion: string, holdoutSetVersion: string, items: object[] }}
  */
 export function parseHoldoutFile(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
@@ -156,11 +176,87 @@ export function parseHoldoutFile(data) {
   if (briefVersion !== CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION) {
     throw holdoutSafeError('holdout Brief 版本不匹配或缺失', 'BRIEF_MISMATCH');
   }
+  const holdoutSetVersion = String(
+    data.holdout_set_version || data.holdoutSetVersion || ''
+  ).trim();
+  if (!holdoutSetVersion) {
+    throw holdoutSafeError('缺少盲测集版本', 'NO_SET_VERSION');
+  }
   const items = Array.isArray(data.items) ? data.items : null;
   if (!items) {
     throw holdoutSafeError('holdout JSON 缺少 items', 'PARSE');
   }
-  return { briefVersion, items };
+  return { briefVersion, holdoutSetVersion, items };
+}
+
+/**
+ * Format / field / count checks. Never returns utterance text. Does not increment quota.
+ * @param {{ holdoutSetVersion?: string, items: object[] }} parsed
+ * @returns {{
+ *   ok: boolean,
+ *   item_n: number,
+ *   unique_ids: boolean,
+ *   empty_text: number,
+ *   grey_intent: number,
+ *   grey_untagged: number,
+ *   mood_class_items: number,
+ *   other_class_items: number,
+ *   by_class: Record<string, number>
+ * }}
+ */
+export function validateHoldoutCounts(parsed) {
+  const items = Array.isArray(parsed?.items) ? parsed.items : [];
+  const ids = [];
+  let emptyText = 0;
+  let greyIntent = 0;
+  let greyUntagged = 0;
+  let moodClass = 0;
+  let otherClass = 0;
+  /** @type {Record<string, number>} */
+  const byClass = {};
+  for (const item of items) {
+    if (!item || typeof item !== 'object') {
+      emptyText++;
+      continue;
+    }
+    const id = String(item.id || '').trim();
+    if (id) ids.push(id);
+    const text = typeof item.text === 'string' ? item.text.trim() : '';
+    if (!text) emptyText++;
+    const classId = String(item.class_id || item.classId || item.class || '').trim() || '(empty)';
+    byClass[classId] = (byClass[classId] || 0) + 1;
+    if (CONFIDE_MOOD_HOLDOUT_CLASS_IDS.includes(classId)) moodClass++;
+    else otherClass++;
+    if (itemGreyIntent(item)) {
+      greyIntent++;
+      if (!itemGreyTagged(item)) greyUntagged++;
+    }
+  }
+  const uniqueIds = ids.length === new Set(ids).size;
+  return {
+    ok: uniqueIds && emptyText === 0 && greyUntagged === 0 && Boolean(parsed?.holdoutSetVersion),
+    item_n: items.length,
+    unique_ids: uniqueIds,
+    empty_text: emptyText,
+    grey_intent: greyIntent,
+    grey_untagged: greyUntagged,
+    mood_class_items: moodClass,
+    other_class_items: otherClass,
+    by_class: byClass
+  };
+}
+
+/**
+ * @param {ReturnType<typeof validateHoldoutCounts>} report
+ * @returns {string}
+ */
+export function formatHoldoutValidateStdout(report) {
+  const lines = [
+    '[mood-veto-holdout] validate_only=yes run_count_incremented=no',
+    `[mood-veto-holdout] ok=${report.ok ? 'yes' : 'no'} items=${report.item_n} unique_ids=${report.unique_ids ? 'yes' : 'no'} empty_text=${report.empty_text}`,
+    `[mood-veto-holdout] grey_intent=${report.grey_intent} grey_untagged=${report.grey_untagged} mood_class_items=${report.mood_class_items} other_class_items=${report.other_class_items}`
+  ];
+  return `${lines.join('\n')}\n`;
 }
 
 /**
