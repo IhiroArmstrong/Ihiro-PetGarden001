@@ -1,7 +1,7 @@
 ---
 id: confide-routing-followup
 kind: feature
-status: 清单已建 · CR-02 起均未做完
+status: 清单在 develop（#1202）· R-0 与路由仲裁 v1 Brief 已出 · 日语项本轮放过
 updated: 2026-10-13
 ---
 

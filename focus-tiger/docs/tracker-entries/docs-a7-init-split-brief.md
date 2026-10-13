@@ -1,0 +1,1 @@
+| A7 `init()` 拆分 Brief（文档） | 纯文档 | 仅单元测试覆盖 | 不是产品功能。验收的是 Brief 与 develop 一致：七段顺序 / 依赖 / 豁免地图；A7.1–A7.2 已合，余 A7.3–A7.6。不代表冷启动画面变了。读 [`task-briefs/task-a7-init-split.md`](../task-briefs/task-a7-init-split.md)。 | — | — | — | `docs/task-briefs/task-a7-init-split.md` | 2026-10-13 |

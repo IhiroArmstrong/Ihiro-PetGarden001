@@ -18,6 +18,7 @@
 
 - **法律与健康声明**：不是诊疗、不诊断、不替代持证专业人士；危机路径固定转介。
 - **开发工作基本原则**：诚实机制与诚实工程（不假修好、不静默失败、文档与代码同批）；不泄密；一次一任务；路径 ASCII `kebab-case`。
+- **R-Confide-Class（禁止头痛医头）**：Confide 问答类 bug，禁止只针对触发它的具体句子修补。修复必须落在「类」和机制上（语义判断、桶定义、路由顺序），并以修补时未见过的盲测句验收。固定句只作回归，不作「已解决」的证据。细则与冻表 / 盲测分工见 `task-briefs/task-confide-class-blind-acceptance.md`；测试纪律 SSOT：`.cursor/rules/testing-strategy.mdc`（`RULES_INDEX` → `confide-class-blind`）。编号不与路由仲裁稿 `confide-r0-routing-arbitration-v1` 的「R-0」简称混用。
 - **对用户的保护性红线**：不制造焦虑、永不消失、不 FOMO 逼付费、观照者不贴人格标签。
 
 ### 禁止用红线当挡箭牌
@@ -29,6 +30,20 @@
 - 「Yin 短句好听」≠「Yin 听懂了」。人设短句不得代替对用户意图的承接。
 
 评测与排期：Local AI 的 **Boundary Respect**（用户未要求解释/分析/建议时，Yin 能否克制）优先于换模型。拆开 **模型能力** 与 **应用层 routing** 之前，禁止以「Qwen 不行」为由立刻换模型。细则见 `PRODUCT_POSITIONING.md`「禅意倾听者」与 `LOCAL_AI_SCENARIOS_V1.md`。
+
+---
+
+## Confide 评测红线（R-0 · 硬 · 2026-10-13）
+
+> **冻结集不能单独当上线关卡。** 调过参的句子只证明回归；没见过的句子才证明泛化。
+
+- **不存原句**：倾诉日志只许 `queryHash` + 长度或按天汇总的计数。禁止把 Electron `turns.jsonl` 原文、从哈希还原的原句、或「为了凑样本编出来的问法」写进仓库、备份或长期遥测。滚动清理与备份排除仍守 Prompt 9（`confide-turns-jsonl-backup-exclude.md`）。补计数时**不得**因此放宽「不存原文」。读日志须遵守 `companion-debug`（`.cursor/rules/focus-tiger-companion-debug.mdc`）：只读最近一条、限行，禁止整份 `turns.jsonl` 进 Chat。
+- **实验室里加盲测分层，不另建一套框架。** 路径与命名仍看 `LAB_SCRIPT_CONVENTIONS.md`（`RULES_INDEX` → `companion-debug`）。现有情绪否决 / 目录复核 / Stage 2b 实验室继续用。每套评测分成：
+  1. **冻结 / 开发集**：可以调规则。一旦用来调过，就只许当回归（不退步）。
+  2. **封存盲测集**：另一个会话生成并封存。Cursor 实现会话只看通过率，不看句子。目录：`focus-tiger/.secrets/confide-blind-holdout/`（gitignore）。
+- **上线 / 切 live 两个条件都要满足**：冻结集不退步 **且** 盲测集通过率达标。只拿冻结集的 88.9%「差 1 句过线」过关 = 违反本条。已经拿来调规则的反向风险句，不得再当唯一验收。
+- **CI 原句扫描**：`npm run lint:confide-original-utterance`（已进 `test:smoke`）。仓库里不得出现 `turns.jsonl`、同一行 `queryHash`+原文、或未封存的盲测原句文件。
+- 机器闸：`src/core/confide/confideEvalGate.js`。跟进顺序见 `confide-routing-followup.md` CR-03 / CR-10。
 
 ---
 

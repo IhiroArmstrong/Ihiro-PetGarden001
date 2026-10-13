@@ -1,0 +1,1 @@
+| Confide 路由仲裁 v1 Brief 四处补丁 | 纯文档 | 仅单元测试覆盖 | **无用户路径。** 不改回复、不等待、不改 live 路由。本条验收的是 Brief 已写入：#1200 对照臂与切 live 删除、明显高于冻结、盲测只汇总、层序按打分裁决。不代表仲裁已接线或盲测已生成。 | — | — | — | `docs/task-briefs/task-confide-routing-arbitration-v1.md` · `task-confide-class-blind-acceptance.md` | 2026-10-13 |

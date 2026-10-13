@@ -1948,6 +1948,24 @@ export const RULE_AUTHORITY_TOPICS = [
         note: '离线筛选不能当成产品路径 M'
       }
     ]
+  },
+  {
+    id: 'confide-class-blind',
+    title: 'Confide 按类盲测与冻表分工（R-Confide-Class）',
+    ssotPath: '.cursor/rules/testing-strategy.mdc',
+    ssotSection: 'Confide 按类盲测与冻表分工（confide-class-blind · 强制）',
+    ssotMustContain: [
+      /confide-class-blind/,
+      /R-Confide-Class/,
+      /safety_leak_to_gate/,
+      /interrogative-positive/,
+      /crisis-edge-grey/
+    ],
+    topicSignals: [/confide-class-blind/, /R-Confide-Class/, /盲测 holdout/],
+    mustCite: [/testing-strategy\.mdc|confide-class-blind|task-confide-class-blind-acceptance/],
+    restatementFingerprints: [/safety_leak_to_gate/, /interrogative-positive 通过率/],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: []
   }
 ];
 

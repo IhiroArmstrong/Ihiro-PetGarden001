@@ -1,0 +1,1 @@
+| Confide 评测 R-0 + 路由仲裁 v1 Brief | 纯文档 + 闸门单测 | 仅单元测试覆盖 | **无用户路径。** 不改回复、不等待、不改 live 路由。自动化：`node --test src/core/confide/confideEvalGate.test.js` · `npm run lint:confide-original-utterance`。本条验收的是原则已写入、Brief 已入库、冻结集不能单独过关。不代表仲裁已接线。 | — | — | — | `docs/task-briefs/task-confide-routing-arbitration-v1.md` · `PRINCIPLES.md` R-0 | 2026-10-13 |
