@@ -87,6 +87,13 @@ import {
   createBootSceneAnimState,
   mountInAppReminderBanner
 } from './boot/boot-scene-anim.js';
+import {
+  createBootMomentHostsState,
+  mountCalmActionRecoverCard,
+  mountFiveMomentsCompass,
+  mountFocusCircleWitnessChrome,
+  mountSupportYinModal
+} from './boot/boot-moment-hosts.js';
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
@@ -124,7 +131,6 @@ import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
-import { FiveMomentsCompassUI } from './ui/FiveMomentsCompassUI.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
@@ -278,9 +284,7 @@ import { SanctuaryEnsoMarkChrome } from './ui/SanctuaryEnsoMarkChrome.js';
 import { QuietTogetherLanternsChrome } from './ui/QuietTogetherLanternsChrome.js';
 import { FocusCirclePresenceChrome } from './ui/FocusCirclePresenceChrome.js';
 import { FocusCircleBesideSeatsChrome } from './ui/FocusCircleBesideSeatsChrome.js';
-import { FocusCircleWitnessChrome } from './ui/FocusCircleWitnessChrome.js';
 import { FocusCircleWitnessLeaveUI } from './ui/FocusCircleWitnessLeaveUI.js';
-import { SupportYinModalUI } from './ui/SupportYinModalUI.js';
 import { shouldLeadSupportModalWithTea } from './core/supportModalLead.js';
 import { resolvePracticeAggregate } from './core/practiceAggregate.js';
 import {
@@ -528,7 +532,6 @@ import { AmbientSoundscapeUI } from './ui/AmbientSoundscapeUI.js';
 import { FocusAwarenessCardUI } from './ui/FocusAwarenessCardUI.js';
 import { OpenEndedNudgeUI } from './ui/OpenEndedNudgeUI.js';
 import { CalmActionRecoverStore } from './core/CalmActionRecoverStore.js';
-import { CalmActionRecoverCardUI } from './ui/CalmActionRecoverCardUI.js';
 import { CalmActionArriveStore } from './core/CalmActionArriveStore.js';
 import { CalmActionArriveCardUI } from './ui/CalmActionArriveCardUI.js';
 import { CalmActionTransitionStore } from './core/CalmActionTransitionStore.js';
@@ -988,6 +991,7 @@ async function init() {
       }
     }
   );
+  const bootMomentHosts = createBootMomentHostsState();
   const todayDirectionOptionsBannerUI = new TodayDirectionOptionsBannerUI(
     document.getElementById('ui-overlay'),
     {
@@ -1153,7 +1157,7 @@ async function init() {
         lightProgression.playRecoverDisturbance();
       }
       if (type === 'activeRecover') {
-        calmActionRecoverCardUI.tryShowAfterActiveRecover();
+        bootMomentHosts.calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
       }
     }
@@ -1200,11 +1204,12 @@ async function init() {
   window.__momentWhisper = momentWhisperUI;
 
   const calmActionRecoverStore = new CalmActionRecoverStore();
-  const calmActionRecoverCardUI = new CalmActionRecoverCardUI(
+  mountCalmActionRecoverCard(
+    bootMomentHosts,
     document.getElementById('ui-overlay') || document.body,
     calmActionRecoverStore
   );
-  window.__calmActionRecoverCard = calmActionRecoverCardUI;
+  window.__calmActionRecoverCard = bootMomentHosts.calmActionRecoverCardUI;
   const calmActionArriveStore = new CalmActionArriveStore();
   const calmActionArriveCardUI = new CalmActionArriveCardUI(
     document.getElementById('ui-overlay') || document.body,
@@ -1309,7 +1314,7 @@ async function init() {
 
   /** @param {string} forKey */
   function isMomentWhisperBusy(forKey) {
-    if (fiveMomentsCompassUI.isOpen()) return true;
+    if (bootMomentHosts.fiveMomentsCompassUI.isOpen()) return true;
     if (stateManager.state === STATES.CELEBRATE) return true;
     if (microRitualUI?.isOpen?.() === true) return true;
     // Arrive may open while Honesty idle entry is still painted — do not block Arrive.
@@ -1437,14 +1442,15 @@ async function init() {
   );
   window.__zenCinemaCard = zenCinemaCardUI;
 
-  const fiveMomentsCompassUI = new FiveMomentsCompassUI(
+  mountFiveMomentsCompass(
+    bootMomentHosts,
     document.body,
     withIdleOverlayOccupancySync({
       onMomentSelect: (momentId) => handleFiveMomentSelect(momentId),
       onOpen: () => syncInAppReminderBanner()
     })
   );
-  window.__fiveMomentsCompass = fiveMomentsCompassUI;
+  window.__fiveMomentsCompass = bootMomentHosts.fiveMomentsCompassUI;
   const coldStartGoalCardUI = new ColdStartGoalCardUI(
     document.body,
     withIdleOverlayOccupancySync({
@@ -1728,7 +1734,7 @@ async function init() {
         const storage =
           typeof localStorage !== 'undefined' ? localStorage : null;
         rememberRespondedTraceId(storage, traceId);
-        focusCircleWitnessChrome.setRespondDisabled(false);
+        bootMomentHosts.focusCircleWitnessChrome.setRespondDisabled(false);
         clearFocusCircleWitnessSnapshot();
         void peekFocusCircleWitness({ storage });
       }
@@ -1736,21 +1742,22 @@ async function init() {
   );
   window.__focusCircleWitnessLeave = focusCircleWitnessLeaveUI;
 
-  const focusCircleWitnessChrome = new FocusCircleWitnessChrome(
+  mountFocusCircleWitnessChrome(
+    bootMomentHosts,
     document.body,
     {
       onRespond: () => {
-        const trace = focusCircleWitnessChrome.getTrace();
+        const trace = bootMomentHosts.focusCircleWitnessChrome.getTrace();
         if (!trace?.traceId) return;
-        focusCircleWitnessChrome.setRespondDisabled(true);
+        bootMomentHosts.focusCircleWitnessChrome.setRespondDisabled(true);
         const opened = focusCircleWitnessLeaveUI.openRespondPicker(trace.traceId);
         if (!opened) {
-          focusCircleWitnessChrome.setRespondDisabled(false);
+          bootMomentHosts.focusCircleWitnessChrome.setRespondDisabled(false);
         }
       }
     }
   );
-  window.__focusCircleWitness = focusCircleWitnessChrome;
+  window.__focusCircleWitness = bootMomentHosts.focusCircleWitnessChrome;
 
   function onFocusCircleRiseSideEffects(elapsedSeconds) {
     maybeWasHereMark({ elapsedSeconds });
@@ -1937,7 +1944,7 @@ async function init() {
     syncHomeSanctuaryNavPulseChrome();
     idleChrome.wide.refreshSecondaryHintDots?.();
     idleChrome.narrow.refreshSecondaryHintDots?.();
-    supportYinModalUI.syncEntitlementCards?.();
+    bootMomentHosts.supportYinModalUI.syncEntitlementCards?.();
   };
   window.addEventListener('resize', () => syncConfideEarChrome());
   syncConfideEarChrome();
@@ -1945,10 +1952,10 @@ async function init() {
 
   /** @type {string[]} */
   const glassOpenOrder = [];
-  // Built on close, not at startup. supportYinModalUI is created later in init.
+  // Built on close, not at startup. Support modal is created later in init.
   const glassOverlayCards = () => {
     const cards = [
-      { id: 'support', ui: supportYinModalUI, close: () => supportYinModalUI.close() },
+      { id: 'support', ui: bootMomentHosts.supportYinModalUI, close: () => bootMomentHosts.supportYinModalUI.close() },
       { id: 'quote', ui: dailyZenQuoteCardUI, close: () => dailyZenQuoteCardUI.close() },
       {
         id: 'mustard-seed',
@@ -1989,7 +1996,7 @@ async function init() {
         ui: groundExerciseChoiceUI,
         close: () => groundExerciseChoiceUI?.close()
       },
-      { id: 'moments', ui: fiveMomentsCompassUI, close: () => fiveMomentsCompassUI.close() },
+      { id: 'moments', ui: bootMomentHosts.fiveMomentsCompassUI, close: () => bootMomentHosts.fiveMomentsCompassUI.close() },
       {
         id: 'cold-start-goal',
         ui: coldStartGoalCardUI,
@@ -2173,7 +2180,7 @@ async function init() {
   function handleFiveMomentSelect(momentId) {
     const action = resolveFiveMomentAction(momentId);
     if (!action) return;
-    fiveMomentsCompassUI.close();
+    bootMomentHosts.fiveMomentsCompassUI.close();
     if (action.type === 'arrival') {
       if (
         !sessionUiGate.canStartArrivalFromChrome({
@@ -2214,7 +2221,8 @@ async function init() {
     }
   }
 
-  const supportYinModalUI = new SupportYinModalUI(
+  mountSupportYinModal(
+    bootMomentHosts,
     document.body,
     withIdleOverlayOccupancySync({
       onOpen: () => {
@@ -2237,7 +2245,7 @@ async function init() {
       }
     })
   );
-  window.__supportYin = supportYinModalUI;
+  window.__supportYin = bootMomentHosts.supportYinModalUI;
   void refreshEntitlement().then(() => {
     syncEntitlementDependentIdleChrome();
   });
@@ -2436,7 +2444,7 @@ async function init() {
     syncFocusCoinsCosmetics();
     yinCoinPanelUI?.refresh?.();
   });
-  supportYinModalUI.setShouldLeadWithTea(() => {
+  bootMomentHosts.supportYinModalUI.setShouldLeadWithTea(() => {
     const aggregate = resolvePracticeAggregate({
       lotusPondStore,
       practiceDaysStore
@@ -3065,8 +3073,8 @@ async function init() {
       presenceSignalsPanelUI?.isOpen?.() === true ||
       confideToYinUI?.isOpen?.() === true ||
       groundExerciseChoiceUI?.isOpen?.() === true ||
-      fiveMomentsCompassUI?.isOpen?.() === true ||
-      supportYinModalUI?.isOpen?.() === true ||
+      bootMomentHosts.fiveMomentsCompassUI?.isOpen?.() === true ||
+      bootMomentHosts.supportYinModalUI?.isOpen?.() === true ||
       sanctuaryUnlockUI?.isOpen?.() === true ||
       membershipUnlockUI?.isOpen?.() === true ||
       tipJarUI?.isOpen?.() === true ||
@@ -3476,7 +3484,7 @@ async function init() {
     quietTogetherLanternsChrome.setContributing(true);
     focusCirclePresenceChrome.setFocusing(false);
     focusCircleBesideSeatsChrome.setFocusing(false);
-    focusCircleWitnessChrome.setFocusing(false);
+    bootMomentHosts.focusCircleWitnessChrome.setFocusing(false);
     setFocusCirclePresenceContributing(true);
     startLanternHeartbeat();
     startFocusCircleHeartbeat();
@@ -3863,7 +3871,7 @@ async function init() {
               placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
               visibleMs: 4_000
             });
-            supportYinModalUI.open();
+            bootMomentHosts.supportYinModalUI.open();
           });
       }
     }
@@ -3913,7 +3921,7 @@ async function init() {
     },
     onFiveMoments: () => {
       closeGrowthOverlayCards({ except: 'moments' });
-      fiveMomentsCompassUI.open({ markSeenOnOpen: true });
+      bootMomentHosts.fiveMomentsCompassUI.open({ markSeenOnOpen: true });
     },
     onJourneyLog: () => {
       closeGrowthOverlayCards({ except: 'journey' });
@@ -4636,7 +4644,7 @@ async function init() {
     sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
     openEndedNudgeUI.hide();
-    calmActionRecoverCardUI.hide({ immediate: true });
+    bootMomentHosts.calmActionRecoverCardUI.hide({ immediate: true });
     calmActionArriveCardUI.hide({ immediate: true });
     transitionMomentUI.close();
     groundExerciseChoiceUI?.close();
@@ -4645,7 +4653,7 @@ async function init() {
       ambientSoundscape.endSession();
     }
     ambientSoundscapeUI.setSessionActive(false);
-    supportYinModalUI.setFabVisible(true);
+    bootMomentHosts.supportYinModalUI.setFabVisible(true);
     tipKindnessBadgesChrome.setVisible(true);
     sanctuaryEnsoMarkChrome.setFocusing(false);
     sanctuaryEnsoMarkChrome.setVisible(true);
@@ -4654,7 +4662,7 @@ async function init() {
     quietTogetherLanternsChrome.setFocusing(false);
     focusCirclePresenceChrome.setFocusing(false);
     focusCircleBesideSeatsChrome.setFocusing(false);
-    focusCircleWitnessChrome.setFocusing(false);
+    bootMomentHosts.focusCircleWitnessChrome.setFocusing(false);
     void stopLanternHeartbeat();
     void stopFocusCircleHeartbeat();
     companionModePicker.setIdleChromeVisible(true);
@@ -4826,12 +4834,12 @@ async function init() {
     focusAwarenessCardUI.resetSession();
     resetOpenEndedNudgeSession();
     calmActionRecoverStore.resetSession();
-    calmActionRecoverCardUI.resetSession();
+    bootMomentHosts.calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
     onboardingHints?.closePurposeCard?.();
     sessionCues.startIntervalSession();
-    supportYinModalUI.setFabVisible(false);
+    bootMomentHosts.supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
     // Enso stays on cushion during Focusing — fade only (Brief opacity 0.45–0.55).
     sanctuaryEnsoMarkChrome.setVisible(true);
@@ -4841,7 +4849,7 @@ async function init() {
     quietTogetherLanternsChrome.setFocusing(true);
     focusCirclePresenceChrome.setFocusing(true);
     focusCircleBesideSeatsChrome.setFocusing(true);
-    focusCircleWitnessChrome.setFocusing(true);
+    bootMomentHosts.focusCircleWitnessChrome.setFocusing(true);
     startLanternHeartbeat();
     startFocusCircleHeartbeat();
     attentionSignals.setEnabled(true);
@@ -5034,7 +5042,7 @@ async function init() {
       sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
     openEndedNudgeUI.hide();
-      calmActionRecoverCardUI.hide({ immediate: true });
+      bootMomentHosts.calmActionRecoverCardUI.hide({ immediate: true });
       calmActionArriveCardUI.hide({ immediate: true });
       transitionMomentUI.close();
       groundExerciseChoiceUI?.close();
@@ -5548,7 +5556,7 @@ async function init() {
       return;
     }
     closeGrowthOverlayCards({ except: 'moments' });
-    fiveMomentsCompassUI.open({ firstRun: true });
+    bootMomentHosts.fiveMomentsCompassUI.open({ firstRun: true });
   }
 
   function scheduleFirstCardOffers(delayMs = 0) {
@@ -6047,7 +6055,7 @@ async function init() {
       focusCircleWitnessLeaveUI.hideRespondPicker({ immediate: true });
       void stopFocusCircleHeartbeat({ storage });
       focusCirclePresenceChrome.refresh();
-      focusCircleWitnessChrome.refresh();
+      bootMomentHosts.focusCircleWitnessChrome.refresh();
     }
   });
 
