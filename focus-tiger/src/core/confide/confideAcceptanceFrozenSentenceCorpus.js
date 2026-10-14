@@ -14,8 +14,9 @@ import {
   KB_MOOD_VETO_LAB_MOOD_ROWS
 } from './confideKbMoodVetoLabSet.js';
 import { CONFIDE_MOOD_VETO_DEVSET_ZH_V1_ITEMS } from './confideMoodVetoDevsetZhV1.js';
-import { CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS } from './confideSafetyDevsetZhV1.js';
+import { CONFIDE_ROUTING_DEVSET_ZH_V2_ITEMS } from './confideRoutingDevsetZhV2.js';
 import { CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS } from './confideRouteDevsetZhV2.js';
+import { CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS } from './confideSafetyDevsetZhV1.js';
 
 /** Minimum trimmed length to count as a leak target (skip ultra-short tokens). */
 export const CONFIDE_ACCEPTANCE_LEAK_MIN_CHARS = 6;
@@ -35,10 +36,6 @@ export const CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS = Object.freeze([
   '會不會好一點'
 ]);
 
-/**
- * Basenames that may embed frozen / devset full lines (fixture SSOT only).
- * @type {readonly string[]}
- */
 /**
  * Runtime modules where embedding frozen/devset lines would be「头痛医头」patching.
  * @type {readonly string[]}
@@ -78,8 +75,9 @@ export const CONFIDE_ACCEPTANCE_LEAK_ALLOWLIST_BASENAMES = Object.freeze([
   'confideKbRoutingMatrix.js',
   'stage2bNegativeControlTexts.js',
   'confideMoodVetoDevsetZhV1.js',
-  'confideSafetyDevsetZhV1.js',
+  'confideRoutingDevsetZhV2.js',
   'confideRouteDevsetZhV2.js',
+  'confideSafetyDevsetZhV1.js',
   'confideAcceptanceFrozenSentenceCorpus.js',
   'confideKbCatalogNearReview.js',
   'confideStage2RealMeatCandidates.js'
@@ -106,8 +104,9 @@ export function listConfideMoodVetoFrozenAndDevsetFullLines() {
   for (const row of KB_MOOD_VETO_LAB_MOOD_ROWS) add(row.text);
   for (const row of KB_MOOD_VETO_LAB_CONTROL_ROWS) add(row.text);
   for (const row of CONFIDE_MOOD_VETO_DEVSET_ZH_V1_ITEMS) add(row.text);
-  for (const row of CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS) add(row.text);
+  for (const row of CONFIDE_ROUTING_DEVSET_ZH_V2_ITEMS) add(row.text);
   for (const row of CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS) add(row.text);
+  for (const row of CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS) add(row.text);
 
   return Object.freeze([...bag].sort((a, b) => b.length - a.length));
 }

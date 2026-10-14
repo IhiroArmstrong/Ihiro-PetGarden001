@@ -29,6 +29,8 @@
     "companion:system-tts-probe": "node scripts/system-tts-probe.js",
     "companion:mood-veto-holdout": "node scripts/l0-kb-mood-veto-holdout-lab.js",
     "companion:mood-veto-holdout:validate": "node scripts/l0-kb-mood-veto-holdout-lab.js --validate-only",
+    "companion:routing-class-holdout": "node scripts/l0-kb-routing-class-holdout-lab.js",
+    "companion:routing-class-holdout:validate": "node scripts/l0-kb-routing-class-holdout-lab.js --validate-only",
     "bytecode:compile": "electron scripts/compile-v8-bytecode.js"
   },
   "dependencies": {

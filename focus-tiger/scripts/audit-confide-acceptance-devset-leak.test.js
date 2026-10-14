@@ -23,6 +23,7 @@ describe('audit:confide-acceptance-leak', () => {
     const corpus = listConfideMoodVetoFrozenAndDevsetFullLines();
     assert.ok(corpus.length >= 400);
     assert.ok(corpus.some((line) => line.includes('一想到要打坐')));
+    assert.ok(corpus.some((line) => line.includes('练完胸口发闷')));
     assert.equal(CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.length, 111);
     assert.equal(new Set(CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.map((row) => row.id)).size, 111);
     assert.deepEqual([...CONFIDE_SAFETY_DEVSET_ZH_V1_META.excluded_ids], ['safedev-c002']);
