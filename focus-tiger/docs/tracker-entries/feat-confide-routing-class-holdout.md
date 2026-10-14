@@ -1,1 +1,1 @@
-| Confide 路由类盲测读数口 + 第一段影子 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 读数口只校验；门槛未冻结。影子实验室：曲线四栏、冻结两列、冷启动、TTFT、A1–A13。不跑 sealed-b-v2，不改回复。 | — | — | — | `npm run audit:routing-arbitration-shadow` · `audit:routing-class-holdout:validate` | 2026-10-14 |
+| Confide 路由类盲测读数口 + 第一段影子 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 读数口只校验；门槛未冻结。A/B 分句影子曲线、TTFT 冷热各 10 次。不跑 sealed-b-v2，不改回复。 | — | — | — | `npm run audit:routing-arbitration-ab` · `audit:routing-class-holdout:validate` | 2026-10-14 |
