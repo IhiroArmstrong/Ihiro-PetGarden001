@@ -1,8 +1,8 @@
 ---
 id: confide-routing-arbitration-v1
 kind: feature
-status: Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · B/C 现写法不采用 · 禁止盲测/切 live · #1222 待合 develop
-updated: 2026-10-14
+status: Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · #1222 已合 · 本机 b-v4 已补两类至 60 · 禁止本会话盲测/切 live
+updated: 2026-10-15
 ---
 
 路由仲裁 v1：一次打分、一个决定。合并 Prompt 16 / 18、情绪否决、目录误命中。#1200 本机开关仅对照臂，切 live 时删除。权威 `task-briefs/task-confide-routing-arbitration-v1.md`。R-0 评测见 `PRINCIPLES.md`。
