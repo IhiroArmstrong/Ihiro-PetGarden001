@@ -1,6 +1,6 @@
 # Task Brief · Confide 路由仲裁 v1
 
-> **状态（2026-10-14）**：PO 已点头出本 Brief（#1206）。**函数 A、门槛 0.01 已写入并冻结**（盲测跑完不得再调）。**不采用 B**；**不拿现写法 C 锁门槛**。发送链仍未改；切 live 与封存盲测须另一次书面点头。#1222 不合。  
+> **状态（2026-10-14 夜）**：PO 已点头出本 Brief（#1206）。**函数 A、门槛 0.01 已冻结**（盲测跑完不得再调）。八类通过线按既有 R-0 **≥85%** + n≥60；`product_path_ttft_hot_delta_ms` = **100**。**不采用 B**；**不拿现写法 C 锁门槛**。发送链仍未改。#1222 影子可合 develop。封存盲测另开会话；切 live 必须等盲测过了再点。  
 > **任务类**：第一段影子对照 = **A 类**。切 live = **B 类**（会改变用户实际听到的回复从哪一层来）。`WORKFLOW.md` Brief 开工门禁。Stage 2 留下的规矩仍在：没有点头不得改 live。  
 > **命名（硬）**：本文是 **路由仲裁**（一句话在各层之间走哪条路）。**不是** `confide-embedding-lifecycle-arbitration.md` 的 **生命周期仲裁**（模型加载排队 / `l1LlamaWorkGate`）。Brief 与代码注释禁止混用「统一仲裁」。  
 > **合并（不再另开第二份）**：Prompt 16 路由顺序（`task-confide-kb-routing-gate.md`）· Prompt 18 近义匹配与误判/漏检（`task-confide-kb-embedding-near-match.md`）· 情绪否决第一段（`task-confide-kb-gate-mood-veto.md`）· 目录 / 近邻误命中（`task-confide-kb-catalog-near-misfire.md`）。带上一句上下文的上线关卡与 Stage 2b 候选共用同一套盲测验收（CR-03 / CR-17）。  
@@ -76,7 +76,7 @@
 - 对照集（冻结 / 可看）至少含：目录误命中 7 句情绪句、混合句 2 句、产品分高于情绪分 3 句、徽章句、Prompt 18 锚点 A1–A13。这两类少，不充当「明显高于」的定门槛样本以外的泛化证据。  
 - 盲测集（另一会话生成）须把 **混合句**、**产品分高于情绪分** 各自成类，每类约 **60** 句。Brief 规划名 → 封存文件 id：`mixed-mood-product` → `mixed`；`product-outranks-mood` → `product-over-emotion`。另有 **`mixed-emotion-dominant`**：产品词只是旁白、情绪仍应赢，用来量「差距不足默认不走产品」时真产品问被漏掉的对侧。  
 - embedding 未就绪：**立刻**退回现有字面 / 冷启动探针，禁止干等。记 `embed_not_ready`。  
-- 产品路径记下首字延迟（冷 / 热各一轮）。不换默认模型。过线标准 **待你点头**。实测（2026-10-14 影子实验室，同一 `classifyProductKnowledgeGate`）：见下文「第一段影子实测」；新函数相对现网热态多出的比较可视为 **0 ms**（同一向量调用）。
+- 产品路径记下首字延迟（冷 / 热各一轮）。不换默认模型。过线标准已锁：`product_path_ttft_hot_delta_ms` = **100**（代码 `PRODUCT_PATH_TTFT_HOT_DELTA_MS`）。单句短答相对现网热态约 +1 ms（同一向量调用）；3 分句混合热中位约 +63 ms。切 live 时热态增量不得超过 100 ms。
 
 ### 第二段（B 类 · 切 live）
 
@@ -213,7 +213,7 @@ P18 在 A@0 / B@0 差的那 1 句是 A12。A@0.05 丢掉 A7/A8/A10；B@0.05 靠 
 | AE 锚 `接地练习在哪` | 产品短答 | **100%** | 1 |
 | AE 锚 `A Quiet Line 在哪` | 产品短答 | **100%** | 1 |
 
-**b-v3 信封**：`holdout_set_version=confide-routing-blind-zh/b-v3` · items=371 · validate `ok=yes`（不占额度）。**徽章补句**：`badge-fill.json` n=32 · id=`badgefill-01`…`badgefill-32` · 仅本机 `ft-private` · **未**并入 b-v3 · **未**进仓。安全层漏接仍单开，不靠调 margin / 目录旁路遮。点头前 **禁止** 对 sealed-b-v2 真跑；**禁止**合 #1222 / 冻结 margin。
+**b-v3 信封**：`holdout_set_version=confide-routing-blind-zh/b-v3` · items=371 · validate `ok=yes`（不占额度）。**徽章补句**：`badge-fill.json` n=32 · id=`badgefill-01`…`badgefill-32` · 仅本机 `ft-private` · **未**并入 b-v3 · **未**进仓。安全层漏接仍单开，不靠调 margin / 目录旁路遮。**禁止**本实现会话对 sealed-b-v2 / b-v3 真跑；盲测另开会话。#1222 影子（函数 A @ 0.01）可合 develop；切 live 仍须盲测过关后再点。
 
 ### 第一段影子实测（2026-10-14 · 未切 live）
 
@@ -222,7 +222,7 @@ P18 在 A@0 / B@0 差的那 1 句是 A12。A@0.05 丢掉 A7/A8/A10；B@0.05 靠 
 - **冷启动**：冻结中文情绪抽样 8 句，`embeddingState=not_ready` → 立刻字面探针，`waited=0`，记 `embed_not_ready`。
 - **TTFT**（加载/预计算不计入；各 10 次；过线仍待点头）：
   - 短答锚「接地练习在哪」分句路径：冷中位 **22 ms** / 最大 27 ms；热中位 **22 ms** / 最大 27 ms。现网同句：冷中位 **22 ms** / 最大 23 ms；热中位 **21 ms** / 最大 22 ms。
-  - 3 分句混合「练完胸口发闷，提醒还在响，从菜单哪关？」：分句路径冷中位 **86 ms** / 最大 89 ms，热中位 **84 ms** / 最大 87 ms；**现网**冷中位 **22 ms** / 最大 23 ms，热中位 **21 ms** / 最大 22 ms。分句路径大约多 3 倍（每句多打 embedding）。`product_path_ttft_hot_delta_ms` 候选仍 **不锁**。
+  - 3 分句混合「练完胸口发闷，提醒还在响，从菜单哪关？」：分句路径冷中位 **86 ms** / 最大 89 ms，热中位 **84 ms** / 最大 87 ms；**现网**冷中位 **22 ms** / 最大 23 ms，热中位 **21 ms** / 最大 22 ms。分句路径大约多 3 倍（每句多打 embedding）。`product_path_ttft_hot_delta_ms` **已锁 = 100**。
 - **冻结混合 3 句**（中/英/日「太累了，怎么关提醒？」）：delta −0.063 / −0.073 / −0.089，任何 margin≥0 新函数都走情绪；今天仍是诚实空态或短答（问法/目录接走）。
 - **目录误命中 7 句**：今天全是短答；候选 0.05 时 6/7 改情绪，1 句 delta≈0.002 在 margin=0 仍产品。徽章句 delta 0.12 两边都产品。真产品对照「接地练习在哪」delta 0.41 两边都产品；「A Quiet Line 在哪」delta 0.023，0.05 会丢。
 - **Prompt 18 A1–A13**（今天 / 新@0 / 新@0.05）：

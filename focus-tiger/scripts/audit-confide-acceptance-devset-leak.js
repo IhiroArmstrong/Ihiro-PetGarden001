@@ -7,9 +7,9 @@
 /**
  * Fail if production Confide code embeds a full frozen acceptance or devset line.
  *
- * Scope: exact full-line copy into mood-veto patch surfaces only (not the
- * product-knowledge catalog). This does **not** catch paraphrase / near-copy.
- * Generalization is the sealed holdout's job, not this scan.
+ * Scope: exact full-line copy into mood-veto and safety classifier patch
+ * surfaces (not the product-knowledge catalog). This does **not** catch
+ * paraphrase / near-copy. Generalization is the sealed holdout's job.
  *
  *   npm run audit:confide-acceptance-leak
  */
@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import {
   CONFIDE_MOOD_VETO_LEAK_GRANDFATHERED_LITERALS,
-  CONFIDE_MOOD_VETO_LEAK_SCAN_RELATIVE_PATHS,
+  CONFIDE_ACCEPTANCE_LEAK_SCAN_RELATIVE_PATHS,
   listConfideMoodVetoFrozenAndDevsetFullLines
 } from '../src/core/confide/confideAcceptanceFrozenSentenceCorpus.js';
 
@@ -32,7 +32,7 @@ const FOCUS_TIGER = join(__dirname, '..');
  */
 export function runConfideAcceptanceDevsetLeakAudit() {
   const corpus = listConfideMoodVetoFrozenAndDevsetFullLines();
-  const files = CONFIDE_MOOD_VETO_LEAK_SCAN_RELATIVE_PATHS.map((rel) => join(FOCUS_TIGER, rel)).filter(
+  const files = CONFIDE_ACCEPTANCE_LEAK_SCAN_RELATIVE_PATHS.map((rel) => join(FOCUS_TIGER, rel)).filter(
     (path) => existsSync(path)
   );
 
@@ -51,7 +51,7 @@ export function runConfideAcceptanceDevsetLeakAudit() {
 
   if (hits.length === 0) {
     console.log(
-      `[audit:confide-acceptance-leak] OK — ${corpus.length} full lines; ${files.length} mood-veto patch surfaces scanned (exact copy only; paraphrase is holdout)`
+      `[audit:confide-acceptance-leak] OK — ${corpus.length} full lines; ${files.length} mood-veto + safety patch surfaces scanned (exact copy only; paraphrase is holdout)`
     );
     return true;
   }

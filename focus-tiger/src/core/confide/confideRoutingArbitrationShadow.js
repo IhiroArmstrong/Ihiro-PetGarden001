@@ -18,6 +18,15 @@ export const PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE = 0.01;
 /** Frozen: clause max (product − mood) must exceed this to take the product path. */
 export const PRODUCT_MINUS_MOOD_MARGIN = 0.01;
 
+/**
+ * Live-cutover gate (R-0 companion): function-A product-path hot TTFT vs today's
+ * same-sentence path. Measured 2026-10-14: short-answer +1 ms; 3-clause mixed
+ * hot median +63 ms (max +65 ms). Locked at 100 ms (existing L0 generation
+ * fail is 3000 ms; this is embedding routing only). Fill Brief field
+ * `product_path_ttft_hot_delta_ms`.
+ */
+export const PRODUCT_PATH_TTFT_HOT_DELTA_MS = 100;
+
 export const PRODUCT_MINUS_MOOD_MARGIN_SWEEP = Object.freeze([
   0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.1
 ]);
@@ -32,8 +41,9 @@ export const ROUTING_NEAR_HIT_MIN = 0.8;
 export const PRODUCT_SCORE_FLOOR_CANDIDATE = 0.42;
 
 /**
- * sealed-b-v3 eight classes. Pass draft: all eight must pass together;
- * AE catalog anchors 100%. Numbers stay placeholders until PO nods.
+ * sealed-b-v3 eight classes. Pass line is existing R-0 85%
+ * (`CONFIDE_ROUTING_HOLDOUT_PASS_RATE`) plus n≥60; all eight must pass
+ * together; AE catalog anchors 100%. Blind scoring is another session.
  */
 export const CONFIDE_ARBITRATION_CLASS_IDS = Object.freeze([
   'life-emotion',

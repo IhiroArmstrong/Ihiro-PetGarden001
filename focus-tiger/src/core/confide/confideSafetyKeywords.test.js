@@ -28,8 +28,16 @@ const MUST_ROUTE = Object.freeze([
   '我不想活了',
   '我要结束生命',
   '我想自残',
+  '想死',
+  '去死',
+  '自我了结',
+  '自我了断',
+  '自我伤害',
+  '我想伤害自己',
   '死にたい',
-  'もう生きたくない'
+  'もう生きたくない',
+  'I feel suicidal',
+  'I will leave this world'
 ]);
 
 describe('confide safety keyword matching', () => {
@@ -82,6 +90,8 @@ describe('confide safety keyword matching', () => {
     assert.equal(matchesSafetyRedirect("I don't want to hurt myself"), false);
     assert.equal(matchesSafetyRedirect('I would never hurt myself'), false);
     assert.equal(matchesSafetyRedirect("I don't want to die"), false);
+    assert.equal(matchesSafetyRedirect("I don't want to leave this world"), false);
+    assert.equal(matchesSafetyRedirect('I am not suicidal'), false);
   });
 
   it('only excuses negation that is immediately adjacent', () => {
@@ -91,10 +101,31 @@ describe('confide safety keyword matching', () => {
     assert.equal(matchesSafetyRedirect("I never told anyone I want to kill myself"), true);
   });
 
-  it('leaves CJK phrasings out of the negation guard', () => {
-    // Chinese/Japanese negation is not handled; documented limitation. These
-    // must keep routing rather than silently slip through a half-built guard.
-    assert.equal(matchesSafetyRedirect('我不会想伤害自己'), true);
-    assert.equal(matchesSafetyRedirect('我绝不会自残'), true);
+  it('excuses CJK negation sitting immediately before a crisis phrase', () => {
+    assert.equal(matchesSafetyRedirect('我不会想伤害自己'), false);
+    assert.equal(matchesSafetyRedirect('我绝不会自残'), false);
+    assert.equal(matchesSafetyRedirect('我不是自杀'), false);
+    assert.equal(matchesSafetyRedirect('我没想伤害自己'), false);
+    assert.equal(matchesSafetyRedirect('我不想死'), false);
+    assert.equal(matchesSafetyRedirect('并非结束生命'), false);
+  });
+
+  it('still routes CJK crisis phrases that carry 不想 inside the phrase', () => {
+    assert.equal(matchesSafetyRedirect('我不想再醒来'), true);
+    assert.equal(matchesSafetyRedirect('不想再醒过来'), true);
+    assert.equal(confideClassify('我不想再醒来'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  });
+
+  it('does not fire on colloquial object / addressee uses of crisis substrings', () => {
+    assert.equal(matchesSafetyRedirect('想死你了'), false);
+    assert.equal(matchesSafetyRedirect('你去死吧'), false);
+    assert.equal(matchesSafetyRedirect('烦死了'), false);
+    assert.equal(matchesSafetyRedirect('想让这个问题永远消失'), false);
+    assert.equal(matchesSafetyRedirect('想死'), true);
+    assert.equal(matchesSafetyRedirect('我想死'), true);
+    assert.equal(matchesSafetyRedirect('去死'), true);
+    assert.equal(matchesSafetyRedirect('我想去死'), true);
+    assert.equal(matchesSafetyRedirect('永远消失'), true);
+    assert.equal(matchesSafetyRedirect('我想永远消失'), true);
   });
 });

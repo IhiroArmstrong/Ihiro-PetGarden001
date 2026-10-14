@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import {
   PRODUCT_MINUS_MOOD_MARGIN,
   PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE,
+  PRODUCT_PATH_TTFT_HOT_DELTA_MS,
   PRODUCT_SCORE_FLOOR_CANDIDATE,
   productClearlyOutranksMood,
   todayGateLayer,
@@ -27,6 +28,7 @@ describe('productClearlyOutranksMood', () => {
   it('requires product to beat mood by the given margin', () => {
     assert.equal(PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE, 0.01);
     assert.equal(PRODUCT_MINUS_MOOD_MARGIN, 0.01);
+    assert.equal(PRODUCT_PATH_TTFT_HOT_DELTA_MS, 100);
     assert.equal(productClearlyOutranksMood(0.5, 0.4, 0.02), true);
     assert.equal(productClearlyOutranksMood(0.5, 0.49, 0.02), false);
     assert.equal(productClearlyOutranksMood(0.5, 0.5, 0.02), false);

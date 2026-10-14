@@ -80,6 +80,7 @@
     "audit:confide-prior-asymmetric": "node scripts/audit-confide-prior-asymmetric.js",
     "audit:confide-kb-matrix-probes": "node scripts/audit-confide-kb-matrix-probes.js",
     "audit:confide-acceptance-leak": "node scripts/audit-confide-acceptance-devset-leak.js",
+    "audit:confide-safety-devset": "node scripts/audit-confide-safety-devset.js",
     "audit:mood-veto-holdout": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js",
     "audit:mood-veto-holdout:validate": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js --validate-only",
     "audit:routing-class-holdout": "node desktop/scripts/l0-kb-routing-class-holdout-lab.js",

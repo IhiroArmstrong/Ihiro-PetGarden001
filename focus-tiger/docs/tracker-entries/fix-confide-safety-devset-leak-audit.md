@@ -1,0 +1,1 @@
+| Confide 安全开发集纳入泄漏扫描 | 纯后端/审计 | 仅单元测试覆盖 | **无运行时。** `audit:confide-acceptance-leak` 现扫安全分类修补面；仓库内安全开发集 111 句（源 112，1 句因与封存盲测完全重复未入库）。不改倾诉回复。 | — | — | — | `audit:confide-acceptance-leak` · `confide-safety-devset-zh-v1.json` | 2026-10-14 |

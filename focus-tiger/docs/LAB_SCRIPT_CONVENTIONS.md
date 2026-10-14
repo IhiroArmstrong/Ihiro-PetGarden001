@@ -37,6 +37,7 @@
 | L3 观察翼陈词滥调语义护栏（#823 · Brief） | `focus-tiger/docs/task-briefs/task-l3-observe-cliche-semantic-guard.md` |
 | KB 路由回归矩阵（无 GGUF） | `focus-tiger/src/core/confide/confideKbRoutingMatrix.js` · `node --test src/core/confide/confideKbRoutingMatrix.test.js` |
 | KB 矩阵第二轮 probe 候选（真实未命中 · 无 GGUF） | `cd focus-tiger && npm run audit:confide-kb-matrix-probes`（扫 `kb_retrieval_miss` · CSV/JSON 在 `/tmp/ft-l0-lab/` · **禁止**头脑风暴造问法 · **禁止**从哈希还原原句） |
+| Confide 安全开发集字面打分（CR-43 · 无 GGUF） | `cd focus-tiger && npm run audit:confide-safety-devset`（只打 id 与通过率；**禁止**把夹具整句打进 stdout） |
 | Confide 评测分层（R-0 · 不另建框架） | 冻结集 = 回归；盲测集 = `focus-tiger/.secrets/confide-blind-holdout/`（gitignore）。切 live 须 `confideLiveEvalGate`（冻结不退步 **且** 盲测达标）。机器闸 `src/core/confide/confideEvalGate.js`。CI：`npm run lint:confide-original-utterance` |
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
