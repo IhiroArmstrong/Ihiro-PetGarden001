@@ -12,7 +12,8 @@
 export const CONFIDE_RENDERER_TURN_LOG_KINDS = Object.freeze([
   'kb_retrieval_miss',
   'crisis_paraphrase_shadow',
-  'kb_catalog_near_review_shadow'
+  'kb_catalog_near_review_shadow',
+  'semantic_crisis_layer'
 ]);
 
 const DROP_KEYS = Object.freeze(['text', 'raw', 'reply', 'prompt', 'contextualText']);

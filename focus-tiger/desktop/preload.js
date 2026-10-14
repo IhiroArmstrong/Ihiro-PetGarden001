@@ -104,6 +104,8 @@ if (companionAllowed) {
       ipcRenderer.invoke('desktop:companion-semantic-live-classify', payload),
     semanticProductKnowledgeGate: (payload) =>
       ipcRenderer.invoke('desktop:companion-product-knowledge-gate', payload),
+    scoreSemanticCrisis: (payload) =>
+      ipcRenderer.invoke('desktop:companion-semantic-crisis-score', payload),
     appendTurnLog: (payload) =>
       ipcRenderer.invoke('desktop:companion-append-turn-log', payload),
     onStatus: (cb) => {
