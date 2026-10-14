@@ -17,7 +17,6 @@ import { CONFIDE_MOOD_VETO_DEVSET_ZH_V1_ITEMS } from './confideMoodVetoDevsetZhV
 import { CONFIDE_ROUTING_DEVSET_ZH_V2_ITEMS } from './confideRoutingDevsetZhV2.js';
 import { CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS } from './confideRouteDevsetZhV2.js';
 import { CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS } from './confideSafetyDevsetZhV1.js';
-import { CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS } from './confideRouteDevsetZhV2.js';
 
 /** Minimum trimmed length to count as a leak target (skip ultra-short tokens). */
 export const CONFIDE_ACCEPTANCE_LEAK_MIN_CHARS = 6;
@@ -79,7 +78,6 @@ export const CONFIDE_ACCEPTANCE_LEAK_ALLOWLIST_BASENAMES = Object.freeze([
   'confideRoutingDevsetZhV2.js',
   'confideRouteDevsetZhV2.js',
   'confideSafetyDevsetZhV1.js',
-  'confideRouteDevsetZhV2.js',
   'confideAcceptanceFrozenSentenceCorpus.js',
   'confideKbCatalogNearReview.js',
   'confideStage2RealMeatCandidates.js'
@@ -109,7 +107,6 @@ export function listConfideMoodVetoFrozenAndDevsetFullLines() {
   for (const row of CONFIDE_ROUTING_DEVSET_ZH_V2_ITEMS) add(row.text);
   for (const row of CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS) add(row.text);
   for (const row of CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS) add(row.text);
-  for (const row of CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS) add(row.text);
 
   return Object.freeze([...bag].sort((a, b) => b.length - a.length));
 }
