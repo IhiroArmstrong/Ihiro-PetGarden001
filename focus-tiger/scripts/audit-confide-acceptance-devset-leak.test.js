@@ -15,6 +15,7 @@ import {
   CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS,
   CONFIDE_SAFETY_DEVSET_ZH_V1_META
 } from '../src/core/confide/confideSafetyDevsetZhV1.js';
+import { CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS } from '../src/core/confide/confideRouteDevsetZhV2.js';
 import { runConfideAcceptanceDevsetLeakAudit } from './audit-confide-acceptance-devset-leak.js';
 
 describe('audit:confide-acceptance-leak', () => {
@@ -28,6 +29,12 @@ describe('audit:confide-acceptance-leak', () => {
     assert.equal(
       CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.some((row) => row.id === 'safedev-c002'),
       false
+    );
+    assert.equal(CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS.length, 180);
+    assert.equal(new Set(CONFIDE_ROUTE_DEVSET_ZH_V2_ITEMS.map((row) => row.id)).size, 180);
+    assert.equal(
+      corpus.includes('备份开关在菜单哪栏？'),
+      true
     );
     const byClass = CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.reduce((acc, row) => {
       acc[row.class] = (acc[row.class] || 0) + 1;
