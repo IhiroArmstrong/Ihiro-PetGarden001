@@ -96,7 +96,7 @@
 | 冻结 / 开发集 | 调参；调过后只回归。`product_minus_mood_margin` 只在这里定 | 仓内实验室夹具（现有 `confideKbMoodVetoLabSet.js` 等） | 逐句两列：今天走哪层 / 新函数走哪层 |
 | 封存盲测集 | 上线关卡。混合句、产品高于情绪各自成类、每类约 60 句 | 另一个会话；实现 Chat **不看句子** | **仅**按类别汇总通过率；禁止逐句两列 |
 
-**额度按盲测文件计。** 每文件一次有效跑分；同一 `holdout_set_version` 最多 2 个过关文件；改本 Brief 不重置；同版本内容变了须升版本。细则 `task-confide-class-blind-acceptance.md`。
+**额度按盲测文件计。** 每文件一次有效跑分；同一 `holdout_set_version` 最多 **1** 个过关文件；改本 Brief 不重置；同版本内容变了须升版本。细则 `task-confide-class-blind-acceptance.md`。
 
 第二轮那 8 句反向风险句已经用来调规则 1，**不能再当唯一验收**。英文 88.9% 差 1 句过线，说明冻结集太小，一句就能翻转结论。
 

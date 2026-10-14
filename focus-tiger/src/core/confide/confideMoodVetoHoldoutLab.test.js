@@ -72,21 +72,19 @@ describe('confide mood-veto holdout lab gates', () => {
     return { filePath, contentSha256: hashHoldoutFile(filePath) };
   }
 
-  it('caps the same holdout set version at two files, one run each', () => {
+  it('caps the same holdout set version at one file, one run', () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), 'ft-holdout-runs-'));
     const logPath = path.join(dir, 'runs.json');
     const a = writeMeta(dir, 'a.json', '{"n":1}\n');
     const b = writeMeta(dir, 'b.json', '{"n":2}\n');
-    const c = writeMeta(dir, 'c.json', '{"n":3}\n');
     assert.equal(authorizeHoldoutRun(logPath, SET_V1, a), 1);
     assert.throws(
       () => authorizeHoldoutRun(logPath, SET_V1, a),
       (err) => /同一盲测文件只能跑分一次/.test(err.message)
     );
-    assert.equal(authorizeHoldoutRun(logPath, SET_V1, b), 2);
     assert.throws(
-      () => authorizeHoldoutRun(logPath, SET_V1, c),
-      (err) => /最多 2 个过关文件/.test(err.message)
+      () => authorizeHoldoutRun(logPath, SET_V1, b),
+      (err) => /最多 1 个过关文件/.test(err.message)
     );
     rmSync(dir, { recursive: true, force: true });
   });
@@ -113,13 +111,11 @@ describe('confide mood-veto holdout lab gates', () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), 'ft-holdout-runs-'));
     const logPath = path.join(dir, 'runs.json');
     const a = writeMeta(dir, 'a.json', '{"n":1}\n');
-    const b = writeMeta(dir, 'b.json', '{"n":2}\n');
     authorizeHoldoutRun(logPath, SET_V1, a);
-    authorizeHoldoutRun(logPath, SET_V1, b);
-    assert.equal(readHoldoutRunCount(logPath, SET_V1), 2);
+    assert.equal(readHoldoutRunCount(logPath, SET_V1), 1);
     assert.throws(
       () => authorizeHoldoutRun(logPath, SET_V1, writeMeta(dir, 'c.json', '{"n":3}\n')),
-      (err) => /最多 2 个过关文件/.test(err.message)
+      (err) => /最多 1 个过关文件/.test(err.message)
     );
     rmSync(dir, { recursive: true, force: true });
   });

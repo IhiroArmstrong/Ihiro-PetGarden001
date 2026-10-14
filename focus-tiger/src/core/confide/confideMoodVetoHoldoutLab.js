@@ -17,7 +17,7 @@ import { CONFIDE_ROUTE } from './confideRoutes.js';
 
 export const CONFIDE_MOOD_HOLDOUT_BRIEF_ID = 'task-confide-class-blind-acceptance';
 export const CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION = 'task-confide-class-blind-acceptance/v1';
-export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET = 2;
+export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET = 1;
 /** @deprecated Quota is per holdout set version; alias kept for older imports. */
 export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_BRIEF = CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET;
 export const CONFIDE_MOOD_HOLDOUT_RECOMMENDED_N_PER_CLASS = 60;
@@ -160,7 +160,7 @@ export function readHoldoutRunCount(logPath, holdoutSetVersion) {
 
 /**
  * Authorize then increment. Call after envelope parse, never in validate-only.
- * Quota is per holdout **file** (one scoring run); max two files per `holdout_set_version`.
+ * Quota is per holdout **file** (one scoring run); max one file per `holdout_set_version`.
  * First run records content SHA-256; same version with changed bytes is refused.
  * @param {string} logPath
  * @param {string} holdoutSetVersion

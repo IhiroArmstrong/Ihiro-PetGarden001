@@ -28,7 +28,7 @@
 | 10 | 路由仲裁 Brief [`task-confide-routing-arbitration-v1.md`](./task-confide-routing-arbitration-v1.md)（#1206 已合）的验收**不另立门槛**，直接沿用本 Brief 的 R-Confide-Class 与盲测纪律。仲裁盲测另须两类：混合句、产品分高于情绪分，各自成类、每类约 **60** 句。封存文件类 id：`mixed` ← Brief `mixed-mood-product`；`product-over-emotion` ← Brief `product-outranks-mood`。合并脚本须做这次映射。另有 **`mixed-emotion-dominant`**：句中可有产品词，但产品分不够「明显高于」情绪分，期望走情绪 / 观察翼（量「差距不足默认不走产品」的对侧）。 |
 | 11 | **正例允许带疑问形式**（补稿 ⑤）：判据是**无具体产品对象**；反例混合句判据是**含具体产品对象**。每类盲测正例 **≥5 句**为「带疑问形式的情绪句」；实验室单独一栏 **interrogative-positive 通过率**（≥85% 与类总通过率并列）。 |
 | 12 | 类 4 **`crisis-edge`**：只放**明确**危机句与**明确**非危机句；边界模糊句标 **`crisis-edge-grey`**，只报告、**不计入**通过或失败。 |
-| 13 | **额度按盲测文件计。** 每份文件只有一次有效跑分。同一 `holdout_set_version` 过关卡最多 2 个文件。第 1 次未过（或看过失败原文）→ **该文件作废**；第 2 次必须是**新会话重出的新文件**并升版本号。改 Brief / Prompt 18 **不**重置。同版本号下内容变了则拒绝跑分（须升版本并由 PO 点头）。实现会话对盲测**只输出按类别汇总的通过率**；逐句两列只对冻结集。`audit:mood-veto-holdout:validate` 查信封；`validate:confide-holdout-counts` 计缺口；二者都不占额度。 |
+| 13 | **额度按盲测文件计。** 每份文件只有一次有效跑分。同一 `holdout_set_version` 过关卡最多 **1** 个文件。第 1 次未过（或看过失败原文）→ **该文件作废**；下一刀必须是**新会话重出的新文件**并升版本号。改 Brief / Prompt 18 **不**重置。同版本号下内容变了则拒绝跑分（须升版本并由 PO 点头）。实现会话对盲测**只输出按类别汇总的通过率**；逐句两列只对冻结集。`audit:mood-veto-holdout:validate` 查信封；`validate:confide-holdout-counts` 计缺口；二者都不占额度。 |
 
 **样本量说明**：每类 20 句、门槛 17 句在统计上偏紧（真实通过率 70% 的方案仍有约 10% 概率蒙过一轮）。因此第 8 条「最终关单用新批次」不是形式，是硬要求。
 
@@ -94,7 +94,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 - PO 或实现方**看过任一句失败原文**后，**该份盲测文件整份作废**（不得在同一文件上第二轮调参）。
 - 修补过程中：每次实验室只读**汇总**（通过率、失败条数、分栏计数）；**禁止**对着失败句逐条改代码再重跑同一文件。
 - **实现会话输出**：盲测只报按类别汇总通过率。禁止输出盲测逐句两列、原句或对错表。冻结 / 开发集才允许逐句两列。
-- **额度按盲测文件计。** 第 1 次未过或已看过失败原文 → **该文件作废**；第 2 次须新会话重出的新文件并升 `holdout_set_version`。每份文件只有一次有效跑分。同一版本过关卡最多 2 个文件。两次都用过仍未过关 → 停手问人。改 Brief **不**重置。同版本内容变了则拒绝。关单仍须从未参与调参的新批次（另计）。
+- **额度按盲测文件计。** 第 1 次未过或已看过失败原文 → **该文件作废**；下一刀须新会话重出的新文件并升 `holdout_set_version`。每份文件只有一次有效跑分。同一版本过关卡最多 **1** 个文件。该版本已用过仍未过关 → 停手问人（禁止同版本再塞第二份）。改 Brief **不**重置。同版本内容变了则拒绝。关单仍须从未参与调参的新批次（另计）。
 - **声称「该类根本解决」或 TEST_TRACKER 关单**：必须再跑一批**从未参与调参**的新盲测（新文件、新会话 B 生成 + PO 新 5 句/类，或 PO 封存的新批次）。开发集可看、可扩，不能代替这批关单盲测。
 - 消融 #1188 的通过证据也须用**未用于否决调参**的盲测批次。
 
@@ -183,7 +183,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 ## 「按这份 Brief 开工」后的下一刀（分 PR）
 
 1. ~~`PRINCIPLES` + `testing-strategy` + `RULES_INDEX`~~（**已完成** · 本旁支）。
-2. ~~Holdout 实验室~~（**本旁支** · 安全先行 + 只输出分栏计数与 `interrogative_positive_pass_rate` + 不打印句子 + 工作区外路径 / 「未封存」+ 每盲测集版本最多 2 次 + 「样本不足」）。
+2. ~~Holdout 实验室~~（**本旁支** · 安全先行 + 只输出分栏计数与 `interrogative_positive_pass_rate` + 不打印句子 + 工作区外路径 / 「未封存」+ 每盲测集版本最多 1 个过关文件 + 「样本不足」）。
 3. ~~开发集入库 + 泄漏扫描~~（**已完成** · `docs/confide-mood-veto-devset-ingest`）。
 4. 会话 A / B 生成 + PO 5 句/类 → PO 封存第一批盲测（**生成仍须在 PO 回「按这份 Brief 开工」之后**）。
 5. 消融与拆 #1188：独立 Brief + 新盲测批次。
@@ -192,7 +192,7 @@ Holdout 跑完后，每一句只属于下列**一种**期望；判错即该类�
 
 - 命令：`cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 FT_CONFIDE_MOOD_HOLDOUT_PATH=<工作区外绝对路径> npm run audit:mood-veto-holdout`
 - 路径在工作区内、或未设、或文件不存在 → **未封存**（工作区内改报「必须在工作区外」）；**不得**改读 `fixtures/confide-mood-veto-devset-zh-v1.json`
-- 额度按盲测文件计：同一 `holdout_set_version` 最多 2 个过关文件、每文件一次跑分。计数在 `~/Documents/ft-private/mood-veto-holdout-runs.json`（不放 `/tmp`，避免重启清掉额度）。首次跑分记下该文件内容 SHA-256；同版本号下内容变了则拒绝，须升版本号并由 PO 点头。`--validate-only` / `audit:mood-veto-holdout:validate` 只查信封与字段，不计数、不加载 GGUF。`validate:confide-holdout-counts` 只计缺口，同样不占额度。
+- 额度按盲测文件计：同一 `holdout_set_version` 最多 **1** 个过关文件、每文件一次跑分。计数在 `~/Documents/ft-private/mood-veto-holdout-runs.json`（不放 `/tmp`，避免重启清掉额度）。首次跑分记下该文件内容 SHA-256；同版本号下内容变了则拒绝，须升版本号并由 PO 点头。`--validate-only` / `audit:mood-veto-holdout:validate` 只查信封与字段，不计数、不加载 GGUF。`validate:confide-holdout-counts` 只计缺口，同样不占额度。
 - 真跑：先过路径与信封解析，再 GGUF 检查，再计数；只汇总 `CONFIDE_MOOD_HOLDOUT_CLASS_IDS` 五类情绪否决，其它 class 进 `other_class_items` / unscored，不进通过率
 - 输出：`safety_handled` · `safety_leak_to_gate` · `veto_would_skip` · `veto_false_positive` · 每类 `interrogative_positive_pass_rate`；`crisis-edge-grey` 只报告。安全层未达标时标注「其他栏不作验收」
 - 单类正例 < 60 或反例 < 20 或 interrogative-positive < 5 → **样本不足**
