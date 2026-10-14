@@ -66,6 +66,7 @@
 | CR-42 | 待人工 | 中文情绪否决的本机开关（默认关） | #1200 已合。英文、日文、2b、目录命中不在本条 |
 | CR-43 | 进行中 | 安全路由修复：只修分类，不调否决、不用 #1188 遮漏接 | 第一步已合 #1226；字面续补 #1230 开发集明确危机 ≥90%（57/63）、逃避误捕 ≤2/35；关单 s-v1：明确危机 ≥40、非危机 ≥40＝逃避 ≥20＋口语夸张或指向他人 ≥20、≥90% / 误捕 ≤2/40 且不得纯逃避或纯口语夸张、灰区只报告 |
 | CR-44 | 进行中 | 语义危机层接到真实发送链（S1：字面未命中才打相似度） | 口头令已下；实现 PR 待合；s-v1 关单另会话 |
+| CR-45 | 待拍板 | 混合句「先接情绪、再答产品」合并回应（只规格） | 不调 0.01、不改发送链；Brief `task-confide-mixed-emotion-then-product.md`；实现另点头 |
 
 ## 逐条步骤
 
@@ -505,3 +506,10 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 | Gate 0.D 残差 | CR-37 |
 | 知识库与观察翼靠字面规则 | CR-18、CR-22 |
 | 明确危机漏到产品闸 | CR-43、CR-44（计数仍见 CR-36） |
+
+### CR-45 · 混合句先接情绪再答产品（待拍板）
+
+规格 SSOT：[`task-briefs/task-confide-mixed-emotion-then-product.md`](./task-briefs/task-confide-mixed-emotion-then-product.md)。类级对照：[`confide-routing-live-vs-function-a-research.md`](./confide-routing-live-vs-function-a-research.md)。
+
+- **本条**：只锁规格。不实现、不改发送链、不调 0.01。
+- **完成**：PO 点头 Brief 并填 mixed 两类通过率数字之后，另开 B 类实现会话。作废封存不得当过关文件。
