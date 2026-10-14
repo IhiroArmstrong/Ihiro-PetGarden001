@@ -1,0 +1,154 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
+ */
+
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  CONFIDE_ROUTING_HOLDOUT_BRIEF_VERSION,
+  CONFIDE_ROUTING_HOLDOUT_SAMPLE_INSUFFICIENT,
+  CONFIDE_ROUTING_HOLDOUT_UNSEALED,
+  formatRoutingHoldoutSummaryStdout,
+  formatRoutingHoldoutValidateStdout,
+  parseRoutingHoldoutFile,
+  scoreRoutingHoldoutRow,
+  stripRoutingHoldoutItem,
+  summarizeRoutingHoldoutScores,
+  validateRoutingHoldoutCounts
+} from './confideRoutingClassHoldoutLab.js';
+
+const WORKSPACE = path.resolve(fileURLToPath(new URL('../../..', import.meta.url)));
+const SECRET = 'SYNTHETIC_ROUTING_UTTERANCE_DO_NOT_ECHO';
+const CLI = path.join(WORKSPACE, 'desktop/scripts/l0-kb-routing-class-holdout-lab.js');
+
+function syntheticEnvelope(items) {
+  return {
+    brief_version: CONFIDE_ROUTING_HOLDOUT_BRIEF_VERSION,
+    holdout_set_version: 'synthetic-routing/v0',
+    items
+  };
+}
+
+describe('confide routing-class holdout lab', () => {
+  it('parses aliases without keeping utterance text', () => {
+    const parsed = parseRoutingHoldoutFile(
+      syntheticEnvelope([
+        {
+          class_id: 'mixed-mood-product',
+          text: SECRET,
+          id: 's1'
+        }
+      ])
+    );
+    const stripped = stripRoutingHoldoutItem(parsed.items[0]);
+    assert.equal(stripped.classId, 'mixed');
+    assert.equal(stripped.expectedPath, 'product');
+    assert.equal(JSON.stringify(stripped).includes(SECRET), false);
+  });
+
+  it('validate-only reports class counts and never echoes text', () => {
+    const report = validateRoutingHoldoutCounts(
+      syntheticEnvelope([
+        { id: 'a', class: 'mixed', text: SECRET },
+        { id: 'b', class_id: 'product-outranks-mood', text: 'ok' },
+        { id: 'c', class: 'mixed-emotion-dominant', text: 'ok' }
+      ])
+    );
+    assert.equal(report.ok, true);
+    assert.equal(report.by_class.mixed, 1);
+    assert.equal(report.by_class['product-over-emotion'], 1);
+    assert.equal(report.by_class['mixed-emotion-dominant'], 1);
+    const out = formatRoutingHoldoutValidateStdout(report);
+    assert.match(out, /validate_only=yes run_count_incremented=no/);
+    assert.match(out, /mixed n=1/);
+    assert.equal(out.includes(SECRET), false);
+  });
+
+  it('scores mixed as product-path and dominant-mood as not product-path', () => {
+    const scored = [
+      scoreRoutingHoldoutRow({
+        classId: 'mixed',
+        expectedPath: 'product',
+        productPath: true
+      }),
+      scoreRoutingHoldoutRow({
+        classId: 'mixed-emotion-dominant',
+        expectedPath: 'mood',
+        productPath: false
+      }),
+      scoreRoutingHoldoutRow({
+        classId: 'product-over-emotion',
+        expectedPath: 'product',
+        productPath: false
+      })
+    ];
+    const summary = summarizeRoutingHoldoutScores(scored);
+    assert.equal(summary.by_class.mixed.n_pass, 1);
+    assert.equal(summary.by_class['mixed-emotion-dominant'].n_pass, 1);
+    assert.equal(summary.by_class['product-over-emotion'].n_pass, 0);
+    const out = formatRoutingHoldoutSummaryStdout(summary);
+    assert.match(out, /mixed n=1/);
+    assert.match(out, new RegExp(CONFIDE_ROUTING_HOLDOUT_SAMPLE_INSUFFICIENT));
+    assert.equal(out.includes(SECRET), false);
+  });
+
+  it('CLI --validate-only on a synthetic file outside the workspace does not increment quota', () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'ft-routing-holdout-'));
+    const file = path.join(dir, 'synthetic.json');
+    const logPath = path.join(dir, 'runs.json');
+    writeFileSync(
+      file,
+      `${JSON.stringify(
+        syntheticEnvelope([
+          { id: 'a', class: 'mixed', text: 'synthetic mixed ask about reminder' },
+          { id: 'b', class: 'product-over-emotion', text: 'synthetic product outranks' },
+          { id: 'c', class: 'mixed-emotion-dominant', text: 'synthetic mood still leads' }
+        ])
+      )}\n`
+    );
+    const ran = spawnSync(process.execPath, [CLI, '--validate-only'], {
+      env: {
+        ...process.env,
+        FT_CONFIDE_ROUTING_HOLDOUT_PATH: file,
+        FT_CONFIDE_ROUTING_HOLDOUT_RUN_LOG: logPath
+      },
+      encoding: 'utf8'
+    });
+    assert.equal(ran.status, 0, ran.stderr);
+    assert.match(ran.stdout, /validate_only=yes run_count_incremented=no/);
+    assert.match(ran.stdout, /mixed n=1/);
+    assert.equal(ran.stdout.includes('synthetic mixed ask'), false);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('CLI refuses an in-workspace path as 必须在工作区外', () => {
+    const ran = spawnSync(process.execPath, [CLI, '--validate-only'], {
+      env: {
+        ...process.env,
+        FT_CONFIDE_ROUTING_HOLDOUT_PATH: path.join(
+          WORKSPACE,
+          'fixtures',
+          'confide-mood-veto-devset-zh-v1.json'
+        )
+      },
+      encoding: 'utf8'
+    });
+    assert.notEqual(ran.status, 0);
+    assert.match(ran.stderr, /工作区外/);
+  });
+
+  it('CLI missing path is 未封存', () => {
+    const ran = spawnSync(process.execPath, [CLI, '--validate-only'], {
+      env: { ...process.env, FT_CONFIDE_ROUTING_HOLDOUT_PATH: '' },
+      encoding: 'utf8'
+    });
+    assert.notEqual(ran.status, 0);
+    assert.match(ran.stderr, new RegExp(CONFIDE_ROUTING_HOLDOUT_UNSEALED));
+  });
+});
