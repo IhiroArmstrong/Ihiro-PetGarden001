@@ -111,7 +111,8 @@ async function main() {
   try {
     authorizeHoldoutRun(RUN_LOG, parsed.holdoutSetVersion, {
       filePath: holdoutPath,
-      contentSha256: hashHoldoutFile(holdoutPath)
+      contentSha256: hashHoldoutFile(holdoutPath),
+      authorPromptId: parsed.authorPromptId
     });
   } catch (err) {
     process.stderr.write(`[routing-class-holdout] ${redactHoldoutError(err)}\n`);

@@ -13,6 +13,11 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {
+  assertAuthorPromptIdUnused,
+  extractHoldoutAuthorPromptId,
+  requireHoldoutAuthorPromptId
+} from './confideHoldoutAuthoring.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
 export const CONFIDE_MOOD_HOLDOUT_BRIEF_ID = 'task-confide-class-blind-acceptance';
@@ -181,7 +186,7 @@ export function readHoldoutRunCount(logPath, holdoutSetVersion) {
  * First run records content SHA-256; same version with changed bytes is refused.
  * @param {string} logPath
  * @param {string} holdoutSetVersion
- * @param {{ filePath: string, contentSha256: string }} fileMeta
+ * @param {{ filePath: string, contentSha256: string, authorPromptId?: string }} fileMeta
  * @returns {number} distinct scoring files after this increment
  */
 export function authorizeHoldoutRun(logPath, holdoutSetVersion, fileMeta) {
@@ -194,6 +199,9 @@ export function authorizeHoldoutRun(logPath, holdoutSetVersion, fileMeta) {
   if (!filePath || filePath === path.sep || !sha) {
     throw holdoutSafeError('缺少盲测文件哈希', 'NO_FILE_HASH');
   }
+  const authorPromptId = requireHoldoutAuthorPromptId({
+    author_prompt_id: fileMeta?.authorPromptId
+  });
 
   mkdirSync(path.dirname(logPath), { recursive: true });
   let bag = { byHoldoutSetVersion: {} };
@@ -213,6 +221,8 @@ export function authorizeHoldoutRun(logPath, holdoutSetVersion, fileMeta) {
   }
   if (!slot || typeof slot !== 'object') slot = { files: {} };
   if (!slot.files || typeof slot.files !== 'object') slot.files = {};
+
+  assertAuthorPromptIdUnused(bag, authorPromptId, filePath);
 
   const rec = slot.files[filePath];
   if (rec) {
@@ -236,7 +246,8 @@ export function authorizeHoldoutRun(logPath, holdoutSetVersion, fileMeta) {
     sha256: sha,
     runs: 1,
     voided: true,
-    void_reason: 'first_run_consumed'
+    void_reason: 'first_run_consumed',
+    author_prompt_id: authorPromptId
   };
   bag.byHoldoutSetVersion[version] = slot;
   writeFileSync(logPath, `${JSON.stringify(bag)}\n`, 'utf8');
@@ -319,7 +330,8 @@ export function parseHoldoutFile(data) {
   if (!items) {
     throw holdoutSafeError('holdout JSON 缺少 items', 'PARSE');
   }
-  return { briefVersion, holdoutSetVersion, items };
+  const authorPromptId = extractHoldoutAuthorPromptId(data);
+  return { briefVersion, holdoutSetVersion, items, authorPromptId };
 }
 
 /**

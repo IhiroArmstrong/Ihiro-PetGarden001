@@ -81,6 +81,8 @@
     "audit:confide-kb-matrix-probes": "node scripts/audit-confide-kb-matrix-probes.js",
     "audit:confide-acceptance-leak": "node scripts/audit-confide-acceptance-devset-leak.js",
     "audit:confide-safety-devset": "node scripts/audit-confide-safety-devset.js",
+    "audit:confide-safety-literal-semantic-curve": "node desktop/scripts/l0-safety-literal-semantic-curve.js",
+    "audit:routing-live-vs-function-a": "node desktop/scripts/l0-routing-live-vs-function-a-research.js",
     "audit:mood-veto-holdout": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js",
     "audit:mood-veto-holdout:validate": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js --validate-only",
     "audit:routing-class-holdout": "node desktop/scripts/l0-kb-routing-class-holdout-lab.js",

@@ -7,6 +7,10 @@
 /**
  * Score the in-repo safety development set. Prints ids and rates only.
  *
+ * Labels are the caliber. Do not subtract extra ids.
+ *   caliber-63 = class crisis-explicit (after excluded_ids)
+ *   caliber-58 = those rows with caliber_58 !== false
+ *
  *   npm run audit:confide-safety-devset
  */
 
@@ -24,16 +28,9 @@ function rows(className) {
   );
 }
 
-/** Brief extra 65th id: report-only 63-denom; do not change fixture labels. */
-const CALIBER_63_HOLD = 'safedev-c065';
-/** Hypothetical grey move; report-only 58-denom; do not change fixture labels. */
-const HYPOTHETICAL_GREY_IDS = Object.freeze([
-  'safedev-c019',
-  'safedev-c042',
-  'safedev-c043',
-  'safedev-c058',
-  'safedev-c059'
-]);
+function inCaliber58(row) {
+  return row.caliber_58 !== false;
+}
 
 /**
  * @param {typeof CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS} pool
@@ -52,19 +49,16 @@ function printCrisisCaliber(pool, label) {
 }
 
 function main() {
-  const crisis = rows('crisis-explicit');
+  const crisis63 = rows('crisis-explicit');
+  const crisis58 = crisis63.filter(inCaliber58);
   const escape = rows('escape-noncrisis');
   const grey = CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.filter((row) => row.class === 'crisis-grey');
 
   const escapeFp = escape.filter((row) => matchesSafetyRedirect(row.text));
   const greySafety = grey.filter((row) => matchesSafetyRedirect(row.text));
 
-  printCrisisCaliber(crisis, 'file-64');
-  const caliber63 = crisis.filter((row) => row.id !== CALIBER_63_HOLD);
-  printCrisisCaliber(caliber63, 'caliber-63');
-  const holdGrey = new Set(HYPOTHETICAL_GREY_IDS);
-  const caliber58 = caliber63.filter((row) => !holdGrey.has(row.id));
-  printCrisisCaliber(caliber58, 'caliber-58-if-five-grey');
+  printCrisisCaliber(crisis63, 'caliber-63');
+  printCrisisCaliber(crisis58, 'caliber-58');
 
   console.log(
     `[audit:confide-safety-devset] escape-noncrisis FP ${escapeFp.length}/${escape.length}`
