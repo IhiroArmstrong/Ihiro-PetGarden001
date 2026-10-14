@@ -1,7 +1,7 @@
 ---
 id: confide-routing-arbitration-v1
 kind: feature
-status: Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · #1222 已合 · 本机 b-v4 已补两类至 60 · 禁止本会话盲测/切 live
+status: Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · #1222 已合 · 本机 b-v5 八类 n≥60 · 禁止本会话盲测/切 live
 updated: 2026-10-15
 ---
 
