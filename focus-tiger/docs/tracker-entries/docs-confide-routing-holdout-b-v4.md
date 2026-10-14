@@ -1,0 +1,1 @@
+| Confide 路由封存 b-v4 补两类样本量 | 纯文档 | 仅单元测试覆盖 | **无用户路径。** 本条验收的是 Brief / 清单记下：本机 `sealed-b-v4` 信封 items=433，`badge-yin-coin` 与 `mixed-emotion-dominant` n=60，validate 不占额度。不代表盲测已跑，不改倾诉回复。另四类仍样本不足。 | — | — | — | `task-confide-routing-arbitration-v1.md` · `audit:routing-class-holdout:validate` | 2026-10-15 |

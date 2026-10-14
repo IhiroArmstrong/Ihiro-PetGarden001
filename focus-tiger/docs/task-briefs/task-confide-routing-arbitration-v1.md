@@ -1,6 +1,6 @@
 # Task Brief · Confide 路由仲裁 v1
 
-> **状态（2026-10-14 夜）**：PO 已点头出本 Brief（#1206）。**函数 A、门槛 0.01 已冻结**（盲测跑完不得再调）。八类通过线按既有 R-0 **≥85%** + n≥60；`product_path_ttft_hot_delta_ms` = **100**。**不采用 B**；**不拿现写法 C 锁门槛**。发送链仍未改。#1222 影子可合 develop。封存盲测另开会话；切 live 必须等盲测过了再点。  
+> **状态（2026-10-15）**：PO 已点头出本 Brief（#1206）。**函数 A、门槛 0.01 已冻结**（盲测跑完不得再调）。八类通过线按既有 R-0 **≥85%** + n≥60；`product_path_ttft_hot_delta_ms` = **100**。**不采用 B**；**不拿现写法 C 锁门槛**。发送链仍未改。#1222 影子已合 develop。本机封存 **b-v4** 已把 `badge-yin-coin` / `mixed-emotion-dominant` 补到 n=60（信封校验 ok，**未跑分**）。另四类仍 <60。切 live 必须等盲测过了再点。  
 > **任务类**：第一段影子对照 = **A 类**。切 live = **B 类**（会改变用户实际听到的回复从哪一层来）。`WORKFLOW.md` Brief 开工门禁。Stage 2 留下的规矩仍在：没有点头不得改 live。  
 > **命名（硬）**：本文是 **路由仲裁**（一句话在各层之间走哪条路）。**不是** `confide-embedding-lifecycle-arbitration.md` 的 **生命周期仲裁**（模型加载排队 / `l1LlamaWorkGate`）。Brief 与代码注释禁止混用「统一仲裁」。  
 > **合并（不再另开第二份）**：Prompt 16 路由顺序（`task-confide-kb-routing-gate.md`）· Prompt 18 近义匹配与误判/漏检（`task-confide-kb-embedding-near-match.md`）· 情绪否决第一段（`task-confide-kb-gate-mood-veto.md`）· 目录 / 近邻误命中（`task-confide-kb-catalog-near-misfire.md`）。带上一句上下文的上线关卡与 Stage 2b 候选共用同一套盲测验收（CR-03 / CR-17）。  
@@ -196,24 +196,24 @@ P18 在 A@0 / B@0 差的那 1 句是 A12。A@0.05 丢掉 A7/A8/A10；B@0.05 靠 
 
 路由开发集 v2（影子，非盲测）：A@0.01 混合 14/15、产品压过情绪 14/15、情绪占上风 7/15（期望情绪，7 句仍走了产品）。C 几乎全放行（现网默认）。
 
-### 路由类通过判据（sealed-b-v3 八类 · 2026-10-14 夜 · 不得真跑盲测）
+### 路由类通过判据（sealed-b-v4 八类 · 2026-10-15 · 不得在本实现会话真跑盲测）
 
-**关单条件（未点头前不跑分）**：八类 `class_id` 各自 `pass_rate ≥ 85%`（`ceil(n×0.85)` 句过关）且 **无** `样本不足`（每类 n≥60 才消标；`badge-yin-coin` 当前 n=18 恒标样本不足，须 PO 点头补量或单独门槛）。八类**同时** `pass_criteria_met=yes` 才算过。场景 AE 两条 catalog 锚点 **100%**（各 n=1）。代码：`confideRoutingClassHoldoutLab.js` · `resolveSealedBExpectedPath` · `routingClassMeetsPassCriteria`；holdout 跑分仍只许 **函数 A @ 0.01**（`productPath` 粗代理：短答与诚实空态不区分，全影子另会话）。
+**关单条件（未点头前不跑分）**：八类 `class_id` 各自 `pass_rate ≥ 85%`（`ceil(n×0.85)` 句过关）且 **无** `样本不足`（每类 n≥60 才消标）。八类**同时** `pass_criteria_met=yes` 才算过。场景 AE 两条 catalog 锚点 **100%**（各 n=1）。代码：`confideRoutingClassHoldoutLab.js` · `resolveSealedBExpectedPath` · `routingClassMeetsPassCriteria`；holdout 跑分仍只许 **函数 A @ 0.01**（`productPath` 粗代理：短答与诚实空态不区分，全影子另会话）。
 
-| 类 id | 期望（`expect` / 类） | 通过率线 | n（b-v3 信封） |
+| 类 id | 期望（`expect` / 类） | 通过率线 | n（b-v4 信封） |
 |---|---|---|---|
-| `life-emotion` | `emotion` → 不走产品 | ≥85% | 42 |
-| `product-short-answer` | `product_short_answer` → 产品闸 | ≥85% | 52 |
-| `product-honest-empty` | `product_honest_empty` → 产品闸 | ≥85% | 56 |
-| `badge-yin-coin` | `product_honest_empty`（徽章≠寅币口径） | ≥85% | 18 · **样本不足** |
-| `chitchat` | `chitchat` → 不走产品 | ≥85% | 42 |
+| `life-emotion` | `emotion` → 不走产品 | ≥85% | 42 · **样本不足** |
+| `product-short-answer` | `product_short_answer` → 产品闸 | ≥85% | 52 · **样本不足** |
+| `product-honest-empty` | `product_honest_empty` → 产品闸 | ≥85% | 56 · **样本不足** |
+| `badge-yin-coin` | `product_honest_empty`（徽章≠寅币口径） | ≥85% | 60 |
+| `chitchat` | `chitchat` → 不走产品 | ≥85% | 42 · **样本不足** |
 | `mixed` | 函数 A → 产品 | ≥85% | 60 |
 | `product-over-emotion` | 函数 A → 产品 | ≥85% | 61 |
-| `mixed-emotion-dominant` | 函数 A → 情绪 | ≥85% | 40 · **样本不足** |
+| `mixed-emotion-dominant` | 函数 A → 情绪 | ≥85% | 60 |
 | AE 锚 `接地练习在哪` | 产品短答 | **100%** | 1 |
 | AE 锚 `A Quiet Line 在哪` | 产品短答 | **100%** | 1 |
 
-**b-v3 信封**：`holdout_set_version=confide-routing-blind-zh/b-v3` · items=371 · validate `ok=yes`（不占额度）。**徽章补句**：`badge-fill.json` n=32 · id=`badgefill-01`…`badgefill-32` · 仅本机 `ft-private` · **未**并入 b-v3 · **未**进仓。安全层漏接仍单开，不靠调 margin / 目录旁路遮。**禁止**本实现会话对 sealed-b-v2 / b-v3 真跑；盲测另开会话。#1222 影子（函数 A @ 0.01）可合 develop；切 live 仍须盲测过关后再点。
+**b-v4 信封**（本机 `ft-private`，不进仓）：`holdout_set_version=confide-routing-blind-zh/b-v4` · items=433 · validate `ok=yes`（不占额度）。由 b-v3 并入 `badge-fill.json`（32 句，`expect` 归一成 `product_honest_empty`）并补徽章 10 + 情绪占上风 20。b-v3 文件保留、未改。安全层漏接仍单开，不靠调 margin / 目录旁路遮。**禁止**本实现对 sealed-b-v2 / b-v3 / b-v4 真跑；盲测另开会话。另四类仍 <60，八类仍不能同时过关。切 live 仍须盲测过关后再点。
 
 ### 第一段影子实测（2026-10-14 · 未切 live）
 
