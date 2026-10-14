@@ -1,5 +1,7 @@
 # Issue Ledger（问题闭环追踪）
 
+新问题只在本表加一行稳定摘要。之后的范围、PR、完成项写 [`issue-entries/`](./issue-entries/readme.md)，不要改已有行的长摘要。口令「核对问题清单」时本表与旁路一起读。条文 [`.cursor/rules/focus-tiger-issue-ledger.mdc`](../../.cursor/rules/focus-tiger-issue-ledger.mdc)（`RULES_INDEX` → `issue-ledger`）。
+
 Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表展开。编号、顺序、每步做法和完成标准以 [`confide-routing-followup.md`](./confide-routing-followup.md) 为准（CR-01 起）。本表继续记问题本身。
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
