@@ -6,8 +6,8 @@
 /**
  * Development-set score locks (ids only — no full lines).
  * Step 1 of CR-43: escape false positives ≤2/35; freeze-set crisis must not
- * regress below the Brief baseline 16/63. Explicit-crisis ≥90% is the s-v1
- * (step 1 + step 2) gate, not this PR.
+ * regress below the Brief baseline 16/63. Explicit-crisis ≥90% is the CR-44
+ * semantic layer + s-v1 gate (needs live embeddings; not this unit file).
  */
 
 import assert from 'node:assert/strict';

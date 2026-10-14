@@ -19,6 +19,7 @@ describe('sanitizeRendererTurnLogRecord', () => {
       CONFIDE_RENDERER_TURN_LOG_KINDS.includes(CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND),
       true
     );
+    assert.equal(CONFIDE_RENDERER_TURN_LOG_KINDS.includes('semantic_crisis_layer'), true);
   });
 
   it('keeps a hash-only kb_retrieval_miss row and drops text', () => {
