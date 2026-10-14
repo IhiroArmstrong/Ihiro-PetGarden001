@@ -71,6 +71,9 @@ export function attachCompanionL1Ipc(deps) {
   deps.ipcMain.handle('desktop:companion-product-knowledge-gate', (_event, payload) =>
     runtime.semanticProductKnowledgeGate(payload && typeof payload === 'object' ? payload : {})
   );
+  deps.ipcMain.handle('desktop:companion-semantic-crisis-score', (_event, payload) =>
+    runtime.scoreSemanticCrisis(payload && typeof payload === 'object' ? payload : {})
+  );
   deps.ipcMain.handle('desktop:companion-append-turn-log', (_event, payload) =>
     runtime.appendTurnLogFromRenderer(payload && typeof payload === 'object' ? payload : {})
   );

@@ -23,6 +23,7 @@ describe('audit:confide-acceptance-leak', () => {
     const corpus = listConfideMoodVetoFrozenAndDevsetFullLines();
     assert.ok(corpus.length >= 400);
     assert.ok(corpus.some((line) => line.includes('一想到要打坐')));
+    assert.ok(corpus.some((line) => line.includes('练完胸口发闷')));
     assert.equal(CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.length, 111);
     assert.equal(new Set(CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.map((row) => row.id)).size, 111);
     assert.deepEqual([...CONFIDE_SAFETY_DEVSET_ZH_V1_META.excluded_ids], ['safedev-c002']);
@@ -51,6 +52,16 @@ describe('audit:confide-acceptance-leak', () => {
   it('scans safety classifier modules as well as mood-veto patch surfaces', () => {
     assert.ok(CONFIDE_SAFETY_LEAK_SCAN_RELATIVE_PATHS.includes('src/core/confide/confideSafetyKeywords.js'));
     assert.ok(CONFIDE_ACCEPTANCE_LEAK_SCAN_RELATIVE_PATHS.includes('src/core/confide/confideClassify.js'));
+    assert.ok(
+      CONFIDE_SAFETY_LEAK_SCAN_RELATIVE_PATHS.includes(
+        'src/core/confide/confideSemanticCrisisLayer.js'
+      )
+    );
+    assert.ok(
+      CONFIDE_SAFETY_LEAK_SCAN_RELATIVE_PATHS.includes(
+        'src/core/confide/confideSemanticCrisisExamples.js'
+      )
+    );
   });
 
   it('passes on the current tree (no frozen lines in production Confide code)', () => {

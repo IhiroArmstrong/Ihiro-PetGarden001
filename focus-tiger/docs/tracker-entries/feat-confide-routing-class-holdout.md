@@ -1,0 +1,1 @@
+| Confide 路由类盲测读数口 + 第一段影子 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 函数 A 门槛 0.01 已冻；八类 ≥85% + n≥60；热态延迟上限 100 ms。不采用 B / 现写法 C。不跑 sealed-b-v2，不改回复。切 live 另点头。 | — | — | — | `npm run audit:routing-arbitration-ab` · `audit:confide-acceptance-leak` | 2026-10-14 |
