@@ -1,1 +1,1 @@
-| Confide 路由类盲测读数口 + 只校验 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 本条验收的是工作区外路径、只校验不占额度、stdout 按类汇总不含句子、`product_minus_mood_margin` 在冻结/开发集拟合后写入 Brief。不代表已对 sealed-b-v2 跑分，也不改倾诉回复。 | — | — | — | `npm run audit:routing-class-holdout:validate` · `confideRoutingClassHoldoutLab.test.js` | 2026-10-14 |
+| Confide 路由类盲测读数口 + 第一段影子 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 读数口只校验；门槛未冻结。影子实验室：曲线四栏、冻结两列、冷启动、TTFT、A1–A13。不跑 sealed-b-v2，不改回复。 | — | — | — | `npm run audit:routing-arbitration-shadow` · `audit:routing-class-holdout:validate` | 2026-10-14 |

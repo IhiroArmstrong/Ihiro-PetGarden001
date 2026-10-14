@@ -1,7 +1,7 @@
 ---
 id: confide-routing-arbitration-v1
 kind: feature
-status: Brief 已合 #1208 · 路由类读数口待合 · 禁止写发送链 · 切 live 另点头
+status: Brief 已合 #1208 · 第一段影子数字已写入草案 · 门槛未冻结 · 禁止盲测/切 live
 updated: 2026-10-14
 ---
 
