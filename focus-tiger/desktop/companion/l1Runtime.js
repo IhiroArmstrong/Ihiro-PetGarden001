@@ -52,6 +52,11 @@ import { canReuseConfideSemanticLiveCache } from './l1SemanticLiveCache.js';
 import { sanitizeRendererTurnLogRecord } from './confideRendererTurnLogAllowlist.js';
 import { resolveStage2bSeedSource } from './l1SemanticStage2bShadow.js';
 import { buildKbProductGateShadowTurnLogRecord } from './l1KbProductGateShadowLog.js';
+import {
+  buildSemanticCrisisTurnLog,
+  resolveConfideSemanticCrisisCosine,
+  resolveConfideSemanticCrisisMode
+} from './l1SemanticCrisisLog.js';
 
 /**
  * @param {Record<string, unknown> | null | undefined} ev
@@ -145,6 +150,8 @@ export class CompanionL1Runtime {
     this._observeClicheWaiters = new Map();
     /** @type {Map<string, (ev: object) => void>} */
     this._productKnowledgeGateWaiters = new Map();
+    /** @type {Map<string, (ev: object) => void>} */
+    this._semanticCrisisWaiters = new Map();
     this._shadowQueue = Promise.resolve();
     this._liveSemanticCache = null;
     this._embeddingShadowGate = createSemanticShadowEmbeddingGate();
@@ -223,6 +230,14 @@ export class CompanionL1Runtime {
         resolve(ev);
       }
     }
+    if (ev.event === 'semantic_crisis_scored' || ev.event === 'semantic_crisis_error') {
+      const id = typeof ev.id === 'string' ? ev.id : '';
+      const resolve = this._semanticCrisisWaiters.get(id);
+      if (resolve) {
+        this._semanticCrisisWaiters.delete(id);
+        resolve(ev);
+      }
+    }
     if (ev.event === 'embedding_ready' || ev.event === 'embedding_error') {
       this._embeddingShadowGate.applyEvent(ev);
     }
@@ -263,6 +278,13 @@ export class CompanionL1Runtime {
         });
       }
       this._productKnowledgeGateWaiters.clear();
+      for (const resolve of this._semanticCrisisWaiters.values()) {
+        resolve({
+          event: 'semantic_crisis_error',
+          message: ev.message || 'companion_error'
+        });
+      }
+      this._semanticCrisisWaiters.clear();
       this._embeddingShadowGate.reset();
     }
     this._push();
@@ -984,6 +1006,144 @@ export class CompanionL1Runtime {
           : String(result?.message || 'embed_unavailable'),
       timing
     };
+  }
+
+  /**
+   * Semantic crisis score after literal miss. Does not await cold embedding load.
+   * @param {{ text?: string }} [payload]
+   * @returns {Promise<{
+   *   ok: boolean,
+   *   embeddingOk: boolean,
+   *   score: number,
+   *   protoId: string | null,
+   *   threshold: number,
+   *   reason: string,
+   *   mode: string
+   * }>}
+   */
+  async scoreSemanticCrisis(payload = {}) {
+    const wallStarted = Date.now();
+    const mode = resolveConfideSemanticCrisisMode(this.env);
+    const threshold = resolveConfideSemanticCrisisCosine(this.env);
+    const empty = {
+      ok: false,
+      embeddingOk: false,
+      score: 0,
+      protoId: null,
+      threshold,
+      mode,
+      reason: 'unavailable'
+    };
+    if (!this.allowed) return empty;
+    const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+    if (!text) return { ...empty, reason: 'empty_text' };
+
+    const gate = this._embeddingShadowGate;
+    if (!gate.isReady()) {
+      if (gate.shouldRequestEnsure()) {
+        try {
+          if (!this.child) this._spawnIfNeeded();
+          gate.markLoading();
+          this._write('ensure-embedding');
+        } catch {
+          const fail = {
+            ...empty,
+            reason: 'embed_failed',
+            timing: { wallMs: Date.now() - wallStarted }
+          };
+          await this._appendTurnLog(
+            buildSemanticCrisisTurnLog({
+              text,
+              mode,
+              reason: fail.reason
+            })
+          );
+          return fail;
+        }
+      }
+      const fail = {
+        ...empty,
+        reason: 'embed_not_ready',
+        timing: { wallMs: Date.now() - wallStarted }
+      };
+      await this._appendTurnLog(
+        buildSemanticCrisisTurnLog({
+          text,
+          mode,
+          reason: fail.reason
+        })
+      );
+      return fail;
+    }
+
+    const id = randomUUID();
+    const pending = this._shadowQueue.then(async () => {
+      const done = new Promise((resolve) => {
+        this._semanticCrisisWaiters.set(id, resolve);
+      });
+      this._write(`semantic-crisis-score ${JSON.stringify({ id, text })}`);
+      const timed = await Promise.race([
+        done,
+        new Promise((resolve) => {
+          setTimeout(() => resolve({ event: 'timeout' }), L0_SEMANTIC_SHADOW_TIMEOUT_MS);
+        })
+      ]);
+      if (timed?.event === 'timeout') {
+        this._semanticCrisisWaiters.delete(id);
+      }
+      return timed;
+    });
+    this._shadowQueue = pending.then(
+      () => undefined,
+      () => undefined
+    );
+    const result = await pending;
+    const timing = { wallMs: Date.now() - wallStarted };
+
+    if (result?.event === 'semantic_crisis_scored') {
+      const score = Number(result.score) || 0;
+      const protoId = typeof result.protoId === 'string' ? result.protoId : null;
+      const wouldApply = score >= threshold;
+      const applied = mode === 'live' && wouldApply;
+      const out = {
+        ok: true,
+        embeddingOk: true,
+        score,
+        protoId,
+        threshold,
+        mode,
+        reason: 'ok',
+        timing
+      };
+      await this._appendTurnLog(
+        buildSemanticCrisisTurnLog({
+          text,
+          protoId,
+          score,
+          applied,
+          wouldApply,
+          mode,
+          reason: 'ok'
+        })
+      );
+      return out;
+    }
+    const fail = {
+      ...empty,
+      reason:
+        result?.event === 'timeout'
+          ? 'timeout'
+          : String(result?.message || 'embed_unavailable'),
+      timing
+    };
+    await this._appendTurnLog(
+      buildSemanticCrisisTurnLog({
+        text,
+        mode,
+        reason: fail.reason
+      })
+    );
+    return fail;
   }
 
   /**

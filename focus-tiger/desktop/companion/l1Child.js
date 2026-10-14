@@ -424,6 +424,54 @@ async function main() {
             });
           }
         });
+      } else if (line.startsWith('semantic-crisis-score ')) {
+        enqueueShadow(async () => {
+          let payload = {};
+          try {
+            payload = JSON.parse(line.slice('semantic-crisis-score '.length));
+          } catch {
+            await emit({
+              event: 'semantic_crisis_error',
+              id: '',
+              message: 'invalid_semantic_crisis_payload'
+            });
+            return;
+          }
+          const id = typeof payload.id === 'string' ? payload.id : '';
+          const text = typeof payload.text === 'string' ? payload.text.trim() : '';
+          if (!text) {
+            await emit({
+              event: 'semantic_crisis_error',
+              id,
+              message: 'empty_text'
+            });
+            return;
+          }
+          const started = Date.now();
+          try {
+            if (!embeddingSession || typeof embeddingSession.scoreSemanticCrisis !== 'function') {
+              throw new Error('embedding_not_ready');
+            }
+            const result = await embeddingSession.scoreSemanticCrisis(text);
+            await emit({
+              event: 'semantic_crisis_scored',
+              id,
+              score: result.score,
+              protoId: result.protoId,
+              hit: Boolean(result.hit),
+              threshold: result.threshold,
+              embedMs: result.embedMs,
+              wallMs: Date.now() - started
+            });
+          } catch (err) {
+            await emit({
+              event: 'semantic_crisis_error',
+              id,
+              message: embeddingErrorMessage(err),
+              wallMs: Date.now() - started
+            });
+          }
+        });
       } else if (line.startsWith('classify-read-tool ')) {
         enqueue(async () => {
           let payload = {};

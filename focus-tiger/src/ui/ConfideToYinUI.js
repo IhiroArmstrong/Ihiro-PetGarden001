@@ -22,6 +22,12 @@ import {
   shouldRunConfideSemanticShadow
 } from '../core/confide/confideSemanticCoarseMap.js';
 import { applyConfideStage2Route } from '../core/confide/confideSemanticStage2.js';
+import {
+  applyConfideSemanticCrisis,
+  resolveConfideSemanticCrisisCosine,
+  resolveConfideSemanticCrisisMode,
+  shouldAttemptConfideSemanticCrisis
+} from '../core/confide/confideSemanticCrisisLayer.js';
 import { applyConfideStage2bLive } from '../core/confide/confideSemanticStage2b.js';
 import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
@@ -1154,10 +1160,20 @@ export class ConfideToYinUI {
     ) {
       void this._companion.appendTurnLog(shadowRow);
     }
-    if (
-      shouldRunConfideSemanticShadow({ route: hit.route }) &&
+    const wideViewport = this._viewportAllowsGenerateLayer();
+    const crisisEligible =
+      shouldAttemptConfideSemanticCrisis({
+        literalRoute: hit.route,
+        text,
+        wideViewport
+      }) &&
       this._companion &&
-      typeof this._companion.semanticLiveClassify === 'function'
+      typeof this._companion.scoreSemanticCrisis === 'function';
+    if (
+      crisisEligible ||
+      (shouldRunConfideSemanticShadow({ route: hit.route }) &&
+        this._companion &&
+        typeof this._companion.semanticLiveClassify === 'function')
     ) {
       void this._applyLiveSemanticThenDispatch(text, hit);
       return;
@@ -1181,6 +1197,51 @@ export class ConfideToYinUI {
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
     this._armPendingReplyWatchdog({ hit, locale, text: asked, corpusText });
+    if (
+      shouldAttemptConfideSemanticCrisis({
+        literalRoute: hit.route,
+        text: asked,
+        wideViewport: this._viewportAllowsGenerateLayer()
+      }) &&
+      this._companion &&
+      typeof this._companion.scoreSemanticCrisis === 'function'
+    ) {
+      let crisisScore = null;
+      try {
+        crisisScore = await this._companion.scoreSemanticCrisis({ text: asked });
+      } catch {
+        crisisScore = null;
+      }
+      if (!this._open || epoch !== this._sendEpoch) {
+        this._sending = false;
+        this._syncSendEnabled();
+        return;
+      }
+      const appliedCrisis = applyConfideSemanticCrisis({
+        literalRoute: hit.route,
+        score: Number(crisisScore?.score) || 0,
+        threshold: resolveConfideSemanticCrisisCosine(),
+        mode: resolveConfideSemanticCrisisMode(),
+        embeddingOk: Boolean(crisisScore?.embeddingOk)
+      });
+      if (appliedCrisis.applied && appliedCrisis.route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
+        const nextHit =
+          resolveConfideCorpusForRoute({
+            route: CONFIDE_ROUTE.SAFETY_REDIRECT,
+            localDate: formatLocalDateYmd(),
+            salt: this._l2Turns.length,
+            excludeIds: this._sessionExclude,
+            excludeNormalizedTexts: [lastRepeatableYinReplyText(this._l2Turns)].filter(
+              Boolean
+            ),
+            locale: getLocale()
+          }) || { ...hit, route: CONFIDE_ROUTE.SAFETY_REDIRECT };
+        this._sending = false;
+        this._syncSendEnabled();
+        this._dispatchClassifiedSend(asked, nextHit);
+        return;
+      }
+    }
     const literalCoarse = resolveConfideLiteralCoarseBucket({
       route: hit.route,
       source: 'corpus'
@@ -1189,25 +1250,31 @@ export class ConfideToYinUI {
     const contextualText = buildConfideShadowContextualText(asked, prior);
     let semanticCoarse = null;
     let liveClassify = null;
-    try {
-      liveClassify = await this._companion.semanticLiveClassify({
-        text: asked,
-        contextualText,
-        hadPriorTurn: Boolean(prior),
-        route: hit.route,
-        source: '',
-        literalCoarse
-      });
-      if (
-        liveClassify?.ok &&
-        typeof liveClassify.bucket === 'string' &&
-        liveClassify.bucket
-      ) {
-        semanticCoarse = liveClassify.bucket;
+    if (
+      shouldRunConfideSemanticShadow({ route: hit.route }) &&
+      this._companion &&
+      typeof this._companion.semanticLiveClassify === 'function'
+    ) {
+      try {
+        liveClassify = await this._companion.semanticLiveClassify({
+          text: asked,
+          contextualText,
+          hadPriorTurn: Boolean(prior),
+          route: hit.route,
+          source: '',
+          literalCoarse
+        });
+        if (
+          liveClassify?.ok &&
+          typeof liveClassify.bucket === 'string' &&
+          liveClassify.bucket
+        ) {
+          semanticCoarse = liveClassify.bucket;
+        }
+      } catch {
+        semanticCoarse = null;
+        liveClassify = null;
       }
-    } catch {
-      semanticCoarse = null;
-      liveClassify = null;
     }
     if (!this._open || epoch !== this._sendEpoch) {
       this._sending = false;
