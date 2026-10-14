@@ -23,6 +23,11 @@ import {
 import { listRetrievableProductKnowledgeEntries } from '../../src/core/confide/confideProductKnowledge.js';
 import { catalogEntryEmbeddingText } from '../../src/core/confide/kbNearMatch.js';
 import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
+import { CONFIDE_SEMANTIC_CRISIS_PROTOTYPES } from '../../src/core/confide/confideSemanticCrisisExamples.js';
+import {
+  resolveConfideSemanticCrisisCosine,
+  scoreSemanticCrisisVectors
+} from '../../src/core/confide/confideSemanticCrisisLayer.js';
 import {
   classifyConfideSemanticCoarse,
   cosineSimilarity,
@@ -55,6 +60,7 @@ export async function loadEmbeddingHold(opts) {
   const onProgress = opts.onProgress || (() => {});
   const routingConfig = resolveConfideSemanticRoutingConfig(opts.env);
   const clicheThreshold = resolveObserveClicheCosineThreshold(opts.env);
+  const crisisThreshold = resolveConfideSemanticCrisisCosine(opts.env);
 
   onProgress('import node-llama-cpp (embedding)');
   const { getLlama } = await import('node-llama-cpp');
@@ -152,6 +158,13 @@ export async function loadEmbeddingHold(opts) {
     clicheVectors.push(await embedText(example));
   }
 
+  onProgress('precomputeSemanticCrisisBank');
+  /** @type {{ id: string, vector: number[] }[]} */
+  const crisisVectors = [];
+  for (const proto of CONFIDE_SEMANTIC_CRISIS_PROTOTYPES) {
+    crisisVectors.push({ id: proto.id, vector: await embedText(proto.text) });
+  }
+
   let disposed = false;
 
   return {
@@ -233,6 +246,23 @@ export async function loadEmbeddingHold(opts) {
         score,
         flagged: score >= clicheThreshold,
         threshold: clicheThreshold,
+        embedMs: Date.now() - embedStarted
+      };
+    },
+    /**
+     * @param {string} text
+     * @returns {Promise<{ score: number, protoId: string | null, hit: boolean, threshold: number, embedMs: number }>}
+     */
+    async scoreSemanticCrisis(text) {
+      if (disposed) throw new Error('embedding_session_disposed');
+      const embedStarted = Date.now();
+      const userVector = await embedText(text);
+      const scored = scoreSemanticCrisisVectors(userVector, crisisVectors);
+      return {
+        score: scored.score,
+        protoId: scored.protoId,
+        hit: scored.score >= crisisThreshold,
+        threshold: crisisThreshold,
         embedMs: Date.now() - embedStarted
       };
     },

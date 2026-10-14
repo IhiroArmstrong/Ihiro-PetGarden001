@@ -10,6 +10,7 @@
 
 import { CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND } from './confideCrisisParaphraseShadow.js';
 import { KB_CATALOG_NEAR_REVIEW_SHADOW_KIND } from './confideKbCatalogNearReview.js';
+import { CONFIDE_SEMANTIC_CRISIS_KIND } from './confideSemanticCrisisLayer.js';
 
 /** @readonly */
 export const CONFIDE_TURNS_SHADOW_AUDIT_KINDS = Object.freeze([
@@ -17,7 +18,8 @@ export const CONFIDE_TURNS_SHADOW_AUDIT_KINDS = Object.freeze([
   'semantic_live_classify',
   'kb_product_gate_shadow',
   CONFIDE_CRISIS_PARAPHRASE_SHADOW_KIND,
-  KB_CATALOG_NEAR_REVIEW_SHADOW_KIND
+  KB_CATALOG_NEAR_REVIEW_SHADOW_KIND,
+  CONFIDE_SEMANTIC_CRISIS_KIND
 ]);
 
 /** @readonly */
