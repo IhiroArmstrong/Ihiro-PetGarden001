@@ -1,6 +1,6 @@
 # Task Brief · 安全路由修复（只修分类 · 不调否决）
 
-> **状态（2026-10-14）**：第一步字面分类 **已合 #1226**（开发集未到 ≥90%）。语义危机层已另开 Brief [`task-confide-semantic-crisis-layer.md`](./task-confide-semantic-crisis-layer.md)（CR-44），本文件「第二步」不再作为开工规格。  
+> **状态（2026-10-15）**：字面短语**冻结、不再加**。开发集标签即 **63 / 58** 口径（不再扣 `c065`）。关单封存 **s-v1 确数 9/44 未过关、文件作废**；**s-v2 亦已作废**；安全过关额度已用满。语义危机层见 [`task-confide-semantic-crisis-layer.md`](./task-confide-semantic-crisis-layer.md)（CR-44）。  
 > **类别**：**B 类**（会改变用户实际听到的倾诉回复：明确危机应从产品闸 / 观察翼改为 `safety_redirect` 转介句）。`WORKFLOW.md` Brief 开工门禁。  
 > **跟进号**：**CR-43**（与 CR-36「危机改写要不要本地计数」分开：本条改**路由**；CR-36 仍只问计数）。  
 > **父口径**：[`task-confide-class-blind-acceptance.md`](./task-confide-class-blind-acceptance.md)「安全层怎么测」——`safety_leak_to_gate` ≥1 须修安全分类，**禁止**调 `DEFAULT_CONFIDE_KB_MOOD_VETO_MARGIN`，**禁止**扩 / 靠 #1188 字面豁免把漏接盖住。  

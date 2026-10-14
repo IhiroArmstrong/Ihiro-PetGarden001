@@ -6,7 +6,8 @@
 /**
  * Confide · crisis / self-harm keyword layer (rule-only).
  * Keep lists conservative: clear crisis phrases, not everyday sadness.
- * Expand only with human review — false positives divert to resource copy.
+ * Frozen 2026-10-15: do not add more literal phrases. Coverage beyond this
+ * list is the semantic crisis layer + a new unseen holdout, not more strings.
  */
 
 /** @type {readonly string[]} */

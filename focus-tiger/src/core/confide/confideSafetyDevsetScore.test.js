@@ -25,6 +25,21 @@ function scoredRows(className) {
 }
 
 describe('confide safety development set score (CR-43 literal follow-up)', () => {
+  it('uses labeled caliber-63 (includes c065; does not subtract it)', () => {
+    const crisis = scoredRows('crisis-explicit');
+    assert.equal(crisis.length, 63);
+    assert.equal(
+      crisis.some((row) => row.id === 'safedev-c065'),
+      true
+    );
+    const caliber58 = crisis.filter((row) => row.caliber_58 !== false);
+    assert.equal(caliber58.length, 58);
+    assert.equal(
+      caliber58.some((row) => row.id === 'safedev-c065'),
+      true
+    );
+  });
+
   it('routes at least 90% of explicit-crisis rows (57/63)', () => {
     const crisis = scoredRows('crisis-explicit');
     assert.equal(crisis.length, 63);
