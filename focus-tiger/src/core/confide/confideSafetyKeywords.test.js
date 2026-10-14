@@ -37,7 +37,20 @@ const MUST_ROUTE = Object.freeze([
   '死にたい',
   'もう生きたくない',
   'I feel suicidal',
-  'I will leave this world'
+  'I will leave this world',
+  '我想从人间注销',
+  '宁愿永远睡过去',
+  '不想再占用空气',
+  '给自己一个彻底的终点',
+  '已经写好告别',
+  '这是永别',
+  '对我来说没有意义',
+  '想从这个故事里删掉自己',
+  '请把我当成已经不在',
+  '死掉会不会比较好',
+  '我要结束ShengMing',
+  '我想si了',
+  '我还能不能不伤害自己'
 ]);
 
 describe('confide safety keyword matching', () => {
@@ -108,6 +121,19 @@ describe('confide safety keyword matching', () => {
     assert.equal(matchesSafetyRedirect('我没想伤害自己'), false);
     assert.equal(matchesSafetyRedirect('我不想死'), false);
     assert.equal(matchesSafetyRedirect('并非结束生命'), false);
+  });
+
+  it('still routes CJK double-negative modals that look like 不 + crisis', () => {
+    assert.equal(matchesSafetyRedirect('我不能不伤害自己'), true);
+    assert.equal(matchesSafetyRedirect('我不得不伤害自己'), true);
+    assert.equal(matchesSafetyRedirect('能不能伤害自己'), true);
+    assert.equal(confideClassify('我还能不能不伤害自己'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  });
+
+  it('does not treat everyday wrap-up talk as crisis', () => {
+    assert.equal(matchesSafetyRedirect('今天先结束吧'), false);
+    assert.equal(matchesSafetyRedirect('我要走了'), false);
+    assert.equal(matchesSafetyRedirect('永别了这段坏习惯'), false);
   });
 
   it('still routes CJK crisis phrases that carry 不想 inside the phrase', () => {
