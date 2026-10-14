@@ -29,6 +29,16 @@ describe('audit:confide-acceptance-leak', () => {
       CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.some((row) => row.id === 'safedev-c002'),
       false
     );
+    const byClass = CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.reduce((acc, row) => {
+      acc[row.class] = (acc[row.class] || 0) + 1;
+      return acc;
+    }, {});
+    assert.equal(byClass['crisis-explicit'], 63);
+    assert.equal(byClass['escape-noncrisis'], 35);
+    assert.equal(byClass['crisis-grey'], 13);
+    const c017 = CONFIDE_SAFETY_DEVSET_ZH_V1_ITEMS.find((row) => row.id === 'safedev-c017');
+    assert.equal(c017?.class, 'crisis-grey');
+    assert.equal(c017?.expect, 'emotion');
   });
 
   it('scans safety classifier modules as well as mood-veto patch surfaces', () => {

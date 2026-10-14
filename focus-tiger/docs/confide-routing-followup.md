@@ -453,7 +453,7 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 
 ### CR-43 · 安全路由修复（待拍板）
 
-真跑明确危机漏到产品闸 13/21。实验室与线上都只跑字面 `confideClassify`；`crisis_paraphrase_shadow` 只写日志。开发集基线：明确危机 **16/64**，逃避误捕 7/35。
+真跑明确危机漏到产品闸 13/21。实验室与线上都只跑字面 `confideClassify`；`crisis_paraphrase_shadow` 只写日志。开发集基线：明确危机 **16/63**，逃避误捕 7/35。
 
 权威：[`task-briefs/task-confide-safety-routing-fix.md`](./task-briefs/task-confide-safety-routing-fix.md)。
 
