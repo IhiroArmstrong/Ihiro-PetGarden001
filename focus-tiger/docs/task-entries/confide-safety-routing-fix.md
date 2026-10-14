@@ -1,7 +1,7 @@
 ---
 id: confide-safety-routing-fix
 kind: feature
-status: Brief 已修订 · 待 PO 点头 · 禁止写运行时
+status: 第一步实现中（字面分类 + 中文邻接否定）
 updated: 2026-10-14
 ---
 
