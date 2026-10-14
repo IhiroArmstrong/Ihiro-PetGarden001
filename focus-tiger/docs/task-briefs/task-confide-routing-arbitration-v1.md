@@ -1,6 +1,6 @@
 # Task Brief · Confide 路由仲裁 v1
 
-> **状态（2026-10-15）**：PO 已点头出本 Brief（#1206）。**函数 A、门槛 0.01 已冻结**（盲测跑完不得再调）。八类通过线按既有 R-0 **≥85%** + n≥60；`product_path_ttft_hot_delta_ms` = **100**。**不采用 B**；**不拿现写法 C 锁门槛**。发送链仍未改。#1222 影子已合 develop。本机封存 **b-v4** 已把 `badge-yin-coin` / `mixed-emotion-dominant` 补到 n=60（信封校验 ok，**未跑分**）。另四类仍 <60。切 live 必须等盲测过了再点。  
+> **状态（2026-10-15）**：PO 已点头出本 Brief（#1206）。**函数 A、门槛 0.01 已冻结**（盲测跑完不得再调）。八类通过线按既有 R-0 **≥85%** + n≥60；`product_path_ttft_hot_delta_ms` = **100**。**不采用 B**；**不拿现写法 C 锁门槛**。发送链仍未改。#1222 影子已合 develop。**`sealed-b-v2` 唯一真跑未过关**（额度已用；只记按类汇总，不写句子）。本机封存 **b-v4** 信封已补两类至 n=60，**未跑分、此刻不烧**。切 live 必须另一次点头，且须新封存过关。  
 > **任务类**：第一段影子对照 = **A 类**。切 live = **B 类**（会改变用户实际听到的回复从哪一层来）。`WORKFLOW.md` Brief 开工门禁。Stage 2 留下的规矩仍在：没有点头不得改 live。  
 > **命名（硬）**：本文是 **路由仲裁**（一句话在各层之间走哪条路）。**不是** `confide-embedding-lifecycle-arbitration.md` 的 **生命周期仲裁**（模型加载排队 / `l1LlamaWorkGate`）。Brief 与代码注释禁止混用「统一仲裁」。  
 > **合并（不再另开第二份）**：Prompt 16 路由顺序（`task-confide-kb-routing-gate.md`）· Prompt 18 近义匹配与误判/漏检（`task-confide-kb-embedding-near-match.md`）· 情绪否决第一段（`task-confide-kb-gate-mood-veto.md`）· 目录 / 近邻误命中（`task-confide-kb-catalog-near-misfire.md`）。带上一句上下文的上线关卡与 Stage 2b 候选共用同一套盲测验收（CR-03 / CR-17）。  

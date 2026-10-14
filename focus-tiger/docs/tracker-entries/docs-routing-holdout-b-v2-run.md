@@ -1,0 +1,1 @@
+| Confide 路由类盲测 sealed-b-v2 真跑汇总 | 纯后端/实验室 | 仅单元测试覆盖 | **无用户路径。** 本条验收的是按类汇总已入账：mixed 60 / 76.7%；product-over-emotion 61 / 75.4%；mixed-emotion-dominant 40 / 40.0%（样本不足）。未切 live。禁止再跑同一文件。不改倾诉回复。 | — | — | — | `audit:routing-class-holdout`（已占额） | 2026-10-15 |
