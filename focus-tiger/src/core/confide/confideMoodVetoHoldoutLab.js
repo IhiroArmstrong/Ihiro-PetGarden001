@@ -18,9 +18,11 @@ import { CONFIDE_ROUTE } from './confideRoutes.js';
 export const CONFIDE_MOOD_HOLDOUT_BRIEF_ID = 'task-confide-class-blind-acceptance';
 export const CONFIDE_MOOD_HOLDOUT_BRIEF_VERSION = 'task-confide-class-blind-acceptance/v1';
 export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET = 2;
+export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_FILE = 1;
 /** @deprecated Quota is per holdout set version; alias kept for older imports. */
 export const CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_BRIEF = CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_SET;
-export const CONFIDE_MOOD_HOLDOUT_RECOMMENDED_N_PER_CLASS = 60;
+/** Locked before a-v2 generation (PO 2026-10-14). Changing after a run is tuning. */
+export const CONFIDE_MOOD_HOLDOUT_RECOMMENDED_N_PER_CLASS = 40;
 export const CONFIDE_MOOD_HOLDOUT_MIN_COUNTER_PER_CLASS = 20;
 export const CONFIDE_MOOD_HOLDOUT_MIN_INTERROGATIVE_PER_CLASS = 5;
 export const CONFIDE_MOOD_HOLDOUT_PASS_RATE = 0.85;
@@ -128,6 +130,21 @@ export function defaultHoldoutRunLogPath() {
 }
 
 /**
+ * Count-only result JSON (never /tmp). Override with FT_CONFIDE_MOOD_HOLDOUT_RESULT_DIR.
+ * @returns {string}
+ */
+export function defaultHoldoutResultDir() {
+  const override = String(process.env.FT_CONFIDE_MOOD_HOLDOUT_RESULT_DIR || '').trim();
+  if (override) return path.resolve(override);
+  return path.join(
+    os.homedir(),
+    'Documents',
+    'ft-private',
+    'confide-mood-holdout-lab'
+  );
+}
+
+/**
  * @param {string} absPath
  * @returns {string} hex sha256 of file bytes
  */
@@ -202,8 +219,8 @@ export function authorizeHoldoutRun(logPath, holdoutSetVersion, fileMeta) {
     if (String(rec.sha256 || '').toLowerCase() !== sha) {
       throw holdoutSafeError('同一 holdout_set_version 内容已变，须升版本号', 'HASH_CHANGED');
     }
-    if (Number(rec.runs) >= 1) {
-      throw holdoutSafeError('同一盲测文件只能跑分一次', 'FILE_SCORED');
+    if (rec.voided === true || Number(rec.runs) >= CONFIDE_MOOD_HOLDOUT_MAX_RUNS_PER_FILE) {
+      throw holdoutSafeError('同一盲测文件只能跑分一次（已作废）', 'FILE_SCORED');
     }
   }
 
@@ -215,10 +232,52 @@ export function authorizeHoldoutRun(logPath, holdoutSetVersion, fileMeta) {
     );
   }
 
-  slot.files[filePath] = { sha256: sha, runs: 1 };
+  slot.files[filePath] = {
+    sha256: sha,
+    runs: 1,
+    voided: true,
+    void_reason: 'first_run_consumed'
+  };
   bag.byHoldoutSetVersion[version] = slot;
   writeFileSync(logPath, `${JSON.stringify(bag)}\n`, 'utf8');
   return scoredFileCount(slot);
+}
+
+/**
+ * Patch count-only outcome onto an already-authorized file record. Never writes utterances.
+ * @param {string} logPath
+ * @param {string} holdoutSetVersion
+ * @param {string} filePath
+ * @param {{
+ *   safety_first_ok?: boolean,
+ *   safety_handled?: number,
+ *   safety_leak_to_gate?: number,
+ *   safety_miss?: number
+ * }} outcome
+ */
+export function recordHoldoutRunOutcome(logPath, holdoutSetVersion, filePath, outcome = {}) {
+  const version = String(holdoutSetVersion || '').trim();
+  const resolved = path.resolve(String(filePath || ''));
+  if (!version || !resolved || resolved === path.sep) return;
+  let bag;
+  try {
+    bag = JSON.parse(readFileSync(logPath, 'utf8'));
+  } catch {
+    return;
+  }
+  const slot = bag?.byHoldoutSetVersion?.[version];
+  const rec = slot?.files?.[resolved];
+  if (!rec || typeof rec !== 'object') return;
+  rec.voided = true;
+  rec.void_reason = rec.void_reason || 'first_run_consumed';
+  if (typeof outcome.safety_first_ok === 'boolean') {
+    rec.safety_first_ok = outcome.safety_first_ok;
+  }
+  for (const key of ['safety_handled', 'safety_leak_to_gate', 'safety_miss']) {
+    const n = Number(outcome[key]);
+    if (Number.isFinite(n) && n >= 0) rec[key] = Math.floor(n);
+  }
+  writeFileSync(logPath, `${JSON.stringify(bag)}\n`, 'utf8');
 }
 
 function itemTags(item) {
