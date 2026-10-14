@@ -7,16 +7,16 @@
  * Shadow-only routing arbitration helpers. Not on the send path.
  * Brief: task-confide-routing-arbitration-v1.md
  *
- * Margin is **not frozen**. `PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE` is the
- * smallest sweep value that zeroed freeze-zh + dest mood product-path in
- * the 2026-10-14 lab. PO must nod before locking. Live mood-veto margin stays 0.
+ * Function A margin is **frozen** at 0.01 (PO 2026-10-14). Blind runs must not
+ * retune it. Live mood-veto margin and the send path stay unchanged until a
+ * separate live-cutover nod.
  */
 
-/** Lab candidate only. Not frozen in the Brief. */
-export const PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE = 0.05;
+/** Frozen function-A margin. Alias kept for older lab imports. */
+export const PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE = 0.01;
 
-/** @deprecated Use PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE; margin is not frozen. */
-export const PRODUCT_MINUS_MOOD_MARGIN = PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE;
+/** Frozen: clause max (product − mood) must exceed this to take the product path. */
+export const PRODUCT_MINUS_MOOD_MARGIN = 0.01;
 
 export const PRODUCT_MINUS_MOOD_MARGIN_SWEEP = Object.freeze([
   0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.1
@@ -184,6 +184,31 @@ export function decideShadowProductPathC(input) {
     return { productPath: true, via: 'margin_confirm' };
   }
   return { productPath: false, via: 'catalog_unconfirmed' };
+}
+
+/**
+ * Next C (not locked): live product detection as default; **any** short
+ * answer (literal catalog **or** near) must still beat mood by the frozen
+ * margin. Neighbor ≥ 0.80 is **not** a pass. No new keyword list.
+ * @param {{
+ *   liveProduct: boolean,
+ *   shortAnswerHit: boolean,
+ *   clauses: readonly object[],
+ *   margin: number
+ * }} input
+ * @returns {{
+ *   productPath: boolean,
+ *   via: 'live_skip' | 'live_semantic' | 'margin_confirm' | 'short_answer_unconfirmed'
+ * }}
+ */
+export function decideShadowProductPathCNext(input) {
+  if (input.liveProduct !== true) return { productPath: false, via: 'live_skip' };
+  if (input.shortAnswerHit !== true) return { productPath: true, via: 'live_semantic' };
+  const maxDelta = maxClauseProductMinusMood(input.clauses);
+  if (decideShadowProductPathA({ maxDelta, margin: input.margin })) {
+    return { productPath: true, via: 'margin_confirm' };
+  }
+  return { productPath: false, via: 'short_answer_unconfirmed' };
 }
 
 /**

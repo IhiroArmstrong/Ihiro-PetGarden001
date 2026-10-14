@@ -1,1 +1,1 @@
-| Confide 路由类盲测读数口 + 第一段影子 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 读数口只校验；门槛未冻结。A/B/C 影子曲线含现网基线、各池 min/p05/median、路由开发集 v2、3 分句混合 TTFT 对照现网。不跑 sealed-b-v2，不改回复。 | — | — | — | `npm run audit:routing-arbitration-ab` · `audit:confide-acceptance-leak` | 2026-10-14 |
+| Confide 路由类盲测读数口 + 第一段影子 | 纯后端/实验室 | 仅单元测试覆盖 | **无运行时。** 函数 A 门槛 0.01 已冻；不采用 B / 现写法 C。读数口按分句函数 A。不跑 sealed-b-v2，不改回复。 | — | — | — | `npm run audit:routing-arbitration-ab` · `audit:confide-acceptance-leak` | 2026-10-14 |

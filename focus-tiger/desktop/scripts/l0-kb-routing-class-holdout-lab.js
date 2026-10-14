@@ -11,8 +11,9 @@
  *     FT_CONFIDE_ROUTING_HOLDOUT_PATH=/absolute/path/outside/workspace.json \\
  *     node desktop/scripts/l0-kb-routing-class-holdout-lab.js --validate-only
  *
- * Scoring consumes the file's one valid run. Do not score sealed-b-v2 until
- * product_minus_mood_margin is frozen. Validate-only does not increment quota.
+ * Scoring consumes the file's one valid run. Scores **function A** (punctuation
+ * clauses, max product−mood vs frozen 0.01). Do not score sealed-b-v2 until
+ * PO separately nods a blind run. Validate-only does not increment quota.
  */
 
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
@@ -23,13 +24,17 @@ import {
   authorizeHoldoutRun,
   hashHoldoutFile
 } from '../../src/core/confide/confideMoodVetoHoldoutLab.js';
-import { PRODUCT_MINUS_MOOD_MARGIN } from '../../src/core/confide/confideRoutingArbitrationShadow.js';
+import {
+  PRODUCT_MINUS_MOOD_MARGIN,
+  decideShadowProductPathA,
+  maxClauseProductMinusMood,
+  splitUtteranceByPunctuation
+} from '../../src/core/confide/confideRoutingArbitrationShadow.js';
 import {
   defaultRoutingHoldoutRunLogPath,
   formatRoutingHoldoutSummaryStdout,
   formatRoutingHoldoutValidateStdout,
   parseRoutingHoldoutFile,
-  productClearlyOutranksMood,
   redactHoldoutError,
   resolveHoldoutFilePath,
   scoreRoutingHoldoutRow,
@@ -126,12 +131,18 @@ async function main() {
       const meta = stripRoutingHoldoutItem(raw);
       if (!meta) continue;
       const text = typeof raw.text === 'string' ? raw.text : '';
-      const gate = await hold.classifyProductKnowledgeGate(text);
-      const productPath = productClearlyOutranksMood(
-        gate.score,
-        gate.moodScore,
-        PRODUCT_MINUS_MOOD_MARGIN
-      );
+      const clauses = [];
+      for (const part of splitUtteranceByPunctuation(text)) {
+        const gate = await hold.classifyProductKnowledgeGate(part);
+        clauses.push({
+          productScore: Number(gate.score),
+          moodScore: Number(gate.moodScore)
+        });
+      }
+      const productPath = decideShadowProductPathA({
+        maxDelta: maxClauseProductMinusMood(clauses),
+        margin: PRODUCT_MINUS_MOOD_MARGIN
+      });
       scored.push(scoreRoutingHoldoutRow({ ...meta, productPath }));
     }
   } finally {

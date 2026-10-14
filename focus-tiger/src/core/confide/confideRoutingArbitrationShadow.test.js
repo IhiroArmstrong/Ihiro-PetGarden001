@@ -6,6 +6,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  PRODUCT_MINUS_MOOD_MARGIN,
   PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE,
   PRODUCT_SCORE_FLOOR_CANDIDATE,
   productClearlyOutranksMood,
@@ -17,13 +18,15 @@ import {
   decideShadowProductPathA,
   decideShadowProductPathB,
   decideShadowProductPathC,
+  decideShadowProductPathCNext,
   CONFIDE_ARBITRATION_CLASS_IDS
 } from './confideRoutingArbitrationShadow.js';
 import { resolveProductKnowledgeGateAction } from './confideProductKnowledgeSemantic.js';
 
 describe('productClearlyOutranksMood', () => {
   it('requires product to beat mood by the given margin', () => {
-    assert.equal(PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE, 0.05);
+    assert.equal(PRODUCT_MINUS_MOOD_MARGIN_CANDIDATE, 0.01);
+    assert.equal(PRODUCT_MINUS_MOOD_MARGIN, 0.01);
     assert.equal(productClearlyOutranksMood(0.5, 0.4, 0.02), true);
     assert.equal(productClearlyOutranksMood(0.5, 0.49, 0.02), false);
     assert.equal(productClearlyOutranksMood(0.5, 0.5, 0.02), false);
@@ -147,5 +150,27 @@ describe('productClearlyOutranksMood', () => {
     });
     assert.equal(near.productPath, true);
     assert.equal(near.via, 'near_confirm');
+  });
+
+  it('function C-next does not treat neighbor 0.80 as a pass for short answers', () => {
+    const nearOnly = [
+      { productScore: 0.65, moodScore: 0.75, nearestScore: 0.82 }
+    ];
+    const blocked = decideShadowProductPathCNext({
+      liveProduct: true,
+      shortAnswerHit: true,
+      clauses: nearOnly,
+      margin: PRODUCT_MINUS_MOOD_MARGIN
+    });
+    assert.equal(blocked.productPath, false);
+    assert.equal(blocked.via, 'short_answer_unconfirmed');
+    const confirmed = decideShadowProductPathCNext({
+      liveProduct: true,
+      shortAnswerHit: true,
+      clauses: [{ productScore: 0.6, moodScore: 0.4, nearestScore: 0.5 }],
+      margin: PRODUCT_MINUS_MOOD_MARGIN
+    });
+    assert.equal(confirmed.productPath, true);
+    assert.equal(confirmed.via, 'margin_confirm');
   });
 });
