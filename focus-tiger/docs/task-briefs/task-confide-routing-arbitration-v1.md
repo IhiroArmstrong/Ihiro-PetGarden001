@@ -196,24 +196,24 @@ P18 在 A@0 / B@0 差的那 1 句是 A12。A@0.05 丢掉 A7/A8/A10；B@0.05 靠 
 
 路由开发集 v2（影子，非盲测）：A@0.01 混合 14/15、产品压过情绪 14/15、情绪占上风 7/15（期望情绪，7 句仍走了产品）。C 几乎全放行（现网默认）。
 
-### 路由类通过判据（草案 · sealed-b-v3 八类 · 点头前数字占位 · 不得跑盲测）
+### 路由类通过判据（sealed-b-v3 八类 · 2026-10-14 夜 · 不得真跑盲测）
 
-八类**同时**达标才算过；场景 AE 两条 catalog 锚点 **100%**。通过线数字待点头后填，下表先占位。
+**关单条件（未点头前不跑分）**：八类 `class_id` 各自 `pass_rate ≥ 85%`（`ceil(n×0.85)` 句过关）且 **无** `样本不足`（每类 n≥60 才消标；`badge-yin-coin` 当前 n=18 恒标样本不足，须 PO 点头补量或单独门槛）。八类**同时** `pass_criteria_met=yes` 才算过。场景 AE 两条 catalog 锚点 **100%**（各 n=1）。代码：`confideRoutingClassHoldoutLab.js` · `resolveSealedBExpectedPath` · `routingClassMeetsPassCriteria`；holdout 跑分仍只许 **函数 A @ 0.01**（`productPath` 粗代理：短答与诚实空态不区分，全影子另会话）。
 
-| 类 id | 期望路径 | 通过率 | n |
+| 类 id | 期望（`expect` / 类） | 通过率线 | n（b-v3 信封） |
 |---|---|---|---|
-| `life-emotion` | 情绪（不走产品） | 待点头 | 待点头 |
-| `product-short-answer` | 产品短答 | 待点头 | 待点头 |
-| `product-honest-empty` | 产品诚实空态 | 待点头 | 待点头 |
-| `badge-yin-coin` | 按已锁徽章口径 | 待点头 | 待点头 |
-| `chitchat` | 闲聊 / 观察翼 | 待点头 | 待点头 |
-| `mixed` | 产品 | 待点头 | 待点头 |
-| `product-over-emotion` | 产品 | 待点头 | 待点头 |
-| `mixed-emotion-dominant` | 情绪 | 待点头 | 待点头 |
-| AE `接地练习在哪` | 产品 | **100%** | 1 |
-| AE `A Quiet Line 在哪` | 产品 | **100%** | 1 |
+| `life-emotion` | `emotion` → 不走产品 | ≥85% | 42 |
+| `product-short-answer` | `product_short_answer` → 产品闸 | ≥85% | 52 |
+| `product-honest-empty` | `product_honest_empty` → 产品闸 | ≥85% | 56 |
+| `badge-yin-coin` | `product_honest_empty`（徽章≠寅币口径） | ≥85% | 18 · **样本不足** |
+| `chitchat` | `chitchat` → 不走产品 | ≥85% | 42 |
+| `mixed` | 函数 A → 产品 | ≥85% | 60 |
+| `product-over-emotion` | 函数 A → 产品 | ≥85% | 61 |
+| `mixed-emotion-dominant` | 函数 A → 情绪 | ≥85% | 40 · **样本不足** |
+| AE 锚 `接地练习在哪` | 产品短答 | **100%** | 1 |
+| AE 锚 `A Quiet Line 在哪` | 产品短答 | **100%** | 1 |
 
-安全层漏接仍单开，不靠调 margin / 目录旁路遮。点头前 **禁止** sealed-b-v2。
+**b-v3 信封**：`holdout_set_version=confide-routing-blind-zh/b-v3` · items=371 · validate `ok=yes`（不占额度）。**徽章补句**：`badge-fill.json` n=32 · id=`badgefill-01`…`badgefill-32` · 仅本机 `ft-private` · **未**并入 b-v3 · **未**进仓。安全层漏接仍单开，不靠调 margin / 目录旁路遮。点头前 **禁止** 对 sealed-b-v2 真跑；**禁止**合 #1222 / 冻结 margin。
 
 ### 第一段影子实测（2026-10-14 · 未切 live）
 

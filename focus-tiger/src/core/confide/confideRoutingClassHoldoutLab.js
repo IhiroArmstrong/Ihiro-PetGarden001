@@ -30,7 +30,22 @@ export const CONFIDE_ROUTING_HOLDOUT_ACCEPTED_BRIEF_VERSIONS = Object.freeze([
   CONFIDE_ROUTING_HOLDOUT_BRIEF_VERSION,
   'task-confide-class-blind-acceptance/v1'
 ]);
-export const CONFIDE_ROUTING_HOLDOUT_CLASS_IDS = CONFIDE_HOLDOUT_ROUTING_CLASS_IDS;
+/** Margin-tuned trio (function A @ frozen 0.01). */
+export const CONFIDE_ROUTING_MARGIN_CLASS_IDS = CONFIDE_HOLDOUT_ROUTING_CLASS_IDS;
+export const CONFIDE_ROUTING_HOLDOUT_CLASS_IDS = CONFIDE_ROUTING_MARGIN_CLASS_IDS;
+
+/** sealed-b-v3 envelope: eight class ids (counts only in validate / summary). */
+export const CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS = Object.freeze([
+  'life-emotion',
+  'product-short-answer',
+  'product-honest-empty',
+  'badge-yin-coin',
+  'chitchat',
+  'mixed',
+  'product-over-emotion',
+  'mixed-emotion-dominant'
+]);
+
 export const CONFIDE_ROUTING_HOLDOUT_RECOMMENDED_N_PER_CLASS = 60;
 export const CONFIDE_ROUTING_HOLDOUT_PASS_RATE = 0.85;
 export { CONFIDE_MOOD_HOLDOUT_UNSEALED as CONFIDE_ROUTING_HOLDOUT_UNSEALED };
@@ -83,6 +98,34 @@ export function expectedPathForRoutingClass(classId) {
 }
 
 /**
+ * sealed-b item `expect` → coarse product vs mood gate (function-A holdout scorer).
+ * Does not distinguish short answer vs honest empty (full shadow required).
+ *
+ * @param {string} classId
+ * @param {string} [expect]
+ * @returns {'product' | 'mood' | null}
+ */
+export function resolveSealedBExpectedPath(classId, expect) {
+  const fromMarginClass = expectedPathForRoutingClass(classId);
+  if (fromMarginClass) return fromMarginClass;
+  const e = String(expect || '').trim();
+  if (e === 'emotion' || e === 'chitchat') return 'mood';
+  if (e === 'product_short_answer' || e === 'product_honest_empty') return 'product';
+  return null;
+}
+
+/**
+ * @param {{ n: number, n_pass: number, pass_rate: number | null, sample_insufficient: boolean }} slot
+ * @returns {boolean}
+ */
+export function routingClassMeetsPassCriteria(slot) {
+  if (!slot || slot.sample_insufficient) return false;
+  if (slot.n <= 0 || slot.pass_rate == null) return false;
+  const need = Math.ceil(slot.n * CONFIDE_ROUTING_HOLDOUT_PASS_RATE);
+  return slot.n_pass >= need;
+}
+
+/**
  * @param {{ holdoutSetVersion?: string, items: object[] }} parsed
  * @returns {{
  *   ok: boolean,
@@ -98,11 +141,11 @@ export function validateRoutingHoldoutCounts(parsed) {
   const items = Array.isArray(parsed?.items) ? parsed.items : [];
   const ids = [];
   let emptyText = 0;
-  let routing = 0;
-  let other = 0;
+  let marginClassItems = 0;
+  let unknownClassItems = 0;
   /** @type {Record<string, number>} */
   const byClass = {};
-  for (const id of CONFIDE_ROUTING_HOLDOUT_CLASS_IDS) byClass[id] = 0;
+  for (const id of CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS) byClass[id] = 0;
   for (const item of items) {
     if (!item || typeof item !== 'object') {
       emptyText++;
@@ -115,11 +158,11 @@ export function validateRoutingHoldoutCounts(parsed) {
     const classId = canonicalizeHoldoutClassId(
       item.class_id || item.classId || item.class
     );
-    if (CONFIDE_ROUTING_HOLDOUT_CLASS_IDS.includes(classId)) {
+    if (CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS.includes(classId)) {
       byClass[classId] = (byClass[classId] || 0) + 1;
-      routing++;
+      if (CONFIDE_ROUTING_MARGIN_CLASS_IDS.includes(classId)) marginClassItems++;
     } else {
-      other++;
+      unknownClassItems++;
       const key = classId || '(empty)';
       byClass[key] = (byClass[key] || 0) + 1;
     }
@@ -128,14 +171,25 @@ export function validateRoutingHoldoutCounts(parsed) {
   const holdoutSetVersion = String(
     parsed?.holdoutSetVersion || parsed?.holdout_set_version || ''
   ).trim();
+  const sealedBN = CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS.reduce(
+    (sum, id) => sum + (byClass[id] || 0),
+    0
+  );
   return {
-    ok: uniqueIds && emptyText === 0 && Boolean(holdoutSetVersion) && routing > 0,
+    ok:
+      uniqueIds &&
+      emptyText === 0 &&
+      Boolean(holdoutSetVersion) &&
+      sealedBN > 0 &&
+      unknownClassItems === 0,
     item_n: items.length,
     unique_ids: uniqueIds,
     empty_text: emptyText,
     by_class: byClass,
-    routing_class_items: routing,
-    other_class_items: other
+    routing_class_items: marginClassItems,
+    other_class_items: sealedBN - marginClassItems,
+    sealed_b_class_items: sealedBN,
+    unknown_class_items: unknownClassItems
   };
 }
 
@@ -148,25 +202,27 @@ export function formatRoutingHoldoutValidateStdout(report) {
     '[routing-class-holdout] validate_only=yes run_count_incremented=no',
     `[routing-class-holdout] ok=${report.ok ? 'yes' : 'no'} items=${report.item_n} unique_ids=${report.unique_ids ? 'yes' : 'no'} empty_text=${report.empty_text}`
   ];
-  for (const id of CONFIDE_ROUTING_HOLDOUT_CLASS_IDS) {
+  for (const id of CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS) {
     lines.push(`[routing-class-holdout] ${id} n=${report.by_class[id] || 0}`);
   }
   lines.push(
-    `[routing-class-holdout] routing_class_items=${report.routing_class_items} other_class_items=${report.other_class_items}`
+    `[routing-class-holdout] margin_class_items=${report.routing_class_items} sealed_b_class_items=${report.sealed_b_class_items} unknown_class_items=${report.unknown_class_items}`
   );
   return `${lines.join('\n')}\n`;
 }
 
 /**
  * @param {object} item
- * @returns {{ classId: string, expectedPath: 'product' | 'mood' | null } | null}
+ * @returns {{ classId: string, expect: string, expectedPath: 'product' | 'mood' | null } | null}
  */
 export function stripRoutingHoldoutItem(item) {
   if (!item || typeof item !== 'object') return null;
   const classId = canonicalizeHoldoutClassId(item.class_id || item.classId || item.class);
+  const expect = String(item.expect || '').trim();
   return {
     classId,
-    expectedPath: expectedPathForRoutingClass(classId)
+    expect,
+    expectedPath: resolveSealedBExpectedPath(classId, expect)
   };
 }
 
@@ -208,7 +264,7 @@ function emptyClassStats() {
 export function summarizeRoutingHoldoutScores(scored) {
   /** @type {Record<string, ReturnType<typeof emptyClassStats>>} */
   const byClass = {};
-  for (const id of CONFIDE_ROUTING_HOLDOUT_CLASS_IDS) {
+  for (const id of CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS) {
     byClass[id] = emptyClassStats();
   }
   let classPass = 0;
@@ -250,11 +306,14 @@ export function formatRoutingHoldoutSummaryStdout(summary) {
   const lines = [
     `[routing-class-holdout] class_pass=${summary.columns.class_pass} class_fail=${summary.columns.class_fail} unscored=${summary.columns.unscored}`
   ];
-  for (const id of CONFIDE_ROUTING_HOLDOUT_CLASS_IDS) {
+  for (const id of CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS) {
     const slot = summary.by_class[id];
     const rate = slot.pass_rate == null ? 'n/a' : slot.pass_rate.toFixed(3);
     const flag = slot.sample_insufficient ? ` ${CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT}` : '';
-    lines.push(`[routing-class-holdout] ${id} n=${slot.n} pass_rate=${rate}${flag}`);
+    const met = routingClassMeetsPassCriteria(slot) ? 'yes' : 'no';
+    lines.push(
+      `[routing-class-holdout] ${id} n=${slot.n} pass_rate=${rate} pass_criteria_met=${met}${flag}`
+    );
   }
   if (summary.sample_insufficient_any) {
     lines.push(`[routing-class-holdout] ${CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT}`);

@@ -17,6 +17,8 @@ import {
   formatRoutingHoldoutSummaryStdout,
   formatRoutingHoldoutValidateStdout,
   parseRoutingHoldoutFile,
+  resolveSealedBExpectedPath,
+  routingClassMeetsPassCriteria,
   scoreRoutingHoldoutRow,
   stripRoutingHoldoutItem,
   summarizeRoutingHoldoutScores,
@@ -68,6 +70,34 @@ describe('confide routing-class holdout lab', () => {
     assert.match(out, /validate_only=yes run_count_incremented=no/);
     assert.match(out, /mixed n=1/);
     assert.equal(out.includes(SECRET), false);
+  });
+
+  it('resolveSealedBExpectedPath maps expect without utterance text', () => {
+    assert.equal(resolveSealedBExpectedPath('life-emotion', 'emotion'), 'mood');
+    assert.equal(resolveSealedBExpectedPath('product-short-answer', 'product_short_answer'), 'product');
+    assert.equal(resolveSealedBExpectedPath('badge-yin-coin', 'product_honest_empty'), 'product');
+    assert.equal(resolveSealedBExpectedPath('mixed', 'product_short_answer'), 'product');
+  });
+
+  it('routingClassMeetsPassCriteria uses 85% and sample size', () => {
+    assert.equal(
+      routingClassMeetsPassCriteria({
+        n: 60,
+        n_pass: 51,
+        pass_rate: 51 / 60,
+        sample_insufficient: false
+      }),
+      true
+    );
+    assert.equal(
+      routingClassMeetsPassCriteria({
+        n: 18,
+        n_pass: 16,
+        pass_rate: 16 / 18,
+        sample_insufficient: true
+      }),
+      false
+    );
   });
 
   it('scores mixed as product-path and dominant-mood as not product-path', () => {
