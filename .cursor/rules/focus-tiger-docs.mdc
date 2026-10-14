@@ -131,6 +131,10 @@ alwaysApply: false
 
 新的任务状态，以及「已部署 / 已备份」，写 `focus-tiger/docs/task-entries/<id>.md`。不要改 `TASKS.md` 里已有的段落，也不要在功能 PR 里跑 `tasks:assemble`。格式与原因见该目录 `readme.md`。
 
+## 问题账本不要改已有行
+
+新问题可以在 `docs/ISSUE_LEDGER.md` 加一行稳定摘要。之后的范围、PR、完成项写 `focus-tiger/docs/issue-entries/<本支>.md`。不要改账本已有行。细则 `focus-tiger-issue-ledger.mdc`（`RULES_INDEX` → `issue-ledger`）。
+
 ## TEST_TRACKER 日常维护（Part 2）
 
 每次完成一项任务后：

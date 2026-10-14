@@ -1460,6 +1460,54 @@ export const RULE_AUTHORITY_TOPICS = [
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
   },
   {
+    id: 'issue-ledger',
+    title:
+      '问题账本：总表只加稳定摘要，进度写 issue-entries（并行 PR 不改同一行）',
+    ssotPath: '.cursor/rules/focus-tiger-issue-ledger.mdc',
+    ssotSection: 'Focus Tiger · Issue Ledger（问题闭环追踪 · 按需层）',
+    ssotMustContain: [
+      /issue-entries/,
+      /稳定摘要/,
+      /禁止功能\/文档 PR 改同一格长摘要/,
+      /本轮不做拼装脚本/,
+      /核对问题清单时总表与旁路一起读/
+    ],
+    topicSignals: [
+      /issue-entries/,
+      /issue-ledger/,
+      /核对问题清单/
+    ],
+    mustCite: [/focus-tiger-issue-ledger\.mdc|issue-ledger/],
+    restatementFingerprints: [
+      /禁止功能\/文档 PR 改同一格长摘要/,
+      /核对问题清单时总表与旁路一起读/,
+      /本轮不做拼装脚本/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'ledger-progress-in-tracker-entries',
+        pattern:
+          /(?:账本|ISSUE_LEDGER).{0,40}(?:进度|完成项|范围).{0,40}tracker-entries/,
+        note: '账本进度不得写入 tracker-entries（验收行目录）'
+      },
+      {
+        id: 'ledger-feature-pr-rewrite-cell',
+        pattern:
+          /功能 PR.{0,24}(?:应|须|可以).{0,16}改.{0,16}ISSUE_LEDGER.{0,16}(?:已有|同一)/,
+        note: '禁止主张功能 PR 可改账本已有行'
+      }
+    ],
+    citeExemptFiles: [
+      'focus-tiger/docs/issue-entries/readme.md',
+      'focus-tiger/docs/ISSUE_LEDGER.md'
+    ],
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/issue-entries/readme.md'
+    ]
+  },
+  {
     id: 'brief-before-user-visible',
     title:
       'B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类）',

@@ -75,6 +75,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `recommend-most-reasonable` | 列多个方案时须同时给出「我认为最合理的」一项 | `.cursor/rules/focus-tiger-recommend-most-reasonable.mdc` | Focus Tiger · 给选项时必须给「最合理项」 |
 | `plain-language-summary` | 用户可见汇报前置大白话总结（≤5 句、无技术术语） | `WORKFLOW.md` | 用户可见汇报：前置大白话总结（强制） |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
+| `issue-ledger` | 问题账本：总表只加稳定摘要，进度写 issue-entries（并行 PR 不改同一行） | `.cursor/rules/focus-tiger-issue-ledger.mdc` | Focus Tiger · Issue Ledger（问题闭环追踪 · 按需层） |
 | `brief-before-user-visible` | B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类） | `WORKFLOW.md` | 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
@@ -99,7 +100,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-semver-release` | 「SemVer / 稳定 tag 见 `WORKFLOW.md` 语义化版本节」 | 主张开发期就开长期 `release/*` 线；平行复述完整 MAJOR/MINOR/PATCH 表与发版 SOP |
 | `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **任务完成后默认 push 旁支/开 PR** + Git 同步分级汇总 + 下班前口令补漏 + **SCENARIO_TESTS 增量核对** + **TEST_TRACKER 碎片拼装**） | 主张「先问再 commit」；主张**每次** push 须口头授权；完整抄门禁条文；**主张可直推 `develop`/`main`**；把 develop 与 feature/fix **并列**成同等可推目标；同步时只报「已 push」无 commit 列表 / 无高风险标注 / 无 PR；把「下班前 Git 同步」做成合并 main / 生产部署 / 推进无关 PR；**下班前同步却不更新 SCENARIO_TESTS**；**下班前同步却不拼装 TEST_TRACKER 碎片** |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」；对话交接摘要见 `session-handoff`，勿与本条混写 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针）；把本条扩成交接模板 |
-| `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」；Cloud 旁支落本机见同节第 8 款（一行指针即可） | 主张同目录并行写可接受；主张可在主仓点 Cursor Apply / checkout migrated branch；在非 SSOT 复述完整 SOP |
+| `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」；Cloud 旁支落本机见同节第 8 款（一行指针即可）；`ISSUE_LEDGER.md` 已有行与 `TASKS.md` 同为共享热点，进度见 `issue-ledger` | 主张同目录并行写可接受；主张可在主仓点 Cursor Apply / checkout migrated branch；在非 SSOT 复述完整 SOP |
 | `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`）；会话结束 N14 须报锁态 | 主张可按 OS mtime / git log 推断占用态；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布；把「锁可自动接管」扩成可静默 `worktree remove` |
 | `git-worktree-hygiene` | 「闲置 worktree 盘点 / 口令拆除见 `WORKFLOW.md` 结束后清理」；标准三步：`check:worktree-hygiene` → `worktree:hygiene-remove` dry-run → `--apply`（只拆 `propose_remove`）；`propose_remove` = 非 cwd+锁可放行+（祖先 **或** cherry 无独有补丁），**脏但已合入**仍可拆（`dirty-but-content-merged`）；`report_only`/`primary` 仍多时用同节 **扩大清点**（`MERGED` PR + `git worktree list`）；固定 QA 树豁免见 `qa-develop-worktree`；与 occupancy Prompt 3 同原则分风险 | 主张 Agent 可静默 `worktree remove`；一见 dirty 就 report_only、不查 develop；每回合默认问要不要清盘；无口令/无点名即拆除；把 hygiene 与锁陈旧自动接管混成同一宽松标准；仅用 cherry 判定已合入（忽略 squash 后 cherry 假阳性）；把 `…-wt-develop-qa` 列入 `propose_remove`；用 Finder 文件夹列表代替 `git worktree list` |
 | `git-feature-merge-preview` | 「合入前研发自检 / 主干同步 / **develop-integrity**（≠ session-lock `releasable`）见 `WORKFLOW.md`」；`TEST_TRACKER` / `COLLAB` / PR 模板可一行引用两层验收（CI 合入 vs tip 关单） | 主张须等用户 Safari 确认才可开 PR / 合 develop；把 develop-integrity 与 session-lock `releasable` 混为一谈；笼统「纯文档」跳过冒烟（未按运行时路径白/黑名单）；完整平行复述 rebase/`comm -12` SOP |
@@ -128,6 +129,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `interaction-feedback` | 「点击反馈见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；已知静默见 `SILENT_BEHAVIORS.md`」；PR 模板 / Cursor 规则可引用 Q1–Q2；第三问见 `feature-conflict-review` | 把逻辑测绿当成点击可感知验收；把有意沉默留白不进白名单；在非 SSOT 复述六条全文 |
 | `recommend-most-reasonable` | 「列多个方案须给最合理项见 `focus-tiger-recommend-most-reasonable.mdc`」；regression-lock / DEV_WORKFLOW_QUALITY / PROCESS / docs.mdc 可一行引用 | 主张列出选项即可、Agent 不必表态；完整复述条款；用本条代替用户拍板或代点 Merge |
 | `session-handoff` | 「口令「生成交接」见 `focus-tiger-session-handoff.mdc`」；PROCESS / COLLAB / WORKFLOW 跨会话节 / docs.mdc / TEST_TRACKER 可一行引用 | 完整复述交接模板字段；主张交接摘要可代替人工关单 / 可跳过 push+PR；把本条与 `git-cross-session` 混成同一条 |
+| `issue-ledger` | 「账本进度见 `focus-tiger-issue-ledger.mdc`」；WORKFLOW 并行热点 / docs.mdc / `ISSUE_LEDGER.md` 文首可一行引用 | 主张功能 PR 可改总表已有长格；把问题闭环进度写入验收碎片目录；本轮做拼装折进总表 |
 | `multi-task-session` | 「同一会话连续多任务见 `focus-tiger-multi-task-session.mdc`」；`focus-tiger-core` / `PROCESS`「一次一任务管改动范围」可一行引用 | 主张一会话只能做一个任务；主张衍生任务可顺手实现；主张多任务可共用一个 PR；把「一次一任务」误解为一会话一任务；完整复述准入/停止条件全文 |
 | `brief-before-user-visible` | 「B 类须 Brief 见 `WORKFLOW.md`」；按需层 `focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` Task Brief 节 / `focus-tiger-core` 可一行引用 | 主张「立刻开工」可跳过 Brief；主张 Agent 可自行把 B 类降为 A 类；平行复述 A/B 表与 Stage 1/2 对照全文 |
 | `ci-failure-triage` | 「CI/smoke 失败且缺日志见 `focus-tiger-ci-failure-triage.mdc`」；`agent-token-cost` §5–§6 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无日志先 grep；主张失败分析摘要可臆测；把合 develop / §7 关单门禁写进本条 |
@@ -162,6 +164,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-agent-token-cost.mdc`](../../.cursor/rules/focus-tiger-agent-token-cost.mdc) | **SSOT**：Agent Token Cost（禁子 Agent / 禁轮询长 CI / 禁擅自全量 e2e；hooks 硬闸） |
 | [`.cursor/rules/focus-tiger-recommend-most-reasonable.mdc`](../../.cursor/rules/focus-tiger-recommend-most-reasonable.mdc) | **SSOT**：列多个方案时须同时给出「我认为最合理的」（`recommend-most-reasonable` / N14b） |
 | [`.cursor/rules/focus-tiger-session-handoff.mdc`](../../.cursor/rules/focus-tiger-session-handoff.mdc) | **SSOT**：会话交接（口令「生成交接」；`session-handoff`） |
+| [`.cursor/rules/focus-tiger-issue-ledger.mdc`](../../.cursor/rules/focus-tiger-issue-ledger.mdc) | **SSOT**：问题账本落账 + 旁路 `issue-entries/`（`issue-ledger`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-multi-task-session.mdc`](../../.cursor/rules/focus-tiger-multi-task-session.mdc) | **SSOT**：会话内多任务连贯执行（准入/停止条件；`multi-task-session`；**alwaysApply**） |
 | [`.cursor/rules/focus-tiger-ci-failure-triage.mdc`](../../.cursor/rules/focus-tiger-ci-failure-triage.mdc) | **SSOT**：CI/Smoke 失败排查前置检查（先 gh 取日志、后探索；探索最多 5 轮；`ci-failure-triage`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-ui-bug-triage.mdc`](../../.cursor/rules/focus-tiger-ui-bug-triage.mdc) | **SSOT**：UI/交互回归排查前置检查（先取 git/复现锚点、后探索；探索最多 5 轮；`ui-bug-triage`；**按需加载，非 alwaysApply**） |
@@ -292,6 +295,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-09-21 | 新增 `brief-before-user-visible`：B 类用户可见改动开工前须 PO 点头 Brief；「立刻开工」不能跳过；有疑问默认 B 类。SSOT `WORKFLOW.md`「用户可见改动：Brief 开工门禁」；按需层 `.cursor/rules/focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` / `focus-tiger-core` 一行引用。示范：Confide Stage 1（A）vs Stage 2 切真路由（B） |
 | 2026-09-16 | 产品表：`EPIC_COVERAGE_AUDIT.md`（存量线覆盖）+ `planning/task-lines-epic-draft.md` 指针；同日建库 #792 音景 / #793 栖居壳层。不进 rules-authority 机器块 |
 | 2026-09-16 | 产品表：`FOCUS_COINS.md` / `REMOTE_PARAM_CANDIDATES.md` 寅币日封顶 Step D = A 已锁（`task-yin-coin-daily-cap-economy`）；persona CI `focusCoinsPersonaRegression.js`。不进 rules-authority 机器块 |
+| 2026-10-15 | 新增 `issue-ledger`：新问题只在 `ISSUE_LEDGER.md` 加一行稳定摘要；之后进度写 `docs/issue-entries/`；并行 PR 不改同一格；本轮不做拼装。SSOT `.cursor/rules/focus-tiger-issue-ledger.mdc` |
 | 2026-09-10 | 修订 `agent-tool-budget`（#700 后补漏）：`Read` 计次对齐 `source-read-granularity`（200/400；大 `limit` 仍计）；连续 8 次探索无改文件先软停；软/硬顶与 `session-handoff` 强制探索快照；「大任务」开工须先列预期文件/函数清单。 |
 | 2026-09-10 | 修订 `agent-tool-budget`：hook **只计探索类**；硬顶不拦改文件/git/约定 smoke；「继续」只留本 Chat（禁止 New Agent 续同一任务）；跨模块+单测+PR 用口令「大任务」。数字仍以 `config.json` + `focus-tiger-agent-token-cost.mdc` 为准。 |
 | 2026-09-10 | 新增 `agent-tool-budget`：三档工具调用预算（qa 28 / impl 50 / large 80 硬顶）+ 口令「开工」「继续」「大任务」；执行 `session_gate.sh` + `tool_budget.sh`；「继续」继承档位并重置计数；实现类冒烟纪律见 `testing-strategy.mdc`。SSOT `focus-tiger-agent-token-cost.mdc` 新节 |
