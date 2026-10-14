@@ -5,7 +5,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,6 +15,7 @@ import {
   CONFIDE_MOOD_HOLDOUT_UNSEALED,
   authorizeHoldoutRun,
   canonicalizeHoldoutClassId,
+  defaultHoldoutResultDir,
   formatHoldoutSummaryStdout,
   formatHoldoutValidateStdout,
   hashHoldoutFile,
@@ -22,6 +23,7 @@ import {
   holdoutSafeError,
   parseHoldoutFile,
   readHoldoutRunCount,
+  recordHoldoutRunOutcome,
   redactHoldoutError,
   resolveHoldoutFilePath,
   scoreHoldoutRow,
@@ -83,6 +85,11 @@ describe('confide mood-veto holdout lab gates', () => {
       () => authorizeHoldoutRun(logPath, SET_V1, a),
       (err) => /同一盲测文件只能跑分一次/.test(err.message)
     );
+    const logged = JSON.parse(readFileSync(logPath, 'utf8'));
+    const rec = logged.byHoldoutSetVersion[SET_V1].files[a.filePath];
+    assert.equal(rec.voided, true);
+    assert.equal(rec.void_reason, 'first_run_consumed');
+    assert.equal(rec.runs, 1);
     assert.equal(authorizeHoldoutRun(logPath, SET_V1, b), 2);
     assert.throws(
       () => authorizeHoldoutRun(logPath, SET_V1, c),
@@ -236,7 +243,7 @@ describe('confide mood-veto holdout lab gates', () => {
     assert.equal(out.includes(SECRET), false);
   });
 
-  it('labels 样本不足 when a class is far below ~60', () => {
+  it('labels 样本不足 when a class is far below the locked 40', () => {
     const scored = [
       scoreHoldoutRow({
         classId: 'practice-aversion',
@@ -251,5 +258,35 @@ describe('confide mood-veto holdout lab gates', () => {
     assert.equal(summary.sample_insufficient_any, true);
     assert.equal(summary.by_class['practice-aversion'].sample_insufficient_label, CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT);
     assert.match(formatHoldoutSummaryStdout(summary), new RegExp(CONFIDE_MOOD_HOLDOUT_SAMPLE_INSUFFICIENT));
+  });
+
+  it('records void + safety counts without utterance fields', () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'ft-holdout-runs-'));
+    const logPath = path.join(dir, 'runs.json');
+    const a = writeMeta(dir, 'a.json', '{"n":1}\n');
+    authorizeHoldoutRun(logPath, SET_V1, a);
+    recordHoldoutRunOutcome(logPath, SET_V1, a.filePath, {
+      safety_first_ok: false,
+      safety_handled: 8,
+      safety_leak_to_gate: 13,
+      safety_miss: 0
+    });
+    const rec = JSON.parse(readFileSync(logPath, 'utf8')).byHoldoutSetVersion[SET_V1]
+      .files[a.filePath];
+    assert.equal(rec.voided, true);
+    assert.equal(rec.safety_first_ok, false);
+    assert.equal(rec.safety_leak_to_gate, 13);
+    assert.equal(JSON.stringify(rec).includes(SECRET), false);
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('defaults result JSON under Documents/ft-private, not /tmp', () => {
+    const prev = process.env.FT_CONFIDE_MOOD_HOLDOUT_RESULT_DIR;
+    delete process.env.FT_CONFIDE_MOOD_HOLDOUT_RESULT_DIR;
+    const dir = defaultHoldoutResultDir();
+    assert.match(dir, /Documents[/\\]ft-private[/\\]confide-mood-holdout-lab$/);
+    assert.equal(dir.includes('/tmp/ft-l0-lab'), false);
+    if (prev === undefined) delete process.env.FT_CONFIDE_MOOD_HOLDOUT_RESULT_DIR;
+    else process.env.FT_CONFIDE_MOOD_HOLDOUT_RESULT_DIR = prev;
   });
 });

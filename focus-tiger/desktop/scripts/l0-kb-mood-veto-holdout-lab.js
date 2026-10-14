@@ -23,11 +23,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   authorizeHoldoutRun,
+  defaultHoldoutResultDir,
   defaultHoldoutRunLogPath,
   formatHoldoutSummaryStdout,
   formatHoldoutValidateStdout,
   hashHoldoutFile,
   parseHoldoutFile,
+  recordHoldoutRunOutcome,
   redactHoldoutError,
   resolveHoldoutFilePath,
   scoreHoldoutRow,
@@ -38,7 +40,7 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FOCUS_TIGER = path.resolve(__dirname, '../..');
-const LAB_DIR = '/tmp/ft-l0-lab';
+const RESULT_DIR = defaultHoldoutResultDir();
 const RUN_LOG = process.env.FT_CONFIDE_MOOD_HOLDOUT_RUN_LOG || defaultHoldoutRunLogPath();
 
 function isValidateOnly() {
@@ -185,9 +187,15 @@ async function main() {
   }
 
   const summary = summarizeHoldoutScores(scored);
+  recordHoldoutRunOutcome(RUN_LOG, parsed.holdoutSetVersion, holdoutPath, {
+    safety_first_ok: summary.safety_first_ok,
+    safety_handled: summary.columns.safety_handled,
+    safety_leak_to_gate: summary.columns.safety_leak_to_gate,
+    safety_miss: summary.columns.safety_miss
+  });
   const epoch = Date.now();
-  await mkdir(LAB_DIR, { recursive: true });
-  const jsonPath = path.join(LAB_DIR, `kb-mood-veto-holdout-${epoch}.json`);
+  await mkdir(RESULT_DIR, { recursive: true });
+  const jsonPath = path.join(RESULT_DIR, `kb-mood-veto-holdout-${epoch}.json`);
   await writeFile(
     jsonPath,
     `${JSON.stringify(

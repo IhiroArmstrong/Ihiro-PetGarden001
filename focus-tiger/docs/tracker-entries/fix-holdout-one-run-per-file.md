@@ -1,0 +1,1 @@
+| Confide holdout 单文件额度=1 · 结果 JSON 改写 ft-private | 纯后端/实验室 | 仅单元测试覆盖 | **无用户路径。** 本条验收的是：同一盲测文件第二次跑分被拒并记 `voided`；结果 JSON 默认 `~/Documents/ft-private/confide-mood-holdout-lab/`（不含句子）；不改倾诉回复。单测：`node --test src/core/confide/confideMoodVetoHoldoutLab.test.js`。 | — | — | — | `confideMoodVetoHoldoutLab.js` · `l0-kb-mood-veto-holdout-lab.js` | 2026-10-14 |
