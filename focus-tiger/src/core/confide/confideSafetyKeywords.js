@@ -70,7 +70,35 @@ export const SAFETY_PHRASES_ZH = Object.freeze([
   '不想再醒来',
   '不想再醒來',
   '不想再醒过来',
-  '不想再醒過來'
+  '不想再醒過來',
+  '人间注销',
+  '人間註銷',
+  '人间註銷',
+  '永遠睡過去',
+  '永远睡过去',
+  '永遠睡去',
+  '永远睡去',
+  '占用空气',
+  '佔用空氣',
+  '占用空氣',
+  '彻底的终点',
+  '徹底的終點',
+  '写好告别',
+  '寫好告別',
+  '这是永别',
+  '這是永別',
+  '对我来说没有意义',
+  '對我來說沒有意義',
+  '从这个故事里删',
+  '從這個故事裡刪',
+  '從這個故事里刪',
+  '当成已经不在',
+  '當成已經不在',
+  '死掉会不会',
+  '死掉會不會',
+  '结束shengming',
+  '結束shengming',
+  '想si了'
 ]);
 
 /** @type {readonly string[]} */
@@ -133,6 +161,12 @@ const CJK_NEGATION_IMMEDIATELY_BEFORE_RE =
   /(?:绝不会|絕不會|决不会|決不會|绝不|絕不|并非|並非|不是|没有|沒有|不会|不會|不想|没想|沒想|不再|未曾|并未|並未|不|没|沒|未|别|別)想?$/;
 
 /**
+ * Modal double-negatives still assert crisis ("can't not hurt myself").
+ * A lone 不 at the end of 不能不 / 不得不 / 能不能 must not excuse.
+ */
+const CJK_DOUBLE_NEGATIVE_STILL_CRISIS_RE = /(?:不能不|不得不|能不能)$/;
+
+/**
  * Object / addressee collocations that reuse a crisis substring without
  * being self-harm (affectionate 想死你了; 你去死吧 toward others; 问题永远消失).
  * @type {Readonly<Record<string, { after?: RegExp, before?: RegExp }>>}
@@ -170,7 +204,7 @@ function isCjkPhraseObjectExcuse(needle, hay, at) {
 
 /** @param {string} value @returns {boolean} */
 function isLatinPhrase(value) {
-  return /[a-z]/i.test(value);
+  return /^[a-z0-9'’\s-]+$/i.test(value);
 }
 
 /**
@@ -212,15 +246,22 @@ export function matchesSafetyRedirect(text, phrases = allSafetyPhrases()) {
   for (const phrase of phrases) {
     const p = foldConfideSafetyText(String(phrase || '')).trim();
     if (!p) continue;
-    // CJK phrases: case-fold only the haystack; needle kept as authored.
-    const latin = isLatinPhrase(p);
-    const needle = latin ? p.toLowerCase() : p;
-    const hay = latin ? lowered : masked;
+    // Latin-only phrases fold case and sit on word boundaries. Mixed
+    // CJK+pinyin (结束shengming) folds case but keeps CJK negation.
+    const latinOnly = isLatinPhrase(p);
+    const foldCase = latinOnly || /[a-z]/i.test(p);
+    const needle = foldCase ? p.toLowerCase() : p;
+    const hay = foldCase ? lowered : masked;
 
     for (let at = hay.indexOf(needle); at !== -1; at = hay.indexOf(needle, at + 1)) {
       const before = hay.slice(0, at);
-      if (!latin) {
-        if (CJK_NEGATION_IMMEDIATELY_BEFORE_RE.test(before)) continue;
+      if (!latinOnly) {
+        if (
+          CJK_NEGATION_IMMEDIATELY_BEFORE_RE.test(before) &&
+          !CJK_DOUBLE_NEGATIVE_STILL_CRISIS_RE.test(before)
+        ) {
+          continue;
+        }
         if (isCjkPhraseObjectExcuse(needle, hay, at)) continue;
         return true;
       }
