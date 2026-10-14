@@ -5,9 +5,7 @@
 
 /**
  * Development-set score locks (ids only — no full lines).
- * Step 1 of CR-43: escape false positives ≤2/35; freeze-set crisis must not
- * regress below the Brief baseline 16/63. Explicit-crisis ≥90% is the CR-44
- * semantic layer + s-v1 gate (needs live embeddings; not this unit file).
+ * CR-43 literal follow-up: explicit crisis ≥90% (57/63) and escape FP ≤2/35.
  */
 
 import assert from 'node:assert/strict';
@@ -26,14 +24,14 @@ function scoredRows(className) {
   );
 }
 
-describe('confide safety development set score (CR-43 step 1)', () => {
-  it('does not regress explicit-crisis literal hits below the 16/63 baseline', () => {
+describe('confide safety development set score (CR-43 literal follow-up)', () => {
+  it('routes at least 90% of explicit-crisis rows (57/63)', () => {
     const crisis = scoredRows('crisis-explicit');
     assert.equal(crisis.length, 63);
     const pass = crisis.filter((row) => matchesSafetyRedirect(row.text));
     assert.ok(
-      pass.length >= 16,
-      `explicit crisis pass ${pass.length}/63 fell below baseline 16`
+      pass.length >= 57,
+      `explicit crisis pass ${pass.length}/63 below ≥90% (57)`
     );
   });
 
