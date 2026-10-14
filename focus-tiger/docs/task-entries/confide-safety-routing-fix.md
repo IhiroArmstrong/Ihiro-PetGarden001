@@ -1,8 +1,8 @@
 ---
 id: confide-safety-routing-fix
 kind: feature
-status: 第一步实现中（字面分类 + 中文邻接否定）
+status: 第一步已合 #1226 · 开发集未到 ≥90% · 第二步见 CR-44
 updated: 2026-10-14
 ---
 
-安全路由修复（CR-43）。只修字面分类，不调否决 margin、不用 #1188 遮漏接。开发集分母 63、基线 16/63（`c017` 已入灰区）；门槛明确危机 ≥90%（57/63）、逃避误捕 ≤2/35 且不得为纯逃避句。关单独立盲测 s-v1（≥40 / ≥20，≥90% / ≤2/20），与 a-v2 解耦。每个盲测文件只跑一次；每个 Brief 版本最多 2 个过关文件。语义危机层另定。权威 `task-briefs/task-confide-safety-routing-fix.md`。
+安全路由修复（CR-43）。第一步字面分类已合 #1226（夹具 46/63，误捕 1/35）。≥90% 与 s-v1 仍待第二步。语义危机层 Brief：`task-briefs/task-confide-semantic-crisis-layer.md`（CR-44）。权威第一步 `task-briefs/task-confide-safety-routing-fix.md`。
