@@ -1,7 +1,7 @@
 ---
 id: confide-routing-arbitration-v1
 kind: feature
-status: Brief 已合 #1208 · 第一段影子数字已写入草案 · 门槛未冻结 · 禁止盲测/切 live
+status: Brief 已合 #1208 · A/B/C 影子+分布+路由开发集 v2 已写入 · 门槛未冻结 · 禁止盲测/切 live
 updated: 2026-10-14
 ---
 

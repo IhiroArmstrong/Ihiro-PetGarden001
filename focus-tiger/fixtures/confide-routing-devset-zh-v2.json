@@ -1,0 +1,295 @@
+{
+  "meta": {
+    "name": "confide-routing-devset-zh",
+    "version": "v2",
+    "date": "2026-10-14",
+    "set": "dev (会话A生成；可入库；禁止给盲测会话)",
+    "labels": {
+      "mixed": "情绪旁白 + 具体产品对象；期望走产品",
+      "product-over-emotion": "带一点情绪色的真产品问；期望走产品",
+      "mixed-emotion-dominant": "产品词只是旁白，情绪仍应赢；期望走情绪"
+    },
+    "notes": [
+      "避开冻结混合三句、目录误命中 7 句、AE 两锚、Prompt 18 原文、情绪否决开发集 v1 全文",
+      "不新增关键词正则；安全/危机句不进本集",
+      "本集只供影子调参与泄漏扫描，不进发送链"
+    ],
+    "counts": {
+      "mixed": 15,
+      "product-over-emotion": 15,
+      "mixed-emotion-dominant": 15
+    }
+  },
+  "items": [
+    {
+      "id": "r-mixed-01",
+      "class": "mixed",
+      "expect": "product",
+      "text": "练完胸口发闷，提醒还在响，从菜单哪关？"
+    },
+    {
+      "id": "r-mixed-02",
+      "class": "mixed",
+      "expect": "product",
+      "text": "今天不想坐了，导出备份的按钮在哪？"
+    },
+    {
+      "id": "r-mixed-03",
+      "class": "mixed",
+      "expect": "product",
+      "text": "心里堵着，Sit 开始钮怎么找不到？"
+    },
+    {
+      "id": "r-mixed-04",
+      "class": "mixed",
+      "expect": "product",
+      "text": "烦得很，专注时长记录从哪看？"
+    },
+    {
+      "id": "r-mixed-05",
+      "class": "mixed",
+      "expect": "product",
+      "text": "有点撑不住，每日提醒怎么关掉？"
+    },
+    {
+      "id": "r-mixed-06",
+      "class": "mixed",
+      "expect": "product",
+      "text": "练着练着想逃，备份失败了要去哪重试？"
+    },
+    {
+      "id": "r-mixed-07",
+      "class": "mixed",
+      "expect": "product",
+      "text": "累到不想睁眼，语言设置在哪改？"
+    },
+    {
+      "id": "r-mixed-08",
+      "class": "mixed",
+      "expect": "product",
+      "text": "胸口发紧，会员页怎么打开？"
+    },
+    {
+      "id": "r-mixed-09",
+      "class": "mixed",
+      "expect": "product",
+      "text": "刚坐下就烦，Journey 记录入口在哪？"
+    },
+    {
+      "id": "r-mixed-10",
+      "class": "mixed",
+      "expect": "product",
+      "text": "提不起劲，提醒声音从哪关？"
+    },
+    {
+      "id": "r-mixed-11",
+      "class": "mixed",
+      "expect": "product",
+      "text": "不想再撑了，导出练习数据点哪？"
+    },
+    {
+      "id": "r-mixed-12",
+      "class": "mixed",
+      "expect": "product",
+      "text": "心里发空，静思典藏从哪进？"
+    },
+    {
+      "id": "r-mixed-13",
+      "class": "mixed",
+      "expect": "product",
+      "text": "坐不住了，练习时长上限在哪改？"
+    },
+    {
+      "id": "r-mixed-14",
+      "class": "mixed",
+      "expect": "product",
+      "text": "脑袋昏，寅币余额从哪看？"
+    },
+    {
+      "id": "r-mixed-15",
+      "class": "mixed",
+      "expect": "product",
+      "text": "练着心烦，这篇短答在目录哪一栏？"
+    },
+    {
+      "id": "r-poe-01",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "有点烦，接地练习入口在菜单哪一栏"
+    },
+    {
+      "id": "r-poe-02",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "不太想说话，Quiet Line 这篇从哪打开"
+    },
+    {
+      "id": "r-poe-03",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "心情一般，专注和冥想有什么区别"
+    },
+    {
+      "id": "r-poe-04",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "今天状态不好，观察翼是什么意思"
+    },
+    {
+      "id": "r-poe-05",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "有点累，备份包不包含练习记录"
+    },
+    {
+      "id": "r-poe-06",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "心里毛，Sit 按钮消失了怎么找回"
+    },
+    {
+      "id": "r-poe-07",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "不太舒服，会员订阅从哪取消"
+    },
+    {
+      "id": "r-poe-08",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "有点倦，提醒开关在设置哪一页"
+    },
+    {
+      "id": "r-poe-09",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "烦躁，语言怎么改成中文"
+    },
+    {
+      "id": "r-poe-10",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "提不起精神，Journey log 从哪打开"
+    },
+    {
+      "id": "r-poe-11",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "不太开心，focus coin 怎么用"
+    },
+    {
+      "id": "r-poe-12",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "有点闷，静思典藏入口在哪"
+    },
+    {
+      "id": "r-poe-13",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "状态差，导出失败了要去哪看原因"
+    },
+    {
+      "id": "r-poe-14",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "有点慌，练习时长上限怎么调"
+    },
+    {
+      "id": "r-poe-15",
+      "class": "product-over-emotion",
+      "expect": "product",
+      "text": "不太想练，ground exercise 是什么"
+    },
+    {
+      "id": "r-med-01",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "提醒那一套我已经懒得管了，就是心里堵"
+    },
+    {
+      "id": "r-med-02",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "备份不备份的随它去，我现在只想逃"
+    },
+    {
+      "id": "r-med-03",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "Sit 不 Sit 的无所谓，胸口一直发闷"
+    },
+    {
+      "id": "r-med-04",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "会员推销我听腻了，练着练着想哭"
+    },
+    {
+      "id": "r-med-05",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "时长记录那些数字我看了更烦"
+    },
+    {
+      "id": "r-med-06",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "语言设置改不改都行，我就是坐不住"
+    },
+    {
+      "id": "r-med-07",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "典藏入口在不在我都不会点，只是不想面对"
+    },
+    {
+      "id": "r-med-08",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "提醒响不响我无所谓，脑袋里一直回放旧对话"
+    },
+    {
+      "id": "r-med-09",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "按钮找不找得到都无所谓，我已经厌了这套练习"
+    },
+    {
+      "id": "r-med-10",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "备份失败就失败吧，我今天一点也不想撑"
+    },
+    {
+      "id": "r-med-11",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "寅币那些事以后再说，现在只想离开垫子"
+    },
+    {
+      "id": "r-med-12",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "Journey 记不记我都懒得看，心里发空"
+    },
+    {
+      "id": "r-med-13",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "关掉提醒也解不了，我就是提不起劲"
+    },
+    {
+      "id": "r-med-14",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "专注冥想那些词听着就累，只想躲一会儿"
+    },
+    {
+      "id": "r-med-15",
+      "class": "mixed-emotion-dominant",
+      "expect": "mood",
+      "text": "设置页我翻不动了，坐在这儿直想逃"
+    }
+  ]
+}

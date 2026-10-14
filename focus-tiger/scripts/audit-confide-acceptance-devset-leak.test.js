@@ -16,6 +16,7 @@ describe('audit:confide-acceptance-leak', () => {
     const corpus = listConfideMoodVetoFrozenAndDevsetFullLines();
     assert.ok(corpus.length >= 250);
     assert.ok(corpus.some((line) => line.includes('一想到要打坐')));
+    assert.ok(corpus.some((line) => line.includes('练完胸口发闷')));
   });
 
   it('passes on the current tree (no frozen lines in production Confide code)', () => {

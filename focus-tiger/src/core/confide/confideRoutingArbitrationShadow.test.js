@@ -16,6 +16,7 @@ import {
   maxClauseProductMinusMood,
   decideShadowProductPathA,
   decideShadowProductPathB,
+  decideShadowProductPathC,
   CONFIDE_ARBITRATION_CLASS_IDS
 } from './confideRoutingArbitrationShadow.js';
 import { resolveProductKnowledgeGateAction } from './confideProductKnowledgeSemantic.js';
@@ -62,6 +63,8 @@ describe('productClearlyOutranksMood', () => {
       'focus vs meditation'
     ]);
     assert.equal(CONFIDE_ARBITRATION_CLASS_IDS.length, 8);
+    assert.equal(CONFIDE_ARBITRATION_CLASS_IDS[0], 'life-emotion');
+    assert.equal(CONFIDE_ARBITRATION_CLASS_IDS[3], 'badge-yin-coin');
   });
 
   it('function A uses the max clause product-minus-mood', () => {
@@ -89,5 +92,60 @@ describe('productClearlyOutranksMood', () => {
     const hit = decideShadowProductPathB({ clauses: trusted, margin: 0.1 });
     assert.equal(hit.productPath, true);
     assert.equal(hit.via, 'trusted_hit');
+  });
+
+  it('function C keeps live skip and asks catalog hits for a second check', () => {
+    const clauses = [
+      { productScore: 0.5, moodScore: 0.49, catalogHit: true, nearestScore: 0.5 }
+    ];
+    assert.equal(
+      decideShadowProductPathC({
+        liveProduct: false,
+        catalogHit: true,
+        clauses,
+        wholeProductScore: 0.5,
+        margin: 0.01
+      }).via,
+      'live_skip'
+    );
+    assert.equal(
+      decideShadowProductPathC({
+        liveProduct: true,
+        catalogHit: false,
+        clauses,
+        wholeProductScore: 0.5,
+        margin: 0.01
+      }).via,
+      'live_semantic'
+    );
+    assert.equal(
+      decideShadowProductPathC({
+        liveProduct: true,
+        catalogHit: true,
+        clauses,
+        wholeProductScore: 0.3,
+        margin: 0.01,
+        floor: 0.42
+      }).via,
+      'below_floor'
+    );
+    const unconfirmed = decideShadowProductPathC({
+      liveProduct: true,
+      catalogHit: true,
+      clauses,
+      wholeProductScore: 0.5,
+      margin: 0.05
+    });
+    assert.equal(unconfirmed.productPath, false);
+    assert.equal(unconfirmed.via, 'catalog_unconfirmed');
+    const near = decideShadowProductPathC({
+      liveProduct: true,
+      catalogHit: true,
+      clauses: [{ productScore: 0.5, moodScore: 0.6, nearestScore: 0.81 }],
+      wholeProductScore: 0.5,
+      margin: 0.05
+    });
+    assert.equal(near.productPath, true);
+    assert.equal(near.via, 'near_confirm');
   });
 });

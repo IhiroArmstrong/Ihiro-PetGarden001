@@ -32,15 +32,15 @@ export const ROUTING_NEAR_HIT_MIN = 0.8;
 export const PRODUCT_SCORE_FLOOR_CANDIDATE = 0.42;
 
 /**
- * Five mood-veto classes + three routing classes. Function B pass draft:
- * all eight must pass together; AE catalog anchors 100%.
+ * sealed-b-v3 eight classes. Pass draft: all eight must pass together;
+ * AE catalog anchors 100%. Numbers stay placeholders until PO nods.
  */
 export const CONFIDE_ARBITRATION_CLASS_IDS = Object.freeze([
-  'practice-aversion',
-  'present-discomfort',
-  'unbidden-recall',
-  'escape-urge',
-  'practice-fatigue',
+  'life-emotion',
+  'product-short-answer',
+  'product-honest-empty',
+  'badge-yin-coin',
+  'chitchat',
   'mixed',
   'product-over-emotion',
   'mixed-emotion-dominant'
@@ -133,6 +133,57 @@ export function decideShadowProductPathB(input) {
     return { productPath: true, via: 'margin' };
   }
   return { productPath: false, via: 'mood' };
+}
+
+/**
+ * Function C: keep today's product detection as the default.
+ * Literal / catalog short answers need a second check: neighbor ≥ 0.80
+ * **or** clause (product − mood) above margin; whole-utterance product
+ * score must also clear the floor. No new keyword list.
+ * @param {{
+ *   liveProduct: boolean,
+ *   catalogHit: boolean,
+ *   clauses: readonly object[],
+ *   wholeProductScore?: number,
+ *   margin: number,
+ *   floor?: number,
+ *   nearMin?: number
+ * }} input
+ * @returns {{
+ *   productPath: boolean,
+ *   via:
+ *     | 'live_skip'
+ *     | 'live_semantic'
+ *     | 'near_confirm'
+ *     | 'margin_confirm'
+ *     | 'below_floor'
+ *     | 'catalog_unconfirmed'
+ * }}
+ */
+export function decideShadowProductPathC(input) {
+  if (input.liveProduct !== true) return { productPath: false, via: 'live_skip' };
+  if (input.catalogHit !== true) return { productPath: true, via: 'live_semantic' };
+
+  const floor = input.floor ?? PRODUCT_SCORE_FLOOR_CANDIDATE;
+  const nearMin = input.nearMin ?? ROUTING_NEAR_HIT_MIN;
+  const clauses = Array.isArray(input.clauses) ? input.clauses : [];
+  const whole = Number(input.wholeProductScore);
+  const productForFloor = Number.isFinite(whole)
+    ? whole
+    : Math.max(
+        ...clauses.map((clause) => Number(clause.productScore)).filter((n) => Number.isFinite(n)),
+        Number.NEGATIVE_INFINITY
+      );
+  if (!Number.isFinite(productForFloor) || productForFloor < Number(floor)) {
+    return { productPath: false, via: 'below_floor' };
+  }
+  const nearOk = clauses.some((clause) => Number(clause.nearestScore) >= Number(nearMin));
+  if (nearOk) return { productPath: true, via: 'near_confirm' };
+  const maxDelta = maxClauseProductMinusMood(clauses);
+  if (decideShadowProductPathA({ maxDelta, margin: input.margin })) {
+    return { productPath: true, via: 'margin_confirm' };
+  }
+  return { productPath: false, via: 'catalog_unconfirmed' };
 }
 
 /**
