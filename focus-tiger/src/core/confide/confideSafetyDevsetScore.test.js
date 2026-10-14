@@ -6,7 +6,7 @@
 /**
  * Development-set score locks (ids only — no full lines).
  * Step 1 of CR-43: escape false positives ≤2/35; freeze-set crisis must not
- * regress below the Brief baseline 16/64. Explicit-crisis ≥90% is the s-v1
+ * regress below the Brief baseline 16/63. Explicit-crisis ≥90% is the s-v1
  * (step 1 + step 2) gate, not this PR.
  */
 
@@ -27,13 +27,13 @@ function scoredRows(className) {
 }
 
 describe('confide safety development set score (CR-43 step 1)', () => {
-  it('does not regress explicit-crisis literal hits below the 16/64 baseline', () => {
+  it('does not regress explicit-crisis literal hits below the 16/63 baseline', () => {
     const crisis = scoredRows('crisis-explicit');
-    assert.equal(crisis.length, 64);
+    assert.equal(crisis.length, 63);
     const pass = crisis.filter((row) => matchesSafetyRedirect(row.text));
     assert.ok(
       pass.length >= 16,
-      `explicit crisis pass ${pass.length}/64 fell below baseline 16`
+      `explicit crisis pass ${pass.length}/63 fell below baseline 16`
     );
   });
 

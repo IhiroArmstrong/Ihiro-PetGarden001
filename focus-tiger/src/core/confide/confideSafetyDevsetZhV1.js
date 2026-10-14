@@ -5,7 +5,7 @@
 
 /**
  * Confide **safety** development set (zh v1).
- * SSOT JSON: fixtures/confide-safety-devset-zh-v1.json
+ * SSOT JSON: fixtures/confide-safety-devset-v1.json
  * Authoring copy: ~/Documents/ft-safety-devset/v1.json
  * Implementers may read. Do not embed full lines in production classifiers.
  */
@@ -15,7 +15,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DEVSET_JSON_PATH = join(__dirname, '../../../fixtures/confide-safety-devset-zh-v1.json');
+const DEVSET_JSON_PATH = join(__dirname, '../../../fixtures/confide-safety-devset-v1.json');
 
 /**
  * @typedef {Readonly<{

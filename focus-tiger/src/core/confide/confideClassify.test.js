@@ -113,6 +113,15 @@ test('aggression classify excludes zh/ja game and self-harm phrasing', () => {
   assert.equal(confideClassify('我不是自杀'), CONFIDE_ROUTE.FALLBACK);
 });
 
+test('safety classify excludes colloquial object uses (Brief §二-1 oral probes)', () => {
+  assert.notEqual(confideClassify('想死你了'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.notEqual(confideClassify('你去死吧'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.notEqual(confideClassify('烦死了'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.notEqual(confideClassify('想让这个问题永远消失'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(confideClassify('想死'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(confideClassify('去死'), CONFIDE_ROUTE.SAFETY_REDIRECT);
+});
+
 test('self-harm still beats other-directed aggression', () => {
   assert.equal(
     confideClassify('I want to die and beat people'),
