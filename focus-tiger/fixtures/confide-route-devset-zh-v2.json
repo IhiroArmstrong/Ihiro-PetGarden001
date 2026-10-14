@@ -1,0 +1,1311 @@
+{
+ "meta": {
+  "name": "confide-route-devset-zh",
+  "version": "v2",
+  "date": "2026-10-14",
+  "set": "dev (会话A生成；可入库；禁止给会话B)",
+  "labels": {
+   "mixed-explicit": "情绪与产品对象同句且产品问明确；期望走产品路径",
+   "product-real": "真产品问，无情绪占主导；期望走产品路径",
+   "emotion-aside": "情绪主导、产品词只是旁白；期望走情绪/观察翼"
+  },
+  "notes": [
+   "Authoring copy: ~/Documents/ft-route-devset/v2.json",
+   "2026-10-14: rdev2-082 rewritten from generic 开关在哪？ to 备份开关在菜单哪栏？ to avoid sealed-a / v1-fill short-form near-dup",
+   "Overlap vs freeze/mood/safety/sealed-a/sealed-b-v3: exact=0 near=0 after rewrite"
+  ],
+  "counts": {
+   "mixed-explicit|colloquial": 9,
+   "mixed-explicit|dialect": 9,
+   "mixed-explicit|typo": 9,
+   "mixed-explicit|word-order": 9,
+   "mixed-explicit|long": 8,
+   "mixed-explicit|short": 8,
+   "mixed-explicit|mixed-en": 9,
+   "mixed-explicit|euphemism": 9,
+   "product-real|colloquial": 9,
+   "product-real|dialect": 9,
+   "product-real|typo": 9,
+   "product-real|word-order": 9,
+   "product-real|long": 8,
+   "product-real|short": 8,
+   "product-real|mixed-en": 9,
+   "product-real|euphemism": 9,
+   "emotion-aside|colloquial": 6,
+   "emotion-aside|dialect": 5,
+   "emotion-aside|typo": 5,
+   "emotion-aside|word-order": 5,
+   "emotion-aside|long": 5,
+   "emotion-aside|short": 4,
+   "emotion-aside|mixed-en": 5,
+   "emotion-aside|euphemism": 5
+  },
+  "class_counts": {
+   "mixed-explicit": 70,
+   "product-real": 70,
+   "emotion-aside": 40
+  }
+ },
+ "items": [
+  {
+   "id": "rdev2-001",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "今天心口闷得慌，那个提醒到底在哪开啊？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-002",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "我都快绷不住了，备份按钮点了没反应是咋回事？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-003",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "心头好烦哦，那个记录入口在菜单里头哪一格？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-004",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "人蔫得很，寅币怎么攒嘛，开关在哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-005",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "难受的要死，手冊里时长设置在那一页？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-006",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "今晚睡不着，徽章怎么点亮啊是点那个摁钮吗？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-007",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "胸口堵，开在哪提醒那个？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-008",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "慌得很备份怎么弄，入口在菜单还是设置？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-009",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "这几天夜里老醒，心里空落落的，我想把记录打开看看以前写过啥，可是那个记录入口我翻了半天没找到，到底藏在哪个菜单下面？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-010",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "今天被说了一通，委屈得不行，想把备份先做好免得哪天没了，请问备份按钮是灰色的话要先开哪个开关？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-011",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "哭完了，时长咋改？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-012",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "慌，徽章入口呢？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-013",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "心情很down，那个reminder开关在settings哪一栏？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-014",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "我快burn out了，backup按钮点哪里，menu第几项？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-015",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "最近状态不太好，想问一下手册里关于时长的那一节怎么找？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-016",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "心里有点沉，寅币入口方便指一下在哪吗？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-017",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "烦死了真的，提醒关了又自己开，是哪个开关没拨对？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-018",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "我现在特想躲起来，记录功能从哪个入口进？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-019",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "心里堵得慌咧，菜单里头那个备份在第几个？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-020",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "俺整个人没劲，徽章咋领啊按钮在哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-021",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "难受哭了，提醒是在设置还是菜箪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-022",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "心乱，时长那个滑条怎么拖不动是bug吗？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-023",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "委屈，手册翻哪页看寅币规则？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-024",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "害怕得很入口记录那个在左下还是右上？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-025",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "今天下午开会差点崩了，手一直抖，我还是想先把提醒设好明天别忘吃药，那个提醒按钮是不是在菜单最底下那一排？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-026",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "一个人待着就想哭，但还是想问清楚：备份和记录是不是两个入口，手册第几章写了开关怎么开？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-027",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "闷，开关在哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-028",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "心酸，菜单点哪个进备份？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-029",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "情绪很messy，时长那个timer按钮灰了怎么点？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-030",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "今晚好lonely，badge入口是profile还是menu？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-031",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "最近有些撑不住，想确认一下记录按钮是不是右上那个小图标？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-032",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "心里不太安稳，手册里入口说明能帮我指一下页码吗？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-033",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "真的没劲了，寅币花了没到账，是哪个按钮没按对？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-034",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "我现在就想躺平，提醒时长能改成更短吗，设置在哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-035",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "心头像压了块石头，那个开关拨过去为啥提醒还不响？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-036",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "俺今儿心里不得劲，记录从哪个入口进嘛？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-037",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "失眠到两点，备份入口是不是叫「导出」那个按纽？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-038",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "好焦虑啊，徽章进度条卡着，菜单里要刷新哪一项？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-039",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "慌乱，开哪手册看按钮说明？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-040",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "委屈哭了时长入口怎么进设置页？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-041",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "跟家里吵完一声不吭坐着，脑子很乱，但我还是想把寅币开关打开，免得错过，请问是在菜单还是个人入口里？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-042",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "这周一直提不起劲，躺着发呆，想把记录备份到别处，手册有没有写备份按钮要先开哪个权限开关？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-043",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "堵得慌，提醒按钮哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-044",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "心累，手册入口呢？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-045",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "我有点overwhelm了，那个toggle开关关提醒在哪一页？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-046",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "mood很差，record入口和backup是不是同一个menu？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-047",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "今天不太舒服，想问徽章那一栏从哪个入口进？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-048",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "情绪有点起伏，时长那一项是在设置菜单第几个？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-049",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "唉说不出来的难受，那个记录按钮为啥要滑两次才出来？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-050",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "我快被自己烦死了，寅币兑换入口藏哪了？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-051",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "心里毛毛的，菜单那一栏提醒开关你帮我瞅瞅在哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-052",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "人乏得很，备份那按钮是不是得先点手册里的入口？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-053",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "心慌手抖，时长设置是「25分」还是「25分钟」那个选项？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-054",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "哭过了，菜单一进就找不到纪录入口了怎么办？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-055",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "空落落，徽章怎么点亮按钮在个人页吗？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-056",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "怕得不行开关提醒那个默认开还是关？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-057",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "下班路上突然很难过，想找人说又说不出口，顺手想把备份打开，可菜单里看见好几个入口，到底哪个才是备份按钮？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-058",
+   "class": "mixed-explicit",
+   "dim": "long",
+   "text": "夜里又睡不着翻来覆去，心里发紧，想改提醒时长别那么勤，设置页那个开关和时长滑条是一起的还是分两处？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-059",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "委屈，寅币入口？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-060",
+   "class": "mixed-explicit",
+   "dim": "short",
+   "text": "慌了，记录按钮点哪个？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-061",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "心里好heavy，handbook里菜单入口那章怎么搜？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-062",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "有点anxious，那个badge开关要不要先开才能看见入口？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-063",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "最近过得不太顺，想确认备份是不是要从记录页里的按钮进？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-064",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "心里沉甸甸的，提醒入口和开关是不是同一处？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-065",
+   "class": "mixed-explicit",
+   "dim": "colloquial",
+   "text": "真的撑不住想歇会儿，手册从哪个菜单点进去啊？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-066",
+   "class": "mixed-explicit",
+   "dim": "dialect",
+   "text": "心头慌慌的，时长那一档往左拨是变短不？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-067",
+   "class": "mixed-explicit",
+   "dim": "typo",
+   "text": "好累哦，寅币余额入口是钱包还是个人中新？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-068",
+   "class": "mixed-explicit",
+   "dim": "word-order",
+   "text": "难受，点哪按钮才能看到徽章进度？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-069",
+   "class": "mixed-explicit",
+   "dim": "mixed-en",
+   "text": "情绪在崩溃边缘，那个menu里的记录入口是log还是journal？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-070",
+   "class": "mixed-explicit",
+   "dim": "euphemism",
+   "text": "今晚有些低落，想问开关关了提醒还会不会从别的入口冒出来？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-071",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "提醒从哪开？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-072",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "备份按钮在菜单第几项啊？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-073",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "那个记录入口在哪一页嘛？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-074",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "寅币开关在设置里头哪一栏？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-075",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "手冊里时长那节怎么搜？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-076",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "徽章入口是不是个人页那个小图标？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-077",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "在哪菜单看备份？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-078",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "按钮提醒那个灰了怎么点？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-079",
+   "class": "product-real",
+   "dim": "long",
+   "text": "我想找一下设置里关于提醒时长的那一项，是跟开关放在同一页，还是要先进菜单再进二级入口？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-080",
+   "class": "product-real",
+   "dim": "long",
+   "text": "记录和备份是不是两个页面？如果我只想导出，是点记录页里的按钮，还是去菜单单独那一栏？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-081",
+   "class": "product-real",
+   "dim": "short",
+   "text": "手册入口？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-082",
+   "class": "product-real",
+   "dim": "short",
+   "text": "备份开关在菜单哪栏？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-083",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "reminder那个toggle在settings哪一行？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-084",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "backup入口是menu还是profile？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-085",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "方便问一下徽章那一栏从哪个入口进吗？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-086",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "想确认寅币页面是不是在钱包那一项下面。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-087",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "那个页面叫啥来着，记录的那个。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-088",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "某条提醒的条目跑哪去了，列表里看不见。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-089",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "设置里头那一页我翻不到，备份那条目藏哪了？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-090",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "菜单最底下那一格是不是手册入口？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-091",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "时长滑条在设置第几屏，我滑不到底？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-092",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "纪录那一页从底栏哪个icon进？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-093",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "哪一页是徽章列表？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-094",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "入口寅币在左上还是右上？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-095",
+   "class": "product-real",
+   "dim": "long",
+   "text": "我在找某个页面：以前好像有个「提醒」列表，现在菜单改版了，那一页现在挂在哪个条目下面？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-096",
+   "class": "product-real",
+   "dim": "long",
+   "text": "手册目录里有没有「开关说明」那一条，我搜开关搜不到，是不是换了条目名字？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-097",
+   "class": "product-real",
+   "dim": "short",
+   "text": "备份页在哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-098",
+   "class": "product-real",
+   "dim": "short",
+   "text": "记录入口呢？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-099",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "那个badge页面path是什么，从哪进？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-100",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "settings里duration那一项叫时长还是计时？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-101",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "想找一下某个条目，就是备份相关的那一页。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-102",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "请问提醒开关所在的页面怎么进比较快？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-103",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "底栏点哪个才是记录，我老点错。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-104",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "菜单里那一排按钮，哪个是手册？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-105",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "俺找不着那个页面，寅币明细在哪一栏？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-106",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "设置页往下翻，时长那条目在不在最底下？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-107",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "提醒列表那一页搜「提醒」搜不出来，条目名改了没？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-108",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "备份按纽进的是导出页还是云同步页？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-109",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "在哪找那个页面徽章的？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-110",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "条目记录历史的藏菜单哪层？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-111",
+   "class": "product-real",
+   "dim": "long",
+   "text": "我想确认：某个页面以前叫「入口」，现在是不是拆成菜单里的「记录」和「备份」两条？分别从哪进？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-112",
+   "class": "product-real",
+   "dim": "long",
+   "text": "开关页和提醒页是不是同一个？如果不是，开关那一页从设置哪个条目点进去？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-113",
+   "class": "product-real",
+   "dim": "short",
+   "text": "时长页？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-114",
+   "class": "product-real",
+   "dim": "short",
+   "text": "徽章列表在哪页？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-115",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "journal入口在tab bar第几个？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-116",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "那个page「手册」是help还是guide菜单？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-117",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "想问一下某个条目现在放哪了，就是寅币兑换那一栏。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-118",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "方便指一下备份所在页面吗，我在菜单里没看见同名条目。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-119",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "设置里翻了三屏，提醒那一页到底在哪？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-120",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "那个入口我记得在右上，现在没了，挪哪了？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-121",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "页面找不到咧，记录历史那一条目还在不在？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-122",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "菜单里头搜「开关」没结果，它挂在提醒页里哇？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-123",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "个人中新那页有没有徽章入口？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-124",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "手册目录第几条是时張设置？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-125",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "哪进那个页面备份云盘的？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-126",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "按钮在哪开寅币显示？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-127",
+   "class": "product-real",
+   "dim": "long",
+   "text": "我要找某个页面，标题大概是「提醒」，里面有开关和时长；现在底栏没有了，是改到菜单某个条目了吗？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-128",
+   "class": "product-real",
+   "dim": "long",
+   "text": "列表里有一条叫记录的，点进去不是我想要的页，真正的记录入口是不是在另一个菜单层级？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-129",
+   "class": "product-real",
+   "dim": "short",
+   "text": "菜单第几项是备份？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-130",
+   "class": "product-real",
+   "dim": "short",
+   "text": "提醒条目去哪了？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-131",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "那个item「手册」在sidebar还是overflow menu？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-132",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "开关页url或者入口名字叫什么？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-133",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "想找某个页面，跟徽章进度有关的那一页。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-134",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "请问时长设置现在挂在哪个菜单条目下面比较准确？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-135",
+   "class": "product-real",
+   "dim": "colloquial",
+   "text": "以前那一页叫入口，现在改名没，我搜不到。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-136",
+   "class": "product-real",
+   "dim": "dialect",
+   "text": "俺要进记录那一页，底栏四个里头点哪个？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-137",
+   "class": "product-real",
+   "dim": "typo",
+   "text": "备份那条目是「备份」还是「备分」我看花了。",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-138",
+   "class": "product-real",
+   "dim": "word-order",
+   "text": "在哪一页改提醒开关？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-139",
+   "class": "product-real",
+   "dim": "mixed-en",
+   "text": "寅币wallet页面从profile哪个row进？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-140",
+   "class": "product-real",
+   "dim": "euphemism",
+   "text": "方便问：某个条目「手册」是不是挪到设置最底下了？",
+   "expect": "product"
+  },
+  {
+   "id": "rdev2-141",
+   "class": "emotion-aside",
+   "dim": "colloquial",
+   "text": "今天真的好难受，提醒什么的先不管了。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-142",
+   "class": "emotion-aside",
+   "dim": "colloquial",
+   "text": "我就是想说说，备份那些回头再说吧，心里堵得慌。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-143",
+   "class": "emotion-aside",
+   "dim": "dialect",
+   "text": "心头好烦哦，菜单不菜单的我都不想点，就是想有人听我说。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-144",
+   "class": "emotion-aside",
+   "dim": "dialect",
+   "text": "人蔫得很，寅币啥的跟我这会儿没关系，我就想哭一会儿。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-145",
+   "class": "emotion-aside",
+   "dim": "typo",
+   "text": "睡不着，手冊那些按钮我懒得看，就是害怕。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-146",
+   "class": "emotion-aside",
+   "dim": "typo",
+   "text": "好焦虑，徽章不徽章的，我只是觉得自己很失败。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-147",
+   "class": "emotion-aside",
+   "dim": "word-order",
+   "text": "记录什么的先放一边，我快撑不住了。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-148",
+   "class": "emotion-aside",
+   "dim": "word-order",
+   "text": "开关提醒那些无所谓，今晚空得慌。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-149",
+   "class": "emotion-aside",
+   "dim": "long",
+   "text": "跟同事闹完一整晚手都是凉的，什么时长入口徽章我这会儿都看不见，我就想有人陪我说两句，别让我一个人坐着。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-150",
+   "class": "emotion-aside",
+   "dim": "long",
+   "text": "备份菜单那些我都知道在哪，不是来问这个的，是今天下午突然很难过，话到嘴边又咽回去，现在还是想说出来。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-151",
+   "class": "emotion-aside",
+   "dim": "short",
+   "text": "提醒先别管，我想哭。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-152",
+   "class": "emotion-aside",
+   "dim": "short",
+   "text": "菜单随便，心里好乱。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-153",
+   "class": "emotion-aside",
+   "dim": "mixed-en",
+   "text": "backup那些以后再说，我现在很down。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-154",
+   "class": "emotion-aside",
+   "dim": "mixed-en",
+   "text": "不是来问timer的，就是lonely得慌。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-155",
+   "class": "emotion-aside",
+   "dim": "euphemism",
+   "text": "入口什么的不急，最近心里有点沉，想找人说说。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-156",
+   "class": "emotion-aside",
+   "dim": "euphemism",
+   "text": "手册那些我改天再翻，今晚只是不太安稳。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-157",
+   "class": "emotion-aside",
+   "dim": "colloquial",
+   "text": "唉，按钮点不点的无所谓，我就是觉得自己多余。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-158",
+   "class": "emotion-aside",
+   "dim": "colloquial",
+   "text": "记录写不写都行，我今天被说得一句都不敢回。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-159",
+   "class": "emotion-aside",
+   "dim": "dialect",
+   "text": "那个开关我等会儿再拨，心头像压了块石头。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-160",
+   "class": "emotion-aside",
+   "dim": "dialect",
+   "text": "时长设不设随它去，俺就是心里不得劲。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-161",
+   "class": "emotion-aside",
+   "dim": "typo",
+   "text": "备份回头搞，我先说，今晚又失眠到两点好怕。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-162",
+   "class": "emotion-aside",
+   "dim": "typo",
+   "text": "菜箪我都不想开，就想有人在。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-163",
+   "class": "emotion-aside",
+   "dim": "word-order",
+   "text": "寅币先不提，委屈得想躲起来。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-164",
+   "class": "emotion-aside",
+   "dim": "word-order",
+   "text": "徽章那些以后讲，我现在慌。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-165",
+   "class": "emotion-aside",
+   "dim": "long",
+   "text": "提醒闹钟响不响都无所谓了，我坐在床边发呆，脑子里全是白天那些话，想找个地方把难过摊开。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-166",
+   "class": "emotion-aside",
+   "dim": "long",
+   "text": "入口开关手册这些我都会用，不是来查功能的，就是跟家里吵完一声不吭，现在还在抖，想被接住。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-167",
+   "class": "emotion-aside",
+   "dim": "short",
+   "text": "时长以后再说，好累。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-168",
+   "class": "emotion-aside",
+   "dim": "short",
+   "text": "备份不重要，心口闷。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-169",
+   "class": "emotion-aside",
+   "dim": "mixed-en",
+   "text": "不是问badge，是今晚好empty。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-170",
+   "class": "emotion-aside",
+   "dim": "mixed-en",
+   "text": "menu那些随便，我有点overwhelm想说话。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-171",
+   "class": "emotion-aside",
+   "dim": "euphemism",
+   "text": "记录功能我知道，只是今天状态不太好，想轻轻说两句。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-172",
+   "class": "emotion-aside",
+   "dim": "euphemism",
+   "text": "提醒设置以后再弄，心里有些起伏，需要被听一听。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-173",
+   "class": "emotion-aside",
+   "dim": "colloquial",
+   "text": "真的没劲了，按钮灰不灰关我屁事，我就想躺着有人陪。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-174",
+   "class": "emotion-aside",
+   "dim": "dialect",
+   "text": "俺不找入口，就是心里毛毛的想说说。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-175",
+   "class": "emotion-aside",
+   "dim": "typo",
+   "text": "寅币余额怎样都好，我只是觉得自己很失败好想哭。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-176",
+   "class": "emotion-aside",
+   "dim": "word-order",
+   "text": "开关随它，我快被自己烦死了。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-177",
+   "class": "emotion-aside",
+   "dim": "mixed-en",
+   "text": "handbook先放着，心情很messy，想倒出来。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-178",
+   "class": "emotion-aside",
+   "dim": "euphemism",
+   "text": "菜单那些不着急，最近过得不太顺，想有人在旁边。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-179",
+   "class": "emotion-aside",
+   "dim": "colloquial",
+   "text": "记录页我熟，今晚不是为这个，是突然很难过说不出口。",
+   "expect": "emotion"
+  },
+  {
+   "id": "rdev2-180",
+   "class": "emotion-aside",
+   "dim": "long",
+   "text": "时长徽章入口我都能找到，别给我指路了，我就是下班路上一下子空掉，想把那点委屈讲完。",
+   "expect": "emotion"
+  }
+ ]
+}
