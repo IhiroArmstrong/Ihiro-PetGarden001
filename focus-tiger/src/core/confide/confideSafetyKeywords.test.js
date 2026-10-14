@@ -115,4 +115,17 @@ describe('confide safety keyword matching', () => {
     assert.equal(matchesSafetyRedirect('不想再醒过来'), true);
     assert.equal(confideClassify('我不想再醒来'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   });
+
+  it('does not fire on colloquial object / addressee uses of crisis substrings', () => {
+    assert.equal(matchesSafetyRedirect('想死你了'), false);
+    assert.equal(matchesSafetyRedirect('你去死吧'), false);
+    assert.equal(matchesSafetyRedirect('烦死了'), false);
+    assert.equal(matchesSafetyRedirect('想让这个问题永远消失'), false);
+    assert.equal(matchesSafetyRedirect('想死'), true);
+    assert.equal(matchesSafetyRedirect('我想死'), true);
+    assert.equal(matchesSafetyRedirect('去死'), true);
+    assert.equal(matchesSafetyRedirect('我想去死'), true);
+    assert.equal(matchesSafetyRedirect('永远消失'), true);
+    assert.equal(matchesSafetyRedirect('我想永远消失'), true);
+  });
 });

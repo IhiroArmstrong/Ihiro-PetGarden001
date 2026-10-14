@@ -132,6 +132,42 @@ const NEGATION_IMMEDIATELY_BEFORE_RE =
 const CJK_NEGATION_IMMEDIATELY_BEFORE_RE =
   /(?:绝不会|絕不會|决不会|決不會|绝不|絕不|并非|並非|不是|没有|沒有|不会|不會|不想|没想|沒想|不再|未曾|并未|並未|不|没|沒|未|别|別)想?$/;
 
+/**
+ * Object / addressee collocations that reuse a crisis substring without
+ * being self-harm (affectionate 想死你了; 你去死吧 toward others; 问题永远消失).
+ * @type {Readonly<Record<string, { after?: RegExp, before?: RegExp }>>}
+ */
+const CJK_PHRASE_OBJECT_EXCUSE = Object.freeze({
+  想死: Object.freeze({
+    after: /^(?:你|您|他|她|它|谁|誰|你们|你們|他们|他們|她们|她們|它们|它們)/
+  }),
+  去死: Object.freeze({
+    before: /(?:你|您|他|她|谁|誰|你们|你們|他们|他們|她们|她們)$/
+  }),
+  永远消失: Object.freeze({
+    before:
+      /(?:这个问题|那个问题|這個問題|那個問題|这问题|那问题|這問題|那問題|问题|問題|这件事|那件事|這件事|那件事|这事|那事|這事|那事)$/
+  }),
+  永遠消失: Object.freeze({
+    before:
+      /(?:这个问题|那个问题|這個問題|那個問題|这问题|那问题|這問題|那問題|问题|問題|这件事|那件事|這件事|那件事|这事|那事|這事|那事)$/
+  })
+});
+
+/**
+ * @param {string} needle
+ * @param {string} hay
+ * @param {number} at
+ * @returns {boolean}
+ */
+function isCjkPhraseObjectExcuse(needle, hay, at) {
+  const rule = CJK_PHRASE_OBJECT_EXCUSE[needle];
+  if (!rule) return false;
+  if (rule.after && rule.after.test(hay.slice(at + needle.length))) return true;
+  if (rule.before && rule.before.test(hay.slice(0, at))) return true;
+  return false;
+}
+
 /** @param {string} value @returns {boolean} */
 function isLatinPhrase(value) {
   return /[a-z]/i.test(value);
@@ -185,6 +221,7 @@ export function matchesSafetyRedirect(text, phrases = allSafetyPhrases()) {
       const before = hay.slice(0, at);
       if (!latin) {
         if (CJK_NEGATION_IMMEDIATELY_BEFORE_RE.test(before)) continue;
+        if (isCjkPhraseObjectExcuse(needle, hay, at)) continue;
         return true;
       }
       // Word boundary keeps "self harm" out of "self harmony".
