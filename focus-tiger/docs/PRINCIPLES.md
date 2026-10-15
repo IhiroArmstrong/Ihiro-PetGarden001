@@ -44,6 +44,7 @@
 - **上线 / 切 live 两个条件都要满足**：冻结集不退步 **且** 盲测集通过率达标。只拿冻结集的 88.9%「差 1 句过线」过关 = 违反本条。已经拿来调规则的反向风险句，不得再当唯一验收。
 - **CI 原句扫描**：`npm run lint:confide-original-utterance`（已进 `test:smoke`）。仓库里不得出现 `turns.jsonl`、同一行 `queryHash`+原文、或未封存的盲测原句文件。
 - 机器闸：`src/core/confide/confideEvalGate.js`。跟进顺序见 `confide-routing-followup.md` CR-03 / CR-10。
+- **评测语言（硬 · 2026-10-15）**：本产品优先面向欧美。Confide **功能测试、路由验收、关单抽测，英文是第一优先、第一重要**。中文句可作对照或回归，**不得**用中文抽测代替英文主路径，也不得只修中文豁免、把英文同类句写成「这次不改」。细则见 `.cursor/rules/testing-strategy.mdc`（`RULES_INDEX` → `confide-en-first-qa`）。这不改变危机转介底线，也不等于「产品问未命中必须 generate」——后一类改发送链须另 Brief。
 
 ---
 
