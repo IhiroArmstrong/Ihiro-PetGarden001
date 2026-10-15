@@ -36,7 +36,8 @@ function loadConfideSafetyDevsetZhV1() {
         class: String(row.class),
         dim: row.dim == null ? undefined : String(row.dim),
         expect: String(row.expect),
-        text: String(row.text)
+        text: String(row.text),
+        caliber_58: row.caliber_58 !== false
       })
     )
   );

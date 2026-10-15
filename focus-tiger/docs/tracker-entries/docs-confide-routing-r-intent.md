@@ -1,0 +1,1 @@
+| R 路由意图可行性研究 + 合并回应情绪半边补条 | 仅单元测试覆盖 | 待人工测试 | 不改发送链、不调 0.01。研究口 `npm run audit:routing-intent-feasibility`。规格补条 `task-briefs/task-confide-mixed-reply-mood-floor.md`。 | — | — | — | 无用户路径 | 2026-10-15 |

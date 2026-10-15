@@ -68,10 +68,14 @@ describe('confide mood-veto holdout lab gates', () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  function writeMeta(dir, name, body) {
+  function writeMeta(dir, name, body, authorPromptId = `prompt-${name}`) {
     const filePath = path.join(dir, name);
     writeFileSync(filePath, body);
-    return { filePath, contentSha256: hashHoldoutFile(filePath) };
+    return {
+      filePath,
+      contentSha256: hashHoldoutFile(filePath),
+      authorPromptId
+    };
   }
 
   it('caps the same holdout set version at two files, one run each', () => {
@@ -103,10 +107,18 @@ describe('confide mood-veto holdout lab gates', () => {
     const logPath = path.join(dir, 'runs.json');
     const filePath = path.join(dir, 'sealed.json');
     writeFileSync(filePath, '{"n":1}\n');
-    const first = { filePath, contentSha256: hashHoldoutFile(filePath) };
+    const first = {
+      filePath,
+      contentSha256: hashHoldoutFile(filePath),
+      authorPromptId: 'prompt-hash-v1'
+    };
     authorizeHoldoutRun(logPath, SET_V1, first);
     writeFileSync(filePath, '{"n":1,"changed":true}\n');
-    const changed = { filePath, contentSha256: hashHoldoutFile(filePath) };
+    const changed = {
+      filePath,
+      contentSha256: hashHoldoutFile(filePath),
+      authorPromptId: 'prompt-hash-v1'
+    };
     assert.throws(
       () => authorizeHoldoutRun(logPath, SET_V1, changed),
       (err) => /内容已变/.test(err.message)

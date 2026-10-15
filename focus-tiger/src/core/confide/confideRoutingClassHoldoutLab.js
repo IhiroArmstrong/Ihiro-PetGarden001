@@ -82,7 +82,8 @@ export function parseRoutingHoldoutFile(data) {
   if (!items) {
     throw holdoutSafeError('holdout JSON 缺少 items', 'PARSE');
   }
-  return { briefVersion, holdoutSetVersion, items };
+  const authorPromptId = String(data.author_prompt_id || data.authorPromptId || '').trim();
+  return { briefVersion, holdoutSetVersion, items, authorPromptId };
 }
 
 /**
