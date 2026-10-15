@@ -4,6 +4,8 @@
  */
 
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import {
   applyVoiceTranscriptToField,
@@ -82,5 +84,14 @@ describe('voiceInputBridge', () => {
     );
     assert.equal(folded.text, 'I am going to the shop today please and then home');
     assert.equal(folded.shrunk, false);
+  });
+
+  it('Confide auto-sends after voice stop applies a transcript', () => {
+    const confideUiPath = fileURLToPath(new URL('../ui/ConfideToYinUI.js', import.meta.url));
+    const confideUi = readFileSync(confideUiPath, 'utf8');
+    assert.match(confideUi, /onTranscriptCommitted:\s*\(\)\s*=>\s*this\._onSend\(\)/);
+    const chromePath = fileURLToPath(new URL('../ui/VoiceInputChrome.js', import.meta.url));
+    const chromeSrc = readFileSync(chromePath, 'utf8');
+    assert.match(chromeSrc, /this\.onTranscriptCommitted\?\.\(transcript\)/);
   });
 });

@@ -318,7 +318,8 @@ export class ConfideToYinUI {
       textarea: this.inputEl,
       mountBefore: null,
       testIdPrefix: 'confide-voice-input',
-      onInputApplied: () => this._syncSendEnabled()
+      onInputApplied: () => this._syncSendEnabled(),
+      onTranscriptCommitted: () => this._onSend()
     });
 
     this.userEl = document.createElement('p');
