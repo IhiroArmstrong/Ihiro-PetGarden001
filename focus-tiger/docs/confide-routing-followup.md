@@ -558,9 +558,9 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 
 ### CR-49 · 事实卡按意思贴近（#1250+#1255 已合 · 未见英文批仍未过关）
 
-权威：[`task-briefs/task-confide-fact-card-near-match.md`](./task-briefs/task-confide-fact-card-near-match.md)。
+权威：[`task-briefs/task-confide-fact-card-near-match.md`](./task-briefs/task-confide-fact-card-near-match.md)。第三刀规格：[`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md)（待 PO 点头）。
 
-- 近义比对事实卡（能力说明按句 + 已审核短答整段），不再比对关键词拼表。
+- 近义比对事实卡（能力说明按句 + 已审核短答整段），不再比对关键词拼表。#1255 切句后未见批仍未过关，**不再**以再切检索句为下一刀。
 - 不够近：诚实空态，只记最近卡片编号和分数，不记原句。
 - 缺的是整张卡时写卡，不补问法。不放低 0.80。不代替 CR-47。
 - 关单前未见英文批：`sealed-v1` 未过关；#1255 后 `sealed-v2` 仍未过关（0037 20%、0038 0%、闲聊不进空态 100%）。两文件均已作废。续刀不得把失败句写入 keywords；过关必须再开新封存文件 + 新手写出题编号。
