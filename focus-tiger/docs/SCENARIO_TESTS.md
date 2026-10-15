@@ -1005,6 +1005,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 2. **倾诉不出设备**：转写路径须 `MacosSpeechProvider`；**禁止** Cloud STT provider 注入倾诉 UI。  
 3. **负例**：Web `?confide=1` / 窄屏 <480 → **不得**见麦克风。  
 4. **回流**：Speak again 录完 Stop 仍自动发送；空转写 / 识别失败仍不发送（框旁红字）。Arrival / Reflection 仍须用户点 Confirm / Continue（**禁止**误开自动发送）。
+5. **专有词**：说 **Yin** 时框内须为 Yin（不得停在 Ian / Ean / Iain）。其它产品名靠本机 `contextualStrings` 提高命中，不把 in / yen 等普通词改成 Yin。
 
 ### AT · Slice 2（Arrival 意图 + Reflection）
 

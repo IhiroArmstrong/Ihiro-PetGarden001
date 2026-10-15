@@ -223,6 +223,18 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
 
   let request = SFSpeechAudioBufferRecognitionRequest()
   request.shouldReportPartialResults = true
+  // Lockstep with VOICE_PRODUCT_CONTEXTUAL_STRINGS in src/core/voiceProductLexicon.js
+  request.contextualStrings = [
+    "Yin",
+    "Focus Tiger",
+    "Confide",
+    "Sanctuary",
+    "Quiet Together",
+    "Focus Circle",
+    "Zen Cinema",
+    "Honesty",
+    "Twinsology"
+  ]
   if #available(macOS 13.0, *) {
     request.requiresOnDeviceRecognition = true
     request.addsPunctuation = true

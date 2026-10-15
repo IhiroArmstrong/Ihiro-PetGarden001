@@ -13,6 +13,7 @@ import {
   DESKTOP_COMPANION_WIDE_MIN_PX,
   isDesktopCompanionViewportAllowed
 } from './desktopCompanionGate.js';
+import { applyVoiceProductLexicon } from './voiceProductLexicon.js';
 
 /**
  * @param {object} [globalObj]
@@ -116,7 +117,7 @@ export function voiceTranscriptNeedsTruncationNotice({
  * @returns {{ truncated: boolean }}
  */
 export function applyVoiceTranscriptToField(el, transcript, maxLength = Infinity) {
-  const next = String(transcript || '').trim();
+  const next = applyVoiceProductLexicon(String(transcript || '')).trim();
   if (!next) return { truncated: false };
   const capped =
     Number.isFinite(maxLength) && maxLength > 0 ? next.slice(0, maxLength) : next;

@@ -15,6 +15,10 @@ import {
   voiceTranscriptNeedsTruncationNotice,
   withVoiceCaptureDiagnostics
 } from './voiceInputBridge.js';
+import {
+  applyVoiceProductLexicon,
+  VOICE_PRODUCT_CONTEXTUAL_STRINGS
+} from './voiceProductLexicon.js';
 
 describe('voiceInputBridge', () => {
   it('requires desktop wide viewport for product chrome', () => {
@@ -84,6 +88,26 @@ describe('voiceInputBridge', () => {
     );
     assert.equal(folded.text, 'I am going to the shop today please and then home');
     assert.equal(folded.shrunk, false);
+  });
+
+  it('rewrites Yin homophones without touching common words', () => {
+    assert.equal(applyVoiceProductLexicon('I miss Ian.'), 'I miss Yin.');
+    assert.equal(applyVoiceProductLexicon('Tell Ian I am here'), 'Tell Yin I am here');
+    assert.equal(applyVoiceProductLexicon('Ean, sit with me'), 'Yin, sit with me');
+    assert.equal(applyVoiceProductLexicon('I am in the garden'), 'I am in the garden');
+    const el = { value: '', maxLength: 280, dispatchEvent() {} };
+    applyVoiceTranscriptToField(el, 'Confide to Ian');
+    assert.equal(el.value, 'Confide to Yin');
+  });
+
+  it('keeps Swift contextualStrings in lockstep with the JS lexicon', () => {
+    const helper = readFileSync(
+      new URL('../../desktop/native/macos-speech-helper.swift', import.meta.url),
+      'utf8'
+    );
+    for (const name of VOICE_PRODUCT_CONTEXTUAL_STRINGS) {
+      assert.equal(helper.includes(`"${name}"`), true, `missing ${name}`);
+    }
   });
 
   it('Confide auto-sends after voice stop applies a transcript', () => {
