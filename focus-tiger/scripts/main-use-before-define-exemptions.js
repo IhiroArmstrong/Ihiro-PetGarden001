@@ -6,13 +6,7 @@
 /**
  * A6 / R3: remaining `no-use-before-define` (variables) hits in `src/main.js`.
  * Caps only shrink. New names or extra hits fail `lint:main-use-before-define`.
- * Caps shrink via A7 boot extracts (A7.5: ambient / cues / hints / pending Choose).
+ * A7.6 cleared `focusInput`; the table is empty. The #1139 fixture must still flag.
  */
 
-export const MAIN_JS_USE_BEFORE_DEFINE_EXEMPTIONS = Object.freeze([
-  {
-    name: 'focusInput',
-    maxHits: 2,
-    reason: 'Focus HUD helpers close over input constructed near end of init.'
-  }
-]);
+export const MAIN_JS_USE_BEFORE_DEFINE_EXEMPTIONS = Object.freeze([]);

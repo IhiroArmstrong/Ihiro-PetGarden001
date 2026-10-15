@@ -1,0 +1,1 @@
+| A7.6 boot Arrival + Focus + ready | 纯后端 | 仅单元测试覆盖 | 不是产品功能。验收的是启动仍 `__FT_APP_READY__`、A6 lint 豁免表空（0 名），不代表 Arrival / Sit / 第一幕画面变了。`npm run lint:main-use-before-define`；`npm run test:e2e:startup`。不覆盖点测 Arrival Choose、Sit、Support。 | — | — | — | `src/boot/boot-arrival-focus-ready.js` · `src/main.js` `init()` | 2026-10-16 |
