@@ -354,7 +354,8 @@ export function retrieveProductKnowledge(text, opts = {}) {
  *   reason: string,
  *   locale?: string,
  *   nearestId?: string | null,
- *   nearestScore?: number | null
+ *   nearestScore?: number | null,
+ *   nearestAskRole?: string | null
  * }} payload
  * @returns {object}
  */
@@ -363,7 +364,8 @@ export function buildKbRetrievalMissTurnLog({
   reason,
   locale = 'en',
   nearestId = null,
-  nearestScore = null
+  nearestScore = null,
+  nearestAskRole = null
 }) {
   const id = typeof nearestId === 'string' && nearestId.trim() ? nearestId.trim() : null;
   const score = Number(nearestScore);
@@ -376,6 +378,10 @@ export function buildKbRetrievalMissTurnLog({
     reason,
     nearestId: id,
     nearestScore: Number.isFinite(score) ? score : null,
+    nearestAskRole:
+      typeof nearestAskRole === 'string' && nearestAskRole.trim()
+        ? nearestAskRole.trim()
+        : null,
     catalogSchemaVersion: catalog.schemaVersion
   };
 }

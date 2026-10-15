@@ -353,6 +353,7 @@ async function main() {
               topK: result.topK,
               nearestId: result.nearestId ?? null,
               nearestScore: result.nearestScore ?? null,
+              nearestAskRole: result.nearestAskRole ?? null,
               lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
               lifeScore: result.lifeScore ?? null,
               moodScore: result.moodScore ?? null,

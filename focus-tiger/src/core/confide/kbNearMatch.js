@@ -5,12 +5,12 @@
 
 /**
  * One similarity ruler for the product-knowledge gate and the catalog entry.
- * Brief: task-confide-fact-card-near-match.md
+ * Brief: task-confide-fact-key-ask-role.md (CR-49 slice 3); near-match phrases
+ * are fact keys when declared, else legacy capability + short answer.
  * Close enough → that entry. Far from every entry → generate.
  * In between → labeled honesty. The product gate keeps that label only when
  * Library C says it is a product question; life chat in this band generates.
- * Embedding phrases are each capability sentence, then the approved short
- * answer as one unit — not the keyword list.
+ * Neighbors are taken only among cards that share the user ask-shape axis.
  */
 
 /**
@@ -65,6 +65,7 @@ export function splitCatalogCapabilitySentences(text) {
  * Short-answer sentences stay glued so shared "Open More" lines do not steal
  * neighbors from other cards.
  * @param {{
+ *   factKeyEn?: string,
  *   capabilityStatementEn?: string,
  *   shortAnswerEn?: string,
  *   keywords?: readonly string[]
@@ -72,6 +73,8 @@ export function splitCatalogCapabilitySentences(text) {
  * @returns {string[]}
  */
 export function catalogEntryEmbeddingPhrases(entry) {
+  const factKey = String(entry?.factKeyEn || '').trim();
+  if (factKey) return [factKey];
   const phrases = splitCatalogCapabilitySentences(entry?.capabilityStatementEn);
   const shortAnswer = String(entry?.shortAnswerEn || '').trim();
   if (shortAnswer) phrases.push(shortAnswer);
@@ -80,6 +83,7 @@ export function catalogEntryEmbeddingPhrases(entry) {
 
 /**
  * @param {{
+ *   factKeyEn?: string,
  *   capabilityStatementEn?: string,
  *   shortAnswerEn?: string,
  *   keywords?: readonly string[]

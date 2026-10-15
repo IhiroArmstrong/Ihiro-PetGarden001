@@ -1,8 +1,8 @@
 ---
 id: confide-fact-key-ask-role
 kind: note
-status: Brief 草稿 · 待 PO 点头 · 未改发送链
+status: 实现已合分支 · 关单待 sealed-v3
 updated: 2026-10-16
 ---
 
-CR-49 第三刀规格。#1255 切句检索后 `sealed-v2` 未过关（0037 20%、0038 0%、闲聊 100%）。下一机制是事实键 + 问法形状轴，不是再切检索句、不放低 0.80、不补失败问法。实现须口令「按事实键形状轴 Brief 开工」。
+CR-49 第三刀：事实键 + 问法形状轴。`factKeyEn` / `askRoleShapes` 入目录；近邻只在同形状卡间比；`whether-required` 扩 CR-47 操作形状（须产品对象）。权威 `task-briefs/task-confide-fact-key-ask-role.md`。

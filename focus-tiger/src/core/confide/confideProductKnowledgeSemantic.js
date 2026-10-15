@@ -9,6 +9,7 @@
  */
 
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
+import { classifyConfideProductAskRole } from './confideProductAskRole.js';
 import { confideBrowserSafeEnv } from './confideSemanticRoutingConfig.js';
 import { scoreLibraryTopK } from './confideSemanticRouting.js';
 import { DEFAULT_CONFIDE_SEMANTIC_TOP_K } from './confideSemanticRoutingConfig.js';
@@ -137,6 +138,10 @@ export function isConfideOperationalProductAskShape(text) {
   }
   if (ACTIVITY_WHAT_IS_RE.test(spaced) || ACTIVITY_WHAT_IS_RE.test(compact)) {
     return false;
+  }
+  const askRole = classifyConfideProductAskRole(text);
+  if (askRole !== 'none') {
+    return true;
   }
   return OPERATIONAL_PRODUCT_ASK_SHAPE_RES.some(
     (re) => re.test(spaced) || (compact !== spaced && re.test(compact))

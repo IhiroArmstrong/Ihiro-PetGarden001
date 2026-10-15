@@ -21,6 +21,10 @@ import {
   moodAsideOutranksProductLibrary
 } from '../../src/core/confide/confideProductKnowledgeSemantic.js';
 import { listRetrievableProductKnowledgeEntries } from '../../src/core/confide/confideProductKnowledge.js';
+import {
+  classifyConfideProductAskRole,
+  pickNearestCatalogEmbeddingMatch
+} from '../../src/core/confide/confideProductAskRole.js';
 import { catalogEntryEmbeddingPhrases } from '../../src/core/confide/kbNearMatch.js';
 import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
 import { CONFIDE_SEMANTIC_CRISIS_PROTOTYPES } from '../../src/core/confide/confideSemanticCrisisExamples.js';
@@ -142,12 +146,12 @@ export async function loadEmbeddingHold(opts) {
   }
 
   onProgress('precomputeCatalogEntries');
-  /** @type {{ id: string, vector: number[] }[]} */
+  /** @type {{ id: string, entry: object, vector: number[] }[]} */
   const catalogVectors = [];
   for (const entry of listRetrievableProductKnowledgeEntries()) {
     const phrases = catalogEntryEmbeddingPhrases(entry);
     for (const phrase of phrases) {
-      catalogVectors.push({ id: entry.id, vector: await embedText(phrase) });
+      catalogVectors.push({ id: entry.id, entry, vector: await embedText(phrase) });
     }
   }
 
@@ -213,19 +217,20 @@ export async function loadEmbeddingHold(opts) {
       const result = classifyProductKnowledgeSemantic(userVector, vectorsC, { env: opts.env });
       const lifeScore = scoreLibraryTopK(userVector, vectorsLife, result.topK);
       const mood = scoreMoodVeto(userVector, result.score, result.topK);
-      let nearestId = null;
-      let nearestScore = -1;
-      for (const row of catalogVectors) {
-        const score = cosineSimilarity(userVector, row.vector);
-        if (score > nearestScore) {
-          nearestScore = score;
-          nearestId = row.id;
-        }
-      }
+      const askRole = classifyConfideProductAskRole(text);
+      const nearest = pickNearestCatalogEmbeddingMatch(
+        catalogVectors,
+        userVector,
+        cosineSimilarity,
+        askRole
+      );
+      const nearestId = nearest.nearestId;
+      const nearestScore = nearest.nearestScore;
       return {
         ...result,
+        nearestAskRole: nearest.askRole,
         nearestId,
-        nearestScore: nearestId ? nearestScore : null,
+        nearestScore,
         lifeScore,
         lifeOutranksProduct: lifeChatOutranksProductLibrary(result.score, lifeScore),
         moodScore: mood.moodScore,
