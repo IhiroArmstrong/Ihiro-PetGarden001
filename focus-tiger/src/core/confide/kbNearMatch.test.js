@@ -5,7 +5,12 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { catalogEntryEmbeddingText, decideKbNearMatch } from './kbNearMatch.js';
+import {
+  catalogEntryEmbeddingPhrases,
+  catalogEntryEmbeddingText,
+  decideKbNearMatch,
+  splitCatalogCapabilitySentences
+} from './kbNearMatch.js';
 import catalog from './productKnowledgeCatalog.json' with { type: 'json' };
 
 describe('decideKbNearMatch', () => {
@@ -66,15 +71,40 @@ describe('catalogEntryEmbeddingText', () => {
     assert.equal(catalogEntryEmbeddingText(card), catalogEntryEmbeddingText(withFailedAsk));
   });
 
-  it('includes the locked capability sentences for 0037 and 0038', () => {
+  it('includes the retrieval-oriented capability sentences for 0037 and 0038', () => {
     const byId = Object.fromEntries(catalog.entries.map((row) => [row.id, row]));
     assert.match(
       catalogEntryEmbeddingText(byId['KB-FUNC-0037']),
-      /Where to turn background music on or off, and that it stays off until the person turns it on/
+      /Where the idle-screen control turns background music or ambient sound on or off/
     );
-    assert.match(
-      catalogEntryEmbeddingText(byId['KB-FUNC-0038']),
-      /Checking in is optional\. Focus Tiger does not require a daily streak/
+    const checkinPhrases = catalogEntryEmbeddingPhrases(byId['KB-FUNC-0038']);
+    assert.equal(
+      checkinPhrases.includes('Whether check-in or a daily streak is required.'),
+      true
+    );
+    assert.equal(checkinPhrases.includes('Missing a day takes nothing away.'), true);
+  });
+
+  it('splits a two-sentence capability into two phrases and still ignores keyword asks', () => {
+    const entry = {
+      capabilityStatementEn:
+        'Whether daily check-in is required. Missing a day takes nothing away.',
+      shortAnswerEn: 'You do not have to check in. Sit with Yin works without it.',
+      keywords: ['must I punch the clock each morning']
+    };
+    const phrases = catalogEntryEmbeddingPhrases(entry);
+    assert.deepEqual(splitCatalogCapabilitySentences(entry.capabilityStatementEn), [
+      'Whether daily check-in is required.',
+      'Missing a day takes nothing away.'
+    ]);
+    assert.equal(phrases.includes('must I punch the clock each morning'), false);
+    assert.equal(
+      phrases.includes('You do not have to check in. Sit with Yin works without it.'),
+      true
+    );
+    assert.equal(
+      phrases.filter((row) => row === 'You do not have to check in.').length,
+      0
     );
   });
 });

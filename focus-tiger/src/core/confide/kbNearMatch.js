@@ -9,8 +9,8 @@
  * Close enough → that entry. Far from every entry → generate.
  * In between → labeled honesty. The product gate keeps that label only when
  * Library C says it is a product question; life chat in this band generates.
- * Embedding text is the capability sentence plus the approved short answer,
- * not the keyword list.
+ * Embedding phrases are each capability sentence, then the approved short
+ * answer as one unit — not the keyword list.
  */
 
 /**
@@ -44,6 +44,41 @@ export function resolveKbNearMatchThresholds(env = {}) {
 }
 
 /**
+ * Split a capability note on sentence boundaries so each fact can be a
+ * retrieval phrase. Does not read keywords or user asks.
+ * @param {string} text
+ * @returns {string[]}
+ */
+export function splitCatalogCapabilitySentences(text) {
+  const raw = String(text || '').trim();
+  if (!raw) return [];
+  return raw
+    .split(/(?<=[.!?])\s+(?=[A-Z])/)
+    .map((part) => part.trim())
+    .filter((part) => part.length >= 8);
+}
+
+/**
+ * Retrieval phrases for one card: each capability sentence, then the whole
+ * short answer as one unit. Keywords never enter this list — adding a failed
+ * ask to keywords must not change the phrases.
+ * Short-answer sentences stay glued so shared "Open More" lines do not steal
+ * neighbors from other cards.
+ * @param {{
+ *   capabilityStatementEn?: string,
+ *   shortAnswerEn?: string,
+ *   keywords?: readonly string[]
+ * }} entry
+ * @returns {string[]}
+ */
+export function catalogEntryEmbeddingPhrases(entry) {
+  const phrases = splitCatalogCapabilitySentences(entry?.capabilityStatementEn);
+  const shortAnswer = String(entry?.shortAnswerEn || '').trim();
+  if (shortAnswer) phrases.push(shortAnswer);
+  return phrases;
+}
+
+/**
  * @param {{
  *   capabilityStatementEn?: string,
  *   shortAnswerEn?: string,
@@ -52,9 +87,7 @@ export function resolveKbNearMatchThresholds(env = {}) {
  * @returns {string}
  */
 export function catalogEntryEmbeddingText(entry) {
-  const capability = String(entry?.capabilityStatementEn || '').trim();
-  const shortAnswer = String(entry?.shortAnswerEn || '').trim();
-  return [capability, shortAnswer].filter(Boolean).join('\n');
+  return catalogEntryEmbeddingPhrases(entry).join('\n');
 }
 
 /**
