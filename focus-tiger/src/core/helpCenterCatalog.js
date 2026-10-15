@@ -143,6 +143,13 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     kbTraceId: 'KB-FUNC-0020'
   }),
   Object.freeze({
+    id: 'KB-FUNC-0038',
+    sectionId: 'practice',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_BODY',
+    kbTraceId: 'KB-FUNC-0038'
+  }),
+  Object.freeze({
     id: 'KB-FUNC-0021',
     sectionId: 'practice',
     titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0021_TITLE',
@@ -258,6 +265,13 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0036_TITLE',
     bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0036_BODY',
     kbTraceId: 'KB-FUNC-0036'
+  }),
+  Object.freeze({
+    id: 'KB-FUNC-0037',
+    sectionId: 'start',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY',
+    kbTraceId: 'KB-FUNC-0037'
   }),
   Object.freeze({
     id: 'HELP-BUY-COLLECTIONS',
