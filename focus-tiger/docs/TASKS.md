@@ -545,6 +545,42 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `confide-mixed-emotion-then-product` · feature · 规格已出 · 未实现 · 待拍板 · 2026-10-15
+
+混合句「先接情绪、再答产品」合并回应。Brief `task-confide-mixed-emotion-then-product.md`（CR-45）。本支只文档：不改发送链、不调 0.01、不碰新封存。类级现网 vs 函数 A 表见 `confide-routing-live-vs-function-a-research.md`。本会话已见作废 b-v2 / b-v5，不参与最终过关文件。
+
+### `confide-routing-arbitration-v1` · feature · Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · #1222 已合 · b-v2/b-v5 已跑未过关已作废 · 额度用满 · 未切 live · 2026-10-15
+
+路由仲裁 v1：一次打分、一个决定。合并 Prompt 16 / 18、情绪否决、目录误命中。#1200 本机开关仅对照臂，切 live 时删除。权威 `task-briefs/task-confide-routing-arbitration-v1.md`。R-0 评测见 `PRINCIPLES.md`。
+
+### `confide-routing-intent-feasibility` · feature · 研究脚本已入库 · 未接线 · 0.01 未动 · 2026-10-15
+
+R 路由研究：作废 b-v2/b-v5 + 开发集 v2 上，同一向量做「在问功能 / 在倾诉」模板分组交叉验证，对照现网与函数 A。诚实空态 42 句里函数 A 失败句只报 A/B 计数。合并回应补条见 `task-confide-mixed-reply-mood-floor.md`。
+
+### `confide-safety-caliber-holdout-gates` · note · 本 PR · 口径与门闩 · 2026-10-15
+
+字面短语冻结。审计脚本 63/58 直接读标签。s-v1/s-v2/b-v2/b-v5 作废、额度用满。封存与打分带手写出题编号。
+
+### `confide-safety-routing-fix` · feature · 字面短语已冻结不再加 · s-v1 9/44 未过关已作废 · s-v2 已作废 · 安全额度用满 · 2026-10-15
+
+安全路由修复（CR-43）。第一步字面分类已合 #1226（夹具 46/63，误捕 1/35）。字面续补 #1230 开发集明确危机 ≥90%（57/63）、逃避误捕 ≤2/35 且不得为纯逃避句。关单独立盲测 s-v1（明确危机 ≥40；非危机 ≥40＝逃避 ≥20＋口语夸张或指向他人 ≥20；≥90% / 误捕 ≤2/40 且不得纯逃避或纯口语夸张；灰区只报告），与 a-v2 解耦；本实现会话不跑封存。语义危机层 Brief：`task-briefs/task-confide-semantic-crisis-layer.md`（CR-44），不夹带。权威 `task-briefs/task-confide-safety-routing-fix.md`。
+
+### `confide-class-blind-acceptance` · feature · sealed-a-v1 已作废 · 每文件 1 次 · 结果 JSON 改 ft-private · a-v2 未生成 · 2026-10-14
+
+Confide 问答按类验收（R-Confide-Class）。情绪开发集已入库。安全开发集已纳入 `audit:confide-acceptance-leak`（只防整句照抄；1 句因与封存盲测完全重复未入库）。`sealed-a-v1` 唯一真跑未过安全栏，文件作废。holdout 真跑：`npm run audit:mood-veto-holdout`。结果 JSON 默认 `~/Documents/ft-private/confide-mood-holdout-lab/`。信封校验：`npm run audit:mood-veto-holdout:validate`（#1213）。缺口计数：`npm run validate:confide-holdout-counts`（#1214）。额度：每文件一次，同一集最多 2 个文件；计数在 `~/Documents/ft-private/`。见 `task-briefs/task-confide-class-blind-acceptance.md`.
+
+### `confide-route-devset-zh-v2` · feature · 入库待合 · 2026-10-14
+
+路由开发集 zh v2（180 句）入库。作者本机 `~/Documents/ft-route-devset/v2.json`；仓库 SSOT `fixtures/confide-route-devset-zh-v2.json`。`rdev2-082` 已从过泛「开关在哪？」改写为「备份开关在菜单哪栏？」。整句进 `audit:confide-acceptance-leak`。不改倾诉回复。
+
+### `confide-safety-devset-c017-grey` · note · 夹具已改类 · 分母 63 · 未见分类器开工 · 2026-10-14
+
+`safedev-c017` 从明确危机改入灰区；计入分母 **63**。仓库夹具改名为 Brief 中的 `fixtures/confide-safety-devset-v1.json`。本会话见过开发集原文，不得再修安全分类器。
+
+### `confide-semantic-crisis-layer` · feature · 口头令已下 · 运行时进行中 · 2026-10-14
+
+安全路由第二步（CR-44）：语义危机层接到真实发送链。方案 S1。阈值默认余弦 0.78。日文 fail-open。开发集合计 ≥90% 须真 embedding 再锁。不改 safety-01。权威 `task-briefs/task-confide-semantic-crisis-layer.md`。
+
 ### `a3-parallel-list-census` · feature · PR #1181 · 待 CI 合 develop · 2026-10-13
 
 根因盘点 A3：全仓平行名单普查表写入 `root-cause-audit-2026-10-12.md` §5；玻璃叠层 SSOT + 契约单测；不做 A4、不做 A9 总表。
@@ -573,10 +609,6 @@ A7.3：抽出 `src/boot/boot-honesty-companion.js` 状态袋（Honesty UI / Comp
 
 根因盘点 A7：`main.js` `init()` 分段拆分。Brief 已锁；A7.1–A7.2 已合 develop。余下 A7.3–A7.6 按 `task-briefs/task-a7-init-split.md` 分刀。不与功能 PR 混线。
 
-### `confide-class-blind-acceptance` · feature · holdout 已接线 · 额度按文件+哈希 · 盲测仍须按缺口补句 · 2026-10-13
-
-Confide 问答按类验收（R-Confide-Class）。开发集已入库。holdout 真跑：`npm run audit:mood-veto-holdout`。信封校验：`npm run audit:mood-veto-holdout:validate`（#1213）。缺口计数：`npm run validate:confide-holdout-counts`（#1214）。额度按文件，计数在 `~/Documents/ft-private/`。见 `task-briefs/task-confide-class-blind-acceptance.md`.
-
 ### `confide-help-center-miss-fallback` · feature · 第一刀已合 #1183 · 第二刀 Brief 待点头 · 2026-10-13
 
 短答未命中时诚实空态改指 Help Center + hello@twinsology.com（#1183）。缺口主题第二刀见 `task-help-center-gap-articles.md`。Confide 检索帮助中心须第三刀另 Brief。
@@ -596,10 +628,6 @@ Electron 灰度：情绪/生活句被知识库诚实空态接走。日志证明 
 ### `confide-r0-eval-gate` · note · R-0 已写入 PRINCIPLES · CI 原句扫描已进 smoke · 2026-10-13
 
 冻结集不退步且盲测达标才许切 live。机器闸 `confideEvalGate.js`。扫描 `npm run lint:confide-original-utterance`。
-
-### `confide-routing-arbitration-v1` · feature · Brief 已合 #1208 · 类名映射补丁待合 · 禁止写发送链 · 切 live 另点头 · 2026-10-13
-
-路由仲裁 v1：一次打分、一个决定。合并 Prompt 16 / 18、情绪否决、目录误命中。#1200 本机开关仅对照臂，切 live 时删除。权威 `task-briefs/task-confide-routing-arbitration-v1.md`。R-0 评测见 `PRINCIPLES.md`。
 
 ### `confide-routing-followup` · feature · 清单在 develop（#1202）· R-0 与路由仲裁 v1 Brief 已出 · 日语项本轮放过 · 2026-10-13
 
