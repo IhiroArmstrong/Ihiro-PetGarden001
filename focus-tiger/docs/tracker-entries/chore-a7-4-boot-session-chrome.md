@@ -1,0 +1,1 @@
+| A7.4 boot Session chrome 状态袋 | 纯后端 | 仅单元测试覆盖 | 不是产品功能。验收的是启动仍 `__FT_APP_READY__`、A6 lint 帽子少 7 名，不代表 Sit / Arrival / Honesty 入口画面变了。`npm run lint:main-use-before-define`；`npm run test:e2e:startup`。不覆盖点测 Sit、Choose 后开表、Honesty 入口观感。 | — | — | — | `src/boot/boot-session-chrome.js` · `src/main.js` `init()` | 2026-10-15 |
