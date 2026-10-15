@@ -1,24 +1,24 @@
 # Task Brief · A7 `init()` 分段拆分
 
 > **状态（2026-10-13）**：**规格已锁** · Brief PR [#1190](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1190) 本回合刷新文案，与 `origin/develop` 对齐后合入。  
-> **落地进度（git 事实 · `origin/develop` `8badf027`）**：**A7.1 已合** [#1192](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1192) · **A7.2 已合** [#1199](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1199) · **A7.3 已合** [#1201](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1201) · **本支 A7.4**；待做 A7.5–A7.6。  
+> **落地进度（git 事实 · `origin/develop` `07734855`）**：**A7.1 已合** [#1192](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1192) · **A7.2 已合** [#1199](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1199) · **A7.3 已合** [#1201](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1201) · **A7.4 已合** [#1252](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1252) · **本支 A7.5**；待做 A7.6。  
 > **分刀类**：默认 **A**（调用顺序、`await` 顺序、第一幕占用与现网一致）。若某刀必须改 construct 相对 `await` / 第一幕的先后 → **升 B**，停下来改本 Brief 再动。  
 > **依赖**：A6 已合 [#1189](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1189)；A5 已合 [#1186](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1186)。  
 > **行号基线**：`src/main.js` 仍含大段 `init()`（约 6171 行文件 · 合入后以符号为准）；段 2–3 已抽到 `src/boot/boot-scene-anim.js` · `boot-moment-hosts.js`。
 
 ## 一句话目标
 
-把 `init()` 拆成按固定顺序调用的启动段。每段自己先声明再赋值，清掉 A6 那 23 个封顶（**现剩 16 名 / 57 次**，见下表）。一次只拆一段，不跟功能 PR 混在一起。
+把 `init()` 拆成按固定顺序调用的启动段。每段自己先声明再赋值，清掉 A6 那 23 个封顶（**本支后剩 1 名 / 2 次**，见下表）。一次只拆一段，不跟功能 PR 混在一起。
 
 ## 进度快照（2026-10-13 · develop）
 
 | 指标 | A6 起点 | 现 develop | A7 全线目标 |
 |---|---|---|---|
-| 豁免 `name` 数 | 23 | **5**（本支 A7.4 后） | 0 |
-| `main.js` 命中次数 | 67 | **38**（本支 A7.4 后） | 0 |
-| `src/boot/` 文件 | 0 | **4** 模块 + 单测 | 段 2–7 各模块（段 1 可暂留 `init()`） |
+| 豁免 `name` 数 | 23 | **1**（本支 A7.5 后） | 0 |
+| `main.js` 命中次数 | 67 | **2**（本支 A7.5 后） | 0 |
+| `src/boot/` 文件 | 0 | **5** 模块 + 单测 | 段 2–7 各模块（段 1 可暂留 `init()`） |
 
-**已落地文件**：`boot-scene-anim.js`（段 2）· `boot-moment-hosts.js`（段 3）· `boot-honesty-companion.js`（段 4）· 本支 `boot-session-chrome.js`（段 5）。`init()` 内仍保留 `onboardingHintHost` box（#1139 / 段 6 前不可 TDZ）。
+**已落地文件**：`boot-scene-anim.js`（段 2）· `boot-moment-hosts.js`（段 3）· `boot-honesty-companion.js`（段 4）· `boot-session-chrome.js`（段 5）· 本支 `boot-ambient-hints.js`（段 6）。`init()` 内仍保留 `onboardingHintHost` box（#1139；overlayBusy 不得直接读晚绑定）。
 
 ## 为什么现在拆（2026-09-06 盘点仍有效）
 
@@ -60,8 +60,8 @@ A6 已经拦住**新的**先用后定义。A7.1 / A7.2 证明分刀可审、帽�
 | **2** Scene + occupancy | `boot-scene-anim.js` | **已合 #1192** | `isSceneAnimOverlayBusy` / `tryPlaySceneAnim` / dispatch / occupancy / 信使 / **提醒横幅构造** | 段 1 精灵与情绪 | `sceneAnimationDispatch` · `spriteOccupancy` · `inAppReminderBannerUI` |
 | **3** Moments hosts | `boot-moment-hosts.js` | **已合 #1199** | Recover 卡、罗盘、见证圈、玻璃叠层助手、Support **助手**（`new SupportYinModalUI` 在本段末） | 段 2 occupancy | `calmActionRecoverCardUI` · `fiveMomentsCompassUI` · `focusCircleWitnessChrome` · `supportYinModalUI` |
 | **4** Honesty + companion | `boot-honesty-companion.js` | **已合 #1201** | Honesty UI/控制器、Companion 点选、微仪式 UI、Arrival **占位** `null` | 段 3 Support 实例 | `honestyCheckInUI` · `companionModePicker` · `microRitualUI` · `arrivalPractice`（先 null） |
-| **5** Session chrome | `boot-session-chrome.js` | **本支 A7.4** | `SessionUiGate`、`createSessionChromeSync`、`postChooseChrome`、Arrival 门闩旗 | 段 4 picker / Honesty | `sessionUiGate` · `postChooseChrome` · `syncArrivalGateReady` · `syncHonestyIdleEntry` · `pendingAutoStartMode` · `arrivalChoseThisRun` · `suppressCompanionOpenAfterNod` |
-| **6** Ambient + hints | `boot-ambient-hints.js` | 待 A7.5 | 环境声、session cues、`onboardingHints`（保留 hint host box） | 段 5 gate | `ambientSoundscape` · `sessionCues` · `onboardingHints` · `pendingChoose` |
+| **5** Session chrome | `boot-session-chrome.js` | **已合 #1252** | `SessionUiGate`、`createSessionChromeSync`、`postChooseChrome`、Arrival 门闩旗 | 段 4 picker / Honesty | `sessionUiGate` · `postChooseChrome` · `syncArrivalGateReady` · `syncHonestyIdleEntry` · `pendingAutoStartMode` · `arrivalChoseThisRun` · `suppressCompanionOpenAfterNod` |
+| **6** Ambient + hints | `boot-ambient-hints.js` | **本支 A7.5** | 环境声、session cues、`onboardingHints`（保留 hint host box） | 段 5 gate | `ambientSoundscape` · `sessionCues` · `onboardingHints` · `pendingChoose` |
 | **7** Arrival + Focus + ready | `boot-arrival-focus-ready.js` | 待 A7.6 | Arrival UI 赋值、`FocusInput`、第一幕占用、品味预取、摘遮罩、`__FT_APP_READY__ = true` | 段 6 hints | `arrivalPractice`（赋值）· `focusInput` |
 
 段 1 可与段 2 同刀文件化，只因为段 1 **没有** A6 豁免名（A7.1 未做段 1 文件化，可留给后续整线收尾）。禁止把段 6 的 `OnboardingHintsUI` 构造提前到 sprite preload 之前。
@@ -75,13 +75,13 @@ A6 已经拦住**新的**先用后定义。A7.1 / A7.2 证明分刀可审、帽�
 | **A7.1** 段 2 | **已合 #1192** | `sceneAnimationDispatch` (1) · `spriteOccupancy` (1) · `inAppReminderBannerUI` (2) — **已删行** |
 | **A7.2** 段 3 | **已合 #1199** | `calmActionRecoverCardUI` (1) · `fiveMomentsCompassUI` (1) · `focusCircleWitnessChrome` (1) · `supportYinModalUI` (3) — **已删行** |
 | **A7.3** 段 4 | **已合 #1201** | `honestyCheckInUI` (2) · `companionModePicker` (4) · `microRitualUI` (1) · `arrivalPractice` (1) — **已删行** |
-| **A7.4** 段 5 | 本支 | `sessionUiGate` (5) · `postChooseChrome` (1) · `syncArrivalGateReady` (1) · `syncHonestyIdleEntry` (1) · `pendingAutoStartMode` (1) · `arrivalChoseThisRun` (1) · `suppressCompanionOpenAfterNod` (1) |
-| **A7.5** 段 6 | 待开工 | `ambientSoundscape` (13) · `sessionCues` (9) · `onboardingHints` (13) · `pendingChoose` (1) |
+| **A7.4** 段 5 | **已合 #1252** | `sessionUiGate` (5) · `postChooseChrome` (1) · `syncArrivalGateReady` (1) · `syncHonestyIdleEntry` (1) · `pendingAutoStartMode` (1) · `arrivalChoseThisRun` (1) · `suppressCompanionOpenAfterNod` (1) — **已删行** |
+| **A7.5** 段 6 | 本支 | `ambientSoundscape` (13) · `sessionCues` (9) · `onboardingHints` (13) · `pendingChoose` (1) |
 | **A7.6** 段 7 | 待开工 | `focusInput` (2) |
 
 全部清零后：豁免表为空数组；夹具仍必须报 #1139 写法；`src/main.js` 零命中。
 
-**`onboardingHints`（#1139 类）**：继续用 **box**（`onboardingHintHost`）给 overlayBusy 早读；`let onboardingHints = null` 必须在 `isSceneAnimOverlayBusy` **所在段的顶**，`new OnboardingHintsUI` 仍在段 6。禁止让 overlayBusy 再直接读可能 TDZ 的绑定。
+**`onboardingHints`（#1139 类）**：继续用 **box**（`onboardingHintHost`）给 overlayBusy 早读；本支把 `onboardingHints` 放进 `bootAmbientHints`，`new OnboardingHintsUI` 仍在段 6 现网位置。禁止让 overlayBusy 再直接读晚绑定。
 
 ## 分刀（每刀一个 PR）
 
@@ -91,8 +91,9 @@ A6 已经拦住**新的**先用后定义。A7.1 / A7.2 证明分刀可审、帽�
 | **A7.1** | **已合 #1192** | 段 2 → `boot-scene-anim.js` | 已验证 |
 | **A7.2** | **已合 #1199** | 段 3 → `boot-moment-hosts.js` | 已验证 |
 | **A7.3** | **已合 #1201** | 段 4 → `boot-honesty-companion.js` | 已验证 |
-| **A7.4** | 本支 | 段 5 → `boot-session-chrome.js` | `lint:main-use-before-define` + `test:smoke` + `test:e2e:startup`；CI `test:pr-smoke` |
-| **A7.5–A7.6** | 待开工 | 按上表一段一刀 | 同上；PR 写明帽子前后数字 |
+| **A7.4** | **已合 #1252** | 段 5 → `boot-session-chrome.js` | 已验证 |
+| **A7.5** | 本支 | 段 6 → `boot-ambient-hints.js` | `lint:main-use-before-define` + `test:smoke` + `test:e2e:startup`；CI `test:pr-smoke` |
+| **A7.6** | 待开工 | 段 7 → `boot-arrival-focus-ready.js` | 同上；PR 写明帽子前后数字 |
 
 禁止：两段进同一功能 PR；「顺便」改 Confide / 菜单文案 / 付款。
 
@@ -120,12 +121,12 @@ Brief 无用户路径。后续分刀若保持调用顺序：强度 / 语气 / �
 
 ## 已好清单
 
-- A7.1 / A7.2 / A7.3 已合 develop；`src/boot/` 三段 + 单测在主干；本支加段 5
+- A7.1 / A7.2 / A7.3 / A7.4 已合 develop；`src/boot/` 四段 + 单测在主干；本支加段 6
 - A6 lint 仍进 `test:smoke`；#1139 夹具仍必须红
 - A5 `pre-push` 启动冒烟仍跑（有 `src` 的刀不可 docs-skip）
 - A2/A3/A4 菜单查表 / 玻璃卡登记 / 缺 handler 抛错不回退
 - 品味预取、Loading 遮罩、第一幕 occupancy 时机不改
-- 豁免表只减不增（本支后：**5 名 / 38 次**）
+- 豁免表只减不增（本支后：**1 名 / 2 次**）
 - 不与 Quiet Line / YPE / Confide / 商品 PR 混线
 
 ## 验收
@@ -133,7 +134,7 @@ Brief 无用户路径。后续分刀若保持调用顺序：强度 / 语气 / �
 ### Brief PR #1190（本回合）
 
 1. 七段顺序、依赖、豁免地图与 **develop 已合刀** 一致，不宣称「点头前禁止改 boot」。
-2. 余下 A7.5–A7.6 仍按本表分刀；不得用过期「草稿待 PO」阻塞已开工的 A7.4。
+2. 余下 A7.6 仍按本表分刀；不得用过期「草稿待 PO」阻塞已开工的 A7.5。
 
 ### 每一刀代码 PR
 
