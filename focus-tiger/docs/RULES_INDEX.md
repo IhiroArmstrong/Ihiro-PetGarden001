@@ -88,6 +88,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `chat-openable-file-links` | 用户可见回复里文件须可点开、可定位（禁止只写反引号路径） | `WORKFLOW.md` | 用户可见回复：文件须可点开、可定位（强制） |
 | `batch-before-human` | 减少人工测试与审核（能终端批量就不要整表请人） | `.cursor/rules/testing-strategy.mdc` | 减少人工测试与审核（batch-before-human · 强制） |
 | `confide-class-blind` | Confide 按类盲测与冻表分工（R-Confide-Class） | `.cursor/rules/testing-strategy.mdc` | Confide 按类盲测与冻表分工（confide-class-blind · 强制） |
+| `confide-en-first-qa` | Confide 功能测试英文第一优先 | `focus-tiger/docs/PRINCIPLES.md` | Confide 评测红线（R-0）· 评测语言 |
 
 <!-- rules-authority-index:end -->
 
@@ -145,6 +146,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
 | `chat-openable-file-links` | 「文件须可点开、可定位见 `WORKFLOW.md`」；core / user-action-steps / alwaysApply 摘要可一行引用 | 主张反引号路径就算链接；只给链接不写绝对路径；完整复述四条必须；把代码围栏当打开文件的替代；静默复制到 Desktop 不先问 |
 | `batch-before-human` | 「减少人工测试与审核见 `testing-strategy.mdc`」；core 按需索引 / user-action-steps 可一行引用 | 已有批量命令仍把整表交给人逐条点；把离线筛选说成口径已上涨 |
+| `confide-en-first-qa` | 「Confide 功能测试英文第一优先见 `PRINCIPLES.md` R-0 评测语言」；`testing-strategy.mdc` / 路由跟进清单可一行引用 | 主张只测中文即可关单；主张 CR-02「英文这次不改」等于英文空态可长期接受；完整复述评测语言条 |
 
 **审批人数**：当前**没有**单独的「PR 须 N 人 approve」规则；合并 `main` 的人工闸门是 `WORKFLOW.md`「项目负责人本人在 GitHub 网页上执行」。若以后要加 branch protection 人数，只改 `WORKFLOW.md` 并更新本表。
 

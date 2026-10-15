@@ -2014,6 +2014,22 @@ export const RULE_AUTHORITY_TOPICS = [
     restatementFingerprints: [/safety_leak_to_gate/, /interrogative-positive 通过率/],
     restatementThreshold: 2,
     forbiddenOutsideSsot: []
+  },
+  {
+    id: 'confide-en-first-qa',
+    title: 'Confide 功能测试英文第一优先',
+    ssotPath: 'focus-tiger/docs/PRINCIPLES.md',
+    ssotSection: 'Confide 评测红线（R-0）· 评测语言',
+    ssotMustContain: [
+      /评测语言（硬 · 2026-10-15）/,
+      /英文是第一优先、第一重要/,
+      /confide-en-first-qa/
+    ],
+    topicSignals: [/confide-en-first-qa/, /英文是第一优先、第一重要/],
+    mustCite: [/PRINCIPLES\.md|confide-en-first-qa/],
+    restatementFingerprints: [/不得用中文抽测代替英文主路径/],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: []
   }
 ];
 
