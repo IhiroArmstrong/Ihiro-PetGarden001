@@ -104,6 +104,12 @@ import {
   mountSessionUiGate,
   attachSessionChromeSync
 } from './boot/boot-session-chrome.js';
+import {
+  createBootAmbientHintsState,
+  mountAmbientSoundscape,
+  mountSessionCues,
+  mountOnboardingHints
+} from './boot/boot-ambient-hints.js';
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
@@ -1001,6 +1007,7 @@ async function init() {
   const bootMomentHosts = createBootMomentHostsState();
   const bootHonestyCompanion = createBootHonestyCompanionState();
   const bootSessionChrome = createBootSessionChromeState();
+  const bootAmbientHints = createBootAmbientHintsState();
   const todayDirectionOptionsBannerUI = new TodayDirectionOptionsBannerUI(
     document.getElementById('ui-overlay'),
     {
@@ -1384,7 +1391,7 @@ async function init() {
         syncInAppReminderBanner();
       },
       onOpen: () => {
-        onboardingHints?.markSeen('in-app-reminder');
+        bootAmbientHints.onboardingHints?.markSeen('in-app-reminder');
       },
       onClose: () => {
         document.body.classList.remove('ft-narrow-stage-reminder');
@@ -1398,14 +1405,14 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
       onOpen: () => {
-        onboardingHints?.markSeen('language-preference');
+        bootAmbientHints.onboardingHints?.markSeen('language-preference');
       },
       onClose: () => {
         document.body.classList.remove('ft-narrow-stage-language');
         document.body.classList.remove('ft-wide-stage-language');
       },
       onLocaleChosen: () => {
-        onboardingHints?.markSeen('language-preference');
+        bootAmbientHints.onboardingHints?.markSeen('language-preference');
       }
     })
   );
@@ -1698,16 +1705,16 @@ async function init() {
     onClose: () => syncIdleYinTap(),
     onPracticeStart: () => {
       void (async () => {
-        const preferred = ambientSoundscape.getPreferredTrackId();
+        const preferred = bootAmbientHints.ambientSoundscape.getPreferredTrackId();
         const trackId =
           preferred === AMBIENT_TRACK_OFF
             ? DEFAULT_AMBIENT_TRACK_ID
             : preferred;
-        await ambientSoundscape.playTrackEphemeral(trackId);
+        await bootAmbientHints.ambientSoundscape.playTrackEphemeral(trackId);
       })();
     },
     onPracticeEnd: () => {
-      ambientSoundscape.stopPlaybackEphemeral();
+      bootAmbientHints.ambientSoundscape.stopPlaybackEphemeral();
     }
   });
   groundExerciseChoiceUI = new GroundExerciseChoiceUI(overlayRoot, {
@@ -2156,7 +2163,7 @@ async function init() {
         bootSessionChrome.pendingAutoStartMode = null;
         bootSessionChrome.arrivalChoseThisRun = false;
         bootSessionChrome.suppressCompanionOpenAfterNod = false;
-        pendingChoose = null;
+        bootAmbientHints.pendingChoose = null;
         bootSessionChrome.postChooseChrome.pending = false;
         bootSessionChrome.syncArrivalGateReady(false);
       }
@@ -2166,8 +2173,8 @@ async function init() {
       bootHonestyCompanion.companionModePicker.hide();
       focusDurationPicker?.hide();
       pendingFocusDurationMode = null;
-      onboardingHints?.markSeen('quick-start');
-      onboardingHints?.markSeen('micro-ritual');
+      bootAmbientHints.onboardingHints?.markSeen('quick-start');
+      bootAmbientHints.onboardingHints?.markSeen('micro-ritual');
       beginMicroRitualChrome();
       bootHonestyCompanion.microRitualUI.selectDurationAndStart(action.minutes);
       resyncSessionChrome();
@@ -2695,7 +2702,7 @@ async function init() {
         focusCoinsStore.markLifetime({ honestyWake: true });
       }
       bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
-      onboardingHints?.markSeen('honesty-optional');
+      bootAmbientHints.onboardingHints?.markSeen('honesty-optional');
       const streak = practiceDaysStore.getRecentStreakDays();
       const nodeId = milestoneGlowStore.claimOffer(streak);
       const revealBridge = () => {
@@ -2808,7 +2815,7 @@ async function init() {
       ) {
         return;
       }
-      onboardingHints?.markSeen('micro-ritual');
+      bootAmbientHints.onboardingHints?.markSeen('micro-ritual');
       beginMicroRitualChrome();
       bootHonestyCompanion.microRitualUI.openDurationPicker();
       resyncSessionChrome();
@@ -2833,17 +2840,17 @@ async function init() {
           freezeUntilCrossFadeEnds: true
         });
       }
-      sessionCues.preload();
-      sessionCues.playStart({ ambient: ambientSoundscape });
-      sessionCues.startIntervalSession();
+      bootAmbientHints.sessionCues.preload();
+      bootAmbientHints.sessionCues.playStart({ ambient: bootAmbientHints.ambientSoundscape });
+      bootAmbientHints.sessionCues.startIntervalSession();
       // Ephemeral ambient: do NOT startSession / presence (Focus-bound path).
       void (async () => {
-        const preferred = ambientSoundscape.getPreferredTrackId();
+        const preferred = bootAmbientHints.ambientSoundscape.getPreferredTrackId();
         const trackId =
           preferred === AMBIENT_TRACK_OFF
             ? DEFAULT_AMBIENT_TRACK_ID
             : preferred;
-        await ambientSoundscape.playTrackEphemeral(trackId);
+        await bootAmbientHints.ambientSoundscape.playTrackEphemeral(trackId);
       })();
       resyncSessionChrome();
       // startBreath already set phase=breath — sync tips only after isOpen()
@@ -2875,12 +2882,12 @@ async function init() {
         freezeUntilCrossFadeEnds: true
       });
       void (async () => {
-        const preferred = ambientSoundscape.getPreferredTrackId();
+        const preferred = bootAmbientHints.ambientSoundscape.getPreferredTrackId();
         const trackId =
           preferred === AMBIENT_TRACK_OFF
             ? DEFAULT_AMBIENT_TRACK_ID
             : preferred;
-        await ambientSoundscape.playTrackEphemeral(trackId);
+        await bootAmbientHints.ambientSoundscape.playTrackEphemeral(trackId);
       })();
       resyncSessionChrome();
       syncOnboardingAutoHints();
@@ -2908,8 +2915,8 @@ async function init() {
 
   function cancelVoiceStartedFocus() {
     if (stateManager.state !== STATES.FOCUSING) return;
-    sessionCues.cancelPending();
-    sessionCues.stopIntervalSession();
+    bootAmbientHints.sessionCues.cancelPending();
+    bootAmbientHints.sessionCues.stopIntervalSession();
     endFocusChrome();
     focusSession.stop();
     bootSessionChrome.sessionUiGate.setCompletionPending(false);
@@ -3469,7 +3476,7 @@ async function init() {
   }
 
   function endRitualFlowChrome() {
-    ambientSoundscape.stopPlaybackEphemeral();
+    bootAmbientHints.ambientSoundscape.stopPlaybackEphemeral();
     lightProgression.endBreath({ releaseDolly: true });
     lightProgression.clearArrivalEffects();
     bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
@@ -3552,7 +3559,7 @@ async function init() {
    */
   function completeRitualFlow(ritualId, selections, ritualSessionId) {
     endBreathLanternPresence();
-    ambientSoundscape.stopPlaybackEphemeral();
+    bootAmbientHints.ambientSoundscape.stopPlaybackEphemeral();
     const config = getRitualConfig(ritualId);
     ritualCompletionStore.recordCompletion(ritualId, { selections });
     const storage =
@@ -3633,12 +3640,12 @@ async function init() {
 
   function completeMicroRitual() {
     endBreathLanternPresence();
-    sessionCues.stopIntervalSession();
+    bootAmbientHints.sessionCues.stopIntervalSession();
     const stopAmbientAfterEndCue = () => {
-      ambientSoundscape.stopPlaybackEphemeral();
+      bootAmbientHints.ambientSoundscape.stopPlaybackEphemeral();
     };
-    const playedEndCue = sessionCues.playEnd({
-      ambient: ambientSoundscape,
+    const playedEndCue = bootAmbientHints.sessionCues.playEnd({
+      ambient: bootAmbientHints.ambientSoundscape,
       onCueEnded: stopAmbientAfterEndCue
     });
     if (!playedEndCue) {
@@ -3720,9 +3727,9 @@ async function init() {
 
   function leaveMicroRitualQuietly() {
     endBreathLanternPresence();
-    sessionCues.cancelPending();
-    sessionCues.stopIntervalSession();
-    ambientSoundscape.stopPlaybackEphemeral();
+    bootAmbientHints.sessionCues.cancelPending();
+    bootAmbientHints.sessionCues.stopIntervalSession();
+    bootAmbientHints.ambientSoundscape.stopPlaybackEphemeral();
     endMicroRitualChrome();
     emotionController.playEmotion('idle', {
       crossFadeMs: CAPCUT_DISSOLVE_MS,
@@ -3738,8 +3745,8 @@ async function init() {
     reflectionOpen(options);
     resyncSessionChrome();
     // 关掉 Rise/Sound 等会话中提示，只留 Reflection（锚在面板上方）
-    onboardingHints?.syncVisibleAutos(['reflection']);
-    requestAnimationFrame(() => onboardingHints?.repositionAll());
+    bootAmbientHints.onboardingHints?.syncVisibleAutos(['reflection']);
+    requestAnimationFrame(() => bootAmbientHints.onboardingHints?.repositionAll());
     maybeOfferMomentWhisper('reflect', { delayMs: 400 });
   };
   const reflectionOnDone = reflectionMoment.onDone;
@@ -3747,7 +3754,7 @@ async function init() {
     reflectionOnDone?.(result, hasAnyAnswer);
     commitPendingJourneyDraft(hasAnyAnswer);
     resyncSessionChrome();
-    onboardingHints?.markSeen('reflection');
+    bootAmbientHints.onboardingHints?.markSeen('reflection');
     hasEndedAnySession = true;
     // Rise 过渡播完后：回 Idle 闭目坐禅（零完成也不再落入 Sleeping）。
     // RISE_HOLD 会挡住额头点击；关面板时释放，即使 emotion key 已空。
@@ -3777,7 +3784,7 @@ async function init() {
   bootHonestyCompanion.honestyCheckInUI.showDurationChoices = () => {
     bootHonestyCompanion.companionModePicker.hide();
     bootHonestyCompanion.microRitualUI?.hideIdleEntry();
-    onboardingHints?.markSeen('honesty-optional');
+    bootAmbientHints.onboardingHints?.markSeen('honesty-optional');
     honestyShowDuration();
     resyncSessionChrome();
     syncOnboardingAutoHints();
@@ -3803,20 +3810,24 @@ async function init() {
   });
 
   const acrossToolsIdleGuard = new AcrossToolsIdleGuard();
-  const ambientSoundscape = new AmbientSoundscapeController({
-    auditionMs: parseAmbientAuditionMs(
-      typeof location !== 'undefined' ? location.search : ''
-    )
-  });
-  const sessionCues = new SessionCueController();
-  sessionCues.preload();
+  mountAmbientSoundscape(
+    bootAmbientHints,
+    {
+      auditionMs: parseAmbientAuditionMs(
+        typeof location !== 'undefined' ? location.search : ''
+      )
+    },
+    { Controller: AmbientSoundscapeController }
+  );
+  mountSessionCues(bootAmbientHints, { Cues: SessionCueController });
+  bootAmbientHints.sessionCues.preload();
   // Avoid TDZ: AmbientSoundscapeUI paints during construct — use onboardingHintHost (declared with idle tap).
   // 挂 body：避免落在 pointer-events:none 的 ui-overlay 栈内，并压过调试栏
   const ambientSoundscapeUI = new AmbientSoundscapeUI(
     document.body,
-    ambientSoundscape,
+    bootAmbientHints.ambientSoundscape,
     {
-      sessionCues,
+      sessionCues: bootAmbientHints.sessionCues,
       onPanelOpened: () => {
         idleSecondaryPanelHost.close({ except: 'soundscape' });
         onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
@@ -3838,7 +3849,7 @@ async function init() {
         onboardingHintHost.hints?.syncDiscoveryDots();
       },
       onLockedDeepTrack: (trackId) => {
-        void ambientSoundscape
+        void bootAmbientHints.ambientSoundscape
           .startDeepAudition(trackId, {
             onEnded: ({ reason }) => {
               ambientSoundscapeUI.renderAfterAudition?.();
@@ -3881,8 +3892,8 @@ async function init() {
   idleChrome.setHandlers({
     isGrowthCardOverlayActive: () => isGrowthCardOverlayActive(),
     isHintUnread: (hintId) => {
-      if (!onboardingHints?.store) return false;
-      const store = onboardingHints.store;
+      if (!bootAmbientHints.onboardingHints?.store) return false;
+      const store = bootAmbientHints.onboardingHints.store;
       if (isClickTriggerHint(hintId)) return !store.isDone(hintId);
       return !store.isSeen(hintId);
     },
@@ -4088,9 +4099,6 @@ async function init() {
     }
   });
 
-  /** @type {OnboardingHintsUI | null} */
-  let onboardingHints = null;
-
   function getOnboardingScene() {
     const arrivalPhase = bootHonestyCompanion.arrivalPractice?.getStep?.() ?? null;
     const honestyEntry = document.getElementById('honesty-idle-entry');
@@ -4145,22 +4153,22 @@ async function init() {
 
   let _syncingOnboardingHints = false;
   function syncOnboardingAutoHints() {
-    if (!onboardingHints || _syncingOnboardingHints) return;
+    if (!bootAmbientHints.onboardingHints || _syncingOnboardingHints) return;
     _syncingOnboardingHints = true;
     try {
       const ids = resolveAutoHintIds(getOnboardingScene());
-      onboardingHints.syncVisibleAutos(ids);
+      bootAmbientHints.onboardingHints.syncVisibleAutos(ids);
       // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
       requestAnimationFrame(() => {
-        onboardingHints?.repositionAll();
-        onboardingHints?.syncDiscoveryDots();
+        bootAmbientHints.onboardingHints?.repositionAll();
+        bootAmbientHints.onboardingHints?.syncDiscoveryDots();
       });
     } finally {
       _syncingOnboardingHints = false;
     }
   }
 
-  onboardingHints = new OnboardingHintsUI(document.body, {
+  mountOnboardingHints(bootAmbientHints, document.body, {
     store: createHintsSeenStore(),
     getScene: getOnboardingScene,
     onPurposeOpen: () => {
@@ -4177,8 +4185,8 @@ async function init() {
     onWellnessFirstDismiss: () => {
       scheduleFirstCardOffers();
     }
-  });
-  onboardingHintHost.hints = onboardingHints;
+  }, { HintsUI: OnboardingHintsUI });
+  onboardingHintHost.hints = bootAmbientHints.onboardingHints;
   const { closeIdleSecondaryPanels } = createIdleSecondaryPanelCoordinator({
     membershipUnlockUI,
     getOnboardingHints: () => onboardingHintHost.hints,
@@ -4188,7 +4196,7 @@ async function init() {
   idleSecondaryPanelHost.close = closeIdleSecondaryPanels;
   // Hints e2e (pulse ownership / clear seen) needs this in vite preview (DEV=false),
   // same contract as `__ambientSoundscape` / `__honestyBridge`.
-  window.__onboardingHints = onboardingHints;
+  window.__onboardingHints = bootAmbientHints.onboardingHints;
   window.__wellnessDisclaimer = {
     hasSeen: () =>
       hasSeenWellnessDisclaimer(
@@ -4198,7 +4206,7 @@ async function init() {
       markWellnessDisclaimerSeen(
         typeof localStorage !== 'undefined' ? localStorage : null
       ),
-    openFirst: () => onboardingHints?.openWellnessFirstCard?.()
+    openFirst: () => bootAmbientHints.onboardingHints?.openWellnessFirstCard?.()
   };
 
   // Reminder / companion e2e hooks — must work in `vite preview` (DEV=false),
@@ -4207,9 +4215,9 @@ async function init() {
   window.__companionModePicker = bootHonestyCompanion.companionModePicker;
   // Ambient e2e (mute↔resume / Focusing track audible) needs these in
   // `vite preview` production builds — same contract as `__honestyBridge`.
-  window.__ambientSoundscape = ambientSoundscape;
+  window.__ambientSoundscape = bootAmbientHints.ambientSoundscape;
   window.__ambientSoundscapeUI = ambientSoundscapeUI;
-  window.__sessionCues = sessionCues;
+  window.__sessionCues = bootAmbientHints.sessionCues;
   // Recover Reset e2e injects passive refocus in vite preview (DEV=false).
   window.__mindfulReminderController = mindfulReminderController;
   if (import.meta.env.DEV) {
@@ -4243,8 +4251,6 @@ async function init() {
       )
   };
 
-  /** @type {{ text: string, source: 'icon' | 'typed' } | null} */
-  let pendingChoose = null;
   /** @type {string} 本次会话 Choose 内容；达标与未达标结束均回显 */
   let currentSessionIntention = '';
   /** @type {'icon' | 'typed'} */
@@ -4263,7 +4269,7 @@ async function init() {
           markPresenceSignalsDisclosureSeen(storage);
         }
         lightProgression.onNoticeSelected();
-        onboardingHints?.markSeen('notice');
+        bootAmbientHints.onboardingHints?.markSeen('notice');
         syncOnboardingAutoHints();
         return showDisclosure;
       },
@@ -4276,18 +4282,18 @@ async function init() {
           crossFadeMs: CAPCUT_DISSOLVE_MS,
           freezeUntilCrossFadeEnds: true
         });
-        onboardingHints?.markSeen('notice');
-        onboardingHints?.maybeShowAuto('breathing');
+        bootAmbientHints.onboardingHints?.markSeen('notice');
+        bootAmbientHints.onboardingHints?.maybeShowAuto('breathing');
       },
       onAfterBreath: () => {
         // 只收呼吸光环，保持 Dolly 推近至合十→idle 淡入完成，避免缓缓拉回造成跳动。
         lightProgression.endBreath({ releaseDolly: false });
-        onboardingHints?.markSeen('breathing');
+        bootAmbientHints.onboardingHints?.markSeen('breathing');
         syncOnboardingAutoHints();
       },
       onChooseConfirmed: () => {
         lightProgression.onChooseConfirmed();
-        onboardingHints?.markSeen('choose');
+        bootAmbientHints.onboardingHints?.markSeen('choose');
       },
       onWelcome: () => {
         // 若仍定格在 dormantWake，playEmotion 会自动注入 CapCut，避免硬切微笑。
@@ -4335,7 +4341,7 @@ async function init() {
         bootSessionChrome.pendingAutoStartMode = null;
         bootSessionChrome.arrivalChoseThisRun = false;
         bootSessionChrome.suppressCompanionOpenAfterNod = false;
-        pendingChoose = null;
+        bootAmbientHints.pendingChoose = null;
         bootSessionChrome.postChooseChrome.pending = false;
         calmActionArriveCardUI.resetFlow();
         bootSessionChrome.syncArrivalGateReady(false);
@@ -4345,7 +4351,7 @@ async function init() {
         emotionController.playEmotion('idle');
       },
       onReady: (info = {}) => {
-        pendingChoose = bootHonestyCompanion.arrivalPractice.getChooseResult();
+        bootAmbientHints.pendingChoose = bootHonestyCompanion.arrivalPractice.getChooseResult();
         // 本轮 Arrival 结果立刻闩上：有 Choose 则锁定；Skip/未选则清空。
         // 勿等到 beginFocus 才写入——二次 beginFocus 曾用 `?? ''` 把已选意图抹掉。
         const latched = resolveSessionIntentionLatch(
@@ -4353,7 +4359,7 @@ async function init() {
             text: currentSessionIntention,
             source: currentIntentionSource
           },
-          pendingChoose,
+          bootAmbientHints.pendingChoose,
           { clearIfEmpty: true }
         );
         currentSessionIntention = latched.text;
@@ -4363,13 +4369,13 @@ async function init() {
           awardFocusCoins({ kind: GRANT_KIND.ARRIVE });
         }
         bootSessionChrome.syncArrivalGateReady(true);
-        onboardingHints?.markSeen('notice');
-        onboardingHints?.markSeen('breathing');
-        onboardingHints?.markSeen('choose');
-        onboardingHints?.markSeen('how-shall-we-sit');
-        onboardingHints?.markSeen('sit-button');
-        onboardingHints?.markSeen('dormant-open');
-        onboardingHints?.markSeen('honesty-optional');
+        bootAmbientHints.onboardingHints?.markSeen('notice');
+        bootAmbientHints.onboardingHints?.markSeen('breathing');
+        bootAmbientHints.onboardingHints?.markSeen('choose');
+        bootAmbientHints.onboardingHints?.markSeen('how-shall-we-sit');
+        bootAmbientHints.onboardingHints?.markSeen('sit-button');
+        bootAmbientHints.onboardingHints?.markSeen('dormant-open');
+        bootAmbientHints.onboardingHints?.markSeen('honesty-optional');
         const resumeMode = bootSessionChrome.pendingAutoStartMode;
         bootSessionChrome.pendingAutoStartMode = null;
         const beginNow = bootSessionChrome.sessionUiGate.shouldBeginFocusOnArrivalReady({
@@ -4550,7 +4556,7 @@ async function init() {
     bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
     bootHonestyCompanion.microRitualUI?.hideIdleEntry();
     // 新一轮 Arrival：清掉上场未消费的 Choose，避免错挂到本场 Reflection
-    pendingChoose = null;
+    bootAmbientHints.pendingChoose = null;
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
     bootSessionChrome.arrivalChoseThisRun = false;
@@ -4563,13 +4569,13 @@ async function init() {
     bootSessionChrome.postChooseChrome.pending = false;
     bootSessionChrome.syncArrivalGateReady(false);
     bootHonestyCompanion.companionModePicker.hide();
-    onboardingHints?.markSeen('sit-button');
-    onboardingHints?.markSeen('how-shall-we-sit');
-    onboardingHints?.markSeen('dormant-open');
-    onboardingHints?.markSeen('honesty-optional');
+    bootAmbientHints.onboardingHints?.markSeen('sit-button');
+    bootAmbientHints.onboardingHints?.markSeen('how-shall-we-sit');
+    bootAmbientHints.onboardingHints?.markSeen('dormant-open');
+    bootAmbientHints.onboardingHints?.markSeen('honesty-optional');
     bootHonestyCompanion.arrivalPractice.start();
     calmActionArriveStore.arm();
-    onboardingHints?.hideWellnessFirstCard({ markSeen: true, notify: false });
+    bootAmbientHints.onboardingHints?.hideWellnessFirstCard({ markSeen: true, notify: false });
     resyncSessionChrome();
     bootSessionChrome.syncHonestyIdleEntry();
     syncOnboardingAutoHints();
@@ -4607,7 +4613,7 @@ async function init() {
       syncOnboardingAutoHints();
     },
     onAccept: () => {
-      onboardingHints?.markSeen('honesty-bridge');
+      bootAmbientHints.onboardingHints?.markSeen('honesty-bridge');
       if (
         !bootSessionChrome.sessionUiGate.canStartArrivalFromChrome({
           isFocusing: stateManager.state === STATES.FOCUSING,
@@ -4622,7 +4628,7 @@ async function init() {
       startArrivalPracticeFromChrome();
     },
     onDecline: () => {
-      onboardingHints?.markSeen('honesty-bridge');
+      bootAmbientHints.onboardingHints?.markSeen('honesty-bridge');
       emotionController.playEmotion('idle');
       bootSessionChrome.syncHonestyIdleEntry();
       syncOnboardingAutoHints();
@@ -4637,11 +4643,11 @@ async function init() {
   }
 
   function endFocusChrome({ stopAmbient = true } = {}) {
-    ambientSoundscape.clearSitPauseHold();
+    bootAmbientHints.ambientSoundscape.clearSitPauseHold();
     attentionSignals.setEnabled(false);
     mindfulReminderController.stopSession();
     acrossToolsIdleGuard.stop();
-    sessionCues.stopIntervalSession();
+    bootAmbientHints.sessionCues.stopIntervalSession();
     focusAwarenessCardUI.hide({ immediate: true });
     openEndedNudgeUI.hide();
     bootMomentHosts.calmActionRecoverCardUI.hide({ immediate: true });
@@ -4650,7 +4656,7 @@ async function init() {
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
     if (stopAmbient) {
-      ambientSoundscape.endSession();
+      bootAmbientHints.ambientSoundscape.endSession();
     }
     ambientSoundscapeUI.setSessionActive(false);
     bootMomentHosts.supportYinModalUI.setFabVisible(true);
@@ -4681,14 +4687,14 @@ async function init() {
     resyncSessionChrome();
     // Plan A: duck → end chime → fadeOutAndStop ambient (do not hard-stop first).
     const stopAmbientAfterEndCue = () => {
-      if (ambientSoundscape.isAudiblePlaying()) {
-        void ambientSoundscape.fadeOutAndStop({ fadeMs: AMBIENT_DUCK_FADE_MS });
+      if (bootAmbientHints.ambientSoundscape.isAudiblePlaying()) {
+        void bootAmbientHints.ambientSoundscape.fadeOutAndStop({ fadeMs: AMBIENT_DUCK_FADE_MS });
         return;
       }
-      ambientSoundscape.endSession();
+      bootAmbientHints.ambientSoundscape.endSession();
     };
-    const playedEndCue = sessionCues.playEnd({
-      ambient: ambientSoundscape,
+    const playedEndCue = bootAmbientHints.sessionCues.playEnd({
+      ambient: bootAmbientHints.ambientSoundscape,
       onCueEnded: stopAmbientAfterEndCue
     });
     if (!playedEndCue) {
@@ -4764,7 +4770,7 @@ async function init() {
     bootHonestyCompanion.companionModePicker.setMicroRitualActive(true);
     setFocusButtonEnabled(false);
     bootHonestyCompanion.microRitualUI?.hideIdleEntry();
-    sessionCues.preload();
+    bootAmbientHints.sessionCues.preload();
     focusDurationPicker.open();
     resyncSessionChrome();
     syncOnboardingAutoHints();
@@ -4792,12 +4798,12 @@ async function init() {
         text: currentSessionIntention,
         source: currentIntentionSource
       },
-      pendingChoose,
+      bootAmbientHints.pendingChoose,
       { clearIfEmpty: false }
     );
     currentSessionIntention = latched.text;
     currentIntentionSource = latched.source;
-    pendingChoose = null;
+    bootAmbientHints.pendingChoose = null;
     // Arrival/⚡ 解锁后保持门闩：Rise 回流点 Here & Now / Flow 须立刻 Focusing（勿清 false）
     if (currentSessionIntention) {
       recordIntention(currentSessionIntention, {
@@ -4807,38 +4813,38 @@ async function init() {
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     bootSessionChrome.postChooseChrome.pending = false;
     focusSession.start({ companionMode });
-    onboardingHints?.markSeen('sit-button');
-    onboardingHints?.markSeen('how-shall-we-sit');
-    onboardingHints?.markSeen('companion-mode');
-    onboardingHints?.markSeen('weekly-heatmap');
-    onboardingHints?.markSeen('in-app-reminder');
-    onboardingHints?.markSeen('micro-ritual');
-    onboardingHints?.markSeen('ambient-gated');
-    onboardingHints?.maybeShowAuto('rise-button');
-    onboardingHints?.maybeShowAuto('ambient-soundscape');
-    requestAnimationFrame(() => onboardingHints?.repositionAll());
+    bootAmbientHints.onboardingHints?.markSeen('sit-button');
+    bootAmbientHints.onboardingHints?.markSeen('how-shall-we-sit');
+    bootAmbientHints.onboardingHints?.markSeen('companion-mode');
+    bootAmbientHints.onboardingHints?.markSeen('weekly-heatmap');
+    bootAmbientHints.onboardingHints?.markSeen('in-app-reminder');
+    bootAmbientHints.onboardingHints?.markSeen('micro-ritual');
+    bootAmbientHints.onboardingHints?.markSeen('ambient-gated');
+    bootAmbientHints.onboardingHints?.maybeShowAuto('rise-button');
+    bootAmbientHints.onboardingHints?.maybeShowAuto('ambient-soundscape');
+    requestAnimationFrame(() => bootAmbientHints.onboardingHints?.repositionAll());
     mindfulReminderController.startSession({
       suppressAwayReminders: shouldSuppressAwayReminders(companionMode),
       getSessionElapsedSeconds: () => focusSession.getElapsedSeconds()
     });
-    ambientSoundscape.startSession();
+    bootAmbientHints.ambientSoundscape.startSession();
     ambientSoundscapeUI.setSessionActive(true);
-    void ambientSoundscape.startSittingMusic().then(() => {
+    void bootAmbientHints.ambientSoundscape.startSittingMusic().then(() => {
       ambientSoundscapeUI.renderAfterAudition?.();
       idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()
       });
     });
     // Free core cue — not Ambient entitlement; sync play on this gesture.
-    sessionCues.playStart({ ambient: ambientSoundscape });
+    bootAmbientHints.sessionCues.playStart({ ambient: bootAmbientHints.ambientSoundscape });
     focusAwarenessCardUI.resetSession();
     resetOpenEndedNudgeSession();
     calmActionRecoverStore.resetSession();
     bootMomentHosts.calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
-    onboardingHints?.closePurposeCard?.();
-    sessionCues.startIntervalSession();
+    bootAmbientHints.onboardingHints?.closePurposeCard?.();
+    bootAmbientHints.sessionCues.startIntervalSession();
     bootMomentHosts.supportYinModalUI.setFabVisible(false);
     tipKindnessBadgesChrome.setVisible(false);
     // Enso stays on cushion during Focusing — fade only (Brief opacity 0.45–0.55).
@@ -4887,13 +4893,13 @@ async function init() {
 
   companionModeHandlers.onModeSelected = (mode) => {
     calmActionArriveCardUI.hide({ immediate: true });
-    onboardingHints?.markSeen('companion-mode');
-    if (mode === COMPANION_MODE_STAY) onboardingHints?.markSeen('companion-stay');
+    bootAmbientHints.onboardingHints?.markSeen('companion-mode');
+    if (mode === COMPANION_MODE_STAY) bootAmbientHints.onboardingHints?.markSeen('companion-stay');
     if (mode === COMPANION_MODE_STEP_AWAY) {
-      onboardingHints?.markSeen('companion-away');
+      bootAmbientHints.onboardingHints?.markSeen('companion-away');
     }
     if (mode === COMPANION_MODE_ACROSS_TOOLS) {
-      onboardingHints?.markSeen('companion-across-tools');
+      bootAmbientHints.onboardingHints?.markSeen('companion-across-tools');
     }
     if (
       !bootSessionChrome.sessionUiGate.canBeginFocusOnCompanionModeSelect(mode, {
@@ -4931,7 +4937,7 @@ async function init() {
       bootSessionChrome.pendingAutoStartMode = null;
       bootSessionChrome.arrivalChoseThisRun = false;
       bootSessionChrome.suppressCompanionOpenAfterNod = false;
-      pendingChoose = null;
+      bootAmbientHints.pendingChoose = null;
       bootSessionChrome.postChooseChrome.pending = false;
       bootSessionChrome.syncArrivalGateReady(false);
     }
@@ -4941,8 +4947,8 @@ async function init() {
     bootHonestyCompanion.companionModePicker.hide();
     focusDurationPicker?.hide();
     pendingFocusDurationMode = null;
-    onboardingHints?.markSeen('quick-start');
-    onboardingHints?.markSeen('micro-ritual');
+    bootAmbientHints.onboardingHints?.markSeen('quick-start');
+    bootAmbientHints.onboardingHints?.markSeen('micro-ritual');
     beginMicroRitualChrome();
     bootHonestyCompanion.microRitualUI.openDurationPicker();
     resyncSessionChrome();
@@ -4980,8 +4986,8 @@ async function init() {
         'ft-narrow-stage-companion',
         'ft-wide-stage-companion'
       );
-      onboardingHints?.maybeShowAuto('companion-mode');
-      requestAnimationFrame(() => onboardingHints?.repositionAll());
+      bootAmbientHints.onboardingHints?.maybeShowAuto('companion-mode');
+      requestAnimationFrame(() => bootAmbientHints.onboardingHints?.repositionAll());
     } else {
       document.body.classList.remove(
         'ft-narrow-stage-companion',
@@ -5033,13 +5039,13 @@ async function init() {
       bootHonestyCompanion.companionModePicker.hide();
       bootHonestyCompanion.arrivalPractice.hide();
       // 保持 arrivalGateReady：本场若经 Arrival/⚡ 解锁，回流 Companion 可直接开表
-      pendingChoose = null;
+      bootAmbientHints.pendingChoose = null;
       bootSessionChrome.pendingAutoStartMode = null;
       bootSessionChrome.suppressCompanionOpenAfterNod = false;
       bootSessionChrome.postChooseChrome.pending = false;
       // Early Rise: no end chime; cancel any in-flight start/interval cue + duck.
-      sessionCues.cancelPending();
-      sessionCues.stopIntervalSession();
+      bootAmbientHints.sessionCues.cancelPending();
+      bootAmbientHints.sessionCues.stopIntervalSession();
       focusAwarenessCardUI.hide({ immediate: true });
     openEndedNudgeUI.hide();
       bootMomentHosts.calmActionRecoverCardUI.hide({ immediate: true });
@@ -5047,7 +5053,7 @@ async function init() {
       transitionMomentUI.close();
       groundExerciseChoiceUI?.close();
       recoverResetPracticeUI?.hide({ immediate: true });
-      ambientSoundscape.cancelDuck();
+      bootAmbientHints.ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
       focusSession.stop();
@@ -5082,7 +5088,7 @@ async function init() {
       currentIntentionSource = 'typed';
       // ambient-soundscape stays unread until a track is actually chosen
       // (ONBOARDING_HINTS: only track choice clears the mint note dot).
-      onboardingHints?.markSeen('rise-button');
+      bootAmbientHints.onboardingHints?.markSeen('rise-button');
       hasEndedAnySession = true;
       syncOnboardingAutoHints();
     }
@@ -5108,12 +5114,12 @@ async function init() {
   focusSitAdjust = new FocusSitAdjustUI(document.getElementById('focus-sit-adjust'), {
     onPause: () => {
       const result = applyFocusSitAdjust(focusSession, { kind: 'pause' });
-      if (result.applied) ambientSoundscape.holdForSitPause();
+      if (result.applied) bootAmbientHints.ambientSoundscape.holdForSitPause();
       refreshFocusSitAdjust(result);
     },
     onResume: () => {
       const result = applyFocusSitAdjust(focusSession, { kind: 'resume' });
-      if (result.applied) ambientSoundscape.releaseSitPause();
+      if (result.applied) bootAmbientHints.ambientSoundscape.releaseSitPause();
       refreshFocusSitAdjust(result);
     },
     onAddFive: () => {
@@ -5125,8 +5131,8 @@ async function init() {
         return;
       }
       const result = applyFocusSitAdjust(focusSession, parsed);
-      if (result.applied && result.kind === 'pause') ambientSoundscape.holdForSitPause();
-      if (result.applied && result.kind === 'resume') ambientSoundscape.releaseSitPause();
+      if (result.applied && result.kind === 'pause') bootAmbientHints.ambientSoundscape.holdForSitPause();
+      if (result.applied && result.kind === 'resume') bootAmbientHints.ambientSoundscape.releaseSitPause();
       refreshFocusSitAdjust(result);
     }
   });
@@ -5311,7 +5317,7 @@ async function init() {
     currentIntentionSource = 'typed';
     maybeOfferGrowthSealAfterBaselineCeremony({ sessionEndOpts: endOpts });
     onFocusCircleRiseSideEffects(witnessElapsedSeconds);
-    onboardingHints?.markSeen('rise-button');
+    bootAmbientHints.onboardingHints?.markSeen('rise-button');
   }
 
   const moodController = new MoodController(stateManager, emotionController, {
@@ -5475,10 +5481,10 @@ async function init() {
   let firstCardOfferTimer = null;
 
   function onboardingHintsBlockFirstCard() {
-    if (onboardingHints?.purposeCard && !onboardingHints.purposeCard.hidden) {
+    if (bootAmbientHints.onboardingHints?.purposeCard && !bootAmbientHints.onboardingHints.purposeCard.hidden) {
       return true;
     }
-    if (onboardingHints?.privacySheet && !onboardingHints.privacySheet.hidden) {
+    if (bootAmbientHints.onboardingHints?.privacySheet && !bootAmbientHints.onboardingHints.privacySheet.hidden) {
       return true;
     }
     return false;
@@ -5488,7 +5494,7 @@ async function init() {
     if (!productChrome) return false;
     if (bootSessionChrome.postChooseChrome.pending) return false;
     if (confideToYinUI.isOpen()) return false;
-    if (onboardingHints?.isWellnessFirstCardOpen?.()) return true;
+    if (bootAmbientHints.onboardingHints?.isWellnessFirstCardOpen?.()) return true;
     if (wellnessFirstConsumedThisPage) return false;
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
@@ -5506,7 +5512,7 @@ async function init() {
       return false;
     }
     closeGrowthOverlayCards();
-    onboardingHints?.openWellnessFirstCard();
+    bootAmbientHints.onboardingHints?.openWellnessFirstCard();
     wellnessFirstConsumedThisPage = true;
     return true;
   }
@@ -5518,7 +5524,7 @@ async function init() {
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
     if (!shouldOfferColdStartGoalCard(storage)) return false;
-    if (onboardingHints?.isWellnessFirstCardOpen?.()) return false;
+    if (bootAmbientHints.onboardingHints?.isWellnessFirstCardOpen?.()) return false;
     if (stateManager.state !== STATES.IDLE) return false;
     if (onboardingHintsBlockFirstCard()) return false;
     const snapshot = buildLiveOverlaySnapshot();
@@ -5541,7 +5547,7 @@ async function init() {
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
     if (!shouldOfferFiveMomentsCompassFirstCard(storage)) return;
-    if (onboardingHints?.isWellnessFirstCardOpen?.()) return;
+    if (bootAmbientHints.onboardingHints?.isWellnessFirstCardOpen?.()) return;
     if (coldStartGoalCardUI?.isOpen?.()) return;
     if (
       !wellnessFirstConsumedThisPage &&
@@ -5712,15 +5718,15 @@ async function init() {
     clearHintsBtn.title =
       '仅实验室页有效（勿带 ?product=1）。清空 focus-tiger.hints-seen.v1 后刷新 tip/薄荷绿。';
     clearHintsBtn.addEventListener('click', () => {
-      if (!onboardingHints) {
+      if (!bootAmbientHints.onboardingHints) {
         showDevLabToast(
           '引导 UI 尚未就绪，请等页面加载完再点「清空引导提示已读」。',
           6_000
         );
         return;
       }
-      onboardingHints.clearSeen();
-      onboardingHints.hideBubble();
+      bootAmbientHints.onboardingHints.clearSeen();
+      bootAmbientHints.onboardingHints.hideBubble();
       syncOnboardingAutoHints();
       // Menu/drawer may already be open — repaint row mints (was silent no-op).
       idleChrome.wide.refreshSecondaryHintDots?.();
@@ -5880,7 +5886,7 @@ async function init() {
           : focusSession.getFocusLevel();
     const presenceBoost =
       stateManager.state === STATES.FOCUSING
-        ? ambientSoundscape.getPresenceBoost(
+        ? bootAmbientHints.ambientSoundscape.getPresenceBoost(
             focusSession.isOpenEnded()
               ? FOCUS_SESSION_DEFAULT_MINUTES
               : focusSession.targetMinutes
@@ -5907,12 +5913,12 @@ async function init() {
       stateManager.state === STATES.FOCUSING &&
       !bootSessionChrome.sessionUiGate.completionPending
     ) {
-      sessionCues.tickInterval({
+      bootAmbientHints.sessionCues.tickInterval({
         elapsedSeconds: focusSession.getElapsedSeconds(),
         targetSeconds: focusSession.isOpenEnded()
           ? OPEN_ENDED_HARD_CAP_MS / 1000
           : focusSession.targetMinutes * 60,
-        ambient: ambientSoundscape,
+        ambient: bootAmbientHints.ambientSoundscape,
         onIntervalPlayed: () => {
           window.setTimeout(() => {
             if (stateManager.state !== STATES.FOCUSING) return;
@@ -5920,19 +5926,19 @@ async function init() {
             focusAwarenessCardUI.tryShow({
               busy:
                 isFocusAwarenessCardBusy() ||
-                !sessionCues.isAwarenessCardEnabled()
+                !bootAmbientHints.sessionCues.isAwarenessCardEnabled()
             });
           }, 120);
         }
       });
     } else if (overlayBreathing) {
-      sessionCues.tickInterval({
+      bootAmbientHints.sessionCues.tickInterval({
         elapsedSeconds: overlayElapsed ?? 0,
         targetSeconds:
           ((microBreathing
             ? bootHonestyCompanion.microRitualUI?.getDurationMinutes?.()
             : ritualFlowUI?.getDurationMinutes?.()) ?? 1) * 60,
-        ambient: ambientSoundscape
+        ambient: bootAmbientHints.ambientSoundscape
       });
     }
 
