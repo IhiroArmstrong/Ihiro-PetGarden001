@@ -83,6 +83,7 @@
     "audit:confide-safety-devset": "node scripts/audit-confide-safety-devset.js",
     "audit:confide-safety-literal-semantic-curve": "node desktop/scripts/l0-safety-literal-semantic-curve.js",
     "audit:routing-live-vs-function-a": "node desktop/scripts/l0-routing-live-vs-function-a-research.js",
+    "audit:routing-intent-feasibility": "node desktop/scripts/l0-routing-intent-feasibility-research.js",
     "audit:mood-veto-holdout": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js",
     "audit:mood-veto-holdout:validate": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js --validate-only",
     "audit:routing-class-holdout": "node desktop/scripts/l0-kb-routing-class-holdout-lab.js",

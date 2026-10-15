@@ -44,6 +44,15 @@
 
 函数 A 门槛数字 **不在本 Brief 重开**。本形状只问「两边分句是否同时在」，不问「再把 0.01 调高一点」。
 
+### 2.8 情绪半边硬闸（2026-10-15 补条）
+
+情绪半边那一分句必须 **同时**：
+
+1. `moodScore` ≥ 路由开发集 v2 上、非函数 A 产品路径分句的 **5% 分位**（本次实验室 **0.50**，n=38；`npm run audit:routing-intent-feasibility`）；
+2. `confideClassify` 落到 `anxious` / `tired` / `stuck` / `sad` / `scattered` 之一。
+
+否则 **不合并**，退回单路径。不调 0.01。细则 [`task-confide-mixed-reply-mood-floor.md`](./task-confide-mixed-reply-mood-floor.md)。
+
 ---
 
 ## 3. 回应结构
