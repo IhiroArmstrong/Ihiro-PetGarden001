@@ -545,9 +545,25 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `confide-routing-arbitration-v1` · feature · Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · #1222 已合 · 本机 b-v5 八类 n≥60 · 禁止本会话盲测/切 live · 2026-10-15
+### `confide-mixed-emotion-then-product` · feature · 规格已出 · 未实现 · 待拍板 · 2026-10-15
+
+混合句「先接情绪、再答产品」合并回应。Brief `task-confide-mixed-emotion-then-product.md`（CR-45）。本支只文档：不改发送链、不调 0.01、不碰新封存。类级现网 vs 函数 A 表见 `confide-routing-live-vs-function-a-research.md`。本会话已见作废 b-v2 / b-v5，不参与最终过关文件。
+
+### `confide-routing-arbitration-v1` · feature · Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · #1222 已合 · b-v2/b-v5 已跑未过关已作废 · 额度用满 · 未切 live · 2026-10-15
 
 路由仲裁 v1：一次打分、一个决定。合并 Prompt 16 / 18、情绪否决、目录误命中。#1200 本机开关仅对照臂，切 live 时删除。权威 `task-briefs/task-confide-routing-arbitration-v1.md`。R-0 评测见 `PRINCIPLES.md`。
+
+### `confide-routing-intent-feasibility` · feature · 研究脚本已入库 · 未接线 · 0.01 未动 · 2026-10-15
+
+R 路由研究：作废 b-v2/b-v5 + 开发集 v2 上，同一向量做「在问功能 / 在倾诉」模板分组交叉验证，对照现网与函数 A。诚实空态 42 句里函数 A 失败句只报 A/B 计数。合并回应补条见 `task-confide-mixed-reply-mood-floor.md`。
+
+### `confide-safety-caliber-holdout-gates` · note · 本 PR · 口径与门闩 · 2026-10-15
+
+字面短语冻结。审计脚本 63/58 直接读标签。s-v1/s-v2/b-v2/b-v5 作废、额度用满。封存与打分带手写出题编号。
+
+### `confide-safety-routing-fix` · feature · 字面短语已冻结不再加 · s-v1 9/44 未过关已作废 · s-v2 已作废 · 安全额度用满 · 2026-10-15
+
+安全路由修复（CR-43）。第一步字面分类已合 #1226（夹具 46/63，误捕 1/35）。字面续补 #1230 开发集明确危机 ≥90%（57/63）、逃避误捕 ≤2/35 且不得为纯逃避句。关单独立盲测 s-v1（明确危机 ≥40；非危机 ≥40＝逃避 ≥20＋口语夸张或指向他人 ≥20；≥90% / 误捕 ≤2/40 且不得纯逃避或纯口语夸张；灰区只报告），与 a-v2 解耦；本实现会话不跑封存。语义危机层 Brief：`task-briefs/task-confide-semantic-crisis-layer.md`（CR-44），不夹带。权威 `task-briefs/task-confide-safety-routing-fix.md`。
 
 ### `confide-class-blind-acceptance` · feature · sealed-a-v1 已作废 · 每文件 1 次 · 结果 JSON 改 ft-private · a-v2 未生成 · 2026-10-14
 
@@ -560,10 +576,6 @@ Confide 问答按类验收（R-Confide-Class）。情绪开发集已入库。安
 ### `confide-safety-devset-c017-grey` · note · 夹具已改类 · 分母 63 · 未见分类器开工 · 2026-10-14
 
 `safedev-c017` 从明确危机改入灰区；计入分母 **63**。仓库夹具改名为 Brief 中的 `fixtures/confide-safety-devset-v1.json`。本会话见过开发集原文，不得再修安全分类器。
-
-### `confide-safety-routing-fix` · feature · 字面续补待合 · 开发集已过 ≥90% · 关单仍待 s-v1 · 2026-10-14
-
-安全路由修复（CR-43）。第一步字面分类已合 #1226（夹具 46/63，误捕 1/35）。字面续补 #1230 开发集明确危机 ≥90%（57/63）、逃避误捕 ≤2/35 且不得为纯逃避句。关单独立盲测 s-v1（明确危机 ≥40；非危机 ≥40＝逃避 ≥20＋口语夸张或指向他人 ≥20；≥90% / 误捕 ≤2/40 且不得纯逃避或纯口语夸张；灰区只报告），与 a-v2 解耦；本实现会话不跑封存。语义危机层 Brief：`task-briefs/task-confide-semantic-crisis-layer.md`（CR-44），不夹带。权威 `task-briefs/task-confide-safety-routing-fix.md`。
 
 ### `confide-semantic-crisis-layer` · feature · 口头令已下 · 运行时进行中 · 2026-10-14
 
