@@ -1035,6 +1035,54 @@
 
 > **权威源（0035–0036）**：`src/ui/TipKindnessBadgesChrome.js` · `src/locales/en.json` · `src/core/confide/productKnowledgeCatalog.json`
 
+### 4.14 背景音乐开关 / 打卡不是强迫签到（已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-10-15 Brief** [`task-briefs/task-confide-fact-card-near-match.md`](./task-briefs/task-confide-fact-card-near-match.md) · **已进** `productKnowledgeCatalog.json` · **0037 / 0038** 无独立菜单行，记入 cross-cutting · 闸门 **40 条**。近义文本用能力说明 + 短答，不加问法关键词。0020 仍只回答 Honesty Check-in 从哪进。
+
+```yaml
+- id: KB-FUNC-0037
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Where to turn background music on or off
+  适用场景: 想开或关主页背景音乐，或分不清这次同坐放的乐和下次默认
+  内容正文: |
+    能力说明（en）：Where to turn background music on or off, and that it stays off until the person turns it on.
+    短答（en）：Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.
+    禁止：曲目名单；上传步骤；为新问法追加 keywords。
+  yin_may_retrieve: 是
+  来源: 界面文案 + PO Brief
+  审核状态: 已通过
+  审核人: PO（2026-10-15 · task-confide-fact-card-near-match）
+  风险标记: 否
+  适用产品版本: 现网 Idle 音乐控件
+  更新时间: 2026-10-15
+  locale_keys: [AMBIENT_MUSIC_ON_ARIA, HINT_AMBIENT_SOUNDSCAPE]
+  检索关键词: [background music]
+
+- id: KB-FUNC-0038
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 术语说明
+  标题: Checking in is optional
+  适用场景: 以为必须每日打卡或漏一天会扣掉什么；与 0020「入口在哪」分开
+  内容正文: |
+    能力说明（en）：Checking in is optional. Focus Tiger does not require a daily streak.
+    短答（en）：You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.
+    禁止：改 0020 短答；为新问法追加 keywords；把「为什么要冥想」写成第三张卡。
+  yin_may_retrieve: 是
+  来源: 界面文案 + PO Brief
+  审核状态: 已通过
+  审核人: PO（2026-10-15 · task-confide-fact-card-near-match）
+  风险标记: 否
+  适用产品版本: 现网 Honesty Check-in（可选）
+  更新时间: 2026-10-15
+  locale_keys: [HONESTY_IDLE_ENTRY, HINT_HONESTY_OPTIONAL]
+  检索关键词: [Honesty Check-in]
+```
+
+> **权威源（0037–0038）**：`src/locales/en.json`（`AMBIENT_MUSIC_ON_ARIA` / `HINT_AMBIENT_SOUNDSCAPE` / `HINT_HONESTY_OPTIONAL`）· `src/core/confide/productKnowledgeCatalog.json`
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml

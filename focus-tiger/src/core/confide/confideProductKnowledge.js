@@ -349,10 +349,24 @@ export function retrieveProductKnowledge(text, opts = {}) {
  * could not answer, which is exactly when the input is most likely to be
  * personal. `queryHash` groups repeats and `textLength` keeps the one
  * diagnostic signal worth having, without keeping the words. (Issue #1037.)
- * @param {{ text: string, reason: string, locale?: string }} payload
+ * @param {{
+ *   text: string,
+ *   reason: string,
+ *   locale?: string,
+ *   nearestId?: string | null,
+ *   nearestScore?: number | null
+ * }} payload
  * @returns {object}
  */
-export function buildKbRetrievalMissTurnLog({ text, reason, locale = 'en' }) {
+export function buildKbRetrievalMissTurnLog({
+  text,
+  reason,
+  locale = 'en',
+  nearestId = null,
+  nearestScore = null
+}) {
+  const id = typeof nearestId === 'string' && nearestId.trim() ? nearestId.trim() : null;
+  const score = Number(nearestScore);
   return {
     at: new Date().toISOString(),
     kind: 'kb_retrieval_miss',
@@ -360,6 +374,8 @@ export function buildKbRetrievalMissTurnLog({ text, reason, locale = 'en' }) {
     queryHash: hashConfidePrivateText(text),
     textLength: String(text || '').length,
     reason,
+    nearestId: id,
+    nearestScore: Number.isFinite(score) ? score : null,
     catalogSchemaVersion: catalog.schemaVersion
   };
 }

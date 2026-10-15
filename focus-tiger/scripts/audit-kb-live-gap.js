@@ -109,7 +109,9 @@ export const KB_CROSS_CUTTING_APPROVED_IDS = Object.freeze([
   'KB-EDU-0003',
   'KB-EDU-0004',
   'KB-FUNC-0035',
-  'KB-FUNC-0036'
+  'KB-FUNC-0036',
+  'KB-FUNC-0037',
+  'KB-FUNC-0038'
 ]);
 
 /**

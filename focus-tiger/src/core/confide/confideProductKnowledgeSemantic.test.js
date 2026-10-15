@@ -8,10 +8,19 @@ import { describe, it } from 'node:test';
 import {
   classifyProductKnowledgeSemantic,
   isConfideMoodAsideFromProductKnowledge,
+  isConfideOperationalProductAskShape,
   isProductKnowledgeColdStartProbe,
   lifeChatOutranksProductLibrary,
   resolveProductKnowledgeGateAction
 } from './confideProductKnowledgeSemantic.js';
+
+const CR47_GENERATE_WHEN_PRODUCT_LIKE = Object.freeze([
+  "I feel quite sleepy. I don't want to practice anymore.",
+  "Why should I do some focus practicing? I don't like that.",
+  'Why should I do some meditation?',
+  "I want to drink some beer. I want to drink some alcohol and I don't like to practice.",
+  "Today I'm quite happy. I want to do some focus practice."
+]);
 
 describe('confideProductKnowledgeSemantic', () => {
   it('cold-start probe blocks product-like misses without semantic', () => {
@@ -101,8 +110,7 @@ describe('confideProductKnowledgeSemantic', () => {
   });
 
   it('leaves non-product asks on their existing decision (K-1 blast radius)', () => {
-    const expected = { hit: 'skip', honesty: 'honesty', skip: 'skip' };
-    for (const [nearAction, want] of Object.entries(expected)) {
+    for (const nearAction of ['hit', 'honesty', 'skip']) {
       assert.equal(
         resolveProductKnowledgeGateAction({
           text: '今天想去骑车',
@@ -111,10 +119,77 @@ describe('confideProductKnowledgeSemantic', () => {
           catalogHit: false,
           nearAction
         }),
-        want,
+        'skip',
         `nearAction ${nearAction}`
       );
     }
+  });
+
+  it('CR-47: motive / refusal / drink-to-avoid generate when embedding says product-like', () => {
+    for (const text of CR47_GENERATE_WHEN_PRODUCT_LIKE) {
+      assert.equal(isConfideOperationalProductAskShape(text), false, text);
+      for (const nearAction of [undefined, 'honesty']) {
+        assert.equal(
+          resolveProductKnowledgeGateAction({
+            text,
+            embeddingState: 'ready',
+            semanticIsProduct: true,
+            catalogHit: false,
+            nearAction
+          }),
+          'skip',
+          `${text} nearAction=${nearAction}`
+        );
+      }
+      assert.equal(
+        resolveProductKnowledgeGateAction({
+          text,
+          embeddingState: 'not_ready',
+          semanticIsProduct: false,
+          catalogHit: false
+        }),
+        'skip',
+        `${text} cold-start`
+      );
+    }
+  });
+
+  it('CR-47: confirmed product asks still must not invent steps', () => {
+    assert.equal(isConfideOperationalProductAskShape('What is the observation wing?'), true);
+    assert.equal(isConfideOperationalProductAskShape('观察翼是什么'), true);
+    assert.equal(isConfideOperationalProductAskShape('how do I turn the reminder off'), true);
+    assert.equal(isConfideOperationalProductAskShape('the reminder won\'t stop'), true);
+    assert.equal(isConfideOperationalProductAskShape('Sit 按钮在哪'), true);
+    assert.equal(isConfideOperationalProductAskShape('How can I meditate?'), true);
+    assert.equal(isConfideOperationalProductAskShape('What is the point of practice'), false);
+    assert.equal(isConfideOperationalProductAskShape("What's the weather like today?"), false);
+    for (const text of [
+      'What is the observation wing?',
+      'how do I turn the reminder off',
+      "the reminder won't stop",
+      'Sit 按钮在哪',
+      'How can I meditate?'
+    ]) {
+      assert.equal(
+        resolveProductKnowledgeGateAction({
+          text,
+          embeddingState: 'ready',
+          semanticIsProduct: true,
+          catalogHit: false
+        }),
+        'honesty',
+        text
+      );
+    }
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'How can I do some ground exercise',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: true
+      }),
+      'hit'
+    );
   });
 
   it('lets life chat out of the honesty line in every band (K-1 × life-outranks)', () => {

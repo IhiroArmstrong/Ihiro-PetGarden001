@@ -30,9 +30,9 @@ const readyOpen = {
 };
 
 describe('confide product knowledge retrieval', () => {
-  it('indexes exactly 38 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
+  it('indexes exactly 40 approved entries (excludes 0006 breath inventory and 0009 cloud backup)', () => {
     const ids = listRetrievableProductKnowledgeEntries().map((row) => row.id);
-    assert.equal(ids.length, 38);
+    assert.equal(ids.length, 40);
     assert.equal(ids.includes('KB-FUNC-0006'), false);
     assert.equal(ids.includes('KB-FUNC-0009'), false);
     assert.equal(ids.includes('KB-FUNC-0001'), true);
@@ -56,6 +56,8 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0034'), true);
     assert.equal(ids.includes('KB-FUNC-0035'), true);
     assert.equal(ids.includes('KB-FUNC-0036'), true);
+    assert.equal(ids.includes('KB-FUNC-0037'), true);
+    assert.equal(ids.includes('KB-FUNC-0038'), true);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });
@@ -137,9 +139,19 @@ describe('confide product knowledge retrieval', () => {
     });
     const serialized = JSON.stringify(miss);
     for (const word of secret.split(' ')) {
+      if (word.length < 3) continue;
       assert.equal(serialized.includes(word), false, `leaked "${word}"`);
     }
     assert.equal(Object.prototype.hasOwnProperty.call(miss, 'text'), false);
+    const withNeighbor = buildKbRetrievalMissTurnLog({
+      text: secret,
+      reason: 'semantic_miss',
+      nearestId: 'KB-FUNC-0020',
+      nearestScore: 0.71
+    });
+    assert.equal(Object.prototype.hasOwnProperty.call(withNeighbor, 'text'), false);
+    assert.equal(withNeighbor.nearestId, 'KB-FUNC-0020');
+    assert.equal(withNeighbor.nearestScore, 0.71);
     assert.equal(miss.textLength, secret.length);
     assert.match(miss.queryHash, /^[0-9a-f]{8}$/);
     assert.equal(

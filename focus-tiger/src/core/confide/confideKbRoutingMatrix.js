@@ -866,6 +866,48 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0036' }
   },
   {
+    id: 'kb-0037-background-music',
+    text: 'background music',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0037' }
+  },
+  {
+    id: 'kb-0037-background-music-where',
+    text: 'Where is background music',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0037' }
+  },
+  {
+    id: 'kb-0037-background-music-off',
+    text: 'Turn background music off',
+    dimensions: ['where', 'en'],
+    lock: 'must-hit',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0037' }
+  },
+  {
+    id: 'kb-0038-honesty-check-in',
+    text: 'Honesty Check-in',
+    dimensions: ['what', 'en'],
+    lock: 'probe',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0038' }
+  },
+  {
+    id: 'kb-0038-honesty-check-in-optional',
+    text: 'Is Honesty Check-in optional',
+    dimensions: ['what', 'en'],
+    lock: 'probe',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0038' }
+  },
+  {
+    id: 'kb-0038-honesty-check-in-required',
+    text: 'Do I need Honesty Check-in',
+    dimensions: ['what', 'en'],
+    lock: 'probe',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0038' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],
