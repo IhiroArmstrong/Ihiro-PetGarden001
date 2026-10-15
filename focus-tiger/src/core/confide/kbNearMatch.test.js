@@ -5,7 +5,8 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { decideKbNearMatch } from './kbNearMatch.js';
+import { catalogEntryEmbeddingText, decideKbNearMatch } from './kbNearMatch.js';
+import catalog from './productKnowledgeCatalog.json' with { type: 'json' };
 
 describe('decideKbNearMatch', () => {
   it('hits the nearest entry only above the hit line', () => {
@@ -41,6 +42,39 @@ describe('decideKbNearMatch', () => {
     assert.equal(
       decideKbNearMatch({ nearestId: 'KB-FUNC-0001', nearestScore: 0.4, hitMin: 0.72, farMax: 0.62 }).action,
       'skip'
+    );
+  });
+});
+
+describe('catalogEntryEmbeddingText', () => {
+  it('uses the short answer and ignores extra keyword phrasings', () => {
+    const text = catalogEntryEmbeddingText({
+      shortAnswerEn: 'Tap Sit with Yin on the home seat.',
+      keywords: ['how can I take a breath', 'take a breath practice']
+    });
+    assert.match(text, /Tap Sit with Yin on the home seat/);
+    assert.equal(text.includes('how can I take a breath'), false);
+    assert.equal(text.includes('take a breath practice'), false);
+  });
+
+  it('does not change when failed-ask keywords are added without a capability sentence', () => {
+    const card = { shortAnswerEn: 'You do not have to check in. Sit with Yin works without it.' };
+    const withFailedAsk = {
+      ...card,
+      keywords: ['do I have to check in every day', 'why do I need a streak']
+    };
+    assert.equal(catalogEntryEmbeddingText(card), catalogEntryEmbeddingText(withFailedAsk));
+  });
+
+  it('includes the locked capability sentences for 0037 and 0038', () => {
+    const byId = Object.fromEntries(catalog.entries.map((row) => [row.id, row]));
+    assert.match(
+      catalogEntryEmbeddingText(byId['KB-FUNC-0037']),
+      /Where to turn background music on or off, and that it stays off until the person turns it on/
+    );
+    assert.match(
+      catalogEntryEmbeddingText(byId['KB-FUNC-0038']),
+      /Checking in is optional\. Focus Tiger does not require a daily streak/
     );
   });
 });

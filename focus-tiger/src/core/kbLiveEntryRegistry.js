@@ -476,7 +476,9 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'KB-FUNC-0033',
       'KB-FUNC-0034',
       'KB-FUNC-0035',
-      'KB-FUNC-0036'
+      'KB-FUNC-0036',
+      'KB-FUNC-0037',
+      'KB-FUNC-0038'
     ])
   }),
   Object.freeze({

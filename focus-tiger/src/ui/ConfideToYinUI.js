@@ -1706,7 +1706,9 @@ export class ConfideToYinUI {
           buildKbRetrievalMissTurnLog({
             text,
             reason: catalogResult.reason || 'semantic_miss',
-            locale: getLocale()
+            locale: getLocale(),
+            nearestId: gate?.nearestId,
+            nearestScore: gate?.nearestScore
           })
         );
       }
