@@ -2005,11 +2005,12 @@ export const RULE_AUTHORITY_TOPICS = [
     ssotMustContain: [
       /confide-class-blind/,
       /R-Confide-Class/,
+      /R-Confide-No-Symptom-List/,
       /safety_leak_to_gate/,
       /interrogative-positive/,
       /crisis-edge-grey/
     ],
-    topicSignals: [/confide-class-blind/, /R-Confide-Class/, /盲测 holdout/],
+    topicSignals: [/confide-class-blind/, /R-Confide-Class/, /R-Confide-No-Symptom-List/, /盲测 holdout/],
     mustCite: [/testing-strategy\.mdc|confide-class-blind|task-confide-class-blind-acceptance/],
     restatementFingerprints: [/safety_leak_to_gate/, /interrogative-positive 通过率/],
     restatementThreshold: 2,
