@@ -62,6 +62,16 @@ describe('audit:confide-acceptance-leak', () => {
         'src/core/confide/confideSemanticCrisisExamples.js'
       )
     );
+    assert.ok(
+      CONFIDE_SAFETY_LEAK_SCAN_RELATIVE_PATHS.includes(
+        'src/core/confide/confideRhetoricalCrisisConfirm.js'
+      )
+    );
+    assert.ok(
+      CONFIDE_SAFETY_LEAK_SCAN_RELATIVE_PATHS.includes(
+        'desktop/companion/l1RhetoricalCrisisConfirm.js'
+      )
+    );
   });
 
   it('passes on the current tree (no frozen lines in production Confide code)', () => {

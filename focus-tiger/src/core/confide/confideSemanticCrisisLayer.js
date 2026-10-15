@@ -14,6 +14,10 @@ import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { cosineSimilarity } from './confideSemanticRouting.js';
 import { confideBrowserSafeEnv } from './confideSemanticRoutingConfig.js';
 import { CONFIDE_SEMANTIC_CRISIS_PROTOTYPES } from './confideSemanticCrisisExamples.js';
+import {
+  RHETORICAL_CRISIS_CONFIRM,
+  confirmRhetoricalCrisisUse
+} from './confideRhetoricalCrisisConfirm.js';
 
 export const CONFIDE_SEMANTIC_CRISIS_KIND = 'semantic_crisis_layer';
 
@@ -142,7 +146,8 @@ export function scoreSemanticCrisisVectors(userVector, protoVectors) {
  *   score?: number,
  *   threshold?: number,
  *   mode?: string | null,
- *   embeddingOk?: boolean
+ *   embeddingOk?: boolean,
+ *   text?: string | null
  * }} [opts]
  * @returns {{
  *   route: string | null,
@@ -156,7 +161,8 @@ export function applyConfideSemanticCrisis({
   score = 0,
   threshold = DEFAULT_CONFIDE_SEMANTIC_CRISIS_COSINE,
   mode = CONFIDE_SEMANTIC_CRISIS_MODE.LIVE,
-  embeddingOk = false
+  embeddingOk = false,
+  text = ''
 } = {}) {
   const route = typeof literalRoute === 'string' ? literalRoute : null;
   const wouldApply = Boolean(embeddingOk) && Number(score) >= Number(threshold);
@@ -171,6 +177,9 @@ export function applyConfideSemanticCrisis({
   }
   if (!wouldApply || mode !== CONFIDE_SEMANTIC_CRISIS_MODE.LIVE) {
     return { route, applied: false, wouldApply, override: null };
+  }
+  if (confirmRhetoricalCrisisUse(text) === RHETORICAL_CRISIS_CONFIRM.RHETORICAL) {
+    return { route, applied: false, wouldApply: true, override: null };
   }
   return {
     route: CONFIDE_ROUTE.SAFETY_REDIRECT,

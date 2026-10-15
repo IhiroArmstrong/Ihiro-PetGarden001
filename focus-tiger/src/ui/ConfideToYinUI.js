@@ -1222,7 +1222,8 @@ export class ConfideToYinUI {
         score: Number(crisisScore?.score) || 0,
         threshold: resolveConfideSemanticCrisisCosine(),
         mode: resolveConfideSemanticCrisisMode(),
-        embeddingOk: Boolean(crisisScore?.embeddingOk)
+        embeddingOk: Boolean(crisisScore?.embeddingOk),
+        text: asked
       });
       if (appliedCrisis.applied && appliedCrisis.route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
         const nextHit =
