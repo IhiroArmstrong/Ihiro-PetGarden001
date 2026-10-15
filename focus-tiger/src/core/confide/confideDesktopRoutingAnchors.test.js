@@ -123,4 +123,45 @@ describe('confideDesktopRoutingAnchors · 2026-09-30 user report', () => {
     );
     assert.equal(resolveConfideMetaQueryBucket('观察翼是什么'), 'product_knowledge_honesty');
   });
+
+  it('CR-47 English motive lines skip honesty when embedding says product-like', () => {
+    const texts = [
+      "I feel quite sleepy. I don't want to practice anymore.",
+      "Why should I do some focus practicing? I don't like that.",
+      'Why should I do some meditation?',
+      "I want to drink some beer. I want to drink some alcohol and I don't like to practice.",
+      "Today I'm quite happy. I want to do some focus practice."
+    ];
+    for (const text of texts) {
+      assert.equal(
+        resolveProductKnowledgeGateAction({
+          text,
+          embeddingState: 'ready',
+          semanticIsProduct: true,
+          catalogHit: false
+        }),
+        'skip',
+        text
+      );
+      assert.notEqual(resolveConfideDesktopSource(text), 'product_knowledge_honesty', text);
+    }
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'How can I do some ground exercise',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: true
+      }),
+      'hit'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'How can I meditate?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false
+      }),
+      'honesty'
+    );
+  });
 });

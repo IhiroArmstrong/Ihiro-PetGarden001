@@ -93,7 +93,7 @@ describe('moodAsideOutranksProductLibrary', () => {
 });
 
 describe('stage one leaves the live gate action alone', () => {
-  it('a mood-shaped semantic product hit still goes to honesty when the switch is off', () => {
+  it('a mood-shaped semantic product hit generates when it is not an operational ask (CR-47)', () => {
     assert.equal(
       resolveProductKnowledgeGateAction({
         text: 'I want a cigarette',
@@ -104,7 +104,7 @@ describe('stage one leaves the live gate action alone', () => {
         lifeOutranksProduct: false,
         moodOutranksProduct: true
       }),
-      'honesty'
+      'skip'
     );
   });
 });
@@ -148,7 +148,7 @@ describe('live Chinese mood veto', () => {
       assert.equal(confideKbMoodVetoUtteranceLang(text), 'zh');
       assert.equal(
         resolveProductKnowledgeGateAction({ ...liveProduct, text, moodVetoLive: false }),
-        'honesty'
+        'skip'
       );
       assert.equal(resolveProductKnowledgeGateAction({ ...liveProduct, text }), 'skip');
     }
@@ -189,7 +189,7 @@ describe('live Chinese mood veto', () => {
         ...liveProduct,
         text: "I'm just sitting here for a bit"
       }),
-      'honesty'
+      'skip'
     );
     assert.equal(
       resolveProductKnowledgeGateAction({
@@ -204,7 +204,7 @@ describe('live Chinese mood veto', () => {
         ...liveProduct,
         text: '練習したくない、お酒が飲みたい'
       }),
-      'honesty'
+      'skip'
     );
   });
 
@@ -251,7 +251,7 @@ describe('live Chinese mood veto', () => {
 
 describe('simulateKbMoodVetoGate', () => {
   const base = {
-    text: 'I want a cigarette',
+    text: '观察翼是什么',
     catalogHit: false,
     nearAction: null,
     semanticIsProduct: true,
@@ -264,10 +264,10 @@ describe('simulateKbMoodVetoGate', () => {
     assert.deepEqual(simulateKbMoodVetoGate(base), {
       baseline: 'honesty',
       withVeto: 'skip',
-      withVetoAskGuard: 'skip',
-      withVetoNarrowAskGuard: 'skip',
+      withVetoAskGuard: 'honesty',
+      withVetoNarrowAskGuard: 'honesty',
       moodOutranksProduct: true,
-      functionAsk: false,
+      functionAsk: true,
       libraryCPointsAtProduct: true
     });
     assert.equal(simulateKbMoodVetoGate({ ...base, moodScore: 0.4 }).withVeto, 'honesty');
@@ -284,8 +284,9 @@ describe('simulateKbMoodVetoGate', () => {
     assert.equal(mixed.functionAsk, true);
     assert.equal(mixed.withVeto, 'skip');
     assert.equal(mixed.withVetoAskGuard, 'honesty');
-    const plain = simulateKbMoodVetoGate(base);
+    const plain = simulateKbMoodVetoGate({ ...base, text: 'I want a cigarette' });
     assert.equal(plain.functionAsk, false);
+    assert.equal(plain.baseline, 'skip');
     assert.equal(plain.withVetoAskGuard, 'skip');
   });
 
