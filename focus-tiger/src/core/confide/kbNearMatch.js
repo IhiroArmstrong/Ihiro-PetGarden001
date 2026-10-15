@@ -5,10 +5,12 @@
 
 /**
  * One similarity ruler for the product-knowledge gate and the catalog entry.
- * Brief: task-confide-kb-embedding-near-match.md
+ * Brief: task-confide-fact-card-near-match.md
  * Close enough → that entry. Far from every entry → generate.
  * In between → labeled honesty. The product gate keeps that label only when
  * Library C says it is a product question; life chat in this band generates.
+ * Embedding text is the capability sentence plus the approved short answer,
+ * not the keyword list.
  */
 
 /**
@@ -42,14 +44,17 @@ export function resolveKbNearMatchThresholds(env = {}) {
 }
 
 /**
- * @param {{ keywords?: readonly string[] }} entry
+ * @param {{
+ *   capabilityStatementEn?: string,
+ *   shortAnswerEn?: string,
+ *   keywords?: readonly string[]
+ * }} entry
  * @returns {string}
  */
 export function catalogEntryEmbeddingText(entry) {
-  const parts = Array.isArray(entry?.keywords)
-    ? entry.keywords.map((kw) => String(kw || '').trim()).filter(Boolean)
-    : [];
-  return parts.join('\n');
+  const capability = String(entry?.capabilityStatementEn || '').trim();
+  const shortAnswer = String(entry?.shortAnswerEn || '').trim();
+  return [capability, shortAnswer].filter(Boolean).join('\n');
 }
 
 /**

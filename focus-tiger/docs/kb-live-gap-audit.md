@@ -38,7 +38,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-10-15 · 29 live rows · 38 approved catalog ids
+**Snapshot**: 2026-10-15 · 29 live rows · 40 approved catalog ids
 
 ### Summary counts
 
@@ -48,7 +48,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 1 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 1 | PO scope before drafting |
-| cross-cutting approved (no live row) | 9 | keep as behavior/platform facts |
+| cross-cutting approved (no live row) | 11 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
 
@@ -64,7 +64,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | registryKbIds | unapprovedKbIds |
 |---|---|---|---|
-| `kb-live-help-center` | live | `KB-EDU-0001` `KB-EDU-0002` `KB-EDU-0003` `KB-EDU-0004` `KB-FUNC-0001` `KB-FUNC-0002` `KB-FUNC-0003` `KB-FUNC-0004` `KB-FUNC-0005` `KB-FUNC-0006` `KB-FUNC-0007` `KB-FUNC-0008` `KB-FUNC-0010` `KB-FUNC-0011` `KB-FUNC-0012` `KB-FUNC-0013` `KB-FUNC-0014` `KB-FUNC-0015` `KB-FUNC-0016` `KB-FUNC-0017` `KB-FUNC-0018` `KB-FUNC-0019` `KB-FUNC-0020` `KB-FUNC-0021` `KB-FUNC-0022` `KB-FUNC-0023` `KB-FUNC-0024` `KB-FUNC-0025` `KB-FUNC-0026` `KB-FUNC-0027` `KB-FUNC-0028` `KB-FUNC-0029` `KB-FUNC-0030` `KB-FUNC-0031` `KB-FUNC-0032` `KB-FUNC-0033` `KB-FUNC-0034` `KB-FUNC-0035` `KB-FUNC-0036` | `KB-FUNC-0006` |
+| `kb-live-help-center` | live | `KB-EDU-0001` `KB-EDU-0002` `KB-EDU-0003` `KB-EDU-0004` `KB-FUNC-0001` `KB-FUNC-0002` `KB-FUNC-0003` `KB-FUNC-0004` `KB-FUNC-0005` `KB-FUNC-0006` `KB-FUNC-0007` `KB-FUNC-0008` `KB-FUNC-0010` `KB-FUNC-0011` `KB-FUNC-0012` `KB-FUNC-0013` `KB-FUNC-0014` `KB-FUNC-0015` `KB-FUNC-0016` `KB-FUNC-0017` `KB-FUNC-0018` `KB-FUNC-0019` `KB-FUNC-0020` `KB-FUNC-0021` `KB-FUNC-0022` `KB-FUNC-0023` `KB-FUNC-0024` `KB-FUNC-0025` `KB-FUNC-0026` `KB-FUNC-0027` `KB-FUNC-0028` `KB-FUNC-0029` `KB-FUNC-0030` `KB-FUNC-0031` `KB-FUNC-0032` `KB-FUNC-0033` `KB-FUNC-0034` `KB-FUNC-0035` `KB-FUNC-0036` `KB-FUNC-0037` `KB-FUNC-0038` | `KB-FUNC-0006` |
 
 ### Conditional / gated-off surfaces (no approved KB yet)
 
@@ -83,6 +83,8 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 - `KB-EDU-0004`
 - `KB-FUNC-0035`
 - `KB-FUNC-0036`
+- `KB-FUNC-0037`
+- `KB-FUNC-0038`
 
 <!-- kb-live-gap-audit:end -->
 
