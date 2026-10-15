@@ -57,7 +57,9 @@ export const CONFIDE_SAFETY_LEAK_SCAN_RELATIVE_PATHS = Object.freeze([
   'src/core/confide/confideClassify.js',
   'src/core/confide/confideCrisisParaphraseShadow.js',
   'src/core/confide/confideSemanticCrisisExamples.js',
-  'src/core/confide/confideSemanticCrisisLayer.js'
+  'src/core/confide/confideSemanticCrisisLayer.js',
+  'src/core/confide/confideRhetoricalCrisisConfirm.js',
+  'desktop/companion/l1RhetoricalCrisisConfirm.js'
 ]);
 
 /** Combined leak-scan surfaces (mood-veto + safety classifiers). */

@@ -165,6 +165,43 @@ describe('confide semantic crisis layer (CR-44 S1)', () => {
     );
   });
 
+  it('does not live-apply rhetorical death-talk even when cosine would hit', () => {
+    const miss = applyConfideSemanticCrisis({
+      literalRoute: CONFIDE_ROUTE.FALLBACK,
+      score: 0.91,
+      embeddingOk: true,
+      mode: CONFIDE_SEMANTIC_CRISIS_MODE.LIVE,
+      text: '想死你了'
+    });
+    assert.equal(miss.applied, false);
+    assert.equal(miss.wouldApply, true);
+    assert.equal(miss.route, CONFIDE_ROUTE.FALLBACK);
+    const enMiss = applyConfideSemanticCrisis({
+      literalRoute: CONFIDE_ROUTE.FALLBACK,
+      score: 0.91,
+      embeddingOk: true,
+      mode: CONFIDE_SEMANTIC_CRISIS_MODE.LIVE,
+      text: "I'm dying to see you"
+    });
+    assert.equal(enMiss.applied, false);
+    assert.equal(enMiss.route, CONFIDE_ROUTE.FALLBACK);
+  });
+
+  it('still live-applies banked self-directed prototypes', () => {
+    for (const text of ['I want to die', '我想死', '我不想活了']) {
+      const hit = applyConfideSemanticCrisis({
+        literalRoute: CONFIDE_ROUTE.FALLBACK,
+        score: 0.91,
+        embeddingOk: true,
+        mode: CONFIDE_SEMANTIC_CRISIS_MODE.LIVE,
+        text
+      });
+      assert.equal(hit.applied, true, text);
+      assert.equal(hit.route, CONFIDE_ROUTE.SAFETY_REDIRECT, text);
+    }
+    assert.equal(DEFAULT_CONFIDE_SEMANTIC_CRISIS_COSINE, 0.78);
+  });
+
   it('logs hash + protoId + score bucket and never the original sentence', () => {
     assert.equal(semanticCrisisScoreBucket(0.81), 'ge_80');
     const row = buildSemanticCrisisTurnLog({

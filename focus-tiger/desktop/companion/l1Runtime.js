@@ -57,6 +57,10 @@ import {
   resolveConfideSemanticCrisisCosine,
   resolveConfideSemanticCrisisMode
 } from './l1SemanticCrisisLog.js';
+import {
+  RHETORICAL_CRISIS_CONFIRM,
+  confirmRhetoricalCrisisUse
+} from './l1RhetoricalCrisisConfirm.js';
 
 /**
  * @param {Record<string, unknown> | null | undefined} ev
@@ -1104,7 +1108,10 @@ export class CompanionL1Runtime {
       const score = Number(result.score) || 0;
       const protoId = typeof result.protoId === 'string' ? result.protoId : null;
       const wouldApply = score >= threshold;
-      const applied = mode === 'live' && wouldApply;
+      const rhetorical =
+        confirmRhetoricalCrisisUse(text) === RHETORICAL_CRISIS_CONFIRM.RHETORICAL;
+      const applied = mode === 'live' && wouldApply && !rhetorical;
+      const reason = rhetorical ? 'rhetorical_confirm' : 'ok';
       const out = {
         ok: true,
         embeddingOk: true,
@@ -1112,7 +1119,7 @@ export class CompanionL1Runtime {
         protoId,
         threshold,
         mode,
-        reason: 'ok',
+        reason,
         timing
       };
       await this._appendTurnLog(
@@ -1123,7 +1130,7 @@ export class CompanionL1Runtime {
           applied,
           wouldApply,
           mode,
-          reason: 'ok'
+          reason
         })
       );
       return out;

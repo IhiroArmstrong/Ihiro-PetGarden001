@@ -533,6 +533,14 @@ describe('desktop companion L2 isolation', () => {
     assert.match(preload, /scoreSemanticCrisis/);
     assert.match(ui, /scoreSemanticCrisis/);
     assert.match(ui, /applyConfideSemanticCrisis/);
+    assert.match(
+      ui,
+      /applyConfideSemanticCrisis\(\{[\s\S]*?text: asked/
+    );
+    assert.match(
+      ui,
+      /\.confide-to-yin__reply\[data-route='\$\{CONFIDE_ROUTE\.SAFETY_REDIRECT\}'\]::before[\s\S]*?background: #7a5340/
+    );
     assert.match(ipcSrc, /desktop:companion-semantic-crisis-score/);
     assert.match(preload, /desktop:companion-append-turn-log/);
     assert.match(ipcSrc, /desktop:companion-semantic-live-classify/);
@@ -557,6 +565,7 @@ describe('desktop companion L2 isolation', () => {
     assert.match(runtime, /stage2bRouting/);
     assert.match(runtime, /canReuseConfideSemanticLiveCache/);
     assert.match(runtime, /l1SemanticLiveCache/);
+    assert.match(runtime, /confirmRhetoricalCrisisUse/);
     assert.match(child, /classifyUserText\(contextualText\)/);
     assert.match(runtime, /kind: 'read_hybrid_classify'[\s\S]*?text: userText\.slice\(0, 400\)/);
     assert.match(ui, /classifyReadTool\(\{[\s\S]*?userText: text/);
