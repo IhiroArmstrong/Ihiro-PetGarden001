@@ -6,7 +6,7 @@
 /**
  * A6 / R3: remaining `no-use-before-define` (variables) hits in `src/main.js`.
  * Caps only shrink. New names or extra hits fail `lint:main-use-before-define`.
- * Caps shrink via A7 boot extracts (A7.3: Honesty / Companion / ritual / Arrival placeholder).
+ * Caps shrink via A7 boot extracts (A7.4: Session chrome gate / Choose box / Arrival flags).
  */
 
 export const MAIN_JS_USE_BEFORE_DEFINE_EXEMPTIONS = Object.freeze([
@@ -27,48 +27,13 @@ export const MAIN_JS_USE_BEFORE_DEFINE_EXEMPTIONS = Object.freeze([
     reason: 'Constructed with ambientSoundscape, after earlier cue callers.'
   },
   {
-    name: 'sessionUiGate',
-    maxHits: 5,
-    reason: 'Instantiated after chrome callbacks that close over the gate.'
-  },
-  {
     name: 'focusInput',
     maxHits: 2,
     reason: 'Focus HUD helpers close over input constructed near end of init.'
   },
   {
-    name: 'pendingAutoStartMode',
-    maxHits: 1,
-    reason: 'Arrival commit closes over flags declared later.'
-  },
-  {
-    name: 'arrivalChoseThisRun',
-    maxHits: 1,
-    reason: 'Arrival commit closes over flags declared later.'
-  },
-  {
-    name: 'suppressCompanionOpenAfterNod',
-    maxHits: 1,
-    reason: 'Arrival commit closes over flags declared later.'
-  },
-  {
     name: 'pendingChoose',
     maxHits: 1,
     reason: 'Arrival commit closes over flags declared later.'
-  },
-  {
-    name: 'postChooseChrome',
-    maxHits: 1,
-    reason: 'Arrival commit closes over chrome box declared later.'
-  },
-  {
-    name: 'syncArrivalGateReady',
-    maxHits: 1,
-    reason: 'Destructured from sessionChromeSyncApi after earlier Arrival helpers.'
-  },
-  {
-    name: 'syncHonestyIdleEntry',
-    maxHits: 1,
-    reason: 'Destructured from sessionChromeSyncApi after earlier Honesty helpers.'
   }
 ]);
