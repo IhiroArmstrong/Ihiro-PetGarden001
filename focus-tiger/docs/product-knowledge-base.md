@@ -1047,7 +1047,7 @@
   标题: Where to turn background music on or off
   适用场景: 想开或关主页背景音乐，或分不清这次同坐放的乐和下次默认
   内容正文: |
-    能力说明（en）：Where to turn background music on or off, and that it stays off until the person turns it on.
+    能力说明（en）：Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.
     短答（en）：Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.
     禁止：曲目名单；上传步骤；为新问法追加 keywords。
   yin_may_retrieve: 是
@@ -1067,7 +1067,7 @@
   标题: Checking in is optional
   适用场景: 以为必须每日打卡或漏一天会扣掉什么；与 0020「入口在哪」分开
   内容正文: |
-    能力说明（en）：Checking in is optional. Focus Tiger does not require a daily streak.
+    能力说明（en）：Whether check-in or a daily streak is required. Missing a day takes nothing away.
     短答（en）：You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.
     禁止：改 0020 短答；为新问法追加 keywords；把「为什么要冥想」写成第三张卡。
   yin_may_retrieve: 是

@@ -1,6 +1,7 @@
 # Task Brief · 产品问答贴近事实卡
 
 > **状态（2026-10-15）**：PO 已同意方向（「有限事实卡 + 按意思贴近」）。本文件是那一刀的规格。**不改发送链。** 实现须另说「按这份 Brief 开工」，并且新开 Chat。
+> **2026-10-15 续刀**：#1250 已合；未见英文批 `sealed-v1` 未过关（0037 30%、0038 0%）。下一刀只改检索短语判定（能力说明按句切开，短答仍整段），并重写 0037/0038 能力说明使它更像「这张卡覆盖哪类事实」。**禁止**把失败句写入 keywords。过关必须另开新封存文件 + 新手写出题编号。
 > **类别**：B 类。会改变宽屏倾诉里产品短答从哪一句来。
 > **跟进号**：**CR-49**。不取代 **CR-47**（操作问法 ∧ 产品对象，否则生成）。
 > **原则**：`PRINCIPLES.md` **R-Confide-No-Symptom-List**。禁止按症状加说法名单。测试纪律 `testing-strategy.mdc`（`confide-class-blind`）。
@@ -19,10 +20,10 @@
 
 ## 二、比对面改成什么
 
-每张可检索卡只贡献两段英文，拼成近义文本：
+每张可检索卡只贡献能力说明和短答，**按句切开能力说明** 再嵌入（短答仍整段一条，避免各卡共用的「Open More」抢邻居）：
 
-1. **一句能力说明**：这张卡在回答哪一种产品事实。一张卡一句。不是用户原话，也不是同义问法列表。
-2. **已审核短答** `shortAnswerEn`。
+1. **能力说明**：这张卡在回答哪一种产品事实。写成「whether / where …」这类事实覆盖句，不是用户原话，也不是同义问法列表。若有两句，检索时分成两条短语。
+2. **已审核短答** `shortAnswerEn`（整段一条向量）。
 
 没有能力说明的旧卡，近义文本就只用短答。实现时若某张旧卡因此从「能命中」变成「不能命中」，只允许给那张卡补一句能力说明，不允许把失败句写进 `keywords`。
 
@@ -40,7 +41,7 @@
 
 ### 0037 · 背景音乐在哪
 
-能力说明：Where to turn background music on or off, and that it stays off until the person turns it on.
+能力说明：Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.
 
 短答（en）：Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.
 
@@ -48,7 +49,7 @@
 
 ### 0038 · 打卡不是强迫签到
 
-能力说明：Checking in is optional. Focus Tiger does not require a daily streak.
+能力说明：Whether check-in or a daily streak is required. Missing a day takes nothing away.
 
 短答（en）：You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.
 
@@ -85,6 +86,7 @@
 
 - `catalogEntryEmbeddingText` 含短答，不含 `keywords` 里多出来的问法。
 - 给一张卡只加失败句的关键词、不加能力说明 → 近义文本不变。
+- 两句能力说明会切成两条检索短语；短答不按句切开。
 - 0037 / 0038 的近义文本含上面的能力说明。
 - 诚实空态日志对象没有 `text` 字段。
 

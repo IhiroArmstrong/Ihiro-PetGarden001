@@ -21,7 +21,7 @@ import {
   moodAsideOutranksProductLibrary
 } from '../../src/core/confide/confideProductKnowledgeSemantic.js';
 import { listRetrievableProductKnowledgeEntries } from '../../src/core/confide/confideProductKnowledge.js';
-import { catalogEntryEmbeddingText } from '../../src/core/confide/kbNearMatch.js';
+import { catalogEntryEmbeddingPhrases } from '../../src/core/confide/kbNearMatch.js';
 import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
 import { CONFIDE_SEMANTIC_CRISIS_PROTOTYPES } from '../../src/core/confide/confideSemanticCrisisExamples.js';
 import {
@@ -145,7 +145,7 @@ export async function loadEmbeddingHold(opts) {
   /** @type {{ id: string, vector: number[] }[]} */
   const catalogVectors = [];
   for (const entry of listRetrievableProductKnowledgeEntries()) {
-    const phrases = catalogEntryEmbeddingText(entry).split('\n').filter(Boolean);
+    const phrases = catalogEntryEmbeddingPhrases(entry);
     for (const phrase of phrases) {
       catalogVectors.push({ id: entry.id, vector: await embedText(phrase) });
     }
