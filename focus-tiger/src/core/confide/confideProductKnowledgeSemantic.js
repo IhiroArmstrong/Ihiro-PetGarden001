@@ -18,8 +18,8 @@ export const DEFAULT_CONFIDE_PRODUCT_KNOWLEDGE_MIN_SCORE = 0.42;
 
 /**
  * Lab / cold-start probe only — not the live classifier when embedding is ready.
- * Brief §6: may block generate when embedding is not ready; never substitutes
- * for semantic classification on the ready path.
+ * Mood-veto labs still use this wider “looks like a question” set. The honesty
+ * gate uses {@link isConfideOperationalProductAskShape} (CR-47).
  * @type {readonly RegExp[]}
  */
 export const PRODUCT_KNOWLEDGE_COLD_START_PROBE_RES = Object.freeze([
@@ -36,6 +36,38 @@ export const PRODUCT_KNOWLEDGE_COLD_START_PROBE_RES = Object.freeze([
   /会不会(?:包含|备份|导出|加密|明文)/,
   /どう|どこ|何|とは|違い/
 ]);
+
+/**
+ * Closed operational-ask shapes (CR-47). May grow shapes, not topics.
+ * Motivation / “why practice” frames are not operational.
+ * @type {readonly RegExp[]}
+ */
+const OPERATIONAL_PRODUCT_ASK_SHAPE_RES = Object.freeze([
+  /\bhow\s+(?:do|can|to)\b/i,
+  /\bhow\s+long\b/i,
+  /\bwhere\s+(?:is|are|do|can)\b/i,
+  /\bwhich\s+button\b/i,
+  /\bcan\s+i\s+turn\s+off\b/i,
+  /\bwon'?t\s+stop\b/i,
+  /\bdoes(?:n'?t|\s+not)\s+work\b/i,
+  /\b(?:can(?:no)?t|can't)\s+find\b/i,
+  /\bis\s+missing\b/i,
+  /\bwhat(?:'s|\s+is)\s+(?:the\s+)?(?:observation\s+wing|ground(?:ing)?(?:\s+exercise)?|sit(?:ting)?(?:\s+button)?|help\s+center|quiet\s+line|reminder|backup|export|menu|drawer|sanctuary|membership|subscription)\b/i,
+  /\bwhat(?:'s|\s+is)\s+the\s+(?!(?:point|purpose|reason|weather|meaning|use|benefit)\b)/i,
+  /\bwhat\s+does\b/i,
+  /\bwhat(?:'s|\s+is)\s+(?:in|inside)\b/i,
+  /怎么|如何|在哪|哪里|从哪|怎么办|如何关|关不掉|找不到|坏了|多久/,
+  /是什么|什么意思|有什么区别/
+]);
+
+const MOTIVATION_ASK_SHAPE_RE =
+  /\bwhy\s+(?:should|do|would|can't|cannot|not)\b|\bwhat(?:'s|\s+is)\s+(?:the\s+)?(?:point|purpose|reason|benefit|meaning|use)\b|为什么|为何|干嘛要|有什么意义|有什么好处|有什么用/i;
+
+const ACTIVITY_WHAT_IS_RE =
+  /\bwhat(?:'s|\s+is)\s+(?:some\s+)?(?:(?:focus|breathing)\s+)?(?:practice|practicing|meditation|meditat(?:e|ing|ion)|focus(?:ing)?|breathing)\b|(?:练习|冥想|专注|呼吸).{0,8}是什么|是什么.{0,8}(?:练习|冥想|专注|呼吸)/i;
+
+const ACTIVITY_HOW_TO_RE =
+  /\bhow\s+(?:do|can|to)\b.+\b(?:meditat(?:e|ing|ion)|practice|practicing|focus(?:ing)?|breath(?:e|ing))\b|\b(?:meditat(?:e|ing|ion)|practice|practicing)\b.+\bhow\s+(?:do|can|to)\b|怎么.{0,12}(?:练|坐|冥想)|如何.{0,12}(?:练|坐|冥想)/i;
 
 /**
  * @param {NodeJS.ProcessEnv} [env]
@@ -87,6 +119,41 @@ export function isProductKnowledgeColdStartProbe(text) {
   return PRODUCT_KNOWLEDGE_COLD_START_PROBE_RES.some(
     (re) => re.test(spaced) || (compact !== spaced && re.test(compact))
   );
+}
+
+/**
+ * Confirmed product-ask shape (CR-47): operational question, not motive/chat.
+ * Activity how-to without a named product entry still counts (must not invent steps).
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isConfideOperationalProductAskShape(text) {
+  const raw = normalizeConfideIntentText(text);
+  if (!raw) return false;
+  const spaced = raw.replace(/\s+/g, ' ').trim();
+  const compact = spaced.replace(/\s+/g, '');
+  if (MOTIVATION_ASK_SHAPE_RE.test(spaced) || MOTIVATION_ASK_SHAPE_RE.test(compact)) {
+    return false;
+  }
+  if (ACTIVITY_WHAT_IS_RE.test(spaced) || ACTIVITY_WHAT_IS_RE.test(compact)) {
+    return false;
+  }
+  return OPERATIONAL_PRODUCT_ASK_SHAPE_RES.some(
+    (re) => re.test(spaced) || (compact !== spaced && re.test(compact))
+  );
+}
+
+/**
+ * “How can I meditate?” class: operational how-to, no product entry named.
+ * Catalog hits still short-answer first; otherwise honesty, never invented steps.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isConfideActivityHowToWithoutProductEntry(text) {
+  const raw = normalizeConfideIntentText(text);
+  if (!raw) return false;
+  const spaced = raw.replace(/\s+/g, ' ').trim();
+  return ACTIVITY_HOW_TO_RE.test(spaced);
 }
 
 /**
@@ -210,27 +277,28 @@ export function resolveProductKnowledgeGateAction(input) {
   if (catalogHit) return 'hit';
   if (isConfideMoodAsideFromProductKnowledge(text)) return 'skip';
 
+  const operational = isConfideOperationalProductAskShape(text);
+  const activityHowTo = isConfideActivityHowToWithoutProductEntry(text);
+  const lifeOrMoodSkip =
+    lifeOutranksProduct || moodVetoReleasesChineseToObserve(input);
+
   if (embeddingState === 'ready') {
-    // Middle band stays a label in decideKbNearMatch.
-    // Life chat (everyday-ask library beats Library C) generates.
-    // Unanswered product questions in this band stay on the honesty line.
+    // Vector “looks like product” is not enough (CR-47). Honesty only after an
+    // operational ask shape. Life chat / live Chinese mood veto still generate.
     if (nearAction === 'honesty') {
-      if (lifeOutranksProduct || moodVetoReleasesChineseToObserve(input)) return 'skip';
+      if (lifeOrMoodSkip) return 'skip';
+      if (!operational) return 'skip';
       return 'honesty';
     }
-    // Distance may decide that a non-product ask is worth retrieving, but it
-    // may not overturn the gate: once this reads as a product question the
-    // catalog cannot answer, the worst outcome is the honesty empty state,
-    // never free generation. Life chat keeps the same escape hatch it has in
-    // the middle band above. (`task-confide-kb-honesty-empty-state.md` §三,
-    // anchor A10.)
     if (semanticIsProduct) {
-      return lifeOutranksProduct || moodVetoReleasesChineseToObserve(input) ? 'skip' : 'honesty';
+      if (lifeOrMoodSkip) return 'skip';
+      return operational ? 'honesty' : 'skip';
     }
+    if (activityHowTo) return 'honesty';
     return 'skip';
   }
 
-  if (isProductKnowledgeColdStartProbe(text)) {
+  if (operational || activityHowTo) {
     return 'honesty';
   }
   return 'skip';
