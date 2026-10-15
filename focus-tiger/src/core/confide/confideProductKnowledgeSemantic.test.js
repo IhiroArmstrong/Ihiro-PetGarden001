@@ -13,6 +13,7 @@ import {
   lifeChatOutranksProductLibrary,
   resolveProductKnowledgeGateAction
 } from './confideProductKnowledgeSemantic.js';
+import { classifyConfideProductAskRole } from './confideProductAskRole.js';
 
 const CR47_GENERATE_WHEN_PRODUCT_LIKE = Object.freeze([
   "I feel quite sleepy. I don't want to practice anymore.",
@@ -152,6 +153,22 @@ describe('confideProductKnowledgeSemantic', () => {
         `${text} cold-start`
       );
     }
+  });
+
+  it('CR-49: whether-required shape with product object is operational; activity-only is not', () => {
+    assert.equal(classifyConfideProductAskRole('Do I need to check in daily?'), 'whether-required');
+    assert.equal(classifyConfideProductAskRole('Do I have to meditate?'), 'none');
+    assert.equal(isConfideOperationalProductAskShape('Is daily streak required?'), true);
+    assert.equal(isConfideOperationalProductAskShape('Do I have to meditate?'), false);
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'Do I need to check in every day?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false
+      }),
+      'honesty'
+    );
   });
 
   it('CR-47: confirmed product asks still must not invent steps', () => {

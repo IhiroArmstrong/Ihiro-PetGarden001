@@ -1,6 +1,6 @@
 # Task Brief · 事实键 + 问法形状轴（CR-49 第三刀）
 
-> **状态（2026-10-16）**：规格草稿。PO 点头或回复「按事实键形状轴 Brief 开工」之前，**禁止改发送链**。
+> **状态（2026-10-16）**：PO 已令开工；实现见 `feature/confide-fact-key-ask-role`（关单仍须 `sealed-v3` 未见英文批）。
 > **类别**：B 类。会改变宽屏倾诉里产品短答从哪一张卡来、以及未命中时走生成还是诚实空态。
 > **跟进号**：**CR-49**。补 **CR-47** 的形状轴（可增形状、不可增话题），不重开产品问闸。
 > **原则**：`PRINCIPLES.md` **R-Confide-No-Symptom-List**。禁止按症状加说法名单。测试纪律 `testing-strategy.mdc`（`confide-class-blind`）。

@@ -281,6 +281,8 @@
     },
     {
       "id": "KB-FUNC-0020",
+      "factKeyEn": "Where do I open Honesty Check-in to record quiet time I already did elsewhere?",
+      "askRoleShapes": ["where", "how"],
       "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Honesty Check-in — below The 5 Moments. Pick how long your quiet time elsewhere was, take one syncing breath, then Yin records it. This is optional; Sit with Yin still works without it. After check-in you may see a gentle bridge asking if you want to sit now too.",
       "keywords": [
         "Honesty Check-in",
@@ -599,6 +601,8 @@
     },
     {
       "id": "KB-FUNC-0037",
+      "factKeyEn": "Where is the idle-screen control that turns background music or ambient sound on or off?",
+      "askRoleShapes": ["where", "how"],
       "capabilityStatementEn": "Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.",
       "shortAnswerEn": "Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.",
       "keywords": [
@@ -607,6 +611,8 @@
     },
     {
       "id": "KB-FUNC-0038",
+      "factKeyEn": "Is daily check-in or a streak required, or is it optional?",
+      "askRoleShapes": ["whether-required"],
       "capabilityStatementEn": "Whether check-in or a daily streak is required. Missing a day takes nothing away.",
       "shortAnswerEn": "You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.",
       "keywords": [

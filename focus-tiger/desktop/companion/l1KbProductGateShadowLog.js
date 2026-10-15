@@ -50,6 +50,7 @@ function finiteOrNull(value) {
  *     moodOutranksProduct?: boolean,
  *     nearestId?: string | null,
  *     nearestScore?: number | null,
+ *     nearestAskRole?: string | null,
  *     embedMs?: number
  *   },
  *   timing?: { wallMs?: number }
@@ -73,6 +74,10 @@ export function buildKbProductGateShadowTurnLogRecord({ text, result, timing }) 
     kbMoodOutranks: moodScore === null ? null : Boolean(result.moodOutranksProduct),
     nearestId: typeof result.nearestId === 'string' ? result.nearestId : null,
     nearestScore: finiteOrNull(result.nearestScore),
+    nearestAskRole:
+      typeof result.nearestAskRole === 'string' && result.nearestAskRole.trim()
+        ? result.nearestAskRole.trim()
+        : null,
     timing: {
       wallMs: finiteOrNull(timing?.wallMs),
       embedMs: finiteOrNull(result.embedMs)

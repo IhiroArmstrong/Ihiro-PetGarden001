@@ -71,18 +71,19 @@ describe('catalogEntryEmbeddingText', () => {
     assert.equal(catalogEntryEmbeddingText(card), catalogEntryEmbeddingText(withFailedAsk));
   });
 
-  it('includes the retrieval-oriented capability sentences for 0037 and 0038', () => {
+  it('uses fact keys for 0037 and 0038 (CR-49 slice 3)', () => {
     const byId = Object.fromEntries(catalog.entries.map((row) => [row.id, row]));
     assert.match(
       catalogEntryEmbeddingText(byId['KB-FUNC-0037']),
-      /Where the idle-screen control turns background music or ambient sound on or off/
+      /Where is the idle-screen control that turns background music or ambient sound on or off/
     );
     const checkinPhrases = catalogEntryEmbeddingPhrases(byId['KB-FUNC-0038']);
+    assert.equal(checkinPhrases.length, 1);
+    assert.match(checkinPhrases[0], /Is daily check-in or a streak required, or is it optional/);
     assert.equal(
-      checkinPhrases.includes('Whether check-in or a daily streak is required.'),
-      true
+      checkinPhrases.some((row) => row.includes('You do not have to check in')),
+      false
     );
-    assert.equal(checkinPhrases.includes('Missing a day takes nothing away.'), true);
   });
 
   it('splits a two-sentence capability into two phrases and still ignores keyword asks', () => {

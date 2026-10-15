@@ -1037,7 +1037,7 @@
 
 ### 4.14 背景音乐开关 / 打卡不是强迫签到（已通过 · catalog 已入库）
 
-> **Status**: **PO 2026-10-15 Brief** [`task-briefs/task-confide-fact-card-near-match.md`](./task-briefs/task-confide-fact-card-near-match.md) · **已进** `productKnowledgeCatalog.json` · **0037 / 0038** 无独立菜单行，记入 cross-cutting · 闸门 **40 条**。近义文本用能力说明 + 短答，不加问法关键词。0020 仍只回答 Honesty Check-in 从哪进。
+> **Status**: **PO 2026-10-16 Brief** [`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md) · **已进** `productKnowledgeCatalog.json` · **0037 / 0038** 无独立菜单行，记入 cross-cutting · 闸门 **40 条**。近义只用 `factKeyEn`（问句形事实键）+ 问法形状轴；短答不进 embedding。0020 补 where/how 事实键，与 0038 whether-required 分轨。关单仍须 `sealed-v3` 未见英文批。
 
 ```yaml
 - id: KB-FUNC-0037
@@ -1047,7 +1047,8 @@
   标题: Where to turn background music on or off
   适用场景: 想开或关主页背景音乐，或分不清这次同坐放的乐和下次默认
   内容正文: |
-    能力说明（en）：Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.
+    事实键（en）：Where is the idle-screen control that turns background music or ambient sound on or off?
+    能力说明（en，文档参考）：Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.
     短答（en）：Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.
     禁止：曲目名单；上传步骤；为新问法追加 keywords。
   yin_may_retrieve: 是
@@ -1067,7 +1068,8 @@
   标题: Checking in is optional
   适用场景: 以为必须每日打卡或漏一天会扣掉什么；与 0020「入口在哪」分开
   内容正文: |
-    能力说明（en）：Whether check-in or a daily streak is required. Missing a day takes nothing away.
+    事实键（en）：Is daily check-in or a streak required, or is it optional?
+    能力说明（en，文档参考）：Whether check-in or a daily streak is required. Missing a day takes nothing away.
     短答（en）：You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.
     禁止：改 0020 短答；为新问法追加 keywords；把「为什么要冥想」写成第三张卡。
   yin_may_retrieve: 是

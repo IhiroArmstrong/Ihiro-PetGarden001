@@ -1708,7 +1708,8 @@ export class ConfideToYinUI {
             reason: catalogResult.reason || 'semantic_miss',
             locale: getLocale(),
             nearestId: gate?.nearestId,
-            nearestScore: gate?.nearestScore
+            nearestScore: gate?.nearestScore,
+            nearestAskRole: gate?.nearestAskRole
           })
         );
       }
