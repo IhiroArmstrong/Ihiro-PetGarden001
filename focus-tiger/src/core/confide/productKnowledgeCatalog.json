@@ -377,7 +377,7 @@
     {
       "id": "KB-EDU-0003",
       "factKeyEn": "Are focus practice, meditation, and mindfulness the same thing, or is Sit with Yin a Focus sit rather than a generic meditation class?",
-      "askRoleShapes": ["what-is"],
+      "askRoleShapes": ["what-is", "why-compare"],
       "shortAnswerEn": "In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.",
       "keywords": [
         "专注和冥想有什么区别",

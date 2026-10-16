@@ -74,7 +74,7 @@
 | CR-48 | 进行中 | 语义危机命中后确认修辞/亲昵，自指求死仍转介 | 实现中。不降低 0.78，不改 safety-01。与 CR-47 不同 PR |
 | CR-49 | 进行中 | 产品问答贴近事实卡（事实键 + 问法形状轴） | #1250+#1255+#1259 已合 develop。机制：同形状近邻、`factKeyEn`、whether-required 扩 CR-47。关单仍须新封存 `sealed-v3` ≥85%/类。Brief `task-confide-fact-key-ask-role.md` |
 | CR-50 | 实现中 | 先听懂要什么事实再取：错卡不念（含字面命中）、帮助短摘、记录三档、生成不得断言事实 | #1277 发送链已合；#1287 事实键+记录原型已合；#1284 v1=9/33。v2=13/33（记录 4/5；0038 1/5；好处 0/5）。停手改卡。关单仍须未见批。Brief `task-confide-asked-fact-keys.md`。不调 0.80 |
-| CR-51 | 待点头 | 问法形状轴扩档：why-compare；whether-required 排在动机闸前 | Brief `task-confide-ask-shape-axis.md`。不改卡、不加问法名单。实现另点头 |
+| CR-51 | 进行中 | 问法形状轴扩档：why-compare；whether-required 排在动机闸前 | Brief `task-confide-ask-shape-axis.md`。不改卡、不加问法名单。PO 已点头开工；实现 #1294 |
 
 ## 逐条步骤
 
@@ -579,12 +579,12 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 
 **完成**：实现 PR 合入；关单仍用未见批与事实答案表，不用 10-16 已见句。
 
-### CR-51 · 问法形状轴扩档（待点头）
+### CR-51 · 问法形状轴扩档（进行中）
 
-权威：[`task-briefs/task-confide-ask-shape-axis.md`](./task-briefs/task-confide-ask-shape-axis.md)。v2：记录 4/5；0038 1/5；好处 0/5。#1287 已停手改卡。
+权威：[`task-briefs/task-confide-ask-shape-axis.md`](./task-briefs/task-confide-ask-shape-axis.md)。v2：记录 4/5；0038 1/5；好处 0/5。#1287 已停手改卡。PO 已点头开工。
 
 - 新增封闭形状 `why-compare`（同一/不同 ∧ 闭集练习名或产品路径）。动机「为什么要练」仍 `none`。
 - `whether-required` 排到动机闸之前，使「为什么必须打卡」进 0038 档。
 - 不改事实键、不调 0.80、不把失败句写入 keywords。不并入 CR-45。
 
-**完成**：PO 点头 + 实现 PR + 仓外未见批 v3 上 0038 与好处类明显上来。没有点头不得改运行时。
+**完成**：实现 PR 合入 + 仓外未见批 v3 上 0038 与好处类明显上来。没有 v3 不得写「换说法已经接住」。
