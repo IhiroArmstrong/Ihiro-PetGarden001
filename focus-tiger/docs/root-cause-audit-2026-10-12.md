@@ -143,13 +143,13 @@
 | **A5** | 新增 husky `pre-push`：跑一条启动冒烟（单个 Playwright spec，断言 `__FT_APP_READY__ === true` 且无页面错误），本地约 1 分钟内结束；仅文档改动可跳过。 | **本支** `chore/a5-pre-push-startup-smoke`：`.husky/pre-push` → `test:e2e:startup`（Vite `:5198`）。单测锁 docs-only 跳过 / 代码推送跑冒烟 / 冒烟红则拒绝。正常启动绿；#1139 类 TDZ 会让 ready 永不置位 → spec 红。 |
 | **A22** | 让钩子在任何检出里都生效：把 `core.hooksPath` 改指向已进 git 的目录（或在建工作目录的脚本里自动装钩子）；`check:worktree-occupancy` 发现钩子目录缺失时报 BLOCK。**须在 A5 之前或同时落地**，否则 A5 的 `pre-push` 在新工作目录里同样不会跑。 | **本支** `chore/committed-git-hooks`：`prepare` 写 `core.hooksPath=.husky`；占用检查对缺失 / 仍指向 `.husky/_` 报 BLOCK。新开工作目录、不跑 `npm install`，只要本机已设 hooksPath，`pre-commit` 会执行。 |
 | **A6** | 对 `src/main.js` 开启「先用后定义」静态检查（ESLint `no-use-before-define`，仅变量；函数声明豁免），接进 `test:smoke`。 | **已合** [#1189](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1189)：`lint:main-use-before-define` 进 `test:smoke`。夹具 `tdz-onboarding-hints-1139.js` 必须报 `onboardingHints`；起点 23 名 / 67 次封顶（只减不增）。拆 `init()` 走 A7。 |
-| **A8** | 页面防呆：① e2e 冒烟与 A1 每步检查可见文字中不含 `undefined` / `NaN` / `[object Object]`；② 提供安全拼装辅助（子节点为空即开发报错），新代码用它。 | **本支** `feat/a8-visible-text-poison`：`visibleTextPoison.js` SSOT + `test:e2e:startup` / 产品壳 e2e + A1 菜单共用；`appendDomChild` / `setDomText` + 单测。 |
+| **A8** | 页面防呆：① e2e 冒烟与 A1 每步检查可见文字中不含 `undefined` / `NaN` / `[object Object]`；② 提供安全拼装辅助（子节点为空即开发报错），新代码用它。 | **已合** [#1268](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1268)：`visibleTextPoison.js` SSOT + e2e 共用 + `appendDomChild`/`setDomText` + 单测。 |
 
 ### 阶段三 · 堵住「只做了第一种」（第 2 类）
 
 | 编号 | 做什么 | 完成标准 |
 |---|---|---|
-| **A9** | 商品与练习登记表：每种商品声明付款回跳去向、已购状态、高清发放方式、编号规则；每种练习声明结束语音、存图命名。配**穷举测试**：遍历登记表，任一类型缺声明即失败。 | 去掉登记表里「艺术收藏回跳」一行时测试失败（红），补上后绿；新增类型不填就过不了 CI。 |
+| **A9** | 商品与练习登记表：每种商品声明付款回跳去向、已购状态、高清发放方式、编号规则；每种练习声明结束语音、存图命名。配**穷举测试**：遍历登记表，任一类型缺声明即失败。 | **slice 1 本支** `feat/a9-commerce-product-registry`：`commerceProductRegistry.js` 覆盖全部 checkout 商品 + `commerceProductRegistry.test.js`；练习/存图命名留 slice 2。 |
 | **A10** | Brief 模板加「变体矩阵」必填栏：列出全部练习、全部商品类型，每行写预期；验收按矩阵逐行勾。 | **已合文档** · `COLLAB.md`「八 · 8.1」+ `brief-before-user-visible` Step D（线3 文档包 A10+A14+A18–A21）。 |
 
 ### 阶段四 · 设计语言和层级进代码（第 3 类）+ `init()` 拆分

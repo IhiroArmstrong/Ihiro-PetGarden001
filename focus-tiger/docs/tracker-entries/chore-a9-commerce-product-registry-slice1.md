@@ -1,0 +1,1 @@
+| A9 商品 checkout 登记表 slice 1 | 纯后端 | 仅单元测试覆盖 | 无用户可见变化。核对 `commerceProductRegistry.test.js` + `*ParallelListContract*` 绿；登记表须与 `DESKTOP_CHECKOUT_KINDS` 一一对应。 | — | — | — | `commerceProductRegistry.js` | 2026-10-16 |

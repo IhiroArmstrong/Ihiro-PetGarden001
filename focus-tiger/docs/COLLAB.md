@@ -199,7 +199,7 @@ COLLAB.md（本文档，协作层）
 **SSOT 指针（实现时对照，不在 Brief 里手抄第二份名单）**：
 
 - 菜单可达：`idleChromeOrchestration.js` + A1 `e2e/menu-full-reachability.spec.js`
-- 付款回跳 / 已购：`paymentCheckoutReturnParallelListContract` · `supportPaidCardParallelListContract`（A9 登记表落地后以此为准穷举）
+- 付款回跳 / 已购：`commerceProductRegistry.js` + `commerceProductRegistry.test.js`；契约别名 `paymentCheckoutReturnParallelListContract` · `supportPaidCardParallelListContract`
 - 艺术收藏高清：`artCollectionCatalog.js` / `cloud/…/artCollectionCatalog.ts`
 
 **合规跳过句**（仅当本次确实不触及上列四类）：  
