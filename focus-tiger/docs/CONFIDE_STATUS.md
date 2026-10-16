@@ -12,7 +12,7 @@
 |---|---|---|
 | **G1 安全托底** | CR-43 · CR-44 | **关单口径维持**：开发集明确危机 **≥90%**（分母 **63** → ≥57）；逃避误捕 **≤2/35** 且不得纯逃避句。封存 **s-v1**：明确危机 **≥90%**（≥40 句）、非危机合计误捕 **≤2/40**（逃避≥20 + 口语夸张或指向他人≥20）；灰区只报告。`safety_leak_to_gate` = 0。语义层只补**字面未命中**（S1），不改 safety-01。 |
 | **G2 路由正确** | CR-10 · CR-11 · **CR-45** | 关单见已点头（附修改）[`task-confide-routing-holdout-caliber-split.md`](./task-briefs/task-confide-routing-holdout-caliber-split.md)：五带；带 A 路径对或 CR-45 **影子**合并对（≥85%、n≥60、分列）；带 C 硬闸（产品问 0 句进情绪路径、徽章 0 句寅币短答）**进 CR-11 前置**；AE 两锚各 1 句短答锁（不报通过率）。**en/b-v6 点头 ≠ 占额**，真跑另书面。CR-45 **影子**可先于 CR-11；**live** 仍等 CR-11。热态 TTFT **≤100 ms**。不调 0.01。不是 CR-51。 |
-| **G3 上线放行清单** | CR-42 · CR-11 · **CR-46** · Stage 2b | **G1 + G2** 封存过关；冻表**不退步**；人工关单（含热线竖线手感，**仍待 Electron 复测**）；仲裁切 live 删 `#1200` 对照臂。Stage 2b **shadow**。产品兜底 **CR-46**（分档回应 + 倾诉卡常驻入口）Brief **#1238**，实现另点头。 |
+| **G3 上线放行清单** | CR-42 · CR-11 · **CR-46** · Stage 2b | **G1 + G2** 封存过关；冻表**不退步**；人工关单（含热线竖线手感，**仍待 Electron 复测**）；仲裁切 live 删 `#1200` 对照臂。Stage 2b **shadow**。产品兜底 **CR-46**：倾诉卡帮助入口骨架已合 **#1283**，中档回应未接到发送链，阈值待复核（Brief **#1238**）。 |
 | **G4 可持续开发方式** | R-Confide-Class · 本板 | 无 CR 编号不开字面补丁；**手写出题编号** `author_prompt_id`；作废句只曲线/统计；**预关卡**不算过关文件；并行 Confide 会话 **≤3**；本板 SSOT。 |
 
 ---
@@ -61,7 +61,7 @@
 
 **§6 · 未见事实诊断 v1（2026-10-16 晚 · 不占过关额度）**：仓外 `confide-g2-fact-arrival/diagnostic-unseen-v1` · `author_prompt_id=g2-fact-unseen-v1-2026-10-16-session-e` · sha256 `a635e5fbba0d7c75a49b38eccaa2b72ec4ad5bb8c32cf5d7e8b43eeca872470c` · n=33 · **9/33（27.3%）** 事实到达。类：`no-fact-card-block` 5/5 · `whether-required-0038` 0/5 · `benefit-why-0003` 0/5 · `bgm-toggle-0037` 1/5 · `device-practice-record` 1/5 · `collections-provenance-help` 1/5 · `design-session-length` 1/3。读口 `npm run audit:g2-fact-arrival`。原句不进仓。
 
-**§6 · 未见事实诊断 v2（2026-10-16 晚 · 事实键续刀后 · 不占过关额度）**：仓外 `confide-g2-fact-arrival/diagnostic-unseen-v2` · `author_prompt_id=g2-fact-unseen-v2-2026-10-16-session-f` · sha256 `194c0be47de09c4280c641c7fd93c873c66833beeb9fb06f270a007e33340dc6` · n=33 · **13/33（39.4%）**。类：`no-fact-card-block` 5/5 · `whether-required-0038` 1/5 · `benefit-why-0003` 0/5 · `bgm-toggle-0037` 2/5 · `device-practice-record` 4/5 · `collections-provenance-help` 1/5 · `design-session-length` 0/3。记录档明显上来；0038 微升；好处卡仍 0（现网 why 仍是 `none`）。原句不进仓。不据此再改卡。
+**§6 · 未见事实诊断 v2（2026-10-16 晚 · 事实键续刀后 · 不占过关额度）**：仓外 `confide-g2-fact-arrival/diagnostic-unseen-v2` · `author_prompt_id=g2-fact-unseen-v2-2026-10-16-session-f` · sha256 `194c0be47de09c4280c641c7fd93c873c66833beeb9fb06f270a007e33340dc6` · n=33 · **13/33（39.4%）**。类：`no-fact-card-block` 5/5 · `whether-required-0038` 1/5 · `benefit-why-0003` 0/5 · `bgm-toggle-0037` 2/5 · `device-practice-record` 4/5 · `collections-provenance-help` 1/5 · `design-session-length` 0/3。记录档明显上来；0038 微升；好处卡仍 0（这批测量时 why 仍是 `none`，在 #1294 之前）。原句不进仓。不据此再改卡。
 
 **§6 第 2 步 · 只读名次（2026-10-16 · 不调参 · 本文件不是过关封存）**
 
@@ -235,7 +235,9 @@
 3. **CR-50 规格 + 发送链**（**已点头 · #1273 Brief · #1277 已合**）：[`task-confide-g2-fact-first.md`](./task-briefs/task-confide-g2-fact-first.md)。五项已落地发送链；**关单**仍须未见事实批 + 事实答案表，不用 10-16 已见句。  
 4. **未见事实诊断**（v1 已跑 · #1284）：9/33；错卡不念 5/5。  
 5. **问到的事实键**（本支已跑 v2）：记录 **4/5**（明显上来）；0038 **1/5**；好处 **0/5**。**停手，不再改卡。** Brief [`task-confide-asked-fact-keys.md`](./task-briefs/task-confide-asked-fact-keys.md)。  
-6. **排队（不自动开工）**：CR-51 形状轴运行时已合 #1294（关单仍欠未见 v3）。**CR-45** 规格已补锁，实现等 CR-11，禁止单独先上。
+   **好处类停手后（未解决）**：`benefit-why-0003` 的 0/5 **留待 CR-51 未见 v3 收口测量后再评估**，不收成「以后就用诚实空态」，也不写成用户已经听得到好处。v3 未跑前不改卡。规格见 [`task-confide-ask-shape-axis.md`](./task-briefs/task-confide-ask-shape-axis.md)：点名了这套练习的好处或比较问，够近才念已审短答，不够近才诚实空态；没点名练习的「为什么要练」仍走生成。  
+6. **排队（不自动开工）**：CR-51 形状轴运行时已合 #1294（关单仍欠未见 v3）。**CR-45** 规格已补锁，实现等 CR-11，禁止单独先上。  
+   **热线竖线**：宽屏手感仍等人手在 Electron 看，本轮不改代码（与第 1 节、第 5 节同一句）。
 
 **先暂停、不删除**：安全曲线、staging-s1 打分、语义原型、阈值调整、逐卡加词。不插到上面步骤前面。G1 关单线不变。
 
@@ -248,7 +250,7 @@
 | **状态 / G2 顺序** | 事实键 v2 已跑；停手不再改卡 | CR-51 #1294 已合；关单未见 v3 |
 | **安全线** | CR-43/44 · staging-s1 · 测量/原型 | 额度满；预关卡已封存未打分 |
 | **路由线** | CR-10 · CR-45（#1237） | 规格已补锁；实现等 CR-11 |
-| **产品兜底** | CR-46（#1238 · #1283 骨架） | 中档未接线；阈值待复核 |
+| **产品兜底** | CR-46（#1238 · #1283 骨架） | 中档未接线；阈值待复核。热线竖线宽屏手感等人手，不改代码 |
 
 > 新开实现或跑分会话前核对：并行 **≤3**；超额须收口或登记替换上表某一行。
 
