@@ -1,7 +1,7 @@
 ---
 id: confide-routing-holdout-caliber-split
 kind: feature
-status: 设计说明已出 · 待 PO 点头 · 未跑 en/b-v6
+status: Brief 已点头（附修改）· 未跑 en/b-v6 · 点头≠占额
 updated: 2026-10-17
 ---
 

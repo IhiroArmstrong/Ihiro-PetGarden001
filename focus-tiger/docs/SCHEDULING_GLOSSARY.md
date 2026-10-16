@@ -17,8 +17,8 @@
 | **可选** · **T3** | TASKS 机器块拼装 | 未做 | 单独小 PR；手改 `TASKS.md` 须与功能 PR 分开 |
 | **未排期** · **T4** | 根因行动 A15–A17 | 搁置 | 见 §3 |
 | — · **T5** | Confide CR-51 问法形状轴 #1294 | **进行中** | `why-compare` + `whether-required` 顺序；**已合 develop**；关单须未见 v3 audit；Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
-| **P2** · **T6** | Confide 路由盲测考核口径拆分 | **立即做** | Brief `task-confide-routing-holdout-caliber-split.md`；待 PO 点头；**禁止**真跑 `en/b-v6`、禁止 CR-11 / CR-45 |
-| — | Confide CR-45 混合句 #1237 | **未开工** | 规格已补锁（等 CR-11）；Brief `task-confide-mixed-emotion-then-product.md`；**禁止单独先上**；口令「按补锁后的 CR-45 Brief 开工」 |
+| **P2** · **T6** | Confide 路由盲测考核口径拆分 | **已点头（附修改）** | Brief `task-confide-routing-holdout-caliber-split.md`；CR-45 **影子**可另口令；**禁止**真跑 `en/b-v6`（点头 ≠ 占额）；CR-11 / CR-45 live 另口令 |
+| — | Confide CR-45 混合句 #1237 | **影子可开工 / live 未开工** | Brief `task-confide-mixed-emotion-then-product.md`；影子口令「按补锁后的 CR-45 Brief 开工影子」；**live 禁止单独先上** |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -42,7 +42,9 @@
 | 「继续 CR-50」或「开 Confide PR」 | 历史 **P2**（#1287 已合）；勿再开同内容 PR |
 | 「开 CR-45」或混合句实现类口令 | **CR-45** 规格线；**不得**与 **T5 / #1294** 混为同一刀；须 Brief 点头 + 新旁支 |
 | 「Confide 下一刀」等未指编号 | 先对照 §1：当前倾诉线 **T6** = 考核口径拆分；**T5** = CR-51 关单仍待未见 v3；**CR-45** 另行；禁止默认开工 CR-45 |
-| 「按考核口径拆分 Brief 点头」 | **T6** 点头后才许改实验室关单与、另会话打 en/b-v6 |
+| 「按考核口径拆分 Brief 点头」 | 已发生（附修改已写入） |
+| 「按补锁后的 CR-45 Brief 开工影子」 | CR-45 **影子**（不改发送链）；不是 live |
+| 「接受 en/b-v6 占额」 | 才允许另会话真跑英文卷 |
 
 ---
 
