@@ -150,7 +150,7 @@
 | 编号 | 做什么 | 完成标准 |
 |---|---|---|
 | **A9** | 商品与练习登记表：每种商品声明付款回跳去向、已购状态、高清发放方式、编号规则；每种练习声明结束语音、存图命名。配**穷举测试**：遍历登记表，任一类型缺声明即失败。 | 去掉登记表里「艺术收藏回跳」一行时测试失败（红），补上后绿；新增类型不填就过不了 CI。 |
-| **A10** | Brief 模板加「变体矩阵」必填栏：列出全部练习、全部商品类型，每行写预期；验收按矩阵逐行勾。 | `COLLAB.md` Brief 模板更新；之后新 Brief 缺此栏不开工（`brief-before-user-visible` 规则补一句）。 |
+| **A10** | Brief 模板加「变体矩阵」必填栏：列出全部练习、全部商品类型，每行写预期；验收按矩阵逐行勾。 | **已合文档** · `COLLAB.md`「八 · 8.1」+ `brief-before-user-visible` Step D（线3 文档包 A10+A14+A18–A21）。 |
 
 ### 阶段四 · 设计语言和层级进代码（第 3 类）+ `init()` 拆分
 
@@ -165,14 +165,14 @@
 
 | 编号 | 做什么 | 完成标准 |
 |---|---|---|
-| **A14** | Brief 模板加「反馈栏」（每个可点击项 → 0–1 秒反馈）和「边缘状态栏」；交互反馈三问前移到 Brief 阶段。 | `COLLAB.md` + `INTERACTION_FEEDBACK_PRINCIPLES.md` 更新。 |
+| **A14** | Brief 模板加「反馈栏」（每个可点击项 → 0–1 秒反馈）和「边缘状态栏」；交互反馈三问前移到 Brief 阶段。 | **已合文档** · `COLLAB.md`「八 · 8.2–8.3」+ `INTERACTION_FEEDBACK_PRINCIPLES.md` Brief 节 + `interaction-feedback.mdc`。 |
 | **A15** | 入库脚本取消默认模式，必须显式 `--mode=watermark-only` 或 `--mode=cutout`；处理后先生成缩略图总览，用户确认后才允许上传 R2。 | 不带模式运行即退出；`art-collection-catalog.md` 记录每批所用模式。 |
 | **A16** | 5173 角落显示当前版本号与 PR 号（仅开发与验收环境）；PR 合入后自动跑 `sync:qa-develop`。 | 用户截图能直接看出版本。 |
 | **A17** | PR 范围提醒：PR 改动跨多个不相关模块时，CI 给警告并要求在描述里说明。 | 拿 #1139 的文件列表试跑时出警告。 |
-| **A18** | 部署配对清单：同时改了前端和 `focus-tiger/cloud/` 的任务，在 `INFRA_SNAPSHOT.md` 记录配对状态；只部署一半时汇报里必须写明哪一半没生效。 | 清单模板进 `INFRA_SNAPSHOT.md`。 |
-| **A19** | 交付门禁：请用户人工复测之前，Agent 必须跑过本次入口对应的单条 e2e（A1 落地后即为该项菜单的可达用例），并在汇报里贴出结果。 | `focus-tiger-regression-lock.mdc` 完工门禁加一行。 |
-| **A20** | 用户消息里每一条「【Bug】」，同回合要么修，要么进 `ISSUE_LEDGER` / tracker，汇报里逐条对应。 | `focus-tiger-issue-ledger.mdc` 触发条件补一句。 |
-| **A21** | 回答「以前好好的、怎么被改坏」时，先给 git 证据：引入问题的提交，或证明从未覆盖。 | `focus-tiger-ui-bug-triage.mdc` 加一步。 |
+| **A18** | 部署配对清单：同时改了前端和 `focus-tiger/cloud/` 的任务，在 `INFRA_SNAPSHOT.md` 记录配对状态；只部署一半时汇报里必须写明哪一半没生效。 | **已合文档** · `INFRA_SNAPSHOT.md` §9。 |
+| **A19** | 交付门禁：请用户人工复测之前，Agent 必须跑过本次入口对应的单条 e2e（A1 落地后即为该项菜单的可达用例），并在汇报里贴出结果。 | **已合文档** · `focus-tiger-regression-lock.mdc` 交互修复完工门禁 A19 勾。 |
+| **A20** | 用户消息里每一条「【Bug】」，同回合要么修，要么进 `ISSUE_LEDGER` / tracker，汇报里逐条对应。 | **已合文档** · `focus-tiger-issue-ledger.mdc` 触发 C。 |
+| **A21** | 回答「以前好好的、怎么被改坏」时，先给 git 证据：引入问题的提交，或证明从未覆盖。 | **已合文档** · `focus-tiger-ui-bug-triage.mdc` Step A4。 |
 
 ### 节奏
 

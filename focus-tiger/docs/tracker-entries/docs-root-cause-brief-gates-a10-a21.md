@@ -1,0 +1,1 @@
+| 根因线3 文档包 A10+A14+A18–A21（Brief 变体/反馈前移 · 部署配对 · 交付 e2e · 【Bug】落账 · 回归证据） | 纯文档 | 仅单元测试覆盖 | **无产品 UI。** 验收：读 `COLLAB.md`「八」与六条 Cursor 规则摘要是否与 `root-cause-audit-2026-10-12.md` §4 一致；不代表运行时行为变了。`npm run docs:check`。 | — | — | — | `docs/COLLAB.md` · `INFRA_SNAPSHOT.md` §9 · `.cursor/rules/*` | 2026-10-16 |

@@ -261,3 +261,30 @@ docs/CONFIDE_EXECUTABLE_INTENTS.md
 ```
 
 （第二期可将 `infra:snapshot-check` 接此列表做 WARN/FAIL。）
+
+---
+
+## §9 前端 + Worker 部署配对清单（A18 · 非 SSOT 活表）
+
+> **何时填**：同一任务 PR 同时改了 **客户端**（`focus-tiger/src/**`、Vite 壳、Electron 打包配置等）与 **`focus-tiger/cloud/**`**（Worker 路由、KV、R2、vars）。只改一侧可留空表，但汇报里须写「未触达 Worker / 未触达前端」。  
+> **完成标准**：合入或部署后更新本表；**只部署一半**时 Agent 收尾必须写明哪一半未生效（例：Worker 已 redeploy、5173 仍是旧 bundle）。
+
+### 模板（复制到任务 `issue-entries/` 或 PR 描述；旁路格式见 `.cursor/rules/focus-tiger-issue-ledger.mdc` · `RULES_INDEX` → `issue-ledger`）
+
+| 字段 | 值 |
+|---|---|
+| `task` / `PR` | （例）`#NNNN` · 分支名 |
+| `client_paths` | （例）`src/api/focusCircle.js` |
+| `cloud_paths` | （例）`cloud/src/index.ts` `POST /api/focus-circle` |
+| `client_deployed` | `yes` / `no` / `n/a`（仅文档） |
+| `worker_deployed` | `yes` / `no` · Version id（口令「部署」后填） |
+| `paired_verified` | `yes` / `no` — 两端同 commit 或 develop tip 上交叉验过 |
+| `half_deploy_note` | 若 `paired_verified=no`，写清**哪一半**用户仍看不到 |
+
+### 当前登记（手工 · 过期则看 §1 `prod_worker_version`）
+
+| task / PR | client | cloud | paired | 备注 |
+|---|---|---|---|---|
+| （空） | — | — | — | 新任务在旁路或 PR 填一行，勿改历史行 |
+
+**漂移**：`cloud/**` 已在 `stale_after_paths`；配对表不替代 redeploy 口令与 `prod_worker_version` 行。

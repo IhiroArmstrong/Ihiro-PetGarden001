@@ -49,6 +49,17 @@ alwaysApply: false
 
 仍须按需 Read：`focus-tiger-feature-conflict-review.mdc`（冲突扫描）、`focus-tiger-docs.mdc`（产品语义）。
 
+## Step D — Brief 模板必填栏（根因 A10 / A14 · B 类）
+
+PO 点头前，Brief 须满足 [`focus-tiger/docs/COLLAB.md`](../../focus-tiger/docs/COLLAB.md)「八」：
+
+| 栏 | 何时必填 | 缺栏 |
+|---|---|---|
+| **变体矩阵（A10）** | 触及练习种类、商品/付款、宽窄视口或多语言入口 | **不得开工**；不能凭「就改一处」省略 |
+| **点击反馈 + 边缘状态（A14）** | 含可点击、付款、练习结束或已购态 | **不得开工** |
+
+不触及某栏时，Brief 仍须有该节标题 + `COLLAB.md` 规定的**合规跳过句**（禁止整节省略）。Agent 在 Step B 判定为 B 类后、写代码前自检；缺栏 → 先补 Brief 或问 PO，**禁止**用「立刻开工」跳过。
+
 ## 示范（勿混淆）
 
 | 任务 | 类 | 无 Brief 时 |

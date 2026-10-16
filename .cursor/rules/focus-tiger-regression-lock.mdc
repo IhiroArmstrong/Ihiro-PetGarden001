@@ -73,6 +73,7 @@ alwaysApply: false
 - [ ] **已好清单**（若本次为重写/改转场）已逐条自检  
 - [ ] **TEST_TRACKER**：用户原话进「用户反馈」列；测试步骤与其它行不冲突；状态「待人工测试」（**禁止**在本门禁收尾自行标「已通过」；关单见「标「已通过」门禁」/ `qa-pass-coverage-split`）  
 - [ ] **相关项目文档已同步（N15）**：至少 TEST_TRACKER；触及行为/情绪/架构/素材/共享面时同步对应权威 md（`EMOTION_BIBLE` / `DESIGN` / `ARCHITECTURE` / `SHARED_RESOURCES` / `ASSET_INVENTORY` / `PROCESS` 速览等）。**禁止**只改代码、文档滞后  
+- [ ] **交付前单条 e2e（A19）**：在请用户**人工复测**之前，Agent 须已跑过**本次改动入口**对应的**一条** Playwright spec（`npm run test:e2e:changed -- <spec>` 或该入口在 A1 可达网中的同 proxy 用例），并在汇报里贴**命令 + pass/fail 摘要**。菜单/chrome 改动默认对照 `e2e/menu-full-reachability.spec.js` 中相关项；纯后端/无 UI 入口写 `n/a` 并说明替代的 `test:smoke` 子集。**禁止**只写「请你点一下」而未先跑单条 e2e。  
 - [ ] **立刻本地 commit**（已验证通过的任务收尾后，Agent **可自动** `git commit` 到**当前工作分支**——旁支 `feature/*` / `fix/*` / `docs/*`；**代码 + 文档同批**；**已完成且验证通过的改动不得跨任务周期悬置未 commit**；缺文档或未 commit → **不得**声称修好）；**默认** push 该旁支 + 开 `--base develop` 的 PR（禁止直推 `develop`/`main`）；**禁止**任何会话自动合并进 `main`（见下文「Commit 汇报与分支门禁」）  
 - [ ] **commit 后同回合汇报**（禁止静默提交）：回复须明确写出 **commit hash**、**分支名**、**涉及文件**（或 `git show --stat` 摘要）；**并行会话**执行的 commit 同样须遵守；缺此项 = 视同未汇报  
 - [ ] **commit 粒度与 message 合格**：每个 commit 只承载**一个逻辑完整改动**（功能 / bug 修复 / 文档更新），message 必须说明 **改了什么 + 为什么改**；禁止 `update docs` / `misc fix` / `wip`  
