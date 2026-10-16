@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-16 晚 · 变更须 PO 改口）
+## 1. 当前队列（2026-10-17 · 变更须 PO 改口）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -16,7 +16,8 @@
 | **P2** · **T2** | Confide CR-50 事实键 #1287 | **已合 develop** | Brief `task-confide-asked-fact-keys.md`；旁支已并入，**勿再开同内容 PR** |
 | **可选** · **T3** | TASKS 机器块拼装 | 未做 | 单独小 PR；手改 `TASKS.md` 须与功能 PR 分开 |
 | **未排期** · **T4** | 根因行动 A15–A17 | 搁置 | 见 §3 |
-| — | Confide 下一刀（无槽位） | **未开工** | 形状轴 / CR-45；`CONFIDE_STATUS.md` §6 第 6 步；**须另口令** |
+| — · **T5** | Confide CR-51 问法形状轴 #1294 | **进行中** | `why-compare` + `whether-required` 顺序；**已合 develop**；关单须未见 v3 audit；Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
+| — | Confide CR-45 混合句 #1237 | **未开工** | 只规格；Brief `task-confide-mixed-emotion-then-product.md`；`CONFIDE_STATUS.md` 路由线；**实现须另口令** |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -33,11 +34,13 @@
 | **口令** | 用户一句话触发 Agent **开始执行**已排槽位（不是新任务名） | 把口令写成「又冒出来的一条安排」 |
 | **rebase develop** | 旁支合入前对齐 `origin/develop` tip | 「对齐最新」「跟一下 develop」（不说动作时） |
 
-### 口令对照（仅 P2）
+### 口令对照
 
 | 用户口令 | Agent 动作 |
 |---|---|
-| 「继续 CR-50」或「开 Confide PR」 | 在 **P2** 分支跑 `test:smoke` + Confide 相关单测 → push → 开/更新 `--base develop` 的 PR |
+| 「继续 CR-50」或「开 Confide PR」 | 历史 **P2**（#1287 已合）；勿再开同内容 PR |
+| 「开 CR-45」或混合句实现类口令 | **CR-45** 规格线；**不得**与 **T5 / #1294** 混为同一刀；须 Brief 点头 + 新旁支 |
+| 「Confide 下一刀」等未指编号 | 先对照 §1：**T5** = CR-51；**CR-45** 另行；禁止默认开工 CR-45 |
 
 ---
 
@@ -80,3 +83,4 @@
 | 日期 | 说明 |
 |---|---|
 | 2026-10-16 | 首版：统一 P1/P2 与 A15–A17 未排期；区分三类「风险」；口令仅绑定 P2 |
+| 2026-10-17 | #1294 合入：**T5** CR-51「进行中」与 CR-45「未开工」分列；口令表防混刀 |
