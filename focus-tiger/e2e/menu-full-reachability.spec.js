@@ -7,6 +7,7 @@ import { test, expect } from '@playwright/test';
 import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   expandWideMoreMenuGroup,
+  expectWideMoreMenuShellVisible,
   openFreshProductShell,
   pickWideMoreRadialGroup
 } from './helpers/product-shell.js';
@@ -156,19 +157,17 @@ async function openMenu(page, surface) {
   if (surface === 'wide-more') {
     const btn = page.locator('#ft-wide-more-btn');
     await expect(btn, '⋯ available').toBeVisible({ timeout: 8_000 });
-    if (
-      !(await page
-        .locator('#ft-wide-more-radial, #ft-wide-more-menu')
-        .isVisible()
-        .catch(() => false))
-    ) {
+    const shellVisible = await page
+      .locator(
+        '#ft-wide-more-radial:not([hidden]), #ft-wide-more-menu:not([hidden])'
+      )
+      .first()
+      .isVisible()
+      .catch(() => false);
+    if (!shellVisible) {
       await btn.click();
     }
-    await expect(
-      page.locator('#ft-wide-more-radial, #ft-wide-more-menu')
-    ).toBeVisible({
-      timeout: 8_000
-    });
+    await expectWideMoreMenuShellVisible(page);
     const radial = page.locator('#ft-wide-more-radial');
     if (!(await radial.isVisible().catch(() => false))) {
       await expandAllWideGroups(page);
