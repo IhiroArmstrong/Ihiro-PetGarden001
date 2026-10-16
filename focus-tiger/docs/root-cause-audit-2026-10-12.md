@@ -149,17 +149,17 @@
 
 | 编号 | 做什么 | 完成标准 |
 |---|---|---|
-| **A9** | 商品与练习登记表：每种商品声明付款回跳去向、已购状态、高清发放方式、编号规则；每种练习声明结束语音、存图命名。配**穷举测试**：遍历登记表，任一类型缺声明即失败。 | **slice 1 本支** `feat/a9-commerce-product-registry`：`commerceProductRegistry.js` 覆盖全部 checkout 商品 + `commerceProductRegistry.test.js`；练习/存图命名留 slice 2。 |
+| **A9** | 商品与练习登记表：每种商品声明付款回跳去向、已购状态、高清发放方式、编号规则；每种练习声明结束语音、存图命名。配**穷举测试**：遍历登记表，任一类型缺声明即失败。 | **已合** [#1272](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1272) `commerceProductRegistry.js` · [#1275](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1275) `practiceExperienceRegistry.js` + 平行名单契约单测。 |
 | **A10** | Brief 模板加「变体矩阵」必填栏：列出全部练习、全部商品类型，每行写预期；验收按矩阵逐行勾。 | **已合文档** · `COLLAB.md`「八 · 8.1」+ `brief-before-user-visible` Step D（线3 文档包 A10+A14+A18–A21）。 |
 
 ### 阶段四 · 设计语言和层级进代码（第 3 类）+ `init()` 拆分
 
 | 编号 | 做什么 | 完成标准 |
 |---|---|---|
-| **A11** | 浮动卡片只能经共享 `createGlassCard()`（基于 `glassPanelStyles.js`）生成；静态检查禁止浮动卡片自写背景色。 | 检查覆盖全部浮动卡片；#1147 前的深色语音卡写法会被拦。 |
-| **A12** | 层级常量化：新建层级常量模块（与 `Z_INDEX.md` 一一对应），扫描脚本禁止 `src/` 出现表外 `z-index` 数字；现存 208 处先列豁免清单，逐批收口。 | `DOC_CODE_CONTRACT.md` Z-dim 行的 (a) 从「暂无」改为指向该扫描；豁免清单只减不增。 |
-| **A13** | 关键卡片截图比对：语音卡、帮助中心、支持页、收藏面板、问号卡、修行卡、扇形、灯笼区等约 12 处，进 CI。 | 故意改一处背景色，CI 红。 |
-| **A7** | `main.js` `init()` 分段拆分：Brief（分段顺序、每段依赖、已好清单），再按段分刀，每刀单独 PR；**不与功能 PR 混线**（沿用 2026-09-06 盘点结论）。 | Brief [`task-briefs/task-a7-init-split.md`](./task-briefs/task-a7-init-split.md)（#1190）。**A7.1 已合 #1192 · A7.2 已合 #1199**；余下 A7.3–A7.6。每刀 A5 启动冒烟 + `lint:main-use-before-define` 帽子只减 + 全量 e2e CI 绿。 |
+| **A11** | 浮动卡片只能经共享 `createGlassCard()`（基于 `glassPanelStyles.js`）生成；静态检查禁止浮动卡片自写背景色。 | **已合** [#1276](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1276) 工厂+`check:glass-card-roots` · [#1278](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1278) 在场信号暖米玻璃。 |
+| **A12** | 层级常量化：新建层级常量模块（与 `Z_INDEX.md` 一一对应），扫描脚本禁止 `src/` 出现表外 `z-index` 数字；现存 208 处先列豁免清单，逐批收口。 | **已合** [#1281](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1281)：`zIndexLayers.js` + `check:z-index-literals`；Z-dim (a) 落地；**数值未改**（叠层肉眼另验）。 |
+| **A13** | 关键卡片截图比对：语音卡、帮助中心、支持页、收藏面板、问号卡、修行卡、扇形、灯笼区等约 12 处，进 CI。 | **已合** [#1285](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1285)：12 处暖米玻璃 **RGB 契约**进 `test:e2e:smoke`；改深色底须红。可选 `FT_A13_SOFT_SNAP=1` 元件 PNG。 |
+| **A7** | `main.js` `init()` 分段拆分：Brief（分段顺序、每段依赖、已好清单），再按段分刀，每刀单独 PR；**不与功能 PR 混线**（沿用 2026-09-06 盘点结论）。 | **已合** [#1258](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1258)（A7.1–A7.6）。Brief [`task-briefs/task-a7-init-split.md`](./task-briefs/task-a7-init-split.md)（#1190）。段 1 Kernel 仍暂留 `init()`。 |
 
 ### 阶段五 · 流程与工具（文档类合并 PR + 两个小工具 PR）
 
