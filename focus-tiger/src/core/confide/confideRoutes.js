@@ -10,6 +10,8 @@
 
 export const CONFIDE_ROUTE = Object.freeze({
   SAFETY_REDIRECT: 'safety_redirect',
+  /** Mid-tier care (CR-46); placeholder copy until professional review. */
+  SAFETY_CARE: 'safety_care',
   AGGRESSION_TOWARD_OTHERS: 'aggression_toward_others',
   ANXIOUS: 'anxious',
   TIRED: 'tired',

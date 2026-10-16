@@ -71,6 +71,9 @@ import {
   trackConfideShare,
   trackKbRetrievalMiss
 } from '../core/confide/confideObservationTelemetry.js';
+import { resolveConfideHelpEntryEnabled } from '../core/confide/confideHelpEntryGate.js';
+import { recordConfideHelpEntryOpen } from '../core/confide/confideHelpEntryTelemetry.js';
+import { formatConfideSafetyResourceGuidance } from '../core/confide/confideSafetyResources.js';
 import {
   buildKbRetrievalMissTurnLog,
   mayTryConfideProductKnowledge,
@@ -342,12 +345,30 @@ export class ConfideToYinUI {
     this.thinkingCopyEl.className = 'confide-to-yin__thinking-copy';
     this.thinkingEl.appendChild(this.thinkingCopyEl);
 
+    this.secondaryLinks = document.createElement('div');
+    this.secondaryLinks.className = 'confide-to-yin__secondary-links';
+
     this.memoryListLink = document.createElement('button');
     this.memoryListLink.type = 'button';
     this.memoryListLink.className = 'confide-to-yin__memory-list-link';
     this.memoryListLink.dataset.testid = 'confide-to-yin-memory-list-link';
     this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
     this.memoryListLink.addEventListener('click', () => this.handlers.onOpenMemoryPanel?.());
+
+    this.helpResourcesLink = document.createElement('button');
+    this.helpResourcesLink.type = 'button';
+    this.helpResourcesLink.className = 'confide-to-yin__memory-list-link';
+    this.helpResourcesLink.dataset.testid = 'confide-to-yin-help-resources';
+    this.helpResourcesLink.setAttribute('aria-expanded', 'false');
+    this.helpResourcesLink.addEventListener('click', () => this._toggleHelpResourcesPanel());
+
+    this.helpResourcesPanel = document.createElement('div');
+    this.helpResourcesPanel.className = 'confide-to-yin__help-resources';
+    this.helpResourcesPanel.dataset.testid = 'confide-to-yin-help-resources-panel';
+    this.helpResourcesPanel.hidden = true;
+    this.helpResourcesPanel.setAttribute('role', 'region');
+
+    this.secondaryLinks.append(this.memoryListLink, this.helpResourcesLink);
 
     this.actions = document.createElement('div');
     this.actions.className = 'confide-to-yin__actions';
@@ -385,9 +406,11 @@ export class ConfideToYinUI {
       this.userEl,
       this.thinkingEl,
       this.replyEl,
-      this.memoryListLink,
+      this.secondaryLinks,
+      this.helpResourcesPanel,
       this.actions
     );
+    this._helpResourcesExpanded = false;
     mountRoot.appendChild(this.root);
 
     this._onKeyDown = (event) => {
@@ -439,6 +462,8 @@ export class ConfideToYinUI {
     this._sendEpoch += 1;
     this._sending = false;
     this._syncSendEnabled();
+    this._collapseHelpResourcesPanel();
+    this._syncHelpEntryVisibility();
     this._syncGenerateLayerForViewport({ ensure: true });
     void this._refreshMemoryState().then(() => {
       if (!this._open) return;
@@ -462,6 +487,7 @@ export class ConfideToYinUI {
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
     this._hideMemoryConsent();
+    this._collapseHelpResourcesPanel();
     this.hideGenerateLayer({ unload: false });
     this._voiceInputChrome?.reset();
     this._stopConfideTts();
@@ -600,6 +626,13 @@ export class ConfideToYinUI {
       this.memoryListLink.textContent = t('YIN_MEMORY_PANEL_LINK');
       this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
     }
+    if (this.helpResourcesLink) {
+      this.helpResourcesLink.textContent = t('CONFIDE_HELP_RESOURCES_ENTRY_PLACEHOLDER');
+    }
+    if (this.helpResourcesPanel) {
+      this.helpResourcesPanel.textContent = formatConfideSafetyResourceGuidance(getLocale());
+    }
+    this._syncHelpEntryVisibility();
     if (this.thinkingCopyEl && this.thinkingEl && !this.thinkingEl.hidden) {
       this.thinkingCopyEl.textContent = `${t('CONFIDE_PANEL_THINKING')}…`;
     }
@@ -939,6 +972,51 @@ export class ConfideToYinUI {
       },
       text
     );
+  }
+
+  _syncHelpEntryVisibility() {
+    const enabled = resolveConfideHelpEntryEnabled();
+    if (this.helpResourcesLink) {
+      this.helpResourcesLink.hidden = !enabled;
+    }
+    if (!enabled) {
+      this._collapseHelpResourcesPanel();
+    }
+    if (this.secondaryLinks) {
+      const memoryVisible =
+        this.memoryListLink && !this.memoryListLink.hidden;
+      const helpVisible =
+        this.helpResourcesLink && !this.helpResourcesLink.hidden;
+      this.secondaryLinks.hidden = !memoryVisible && !helpVisible;
+    }
+  }
+
+  _collapseHelpResourcesPanel() {
+    this._helpResourcesExpanded = false;
+    if (this.helpResourcesPanel) this.helpResourcesPanel.hidden = true;
+    if (this.helpResourcesLink) {
+      this.helpResourcesLink.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  _toggleHelpResourcesPanel() {
+    if (!resolveConfideHelpEntryEnabled()) return;
+    this._helpResourcesExpanded = !this._helpResourcesExpanded;
+    if (this.helpResourcesPanel) {
+      this.helpResourcesPanel.hidden = !this._helpResourcesExpanded;
+    }
+    if (this.helpResourcesLink) {
+      this.helpResourcesLink.setAttribute(
+        'aria-expanded',
+        this._helpResourcesExpanded ? 'true' : 'false'
+      );
+    }
+    if (this._helpResourcesExpanded) {
+      recordConfideHelpEntryOpen(
+        typeof localStorage !== 'undefined' ? localStorage : null,
+        getLocale()
+      );
+    }
   }
 
   _hideMemoryConsent() {
@@ -1928,6 +2006,30 @@ export class ConfideToYinUI {
       .confide-to-yin__memory-list-link[hidden] {
         display: none !important;
       }
+      .confide-to-yin__secondary-links {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        margin: 4px 0 6px;
+      }
+      .confide-to-yin__secondary-links[hidden] {
+        display: none !important;
+      }
+      .confide-to-yin__help-resources {
+        margin: 0 0 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: ${GLASS_FILL_STRONG};
+        border: 1px solid rgba(122, 83, 64, 0.18);
+        font-size: 13px;
+        line-height: 1.45;
+        color: #5a4030;
+        white-space: pre-wrap;
+      }
+      .confide-to-yin__help-resources[hidden] {
+        display: none !important;
+      }
       .confide-to-yin__desktop-status {
         margin: 0 0 12px;
         padding: 10px 12px;
@@ -2072,6 +2174,10 @@ export class ConfideToYinUI {
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.FALLBACK}']::before {
         display: block;
         background: #d4a24a;
+      }
+      .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.SAFETY_CARE}']::before {
+        display: block;
+        background: #5c6b7a;
       }
       .confide-to-yin__reply[data-route='${CONFIDE_ROUTE.SAFETY_REDIRECT}']::before {
         display: block;

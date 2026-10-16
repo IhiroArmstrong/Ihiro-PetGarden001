@@ -1,0 +1,14 @@
+{
+  "en": {
+    "CONFIDE_HELP_RESOURCES_ENTRY_PLACEHOLDER": "[PLACEHOLDER_HELP_ENTRY · pending professional review]",
+    "CONFIDE_SAFETY_CARE_PLACEHOLDER": "[PLACEHOLDER_MID_CARE · pending professional review · not product copy]"
+  },
+  "zh": {
+    "CONFIDE_HELP_RESOURCES_ENTRY_PLACEHOLDER": "[PLACEHOLDER_HELP_ENTRY · 专业复核定稿]",
+    "CONFIDE_SAFETY_CARE_PLACEHOLDER": "[PLACEHOLDER_MID_CARE · 专业复核定稿 · 禁止实现会话写成产品句]"
+  },
+  "ja": {
+    "CONFIDE_HELP_RESOURCES_ENTRY_PLACEHOLDER": "[PLACEHOLDER_HELP_ENTRY · 専門レビュー待ち]",
+    "CONFIDE_SAFETY_CARE_PLACEHOLDER": "[PLACEHOLDER_MID_CARE · 専門レビュー待ち · 製品文ではない]"
+  }
+}

@@ -192,6 +192,23 @@ describe('Paid panels SB-19 overlay backdrop', () => {
     }
   });
 
+  it('ConfideToYinUI help-resources entry expands in-card panel (CR-46 P3)', () => {
+    const { mountRoot, restore } = makeBackdropTestHarness();
+    try {
+      const ui = new ConfideToYinUI(mountRoot);
+      ui.open();
+      assert.equal(ui.helpResourcesLink.hidden, false);
+      assert.equal(ui.helpResourcesPanel.hidden, true);
+      ui._toggleHelpResourcesPanel();
+      assert.equal(ui.helpResourcesPanel.hidden, false);
+      assert.match(String(ui.helpResourcesPanel.textContent), /crisis line|热线|相談窓口/i);
+      const supportModal = mountRoot.children.find((node) => node?.id === 'yin-support-modal');
+      assert.equal(supportModal, undefined);
+    } finally {
+      restore();
+    }
+  });
+
   it('TipJarUI shows visual-only backdrop that does not dismiss on click', () => {
     const { mountRoot, restore } = makeBackdropTestHarness();
     try {
