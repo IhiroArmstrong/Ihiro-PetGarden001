@@ -110,6 +110,15 @@ import {
   mountSessionCues,
   mountOnboardingHints
 } from './boot/boot-ambient-hints.js';
+import {
+  createBootArrivalFocusReadyState,
+  mountArrivalPractice,
+  mountFocusInput,
+  applyBootSpriteOccupancy,
+  createTastePrefetchStarter,
+  scheduleLiftLoadingMask,
+  markAppReady
+} from './boot/boot-arrival-focus-ready.js';
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
@@ -1008,6 +1017,7 @@ async function init() {
   const bootHonestyCompanion = createBootHonestyCompanionState();
   const bootSessionChrome = createBootSessionChromeState();
   const bootAmbientHints = createBootAmbientHintsState();
+  const bootArrivalFocus = createBootArrivalFocusReadyState();
   const todayDirectionOptionsBannerUI = new TodayDirectionOptionsBannerUI(
     document.getElementById('ui-overlay'),
     {
@@ -2924,7 +2934,7 @@ async function init() {
     tigerCharacter.setFocusLevel(0);
     honestyCheckIn.onIncompleteSessionEnded();
     stateManager.setState(STATES.IDLE);
-    focusInput.resetButton(focusButton);
+    bootArrivalFocus.focusInput.resetButton(focusButton);
     resyncSessionChrome();
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
     bootHonestyCompanion.companionModePicker.setMicroRitualActive(true);
@@ -4256,7 +4266,8 @@ async function init() {
   /** @type {'icon' | 'typed'} */
   let currentIntentionSource = 'typed';
 
-  bootHonestyCompanion.arrivalPractice = new ArrivalPracticeUI(
+  mountArrivalPractice(
+    bootHonestyCompanion,
     document.getElementById('ui-overlay'),
     {
       onNoticeSelected: (noticeId) => {
@@ -4403,7 +4414,8 @@ async function init() {
         }
         syncOnboardingAutoHints();
       }
-    }
+    },
+    { ArrivalUI: ArrivalPracticeUI }
   );
   // E2e skip Arrival → Focus (home left ball is Breath practice, not skip).
   // Must work in vite preview (DEV=false), same as `__honestyBridge`.
@@ -4871,7 +4883,7 @@ async function init() {
     bootSessionChrome.sessionUiGate.setCompletionPending(false);
     resyncSessionChrome();
     // 自动开计时路径须同步主按钮 → Rise（事件触发时 focusInput 已初始化）
-    focusInput.beginFocusing(focusButton);
+    bootArrivalFocus.focusInput.beginFocusing(focusButton);
     maybeOfferMomentWhisper('focus', { delayMs: 600 });
   }
 
@@ -5000,7 +5012,8 @@ async function init() {
     syncOnboardingAutoHints();
   };
 
-  const focusInput = new FocusInput(
+  mountFocusInput(
+    bootArrivalFocus,
     () => {
       if (bootSessionChrome.sessionUiGate.completionPending) return false;
       sessionEndFlow.cancelPending();
@@ -5091,7 +5104,8 @@ async function init() {
       bootAmbientHints.onboardingHints?.markSeen('rise-button');
       hasEndedAnySession = true;
       syncOnboardingAutoHints();
-    }
+    },
+    { Input: FocusInput }
   );
 
   const voiceRiseSlot = document.createElement('span');
@@ -5127,7 +5141,7 @@ async function init() {
     },
     onVoice: (parsed) => {
       if (parsed?.kind === 'end') {
-        focusInput.requestRise();
+        bootArrivalFocus.focusInput.requestRise();
         return;
       }
       const result = applyFocusSitAdjust(focusSession, parsed);
@@ -5304,7 +5318,7 @@ async function init() {
     stateManager.setState(STATES.IDLE);
     honestyGlowLevel = null;
     tigerCharacter.setFocusLevel(0);
-    focusInput.resetButton(focusButton);
+    bootArrivalFocus.focusInput.resetButton(focusButton);
     bootSessionChrome.sessionUiGate.setCompletionPending(false);
     resyncSessionChrome();
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
@@ -5362,37 +5376,29 @@ async function init() {
   });
 
   honestyCheckIn.onAppReady();
-  if (
-    bootDecision.occupy &&
-    bootDecision.occupy !== SPRITE_OCCUPANCY.KEEP
-  ) {
-    bootSceneAnim.spriteOccupancy = bootDecision.occupy;
-  }
+  applyBootSpriteOccupancy(
+    bootSceneAnim,
+    bootDecision,
+    SPRITE_OCCUPANCY.KEEP
+  );
 
-  let tastePrefetchFirstWaitDone = false;
-  function startTastePrefetchOnce() {
-    const delayMs = nextBootNetworkDelayMs({
-      overlayBusy: isSceneAnimOverlayBusy(),
-      firstWaitDone: tastePrefetchFirstWaitDone
-    });
-    if (delayMs > 0) {
-      if (!tastePrefetchFirstWaitDone && delayMs >= 12000) {
-        tastePrefetchFirstWaitDone = true;
-      }
-      window.setTimeout(startTastePrefetchOnce, delayMs);
-      return;
+  const { startOnce: startTastePrefetchOnce } = createTastePrefetchStarter({
+    isOverlayBusy: isSceneAnimOverlayBusy,
+    nextDelayMs: nextBootNetworkDelayMs,
+    schedule: (fn, ms) => window.setTimeout(fn, ms),
+    runPrefetch: () => {
+      void prefetchTasteLayer({
+        search: location.search,
+        locale: getLocale(),
+        canApply: () => !isSceneAnimOverlayBusy()
+      });
+      void prefetchGrowthMetricsConfig({
+        search: location.search,
+        canApply: () => !isSceneAnimOverlayBusy()
+      });
+      void refreshSoftUpdateAvailability();
     }
-    void prefetchTasteLayer({
-      search: location.search,
-      locale: getLocale(),
-      canApply: () => !isSceneAnimOverlayBusy()
-    });
-    void prefetchGrowthMetricsConfig({
-      search: location.search,
-      canApply: () => !isSceneAnimOverlayBusy()
-    });
-    void refreshSoftUpdateAvailability();
-  }
+  });
   startTastePrefetchOnce();
 
   /** After welcome / flower first paint: occupancy resets but idle loop may not. */
@@ -5609,7 +5615,7 @@ async function init() {
   // Occupancy already decided the first paint (welcome / flower / thanks /
   // cloak / idle). Do not also fire LATE_NIGHT on the same tick.
   // Lift mask on next frame after sprite overlay has a chance to show.
-  requestAnimationFrame(() => {
+  scheduleLiftLoadingMask(requestAnimationFrame, () => {
     PoseManager.setLoadingMaskVisible(false);
   });
 
@@ -5840,7 +5846,7 @@ async function init() {
     document.body.appendChild(resetIdleBtn);
   }
 
-  const uiControls = new UIControls(focusInput);
+  const uiControls = new UIControls(bootArrivalFocus.focusInput);
   uiControls.bindAll();
 
   // 同页静候到期：无 tab 切换时也要能在提醒时分 hidden→show（并触发信使）。
@@ -6166,8 +6172,7 @@ async function init() {
 
   // E2E readiness: all primary UI/controllers are wired, initial syncs ran,
   // and the product shell can now be safely queried/clicked.
-  window.__FT_APP_READY__ = true;
-  window.dispatchEvent(new Event('ft:app-ready'));
+  markAppReady(window);
 
   animate();
 }
