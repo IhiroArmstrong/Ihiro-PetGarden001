@@ -72,7 +72,9 @@ COLLAB.md（本文档，协作层）
 
 **回归锁约定**：见 `.cursor/rules/focus-tiger-regression-lock.mdc`（门禁）与 `DEV_WORKFLOW_QUALITY.md`（叙事）；主题权威索引 `RULES_INDEX.md`。此处不复述。
 
-**点击反馈约定（2026-08-14）**：含可点击交互的 Task Brief / PR 须回答「点击后 0–1 秒内用户看到什么」；设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）。
+**点击反馈约定（2026-08-14 · A14 前移 2026-10-16）**：含可点击交互时，**Brief 阶段**须先写「点击反馈（0–1 秒）」与「边缘状态」两节（骨架见下文「八」）；PR 仍回答交互三问。设计静默须挂 `SILENT_BEHAVIORS.md` 的 `SB-xx`。全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`（`RULES_INDEX` → `interaction-feedback`）。
+
+**变体矩阵约定（2026-10-16 · 根因 A10）**：触及练习种类、商品/付款 SKU、宽窄视口差异或多语言入口的 **B 类 Brief**，须含「变体矩阵」节（或一句合规跳过）；缺栏不得开工。见下文「八 · 8.1」与 `brief-before-user-visible`。
 
 **功能冲突扫描约定（2026-08-16）**：实现前对照 `SCENARIO_TESTS.md` 做冲突扫描；有疑点须等用户拍板。全文见 `FEATURE_CONFLICT_REVIEW.md`（`RULES_INDEX` → `feature-conflict-review`）。
 
@@ -169,4 +171,70 @@ COLLAB.md（本文档，协作层）
 运行时字段（如 registry 的 `busyGateExceptions`）**本约定不要求同 PR 改 JS**；先把结论写进 Brief。清单漏项则先补 `SHARED_RESOURCES` / `Z_INDEX` 再实现。
 
 ---
-*版本：1.10 · 2026-09-18 Brief 叠层 O-04 三态键须写结论句；CI 绿合 develop；人工测试事后批量*
+
+## 八、Task Brief · 标准章节（根因 A10 / A14）
+
+> **目的**：Brief 写机制不写体验、不列变体，是 #1143–#1153 一类「只做了第一种」与「点了像空壳」的温床。  
+> **类**：**B 类**（或 Brief 已锁的可见改动）在 PO 点头前须含下列各节；**不触及**某节时仍须出现该节标题 + **一句合规跳过**（禁止整节省略）。  
+> **范例**：[`task-briefs/task-menu-single-source.md`](./task-briefs/task-menu-single-source.md)（含「点击反馈」「边缘状态」表）。
+
+### 8.1 变体矩阵（A10 · 必填或跳过）
+
+**何时必填**：本次改动触及任一项——
+
+- 一种或多种**练习**（Sit / 呼吸 / 开放式静坐 / 仪式 / Journey 存图等）的结束语、语音、存图命名、徽章；
+- 一种或多种**商品或付款路径**（Pro / 会员 / Sanctuary / 请茶 / 艺术收藏 / Companion 加购等）的回跳、已购态、高清发放、编号规则；
+- **宽屏 vs 窄屏**（或 Electron vs 浏览器）行为应对齐或刻意分叉；
+- **多语言**下同一入口的可见文案或路由。
+
+**写法**：表格逐行列出**本 Brief 负责的全部变体**（不是「举例两行」），每行写清「入口 / 状态 → 用户应看到或得到什么」。验收时按表逐行勾，缺行 = Brief 未锁。
+
+| 列 | 含义 |
+|---|---|
+| `变体` | 练习名、商品 id、视口、locale 等 |
+| `入口 / 前置状态` | 从哪进、是否已购、是否窄屏等 |
+| `预期（可见结果）` | 0–1 秒内反馈 + 最终结果（付款/存图/语音等） |
+| `自动化` | 已有 e2e/单测 id，或「本刀补」 |
+
+**SSOT 指针（实现时对照，不在 Brief 里手抄第二份名单）**：
+
+- 菜单可达：`idleChromeOrchestration.js` + A1 `e2e/menu-full-reachability.spec.js`
+- 付款回跳 / 已购：`paymentCheckoutReturnParallelListContract` · `supportPaidCardParallelListContract`（A9 登记表落地后以此为准穷举）
+- 艺术收藏高清：`artCollectionCatalog.js` / `cloud/…/artCollectionCatalog.ts`
+
+**合规跳过句**（仅当本次确实不触及上列四类）：  
+`本次不新增练习种类、商品类型、宽窄视口分叉或多语言入口差异，变体矩阵跳过。`
+
+### 8.2 点击反馈（0–1 秒）（A14 · 含可点击时必填）
+
+对每个**新增或改动的可点击**控件一行（或一小表）：
+
+| 控件 / 入口 | 点击后 0–1 秒内用户看到什么 | 持久化时：挂起 / 成功 / 失败 |
+|---|---|---|
+| （例）次级菜单「Art Collection」 | 面板展开动效 + 卡片可见 | — |
+
+若会改 `localStorage` / 云端 mutation，须拆三态（定义见 `INTERACTION_FEEDBACK_PRINCIPLES.md`「持久化三态可见性」）。  
+按设计**不生效**的点击 → 点名 `SILENT_BEHAVIORS.md` 的 `SB-xx`；不在白名单 = bug。
+
+**合规跳过句**：`本次无可点击交互改动，点击反馈节跳过。`
+
+### 8.3 边缘状态（A14 · 含可点击、付款或练习结束时必填）
+
+覆盖「不限时、已拥有、付款之后、窄屏、模型未就绪」等**非默认路径**：
+
+| 边缘状态 | 预期（含 0–1 秒反馈） |
+|---|---|
+| （例）已购 Lifetime | Support 卡变淡，不得再开 Stripe |
+| （例）嵌入模型未 ready | Confide 发送按钮禁用或明确等待态 |
+
+**合规跳过句**：`本次无付款/已购/练习结束/窄屏专属分支，边缘状态节跳过。`
+
+### 8.4 与其它 Brief 节的关系
+
+| 节 | 与「七 · 共用机制核对」 |
+|---|---|
+| 变体矩阵 | 正交；矩阵写**产品变体**，第七节写 overlay/HUD/z |
+| 点击反馈 / 边缘状态 | PR 阶段仍答交互**三问**（Q3 冲突扫描只在 PR；Brief 须先有 Q1–Q2 等价内容） |
+
+---
+*版本：1.11 · 2026-10-16 根因 A10 变体矩阵 + A14 Brief 反馈/边缘状态前移；2026-09-18 O-04 结论句*
