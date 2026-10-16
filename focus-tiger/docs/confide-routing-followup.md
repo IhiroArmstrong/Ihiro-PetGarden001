@@ -76,6 +76,8 @@
 | CR-50 | 实现中 | 先听懂要什么事实再取：错卡不念（含字面命中）、帮助短摘、记录三档、生成不得断言事实 | #1277 发送链已合；#1287 事实键+记录原型已合；#1284 v1=9/33。v2=13/33（记录 4/5；0038 1/5；好处 0/5）。停手改卡。关单仍须未见批。Brief `task-confide-asked-fact-keys.md`。不调 0.80 |
 | CR-51 | 进行中 | 问法形状轴扩档：why-compare；whether-required 排在动机闸前 | Brief `task-confide-ask-shape-axis.md`。不改卡、不加问法名单。PO 已点头开工；实现 #1294 |
 
+「是不是在问产品」影子计数已停。笔记在仓外 `~/Documents/ft-private/confide-research-2026-10-17/voided-ask-intent-shadow-STOP.md`。重启须另书面同意。不接发送链。本行不改 CR-11、CR-45。
+
 ## 逐条步骤
 
 ### CR-01 · 本清单
