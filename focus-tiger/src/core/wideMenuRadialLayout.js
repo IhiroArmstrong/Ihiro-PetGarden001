@@ -20,6 +20,21 @@ export const WIDE_MENU_RADIAL_GROUP_KEYS = Object.freeze([
   'MENU_GROUP_PREFERENCES'
 ]);
 
+/** Wide ⋯ / radial index; matches `WIDE_MQ` in `WideIdleMoreMenu`. */
+export const WIDE_MENU_MIN_VIEWPORT_WIDTH_PX = 480;
+
+/**
+ * @param {number} innerWidth
+ * @param {boolean} [mqMinWidth480Matches]
+ * @returns {boolean}
+ */
+export function isWideMenuViewport(innerWidth, mqMinWidth480Matches = false) {
+  if (Number.isFinite(innerWidth)) {
+    return innerWidth >= WIDE_MENU_MIN_VIEWPORT_WIDTH_PX;
+  }
+  return mqMinWidth480Matches;
+}
+
 /** Measured 2026-10-16: below this, fan icons crowd dock + safe inset. */
 export const WIDE_MENU_RADIAL_MIN_INNER_HEIGHT_PX = 520;
 

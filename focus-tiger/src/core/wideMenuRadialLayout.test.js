@@ -8,12 +8,18 @@ import { describe, it } from 'node:test';
 import {
   WIDE_MENU_RADIAL_GROUP_KEYS,
   WIDE_MENU_RADIAL_MIN_INNER_HEIGHT_PX,
+  isWideMenuViewport,
   layoutWideMenuRadialIcons,
   shouldDegenerateWideMenuRadial,
   wideMenuRadialIconBBox
 } from './wideMenuRadialLayout.js';
 
 describe('wideMenuRadialLayout', () => {
+  it('prefers innerWidth over matchMedia for wide breakpoint', () => {
+    assert.equal(isWideMenuViewport(375, true), false);
+    assert.equal(isWideMenuViewport(480, false), true);
+  });
+
   it('lays out five groups on the radial index', () => {
     const spots = layoutWideMenuRadialIcons(400, 600);
     assert.equal(spots.length, WIDE_MENU_RADIAL_GROUP_KEYS.length);

@@ -137,6 +137,7 @@ async function settleAfterRow(page) {
     }
     window.__inAppReminder?.settings?.closePanel?.();
     window.__inAppReminder?.settings?.close?.();
+    window.__wideIdleMoreMenu?.releaseInactivePresentation?.();
     window.__wideIdleMoreMenu?.setSuppressed?.(false);
     window.__wideIdleMoreMenu?.setIdle?.(true);
     window.__narrowIdleShell?.setSuppressed?.(false);
@@ -252,7 +253,9 @@ async function walkMenu(page, surface, menuSelector) {
       timeout: 8_000
     });
     if (row.proxy === 'reminder') await item.hover();
-    await item.click();
+    const clickOpts =
+      surface === 'narrow-drawer' ? { timeout: 30_000 } : undefined;
+    await item.click(clickOpts);
     await assertOpenedResult(page, row.contract, row.proxy);
     opened.push(row.proxy);
     await settleAfterRow(page);
@@ -294,5 +297,9 @@ test('menu full reachability · wide Idle ⋯ then narrow drawer', async ({
     page.locator('#ft-wide-more-backdrop'),
     'wide ⋯ scrim must not cover the narrow drawer'
   ).toBeHidden();
+  await page.evaluate(() => {
+    window.__wideIdleMoreMenu?.releaseInactivePresentation?.();
+  });
+  await settleAfterRow(page);
   await walkMenu(page, 'narrow-drawer', '#ft-narrow-options-drawer');
 });

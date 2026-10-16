@@ -29,6 +29,7 @@ import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import {
   WIDE_MENU_RADIAL_GROUP_KEYS,
   WIDE_MENU_RADIAL_ICON_PX,
+  isWideMenuViewport,
   layoutWideMenuRadialIcons,
   shouldDegenerateWideMenuRadialForButton
 } from '../core/wideMenuRadialLayout.js';
@@ -350,6 +351,9 @@ export class WideIdleMoreMenu {
   destroy() {
     this._localeUnsub?.();
     this._mq?.removeEventListener?.('change', this._onMqChange);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this._onResize);
+    }
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     document.removeEventListener('keydown', this._onKeyDown, true);
     this._dockObserver?.disconnect?.();
@@ -374,8 +378,10 @@ export class WideIdleMoreMenu {
   }
 
   _isWide() {
-    if (this._mq) return this._mq.matches;
-    return typeof window !== 'undefined' && window.innerWidth >= 480;
+    const innerWidth =
+      typeof window !== 'undefined' ? window.innerWidth : Number.NaN;
+    const mq = this._mq ? this._mq.matches : false;
+    return isWideMenuViewport(innerWidth, mq);
   }
 
   /**
@@ -675,6 +681,13 @@ export class WideIdleMoreMenu {
       this._sync();
     };
     this._mq?.addEventListener?.('change', this._onMqChange);
+    this._onResize = () => {
+      if (!this._isWide()) this.closeMenu();
+      this._sync();
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this._onResize);
+    }
 
     this._onDocPointer = (event) => {
       if (!this._menuOpen) return;
