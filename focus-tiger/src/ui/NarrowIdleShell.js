@@ -10,6 +10,7 @@ import {
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
   dispatchSecondaryChromeProxy,
+  decorateSecondaryLockButton,
   invokeHandler,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
@@ -867,10 +868,7 @@ export class NarrowIdleShell {
         btn.classList.add('is-beige-cta');
       }
       if (item.locked) {
-        btn.disabled = true;
-        btn.setAttribute('aria-disabled', 'true');
-        btn.title = t('ritual.menu_locked');
-        btn.classList.add('is-locked');
+        decorateSecondaryLockButton(btn, item, t);
       } else if (item.interactive === false) {
         btn.disabled = true;
         btn.setAttribute('aria-disabled', 'true');
@@ -1354,13 +1352,21 @@ export class NarrowIdleShell {
           0 1px 0 rgba(180, 150, 110, 0.18);
         transition: transform 120ms ease;
       }
-      .ft-narrow-sheet__item:active:not(:disabled):not(.is-locked) {
+      .ft-narrow-sheet__item:active:not(:disabled) {
         transform: translateY(1px) scale(0.98);
       }
-      .ft-narrow-sheet__item.is-locked,
+      .ft-narrow-sheet__item.is-locked {
+        opacity: 0.62;
+        cursor: pointer;
+      }
       .ft-narrow-sheet__item:disabled {
         opacity: 0.48;
         cursor: not-allowed;
+      }
+      .ft-narrow-sheet__item .ft-secondary-menu-lock {
+        margin-left: 8px;
+        font-size: 11px;
+        opacity: 0.7;
       }
       .ft-narrow-sheet__item.is-beige-cta {
         font-weight: 700;

@@ -199,8 +199,14 @@ export function listMenuReachabilityRows(
     const interactive = entry.interactive !== false;
     /** @type {MenuReachContract} */
     let contract = mapped;
-    if (locked) contract = Object.freeze({ kind: 'locked-row' });
-    else if (!interactive) contract = Object.freeze({ kind: 'static-row' });
+    if (locked) {
+      contract = Object.freeze({
+        kind: 'open-panel',
+        resultSelector: '#yin-membership-card'
+      });
+    } else if (!interactive) {
+      contract = Object.freeze({ kind: 'static-row' });
+    }
     rows.push({
       proxy: entry.proxy,
       groupKey,

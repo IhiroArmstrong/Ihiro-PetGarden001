@@ -2195,7 +2195,7 @@ async function init() {
 
   /**
    * Compass chips jump to existing Arrive / Focus / Recover / Transition / Reflect
-   * surfaces (locked rituals still toast via openRitualFlowFromMenu).
+   * surfaces (locked rituals open the existing membership card).
    * @param {string} momentId
    */
   function handleFiveMomentSelect(momentId) {
@@ -3536,10 +3536,8 @@ async function init() {
     const config = getRitualConfig(ritualId);
     if (!config) return;
     if (!isEntitled(config.accessFeatureKey)) {
-      mindfulToast.show(t('ritual.menu_locked'), {
-        placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
-        visibleMs: 3_500
-      });
+      closeGrowthOverlayCards({ except: 'membership' });
+      membershipUnlockUI.open();
       return;
     }
     if (

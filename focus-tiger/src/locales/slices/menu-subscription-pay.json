@@ -1,0 +1,14 @@
+{
+  "en": {
+    "MENU_SUBSCRIPTION_ROW": "Subscription",
+    "RITUAL_MENU_LOCK_A11Y": "Requires subscription. Press Return to view."
+  },
+  "zh": {
+    "MENU_SUBSCRIPTION_ROW": "订阅",
+    "RITUAL_MENU_LOCK_A11Y": "需订阅，按回车查看。"
+  },
+  "ja": {
+    "MENU_SUBSCRIPTION_ROW": "サブスクリプション",
+    "RITUAL_MENU_LOCK_A11Y": "購読が必要です。Returnキーで内容を見られます。"
+  }
+}
