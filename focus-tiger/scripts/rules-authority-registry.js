@@ -39,6 +39,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-browser-energy.mdc',
   '.cursor/rules/focus-tiger-agent-token-cost.mdc',
   '.cursor/rules/focus-tiger-recommend-most-reasonable.mdc',
+  '.cursor/rules/focus-tiger-scheduling-glossary.mdc',
+  '.cursor/rules/focus-tiger-communication-consistency.mdc',
   '.cursor/rules/focus-tiger-session-handoff.mdc',
   '.cursor/rules/focus-tiger-brief-before-user-visible.mdc',
   '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
@@ -66,6 +68,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/PRINCIPLES.md',
   'focus-tiger/docs/ARCHITECTURE.md',
   'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md',
+  'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+  'focus-tiger/docs/GLOSSARY.md',
   'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
   'focus-tiger/docs/SILENT_BEHAVIORS.md',
   'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
@@ -1423,6 +1427,68 @@ export const RULE_AUTHORITY_TOPICS = [
       '.cursor/rules/focus-tiger-core.mdc',
       'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
       'focus-tiger/docs/PROCESS.md'
+    ],
+    forbiddenOutsideSsot: []
+  },
+  {
+    id: 'scheduling-glossary',
+    title: '排期与队列汇报统一用语（P1/P2/未排期；禁止同义换写）',
+    ssotPath: 'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+    ssotSection: 'SCHEDULING_GLOSSARY.md — 排期与汇报统一用语',
+    ssotMustContain: [
+      /scheduling-glossary/,
+      /槽位 P1/,
+      /未排期/,
+      /三种「风险」/
+    ],
+    topicSignals: [
+      /scheduling-glossary/,
+      /SCHEDULING_GLOSSARY/,
+      /槽位 P1/,
+      /排期统一用语/
+    ],
+    mustCite: [/SCHEDULING_GLOSSARY\.md/],
+    restatementFingerprints: [
+      /槽位 P1/,
+      /禁止为同一概念换同义词/,
+      /三种「风险」/
+    ],
+    restatementThreshold: 2,
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-scheduling-glossary.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ],
+    forbiddenOutsideSsot: []
+  },
+  {
+    id: 'communication-glossary',
+    title: '会话任务术语表与沟通统一（T 代号、状态词、汇报结构）',
+    ssotPath: 'focus-tiger/docs/GLOSSARY.md',
+    ssotSection: 'GLOSSARY.md — 会话任务术语表',
+    ssotMustContain: [
+      /communication-glossary/,
+      /代号对照/,
+      /状态词/
+    ],
+    topicSignals: [
+      /communication-glossary/,
+      /GLOSSARY\.md/,
+      /任务代号/,
+      /沟通术语统一/
+    ],
+    mustCite: [/GLOSSARY\.md/],
+    restatementFingerprints: [
+      /任务代号 \+ 中文短名/,
+      /立即做/,
+      /代号对照/
+    ],
+    restatementThreshold: 2,
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-communication-consistency.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/SCHEDULING_GLOSSARY.md'
     ],
     forbiddenOutsideSsot: []
   },
