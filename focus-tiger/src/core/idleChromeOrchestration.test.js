@@ -352,12 +352,12 @@ describe('listSecondaryChromeEntries', () => {
         'art-collection',
         'quiet-together',
         'focus-circle',
+        'community',
         'reminder',
         'language',
         'today-direction',
         'newsletter',
         'account',
-        'community',
         'help-center',
         'local-backup',
         'membership',
@@ -399,12 +399,12 @@ describe('listSecondaryChromeEntries', () => {
         'art-collection',
         'quiet-together',
         'focus-circle',
+        'community',
         'reminder',
         'language',
         'today-direction',
         'newsletter',
         'account',
-        'community',
         'help-center',
         'local-backup',
         'membership',
@@ -463,11 +463,11 @@ describe('listSecondaryChromeEntries', () => {
         'art-collection',
         'quiet-together',
         'focus-circle',
+        'community',
         'language',
         'today-direction',
         'newsletter',
         'account',
-        'community',
         'help-center',
         'local-backup',
         'membership',
@@ -493,6 +493,16 @@ describe('listSecondaryChromeEntries', () => {
       hidden.some((e) => e.proxy === 'yin-coin'),
       false
     );
+  });
+
+  it('community sits in You are not alone, not Preferences', () => {
+    const entries = listSecondaryChromeEntries('wide-more', allOn);
+    const proxies = entries.filter((e) => e.proxy).map((e) => e.proxy);
+    const communityIdx = proxies.indexOf('community');
+    const focusCircleIdx = proxies.indexOf('focus-circle');
+    const reminderIdx = proxies.indexOf('reminder');
+    assert.ok(communityIdx > focusCircleIdx);
+    assert.ok(reminderIdx > communityIdx);
   });
 
   it('newsletter becomes non-interactive confirmation row when submitted', () => {

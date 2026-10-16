@@ -717,7 +717,8 @@ export function listSecondaryChromeEntries(surface, visibility) {
 
   pushLabeledGroup(out, 'MENU_GROUP_NOT_ALONE', [
     { proxy: 'quiet-together', labelKey: 'QUIET_TOGETHER_MENU_LABEL' },
-    { proxy: 'focus-circle', labelKey: 'FOCUS_CIRCLE_MENU_LABEL' }
+    { proxy: 'focus-circle', labelKey: 'FOCUS_CIRCLE_MENU_LABEL' },
+    { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' }
   ]);
 
   pushLabeledGroup(out, 'MENU_GROUP_PREFERENCES', [
@@ -752,7 +753,6 @@ export function listSecondaryChromeEntries(surface, visibility) {
       interactive: false,
       testId: 'idle-account-placeholder'
     },
-    { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' },
     {
       proxy: 'help-center',
       labelKey: 'HELP_CENTER_MENU_LABEL',

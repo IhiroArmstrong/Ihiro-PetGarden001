@@ -504,7 +504,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     surface: 'menu',
     proxy: 'community',
     labelKeys: Object.freeze(['COMMUNITY_MENU_LABEL']),
-    menuPath: '⋯ → Preferences → Community',
+    menuPath: '⋯ → You are not alone → Community',
     liveStatus: 'live',
     codeAnchors: Object.freeze([
       "proxy: 'community'",
