@@ -145,6 +145,7 @@ describe('marketing-site Slice 3 contract', () => {
     assert.equal(catalogUrls.length >= 2, true);
     assert.ok(catalogUrls.includes('https://youtu.be/RV46qrvG1pw'));
     assert.ok(catalogUrls.includes('https://youtu.be/xawM6cgJSrE'));
+    assert.ok(catalogUrls.includes('https://youtu.be/xpcPXJ95-00'));
     for (const url of catalogUrls) {
       assert.match(
         html,
@@ -164,6 +165,7 @@ describe('marketing-site Slice 3 contract', () => {
     assert.match(html, /What is Zen\? Ancient Wisdom/);
     assert.match(html, /zen-cinema-satori-flash-thumb\.png/);
     assert.match(html, /zen-cinema-what-is-zen-thumb\.png/);
+    assert.match(html, /zen-cinema-hundred-foot-pole-thumb\.png/);
     assert.match(html, /class="zen-cinema-list"/);
     assert.match(html, /Each poster opens YouTube in a new tab/);
   });

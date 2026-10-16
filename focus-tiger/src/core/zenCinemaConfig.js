@@ -31,6 +31,12 @@ export const ZEN_CINEMA_FILMS = Object.freeze([
     youtubeUrl: 'https://youtu.be/xawM6cgJSrE',
     thumbSrc: '/images/zen-cinema/what-is-zen-thumb.png',
     titleKey: 'ZEN_CINEMA_FILM_TITLE_WHAT_IS_ZEN'
+  },
+  {
+    id: 'hundred-foot-pole',
+    youtubeUrl: 'https://youtu.be/xpcPXJ95-00',
+    thumbSrc: '/images/zen-cinema/hundred-foot-pole-thumb.png',
+    titleKey: 'ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE'
   }
 ]);
 
