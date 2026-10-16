@@ -18,7 +18,7 @@
 | **未排期** · **T4** | 根因行动 A15–A17 | 搁置 | 见 §3 |
 | — · **T5** | Confide CR-51 问法形状轴 #1294 | **进行中** | `why-compare` + `whether-required` 顺序；**已合 develop**；关单须未见 v3 audit；Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
 | **P2** · **T6** | Confide 路由盲测五带口径 #1306 | **已合 develop** | Brief `task-confide-routing-holdout-caliber-split.md`；**禁止**真跑 `en/b-v6`（点头 ≠ 占额） |
-| — · **T7** | Confide CR-45 影子 + 带 C 硬闸 #1237 | **进行中** | 影子 PR 已开；**live 仍等 CR-11**；口令「按补锁后的 CR-45 Brief 开工影子」 |
+| — · **T7** | Confide CR-45 影子 + 带 C 硬闸 #1309 | **已合 develop** | holdout `caliber_split` + §6.5 合并对；**CR-45 live 仍等 CR-11**；**禁止**真跑 en/b-v6 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 

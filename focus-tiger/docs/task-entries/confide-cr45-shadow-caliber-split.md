@@ -1,7 +1,7 @@
 ---
 id: confide-cr45-shadow-caliber-split
 kind: feature
-status: T7 · 影子 + 带 C 硬闸实验室 · 进行中
+status: 已完成 · #1309 合 develop · T7
 updated: 2026-10-17
 ---
 
