@@ -73,16 +73,17 @@ import {
 } from '../core/confide/confideObservationTelemetry.js';
 import {
   buildKbRetrievalMissTurnLog,
-  getRetrievableProductKnowledgeEntry,
   mayTryConfideProductKnowledge,
-  probeProductKnowledgeCatalog,
-  productKnowledgeReplyPassesGuard
+  probeProductKnowledgeCatalog
 } from '../core/confide/confideProductKnowledge.js';
 import { buildCrisisParaphraseShadowTurnLog } from '../core/confide/confideCrisisParaphraseShadow.js';
 import { formatConfideProductKnowledgeHonestyReply } from '../core/confide/confideProductKnowledgeHonesty.js';
-import { resolveProductKnowledgeGateAction } from '../core/confide/confideProductKnowledgeSemantic.js';
 import { buildKbCatalogNearReviewShadowTurnLog } from '../core/confide/confideKbCatalogNearReview.js';
-import { decideKbNearMatch } from '../core/confide/kbNearMatch.js';
+import { resolveConfideFactFirstSpeak } from '../core/confide/confideFactFirstSpeak.js';
+import {
+  formatHelpCenterExcerpt
+} from '../core/confide/confideHelpCenterExcerpt.js';
+import { findHelpCenterArticle } from '../core/helpCenterCatalog.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -1640,47 +1641,38 @@ export class ConfideToYinUI {
         embeddingState = 'error';
       }
     }
-    let nearHit = null;
-    let nearAction = null;
-    if (
-      embeddingState === 'ready' &&
-      !catalogResult.hit &&
-      Number.isFinite(Number(gate?.nearestScore))
-    ) {
-      const near = decideKbNearMatch({
-        nearestId: gate.nearestId,
-        nearestScore: gate.nearestScore
-      });
-      nearAction = near.action;
-      if (near.action === 'hit' && near.id) {
-        const entry = getRetrievableProductKnowledgeEntry(near.id);
-        if (entry && productKnowledgeReplyPassesGuard(entry.shortAnswerEn)) {
-          nearHit = entry;
-        }
-      }
-    }
-    const action = resolveProductKnowledgeGateAction({
+    const spoken = resolveConfideFactFirstSpeak({
       text,
+      catalogResult,
       embeddingState,
       semanticIsProduct,
-      catalogHit: Boolean(catalogResult.hit || nearHit),
-      nearAction,
+      nearestId: gate?.nearestId,
+      nearestScore: gate?.nearestScore,
+      helpNearestId: gate?.helpNearestId,
+      helpNearestScore: gate?.helpNearestScore,
+      recordKind: gate?.recordKind,
+      recordScore: gate?.recordScore,
       lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct),
       moodOutranksProduct: gate?.moodOutranksProduct === true,
       moodVetoLive: gate?.moodVetoLive === true
     });
-    const shown = catalogResult.hit
-      ? { id: catalogResult.id, text: catalogResult.text }
-      : nearHit;
-    if (action === 'hit' && shown?.text) {
+    if (spoken.action === 'practice_facts') {
+      this._executeConfideTool(
+        { id: CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION },
+        hit,
+        text
+      );
+      return 'shown';
+    }
+    if (spoken.action === 'product_knowledge' && spoken.text) {
       const reviewRow = buildKbCatalogNearReviewShadowTurnLog({
         text,
         locale: getLocale(),
-        hitKind: catalogResult.hit ? 'catalog' : 'near',
-        kbId: shown.id,
+        hitKind: catalogResult.hit && spoken.id === catalogResult.id ? 'catalog' : 'near',
+        kbId: spoken.id,
         moodScore: gate?.moodScore,
         moodOutranksProduct: gate?.moodOutranksProduct,
-        action
+        action: 'hit'
       });
       if (
         reviewRow &&
@@ -1692,15 +1684,32 @@ export class ConfideToYinUI {
       this._showReply(
         {
           route: hit.route,
-          text: shown.text,
+          text: spoken.text,
           source: 'product_knowledge',
-          kbId: shown.id
+          kbId: spoken.id
         },
         text
       );
       return 'shown';
     }
-    if (action === 'honesty') {
+    if (spoken.action === 'help_center_excerpt' && spoken.id) {
+      const article = findHelpCenterArticle(spoken.id);
+      const body = article ? t(article.bodyKey) : '';
+      const excerpt = formatHelpCenterExcerpt(body);
+      if (excerpt) {
+        this._showReply(
+          {
+            route: hit.route,
+            text: excerpt,
+            source: 'help_center_excerpt',
+            kbId: spoken.id
+          },
+          text
+        );
+        return 'shown';
+      }
+    }
+    if (spoken.action === 'honesty') {
       trackKbRetrievalMiss({ reason: catalogResult.reason || 'semantic_miss' });
       if (this._companion && typeof this._companion.appendTurnLog === 'function') {
         void this._companion.appendTurnLog(

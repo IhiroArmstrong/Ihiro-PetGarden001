@@ -95,6 +95,7 @@ export function catalogEntryEmbeddingText(entry) {
 }
 
 /**
+ * Same door for near-match and (CR-50) literal catalog speak.
  * @param {{
  *   nearestScore?: number | null,
  *   nearestId?: string | null,

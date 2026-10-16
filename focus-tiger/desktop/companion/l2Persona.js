@@ -53,6 +53,10 @@ export const L3_CHAT_NO_CUB_FILL =
 export const L3_CHAT_NO_PARROT =
   'Do not repeat the user line back as the whole reply, including a word-for-word translation.';
 
+/** CR-50: generate is companionship only. */
+export const L3_NO_INVENTED_DEVICE_OR_PRODUCT_FACTS =
+  'Do not assert how long this person has practiced, or how a product control works. No invented minutes, buttons, or catalog facts. Companionship only.';
+
 /**
  * Unmatched Confide generate that is a question / companion chat,
  * not an emotion or habit self-report.
@@ -252,6 +256,7 @@ export function buildCompanionL2Prompt({
       'If they are unsure whether to speak, respect the boundary; do not probe.',
       'Answer the latest User line only. Do not repeat an earlier Yin sentence.',
       'Do not list steps. Do not mention being an AI or a model.',
+      L3_NO_INVENTED_DEVICE_OR_PRODUCT_FACTS,
       memoryBlock,
       insightBlock,
       turns ? `Recent turns:\n${turns}` : '',

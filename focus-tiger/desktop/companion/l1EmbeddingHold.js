@@ -26,6 +26,15 @@ import {
   pickNearestCatalogEmbeddingMatch
 } from '../../src/core/confide/confideProductAskRole.js';
 import { catalogEntryEmbeddingPhrases } from '../../src/core/confide/kbNearMatch.js';
+import {
+  helpCenterEmbeddingPhrases,
+  listHelpCenterExcerptArticles,
+  pickNearestHelpCenterMatch
+} from '../../src/core/confide/confideHelpCenterExcerpt.js';
+import {
+  CONFIDE_RECORD_INTENT_PROTOTYPES,
+  pickNearestRecordIntent
+} from '../../src/core/confide/confideRecordIntent.js';
 import { OBSERVE_CLICHE_EXAMPLES } from '../../src/core/confide/observeClicheExamples.js';
 import { CONFIDE_SEMANTIC_CRISIS_PROTOTYPES } from '../../src/core/confide/confideSemanticCrisisExamples.js';
 import {
@@ -155,6 +164,22 @@ export async function loadEmbeddingHold(opts) {
     }
   }
 
+  onProgress('precomputeHelpCenterExcerpts');
+  /** @type {{ id: string, vector: number[] }[]} */
+  const helpVectors = [];
+  for (const article of listHelpCenterExcerptArticles()) {
+    for (const phrase of helpCenterEmbeddingPhrases(article)) {
+      helpVectors.push({ id: article.id, vector: await embedText(phrase) });
+    }
+  }
+
+  onProgress('precomputeRecordIntentPrototypes');
+  /** @type {{ kind: string, vector: number[] }[]} */
+  const recordVectors = [];
+  for (const proto of CONFIDE_RECORD_INTENT_PROTOTYPES) {
+    recordVectors.push({ kind: proto.kind, vector: await embedText(proto.text) });
+  }
+
   onProgress('precomputeObserveClicheBank');
   /** @type {number[][]} */
   const clicheVectors = [];
@@ -226,11 +251,17 @@ export async function loadEmbeddingHold(opts) {
       );
       const nearestId = nearest.nearestId;
       const nearestScore = nearest.nearestScore;
+      const help = pickNearestHelpCenterMatch(helpVectors, userVector, cosineSimilarity);
+      const record = pickNearestRecordIntent(recordVectors, userVector, cosineSimilarity);
       return {
         ...result,
         nearestAskRole: nearest.askRole,
         nearestId,
         nearestScore,
+        helpNearestId: help.nearestId,
+        helpNearestScore: help.nearestScore,
+        recordKind: record.kind,
+        recordScore: record.score,
         lifeScore,
         lifeOutranksProduct: lifeChatOutranksProductLibrary(result.score, lifeScore),
         moodScore: mood.moodScore,

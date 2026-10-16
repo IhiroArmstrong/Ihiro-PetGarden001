@@ -22,6 +22,13 @@ const READY_MISS_GATE = Object.freeze({
   nearestScore: 0.7
 });
 
+const READY_HIT_GATE = Object.freeze({
+  ok: true,
+  isProduct: true,
+  nearestId: 'KB-FUNC-0002',
+  nearestScore: 0.86
+});
+
 const COLD_GATE = Object.freeze({
   ok: false,
   reason: 'embed_not_ready'
@@ -109,7 +116,7 @@ test('ready embedding miss stays on honesty empty state within 1s', async ({
 test('catalog hit stays a short answer and mood aside skips honesty', async ({
   page
 }) => {
-  await openConfide(page, READY_MISS_GATE);
+  await openConfide(page, READY_HIT_GATE);
   const hit = await shareExpectSource(page, '接地练习在哪', 'product_knowledge');
   await expect(hit).not.toHaveAttribute(
     'data-source',

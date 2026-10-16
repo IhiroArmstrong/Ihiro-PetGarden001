@@ -993,6 +993,14 @@ export class CompanionL1Runtime {
           : null,
         nearestAskRole:
           typeof result.nearestAskRole === 'string' ? result.nearestAskRole : null,
+        helpNearestId: typeof result.helpNearestId === 'string' ? result.helpNearestId : null,
+        helpNearestScore: Number.isFinite(Number(result.helpNearestScore))
+          ? Number(result.helpNearestScore)
+          : null,
+        recordKind: typeof result.recordKind === 'string' ? result.recordKind : null,
+        recordScore: Number.isFinite(Number(result.recordScore))
+          ? Number(result.recordScore)
+          : null,
         lifeOutranksProduct: Boolean(result.lifeOutranksProduct),
         moodScore: Number.isFinite(Number(result.moodScore)) ? Number(result.moodScore) : null,
         moodOutranksProduct: Number.isFinite(Number(result.moodScore))

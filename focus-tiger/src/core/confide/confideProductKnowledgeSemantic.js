@@ -279,6 +279,7 @@ export function moodAsideOutranksProductLibrary(
 export function resolveProductKnowledgeGateAction(input) {
   const { text, embeddingState, semanticIsProduct, catalogHit, nearAction, lifeOutranksProduct } =
     input;
+  // catalogHit here means the card already passed the fact door (CR-50).
   if (catalogHit) return 'hit';
   if (isConfideMoodAsideFromProductKnowledge(text)) return 'skip';
 
