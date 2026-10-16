@@ -79,11 +79,21 @@ describe('catalogEntryEmbeddingText', () => {
     );
     const checkinPhrases = catalogEntryEmbeddingPhrases(byId['KB-FUNC-0038']);
     assert.equal(checkinPhrases.length, 1);
-    assert.match(checkinPhrases[0], /Is daily check-in or a streak required, or is it optional/);
+    assert.match(
+      checkinPhrases[0],
+      /Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in/
+    );
     assert.equal(
       checkinPhrases.some((row) => row.includes('You do not have to check in')),
       false
     );
+    const eduPhrases = catalogEntryEmbeddingPhrases(byId['KB-EDU-0003']);
+    assert.equal(eduPhrases.length, 1);
+    assert.match(
+      eduPhrases[0],
+      /Are focus practice, meditation, and mindfulness the same thing/
+    );
+    assert.equal(eduPhrases[0].includes('Yin explains the words only'), false);
   });
 
   it('splits a two-sentence capability into two phrases and still ignores keyword asks', () => {
