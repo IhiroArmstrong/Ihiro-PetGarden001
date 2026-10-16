@@ -9,6 +9,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { Z } from './zIndexLayers.js';
 
 const FADE_MS = 280;
 
@@ -124,7 +125,7 @@ export class TodayDirectionOptionsBannerUI {
         position: absolute;
         top: max(16px, env(safe-area-inset-top, 0px));
         left: 50%;
-        z-index: 16;
+        z-index: ${Z.DOCK};
         display: flex;
         align-items: center;
         gap: 8px;
@@ -148,7 +149,7 @@ export class TodayDirectionOptionsBannerUI {
       body.ft-narrow-shell.ft-narrow-idle .today-direction-options-banner,
       body.ft-narrow-shell.ft-narrow-park .today-direction-options-banner {
         top: calc(env(safe-area-inset-top, 0px) + 58px);
-        z-index: 34;
+        z-index: ${Z.HINT_BUBBLE};
         max-width: min(360px, calc(100vw - 24px));
       }
       body.ft-narrow-shell.ft-narrow-idle .in-app-reminder-banner.is-visible

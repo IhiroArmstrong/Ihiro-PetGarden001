@@ -39,6 +39,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'presence-signals-panel-styles-v3';
 const FADE_MS = 220;
@@ -62,7 +63,7 @@ export class PresenceSignalsPanelUI {
 
     this.backdrop = createOverlayBackdrop(mountRoot, {
       testId: 'presence-signals-panel-backdrop',
-      zIndex: 15,
+      zIndex: Z.PANEL,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -369,7 +370,7 @@ export class PresenceSignalsPanelUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 16;
+        z-index: ${Z.DOCK};
         width: min(360px, calc(100vw - 40px));
         max-height: min(42vh, 380px);
         overflow: auto;
@@ -513,7 +514,7 @@ export class PresenceSignalsPanelUI {
         position: absolute;
         top: calc(100% + 4px);
         right: 0;
-        z-index: 2;
+        z-index: ${Z.SCENE};
         min-width: 120px;
         padding: 4px;
         border-radius: 10px;

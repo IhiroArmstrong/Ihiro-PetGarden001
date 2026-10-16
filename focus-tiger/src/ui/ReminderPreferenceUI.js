@@ -20,6 +20,7 @@ import {
   resolveReminderPreferencePanelNotes
 } from '../core/reminderPreference.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import { Z } from './zIndexLayers.js';
 
 const CLOCK_ICON = `<svg class="reminder-pref__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm.75 3.5h-1.5v5.25l4.25 2.55.75-1.23-3.5-2.1V7.5z"/></svg>`;
 
@@ -377,7 +378,7 @@ export class ReminderPreferenceUI {
     style.textContent = `
       .reminder-pref {
         position: relative;
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         flex: 0 0 auto;
         pointer-events: auto;
         font-family: 'Noto Sans SC', system-ui, sans-serif;
@@ -425,7 +426,7 @@ export class ReminderPreferenceUI {
         right: auto;
         bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
         transform: translateX(-50%);
-        z-index: 35;
+        z-index: ${Z.REMINDER_PANEL};
         width: min(260px, calc(100vw - 36px));
         padding: 16px 16px 14px;
         border-radius: 18px;

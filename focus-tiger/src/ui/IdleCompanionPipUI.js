@@ -18,6 +18,7 @@ import {
   shouldShowDocumentPictureInPictureEntry
 } from '../core/idleCompanionPipGate.js';
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'idle-companion-pip';
 const STYLE_ID = 'idle-companion-pip-styles-v1';
@@ -251,7 +252,7 @@ export class IdleCompanionPipUI {
     style.textContent = `
       .idle-companion-pip {
         position: relative;
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         flex: 0 0 auto;
         pointer-events: auto;
       }

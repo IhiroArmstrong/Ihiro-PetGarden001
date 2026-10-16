@@ -49,6 +49,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'journey-log-card-styles-v5';
 const FADE_MS = 220;
@@ -537,7 +538,7 @@ export class JourneyLogUI {
       .journey-log-backdrop {
         position: fixed;
         inset: 0;
-        z-index: 31;
+        z-index: ${Z.JOURNEY_LOG_DIM};
         background: rgba(44, 31, 20, 0.12);
         ${GLASS_BLUR_CSS};
         opacity: 0;
@@ -552,7 +553,7 @@ export class JourneyLogUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 32;
+        z-index: ${Z.NARROW_STAGE};
         width: min(360px, calc(100vw - 40px));
         max-height: min(70vh, 520px);
         overflow: auto;

@@ -12,6 +12,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'confide-ear-chrome-styles-v2';
 const ROOT_ID = 'confide-ear-chrome';
@@ -102,7 +103,7 @@ export class ConfideEarChromeUI {
         /* Below #focus-hud glass card (row + shared-sitting bar); SANCTUARY_UI_ART_DIRECTION B */
         top: calc(max(18px, env(safe-area-inset-top, 0px)) + 152px);
         left: max(18px, env(safe-area-inset-left, 0px));
-        z-index: 24;
+        z-index: ${Z.IDLE_FAB};
         width: 52px;
         height: 52px;
         padding: 0;
@@ -152,7 +153,7 @@ export class ConfideEarChromeUI {
       .confide-ear-chrome__img {
         display: block;
         position: relative;
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         width: 52px;
         height: 52px;
         border-radius: 50%;

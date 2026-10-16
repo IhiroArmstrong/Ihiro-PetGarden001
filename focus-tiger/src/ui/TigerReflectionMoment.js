@@ -65,6 +65,7 @@ import {
 } from '../core/reflectionCompanionValidation.js';
 import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
 import { VoiceInputChrome } from './VoiceInputChrome.js';
+import { Z } from './zIndexLayers.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
@@ -121,7 +122,7 @@ const SKIP_ALL_TERTIARY_CSS = [
   'text-decoration:underline',
   'text-underline-offset:2px',
   'box-shadow:none',
-  'z-index:1'
+  `z-index:${Z.LOCAL}`
 ].join(';');
 
 /**
@@ -302,7 +303,7 @@ export class TigerReflectionMoment {
       'position:absolute',
       'left:50%',
       `bottom:${homeClearanceBottomCss()}`,
-      'z-index:15',
+      `z-index:${Z.PANEL}`,
       // Leave room for left heatmap/? and right language globe (not 48px).
       'width:min(460px,calc(100vw - 176px))',
       'transform:translate(-50%, 12px)',

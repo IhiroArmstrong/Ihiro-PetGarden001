@@ -43,6 +43,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'mustard-seed-seal-card-styles-v4';
 const LEGACY_STYLE_ID = 'mustard-seed-seal-card-styles-v2';
@@ -515,7 +516,7 @@ export class MustardSeedSealCardUI {
       .mustard-seed-seal-card__backdrop {
         position: fixed;
         inset: 0;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         background: rgba(44, 31, 20, 0.16);
         ${GLASS_BLUR_CSS};
         opacity: 0;
@@ -532,7 +533,7 @@ export class MustardSeedSealCardUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(380px, calc(100vw - 40px));
         max-height: min(78vh, 640px);
         overflow: auto;

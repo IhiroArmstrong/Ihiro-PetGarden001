@@ -10,7 +10,8 @@
  * @see docs/task-briefs/task-lit-pilot-onboarding-hints.md
  */
 
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css, unsafeCSS, nothing } from 'lit';
+import { Z } from './zIndexLayers.js';
 
 export class FtOnboardingHintBubble extends LitElement {
   static properties = {
@@ -29,7 +30,7 @@ export class FtOnboardingHintBubble extends LitElement {
     :host {
       position: fixed;
       /* Above NarrowIdleShell chrome (home CTAs ~30) so tips stay readable */
-      z-index: 34;
+      z-index: ${unsafeCSS(String(Z.HINT_BUBBLE))};
       box-sizing: border-box;
       padding: 11px 18px;
       border-radius: 18px 18px 18px 6px;

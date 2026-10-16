@@ -13,6 +13,7 @@ import {
   ensureOverlayBackdropStyles,
   releaseIdleOverlayChromeDim
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'badge-award-moment-styles-v1';
 const DIM_MS = 300;
@@ -182,7 +183,7 @@ export class BadgeAwardMomentUI {
       .badge-award-moment__dim {
         position: fixed;
         inset: 0;
-        z-index: 19;
+        z-index: ${Z.GLASS_CARD_FRONT};
         background: rgba(44, 31, 20, 0.28);
         opacity: 0;
         pointer-events: auto;
@@ -193,7 +194,7 @@ export class BadgeAwardMomentUI {
         top: 46%;
         width: ${FLY_SIZE}px;
         height: ${FLY_SIZE}px;
-        z-index: 23;
+        z-index: ${Z.SOUND_CHROME};
         pointer-events: none;
         transform: translate(-50%, -50%);
       }

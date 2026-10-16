@@ -10,6 +10,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { REMINDER_GENTLE_WAITING_MESSAGE_KEY } from '../core/reminderPreference.js';
+import { Z } from './zIndexLayers.js';
 
 const FADE_MS = 280;
 
@@ -115,7 +116,7 @@ export class InAppReminderBannerUI {
         position: absolute;
         top: max(16px, env(safe-area-inset-top, 0px));
         left: 50%;
-        z-index: 16;
+        z-index: ${Z.DOCK};
         display: flex;
         align-items: center;
         gap: 10px;
@@ -140,7 +141,7 @@ export class InAppReminderBannerUI {
       body.ft-narrow-shell.ft-narrow-idle .in-app-reminder-banner,
       body.ft-narrow-shell.ft-narrow-park .in-app-reminder-banner {
         top: calc(env(safe-area-inset-top, 0px) + 58px);
-        z-index: 34;
+        z-index: ${Z.HINT_BUBBLE};
         max-width: min(340px, calc(100vw - 24px));
       }
       .in-app-reminder-banner.is-visible {

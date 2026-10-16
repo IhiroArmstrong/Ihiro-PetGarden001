@@ -244,6 +244,7 @@ import {
   setCloudPresenceDegradedHintIdleProbe,
   setCloudPresenceDegradedHintNotifier
 } from './core/cloudPresenceDegradedHint.js';
+import { Z } from './ui/zIndexLayers.js';
 import {
   bindFocusCirclePresencePageHide,
   bindFocusCirclePresenceVisibilityPeek,
@@ -608,7 +609,7 @@ function showDevLabToast(message, durationMs = 8000) {
   toast.id = 'dev-lab-toast';
   toast.textContent = message;
   toast.style.cssText =
-    'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:22;' +
+    `position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index: ${Z.AMBIENT};` +
     'max-width:min(92vw,520px);padding:12px 16px;font-size:13px;line-height:1.45;' +
     'background:rgba(44,31,20,0.92);color:#fff8f0;border-radius:10px;' +
     'box-shadow:0 8px 24px rgba(0,0,0,0.18);pointer-events:none;';
@@ -5719,7 +5720,7 @@ async function init() {
     clearHintsBtn.type = 'button';
     clearHintsBtn.textContent = '清空引导提示已读';
     clearHintsBtn.style.cssText =
-      'position:fixed;top:12px;right:180px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff8f0;color:#2c1f14;border-radius:4px;';
+      `position:fixed;top:12px;right:180px;z-index: ${Z.DEV_LAB};padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff8f0;color:#2c1f14;border-radius:4px;`;
     clearHintsBtn.id = 'dev-clear-hints-seen';
     clearHintsBtn.title =
       '仅实验室页有效（勿带 ?product=1）。清空 focus-tiger.hints-seen.v1 后刷新 tip/薄荷绿。';
@@ -5751,7 +5752,7 @@ async function init() {
     funnelBtn.title =
       '本地付费意愿漏斗 + opt-in 状态（Support → CTA → Checkout → 完成）';
     funnelBtn.style.cssText =
-      'position:fixed;top:12px;right:470px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #5a6b4a;background:#f4f8f0;color:#2c1f14;border-radius:4px;';
+      `position:fixed;top:12px;right:470px;z-index: ${Z.DEV_LAB};padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #5a6b4a;background:#f4f8f0;color:#2c1f14;border-radius:4px;`;
     funnelBtn.addEventListener('click', () => {
       const text = [
         getMonetizationFunnelStore().formatSummary(),
@@ -5783,7 +5784,7 @@ async function init() {
     resetAllBtn.title =
       '清空 focus-tiger.* localStorage 并刷新 → 场景 A：零完成 Idle 坐禅 + Honesty 入口（不是自动 DORMANT）';
     resetAllBtn.style.cssText =
-      'position:fixed;top:12px;right:320px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff0f0;color:#2c1f14;border-radius:4px;';
+      `position:fixed;top:12px;right:320px;z-index: ${Z.DEV_LAB};padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #8b2e2e;background:#fff0f0;color:#2c1f14;border-radius:4px;`;
     resetAllBtn.addEventListener('click', async () => {
       const confirmed = globalThis.confirm(
         '将清空全部 focus-tiger 本地数据并刷新。\n\n' +
@@ -5821,7 +5822,7 @@ async function init() {
     resetIdleBtn.title =
       '清空 localStorage 并刷新后直接进入 idle pingpong（测动画 / 跳过 DORMANT）';
     resetIdleBtn.style.cssText =
-      'position:fixed;top:12px;right:470px;z-index:21;padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #2e6b8b;background:#f0f8ff;color:#2c1f14;border-radius:4px;';
+      `position:fixed;top:12px;right:470px;z-index: ${Z.DEV_LAB};padding:6px 10px;font-size:11px;cursor:pointer;border:1px solid #2e6b8b;background:#f0f8ff;color:#2c1f14;border-radius:4px;`;
     resetIdleBtn.addEventListener('click', async () => {
       const confirmed = globalThis.confirm(
         '将清空全部 focus-tiger 本地数据并刷新，然后直接进入 idle 坐禅 pingpong（不显示 DORMANT / Honesty）。\n\n' +

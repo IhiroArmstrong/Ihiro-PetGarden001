@@ -42,12 +42,13 @@ import {
   RITUAL_LEAVE_RETROSPECTIVE_DWELL_MS,
   resolveRitualChipLabelKey
 } from '../core/ritualPresenceBridge.js';
+import { Z } from './zIndexLayers.js';
 
 const PANEL_CSS = [
   'position:absolute',
   'left:50%',
   'bottom:96px',
-  'z-index:15',
+  `z-index:${Z.PANEL}`,
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'padding:14px 18px 12px',

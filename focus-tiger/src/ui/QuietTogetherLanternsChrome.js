@@ -29,6 +29,7 @@ import {
   isLanternPresenceClientEnabled
 } from '../core/quietTogetherPresence.js';
 import { createPresenceLanternShell } from './presenceLanternIcons.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'quiet-together-lanterns-chrome-v1';
 const MAX_DOTS = 8;
@@ -189,7 +190,7 @@ export class QuietTogetherLanternsChrome {
         position: fixed;
         left: 18px;
         bottom: ${IDLE_LANTERN_BOTTOM_WIDE_CSS};
-        z-index: 12;
+        z-index: ${Z.CLUSTER};
         pointer-events: none;
         display: flex;
         flex-direction: column;

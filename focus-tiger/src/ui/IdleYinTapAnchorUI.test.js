@@ -21,7 +21,7 @@ test('Idle Yin tap is hidden when not armed (no silent click on a visible hit)',
   assert.match(src, /setArmed/);
   assert.match(src, /this\.root\.hidden = !show/);
   assert.match(src, /if \(!this\._armed\) return/);
-  assert.match(src, /z-index: 12/);
+  assert.match(src, /z-index: \$\{Z\.CLUSTER\}/);
   assert.match(src, /idle-yin-tap-hint/);
   assert.match(src, /IDLE_YIN_TAP_HINT/);
 });

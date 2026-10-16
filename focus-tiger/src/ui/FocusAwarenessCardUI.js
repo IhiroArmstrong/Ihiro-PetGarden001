@@ -10,6 +10,7 @@
 
 import { COPY_POOLS, t, onLocaleChange } from '../locales/i18n.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'focus-awareness-card';
 const STYLE_ID = 'focus-awareness-card-styles-v2';
@@ -141,7 +142,7 @@ export class FocusAwarenessCardUI {
         left: 50%;
         bottom: 88px;
         top: auto;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         max-width: min(320px, calc(100vw - 48px));
         margin: 0;
         padding: 10px 16px;

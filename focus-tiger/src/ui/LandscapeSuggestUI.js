@@ -14,6 +14,7 @@ import {
   shouldShowLandscapeSuggest,
   writeLandscapeSuggestDismissed
 } from '../core/landscapeSuggestGate.js';
+import { Z } from './zIndexLayers.js';
 
 export class LandscapeSuggestUI {
   /**
@@ -84,7 +85,7 @@ export class LandscapeSuggestUI {
         top: 64px;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 16;
+        z-index: ${Z.DOCK};
         display: flex;
         align-items: center;
         gap: 10px;

@@ -15,6 +15,7 @@ import {
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import { RESET_ROUTES } from './resetPracticeRoutes.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'recover-reset-practice';
 const STYLE_ID = 'recover-reset-practice-styles-v1';
@@ -301,7 +302,7 @@ export class RecoverResetPracticeUI {
         left: 50%;
         bottom: 72px;
         top: auto;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         width: min(400px, calc(100vw - 28px));
         margin: 0;
         padding: 0;
@@ -350,7 +351,7 @@ export class RecoverResetPracticeUI {
         position: absolute;
         top: 4px;
         right: 6px;
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         border: 0;
         background: transparent;
         color: rgba(58, 46, 34, 0.5);

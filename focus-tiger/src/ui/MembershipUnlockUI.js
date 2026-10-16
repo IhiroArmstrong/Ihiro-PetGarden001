@@ -36,6 +36,7 @@ import {
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-membership-card-styles-v2';
 const FADE_MS = 220;
@@ -674,7 +675,7 @@ export class MembershipUnlockUI {
       .yin-membership-backdrop {
         position: fixed;
         inset: 0;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         background: rgba(44, 31, 20, 0.14);
         ${GLASS_BLUR_CSS};
         opacity: 0;
@@ -691,7 +692,7 @@ export class MembershipUnlockUI {
         position: fixed;
         left: 50%;
         top: 50%;
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(380px, calc(100vw - 40px));
         max-height: min(78vh, 520px);
         overflow-y: auto;

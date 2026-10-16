@@ -26,7 +26,7 @@ test('uses svg lantern shells instead of css dots', () => {
 });
 
 test('sits above the arrive notice glass and still cannot be clicked', () => {
-  assert.match(src, /z-index:\s*12/);
+  assert.match(src, /z-index:\s*\$\{Z\.CLUSTER\}/);
   assert.match(src, /pointer-events:\s*none/);
 });
 

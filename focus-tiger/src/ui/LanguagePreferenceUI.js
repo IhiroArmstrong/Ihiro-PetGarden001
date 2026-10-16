@@ -11,6 +11,7 @@
 
 import { t, onLocaleChange, getLocale, setLocale } from '../locales/i18n.js';
 import { listPickerLocales } from '../locales/localePreference.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'language-preference-styles-v7';
 
@@ -208,7 +209,7 @@ export class LanguagePreferenceUI {
           ${CLUSTER_BOTTOM_EXPR} + ${CLUSTER_PAD_BOTTOM_PX}px +
             (${HELP_IN_CLUSTER_PX}px - ${FAB_PX}px) / 2
         );
-        z-index: 16;
+        z-index: ${Z.DOCK};
         width: ${FAB_PX}px;
         height: ${FAB_PX}px;
         padding: 0;
@@ -268,7 +269,7 @@ export class LanguagePreferenceUI {
             (${HELP_IN_CLUSTER_PX}px - ${FAB_PX}px) / 2 + ${FAB_PX}px + 12px
         );
         transform: none;
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(92vw, 300px);
         pointer-events: auto;
       }

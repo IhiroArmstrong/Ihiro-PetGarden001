@@ -10,6 +10,7 @@
 
 import { GLASS_BLUR_CSS } from './glassPanelStyles.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
+import { Z } from './zIndexLayers.js';
 
 export const OVERLAY_BACKDROP_FADE_MS = 220;
 export const OVERLAY_BACKDROP_RGBA = 'rgba(44, 31, 20, 0.16)';
@@ -172,7 +173,7 @@ export function createOverlayBackdrop(mountRoot, opts = {}) {
   if (opts.testId) backdrop.dataset.testid = opts.testId;
   backdrop.dataset.dimIdleChrome = opts.dimIdleChrome === false ? '0' : '1';
   backdrop.hidden = true;
-  backdrop.style.zIndex = String(opts.zIndex ?? 17);
+  backdrop.style.zIndex = String(opts.zIndex ?? Z.OVERLAY_DIM);
 
   if (outsideDismiss === OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES && opts.onDismiss) {
     backdrop.addEventListener('click', () => opts.onDismiss?.());

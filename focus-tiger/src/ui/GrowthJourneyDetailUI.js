@@ -23,6 +23,7 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'growth-journey-detail-styles-v1';
 const FADE_MS = 220;
@@ -47,7 +48,7 @@ export class GrowthJourneyDetailUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'growth-journey-detail-backdrop',
       testId: 'growth-journey-detail-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -236,7 +237,7 @@ export class GrowthJourneyDetailUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(360px, calc(100vw - 40px));
         max-height: min(52vh, 420px);
         overflow: auto;

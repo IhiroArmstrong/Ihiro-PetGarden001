@@ -8,6 +8,8 @@
  * `ConfideEarChromeUI` / wide listening ear. Replaces slow native `title`.
  */
 
+import { Z } from './zIndexLayers.js';
+
 const STYLE_ID = 'ft-glass-hover-tip-styles-v1';
 export const FT_GLASS_HOVER_DELAY_MS = 120;
 const TOUCH_FLASH_MS = 1200;
@@ -120,7 +122,7 @@ function _injectStyles() {
       }
       .ft-glass-hover-tip {
         position: absolute;
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         max-width: min(220px, calc(100vw - 86px));
         padding: 5px 10px;
         border-radius: 999px;

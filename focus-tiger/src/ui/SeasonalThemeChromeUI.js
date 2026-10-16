@@ -18,6 +18,7 @@ import {
 } from '../core/seasonal/seasonalWhisperGate.js';
 import { computeSeasonWindow } from '../core/seasonal/resolveActiveSeasonalTheme.js';
 import { getSeason } from '../core/seasonal/seasonalCalendar.js';
+import { Z } from './zIndexLayers.js';
 
 const WASH_ID = 'seasonal-theme-wash';
 const WASH_STYLE_ID = 'seasonal-theme-wash-styles-v1';
@@ -183,7 +184,7 @@ export class SeasonalThemeChromeUI {
         .seasonal-theme-wash {
           position: absolute;
           inset: 0;
-          z-index: 0;
+          z-index: ${Z.WASH};
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.9s ease;
@@ -223,7 +224,7 @@ export class SeasonalThemeChromeUI {
           position: fixed;
           left: 50%;
           transform: translateX(-50%) translateY(-6px);
-          z-index: 17;
+          z-index: ${Z.OVERLAY_DIM};
           max-width: min(88vw, 340px);
           margin: 0;
           padding: 10px 14px;

@@ -3,6 +3,8 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong Hao Hoh. All rights reserved.
  */
 
+import { Z } from './zIndexLayers.js';
+
 /**
  * Centered glass cards: at most two stay open, and a press on a non-control
  * area drags the card. Backdrops stay below the cards, so the other card
@@ -92,11 +94,11 @@ export const GLASS_CARD_KEEP_STYLESHEET_Z = Object.freeze(
 /**
  * @param {string} elementId
  * @param {{ isFront?: boolean }} [opts]
- * @returns {'19' | '18' | null} null = leave stylesheet z-index
+ * @returns {string | null} null = leave stylesheet z-index
  */
 export function glassCardInlineZIndex(elementId, { isFront = false } = {}) {
   if (GLASS_CARD_KEEP_STYLESHEET_Z.has(elementId)) return null;
-  return isFront ? '19' : '18';
+  return isFront ? String(Z.GLASS_CARD_FRONT) : String(Z.GLASS_CARD);
 }
 
 /**
@@ -189,7 +191,7 @@ export function installGlassCardDeck(doc = document) {
     card.style.bottom = 'auto';
     card.style.transform = 'none';
     card.style.margin = '0';
-    card.style.zIndex = '19';
+    card.style.zIndex = String(Z.GLASS_CARD_FRONT);
     drag = {
       card,
       dx: event.clientX - rect.left,

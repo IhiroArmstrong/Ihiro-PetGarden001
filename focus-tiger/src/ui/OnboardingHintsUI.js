@@ -80,6 +80,7 @@ import {
   HELP_OUTSIDE_DISMISS,
   resolveHelpOutsideDismissAction
 } from './helpOverlayOutsideDismiss.js';
+import { Z } from './zIndexLayers.js';
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -2693,7 +2694,7 @@ export class OnboardingHintsUI {
     style.textContent = `
       .ft-hint-catalog-chip {
         position: fixed;
-        z-index: 28;
+        z-index: ${Z.HINT_CHIP};
         box-sizing: border-box;
         max-width: min(220px, calc(100vw - 24px));
         padding: 8px 12px;
@@ -2725,7 +2726,7 @@ export class OnboardingHintsUI {
         position: fixed;
         left: 20px;
         bottom: 28px;
-        z-index: 22;
+        z-index: ${Z.AMBIENT};
         pointer-events: auto;
         width: 44px;
         height: 44px;
@@ -2773,7 +2774,7 @@ export class OnboardingHintsUI {
       }
       .onboarding-hint-badge {
         position: fixed;
-        z-index: 27;
+        z-index: ${Z.SANCTUARY_CARD};
         width: 10px;
         height: 10px;
         padding: 4px;
@@ -2798,7 +2799,7 @@ export class OnboardingHintsUI {
       .onboarding-app-purpose-backdrop {
         position: fixed;
         inset: 0;
-        z-index: 26;
+        z-index: ${Z.SUPPORT_MODAL};
         background: rgba(44, 31, 20, 0.12);
         ${GLASS_BLUR_CSS};
         opacity: 0;
@@ -2813,13 +2814,13 @@ export class OnboardingHintsUI {
       }
       body.ft-purpose-pinned .onboarding-hint-help,
       body.ft-purpose-pinned #ft-narrow-help-btn {
-        z-index: 28;
+        z-index: ${Z.HINT_CHIP};
       }
       .onboarding-app-purpose {
         position: fixed;
         left: 0;
         top: 0;
-        z-index: 27;
+        z-index: ${Z.SANCTUARY_CARD};
         box-sizing: border-box;
         width: min(320px, calc(100vw - 32px));
         max-height: min(72vh, 480px);
@@ -2842,7 +2843,7 @@ export class OnboardingHintsUI {
       }
       .ft-hint-catalog-chip {
         position: fixed;
-        z-index: 28;
+        z-index: ${Z.HINT_CHIP};
         box-sizing: border-box;
         max-width: min(220px, calc(100vw - 24px));
         padding: 8px 12px;
@@ -2953,7 +2954,7 @@ export class OnboardingHintsUI {
         position: fixed;
         left: 0;
         top: 0;
-        z-index: 28;
+        z-index: ${Z.HINT_CHIP};
         box-sizing: border-box;
         width: min(380px, calc(100vw - 32px));
         max-height: min(72vh, 480px);
@@ -3075,7 +3076,7 @@ export class OnboardingHintsUI {
       }
       .onboarding-wellness-first {
         position: fixed;
-        z-index: 29;
+        z-index: ${Z.PRIVACY_SHEET};
         box-sizing: border-box;
         width: min(360px, calc(100vw - 24px));
         max-height: min(70vh, 520px);
@@ -3128,7 +3129,7 @@ export class OnboardingHintsUI {
       }
       .onboarding-privacy-sheet {
         position: fixed;
-        z-index: 29;
+        z-index: ${Z.PRIVACY_SHEET};
         box-sizing: border-box;
         width: min(360px, calc(100vw - 24px));
         max-height: min(70vh, 520px);
@@ -3284,7 +3285,7 @@ export class OnboardingHintsUI {
         background: ${HINT_DISCOVERY_DOT_COLOR};
         box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.9);
         pointer-events: none;
-        z-index: 2;
+        z-index: ${Z.SCENE};
       }
       /* Calm HUD：不再画浮动 mint badge；残留选择器只防旧节点抢视线 */
       #focus-hud .ft-hint-discovery-dot,

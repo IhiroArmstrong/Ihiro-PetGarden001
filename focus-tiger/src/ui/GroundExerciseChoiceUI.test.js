@@ -24,5 +24,5 @@ test('GroundExerciseChoiceUI exposes stable testids and choice routes', () => {
 test('GroundExerciseChoiceUI uses overlay backdrop dim like Five Moments', () => {
   const src = readFileSync(join(here, 'GroundExerciseChoiceUI.js'), 'utf8');
   assert.match(src, /createOverlayBackdrop/);
-  assert.match(src, /zIndex: 17/);
+  assert.match(src, /zIndex: Z\.OVERLAY_DIM/);
 });

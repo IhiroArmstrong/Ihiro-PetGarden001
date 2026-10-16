@@ -37,6 +37,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'focus-circle-witness-chrome-v2';
 /** Clear the was-here caption. Presence grows up from +46px; 62px let the hide-name line cover it. */
@@ -262,7 +263,7 @@ export class FocusCircleWitnessChrome {
         position: fixed;
         left: 18px;
         bottom: calc(${IDLE_LANTERN_BOTTOM_WIDE_CSS} + ${WITNESS_ABOVE_PRESENCE_CSS});
-        z-index: 14;
+        z-index: ${Z.WITNESS};
         pointer-events: none;
         display: flex;
         flex-direction: column;

@@ -36,7 +36,7 @@ test('pointer-events none and stacks above lanterns', () => {
 });
 
 test('sits above the arrive notice glass with a readable caption', () => {
-  assert.match(src, /z-index:\s*13/);
+  assert.match(src, /z-index:\s*\$\{Z\.CIRCLE\}/);
   assert.match(src, /color:\s*rgba\(58,\s*46,\s*34,\s*0\.88\)/);
   assert.doesNotMatch(src, /rgba\(220,\s*228,\s*240/);
 });

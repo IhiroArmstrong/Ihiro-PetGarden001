@@ -22,6 +22,7 @@ import {
   shouldShowSanctuaryEnsoMark
 } from '../core/sanctuaryEnsoMark.js';
 import { onEntitlementChange } from '../core/entitlement/entitlementGate.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-sanctuary-enso-mark-chrome-v3';
 
@@ -192,7 +193,7 @@ export class SanctuaryEnsoMarkChrome {
       .yin-sanctuary-enso-mark {
         position: fixed;
         /* Above sprite-overlay(3), below #ui-overlay(10); with LightProgression FX(4) */
-        z-index: 4;
+        z-index: ${Z.FX};
         pointer-events: auto;
         opacity: ${ENSO_OPACITY_IDLE};
         transition: opacity 180ms ease;

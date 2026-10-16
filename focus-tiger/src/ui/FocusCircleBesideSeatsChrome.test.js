@@ -18,7 +18,7 @@ test('beside seat row uses the cut-out Yin outline and cannot be clicked', () =>
   assert.equal(existsSync(join(publicUi, 'yin-sitting-outline.png')), true);
   assert.equal(existsSync(join(publicUi, 'yin-sitting-fill.png')), true);
   assert.match(src, /pointer-events:\s*none/);
-  assert.match(src, /z-index:\s*13/);
+  assert.match(src, /z-index:\s*\$\{Z\.CIRCLE\}/);
   assert.match(src, /yin-sitting-outline\.png/);
   assert.match(src, /is-seated/);
 });

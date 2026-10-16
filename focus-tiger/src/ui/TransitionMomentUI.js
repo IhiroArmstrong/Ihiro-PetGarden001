@@ -11,6 +11,7 @@
 import { findCalmActionTransitionEntry } from '../content/calm-action-wisdom/index.js';
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
 import { homeClearanceTopCss } from './homeChromeClearance.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'transition-moment-whisper';
 const STYLE_ID = 'transition-moment-whisper-styles-v1';
@@ -154,7 +155,7 @@ export class TransitionMomentUI {
         left: 50%;
         top: max(12px, env(safe-area-inset-top, 0px));
         bottom: auto;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         max-width: min(340px, calc(100vw - 56px));
         margin: 0;
         padding: 10px 16px;

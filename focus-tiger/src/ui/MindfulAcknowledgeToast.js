@@ -4,6 +4,7 @@
  */
 
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
+import { Z } from './zIndexLayers.js';
 
 const DEFAULT_VISIBLE_MS = 4_000;
 
@@ -49,7 +50,7 @@ function placementCss(placement) {
     return [
       `top:${top}`,
       'bottom:auto',
-      'z-index:40',
+      `z-index:${Z.TOAST}`,
       'padding:14px 22px',
       'font-size:16px',
       'font-weight:560',
@@ -62,7 +63,7 @@ function placementCss(placement) {
   return [
     `bottom:${homeClearanceBottomCss()}`,
     'top:auto',
-    'z-index:18',
+    `z-index:${Z.GLASS_CARD}`,
     'transform:translate(-50%,10px)'
   ].join(';');
 }

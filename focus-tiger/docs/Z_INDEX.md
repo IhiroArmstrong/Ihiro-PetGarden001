@@ -3,7 +3,7 @@
 > **目的**：新加 `position: fixed` / 浮层前，先扫一眼本表，避免与既有层级打架。  
 > **范围**：`focus-tiger/` 产品运行时代码（`index.html` + `src/` + 实际挂进主壳的 ui-kit 组件）。  
 > **不含**：仅 e2e 测试夹具、`ui-kit/demo.html` 演示页（见文末附录）。  
-> **维护**：新增/改动产品 `z-index` 时顺手改本表一行；**不要**借登记名义批量改数值。新增 dim 遮罩时对照下文 **Idle 常驻 chrome**，不得只按「卡片 z − 1」覆盖背景。body 挂载的可点叠层还须进 `OVERLAY_UI_SURFACE`（O-04）；**常量化 + 全仓静态扫描**仍是 [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) **Z-dim**，本表不替代。  
+> **维护**：新增/改动产品 `z-index` 时顺手改本表一行，并在 [`src/ui/zIndexLayers.js`](../src/ui/zIndexLayers.js) 加同名常量；**不要**借登记名义批量改数值。新增 dim 遮罩时对照下文 **Idle 常驻 chrome**，不得只按「卡片 z − 1」覆盖背景。body 挂载的可点叠层还须进 `OVERLAY_UI_SURFACE`（O-04）；**常量化 + 全仓静态扫描**见 [`DOC_CODE_CONTRACT.md`](./DOC_CODE_CONTRACT.md) **Z-dim**。  
 > **扫描日**：2026-07-29（对照当前 `develop` 工作树）。**dim 消费者节**：2026-09-09。
 
 叠层上下文提醒：多数业务浮层挂在 `#ui-overlay`（`z-index: 10`）内部；其子节点的 `z-index` 只在该 stacking context 内比较。`NarrowIdleShell` / Ambient / Hints 等是 **同级 `position: fixed` 挂在 `body`/`#app`**，会与 `#ui-overlay` 整层比较。`IdleChromeFacade`（Task 3）**不设** z-index——层级仍登记在下方 Narrow / Wide 适配器行。
@@ -37,7 +37,7 @@
 | **11** | `src/ui/TipKindnessBadgesChrome.js` | Idle 阿寅旁练习/善意徽章条（`#yin-tip-kindness-badges`；**mid-right** beside Yin，勿压右上 Support/mute；Focusing 隐藏） |
 | **19** | `src/ui/BadgeAwardMomentUI.js` | 颁发飞入轻 dim（`.badge-award-moment__dim`；z 低于菜单与 Support FAB；约 2.5s；点按 / Esc 跳过） |
 | **23** | `src/ui/BadgeAwardMomentUI.js` | 颁发飞入徽章（`.badge-award-moment__fly`；低于 Support FAB 24 与菜单 25；扫光只在徽章形状内） |
-| **11** | `src/ui/SanctuaryEnsoMarkChrome.js` | Sanctuary Enso 页面左下角印记（`#yin-sanctuary-enso-mark`）；与 kindness badges 同带；宽屏真左下角、375 抬到三球之上；`pointer-events: none`；Focusing 淡化 |
+| **4** | `src/ui/SanctuaryEnsoMarkChrome.js` | Sanctuary Enso 页面左下角印记（`#yin-sanctuary-enso-mark`）；代码为 z4（与 FX 同带，**不是** kindness 11）。宽屏真左下角、375 抬到三球之上；`pointer-events: none`；Focusing 淡化。A12 对账只改正表，未改运行时数字 |
 | **12** | `src/ui/WeeklyPracticeHeatmap.js` | 周练习热力图簇（含 Reminder 时钟、成长旅程短轨迹；短轨迹不新开一层） |
 | **12** | `src/ui/ActiveRecoverAnchorUI.js` | Focusing Tiger Anchor（轻触阿寅 / 幽灵提示）；冷却期微光+提示 hidden、**invisible hit 仍在**（FB-01）；`#ui-overlay` 内；须低于 dock Rise(16) 与 toast(18/40) |
 | **12** | `src/ui/IdleYinTapAnchorUI.js` | Idle 轻点阿寅额头 `#idle-yin-tap-anchor`（invisible hit，`top:30%` 盖额头；无微光）；与 Active Recover **互斥**（Idle vs Focusing）；须低于 dock Sit(16) |
@@ -150,6 +150,14 @@
 | **35 / 36** | `src/ui/HomeSanctuaryNavFanUI.js` | Home/Sanctuary 导航扇遮罩（35）+ 扇本体（36）；**挂 body**，与 `#ui-overlay`（10）整层比较，不与其子层同带 |
 | **12050** | `src/ui/SystemTtsPreferenceUI.js` | 系统朗读偏好。**数值异常**，比全表任何一层高两个数量级，来历不明；审计 Z-2 记在案，本次只登记不改，改动须单独评估 |
 | 无自有 z | `src/ui/overlayBackdrop.js` | 共享遮罩 CSS 基类（`position: fixed; inset: 0`）；z 由各调用方设定，见上文各 backdrop 行 |
+
+### 2026-10-16 A12 对账补登（只补登记，未改数值）
+
+| z-index | 文件 | 用途 |
+|---|---|---|
+| **5** | `src/ui/NarrowIdleShell.js` | 窄屏抽屉打开时 ♪ / ? 相对 sheet(2)+backdrop(1) 的局部叠层 |
+| **31** | `src/ui/JourneyLogUI.js` | Journey Log 遮罩（面板 32；高于普通玻璃卡 18） |
+| **42** | `src/ui/VoiceCommandUndoToast.js` | 语音开坐撤销条（高于中置 toast 40，避免被「也算数」盖住） |
 
 ### ui-kit 变量（未在主产品硬编码数值）
 

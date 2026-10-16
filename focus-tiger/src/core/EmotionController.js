@@ -24,6 +24,7 @@ import {
   pickCloakVariant,
   sleepingSequenceKey
 } from '../character/cloakVariant.js';
+import { Z } from '../ui/zIndexLayers.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
 /**
@@ -1256,7 +1257,7 @@ export class EmotionController {
     const group = document.createElement('div');
     group.id = 'emotion-debug-ui';
     group.style.cssText =
-      'position:fixed;top:12px;right:12px;z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;max-height:calc(100vh - 24px);overflow-y:auto;padding-bottom:8px;';
+      `position:fixed;top:12px;right:12px;z-index: ${Z.DEV};display:flex;flex-direction:column;gap:6px;pointer-events:auto;max-height:calc(100vh - 24px);overflow-y:auto;padding-bottom:8px;`;
 
     const addSectionLabel = (text) => {
       const el = document.createElement('div');

@@ -41,6 +41,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-sanctuary-card-styles-v1';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -69,7 +70,7 @@ export class SanctuaryUnlockUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'yin-sanctuary-backdrop',
       testId: 'yin-sanctuary-backdrop',
-      zIndex: 26,
+      zIndex: Z.SUPPORT_MODAL,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
     });
 
@@ -493,7 +494,7 @@ export class SanctuaryUnlockUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 27;
+        z-index: ${Z.SANCTUARY_CARD};
         width: min(400px, calc(100vw - 40px));
         transform: translate(-50%, 10px);
         padding: 16px 16px 14px;

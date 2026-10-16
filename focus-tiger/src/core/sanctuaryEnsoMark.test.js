@@ -139,7 +139,7 @@ describe('sanctuaryEnsoMark', () => {
     assert.match(chromeSrc, /ENSO_MIN_CSS_PX/);
     assert.match(chromeSrc, /ENSO_FALLBACK_VIEWPORT_FRAC/);
     assert.match(chromeSrc, /preventDefault/);
-    assert.match(chromeSrc, /z-index:\s*4/);
+    assert.match(chromeSrc, /z-index:\s*\$\{Z\.FX\}/);
     assert.doesNotMatch(
       chromeSrc,
       /openSanctuary|openSupport|startCheckout|SupportYinModal/i

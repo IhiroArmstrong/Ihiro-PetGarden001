@@ -32,6 +32,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-personal-memory-card-styles-v1';
 const FADE_MS = 220;
@@ -326,7 +327,7 @@ export class YinPersonalMemoryUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(360px, calc(100vw - 40px));
         max-height: min(70vh, 520px);
         overflow: auto;

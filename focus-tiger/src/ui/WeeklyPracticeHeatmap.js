@@ -14,6 +14,7 @@
 import { growthJourneyHomeLineModel } from '../core/growthJourneyHomeLine.js';
 import { t } from '../locales/i18n.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
+import { Z } from './zIndexLayers.js';
 
 export const WEEKLY_PRACTICE_HEATMAP_DAYS = 7;
 
@@ -320,7 +321,7 @@ export class WeeklyPracticeHeatmap {
          * 否则球/蒲团会盖住簇与 weekly-heatmap mint hint。
          */
         bottom: calc(36px + 88px + 20px);
-        z-index: 12;
+        z-index: ${Z.CLUSTER};
         display: flex;
         flex-direction: column;
         align-items: stretch;

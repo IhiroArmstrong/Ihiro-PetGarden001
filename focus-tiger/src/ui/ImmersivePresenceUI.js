@@ -31,6 +31,7 @@ import {
   shouldShowDocumentPictureInPictureEntry,
   supportsElementFullscreen
 } from '../core/immersivePresenceSupport.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'immersive-presence';
 const STYLE_ID = 'immersive-presence-styles-v1';
@@ -377,7 +378,7 @@ export class ImmersivePresenceUI {
         left: 50%;
         bottom: calc(32px + 52px + env(safe-area-inset-bottom, 0px));
         transform: translateX(-50%);
-        z-index: 16;
+        z-index: ${Z.DOCK};
         display: flex;
         flex-wrap: wrap;
         gap: 8px;

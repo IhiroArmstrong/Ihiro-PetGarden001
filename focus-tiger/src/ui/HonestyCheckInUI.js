@@ -25,6 +25,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 export { HONESTY_BREATH_MS };
 
@@ -52,7 +53,7 @@ const PANEL_CSS = [
   'transition:opacity 260ms ease,transform 260ms ease',
   'opacity:0',
   'pointer-events:auto',
-  'z-index:15'
+  `z-index:${Z.PANEL}`
 ].join(';');
 
 const CHOICE_BTN_CSS = [
@@ -237,7 +238,7 @@ export class HonestyCheckInUI {
         'cursor:pointer',
         'text-decoration:underline',
         'text-underline-offset:3px',
-        'z-index:14',
+        `z-index:${Z.WITNESS}`,
         'pointer-events:auto',
         'max-width:calc(100vw - 48px)',
         'white-space:normal',

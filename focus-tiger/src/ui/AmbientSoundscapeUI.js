@@ -27,6 +27,7 @@ import {
 import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
 import { onEntitlementChange } from '../core/entitlement/entitlementGate.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
+import { Z } from './zIndexLayers.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
 export const AMBIENT_NUDGE_STORAGE_KEY = 'focus-tiger.ambient-nudge.seen.v1';
@@ -1125,7 +1126,7 @@ export class AmbientSoundscapeUI {
       .ambient-soundscape {
         position: fixed;
         inset: 0;
-        z-index: 22;
+        z-index: ${Z.AMBIENT};
         pointer-events: none;
         font-family: 'Noto Sans SC', system-ui, sans-serif;
       }
@@ -1133,7 +1134,7 @@ export class AmbientSoundscapeUI {
         position: fixed;
         top: 14px;
         right: 14px;
-        z-index: 24;
+        z-index: ${Z.IDLE_FAB};
         pointer-events: auto;
         /* +50% vs prior 44px hit target — music note readability */
         width: 66px;
@@ -1184,7 +1185,7 @@ export class AmbientSoundscapeUI {
           0 0 0 2px rgba(255, 252, 245, 0.98),
           0 0 0 3px rgba(109, 179, 160, 0.35);
         pointer-events: none;
-        z-index: 2;
+        z-index: ${Z.SCENE};
         animation: ft-ambient-mute-hint-pulse 1.6s ease-in-out infinite;
       }
       .ambient-soundscape__mute > .ft-secondary-menu-hint-dot {
@@ -1199,7 +1200,7 @@ export class AmbientSoundscapeUI {
           0 0 0 2px rgba(255, 252, 245, 0.98),
           0 0 0 3px rgba(109, 179, 160, 0.35);
         pointer-events: none;
-        z-index: 3;
+        z-index: ${Z.SPRITE};
         animation: ft-ambient-mute-hint-pulse 1.6s ease-in-out infinite;
       }
       /* Prefer ::after; hide duplicate span when both present */
@@ -1232,7 +1233,7 @@ export class AmbientSoundscapeUI {
         position: fixed;
         right: 16px;
         bottom: 28px;
-        z-index: 23;
+        z-index: ${Z.SOUND_CHROME};
         display: flex;
         flex-direction: column;
         align-items: flex-end;
@@ -1277,7 +1278,7 @@ export class AmbientSoundscapeUI {
           padding: 0 !important;
           opacity: 0 !important;
           pointer-events: none !important;
-          z-index: -1 !important;
+          z-index: ${Z.PARK} !important;
         }
         /* Focusing / Idle: stage panel from top-right note (no FAB) — 靠右，不挡阿寅 */
         body.ft-wide-stage-sound .ambient-soundscape__focus-chrome {
@@ -1291,7 +1292,7 @@ export class AmbientSoundscapeUI {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
-          z-index: 32 !important;
+          z-index: ${Z.NARROW_STAGE} !important;
           align-items: stretch !important;
         }
         body.ft-wide-stage-sound .ambient-soundscape__panel {

@@ -9,6 +9,7 @@
  */
 
 import { onLocaleChange, t } from '../locales/i18n.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'idle-yin-tap-anchor-styles-v1';
 const ROOT_ID = 'idle-yin-tap-anchor';
@@ -121,7 +122,7 @@ export class IdleYinTapAnchorUI {
       .idle-yin-tap-anchor {
         position: absolute;
         inset: 0;
-        z-index: 12;
+        z-index: ${Z.CLUSTER};
         pointer-events: none;
       }
       .idle-yin-tap-anchor__hit {
@@ -148,7 +149,7 @@ export class IdleYinTapAnchorUI {
         position: absolute;
         left: 50%;
         top: ${IDLE_YIN_TAP_HIT_LAYOUT.top};
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         max-width: min(280px, calc(100vw - 48px));
         margin: 0;
         padding: 10px 16px;
