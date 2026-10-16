@@ -1,0 +1,1 @@
+| Confide 路由盲测考核口径拆分（设计说明） | 纯文档 | 仅单元测试覆盖 | **无用户路径。** Brief 已点头（附修改）：带 A 出路=CR-45 影子或门；带 C 硬闸写死并进 CR-11 前置；点头≠en/b-v6 占额。状态板额度与日志对齐。不改倾诉回复，不跑 holdout 真分。 | — | — | — | `task-confide-routing-holdout-caliber-split.md` | 2026-10-17 |

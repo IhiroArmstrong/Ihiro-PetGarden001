@@ -895,7 +895,7 @@
   标题: 社区从哪开
   适用场景: 想找 Join our community，或分不清和同坐 / 小圈的区别
   内容正文: |
-    短答（en）：Open More (⋯) or the drawer → Preferences → Join our community. That opens the public community page in a new tab. It is optional; sitting with Yin does not require joining. Yin only points here and does not read invite links aloud.
+    短答（en）：Open More (⋯) or the drawer → You are not alone → Join our community. That opens the public community page in a new tab. It is optional; sitting with Yin does not require joining. Yin only points here and does not read invite links aloud.
     指路：菜单 `COMMUNITY_MENU_LABEL`（proxy `community`）→ `communityLink.js` 打开公开社区页。与 0027/0028 分工：本条 = 站外社区页；那两条 = 应用内同坐灯笼 / 小圈。
     禁止：说成必须加入才算练习；禁止在短答里念 Slack 邀请链接。
   yin_may_retrieve: 是
