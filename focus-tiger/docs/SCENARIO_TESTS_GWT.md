@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-15  
+生成日期：2026-10-17  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -1822,8 +1822,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
 | U1-1 | P0 | 无自动化标注 | Idle → ⋯ / 抽屉 Zen Cinema → 0–1 秒内：菜单行按压 + `#zen-ci |
-| U1-2 | P0 | 无自动化标注 | Watch → 0–1 秒内：主钮按压 + 确认卡开始收起；结果（可延迟）：系统浏览器打开 `htt |
-| U1-3 | P0 | 无自动化标注 | 禁止：Reflection 边缘入口、App 内嵌播放器。 |
+| U1-2 | P0 | 无自动化标注 | 默认选中第一部时 Watch → 0–1 秒内：主钮按压 + 确认卡开始收起；结果（可延迟）：系统浏 |
+| U1-3 | P0 | 无自动化标注 | 禁止：Reflection 边缘入口、App 内嵌播放器、YouTube 频道墙 / 登录墙。 |
 
 ### Given-When-Then 明细
 
@@ -1840,7 +1840,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Idle
 
 **Then**
-- ⋯ / 抽屉 Zen Cinema → 0–1 秒内：菜单行按压 + `#zen-cinema-card` 展开（缩略图 + 片名 +「将打开 YouTube」）。
+- ⋯ / 抽屉 Zen Cinema → 0–1 秒内：菜单行按压 + `#zen-cinema-card` 展开（`[data-testid=zen-cinema-grid]` 策展缩略图网格 +「将打开 YouTube」）。
 
 #### U1-2
 
@@ -1852,10 +1852,10 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
 
 **When**
-- Watch
+- 默认选中第一部时 Watch
 
 **Then**
-- 0–1 秒内：主钮按压 + 确认卡开始收起；结果（可延迟）：系统浏览器打开 `https://youtu.be/RV46qrvG1pw`。卡已关但标签页还没出 = 仍算「已接收」，不要报成哑点击。Not now → 0–1 秒内卡收起、回到 Idle 菜单入口可见。
+- 0–1 秒内：主钮按压 + 确认卡开始收起；结果（可延迟）：系统浏览器打开 `https://youtu.be/RV46qrvG1pw`。点选 `[data-testid=zen-cinema-tile-what-is-zen]` 后再 Watch → 打开 `https://youtu.be/xawM6cgJSrE`。卡已关但标签页还没出 = 仍算「已接收」，不要报成哑点击。Not now → 0–1 秒内卡收起、回到 Idle 菜单入口可见。
 
 #### U1-3
 
@@ -1869,7 +1869,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - （无额外用户操作）
 
 **Then**
-- 禁止：Reflection 边缘入口、App 内嵌播放器
+- 禁止：Reflection 边缘入口、App 内嵌播放器、YouTube 频道墙 / 登录墙
 
 ---
 ## 场景 U2：U2 · Quiet Line / 今日静语
@@ -5425,7 +5425,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | AT-1 | P0 | 无自动化标注 | 主路径（Electron 宽屏 · Confide L2 ready）：Idle → 开 Confi |
 | AT-2 | P0 | 无自动化标注 | 倾诉不出设备：转写路径须 `MacosSpeechProvider`；禁止 Cloud STT pr |
 | AT-3 | P0 | 无自动化标注 | 负例：Web `?confide=1` / 窄屏 <480 → 不得见麦克风。 |
-| AT-4 | P0 | 无自动化标注 | 回流：转写后改字再 Share → 以编辑后文本为准。 |
+| AT-4 | P0 | 无自动化标注 | 回流：Speak again 录完 Stop 仍自动发送；空转写 / 识别失败仍不发送（框旁红字）。 |
+| AT-5 | P0 | 无自动化标注 | 专有词：说 Yin 时框内须为 Yin（不得停在 Ian / Ean / Iain）。其它产品名靠本 |
 
 ### Given-When-Then 明细
 
@@ -5442,7 +5443,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 主路径（Electron 宽屏 · Confide L2 ready）：Idle
 
 **Then**
-- 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → 0–1 秒内状态变 Listening，Stop 旁出现 `[data-testid=voice-input-level]` 三条音量条并先贴底 → 安静时保持贴底（禁止自己上下跳）→ 说英语时条子随本机音量升高 → Stop → 0–1 秒内条子消失且转写文字进输入框（可编辑）→ 用户点 Share → 走既有 AE L2 路由（禁止 `麦克风 → LLM` 直连）。音量映射单测：`voiceLevelMeter.test.js`。
+- 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → 0–1 秒内状态变 Listening，Stop 旁出现 `[data-testid=voice-input-level]` 三条音量条并先贴底 → 安静时保持贴底（禁止自己上下跳）→ 说英语时条子随本机音量升高 → Stop → 0–1 秒内条子消失且转写文字进输入框 → 无须再点 Share 或回车，0–1 秒内见 Thinking / 回复，走既有 AE L2 路由（禁止 `麦克风 → LLM` 直连）。音量映射单测：`voiceLevelMeter.test.js`；Stop 后自动发送接线：`voiceInputBridge.test.js`。
 
 #### AT-2
 
@@ -5481,10 +5482,24 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 页面 URL：http://localhost:5173/?product=1
 
 **When**
-- 回流：转写后改字再 Share
+- （无额外用户操作）
 
 **Then**
-- 以编辑后文本为准。
+- 回流：Speak again 录完 Stop 仍自动发送；空转写 / 识别失败仍不发送（框旁红字）。Arrival / Reflection 仍须用户点 Confirm / Continue（禁止误开自动发送）
+
+#### AT-5
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 专有词：说 Yin 时框内须为 Yin（不得停在 Ian / Ean / Iain）。其它产品名靠本机 `contextualStrings` 提高命中，不把 in / yen 等普通词改成 Yin
 
 ---
 ## 场景 AT：AT · Slice 2（Arrival 意图 + Reflection）
@@ -6172,4 +6187,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 67 · 步骤 325 · 待澄清 46_
+_场景 67 · 步骤 326 · 待澄清 46_
