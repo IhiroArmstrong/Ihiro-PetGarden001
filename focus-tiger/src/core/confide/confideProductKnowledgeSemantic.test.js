@@ -155,6 +155,34 @@ describe('confideProductKnowledgeSemantic', () => {
     }
   });
 
+  it('CR-51: why-compare and why-must-check-in are operational; motive activity is not', () => {
+    assert.equal(
+      classifyConfideProductAskRole('Are focus practice and meditation the same thing?'),
+      'why-compare'
+    );
+    assert.equal(isConfideOperationalProductAskShape('Are focus practice and meditation the same thing?'), true);
+    assert.equal(isConfideOperationalProductAskShape('Why do I have to check in every day?'), true);
+    assert.equal(isConfideOperationalProductAskShape('Why should I do some meditation?'), false);
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'Are focus practice and meditation the same thing?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false
+      }),
+      'honesty'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'Why do I have to check in every day?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false
+      }),
+      'honesty'
+    );
+  });
+
   it('CR-49: whether-required shape with product object is operational; activity-only is not', () => {
     assert.equal(classifyConfideProductAskRole('Do I need to check in daily?'), 'whether-required');
     assert.equal(classifyConfideProductAskRole('Do I have to meditate?'), 'none');

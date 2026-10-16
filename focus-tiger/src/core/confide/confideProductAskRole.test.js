@@ -33,6 +33,23 @@ describe('classifyConfideProductAskRole', () => {
     assert.equal(classifyConfideProductAskRole('What is the observation wing?'), 'what-is');
     assert.equal(classifyConfideProductAskRole('I had noodles for lunch'), 'none');
   });
+
+  it('CR-51: whether-required precedes motivation; why-compare is closed compare/benefit', () => {
+    assert.equal(
+      classifyConfideProductAskRole('Why should I do some meditation?'),
+      'none'
+    );
+    assert.equal(
+      classifyConfideProductAskRole('Are focus practice and meditation the same thing?'),
+      'why-compare'
+    );
+    assert.equal(
+      classifyConfideProductAskRole('Why do I have to check in every day?'),
+      'whether-required'
+    );
+    assert.equal(classifyConfideProductAskRole('Do I have to meditate?'), 'none');
+    assert.equal(classifyConfideProductAskRole('I had noodles for lunch'), 'none');
+  });
 });
 
 describe('catalog fact keys and ask-role lanes', () => {
@@ -64,7 +81,20 @@ describe('catalog fact keys and ask-role lanes', () => {
     assert.equal(catalogEntryEligibleForAskRole(byId['KB-FUNC-0020'], 'where'), true);
     assert.equal(catalogEntryEligibleForAskRole(byId['KB-FUNC-0038'], 'where'), false);
     assert.equal(catalogEntryEligibleForAskRole(byId['KB-EDU-0003'], 'what-is'), true);
+    assert.equal(catalogEntryEligibleForAskRole(byId['KB-EDU-0003'], 'why-compare'), true);
     assert.equal(catalogEntryEligibleForAskRole(byId['KB-EDU-0003'], 'where'), false);
+    assert.equal(catalogEntryEligibleForAskRole(byId['KB-FUNC-0038'], 'why-compare'), false);
+  });
+
+  it('locks EDU-0003 fact key; keywords do not become retrieval phrases', () => {
+    const locked =
+      'Are focus practice, meditation, and mindfulness the same thing, or is Sit with Yin a Focus sit rather than a generic meditation class?';
+    assert.deepEqual(catalogEntryEmbeddingPhrases(byId['KB-EDU-0003']), [locked]);
+    const withFailedAsk = {
+      ...byId['KB-EDU-0003'],
+      keywords: [...byId['KB-EDU-0003'].keywords, 'failed ask must not become a retrieval phrase']
+    };
+    assert.deepEqual(catalogEntryEmbeddingPhrases(byId['KB-EDU-0003']), catalogEntryEmbeddingPhrases(withFailedAsk));
   });
 
   it('pickNearest only searches the same ask-role lane', () => {

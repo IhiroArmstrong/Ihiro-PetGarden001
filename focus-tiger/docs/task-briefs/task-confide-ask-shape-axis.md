@@ -1,6 +1,6 @@
 # Task Brief · 问法形状轴扩档（CR-51）
 
-> **状态（2026-10-16）**：**待 PO 点头**。点头前禁止改 `confideProductAskRole.js`、目录 JSON、发送链。
+> **状态（2026-10-16）**：**已点头，实现中**。PO 口令「按这份 Brief 开工」。
 > **类别**：B 类。会改变宽屏倾诉里「为什么 / 要不要」走短答、诚实空态还是生成。
 > **跟进号**：**CR-51**。补 **CR-49** 封闭形状轴（可增形状、不可增话题）。不并入 CR-45 / CR-46。不再改 0038 / EDU-0003 短答与事实键（#1287 已停手改卡）。
 > **原则**：`PRINCIPLES.md` **R-Confide-No-Symptom-List**。禁止按症状加说法名单。测试纪律 `testing-strategy.mdc`（`confide-class-blind`）。
