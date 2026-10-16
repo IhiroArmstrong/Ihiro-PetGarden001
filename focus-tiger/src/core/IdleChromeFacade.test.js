@@ -194,6 +194,39 @@ describe('IdleChromeFacade', () => {
     facade.destroy();
   });
 
+  it('resize also releases wide chrome when crossing into narrow', () => {
+    const narrow = mockShell();
+    const wide = mockShell();
+    let matches = false;
+    const resizeListeners = new Set();
+    const facade = new IdleChromeFacade({
+      narrow: /** @type {any} */ (narrow),
+      wide: /** @type {any} */ (wide),
+      matchMedia: () => ({
+        get matches() {
+          return matches;
+        },
+        addEventListener() {},
+        removeEventListener() {}
+      }),
+      resizeTarget: {
+        addEventListener(_t, fn) {
+          resizeListeners.add(fn);
+        },
+        removeEventListener(_t, fn) {
+          resizeListeners.delete(fn);
+        }
+      }
+    });
+    assert.equal(facade.isNarrow(), false);
+    matches = true;
+    for (const fn of resizeListeners) fn();
+    assert.equal(wide.state.releaseCount, 1);
+    assert.equal(narrow.state.releaseCount, 0);
+    facade.destroy();
+    assert.equal(resizeListeners.size, 0);
+  });
+
   it('clearAllStageClasses removes narrow+wide stage tokens when document exists', () => {
     if (typeof document === 'undefined') return;
     document.body.classList.add(NARROW_STAGE_CLASS.sound);

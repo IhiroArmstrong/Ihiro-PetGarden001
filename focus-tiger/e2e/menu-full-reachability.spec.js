@@ -281,8 +281,18 @@ test('menu full reachability · wide Idle ⋯ then narrow drawer', async ({
   await walkMenu(page, 'wide-more', '#ft-wide-more-menu');
   await settleAfterRow(page);
   await page.setViewportSize({ width: 375, height: 667 });
-  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
-    timeout: 15_000
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event('resize'));
   });
+  await expect
+    .poll(() => page.evaluate(() => window.matchMedia('(max-width: 479px)').matches))
+    .toBe(true);
+  await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
+    timeout: 8_000
+  });
+  await expect(
+    page.locator('#ft-wide-more-backdrop'),
+    'wide ⋯ scrim must not cover the narrow drawer'
+  ).toBeHidden();
   await walkMenu(page, 'narrow-drawer', '#ft-narrow-options-drawer');
 });

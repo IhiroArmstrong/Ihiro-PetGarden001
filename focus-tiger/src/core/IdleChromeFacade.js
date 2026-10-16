@@ -39,7 +39,8 @@ export class IdleChromeFacade {
    *     releaseInactivePresentation?: () => void,
    *     destroy?: () => void
    *   },
-   *   matchMedia?: ((query: string) => MediaQueryList) | null
+   *   matchMedia?: ((query: string) => MediaQueryList) | null,
+   *   resizeTarget?: { addEventListener?: Function, removeEventListener?: Function } | null
    * }} options
    */
   constructor(options) {
@@ -61,12 +62,21 @@ export class IdleChromeFacade {
     this._wasNarrow = this.isNarrow();
     this._onMqChange = () => this._handleBreakpointChange();
     this._mq?.addEventListener?.('change', this._onMqChange);
+    // matchMedia `change` can miss Playwright viewport flips; `.matches` is live.
+    this._resizeTarget =
+      options.resizeTarget ??
+      (typeof window !== 'undefined' ? window : null);
+    this._onResize = () => this._handleBreakpointChange();
+    this._resizeTarget?.addEventListener?.('resize', this._onResize);
   }
 
   /** @returns {boolean} */
   isNarrow() {
+    if (typeof window !== 'undefined' && Number.isFinite(window.innerWidth)) {
+      return window.innerWidth <= 479;
+    }
     if (this._mq) return Boolean(this._mq.matches);
-    return typeof window !== 'undefined' && window.innerWidth <= 479;
+    return false;
   }
 
   /**
@@ -159,6 +169,7 @@ export class IdleChromeFacade {
   /** @returns {void} */
   destroy() {
     this._mq?.removeEventListener?.('change', this._onMqChange);
+    this._resizeTarget?.removeEventListener?.('resize', this._onResize);
     this.narrow.destroy?.();
     this.wide.destroy?.();
   }
