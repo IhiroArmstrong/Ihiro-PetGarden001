@@ -1,8 +1,8 @@
 ---
 id: a11-shared-glass-card
 kind: feature
-status: Brief 待 PO 点头 · 线 2
+status: 本支 chore/a11-1-glass-card-factory · A11.1 工厂+扫描
 updated: 2026-10-16
 ---
 
-根因盘点 A11：浮动卡根必须经共享暖米玻璃工厂；静态检查拦住自写深色底板。本回合只交 Brief，不改运行时。不做 A12/A13。
+根因盘点 A11：`createGlassCard()` + `check-glass-card-roots`（#1147 深色语音卡夹具必须红）。已用暖米玻璃的卡不换肤。`presence-signals-panel` 仍是近乎不透明纸色，列入 A11.2 暂留、本刀不换肤。不做 A12/A13。
