@@ -167,6 +167,15 @@ export async function clickBreathPracticeEntry(page) {
   await clickQuickStartEntry(page);
 }
 
+/** Radial or flat degenerate list — only one phase is visible at a time. */
+export async function expectWideMoreMenuShellVisible(page) {
+  await expect(
+    page.locator(
+      '#ft-wide-more-radial:not([hidden]), #ft-wide-more-menu:not([hidden])'
+    ).first()
+  ).toBeVisible({ timeout: 5_000 });
+}
+
 /**
  * 若宽屏 ⋯ 可见则打开 More 菜单。
  * @param {import('@playwright/test').Page} page
@@ -179,11 +188,7 @@ export async function openWideMoreMenuIfPresent(page) {
   });
   if (!canOpen) return false;
   await page.locator('#ft-wide-more-btn').click({ force: true });
-  await expect(
-    page.locator('#ft-wide-more-radial, #ft-wide-more-menu')
-  ).toBeVisible({
-    timeout: 5_000
-  });
+  await expectWideMoreMenuShellVisible(page);
   return true;
 }
 
@@ -194,10 +199,25 @@ export async function openWideMoreMenuIfPresent(page) {
  */
 export async function pickWideMoreRadialGroup(page, groupKey) {
   const radial = page.locator('#ft-wide-more-radial');
-  if (!(await radial.isVisible().catch(() => false))) return;
-  await page.locator(`#ft-wide-more-radial [data-group="${groupKey}"]`).click();
-  await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
-    timeout: 5_000
+  if (await radial.isVisible().catch(() => false)) {
+    await page.locator(`#ft-wide-more-radial [data-group="${groupKey}"]`).click();
+    await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
+      timeout: 5_000
+    });
+    return;
+  }
+
+  // Degenerate flat list (sprite-stage / short innerHeight): radial hidden.
+  const menu = page.locator('#ft-wide-more-menu');
+  if (!(await menu.isVisible().catch(() => false))) return;
+  const header = page.locator(
+    `#ft-wide-more-menu .ft-wide-more__section-header[data-group="${groupKey}"]`
+  );
+  if (!(await header.isVisible().catch(() => false))) return;
+  if ((await header.getAttribute('aria-expanded')) === 'true') return;
+  await header.click();
+  await expect(header).toHaveAttribute('aria-expanded', 'true', {
+    timeout: 3_000
   });
 }
 

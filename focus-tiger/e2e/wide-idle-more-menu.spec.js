@@ -8,6 +8,7 @@ import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import { expectOpenHintBubblesAtMost } from './helpers/hints-concurrency.js';
 import {
   expandWideMoreMenuGroup,
+  expectWideMoreMenuShellVisible,
   openFreshProductShell,
   pickWideMoreRadialGroup,
   quickStartFocus
@@ -17,7 +18,8 @@ import {
  * Wide Idle (≥480): three home balls (Breath · Sit · Honesty) + ⋯ right sheet.
  */
 
-test.use({ viewport: { width: 1280, height: 720 } });
+// Taller than 720 so radial icons usually clear sprite-stage (degenerate → flat list).
+test.use({ viewport: { width: 1280, height: 900 } });
 
 /** Row proxy → click-hint id (Language has none by design). Breath is home ball. */
 const WIDE_MORE_ROW_HINT = Object.freeze({
@@ -103,10 +105,12 @@ test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible({ timeout: 15_000 });
   await more.click();
-  await expect(page.locator('#ft-wide-more-radial')).toBeVisible({
-    timeout: 5_000
-  });
   await expect(page.locator('#ft-wide-more-backdrop')).toBeVisible();
+  await expectWideMoreMenuShellVisible(page);
+  const radialMode = await page
+    .locator('#ft-wide-more-radial')
+    .isVisible()
+    .catch(() => false);
   await pickWideMoreRadialGroup(page, 'MENU_GROUP_PRACTICE');
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
@@ -116,11 +120,13 @@ test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
   await expect(
     menu.locator('.ft-wide-more__section-header[data-group="ritual.menu_group"]')
   ).toBeVisible();
-  await expect(
-    menu.locator(
-      '.ft-wide-more__section-header[data-group="MENU_GROUP_INSPIRATION"]'
-    )
-  ).toHaveCount(0);
+  if (radialMode) {
+    await expect(
+      menu.locator(
+        '.ft-wide-more__section-header[data-group="MENU_GROUP_INSPIRATION"]'
+      )
+    ).toHaveCount(0);
+  }
   const box = await menu.boundingBox();
   const vp = page.viewportSize();
   expect(box).toBeTruthy();
