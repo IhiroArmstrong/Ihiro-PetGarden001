@@ -9,6 +9,7 @@ import {
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
   dispatchSecondaryChromeProxy,
+  decorateSecondaryLockButton,
   invokeHandler,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
@@ -764,10 +765,7 @@ export class WideIdleMoreMenu {
         btn.classList.add('is-beige-cta');
       }
       if (item.locked) {
-        btn.disabled = true;
-        btn.setAttribute('aria-disabled', 'true');
-        btn.title = t('ritual.menu_locked');
-        btn.classList.add('is-locked');
+        decorateSecondaryLockButton(btn, item, t);
       } else if (item.interactive === false) {
         btn.disabled = true;
         btn.setAttribute('aria-disabled', 'true');
@@ -1064,19 +1062,26 @@ export class WideIdleMoreMenu {
         cursor: pointer;
         transition: transform 120ms ease;
       }
-      .ft-wide-more__item:active:not(:disabled):not(.is-locked) {
+      .ft-wide-more__item:active:not(:disabled) {
         transform: translateY(1px) scale(0.98);
       }
-      .ft-wide-more__item.is-locked,
+      .ft-wide-more__item.is-locked {
+        opacity: 0.62;
+        cursor: pointer;
+      }
       .ft-wide-more__item:disabled {
         opacity: 0.48;
         cursor: not-allowed;
+      }
+      .ft-wide-more__item .ft-secondary-menu-lock {
+        margin-left: 8px;
+        font-size: 11px;
+        opacity: 0.7;
       }
       .ft-wide-more__item:hover {
         background: rgba(255, 246, 230, 0.9);
         border-color: rgba(139, 115, 85, 0.18);
       }
-      .ft-wide-more__item.is-locked:hover,
       .ft-wide-more__item:disabled:hover {
         background: transparent;
         border-color: transparent;

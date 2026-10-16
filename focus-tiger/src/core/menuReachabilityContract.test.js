@@ -32,11 +32,13 @@ describe('menuReachabilityContract', () => {
     }
   });
 
-  it('treats default rituals as locked rows (no silent click)', () => {
+  it('treats default rituals as locked but clickable membership opens', () => {
     const rows = listMenuReachabilityRows('wide-more');
     const morning = rows.find((r) => r.proxy === 'ritual-morning');
     assert.equal(morning?.locked, true);
-    assert.equal(morning?.contract.kind, 'locked-row');
+    assert.equal(morning?.interactive, true);
+    assert.equal(morning?.contract.kind, 'open-panel');
+    assert.equal(morning?.contract.resultSelector, '#yin-membership-card');
   });
 
   it('treats account placeholder as a static row', () => {
