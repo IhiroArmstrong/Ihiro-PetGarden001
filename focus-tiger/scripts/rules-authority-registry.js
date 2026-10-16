@@ -322,7 +322,9 @@ export const RULE_AUTHORITY_TOPICS = [
       /worktree:hygiene-remove/,
       /最后一次 commit/,
       /禁止.*静默.*worktree remove|禁止.*Agent 静默/,
-      /git cherry|cherry origin\/develop/
+      /git cherry|cherry origin\/develop/,
+      /扩大清点/,
+      /headRefOid/
     ],
     topicSignals: [
       /worktree-hygiene/,

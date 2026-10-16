@@ -11,6 +11,7 @@
  *
  * Default is dry-run. `--apply` runs `git worktree remove` then `git worktree prune`.
  * Never removes primary checkout, `…-wt-develop-qa`, or `report_only` rows.
+ * Squash / `primary` / cherry-false-positive trees: WORKFLOW.md 方案 B（扩大清点）.
  * Does not delete remote branches.
  *
  * Usage:

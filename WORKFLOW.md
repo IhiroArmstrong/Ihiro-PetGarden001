@@ -214,26 +214,42 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 5. **合回主线**：功能分支经 PR 进入 `develop`——合入资格见下文「合入 develop：CI 绿即可合并」；研发自检 / 主干同步见「feature/fix 合入 develop：研发自检 + 主干同步」。`main` 仍只走 PR + 负责人网页合并（见合并门禁）。任务完成后默认 **push 旁支 + 开 PR**（见 `git-agent-commit`）；**禁止**直推 `develop`/`main`。  
 6. **结束后清理（目录拆除 · 高风险 · 须口令）**：分支已合入且不再需要本地目录时，在主仓执行 `git worktree remove <path>`；目录已删则 `git worktree prune`。未合入、未推送的 commit 不得先 remove。拆盘**只删工作目录**；本地分支与 `origin` 远端分支**默认保留**（除非另开「删远端分支」口令）。  
    - **禁止** Agent 静默 `worktree remove` / 按「看起来没人用」推断拆盘。  
-   - **口令**「请清理闲置 worktree」（或同等）：Agent **只读**跑 `cd focus-tiger && npm run check:worktree-hygiene`，把输出做成候选清单贴进「待你决定」；**仅** `propose_remove` 档可建议拆除；`report_only` / `primary` **只汇报、不提议**（扩大清点见下）。  
-   - **标准三步（自动分类器 · 在 `focus-tiger/` 下）**：
+   - **口令与指令（用户 → Agent）**：
+
+     | 你说的话 | Agent 做什么 |
+     |---|---|
+     | **「请清理闲置 worktree」**（或同等） | 先跑 **方案 A** 三步（下）；把 `propose_remove` / `report_only` / `primary` 摘要贴进回复；**未**写「按清单清」或「扩大清点」时 **不得** `worktree remove` |
+     | 同上 + **「按清单清」** | 方案 A 第 3 步 `--apply`：只拆当时脚本输出的 **`propose_remove`** |
+     | 同上 + **「扩大清点」**（或「扩大清点、自行确认可拆的」） | 在方案 A 之后跑 **方案 B**（下）；对满足 B 判定且 Agent **能自行确认**的树执行 `git worktree remove --force` + `prune`；拆前须列出将拆 path + 依据（PR 号 / 脏文件结论） |
+     | 同上 + **点名 path** | 只拆你点名的 path；仍须满足 A 或 B 的拆除门禁（禁止硬拆 QA / 主仓 / 有未提交真实源码的树） |
+
+   - **方案 A（自动分类器 · `npm run worktree:hygiene-remove` 只认 `propose_remove`）** — 在 `focus-tiger/` 下：
      1. `npm run check:worktree-hygiene`（盘点；exit 0 亦可能有候选）
      2. `npm run worktree:hygiene-remove`（**dry-run**，打印将拆的 `propose_remove`）
      3. `npm run worktree:hygiene-remove -- --apply`（**只拆**当时 `propose_remove`；脏树用 `git worktree remove --force`）
    - **`propose_remove` 内容已合入判定（squash 友好）**：非当前 cwd + 锁可放行（无锁 / `releasable` / 锁已陈旧等，细则见 `check-worktree-hygiene.js`），且满足其一——① tip 已是 `origin/develop` 祖先；或 ② `git cherry origin/develop HEAD` **无** `+` 行（无独有补丁）。禁止仅用祖先检查（squash 合入会假阴性）。  
    - **脏树 ≠ 不能拆（2026-10-11 · 取代旧「一见 dirty 就 report_only」）**：在**内容已合入**（上条 ① 或 ②）且锁可放行时，即使 `git status --porcelain` 非空（常见仅 `node_modules`、`.staging/`、构建产物），仍标 **`propose_remove`**（理由 `dirty-but-content-merged`）。**禁止**因脏就跳过 develop/cherry 判定。若相对 `develop` 仍有独有补丁，或锁 `active` 且未陈旧 → 仍 `report_only`。  
    - 清单须含 **最后一次 commit 时间**（与闲置天数），便于你决定是否还要留作对照。  
-   - 你点名 path（或写「**按清单清**」= 只清当时脚本输出的 `propose_remove`）后，Agent 才可 `git worktree remove`；缺点名 = 不得拆除。「按扩大清单清」= 下条扩大清点里你已确认的 path 列表，**仍须**口令 + 点名。  
-   - **本机按清单清（同一分类器）**：口令之后在**主仓**跑 `cd <主仓>/focus-tiger && npm run worktree:hygiene-remove`（默认 dry-run）→ 确认清单后再 `npm run worktree:hygiene-remove -- --apply`。只拆当时 `propose_remove`；**不**删远端分支；**不**拆主仓 / `…-wt-develop-qa`。Finder 里看到的文件夹不算数——只认 `git worktree list`。  
-   - **扩大清点（PR 已合、长期闲置，但仍在 `report_only` / `primary`）**：自动三步跑完后若仍有一大批旧树，在**同一口令**下做第二轮人工核对（2026-10-11 本机确认的做法）：
+   - **本机按清单清（方案 A）**：口令 +「按清单清」→ `cd <主仓>/focus-tiger && npm run worktree:hygiene-remove -- --apply`。只拆当时 `propose_remove`；**不**删远端分支；**不**拆主仓 / `…-wt-develop-qa`。Finder 里看到的文件夹不算数——只认 `git worktree list`。  
+   - **方案 B（扩大清点 · `report_only` / `primary` 仍多 · 或 squash 后 cherry 假阳性）**：在**同一口令**下、通常紧接方案 A 之后执行（2026-10-11 起本机实践；2026-10-16 补「Agent 可自行确认」细则）：
      1. `git fetch origin develop`
-     2. 以 `git worktree list --porcelain` 为全集（**禁止**只用 Downloads 文件夹列表）
-     3. 对每棵树（跳过主仓、跳过 `…-wt-develop-qa`）：`gh pr list --head <branch> --state all` → 若存在 **`MERGED`** 且该 PR 的 `headRefOid` 与工作树 `HEAD` 一致（或分支 tip 即该已合 PR），且**无**同分支 **`OPEN`** PR → 可拆目录
-     4. **仍保留**：`OPEN` PR 对应树；**未提交的真实源码**（非仅 `node_modules` / 仅 `.staging/` 的脏）；锁 `active` 且未陈旧且你仍要占用的会话；固定 QA 树；主仓
-     5. 拆除：`git worktree remove --force <path>`（脏树）→ 主仓 `git worktree prune`
-     6. **不** `git push --delete` 远端分支（除非另开删分支口令）
-   - **脚本盲区（扩大清点的原因）**：
-     - **主仓判定**：`isLikelyMainCheckout` 以路径 basename **是否含字面 `-wt-`** 区分「主仓并列目录」与 feature 树；basename **不含** `-wt-` 的并列目录（如 `Zen-tiger-art-checkout-brief`）以及主仓内的 **`.wt-*`** 附属目录会标 **`primary`**，**不会**进入 `propose_remove`（与上节第 3 款「不要塞进主仓内部」的现行实践并存时，须靠扩大清点）。
-     - **Squash 假阳性**：PR 已 **squash 合入** `develop` 后，工作树 tip 相对 `develop` 仍可能 **`git cherry` 有 `+`**（独有补丁）；此时不能单靠 cherry，须用 **GitHub `MERGED` PR + headRefOid** 判定「内容已落地」再拆。
+     2. 以 `git worktree list --porcelain` 为全集（**禁止**只用 Downloads / Finder 文件夹列表）
+     3. 对每棵树（**跳过**主仓 checkout、**跳过** `…-wt-develop-qa`、**跳过** detached 且无合入证明的分支）在**该 worktree 目录**内取 `HEAD` 与 `git status --porcelain`，并查 `gh pr list --head <branch> --state open` 与 `--state merged`
+     4. **可拆目录（Agent 可自行确认 · 须逐棵举证）** — 以下**全部**满足才可 `git worktree remove --force`：
+        - **合入证明**（满足其一即可）：① 工作树 `HEAD` 已是 `origin/develop` 祖先；或 ② 存在 **`MERGED`** PR 且 `headRefOid` **等于**该工作树 `HEAD`（squash 合入后 **`git cherry` 仍可有 `+`** — **不**再单独挡拆）
+        - **无**同分支 **`OPEN`** PR
+        - **无「要留的真实源码」脏改**：`git status --porcelain` 在排除 `node_modules/`、`.staging/`、`dist/`、`.vite/`、`test-results/`、`.playwright-*` 后**为空**；**未跟踪**的整棵 `focus-tiger/node_modules`（或 `node_modules`）**不算**要留的源码
+        - **锁**：无 `.ft-session-lock.json`，或锁为 `releasable` / 已陈旧（细则同 `check-worktree-hygiene.js`）；**禁止**拆锁 `active` 且未陈旧的树
+     5. **必须保留（即使 `report_only` 写着 cherry-has-unique-patches）** — 任一满足即**不拆**：
+        - **无合入证明**（无 MERGED PR + `headRefOid` 对齐，且 tip 非 `develop` 祖先）
+        - **有 OPEN PR**
+        - **有意义脏改**（上条排除后仍有已跟踪文件的 `M`/`A`/`D` 等，或你要留的未跟踪文档/源码）
+        - **固定 QA 树**、**主仓**、**当前会话正在写的 cwd**
+     6. 拆除：主仓执行 `git worktree remove --force <path>` → `git worktree prune`；**不** `git push --delete` 远端分支（除非另开口令）
+     7. **汇报**：列出已拆 path、对应分支、MERGED PR 号；列出保留树及**一条**保留原因（例：`meaningful-dirty` / `no-merge-proof` / `open-pr`）
+   - **脚本盲区（方案 B 存在的原因）**：
+     - **主仓判定**：`isLikelyMainCheckout` 以路径 basename **是否含字面 `-wt-`** 区分「主仓并列目录」与 feature 树；basename **不含** `-wt-` 的并列目录（如 `Zen-tiger-art-checkout-brief`）以及主仓内的 **`.wt-*`** 附属目录会标 **`primary`**，**不会**进入方案 A 的 `propose_remove`（与上节第 3 款「不要塞进主仓内部」的现行实践并存时，须靠方案 B）。
+     - **Squash 假阳性**：PR 已 **squash 合入** `develop` 后，工作树 tip 相对 `develop` 仍可能 **`git cherry` 有 `+`**；方案 A 会留在 `report_only`。方案 B 用 **`MERGED` + `headRefOid`** 覆盖「cherry 仍有独有补丁」这一档——**前提**是无 meaningful 脏改且无 OPEN PR。
    - **固定 QA 树拆除豁免**见下文 `qa-develop-worktree`（`…-wt-develop-qa` **不得** `propose_remove`）。  
    - 政策索引：`focus-tiger/docs/RULES_INDEX.md` → `git-worktree-hygiene`。与锁心跳/陈旧（下节 Prompt 3）**同原则、不同风险等级**：客观依据（脚本输出 / `last_heartbeat`）供判断；**不可逆拆盘必须人工确认**；可逆的锁接管见下节。  
 7. **能耗 ≠ 正确性**：worktree **隔离写盘**；同时开多个 worktree **窗口** + 多个**本地** Agent 仍会叠加本机 CPU/GPU（见 Process Explorer 的 Shared / extension-host）。并行任务优先：本地 ≤1–2 写会话，其余用 Cloud Agent；不用的窗口关掉。操作细则见 `focus-tiger/docs/PROCESS.md`「本地 Cursor 能耗」。  
