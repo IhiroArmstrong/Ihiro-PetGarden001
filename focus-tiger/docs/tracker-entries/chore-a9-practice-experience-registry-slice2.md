@@ -1,0 +1,1 @@
+| A9 练习登记表 slice 2 | 纯后端 | 仅单元测试覆盖 | 无用户可见变化。`practiceExperienceRegistry.js` 穷举练习结束语音 + 存图命名；平行名单契约读登记表。测：`npm run test:smoke` 绿。 | — | — | — | `practiceExperienceRegistry.js` · `root-cause-audit-2026-10-12.md` A9 | 2026-10-16 |
