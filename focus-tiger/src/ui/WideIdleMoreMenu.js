@@ -25,6 +25,7 @@ import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v7';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
@@ -969,7 +970,7 @@ export class WideIdleMoreMenu {
       .ft-wide-more__backdrop {
         position: fixed;
         inset: 0;
-        z-index: 25;
+        z-index: ${Z.SUPPORT_DIM};
         margin: 0;
         padding: 0;
         border: 0;
@@ -998,7 +999,7 @@ export class WideIdleMoreMenu {
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
-        z-index: 26;
+        z-index: ${Z.SUPPORT_MODAL};
         overflow: hidden;
       }
       .ft-wide-more__menu[hidden] {
@@ -1148,7 +1149,7 @@ export class WideIdleMoreMenu {
           padding: 0 !important;
           opacity: 0 !important;
           pointer-events: none !important;
-          z-index: -1 !important;
+          z-index: ${Z.PARK} !important;
         }
       }
 
@@ -1166,7 +1167,7 @@ export class WideIdleMoreMenu {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
-          z-index: 32 !important;
+          z-index: ${Z.NARROW_STAGE} !important;
           align-items: stretch !important;
         }
         body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__panel {
@@ -1190,7 +1191,7 @@ export class WideIdleMoreMenu {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
-          z-index: 35 !important;
+          z-index: ${Z.REMINDER_PANEL} !important;
         }
       }
     `;

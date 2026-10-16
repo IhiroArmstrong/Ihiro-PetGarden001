@@ -6,6 +6,7 @@
 /**
  * Actionable undo bar after a voice-started focus session (Brief B · Slice 1).
  */
+import { Z } from './zIndexLayers.js';
 
 const DEFAULT_VISIBLE_MS = 5_000;
 
@@ -29,7 +30,7 @@ const BASE_CSS = [
   'position:absolute',
   'left:50%',
   'bottom:108px',
-  'z-index:42',
+  `z-index:${Z.VOICE_UNDO}`,
   'align-items:center',
   'gap:12px',
   'max-width:min(520px,calc(100vw - 40px))',

@@ -24,6 +24,7 @@ import {
 } from './overlayBackdrop.js';
 import { RESET_ROUTES } from './resetPracticeRoutes.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
+import { Z } from './zIndexLayers.js';
 
 /** @typedef {import('./resetPracticeRoutes.js').ResetRoute} ResetRoute */
 
@@ -53,7 +54,7 @@ export class GroundExerciseChoiceUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'ground-exercise-choice-backdrop',
       testId: 'ground-exercise-choice-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -174,7 +175,7 @@ export class GroundExerciseChoiceUI {
         bottom: calc(env(safe-area-inset-bottom, 0px) + 18vh);
         transform: translateX(-50%) translateY(12px);
         width: min(92vw, 360px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         opacity: 0;
         pointer-events: none;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;

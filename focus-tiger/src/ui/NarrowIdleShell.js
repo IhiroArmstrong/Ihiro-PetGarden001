@@ -26,6 +26,7 @@ import {
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
 const NARROW_MQ = '(max-width: 479px)';
@@ -1011,7 +1012,7 @@ export class NarrowIdleShell {
         position: fixed;
         inset: 0;
         /* Above ambient (z22) so ActionBar ♪ / ? are clickable */
-        z-index: 30;
+        z-index: ${Z.NARROW_SHELL};
         pointer-events: none;
       }
       .ft-narrow-idle-shell > * {
@@ -1043,7 +1044,7 @@ export class NarrowIdleShell {
         left: 12px;
         right: 12px;
         height: 48px;
-        z-index: 5; /* above sheet (z2) + backdrop (z1) — ♪ / ? hoverable & clickable while drawer open */
+        z-index: ${Z.DRAWER_ABOVE_SHEET}; /* above sheet (z2) + backdrop (z1) — ♪ / ? hoverable & clickable while drawer open */
         display: flex;
         align-items: center;
         gap: 10px;
@@ -1269,7 +1270,7 @@ export class NarrowIdleShell {
       .ft-narrow-sheet-backdrop {
         position: absolute;
         inset: 0;
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         background: rgba(44, 31, 20, 0.28);
       }
       .ft-narrow-sheet {
@@ -1277,7 +1278,7 @@ export class NarrowIdleShell {
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 2;
+        z-index: ${Z.SCENE};
         max-height: min(82vh, 580px);
         padding: 8px 14px calc(12px + env(safe-area-inset-bottom, 0px));
         border-radius: 22px 22px 0 0;
@@ -1521,7 +1522,7 @@ export class NarrowIdleShell {
           transform: translateX(-50%) !important;
           opacity: 1 !important;
           pointer-events: auto !important;
-          z-index: 32 !important;
+          z-index: ${Z.NARROW_STAGE} !important;
         }
         /* Home balls already cover Sit / Quick / Honesty — never re-surface dock pills */
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion #honesty-idle-entry,
@@ -1540,7 +1541,7 @@ export class NarrowIdleShell {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
-          z-index: 32 !important;
+          z-index: ${Z.NARROW_STAGE} !important;
           position: fixed !important;
         }
         /* Panel viewport-centered when staged — toggle sits off-center in cluster */
@@ -1552,7 +1553,7 @@ export class NarrowIdleShell {
           width: min(260px, calc(100vw - 32px)) !important;
           transform: translateX(-50%) !important;
           translate: none !important;
-          z-index: 35 !important;
+          z-index: ${Z.REMINDER_PANEL} !important;
         }
 
         /* Idle drawer Sound: Soundscape track panel only — never the red FAB */
@@ -1566,7 +1567,7 @@ export class NarrowIdleShell {
           visibility: visible !important;
           pointer-events: auto !important;
           position: fixed !important;
-          z-index: 32 !important;
+          z-index: ${Z.NARROW_STAGE} !important;
           align-items: stretch !important;
           width: min(280px, calc(100vw - 32px)) !important;
         }
@@ -1643,7 +1644,7 @@ export class NarrowIdleShell {
           opacity: 1 !important;
           visibility: visible !important;
           pointer-events: auto !important;
-          z-index: 32 !important;
+          z-index: ${Z.NARROW_STAGE} !important;
           align-items: stretch !important;
           position: fixed !important;
         }

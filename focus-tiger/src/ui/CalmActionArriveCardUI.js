@@ -9,6 +9,7 @@
  */
 
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'calm-action-arrive-card';
 const STYLE_ID = 'calm-action-arrive-card-styles-v1';
@@ -143,7 +144,7 @@ export class CalmActionArriveCardUI {
         left: 50%;
         bottom: max(220px, calc(env(safe-area-inset-bottom, 0px) + 204px));
         top: auto;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         max-width: min(340px, calc(100vw - 40px));
         margin: 0;
         padding: 12px 18px;

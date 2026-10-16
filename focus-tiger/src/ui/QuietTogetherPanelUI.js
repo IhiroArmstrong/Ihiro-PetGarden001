@@ -23,6 +23,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'quiet-together-panel-ui-v1';
 const FADE_MS = 220;
@@ -150,7 +151,7 @@ export class QuietTogetherPanelUI {
         position: fixed;
         left: 50%;
         bottom: 18%;
-        z-index: 16;
+        z-index: ${Z.DOCK};
         width: min(480px, calc(100vw - 32px));
         padding: 16px 18px;
         ${GLASS_BORDER};

@@ -31,6 +31,7 @@ import { runKbLiveGapAudit } from './audit-kb-live-gap.js';
 import { runMutationM01Check } from './mutation-m01-check.js';
 import { runZIndexRegistryCheck } from './z-index-registry-check.js';
 import { runProtectedPathLayerCheck } from './protected-path-layer-check.js';
+import { runZIndexLiteralCheck } from './z-index-literal-check.js';
 import { runGlassCardRootCheck } from './check-glass-card-roots.js';
 import { runConfideAcceptanceDevsetLeakAudit } from './audit-confide-acceptance-devset-leak.js';
 
@@ -50,6 +51,7 @@ function main() {
   if (!runOverlayContractUiCheck()) ok = false;
   if (!runZIndexRegistryCheck()) ok = false;
   if (!runProtectedPathLayerCheck()) ok = false;
+  if (!runZIndexLiteralCheck()) ok = false;
   if (!runGlassCardRootCheck()) ok = false;
   if (!runPracticeAggregateCoverageAudit()) ok = false;
   if (!runGrowthMetricsAudit()) ok = false;

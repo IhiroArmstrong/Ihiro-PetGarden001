@@ -18,6 +18,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 /**
  * 轻量半透明气泡（对齐 Arrival Notice）：角色动画须透出可见。
@@ -39,7 +40,7 @@ const PANEL_CSS = [
   'opacity:0',
   'pointer-events:auto',
   /* 须高于 session-start-dock(z16)，否则 Honesty / 微仪式入口会盖住 Yes/No */
-  'z-index:18'
+  `z-index:${Z.GLASS_CARD}`
 ].join(';');
 
 /** Reflection 同级按钮权重（不做主次强调）；略实一点以保持可点可读。 */

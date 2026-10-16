@@ -25,6 +25,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'practice-imprint-card-styles-v1';
 const FADE_MS = 220;
@@ -207,7 +208,7 @@ export class PracticeImprintCardUI {
       .practice-imprint-card__backdrop {
         position: fixed;
         inset: 0;
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         background: rgba(8, 12, 10, 0.42);
         opacity: 0;
         transition: opacity ${FADE_MS}ms ease;
@@ -223,7 +224,7 @@ export class PracticeImprintCardUI {
         bottom: max(24px, env(safe-area-inset-bottom));
         transform: translateX(-50%) translateY(12px);
         width: min(420px, calc(100vw - 32px));
-        z-index: 19;
+        z-index: ${Z.GLASS_CARD_FRONT};
         padding: 20px 18px 16px;
         border-radius: ${GLASS_RADIUS};
         border: ${GLASS_BORDER};

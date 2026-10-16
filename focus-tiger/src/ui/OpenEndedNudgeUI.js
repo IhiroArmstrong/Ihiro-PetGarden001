@@ -9,6 +9,7 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { OPEN_ENDED_NUDGE_AT_MS } from '../core/openEndedFocus.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'open-ended-nudge';
 const STYLE_ID = 'open-ended-nudge-styles-v1';
@@ -147,7 +148,7 @@ export class OpenEndedNudgeUI {
         position: absolute;
         top: 108px;
         left: 18px;
-        z-index: 14;
+        z-index: ${Z.WITNESS};
         width: min(280px, calc(100vw - 36px));
         margin: 0;
         padding: 12px 14px;

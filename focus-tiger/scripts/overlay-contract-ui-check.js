@@ -24,6 +24,7 @@ import {
   OVERLAY_UI_SUCCESS_TOKENS_FORBIDDEN_IN_FAIL,
   OVERLAY_UI_SURFACE
 } from '../src/core/overlayUiSurfaceContract.js';
+import { maxDeclaredZIndex } from './z-index-literal-check.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, '..');
@@ -31,8 +32,6 @@ const UI_DIR = join(PKG_ROOT, 'src/ui');
 
 const STATUS_FN = /(?:isOpen|isVisible|isPrivacySheetOpen|isPurposeCardOpen|isWellnessFirstCardOpen)\s*\(\s*\)\s*\{|phase\s*!==\s*'hidden'/;
 const POINTER_HIT_TEST = /pointer-events\s*:\s*auto/;
-const Z_INDEX = /z-index\s*:\s*(\d+)/gi;
-
 /** Chrome / hits / nested controls — not independent occupancy overlays. */
 const WHITELIST_FILES = new Set([
   'ActiveRecoverAnchorUI.js',
@@ -85,14 +84,6 @@ const WHITELIST_FILES = new Set([
  * @param {string} src
  * @returns {number}
  */
-function maxDeclaredZIndex(src) {
-  let max = 0;
-  for (const match of src.matchAll(Z_INDEX)) {
-    max = Math.max(max, Number(match[1]));
-  }
-  return max;
-}
-
 /**
  * @param {object} claim
  * @param {string} label

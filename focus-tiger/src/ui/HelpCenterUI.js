@@ -29,6 +29,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'help-center-ui-styles-v1';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -49,7 +50,7 @@ export class HelpCenterUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'help-center-backdrop',
       testId: 'help-center-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -239,7 +240,7 @@ export class HelpCenterUI {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         pointer-events: auto;
         width: min(420px, calc(100vw - 32px));
         max-height: min(78vh, 640px);

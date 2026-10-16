@@ -43,6 +43,7 @@ import {
   releaseYinCoinWaveFocus,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-coin-panel-styles-v7';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -99,7 +100,7 @@ export class FocusCoinsPanelUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'yin-coin-panel-backdrop',
       testId: 'yin-coin-panel-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -1121,7 +1122,7 @@ export class FocusCoinsPanelUI {
         position: fixed;
         left: 50%;
         bottom: max(72px, env(safe-area-inset-bottom, 0px) + 56px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(400px, calc(100vw - 32px));
         max-height: min(72vh, 640px);
         overflow: auto;
@@ -1163,7 +1164,7 @@ export class FocusCoinsPanelUI {
       .yin-coin-panel__detail {
         position: absolute;
         inset: 0;
-        z-index: 4;
+        z-index: ${Z.FX};
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -1208,7 +1209,7 @@ export class FocusCoinsPanelUI {
       .yin-coin-panel__heading {
         position: sticky;
         top: 0;
-        z-index: 4;
+        z-index: ${Z.FX};
         display: flex;
         align-items: flex-start;
         gap: 10px;
@@ -1250,7 +1251,7 @@ export class FocusCoinsPanelUI {
       .yin-coin-panel__art-bridge {
         position: sticky;
         top: 0;
-        z-index: 3;
+        z-index: ${Z.SPRITE};
         margin: 0 0 10px;
         padding: 10px 12px;
         background: rgba(255, 249, 240, 0.98);

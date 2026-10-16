@@ -14,7 +14,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 describe('ReminderPreferenceUI layering + confirm affordance', () => {
   it('panel sits above onboarding hint bubbles (z35 > z34)', () => {
     const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
-    assert.match(src, /\.reminder-pref__panel[\s\S]*z-index: 35/);
+    assert.match(src, /\.reminder-pref__panel[\s\S]*z-index: \$\{Z\.REMINDER_PANEL\}/);
   });
 
   it('confirm button has visible press feedback', () => {

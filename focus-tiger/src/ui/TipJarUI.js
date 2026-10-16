@@ -46,6 +46,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-tip-jar-card-styles-v2';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -76,7 +77,7 @@ export class TipJarUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'yin-tip-jar-backdrop',
       testId: 'yin-tip-jar-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
     });
 
@@ -579,7 +580,7 @@ export class TipJarUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(380px, calc(100vw - 40px));
         max-height: min(78vh, 640px);
         overflow: auto;

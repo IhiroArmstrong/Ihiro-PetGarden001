@@ -27,12 +27,13 @@ import {
   readFocusCoinsHintSearch
 } from './focusCoinsDurationHint.js';
 import { VoiceCommandChrome } from './VoiceCommandChrome.js';
+import { Z } from './zIndexLayers.js';
 
 const PANEL_CSS = [
   'position:absolute',
   'left:50%',
   'bottom:96px',
-  'z-index:15',
+  `z-index:${Z.PANEL}`,
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'opacity:0',

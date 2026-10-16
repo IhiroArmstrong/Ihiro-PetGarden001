@@ -31,6 +31,7 @@ import {
 } from '../core/focusCirclePresence.js';
 import { isFocusCircleWasHereClientEnabled } from '../core/focusCircleWasHere.js';
 import { createPresenceLanternShell } from './presenceLanternIcons.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'focus-circle-presence-chrome-v1';
 const MAX_DOTS = 7;
@@ -241,7 +242,7 @@ export class FocusCirclePresenceChrome {
         position: fixed;
         left: 18px;
         bottom: calc(${IDLE_LANTERN_BOTTOM_WIDE_CSS} + ${PRESENCE_ABOVE_LANTERNS_CSS});
-        z-index: 13;
+        z-index: ${Z.CIRCLE};
         pointer-events: none;
         display: flex;
         flex-direction: column;

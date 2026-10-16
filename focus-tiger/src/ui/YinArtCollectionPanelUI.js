@@ -40,6 +40,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-art-panel-styles-v1';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -64,7 +65,7 @@ export class YinArtCollectionPanelUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'yin-art-panel-backdrop',
       testId: 'yin-art-panel-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -380,7 +381,7 @@ export class YinArtCollectionPanelUI {
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = [
-      '.yin-art-panel{position:fixed;z-index:18;left:50%;bottom:max(96px,env(safe-area-inset-bottom,0px) + 72px);width:min(360px,calc(100vw - 40px));max-height:min(70vh,560px);overflow:auto;transform:translate(-50%,10px);padding:16px;box-sizing:border-box;color:#2c1f14;background:',
+      `.yin-art-panel{position:fixed;z-index: ${Z.GLASS_CARD};left:50%;bottom:max(96px,env(safe-area-inset-bottom,0px) + 72px);width:min(360px,calc(100vw - 40px));max-height:min(70vh,560px);overflow:auto;transform:translate(-50%,10px);padding:16px;box-sizing:border-box;color:#2c1f14;background:`,
       GLASS_FILL,
       ';',
       GLASS_BLUR_CSS,

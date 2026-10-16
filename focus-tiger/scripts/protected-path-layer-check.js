@@ -14,6 +14,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Z } from '../src/ui/zIndexLayers.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, '..');
@@ -35,29 +36,16 @@ export function runProtectedPathLayerCheck() {
   const deck = readSrc('src/ui/glassCardDeck.js');
   const sanctuary = readSrc('src/ui/SanctuaryUnlockUI.js');
 
-  const backdropZ = support.match(
-    /\.yin-support-backdrop\s*\{[\s\S]*?z-index:\s*(\d+)/
-  );
-  const modalZ = support.match(
-    /\.yin-support-modal\s*\{[\s\S]*?z-index:\s*(\d+)/
-  );
-  const sanctuaryZ = sanctuary.match(
-    /#yin-sanctuary-card[\s\S]*?z-index:\s*(\d+)/
-  ) || sanctuary.match(/z-index:\s*(27)/);
+  if (Z.SUPPORT_DIM !== 25) errors.push(`Z.SUPPORT_DIM must stay 25; found ${Z.SUPPORT_DIM}`);
+  if (Z.SUPPORT_MODAL !== 26) errors.push(`Z.SUPPORT_MODAL must stay 26; found ${Z.SUPPORT_MODAL}`);
+  if (Z.SANCTUARY_CARD !== 27) errors.push(`Z.SANCTUARY_CARD must stay 27; found ${Z.SANCTUARY_CARD}`);
+  if (!(Z.GLASS_CARD_FRONT < Z.SUPPORT_DIM && Z.SUPPORT_DIM < Z.SUPPORT_MODAL && Z.SUPPORT_MODAL < Z.SANCTUARY_CARD)) {
+    errors.push('protected stack order broken in Z');
+  }
 
-  if (!backdropZ) errors.push('Support backdrop z-index not found');
-  if (!modalZ) errors.push('Support modal z-index not found');
-  const dim = backdropZ ? Number(backdropZ[1]) : NaN;
-  const card = modalZ ? Number(modalZ[1]) : NaN;
-  if (Number.isFinite(dim) && Number.isFinite(card) && !(card > dim)) {
-    errors.push(`Support modal z ${card} must be above dim ${dim}`);
-  }
-  if (Number.isFinite(card) && card !== 26) {
-    errors.push(`Support modal z must stay 26 (Z_INDEX.md); found ${card}`);
-  }
-  if (Number.isFinite(dim) && dim !== 25) {
-    errors.push(`Support dim z must stay 25 (Z_INDEX.md); found ${dim}`);
-  }
+  if (!support.includes('Z.SUPPORT_DIM')) errors.push('Support backdrop must use Z.SUPPORT_DIM');
+  if (!support.includes('Z.SUPPORT_MODAL')) errors.push('Support modal must use Z.SUPPORT_MODAL');
+  if (!sanctuary.includes('Z.SANCTUARY_CARD')) errors.push('Sanctuary card must use Z.SANCTUARY_CARD');
 
   if (!/GLASS_CARD_KEEP_STYLESHEET_Z[\s\S]*yin-support-modal/.test(deck)) {
     errors.push('glassCardDeck must keep stylesheet z for yin-support-modal');
@@ -67,13 +55,6 @@ export function runProtectedPathLayerCheck() {
   }
   if (!/GLASS_CARD_KEEP_STYLESHEET_Z\.has\(card\.id\)\) return/.test(deck)) {
     errors.push('Support modal must not enter glass-card drag');
-  }
-
-  if (sanctuaryZ) {
-    const sz = Number(sanctuaryZ[1]);
-    if (Number.isFinite(card) && Number.isFinite(sz) && !(sz > card)) {
-      errors.push(`Sanctuary card z ${sz} must be above Support modal ${card}`);
-    }
   }
 
   if (errors.length) {

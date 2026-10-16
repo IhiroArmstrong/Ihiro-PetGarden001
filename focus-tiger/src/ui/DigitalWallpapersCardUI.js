@@ -29,6 +29,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'digital-wallpapers-card-styles-v1';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -52,7 +53,7 @@ export class DigitalWallpapersCardUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'digital-wallpapers-backdrop',
       testId: 'digital-wallpapers-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -246,7 +247,7 @@ export class DigitalWallpapersCardUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(400px, calc(100vw - 40px));
         transform: translate(-50%, 10px);
         padding: 16px 16px 14px;

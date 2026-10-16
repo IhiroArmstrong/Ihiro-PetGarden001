@@ -15,6 +15,7 @@ import {
   shouldOfferContextualTeaTip
 } from '../core/contextualTeaTipGate.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'contextual-tea-tip-bubble';
 const STYLE_ID = 'contextual-tea-tip-bubble-styles-v1';
@@ -223,7 +224,7 @@ export class ContextualTeaTipBubbleUI {
         left: 50%;
         bottom: ${homeClearanceBottomCss()};
         transform: translate(-50%, 8px);
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         max-width: min(320px, calc(100vw - 40px));
         width: max-content;
         padding: 14px 16px 12px;

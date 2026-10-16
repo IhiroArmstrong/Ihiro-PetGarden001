@@ -29,7 +29,7 @@ test('witness leave UI uses glass panel tokens and body-level z-index above narr
   assert.match(src, /glassPanelStyles\.js/);
   assert.match(src, /GLASS_FILL/);
   assert.match(src, /pointer-events: auto/);
-  assert.match(src, /z-index: 35/);
+  assert.match(src, /z-index: \$\{Z\.REMINDER_PANEL\}/);
   assert.match(mainSrc, /new FocusCircleWitnessLeaveUI\(\s*document\.body/);
 });
 

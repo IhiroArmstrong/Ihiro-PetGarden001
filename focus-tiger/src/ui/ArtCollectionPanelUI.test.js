@@ -18,7 +18,7 @@ const ja = readFileSync(join(here, '../locales/ja.json'), 'utf8');
 test('art collection panel is its own glass card', () => {
   assert.match(src, /id: 'art-collection-backdrop'/);
   assert.match(src, /id = 'art-collection-panel'/);
-  assert.match(src, /z-index: 18/);
+  assert.match(src, /z-index: \$\{Z\.GLASS_CARD\}/);
   assert.match(src, /\.art-collection-panel__btn:active:not\(:disabled\)/);
   assert.match(src, /requestArtPurchase/);
   assert.match(src, /create-art-collection-checkout-session/);

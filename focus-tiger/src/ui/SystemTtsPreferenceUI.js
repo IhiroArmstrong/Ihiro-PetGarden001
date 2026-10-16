@@ -22,6 +22,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'system-tts-preference-styles-v1';
 
@@ -169,7 +170,7 @@ export class SystemTtsPreferenceUI {
         position: fixed;
         right: max(16px, env(safe-area-inset-right));
         bottom: max(16px, env(safe-area-inset-bottom));
-        z-index: 12050;
+        z-index: ${Z.TTS_OUTLIER};
         width: min(320px, calc(100vw - 32px));
         padding: 16px 16px 12px;
         border-radius: ${GLASS_RADIUS};

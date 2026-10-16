@@ -23,6 +23,7 @@ import {
 } from '../core/sanctuaryBadges.js';
 import { GLASS_BLUR_CSS, GLASS_FILL, GLASS_RADIUS } from './glassPanelStyles.js';
 import { pickNewestAwardedId } from '../core/badgeAwardMoment.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-tip-kindness-badges-chrome-v6';
 
@@ -234,7 +235,7 @@ export class TipKindnessBadgesChrome {
       .yin-tip-kindness-badges {
         position: fixed;
         /* Beside Yin (mid-right), clear of top-right Support / mute */
-        z-index: 11;
+        z-index: ${Z.KINDNESS};
         right: max(12px, env(safe-area-inset-right, 0px));
         left: auto;
         top: max(120px, 28vh);

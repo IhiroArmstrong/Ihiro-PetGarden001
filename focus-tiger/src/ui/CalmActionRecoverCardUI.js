@@ -11,6 +11,7 @@
 import { getLocale, onLocaleChange } from '../locales/i18n.js';
 import { ACTIVE_RECOVER_TOAST_MS } from '../core/MindfulReminderController.js';
 import { homeClearanceBottomCss } from './homeChromeClearance.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'calm-action-recover-card';
 const STYLE_ID = 'calm-action-recover-card-styles-v1';
@@ -147,7 +148,7 @@ export class CalmActionRecoverCardUI {
         left: 50%;
         bottom: 96px;
         top: auto;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         max-width: min(340px, calc(100vw - 40px));
         margin: 0;
         padding: 12px 18px;

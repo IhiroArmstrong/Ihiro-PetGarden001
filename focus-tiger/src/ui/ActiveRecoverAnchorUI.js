@@ -9,6 +9,7 @@
  */
 
 import { onLocaleChange, t } from '../locales/i18n.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'active-recover-anchor-styles-v4';
 const ROOT_ID = 'active-recover-anchor';
@@ -144,7 +145,7 @@ export class ActiveRecoverAnchorUI {
       .active-recover-anchor {
         position: absolute;
         inset: 0;
-        z-index: 12;
+        z-index: ${Z.CLUSTER};
         pointer-events: none;
       }
       .active-recover-anchor__glow {

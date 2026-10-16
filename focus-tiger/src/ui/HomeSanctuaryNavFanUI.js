@@ -13,6 +13,7 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import { markHomeSanctuaryNavSeen } from '../core/homeSanctuaryNavGate.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'home-sanctuary-nav-fan-styles-v2';
 const COMPASS_FAB_PX = Math.round(44 * 1.5);
@@ -304,7 +305,7 @@ export class HomeSanctuaryNavFanUI {
       .home-sanctuary-nav-fan__backdrop {
         position: fixed;
         inset: 0;
-        z-index: 35;
+        z-index: ${Z.REMINDER_PANEL};
         margin: 0;
         padding: 0;
         border: 0;
@@ -323,7 +324,7 @@ export class HomeSanctuaryNavFanUI {
         position: fixed;
         left: var(--fan-anchor-x, 50%);
         top: var(--fan-anchor-y, 78%);
-        z-index: 36;
+        z-index: ${Z.NAV_FAN};
         width: 0;
         height: 0;
         pointer-events: none;
@@ -428,7 +429,7 @@ export class HomeSanctuaryNavFanUI {
           ${CLUSTER_BOTTOM_EXPR} + ${CLUSTER_PAD_BOTTOM_PX}px +
             (${HELP_IN_CLUSTER_PX}px - ${COMPASS_FAB_PX}px) / 2
         );
-        z-index: 16;
+        z-index: ${Z.DOCK};
         width: ${COMPASS_FAB_PX}px;
         height: ${COMPASS_FAB_PX}px;
         padding: 0;

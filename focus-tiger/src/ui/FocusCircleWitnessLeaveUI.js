@@ -28,6 +28,7 @@ import {
   GLASS_RADIUS,
   GLASS_SHADOW
 } from './glassPanelStyles.js';
+import { Z } from './zIndexLayers.js';
 
 const LEAVE_ROOT_ID = 'focus-circle-witness-leave';
 const PICKER_ROOT_ID = 'focus-circle-witness-picker';
@@ -532,7 +533,7 @@ export class FocusCircleWitnessLeaveUI {
         left: 50%;
         bottom: calc(${homeClearanceBottomCss()} + 12px);
         transform: translateX(-50%) translateY(8px);
-        z-index: 34;
+        z-index: ${Z.HINT_BUBBLE};
         pointer-events: auto;
         width: min(92vw, 420px);
         padding: 12px 16px;
@@ -607,7 +608,7 @@ export class FocusCircleWitnessLeaveUI {
         left: 50%;
         bottom: calc(${homeClearanceBottomCss()} + 12px);
         transform: translateX(-50%) translateY(8px);
-        z-index: 35;
+        z-index: ${Z.REMINDER_PANEL};
         pointer-events: auto;
         width: min(92vw, 420px);
         max-height: min(70vh, 520px);

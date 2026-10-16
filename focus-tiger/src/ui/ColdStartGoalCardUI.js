@@ -28,6 +28,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'cold-start-goal-card-styles-v1';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -64,7 +65,7 @@ export class ColdStartGoalCardUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'cold-start-goal-backdrop',
       testId: 'cold-start-goal-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this._dismissWithChoice('browse')
     });
@@ -209,7 +210,7 @@ export class ColdStartGoalCardUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(400px, calc(100vw - 32px));
         max-height: min(70vh, 520px);
         overflow: auto;

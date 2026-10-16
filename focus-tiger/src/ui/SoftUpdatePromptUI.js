@@ -14,6 +14,7 @@ import {
   DESKTOP_UPDATE_PHASES,
   desktopUpdateFailedActionsVisible
 } from '../core/desktopUpdaterState.js';
+import { Z } from './zIndexLayers.js';
 
 export class SoftUpdatePromptUI {
   /**
@@ -220,7 +221,7 @@ export class SoftUpdatePromptUI {
         position: fixed;
         left: max(16px, env(safe-area-inset-left, 0px));
         bottom: calc(28px + 44px + 10px);
-        z-index: 22;
+        z-index: ${Z.AMBIENT};
         pointer-events: auto;
         display: flex;
         flex-direction: column;

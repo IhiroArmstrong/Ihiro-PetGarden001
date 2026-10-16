@@ -6,6 +6,7 @@
 /** Fast hover label for Idle home balls — avoids native `title` ~1s delay. */
 export const IDLE_HOME_CTA_TIP_STYLE_ID = 'idle-home-cta-tip-styles-v1';
 
+import { Z } from './zIndexLayers.js';
 /**
  * @param {HTMLElement | null | undefined} btn
  * @param {string} label
@@ -44,7 +45,7 @@ export function injectIdleHomeCtaTipStyles() {
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      z-index: 40;
+      z-index: ${Z.TOAST};
       transition: opacity 120ms ease, transform 120ms ease;
     }
     [data-ft-tip]:hover::after,

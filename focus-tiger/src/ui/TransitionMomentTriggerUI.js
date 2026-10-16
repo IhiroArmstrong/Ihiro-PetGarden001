@@ -8,6 +8,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'transition-moment-trigger-styles-v1';
 const ROOT_ID = 'transition-moment-trigger';
@@ -85,7 +86,7 @@ export class TransitionMomentTriggerUI {
         position: absolute;
         left: calc(16px + 168px);
         bottom: calc(36px + 88px + 28px);
-        z-index: 12;
+        z-index: ${Z.CLUSTER};
         width: 36px;
         height: 36px;
         margin: 0;

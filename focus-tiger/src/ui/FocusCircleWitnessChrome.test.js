@@ -24,7 +24,7 @@ test('idle witness chrome keeps pointer-events contract', () => {
   assert.match(src, /\.focus-circle-witness \{[\s\S]*pointer-events: none/);
   assert.match(src, /\.focus-circle-witness__respond \{[\s\S]*pointer-events: auto/);
   assert.match(src, /\.focus-circle-witness__hide \{[\s\S]*pointer-events: auto/);
-  assert.match(src, /z-index:\s*14/);
+  assert.match(src, /z-index:\s*\$\{Z\.WITNESS\}/);
 });
 
 test('idle witness respond button matches leave-strip gold CTA', () => {

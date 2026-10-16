@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { COLORS } from '../utils/Constants.js';
 import { easeInOutQuad, easeOutQuad } from '../utils/Easing.js';
 import { loadTexture } from '../utils/Loaders.js';
+import { Z } from '../ui/zIndexLayers.js';
 
 const LOTUS_TEXTURE_PATH = '/textures/lotus.png';
 
@@ -394,7 +395,7 @@ export class IncenseGreeting {
     const root = document.createElement('div');
     root.id = 'incense-fx-overlay';
     root.style.cssText =
-      'position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;';
+      `position:fixed;inset:0;z-index: ${Z.FX};pointer-events:none;overflow:hidden;`;
     this._fxContainer.appendChild(root);
     this._fxRoot = root;
     return root;

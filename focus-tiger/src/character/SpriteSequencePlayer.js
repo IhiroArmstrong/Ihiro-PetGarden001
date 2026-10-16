@@ -28,6 +28,7 @@ import {
   spriteDisplayTransformCss
 } from './spriteDisplayFit.js';
 import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
+import { Z } from '../ui/zIndexLayers.js';
 
 /**
  * @typedef {object} PlayOptions
@@ -192,7 +193,7 @@ export class SpriteSequencePlayer {
     overlay.id = 'sprite-overlay';
     overlay.style.cssText =
       // fixed + 独立合成层，确保在 WebGL canvas 上方稳定显示（仍低于 UI z-index:10）
-      'position:fixed;inset:0;z-index:3;display:block;' +
+      `position:fixed;inset:0;z-index: ${Z.SPRITE};display:block;` +
       'pointer-events:none;opacity:0;' +
       'isolation:isolate;transform:translateZ(0);transition:opacity 200ms ease;';
 

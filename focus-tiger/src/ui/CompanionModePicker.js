@@ -29,6 +29,7 @@ import {
   resolveCompanionHintClick
 } from '../core/FocusSession.js';
 import { resolveCompanionModeSelectCommit } from '../core/SessionUiGate.js';
+import { Z } from './zIndexLayers.js';
 
 /**
  * @typedef {object} CompanionModePickerHandlers
@@ -494,7 +495,7 @@ export class CompanionModePicker {
         bottom: max(36px, calc(28px + env(safe-area-inset-bottom, 0px)));
         transform: translateX(-50%);
         /* 须高于 Honesty 面板(z15) / 再补登入口(z14)，否则点击 Sit 会被抢走打开 Mindful Check-in */
-        z-index: 16;
+        z-index: ${Z.DOCK};
         display: flex;
         flex-direction: column;
         align-items: center;

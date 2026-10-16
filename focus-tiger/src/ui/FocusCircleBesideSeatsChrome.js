@@ -20,6 +20,7 @@ import {
   readFocusCircleQueryFlag
 } from '../core/focusCircleMembership.js';
 import { isFocusCirclePresenceContributing } from '../core/focusCirclePresence.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'focus-circle-beside-seats-v1';
 const OUTLINE_SRC = '/ui/yin-sitting-outline.png';
@@ -137,7 +138,7 @@ export class FocusCircleBesideSeatsChrome {
         position: fixed;
         left: max(16px, env(safe-area-inset-left, 0px));
         top: 38%;
-        z-index: 13;
+        z-index: ${Z.CIRCLE};
         pointer-events: none;
         display: flex;
         flex-direction: row;

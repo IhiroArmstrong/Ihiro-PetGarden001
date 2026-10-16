@@ -10,6 +10,7 @@
 import { t } from '../locales/i18n.js';
 import { VoiceCommandChrome } from './VoiceCommandChrome.js';
 import { parseFocusSitAdjust } from '../core/focusSitAdjust.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'focus-sit-adjust-styles-v1';
 
@@ -121,7 +122,7 @@ export class FocusSitAdjustUI {
         position: absolute;
         top: 196px;
         left: 18px;
-        z-index: 11;
+        z-index: ${Z.KINDNESS};
         max-width: 280px;
         pointer-events: auto;
         font-family: var(--font-family, "Nunito", system-ui, sans-serif);

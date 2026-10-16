@@ -12,6 +12,7 @@ import { t, onLocaleChange } from '../locales/i18n.js';
 import { markMomentWhisperSeen } from '../core/momentWhispersGate.js';
 import { ypeMayShowMomentWhisper } from '../core/yinPersonalizationEngine.js';
 import { homeClearanceTopCss } from './homeChromeClearance.js';
+import { Z } from './zIndexLayers.js';
 
 const ROOT_ID = 'moment-whisper';
 const STYLE_ID = 'moment-whisper-styles-v1';
@@ -153,7 +154,7 @@ export class MomentWhisperUI {
         left: 50%;
         top: max(12px, env(safe-area-inset-top, 0px));
         bottom: auto;
-        z-index: 17;
+        z-index: ${Z.OVERLAY_DIM};
         max-width: min(280px, calc(100vw - 56px));
         margin: 0;
         padding: 8px 14px;

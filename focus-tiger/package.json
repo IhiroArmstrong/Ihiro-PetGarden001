@@ -22,6 +22,7 @@
     "audit:favorable-disagreement-mill": "npm --prefix desktop run companion:favorable-disagreement-mill",
     "docs:check": "node scripts/docs-check.js",
     "check:z-index": "node scripts/z-index-registry-check.js",
+    "check:z-index-literals": "node --test scripts/z-index-literal-check.test.js && node scripts/z-index-literal-check.js",
     "check:glass-card-roots": "node --test scripts/check-glass-card-roots.test.js && node scripts/check-glass-card-roots.js",
     "docs:sync": "node scripts/docs-sync.js",
     "copyright:header-check": "node scripts/copyright-header.js",

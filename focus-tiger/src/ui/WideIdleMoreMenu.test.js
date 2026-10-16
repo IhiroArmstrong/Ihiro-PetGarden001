@@ -78,7 +78,7 @@ describe('wide more menu click reception', () => {
     assert.match(src, /ft-wide-more__backdrop/);
     assert.match(src, /width: min\(360px, calc\(100vw - 48px\)\)/);
     assert.match(src, /max-width: 380px/);
-    assert.match(src, /z-index: 26/);
+    assert.match(src, /z-index: \$\{Z\.SUPPORT_MODAL\}/);
     assert.doesNotMatch(src, /bottom: calc\(100% \+ 10px\)/);
   });
 

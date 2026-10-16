@@ -29,6 +29,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'daily-zen-quote-card-styles-v2';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -56,7 +57,7 @@ export class DailyZenQuoteCardUI {
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'daily-zen-quote-backdrop',
       testId: 'daily-zen-quote-backdrop',
-      zIndex: 17,
+      zIndex: Z.OVERLAY_DIM,
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
       onDismiss: () => this.close()
     });
@@ -224,7 +225,7 @@ export class DailyZenQuoteCardUI {
         position: fixed;
         left: 50%;
         bottom: max(96px, env(safe-area-inset-bottom, 0px) + 72px);
-        z-index: 18;
+        z-index: ${Z.GLASS_CARD};
         width: min(360px, calc(100vw - 40px));
         transform: translate(-50%, 10px);
         padding: 16px 16px 14px;
@@ -248,13 +249,13 @@ export class DailyZenQuoteCardUI {
         object-fit: cover;
         object-position: center 28%;
         pointer-events: none;
-        z-index: 0;
+        z-index: ${Z.WASH};
       }
       .daily-zen-quote-card::before {
         content: '';
         position: absolute;
         inset: 0;
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         pointer-events: none;
         background: linear-gradient(
           180deg,
@@ -265,7 +266,7 @@ export class DailyZenQuoteCardUI {
       }
       .daily-zen-quote-card > *:not(.daily-zen-quote-card__bg) {
         position: relative;
-        z-index: 2;
+        z-index: ${Z.SCENE};
       }
       .daily-zen-quote-card.is-visible {
         opacity: 1;

@@ -47,6 +47,7 @@ import {
   MICRO_RITUAL_BREATH_PHASE_MS,
   isInhalePhase
 } from '../core/MicroRitual.js';
+import { Z } from './zIndexLayers.js';
 
 /**
  * @typedef {object} ArrivalReadyInfo
@@ -76,7 +77,7 @@ const ROOT_CSS = [
   'left:50%',
   // 须高于 dock（⚡ + How shall we sit?）；Sit 在 Arrival 中会隐藏，仍给足余量防重叠
   'bottom:max(148px, calc(env(safe-area-inset-bottom, 0px) + 132px))',
-  'z-index:15',
+  `z-index:${Z.PANEL}`,
   'width:min(420px,calc(100vw - 40px))',
   'transform:translate(-50%, 8px)',
   'padding:0',

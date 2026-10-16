@@ -3,6 +3,8 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+import { Z } from '../ui/zIndexLayers.js';
+
 /**
  * 光影物理渐进（2D DOM/CSS）—— Arrival 视差 Dolly + 呼吸光环 + 日常 DOM Rim + Recover。
  * 纯视觉层：不改跳过/存储/触发逻辑；不引入 GSAP / 3D 相机 / Shader。
@@ -308,7 +310,7 @@ export class LightProgression {
     el.style.cssText = [
       'position:absolute',
       'inset:0',
-      'z-index:0',
+      `z-index:${Z.WASH}`,
       'pointer-events:none',
       'opacity:0',
       'transform:scale(1)',
@@ -396,7 +398,7 @@ export class LightProgression {
       'bottom:10%',
       'width:min(70vw,460px)',
       'height:min(58vw,420px)',
-      'z-index:2',
+      `z-index:${Z.SCENE}`,
       'pointer-events:none',
       'opacity:0',
       'transform:translate(-50%,0) scale(1)',
@@ -418,7 +420,7 @@ export class LightProgression {
     root = document.createElement('div');
     root.id = 'light-progression-fx';
     root.style.cssText =
-      'position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden;';
+      `position:fixed;inset:0;z-index: ${Z.FX};pointer-events:none;overflow:hidden;`;
     document.body.appendChild(root);
     return root;
   }

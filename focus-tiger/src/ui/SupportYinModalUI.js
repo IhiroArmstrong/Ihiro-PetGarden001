@@ -47,6 +47,7 @@ import {
   supportModalSuggestedHost
 } from '../core/supportModalLead.js';
 import { supportPaidCardPresentation } from '../core/supportPaidCardPresentation.js';
+import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'yin-support-modal-styles-v7';
 const FADE_MS = 220;
@@ -841,7 +842,7 @@ export class SupportYinModalUI {
         top: 14px;
         /* Mute is 66px @ right:14 → leave ~12px gap */
         right: 92px;
-        z-index: 24;
+        z-index: ${Z.IDLE_FAB};
         display: inline-flex;
         align-items: center;
         gap: 10px;
@@ -893,7 +894,7 @@ export class SupportYinModalUI {
       .yin-support-backdrop {
         position: fixed;
         inset: 0;
-        z-index: 25;
+        z-index: ${Z.SUPPORT_DIM};
         background: rgba(48, 34, 22, 0.28);
         opacity: 0;
         transition: opacity ${FADE_MS}ms ease;
@@ -905,7 +906,7 @@ export class SupportYinModalUI {
       }
       .yin-support-modal {
         position: fixed;
-        z-index: 26;
+        z-index: ${Z.SUPPORT_MODAL};
         left: 50%;
         top: 50%;
         transform: translate(-50%, -46%) scale(0.98);
@@ -976,7 +977,7 @@ export class SupportYinModalUI {
         position: absolute;
         top: 10px;
         right: 10px;
-        z-index: 1;
+        z-index: ${Z.LOCAL};
         padding: 3px 8px;
         border-radius: 999px;
         border: 1px solid rgba(139, 115, 85, 0.22);

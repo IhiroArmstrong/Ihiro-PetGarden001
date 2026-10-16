@@ -34,12 +34,13 @@ import {
   createFocusCoinsDurationHint,
   readFocusCoinsHintSearch
 } from './focusCoinsDurationHint.js';
+import { Z } from './zIndexLayers.js';
 
 const PANEL_CSS = [
   'position:absolute',
   'left:50%',
   'bottom:96px',
-  'z-index:15',
+  `z-index:${Z.PANEL}`,
   'width:min(420px,calc(100vw - 48px))',
   'transform:translate(-50%, 12px)',
   'padding:14px 18px 12px',
@@ -266,7 +267,7 @@ export class MicroRitualUI {
         'left:50%',
         'bottom:calc(max(16px, env(safe-area-inset-bottom, 0px)) + 96px)',
         'transform:translateX(-50%)',
-        'z-index:14',
+        `z-index:${Z.WITNESS}`,
         'pointer-events:auto'
       ].join(';');
       this.container.appendChild(btn);
