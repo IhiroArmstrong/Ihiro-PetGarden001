@@ -18,8 +18,8 @@
  *   OR `git cherry origin/develop HEAD` has no `+` lines (no unique patches).
  * Dirty worktrees with merged content → propose_remove (dirty-but-content-merged);
  * apply uses `git worktree remove --force`. When cherry still shows `+` after squash
- * merge, or rows are `primary` (no `-wt-` in basename / `.wt-*` under main), see
- * WORKFLOW.md「扩大清点」+ GitHub MERGED PR — not this script alone.
+ * merge, or rows are `primary` (no `-wt-` in basename / `.wt-*` under main), use
+ * WORKFLOW.md 方案 B「扩大清点」（MERGED + headRefOid, meaningful-dirty gate).
  *
  * Usage: cd focus-tiger && npm run check:worktree-hygiene
  * Apply (after passphrase / 按清单清): cd focus-tiger && npm run worktree:hygiene-remove [-- --apply]
@@ -418,7 +418,10 @@ export function formatHygieneReport(rows, thresholdMs) {
   }
   lines.push('')
   lines.push(
-    'next: user says「请清理闲置 worktree」then names paths (or「按清单清」for propose_remove only).'
+    'next: passphrase「请清理闲置 worktree」+「按清单清」→ npm run worktree:hygiene-remove -- --apply (propose_remove only).'
+  )
+  lines.push(
+    'next: same passphrase +「扩大清点」→ WORKFLOW.md 方案 B (MERGED+headRefOid; squash cherry+ ok if no meaningful dirty).'
   )
   return lines.join('\n')
 }
