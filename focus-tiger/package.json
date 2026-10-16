@@ -89,6 +89,8 @@
     "audit:mood-veto-holdout:validate": "node desktop/scripts/l0-kb-mood-veto-holdout-lab.js --validate-only",
     "audit:routing-class-holdout": "node desktop/scripts/l0-kb-routing-class-holdout-lab.js",
     "audit:routing-class-holdout:validate": "node desktop/scripts/l0-kb-routing-class-holdout-lab.js --validate-only",
+    "audit:g2-fact-arrival": "node desktop/scripts/l0-g2-fact-arrival-lab.js",
+    "audit:g2-fact-arrival:validate": "node desktop/scripts/l0-g2-fact-arrival-lab.js --validate-only",
     "audit:fit-product-minus-mood-margin": "node desktop/scripts/l0-fit-product-minus-mood-margin.js",
     "audit:routing-arbitration-shadow": "node desktop/scripts/l0-routing-arbitration-shadow-lab.js",
     "audit:routing-arbitration-ab": "node desktop/scripts/l0-routing-arbitration-ab-lab.js",
