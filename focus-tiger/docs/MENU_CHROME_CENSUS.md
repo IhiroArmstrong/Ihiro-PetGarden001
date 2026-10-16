@@ -87,3 +87,7 @@
 ## 4. 维护
 
 新加 Idle 常驻可点 chrome 时：先在本表 2.1–2.3 加一行，再决定是否进 `listSecondaryChromeEntries`。只加 FAB、不改本表 = 普查回退。
+
+## 5. 宽屏五图标索引（2026-10-16 · 未开工）
+
+方向已点头，运行时未改。登录灰行与「印揭晓前不进菜单」维持上文。付费行、分组和扇形的后续三刀见 [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。本表 §1 第 4 条「⋯ 在宽屏、左上留给日历」在第三刀之前仍然有效；第三刀只把展开方式改成底部 `⋯` 上方的五个图标，不把入口搬去左上。
