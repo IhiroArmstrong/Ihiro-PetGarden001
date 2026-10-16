@@ -561,8 +561,8 @@
   标题: Zen Cinema 从哪开
   适用场景: 想找短片冥想视频、或分不清和 A Quiet Line / Wallpapers 的区别
   内容正文: |
-    短答（en）：Open More (⋯) or the drawer → Inspiration → Zen Cinema. Yin offers one short visual meditation — tap Watch on YouTube to open a featured film in your browser (not inside the app). Yin only points; this is a small gift when you have a quiet minute.
-    指路：菜单 `ZEN_CINEMA_MENU_LABEL`（proxy `zen-cinema`）→ `ZenCinemaCardUI` → `openZenCinemaExternal`（`zenCinemaConfig.js` · 单支精选 YouTube 外链 · 无应用内播放器）。与 0021 分工：0021 = 本地每日静语卡 + Save image；本条 = 浏览器打开一支短片。与 Wallpapers 分工：本条 = 外链视频；Wallpapers = 阿寅静帧本地存图。
+    短答（en）：Open More (⋯) or the drawer → Inspiration → Zen Cinema. Yin offers a few curated short visual meditations — pick one and tap Watch on YouTube to open it in your browser (not inside the app). Yin only points; this is a small gift when you have a quiet minute.
+    指路：菜单 `ZEN_CINEMA_MENU_LABEL`（proxy `zen-cinema`）→ `ZenCinemaCardUI` → `openZenCinemaExternal`（`zenCinemaConfig.js` · 策展 YouTube 列表 · 无应用内播放器）。与 0021 分工：0021 = 本地每日静语卡 + Save image；本条 = 浏览器打开精选短片。与 Wallpapers 分工：本条 = 外链视频；Wallpapers = 阿寅静帧本地存图。
     禁止：说成频道墙或需登录；禁止在短答里念 `ZEN_CINEMA_FILM_TITLE` 片名正文；禁止说成必须每日打卡；禁止与 Daily quote / Wallpapers 混为一谈。
   yin_may_retrieve: 是
   来源: 界面文案

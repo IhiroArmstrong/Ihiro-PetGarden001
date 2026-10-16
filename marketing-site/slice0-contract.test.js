@@ -137,15 +137,21 @@ describe('marketing-site Slice 2 contract', () => {
 });
 
 describe('marketing-site Slice 3 contract', () => {
-  const youtubeUrlMatch = zenCinemaConfig.match(
-    /ZEN_CINEMA_YOUTUBE_URL\s*=\s*'([^']+)'/
-  );
-  const youtubeUrl = youtubeUrlMatch?.[1] ?? '';
+  const catalogUrls = [
+    ...zenCinemaConfig.matchAll(/youtubeUrl:\s*'([^']+)'/g)
+  ].map((m) => m[1]);
 
-  it('uses the same Zen Cinema YouTube URL as zenCinemaConfig.js', () => {
-    assert.ok(youtubeUrl, 'zenCinemaConfig.js must export ZEN_CINEMA_YOUTUBE_URL');
-    assert.match(youtubeUrl, /youtu\.be\/RV46qrvG1pw/);
-    assert.match(html, new RegExp(youtubeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'));
+  it('lists the same Zen Cinema YouTube URLs as zenCinemaConfig.js', () => {
+    assert.equal(catalogUrls.length >= 2, true);
+    assert.ok(catalogUrls.includes('https://youtu.be/RV46qrvG1pw'));
+    assert.ok(catalogUrls.includes('https://youtu.be/xawM6cgJSrE'));
+    assert.ok(catalogUrls.includes('https://youtu.be/xpcPXJ95-00'));
+    for (const url of catalogUrls) {
+      assert.match(
+        html,
+        new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      );
+    }
   });
 
   it('shows Zen Cinema between community Slack note and footer legal links', () => {
@@ -156,9 +162,12 @@ describe('marketing-site Slice 3 contract', () => {
     assert.match(html, /Zen Cinema/);
     assert.match(html, /Mindful Moments with Yin/);
     assert.match(html, /Satori: The Flash That Changes Everything/);
+    assert.match(html, /What is Zen\? Ancient Wisdom/);
     assert.match(html, /zen-cinema-satori-flash-thumb\.png/);
-    assert.match(html, />Watch on YouTube</);
-    assert.match(html, /Opens YouTube in a new tab/);
+    assert.match(html, /zen-cinema-what-is-zen-thumb\.png/);
+    assert.match(html, /zen-cinema-hundred-foot-pole-thumb\.png/);
+    assert.match(html, /class="zen-cinema-list"/);
+    assert.match(html, /Each poster opens YouTube in a new tab/);
   });
 
   it('keeps calm tone without FOMO on Zen Cinema', () => {

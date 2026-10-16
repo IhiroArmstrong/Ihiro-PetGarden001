@@ -68,13 +68,15 @@
 | CR-42 | 待人工 | 中文情绪否决的本机开关（默认关） | #1200 已合。英文、日文、2b、目录命中不在本条 |
 | CR-43 | 进行中 | 安全路由修复：只修分类，不调否决、不用 #1188 遮漏接 | 第一步已合 #1226；字面续补 #1230 开发集明确危机 ≥90%（57/63）、逃避误捕 ≤2/35；关单 s-v1：明确危机 ≥40、非危机 ≥40＝逃避 ≥20＋口语夸张或指向他人 ≥20、≥90% / 误捕 ≤2/40 且不得纯逃避或纯口语夸张、灰区只报告 |
 | CR-44 | 进行中 | 语义危机层接到真实发送链（S1：字面未命中才打相似度） | 运行时已合 #1232；第八节复核 2026-10-15 已记（PO 授权大模型，不改金句）；关单仍认新过关文件，额度已满 |
-| CR-45 | 待拍板 | 混合句「先接情绪、再答产品」合并回应（只规格） | 不调 0.01、不改发送链；Brief `task-confide-mixed-emotion-then-product.md`；实现另点头 |
+| CR-45 | 规格已补锁 | 混合句「先接情绪、再答产品」合并回应（只规格） | 不调 0.01、不改发送链。PO 2026-10-17：有条件采用；通过率关单再填；**等 CR-11 一起或紧跟其后**。Brief `task-confide-mixed-emotion-then-product.md`。不是 CR-51 |
 | CR-46 | 待点头 | 分档回应 + 倾诉卡常驻支持入口（不再只靠分类器托底） | Brief 已出；不改 ≥90% 关单；中档轻句与阈值待专业复核 |
 | CR-47 | 进行中 | 产品问收窄为操作问法 ∧ 产品对象；否则默认生成 | 规格已点头；实现另口令。禁止往 #1188 词表加词。危机修辞不在本条 |
 | CR-48 | 进行中 | 语义危机命中后确认修辞/亲昵，自指求死仍转介 | 实现中。不降低 0.78，不改 safety-01。与 CR-47 不同 PR |
 | CR-49 | 进行中 | 产品问答贴近事实卡（事实键 + 问法形状轴） | #1250+#1255+#1259 已合 develop。机制：同形状近邻、`factKeyEn`、whether-required 扩 CR-47。关单仍须新封存 `sealed-v3` ≥85%/类。Brief `task-confide-fact-key-ask-role.md` |
-| CR-50 | 实现中 | 先听懂要什么事实再取：错卡不念（含字面命中）、帮助短摘、记录三档、生成不得断言事实 | #1277 发送链已合；#1287 事实键已合。v2=13/33（记录 4/5；0038 1/5；好处 0/5）。停手改卡。Brief `task-confide-asked-fact-keys.md`。不调 0.80 |
-| CR-51 | 待点头 | 问法形状轴扩档：why-compare；whether-required 排在动机闸前 | Brief `task-confide-ask-shape-axis.md`。不改卡、不加问法名单。实现另点头 |
+| CR-50 | 实现中 | 先听懂要什么事实再取：错卡不念（含字面命中）、帮助短摘、记录三档、生成不得断言事实 | #1277 发送链已合；#1287 事实键+记录原型已合；#1284 v1=9/33。v2=13/33（记录 4/5；0038 1/5；好处 0/5）。停手改卡。关单仍须未见批。Brief `task-confide-asked-fact-keys.md`。不调 0.80 |
+| CR-51 | 进行中 | 问法形状轴扩档：why-compare；whether-required 排在动机闸前 | Brief `task-confide-ask-shape-axis.md`。不改卡、不加问法名单。PO 已点头开工；实现 #1294 |
+
+「是不是在问产品」影子计数已停。笔记在仓外 `~/Documents/ft-private/confide-research-2026-10-17/voided-ask-intent-shadow-STOP.md`。重启须另书面同意。不接发送链。本行不改 CR-11、CR-45。
 
 ## 逐条步骤
 
@@ -528,12 +530,13 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 | 知识库与观察翼靠字面规则 | CR-18、CR-22 |
 | 明确危机漏到产品闸 | CR-43、CR-44（计数仍见 CR-36）；触达补强见 CR-46（不改关单口径）；修辞误捕见 CR-48 |
 
-### CR-45 · 混合句先接情绪再答产品（待拍板）
+### CR-45 · 混合句先接情绪再答产品（规格已补锁 · 实现等 CR-11）
 
-规格 SSOT：[`task-briefs/task-confide-mixed-emotion-then-product.md`](./task-briefs/task-confide-mixed-emotion-then-product.md)。类级对照：[`confide-routing-live-vs-function-a-research.md`](./confide-routing-live-vs-function-a-research.md)。
+规格 SSOT：[`task-briefs/task-confide-mixed-emotion-then-product.md`](./task-briefs/task-confide-mixed-emotion-then-product.md)。类级对照：[`confide-routing-live-vs-function-a-research.md`](./confide-routing-live-vs-function-a-research.md)。**不是** CR-51 / #1294。
 
 - **本条**：只锁规格。不实现、不改发送链、不调 0.01。
-- **完成**：PO 点头 Brief 并填 mixed 两类通过率数字之后，另开 B 类实现会话。作废封存不得当过关文件。
+- **2026-10-17 PO**：有条件采用；§6 数字关单再填；接线等 CR-11 一起或紧跟其后。Brief 已补变体矩阵 / 点击 / 边缘 / 共用机制、承接句上限、分语言触发率、人工通读 10–20 组。
+- **完成**：CR-11 live 之后另口令「按补锁后的 CR-45 Brief 开工」+ 实现 PR。作废封存不得当过关文件。通过率数字仍空到新未见封存。
 
 ### CR-47 · 产品问收窄为操作问法（规格已点头 · 未改发送链）
 
@@ -579,12 +582,12 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 
 **完成**：实现 PR 合入；关单仍用未见批与事实答案表，不用 10-16 已见句。
 
-### CR-51 · 问法形状轴扩档（待点头）
+### CR-51 · 问法形状轴扩档（进行中）
 
-权威：[`task-briefs/task-confide-ask-shape-axis.md`](./task-briefs/task-confide-ask-shape-axis.md)。v2：记录 4/5；0038 1/5；好处 0/5。#1287 已停手改卡。
+权威：[`task-briefs/task-confide-ask-shape-axis.md`](./task-briefs/task-confide-ask-shape-axis.md)。v2：记录 4/5；0038 1/5；好处 0/5。#1287 已停手改卡。PO 已点头开工。
 
 - 新增封闭形状 `why-compare`（同一/不同 ∧ 闭集练习名或产品路径）。动机「为什么要练」仍 `none`。
 - `whether-required` 排到动机闸之前，使「为什么必须打卡」进 0038 档。
 - 不改事实键、不调 0.80、不把失败句写入 keywords。不并入 CR-45。
 
-**完成**：PO 点头 + 实现 PR + 仓外未见批 v3 上 0038 与好处类明显上来。没有点头不得改运行时。
+**完成**：实现 PR 合入 + 仓外未见批 v3 上 0038 与好处类明显上来。没有 v3 不得写「换说法已经接住」。

@@ -4,13 +4,13 @@
  */
 
 /**
- * Closed ask-shape axis for KB near-match (CR-49 slice 3).
- * Brief: task-confide-fact-key-ask-role.md
+ * Closed ask-shape axis for KB near-match (CR-49 slice 3; CR-51 why-compare).
+ * Brief: task-confide-fact-key-ask-role.md · task-confide-ask-shape-axis.md
  */
 
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 
-/** @typedef {'where' | 'how' | 'whether-required' | 'what-is' | 'none'} ConfideProductAskRole */
+/** @typedef {'where' | 'how' | 'whether-required' | 'what-is' | 'why-compare' | 'none'} ConfideProductAskRole */
 
 const MOTIVATION_ASK_SHAPE_RE =
   /\bwhy\s+(?:should|do|would|can't|cannot|not)\b|\bwhat(?:'s|\s+is)\s+(?:the\s+)?(?:point|purpose|reason|benefit|meaning|use)\b|为什么|为何|干嘛要|有什么意义|有什么好处|有什么用/i;
@@ -27,8 +27,20 @@ const WHETHER_REQUIRED_OPTIONAL_FRAME_RE =
 const WHETHER_PRODUCT_OBJECT_RE =
   /\b(?:honesty\s*check[- ]?in|check[- ]?in|daily\s+streak|streak|reminder)\b/i;
 
+const WHETHER_MUST_WHY_RE = /(?:为什么|为何).{0,12}必须/;
+
 const ACTIVITY_VERB_RE =
   /\b(?:meditat(?:e|ing|ion)?|practice|practicing|focus(?:ing)?)\b/i;
+
+/** Named product path — not gerunds like "focus practicing". */
+const PRODUCT_PATH_OBJECT_RE =
+  /\b(?:sit(?:ting)?\s+with\s+yin|focus\s+sit|focus\s+practice|mindfulness)\b/i;
+
+const COMPARE_CLOSED_OBJECT_RE =
+  /\b(?:sit(?:ting)?\s+with\s+yin|focus\s+sit|focus\s+practice|mindfulness|meditation)\b/i;
+
+const COMPARE_ASK_SHAPE_RE =
+  /\b(?:the\s+)?same(?:\s+thing)?\b|\bvs\.?\b|\bversus\b|\bdiffer(?:ent|ence)?\b|\bidentical\b|\balike\b/i;
 
 const WHERE_ASK_SHAPE_RE =
   /\bwhere\s+(?:is|are|do|can)\b/i;
@@ -70,6 +82,35 @@ export function hasConfideWhetherRequiredProductObject(text) {
   return /诚实|打卡|签到|连续|提醒/.test(spaced);
 }
 
+function hasCompareAskFrame(spaced) {
+  return COMPARE_ASK_SHAPE_RE.test(spaced) || /一样|一回事|同一|不同|区别|是不是一回事/.test(spaced);
+}
+
+function hasCompareClosedObject(spaced) {
+  return COMPARE_CLOSED_OBJECT_RE.test(spaced) || /和寅坐|坐和寅|专注练习|正念|冥想/.test(spaced);
+}
+
+function hasProductPathObject(spaced) {
+  return PRODUCT_PATH_OBJECT_RE.test(spaced) || /和寅坐|坐和寅|专注练习|正念/.test(spaced);
+}
+
+function isShouldActivityMotivation(spaced) {
+  return (
+    /\bwhy\s+should\b/i.test(spaced) &&
+    ACTIVITY_VERB_RE.test(spaced) &&
+    !hasProductPathObject(spaced) &&
+    !hasCompareAskFrame(spaced)
+  );
+}
+
+function isWhyCompareAsk(spaced) {
+  if (isShouldActivityMotivation(spaced)) return false;
+  if (hasCompareAskFrame(spaced) && hasCompareClosedObject(spaced)) return true;
+  const whyBenefit =
+    MOTIVATION_ASK_SHAPE_RE.test(spaced) && hasCompareClosedObject(spaced);
+  return whyBenefit;
+}
+
 /**
  * @param {string} text
  * @returns {ConfideProductAskRole}
@@ -81,16 +122,10 @@ export function classifyConfideProductAskRole(text) {
   const compact = spaced.replace(/\s+/g, '');
   const testBoth = (re) => re.test(spaced) || (compact !== spaced && re.test(compact));
 
-  if (MOTIVATION_ASK_SHAPE_RE.test(spaced) || MOTIVATION_ASK_SHAPE_RE.test(compact)) {
-    return 'none';
-  }
-  if (ACTIVITY_WHAT_IS_RE.test(spaced) || ACTIVITY_WHAT_IS_RE.test(compact)) {
-    return 'none';
-  }
-
   const whetherFrame =
     testBoth(WHETHER_ASK_SHAPE_RE) ||
     testBoth(WHETHER_REQUIRED_OPTIONAL_FRAME_RE) ||
+    WHETHER_MUST_WHY_RE.test(spaced) ||
     /要不要|必须吗|是不是可选|是否必须|非得/.test(spaced);
   if (whetherFrame) {
     if (!hasConfideWhetherRequiredProductObject(text)) return 'none';
@@ -101,6 +136,17 @@ export function classifyConfideProductAskRole(text) {
       return 'none';
     }
     return 'whether-required';
+  }
+
+  if (isWhyCompareAsk(spaced)) {
+    return 'why-compare';
+  }
+
+  if (MOTIVATION_ASK_SHAPE_RE.test(spaced) || MOTIVATION_ASK_SHAPE_RE.test(compact)) {
+    return 'none';
+  }
+  if (ACTIVITY_WHAT_IS_RE.test(spaced) || ACTIVITY_WHAT_IS_RE.test(compact)) {
+    return 'none';
   }
 
   if (testBoth(WHERE_ASK_SHAPE_RE) || /在哪|哪里|从哪/.test(spaced)) {

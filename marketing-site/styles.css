@@ -403,10 +403,25 @@ h1 {
   color: var(--color-ink-muted);
 }
 
-.zen-cinema-feature {
+.zen-cinema-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
   margin: 0 auto 1.25rem;
   padding: 0;
-  max-width: 20rem;
+  max-width: 42rem;
+  list-style: none;
+}
+
+.zen-cinema-list > li {
+  margin: 0;
+  min-width: 0;
+}
+
+.zen-cinema-feature {
+  margin: 0;
+  padding: 0;
+  max-width: none;
 }
 
 .zen-cinema-thumb-link {

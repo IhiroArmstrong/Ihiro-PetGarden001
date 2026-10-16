@@ -133,15 +133,15 @@ export function isConfideOperationalProductAskShape(text) {
   if (!raw) return false;
   const spaced = raw.replace(/\s+/g, ' ').trim();
   const compact = spaced.replace(/\s+/g, '');
+  const askRole = classifyConfideProductAskRole(text);
+  if (askRole !== 'none') {
+    return true;
+  }
   if (MOTIVATION_ASK_SHAPE_RE.test(spaced) || MOTIVATION_ASK_SHAPE_RE.test(compact)) {
     return false;
   }
   if (ACTIVITY_WHAT_IS_RE.test(spaced) || ACTIVITY_WHAT_IS_RE.test(compact)) {
     return false;
-  }
-  const askRole = classifyConfideProductAskRole(text);
-  if (askRole !== 'none') {
-    return true;
   }
   return OPERATIONAL_PRODUCT_ASK_SHAPE_RES.some(
     (re) => re.test(spaced) || (compact !== spaced && re.test(compact))
