@@ -573,6 +573,10 @@ CR-49 关单前第二份盲测。`origin/develop` `b0d47bc`（含 #1255 `428fa0e
 
 CR-49 第三刀已上线：事实键 + 问法形状轴（`confideProductAskRole.js` · `l1EmbeddingHold` · 目录 0020/0037/0038）。权威 `task-briefs/task-confide-fact-key-ask-role.md`。未见英文泛化仍须新封存 `sealed-v3`。
 
+### `confide-g2-fact-first` · note · Brief 待点头 · 无运行时 · 2026-10-16
+
+CR-50：先听懂要什么事实再取。只读名次已入账（库内有答案 1/5 进前三；无卡组 3/20 被念，均为字面命中）。权威 `task-briefs/task-confide-g2-fact-first.md`。实现另点头。
+
 ### `root-cause-hardening` · feature · 盘点已落 · A22 已合 #1171 · A1 已合 #1173 · A2 已合 #1179 · A3 已合 #1181 · A4 已合 #1184 · A5 已合 #1186 · A6 已合 #1189 · A7 已合 #1258 · A8 已合 #1268 · A10 A14 A18–A21 已合 #1267 · Brief #1190 · 2026-10-16
 
 2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首七行。A7 已合 #1258（A7.1–A7.6）。A8 已合 #1268。第三阶段 line3：A10 / A14 / A18–A21（Brief 变体矩阵、反馈栏、部署配对、交付 e2e、Bug 落账、改坏证据）已合 #1267。
