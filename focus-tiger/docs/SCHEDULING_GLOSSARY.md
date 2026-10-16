@@ -17,7 +17,7 @@
 | **可选** · **T3** | TASKS 机器块拼装 | 未做 | 单独小 PR；手改 `TASKS.md` 须与功能 PR 分开 |
 | **未排期** · **T4** | 根因行动 A15–A17 | 搁置 | 见 §3 |
 | — · **T5** | Confide CR-51 问法形状轴 #1294 | **进行中** | `why-compare` + `whether-required` 顺序；**已合 develop**；关单须未见 v3 audit；Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
-| — | Confide CR-45 混合句 #1237 | **未开工** | 只规格；Brief `task-confide-mixed-emotion-then-product.md`；`CONFIDE_STATUS.md` 路由线；**实现须另口令** |
+| — | Confide CR-45 混合句 #1237 | **未开工** | 规格已补锁（等 CR-11）；Brief `task-confide-mixed-emotion-then-product.md`；**禁止单独先上**；口令「按补锁后的 CR-45 Brief 开工」 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -84,3 +84,4 @@
 |---|---|
 | 2026-10-16 | 首版：统一 P1/P2 与 A15–A17 未排期；区分三类「风险」；口令仅绑定 P2 |
 | 2026-10-17 | #1294 合入：**T5** CR-51「进行中」与 CR-45「未开工」分列；口令表防混刀 |
+| 2026-10-17 | CR-45 Brief 补锁；实现仍未开工，等 CR-11 |
