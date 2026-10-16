@@ -4,8 +4,8 @@
  */
 
 /**
- * Presence Signals · quiet object surface (D.2).
- * Paper card, human time, overflow Remove; storage / consent unchanged.
+ * Presence Signals · quiet object surface (D.2 + A11.2).
+ * Sanctuary glass card, human time, overflow Remove; storage / consent unchanged.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -25,7 +25,14 @@ import {
   formatPresenceExactTime,
   formatPresenceMomentTime
 } from '../core/presenceHumanTime.js';
-import { GLASS_RADIUS } from './glassPanelStyles.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_RADIUS,
+  GLASS_SHADOW,
+  createGlassCard
+} from './glassPanelStyles.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   createOverlayBackdrop,
@@ -33,11 +40,8 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 
-const STYLE_ID = 'presence-signals-panel-styles-v2';
+const STYLE_ID = 'presence-signals-panel-styles-v3';
 const FADE_MS = 220;
-const PAPER_FILL = 'rgba(255, 249, 240, 0.98)';
-const PAPER_BORDER = '1px solid rgba(139, 115, 85, 0.28)';
-const PAPER_SHADOW = '0 4px 16px rgba(44, 31, 20, 0.08)';
 
 export class PresenceSignalsPanelUI {
   /**
@@ -63,9 +67,11 @@ export class PresenceSignalsPanelUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'presence-signals-panel';
-    this.root.className = 'presence-signals-panel';
+    this.root = createGlassCard({
+      id: 'presence-signals-panel',
+      className: 'presence-signals-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.dataset.testid = 'presence-signals-panel';
     this.root.setAttribute('role', 'dialog');
@@ -355,6 +361,7 @@ export class PresenceSignalsPanelUI {
   _injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
     document.getElementById('presence-signals-panel-styles-v1')?.remove();
+    document.getElementById('presence-signals-panel-styles-v2')?.remove();
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
@@ -370,10 +377,11 @@ export class PresenceSignalsPanelUI {
         padding: 16px 16px 14px;
         box-sizing: border-box;
         color: #2c1f14;
-        background: ${PAPER_FILL};
-        border: ${PAPER_BORDER};
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        border: ${GLASS_BORDER};
         border-radius: ${GLASS_RADIUS};
-        box-shadow: ${PAPER_SHADOW};
+        box-shadow: ${GLASS_SHADOW};
         opacity: 0;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
         pointer-events: none;

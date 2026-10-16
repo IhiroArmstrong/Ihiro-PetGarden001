@@ -183,7 +183,7 @@ D.9 的 Reject **不是**「以后再看」，是**本轮明确不做**。若有
 - **records → moments**：展示语言从「记录」改为时刻 / 观察；存储 key 与字段名不改。
 - **人时**：默认 `Today · 2:47 AM` 一类；秒级时间戳只在展开 / 长按。存储仍 ISO。
 - **Delete**：从常驻按钮收进 `···` → Remove。行为与联动删除不变（A.6）。
-- 表面：实色纸感、轻阴影、暖描边；圆角跟现有 Object 卡，不新造 24px token 体系。
+- 表面（A11.2）：卡根用 `glassPanelStyles.js` 暖米玻璃（`createGlassCard` / `GLASS_FILL`），禁止近乎不透明纸色底板；行内条目可略实以便阅读。圆角仍 `GLASS_RADIUS`。宽屏侧停几何不变。
 - **不改**：storage、Consent、90 天、双写。
 
 ## D.3 Quiet Drawer — Adopt

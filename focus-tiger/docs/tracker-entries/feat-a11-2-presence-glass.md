@@ -1,0 +1,1 @@
+| A11.2 在场信号卡暖米玻璃 | UI可见 | 待人工测试 | **宽屏 ≥480**：⋯ → Presence moments → `#presence-signals-panel` 仍靠右停；卡根是半透明暖米玻璃（能透出栖居），不是实色纸板。行头展开人时、`···` Remove 与 D.2 相同。**窄屏 ≤479**：底栏同入口，短底面板，同一套玻璃。回流：关再开仍玻璃。不点 Stripe。自动化：`PresenceSignalsPanelUI.test.js` + `check-glass-card-roots`（holdout 已撤）。 | — | — | — | `#presence-signals-panel` · `/?product=1` · Safari 宽/窄 | 2026-10-16 |
