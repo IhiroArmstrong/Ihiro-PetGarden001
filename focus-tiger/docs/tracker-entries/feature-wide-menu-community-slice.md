@@ -1,0 +1,2 @@
+
+| 菜单归类第二刀 · 社区进 You are not alone | UI/交互 | 待人工测试 | **主路径**：`?product=1` 宽屏 ⋯ 或窄屏抽屉 → **You are not alone** 组内见 Join our community（在 My circle 下）；**Preferences 组内不得再出现**该行。点击仍开站外社区页（`twinsology.com/#community`）。**对照**：今日方向、Stay in touch 仍在 Preferences；登录灰行不变。**自动化**：`idleChromeOrchestration.test.js` 代理顺序；KB 0031 指路已同步。 | — | — | — | Brief `task-wide-menu-radial-index.md` · `community` proxy | 2026-10-16 |
