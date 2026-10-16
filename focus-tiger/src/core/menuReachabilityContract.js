@@ -14,6 +14,7 @@
  */
 
 import { listSecondaryChromeEntries } from './idleChromeOrchestration.js';
+import { VISIBLE_TEXT_POISON_RE } from './visibleTextPoison.js';
 
 /**
  * @typedef {'open-panel' | 'open-external' | 'static-row' | 'locked-row'} MenuReachKind
@@ -144,7 +145,7 @@ export const MENU_REACHABILITY = Object.freeze({
 });
 
 /** Forbidden leftover strings in opened result text (A8 ①, reused by A1). */
-export const MENU_RESULT_FORBIDDEN_TEXT = /\b(?:undefined|NaN|\[object Object\])\b/;
+export const MENU_RESULT_FORBIDDEN_TEXT = VISIBLE_TEXT_POISON_RE;
 
 /**
  * Default Idle visibility for `?product=1` web (not Electron L1 / not Confide ship).

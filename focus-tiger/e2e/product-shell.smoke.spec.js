@@ -5,6 +5,7 @@
 
 import { test, expect } from '@playwright/test';
 import { openFreshProductShell } from './helpers/product-shell.js';
+import { expectNoVisibleTextPoison } from './helpers/visible-text-poison.js';
 
 /**
  * 产品壳入口冒烟 —— SCENARIO_TESTS 场景 A 前置（DOM 层）。
@@ -20,6 +21,7 @@ test('product shell shows Sit with Yin and hides emotion debug UI', async ({
 
   await expect(page.locator('#emotion-debug-ui')).toHaveCount(0);
   await expect(page.locator('#dev-reset-all-local-state')).toHaveCount(0);
+  await expectNoVisibleTextPoison(page, 'product shell idle');
 });
 
 test('lab shell exposes reset-all local state in DEV', async ({ page }) => {
