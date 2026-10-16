@@ -338,6 +338,9 @@ export class ConfideToYinUI {
     this.thinkingEl.dataset.testid = 'confide-to-yin-thinking';
     this.thinkingEl.setAttribute('aria-live', 'polite');
     this.thinkingEl.hidden = true;
+    this.thinkingCopyEl = document.createElement('span');
+    this.thinkingCopyEl.className = 'confide-to-yin__thinking-copy';
+    this.thinkingEl.appendChild(this.thinkingCopyEl);
 
     this.memoryListLink = document.createElement('button');
     this.memoryListLink.type = 'button';
@@ -597,8 +600,8 @@ export class ConfideToYinUI {
       this.memoryListLink.textContent = t('YIN_MEMORY_PANEL_LINK');
       this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
     }
-    if (this.thinkingEl && !this.thinkingEl.hidden) {
-      this.thinkingEl.textContent = t('CONFIDE_PANEL_THINKING');
+    if (this.thinkingCopyEl && this.thinkingEl && !this.thinkingEl.hidden) {
+      this.thinkingCopyEl.textContent = `${t('CONFIDE_PANEL_THINKING')}…`;
     }
     this._renderDesktopStatus();
   }
@@ -689,7 +692,7 @@ export class ConfideToYinUI {
     this._clearPendingReplyWatchdog();
     if (!this.thinkingEl) return;
     this.thinkingEl.hidden = true;
-    this.thinkingEl.textContent = '';
+    if (this.thinkingCopyEl) this.thinkingCopyEl.textContent = '';
   }
 
   /**
@@ -705,7 +708,9 @@ export class ConfideToYinUI {
     this.replyEl.dataset.route = '';
     this.replyEl.dataset.lineId = '';
     this.replyEl.dataset.source = '';
-    this.thinkingEl.textContent = t('CONFIDE_PANEL_THINKING');
+    if (this.thinkingCopyEl) {
+      this.thinkingCopyEl.textContent = `${t('CONFIDE_PANEL_THINKING')}…`;
+    }
     this.thinkingEl.hidden = false;
     this.inputEl.value = '';
     this._syncSendEnabled();
@@ -2005,15 +2010,26 @@ export class ConfideToYinUI {
         line-height: 1.35;
         opacity: 0.92;
         animation: confide-to-yin-thinking-float 2.4s ease-in-out infinite;
+        --confide-thinking-shimmer-base: rgba(44, 31, 20, 0.38);
+        --confide-thinking-shimmer-peak: rgba(44, 31, 20, 0.96);
       }
-      .confide-to-yin__thinking::after {
-        content: '…';
+      .confide-to-yin__thinking-copy {
         display: inline-block;
-        width: 1.1em;
         min-width: 1.1em;
-        overflow: hidden;
-        vertical-align: bottom;
-        animation: confide-to-yin-thinking-dots 1.2s ease-in-out infinite;
+        background-image: linear-gradient(
+          105deg,
+          var(--confide-thinking-shimmer-base) 0%,
+          var(--confide-thinking-shimmer-base) 38%,
+          var(--confide-thinking-shimmer-peak) 50%,
+          var(--confide-thinking-shimmer-base) 62%,
+          var(--confide-thinking-shimmer-base) 100%
+        );
+        background-size: 240% 100%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        animation: confide-to-yin-thinking-shimmer 2.1s linear infinite;
       }
       .confide-to-yin__thinking[hidden] {
         display: none !important;
@@ -2022,9 +2038,9 @@ export class ConfideToYinUI {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-2px); }
       }
-      @keyframes confide-to-yin-thinking-dots {
-        0%, 100% { opacity: 0.35; }
-        50% { opacity: 1; }
+      @keyframes confide-to-yin-thinking-shimmer {
+        0% { background-position: 120% 50%; }
+        100% { background-position: -20% 50%; }
       }
       .confide-to-yin__reply {
         position: relative;
