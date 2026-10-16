@@ -152,6 +152,16 @@
 
 作废 b-v2 / b-v5 与路由开发集 v2 **不得**当作本判据的过关文件。下一份过关封存须新会话、未见句。
 
+### 6.5 「合并对」影子判据（结构检查 · 口令锁）
+
+影子跑分与 live 关单共用下列**结构**定义（不做语义裁判）：
+
+1. §2 混合形状已触发（分句后产品半边与情绪半边同时成立；纯产品 / AE 两锚 / 徽章闲聊等 §2 排除类不触发）。
+2. **第一段**：从 `confideCorpus.js` 允许池 `pickConfideLine` 抽出的一条 `review=ok` 情绪路由句；id 不在 §4 禁止池；过 §4.1 长度上限。实现：`confideCr45MixedReplyShadow.js` · `isAllowedCr45FirstSegmentLine`。
+3. **第二段零改写**：catalog 真命中 → 目录短答与 `retrieveProductKnowledge` 一字相同；否则诚实空态 → 与 `formatConfideProductKnowledgeHonestyReply` 一字相同。实现：`resolveCr45ShadowSecondSegment` · `isCr45MergeStructurallyCorrect`。
+
+报表须分列「路径对」与「靠合并过」；另报 **`merge_pass_share_of_passes`（靠合并过占过关句比例）**，**只观察、不关单**。
+
 ---
 
 ## 7. 风险

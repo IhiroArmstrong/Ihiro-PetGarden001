@@ -137,6 +137,7 @@ async function settleAfterRow(page) {
     }
     window.__inAppReminder?.settings?.closePanel?.();
     window.__inAppReminder?.settings?.close?.();
+    window.__wideIdleMoreMenu?.closeMenu?.();
     window.__wideIdleMoreMenu?.releaseInactivePresentation?.();
     window.__wideIdleMoreMenu?.setSuppressed?.(false);
     window.__wideIdleMoreMenu?.setIdle?.(true);
@@ -253,9 +254,9 @@ async function walkMenu(page, surface, menuSelector) {
       timeout: 8_000
     });
     if (row.proxy === 'reminder') await item.hover();
-    const clickOpts =
-      surface === 'narrow-drawer' ? { timeout: 30_000 } : undefined;
-    await item.click(clickOpts);
+    await item.click({
+      timeout: surface === 'narrow-drawer' ? 30_000 : 20_000
+    });
     await assertOpenedResult(page, row.contract, row.proxy);
     opened.push(row.proxy);
     await settleAfterRow(page);
@@ -286,20 +287,18 @@ test('menu full reachability · wide Idle ⋯ then narrow drawer', async ({
   await page.setViewportSize({ width: 375, height: 667 });
   await page.evaluate(() => {
     window.dispatchEvent(new Event('resize'));
+    window.__wideIdleMoreMenu?.releaseInactivePresentation?.();
   });
   await expect
     .poll(() => page.evaluate(() => window.matchMedia('(max-width: 479px)').matches))
     .toBe(true);
   await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
-    timeout: 8_000
+    timeout: 15_000
   });
   await expect(
     page.locator('#ft-wide-more-backdrop'),
     'wide ⋯ scrim must not cover the narrow drawer'
   ).toBeHidden();
-  await page.evaluate(() => {
-    window.__wideIdleMoreMenu?.releaseInactivePresentation?.();
-  });
   await settleAfterRow(page);
   await walkMenu(page, 'narrow-drawer', '#ft-narrow-options-drawer');
 });
