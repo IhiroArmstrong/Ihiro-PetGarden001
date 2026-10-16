@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test'
+import { expectNoVisibleTextPoison } from './helpers/visible-text-poison.js'
 
 /**
  * A5 启动冒烟：App 必须置位 __FT_APP_READY__，且不得有未捕获 pageerror。
@@ -24,4 +25,5 @@ test('startup sets __FT_APP_READY__ without page errors', async ({ page }) => {
     timeout: 30_000
   })
   expect(pageErrors, pageErrors.join('\n')).toEqual([])
+  await expectNoVisibleTextPoison(page, 'startup idle shell')
 })
