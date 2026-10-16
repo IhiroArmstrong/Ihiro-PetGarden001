@@ -30,6 +30,8 @@ export const JA_HAS_JAPANESE_SCRIPT =
  */
 export function isJaProperNounAllowlisted(key) {
   if (JA_MAY_MATCH_EN.has(key)) return true;
+  // Curated cinema titles stay English across locales (YouTube proper nouns).
+  if (String(key).startsWith('ZEN_CINEMA_FILM_TITLE')) return true;
   if (String(key).startsWith('AMBIENT_TRACK_')) return true;
   // Legal / brand colophon stays English in every locale (indie About tone).
   if (String(key).startsWith('HINT_APP_PURPOSE_COLOPHON_')) return true;

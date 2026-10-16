@@ -4,23 +4,59 @@
  */
 
 /**
- * Zen Cinema · growth pack ① — single featured YouTube gift (not a channel wall).
- * @see docs/task-briefs/task-growth-content-pack-decision.md
+ * Zen Cinema · curated YouTube gifts (not a channel wall, no in-app player).
+ * Add films here; the Idle card and marketing list both read this catalog.
+ * @see docs/task-briefs/task-zen-cinema-film-catalog.md
  */
 
-/** Featured short · Satori: The Flash That Changes Everything */
-export const ZEN_CINEMA_YOUTUBE_URL = 'https://youtu.be/RV46qrvG1pw';
+/**
+ * @typedef {{
+ *   id: string,
+ *   youtubeUrl: string,
+ *   thumbSrc: string,
+ *   titleKey: string
+ * }} ZenCinemaFilm
+ */
 
-/** Public asset (kebab-case); 320×180 thumb from product. */
-export const ZEN_CINEMA_THUMB_SRC =
-  '/images/zen-cinema/satori-flash-thumb.png';
+/** @type {readonly ZenCinemaFilm[]} */
+export const ZEN_CINEMA_FILMS = Object.freeze([
+  {
+    id: 'satori-flash',
+    youtubeUrl: 'https://youtu.be/RV46qrvG1pw',
+    thumbSrc: '/images/zen-cinema/satori-flash-thumb.png',
+    titleKey: 'ZEN_CINEMA_FILM_TITLE'
+  },
+  {
+    id: 'what-is-zen',
+    youtubeUrl: 'https://youtu.be/xawM6cgJSrE',
+    thumbSrc: '/images/zen-cinema/what-is-zen-thumb.png',
+    titleKey: 'ZEN_CINEMA_FILM_TITLE_WHAT_IS_ZEN'
+  }
+]);
+
+/** First film — kept for callers that still pin a single featured URL. */
+export const ZEN_CINEMA_YOUTUBE_URL = ZEN_CINEMA_FILMS[0].youtubeUrl;
+
+/** First film thumb — public asset (kebab-case). */
+export const ZEN_CINEMA_THUMB_SRC = ZEN_CINEMA_FILMS[0].thumbSrc;
 
 /**
- * Open the featured film in a new browsing context.
- * @param {{ open?: typeof window.open }} [opts]
+ * @param {string} id
+ * @returns {ZenCinemaFilm | null}
+ */
+export function findZenCinemaFilmById(id) {
+  if (typeof id !== 'string' || !id) return null;
+  return ZEN_CINEMA_FILMS.find((film) => film.id === id) || null;
+}
+
+/**
+ * Open a curated film in a new browsing context.
+ * @param {{ id?: string, open?: typeof window.open }} [opts]
  * @returns {Window | null}
  */
 export function openZenCinemaExternal(opts = {}) {
+  const film = findZenCinemaFilmById(opts.id) || ZEN_CINEMA_FILMS[0] || null;
+  if (!film) return null;
   const openFn =
     typeof opts.open === 'function'
       ? opts.open
@@ -28,5 +64,5 @@ export function openZenCinemaExternal(opts = {}) {
         ? globalThis.open.bind(globalThis)
         : null;
   if (!openFn) return null;
-  return openFn(ZEN_CINEMA_YOUTUBE_URL, '_blank', 'noopener,noreferrer');
+  return openFn(film.youtubeUrl, '_blank', 'noopener,noreferrer');
 }
