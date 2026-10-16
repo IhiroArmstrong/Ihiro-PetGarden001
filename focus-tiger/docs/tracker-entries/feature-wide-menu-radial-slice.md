@@ -1,0 +1,2 @@
+
+| 菜单扇形第三刀 · 五组图标索引 | UI/交互 | 待人工测试 | **主路径（宽 ≥480 · `?product=1`）**：点 `⋯` → **0–1s** 见 `#ft-wide-more-radial` 五个组图标（悬停见组名）→ 点 Practice → 右侧玻璃列表只出 Practice + Rituals 组。**退化**：`innerHeight < 520` 或与 `#sprite-stage` 相交时直接出手风琴整表（与第二刀前相同）。**键盘**：扇形左右键、回车开组；列表内上下键、回车执行。**对照**：窄屏抽屉无扇形；Support FAB 仍 `test:payment-contract` 绿。**375** 抽屉不变。 | — | — | — | Brief `task-wide-menu-radial-index.md` · `wideMenuRadialLayout.js` | 2026-10-16 |

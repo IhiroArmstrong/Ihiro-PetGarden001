@@ -26,6 +26,12 @@ import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
+import {
+  WIDE_MENU_RADIAL_GROUP_KEYS,
+  WIDE_MENU_RADIAL_ICON_PX,
+  layoutWideMenuRadialIcons,
+  shouldDegenerateWideMenuRadialForButton
+} from '../core/wideMenuRadialLayout.js';
 import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v7';
@@ -145,6 +151,12 @@ export class WideIdleMoreMenu {
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
     this._expandedGroups = new Set(DEFAULT_EXPANDED_MENU_GROUPS);
+    /** @type {boolean} */
+    this._menuFlat = false;
+    /** @type {string | null} */
+    this._activeListGroup = null;
+    /** @type {number} */
+    this._radialFocusIdx = 0;
     this._localeUnsub = null;
     this._refreshingHomeCtas = false;
 
@@ -160,7 +172,10 @@ export class WideIdleMoreMenu {
     this._localeUnsub = onLocaleChange(() => {
       this._refreshLabels();
       this._refreshHomeCtas();
-      if (this._menuOpen) this._refreshItems();
+      if (this._menuOpen) {
+        this._refreshRadial();
+        this._refreshItems();
+      }
     });
   }
 
@@ -226,6 +241,14 @@ export class WideIdleMoreMenu {
     if (!this._isWide() || !this._idle || this._honestyBridgeActive) return;
     this._dismissIdleVisualPrimaryOverlays();
     this._menuOpen = true;
+    this._menuFlat = shouldDegenerateWideMenuRadialForButton(this.moreBtn);
+    this._activeListGroup = null;
+    this._radialFocusIdx = 0;
+    if (this._menuFlat) {
+      this._expandedGroups = new Set(DEFAULT_EXPANDED_MENU_GROUPS);
+    } else {
+      this._expandedGroups = new Set();
+    }
     this._popEscapeLayer?.();
     this._popEscapeLayer = pushOverlayEscapeLayer({
       id: 'wide-more-menu',
@@ -235,7 +258,12 @@ export class WideIdleMoreMenu {
       }
     });
     this._refreshItems();
+    this._refreshRadial();
+    this._syncMenuLayers();
     this._sync();
+    if (!this._menuFlat) {
+      document.addEventListener('keydown', this._onKeyDown, true);
+    }
     this.moreBtn?.setAttribute('aria-expanded', 'true');
     this.handlers.onMenuChange?.(true);
   }
@@ -246,8 +274,11 @@ export class WideIdleMoreMenu {
   closeMenu() {
     if (!this._menuOpen) return;
     this._menuOpen = false;
+    this._activeListGroup = null;
     this._popEscapeLayer?.();
     this._popEscapeLayer = null;
+    document.removeEventListener('keydown', this._onKeyDown, true);
+    this._syncMenuLayers();
     this._sync();
     this.moreBtn?.setAttribute('aria-expanded', 'false');
     this.handlers.onMenuChange?.(false);
@@ -324,6 +355,7 @@ export class WideIdleMoreMenu {
     this._dockObserver?.disconnect?.();
     this.wrap?.remove();
     this.menu?.remove();
+    this.radialRoot?.remove();
     this.backdrop?.remove();
     this.homeCtas?.remove();
     this.ctaRow?.remove();
@@ -413,15 +445,23 @@ export class WideIdleMoreMenu {
     this.listEl.className = 'ft-wide-more__list';
     this.menu.appendChild(this.listEl);
 
+    this.radialRoot = document.createElement('div');
+    this.radialRoot.id = 'ft-wide-more-radial';
+    this.radialRoot.className = 'ft-wide-more-radial';
+    this.radialRoot.hidden = true;
+    this.radialRoot.setAttribute('role', 'toolbar');
+    this.radialRoot.dataset.testid = 'ft-wide-more-radial';
+
     this.wrap.append(this.moreBtn);
     // Portal sheet + scrim to body so they can sit above Support/mute (z24)
     // without remaining trapped in the dock stacking context (z16).
-    document.body.append(this.backdrop, this.menu);
+    document.body.append(this.backdrop, this.radialRoot, this.menu);
 
     // Three balls + ⋯; leave hint / Honesty / breath / Sit+⚡ pills in dock for proxy
     this.ctaRow.append(this.homeCtas, this.wrap);
     dock.appendChild(this.ctaRow);
 
+    this._onKeyDown = (event) => this._handleMenuKeyDown(event);
     this._bindMenuEls();
     this._bindHomeCtas();
     this._observeDock();
@@ -676,11 +716,155 @@ export class WideIdleMoreMenu {
       this.homeCtas.classList.toggle('is-arrival-quick', keepQs);
     }
     if (this.moreBtn) this.moreBtn.hidden = !showMore;
-    const sheetOpen = this._menuOpen && showMore;
-    if (this.menu) this.menu.hidden = !sheetOpen;
-    if (this.backdrop) this.backdrop.hidden = !sheetOpen;
     if (!showMore) this._menuOpen = false;
+    this._syncMenuLayers();
     if (park) this._refreshHomeCtas();
+  }
+
+  /** @returns {void} */
+  _syncMenuLayers() {
+    const open = this._menuOpen && !this.moreBtn?.hidden;
+    if (!open) {
+      if (this.backdrop) this.backdrop.hidden = true;
+      if (this.menu) this.menu.hidden = true;
+      if (this.radialRoot) this.radialRoot.hidden = true;
+      document.body.classList.remove('ft-wide-more-radial-open');
+      return;
+    }
+    if (this.backdrop) this.backdrop.hidden = false;
+    if (this._menuFlat) {
+      if (this.menu) this.menu.hidden = false;
+      if (this.radialRoot) this.radialRoot.hidden = true;
+      document.body.classList.remove('ft-wide-more-radial-open');
+      return;
+    }
+    const listPhase = Boolean(this._activeListGroup);
+    if (this.menu) this.menu.hidden = !listPhase;
+    if (this.radialRoot) this.radialRoot.hidden = listPhase;
+    document.body.classList.toggle('ft-wide-more-radial-open', !listPhase);
+    if (!listPhase) this._placeRadial();
+  }
+
+  /** @returns {void} */
+  _refreshRadial() {
+    if (!this.radialRoot) return;
+    this.radialRoot.innerHTML = '';
+    /** @type {Record<string, string>} */
+    const glyph = {
+      MENU_GROUP_PRACTICE: '◎',
+      MENU_GROUP_RECORDS: '≡',
+      MENU_GROUP_INSPIRATION: '✦',
+      MENU_GROUP_NOT_ALONE: '○',
+      MENU_GROUP_PREFERENCES: '⚙'
+    };
+    for (const groupKey of WIDE_MENU_RADIAL_GROUP_KEYS) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ft-wide-more-radial__icon';
+      btn.dataset.group = groupKey;
+      btn.dataset.testid = `wide-more-radial-${groupKey}`;
+      btn.setAttribute('aria-label', t(groupKey));
+      btn.innerHTML = `<span class="ft-wide-more-radial__glyph" aria-hidden="true">${glyph[groupKey] || '•'}</span><span class="ft-wide-more-radial__name">${t(groupKey)}</span>`;
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        this._openRadialGroup(groupKey);
+      });
+      attachGlassHoverTip(btn, {
+        placement: 'top',
+        tipId: `ft-wide-more-radial-tip-${groupKey}`,
+        text: t(groupKey)
+      });
+      this.radialRoot.appendChild(btn);
+    }
+    this._placeRadial();
+  }
+
+  /** @returns {void} */
+  _placeRadial() {
+    if (!this.radialRoot || !this.moreBtn) return;
+    const rect = this.moreBtn.getBoundingClientRect();
+    if (rect.width < 8 || rect.height < 8) return;
+    const ax = rect.left + rect.width / 2;
+    const ay = rect.top + rect.height / 2;
+    const spots = layoutWideMenuRadialIcons(ax, ay);
+    const buttons = this.radialRoot.querySelectorAll('.ft-wide-more-radial__icon');
+    spots.forEach((spot, idx) => {
+      const btn = buttons[idx];
+      if (!btn) return;
+      btn.style.left = `${spot.cx}px`;
+      btn.style.top = `${spot.cy}px`;
+    });
+    this.radialRoot.style.setProperty('--radial-anchor-x', `${ax}px`);
+    this.radialRoot.style.setProperty('--radial-anchor-y', `${ay}px`);
+  }
+
+  /**
+   * @param {string} groupKey
+   * @returns {void}
+   */
+  _openRadialGroup(groupKey) {
+    this._activeListGroup = groupKey;
+    this._expandedGroups = new Set([groupKey]);
+    this._refreshItems();
+    this._syncMenuLayers();
+    const first = this.listEl?.querySelector('.ft-wide-more__item:not(:disabled)');
+    first?.focus?.();
+  }
+
+  /**
+   * @param {KeyboardEvent} event
+   * @returns {void}
+   */
+  _handleMenuKeyDown(event) {
+    if (!this._menuOpen || this._menuFlat) return;
+    if (!this._activeListGroup) {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        const delta = event.key === 'ArrowRight' ? 1 : -1;
+        const len = WIDE_MENU_RADIAL_GROUP_KEYS.length;
+        this._radialFocusIdx =
+          (this._radialFocusIdx + delta + len) % len;
+        const btn = this.radialRoot?.querySelector(
+          `[data-group="${WIDE_MENU_RADIAL_GROUP_KEYS[this._radialFocusIdx]}"]`
+        );
+        btn?.focus?.();
+        return;
+      }
+      if (event.key === 'Enter' || event.key === ' ') {
+        const focused = this.radialRoot?.querySelector(
+          '.ft-wide-more-radial__icon:focus'
+        );
+        const group =
+          focused?.getAttribute('data-group') ||
+          WIDE_MENU_RADIAL_GROUP_KEYS[this._radialFocusIdx];
+        if (group) {
+          event.preventDefault();
+          this._openRadialGroup(group);
+        }
+        return;
+      }
+    }
+    if (!this._activeListGroup || !this.listEl) return;
+    const items = [
+      ...this.listEl.querySelectorAll('.ft-wide-more__item:not(:disabled)')
+    ];
+    if (items.length === 0) return;
+    const idx = items.findIndex((el) => el === document.activeElement);
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      const next = items[Math.min(items.length - 1, idx < 0 ? 0 : idx + 1)];
+      next?.focus?.();
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      const next = items[Math.max(0, idx <= 0 ? 0 : idx - 1)];
+      next?.focus?.();
+    } else if (event.key === 'Enter') {
+      const active = document.activeElement;
+      if (active?.classList?.contains('ft-wide-more__item')) {
+        event.preventDefault();
+        active.click();
+      }
+    }
   }
 
   _refreshItems() {
@@ -718,11 +902,22 @@ export class WideIdleMoreMenu {
     });
 
     this.listEl.innerHTML = '';
+    const radialListOnly =
+      !this._menuFlat && Boolean(this._activeListGroup);
     /** @type {HTMLUListElement | null} */
     let sectionItems = null;
     for (const item of entries) {
       if (item.kind === 'group-label') {
-        const expanded = this._expandedGroups.has(item.labelKey);
+        if (radialListOnly) {
+          const showGroup =
+            item.labelKey === this._activeListGroup ||
+            (item.labelKey === 'ritual.menu_group' &&
+              this._activeListGroup === 'MENU_GROUP_PRACTICE');
+          if (!showGroup) continue;
+        }
+        const expanded = radialListOnly
+          ? true
+          : this._expandedGroups.has(item.labelKey);
         const sectionLi = document.createElement('li');
         sectionLi.className = 'ft-wide-more__section';
         sectionLi.dataset.group = item.labelKey;
@@ -977,6 +1172,77 @@ export class WideIdleMoreMenu {
       }
       .ft-wide-more__backdrop[hidden] {
         display: none !important;
+      }
+      .ft-wide-more-radial {
+        position: fixed;
+        inset: 0;
+        z-index: ${Z.SUPPORT_MODAL};
+        pointer-events: none;
+      }
+      .ft-wide-more-radial[hidden] {
+        display: none !important;
+      }
+      .ft-wide-more-radial__icon {
+        position: fixed;
+        width: ${WIDE_MENU_RADIAL_ICON_PX}px;
+        height: ${WIDE_MENU_RADIAL_ICON_PX}px;
+        margin: 0;
+        padding: 0;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        border: 1px solid rgba(139, 115, 85, 0.28);
+        background: rgba(255, 252, 245, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: rgba(74, 58, 40, 0.92);
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        pointer-events: auto;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9) inset,
+          0 3px 10px rgba(44, 31, 20, 0.1);
+        transition: transform 180ms ease, opacity 180ms ease;
+      }
+      .ft-wide-more-radial__glyph {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+      .ft-wide-more-radial__name {
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 4px);
+        transform: translateX(-50%);
+        max-width: 120px;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: rgba(255, 252, 245, 0.92);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: rgba(74, 58, 40, 0.9);
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 120ms ease;
+      }
+      .ft-wide-more-radial__icon:hover .ft-wide-more-radial__name,
+      .ft-wide-more-radial__icon:focus-visible .ft-wide-more-radial__name {
+        opacity: 1;
+      }
+      .ft-wide-more-radial__icon:active {
+        transform: translate(-50%, -50%) scale(0.94);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .ft-wide-more-radial__icon {
+          transition: opacity 120ms ease;
+        }
+        body.ft-wide-more-radial-open .ft-wide-more-radial__icon {
+          transform: translate(-50%, -50%);
+        }
       }
       .ft-wide-more__menu {
         position: fixed;
