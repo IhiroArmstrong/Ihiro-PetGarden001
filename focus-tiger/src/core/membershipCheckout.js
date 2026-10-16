@@ -188,7 +188,7 @@ export function isMembershipActiveLocally({
 
 /**
  * Advanced RitualFlow scenes unlock with Membership ∪ Sanctuary Lifetime.
- * Menu “Premium unlocked” and the status card use this — not subscription alone.
+ * Menu Subscription (unlocked testId) and the status card use this — not subscription alone.
  *
  * @param {object} [opts]
  * @param {Storage | null} [opts.storage]

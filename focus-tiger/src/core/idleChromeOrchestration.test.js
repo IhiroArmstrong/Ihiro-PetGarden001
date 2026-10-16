@@ -15,6 +15,7 @@ import {
   secondaryProxyForHintId,
   resolveSecondaryChromeDispatch,
   dispatchSecondaryChromeProxy,
+  ritualMenuLockAccessibleName,
   invokeHandler,
   resolveHandlerStrictEnv
 } from './idleChromeOrchestration.js';
@@ -516,30 +517,45 @@ describe('listSecondaryChromeEntries', () => {
     assert.equal(membershipIdx, localBackupIdx + 1);
     assert.equal(ritualsIdx, membershipIdx + 1);
     assert.equal(entries[ritualsIdx]?.kind, 'group-label');
+    assert.equal(entries[membershipIdx]?.labelKey, 'MENU_SUBSCRIPTION_ROW');
+    assert.equal(entries[membershipIdx]?.emphasis, undefined);
   });
 
-  it('membership row is beige subscribe CTA when scenes are locked', () => {
+  it('Subscription row uses CTA testId when scenes are locked', () => {
     const entries = listSecondaryChromeEntries('wide-more', {
       ...allOn,
       scenesEntitled: false
     });
     const row = entries.find((e) => e.proxy === 'membership');
-    assert.equal(row?.labelKey, 'MEMBERSHIP_MENU_CTA');
-    assert.equal(row?.emphasis, 'beige-cta');
+    assert.equal(row?.labelKey, 'MENU_SUBSCRIPTION_ROW');
+    assert.equal(row?.emphasis, undefined);
     assert.equal(row?.interactive, undefined);
     assert.equal(row?.testId, 'idle-membership-cta');
   });
 
-  it('membership row is You\'re subscribed when scenes are entitled', () => {
+  it('Subscription row uses unlocked testId when scenes are entitled', () => {
     const entries = listSecondaryChromeEntries('wide-more', {
       ...allOn,
       scenesEntitled: true
     });
     const row = entries.find((e) => e.proxy === 'membership');
-    assert.equal(row?.labelKey, 'MEMBERSHIP_MENU_UNLOCKED');
+    assert.equal(row?.labelKey, 'MENU_SUBSCRIPTION_ROW');
     assert.equal(row?.interactive, undefined);
     assert.equal(row?.emphasis, undefined);
     assert.equal(row?.testId, 'idle-membership-unlocked');
+  });
+
+  it('lock accessible name includes requires-subscription copy', () => {
+    const zh = ritualMenuLockAccessibleName(
+      '晨间仪式',
+      '需订阅，按回车查看。'
+    );
+    assert.match(zh, /需订阅/);
+    const en = ritualMenuLockAccessibleName(
+      'Morning Ritual',
+      'Requires subscription. Press Return to view.'
+    );
+    assert.match(en, /Requires subscription/);
   });
 
   it('confide row hidden while safety copy draft; visible only when gate open', () => {
@@ -626,25 +642,34 @@ describe('dispatchSecondaryChromeProxy', () => {
     assert.deepEqual(calls, ['clear', 'close', 'honesty']);
   });
 
-  it('does not invoke locked or static rows', () => {
-    let called = 0;
+  it('routes locked ritual rows to membership and still blocks static rows', () => {
+    const calls = [];
     assert.equal(
       dispatchSecondaryChromeProxy(
         'ritual-morning',
-        { handlers: { onRitualFlow: () => called++ } },
+        {
+          handlers: {
+            onRitualFlow: () => calls.push('ritual'),
+            onMembership: () => calls.push('membership')
+          },
+          close: () => calls.push('close'),
+          clearStage: () => calls.push('clear')
+        },
         { locked: true }
       ),
-      'blocked'
+      'invoked'
     );
+    assert.deepEqual(calls, ['clear', 'close', 'membership']);
     assert.equal(
       dispatchSecondaryChromeProxy(
         'newsletter',
-        { handlers: { onNewsletter: () => called++ } },
+        { handlers: { onNewsletter: () => calls.push('newsletter') } },
         { interactive: false }
       ),
       'blocked'
     );
-    assert.equal(called, 0);
+    assert.equal(calls.includes('newsletter'), false);
+    assert.equal(calls.includes('ritual'), false);
   });
 
   it('missing handler throws in dev/test and does not close chrome', () => {

@@ -274,9 +274,48 @@ export function invokeHandler(handlers, name, args = [], opts) {
   return undefined;
 }
 
+/** @param {string} rowLabel @param {string} lockA11y */
+export function ritualMenuLockAccessibleName(rowLabel, lockA11y) {
+  const label = String(rowLabel || '').trim();
+  const hint = String(lockA11y || '').trim();
+  if (!label) return hint;
+  if (!hint) return label;
+  return `${label}. ${hint}`;
+}
+
+/**
+ * Visual lock + accessible name for clickable unpaid ritual rows.
+ * Must stay enabled: first-knife lock opens Membership, not a disabled row.
+ *
+ * @param {HTMLElement} btn
+ * @param {SecondaryChromeEntry} item
+ * @param {(key: string) => string} translate
+ * @returns {void}
+ */
+export function decorateSecondaryLockButton(btn, item, translate) {
+  if (!btn || item?.locked !== true) return;
+  btn.classList.add('is-locked');
+  btn.removeAttribute('disabled');
+  btn.removeAttribute('aria-disabled');
+  const mark = document.createElement('span');
+  mark.className = 'ft-secondary-menu-lock';
+  mark.setAttribute('aria-hidden', 'true');
+  mark.textContent = '🔒';
+  btn.appendChild(mark);
+  const rowLabel =
+    typeof translate === 'function' ? translate(item.labelKey) : '';
+  const hint =
+    typeof translate === 'function' ? translate('RITUAL_MENU_LOCK_A11Y') : '';
+  btn.setAttribute('aria-label', ritualMenuLockAccessibleName(rowLabel, hint));
+  if (typeof translate === 'function') {
+    btn.title = translate('ritual.menu_locked');
+  }
+}
+
 /**
  * Look up proxy → handler and run chrome prep. Uses `invokeHandler`
  * (dev/test throw; production log). Does not close chrome when missing.
+ * Locked ritual rows open Membership (not blocked). Static rows stay blocked.
  *
  * @param {string | null | undefined} proxy
  * @param {{
@@ -292,8 +331,11 @@ export function invokeHandler(handlers, name, args = [], opts) {
  * @returns {'blocked' | 'missing-handler' | 'invoked' | 'unknown'}
  */
 export function dispatchSecondaryChromeProxy(proxy, host, entryMeta = {}) {
-  if (entryMeta.locked === true || entryMeta.interactive === false) {
+  if (entryMeta.interactive === false) {
     return 'blocked';
+  }
+  if (entryMeta.locked === true) {
+    return dispatchSecondaryChromeProxy('membership', host, {});
   }
   const spec = resolveSecondaryChromeDispatch(proxy);
   if (!spec) return 'unknown';
@@ -716,32 +758,18 @@ export function listSecondaryChromeEntries(surface, visibility) {
       labelKey: 'HELP_CENTER_MENU_LABEL',
       testId: 'idle-help-center'
     },
-    { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' }
+    { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' },
+    {
+      proxy: 'membership',
+      labelKey: 'MENU_SUBSCRIPTION_ROW',
+      testId: hasUnlockedAdvancedScenes(visibility)
+        ? 'idle-membership-unlocked'
+        : 'idle-membership-cta'
+    }
   ]);
 
   // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.
-  // One contextual row here (not the three pay SKUs) sits immediately above
-  // the Rituals heading (user 2026-08-15): beige subscribe CTA when locked;
-  // “Premium unlocked” when entitled (Membership ∪ Sanctuary Lifetime).
-  const scenesEntitled = hasUnlockedAdvancedScenes(visibility);
-  if (scenesEntitled) {
-    out.push(
-      attachSecondaryHandler({
-        proxy: 'membership',
-        labelKey: 'MEMBERSHIP_MENU_UNLOCKED',
-        testId: 'idle-membership-unlocked'
-      })
-    );
-  } else {
-    out.push(
-      attachSecondaryHandler({
-        proxy: 'membership',
-        labelKey: 'MEMBERSHIP_MENU_CTA',
-        emphasis: 'beige-cta',
-        testId: 'idle-membership-cta'
-      })
-    );
-  }
+  // Preferences · Subscription opens the existing membership card (knife 1).
 
   // Advanced RitualFlow scenes (entitlement-gated; free Breath stays home left ball).
   out.push({

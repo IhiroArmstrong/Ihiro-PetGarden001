@@ -1,0 +1,3 @@
+# feature/wide-menu-pay-slice
+
+| 菜单付费第一刀 · Subscription + 仪式锁开会员卡 | UI/交互 | 待人工测试 | **未购**：`?product=1` Idle → ⋯ / 抽屉 → Rituals 任一行（有淡锁）→ **0–1 秒内**见 `#yin-membership-card` 订阅视图，不见 `#ritual-flow`、不跳 Stripe；读屏名称含「需订阅」。Preferences → **Subscription**（`[data-testid=idle-membership-cta]`）同样开订阅卡，卡底 Restore 仍在。菜单**不得**再出现 Subscribe for more scenes / Premium unlocked。**已购**：`?product=1&entitlementMock=subscription` → 仪式行无锁、点开 `#ritual-flow`；Subscription（`idle-membership-unlocked`）开已订阅卡，见 Manage / Close，不见 Restore 表单。**对照**：右上 Support FAB 五卡仍可点。**375** 抽屉同验。自动化：`idleChromeOrchestration.test.js` · `menuReachabilityContract.test.js` · `npm run test:payment-contract`。 | — | — | — | Brief `task-wide-menu-radial-index.md` · `#yin-membership-card` | 2026-10-16 |

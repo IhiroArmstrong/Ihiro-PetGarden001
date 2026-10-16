@@ -30,7 +30,7 @@ Source: `src/core/kbLiveEntryRegistry.js`. Refresh: `node scripts/write-internal
 | `kb-live-sanctuary-nav` | menu | live | ⋯ → Practice → Navigate sanctuary (wide home compass ball shortcut) | SANCTUARY_NAV_MENU_LABEL | KB-FUNC-0030 |
 | `kb-live-local-backup` | menu | live | ⋯ → Preferences → Backup & restore | LOCAL_BACKUP_MENU_LABEL | KB-FUNC-0003 KB-FUNC-0015 |
 | `kb-live-community` | menu | live | ⋯ → Preferences → Community | COMMUNITY_MENU_LABEL | KB-FUNC-0031 |
-| `kb-live-membership` | menu | live | ⋯ → Membership CTA / Premium unlocked | MEMBERSHIP_MENU_CTA MEMBERSHIP_MENU_UNLOCKED | KB-FUNC-0032 |
+| `kb-live-membership` | menu | live | ⋯ → Preferences → Subscription | MENU_SUBSCRIPTION_ROW RITUAL_MENU_LOCK_A11Y | KB-FUNC-0032 |
 | `kb-live-hud-progress` | hud | live | Top-left HUD · Today shared sitting | HUD_PROGRESS_SHARED_SITTING | KB-FUNC-0004 |
 | `kb-live-ritual-morning` | ritual | entitlement-gated | ⋯ → Rituals → ritual.morning.menu | ritual.morning.menu | KB-FUNC-0024 |
 | `kb-live-ritual-emotional-reset` | ritual | entitlement-gated | ⋯ → Rituals → ritual.emotional_reset.menu | ritual.emotional_reset.menu | KB-FUNC-0025 |

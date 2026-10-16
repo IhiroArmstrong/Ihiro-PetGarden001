@@ -915,17 +915,17 @@
   标题: 会员从哪开
   适用场景: 想找订阅入口，或分不清会员、终身通行证和请茶的区别
   内容正文: |
-    短答（en）：Open More (⋯) or the drawer. Just above Rituals the row says Subscribe for more scenes, or Premium unlocked if advanced scenes are already open. Membership is optional and can be canceled anytime — it opens the same advanced rituals and ambience as Sanctuary Lifetime. A tea tip does not unlock those. Sit with Yin works without it. Yin only points here and does not read prices aloud.
-    指路：菜单行 `MEMBERSHIP_MENU_CTA` / `MEMBERSHIP_MENU_UNLOCKED`（proxy `membership`，紧挨 Rituals 标题上方）→ `idleChromeOrchestration.js`。卡片文案 `MEMBERSHIP_CARD_BLURB`。与请茶分工：请茶不解锁场景。与 0024–0026 分工：本条只指路会员行，不念仪式步骤。
+    短答（en）：Open More (⋯) or the drawer → Preferences → Subscription. That row opens the membership card. Locked ritual rows also open the same card. Membership is optional and can be canceled anytime — it opens the same advanced rituals and ambience as Sanctuary Lifetime. A tea tip does not unlock those. Sit with Yin works without it. Yin only points here and does not read prices aloud.
+    指路：菜单行 `MENU_SUBSCRIPTION_ROW`（proxy `membership`，Preferences 末）→ `idleChromeOrchestration.js`。卡片文案 `MEMBERSHIP_CARD_BLURB`。与请茶分工：请茶不解锁场景。与 0024–0026 分工：本条只指路会员行，不念仪式步骤。
     禁止：FOMO / 硬推销；禁止在短答里念价格；禁止说成不订阅就不能 Sit。
   yin_may_retrieve: 是
   来源: 界面文案
   审核状态: 已通过
   审核人: PO（2026-09-27 · 书面放行成批入库）
   风险标记: 否
-  适用产品版本: 现网会员菜单行（live · 未解锁为 CTA，已解锁为 Premium unlocked）
-  更新时间: 2026-09-27
-  locale_keys: [MEMBERSHIP_MENU_CTA, MEMBERSHIP_MENU_UNLOCKED, MEMBERSHIP_MENU_LABEL, MEMBERSHIP_CARD_BLURB, MEMBERSHIP_CLOSE, SUPPORT_MODAL_SUBTITLE]
+  适用产品版本: 现网 Preferences · Subscription（live · 锁仪式行也可打开同一张会员卡）
+  更新时间: 2026-10-16
+  locale_keys: [MENU_SUBSCRIPTION_ROW, MEMBERSHIP_MENU_LABEL, MEMBERSHIP_CARD_BLURB, MEMBERSHIP_CLOSE, SUPPORT_MODAL_SUBTITLE]
   检索关键词: [Yin Membership, 会员, Subscribe for more scenes, Premium unlocked, membership menu, 订阅会员, where is membership, 会员从哪开]
 ```
 

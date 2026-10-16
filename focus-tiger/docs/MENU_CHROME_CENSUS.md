@@ -37,7 +37,7 @@
 | 角落 / 快捷入口 | 菜单降级路径 | 结论 |
 |---|---|---|
 | 语言地球 `#language-preference-fab` | Preferences → Language（`shouldOfferLanguagePicker()` 为真时） | **已在菜单** |
-| Support Yin `#yin-support-fab` | 菜单有 Membership CTA / Premium unlocked **一行**；五卡（Sanctuary / Membership / Tea / Pro / Add-on）全目录仍只在 FAB 模态 | **半在菜单。** 降级「打开付费」够；目录级对等没有。**2026-09-15 拍板**：五卡不进菜单。维持现状 |
+| Support Yin `#yin-support-fab` | 菜单 Preferences 有 **Subscription** 一行（打开既有会员卡）；未购仪式锁行也可打开同一张卡；五卡（Sanctuary / Membership / Tea / Pro / Add-on）全目录仍只在 FAB 模态 | **半在菜单。** 降级「打开付费」够；目录级对等没有。**2026-09-15 拍板**：五卡不进菜单。**2026-10-16 第一刀**：去掉 Rituals 上方 CTA / Premium unlocked 行。 |
 | 寅币商店 | Practice → Yin Coin（闸关则隐） | **已在菜单** |
 | 设置类（提醒、语言、备份、社区、通讯） | Preferences 组 | **已在菜单** |
 

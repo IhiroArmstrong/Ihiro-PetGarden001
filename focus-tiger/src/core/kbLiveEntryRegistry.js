@@ -521,14 +521,14 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     surface: 'menu',
     proxy: 'membership',
     labelKeys: Object.freeze([
-      'MEMBERSHIP_MENU_CTA',
-      'MEMBERSHIP_MENU_UNLOCKED'
+      'MENU_SUBSCRIPTION_ROW',
+      'RITUAL_MENU_LOCK_A11Y'
     ]),
-    menuPath: '⋯ → Membership CTA / Premium unlocked',
+    menuPath: '⋯ → Preferences → Subscription',
     liveStatus: 'live',
     codeAnchors: Object.freeze([
       "proxy: 'membership'",
-      'MEMBERSHIP_MENU_CTA'
+      'MENU_SUBSCRIPTION_ROW'
     ]),
     authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js']),
     catalogKbIds: Object.freeze(['KB-FUNC-0032'])
