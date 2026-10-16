@@ -42,6 +42,23 @@ import {
   summarizeRoutingHoldoutScores,
   validateRoutingHoldoutCounts
 } from '../../src/core/confide/confideRoutingClassHoldoutLab.js';
+import {
+  CR45_BAND_A_CLASS_IDS,
+  cr45MixedShapeFromClauses,
+  cr45SaltFromHoldoutItemId,
+  evaluateCr45ShadowMergeOutcome,
+  isCr45AeAnchorHoldoutItem,
+  resolveCr45ShadowSecondSegment
+} from '../../src/core/confide/confideCr45MixedReplyShadow.js';
+import {
+  formatCaliberSplitHoldoutStdout,
+  scoreBandCHardGateRow,
+  summarizeCaliberSplitHoldout
+} from '../../src/core/confide/confideRoutingHoldoutCaliberSplit.js';
+import {
+  resolveHoldoutShadowCatalogId,
+  resolveHoldoutShadowDataSource
+} from '../../src/core/confide/confideRoutingHoldoutShadowPath.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FOCUS_TIGER = path.resolve(__dirname, '../..');
@@ -127,30 +144,99 @@ async function main() {
 
   /** @type {ReturnType<typeof scoreRoutingHoldoutRow>[]} */
   const scored = [];
+  /** @type {object[]} */
+  const bandARows = [];
+  /** @type {object[]} */
+  const bandBRows = [];
+  /** @type {object[]} */
+  const bandCRows = [];
+  /** @type {object[]} */
+  const bandDAnchors = [];
   try {
     for (const raw of parsed.items) {
       const meta = stripRoutingHoldoutItem(raw);
       if (!meta) continue;
       const text = typeof raw.text === 'string' ? raw.text : '';
+      const locale = String(raw.locale || raw.lang || 'zh').trim() || 'zh';
       const clauses = [];
       for (const part of splitUtteranceByPunctuation(text)) {
         const gate = await hold.classifyProductKnowledgeGate(part);
         clauses.push({
+          text: part,
           productScore: Number(gate.score),
-          moodScore: Number(gate.moodScore)
+          moodScore: Number(gate.moodScore),
+          gate
         });
       }
       const productPath = decideShadowProductPathA({
         maxDelta: maxClauseProductMinusMood(clauses),
         margin: PRODUCT_MINUS_MOOD_MARGIN
       });
-      scored.push(scoreRoutingHoldoutRow({ ...meta, productPath }));
+      const rowScore = scoreRoutingHoldoutRow({ ...meta, productPath });
+      scored.push(rowScore);
+
+      const wholeGate = await hold.classifyProductKnowledgeGate(text);
+      const dataSource = resolveHoldoutShadowDataSource({
+        text,
+        productPath,
+        gate: wholeGate
+      });
+      const catalogId = resolveHoldoutShadowCatalogId({
+        text,
+        productPath,
+        gate: wholeGate
+      });
+      bandCRows.push(
+        scoreBandCHardGateRow({
+          classId: meta.classId,
+          text,
+          dataSource,
+          catalogId
+        })
+      );
+
+      if (isCr45AeAnchorHoldoutItem(raw)) {
+        bandDAnchors.push({
+          id: String(raw.id || ''),
+          pass: dataSource === 'product_knowledge'
+        });
+      }
+
+      if (CR45_BAND_A_CLASS_IDS.includes(meta.classId)) {
+        const { productIdx } = cr45MixedShapeFromClauses(clauses);
+        const productClause = clauses[productIdx] || clauses[0] || { text: '' };
+        const second = resolveCr45ShadowSecondSegment(productClause.text);
+        const cr45 = evaluateCr45ShadowMergeOutcome({
+          text,
+          clauses,
+          locale,
+          salt: cr45SaltFromHoldoutItemId(raw.id),
+          aeAnchor: isCr45AeAnchorHoldoutItem(raw),
+          classId: meta.classId,
+          secondKind: second.kind,
+          canonicalSecondText: second.canonicalSecondText,
+          actualSecondText: second.actualSecondText
+        });
+        bandARows.push({
+          classId: meta.classId,
+          pathPass: rowScore.pass === true,
+          mergeStructPass: cr45.mergeStructurallyCorrect
+        });
+      } else if (meta.classId === 'life-emotion' || meta.classId === 'chitchat') {
+        bandBRows.push({ classId: meta.classId, pass: rowScore.pass === true });
+      }
     }
   } finally {
     await hold.dispose();
   }
 
   const summary = summarizeRoutingHoldoutScores(scored);
+  const caliber = summarizeCaliberSplitHoldout({
+    bandARows,
+    bandBRows,
+    bandCRows,
+    bandDAnchors
+  });
   const epoch = Date.now();
   await mkdir(LAB_DIR, { recursive: true });
   const jsonPath = path.join(LAB_DIR, `kb-routing-class-holdout-${epoch}.json`);
@@ -162,7 +248,8 @@ async function main() {
         brief_version: parsed.briefVersion,
         holdout_set_version: parsed.holdoutSetVersion,
         product_minus_mood_margin: PRODUCT_MINUS_MOOD_MARGIN,
-        summary
+        summary,
+        caliber_split: caliber
       },
       null,
       2
@@ -170,6 +257,7 @@ async function main() {
     'utf8'
   );
   process.stdout.write(formatRoutingHoldoutSummaryStdout(summary));
+  process.stdout.write(formatCaliberSplitHoldoutStdout(caliber));
   process.stdout.write(`[routing-class-holdout] json: ${jsonPath}\n`);
 }
 
