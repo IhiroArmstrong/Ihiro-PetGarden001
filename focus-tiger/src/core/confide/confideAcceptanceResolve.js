@@ -22,6 +22,7 @@ import {
   mayTryConfideProductKnowledge,
   probeProductKnowledgeCatalog
 } from './confideProductKnowledge.js';
+import { catalogKeywordSpeakAllowed } from './confideFactFirstSpeak.js';
 import { resolveProductKnowledgeGateAction } from './confideProductKnowledgeSemantic.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
@@ -80,11 +81,17 @@ export function resolveConfideMetaQueryBucket(text, route = confideClassify(text
     })
   ) {
     const catalog = probeProductKnowledgeCatalog(text);
+    const keywordOk = catalogKeywordSpeakAllowed({
+      catalogHit: Boolean(catalog.hit),
+      catalogId: catalog.id,
+      embeddingState: 'not_ready',
+      text
+    });
     const action = resolveProductKnowledgeGateAction({
       text,
       embeddingState: 'not_ready',
       semanticIsProduct: false,
-      catalogHit: Boolean(catalog.hit)
+      catalogHit: keywordOk
     });
     if (action === 'hit') return 'product_knowledge';
     if (action === 'honesty') return 'product_knowledge_honesty';

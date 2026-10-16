@@ -257,6 +257,24 @@ export function isHighOverlapWithUserLine(raw, userText) {
 }
 
 /**
+ * Generated companionship must not invent device totals or product facts (CR-50).
+ * Mechanism: numeric duration + practice/sit verbs. Not a user-ask list.
+ * @param {unknown} raw
+ * @returns {boolean}
+ */
+export function isInventedDeviceOrProductFactReply(raw) {
+  const text = String(raw || '');
+  if (!text.trim()) return false;
+  const hasCount =
+    /\b\d+\s*(?:minute|min|hour|day)s?\b/i.test(text) || /\d+\s*(?:分钟|小時|小时|天)/.test(text);
+  if (!hasCount) return false;
+  return (
+    /\b(?:practi[cs]e|practi[cs]ed|sat|sits|sitting|meditat)/i.test(text) ||
+    /练|坐|練習|练习|冥想/.test(text)
+  );
+}
+
+/**
  * @param {unknown} raw
  * @param {{ priorReplies?: unknown, userText?: unknown }} [opts]
  * @returns {string | null}
@@ -274,6 +292,7 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   if (!text) return null;
   if (TRIVIAL_ONLY_REPLIES.test(text)) return null;
   if (isBareEmotionLabelReply(text)) return null;
+  if (isInventedDeviceOrProductFactReply(text)) return null;
   if (BANNED.some((re) => re.test(text))) return null;
   if (isHollowCompanionObserveReply(text)) return null;
   if (isGenericCubTheaterReply(text)) return null;

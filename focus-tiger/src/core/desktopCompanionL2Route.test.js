@@ -234,6 +234,8 @@ describe('desktop companion L2 persona / sanitize', () => {
       }),
       'Clouds drift.'
     );
+    assert.match(prompt, /No invented minutes, buttons, or catalog facts/i);
+    assert.equal(sanitizeCompanionL2Reply('You have practiced 40 minutes on this device.'), null);
     assert.equal(sanitizeCompanionL2Reply('You should try to breathe slowly.'), null);
     assert.equal(sanitizeCompanionL2Reply('你应该深呼吸。'), null);
     assert.equal(sanitizeCompanionL2Reply(''), null);
