@@ -7,8 +7,10 @@ import { test, expect } from '@playwright/test';
 import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   expandWideMoreMenuGroup,
-  openFreshProductShell
+  openFreshProductShell,
+  pickWideMoreRadialGroup
 } from './helpers/product-shell.js';
+import { wideMoreMenuGroupForProxy } from '../src/core/wideMenuRadialLayout.js';
 import {
   MENU_RESULT_FORBIDDEN_TEXT,
   listMenuReachabilityRows
@@ -155,14 +157,22 @@ async function openMenu(page, surface) {
     const btn = page.locator('#ft-wide-more-btn');
     await expect(btn, '⋯ available').toBeVisible({ timeout: 8_000 });
     if (
-      !(await page.locator('#ft-wide-more-menu').isVisible().catch(() => false))
+      !(await page
+        .locator('#ft-wide-more-radial, #ft-wide-more-menu')
+        .isVisible()
+        .catch(() => false))
     ) {
       await btn.click();
     }
-    await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
+    await expect(
+      page.locator('#ft-wide-more-radial, #ft-wide-more-menu')
+    ).toBeVisible({
       timeout: 8_000
     });
-    await expandAllWideGroups(page);
+    const radial = page.locator('#ft-wide-more-radial');
+    if (!(await radial.isVisible().catch(() => false))) {
+      await expandAllWideGroups(page);
+    }
     return;
   }
   const grabber = page.locator('.ft-narrow-grabber');
@@ -234,6 +244,10 @@ async function walkMenu(page, surface, menuSelector) {
   await prepareIdle(page);
   for (const row of clickable) {
     await openMenu(page, surface);
+    if (surface === 'wide-more') {
+      const groupKey = wideMoreMenuGroupForProxy(row.proxy);
+      if (groupKey) await pickWideMoreRadialGroup(page, groupKey);
+    }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
     await item.scrollIntoViewIfNeeded();
     await expect(item, `row ${row.proxy} listed`).toBeVisible({
@@ -248,6 +262,10 @@ async function walkMenu(page, surface, menuSelector) {
 
   await openMenu(page, surface);
   for (const row of inert) {
+    if (surface === 'wide-more') {
+      const groupKey = wideMoreMenuGroupForProxy(row.proxy);
+      if (groupKey) await pickWideMoreRadialGroup(page, groupKey);
+    }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
     await item.scrollIntoViewIfNeeded();
     await expect(item, `inert ${row.proxy}`).toBeVisible();

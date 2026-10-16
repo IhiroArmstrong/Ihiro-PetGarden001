@@ -9,6 +9,7 @@ import { expectOpenHintBubblesAtMost } from './helpers/hints-concurrency.js';
 import {
   expandWideMoreMenuGroup,
   openFreshProductShell,
+  pickWideMoreRadialGroup,
   quickStartFocus
 } from './helpers/product-shell.js';
 
@@ -31,6 +32,18 @@ const WIDE_MORE_ROW_GROUP = Object.freeze({
   'zen-cinema': 'MENU_GROUP_INSPIRATION',
   'daily-quote': 'MENU_GROUP_INSPIRATION'
 });
+
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {string} [groupKey]
+ */
+async function openWideMoreList(page, groupKey = 'MENU_GROUP_PRACTICE') {
+  await page.locator('#ft-wide-more-btn').click();
+  await pickWideMoreRadialGroup(page, groupKey);
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  return menu;
+}
 
 /**
  * Sit / idle-after-session auto tip visibility (not geometry vs menu).
@@ -90,25 +103,24 @@ test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible({ timeout: 15_000 });
   await more.click();
+  await expect(page.locator('#ft-wide-more-radial')).toBeVisible({
+    timeout: 5_000
+  });
+  await expect(page.locator('#ft-wide-more-backdrop')).toBeVisible();
+  await pickWideMoreRadialGroup(page, 'MENU_GROUP_PRACTICE');
   const menu = page.locator('#ft-wide-more-menu');
   await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expect(page.locator('#ft-wide-more-backdrop')).toBeVisible();
   await expect(
     menu.locator('.ft-wide-more__section-header[data-group="MENU_GROUP_PRACTICE"]')
+  ).toBeVisible();
+  await expect(
+    menu.locator('.ft-wide-more__section-header[data-group="ritual.menu_group"]')
   ).toBeVisible();
   await expect(
     menu.locator(
       '.ft-wide-more__section-header[data-group="MENU_GROUP_INSPIRATION"]'
     )
-  ).toBeVisible();
-  await expect(
-    menu.locator(
-      '.ft-wide-more__section-header[data-group="MENU_GROUP_PREFERENCES"]'
-    )
-  ).toBeVisible();
-  await expect(
-    menu.locator('.ft-wide-more__section-header[data-group="ritual.menu_group"]')
-  ).toBeVisible();
+  ).toHaveCount(0);
   const box = await menu.boundingBox();
   const vp = page.viewportSize();
   expect(box).toBeTruthy();
@@ -122,6 +134,7 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   const more = page.locator('#ft-wide-more-btn');
   await expect(more).toBeVisible({ timeout: 15_000 });
   await more.click();
+  await pickWideMoreRadialGroup(page, 'MENU_GROUP_PRACTICE');
   await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
     timeout: 5_000
   });
@@ -134,10 +147,7 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   await page.evaluate(() => window.__companionModePicker?.hide?.());
   await expect(page.locator('.session-start-dock__panel')).toBeHidden();
 
-  await more.click();
-  await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
-    timeout: 5_000
-  });
+  await openWideMoreList(page, 'MENU_GROUP_PREFERENCES');
   await expandWideMoreMenuGroup(page, 'MENU_GROUP_PREFERENCES');
   const reminderRow = page.locator('#ft-wide-more-menu [data-proxy="reminder"]');
   await reminderRow.scrollIntoViewIfNeeded();
@@ -211,8 +221,7 @@ test('wide Idle: ⋯ has no Sound row; Honesty stays in Practice', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  const more = page.locator('#ft-wide-more-btn');
-  await more.click();
+  await openWideMoreList(page, 'MENU_GROUP_PRACTICE');
   await expect(page.locator('#ft-wide-more-menu [data-proxy="honesty"]')).toBeVisible();
   await expect(page.locator('#ft-wide-more-menu [data-proxy="sound"]')).toHaveCount(0);
   await expect(page.locator('#ft-wide-home-honesty')).toBeVisible();
@@ -232,9 +241,7 @@ test('wide ⋯: unread row mint only — no floating badge double', async ({
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
+  const menu = await openWideMoreList(page, 'MENU_GROUP_PRACTICE');
 
   // Row host mint stays (unread).
   await expect(
@@ -275,9 +282,7 @@ test('wide ⋯: Sit auto tip hidden while menu open (no hover required)', async 
     .locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"][open]')
     .waitFor({ state: 'visible', timeout: 2_000 })
     .catch(() => {});
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
+  const menu = await openWideMoreList(page, 'MENU_GROUP_PRACTICE');
 
   await expect
     .poll(
@@ -303,9 +308,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
     window.__onboardingHints?.store?.clear?.();
     window.__onboardingHints?.syncDiscoveryDots?.();
   });
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
+  const menu = await openWideMoreList(page, 'MENU_GROUP_PRACTICE');
 
   const proxies = /** @type {const} */ ([
     'companion',
@@ -366,10 +369,7 @@ test('wide ⋯: row hover tip matrix + no Sit tip flash on switch', async ({
 
 test('wide Idle: Zen Cinema row lives in Inspiration', async ({ page }) => {
   await openFreshProductShell(page);
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
+  const menu = await openWideMoreList(page, 'MENU_GROUP_INSPIRATION');
   await expect(menu.locator('[data-proxy="zen-cinema"]')).toBeVisible();
 });
 
@@ -384,9 +384,7 @@ test('wide Idle: Five Moments Compass row opens card with backdrop dim', async (
       /* ignore */
     }
   });
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
+  const menu = await openWideMoreList(page, 'MENU_GROUP_PRACTICE');
   await expect(menu.locator('[data-proxy="five-moments"]')).toBeVisible();
   await menu.locator('[data-proxy="five-moments"]').click();
   const card = page.locator('#five-moments-compass');
@@ -397,8 +395,7 @@ test('wide Idle: Five Moments Compass row opens card with backdrop dim', async (
   await backdrop.click({ position: { x: 12, y: 12 } });
   await expect(card).toBeHidden({ timeout: 5_000 });
   await expect(backdrop).toBeHidden({ timeout: 5_000 });
-  await page.locator('#ft-wide-more-btn').click();
-  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await openWideMoreList(page, 'MENU_GROUP_PRACTICE');
   await menu.locator('[data-proxy="five-moments"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
   await expect(backdrop).toBeVisible({ timeout: 5_000 });
@@ -415,9 +412,7 @@ test('wide Idle: Yin Collections row opens panel with backdrop dim', async ({
       /* ignore */
     }
   });
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
+  const menu = await openWideMoreList(page, 'MENU_GROUP_RECORDS');
   await expect(menu.locator('[data-proxy="yin-coin"]')).toBeVisible();
   await menu.locator('[data-proxy="yin-coin"]').click();
   const panel = page.locator('#yin-coin-panel');
@@ -429,8 +424,7 @@ test('wide Idle: Yin Collections row opens panel with backdrop dim', async ({
   await backdrop.click({ position: { x: 12, y: 12 } });
   await expect(panel).toBeHidden({ timeout: 5_000 });
   await expect(backdrop).toBeHidden({ timeout: 5_000 });
-  await page.locator('#ft-wide-more-btn').click();
-  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await openWideMoreList(page, 'MENU_GROUP_RECORDS');
   await menu.locator('[data-proxy="yin-coin"]').click();
   await expect(panel).toBeVisible({ timeout: 5_000 });
   await expect(backdrop).toBeVisible({ timeout: 5_000 });
@@ -440,10 +434,7 @@ test('wide Idle: Quiet Line row opens quote card and save stays available', asyn
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
+  const menu = await openWideMoreList(page, 'MENU_GROUP_INSPIRATION');
   await expect(menu.locator('[data-proxy="daily-quote"]')).toBeVisible();
   await menu.locator('[data-proxy="daily-quote"]').click();
   const card = page.locator('#daily-zen-quote-card');
@@ -456,9 +447,7 @@ test('wide Idle: Quiet Line row opens quote card and save stays available', asyn
   await expect(card).toBeHidden({ timeout: 5_000 });
   await expect(backdrop).toBeHidden({ timeout: 5_000 });
   // Reflow: reopen menu → card again
-  await page.locator('#ft-wide-more-btn').click();
-  await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
+  await openWideMoreList(page, 'MENU_GROUP_INSPIRATION');
   await menu.locator('[data-proxy="daily-quote"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
   await expect(backdrop).toBeVisible({ timeout: 5_000 });
@@ -468,10 +457,7 @@ test('wide Idle: Wallpapers row opens card with backdrop dim and blank dismiss',
   page
 }) => {
   await openFreshProductShell(page);
-  await page.locator('#ft-wide-more-btn').click();
-  const menu = page.locator('#ft-wide-more-menu');
-  await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
+  const menu = await openWideMoreList(page, 'MENU_GROUP_INSPIRATION');
   await expect(menu.locator('[data-proxy="wallpapers"]')).toBeVisible();
   await menu.locator('[data-proxy="wallpapers"]').click();
   const card = page.locator('#digital-wallpapers-card');
@@ -483,9 +469,7 @@ test('wide Idle: Wallpapers row opens card with backdrop dim and blank dismiss',
   await backdrop.click({ position: { x: 12, y: 12 } });
   await expect(card).toBeHidden({ timeout: 5_000 });
   await expect(backdrop).toBeHidden({ timeout: 5_000 });
-  await page.locator('#ft-wide-more-btn').click();
-  await expect(menu).toBeVisible({ timeout: 5_000 });
-  await expandWideMoreMenuGroup(page, 'MENU_GROUP_INSPIRATION');
+  await openWideMoreList(page, 'MENU_GROUP_INSPIRATION');
   await menu.locator('[data-proxy="wallpapers"]').click();
   await expect(card).toBeVisible({ timeout: 5_000 });
   await expect(backdrop).toBeVisible({ timeout: 5_000 });
