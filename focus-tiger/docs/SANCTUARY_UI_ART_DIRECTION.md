@@ -191,6 +191,7 @@ D.9 的 Reject **不是**「以后再看」，是**本轮明确不做**。若有
 - 宽屏 `#ft-wide-more-menu`：已有四组标题。本条只加 **accordion（默认展开当前 section）+ 字重**，**不重组 IA**（Journey / Presence / Collections 不拆成新的 Practice vs Moments 产品分组）。
 - 宽屏面板 max-width **320–360px**，上限 **380px**（面板宽度，不是视口断点）。打开后仍须能看见 Yin；列表不得竖切面部（现网契约保留）。
 - 窄屏继续 `#ft-narrow-options-drawer` 上滑抽屉，**不**把宽屏侧栏搬到 375。
+- **2026-10-16 方向已点头、未开工**：宽屏以后用底部 `⋯` 上的五个组图标当索引，点开后仍是本条玻璃列表。见 [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。在该 Brief 第三刀开工前，本条「不重组 IA」仍然管现网。
 
 ## D.4 Collections `#yin-coin-panel` — Adopt + Adopt-as
 

@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **宽屏菜单五图标索引（2026-10-16 · 纯文档 · 未开工）**：底部 `⋯` 展开五个现有组，点开后仍是玻璃列表；窄屏仍是抽屉。登录维持灰行；静思印揭晓前不进菜单；付费状态改到仪式锁和 Preferences 的 Subscription 行。Brief [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。口令「开工菜单第一刀」只做付费。
+
 - **Voice Input V1 Brief（2026-09-24 · 纯文档）**：`task-voice-input-v1.md`。共用 Speak to type；首发只挂倾诉 / Arrival 手写意图 / Reflection 三问；Electron 英语；倾诉禁止注入云 STT。拍板 ≠ 开工；第一口令「开工 Voice Input 探针」。
 
 - **KB 路由回归矩阵（2026-09-22 · A 类单测）**：`confideKbRoutingMatrix.js` 锁寅币 / 备份内容 / 时长空格 / 观察翼诚实空态；拉伸变体记 `probe` 漏检率，不手测一句补一条正则。with-prior 与 Stage 2 gray→功能桶**不**套本矩阵，改走 2026-10-12 样本量复核。Brief `task-confide-kb-routing-matrix.md`。
