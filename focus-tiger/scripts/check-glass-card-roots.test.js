@@ -6,11 +6,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { A11_DARK_VOICE_CARD_BEFORE_1147 } from './fixtures/a11-dark-voice-card-before-1147.js';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   classifyGlassRootFill,
+  GLASS_CARD_ROOT_HOLDOUT_IDS,
   runGlassCardRootCheck,
   scanGlassCardRootSource
 } from './check-glass-card-roots.js';
+
+const here = dirname(fileURLToPath(import.meta.url));
 
 test('#1147 dark voice-card fixture fails as a dark plate', () => {
   const result = scanGlassCardRootSource(A11_DARK_VOICE_CARD_BEFORE_1147, {
@@ -45,4 +51,18 @@ test('JS template interpolations before background do not hide sanctuary glass',
 
 test('live registered card roots stay sanctuary glass', () => {
   assert.equal(runGlassCardRootCheck(), true);
+});
+
+test('presence-signals-panel is sanctuary glass, not an opaque-cream holdout', () => {
+  assert.equal(GLASS_CARD_ROOT_HOLDOUT_IDS.includes('presence-signals-panel'), false);
+  const src = readFileSync(
+    join(here, '../src/ui/PresenceSignalsPanelUI.js'),
+    'utf8'
+  );
+  const result = scanGlassCardRootSource(src, {
+    id: 'presence-signals-panel',
+    selectors: ['#presence-signals-panel', '.presence-signals-panel']
+  });
+  assert.equal(result.ok, true, result.problems.join('; '));
+  assert.ok(result.classes.includes('token'));
 });

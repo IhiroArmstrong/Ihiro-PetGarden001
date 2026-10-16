@@ -47,12 +47,11 @@ export const GLASS_CARD_EXTRA_ROOT_TARGETS = Object.freeze([
 ]);
 
 /**
- * Live roots that are not sanctuary glass yet. A11.1 does not restyle them.
- * Dark plates on these ids still fail. Opaque cream waits for A11.2.
+ * Live roots that are not sanctuary glass yet.
+ * Dark plates on these ids still fail. Opaque cream is no longer held out
+ * (A11.2 moved `#presence-signals-panel` onto `GLASS_FILL`).
  */
-export const GLASS_CARD_ROOT_HOLDOUT_IDS = Object.freeze([
-  'presence-signals-panel'
-]);
+export const GLASS_CARD_ROOT_HOLDOUT_IDS = Object.freeze([]);
 
 /**
  * Cards often use `#id` plus a shorter class (e.g. yin-membership-card → .yin-membership).

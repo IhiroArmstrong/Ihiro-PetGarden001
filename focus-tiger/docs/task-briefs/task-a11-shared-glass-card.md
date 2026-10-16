@@ -87,7 +87,7 @@ R8：`glassPanelStyles.js` 存在，但不调用也不会出错。#1147 只给�
 |---|---|---|
 | **本 Brief** | A | 锁范围 |
 | **A11.1** | A | 工厂 + 扫描 + #1147 夹具 |
-| **A11.2** | 仅当有卡根仍非 token | 把那些卡根迁到工厂；有可见换肤则升 B |
+| **A11.2** | **B** | 在场信号卡 `#presence-signals-panel` 迁工厂并换暖米玻璃。Brief：`task-a11-2-presence-glass.md` |
 
 ## 并行线约定
 

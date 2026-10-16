@@ -12,9 +12,12 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'PresenceSignalsPanelUI.js'), 'utf8');
 
-test('Presence panel uses paper quiet-object surface and right dock on wide', () => {
-  assert.match(src, /PAPER_FILL/);
-  assert.doesNotMatch(src, /GLASS_BLUR_CSS/);
+test('Presence panel uses sanctuary glass and right dock on wide', () => {
+  assert.match(src, /createGlassCard/);
+  assert.match(src, /GLASS_FILL/);
+  assert.match(src, /GLASS_BLUR_CSS/);
+  assert.doesNotMatch(src, /PAPER_FILL/);
+  assert.doesNotMatch(src, /rgba\(255, 249, 240, 0\.98\)/);
   assert.match(src, /@media \(min-width: 480px\)/);
   assert.match(src, /left: max\(56vw, calc\(100vw - 360px\)\)/);
 });
