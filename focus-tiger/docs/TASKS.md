@@ -545,9 +545,69 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `a11-shared-glass-card` · feature · Brief 待 PO 点头 · 线 2 · 2026-10-16
+
+根因盘点 A11：浮动卡根必须经共享暖米玻璃工厂；静态检查拦住自写深色底板。本回合只交 Brief，不改运行时。不做 A12/A13。
+
+### `a7-6-boot-arrival-focus-ready` · feature · 本支 chore/a7-6-boot-arrival-focus-ready · 2026-10-16
+
+A7.6：抽出 `src/boot/boot-arrival-focus-ready.js`（Arrival 赋值、`FocusInput` 袋、第一幕占用写入、品味预取 starter、摘遮罩、`__FT_APP_READY__`）。清掉最后一条 A6 豁免 `focusInput`。构造与第一幕播放仍在 `init()` 现网位置。不改付款路径。
+
+### `a7-init-split` · feature · 已合 #1258（A7.1–A7.6） · 2026-10-16
+
+根因盘点 A7：`main.js` `init()` 分段拆分。Brief 已锁；A7.1–A7.6 已合 develop（#1258 段 7 `boot-arrival-focus-ready.js`）。段 1 Kernel 仍暂留 `init()`。不与功能 PR 混线。
+
+### `a8-visible-text-poison` · feature · 本支 feat/a8-visible-text-poison · 2026-10-16
+
+根因盘点 A8（R5）：页面防呆。① `VISIBLE_TEXT_POISON_RE` SSOT + 启动冒烟 / 产品壳 e2e / A1 菜单可达共用；② `appendDomChild` / `setDomText` 在 dev/test 对 nullish 抛错。不改用户可见路由/文案。验收：`visibleTextPoison.test.js` · `test:e2e:startup` · `test:e2e:smoke` 产品壳行。
+
+### `confide-fact-card-capability-phrases` · feature · 已合 develop（#1255）· 关单仍欠未见批过关 · 2026-10-16
+
+CR-49 续刀。检索改为能力说明按句切开、短答仍整段；重写 0037/0038 能力说明为「覆盖哪类事实」。不把失败句写入 keywords，不放低 0.80。#1255 后新未见英文批 `sealed-v2` 未过关。
+
+### `confide-fact-card-en-paraphrase-holdout-v2` · note · 未见英文问法批已跑 · 未过关 · 不得写换说法已接住 · 2026-10-16
+
+CR-49 关单前第二份盲测。`origin/develop` `b0d47bc`（含 #1255 `428fa0e9`）。封存 `fact-card-en-paraphrase/sealed-v2`，出题编号 `fc-en-unseen-v2-2026-10-16-session-c`。一次有效跑分已消耗。汇总：bgm-0037 4/20；checkin-optional-0038 0/20；chitchat-not-honesty 20/20。字面命中未进 0037；0038 有错误邻居与跳过，无正确命中。不把原句写入仓库或 keywords。
+
+### `confide-fact-key-ask-role` · note · 已合 develop #1259 · 关单待 sealed-v3 · 2026-10-16
+
+CR-49 第三刀已上线：事实键 + 问法形状轴（`confideProductAskRole.js` · `l1EmbeddingHold` · 目录 0020/0037/0038）。权威 `task-briefs/task-confide-fact-key-ask-role.md`。未见英文泛化仍须新封存 `sealed-v3`。
+
+### `root-cause-hardening` · feature · 盘点已落 · A22 已合 #1171 · A1 已合 #1173 · A2 已合 #1179 · A3 已合 #1181 · A4 已合 #1184 · A5 已合 #1186 · A6 已合 #1189 · A7 已合 #1258 · A8 已合 #1268 · A10 A14 A18–A21 已合 #1267 · Brief #1190 · 2026-10-16
+
+2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首七行。A7 已合 #1258（A7.1–A7.6）。A8 已合 #1268。第三阶段 line3：A10 / A14 / A18–A21（Brief 变体矩阵、反馈栏、部署配对、交付 e2e、Bug 落账、改坏证据）已合 #1267。
+
+### `a7-4-boot-session-chrome` · feature · 本支 chore/a7-4-boot-session-chrome · 2026-10-15
+
+A7.4：抽出 `src/boot/boot-session-chrome.js` 状态袋（`SessionUiGate` / Choose-pending 盒 / Arrival 自动开表旗 / chrome sync 绑定）。清掉 A6 豁免 `sessionUiGate` · `postChooseChrome` · `syncArrivalGateReady` · `syncHonestyIdleEntry` · `pendingAutoStartMode` · `arrivalChoseThisRun` · `suppressCompanionOpenAfterNod`。Gate 与 `createSessionChromeSync` 仍在现网同一位置构造。不改付款路径、不改第一幕占用与 Loading 遮罩时机。
+
+### `a7-5-boot-ambient-hints` · feature · 本支 chore/a7-5-boot-ambient-hints · 2026-10-15
+
+A7.5：抽出 `src/boot/boot-ambient-hints.js` 状态袋（环境声 / session cues / `OnboardingHintsUI` / pending Choose）。清掉 A6 豁免 `ambientSoundscape` · `sessionCues` · `onboardingHints` · `pendingChoose`。`onboardingHintHost` 仍给 overlayBusy 早读。控制器与 Hints UI 仍在现网同一位置构造。不改付款路径、不改第一幕占用与 Loading 遮罩时机。
+
+### `confide-fact-card-en-paraphrase-holdout` · note · 未见英文问法批已跑 · 未过关 · 不得写换说法已接住 · 2026-10-15
+
+CR-49 关单前盲测。`origin/develop` `365ebee`（#1250）。封存 `fact-card-en-paraphrase/sealed-v1`，出题编号 `fc-en-unseen-v1-2026-10-15-session-b`。一次有效跑分已消耗。汇总：bgm-0037 6/20；checkin-optional-0038 0/20；chitchat-not-honesty 20/20。不把原句写入仓库或 keywords。
+
+### `confide-fact-card-near-match` · feature · 实现中（旁支待 PR） · 2026-10-15
+
+产品问近义比对改为事实卡能力说明 + 短答，不再把 keywords 问法名单送进 embedding。入库 `KB-FUNC-0037`（背景音乐开关）与 `KB-FUNC-0038`（打卡不是强迫签到）。不改发送链、不放低 0.80、不实现 CR-47。Brief：`task-briefs/task-confide-fact-card-near-match.md`。跟进 CR-49。
+
 ### `confide-mixed-emotion-then-product` · feature · 规格已出 · 未实现 · 待拍板 · 2026-10-15
 
 混合句「先接情绪、再答产品」合并回应。Brief `task-confide-mixed-emotion-then-product.md`（CR-45）。本支只文档：不改发送链、不调 0.01、不碰新封存。类级现网 vs 函数 A 表见 `confide-routing-live-vs-function-a-research.md`。本会话已见作废 b-v2 / b-v5，不参与最终过关文件。
+
+### `confide-no-symptom-list` · feature · 原则已写入 · 检索机制未开工 · 2026-10-15
+
+禁止按症状加说法名单（R-Confide-No-Symptom-List）。不改发送链。下一刀若做：产品问答对有限事实卡做语义贴近，未命中走诚实空态，不把问法写进代码。
+
+### `confide-product-ask-operational-gate` · feature · 发送链已改 · 待合入 · 2026-10-15
+
+产品问收窄为「操作问法 ∧ 产品对象」（CR-47）。`resolveProductKnowledgeGateAction`：无操作问法则 `skip`（生成）；诚实空态只留给确认后的产品问且目录无近条。未扩中文豁免词表。权威 `task-briefs/task-confide-product-ask-operational-gate.md`。危机修辞不在本片。
+
+### `confide-rhetorical-crisis-exemption` · feature · 实现中 · 2026-10-15
+
+危机层在语义命中之后确认：自指求死仍转介；修辞或亲昵（想死你了、dying to）不转介。不降低 0.78，不改 safety-01，不与产品问闸 CR-47 同一个实现。权威 `task-briefs/task-confide-rhetorical-crisis-exemption.md`。竖线合入后再测。
 
 ### `confide-routing-arbitration-v1` · feature · Brief 已合 #1208 · 函数 A 门槛 0.01 已冻 · #1222 已合 · b-v2/b-v5 已跑未过关已作废 · 额度用满 · 未切 live · 2026-10-15
 
@@ -565,6 +625,18 @@ R 路由研究：作废 b-v2/b-v5 + 开发集 v2 上，同一向量做「在问�
 
 安全路由修复（CR-43）。第一步字面分类已合 #1226（夹具 46/63，误捕 1/35）。字面续补 #1230 开发集明确危机 ≥90%（57/63）、逃避误捕 ≤2/35 且不得为纯逃避句。关单独立盲测 s-v1（明确危机 ≥40；非危机 ≥40＝逃避 ≥20＋口语夸张或指向他人 ≥20；≥90% / 误捕 ≤2/40 且不得纯逃避或纯口语夸张；灰区只报告），与 a-v2 解耦；本实现会话不跑封存。语义危机层 Brief：`task-briefs/task-confide-semantic-crisis-layer.md`（CR-44），不夹带。权威 `task-briefs/task-confide-safety-routing-fix.md`。
 
+### `confide-semantic-crisis-layer` · feature · 运行时已合 develop · 第八节复核已记（PO 授权大模型） · 2026-10-15
+
+安全路由第二步（CR-44）：语义危机层接到真实发送链（#1232）。方案 S1。阈值默认余弦 0.78。日文 fail-open。2026-10-15 PO 授权大模型勾 Brief 第八节：金句与现网 15 条原型不改句；字面熟人说法过、语义层豁免另点头。不改 safety-01。权威 `task-briefs/task-confide-semantic-crisis-layer.md`。
+
+### `confide-tiered-response-support-entry` · feature · Brief 待 PO 点头 · 无运行时 · 2026-10-15
+
+CR-46：分档回应（高档 safety-01 不改；中档轻句占位 + 同一资源指引）与倾诉卡常驻支持入口。阈值只在开发集定。验收改路径清单，不改明确危机 ≥90% 关单。权威 `task-briefs/task-confide-tiered-response-support-entry.md`。
+
+### `docs-confide-en-first-qa` · note · 进行中（原则已写 · 发送链未改） · 2026-10-15
+
+锁 Confide 功能测试英文第一优先（`PRINCIPLES.md` R-0）。记下 2026-10-15 宽屏抽测：英文动机/不想练进诚实空态、熟人说法误转介。不改发送链。
+
 ### `confide-class-blind-acceptance` · feature · sealed-a-v1 已作废 · 每文件 1 次 · 结果 JSON 改 ft-private · a-v2 未生成 · 2026-10-14
 
 Confide 问答按类验收（R-Confide-Class）。情绪开发集已入库。安全开发集已纳入 `audit:confide-acceptance-leak`（只防整句照抄；1 句因与封存盲测完全重复未入库）。`sealed-a-v1` 唯一真跑未过安全栏，文件作废。holdout 真跑：`npm run audit:mood-veto-holdout`。结果 JSON 默认 `~/Documents/ft-private/confide-mood-holdout-lab/`。信封校验：`npm run audit:mood-veto-holdout:validate`（#1213）。缺口计数：`npm run validate:confide-holdout-counts`（#1214）。额度：每文件一次，同一集最多 2 个文件；计数在 `~/Documents/ft-private/`。见 `task-briefs/task-confide-class-blind-acceptance.md`.
@@ -576,10 +648,6 @@ Confide 问答按类验收（R-Confide-Class）。情绪开发集已入库。安
 ### `confide-safety-devset-c017-grey` · note · 夹具已改类 · 分母 63 · 未见分类器开工 · 2026-10-14
 
 `safedev-c017` 从明确危机改入灰区；计入分母 **63**。仓库夹具改名为 Brief 中的 `fixtures/confide-safety-devset-v1.json`。本会话见过开发集原文，不得再修安全分类器。
-
-### `confide-semantic-crisis-layer` · feature · 口头令已下 · 运行时进行中 · 2026-10-14
-
-安全路由第二步（CR-44）：语义危机层接到真实发送链。方案 S1。阈值默认余弦 0.78。日文 fail-open。开发集合计 ≥90% 须真 embedding 再锁。不改 safety-01。权威 `task-briefs/task-confide-semantic-crisis-layer.md`。
 
 ### `a3-parallel-list-census` · feature · PR #1181 · 待 CI 合 develop · 2026-10-13
 
@@ -604,10 +672,6 @@ A7.2：抽出 `src/boot/boot-moment-hosts.js` 状态袋（Recover 卡 / 罗盘 /
 ### `a7-3-boot-honesty-companion` · feature · 本支 chore/a7-3-boot-honesty-companion · 2026-10-13
 
 A7.3：抽出 `src/boot/boot-honesty-companion.js` 状态袋（Honesty UI / Companion 点选 / 微仪式 / Arrival 占位 null）。清掉 A6 豁免 `honestyCheckInUI` · `companionModePicker` · `microRitualUI` · `arrivalPractice`。Arrival 仍在段 7 赋值。不改付款路径、不改第一幕占用与 Loading 遮罩时机。
-
-### `a7-init-split` · feature · Brief #1190 对齐 develop · A7.1 已合 #1192 · A7.2 已合 #1199 · A7.3 #1201 · 2026-10-13
-
-根因盘点 A7：`main.js` `init()` 分段拆分。Brief 已锁；A7.1–A7.2 已合 develop。余下 A7.3–A7.6 按 `task-briefs/task-a7-init-split.md` 分刀。不与功能 PR 混线。
 
 ### `confide-help-center-miss-fallback` · feature · 第一刀已合 #1183 · 第二刀 Brief 待点头 · 2026-10-13
 
@@ -644,10 +708,6 @@ Help Center 补四篇：呼吸时长、两扇收藏怎么买、莲花含义、�
 ### `menu-single-source` · feature · 实现中 · A2 本支（菜单查表分派） · 2026-10-13
 
 A2：次级菜单 `proxy → handler` 单一来源；宽/窄点击查表。依赖 A1 已合 #1173。Brief `task-briefs/task-menu-single-source.md`。
-
-### `root-cause-hardening` · feature · 盘点已落 · A22 已合 #1171 · A1 已合 #1173 · A2 已合 #1179 · A3 已合 #1181 · A4 已合 #1184 · A5 已合 #1186 · A6 已合 #1189 · A7.1 已合 #1192 · A7.2 已合 #1199 · Brief #1190 · 2026-10-13
-
-2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首七行。A7：Brief `task-briefs/task-a7-init-split.md`；A7.1–A7.2 已合 develop；余下 A7.3–A7.6 分刀。
 
 ### `chore-payment-click-contract` · feature · 进行中 · 旁支待合 · 2026-10-12
 
