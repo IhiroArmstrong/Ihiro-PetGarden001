@@ -545,9 +545,29 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `a11-shared-glass-card` · feature · Brief 待 PO 点头 · 线 2 · 2026-10-16
+### `confide-mixed-emotion-then-product` · feature · 规格已补锁 · 实现等 CR-11 · CR-45 · 2026-10-17
 
-根因盘点 A11：浮动卡根必须经共享暖米玻璃工厂；静态检查拦住自写深色底板。本回合只交 Brief，不改运行时。不做 A12/A13。
+CR-45：混合句先接情绪再答产品。PO 2026-10-17 有条件采用；通过率关单再填；接线等 CR-11 一起或紧跟其后。权威 `task-briefs/task-confide-mixed-emotion-then-product.md`。本支只文档：不改发送链、不调 0.01。不是 CR-51。
+
+### `zen-cinema-film-catalog` · feature · 进行中 · 旁支 feature/zen-cinema-film-catalog · 2026-10-17
+
+Zen Cinema 从单支确认卡改为策展列表（Wallpapers 同款点选网格）。本刀加入 `what-is-zen`（`https://youtu.be/xawM6cgJSrE`）。后续加片只改 `ZEN_CINEMA_FILMS` + 封面 + 片名键。
+
+### `a11-2-presence-glass` · feature · 本支 feat/a11-2-presence-glass · A11.2 在场信号卡暖米玻璃 · 2026-10-16
+
+A11 holdout `#presence-signals-panel` 卡根改走 `createGlassCard` / `GLASS_FILL`。D.2 人时、侧停、`···` Remove、存储不变。不做 A12。
+
+### `a11-shared-glass-card` · feature · A11.1 已合 #1276 · A11.2 另见 a11-2-presence-glass · 2026-10-16
+
+根因盘点 A11：`createGlassCard()` + `check-glass-card-roots`（#1147 深色语音卡夹具必须红）。A11.1 不换肤。在场信号卡换肤见 `a11-2-presence-glass`。不做 A12/A13。
+
+### `a12-z-index-constants` · feature · 已合 develop #1281 · Z-dim (a) 扫描 + src 常量化 · 2026-10-16
+
+根因盘点 A12：`zIndexLayers.js` 与 `Z_INDEX.md` 对账；`src/` 手写 z-index 改走常量；豁免只留 `index.html`。不做 A13。不改层级数值。
+
+### `a13-glass-card-screenshots` · feature · 已合 develop #1285 · 12 处暖米玻璃 RGB e2e · 2026-10-16
+
+根因盘点 A13：关键卡暖米玻璃运行时契约 + 可选软截图。依赖 A11/A12。不替代人工叠层观感。
 
 ### `a7-6-boot-arrival-focus-ready` · feature · 本支 chore/a7-6-boot-arrival-focus-ready · 2026-10-16
 
@@ -561,6 +581,26 @@ A7.6：抽出 `src/boot/boot-arrival-focus-ready.js`（Arrival 赋值、`FocusIn
 
 根因盘点 A8（R5）：页面防呆。① `VISIBLE_TEXT_POISON_RE` SSOT + 启动冒烟 / 产品壳 e2e / A1 菜单可达共用；② `appendDomChild` / `setDomText` 在 dev/test 对 nullish 抛错。不改用户可见路由/文案。验收：`visibleTextPoison.test.js` · `test:e2e:startup` · `test:e2e:smoke` 产品壳行。
 
+### `a9-commerce-product-registry` · feature · 已合 develop #1272 · slice 1（商品 checkout 登记表） · 2026-10-16
+
+根因盘点 A9（R6）第一刀：新增 `commerceProductRegistry.js` SSOT，覆盖全部 `DESKTOP_CHECKOUT_KINDS`（付款回跳 query、产品壳 thanks、Support 卡、已购变淡旗标、高清/编号规则指针）。`commerceProductRegistry.test.js` 穷举缺字段即失败；平行名单契约测试改为读登记表。练习结束语音 / 存图命名仍留 slice 2。不改用户可见路由/文案。
+
+### `a9-practice-experience-registry` · feature · 已合 develop #1275 · slice 2（练习结束语音 + 存图命名） · 2026-10-16
+
+根因盘点 A9（R6）第二刀：新增 `practiceExperienceRegistry.js` SSOT，逐行声明练习种类（结束语音接线、可选仪式存图）与可下载 PNG 命名策略。`practiceExperienceRegistry.test.js` + `practiceEndVoiceParallelListContract` / `practiceSaveImageParallelListContract` 穷举缺字段或缺源码锚点即失败。商品 checkout 登记表见 slice 1 `commerceProductRegistry.js`。不改用户可见路由/文案。
+
+### `confide-ask-shape-axis` · feature · 实现中 · CR-51 · 2026-10-16
+
+CR-51：问法形状轴扩档。`why-compare` 新档；`whether-required` 排到动机闸之前。不改 0038 / EDU-0003 事实键。权威 `task-briefs/task-confide-ask-shape-axis.md`。PO 已点头开工。
+
+### `confide-cr50-asked-fact-keys` · feature · 本支已跑 v2 · 停手不再改卡 · 2026-10-16
+
+CR-50 续刀：只改 0038 / EDU-0003 事实键与记录三档原型，再跑未见批 v2。Brief `task-briefs/task-confide-asked-fact-keys.md`。不调 0.80，不加说法名单。
+
+### `confide-cr50-fact-first` · feature · 实现中 · 发送链 · 2026-10-16
+
+CR-50：字面命中与近邻同一道门；miss 后帮助中心短摘；查本机记录走语义工具、不得生成。Brief `task-confide-g2-fact-first.md`。不调 0.80，不上本地是/否。
+
 ### `confide-fact-card-capability-phrases` · feature · 已合 develop（#1255）· 关单仍欠未见批过关 · 2026-10-16
 
 CR-49 续刀。检索改为能力说明按句切开、短答仍整段；重写 0037/0038 能力说明为「覆盖哪类事实」。不把失败句写入 keywords，不放低 0.80。#1255 后新未见英文批 `sealed-v2` 未过关。
@@ -573,13 +613,25 @@ CR-49 关单前第二份盲测。`origin/develop` `b0d47bc`（含 #1255 `428fa0e
 
 CR-49 第三刀已上线：事实键 + 问法形状轴（`confideProductAskRole.js` · `l1EmbeddingHold` · 目录 0020/0037/0038）。权威 `task-briefs/task-confide-fact-key-ask-role.md`。未见英文泛化仍须新封存 `sealed-v3`。
 
+### `confide-g2-fact-arrival-diagnostic-v1` · note · 未见批 v1 已跑 · 9/33 · 不占过关额度 · 2026-10-16
+
+CR-50 关单向「事实到没到」：仓外 `diagnostic-unseen-v1` 已出题并真跑（`g2-fact-unseen-v1-2026-10-16-session-e`）。汇总 9/33；错卡不念类 5/5。读口 `audit:g2-fact-arrival`。禁止写入原句。
+
+### `confide-g2-fact-arrival-diagnostic-v2` · note · 未见批 v2 已跑 · 13/33 · 不占过关额度 · 2026-10-16
+
+CR-50 事实键续刀后仓外 `diagnostic-unseen-v2`（`g2-fact-unseen-v2-2026-10-16-session-f`）。汇总 13/33；记录 4/5；0038 1/5；好处 0/5。禁止写入原句。不据此再改卡；下一刀形状轴。
+
 ### `confide-g2-fact-first` · note · Brief 待点头 · 无运行时 · 2026-10-16
 
 CR-50：先听懂要什么事实再取。只读名次已入账（库内有答案 1/5 进前三；无卡组 3/20 被念，均为字面命中）。权威 `task-briefs/task-confide-g2-fact-first.md`。实现另点头。
 
-### `root-cause-hardening` · feature · 盘点已落 · A22 已合 #1171 · A1 已合 #1173 · A2 已合 #1179 · A3 已合 #1181 · A4 已合 #1184 · A5 已合 #1186 · A6 已合 #1189 · A7 已合 #1258 · A8 已合 #1268 · A10 A14 A18–A21 已合 #1267 · Brief #1190 · 2026-10-16
+### `root-cause-hardening` · feature · 盘点已落 · A1–A8·A22 已合 · A9 已合 #1272·#1275 · A10·A14·A18–A21 已合 #1267 · A11 已合 #1276·#1278 · A12 已合 #1281 · A13 已合 #1285 · **未开工** A15–A17 · Brief #1190 · 2026-10-16
 
-2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首七行。A7 已合 #1258（A7.1–A7.6）。A8 已合 #1268。第三阶段 line3：A10 / A14 / A18–A21（Brief 变体矩阵、反馈栏、部署配对、交付 e2e、Bug 落账、改坏证据）已合 #1267。
+2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首扇出行。**已合 develop：** A1 #1173 · A2 #1179 · A3 #1181 · A4 #1184 · A5 #1186 · A6 #1189 · A7 #1258（A7.1–A7.6）· A8 #1268 · A9 #1272（商品登记表）· #1275（练习登记表）· A10/A14/A18–A21 #1267 · A11 #1276（工厂+扫描）· #1278（在场玻璃）· A12 #1281 · A13 #1285 · A22 #1171。**刻意未排期（PO 2026-10-16）：** A15 入库脚本 · A16 5173 版本角标 · A17 PR 范围提醒（高风险/流程刀暂放下）。
+
+### `wide-menu-pay-slice` · feature · 第一刀实现中 · 2026-10-16
+
+宽屏菜单三刀之第一刀（付费）：去掉 Rituals 上方会员状态行；未购仪式锁可点并打开 `#yin-membership-card`；Preferences 增加 Subscription。Brief `task-briefs/task-wide-menu-radial-index.md`。
 
 ### `a7-4-boot-session-chrome` · feature · 本支 chore/a7-4-boot-session-chrome · 2026-10-15
 
@@ -596,10 +648,6 @@ CR-49 关单前盲测。`origin/develop` `365ebee`（#1250）。封存 `fact-car
 ### `confide-fact-card-near-match` · feature · 实现中（旁支待 PR） · 2026-10-15
 
 产品问近义比对改为事实卡能力说明 + 短答，不再把 keywords 问法名单送进 embedding。入库 `KB-FUNC-0037`（背景音乐开关）与 `KB-FUNC-0038`（打卡不是强迫签到）。不改发送链、不放低 0.80、不实现 CR-47。Brief：`task-briefs/task-confide-fact-card-near-match.md`。跟进 CR-49。
-
-### `confide-mixed-emotion-then-product` · feature · 规格已出 · 未实现 · 待拍板 · 2026-10-15
-
-混合句「先接情绪、再答产品」合并回应。Brief `task-confide-mixed-emotion-then-product.md`（CR-45）。本支只文档：不改发送链、不调 0.01、不碰新封存。类级现网 vs 函数 A 表见 `confide-routing-live-vs-function-a-research.md`。本会话已见作废 b-v2 / b-v5，不参与最终过关文件。
 
 ### `confide-no-symptom-list` · feature · 原则已写入 · 检索机制未开工 · 2026-10-15
 
