@@ -1,0 +1,1 @@
+| A8 页面防呆（可见文字毒 + DOM 安全拼装） | 纯后端 | 仅单元测试覆盖 | 不是产品功能。`visibleTextPoison.js` 锁 `undefined` / `NaN` / `[object Object]`；启动冒烟、产品壳 e2e、A1 菜单可达共用同一正则；`appendDomChild` / `setDomText` 在 test/dev 对 nullish 抛错。不代表已扫全站手拼字符串。 | — | — | — | `src/core/visibleTextPoison.js` · `e2e/helpers/visible-text-poison.js` · `e2e/startup-ready.smoke.spec.js` | 2026-10-16 |
