@@ -1,0 +1,1 @@
+| Confide 路由盲测考核口径拆分（设计说明） | 纯文档 | 仅单元测试覆盖 | **无用户路径。** 本条验收的是 Brief 五带已写下、状态板额度叙述已与本机 `routing-class-holdout-runs.json` 对齐（zh/b-v6 已占一次；en/b-v6 封存未打分）。不代表口径已点头，不改倾诉回复，不跑 holdout 真分。 | — | — | — | `task-confide-routing-holdout-caliber-split.md` | 2026-10-17 |

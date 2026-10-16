@@ -200,6 +200,8 @@ P18 在 A@0 / B@0 差的那 1 句是 A12。A@0.05 丢掉 A7/A8/A10；B@0.05 靠 
 
 **关单条件（未点头前不跑分）**：八类 `class_id` 各自 `pass_rate ≥ 85%`（`ceil(n×0.85)` 句过关）且 **无** `样本不足`（每类 n≥60 才消标）。八类**同时** `pass_criteria_met=yes` 才算过。场景 AE 两条 catalog 锚点 **100%**（各 n=1）。代码：`confideRoutingClassHoldoutLab.js` · `resolveSealedBExpectedPath` · `routingClassMeetsPassCriteria`；holdout 跑分仍只许 **函数 A @ 0.01**（`productPath` 粗代理：短答与诚实空态不区分，全影子另会话）。
 
+> **2026-10-17**：上述「八类同时」与函数 A 粗代理混关，正是结构短板反复不过的原因。拆分设计（待点头、点头前**不得**用本表去跑 `en/b-v6`）：[`task-confide-routing-holdout-caliber-split.md`](./task-confide-routing-holdout-caliber-split.md)。
+
 | 类 id | 期望（`expect` / 类） | 通过率线 | n（b-v5 信封） |
 |---|---|---|---|
 | `life-emotion` | `emotion` → 不走产品 | ≥85% | 60 |
