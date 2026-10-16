@@ -5,4 +5,4 @@ status: 盘点已落 · A22 已合 #1171 · A1 已合 #1173 · A2 已合 #1179 �
 updated: 2026-10-16
 ---
 
-2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首七行。A9 商品登记表 slice 1 本支 `feat/a9-commerce-product-registry`（练习变体留 slice 2）。
+2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首七行。A7 已合 #1258（A7.1–A7.6）。A8 已合 #1268。第三阶段 line3：A10 / A14 / A18–A21（Brief 变体矩阵、反馈栏、部署配对、交付 e2e、Bug 落账、改坏证据）已合 #1267。A9 商品登记表 slice 1 本支 `feat/a9-commerce-product-registry`（练习变体留 slice 2）。
