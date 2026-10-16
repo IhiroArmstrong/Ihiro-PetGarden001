@@ -8,8 +8,7 @@ import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   expandWideMoreMenuGroup,
   expectWideMoreMenuShellVisible,
-  openFreshProductShell,
-  pickWideMoreRadialGroup
+  openFreshProductShell
 } from './helpers/product-shell.js';
 import { wideMoreMenuGroupForProxy } from '../src/core/wideMenuRadialLayout.js';
 import {
@@ -245,7 +244,7 @@ async function walkMenu(page, surface, menuSelector) {
     await openMenu(page, surface);
     if (surface === 'wide-more') {
       const groupKey = wideMoreMenuGroupForProxy(row.proxy);
-      if (groupKey) await pickWideMoreRadialGroup(page, groupKey);
+      if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
     await item.scrollIntoViewIfNeeded();
@@ -263,7 +262,7 @@ async function walkMenu(page, surface, menuSelector) {
   for (const row of inert) {
     if (surface === 'wide-more') {
       const groupKey = wideMoreMenuGroupForProxy(row.proxy);
-      if (groupKey) await pickWideMoreRadialGroup(page, groupKey);
+      if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
     await item.scrollIntoViewIfNeeded();
