@@ -57,6 +57,9 @@
 
 **已见（2026-10-16 宽屏抽测）**：只记日期和类别，原句不进仓库。类别：明确危机与指向他人、亲昵修辞、收藏类产品问（短答未命中）、库内无对应事实卡的能力问（错卡被念出）、查本机时长的换说法、一次该坐多久（陪伴回复可接受）、要不要每天做 / 为什么 / 有什么好处、动机与不想练。仓外封存供只读诊断，**不得**再当未见盲测，**不得**写入关键词或单测。
 
+
+**§6 · 未见事实诊断 v1（2026-10-16 晚 · 不占过关额度）**：仓外 `confide-g2-fact-arrival/diagnostic-unseen-v1` · `author_prompt_id=g2-fact-unseen-v1-2026-10-16-session-e` · sha256 `a635e5fbba0d7c75a49b38eccaa2b72ec4ad5bb8c32cf5d7e8b43eeca872470c` · n=33 · **9/33（27.3%）** 事实到达。类：`no-fact-card-block` 5/5 · `whether-required-0038` 0/5 · `benefit-why-0003` 0/5 · `bgm-toggle-0037` 1/5 · `device-practice-record` 1/5 · `collections-provenance-help` 1/5 · `design-session-length` 1/3。读口 `npm run audit:g2-fact-arrival`。原句不进仓。
+
 **§6 第 2 步 · 只读名次（2026-10-16 · 不调参 · 本文件不是过关封存）**
 
 | 组 | n | 结果 |
