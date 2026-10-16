@@ -1,0 +1,1 @@
+| A13 关键卡片玻璃视觉护栏 | 纯后端+e2e | 仅单元测试覆盖 | 无产品行为变更。宽屏 Idle 打开 12 处表面（语音/帮助/Support/收藏/?/旅程/在场/五时刻/扇形/倾诉/同坐/灯笼 debug）→ computed 背景须暖米玻璃、非 #1147 深色底。`npm run test:glass-card-visual`；进 `test:e2e:smoke`。软截图仅 `FT_A13_SOFT_SNAP=1`。叠层谁压谁仍人工。 | — | — | — | `task-a13-glass-card-screenshots.md` · `glass-card-visual-guardrail.spec.js` | 2026-10-16 |
