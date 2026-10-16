@@ -31,6 +31,7 @@ export class VoiceInputChrome {
    *   mountBefore?: HTMLElement | null,
    *   testIdPrefix?: string,
    *   onInputApplied?: () => void
+   *   onTranscriptCommitted?: (transcript: string) => void
    * }} opts
    */
   constructor({
@@ -38,10 +39,12 @@ export class VoiceInputChrome {
     mountParent = null,
     mountBefore = null,
     testIdPrefix = 'voice-input',
-    onInputApplied
+    onInputApplied,
+    onTranscriptCommitted
   }) {
     this.textarea = textarea;
     this.onInputApplied = onInputApplied;
+    this.onTranscriptCommitted = onTranscriptCommitted;
     this._bridge = getVoiceInputBridge();
     this._unsubStatus = null;
     this._unsubLevel = null;
@@ -308,6 +311,7 @@ export class VoiceInputChrome {
         this._truncationMessage = t('VOICE_INPUT_TRUNCATED');
       }
       this.onInputApplied?.();
+      this.onTranscriptCommitted?.(transcript);
       this._setState('idle');
     } catch {
       this._errorMessage = t('VOICE_INPUT_ERROR_GENERIC');

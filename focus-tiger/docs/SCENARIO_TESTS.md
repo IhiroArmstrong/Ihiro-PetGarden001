@@ -1001,10 +1001,11 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ### AT · Slice 1（Confide Speak to type）
 
-1. **主路径（Electron 宽屏 · Confide L2 ready）**：Idle → 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → **0–1 秒内**状态变 Listening，Stop 旁出现 `[data-testid=voice-input-level]` 三条音量条并先贴底 → 安静时保持贴底（禁止自己上下跳）→ 说英语时条子随本机音量升高 → Stop → **0–1 秒内**条子消失且转写文字进输入框（可编辑）→ 用户点 Share → 走既有 **AE** L2 路由（**禁止** `麦克风 → LLM` 直连）。音量映射单测：`voiceLevelMeter.test.js`。  
+1. **主路径（Electron 宽屏 · Confide L2 ready）**：Idle → 开 Confide → Confide 输入框旁见 `[data-testid=voice-input-speak]`（或等价）→ 点 🎙 → **0–1 秒内**状态变 Listening，Stop 旁出现 `[data-testid=voice-input-level]` 三条音量条并先贴底 → 安静时保持贴底（禁止自己上下跳）→ 说英语时条子随本机音量升高 → Stop → **0–1 秒内**条子消失且转写文字进输入框 → **无须再点 Share 或回车**，**0–1 秒内**见 Thinking / 回复，走既有 **AE** L2 路由（**禁止** `麦克风 → LLM` 直连）。音量映射单测：`voiceLevelMeter.test.js`；Stop 后自动发送接线：`voiceInputBridge.test.js`。  
 2. **倾诉不出设备**：转写路径须 `MacosSpeechProvider`；**禁止** Cloud STT provider 注入倾诉 UI。  
 3. **负例**：Web `?confide=1` / 窄屏 <480 → **不得**见麦克风。  
-4. **回流**：转写后改字再 Share → 以编辑后文本为准。
+4. **回流**：Speak again 录完 Stop 仍自动发送；空转写 / 识别失败仍不发送（框旁红字）。Arrival / Reflection 仍须用户点 Confirm / Continue（**禁止**误开自动发送）。
+5. **专有词**：说 **Yin** 时框内须为 Yin（不得停在 Ian / Ean / Iain）。其它产品名靠本机 `contextualStrings` 提高命中，不把 in / yen 等普通词改成 Yin。
 
 ### AT · Slice 2（Arrival 意图 + Reflection）
 
