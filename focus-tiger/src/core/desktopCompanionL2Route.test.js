@@ -479,6 +479,10 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /listShippedConfideVerbalHintChips/);
     assert.match(ui, /_fillVerbalHintChip/);
     assert.match(ui, /confide-to-yin-memory-list-link/);
+    assert.match(ui, /confide-to-yin-help-resources/);
+    assert.match(ui, /confide-to-yin-help-resources-panel/);
+    assert.match(ui, /resolveConfideHelpEntryEnabled/);
+    assert.match(ui, /formatConfideSafetyResourceGuidance/);
     assert.match(ui, /onOpenMemoryPanel/);
     assert.match(ui, /shouldOfferYinMemoryConsent/);
     assert.match(ui, /_maybeOfferMemoryConsentOnOpen/);

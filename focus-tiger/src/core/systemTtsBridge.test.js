@@ -127,8 +127,8 @@ describe('systemTtsBridge', () => {
   });
 
   it('keeps every reachable route id on its existing speak decision', () => {
-    // 已好清单 for the deny-list → allow-list swap: these nine ids are every
-    // route value that reaches the gate today (the eight classify outputs plus
+    // 已好清单 for the deny-list → allow-list swap: these ids are every
+    // route value that reaches the gate today (classify outputs plus
     // the local-AI id), so the swap must not move any of them.
     const expected = {
       [CONFIDE_ROUTE.ANXIOUS]: true,
@@ -138,6 +138,7 @@ describe('systemTtsBridge', () => {
       [CONFIDE_ROUTE.SCATTERED]: true,
       [CONFIDE_ROUTE.FALLBACK]: true,
       [CONFIDE_ROUTE.SAFETY_REDIRECT]: false,
+      [CONFIDE_ROUTE.SAFETY_CARE]: false,
       [CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS]: false,
       generate: true
     };
@@ -145,7 +146,7 @@ describe('systemTtsBridge', () => {
       assert.equal(shouldSpeakConfideReply(route), speaks, `route ${route}`);
     }
     // Guards against a new classify output slipping in unreviewed.
-    assert.equal(Object.keys(CONFIDE_ROUTE).length, 8);
+    assert.equal(Object.keys(CONFIDE_ROUTE).length, 9);
   });
 
   it('stays silent for route ids it does not recognise', () => {
