@@ -1,7 +1,7 @@
 ---
 id: a9-practice-experience-registry
 kind: feature
-status: 本支 feat/a9-practice-registry-slice2 · slice 2（练习结束语音 + 存图命名）
+status: 已合 develop #1275 · slice 2（练习结束语音 + 存图命名）
 updated: 2026-10-16
 ---
 

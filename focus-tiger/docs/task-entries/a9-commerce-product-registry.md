@@ -1,7 +1,7 @@
 ---
 id: a9-commerce-product-registry
 kind: feature
-status: 本支 feat/a9-commerce-product-registry · slice 1（商品 checkout 登记表）
+status: 已合 develop #1272 · slice 1（商品 checkout 登记表）
 updated: 2026-10-16
 ---
 

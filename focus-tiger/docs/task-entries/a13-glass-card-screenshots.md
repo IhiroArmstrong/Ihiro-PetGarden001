@@ -1,7 +1,7 @@
 ---
 id: a13-glass-card-screenshots
 kind: feature
-status: 本支 feat/a13-glass-card-screenshots · 12 处暖米玻璃 RGB e2e
+status: 已合 develop #1285 · 12 处暖米玻璃 RGB e2e
 updated: 2026-10-16
 ---
 

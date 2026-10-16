@@ -1,7 +1,7 @@
 ---
 id: a12-z-index-constants
 kind: feature
-status: 本支 feat/a12-z-index-constants · Z-dim (a) 扫描 + src 常量化
+status: 已合 develop #1281 · Z-dim (a) 扫描 + src 常量化
 updated: 2026-10-16
 ---
 
