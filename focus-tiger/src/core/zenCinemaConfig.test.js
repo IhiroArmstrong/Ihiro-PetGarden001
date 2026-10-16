@@ -30,6 +30,17 @@ describe('zenCinemaConfig', () => {
       '/images/zen-cinema/what-is-zen-thumb.png'
     );
     assert.equal(whatIsZen.titleKey, 'ZEN_CINEMA_FILM_TITLE_WHAT_IS_ZEN');
+    const hundredFootPole = findZenCinemaFilmById('hundred-foot-pole');
+    assert.ok(hundredFootPole);
+    assert.equal(hundredFootPole.youtubeUrl, 'https://youtu.be/xpcPXJ95-00');
+    assert.equal(
+      hundredFootPole.thumbSrc,
+      '/images/zen-cinema/hundred-foot-pole-thumb.png'
+    );
+    assert.equal(
+      hundredFootPole.titleKey,
+      'ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE'
+    );
     for (const film of ZEN_CINEMA_FILMS) {
       assert.match(film.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
       assert.match(film.youtubeUrl, /^https:\/\/youtu\.be\/[A-Za-z0-9_-]+$/);

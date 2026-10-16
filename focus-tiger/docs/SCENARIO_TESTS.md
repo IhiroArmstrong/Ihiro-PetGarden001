@@ -440,7 +440,7 @@
 ### U1 · Zen Cinema
 
 1. Idle → ⋯ / 抽屉 **Zen Cinema** → **0–1 秒内**：菜单行按压 + `#zen-cinema-card` 展开（`[data-testid=zen-cinema-grid]` 策展缩略图网格 +「将打开 YouTube」）。
-2. 默认选中第一部时 **Watch** → **0–1 秒内**：主钮按压 + 确认卡开始收起；**结果**（可延迟）：系统浏览器打开 `https://youtu.be/RV46qrvG1pw`。点选 `[data-testid=zen-cinema-tile-what-is-zen]` 后再 **Watch** → 打开 `https://youtu.be/xawM6cgJSrE`。卡已关但标签页还没出 = 仍算「已接收」，不要报成哑点击。**Not now** → 0–1 秒内卡收起、回到 Idle 菜单入口可见。
+2. 默认选中第一部时 **Watch** → **0–1 秒内**：主钮按压 + 确认卡开始收起；**结果**（可延迟）：系统浏览器打开 `https://youtu.be/RV46qrvG1pw`。点选 `[data-testid=zen-cinema-tile-what-is-zen]` 后再 **Watch** → 打开 `https://youtu.be/xawM6cgJSrE`。点选 `[data-testid=zen-cinema-tile-hundred-foot-pole]` 后再 **Watch** → 打开 `https://youtu.be/xpcPXJ95-00`。卡已关但标签页还没出 = 仍算「已接收」，不要报成哑点击。**Not now** → 0–1 秒内卡收起、回到 Idle 菜单入口可见。
 3. **禁止**：Reflection 边缘入口、App 内嵌播放器、YouTube 频道墙 / 登录墙。
 
 ### U2 · Quiet Line / 今日静语

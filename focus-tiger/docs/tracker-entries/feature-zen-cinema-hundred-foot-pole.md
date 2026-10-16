@@ -1,0 +1,1 @@
+| Zen Cinema 第三部 · 百尺竿头 / Peak Performance | UI可见 | 待人工测试 | **主路径**：`?product=1` → ⋯ → Zen Cinema → 三张海报 → 点第三张（`[data-testid=zen-cinema-tile-hundred-foot-pole]`）→ Watch 打开 `https://youtu.be/xpcPXJ95-00`。营销页第三张海报同链。 | — | — | — | `zen-cinema-grid` · `zen-cinema-tile-hundred-foot-pole` | 2026-10-17 |
