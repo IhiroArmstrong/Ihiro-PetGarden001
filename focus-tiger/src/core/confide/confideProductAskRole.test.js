@@ -43,7 +43,7 @@ describe('catalog fact keys and ask-role lanes', () => {
       'Where is the idle-screen control that turns background music or ambient sound on or off?'
     ]);
     assert.deepEqual(catalogEntryEmbeddingPhrases(byId['KB-FUNC-0038']), [
-      'Is daily check-in or a streak required, or is it optional?'
+      'Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in?'
     ]);
     assert.deepEqual(catalogEntryEmbeddingPhrases(byId['KB-FUNC-0020']), [
       'Where do I open Honesty Check-in to record quiet time I already did elsewhere?'
@@ -63,6 +63,8 @@ describe('catalog fact keys and ask-role lanes', () => {
     assert.equal(catalogEntryEligibleForAskRole(byId['KB-FUNC-0020'], 'whether-required'), false);
     assert.equal(catalogEntryEligibleForAskRole(byId['KB-FUNC-0020'], 'where'), true);
     assert.equal(catalogEntryEligibleForAskRole(byId['KB-FUNC-0038'], 'where'), false);
+    assert.equal(catalogEntryEligibleForAskRole(byId['KB-EDU-0003'], 'what-is'), true);
+    assert.equal(catalogEntryEligibleForAskRole(byId['KB-EDU-0003'], 'where'), false);
   });
 
   it('pickNearest only searches the same ask-role lane', () => {

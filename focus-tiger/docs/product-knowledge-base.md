@@ -675,8 +675,9 @@
   标题: Focus sit 和 meditation 在说法上差在哪
   适用场景: 分不清 focus / meditation / 正念 在公众说法里各指什么，或问「我这是在冥想吗」（不是正在求被带着做）
   内容正文: |
+    事实键（en）：Are focus practice, meditation, and mindfulness the same thing, or is Sit with Yin a Focus sit rather than a generic meditation class?
     短答（en）：In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.
-    分工：纯「正念是什么」→ KB-EDU-0002；菜单路径 → KB-FUNC-0001 / 0011 / KB-EDU-0004。
+    分工：纯「正念是什么」→ KB-EDU-0002；菜单路径 → KB-FUNC-0001 / 0011 / KB-EDU-0004。近义只用事实键；形状只 what-is。禁止把「有什么好处」写进短答或 keywords。
   禁止事项核查:
     具体步骤指令: 否
     治疗类表述: 否
@@ -692,7 +693,7 @@
   风险标记: 否
   yin_may_retrieve: 是
   适用产品版本: 现网产品壳（Sit 10 分钟起 · 左球 Breath practice）
-  更新时间: 2026-09-26
+  更新时间: 2026-10-16
   检索关键词: [专注和冥想有什么区别, focus vs meditation, 正念和冥想一样吗, 我这是在冥想吗, Focus sit and meditation, meditation vs focus sit, 专注和冥想, 正念和专注是一回事吗]
 
 - id: KB-EDU-0004
@@ -1068,7 +1069,7 @@
   标题: Checking in is optional
   适用场景: 以为必须每日打卡或漏一天会扣掉什么；与 0020「入口在哪」分开
   内容正文: |
-    事实键（en）：Is daily check-in or a streak required, or is it optional?
+    事实键（en）：Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in?
     能力说明（en，文档参考）：Whether check-in or a daily streak is required. Missing a day takes nothing away.
     短答（en）：You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.
     禁止：改 0020 短答；为新问法追加 keywords；把「为什么要冥想」写成第三张卡。
@@ -1078,7 +1079,7 @@
   审核人: PO（2026-10-15 · task-confide-fact-card-near-match）
   风险标记: 否
   适用产品版本: 现网 Honesty Check-in（可选）
-  更新时间: 2026-10-15
+  更新时间: 2026-10-16
   locale_keys: [HONESTY_IDLE_ENTRY, HINT_HONESTY_OPTIONAL]
   检索关键词: [Honesty Check-in]
 ```

@@ -1,6 +1,6 @@
 # Task Brief · G2 先听懂要什么事实，再去对的库取（CR-50）
 
-> **状态（2026-10-16）**：**PO 已点头开工**（按这份 Brief 改发送链）。实现中。
+> **状态（2026-10-16）**：发送链 **#1277** 已合。续刀事实键见 [`task-confide-asked-fact-keys.md`](./task-confide-asked-fact-keys.md)。
 > **跟进号**：**CR-50**。不并入 CR-45 / CR-46 / CR-49。
 > **原则**：`PRINCIPLES.md` **R-Confide-No-Symptom-List**。禁止按症状加说法名单。
 

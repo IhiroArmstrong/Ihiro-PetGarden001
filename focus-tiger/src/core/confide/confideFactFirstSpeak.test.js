@@ -18,6 +18,7 @@ import {
 import { findHelpCenterArticle } from '../helpCenterCatalog.js';
 import {
   CONFIDE_RECORD_INTENT_KIND,
+  CONFIDE_RECORD_INTENT_PROTOTYPES,
   decideConfideRecordIntent,
   pickNearestRecordIntent
 } from './confideRecordIntent.js';
@@ -166,5 +167,26 @@ describe('CR-50 fact-first speak', () => {
       (a, b) => a[0] * b[0] + a[1] * b[1]
     );
     assert.equal(picked.kind, CONFIDE_RECORD_INTENT_KIND.DESIGN_DURATION);
+  });
+
+  it('record prototypes contrast this-device log with designed session length', () => {
+    const device = CONFIDE_RECORD_INTENT_PROTOTYPES.filter(
+      (row) => row.kind === CONFIDE_RECORD_INTENT_KIND.DEVICE_RECORD
+    );
+    const design = CONFIDE_RECORD_INTENT_PROTOTYPES.filter(
+      (row) => row.kind === CONFIDE_RECORD_INTENT_KIND.DESIGN_DURATION
+    );
+    assert.equal(device.length, 3);
+    assert.equal(design.length, 1);
+    assert.equal(
+      device.every((row) => /this (?:device|machine)|already counted on this device/i.test(row.text)),
+      true
+    );
+    assert.match(design[0].text, /designed to last/);
+    assert.match(design[0].text, /not my lifetime total/);
+    assert.equal(
+      CONFIDE_RECORD_INTENT_PROTOTYPES.some((row) => /how long have I practiced according/i.test(row.text)),
+      false
+    );
   });
 });

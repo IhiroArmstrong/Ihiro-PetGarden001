@@ -20,19 +20,19 @@ export const CONFIDE_RECORD_INTENT_KIND = Object.freeze({
 export const CONFIDE_RECORD_INTENT_PROTOTYPES = Object.freeze([
   Object.freeze({
     kind: CONFIDE_RECORD_INTENT_KIND.DEVICE_RECORD,
-    text: 'How long have I practiced according to sits already written on this device?'
+    text: 'How many minutes or practiced days does this device already have written down for me?'
   }),
   Object.freeze({
     kind: CONFIDE_RECORD_INTENT_KIND.DEVICE_RECORD,
-    text: 'When do I usually sit, according to this device practice log?'
+    text: 'What does this machine already record about when I have sat?'
   }),
   Object.freeze({
     kind: CONFIDE_RECORD_INTENT_KIND.DEVICE_RECORD,
-    text: 'Have I been showing up on the days already counted on this device?'
+    text: 'Have the days already counted on this device shown me showing up?'
   }),
   Object.freeze({
     kind: CONFIDE_RECORD_INTENT_KIND.DESIGN_DURATION,
-    text: 'How long is one Breath or Sit session meant to last in the product?'
+    text: 'How long is one Sit or Breath sitting designed to last in the product, not my lifetime total on this device?'
   })
 ]);
 
