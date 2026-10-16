@@ -10,6 +10,7 @@ import {
   installHeavyLocalMediaStubs
 } from './mock-external-network.js';
 import { dismissReflectionViaWisdomHold } from './reflection-dismiss.js';
+import { wideMoreMenuGroupForProxy } from '../../src/core/wideMenuRadialLayout.js';
 
 /** @type {WeakMap<import('@playwright/test').Page, true>} */
 const externalMocksByPage = new WeakMap();
@@ -294,7 +295,7 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
     language: '#language-preference-panel'
   }[proxy];
   if (await openWideMoreMenuIfPresent(page)) {
-    const groupKey = WIDE_MORE_PROXY_GROUP[proxy];
+    const groupKey = wideMoreMenuGroupForProxy(proxy);
     if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     const row = page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`);
     await row.scrollIntoViewIfNeeded();
