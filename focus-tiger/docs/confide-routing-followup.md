@@ -72,7 +72,7 @@
 | CR-46 | 待点头 | 分档回应 + 倾诉卡常驻支持入口（不再只靠分类器托底） | Brief 已出；不改 ≥90% 关单；中档轻句与阈值待专业复核 |
 | CR-47 | 进行中 | 产品问收窄为操作问法 ∧ 产品对象；否则默认生成 | 规格已点头；实现另口令。禁止往 #1188 词表加词。危机修辞不在本条 |
 | CR-48 | 进行中 | 语义危机命中后确认修辞/亲昵，自指求死仍转介 | 实现中。不降低 0.78，不改 safety-01。与 CR-47 不同 PR |
-| CR-49 | 进行中 | 产品问答贴近事实卡正文，不再贴近关键词名单 | #1250 已合；未见英文批未过关。续刀：能力说明按句检索 + 重写 0037/0038 覆盖句。不改 0.80，不把失败句写入 keywords。Brief `task-confide-fact-card-near-match.md` |
+| CR-49 | 进行中 | 产品问答贴近事实卡（事实键 + 问法形状轴） | #1250+#1255+#1259 已合 develop。机制：同形状近邻、`factKeyEn`、whether-required 扩 CR-47。关单仍须新封存 `sealed-v3` ≥85%/类。Brief `task-confide-fact-key-ask-role.md` |
 
 ## 逐条步骤
 
@@ -556,13 +556,12 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 
 **完成**：实现 PR 号 + 「想死你了」不再转介 + 已有自指原型仍转介 + 封存未见句两类分开过关。没有这三项不得写成已修。
 
-### CR-49 · 事实卡按意思贴近（#1250+#1255 已合 · 未见英文批仍未过关）
+### CR-49 · 事实卡按意思贴近（#1259 已合 · 关单仍欠 sealed-v3）
 
-权威：[`task-briefs/task-confide-fact-card-near-match.md`](./task-briefs/task-confide-fact-card-near-match.md)。第三刀规格：[`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md)（待 PO 点头）。
+权威：[`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md)（实现 PR **#1259** · develop `0e410613`）。前序：#1250 正文近义、#1255 能力切句（`sealed-v2` 更差，已作废再切句路线）。
 
-- 近义比对事实卡（能力说明按句 + 已审核短答整段），不再比对关键词拼表。#1255 切句后未见批仍未过关，**不再**以再切检索句为下一刀。
-- 不够近：诚实空态，只记最近卡片编号和分数，不记原句。
-- 缺的是整张卡时写卡，不补问法。不放低 0.80。不代替 CR-47。
-- 关单前未见英文批：`sealed-v1` 未过关；#1255 后 `sealed-v2` 仍未过关（0037 20%、0038 0%、闲聊不进空态 100%）。两文件均已作废。续刀不得把失败句写入 keywords；过关必须再开新封存文件 + 新手写出题编号。
+- 近义只在**同一问法形状**的 `factKeyEn` 间比；0020（where/how）与 0038（whether-required）分轨；短答不进 embedding。不够近：诚实空态，记 `nearestId` + 分数 + **形状名**，不记原句。
+- 不放低 0.80。不把失败句写入 keywords。不代替 CR-47（whether-required 仍须产品对象）。
+- 关单前须**新**未见英文批 `sealed-v3` + 新出题编号（禁止再跑 v1/v2）。`sealed-v1`/`sealed-v2` 均已作废。
 
-**完成**：新未见英文问法批按类 ≥85%，且冻表/机制单测不退步。没有新文件过关不得写成已修。
+**完成**：`sealed-v3` 按类 ≥85%，且冻表/机制单测不退步。没有新文件过关不得写成「换说法已经接住」。
