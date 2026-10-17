@@ -65,7 +65,8 @@ import { assertRoutingHoldoutScoringAllowed } from '../../src/core/confide/confi
 import {
   formatVoidedReplayCaliberHints,
   formatVoidedReplayCurvesPreamble,
-  voidedReplayCurvesJsonMeta
+  voidedReplayCurvesJsonMeta,
+  writeBandCRedSentencesPrivateFile
 } from '../../src/core/confide/confideRoutingVoidedReplayLab.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -182,6 +183,8 @@ async function main() {
   /** @type {object[]} */
   const bandCRows = [];
   /** @type {object[]} */
+  const bandCRedSentenceRows = [];
+  /** @type {object[]} */
   const bandDAnchors = [];
   try {
     for (const raw of parsed.items) {
@@ -217,14 +220,22 @@ async function main() {
         productPath,
         gate: wholeGate
       });
-      bandCRows.push(
-        scoreBandCHardGateRow({
-          classId: meta.classId,
+      const bandCScore = scoreBandCHardGateRow({
+        classId: meta.classId,
+        text,
+        dataSource,
+        catalogId
+      });
+      bandCRows.push(bandCScore);
+      if (bandCScore.productAskIntoEmotion || bandCScore.yinCoinShortAnswer) {
+        bandCRedSentenceRows.push({
+          holdoutSetVersion: parsed.holdoutSetVersion,
+          itemId: String(raw.id || ''),
           text,
-          dataSource,
-          catalogId
-        })
-      );
+          productAskIntoEmotion: bandCScore.productAskIntoEmotion === true,
+          yinCoinShortAnswer: bandCScore.yinCoinShortAnswer === true
+        });
+      }
 
       if (isCr45AeAnchorHoldoutItem(raw)) {
         bandDAnchors.push({
@@ -302,7 +313,21 @@ async function main() {
   process.stdout.write(formatRoutingHoldoutSummaryStdout(summary));
   process.stdout.write(formatCaliberSplitHoldoutStdout(caliber));
   if (curvesOnlyRun) {
-    process.stdout.write(formatVoidedReplayCaliberHints(caliber));
+    process.stdout.write(
+      formatVoidedReplayCaliberHints(caliber, {
+        holdoutSetVersion: parsed.holdoutSetVersion
+      })
+    );
+    const bandCRedPath = await writeBandCRedSentencesPrivateFile({
+      holdoutSetVersion: parsed.holdoutSetVersion,
+      rows: bandCRedSentenceRows,
+      epoch
+    });
+    if (bandCRedPath) {
+      process.stdout.write(
+        `[routing-class-holdout] band_c_red_sentences_private=${bandCRedPath}\n`
+      );
+    }
     process.stdout.write(
       '[routing-class-holdout] curves_only=yes quota_incremented=no research_voided=yes\n'
     );

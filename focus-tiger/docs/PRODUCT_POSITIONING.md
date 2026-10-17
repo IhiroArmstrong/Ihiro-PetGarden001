@@ -64,7 +64,7 @@ Focus Tiger：一只陪伴你练习专注与觉察的小老虎。
 
 只要不违法、不违背开发工作基本原则，**用户是否被听见、边界是否被尊重**高于内部分类/语料是否「守住了」。**禁止不顾用户体验第一去设置产品设计红线**（含把 Slack 证据当开工许可证）。堆砌红线却让 Yin 主动给用户贴心理状态标签，是产品禁止项。权威条款：`PRINCIPLES.md`「用户体验优先」。
 
-### 0a. Voice is a first-class way in（2026-10-17 · T9 Brief 待点头）
+### 0a. Voice is a first-class way in（2026-10-17 · T10 Brief 已点头）
 
 产品「博爱」包含：老年人、残障、只能开口的人，必须能把现在能点的事用说话办完。Yin 仍是倾听对象；办事走 Operating 通道与分档确认，不靠模型猜。规格 [`task-briefs/task-yin-voice-command-entry.md`](./task-briefs/task-yin-voice-command-entry.md)。点头前无运行时。
 
