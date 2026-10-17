@@ -17,6 +17,14 @@ import { JS_CSS_HEADER } from './copyright-header.js';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const SLICES_DIR = join(root, 'src', 'locales', 'slices');
 export const MODULE_PATH = join(root, 'src', 'locales', 'localeSliceModules.js');
+/** Same directory as MODULE_PATH so `./slices/*.json` imports still resolve. */
+export const REWRITE_PROBE_PATH = join(
+  root,
+  'src',
+  'locales',
+  'localeSliceModules.rewrite-probe.js'
+);
+export const LOCALE_SLICE_INDEX_LOCK_ENV = 'FT_LOCALE_SLICE_INDEX_LOCKED';
 
 /**
  * @param {string[]} filenames
@@ -52,14 +60,23 @@ export function listSliceFilenames() {
 }
 
 /**
+ * @param {string} [targetPath]
  * @returns {string}
  */
-export function writeLocaleSliceIndex() {
+export function writeLocaleSliceIndex(targetPath = MODULE_PATH) {
+  if (
+    process.env[LOCALE_SLICE_INDEX_LOCK_ENV] === '1' &&
+    targetPath === MODULE_PATH
+  ) {
+    throw new Error(
+      'localeSliceModules.js is frozen during parallel tests; write a probe path instead'
+    );
+  }
   const filenames = listSliceFilenames();
   const body = renderLocaleSliceModule(filenames);
-  const tmpPath = `${MODULE_PATH}.${randomBytes(8).toString('hex')}.tmp`;
+  const tmpPath = `${targetPath}.${randomBytes(8).toString('hex')}.tmp`;
   writeFileSync(tmpPath, body);
-  renameSync(tmpPath, MODULE_PATH);
+  renameSync(tmpPath, targetPath);
   return body;
 }
 

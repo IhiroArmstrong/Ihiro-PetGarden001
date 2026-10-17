@@ -12,9 +12,13 @@ import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { writeLocaleSliceIndex } from './write-locale-slice-index.js';
+import {
+  LOCALE_SLICE_INDEX_LOCK_ENV,
+  writeLocaleSliceIndex
+} from './write-locale-slice-index.js';
 
 writeLocaleSliceIndex();
+process.env[LOCALE_SLICE_INDEX_LOCK_ENV] = '1';
 
 const srcRoot = join(fileURLToPath(new URL('.', import.meta.url)), '..', 'src');
 
@@ -42,6 +46,7 @@ if (files.length === 0) {
 }
 
 const result = spawnSync(process.execPath, ['--test', ...files], {
-  stdio: 'inherit'
+  stdio: 'inherit',
+  env: process.env
 });
 process.exit(result.status === null ? 1 : result.status);
