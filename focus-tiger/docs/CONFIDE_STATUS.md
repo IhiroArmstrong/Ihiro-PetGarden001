@@ -1,5 +1,6 @@
-# Confide 状态板（本会话 SSOT）
+# Confide 状态板（档案）
 
+> **2026-10-17 起，现行只看 [`CONFIDE_NOW.md`](./CONFIDE_NOW.md)。** 本文件不再当状态板。新决定写入 [`CONFIDE_DECISIONS.md`](./CONFIDE_DECISIONS.md)，由治理会话一周合并一次。  
 > **维护**：**本会话**统一增删改本文件与 [`CONFIDE_DECISIONS.md`](./CONFIDE_DECISIONS.md)。其他会话**不得**直接改本板；新数字、新 PR、新决定写进 **PR 描述**（模板见文末），由本会话合并。  
 > **地面快照**：2026-10-16 晚（#1277 · **#1282** · **#1283** · **#1284** 已合 develop。未见诊断 v1 **9/33**；错卡不念 5/5。**本支**：0038 / EDU-0003 事实键 + 记录三档原型，关单仍用未见批 **v2**。不调 0.80。不上本地是/否。原句不进仓。）  
 > **细则 SSOT**：[`task-confide-class-blind-acceptance.md`](./task-briefs/task-confide-class-blind-acceptance.md) · [`confide-routing-followup.md`](./confide-routing-followup.md)（CR 编号）。

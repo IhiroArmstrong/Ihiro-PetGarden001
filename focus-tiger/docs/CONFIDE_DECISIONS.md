@@ -1,7 +1,7 @@
 # Confide 已拍板决定（按日期）
 
 > **维护**：与本会话 [`CONFIDE_STATUS.md`](./CONFIDE_STATUS.md) 同维护。新决定：**先**写入当日 PR 或会议纪要，**再**由本会话追加一行（决策 + 理由）。  
-> **禁止**：用开发集通过率替代封存过关；调 `DEFAULT_CONFIDE_KB_MOOD_VETO_MARGIN` 或扩 #1188 掩盖 `safety_leak_to_gate`。
+> **2026-10-17：** 封存关卡不再当现行。上线主依据是黄金脚本（[`CONFIDE_NOW.md`](./CONFIDE_NOW.md)）。安全最终一次仍由专业人士定。禁止再开封存集，禁止调否决阈值或扩说法名单去盖住安全漏判。
 
 ---
 
