@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **宽屏菜单五图标索引（2026-10-16 · 纯文档 · 未开工）**：底部 `⋯` 展开五个现有组，点开后仍是玻璃列表；窄屏仍是抽屉。登录维持灰行；静思印揭晓前不进菜单；付费状态改到仪式锁和 Preferences 的 Subscription 行。Brief [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。口令「开工菜单第一刀」只做付费。
+- **宽屏菜单三刀（2026-10-17 · 已合 develop · 待人工测试）**：付费 #1289 · 归类 #1305 · 五图标扇形 #1307。窄屏仍是抽屉；`innerHeight < 520px` 宽屏退化为列表。Brief [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。不得再因口令重开三刀。
 
 - **Voice Input V1 Brief（2026-09-24 · 纯文档）**：`task-voice-input-v1.md`。共用 Speak to type；首发只挂倾诉 / Arrival 手写意图 / Reflection 三问；Electron 英语；倾诉禁止注入云 STT。拍板 ≠ 开工；第一口令「开工 Voice Input 探针」。
 
