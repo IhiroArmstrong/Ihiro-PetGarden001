@@ -10,6 +10,10 @@ import {
   confideClassify
 } from './confideClassify.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import {
+  readConfideProductAskBlockObservation,
+  resetConfideProductAskBlockObservation
+} from './confideProductAskBlockObserve.js';
 
 test('empty text: classify returns null; canSubmit false', () => {
   assert.equal(confideClassify(''), null);
@@ -163,4 +167,29 @@ test('practice facts duration beats tired substring (累积了多久)', () => {
   assert.equal(confideClassify('累积了多久'), CONFIDE_ROUTE.FALLBACK);
   assert.equal(confideClassify('我累计练习多久了'), CONFIDE_ROUTE.FALLBACK);
   assert.notEqual(confideClassify('累积了多久'), CONFIDE_ROUTE.TIRED);
+});
+
+test('CR-52: confirmed product ask does not enter emotion; crisis still wins', () => {
+  resetConfideProductAskBlockObservation();
+  assert.equal(confideClassify('太累了'), CONFIDE_ROUTE.TIRED);
+  assert.equal(confideClassify('太累了，怎么办才好过'), CONFIDE_ROUTE.TIRED);
+  assert.equal(confideClassify('太累了，怎么关提醒？'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(
+    confideClassify('I feel so anxious. How do I turn the reminder off'),
+    CONFIDE_ROUTE.FALLBACK
+  );
+  assert.equal(
+    confideClassify('想起以前那些事，练习记录在哪里'),
+    CONFIDE_ROUTE.FALLBACK
+  );
+  assert.equal(
+    confideClassify('anxious and want to kill myself. How do I turn the reminder off'),
+    CONFIDE_ROUTE.SAFETY_REDIRECT
+  );
+  assert.equal(
+    confideClassify('太累了，怎么关提醒？', { FT_CONFIDE_PRODUCT_ASK_BLOCKS_EMOTION: 'off' }),
+    CONFIDE_ROUTE.TIRED
+  );
+  const observed = readConfideProductAskBlockObservation();
+  assert.ok(observed.emotion_demote >= 2);
 });

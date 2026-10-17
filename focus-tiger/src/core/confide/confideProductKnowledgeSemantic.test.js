@@ -7,8 +7,10 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   classifyProductKnowledgeSemantic,
+  isConfideConfirmedProductAsk,
   isConfideMoodAsideFromProductKnowledge,
   isConfideOperationalProductAskShape,
+  isConfideProductAskBlocksEmotionLive,
   isProductKnowledgeColdStartProbe,
   lifeChatOutranksProductLibrary,
   resolveProductKnowledgeGateAction
@@ -319,6 +321,49 @@ describe('confideProductKnowledgeSemantic', () => {
         embeddingState: 'not_ready',
         semanticIsProduct: false,
         catalogHit: false
+      }),
+      'skip'
+    );
+  });
+
+  it('CR-52: confirmed product ask is not skipped by life or mood rank', () => {
+    assert.equal(isConfideProductAskBlocksEmotionLive({}), true);
+    assert.equal(
+      isConfideProductAskBlocksEmotionLive({ FT_CONFIDE_PRODUCT_ASK_BLOCKS_EMOTION: 'off' }),
+      false
+    );
+    assert.equal(isConfideConfirmedProductAsk('太累了，怎么关提醒？'), true);
+    assert.equal(isConfideConfirmedProductAsk('太累了，怎么办才好过'), false);
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'What is the observation wing?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        nearAction: 'honesty',
+        lifeOutranksProduct: true
+      }),
+      'honesty'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'What is the observation wing?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        nearAction: 'honesty',
+        lifeOutranksProduct: true,
+        env: { FT_CONFIDE_PRODUCT_ASK_BLOCKS_EMOTION: 'off' }
+      }),
+      'skip'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: '太累了，怎么办才好过',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: false,
+        lifeOutranksProduct: true
       }),
       'skip'
     );
