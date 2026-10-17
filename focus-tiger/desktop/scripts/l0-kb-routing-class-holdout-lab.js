@@ -62,6 +62,11 @@ import {
   resolveHoldoutShadowDataSource
 } from '../../src/core/confide/confideRoutingHoldoutShadowPath.js';
 import { assertRoutingHoldoutScoringAllowed } from '../../src/core/confide/confideRoutingHoldoutCurvesOnly.js';
+import {
+  formatVoidedReplayCaliberHints,
+  formatVoidedReplayCurvesPreamble,
+  voidedReplayCurvesJsonMeta
+} from '../../src/core/confide/confideRoutingVoidedReplayLab.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FOCUS_TIGER = path.resolve(__dirname, '../..');
@@ -263,6 +268,7 @@ async function main() {
     bandCRows,
     bandDAnchors
   });
+  const curvesOnlyRun = scoringGate.mode === 'curves_only';
   const epoch = Date.now();
   await mkdir(LAB_DIR, { recursive: true });
   const jsonPath = path.join(LAB_DIR, `kb-routing-class-holdout-${epoch}.json`);
@@ -274,9 +280,12 @@ async function main() {
         brief_version: parsed.briefVersion,
         holdout_set_version: parsed.holdoutSetVersion,
         product_minus_mood_margin: PRODUCT_MINUS_MOOD_MARGIN,
-        curves_only: scoringGate.mode === 'curves_only',
-        research_voided: scoringGate.mode === 'curves_only',
-        quota_incremented: scoringGate.mode === 'curves_only' ? false : true,
+        curves_only: curvesOnlyRun,
+        research_voided: curvesOnlyRun,
+        quota_incremented: curvesOnlyRun ? false : true,
+        ...(curvesOnlyRun
+          ? voidedReplayCurvesJsonMeta({ holdoutSetVersion: parsed.holdoutSetVersion })
+          : {}),
         summary,
         caliber_split: caliber
       },
@@ -285,9 +294,15 @@ async function main() {
     )}\n`,
     'utf8'
   );
+  if (curvesOnlyRun) {
+    process.stdout.write(
+      formatVoidedReplayCurvesPreamble({ holdoutSetVersion: parsed.holdoutSetVersion })
+    );
+  }
   process.stdout.write(formatRoutingHoldoutSummaryStdout(summary));
   process.stdout.write(formatCaliberSplitHoldoutStdout(caliber));
-  if (scoringGate.mode === 'curves_only') {
+  if (curvesOnlyRun) {
+    process.stdout.write(formatVoidedReplayCaliberHints(caliber));
     process.stdout.write(
       '[routing-class-holdout] curves_only=yes quota_incremented=no research_voided=yes\n'
     );
