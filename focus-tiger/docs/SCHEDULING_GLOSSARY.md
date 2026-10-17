@@ -25,6 +25,7 @@
 | **P2** · **T10** | Yin 语音指令入口 #1312 | **已合 develop** | #1321 |
 | **P1** · **T12** | PR smoke 移出菜单走完 | **已合 develop** | #1324；从 PR 必跑冒烟拿掉 `menu-full-reachability`；nightly + 改菜单路径仍跑 |
 | **P2** · **T13** | Confide CR-52 产品问不得进情绪路径 | **规格待点头** | Brief `task-confide-product-ask-not-emotion.md`；**点头前不改发送链**；带 C 硬闸改由本刀验收，不再当 CR-11 前置 |
+| **P2** · **T14** | G2 正确卡排名余量诊断 | **已完成** | 作废未见 v1/v2 回放 + 可见开发集；查询端 Qwen3 Instruct 前后对比；排名+余量 vs 0.80/0.62；不新增封存批；不改发送链 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
