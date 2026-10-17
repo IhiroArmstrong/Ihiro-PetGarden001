@@ -1,7 +1,7 @@
 ---
 id: confide-voided-caliber-curves
 kind: feature
-status: 进行中 · T8 · 不占额
+status: 已完成 · T8 · #1311 · 不占额
 updated: 2026-10-17
 ---
 

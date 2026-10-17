@@ -91,6 +91,7 @@ describe('confideRoutingHoldoutCurvesOnly', () => {
     });
     assert.notEqual(ran.status, 0);
     assert.match(`${ran.stderr}${ran.stdout}`, /EN_BV6_QUOTA_NOT_ACCEPTED|点头≠占额/);
+    assert.doesNotMatch(`${ran.stdout}${ran.stderr}`, /作废卷回放，非过关证据/);
     assert.equal(`${ran.stdout}${ran.stderr}`.includes(SECRET), false);
     rmSync(dir, { recursive: true, force: true });
   });

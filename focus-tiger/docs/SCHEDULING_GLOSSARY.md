@@ -19,8 +19,9 @@
 | — · **T5** | Confide CR-51 问法形状轴 #1294 | **进行中** | `why-compare` + `whether-required` 顺序；**已合 develop**；关单须未见 v3 audit；Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
 | **P2** · **T6** | Confide 路由盲测五带口径 #1306 | **已合 develop** | Brief `task-confide-routing-holdout-caliber-split.md`；**禁止**真跑 `en/b-v6`（点头 ≠ 占额） |
 | — · **T7** | Confide CR-45 影子 + 带 C 硬闸 #1309 | **已合 develop** | holdout `caliber_split` + §6.5 合并对；**CR-45 live 仍等 CR-11**；**禁止**真跑 en/b-v6 |
-| **P2** · **T8** | Confide 作废中文卷五带曲线 | **进行中** | `--curves-only`；只已作废 zh/b-v2·b-v5·b-v6；**不占额**；**禁止**真跑 en/b-v6；**CR-11 live 另口令** |
-| **P2** · **T9** | Yin 语音指令入口 | **已点头 · 运行时排队** | #1312 仍只文档（含原始转写门闩、自动提交、B 档 5 秒窗）；实现另开旁支。风险升一档为 **中**（Playbook 多模块；发送链属高风险面，开工须回归锁） |
+| **P2** · **T8** | Confide 作废中文卷五带曲线 #1311 | **已合 develop** | `--curves-only` 门闩；不占额 |
+| **P2** · **T9** | 作废卷曲线标注 + 按规则回放 | **PR 待开** | `confideRoutingVoidedReplayLab.js` |
+| **P2** · **T10** | Yin 语音指令入口 #1312 | **排队中** | 原表 T9 改 T10；Brief 已点头，运行时另旁支 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -47,8 +48,7 @@
 | 「按考核口径拆分 Brief 点头」 | 已发生（附修改已写入） |
 | 「按补锁后的 CR-45 Brief 开工影子」 | CR-45 **影子**（不改发送链）；不是 live |
 | 「接受 en/b-v6 占额」 | 才允许另会话真跑英文卷 |
-| 「开作废中文卷五带曲线」或本回合「立刻开工」 | **T8**：`--curves-only`；不占额；仍禁止 en/b-v6 |
-| 「点头」（针对 T9 Brief） | **已发生**（2026-10-17，含两句补锁）。允许开 **T9** 实现旁支；#1312 仍只文档 |
+| 「作废卷回放」 | **T9**：`--curves-only` + PO 读数规则；不占额；仍禁止 en/b-v6 |
 
 ---
 
@@ -94,6 +94,3 @@
 | 2026-10-17 | #1294 合入：**T5** CR-51「进行中」与 CR-45「未开工」分列；口令表防混刀 |
 | 2026-10-17 | CR-45 Brief 补锁；实现仍未开工，等 CR-11 |
 | 2026-10-17 | **T8** 作废中文卷五带曲线（不占额）为当前 P2 |
-| 2026-10-17 | **【新增】** 可选槽 **T9** Yin 语音指令入口 Brief |
-| 2026-10-17 | T9 条件式点头五点已补；S2 锁定为备份 + Journey Log + 切语言 |
-| 2026-10-17 | T9 点头后槽位 可选→P2、风险 低→中；运行时另开旁支 |
