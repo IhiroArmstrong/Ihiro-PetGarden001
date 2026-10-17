@@ -24,7 +24,7 @@
 | **P2** · **T9** | 作废卷曲线标注 + 按规则回放 | **已合 develop** | #1323 |
 | **P2** · **T10** | Yin 语音指令入口 #1312 | **已合 develop** | #1321 |
 | **P1** · **T12** | PR smoke 移出菜单走完 | **已合 develop** | #1324；从 PR 必跑冒烟拿掉 `menu-full-reachability`；nightly + 改菜单路径仍跑 |
-| **P2** · **T13** | Confide CR-52 产品问不得进情绪路径 | **规格待点头** | Brief `task-confide-product-ask-not-emotion.md`；**点头前不改发送链**；带 C 硬闸改由本刀验收，不再当 CR-11 前置 |
+| **P2** · **T13** | Confide CR-52 产品问不得进情绪路径 | **实现中** | Brief 已点头（附修改：规格误伤 **2%**）；旁支 `fix/confide-product-ask-not-emotion`；带 C 硬闸改由本刀验收，不再当 CR-11 前置 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -100,3 +100,4 @@
 | 2026-10-17 | CR-45 Brief 补锁；实现仍未开工，等 CR-11 |
 | 2026-10-17 | **T8** 作废中文卷五带曲线（不占额）为当前 P2 |
 | 2026-10-17 | **T10** #1321 已合；**T5** 未见 v3 已跑未关单 |
+| 2026-10-17 | **T13** CR-52 Brief 已点头；实现开工 |

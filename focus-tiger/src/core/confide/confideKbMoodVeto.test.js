@@ -210,8 +210,16 @@ describe('live Chinese mood veto', () => {
 
   it('accepts the Chinese mixed-sentence false veto and still answers a catalog hit', () => {
     assert.equal(
-      resolveProductKnowledgeGateAction({ ...liveProduct, text: '太累了，怎么关提醒？' }),
+      resolveProductKnowledgeGateAction({
+        ...liveProduct,
+        text: '太累了，怎么关提醒？',
+        env: { FT_CONFIDE_PRODUCT_ASK_BLOCKS_EMOTION: 'off' }
+      }),
       'skip'
+    );
+    assert.equal(
+      resolveProductKnowledgeGateAction({ ...liveProduct, text: '太累了，怎么关提醒？' }),
+      'honesty'
     );
     assert.equal(
       resolveProductKnowledgeGateAction({
@@ -302,11 +310,11 @@ describe('simulateKbMoodVetoGate', () => {
       productScore: 0.2,
       nearAction: 'honesty'
     });
-    assert.equal(exclamation.baseline, 'honesty');
+    assert.equal(exclamation.baseline, 'skip');
     assert.equal(exclamation.functionAsk, true);
     assert.equal(exclamation.libraryCPointsAtProduct, false);
     assert.equal(exclamation.withVeto, 'skip');
-    assert.equal(exclamation.withVetoAskGuard, 'honesty');
+    assert.equal(exclamation.withVetoAskGuard, 'skip');
     assert.equal(exclamation.withVetoNarrowAskGuard, 'skip');
   });
 });
