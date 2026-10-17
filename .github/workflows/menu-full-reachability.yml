@@ -1,0 +1,77 @@
+name: menu-full-reachability
+
+# Idle menu full walk (wide ⋯ → narrow drawer). Not a develop Required check.
+# Default PR smoke no longer includes this spec (flake amplifier).
+# Runs: nightly, every push to develop, and workflow_dispatch.
+# Menu-touching PRs still run it inside pr-smoke.yml (path filter).
+# SSOT: focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md
+#
+# Owner: PO (Armstrong). Notify: GitHub Watch → Custom → Actions email.
+# Two consecutive scheduled reds → handle that day or open an issue.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to test (branch / tag / SHA)'
+        required: false
+        default: 'develop'
+  schedule:
+    # Daily UTC 04:30 (after full e2e at 02:00)
+    - cron: '30 4 * * *'
+  push:
+    branches:
+      - develop
+
+jobs:
+  menu-reachability:
+    name: menu full reachability
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: focus-tiger
+    steps:
+      - name: Checkout develop tip (or dispatch ref)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: focus-tiger/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Menu full reachability
+        run: npm run test:e2e:menu-reachability
+        env:
+          CI: 'true'
+          PLAYWRIGHT_CHANNEL: ''
+
+      - name: Upload Playwright failure artifacts
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: menu-full-reachability-playwright-results
+          path: focus-tiger/test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Failure notice
+        if: failure()
+        working-directory: ${{ github.workspace }}
+        run: |
+          {
+            echo '## menu-full-reachability failed'
+            echo
+            echo '- Owner: PO (Armstrong)'
+            echo '- Channel: GitHub Watch this repo → Custom → Actions email; Actions tab workflow `menu-full-reachability`'
+            echo '- If this is the 2nd consecutive scheduled red, handle today or open an issue — do not ignore.'
+            echo '- Policy: `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md`'
+          } >> "$GITHUB_STEP_SUMMARY"

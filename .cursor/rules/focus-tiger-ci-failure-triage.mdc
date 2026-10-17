@@ -9,7 +9,8 @@ alwaysApply: false
 >
 > 索引：`RULES_INDEX.md` → `ci-failure-triage`。
 >
-> **只管排查前的信息收集顺序**；不改变 push/PR 默认、合 develop（CI 绿）、§7 人工关单、本地 e2e 硬顶。
+> **只管排查前的信息收集顺序**；不改变 push/PR 默认、合 develop（CI 绿）、§7 人工关单、本地 e2e 硬顶。  
+> smoke 失败种类表 SSOT：[`focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md`](../../focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md)（`pr-smoke-failure-classes`）。
 
 ## 适用条件（同时满足才生效）
 
@@ -20,6 +21,22 @@ alwaysApply: false
    - 一行断言/报错摘要（含可定位的堆栈行或文件:行号）
 
 仅 PR URL / PR 号 /「smoke 挂了」= **信息不足**，必须走下方 Step A。
+
+## Step 0 — 红灯先归类（改代码 / 重跑之前）
+
+日志齐了（本条已有，或 Step A 完成后）→ **对照** `PR_SMOKE_FAILURE_CLASSES.md` 根因表写明种类，**才允许**改产品代码或点 Re-run。
+
+| 种类 | Agent 动作 |
+|---|---|
+| **1** 菜单走完超时 | 已知基建。PR 评论写「已知问题 · 种类 1 · 见 `PR_SMOKE_FAILURE_CLASSES.md`」。**禁止**当本 PR 产品回归去改菜单实现；**禁止**为同一报错连着重跑 |
+| **2** `LOCALE_SLICES` / 语言包索引半成品 | 已知基建。标 **T11** #1322。**禁止**当文档回归 |
+| **3** 宽/窄菜单选择器命中两个节点 | 本 PR 测试债：同批修选择器唯一性 |
+| **4** 语法 / 夹具 | 修这个 PR |
+| 噪声 `Error: boom` | 忽略（模拟 PWA 注册失败） |
+
+**重跑上限**：同一 PR、同一报错，Agent 最多自动 `gh run rerun` **1** 次；仍红则停下报告。禁止连续重跑 2～3 轮。
+
+**开 PR 描述**（改菜单 / 共享生成文件时）：见该 SSOT「Agent 开 PR 时」第 4–5 条；PR 模板有对应勾选。
 
 ## Step A — 取失败信号（硬闸 · 优先于一切源码 Grep/Read）
 
@@ -106,6 +123,7 @@ alwaysApply: false
 - `agent-token-cost` §5–§6：CI/smoke 失败排查场景下，本条 Step C 的 **5 轮硬顶**优先于 §5 笼统上限；§6「失败分析摘要」**必须基于 Step A 提取的日志**，禁止臆测
 - `testing-strategy.mdc`（`RULES_INDEX` → `e2e-local-budget`）：修完后本地验证仍遵守 e2e 硬顶；本条不改为本地跑全量
 - `regression-lock` / §7：声称修好仍须五证 + 人工关单；**已合 develop ≠ 已修复**
+- `pr-smoke-failure-classes`：种类表与菜单走完门闩见 `PR_SMOKE_FAILURE_CLASSES.md`；本文件只锁「先归类、限重跑」
 
 ## 汇报
 
