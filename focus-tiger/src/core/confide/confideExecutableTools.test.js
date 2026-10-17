@@ -51,9 +51,14 @@ describe('confide executable tool registry', () => {
       CONFIDE_TOOL_ID.QUERY_PRESENCE_TREND
     );
     const sad = 'I feel depressed, how long have I practiced?';
-    assert.equal(confideClassify(sad), CONFIDE_ROUTE.SAD);
+    assert.equal(confideClassify(sad), CONFIDE_ROUTE.FALLBACK);
     assert.equal(
-      matchConfideExecutableTool({ route: CONFIDE_ROUTE.SAD, text: sad }),
+      matchConfideExecutableTool({ route: CONFIDE_ROUTE.FALLBACK, text: sad })?.id,
+      CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION
+    );
+    assert.equal(confideClassify('I feel depressed'), CONFIDE_ROUTE.SAD);
+    assert.equal(
+      matchConfideExecutableTool({ route: CONFIDE_ROUTE.SAD, text: 'I feel depressed' }),
       null
     );
     assert.equal(

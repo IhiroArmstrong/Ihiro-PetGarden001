@@ -5242,13 +5242,13 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 **When**
 - When：输入 `How long have I practiced?` / `练了多久` / `Can you tell me my total sitting time on this device?`
-- Then：0–1 秒内 `[data-testid=confide-to-yin-reply]` `data-source=practice_facts`，天数/分钟与 Journey 手算一致。危机优先：`I feel depressed, how long have I practiced?`
+- Then：0–1 秒内 `[data-testid=confide-to-yin-reply]` `data-source=practice_facts`，天数/分钟与 Journey 手算一致。危机优先：自伤句仍 `safety_redirect`。CR-52：`I feel depressed, how long have I practiced?`
 
 **Then**
 - CI-00 · 练习总时长（来源：§3.1 CI-00 · 练了多久）
 - Given：Electron 宽屏 Confide ready · Journey Log 有已知练习记录
 - Share。
-- sad 语料，非 practice_facts。
+- `practice_facts`（操作问法 ∧ 记录对象），不是 sad。纯 `I feel depressed` 仍 sad。
 
 #### AS-5
 

@@ -10,6 +10,7 @@
  *   empty → null (caller must disable send)
  *   → safety_redirect (priority)
  *   → aggression_toward_others (other-directed violence intent)
+ *   → CR-52: confirmed product ask (operational ∧ object) → fallback
  *   → emotion buckets (explicit priority on multi-hit)
  *   → fallback
  */
@@ -25,12 +26,18 @@ import {
 import { matchesAggressionTowardOthers } from './confideAggressionKeywords.js';
 import { isPracticeFactsQuestion } from './confidePracticeFacts.js';
 import { matchesSafetyRedirect } from './confideSafetyKeywords.js';
+import { observeConfideProductAskBlock } from './confideProductAskBlockObserve.js';
+import {
+  isConfideConfirmedProductAsk,
+  isConfideProductAskBlocksEmotionLive
+} from './confideProductKnowledgeSemantic.js';
 
 /**
  * @param {string} text
+ * @param {NodeJS.ProcessEnv} [env]
  * @returns {string | null} route id, or null when empty (do not classify)
  */
-export function confideClassify(text) {
+export function confideClassify(text, env) {
   const raw = typeof text === 'string' ? text : '';
   if (!raw.trim()) return null;
 
@@ -42,6 +49,9 @@ export function confideClassify(text) {
     return CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS;
   }
 
+  const blocksEmotion =
+    isConfideProductAskBlocksEmotionLive(env) && isConfideConfirmedProductAsk(raw);
+
   /** @type {string[]} */
   const hits = [];
   const practiceFactsAsk = isPracticeFactsQuestion(raw);
@@ -49,6 +59,11 @@ export function confideClassify(text) {
     if (bucket === CONFIDE_ROUTE.TIRED && practiceFactsAsk) continue;
     const phrases = EMOTION_PHRASES[bucket] || [];
     if (textMatchesAnyPhrase(raw, phrases)) hits.push(bucket);
+  }
+
+  if (blocksEmotion) {
+    if (hits.length > 0) observeConfideProductAskBlock('emotion_demote');
+    return CONFIDE_ROUTE.FALLBACK;
   }
 
   if (hits.length === 0) return CONFIDE_ROUTE.FALLBACK;

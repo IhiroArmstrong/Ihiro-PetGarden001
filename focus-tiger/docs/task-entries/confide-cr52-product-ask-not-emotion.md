@@ -1,8 +1,8 @@
 ---
 id: confide-cr52-product-ask-not-emotion
 kind: feature
-status: 规格待点头（本支只 Brief + 书面锁）
+status: 实现中（Brief 已点头 · 误伤 2%）
 updated: 2026-10-17
 ---
 
-CR-52 从 CR-11 拆出：产品问不得进情绪路径。点头前不改发送链。
+CR-52：产品问不得进情绪路径。PO 已点头（规格误伤 2%；关单计语料与 generate 两路；上线后只计数不记原句）。实现旁支 `fix/confide-product-ask-not-emotion`。

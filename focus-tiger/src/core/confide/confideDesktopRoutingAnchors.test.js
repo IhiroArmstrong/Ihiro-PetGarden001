@@ -164,4 +164,30 @@ describe('confideDesktopRoutingAnchors · 2026-09-30 user report', () => {
       'honesty'
     );
   });
+
+  it('CR-52: public product-ask anchors stay off corpus even with emotion phrases', () => {
+    const texts = [
+      '太累了，怎么关提醒？',
+      'I feel so anxious. How do I turn the reminder off',
+      '想起以前那些事，练习记录在哪里'
+    ];
+    for (const text of texts) {
+      assert.notEqual(confideClassify(text), CONFIDE_ROUTE.TIRED, text);
+      assert.notEqual(confideClassify(text), CONFIDE_ROUTE.ANXIOUS, text);
+      assert.notEqual(confideClassify(text), CONFIDE_ROUTE.SAD, text);
+      assert.notEqual(resolveConfideDesktopSource(text), 'corpus', text);
+    }
+    assert.equal(
+      confideClassify('How can I do some ground exercise when I feel so anxious'),
+      CONFIDE_ROUTE.FALLBACK
+    );
+    assert.equal(
+      resolveConfideDesktopSource('太累了，怎么关提醒？'),
+      'product_knowledge_honesty'
+    );
+    assert.equal(
+      resolveConfideDesktopSource('太累了'),
+      'corpus'
+    );
+  });
 });
