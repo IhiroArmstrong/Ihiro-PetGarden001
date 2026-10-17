@@ -14,7 +14,8 @@ import {
   YIN_VOICE_LANGUAGE_UNDO_MS,
   backupConfirmWindow,
   classifyYinVoiceConfirmReply,
-  classifyYinVoiceEntry
+  classifyYinVoiceEntry,
+  nextPickerLocaleId
 } from './yinVoiceCommandEntry.js';
 
 describe('T10 address latch on the raw transcript', () => {
@@ -73,6 +74,16 @@ describe('T10 address latch on the raw transcript', () => {
       { enabled: true }
     );
     assert.equal(decision.channel, 'confide');
+  });
+
+  it('switches back to English from the spoken phrase on any UI language', () => {
+    const decision = classifyYinVoiceEntry('Hi Yin, please switch back to English', {
+      enabled: true
+    });
+    assert.equal(decision.command, 'switch_language');
+    assert.equal(decision.targetLocale, 'en');
+    assert.equal(nextPickerLocaleId('en', ['en', 'ja']), 'ja');
+    assert.equal(nextPickerLocaleId('ja', ['en', 'ja']), 'en');
   });
 
   it('stays on Confide when the English desktop gate is closed', () => {

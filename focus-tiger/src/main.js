@@ -400,7 +400,10 @@ import {
 } from './ui/MindfulAcknowledgeToast.js';
 import { VoiceCommandUndoToast } from './ui/VoiceCommandUndoToast.js';
 import { VoiceCommandChrome } from './ui/VoiceCommandChrome.js';
-import { canShowVoiceCommandChrome } from './core/voiceCommandGate.js';
+import {
+  canRouteSpokenYinCommand,
+  canShowVoiceCommandChrome
+} from './core/voiceCommandGate.js';
 import { getVoiceInputBridge } from './core/voiceInputBridge.js';
 import {
   YIN_VOICE_PUSH_TO_TALK_ACCELERATOR,
@@ -5178,7 +5181,7 @@ async function init() {
       return bridge.stop();
     },
     onTranscript: (raw) => {
-      if (!canShowVoiceCommandChrome({ widthPx: window.innerWidth })) return;
+      if (!canRouteSpokenYinCommand({ widthPx: window.innerWidth })) return;
       if (confideToYinUI.ownsOperatingMic?.()) return;
       const focusing = stateManager.state === STATES.FOCUSING;
       const routed = routePushToTalkTranscript({

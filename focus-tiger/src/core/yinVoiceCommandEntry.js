@@ -89,12 +89,27 @@ export function classifyYinVoiceEntry(rawTranscript, { enabled = true } = {}) {
       display
     };
   }
+  if (
+    /\b(?:switch|change)\b/.test(rest) &&
+    /\b(?:back\s+to|to)\s+english\b/.test(rest)
+  ) {
+    return {
+      channel: 'command',
+      command: 'switch_language',
+      tier: 'A',
+      execute: true,
+      targetLocale: 'en',
+      raw,
+      display
+    };
+  }
   if (/\b(?:switch|change)\b/.test(rest) && /\blanguage\b/.test(rest)) {
     return {
       channel: 'command',
       command: 'switch_language',
       tier: 'A',
       execute: true,
+      targetLocale: null,
       raw,
       display
     };

@@ -18,7 +18,7 @@ import {
   stopSystemTts,
   shouldSpeakConfideReply
 } from '../core/systemTtsBridge.js';
-import { canShowVoiceCommandChrome } from '../core/voiceCommandGate.js';
+import { canRouteSpokenYinCommand } from '../core/voiceCommandGate.js';
 import {
   classifyYinVoiceEntry,
   nextPickerLocaleId
@@ -1235,11 +1235,6 @@ export class ConfideToYinUI {
       });
   }
 
-  voiceCommandEntryEnabled() {
-    const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
-    return canShowVoiceCommandChrome({ widthPx });
-  }
-
   ownsOperatingMic() {
     return this._operatingOwnsMic === true;
   }
@@ -1272,7 +1267,7 @@ export class ConfideToYinUI {
         ),
       openJourney: () => this.handlers.onOpenJourneyLog?.(),
       closeJourney: () => this.handlers.onCloseJourneyLog?.(),
-      switchLanguage: () => this._switchOperatingLanguage()
+      switchLanguage: (targetLocale) => this._switchOperatingLanguage(targetLocale)
     });
   }
 
@@ -1338,10 +1333,12 @@ export class ConfideToYinUI {
     }
   }
 
-  _switchOperatingLanguage() {
+  _switchOperatingLanguage(targetLocale) {
     const ids = listPickerLocales().map((opt) => opt.id);
     const previous = getLocale();
-    const next = nextPickerLocaleId(previous, ids);
+    const requested =
+      targetLocale && ids.includes(targetLocale) ? targetLocale : null;
+    const next = requested || nextPickerLocaleId(previous, ids);
     if (!next || next === previous) return { changed: false, undo() {} };
     setLocale(next, { persist: true });
     return {
@@ -1357,7 +1354,9 @@ export class ConfideToYinUI {
     this._voiceRawForSend = null;
     if (!canSubmitConfideText(raw)) return;
     const decision = classifyYinVoiceEntry(raw, {
-      enabled: this.voiceCommandEntryEnabled()
+      enabled: canRouteSpokenYinCommand({
+        widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
+      })
     });
     if (decision.channel === 'command') {
       void this._runOperatingCommand(decision);

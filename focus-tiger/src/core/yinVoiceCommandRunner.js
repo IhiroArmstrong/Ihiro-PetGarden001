@@ -76,7 +76,7 @@ export async function runYinVoiceCommand(decision, deps) {
   }
 
   if (decision.command === 'switch_language') {
-    const switched = deps.switchLanguage();
+    const switched = deps.switchLanguage(decision.targetLocale || null);
     if (!switched?.changed) {
       deps.show(userText, 'YIN_VOICE_LANGUAGE_UNCHANGED');
       void deps.speakAndWait('YIN_VOICE_LANGUAGE_UNCHANGED');

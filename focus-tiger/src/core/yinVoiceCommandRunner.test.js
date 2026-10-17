@@ -84,6 +84,26 @@ describe('T10 backup runner', () => {
 });
 
 describe('T10 A-tier undo and C-tier wipe', () => {
+  it('asks the language switch to return to English', async () => {
+    let target = 'unset';
+    await runYinVoiceCommand(
+      { ...backup, command: 'switch_language', targetLocale: 'en' },
+      {
+        show() {},
+        speakAndWait: async () => false,
+        listen: async () => '',
+        writeBackup: async () => {},
+        openJourney() {},
+        closeJourney() {},
+        switchLanguage: (locale) => {
+          target = locale;
+          return { changed: false, undo() {} };
+        }
+      }
+    );
+    assert.equal(target, 'en');
+  });
+
   it('reverts language within 5 seconds', async () => {
     let undone = false;
     let listenMs = 0;
