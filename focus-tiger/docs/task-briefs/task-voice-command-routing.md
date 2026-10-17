@@ -7,7 +7,7 @@
 
 | 项 | 口径 |
 |---|---|
-| 入口 | **曾拍：独立于 Confide**（D1-A）。倾诉人格永不执行 Operating；命令文字不进倾诉语料。 **2026-10-17 T9**：改为与 Confide 内称呼词捷径**并存**（称呼词第一刀、独立入口第二刀）。见 [`task-yin-voice-command-entry.md`](./task-yin-voice-command-entry.md)。 |
+| 入口 | **曾拍：独立于 Confide**（D1-A）。倾诉人格永不执行 Operating；命令文字不进倾诉语料。 **2026-10-17 T10**：改为与 Confide 内称呼词捷径**并存**（称呼词第一刀、独立入口第二刀）。见 [`task-yin-voice-command-entry.md`](./task-yin-voice-command-entry.md)。 |
 | V1 动作 | **只做开始专注**（含时长、含 Open-ended）。 |
 | 解析 | **规则**（关键词 + 时长 + 同义词）。不调本机陪伴模型。 |
 | 「L2 不含语音」 | **不触碰**。路径是 STT → 规则 → 既有开始专注入口。无 TTS、无对话。与 [`tts-v1-decision-memo.md`](../decisions/tts-v1-decision-memo.md) 决策 3 同一解释。 |
@@ -16,14 +16,14 @@
 | 不确定 | unknown 或带情绪的句子不执行。 |
 | 低风险 | 开始计时直接执行，并给可撤销提示。 |
 
-入口在界面上的位置、撤销条停留时长：**时长板 V1 仍待设计**。时长板这条路径 **V1 不做全局快捷键**。**T9** 第一刀按键说话（Confide 称呼词通道）另锁，见 [`task-yin-voice-command-entry.md`](./task-yin-voice-command-entry.md) §12。
+入口在界面上的位置、撤销条停留时长：**时长板 V1 仍待设计**。时长板这条路径 **V1 不做全局快捷键**。**T10** 第一刀按键说话（Confide 称呼词通道）另锁，见 [`task-yin-voice-command-entry.md`](./task-yin-voice-command-entry.md) §12。
 
 ## 现网核对（2026-09-28）
 
 | 项 | 现网 |
 |---|---|
 | Voice Input V1 | Brief [`task-voice-input-v1.md`](./task-voice-input-v1.md)：只挂 Confide、Arrival 手写意图、Reflection。麦克风仅点击后开。命令入口不得塞进这三处。 |
-| Confide | 时长板命令麦 **不得**塞进倾诉听写。**T9**：称呼词门闩加在发送路径前，不是把时长板解析器塞进倾诉组件。 |
+| Confide | 时长板命令麦 **不得**塞进倾诉听写。**T10**：称呼词门闩加在发送路径前，不是把时长板解析器塞进倾诉组件。 |
 | 开始专注 | 场景 T：chip 点选后进入 Focusing。语音只能调用同一入口，不绕过 Arrival / Skip。 |
 | 新浮层 | Voice Input 禁止新 overlay。命令入口优先做成既有面板里的控件；若做成独立浮层，须先登记 z-index / overlay，并停下来改本 Brief。 |
 
@@ -54,4 +54,4 @@
 ## 明确不做
 
 时长板 V1：无 TTS、无连续对话、无全局快捷键、不清空/发送/删除、无云端解析、无日语或中文命令、不把命令写入倾诉语料。  
-**T9 另锁**（不改上列时长板 V1）：称呼词捷径、按键说话、指令结果必声、备份 B 档。
+**T10 另锁**（不改上列时长板 V1）：称呼词捷径、按键说话、指令结果必声、备份 B 档。

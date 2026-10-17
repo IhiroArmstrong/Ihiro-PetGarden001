@@ -1,1 +1,1 @@
-| T9 Yin 语音指令入口 Brief | 纯文档 | 仅单元测试覆盖 | 本回合未改运行时。读 `task-briefs/task-yin-voice-command-entry.md`。`npm run docs:check`。实现须 PO 点头 Brief 后另旁支才有 UI 测项。 | — | — | — | `task-briefs/task-yin-voice-command-entry.md` | 2026-10-17 |
+| T10 Yin 语音指令入口 Brief | 纯文档 | 仅单元测试覆盖 | 本回合未改运行时。读 `task-briefs/task-yin-voice-command-entry.md`。`npm run docs:check`。实现须 PO 点头 Brief 后另旁支才有 UI 测项。 | — | — | — | `task-briefs/task-yin-voice-command-entry.md` | 2026-10-17 |

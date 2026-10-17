@@ -29,7 +29,7 @@
 - **Confide / Local AI**：用户在表达「我现在不确定要不要说」这类**边界**时，禁止因 routing / prompt / corpus pipeline **主动给用户贴心理状态标签**（反例：「I'm not sure whether I want to talk about it.」→「I am curious.」）。现网：层 3 前走 `boundary` 模板（`CONFIDE_BOUNDARY_RESPECT`），L3 禁止生成该标签。
 - 一句里同时有情绪信号与明确请求（陪伴坐下、开始、忘掉某事）时，须先回应**当下用户要 Yin 做什么**；情绪只作背景，不得盖过请求。
 - 「Yin 短句好听」≠「Yin 听懂了」。人设短句不得代替对用户意图的承接。
-- **语音指令 / 只能开口的人（2026-10-17 · T9 Brief 待点头）**：不得用内部边界（「Confide 陪伴不执行 Operating」「命令须另开无脸入口」）挡住把「现在能点的事」用说话办完。分档确认、低置信度重问，是无障碍，不是拒绝办理。规格 [`task-briefs/task-yin-voice-command-entry.md`](./task-briefs/task-yin-voice-command-entry.md)；点头前无运行时。
+- **语音指令 / 只能开口的人（2026-10-17 · T10 Brief 已点头）**：不得用内部边界（「Confide 陪伴不执行 Operating」「命令须另开无脸入口」）挡住把「现在能点的事」用说话办完。分档确认、低置信度重问，是无障碍，不是拒绝办理。规格 [`task-briefs/task-yin-voice-command-entry.md`](./task-briefs/task-yin-voice-command-entry.md)；点头前无运行时。
 
 评测与排期：Local AI 的 **Boundary Respect**（用户未要求解释/分析/建议时，Yin 能否克制）优先于换模型。拆开 **模型能力** 与 **应用层 routing** 之前，禁止以「Qwen 不行」为由立刻换模型。细则见 `PRODUCT_POSITIONING.md`「禅意倾听者」与 `LOCAL_AI_SCENARIOS_V1.md`。
 
