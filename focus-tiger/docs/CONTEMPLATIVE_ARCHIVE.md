@@ -23,7 +23,7 @@
 | Quiet Line | S–M；**硬顶 100 characters** | 诗性日签；同日一句 | 已上；**禁止**灌本层 |
 | Daily Wisdom | S–M；**硬顶 100 characters** | Reflection 底短句 | 14 id 冻结；**禁止**扩、并池 |
 | Calm Action Wisdom | S 25–45 / M 46–75 / L 76–90 | 行为时刻许可句 | 70 条 CMS，**尚未接线**；**禁止**加长充数 |
-| **Contemplative Archive（本层）** | 见 §二 | **一次发现、长期保存** | 《芥子须弥》四 case 已接线 |
+| **Contemplative Archive（本层）** | 见 §二 | **一次发现、长期保存** | 《芥子须弥》五 case 已接线 |
 
 禁止：
 
@@ -113,10 +113,10 @@ S/M/L 日签金句仍适用「产品不是阅读应用」：Notice → Feel → 
 
 | 项 | 口径 |
 |---|---|
-| 地位 | **本层第一枚纪念印**（#246 / #256 已合；四 case） |
-| 门槛 | `score ≥ 21`；四 case 同一门槛，按完成场次揭示 |
-| 气质 | `small-vast`（Case 1–3）；Case 4 = `return` |
-| 版权 | ORIG（樂五齋 Case 1–3）；**PD**（景岑 Case 4） |
+| 地位 | **本层第一枚纪念印**（#246 / #256 已合；五 case） |
+| 门槛 | `score ≥ 21`；五 case 同一门槛，按完成场次揭示 |
+| 气质 | `small-vast`（Case 1–3）；Case 4 = `return`；Case 5 = `stillness` |
+| 版权 | ORIG（樂五齋 Case 1–3）；**PD**（景岑 Case 4 · 慧開 Case 5） |
 | 章 | `public/ui/support/mustard-seed-seal/…`；不进 tip / Sanctuary `badgeIds` |
 | Brief | `task-briefs/task-mustard-seed-seal.md` |
 | 人工 | TEST_TRACKER 仍待关单；本切片 **不**改运行时 |
@@ -148,6 +148,32 @@ Standing alone atop a very high pole, yet daring to step forward with resolve—
 **Attribution** 長沙景岑禪師 · Chan Master Jingcen of Changsha · Song China
 
 **目录 id** `hundred-foot-pole`（`__mustardSeedSeal.open({ mode:'force', caseId:'hundred-foot-pole' })`）
+
+### Case 5 · MS-05 · Good Season on Earth（人間好時節）
+
+**首屏 ZH**
+
+春有百花秋有月，  
+夏有涼風冬有雪。  
+若無閒事掛心頭，  
+便是人間好時節。
+
+**首屏 EN**
+
+Spring brings a hundred flowers; autumn, the moon;  
+Summer offers cool breezes; winter, its snow.  
+If no idle cares cling to the heart,  
+Then every season is a good season on earth.
+
+**Comment（繁體）**  
+勸人放下心中執念與煩惱，以隨緣自在、無住無執的平常心去全然接納並欣賞每個當下的自然之美，便能時時身處人間好時節。
+
+**Comment（EN）**  
+A counsel to release fixed ideas and needless worry, meet each season with an ordinary mind free of grasping, and receive the beauty of the present—then every moment is a good season on earth.
+
+**Attribution** 無門慧開禪師 · Chan Master Wumen Huikai · Song China
+
+**目录 id** `good-season-on-earth`（`__mustardSeedSeal.open({ mode:'force', caseId:'good-season-on-earth' })`）
 
 ---
 

@@ -13,6 +13,7 @@ import {
   MUSTARD_SEED_SEAL_CASE_HERO,
   MUSTARD_SEED_SEAL_CASE_NO_TRACE,
   MUSTARD_SEED_SEAL_CASE_HUNDRED_FOOT_POLE,
+  MUSTARD_SEED_SEAL_CASE_GOOD_SEASON_ON_EARTH,
   MUSTARD_SEED_SEAL_CASES,
   MUSTARD_SEED_SEAL_HERO_POEM_ZH,
   MUSTARD_SEED_SEAL_HERO_ATTRIBUTION_ZH,
@@ -20,6 +21,8 @@ import {
   MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH,
   MUSTARD_SEED_SEAL_HUNDRED_FOOT_POLE_POEM_ZH,
   MUSTARD_SEED_SEAL_HUNDRED_FOOT_POLE_ATTRIBUTION_ZH,
+  MUSTARD_SEED_SEAL_GOOD_SEASON_ON_EARTH_POEM_ZH,
+  MUSTARD_SEED_SEAL_GOOD_SEASON_ON_EARTH_ATTRIBUTION_ZH,
   clearMustardSeedSealState,
   getMustardSeedSealCase,
   isMustardSeedSealScoreMet,
@@ -92,14 +95,18 @@ describe('mustardSeedSeal', () => {
     );
   });
 
-  it('catalog has four mustard-seed verse cases', () => {
-    assert.equal(MUSTARD_SEED_SEAL_CASES.length, 4);
+  it('catalog has five mustard-seed verse cases', () => {
+    assert.equal(MUSTARD_SEED_SEAL_CASES.length, 5);
     assert.equal(MUSTARD_SEED_SEAL_CASES[0].id, MUSTARD_SEED_SEAL_CASE_SUMERU);
     assert.equal(MUSTARD_SEED_SEAL_CASES[1].id, MUSTARD_SEED_SEAL_CASE_HERO);
     assert.equal(MUSTARD_SEED_SEAL_CASES[2].id, MUSTARD_SEED_SEAL_CASE_NO_TRACE);
     assert.equal(
       MUSTARD_SEED_SEAL_CASES[3].id,
       MUSTARD_SEED_SEAL_CASE_HUNDRED_FOOT_POLE
+    );
+    assert.equal(
+      MUSTARD_SEED_SEAL_CASES[4].id,
+      MUSTARD_SEED_SEAL_CASE_GOOD_SEASON_ON_EARTH
     );
     assert.deepEqual(MUSTARD_SEED_SEAL_HERO_POEM_ZH, [
       '山海奇雲風幡舞，',
@@ -134,6 +141,16 @@ describe('mustardSeedSeal', () => {
     assert.equal(
       MUSTARD_SEED_SEAL_HUNDRED_FOOT_POLE_ATTRIBUTION_ZH,
       '長沙景岑禪師'
+    );
+    assert.deepEqual(MUSTARD_SEED_SEAL_GOOD_SEASON_ON_EARTH_POEM_ZH, [
+      '春有百花秋有月，',
+      '夏有涼風冬有雪。',
+      '若無閒事掛心頭，',
+      '便是人間好時節。'
+    ]);
+    assert.equal(
+      MUSTARD_SEED_SEAL_GOOD_SEASON_ON_EARTH_ATTRIBUTION_ZH,
+      '無門慧開禪師'
     );
   });
 
@@ -348,6 +365,16 @@ describe('mustardSeedSeal', () => {
     markMustardSeedSealRevealed(storage, {
       caseId: MUSTARD_SEED_SEAL_CASE_HUNDRED_FOOT_POLE
     });
+    const afterFourth = resolveMustardSeedSeal(storage);
+    assert.equal(afterFourth.shouldAutoReveal, true);
+    assert.equal(
+      afterFourth.nextCase?.id,
+      MUSTARD_SEED_SEAL_CASE_GOOD_SEASON_ON_EARTH
+    );
+
+    markMustardSeedSealRevealed(storage, {
+      caseId: MUSTARD_SEED_SEAL_CASE_GOOD_SEASON_ON_EARTH
+    });
     const afterAll = resolveMustardSeedSeal(storage);
     assert.equal(afterAll.shouldAutoReveal, false);
     assert.equal(afterAll.nextCase, null);
@@ -355,7 +382,8 @@ describe('mustardSeedSeal', () => {
       MUSTARD_SEED_SEAL_CASE_SUMERU,
       MUSTARD_SEED_SEAL_CASE_HERO,
       MUSTARD_SEED_SEAL_CASE_NO_TRACE,
-      MUSTARD_SEED_SEAL_CASE_HUNDRED_FOOT_POLE
+      MUSTARD_SEED_SEAL_CASE_HUNDRED_FOOT_POLE,
+      MUSTARD_SEED_SEAL_CASE_GOOD_SEASON_ON_EARTH
     ]);
 
     clearMustardSeedSealState(storage);

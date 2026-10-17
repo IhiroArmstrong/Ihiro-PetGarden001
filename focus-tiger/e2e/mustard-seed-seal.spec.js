@@ -8,7 +8,7 @@ import { openFreshProductShell } from './helpers/product-shell.js';
 
 /**
  * Memorial Seal (Mustard Seed · Sumeru) — product-path ritual card after score unlock.
- * Locks directory-driven copy for all four verse cases via debug API + DOM snapshot.
+ * Locks directory-driven copy for all five verse cases via debug API + DOM snapshot.
  */
 
 test.describe('Mustard Seed memorial seal', () => {
@@ -38,10 +38,16 @@ test.describe('Mustard Seed memorial seal', () => {
       poemZh: '百尺竿頭不動人',
       poemEn: 'At the hundred-foot pole, you do not stir',
       attribution: '長沙景岑禪師'
+    },
+    {
+      caseId: 'good-season-on-earth',
+      poemZh: '春有百花秋有月',
+      poemEn: 'Spring brings a hundred flowers',
+      attribution: '無門慧開禪師'
     }
   ];
 
-  test('four verse cases render expected copy from directory', async ({ page }) => {
+  test('five verse cases render expected copy from directory', async ({ page }) => {
     await openFreshProductShell(page);
 
     await expect
@@ -178,7 +184,8 @@ test.describe('Mustard Seed memorial seal', () => {
             'mustard-seed-sumeru',
             'hero-not-pond',
             'no-trace-might',
-            'hundred-foot-pole'
+            'hundred-foot-pole',
+            'good-season-on-earth'
           ],
           lastShownCaseId: 'mustard-seed-sumeru'
         })
@@ -210,10 +217,14 @@ test.describe('Mustard Seed memorial seal', () => {
 
     await next.click();
     await expect(card).toHaveAttribute('data-case-id', 'hundred-foot-pole');
+    await expect(next).toBeEnabled();
+
+    await next.click();
+    await expect(card).toHaveAttribute('data-case-id', 'good-season-on-earth');
     await expect(next).toBeDisabled();
 
     await prev.click();
-    await expect(card).toHaveAttribute('data-case-id', 'hero-not-pond');
+    await expect(card).toHaveAttribute('data-case-id', 'hundred-foot-pole');
 
     await page.evaluate(() => window.__mustardSeedCard.close());
     await expect(card).toBeHidden({ timeout: 5_000 });

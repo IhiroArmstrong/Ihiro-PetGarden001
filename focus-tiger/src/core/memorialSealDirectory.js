@@ -49,6 +49,7 @@ export const MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU = 'mustard-seed-sumeru';
 export const MEMORIAL_SEAL_ENTRY_HERO = 'hero-not-pond';
 export const MEMORIAL_SEAL_ENTRY_NO_TRACE = 'no-trace-might';
 export const MEMORIAL_SEAL_ENTRY_HUNDRED_FOOT_POLE = 'hundred-foot-pole';
+export const MEMORIAL_SEAL_ENTRY_GOOD_SEASON_ON_EARTH = 'good-season-on-earth';
 
 export const CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX =
   'contemplative-archive-seal:';
@@ -173,6 +174,36 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
     badgeAsset: MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
     toneTag: 'imperfection-return',
+    enabled: true
+  }),
+  Object.freeze({
+    catalogId: 'MS-05',
+    id: MEMORIAL_SEAL_ENTRY_GOOD_SEASON_ON_EARTH,
+    sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
+    poemZh: Object.freeze([
+      '春有百花秋有月，',
+      '夏有涼風冬有雪。',
+      '若無閒事掛心頭，',
+      '便是人間好時節。'
+    ]),
+    poemEn: Object.freeze([
+      'Spring brings a hundred flowers; autumn, the moon;',
+      'Summer offers cool breezes; winter, its snow.',
+      'If no idle cares cling to the heart,',
+      'Then every season is a good season on earth.'
+    ]),
+    poemJa: Object.freeze([
+      '春は百花、秋は月、',
+      '夏は涼風、冬は雪。',
+      '閑事を心に掛けず、',
+      'いつも人間の好時節。'
+    ]),
+    attributionZh: '無門慧開禪師',
+    attributionEn: 'Chan Master Wumen Huikai · Song China',
+    badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
+    badgeAsset: MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
+    toneTag: 'stillness',
     enabled: true
   })
 ]);
