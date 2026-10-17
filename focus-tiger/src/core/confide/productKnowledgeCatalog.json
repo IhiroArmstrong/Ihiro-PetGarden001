@@ -282,7 +282,10 @@
     {
       "id": "KB-FUNC-0020",
       "factKeyEn": "Where do I open Honesty Check-in to record quiet time I already did elsewhere?",
-      "askRoleShapes": ["where", "how"],
+      "askRoleShapes": [
+        "where",
+        "how"
+      ],
       "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Honesty Check-in — below The 5 Moments. Pick how long your quiet time elsewhere was, take one syncing breath, then Yin records it. This is optional; Sit with Yin still works without it. After check-in you may see a gentle bridge asking if you want to sit now too.",
       "keywords": [
         "Honesty Check-in",
@@ -377,7 +380,10 @@
     {
       "id": "KB-EDU-0003",
       "factKeyEn": "Are focus practice, meditation, and mindfulness the same thing, or is Sit with Yin a Focus sit rather than a generic meditation class?",
-      "askRoleShapes": ["what-is", "why-compare"],
+      "askRoleShapes": [
+        "what-is",
+        "why-compare"
+      ],
       "shortAnswerEn": "In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.",
       "keywords": [
         "专注和冥想有什么区别",
@@ -604,7 +610,10 @@
     {
       "id": "KB-FUNC-0037",
       "factKeyEn": "Where is the idle-screen control that turns background music or ambient sound on or off?",
-      "askRoleShapes": ["where", "how"],
+      "askRoleShapes": [
+        "where",
+        "how"
+      ],
       "capabilityStatementEn": "Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.",
       "shortAnswerEn": "Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.",
       "keywords": [
@@ -614,11 +623,36 @@
     {
       "id": "KB-FUNC-0038",
       "factKeyEn": "Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in?",
-      "askRoleShapes": ["whether-required"],
+      "askRoleShapes": [
+        "whether-required"
+      ],
       "capabilityStatementEn": "Whether check-in or a daily streak is required. Missing a day takes nothing away.",
       "shortAnswerEn": "You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.",
       "keywords": [
         "Honesty Check-in"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0039",
+      "factKeyEn": "Can I ask Yin by voice to do things on this device instead of tapping, for example backing up my practice data?",
+      "askRoleShapes": [
+        "whether",
+        "how"
+      ],
+      "capabilityStatementEn": "That Focus Tiger is built so people who cannot tap comfortably can often speak instead; on the Mac desktop app Yin can listen for short English operating requests that run the same local actions as taps, with confirmation before writing files; words stay on this device.",
+      "shortAnswerEn": "When tapping is hard, Focus Tiger is built so you can often speak instead. On the Mac desktop app, Yin can listen for short English requests that run the same local actions you would tap — for example starting a focus sit, ending with Rise, or backing up your practice data after Yin repeats what will happen and you say yes. Open More (⋯) or the drawer → Practice → Confide to Yin, or use Yin's listen entry when it is on screen. Example: Hi Yin, please backup all the app data for me. Your words stay on this device. More menu actions join over time. Yin only points here and does not read long scripts aloud.",
+      "keywords": [
+        "voice command",
+        "speak instead of tap",
+        "Hi Yin backup",
+        "backup by voice",
+        "Yin listen",
+        "local AI operating",
+        "accessibility voice",
+        "elderly voice",
+        "语音办理",
+        "语音备份",
+        "阿寅倾听"
       ]
     }
   ]

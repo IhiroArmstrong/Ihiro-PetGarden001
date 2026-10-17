@@ -79,7 +79,11 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-journey-log': Object.freeze(['KB-FUNC-0012']),
   'kb-live-presence-signals': Object.freeze(['KB-FUNC-0013']),
   'kb-live-yin-coin': Object.freeze(['KB-FUNC-0018']),
-  'kb-live-confide': Object.freeze(['KB-FUNC-0010', 'KB-FUNC-0005']),
+  'kb-live-confide': Object.freeze([
+    'KB-FUNC-0010',
+    'KB-FUNC-0005',
+    'KB-FUNC-0039'
+  ]),
   'kb-live-local-backup': Object.freeze(['KB-FUNC-0003', 'KB-FUNC-0015']),
   'kb-live-hud-progress': Object.freeze(['KB-FUNC-0004']),
   'kb-live-five-moments': Object.freeze(['KB-FUNC-0019']),

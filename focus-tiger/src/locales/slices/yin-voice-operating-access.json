@@ -1,0 +1,17 @@
+{
+  "en": {
+    "HINT_APP_PURPOSE_VOICE_ACCESS_TITLE": "Voice when tapping is hard",
+    "HINT_APP_PURPOSE_VOICE_ACCESS_BODY": "Focus Tiger is built for everyone — including people who cannot tap menus easily. On the Mac desktop app, Yin can listen for short English requests and run the same local actions you would tap, such as starting a sit, ending with Rise, or backing up your practice data after Yin repeats the plan and you say yes. Open Confide to Yin or use Yin's listen entry when you see it. Example: Hi Yin, please backup all the app data for me. Your words stay on this device; more actions join over time.",
+    "PRIVACY_SHEET_VOICE_OPERATING": "On the Mac desktop app, you can ask Yin by voice to run the same local actions you would tap — for example starting a sit or backing up your practice data. Yin repeats what will happen before writing files; you confirm with a short yes or cancel. Those operating words are processed on this device and are not sent to cloud AI for that path."
+  },
+  "zh": {
+    "HINT_APP_PURPOSE_VOICE_ACCESS_TITLE": "点按不便时用语音",
+    "HINT_APP_PURPOSE_VOICE_ACCESS_BODY": "Focus Tiger 为所有人而设计——包括不便点菜单的人。在 Mac 桌面版，可用简短英语请 Yin 倾听并办理与点击相同的本机操作，例如开始同坐、用起身结束，或在 Yin 复述计划且你同意后备份练习资料。可打开「向阿寅倾诉」，或使用屏幕上出现的倾听入口。例：Hi Yin, please backup all the app data for me。你的话留在本机；更多操作会逐步加入。",
+    "PRIVACY_SHEET_VOICE_OPERATING": "在 Mac 桌面版，可用简短英语请 Yin 办理与点击相同的本机操作（例如开始同坐或备份练习资料）。写文件前 Yin 会复述将发生的事，你用简短「好」或取消来确认。这些办理用语在本机处理，该路径不会发送到云端 AI。"
+  },
+  "ja": {
+    "HINT_APP_PURPOSE_VOICE_ACCESS_TITLE": "タップが難しいときの声",
+    "HINT_APP_PURPOSE_VOICE_ACCESS_BODY": "Focus Tiger は、メニューをタップしづらい方にも使えるよう設計しています。Mac デスクトップでは、短い英語で Yin に頼み、タップと同じ本機操作（Sit の開始、Rise で終える、バックアップなど）を実行できます。ファイルを書く前に Yin が内容を復唱し、Yes で続行します。寅に話す、または画面上の「聞く」入口を使います。例：Hi Yin, please backup all the app data for me。言葉は端末に残ります。操作は順次増えます。",
+    "PRIVACY_SHEET_VOICE_OPERATING": "Mac デスクトップでは、短い英語で Yin にタップと同じ本機操作を頼めます（Sit の開始やバックアップなど）。ファイルを書く前に Yin が内容を復唱し、短い Yes またはキャンセルで確認します。その操作の言葉は端末上で処理され、その経路ではクラウド AI へ送られません。"
+  }
+}

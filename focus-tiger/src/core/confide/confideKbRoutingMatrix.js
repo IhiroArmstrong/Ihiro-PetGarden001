@@ -908,6 +908,27 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0038' }
   },
   {
+    id: 'kb-0039-voice-backup-mac',
+    text: 'Can I ask Yin by voice to backup my data on this Mac',
+    dimensions: ['how', 'en'],
+    lock: 'probe',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0039' }
+  },
+  {
+    id: 'kb-0039-hi-yin-backup',
+    text: 'Hi Yin please backup all the app data for me',
+    dimensions: ['how', 'en'],
+    lock: 'probe',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0039' }
+  },
+  {
+    id: 'kb-0039-speak-instead-tap',
+    text: 'speak instead of tap voice command Yin listen',
+    dimensions: ['how', 'en'],
+    lock: 'probe',
+    expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0039' }
+  },
+  {
     id: 'kb-edu-0001-grounding-en',
     text: 'what is grounding?',
     dimensions: ['what', 'en'],

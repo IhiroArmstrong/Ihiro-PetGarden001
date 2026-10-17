@@ -265,7 +265,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/confide/confideUserVisibilityGate.js',
       'src/locales/en.json'
     ]),
-    catalogKbIds: Object.freeze(['KB-FUNC-0005', 'KB-FUNC-0010'])
+    catalogKbIds: Object.freeze(['KB-FUNC-0005', 'KB-FUNC-0010', 'KB-FUNC-0039'])
   }),
   Object.freeze({
     id: 'kb-live-daily-quote',
@@ -478,7 +478,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'KB-FUNC-0035',
       'KB-FUNC-0036',
       'KB-FUNC-0037',
-      'KB-FUNC-0038'
+      'KB-FUNC-0038',
+      'KB-FUNC-0039'
     ])
   }),
   Object.freeze({

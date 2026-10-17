@@ -29,6 +29,7 @@ const SECTION_BY_ID = {
   'KB-FUNC-0032': 'start',
   'KB-FUNC-0034': 'start',
   'KB-FUNC-0037': 'start',
+  'KB-FUNC-0039': 'companion',
   'KB-FUNC-0002': 'practice',
   'KB-FUNC-0006': 'practice',
   'KB-FUNC-0013': 'practice',
@@ -212,6 +213,11 @@ const TITLE_BY_ID = {
     en: 'Where practices live in the app',
     zh: '概念对应哪些入口',
     ja: '練習の入口一覧'
+  },
+  'KB-FUNC-0039': {
+    en: 'Ask Yin by voice (desktop)',
+    zh: '用语音请阿寅办理（桌面）',
+    ja: '声で寅にお願いする（デスクトップ）'
   }
 };
 
@@ -349,6 +355,10 @@ const BODY_ZH_JA = {
   'KB-EDU-0004': {
     zh: '同坐→主钮；短呼吸→左球；接地练习→菜单接地。此处只对照入口。',
     ja: 'Sit／呼吸／グラウンディングの入口対応。'
+  },
+  'KB-FUNC-0039': {
+    zh: '点按不便时，Mac 桌面版可用英语短句请 Yin 办理本机操作（如同坐、起身、备份）；写文件前 Yin 会复述并请你说好。例：Hi Yin, please backup all the app data for me。话留在本机。',
+    ja: 'タップが難しいとき、Mac デスクトップでは短い英語で Yin に同じ操作を頼めます（Sit、Rise、バックアップなど）。ファイルを書く前に Yin が内容を復唱し、Yes で続行。例：Hi Yin, please backup all the app data for me。言葉は端末に残ります。'
   }
 };
 
@@ -374,8 +384,10 @@ const existingSlice = JSON.parse(
 );
 
 const shellKeys = Object.keys(existingSlice.en).filter(
-  (k) => !k.startsWith('HELP_CENTER_ARTICLE_')
-);
+  (k) =>
+    !k.startsWith('HELP_CENTER_ARTICLE_') ||
+    k.startsWith('HELP_CENTER_ARTICLE_HELP_')
+  );
 
 /** @type {Record<string, Record<string, string>>} */
 const locales = { en: {}, zh: {}, ja: {} };
@@ -441,9 +453,35 @@ const articleLines = sortedIds.map((id) => {
 });
 
 const catalogJs = readFileSync(join(root, 'src/core/helpCenterCatalog.js'), 'utf8');
+const HELP_CENTER_GAP_ARTICLE_LINES = String.raw`
+  Object.freeze({
+    id: 'HELP-BREATH-DURATION',
+    sectionId: 'practice',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-LOTUS-BLOOMS',
+    sectionId: 'practice',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-BUY-COLLECTIONS',
+    sectionId: 'data',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-BADGE-NOT-COIN',
+    sectionId: 'data',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY'
+  })`;
+
 const replaced = catalogJs.replace(
   /export const HELP_CENTER_ARTICLES = Object\.freeze\(\[[\s\S]*?\]\);/,
-  `export const HELP_CENTER_ARTICLES = Object.freeze([\n${articleLines.join(',\n')}\n]);`
+  `export const HELP_CENTER_ARTICLES = Object.freeze([\n${articleLines.join(',\n')},\n${HELP_CENTER_GAP_ARTICLE_LINES}\n]);`
 );
 writeFileSync(join(root, 'src/core/helpCenterCatalog.js'), replaced, 'utf8');
 
