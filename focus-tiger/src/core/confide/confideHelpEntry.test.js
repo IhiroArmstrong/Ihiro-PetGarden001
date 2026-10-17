@@ -13,9 +13,11 @@ import {
 import { formatConfideSafetyResourceGuidance } from './confideSafetyResources.js';
 
 describe('confide help entry (CR-46 P3)', () => {
-  it('help entry is on by default and FT_CONFIDE_HELP_ENTRY=off hides', () => {
-    assert.equal(resolveConfideHelpEntryEnabled({}), true);
+  it('help entry is off by default and FT_CONFIDE_HELP_ENTRY=on shows', () => {
+    assert.equal(resolveConfideHelpEntryEnabled({}), false);
     assert.equal(resolveConfideHelpEntryEnabled({ FT_CONFIDE_HELP_ENTRY: 'off' }), false);
+    assert.equal(resolveConfideHelpEntryEnabled({ FT_CONFIDE_HELP_ENTRY: 'on' }), true);
+    assert.equal(resolveConfideHelpEntryEnabled({ FT_CONFIDE_HELP_ENTRY: '1' }), true);
   });
 
   it('resource panel reuses safety-01 guidance in three locales', () => {

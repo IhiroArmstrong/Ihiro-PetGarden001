@@ -1,6 +1,6 @@
 # Task Brief · 分档回应与常驻支持入口
 
-> **状态（2026-10-15）**：**待 PO 点头**。本稿只锁规格，**无运行时**。  
+> **状态（2026-10-18）**：**PO 已点头 · T14 实现中**。P3 常驻入口骨架 #1283；产品挂载 **默认关**（`FT_CONFIDE_HELP_ENTRY` 未设 = off，`on` 显示）。中档与阈值仍待专业复核。  
 > **类别**：**B 类**。点头并开工之后，用户可见回复可能多一档「更轻的关心」，倾诉卡上也会多一个可点入口。`WORKFLOW.md` Brief 开工门禁。  
 > **跟进号**：**CR-46**（父条 **CR-43** 字面分类 · **CR-44** 语义危机层）。  
 > **父 Brief**：[`task-confide-safety-routing-fix.md`](./task-confide-safety-routing-fix.md) · [`task-confide-semantic-crisis-layer.md`](./task-confide-semantic-crisis-layer.md)。  
@@ -266,7 +266,7 @@
 
 ## 十、回滚
 
-建议环境变量：`FT_CONFIDE_SAFETY_CARE=off`（中档关掉，高档与入口可独立关）。`FT_CONFIDE_HELP_ENTRY=off` 隐藏常驻入口。设回后：未达字面 / 未达原语义高档的句子必须回到 CR-44 切后、本刀切前。高档字面危机不受影响。
+建议环境变量：`FT_CONFIDE_SAFETY_CARE=off`（中档关掉，高档与入口可独立关）。**`FT_CONFIDE_HELP_ENTRY` 默认 off（T14 产品挂载关）**；设 `on` / `1` / `true` 显示常驻入口。设回 off 后：未达字面 / 未达原语义高档的句子必须回到 CR-44 切后、本刀切前。高档字面危机不受影响。
 
 默认：PO 点头开工并合入后，Electron 宽屏可 live；中档 **必须**复核定稿后才允许去掉占位。入口可先以占位短名合入（须明显像占位或先 hidden），由 PO 选。
 
