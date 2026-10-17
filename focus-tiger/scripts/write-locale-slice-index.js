@@ -8,7 +8,8 @@
  * The file is gitignored. Dev, test, and postinstall regenerate it
  * so feature PRs never edit a shared import list.
  */
-import { readdirSync, writeFileSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
+import { readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { JS_CSS_HEADER } from './copyright-header.js';
@@ -56,7 +57,9 @@ export function listSliceFilenames() {
 export function writeLocaleSliceIndex() {
   const filenames = listSliceFilenames();
   const body = renderLocaleSliceModule(filenames);
-  writeFileSync(MODULE_PATH, body);
+  const tmpPath = `${MODULE_PATH}.${randomBytes(8).toString('hex')}.tmp`;
+  writeFileSync(tmpPath, body);
+  renameSync(tmpPath, MODULE_PATH);
   return body;
 }
 
