@@ -1,0 +1,41 @@
+{
+  "en": {
+    "YIN_VOICE_BACKUP_RECAP": "I'll back up the data on this device. Say Yes to go ahead, or Cancel to stop.",
+    "YIN_VOICE_BACKUP_DONE": "The backup is saved on this device.",
+    "YIN_VOICE_BACKUP_FAILED": "The backup did not finish. The older copy is still here.",
+    "YIN_VOICE_BACKUP_MISSED": "I didn't hear you. I won't back up this time.",
+    "YIN_VOICE_CANCELLED": "All right. Not this time.",
+    "YIN_VOICE_JOURNEY_OPENED": "The Journey Log is open.",
+    "YIN_VOICE_LANGUAGE_SWITCHED": "The language is switched. Say Cancel to switch it back.",
+    "YIN_VOICE_LANGUAGE_UNCHANGED": "There isn't another language to switch to yet.",
+    "YIN_VOICE_FORGET_RECAP": "This would erase everything Yin has remembered, and voice cannot bring it back. Say Yes, forget everything to confirm, or Cancel.",
+    "YIN_VOICE_FORGET_NOT_ERASED": "Nothing was erased.",
+    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "I heard you. Nothing was erased."
+  },
+  "zh": {
+    "YIN_VOICE_BACKUP_RECAP": "我来备份这份本机资料。说 Yes 继续，说 Cancel 停下。",
+    "YIN_VOICE_BACKUP_DONE": "备份已经写在这台设备上。",
+    "YIN_VOICE_BACKUP_FAILED": "这次备份没有完成。旧的那份还在。",
+    "YIN_VOICE_BACKUP_MISSED": "没听到，这次先不备份",
+    "YIN_VOICE_CANCELLED": "好，这次不做。",
+    "YIN_VOICE_JOURNEY_OPENED": "旅程记录已经打开。",
+    "YIN_VOICE_LANGUAGE_SWITCHED": "语言已经切换。说 Cancel 可以切回去。",
+    "YIN_VOICE_LANGUAGE_UNCHANGED": "现在还没有另一种语言可以切换。",
+    "YIN_VOICE_FORGET_RECAP": "这会忘掉阿寅记下的全部个人条目，而且不能用口头再找回来。请说 Yes, forget everything 确认，或说 Cancel。",
+    "YIN_VOICE_FORGET_NOT_ERASED": "没有删掉任何东西。",
+    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "我听到了。没有删掉任何东西。"
+  },
+  "ja": {
+    "YIN_VOICE_BACKUP_RECAP": "この端末のデータをバックアップします。進めるなら Yes、止めるなら Cancel と言ってください。",
+    "YIN_VOICE_BACKUP_DONE": "バックアップをこの端末に保存しました。",
+    "YIN_VOICE_BACKUP_FAILED": "バックアップは完了しませんでした。前の分はそのままです。",
+    "YIN_VOICE_BACKUP_MISSED": "聞き取れませんでした。今回はバックアップしません。",
+    "YIN_VOICE_CANCELLED": "わかりました。今回はやめておきます。",
+    "YIN_VOICE_JOURNEY_OPENED": "旅の記録を開きました。",
+    "YIN_VOICE_LANGUAGE_SWITCHED": "言語を切り替えました。戻すなら Cancel と言ってください。",
+    "YIN_VOICE_LANGUAGE_UNCHANGED": "切り替えられる別の言語は、まだありません。",
+    "YIN_VOICE_FORGET_RECAP": "Yin が覚えている個人の記録をすべて消し、声では戻せません。確認するなら Yes, forget everything、やめるなら Cancel と言ってください。",
+    "YIN_VOICE_FORGET_NOT_ERASED": "何も消していません。",
+    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "聞きました。何も消していません。"
+  }
+}

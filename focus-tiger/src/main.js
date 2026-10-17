@@ -401,6 +401,12 @@ import {
 import { VoiceCommandUndoToast } from './ui/VoiceCommandUndoToast.js';
 import { VoiceCommandChrome } from './ui/VoiceCommandChrome.js';
 import { canShowVoiceCommandChrome } from './core/voiceCommandGate.js';
+import { getVoiceInputBridge } from './core/voiceInputBridge.js';
+import {
+  YIN_VOICE_PUSH_TO_TALK_ACCELERATOR,
+  createPushToTalkToggle,
+  routePushToTalkTranscript
+} from './core/yinVoicePushToTalk.js';
 import {
   applyFocusSitAdjust,
   focusSitAdjustStatus
@@ -1905,6 +1911,12 @@ async function init() {
     onMemoryRemembered: () => {
       yinPersonalMemoryUI.reloadIfOpen();
     },
+    onOpenJourneyLog: () => {
+      journeyLogUI.open();
+    },
+    onCloseJourneyLog: () => {
+      journeyLogUI.close();
+    },
     onReplied: ({ route }) => {
       if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
         emotionController.playEmotion('nodBow');
@@ -3333,6 +3345,7 @@ async function init() {
     syncConfideEarChrome();
     syncTransitionMomentTrigger();
     refreshFocusSitAdjust();
+
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -5152,6 +5165,42 @@ async function init() {
   stateManager.onChange(() => refreshFocusSitAdjust());
   window.addEventListener('resize', () => refreshFocusSitAdjust());
   refreshFocusSitAdjust();
+
+  const yinVoicePushToTalk = createPushToTalkToggle({
+    start: async () => {
+      const bridge = getVoiceInputBridge();
+      if (!bridge || typeof bridge.start !== 'function') return { ok: false };
+      return bridge.start();
+    },
+    stop: async () => {
+      const bridge = getVoiceInputBridge();
+      if (!bridge || typeof bridge.stop !== 'function') return { transcript: '' };
+      return bridge.stop();
+    },
+    onTranscript: (raw) => {
+      if (!canShowVoiceCommandChrome({ widthPx: window.innerWidth })) return;
+      if (confideToYinUI.ownsOperatingMic?.()) return;
+      const focusing = stateManager.state === STATES.FOCUSING;
+      const routed = routePushToTalkTranscript({
+        focusing,
+        rawTranscript: raw,
+        enabled: true
+      });
+      if (routed.channel === 'end_focus') {
+        bootArrivalFocus.focusInput.requestRise();
+        return;
+      }
+      if (routed.channel === 'focus_hold') return;
+      confideToYinUI.submitVoiceCommandRaw(raw);
+    }
+  });
+  const desktopShellForVoice = getDesktopShellBridge();
+  if (desktopShellForVoice && typeof desktopShellForVoice.onYinVoicePushToTalk === 'function') {
+    desktopShellForVoice.onYinVoicePushToTalk(() => {
+      if (YIN_VOICE_PUSH_TO_TALK_ACCELERATOR && confideToYinUI.ownsOperatingMic?.()) return;
+      void yinVoicePushToTalk();
+    });
+  }
 
   /**
    * @param {{

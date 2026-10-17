@@ -21,7 +21,7 @@
 | — · **T7** | Confide CR-45 影子 + 带 C 硬闸 #1309 | **已合 develop** | holdout `caliber_split` + §6.5 合并对；**CR-45 live 仍等 CR-11**；**禁止**真跑 en/b-v6 |
 | **P2** · **T8** | Confide 作废中文卷五带曲线 #1311 | **已合 develop** | `--curves-only` 门闩；不占额 |
 | **P2** · **T9** | 作废卷曲线标注 + 按规则回放 | **PR 待开** | `confideRoutingVoidedReplayLab.js` |
-| **P2** · **T10** | Yin 语音指令入口 #1312 | **排队中** | 原表 T9 改 T10；Brief 已点头，运行时另旁支 |
+| **P2** · **T10** | Yin 语音指令入口 #1312 | **立即做** | Brief 已点头；本旁支写称呼词门闩、备份确认、按键说话 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 

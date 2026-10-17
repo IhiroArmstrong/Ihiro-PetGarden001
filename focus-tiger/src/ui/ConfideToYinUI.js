@@ -8,14 +8,24 @@
  * Web / narrow: retrieve-not-generate. Electron wide L2: fallback may generate.
  */
 
-import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
+import { t, getLocale, onLocaleChange, setLocale } from '../locales/i18n.js';
+import { listPickerLocales } from '../locales/localePreference.js';
 import {
   canUseSystemTts,
+  getSystemTtsBridge,
   mapLocaleToTtsLocale,
   speakSystemTts,
   stopSystemTts,
   shouldSpeakConfideReply
 } from '../core/systemTtsBridge.js';
+import { canShowVoiceCommandChrome } from '../core/voiceCommandGate.js';
+import {
+  classifyYinVoiceEntry,
+  nextPickerLocaleId
+} from '../core/yinVoiceCommandEntry.js';
+import { runYinVoiceCommand } from '../core/yinVoiceCommandRunner.js';
+import { getVoiceInputBridge } from '../core/voiceInputBridge.js';
+import { downloadPracticeExport } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import { canSubmitConfideText } from '../core/confide/confideClassify.js';
 import {
   resolveConfideLiteralCoarseBucket,
@@ -195,6 +205,8 @@ export class ConfideToYinUI {
     this._companionStatus = null;
     this._sending = false;
     this._sendEpoch = 0;
+    this._voiceRawForSend = null;
+    this._operatingOwnsMic = false;
     this._pendingWatchdogTimer = 0;
     this._pendingFallback = null;
     this._l2Turns = [];
@@ -324,7 +336,10 @@ export class ConfideToYinUI {
       mountBefore: null,
       testIdPrefix: 'confide-voice-input',
       onInputApplied: () => this._syncSendEnabled(),
-      onTranscriptCommitted: () => this._onSend()
+      onTranscriptCommitted: (raw) => {
+        this._voiceRawForSend = typeof raw === 'string' ? raw : '';
+        this._onSend();
+      }
     });
 
     this.userEl = document.createElement('p');
@@ -1220,9 +1235,134 @@ export class ConfideToYinUI {
       });
   }
 
+  voiceCommandEntryEnabled() {
+    const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
+    return canShowVoiceCommandChrome({ widthPx });
+  }
+
+  ownsOperatingMic() {
+    return this._operatingOwnsMic === true;
+  }
+
+  /**
+   * Push-to-talk submits the raw transcript without a send click.
+   * @param {string} raw
+   */
+  submitVoiceCommandRaw(raw) {
+    this._voiceRawForSend = String(raw || '');
+    if (!this._open) this.open();
+    this._onSend();
+  }
+
+
+  /**
+   * Operating turn. Visible in the open Confide card, not stored as a confide turn.
+   * @param {object} decision
+   */
+  async _runOperatingCommand(decision) {
+    this.inputEl.value = '';
+    this._syncSendEnabled();
+    await runYinVoiceCommand(decision, {
+      show: (userText, sayKey) => this._showOperatingLine(userText, sayKey),
+      speakAndWait: (sayKey) => this._speakOperatingAndWait(sayKey),
+      listen: (ms) => this._listenOperating(ms),
+      writeBackup: () =>
+        downloadPracticeExport(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        ),
+      openJourney: () => this.handlers.onOpenJourneyLog?.(),
+      closeJourney: () => this.handlers.onCloseJourneyLog?.(),
+      switchLanguage: () => this._switchOperatingLanguage()
+    });
+  }
+
+  _showOperatingLine(userText, sayKey) {
+    this._hideThinkingIndicator();
+    const asked = String(userText || '').trim();
+    this.userEl.textContent = asked;
+    this.userEl.hidden = !asked;
+    this.replyEl.textContent = t(sayKey);
+    this.replyEl.hidden = false;
+    this.replyEl.dataset.route = 'yin_voice_command';
+    this.replyEl.dataset.lineId = sayKey;
+    this.replyEl.dataset.source = 'operating';
+    this.inputEl.value = '';
+    this._syncSendEnabled();
+    this._scrollReplyIntoView();
+  }
+
+  async _speakOperatingAndWait(sayKey) {
+    const line = t(sayKey);
+    const spoke = speakSystemTts({
+      text: line,
+      locale: mapLocaleToTtsLocale(getLocale())
+    });
+    if (!spoke) return true;
+    const bridge = getSystemTtsBridge();
+    if (!bridge || typeof bridge.onStatus !== 'function') return true;
+    return new Promise((resolve) => {
+      let sawSpeaking = false;
+      let unsub = () => {};
+      const timer = setTimeout(() => {
+        unsub();
+        resolve(true);
+      }, 20000);
+      unsub = bridge.onStatus((payload) => {
+        const status = payload && payload.status;
+        if (status === 'speaking') sawSpeaking = true;
+        if (sawSpeaking && (status === 'done' || status === 'error')) {
+          clearTimeout(timer);
+          unsub();
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  async _listenOperating(ms) {
+    const bridge = getVoiceInputBridge();
+    if (!bridge || typeof bridge.start !== 'function' || typeof bridge.stop !== 'function') {
+      return '';
+    }
+    this._operatingOwnsMic = true;
+    try {
+      const started = await bridge.start();
+      if (!started || started.ok === false) return '';
+      await new Promise((resolve) => setTimeout(resolve, ms));
+      const stopped = await bridge.stop();
+      return String((stopped && stopped.transcript) || '').trim();
+    } catch {
+      return '';
+    } finally {
+      this._operatingOwnsMic = false;
+    }
+  }
+
+  _switchOperatingLanguage() {
+    const ids = listPickerLocales().map((opt) => opt.id);
+    const previous = getLocale();
+    const next = nextPickerLocaleId(previous, ids);
+    if (!next || next === previous) return { changed: false, undo() {} };
+    setLocale(next, { persist: true });
+    return {
+      changed: true,
+      undo: () => setLocale(previous, { persist: true })
+    };
+  }
+
   _onSend() {
-    if (this._sending) return;
+    if (this._sending || this._operatingOwnsMic) return;
     const text = this.inputEl.value;
+    const raw = this._voiceRawForSend || text;
+    this._voiceRawForSend = null;
+    if (!canSubmitConfideText(raw)) return;
+    const decision = classifyYinVoiceEntry(raw, {
+      enabled: this.voiceCommandEntryEnabled()
+    });
+    if (decision.channel === 'command') {
+      void this._runOperatingCommand(decision);
+      return;
+    }
     if (!canSubmitConfideText(text)) return;
     const hit = resolveConfideReply({
       text,
