@@ -64,10 +64,13 @@ describe('confide practice facts (Slice 0)', () => {
     );
   });
 
-  it('does not steal safety or sad routes', () => {
-    const sad = 'I feel depressed, how long have I practiced?';
-    assert.equal(confideClassify(sad), CONFIDE_ROUTE.SAD);
-    assert.equal(shouldAnswerWithPracticeFacts(CONFIDE_ROUTE.SAD, sad), false);
+  it('does not steal safety; CR-52 lets a duration ask leave the sad bucket', () => {
+    const sadOnly = 'I feel depressed';
+    assert.equal(confideClassify(sadOnly), CONFIDE_ROUTE.SAD);
+    assert.equal(shouldAnswerWithPracticeFacts(CONFIDE_ROUTE.SAD, sadOnly), false);
+    const sadDuration = 'I feel depressed, how long have I practiced?';
+    assert.equal(confideClassify(sadDuration), CONFIDE_ROUTE.FALLBACK);
+    assert.equal(shouldAnswerWithPracticeFacts(CONFIDE_ROUTE.FALLBACK, sadDuration), true);
     const safety = "I don't want to live";
     assert.equal(confideClassify(safety), CONFIDE_ROUTE.SAFETY_REDIRECT);
     assert.equal(
