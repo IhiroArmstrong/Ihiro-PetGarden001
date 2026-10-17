@@ -23,7 +23,7 @@
 | Quiet Line | S–M；**硬顶 100 characters** | 诗性日签；同日一句 | 已上；**禁止**灌本层 |
 | Daily Wisdom | S–M；**硬顶 100 characters** | Reflection 底短句 | 14 id 冻结；**禁止**扩、并池 |
 | Calm Action Wisdom | S 25–45 / M 46–75 / L 76–90 | 行为时刻许可句 | 70 条 CMS，**尚未接线**；**禁止**加长充数 |
-| **Contemplative Archive（本层）** | 见 §二 | **一次发现、长期保存** | 仅《芥子须弥》三 case 已接线 |
+| **Contemplative Archive（本层）** | 见 §二 | **一次发现、长期保存** | 《芥子须弥》四 case 已接线 |
 
 禁止：
 
@@ -113,15 +113,41 @@ S/M/L 日签金句仍适用「产品不是阅读应用」：Notice → Feel → 
 
 | 项 | 口径 |
 |---|---|
-| 地位 | **本层第一枚纪念印**（#246 / #256 已合；三 case） |
-| 门槛 | `score ≥ 21`；三 case 同一门槛，按完成场次揭示 |
-| 气质 | `small-vast` |
-| 版权 | ORIG（樂五齋） |
+| 地位 | **本层第一枚纪念印**（#246 / #256 已合；四 case） |
+| 门槛 | `score ≥ 21`；四 case 同一门槛，按完成场次揭示 |
+| 气质 | `small-vast`（Case 1–3）；Case 4 = `return` |
+| 版权 | ORIG（樂五齋 Case 1–3）；**PD**（景岑 Case 4） |
 | 章 | `public/ui/support/mustard-seed-seal/…`；不进 tip / Sanctuary `badgeIds` |
 | Brief | `task-briefs/task-mustard-seed-seal.md` |
 | 人工 | TEST_TRACKER 仍待关单；本切片 **不**改运行时 |
 
-Case 1–3 诗面与署名为现网权威（`mustardSeedSeal.js`），此处不复述全文。
+Case 1–3 诗面与署名为现网权威（`memorialSealDirectory.js`），此处不复述全文。
+
+### Case 4 · MS-04 · Hundred-Foot Pole（百尺竿頭）
+
+**首屏 ZH**
+
+百尺竿頭不動人，  
+雖然得入未為真；  
+百尺竿頭須進步，  
+十方世界現全身。
+
+**首屏 EN**
+
+At the hundred-foot pole, you do not stir;  
+Though you have entered, it is not yet real.  
+At the hundred-foot pole, you must take one step forward;  
+Then the ten directions reveal the whole body.
+
+**Comment（繁體）**  
+獨立於很高的竿頭，還敢於毅然決然邁步，那就是覺醒的勇氣和放棄所有舊有依賴的決絕，無論那些舊有依賴是什麼。
+
+**Comment（EN）**  
+Standing alone atop a very high pole, yet daring to step forward with resolve—that is the courage of awakening and the decisiveness to let go of every old dependency, whatever those dependencies may be.
+
+**Attribution** 長沙景岑禪師 · Chan Master Jingcen of Changsha · Song China
+
+**目录 id** `hundred-foot-pole`（`__mustardSeedSeal.open({ mode:'force', caseId:'hundred-foot-pole' })`）
 
 ---
 

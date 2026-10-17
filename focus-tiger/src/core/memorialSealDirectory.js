@@ -48,6 +48,7 @@ export const MEMORIAL_SEAL_SCENE_MUSTARD_SEED = 'mustard-seed-sumeru';
 export const MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU = 'mustard-seed-sumeru';
 export const MEMORIAL_SEAL_ENTRY_HERO = 'hero-not-pond';
 export const MEMORIAL_SEAL_ENTRY_NO_TRACE = 'no-trace-might';
+export const MEMORIAL_SEAL_ENTRY_HUNDRED_FOOT_POLE = 'hundred-foot-pole';
 
 export const CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX =
   'contemplative-archive-seal:';
@@ -142,6 +143,36 @@ const MUSTARD_SEED_DIRECTORY_ENTRIES = Object.freeze([
     badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
     badgeAsset: MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
     toneTag: 'smallness-vastness',
+    enabled: true
+  }),
+  Object.freeze({
+    catalogId: 'MS-04',
+    id: MEMORIAL_SEAL_ENTRY_HUNDRED_FOOT_POLE,
+    sealSceneId: MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
+    scoreThreshold: PRACTICE_SCORE_21_THRESHOLD,
+    poemZh: Object.freeze([
+      '百尺竿頭不動人，',
+      '雖然得入未為真；',
+      '百尺竿頭須進步，',
+      '十方世界現全身。'
+    ]),
+    poemEn: Object.freeze([
+      'At the hundred-foot pole, you do not stir;',
+      'Though you have entered, it is not yet real.',
+      'At the hundred-foot pole, you must take one step forward;',
+      'Then the ten directions reveal the whole body.'
+    ]),
+    poemJa: Object.freeze([
+      '百尺竿頭に動かず、',
+      '雖入っても未だ真ならず；',
+      '百尺竿頭さらに一歩進むべし、',
+      '十方世界全身を現す。'
+    ]),
+    attributionZh: '長沙景岑禪師',
+    attributionEn: 'Chan Master Jingcen of Changsha · Song China',
+    badgeDir: MEMORIAL_SEAL_BADGE_PUBLIC_DIR,
+    badgeAsset: MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
+    toneTag: 'imperfection-return',
     enabled: true
   })
 ]);

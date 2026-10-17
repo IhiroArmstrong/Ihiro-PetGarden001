@@ -1,0 +1,3 @@
+# feature/mustard-seed-seal-verse-hundred-foot-pole
+
+| 芥子须弥纪念印 · 第四 case · 百尺竿頭（景岑） | UI可见 | 待人工测试 | **基线**：本旁支（待开 PR）。**调试主路径**：`?product=1` → `__mustardSeedSeal.open({ mode:'force', caseId:'hundred-foot-pole' })` → `#mustard-seed-seal-card` `data-case-id=hundred-foot-pole` 须见繁体「百尺竿頭不動人…十方世界現全身」+ EN 译 +「長沙景岑禪師 · Chan Master Jingcen of Changsha · Song China」+ 方章。**仪式路径**：Case 1–3 已揭示后再完成一场计时 → 仪式后出 Case 4 → Continue → Reflection。**回流**：⋯/抽屉 Mustard Seed · Sumeru 可重读；四首都揭示后完成不再自动弹出。**Comment** 见 `CONTEMPLATIVE_ARCHIVE.md` §六 Case 4（不进卡面）。自动化：`mustardSeedSeal.test.js` · `memorialSealDirectory.test.js` · `mustard-seed-seal.spec.js`。 | — | — | — | `?product=1` · `#mustard-seed-seal-card` · `__mustardSeedSeal` | 2026-10-17 |

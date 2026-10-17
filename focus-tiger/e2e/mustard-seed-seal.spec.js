@@ -8,7 +8,7 @@ import { openFreshProductShell } from './helpers/product-shell.js';
 
 /**
  * Memorial Seal (Mustard Seed · Sumeru) — product-path ritual card after score unlock.
- * Locks directory-driven copy for all three verse cases via debug API + DOM snapshot.
+ * Locks directory-driven copy for all four verse cases via debug API + DOM snapshot.
  */
 
 test.describe('Mustard Seed memorial seal', () => {
@@ -32,10 +32,16 @@ test.describe('Mustard Seed memorial seal', () => {
       poemZh: '乾坤縱橫九萬里',
       poemEn: 'Heaven and earth span ninety thousand miles',
       attribution: '樂五齋詩稿'
+    },
+    {
+      caseId: 'hundred-foot-pole',
+      poemZh: '百尺竿頭不動人',
+      poemEn: 'At the hundred-foot pole, you do not stir',
+      attribution: '長沙景岑禪師'
     }
   ];
 
-  test('three verse cases render expected copy from directory', async ({ page }) => {
+  test('four verse cases render expected copy from directory', async ({ page }) => {
     await openFreshProductShell(page);
 
     await expect
@@ -171,7 +177,8 @@ test.describe('Mustard Seed memorial seal', () => {
           revealedCaseIds: [
             'mustard-seed-sumeru',
             'hero-not-pond',
-            'no-trace-might'
+            'no-trace-might',
+            'hundred-foot-pole'
           ],
           lastShownCaseId: 'mustard-seed-sumeru'
         })
@@ -199,6 +206,10 @@ test.describe('Mustard Seed memorial seal', () => {
 
     await next.click();
     await expect(card).toHaveAttribute('data-case-id', 'no-trace-might');
+    await expect(next).toBeEnabled();
+
+    await next.click();
+    await expect(card).toHaveAttribute('data-case-id', 'hundred-foot-pole');
     await expect(next).toBeDisabled();
 
     await prev.click();
