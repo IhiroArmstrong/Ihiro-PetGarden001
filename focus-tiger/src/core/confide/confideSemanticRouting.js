@@ -145,3 +145,21 @@ export function formatQwen3EmbeddingInput(text) {
   if (!raw) return eos;
   return raw.endsWith(eos) ? raw : `${raw}${eos}`;
 }
+
+/** Official Qwen3-Embedding retrieval instruction (query side only). */
+export const QWEN3_EMBEDDING_RETRIEVAL_INSTRUCT =
+  'Given a web search query, retrieve relevant passages that answer the query';
+
+/**
+ * Query-side Instruct prefix. Documents stay on formatQwen3EmbeddingInput only.
+ * @param {string} text
+ * @param {{ instruct?: string }} [opts]
+ * @returns {string}
+ */
+export function formatQwen3EmbeddingQuery(text, opts = {}) {
+  const raw = typeof text === 'string' ? text.trim() : '';
+  const instruct = opts.instruct == null ? QWEN3_EMBEDDING_RETRIEVAL_INSTRUCT : String(opts.instruct);
+  if (!instruct) return formatQwen3EmbeddingInput(raw);
+  const body = raw ? `Instruct: ${instruct}\nQuery:${raw}` : `Instruct: ${instruct}\nQuery:`;
+  return formatQwen3EmbeddingInput(body);
+}

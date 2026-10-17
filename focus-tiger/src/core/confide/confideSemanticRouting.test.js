@@ -15,6 +15,7 @@ import {
   classifyConfideSemanticCoarse,
   cosineSimilarity,
   formatQwen3EmbeddingInput,
+  formatQwen3EmbeddingQuery,
   scoreLibraryTopK
 } from './confideSemanticRouting.js';
 
@@ -27,6 +28,10 @@ function unitVector(dim, index) {
 describe('confideSemanticRouting', () => {
   it('formats Qwen3 embedding input with explicit EOS', () => {
     assert.equal(formatQwen3EmbeddingInput('忙啥'), '忙啥<|endoftext|>');
+    assert.match(
+      formatQwen3EmbeddingQuery('忙啥'),
+      /^Instruct: Given a web search query[\s\S]*\nQuery:忙啥<\|endoftext\|>$/
+    );
     assert.equal(formatQwen3EmbeddingInput(''), '<|endoftext|>');
     assert.equal(
       formatQwen3EmbeddingInput('already<|endoftext|>'),

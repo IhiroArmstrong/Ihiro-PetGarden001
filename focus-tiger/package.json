@@ -95,6 +95,7 @@
     "audit:routing-class-holdout:curves": "node desktop/scripts/l0-kb-routing-class-holdout-lab.js --curves-only",
     "audit:g2-fact-arrival": "node desktop/scripts/l0-g2-fact-arrival-lab.js",
     "audit:g2-fact-arrival:validate": "node desktop/scripts/l0-g2-fact-arrival-lab.js --validate-only",
+    "audit:g2-fact-rank-margin": "node desktop/scripts/l0-g2-fact-rank-margin-lab.js",
     "audit:fit-product-minus-mood-margin": "node desktop/scripts/l0-fit-product-minus-mood-margin.js",
     "audit:routing-arbitration-shadow": "node desktop/scripts/l0-routing-arbitration-shadow-lab.js",
     "audit:routing-arbitration-ab": "node desktop/scripts/l0-routing-arbitration-ab-lab.js",
