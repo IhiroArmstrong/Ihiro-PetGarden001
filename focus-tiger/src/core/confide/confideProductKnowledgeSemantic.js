@@ -9,7 +9,9 @@
  */
 
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
+import { observeConfideProductAskBlock } from './confideProductAskBlockObserve.js';
 import { classifyConfideProductAskRole } from './confideProductAskRole.js';
+import { hasConfideProductObject } from './confideProductObject.js';
 import { confideBrowserSafeEnv } from './confideSemanticRoutingConfig.js';
 import { scoreLibraryTopK } from './confideSemanticRouting.js';
 import { DEFAULT_CONFIDE_SEMANTIC_TOP_K } from './confideSemanticRoutingConfig.js';
@@ -68,7 +70,7 @@ const ACTIVITY_WHAT_IS_RE =
   /\bwhat(?:'s|\s+is)\s+(?:some\s+)?(?:(?:focus|breathing)\s+)?(?:practice|practicing|meditation|meditat(?:e|ing|ion)|focus(?:ing)?|breathing)\b|(?:练习|冥想|专注|呼吸).{0,8}是什么|是什么.{0,8}(?:练习|冥想|专注|呼吸)/i;
 
 const ACTIVITY_HOW_TO_RE =
-  /\bhow\s+(?:do|can|to)\b.+\b(?:meditat(?:e|ing|ion)|practice|practicing|focus(?:ing)?|breath(?:e|ing))\b|\b(?:meditat(?:e|ing|ion)|practice|practicing)\b.+\bhow\s+(?:do|can|to)\b|怎么.{0,12}(?:练|坐|冥想)|如何.{0,12}(?:练|坐|冥想)/i;
+  /\bhow\s+(?:do|can|to)\b.+\b(?:meditat(?:e|ing|ion)|practice|practicing|focus(?:ing)?|breath(?:e|ing))\b|\bhow\s+long\b.+\b(?:meditat(?:e|ing|ion)|practice|practicing|focus(?:ing)?|breath(?:e|ing))\b|\b(?:meditat(?:e|ing|ion)|practice|practicing)\b.+\bhow\s+(?:do|can|to)\b|怎么.{0,12}(?:练|坐|冥想)|如何.{0,12}(?:练|坐|冥想)/i;
 
 /**
  * @param {NodeJS.ProcessEnv} [env]
@@ -159,6 +161,32 @@ export function isConfideActivityHowToWithoutProductEntry(text) {
   if (!raw) return false;
   const spaced = raw.replace(/\s+/g, ' ').trim();
   return ACTIVITY_HOW_TO_RE.test(spaced);
+}
+
+/**
+ * CR-52 rollback. Unset / `live` = on. `off` / `shadow` restores pre-CR-52 order.
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {boolean}
+ */
+export function isConfideProductAskBlocksEmotionLive(env) {
+  const raw = String(
+    confideBrowserSafeEnv(env).FT_CONFIDE_PRODUCT_ASK_BLOCKS_EMOTION || 'live'
+  )
+    .trim()
+    .toLowerCase();
+  if (raw === 'off' || raw === 'shadow') return false;
+  return true;
+}
+
+/**
+ * Operational ask ∧ product object. Shape alone is not enough.
+ * @param {string} text
+ * @param {{ catalogHit?: boolean }} [opts]
+ * @returns {boolean}
+ */
+export function isConfideConfirmedProductAsk(text, opts = {}) {
+  if (!isConfideOperationalProductAskShape(text)) return false;
+  return hasConfideProductObject(text, opts);
 }
 
 /**
@@ -272,7 +300,8 @@ export function moodAsideOutranksProductLibrary(
  *   nearAction?: 'hit' | 'honesty' | 'skip' | null,
  *   lifeOutranksProduct?: boolean,
  *   moodOutranksProduct?: boolean | null,
- *   moodVetoLive?: boolean
+ *   moodVetoLive?: boolean,
+ *   env?: NodeJS.ProcessEnv
  * }} input
  * @returns {'skip' | 'hit' | 'honesty'}
  */
@@ -285,26 +314,42 @@ export function resolveProductKnowledgeGateAction(input) {
 
   const operational = isConfideOperationalProductAskShape(text);
   const activityHowTo = isConfideActivityHowToWithoutProductEntry(text);
+  const confirmed = isConfideConfirmedProductAsk(text, { catalogHit: false });
+  const blocksEmotion = isConfideProductAskBlocksEmotionLive(input.env);
   const lifeOrMoodSkip =
     lifeOutranksProduct || moodVetoReleasesChineseToObserve(input);
+  const lifeOrMoodStillSkips = lifeOrMoodSkip && !(blocksEmotion && confirmed);
+  const honestyOk = blocksEmotion
+    ? confirmed || activityHowTo
+    : operational || activityHowTo;
 
   if (embeddingState === 'ready') {
     // Vector “looks like product” is not enough (CR-47). Honesty only after an
-    // operational ask shape. Life chat / live Chinese mood veto still generate.
+    // operational ask shape. Life chat / live Chinese mood veto still generate
+    // unless CR-52 confirms a product object.
     if (nearAction === 'honesty') {
-      if (lifeOrMoodSkip) return 'skip';
-      if (!operational) return 'skip';
+      if (lifeOrMoodStillSkips) return 'skip';
+      if (lifeOrMoodSkip && confirmed) {
+        observeConfideProductAskBlock('life_or_mood_override');
+      }
+      if (!honestyOk) return 'skip';
       return 'honesty';
     }
     if (semanticIsProduct) {
-      if (lifeOrMoodSkip) return 'skip';
-      return operational ? 'honesty' : 'skip';
+      if (lifeOrMoodStillSkips) return 'skip';
+      if (lifeOrMoodSkip && confirmed) {
+        observeConfideProductAskBlock('life_or_mood_override');
+      }
+      return honestyOk ? 'honesty' : 'skip';
     }
     if (activityHowTo) return 'honesty';
     return 'skip';
   }
 
-  if (operational || activityHowTo) {
+  if (honestyOk) {
+    if (lifeOrMoodSkip && confirmed && blocksEmotion) {
+      observeConfideProductAskBlock('life_or_mood_override');
+    }
     return 'honesty';
   }
   return 'skip';

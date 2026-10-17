@@ -68,7 +68,7 @@
 | gs-en-short-04 | en | 产品问-短答 | doesn't keep a manual；转介 | Where is A Quiet Line? |
 | gs-en-short-05 | en | 产品问-短答 | doesn't keep a manual；转介 | How to remind me to practice? |
 | gs-en-hon-01 | en | 产品问-诚实空态 | 转介 | What is the observation wing? |
-| gs-en-hon-02 | en | 产品问-诚实空态 | 转介 | Where is the Sit button? |
+| gs-en-hon-02 | en | 情绪或生成 | 转介 | Where is the Sit button? |
 | gs-en-hon-03 | en | 产品问-诚实空态 | 转介 | How do I turn the reminder off |
 | gs-en-hon-04 | en | 产品问-诚实空态 | 转介 | the reminder won't stop |
 | gs-en-hon-05 | en | 产品问-诚实空态 | 转介 | How long can I practice breathing? |

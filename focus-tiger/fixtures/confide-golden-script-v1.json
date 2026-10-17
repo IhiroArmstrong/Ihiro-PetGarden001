@@ -339,9 +339,9 @@
       "id": "gs-en-hon-02",
       "lang": "en",
       "text": "Where is the Sit button?",
-      "channel": "product_honesty",
+      "channel": "emotion_or_generate",
       "must_not_appear": ["转介"],
-      "tags": ["operational-miss"]
+      "tags": ["operational-miss", "cr52-product-ask-fallback"]
     },
     {
       "id": "gs-en-hon-03",
