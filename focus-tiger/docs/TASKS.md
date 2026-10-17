@@ -561,9 +561,17 @@ T6：路由盲测考核口径拆成五带。Brief `task-confide-routing-holdout-
 
 T8：已作废中文路由卷（zh/b-v2 · b-v5 · b-v6）可用 `npm run audit:routing-class-holdout:curves` 做五带曲线回放，不调用 `authorizeHoldoutRun`。`confide-routing-blind-en/b-v6` 在加载模型前硬拒。不改发送链、不切 CR-11 live。
 
-### `confide-voided-replay-labels` · feature · 已完成 · T9 · 本机回放 2026-10-17 · 2026-10-17
+### `confide-voided-replay-labels` · feature · 已完成 · T9 刀 B 读数补丁 · 2026-10-17 · 2026-10-17
 
-T9：在 T8 `--curves-only` 回放上强制 PO 读数规则与「作废卷回放，非过关证据」标注（`confideRoutingVoidedReplayLab.js`）。只回放运行记录已 voided 的 zh/b-v2 · b-v5 · b-v6；en/b-v6 仍硬拒。不改发送链。
+T9：在 T8 `--curves-only` 回放上强制 PO 读数规则与「作废卷回放，非过关证据」标注（`confideRoutingVoidedReplayLab.js`）。刀 B：zh/b-v6 读数块显式写出带 A 三类 `pass_criteria_met` 与带 C `hard_gate_met`；`merge_pass_share_of_passes=n/a` 时提示「无过线样本，无法判断」；0.5 阈值旁注暂定口径；带 C 红句只写 `~/Documents/ft-private/voided-replay-band-c-red/`（stdout 仅路径）。只回放已 voided 的 zh/b-v2 · b-v5 · b-v6；en/b-v6 仍硬拒。不改发送链。
+
+### `fix-locale-slice-index-frozen-during-tests` · feature · 进行中 · 2026-10-17
+
+并行 `test:smoke` 期间冻结 `localeSliceModules.js`。原子写不够：压测若仍改共享索引，holdout CLI 会误报缺 `LOCALE_SLICES`。无用户路径。
+
+### `pr-smoke-demote-menu-reachability` · feature · 进行中 · T12 · 2026-10-17
+
+从每个 PR 的必跑 `test:e2e:smoke` 拿掉 `menu-full-reachability`（种类 1 时序不稳）。nightly、合入 develop 后、以及改菜单路径的 PR 仍跑。不改产品代码。
 
 ### `wide-menu-community-slice` · feature · 已合 develop #1305 · 待人工测试 · 纯归类（不含扇形） · 2026-10-17
 
@@ -577,9 +585,9 @@ T9：在 T8 `--curves-only` 回放上强制 PO 读数规则与「作废卷回放
 
 宽屏菜单三刀之第三刀（扇形）：宽屏 `⋯` 五组图标索引 + 点击后玻璃列表；`innerHeight < 520px` 或几何压脸时退化为手风琴列表；resize 断点收口（#1308）。Brief `task-briefs/task-wide-menu-radial-index.md`。混支 #1292 已关未合。
 
-### `yin-voice-command-entry` · feature · Brief 待 PO 点头 · 无运行时 · 2026-10-17
+### `yin-voice-command-entry` · feature · Brief 已点头 · 无运行时 · T10 · 2026-10-17
 
-T9 Yin 语音指令入口。挂靠 Voice Input / Voice Command / Operating Layer，不另起 Epic。Brief：`docs/task-briefs/task-yin-voice-command-entry.md`。
+T10 Yin 语音指令入口。挂靠 Voice Input / Voice Command / Operating Layer，不另起 Epic。Brief：`docs/task-briefs/task-yin-voice-command-entry.md`。
 
 ### `zen-cinema-film-catalog` · feature · 进行中 · 旁支 feature/zen-cinema-film-catalog · 2026-10-17
 
