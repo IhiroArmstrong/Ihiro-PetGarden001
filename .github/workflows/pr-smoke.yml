@@ -4,6 +4,8 @@ name: PR smoke (logic + browser shell)
 # paths are untouched) so `test:pr-smoke` can be a GitHub Required check without
 # blocking docs-only / workflow-only PRs.
 # Full e2e / visibility / doc-contract run separately (pre-merge or scheduled).
+# Menu full-walk is NOT in default browser smoke (flake amplifier). It still
+# runs here when menu paths change — see docs/PR_SMOKE_FAILURE_CLASSES.md.
 on:
   pull_request:
     branches:
@@ -13,7 +15,7 @@ jobs:
   pr-smoke:
     name: test:pr-smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: focus-tiger
@@ -35,6 +37,24 @@ jobs:
           else
             echo "product=false" >> "$GITHUB_OUTPUT"
             echo "No focus-tiger / pr-smoke.yml changes — skipping tests (Required-check no-op success)."
+          fi
+
+      - name: Detect menu-reachability paths
+        id: menu_paths
+        working-directory: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          # Must equal MENU_REACHABILITY_TRIGGER_PATH_RE in
+          # focus-tiger/scripts/menu-reachability-trigger-paths.js
+          MENU_RE='^(focus-tiger/src/ui/NarrowIdleShell|focus-tiger/src/ui/WideIdleMoreMenu|focus-tiger/src/core/idleChromeOrchestration|focus-tiger/src/core/IdleChromeFacade|focus-tiger/src/core/createIdleChromeFacade|focus-tiger/src/core/menuReachabilityContract|focus-tiger/src/core/wideMenuRadialLayout|focus-tiger/src/core/electronIdleContextMenu|focus-tiger/src/locales/slices/menu-|focus-tiger/e2e/menu-full-reachability|focus-tiger/e2e/wide-idle-more-menu|focus-tiger/e2e/helpers/product-shell\.js|\.github/workflows/menu-full-reachability\.yml)'
+          if git diff --name-only "$BASE"..."$HEAD" | grep -E "$MENU_RE" >/dev/null; then
+            echo "menu=true" >> "$GITHUB_OUTPUT"
+            echo "Menu paths changed — will run menu-full-reachability after browser smoke."
+          else
+            echo "menu=false" >> "$GITHUB_OUTPUT"
+            echo "No menu-reachability trigger paths — skipping menu full walk."
           fi
 
       - name: Skip notice (non-product PR)
@@ -65,6 +85,13 @@ jobs:
       - name: Browser smoke (Playwright subset)
         if: steps.paths.outputs.product == 'true'
         run: npm run test:e2e:smoke
+        env:
+          CI: 'true'
+          PLAYWRIGHT_CHANNEL: ''
+
+      - name: Menu full reachability (path-triggered)
+        if: steps.paths.outputs.product == 'true' && steps.menu_paths.outputs.menu == 'true'
+        run: npm run test:e2e:menu-reachability
         env:
           CI: 'true'
           PLAYWRIGHT_CHANNEL: ''
