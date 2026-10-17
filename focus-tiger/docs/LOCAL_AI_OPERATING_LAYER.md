@@ -58,10 +58,12 @@ English:
 | 入口 | 用户在说什么 | 系统必须像什么 | 现网 |
 |---|---|---|---|
 | **Confide → Yin** | 「今天有点累。」「我好像越来越难专注。」 | 陪伴、觉察、回应。**禁止**变成「好的，我执行命令。」 | 已有（Electron 宽屏 + Web harness） |
-| **Auto-Operating** | 「请备份本周 Journey。」「检查有没有更新。」 | 克制的 command surface；**可以不显示阿寅** | **未实现**；本文件只锁边界 |
+| **Auto-Operating** | 「请备份本周 Journey。」「检查有没有更新。」 | 克制的 command surface。**2026-10-17 T9**：独立入口仍是 **Yin 倾听**（PO：换入口也是让 Yin 听）；不是无脸 CLI。旧句「可以不显示阿寅」作废。 | **未实现**；本文件只锁边界；规格 `task-yin-voice-command-entry.md` |
 
 **硬闸**：同一套 Local AI Layer 与未来同一套 Registry 权限模型；**两套入口**。  
-**Confide 永远不得执行 Operating Tools。**
+**Confide 陪伴回复永远不得执行 Operating Tools。**
+
+**修正（2026-10-17 · T9 Brief，待 PO 点头）**：用户可在 Confide **用称呼词捷径**进入 Operating 通道（`Hi Yin, please…`）。那一回合不再当陪伴执行，而当 Operating 执行。未命中封闭指令集则原样回 Confide，禁止「不能做」硬拒绝。独立入口为第二刀，**仍倾听、不摘脸**。1.7B **不得**决定「算不算指令」（语用推断）。规格：[`task-briefs/task-yin-voice-command-entry.md`](./task-briefs/task-yin-voice-command-entry.md)。本段**不是**开工令。
 
 ---
 
