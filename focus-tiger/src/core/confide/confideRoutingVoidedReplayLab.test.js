@@ -9,6 +9,7 @@ import { mkdtemp, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {
+  VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_GLOSS,
   VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_SAMPLES,
   VOIDED_REPLAY_BAND_C_MANUAL_REVIEW_LABEL,
   VOIDED_REPLAY_EVIDENCE_LABEL,
@@ -80,7 +81,63 @@ describe('confideRoutingVoidedReplayLab', () => {
         `band_a mixed band_a_read_discount=${VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_SAMPLES}`
       )
     );
+    assert.match(hints, new RegExp(VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_GLOSS));
     assert.doesNotMatch(hints, /未触发/);
+  });
+
+  it('never prints 未触发 in voided-replay stdout bundle (red if reintroduced)', () => {
+    const summary = summarizeCaliberSplitHoldout({
+      bandARows: [
+        { classId: 'mixed', pathPass: true, mergeStructPass: false },
+        { classId: 'mixed-emotion-dominant', pathPass: false, mergeStructPass: false }
+      ],
+      bandBRows: [{ classId: 'chitchat', pass: false }],
+      bandCRows: [{ counted: true, productAskIntoEmotion: 2, yinCoinShortAnswer: 1 }],
+      bandDAnchors: []
+    });
+    const version = 'confide-routing-blind-zh/b-v6';
+    const bundle =
+      formatVoidedReplayCurvesPreamble({ holdoutSetVersion: version }) +
+      formatVoidedReplayCaliberHints(summary, { holdoutSetVersion: version }) +
+      JSON.stringify(voidedReplayCurvesJsonMeta({ holdoutSetVersion: version }));
+    assert.doesNotMatch(bundle, /未触发/);
+    assert.match(bundle, /band_b_fail_do_not_spend_en_quota=yes/);
+  });
+
+  it('does not echo band C red sentence text in stdout or json meta (red if leaked)', async () => {
+    const secret = 'UNIQUE_HOLDOUT_RED_SENTENCE_FOR_PRIVACY_LOCK';
+    const summary = summarizeCaliberSplitHoldout({
+      bandARows: [],
+      bandBRows: [],
+      bandCRows: [{ counted: true, productAskIntoEmotion: 1, yinCoinShortAnswer: 0 }],
+      bandDAnchors: []
+    });
+    const version = 'confide-routing-blind-zh/b-v6';
+    const metaJson = JSON.stringify(
+      voidedReplayCurvesJsonMeta({ holdoutSetVersion: version })
+    );
+    const stdout =
+      formatVoidedReplayCurvesPreamble({ holdoutSetVersion: version }) +
+      formatVoidedReplayCaliberHints(summary, { holdoutSetVersion: version }) +
+      metaJson;
+    assert.doesNotMatch(stdout, new RegExp(secret));
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'ft-band-c-red-'));
+    await writeBandCRedSentencesPrivateFile({
+      holdoutSetVersion: version,
+      rows: [
+        {
+          holdoutSetVersion: version,
+          itemId: 'leak-test',
+          text: secret,
+          productAskIntoEmotion: true,
+          yinCoinShortAnswer: false
+        }
+      ],
+      epoch: 2,
+      baseDir: dir
+    });
+    assert.doesNotMatch(stdout, new RegExp(secret));
+    assert.doesNotMatch(metaJson, new RegExp(secret));
   });
 
   it('writes band C red sentences only to a private path', async () => {

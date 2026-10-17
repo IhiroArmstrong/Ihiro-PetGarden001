@@ -25,6 +25,10 @@ export const VOIDED_REPLAY_MERGE_PASS_SHARE_PROVISIONAL_NOTE =
 export const VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_SAMPLES =
   '无过线样本，无法判断';
 
+/** Clarifies 过线 here = n_pass=0 for merge-share, not the 85% pass-rate gate. */
+export const VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_GLOSS =
+  '指该带 A 类过关句数 n_pass=0，非 85% 关单尺未达线';
+
 export const VOIDED_REPLAY_BAND_C_MANUAL_REVIEW_LABEL = '硬闸计数未过，待人工判';
 
 const RULE_LINES = Object.freeze([
@@ -42,15 +46,18 @@ export function defaultVoidedReplayBandCRedSentencesDir() {
  * @param {{ holdoutSetVersion: string }} ctx
  */
 export function voidedReplayCurvesJsonMeta(ctx) {
+  const holdoutSetVersion = String(ctx?.holdoutSetVersion || '').trim();
   return {
     voided_replay_evidence_label: VOIDED_REPLAY_EVIDENCE_LABEL,
     not_pass_evidence: true,
     unseen_holdout_prediction: false,
     en_bv6_sealed: true,
+    holdout_set_version: holdoutSetVersion || null,
     reading_rules: RULE_LINES,
     merge_pass_share_high_threshold: VOIDED_REPLAY_MERGE_PASS_SHARE_HIGH,
     merge_pass_share_high_threshold_provisional_note:
-      VOIDED_REPLAY_MERGE_PASS_SHARE_PROVISIONAL_NOTE
+      VOIDED_REPLAY_MERGE_PASS_SHARE_PROVISIONAL_NOTE,
+    band_a_discount_no_pass_gloss: VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_GLOSS
   };
 }
 
@@ -75,7 +82,7 @@ export function formatVoidedReplayCurvesPreamble(ctx) {
 function formatBandAReadDiscountLine(id, slot) {
   const share = slot.merge_pass_share_of_passes;
   if (share == null) {
-    return `[routing-class-holdout] band_a ${id} band_a_read_discount=${VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_SAMPLES} merge_pass_share_of_passes=n/a`;
+    return `[routing-class-holdout] band_a ${id} band_a_read_discount=${VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_SAMPLES} merge_pass_share_of_passes=n/a no_pass_gloss=${VOIDED_REPLAY_BAND_A_DISCOUNT_NO_PASS_GLOSS}`;
   }
   if (share > VOIDED_REPLAY_MERGE_PASS_SHARE_HIGH) {
     return `[routing-class-holdout] band_a ${id} band_a_read_discount=yes merge_pass_share_of_passes=${share.toFixed(3)} threshold=${VOIDED_REPLAY_MERGE_PASS_SHARE_HIGH} provisional_note=${VOIDED_REPLAY_MERGE_PASS_SHARE_PROVISIONAL_NOTE}`;
@@ -119,7 +126,7 @@ export function formatVoidedReplayCaliberHints(summary, ctx = {}) {
     const slot = summary.band_b[id];
     if (slot.pass_criteria_met === false && slot.n > 0) {
       lines.push(
-        `[routing-class-holdout] band_b ${id} english_quota_irrelevant=yes pass_criteria_met=no`
+        `[routing-class-holdout] band_b ${id} band_b_fail_do_not_spend_en_quota=yes pass_criteria_met=no`
       );
     }
   }
