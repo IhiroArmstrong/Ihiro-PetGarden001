@@ -34,7 +34,7 @@
 | CR-08 | 暂接受 | 两句混合句被情绪否决误放 | CR-02 |
 | CR-09 | 明确不做 | 不单独为这三句加关键词（并入路由仲裁打分） | CR-10 |
 | CR-10 | 进行中 | 路由仲裁 v1 影子读口已合 #1222；zh/b-v2、zh/b-v5、**zh/b-v6** 均已跑占额、文件作废；**T8** #1311 `--curves-only` 门闩；**T9** 回放须带「作废卷回放，非过关证据」读数规则（不占额）。**en/b-v6 封存未打分**（点头 ≠ 占额；脚本硬拒）。关单尺子见 `task-confide-routing-holdout-caliber-split.md` | 已出 Brief，不等 CR-07 |
-| CR-11 | 未开始 | 路由仲裁改到用户能看到的回复 | CR-10 影子过关、另点头 |
+| CR-11 | 未开始 | 路由仲裁改到用户能看到的回复 | CR-10 影子过关、另点头。**带 C 硬闸不再当本条前置**（改 CR-52） |
 | CR-12 | 未开始 | Stage 2b 抬桶不得绕过复核 | CR-07 或 CR-11；在此之前保持 shadow |
 | CR-13 | 未开始 | 三句功能问没有目录条目 | 须先写 Brief |
 | CR-14 | 明确不做 | 日文原型补进 A/B/C/LIFE（本轮暂时放过） | CR-04 |
@@ -75,8 +75,9 @@
 | CR-49 | 进行中 | 产品问答贴近事实卡（事实键 + 问法形状轴） | #1250+#1255+#1259 已合 develop。机制：同形状近邻、`factKeyEn`、whether-required 扩 CR-47。关单仍须新封存 `sealed-v3` ≥85%/类。Brief `task-confide-fact-key-ask-role.md` |
 | CR-50 | 实现中 | 先听懂要什么事实再取：错卡不念（含字面命中）、帮助短摘、记录三档、生成不得断言事实 | #1277 发送链已合；#1287 事实键+记录原型已合；#1284 v1=9/33。v2=13/33（记录 4/5；0038 1/5；好处 0/5）。停手改卡。关单仍须未见批。Brief `task-confide-asked-fact-keys.md`。不调 0.80 |
 | CR-51 | 进行中 | 问法形状轴扩档：why-compare；whether-required 排在动机闸前 | Brief `task-confide-ask-shape-axis.md`。不改卡、不加问法名单。PO 已点头开工；实现 #1294 |
+| CR-52 | 待拍板 | 产品问不得进情绪路径（从 CR-11 拆出；只改顺序） | Brief `task-confide-product-ask-not-emotion.md`。只用 CR-47 窄信号 ∧ 产品对象；不调 0.01；不接宽影子维。点头前不改发送链。带 C 硬闸改由本条验收 |
 
-「是不是在问产品」影子计数已停。笔记在仓外 `~/Documents/ft-private/confide-research-2026-10-17/voided-ask-intent-shadow-STOP.md`。重启须另书面同意。不接发送链。本行不改 CR-11、CR-45。
+「是不是在问产品」影子计数已停。笔记在仓外 `~/Documents/ft-private/confide-research-2026-10-17/voided-ask-intent-shadow-STOP.md`。重启须另书面同意。不接发送链。宽维不并入 CR-52。
 
 ## 逐条步骤
 
@@ -213,7 +214,7 @@
 
 ### CR-11 · 一次打分改到回复上
 
-**步骤**：CR-10 的两列对照过关后另点头。点头前不改 `resolveProductKnowledgeGateAction` 的现行顺序。
+**步骤**：CR-10 的两列对照过关后另点头。点头前不把仲裁函数接到发送链。**「操作问法 ∧ 产品对象不得进情绪路径」的顺序改动改走 CR-52**，不堵在本条。带 C 硬闸不再当本条切 live 前置。
 
 **完成**：点头文件里的句子走新函数；安全路由和攻击他人路由不被新函数改写。
 
@@ -591,3 +592,14 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 - 不改事实键、不调 0.80、不把失败句写入 keywords。不并入 CR-45。
 
 **完成**：实现 PR 合入 + 仓外未见批 v3 上 0038 与好处类明显上来。没有 v3 不得写「换说法已经接住」。
+
+### CR-52 · 产品问不得进情绪路径（待拍板）
+
+权威：[`task-briefs/task-confide-product-ask-not-emotion.md`](./task-briefs/task-confide-product-ask-not-emotion.md)。从 CR-11 拆出。伤人岔路是顺序：情绪分类或生活分更高先收工，短答轮不到。
+
+- 只用已有操作问法 ∧ 产品对象。不用已停宽影子维。不调 0.01。不加关键词。
+- 安全 / 攻击仍最先。不接 CR-45 live。不切仲裁 live。
+- 验收：产品问进情绪 0 句；徽章 0 句寅币短答；AE 两锚仍短答；误伤上限见 Brief；可一键回滚。
+- 点头前不改发送链。实现须另口令「按 CR-52 Brief 开工」。
+
+**完成**：实现 PR 合入 + Brief 第八节硬闸全过。英文未见卷仍封存。
