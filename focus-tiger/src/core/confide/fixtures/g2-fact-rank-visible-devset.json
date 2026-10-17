@@ -1,0 +1,67 @@
+{
+  "set_id": "g2-fact-rank-visible-dev-2026-10-17",
+  "role": "visible-development",
+  "notes": "Visible development paraphrases. Not a sealed holdout. Lab stdout must not print text.",
+  "items": [
+    {
+      "id": "vis-0038-a",
+      "class_id": "whether-required-0038",
+      "expected": { "kind": "product_card", "card_id": "KB-FUNC-0038" },
+      "text": "Do I have to complete Honesty Check-in before I can sit with Yin?"
+    },
+    {
+      "id": "vis-0038-b",
+      "class_id": "whether-required-0038",
+      "expected": { "kind": "product_card", "card_id": "KB-FUNC-0038" },
+      "text": "Is a daily streak required, or can I skip check-in?"
+    },
+    {
+      "id": "vis-0003-a",
+      "class_id": "benefit-why-0003",
+      "expected": { "kind": "product_card", "card_id": "KB-EDU-0003" },
+      "text": "Are focus practice and meditation the same thing in this app?"
+    },
+    {
+      "id": "vis-0003-b",
+      "class_id": "benefit-why-0003",
+      "expected": { "kind": "product_card", "card_id": "KB-EDU-0003" },
+      "text": "Is Sit with Yin a generic meditation class?"
+    },
+    {
+      "id": "vis-0037-a",
+      "class_id": "bgm-toggle-0037",
+      "expected": { "kind": "product_card", "card_id": "KB-FUNC-0037" },
+      "text": "Where do I turn background music off on the idle screen?"
+    },
+    {
+      "id": "vis-0037-b",
+      "class_id": "bgm-toggle-0037",
+      "expected": { "kind": "product_card", "card_id": "KB-FUNC-0037" },
+      "text": "How can I mute the ambient sound?"
+    },
+    {
+      "id": "vis-0020-a",
+      "class_id": "honesty-where-0020",
+      "expected": { "kind": "product_card", "card_id": "KB-FUNC-0020" },
+      "text": "Where do I open Honesty Check-in to record a sit I already did elsewhere?"
+    },
+    {
+      "id": "vis-0011-a",
+      "class_id": "design-session-length",
+      "expected": { "kind": "product_card", "card_id": "KB-FUNC-0011" },
+      "text": "How long is one Breath practice designed to last?"
+    },
+    {
+      "id": "vis-chat-a",
+      "class_id": "no-fact-card-block",
+      "expected": { "kind": "no_product_card" },
+      "text": "Where can I eat noodle?"
+    },
+    {
+      "id": "vis-chat-b",
+      "class_id": "no-fact-card-block",
+      "expected": { "kind": "no_product_card" },
+      "text": "So can I talk to you?"
+    }
+  ]
+}
