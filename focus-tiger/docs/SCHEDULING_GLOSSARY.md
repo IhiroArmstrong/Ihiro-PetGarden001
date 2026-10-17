@@ -21,9 +21,9 @@
 | **P2** · **T6** | Confide 路由盲测五带口径 #1306 | **已合 develop** | Brief `task-confide-routing-holdout-caliber-split.md`；**禁止**真跑 `en/b-v6`（点头 ≠ 占额） |
 | — · **T7** | Confide CR-45 影子 + 带 C 硬闸 #1309 | **已合 develop** | holdout `caliber_split` + §6.5 合并对；**CR-45 live 仍等 CR-11**；**禁止**真跑 en/b-v6 |
 | **P2** · **T8** | Confide 作废中文卷五带曲线 #1311 | **已合 develop** | `--curves-only` 门闩；不占额 |
-| **P2** · **T9** | 作废卷曲线标注 + 按规则回放 | **PR 待开** | `confideRoutingVoidedReplayLab.js` |
-| **P2** · **T10** | Yin 语音指令入口 #1312 | **排队中** | 原表 T9 改 T10；Brief 已点头，运行时另旁支 |
-| **P1** · **T12** | PR smoke 移出菜单走完 | **进行中** | 从每个 PR 必跑冒烟拿掉 `menu-full-reachability`；nightly + 合入 develop + 改菜单路径仍跑；**不是** T11 |
+| **P2** · **T9** | 作废卷曲线标注 + 按规则回放 | **已合 develop** | #1323 |
+| **P2** · **T10** | Yin 语音指令入口 #1312 | **进行中（PR #1321）** | Brief 已点头；称呼词门闩、备份确认、按键说话 |
+| **P1** · **T12** | PR smoke 移出菜单走完 | **已合 develop** | #1324；从 PR 必跑冒烟拿掉 `menu-full-reachability`；nightly + 改菜单路径仍跑 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 

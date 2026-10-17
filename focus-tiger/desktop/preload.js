@@ -80,6 +80,12 @@ const desktopShell = {
     ipcRenderer.on('desktop:open-preferences', wrapped);
     return () => ipcRenderer.removeListener('desktop:open-preferences', wrapped);
   },
+  onYinVoicePushToTalk: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = () => cb();
+    ipcRenderer.on('desktop:yin-voice-ptt', wrapped);
+    return () => ipcRenderer.removeListener('desktop:yin-voice-ptt', wrapped);
+  },
   onCheckoutReturn: (cb) => {
     if (typeof cb !== 'function') return () => {};
     const wrapped = (_event, search) => cb(search);

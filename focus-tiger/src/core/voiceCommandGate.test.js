@@ -5,7 +5,10 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { canShowVoiceCommandChrome } from './voiceCommandGate.js';
+import {
+  canRouteSpokenYinCommand,
+  canShowVoiceCommandChrome
+} from './voiceCommandGate.js';
 
 describe('voiceCommandGate', () => {
   const desktop = {
@@ -29,5 +32,15 @@ describe('voiceCommandGate', () => {
       false
     );
     assert.equal(canShowVoiceCommandChrome({ widthPx: 1200, locale: 'en', globalObj: {} }), false);
+  });
+
+  it('still routes spoken English when the UI language is Japanese', () => {
+    assert.equal(
+      canShowVoiceCommandChrome({ widthPx: 480, locale: 'ja', globalObj: desktop }),
+      false
+    );
+    assert.equal(canRouteSpokenYinCommand({ widthPx: 480, globalObj: desktop }), true);
+    assert.equal(canRouteSpokenYinCommand({ widthPx: 479, globalObj: desktop }), false);
+    assert.equal(canRouteSpokenYinCommand({ widthPx: 1200, globalObj: {} }), false);
   });
 });

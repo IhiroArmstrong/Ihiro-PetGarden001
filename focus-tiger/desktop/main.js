@@ -17,7 +17,8 @@ import {
   net,
   protocol,
   shell,
-  Tray
+  Tray,
+  globalShortcut
 } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -609,6 +610,16 @@ if (gotSingleInstanceLock) {
   installMacApplicationMenu();
   createTray();
   mainWindow = createMainWindow();
+  if (process.platform === 'darwin') {
+    globalShortcut.register('Control+Shift+Y', () => {
+      showMainWindow();
+      if (!mainWindow || mainWindow.isDestroyed() || mainWindow.webContents.isDestroyed()) return;
+      mainWindow.webContents.send('desktop:yin-voice-ptt');
+    });
+  }
+  app.on('will-quit', () => {
+    globalShortcut.unregister('Control+Shift+Y');
+  });
   updaterRuntime.scheduleCheck();
 
   if (pendingCheckoutReturnUrl) {
