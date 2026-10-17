@@ -17,12 +17,12 @@
 | **可选** · **T3** | TASKS 机器块拼装 #1319 | **已合 develop** | 单独小 PR |
 | **P1** · **T11** | 并行 smoke 冻结 locale 切片索引 #1322 | **已合 develop** | 测试基建；压测仍禁止改共享索引 |
 | **未排期** · **T4** | 根因行动 A15–A17 | 搁置 | 见 §3 |
-| — · **T5** | Confide CR-51 问法形状轴 #1294 | **进行中** | `why-compare` + `whether-required` 顺序；**已合 develop**；关单须未见 v3 audit；Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
+| — · **T5** | Confide CR-51 问法形状轴 #1294 | **关单未过** | `why-compare` + `whether-required` 顺序；**已合 develop**；未见 v3 已跑：0038 **2/5**（v2 1/5）、benefit-why **2/5**（v2 0/5），未达「明显上来」。**不是 G2 整项过关**。再改运行时须另口令。Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
 | **P2** · **T6** | Confide 路由盲测五带口径 #1306 | **已合 develop** | Brief `task-confide-routing-holdout-caliber-split.md`；**禁止**真跑 `en/b-v6`（点头 ≠ 占额） |
 | — · **T7** | Confide CR-45 影子 + 带 C 硬闸 #1309 | **已合 develop** | holdout `caliber_split` + §6.5 合并对；**CR-45 live 仍等 CR-11**；**禁止**真跑 en/b-v6 |
 | **P2** · **T8** | Confide 作废中文卷五带曲线 #1311 | **已合 develop** | `--curves-only` 门闩；不占额 |
 | **P2** · **T9** | 作废卷曲线标注 + 按规则回放 | **已合 develop** | #1323 |
-| **P2** · **T10** | Yin 语音指令入口 #1312 | **进行中（PR #1321）** | Brief 已点头；称呼词门闩、备份确认、按键说话 |
+| **P2** · **T10** | Yin 语音指令入口 #1312 | **已合 develop** | #1321 |
 | **P1** · **T12** | PR smoke 移出菜单走完 | **已合 develop** | #1324；从 PR 必跑冒烟拿掉 `menu-full-reachability`；nightly + 改菜单路径仍跑 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
@@ -97,3 +97,4 @@
 | 2026-10-17 | #1294 合入：**T5** CR-51「进行中」与 CR-45「未开工」分列；口令表防混刀 |
 | 2026-10-17 | CR-45 Brief 补锁；实现仍未开工，等 CR-11 |
 | 2026-10-17 | **T8** 作废中文卷五带曲线（不占额）为当前 P2 |
+| 2026-10-17 | **T10** #1321 已合；**T5** 未见 v3 已跑未关单 |
