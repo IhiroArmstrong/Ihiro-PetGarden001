@@ -354,6 +354,7 @@ export class NarrowIdleShell {
     this._stopWallClock();
     this._hudObserver?.disconnect();
     this._mq?.removeEventListener?.('change', this._onMqChange);
+    window.removeEventListener('resize', this._onMqChange);
     this.root?.removeEventListener('touchstart', this._onTouchStart, {
       capture: true
     });
@@ -372,6 +373,9 @@ export class NarrowIdleShell {
   }
 
   _isNarrow() {
+    if (typeof window !== 'undefined' && Number.isFinite(window.innerWidth)) {
+      return window.innerWidth <= 479;
+    }
     return Boolean(this._mq?.matches);
   }
 
@@ -585,6 +589,7 @@ export class NarrowIdleShell {
   _bind() {
     this._onMqChange = () => this._syncMode();
     this._mq?.addEventListener?.('change', this._onMqChange);
+    window.addEventListener('resize', this._onMqChange);
 
     this.actionBar?.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-proxy]');

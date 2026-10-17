@@ -10,6 +10,7 @@ import {
   installHeavyLocalMediaStubs
 } from './mock-external-network.js';
 import { dismissReflectionViaWisdomHold } from './reflection-dismiss.js';
+import { wideMoreMenuGroupForProxy } from '../../src/core/wideMenuRadialLayout.js';
 
 /** @type {WeakMap<import('@playwright/test').Page, true>} */
 const externalMocksByPage = new WeakMap();
@@ -167,6 +168,15 @@ export async function clickBreathPracticeEntry(page) {
   await clickQuickStartEntry(page);
 }
 
+/** Radial or flat degenerate list — only one phase is visible at a time. */
+export async function expectWideMoreMenuShellVisible(page) {
+  await expect(
+    page.locator(
+      '#ft-wide-more-radial:not([hidden]), #ft-wide-more-menu:not([hidden])'
+    ).first()
+  ).toBeVisible({ timeout: 5_000 });
+}
+
 /**
  * 若宽屏 ⋯ 可见则打开 More 菜单。
  * @param {import('@playwright/test').Page} page
@@ -179,18 +189,38 @@ export async function openWideMoreMenuIfPresent(page) {
   });
   if (!canOpen) return false;
   await page.locator('#ft-wide-more-btn').click({ force: true });
-  await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
-    timeout: 5_000
-  });
+  await expectWideMoreMenuShellVisible(page);
   return true;
 }
 
-/** @type {Readonly<Record<string, string>>} */
-const WIDE_MORE_PROXY_GROUP = Object.freeze({
-  reminder: 'MENU_GROUP_PREFERENCES',
-  language: 'MENU_GROUP_PREFERENCES',
-  'today-direction': 'MENU_GROUP_PREFERENCES'
-});
+/**
+ * Radial index (knife 3): open a group list from the five icons.
+ * @param {import('@playwright/test').Page} page
+ * @param {string} groupKey
+ */
+export async function pickWideMoreRadialGroup(page, groupKey) {
+  const radial = page.locator('#ft-wide-more-radial');
+  if (await radial.isVisible().catch(() => false)) {
+    await page.locator(`#ft-wide-more-radial [data-group="${groupKey}"]`).click();
+    await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
+      timeout: 5_000
+    });
+    return;
+  }
+
+  // Degenerate flat list (sprite-stage / short innerHeight): radial hidden.
+  const menu = page.locator('#ft-wide-more-menu');
+  if (!(await menu.isVisible().catch(() => false))) return;
+  const header = page.locator(
+    `#ft-wide-more-menu .ft-wide-more__section-header[data-group="${groupKey}"]`
+  );
+  if (!(await header.isVisible().catch(() => false))) return;
+  if ((await header.getAttribute('aria-expanded')) === 'true') return;
+  await header.click();
+  await expect(header).toHaveAttribute('aria-expanded', 'true', {
+    timeout: 3_000
+  });
+}
 
 /**
  * Expand a collapsible wide ⋯ section before clicking a parked row.
@@ -198,6 +228,7 @@ const WIDE_MORE_PROXY_GROUP = Object.freeze({
  * @param {string} groupKey
  */
 export async function expandWideMoreMenuGroup(page, groupKey) {
+  await pickWideMoreRadialGroup(page, groupKey);
   const header = page.locator(
     `#ft-wide-more-menu .ft-wide-more__section-header[data-group="${groupKey}"]`
   );
@@ -216,6 +247,7 @@ export async function expandWideMoreMenuGroup(page, groupKey) {
  */
 export async function clickHonestyCheckInEntry(page) {
   if (await openWideMoreMenuIfPresent(page)) {
+    await pickWideMoreRadialGroup(page, 'MENU_GROUP_PRACTICE');
     const honestyRow = page.locator('#ft-wide-more-menu [data-proxy="honesty"]');
     if ((await honestyRow.count()) > 0) {
       await honestyRow.click();
@@ -263,7 +295,7 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
     language: '#language-preference-panel'
   }[proxy];
   if (await openWideMoreMenuIfPresent(page)) {
-    const groupKey = WIDE_MORE_PROXY_GROUP[proxy];
+    const groupKey = wideMoreMenuGroupForProxy(proxy);
     if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     const row = page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`);
     await row.scrollIntoViewIfNeeded();

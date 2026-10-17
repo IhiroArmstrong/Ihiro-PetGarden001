@@ -11,16 +11,7 @@ import {
   openWideMoreMenuIfPresent
 } from './product-shell.js';
 import { MENU_REACHABILITY } from '../../src/core/menuReachabilityContract.js';
-
-/** @type {Readonly<Record<string, string>>} */
-const WIDE_MORE_PROXY_GROUP = Object.freeze({
-  reminder: 'MENU_GROUP_PREFERENCES',
-  language: 'MENU_GROUP_PREFERENCES',
-  'today-direction': 'MENU_GROUP_PREFERENCES',
-  'system-tts': 'MENU_GROUP_PREFERENCES',
-  'help-center': 'MENU_GROUP_PREFERENCES',
-  'local-backup': 'MENU_GROUP_PREFERENCES'
-});
+import { wideMoreMenuGroupForProxy } from '../../src/core/wideMenuRadialLayout.js';
 
 /**
  * @param {import('@playwright/test').Page} page
@@ -130,7 +121,7 @@ export async function openA13GlassSurface(page, surface) {
 
   if (await openWideMoreMenuIfPresent(page)) {
     await expandAllWideGroups(page);
-    const groupKey = WIDE_MORE_PROXY_GROUP[proxy];
+    const groupKey = wideMoreMenuGroupForProxy(proxy);
     if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     const row = page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`);
     await row.scrollIntoViewIfNeeded();

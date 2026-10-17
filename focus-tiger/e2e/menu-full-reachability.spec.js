@@ -7,8 +7,10 @@ import { test, expect } from '@playwright/test';
 import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
   expandWideMoreMenuGroup,
+  expectWideMoreMenuShellVisible,
   openFreshProductShell
 } from './helpers/product-shell.js';
+import { wideMoreMenuGroupForProxy } from '../src/core/wideMenuRadialLayout.js';
 import {
   MENU_RESULT_FORBIDDEN_TEXT,
   listMenuReachabilityRows
@@ -20,10 +22,11 @@ import {
  * Stay on one page (Escape between rows). Per-row reload saturated CI
  * preview (:5199) on #1173 — page.reload 30s, then later smoke goto hung.
  * Wide + narrow share one openFreshProductShell: a second goto after the
- * wide walk killed preview on CI (narrow TimeoutError 40s).
+ * wide walk killed preview on CI (narrow TimeoutError 40s). Knife 3 radial
+ * expands a group per row on wide — CI needs >240s for wide+narrow in one test.
  */
 
-test.setTimeout(240_000);
+test.setTimeout(480_000);
 test.describe.configure({ retries: 0 });
 
 const FORBIDDEN = MENU_RESULT_FORBIDDEN_TEXT;
@@ -136,6 +139,7 @@ async function settleAfterRow(page) {
     window.__inAppReminder?.settings?.closePanel?.();
     window.__inAppReminder?.settings?.close?.();
     window.__wideIdleMoreMenu?.closeMenu?.();
+    window.__wideIdleMoreMenu?.releaseInactivePresentation?.();
     window.__wideIdleMoreMenu?.setSuppressed?.(false);
     window.__wideIdleMoreMenu?.setIdle?.(true);
     window.__narrowIdleShell?.setSuppressed?.(false);
@@ -155,15 +159,21 @@ async function openMenu(page, surface) {
   if (surface === 'wide-more') {
     const btn = page.locator('#ft-wide-more-btn');
     await expect(btn, '⋯ available').toBeVisible({ timeout: 8_000 });
-    if (
-      !(await page.locator('#ft-wide-more-menu').isVisible().catch(() => false))
-    ) {
+    const shellVisible = await page
+      .locator(
+        '#ft-wide-more-radial:not([hidden]), #ft-wide-more-menu:not([hidden])'
+      )
+      .first()
+      .isVisible()
+      .catch(() => false);
+    if (!shellVisible) {
       await btn.click();
     }
-    await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
-      timeout: 8_000
-    });
-    await expandAllWideGroups(page);
+    await expectWideMoreMenuShellVisible(page);
+    const radial = page.locator('#ft-wide-more-radial');
+    if (!(await radial.isVisible().catch(() => false))) {
+      await expandAllWideGroups(page);
+    }
     return;
   }
   const grabber = page.locator('.ft-narrow-grabber');
@@ -235,13 +245,19 @@ async function walkMenu(page, surface, menuSelector) {
   await prepareIdle(page);
   for (const row of clickable) {
     await openMenu(page, surface);
+    if (surface === 'wide-more') {
+      const groupKey = wideMoreMenuGroupForProxy(row.proxy);
+      if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
+    }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
     await item.scrollIntoViewIfNeeded();
     await expect(item, `row ${row.proxy} listed`).toBeVisible({
       timeout: 8_000
     });
     if (row.proxy === 'reminder') await item.hover();
-    await item.click({ timeout: 20_000 });
+    await item.click({
+      timeout: surface === 'narrow-drawer' ? 30_000 : 20_000
+    });
     await assertOpenedResult(page, row.contract, row.proxy);
     opened.push(row.proxy);
     await settleAfterRow(page);
@@ -249,6 +265,10 @@ async function walkMenu(page, surface, menuSelector) {
 
   await openMenu(page, surface);
   for (const row of inert) {
+    if (surface === 'wide-more') {
+      const groupKey = wideMoreMenuGroupForProxy(row.proxy);
+      if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
+    }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
     await item.scrollIntoViewIfNeeded();
     await expect(item, `inert ${row.proxy}`).toBeVisible();
@@ -267,10 +287,19 @@ test('menu full reachability · wide Idle ⋯ then narrow drawer', async ({
   await settleAfterRow(page);
   await page.setViewportSize({ width: 375, height: 667 });
   await page.evaluate(() => {
+    window.dispatchEvent(new Event('resize'));
     window.__wideIdleMoreMenu?.releaseInactivePresentation?.();
   });
+  await expect
+    .poll(() => page.evaluate(() => window.matchMedia('(max-width: 479px)').matches))
+    .toBe(true);
   await expect(page.locator('#ft-narrow-idle-shell')).toBeVisible({
     timeout: 15_000
   });
+  await expect(
+    page.locator('#ft-wide-more-backdrop'),
+    'wide ⋯ scrim must not cover the narrow drawer'
+  ).toBeHidden();
+  await settleAfterRow(page);
   await walkMenu(page, 'narrow-drawer', '#ft-narrow-options-drawer');
 });
