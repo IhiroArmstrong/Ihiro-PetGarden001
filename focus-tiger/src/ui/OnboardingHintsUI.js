@@ -1923,6 +1923,20 @@ export class OnboardingHintsUI {
 
     desktopRam.append(desktopRamTitle, desktopRamBody);
 
+    const voiceAccess = document.createElement('div');
+    voiceAccess.id = 'onboarding-purpose-voice-access';
+    voiceAccess.className = 'onboarding-app-purpose__desktop-ram';
+    voiceAccess.dataset.testid = 'onboarding-purpose-voice-access';
+    voiceAccess.hidden = true;
+
+    const voiceAccessTitle = document.createElement('h3');
+    voiceAccessTitle.className = 'onboarding-app-purpose__desktop-ram-title';
+
+    const voiceAccessBody = document.createElement('p');
+    voiceAccessBody.className = 'onboarding-app-purpose__desktop-ram-body';
+
+    voiceAccess.append(voiceAccessTitle, voiceAccessBody);
+
     const todayDirection = document.createElement('button');
     todayDirection.type = 'button';
     todayDirection.className =
@@ -1989,7 +2003,7 @@ export class OnboardingHintsUI {
 
     links.append(helpCenter, wellness, privacy, todayDirection);
     actions.append(dismiss);
-    card.append(brand, desktopRam, links, colophon, actions);
+    card.append(brand, desktopRam, voiceAccess, links, colophon, actions);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
@@ -1999,6 +2013,9 @@ export class OnboardingHintsUI {
     this._purposeDesktopRamEl = desktopRam;
     this._purposeDesktopRamTitleEl = desktopRamTitle;
     this._purposeDesktopRamBodyEl = desktopRamBody;
+    this._purposeVoiceAccessEl = voiceAccess;
+    this._purposeVoiceAccessTitleEl = voiceAccessTitle;
+    this._purposeVoiceAccessBodyEl = voiceAccessBody;
     this._purposeTodayDirectionEl = todayDirection;
     this._purposeHelpCenterEl = helpCenter;
     this._purposePrivacyEl = privacy;
@@ -2041,6 +2058,19 @@ export class OnboardingHintsUI {
     if (this._purposeDesktopRamBodyEl) {
       this._purposeDesktopRamBodyEl.textContent = t(
         'HINT_APP_PURPOSE_DESKTOP_RAM_BODY'
+      );
+    }
+    if (this._purposeVoiceAccessEl) {
+      this._purposeVoiceAccessEl.hidden = !showDesktopRam;
+    }
+    if (this._purposeVoiceAccessTitleEl) {
+      this._purposeVoiceAccessTitleEl.textContent = t(
+        'HINT_APP_PURPOSE_VOICE_ACCESS_TITLE'
+      );
+    }
+    if (this._purposeVoiceAccessBodyEl) {
+      this._purposeVoiceAccessBodyEl.textContent = t(
+        'HINT_APP_PURPOSE_VOICE_ACCESS_BODY'
       );
     }
     if (this._purposeTodayDirectionEl) {

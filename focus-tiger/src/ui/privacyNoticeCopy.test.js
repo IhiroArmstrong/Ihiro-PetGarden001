@@ -8,6 +8,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { mergeLocalePack } from '../locales/mergeLocaleSlices.js';
+import { LOCALE_SLICES } from '../locales/localeSliceModules.js';
 import {
   PRIVACY_SHEET_BODY_KEYS,
   PRIVACY_SHEET_SECTIONS,
@@ -22,7 +24,15 @@ const here = dirname(fileURLToPath(import.meta.url));
 const localesDir = join(here, '../locales');
 
 function loadLocale(name) {
-  return JSON.parse(readFileSync(join(localesDir, name), 'utf8'));
+  const locale = String(name).replace(/\.json$/, '');
+  const bases = {
+    en: JSON.parse(readFileSync(join(localesDir, 'en.json'), 'utf8')),
+    zh: JSON.parse(readFileSync(join(localesDir, 'zh.json'), 'utf8')),
+    ja: JSON.parse(readFileSync(join(localesDir, 'ja.json'), 'utf8'))
+  };
+  const { dictionaries, errors } = mergeLocalePack(bases, LOCALE_SLICES);
+  assert.equal(errors.length, 0, errors.join('; '));
+  return dictionaries[locale];
 }
 
 describe('privacyNoticeCopy', () => {
@@ -31,6 +41,7 @@ describe('privacyNoticeCopy', () => {
     assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_INTRO'));
     assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_FULL_LEAD'));
     assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_AI_INFERENCE'));
+    assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_VOICE_OPERATING'));
     assert.ok(PRIVACY_SHEET_BODY_KEYS.includes('PRIVACY_SHEET_SEC_3_TITLE'));
   });
 
@@ -44,6 +55,15 @@ describe('privacyNoticeCopy', () => {
         assert.equal(typeof map[section.bodyKey], 'string', `${file} ${section.bodyKey}`);
       }
     }
+  });
+
+  it('en + ja voice operating privacy line stays on-device', () => {
+    const en = loadLocale('en.json');
+    const ja = loadLocale('ja.json');
+    assert.match(en.PRIVACY_SHEET_VOICE_OPERATING, /on this device/i);
+    assert.match(en.PRIVACY_SHEET_VOICE_OPERATING, /cloud AI/i);
+    assert.match(ja.PRIVACY_SHEET_VOICE_OPERATING, /端末/);
+    assert.match(ja.PRIVACY_SHEET_VOICE_OPERATING, /クラウド/);
   });
 
   it('en + ja local AI privacy line stays on-device', () => {
@@ -111,6 +131,9 @@ describe('privacyNoticeCopy', () => {
     assert.match(en.SUPPORT_DESKTOP_RAM_NOTE, /8 GB of RAM/i);
     assert.match(ja.HINT_APP_PURPOSE_DESKTOP_RAM_BODY, /8GB/);
     assert.match(ja.HINT_APP_PURPOSE_DESKTOP_RAM_BODY, /Windows/);
+    assert.match(en.HINT_APP_PURPOSE_VOICE_ACCESS_BODY, /backup all the app data/i);
+    assert.match(ja.HINT_APP_PURPOSE_VOICE_ACCESS_BODY, /バックアップ/);
+
     assert.match(ja.HINT_APP_PURPOSE_WELLNESS_BODY, /医療機器ではありません/);
     assert.match(
       ja.HINT_APP_PURPOSE_WELLNESS_BODY,
@@ -144,6 +167,7 @@ describe('privacyNoticeCopy', () => {
     assert.match(purpose, /onboarding-purpose-desktop-ram/);
     assert.match(purpose, /isDesktopShellRuntime/);
     assert.match(purpose, /HINT_APP_PURPOSE_DESKTOP_RAM_BODY/);
+    assert.match(purpose, /HINT_APP_PURPOSE_VOICE_ACCESS_BODY/);
     assert.match(purpose, /privacy-ype-cloud-personalization-opt-in/);
     assert.match(purpose, /setYpeCloudPersonalizationConsent/);
     assert.match(support, /yin-support-desktop-ram/);
@@ -155,7 +179,7 @@ describe('privacyNoticeCopy', () => {
     const purpose = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
     assert.match(
       purpose,
-      /card\.append\(brand, desktopRam, links, colophon, actions\)/
+      /card\.append\(brand, desktopRam, voiceAccess, links, colophon, actions\)/
     );
     assert.match(
       purpose,

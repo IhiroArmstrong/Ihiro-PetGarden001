@@ -72,10 +72,10 @@ test('help center gap articles are allowlisted and absent from confide catalog',
   }
 });
 
-test('help center keeps 41 KB-traced articles after gap add', () => {
+test('help center keeps 42 KB-traced articles after gap add', () => {
   const kbish = HELP_CENTER_ARTICLES.filter((row) => row.id.startsWith('KB-'));
-  assert.equal(kbish.length, 41);
-  assert.equal(HELP_CENTER_ARTICLES.length, 45);
+  assert.equal(kbish.length, 42);
+  assert.equal(HELP_CENTER_ARTICLES.length, 46);
 });
 
 test('help center gap article locale keys exist in en zh ja', () => {

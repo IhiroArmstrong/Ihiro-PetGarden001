@@ -368,3 +368,7 @@ Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
 - 当前阶段仍是单一角色与默认装扮，不提供换装 UI；
 - 一次只做一个任务，长期愿景不得自动进入当前开发范围。
 
+## Accessibility and voice (desktop)
+
+Focus Tiger is built so people who cannot tap menus comfortably — including many older adults and people who rely on speech — can often **speak** instead. On the Mac desktop app, **Yin listens** for short English requests that run the same **local** actions you would tap (for example starting a sit, ending with Rise, or backing up practice data after Yin repeats the plan and you confirm). This is separate from long Confide companionship scripts: Yin points to approved help, and operating words stay on your device. See `KB-FUNC-0039` and `task-briefs/task-yin-voice-command-entry.md`.
+

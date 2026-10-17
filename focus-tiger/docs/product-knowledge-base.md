@@ -1038,7 +1038,7 @@
 
 ### 4.14 背景音乐开关 / 打卡不是强迫签到（已通过 · catalog 已入库）
 
-> **Status**: **PO 2026-10-16 Brief** [`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md) · **已进** `productKnowledgeCatalog.json` · **0037 / 0038** 无独立菜单行，记入 cross-cutting · 闸门 **40 条**。近义只用 `factKeyEn`（问句形事实键）+ 问法形状轴；短答不进 embedding。0020 补 where/how 事实键，与 0038 whether-required 分轨。关单仍须 `sealed-v3` 未见英文批。
+> **Status**: **PO 2026-10-16 Brief** [`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md) · **已进** `productKnowledgeCatalog.json` · **0037 / 0038** 无独立菜单行，记入 cross-cutting · 闸门 **41 条**。近义只用 `factKeyEn`（问句形事实键）+ 问法形状轴；短答不进 embedding。0020 补 where/how 事实键，与 0038 whether-required 分轨。关单仍须 `sealed-v3` 未见英文批。
 
 ```yaml
 - id: KB-FUNC-0037
@@ -1083,6 +1083,37 @@
   locale_keys: [HONESTY_IDLE_ENTRY, HINT_HONESTY_OPTIONAL]
   检索关键词: [Honesty Check-in]
 ```
+
+
+
+### 4.15 语音办理 / Yin 倾听（已通过 · catalog 已入库）
+
+> **Status**: **PO 2026-10-17** · Brief [`task-briefs/task-yin-voice-command-entry.md`](./task-briefs/task-yin-voice-command-entry.md) · **已进** `productKnowledgeCatalog.json` · **0039** cross-cutting（Confide + 倾听入口 + 桌面 Operating）· 闸门 **41 条**。
+
+```yaml
+- id: KB-FUNC-0039
+  所属库: 陪伴可检索
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Ask Yin by voice on desktop
+  适用场景: 点按不便、只能靠语音；问能否口头请 Yin 备份或办理本机操作
+  内容正文: |
+    事实键（en）：Can I ask Yin by voice to do things on this device instead of tapping, for example backing up my practice data?
+    能力说明（en，文档参考）：博爱/accessibility 口径；Mac 桌面短英语 Operating；写盘前复述确认；话留本机。
+    短答（en）：When tapping is hard… Example: Hi Yin, please backup all the app data for me. … Yin only points here and does not read long scripts aloud.
+    禁止：假装全菜单已语音化；把 Confide 陪伴回合写成 Operating；中文/日语称呼词第一刀（Brief 已排后）。
+  yin_may_retrieve: 是
+  来源: PO 2026-10-17 + task-yin-voice-command-entry
+  审核状态: 已通过
+  审核人: PO（2026-10-17 · 产品说明同步）
+  风险标记: 否
+  适用产品版本: Mac 桌面 · 英语 Operating 逐步铺开
+  更新时间: 2026-10-17
+  locale_keys: [HINT_APP_PURPOSE_VOICE_ACCESS_TITLE, HINT_APP_PURPOSE_VOICE_ACCESS_BODY, HELP_CENTER_ARTICLE_KB_FUNC_0039_BODY]
+  检索关键词: [voice command, Hi Yin backup, speak instead of tap, 语音办理]
+```
+
+> **权威源（0039）**：`src/core/confide/productKnowledgeCatalog.json` · `src/locales/slices/help-center.json` · `src/locales/en.json` / `ja.json`
 
 > **权威源（0037–0038）**：`src/locales/en.json`（`AMBIENT_MUSIC_ON_ARIA` / `HINT_AMBIENT_SOUNDSCAPE` / `HINT_HONESTY_OPTIONAL`）· `src/core/confide/productKnowledgeCatalog.json`
 

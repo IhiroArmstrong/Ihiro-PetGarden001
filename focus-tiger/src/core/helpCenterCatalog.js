@@ -108,6 +108,13 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     kbTraceId: 'KB-FUNC-0034'
   }),
   Object.freeze({
+    id: 'KB-FUNC-0037',
+    sectionId: 'start',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY',
+    kbTraceId: 'KB-FUNC-0037'
+  }),
+  Object.freeze({
     id: 'KB-FUNC-0002',
     sectionId: 'practice',
     titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0002_TITLE',
@@ -141,13 +148,6 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0020_TITLE',
     bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0020_BODY',
     kbTraceId: 'KB-FUNC-0020'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0038',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_BODY',
-    kbTraceId: 'KB-FUNC-0038'
   }),
   Object.freeze({
     id: 'KB-FUNC-0021',
@@ -206,16 +206,11 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     kbTraceId: 'KB-FUNC-0028'
   }),
   Object.freeze({
-    id: 'HELP-BREATH-DURATION',
+    id: 'KB-FUNC-0038',
     sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_BODY'
-  }),
-  Object.freeze({
-    id: 'HELP-LOTUS-BLOOMS',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY'
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_BODY',
+    kbTraceId: 'KB-FUNC-0038'
   }),
   Object.freeze({
     id: 'KB-FUNC-0003',
@@ -267,25 +262,6 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     kbTraceId: 'KB-FUNC-0036'
   }),
   Object.freeze({
-    id: 'KB-FUNC-0037',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY',
-    kbTraceId: 'KB-FUNC-0037'
-  }),
-  Object.freeze({
-    id: 'HELP-BUY-COLLECTIONS',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_BODY'
-  }),
-  Object.freeze({
-    id: 'HELP-BADGE-NOT-COIN',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY'
-  }),
-  Object.freeze({
     id: 'KB-FUNC-0005',
     sectionId: 'companion',
     titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0005_TITLE',
@@ -321,6 +297,13 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     kbTraceId: 'KB-FUNC-0017'
   }),
   Object.freeze({
+    id: 'KB-FUNC-0039',
+    sectionId: 'companion',
+    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0039_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0039_BODY',
+    kbTraceId: 'KB-FUNC-0039'
+  }),
+  Object.freeze({
     id: 'KB-EDU-0001',
     sectionId: 'learn',
     titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0001_TITLE',
@@ -347,6 +330,30 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0004_TITLE',
     bodyKey: 'HELP_CENTER_ARTICLE_KB_EDU_0004_BODY',
     kbTraceId: 'KB-EDU-0004'
+  }),
+  Object.freeze({
+    id: 'HELP-BREATH-DURATION',
+    sectionId: 'practice',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-LOTUS-BLOOMS',
+    sectionId: 'practice',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-BUY-COLLECTIONS',
+    sectionId: 'data',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-BADGE-NOT-COIN',
+    sectionId: 'data',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY'
   })
 ]);
 
