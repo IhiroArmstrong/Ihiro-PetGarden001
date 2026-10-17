@@ -1362,7 +1362,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 | 项 | 状态 |
 |---|---|
-| PR→`develop` 轻量冒烟 | ✅ `pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）；Required 已勾；**解放本地 Agent** |
+| PR→`develop` 轻量冒烟 | ✅ `pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）；Required 已勾；菜单走完不在默认子集（见 `PR_SMOKE_FAILURE_CLASSES.md`）；**解放本地 Agent** |
 | 全量 e2e workflow | ✅ `focus-tiger-e2e-full.yml`：`workflow_dispatch` + `schedule` cron `0 2 * * *`（UTC）；**120m** + `--workers=1` |
 | 定时任务是否按 120 跑 | ✅ **YAML 已在 `main`**（PR #47，2026-07-31）。下一 schedule / dispatch 应按 120；#11 及更早仍为合并前 60m cancel |
 | Plan A（分片+清单） | ✅ **#63→main**；基建验 [#15](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/actions/runs/30707227694)（~55m + JUnit，非 2h cancel） |

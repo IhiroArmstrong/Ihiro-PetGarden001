@@ -80,6 +80,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `issue-ledger` | 问题账本：总表只加稳定摘要，进度写 issue-entries（并行 PR 不改同一行） | `.cursor/rules/focus-tiger-issue-ledger.mdc` | Focus Tiger · Issue Ledger（问题闭环追踪 · 按需层） |
 | `brief-before-user-visible` | B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类） | `WORKFLOW.md` | 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
+| `pr-smoke-failure-classes` | PR smoke 失败归类与菜单走完门闩（必跑子集 / nightly / 路径触发） | `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md` | PR_SMOKE_FAILURE_CLASSES.md — PR smoke 失败归类与菜单走完门闩 |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
 | `layered-bug-diagnostics` | 多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑） | `.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc` | Focus Tiger · 多层系统集成 bug 排查（layered-bug-diagnostics · 按需层） |
 | `companion-debug` | 调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档） | `.cursor/rules/focus-tiger-companion-debug.mdc` | Focus Tiger · 调试本地 AI companion |
@@ -136,6 +137,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `multi-task-session` | 「同一会话连续多任务见 `focus-tiger-multi-task-session.mdc`」；`focus-tiger-core` / `PROCESS`「一次一任务管改动范围」可一行引用 | 主张一会话只能做一个任务；主张衍生任务可顺手实现；主张多任务可共用一个 PR；把「一次一任务」误解为一会话一任务；完整复述准入/停止条件全文 |
 | `brief-before-user-visible` | 「B 类须 Brief 见 `WORKFLOW.md`」；按需层 `focus-tiger-brief-before-user-visible.mdc`；`agent-tool-budget` / `PROCESS` Task Brief 节 / `focus-tiger-core` 可一行引用 | 主张「立刻开工」可跳过 Brief；主张 Agent 可自行把 B 类降为 A 类；平行复述 A/B 表与 Stage 1/2 对照全文 |
 | `ci-failure-triage` | 「CI/smoke 失败且缺日志见 `focus-tiger-ci-failure-triage.mdc`」；`agent-token-cost` §5–§6 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无日志先 grep；主张失败分析摘要可臆测；把合 develop / §7 关单门禁写进本条 |
+| `pr-smoke-failure-classes` | 「种类表 / 菜单走完门闩见 `PR_SMOKE_FAILURE_CLASSES.md`」；`ci-failure-triage` Step 0 / PR 模板 / WORKFLOW CI 边界可一行引用 | 主张每个 PR 仍必跑 `menu-full-reachability`；完整复述四种根因表；主张可无限重跑 |
 | `ui-bug-triage` | 「UI/交互回归且缺锚点见 `focus-tiger-ui-bug-triage.mdc`」；`agent-token-cost` §5 / `focus-tiger-core` 按需索引可一行引用 | 复述 Step A–C 全文；主张可无复现/锚点先全仓 grep；主张分析会话可无限探索；把合 develop / §7 关单门禁写进本条 |
 | `layered-bug-diagnostics` | 「多层系统集成 bug 见 `focus-tiger-layered-bug-diagnostics.mdc`」；`focus-tiger-core` 按需索引可一行引用；与 `ui-bug-triage` 并列（UI 先锚点，本条针对权限/进程/音频/系统 API） | 复述四步全文；主张可先猜测性改逻辑；主张连续 2 次失败后仍可盲试；把合 develop / §7 关单门禁写进本条 |
 | `companion-debug` | 「调试本地 AI companion 见 `focus-tiger-companion-debug.mdc`」；实验室脚本路径/命名/已测候选见 `LAB_SCRIPT_CONVENTIONS.md`（勿复述路径表）；docs.mdc / PROCESS 可一行引用 | 复述完整条款或循环上限数字；主张可无范围「全面改善」；主张可读完整 `turns.jsonl` / 日志目录；把 `CompanionModePicker` / Idle PiP 误套成本条 |
@@ -171,6 +173,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-issue-ledger.mdc`](../../.cursor/rules/focus-tiger-issue-ledger.mdc) | **SSOT**：问题账本落账 + 旁路 `issue-entries/`（`issue-ledger`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-multi-task-session.mdc`](../../.cursor/rules/focus-tiger-multi-task-session.mdc) | **SSOT**：会话内多任务连贯执行（准入/停止条件；`multi-task-session`；**alwaysApply**） |
 | [`.cursor/rules/focus-tiger-ci-failure-triage.mdc`](../../.cursor/rules/focus-tiger-ci-failure-triage.mdc) | **SSOT**：CI/Smoke 失败排查前置检查（先 gh 取日志、后探索；探索最多 5 轮；`ci-failure-triage`；**按需加载，非 alwaysApply**） |
+| [`PR_SMOKE_FAILURE_CLASSES.md`](./PR_SMOKE_FAILURE_CLASSES.md) | **SSOT**：PR smoke 失败种类 + 菜单走完门闩（`pr-smoke-failure-classes`） |
 | [`.cursor/rules/focus-tiger-ui-bug-triage.mdc`](../../.cursor/rules/focus-tiger-ui-bug-triage.mdc) | **SSOT**：UI/交互回归排查前置检查（先取 git/复现锚点、后探索；探索最多 5 轮；`ui-bug-triage`；**按需加载，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc`](../../.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc) | **SSOT**：多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑；`layered-bug-diagnostics`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`；**glob 注入，非 alwaysApply**） |
@@ -267,6 +270,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 文档-代码 | `gate` / `hints` / `state` 三类 `*-doc-check.js` |
 | CI | `.github/workflows/focus-tiger-doc-contract-check.yml` |
 | PR 轻量冒烟 | `.github/workflows/pr-smoke.yml`（Required on `develop`） |
+| 菜单走完（nightly / 合入 develop） | `.github/workflows/menu-full-reachability.yml`（非 Required；路径触发仍在 `pr-smoke.yml`。见 `pr-smoke-failure-classes`） |
 | 全量 e2e（夜间+手动） | `.github/workflows/focus-tiger-e2e-full.yml`（**`schedule` 读默认分支 YAML，现为 `develop`**；见 `ENV_CONFIG.md` §3） |
 | 环境与密钥规则 | `docs/ENV_CONFIG.md` · 现状摘要 `docs/INFRA_SNAPSHOT.md` |
 
@@ -288,6 +292,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-10-17 | 新增 `pr-smoke-failure-classes`：PR smoke 失败四种根因 + 菜单走完移出默认必跑（nightly / 合入 develop / 路径触发仍跑）。SSOT `PR_SMOKE_FAILURE_CLASSES.md`；`ci-failure-triage` 增 Step 0 归类与重跑上限 1 次 |
 | 2026-10-15 | 扩展 `confide-class-blind`：R-Confide-No-Symptom-List。Confide 问答修复禁止按症状扩说法名单；允许改判定机制、补事实卡（不补问法）或安全分类机制。SSOT `PRINCIPLES.md`；测试纪律仍 `.cursor/rules/testing-strategy.mdc`。不新开 rules-authority 主题 |
 | 2026-10-13 | A6：`src/main.js` ESLint `no-use-before-define`（仅变量）进 `test:smoke`（`lint:main-use-before-define`）；#1139 夹具必须红。SSOT `DOC_CODE_CONTRACT.md` |
 | 2026-10-13 | A5：husky `pre-push` 强制 `test:e2e:startup`（`__FT_APP_READY__` + 无 pageerror）；仅 `.md`/`.mdc` 可跳过。SSOT `.cursor/rules/testing-strategy.mdc` + `WORKFLOW.md` git-worktree-occupancy 钩子行 |

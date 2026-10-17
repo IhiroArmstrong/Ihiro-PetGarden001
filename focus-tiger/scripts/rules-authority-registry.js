@@ -58,7 +58,9 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-user-action-steps.mdc',
   '.cursor/rules/00-protected-paths.mdc',
   '.cursor/rules/10-ui-layers.mdc',
+  '.github/PULL_REQUEST_TEMPLATE.md',
   'focus-tiger/docs/RULES_INDEX.md',
+  'focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md',
   'focus-tiger/docs/PROCESS.md',
   'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
   'focus-tiger/docs/COLLAB.md',
@@ -1633,6 +1635,7 @@ export const RULE_AUTHORITY_TOPICS = [
     ssotSection: 'Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层）',
     ssotMustContain: [
       /ci-failure-triage/,
+      /Step 0/,
       /Step A/,
       /连续 5 次/,
       /禁止.*地毯式/
@@ -1669,7 +1672,61 @@ export const RULE_AUTHORITY_TOPICS = [
       '.cursor/rules/focus-tiger-core.mdc',
       'focus-tiger/docs/RULES_INDEX.md'
     ],
-    restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md'
+    ]
+  },
+  {
+    id: 'pr-smoke-failure-classes',
+    title:
+      'PR smoke 失败归类与菜单走完门闩（必跑子集 / nightly / 路径触发）',
+    ssotPath: 'focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md',
+    ssotSection: 'PR_SMOKE_FAILURE_CLASSES.md — PR smoke 失败归类与菜单走完门闩',
+    ssotMustContain: [
+      /pr-smoke-failure-classes/,
+      /菜单走完超时/,
+      /test:e2e:menu-reachability/,
+      /menu-reachability-trigger-paths/
+    ],
+    topicSignals: [
+      /pr-smoke-failure-classes/,
+      /PR smoke 失败归类/,
+      /menu-full-reachability.*必跑|必跑.*menu-full-reachability/
+    ],
+    mustCite: [/PR_SMOKE_FAILURE_CLASSES\.md|pr-smoke-failure-classes/],
+    restatementFingerprints: [
+      /种类 1.*菜单走完超时/,
+      /同一 PR 同一报错最多自动重跑/,
+      /合入 `develop` 之后/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'menu-walk-still-required-every-pr',
+        pattern:
+          /每个 PR.{0,24}必跑.{0,48}menu-full-reachability/,
+        note: '菜单走完已移出默认 PR 必跑 smoke；禁止写成仍每 PR 必跑'
+      }
+    ],
+    citeExemptFiles: [
+      '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
+      '.cursor/rules/focus-tiger-core.mdc',
+      '.github/PULL_REQUEST_TEMPLATE.md',
+      '.github/workflows/pr-smoke.yml',
+      '.github/workflows/menu-full-reachability.yml',
+      'focus-tiger/docs/RULES_INDEX.md',
+      'WORKFLOW.md',
+      'focus-tiger/docs/PROCESS.md',
+      'focus-tiger/docs/GLOSSARY.md',
+      'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+      'focus-tiger/docs/TEST_TRACKER.md',
+      '.cursor/rules/testing-strategy.mdc'
+    ],
+    restatementExemptFiles: [
+      'focus-tiger/docs/RULES_INDEX.md',
+      '.cursor/rules/focus-tiger-ci-failure-triage.mdc'
+    ]
   },
   {
     id: 'ui-bug-triage',

@@ -14,8 +14,8 @@
 |---|---|---|---|
 | **P1** · **T1** | 文档同步 #1288 | **已合 develop** | 账本 A9–A13、`ISSUE_LEDGER`、根因盘点片 |
 | **P2** · **T2** | Confide CR-50 事实键 #1287 | **已合 develop** | Brief `task-confide-asked-fact-keys.md`；旁支已并入，**勿再开同内容 PR** |
-| **可选** · **T3** | TASKS 机器块拼装 #1319 | **进行中** | 单独小 PR；须 merge develop（含 #1320）后重跑 smoke |
-| **P1** · **T11** | 并行 smoke 冻结 locale 切片索引 | **进行中** | 测试基建；#1320 原子写之后仍禁止压测改共享索引 |
+| **可选** · **T3** | TASKS 机器块拼装 #1319 | **已合 develop** | 单独小 PR |
+| **P1** · **T11** | 并行 smoke 冻结 locale 切片索引 #1322 | **已合 develop** | 测试基建；压测仍禁止改共享索引 |
 | **未排期** · **T4** | 根因行动 A15–A17 | 搁置 | 见 §3 |
 | — · **T5** | Confide CR-51 问法形状轴 #1294 | **进行中** | `why-compare` + `whether-required` 顺序；**已合 develop**；关单须未见 v3 audit；Brief `task-confide-ask-shape-axis.md`。**不是 CR-45** |
 | **P2** · **T6** | Confide 路由盲测五带口径 #1306 | **已合 develop** | Brief `task-confide-routing-holdout-caliber-split.md`；**禁止**真跑 `en/b-v6`（点头 ≠ 占额） |
@@ -23,6 +23,7 @@
 | **P2** · **T8** | Confide 作废中文卷五带曲线 #1311 | **已合 develop** | `--curves-only` 门闩；不占额 |
 | **P2** · **T9** | 作废卷曲线标注 + 按规则回放 | **PR 待开** | `confideRoutingVoidedReplayLab.js` |
 | **P2** · **T10** | Yin 语音指令入口 #1312 | **排队中** | 原表 T9 改 T10；Brief 已点头，运行时另旁支 |
+| **P1** · **T12** | PR smoke 移出菜单走完 | **进行中** | 从每个 PR 必跑冒烟拿掉 `menu-full-reachability`；nightly + 合入 develop + 改菜单路径仍跑；**不是** T11 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -50,6 +51,7 @@
 | 「按补锁后的 CR-45 Brief 开工影子」 | CR-45 **影子**（不改发送链）；不是 live |
 | 「接受 en/b-v6 占额」 | 才允许另会话真跑英文卷 |
 | 「作废卷回放」 | **T9**：`--curves-only` + PO 读数规则；不占额；仍禁止 en/b-v6 |
+| 「立刻开工」移出菜单走完 | **T12**：改 CI 范围，不改产品代码 |
 
 ---
 

@@ -689,7 +689,7 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 
 ### CI 与本地 e2e 边界（现状）
 
-- **PR→develop**：`pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）为轻量门闩。  
+- **PR→develop**：`pr-smoke.yml`（`test:smoke` + `test:e2e:smoke` + build）为轻量门闩。默认浏览器冒烟**不含**菜单走完；路径触发 / nightly / 合入 develop 后见 `PR_SMOKE_FAILURE_CLASSES.md`（`pr-smoke-failure-classes`）。  
 - **visibility 契约 e2e**：`focus-tiger-visibility-contract.yml`（path 触发 + `workflow_dispatch`）；**不是** develop Required check（Required 仍只有 `test:pr-smoke` + `pre-merge with develop`）。  
 - **全量 e2e**：`focus-tiger-e2e-full.yml`（schedule + `workflow_dispatch`）；**禁止**默认本机 `npm run test:e2e`。  
 - **本地 Agent**：仅 `test:smoke` / `test:e2e:smoke` / `test:e2e:changed -- <单个 spec>`；多文件与全量见 `RULES_INDEX` → `e2e-local-budget`（`RUN_E2E_LOCAL=true` 逃生口会打警告）。  
