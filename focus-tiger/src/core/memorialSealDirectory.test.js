@@ -19,9 +19,9 @@ import {
 } from './memorialSealDirectory.js';
 
 describe('memorialSealDirectory', () => {
-  it('mustard-seed scene has three enabled entries at catalog score threshold', () => {
+  it('mustard-seed scene has four enabled entries at catalog score threshold', () => {
     const scene = listMemorialSealEntriesForScene(MEMORIAL_SEAL_SCENE_MUSTARD_SEED);
-    assert.equal(scene.length, 3);
+    assert.equal(scene.length, 4);
     assert.ok(
       scene.every((entry) => entry.scoreThreshold === PRACTICE_SCORE_21_THRESHOLD)
     );
@@ -31,9 +31,22 @@ describe('memorialSealDirectory', () => {
     );
   });
 
-  it('catalog has twelve CA candidates plus three mustard cases', () => {
+  it('catalog has twelve CA candidates plus four mustard cases', () => {
     assert.equal(CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES.length, 12);
-    assert.equal(MEMORIAL_SEAL_DIRECTORY.length, 15);
+    assert.equal(MEMORIAL_SEAL_DIRECTORY.length, 16);
+  });
+
+  it('MS-04 hundred-foot pole keeps Jingcen verse in traditional Chinese', () => {
+    const entry = getMemorialSealEntry('hundred-foot-pole');
+    assert.equal(entry?.catalogId, 'MS-04');
+    assert.deepEqual(entry?.poemZh, [
+      '百尺竿頭不動人，',
+      '雖然得入未為真；',
+      '百尺竿頭須進步，',
+      '十方世界現全身。'
+    ]);
+    assert.equal(entry?.attributionZh, '長沙景岑禪師');
+    assert.match(entry?.poemEn?.[0] ?? '', /hundred-foot pole/i);
   });
 
   it('all twelve CA entries are enabled in the archive catalog', () => {

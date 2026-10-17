@@ -27,6 +27,7 @@ import {
   MEMORIAL_SEAL_DEFAULT_BADGE_FILE,
   MEMORIAL_SEAL_DIRECTORY,
   MEMORIAL_SEAL_ENTRY_HERO,
+  MEMORIAL_SEAL_ENTRY_HUNDRED_FOOT_POLE,
   MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU,
   MEMORIAL_SEAL_ENTRY_NO_TRACE,
   MEMORIAL_SEAL_SCENE_MUSTARD_SEED,
@@ -53,6 +54,8 @@ export const MUSTARD_SEED_SEAL_BADGE_FILE = MEMORIAL_SEAL_DEFAULT_BADGE_FILE;
 export const MUSTARD_SEED_SEAL_CASE_SUMERU = MEMORIAL_SEAL_ENTRY_MUSTARD_SEED_SUMERU;
 export const MUSTARD_SEED_SEAL_CASE_HERO = MEMORIAL_SEAL_ENTRY_HERO;
 export const MUSTARD_SEED_SEAL_CASE_NO_TRACE = MEMORIAL_SEAL_ENTRY_NO_TRACE;
+export const MUSTARD_SEED_SEAL_CASE_HUNDRED_FOOT_POLE =
+  MEMORIAL_SEAL_ENTRY_HUNDRED_FOOT_POLE;
 
 /** Body class toggled while the memorial seal card is open (scene chrome). */
 export const MUSTARD_SEED_SEAL_BODY_CLASS = 'ft-mustard-seed-seal-open';
@@ -92,6 +95,9 @@ export function resolveMustardSeedPoemPresentation(verse, locale) {
 const sumeruEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_SUMERU);
 const heroEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_HERO);
 const noTraceEntry = getMemorialSealEntry(MUSTARD_SEED_SEAL_CASE_NO_TRACE);
+const hundredFootPoleEntry = getMemorialSealEntry(
+  MUSTARD_SEED_SEAL_CASE_HUNDRED_FOOT_POLE
+);
 
 export const MUSTARD_SEED_SEAL_POEM_ZH = sumeruEntry?.poemZh ?? Object.freeze([]);
 export const MUSTARD_SEED_SEAL_POEM_EN = sumeruEntry?.poemEn ?? Object.freeze([]);
@@ -115,6 +121,16 @@ export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_ZH =
   noTraceEntry?.attributionZh ?? '樂五齋詩稿';
 export const MUSTARD_SEED_SEAL_NO_TRACE_ATTRIBUTION_EN =
   noTraceEntry?.attributionEn ?? 'Verses of Le Wu Zhai · 0902';
+
+export const MUSTARD_SEED_SEAL_HUNDRED_FOOT_POLE_POEM_ZH =
+  hundredFootPoleEntry?.poemZh ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_HUNDRED_FOOT_POLE_POEM_EN =
+  hundredFootPoleEntry?.poemEn ?? Object.freeze([]);
+export const MUSTARD_SEED_SEAL_HUNDRED_FOOT_POLE_ATTRIBUTION_ZH =
+  hundredFootPoleEntry?.attributionZh ?? '長沙景岑禪師';
+export const MUSTARD_SEED_SEAL_HUNDRED_FOOT_POLE_ATTRIBUTION_EN =
+  hundredFootPoleEntry?.attributionEn ??
+  'Chan Master Jingcen of Changsha · Song China';
 
 /** Enabled mustard-seed scene entries in directory order. */
 const MUSTARD_SEED_SCENE_ENTRIES = listMemorialSealEntriesForScene(
