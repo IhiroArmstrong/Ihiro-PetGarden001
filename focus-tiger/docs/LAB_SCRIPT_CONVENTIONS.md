@@ -39,6 +39,7 @@
 | KB 矩阵第二轮 probe 候选（真实未命中 · 无 GGUF） | `cd focus-tiger && npm run audit:confide-kb-matrix-probes`（扫 `kb_retrieval_miss` · CSV/JSON 在 `/tmp/ft-l0-lab/` · **禁止**头脑风暴造问法 · **禁止**从哈希还原原句） |
 | Confide 安全开发集字面打分（CR-43 · 无 GGUF） | `cd focus-tiger && npm run audit:confide-safety-devset`（**caliber-63 / caliber-58 直接读标签**；只打 id 与通过率；**禁止**把夹具整句打进 stdout；**禁止**再扣 `c065`） |
 | Confide 语义危机层（CR-44 · 须真 embedding） | 发送链：`scoreSemanticCrisis`；开发集合计 ≥90% 只打 id，禁止 stdout 原句。未跑真模型不得把 live 写成已过关。 |
+| Confide 黄金脚本 v1（可见冻结 · CI+人工） | `fixtures/confide-golden-script-v1.json` · [`CONFIDE_GOLDEN_SCRIPT.md`](./CONFIDE_GOLDEN_SCRIPT.md) · `node --test src/core/confide/confideGoldenScriptV1.test.js`（进 `test:smoke`）。禁止把整句抄进分类器。不占 en/b-v6。 |
 | Confide 评测分层（R-0 · 不另建框架） | 冻结集 = 回归；盲测集 = `focus-tiger/.secrets/confide-blind-holdout/`（gitignore）。切 live 须 `confideLiveEvalGate`（冻结不退步 **且** 盲测达标）。机器闸 `src/core/confide/confideEvalGate.js`。CI：`npm run lint:confide-original-utterance` |
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
