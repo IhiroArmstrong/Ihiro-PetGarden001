@@ -19,9 +19,9 @@ import {
 } from './memorialSealDirectory.js';
 
 describe('memorialSealDirectory', () => {
-  it('mustard-seed scene has four enabled entries at catalog score threshold', () => {
+  it('mustard-seed scene has five enabled entries at catalog score threshold', () => {
     const scene = listMemorialSealEntriesForScene(MEMORIAL_SEAL_SCENE_MUSTARD_SEED);
-    assert.equal(scene.length, 4);
+    assert.equal(scene.length, 5);
     assert.ok(
       scene.every((entry) => entry.scoreThreshold === PRACTICE_SCORE_21_THRESHOLD)
     );
@@ -31,9 +31,9 @@ describe('memorialSealDirectory', () => {
     );
   });
 
-  it('catalog has twelve CA candidates plus four mustard cases', () => {
+  it('catalog has twelve CA candidates plus five mustard cases', () => {
     assert.equal(CONTEMPLATIVE_ARCHIVE_CATALOG_ENTRIES.length, 12);
-    assert.equal(MEMORIAL_SEAL_DIRECTORY.length, 16);
+    assert.equal(MEMORIAL_SEAL_DIRECTORY.length, 17);
   });
 
   it('MS-04 hundred-foot pole keeps Jingcen verse in traditional Chinese', () => {
@@ -47,6 +47,19 @@ describe('memorialSealDirectory', () => {
     ]);
     assert.equal(entry?.attributionZh, '長沙景岑禪師');
     assert.match(entry?.poemEn?.[0] ?? '', /hundred-foot pole/i);
+  });
+
+  it('MS-05 good season on earth keeps Wumen Huikai verse in traditional Chinese', () => {
+    const entry = getMemorialSealEntry('good-season-on-earth');
+    assert.equal(entry?.catalogId, 'MS-05');
+    assert.deepEqual(entry?.poemZh, [
+      '春有百花秋有月，',
+      '夏有涼風冬有雪。',
+      '若無閒事掛心頭，',
+      '便是人間好時節。'
+    ]);
+    assert.equal(entry?.attributionZh, '無門慧開禪師');
+    assert.match(entry?.poemEn?.[3] ?? '', /good season on earth/i);
   });
 
   it('all twelve CA entries are enabled in the archive catalog', () => {

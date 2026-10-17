@@ -1,0 +1,3 @@
+# feature/mustard-seed-seal-verse-good-season-on-earth
+
+| 芥子须弥纪念印 · 第五 case · 人間好時節（無門慧開） | UI可见 | 待人工测试 | **基线**：本旁支（待开 PR）。**调试主路径**：`?product=1` → `__mustardSeedSeal.open({ mode:'force', caseId:'good-season-on-earth' })` → `#mustard-seed-seal-card` `data-case-id=good-season-on-earth` 须见繁体「春有百花秋有月…便是人間好時節」+ EN 译 +「無門慧開禪師 · Chan Master Wumen Huikai · Song China」+ 方章。**仪式路径**：Case 1–4 已揭示后再完成一场计时 → 仪式后出 Case 5 → Continue → Reflection。**回流**：⋯/抽屉 Mustard Seed · Sumeru 可重读；五首都揭示后完成不再自动弹出。**Comment** 见 `CONTEMPLATIVE_ARCHIVE.md` §六 Case 5（不进卡面）。自动化：`mustardSeedSeal.test.js` · `memorialSealDirectory.test.js` · `mustard-seed-seal.spec.js`。 | — | — | — | `?product=1` · `#mustard-seed-seal-card` · `__mustardSeedSeal` | 2026-10-17 |
