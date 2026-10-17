@@ -1,9 +1,9 @@
 # Task Brief · Confide 路由盲测考核口径拆分
 
 > **状态（2026-10-17）**：**已点头（附修改）**。PO 书面：按本 Brief 点头，但须写入下文「带 A 出路」与「带 C 读口」；**点头 ≠ 接受 en/b-v6 占额**；**仍禁止**真跑 `en/b-v6`，直至另行书面。本文件 **不**授权改用户听到的话。  
-> **任务类**：关单尺子 + CR-45 **影子** = **A 类**。CR-11 切 live、CR-45 接到发送链 = **B 类**，须另口令。  
-> **交叉**：[`task-confide-routing-arbitration-v1.md`](./task-confide-routing-arbitration-v1.md) · [`task-confide-mixed-emotion-then-product.md`](./task-confide-mixed-emotion-then-product.md) · [`task-confide-class-blind-acceptance.md`](./task-confide-class-blind-acceptance.md) · [`CONFIDE_STATUS.md`](../CONFIDE_STATUS.md) G2 · [`PRINCIPLES.md`](../PRINCIPLES.md) R-0 · [`SCENARIO_TESTS.md`](../SCENARIO_TESTS.md) 场景 AE  
-> **跟进**：CR-10 关单尺子（本文件）；CR-45 **影子**可先于 CR-11；CR-45 **live** 仍等 CR-11。
+> **任务类**：关单尺子 + CR-45 **影子** = **A 类**。CR-11 切 live、CR-45 接到发送链、**CR-52** 产品问不得进情绪路径 = **B 类**，须另口令。  
+> **交叉**：[`task-confide-routing-arbitration-v1.md`](./task-confide-routing-arbitration-v1.md) · [`task-confide-mixed-emotion-then-product.md`](./task-confide-mixed-emotion-then-product.md) · [`task-confide-product-ask-not-emotion.md`](./task-confide-product-ask-not-emotion.md)（CR-52）· [`task-confide-class-blind-acceptance.md`](./task-confide-class-blind-acceptance.md) · [`CONFIDE_STATUS.md`](../CONFIDE_STATUS.md) G2 · [`PRINCIPLES.md`](../PRINCIPLES.md) R-0 · [`SCENARIO_TESTS.md`](../SCENARIO_TESTS.md) 场景 AE  
+> **跟进**：CR-10 关单尺子（本文件）；CR-45 **影子**可先于 CR-11；CR-45 **live** 仍等 CR-11。**带 C 硬闸改由 CR-52 自己验收**，不再当 CR-11 前置。
 
 ---
 
@@ -57,7 +57,7 @@
 | `life-emotion` | 不走产品 | 函数 A `expectedPath=mood` | ≥85% 且 n≥60 |
 | `chitchat` | 不走产品 | 同上 | ≥85% 且 n≥60 |
 
-### 带 C · 产品闸细档（读口已写死 · 进 CR-11 前置）
+### 带 C · 产品闸细档（读口已写死 · **CR-52 自己验收**，不再当 CR-11 前置）
 
 函数 A 的 `productPath` **不得**当本带关单（短答与空态在脚本里是同一个桶）。方向错误（产品问被送去情绪路径）是本带要抓的伤，检索层救不了已经走错的句子。
 
@@ -94,8 +94,9 @@
 | 2 | CR-45 **影子**（A 类 · 另口令「按补锁后的 CR-45 Brief 开工影子」） | 否 |
 | 3 | 带 C 硬闸实验室（可与 2 同批文档/测，不接发送链） | 否 |
 | 3b | **T8** 已作废中文卷 `--curves-only`（zh/b-v2·b-v5·b-v6；不占额） | 否 |
-| 4 | **en/b-v6 真跑** | 否；**须 PO 另行书面接受占额**。本点头不算。 |
-| 5 | CR-11 切 live（B 类 · 另口令） | 是；前置见第三节 |
+| 3c | **CR-52** 产品问不得进情绪路径（B 类 · Brief [`task-confide-product-ask-not-emotion.md`](./task-confide-product-ask-not-emotion.md)；点头后另口令开工） | 是；范围只限顺序，见该 Brief |
+| 4 | **en/b-v6 真跑** | 否；**须 PO 另行书面接受占额**。建议在 CR-52 验收之后。本点头不算。 |
+| 5 | CR-11 切 live（B 类 · 另口令） | 是；前置见第三节（**不再等带 C 硬闸当本条门槛**） |
 | 6 | CR-45 **live** | 是；等 CR-11 一起或紧跟其后，禁止单独先上发送链 |
 
 禁止：用影子合并当 CR-11 未过就改现网；用再出一卷代替影子出口；把「带 A 不过」解释成可以调 0.01。
@@ -109,10 +110,10 @@
 1. 带 B 在未见路由封存上过关（函数 A，不走产品；≥85%、n≥60）。  
 2. 带 A 在同一未见集上过关，尺子是 **路径对或 CR-45 影子合并对**（≥85%、n≥60；分列报表）。因此 CR-45 **影子必须已经存在**，否则带 A 没有合法出口。  
 3. 带 D 两锚各 1 句短答正确（关单锁，不报通过率）。  
-4. **带 C 两条硬闸全过**（产品问 0 句进情绪路径；徽章 0 句寅币短答）。  
+4. **带 C 两条硬闸不再当本条门槛。** 产品问 0 句进情绪路径、徽章 0 句寅币短答，改由 **CR-52** 自己验收（Brief [`task-confide-product-ask-not-emotion.md`](./task-confide-product-ask-not-emotion.md)）。CR-11 切 live 时仍须冻表不把这两条弄红，但**不必**等 CR-52 已过关才允许另口令切仲裁 live。  
 5. 冻表不退步；热态 TTFT ≤100 ms。  
 6. 带 E 不作为 CR-11 的函数 A 门。  
-7. **不调 0.01。** 发送链只在 CR-11 / CR-45 live 口令下改。
+7. **不调 0.01。** 发送链只许在下列口令下改：CR-11 live、CR-45 live、或「按 CR-52 Brief 开工」（后者范围只限「操作问法 ∧ 产品对象不得进情绪路径」的顺序，不得顺手接仲裁 live 或 CR-45 live）。
 
 ---
 
@@ -134,8 +135,8 @@
 
 ## 五、非目标
 
-- 不改 `resolveProductKnowledgeGateAction` / 发送链 / 0.01。  
-- 本文件不授权 CR-11 live、CR-45 live、CR-47。CR-45 **影子**须另口令，且不得改发送链。  
+- 不改 `resolveProductKnowledgeGateAction` / 发送链 / 0.01（**CR-52 点头并另口令开工后除外**，且仅限该 Brief 的顺序）。  
+- 本文件不授权 CR-11 live、CR-45 live、CR-47。CR-45 **影子**须另口令，且不得改发送链。CR-52 规格见其 Brief；本文件只改书面锁归属。  
 - 不读作废封存原句、不读路由开发集、不把作废句写入生产示例。  
 - 不把带 C 塞回函数 A 关单来「凑八类」。  
 - 不把本设计当成已经过关。
@@ -177,6 +178,7 @@
 | 职责 | AE catalog 真命中（接地练习 / A Quiet Line） | **无冲突**。带 D 维持 100% 短答，禁止改成观察翼或空态。 |
 | 职责 | AE 未命中诚实空态 | **无冲突**。带 C 硬闸要求产品问（含目录外）不得进情绪路径；未命中仍须空态、禁止 generate。 |
 | 职责 | CR-45 混合句先情绪再产品 | **无冲突（出路已锁）**：影子可先于 CR-11；live 仍等 CR-11。AE 两锚不得合并。 |
+| 职责 | CR-52 产品问不得进情绪路径 | **无冲突（已拆）**：带 C 硬闸由 CR-52 自己验收；本文件第三节第 4 / 7 条已改归属。 |
 | 强度 | 用户仍发一句等一句 | **无冲突**。本刀无运行时。 |
 | 语气 | 不改倾诉文案 | **无冲突**。 |
 
