@@ -22,10 +22,11 @@ import {
  * Stay on one page (Escape between rows). Per-row reload saturated CI
  * preview (:5199) on #1173 — page.reload 30s, then later smoke goto hung.
  * Wide + narrow share one openFreshProductShell: a second goto after the
- * wide walk killed preview on CI (narrow TimeoutError 40s).
+ * wide walk killed preview on CI (narrow TimeoutError 40s). Knife 3 radial
+ * expands a group per row on wide — CI needs >240s for wide+narrow in one test.
  */
 
-test.setTimeout(240_000);
+test.setTimeout(480_000);
 test.describe.configure({ retries: 0 });
 
 const FORBIDDEN = MENU_RESULT_FORBIDDEN_TEXT;
