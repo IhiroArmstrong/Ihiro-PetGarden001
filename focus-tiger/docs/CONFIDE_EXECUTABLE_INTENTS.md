@@ -57,7 +57,7 @@
 
 | 用户可能说 | 为何不做 | 合理行为 |
 |---|---|---|
-| 帮我备份练习记录 | 备份属 Operating Layer（`LOCAL_AI_OPERATING_LAYER.md`）；现网走 Journey / 练习云备份链 | 诚实说明入口，或 L3 不接「已备份」幻觉 |
+| 帮我备份练习记录 | 备份属 Operating Layer（`LOCAL_AI_OPERATING_LAYER.md`）；**不是** Companion CI | **无称呼词**：诚实说明或 L3 不接「已备份」幻觉。**有称呼词且命中封闭集**（T9 Brief，待点头）：走 Operating 备份 + B 档语音确认，不进本表白名单 |
 | 忘掉你记得的一切 | bulk wipe 风险高 | 引导「What Yin remembers」逐条 Forget（1e 负例） |
 | 喜欢吃什么 / 任意 Preference | 本机无该事实字段 | 不记、不编（架构 § 延后） |
 | 最近在忙什么 / 为什么开始（无账本） | 不是 CI-03 列表（#822）；本机无日程/动机账本 | 管道 `reflective_honesty` 诚实空态 + 邀请点一件；**禁止** L3 观察句、**禁止**念记忆列表 |

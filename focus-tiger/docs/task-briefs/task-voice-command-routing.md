@@ -7,7 +7,7 @@
 
 | 项 | 口径 |
 |---|---|
-| 入口 | **独立于 Confide**（D1-A）。倾诉永不执行动作；命令文字不进倾诉语料。 |
+| 入口 | **曾拍：独立于 Confide**（D1-A）。倾诉人格永不执行 Operating；命令文字不进倾诉语料。 **2026-10-17 T9**：改为与 Confide 内称呼词捷径**并存**（称呼词第一刀、独立入口第二刀）。见 [`task-yin-voice-command-entry.md`](./task-yin-voice-command-entry.md)。 |
 | V1 动作 | **只做开始专注**（含时长、含 Open-ended）。 |
 | 解析 | **规则**（关键词 + 时长 + 同义词）。不调本机陪伴模型。 |
 | 「L2 不含语音」 | **不触碰**。路径是 STT → 规则 → 既有开始专注入口。无 TTS、无对话。与 [`tts-v1-decision-memo.md`](../decisions/tts-v1-decision-memo.md) 决策 3 同一解释。 |

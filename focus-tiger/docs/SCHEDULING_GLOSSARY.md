@@ -20,6 +20,7 @@
 | **P2** · **T6** | Confide 路由盲测五带口径 #1306 | **已合 develop** | Brief `task-confide-routing-holdout-caliber-split.md`；**禁止**真跑 `en/b-v6`（点头 ≠ 占额） |
 | — · **T7** | Confide CR-45 影子 + 带 C 硬闸 #1309 | **已合 develop** | holdout `caliber_split` + §6.5 合并对；**CR-45 live 仍等 CR-11**；**禁止**真跑 en/b-v6 |
 | **P2** · **T8** | Confide 作废中文卷五带曲线 | **进行中** | `--curves-only`；只已作废 zh/b-v2·b-v5·b-v6；**不占额**；**禁止**真跑 en/b-v6；**CR-11 live 另口令** |
+| **可选** · **T9** | Yin 语音指令入口 Brief | **本会话出 Brief** | 挂既有 Operating Layer + Voice Command Epic；**不另起炉灶**；实现等 PO 点头 Brief |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -47,6 +48,7 @@
 | 「按补锁后的 CR-45 Brief 开工影子」 | CR-45 **影子**（不改发送链）；不是 live |
 | 「接受 en/b-v6 占额」 | 才允许另会话真跑英文卷 |
 | 「开作废中文卷五带曲线」或本回合「立刻开工」 | **T8**：`--curves-only`；不占额；仍禁止 en/b-v6 |
+| 「按 Yin 语音指令入口 Brief 点头」 | 才允许开 **T9** 实现旁支；点头前只文档 |
 
 ---
 
@@ -92,3 +94,4 @@
 | 2026-10-17 | #1294 合入：**T5** CR-51「进行中」与 CR-45「未开工」分列；口令表防混刀 |
 | 2026-10-17 | CR-45 Brief 补锁；实现仍未开工，等 CR-11 |
 | 2026-10-17 | **T8** 作废中文卷五带曲线（不占额）为当前 P2 |
+| 2026-10-17 | **【新增】** 可选槽 **T9** Yin 语音指令入口 Brief |

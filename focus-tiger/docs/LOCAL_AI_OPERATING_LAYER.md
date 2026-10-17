@@ -61,7 +61,9 @@ English:
 | **Auto-Operating** | 「请备份本周 Journey。」「检查有没有更新。」 | 克制的 command surface；**可以不显示阿寅** | **未实现**；本文件只锁边界 |
 
 **硬闸**：同一套 Local AI Layer 与未来同一套 Registry 权限模型；**两套入口**。  
-**Confide 永远不得执行 Operating Tools。**
+**Confide 陪伴回复永远不得执行 Operating Tools。**
+
+**修正（2026-10-17 · T9 Brief，待 PO 点头）**：用户可在 Confide **用称呼词捷径**进入 Operating 通道（`Hi Yin, please…`）。那一回合不再当陪伴执行，而当 Operating 执行。未命中封闭指令集则原样回 Confide，禁止「不能做」硬拒绝。独立 Auto-Operating 入口仍为第二刀。规格：[`task-briefs/task-yin-voice-command-entry.md`](./task-briefs/task-yin-voice-command-entry.md)。本段**不是**开工令。
 
 ---
 
