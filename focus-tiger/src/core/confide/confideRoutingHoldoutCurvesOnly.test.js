@@ -10,15 +10,12 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { writeLocaleSliceIndex } from '../../../scripts/write-locale-slice-index.js';
 import { CONFIDE_ROUTING_HOLDOUT_BRIEF_VERSION } from './confideRoutingClassHoldoutLab.js';
 import {
   CONFIDE_ROUTING_EN_BV6_SET,
   assertRoutingHoldoutScoringAllowed,
   isConfideRoutingEnBv6Set
 } from './confideRoutingHoldoutCurvesOnly.js';
-
-writeLocaleSliceIndex();
 
 const WORKSPACE = path.resolve(fileURLToPath(new URL('../../..', import.meta.url)));
 const CLI = path.join(WORKSPACE, 'desktop/scripts/l0-kb-routing-class-holdout-lab.js');

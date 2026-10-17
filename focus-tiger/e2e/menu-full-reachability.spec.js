@@ -151,6 +151,18 @@ async function settleAfterRow(page) {
 }
 
 /**
+ * Scrollable menus (especially narrow drawer + heatmap) can fail Playwright's
+ * "element stable" gate while the sheet is still settling on CI.
+ *
+ * @param {import('@playwright/test').Locator} item
+ */
+async function scrollMenuRowIntoView(item) {
+  await item.evaluate((el) => {
+    el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  });
+}
+
+/**
  * @param {import('@playwright/test').Page} page
  * @param {'wide-more' | 'narrow-drawer'} surface
  */
@@ -183,6 +195,9 @@ async function openMenu(page, surface) {
     await grabber.click();
   }
   await expect(drawer).toHaveAttribute('aria-hidden', 'false', {
+    timeout: 8_000
+  });
+  await expect(drawer.locator('.ft-narrow-sheet__list [data-proxy]').first()).toBeVisible({
     timeout: 8_000
   });
 }
@@ -250,7 +265,7 @@ async function walkMenu(page, surface, menuSelector) {
       if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
-    await item.scrollIntoViewIfNeeded();
+    await scrollMenuRowIntoView(item);
     await expect(item, `row ${row.proxy} listed`).toBeVisible({
       timeout: 8_000
     });
@@ -270,7 +285,7 @@ async function walkMenu(page, surface, menuSelector) {
       if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     }
     const item = page.locator(`${menuSelector} [data-proxy="${row.proxy}"]`);
-    await item.scrollIntoViewIfNeeded();
+    await scrollMenuRowIntoView(item);
     await expect(item, `inert ${row.proxy}`).toBeVisible();
     await expect(item).toBeDisabled();
   }

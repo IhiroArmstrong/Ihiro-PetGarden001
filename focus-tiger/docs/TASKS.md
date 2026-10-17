@@ -545,9 +545,41 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `confide-mixed-emotion-then-product` · feature · 规格已补锁 · 实现等 CR-11 · CR-45 · 2026-10-17
+### `confide-cr45-shadow-caliber-split` · feature · 已完成 · #1309 合 develop · T7 · 2026-10-17
 
-CR-45：混合句先接情绪再答产品。PO 2026-10-17 有条件采用；通过率关单再填；接线等 CR-11 一起或紧跟其后。权威 `task-briefs/task-confide-mixed-emotion-then-product.md`。本支只文档：不改发送链、不调 0.01。不是 CR-51。
+CR-45 **影子**（口令：按补锁后的 CR-45 Brief 开工影子）+ 五带 holdout 读口（`task-confide-routing-holdout-caliber-split.md`）。合并对结构判据见 Brief §6.5 / `confideCr45MixedReplyShadow.js`。带 C 硬闸只报数、不调线。不改发送链、不切 live、不跑 en/b-v6。
+
+### `confide-mixed-emotion-then-product` · feature · 规格已补锁 · 影子进行中 · live 等 CR-11 · CR-45 · 2026-10-17
+
+CR-45：混合句先接情绪再答产品。PO 2026-10-17 有条件采用；影子可先于 CR-11（见 T7）；**live** 接线仍等 CR-11。权威 `task-briefs/task-confide-mixed-emotion-then-product.md`。不调 0.01。不是 CR-51。
+
+### `confide-routing-holdout-caliber-split` · feature · Brief 已点头（附修改）· 未跑 en/b-v6 · 点头≠占额 · 2026-10-17
+
+T6：路由盲测考核口径拆成五带。Brief `task-confide-routing-holdout-caliber-split.md`。不改发送链。
+
+### `confide-voided-caliber-curves` · feature · 已完成 · T8 · #1311 · 不占额 · 2026-10-17
+
+T8：已作废中文路由卷（zh/b-v2 · b-v5 · b-v6）可用 `npm run audit:routing-class-holdout:curves` 做五带曲线回放，不调用 `authorizeHoldoutRun`。`confide-routing-blind-en/b-v6` 在加载模型前硬拒。不改发送链、不切 CR-11 live。
+
+### `confide-voided-replay-labels` · feature · 已完成 · T9 · 本机回放 2026-10-17 · 2026-10-17
+
+T9：在 T8 `--curves-only` 回放上强制 PO 读数规则与「作废卷回放，非过关证据」标注（`confideRoutingVoidedReplayLab.js`）。只回放运行记录已 voided 的 zh/b-v2 · b-v5 · b-v6；en/b-v6 仍硬拒。不改发送链。
+
+### `wide-menu-community-slice` · feature · 已合 develop #1305 · 待人工测试 · 纯归类（不含扇形） · 2026-10-17
+
+宽屏菜单三刀之第二刀（归类）：Join our community 挪进 You are not alone；今日方向与 Stay in touch 留在 Preferences。Brief `task-briefs/task-wide-menu-radial-index.md`。
+
+### `wide-menu-pay-slice` · feature · 已合 develop #1289 · 待人工测试 · 不得再因口令重开 · 2026-10-17
+
+宽屏菜单三刀之第一刀（付费）：去掉 Rituals 上方会员状态行；未购仪式锁可点并打开 `#yin-membership-card`；Preferences 增加 Subscription。Brief `task-briefs/task-wide-menu-radial-index.md`。
+
+### `wide-menu-radial-slice` · feature · 已合 develop #1307（#1293/#1295/#1308）· 待人工测试 · 不得再因口令重开第三刀 · 2026-10-17
+
+宽屏菜单三刀之第三刀（扇形）：宽屏 `⋯` 五组图标索引 + 点击后玻璃列表；`innerHeight < 520px` 或几何压脸时退化为手风琴列表；resize 断点收口（#1308）。Brief `task-briefs/task-wide-menu-radial-index.md`。混支 #1292 已关未合。
+
+### `yin-voice-command-entry` · feature · Brief 待 PO 点头 · 无运行时 · 2026-10-17
+
+T9 Yin 语音指令入口。挂靠 Voice Input / Voice Command / Operating Layer，不另起 Epic。Brief：`docs/task-briefs/task-yin-voice-command-entry.md`。
 
 ### `zen-cinema-film-catalog` · feature · 进行中 · 旁支 feature/zen-cinema-film-catalog · 2026-10-17
 
@@ -628,10 +660,6 @@ CR-50：先听懂要什么事实再取。只读名次已入账（库内有答案
 ### `root-cause-hardening` · feature · 盘点已落 · A1–A8·A22 已合 · A9 已合 #1272·#1275 · A10·A14·A18–A21 已合 #1267 · A11 已合 #1276·#1278 · A12 已合 #1281 · A13 已合 #1285 · **未开工** A15–A17 · Brief #1190 · 2026-10-16
 
 2026-10-09 至 10-11 的修复归为 6 类、19 条根因，对应 22 项根治行动（A1–A22），分五个阶段，一项一个 PR。计划与对照表见 `docs/root-cause-audit-2026-10-12.md`，账本见 `ISSUE_LEDGER.md` 文首扇出行。**已合 develop：** A1 #1173 · A2 #1179 · A3 #1181 · A4 #1184 · A5 #1186 · A6 #1189 · A7 #1258（A7.1–A7.6）· A8 #1268 · A9 #1272（商品登记表）· #1275（练习登记表）· A10/A14/A18–A21 #1267 · A11 #1276（工厂+扫描）· #1278（在场玻璃）· A12 #1281 · A13 #1285 · A22 #1171。**刻意未排期（PO 2026-10-16）：** A15 入库脚本 · A16 5173 版本角标 · A17 PR 范围提醒（高风险/流程刀暂放下）。
-
-### `wide-menu-pay-slice` · feature · 第一刀实现中 · 2026-10-16
-
-宽屏菜单三刀之第一刀（付费）：去掉 Rituals 上方会员状态行；未购仪式锁可点并打开 `#yin-membership-card`；Preferences 增加 Subscription。Brief `task-briefs/task-wide-menu-radial-index.md`。
 
 ### `a7-4-boot-session-chrome` · feature · 本支 chore/a7-4-boot-session-chrome · 2026-10-15
 

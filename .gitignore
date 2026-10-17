@@ -1,6 +1,8 @@
 # Dependencies & build
 node_modules/
 focus-tiger/src/locales/localeSliceModules.js
+focus-tiger/src/locales/localeSliceModules.rewrite-probe.js
+focus-tiger/src/locales/localeSliceModules*.tmp
 dist/
 .vite/
 *.local
