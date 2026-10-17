@@ -11,9 +11,11 @@
  *     FT_CONFIDE_ROUTING_HOLDOUT_PATH=/absolute/path/outside/workspace.json \\
  *     node desktop/scripts/l0-kb-routing-class-holdout-lab.js --validate-only
  *
- * Scoring consumes the file's one valid run. Scores **function A** (punctuation
- * clauses, max product−mood vs frozen 0.01). Do not score sealed-b-v2 until
- * PO separately nods a blind run. Validate-only does not increment quota.
+ * Scoring consumes the file's one valid run unless `--curves-only` on an
+ * already-voided zh b-v2/b-v5/b-v6 file (no quota). **Never** score
+ * `confide-routing-blind-en/b-v6` until PO accepts quota in writing.
+ * Scores **function A** (punctuation clauses, max product−mood vs frozen 0.01).
+ * Validate-only does not increment quota.
  */
 
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
@@ -59,6 +61,7 @@ import {
   resolveHoldoutShadowCatalogId,
   resolveHoldoutShadowDataSource
 } from '../../src/core/confide/confideRoutingHoldoutShadowPath.js';
+import { assertRoutingHoldoutScoringAllowed } from '../../src/core/confide/confideRoutingHoldoutCurvesOnly.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FOCUS_TIGER = path.resolve(__dirname, '../..');
@@ -69,6 +72,13 @@ function isValidateOnly() {
   return (
     process.argv.includes('--validate-only') ||
     process.env.FT_CONFIDE_ROUTING_HOLDOUT_VALIDATE_ONLY === '1'
+  );
+}
+
+function isCurvesOnly() {
+  return (
+    process.argv.includes('--curves-only') ||
+    process.env.FT_CONFIDE_ROUTING_HOLDOUT_CURVES_ONLY === '1'
   );
 }
 
@@ -100,6 +110,20 @@ async function main() {
     process.exit(report.ok ? 0 : 1);
   }
 
+  const curvesOnly = isCurvesOnly();
+  let scoringGate;
+  try {
+    scoringGate = assertRoutingHoldoutScoringAllowed({
+      holdoutSetVersion: parsed.holdoutSetVersion,
+      curvesOnly,
+      logPath: RUN_LOG,
+      filePath: holdoutPath
+    });
+  } catch (err) {
+    process.stderr.write(`[routing-class-holdout] ${redactHoldoutError(err)}\n`);
+    process.exit(1);
+  }
+
   const {
     L0_EMBEDDING_MODEL_FILENAME,
     L0_EMBEDDING_MODEL_MIN_BYTES
@@ -125,15 +149,17 @@ async function main() {
     process.exit(2);
   }
 
-  try {
-    authorizeHoldoutRun(RUN_LOG, parsed.holdoutSetVersion, {
-      filePath: holdoutPath,
-      contentSha256: hashHoldoutFile(holdoutPath),
-      authorPromptId: parsed.authorPromptId
-    });
-  } catch (err) {
-    process.stderr.write(`[routing-class-holdout] ${redactHoldoutError(err)}\n`);
-    process.exit(1);
+  if (scoringGate.mode !== 'curves_only') {
+    try {
+      authorizeHoldoutRun(RUN_LOG, parsed.holdoutSetVersion, {
+        filePath: holdoutPath,
+        contentSha256: hashHoldoutFile(holdoutPath),
+        authorPromptId: parsed.authorPromptId
+      });
+    } catch (err) {
+      process.stderr.write(`[routing-class-holdout] ${redactHoldoutError(err)}\n`);
+      process.exit(1);
+    }
   }
 
   const hold = await loadEmbeddingHold({
@@ -248,6 +274,9 @@ async function main() {
         brief_version: parsed.briefVersion,
         holdout_set_version: parsed.holdoutSetVersion,
         product_minus_mood_margin: PRODUCT_MINUS_MOOD_MARGIN,
+        curves_only: scoringGate.mode === 'curves_only',
+        research_voided: scoringGate.mode === 'curves_only',
+        quota_incremented: scoringGate.mode === 'curves_only' ? false : true,
         summary,
         caliber_split: caliber
       },
@@ -258,6 +287,11 @@ async function main() {
   );
   process.stdout.write(formatRoutingHoldoutSummaryStdout(summary));
   process.stdout.write(formatCaliberSplitHoldoutStdout(caliber));
+  if (scoringGate.mode === 'curves_only') {
+    process.stdout.write(
+      '[routing-class-holdout] curves_only=yes quota_incremented=no research_voided=yes\n'
+    );
+  }
   process.stdout.write(`[routing-class-holdout] json: ${jsonPath}\n`);
 }
 
