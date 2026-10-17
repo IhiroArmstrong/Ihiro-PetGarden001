@@ -55,3 +55,4 @@
 | 2026-10-17 | **T7** #1309 合入 develop |
 | 2026-10-17 | **T8** 作废中文卷五带曲线（不占额）；en/b-v6 / CR-11 live 仍禁 |
 | 2026-10-17 | **【新增】T9** Yin 语音指令入口 Brief（PO 点名出 Brief；实现等 Brief 点头） |
+| 2026-10-17 | T9 Brief 对照分析师全文补录（必声、Yin 倾听、负例、Space、纳入 PRINCIPLES / 定位 / Operating） |
