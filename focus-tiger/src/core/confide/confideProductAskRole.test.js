@@ -126,6 +126,22 @@ describe('catalog fact keys and ask-role lanes', () => {
     assert.equal(wherePick.nearestId, 'KB-FUNC-0020');
   });
 
+  it('reports lead margin between the top two cards in the lane', () => {
+    const rows = [
+      { id: 'card-a', entry: { askRoleShapes: ['whether-required'] }, vector: [0.9, 0] },
+      { id: 'card-a', entry: { askRoleShapes: ['whether-required'] }, vector: [0.85, 0] },
+      { id: 'card-b', entry: { askRoleShapes: ['whether-required'] }, vector: [0.8, 0] }
+    ];
+    const pick = pickNearestCatalogEmbeddingMatch(
+      rows,
+      [1, 0],
+      (a, b) => a[0] * b[0] + a[1] * b[1],
+      'whether-required'
+    );
+    assert.equal(pick.nearestId, 'card-a');
+    assert.ok(Math.abs(pick.leadMargin - 0.1) < 1e-9);
+  });
+
   it('returns no neighbor when ask role is none', () => {
     const rows = [
       { id: 'KB-FUNC-0037', entry: byId['KB-FUNC-0037'], vector: [1, 0] }

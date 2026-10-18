@@ -28,6 +28,7 @@ import { decideKbNearMatch } from './kbNearMatch.js';
  *   embeddingState?: string,
  *   nearestId?: string | null,
  *   nearestScore?: number | null,
+ *   leadMargin?: number | null,
  *   text?: string,
  *   entry?: object | null
  * }} input
@@ -40,7 +41,9 @@ export function catalogKeywordSpeakAllowed(input) {
   if (input.embeddingState !== 'ready') return true;
   const near = decideKbNearMatch({
     nearestId: input.nearestId,
-    nearestScore: input.nearestScore
+    nearestScore: input.nearestScore,
+    leadMargin: input.leadMargin,
+    rankMarginConfirm: input.catalogId === input.nearestId
   });
   return near.action === 'hit' && near.id === input.catalogId;
 }
@@ -53,6 +56,7 @@ export function catalogKeywordSpeakAllowed(input) {
  *   semanticIsProduct?: boolean,
  *   nearestId?: string | null,
  *   nearestScore?: number | null,
+ *   leadMargin?: number | null,
  *   helpNearestId?: string | null,
  *   helpNearestScore?: number | null,
  *   recordKind?: string | null,
@@ -82,7 +86,9 @@ export function resolveConfideFactFirstSpeak(input) {
   if (input.embeddingState === 'ready') {
     const near = decideKbNearMatch({
       nearestId: input.nearestId,
-      nearestScore: input.nearestScore
+      nearestScore: input.nearestScore,
+      leadMargin: input.leadMargin,
+      rankMarginConfirm: input.semanticIsProduct === true
     });
     nearAction = near.action;
     if (near.action === 'hit') nearId = near.id;
@@ -98,6 +104,7 @@ export function resolveConfideFactFirstSpeak(input) {
     embeddingState: input.embeddingState,
     nearestId: input.nearestId,
     nearestScore: input.nearestScore,
+    leadMargin: input.leadMargin,
     text: input.text,
     entry: keywordEntry
   });

@@ -991,6 +991,9 @@ export class CompanionL1Runtime {
         nearestScore: Number.isFinite(Number(result.nearestScore))
           ? Number(result.nearestScore)
           : null,
+        leadMargin: Number.isFinite(Number(result.leadMargin))
+          ? Number(result.leadMargin)
+          : null,
         nearestAskRole:
           typeof result.nearestAskRole === 'string' ? result.nearestAskRole : null,
         helpNearestId: typeof result.helpNearestId === 'string' ? result.helpNearestId : null,
