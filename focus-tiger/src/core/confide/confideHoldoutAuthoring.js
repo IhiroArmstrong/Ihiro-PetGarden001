@@ -110,3 +110,91 @@ export function assertSampleNotFromVoidedHoldouts(text, voidedHashes) {
     throw authoringError('补样本不得使用已作废封存文件中的句子', 'VOIDED_UTTERANCE');
   }
 }
+
+/**
+ * @typedef {{
+ *   item_n: number,
+ *   unique_phrasing: number,
+ *   duplicate_clusters: number,
+ *   max_cluster_size: number,
+ *   padded_items: number,
+ *   has_duplicates: boolean
+ * }} HoldoutUtteranceDupSlice
+ */
+
+/**
+ * @param {Map<string, number>} hashCounts
+ * @param {number} itemN
+ * @returns {HoldoutUtteranceDupSlice}
+ */
+function summarizeUtteranceHashCounts(hashCounts, itemN) {
+  let duplicateClusters = 0;
+  let maxClusterSize = itemN > 0 ? 1 : 0;
+  let paddedItems = 0;
+  for (const n of hashCounts.values()) {
+    if (n > 1) {
+      duplicateClusters++;
+      paddedItems += n;
+      if (n > maxClusterSize) maxClusterSize = n;
+    }
+  }
+  return {
+    item_n: itemN,
+    unique_phrasing: hashCounts.size,
+    duplicate_clusters: duplicateClusters,
+    max_cluster_size: maxClusterSize,
+    padded_items: paddedItems,
+    has_duplicates: duplicateClusters > 0
+  };
+}
+
+/**
+ * Detect identical normalized utterances with different item ids (padding).
+ * Never returns utterance text.
+ *
+ * @param {object[]} items
+ * @param {{ groupByClass?: boolean, resolveClassId?: (item: object) => string }} [options]
+ * @returns {{ overall: HoldoutUtteranceDupSlice, by_class?: Record<string, HoldoutUtteranceDupSlice> }}
+ */
+export function analyzeHoldoutUtteranceDuplicates(items, options = {}) {
+  const groupByClass = options.groupByClass === true;
+  const resolveClassId =
+    typeof options.resolveClassId === 'function'
+      ? options.resolveClassId
+      : () => '(all)';
+
+  /** @type {Map<string, number>} */
+  const overallHashes = new Map();
+  let overallItemN = 0;
+  /** @type {Record<string, { hashes: Map<string, number>, item_n: number }>} */
+  const classBuckets = {};
+
+  for (const item of items || []) {
+    if (!item || typeof item !== 'object') continue;
+    const text = itemText(item);
+    if (!normalizeHoldoutUtterance(text)) continue;
+    overallItemN++;
+    const hash = hashHoldoutUtterance(text);
+    overallHashes.set(hash, (overallHashes.get(hash) || 0) + 1);
+    if (groupByClass) {
+      const classId = String(resolveClassId(item) || '(empty)').trim() || '(empty)';
+      if (!classBuckets[classId]) {
+        classBuckets[classId] = { hashes: new Map(), item_n: 0 };
+      }
+      const bucket = classBuckets[classId];
+      bucket.item_n++;
+      bucket.hashes.set(hash, (bucket.hashes.get(hash) || 0) + 1);
+    }
+  }
+
+  const overall = summarizeUtteranceHashCounts(overallHashes, overallItemN);
+  if (!groupByClass) {
+    return { overall };
+  }
+  /** @type {Record<string, HoldoutUtteranceDupSlice>} */
+  const byClass = {};
+  for (const [classId, bucket] of Object.entries(classBuckets)) {
+    byClass[classId] = summarizeUtteranceHashCounts(bucket.hashes, bucket.item_n);
+  }
+  return { overall, by_class: byClass };
+}
