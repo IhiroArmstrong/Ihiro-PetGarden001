@@ -58,8 +58,8 @@ describe('confide routing-class holdout lab', () => {
     const report = validateRoutingHoldoutCounts(
       syntheticEnvelope([
         { id: 'a', class: 'mixed', text: SECRET },
-        { id: 'b', class_id: 'product-outranks-mood', text: 'ok' },
-        { id: 'c', class: 'mixed-emotion-dominant', text: 'ok' }
+        { id: 'b', class_id: 'product-outranks-mood', text: 'ok-unique-b' },
+        { id: 'c', class: 'mixed-emotion-dominant', text: 'ok-unique-c' }
       ])
     );
     assert.equal(report.ok, true);
@@ -70,6 +70,43 @@ describe('confide routing-class holdout lab', () => {
     assert.match(out, /validate_only=yes run_count_incremented=no/);
     assert.match(out, /mixed n=1/);
     assert.equal(out.includes(SECRET), false);
+  });
+
+  it('validate rejects padded duplicate utterances on new holdout sets', () => {
+    const padded = 'synthetic padded utterance for dup gate';
+    const report = validateRoutingHoldoutCounts(
+      syntheticEnvelope([
+        { id: 'mixed-v6-1', class: 'mixed', text: padded },
+        { id: 'mixed-v6-2', class: 'mixed', text: padded },
+        { id: 'b', class: 'product-over-emotion', text: 'other unique line b' },
+        { id: 'c', class: 'mixed-emotion-dominant', text: 'other unique line c' }
+      ])
+    );
+    assert.equal(report.utterance_dup_report_only, false);
+    assert.equal(report.utterance_dup_ok, false);
+    assert.equal(report.ok, false);
+    const out = formatRoutingHoldoutValidateStdout(report);
+    assert.match(out, /utterance_dup_ok=no/);
+    assert.match(out, /dup_clusters=1/);
+    assert.equal(out.includes(padded), false);
+  });
+
+  it('voided zh holdout sets only report utterance dup counts', () => {
+    const padded = 'voided set padded line';
+    const report = validateRoutingHoldoutCounts({
+      brief_version: CONFIDE_ROUTING_HOLDOUT_BRIEF_VERSION,
+      holdout_set_version: 'confide-routing-blind-zh/b-v6',
+      items: [
+        { id: 'a-1', class: 'mixed', text: padded },
+        { id: 'a-2', class: 'mixed', text: padded },
+        { id: 'b', class: 'product-over-emotion', text: 'unique b' },
+        { id: 'c', class: 'mixed-emotion-dominant', text: 'unique c' }
+      ]
+    });
+    assert.equal(report.utterance_dup_report_only, true);
+    assert.equal(report.utterance_dup_ok, false);
+    assert.equal(report.ok, true);
+    assert.equal(report.utterance_dup_by_class.mixed.duplicate_clusters, 1);
   });
 
   it('resolveSealedBExpectedPath maps expect without utterance text', () => {

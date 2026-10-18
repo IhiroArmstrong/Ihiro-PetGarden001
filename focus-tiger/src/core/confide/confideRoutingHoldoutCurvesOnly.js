@@ -28,6 +28,16 @@ export function isConfideRoutingEnBv6Set(holdoutSetVersion) {
 }
 
 /**
+ * Voided zh routing sets: utterance-dup gate is report-only (counts), not validate fail.
+ * @param {string} holdoutSetVersion
+ */
+export function isVoidedRoutingHoldoutUtteranceDupReportOnly(holdoutSetVersion) {
+  return CONFIDE_ROUTING_CURVES_ONLY_ZH_SETS.includes(
+    String(holdoutSetVersion || '').trim()
+  );
+}
+
+/**
  * @param {string} logPath
  * @param {string} holdoutSetVersion
  * @param {string} filePath

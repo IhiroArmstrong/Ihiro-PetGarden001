@@ -13,6 +13,7 @@ import {
   hashHoldoutFile
 } from './confideMoodVetoHoldoutLab.js';
 import {
+  analyzeHoldoutUtteranceDuplicates,
   assertSampleNotFromVoidedHoldouts,
   collectVoidedUtteranceHashes,
   requireHoldoutAuthorPromptId
@@ -48,6 +49,24 @@ describe('confide holdout authoring gates', () => {
       (err) => /手写出题编号已用过/.test(err.message)
     );
     rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('flags identical normalized text with different ids (no echo)', () => {
+    const secret = 'PADDED_HOLDOUT_LINE_DO_NOT_ECHO';
+    const report = analyzeHoldoutUtteranceDuplicates(
+      [
+        { id: 'row-v6-1', text: secret },
+        { id: 'row-v6-2', text: `  ${secret}  ` },
+        { id: 'row-other', text: 'distinct phrasing for coverage' }
+      ],
+      { groupByClass: false }
+    );
+    assert.equal(report.overall.item_n, 3);
+    assert.equal(report.overall.unique_phrasing, 2);
+    assert.equal(report.overall.duplicate_clusters, 1);
+    assert.equal(report.overall.max_cluster_size, 2);
+    assert.equal(report.overall.has_duplicates, true);
+    assert.equal(JSON.stringify(report).includes(secret), false);
   });
 
   it('refuses sample ingest of a voided-file sentence without echoing it', () => {

@@ -21,7 +21,9 @@ import {
   redactHoldoutError,
   resolveHoldoutFilePath
 } from './confideMoodVetoHoldoutLab.js';
+import { analyzeHoldoutUtteranceDuplicates } from './confideHoldoutAuthoring.js';
 import { productClearlyOutranksMood } from './confideRoutingArbitrationShadow.js';
+import { isVoidedRoutingHoldoutUtteranceDupReportOnly } from './confideRoutingHoldoutCurvesOnly.js';
 
 export const CONFIDE_ROUTING_HOLDOUT_BRIEF_ID = 'task-confide-routing-arbitration-v1';
 export const CONFIDE_ROUTING_HOLDOUT_BRIEF_VERSION = 'task-confide-routing-arbitration-v1/v1';
@@ -176,13 +178,23 @@ export function validateRoutingHoldoutCounts(parsed) {
     (sum, id) => sum + (byClass[id] || 0),
     0
   );
+  const utteranceDup = analyzeHoldoutUtteranceDuplicates(items, {
+    groupByClass: true,
+    resolveClassId: (item) =>
+      canonicalizeHoldoutClassId(item.class_id || item.classId || item.class)
+  });
+  const utteranceDupReportOnly = isVoidedRoutingHoldoutUtteranceDupReportOnly(
+    holdoutSetVersion
+  );
+  const utteranceDupOk = !utteranceDup.overall.has_duplicates;
+  const envelopeOk =
+    uniqueIds &&
+    emptyText === 0 &&
+    Boolean(holdoutSetVersion) &&
+    sealedBN > 0 &&
+    unknownClassItems === 0;
   return {
-    ok:
-      uniqueIds &&
-      emptyText === 0 &&
-      Boolean(holdoutSetVersion) &&
-      sealedBN > 0 &&
-      unknownClassItems === 0,
+    ok: envelopeOk && (utteranceDupReportOnly || utteranceDupOk),
     item_n: items.length,
     unique_ids: uniqueIds,
     empty_text: emptyText,
@@ -190,7 +202,11 @@ export function validateRoutingHoldoutCounts(parsed) {
     routing_class_items: marginClassItems,
     other_class_items: sealedBN - marginClassItems,
     sealed_b_class_items: sealedBN,
-    unknown_class_items: unknownClassItems
+    unknown_class_items: unknownClassItems,
+    utterance_dup_report_only: utteranceDupReportOnly,
+    utterance_dup_ok: utteranceDupOk,
+    utterance_dup: utteranceDup.overall,
+    utterance_dup_by_class: utteranceDup.by_class || {}
   };
 }
 
@@ -209,6 +225,18 @@ export function formatRoutingHoldoutValidateStdout(report) {
   lines.push(
     `[routing-class-holdout] margin_class_items=${report.routing_class_items} sealed_b_class_items=${report.sealed_b_class_items} unknown_class_items=${report.unknown_class_items}`
   );
+  const dup = report.utterance_dup || {};
+  lines.push(
+    `[routing-class-holdout] utterance_dup_report_only=${report.utterance_dup_report_only ? 'yes' : 'no'} utterance_dup_ok=${report.utterance_dup_ok ? 'yes' : 'no'} unique_phrasing=${dup.unique_phrasing ?? 0} dup_clusters=${dup.duplicate_clusters ?? 0} max_cluster=${dup.max_cluster_size ?? 0}`
+  );
+  const dupByClass = report.utterance_dup_by_class || {};
+  for (const id of CONFIDE_SEALED_B_HOLDOUT_CLASS_IDS) {
+    const slice = dupByClass[id];
+    if (!slice) continue;
+    lines.push(
+      `[routing-class-holdout] ${id} utterance_items=${slice.item_n} unique_phrasing=${slice.unique_phrasing} dup_clusters=${slice.duplicate_clusters} max_cluster=${slice.max_cluster_size}`
+    );
+  }
   return `${lines.join('\n')}\n`;
 }
 
