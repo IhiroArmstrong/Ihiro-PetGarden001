@@ -549,6 +549,24 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 CR-45 **影子**（口令：按补锁后的 CR-45 Brief 开工影子）+ 五带 holdout 读口（`task-confide-routing-holdout-caliber-split.md`）。合并对结构判据见 Brief §6.5 / `confideCr45MixedReplyShadow.js`。带 C 硬闸只报数、不调线。不改发送链、不切 live、不跑 en/b-v6。
 
+### `confide-cr52-product-ask-not-emotion` · feature · 实现中（Brief 已点头 · 误伤 2%） · 2026-10-17
+
+CR-52：产品问不得进情绪路径。PO 已点头（规格误伤 2%；关单计语料与 generate 两路；上线后只计数不记原句）。实现旁支 `fix/confide-product-ask-not-emotion`。
+
+### `confide-g2-fact-arrival-diagnostic-v3` · note · 未见批 v3 已跑 · 4/10 · 关单不过 · 不占过关额度 · 2026-10-17
+
+CR-51 关单向仓外 `diagnostic-unseen-v3`（`g2-fact-unseen-v3-2026-10-17-session-t5`）。n=10；0038 2/5；好处 2/5。相对 v2 有升，未达明显上来。禁止写入原句。不改发送链。不是 G2 整项过关。
+
+### `confide-g2-fact-rank-margin-diag` · feature · 诊断完成 · T14 · 结论=修好（不先缩到约10张卡）· 不占额 · 不新增封存批 · 2026-10-17
+
+T14：作废未见 v1/v2 回放 + 可见开发集（10 句改写 + 41 张卡自检索）。读口 `npm run audit:g2-fact-rank-margin`。仓外 JSON `g2-fact-rank-margin-1792235369700.json`。禁止原句。不改发送链。
+
+结论：**修好，不要先缩到约 10 张卡。** 41 张卡自检索 41/41 第一、余量最小 0.122。换说法时正确卡经常已经是第一，卡在 0.80。查询端 Instruct 前缀让排名略升、0.80 更差，现网不要加。单用「排名+余量」会把无卡句误接成卡（v2 ≥0.02 时 4/5）。0.80 从未命中错卡、无卡误命中 0。
+
+### `confide-g2-unseen-v4-contract` · note · v4 出题合同已写入 Brief · 出题未排期 · 2026-10-17
+
+T5 仓外未见批 v4 出题合同写入 `task-briefs/task-confide-ask-shape-axis.md` 第九节。复现探测，不是关单重考，不占五带额度。出题须另口令 + 新开未见会话；本会话已见 v3 失败原句，不得出题。
+
 ### `confide-mixed-emotion-then-product` · feature · 规格已补锁 · 影子进行中 · live 等 CR-11 · CR-45 · 2026-10-17
 
 CR-45：混合句先接情绪再答产品。PO 2026-10-17 有条件采用；影子可先于 CR-11（见 T7）；**live** 接线仍等 CR-11。权威 `task-briefs/task-confide-mixed-emotion-then-product.md`。不调 0.01。不是 CR-51。
@@ -585,9 +603,11 @@ T9：在 T8 `--curves-only` 回放上强制 PO 读数规则与「作废卷回放
 
 宽屏菜单三刀之第三刀（扇形）：宽屏 `⋯` 五组图标索引 + 点击后玻璃列表；`innerHeight < 520px` 或几何压脸时退化为手风琴列表；resize 断点收口（#1308）。Brief `task-briefs/task-wide-menu-radial-index.md`。混支 #1292 已关未合。
 
-### `yin-voice-command-entry` · feature · Brief 已点头 · 无运行时 · T10 · 2026-10-17
+### `yin-voice-command-entry` · feature · 进行中（PR #1321 · 未合 develop） · 2026-10-17
 
-T10 Yin 语音指令入口。挂靠 Voice Input / Voice Command / Operating Layer，不另起 Epic。Brief：`docs/task-briefs/task-yin-voice-command-entry.md`。
+T10 Yin 语音指令入口。Brief：`docs/task-briefs/task-yin-voice-command-entry.md`。挂靠 Voice Input / Voice Command / Operating Layer，不另起 Epic。
+
+第一刀（#1321）：称呼词只认原始转写里的 Yin；备份要先听完复述再等 10 秒；超时会说出「没听到，这次先不备份」。切语言的撤销仍是 5 秒。按键说话是 Control+Shift+Y，再按一次才提交。专注中 Rise / I'm done 结束这场坐，单独 Stop 不结束。
 
 ### `zen-cinema-film-catalog` · feature · 进行中 · 旁支 feature/zen-cinema-film-catalog · 2026-10-17
 
