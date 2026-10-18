@@ -45,6 +45,33 @@ describe('CR-50 fact-first speak', () => {
     );
   });
 
+  it('T17: semantic product ask can hit below 0.80 when lead margin clears', () => {
+    const spoken = resolveConfideFactFirstSpeak({
+      text: 'Is a daily streak required, or can I skip check-in?',
+      catalogResult: { hit: false },
+      embeddingState: 'ready',
+      semanticIsProduct: true,
+      nearestId: 'KB-FUNC-0038',
+      nearestScore: 0.71,
+      leadMargin: 0.06
+    });
+    assert.equal(spoken.action, 'product_knowledge');
+    assert.equal(spoken.id, 'KB-FUNC-0038');
+  });
+
+  it('T17: without semantic product confirm, sub-0.80 must not speak a card', () => {
+    const spoken = resolveConfideFactFirstSpeak({
+      text: 'I feel tired and want to vent.',
+      catalogResult: { hit: false },
+      embeddingState: 'ready',
+      semanticIsProduct: false,
+      nearestId: 'KB-FUNC-0038',
+      nearestScore: 0.71,
+      leadMargin: 0.06
+    });
+    assert.notEqual(spoken.action, 'product_knowledge');
+  });
+
   it('allows a keyword hit only when the near-match is the same card', () => {
     const entry = getRetrievableProductKnowledgeEntry('KB-FUNC-0038');
     assert.equal(

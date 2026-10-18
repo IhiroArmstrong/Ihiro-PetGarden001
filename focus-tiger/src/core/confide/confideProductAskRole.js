@@ -183,26 +183,33 @@ export function catalogEntryEligibleForAskRole(entry, role) {
  * @param {number[]} userVector
  * @param {(a: number[], b: number[]) => number} scoreFn
  * @param {ConfideProductAskRole} askRole
- * @returns {{ nearestId: string | null, nearestScore: number | null, askRole: ConfideProductAskRole }}
+ * @returns {{
+ *   nearestId: string | null,
+ *   nearestScore: number | null,
+ *   leadMargin: number | null,
+ *   askRole: ConfideProductAskRole
+ * }}
  */
 export function pickNearestCatalogEmbeddingMatch(rows, userVector, scoreFn, askRole) {
   const role = askRole || 'none';
   if (role === 'none') {
-    return { nearestId: null, nearestScore: null, askRole: role };
+    return { nearestId: null, nearestScore: null, leadMargin: null, askRole: role };
   }
-  let nearestId = null;
-  let nearestScore = -1;
+  /** @type {Map<string, number>} */
+  const bestByCard = new Map();
   for (const row of rows) {
     if (!catalogEntryEligibleForAskRole(row.entry, role)) continue;
     const score = scoreFn(userVector, row.vector);
-    if (score > nearestScore) {
-      nearestScore = score;
-      nearestId = row.id;
-    }
+    const prev = bestByCard.get(row.id);
+    if (prev == null || score > prev) bestByCard.set(row.id, score);
   }
+  const ranked = [...bestByCard.entries()].sort((a, b) => b[1] - a[1]);
+  const top = ranked[0] || null;
+  const second = ranked[1] || null;
   return {
-    nearestId,
-    nearestScore: nearestId ? nearestScore : null,
+    nearestId: top ? top[0] : null,
+    nearestScore: top ? top[1] : null,
+    leadMargin: top && second ? top[1] - second[1] : null,
     askRole: role
   };
 }

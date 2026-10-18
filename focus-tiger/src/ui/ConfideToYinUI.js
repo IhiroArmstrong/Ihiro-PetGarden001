@@ -1871,6 +1871,7 @@ export class ConfideToYinUI {
       semanticIsProduct,
       nearestId: gate?.nearestId,
       nearestScore: gate?.nearestScore,
+      leadMargin: gate?.leadMargin,
       helpNearestId: gate?.helpNearestId,
       helpNearestScore: gate?.helpNearestScore,
       recordKind: gate?.recordKind,

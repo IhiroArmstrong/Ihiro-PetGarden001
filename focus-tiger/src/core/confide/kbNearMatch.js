@@ -25,6 +25,13 @@ export const DEFAULT_KB_NEAR_HIT_MIN = 0.8;
 export const DEFAULT_KB_NEAR_FAR_MAX = 0.62;
 
 /**
+ * T17: between farMax and hitMin, allow hit only when the top card beats the
+ * runner-up by at least this margin and the caller confirms a product ask.
+ * Frozen from G2 rank-margin diagnostic (not 0.02 — that band false-accepts no-card).
+ */
+export const DEFAULT_KB_NEAR_LEAD_MARGIN_MIN = 0.05;
+
+/**
  * @param {NodeJS.ProcessEnv} [env]
  * @returns {{ hitMin: number, farMax: number }}
  */
@@ -99,6 +106,9 @@ export function catalogEntryEmbeddingText(entry) {
  * @param {{
  *   nearestScore?: number | null,
  *   nearestId?: string | null,
+ *   leadMargin?: number | null,
+ *   rankMarginConfirm?: boolean,
+ *   leadMarginMin?: number,
  *   hitMin?: number,
  *   farMax?: number
  * }} row
@@ -111,10 +121,23 @@ export function decideKbNearMatch(row) {
     FT_CONFIDE_KB_NEAR_HIT_MIN: row.hitMin,
     FT_CONFIDE_KB_NEAR_FAR_MAX: row.farMax
   });
+  const leadFloor = Number.isFinite(row.leadMarginMin)
+    ? Number(row.leadMarginMin)
+    : DEFAULT_KB_NEAR_LEAD_MARGIN_MIN;
+  const lead = Number(row.leadMargin);
   if (!id || !Number.isFinite(score)) {
     return { action: 'skip', id: null, score: null };
   }
   if (score >= hitMin) return { action: 'hit', id, score };
-  if (score >= farMax) return { action: 'honesty', id: null, score };
+  if (score >= farMax) {
+    if (
+      row.rankMarginConfirm === true &&
+      Number.isFinite(lead) &&
+      lead >= leadFloor
+    ) {
+      return { action: 'hit', id, score };
+    }
+    return { action: 'honesty', id: null, score };
+  }
   return { action: 'skip', id: null, score };
 }

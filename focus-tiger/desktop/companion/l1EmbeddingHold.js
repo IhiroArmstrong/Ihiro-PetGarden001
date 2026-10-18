@@ -251,6 +251,7 @@ export async function loadEmbeddingHold(opts) {
       );
       const nearestId = nearest.nearestId;
       const nearestScore = nearest.nearestScore;
+      const leadMargin = nearest.leadMargin;
       const help = pickNearestHelpCenterMatch(helpVectors, userVector, cosineSimilarity);
       const record = pickNearestRecordIntent(recordVectors, userVector, cosineSimilarity);
       return {
@@ -258,6 +259,7 @@ export async function loadEmbeddingHold(opts) {
         nearestAskRole: nearest.askRole,
         nearestId,
         nearestScore,
+        leadMargin,
         helpNearestId: help.nearestId,
         helpNearestScore: help.nearestScore,
         recordKind: record.kind,

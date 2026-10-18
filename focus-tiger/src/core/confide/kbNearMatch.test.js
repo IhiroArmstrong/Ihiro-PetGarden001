@@ -49,6 +49,20 @@ describe('decideKbNearMatch', () => {
       'skip'
     );
   });
+
+  it('T17: rank-margin confirm hits between 0.62 and 0.80 only with product confirm', () => {
+    const base = {
+      nearestId: 'KB-FUNC-0038',
+      nearestScore: 0.71,
+      leadMargin: 0.06
+    };
+    assert.equal(decideKbNearMatch({ ...base, rankMarginConfirm: false }).action, 'honesty');
+    assert.equal(decideKbNearMatch({ ...base, rankMarginConfirm: true }).action, 'hit');
+    assert.equal(
+      decideKbNearMatch({ ...base, rankMarginConfirm: true, leadMargin: 0.02 }).action,
+      'honesty'
+    );
+  });
 });
 
 describe('catalogEntryEmbeddingText', () => {
