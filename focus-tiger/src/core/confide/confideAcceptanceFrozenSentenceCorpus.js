@@ -82,6 +82,7 @@ export const CONFIDE_ACCEPTANCE_LEAK_ALLOWLIST_BASENAMES = Object.freeze([
   'confideRoutingDevsetZhV2.js',
   'confideRouteDevsetZhV2.js',
   'confideSafetyDevsetZhV1.js',
+  'confideGoldenScriptV1.js',
   'confideAcceptanceFrozenSentenceCorpus.js',
   'confideKbCatalogNearReview.js',
   'confideStage2RealMeatCandidates.js'
