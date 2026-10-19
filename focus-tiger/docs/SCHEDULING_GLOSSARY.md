@@ -30,8 +30,8 @@
 | **P2** · **T16** | Confide 黄金脚本 v1 | **已合 develop** | #1332；英文 60 句是放行线 |
 | **P2** · **T17** | Confide 事实卡判定一刀 | **已合 develop** | #1339。倾诉内卡检索验收退役（PO 产品问迁出）；不缩卡 |
 | **P1** · **T18** | 练习观察纸方向锁 | **立即做** | [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md)；无运行时。界面另口令 |
-| **P2** · **T21** | 产品问入口转移 Brief | **立即做** | [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) 待点头。点头前不改 `src/` |
-| **P2** · **T22** | Help Center 问卡 | **排队中** | 文字+语音进框（可见可改再提交）→ 2–3 张可点卡或无合适卡。不执行办理 |
+| **P2** · **T21** | 产品问入口转移 Brief | **已合 develop** | #1347 · [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) |
+| **P2** · **T22** | Help Center 问卡 | **立即做** | 文字+语音进框（可见可改再提交）→ 2–3 张可点卡或无合适卡。不执行办理 |
 | **P2** · **T23** | Confide 产品问改口 + 黄金脚本 v1.1 | **排队中** | 须 T22 可点后才跳转。不按日期关 #1339 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。

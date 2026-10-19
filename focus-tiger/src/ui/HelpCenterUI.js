@@ -14,6 +14,9 @@ import {
   findHelpCenterArticle,
   listHelpCenterArticlesForSection
 } from '../core/helpCenterCatalog.js';
+import { searchHelpCenterAskCards } from '../core/helpCenterAskSearch.js';
+import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
+import { VoiceInputChrome } from './VoiceInputChrome.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -86,6 +89,63 @@ export class HelpCenterUI {
 
     this.header.append(this.backBtn, this.titleEl, this.closeBtn);
 
+    this.askSection = document.createElement('section');
+    this.askSection.className = 'help-center__ask';
+    this.askSection.dataset.testid = 'help-center-ask';
+
+    this.askLabelEl = document.createElement('p');
+    this.askLabelEl.className = 'help-center__ask-label';
+
+    this.askRow = document.createElement('div');
+    this.askRow.className = 'help-center__ask-row';
+
+    this.askInput = document.createElement('input');
+    this.askInput.type = 'search';
+    this.askInput.className = 'help-center__ask-input';
+    this.askInput.dataset.testid = 'help-center-ask-input';
+    this.askInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        void this._submitAsk();
+      }
+    });
+
+    this.askSubmitBtn = document.createElement('button');
+    this.askSubmitBtn.type = 'button';
+    this.askSubmitBtn.className = 'help-center__ask-submit';
+    this.askSubmitBtn.dataset.testid = 'help-center-ask-submit';
+    this.askSubmitBtn.addEventListener('click', () => void this._submitAsk());
+
+    this.askRow.append(this.askInput, this.askSubmitBtn);
+
+    this.askStatusEl = document.createElement('p');
+    this.askStatusEl.className = 'help-center__ask-status';
+    this.askStatusEl.dataset.testid = 'help-center-ask-status';
+    this.askStatusEl.hidden = true;
+
+    this.askResultsEl = document.createElement('div');
+    this.askResultsEl.className = 'help-center__ask-results';
+    this.askResultsEl.dataset.testid = 'help-center-ask-results';
+    this.askResultsEl.hidden = true;
+
+    this.askSection.append(
+      this.askLabelEl,
+      this.askRow,
+      this.askStatusEl,
+      this.askResultsEl
+    );
+
+    this._voiceInputChrome = new VoiceInputChrome({
+      textarea: this.askInput,
+      mountParent: this.askSection,
+      mountBefore: this.askStatusEl,
+      testIdPrefix: 'help-center-voice-input',
+      onInputApplied: () => {
+        this._askSearching = false;
+        this._syncAskStatus();
+      }
+    });
+
     this.introEl = document.createElement('p');
     this.introEl.className = 'help-center__intro';
     this.introEl.dataset.testid = 'help-center-intro';
@@ -113,11 +173,17 @@ export class HelpCenterUI {
 
     this.root.append(
       this.header,
+      this.askSection,
       this.introEl,
       this.indexEl,
       this.articleEl,
       this.confideNoteEl
     );
+
+    /** @type {string[]} */
+    this._askResultArticleIds = [];
+    this._askSearching = false;
+    this._askSubmitEpoch = 0;
 
     mountRoot.append(this.root);
     this._localeOff = onLocaleChange(() => {
@@ -155,6 +221,7 @@ export class HelpCenterUI {
   _showIndex() {
     this._activeArticleId = null;
     this.backBtn.hidden = true;
+    this.askSection.hidden = false;
     this.indexEl.hidden = false;
     this.articleEl.hidden = true;
     this.confideNoteEl.hidden = false;
@@ -169,10 +236,107 @@ export class HelpCenterUI {
     if (!row) return;
     this._activeArticleId = articleId;
     this.backBtn.hidden = false;
+    this.askSection.hidden = true;
     this.indexEl.hidden = true;
     this.articleEl.hidden = false;
     this.confideNoteEl.hidden = true;
     this._render();
+  }
+
+  _syncAskStatus() {
+    const searching = this._askSearching;
+    this.askStatusEl.hidden = !searching;
+    this.askStatusEl.textContent = searching ? t('HELP_CENTER_ASK_SEARCHING') : '';
+    this.askSubmitBtn.disabled = searching;
+  }
+
+  async _fetchAskEmbeddingGate(text) {
+    const companion = getDesktopCompanionBridge();
+    if (!companion || typeof companion.semanticProductKnowledgeGate !== 'function') {
+      return { embeddingState: 'not_ready' };
+    }
+    try {
+      const gate = await companion.semanticProductKnowledgeGate({ text });
+      if (gate?.ok) {
+        return {
+          embeddingState: 'ready',
+          nearestId: gate.nearestId ?? null,
+          nearestScore: gate.nearestScore ?? null,
+          leadMargin: gate.leadMargin ?? null,
+          helpNearestId: gate.helpNearestId ?? null,
+          helpNearestScore: gate.helpNearestScore ?? null
+        };
+      }
+      if (gate?.reason === 'embed_not_ready') {
+        return { embeddingState: 'not_ready' };
+      }
+      return { embeddingState: 'error' };
+    } catch {
+      return { embeddingState: 'error' };
+    }
+  }
+
+  async _submitAsk() {
+    const text = String(this.askInput.value || '').trim();
+    if (!text) {
+      this._askResultArticleIds = [];
+      this._renderAskResults();
+      return;
+    }
+    const epoch = ++this._askSubmitEpoch;
+    this._askSearching = true;
+    this._syncAskStatus();
+    const embed = await this._fetchAskEmbeddingGate(text);
+    if (epoch !== this._askSubmitEpoch || !this._open) return;
+    const result = searchHelpCenterAskCards(text, embed);
+    this._askResultArticleIds = result.articleIds;
+    this._askSearching = false;
+    this._syncAskStatus();
+    this._renderAskResults(result.empty);
+  }
+
+  /**
+   * @param {boolean} [forcedEmpty]
+   */
+  _renderAskResults(forcedEmpty = false) {
+    const ids = this._askResultArticleIds;
+    this.askResultsEl.replaceChildren();
+    if (!ids.length) {
+      this.askResultsEl.hidden = true;
+      if (forcedEmpty || String(this.askInput.value || '').trim()) {
+        this.askResultsEl.hidden = false;
+        const empty = document.createElement('p');
+        empty.className = 'help-center__ask-empty';
+        empty.dataset.testid = 'help-center-ask-empty';
+        empty.textContent = t('HELP_CENTER_ASK_EMPTY');
+        this.askResultsEl.append(empty);
+      }
+      return;
+    }
+
+    this.askResultsEl.hidden = false;
+    const heading = document.createElement('p');
+    heading.className = 'help-center__ask-results-label';
+    heading.textContent = t('HELP_CENTER_ASK_RESULTS_LABEL');
+
+    const list = document.createElement('ul');
+    list.className = 'help-center__ask-list';
+
+    for (const articleId of ids) {
+      const row = findHelpCenterArticle(articleId);
+      if (!row) continue;
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'help-center__ask-card';
+      btn.dataset.testid = `help-center-ask-card-${articleId}`;
+      btn.textContent = t(row.titleKey);
+      btn.addEventListener('click', () => this._openArticle(articleId));
+      li.append(btn);
+      list.append(li);
+    }
+
+    this.askResultsEl.append(heading, list);
   }
 
   _render() {
@@ -193,9 +357,15 @@ export class HelpCenterUI {
 
     this.titleEl.textContent = t('HELP_CENTER_TITLE');
     this.closeBtn.textContent = t('HELP_CENTER_CLOSE');
+    this.askLabelEl.textContent = t('HELP_CENTER_ASK_LABEL');
+    this.askInput.placeholder = t('HELP_CENTER_ASK_PLACEHOLDER');
+    this.askSubmitBtn.textContent = t('HELP_CENTER_ASK_SUBMIT');
+    this.askSubmitBtn.setAttribute('aria-label', t('HELP_CENTER_ASK_SUBMIT_ARIA'));
+    this._syncAskStatus();
     this.introEl.hidden = false;
     this.introEl.textContent = t('HELP_CENTER_INTRO');
     this.confideNoteEl.textContent = t('HELP_CENTER_CONFIDE_NOTE');
+    this._renderAskResults();
 
     this.indexEl.replaceChildren();
     for (const section of HELP_CENTER_SECTIONS) {
@@ -286,6 +456,88 @@ export class HelpCenterUI {
       .help-center__close:active {
         transform: scale(0.98);
       }
+      .help-center__ask {
+        margin: 0 0 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(42, 37, 32, 0.12);
+      }
+      .help-center__ask-label {
+        margin: 0 0 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .help-center__ask-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: start;
+      }
+      .help-center__ask-input {
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 10px;
+        border: 1px solid rgba(42, 37, 32, 0.18);
+        background: rgba(255, 252, 245, 0.92);
+        padding: 10px 10px;
+        font: inherit;
+        font-size: 0.9rem;
+        color: inherit;
+      }
+      .help-center__ask-submit {
+        border: none;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font: inherit;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: ${GLASS_FILL_STRONG};
+        color: inherit;
+      }
+      .help-center__ask-submit:hover:not(:disabled) {
+        filter: brightness(0.98);
+      }
+      .help-center__ask-submit:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+      .help-center__ask-submit:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
+      .help-center__ask-status,
+      .help-center__ask-empty,
+      .help-center__ask-results-label {
+        margin: 10px 0 0;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        opacity: 0.9;
+      }
+      .help-center__ask-list {
+        list-style: none;
+        margin: 6px 0 0;
+        padding: 0;
+      }
+      .help-center__ask-card {
+        display: block;
+        width: 100%;
+        text-align: left;
+        border: none;
+        background: transparent;
+        padding: 10px 8px;
+        margin: 0;
+        border-radius: 10px;
+        font: inherit;
+        font-size: 0.92rem;
+        cursor: pointer;
+        color: inherit;
+      }
+      .help-center__ask-card:hover {
+        background: ${GLASS_FILL_STRONG};
+      }
+      .help-center__ask-card:active {
+        transform: scale(0.99);
+      }
       .help-center__intro,
       .help-center__confide-note {
         margin: 0 0 12px;
@@ -348,6 +600,7 @@ export class HelpCenterUI {
 
   destroy() {
     this._localeOff?.();
+    this._voiceInputChrome?.destroy();
     this.close();
     this.root.remove();
     this.backdrop?.remove();

@@ -1,7 +1,7 @@
 ---
 id: t22-yin-listening-product-ask
 kind: feature
-status: 排队中 · T22 · 等 T21 Brief 点头
+status: 立即做 · T22 · 实现中（feature/help-center-ask-cards）
 updated: 2026-10-19
 ---
 
