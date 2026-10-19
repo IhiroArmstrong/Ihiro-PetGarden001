@@ -10,7 +10,8 @@
     "YIN_VOICE_LANGUAGE_UNCHANGED": "There isn't another language to switch to yet.",
     "YIN_VOICE_FORGET_RECAP": "This would erase everything Yin has remembered, and voice cannot bring it back. Say Yes, forget everything to confirm, or Cancel.",
     "YIN_VOICE_FORGET_NOT_ERASED": "Nothing was erased.",
-    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "I heard you. Nothing was erased."
+    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "I heard you. Nothing was erased.",
+    "YIN_VOICE_CONFIRM_LISTENING": "Listening for Yes or Cancel…"
   },
   "zh": {
     "YIN_VOICE_BACKUP_RECAP": "我来备份这份本机资料。说 Yes 继续，说 Cancel 停下。",
@@ -23,7 +24,8 @@
     "YIN_VOICE_LANGUAGE_UNCHANGED": "现在还没有另一种语言可以切换。",
     "YIN_VOICE_FORGET_RECAP": "这会忘掉阿寅记下的全部个人条目，而且不能用口头再找回来。请说 Yes, forget everything 确认，或说 Cancel。",
     "YIN_VOICE_FORGET_NOT_ERASED": "没有删掉任何东西。",
-    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "我听到了。没有删掉任何东西。"
+    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "我听到了。没有删掉任何东西。",
+    "YIN_VOICE_CONFIRM_LISTENING": "正在听你说 Yes 或 Cancel…"
   },
   "ja": {
     "YIN_VOICE_BACKUP_RECAP": "この端末のデータをバックアップします。進めるなら Yes、止めるなら Cancel と言ってください。",
@@ -36,6 +38,7 @@
     "YIN_VOICE_LANGUAGE_UNCHANGED": "切り替えられる別の言語は、まだありません。",
     "YIN_VOICE_FORGET_RECAP": "Yin が覚えている個人の記録をすべて消し、声では戻せません。確認するなら Yes, forget everything、やめるなら Cancel と言ってください。",
     "YIN_VOICE_FORGET_NOT_ERASED": "何も消していません。",
-    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "聞きました。何も消していません。"
+    "YIN_VOICE_FORGET_HEARD_NOT_ERASED": "聞きました。何も消していません。",
+    "YIN_VOICE_CONFIRM_LISTENING": "Yes か Cancel を聞いています…"
   }
 }

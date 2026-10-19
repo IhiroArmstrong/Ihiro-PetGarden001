@@ -130,6 +130,8 @@ describe('T10 confirm windows', () => {
     assert.equal(slice.zh[YIN_VOICE_BACKUP_MISSED_KEY], '没听到，这次先不备份');
     assert.match(slice.en[YIN_VOICE_BACKUP_MISSED_KEY], /won't back up/i);
     assert.ok(slice.ja[YIN_VOICE_BACKUP_MISSED_KEY]);
+    assert.ok(slice.en.YIN_VOICE_CONFIRM_LISTENING);
+    assert.ok(slice.zh.YIN_VOICE_CONFIRM_LISTENING);
     assert.notEqual(
       slice.ja[YIN_VOICE_BACKUP_MISSED_KEY],
       slice.en[YIN_VOICE_BACKUP_MISSED_KEY]
@@ -143,6 +145,8 @@ describe('T10 confirm replies', () => {
     assert.equal(classifyYinVoiceConfirmReply('OK'), 'yes');
     assert.equal(classifyYinVoiceConfirmReply('Please do it'), 'yes');
     assert.equal(classifyYinVoiceConfirmReply('Go ahead'), 'yes');
+    assert.equal(classifyYinVoiceConfirmReply('Yeah'), 'yes');
+    assert.equal(classifyYinVoiceConfirmReply('Yes please'), 'yes');
     assert.equal(classifyYinVoiceConfirmReply('Cancel'), 'no');
     assert.equal(classifyYinVoiceConfirmReply('Never mind'), 'no');
     assert.equal(classifyYinVoiceConfirmReply(''), 'empty');
