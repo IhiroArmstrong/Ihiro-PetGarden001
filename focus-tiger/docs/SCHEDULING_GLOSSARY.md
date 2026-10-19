@@ -32,8 +32,8 @@
 | **P1** · **T18** | 练习观察纸方向锁 | **已合 develop** | #1343 · #1345。Sit 读 Journey Log Sit 行（勘误随 T24 文档 PR） |
 | **P1** · **T24** | 练习观察纸界面 Brief | **立即做** | [`task-practice-paper-ui.md`](./task-briefs/task-practice-paper-ui.md)。点头后才改 `src/` |
 | **P2** · **T21** | 产品问入口转移 Brief | **已合 develop** | #1347 · [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) |
-| **P2** · **T22** | Help Center 问卡 | **立即做** | 文字+语音进框（可见可改再提交）→ 2–3 张可点卡或无合适卡。不执行办理 |
-| **P2** · **T23** | Confide 产品问改口 + 黄金脚本 v1.1 | **排队中** | 须 T22 可点后才跳转。不按日期关 #1339 |
+| **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 10/22 手测；不挡 T23。不执行办理 |
+| **P2** · **T23** | Confide 产品问改口 + 黄金脚本 v1.1 | **立即做** | T22 可点已满足。Help Center 不可达则不跳转 |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -55,8 +55,9 @@
 | 用户口令 | Agent 动作 |
 |---|---|
 | 「继续 CR-50」或「开 Confide PR」 | 历史 **P2**（#1287 已合）；勿再开同内容 PR |
-| 「Confide 下一刀」等未指编号 | 先对照 [`CONFIDE_NOW.md`](./CONFIDE_NOW.md)：T14/T16/T17 **代码已合**。**T21** Brief 待点头；**T22** / **T23** 未点头不得开工。10/31 是放行日历。代号不许别的会话自编 |
-| 「按 T21 Brief 开工」 | **T22** Help Center 问卡（不改发送链）。T23 须目的地可点后再换 new chat |
+| 「Confide 下一刀」等未指编号 | 先对照 [`CONFIDE_NOW.md`](./CONFIDE_NOW.md)：**T23** 现行发送链；**T22** #1348 已合。10/31 是放行日历 |
+| 「按 T21 Brief 开工」 | 历史口令；**T22 已合** |
+| 「按 T23 开工」 | 倾诉跳转 + 黄金脚本 v1.1。T22 手测不是硬闸 |
 | 「按练习观察纸方向锁开工界面」 | **不再直接开工**。须 **T24** Brief 点头 |
 | 「按 T24 Brief 开工」 | **T24 实现**（B 类）：详情下半部观察纸。不改上半部、不碰倾诉 |
 | 「按 v4 出题合同出题」 | **不再开工**。合同留档，不新开封存批 |
@@ -126,3 +127,4 @@
 | 2026-10-18 | **T18** #1343 已合后修订判定表 / 两张卡；界面仍另 Brief |
 | 2026-10-19 | 撤回 10/24 关短答。T22 定形文字+语音列卡 |
 | 2026-10-19 | **T18** #1345 已合。**【新增】T24** 界面 Brief = P1 |
+| 2026-10-19 | **T22** #1348 已合。**T23** 立即做；手测不是硬闸 |

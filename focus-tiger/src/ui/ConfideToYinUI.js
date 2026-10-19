@@ -91,6 +91,8 @@ import {
 } from '../core/confide/confideProductKnowledge.js';
 import { buildCrisisParaphraseShadowTurnLog } from '../core/confide/confideCrisisParaphraseShadow.js';
 import { formatConfideProductKnowledgeHonestyReply } from '../core/confide/confideProductKnowledgeHonesty.js';
+import { isHelpCenterAskDestinationReachable } from '../core/confide/confideHelpCenterAskReachable.js';
+import { formatConfideHelpCenterAskRedirectReply } from '../core/confide/confideHelpCenterRedirect.js';
 import { buildKbCatalogNearReviewShadowTurnLog } from '../core/confide/confideKbCatalogNearReview.js';
 import { resolveConfideFactFirstSpeak } from '../core/confide/confideFactFirstSpeak.js';
 import {
@@ -817,6 +819,8 @@ export class ConfideToYinUI {
                                 ? 'product_knowledge'
                                 : shown.source === 'product_knowledge_honesty'
                                   ? 'product_knowledge_honesty'
+                                  : shown.source === 'help_center_redirect'
+                                    ? 'help_center_redirect'
                     : 'corpus'
     });
     if (this._l2Turns.length > 16) this._l2Turns = this._l2Turns.slice(-16);
@@ -1878,12 +1882,24 @@ export class ConfideToYinUI {
       recordScore: gate?.recordScore,
       lifeOutranksProduct: Boolean(gate?.lifeOutranksProduct),
       moodOutranksProduct: gate?.moodOutranksProduct === true,
-      moodVetoLive: gate?.moodVetoLive === true
+      moodVetoLive: gate?.moodVetoLive === true,
+      helpCenterAskReachable: isHelpCenterAskDestinationReachable()
     });
     if (spoken.action === 'practice_facts') {
       this._executeConfideTool(
         { id: CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION },
         hit,
+        text
+      );
+      return 'shown';
+    }
+    if (spoken.action === 'help_center_redirect') {
+      this._showReply(
+        {
+          route: hit.route,
+          text: formatConfideHelpCenterAskRedirectReply(t),
+          source: 'help_center_redirect'
+        },
         text
       );
       return 'shown';

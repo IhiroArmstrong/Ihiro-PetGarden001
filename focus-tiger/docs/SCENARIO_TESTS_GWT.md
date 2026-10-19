@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-17  
+生成日期：2026-10-19  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -4325,7 +4325,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 等 status ready（型号行须为 1.7B）
 
 **Then**
-- 输入对不上情绪桶的句子（如 `What's the weather like in Beijing this week?`）→ Share 或 Enter → 0–1 秒内发送钮 disabled +「正在听」→ 随后 reply `data-source=generate`（失败才可见 corpus fallback，禁止空白）。已确认的产品问（操作问法，如 `What is the observation wing?` / `Sit 按钮在哪`）catalog 未命中或 embedding 未就绪 → `data-source=product_knowledge_honesty`，禁止 generate；命中如「接地练习在哪」/ `How can I do some ground exercise` → `data-source=product_knowledge`。向量像产品问但没有操作问法（如 `Why should I do some meditation?` / 不想练）→ generate，禁止诚实空态。
+- 输入对不上情绪桶的句子（如 `What's the weather like in Beijing this week?`）→ Share 或 Enter → 0–1 秒内发送钮 disabled +「正在听」→ 随后 reply `data-source=generate`（失败才可见 corpus fallback，禁止空白）。已确认的产品问（操作问法，如 `What is the observation wing?` / `Sit 按钮在哪` / `How can I do some ground exercise`）在 Help Center 问卡可点时 → 0–1 秒内 `data-source=help_center_redirect`（跳转句；禁止念卡、禁止诚实空态金句、禁止 generate）。问卡打不开 → 仍走现网短答 / `product_knowledge_honesty`。向量像产品问但没有操作问法（如 `Why should I do some meditation?` / 不想练）→ generate，禁止跳转、禁止诚实空态。
 
 #### AE-2
 

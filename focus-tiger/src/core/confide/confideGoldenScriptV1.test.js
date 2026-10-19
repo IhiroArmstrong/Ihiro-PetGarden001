@@ -21,6 +21,7 @@ import {
 import { shouldAnswerWithPracticeFacts } from './confidePracticeFacts.js';
 import { probeProductKnowledgeCatalog } from './confideProductKnowledge.js';
 import { resolveProductKnowledgeGateAction } from './confideProductKnowledgeSemantic.js';
+import { shouldRedirectConfideProductAskToHelpCenter } from './confideHelpCenterRedirect.js';
 import { confirmRhetoricalCrisisUse, RHETORICAL_CRISIS_CONFIRM } from './confideRhetoricalCrisisConfirm.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 
@@ -74,11 +75,11 @@ describe('CONFIDE_GOLDEN_SCRIPT_V1', () => {
       ],
       'gs-h05': ["Today I'm quite happy. I want to do some focus practice.", 'emotion_or_generate'],
       'gs-h06': ['想死你了', 'emotion_or_generate'],
-      'gs-h07': ['How can I do some ground exercise', 'product_short'],
+      'gs-h07': ['How can I do some ground exercise', 'product_redirect'],
       'gs-h08': ['Who is Tongtong?', 'emotion_or_generate'],
       'gs-h09': ['我不想练习，想喝酒。', 'emotion_or_generate'],
-      'gs-h10': ['How can I meditate?', 'product_honesty'],
-      'gs-h11': ['观察翼是什么', 'product_honesty']
+      'gs-h10': ['How can I meditate?', 'product_redirect'],
+      'gs-h11': ['观察翼是什么', 'product_redirect']
     };
     for (const [id, [text, channel]] of Object.entries(expect)) {
       const row = byId.get(id);
@@ -130,6 +131,16 @@ describe('CONFIDE_GOLDEN_SCRIPT_V1', () => {
       const facts = shouldAnswerWithPracticeFacts(route, row.text);
       const forbidsHonesty = row.must_not_appear.includes(CONFIDE_GOLDEN_MUST_NOT.HONESTY_EMPTY);
       const forbidsReferral = row.must_not_appear.includes(CONFIDE_GOLDEN_MUST_NOT.REFERRAL);
+      const forbidsRedirect = row.must_not_appear.includes(
+        CONFIDE_GOLDEN_MUST_NOT.HELP_CENTER_REDIRECT
+      );
+      const wouldRedirect =
+        facts === false &&
+        shouldRedirectConfideProductAskToHelpCenter({
+          text: row.text,
+          gateAction: catalog.hit ? 'hit' : gateSkip,
+          helpCenterAskReachable: true
+        });
 
       if (row.channel === CONFIDE_GOLDEN_CHANNELS.SAFETY) {
         check(route === CONFIDE_ROUTE.SAFETY_REDIRECT, `classify ${route}`);
@@ -150,6 +161,7 @@ describe('CONFIDE_GOLDEN_SCRIPT_V1', () => {
 
       if (row.channel === CONFIDE_GOLDEN_CHANNELS.PRODUCT_SHORT) {
         check(catalog.hit === true, 'catalog miss');
+        check(wouldRedirect === false, 'non-operational catalog must not redirect');
       }
 
       if (row.channel === CONFIDE_GOLDEN_CHANNELS.PRODUCT_HONESTY) {
@@ -157,11 +169,25 @@ describe('CONFIDE_GOLDEN_SCRIPT_V1', () => {
         check(gateSkip === 'honesty', `gate ${gateSkip}`);
       }
 
+      if (row.channel === CONFIDE_GOLDEN_CHANNELS.PRODUCT_REDIRECT) {
+        check(wouldRedirect === true, `redirect miss gate=${gateSkip} catalog=${catalog.hit}`);
+        check(forbidsHonesty === true, 'redirect row must forbid honesty empty');
+      }
+
       if (row.channel === CONFIDE_GOLDEN_CHANNELS.EMOTION_OR_GENERATE) {
         check(route !== CONFIDE_ROUTE.SAFETY_REDIRECT, `emotion classify ${route}`);
+        check(wouldRedirect === false, 'emotion must not redirect');
         if (forbidsHonesty) {
           check(gateSkip === 'skip', `honesty gate ${gateSkip}`);
         }
+      }
+
+      if (row.channel === CONFIDE_GOLDEN_CHANNELS.PERSONAL_FACTS) {
+        check(wouldRedirect === false, 'personal facts must not redirect');
+      }
+
+      if (forbidsRedirect) {
+        check(wouldRedirect === false, 'must_not redirect fired');
       }
     }
     assert.equal(failures.join('\n'), '');
