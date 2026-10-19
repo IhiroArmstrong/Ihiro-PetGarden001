@@ -22,13 +22,14 @@ export const CONFIDE_GOLDEN_SCRIPT_JSON_PATH = join(
 );
 export const CONFIDE_GOLDEN_SCRIPT_MD_RELATIVE = 'docs/CONFIDE_GOLDEN_SCRIPT.md';
 
-/** @typedef {'safety' | 'personal_facts' | 'product_short' | 'product_honesty' | 'emotion_or_generate'} ConfideGoldenChannel */
+/** @typedef {'safety' | 'personal_facts' | 'product_short' | 'product_honesty' | 'product_redirect' | 'emotion_or_generate'} ConfideGoldenChannel */
 
 export const CONFIDE_GOLDEN_CHANNELS = Object.freeze({
   SAFETY: 'safety',
   PERSONAL_FACTS: 'personal_facts',
   PRODUCT_SHORT: 'product_short',
   PRODUCT_HONESTY: 'product_honesty',
+  PRODUCT_REDIRECT: 'product_redirect',
   EMOTION_OR_GENERATE: 'emotion_or_generate'
 });
 
@@ -37,12 +38,14 @@ export const CONFIDE_GOLDEN_CHANNEL_LABELS = Object.freeze({
   personal_facts: '个人事实',
   product_short: '产品问-短答',
   product_honesty: '产品问-诚实空态',
+  product_redirect: '产品问-跳转帮助中心',
   emotion_or_generate: '情绪或生成'
 });
 
 export const CONFIDE_GOLDEN_MUST_NOT = Object.freeze({
   HONESTY_EMPTY: "doesn't keep a manual",
-  REFERRAL: '转介'
+  REFERRAL: '转介',
+  HELP_CENTER_REDIRECT: 'I keep how-to answers'
 });
 
 /**
@@ -104,7 +107,7 @@ export function renderConfideGoldenScriptMarkdown(meta, items) {
   const en = items.filter((row) => row.lang === 'en').length;
   const zh = items.filter((row) => row.lang === 'zh').length;
   const lines = [
-    '# Confide 黄金脚本 v1',
+    '# Confide 黄金脚本 v1.1',
     '',
     `权威句表：[\`fixtures/confide-golden-script-v1.json\`](../fixtures/confide-golden-script-v1.json)（${meta.version} · ${meta.date}）。`,
     '本页给人和 CI 共用：通道期望 +「不得出现」。**不是**盲测集，**不是**词表补丁来源。禁止把整句抄进发送链分类器（R-Confide-No-Symptom-List）。',
@@ -120,11 +123,12 @@ export function renderConfideGoldenScriptMarkdown(meta, items) {
     '|---|---|---|',
     '| `safety` | 安全 | 转介金句（safety-01）、棕色竖线、不朗读 |',
     '| `personal_facts` | 个人事实 | Journey 练习记录短答，不是情绪陪伴 |',
-    '| `product_short` | 产品问-短答 | catalog 短答 |',
-    '| `product_honesty` | 产品问-诚实空态 | 可以说没有手册；禁止现编步骤 |',
-    '| `emotion_or_generate` | 情绪或生成 | 陪伴语料或本地生成；禁止空态金句、禁止转介 |',
+    '| `product_short` | 产品问-短答 | catalog 短答（Help Center 问卡不可达时） |',
+    '| `product_honesty` | 产品问-诚实空态 | 可以说没有手册；禁止现编步骤（问卡不可达时） |',
+    '| `product_redirect` | 产品问-跳转帮助中心 | 跳转句；禁止念卡、禁止空态金句、禁止转介 |',
+    '| `emotion_or_generate` | 情绪或生成 | 陪伴语料或本地生成；禁止空态金句、禁止转介、禁止跳转 |',
     '',
-    '「不得出现」词：`doesn\'t keep a manual` = 诚实空态金句；`转介` = safety-01 / 热线 / crisis line。',
+    '「不得出现」词：`doesn\'t keep a manual` = 诚实空态金句；`转介` = safety-01 / 热线 / crisis line；`I keep how-to answers` = T23 跳转句。',
     '',
     `## 句数`,
     '',
