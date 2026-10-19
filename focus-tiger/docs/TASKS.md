@@ -545,6 +545,42 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `practice-paper` · feature · 方向锁已合 #1345 · 第一刀一卡随 T24 文档 · 2026-10-19
+
+练习观察纸（Practice Paper）。挂在成长旅程详情下半部。T18 方向锁 #1343 · #1345 已合。第一刀一张 Sit & Breath 卡，读 Journey Log 全部行（不按 `arrive` 拆、不读练习日总账填卡）。界面规格见 T24 Brief。
+
+### `t17-confide-fact-card-accept-retired` · note · 搁置 · T17 倾诉验收退役 · 2026-10-19
+
+#1339 代码仍在发送链（`resolveConfideFactFirstSpeak`，`ConfideToYinUI` 发送时调用），T23 合入前仍可能对用户念卡。验收已退役。不按 10/24 提前关掉。
+
+### `t21-product-ask-entry-split` · feature · 已完成 · T21 · #1347 已合 develop · 2026-10-19
+
+产品知识问答迁出 Confide。Brief [`task-confide-product-ask-entry-split.md`](../task-briefs/task-confide-product-ask-entry-split.md)。T22 第一版：Help Center 内文字+语音列卡。T23 可点后才跳。已撤回 10/24 关 #1339 默认。本线不受加一砍一挡。
+
+### `t22-yin-listening-product-ask` · feature · 立即做 · T22 · 实现中（feature/help-center-ask-cards） · 2026-10-19
+
+Help Center 顶部问卡：文字或 Speak to type（字进框、可见可改、再提交）后列 2–3 张可点卡或「没有合适的卡」。检索 = 关键词/句式 + 已有 embedding，不用 1.7B。祈使句不执行办理。不改倾诉发送链。
+
+### `t23-confide-product-ask-redirect` · feature · 立即做 · T23 · T22 #1348 已可点 · 2026-10-19
+
+T22 可点（#1348）后：CR-47 高置信度跳到 Help Center 问卡句。问卡 DOM 不在则保持现网诚实空态/短答。黄金脚本 v1.1：情绪句、个人事实、危机句不得被跳转。T22 手测不是硬闸。
+
+### `t24-practice-paper-ui` · feature · 界面第一刀实现中 · feature/practice-paper-ui · 2026-10-19
+
+T24 练习观察纸界面第一刀。#1352 一卡规格已合。一张 Sit & Breath 卡，读 Journey Log 全部行。不按 `arrive` 拆。本片不改 TASKS 总表。
+
+### `confide-g2-fact-rank-margin-diag` · feature · 诊断完成 · T15 · 结论=修好（不先缩到约10张卡）· 不占额 · 不新增封存批 · 2026-10-18
+
+T15：作废未见 v1/v2 回放 + 可见开发集（10 句改写 + 41 张卡自检索）。读口 `npm run audit:g2-fact-rank-margin`。仓外 JSON `g2-fact-rank-margin-1792235369700.json`。禁止原句。不改发送链。
+
+结论：**修好，不要先缩到约 10 张卡。** 41 张卡自检索 41/41 第一、余量最小 0.122。换说法时正确卡经常已经是第一，卡在 0.80。查询端 Instruct 前缀让排名略升、0.80 更差，现网不要加。单用「排名+余量」会把无卡句误接成卡（v2 ≥0.02 时 4/5）。0.80 从未命中错卡、无卡误命中 0。
+
+**四批英文占比（2026-10-18，无 CJK 且含拉丁字母；卡自检索取每卡首条检索短语）：** 作废未见 v1 **33/33（100%）** · v2 **33/33（100%）** · 可见改写 **10/10（100%）** · 卡自检索 **40/41（97.6%）**。英文为主体，T17 英文复核前置满足。
+
+### `confide-t17-fact-card-rank-margin` · feature · 实现中 · T17 · 判定一刀 · 2026-10-18
+
+T17：事实卡近邻门在 0.80 与 0.62 之间增加「同形状轴排名第一 + 领先余量 ≥0.05 + 语义产品问确认」放行；不调 0.80 常数。验收：`node --test src/core/confide/confideGoldenScriptV1.test.js` 英文 60 句；无卡英文句 0 误接（手测/黄金脚本）。依赖 T15 四批英文占比行（#1338）。
+
 ### `confide-cr45-shadow-caliber-split` · feature · 已完成 · #1309 合 develop · T7 · 2026-10-17
 
 CR-45 **影子**（口令：按补锁后的 CR-45 Brief 开工影子）+ 五带 holdout 读口（`task-confide-routing-holdout-caliber-split.md`）。合并对结构判据见 Brief §6.5 / `confideCr45MixedReplyShadow.js`。带 C 硬闸只报数、不调线。不改发送链、不切 live、不跑 en/b-v6。
@@ -557,15 +593,13 @@ CR-52：产品问不得进情绪路径。PO 已点头（规格误伤 2%；关单
 
 CR-51 关单向仓外 `diagnostic-unseen-v3`（`g2-fact-unseen-v3-2026-10-17-session-t5`）。n=10；0038 2/5；好处 2/5。相对 v2 有升，未达明显上来。禁止写入原句。不改发送链。不是 G2 整项过关。
 
-### `confide-g2-fact-rank-margin-diag` · feature · 诊断完成 · T14 · 结论=修好（不先缩到约10张卡）· 不占额 · 不新增封存批 · 2026-10-17
-
-T14：作废未见 v1/v2 回放 + 可见开发集（10 句改写 + 41 张卡自检索）。读口 `npm run audit:g2-fact-rank-margin`。仓外 JSON `g2-fact-rank-margin-1792235369700.json`。禁止原句。不改发送链。
-
-结论：**修好，不要先缩到约 10 张卡。** 41 张卡自检索 41/41 第一、余量最小 0.122。换说法时正确卡经常已经是第一，卡在 0.80。查询端 Instruct 前缀让排名略升、0.80 更差，现网不要加。单用「排名+余量」会把无卡句误接成卡（v2 ≥0.02 时 4/5）。0.80 从未命中错卡、无卡误命中 0。
-
 ### `confide-g2-unseen-v4-contract` · note · v4 出题合同已写入 Brief · 出题未排期 · 2026-10-17
 
 T5 仓外未见批 v4 出题合同写入 `task-briefs/task-confide-ask-shape-axis.md` 第九节。复现探测，不是关单重考，不占五带额度。出题须另口令 + 新开未见会话；本会话已见 v3 失败原句，不得出题。
+
+### `confide-golden-script-v1` · feature · 实现中（旁支待 PR） · 2026-10-17
+
+可见冻结黄金脚本：英文≥60、中文≥20，含 2026-10-15 手测 11 句、英文夸张/明确危机/否定。权威 `fixtures/confide-golden-script-v1.json` + `docs/CONFIDE_GOLDEN_SCRIPT.md`。CI `confideGoldenScriptV1.test.js`。不改发送链。禁止把整句抄进分类器。
 
 ### `confide-mixed-emotion-then-product` · feature · 规格已补锁 · 影子进行中 · live 等 CR-11 · CR-45 · 2026-10-17
 
