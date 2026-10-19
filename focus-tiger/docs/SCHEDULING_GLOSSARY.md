@@ -32,8 +32,8 @@
 | **P1** · **T18** | 练习观察纸方向锁 | **已合 develop** | #1343 · #1345。2026-10-19 收口第一刀一张 Sit & Breath 卡 |
 | **P1** · **T24** | 练习观察纸界面 | **立即做** | [`task-practice-paper-ui.md`](./task-briefs/task-practice-paper-ui.md)。#1352 已合；旁支 `feature/practice-paper-ui` |
 | **P2** · **T21** | 产品问入口转移 Brief | **已合 develop** | #1347 · [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) |
-| **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 10/22 手测；不执行办理 |
-| **P2** · **T23** | Confide 产品问改口 + 黄金脚本 v1.1 | **已合 develop** | #1351；跳转句打字或语音；v1.1 英文 60 + 安全回归待勾；10/27 复核一页纸 + **发送链冻结** |
+| **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 2026-10-20 手测问卡通过（未关单）；不执行办理 |
+| **P2** · **T23** | Confide 产品问改口 + 黄金脚本 v1.1 | **已合 develop** | #1351；2026-10-20 备份 where-click 1 句漏跳（CR-47）；v1.1 英文 60 + 安全回归待勾；10/27 复核一页纸 + **发送链冻结** |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -130,3 +130,4 @@
 | 2026-10-19 | **T18** #1345 已合。**【新增】T24** 界面 Brief = P1 |
 | 2026-10-19 | **T24** 第一刀一张 Sit & Breath 卡；不按 `arrive` 拆；规格文档先合再界面 |
 | 2026-10-19 | **T23** 跳转句打字或语音（#1351） |
+| 2026-10-20 | T22 手测问卡通过（未关单）；T23 备份 where-click 漏跳记 CR-47 |

@@ -86,4 +86,7 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 优化建议 | 混合句先接情绪再答产品（规格，未接线） | 2026-10-15 用户书面 · 本会话 | 旁路 [`issue-entries/docs-confide-mixed-emotion-then-product.md`](./issue-entries/docs-confide-mixed-emotion-then-product.md)。Brief CR-45。不调 0.01、不改发送链。 | 跟进中 |
 | 独立bug | 熟人说法被语义危机层转介（中文「想死你了」念 safety-01） | 2026-10-15 用户 Electron · `sync:qa-develop` 后宽屏 | 旁路 [`issue-entries/docs-confide-en-first-qa.md`](./issue-entries/docs-confide-en-first-qa.md)。字面层本应豁免；语义层无熟人说法。已拍板与调阈值同一刀做豁免。本回合不改发送链。 | 跟进中 |
 | 优化建议 | 英文练习动机 / 不想练 / 想喝酒类句被产品闸送进诚实空态，用户要求走本地生成 | 2026-10-15 用户 Electron · 英文第一优先抽测 | 旁路同上。PO 2026-10-15 已拍板：产品问 = 操作问法 ∧ 产品对象，否则生成；空态只留给确认后的产品问。规格 CR-47 [`task-briefs/task-confide-product-ask-operational-gate.md`](./task-briefs/task-confide-product-ask-operational-gate.md)。禁止话题白名单，禁止再往中文豁免词表加词。本回合不改发送链。同场：接地练习问句与 Tongtong 问句正确。 | 跟进中（规格已点头） |
+| 独立bug | T23 跳转漏接「Where can I click to back up…」类换说法 | 2026-10-20 用户书面 · T22 手测顺带 | 旁路 [`issue-entries/docs-t22-t23-handtest-tracker.md`](./issue-entries/docs-t22-t23-handtest-tracker.md)。禁止为这句加关键词。 | 未跟进 |
+| 独立bug | 英文名词化改写仍复述提问（sanitize 照抄闸未拦住） | 2026-10-20 用户书面 · Confide 手测 | 旁路同上。禁止扩当天问法字面表；归 CR-22。 | 未跟进 |
+| 优化建议 | Confide 跳转句旁加一句：入口只用于倾听提问或表述 | 2026-10-20 用户书面 · T22 手测 | 旁路同上。文案刀，须 Brief；不挡 T22。 | 未跟进 |
 
