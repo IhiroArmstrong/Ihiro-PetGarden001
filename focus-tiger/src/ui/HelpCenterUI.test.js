@@ -16,6 +16,14 @@ test('HelpCenterUI registers active press feedback on topic buttons', () => {
   assert.match(src, /\.help-center__topic:active/);
 });
 
+test('HelpCenterUI mounts T22 ask-card anchors on the index view', () => {
+  assert.match(src, /help-center-ask-input/);
+  assert.match(src, /help-center-ask-submit/);
+  assert.match(src, /help-center-ask-empty/);
+  assert.match(src, /help-center-ask-card-/);
+  assert.doesNotMatch(src, /onTranscriptCommitted:\s*\(\)\s*=>\s*void this\._submitAsk/);
+});
+
 test('help center close hides the card in the same turn as the click', () => {
   const closeAt = src.indexOf('  close() {');
   const closeFn = src.slice(closeAt, src.indexOf('  _showIndex() {', closeAt));

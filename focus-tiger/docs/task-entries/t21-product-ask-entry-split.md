@@ -1,7 +1,7 @@
 ---
 id: t21-product-ask-entry-split
 kind: feature
-status: 立即做 · T21 · Brief 待点头（10/19 修订）
+status: 已完成 · T21 · #1347 已合 develop
 updated: 2026-10-19
 ---
 
