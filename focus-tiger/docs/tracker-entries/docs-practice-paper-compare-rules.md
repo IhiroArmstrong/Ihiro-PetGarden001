@@ -1,0 +1,1 @@
+| 练习观察纸方向锁修订（滚动 7 天判定表 · 两张卡） | 纯文档 | 待人工测试 | 打开 `PRACTICE_PAPER.md`：确认 8 行判定表第 4 行英文是 last few days（不是 This week）、无 Recover 独立卡、Sit 无提前起身、隐藏默认显示、免责三语。定位稿例外句已拿掉停一下卡。本 PR 无 `src/`。 | — | — | — | 读 `PRACTICE_PAPER.md` 即可 | 2026-10-19 |
