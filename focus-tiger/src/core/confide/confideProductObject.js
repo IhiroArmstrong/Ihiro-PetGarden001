@@ -10,7 +10,7 @@
  */
 
 import catalog from './productKnowledgeCatalog.json' with { type: 'json' };
-import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
+import { confideObjectKeywordMatches } from './confideObjectNormalize.js';
 import { isPracticeFactsQuestion } from './confidePracticeFacts.js';
 import {
   classifyConfideProductAskRole,
@@ -29,17 +29,20 @@ function isAskShapeKeyword(keyword) {
 }
 
 /**
- * @param {string} haystack
- * @param {string} needle
- * @returns {boolean}
+ * Catalog keywords that name objects (skip how/where rows).
+ * @returns {string[]}
  */
-function keywordMatches(haystack, needle) {
-  const n = String(needle || '').trim();
-  if (!n) return false;
-  if (/[\u3040-\u30ff\u3400-\u9fff]/.test(n)) {
-    return haystack.includes(n);
+export function listConfideCatalogNounKeywords() {
+  /** @type {string[]} */
+  const out = [];
+  for (const entry of catalog.entries || []) {
+    for (const keyword of entry.keywords || []) {
+      if (isAskShapeKeyword(keyword)) continue;
+      const k = String(keyword || '').trim();
+      if (k) out.push(k);
+    }
   }
-  return haystack.toLowerCase().includes(n.toLowerCase());
+  return out;
 }
 
 /**
@@ -48,13 +51,8 @@ function keywordMatches(haystack, needle) {
  * @returns {boolean}
  */
 export function hasConfideCatalogNounObject(text) {
-  const raw = normalizeConfideIntentText(text);
-  if (!raw) return false;
-  for (const entry of catalog.entries || []) {
-    for (const keyword of entry.keywords || []) {
-      if (isAskShapeKeyword(keyword)) continue;
-      if (keywordMatches(raw, keyword)) return true;
-    }
+  for (const keyword of listConfideCatalogNounKeywords()) {
+    if (confideObjectKeywordMatches(text, keyword)) return true;
   }
   return false;
 }
