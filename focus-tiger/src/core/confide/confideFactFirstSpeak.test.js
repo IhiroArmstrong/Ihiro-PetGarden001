@@ -59,6 +59,44 @@ describe('CR-50 fact-first speak', () => {
     assert.equal(spoken.id, 'KB-FUNC-0038');
   });
 
+  it('T23: operational catalog hit redirects when Help Center ask-cards exist', () => {
+    const spoken = resolveConfideFactFirstSpeak({
+      text: 'How can I do some ground exercise',
+      catalogResult: { hit: true, id: 'KB-FUNC-0002', text: 'Ground is on the right orb.' },
+      embeddingState: 'ready',
+      semanticIsProduct: true,
+      nearestId: 'KB-FUNC-0002',
+      nearestScore: 0.91,
+      helpCenterAskReachable: true
+    });
+    assert.equal(spoken.action, 'help_center_redirect');
+  });
+
+  it('T23: unreachable Help Center keeps the catalog short answer', () => {
+    const spoken = resolveConfideFactFirstSpeak({
+      text: 'How can I do some ground exercise',
+      catalogResult: { hit: true, id: 'KB-FUNC-0002', text: 'Ground is on the right orb.' },
+      embeddingState: 'ready',
+      semanticIsProduct: true,
+      nearestId: 'KB-FUNC-0002',
+      nearestScore: 0.91,
+      helpCenterAskReachable: false
+    });
+    assert.equal(spoken.action, 'product_knowledge');
+  });
+
+  it('T23: mood lines never redirect even when Help Center is reachable', () => {
+    const spoken = resolveConfideFactFirstSpeak({
+      text: "I feel quite sleepy. I don't want to practice anymore.",
+      catalogResult: { hit: false },
+      embeddingState: 'ready',
+      semanticIsProduct: true,
+      helpCenterAskReachable: true
+    });
+    assert.notEqual(spoken.action, 'help_center_redirect');
+    assert.notEqual(spoken.action, 'product_knowledge');
+  });
+
   it('T17: without semantic product confirm, sub-0.80 must not speak a card', () => {
     const spoken = resolveConfideFactFirstSpeak({
       text: 'I feel tired and want to vent.',

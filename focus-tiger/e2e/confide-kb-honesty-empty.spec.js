@@ -77,6 +77,11 @@ async function shareExpectSource(page, text, source) {
   await expect(reply).toBeVisible();
   const body = (await reply.innerText()).trim();
   expect(body.length).toBeGreaterThan(0);
+  if (source === 'help_center_redirect') {
+    expect(body).toMatch(/I keep how-to answers in Help Center/i);
+    expect(body).not.toMatch(/doesn't keep a manual/i);
+    expect(body).not.toMatch(/hello@twinsology\.com/);
+  }
   if (source === 'product_knowledge_honesty') {
     expect(body).toMatch(/Help Center/i);
     expect(body).toMatch(/hello@twinsology\.com/);
@@ -92,7 +97,7 @@ async function reopen(page) {
   await expect(page.getByTestId('confide-to-yin-card')).toBeVisible();
 }
 
-test('ready embedding miss stays on honesty empty state within 1s', async ({
+test('ready embedding miss redirects to Help Center ask within 1s', async ({
   page
 }) => {
   await openConfide(page, READY_MISS_GATE);
@@ -100,24 +105,32 @@ test('ready embedding miss stays on honesty empty state within 1s', async ({
     const reply = await shareExpectSource(
       page,
       text,
-      'product_knowledge_honesty'
+      'help_center_redirect'
     );
     await expect(reply).not.toHaveAttribute('data-source', 'generate');
+    await expect(reply).not.toHaveAttribute(
+      'data-source',
+      'product_knowledge_honesty'
+    );
     await reopen(page);
   }
   const again = await shareExpectSource(
     page,
     '观察翼是什么',
-    'product_knowledge_honesty'
+    'help_center_redirect'
   );
   await expect(again).not.toHaveAttribute('data-source', 'generate');
 });
 
-test('catalog hit stays a short answer and mood aside skips honesty', async ({
+test('catalog operational hit redirects; mood aside does not', async ({
   page
 }) => {
   await openConfide(page, READY_HIT_GATE);
-  const hit = await shareExpectSource(page, '接地练习在哪', 'product_knowledge');
+  const hit = await shareExpectSource(page, '接地练习在哪', 'help_center_redirect');
+  await expect(hit).not.toHaveAttribute(
+    'data-source',
+    'product_knowledge'
+  );
   await expect(hit).not.toHaveAttribute(
     'data-source',
     'product_knowledge_honesty'
@@ -132,17 +145,22 @@ test('catalog hit stays a short answer and mood aside skips honesty', async ({
     'data-source',
     'product_knowledge_honesty'
   );
+  await expect(reply).not.toHaveAttribute('data-source', 'help_center_redirect');
   await expect(reply).not.toHaveAttribute('data-source', 'generate');
 });
 
-test('embedding not ready still uses honesty for a product miss within 1s', async ({
+test('embedding not ready still redirects a product miss within 1s', async ({
   page
 }) => {
   await openConfide(page, COLD_GATE);
   const reply = await shareExpectSource(
     page,
     '观察翼是什么',
-    'product_knowledge_honesty'
+    'help_center_redirect'
   );
   await expect(reply).not.toHaveAttribute('data-source', 'generate');
+  await expect(reply).not.toHaveAttribute(
+    'data-source',
+    'product_knowledge_honesty'
+  );
 });

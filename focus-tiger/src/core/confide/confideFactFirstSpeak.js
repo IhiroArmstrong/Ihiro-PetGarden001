@@ -18,6 +18,7 @@ import {
   decideConfideRecordIntent
 } from './confideRecordIntent.js';
 import { decideHelpCenterExcerpt } from './confideHelpCenterExcerpt.js';
+import { shouldRedirectConfideProductAskToHelpCenter } from './confideHelpCenterRedirect.js';
 import { decideKbNearMatch } from './kbNearMatch.js';
 
 /**
@@ -63,10 +64,11 @@ export function catalogKeywordSpeakAllowed(input) {
  *   recordScore?: number | null,
  *   lifeOutranksProduct?: boolean,
  *   moodOutranksProduct?: boolean | null,
- *   moodVetoLive?: boolean
+ *   moodVetoLive?: boolean,
+ *   helpCenterAskReachable?: boolean
  * }} input
  * @returns {{
- *   action: 'practice_facts' | 'product_knowledge' | 'help_center_excerpt' | 'honesty' | 'skip',
+ *   action: 'practice_facts' | 'help_center_redirect' | 'product_knowledge' | 'help_center_excerpt' | 'honesty' | 'skip',
  *   id?: string | null,
  *   text?: string | null,
  *   nearAction?: string | null
@@ -121,6 +123,21 @@ export function resolveConfideFactFirstSpeak(input) {
     moodVetoLive: input.moodVetoLive
   });
 
+  const help = decideHelpCenterExcerpt({
+    nearestId: input.helpNearestId,
+    nearestScore: input.helpNearestScore
+  });
+  if (
+    shouldRedirectConfideProductAskToHelpCenter({
+      text: input.text,
+      gateAction,
+      helpCenterAskReachable: input.helpCenterAskReachable === true,
+      helpExcerptHit: help.action === 'hit'
+    })
+  ) {
+    return { action: 'help_center_redirect', nearAction };
+  }
+
   if (gateAction === 'hit' && shownId) {
     const entry = getRetrievableProductKnowledgeEntry(shownId);
     const spokenText =
@@ -137,10 +154,6 @@ export function resolveConfideFactFirstSpeak(input) {
     }
   }
 
-  const help = decideHelpCenterExcerpt({
-    nearestId: input.helpNearestId,
-    nearestScore: input.helpNearestScore
-  });
   if (help.action === 'hit' && help.id) {
     return { action: 'help_center_excerpt', id: help.id, nearAction };
   }
