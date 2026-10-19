@@ -21,9 +21,10 @@
 1. **Sit 和 Breath 统一数「天」，不数「行」。** 一天多次呼吸只算一天。两张卡单位一致。  
 2. **30 行上限。** 若 Journey Log 已满 30 行，且最旧一行的本地日期仍落在近 7 个日历日内，数字可能偏少：Breath（以及同一套窗口函数下的 Sit）**不显示精确天数**，改用中性句（如「这几天有过呼吸练习」/「这几天有过同坐」）。未满时正常显示天数。  
 3. **节奏句和 Sit 卡可以对不上。** 节奏句读 `practice-days.v1`（含呼吸日）；Sit 卡只读 Journey Log 正式 Sit 行。文案必须写「同坐」，禁止泛称「练习」。手测须覆盖「只呼吸、不 Sit」。  
-4. **英文副标题。** `A quiet look at how your kinds of practice have been showing up.`（替换方向锁定名里的 *practice kinds*。）  
-5. **隐藏键。** `focus-tiger.practice-paper-hidden.v1`；缺省 = 显示。读写 `localStorage` 须 `try/catch`；读不到按显示。隐藏时节奏句、两张卡、免责行一起藏；下半部只留「显示练习观察纸」。  
-6. **日期。** 一律本地日历日差，禁止毫秒 ÷ 24 小时。`PRACTICE_PAPER_QUIETER_DELTA = 2`，不可远程配置。
+4. **英文副标题。** `A quiet look at how your kinds of practice have been showing up.`（与方向锁定名表一致。）  
+5. **最近一次时长 / 分钟。** Sit 与 Breath 的「最近一次」只在近 7 个本地日历日内有对应 Journey Log 行时显示；窗外记录一律省略，不得出现「近窗天数为 0 但仍显示最近一次时长/分钟」的组合。  
+6. **隐藏键。** `focus-tiger.practice-paper-hidden.v1`；缺省 = 显示。读写 `localStorage` 须 `try/catch`；读不到按显示。隐藏时节奏句、两张卡、免责行一起藏；下半部只留「显示练习观察纸」。  
+7. **日期。** 一律本地日历日差，禁止毫秒 ÷ 24 小时。`PRACTICE_PAPER_QUIETER_DELTA = 2`，不可远程配置。
 
 ---
 
@@ -161,7 +162,7 @@
 - 判定表 8 行全覆盖（方向锁用例表）。
 - `firstPracticeAgeDays = 6` 和 `7`。
 - 跨夏令时（洛杉矶切换日）与 23:59 / 00:01。
-- Sit / Breath：空态、1 天、7 天、满 30 行「可能偏少」。
+- Sit / Breath：空态、1 天、7 天、满 30 行「可能偏少」；**近窗 0 天、窗外有记录** → 只显示空态句，不显示最近一次时长/分钟。
 - 隐藏键：缺省、已隐藏、存储不可用。
 
 **检查**

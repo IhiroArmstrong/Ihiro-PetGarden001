@@ -29,7 +29,7 @@
 8. **混合句（倾诉侧，T23）。** 不整句跳转。拿不准走陪伴。情绪句、个人事实、危机句不得被跳转。  
 9. **Web / 窄屏。** Help Center 打得开才算有目的地。打不开 → T23 不跳转。  
 10. **跳转句（英文，仅 T23）。**  
-    *I keep how-to answers in Help Center. Open Help Center from the menu and type your question.*  
+    *I keep how-to answers in Help Center. Open Help Center from the menu and type or speak your question.*（中文：再打字或语音问；与 T22 问卡入口一致。）  
 11. **#1339 卡短答。** T17 只退役了验收。T23 合入前，倾诉里这段念卡 **仍对用户生效**。不按日期提前关掉。手测换说法的产品问时顺带看有没有错接。  
 12. **黄金脚本 v1.1（T23）。** 通道期望随跳转改；必须加「情绪句、个人事实、危机句不得被跳转」。验收核心 = 2026-10-15 错句（`gs-h01`–`gs-h11`，英文先过）。不推倒 v1 句表。
 

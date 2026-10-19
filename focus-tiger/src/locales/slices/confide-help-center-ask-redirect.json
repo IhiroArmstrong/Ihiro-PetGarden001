@@ -1,11 +1,11 @@
 {
   "en": {
-    "CONFIDE_HELP_CENTER_ASK_REDIRECT": "I keep how-to answers in Help Center. Open Help Center from the menu and type your question."
+    "CONFIDE_HELP_CENTER_ASK_REDIRECT": "I keep how-to answers in Help Center. Open Help Center from the menu and type or speak your question."
   },
   "zh": {
-    "CONFIDE_HELP_CENTER_ASK_REDIRECT": "怎么用这类问题，我放在帮助中心里。请从菜单打开帮助中心，再打字问。"
+    "CONFIDE_HELP_CENTER_ASK_REDIRECT": "怎么用这类问题，我放在帮助中心里。请从菜单打开帮助中心，再打字或语音问。"
   },
   "ja": {
-    "CONFIDE_HELP_CENTER_ASK_REDIRECT": "使い方の答えは Help Center に置いてあります。メニューから Help Center を開き、質問を入力してください。"
+    "CONFIDE_HELP_CENTER_ASK_REDIRECT": "使い方の答えは Help Center に置いてあります。メニューから Help Center を開き、質問を入力するか音声で話してください。"
   }
 }
