@@ -1,6 +1,6 @@
 # Task Brief · 练习观察纸界面第一刀（T24）
 
-> **状态（2026-10-19）**：**一卡规格已点头。** 本文件与 [`PRACTICE_PAPER.md`](../PRACTICE_PAPER.md) 须先合入文档 PR；**合入后再**开 `feature/practice-paper-ui`。点头前不得改 `focus-tiger/src/`。  
+> **状态（2026-10-19）**：**一卡规格已合（#1352）。** 界面旁支 `feature/practice-paper-ui`。  
 > **类别**：**B 类**（成长旅程详情下半部会出现新句子、一张卡、隐藏开关）。  
 > **代号**：**T24**。**T18** = 方向锁（#1343 · #1345 已合）。实现是 T24 点头后的同一任务线，不另起产品名。  
 > **从属**：[`PRACTICE_PAPER.md`](../PRACTICE_PAPER.md) · [`GROWTH_JOURNEY.md`](../GROWTH_JOURNEY.md) · [`PRODUCT_POSITIONING.md`](../PRODUCT_POSITIONING.md)  

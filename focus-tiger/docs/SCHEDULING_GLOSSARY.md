@@ -30,7 +30,7 @@
 | **P2** · **T16** | Confide 黄金脚本 v1 | **已合 develop** | #1332；英文 60 句是放行线 |
 | **P2** · **T17** | Confide 事实卡判定一刀 | **已合 develop** | #1339。倾诉**验收**退役；T23 前仍可能念卡 |
 | **P1** · **T18** | 练习观察纸方向锁 | **已合 develop** | #1343 · #1345。2026-10-19 收口第一刀一张 Sit & Breath 卡 |
-| **P1** · **T24** | 练习观察纸界面 Brief | **立即做** | [`task-practice-paper-ui.md`](./task-briefs/task-practice-paper-ui.md)。一卡规格先合文档；合入后再开 `feature/practice-paper-ui` |
+| **P1** · **T24** | 练习观察纸界面 | **立即做** | [`task-practice-paper-ui.md`](./task-briefs/task-practice-paper-ui.md)。#1352 已合；旁支 `feature/practice-paper-ui` |
 | **P2** · **T21** | 产品问入口转移 Brief | **已合 develop** | #1347 · [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) |
 | **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 10/22 手测；不执行办理 |
 | **P2** · **T23** | Confide 产品问改口 + 黄金脚本 v1.1 | **立即做** | ≤10/26 合入；10/27 复核一页纸 + **发送链冻结**；10/26 未合则兜底（无跳转放行） |
