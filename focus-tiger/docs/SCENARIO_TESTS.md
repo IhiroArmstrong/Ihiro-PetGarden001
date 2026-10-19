@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-19（T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
+最近代码核对：2026-10-19（T24 成长旅程详情下半部一张 Sit & Breath 练习观察纸 · T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳 · T22 Help Center 顶部问卡打字/语音检索）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -34,7 +34,9 @@
   - `overlaySlotArbitration.test.js` + `sessionChromeSync.test.js` — **AH** 首卡队列 / postSession suppress / C1–C3 busy（**非**完整 Compass 故事 e2e）
   - `practiceBackupDailyCompletionReconcile.test.js` · `practiceBackupSync.test.js` — **AI** 恢复后从 `practice-days` 派生 `daily-completions`（**非**完整备份 UI e2e）
   - `immersivePresenceSupport.test.js` — **AK** Electron PiP 探针红/绿（**非**真 PiP DOM e2e）
-  - `helpCenterCatalog.test.js` · `HelpCenterUI.test.js` — **AX** 帮助中心目录与按压样式（**非**从菜单点开的完整故事）
+  - `helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js` — **AX** 帮助中心目录、按压样式与问卡检索（**非**从菜单点开的完整故事）
+  - `practicePaperFacts.test.js` · `growthJourneyDetailRhythm.test.js` — **AV** 练习观察纸节奏句与 Sit & Breath 卡（**非**完整浏览器故事）
+  - `confideHelpCenterRedirect.test.js` — **AE** T23 产品问跳转 Help Center（**非** Web harness 全故事）
   - `teaGiftHd.test.js` — **AW** 请茶核销后把金鸭预览换成本机已有的原图（**非**真付、**非**观感）
   - `confidePracticeFacts` · `yinPersonalMemory*` · `desktopCompanionL2Route` — **AG** 练习事实 / Consent / Remember / 注入 / 口头 Forget（**非**完整 Confide 故事 e2e）
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感、Presence 披露时长、Electron memory 面板等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
@@ -1034,12 +1036,13 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 ## 场景 AV：首页旅程短行 · 点开「Where you are」（#1102 / #1107 · 2026-10-09）
 
 > **地位**：Idle 本周陪伴热力图**上方**的一行旅程。**≠** Journey log（场景 Z）。圆点分钟 **≠** 莲花朵数；花只画在这张纸上。  
-> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js` · `LotusPondRuntime.test.js`。**非**完整浏览器故事。  
-> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、有朵时见横排莲花（下一句与累计分钟之间）、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
+> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js` · `LotusPondRuntime.test.js` · `practicePaperFacts.test.js` · `growthJourneyDetailRhythm.test.js`。**非**完整浏览器故事。  
+> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、有朵时见横排莲花（下一句与累计分钟之间）、累计分钟；节奏句下方见 **练习观察纸**（默认一张 **Sit & Breath** 卡，读 Journey Log 全部行，**不按** `arrive` 拆）。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
 
 1. `?product=1` Idle，热力图可见 → 其上方见 `[data-testid=growth-journey-home-line]`（阶段句 + 轨道点）。  
 2. 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。`qaLotusBlooms=0` 不见莲花行；`qaLotusBlooms≥1` 见 `#growth-journey-lotus-row` 横排。Idle 阿寅身前 **无** `#lotus-pond`。  
-3. Close 或点背板 → 卡收起，热力图与 Sit 仍在。
+3. 节奏句下方 → **0–1 秒内**见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 **Sit & Breath**（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，**禁止**健康分 / 百分比 / 「本周」对外文案）。点 **Hide** → **0–1 秒内**整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸**不得**改上半部阶段公式，**不得**另写 Journey log 行。  
+4. Close 或点背板 → 卡收起，热力图与 Sit 仍在。
 
 ---
 
@@ -1063,10 +1066,11 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 ## 场景 AX：帮助中心（菜单 + 问号卡 · #1120 / #1122 · 2026-10-10）
 
 > **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。  
-> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录；不碰付款、不改练习记录）。  
-> **点击**：菜单行与问号卡上的链，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
+> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录与问卡检索；不碰付款、不改练习记录）。  
+> **点击**：菜单行与问号卡上的链，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。顶部 **问卡**输入（可打字或 **Speak to type**，宽屏 Electron）→ **0–1 秒内**见匹配主题列表（**只列结果、不执行** T10 命令）。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
 
 1. `?product=1` Idle → ⋯ Preferences **Help Center**（窄屏抽屉同一行，`data-testid=idle-help-center`）→ **0–1 秒内** `[data-testid=help-center]` 可见，标题 Help Center，下面是分好组的主题。  
+1b. 顶部问卡输入 `How do I back up my data?`（或等价产品问）→ **0–1 秒内**见相关主题行；点一行 → 同步骤 2 见正文。**禁止**在 Help Center 内直接执行备份。无关句 → 空列表或弱匹配，不得静默。  
 2. 点任一主题 → **0–1 秒内**见该篇标题和正文（`data-testid=help-center-article`）。Back **0–1 秒内**回到目录。  
 3. Close 或点背板 → **0–1 秒内**面板收起，Sit 仍在。收起后闲置页右侧、徽章卡片外面不得留下黑字 `undefined`（#1137）。  
 4. 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Center” 同样打开这一页，不得和简介卡叠成两层。问号卡不再重复菜单里的「重新选择今日方向」（#1131）；那条只留在 Preferences。  
@@ -1358,14 +1362,15 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 ---
 
-## 2026-10-19 增量核对摘要（T23 产品问跳转 Help Center 问卡）
+## 2026-10-18–19 增量核对摘要（Practice Paper T24 · Help Center 问卡 T22 · Confide 跳转 T23）
 
-1. **背景**：T22 问卡 #1348 已合。T23 把倾诉里高置信度产品问改成跳转句，不再念卡。
+1. **背景**：自文首上次核对（2026-10-17）之后，合入 develop 的用户面包括：练习观察纸方向锁与滚动 7 天节奏文案（#1343 · #1345 · #1349 文档）· **T24** 成长旅程详情下半部一张 **Sit & Breath** 观察纸（#1353 `feature/practice-paper-ui`）· **T22** Help Center 顶部问卡检索 + 语音框（#1348）· **T23** Confide 高置信度操作型产品问改口述跳转 Help Center（#1351）。  
 2. **本次核对（增量，未升格新字母场景）**：
-   - **场景 AE · Electron · L2 · 步 1**：Help Center 问卡可点时，操作问法产品问 → **`data-source=help_center_redirect`**（0–1 秒内见跳转句）。问卡打不开仍短答 / 诚实空态。动机句仍 generate。情绪 / 个人事实 / 危机不得跳转。
-   - **场景 AX**：问卡仍在 Help Center 面板内；本刀不重做目录。
-3. **仍须人工**：Electron 宽屏英文 `gs-h01`–`gs-h11`；窄屏 / Web 问卡不可达不跳转。
-4. **TEST_TRACKER** 见碎片 `tracker-entries/feat-t23-confide-help-center-redirect.md`。
+   - **场景 AV**：详情卡节奏句下默认见练习观察纸；一张 Sit & Breath 卡读 Journey Log 全部行；隐藏键默认显示。单测 `practicePaperFacts.test.js` · `growthJourneyDetailRhythm.test.js`。**非**健康仪表盘、**非**按 `arrive` 拆卡。  
+   - **场景 AX**：Help Center 顶部问卡打字/语音检索列出主题；**只检索不执行**。单测 `helpCenterAskSearch.test.js`。  
+   - **场景 AE · Electron · L2 · 步 1**：Help Center 问卡可点时，操作问法产品问 → **`data-source=help_center_redirect`**（0–1 秒内见跳转句）。问卡打不开仍短答 / 诚实空态。动机句仍 generate。情绪 / 个人事实 / 危机不得跳转。单测 `confideHelpCenterRedirect.test.js`。  
+3. **仍须人工**：观察纸空态与「只呼吸」变体观感；Help Center 语音框仅宽屏 Electron；T23 英文 `gs-h01`–`gs-h11`；窄屏 / Web 问卡不可达不跳转。  
+4. **TEST_TRACKER**：本旁支 `tracker:assemble` 折入 **568** 条碎片机器块；`tasks:assemble` 另开仅改 `TASKS.md` 的 `docs/*` PR（门禁禁止与本文同提交）。
 
 ---
 

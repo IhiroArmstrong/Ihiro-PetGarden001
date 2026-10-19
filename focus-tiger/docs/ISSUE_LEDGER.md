@@ -89,4 +89,8 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 独立bug | T23 跳转漏接「Where can I click to back up…」类换说法 | 2026-10-20 用户书面 · T22 手测顺带 | 旁路 [`issue-entries/docs-t22-t23-handtest-tracker.md`](./issue-entries/docs-t22-t23-handtest-tracker.md)。禁止为这句加关键词。 | 未跟进 |
 | 独立bug | 英文名词化改写仍复述提问（sanitize 照抄闸未拦住） | 2026-10-20 用户书面 · Confide 手测 | 旁路同上。禁止扩当天问法字面表；归 CR-22。 | 未跟进 |
 | 优化建议 | Confide 跳转句旁加一句：入口只用于倾听提问或表述 | 2026-10-20 用户书面 · T22 手测 | 旁路同上。文案刀，须 Brief；不挡 T22。 | 未跟进 |
+| 独立bug | Electron 测扇形菜单仍只有三个图标，疑未实现近期五组扇形 | 2026-10-20 用户书面 · 最新 Electron 壳 · `origin/develop` `8970c2dd` | 旁路 [`issue-entries/docs-electron-qa-2026-10-20.md`](./issue-entries/docs-electron-qa-2026-10-20.md)。**不是代码未合入**：五组扇形已合 #1307。指南针扇仍是 Home/Calendar/Collection 三叶（#986）。须先确认点的是底栏 `⋯` 还是右下指南针。 | 未跟进 |
+| 优化建议 | Help Center 用合适按钮安在问号按钮右边 | 2026-10-20 用户书面 · 同场 Electron | 旁路同上。现网 Help Center 在 ⋯ Preferences 行，以及问号简介卡内一行。问号钮 `#onboarding-hint-help`。B 类，须 Brief。 | 未跟进 |
+| 优化建议 | 任何练习中间不要语音播放 inhale / exhale，其它播放可以 | 2026-10-20 用户书面 · 同场 Electron | 旁路同上。现网 `maybeSpeakBreathPhaseCue` 挂 Arrival / Honesty / MicroRitual / RitualFlow。结束句与其它公告保留。B 类，须 Brief。 | 未跟进 |
+| 独立bug | Practice Paper 被测成过简；用户认为原意是带彩色进度的健康地图 | 2026-10-20 用户书面 · 同场截图 | 旁路同上。截图与 **T24** 第一刀（#1353）一致。方向锁 [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md) 明确禁止健康仪表盘 / 红黄绿色点。非漏实现。推翻锁须书面。 | 未跟进 |
 
