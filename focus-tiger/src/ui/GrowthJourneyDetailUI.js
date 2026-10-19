@@ -10,6 +10,14 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { growthJourneyDetailModel } from '../core/growthJourneyDetail.js';
+import { readJourneyLog } from '../core/journeyLogGate.js';
+import {
+  getPracticePaperSentence,
+  getSitBreathFacts,
+  isPracticePaperHidden,
+  setPracticePaperHidden
+} from '../core/practicePaperFacts.js';
+import { getLocalDateKey } from '../utils/localDate.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -38,6 +46,9 @@ export class GrowthJourneyDetailUI {
    * @param {() => unknown} [handlers.getLifetimeMinutes]
    * @param {() => unknown} [handlers.getStageFloor]
    * @param {() => Iterable<unknown>} [handlers.getPracticeDates]
+   * @param {() => unknown} [handlers.getJourneyLog]
+   * @param {() => Storage | null} [handlers.getStorage]
+   * @param {() => string} [handlers.getTodayKey]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -101,6 +112,12 @@ export class GrowthJourneyDetailUI {
     this.rhythmEl.className = 'growth-journey-detail__rhythm';
     this.rhythmEl.dataset.testid = 'growth-journey-detail-rhythm';
 
+    this.paperEl = document.createElement('section');
+    this.paperEl.className = 'growth-journey-detail__paper';
+    this.paperEl.dataset.testid = 'practice-paper';
+
+    this._paperExpanded = false;
+
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
     this.closeBtn.className = 'growth-journey-detail__close';
@@ -117,6 +134,7 @@ export class GrowthJourneyDetailUI {
       this.lotusRow,
       this.lifetimeEl,
       this.rhythmEl,
+      this.paperEl,
       this.closeBtn
     );
     mountRoot.appendChild(this.root);
@@ -172,11 +190,12 @@ export class GrowthJourneyDetailUI {
   }
 
   _refresh() {
+    const practiceDates = this.handlers.getPracticeDates?.() ?? [];
     const model = growthJourneyDetailModel({
       eligibleMinutes: this.handlers.getEligibleMinutes?.() ?? 0,
       lifetimeMinutes: this.handlers.getLifetimeMinutes?.() ?? 0,
       floor: this.handlers.getStageFloor?.() ?? null,
-      practiceDates: this.handlers.getPracticeDates?.() ?? [],
+      practiceDates,
       translate: t
     });
     this.titleEl.textContent = t('GROWTH_JOURNEY_DETAIL_TITLE');
@@ -226,6 +245,121 @@ export class GrowthJourneyDetailUI {
       }
       this.rhythmEl.appendChild(item);
     }
+
+    this._refreshPaper(practiceDates);
+  }
+
+  _storage() {
+    try {
+      return this.handlers.getStorage?.() ?? globalThis.localStorage ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  _todayKey() {
+    return this.handlers.getTodayKey?.() ?? getLocalDateKey(new Date());
+  }
+
+  _refreshPaper(practiceDates) {
+    const storage = this._storage();
+    const today = this._todayKey();
+    const hidden = isPracticePaperHidden(storage);
+    this.paperEl.replaceChildren();
+
+    if (hidden) {
+      const showBtn = document.createElement('button');
+      showBtn.type = 'button';
+      showBtn.className = 'growth-journey-detail__paper-toggle';
+      showBtn.dataset.testid = 'practice-paper-show';
+      showBtn.textContent = t('PRACTICE_PAPER_SHOW');
+      showBtn.addEventListener('click', () => {
+        if (!setPracticePaperHidden(this._storage(), false)) return;
+        this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
+      });
+      this.paperEl.appendChild(showBtn);
+      return;
+    }
+
+    const sentence = getPracticePaperSentence(practiceDates, today);
+    const rhythm = document.createElement('p');
+    rhythm.className = 'growth-journey-detail__paper-rhythm';
+    rhythm.dataset.testid = 'practice-paper-rhythm';
+    rhythm.textContent = t(sentence.key);
+    this.paperEl.appendChild(rhythm);
+
+    const subtitle = document.createElement('p');
+    subtitle.className = 'growth-journey-detail__paper-subtitle';
+    subtitle.textContent = t('PRACTICE_PAPER_SUBTITLE');
+    this.paperEl.appendChild(subtitle);
+
+    const log =
+      this.handlers.getJourneyLog?.() ?? readJourneyLog(storage);
+    const facts = getSitBreathFacts(log, today);
+
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'growth-journey-detail__sit-breath';
+    card.dataset.testid = 'practice-paper-sit-breath';
+    card.setAttribute('aria-expanded', this._paperExpanded ? 'true' : 'false');
+    const cardTitle = document.createElement('span');
+    cardTitle.className = 'growth-journey-detail__sit-breath-title';
+    cardTitle.textContent = t('PRACTICE_PAPER_CARD_TITLE');
+    card.appendChild(cardTitle);
+
+    const factsEl = document.createElement('div');
+    factsEl.className = 'growth-journey-detail__sit-breath-facts';
+    factsEl.dataset.testid = 'practice-paper-sit-breath-facts';
+    factsEl.hidden = !this._paperExpanded;
+
+    if (facts.uniqueDays === 0) {
+      const empty = document.createElement('p');
+      empty.textContent = t('PRACTICE_PAPER_CARD_EMPTY');
+      factsEl.appendChild(empty);
+    } else if (facts.incomplete) {
+      const incomplete = document.createElement('p');
+      incomplete.textContent = t('PRACTICE_PAPER_CARD_INCOMPLETE');
+      factsEl.appendChild(incomplete);
+    } else {
+      const days = document.createElement('p');
+      days.textContent = t('PRACTICE_PAPER_CARD_DAYS').replaceAll(
+        '{days}',
+        String(facts.uniqueDays)
+      );
+      factsEl.appendChild(days);
+    }
+    if (facts.lastMinutes != null) {
+      const last = document.createElement('p');
+      last.textContent = t('PRACTICE_PAPER_CARD_LAST').replaceAll(
+        '{minutes}',
+        String(facts.lastMinutes)
+      );
+      factsEl.appendChild(last);
+    }
+    card.addEventListener('click', () => {
+      this._paperExpanded = !this._paperExpanded;
+      this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
+    });
+    this.paperEl.appendChild(card);
+    this.paperEl.appendChild(factsEl);
+
+    const hideBtn = document.createElement('button');
+    hideBtn.type = 'button';
+    hideBtn.className = 'growth-journey-detail__paper-toggle';
+    hideBtn.dataset.testid = 'practice-paper-hide';
+    hideBtn.textContent = t('PRACTICE_PAPER_HIDE');
+    hideBtn.addEventListener('click', () => {
+      if (!setPracticePaperHidden(this._storage(), true)) return;
+      this._paperExpanded = false;
+      this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
+    });
+    this.paperEl.appendChild(hideBtn);
+
+    const disclaimer = document.createElement('p');
+    disclaimer.className = 'growth-journey-detail__paper-disclaimer';
+    disclaimer.dataset.testid = 'practice-paper-disclaimer';
+    disclaimer.textContent = t('PRACTICE_PAPER_DISCLAIMER');
+    this.paperEl.appendChild(disclaimer);
   }
 
   _injectStyles() {
@@ -354,6 +488,56 @@ export class GrowthJourneyDetailUI {
         font-size: 11px;
         line-height: 1.2;
         color: rgba(44, 31, 20, 0.62);
+      }
+      .growth-journey-detail__paper {
+        margin: 4px 0 12px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(44, 31, 20, 0.12);
+      }
+      .growth-journey-detail__paper-rhythm,
+      .growth-journey-detail__paper-subtitle,
+      .growth-journey-detail__paper-disclaimer,
+      .growth-journey-detail__sit-breath-facts p {
+        margin: 0 0 8px;
+        font-size: 0.86rem;
+        line-height: 1.4;
+        color: #2c1f14;
+      }
+      .growth-journey-detail__paper-subtitle,
+      .growth-journey-detail__paper-disclaimer {
+        opacity: 0.72;
+        font-size: 0.78rem;
+      }
+      .growth-journey-detail__sit-breath {
+        appearance: none;
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin: 0 0 8px;
+        padding: 10px 12px;
+        font: inherit;
+        color: #2c1f14;
+        background: rgba(255, 248, 238, 0.55);
+        border: 1px solid rgba(44, 31, 20, 0.14);
+        border-radius: 12px;
+        cursor: pointer;
+      }
+      .growth-journey-detail__sit-breath-title {
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .growth-journey-detail__paper-toggle {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        margin: 0 0 8px;
+        font: inherit;
+        font-size: 0.8rem;
+        color: rgba(44, 31, 20, 0.72);
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 2px;
       }
       .growth-journey-detail__close {
         appearance: none;

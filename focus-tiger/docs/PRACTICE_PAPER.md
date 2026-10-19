@@ -1,11 +1,11 @@
 # Practice Paper — 练习观察纸 · 方向锁
 
-> **状态**：方向锁 · **无运行时** · 2026-10-18
+> **状态**：方向锁 · 界面第一刀挂成长旅程详情下半部（T24）· 2026-10-19
 > **点头分层**：**方向**（挂在成长旅程详情、不打分、不新造账本、不碰倾诉原文）PO 已书面点头。**文案规则**（滚动 7 天判定表、去掉「提前起身」）是分析师 2026-10-18 表。**第一刀一张卡**（Sit & Breath / 同坐与呼吸；2026-10-19 PO 收口：不按 `arrive` 拆）。不要把未审过的句子记成已批准界面。
 > **从属**：[`PRODUCT_POSITIONING.md`](./PRODUCT_POSITIONING.md) · [`PRINCIPLES.md`](./PRINCIPLES.md) · [`GROWTH_JOURNEY.md`](./GROWTH_JOURNEY.md) · [`GROWTH_METRICS_CHARTER.md`](./GROWTH_METRICS_CHARTER.md)
 > **不是**：健康仪表盘、ServiceMap、心智拓扑图、0–100 分数、红黄绿告警、情绪监测、新的 `scoreFormula`
 
-本锁只定「用户看见什么、读哪些已有数字、哪些词不许用」。不改界面，不加计数器。
+本锁定「用户看见什么、读哪些已有数字、哪些词不许用」。不加新计数器。界面第一刀按 T24 Brief 挂在详情下半部，一张 Sit & Breath 卡。
 
 ---
 

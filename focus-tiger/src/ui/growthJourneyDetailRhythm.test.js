@@ -26,3 +26,12 @@ test('lotus row sits between the next step and lifetime, never wraps', () => {
   assert.match(src, /id = 'growth-journey-lotus-row'/);
   assert.match(src, /flex-wrap: nowrap/);
 });
+
+test('practice paper hangs under the rhythm, as one Sit & Breath card', () => {
+  assert.match(
+    src,
+    /this\.rhythmEl,\s*this\.paperEl,\s*this\.closeBtn/s
+  );
+  assert.match(src, /practice-paper-sit-breath/);
+  assert.doesNotMatch(src, /arrive\s*===\s*true/);
+});

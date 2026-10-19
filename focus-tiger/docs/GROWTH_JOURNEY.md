@@ -1,6 +1,6 @@
 # Growth Journey V1 — 方向锁
 
-> **状态**：方向锁（首页短轨迹与详情已接线）· 观察纸另见 [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md)（无运行时；第一刀一张 Sit & Breath 卡，滚动 7 天节奏句）· 2026-10-03 PO 书面点头；2026-10-18 观察纸挂点补锁；2026-10-19 一卡收口
+> **状态**：方向锁（首页短轨迹与详情已接线）· 观察纸另见 [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md)（详情下半部第一刀一张 Sit & Breath 卡 + 滚动 7 天节奏句；T24）· 2026-10-03 PO 书面点头；2026-10-18 观察纸挂点补锁；2026-10-19 一卡收口
 > **从属**：`PRODUCT_POSITIONING.md`（成长的正确表达、宁静型游戏化）· `PRINCIPLES.md` · `GROWTH_METRICS_CHARTER.md`（不新造公式）
 > **不是**：等级、经验值、健康评分、Yin Evolution、莲花朵数、七日热力图、连胜环
 
