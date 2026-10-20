@@ -983,6 +983,14 @@ export class WideIdleMoreMenu {
       const showDot =
         Boolean(hintId) && this.handlers.isHintUnread?.(hintId) === true;
       syncSecondaryMenuHintDot(btn, showDot);
+      if (item.hoverTipKey) {
+        attachGlassHoverTip(btn, {
+          placement: 'left',
+          multiline: true,
+          tipId: `ft-menu-hover-tip-${item.proxy}`,
+          text: t(item.hoverTipKey)
+        });
+      }
       li.appendChild(btn);
       sectionItems.appendChild(li);
     }

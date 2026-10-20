@@ -552,14 +552,14 @@ export const KB_ROUTING_MATRIX_FIXTURES = Object.freeze([
   },
   {
     id: 'kb-0022-zen-cinema-zh',
-    text: 'Zen Cinema 从哪开？',
+    text: 'Mindful Theater 从哪开？',
     dimensions: ['where'],
     lock: 'must-hit',
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0022' }
   },
   {
     id: 'kb-0022-zen-cinema-en',
-    text: 'Where is Zen Cinema?',
+    text: 'Where is Mindful Theater?',
     dimensions: ['where', 'en'],
     lock: 'must-hit',
     expect: { dataSource: 'product_knowledge', catalogId: 'KB-FUNC-0022' }

@@ -69,6 +69,7 @@ import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js'
  * @property {boolean} [interactive] false = visible confirmation row, not clickable
  * @property {'beige-cta'} [emphasis]
  * @property {string} [testId]
+ * @property {string} [hoverTipKey] glass hover subtitle on menu row (wide ⋯ / narrow drawer)
  */
 
 /** Menu / drawer row → onboarding hint id (mint dot on first visit). */
@@ -693,7 +694,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
 
   pushLabeledGroup(out, 'MENU_GROUP_INSPIRATION', [
     { proxy: 'daily-quote', labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL' },
-    { proxy: 'zen-cinema', labelKey: 'ZEN_CINEMA_MENU_LABEL' },
+    {
+      proxy: 'zen-cinema',
+      labelKey: 'ZEN_CINEMA_MENU_LABEL',
+      hoverTipKey: 'ZEN_CINEMA_MENU_HOVER_TIP'
+    },
     visibility.mustardSeedSealUnlocked
       ? {
           proxy: 'mustard-seed-seal',
