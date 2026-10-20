@@ -286,7 +286,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     surface: 'menu',
     proxy: 'zen-cinema',
     labelKeys: Object.freeze(['ZEN_CINEMA_MENU_LABEL']),
-    menuPath: '⋯ → Inspiration → Zen Cinema',
+    menuPath: '⋯ → Inspiration → Mindful Theater',
     liveStatus: 'live',
     codeAnchors: Object.freeze([
       "proxy: 'zen-cinema'",

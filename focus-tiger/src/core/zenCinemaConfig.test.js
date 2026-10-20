@@ -41,10 +41,20 @@ describe('zenCinemaConfig', () => {
       hundredFootPole.titleKey,
       'ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE'
     );
+
+    const yuanPorcelain = findZenCinemaFilmById('yuan-blue-white-porcelain');
+    assert.ok(yuanPorcelain);
+    assert.equal(yuanPorcelain.youtubeUrl, 'https://youtu.be/amZwKxj32ww');
+    const piano = findZenCinemaFilmById('porcelain-piano-meditation');
+    assert.ok(piano);
+    assert.equal(piano.youtubeUrl, 'https://youtu.be/CpEKlYyKxGU');
+    const deepFlow = findZenCinemaFilmById('porcelain-deep-flow');
+    assert.ok(deepFlow);
+    assert.equal(deepFlow.youtubeUrl, 'https://youtu.be/-pi1S408Ikg');
     for (const film of ZEN_CINEMA_FILMS) {
       assert.match(film.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
       assert.match(film.youtubeUrl, /^https:\/\/youtu\.be\/[A-Za-z0-9_-]+$/);
-      assert.match(film.thumbSrc, /^\/images\/zen-cinema\/[a-z0-9-]+\.png$/);
+      assert.match(film.thumbSrc, /^\/images\/zen-cinema\/[a-z0-9-]+\.(?:png|jpg)$/);
       assert.match(film.titleKey, /^ZEN_CINEMA_FILM_TITLE/);
     }
   });
