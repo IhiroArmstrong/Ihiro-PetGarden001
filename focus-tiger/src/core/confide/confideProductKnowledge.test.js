@@ -338,13 +338,13 @@ describe('confide product knowledge retrieval', () => {
   });
 
   it('hits batch-2 Inspiration Zen Cinema and Wallpapers entry questions', () => {
-    const cinema = retrieveProductKnowledge('Zen Cinema 从哪开？');
+    const cinema = retrieveProductKnowledge('Mindful Theater 从哪开？');
     assert.equal(cinema.hit, true);
     assert.equal(cinema.id, 'KB-FUNC-0022');
-    assert.match(cinema.text || '', /Zen Cinema/i);
+    assert.match(cinema.text || '', /Mindful Theater/i);
     assert.match(cinema.text || '', /YouTube/i);
 
-    const cinemaEn = retrieveProductKnowledge('Where is Zen Cinema?');
+    const cinemaEn = retrieveProductKnowledge('Where is Mindful Theater?');
     assert.equal(cinemaEn.hit, true);
     assert.equal(cinemaEn.id, 'KB-FUNC-0022');
 

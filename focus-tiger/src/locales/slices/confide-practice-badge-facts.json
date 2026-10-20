@@ -1,0 +1,14 @@
+{
+  "en": {
+    "CONFIDE_PRACTICE_FACTS_BADGES_NONE": "This device does not show any marks beside Yin yet.",
+    "CONFIDE_PRACTICE_FACTS_BADGES_COUNT": "This device currently shows {count} marks beside Yin."
+  },
+  "zh": {
+    "CONFIDE_PRACTICE_FACTS_BADGES_NONE": "这台设备上，阿寅身边还没有记下印记。",
+    "CONFIDE_PRACTICE_FACTS_BADGES_COUNT": "这台设备上，阿寅身边现在有 {count} 枚印记。"
+  },
+  "ja": {
+    "CONFIDE_PRACTICE_FACTS_BADGES_NONE": "この端末では、阿寅のそばに印はまだありません。",
+    "CONFIDE_PRACTICE_FACTS_BADGES_COUNT": "この端末では、阿寅のそばにいま {count} 個の印があります。"
+  }
+}

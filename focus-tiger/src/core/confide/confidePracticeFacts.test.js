@@ -11,15 +11,19 @@ import { confideClassify } from './confideClassify.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import {
   formatPracticeDurationReply,
+  formatPracticeBadgeReply,
   isPracticeDurationQuestion,
   shouldAnswerWithPracticeFacts,
   summarizePracticeFacts,
   summarizePracticeFactsFromJourneyLog,
+  summarizeIdleBadgeFacts,
   classifyPracticeFactsKind,
   PRACTICE_FACTS_KIND,
   buildPracticeFactsReply
 } from './confidePracticeFacts.js';
 import { shouldUseDesktopCompanionGenerate } from '../desktopCompanionL2Route.js';
+import { markTipFromCheckoutReturn } from '../tipJarGate.js';
+import { mayTryConfideProductKnowledge } from './confideProductKnowledge.js';
 
 const tFn = (key) =>
   ({
@@ -29,7 +33,11 @@ const tFn = (key) =>
     CONFIDE_PRACTICE_FACTS_DAYS_PARTIAL:
       'This device has {days} practiced days, about {minutes} minutes on the days that recorded time.',
     CONFIDE_PRACTICE_FACTS_DAYS_MINUTES:
-      'This device has {days} practiced days, about {minutes} minutes in all.'
+      'This device has {days} practiced days, about {minutes} minutes in all.',
+    CONFIDE_PRACTICE_FACTS_BADGES_NONE:
+      'This device does not show any marks beside Yin yet.',
+    CONFIDE_PRACTICE_FACTS_BADGES_COUNT:
+      'This device currently shows {count} marks beside Yin.'
   })[key] || key;
 
 const readyOpen = {
@@ -64,6 +72,87 @@ describe('confide practice facts (Slice 0)', () => {
     );
   });
 
+  it('answers badge inventory from idle pack and leaves download / coin on product path', () => {
+    assert.equal(
+      classifyPracticeFactsKind('How many badges do I have?'),
+      PRACTICE_FACTS_KIND.BADGES
+    );
+    assert.equal(
+      classifyPracticeFactsKind('Which badges have I earned?'),
+      PRACTICE_FACTS_KIND.BADGES
+    );
+    assert.equal(classifyPracticeFactsKind('我有几枚徽章'), PRACTICE_FACTS_KIND.BADGES);
+    assert.equal(classifyPracticeFactsKind('Can I download my badge?'), null);
+    assert.equal(classifyPracticeFactsKind('徽章是否可以做 focus coin 来使用？'), null);
+    assert.equal(classifyPracticeFactsKind('How do I get badges?'), null);
+
+    const empty = {};
+    const emptyStore = {
+      getItem: (k) => empty[k] ?? null,
+      setItem: (k, v) => {
+        empty[k] = String(v);
+      },
+      removeItem: (k) => {
+        delete empty[k];
+      }
+    };
+    assert.equal(summarizeIdleBadgeFacts(emptyStore).count, 0);
+    assert.equal(
+      formatPracticeBadgeReply({ count: 0 }, tFn),
+      'This device does not show any marks beside Yin yet.'
+    );
+
+    const tipped = {};
+    const tippedStore = {
+      getItem: (k) => tipped[k] ?? null,
+      setItem: (k, v) => {
+        tipped[k] = String(v);
+      },
+      removeItem: (k) => {
+        delete tipped[k];
+      }
+    };
+    markTipFromCheckoutReturn(tippedStore, {
+      now: () => new Date('2026-08-15T00:00:00.000Z')
+    });
+    const tippedCount = summarizeIdleBadgeFacts(tippedStore).count;
+    assert.ok(tippedCount >= 3);
+    const reply = buildPracticeFactsReply(
+      null,
+      tippedStore,
+      tFn,
+      'How many badges do I have?'
+    );
+    assert.match(reply, new RegExp(`${tippedCount} marks beside Yin`));
+
+    const text = 'How many badges do I have?';
+    const route = confideClassify(text);
+    assert.equal(route, CONFIDE_ROUTE.FALLBACK);
+    assert.equal(shouldAnswerWithPracticeFacts(route, text), true);
+    assert.equal(
+      mayTryConfideProductKnowledge({
+        route,
+        text,
+        wideViewport: true,
+        hasBridge: true,
+        hasMemoryBridge: true
+      }),
+      false
+    );
+    const download = 'Can I download my badge?';
+    assert.equal(shouldAnswerWithPracticeFacts(CONFIDE_ROUTE.FALLBACK, download), false);
+    assert.equal(
+      mayTryConfideProductKnowledge({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: download,
+        wideViewport: true,
+        hasBridge: true,
+        hasMemoryBridge: true
+      }),
+      true
+    );
+  });
+
   it('does not steal safety; CR-52 lets a duration ask leave the sad bucket', () => {
     const sadOnly = 'I feel depressed';
     assert.equal(confideClassify(sadOnly), CONFIDE_ROUTE.SAD);
@@ -75,6 +164,13 @@ describe('confide practice facts (Slice 0)', () => {
     assert.equal(confideClassify(safety), CONFIDE_ROUTE.SAFETY_REDIRECT);
     assert.equal(
       shouldAnswerWithPracticeFacts(CONFIDE_ROUTE.SAFETY_REDIRECT, safety),
+      false
+    );
+    assert.equal(
+      shouldAnswerWithPracticeFacts(
+        CONFIDE_ROUTE.SAFETY_REDIRECT,
+        'How many badges do I have?'
+      ),
       false
     );
   });

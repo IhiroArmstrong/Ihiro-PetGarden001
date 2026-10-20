@@ -141,7 +141,7 @@ describe('marketing-site Slice 3 contract', () => {
     ...zenCinemaConfig.matchAll(/youtubeUrl:\s*'([^']+)'/g)
   ].map((m) => m[1]);
 
-  it('lists the same Zen Cinema YouTube URLs as zenCinemaConfig.js', () => {
+  it('lists the same Mindful Theater YouTube URLs as zenCinemaConfig.js', () => {
     assert.equal(catalogUrls.length >= 2, true);
     assert.ok(catalogUrls.includes('https://youtu.be/RV46qrvG1pw'));
     assert.ok(catalogUrls.includes('https://youtu.be/xawM6cgJSrE'));
@@ -154,23 +154,26 @@ describe('marketing-site Slice 3 contract', () => {
     }
   });
 
-  it('shows Zen Cinema between community Slack note and footer legal links', () => {
+  it('shows Mindful Theater between community Slack note and footer legal links', () => {
     const communityEnd = html.indexOf('</section>', html.indexOf('id="community"'));
     const zenStart = html.indexOf('id="zen-cinema"');
     const footerStart = html.indexOf('<footer class="colophon"');
     assert.ok(communityEnd > 0 && zenStart > communityEnd && footerStart > zenStart);
-    assert.match(html, /Zen Cinema/);
-    assert.match(html, /Mindful Moments with Yin/);
+    assert.match(html, /Mindful Theater/);
+    assert.match(html, /Meditation, Ancient Art/);
     assert.match(html, /Satori: The Flash That Changes Everything/);
     assert.match(html, /What is Zen\? Ancient Wisdom/);
     assert.match(html, /zen-cinema-satori-flash-thumb\.png/);
     assert.match(html, /zen-cinema-what-is-zen-thumb\.png/);
     assert.match(html, /zen-cinema-hundred-foot-pole-thumb\.png/);
+    assert.match(html, /zen-cinema-porcelain-deep-flow-thumb\.png/);
+    assert.match(html, /zen-cinema-porcelain-piano-meditation-thumb\.jpg/);
+    assert.match(html, /zen-cinema-yuan-blue-white-porcelain-thumb\.png/);
     assert.match(html, /class="zen-cinema-list"/);
     assert.match(html, /Each poster opens YouTube in a new tab/);
   });
 
-  it('keeps calm tone without FOMO on Zen Cinema', () => {
+  it('keeps calm tone without FOMO on Mindful Theater', () => {
     const zenSection = html.match(
       /<section id="zen-cinema"[\s\S]*?<\/section>/
     )?.[0] ?? '';

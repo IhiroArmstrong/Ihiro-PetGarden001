@@ -17,6 +17,7 @@ import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 import { journeyLogDateKey, readJourneyLog } from '../journeyLogGate.js';
 import { PracticeDaysStore } from '../PracticeDaysStore.js';
 import { resolvePracticeAggregate } from '../practiceAggregate.js';
+import { syncAndReadIdleBadgePack } from '../idlePracticeBadges.js';
 
 export const PRACTICE_COMPARE_WINDOW_DAYS = 14;
 export const PRACTICE_USUAL_MIN_SESSIONS = 3;
@@ -26,7 +27,8 @@ export const PRACTICE_FACTS_KIND = Object.freeze({
   USUAL_TIME: 'usual_time',
   SHOWING_UP: 'showing_up',
   COMPARE_VOLUME: 'compare_volume',
-  COMPARE_EASE: 'compare_ease'
+  COMPARE_EASE: 'compare_ease',
+  BADGES: 'badges'
 });
 
 const DURATION_RES = [
@@ -63,6 +65,34 @@ const COMPARE_EASE_RES = [
   /\bgetting\s+into\s+practice\s+more\s+easily\b/i,
   /\beasier\s+to\s+(get\s+into|enter)\s+(practice|a\s+sit)\b/i,
   /更容易进入状态|更容易進入狀態|进状态(顺不顺|容易)/
+];
+
+/**
+ * T31 · first-person inventory of marks this device already shows.
+ * Shape, not a topic list: count/list of *my* badges/seals/imprints.
+ * Product operators (download / buy / use-as coin) stay on the KB path.
+ */
+const BADGE_MARK_EN = '(?:kindness\\s+)?(?:badges?|seals?|imprints?|medallions?)';
+const BADGE_INVENTORY_RES = [
+  new RegExp(`\\bhow\\s+many\\s+${BADGE_MARK_EN}\\b`, 'i'),
+  new RegExp(
+    `\\b(?:do\\s+i\\s+have|have\\s+i(?:\\s+(?:got|earned|unlocked))?)\\s+(?:any\\s+|a\\s+)?${BADGE_MARK_EN}\\b`,
+    'i'
+  ),
+  new RegExp(
+    `\\b(?:which|what)\\s+${BADGE_MARK_EN}\\s+(?:do\\s+i\\s+have|have\\s+i(?:\\s+(?:got|earned|unlocked))?|are\\s+mine)\\b`,
+    'i'
+  ),
+  new RegExp(
+    `\\b(?:how\\s+many|which|what)\\s+${BADGE_MARK_EN}\\s+(?:are\\s+on\\s+this\\s+device|does\\s+this\\s+device)\\b`,
+    'i'
+  ),
+  /我有(?:几|幾|多少)(?:枚|个|個)?(?:徽章|印记|印記|バッジ)/,
+  /(?:徽章|印记|印記|バッジ)(?:有)?(?:几|幾|多少|いくつ)(?:枚|个|個)?/,
+  /我有哪些(?:徽章|印记|印記|バッジ)/,
+  /(?:哪些|哪几枚|哪幾枚)(?:徽章|印记|印記)/,
+  /我(?:解锁|解鎖|拿到|获得|獲得)了?(?:几|幾|多少|哪些)(?:枚|个|個)?(?:徽章|印记|印記)/,
+  /バッジはいくつ|いくつバッジ|私のバッジ/
 ];
 
 /** CI-05 · domain-limited practice pattern asks (not meta-observation). */
@@ -116,6 +146,42 @@ function matchesAnyPracticeFactsRes(res, raw) {
   return res.some((re) => re.test(spaced) || (compact !== spaced && re.test(compact)));
 }
 
+/**
+ * Closed product-operator set. Inventory asks must not steal download / coin /
+ * how-to-get. Not a phrase list of today's failed sentences.
+ * @param {string} raw
+ * @returns {boolean}
+ */
+export function isBadgeInventoryProductOperator(raw) {
+  const spaced = String(raw || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+  if (!spaced) return false;
+  const compact = spaced.replace(/\s+/g, '');
+  if (/\bdownload\b/.test(spaced) || compact.includes('下载') || compact.includes('下載')) {
+    return true;
+  }
+  if (
+    /\bfocus\s*coins?\b/.test(spaced) ||
+    compact.includes('寅币') ||
+    compact.includes('寅幣') ||
+    compact.includes('focuscoin')
+  ) {
+    return true;
+  }
+  if (/\bhow\s+(?:can|do|to)\b/.test(spaced) && /\b(get|earn|buy|unlock|use)\b/.test(spaced)) {
+    return true;
+  }
+  if (/(?:怎么|如何|怎樣).*(?:下载|下載|获得|獲得|解锁|解鎖|买|買)/.test(compact)) {
+    return true;
+  }
+  if (compact.includes('可以做') && (compact.includes('徽章') || compact.includes('badge'))) {
+    return true;
+  }
+  return false;
+}
+
 export function classifyPracticeFactsKind(text) {
   const raw = typeof text === 'string' ? text.trim() : '';
   if (!raw) return null;
@@ -127,6 +193,12 @@ export function classifyPracticeFactsKind(text) {
   if (matchesAnyPracticeFactsRes(SHOWING_UP_RES, raw)) return PRACTICE_FACTS_KIND.SHOWING_UP;
   if (matchesAnyPracticeFactsRes(COMPARE_VOLUME_RES, raw)) {
     return PRACTICE_FACTS_KIND.COMPARE_VOLUME;
+  }
+  if (
+    !isBadgeInventoryProductOperator(raw) &&
+    matchesAnyPracticeFactsRes(BADGE_INVENTORY_RES, raw)
+  ) {
+    return PRACTICE_FACTS_KIND.BADGES;
   }
   if (matchesAnyPracticeFactsRes(DURATION_RES, raw)) return PRACTICE_FACTS_KIND.DURATION;
   return null;
@@ -409,6 +481,34 @@ function fill(template, vars) {
  * @param {(key: string) => string} tFn
  * @returns {string}
  */
+/**
+ * Idle chrome pack this device already shows (same source as the badge row).
+ * @param {Storage | null | undefined} storage
+ * @returns {{ count: number }}
+ */
+export function summarizeIdleBadgeFacts(storage) {
+  const pack = syncAndReadIdleBadgePack(storage);
+  const ids = Array.isArray(pack?.ids) ? pack.ids : [];
+  return { count: ids.length };
+}
+
+/**
+ * @param {{ count: number }} summary
+ * @param {(key: string) => string} tFn
+ * @returns {string}
+ */
+export function formatPracticeBadgeReply(summary, tFn) {
+  const lookup = typeof tFn === 'function' ? tFn : () => '';
+  const count = Math.max(0, Math.floor(Number(summary?.count) || 0));
+  if (count <= 0) return lookup('CONFIDE_PRACTICE_FACTS_BADGES_NONE');
+  return fill(lookup('CONFIDE_PRACTICE_FACTS_BADGES_COUNT'), { count });
+}
+
+/**
+ * @param {{ dayCount: number, knownMinutes: number | null, unknownMinuteDays: number }} summary
+ * @param {(key: string) => string} tFn
+ * @returns {string}
+ */
 export function formatPracticeDurationReply(summary, tFn) {
   const lookup = typeof tFn === 'function' ? tFn : () => '';
   const dayCount = Number(summary?.dayCount) || 0;
@@ -544,6 +644,9 @@ export function formatPracticeArriveCompareReply(windows, tFn) {
 export function buildPracticeFactsReply(store, storage, tFn, text, opts = {}) {
   const kind = classifyPracticeFactsKind(text) || PRACTICE_FACTS_KIND.DURATION;
   const reference = opts.reference ?? new Date();
+  if (kind === PRACTICE_FACTS_KIND.BADGES) {
+    return formatPracticeBadgeReply(summarizeIdleBadgeFacts(storage), tFn);
+  }
   if (kind === PRACTICE_FACTS_KIND.USUAL_TIME) {
     return formatPracticeUsualTimeReply(tallyPracticeHourBuckets(storage), tFn);
   }

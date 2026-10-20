@@ -883,6 +883,14 @@ export class NarrowIdleShell {
       const showDot =
         Boolean(hintId) && this.handlers.isHintUnread?.(hintId) === true;
       syncSecondaryMenuHintDot(btn, showDot);
+      if (item.hoverTipKey) {
+        attachGlassHoverTip(btn, {
+          placement: 'top',
+          multiline: true,
+          tipId: `ft-menu-hover-tip-${item.proxy}`,
+          text: t(item.hoverTipKey)
+        });
+      }
       li.appendChild(btn);
       this.listEl.appendChild(li);
     }

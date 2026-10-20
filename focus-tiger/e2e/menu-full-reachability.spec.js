@@ -148,6 +148,19 @@ async function settleAfterRow(page) {
   for (let n = 0; n < 2; n++) {
     await page.keyboard.press('Escape');
   }
+  await page.evaluate(() => {
+    for (const el of document.querySelectorAll('.ft-overlay-backdrop.is-visible')) {
+      el.classList.remove('is-visible');
+      el.hidden = true;
+      el.setAttribute('aria-hidden', 'true');
+    }
+    document.body.classList.remove('ft-idle-overlay-chrome-dim');
+  });
+  await page
+    .locator('.ft-overlay-backdrop.is-visible')
+    .first()
+    .waitFor({ state: 'hidden', timeout: 8_000 })
+    .catch(() => {});
 }
 
 /**
@@ -166,8 +179,34 @@ async function scrollMenuRowIntoView(item) {
  * @param {import('@playwright/test').Page} page
  * @param {'wide-more' | 'narrow-drawer'} surface
  */
+
+/** @param {import('@playwright/test').Page} page */
+async function dismissVisibleGrowthBackdrops(page) {
+  await page.evaluate(() => {
+    for (const name of ['__yinCoinPanel', '__zenCinemaCard', '__dailyZenQuoteCard']) {
+      try {
+        window[name]?.close?.();
+      } catch {
+        /* ignore */
+      }
+    }
+    for (const el of document.querySelectorAll('.ft-overlay-backdrop')) {
+      el.classList.remove('is-visible');
+      el.hidden = true;
+      el.setAttribute('aria-hidden', 'true');
+    }
+    document.body.classList.remove('ft-idle-overlay-chrome-dim');
+  });
+  await page
+    .locator('.ft-overlay-backdrop.is-visible')
+    .first()
+    .waitFor({ state: 'hidden', timeout: 8_000 })
+    .catch(() => {});
+}
+
 async function openMenu(page, surface) {
   await settleAfterRow(page);
+  await dismissVisibleGrowthBackdrops(page);
   if (surface === 'wide-more') {
     const btn = page.locator('#ft-wide-more-btn');
     await expect(btn, '⋯ available').toBeVisible({ timeout: 8_000 });
@@ -274,8 +313,17 @@ async function walkMenu(page, surface, menuSelector) {
       timeout: surface === 'narrow-drawer' ? 30_000 : 20_000
     });
     await assertOpenedResult(page, row.contract, row.proxy);
+    await expect
+      .poll(
+        async () => {
+          await settleAfterRow(page);
+          await dismissVisibleGrowthBackdrops(page);
+          return await page.locator('.ft-overlay-backdrop.is-visible').count();
+        },
+        { timeout: 12_000 }
+      )
+      .toBe(0);
     opened.push(row.proxy);
-    await settleAfterRow(page);
   }
 
   await openMenu(page, surface);
