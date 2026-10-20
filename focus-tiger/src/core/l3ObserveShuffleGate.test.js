@@ -11,6 +11,7 @@ import {
   isEchoOfUserLine,
   isHighOverlapWithUserLine,
   isBareEmotionLabelReply,
+  isContentWordParrotReply,
   sanitizeCompanionL2Reply
 } from '../../desktop/companion/l2Sanitize.js';
 import {
@@ -194,5 +195,39 @@ describe('L3 observe scheme B shuffle gate', () => {
     );
     assert.equal(isBareEmotionLabelReply('烦躁。'), true);
     assert.equal(isBareEmotionLabelReply('茶还热着'), false);
+  });
+
+  it('rejects content-word restatements without a field-sentence reject list', () => {
+    assert.equal(
+      isContentWordParrotReply("Sister's dislike of Yin.", 'My sister does not like Yin.'),
+      true
+    );
+    assert.equal(
+      isContentWordParrotReply('Dislike of Yin.', 'My sister does not like Yin.'),
+      true
+    );
+    assert.equal(
+      sanitizeCompanionL2Reply("Sister's dislike of Yin.", {
+        userText: 'My sister does not like Yin.'
+      }),
+      null
+    );
+    assert.equal(
+      isContentWordParrotReply(
+        'The cub cannot settle into sleep tonight.',
+        '睡不着'
+      ),
+      false
+    );
+    assert.equal(
+      isContentWordParrotReply('Tea is still warm.', 'I think I need a reset.'),
+      false
+    );
+    assert.equal(
+      sanitizeCompanionL2Reply('Sitting can wait when the body wants rest.', {
+        userText: 'Why should I do some meditation?'
+      }),
+      'Sitting can wait when the body wants rest.'
+    );
   });
 });
