@@ -131,9 +131,25 @@ export function classifyYinVoiceConfirmReply(transcript) {
   const normalized = normalizeYinVoiceUtterance(transcript);
   if (!normalized) return 'empty';
   if (normalized === 'yes forget everything') return 'forget_confirm';
-  if (/^(?:yes|ok|okay|please do it|go ahead)$/.test(normalized)) return 'yes';
+  if (/^yes(?: please)?$/.test(normalized)) return 'yes';
+  if (/^(?:yeah|yep|sure)$/.test(normalized)) return 'yes';
+  if (/^(?:ok|okay)(?: please)?$/.test(normalized)) return 'yes';
+  if (/^(?:please do it|go ahead)$/.test(normalized)) return 'yes';
   if (/^(?:no|cancel|stop|never mind)$/.test(normalized)) return 'no';
   return 'unrecognized';
+}
+
+/**
+ * @param {unknown} heard
+ * @returns {{ transcript: string, captureDiagnostics: string }}
+ */
+export function normalizeYinVoiceListenResult(heard) {
+  if (heard && typeof heard === 'object' && !Array.isArray(heard)) {
+    const transcript = String(heard.transcript ?? '').trim();
+    const captureDiagnostics = String(heard.captureDiagnostics ?? '').trim();
+    return { transcript, captureDiagnostics };
+  }
+  return { transcript: String(heard ?? '').trim(), captureDiagnostics: '' };
 }
 
 /**
