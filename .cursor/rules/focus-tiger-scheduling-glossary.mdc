@@ -6,7 +6,7 @@ alwaysApply: true
 # Focus Tiger · 排期统一用语（强制）
 
 > **SSOT**：[`focus-tiger/docs/SCHEDULING_GLOSSARY.md`](../../focus-tiger/docs/SCHEDULING_GLOSSARY.md)（`RULES_INDEX` → `scheduling-glossary`）。向 PO 汇报「先做什么、是否同一安排」时 **Read 全文**；本文件只列硬禁令。  
-> **会话代号**：[`focus-tiger/docs/GLOSSARY.md`](../../focus-tiger/docs/GLOSSARY.md)（T1/T2…）须与 §1 槽位同步，见 `communication-glossary`。
+> **会话代号**：[`focus-tiger/docs/GLOSSARY.md`](../../focus-tiger/docs/GLOSSARY.md)（T1/T2…）风险列与 §1 对齐；§1 为队列 SSOT。实现旁支只读，见 [`queue-governance-readme.md`](../../focus-tiger/docs/queue-governance-readme.md)。
 
 ## 硬禁令
 

@@ -6,19 +6,20 @@ alwaysApply: true
 # Focus Tiger · 沟通术语统一
 
 > **术语表 SSOT**：[`focus-tiger/docs/GLOSSARY.md`](../../focus-tiger/docs/GLOSSARY.md)（`RULES_INDEX` → `communication-glossary`）。  
-> **排期槽位 SSOT**：[`focus-tiger/docs/SCHEDULING_GLOSSARY.md`](../../focus-tiger/docs/SCHEDULING_GLOSSARY.md)（`scheduling-glossary`）。向 PO 汇报「先做什么」时两表须一致，不得只写分支名或 CR 编号。
+> **排期槽位 SSOT**：[`focus-tiger/docs/SCHEDULING_GLOSSARY.md`](../../focus-tiger/docs/SCHEDULING_GLOSSARY.md) §1（`scheduling-glossary`）。向 PO 汇报「先做什么」时两表须一致，不得只写分支名或 CR 编号。  
+> **实现会话只读热点**：[`queue-governance-readme.md`](../../focus-tiger/docs/queue-governance-readme.md)（`queue:check` 进 `docs:check`）。
 
 ## 一、术语统一（最重要）
 
 1. 同一概念全程只用同一名称；第一次出现定名后不得换说法。
-2. 每个在谈任务须有唯一 **任务代号 + 中文短名**（登记在 `GLOSSARY.md`），例如「T1 文档同步 PR」「T2 Confide CR-50」。之后只写 **T1 / T2**，禁止「#2」「旁支」「那个 PR」「下一刀」等别名。
+2. 每个在谈任务须有唯一 **任务代号 + 中文短名**（登记在治理会话更新的 `GLOSSARY.md`），例如「T1 文档同步 PR」「T2 Confide CR-50」。之后只写 **T1 / T2**，禁止「#2」「旁支」「那个 PR」「下一刀」等别名。
 3. **执行状态**（`GLOSSARY.md`「状态」列）只允许：**立即做**／**排队中**／**搁置**／**已完成**／**阻塞**。禁止用「不排」「暂不安排」「未排期」当作状态列同义词——PO 槽位「未排期」写在「排期槽位」列（见术语表），状态列对未安排项写 **搁置**。
 4. **风险**只允许：**高**／**中**／**低**。凡写风险须同时给出 **等级 + 一句话原因**。向 PO 列队时若涉及 Playbook / §2.3 高风险面 / 根因暂缓，按 `SCHEDULING_GLOSSARY.md` §3 写清是哪一种，禁止单写「高风险」不展开。
 
 ## 二、禁止项
 
 5. 禁止把未解释的缩写、内部代号、文件名当说明；首次出现须括号一句话解释。
-6. 禁止中途突然引入新任务、新名词；确有需要须标 **【新增】……，原因：……**，并**先**更新 `GLOSSARY.md` 再出现在正文。
+6. 禁止中途突然引入新任务、新名词；确有需要须标 **【新增】……，原因：……**，并**由治理 docs PR** 更新 `GLOSSARY.md` / `SCHEDULING_GLOSSARY.md`（实现旁支 **禁止** 在关单 PR 里顺手改）。
 7. 禁止只给路径或命令当回答；路径与命令放 **附录**，正文须可独立读懂。
 
 ## 三、汇报结构（列计划时）
@@ -40,8 +41,8 @@ alwaysApply: true
 
 ## 六、术语表维护（强制）
 
-10. 会话中若将列任务/队列，先 **Read** `focus-tiger/docs/GLOSSARY.md`；不存在则按表头创建。
+10. 会话中若将列任务/队列，先 **Read** `focus-tiger/docs/GLOSSARY.md` 与 `SCHEDULING_GLOSSARY.md` §1；**不要**在实现旁支 commit 改动。
 11. 任务只用术语表中的代号与名称；状态只用第一节固定词。
-12. 新任务：先登记 `GLOSSARY.md`（代号、名称、状态、排期槽位、风险），再在回复中使用。
-13. 状态或槽位变化：先改 `GLOSSARY.md`，再汇报。
+12. 新任务：PO / 治理会话登记 `GLOSSARY.md`（代号、名称、状态、排期槽位、风险）；实现会话在 PR 描述写 T 号即可。
+13. 状态或槽位变化：只由治理 docs PR 改账本；实现会话在汇报里写变化，**不要**在功能 PR 改文件。
 14. 列队或列多任务时，技术段开头写：**「本轮使用术语表版本：（日期或本次修改说明）」**。
