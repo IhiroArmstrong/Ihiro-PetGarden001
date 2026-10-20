@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   classifyProductKnowledgeSemantic,
+  isConfideActivityHowToWithoutProductEntry,
   isConfideConfirmedProductAsk,
   isConfideMoodAsideFromProductKnowledge,
   isConfideOperationalProductAskShape,
@@ -237,6 +238,23 @@ describe('confideProductKnowledgeSemantic', () => {
       }),
       'hit'
     );
+  });
+
+  it('T30: cognitive how-to generates; activity how-to still cannot invent steps', () => {
+    assert.equal(isConfideOperationalProductAskShape('How to understand Zen practice?'), false);
+    assert.equal(isConfideActivityHowToWithoutProductEntry('How to understand Zen practice?'), false);
+    assert.equal(classifyConfideProductAskRole('How to understand Zen practice?'), 'none');
+    assert.equal(
+      resolveProductKnowledgeGateAction({
+        text: 'How to understand Zen practice?',
+        embeddingState: 'ready',
+        semanticIsProduct: true,
+        catalogHit: true
+      }),
+      'skip'
+    );
+    assert.equal(isConfideActivityHowToWithoutProductEntry('How can I meditate?'), true);
+    assert.equal(isConfideOperationalProductAskShape('How can I meditate?'), true);
   });
 
   it('lets life chat out of the honesty line in every band (K-1 × life-outranks)', () => {
