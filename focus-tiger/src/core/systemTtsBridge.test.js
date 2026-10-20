@@ -140,7 +140,8 @@ describe('systemTtsBridge', () => {
       [CONFIDE_ROUTE.SAFETY_REDIRECT]: false,
       [CONFIDE_ROUTE.SAFETY_CARE]: false,
       [CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS]: false,
-      generate: true
+      generate: true,
+      help_center_redirect: true
     };
     for (const [route, speaks] of Object.entries(expected)) {
       assert.equal(shouldSpeakConfideReply(route), speaks, `route ${route}`);

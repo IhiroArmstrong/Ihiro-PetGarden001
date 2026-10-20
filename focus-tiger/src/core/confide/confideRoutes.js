@@ -28,6 +28,12 @@ export const CONFIDE_ROUTE = Object.freeze({
  */
 export const CONFIDE_GENERATE_REPLY_ROUTE = 'generate';
 
+/**
+ * Speak-only Help Center redirect stamp (`ConfideToYinUI` `data-source`).
+ * Not a classify output.
+ */
+export const CONFIDE_HELP_CENTER_REDIRECT_REPLY_ROUTE = 'help_center_redirect';
+
 /** Emotion buckets only (excludes safety + fallback). */
 export const CONFIDE_EMOTION_BUCKETS = Object.freeze([
   CONFIDE_ROUTE.ANXIOUS,

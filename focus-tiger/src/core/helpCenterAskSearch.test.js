@@ -12,8 +12,8 @@ import {
   searchHelpCenterAskCards
 } from './helpCenterAskSearch.js';
 
-test('normalizeHelpCenterAskText maps back up to backup for retrieval', () => {
-  assert.equal(normalizeHelpCenterAskText('Back up now'), 'backup now');
+test('normalizeHelpCenterAskText keeps spaced compounds; matcher joins adjacent words', () => {
+  assert.equal(normalizeHelpCenterAskText('Back up now'), 'back up now');
 });
 
 test('imperative backup phrase is imperative-shaped, not executed on submit', () => {

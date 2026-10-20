@@ -1,6 +1,6 @@
 # Task Brief · 对象归一 + 跳转句朗读 + 只倾听（T29）
 
-> **状态（2026-10-20）**：**规格待点头。** 点头口令：「按这份 Brief 开工」。本文件只锁规格。**点头前不改发送链。**  
+> **状态（2026-10-20）**：**已点头，实现中。** 点头口令已发。空格变体 = 相邻两词拼接；四字母及以下与 `-us`/`-ss` 不做复数还原。  
 > **类别**：**B 类**（会改变「跳转还是生成」，以及跳转句是否朗读）。  
 > **代号**：**T29**。占号仍是 **CR-47** 对象闸切片，不是新的 CR。  
 > **时限**：须在 **10/27** 发送链冻结前合入；合入后重跑黄金脚本英文 60 句 + 安全回归。来不及 → 写进复核纸，本刀不上。  
@@ -87,15 +87,15 @@
 | Help Center 问卡 DOM 不在 | T23 现网：不跳转。本刀不放宽 |
 | TTS 桥不在 / 窄屏 | 跳转句可见、不念 |
 | 目录词已是单数、用户写复数（或相反） | 对象闸为真 |
-| 用户写 `back-up` / `back up` | 与目录 `backup` 同等 |
+| 用户写 `back-up` / `back up` | 与目录 `backup` 同等（相邻两词拼接，不是整句去空格） |
 
 ---
 
 ## 六、落地时怎么判（实现会话照此写，本 PR 不写代码）
 
-1. **归一函数（共用）。** 输入字符串 → 小写（仅拉丁）→ 空白折叠 → 去掉词内连字符使 `back-up`=`backup` → 英文简单复数（词尾 `ies`/`es`/`s` 的保守规则，**禁止**为单个产品词写特例表）。CJK 不拆字、不改。  
-2. **双方归一再 includes。** `keywordMatches` / `hasConfideCatalogNounObject`：haystack 与 needle 都走同一函数后再比。Help Center `normalizeHelpCenterAskText` 改为调用该函数，删除 backup 专用 alias 数组。  
-3. **验收生成变体，不手测一句。** 从 catalog 非问法 keywords 生成：原词、空格切开的复合词（`backup`→`back up`）、加连字符、朴素复数。每条变体 `hasConfideCatalogNounObject === true`。负例：与目录无关的词不得因为归一变真。仓库**禁止**只锁 `Where can I click to back up the data?` 这一句当过关。  
+1. **归一函数（共用）。** 输入字符串 → 小写（仅拉丁）→ 空白折叠 → 去掉词内连字符使 `back-up`=`backup` → 英文简单复数（词尾 `ies`/`es`/`s` 的保守规则，**禁止**为单个产品词写特例表）。**四个字母及以下的词、以及 `-us`、`-ss` 结尾的词不做复数还原**（保护 `bus` / `yes` / `focus` / `gas`）。CJK 不拆字、不改。  
+2. **双方归一后再比。** `keywordMatches` / `hasConfideCatalogNounObject`：haystack 与 needle 都走同一函数。**空格变体只允许「相邻两个词拼起来」去比目录词，禁止把用户整句去空格再 includes**（否则 `his it` 会命中 `sit`）。目录词 `backup`、用户写 `back up` → 相邻两词拼成 `backup`，命中；`his it` 拼出 `hisit` ≠ `sit`，不命中。Help Center `normalizeHelpCenterAskText` 改为调用该函数，删除 backup 专用 alias 数组。  
+3. **验收生成变体，不手测一句。** 从 catalog 非问法 keywords 生成：原词、空格切开的复合词（`backup`→`back up`）、加连字符、朴素复数。每条变体 `hasConfideCatalogNounObject === true`。负例用真实脚本：黄金脚本 **英文情绪闲聊 38 句**加 **gs-h01–h11** 里通道不是产品跳转的句子，归一之后跳转次数必须仍是 0。仓库**禁止**只锁 `Where can I click to back up the data?` 这一句当过关。  
 4. **TTS。** `SPEAKABLE_CONFIDE_REPLY_ROUTES` 加入 `help_center_redirect`（与 `ConfideToYinUI` 盖在 reply 上的 `data-source` 同名）。`systemTtsBridge.test.js` 的「已好清单」把该 id 从「未识别则静音」改为 true；`safety_*` / `aggression_toward_others` 保持 false。未识别 id 仍静音。  
 5. **文案。** 只改 `confide-help-center-ask-redirect.json` 三语。跳转条件（CR-47 操作问法 ∧ 对象、问卡可点）不放宽。  
 6. **安全。** 本刀 diff 不得改 `confideSemanticCrisisLayer` / safety-01 / 危机确认。PR 描述写「不涉及安全通道」。
@@ -127,8 +127,9 @@
 - `Where can I click to back up the data?` 在问卡可点桩下走 `help_center_redirect`（回归，不是唯一过关句）。  
 - `shouldSpeakConfideReply('help_center_redirect') === true`；危机三路由 false。  
 - locale 英文含 `I'm here to listen` 与 `I keep how-to answers`。  
+- 黄金脚本英文 38 句情绪闲聊 + gs-h01–h11 非跳转行：跳转次数 0。  
 - `npm run test:smoke`。  
-- 合入后：黄金脚本英文 60 + 安全回归。
+- 合入后：**10/24** 重跑黄金脚本英文 60 句 + 安全回归；**10/25–26** 英文手测。
 
 **人工（Mac Electron 宽屏）：** 听一句跳转句被念出；听一句危机句仍静音。不问卡执行备份。
 
