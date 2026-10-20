@@ -68,6 +68,7 @@ alwaysApply: true
 | 回复里请用户打开仓库文件 | `focus-tiger-chat-openable-file-links.mdc`（`RULES_INDEX` → `chat-openable-file-links`） |
 | 向 PO 汇报排期/队列/「是否同一安排」/风险与搁置 | `focus-tiger-scheduling-glossary.mdc` + `SCHEDULING_GLOSSARY.md`（`scheduling-glossary`）+ `GLOSSARY.md`（`communication-glossary`） |
 | 任务代号 T*、状态词、列计划汇报结构、禁止换名 | `focus-tiger-communication-consistency.mdc` + `GLOSSARY.md`（`communication-glossary`） |
+| 队列/倾诉日历热点（功能 PR 禁止改 GLOSSARY 等） | `queue-governance-readme.md`（`queue-governance`）· `npm run queue:check` |
 | 改 z-index / overlay / 玻璃卡 / 付款入口 | `00-protected-paths.mdc`（常驻）+ `10-ui-layers.mdc`；契约 `npm run test:payment-contract` |
 
 ## 产品红线

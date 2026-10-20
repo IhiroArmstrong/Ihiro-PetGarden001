@@ -72,6 +72,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md',
   'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
   'focus-tiger/docs/GLOSSARY.md',
+  'focus-tiger/docs/queue-governance-readme.md',
   'focus-tiger/docs/INTERACTION_FEEDBACK_PRINCIPLES.md',
   'focus-tiger/docs/SILENT_BEHAVIORS.md',
   'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
@@ -1490,7 +1491,27 @@ export const RULE_AUTHORITY_TOPICS = [
       '.cursor/rules/focus-tiger-communication-consistency.mdc',
       '.cursor/rules/focus-tiger-core.mdc',
       'focus-tiger/docs/RULES_INDEX.md',
-      'focus-tiger/docs/SCHEDULING_GLOSSARY.md'
+      'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+      'focus-tiger/docs/queue-governance-readme.md'
+    ],
+    forbiddenOutsideSsot: []
+  },
+  {
+    id: 'queue-governance',
+    title: '队列文档治理（防 GLOSSARY / SCHEDULING / CONFIDE 热点冲突）',
+    ssotPath: 'focus-tiger/docs/queue-governance-readme.md',
+    ssotSection: '队列文档治理（防 PR 冲突）',
+    ssotMustContain: [/queue:check/, /热点文件/, /治理 PR/],
+    topicSignals: [/queue-governance/, /queue:check/, /queue-governance-readme/],
+    mustCite: [/queue-governance-readme\.md/],
+    restatementFingerprints: [/功能 PR 禁止/, /全队账本/],
+    restatementThreshold: 2,
+    citeExemptFiles: [
+      'WORKFLOW.md',
+      '.cursor/rules/focus-tiger-communication-consistency.mdc',
+      '.cursor/rules/focus-tiger-scheduling-glossary.mdc',
+      'focus-tiger/docs/RULES_INDEX.md',
+      'focus-tiger/scripts/check-queue-governance-docs.js'
     ],
     forbiddenOutsideSsot: []
   },
