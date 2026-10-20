@@ -16,9 +16,10 @@
  * - hybrid_classify: regex miss but must still run L0 classify
  * - companion_greeting: tier-4 small talk
  * - generate_skip_classify: obvious chitchat; #861 skip L0 classify
+ * - language_not_yet_open: T36 kana after safety
  */
 
-/** @typedef {'memory_list' | 'reflective_honesty' | 'practice_facts' | 'hybrid_classify' | 'companion_greeting' | 'generate_skip_classify'} ConfideMetaQueryBucket */
+/** @typedef {'memory_list' | 'reflective_honesty' | 'practice_facts' | 'hybrid_classify' | 'companion_greeting' | 'generate_skip_classify' | 'language_not_yet_open'} ConfideMetaQueryBucket */
 
 /**
  * @typedef {Readonly<{
@@ -31,7 +32,7 @@
 
 /** @type {readonly ConfideMetaQueryAcceptanceFixture[]} */
 export const CONFIDE_META_QUERY_ACCEPTANCE_FIXTURES = Object.freeze([
-  // memory_list — 8
+  // memory_list — 7 (ja list line moved to T36 language_not_yet_open)
   Object.freeze({
     id: 'meta-list-zh-canonical',
     text: '列出记忆',
@@ -71,7 +72,8 @@ export const CONFIDE_META_QUERY_ACCEPTANCE_FIXTURES = Object.freeze([
   Object.freeze({
     id: 'meta-list-ja',
     text: '何を覚えていますか',
-    bucket: 'memory_list'
+    bucket: 'language_not_yet_open',
+    note: 'T36: kana after safety; not memory_list, not generate'
   }),
 
   // reflective_honesty — 8

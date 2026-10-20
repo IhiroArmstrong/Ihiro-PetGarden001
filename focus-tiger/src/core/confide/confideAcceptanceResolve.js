@@ -41,6 +41,9 @@ const READY_GENERATE = Object.freeze({
  * @returns {import('./confideMetaQueryAcceptanceFixtures.js').ConfideMetaQueryBucket}
  */
 export function resolveConfideMetaQueryBucket(text, route = confideClassify(text) ?? FALLBACK) {
+  if (route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) {
+    return 'language_not_yet_open';
+  }
   if (shouldHandleStandaloneMemorySuppress({
     route,
     text,
@@ -111,6 +114,9 @@ export function resolveConfideDesktopSource(text) {
   const route = confideClassify(text) ?? FALLBACK;
   if (route === CONFIDE_ROUTE.SAFETY_REDIRECT || route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) {
     return 'corpus';
+  }
+  if (route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) {
+    return 'language_not_yet_open';
   }
   if (route !== FALLBACK) {
     return 'corpus';

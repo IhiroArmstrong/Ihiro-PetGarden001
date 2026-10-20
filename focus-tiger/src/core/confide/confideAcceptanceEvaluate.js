@@ -74,7 +74,14 @@ export function evaluateConfideAcceptanceRow(row) {
     if (actual.bucket !== row.expect) {
       failures.push(`bucket ${actual.bucket} !== ${row.expect}`);
     }
-    if (actual.route === CONFIDE_ROUTE.FALLBACK) {
+    if (actual.route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) {
+      if (actual.source !== 'language_not_yet_open') {
+        failures.push(`source ${actual.source} !== language_not_yet_open`);
+      }
+      if (actual.generate) {
+        failures.push('generate must not run');
+      }
+    } else if (actual.route === CONFIDE_ROUTE.FALLBACK) {
       if (row.expect === 'generate_skip_classify') {
         if (actual.source !== 'generate') {
           failures.push(`source ${actual.source} !== generate`);

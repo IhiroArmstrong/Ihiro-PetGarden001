@@ -10,6 +10,7 @@
  *   empty → null (caller must disable send)
  *   → safety_redirect (priority)
  *   → aggression_toward_others (other-directed violence intent)
+ *   → T36: Hiragana/Katakana → language_not_yet_open (after safety)
  *   → CR-52: confirmed product ask (operational ∧ object) → fallback
  *   → emotion buckets (explicit priority on multi-hit)
  *   → fallback
@@ -27,6 +28,7 @@ import { matchesAggressionTowardOthers } from './confideAggressionKeywords.js';
 import { isPracticeFactsQuestion } from './confidePracticeFacts.js';
 import { matchesSafetyRedirect } from './confideSafetyKeywords.js';
 import { observeConfideProductAskBlock } from './confideProductAskBlockObserve.js';
+import { shouldApplyJapaneseConfideNotYetOpen } from './confideJapaneseNotYetOpen.js';
 import {
   isConfideConfirmedProductAsk,
   isConfideProductAskBlocksEmotionLive
@@ -47,6 +49,10 @@ export function confideClassify(text, env) {
 
   if (matchesAggressionTowardOthers(raw)) {
     return CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS;
+  }
+
+  if (shouldApplyJapaneseConfideNotYetOpen(raw, env)) {
+    return CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN;
   }
 
   const blocksEmotion =

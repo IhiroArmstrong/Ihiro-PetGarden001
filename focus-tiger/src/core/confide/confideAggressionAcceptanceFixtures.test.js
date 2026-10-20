@@ -38,7 +38,12 @@ describe('confideAggressionAcceptanceFixtures', () => {
     );
     assert.equal(
       fixturesForAggressionAcceptanceRoute(CONFIDE_ROUTE.FALLBACK).length,
-      11
+      10
+    );
+    assert.equal(
+      fixturesForAggressionAcceptanceRoute(CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN)
+        .length,
+      1
     );
   });
 
@@ -86,7 +91,10 @@ describe('confideAggressionAcceptanceFixtures', () => {
     assert.equal(confideClassify('我想打人'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
     assert.equal(confideClassify('人を殴りたい'), CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
     assert.equal(confideClassify('我要打游戏'), CONFIDE_ROUTE.FALLBACK);
-    assert.equal(confideClassify('ゲームで殴る'), CONFIDE_ROUTE.FALLBACK);
+    assert.equal(
+      confideClassify('ゲームで殴る'),
+      CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN
+    );
     assert.equal(confideClassify('不想活'), CONFIDE_ROUTE.SAFETY_REDIRECT);
     assert.equal(confideClassify('想伤害自己'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   });
