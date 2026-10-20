@@ -83,6 +83,44 @@ describe('T10 backup runner', () => {
   });
 });
 
+
+  it('passes capture diagnostics on missed backup', async () => {
+    let opts;
+    await runYinVoiceCommand(backup, {
+      show(_user, key, showOpts) {
+        if (key === YIN_VOICE_BACKUP_MISSED_KEY) opts = showOpts;
+      },
+      speakAndWait: async () => true,
+      listen: async () => ({
+        transcript: '',
+        captureDiagnostics: 'buffers=3, peak=1.00e-3, 48000Hz'
+      }),
+      writeBackup: async () => {
+        throw new Error('wrote');
+      },
+      openJourney() {},
+      closeJourney() {},
+      switchLanguage: () => ({ changed: false, undo() {} })
+    });
+    assert.equal(opts?.captureDiagnostics, 'buffers=3, peak=1.00e-3, 48000Hz');
+  });
+
+  it('writes after Yes please', async () => {
+    let writes = 0;
+    await runYinVoiceCommand(backup, {
+      show() {},
+      speakAndWait: async () => true,
+      listen: async () => 'Yes please',
+      writeBackup: async () => {
+        writes += 1;
+      },
+      openJourney() {},
+      closeJourney() {},
+      switchLanguage: () => ({ changed: false, undo() {} })
+    });
+    assert.equal(writes, 1);
+  });
+
 describe('T10 A-tier undo and C-tier wipe', () => {
   it('asks the language switch to return to English', async () => {
     let target = 'unset';

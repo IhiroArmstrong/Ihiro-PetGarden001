@@ -27,12 +27,21 @@ test("Yin's Collections panel is Journey-log glass family (z-index 18, 220ms fad
   assert.match(src, /z-index: \$\{Z\.GLASS_CARD\}/);
   assert.match(src, /const FADE_MS = OVERLAY_BACKDROP_FADE_MS/);
   assert.match(src, /\.yin-coin-panel__btn:active:not\(:disabled\)/);
-  assert.match(src, /overflow: auto/);
+  assert.match(src, /yin-coin-panel__scroll/);
+  assert.match(src, /overflow-y: auto/);
+  assert.doesNotMatch(src, /\.yin-coin-panel \{[^}]*overflow: auto/s);
   assert.match(src, /listFocusCoinSurfaceSections/);
 });
 
+test("Yin's Collections scrolls inside an inner viewport, not the frosted shell", () => {
+  assert.match(src, /dataset\.testid = 'yin-coin-panel-scroll'/);
+  assert.match(src, /overflow: hidden/);
+  assert.match(src, /display: flex/);
+  assert.match(src, /flex-direction: column/);
+});
+
 test("Yin's Collections is a compact readable card, not a full-height frost slab", () => {
-  assert.match(src, /yin-coin-panel-styles-v7/);
+  assert.match(src, /yin-coin-panel-styles-v8/);
   assert.match(src, /GLASS_FILL_STRONG/);
   assert.match(src, /max-height: min\(72vh, 640px\)/);
   assert.match(src, /yin-coin-panel__btn--chrome-close/);
@@ -72,7 +81,7 @@ test('curio thumb opens a still and a short note inside the panel', () => {
   assert.match(src, /yin-coin-panel__thumb-img--pending/);
   assert.match(src, /_showCurio\(row\)/);
   const created = src.indexOf("this.detail = document.createElement('div')");
-  const mounted = src.indexOf('this.actions,\n      this.detail');
+  const mounted = src.indexOf('this.root.append(this.headingEl, this.scrollEl, this.detail)');
   assert.ok(created > 0 && mounted > created);
 });
 

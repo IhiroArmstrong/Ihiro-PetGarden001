@@ -12,6 +12,7 @@
 import catalog from './productKnowledgeCatalog.json' with { type: 'json' };
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
+import { confideObjectKeywordMatches } from './confideObjectNormalize.js';
 import { confideBrowserSafeEnv } from './confideSemanticRoutingConfig.js';
 import { shouldAnswerWithPracticeFacts } from './confidePracticeFacts.js';
 import { shouldAnswerWithPresenceFacts } from './confidePresenceFacts.js';
@@ -194,12 +195,7 @@ export function mayTryConfideProductKnowledge({
  * @returns {boolean}
  */
 function keywordMatches(haystack, needle) {
-  const n = String(needle || '').trim();
-  if (!n) return false;
-  if (/[\u3040-\u30ff\u3400-\u9fff]/.test(n)) {
-    return haystack.includes(n);
-  }
-  return haystack.toLowerCase().includes(n.toLowerCase());
+  return confideObjectKeywordMatches(haystack, needle);
 }
 
 /**

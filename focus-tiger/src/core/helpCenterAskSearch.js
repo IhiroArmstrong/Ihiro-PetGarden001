@@ -9,7 +9,7 @@
  */
 
 import { HELP_CENTER_ARTICLES } from './helpCenterCatalog.js';
-import { normalizeConfideIntentText } from './confide/confideBoundaryRespect.js';
+import { normalizeConfideObjectPhrase } from './confide/confideObjectNormalize.js';
 import { catalogKeywordSpeakAllowed } from './confide/confideFactFirstSpeak.js';
 import { decideKbNearMatch } from './confide/kbNearMatch.js';
 import {
@@ -20,11 +20,6 @@ import { isConfideOperationalProductAskShape } from './confide/confideProductKno
 import { resolveVoiceCommandOutcome } from './voiceCommandOutcome.js';
 
 export const HELP_CENTER_ASK_MAX_CARDS = 3;
-
-/** Help Center-only retrieval aliases (not Confide send-chain symptom lists). */
-const HELP_CENTER_ASK_TOKEN_ALIASES = Object.freeze([
-  { re: /\bback\s+up\b/gi, token: 'backup' }
-]);
 
 /**
  * @param {string} kbId
@@ -44,11 +39,7 @@ export function resolveHelpCenterArticleIdForKbId(kbId) {
  * @returns {string}
  */
 export function normalizeHelpCenterAskText(text) {
-  let raw = normalizeConfideIntentText(text).replace(/\s+/g, ' ').trim();
-  for (const { re, token } of HELP_CENTER_ASK_TOKEN_ALIASES) {
-    raw = raw.replace(re, token);
-  }
-  return raw.replace(/\s+/g, ' ').trim();
+  return normalizeConfideObjectPhrase(text);
 }
 
 /**

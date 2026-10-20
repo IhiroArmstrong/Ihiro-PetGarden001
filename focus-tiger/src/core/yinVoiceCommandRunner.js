@@ -5,8 +5,10 @@
 
 import {
   YIN_VOICE_BACKUP_CONFIRM_LISTEN_MS,
+  YIN_VOICE_BACKUP_MISSED_KEY,
   YIN_VOICE_LANGUAGE_UNDO_MS,
-  classifyYinVoiceConfirmReply
+  classifyYinVoiceConfirmReply,
+  normalizeYinVoiceListenResult
 } from './yinVoiceCommandEntry.js';
 import {
   planBackupAfterListen,
@@ -16,9 +18,9 @@ import {
 /**
  * @param {object} decision
  * @param {{
- *   show: (userText: string, sayKey: string) => void,
+ *   show: (userText: string, sayKey: string, opts?: { captureDiagnostics?: string }) => void,
  *   speakAndWait: (sayKey: string) => Promise<boolean>,
- *   listen: (ms: number) => Promise<string>,
+ *   listen: (ms: number) => Promise<string | { transcript?: string, captureDiagnostics?: string }>,
  *   writeBackup: () => Promise<void>,
  *   openJourney: () => void,
  *   closeJourney: () => void,
@@ -30,11 +32,12 @@ export async function runYinVoiceCommand(decision, deps) {
   if (decision.command === 'backup') {
     deps.show(userText, 'YIN_VOICE_BACKUP_RECAP');
     const speechEnded = await deps.speakAndWait('YIN_VOICE_BACKUP_RECAP');
-    const heard = speechEnded
+    const heardRaw = speechEnded
       ? await deps.listen(YIN_VOICE_BACKUP_CONFIRM_LISTEN_MS)
       : '';
+    const { transcript, captureDiagnostics } = normalizeYinVoiceListenResult(heardRaw);
     const plan = planBackupAfterListen({
-      reply: classifyYinVoiceConfirmReply(heard),
+      reply: classifyYinVoiceConfirmReply(transcript),
       speechEnded
     });
     if (plan.writeBackup) {
@@ -46,18 +49,24 @@ export async function runYinVoiceCommand(decision, deps) {
       }
       return;
     }
-    if (plan.sayKey) deps.show(userText, plan.sayKey);
+    if (plan.sayKey) {
+      deps.show(userText, plan.sayKey, {
+        captureDiagnostics:
+          plan.sayKey === YIN_VOICE_BACKUP_MISSED_KEY ? captureDiagnostics : ''
+      });
+    }
     return;
   }
 
   if (decision.command === 'forget_all') {
     deps.show(userText, 'YIN_VOICE_FORGET_RECAP');
     const speechEnded = await deps.speakAndWait('YIN_VOICE_FORGET_RECAP');
-    const heard = speechEnded
+    const heardRaw = speechEnded
       ? await deps.listen(YIN_VOICE_BACKUP_CONFIRM_LISTEN_MS)
       : '';
+    const { transcript } = normalizeYinVoiceListenResult(heardRaw);
     const plan = planForgetAfterListen({
-      reply: classifyYinVoiceConfirmReply(heard)
+      reply: classifyYinVoiceConfirmReply(transcript)
     });
     deps.show(userText, plan.sayKey);
     return;
@@ -67,8 +76,10 @@ export async function runYinVoiceCommand(decision, deps) {
     deps.openJourney();
     deps.show(userText, 'YIN_VOICE_JOURNEY_OPENED');
     void deps.speakAndWait('YIN_VOICE_JOURNEY_OPENED');
-    const heard = await deps.listen(YIN_VOICE_LANGUAGE_UNDO_MS);
-    if (classifyYinVoiceConfirmReply(heard) === 'no') {
+    const { transcript: journeyUndo } = normalizeYinVoiceListenResult(
+      await deps.listen(YIN_VOICE_LANGUAGE_UNDO_MS)
+    );
+    if (classifyYinVoiceConfirmReply(journeyUndo) === 'no') {
       deps.closeJourney();
       deps.show(userText, 'YIN_VOICE_CANCELLED');
     }
@@ -84,8 +95,10 @@ export async function runYinVoiceCommand(decision, deps) {
     }
     deps.show(userText, 'YIN_VOICE_LANGUAGE_SWITCHED');
     void deps.speakAndWait('YIN_VOICE_LANGUAGE_SWITCHED');
-    const heard = await deps.listen(YIN_VOICE_LANGUAGE_UNDO_MS);
-    if (classifyYinVoiceConfirmReply(heard) === 'no') {
+    const { transcript: languageUndo } = normalizeYinVoiceListenResult(
+      await deps.listen(YIN_VOICE_LANGUAGE_UNDO_MS)
+    );
+    if (classifyYinVoiceConfirmReply(languageUndo) === 'no') {
       switched.undo();
       deps.show(userText, 'YIN_VOICE_CANCELLED');
     }

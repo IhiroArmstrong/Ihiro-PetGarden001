@@ -539,15 +539,16 @@ Gate 0.D 的 7 路诊断没有挂到发送上。架构未过。禁止把 E′ �
 - **2026-10-17 PO**：有条件采用；§6 数字关单再填；接线等 CR-11 一起或紧跟其后。Brief 已补变体矩阵 / 点击 / 边缘 / 共用机制、承接句上限、分语言触发率、人工通读 10–20 组。
 - **完成**：CR-11 live 之后另口令「按补锁后的 CR-45 Brief 开工」+ 实现 PR。作废封存不得当过关文件。通过率数字仍空到新未见封存。
 
-### CR-47 · 产品问收窄为操作问法（规格已点头 · 未改发送链）
+### CR-47 · 产品问收窄为操作问法（规格已点头 · T23 已用形状跳转 · 关单未写已修）
 
-权威：[`task-briefs/task-confide-product-ask-operational-gate.md`](./task-briefs/task-confide-product-ask-operational-gate.md)。
+权威：[`task-briefs/task-confide-product-ask-operational-gate.md`](./task-briefs/task-confide-product-ask-operational-gate.md)。**T23** #1351 已用操作问法做 Help Center 跳转；本条完成三项仍未齐，不得写成已修。
 
 - 产品问 = 操作问法 ∧ 产品对象。缺一则默认生成。
 - 诚实空态只在确认是产品问且目录无近条时出现。真功能问仍不许现编步骤。
 - 禁止再往 `isConfideMoodAsideFromProductKnowledge` 加词。禁止按话题白名单修补。
 - 关单按类别抽样，不按单句平均 ≥90% 把整类空态稀释掉。已见句只作回归。
 - 危机修辞、竖线不在本条。
+- **2026-10-20 手测（不改代码）**：`Where can I click to back up the data?` 操作问法为真、目录对象 `backup` 对不上 `back up`、摘录未撑住 → 未跳转。`How to understand Zen practice` 因 activity how-to 过跳。禁止为这些句子加 keywords。
 
 **完成**：实现 PR 号 + 回归锚变绿 + 封存的未见英文按类别全部不进空态 + 产品问回归不退步。没有这三项不得写成已修。
 

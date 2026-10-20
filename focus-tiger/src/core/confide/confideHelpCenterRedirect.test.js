@@ -26,7 +26,7 @@ describe('T23 Help Center ask redirect', () => {
     const line = formatConfideHelpCenterAskRedirectReply(tEn);
     assert.equal(
       line,
-      'I keep how-to answers in Help Center. Open Help Center from the menu and type or speak your question.'
+      "I keep how-to answers in Help Center. Open it from the menu and type or speak your question. I'm here to listen."
     );
     assert.equal(CONFIDE_HELP_CENTER_ASK_REDIRECT_KEY, 'CONFIDE_HELP_CENTER_ASK_REDIRECT');
   });
