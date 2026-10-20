@@ -12,6 +12,8 @@ export {
   classifyPracticeFactsKind,
   shouldAnswerWithPracticeFacts,
   summarizePracticeFacts,
+  summarizeIdleBadgeFacts,
+  formatPracticeBadgeReply,
   summarizePracticeFactsFromJourneyLog,
   formatPracticeDurationReply,
   buildPracticeFactsReply
