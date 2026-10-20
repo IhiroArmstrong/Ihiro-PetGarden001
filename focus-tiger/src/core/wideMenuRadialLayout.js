@@ -6,7 +6,8 @@
 /**
  * Wide ⋯ radial index geometry (knife 3).
  * SSOT for height degenerate rules — keep in sync with
- * `docs/task-briefs/task-wide-menu-radial-index.md`.
+ * `docs/task-briefs/task-wide-menu-radial-index.md` and T25
+ * `docs/task-briefs/task-wide-more-five-icon-show.md`.
  */
 
 import { WIDE_HOME_CTA_BOTTOM_PX, WIDE_HOME_SIT_PX } from '../ui/homeChromeClearance.js';
@@ -90,20 +91,6 @@ export function wideMenuRadialIconBBox(spot) {
 }
 
 /**
- * @param {{ left: number, top: number, right: number, bottom: number }} a
- * @param {{ left: number, top: number, right: number, bottom: number }} b
- * @returns {boolean}
- */
-export function rectsIntersect(a, b) {
-  return !(
-    a.right < b.left ||
-    a.left > b.right ||
-    a.bottom < b.top ||
-    a.top > b.bottom
-  );
-}
-
-/**
  * Estimate ⋯ anchor when layout has not painted yet.
  * @param {number} innerWidth
  * @param {number} innerHeight
@@ -131,19 +118,6 @@ export function shouldDegenerateWideMenuRadial(win, anchor) {
   for (const spot of spots) {
     const box = wideMenuRadialIconBBox(spot);
     if (box.top < VIEWPORT_TOP_SAFE_PX) return true;
-  }
-  const stage = win.document?.getElementById?.('sprite-stage');
-  const stageRect = stage?.getBoundingClientRect?.();
-  if (
-    stageRect &&
-    stageRect.width > 8 &&
-    stageRect.height > 8
-  ) {
-    for (const spot of spots) {
-      if (rectsIntersect(wideMenuRadialIconBBox(spot), stageRect)) {
-        return true;
-      }
-    }
   }
   return false;
 }
