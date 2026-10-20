@@ -1,3 +1,3 @@
-| T25 ⋯ 五组图标 Brief | 纯文档 | 待人工测试 | **本条只验收 Brief**：宽屏够高时点 ⋯ 应先出五图标；退化仅矮窗/顶切。不把指南针当缺口。点头后才改运行时。 | — | — | — | `task-wide-more-five-icon-show.md` | 2026-10-20 |
-| T26 问号右侧 Help Center Brief | 纯文档 | 待人工测试 | **本条只验收 Brief**：问号右一颗钮打开现有帮助中心；问号仍简介；菜单行保留。 | — | — | — | `task-help-center-beside-question.md` | 2026-10-20 |
-| T27 停 inhale/exhale Brief | 纯文档 | 待人工测试 | **本条只验收 Brief**：四处相位 TTS 停；结束句与其它播放保留。 | — | — | — | `task-stop-practice-breath-phase-tts.md` | 2026-10-20 |
+| T25 ⋯ 五组图标 Brief | 纯文档 | 待人工测试 | **本条只验收 Brief**：宽屏够高时点 ⋯ 应先出五图标；退化仅矮窗/顶切；手测不挡 Sit 主球。不把指南针当缺口。2026-10-21 已点头。实现另 Chat。 | **2026-10-21 点头**：矮窗仍列表；验收手测不挡主球；第三刀「宽屏形态」删相交句。 | — | — | `task-wide-more-five-icon-show.md` | 2026-10-21 |
+| T26 问号右侧 Help Center Brief | 纯文档 | 待人工测试 | **本条只验收 Brief**：问号右一颗钮打开现有帮助中心；问号仍简介；菜单行保留。简介与帮助中心互斥。2026-10-21 已点头。实现等 T25。 | **2026-10-21 点头**：同一时间只留一张；再点新钮保持打开；Esc 关当前唯一一层；新钮 z=22。 | — | — | `task-help-center-beside-question.md` | 2026-10-21 |
+| T27 停 inhale/exhale Brief | 纯文档 | 待人工测试 | **本条只验收 Brief**：四处相位 TTS 停；结束句与其它播放保留；`HONESTY_BREATH_*` 文案保留。2026-10-21 已点头。实现等 T25。 | **2026-10-21 点头**：只停发声，不删 locale。 | — | — | `task-stop-practice-breath-phase-tts.md` | 2026-10-21 |

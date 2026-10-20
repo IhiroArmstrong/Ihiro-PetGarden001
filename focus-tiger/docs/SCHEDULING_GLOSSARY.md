@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-20 · T29 已合 · T25 P1 · T26 P1 · T27 P2 · T31 立即做 · T28 搁置）
+## 1. 当前队列（2026-10-21 · T25–T27 Brief 已点头 · T25 P1 立即做 · T31 立即做 · T28 搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -31,9 +31,9 @@
 | **P2** · **T17** | Confide 事实卡判定一刀 | **已合 develop** | #1339。倾诉**验收**退役；T23 前仍可能念卡 |
 | **P1** · **T18** | 练习观察纸方向锁 | **已合 develop** | #1343 · #1345。2026-10-19 收口第一刀一张 Sit & Breath 卡 |
 | **P1** · **T24** | 练习观察纸界面 | **已合 develop** | #1353 一张 Sit & Breath 卡。人工反馈见 **T28** |
-| **P1** · **T25** | ⋯五组图标须先出现 | Brief 待点头 | 用户已确认点的是底栏 ⋯。#1307 已合。改 AABB 误退化。Brief [`task-wide-more-five-icon-show.md`](./task-briefs/task-wide-more-five-icon-show.md)。**不是** T4 未排期 |
-| **P1** · **T26** | Help Center 问号右侧钮 | Brief 待点头 | B 类 chrome。[`task-help-center-beside-question.md`](./task-briefs/task-help-center-beside-question.md) |
-| **P2** · **T27** | 练习中停 inhale/exhale 语音 | Brief 待点头 | 停相位 TTS；其它播放保留。[`task-stop-practice-breath-phase-tts.md`](./task-briefs/task-stop-practice-breath-phase-tts.md) |
+| **P1** · **T25** | ⋯五组图标须先出现 | Brief 已点头 · 新 Chat 开工 | 用户已确认点的是底栏 ⋯。#1307 已合。改 AABB 误退化。Brief [`task-wide-more-five-icon-show.md`](./task-briefs/task-wide-more-five-icon-show.md)。**不是** T4 未排期 |
+| **P1** · **T26** | Help Center 问号右侧钮 | Brief 已点头 · 排队中 | B 类 chrome。简介与帮助中心互斥。等 T25 合入。[`task-help-center-beside-question.md`](./task-briefs/task-help-center-beside-question.md) |
+| **P2** · **T27** | 练习中停 inhale/exhale 语音 | Brief 已点头 · 排队中 | 停相位 TTS；保留 `HONESTY_BREATH_*` 文案。等 T25 合入。[`task-stop-practice-breath-phase-tts.md`](./task-briefs/task-stop-practice-breath-phase-tts.md) |
 | **—** · **T28** | 练习纸彩色健康标记 | 搁置 | 先推翻 [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md) 才可做 |
 | **P2** · **T21** | 产品问入口转移 Brief | **已合 develop** | #1347 · [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) |
 | **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 手测主路径通过；低配：embedding 未就绪仍列备份卡；窄屏/Web 无麦。**未关单** |
@@ -71,9 +71,9 @@
 | 「继续 T31」 | **T31** 个人事实徽章行 |
 | 「按练习观察纸方向锁开工界面」 | **不再直接开工**。须 **T24** Brief 点头 |
 | 「按 T24 Brief 开工」 | **T24 已合 #1353**。勿再开同内容界面旁支 |
-| 「开工五组扇形」或「按 T25 Brief 开工」 | **T25**：点头后新 Chat。禁止当 #1307 未合而重开第三刀 |
-| 「问号右边放 Help Center」或「按 T26 Brief 开工」 | **T26**：点头后新 Chat；不是 T22 |
-| 「练习中不要 inhale exhale」或「按 T27 Brief 开工」 | **T27**：点头后新 Chat；不停结束句 |
+| 「开工五组扇形」或「按 T25 Brief 开工」 | **T25**：Brief 已点头。新 Chat，基线 `origin/develop`。禁止当 #1307 未合而重开第三刀 |
+| 「问号右边放 Help Center」或「按 T26 Brief 开工」 | **T26**：Brief 已点头。等 T25 合入后新 Chat；不是 T22 |
+| 「练习中不要 inhale exhale」或「按 T27 Brief 开工」 | **T27**：Brief 已点头。等 T25 合入后新 Chat；不停结束句；不删相位文案 |
 | 「练习纸做成健康地图」 | **T28**：须先书面推翻方向锁。**不是** T24 漏实现 |
 | 「按 v4 出题合同出题」 | **不再开工**。合同留档，不新开封存批 |
 | 「开 CR-45」或混合句实现类口令 | **不再开工**。影子已交付，合并回应已砍 |
@@ -150,3 +150,4 @@
 | 2026-10-20 | **T29** 点头开工：相邻两词拼接；复核人点名修改不受冻结挡 |
 | 2026-10-20 | **T25** → P1；**T26** → P1；**T27** → P2。三份 Brief 待点头。**T28** 仍搁置 |
 | 2026-10-20 | **T29** #1362 已合。**【新增】T30–T33**；**T31** 立即做 |
+| 2026-10-21 | **T25–T27 Brief 已点头**。实现顺序 T25 → T26 → T27，各自新 Chat |
