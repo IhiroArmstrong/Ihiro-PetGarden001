@@ -73,21 +73,6 @@ async function prepareIdle(page) {
 
 /**
  * @param {import('@playwright/test').Page} page
- */
-async function expandAllWideGroups(page) {
-  const headers = page.locator(
-    '#ft-wide-more-menu .ft-wide-more__section-header[data-group]'
-  );
-  const n = await headers.count();
-  for (let i = 0; i < n; i++) {
-    const header = headers.nth(i);
-    const group = await header.getAttribute('data-group');
-    if (group) await expandWideMoreMenuGroup(page, group);
-  }
-}
-
-/**
- * @param {import('@playwright/test').Page} page
  * @param {'wide-more' | 'narrow-drawer'} surface
  */
 async function settleAfterRow(page) {
@@ -221,10 +206,6 @@ async function openMenu(page, surface) {
       await btn.click();
     }
     await expectWideMoreMenuShellVisible(page);
-    const radial = page.locator('#ft-wide-more-radial');
-    if (!(await radial.isVisible().catch(() => false))) {
-      await expandAllWideGroups(page);
-    }
     return;
   }
   const grabber = page.locator('.ft-narrow-grabber');

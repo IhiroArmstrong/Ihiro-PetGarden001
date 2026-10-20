@@ -16,21 +16,6 @@ import { wideMoreMenuGroupForProxy } from '../../src/core/wideMenuRadialLayout.j
 /**
  * @param {import('@playwright/test').Page} page
  */
-async function expandAllWideGroups(page) {
-  const headers = page.locator(
-    '#ft-wide-more-menu .ft-wide-more__section-header[data-group]'
-  );
-  const n = await headers.count();
-  for (let i = 0; i < n; i++) {
-    const header = headers.nth(i);
-    const group = await header.getAttribute('data-group');
-    if (group) await expandWideMoreMenuGroup(page, group);
-  }
-}
-
-/**
- * @param {import('@playwright/test').Page} page
- */
 async function closeOpenPanels(page) {
   for (let n = 0; n < 3; n++) {
     await page.keyboard.press('Escape');
@@ -120,7 +105,6 @@ export async function openA13GlassSurface(page, surface) {
   if (!proxy) throw new Error(`A13 surface ${surface.id} missing menuProxy`);
 
   if (await openWideMoreMenuIfPresent(page)) {
-    await expandAllWideGroups(page);
     const groupKey = wideMoreMenuGroupForProxy(proxy);
     if (groupKey) await expandWideMoreMenuGroup(page, groupKey);
     const row = page.locator(`#ft-wide-more-menu [data-proxy="${proxy}"]`);
