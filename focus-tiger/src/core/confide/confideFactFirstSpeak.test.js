@@ -85,6 +85,19 @@ describe('CR-50 fact-first speak', () => {
     assert.equal(spoken.action, 'product_knowledge');
   });
 
+  it('T30: cognitive how-to skips catalog speak and Help Center redirect', () => {
+    const spoken = resolveConfideFactFirstSpeak({
+      text: 'How to understand Zen practice?',
+      catalogResult: { hit: true, id: 'KB-FUNC-0002', text: 'Ground is on the right orb.' },
+      embeddingState: 'ready',
+      semanticIsProduct: true,
+      nearestId: 'KB-FUNC-0002',
+      nearestScore: 0.91,
+      helpCenterAskReachable: true
+    });
+    assert.equal(spoken.action, 'skip');
+  });
+
   it('T23: mood lines never redirect even when Help Center is reachable', () => {
     const spoken = resolveConfideFactFirstSpeak({
       text: "I feel quite sleepy. I don't want to practice anymore.",
