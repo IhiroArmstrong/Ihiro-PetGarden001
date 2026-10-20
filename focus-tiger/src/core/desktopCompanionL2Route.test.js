@@ -60,6 +60,15 @@ describe('desktop companion L2 route', () => {
     );
   });
 
+  it('never generates on Japanese not-yet-open after safety', () => {
+    const route = confideClassify('こんにちは');
+    assert.equal(route, CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN);
+    assert.equal(
+      shouldUseDesktopCompanionGenerate({ ...readyOpen, route }),
+      false
+    );
+  });
+
   it('never generates on safety, aggression toward others, or emotion buckets', () => {
     assert.equal(
       shouldUseDesktopCompanionGenerate({

@@ -19,7 +19,7 @@ describe('confideMetaQueryAcceptanceFixtures', () => {
     assert.equal(ids.size, CONFIDE_META_QUERY_ACCEPTANCE_FIXTURES.length);
   });
 
-  it('covers all six routing buckets', () => {
+  it('covers routing buckets', () => {
     const buckets = new Set(CONFIDE_META_QUERY_ACCEPTANCE_FIXTURES.map((row) => row.bucket));
     assert.deepEqual(
       [...buckets].sort(),
@@ -27,12 +27,13 @@ describe('confideMetaQueryAcceptanceFixtures', () => {
         'companion_greeting',
         'generate_skip_classify',
         'hybrid_classify',
+        'language_not_yet_open',
         'memory_list',
         'practice_facts',
         'reflective_honesty'
       ]
     );
-    assert.ok(fixturesForMetaQueryBucket('memory_list').length >= 8);
+    assert.ok(fixturesForMetaQueryBucket('memory_list').length >= 7);
     assert.ok(fixturesForMetaQueryBucket('reflective_honesty').length >= 8);
   });
 

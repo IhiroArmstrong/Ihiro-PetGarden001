@@ -24,6 +24,12 @@ describe('confideSemanticCoarseMap', () => {
       shouldRunConfideSemanticShadow({ route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS }),
       false
     );
+    assert.equal(
+      shouldRunConfideSemanticShadow({
+        route: CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN
+      }),
+      false
+    );
     assert.equal(shouldRunConfideSemanticShadow({ route: CONFIDE_ROUTE.FALLBACK }), true);
   });
 

@@ -36,6 +36,20 @@ describe('confide multilang chitchat fixtures (six-lang A/B)', () => {
     for (const fixture of CONFIDE_MULTILANG_CHITCHAT_FIXTURES) {
       const hit = resolveConfideReply({ text: fixture.text, locale: fixture.locale });
       assert.ok(hit, fixture.id);
+      if (fixture.locale === 'ja') {
+        assert.equal(hit.route, CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN, fixture.id);
+        assert.equal(
+          shouldUseDesktopCompanionGenerate({
+            route: hit.route,
+            generateEnabled: true,
+            generateLayerOpen: true,
+            hasGenerateFn: true
+          }),
+          false,
+          fixture.id
+        );
+        continue;
+      }
       assert.equal(hit.route, CONFIDE_ROUTE.FALLBACK, fixture.id);
       assert.equal(
         shouldUseDesktopCompanionGenerate({

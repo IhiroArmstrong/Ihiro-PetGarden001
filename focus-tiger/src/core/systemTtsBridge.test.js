@@ -137,6 +137,7 @@ describe('systemTtsBridge', () => {
       [CONFIDE_ROUTE.SAD]: true,
       [CONFIDE_ROUTE.SCATTERED]: true,
       [CONFIDE_ROUTE.FALLBACK]: true,
+      [CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN]: true,
       [CONFIDE_ROUTE.SAFETY_REDIRECT]: false,
       [CONFIDE_ROUTE.SAFETY_CARE]: false,
       [CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS]: false,
@@ -147,7 +148,7 @@ describe('systemTtsBridge', () => {
       assert.equal(shouldSpeakConfideReply(route), speaks, `route ${route}`);
     }
     // Guards against a new classify output slipping in unreviewed.
-    assert.equal(Object.keys(CONFIDE_ROUTE).length, 9);
+    assert.equal(Object.keys(CONFIDE_ROUTE).length, 10);
   });
 
   it('stays silent for route ids it does not recognise', () => {
@@ -174,8 +175,7 @@ describe('crisis paraphrases outside the keyword layer (audit A-1 gap)', () => {
     'I want to disappear forever',
     'maybe everyone would be better off without me',
     '我撑不下去了',
-    '我不想醒来了',
-    'もう消えるしかない'
+    '我不想醒来了'
   ]);
 
   it('routes to fallback today, which is the open gap', () => {
@@ -186,6 +186,13 @@ describe('crisis paraphrases outside the keyword layer (audit A-1 gap)', () => {
         `expected the documented gap for: ${text}`
       );
     }
+  });
+
+  it('T36: Japanese crisis paraphrase does not fall through to generate', () => {
+    assert.equal(
+      confideClassify('もう消えるしかない'),
+      CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN
+    );
   });
 
   it('keyword layer still catches the explicit phrasings it claims to', () => {

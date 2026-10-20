@@ -40,6 +40,7 @@ export function shouldUseDesktopCompanionGenerate({
   if (!generateEnabled || !generateLayerOpen || !hasGenerateFn) return false;
   if (!route || route === CONFIDE_ROUTE.SAFETY_REDIRECT) return false;
   if (route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) return false;
+  if (route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) return false;
   if (CONFIDE_EMOTION_BUCKETS.includes(route)) return false;
   return route === CONFIDE_ROUTE.FALLBACK;
 }

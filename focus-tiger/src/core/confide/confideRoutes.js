@@ -18,7 +18,9 @@ export const CONFIDE_ROUTE = Object.freeze({
   STUCK: 'stuck',
   SAD: 'sad',
   SCATTERED: 'scattered',
-  FALLBACK: 'fallback'
+  FALLBACK: 'fallback',
+  /** T36: kana after safety — static not-yet-open; not mood / generate. */
+  LANGUAGE_NOT_YET_OPEN: 'language_not_yet_open'
 });
 
 /**

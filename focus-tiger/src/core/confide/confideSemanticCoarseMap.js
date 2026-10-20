@@ -73,6 +73,7 @@ export function shouldRunConfideSemanticShadow({ route = null } = {}) {
   if (!routeId) return false;
   if (routeId === CONFIDE_ROUTE.SAFETY_REDIRECT) return false;
   if (routeId === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) return false;
+  if (routeId === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) return false;
   return true;
 }
 
