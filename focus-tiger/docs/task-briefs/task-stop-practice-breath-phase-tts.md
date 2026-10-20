@@ -1,6 +1,6 @@
 # Task Brief · T27 练习中停 inhale / exhale 语音
 
-> **状态（2026-10-20）**：**待 PO 点头。** 点头后新 Chat 开工 `fix/stop-practice-breath-phase-tts`。  
+> **状态（2026-10-21）**：**PO 已点头。** 实现须新 Chat，且须等 T25 合入后再开，分支 `fix/stop-practice-breath-phase-tts`。本 PR 只锁规格，不改运行时。  
 > **类**：**B**（练习进行中不再听到吸气/呼气播报）。  
 > **代号**：**T27**。**不是**关掉全部 Voice announcements，**不是**停结束句。  
 > **拍板入口**：2026-10-20 用户书面：任何练习中间都无需语音播放 inhale, exhale。其它播放可以。
@@ -11,7 +11,7 @@
 
 ## 已经定下的做法
 
-1. **停的只有相位句。** 入口是 `maybeSpeakBreathPhaseCue`（locale `HONESTY_BREATH_INHALE` / `HONESTY_BREATH_EXHALE`）。四处调用：Arrival、Honesty 呼吸段、Ritual、MicroRitual。本刀让该函数不再发声（调用方可留，以免漏接；单测锁「返回 false 且不 speak」）。
+1. **停的只有相位发声。** 入口是 `maybeSpeakBreathPhaseCue`（locale `HONESTY_BREATH_INHALE` / `HONESTY_BREATH_EXHALE`）。四处调用：Arrival、Honesty 呼吸段、Ritual、MicroRitual。本刀让该函数不再发声（调用方可留，以免漏接；单测锁「返回 false 且不 speak」）。**locale 句子保留**，不删 `HONESTY_BREATH_*` 文案，便于日后若要恢复只改函数。
 2. **保留**：`maybeSpeakPracticeAnnouncement` / `maybeSpeakFocusEndAnnouncement`；Confide 朗读（独立开关）；Voice announcements 菜单行与偏好存储。
 3. **范围**：任何练习中间。不按种类再开例外。Web / 窄屏本来就不能系统 TTS（`canUseSystemTts`），行为已是静音，保持。
 4. **不改**呼吸动画、计时、文案字幕（若界面上仍有吸呼字，那是视觉，不是本刀 TTS）。
@@ -69,8 +69,9 @@
 - 不默认关掉 Voice announcements。
 - 不停结束句和其它非相位公告。
 - 不改 Confide。
+- 不删 `HONESTY_BREATH_INHALE` / `HONESTY_BREATH_EXHALE` locale 键。
 - 不并进 T25 / T26。
 
 ## 开工闸
 
-须 PO 书面点头本页。口令「立刻开工」不能跳过。点头后新 Chat 实现。
+2026-10-21 已点头（附条件：保留 `HONESTY_BREATH_*` 文案，只停发声）。实现口令：「按 T27 Brief 开工」。须等 T25 合入后再开新 Chat。不并进 T25 / T26。
