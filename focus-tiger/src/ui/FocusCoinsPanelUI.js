@@ -10,7 +10,8 @@
  * Shop SKUs only (no retired overlays). Wave play is a footer control, not a shop row.
  * DOM id `#yin-coin-panel`.
  * Compact readable card (Art Collection family): never a full-height
- * frosted slab. Title + Close stay in a sticky chrome row.
+ * frosted slab. Title + Close stay in a fixed chrome row; only the inner
+ * scroll viewport moves (no backdrop-filter on the scrolling layer).
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -45,7 +46,7 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v7';
+const STYLE_ID = 'yin-coin-panel-styles-v8';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CEREMONIAL_MS = 2400;
 
@@ -373,14 +374,17 @@ export class FocusCoinsPanelUI {
     );
     this._detailSkuId = null;
 
-    this.root.append(
-      this.headingEl,
+    this.scrollEl = document.createElement('div');
+    this.scrollEl.className = 'yin-coin-panel__scroll';
+    this.scrollEl.dataset.testid = 'yin-coin-panel-scroll';
+    this.scrollEl.append(
       this.artBridge,
       this.tabBar,
       this.bodyEl,
-      this.actions,
-      this.detail
+      this.actions
     );
+
+    this.root.append(this.headingEl, this.scrollEl, this.detail);
     mountRoot.appendChild(this.root);
 
     this._onKeyDown = (event) => {
@@ -946,7 +950,7 @@ export class FocusCoinsPanelUI {
     this.detailNote.textContent = row.noteKey ? t(row.noteKey) : '';
     this.detailClose.textContent = t('YIN_COIN_CLOSE');
     this.detail.hidden = false;
-    this.root.scrollTop = 0;
+    this.scrollEl.scrollTop = 0;
     this.root.classList.add('yin-coin-panel--detail');
     this.detailClose.focus({ preventScroll: true });
   }
@@ -1073,7 +1077,7 @@ export class FocusCoinsPanelUI {
     if (!this._onArtBridgeScroll) {
       this._onArtBridgeScroll = () => this._noteArtBridgeIfInView();
     }
-    this.root.addEventListener('scroll', this._onArtBridgeScroll, {
+    this.scrollEl.addEventListener('scroll', this._onArtBridgeScroll, {
       passive: true
     });
     window.requestAnimationFrame(() => {
@@ -1085,18 +1089,18 @@ export class FocusCoinsPanelUI {
     if (!this._open || this.artBridge.hidden) return;
     const inView = isCollectionsArtBridgeInView(
       this.artBridge.getBoundingClientRect(),
-      this.root.getBoundingClientRect()
+      this.scrollEl.getBoundingClientRect()
     );
     if (!inView) return;
     this.handlers.markArtBridgeSeen?.();
-    this.root.removeEventListener('scroll', this._onArtBridgeScroll);
+    this.scrollEl.removeEventListener('scroll', this._onArtBridgeScroll);
   }
 
   _rememberArtBridgeSeen() {
     this.handlers.markArtBridgeSeen?.();
     this._artBridgeHolding = false;
     this.artBridge.hidden = true;
-    this.root.removeEventListener('scroll', this._onArtBridgeScroll);
+    this.scrollEl.removeEventListener('scroll', this._onArtBridgeScroll);
   }
 
   _fillArtBridgeCopy() {
@@ -1123,9 +1127,11 @@ export class FocusCoinsPanelUI {
         left: 50%;
         bottom: max(72px, env(safe-area-inset-bottom, 0px) + 56px);
         z-index: ${Z.GLASS_CARD};
+        display: flex;
+        flex-direction: column;
         width: min(400px, calc(100vw - 32px));
         max-height: min(72vh, 640px);
-        overflow: auto;
+        overflow: hidden;
         transform: translate(-50%, 10px);
         padding: 16px 16px 14px;
         box-sizing: border-box;
@@ -1138,6 +1144,13 @@ export class FocusCoinsPanelUI {
         opacity: 0;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
         pointer-events: none;
+      }
+      .yin-coin-panel__scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .yin-coin-panel.is-visible {
         opacity: 1;
@@ -1207,8 +1220,7 @@ export class FocusCoinsPanelUI {
         }
       }
       .yin-coin-panel__heading {
-        position: sticky;
-        top: 0;
+        flex-shrink: 0;
         z-index: ${Z.FX};
         display: flex;
         align-items: flex-start;
