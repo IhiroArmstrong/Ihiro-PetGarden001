@@ -30,13 +30,13 @@
 
 | 代号 | 做什么 | 时限 | 退出 |
 |---|---|---|---|
-| **T29** 对象归一 + 跳转朗读 + 只倾听 | CR-47 通用归一（空格变体=相邻两词拼接；四字母及 `-us`/`-ss` 不做复数还原）；跳转句 TTS；英文加 I'm here to listen。**不**改危机朗读。规格 [`task-confide-object-normalize-redirect-tts.md`](./task-briefs/task-confide-object-normalize-redirect-tts.md) | **10/21–23** 实现；**10/24** 英文 60 + 安全回归；**10/25–26** 英文手测；**≤10/27** 合 develop | 合入 + 英文 60 全绿；来不及则只留复核纸缺口 1 |
+| **T30** 操作动词收紧 | CR-47 认知 how-to（understand / know）走生成，不跳 Help Center。规格 [`task-confide-operational-verb-tighten.md`](./task-briefs/task-confide-operational-verb-tighten.md)。叠 **T29** #1362 | **10/21–22** 合入 | 合入 + 黄金脚本跳转正例不误伤 |
 | **T14** PO 双时点 | 内测可见入口 + 对客打开；**不是**再写代码 | 10/28 内测 on；10/29 对客 on | 复核人 10/28 看见真实入口；10/30 勾表前对客 on |
 | **复核一页纸** | 通过标准 + 已知缺口 + **签字范围** + **危机转介是否朗读**（问复核人） | **10/27** 交付并宣布发送链冻结 | 草稿 [`CONFIDE_REVIEW_ONE_PAGER.md`](./CONFIDE_REVIEW_ONE_PAGER.md)；缺定稿则 **10/28 不复核** |
 
 同一时间只许 **一个** 实现会话改倾诉代码。
 
-**T22** Help Center 问卡：**#1348 已合，未关单。** 2026-10-20 手测主路径通过；同日低配补测：`embeddingState: 'not_ready'`/`error` 仍列出备份卡 `KB-FUNC-0003`；`canShowVoiceInputChrome` 在 479px 与 Web 为假。**T23** #1351 已合。**T29** Brief 已点头，实现中（冻结前最后一刀发送链体验修补）。
+**T22** Help Center 问卡：**#1348 已合，未关单。** **T23** #1351 已合。**T29** #1362 已开。**T30** 为本会话正在改的发送链刀。**T31–T33** 排队中。
 
 ## 完成线（写死，只算英文）
 

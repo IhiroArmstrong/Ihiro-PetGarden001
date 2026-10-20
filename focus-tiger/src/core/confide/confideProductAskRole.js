@@ -9,6 +9,7 @@
  */
 
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
+import { isConfideCognitiveHowToShape } from './confideCognitiveHowTo.js';
 
 /** @typedef {'where' | 'how' | 'whether-required' | 'what-is' | 'why-compare' | 'none'} ConfideProductAskRole */
 
@@ -146,6 +147,9 @@ export function classifyConfideProductAskRole(text) {
     return 'none';
   }
   if (ACTIVITY_WHAT_IS_RE.test(spaced) || ACTIVITY_WHAT_IS_RE.test(compact)) {
+    return 'none';
+  }
+  if (isConfideCognitiveHowToShape(text)) {
     return 'none';
   }
 
