@@ -36,7 +36,7 @@ export function getGlassHoverTipHandle(host) {
 
 /**
  * @param {HTMLElement} host
- * @param {{ text?: string, placement?: GlassTipPlacement, tipId?: string }} [options]
+ * @param {{ text?: string, placement?: GlassTipPlacement, tipId?: string, multiline?: boolean }} [options]
  * @returns {GlassHoverTipHandle}
  */
 export function attachGlassHoverTip(host, options = {}) {
@@ -64,6 +64,9 @@ export function attachGlassHoverTip(host, options = {}) {
   tipEl.className = 'ft-glass-hover-tip';
   tipEl.setAttribute('role', 'tooltip');
   tipEl.dataset.testid = 'ft-glass-hover-tip';
+  if (options.multiline) {
+    tipEl.classList.add('ft-glass-hover-tip--wrap');
+  }
   host.appendChild(tipEl);
   host.setAttribute('aria-describedby', tipId);
 
@@ -196,6 +199,12 @@ function _injectStyles() {
       }
       .ft-glass-tip-host--suppressed .ft-glass-hover-tip {
         display: none !important;
+      }
+      .ft-glass-hover-tip--wrap {
+        white-space: normal;
+        max-width: min(280px, calc(100vw - 86px));
+        border-radius: 12px;
+        line-height: 1.35;
       }
       @media (prefers-reduced-motion: reduce) {
         .ft-glass-hover-tip {

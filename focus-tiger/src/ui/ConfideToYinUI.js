@@ -20,11 +20,16 @@ import {
 } from '../core/systemTtsBridge.js';
 import { canRouteSpokenYinCommand } from '../core/voiceCommandGate.js';
 import {
+  classifyYinVoiceConfirmReply,
   classifyYinVoiceEntry,
   nextPickerLocaleId
 } from '../core/yinVoiceCommandEntry.js';
 import { runYinVoiceCommand } from '../core/yinVoiceCommandRunner.js';
-import { getVoiceInputBridge } from '../core/voiceInputBridge.js';
+import {
+  getVoiceInputBridge,
+  withVoiceCaptureDiagnostics
+} from '../core/voiceInputBridge.js';
+import { voiceLevelUnit } from '../core/voiceLevelMeter.js';
 import { downloadPracticeExport } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import { canSubmitConfideText } from '../core/confide/confideClassify.js';
 import {
@@ -209,6 +214,10 @@ export class ConfideToYinUI {
     this._sendEpoch = 0;
     this._voiceRawForSend = null;
     this._operatingOwnsMic = false;
+    /** @type {((text: string) => void) | null} */
+    this._operatingConfirmTypedSubmit = null;
+    /** @type {(() => void) | null} */
+    this._operatingConfirmLevelUnsub = null;
     this._pendingWatchdogTimer = 0;
     this._pendingFallback = null;
     this._l2Turns = [];
@@ -354,6 +363,28 @@ export class ConfideToYinUI {
     this.replyEl.dataset.testid = 'confide-to-yin-reply';
     this.replyEl.hidden = true;
 
+    this.operatingConfirmEl = document.createElement('div');
+    this.operatingConfirmEl.className = 'confide-to-yin__operating-confirm';
+    this.operatingConfirmEl.dataset.testid = 'confide-operating-confirm-listen';
+    this.operatingConfirmEl.hidden = true;
+    this.operatingConfirmStatusEl = document.createElement('p');
+    this.operatingConfirmStatusEl.className = 'confide-to-yin__operating-confirm-status';
+    this.operatingConfirmStatusEl.dataset.testid = 'confide-operating-confirm-status';
+    this.operatingConfirmMeter = document.createElement('span');
+    this.operatingConfirmMeter.className = 'confide-to-yin__operating-confirm-meter';
+    this.operatingConfirmMeter.dataset.testid = 'confide-operating-confirm-level';
+    this.operatingConfirmMeter.setAttribute('aria-hidden', 'true');
+    this.operatingConfirmMeterBars = [0, 1, 2].map(() => {
+      const bar = document.createElement('span');
+      bar.className = 'confide-to-yin__operating-confirm-meter-bar';
+      this.operatingConfirmMeter.append(bar);
+      return bar;
+    });
+    this.operatingConfirmEl.append(
+      this.operatingConfirmStatusEl,
+      this.operatingConfirmMeter
+    );
+
     this.thinkingEl = document.createElement('p');
     this.thinkingEl.className = 'confide-to-yin__thinking';
     this.thinkingEl.dataset.testid = 'confide-to-yin-thinking';
@@ -424,6 +455,7 @@ export class ConfideToYinUI {
       this.userEl,
       this.thinkingEl,
       this.replyEl,
+      this.operatingConfirmEl,
       this.secondaryLinks,
       this.helpResourcesPanel,
       this.actions
@@ -1262,7 +1294,7 @@ export class ConfideToYinUI {
     this.inputEl.value = '';
     this._syncSendEnabled();
     await runYinVoiceCommand(decision, {
-      show: (userText, sayKey) => this._showOperatingLine(userText, sayKey),
+      show: (userText, sayKey, opts) => this._showOperatingLine(userText, sayKey, opts),
       speakAndWait: (sayKey) => this._speakOperatingAndWait(sayKey),
       listen: (ms) => this._listenOperating(ms),
       writeBackup: () =>
@@ -1275,12 +1307,22 @@ export class ConfideToYinUI {
     });
   }
 
-  _showOperatingLine(userText, sayKey) {
+  /**
+   * @param {string} userText
+   * @param {string} sayKey
+   * @param {{ captureDiagnostics?: string }} [opts]
+   */
+  _showOperatingLine(userText, sayKey, opts = {}) {
     this._hideThinkingIndicator();
     const asked = String(userText || '').trim();
     this.userEl.textContent = asked;
     this.userEl.hidden = !asked;
-    this.replyEl.textContent = t(sayKey);
+    let line = t(sayKey);
+    const diag = String(opts.captureDiagnostics || '').trim();
+    if (diag && sayKey === 'YIN_VOICE_BACKUP_MISSED') {
+      line = withVoiceCaptureDiagnostics(line, diag);
+    }
+    this.replyEl.textContent = line;
     this.replyEl.hidden = false;
     this.replyEl.dataset.route = 'yin_voice_command';
     this.replyEl.dataset.lineId = sayKey;
@@ -1318,21 +1360,111 @@ export class ConfideToYinUI {
     });
   }
 
+  _paintOperatingConfirmLevel(rms) {
+    const unit = voiceLevelUnit(rms);
+    const weights = [0.72, 1, 0.84];
+    this.operatingConfirmMeterBars.forEach((bar, index) => {
+      const height = 4 + Math.round(unit * 12 * weights[index]);
+      bar.style.height = `${height}px`;
+    });
+  }
+
+  _showOperatingConfirmListen(bridge) {
+    this.operatingConfirmStatusEl.textContent = t('YIN_VOICE_CONFIRM_LISTENING');
+    this.operatingConfirmEl.hidden = false;
+    this._paintOperatingConfirmLevel(0);
+    if (this._voiceInputChrome?.root) {
+      this._voiceInputChrome.root.hidden = true;
+    }
+    if (bridge && typeof bridge.onLevel === 'function') {
+      this._operatingConfirmLevelUnsub = bridge.onLevel((payload) => {
+        const level = payload && typeof payload === 'object' ? payload.rms : 0;
+        this._paintOperatingConfirmLevel(level);
+      });
+    }
+    this._syncSendEnabled();
+  }
+
+  _hideOperatingConfirmListen() {
+    this.operatingConfirmEl.hidden = true;
+    if (typeof this._operatingConfirmLevelUnsub === 'function') {
+      this._operatingConfirmLevelUnsub();
+    }
+    this._operatingConfirmLevelUnsub = null;
+    this._paintOperatingConfirmLevel(0);
+    if (this._voiceInputChrome?.root && this._voiceInputChrome.isVisible?.()) {
+      this._voiceInputChrome.root.hidden = false;
+    }
+    this._syncSendEnabled();
+  }
+
+  /**
+   * B/C-tier confirm window: auto mic + optional typed Yes/Cancel in the input.
+   * @param {number} ms
+   * @returns {Promise<{ transcript: string, captureDiagnostics: string }>}
+   */
   async _listenOperating(ms) {
     const bridge = getVoiceInputBridge();
     if (!bridge || typeof bridge.start !== 'function' || typeof bridge.stop !== 'function') {
-      return '';
+      return { transcript: '', captureDiagnostics: '' };
     }
     this._operatingOwnsMic = true;
+    this._showOperatingConfirmListen(bridge);
+    let settled = false;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    let listenTimer = null;
+    /** @type {((value: { transcript: string, captureDiagnostics: string }) => void) | null} */
+    let finish = null;
+
+    const complete = (payload) => {
+      if (settled || !finish) return;
+      settled = true;
+      if (listenTimer) clearTimeout(listenTimer);
+      finish(payload);
+    };
+
     try {
       const started = await bridge.start();
-      if (!started || started.ok === false) return '';
-      await new Promise((resolve) => setTimeout(resolve, ms));
-      const stopped = await bridge.stop();
-      return String((stopped && stopped.transcript) || '').trim();
+      if (!started || started.ok === false) {
+        return { transcript: '', captureDiagnostics: '' };
+      }
+
+      return await new Promise((resolve) => {
+        finish = resolve;
+        this._operatingConfirmTypedSubmit = (text) => {
+          complete({ transcript: String(text || '').trim(), captureDiagnostics: '' });
+          void (async () => {
+            try {
+              const snap =
+                typeof bridge.snapshot === 'function' ? await bridge.snapshot() : null;
+              if (snap && snap.status === 'listening' && typeof bridge.stop === 'function') {
+                await bridge.stop();
+              }
+            } catch {
+              /* ignore */
+            }
+          })();
+        };
+
+        listenTimer = setTimeout(() => {
+          void (async () => {
+            try {
+              const stopped = await bridge.stop();
+              complete({
+                transcript: String((stopped && stopped.transcript) || '').trim(),
+                captureDiagnostics: String((stopped && stopped.captureDiagnostics) || '').trim()
+              });
+            } catch {
+              complete({ transcript: '', captureDiagnostics: '' });
+            }
+          })();
+        }, ms);
+      });
     } catch {
-      return '';
+      return { transcript: '', captureDiagnostics: '' };
     } finally {
+      this._operatingConfirmTypedSubmit = null;
+      this._hideOperatingConfirmListen();
       this._operatingOwnsMic = false;
     }
   }
@@ -1352,6 +1484,17 @@ export class ConfideToYinUI {
   }
 
   _onSend() {
+    if (this._operatingConfirmTypedSubmit) {
+      const typed = String(this.inputEl.value || '').trim();
+      const replyKind = classifyYinVoiceConfirmReply(typed);
+      if (typed && replyKind !== 'empty') {
+        this._operatingConfirmTypedSubmit(typed);
+        this.inputEl.value = '';
+        this._voiceRawForSend = null;
+        this._syncSendEnabled();
+        return;
+      }
+    }
     if (this._sending || this._operatingOwnsMic) return;
     const text = this.inputEl.value;
     const raw = this._voiceRawForSend || text;
@@ -2309,6 +2452,36 @@ export class ConfideToYinUI {
         background: ${GLASS_FILL_STRONG};
         font-size: 0.92rem;
         line-height: 1.45;
+      }
+      .confide-to-yin__operating-confirm {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 10px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: ${GLASS_FILL_STRONG};
+        font-size: 0.86rem;
+      }
+      .confide-to-yin__operating-confirm[hidden] {
+        display: none !important;
+      }
+      .confide-to-yin__operating-confirm-status {
+        flex: 1;
+        margin: 0;
+        line-height: 1.35;
+      }
+      .confide-to-yin__operating-confirm-meter {
+        display: inline-flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 18px;
+      }
+      .confide-to-yin__operating-confirm-meter-bar {
+        width: 4px;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.72);
       }
       .confide-to-yin__reply::before {
         content: '';

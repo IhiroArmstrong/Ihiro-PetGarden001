@@ -4,7 +4,7 @@
  */
 
 /**
- * Zen Cinema · curated YouTube gifts (not a channel wall, no in-app player).
+ * Mindful Theater · curated YouTube gifts (not a channel wall, no in-app player).
  * Add films here; the Idle card and marketing list both read this catalog.
  * @see docs/task-briefs/task-zen-cinema-film-catalog.md
  */
@@ -37,6 +37,24 @@ export const ZEN_CINEMA_FILMS = Object.freeze([
     youtubeUrl: 'https://youtu.be/xpcPXJ95-00',
     thumbSrc: '/images/zen-cinema/hundred-foot-pole-thumb.png',
     titleKey: 'ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE'
+  },
+  {
+    id: 'yuan-blue-white-porcelain',
+    youtubeUrl: 'https://youtu.be/amZwKxj32ww',
+    thumbSrc: '/images/zen-cinema/yuan-blue-white-porcelain-thumb.png',
+    titleKey: 'ZEN_CINEMA_FILM_TITLE_YUAN_BLUE_WHITE_PORCELAIN'
+  },
+  {
+    id: 'porcelain-piano-meditation',
+    youtubeUrl: 'https://youtu.be/CpEKlYyKxGU',
+    thumbSrc: '/images/zen-cinema/porcelain-piano-meditation-thumb.jpg',
+    titleKey: 'ZEN_CINEMA_FILM_TITLE_PORCELAIN_PIANO_MEDITATION'
+  },
+  {
+    id: 'porcelain-deep-flow',
+    youtubeUrl: 'https://youtu.be/-pi1S408Ikg',
+    thumbSrc: '/images/zen-cinema/porcelain-deep-flow-thumb.png',
+    titleKey: 'ZEN_CINEMA_FILM_TITLE_PORCELAIN_DEEP_FLOW'
   }
 ]);
 

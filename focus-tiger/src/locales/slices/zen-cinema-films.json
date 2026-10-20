@@ -2,16 +2,34 @@
   "en": {
     "ZEN_CINEMA_CARD_BLURB": "A few short visual meditations — a small gift when you have a quiet minute.",
     "ZEN_CINEMA_FILM_TITLE_WHAT_IS_ZEN": "What is Zen? Ancient Wisdom & Guided Meditation",
-    "ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE": "What is Zen? The \"Unfair Advantage\" for Peak Performance and Peace"
+    "ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE": "What is Zen? The \"Unfair Advantage\" for Peak Performance and Peace",
+    "ZEN_CINEMA_FILM_TITLE_YUAN_BLUE_WHITE_PORCELAIN": "The Rarest Porcelain on Earth. How the Mongol Empire Created Yuan Blue-and-White?",
+    "ZEN_CINEMA_FILM_TITLE_PORCELAIN_PIANO_MEDITATION": "Ancient Chinese Porcelain & Piano Meditation",
+    "ZEN_CINEMA_FILM_TITLE_PORCELAIN_DEEP_FLOW": "1,000 Years of Porcelain Art, Deep Flow Meditation.",
+    "ZEN_CINEMA_MENU_LABEL": "Mindful Theater",
+    "ZEN_CINEMA_MENU_HOVER_TIP": "Meditation, Ancient Art & Mindful Visuals",
+    "ZEN_CINEMA_CARD_TITLE": "Mindful Theater"
   },
   "zh": {
     "ZEN_CINEMA_CARD_BLURB": "几段短片冥想——有空时的一份小礼物。",
     "ZEN_CINEMA_FILM_TITLE_WHAT_IS_ZEN": "What is Zen? Ancient Wisdom & Guided Meditation",
-    "ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE": "What is Zen? The \"Unfair Advantage\" for Peak Performance and Peace"
+    "ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE": "What is Zen? The \"Unfair Advantage\" for Peak Performance and Peace",
+    "ZEN_CINEMA_FILM_TITLE_YUAN_BLUE_WHITE_PORCELAIN": "The Rarest Porcelain on Earth. How the Mongol Empire Created Yuan Blue-and-White?",
+    "ZEN_CINEMA_FILM_TITLE_PORCELAIN_PIANO_MEDITATION": "Ancient Chinese Porcelain & Piano Meditation",
+    "ZEN_CINEMA_FILM_TITLE_PORCELAIN_DEEP_FLOW": "1,000 Years of Porcelain Art, Deep Flow Meditation.",
+    "ZEN_CINEMA_MENU_LABEL": "Mindful Theater",
+    "ZEN_CINEMA_MENU_HOVER_TIP": "冥想、古代艺术与正念影像",
+    "ZEN_CINEMA_CARD_TITLE": "Mindful Theater"
   },
   "ja": {
     "ZEN_CINEMA_CARD_BLURB": "短い映像の瞑想がいくつか — 静かな一分のための小さな贈り物。",
     "ZEN_CINEMA_FILM_TITLE_WHAT_IS_ZEN": "What is Zen? Ancient Wisdom & Guided Meditation",
-    "ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE": "What is Zen? The \"Unfair Advantage\" for Peak Performance and Peace"
+    "ZEN_CINEMA_FILM_TITLE_HUNDRED_FOOT_POLE": "What is Zen? The \"Unfair Advantage\" for Peak Performance and Peace",
+    "ZEN_CINEMA_FILM_TITLE_YUAN_BLUE_WHITE_PORCELAIN": "The Rarest Porcelain on Earth. How the Mongol Empire Created Yuan Blue-and-White?",
+    "ZEN_CINEMA_FILM_TITLE_PORCELAIN_PIANO_MEDITATION": "Ancient Chinese Porcelain & Piano Meditation",
+    "ZEN_CINEMA_FILM_TITLE_PORCELAIN_DEEP_FLOW": "1,000 Years of Porcelain Art, Deep Flow Meditation.",
+    "ZEN_CINEMA_MENU_LABEL": "マインドフル・シアター",
+    "ZEN_CINEMA_MENU_HOVER_TIP": "瞑想、古代美術、マインドフルな映像",
+    "ZEN_CINEMA_CARD_TITLE": "マインドフル・シアター"
   }
 }
