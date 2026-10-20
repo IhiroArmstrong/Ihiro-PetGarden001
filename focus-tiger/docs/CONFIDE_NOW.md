@@ -31,13 +31,13 @@
 
 | 代号 | 做什么 | 时限 | 退出 |
 |---|---|---|---|
-| **T31** 个人事实补徽章行 | 枚数 / 我有哪些印记读 Idle 徽章包；下载与寅币句不抢。规格 [`task-confide-personal-fact-badge-row.md`](./task-briefs/task-confide-personal-fact-badge-row.md) | **10/22–23** 合入 | 合入 + 清点句报本机枚数 |
+| **T30** 操作动词收紧 | CR-47 认知 how-to（understand / know）走生成，不跳 Help Center。规格 [`task-confide-operational-verb-tighten.md`](./task-briefs/task-confide-operational-verb-tighten.md)。叠 **T29** #1362（已合） | **10/21–22** 合入 | 合入 + 黄金脚本跳转正例不误伤 |
 | **T14** PO 双时点 | 内测可见入口 + 对客打开；**不是**再写代码 | 10/28 内测 on；10/29 对客 on | 复核人 10/28 看见真实入口；10/30 勾表前对客 on |
 | **复核一页纸** | 通过标准 + 已知缺口 + **签字范围** + **危机转介是否朗读**（问复核人） | **10/27** 交付并宣布发送链冻结 | 草稿 [`CONFIDE_REVIEW_ONE_PAGER.md`](./CONFIDE_REVIEW_ONE_PAGER.md)；缺定稿则 **10/28 不复核** |
 
 同一时间只许 **一个** 实现会话改倾诉代码。
 
-**T22** Help Center 问卡：**#1348 已合，未关单。** **T23** #1351 已合。**T29** #1362 已合。**T30** #1364 等 CI。**T31** 为本会话正在改的个人事实刀。**T32–T33** 排队中。
+**T22** Help Center 问卡：**#1348 已合，未关单。** **T23** #1351 已合。**T29** #1362 已合。**T30** #1364 为本刀（消冲突后等 CI）。**T31–T33** 排队中。**T25** P1（⋯ 五图标，Brief 待点头）。**T26–T27** Brief 待点头。
 
 ## 完成线（写死，只算英文）
 
