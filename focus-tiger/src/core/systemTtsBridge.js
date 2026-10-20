@@ -13,12 +13,6 @@ import {
   DESKTOP_COMPANION_WIDE_MIN_PX,
   isDesktopCompanionViewportAllowed
 } from './desktopCompanionGate.js';
-import {
-  CONFIDE_EMOTION_BUCKETS,
-  CONFIDE_GENERATE_REPLY_ROUTE,
-  CONFIDE_HELP_CENTER_REDIRECT_REPLY_ROUTE,
-  CONFIDE_ROUTE
-} from './confide/confideRoutes.js';
 
 /**
  * @param {string} locale
@@ -31,33 +25,19 @@ export function mapLocaleToTtsLocale(locale) {
 }
 
 /**
- * Reply route ids cleared for speech. Brief task-confide-tts-v1 speaks every
- * reply except the two crisis routes, and the local-AI branch is the main case
- * — so the emotion buckets, fallback and `generate` all belong here.
+ * Speak whenever Confide shows a reply body (Brief T34).
+ * Route id is not a mute switch: crisis, aggression, Help Center redirect,
+ * and unrecognised ids all speak the on-screen text. Empty body stays silent.
+ * Stop/close/newest-wins remain the user's quiet path — this function does
+ * not remove them.
  *
- * Listing what may speak rather than what may not keeps an unrecognised route
- * id silent: a future crisis-adjacent route would otherwise be read aloud
- * until someone remembered to add it to an exclusion list.
- *
- * @type {ReadonlySet<string>}
- */
-const SPEAKABLE_CONFIDE_REPLY_ROUTES = Object.freeze(
-  new Set([
-    ...CONFIDE_EMOTION_BUCKETS,
-    CONFIDE_ROUTE.FALLBACK,
-    CONFIDE_GENERATE_REPLY_ROUTE,
-    CONFIDE_HELP_CENTER_REDIRECT_REPLY_ROUTE
-  ])
-);
-
-/**
- * Crisis / safety routes stay text-only (Brief task-confide-tts-v1).
- *
- * @param {string} route
+ * @param {string | null | undefined} [_route]
+ * @param {string | null | undefined} [text]
  * @returns {boolean}
  */
-export function shouldSpeakConfideReply(route) {
-  return SPEAKABLE_CONFIDE_REPLY_ROUTES.has(route);
+export function shouldSpeakConfideReply(_route, text) {
+  if (text !== undefined) return String(text || '').trim().length > 0;
+  return true;
 }
 
 /**

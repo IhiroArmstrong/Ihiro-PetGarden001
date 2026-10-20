@@ -16,6 +16,7 @@ import {
   withVoiceCaptureDiagnostics
 } from '../core/voiceInputBridge.js';
 import { voiceLevelUnit } from '../core/voiceLevelMeter.js';
+import { stopSystemTts } from '../core/systemTtsBridge.js';
 
 const STYLE_ID = 'voice-input-chrome-styles-v1';
 
@@ -261,6 +262,7 @@ export class VoiceInputChrome {
 
   async _onSpeak() {
     if (!this._bridge || typeof this._bridge.start !== 'function') return;
+    stopSystemTts();
     this._errorMessage = '';
     this._truncationMessage = '';
     this._clearFieldForNewCapture();
