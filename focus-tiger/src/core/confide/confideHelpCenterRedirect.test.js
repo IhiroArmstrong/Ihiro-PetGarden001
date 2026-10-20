@@ -56,6 +56,14 @@ describe('T23 Help Center ask redirect', () => {
       }),
       false
     );
+    assert.equal(
+      shouldRedirectConfideProductAskToHelpCenter({
+        text: 'How to understand Zen practice?',
+        gateAction: 'honesty',
+        helpCenterAskReachable: true
+      }),
+      false
+    );
   });
 
   it('does not redirect mood, motive, or unknown-name lines even if reachable', () => {

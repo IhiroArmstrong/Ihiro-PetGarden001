@@ -9,6 +9,7 @@
  */
 
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
+import { isConfideCognitiveHowToShape } from './confideCognitiveHowTo.js';
 import { observeConfideProductAskBlock } from './confideProductAskBlockObserve.js';
 import { classifyConfideProductAskRole } from './confideProductAskRole.js';
 import { hasConfideProductObject } from './confideProductObject.js';
@@ -133,6 +134,7 @@ export function isProductKnowledgeColdStartProbe(text) {
 export function isConfideOperationalProductAskShape(text) {
   const raw = normalizeConfideIntentText(text);
   if (!raw) return false;
+  if (isConfideCognitiveHowToShape(text)) return false;
   const spaced = raw.replace(/\s+/g, ' ').trim();
   const compact = spaced.replace(/\s+/g, '');
   const askRole = classifyConfideProductAskRole(text);
@@ -159,6 +161,7 @@ export function isConfideOperationalProductAskShape(text) {
 export function isConfideActivityHowToWithoutProductEntry(text) {
   const raw = normalizeConfideIntentText(text);
   if (!raw) return false;
+  if (isConfideCognitiveHowToShape(text)) return false;
   const spaced = raw.replace(/\s+/g, ' ').trim();
   return ACTIVITY_HOW_TO_RE.test(spaced);
 }
@@ -308,6 +311,8 @@ export function moodAsideOutranksProductLibrary(
 export function resolveProductKnowledgeGateAction(input) {
   const { text, embeddingState, semanticIsProduct, catalogHit, nearAction, lifeOutranksProduct } =
     input;
+  // Cognitive how-to is companionship, not a product card (T30).
+  if (isConfideCognitiveHowToShape(text)) return 'skip';
   // catalogHit here means the card already passed the fact door (CR-50).
   if (catalogHit) return 'hit';
   if (isConfideMoodAsideFromProductKnowledge(text)) return 'skip';
