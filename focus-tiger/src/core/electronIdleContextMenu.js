@@ -45,6 +45,7 @@ const CHROME_SELECTOR = [
   '#idle-yin-tap-anchor',
   '.onboarding-hint-help',
   '#ft-narrow-help-btn',
+  '#ft-narrow-help-center-btn',
   '#onboarding-app-purpose',
   '#onboarding-privacy-sheet'
 ].join(',');

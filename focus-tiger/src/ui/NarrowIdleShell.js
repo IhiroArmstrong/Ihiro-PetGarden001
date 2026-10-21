@@ -29,7 +29,7 @@ import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v23';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v24';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -87,6 +87,7 @@ export class NarrowIdleShell {
    *     onNewsletter?: () => void,
    *     onCommunity?: () => void,
    *     onHelpCenter?: () => void,
+   *     onHelpCenterChrome?: () => void,
    *     onLocalBackup?: () => void,
    *     onRitualFlow?: (proxy: string) => void,
    *     onHonesty?: () => void,
@@ -431,6 +432,9 @@ export class NarrowIdleShell {
       <button type="button" class="ft-narrow-action-bar__btn" id="ft-narrow-help-btn" data-proxy="help" aria-label="">
         ?
       </button>
+      <button type="button" class="ft-narrow-action-bar__btn" id="ft-narrow-help-center-btn" data-proxy="help-center-beside" data-testid="ft-narrow-help-center-btn" aria-label="">
+        <svg class="ft-narrow-help-center-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.2 4.2h11.1c1 0 1.8.8 1.8 1.8v13.1c0 .8-.9 1.2-1.5.7L16 18.1l-1.7 1.7c-.6.5-1.5.1-1.5-.7V6.5H6.2c-.5 0-.9.4-.9.9v11.2H3.2V7.4c0-1.8 1.4-3.2 3-3.2z"/></svg>
+      </button>
       <button type="button" class="ft-narrow-action-bar__btn is-confide" id="ft-narrow-confide-btn" data-proxy="confide" data-testid="ft-narrow-confide-btn" hidden aria-label="">
         <img class="ft-narrow-action-bar__confide-img" src="${ICON_CONFIDE}" alt="" width="28" height="28" draggable="false" decoding="async" />
       </button>
@@ -557,11 +561,17 @@ export class NarrowIdleShell {
 
   _refreshLabels() {
     const helpBtn = this.actionBar?.querySelector('[data-proxy="help"]');
+    const helpCenterBtn = this.actionBar?.querySelector(
+      '#ft-narrow-help-center-btn'
+    );
     const confideBtn = this.actionBar?.querySelector('#ft-narrow-confide-btn');
     const muteBtn = this.actionBar?.querySelector('[data-proxy="mute"]');
     const title = this.sheet?.querySelector('[data-role="sheet-title"]');
     const close = this.sheet?.querySelector('[data-role="close"]');
     if (helpBtn) helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
+    if (helpCenterBtn) {
+      helpCenterBtn.setAttribute('aria-label', t('HELP_CENTER_BESIDE_ARIA'));
+    }
     if (confideBtn) {
       confideBtn.setAttribute('aria-label', t('CONFIDE_MENU_LABEL'));
       this._confideTip?.setText(t('CONFIDE_EAR_TOOLTIP'));
@@ -994,6 +1004,12 @@ export class NarrowIdleShell {
       return;
     }
 
+    if (key === 'help-center-beside') {
+      this.closeSheet();
+      invokeHandler(this.handlers, 'onHelpCenterChrome');
+      return;
+    }
+
     const map = {
       help: () => document.getElementById('onboarding-hint-help'),
       sit: () => document.getElementById('btn-focus'),
@@ -1082,6 +1098,12 @@ export class NarrowIdleShell {
       }
       .ft-narrow-action-bar__btn:active {
         transform: scale(0.96);
+      }
+      .ft-narrow-help-center-glyph {
+        display: block;
+        width: 18px;
+        height: 18px;
+        margin: 0 auto;
       }
       .ft-narrow-action-bar__btn.is-confide {
         padding: 0;

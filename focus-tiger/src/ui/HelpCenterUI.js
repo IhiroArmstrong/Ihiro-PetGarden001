@@ -4,8 +4,10 @@
  */
 
 /**
- * Help Center — browsable user topics (menu entry only; ? stays purpose card).
+ * Help Center — browsable user topics (menu + Idle chrome beside ?;
+ * the question mark itself stays the purpose card).
  * Brief: docs/task-briefs/task-user-help-center.md
+ *        docs/task-briefs/task-help-center-beside-question.md
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -32,6 +34,7 @@ import {
   hideOverlayBackdrop,
   showOverlayBackdrop
 } from './overlayBackdrop.js';
+import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'help-center-ui-styles-v1';
@@ -49,6 +52,8 @@ export class HelpCenterUI {
     this._open = false;
     /** @type {string | null} */
     this._activeArticleId = null;
+    /** @type {(() => void) | null} */
+    this._popEscapeLayer = null;
 
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'help-center-backdrop',
@@ -196,15 +201,25 @@ export class HelpCenterUI {
     return this._open;
   }
 
-  open() {
+  /**
+   * @param {{ resume?: boolean }} [opts]
+   * Menu re-open resets to the topic index. Idle chrome beside `?` passes
+   * `resume: true` so an already-open card stays put and comes to front.
+   */
+  open({ resume = false } = {}) {
     if (this._open) {
-      this._showIndex();
+      if (!resume) this._showIndex();
       return;
     }
     this._open = true;
     this._activeArticleId = null;
     this.root.hidden = false;
     showOverlayBackdrop(this.backdrop);
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = pushOverlayEscapeLayer({
+      id: 'help-center',
+      dismiss: () => this.close()
+    });
     this._showIndex();
     this.handlers.onOpen?.();
   }
@@ -214,6 +229,8 @@ export class HelpCenterUI {
     this._open = false;
     this._activeArticleId = null;
     this.root.hidden = true;
+    this._popEscapeLayer?.();
+    this._popEscapeLayer = null;
     hideOverlayBackdrop(this.backdrop, { fadeMs: FADE_MS });
     this.handlers.onClose?.();
   }

@@ -1502,7 +1502,14 @@ async function init() {
   window.__journeyLog = journeyLogUI;
   const helpCenterUI = new HelpCenterUI(
     document.body,
-    withIdleOverlayOccupancySync({})
+    withIdleOverlayOccupancySync({
+      onOpen: () => {
+        window.__onboardingHints?.pinHelpChromeAboveOverlay?.();
+      },
+      onClose: () => {
+        window.__onboardingHints?.unpinHelpChromeAboveOverlay?.();
+      }
+    })
   );
   window.__helpCenter = helpCenterUI;
   const presenceSignalsPanelUI = new PresenceSignalsPanelUI(
@@ -2108,9 +2115,14 @@ async function init() {
     coldStartGoalCardUI.open({ manual: true });
   };
 
-  const openHelpCenter = () => {
+  const openHelpCenter = ({ resume = false } = {}) => {
     closeGrowthOverlayCards({ except: 'help-center' });
-    helpCenterUI.open();
+    helpCenterUI.open({ resume });
+  };
+
+  const openHelpCenterFromChrome = () => {
+    window.__onboardingHints?._hidePurposeCard?.();
+    openHelpCenter({ resume: true });
   };
 
   const visibleSanctuaryAnchor = (el) => {
@@ -4022,6 +4034,9 @@ async function init() {
     onHelpCenter: () => {
       openHelpCenter();
     },
+    onHelpCenterChrome: () => {
+      openHelpCenterFromChrome();
+    },
     onLocalBackup: () => {
       closeGrowthOverlayCards({ except: 'local-backup' });
       localPracticeDataPanelUI.openPanel();
@@ -4206,6 +4221,12 @@ async function init() {
     },
     onHelpCenter: () => {
       openHelpCenter();
+    },
+    onHelpCenterChrome: () => {
+      openHelpCenterFromChrome();
+    },
+    onHelpCenterClose: () => {
+      helpCenterUI.close();
     },
     onWellnessFirstDismiss: () => {
       scheduleFirstCardOffers();

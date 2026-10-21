@@ -105,6 +105,7 @@
 | **22** | `src/main.js` | DEV 实验室一次性 toast（`#dev-lab-toast`） |
 | **22** | `src/ui/AmbientSoundscapeUI.js` | Ambient 根壳（`.ambient-soundscape`，`pointer-events: none`） |
 | **22** | `src/ui/OnboardingHintsUI.js` | 左下 `?` 帮助钮（`.onboarding-hint-help`） |
+| **22** | `src/ui/OnboardingHintsUI.js` | 左下 Help Center 快捷（`.onboarding-hint-help-center` / `#onboarding-hint-help-center`；与 `?` 同簇。帮助中心开时簇抬到 22，以免 z17 遮罩挡住） |
 | **22** | `src/ui/SoftUpdatePromptUI.js` | 仅有新版本时出现的轻量更新芯片（`#ft-soft-update-prompt`；左下、几何在 `?` **上方**；点一下刷新；忙时隐藏；与 `?` 同带勿抢 23 右下 Sound chrome） |
 | **23** | `src/ui/AmbientSoundscapeUI.js` | Soundscape 右下 focus chrome（曲目面板 + Sound FAB 容器） |
 | **24** | `src/ui/AmbientSoundscapeUI.js` | 右上 mute / 音符钮（`.ambient-soundscape__mute`） |
@@ -178,6 +179,7 @@
 | Ambient 音符 / mute | 24 | `.ambient-soundscape__mute` | **须 dim** |
 | 倾听耳（宽屏） | 24 | `#confide-ear-chrome` | **须 dim**（与上两项同带） |
 | 左下 `?` 帮助 | 22 | `.onboarding-hint-help` | 新遮罩须点名结论：dim 或保持（现 overlayBackdrop 默认列表未含此项） |
+| 左下 Help Center 快捷 | 22 | `.onboarding-hint-help-center` | 与 `?` 同等：现 overlayBackdrop 默认列表未含此项。帮助中心开着时把 ? + 本钮 pin 到 `body` z22（簇在 `#ui-overlay` z10 内抬 z 仍会被遮罩挡住） |
 | 软更新芯片 | 22 | `#ft-soft-update-prompt` | 同上，默认未列入 idle-chrome dim |
 | Soundscape 右下 FAB 容器 | 23 | Ambient focus chrome | 新遮罩须点名；勿与右上 mute 混为一谈 |
 | 窄屏 ActionBar Confide | 30 壳内 | `#ft-narrow-confide-btn` | 窄屏路径单独写结论（耳钮 CSS 隐藏） |

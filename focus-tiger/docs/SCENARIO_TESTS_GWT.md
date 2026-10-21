@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-19  
+生成日期：2026-10-21  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -5654,8 +5654,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 > **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
 > **地位**：Idle 本周陪伴热力图**上方**的一行旅程。**≠** Journey log（场景 Z）。圆点分钟 **≠** 莲花朵数；花只画在这张纸上。
-> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js` · `LotusPondRuntime.test.js`。**非**完整浏览器故事。
-> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、有朵时见横排莲花（下一句与累计分钟之间）、累计分钟。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
+> **单元**：`growthJourneyHomeLine.test.js` · `growthJourneyDetail.test.js` · `LotusPondRuntime.test.js` · `practicePaperFacts.test.js` · `growthJourneyDetailRhythm.test.js`。**非**完整浏览器故事。
+> **点击**：短行是按钮。点后 **0–1 秒内** `#growth-journey-detail` 开始出现（`data-testid=growth-journey-detail`），见标题 Where you are、轨道上的点、You're here、下一句、有朵时见横排莲花（下一句与累计分钟之间）、累计分钟；节奏句下方见 **练习观察纸**（默认一张 **Sit & Breath** 卡，读 Journey Log 全部行，**不按** `arrive` 拆）。Close **0–1 秒内**收起。短行 `hidden` 时点击无效。
 
 ### 步骤总览
 
@@ -5663,14 +5663,15 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 |---|---|---|---|
 | AV-1 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | `?product=1` Idle，热力图可见 → 其上方见 `[data-testid=growt |
 | AV-2 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来 |
-| AV-3 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | Close 或点背板 → 卡收起，热力图与 Sit 仍在。 |
+| AV-3 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | 节奏句下方 → 0–1 秒内见 `[data-testid=practice-paper]`；默认见 |
+| AV-4 | P1 | 已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `gro | Close 或点背板 → 卡收起，热力图与 Sit 仍在。 |
 
 ### Given-When-Then 明细
 
 #### AV-1
 
 - **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖；已在 `practicePaperFacts.test.js` 覆盖；已在 `growthJourneyDetailRhythm.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5685,7 +5686,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AV-2
 
 - **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖；已在 `practicePaperFacts.test.js` 覆盖；已在 `growthJourneyDetailRhythm.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5700,7 +5701,21 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AV-3
 
 - **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖；已在 `practicePaperFacts.test.js` 覆盖；已在 `growthJourneyDetailRhythm.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 节奏句下方
+
+**Then**
+- 0–1 秒内见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 Sit & Breath（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，禁止健康分 / 百分比 / 「本周」对外文案）。点 Hide → 0–1 秒内整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸不得改上半部阶段公式，不得另写 Journey log 行。
+
+#### AV-4
+
+- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
+- **覆盖**：已在 `growthJourneyHomeLine.test.js` 覆盖；已在 `growthJourneyDetail.test.js` 覆盖；已在 `LotusPondRuntime.test.js` 覆盖；已在 `practicePaperFacts.test.js` 覆盖；已在 `growthJourneyDetailRhythm.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5848,29 +5863,31 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 艺术收藏面板。结缘页已有至少一件藏品、且这台设备还没看过那句时，打开 Yin's Collections 须在标题下看见 “If you enjoy pieces like this…”、Open 与 Close（#1132），不用滚到列表底才算看见；句子若在可视区域外，关掉再开仍应出现。没有藏品不出现这句。
 
 ---
-## 场景 AX：帮助中心（菜单 + 问号卡 · #1120 / #1122 · 2026-10-10）
+## 场景 AX：帮助中心（菜单 + 问号卡 · #1120 / #1122 · 2026-10-10 · T26 快捷 2026-10-21）
 
-> **E2E 优先级**：P1 · 正式用户路径；E2E 保一条主干，分支下沉单测/集成
-> **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。
-> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录；不碰付款、不改练习记录）。
-> **点击**：菜单行与问号卡上的链，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
+> **E2E 优先级**：P0 · 跨系统链路
+> **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。左下问号右边另有 Help Center 快捷（T26），打开同一张卡。
+> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录、问卡检索、Idle 快捷；不碰付款、不改练习记录）。
+> **点击**：菜单行、问号卡上的链、问号右边快捷钮，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。顶部 **问卡**输入（可打字或 **Speak to type**，宽屏 Electron）→ **0–1 秒内**见匹配主题列表（**只列结果、不执行** T10 命令）。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
 
 ### 步骤总览
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AX-1 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | `?product=1` Idle → ⋯ Preferences Help Center（窄屏抽屉 |
-| AX-2 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 点任一主题 → 0–1 秒内见该篇标题和正文（`data-testid=help-center-ar |
-| AX-3 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | Close 或点背板 → 0–1 秒内面板收起，Sit 仍在。收起后闲置页右侧、徽章卡片外面不得留下 |
-| AX-4 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Ce |
-| AX-5 | P1 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 目录是说明，不是对阿寅说话。这里的句子不得冒充倾诉面板里的回复。 |
+| AX-1 | P0 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | `?product=1` Idle → ⋯ Preferences Help Center（窄屏抽屉 |
+| AX-1b | P0 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 顶部问卡输入 `How do I back up my data?`（或等价产品问）→ 0–1 秒内 |
+| AX-1c | P0 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | Idle 问号右边 `[data-testid=idle-help-center-beside]`（ |
+| AX-2 | P0 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 点任一主题 → 0–1 秒内见该篇标题和正文（`data-testid=help-center-ar |
+| AX-3 | P0 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | Close 或点背板 → 0–1 秒内面板收起，Sit 仍在。收起后闲置页右侧、徽章卡片外面不得留下 |
+| AX-4 | P0 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 场景 W 的问号简介卡里，次级链 “Browse all topics → open Help Ce |
+| AX-5 | P0 | 已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCen | 目录是说明，不是对阿寅说话。这里的句子不得冒充倾诉面板里的回复。 |
 
 ### Given-When-Then 明细
 
 #### AX-1
 
-- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+- **优先级**：P0（跨系统链路）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5882,10 +5899,39 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 **Then**
 - ⋯ Preferences Help Center（窄屏抽屉同一行，`data-testid=idle-help-center`）→ 0–1 秒内 `[data-testid=help-center]` 可见，标题 Help Center，下面是分好组的主题。
 
+#### AX-1b
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- 顶部问卡输入 `How do I back up my data?`（或等价产品问）
+
+**Then**
+- 0–1 秒内见相关主题行；点一行 → 同步骤 2 见正文。禁止在 Help Center 内直接执行备份。无关句 → 空列表或弱匹配，不得静默。
+
+#### AX-1c
+
+- **优先级**：P0（跨系统链路）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+- Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
+
+**When**
+- Idle 问号右边 `[data-testid=idle-help-center-beside]`（窄屏 `#ft-narrow-help-center-btn`）
+
+**Then**
+- 0–1 秒内见同一 `[data-testid=help-center]`。问号仍只出简介。已开简介再点新钮 → 0–1 秒内简介关、帮助中心开。已开帮助中心再点问号 → 0–1 秒内帮助中心关、简介开。已开帮助中心再点新钮 → 保持打开、前置，不关不叠。Esc 关当前唯一一层。e2e：`help-center-beside-question.spec.js`。
+
 #### AX-2
 
-- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+- **优先级**：P0（跨系统链路）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5898,8 +5944,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 #### AX-3
 
-- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+- **优先级**：P0（跨系统链路）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5912,8 +5958,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 #### AX-4
 
-- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+- **优先级**：P0（跨系统链路）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5926,8 +5972,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 #### AX-5
 
-- **优先级**：P1（正式用户路径；E2E 保一条主干，分支下沉单测/集成）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖
+- **优先级**：P0（跨系统链路）
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -6187,4 +6233,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 67 · 步骤 326 · 待澄清 46_
+_场景 67 · 步骤 329 · 待澄清 46_
