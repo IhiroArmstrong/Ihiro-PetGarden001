@@ -93,4 +93,5 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 优化建议 | Help Center 用合适按钮安在问号按钮右边 | 2026-10-20 用户书面 · 同场 Electron | 旁路同上。现网 Help Center 在 ⋯ Preferences 行，以及问号简介卡内一行。问号钮 `#onboarding-hint-help`。B 类，须 Brief。 | 未跟进 |
 | 优化建议 | 任何练习中间不要语音播放 inhale / exhale，其它播放可以 | 2026-10-20 用户书面 · 同场 Electron | 旁路同上。现网 `maybeSpeakBreathPhaseCue` 挂 Arrival / Honesty / MicroRitual / RitualFlow。结束句与其它公告保留。B 类，须 Brief。 | 未跟进 |
 | 独立bug | Practice Paper 被测成过简；用户认为原意是带彩色进度的健康地图 | 2026-10-20 用户书面 · 同场截图 | 旁路同上。截图与 **T24** 第一刀（#1353）一致。方向锁 [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md) 明确禁止健康仪表盘 / 红黄绿色点。非漏实现。推翻锁须书面。 | 未跟进 |
+| 独立bug | Confide 日语无语言闸，语义危机层对假名 fail-open，未测委婉说法可进情绪桶或生成 | 2026-10-21 分析师复核 · 本机对 `origin/develop` `09f11959` | 旁路 [`issue-entries/docs-language-support-matrix.md`](./issue-entries/docs-language-support-matrix.md)。政策：过安全后暂未开放。**T35/T37** 文档；**T36** 运行时待冻结例外点头。 | 跟进中 |
 

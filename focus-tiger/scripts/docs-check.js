@@ -34,6 +34,7 @@ import { runProtectedPathLayerCheck } from './protected-path-layer-check.js';
 import { runZIndexLiteralCheck } from './z-index-literal-check.js';
 import { runGlassCardRootCheck } from './check-glass-card-roots.js';
 import { runConfideAcceptanceDevsetLeakAudit } from './audit-confide-acceptance-devset-leak.js';
+import { runQueueGovernanceCheck } from './check-queue-governance-docs.js';
 
 function main() {
   let ok = true;
@@ -60,6 +61,7 @@ function main() {
   if (!runKbLiveGapAudit()) ok = false;
   if (!runMutationM01Check()) ok = false;
   if (!runConfideAcceptanceDevsetLeakAudit()) ok = false;
+  if (!runQueueGovernanceCheck()) ok = false;
 
   if (!ok) {
     console.error(

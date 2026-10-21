@@ -880,9 +880,8 @@ export class ConfideToYinUI {
    * @param {{ route: string, text: string }} shown
    */
   _maybeSpeakConfideReply(shown) {
-    if (!shouldSpeakConfideReply(shown.route)) return;
     const text = String(shown.text || '').trim();
-    if (!text) return;
+    if (!shouldSpeakConfideReply(shown.route, text)) return;
     const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
     if (!canUseSystemTts({ widthPx })) return;
     speakSystemTts({ text, locale: mapLocaleToTtsLocale(getLocale()) });

@@ -96,10 +96,18 @@ describe('systemTtsBridge', () => {
     assert.equal(mapLocaleToTtsLocale('en-US'), 'en-US');
   });
 
-  it('skips crisis routes for Confide reply speech', () => {
+  it('speaks crisis and aggression replies the same as emotion replies (T34)', () => {
     assert.equal(shouldSpeakConfideReply(CONFIDE_ROUTE.SAD), true);
-    assert.equal(shouldSpeakConfideReply(CONFIDE_ROUTE.SAFETY_REDIRECT), false);
-    assert.equal(shouldSpeakConfideReply(CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS), false);
+    assert.equal(shouldSpeakConfideReply(CONFIDE_ROUTE.SAFETY_REDIRECT), true);
+    assert.equal(shouldSpeakConfideReply(CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS), true);
+    assert.equal(
+      shouldSpeakConfideReply(
+        CONFIDE_ROUTE.SAFETY_REDIRECT,
+        'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line.'
+      ),
+      true
+    );
+    assert.equal(shouldSpeakConfideReply(CONFIDE_ROUTE.SAFETY_REDIRECT, '   '), false);
   });
 
   it('requires desktop wide viewport for product TTS', () => {
@@ -119,17 +127,10 @@ describe('systemTtsBridge', () => {
   });
 
   it('keeps speaking the local-AI reply route (task-confide-tts-v1 挂载点)', () => {
-    // ConfideToYinUI._showReply passes a bare 'generate' string, not a
-    // CONFIDE_ROUTE member. Brief task-confide-tts-v1: every reply is spoken
-    // except the two crisis routes — so this must stay true through any
-    // deny-list → allow-list rework.
     assert.equal(shouldSpeakConfideReply('generate'), true);
   });
 
-  it('keeps every reachable route id on its existing speak decision', () => {
-    // 已好清单 for the deny-list → allow-list swap: these ids are every
-    // route value that reaches the gate today (classify outputs plus
-    // the local-AI id), so the swap must not move any of them.
+  it('speaks every reachable route id, including crisis and redirect (T34)', () => {
     const expected = {
       [CONFIDE_ROUTE.ANXIOUS]: true,
       [CONFIDE_ROUTE.TIRED]: true,
@@ -138,27 +139,34 @@ describe('systemTtsBridge', () => {
       [CONFIDE_ROUTE.SCATTERED]: true,
       [CONFIDE_ROUTE.FALLBACK]: true,
       [CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN]: true,
-      [CONFIDE_ROUTE.SAFETY_REDIRECT]: false,
-      [CONFIDE_ROUTE.SAFETY_CARE]: false,
-      [CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS]: false,
+      [CONFIDE_ROUTE.SAFETY_REDIRECT]: true,
+      [CONFIDE_ROUTE.SAFETY_CARE]: true,
+      [CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS]: true,
       generate: true,
       help_center_redirect: true
     };
     for (const [route, speaks] of Object.entries(expected)) {
       assert.equal(shouldSpeakConfideReply(route), speaks, `route ${route}`);
     }
-    // Guards against a new classify output slipping in unreviewed.
     assert.equal(Object.keys(CONFIDE_ROUTE).length, 10);
   });
 
-  it('stays silent for route ids it does not recognise', () => {
-    // Fail-open gate: an unrecognised route id must not default to speech,
-    // otherwise a future crisis-adjacent route is read aloud until someone
-    // remembers to add it to the exclusion list.
-    assert.equal(shouldSpeakConfideReply(''), false);
-    assert.equal(shouldSpeakConfideReply(undefined), false);
-    assert.equal(shouldSpeakConfideReply(null), false);
-    assert.equal(shouldSpeakConfideReply('crisis_followup'), false);
+  it('speaks unrecognised route ids when a reply body is on screen (T34)', () => {
+    assert.equal(shouldSpeakConfideReply(''), true);
+    assert.equal(shouldSpeakConfideReply(undefined), true);
+    assert.equal(shouldSpeakConfideReply(null), true);
+    assert.equal(shouldSpeakConfideReply('crisis_followup'), true);
+  });
+
+  it('lets stop interrupt a crisis line the same as any other line', async () => {
+    const shell = fakeShell();
+    const line =
+      'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line.';
+    assert.equal(speakSystemTts({ text: line, globalObj: shell.globalObj }), true);
+    await flush();
+    assert.equal(stopSystemTts(shell.globalObj), true);
+    await flush();
+    assert.deepEqual(shell.calls, ['stop', `speak:${line}`, 'stop']);
   });
 });
 

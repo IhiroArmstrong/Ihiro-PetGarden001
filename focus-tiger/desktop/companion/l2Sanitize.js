@@ -216,6 +216,201 @@ export function isEchoOfUserLine(raw, userText) {
   return false;
 }
 
+/** Closed grammatical set — not a topic / utterance reject list. */
+const CONTENT_FUNCTION_WORDS = new Set([
+  'a',
+  'an',
+  'the',
+  'of',
+  'to',
+  'in',
+  'on',
+  'for',
+  'with',
+  'my',
+  'your',
+  'his',
+  'her',
+  'their',
+  'this',
+  'that',
+  'these',
+  'those',
+  'is',
+  'are',
+  'was',
+  'were',
+  'be',
+  'been',
+  'being',
+  'do',
+  'does',
+  'did',
+  'doing',
+  'have',
+  'has',
+  'had',
+  'having',
+  'not',
+  'no',
+  'nor',
+  'so',
+  'if',
+  'or',
+  'and',
+  'but',
+  'as',
+  'at',
+  'by',
+  'from',
+  'about',
+  'into',
+  'than',
+  'then',
+  'too',
+  'very',
+  'can',
+  'could',
+  'would',
+  'should',
+  'will',
+  'just',
+  'only',
+  'also',
+  'still',
+  'here',
+  'there',
+  'when',
+  'what',
+  'which',
+  'who',
+  'whom',
+  'why',
+  'how',
+  'where',
+  'i',
+  'me',
+  'we',
+  'us',
+  'you',
+  'it',
+  'they',
+  'them',
+  'im',
+  'ive',
+  'dont',
+  'doesnt',
+  'didnt',
+  'isnt',
+  'arent',
+  'wasnt',
+  'werent',
+  'cant',
+  'couldnt',
+  'wouldnt',
+  'shouldnt',
+  'wont',
+  'some',
+  'any',
+  'all',
+  'each',
+  'every',
+  'other',
+  'another',
+  'own',
+  'same',
+  'such',
+  'both',
+  'few',
+  'more',
+  'most',
+  'once',
+  'already',
+  'even',
+  'yet'
+]);
+
+/**
+ * @param {string} word
+ * @returns {string}
+ */
+function lightContentStem(word) {
+  let w = String(word || '')
+    .toLowerCase()
+    .replace(/'s$/u, '')
+    .replace(/'/gu, '');
+  if (w.length >= 5 && /s$/u.test(w) && !/(?:ss|us)$/u.test(w)) {
+    w = w.slice(0, -1);
+  }
+  return w;
+}
+
+/**
+ * Content stems from a line. Mechanism = leftover after dropping function words.
+ * @param {unknown} raw
+ * @returns {Set<string>}
+ */
+export function contentStemsFromLine(raw) {
+  /** @type {Set<string>} */
+  const stems = new Set();
+  const text = String(raw || '');
+  const lower = text.toLowerCase();
+  for (const match of lower.matchAll(/[a-z]+(?:'[a-z]+)?/gu)) {
+    const stem = lightContentStem(match[0]);
+    if (!stem || stem.length < 3) continue;
+    if (CONTENT_FUNCTION_WORDS.has(stem)) continue;
+    stems.add(stem);
+  }
+  for (const match of text.matchAll(/[\u3400-\u9fff]{2,}/gu)) {
+    stems.add(match[0]);
+  }
+  return stems;
+}
+
+/**
+ * @param {string} replyStem
+ * @param {string} userStem
+ * @returns {boolean}
+ */
+function contentStemsRelate(replyStem, userStem) {
+  if (replyStem === userStem) return true;
+  if (replyStem.length >= 4 && userStem.length >= 4) {
+    if (replyStem.startsWith(userStem) || userStem.startsWith(replyStem)) return true;
+  }
+  if (replyStem === `dis${userStem}` || replyStem === `un${userStem}`) return true;
+  if (userStem === `dis${replyStem}` || userStem === `un${replyStem}`) return true;
+  return false;
+}
+
+/**
+ * @param {string} replyStem
+ * @param {Set<string>} userStems
+ * @returns {boolean}
+ */
+function contentStemCoveredByUser(replyStem, userStems) {
+  for (const userStem of userStems) {
+    if (contentStemsRelate(replyStem, userStem)) return true;
+  }
+  return false;
+}
+
+/**
+ * Nominalized restatement: reply content words are all from the user line.
+ * Swap to the existing companion corpus short line. Not a reject list of field sentences.
+ * @param {unknown} raw
+ * @param {unknown} userText
+ * @returns {boolean}
+ */
+export function isContentWordParrotReply(raw, userText) {
+  const replyStems = contentStemsFromLine(raw);
+  const userStems = contentStemsFromLine(userText);
+  if (replyStems.size === 0 || userStems.size === 0) return false;
+  for (const stem of replyStems) {
+    if (!contentStemCoveredByUser(stem, userStems)) return false;
+  }
+  return true;
+}
+
 /**
  * Character-bigram overlap with the current user line (separate from echo).
  * @param {unknown} raw
@@ -298,6 +493,7 @@ export function sanitizeCompanionL2Reply(raw, opts = {}) {
   if (isGenericCubTheaterReply(text)) return null;
   if (isEchoOfUserLine(text, opts.userText)) return null;
   if (isHighOverlapWithUserLine(text, opts.userText)) return null;
+  if (isContentWordParrotReply(text, opts.userText)) return null;
   const prior = Array.isArray(opts.priorReplies) ? opts.priorReplies : [];
   const normalized = normalizeCompanionL2Reply(text);
   if (

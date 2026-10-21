@@ -185,6 +185,15 @@ describe('confide semantic crisis layer (CR-44 S1)', () => {
     });
     assert.equal(enMiss.applied, false);
     assert.equal(enMiss.route, CONFIDE_ROUTE.FALLBACK);
+    const killingMe = applyConfideSemanticCrisis({
+      literalRoute: CONFIDE_ROUTE.FALLBACK,
+      score: 0.91,
+      embeddingOk: true,
+      mode: CONFIDE_SEMANTIC_CRISIS_MODE.LIVE,
+      text: 'this is killing me'
+    });
+    assert.equal(killingMe.applied, false);
+    assert.equal(killingMe.route, CONFIDE_ROUTE.FALLBACK);
   });
 
   it('still live-applies banked self-directed prototypes', () => {

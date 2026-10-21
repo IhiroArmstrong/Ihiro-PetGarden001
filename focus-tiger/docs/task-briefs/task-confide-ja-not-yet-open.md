@@ -22,7 +22,7 @@ Safety / aggression / FORGET → (existing) address+command → Japanese not-yet
 
 ## 4. Copy
 
-English lead + fixed Japanese line. Key: not yet open (not “cannot be used”). Crisis referral unchanged and not spoken if current crisis TTS rules forbid it.
+English lead + fixed Japanese line. Key: not yet open (not “cannot be used”). Crisis referral unchanged; T34 speaks on-screen crisis copy when a body is shown.
 
 ## 5. Out of scope
 
@@ -47,7 +47,7 @@ Payment / Sit vs Breath: **skip** — this slice does not add products or practi
 
 No new persistent control required. Notice is send-path copy in the existing Confide card.
 
-- 0–1s after Share on Japanese (non-crisis): user sees the static notice (and hears it only if existing TTS already speaks non-crisis replies).  
+- 0–1s after Share on Japanese (non-crisis): user sees the static notice (and hears it when T34 rules speak the on-screen body).  
 - Crisis Japanese: referral first; do not substitute the language notice.  
 - Later Japanese turns: same notice on language miss; do not toast-spam every keystroke.  
 - Overlay / focusing: do not new-layer over Support / menu escape hatch.

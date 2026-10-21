@@ -76,6 +76,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `plain-language-summary` | 用户可见汇报前置大白话总结（≤5 句、无技术术语） | `WORKFLOW.md` | 用户可见汇报：前置大白话总结（强制） |
 | `scheduling-glossary` | 排期与队列汇报统一用语（P1/P2/未排期；禁止同义换写） | `focus-tiger/docs/SCHEDULING_GLOSSARY.md` | SCHEDULING_GLOSSARY.md — 排期与汇报统一用语 |
 | `communication-glossary` | 会话任务术语表与沟通统一（T 代号、状态词、汇报结构） | `focus-tiger/docs/GLOSSARY.md` | GLOSSARY.md — 会话任务术语表 |
+| `queue-governance` | 队列文档治理（防 GLOSSARY / SCHEDULING / CONFIDE 热点冲突） | `focus-tiger/docs/queue-governance-readme.md` | 队列文档治理（防 PR 冲突） |
 | `session-handoff` | 会话交接（口令「生成交接」：结构化摘要给下一会话） | `.cursor/rules/focus-tiger-session-handoff.mdc` | Focus Tiger · 会话交接（Session Handoff） |
 | `issue-ledger` | 问题账本：总表只加稳定摘要，进度写 issue-entries（并行 PR 不改同一行） | `.cursor/rules/focus-tiger-issue-ledger.mdc` | Focus Tiger · Issue Ledger（问题闭环追踪 · 按需层） |
 | `brief-before-user-visible` | B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类） | `WORKFLOW.md` | 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21） |
