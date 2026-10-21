@@ -695,6 +695,7 @@ export class WideIdleMoreMenu {
       const target = /** @type {Node} */ (event.target);
       if (this.wrap?.contains(target)) return;
       if (this.menu?.contains(target)) return;
+      if (this.radialRoot?.contains(target)) return;
       this.closeMenu();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);

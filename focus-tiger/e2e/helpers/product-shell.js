@@ -199,16 +199,20 @@ export async function openWideMoreMenuIfPresent(page) {
  * @param {string} groupKey
  */
 export async function pickWideMoreRadialGroup(page, groupKey) {
-  const radial = page.locator('#ft-wide-more-radial');
-  if (await radial.isVisible().catch(() => false)) {
-    await page.locator(`#ft-wide-more-radial [data-group="${groupKey}"]`).click();
+  await expectWideMoreMenuShellVisible(page);
+  const radialIcon = page.locator(
+    `#ft-wide-more-radial:not([hidden]) [data-group="${groupKey}"]`
+  );
+  if ((await radialIcon.count()) > 0) {
+    await expect(radialIcon).toBeVisible({ timeout: 5_000 });
+    await radialIcon.click();
     await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
       timeout: 5_000
     });
     return;
   }
 
-  // Degenerate flat list (sprite-stage / short innerHeight): radial hidden.
+  // Degenerate flat list (short innerHeight / top-clipped icons): radial hidden.
   const menu = page.locator('#ft-wide-more-menu');
   if (!(await menu.isVisible().catch(() => false))) return;
   const header = page.locator(

@@ -18,7 +18,7 @@ import {
  * Wide Idle (≥480): three home balls (Breath · Sit · Honesty) + ⋯ right sheet.
  */
 
-// Taller than 720 so radial icons usually clear sprite-stage (degenerate → flat list).
+// Wide + tall enough that T25 keeps the five-icon radial (not the short-window list).
 test.use({ viewport: { width: 1280, height: 900 } });
 
 /** Row proxy → click-hint id (Language has none by design). Breath is home ball. */
@@ -107,6 +107,9 @@ test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
   await more.click();
   await expect(page.locator('#ft-wide-more-backdrop')).toBeVisible();
   await expectWideMoreMenuShellVisible(page);
+  await expect(
+    page.locator('#ft-wide-more-radial:not([hidden]) .ft-wide-more-radial__icon')
+  ).toHaveCount(5);
   const radialMode = await page
     .locator('#ft-wide-more-radial')
     .isVisible()
