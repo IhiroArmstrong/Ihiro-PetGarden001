@@ -181,9 +181,9 @@ export const CONFIDE_AGGRESSION_ACCEPTANCE_FIXTURES = Object.freeze([
   Object.freeze({
     id: 'ex-ja-game-punch',
     text: 'ゲームで殴る',
-    route: CONFIDE_ROUTE.FALLBACK,
+    route: CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN,
     locale: 'ja',
-    note: 'meat-test control · fighting-game context'
+    note: 'T36: kana after safety · not aggression · not generate'
   }),
   Object.freeze({
     id: 'ex-en-beat-level',

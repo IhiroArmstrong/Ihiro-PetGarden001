@@ -8,6 +8,7 @@
  */
 
 import { canSubmitConfideText, confideClassify } from './confideClassify.js';
+import { buildJapaneseConfideNotYetOpenLine } from './confideJapaneseNotYetOpen.js';
 import {
   CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS,
   confideLineText,
@@ -30,11 +31,15 @@ export function resolveConfideReply({
   salt = 0,
   excludeIds = [],
   excludeNormalizedTexts = [],
-  locale = 'en'
+  locale = 'en',
+  env
 } = {}) {
   if (!canSubmitConfideText(text)) return null;
-  const route = confideClassify(text);
+  const route = confideClassify(text, env);
   if (!route) return null;
+  if (route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) {
+    return { route, line: buildJapaneseConfideNotYetOpenLine() };
+  }
   const line = pickConfideLine({
     route,
     localDate,

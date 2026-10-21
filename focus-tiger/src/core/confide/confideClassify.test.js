@@ -110,7 +110,10 @@ test('aggression classify excludes zh/ja game and self-harm phrasing', () => {
   assert.equal(confideClassify('打游戏'), CONFIDE_ROUTE.FALLBACK);
   assert.equal(confideClassify('我要打游戏'), CONFIDE_ROUTE.FALLBACK);
   assert.equal(confideClassify('想打一架结果输了'), CONFIDE_ROUTE.FALLBACK);
-  assert.equal(confideClassify('ゲームで殴る'), CONFIDE_ROUTE.FALLBACK);
+  assert.equal(
+    confideClassify('ゲームで殴る'),
+    CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN
+  );
   assert.equal(confideClassify('不想活'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   assert.equal(confideClassify('想伤害自己'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   assert.equal(confideClassify('想死'), CONFIDE_ROUTE.SAFETY_REDIRECT);

@@ -46,6 +46,8 @@ export function isJaProperNounAllowlisted(key) {
   ) {
     return true;
   }
+  // T36: English lead + fixed Japanese companion line, same in every locale.
+  if (key === 'CONFIDE_JA_NOT_YET_OPEN') return true;
   return false;
 }
 

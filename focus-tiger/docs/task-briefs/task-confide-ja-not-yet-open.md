@@ -1,9 +1,9 @@
 # Task Brief · T36 Confide Japanese not yet open
 
 > **Class:** B (changes user-visible Confide replies and routing).  
-> **Status:** queued. **Do not implement** until PO writes T36 into the 10/27 send-chain freeze **safety exception**.  
-> **SSOT copy / matrix:** [`LANGUAGE_SUPPORT.md`](../LANGUAGE_SUPPORT.md).  
-> **Does not include:** Help Center ask retrieval, always-on wake, Chinese hard-block, T14 crisis-entry calendar.
+> **Status:** PO locked freeze exception 2026-10-21. Implementing.  
+> **SSOT copy:** English lead + fixed Japanese companion line in locale slice `confide-ja-not-yet-open`.  
+> **Does not include:** Help Center ask retrieval, always-on wake, Chinese hard-block, T14 crisis-entry calendar, extra language detectors.
 
 ## 1. Why
 
@@ -22,11 +22,11 @@ Safety / aggression / FORGET → (existing) address+command → Japanese not-yet
 
 ## 4. Copy
 
-English lead + fixed Japanese line from `LANGUAGE_SUPPORT.md`. Key: not yet open (not “cannot be used”). Crisis referral unchanged and not spoken if current crisis TTS rules forbid it.
+English lead + fixed Japanese line. Key: not yet open (not “cannot be used”). Crisis referral unchanged; T34 speaks on-screen crisis copy when a body is shown.
 
 ## 5. Out of scope
 
-T35/T37 docs. T10 always-on. T22 retrieval. Changing CR-04 prototypes. T14 default-on.
+T35/T37 docs except freeze wording. T10 always-on. T22 retrieval. Changing CR-04 prototypes. T14 default-on. Extra detectors for kanji-only Japanese.
 
 ## 6. Variant matrix (A10)
 
@@ -45,16 +45,15 @@ Payment / Sit vs Breath: **skip** — this slice does not add products or practi
 
 ## 7. Click feedback + edges (A14)
 
-No new persistent control required. First-open notice is one-shot copy in the existing Confide card.
+No new persistent control required. Notice is send-path copy in the existing Confide card.
 
-- 0–1s after Share on Japanese (non-crisis): user sees the static notice (and hears it only if T34/TTS rules already speak non-crisis replies).  
+- 0–1s after Share on Japanese (non-crisis): user sees the static notice (and hears it when T34 rules speak the on-screen body).  
 - Crisis Japanese: referral first; do not substitute the language notice.  
-- Second Japanese turn after dismiss: notice may show again on language miss; do not toast-spam every keystroke.  
+- Later Japanese turns: same notice on language miss; do not toast-spam every keystroke.  
 - Overlay / focusing: do not new-layer over Support / menu escape hatch.
 
-If a control is not meant to act: not applicable; this is send-path copy, not a new button.
+Known boundary (not a follow-up in this PR): kanji-only Japanese may miss; kana may catch mixed Chinese+kana. Do not add another detector here.
 
 ## 8. Freeze
 
-Agent recommendation: merge **before** 10/27 23:59 as a **safety exception**, so 10/28 T14 internal test does not ship the Japanese generate hole.  
-This is **not** automatically the existing “English safety-line trip” exception. **PO must say** T36 is in the exception list.
+PO 2026-10-21: T36 **is** the send-chain freeze safety exception. Merge **before** 10/27 23:59. If it misses that clock, **do not** enter the freeze window; do it after freeze. Do not widen the exception.

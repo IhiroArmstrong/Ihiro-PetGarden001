@@ -1699,6 +1699,17 @@ export class ConfideToYinUI {
   _dispatchClassifiedSend(text, hit) {
     const locale = getLocale();
     const corpusText = confideLineText(hit.line, locale);
+    if (hit.route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) {
+      this._showReply(
+        {
+          route: hit.route,
+          text: corpusText,
+          source: 'language_not_yet_open'
+        },
+        text
+      );
+      return;
+    }
     const turnOrdinal = Math.floor(this._l2Turns.length / 2);
     if (
       shouldHandlePostRecallMemorySuppress({

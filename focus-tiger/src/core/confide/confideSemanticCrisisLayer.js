@@ -111,7 +111,8 @@ export function shouldAttemptConfideSemanticCrisis({
   if (!literalRoute) return false;
   if (
     literalRoute === CONFIDE_ROUTE.SAFETY_REDIRECT ||
-    literalRoute === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
+    literalRoute === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS ||
+    literalRoute === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN
   ) {
     return false;
   }
