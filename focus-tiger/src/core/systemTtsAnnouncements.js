@@ -8,8 +8,9 @@
  * switch. Confide reply speech stays independent in ConfideToYinUI.
  *
  * Same cue id is spoken once until `resetPracticeAnnouncementCue()` (a new
- * practice) or a different cue id. Breath phases include the cycle index so
- * each inhale / exhale is heard again.
+ * practice) or a different cue id. Breath-phase inhale / exhale TTS is
+ * retired (T27); call `maybeSpeakBreathPhaseCue` stays a no-op so UI wiring
+ * cannot silently re-speak.
  */
 
 import { t, getLocale } from '../locales/i18n.js';
@@ -72,7 +73,9 @@ export function maybeSpeakFocusEndAnnouncement(opts = {}) {
 }
 
 /**
- * Speak Inhale / Exhale once per cycle. `scope` keeps two practices apart.
+ * Practice-in-progress Inhale / Exhale TTS is off (T27). Call sites stay so
+ * Arrival / Honesty / Ritual / MicroRitual cannot miss a later restore.
+ * Locale keys `HONESTY_BREATH_*` stay for on-screen labels.
  *
  * @param {{
  *   inhale?: boolean,
@@ -82,26 +85,9 @@ export function maybeSpeakFocusEndAnnouncement(opts = {}) {
  *   widthPx?: number,
  *   storage?: Storage | null,
  *   globalObj?: object
- * }} [opts]
- * @returns {boolean}
+ * }} [_opts]
+ * @returns {false}
  */
-export function maybeSpeakBreathPhaseCue({
-  inhale = true,
-  elapsedMs = 0,
-  phaseMs = 2500,
-  scope = 'breath',
-  widthPx,
-  storage,
-  globalObj
-} = {}) {
-  const phase = Math.max(1, Number(phaseMs) || 2500);
-  const cycle = Math.floor(Math.max(0, Number(elapsedMs) || 0) / phase);
-  const key = inhale ? 'HONESTY_BREATH_INHALE' : 'HONESTY_BREATH_EXHALE';
-  return maybeSpeakPracticeAnnouncement({
-    text: t(key),
-    cueId: `${scope}:${key}:${cycle}`,
-    widthPx,
-    storage,
-    globalObj
-  });
+export function maybeSpeakBreathPhaseCue(_opts = {}) {
+  return false;
 }
