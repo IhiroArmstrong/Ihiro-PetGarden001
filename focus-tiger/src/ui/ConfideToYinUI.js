@@ -196,6 +196,7 @@ export class ConfideToYinUI {
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
    * @param {(info: { route: string, lineId: string, source?: string }) => void} [handlers.onReplied]
+   * @param {(info: { route: string, lineId: string, source?: string }) => void} [handlers.onReplyAckGesture]
    * @param {() => boolean} [handlers.canOpen]
    * @param {() => void} [handlers.onOpenMemoryPanel]
    * @param {(memoryId: string) => void} [handlers.onMemoryForgotten]
@@ -864,7 +865,7 @@ export class ConfideToYinUI {
       source: shown.source
     });
     this._scrollReplyIntoView();
-    this._maybeSpeakConfideReply(shown);
+    this._speakConfideReplyThenAckGesture(shown);
     this._maybeScheduleSemanticShadow({
       text: asked,
       route: shown.route,
@@ -877,14 +878,38 @@ export class ConfideToYinUI {
   }
 
   /**
-   * @param {{ route: string, text: string }} shown
+   * TTS first (when enabled), then one acknowledgment gesture — not while waiting.
+   *
+   * @param {{ route: string, text: string, line?: { id?: string }, source?: string }} shown
    */
-  _maybeSpeakConfideReply(shown) {
+  _speakConfideReplyThenAckGesture(shown) {
+    const fireGesture = () => {
+      this.handlers.onReplyAckGesture?.({
+        route: shown.route,
+        lineId: shown.line?.id || '',
+        source: shown.source
+      });
+    };
     const text = String(shown.text || '').trim();
-    if (!shouldSpeakConfideReply(shown.route, text)) return;
+    if (!shouldSpeakConfideReply(shown.route, text)) {
+      fireGesture();
+      return;
+    }
+    if (!text) {
+      fireGesture();
+      return;
+    }
     const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
-    if (!canUseSystemTts({ widthPx })) return;
-    speakSystemTts({ text, locale: mapLocaleToTtsLocale(getLocale()) });
+    if (!canUseSystemTts({ widthPx })) {
+      fireGesture();
+      return;
+    }
+    const spoke = speakSystemTts({
+      text,
+      locale: mapLocaleToTtsLocale(getLocale()),
+      onFinished: fireGesture
+    });
+    if (!spoke) fireGesture();
   }
 
   /**
