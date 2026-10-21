@@ -41,6 +41,18 @@ describe('shouldIgnoreOutsideDismissTarget', () => {
     assert.equal(shouldIgnoreOutsideDismissTarget(narrowHelp), true);
     assert.equal(
       shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#onboarding-hint-help-center' ? {} : null)
+      }),
+      true
+    );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#ft-narrow-help-center-btn' ? {} : null)
+      }),
+      true
+    );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
         closest: (sel) => (sel === '#ft-narrow-home-quickstart' ? {} : null)
       }),
       true

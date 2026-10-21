@@ -58,6 +58,7 @@
 |---|---|
 | Sit / Rise、左球 Breath practice | 主路径，不是次级功能 |
 | 窄屏 ActionBar `?` | 产品简介 / hint，不是功能列表项 |
+| 宽屏簇 / 窄屏 ActionBar Help Center 快捷（`#onboarding-hint-help-center` / `#ft-narrow-help-center-btn`，T26） | **不是漏项。** 菜单 Preferences 已有同一张帮助中心（`help-center` / `idle-help-center`）。新钮是快捷，不搬家 |
 | 音符 / 环境音面板 | 编排注释显式排除；走 ActionBar / 右下 Sound FAB |
 | 左上日历 / 周热力图 | 内容导航；原则 4 把左上留给日历 |
 | 倾听耳（宽） | 倾诉另有菜单行 `confide`；耳是快捷 |

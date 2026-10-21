@@ -24,6 +24,14 @@ test('HelpCenterUI mounts T22 ask-card anchors on the index view', () => {
   assert.doesNotMatch(src, /onTranscriptCommitted:\s*\(\)\s*=>\s*void this\._submitAsk/);
 });
 
+test('HelpCenterUI chrome re-open keeps the current view', () => {
+  const openAt = src.indexOf('  open({ resume = false } = {})');
+  assert.ok(openAt >= 0);
+  const openFn = src.slice(openAt, src.indexOf('  close() {', openAt));
+  assert.match(openFn, /if \(!resume\) this\._showIndex\(\)/);
+  assert.match(openFn, /pushOverlayEscapeLayer/);
+});
+
 test('help center close hides the card in the same turn as the click', () => {
   const closeAt = src.indexOf('  close() {');
   const closeFn = src.slice(closeAt, src.indexOf('  _showIndex() {', closeAt));

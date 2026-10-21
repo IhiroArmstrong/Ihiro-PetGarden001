@@ -80,7 +80,10 @@ import {
   HELP_OUTSIDE_DISMISS,
   resolveHelpOutsideDismissAction
 } from './helpOverlayOutsideDismiss.js';
+import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { Z } from './zIndexLayers.js';
+
+const HELP_CENTER_BESIDE_GLYPH = `<svg class="onboarding-hint-help__glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.2 4.2h11.1c1 0 1.8.8 1.8 1.8v13.1c0 .8-.9 1.2-1.5.7L16 18.1l-1.7 1.7c-.6.5-1.5.1-1.5-.7V6.5H6.2c-.5 0-.9.4-.9.9v11.2H3.2V7.4c0-1.8 1.4-3.2 3-3.2z"/></svg>`;
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -466,6 +469,8 @@ export class OnboardingHintsUI {
       onPurposeClose = null,
       onTodayDirection = null,
       onHelpCenter = null,
+      onHelpCenterChrome = null,
+      onHelpCenterClose = null,
       storage = null
     } = {}
   ) {
@@ -476,6 +481,13 @@ export class OnboardingHintsUI {
     this.onPurposeClose = onPurposeClose;
     this.onTodayDirection = onTodayDirection;
     this.onHelpCenter = onHelpCenter;
+    this.onHelpCenterChrome = onHelpCenterChrome;
+    this.onHelpCenterClose = onHelpCenterClose;
+    /** @type {(() => void) | null} */
+    this._popPurposeEscape = null;
+    this._helpChromePinned = false;
+    /** @type {HTMLElement[]} */
+    this._helpPinPlaceholders = [];
     this._storage =
       storage ??
       (typeof localStorage !== 'undefined' ? localStorage : null);
@@ -531,7 +543,25 @@ export class OnboardingHintsUI {
     helpMark.textContent = '?';
     this.helpBtn.append(helpMark);
     this.helpBtn.addEventListener('click', () => {
+      this.onHelpCenterClose?.();
       this.openPurposeOnly({ markHelpDone: true, pin: true });
+    });
+
+    this.helpCenterBtn = document.createElement('button');
+    this.helpCenterBtn.type = 'button';
+    this.helpCenterBtn.id = 'onboarding-hint-help-center';
+    this.helpCenterBtn.className =
+      'onboarding-hint-help onboarding-hint-help-center';
+    this.helpCenterBtn.dataset.testid = 'idle-help-center-beside';
+    this.helpCenterBtn.setAttribute('aria-label', t('HELP_CENTER_BESIDE_ARIA'));
+    const helpCenterMark = document.createElement('span');
+    helpCenterMark.className = 'onboarding-hint-help__mark';
+    helpCenterMark.innerHTML = HELP_CENTER_BESIDE_GLYPH;
+    this.helpCenterBtn.append(helpCenterMark);
+    this.helpCenterBtn.addEventListener('click', () => {
+      this._hidePurposeCard();
+      const openChrome = this.onHelpCenterChrome || this.onHelpCenter;
+      openChrome?.();
     });
 
     // 收纳进左下热力簇（若已建），避免角落散落；窄屏 park 只认簇即可
@@ -540,11 +570,11 @@ export class OnboardingHintsUI {
       '.weekly-practice-heatmap-cluster__row'
     );
     if (furnitureRow) {
-      furnitureRow.appendChild(this.helpBtn);
+      furnitureRow.append(this.helpBtn, this.helpCenterBtn);
     } else if (cluster) {
-      cluster.appendChild(this.helpBtn);
+      cluster.append(this.helpBtn, this.helpCenterBtn);
     } else {
-      mountRoot.append(this.helpBtn);
+      mountRoot.append(this.helpBtn, this.helpCenterBtn);
     }
     this._ensurePurposeCard();
     this._injectHelpStyles();
@@ -558,6 +588,10 @@ export class OnboardingHintsUI {
 
     this._unsubLocale = onLocaleChange(() => {
       this.helpBtn.setAttribute('aria-label', t('HINT_HELP_ARIA'));
+      this.helpCenterBtn.setAttribute(
+        'aria-label',
+        t('HELP_CENTER_BESIDE_ARIA')
+      );
       this._refreshPurposeCardCopy();
       this._refreshPrivacySheetCopy();
       this._refreshWellnessFirstCardCopy();
@@ -590,7 +624,10 @@ export class OnboardingHintsUI {
         purposeContains: this.purposeCard?.contains(el) === true,
         helpContains:
           this.helpBtn.contains(el) ||
-          Boolean(el.closest('#ft-narrow-help-btn'))
+          this.helpCenterBtn.contains(el) ||
+          Boolean(el.closest('#ft-narrow-help-btn')) ||
+          Boolean(el.closest('#ft-narrow-help-center-btn')) ||
+          Boolean(el.closest('#onboarding-hint-help-center'))
       });
       if (action === HELP_OUTSIDE_DISMISS.CLOSE_WELLNESS_FIRST) {
         this.hideWellnessFirstCard({ markSeen: true, notify: true });
@@ -2536,6 +2573,7 @@ export class OnboardingHintsUI {
     this._positionPurposeCard();
     this._bindPurposeCardHoverLeave();
     markWellnessDisclaimerSeen(this._storage);
+    this._syncPurposeEscapeLayer();
     this.onPurposeOpen?.();
   }
 
@@ -2570,7 +2608,77 @@ export class OnboardingHintsUI {
     this._purposePinned = false;
     this._hideWellnessDetailCard();
     this._hidePrivacySheet();
+    this._syncPurposeEscapeLayer();
     this.onPurposeClose?.();
+  }
+
+  _syncPurposeEscapeLayer() {
+    this._popPurposeEscape?.();
+    this._popPurposeEscape = null;
+    if (!this.isPurposeCardOpen()) return;
+    this._popPurposeEscape = pushOverlayEscapeLayer({
+      id: 'onboarding-app-purpose',
+      dismiss: () => this._hidePurposeCard()
+    });
+  }
+
+  /**
+   * Help Center backdrop lives on `body` at z17; the heatmap cluster is
+   * inside `#ui-overlay` (z10). Pin ? + Help Center chrome to `body` z22
+   * so they stay clickable (Brief: 新钮不哑).
+   */
+  pinHelpChromeAboveOverlay() {
+    if (this._helpChromePinned) return;
+    const buttons = [this.helpBtn, this.helpCenterBtn].filter(Boolean);
+    if (!buttons.length) return;
+    this._helpChromePinned = true;
+    this._helpPinPlaceholders = [];
+    for (const el of buttons) {
+      const r = el.getBoundingClientRect();
+      const ph = document.createElement('span');
+      ph.setAttribute('aria-hidden', 'true');
+      ph.style.cssText = `display:inline-block;width:${Math.max(1, r.width)}px;height:${Math.max(1, r.height)}px;flex:0 0 auto;`;
+      el.after(ph);
+      this._helpPinPlaceholders.push(ph);
+      el.style.position = 'fixed';
+      el.style.left = `${r.left}px`;
+      el.style.top = `${r.top}px`;
+      el.style.width = `${r.width}px`;
+      el.style.height = `${r.height}px`;
+      el.style.zIndex = String(Z.AMBIENT);
+      document.body.append(el);
+    }
+  }
+
+  unpinHelpChromeAboveOverlay() {
+    if (!this._helpChromePinned) return;
+    const cluster = document.getElementById('weekly-practice-heatmap-cluster');
+    const furnitureRow = cluster?.querySelector(
+      '.weekly-practice-heatmap-cluster__row'
+    );
+    const host = furnitureRow || cluster || this.mountRoot;
+    if (this.helpBtn) {
+      this.helpBtn.style.position = '';
+      this.helpBtn.style.left = '';
+      this.helpBtn.style.top = '';
+      this.helpBtn.style.width = '';
+      this.helpBtn.style.height = '';
+      this.helpBtn.style.zIndex = '';
+    }
+    if (this.helpCenterBtn) {
+      this.helpCenterBtn.style.position = '';
+      this.helpCenterBtn.style.left = '';
+      this.helpCenterBtn.style.top = '';
+      this.helpCenterBtn.style.width = '';
+      this.helpCenterBtn.style.height = '';
+      this.helpCenterBtn.style.zIndex = '';
+    }
+    if (host && this.helpBtn && this.helpCenterBtn) {
+      host.append(this.helpBtn, this.helpCenterBtn);
+    }
+    for (const ph of this._helpPinPlaceholders) ph.remove();
+    this._helpPinPlaceholders = [];
+    this._helpChromePinned = false;
   }
 
   /** @returns {boolean} */
@@ -2717,10 +2825,11 @@ export class OnboardingHintsUI {
   }
 
   _injectHelpStyles() {
-    if (document.getElementById('onboarding-hint-styles-v2')) return;
+    if (document.getElementById('onboarding-hint-styles-v3')) return;
+    document.getElementById('onboarding-hint-styles-v2')?.remove();
     document.getElementById('onboarding-hint-styles')?.remove();
     const style = document.createElement('style');
-    style.id = 'onboarding-hint-styles-v2';
+    style.id = 'onboarding-hint-styles-v3';
     style.textContent = `
       .ft-hint-catalog-chip {
         position: fixed;
@@ -2802,6 +2911,23 @@ export class OnboardingHintsUI {
         transform: translateY(1px) scale(0.97);
         box-shadow: 0 1px 4px rgba(44, 31, 20, 0.08);
       }
+      .onboarding-hint-help__glyph {
+        display: block;
+        width: 18px;
+        height: 18px;
+        margin: 11px auto 0;
+      }
+      .weekly-practice-heatmap-cluster .onboarding-hint-help__glyph {
+        margin-top: 11px;
+      }
+      body:has(#help-center:not([hidden])) .weekly-practice-heatmap-cluster {
+        z-index: ${Z.AMBIENT};
+      }
+      @media (max-width: 479px) {
+        #onboarding-hint-help-center {
+          display: none !important;
+        }
+      }
       .onboarding-hint-badge {
         position: fixed;
         z-index: ${Z.SANCTUARY_CARD};
@@ -2843,7 +2969,8 @@ export class OnboardingHintsUI {
         display: none !important;
       }
       body.ft-purpose-pinned .onboarding-hint-help,
-      body.ft-purpose-pinned #ft-narrow-help-btn {
+      body.ft-purpose-pinned #ft-narrow-help-btn,
+      body.ft-purpose-pinned #ft-narrow-help-center-btn {
         z-index: ${Z.HINT_CHIP};
       }
       .onboarding-app-purpose {
