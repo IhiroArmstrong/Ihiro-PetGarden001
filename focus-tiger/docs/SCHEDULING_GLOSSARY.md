@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-21 · T38 立即做 · T32 立即做 · T33 只读并行 · T25 P1 · 十二条对照 T38–T49）
+## 1. 当前队列（2026-10-21 晚 · **T34 挡 10/31** · T38 立即做 · T32 立即做 · T33 只读 · T25 P1 · 十二条对照 T38–T49）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -36,7 +36,8 @@
 | **P2** · **T27** | 练习中停 inhale/exhale 语音 | Brief 待点头 | 停相位 TTS；其它播放保留。[`task-stop-practice-breath-phase-tts.md`](./task-briefs/task-stop-practice-breath-phase-tts.md) |
 | **—** · **T28** | 练习纸彩色健康标记 | 搁置 | 先推翻 [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md) 才可做 |
 | **P2** · **T21** | 产品问入口转移 Brief | **已合 develop** | #1347 · [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) |
-| **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 手测主路径通过；低配：embedding 未就绪仍列备份卡；窄屏/Web 无麦。**未关单** |
+| **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 列卡 v1；**办理等 T34** |
+| **P2** · **T34** | Help Center 办理（T10 封闭集） | **立即做** | Brief 已点头；**未合 = 10/31 不得放行** · [`task-help-center-operating-commands.md`](./task-briefs/task-help-center-operating-commands.md) |
 | **P2** · **T23** | Confide 产品问改口 + 黄金脚本 v1.1 | **已合 develop** | #1351；备份 where-click 漏跳交 **T29**；v1.1 英文 60 + 安全回归待勾；10/27 复核一页纸 + **发送链冻结** |
 | **P2** · **T29** | 对象归一 + 跳转句朗读 + 只倾听 | **已合 develop** | #1362 |
 | **P2** · **T30** | 操作动词收紧 | **已合 develop** | #1364；认知 how-to 走生成。不碰安全通道 |
@@ -82,6 +83,7 @@
 | 「按这份 Brief 开工」（T29） | **T29 已合 #1362** |
 | 「继续 T31」 | **T31 已合 #1365**。勿再开同内容徽章旁支 |
 | 「继续 T32」 | **T32** 复述提问护栏 |
+| 「按 T34 Brief 开工」 | Help Center 问卡 **办理**（T10 封闭集）；**10/31 放行闸**；新 Chat 建议 |
 | 「立刻开工」T33 | **T33** 只读诊断；不改发送链 |
 | 「按练习观察纸方向锁开工界面」 | **不再直接开工**。须 **T24** Brief 点头 |
 | 「按 T24 Brief 开工」 | **T24 已合 #1353**。勿再开同内容界面旁支 |
