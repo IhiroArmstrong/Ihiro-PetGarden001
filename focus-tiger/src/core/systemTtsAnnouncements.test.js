@@ -5,8 +5,16 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement, resetPracticeAnnouncementCue } from './systemTtsAnnouncements.js';
+import {
+  maybeSpeakBreathPhaseCue,
+  maybeSpeakFocusEndAnnouncement,
+  maybeSpeakPracticeAnnouncement,
+  resetPracticeAnnouncementCue
+} from './systemTtsAnnouncements.js';
 import { SYSTEM_TTS_PREF_STORAGE_KEY } from './systemTtsPreference.js';
+import en from '../locales/en.json' with { type: 'json' };
+import zh from '../locales/zh.json' with { type: 'json' };
+import ja from '../locales/ja.json' with { type: 'json' };
 
 /**
  * @param {Record<string, string>} [seed]
@@ -152,4 +160,67 @@ test('practice line needs the switch, and the same cue is not repeated until res
   );
   await Promise.resolve();
   assert.equal(spoken.length, 2);
+});
+
+test('breath-phase cue never speaks even when announcements are on', async () => {
+  let spoke = false;
+  const globalObj = {
+    desktopShell: {
+      isDesktop: true,
+      systemTts: {
+        speak() {
+          spoke = true;
+        }
+      }
+    }
+  };
+  const storage = memoryStorage({
+    [SYSTEM_TTS_PREF_STORAGE_KEY]: JSON.stringify({
+      announcementsEnabled: true
+    })
+  });
+  resetPracticeAnnouncementCue();
+  for (const scope of ['arrival', 'honesty', 'ritual', 'micro-ritual']) {
+    assert.equal(
+      maybeSpeakBreathPhaseCue({
+        inhale: true,
+        elapsedMs: 0,
+        scope,
+        widthPx: 480,
+        storage,
+        globalObj
+      }),
+      false
+    );
+    assert.equal(
+      maybeSpeakBreathPhaseCue({
+        inhale: false,
+        elapsedMs: 4000,
+        scope,
+        widthPx: 480,
+        storage,
+        globalObj
+      }),
+      false
+    );
+  }
+  await Promise.resolve();
+  assert.equal(spoke, false);
+  assert.equal(
+    maybeSpeakFocusEndAnnouncement({
+      widthPx: 480,
+      storage,
+      globalObj
+    }),
+    true
+  );
+  await Promise.resolve();
+  assert.equal(spoke, true);
+});
+
+test('inhale and exhale locale keys stay for on-screen labels', () => {
+  for (const dict of [en, zh, ja]) {
+    assert.ok(String(dict.HONESTY_BREATH_INHALE).trim().length > 0);
+    assert.ok(String(dict.HONESTY_BREATH_EXHALE).trim().length > 0);
+  }
 });

@@ -1,6 +1,6 @@
 # Task Brief · T27 练习中停 inhale / exhale 语音
 
-> **状态（2026-10-21）**：**PO 已点头。** 实现须新 Chat，且须等 T25 合入后再开，分支 `fix/stop-practice-breath-phase-tts`。本 PR 只锁规格，不改运行时。  
+> **状态（2026-10-21）**：**PO 已点头。** 实现旁支 `fix/stop-practice-breath-phase-tts`（T25 / T26 已合 develop）。  
 > **类**：**B**（练习进行中不再听到吸气/呼气播报）。  
 > **代号**：**T27**。**不是**关掉全部 Voice announcements，**不是**停结束句。  
 > **拍板入口**：2026-10-20 用户书面：任何练习中间都无需语音播放 inhale, exhale。其它播放可以。
