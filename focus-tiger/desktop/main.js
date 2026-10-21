@@ -43,6 +43,7 @@ import { createDesktopUpdaterRuntime } from './updater/updaterRuntime.js';
 import { attachDesktopUpdaterIpc } from './updater/updaterIpc.js';
 import { attachVoiceInputIpc } from './voiceInput/voiceInputIpc.js';
 import { attachSystemTtsIpc } from './systemTts/systemTtsIpc.js';
+import { createFloatingMarkerRuntime } from './floatingMarker/floatingMarkerNative.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -73,6 +74,8 @@ let companionRuntime = null;
 let updaterRuntime = null;
 /** @type {Tray | null} */
 let tray = null;
+/** @type {ReturnType<typeof createFloatingMarkerRuntime> | null} */
+let floatingMarkerRuntime = null;
 let isQuitting = false;
 let shellHidden = false;
 let shellHideReason = HIDE_REASON_NONE;
@@ -118,6 +121,7 @@ function installDevSignalQuit() {
     isQuitting = true;
     void companionRuntime?.dispose?.();
     updaterRuntime?.dispose?.();
+    floatingMarkerRuntime?.dispose?.();
     app.quit();
   };
 
@@ -363,24 +367,54 @@ function installMacApplicationMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
+function applyTrayMenu() {
+  if (!tray) return;
+  const labels = trayMenuLabels(app.getLocale());
+  const prefs = floatingMarkerRuntime?.prefs?.() ?? {
+    show: false,
+    hideInFullScreen: true
+  };
+  /** @type {import('electron').MenuItemConstructorOptions[]} */
+  const items = [{ label: labels.show, click: () => showMainWindow() }];
+  if (process.platform === 'darwin' && floatingMarkerRuntime) {
+    items.push(
+      { type: 'separator' },
+      {
+        label: labels.floatingMarker,
+        type: 'checkbox',
+        checked: prefs.show,
+        click: (item) => {
+          floatingMarkerRuntime?.setShow(item.checked);
+        }
+      },
+      {
+        label: labels.hideInFullScreen,
+        type: 'checkbox',
+        checked: prefs.hideInFullScreen,
+        click: (item) => {
+          floatingMarkerRuntime?.setHideInFullScreen(item.checked);
+        }
+      }
+    );
+  }
+  items.push(
+    { type: 'separator' },
+    {
+      label: labels.quit,
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      }
+    }
+  );
+  tray.setContextMenu(Menu.buildFromTemplate(items));
+}
+
 function createTray() {
   if (tray) return tray;
   tray = new Tray(trayIconImage());
-  const labels = trayMenuLabels(app.getLocale());
   tray.setToolTip('Focus Tiger');
-  tray.setContextMenu(
-    Menu.buildFromTemplate([
-      { label: labels.show, click: () => showMainWindow() },
-      { type: 'separator' },
-      {
-        label: labels.quit,
-        click: () => {
-          isQuitting = true;
-          app.quit();
-        }
-      }
-    ])
-  );
+  applyTrayMenu();
   tray.on('click', () => showMainWindow());
   return tray;
 }
@@ -608,7 +642,13 @@ if (gotSingleInstanceLock) {
   });
 
   installMacApplicationMenu();
+  floatingMarkerRuntime = createFloatingMarkerRuntime({
+    userDataDir: app.getPath('userData'),
+    onClicked: () => showMainWindow(),
+    onStateChange: () => applyTrayMenu()
+  });
   createTray();
+  floatingMarkerRuntime.start();
   mainWindow = createMainWindow();
   if (process.platform === 'darwin') {
     globalShortcut.register('Control+Shift+Y', () => {
@@ -638,6 +678,7 @@ app.on('before-quit', () => {
   isQuitting = true;
   void companionRuntime?.dispose?.();
   updaterRuntime?.dispose?.();
+  floatingMarkerRuntime?.dispose?.();
 });
 
 app.on('window-all-closed', () => {

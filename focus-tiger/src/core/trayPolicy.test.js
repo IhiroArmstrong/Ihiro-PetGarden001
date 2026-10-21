@@ -26,8 +26,13 @@ describe('trayPolicy', () => {
   });
 
   it('picks tray labels from locale', () => {
-    assert.deepEqual(trayMenuLabels('en-US'), { show: 'Show', quit: 'Quit' });
-    assert.deepEqual(trayMenuLabels('ja'), { show: '表示', quit: '終了' });
-    assert.deepEqual(trayMenuLabels('zh-CN'), { show: '显示', quit: '退出' });
+    assert.equal(trayMenuLabels('en-US').show, 'Show');
+    assert.equal(trayMenuLabels('en-US').quit, 'Quit');
+    assert.equal(trayMenuLabels('ja').show, '表示');
+    assert.equal(trayMenuLabels('ja').quit, '終了');
+    assert.equal(trayMenuLabels('zh-CN').show, '显示');
+    assert.equal(trayMenuLabels('zh-CN').quit, '退出');
+    assert.ok(trayMenuLabels('en-US').floatingMarker);
+    assert.ok(trayMenuLabels('zh-CN').hideInFullScreen);
   });
 });

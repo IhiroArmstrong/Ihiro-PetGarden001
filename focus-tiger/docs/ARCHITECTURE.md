@@ -397,6 +397,7 @@ public/sprites/{characterId}/{outfitId}/{animationName}/frame_{NNN}.png
 - **与 Web 的关系**：v1.0.0 默认仍是纯 Web；Electron 是加法。渲染层继续 `localStorage`；壳内不注册现有 PWA SW。
 - **手机**：未来默认 Capacitor（HealthKit 等）；与本条分离。
 - **尚未实现（运行时）**：公证 CI、`electron-updater`（Brief `task-electron-desktop-updater.md` · 2026-09-12 口径已锁；第一份收费 DMG 前必须接线）。**步骤 B 托盘已接线**（待 Mac 场景 AB 人工）。窗口代码在 `focus-tiger/desktop/`。Electron 不进产品 `dependencies`。
+- **Mac 悬浮陪伴（2026-10-21）**：可选贴边 `NSPanel` 子进程（`desktop/native/floating-marker.swift`），**不是**页内 Float Yin / Document PiP。默认关；全屏默认隐藏。对照 Demo：`desktop/native/floating-marker-demo/`。Brief：`task-macos-floating-marker.md`。
 - **Cloud API**：壳内 `postCloudJson` 走主进程 IPC（避开自定义协议 CORS）。Worker `ALLOWED_ORIGIN` 可逗号列表含 `focus-tiger://app`（下次生产部署再加；本回合**不** Redeploy）。
 - **失败反馈**：Checkout / OTP / 备份失败复用现有 Web 卡面错误文案（`TIP_BUY_ERROR` / `SANCTUARY_ERROR_GENERIC` / `MEMBERSHIP_ERROR_GENERIC` / `JOURNEY_LOG_BACKUP_STATUS_ERR`），不为壳另做一套。
 
