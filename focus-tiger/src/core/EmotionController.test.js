@@ -677,6 +677,80 @@ test('curiousTilt plays blinkSmile once and returns to idle breathing', () => {
   assert.equal(controller.getCurrentEmotionKey(), 'idle');
 });
 
+test('confide listening baseline restores after mindfulAcknowledge oneshot', () => {
+  const timingCalls = [];
+  const idleOrchestrator = {
+    _active: false,
+    isActive() {
+      return this._active;
+    },
+    stop() {
+      this._active = false;
+    },
+    setTiming(timing) {
+      timingCalls.push(timing);
+    },
+    start() {
+      this._active = true;
+    }
+  };
+  const plays = [];
+  const spritePlayer = {
+    play(name, options = {}) {
+      plays.push({ name, options });
+      return true;
+    },
+    stop() {}
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer,
+    idleOrchestrator
+  });
+
+  controller.enterConfideListeningBaseline({ crossFadeMs: 0 });
+  assert.equal(controller.isConfideListeningBaselineActive(), true);
+  controller.playEmotion('mindfulAcknowledge');
+  plays.at(-1).options.onComplete();
+  const lastTiming = timingCalls.at(-1);
+  assert.equal(lastTiming.blinkPingpongCycles, 2);
+  assert.equal(lastTiming.breathPingpongCycles, 1);
+});
+
+test('leaveConfideListeningBaseline uses hard cut back to default idle timing', () => {
+  const timingCalls = [];
+  const idleOrchestrator = {
+    _active: true,
+    isActive() {
+      return this._active;
+    },
+    stop() {
+      this._active = false;
+    },
+    setTiming(timing) {
+      timingCalls.push(timing);
+    },
+    start(opts = {}) {
+      this._active = true;
+      this._lastStart = opts;
+    }
+  };
+  const controller = new EmotionController({
+    poseManager: { setPose() {}, setCanvasHidden() {} },
+    dynamicMotion: { setBreathingEnabled() {} },
+    incenseGreeting: {},
+    spritePlayer: { play: () => true, stop() {} },
+    idleOrchestrator
+  });
+  controller.enterConfideListeningBaseline({ crossFadeMs: 0 });
+  controller.leaveConfideListeningBaseline();
+  assert.equal(controller.isConfideListeningBaselineActive(), false);
+  assert.equal(timingCalls.at(-1).breathPingpongCycles, 2);
+  assert.equal(idleOrchestrator._lastStart.crossFadeMs, 0);
+});
+
 test('mindfulAcknowledge plays nodBow pingpong once then CapCut idle', () => {
   const plays = [];
   const spritePlayer = {

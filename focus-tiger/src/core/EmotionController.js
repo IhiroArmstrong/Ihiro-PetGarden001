@@ -25,6 +25,10 @@ import {
   sleepingSequenceKey
 } from '../character/cloakVariant.js';
 import { Z } from '../ui/zIndexLayers.js';
+import {
+  CONFIDE_LISTENING_IDLE_TIMING,
+  DEFAULT_IDLE_ORCHESTRATOR_TIMING
+} from './confideListeningIdlePolicy.js';
 
 /** @typedef {Record<string, unknown>} EmotionOptions */
 /**
@@ -228,6 +232,8 @@ export class EmotionController {
     this._milestoneHoldTimer = null;
     this._milestoneHoldToken = 0;
     this._runtimeGlowSuppressed = false;
+    /** T38 · Confide panel open → listening idle timing until close. */
+    this._confideListeningActive = false;
 
     /**
      * 情绪标识符 → 底层调用组合。
@@ -250,6 +256,7 @@ export class EmotionController {
           ) {
             return;
           }
+          this._applyIdleOrchestratorTimingForMode();
           this.idleOrchestrator.start({
             crossFadeMs: options.crossFadeMs,
             freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds
@@ -1021,6 +1028,69 @@ export class EmotionController {
     }
   }
 
+  _applyIdleOrchestratorTimingForMode() {
+    const orchestrator = this.idleOrchestrator;
+    if (!orchestrator || typeof orchestrator.setTiming !== 'function') return;
+    const timing = this._confideListeningActive
+      ? CONFIDE_LISTENING_IDLE_TIMING
+      : DEFAULT_IDLE_ORCHESTRATOR_TIMING;
+    orchestrator.setTiming(timing);
+  }
+
+  /**
+   * T38 · Confide open: open-eye listening baseline (not global idle change).
+   * @param {EmotionOptions} [options]
+   */
+  enterConfideListeningBaseline(options = {}) {
+    this._confideListeningActive = true;
+    this._applyIdleOrchestratorTimingForMode();
+    this.playEmotion('idle', {
+      restart: true,
+      crossFadeMs: options.crossFadeMs ?? CAPCUT_DISSOLVE_MS,
+      freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+    });
+  }
+
+  /**
+   * T38 · Confide close: immediate closed-eye default idle.
+   */
+  leaveConfideListeningBaseline() {
+    this._confideListeningActive = false;
+    this._applyIdleOrchestratorTimingForMode();
+    this.playEmotion('idle', {
+      restart: true,
+      crossFadeMs: 0,
+      freezeUntilCrossFadeEnds: false
+    });
+  }
+
+  isConfideListeningBaselineActive() {
+    return this._confideListeningActive;
+  }
+
+  /**
+   * @param {EmotionOptions} [options]
+   */
+  _returnToIdleBaseline(options = {}) {
+    this._applyIdleOrchestratorTimingForMode();
+    const raw = options.returnCrossFadeMs;
+    const crossFadeMs =
+      raw === 0 || raw === '0'
+        ? 0
+        : Number.isFinite(Number(raw))
+          ? Number(raw)
+          : CAPCUT_DISSOLVE_MS;
+    if (crossFadeMs > 0) {
+      this.playEmotion('idle', {
+        restart: true,
+        crossFadeMs,
+        freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
+      });
+    } else {
+      this.playEmotion('idle', { restart: true, crossFadeMs: 0 });
+    }
+  }
+
   /**
    * MilestoneGlow 烧录特效（金辉蝴蝶 / 琉璃星石）在帧中；末帧按固定时长停留后直接完成。
    * @param {() => void} onComplete
@@ -1055,24 +1125,7 @@ export class EmotionController {
       options.onComplete(tag);
     }
     if (!options.holdPose) {
-      const raw = options.returnCrossFadeMs;
-      const crossFadeMs =
-        raw === 0 || raw === '0'
-          ? 0
-          : Number.isFinite(Number(raw))
-            ? Number(raw)
-            : CAPCUT_DISSOLVE_MS;
-      if (crossFadeMs > 0) {
-        // restart:true — cold-start welcome may have idleOrchestrator live again
-        // before oneshot onComplete; without restart the idle early-return skips CapCut.
-        this.playEmotion('idle', {
-          restart: true,
-          crossFadeMs,
-          freezeUntilCrossFadeEnds: options.freezeUntilCrossFadeEnds !== false
-        });
-      } else {
-        this.playEmotion('idle', { restart: true });
-      }
+      this._returnToIdleBaseline(options);
     }
   }
 

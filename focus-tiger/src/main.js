@@ -341,7 +341,7 @@ import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
 import { YinPersonalMemoryUI } from './ui/YinPersonalMemoryUI.js';
 import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
-import { CONFIDE_ROUTE } from './core/confide/confideRoutes.js';
+import { confideReplyAckEmotionKey } from './core/confideReplyAckGesture.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { getMonetizationFunnelStore } from './core/monetizationIntentFunnel.js';
 import {
@@ -1907,9 +1907,11 @@ async function init() {
       companionIdleUnloadScheduler.cancel();
       closeGrowthOverlayCards({ except: 'confide' });
       wakeYinIfSleeping();
+      emotionController.enterConfideListeningBaseline();
     },
     onClose: () => {
       companionIdleUnloadScheduler.schedule();
+      emotionController.leaveConfideListeningBaseline();
     },
     onOpenMemoryPanel: () => {
       closeGrowthOverlayCards({ except: 'yin-memory' });
@@ -1927,15 +1929,9 @@ async function init() {
     onCloseJourneyLog: () => {
       journeyLogUI.close();
     },
-    onReplied: ({ route }) => {
-      if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
-        emotionController.playEmotion('nodBow');
-        return;
-      }
-      if (route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) {
-        return;
-      }
-      emotionController.playEmotion('mindfulAcknowledge');
+    onReplyAckGesture: ({ route }) => {
+      const emotionKey = confideReplyAckEmotionKey({ route });
+      if (emotionKey) emotionController.playEmotion(emotionKey);
     }
     })
   );

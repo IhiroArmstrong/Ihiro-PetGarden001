@@ -87,6 +87,23 @@ describe('systemTtsBridge speech coordination (audit T-1 / T-2)', () => {
     await flush();
     assert.deepEqual(shell.calls, ['stop']);
   });
+
+  it('invokes onFinished after speak settles (T38 confide ack gesture)', async () => {
+    const shell = fakeShell();
+    let finished = 0;
+    assert.equal(
+      speakSystemTts({
+        text: 'heard',
+        globalObj: shell.globalObj,
+        onFinished: () => {
+          finished += 1;
+        }
+      }),
+      true
+    );
+    await flush();
+    assert.equal(finished, 1);
+  });
 });
 
 describe('systemTtsBridge', () => {

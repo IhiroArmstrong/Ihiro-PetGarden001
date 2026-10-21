@@ -80,14 +80,30 @@ export function hasSystemTtsBridge(globalObj = globalThis) {
  * Returns synchronously so callers keep their "did we dispatch" contract, while
  * the stop→speak order is still guaranteed by chaining.
  *
- * @param {{ text?: string, locale?: string, globalObj?: object }} payload
+ * @param {{ text?: string, locale?: string, globalObj?: object, onFinished?: () => void }} payload
  * @returns {boolean} true when a speak request was dispatched
  */
-export function speakSystemTts({ text, locale, globalObj = globalThis } = {}) {
+export function speakSystemTts({
+  text,
+  locale,
+  globalObj = globalThis,
+  onFinished
+} = {}) {
   const bridge = getSystemTtsBridge(globalObj);
   if (!bridge || typeof bridge.speak !== 'function') return false;
   const body = String(text || '').trim();
   if (!body) return false;
+
+  const finish =
+    typeof onFinished === 'function'
+      ? () => {
+          try {
+            onFinished();
+          } catch {
+            /* product callback */
+          }
+        }
+      : null;
 
   const stopped =
     typeof bridge.stop === 'function'
@@ -95,7 +111,10 @@ export function speakSystemTts({ text, locale, globalObj = globalThis } = {}) {
           .then(() => bridge.stop())
           .catch(() => {})
       : Promise.resolve();
-  void stopped.then(() => bridge.speak({ text: body, locale }));
+  void stopped
+    .then(() => bridge.speak({ text: body, locale }))
+    .then(() => finish?.())
+    .catch(() => finish?.());
   return true;
 }
 
