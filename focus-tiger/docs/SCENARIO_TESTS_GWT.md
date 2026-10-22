@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-21  
+生成日期：2026-10-22  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -5867,8 +5867,8 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 > **E2E 优先级**：P0 · 跨系统链路
 > **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。左下问号右边另有 Help Center 快捷（T26），打开同一张卡。
-> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录、问卡检索、Idle 快捷；不碰付款、不改练习记录）。
-> **点击**：菜单行、问号卡上的链、问号右边快捷钮，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。顶部 **问卡**输入（可打字或 **Speak to type**，宽屏 Electron）→ **0–1 秒内**见匹配主题列表（**只列结果、不执行** T10 命令）。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
+> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录、问卡检索、Idle 快捷、T34 办理确认；不碰付款、不改练习记录）。
+> **点击**：菜单行、问号卡上的链、问号右边快捷钮，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。顶部 **问卡**输入（可打字或 **Speak to type**，宽屏 Electron）→ 疑问句 **0–1 秒内**见匹配主题列表；封闭集祈使 **0–1 秒内**见 T10 同档复述确认（**禁止**静默写备份）。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
 
 ### 步骤总览
 
@@ -5911,7 +5911,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 顶部问卡输入 `How do I back up my data?`（或等价产品问）
 
 **Then**
-- 0–1 秒内见相关主题行；点一行 → 同步骤 2 见正文。禁止在 Help Center 内直接执行备份。无关句 → 空列表或弱匹配，不得静默。
+- 0–1 秒内见相关主题行；点一行 → 同步骤 2 见正文。禁止静默写备份。`Back up now` / `Hi Yin, please backup…` → 0–1 秒内见 B 档复述 + 确认/取消（T34）；点取消不得写出备份文件。危机句进框 → 不办理。无关句 → 空列表或弱匹配，不得静默。e2e：`help-center-operating.spec.js`。
 
 #### AX-1c
 

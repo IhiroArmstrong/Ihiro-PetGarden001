@@ -24,6 +24,14 @@ test('HelpCenterUI mounts T22 ask-card anchors on the index view', () => {
   assert.doesNotMatch(src, /onTranscriptCommitted:\s*\(\)\s*=>\s*void this\._submitAsk/);
 });
 
+test('HelpCenterUI mounts T34 operating confirm anchors and does not auto-search on transcript', () => {
+  assert.match(src, /help-center-operating/);
+  assert.match(src, /help-center-operating-confirm/);
+  assert.match(src, /help-center-operating-cancel/);
+  assert.match(src, /resolveHelpCenterAskSubmitPolicy/);
+  assert.match(src, /runYinVoiceCommand/);
+});
+
 test('HelpCenterUI chrome re-open keeps the current view', () => {
   const openAt = src.indexOf('  open({ resume = false } = {})');
   assert.ok(openAt >= 0);
@@ -35,6 +43,7 @@ test('HelpCenterUI chrome re-open keeps the current view', () => {
 test('help center close hides the card in the same turn as the click', () => {
   const closeAt = src.indexOf('  close() {');
   const closeFn = src.slice(closeAt, src.indexOf('  _showIndex() {', closeAt));
+  assert.match(closeFn, /_cancelOperatingListen/);
   assert.match(closeFn, /this\.root\.hidden = true/);
   assert.match(closeFn, /hideOverlayBackdrop\(this\.backdrop, \{ fadeMs: FADE_MS \}\)/);
   assert.doesNotMatch(closeFn, /hideOverlayBackdrop\(this\.backdrop, FADE_MS/);

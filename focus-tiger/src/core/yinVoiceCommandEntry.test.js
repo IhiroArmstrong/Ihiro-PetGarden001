@@ -13,8 +13,10 @@ import {
   YIN_VOICE_BACKUP_MISSED_KEY,
   YIN_VOICE_LANGUAGE_UNDO_MS,
   backupConfirmWindow,
+  classifyHelpCenterOperatingCommand,
   classifyYinVoiceConfirmReply,
   classifyYinVoiceEntry,
+  matchClosedOperatingCommand,
   nextPickerLocaleId
 } from './yinVoiceCommandEntry.js';
 
@@ -159,5 +161,32 @@ describe('T10 confirm replies', () => {
       classifyYinVoiceConfirmReply('Yes, forget everything'),
       'forget_confirm'
     );
+  });
+});
+
+describe('shared closed operating set (T10 + T34)', () => {
+  it('keeps Confide off the command channel without an address', () => {
+    const decision = classifyYinVoiceEntry('Back up now', { enabled: true });
+    assert.equal(decision.channel, 'confide');
+    assert.equal(decision.reason, 'no_address');
+  });
+
+  it('lets Help Center hit backup without an address', () => {
+    const hit = matchClosedOperatingCommand('back up now');
+    assert.equal(hit?.command, 'backup');
+    assert.equal(hit?.tier, 'B');
+    assert.equal(hit?.execute, false);
+    const help = classifyHelpCenterOperatingCommand('Back up now');
+    assert.equal(help.channel, 'command');
+    assert.equal(help.command, 'backup');
+  });
+
+  it('still requires address in Confide for the same closed set', () => {
+    const withAddress = classifyYinVoiceEntry('Hi Yin, please backup', {
+      enabled: true
+    });
+    assert.equal(withAddress.command, 'backup');
+    const help = classifyHelpCenterOperatingCommand('Hi Yin, please backup');
+    assert.equal(help.command, 'backup');
   });
 });
