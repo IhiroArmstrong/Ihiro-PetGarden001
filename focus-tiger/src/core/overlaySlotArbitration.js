@@ -74,6 +74,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [focusCircleWitnessLeaveVisible]
  * @property {boolean} [focusCircleWitnessRespondOpen]
  * @property {boolean} [focusAwarenessOpen]
+ * @property {boolean} [awakenInviteOpen]
  * @property {boolean} [recoverResetPracticeOpen]
  * @property {boolean} [transitionMomentOpen]
  */
@@ -90,7 +91,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
  *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' |
- *   'recoverResetPracticeOpen' | 'transitionMomentOpen'
+ *   'awakenInviteOpen' | 'recoverResetPracticeOpen' | 'transitionMomentOpen'
  * >>} OverlaySnapshot
  */
 
@@ -142,6 +143,7 @@ export function buildOverlaySnapshot(input = {}) {
     focusCircleWitnessLeaveVisible: Boolean(input.focusCircleWitnessLeaveVisible),
     focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen),
     focusAwarenessOpen: Boolean(input.focusAwarenessOpen),
+    awakenInviteOpen: Boolean(input.awakenInviteOpen),
     recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
     transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };
@@ -271,6 +273,7 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
 export function deriveFocusingSoftCardBusy(snapshot) {
   if (snapshot.recoverResetPracticeOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
+  if (snapshot.awakenInviteOpen) return true;
   if (snapshot.compassOpen || snapshot.coldStartGoalOpen) return true;
   if (snapshot.mustardSeedOpen) return true;
   if (snapshot.sessionState === STATES.CELEBRATE) return true;
@@ -705,8 +708,10 @@ export function requestOverlaySlot(req) {
 
   if (isSessionHardGate(snapshot)) {
     const focusingSoftCardAllowed =
-      source === OVERLAY_SOURCES.FOCUS_AWARENESS &&
-      snapshot.sessionState === STATES.FOCUSING;
+      snapshot.sessionState === STATES.FOCUSING &&
+      (source === OVERLAY_SOURCES.FOCUS_AWARENESS ||
+        source === OVERLAY_SOURCES.AWAKEN_INVITE ||
+        source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE);
     if (!focusingSoftCardAllowed) {
       mustYieldTo.push('session-hard-gate');
     }
@@ -748,12 +753,23 @@ export function requestOverlaySlot(req) {
     }
   }
 
+  if (source === OVERLAY_SOURCES.AWAKEN_INVITE) {
+    if (deriveFocusingSoftCardBusy(snapshot)) {
+      mustYieldTo.push('focusing-soft-card-busy');
+    }
+    if (snapshot.confideOpen) mustYieldTo.push(OVERLAY_SOURCES.CONFIDE);
+    if (snapshot.supportModalOpen) {
+      mustYieldTo.push(OVERLAY_SOURCES.SUPPORT_MODAL);
+    }
+  }
+
   if (source === OVERLAY_SOURCES.RECOVER_RESET_PRACTICE) {
     mustYieldTo.push(...collectRecoverResetBaseYield(snapshot));
-    if (snapshot.sessionState === STATES.FOCUSING) {
-      mustYieldTo.push('session-hard-gate');
-    }
-    if (deriveFocusingSoftCardBusy(snapshot)) {
+    // Mutual exclusion vs other Focusing soft cards only. The full
+    // deriveFocusingSoftCardBusy list repeats session/arrival/honesty
+    // (already in collectRecoverResetBaseYield) and also treats the
+    // companion dock as busy — that would swallow T51「要」→ GROUND.
+    if (snapshot.focusAwarenessOpen || snapshot.awakenInviteOpen) {
       mustYieldTo.push('focusing-soft-card-busy');
     }
   }

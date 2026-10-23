@@ -36,6 +36,7 @@ export class MindfulReminderController {
    * @param {() => number} [deps.now]
    * @param {() => number} [deps.random]
    * @param {(type: 'mindful' | 'stretch' | 'refocus' | 'activeRecover') => void} [deps.onReminderShown]
+   * @param {() => boolean} [deps.onStretchDue] true → skip stretch toast (T51 invite)
    */
   constructor({
     quotaManager,
@@ -44,7 +45,8 @@ export class MindfulReminderController {
     getCopy,
     now = () => Date.now(),
     random = Math.random,
-    onReminderShown = null
+    onReminderShown = null,
+    onStretchDue = null
   }) {
     this.quotaManager = quotaManager;
     this.emotionController = emotionController;
@@ -53,6 +55,7 @@ export class MindfulReminderController {
     this.now = now;
     this.random = random;
     this.onReminderShown = onReminderShown;
+    this.onStretchDue = onStretchDue;
 
     this.sessionActive = false;
     this.sessionElapsedSeconds = 0;
@@ -140,6 +143,7 @@ export class MindfulReminderController {
 
     if (this.activeStretchSeconds >= STRETCH_REMINDER_THRESHOLD_SECONDS) {
       this.activeStretchSeconds %= STRETCH_REMINDER_THRESHOLD_SECONDS;
+      if (this.onStretchDue?.() === true) return;
       this._showReminder('stretch');
     }
   }

@@ -226,6 +226,32 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
   glassCard('ContextualTeaTipBubbleUI.js'),
   glassCard('MomentWhisperUI.js'),
   glassCard('FocusAwarenessCardUI.js'),
+  surface({
+    file: 'AwakenInviteUI.js',
+    slotRequest: requestSlot(
+      ['requestSlot', 'releaseSlot'],
+      ['AWAKEN_INVITE', 'requestOverlaySlot']
+    ),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'local-cooldown-only' }),
+      success: Object.freeze({ mode: 'na', reason: 'local-cooldown-only' }),
+      fail: Object.freeze({ mode: 'na', reason: 'local-cooldown-only' })
+    }),
+    e2eOverlap: {
+      mode: 'spec',
+      path: 'e2e/awaken-invite.spec.js',
+      tokens: Object.freeze(['awaken-invite', 'awaken-invite-yes'])
+    },
+    trackerCoverage: {
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-t51-awaken-invite-orchestrator.md'
+      ]),
+      tokens: Object.freeze(['待人工测试', 'awaken-invite'])
+    }
+  }),
   glassCard('CalmActionRecoverCardUI.js'),
   glassCard('CalmActionArriveCardUI.js'),
   surface({

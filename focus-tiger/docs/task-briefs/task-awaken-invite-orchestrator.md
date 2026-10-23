@@ -1,6 +1,6 @@
 # Task Brief · T51 觉照邀请编排（只邀请，不自动开练习）
 
-> **状态（2026-10-23）**：Brief 待点头。口径已写入 `DESIGN.md`「觉照邀请」· `PRODUCT_POSITIONING.md` · `PRINCIPLES.md`。  
+> **状态（2026-10-23）**：PO 点头，本旁支实现。口径已写入 `DESIGN.md`「觉照邀请」· `PRODUCT_POSITIONING.md` · `PRINCIPLES.md`。  
 > **类**：B 类（会改 Focusing 期间用户看见什么）。**口令「立刻开工」不能跳过本 Brief。**  
 > **父任务**：T50 产品口径（本治理档）。**下一刀**：T52 微打卡。  
 > **依赖**：现网 Recover / Ground / 呼吸 / Re-focus / Companion Mode；不新建练习种类。

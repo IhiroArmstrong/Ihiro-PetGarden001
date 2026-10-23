@@ -34,6 +34,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   FLOWER_WELCOME: 'flower-welcome',
   MOMENT_WHISPER: 'moment-whisper',
   FOCUS_AWARENESS: 'focus-awareness',
+  AWAKEN_INVITE: 'awaken-invite',
   CALM_ACTION_RECOVER: 'calm-action-recover',
   CALM_ACTION_ARRIVE: 'calm-action-arrive',
   TRANSITION_MOMENT: 'transition-moment',
@@ -497,6 +498,16 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     readers: 'FocusAwarenessCardUI.tryShow (Focusing allowed)'
   }),
   contract({
+    id: OVERLAY_SOURCES.AWAKEN_INVITE,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 24,
+    readers:
+      'AwakenInviteUI.tryShow (Focusing allowed; does not block Sit / Yin tap)',
+    blocksIdleYinTap: false,
+    blocksEnterSleep: false,
+    snapshotField: 'awakenInviteOpen'
+  }),
+  contract({
     id: OVERLAY_SOURCES.CALM_ACTION_RECOVER,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
@@ -597,6 +608,7 @@ export const OVERLAY_UI_POINTER_HIT_TEST_REQUIRED = Object.freeze([
   'ContextualTeaTipBubbleUI.js',
   'MomentWhisperUI.js',
   'FocusAwarenessCardUI.js',
+  'AwakenInviteUI.js',
   'CalmActionRecoverCardUI.js',
   'CalmActionArriveCardUI.js',
   'TransitionMomentUI.js',
@@ -653,6 +665,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'ContextualTeaTipBubbleUI.js': [OVERLAY_SOURCES.TEA_BUBBLE],
   'MomentWhisperUI.js': [OVERLAY_SOURCES.MOMENT_WHISPER],
   'FocusAwarenessCardUI.js': [OVERLAY_SOURCES.FOCUS_AWARENESS],
+  'AwakenInviteUI.js': [OVERLAY_SOURCES.AWAKEN_INVITE],
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
   'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],
   'TransitionMomentUI.js': [OVERLAY_SOURCES.TRANSITION_MOMENT],
