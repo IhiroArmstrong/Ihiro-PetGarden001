@@ -24,7 +24,7 @@
 |---|---|---|---|---|---|
 | **SB-01** | Re-focus：离开 **&lt;20s** 再回来 | **无** toast / `nod-bow`；连内部记账都不做 | 门槛未到；避免误触切页 | `SCENARIO_TESTS` 场景 B | 门槛未到 · 完全静默 |
 | **SB-02** | Re-focus：离开 **20–60s** 再回来 | 只内部记账；**仍无**文案 / `nod-bow` | 未达展示门槛 | 同上 | 门槛未到 · 无表面反馈 |
-| **SB-03** | Offline Space / Flow State 切走再回 | 即使离开 &gt;60s 也**无** Re-focus | `suppressAwayReminders`；离开是预期 | 场景 B / E | 模式抑制 |
+| **SB-03** | Offline Space / Flow State 切走再回 | 即使离开 &gt;60s 也**无** Re-focus、**无** T51 离开类觉照邀请 | `suppressAwayReminders` / `FLOW_PROTECT`；离开是预期 | 场景 B / E · T51 Brief | 模式抑制 |
 | **SB-04** | 应用内提醒横幅 · 忙碌期 | Arrival / Focusing / Reflection / 微仪式中横幅 **不展示、不排队** | 已拍板 `suppress`（非 defer） | 场景 P | busy suppress |
 | **SB-05** | Moment Whisper 该键已见 | 再进同一 Moment **不再**出 `#moment-whisper` | 每键一生一次 | 场景 Y | 限频已消耗 |
 | **SB-06** | Moment Whisper · busy | Compass / Companion / Arrival 等叠层开着时不出 | 互斥，避免挡主路径 | 场景 Y | busy suppress |

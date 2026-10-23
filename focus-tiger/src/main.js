@@ -47,6 +47,7 @@ import {
   deriveTeaBubbleBusyTarget,
   deriveReminderBusySessionTarget,
   deriveFocusAwarenessCardBusy,
+  deriveFocusingSoftCardBusy,
   deriveIdleYinTapOverlayBusy,
   deriveSceneAnimOverlayBusy,
   canAttemptFirstCard,
@@ -582,6 +583,9 @@ import { TransitionMomentUI } from './ui/TransitionMomentUI.js';
 import { TransitionMomentTriggerUI } from './ui/TransitionMomentTriggerUI.js';
 import { GroundExerciseChoiceUI } from './ui/GroundExerciseChoiceUI.js';
 import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
+import { RESET_ROUTES } from './ui/resetPracticeRoutes.js';
+import { AwakenInviteUI } from './ui/AwakenInviteUI.js';
+import { InterventionOrchestrator } from './core/InterventionOrchestrator.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -1195,6 +1199,7 @@ async function init() {
     appEl: app,
     getSpriteOverlay: () => spritePlayer.overlayEl
   });
+  const awakenOrchestrator = new InterventionOrchestrator();
   const mindfulReminderController = new MindfulReminderController({
     quotaManager: reminderQuotaManager,
     emotionController,
@@ -1208,7 +1213,8 @@ async function init() {
         bootMomentHosts.calmActionRecoverCardUI.tryShowAfterActiveRecover();
         maybeOfferMomentWhisper('recover', { delayMs: 200 });
       }
-    }
+    },
+    onStretchDue: () => tryShowAwakenInvite({ kind: 'long-sit', stretchDue: true })
   });
   const activeRecoverAnchor = new ActiveRecoverAnchorUI(
     document.getElementById('ui-overlay'),
@@ -1239,7 +1245,17 @@ async function init() {
     },
     onReturn: (event) => {
       sessionPresenceCollector.noteLeave(event?.durationMs);
+      const before =
+        mindfulReminderController.getSessionStats().refocusHandledThisSession;
       mindfulReminderController.handleAttentionReturn(event);
+      const after =
+        mindfulReminderController.getSessionStats().refocusHandledThisSession;
+      if (after > before) awakenOrchestrator.noteCooldownEvent();
+      tryShowAwakenInvite({
+        kind: 'away',
+        displayEligible: event?.displayEligible === true,
+        refocusSlotConsumed: after > 0
+      });
     }
   });
   attentionSignals.bind();
@@ -1651,8 +1667,11 @@ async function init() {
   let witnessRespondSlotHeld = false;
   let transitionMomentSlotHeld = false;
   let recoverResetPracticeSlotHeld = false;
+  let awakenInviteSlotHeld = false;
   /** @type {RecoverResetPracticeUI | null} */
   let recoverResetPracticeUI = null;
+  /** @type {AwakenInviteUI | null} */
+  let awakenInviteUI = null;
   /** @type {GroundExerciseChoiceUI | null} */
   let groundExerciseChoiceUI = null;
 
@@ -1725,7 +1744,8 @@ async function init() {
       kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
       intent: 'show',
       snapshot: buildLiveOverlaySnapshot({
-        recoverResetPracticeOpen: false
+        recoverResetPracticeOpen: false,
+        awakenInviteOpen: false
       })
     });
     if (!decision.canShow) return false;
@@ -1738,6 +1758,55 @@ async function init() {
     if (!recoverResetPracticeSlotHeld) return;
     recoverResetPracticeSlotHeld = false;
     syncIdleYinTap();
+  }
+
+  function requestAwakenInviteOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.AWAKEN_INVITE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({ awakenInviteOpen: false })
+    });
+    if (!decision.canShow) return false;
+    awakenInviteSlotHeld = true;
+    return true;
+  }
+
+  function releaseAwakenInviteOverlaySlot() {
+    if (!awakenInviteSlotHeld) return;
+    awakenInviteSlotHeld = false;
+  }
+
+  function isAwakenInviteYieldBusy() {
+    const snap = buildLiveOverlaySnapshot({ awakenInviteOpen: false });
+    if (deriveFocusingSoftCardBusy(snap)) return true;
+    if (snap.confideOpen || snap.supportModalOpen) return true;
+    if (stateManager.state === STATES.CELEBRATE) return true;
+    const toast = document.getElementById('mindful-acknowledge-toast');
+    return Boolean(toast && toast.style.opacity === '1');
+  }
+
+  function tryShowAwakenInvite(input) {
+    if (!awakenInviteUI) return false;
+    if (stateManager.state !== STATES.FOCUSING) return false;
+    const companionMode =
+      focusSession.companionMode ||
+      bootHonestyCompanion.companionModePicker.getSelectedMode();
+    const decision = awakenOrchestrator.decide({
+      ...input,
+      focusing: true,
+      companionMode,
+      trayHidden: attentionSignals.hideReason === 'tray',
+      yieldBusy: isAwakenInviteYieldBusy(),
+      inviteVisible: awakenInviteUI.isVisible()
+    });
+    if (!decision.show) return false;
+    focusAwarenessCardUI.hide({ immediate: true });
+    const shown = awakenInviteUI.tryShow(decision.kind);
+    if (!shown) return false;
+    awakenOrchestrator.noteInviteShown();
+    if (input.kind === 'extend') awakenOrchestrator.markExtendOffered();
+    return true;
   }
 
   const canOpenConfideEntitled = () => {
@@ -1787,6 +1856,44 @@ async function init() {
   });
   window.__recoverResetPractice = recoverResetPracticeUI;
   window.__groundExerciseChoice = groundExerciseChoiceUI;
+  awakenInviteUI = new AwakenInviteUI(overlayRoot, {
+    requestSlot: requestAwakenInviteOverlaySlot,
+    releaseSlot: releaseAwakenInviteOverlaySlot,
+    onAccept: (kind) => {
+      if (kind === 'extend') {
+        applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 });
+        refreshFocusSitAdjust();
+        return;
+      }
+      focusAwarenessCardUI.hide({ immediate: true });
+      recoverResetPracticeUI?.show(RESET_ROUTES.GROUND);
+    },
+    onDismiss: () => {
+      if (
+        stateManager.state === STATES.FOCUSING &&
+        focusSession.hasReachedTarget() &&
+        !bootSessionChrome.sessionUiGate.completionPending
+      ) {
+        beginSessionCompleteIfNeeded();
+      }
+    }
+  });
+  window.__awakenInvite = {
+    showPause: () => {
+      if (stateManager.state !== STATES.FOCUSING) return false;
+      focusAwarenessCardUI.hide({ immediate: true });
+      const shown = awakenInviteUI.tryShow('pause');
+      if (shown) awakenOrchestrator.noteInviteShown();
+      return shown;
+    },
+    offerAway: () =>
+      tryShowAwakenInvite({
+        kind: 'away',
+        displayEligible: true,
+        refocusSlotConsumed: true
+      }),
+    isVisible: () => awakenInviteUI?.isVisible() === true
+  };
 
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
     document.body,
@@ -3234,6 +3341,8 @@ async function init() {
       transitionMomentOpen:
         transitionMomentSlotHeld || transitionMomentUI?.isOpen?.() === true,
       focusAwarenessOpen: focusAwarenessCardUI?.isVisible?.() === true,
+      awakenInviteOpen:
+        awakenInviteSlotHeld || awakenInviteUI?.isVisible?.() === true,
       recoverResetPracticeOpen:
         recoverResetPracticeSlotHeld ||
         recoverResetPracticeUI?.isVisible?.() === true,
@@ -4740,6 +4849,8 @@ async function init() {
     transitionMomentUI.close();
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
+    awakenInviteUI?.hide({ immediate: true });
+    awakenOrchestrator.stopSession();
     if (stopAmbient) {
       bootAmbientHints.ambientSoundscape.endSession();
     }
@@ -4764,6 +4875,16 @@ async function init() {
       bootSessionChrome.sessionUiGate.completionPending ||
       stateManager.state !== STATES.FOCUSING ||
       !focusSession.hasReachedTarget()
+    ) {
+      return;
+    }
+
+    if (awakenInviteUI?.isVisible()) return;
+    if (
+      tryShowAwakenInvite({
+        kind: 'extend',
+        sessionReachedTarget: true
+      })
     ) {
       return;
     }
@@ -4920,6 +5041,7 @@ async function init() {
       suppressAwayReminders: shouldSuppressAwayReminders(companionMode),
       getSessionElapsedSeconds: () => focusSession.getElapsedSeconds()
     });
+    awakenOrchestrator.startSession(companionMode);
     bootAmbientHints.ambientSoundscape.startSession();
     ambientSoundscapeUI.setSessionActive(true);
     void bootAmbientHints.ambientSoundscape.startSittingMusic().then(() => {
@@ -4936,6 +5058,7 @@ async function init() {
     bootMomentHosts.calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
+    awakenInviteUI?.hide({ immediate: true });
     bootAmbientHints.onboardingHints?.closePurposeCard?.();
     bootAmbientHints.sessionCues.startIntervalSession();
     bootMomentHosts.supportYinModalUI.setFabVisible(false);

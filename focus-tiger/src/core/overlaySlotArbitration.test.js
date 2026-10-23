@@ -558,7 +558,7 @@ describe('requestOverlaySlot', () => {
     assert.equal(d.canShow, true);
   });
 
-  it('recover reset practice blocked during focusing (Idle menu only)', () => {
+  it('recover reset practice allowed during focusing for T51 nod-in', () => {
     const snapshot = buildOverlaySnapshot({ sessionState: STATES.FOCUSING });
     const d = requestOverlaySlot({
       source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
@@ -566,8 +566,28 @@ describe('requestOverlaySlot', () => {
       intent: 'show',
       snapshot
     });
-    assert.equal(d.canShow, false);
-    assert.ok(d.mustYieldTo.includes('session-hard-gate'));
+    assert.equal(d.canShow, true);
+  });
+
+  it('awaken invite allowed during focusing and yields to Confide', () => {
+    const open = requestOverlaySlot({
+      source: OVERLAY_SOURCES.AWAKEN_INVITE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildOverlaySnapshot({ sessionState: STATES.FOCUSING })
+    });
+    assert.equal(open.canShow, true);
+    const blocked = requestOverlaySlot({
+      source: OVERLAY_SOURCES.AWAKEN_INVITE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildOverlaySnapshot({
+        sessionState: STATES.FOCUSING,
+        confideOpen: true
+      })
+    });
+    assert.equal(blocked.canShow, false);
+    assert.ok(blocked.mustYieldTo.includes(OVERLAY_SOURCES.CONFIDE));
   });
 
   it('recover reset practice allowed on idle when no blockers', () => {
@@ -635,6 +655,42 @@ describe('requestOverlaySlot', () => {
   it('transition moment whisper does not block idle yin tap when open', () => {
     const snapshot = buildOverlaySnapshot({ transitionMomentOpen: true });
     assert.equal(deriveIdleYinTapOverlayBusy(snapshot), false);
+  });
+
+  it('awaken invite does not block idle yin tap or scene-anim busy', () => {
+    const snapshot = buildOverlaySnapshot({ awakenInviteOpen: true });
+    assert.equal(deriveIdleYinTapOverlayBusy(snapshot), false);
+    assert.equal(deriveSceneAnimOverlayBusy(snapshot), false);
+  });
+
+  it('recover reset practice can show during focusing after invite released', () => {
+    const snapshot = buildOverlaySnapshot({
+      sessionState: STATES.FOCUSING,
+      awakenInviteOpen: false,
+      recoverResetPracticeOpen: false
+    });
+    const d = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot
+    });
+    assert.equal(d.canShow, true);
+  });
+
+  it('recover reset practice yields to an open awaken invite', () => {
+    const snapshot = buildOverlaySnapshot({
+      sessionState: STATES.FOCUSING,
+      awakenInviteOpen: true
+    });
+    const d = requestOverlaySlot({
+      source: OVERLAY_SOURCES.RECOVER_RESET_PRACTICE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot
+    });
+    assert.equal(d.canShow, false);
+    assert.ok(d.mustYieldTo.includes('focusing-soft-card-busy'));
   });
 
   it('recover reset practice blocks idle yin tap when open', () => {

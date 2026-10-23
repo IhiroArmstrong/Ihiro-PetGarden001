@@ -1,0 +1,23 @@
+{
+  "en": {
+    "AWAKEN_INVITE_PAUSE_PROMPT": "Three breaths, or feel the ground?",
+    "AWAKEN_INVITE_YES": "Yes",
+    "AWAKEN_INVITE_NOT_NOW": "Not now",
+    "AWAKEN_INVITE_EXTEND_PROMPT": "Sit a little longer?",
+    "AWAKEN_INVITE_EXTEND_YES": "A little longer"
+  },
+  "zh": {
+    "AWAKEN_INVITE_PAUSE_PROMPT": "要不要三次呼吸，或感受一下地面？",
+    "AWAKEN_INVITE_YES": "要",
+    "AWAKEN_INVITE_NOT_NOW": "先不用",
+    "AWAKEN_INVITE_EXTEND_PROMPT": "要再坐一会儿吗？",
+    "AWAKEN_INVITE_EXTEND_YES": "再坐一会儿"
+  },
+  "ja": {
+    "AWAKEN_INVITE_PAUSE_PROMPT": "三回呼吸する？それとも地面を感じる？",
+    "AWAKEN_INVITE_YES": "はい",
+    "AWAKEN_INVITE_NOT_NOW": "今はしない",
+    "AWAKEN_INVITE_EXTEND_PROMPT": "もう少し坐る？",
+    "AWAKEN_INVITE_EXTEND_YES": "もう少し"
+  }
+}
