@@ -37,6 +37,10 @@ test('FocusHUD Idle C.2 hides shared-sitting bar until hover; Focusing shows ful
   await expectFocusSessionActive(page);
 
   await expect(hud).toHaveAttribute('data-focusing', '1');
+  await expect(hud).toHaveAttribute('data-sitting-picture', '1');
+  await expect(page.locator('#hud-time')).toBeHidden();
+  await hud.hover();
+  await expect(page.locator('#hud-time')).toBeHidden();
   await expect
     .poll(async () => bar.evaluate((el) => Number(getComputedStyle(el).opacity)))
     .toBeGreaterThan(0.9);

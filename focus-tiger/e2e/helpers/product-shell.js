@@ -508,6 +508,11 @@ export async function expectFocusSessionActive(page) {
       timeout: 8_000
     })
     .not.toBe('00:00');
+  await expect(page.locator('#hud-time')).toBeHidden();
+  await expect(page.locator('#focus-hud .ft-hud')).toHaveAttribute(
+    'data-sitting-picture',
+    '1'
+  );
 }
 
 export async function expectFocusSessionInactive(page) {

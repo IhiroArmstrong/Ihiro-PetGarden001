@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-22（T34 Help Center 问卡办理 · 场景 AX 1b）· 2026-10-21（T26 Idle 问号右边 Help Center 快捷钮 · 场景 AX 1c）· 2026-10-19（T24 成长旅程详情下半部一张 Sit & Breath 练习观察纸 · T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳 · T22 Help Center 顶部问卡打字/语音检索）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
+最近代码核对：2026-10-23（T45 静坐画面藏跳动数字 · SB-22 · 场景 T / O）· 2026-10-22（T34 Help Center 问卡办理 · 场景 AX 1b）· 2026-10-21（T26 Idle 问号右边 Help Center 快捷钮 · 场景 AX 1c）· 2026-10-19（T24 成长旅程详情下半部一张 Sit & Breath 练习观察纸 · T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳 · T22 Help Center 顶部问卡打字/语音检索）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -287,7 +287,7 @@
 3. **读图**：亮格 = `totalMinutes === null` 或 `> 0`；暗格 = 真零。**无**点击下钻。
 4. **Hint（可选）**：ActionBar 点 ? → tips（窄屏尖角目标可能变化）。
 5. **让格子变亮**：完成计时 / Honesty / 一分钟呼吸 → 回 Idle → 抽屉内今日格亮。
-6. **回流**：开 Focusing → 主钮/抽屉/grabber 收起，**Rise** 仍可见可点；Rise 回 Idle → 三主钮 + grabber 再出现。
+6. **回流**：开 Focusing → 主钮/抽屉/grabber 收起，**Rise** 仍可见可点；`#focus-hud` 根可见，`#hud-time` **视觉隐藏**（**SB-22**，非 HUD 坏了）。Rise 回 Idle → 三主钮 + grabber 再出现。
 7. **已知边界**：热力格子仍不可下钻。格子上面那一行可点，0–1 秒内打开一张只读的「走到哪」纸（阶段线、你在这里、累计时间、节奏点）。与 HUD streak（宽屏卡内 7 点环）分工不同。与 ⋯ Journey log 也不同：那是留痕列表，这张纸不写九十天天数。
 
 ---
@@ -421,11 +421,11 @@
 > **用户故事**：Kelly 走完 Arrival、选好 Companion 模式后，再选本场专注时长，再开表。  
 > **单元**：`focusDuration.test.js`；偏好 `focus-tiger.focus-duration-pref.v1`。  
 > **DOM**：产品无 query 路径须人工；e2e helper 默认带 `?sessionMinutes=N` **跳过** picker（勿用跳过路径当本场景通过）。  
-> **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
+> **仍须人工**：点 Leave 取消不开表；坐下后不见跳秒（**SB-22**）；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
 
 1. `?product=1`（**勿**带 `sessionMinutes`）→ Sit→Arrival→Choose→Companion 点选模式。
 2. 见 `#focus-duration-picker`：chip **10 / 15 / 25 / 45**（默认 10；数字 10 也可出现在 Breath，但路径不同）；**须见**最短档说明（`#focus-duration-floor-hint`，英文含 10 minutes / Breath practice）。chip 下方须见静默 `#focus-coins-duration-hint`（寅币、满 5 分钟；`?focusCoins=0` 时无）。**0–1 秒内** picker 与两句 hint 一同出现（无新按钮）。
-3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing + **开始磬**（若计时提示音开）+ 氛围乐）；`#focus-hud` 显示所选目标分钟。
+3. 点选 → **立刻 Focusing**（0–1 秒内 Sit 变 Rise、状态 Focusing + **开始磬**（若计时提示音开）+ 氛围乐）；`#focus-hud` 根与金环可见；`#hud-time` / 目标分秒 **视觉隐藏**（**SB-22**；非点击 / 系统事件）。
 4. **Leave**（若 picker 仍开）→ 取消、不开表。
 5. **回流**：Rise → 再 Sit→…→ 再出 picker；偏好应合理回显。
 6. **调试捷径**（非故事）：`?sessionMinutes=1` 跳过 picker——仅 DEMO/e2e。

@@ -262,6 +262,20 @@
       #focus-hud .ft-hud:focus-within .ft-hud__time {
         opacity: 0.92;
       }
+      /* T45 sitting picture: official Focusing never reveals ticking digits */
+      #focus-hud .ft-hud[data-sitting-picture='1'] .ft-hud__time,
+      #focus-hud .ft-hud[data-sitting-picture='1'] .ft-hud__session-target,
+      #focus-hud .ft-hud[data-sitting-picture='1']:hover .ft-hud__time,
+      #focus-hud .ft-hud[data-sitting-picture='1']:focus-within .ft-hud__time,
+      #focus-hud .ft-hud[data-sitting-picture='1']:hover .ft-hud__session-target,
+      #focus-hud .ft-hud[data-sitting-picture='1']:focus-within .ft-hud__session-target,
+      #focus-hud .ft-hud[data-sitting-picture='1'] .ft-hud__detail,
+      #focus-hud .ft-hud[data-sitting-picture='1']:hover .ft-hud__detail,
+      #focus-hud .ft-hud[data-sitting-picture='1']:focus-within .ft-hud__detail {
+        opacity: 0 !important;
+        visibility: hidden;
+        pointer-events: none;
+      }
       /* Option A: session total under elapsed — quieter than the clock */
       #focus-hud .ft-hud__session-target {
         font-size: 0.8rem;

@@ -90,7 +90,7 @@ D.5 是次级面板的**停靠优先**（侧停 / 缩小 / 下半屏），**不�
 
 | 元素 | `#id` / 选择器 | 场景 | 层级初判 | 可点/装饰 | 既有拍板 | 本轮 |
 |---|---|---|---|---|---|---|
-| FocusHUD（状态名+计时+环+条+连胜环） | `#focus-hud`；子：`.ft-hud`、`.ft-hud__state`、`.ft-hud__time`、`.ft-hud__session-target`、`.ft-hud__gauge`、`.ft-hud__bar`、`.ft-hud__streak` | Idle / Focusing | Idle 应变轻；Focusing = 主反馈 | 可点；悬停出 `.ft-hud__detail` | `index.html` 样式：Idle 时时间半透明，hover / Focusing 提高不透明度；环/条/连胜环仍常驻 | **C.2** |
+| FocusHUD（状态名+计时+环+条+连胜环） | `#focus-hud`；子：`.ft-hud`、`.ft-hud__state`、`.ft-hud__time`、`.ft-hud__session-target`、`.ft-hud__gauge`、`.ft-hud__bar`、`.ft-hud__streak` | Idle / Focusing | Idle 应变轻；Focusing = 主反馈（环/条；数字 T45 藏） | 可点；Idle 悬停出 `.ft-hud__detail` | Idle 时间半透明、hover 加重；正式 Focusing 藏跳动数字（**SB-22**）；环/条/连胜环仍常驻 | **C.2** |
 | Idle 倾听耳（向阿寅倾诉） | `#confide-ear-chrome`；窄屏 `#ft-narrow-confide-btn` | Idle 宽屏（闸开） | 次级入口；**不得**与 C.2 HUD 抢左上角 | 可点；悬停出 `#confide-ear-chrome-tip` | 2026-09-04 重叠 HUD；**2026-09-06** 下移至 HUD 下方 | **待 tip 复测** |
 | Support Yin | `#yin-support-fab`；标签 `.yin-support-fab__label` | Idle（Focusing 隐藏） | L2 付费入口 | 可点 | 统一 Support 三卡；A.6 禁止无标签纯 icon | **D.8**（Idle 默认小标；hover/展开后完整药丸；**不是**去标签） |
 | 徽章条 | `#yin-tip-kindness-badges` | Idle | B 轨身份印记，非成就墙 | 可点，下载 PNG | 右侧；付费 `min=3`（Sanctuary 上限 17 / tip 上限 9）；练习分上涨只增 | **C.1** |
@@ -134,12 +134,12 @@ D.5 是次级面板的**停靠优先**（侧停 / 缩小 / 下半屏），**不�
 
 **决策：Idle 默认态变轻；Focusing 时环 / 条保持完整。**
 
-现网已有：Idle 时 `.ft-hud__time` / `.ft-hud__session-target` 降低不透明度；hover / `:focus-within` / `data-focusing="1"` 提高。**不要**再加一套「点击展开」——沿用已有 hover / 键盘 focus。
+现网 Idle：`.ft-hud__time` / `.ft-hud__session-target` 降低不透明度；hover / `:focus-within` 提高。正式 Focusing（`data-sitting-picture="1"`）**不再**露跳动数字（T45 · **SB-22**）。**不要**再加一套「点击展开」或「显示时间」开关。
 
 本补丁要做的是 Idle **默认态**少露信息：
 
 - Idle 默认：状态名 + 克制计时（可保持现网半透明时间）。`.ft-hud__bar` 与 `.ft-hud__streak`（截图中的「8 点环」）不在 Idle 默认态抢视线（可用降低不透明度或仅 hover / Focusing 显示）。
-- Focusing：环、条、计时、连胜环保持完整，**不裁剪**。
+- Focusing：环、条、连胜环保持完整，**不裁剪**。跳动分秒按 T45 视觉隐藏。
 - 卡片去边框：仅当与其它 Idle chrome 不一致时再动；若 Calm 卡已与玻璃族同类，不必单独再降一级。
 - 回归：Idle → Focusing 信息增加时布局尽量不跳；窄屏 375 不挡 mute；e2e `focus-hud-hover` 仍能悬停出 tip。
 

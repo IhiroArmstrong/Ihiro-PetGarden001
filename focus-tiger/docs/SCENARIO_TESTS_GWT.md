@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-22  
+生成日期：2026-10-23  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -943,7 +943,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | O-3 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 读图：亮格 = `totalMinutes === null` 或 `> 0`；暗格 = 真零。无点 |
 | O-4 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | Hint（可选）：ActionBar 点 ? → tips（窄屏尖角目标可能变化）。 |
 | O-5 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 让格子变亮：完成计时 / Honesty / 一分钟呼吸 → 回 Idle → 抽屉内今日格亮。 |
-| O-6 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 回流：开 Focusing → 主钮/抽屉/grabber 收起，Rise 仍可见可点；Rise 回 |
+| O-6 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 回流：开 Focusing → 主钮/抽屉/grabber 收起，Rise 仍可见可点；`#focu |
 | O-7 | P2 | 已在 `e2e/weekly-practice-heatmap.spec.js` 覆盖；完 | 已知边界：热力格子仍不可下钻。格子上面那一行可点，0–1 秒内打开一张只读的「走到哪」纸（阶段线、你 |
 
 ### Given-When-Then 明细
@@ -1034,7 +1034,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 回流：开 Focusing
 
 **Then**
-- 主钮/抽屉/grabber 收起，Rise 仍可见可点；Rise 回 Idle → 三主钮 + grabber 再出现。
+- 主钮/抽屉/grabber 收起，Rise 仍可见可点；`#focus-hud` 根可见，`#hud-time` 视觉隐藏（SB-22，非 HUD 坏了）。Rise 回 Idle → 三主钮 + grabber 再出现。
 
 #### O-7
 
@@ -1712,7 +1712,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 > **用户故事**：Kelly 走完 Arrival、选好 Companion 模式后，再选本场专注时长，再开表。
 > **单元**：`focusDuration.test.js`；偏好 `focus-tiger.focus-duration-pref.v1`。
 > **DOM**：产品无 query 路径须人工；e2e helper 默认带 `?sessionMinutes=N` **跳过** picker（勿用跳过路径当本场景通过）。
-> **仍须人工**：点 Leave 取消不开表；HUD 见本场目标分钟标注；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
+> **仍须人工**：点 Leave 取消不开表；坐下后不见跳秒（**SB-22**）；回流再开仍记住偏好或可改；点时长 chip **0–1 秒内**开始磬 + 氛围乐（对齐 Breath；Idle 冷启动仍静音）。
 
 ### 步骤总览
 
@@ -1768,7 +1768,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 点选
 
 **Then**
-- 立刻 Focusing（0–1 秒内 Sit 变 Rise、状态 Focusing + 开始磬（若计时提示音开）+ 氛围乐）；`#focus-hud` 显示所选目标分钟。
+- 立刻 Focusing（0–1 秒内 Sit 变 Rise、状态 Focusing + 开始磬（若计时提示音开）+ 氛围乐）；`#focus-hud` 根与金环可见；`#hud-time` / 目标分秒 视觉隐藏（SB-22；非点击 / 系统事件）。
 
 #### T-4
 

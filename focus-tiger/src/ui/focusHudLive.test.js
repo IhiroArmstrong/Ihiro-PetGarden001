@@ -5,7 +5,10 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveFocusHudLiveView } from './focusHudLive.js';
+import {
+  resolveFocusHudLiveView,
+  shouldHideSittingPictureDigits
+} from './focusHudLive.js';
 
 describe('resolveFocusHudLiveView', () => {
   it('Idle with no overlay stays idle / zero live', () => {
@@ -46,5 +49,22 @@ describe('resolveFocusHudLiveView', () => {
     assert.equal(view.displayState, 'FOCUSING');
     assert.equal(view.elapsedSeconds, 45);
     assert.equal(view.level, 0.75);
+  });
+});
+
+describe('shouldHideSittingPictureDigits', () => {
+  it('hides ticking digits on a real Focusing session, not overlay HUD', () => {
+    assert.equal(
+      shouldHideSittingPictureDigits({ focusing: true, overlayHud: false }),
+      true
+    );
+    assert.equal(
+      shouldHideSittingPictureDigits({ focusing: true, overlayHud: true }),
+      false
+    );
+    assert.equal(
+      shouldHideSittingPictureDigits({ focusing: false, overlayHud: false }),
+      false
+    );
   });
 });
