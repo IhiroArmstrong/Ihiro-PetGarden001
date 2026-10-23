@@ -38,13 +38,12 @@ describe('confideDockPlacement', () => {
 
 describe('ConfideToYinUI dock CSS', () => {
   it('ships matching media queries so the card is not centered on wide', () => {
-    const src = readFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), '../ui/ConfideToYinUI.js'),
-      'utf8'
-    );
-    assert.match(src, /@media \(min-width: 480px\) and \(max-width: 899px\)/);
-    assert.match(src, /@media \(min-width: 900px\)/);
-    assert.match(src, /right: max\(16px/);
-    assert.match(src, /max-height: min\(42vh/);
+    const here = dirname(fileURLToPath(import.meta.url));
+    const shared = readFileSync(join(here, 'wideSecondaryDockCss.js'), 'utf8');
+    const confide = readFileSync(join(here, '../ui/ConfideToYinUI.js'), 'utf8');
+    assert.match(shared, /@media \(min-width: \$\{minWide\}px\) and \(max-width: \$\{maxStrip\}px\)/);
+    assert.match(shared, /right: max\(16px/);
+    assert.match(shared, /max-height: min\(42vh/);
+    assert.match(confide, /wideSecondaryDockCss\('\.confide-to-yin'/);
   });
 });

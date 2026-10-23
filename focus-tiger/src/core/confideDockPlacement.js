@@ -4,7 +4,7 @@
  */
 
 /**
- * T41 · where the Confide glass card sits so Yin’s face stays clear on wide screens.
+ * T41 / T42 · where wide Idle glass cards sit so Yin’s face stays clear.
  */
 
 export const CONFIDE_NARROW_MAX_PX = 479;

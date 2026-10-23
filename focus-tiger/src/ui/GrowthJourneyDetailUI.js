@@ -31,6 +31,10 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
+import {
+  wideSecondaryDockCss,
+  wideSecondaryDockPlacement
+} from '../core/wideSecondaryDockCss.js';
 import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'growth-journey-detail-styles-v1';
@@ -147,11 +151,21 @@ export class GrowthJourneyDetailUI {
     };
     document.addEventListener('keydown', this._onKeyDown);
 
+    this._onResize = () => this._syncDock();
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('resize', this._onResize);
+    }
     this._injectStyles();
+    this._syncDock();
     this._unsubLocale = onLocaleChange(() => {
       if (this._open) this._refresh();
     });
     this._refresh();
+  }
+
+  _syncDock() {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 0;
+    this.root.dataset.dock = wideSecondaryDockPlacement(width);
   }
 
   /** @returns {boolean} */
@@ -393,6 +407,7 @@ export class GrowthJourneyDetailUI {
         transform: translate(-50%, 0);
         pointer-events: auto;
       }
+      ${wideSecondaryDockCss('.growth-journey-detail', { slide: true })}
       .growth-journey-detail__title {
         margin: 0 0 12px;
         font-size: 1.02rem;
