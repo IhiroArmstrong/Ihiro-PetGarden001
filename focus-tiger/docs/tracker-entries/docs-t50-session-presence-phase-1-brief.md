@@ -1,0 +1,1 @@
+| T50 会话存在摘要 Phase 1 Brief | 纯文档 | 仅单元测试覆盖 | **无产品 UI。** 打开 [`task-session-presence-summary-phase-1.md`](../task-briefs/task-session-presence-summary-phase-1.md)：确认 B 类、只接结束姿态/轻声选句/句库分桶、下次默认时长 v1 不做、标签永不展示。`npm run docs:check`。实现须另旁支，不得与本 Brief 同 PR。 | — | — | — | Brief 路径见左 | 2026-10-23 |
