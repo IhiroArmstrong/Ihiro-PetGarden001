@@ -1,0 +1,1 @@
+| T45 静坐画面（藏跳动数字） | UI可见 | 待人工测试 | **主路径（`?product=1`）**：Sit → 选时长 → Focusing：左上金环/状态词在，**不见**跳 `MM:SS`；悬停 HUD 也不露表。坐满见现成完成动作。**Rise 中途**仍可起身。**桌面 Open-ended**（若有 chip）：正计时数字同样藏；90m 提示仍可出。**对照**：一分钟呼吸等微仪式 overlay **仍见**墙钟。自动化：`focusHudLive.test.js` · `expectFocusSessionActive` `#hud-time` hidden。 | — | — | — | Brief `task-sitting-picture.md` · SB-22 | 2026-10-23 |

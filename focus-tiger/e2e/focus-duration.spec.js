@@ -26,7 +26,7 @@ test('Focus duration: companion select → 10 chip starts Focusing', async ({
   await expect(page.locator('#hud-state')).toContainText(/Focusing|专注/i);
   // Option A: total under elapsed
   const target = page.locator('#hud-session-target');
-  await expect(target).toBeVisible();
+  await expect(target).toBeHidden();
   await expect(target).toContainText(/10\s*min|10\s*分钟|10\s*分/i);
 });
 

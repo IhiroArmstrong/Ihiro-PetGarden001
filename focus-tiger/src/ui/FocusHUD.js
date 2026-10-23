@@ -6,7 +6,11 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { focusLevelToHaloVars } from './focusHudHalo.js';
 import { sharedSittingProgressPercent } from './sharedSittingProgress.js';
-import { resolveFocusHudLiveView, shouldShowFocusLevelPercent } from './focusHudLive.js';
+import {
+  resolveFocusHudLiveView,
+  shouldHideSittingPictureDigits,
+  shouldShowFocusLevelPercent
+} from './focusHudLive.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from '../utils/Constants.js';
 import {
   PRACTICE_STREAK_RING_TOTAL
@@ -21,7 +25,10 @@ import {
 } from '../../ui-kit/components/streak-meter.js';
 
 export { focusLevelToHaloVars };
-export { resolveFocusHudLiveView } from './focusHudLive.js';
+export {
+  resolveFocusHudLiveView,
+  shouldHideSittingPictureDigits
+} from './focusHudLive.js';
 
 if (!customElements.get(PROGRESS_BAR_TAG)) {
   customElements.define(PROGRESS_BAR_TAG, ProgressBar);
@@ -32,7 +39,8 @@ if (!customElements.get(STREAK_METER_TAG)) {
 
 /**
  * Soft chrome HUD: gold ring + shared-sitting bar + soft 7-dot practice ring.
- * Digits muted until hover. Keeps #hud-state / #hud-time / #hud-level for e2e.
+ * Idle digits muted until hover. Official Focusing hides ticking digits (T45).
+ * Keeps #hud-state / #hud-time / #hud-level in the DOM for e2e / elapsed.
  */
 export class FocusHUD {
   constructor(rootElement) {
@@ -149,24 +157,34 @@ export class FocusHUD {
       Math.max(0, opts.practiceRingFilled ?? 0)
     );
 
+    const overlayHud = opts.treatAsFocusing === true;
+    const hideDigits = shouldHideSittingPictureDigits({
+      focusing: live.focusing,
+      overlayHud
+    });
     this.levelEl.textContent = `${Math.round(live.level * 100)}%`;
+    this.levelEl.setAttribute('aria-hidden', hideDigits ? 'true' : 'false');
     const detail = this.root.querySelector('.ft-hud__detail');
     if (detail) {
       detail.hidden = !shouldShowFocusLevelPercent({
         focusing: live.focusing,
-        openEnded: opts.sessionOpenEnded === true
+        openEnded: opts.sessionOpenEnded === true,
+        overlayHud
       });
     }
     this.timeEl.textContent = this._formatTime(live.elapsedSeconds);
+    this.timeEl.setAttribute('aria-hidden', hideDigits ? 'true' : 'false');
     this.stateEl.textContent = this._stateLabel(live.displayState);
     this._renderSessionTarget(
       live.focusing,
       opts.sessionTargetMinutes,
-      opts.sessionOpenEnded === true
+      opts.sessionOpenEnded === true,
+      hideDigits
     );
 
     if (this.wrapEl) {
       this.wrapEl.dataset.focusing = live.focusing ? '1' : '0';
+      this.wrapEl.dataset.sittingPicture = hideDigits ? '1' : '0';
       this.wrapEl.style.setProperty('--ft-hud-fill', String(vars.fill));
     }
     if (this.ringEl) {
@@ -194,8 +212,9 @@ export class FocusHUD {
    * @param {boolean} focusing
    * @param {number | null | undefined} minutes
    */
-  _renderSessionTarget(focusing, minutes, openEnded = false) {
+  _renderSessionTarget(focusing, minutes, openEnded = false, hideDigits = false) {
     if (!this.targetEl) return;
+    this.targetEl.setAttribute('aria-hidden', hideDigits ? 'true' : 'false');
     if (!focusing) {
       this.targetEl.hidden = true;
       this.targetEl.textContent = '';

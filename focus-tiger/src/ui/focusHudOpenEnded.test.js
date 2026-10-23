@@ -8,7 +8,26 @@ import test from 'node:test';
 import { shouldShowFocusLevelPercent } from './focusHudLive.js';
 
 test('an open-ended sit hides the percent that barely moves', () => {
-  assert.equal(shouldShowFocusLevelPercent({ focusing: true, openEnded: true }), false);
-  assert.equal(shouldShowFocusLevelPercent({ focusing: true, openEnded: false }), true);
+  assert.equal(
+    shouldShowFocusLevelPercent({
+      focusing: true,
+      openEnded: true,
+      overlayHud: true
+    }),
+    false
+  );
+  assert.equal(
+    shouldShowFocusLevelPercent({
+      focusing: true,
+      openEnded: false,
+      overlayHud: true
+    }),
+    true
+  );
   assert.equal(shouldShowFocusLevelPercent({ focusing: false, openEnded: true }), true);
+});
+
+test('official Focusing hides percent even on a timed sit (T45)', () => {
+  assert.equal(shouldShowFocusLevelPercent({ focusing: true, openEnded: false }), false);
+  assert.equal(shouldShowFocusLevelPercent({ focusing: true, openEnded: true }), false);
 });

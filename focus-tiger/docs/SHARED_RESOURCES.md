@@ -261,7 +261,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 进阶仪式 `RitualFlowUI`（Morning / Emotional Reset / Work Transition） | `isBreathing()` | `getElapsedSeconds()` / `getProgress()` | `ritualBreathing` → `overlayBreathing` |
 | 正式 Focus 会话 | `FocusSession` focusing | 会话 elapsed / target | 非 overlay 路径（既有 HUD） |
 
-契约锁（源码字符串）：`ritualFlowHudWiring.test.js`。新 breath 流程不得只测面板内圆环，须写明左上角 Focusing + 秒数走动。
+契约锁（源码字符串）：`ritualFlowHudWiring.test.js`。新 breath 流程不得只测面板内圆环，须写明左上角 Focusing + elapsed 仍推进。正式 Focus 会话（T45）**视觉藏** `#hud-time`（**SB-22**），DOM 仍写秒数；微仪式 / RitualFlow overlay 墙钟不套坐图画藏数字。
 
 ---
 
@@ -299,6 +299,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `honesty-panel-entry-hidden` | honesty-check-in-open | both | HonestyEntry | hidden | `#honesty-idle-entry` | `#ft-narrow-home-honesty` | **locked** | `e2e/micro-ritual.spec.js › Honesty Check-in click hides entry until duration panel open` | `e2e/micro-ritual.spec.js › 375 Honesty panel: narrow home Honesty ball hidden` |
 | `focusing-narrow-home-ctas-hidden` | focusing | narrow | HomeCtas+Grabber | hidden | — | `#ft-narrow-home-ctas, .ft-narrow-grabber` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD and hides Sound FAB` |
 | `focusing-focus-hud-visible` | focusing | both | FocusHUD | visible | `#focus-hud` | `#focus-hud` | **locked** | `e2e/helpers/product-shell.js › expectFocusSessionActive (#focus-hud visible)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
+| `focusing-hud-time-hidden` | focusing | both | FocusHUD digits | hidden | `#hud-time` | `#hud-time` | **locked** | `e2e/helpers/product-shell.js › expectFocusSessionActive (#hud-time hidden)` | `e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…` |
 | `choose-bow-companion-in-viewport` | after-choose-bow | both | CompanionPanel | in-viewport | `.session-start-dock__panel` | `.session-start-dock__panel` | **locked** | `e2e/scenario-a.companion.spec.js › scenario A4… (toBeVisible; 宽屏不 park)` | `e2e/scenario-a.companion.spec.js › 375 Choose bow: Companion staged in viewport…` |
 | `companion-stage-honesty-entry-hidden` | companion-staged-narrow | narrow | HonestyIdleEntry | hidden | — | `#honesty-idle-entry` | **locked** | — | `e2e/scenario-a.companion.spec.js › 375 companion stage: Honesty dock entry stays hidden` |
 | `idle-narrow-three-home-balls` | idle | narrow | HomeCtas | visible | — | `#ft-sanctuary-nav-compass-fab, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty` | **locked** | — | `e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…` |

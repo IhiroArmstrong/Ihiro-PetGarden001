@@ -56,11 +56,30 @@ export function resolveFocusHudLiveView({
 }
 
 /**
- * Open-ended sits measure elapsed time against a 24h cap, so the percent
- * stays at 0% for a long while. Hide it. The clock remains.
- * @param {{ focusing?: boolean, openEnded?: boolean }} input
+ * T45 sitting picture: hide ticking MM:SS / target / percent on a real Focus
+ * session. Overlay HUD (micro-ritual / ritual breath) keeps the live clock.
+ * @param {{ focusing?: boolean, overlayHud?: boolean }} input
  * @returns {boolean}
  */
-export function shouldShowFocusLevelPercent({ focusing = false, openEnded = false } = {}) {
+export function shouldHideSittingPictureDigits({
+  focusing = false,
+  overlayHud = false
+} = {}) {
+  return focusing === true && overlayHud !== true;
+}
+
+/**
+ * Open-ended sits measure elapsed time against a 24h cap, so the percent
+ * stays at 0% for a long while. Hide it. Official Focus also hides percent
+ * (T45); overlay HUD still uses the open-ended rule.
+ * @param {{ focusing?: boolean, openEnded?: boolean, overlayHud?: boolean }} input
+ * @returns {boolean}
+ */
+export function shouldShowFocusLevelPercent({
+  focusing = false,
+  openEnded = false,
+  overlayHud = false
+} = {}) {
+  if (shouldHideSittingPictureDigits({ focusing, overlayHud })) return false;
   return !(focusing === true && openEnded === true);
 }

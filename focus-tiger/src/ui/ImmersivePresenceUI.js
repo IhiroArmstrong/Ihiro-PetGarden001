@@ -448,7 +448,7 @@ export class ImmersivePresenceUI {
         display: none !important;
       }
 
-      body.ft-immersive-presence #focus-hud .ft-hud__time {
+      body.ft-immersive-presence #focus-hud .ft-hud:not([data-sitting-picture='1']) .ft-hud__time {
         opacity: 0.95;
         font-size: 1.35rem;
       }

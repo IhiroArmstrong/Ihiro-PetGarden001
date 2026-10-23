@@ -216,7 +216,25 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
       'e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…',
     lockStatus: 'locked',
     source: 'SHARED §6 FocusHUD vs ActionBar / S2 · PR#2 merge-class-2 (P2)',
-    notes: '宽+窄：expectFocusSessionActive 锁 #focus-hud；窄屏 Focusing 专条亦锁'
+    notes:
+      '宽+窄：expectFocusSessionActive 锁 #focus-hud 根可见；跳动数字见 focusing-hud-time-hidden'
+  },
+  {
+    id: 'focusing-hud-time-hidden',
+    state: 'focusing',
+    viewport: 'both',
+    role: 'FocusHUD digits',
+    must: 'hidden',
+    wideSelector: '#hud-time',
+    narrowSelector: '#hud-time',
+    testAnchorWide:
+      'e2e/helpers/product-shell.js › expectFocusSessionActive (#hud-time hidden)',
+    testAnchorNarrow:
+      'e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD…',
+    lockStatus: 'locked',
+    source: 'T45 sitting picture / SB-22',
+    notes:
+      '正式 Focusing 视觉藏 #hud-time；DOM 仍写 elapsed。微仪式 overlay HUD 不套本条'
   },
   {
     id: 'choose-bow-companion-in-viewport',
