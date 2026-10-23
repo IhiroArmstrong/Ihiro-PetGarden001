@@ -376,6 +376,37 @@ test('snapshotFocusSessionForPresence uses wall-clock elapsed and open planned n
   );
 });
 
+test('peek does not log or reset; finalize still writes once and takePendingLabel is one-shot', () => {
+  const logs = [];
+  const storage = createMapStorage();
+  const collector = new SessionPresenceCollector({
+    storage,
+    log: (...args) => logs.push(args)
+  });
+  collector.begin();
+  collector.noteLeave(21_000);
+  collector.noteLeave(22_000);
+  collector.noteLeave(23_000);
+  const snap = {
+    companionMode: 'stay',
+    plannedMinutes: 25,
+    actualSeconds: 25 * 60,
+    durationMode: 'fixed',
+    endedEarly: false
+  };
+  const peeked = collector.peek(snap);
+  assert.equal(peeked.leaveCount, 3);
+  assert.equal(logs.length, 0);
+  assert.equal(readSessionPresenceRing(storage).length, 0);
+  const summary = collector.finalize(snap);
+  assert.equal(summary.leaveCount, 3);
+  assert.equal(logs.length, 1);
+  assert.equal(readSessionPresenceRing(storage).length, 1);
+  assert.equal(collector.takePendingLabel(), SESSION_PRESENCE_LABELS.DRIFTING);
+  assert.equal(collector.takePendingLabel(), null);
+  assert.equal(collector.finalize(snap), null);
+});
+
 test('complete-path pause must not be counted unless noteUserPause ran', () => {
   const collector = new SessionPresenceCollector({
     storage: createMapStorage(),

@@ -1,0 +1,1 @@
+| T50 会话存在摘要 Phase 1 | 交互 | 待人工测试 | 计时同坐达标（当日已庆祝过一次）后：DRIFTING 应偏摆尾轻完成 + 轻声走 Arrive 句（若未见过）；STRUGGLING 应偏点头 + 轻声 Recover。标签字 SETTLED/DRIFTING/STRUGGLING 不得出现在画面上。心流模式多次切走不得当成 DRIFTING。提前 Rise 仍是起身 hold，不是完成庆祝。下次默认时长应与改前相同。Electron `?product=1` 走一场 Sit。 | — | — | — | `?product=1` | 2026-10-23 |

@@ -77,6 +77,45 @@ test('not yet celebrated → celebrating without sessionComplete', () => {
   assert.deepEqual(emotions, []);
 });
 
+test('already celebrated + STRUGGLING bias → mindfulAcknowledge, not celebrating', () => {
+  const emotions = [];
+  const selected = triggerSessionCompletionFeedback({
+    hasCelebratedToday: true,
+    lightCompleteBias: 'mindfulAcknowledge',
+    emotionController: {
+      playEmotion(key) {
+        emotions.push(key);
+      }
+    },
+    startCelebrating: () => {
+      throw new Error('must not celebrate');
+    },
+    onComplete: () => {},
+    random: () => 0
+  });
+  assert.equal(selected, 'mindfulAcknowledge');
+  assert.deepEqual(emotions, ['mindfulAcknowledge']);
+});
+
+test('first of day still celebrates when lightCompleteBias is set', () => {
+  let celebrations = 0;
+  const selected = triggerSessionCompletionFeedback({
+    hasCelebratedToday: false,
+    lightCompleteBias: 'mindfulAcknowledge',
+    emotionController: {
+      playEmotion() {
+        throw new Error('must not play light pool');
+      }
+    },
+    startCelebrating: () => {
+      celebrations += 1;
+    },
+    onComplete: () => {}
+  });
+  assert.equal(selected, 'celebrating');
+  assert.equal(celebrations, 1);
+});
+
 test('preferMilestoneGlow → milestoneGlow; suppresses celebrating', () => {
   const emotions = [];
   let celebrations = 0;
