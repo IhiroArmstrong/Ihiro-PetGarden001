@@ -209,6 +209,8 @@ export class SessionPresenceCollector {
     this.storage = storage;
     this.now = now;
     this.log = log;
+    /** @type {'SETTLED' | 'DRIFTING' | 'STRUGGLING' | 'UNKNOWN' | null} */
+    this.lastLabel = null;
     this._resetMemory();
   }
 
@@ -221,8 +223,28 @@ export class SessionPresenceCollector {
     this.awayStartedAt = null;
   }
 
+  /**
+   * Build a summary without logging or resetting. Used to bias end pose
+   * before `finalize` (complete path pauses first, then animates, then logs).
+   * @param {object} snapshot
+   * @returns {object | null}
+   */
+  peek(snapshot) {
+    return this._buildSummaryFromMemory(snapshot);
+  }
+
+  /**
+   * @returns {'SETTLED' | 'DRIFTING' | 'STRUGGLING' | 'UNKNOWN' | null}
+   */
+  takePendingLabel() {
+    const label = this.lastLabel ?? null;
+    this.lastLabel = null;
+    return label;
+  }
+
   begin() {
     this._resetMemory();
+    this.lastLabel = null;
     this.active = true;
   }
 
@@ -262,7 +284,7 @@ export class SessionPresenceCollector {
    * @param {object} snapshot
    * @returns {object | null}
    */
-  finalize(snapshot) {
+  _buildSummaryFromMemory(snapshot) {
     if (!this.active) return null;
     const leaveDurationsSeconds = [...this.leaveDurationsSeconds];
     if (this.awayStartedAt != null) {
@@ -271,7 +293,7 @@ export class SessionPresenceCollector {
         leaveDurationsSeconds.push(openMs / 1000);
       }
     }
-    const summary = buildSessionPresenceSummary({
+    return buildSessionPresenceSummary({
       companionMode: snapshot.companionMode,
       plannedMinutes: snapshot.plannedMinutes,
       actualSeconds: snapshot.actualSeconds,
@@ -281,6 +303,16 @@ export class SessionPresenceCollector {
       endedEarly: snapshot.endedEarly,
       durationMode: snapshot.durationMode
     });
+  }
+
+  /**
+   * @param {object} snapshot
+   * @returns {object | null}
+   */
+  finalize(snapshot) {
+    const summary = this._buildSummaryFromMemory(snapshot);
+    if (!summary) return null;
+    this.lastLabel = estimateSessionPresence(summary);
     this._resetMemory();
     this.log('[SessionPresence]', summary);
     appendSessionPresenceSummary(summary, this.storage);

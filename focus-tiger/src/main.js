@@ -375,8 +375,13 @@ import {
 import { AttentionSignals } from './input/AttentionSignals.js';
 import {
   SessionPresenceCollector,
+  estimateSessionPresence,
   snapshotFocusSessionForPresence
 } from './core/sessionPresenceSummary.js';
+import {
+  pickPresenceWhisperKey,
+  selectPresenceEndConsumers
+} from './core/sessionPresenceConsumers.js';
 import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime } from './core/desktopShell.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import { bindDesktopPreferencesShortcut } from './core/desktopPreferencesShortcut.js';
@@ -3809,7 +3814,10 @@ async function init() {
     // 关掉 Rise/Sound 等会话中提示，只留 Reflection（锚在面板上方）
     bootAmbientHints.onboardingHints?.syncVisibleAutos(['reflection']);
     requestAnimationFrame(() => bootAmbientHints.onboardingHints?.repositionAll());
-    maybeOfferMomentWhisper('reflect', { delayMs: 400 });
+    maybeOfferMomentWhisper(
+      pickPresenceWhisperKey(sessionPresenceCollector.takePendingLabel()),
+      { delayMs: 400 }
+    );
   };
   const reflectionOnDone = reflectionMoment.onDone;
   reflectionMoment.onDone = (result, hasAnyAnswer) => {
@@ -4800,9 +4808,16 @@ async function init() {
     if (endDec.occupy !== SPRITE_OCCUPANCY.KEEP) {
       bootSceneAnim.spriteOccupancy = endDec.occupy;
     }
+    const presencePeek = sessionPresenceCollector.peek(
+      snapshotFocusSessionForPresence(focusSession, { endedEarly: false })
+    );
+    const presenceConsumers = selectPresenceEndConsumers(
+      presencePeek ? estimateSessionPresence(presencePeek) : null
+    );
     triggerSessionCompletionFeedback({
       hasCelebratedToday: dailyCompletionStore.hasCelebratedToday(),
       preferMilestoneGlow: Boolean(milestoneNode),
+      lightCompleteBias: presenceConsumers.lightCompleteBias,
       emotionController,
       startCelebrating: () => {
         dailyCompletionStore.markCelebratedToday();

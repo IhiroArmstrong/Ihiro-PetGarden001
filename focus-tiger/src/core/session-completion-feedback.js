@@ -23,6 +23,9 @@ import {
  * @param {() => void} [options.startMilestoneGlow]
  * @param {() => void} options.onComplete
  * @param {() => number} [options.random]
+ * @param {'sessionComplete' | 'mindfulAcknowledge' | null} [options.lightCompleteBias]
+ *   T50 Phase 1: already-celebrated light pool only. First-of-day Celebrating and
+ *   milestone glow still win. Next-session duration is not selected here.
  * @returns {string} emotion key played / started
  */
 export function triggerSessionCompletionFeedback({
@@ -32,7 +35,8 @@ export function triggerSessionCompletionFeedback({
   startCelebrating,
   startMilestoneGlow,
   onComplete,
-  random = Math.random
+  random = Math.random,
+  lightCompleteBias = null
 }) {
   if (preferMilestoneGlow && typeof startMilestoneGlow === 'function') {
     startMilestoneGlow();
@@ -49,7 +53,12 @@ export function triggerSessionCompletionFeedback({
     sessionState: 'IDLE',
     random
   });
-  const key = decision.emotionKey || EMOTION_KEYS.SESSION_COMPLETE;
+  const biased =
+    lightCompleteBias === EMOTION_KEYS.SESSION_COMPLETE ||
+    lightCompleteBias === EMOTION_KEYS.MINDFUL_ACKNOWLEDGE
+      ? lightCompleteBias
+      : null;
+  const key = biased || decision.emotionKey || EMOTION_KEYS.SESSION_COMPLETE;
   emotionController.playEmotion(key, {
     crossFadeMs: CAPCUT_DISSOLVE_MS,
     onComplete
