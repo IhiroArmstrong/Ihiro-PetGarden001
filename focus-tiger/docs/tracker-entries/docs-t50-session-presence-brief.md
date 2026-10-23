@@ -1,0 +1,1 @@
+| T50 会话存在摘要 Phase 0 Brief | 纯文档 | 仅单元测试覆盖 | **无产品 UI。** 打开 [`task-session-presence-summary-phase-0.md`](../task-briefs/task-session-presence-summary-phase-0.md)：确认 A 类影子、禁碰练习账本、persona 七行、消费端只接结束句且本刀不接线。`npm run docs:check`。实现须「按 T50 Brief 开工」。 | — | — | — | Brief 路径见左 | 2026-10-23 |
