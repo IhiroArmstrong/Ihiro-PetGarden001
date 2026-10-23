@@ -699,3 +699,25 @@ v4.0的"挂点滴→离家出走→留信→唤回"是建立在"角色可以离�
 - 连续性较低 → 金色粒子出现短暂停滞后自动恢复,而非直接消失或转为负面视觉(如变灰、变暗)
 
 此机制需要与既有的"动态效果层"(粒子系统)对接,Continuity数值作为粒子系统的一个驱动参数,而非独立的展示模块。在 across-tools 子模式下，不得因正常多工具切换压低 Continuity 并制造「你不专心」的视觉暗示。
+
+### 觉照邀请（2026-10-23 · T50 口径锁 · 运行时分 T51–T53）
+
+> PO 书面：愿意用行为节奏做**邀请时机**，不愿意用它给用户**定性**。  
+> 运行时 Brief：邀请编排 [`task-awaken-invite-orchestrator.md`](./task-briefs/task-awaken-invite-orchestrator.md) · 微打卡 [`task-awaken-micro-check-in.md`](./task-briefs/task-awaken-micro-check-in.md) · 输入节奏 [`task-awaken-input-rhythm.md`](./task-briefs/task-awaken-input-rhythm.md)
+
+**做什么**
+
+1. **邀请，不自动开练习。** 命中时机后，阿寅以非模态方式问要不要三次呼吸 / 接地 / 短休。用户点头才进入已有 Recover / Ground / 呼吸路径；不理几秒就消失。禁止锁屏幕、禁止自动播完整练习、禁止弹出「你现在是焦虑/分心/疲劳」。
+2. **心流保护沿用 Companion Mode。** `Flow State` / `Offline Space` 下，切走窗口仍**不得**当成分心来提醒（既有 `suppressAwayReminders` / **SB-03**）。到点若要多坐一会儿，只允许一句可撤销的「要再坐一会儿吗」，禁止静默擅自加时。
+3. **微打卡是你自己说感受**，不是系统宣布状态。三种足够：顺 / 乱 / 倦。一场结束问一次；中途每天最多几次，不理就消失。标签只用于以后校准「何时该问」，不展示分数。
+4. **击键节奏默认关（仅 Mac 电脑版）。** 设置打开后，本机只记时间戳与是否退格，不记字符、不记窗口标题。权限没有或关掉 → 退回只用离开窗口与坐了多久。算出的东西仍不显示成分数。
+
+**禁止**
+
+- 对外「心流指数」「状态分类器」「检测到焦虑」
+- 用退格率给用户定性
+- 申请屏幕录制去读窗口标题
+- 让邀请比场景 X 主动 Recover 更重（不得再做成切走回来后的强制双钮仪式）
+- 与场景 B 的 Re-focus toast 叠两层同时喊；Re-focus 在场时邀请让位（**SB-10** 同类）
+
+**内部词（不进用户可见文案）**：`NEUTRAL` / `FLOW_PROTECT` / `AWAY_INVITE` / `LONG_SIT_INVITE`。没有 `ANXIETY` 状态名。
