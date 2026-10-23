@@ -83,6 +83,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.focus-circle-identity-hidden.v1',
   'focus-tiger.focus-duration-pref.v1',
   'focus-tiger.confide-observation.v1',
+  'focus-tiger.session-presence-ring.v1',
   'focus-tiger.seasonal-whisper.v1',
   'focus-tiger.desktop-checkout-pending.v1'
 ]);
