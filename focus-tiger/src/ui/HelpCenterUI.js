@@ -9,6 +9,7 @@
  * Brief: docs/task-briefs/task-user-help-center.md
  *        docs/task-briefs/task-help-center-beside-question.md
  *        docs/task-briefs/task-help-center-operating-commands.md
+ *        docs/task-briefs/task-wide-secondary-dock.md
  */
 
 import { getLocale, setLocale, t, onLocaleChange } from '../locales/i18n.js';
@@ -51,6 +52,10 @@ import {
   showOverlayBackdrop
 } from './overlayBackdrop.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
+import {
+  wideSecondaryDockCss,
+  wideSecondaryDockPlacement
+} from '../core/wideSecondaryDockCss.js';
 import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'help-center-ui-styles-v1';
@@ -255,7 +260,17 @@ export class HelpCenterUI {
     this._localeOff = onLocaleChange(() => {
       if (this._open) this._render();
     });
+    this._onResize = () => this._syncDock();
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('resize', this._onResize);
+    }
     this._injectStyles();
+    this._syncDock();
+  }
+
+  _syncDock() {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 0;
+    this.root.dataset.dock = wideSecondaryDockPlacement(width);
   }
 
   isOpen() {
@@ -703,6 +718,7 @@ export class HelpCenterUI {
         color: var(--ft-ink-primary, #2a2520);
         font-family: var(--ft-font-ui, system-ui, sans-serif);
       }
+      ${wideSecondaryDockCss('#help-center')}
       .help-center__header {
         display: grid;
         grid-template-columns: auto 1fr auto;
@@ -903,6 +919,9 @@ export class HelpCenterUI {
   destroy() {
     this._localeOff?.();
     this._voiceInputChrome?.destroy();
+    if (typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
+      window.removeEventListener('resize', this._onResize);
+    }
     this.close();
     this.root.remove();
     this.backdrop?.remove();

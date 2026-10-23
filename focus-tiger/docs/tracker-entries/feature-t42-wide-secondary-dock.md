@@ -1,0 +1,1 @@
+| T42 宽屏次级面板不盖脸 | UI/交互 | 待人工测试 | **主路径（宽屏 ≥900 · `?product=1`）**：Idle 点问号右边 Help Center → 0–1 秒内帮助中心靠右，中间阿寅脸不被挡住。**480–899**：卡贴在底部一条。**375**：仍可居中。点首页旅程短行打开详情卡，宽屏同样靠右或贴底。**对照**：Support 付款大卡仍居中；倾诉贴边仍是 T41。自动化：`wideSecondaryDockCss.test.js` · `HelpCenterUI.test.js` · e2e `help-center-wide-dock.spec.js`。 | — | — | — | Brief `task-wide-secondary-dock.md` | 2026-10-23 |

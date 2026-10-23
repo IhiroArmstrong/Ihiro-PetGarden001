@@ -40,6 +40,12 @@ test('HelpCenterUI chrome re-open keeps the current view', () => {
   assert.match(openFn, /pushOverlayEscapeLayer/);
 });
 
+test('HelpCenterUI docks with the T41/T42 wide secondary rule', () => {
+  assert.match(src, /wideSecondaryDockCss\('#help-center'\)/);
+  assert.match(src, /wideSecondaryDockPlacement/);
+  assert.match(src, /dataset\.dock/);
+});
+
 test('help center close hides the card in the same turn as the click', () => {
   const closeAt = src.indexOf('  close() {');
   const closeFn = src.slice(closeAt, src.indexOf('  _showIndex() {', closeAt));

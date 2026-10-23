@@ -10,6 +10,7 @@
 
 import { t, getLocale, onLocaleChange, setLocale } from '../locales/i18n.js';
 import { confideDockPlacement } from '../core/confideDockPlacement.js';
+import { wideSecondaryDockCss } from '../core/wideSecondaryDockCss.js';
 import { listPickerLocales } from '../locales/localePreference.js';
 import {
   canUseSystemTts,
@@ -2259,34 +2260,7 @@ export class ConfideToYinUI {
         transform: translate(-50%, 0);
         pointer-events: auto;
       }
-      @media (min-width: 480px) and (max-width: 899px) {
-        .confide-to-yin {
-          left: 50%;
-          right: auto;
-          top: auto;
-          bottom: max(12px, env(safe-area-inset-bottom, 0px));
-          width: min(720px, calc(100vw - 24px));
-          max-height: min(42vh, 380px);
-          transform: translate(-50%, 10px);
-        }
-        .confide-to-yin.is-visible {
-          transform: translate(-50%, 0);
-        }
-      }
-      @media (min-width: 900px) {
-        .confide-to-yin {
-          left: auto;
-          right: max(16px, env(safe-area-inset-right, 0px));
-          top: 50%;
-          bottom: auto;
-          width: min(380px, 34vw);
-          max-height: min(78vh, 640px);
-          transform: translate(12px, -50%);
-        }
-        .confide-to-yin.is-visible {
-          transform: translate(0, -50%);
-        }
-      }
+      ${wideSecondaryDockCss('.confide-to-yin', { slide: true })}
       .confide-to-yin__title {
         margin: 0 0 8px;
         font-size: 1.05rem;
