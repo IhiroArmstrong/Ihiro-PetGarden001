@@ -531,6 +531,34 @@ export function resolveShellChromeProjection(input) {
   };
 }
 
+/** Pointer / touch hit strip for T47 edge-recall ⋯ / grabber (px). */
+export const EDGE_RECALL_HIT_PX = 24;
+
+/**
+ * Map narrow/wide shell flags to orchestration stage (mirrors sessionChromeSync inputs).
+ *
+ * @param {{
+ *   idle: boolean,
+ *   suppressed: boolean,
+ *   keepQuickStart?: boolean,
+ *   honestyBridgeActive?: boolean
+ * }} flags
+ * @returns {IdleChromeStage}
+ */
+export function resolveIdleChromeStageForShellFlags(flags) {
+  const {
+    idle,
+    suppressed,
+    keepQuickStart = false,
+    honestyBridgeActive = false
+  } = flags;
+  if (!idle) return 'focusing';
+  if (honestyBridgeActive) return 'bridge';
+  if (suppressed && keepQuickStart) return 'arrival';
+  if (suppressed) return 'overlay-suppress';
+  return 'idle';
+}
+
 /**
  * Contract-level role visibility for Sit / Quick Start / Honesty / More(⋯) /
  * Grabber. Aligns with SHARED_RESOURCES §6 narrative (not a third SSOT —
@@ -541,7 +569,7 @@ export function resolveShellChromeProjection(input) {
  *   sit: 'visible' | 'hidden' | 'disabled',
  *   quickStart: 'visible' | 'hidden',
  *   honesty: 'visible' | 'hidden' | 'in-menu',
- *   moreOrGrabber: 'visible' | 'hidden' | 'na',
+ *   moreOrGrabber: 'visible' | 'hidden' | 'na' | 'edge-recall',
  *   actionBar: 'visible' | 'na'
  * }}
  */
@@ -554,7 +582,7 @@ export function resolveRoleVisibility(input) {
       sit: 'hidden',
       quickStart: 'hidden',
       honesty: 'hidden',
-      moreOrGrabber: 'hidden',
+      moreOrGrabber: 'edge-recall',
       actionBar: narrow ? 'visible' : 'na'
     };
   }

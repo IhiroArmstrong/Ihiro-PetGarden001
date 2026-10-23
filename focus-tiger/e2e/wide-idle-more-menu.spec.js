@@ -203,7 +203,9 @@ test('wide Focusing: more + balls hidden; top-right note stays, Sound FAB stays 
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 15_000
   });
-  await expect(page.locator('#ft-wide-more-btn')).toBeHidden();
+  const more = page.locator('#ft-wide-more-btn');
+  await expect(more).toBeAttached();
+  await expect(more).not.toBeVisible();
   await expect(page.locator('#ft-wide-home-ctas')).toBeHidden();
   await expect(page.locator('.ambient-soundscape__mute')).toBeInViewport();
   await expect(page.locator('.ambient-soundscape__fab')).not.toBeInViewport();

@@ -17,7 +17,7 @@
  */
 
 /**
- * @typedef {'visible' | 'hidden' | 'disabled' | 'in-viewport'} VisibilityMust
+ * @typedef {'visible' | 'hidden' | 'disabled' | 'in-viewport' | 'edge-recall'} VisibilityMust
  */
 
 /**
@@ -193,14 +193,41 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     id: 'focusing-narrow-home-ctas-hidden',
     state: 'focusing',
     viewport: 'narrow',
-    role: 'HomeCtas+Grabber',
+    role: 'HomeCtas',
     must: 'hidden',
-    narrowSelector: '#ft-narrow-home-ctas, .ft-narrow-grabber',
+    narrowSelector: '#ft-narrow-home-ctas',
     testAnchorNarrow:
-      'e2e/weekly-practice-heatmap.spec.js › 375 Focusing restores FocusHUD and hides Sound FAB',
+      'e2e/focusing-edge-recall-more.spec.js › 375 Focusing: home balls hidden; grabber edge-recall opens drawer',
     lockStatus: 'locked',
-    source: '场景 O / RESPONSIVE_LAYOUT Focusing',
-    notes: 'Focusing 期见 #focus-hud；home 三球与 grabber 须藏（CSS ft-narrow-focusing）'
+    source: '场景 O / T47 recede chrome',
+    notes: 'Focusing 藏主球；grabber 见 focusing-narrow-grabber-edge-recall'
+  },
+  {
+    id: 'focusing-narrow-grabber-edge-recall',
+    state: 'focusing',
+    viewport: 'narrow',
+    role: 'Grabber',
+    must: 'edge-recall',
+    narrowSelector: '.ft-narrow-grabber',
+    testAnchorNarrow:
+      'e2e/focusing-edge-recall-more.spec.js › 375 Focusing: home balls hidden; grabber edge-recall opens drawer',
+    lockStatus: 'locked',
+    source: 'T47 专注中收控件',
+    notes:
+      '默认视觉隐退；底边热区 24px 或点原位 0–1s 出现；overlay suppress 时仍常显逃生舱'
+  },
+  {
+    id: 'focusing-wide-more-edge-recall',
+    state: 'focusing',
+    viewport: 'wide',
+    role: 'MoreButton',
+    must: 'edge-recall',
+    wideSelector: '#ft-wide-more-btn',
+    testAnchorWide:
+      'e2e/focusing-edge-recall-more.spec.js › wide Focusing: ⋯ edge-recall opens menu',
+    lockStatus: 'locked',
+    source: 'T47 专注中收控件',
+    notes: '默认隐退；dock 底边热区唤出；禁止 display:none 卸节点'
   },
   {
     id: 'focusing-focus-hud-visible',

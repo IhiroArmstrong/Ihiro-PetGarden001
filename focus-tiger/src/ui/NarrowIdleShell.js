@@ -6,12 +6,15 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 
 import {
+  EDGE_RECALL_HIT_PX,
   NARROW_STAGE_CLASS,
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
   dispatchSecondaryChromeProxy,
   decorateSecondaryLockButton,
   invokeHandler,
+  resolveIdleChromeStageForShellFlags,
+  resolveRoleVisibility,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
@@ -120,6 +123,8 @@ export class NarrowIdleShell {
     this._localeUnsub = null;
     this._hudObserver = null;
     this._wallClockTimer = null;
+    /** @type {boolean} */
+    this._grabberEdgeRevealed = false;
 
     this._injectStyles();
     this._build();
@@ -315,7 +320,12 @@ export class NarrowIdleShell {
    * @returns {void}
    */
   openSheet() {
-    if (!this._isNarrow() || !this._idle) return;
+    if (!this._isNarrow()) return;
+    if (this._idle) {
+      if (this._suppressed && !this._keepQuickStart) return;
+    } else if (!this._canOpenSheetWhileFocusing()) {
+      return;
+    }
     this._dismissIdleVisualPrimaryOverlays();
     this._sheetOpen = true;
     this._popEscapeLayer?.();
@@ -339,6 +349,9 @@ export class NarrowIdleShell {
     // can stack-overflow (Choose → postChoose keepQuickStart path).
     if (!this._sheetOpen) return;
     this._sheetOpen = false;
+    if (this._moreOrGrabberRole() === 'edge-recall') {
+      this._grabberEdgeRevealed = false;
+    }
     this._popEscapeLayer?.();
     this._popEscapeLayer = null;
     this.shell?.classList.remove('is-sheet-open');
@@ -413,12 +426,47 @@ export class NarrowIdleShell {
         Boolean(this._honestyBridgeActive)
       );
     }
-    if (!narrow || this._suppressed) this.closeSheet();
+    const moreRole = this._moreOrGrabberRole();
+    const edgeRecallGrabber = focusing && moreRole === 'edge-recall';
+    const escapeGrabber = focusing && moreRole === 'visible';
+    if (this.shell) {
+      this.shell.classList.toggle('is-grabber-edge-recall', edgeRecallGrabber);
+      this.shell.classList.toggle('is-grabber-escape', escapeGrabber);
+      this.shell.classList.toggle(
+        'is-grabber-revealed',
+        edgeRecallGrabber && (this._grabberEdgeRevealed || this._sheetOpen)
+      );
+      this.shell.dataset.edgeRecallPx = String(EDGE_RECALL_HIT_PX);
+    }
+    if (!narrow || (this._suppressed && !focusing)) this.closeSheet();
     if (narrow) {
       this._syncActionBarStateFromHud();
       this._tickWallClock();
     }
     if (idleChrome || keepQs) this._refreshHomeCtas();
+  }
+
+  /**
+   * @returns {'visible' | 'hidden' | 'na' | 'edge-recall'}
+   */
+  _moreOrGrabberRole() {
+    const stage = resolveIdleChromeStageForShellFlags({
+      idle: this._idle,
+      suppressed: this._suppressed,
+      keepQuickStart: this._keepQuickStart,
+      honestyBridgeActive: this._honestyBridgeActive
+    });
+    return resolveRoleVisibility({ stage, viewport: 'narrow' }).moreOrGrabber;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  _canOpenSheetWhileFocusing() {
+    const role = this._moreOrGrabberRole();
+    if (role === 'hidden' || role === 'na') return false;
+    if (this._honestyBridgeActive) return false;
+    return role === 'edge-recall' || role === 'visible';
   }
 
   _build() {
@@ -639,7 +687,27 @@ export class NarrowIdleShell {
       this._proxy(btn.getAttribute('data-proxy'));
     });
 
-    this.grabber?.addEventListener('click', () => this.openSheet());
+    this.grabber?.addEventListener('click', () => {
+      if (this._moreOrGrabberRole() === 'edge-recall') {
+        this._grabberEdgeRevealed = true;
+      }
+      this.openSheet();
+    });
+    this.grabber?.addEventListener('pointerenter', () => {
+      if (this._moreOrGrabberRole() !== 'edge-recall') return;
+      this._grabberEdgeRevealed = true;
+      this._syncMode();
+    });
+    this.grabber?.addEventListener('pointerleave', () => {
+      if (this._moreOrGrabberRole() !== 'edge-recall' || this._sheetOpen) return;
+      this._grabberEdgeRevealed = false;
+      this._syncMode();
+    });
+    this.grabber?.addEventListener('focus', () => {
+      if (this._moreOrGrabberRole() !== 'edge-recall') return;
+      this._grabberEdgeRevealed = true;
+      this._syncMode();
+    });
     this.backdrop?.addEventListener('click', () => this.closeSheet());
     this.sheet?.querySelector('[data-role="close"]')?.addEventListener('click', () => {
       this.closeSheet();
@@ -659,7 +727,12 @@ export class NarrowIdleShell {
     });
 
     this._onTouchStart = (e) => {
-      if (!this._isNarrow() || !this._idle) return;
+      if (!this._isNarrow()) return;
+      if (this._idle) {
+        if (this._suppressed && !this._keepQuickStart) return;
+      } else if (!this._canOpenSheetWhileFocusing()) {
+        return;
+      }
       if (e.touches?.length !== 1) return;
       // Don't steal from open sheet scroll
       if (this._sheetOpen && this.sheet?.contains(e.target)) {
@@ -1291,9 +1364,31 @@ export class NarrowIdleShell {
         border-radius: 999px;
         background: rgba(74, 58, 40, 0.28);
       }
-      body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber,
       body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-home-ctas {
         display: none;
+      }
+      body.ft-narrow-shell.ft-narrow-focusing
+        .ft-narrow-idle-shell.is-grabber-edge-recall:not(.is-grabber-revealed):not(.is-sheet-open)
+        .ft-narrow-grabber::before {
+        opacity: 0;
+        transition: opacity 180ms ease;
+      }
+      body.ft-narrow-shell.ft-narrow-focusing
+        .ft-narrow-idle-shell.is-grabber-edge-recall.is-grabber-revealed
+        .ft-narrow-grabber::before,
+      body.ft-narrow-shell.ft-narrow-focusing
+        .ft-narrow-idle-shell.is-grabber-edge-recall.is-sheet-open
+        .ft-narrow-grabber::before,
+      body.ft-narrow-shell.ft-narrow-focusing
+        .ft-narrow-idle-shell.is-grabber-edge-recall
+        .ft-narrow-grabber:focus-visible::before {
+        opacity: 1;
+      }
+      body.ft-narrow-shell.ft-narrow-focusing
+        .ft-narrow-idle-shell.is-grabber-edge-recall
+        .ft-narrow-grabber {
+        min-height: calc(20px + ${EDGE_RECALL_HIT_PX}px);
+        padding-bottom: ${EDGE_RECALL_HIT_PX}px;
       }
       /* Staging secondary panels: tuck home CTAs so they do not fight the panel */
       body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-companion .ft-narrow-home-ctas,
@@ -1646,8 +1741,7 @@ export class NarrowIdleShell {
           transform-origin: center 55%;
         }
 
-        /* Focusing: ActionBar stays (wall clock + ? + ♪); hide grabber / home */
-        body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-grabber,
+        /* Focusing: ActionBar stays (wall clock + ? + ♪); hide home balls */
         body.ft-narrow-shell.ft-narrow-focusing .ft-narrow-home-ctas {
           display: none !important;
         }
