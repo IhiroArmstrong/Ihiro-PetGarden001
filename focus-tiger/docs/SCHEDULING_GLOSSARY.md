@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-23 · **T42 立即做** · T34 挡 10/31 · T38 立即做 · T32 立即做 · T33 只读 · T25 P1 · **T39 #1393 · T41 #1392 已合** · **T45 T47 Brief 待点头** · T50 排队中 · 十二条对照 T38–T49）
+## 1. 当前队列（2026-10-23 · **T51 邀请立即做** · T34 挡 10/31 · T38 立即做 · T32 立即做 · T33 只读 · T25 P1 · **T39 #1393 · T41 #1392 · T42 #1397 · T50 #1394 已合** · **T45 T47 Brief 待点头** · 十二条对照 T38–T49 · 觉照 T51–T53）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -48,7 +48,7 @@
 | **P1** · **T39** | 开始铃结束铃默认关（对照 7） | **已合 develop** | 执行序 4。#1393。朗读开关分开。T27 不停结束句 |
 | **P1** · **T40** | 电脑版系统字体（对照 6） | 排队中 | 执行序 5。网页字体不改 |
 | **P1** · **T41** | 窗口置顶 + 倾诉贴边（对照 5） | **已合 develop** | 执行序 1。#1392。设置仍用玻璃卡。宽屏倾诉不盖阿寅 |
-| **P1** · **T42** | 宽屏次级面板不盖脸（对照 12） | **立即做** | 执行序 2。与 T41 同一布局规则，单独 PR。付款大卡居中例外；到达/回顾贴底半高。开工须 Brief |
+| **P1** · **T42** | 宽屏次级面板不盖脸（对照 12） | **已合 develop** | 执行序 2。#1397。与 T41 同一布局规则。付款大卡居中例外；到达/回顾贴底半高 |
 | **P1** · **T43** | 适中陪伴窗 + 全屏静坐（对照 9） | 排队中 | 执行序 6。不自绘红绿灯 |
 | **P1** · **T44** | 空格起停 + 倾诉快捷键 + 系统通知（对照 10） | 排队中 | 执行序 7 |
 | **P1** · **T45** | 静坐画面（对照 4） | Brief 待点头 | 执行序 8。无声场第二刀。结束轻动本刀，通知归 T44。[`task-sitting-picture.md`](./task-briefs/task-sitting-picture.md) |
@@ -56,7 +56,10 @@
 | **P1** · **T47** | 专注中收控件（对照 3） | Brief 待点头 | 执行序 10。无声场第三刀。Rise 不收；⋯ 边缘可唤出。[`task-recede-chrome-while-focusing.md`](./task-briefs/task-recede-chrome-while-focusing.md) |
 | **可选** · **T48** | 夜间略降亮度（对照 8） | 排队中 | 执行序 11。整套深色不做 |
 | **可选** · **T49** | 不换网页壳（对照 11） | 搁置 | 明确不做原生重写。**仍占十二条之一，禁止删行** |
-| **可选** · **T50** | 会话存在摘要 Phase 0 | 排队中 | A 类影子；不改可见行为。Brief [`task-session-presence-summary-phase-0.md`](./task-briefs/task-session-presence-summary-phase-0.md)。**不是** Presence Signals、**不是**键盘监控 |
+| **可选** · **T50** | 会话存在摘要 Phase 0 | **已合 develop** | #1394。A 类影子；不改可见行为。Brief [`task-session-presence-summary-phase-0.md`](./task-briefs/task-session-presence-summary-phase-0.md)。**不是** Presence Signals、**不是**键盘监控、**不是** T51 |
+| **P2** · **T51** | 觉照邀请编排 | **立即做** | 只邀请不自动开练习。Brief [`task-awaken-invite-orchestrator.md`](./task-briefs/task-awaken-invite-orchestrator.md)。口径见 [`DESIGN.md`](./DESIGN.md)「觉照邀请」。**不是** T50 |
+| **P2** · **T52** | 觉照微打卡 | Brief 待点头 | 顺/乱/倦校准。[`task-awaken-micro-check-in.md`](./task-briefs/task-awaken-micro-check-in.md) |
+| **可选** · **T53** | 输入节奏（默认关） | Brief 待点头 | Mac 击键间隔；无权限退回 T51。[`task-awaken-input-rhythm.md`](./task-briefs/task-awaken-input-rhythm.md) |
 
 **历史**：P1/P2 曾可并行审 PR；P2 合入前须 rebase develop（已完成）。开 PR `--base` 见 [`WORKFLOW.md`](../../WORKFLOW.md)（`git-pr-base-develop`）。
 
@@ -102,9 +105,10 @@
 | 「按 CR-52 Brief 开工」 | **T13 已搁置**。不自动改发送链。要恢复须你在现行三条里点名替换某一条 |
 | 「按 T38 开工」或「做倾听坐姿」 | **T38**：倾诉开着睁眼轻眨眼。宜在 **T41** 贴边后验收动画。新 Chat。不改发送链。不是 T29 |
 | 「按 T41 开工」或「倾诉贴边 / 窗口置顶」 | **T41 已合 #1392**。勿再开同内容置顶旁支。不是 T42 |
-| 「按 T42 开工」或「弹窗不盖脸」 | **T42**：宽屏次级弹窗默认不挡阿寅。付款大卡居中例外；到达/回顾贴底半高。须 Brief 点头。不是 T41 |
+| 「按 T42 开工」或「弹窗不盖脸」 | **T42 已合 #1397**。勿再开同内容贴边旁支。不是 T41 |
 | 「继续十二条」 | 按 [`GLOSSARY.md`](GLOSSARY.md) 执行序做下一行未完成项；**不得跳过对照号、不得删行** |
-| 「按 T50 Brief 开工」 | **T50** Phase 0 影子采集；A 类；新 Chat。不改结束句、不接键盘 |
+| 「按 T50 Brief 开工」 | **T50 Phase 0 已合 #1394**。勿再开同内容影子旁支。不改结束句、不接键盘。**不是**觉照邀请 |
+| 「按 T51 Brief 开工」 | **T51** 觉照邀请编排；B 类；口径已在 DESIGN。Brief 仍待点头。**不是** T50 |
 | 「按 T39 Brief 开工」 | **T39 已合 #1393**。勿再开同内容铃默认旁支 |
 | 「按无声场出 T45 Brief」或「按 T45 Brief 开工」 | **T45** 静坐画面。出 Brief 已发生；点头后新 Chat 改 HUD 数字。不接 T44 通知 |
 | 「出 T47 Brief」或「按 T47 Brief 开工」 | **T47** 专注中收控件。出 Brief 已发生；点头后新 Chat。不得藏死 ⋯；Rise 不收 |
