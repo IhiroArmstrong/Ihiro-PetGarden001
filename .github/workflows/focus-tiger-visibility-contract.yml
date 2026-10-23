@@ -138,6 +138,8 @@ jobs:
         run: npm ci
       - name: Install Playwright Chromium
         run: npx playwright install chromium --with-deps
+      # Search job log for FT_E2E_OPEN_METRICS / FT_E2E_RETRY_SUMMARY
+      # (once-pass vs retry-pass vs hard-fail; job green ≠ healthy).
       - name: Visibility e2e shard (${{ matrix.label }})
         run: >
           node scripts/e2e-ci-guard.js visibility &&

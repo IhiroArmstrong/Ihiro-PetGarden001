@@ -29,14 +29,16 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['github'],
-    ['junit', { outputFile: `test-results/junit-shard-${shard}.xml` }]
+    ['junit', { outputFile: `test-results/junit-shard-${shard}.xml` }],
+    ['./e2e/helpers/open-shell-retry-reporter.js']
   ],
   use: {
     ...base.use,
-    // on-first-retry traces + retain-on-failure video (not every attempt).
-    // No HTML report. Workflow uploads JUnit always and trace.zip only on failure.
+    // on-first-retry traces. Video off: retain-on-failure recording is not
+    // uploaded (workflow only keeps trace.zip) and stalls the next :5199 goto.
+    // Same as playwright.ci-visibility.config.js.
     trace: 'on-first-retry',
-    video: 'retain-on-failure',
+    video: 'off',
     screenshot: 'only-on-failure'
   }
 });

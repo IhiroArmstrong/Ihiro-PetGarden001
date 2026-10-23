@@ -11,6 +11,12 @@ import {
 } from './mock-external-network.js';
 import { dismissReflectionViaWisdomHold } from './reflection-dismiss.js';
 import { wideMoreMenuGroupForProxy } from '../../src/core/wideMenuRadialLayout.js';
+import {
+  attachOpenStage,
+  classifyOpenShellError,
+  decideOpenShellAttempt,
+  recordOpenShellEvent
+} from './open-shell-metrics.js';
 
 /** @type {WeakMap<import('@playwright/test').Page, true>} */
 const externalMocksByPage = new WeakMap();
@@ -113,21 +119,56 @@ export async function openFreshProductShell(page, opts = {}) {
   let lastErr;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
-      if (isCi) await waitForPreviewHealthy();
-      await page.goto(path, {
-        waitUntil: 'domcontentloaded',
-        timeout: gotoMs
+      const previewHealthy = isCi ? await waitForPreviewHealthy() : true;
+      if (decideOpenShellAttempt({ isCi, previewHealthy }) === 'abort_preview') {
+        throw attachOpenStage(
+          new Error(':5199 did not answer before goto'),
+          'preview_unhealthy'
+        );
+      }
+      await withOpenStage('goto_timeout', () =>
+        page.goto(path, {
+          waitUntil: 'domcontentloaded',
+          timeout: gotoMs
+        })
+      );
+      await withOpenStage('app_ready_timeout', () =>
+        page.waitForFunction(() => window.__FT_APP_READY__ === true, {
+          timeout: readyMs
+        })
+      );
+      await withOpenStage('sit_invisible', () =>
+        expect(page.locator('#btn-focus')).toBeVisible({ timeout: sitMs })
+      );
+      recordOpenShellEvent({
+        stage: 'ok',
+        attempt,
+        ok: true,
+        helperRetry: attempt > 0
       });
-      await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
-        timeout: readyMs
-      });
-      await expect(page.locator('#btn-focus')).toBeVisible({ timeout: sitMs });
       return;
     } catch (err) {
       lastErr = err;
+      recordOpenShellEvent({
+        stage: classifyOpenShellError(err),
+        attempt,
+        ok: false
+      });
     }
   }
   throw lastErr;
+}
+
+/**
+ * @param {import('./open-shell-metrics.js').OpenShellStage} stage
+ * @param {() => Promise<unknown>} fn
+ */
+async function withOpenStage(stage, fn) {
+  try {
+    return await fn();
+  } catch (err) {
+    throw attachOpenStage(err, stage);
+  }
 }
 
 /**
