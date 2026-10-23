@@ -5,7 +5,7 @@
 
 /**
  * Focus 计时提示音偏好。
- * - 开始/结束铃：Soundscape「计时提示音」总开关（两字段同步，默认开）
+ * - 开始/结束铃：Soundscape「计时提示音」总开关（两字段同步，默认关）
  * - 间隔磬节奏：独立 off / 3min / 5min（默认 off = 纯净陪伴）
  * - 觉察观照卡：独立开关（默认开；无间隔时也不会出卡）
  */
@@ -41,8 +41,8 @@ export const SESSION_INTERVAL_MS_OPTIONS = Object.freeze([
 /** @returns {SessionCuePref} */
 export function defaultSessionCuePref() {
   return {
-    sessionStartBellEnabled: true,
-    sessionEndBellEnabled: true,
+    sessionStartBellEnabled: false,
+    sessionEndBellEnabled: false,
     sessionIntervalMs: SESSION_INTERVAL_MS_OFF,
     focusAwarenessCardEnabled: true,
     cueVolume: SESSION_CUE_DEFAULT_VOLUME
@@ -80,11 +80,11 @@ export function normalizeSessionCuePref(raw) {
   const start =
     typeof raw.sessionStartBellEnabled === 'boolean'
       ? raw.sessionStartBellEnabled
-      : true;
+      : false;
   const end =
     typeof raw.sessionEndBellEnabled === 'boolean'
       ? raw.sessionEndBellEnabled
-      : true;
+      : false;
   // Start/end stay synced (AND) for the master toggle.
   const startEnd = start && end;
 

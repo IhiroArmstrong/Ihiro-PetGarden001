@@ -79,15 +79,48 @@ function createMockAudio() {
   };
 }
 
-test('default pref: start/end on, interval off, awareness on', () => {
+function storageWithStartEndBellsEnabled() {
+  const storage = createMapStorage();
+  writeSessionCuePrefEnabled(storage, true);
+  return storage;
+}
+
+test('default pref: start/end off, interval off, awareness on', () => {
   assert.deepEqual(defaultSessionCuePref(), {
-    sessionStartBellEnabled: true,
-    sessionEndBellEnabled: true,
+    sessionStartBellEnabled: false,
+    sessionEndBellEnabled: false,
     sessionIntervalMs: SESSION_INTERVAL_MS_OFF,
     focusAwarenessCardEnabled: true,
     cueVolume: SESSION_CUE_DEFAULT_VOLUME
   });
   assert.equal(SESSION_CUE_PREF_STORAGE_KEY, 'focus-tiger.session-cues.v1');
+  assert.equal(isSessionCueMasterEnabled(readSessionCuePref(createMapStorage())), false);
+});
+
+test('normalize keeps stored true; missing start/end fall back off', () => {
+  assert.deepEqual(
+    normalizeSessionCuePref({
+      sessionStartBellEnabled: true,
+      sessionEndBellEnabled: true
+    }),
+    {
+      sessionStartBellEnabled: true,
+      sessionEndBellEnabled: true,
+      sessionIntervalMs: 0,
+      focusAwarenessCardEnabled: true,
+      cueVolume: SESSION_CUE_DEFAULT_VOLUME
+    }
+  );
+  assert.deepEqual(
+    normalizeSessionCuePref({ sessionIntervalMs: SESSION_INTERVAL_MS_3MIN }),
+    {
+      sessionStartBellEnabled: false,
+      sessionEndBellEnabled: false,
+      sessionIntervalMs: SESSION_INTERVAL_MS_3MIN,
+      focusAwarenessCardEnabled: true,
+      cueVolume: SESSION_CUE_DEFAULT_VOLUME
+    }
+  );
 });
 
 test('normalize syncs start/end only; migrates old interval boolean', () => {
@@ -153,7 +186,7 @@ test('master toggle preserves interval and awareness', () => {
 
 test('SessionCueController playStart ducks ambient then unducks on ended', async () => {
   const cues = new SessionCueController({
-    storage: createMapStorage(),
+    storage: storageWithStartEndBellsEnabled(),
     startAudio: createMockAudio(),
     intervalAudio: createMockAudio(),
     endAudio: createMockAudio(),
@@ -229,6 +262,28 @@ test('tickInterval respects off / 3min / 5min', () => {
   assert.equal(played, 2);
 });
 
+test('master start/end off does not silence an enabled interval bell', () => {
+  const storage = createMapStorage();
+  writeSessionCuePrefEnabled(storage, false);
+  writeSessionIntervalMs(storage, SESSION_INTERVAL_MS_3MIN);
+  const cues = new SessionCueController({
+    storage,
+    startAudio: createMockAudio(),
+    intervalAudio: createMockAudio(),
+    endAudio: createMockAudio(),
+    mountToDocument: false
+  });
+  assert.equal(cues.playStart(), false);
+  cues.startIntervalSession();
+  assert.equal(
+    cues.tickInterval({
+      elapsedSeconds: 180,
+      targetSeconds: 600
+    }).action,
+    'play'
+  );
+});
+
 test('stopIntervalSession cancels further ticks', () => {
   const cues = new SessionCueController({
     storage: createMapStorage(),
@@ -267,7 +322,7 @@ test('sitting bells default to 25% with relative gain (not HTMLAudio 1.0)', () =
   const startAudio = createMockAudio();
   startAudio.volume = 1;
   const cues = new SessionCueController({
-    storage: createMapStorage(),
+    storage: storageWithStartEndBellsEnabled(),
     startAudio,
     intervalAudio: createMockAudio(),
     endAudio: createMockAudio(),
