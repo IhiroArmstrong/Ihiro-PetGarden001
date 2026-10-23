@@ -15,6 +15,7 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
+import { canUseAlwaysOnTop } from '../core/alwaysOnTopBridge.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
@@ -858,7 +859,8 @@ export class NarrowIdleShell {
       ).unlocked,
       contemplativeArchiveSealMenus: resolveContemplativeArchiveSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
-      ).menuEntries
+      ).menuEntries,
+      alwaysOnTopAvailable: canUseAlwaysOnTop()
     });
 
     this.listEl.innerHTML = '';

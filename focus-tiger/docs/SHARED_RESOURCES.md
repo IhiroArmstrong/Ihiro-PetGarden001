@@ -25,6 +25,7 @@
 | Key | 模块 | 谁读写 / 影响场景 |
 |---|---|---|
 
+| `userData/always-on-top.json` | `alwaysOnTopPolicy` / IPC `desktop:always-on-top-*` / `AlwaysOnTopPreferenceUI` | Electron 主窗始终在最前（**默认关**）；托盘勾选与 Preferences 玻璃卡同一状态；**不进**云端 / 练习备份；Web 无此文件 |
 | `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent；1b Remember；1c Forget；1f `rememberOptOuts[]` + suppress）；**不进**云端 6 key；**本地** Backup & restore v2 `companionFiles`；Web 无此文件 |
 | `userData/companion-l2/turns.jsonl` | `CompanionL1Runtime._appendTurnLog` · renderer `appendTurnLog` → `appendTurnLogFromRenderer`（仅 `kb_retrieval_miss` / `crisis_paraphrase_shadow`，剥原文） | Confide 调试 jsonl（**非** Personal Memory）；**不进**本地 Backup & restore v2（2026-09-19 · 见 `confide-turns-jsonl-backup-exclude.md`）；本机滚动清理（影子 7d / 生成 30d）；**不进**云端 6 key |
 | `userData/companion-l2/confide-observation.jsonl` | `confideObservationTelemetry` / IPC `desktop:confide-observation-append` | Batch 0 观察本地打点（chip tap / Share `data-source` + chip 匹配；**不含**用户自由文本）；Electron jsonl + 渲染层 `focus-tiger.confide-observation.v1` localStorage 环缓；汇总 `node scripts/dump-confide-observation.js`；**不进**云端 6 key / 练习备份 |

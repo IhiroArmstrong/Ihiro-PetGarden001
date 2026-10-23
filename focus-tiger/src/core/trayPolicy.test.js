@@ -34,5 +34,8 @@ describe('trayPolicy', () => {
     assert.equal(trayMenuLabels('zh-CN').quit, '退出');
     assert.ok(trayMenuLabels('en-US').floatingMarker);
     assert.ok(trayMenuLabels('zh-CN').hideInFullScreen);
+    assert.equal(trayMenuLabels('en-US').alwaysOnTop, 'Keep in front');
+    assert.equal(trayMenuLabels('zh-CN').alwaysOnTop, '始终在最前');
+    assert.equal(trayMenuLabels('ja').alwaysOnTop, '常に手前に表示');
   });
 });

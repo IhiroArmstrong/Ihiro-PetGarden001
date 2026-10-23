@@ -415,6 +415,25 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
+  it('includes always-on-top on wide and narrow when available', () => {
+    assert.ok(
+      !listSecondaryChromeEntries('wide-more', allOn).some(
+        (e) => e.proxy === 'always-on-top'
+      )
+    );
+    const on = { ...allOn, alwaysOnTopAvailable: true };
+    assert.ok(
+      listSecondaryChromeEntries('wide-more', on).some(
+        (e) => e.proxy === 'always-on-top'
+      )
+    );
+    assert.ok(
+      listSecondaryChromeEntries('narrow-drawer', on).some(
+        (e) => e.proxy === 'always-on-top'
+      )
+    );
+  });
+
   it('wide more includes system-tts only when systemTtsAvailable', () => {
     const off = listSecondaryChromeEntries('wide-more', allOn);
     assert.ok(!off.some((e) => e.proxy === 'system-tts'));

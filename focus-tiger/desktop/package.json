@@ -58,6 +58,7 @@
       "preload.js",
       "ipcGuard.js",
       "trayPolicy.js",
+      "alwaysOnTop/**/*.js",
       "floatingMarker/**/*.js",
       "checkoutReturnDelivery.js",
       "voiceInput/**/*.js",

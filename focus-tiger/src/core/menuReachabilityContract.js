@@ -103,6 +103,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#system-tts-preference'
   }),
+  'always-on-top': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#always-on-top-preference'
+  }),
   'today-direction': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#cold-start-goal-card'
@@ -160,6 +164,7 @@ export const PRODUCT_IDLE_MENU_VISIBILITY = Object.freeze({
   companionGeneration: false,
   mustardSeedSealUnlocked: false,
   systemTtsAvailable: false,
+  alwaysOnTopAvailable: false,
   newsletterSubmitted: false,
   scenesEntitled: false
 });

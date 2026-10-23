@@ -56,6 +56,7 @@ import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js'
  * @property {Array<{ proxy: string, labelKey: string }>} [contemplativeArchiveSealMenus]
  * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
  * @property {boolean} [systemTtsAvailable] macOS Electron wide System TTS menu row
+ * @property {boolean} [alwaysOnTopAvailable] Electron Keep-in-front preference row
  */
 
 /**
@@ -123,6 +124,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
   reminder: { handler: 'onReminder', close: true, stage: 'reminder' },
   language: { handler: 'onLanguage', close: false, stage: 'language' },
   'system-tts': { handler: 'onSystemTts', close: true, stage: 'systemTts' },
+  'always-on-top': {
+    handler: 'onAlwaysOnTop',
+    close: true,
+    stage: 'alwaysOnTop'
+  },
   'today-direction': { handler: 'onTodayDirection', close: true },
   'ground-exercise': { handler: 'onGroundExercise', close: true },
   'five-moments': { handler: 'onFiveMoments', close: true },
@@ -389,7 +395,8 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   language: 'ft-narrow-stage-language',
   localBackup: 'ft-narrow-stage-local-backup',
   quietTogether: 'ft-narrow-stage-quiet-together',
-  focusCircle: 'ft-narrow-stage-focus-circle'
+  focusCircle: 'ft-narrow-stage-focus-circle',
+  alwaysOnTop: 'ft-narrow-stage-always-on-top'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -399,6 +406,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   sound: 'ft-wide-stage-sound',
   language: 'ft-wide-stage-language',
   systemTts: 'ft-wide-stage-system-tts',
+  alwaysOnTop: 'ft-wide-stage-always-on-top',
   localBackup: 'ft-wide-stage-local-backup',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -738,6 +746,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
           proxy: 'system-tts',
           labelKey: 'system_tts.menu_label',
           testId: 'idle-system-tts'
+        }
+      : null,
+    visibility.alwaysOnTopAvailable
+      ? {
+          proxy: 'always-on-top',
+          labelKey: 'ALWAYS_ON_TOP_MENU_LABEL',
+          testId: 'idle-always-on-top'
         }
       : null,
     {
