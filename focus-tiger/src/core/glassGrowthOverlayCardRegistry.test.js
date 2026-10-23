@@ -20,7 +20,12 @@ describe('glassGrowthOverlayCardRegistry (A3)', () => {
       if (proxy === 'companion') continue;
       if (proxy === 'honesty') continue;
       if (proxy === 'sanctuary-nav') continue;
-      if (proxy === 'reminder' || proxy === 'language' || proxy === 'system-tts') {
+      if (
+        proxy === 'reminder' ||
+        proxy === 'language' ||
+        proxy === 'system-tts' ||
+        proxy === 'always-on-top'
+      ) {
         continue;
       }
       const mapped = MENU_PROXY_TO_GROWTH_OVERLAY_CARD_ID[proxy];

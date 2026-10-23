@@ -1,0 +1,32 @@
+{
+  "en": {
+    "ALWAYS_ON_TOP_MENU_LABEL": "Keep in front",
+    "ALWAYS_ON_TOP_PANEL_TITLE": "Keep in front",
+    "ALWAYS_ON_TOP_TOGGLE_LABEL": "Keep this window in front",
+    "ALWAYS_ON_TOP_TOGGLE_HINT": "The companion window stays above other apps. Off by default. Safari and the website never pin themselves.",
+    "ALWAYS_ON_TOP_STATUS_ON": "On",
+    "ALWAYS_ON_TOP_STATUS_OFF": "Off",
+    "ALWAYS_ON_TOP_SAVE_FAILED": "Could not save. Try again.",
+    "ALWAYS_ON_TOP_CLOSE": "Close"
+  },
+  "zh": {
+    "ALWAYS_ON_TOP_MENU_LABEL": "始终在最前",
+    "ALWAYS_ON_TOP_PANEL_TITLE": "始终在最前",
+    "ALWAYS_ON_TOP_TOGGLE_LABEL": "让窗口浮在其它应用上面",
+    "ALWAYS_ON_TOP_TOGGLE_HINT": "陪伴窗口会盖在别的软件上面。默认关闭。网页版不会置顶。",
+    "ALWAYS_ON_TOP_STATUS_ON": "开",
+    "ALWAYS_ON_TOP_STATUS_OFF": "关",
+    "ALWAYS_ON_TOP_SAVE_FAILED": "没能记住。请再试一次。",
+    "ALWAYS_ON_TOP_CLOSE": "关闭"
+  },
+  "ja": {
+    "ALWAYS_ON_TOP_MENU_LABEL": "常に手前に表示",
+    "ALWAYS_ON_TOP_PANEL_TITLE": "常に手前に表示",
+    "ALWAYS_ON_TOP_TOGGLE_LABEL": "この窓を他のアプリの手前に置く",
+    "ALWAYS_ON_TOP_TOGGLE_HINT": "伴走ウィンドウが他のアプリの上に残ります。既定はオフ。ウェブサイトでは使いません。",
+    "ALWAYS_ON_TOP_STATUS_ON": "オン",
+    "ALWAYS_ON_TOP_STATUS_OFF": "オフ",
+    "ALWAYS_ON_TOP_SAVE_FAILED": "保存できませんでした。もう一度試してください。",
+    "ALWAYS_ON_TOP_CLOSE": "閉じる"
+  }
+}

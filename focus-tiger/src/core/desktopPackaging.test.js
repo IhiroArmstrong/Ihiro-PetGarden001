@@ -76,6 +76,7 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.ok(desktopPkg.build.files.includes('trayPolicy.js'));
     assert.ok(desktopPkg.build.files.includes('checkoutReturnDelivery.js'));
     assert.ok(desktopPkg.build.files.includes('floatingMarker/**/*.js'));
+    assert.ok(desktopPkg.build.files.includes('alwaysOnTop/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('native/**/*.swift'));
   });
 
@@ -88,12 +89,17 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:show/);
     assert.match(preload, /desktop:shell-visibility/);
     assert.match(preload, /desktop:open-preferences/);
+    assert.match(preload, /desktop:always-on-top-get/);
+    assert.match(preload, /desktop:always-on-top-set/);
   });
 
   it('macOS Application menu wires Cmd+, to open Preferences', () => {
     assert.match(mainSrc, /installMacApplicationMenu/);
     assert.match(mainSrc, /accelerator:\s*['"]Cmd\+,['"]/);
     assert.match(mainSrc, /desktop:open-preferences/);
+    assert.match(mainSrc, /desktop:always-on-top-get/);
+    assert.match(mainSrc, /desktop:always-on-top-set/);
+    assert.match(mainSrc, /setAlwaysOnTop/);
   });
 
   it('preload is CommonJS so sandboxed Electron can parse it as a script', () => {

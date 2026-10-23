@@ -44,6 +44,10 @@ import { attachDesktopUpdaterIpc } from './updater/updaterIpc.js';
 import { attachVoiceInputIpc } from './voiceInput/voiceInputIpc.js';
 import { attachSystemTtsIpc } from './systemTts/systemTtsIpc.js';
 import { createFloatingMarkerRuntime } from './floatingMarker/floatingMarkerNative.js';
+import {
+  loadAlwaysOnTopPrefs,
+  saveAlwaysOnTopPrefs
+} from './alwaysOnTop/alwaysOnTopPolicy.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -76,6 +80,7 @@ let updaterRuntime = null;
 let tray = null;
 /** @type {ReturnType<typeof createFloatingMarkerRuntime> | null} */
 let floatingMarkerRuntime = null;
+let alwaysOnTopEnabled = false;
 let isQuitting = false;
 let shellHidden = false;
 let shellHideReason = HIDE_REASON_NONE;
@@ -367,6 +372,19 @@ function installMacApplicationMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
+function applyAlwaysOnTop(win = mainWindow) {
+  if (!win || win.isDestroyed()) return;
+  win.setAlwaysOnTop(alwaysOnTopEnabled, 'floating');
+}
+
+function persistAlwaysOnTop(enabled) {
+  alwaysOnTopEnabled = Boolean(enabled);
+  saveAlwaysOnTopPrefs(app.getPath('userData'), { enabled: alwaysOnTopEnabled });
+  applyAlwaysOnTop();
+  applyTrayMenu();
+  return alwaysOnTopEnabled;
+}
+
 function applyTrayMenu() {
   if (!tray) return;
   const labels = trayMenuLabels(app.getLocale());
@@ -375,7 +393,17 @@ function applyTrayMenu() {
     hideInFullScreen: true
   };
   /** @type {import('electron').MenuItemConstructorOptions[]} */
-  const items = [{ label: labels.show, click: () => showMainWindow() }];
+  const items = [
+    { label: labels.show, click: () => showMainWindow() },
+    {
+      label: labels.alwaysOnTop,
+      type: 'checkbox',
+      checked: alwaysOnTopEnabled,
+      click: (item) => {
+        persistAlwaysOnTop(item.checked);
+      }
+    }
+  ];
   if (process.platform === 'darwin' && floatingMarkerRuntime) {
     items.push(
       { type: 'separator' },
@@ -438,6 +466,7 @@ function createMainWindow() {
   win.once('ready-to-show', () => {
     shellHidden = false;
     shellHideReason = HIDE_REASON_NONE;
+    applyAlwaysOnTop(win);
     win.show();
     notifyShellVisibility(win);
   });
@@ -542,6 +571,10 @@ if (gotSingleInstanceLock) {
     showMainWindow();
     return visibilityPayload();
   });
+  ipcMain.handle('desktop:always-on-top-get', () => alwaysOnTopEnabled);
+  ipcMain.handle('desktop:always-on-top-set', (_event, enabled) =>
+    persistAlwaysOnTop(enabled)
+  );
   ipcMain.handle('desktop:shell-visibility-get', () => visibilityPayload());
 
   ipcMain.on('desktop:voice-input-probe-allowed', (event) => {
@@ -641,6 +674,7 @@ if (gotSingleInstanceLock) {
     isDevMode
   });
 
+  alwaysOnTopEnabled = loadAlwaysOnTopPrefs(app.getPath('userData')).enabled;
   installMacApplicationMenu();
   floatingMarkerRuntime = createFloatingMarkerRuntime({
     userDataDir: app.getPath('userData'),

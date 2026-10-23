@@ -151,6 +151,7 @@ import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFr
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
+import { AlwaysOnTopPreferenceUI } from './ui/AlwaysOnTopPreferenceUI.js';
 import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
@@ -1152,6 +1153,8 @@ async function init() {
   let languagePreferenceUI = null;
   /** @type {SystemTtsPreferenceUI | null} */
   let systemTtsPreferenceUI = null;
+  /** @type {AlwaysOnTopPreferenceUI | null} */
+  let alwaysOnTopPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -1444,6 +1447,13 @@ async function init() {
     }
   });
   window.__systemTtsPreference = systemTtsPreferenceUI;
+  alwaysOnTopPreferenceUI = new AlwaysOnTopPreferenceUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-always-on-top');
+      document.body.classList.remove('ft-narrow-stage-always-on-top');
+    }
+  });
+  window.__alwaysOnTopPreference = alwaysOnTopPreferenceUI;
   const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-local-backup');
@@ -3951,6 +3961,9 @@ async function init() {
     onSystemTts: () => {
       systemTtsPreferenceUI?.openPanel();
     },
+    onAlwaysOnTop: () => {
+      alwaysOnTopPreferenceUI?.openPanel();
+    },
     onTodayDirection: () => {
       openTodayDirectionManual();
     },
@@ -4083,6 +4096,7 @@ async function init() {
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
       systemTtsPreferenceUI?.closePanel();
+      alwaysOnTopPreferenceUI?.closePanel();
       localPracticeDataPanelUI.closePanel();
       quietTogetherPanelUI.closePanel();
       focusCirclePanelUI.closePanel();

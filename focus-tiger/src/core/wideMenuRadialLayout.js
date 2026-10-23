@@ -149,6 +149,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   reminder: 'MENU_GROUP_PREFERENCES',
   language: 'MENU_GROUP_PREFERENCES',
   'system-tts': 'MENU_GROUP_PREFERENCES',
+  'always-on-top': 'MENU_GROUP_PREFERENCES',
   'today-direction': 'MENU_GROUP_PREFERENCES',
   newsletter: 'MENU_GROUP_PREFERENCES',
   account: 'MENU_GROUP_PREFERENCES',
