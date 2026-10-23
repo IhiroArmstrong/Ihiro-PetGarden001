@@ -35,6 +35,8 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   ...QUEUE_GOVERNANCE_HOTSPOTS,
   'focus-tiger/docs/GLOSSARY_CHANGELOG.md',
   'focus-tiger/docs/SCHEDULING_CHANGELOG.md',
+  // docs:check rewrites the snapshot date on the calendar day of the commit
+  'focus-tiger/docs/kb-live-gap-audit.md',
   'focus-tiger/docs/queue-governance-readme.md',
   'focus-tiger/docs/CONFIDE_WORKING_AGREEMENT.md',
   'focus-tiger/scripts/check-queue-governance-docs.js',

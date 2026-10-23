@@ -25,6 +25,7 @@
 ## 治理 PR（允许改热点）
 
 - **仅**改热点 + 本 readme + changelog + 相关规则/脚本/WORKFLOW 的 PR 可以通过 `queue:check`。  
+- `docs:check` 会按当天日期重写 [`kb-live-gap-audit.md`](./kb-live-gap-audit.md) 机器块日期；该文件允许与治理 PR 同批，避免挡队列更新。  
 - 合并前：`git fetch origin develop && git merge origin/develop`，一次性对齐语义（T 已合 / 立即做 / 旁支保留行）。  
 - 队列行：**先改 `SCHEDULING_GLOSSARY.md` §1**，再在同 PR 同步 `GLOSSARY.md`「当前任务」表（含风险列）。
 - **电脑版十二条对照**（`GLOSSARY.md` 专节，对照号 1–12）：只许改状态 / 执行序附注，**禁止删行或把 12 行缩成更少**。T38–T49 对应该 12 行。

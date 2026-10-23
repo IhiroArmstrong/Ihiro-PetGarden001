@@ -55,4 +55,11 @@ describe('isQueueGovernanceCoPrAllowed', () => {
       true
     );
   });
+
+  it('allows kb-live-gap machine block rewritten by docs:check', () => {
+    assert.equal(
+      isQueueGovernanceCoPrAllowed('focus-tiger/docs/kb-live-gap-audit.md'),
+      true
+    );
+  });
 });
