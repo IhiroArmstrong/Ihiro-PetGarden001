@@ -1,0 +1,17 @@
+{
+  "en": {
+    "HELP_CENTER_OPERATING_CONFIRM": "Yes",
+    "HELP_CENTER_OPERATING_CANCEL": "Cancel",
+    "HELP_CENTER_OPERATING_FORGET_CONFIRM": "Yes, forget everything"
+  },
+  "zh": {
+    "HELP_CENTER_OPERATING_CONFIRM": "确认",
+    "HELP_CENTER_OPERATING_CANCEL": "取消",
+    "HELP_CENTER_OPERATING_FORGET_CONFIRM": "确认忘掉全部"
+  },
+  "ja": {
+    "HELP_CENTER_OPERATING_CONFIRM": "はい",
+    "HELP_CENTER_OPERATING_CANCEL": "キャンセル",
+    "HELP_CENTER_OPERATING_FORGET_CONFIRM": "すべて忘れる"
+  }
+}

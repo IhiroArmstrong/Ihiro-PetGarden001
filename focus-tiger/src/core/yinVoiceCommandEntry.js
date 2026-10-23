@@ -39,6 +39,73 @@ const ADDRESS_RE =
   /^(?:hi|hey|ok) yin\b\s*(?:please|can you|could you)\b\s*(.*)$/;
 
 /**
+ * Closed S2 set shared by T10 (after address) and Help Center (optional address).
+ * Do not add Help Center-only verbs here.
+ * @param {string} rest already passed through normalizeYinVoiceUtterance
+ * @returns {{ command: string, tier: 'A' | 'B' | 'C', execute: boolean, targetLocale?: string | null } | null}
+ */
+export function matchClosedOperatingCommand(rest) {
+  const text = String(rest || '');
+  if (!text) return null;
+  if (/\bforget everything\b/.test(text) || /\bforget all\b/.test(text)) {
+    return { command: 'forget_all', tier: 'C', execute: false };
+  }
+  if (/\bbackup\b/.test(text) || /\bback up\b/.test(text)) {
+    return { command: 'backup', tier: 'B', execute: false };
+  }
+  if (/\bjourney log\b/.test(text)) {
+    return { command: 'open_journey_log', tier: 'A', execute: true };
+  }
+  if (
+    /\b(?:switch|change)\b/.test(text) &&
+    /\b(?:back\s+to|to)\s+english\b/.test(text)
+  ) {
+    return {
+      command: 'switch_language',
+      tier: 'A',
+      execute: true,
+      targetLocale: 'en'
+    };
+  }
+  if (/\b(?:switch|change)\b/.test(text) && /\blanguage\b/.test(text)) {
+    return {
+      command: 'switch_language',
+      tier: 'A',
+      execute: true,
+      targetLocale: null
+    };
+  }
+  return null;
+}
+
+/**
+ * Help Center ask box: same closed set, address optional. Safety still first.
+ * Question-shaped asks are filtered by Help Center policy before this runs.
+ * @param {unknown} rawTranscript
+ */
+export function classifyHelpCenterOperatingCommand(rawTranscript) {
+  const raw = String(rawTranscript ?? '');
+  const display = applyVoiceProductLexicon(raw);
+  if (matchesSafetyRedirect(raw) || isConfideBoundaryIntent(raw)) {
+    return {
+      channel: 'safety',
+      reason: 'safety_first',
+      execute: false,
+      raw,
+      display
+    };
+  }
+  const normalized = normalizeYinVoiceUtterance(raw);
+  const address = normalized.match(ADDRESS_RE);
+  const rest = address ? address[1] || '' : normalized;
+  const hit = matchClosedOperatingCommand(rest);
+  if (!hit) {
+    return { channel: 'ask_search', raw, display };
+  }
+  return { channel: 'command', ...hit, raw, display };
+}
+
+/**
  * @param {unknown} rawTranscript
  * @param {{ enabled?: boolean }} [opts]
  */
@@ -59,60 +126,9 @@ export function classifyYinVoiceEntry(rawTranscript, { enabled = true } = {}) {
   }
 
   const rest = address[1] || '';
-  if (/\bforget everything\b/.test(rest) || /\bforget all\b/.test(rest)) {
-    return {
-      channel: 'command',
-      command: 'forget_all',
-      tier: 'C',
-      execute: false,
-      raw,
-      display
-    };
-  }
-  if (/\bbackup\b/.test(rest) || /\bback up\b/.test(rest)) {
-    return {
-      channel: 'command',
-      command: 'backup',
-      tier: 'B',
-      execute: false,
-      raw,
-      display
-    };
-  }
-  if (/\bjourney log\b/.test(rest)) {
-    return {
-      channel: 'command',
-      command: 'open_journey_log',
-      tier: 'A',
-      execute: true,
-      raw,
-      display
-    };
-  }
-  if (
-    /\b(?:switch|change)\b/.test(rest) &&
-    /\b(?:back\s+to|to)\s+english\b/.test(rest)
-  ) {
-    return {
-      channel: 'command',
-      command: 'switch_language',
-      tier: 'A',
-      execute: true,
-      targetLocale: 'en',
-      raw,
-      display
-    };
-  }
-  if (/\b(?:switch|change)\b/.test(rest) && /\blanguage\b/.test(rest)) {
-    return {
-      channel: 'command',
-      command: 'switch_language',
-      tier: 'A',
-      execute: true,
-      targetLocale: null,
-      raw,
-      display
-    };
+  const hit = matchClosedOperatingCommand(rest);
+  if (hit) {
+    return { channel: 'command', ...hit, raw, display };
   }
   return {
     channel: 'confide',

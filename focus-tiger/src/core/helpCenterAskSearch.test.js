@@ -16,11 +16,38 @@ test('normalizeHelpCenterAskText keeps spaced compounds; matcher joins adjacent 
   assert.equal(normalizeHelpCenterAskText('Back up now'), 'back up now');
 });
 
-test('imperative backup phrase is imperative-shaped, not executed on submit', () => {
+test('imperative backup phrase is B-tier confirm, not silent execute, not search', () => {
   assert.equal(isHelpCenterAskImperativeShape('Back up now'), true);
   const policy = resolveHelpCenterAskSubmitPolicy('Back up now');
+  assert.equal(policy.shouldExecute, true);
+  assert.equal(policy.shouldSearch, false);
+  assert.equal(policy.reason, 'command');
+  assert.equal(policy.decision?.command, 'backup');
+  assert.equal(policy.decision?.tier, 'B');
+  assert.equal(policy.decision?.execute, false);
+});
+
+test('address-latch backup in Help Center uses the same closed set', () => {
+  const policy = resolveHelpCenterAskSubmitPolicy(
+    'Hi Yin, please backup all the app data for me.'
+  );
+  assert.equal(policy.shouldExecute, true);
+  assert.equal(policy.decision?.command, 'backup');
+  assert.equal(policy.decision?.tier, 'B');
+});
+
+test('question-shaped backup ask still searches and does not operate', () => {
+  const policy = resolveHelpCenterAskSubmitPolicy('How do I back up my data?');
   assert.equal(policy.shouldExecute, false);
   assert.equal(policy.shouldSearch, true);
+  assert.equal(policy.reason, 'question');
+});
+
+test('crisis text in the ask box never starts backup', () => {
+  const policy = resolveHelpCenterAskSubmitPolicy('I want to kill myself');
+  assert.equal(policy.shouldExecute, false);
+  assert.equal(policy.shouldSearch, false);
+  assert.equal(policy.reason, 'safety');
 });
 
 test('question-shaped backup ask lists backup article without embedding', () => {
@@ -48,7 +75,9 @@ test('unrelated gibberish returns empty ask results', () => {
   assert.deepEqual(result.articleIds, []);
 });
 
-test('focus start imperative does not imply execution from Help Center policy', () => {
+test('focus start imperative is outside the closed S2 set so Help Center only searches', () => {
   assert.equal(isHelpCenterAskImperativeShape('Start a 25-minute focus'), true);
-  assert.equal(resolveHelpCenterAskSubmitPolicy('Start a 25-minute focus').shouldExecute, false);
+  const policy = resolveHelpCenterAskSubmitPolicy('Start a 25-minute focus');
+  assert.equal(policy.shouldExecute, false);
+  assert.equal(policy.shouldSearch, true);
 });

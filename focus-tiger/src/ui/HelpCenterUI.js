@@ -8,16 +8,32 @@
  * the question mark itself stays the purpose card).
  * Brief: docs/task-briefs/task-user-help-center.md
  *        docs/task-briefs/task-help-center-beside-question.md
+ *        docs/task-briefs/task-help-center-operating-commands.md
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { getLocale, setLocale, t, onLocaleChange } from '../locales/i18n.js';
+import { listPickerLocales } from '../locales/localePreference.js';
 import {
   HELP_CENTER_SECTIONS,
   findHelpCenterArticle,
   listHelpCenterArticlesForSection
 } from '../core/helpCenterCatalog.js';
-import { searchHelpCenterAskCards } from '../core/helpCenterAskSearch.js';
+import {
+  resolveHelpCenterAskSubmitPolicy,
+  searchHelpCenterAskCards
+} from '../core/helpCenterAskSearch.js';
 import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
+import { downloadPracticeExport } from '../core/practiceBackup/practiceBackupLocalIo.js';
+import {
+  classifyYinVoiceConfirmReply,
+  nextPickerLocaleId
+} from '../core/yinVoiceCommandEntry.js';
+import { runYinVoiceCommand } from '../core/yinVoiceCommandRunner.js';
+import {
+  getSystemTtsBridge,
+  mapLocaleToTtsLocale,
+  speakSystemTts
+} from '../core/systemTtsBridge.js';
 import { VoiceInputChrome } from './VoiceInputChrome.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
@@ -133,10 +149,44 @@ export class HelpCenterUI {
     this.askResultsEl.dataset.testid = 'help-center-ask-results';
     this.askResultsEl.hidden = true;
 
+    this.operatingEl = document.createElement('div');
+    this.operatingEl.className = 'help-center__operating';
+    this.operatingEl.dataset.testid = 'help-center-operating';
+    this.operatingEl.hidden = true;
+
+    this.operatingLineEl = document.createElement('p');
+    this.operatingLineEl.className = 'help-center__operating-line';
+    this.operatingLineEl.dataset.testid = 'help-center-operating-line';
+
+    this.operatingActionsEl = document.createElement('div');
+    this.operatingActionsEl.className = 'help-center__operating-actions';
+
+    this.operatingConfirmBtn = document.createElement('button');
+    this.operatingConfirmBtn.type = 'button';
+    this.operatingConfirmBtn.className = 'help-center__operating-confirm';
+    this.operatingConfirmBtn.dataset.testid = 'help-center-operating-confirm';
+    this.operatingConfirmBtn.addEventListener('click', () => {
+      this.operatingActionsEl.hidden = true;
+      this._resolveOperatingListen(this._operatingConfirmTranscript());
+    });
+
+    this.operatingCancelBtn = document.createElement('button');
+    this.operatingCancelBtn.type = 'button';
+    this.operatingCancelBtn.className = 'help-center__operating-cancel';
+    this.operatingCancelBtn.dataset.testid = 'help-center-operating-cancel';
+    this.operatingCancelBtn.addEventListener('click', () => {
+      this.operatingActionsEl.hidden = true;
+      this._resolveOperatingListen('cancel');
+    });
+
+    this.operatingActionsEl.append(this.operatingConfirmBtn, this.operatingCancelBtn);
+    this.operatingEl.append(this.operatingLineEl, this.operatingActionsEl);
+
     this.askSection.append(
       this.askLabelEl,
       this.askRow,
       this.askStatusEl,
+      this.operatingEl,
       this.askResultsEl
     );
 
@@ -189,6 +239,17 @@ export class HelpCenterUI {
     this._askResultArticleIds = [];
     this._askSearching = false;
     this._askSubmitEpoch = 0;
+    this._operatingEpoch = 0;
+    /** @type {object | null} */
+    this._operatingDecision = null;
+    /** @type {((transcript: string) => void) | null} */
+    this._operatingListenResolve = null;
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    this._operatingListenTimer = null;
+    /** @type {string | null} */
+    this._operatingPendingReply = null;
+    /** @type {(() => void) | null} */
+    this._operatingSpeakWaitResolve = null;
 
     mountRoot.append(this.root);
     this._localeOff = onLocaleChange(() => {
@@ -226,6 +287,7 @@ export class HelpCenterUI {
 
   close() {
     if (!this._open) return;
+    this._cancelOperatingListen('cancel');
     this._open = false;
     this._activeArticleId = null;
     this.root.hidden = true;
@@ -295,12 +357,40 @@ export class HelpCenterUI {
 
   async _submitAsk() {
     const text = String(this.askInput.value || '').trim();
+    if (this._operatingListenResolve) {
+      const replyKind = classifyYinVoiceConfirmReply(text);
+      if (text && replyKind !== 'empty') {
+        this._resolveOperatingListen(text);
+        this.askInput.value = '';
+        return;
+      }
+    }
     if (!text) {
       this._askResultArticleIds = [];
+      this._hideOperatingPanel();
       this._renderAskResults();
       return;
     }
+    const policy = resolveHelpCenterAskSubmitPolicy(text);
+    if (policy.reason === 'safety') {
+      this._askResultArticleIds = [];
+      this._hideOperatingPanel();
+      this._askSearching = false;
+      this._syncAskStatus();
+      this._renderAskResults(true);
+      return;
+    }
+    if (policy.shouldExecute && policy.decision) {
+      this._askSearching = false;
+      this._askResultArticleIds = [];
+      this._renderAskResults();
+      this._syncAskStatus();
+      await this._runOperatingCommand(policy.decision);
+      return;
+    }
+
     const epoch = ++this._askSubmitEpoch;
+    this._hideOperatingPanel();
     this._askSearching = true;
     this._syncAskStatus();
     const embed = await this._fetchAskEmbeddingGate(text);
@@ -310,6 +400,176 @@ export class HelpCenterUI {
     this._askSearching = false;
     this._syncAskStatus();
     this._renderAskResults(result.empty);
+  }
+
+  _operatingConfirmTranscript() {
+    return this._operatingDecision?.command === 'forget_all'
+      ? 'Yes, forget everything'
+      : 'yes';
+  }
+
+  _hideOperatingPanel() {
+    this.operatingEl.hidden = true;
+    this.operatingLineEl.textContent = '';
+    this.operatingActionsEl.hidden = true;
+  }
+
+  _syncOperatingLabels() {
+    const forget = this._operatingDecision?.command === 'forget_all';
+    this.operatingConfirmBtn.textContent = forget
+      ? t('HELP_CENTER_OPERATING_FORGET_CONFIRM')
+      : t('HELP_CENTER_OPERATING_CONFIRM');
+    this.operatingCancelBtn.textContent = t('HELP_CENTER_OPERATING_CANCEL');
+  }
+
+  /**
+   * @param {string} transcript
+   */
+  _resolveOperatingListen(transcript) {
+    const said = String(transcript || '');
+    this._operatingPendingReply = said;
+    if (this._operatingSpeakWaitResolve) {
+      const finishSpeak = this._operatingSpeakWaitResolve;
+      this._operatingSpeakWaitResolve = null;
+      finishSpeak();
+    }
+    if (!this._operatingListenResolve) return;
+    const resolve = this._operatingListenResolve;
+    this._operatingListenResolve = null;
+    if (this._operatingListenTimer) {
+      clearTimeout(this._operatingListenTimer);
+      this._operatingListenTimer = null;
+    }
+    this._operatingPendingReply = null;
+    resolve(said);
+  }
+
+  /**
+   * @param {string} transcript
+   */
+  _cancelOperatingListen(transcript) {
+    this._operatingEpoch += 1;
+    this._resolveOperatingListen(transcript);
+    this._operatingDecision = null;
+    this._hideOperatingPanel();
+  }
+
+  /**
+   * @param {object} decision
+   */
+  async _runOperatingCommand(decision) {
+    const epoch = ++this._operatingEpoch;
+    this._operatingPendingReply = null;
+    this._operatingDecision = decision;
+    this._syncOperatingLabels();
+    await runYinVoiceCommand(decision, {
+      show: (userText, sayKey) => {
+        if (epoch !== this._operatingEpoch || !this._open) return;
+        this._showOperatingLine(sayKey);
+      },
+      speakAndWait: (sayKey) => this._speakOperatingAndWait(sayKey),
+      listen: (ms) => this._listenOperating(ms, epoch),
+      writeBackup: () =>
+        this.handlers.writeBackup
+          ? this.handlers.writeBackup()
+          : downloadPracticeExport(
+              typeof localStorage !== 'undefined' ? localStorage : null
+            ),
+      openJourney: () => this.handlers.onOpenJourneyLog?.(),
+      closeJourney: () => this.handlers.onCloseJourneyLog?.(),
+      switchLanguage: (targetLocale) => this._switchOperatingLanguage(targetLocale)
+    });
+  }
+
+  /**
+   * @param {string} sayKey
+   */
+  _showOperatingLine(sayKey) {
+    this.operatingEl.hidden = false;
+    this.operatingLineEl.textContent = t(sayKey);
+    this.operatingLineEl.dataset.lineId = sayKey;
+    const waiting =
+      sayKey === 'YIN_VOICE_BACKUP_RECAP' ||
+      sayKey === 'YIN_VOICE_FORGET_RECAP' ||
+      sayKey === 'YIN_VOICE_JOURNEY_OPENED' ||
+      sayKey === 'YIN_VOICE_LANGUAGE_SWITCHED';
+    this.operatingActionsEl.hidden = !waiting;
+    this.operatingConfirmBtn.hidden =
+      sayKey === 'YIN_VOICE_JOURNEY_OPENED' ||
+      sayKey === 'YIN_VOICE_LANGUAGE_SWITCHED';
+    this._syncOperatingLabels();
+  }
+
+  /**
+   * @param {string} sayKey
+   * @returns {Promise<boolean>}
+   */
+  async _speakOperatingAndWait(sayKey) {
+    const line = t(sayKey);
+    const spoke = speakSystemTts({
+      text: line,
+      locale: mapLocaleToTtsLocale(getLocale())
+    });
+    if (!spoke) return true;
+    const bridge = getSystemTtsBridge();
+    if (!bridge || typeof bridge.onStatus !== 'function') return true;
+    return new Promise((resolve) => {
+      let settled = false;
+      let sawSpeaking = false;
+      let unsub = () => {};
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        this._operatingSpeakWaitResolve = null;
+        clearTimeout(timer);
+        unsub();
+        resolve(true);
+      };
+      const timer = setTimeout(finish, 20_000);
+      this._operatingSpeakWaitResolve = finish;
+      unsub = bridge.onStatus((payload) => {
+        const status = payload && payload.status;
+        if (status === 'speaking') sawSpeaking = true;
+        if (sawSpeaking && (status === 'done' || status === 'error')) finish();
+      });
+    });
+  }
+
+  /**
+   * @param {number} ms
+   * @param {number} epoch
+   * @returns {Promise<string>}
+   */
+  _listenOperating(ms, epoch) {
+    if (epoch !== this._operatingEpoch || !this._open) return Promise.resolve('');
+    if (this._operatingPendingReply != null) {
+      const pending = this._operatingPendingReply;
+      this._operatingPendingReply = null;
+      return Promise.resolve(pending);
+    }
+    return new Promise((resolve) => {
+      this._operatingListenResolve = (transcript) => resolve(transcript);
+      this._operatingListenTimer = setTimeout(() => {
+        this._resolveOperatingListen('');
+      }, ms);
+    });
+  }
+
+  /**
+   * @param {string | null} targetLocale
+   */
+  _switchOperatingLanguage(targetLocale) {
+    const ids = listPickerLocales().map((opt) => opt.id);
+    const previous = getLocale();
+    const requested =
+      targetLocale && ids.includes(targetLocale) ? targetLocale : null;
+    const next = requested || nextPickerLocaleId(previous, ids);
+    if (!next || next === previous) return { changed: false, undo() {} };
+    setLocale(next, { persist: true });
+    return {
+      changed: true,
+      undo: () => setLocale(previous, { persist: true })
+    };
   }
 
   /**
@@ -378,6 +638,7 @@ export class HelpCenterUI {
     this.askInput.placeholder = t('HELP_CENTER_ASK_PLACEHOLDER');
     this.askSubmitBtn.textContent = t('HELP_CENTER_ASK_SUBMIT');
     this.askSubmitBtn.setAttribute('aria-label', t('HELP_CENTER_ASK_SUBMIT_ARIA'));
+    this._syncOperatingLabels();
     this._syncAskStatus();
     this.introEl.hidden = false;
     this.introEl.textContent = t('HELP_CENTER_INTRO');
@@ -524,11 +785,35 @@ export class HelpCenterUI {
       }
       .help-center__ask-status,
       .help-center__ask-empty,
-      .help-center__ask-results-label {
+      .help-center__ask-results-label,
+      .help-center__operating-line {
         margin: 10px 0 0;
         font-size: 0.82rem;
         line-height: 1.45;
         opacity: 0.9;
+      }
+      .help-center__operating-actions {
+        display: flex;
+        gap: 8px;
+        margin: 8px 0 0;
+      }
+      .help-center__operating-actions[hidden] {
+        display: none;
+      }
+      .help-center__operating-confirm,
+      .help-center__operating-cancel {
+        border: ${GLASS_BORDER};
+        background: ${GLASS_FILL_STRONG};
+        border-radius: 10px;
+        padding: 8px 12px;
+        font: inherit;
+        font-size: 0.86rem;
+        cursor: pointer;
+        color: inherit;
+      }
+      .help-center__operating-confirm:active,
+      .help-center__operating-cancel:active {
+        transform: scale(0.98);
       }
       .help-center__ask-list {
         list-style: none;

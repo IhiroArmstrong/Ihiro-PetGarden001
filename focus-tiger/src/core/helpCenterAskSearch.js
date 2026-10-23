@@ -4,8 +4,9 @@
  */
 
 /**
- * Help Center ask-cards retrieval (T22). Retrieve-and-list only — never executes T10 commands.
- * SSOT: docs/task-briefs/task-confide-product-ask-entry-split.md
+ * Help Center ask-cards retrieval (T22) plus T34 submit priority:
+ * safety → closed operating set → else retrieve-and-list.
+ * SSOT: docs/task-briefs/task-help-center-operating-commands.md
  */
 
 import { HELP_CENTER_ARTICLES } from './helpCenterCatalog.js';
@@ -18,6 +19,7 @@ import {
 } from './confide/confideProductKnowledge.js';
 import { isConfideOperationalProductAskShape } from './confide/confideProductKnowledgeSemantic.js';
 import { resolveVoiceCommandOutcome } from './voiceCommandOutcome.js';
+import { classifyHelpCenterOperatingCommand } from './yinVoiceCommandEntry.js';
 
 export const HELP_CENTER_ASK_MAX_CARDS = 3;
 
@@ -78,15 +80,56 @@ export function isHelpCenterAskImperativeShape(text) {
 }
 
 /**
- * T22 hard rule: Help Center ask never runs voice-command execution.
+ * Help Center submit: safety and questions never operate; closed-set
+ * imperatives take T10 confirm (never silent write); else T22 search.
  * @param {string} text
- * @returns {{ shouldExecute: false, shouldSearch: boolean }}
+ * @returns {{
+ *   shouldExecute: boolean,
+ *   shouldSearch: boolean,
+ *   reason: 'empty' | 'safety' | 'question' | 'command' | 'search',
+ *   decision: object | null
+ * }}
  */
 export function resolveHelpCenterAskSubmitPolicy(text) {
-  const raw = normalizeHelpCenterAskText(text);
+  const raw = String(text || '').trim();
+  if (!raw) {
+    return {
+      shouldExecute: false,
+      shouldSearch: false,
+      reason: 'empty',
+      decision: null
+    };
+  }
+  const operating = classifyHelpCenterOperatingCommand(raw);
+  if (operating.channel === 'safety') {
+    return {
+      shouldExecute: false,
+      shouldSearch: false,
+      reason: 'safety',
+      decision: operating
+    };
+  }
+  if (isHelpCenterAskQuestionShape(raw)) {
+    return {
+      shouldExecute: false,
+      shouldSearch: true,
+      reason: 'question',
+      decision: null
+    };
+  }
+  if (operating.channel === 'command') {
+    return {
+      shouldExecute: true,
+      shouldSearch: false,
+      reason: 'command',
+      decision: operating
+    };
+  }
   return {
     shouldExecute: false,
-    shouldSearch: raw.length > 0
+    shouldSearch: true,
+    reason: 'search',
+    decision: null
   };
 }
 

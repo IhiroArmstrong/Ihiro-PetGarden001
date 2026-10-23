@@ -94,6 +94,8 @@
 - [ ] `npm run test:smoke` + 付款契约（若动共享层）  
 - [ ] CONFIDE_NOW 放行清单 **T34** 可勾  
 
+手测句（英文先行，不进黄金脚本 60 句表）：`How do I back up my data?` 列卡不写盘；`Hi Yin, please backup all the app data for me.` / `Back up now` B 档确认后才备份；危机句进框 0 次备份。  
+
 ---
 
 ## 八、口令

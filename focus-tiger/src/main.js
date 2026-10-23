@@ -1508,6 +1508,12 @@ async function init() {
       },
       onClose: () => {
         window.__onboardingHints?.unpinHelpChromeAboveOverlay?.();
+      },
+      onOpenJourneyLog: () => {
+        journeyLogUI.open();
+      },
+      onCloseJourneyLog: () => {
+        journeyLogUI.close();
       }
     })
   );
