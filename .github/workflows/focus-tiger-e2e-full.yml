@@ -61,8 +61,10 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install chromium --with-deps
 
-      # Guard + shard. CI-full config: junit + no HTML + retain-on-failure traces only.
+      # Guard + shard. CI-full config: junit + no HTML + traces only.
       # --workers=1: avoid dual Chromium goto storms on ubuntu-latest.
+      # Search job log for FT_E2E_OPEN_METRICS / FT_E2E_RETRY_SUMMARY
+      # (once-pass vs retry-pass vs hard-fail; job green ≠ healthy).
       - name: Full Playwright e2e (shard)
         run: >
           node scripts/e2e-ci-guard.js full &&

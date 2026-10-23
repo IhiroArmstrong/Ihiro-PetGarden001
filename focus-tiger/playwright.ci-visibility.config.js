@@ -24,7 +24,8 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['github'],
-    ['junit', { outputFile: `test-results/junit-visibility-${specSlug}.xml` }]
+    ['junit', { outputFile: `test-results/junit-visibility-${specSlug}.xml` }],
+    ['./e2e/helpers/open-shell-retry-reporter.js']
   ],
   use: {
     ...base.use,
