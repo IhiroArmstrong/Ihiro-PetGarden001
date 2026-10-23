@@ -372,6 +372,10 @@ import {
   ACTIVE_RECOVER_COOLDOWN_MS
 } from './core/MindfulReminderController.js';
 import { AttentionSignals } from './input/AttentionSignals.js';
+import {
+  SessionPresenceCollector,
+  snapshotFocusSessionForPresence
+} from './core/sessionPresenceSummary.js';
 import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime } from './core/desktopShell.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import { bindDesktopPreferencesShortcut } from './core/desktopPreferencesShortcut.js';
@@ -1215,11 +1219,20 @@ async function init() {
     }
   );
   window.__activeRecoverAnchor = activeRecoverAnchor;
+  const sessionPresenceCollector = new SessionPresenceCollector();
   const attentionSignals = new AttentionSignals({
-    onAway: () => mindfulReminderController.setAttentionAway(true),
-    onResume: () => mindfulReminderController.setAttentionAway(false),
-    onReturn: (event) =>
-      mindfulReminderController.handleAttentionReturn(event)
+    onAway: () => {
+      mindfulReminderController.setAttentionAway(true);
+      sessionPresenceCollector.noteAwayStart();
+    },
+    onResume: () => {
+      mindfulReminderController.setAttentionAway(false);
+      sessionPresenceCollector.noteAwayResume();
+    },
+    onReturn: (event) => {
+      sessionPresenceCollector.noteLeave(event?.durationMs);
+      mindfulReminderController.handleAttentionReturn(event);
+    }
   });
   attentionSignals.bind();
   bindDesktopShellAttention(attentionSignals);
@@ -4863,6 +4876,7 @@ async function init() {
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     bootSessionChrome.postChooseChrome.pending = false;
     focusSession.start({ companionMode });
+    sessionPresenceCollector.begin();
     bootAmbientHints.onboardingHints?.markSeen('sit-button');
     bootAmbientHints.onboardingHints?.markSeen('how-shall-we-sit');
     bootAmbientHints.onboardingHints?.markSeen('companion-mode');
@@ -5107,6 +5121,9 @@ async function init() {
       bootAmbientHints.ambientSoundscape.cancelDuck();
       endFocusChrome();
       stashPendingJourneyDraft({ completed: false });
+      sessionPresenceCollector.finalize(
+        snapshotFocusSessionForPresence(focusSession, { endedEarly: true })
+      );
       focusSession.stop();
       bootSessionChrome.sessionUiGate.setCompletionPending(false);
       honestyGlowLevel = null;
@@ -5166,7 +5183,10 @@ async function init() {
   focusSitAdjust = new FocusSitAdjustUI(document.getElementById('focus-sit-adjust'), {
     onPause: () => {
       const result = applyFocusSitAdjust(focusSession, { kind: 'pause' });
-      if (result.applied) bootAmbientHints.ambientSoundscape.holdForSitPause();
+      if (result.applied) {
+        sessionPresenceCollector.noteUserPause();
+        bootAmbientHints.ambientSoundscape.holdForSitPause();
+      }
       refreshFocusSitAdjust(result);
     },
     onResume: () => {
@@ -5175,7 +5195,9 @@ async function init() {
       refreshFocusSitAdjust(result);
     },
     onAddFive: () => {
-      refreshFocusSitAdjust(applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 }));
+      const result = applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 });
+      if (result.applied) sessionPresenceCollector.noteExtended();
+      refreshFocusSitAdjust(result);
     },
     onVoice: (parsed) => {
       if (parsed?.kind === 'end') {
@@ -5183,8 +5205,12 @@ async function init() {
         return;
       }
       const result = applyFocusSitAdjust(focusSession, parsed);
-      if (result.applied && result.kind === 'pause') bootAmbientHints.ambientSoundscape.holdForSitPause();
+      if (result.applied && result.kind === 'pause') {
+        sessionPresenceCollector.noteUserPause();
+        bootAmbientHints.ambientSoundscape.holdForSitPause();
+      }
       if (result.applied && result.kind === 'resume') bootAmbientHints.ambientSoundscape.releaseSitPause();
+      if (result.applied && result.kind === 'add') sessionPresenceCollector.noteExtended();
       refreshFocusSitAdjust(result);
     }
   });
@@ -5379,6 +5405,9 @@ async function init() {
     const witnessElapsedSeconds = focusSession.getElapsedSeconds();
     const timedAwardMinutes = focusSession.resolveTimedAwardMinutes();
     stashPendingJourneyDraft({ completed: true });
+    sessionPresenceCollector.finalize(
+      snapshotFocusSessionForPresence(focusSession, { endedEarly: false })
+    );
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(timedAwardMinutes);
     awardFocusCoins({

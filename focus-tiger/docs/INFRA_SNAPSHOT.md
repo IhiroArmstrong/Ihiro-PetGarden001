@@ -199,8 +199,8 @@
 
 | 项 | 现状 |
 |---|---|
-| `localStorage` 白名单 | **50** keys（`FOCUS_TIGER_LOCAL_STORAGE_KEYS`；L-01 契约测试锁集合相等） |
-| 最近新增（参考） | `focus-tiger.brand-yin-way-first-reflect.v1` · `focus-tiger.ype-companion-style.v1` · `focus-tiger.ype-cloud-personalization-consent.v1` · `focus-tiger.ype-personalization-pack.v1` |
+| `localStorage` 白名单 | **`FOCUS_TIGER_LOCAL_STORAGE_KEYS` 长度以源文件为准**（L-01 契约测试锁集合相等）；2026-10-23 增 `focus-tiger.session-presence-ring.v1` |
+| 最近新增（参考） | `focus-tiger.session-presence-ring.v1` · `focus-tiger.brand-yin-way-first-reflect.v1` · `focus-tiger.ype-companion-style.v1` · `focus-tiger.ype-cloud-personalization-consent.v1` · `focus-tiger.ype-personalization-pack.v1` |
 | Practice-backup 快照 keys（6） | `journey-log` · `practice-days` · `milestone-glow` · `entitlement-ownership` · `ritual-completions` · `mustard-seed-seal`（schema v1） |
 | Practice-backup opt-in key | `focus-tiger.practice-backup.v1`（**不**进 6-key 快照） |
 | DOC_CODE_CONTRACT 强绑 ID | G-01–G-04 · H-01 · L-01 · S-01 · F-01 · D-01–D-04 · A-01 · V-01 |

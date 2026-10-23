@@ -38,6 +38,7 @@
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
 | `focus-tiger.confide-observation.v1` | `confideObservationTelemetry` | Confide Batch 0 观察环缓（最多 500 条）：`confide_chip_tapped` / `confide_share`（`dataSource` + `matchedChipId`；**无**用户原文）；Web/Electron 渲染层；Electron 另追加 `userData/companion-l2/confide-observation.jsonl` |
+| `focus-tiger.session-presence-ring.v1` | `sessionPresenceSummary` | **T50 Phase 0** 会话存在摘要环缓（最多 40 条）：一场计时同坐结束压 `{ companionMode, plannedMinutes, actualSeconds, leaveCount, leaveTotalSeconds, leaveLongestSeconds, pauseCount, extended, endedEarly, durationMode }`；`console.log('[SessionPresence]')`；**不**写练习账本 / Presence Signals / 备份；标签估计器零消费端 |
 | `focus-tiger.brand-yin-way-first-reflect.v1` | `brandYinWayFirstReflectGate` | 首次 `first_session_complete` 后 Reflect 底栏品牌句已展示（`{ shown }`）；双语仅该次 |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显。本场闩在 `main`：`onReady` 写入、`beginFocus` 空 pending **不抹**已闩意图（`resolveSessionIntentionLatch`） |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条（**非**趋势 SSOT）；freeText **90 天**与 presence-signals 对齐 prune；**本地** Backup & restore v2 白名单 |
