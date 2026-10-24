@@ -154,6 +154,7 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
 import { AlwaysOnTopPreferenceUI } from './ui/AlwaysOnTopPreferenceUI.js';
 import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
+import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -1428,6 +1429,17 @@ async function init() {
         busy: isMomentWhisperBusy(key)
       });
     }, delayMs);
+  }
+
+  /**
+   * @param {number} elapsedSeconds
+   */
+  function maybeOfferSessionDurationWhisper(elapsedSeconds) {
+    const line = formatObservedSessionDurationLine(elapsedSeconds);
+    if (!line) return;
+    momentWhisperUI.tryShowObservationalLine(line, {
+      busy: isMomentWhisperBusy('session-duration')
+    });
   }
 
   // Honesty Check-in：冷启动 / 零完成 → Idle 闭目坐禅 + 可忽略补登提示（不开 Sleeping / 不披毯）
@@ -4908,7 +4920,9 @@ async function init() {
     if (!playedEndCue) {
       stopAmbientAfterEndCue();
     }
-    maybeSpeakFocusEndAnnouncement();
+    maybeSpeakFocusEndAnnouncement({
+      elapsedSeconds: focusSession.getElapsedSeconds()
+    });
     endFocusChrome({ stopAmbient: false });
     focusSession.pause();
     // 庆祝戳与完成记录解耦：Honesty 补登不占 Celebrating；首次计时达标仍须舞。
@@ -5274,6 +5288,7 @@ async function init() {
       recoverResetPracticeUI?.hide({ immediate: true });
       bootAmbientHints.ambientSoundscape.cancelDuck();
       endFocusChrome();
+      const riseElapsedSeconds = focusSession.getElapsedSeconds();
       stashPendingJourneyDraft({ completed: false });
       sessionPresenceCollector.finalize(
         snapshotFocusSessionForPresence(focusSession, { endedEarly: true })
@@ -5300,12 +5315,14 @@ async function init() {
         pickDaytimeRiseEmotion: pickRiseInterruptEmotion
       });
       emotionController.playEmotion(riseEmotion, { holdPose: true });
+      maybeOfferSessionDurationWhisper(riseElapsedSeconds);
       sessionEndFlow.onSessionEnded({
         completed: false,
         intention: currentSessionIntention,
-        intentionSource: currentIntentionSource
+        intentionSource: currentIntentionSource,
+        elapsedSeconds: riseElapsedSeconds
       });
-      onFocusCircleRiseSideEffects(focusSession.getElapsedSeconds());
+      onFocusCircleRiseSideEffects(riseElapsedSeconds);
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
       // ambient-soundscape stays unread until a track is actually chosen
@@ -5582,7 +5599,8 @@ async function init() {
     const endOpts = {
       completed: true,
       intention: currentSessionIntention,
-      intentionSource: currentIntentionSource
+      intentionSource: currentIntentionSource,
+      elapsedSeconds: witnessElapsedSeconds
     };
     currentSessionIntention = '';
     currentIntentionSource = 'typed';

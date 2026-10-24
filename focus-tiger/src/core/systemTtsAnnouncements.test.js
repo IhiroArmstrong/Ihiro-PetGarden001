@@ -70,6 +70,37 @@ test('focus end announcement requires global switch and desktop wide bridge', as
   assert.equal(spoke, true);
 });
 
+test('focus end announcement uses observed minutes when elapsed is long enough', async () => {
+  resetPracticeAnnouncementCue();
+  let spoken = '';
+  const globalObj = {
+    desktopShell: {
+      isDesktop: true,
+      systemTts: {
+        speak({ text }) {
+          spoken = text;
+        }
+      }
+    }
+  };
+  const storage = memoryStorage({
+    [SYSTEM_TTS_PREF_STORAGE_KEY]: JSON.stringify({
+      announcementsEnabled: true
+    })
+  });
+  assert.equal(
+    maybeSpeakFocusEndAnnouncement({
+      widthPx: 480,
+      storage,
+      globalObj,
+      elapsedSeconds: 12 * 60 + 20
+    }),
+    true
+  );
+  await Promise.resolve();
+  assert.match(spoken, /12/);
+});
+
 test('focus end announcement stays off on narrow viewport', async () => {
   let spoke = false;
   const globalObj = {
