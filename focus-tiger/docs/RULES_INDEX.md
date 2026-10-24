@@ -112,7 +112,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-develop-small-pr-run-merge` | 「合入 develop：CI 绿即可合并见 `WORKFLOW.md`」（旧称文档/小 PR Run 合并；现含运行时 PR）；regression-lock / PROCESS / COLLAB / docs.mdc 可一行引用 | 把合 develop 默认改回「只请你上 GitHub 手合」或「等人工测完再合」；把本条扩成合 `main` 或生产部署；下班前口令顺手推进无关 PR |
 | `prod-worker-deploy` | 「生产 Worker 须明确「部署」见 `WORKFLOW.md`」；cloud README 可一行引用 | 主张合入 develop / CI 绿即可 redeploy；把「同步」「发布」当成部署口令 |
 | `git-pr-base-develop` | 「开 PR 须 `--base develop` + `--head` 本任务分支；见 `WORKFLOW.md`」；PROCESS 血统检查可一行引用 | 主张可省略 `--base` / `--head` 靠 GitHub 默认；日常 PR 默认可打 `main`；误开后仍等 CI 不立刻纠正 |
-| `git-pr-open-close-gate` | 「禁止 Agent `gh pr close` 未合入 PR（除非用户当回合点名 #）；`pr edit` 不得认领他任务票；见 `WORKFLOW.md` 开 PR/关 PR 硬闸」 | 主张可因「开错/superseded」自动关 PR；主张可 `pr edit` 改别人刚开的 title 认领；并行写可共用主仓 checkout |
+| `git-pr-open-close-gate` | 「禁止 Agent `gh pr close` 未合入 PR（除非用户当回合点名 #）；`pr edit` 不得认领他任务票；开完须核对 `headRefName`；删远程旁支前须 `gh pr list --head` 为空（#1412）；见 `WORKFLOW.md` 开 PR/关 PR 硬闸」 | 主张可因「开错/superseded」自动关 PR；主张可 `pr edit` 改别人刚开的 title 认领；并行写可共用主仓 checkout；关一张票后即可删远程旁支而不查同 head 上其它 open PR |
 | `git-pr-task-line-ref` | 「PR 须 `Closes #NNN`；仓库 auto-close 已关；见 `WORKFLOW.md`」 | 主张 Epic 用 `Relates to`（Linked pull requests 列会空）；主张仅用手动 Development 即可挂线且免误关；把活基线 Epic 当可关单子 Issue |
 | `git-branch-health` | 「分支健康度见 `PROCESS.md`；`COLLAB` 可摘要」 | 主张把分支健康度普查勾成 develop Required / merge 硬拦；完整平行复述阈值表 |
 | `regression-gate` / `bug-close-s7` | `DEV_WORKFLOW_QUALITY` 解释 why；`PROCESS` 一句话摘要 + 链接 | 在 COLLAB / docs.mdc 再写一整份 checklist |
@@ -340,6 +340,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-08-20 | `git-worktree-hygiene`：本机按清单清收成 `npm run worktree:hygiene-remove`（dry-run / `--apply` 只拆 `propose_remove`）；仍须口令；不删远端分支；不拆主仓 / `…-wt-develop-qa` |
 | 2026-08-20 | 新增 `session-handoff`：口令「生成交接」+ 阶段性任务后输出结构化交接摘要；SSOT `.cursor/rules/focus-tiger-session-handoff.mdc`；与「批量人工测试」同级；不改变 push/PR / 合 develop / 人工关单 |
 | 2026-08-16 | 新增 `feature-conflict-review`：实现前对照 `SCENARIO_TESTS.md` 扫强度错位 / 人设语气 / 职责重叠；有冲突须等用户拍板（优先于默认执行）；SSOT `FEATURE_CONFLICT_REVIEW.md`；PR 三问 Q3；Cursor 规则 + `SCENARIO_TESTS` 文首索引 |
+| 2026-10-25 | `git-pr-open-close-gate` 补：**#1412** — 省略 `--head` 把 T48 票挂在 T46 旁支；删远程旁支连带 Close 未合入 PR。开完须核对 `headRefName`；删 `refs/heads` 前 `gh pr list --head` 须为空 |
 | 2026-10-24 | 新增 `git-pr-open-close-gate`：`--head` 必填、禁止 Agent 关未合入 PR（#1406）、禁止 `pr edit` 认领他任务票；SSOT `WORKFLOW.md`「开 PR / 关 PR 硬闸」 |
 | 2026-08-15 | 扩展 `git-parallel-worktree`：Cloud 旁支落到本机须 `worktree add`，禁止主仓 Apply / checkout migrated branch（超时 + 抢 5173/主仓检出）。SSOT `WORKFLOW.md` 并行 worktree 第 8 款 |
 | 2026-08-15 | 新增 `qa-develop-worktree`：固定 `…-wt-develop-qa` 关单/批量测树、Vite `:5173` 常驻；合入 develop 后 `npm run sync:qa-develop` 并汇报是否重启 + 一句变化；feature 开发树不变。SSOT `WORKFLOW.md` |
