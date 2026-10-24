@@ -14,6 +14,7 @@
  */
 
 import { t, getLocale } from '../locales/i18n.js';
+import { formatObservedSessionDurationLine } from './sessionEndObservedDuration.js';
 import { canUseSystemTts, mapLocaleToTtsLocale, speakSystemTts } from './systemTtsBridge.js';
 import { isSystemTtsAnnouncementsEnabled } from './systemTtsPreference.js';
 
@@ -64,10 +65,26 @@ export function maybeSpeakPracticeAnnouncement({
  * }} [opts]
  * @returns {boolean} true when a speak request was dispatched
  */
+/**
+ * @param {{
+ *   elapsedSeconds?: number,
+ *   widthPx?: number,
+ *   storage?: Storage | null,
+ *   globalObj?: object
+ * }} [opts]
+ */
 export function maybeSpeakFocusEndAnnouncement(opts = {}) {
+  const { elapsedSeconds, ...rest } = opts;
+  const observed =
+    typeof elapsedSeconds === 'number'
+      ? formatObservedSessionDurationLine(elapsedSeconds)
+      : null;
+  const text =
+    observed ||
+    t('system_tts.focus_end');
   return maybeSpeakPracticeAnnouncement({
-    ...opts,
-    text: t('system_tts.focus_end'),
+    ...rest,
+    text,
     cueId: `focus-end:${Date.now()}`
   });
 }
