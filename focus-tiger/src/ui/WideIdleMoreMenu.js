@@ -5,12 +5,15 @@
 
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
+  EDGE_RECALL_HIT_PX,
   WIDE_STAGE_CLASS,
   listSecondaryChromeEntries,
   SECONDARY_PROXY_HINT_IDS,
   dispatchSecondaryChromeProxy,
   decorateSecondaryLockButton,
   invokeHandler,
+  resolveIdleChromeStageForShellFlags,
+  resolveRoleVisibility,
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
@@ -162,6 +165,8 @@ export class WideIdleMoreMenu {
     this._radialFocusIdx = 0;
     this._localeUnsub = null;
     this._refreshingHomeCtas = false;
+    /** @type {boolean} */
+    this._edgeRecallRevealed = false;
 
     this._mq =
       typeof window.matchMedia === 'function'
@@ -241,7 +246,8 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   openMenu() {
-    if (!this._isWide() || !this._idle || this._honestyBridgeActive) return;
+    if (!this._isWide() || this._honestyBridgeActive) return;
+    if (!this._canOpenMoreMenu()) return;
     this._dismissIdleVisualPrimaryOverlays();
     this._menuOpen = true;
     this._menuFlat = shouldDegenerateWideMenuRadialForButton(this.moreBtn);
@@ -282,9 +288,37 @@ export class WideIdleMoreMenu {
     this._popEscapeLayer = null;
     document.removeEventListener('keydown', this._onKeyDown, true);
     this._syncMenuLayers();
+    if (this._moreOrGrabberRole() === 'edge-recall') {
+      this._edgeRecallRevealed = false;
+    }
     this._sync();
     this.moreBtn?.setAttribute('aria-expanded', 'false');
     this.handlers.onMenuChange?.(false);
+  }
+
+  /**
+   * @returns {'visible' | 'hidden' | 'na' | 'edge-recall'}
+   */
+  _moreOrGrabberRole() {
+    const stage = resolveIdleChromeStageForShellFlags({
+      idle: this._idle,
+      suppressed: this._suppressed,
+      keepQuickStart: this._keepQuickStart,
+      honestyBridgeActive: this._honestyBridgeActive
+    });
+    return resolveRoleVisibility({ stage, viewport: 'wide' }).moreOrGrabber;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  _canOpenMoreMenu() {
+    const role = this._moreOrGrabberRole();
+    if (role === 'hidden' || role === 'na') return false;
+    if (this._idle) {
+      return !this._suppressed || this._keepQuickStart;
+    }
+    return role === 'edge-recall' || role === 'visible';
   }
 
   /**
@@ -428,6 +462,10 @@ export class WideIdleMoreMenu {
     this.wrap.className = 'ft-wide-more';
     this.wrap.id = 'ft-wide-more';
 
+    this.edgeZone = document.createElement('div');
+    this.edgeZone.className = 'ft-wide-more__edge-zone';
+    this.edgeZone.setAttribute('aria-hidden', 'true');
+
     this.moreBtn = document.createElement('button');
     this.moreBtn.type = 'button';
     this.moreBtn.id = 'ft-wide-more-btn';
@@ -460,7 +498,7 @@ export class WideIdleMoreMenu {
     this.radialRoot.setAttribute('role', 'toolbar');
     this.radialRoot.dataset.testid = 'ft-wide-more-radial';
 
-    this.wrap.append(this.moreBtn);
+    this.wrap.append(this.edgeZone, this.moreBtn);
     // Portal sheet + scrim to body so they can sit above Support/mute (z24)
     // without remaining trapped in the dock stacking context (z16).
     document.body.append(this.backdrop, this.radialRoot, this.menu);
@@ -483,6 +521,26 @@ export class WideIdleMoreMenu {
       e.stopPropagation();
       if (this._menuOpen) this.closeMenu();
       else this.openMenu();
+    });
+    this.moreBtn?.addEventListener('focus', () => {
+      if (this._moreOrGrabberRole() !== 'edge-recall') return;
+      this._edgeRecallRevealed = true;
+      this._sync();
+    });
+    this.edgeZone?.addEventListener('pointerenter', () => {
+      if (this._moreOrGrabberRole() !== 'edge-recall') return;
+      this._edgeRecallRevealed = true;
+      this._sync();
+    });
+    this.edgeZone?.addEventListener('pointerleave', () => {
+      if (this._moreOrGrabberRole() !== 'edge-recall' || this._menuOpen) return;
+      this._edgeRecallRevealed = false;
+      this._sync();
+    });
+    this.wrap?.addEventListener('pointerleave', () => {
+      if (this._moreOrGrabberRole() !== 'edge-recall' || this._menuOpen) return;
+      this._edgeRecallRevealed = false;
+      this._sync();
     });
 
     this.listEl?.addEventListener('click', (e) => {
@@ -709,8 +767,11 @@ export class WideIdleMoreMenu {
     const wide = this._isWide();
     const park = wide && this._idle;
     const keepQs = Boolean(this._keepQuickStart);
-    // Escape hatch (#757): overlay-suppress keeps ⋯; Honesty bridge must hide per contract.
-    const showMore = park && !this._honestyBridgeActive;
+    const moreRole = this._moreOrGrabberRole();
+    const edgeRecallMore = wide && moreRole === 'edge-recall';
+    const showMore =
+      (park && moreRole === 'visible' && !this._honestyBridgeActive) ||
+      edgeRecallMore;
     // Full suppress (Reflection / duration picker / growth cards): hide home balls.
     // keepQuickStart: Quick Start only via `.is-arrival-quick` (matches narrow shell).
     const showHome = park && (!this._suppressed || keepQs);
@@ -731,7 +792,18 @@ export class WideIdleMoreMenu {
       this.homeCtas.hidden = !showHome;
       this.homeCtas.classList.toggle('is-arrival-quick', keepQs);
     }
-    if (this.moreBtn) this.moreBtn.hidden = !showMore;
+    if (this.moreBtn) {
+      this.moreBtn.hidden =
+        moreRole === 'hidden' || moreRole === 'na' || !showMore;
+    }
+    if (this.wrap) {
+      this.wrap.classList.toggle('is-edge-recall', edgeRecallMore && !this._menuOpen);
+      this.wrap.classList.toggle(
+        'is-edge-recall-revealed',
+        edgeRecallMore && (this._edgeRecallRevealed || this._menuOpen)
+      );
+      this.wrap.dataset.edgeRecallPx = String(EDGE_RECALL_HIT_PX);
+    }
     if (!showMore) this._menuOpen = false;
     this._syncMenuLayers();
     if (park) this._refreshHomeCtas();
@@ -1184,6 +1256,30 @@ export class WideIdleMoreMenu {
       }
       .ft-wide-more__btn[hidden] {
         display: none !important;
+      }
+      .ft-wide-more__edge-zone {
+        position: absolute;
+        left: 50%;
+        bottom: calc(-1 * ${EDGE_RECALL_HIT_PX}px);
+        transform: translateX(-50%);
+        width: calc(100% + ${EDGE_RECALL_HIT_PX * 2}px);
+        height: calc(100% + ${EDGE_RECALL_HIT_PX}px);
+        pointer-events: none;
+      }
+      .ft-wide-more.is-edge-recall .ft-wide-more__edge-zone {
+        pointer-events: auto;
+      }
+      .ft-wide-more.is-edge-recall:not(.is-edge-recall-revealed) .ft-wide-more__btn {
+        opacity: 0;
+        transform: scale(0.92);
+        pointer-events: none;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      .ft-wide-more.is-edge-recall.is-edge-recall-revealed .ft-wide-more__btn,
+      .ft-wide-more.is-edge-recall:focus-within .ft-wide-more__btn {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
       }
       .ft-wide-more__backdrop {
         position: fixed;

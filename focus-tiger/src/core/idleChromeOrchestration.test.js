@@ -288,6 +288,16 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
       );
     }
   });
+
+  it('focusing: home balls hidden; ⋯ / grabber edge-recall (T47)', () => {
+    for (const viewport of /** @type {const} */ (['narrow', 'wide'])) {
+      const r = resolveRoleVisibility({ stage: 'focusing', viewport });
+      assert.equal(r.sit, 'hidden');
+      assert.equal(r.quickStart, 'hidden');
+      assert.equal(r.honesty, 'hidden');
+      assert.equal(r.moreOrGrabber, 'edge-recall');
+    }
+  });
 });
 
 describe('secondaryProxyForHintId', () => {
