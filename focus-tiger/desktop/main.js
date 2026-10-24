@@ -18,6 +18,7 @@ import {
   protocol,
   shell,
   Tray,
+  Notification,
   globalShortcut,
   screen
 } from 'electron';
@@ -678,6 +679,15 @@ if (gotSingleInstanceLock) {
     applyWindowLayoutAction(action === 'fullscreen' ? 'fullscreen' : 'companion')
   );
   ipcMain.handle('desktop:shell-visibility-get', () => visibilityPayload());
+  ipcMain.handle('desktop:session-end-notification', (_event, payload) => {
+    const title = String(payload?.title || '').trim();
+    const body = String(payload?.body || '').trim();
+    if (!title) return false;
+    if (!Notification.isSupported()) return false;
+    const note = new Notification({ title, body });
+    note.show();
+    return true;
+  });
 
   ipcMain.on('desktop:voice-input-probe-allowed', (event) => {
     event.returnValue = isVoiceInputProbeMode();

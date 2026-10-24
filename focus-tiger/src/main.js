@@ -389,6 +389,11 @@ import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime
 import { applyDesktopShellTypographyClass } from './core/desktopSystemTypography.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import { bindDesktopPreferencesShortcut } from './core/desktopPreferencesShortcut.js';
+import { bindProductKeyboardShortcuts } from './core/productKeyboardShortcuts.js';
+import {
+  maybeNotifySessionEndSystem,
+  readSessionEndVisibilitySnapshot
+} from './core/sessionEndSystemNotification.js';
 import {
   canRegisterDesktopCompanionGeneration,
   getDesktopCompanionBridge,
@@ -4930,6 +4935,9 @@ async function init() {
 
     bootSessionChrome.sessionUiGate.setCompletionPending(true);
     resyncSessionChrome();
+    void readSessionEndVisibilitySnapshot(() =>
+      getDesktopShellBridge()?.getShellVisibility?.()
+    ).then((visibility) => maybeNotifySessionEndSystem(visibility));
     // Plan A: duck → end chime → fadeOutAndStop ambient (do not hard-stop first).
     const stopAmbientAfterEndCue = () => {
       if (bootAmbientHints.ambientSoundscape.isAudiblePlaying()) {
@@ -5413,6 +5421,59 @@ async function init() {
   stateManager.onChange(() => refreshFocusSitAdjust());
   window.addEventListener('resize', () => refreshFocusSitAdjust());
   refreshFocusSitAdjust();
+
+  function toggleFocusSitPauseFromKeyboard() {
+    const kind = focusSession.isPaused() ? 'resume' : 'pause';
+    const result = applyFocusSitAdjust(focusSession, { kind });
+    if (result.applied && kind === 'pause') {
+      sessionPresenceCollector.noteUserPause();
+      bootAmbientHints.ambientSoundscape.holdForSitPause();
+    }
+    if (result.applied && kind === 'resume') {
+      bootAmbientHints.ambientSoundscape.releaseSitPause();
+    }
+    refreshFocusSitAdjust(result);
+  }
+
+  function buildProductKeyboardGates() {
+    const focusing = stateManager.state === STATES.FOCUSING;
+    const idle = stateManager.state === STATES.IDLE;
+    const sitBlocked =
+      !idle ||
+      bootSessionChrome.sessionUiGate.completionPending ||
+      reflectionMoment?.isOpen?.() ||
+      bootHonestyCompanion.microRitualUI?.isOpen?.() ||
+      focusDurationPicker?.isOpen?.() ||
+      honestyBridge?.isVisible?.() ||
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() ||
+      focusButton.getAttribute('aria-disabled') === 'true';
+    return {
+      spaceIdleAllowed: !sitBlocked,
+      spaceFocusToggleAllowed:
+        focusing &&
+        !bootSessionChrome.sessionUiGate.completionPending &&
+        !awakenInviteUI?.isVisible?.(),
+      confideAllowed: canOpenConfidePanel({
+        search: location.search,
+        stage: 'idle',
+        companionGeneration: canRegisterDesktopCompanionGeneration({
+          widthPx: window.innerWidth
+        })
+      })
+    };
+  }
+
+  bindProductKeyboardShortcuts({
+    getGates: buildProductKeyboardGates,
+    onSpaceIdle: () => {
+      focusButton.click();
+    },
+    onSpaceFocusToggle: toggleFocusSitPauseFromKeyboard,
+    onConfideShortcut: () => {
+      closeGrowthOverlayCards({ except: 'confide' });
+      confideToYinUI.open();
+    }
+  });
 
   const yinVoicePushToTalk = createPushToTalkToggle({
     start: async () => {
