@@ -1,0 +1,14 @@
+{
+  "en": {
+    "SESSION_END_NOTIFICATION_TITLE": "This sitting is complete",
+    "SESSION_END_NOTIFICATION_BODY": "Yin is here when you return."
+  },
+  "zh": {
+    "SESSION_END_NOTIFICATION_TITLE": "这一场坐满了",
+    "SESSION_END_NOTIFICATION_BODY": "回来时，阿寅还在。"
+  },
+  "ja": {
+    "SESSION_END_NOTIFICATION_TITLE": "今回の座りが終わりました",
+    "SESSION_END_NOTIFICATION_BODY": "戻ってきたら、寅はここにいます。"
+  }
+}

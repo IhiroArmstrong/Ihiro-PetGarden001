@@ -97,7 +97,9 @@ const desktopShell = {
     const wrapped = (_event, search) => cb(search);
     ipcRenderer.on('desktop:checkout-return', wrapped);
     return () => ipcRenderer.removeListener('desktop:checkout-return', wrapped);
-  }
+  },
+  showSessionEndNotification: (payload) =>
+    ipcRenderer.invoke('desktop:session-end-notification', payload)
 };
 
 if (companionAllowed) {
