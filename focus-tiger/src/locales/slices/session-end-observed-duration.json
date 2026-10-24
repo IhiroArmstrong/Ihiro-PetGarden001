@@ -1,0 +1,11 @@
+{
+  "en": {
+    "SESSION_END_OBSERVED_MINUTES": "About {minutes} minutes this sitting."
+  },
+  "zh": {
+    "SESSION_END_OBSERVED_MINUTES": "这一场大约 {minutes} 分钟。"
+  },
+  "ja": {
+    "SESSION_END_OBSERVED_MINUTES": "今回はおよそ {minutes} 分でした。"
+  }
+}

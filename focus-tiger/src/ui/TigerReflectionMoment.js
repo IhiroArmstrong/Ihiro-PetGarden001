@@ -213,6 +213,7 @@ export class TigerReflectionMoment {
     /** @type {ReflectionFlowState | null} */
     this.flow = null;
     this.root = null;
+    this.durationEl = null;
     this.echoEl = null;
     /** Companion echo after a non-empty Continue (distinct from intention echo). */
     this.companionEchoEl = null;
@@ -232,6 +233,8 @@ export class TigerReflectionMoment {
     this.brandTaglineHost = null;
     /** @type {string} */
     this._sessionIntention = '';
+    /** @type {string | null} */
+    this._sessionDurationLine = null;
     /** @type {'icon' | 'typed' | null} */
     this._intentionSource = null;
     /** @type {string | null} */
@@ -264,10 +267,19 @@ export class TigerReflectionMoment {
    * @param {object} [options]
    * @param {string} [options.intention]
    * @param {'icon' | 'typed' | string} [options.intentionSource]
+   * @param {string | null} [options.sessionDurationLine]
    */
-  open({ intention = '', intentionSource = 'typed' } = {}) {
+  open({
+    intention = '',
+    intentionSource = 'typed',
+    sessionDurationLine = null
+  } = {}) {
     if (this.root) return;
     this._sessionIntention = normalizeIntentionText(intention);
+    this._sessionDurationLine =
+      typeof sessionDurationLine === 'string' && sessionDurationLine.trim()
+        ? sessionDurationLine.trim()
+        : null;
     this._intentionSource =
       this._sessionIntention && intentionSource === 'icon' ? 'icon' : 'typed';
     this.flow = new ReflectionFlowState();
@@ -328,6 +340,19 @@ export class TigerReflectionMoment {
     this.skipAllBtn.dataset.testid = 'reflection-skip-all';
     this.skipAllBtn.style.cssText = SKIP_ALL_TERTIARY_CSS;
     this.skipAllBtn.addEventListener('click', () => this._skipAll());
+
+    this.durationEl = document.createElement('div');
+    this.durationEl.dataset.testid = 'reflection-session-duration';
+    this.durationEl.setAttribute('aria-live', 'polite');
+    this.durationEl.style.cssText = [
+      'font-size:13px',
+      'line-height:1.55',
+      'font-weight:500',
+      'color:#5c4330',
+      'margin:0 0 10px',
+      'padding:0 2px',
+      'opacity:0.92'
+    ].join(';');
 
     this.echoEl = document.createElement('div');
     this.echoEl.dataset.testid = 'reflection-intention-echo';
@@ -465,6 +490,11 @@ export class TigerReflectionMoment {
 
     this.root.appendChild(this.skipAllBtn);
 
+    if (this._sessionDurationLine) {
+      this.durationEl.textContent = this._sessionDurationLine;
+      this.durationEl.hidden = false;
+      this.root.appendChild(this.durationEl);
+    }
     if (this._sessionIntention) {
       this.root.appendChild(this.echoEl);
     }
@@ -903,6 +933,7 @@ export class TigerReflectionMoment {
     const flow = this.flow;
     this.flow = null;
     this._sessionIntention = '';
+    this._sessionDurationLine = null;
     this._intentionSource = null;
     this._companionEchoKey = null;
     this._awaitingLastEchoHold = false;
@@ -929,6 +960,7 @@ export class TigerReflectionMoment {
     this._voiceInputChrome = null;
     this.root?.remove();
     this.root = null;
+    this.durationEl = null;
     this.echoEl = null;
     this.companionEchoEl = null;
     this.companionObservationEl = null;

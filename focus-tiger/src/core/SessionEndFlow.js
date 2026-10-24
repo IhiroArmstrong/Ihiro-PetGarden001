@@ -15,6 +15,7 @@
  */
 
 import { getStorage, setStorage } from '../utils/Storage.js';
+import { formatObservedSessionDurationLine } from './sessionEndObservedDuration.js';
 import { appendReflectionPresenceSignals } from './reflectionPresenceBridge.js';
 import {
   PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS,
@@ -109,19 +110,26 @@ export class SessionEndFlow {
    *   completed=true 时完成反馈已播放完毕、角色已回归基础坐姿）
    * @param {string} [options.intention] 本次会话 Choose 内容（可空；空则不回显）
    * @param {'icon' | 'typed' | string} [options.intentionSource]
+   * @param {number} [options.elapsedSeconds] wall-clock sit length for observed duration line
    */
   onSessionEnded({
     completed = false,
     intention = '',
-    intentionSource = 'typed'
+    intentionSource = 'typed',
+    elapsedSeconds = 0
   } = {}) {
     window.clearTimeout(this._pendingTimer);
     const pauseMs = completed ? POST_FEEDBACK_PAUSE_MS : MANUAL_END_PAUSE_MS;
     const echo = typeof intention === 'string' ? intention : '';
+    const sessionDurationLine =
+      typeof elapsedSeconds === 'number'
+        ? formatObservedSessionDurationLine(elapsedSeconds)
+        : null;
     this._pendingTimer = window.setTimeout(() => {
       this.reflectionMoment.open({
         intention: echo,
-        intentionSource
+        intentionSource,
+        sessionDurationLine
       });
     }, pauseMs);
   }

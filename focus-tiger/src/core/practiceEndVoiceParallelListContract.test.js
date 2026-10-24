@@ -34,7 +34,7 @@ describe('practiceEndVoiceParallelListContract (A9 registry)', () => {
 
   it('timed sit and breath micro-ritual both close with system_tts.focus_end in main.js', () => {
     const main = readSrc('main.js');
-    assert.match(main, /maybeSpeakFocusEndAnnouncement\(\)/);
+    assert.match(main, /maybeSpeakFocusEndAnnouncement\(/);
     const start = main.indexOf('function completeMicroRitual');
     const end = main.indexOf('function leaveMicroRitualQuietly');
     const body = main.slice(start, end);

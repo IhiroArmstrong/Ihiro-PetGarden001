@@ -1,0 +1,1 @@
+| 结束报时长 Brief | 纯文档 | 仅单元测试覆盖 | 打开 [`task-session-end-observed-duration.md`](../task-briefs/task-session-end-observed-duration.md)：B 类、T45 后续、与 T47 分 PR。`npm run docs:check`。 | — | — | — | Brief 路径见左 | 2026-10-24 |

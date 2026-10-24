@@ -50,9 +50,13 @@ export class MomentWhisperUI {
     this._visible = false;
     /** @type {string | null} */
     this._activeKey = null;
+    /** @type {string | null} */
+    this._activeObservationalText = null;
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => {
-      if (this._visible && this.root && this._activeKey) {
+      if (this._visible && this.root && this._activeObservationalText) {
+        this.root.textContent = this._activeObservationalText;
+      } else if (this._visible && this.root && this._activeKey) {
         this.root.textContent = t(COPY_KEYS[this._activeKey] || '');
       }
     });
@@ -113,6 +117,52 @@ export class MomentWhisperUI {
   }
 
   /**
+   * Repeatable observational line (session duration, etc.). Does not mark Five Moments seen.
+   *
+   * @param {string} text
+   * @param {{ busy?: boolean }} [opts]
+   * @returns {boolean}
+   */
+  tryShowObservationalLine(text, opts = {}) {
+    const body = String(text || '').trim();
+    if (!body) return false;
+    const busy =
+      typeof opts.busy === 'boolean'
+        ? opts.busy
+        : Boolean(this.handlers.isBusy?.());
+    if (busy) return false;
+    this.hide({ immediate: true });
+
+    const root = document.createElement('button');
+    root.type = 'button';
+    root.id = ROOT_ID;
+    root.className = 'moment-whisper';
+    root.dataset.testid = 'moment-whisper';
+    root.dataset.moment = 'session-duration';
+    root.setAttribute('aria-live', 'polite');
+    root.textContent = body;
+    root.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      this.hide();
+    });
+
+    root.style.top = homeClearanceTopCss();
+
+    this.container.appendChild(root);
+    this.root = root;
+    this._visible = true;
+    this._activeKey = null;
+    this._activeObservationalText = body;
+
+    root.getBoundingClientRect();
+    root.classList.add('is-visible');
+
+    this._holdTimer = window.setTimeout(() => this.hide(), HOLD_MS);
+    return true;
+  }
+
+  /**
    * @param {{ immediate?: boolean }} [opts]
    */
   hide(opts = {}) {
@@ -128,6 +178,7 @@ export class MomentWhisperUI {
     this.root = null;
     this._visible = false;
     this._activeKey = null;
+    this._activeObservationalText = null;
     if (!root) return;
     if (opts.immediate) {
       root.remove();
