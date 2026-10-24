@@ -28,6 +28,10 @@ import {
   spriteDisplayTransformCss
 } from './spriteDisplayFit.js';
 import { playbackZoomAtIndex } from './spritePlaybackZoom.js';
+import {
+  applySpriteCrispImageRendering,
+  containRectCrisp
+} from './spriteCrispRendering.js';
 import { Z } from '../ui/zIndexLayers.js';
 
 /**
@@ -206,19 +210,20 @@ export class SpriteSequencePlayer {
       'pointer-events:none;';
 
     const imageStyle =
-      'position:absolute;inset:0;width:100%;height:100%;object-fit:contain;' +
-      'will-change:transform,opacity;user-select:none;';
+      'position:absolute;object-fit:fill;will-change:transform,opacity;user-select:none;';
     const outgoingImg = document.createElement('img');
     outgoingImg.alt = '';
     outgoingImg.decoding = 'async';
     outgoingImg.draggable = false;
     outgoingImg.style.cssText = imageStyle + 'opacity:0;';
+    applySpriteCrispImageRendering(outgoingImg.style);
 
     const img = document.createElement('img');
     img.alt = '';
     img.decoding = 'async';
     img.draggable = false;
     img.style.cssText = imageStyle + 'opacity:1;';
+    applySpriteCrispImageRendering(img.style);
 
     stage.appendChild(outgoingImg);
     stage.appendChild(img);
@@ -475,11 +480,12 @@ export class SpriteSequencePlayer {
     const layoutW = this.stageEl.clientWidth || stageBox.width;
     const layoutH = this.stageEl.clientHeight || stageBox.height;
     const container = stageBox;
-    const baseScale = Math.min(layoutW / nw, layoutH / nh);
-    let width = nw * baseScale;
-    let height = nh * baseScale;
-    let localLeft = (layoutW - width) * 0.5;
-    let localTop = (layoutH - height) * 0.5;
+    const crisp = containRectCrisp(nw, nh, layoutW, layoutH);
+    const baseScale = crisp.scale;
+    let width = crisp.width;
+    let height = crisp.height;
+    let localLeft = crisp.left;
+    let localTop = crisp.top;
 
     const fit = computeSpriteDisplayTransform(this._currentDisplayFit, {
       width: layoutW,
@@ -744,6 +750,15 @@ export class SpriteSequencePlayer {
     // LightProgression Dolly 的 CSS scale 会放大 rect，但 object-fit 仍按布局盒计算。
     const width = this.stageEl.clientWidth;
     const height = this.stageEl.clientHeight;
+    const nw = imgEl.naturalWidth;
+    const nh = imgEl.naturalHeight;
+    if (nw > 0 && nh > 0 && width > 0 && height > 0) {
+      const crisp = containRectCrisp(nw, nh, width, height);
+      imgEl.style.left = `${crisp.left}px`;
+      imgEl.style.top = `${crisp.top}px`;
+      imgEl.style.width = `${crisp.width}px`;
+      imgEl.style.height = `${crisp.height}px`;
+    }
     const t = computeSpriteDisplayTransform(fitDef, { width, height });
     const fitCss = spriteDisplayTransformCss(t);
     const z = Number(zoom);
