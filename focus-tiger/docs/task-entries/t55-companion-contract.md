@@ -1,7 +1,7 @@
 ---
 id: t55-companion-contract
 kind: feature
-status: PR-1 盘点待过目
+status: PR-1 盘点 #1419 · 排队中 · 可选
 updated: 2026-10-25
 ---
 
