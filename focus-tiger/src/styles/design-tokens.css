@@ -57,6 +57,7 @@
   --shadow-lift: 0 8px 24px rgba(44, 31, 20, 0.1);
 
   --font-family: "Nunito", "Quicksand", "Noto Sans SC", system-ui, sans-serif;
+  --ft-font-ui: var(--font-family);
   --font-size-sm: 0.8125rem;
   --font-size-md: 0.9375rem;
   --font-size-lg: 1.125rem;
@@ -67,4 +68,16 @@
   --duration-celebrate: 1200ms;
 
   --z-modal: 1000;
+}
+
+/* T40 · Electron only — html.ft-desktop-shell from preload + index bootstrap */
+html.ft-desktop-shell {
+  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans", "Yu Gothic UI", "Segoe UI", system-ui, sans-serif;
+  --ft-font-ui: var(--font-family);
+}
+
+html.ft-desktop-shell,
+html.ft-desktop-shell body {
+  font-family: var(--font-family);
 }

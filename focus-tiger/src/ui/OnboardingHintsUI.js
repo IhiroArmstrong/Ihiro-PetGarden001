@@ -2844,7 +2844,7 @@ export class OnboardingHintsUI {
           0 1px 0 rgba(255, 255, 255, 0.7) inset,
           0 6px 16px rgba(40, 64, 52, 0.16);
         color: #2f463c;
-        font-family: "Nunito", "Noto Sans SC", system-ui, sans-serif;
+        font-family: var(--font-family, "Nunito", "Noto Sans SC", system-ui, sans-serif);
         font-size: 13px;
         font-weight: 700;
         line-height: 1.2;
@@ -3011,7 +3011,7 @@ export class OnboardingHintsUI {
           0 1px 0 rgba(255, 255, 255, 0.7) inset,
           0 6px 16px rgba(40, 64, 52, 0.16);
         color: #2f463c;
-        font-family: "Nunito", "Noto Sans SC", system-ui, sans-serif;
+        font-family: var(--font-family, "Nunito", "Noto Sans SC", system-ui, sans-serif);
         font-size: 13px;
         font-weight: 700;
         line-height: 1.2;

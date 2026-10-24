@@ -477,7 +477,7 @@ const PIP_DOCUMENT_CSS = `
     height: 100%;
     overflow: hidden;
     background: #e8e6e1;
-    font-family: "Nunito", system-ui, sans-serif;
+    font-family: var(--font-family, "Nunito", system-ui, sans-serif);
     color: #2c1f14;
   }
   .pip-companion {
