@@ -72,6 +72,7 @@ import { UIControls } from './input/UIControls.js';
 import { FocusHUD } from './ui/FocusHUD.js';
 import { FocusSitAdjustUI } from './ui/FocusSitAdjustUI.js';
 import { ImmersivePresenceUI } from './ui/ImmersivePresenceUI.js';
+import { startNightSceneDimClock } from './ui/nightSceneDim.js';
 import {
   needsDocumentPictureInPictureProbe,
   probeDocumentPictureInPicture
@@ -679,6 +680,7 @@ async function init() {
   });
 
   const app = document.querySelector('#app');
+  startNightSceneDimClock();
   const canvas = document.getElementById('scene-canvas');
   const { renderer, camera, lights } = createRenderer(app, canvas);
   const { scene, mounts } = createScene();

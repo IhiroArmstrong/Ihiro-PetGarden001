@@ -1,0 +1,1 @@
+| T48 夜间略降亮度 | UI可见 | 待人工测试 | **主路径**：本地 23:00–05:59 或 `?product=1&nightDim=1` → 场景（海报+canvas+精灵）略暗，HUD/玻璃卡/Support 三卡亮度不变。**白天**或 `?nightDim=0` → 与现网一致。**跨 06:00/23:00** 无需刷新即切换。**自动化**：`nightSceneDim.test.js` + `npm run test:smoke`。**不是**深色模式。 | — | — | — | Brief `task-night-scene-dim.md` · `nightSceneDim.js` | 2026-10-24 |
