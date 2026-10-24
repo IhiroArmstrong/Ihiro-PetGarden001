@@ -163,7 +163,36 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 
 1. **默认 base = `develop`**：日常 `feature/*` / `fix/*` / `docs/*` PR **必须**显式 `--base develop`（或 UI 选 `develop`）。  
 2. **禁止默认打到 `main`**：除非用户**当回合书面**要求「开往 `main`」或「`develop` → `main` 发版 PR」。  
-3. **开完立刻核对**：`gh pr view <n> --json baseRefName`（或 PR 页 base）须为预期；若误为 `main` → **立刻改 base 或关 PR 重开**，禁止带着错误 base 等 CI / 催合。
+3. **开完立刻核对**：`gh pr view <n> --json baseRefName`（或 PR 页 base）须为预期；若误为 `main` → **立刻改 base**（`gh pr edit` base），或在本节「关 PR」硬闸允许时关 PR 重开；禁止带着错误 base 等 CI / 催合。  
+4. **必须显式 `--head <本任务分支>`**：`gh pr create` **禁止**省略 `--head`（否则 GitHub 用当前 checkout 分支，共用主仓并行会话时会把 A 任务的 PR 开在 B 分支头上）。与 `--base develop` **同一条命令里写全**。
+
+### 开 PR / 关 PR 硬闸（硬性 · 2026-10-24）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-open-close-gate`）。教训：**#1406** — 并行会话共用主仓、省略 `--head`，一会话把 T40 的 open PR 当「自己开错」执行 `gh pr close`，另一会话刚改完标题；未合入即被关（后已 reopen 并合入）。
+
+**关 PR（`gh pr close`）**
+
+1. **默认禁止**：Agent **不得**执行 `gh pr close`（含带 `-c` 评论），除非用户**当回合书面**写明要关哪一个（例如「关掉 #1406」）。  
+2. **唯一窄例外（仍须先查再关）**：仅当 **本会话** 刚创建该 PR，关之前再跑一次 `gh pr view <n> --json number,title,headRefName,state`；**编号、标题、头分支仍全部属于本会话任务** 才可关。任一已变（例如标题已被改成另一任务、头分支不是本会话分支、`state` 已不是 `OPEN`）→ **停下，禁止关**；在「待你决定」向用户说明并贴 PR 链接。  
+3. **禁止**以「开错 head / superseded / 另开 #1407」等理由关 **未合入** 且已属他任务的 PR。正确做法：本会话用正确 `--head` **新开** PR；误开的 PR 若已被他任务认领 → **只问用户**，不自动关。  
+4. **合并导致的 closed** 不算 Agent 关 PR；本条只管 **未合入** 的主动关闭。
+
+**改 PR 元数据（`gh pr edit`）**
+
+5. **禁止**把 **已存在的 open PR**（尤其是他任务 / 他会话刚开的）改成自己会话的任务：不得改 `title` / `body` 去「认领」别人的票。若 `gh pr list --head <branch> --state open` 已有 PR 且范围/任务与当前刀不一致 → **先问用户**（保留 / 另开 / 你书面指定关哪一个），不得默认 `pr edit` 或 `pr close`。  
+6. **允许**：`gh pr edit` **仅改 base**（例如误打 `main` 改回 `develop`），且不改 title/head 语义。
+
+**并行写（与 `git-parallel-worktree` 同读）**
+
+7. 两个及以上 Cursor 会话会 `commit` / 切分支 / 开 PR 时，**必须**各用独立 `git worktree` 目录；**禁止**共用主仓 checkout 并行写（#1406 反面教材）。只读查文档/log 可共用主仓。
+
+**开 PR 命令模板（日常 feature/fix/docs）**
+
+```bash
+gh pr create --base develop --head "$(git branch --show-current)" --title "…" --body "…"
+```
+
+`--head` 须是本 worktree 当前分支名，**禁止**依赖「当前目录 checkout 碰巧是谁」。
 
 ### PR 描述须引用所属任务线 Issue（硬性 · 2026-09-07 · 2026-09-08 修订）
 

@@ -10,7 +10,7 @@ alwaysApply: true
 
 ## Git 硬闸
 
-> 分支/PR/合入细则 SSOT：`WORKFLOW.md`（`RULES_INDEX` → `git-agent-commit` / `git-pr-base-develop`）。
+> 分支/PR/合入细则 SSOT：`WORKFLOW.md`（`RULES_INDEX` → `git-agent-commit` / `git-pr-base-develop` / `git-pr-open-close-gate`）。
 
 - **禁止** `git push` 到 `origin/develop` / `origin/main`；进主干只能 PR 合入。
 - 任务验证通过后：**默认** `git commit`（旁支 `feature/*` / `fix/*` / `docs/*`）→ **默认** `git push -u origin HEAD` → 开/更新 `--base develop` 的 PR；同回合汇报 hash、分支、文件、PR URL。
@@ -70,6 +70,7 @@ alwaysApply: true
 | 任务代号 T*、状态词、列计划汇报结构、禁止换名 | `focus-tiger-communication-consistency.mdc` + `GLOSSARY.md`（`communication-glossary`） |
 | 队列/倾诉日历热点（功能 PR 禁止改 GLOSSARY 等） | `queue-governance-readme.md`（`queue-governance`）· `npm run queue:check` |
 | 改 z-index / overlay / 玻璃卡 / 付款入口 | `00-protected-paths.mdc`（常驻）+ `10-ui-layers.mdc`；契约 `npm run test:payment-contract` |
+| 开 PR / `gh pr close` / `gh pr edit` 认领票 / 并行会话抢同一 PR 号 | `WORKFLOW.md`「开 PR / 关 PR 硬闸」（`RULES_INDEX` → `git-pr-open-close-gate`）；并行写仍须 `git-parallel-worktree` |
 
 ## 产品红线
 
