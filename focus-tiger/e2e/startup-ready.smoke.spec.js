@@ -27,3 +27,14 @@ test('startup sets __FT_APP_READY__ without page errors', async ({ page }) => {
   expect(pageErrors, pageErrors.join('\n')).toEqual([])
   await expectNoVisibleTextPoison(page, 'startup idle shell')
 })
+
+test('nightDim=1 applies T48 scene dim flag after ready', async ({ page }) => {
+  await page.goto('/?product=1&nightDim=1&sessionMinutes=1', {
+    waitUntil: 'domcontentloaded',
+    timeout: 30_000
+  })
+  await page.waitForFunction(() => window.__FT_APP_READY__ === true, {
+    timeout: 30_000
+  })
+  await expect(page.locator('html')).toHaveAttribute('data-ft-night-dim', '1')
+})

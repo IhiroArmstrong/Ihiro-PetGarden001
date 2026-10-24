@@ -81,3 +81,13 @@ html.ft-desktop-shell,
 html.ft-desktop-shell body {
   font-family: var(--font-family);
 }
+
+/* T48 · late-night scene dim (not a dark theme) */
+:root {
+  --ft-night-scene-brightness: 0.9;
+}
+
+html[data-ft-night-dim='1'] #app {
+  filter: brightness(var(--ft-night-scene-brightness));
+  transition: filter 1s ease;
+}
