@@ -163,12 +163,16 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 
 1. **默认 base = `develop`**：日常 `feature/*` / `fix/*` / `docs/*` PR **必须**显式 `--base develop`（或 UI 选 `develop`）。  
 2. **禁止默认打到 `main`**：除非用户**当回合书面**要求「开往 `main`」或「`develop` → `main` 发版 PR」。  
-3. **开完立刻核对**：`gh pr view <n> --json baseRefName`（或 PR 页 base）须为预期；若误为 `main` → **立刻改 base**（`gh pr edit` base），或在本节「关 PR」硬闸允许时关 PR 重开；禁止带着错误 base 等 CI / 催合。  
+3. **开完立刻核对**：`gh pr view <n> --json baseRefName,headRefName,title`（或 PR 页）须为预期。  
+   - 若 **base** 误为 `main` → **立刻改 base**（`gh pr edit` base），或在本节「关 PR」硬闸允许时关 PR 重开；禁止带着错误 base 等 CI / 催合。  
+   - 若 **head** 不是本任务分支名（例：标题写 T48，head 却是另一任务旁支）→ **禁止**汇报「PR 已开好」；**禁止**把该票当本任务交付。正确做法：本会话用正确 `--head` **新开**；误开的票 **只问用户**是否关（默认禁止 `gh pr close`）。  
 4. **必须显式 `--head <本任务分支>`**：`gh pr create` **禁止**省略 `--head`（否则 GitHub 用当前 checkout 分支，共用主仓并行会话时会把 A 任务的 PR 开在 B 分支头上）。与 `--base develop` **同一条命令里写全**。
 
-### 开 PR / 关 PR 硬闸（硬性 · 2026-10-24）
+### 开 PR / 关 PR 硬闸（硬性 · 2026-10-24 · 2026-10-25 补删分支）
 
-> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-open-close-gate`）。教训：**#1406** — 并行会话共用主仓、省略 `--head`，一会话把 T40 的 open PR 当「自己开错」执行 `gh pr close`，另一会话刚改完标题；未合入即被关（后已 reopen 并合入）。
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-open-close-gate`）。教训：  
+> - **#1406** — 并行会话共用主仓、省略 `--head`，一会话把 T40 的 open PR 当「自己开错」执行 `gh pr close`，另一会话刚改完标题；未合入即被关（后已 reopen 并合入）。  
+> - **#1412** — T48 开 PR 省略 `--head`，票挂在 T46 旁支上；另一会话关 #1411 后 **删除 T46 远程旁支**，GitHub 连带把未合入的 #1412 Close（未 merge）。Agent 未执行 `gh pr close 1412`，效果等同误关。
 
 **关 PR（`gh pr close`）**
 
@@ -185,6 +189,12 @@ Agent 执行 `gh pr create`（或等价开 PR）**之前**必须确认：
 **并行写（与 `git-parallel-worktree` 同读）**
 
 7. 两个及以上 Cursor 会话会 `commit` / 切分支 / 开 PR 时，**必须**各用独立 `git worktree` 目录；**禁止**共用主仓 checkout 并行写（#1406 反面教材）。只读查文档/log 可共用主仓。
+
+**删远程分支（`git push origin --delete` / `gh api DELETE …/git/refs/heads/…`）**
+
+8. **默认禁止**删除远程 `feature/*` / `fix/*` / `docs/*` 旁支，除非用户**当回合书面**写明分支名（例如「删掉远程 `feature/t46-…`」），或本会话刚关的、且 **head 仍只属于该已关票** 的旁支。  
+9. **删之前必须**：`gh pr list --head <branch> --state open --json number,title`。结果 **非空** → **停下，禁止删**；在「待你决定」列出 PR 号与标题。关一张票（如 #1411）**不等于**可以删同名旁支——旁支上可能还挂着别人的 open PR（#1412）。  
+10. **禁止**用「合理则办 / 关实验旁支 / 收尾」绕过第 9 步。本地 `git branch -D` 不触发 GitHub Close，但仍须确认远程未删。
 
 **开 PR 命令模板（日常 feature/fix/docs）**
 
