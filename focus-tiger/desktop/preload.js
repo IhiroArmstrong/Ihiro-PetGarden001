@@ -70,6 +70,9 @@ const desktopShell = {
   getAlwaysOnTop: () => ipcRenderer.invoke('desktop:always-on-top-get'),
   setAlwaysOnTop: (enabled) =>
     ipcRenderer.invoke('desktop:always-on-top-set', Boolean(enabled)),
+  getWindowLayout: () => ipcRenderer.invoke('desktop:window-layout-get'),
+  applyWindowLayout: (action) =>
+    ipcRenderer.invoke('desktop:window-layout-apply', action),
   getShellVisibility: () => ipcRenderer.invoke('desktop:shell-visibility-get'),
   onShellVisibility: (cb) => {
     if (typeof cb !== 'function') return () => {};

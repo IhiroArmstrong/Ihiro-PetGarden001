@@ -1,0 +1,41 @@
+{
+  "en": {
+    "WINDOW_LAYOUT_MENU_LABEL": "Window",
+    "WINDOW_LAYOUT_PANEL_TITLE": "Window",
+    "WINDOW_LAYOUT_COMPANION_LABEL": "Companion window",
+    "WINDOW_LAYOUT_COMPANION_HINT": "A modest window that sits beside your other work. Uses the system window, not drawn window buttons.",
+    "WINDOW_LAYOUT_FULLSCREEN_LABEL": "Sit fullscreen",
+    "WINDOW_LAYOUT_FULLSCREEN_HINT": "Enter system fullscreen. Leave with the green button or Escape.",
+    "WINDOW_LAYOUT_STATUS_REGULAR": "Regular window",
+    "WINDOW_LAYOUT_STATUS_COMPANION": "Companion window",
+    "WINDOW_LAYOUT_STATUS_FULLSCREEN": "Full screen",
+    "WINDOW_LAYOUT_SAVE_FAILED": "Could not change the window. Try again.",
+    "WINDOW_LAYOUT_CLOSE": "Close"
+  },
+  "zh": {
+    "WINDOW_LAYOUT_MENU_LABEL": "窗口",
+    "WINDOW_LAYOUT_PANEL_TITLE": "窗口",
+    "WINDOW_LAYOUT_COMPANION_LABEL": "适中陪伴窗",
+    "WINDOW_LAYOUT_COMPANION_HINT": "变成一个适中的窗口，好放在别的工作旁边。走系统窗口，不自绘红绿灯。",
+    "WINDOW_LAYOUT_FULLSCREEN_LABEL": "全屏静坐",
+    "WINDOW_LAYOUT_FULLSCREEN_HINT": "进入系统全屏。用绿色按钮或 Esc 退出。",
+    "WINDOW_LAYOUT_STATUS_REGULAR": "普通窗口",
+    "WINDOW_LAYOUT_STATUS_COMPANION": "适中陪伴窗",
+    "WINDOW_LAYOUT_STATUS_FULLSCREEN": "全屏",
+    "WINDOW_LAYOUT_SAVE_FAILED": "没能改窗口。请再试一次。",
+    "WINDOW_LAYOUT_CLOSE": "关闭"
+  },
+  "ja": {
+    "WINDOW_LAYOUT_MENU_LABEL": "ウィンドウ",
+    "WINDOW_LAYOUT_PANEL_TITLE": "ウィンドウ",
+    "WINDOW_LAYOUT_COMPANION_LABEL": "ほどよい伴走ウィンドウ",
+    "WINDOW_LAYOUT_COMPANION_HINT": "他の作業の横に置けるほどよい大きさにします。システムの窓を使い、自前の信号ボタンは描きません。",
+    "WINDOW_LAYOUT_FULLSCREEN_LABEL": "全画面で静坐",
+    "WINDOW_LAYOUT_FULLSCREEN_HINT": "システムの全画面に入ります。緑のボタンか Esc で戻れます。",
+    "WINDOW_LAYOUT_STATUS_REGULAR": "通常のウィンドウ",
+    "WINDOW_LAYOUT_STATUS_COMPANION": "ほどよい伴走ウィンドウ",
+    "WINDOW_LAYOUT_STATUS_FULLSCREEN": "全画面",
+    "WINDOW_LAYOUT_SAVE_FAILED": "ウィンドウを変えられませんでした。もう一度試してください。",
+    "WINDOW_LAYOUT_CLOSE": "閉じる"
+  }
+}

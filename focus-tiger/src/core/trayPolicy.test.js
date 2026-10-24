@@ -37,5 +37,9 @@ describe('trayPolicy', () => {
     assert.equal(trayMenuLabels('en-US').alwaysOnTop, 'Keep in front');
     assert.equal(trayMenuLabels('zh-CN').alwaysOnTop, '始终在最前');
     assert.equal(trayMenuLabels('ja').alwaysOnTop, '常に手前に表示');
+    assert.equal(trayMenuLabels('en-US').companionWindow, 'Companion window');
+    assert.equal(trayMenuLabels('zh-CN').companionWindow, '适中陪伴窗');
+    assert.equal(trayMenuLabels('en-US').sitFullscreen, 'Sit fullscreen');
+    assert.equal(trayMenuLabels('zh-CN').sitFullscreen, '全屏静坐');
   });
 });

@@ -165,6 +165,7 @@ export const PRODUCT_IDLE_MENU_VISIBILITY = Object.freeze({
   mustardSeedSealUnlocked: false,
   systemTtsAvailable: false,
   alwaysOnTopAvailable: false,
+  windowLayoutAvailable: false,
   newsletterSubmitted: false,
   scenesEntitled: false
 });

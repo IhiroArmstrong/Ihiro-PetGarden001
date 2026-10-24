@@ -57,6 +57,7 @@ import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js'
  * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
  * @property {boolean} [systemTtsAvailable] macOS Electron wide System TTS menu row
  * @property {boolean} [alwaysOnTopAvailable] Electron Keep-in-front preference row
+ * @property {boolean} [windowLayoutAvailable] Electron companion-window / fullscreen-sit row
  */
 
 /**
@@ -128,6 +129,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     handler: 'onAlwaysOnTop',
     close: true,
     stage: 'alwaysOnTop'
+  },
+  'window-layout': {
+    handler: 'onWindowLayout',
+    close: true,
+    stage: 'windowLayout'
   },
   'today-direction': { handler: 'onTodayDirection', close: true },
   'ground-exercise': { handler: 'onGroundExercise', close: true },
@@ -396,7 +402,8 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   localBackup: 'ft-narrow-stage-local-backup',
   quietTogether: 'ft-narrow-stage-quiet-together',
   focusCircle: 'ft-narrow-stage-focus-circle',
-  alwaysOnTop: 'ft-narrow-stage-always-on-top'
+  alwaysOnTop: 'ft-narrow-stage-always-on-top',
+  windowLayout: 'ft-narrow-stage-window-layout'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -407,6 +414,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   language: 'ft-wide-stage-language',
   systemTts: 'ft-wide-stage-system-tts',
   alwaysOnTop: 'ft-wide-stage-always-on-top',
+  windowLayout: 'ft-wide-stage-window-layout',
   localBackup: 'ft-wide-stage-local-backup',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -781,6 +789,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
           proxy: 'always-on-top',
           labelKey: 'ALWAYS_ON_TOP_MENU_LABEL',
           testId: 'idle-always-on-top'
+        }
+      : null,
+    visibility.windowLayoutAvailable
+      ? {
+          proxy: 'window-layout',
+          labelKey: 'WINDOW_LAYOUT_MENU_LABEL',
+          testId: 'idle-window-layout'
         }
       : null,
     {

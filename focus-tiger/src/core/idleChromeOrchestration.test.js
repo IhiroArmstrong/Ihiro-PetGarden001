@@ -444,6 +444,25 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
+  it('includes window-layout on wide and narrow when available', () => {
+    assert.ok(
+      !listSecondaryChromeEntries('wide-more', allOn).some(
+        (e) => e.proxy === 'window-layout'
+      )
+    );
+    const on = { ...allOn, windowLayoutAvailable: true };
+    assert.ok(
+      listSecondaryChromeEntries('wide-more', on).some(
+        (e) => e.proxy === 'window-layout'
+      )
+    );
+    assert.ok(
+      listSecondaryChromeEntries('narrow-drawer', on).some(
+        (e) => e.proxy === 'window-layout'
+      )
+    );
+  });
+
   it('wide more includes system-tts only when systemTtsAvailable', () => {
     const off = listSecondaryChromeEntries('wide-more', allOn);
     assert.ok(!off.some((e) => e.proxy === 'system-tts'));

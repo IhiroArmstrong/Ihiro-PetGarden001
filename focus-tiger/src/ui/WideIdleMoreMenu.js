@@ -26,6 +26,7 @@ import {
 } from '../core/desktopCompanionGate.js';
 import { canUseSystemTts } from '../core/systemTtsBridge.js';
 import { canUseAlwaysOnTop } from '../core/alwaysOnTopBridge.js';
+import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
@@ -117,6 +118,7 @@ export class WideIdleMoreMenu {
      *     onLanguage?: () => void,
      *     onSystemTts?: () => void,
      *     onAlwaysOnTop?: () => void,
+     *     onWindowLayout?: () => void,
    *     onFiveMoments?: () => void,
      *     onJourneyLog?: () => void,
      *     onYinCoin?: () => void,
@@ -987,7 +989,8 @@ export class WideIdleMoreMenu {
       systemTtsAvailable: canUseSystemTts({
         widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
       }),
-      alwaysOnTopAvailable: canUseAlwaysOnTop()
+      alwaysOnTopAvailable: canUseAlwaysOnTop(),
+      windowLayoutAvailable: canUseWindowLayout()
     });
 
     this.listEl.innerHTML = '';
