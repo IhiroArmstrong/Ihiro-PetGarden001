@@ -18,6 +18,15 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="stylesheet" href="/src/styles/design-tokens.css" />
+    <script>
+      try {
+        if (globalThis.desktopShell && globalThis.desktopShell.isDesktop) {
+          document.documentElement.classList.add('ft-desktop-shell');
+        }
+      } catch (_) {
+        /* Web build: no preload bridge */
+      }
+    </script>
     <style>
       * {
         margin: 0;
@@ -30,7 +39,7 @@
         height: 100%;
         overflow: hidden;
         background: #e8e6e1;
-        font-family: 'Noto Sans SC', system-ui, sans-serif;
+        font-family: var(--font-family, 'Noto Sans SC', system-ui, sans-serif);
       }
       #app {
         position: relative;

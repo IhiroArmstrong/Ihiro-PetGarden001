@@ -385,6 +385,7 @@ import {
   selectPresenceEndConsumers
 } from './core/sessionPresenceConsumers.js';
 import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime } from './core/desktopShell.js';
+import { applyDesktopShellTypographyClass } from './core/desktopSystemTypography.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import { bindDesktopPreferencesShortcut } from './core/desktopPreferencesShortcut.js';
 import {
@@ -643,6 +644,7 @@ function showDevLabToast(message, durationMs = 8000) {
 
 async function init() {
   ensureOverlayEscapeListener();
+  applyDesktopShellTypographyClass();
   // Locale before UI: restore ready preference (default en).
   bootLocaleFromPreference();
   migrateColdStartGoalOptionsSeen(
