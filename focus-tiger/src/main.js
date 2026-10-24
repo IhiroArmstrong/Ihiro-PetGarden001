@@ -153,6 +153,7 @@ import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
 import { AlwaysOnTopPreferenceUI } from './ui/AlwaysOnTopPreferenceUI.js';
+import { WindowLayoutPreferenceUI } from './ui/WindowLayoutPreferenceUI.js';
 import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
@@ -1171,6 +1172,8 @@ async function init() {
   let systemTtsPreferenceUI = null;
   /** @type {AlwaysOnTopPreferenceUI | null} */
   let alwaysOnTopPreferenceUI = null;
+  /** @type {WindowLayoutPreferenceUI | null} */
+  let windowLayoutPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
   const reminderQuotaManager = new ReminderQuotaManager();
   const mindfulToast = new MindfulAcknowledgeToast(
@@ -1502,6 +1505,20 @@ async function init() {
     }
   });
   window.__alwaysOnTopPreference = alwaysOnTopPreferenceUI;
+  windowLayoutPreferenceUI = new WindowLayoutPreferenceUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-window-layout');
+      document.body.classList.remove('ft-narrow-stage-window-layout');
+    }
+  });
+  window.__windowLayoutPreference = windowLayoutPreferenceUI;
+  windowLayoutPreferenceUI = new WindowLayoutPreferenceUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-window-layout');
+      document.body.classList.remove('ft-narrow-stage-window-layout');
+    }
+  });
+  window.__windowLayoutPreference = windowLayoutPreferenceUI;
   const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-local-backup');
@@ -4108,6 +4125,12 @@ async function init() {
     onAlwaysOnTop: () => {
       alwaysOnTopPreferenceUI?.openPanel();
     },
+    onWindowLayout: () => {
+      windowLayoutPreferenceUI?.openPanel();
+    },
+    onWindowLayout: () => {
+      windowLayoutPreferenceUI?.openPanel();
+    },
     onTodayDirection: () => {
       openTodayDirectionManual();
     },
@@ -4241,6 +4264,8 @@ async function init() {
       languagePreferenceUI.closePanel();
       systemTtsPreferenceUI?.closePanel();
       alwaysOnTopPreferenceUI?.closePanel();
+      windowLayoutPreferenceUI?.closePanel();
+      windowLayoutPreferenceUI?.closePanel();
       localPracticeDataPanelUI.closePanel();
       quietTogetherPanelUI.closePanel();
       focusCirclePanelUI.closePanel();

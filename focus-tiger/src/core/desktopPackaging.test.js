@@ -77,6 +77,7 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.ok(desktopPkg.build.files.includes('checkoutReturnDelivery.js'));
     assert.ok(desktopPkg.build.files.includes('floatingMarker/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('alwaysOnTop/**/*.js'));
+    assert.ok(desktopPkg.build.files.includes('windowLayout/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('native/**/*.swift'));
   });
 
@@ -91,6 +92,8 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:open-preferences/);
     assert.match(preload, /desktop:always-on-top-get/);
     assert.match(preload, /desktop:always-on-top-set/);
+    assert.match(preload, /desktop:window-layout-get/);
+    assert.match(preload, /desktop:window-layout-apply/);
   });
 
   it('macOS Application menu wires Cmd+, to open Preferences', () => {
@@ -100,6 +103,11 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(mainSrc, /desktop:always-on-top-get/);
     assert.match(mainSrc, /desktop:always-on-top-set/);
     assert.match(mainSrc, /setAlwaysOnTop/);
+    assert.match(mainSrc, /desktop:window-layout-get/);
+    assert.match(mainSrc, /desktop:window-layout-apply/);
+    assert.match(mainSrc, /setFullScreen/);
+    assert.doesNotMatch(mainSrc, /frame:\s*false/);
+    assert.doesNotMatch(mainSrc, /titleBarStyle:\s*['"]hidden/);
   });
 
   it('preload is CommonJS so sandboxed Electron can parse it as a script', () => {

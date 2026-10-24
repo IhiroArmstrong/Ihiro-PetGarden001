@@ -19,6 +19,7 @@ import {
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { canUseAlwaysOnTop } from '../core/alwaysOnTopBridge.js';
+import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
@@ -933,7 +934,8 @@ export class NarrowIdleShell {
       contemplativeArchiveSealMenus: resolveContemplativeArchiveSeal(
         typeof localStorage !== 'undefined' ? localStorage : null
       ).menuEntries,
-      alwaysOnTopAvailable: canUseAlwaysOnTop()
+      alwaysOnTopAvailable: canUseAlwaysOnTop(),
+      windowLayoutAvailable: canUseWindowLayout()
     });
 
     this.listEl.innerHTML = '';

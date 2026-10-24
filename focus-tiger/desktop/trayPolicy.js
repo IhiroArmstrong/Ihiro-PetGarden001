@@ -32,7 +32,7 @@ export function isTrayHideReason(reason) {
  * Native tray labels. Web i18n is not available in the main process.
  *
  * @param {string} [locale]
- * @returns {{ show: string, quit: string, alwaysOnTop: string, floatingMarker: string, hideInFullScreen: string }}
+ * @returns {{ show: string, quit: string, alwaysOnTop: string, companionWindow: string, sitFullscreen: string, floatingMarker: string, hideInFullScreen: string }}
  */
 export function trayMenuLabels(locale = '') {
   const tag = String(locale || '').toLowerCase();
@@ -41,6 +41,8 @@ export function trayMenuLabels(locale = '') {
       show: '表示',
       quit: '終了',
       alwaysOnTop: '常に手前に表示',
+      companionWindow: 'ほどよい伴走ウィンドウ',
+      sitFullscreen: '全画面で静坐',
       floatingMarker: 'フローティング同伴を表示',
       hideInFullScreen: 'フルスクリーンでは隠す'
     };
@@ -50,6 +52,8 @@ export function trayMenuLabels(locale = '') {
       show: '显示',
       quit: '退出',
       alwaysOnTop: '始终在最前',
+      companionWindow: '适中陪伴窗',
+      sitFullscreen: '全屏静坐',
       floatingMarker: '显示悬浮陪伴',
       hideInFullScreen: '全屏时隐藏'
     };
@@ -58,6 +62,8 @@ export function trayMenuLabels(locale = '') {
     show: 'Show',
     quit: 'Quit',
     alwaysOnTop: 'Keep in front',
+    companionWindow: 'Companion window',
+    sitFullscreen: 'Sit fullscreen',
     floatingMarker: 'Show floating companion',
     hideInFullScreen: 'Hide while fullscreen'
   };

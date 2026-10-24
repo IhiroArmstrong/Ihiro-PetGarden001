@@ -18,7 +18,8 @@ import {
   protocol,
   shell,
   Tray,
-  globalShortcut
+  globalShortcut,
+  screen
 } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -48,6 +49,13 @@ import {
   loadAlwaysOnTopPrefs,
   saveAlwaysOnTopPrefs
 } from './alwaysOnTop/alwaysOnTopPolicy.js';
+import {
+  companionBoundsForWorkArea,
+  isCompanionBounds,
+  loadWindowLayoutPrefs,
+  planWindowLayout,
+  saveWindowLayoutPrefs
+} from './windowLayout/windowLayoutPolicy.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -81,6 +89,8 @@ let tray = null;
 /** @type {ReturnType<typeof createFloatingMarkerRuntime> | null} */
 let floatingMarkerRuntime = null;
 let alwaysOnTopEnabled = false;
+/** @type {ReturnType<typeof loadWindowLayoutPrefs>} */
+let windowLayoutPrefs = { lastLayout: 'regular', normalBounds: null };
 let isQuitting = false;
 let shellHidden = false;
 let shellHideReason = HIDE_REASON_NONE;
@@ -343,6 +353,7 @@ function openPreferencesFromMenu() {
 
 function installMacApplicationMenu() {
   if (process.platform !== 'darwin') return;
+  const labels = trayMenuLabels(app.getLocale());
 
   const template = [
     {
@@ -367,7 +378,24 @@ function installMacApplicationMenu() {
     },
     { role: 'editMenu' },
     { role: 'viewMenu' },
-    { role: 'windowMenu' }
+    {
+      role: 'window',
+      submenu: [
+        {
+          label: labels.companionWindow,
+          click: () => applyWindowLayoutAction('companion')
+        },
+        {
+          label: labels.sitFullscreen,
+          click: () => applyWindowLayoutAction('fullscreen')
+        },
+        { type: 'separator' },
+        { role: 'minimize' },
+        { role: 'zoom' },
+        { type: 'separator' },
+        { role: 'front' }
+      ]
+    }
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
@@ -383,6 +411,65 @@ function persistAlwaysOnTop(enabled) {
   applyAlwaysOnTop();
   applyTrayMenu();
   return alwaysOnTopEnabled;
+}
+
+function describeWindowLayout(win = mainWindow) {
+  if (!win || win.isDestroyed()) return 'regular';
+  if (win.isFullScreen()) return 'fullscreen';
+  if (isCompanionBounds(win.getBounds())) return 'companion';
+  return 'regular';
+}
+
+function currentWorkArea(win = mainWindow) {
+  if (!win || win.isDestroyed()) {
+    return screen.getPrimaryDisplay().workArea;
+  }
+  return screen.getDisplayMatching(win.getBounds()).workArea;
+}
+
+function applyPlannedBounds(win, bounds) {
+  if (!win || win.isDestroyed() || !bounds) return;
+  if (Number.isFinite(bounds.x) && Number.isFinite(bounds.y)) {
+    win.setBounds(bounds);
+    return;
+  }
+  win.setSize(bounds.width, bounds.height);
+}
+
+function applyWindowLayoutAction(action) {
+  showMainWindow();
+  const win = mainWindow;
+  if (!win || win.isDestroyed()) return { layout: 'regular', saved: false };
+  const plan = planWindowLayout({
+    action: action === 'fullscreen' ? 'fullscreen' : 'companion',
+    isFullScreen: win.isFullScreen(),
+    currentBounds: win.getBounds(),
+    prefs: windowLayoutPrefs,
+    workArea: currentWorkArea(win)
+  });
+  const commitPrefs = () => {
+    windowLayoutPrefs = saveWindowLayoutPrefs(app.getPath('userData'), plan.persist);
+    applyTrayMenu();
+  };
+  const finishGeometry = () => {
+    applyPlannedBounds(win, plan.setBounds);
+    commitPrefs();
+  };
+  if (plan.waitForLeaveFullScreen && win.isFullScreen()) {
+    win.once('leave-full-screen', () => {
+      applyPlannedBounds(win, plan.setBounds);
+    });
+    win.setFullScreen(false);
+    commitPrefs();
+    return { layout: plan.layout, saved: true };
+  }
+  if (plan.setFullScreen === true && !win.isFullScreen()) {
+    win.setFullScreen(true);
+  } else if (plan.setFullScreen === false && win.isFullScreen()) {
+    win.setFullScreen(false);
+  }
+  finishGeometry();
+  return { layout: describeWindowLayout(win), saved: true };
 }
 
 function applyTrayMenu() {
@@ -402,6 +489,14 @@ function applyTrayMenu() {
       click: (item) => {
         persistAlwaysOnTop(item.checked);
       }
+    },
+    {
+      label: labels.companionWindow,
+      click: () => applyWindowLayoutAction('companion')
+    },
+    {
+      label: labels.sitFullscreen,
+      click: () => applyWindowLayoutAction('fullscreen')
     }
   ];
   if (process.platform === 'darwin' && floatingMarkerRuntime) {
@@ -467,6 +562,9 @@ function createMainWindow() {
     shellHidden = false;
     shellHideReason = HIDE_REASON_NONE;
     applyAlwaysOnTop(win);
+    if (windowLayoutPrefs.lastLayout === 'companion') {
+      applyPlannedBounds(win, companionBoundsForWorkArea(currentWorkArea(win)));
+    }
     win.show();
     notifyShellVisibility(win);
   });
@@ -575,6 +673,10 @@ if (gotSingleInstanceLock) {
   ipcMain.handle('desktop:always-on-top-set', (_event, enabled) =>
     persistAlwaysOnTop(enabled)
   );
+  ipcMain.handle('desktop:window-layout-get', () => describeWindowLayout());
+  ipcMain.handle('desktop:window-layout-apply', (_event, action) =>
+    applyWindowLayoutAction(action === 'fullscreen' ? 'fullscreen' : 'companion')
+  );
   ipcMain.handle('desktop:shell-visibility-get', () => visibilityPayload());
 
   ipcMain.on('desktop:voice-input-probe-allowed', (event) => {
@@ -675,6 +777,7 @@ if (gotSingleInstanceLock) {
   });
 
   alwaysOnTopEnabled = loadAlwaysOnTopPrefs(app.getPath('userData')).enabled;
+  windowLayoutPrefs = loadWindowLayoutPrefs(app.getPath('userData'));
   installMacApplicationMenu();
   floatingMarkerRuntime = createFloatingMarkerRuntime({
     userDataDir: app.getPath('userData'),
