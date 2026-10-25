@@ -18,6 +18,8 @@
  *   npx wrangler kv namespace create GROWTH_METRICS_KV --preview
  *   npx wrangler kv namespace create TASTE_LAYER_KV
  *   npx wrangler kv namespace create TASTE_LAYER_KV --preview
+ *   npx wrangler kv namespace create T54_RESEARCH_KV
+ *   npx wrangler kv namespace create T54_RESEARCH_KV --preview
  *
  * Secrets (never commit):
  *   npx wrangler secret put STRIPE_SECRET_KEY

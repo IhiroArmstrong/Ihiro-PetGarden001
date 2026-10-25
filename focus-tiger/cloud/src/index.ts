@@ -46,6 +46,7 @@ import { handleSubscribeNewsletter } from "./routes/subscribeNewsletter";
 import { handleUnsubscribeNewsletter } from "./routes/unsubscribeNewsletter";
 import { handleYpePersonalizationIngest } from "./routes/ypePersonalizationIngest";
 import { handleYpePersonalizationDelete } from "./routes/ypePersonalizationDelete";
+import { handleT54ResearchIngest } from "./routes/t54ResearchIngest";
 import { handleDesktopCheckoutReturn } from "./routes/desktopCheckoutReturn";
 import { handleLanternPresence } from "./routes/lanternPresence";
 import { handleFocusCircle } from "./routes/focusCircle";
@@ -103,6 +104,7 @@ export default {
 				url.pathname === "/api/monetization-funnel-ingest" ||
 				url.pathname === "/api/ype-personalization-ingest" ||
 				url.pathname === "/api/ype-personalization-delete" ||
+				url.pathname === "/api/t54-research-ingest" ||
 				url.pathname === "/api/growth-metrics-config" ||
 				url.pathname === "/api/lantern-presence" ||
 				url.pathname === "/api/focus-circle" ||
@@ -630,6 +632,16 @@ export default {
 				await handleYpePersonalizationDelete(request, env),
 				origin,
 			);
+		}
+
+		if (url.pathname === "/api/t54-research-ingest") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(await handleT54ResearchIngest(request, env), origin);
 		}
 
 		if (url.pathname === "/api/lantern-presence") {

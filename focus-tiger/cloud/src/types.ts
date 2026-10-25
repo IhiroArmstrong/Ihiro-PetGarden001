@@ -27,6 +27,8 @@ export interface Env {
 	GROWTH_METRICS_KV: KVNamespace;
 	/** Taste-layer weight pools + Honesty long-sit threshold (not growth / YPE). */
 	TASTE_LAYER_KV: KVNamespace;
+	/** T54 de-identified study rows only (not YPE / backup / funnel / tip). Bind on deploy. */
+	T54_RESEARCH_KV?: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;
