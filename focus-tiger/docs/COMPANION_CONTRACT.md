@@ -5,7 +5,7 @@
 > **索引**：`RULES_INDEX.md` → `companion-contract`。  
 > **Brief**：[`task-briefs/task-companion-contract.md`](./task-briefs/task-companion-contract.md)。  
 > **PR-1 代码锚点盘点**：[`companion-contract-inventory.md`](./companion-contract-inventory.md)（按通道；禁止改成 L0–L3 阶梯）。  
-> **日期**：2026-10-25（PR-2 契约正文）。
+> **日期**：2026-10-25（PR-2 契约正文；PR-3 字面检查）。
 
 ---
 
@@ -84,14 +84,16 @@ Quiet Line、Calm Action Wisdom、Moment Whisper 的露出方式、语气与禁�
 ```
 
 - **只**在 `InterventionOrchestrator.test.js` 扫 `locales/slices/awaken-invite.json`（en/zh/ja）。  
-- **不是** C-01–C-10 全表。其它开口通道与三文案池**没有**接这条正则（盘点 S-01、S-02）。
+- **不是** C-01–C-10 全表。运行时邀请切片仍走这条窄正则。
 
-**PR-3 计划（本 PR 不实现）**
+**PR-3 字面检查（已接线 · 不改运行时）**
 
-1. 把契约禁词表扩到现网用户可见字符串；存量命中走豁免表（只减不增，沿用 #1188）。  
-2. **扫描顺序**：**先扫 Re-focus 池** `REFOCUS_ACKNOWLEDGE_*`（离 C-01/C-04 最近、现网无禁词扫描）。  
-3. 再覆盖 Quiet Line、Calm Action、Moment Whisper、结束分钟句、归来问候等（见盘点 §3、§5）。  
-4. 脚本输出须重复 §A「诚实边界」：**字面检查管不到倾诉里现场生成的句子**（Confide 本地模型输出）；通过检查 ≠ 已验证。
+1. `npm run check:companion-contract`（并入 `docs:check`）：契约禁词表扫现网固定文案；存量命中走豁免表（只减不增）。  
+2. **扫描顺序**：**先扫 Re-focus 池** `REFOCUS_ACKNOWLEDGE_*`，再 Quiet Line、Calm Action、Moment Whisper、结束分钟句、归来问候、邀请切片。  
+3. 脚本每次输出须重复 §A「诚实边界」：**字面检查管不到倾诉里现场生成的句子**（Confide 本地模型输出）；通过检查 ≠ 已验证。  
+4. 红线样本集与两个比率仍是 **PR-4**；本检查器对样本集报告 `n/a (PR-4)`。
+
+**存量报告（2026-10-25 · 本 PR 基线）**：Re-focus 9、邀请切片 15、Quiet Line 87、Calm Action 116、Moment Whisper 15、结束分钟句 3、归来问候 9。禁词命中 **0**。豁免表空（只减不增）。这不是「已验证」声明。
 
 ### C.3 允许的近邻说法（防误拦）
 
@@ -101,14 +103,14 @@ Quiet Line、Calm Action Wisdom、Moment Whisper 的露出方式、语气与禁�
 |---|---|---|
 | 近日同坐环 / Recent days / 一天只亮一点 | 练习事实，非 C-02 打分 | `PracticeDaysStore.js`；盘点 §3.2 |
 | 莲花计入分钟、成长旅程圆点 | 练习事实，非五维分数 | `LotusPondStore`；`GROWTH_JOURNEY.md` |
-| 观察式「注意力出去走了一会儿」类 Re-focus 句 | 观察离座，非诊断、非愧疚账（仍须 PR-3 字面扫本池） | `REFOCUS_ACKNOWLEDGE_*` |
+| 观察式「注意力出去走了一会儿」类 Re-focus 句 | 观察离座，非诊断、非愧疚账（PR-3 字面扫本池） | `REFOCUS_ACKNOWLEDGE_*` |
 | 归来问候三锚句（Come back / Welcome back / You returned 及 zh/ja 对应） | **C-04**：允许问候、禁止带账 | 盘点 §1「归来问候」 |
 | `GROWTH_JOURNEY_PAUSED`（歇过） | 练习事实空档标，不是问候带账 | `growthJourneyDetail.js` |
 | 结束低语观察分钟 | 练习事实叙述（**C-02**） | `SESSION_END_OBSERVED_MINUTES` |
 
-### C.4 存量缺口（只记录，PR-2 不修）
+### C.4 存量缺口
 
-见盘点 §5（S-01–S-05）。改文案属 B 类用户可见变更，另走 Brief 与点头。
+S-01 / S-02（无契约级扫描）由本 PR 的检查器覆盖。S-03–S-05 仍见盘点 §5。改用户可见文案属 B 类，另走 Brief 与点头。
 
 ---
 
@@ -135,13 +137,13 @@ PR-4 交付约 **40 条**样本（英文为主、日文次之），**不含危�
 
 | | |
 |---|---|
-| **计划** | PR-2：`COMPANION_CONTRACT.md` + RULES_INDEX 链入；与 PR-1 盘点一致；并行通道、不画阶梯；C-04 覆盖邀请/Re-focus/归来问候；写明 Confide 现场生成不受字面检查约束。 |
-| **现状** | 契约四节已写；零 `src/` 改动。 |
-| **还差** | PR-3 禁词扫描（**先 Re-focus 池**）；PR-4 样本集 + 检查器回归；`npm run check:companion-contract`（PR-3 起）；治理账本若未登记 T55 见队列治理旁支（不混进本 PR 若已 #1420 合入则仅核对）。 |
-| **下一步** | PO 过目 PR-2 → 新 PR 开 PR-3。不挡 T34。 |
+| **计划** | PR-3：禁词表 + 现网字符串扫描 + 豁免表；`npm run check:companion-contract`；先 Re-focus 池。 |
+| **现状** | 检查器已扫开口通道固定文案；豁免只减不增；零 `src/` 运行时改动。 |
+| **还差** | PR-4 样本集 + 坏样本命中率 / 放行样本放行率达标线（PO 定）。 |
+| **下一步** | PO 过目本 PR 存量报告 → 开 PR-4。不挡 T34。 |
 
 ---
 
-## 冲突扫描（PR-2 文档）
+## 冲突扫描（PR-3 检查器）
 
-对照 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 与场景 **B**（Re-focus）、**X**（主动 Recover）、**Y**（Moment Whisper）、觉照邀请、Arrival 许可句、归来问候三表面。本 PR 只立 SSOT，不改路径。**强度**：无新仪式。**语气**：无新用户可见文案。**职责**：通道仍并行，未写成阶梯。
+对照 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 与场景 **B**（Re-focus）、**X**（主动 Recover）、**Y**（Moment Whisper）、觉照邀请、Arrival 许可句、归来问候三表面。本 PR 只加静态扫描，不改路径。**强度**：无新仪式。**语气**：无新用户可见文案。**职责**：通道仍并行，未写成阶梯。
