@@ -1,0 +1,1 @@
+| 冷启动声音入口 Brief | 纯文档 | 待人工测试 | **本条只验收 Brief 锁稿**，不测运行时。打开 `task-briefs/task-cold-start-sound-entry.md` → 核对：主入口只有音符；宽/窄英文两句；Voice 网页整块隐藏；无总开关；菜单一行 Sound；倾诉朗读不并入。点头口令「按本 Brief 开工」后另开实现旁支。 | **2026-10-25 点头**：方案书面确认；本 PR 只落 Brief。 | — | — | `task-cold-start-sound-entry.md` | 2026-10-25 |
