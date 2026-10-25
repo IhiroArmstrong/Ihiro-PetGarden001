@@ -8,10 +8,12 @@ import assert from 'node:assert/strict';
 import {
   collectLiveStrings,
   evaluateCompanionContract,
+  evaluateCompanionContractSamples,
   runCompanionContractCheck
 } from './check-companion-contract.js';
 import { COMPANION_CONTRACT_HONESTY, matchForbiddenPatterns } from './companion-contract-forbidden.js';
 import { COMPANION_CONTRACT_EXEMPTIONS } from './companion-contract-exemptions.js';
+import { COMPANION_CONTRACT_SAMPLES } from './companion-contract-samples.js';
 
 test('honesty banner is fixed and refuses verified-behavior wording', () => {
   assert.match(COMPANION_CONTRACT_HONESTY, /Confide live model output is not covered/);
@@ -97,11 +99,29 @@ test('exempted hit passes at the listed id', () => {
   assert.equal(result.ok, true, result.errors.join('; '));
 });
 
-test('sample rates stay split and n/a until PR-4', () => {
+test('sample rates stay split and meet the proposed 1.0/1.0 gate', () => {
   const result = evaluateCompanionContract({ strings: [], exemptions: [] });
-  assert.equal(result.sample_bad_hit_rate, 'n/a (PR-4)');
-  assert.equal(result.sample_allow_pass_rate, 'n/a (PR-4)');
-  assert.notEqual(result.sample_bad_hit_rate, result.sample_allow_pass_rate + result.sample_bad_hit_rate);
+  assert.equal(result.sample_bad_hit_rate, '34/34');
+  assert.equal(result.sample_allow_pass_rate, '6/6');
+  assert.notEqual(result.sample_bad_hit_rate, result.sample_allow_pass_rate);
+  assert.equal(result.ok, true, result.errors.join('; '));
+});
+
+test('sample set is 40 rows, no C-10, fields complete', () => {
+  assert.equal(COMPANION_CONTRACT_SAMPLES.length, 40);
+  const report = evaluateCompanionContractSamples();
+  assert.deepEqual(report.errors, []);
+  assert.ok(COMPANION_CONTRACT_SAMPLES.every((row) => row.category !== 'C-10'));
+});
+
+test('a missed bad sample drops bad-hit rate without mixing allow-pass', () => {
+  const mutated = COMPANION_CONTRACT_SAMPLES.map((row, index) =>
+    index === 0 ? { ...row, utterance: 'Hello there.' } : row
+  );
+  const report = evaluateCompanionContractSamples(mutated);
+  assert.equal(report.sample_bad_hit_rate, '33/34');
+  assert.equal(report.sample_allow_pass_rate, '6/6');
+  assert.ok(report.errors.some((err) => /cc-c01-01/.test(err)));
 });
 
 test('live product copy matches exemption caps', () => {
