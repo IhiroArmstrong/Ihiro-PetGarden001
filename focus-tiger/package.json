@@ -24,6 +24,7 @@
     "check:z-index": "node scripts/z-index-registry-check.js",
     "check:z-index-literals": "node --test scripts/z-index-literal-check.test.js && node scripts/z-index-literal-check.js",
     "check:glass-card-roots": "node --test scripts/check-glass-card-roots.test.js && node scripts/check-glass-card-roots.js",
+    "check:companion-contract": "node --test scripts/check-companion-contract.test.js && node scripts/check-companion-contract.js",
     "test:glass-card-visual": "playwright test e2e/glass-card-visual-guardrail.spec.js --project=chromium --grep \"warm sanctuary glass\"",
     "docs:sync": "node scripts/docs-sync.js",
     "copyright:header-check": "node scripts/copyright-header.js",
