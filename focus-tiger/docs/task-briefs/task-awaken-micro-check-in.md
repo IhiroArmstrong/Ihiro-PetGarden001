@@ -1,6 +1,6 @@
 # Task Brief · T52 觉照微打卡（你自己说感受）
 
-> **状态（2026-10-23）**：Brief 待点头。依赖 **T51** 邀请表面或独立角落触点；不得阻塞 T51 合入。  
+> **状态（2026-10-25）**：PO 已点头开工（按本 Brief）。依赖 **T51**（#1403 已合）。  
 > **类**：B 类。  
 > **口径**：`DESIGN.md`「觉照邀请」第 3 条。
 
@@ -29,12 +29,12 @@
 
 ## 实现范围
 
-- [ ] 三种值：`ease` / `restless` / `tired`（对内 id；用户可见文案 locale，不出现 anxiety）。  
-- [ ] 存储：本机 `localStorage` 或 SQLite 旁路表 `checkin {sessionId, ts, label}`；**不**上传。  
-- [ ] 结束：Rise / 达标进 Reflection 前或 Reflection 底一条可选三钮；可跳过。  
-- [ ] 中途：仅 Focusing；与 T51 邀请互斥（同时只出一个）。  
-- [ ] 单测：互斥、日上限、跳过、禁止定性词。  
-- [ ] e2e：结束路径可见三钮，点一个后消失且不挡 Reflection。
+- [x] 三种值：`ease` / `restless` / `tired`（对内 id；用户可见文案 locale，不出现 anxiety）。  
+- [x] 存储：本机 `localStorage` `focus-tiger.awaken-check-ins.v1` `{sessionId, ts, label, phase}`；**不**上传。  
+- [x] 结束：Reflection 底一条可选三钮；可跳过。  
+- [x] 中途：仅 Focusing；与 T51 邀请互斥（同时只出一个）。  
+- [x] 单测：互斥、日上限、禁止定性词。  
+- [x] e2e：结束路径可见三钮，点一个后消失且不挡 Reflection。
 
 ## 变体矩阵
 

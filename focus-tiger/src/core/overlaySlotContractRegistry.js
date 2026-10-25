@@ -35,6 +35,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   MOMENT_WHISPER: 'moment-whisper',
   FOCUS_AWARENESS: 'focus-awareness',
   AWAKEN_INVITE: 'awaken-invite',
+  AWAKEN_CHECK_IN: 'awaken-check-in',
   CALM_ACTION_RECOVER: 'calm-action-recover',
   CALM_ACTION_ARRIVE: 'calm-action-arrive',
   TRANSITION_MOMENT: 'transition-moment',
@@ -508,6 +509,16 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     snapshotField: 'awakenInviteOpen'
   }),
   contract({
+    id: OVERLAY_SOURCES.AWAKEN_CHECK_IN,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 24,
+    readers:
+      'AwakenCheckInUI mid bar (Focusing; mutex with awaken-invite; end row lives in Reflection)',
+    blocksIdleYinTap: false,
+    blocksEnterSleep: false,
+    snapshotField: 'awakenCheckInOpen'
+  }),
+  contract({
     id: OVERLAY_SOURCES.CALM_ACTION_RECOVER,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
@@ -666,6 +677,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'MomentWhisperUI.js': [OVERLAY_SOURCES.MOMENT_WHISPER],
   'FocusAwarenessCardUI.js': [OVERLAY_SOURCES.FOCUS_AWARENESS],
   'AwakenInviteUI.js': [OVERLAY_SOURCES.AWAKEN_INVITE],
+  'AwakenCheckInUI.js': [OVERLAY_SOURCES.AWAKEN_CHECK_IN],
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
   'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],
   'TransitionMomentUI.js': [OVERLAY_SOURCES.TRANSITION_MOMENT],

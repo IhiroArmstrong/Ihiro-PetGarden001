@@ -594,6 +594,11 @@ import { GroundExerciseChoiceUI } from './ui/GroundExerciseChoiceUI.js';
 import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
 import { RESET_ROUTES } from './ui/resetPracticeRoutes.js';
 import { AwakenInviteUI } from './ui/AwakenInviteUI.js';
+import { AwakenCheckInUI } from './ui/AwakenCheckInUI.js';
+import {
+  decideAwakenEndCheckIn,
+  decideAwakenMidCheckIn
+} from './core/AwakenCheckInOrchestrator.js';
 import { InterventionOrchestrator } from './core/InterventionOrchestrator.js';
 import {
   createHintsSeenStore,
@@ -1269,6 +1274,7 @@ async function init() {
         displayEligible: event?.displayEligible === true,
         refocusSlotConsumed: after > 0
       });
+      tryShowAwakenMidCheckIn({ mutationCandidate: true });
     }
   });
   attentionSignals.bind();
@@ -1706,10 +1712,16 @@ async function init() {
   let transitionMomentSlotHeld = false;
   let recoverResetPracticeSlotHeld = false;
   let awakenInviteSlotHeld = false;
+  let awakenCheckInSlotHeld = false;
   /** @type {RecoverResetPracticeUI | null} */
   let recoverResetPracticeUI = null;
   /** @type {AwakenInviteUI | null} */
   let awakenInviteUI = null;
+  /** @type {AwakenCheckInUI | null} */
+  let awakenCheckInUI = null;
+  /** @type {string} */
+  let currentAwakenSitSessionId = '';
+  let endAwakenCheckInOffered = false;
   /** @type {GroundExerciseChoiceUI | null} */
   let groundExerciseChoiceUI = null;
 
@@ -1783,7 +1795,8 @@ async function init() {
       intent: 'show',
       snapshot: buildLiveOverlaySnapshot({
         recoverResetPracticeOpen: false,
-        awakenInviteOpen: false
+        awakenInviteOpen: false,
+        awakenCheckInOpen: false
       })
     });
     if (!decision.canShow) return false;
@@ -1796,6 +1809,23 @@ async function init() {
     if (!recoverResetPracticeSlotHeld) return;
     recoverResetPracticeSlotHeld = false;
     syncIdleYinTap();
+  }
+
+  function requestAwakenCheckInOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.AWAKEN_CHECK_IN,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({ awakenCheckInOpen: false })
+    });
+    if (!decision.canShow) return false;
+    awakenCheckInSlotHeld = true;
+    return true;
+  }
+
+  function releaseAwakenCheckInOverlaySlot() {
+    if (!awakenCheckInSlotHeld) return;
+    awakenCheckInSlotHeld = false;
   }
 
   function requestAwakenInviteOverlaySlot() {
@@ -1822,29 +1852,6 @@ async function init() {
     if (stateManager.state === STATES.CELEBRATE) return true;
     const toast = document.getElementById('mindful-acknowledge-toast');
     return Boolean(toast && toast.style.opacity === '1');
-  }
-
-  function tryShowAwakenInvite(input) {
-    if (!awakenInviteUI) return false;
-    if (stateManager.state !== STATES.FOCUSING) return false;
-    const companionMode =
-      focusSession.companionMode ||
-      bootHonestyCompanion.companionModePicker.getSelectedMode();
-    const decision = awakenOrchestrator.decide({
-      ...input,
-      focusing: true,
-      companionMode,
-      trayHidden: attentionSignals.hideReason === 'tray',
-      yieldBusy: isAwakenInviteYieldBusy(),
-      inviteVisible: awakenInviteUI.isVisible()
-    });
-    if (!decision.show) return false;
-    focusAwarenessCardUI.hide({ immediate: true });
-    const shown = awakenInviteUI.tryShow(decision.kind);
-    if (!shown) return false;
-    awakenOrchestrator.noteInviteShown();
-    if (input.kind === 'extend') awakenOrchestrator.markExtendOffered();
-    return true;
   }
 
   const canOpenConfideEntitled = () => {
@@ -1932,6 +1939,72 @@ async function init() {
       }),
     isVisible: () => awakenInviteUI?.isVisible() === true
   };
+  awakenCheckInUI = new AwakenCheckInUI(overlayRoot, {
+    requestMidSlot: requestAwakenCheckInOverlaySlot,
+    releaseMidSlot: releaseAwakenCheckInOverlaySlot
+  });
+  window.__awakenCheckIn = {
+    tryShowMid: () => tryShowAwakenMidCheckIn({ mutationCandidate: true }),
+    tryShowEnd: () => tryShowAwakenEndCheckIn(),
+    isVisible: () => awakenCheckInUI?.isVisible?.() === true
+  };
+
+  function tryShowAwakenMidCheckIn(input = {}) {
+    if (!awakenCheckInUI || !currentAwakenSitSessionId) return false;
+    if (stateManager.state !== STATES.FOCUSING) return false;
+    const decision = decideAwakenMidCheckIn({
+      focusing: true,
+      inviteVisible: awakenInviteUI?.isVisible?.() === true,
+      checkInVisible: awakenCheckInUI.isVisible(),
+      yieldBusy: isAwakenInviteYieldBusy(),
+      mutationCandidate: input.mutationCandidate === true
+    });
+    if (!decision.show) return false;
+    return awakenCheckInUI.tryShow({
+      phase: 'mid',
+      sessionId: currentAwakenSitSessionId
+    });
+  }
+
+  function tryShowAwakenEndCheckIn() {
+    if (!awakenCheckInUI || !currentAwakenSitSessionId) return false;
+    const decision = decideAwakenEndCheckIn({
+      reflectionOpen: reflectionMoment?.isOpen?.() === true,
+      endOfferedForSession: endAwakenCheckInOffered,
+      checkInVisible: awakenCheckInUI.isVisible()
+    });
+    if (!decision.show) return false;
+    const shown = awakenCheckInUI.tryShow({
+      phase: 'end',
+      sessionId: currentAwakenSitSessionId
+    });
+    if (shown) endAwakenCheckInOffered = true;
+    return shown;
+  }
+
+  function tryShowAwakenInvite(input) {
+    if (!awakenInviteUI) return false;
+    if (awakenCheckInUI?.isVisible?.()) return false;
+    if (stateManager.state !== STATES.FOCUSING) return false;
+    const companionMode =
+      focusSession.companionMode ||
+      bootHonestyCompanion.companionModePicker.getSelectedMode();
+    const decision = awakenOrchestrator.decide({
+      ...input,
+      focusing: true,
+      companionMode,
+      trayHidden: attentionSignals.hideReason === 'tray',
+      yieldBusy: isAwakenInviteYieldBusy(),
+      inviteVisible: awakenInviteUI.isVisible()
+    });
+    if (!decision.show) return false;
+    focusAwarenessCardUI.hide({ immediate: true });
+    const shown = awakenInviteUI.tryShow(decision.kind);
+    if (!shown) return false;
+    awakenOrchestrator.noteInviteShown();
+    if (input.kind === 'extend') awakenOrchestrator.markExtendOffered();
+    return true;
+  }
 
   const focusCircleWitnessLeaveUI = new FocusCircleWitnessLeaveUI(
     document.body,
@@ -3381,6 +3454,8 @@ async function init() {
       focusAwarenessOpen: focusAwarenessCardUI?.isVisible?.() === true,
       awakenInviteOpen:
         awakenInviteSlotHeld || awakenInviteUI?.isVisible?.() === true,
+      awakenCheckInOpen:
+        awakenCheckInSlotHeld || awakenCheckInUI?.isVisible?.() === true,
       recoverResetPracticeOpen:
         recoverResetPracticeSlotHeld ||
         recoverResetPracticeUI?.isVisible?.() === true,
@@ -3960,7 +4035,10 @@ async function init() {
     resyncSessionChrome();
     // 关掉 Rise/Sound 等会话中提示，只留 Reflection（锚在面板上方）
     bootAmbientHints.onboardingHints?.syncVisibleAutos(['reflection']);
-    requestAnimationFrame(() => bootAmbientHints.onboardingHints?.repositionAll());
+    requestAnimationFrame(() => {
+      bootAmbientHints.onboardingHints?.repositionAll();
+      tryShowAwakenEndCheckIn();
+    });
     maybeOfferMomentWhisper(
       pickPresenceWhisperKey(sessionPresenceCollector.takePendingLabel()),
       { delayMs: 400 }
@@ -4896,6 +4974,7 @@ async function init() {
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
     awakenInviteUI?.hide({ immediate: true });
+    awakenCheckInUI?.hide({ immediate: true });
     awakenOrchestrator.stopSession();
     if (stopAmbient) {
       bootAmbientHints.ambientSoundscape.endSession();
@@ -5077,6 +5156,8 @@ async function init() {
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     bootSessionChrome.postChooseChrome.pending = false;
     focusSession.start({ companionMode });
+    currentAwakenSitSessionId = `sit-${Date.now()}`;
+    endAwakenCheckInOffered = false;
     sessionPresenceCollector.begin();
     bootAmbientHints.onboardingHints?.markSeen('sit-button');
     bootAmbientHints.onboardingHints?.markSeen('how-shall-we-sit');
@@ -5110,6 +5191,7 @@ async function init() {
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
     awakenInviteUI?.hide({ immediate: true });
+    awakenCheckInUI?.hide({ immediate: true });
     bootAmbientHints.onboardingHints?.closePurposeCard?.();
     bootAmbientHints.sessionCues.startIntervalSession();
     bootMomentHosts.supportYinModalUI.setFabVisible(false);
@@ -5392,6 +5474,7 @@ async function init() {
       if (result.applied) {
         sessionPresenceCollector.noteUserPause();
         bootAmbientHints.ambientSoundscape.holdForSitPause();
+        tryShowAwakenMidCheckIn({ mutationCandidate: true });
       }
       refreshFocusSitAdjust(result);
     },
@@ -5402,7 +5485,10 @@ async function init() {
     },
     onAddFive: () => {
       const result = applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 });
-      if (result.applied) sessionPresenceCollector.noteExtended();
+      if (result.applied) {
+        sessionPresenceCollector.noteExtended();
+        tryShowAwakenMidCheckIn({ mutationCandidate: true });
+      }
       refreshFocusSitAdjust(result);
     },
     onVoice: (parsed) => {
@@ -5416,7 +5502,10 @@ async function init() {
         bootAmbientHints.ambientSoundscape.holdForSitPause();
       }
       if (result.applied && result.kind === 'resume') bootAmbientHints.ambientSoundscape.releaseSitPause();
-      if (result.applied && result.kind === 'add') sessionPresenceCollector.noteExtended();
+      if (result.applied && result.kind === 'add') {
+        sessionPresenceCollector.noteExtended();
+        tryShowAwakenMidCheckIn({ mutationCandidate: true });
+      }
       refreshFocusSitAdjust(result);
     }
   });
@@ -5430,6 +5519,7 @@ async function init() {
     if (result.applied && kind === 'pause') {
       sessionPresenceCollector.noteUserPause();
       bootAmbientHints.ambientSoundscape.holdForSitPause();
+      tryShowAwakenMidCheckIn({ mutationCandidate: true });
     }
     if (result.applied && kind === 'resume') {
       bootAmbientHints.ambientSoundscape.releaseSitPause();
@@ -5454,7 +5544,8 @@ async function init() {
       spaceFocusToggleAllowed:
         focusing &&
         !bootSessionChrome.sessionUiGate.completionPending &&
-        !awakenInviteUI?.isVisible?.(),
+        !awakenInviteUI?.isVisible?.() &&
+        !awakenCheckInUI?.isVisible?.(),
       confideAllowed: canOpenConfidePanel({
         search: location.search,
         stage: 'idle',
