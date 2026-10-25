@@ -77,6 +77,8 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/SILENT_BEHAVIORS.md',
   'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
   'focus-tiger/docs/BACKGROUND_NETWORK.md',
+  'focus-tiger/docs/COMPANION_CONTRACT.md',
+  'focus-tiger/docs/companion-contract-inventory.md',
   'focus-tiger/docs/INFRA_SNAPSHOT.md',
   'focus-tiger/docs/ENV_CONFIG.md'
 ];
@@ -1839,6 +1841,62 @@ export const RULE_AUTHORITY_TOPICS = [
       'focus-tiger/docs/RULES_INDEX.md'
     ],
     restatementExemptFiles: ['focus-tiger/docs/RULES_INDEX.md']
+  },
+  {
+    id: 'companion-contract',
+    title: 'Yin 陪伴契约（红线、并行开口通道、措辞与字面检查边界）',
+    ssotPath: 'focus-tiger/docs/COMPANION_CONTRACT.md',
+    ssotSection: '§A 红线（Yin 不做什么）',
+    ssotMustContain: [
+      /companion-contract/,
+      /并行通道/,
+      /C-04/,
+      /允许问候/,
+      /禁止带缺席/,
+      /字面检查管不到倾诉/,
+      /尚未实现/,
+      /REFOCUS_ACKNOWLEDGE/
+    ],
+    topicSignals: [
+      /companion-contract/,
+      /COMPANION_CONTRACT/,
+      /陪伴契约/,
+      /AWAKEN_FORBIDDEN_COPY/,
+      /开口通道/
+    ],
+    mustCite: [/COMPANION_CONTRACT\.md|companion-contract/],
+    restatementFingerprints: [
+      /允许问候，禁止带缺席/,
+      /字面检查管不到倾诉/,
+      /不是 L0→L3 一级升一级/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'companion-contract-verified-claim',
+        pattern:
+          /(?:已验证|经验证).{0,24}(?:分级干预|陪伴规范|红线检查)/,
+        note: '字面检查通过 ≠ 已验证；见 COMPANION_CONTRACT.md'
+      },
+      {
+        id: 'companion-ladder-only',
+        pattern: /(?:只升不跳|L0→L3|一级升一级).{0,20}(?:陪伴|开口|介入)/,
+        note: '现网开口为并行通道，不是升级阶梯；见 COMPANION_CONTRACT.md §B',
+        exemptIfLineMatches: /禁止|不是|不得|勿/
+      }
+    ],
+    citeExemptFiles: [
+      'focus-tiger/docs/companion-contract-inventory.md',
+      'focus-tiger/docs/task-briefs/task-companion-contract.md',
+      'focus-tiger/docs/task-entries/t55-companion-contract.md',
+      'focus-tiger/docs/tracker-entries/docs-t55-companion-contract-inventory.md',
+      '.cursor/rules/focus-tiger-docs.mdc',
+      'focus-tiger/docs/RULES_INDEX.md'
+    ],
+    restatementExemptFiles: [
+      'focus-tiger/docs/companion-contract-inventory.md',
+      'focus-tiger/docs/task-briefs/task-companion-contract.md'
+    ]
   },
   {
     id: 'companion-debug',
