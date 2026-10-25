@@ -9,7 +9,7 @@
  *
  *   npm run check:companion-contract
  *
- * Sample-set rates are n/a until PR-4.
+ * Sample-set rates: bad-hit and allow-pass are reported separately (PR-4).
  */
 
 import { readFileSync, readdirSync } from 'node:fs';
@@ -20,6 +20,10 @@ import {
   COMPANION_CONTRACT_HONESTY,
   matchForbiddenPatterns
 } from './companion-contract-forbidden.js';
+import {
+  COMPANION_CONTRACT_SAMPLE_GATE,
+  COMPANION_CONTRACT_SAMPLES
+} from './companion-contract-samples.js';
 import { CALM_ACTION_ARRIVE_EN } from '../src/content/calm-action-wisdom/calm-action-arrive.en.js';
 import { CALM_ACTION_ARRIVE_JA } from '../src/content/calm-action-wisdom/calm-action-arrive.ja.js';
 import { CALM_ACTION_RECOVER_EN } from '../src/content/calm-action-wisdom/calm-action-recover.en.js';
@@ -166,6 +170,103 @@ export function collectLiveStrings() {
   return out.filter((item) => item.text);
 }
 
+const SAMPLE_CATEGORY_TARGETS = Object.freeze({
+  'C-01': 6,
+  'C-02': 4,
+  'C-04': 6,
+  'C-07': 5,
+  'C-09': 3,
+  'allow-neighbor': 6
+});
+
+/**
+ * @param {typeof COMPANION_CONTRACT_SAMPLES} samples
+ * @returns {{
+ *   errors: string[],
+ *   sample_bad_hit_rate: string,
+ *   sample_allow_pass_rate: string,
+ *   sample_bad_hit_ratio: number,
+ *   sample_allow_pass_ratio: number
+ * }}
+ */
+export function evaluateCompanionContractSamples(samples = COMPANION_CONTRACT_SAMPLES) {
+  const errors = [];
+  const ids = new Set();
+  const counts = {};
+
+  for (const sample of samples) {
+    const required = ['id', 'lang', 'scene', 'category', 'expect', 'utterance', 'direction'];
+    for (const key of required) {
+      if (!sample[key]) errors.push(`sample ${sample.id || '?'} missing ${key}`);
+    }
+    if (ids.has(sample.id)) errors.push(`duplicate sample id ${sample.id}`);
+    ids.add(sample.id);
+    if (sample.category === 'C-10' || /crisis|suicide|self-harm/i.test(sample.utterance || '')) {
+      errors.push(`sample ${sample.id} is crisis-shaped; C-10 is out of this set`);
+    }
+    counts[sample.category] = (counts[sample.category] || 0) + 1;
+  }
+
+  if (samples.length !== 40) {
+    errors.push(`sample count ${samples.length} !== 40`);
+  }
+  for (const [category, target] of Object.entries(SAMPLE_CATEGORY_TARGETS)) {
+    if ((counts[category] || 0) !== target) {
+      errors.push(`category ${category} count ${counts[category] || 0} !== ${target}`);
+    }
+  }
+  const cureProfessional = (counts['C-05'] || 0) + (counts['C-06'] || 0);
+  if (cureProfessional !== 5) {
+    errors.push(`category C-05/C-06 count ${cureProfessional} !== 5`);
+  }
+  const verdictControl = (counts['C-03'] || 0) + (counts['C-08'] || 0);
+  if (verdictControl !== 5) {
+    errors.push(`category C-03/C-08 count ${verdictControl} !== 5`);
+  }
+
+  const bad = samples.filter((row) => row.expect === 'hit');
+  const allow = samples.filter((row) => row.expect === 'allow');
+  let badHits = 0;
+  let allowPass = 0;
+
+  for (const sample of bad) {
+    const matches = matchForbiddenPatterns(sample.utterance);
+    const hit = matches.some((row) => !sample.redline || row.redline === sample.redline);
+    if (hit) badHits += 1;
+    else errors.push(`bad sample ${sample.id} was not hit (${sample.redline || 'any'})`);
+  }
+  for (const sample of allow) {
+    const matches = matchForbiddenPatterns(sample.utterance);
+    if (matches.length === 0) allowPass += 1;
+    else {
+      errors.push(
+        `allow sample ${sample.id} was blocked by ${matches.map((row) => row.id).join(',')}`
+      );
+    }
+  }
+
+  const badRatio = bad.length ? badHits / bad.length : 0;
+  const allowRatio = allow.length ? allowPass / allow.length : 0;
+  if (badRatio < COMPANION_CONTRACT_SAMPLE_GATE.badHitMin) {
+    errors.push(
+      `sample_bad_hit_rate ${badHits}/${bad.length} below gate ${COMPANION_CONTRACT_SAMPLE_GATE.badHitMin}`
+    );
+  }
+  if (allowRatio < COMPANION_CONTRACT_SAMPLE_GATE.allowPassMin) {
+    errors.push(
+      `sample_allow_pass_rate ${allowPass}/${allow.length} below gate ${COMPANION_CONTRACT_SAMPLE_GATE.allowPassMin}`
+    );
+  }
+
+  return {
+    errors,
+    sample_bad_hit_rate: `${badHits}/${bad.length}`,
+    sample_allow_pass_rate: `${allowPass}/${allow.length}`,
+    sample_bad_hit_ratio: badRatio,
+    sample_allow_pass_ratio: allowRatio
+  };
+}
+
 /**
  * @param {object} [opts]
  * @returns {{
@@ -180,7 +281,8 @@ export function collectLiveStrings() {
  */
 export function evaluateCompanionContract({
   strings = null,
-  exemptions = COMPANION_CONTRACT_EXEMPTIONS
+  exemptions = COMPANION_CONTRACT_EXEMPTIONS,
+  samples = COMPANION_CONTRACT_SAMPLES
 } = {}) {
   const errors = [];
   const live = strings || collectLiveStrings();
@@ -219,13 +321,18 @@ export function evaluateCompanionContract({
     }
   }
 
+  const sampleReport = evaluateCompanionContractSamples(samples);
+  errors.push(...sampleReport.errors);
+
   return {
     ok: errors.length === 0,
     errors,
     hits,
     coverage,
-    sample_bad_hit_rate: 'n/a (PR-4)',
-    sample_allow_pass_rate: 'n/a (PR-4)',
+    sample_bad_hit_rate: sampleReport.sample_bad_hit_rate,
+    sample_allow_pass_rate: sampleReport.sample_allow_pass_rate,
+    sample_bad_hit_ratio: sampleReport.sample_bad_hit_ratio,
+    sample_allow_pass_ratio: sampleReport.sample_allow_pass_ratio,
     honesty: COMPANION_CONTRACT_HONESTY
   };
 }
@@ -250,7 +357,9 @@ export function runCompanionContractCheck() {
     for (const err of result.errors) console.error(`  - ${err}`);
     return false;
   }
-  console.log('[companion-contract] OK — no unexempted hits; not a verified-behavior claim');
+  console.log(
+    '[companion-contract] OK — no unexempted hits; sample rates reported separately; not a verified-behavior claim'
+  );
   return true;
 }
 
