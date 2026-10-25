@@ -252,6 +252,32 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       tokens: Object.freeze(['待人工测试', 'awaken-invite'])
     }
   }),
+  surface({
+    file: 'AwakenCheckInUI.js',
+    slotRequest: requestSlot(
+      ['requestMidSlot', 'releaseMidSlot'],
+      ['AWAKEN_CHECK_IN', 'requestOverlaySlot']
+    ),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'local-label-only' }),
+      success: Object.freeze({ mode: 'na', reason: 'local-label-only' }),
+      fail: Object.freeze({ mode: 'na', reason: 'local-label-only' })
+    }),
+    e2eOverlap: {
+      mode: 'spec',
+      path: 'e2e/awaken-check-in.spec.js',
+      tokens: Object.freeze(['awaken-check-in', 'awaken-check-in-ease'])
+    },
+    trackerCoverage: {
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-t52-awaken-micro-check-in.md'
+      ]),
+      tokens: Object.freeze(['待人工测试', 'awaken-check-in'])
+    }
+  }),
   glassCard('CalmActionRecoverCardUI.js'),
   glassCard('CalmActionArriveCardUI.js'),
   surface({

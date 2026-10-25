@@ -1,0 +1,26 @@
+{
+  "en": {
+    "AWAKEN_CHECKIN_END_PROMPT": "Right now, which feels closer?",
+    "AWAKEN_CHECKIN_MID_PROMPT": "A quick check — which feels closer?",
+    "AWAKEN_CHECKIN_LABEL_EASE": "Ease",
+    "AWAKEN_CHECKIN_LABEL_RESTLESS": "Restless",
+    "AWAKEN_CHECKIN_LABEL_TIRED": "Tired",
+    "AWAKEN_CHECKIN_SKIP": "Skip"
+  },
+  "zh": {
+    "AWAKEN_CHECKIN_END_PROMPT": "现在更像哪一种？",
+    "AWAKEN_CHECKIN_MID_PROMPT": "轻轻问一句——现在更像哪一种？",
+    "AWAKEN_CHECKIN_LABEL_EASE": "顺",
+    "AWAKEN_CHECKIN_LABEL_RESTLESS": "乱",
+    "AWAKEN_CHECKIN_LABEL_TIRED": "倦",
+    "AWAKEN_CHECKIN_SKIP": "跳过"
+  },
+  "ja": {
+    "AWAKEN_CHECKIN_END_PROMPT": "今はどれに近い？",
+    "AWAKEN_CHECKIN_MID_PROMPT": "ひとこと——今はどれに近い？",
+    "AWAKEN_CHECKIN_LABEL_EASE": "楽",
+    "AWAKEN_CHECKIN_LABEL_RESTLESS": "ざわざわ",
+    "AWAKEN_CHECKIN_LABEL_TIRED": "疲れ",
+    "AWAKEN_CHECKIN_SKIP": "スキップ"
+  }
+}

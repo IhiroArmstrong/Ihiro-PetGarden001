@@ -58,6 +58,7 @@
 | **17** | `src/ui/TransitionMomentUI.js` | `#transition-moment-whisper` Calm Action Transition 轻提示（阿寅旁；合十 + CAW-T；~8s 淡出；非模态、不挡摸头） |
 | **17** | `src/ui/FocusAwarenessCardUI.js` | `#focus-awareness-card` Focusing **底部**间隔拍觉察短句（可重复；可单独关；**不**写 Whisper seen） |
 | **17** | `src/ui/AwakenInviteUI.js` | `#awaken-invite` T51 觉照邀请轻提示（Focusing；非模态；10s 自消；**不**盖 Support FAB） |
+| **17** | `src/ui/AwakenCheckInUI.js` | `#awaken-check-in` T52 觉照微打卡（Focusing 顶栏 / Reflection 底栏；10s 自消；本地标签） |
 | **17** | `src/ui/GroundExerciseChoiceUI.js` | `#ground-exercise-choice-backdrop` Idle「更多」→ 接地练习选择层遮罩（与 Five Moments 同族 dim） |
 | **17** | `src/ui/RecoverResetPracticeUI.js` | `#recover-reset-practice` 接地练习半高卡（Feel the Ground / Look Around；Idle 菜单入口） |
 | **17** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-whisper` 节日观察式短句（一日一次；可点消；非 Banner） |

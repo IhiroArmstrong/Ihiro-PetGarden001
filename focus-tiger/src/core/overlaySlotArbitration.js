@@ -75,6 +75,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [focusCircleWitnessRespondOpen]
  * @property {boolean} [focusAwarenessOpen]
  * @property {boolean} [awakenInviteOpen]
+ * @property {boolean} [awakenCheckInOpen]
  * @property {boolean} [recoverResetPracticeOpen]
  * @property {boolean} [transitionMomentOpen]
  */
@@ -91,7 +92,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
  *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' |
- *   'awakenInviteOpen' | 'recoverResetPracticeOpen' | 'transitionMomentOpen'
+ *   'awakenInviteOpen' | 'awakenCheckInOpen' | 'recoverResetPracticeOpen' | 'transitionMomentOpen'
  * >>} OverlaySnapshot
  */
 
@@ -144,6 +145,7 @@ export function buildOverlaySnapshot(input = {}) {
     focusCircleWitnessRespondOpen: Boolean(input.focusCircleWitnessRespondOpen),
     focusAwarenessOpen: Boolean(input.focusAwarenessOpen),
     awakenInviteOpen: Boolean(input.awakenInviteOpen),
+    awakenCheckInOpen: Boolean(input.awakenCheckInOpen),
     recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
     transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };
@@ -274,6 +276,7 @@ export function deriveFocusingSoftCardBusy(snapshot) {
   if (snapshot.recoverResetPracticeOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
   if (snapshot.awakenInviteOpen) return true;
+  if (snapshot.awakenCheckInOpen) return true;
   if (snapshot.compassOpen || snapshot.coldStartGoalOpen) return true;
   if (snapshot.mustardSeedOpen) return true;
   if (snapshot.sessionState === STATES.CELEBRATE) return true;
@@ -769,7 +772,11 @@ export function requestOverlaySlot(req) {
     // deriveFocusingSoftCardBusy list repeats session/arrival/honesty
     // (already in collectRecoverResetBaseYield) and also treats the
     // companion dock as busy — that would swallow T51「要」→ GROUND.
-    if (snapshot.focusAwarenessOpen || snapshot.awakenInviteOpen) {
+    if (
+      snapshot.focusAwarenessOpen ||
+      snapshot.awakenInviteOpen ||
+      snapshot.awakenCheckInOpen
+    ) {
       mustYieldTo.push('focusing-soft-card-busy');
     }
   }
