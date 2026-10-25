@@ -42,6 +42,10 @@ import {
 } from './RetentionTelemetry.js';
 import { BRAND_YIN_WAY_FIRST_REFLECT_STORAGE_KEY } from './brandYinWayFirstReflectGate.js';
 import {
+  T54_RESEARCH_LOG_STORAGE_KEY,
+  T54_RESEARCH_CONSENT_STORAGE_KEY
+} from './t54ResearchLedger.js';
+import {
   createHintsSeenStore,
   HINTS_SEEN_STORAGE_KEY
 } from './OnboardingHintsStore.js';
@@ -232,6 +236,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_DURATION_STORAGE_KEY,
   CONFIDE_OBSERVATION_STORAGE_KEY,
   'focus-tiger.session-presence-ring.v1',
+  T54_RESEARCH_LOG_STORAGE_KEY,
+  T54_RESEARCH_CONSENT_STORAGE_KEY,
   SEASONAL_WHISPER_STORAGE_KEY,
   DESKTOP_CHECKOUT_PENDING_STORAGE_KEY
 ]);
