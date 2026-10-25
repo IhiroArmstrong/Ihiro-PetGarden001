@@ -176,7 +176,7 @@ const SAMPLE_CATEGORY_TARGETS = Object.freeze({
   'C-04': 6,
   'C-07': 5,
   'C-09': 3,
-  'allow-neighbor': 6
+  'allow-neighbor': 8
 });
 
 /**
@@ -207,8 +207,8 @@ export function evaluateCompanionContractSamples(samples = COMPANION_CONTRACT_SA
     counts[sample.category] = (counts[sample.category] || 0) + 1;
   }
 
-  if (samples.length !== 40) {
-    errors.push(`sample count ${samples.length} !== 40`);
+  if (samples.length !== 42) {
+    errors.push(`sample count ${samples.length} !== 42`);
   }
   for (const [category, target] of Object.entries(SAMPLE_CATEGORY_TARGETS)) {
     if ((counts[category] || 0) !== target) {
@@ -347,7 +347,7 @@ export function runCompanionContractCheck() {
     `[companion-contract] coverage ${JSON.stringify(result.coverage)} (invite runtime regex still only awaken-invite tests)`
   );
   console.log(
-    `[companion-contract] sample_bad_hit_rate=${result.sample_bad_hit_rate} sample_allow_pass_rate=${result.sample_allow_pass_rate}`
+    `[companion-contract] sample_bad_hit_rate=${result.sample_bad_hit_rate} sample_allow_pass_rate=${result.sample_allow_pass_rate} (regression only; not coverage; not verified; do not cite externally)`
   );
   if (result.hits.length) {
     console.log(`[companion-contract] live hits ${result.hits.length} (exemption caps only shrink)`);
