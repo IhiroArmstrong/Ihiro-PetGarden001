@@ -1,7 +1,7 @@
 ---
 id: t55-companion-contract
 kind: feature
-status: PR-2 契约 #TBD · 排队中 · 可选
+status: PR-2 契约 #1425 · 排队中 · 可选
 updated: 2026-10-25
 ---
 
