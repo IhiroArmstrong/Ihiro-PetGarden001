@@ -2,7 +2,7 @@
 
 > **状态（2026-10-25）**：只读对照。以 `origin/develop` tip `2b71d968`（#1417 Brief 已合）上的代码为准。  
 > **代号**：**T55**。状态 **排队中** · 槽位 **可选**（不以「立即做」写本任务）。独立于 **T54**（仍搁置 · 未排期）。**不挡 T34**。  
-> **类**：A 类。本文件不改运行时、不改文案、不写 `COMPANION_CONTRACT.md`（那是 PR-2，新对话）。  
+> **类**：A 类。本文件不改运行时、不改文案。契约正文 SSOT：[`COMPANION_CONTRACT.md`](./COMPANION_CONTRACT.md)（PR-2）。  
 > **Brief**：[`task-briefs/task-companion-contract.md`](./task-briefs/task-companion-contract.md)
 
 现网是**并行通道**，不是一级升一级。本表禁止按 L0–L3 列。空格写「尚未实现」，不编。
@@ -97,14 +97,14 @@ T50 标签 `SETTLED` / `DRIFTING` / `STRUGGLING`：**硬规则 C-09**。只偏�
 |---|---|
 | **计划** | 按通道列出现网开口；文案池各一行；练习事实单独标出；归来问候有文件/行/测试 |
 | **现状** | 五条通道 + 三池已对到文件与行；零 `src/` 改动 |
-| **还差** | 契约正文（PR-2，新对话）、#1418 账本登记、禁词扫描（PR-3）、样本集（PR-4） |
-| **下一步** | #1419 合入后新对话写 `COMPANION_CONTRACT.md`。契约须写明字面检查管不到倾诉现场生成。不挡 T34 |
+| **还差** | 禁词扫描（PR-3，**先 `REFOCUS_ACKNOWLEDGE_*`**）、样本集（PR-4）、`check:companion-contract`（PR-3 起） |
+| **下一步** | PO 过目 PR-2 契约 → 开 PR-3。不挡 T34 |
 
 ---
 
 ## 冲突扫描（文档盘点）
 
-对照场景 **B**（Re-focus）、**X**（主动 Recover）、**Y**（Moment Whisper）、觉照邀请（T51 / DESIGN）、Arrival 后许可句、Journey Come Back / 观察纸节奏 5 / 成长旅程 returned。本 PR 只登记、不改路径。
+对照 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 与场景 **B**（Re-focus）、**X**（主动 Recover）、**Y**（Moment Whisper）、觉照邀请（T51 / DESIGN）、Arrival 后许可句、Journey Come Back / 观察纸节奏 5 / 成长旅程 returned。本 PR 只登记、不改路径。
 
 - 强度：无新仪式。  
 - 语气：无新文案。  

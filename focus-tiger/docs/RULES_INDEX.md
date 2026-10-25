@@ -84,6 +84,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `pr-smoke-failure-classes` | PR smoke 失败归类与菜单走完门闩（必跑子集 / nightly / 路径触发） | `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md` | PR_SMOKE_FAILURE_CLASSES.md — PR smoke 失败归类与菜单走完门闩 |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
 | `layered-bug-diagnostics` | 多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑） | `.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc` | Focus Tiger · 多层系统集成 bug 排查（layered-bug-diagnostics · 按需层） |
+| `companion-contract` | Yin 陪伴契约（红线、并行开口通道、措辞与字面检查边界） | `focus-tiger/docs/COMPANION_CONTRACT.md` | §A 红线（Yin 不做什么） |
 | `companion-debug` | 调试本地 AI companion（先定点、限日志、最多 3 轮、简单调试不升档） | `.cursor/rules/focus-tiger-companion-debug.mdc` | Focus Tiger · 调试本地 AI companion |
 | `infra-snapshot` | 基础设施现状摘要（Worker/KV/entitlement/locale 等低频配置快照） | `focus-tiger/docs/INFRA_SNAPSHOT.md` | INFRA_SNAPSHOT — 基础设施现状摘要（非 SSOT） |
 | `source-read-granularity` | 源码读取粒度（大文件先定位再片段读，控上下文 token） | `.cursor/rules/focus-tiger-source-read-granularity.mdc` | Focus Tiger · 源码读取粒度（控上下文 token · 按需层） |
@@ -218,6 +219,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
 | `ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 | `PRODUCT_MOMENTS.md` | Five Moments |
+| `COMPANION_CONTRACT.md` | **陪伴契约 SSOT**（`companion-contract`）：红线、并行开口通道、措辞与字面检查边界；T55；**无运行时** |
 | `CALM_ACTION_WISDOM.md` | **Calm Action Wisdom** 内容规范 + 70 条 CMS（行为时刻；与 Quiet Line / Daily Wisdom / 静思典藏分池；**无运行时**） |
 | `CONTEMPLATIVE_ARCHIVE.md` | **静思典藏层**（Contemplative Archive）：长期纪念文学 + 12 条候选；第一枚印 = 芥子须弥；**无新运行时** |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |

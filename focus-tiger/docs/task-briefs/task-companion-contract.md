@@ -3,7 +3,7 @@
 > **状态（2026-10-25）**：PO 点头。四处修订已写入（通道表、C-02/C-04/C-09 说明、现网禁词范围）。  
 > **代号**：**T55**。独立于 **T54**（T54 仍搁置 · 未排期）。  
 > **类**：A 类（文档 + 静态检查；不改用户可见界面、文案、路由）。  
-> **规格路径**：本文件。契约正文尚未写，等 PR-1 盘点过目后再写 `COMPANION_CONTRACT.md`。
+> **规格路径**：本文件。契约正文 SSOT：[`COMPANION_CONTRACT.md`](../COMPANION_CONTRACT.md)（PR-2）。盘点：[`companion-contract-inventory.md`](../companion-contract-inventory.md)（PR-1 · #1419）。
 
 ---
 
