@@ -1,6 +1,6 @@
 # COMPANION_CONTRACT.md — Yin 陪伴契约（措辞与开口 SSOT）
 
-> **代号**：**T55** · 状态 **排队中** · 槽位 **可选**（不以「立即做」写本任务）。独立于 **T54**（分享开关 #1434 已合；90 天仍搁置；不是「已证明有效」）。**不挡 T34**。  
+> **代号**：**T55** · 状态 **排队中** · 槽位 **可选**（不以「立即做」写本任务）。独立于 **T54**（分享开关 #1434 已合，不含倾诉原文；90 天仍搁置；不是「已证明有效」）。**不挡 T34**。  
 > **类**：A 类（文档 + 后续字面检查；**本文件不改运行时**）。  
 > **索引**：`RULES_INDEX.md` → `companion-contract`。  
 > **Brief**：[`task-briefs/task-companion-contract.md`](./task-briefs/task-companion-contract.md)。  
