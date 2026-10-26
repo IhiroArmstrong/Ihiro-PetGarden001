@@ -209,4 +209,28 @@ describe('InterventionOrchestrator', () => {
     assert.equal(second.show, false);
     assert.ok(second.reason === 'cooldown' || second.reason === 'hour-cap');
   });
+
+  it('accepts a shorter cooldown from input rhythm without skipping Flow protect', () => {
+    const ok = decideAwakenInvite({
+      ...STAY,
+      kind: 'away',
+      displayEligible: true,
+      refocusSlotConsumed: true,
+      lastActiveAt: STAY.now - 8 * 60 * 1000,
+      cooldownMs: 7 * 60 * 1000
+    });
+    assert.equal(ok.show, true);
+    assert.equal(
+      decideAwakenInvite({
+        focusing: true,
+        companionMode: COMPANION_MODE_ACROSS_TOOLS,
+        kind: 'away',
+        displayEligible: true,
+        refocusSlotConsumed: true,
+        now: 1,
+        cooldownMs: 1
+      }).reason,
+      'sb-03'
+    );
+  });
 });

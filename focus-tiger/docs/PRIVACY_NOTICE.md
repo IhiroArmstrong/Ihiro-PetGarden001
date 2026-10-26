@@ -17,6 +17,8 @@
 
 Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别把你说的话转成文字；**不是语音消息**，录音**不会上传**。
 
+可选的「专注节奏」（仅 Mac 电脑版，**默认关闭**）：打开且系统允许输入监控后，本机只看按键**间隔**和是否退格，用来稍微调整邀请时机。**不保存**你打的字、**不读**窗口标题、**不上传**、不显示分数。关掉或未授权则退回只看出没离开窗口、坐了多久。
+
 ### 2. 默认数据存储
 
 除非你使用下文第 3 节的导出/导入自行迁移，你的习惯打卡、练习记录等数据默认**仅保存在你的设备本地**，本应用**不会自动将其上传到开发者服务器**。
@@ -61,6 +63,8 @@ AI companion features related to habits, check-ins, and practice guidance run **
 
 On the Mac app, **Speak to type** in Confide uses **on-device speech recognition** only to turn speech into text. It is **not a voice message**; audio is **not uploaded**.
 
+Optional **Focus rhythm** (Mac app only, **off by default**): when you turn it on and the system allows Input Monitoring, this device may notice key **timing** and backspaces to time a quiet invite. It does **not** store what you type, window titles, or a score, and it is **never uploaded**. If it is off or not permitted, invites again use leaving the window and how long you have sat.
+
 ### 2. Default Data Storage
 
 Unless you use local export/import (Section 3), your habit check-ins, practice records, and similar data are stored **only on your local device by default**. This app **does not automatically upload this data to our servers**.
@@ -104,6 +108,8 @@ If we introduce cloud backup later, we will update this notice before launch, ex
 習慣、チェックイン、練習サポートに関連するAI対話機能は、**端末上（オンデバイス）のモデル**で推論を行います。関連する入力内容はすべてお使いの端末上で処理され、**第三者の大規模言語モデル提供事業者へ送信されることはありません**。
 
 Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声認識のみで話した内容を文字にします。**音声メッセージではありません**。音声は**アップロードされません**。
+
+任意の「集中のリズム」（Macアプリのみ、**既定オフ**）：オンにし、入力モニタリングが許可されたとき、この端末はキーの**間隔**とバックスペースの有無だけを見て誘いのタイミングを少しずらします。打った文字・窓の題名・点数は保存せず、送信もしません。オフまたは未許可なら、窓を離れたことと座った長さだけに戻ります。
 
 ### 2. デフォルトのデータ保存
 

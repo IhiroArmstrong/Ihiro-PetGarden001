@@ -70,6 +70,12 @@ const desktopShell = {
   getAlwaysOnTop: () => ipcRenderer.invoke('desktop:always-on-top-get'),
   setAlwaysOnTop: (enabled) =>
     ipcRenderer.invoke('desktop:always-on-top-set', Boolean(enabled)),
+  getInputRhythm: () => ipcRenderer.invoke('desktop:input-rhythm-get'),
+  setInputRhythmEnabled: (enabled) =>
+    ipcRenderer.invoke('desktop:input-rhythm-set', Boolean(enabled)),
+  clearInputRhythm: () => ipcRenderer.invoke('desktop:input-rhythm-clear'),
+  openInputRhythmSettings: () =>
+    ipcRenderer.invoke('desktop:input-rhythm-open-settings'),
   getWindowLayout: () => ipcRenderer.invoke('desktop:window-layout-get'),
   applyWindowLayout: (action) =>
     ipcRenderer.invoke('desktop:window-layout-apply', action),

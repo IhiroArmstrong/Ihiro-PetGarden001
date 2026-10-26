@@ -444,6 +444,25 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
+  it('includes input-rhythm on wide and narrow when available', () => {
+    assert.ok(
+      !listSecondaryChromeEntries('wide-more', allOn).some(
+        (e) => e.proxy === 'input-rhythm'
+      )
+    );
+    const on = { ...allOn, inputRhythmAvailable: true };
+    assert.ok(
+      listSecondaryChromeEntries('wide-more', on).some(
+        (e) => e.proxy === 'input-rhythm'
+      )
+    );
+    assert.ok(
+      listSecondaryChromeEntries('narrow-drawer', on).some(
+        (e) => e.proxy === 'input-rhythm'
+      )
+    );
+  });
+
   it('includes window-layout on wide and narrow when available', () => {
     assert.ok(
       !listSecondaryChromeEntries('wide-more', allOn).some(

@@ -50,6 +50,7 @@ import {
   loadAlwaysOnTopPrefs,
   saveAlwaysOnTopPrefs
 } from './alwaysOnTop/alwaysOnTopPolicy.js';
+import { createInputRhythmSensorBridge } from './inputRhythm/sensorBridge.js';
 import {
   companionBoundsForWorkArea,
   isCompanionBounds,
@@ -90,6 +91,8 @@ let tray = null;
 /** @type {ReturnType<typeof createFloatingMarkerRuntime> | null} */
 let floatingMarkerRuntime = null;
 let alwaysOnTopEnabled = false;
+/** @type {ReturnType<typeof createInputRhythmSensorBridge> | null} */
+let inputRhythmBridge = null;
 /** @type {ReturnType<typeof loadWindowLayoutPrefs>} */
 let windowLayoutPrefs = { lastLayout: 'regular', normalBounds: null };
 let isQuitting = false;
@@ -138,6 +141,7 @@ function installDevSignalQuit() {
     void companionRuntime?.dispose?.();
     updaterRuntime?.dispose?.();
     floatingMarkerRuntime?.dispose?.();
+  inputRhythmBridge?.dispose?.();
     app.quit();
   };
 
@@ -674,6 +678,18 @@ if (gotSingleInstanceLock) {
   ipcMain.handle('desktop:always-on-top-set', (_event, enabled) =>
     persistAlwaysOnTop(enabled)
   );
+  ipcMain.handle('desktop:input-rhythm-get', () =>
+    inputRhythmBridge?.snapshot() || { available: false, enabled: false }
+  );
+  ipcMain.handle('desktop:input-rhythm-set', (_event, enabled) =>
+    inputRhythmBridge?.setEnabled(enabled) || { available: false, enabled: false }
+  );
+  ipcMain.handle('desktop:input-rhythm-clear', () =>
+    inputRhythmBridge?.clear() || { available: false, enabled: false }
+  );
+  ipcMain.handle('desktop:input-rhythm-open-settings', () =>
+    inputRhythmBridge?.openInputMonitoringSettings()
+  );
   ipcMain.handle('desktop:window-layout-get', () => describeWindowLayout());
   ipcMain.handle('desktop:window-layout-apply', (_event, action) =>
     applyWindowLayoutAction(action === 'fullscreen' ? 'fullscreen' : 'companion')
@@ -788,6 +804,10 @@ if (gotSingleInstanceLock) {
 
   alwaysOnTopEnabled = loadAlwaysOnTopPrefs(app.getPath('userData')).enabled;
   windowLayoutPrefs = loadWindowLayoutPrefs(app.getPath('userData'));
+  inputRhythmBridge = createInputRhythmSensorBridge({
+    userDataDir: app.getPath('userData')
+  });
+  inputRhythmBridge.bootIfEnabled();
   installMacApplicationMenu();
   floatingMarkerRuntime = createFloatingMarkerRuntime({
     userDataDir: app.getPath('userData'),
