@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-23  
+生成日期：2026-10-26  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -2188,7 +2188,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 点 Privacy
 
 **Then**
-- `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思；YPE / 漏斗 opt-in 在可滚动 body 内（不被 `max-height: 70vh` 裁切）；见 wellness 交叉引用 → 点链回简介免责区块。点 sheet 外空白或 backdrop → 0–1 秒内 Privacy + 简介卡一起关掉（不必先 Back）。
+- `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思；YPE / 漏斗 / 研究分享 opt-in 在可滚动 body 内（不被 `max-height: 70vh` 裁切）；研究开关 `#privacy-t54-research-opt-in` 默认未勾，勾选 0–1 秒内方块勾上；见 wellness 交叉引用 → 点链回简介免责区块。点 sheet 外空白或 backdrop → 0–1 秒内 Privacy + 简介卡一起关掉（不必先 Back）。
 
 #### W-4
 

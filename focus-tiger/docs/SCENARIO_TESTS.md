@@ -486,7 +486,7 @@
 
 1. **冷启动（默认）**：`?product=1`（可清 `focus-tiger.wellness-disclaimer-seen.v1`）→ Idle **不得**见 `#onboarding-wellness-first`。**0–1 秒内**：首屏是阿寅坐禅，不是「Not therapy」警告牌。
 2. 点「?」`#onboarding-hint-help` → **0–1 秒内**见 `#onboarding-app-purpose`（no pressure / no ads / stays on this device）+ 免责区块 `.onboarding-app-purpose__wellness`（EN：Not therapy or medical care；含 diagnose/treat/cure/prevent；日语切语后见「心理療法・医療ではありません」）+ 卡末 colophon（Focus Tiger™ / Created by Ihiro Armstrong / Twinsology / © 2026）。**Electron 另见** `#onboarding-purpose-desktop-ram`（8 GB · Mac and Windows）；**Web / 手机 Safari 不见该块。**
-3. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思；YPE / 漏斗 opt-in 在**可滚动 body 内**（不被 `max-height: 70vh` 裁切）；见 wellness 交叉引用 → 点链回简介免责区块。**点 sheet 外空白或 backdrop** → **0–1 秒内** Privacy + 简介卡一起关掉（不必先 Back）。
+3. 点 **Privacy** → `#onboarding-privacy-sheet` 可读本地优先、不挖矿反思；YPE / 漏斗 / 研究分享 opt-in 在**可滚动 body 内**（不被 `max-height: 70vh` 裁切）；研究开关 `#privacy-t54-research-opt-in` 默认未勾，勾选 **0–1 秒内**方块勾上；见 wellness 交叉引用 → 点链回简介免责区块。**点 sheet 外空白或 backdrop** → **0–1 秒内** Privacy + 简介卡一起关掉（不必先 Back）。
 4. （可选）点 **The five moments** → 打开与场景 Y 同一 `#five-moments-compass`（见 Y）。
 5. **Back** → 回简介 → Got it 关闭。
 6. **回流**：Rise 后再点 ? → Privacy → Back。

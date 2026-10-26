@@ -1,0 +1,14 @@
+{
+  "en": {
+    "T54_RESEARCH_CONSENT_LABEL": "Share optional practice-effect counts (research)",
+    "T54_RESEARCH_CONSENT_HINT": "Off by default. If you turn this on, we only receive de-identified counts about timed sits — for example whether a sit finished, and later whether you returned — plus a random research id that resets if you reinstall. No chat text, no email, and no payment details. This helps us improve the product. You can turn it off anytime."
+  },
+  "zh": {
+    "T54_RESEARCH_CONSENT_LABEL": "分享可选的练习效果计数（研究）",
+    "T54_RESEARCH_CONSENT_HINT": "默认关闭。打开后，我们只会收到计时专注的去身份计数（例如有没有坐完、后来有没有回来），以及一个重装即作废的本机研究代号。没有倾诉原文、没有邮箱、没有付款信息。用来把产品做顺，随时可以关掉。"
+  },
+  "ja": {
+    "T54_RESEARCH_CONSENT_LABEL": "任意の練習効果カウントを共有する（研究）",
+    "T54_RESEARCH_CONSENT_HINT": "初期設定はオフです。オンにすると、時間を決めた坐の回数など（終えたか、あとで戻ったか）と、再インストールで消える研究用の番号だけが届きます。会話の原文、メール、支払い情報は送りません。製品をよくするためのものです。いつでもオフにできます。"
+  }
+}

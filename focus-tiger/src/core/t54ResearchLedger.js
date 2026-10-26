@@ -7,6 +7,7 @@
  * T54 stage-2 local practice log. Append-only. Not practice-days / journey-log / T50 ring.
  */
 
+import { getCloudApiBaseUrl } from './cloudApiClient.js';
 import {
   canUploadT54ResearchPayload,
   T54_RESEARCH_INGEST_PATH
@@ -15,6 +16,7 @@ import {
 export const T54_RESEARCH_LOG_STORAGE_KEY = 'focus-tiger.t54-research-log.v1';
 export const T54_RESEARCH_CONSENT_STORAGE_KEY =
   'focus-tiger.t54-research-consent.v1';
+export const T54_RESEARCH_CONSENT_LAYER = 'product_improve';
 
 export const T54_LOG_SOURCE = Object.freeze({
   SELF_OPEN: 'self_open',
@@ -64,19 +66,96 @@ export function isTimedFocusLogSource(source) {
 }
 
 /**
+ * @param {unknown} raw
+ * @returns {{
+ *   granted: boolean,
+ *   consentedAt: string | null,
+ *   layer: string | null,
+ *   localResearchCode: string | null
+ * }}
+ */
+export function normalizeT54ResearchConsent(raw) {
+  if (!raw || typeof raw !== 'object') {
+    return {
+      granted: false,
+      consentedAt: null,
+      layer: null,
+      localResearchCode: null
+    };
+  }
+  const o = /** @type {Record<string, unknown>} */ (raw);
+  return {
+    granted: o.granted === true,
+    consentedAt:
+      typeof o.consentedAt === 'string' && o.consentedAt ? o.consentedAt : null,
+    layer: typeof o.layer === 'string' && o.layer ? o.layer : null,
+    localResearchCode:
+      typeof o.localResearchCode === 'string' && o.localResearchCode.trim()
+        ? o.localResearchCode.trim()
+        : null
+  };
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ */
+export function readT54ResearchConsent(storage) {
+  const store = resolveStorage(storage);
+  if (!store) return normalizeT54ResearchConsent(null);
+  try {
+    const raw = store.getItem(T54_RESEARCH_CONSENT_STORAGE_KEY);
+    if (!raw) return normalizeT54ResearchConsent(null);
+    return normalizeT54ResearchConsent(JSON.parse(raw));
+  } catch {
+    return normalizeT54ResearchConsent(null);
+  }
+}
+
+function mintT54LocalResearchCode() {
+  try {
+    if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  } catch {
+    /* fall through */
+  }
+  return `t54-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+}
+
+/**
+ * @param {Storage | null | undefined} storage
+ * @param {boolean} granted
+ * @param {() => Date} [now]
+ */
+export function setT54ResearchConsent(storage, granted, now = () => new Date()) {
+  const store = resolveStorage(storage);
+  const prev = readT54ResearchConsent(store);
+  const next = {
+    granted: granted === true,
+    consentedAt:
+      granted === true
+        ? prev.consentedAt || now().toISOString()
+        : prev.consentedAt,
+    layer: T54_RESEARCH_CONSENT_LAYER,
+    localResearchCode: prev.localResearchCode || mintT54LocalResearchCode()
+  };
+  if (!store) return next;
+  try {
+    store.setItem(T54_RESEARCH_CONSENT_STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    /* ignore */
+  }
+  return next;
+}
+
+/**
+ * Missing fields or a layer other than product_improve = not consented.
+ *
  * @param {Storage | null | undefined} storage
  */
 export function hasT54ResearchConsent(storage) {
-  const store = resolveStorage(storage);
-  if (!store) return false;
-  try {
-    const raw = store.getItem(T54_RESEARCH_CONSENT_STORAGE_KEY);
-    if (!raw) return false;
-    const parsed = JSON.parse(raw);
-    return parsed?.granted === true;
-  } catch {
-    return false;
-  }
+  const state = readT54ResearchConsent(storage);
+  return (
+    state.granted === true && state.layer === T54_RESEARCH_CONSENT_LAYER
+  );
 }
 
 /**
@@ -132,7 +211,7 @@ export function appendT54TimedFocusLog(input) {
 }
 
 /**
- * Default off. Lab query `t54ResearchUpload=1` may enable, still blocked without consent.
+ * Debug query only. Must not upload without consent.
  *
  * @param {string} [search]
  */
@@ -146,17 +225,29 @@ export function isT54LabUploadEnabled(search = '') {
 }
 
 /**
- * @param {{ storage?: Storage | null, search?: string }} [opts]
+ * @param {{
+ *   storage?: Storage | null,
+ *   search?: string,
+ *   receiveConfigured?: boolean
+ * }} [opts]
  */
-export function shouldPostT54ResearchIngest({ storage, search } = {}) {
+export function shouldPostT54ResearchIngest({
+  storage,
+  search,
+  receiveConfigured
+} = {}) {
+  const consented = hasT54ResearchConsent(storage);
+  const configured =
+    receiveConfigured ?? Boolean(getCloudApiBaseUrl());
   return canUploadT54ResearchPayload({
-    consented: hasT54ResearchConsent(storage),
+    consented,
+    receiveConfigured: configured,
     labUploadEnabled: isT54LabUploadEnabled(search)
   });
 }
 
 /**
- * Call from timed FocusSession end only. Does not POST unless lab + consent.
+ * Call from timed FocusSession end only. Does not POST unless consent + receive.
  *
  * @param {object} opts
  * @param {object} opts.session

@@ -63,6 +63,10 @@ import {
   setMonetizationFunnelOptIn
 } from '../core/monetizationFunnelOptIn.js';
 import {
+  hasT54ResearchConsent,
+  setT54ResearchConsent
+} from '../core/t54ResearchLedger.js';
+import {
   isYpeCloudPersonalizationConsentEnabled,
   setYpeCloudPersonalizationConsent
 } from '../core/ypeCloudPersonalizationConsent.js';
@@ -2414,6 +2418,39 @@ export class OnboardingHintsUI {
     optInLabel.append(optInCheck, optInText);
     optIn.append(optInLabel, optInHint);
 
+    const t54OptIn = document.createElement('div');
+    t54OptIn.className = 'onboarding-privacy-sheet__opt-in';
+    t54OptIn.id = 'privacy-t54-research-opt-in';
+
+    const t54OptInLabel = document.createElement('label');
+    t54OptInLabel.className = 'onboarding-privacy-sheet__opt-in-label';
+    t54OptInLabel.htmlFor = 'privacy-t54-research-opt-in-toggle';
+
+    const t54OptInCheck = document.createElement('input');
+    t54OptInCheck.type = 'checkbox';
+    t54OptInCheck.id = 'privacy-t54-research-opt-in-toggle';
+    t54OptInCheck.className = 'onboarding-privacy-sheet__opt-in-check';
+    t54OptInCheck.dataset.testid = 'privacy-t54-research-opt-in-toggle';
+    t54OptInCheck.addEventListener('change', () => {
+      const enabled = t54OptInCheck.checked === true;
+      const next = setT54ResearchConsent(globalThis.localStorage, enabled);
+      if (next.granted !== enabled) {
+        t54OptInCheck.checked = false;
+      }
+      this._refreshT54ResearchOptInCopy();
+    });
+
+    const t54OptInText = document.createElement('span');
+    t54OptInText.className = 'onboarding-privacy-sheet__opt-in-text';
+    t54OptInText.dataset.privacyKey = 'T54_RESEARCH_CONSENT_LABEL';
+
+    const t54OptInHint = document.createElement('p');
+    t54OptInHint.className = 'onboarding-privacy-sheet__opt-in-hint';
+    t54OptInHint.dataset.privacyKey = 'T54_RESEARCH_CONSENT_HINT';
+
+    t54OptInLabel.append(t54OptInCheck, t54OptInText);
+    t54OptIn.append(t54OptInLabel, t54OptInHint);
+
     const wellnessNote = document.createElement('p');
     wellnessNote.className = 'onboarding-privacy-sheet__wellness-note';
     wellnessNote.dataset.privacyKey = 'PRIVACY_SHEET_WELLNESS_NOTE';
@@ -2438,7 +2475,7 @@ export class OnboardingHintsUI {
     });
 
     sheet.append(title, body, back);
-    body.append(ypeOptIn, optIn, wellnessNote, wellnessLink);
+    body.append(ypeOptIn, optIn, t54OptIn, wellnessNote, wellnessLink);
     this.mountRoot.appendChild(sheet);
     this.privacySheet = sheet;
     this._privacyTitleEl = title;
@@ -2453,6 +2490,10 @@ export class OnboardingHintsUI {
     this._privacyOptInCheck = optInCheck;
     this._privacyOptInText = optInText;
     this._privacyOptInHint = optInHint;
+    this._privacyT54OptInEl = t54OptIn;
+    this._privacyT54OptInCheck = t54OptInCheck;
+    this._privacyT54OptInText = t54OptInText;
+    this._privacyT54OptInHint = t54OptInHint;
     this._privacyWellnessNoteEl = wellnessNote;
     this._privacyWellnessLinkEl = wellnessLink;
     this._refreshPrivacySheetCopy();
@@ -2511,6 +2552,7 @@ export class OnboardingHintsUI {
     }
     this._refreshYpeOptInCopy();
     this._refreshPrivacyOptInCopy();
+    this._refreshT54ResearchOptInCopy();
     if (this._privacyWellnessNoteEl) {
       this._privacyWellnessNoteEl.textContent = t('PRIVACY_SHEET_WELLNESS_NOTE');
     }
