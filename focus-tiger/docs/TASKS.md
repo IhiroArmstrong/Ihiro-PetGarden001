@@ -545,6 +545,145 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `co-practice-positioning` · feature · 已完成（口径 + C-11；无运行时） · 2026-10-26
+
+人机共修只加口径。适应层等 Brief 点头后再写代码。
+
+### `t53-awaken-input-rhythm` · feature · 旁支实现中 · 2026-10-26
+
+T53 输入节奏：默认关；无 Input Monitoring 退回 T51（SB-21）。只记间隔与退格，不记键值/标题。叠在已合 T52 之后。
+
+### `t54-research-consent` · feature · 立即做 · 可选（实现中） · 2026-10-26
+
+**T54** 阶段 2 第二刀：Privacy 研究数据分享开关（改进产品层）。B 类。默认关。不改招呼。不开 90 天。Brief [`task-t54-research-consent.md`](../task-briefs/task-t54-research-consent.md)。影子流水 #1430 已合。PO 已点头文案。不是 T50 / T51 / T52。不是 T4。
+
+### `t56-analyst-followup` · note · 口径补丁待合（无运行时） · 2026-10-26
+
+分析师点头一页纸与 T57，T58 改稿后再点头。T59 另开文案 Brief。
+
+### `t56-analyst-six-point-confirm` · note · T58 改稿已在 develop（#1439）；补 T59 样式 / T60 Brief / T58 分享禁入 · 2026-10-26
+
+#1439 合入的是改后 T58，不是冷却两倍旧稿。本支只补分析师后续三条规格，不写运行时。
+
+### `t59-still-last-duration-copy` · note · Brief 待点头（无运行时） · 2026-10-26
+
+时长记忆已在。只补「还是上次那个」一句。B 类。位置：时长条旁低对比小字、无动画、375 不裁切。en 人审可改为 Same as last time。不是 T58。
+
+### `t60-reset-whitelist-t52-keys` · note · Brief 待点头（无运行时） · 2026-10-26
+
+把 T52 打卡键补进删除白名单，并钉住时长偏好键已在名单内。排在 T58 开工前。不是 T58。
+
+### `cold-start-sound-entry` · feature · Brief 已锁 · 待开工（禁止改 src，口令「按本 Brief 开工」） · 2026-10-25
+
+冷启动全静音后的声音入口。B 类。规格见 [`task-briefs/task-cold-start-sound-entry.md`](../task-briefs/task-cold-start-sound-entry.md)。不是 T39、不是 T34、不是 System TTS 音色。无 T 代号（未改 GLOSSARY）。
+
+### `t54-shadow-pipeline` · feature · 排队中 · 可选（影子流水） · 2026-10-25
+
+**T54** 阶段 2 第一条：本机计时专注流水 + Worker 白名单接收口。A 类。不改招呼文案。Brief [`task-t54-stage2-shadow-pipeline.md`](../task-briefs/task-t54-stage2-shadow-pipeline.md)。不是 T50 / T51 / T52。不是 90 天实验。
+
+### `t55-companion-contract` · feature · PR-4 已合 #1429 · 合入后补丁（近邻+§D 口径） · 2026-10-25
+
+**T55** 陪伴契约。A 类。Brief [`task-companion-contract.md`](../task-briefs/task-companion-contract.md)。PR-1 盘点 #1419。PR-2 契约 #1425。PR-3 字面检查 #1426。PR-4 样本集 #1429。合入后补丁：近邻再加同坐环悬停与分钟/天数练习事实；§D 写明 34/34 是回归不是覆盖率/验证、对外不引用；日文样本目前不算覆盖。「已知漏网」一栏另开小任务。不改运行时。不挡 T34。不是 T54。不改队列热点文件。
+
+### `session-end-observed-duration` · feature · 实现中 · feature/session-end-observed-duration · 2026-10-24
+
+**结束报时长（观察式）**。T45 藏跳秒后的结束句：Rise 轻声 + Reflection 顶行 + Voice 可选朗读。Brief [`task-session-end-observed-duration.md`](../task-briefs/task-session-end-observed-duration.md)。**不是** T47。
+
+### `t40-desktop-system-font` · feature · 立即做 · P1 · 实现旁支 · 2026-10-24
+
+T40：电脑版 Electron 全局 UI 切系统无衬线（旧金山/苹方等）；Web 仍 Nunito。PO 2026-10-24 B 波第一刀 + 免 Brief 点头。Brief [`task-briefs/task-desktop-system-font.md`](../task-briefs/task-desktop-system-font.md)。
+
+### `t43-companion-window-fullscreen-sit` · feature · 立即做 · P1 · 实现旁支 · 2026-10-24
+
+T43：电脑版两个系统窗口动作（适中陪伴窗、全屏静坐）。不自绘红绿灯。Web 无入口。PO 2026-10-24 立刻开工 + 免 Brief 点头。Brief [`task-briefs/task-companion-window-fullscreen-sit.md`](../task-briefs/task-companion-window-fullscreen-sit.md)。
+
+### `t44-keyboard-system-notification` · feature · 实现中（feature/t44-keyboard-system-notification） · 2026-10-24
+
+T44：空格起停、倾诉 ⌘+E、坐满系统通知。Brief [`task-keyboard-shortcuts-system-notification.md`](../task-briefs/task-keyboard-shortcuts-system-notification.md)。不是 T47。
+
+### `awaken-invite-lock` · feature · T50 口径本 PR；T51–T53 Brief 待点头 · 2026-10-23
+
+觉照：行为节奏只定时机、不定性。邀请不自动开练习。输入节奏默认关。
+
+### `t39-session-start-end-bell-default-off` · feature · 实现中（fix/t39-session-bells-default-off） · 2026-10-23
+
+T39 开始铃结束铃默认关。规格见 `task-briefs/task-session-start-end-bell-default-off.md`。不是 T27、不是 T45。间隔磬默认仍关、不绑总开关。
+
+### `t41-window-pin-confide-dock` · feature · 立即做 · P1 · 实现旁支 · 2026-10-23
+
+T41：电脑版始终在最前（默认关）+ 宽屏倾诉贴底/靠右。设置仍用玻璃卡。PO 2026-10-23 书面免 Brief 点头后开工。Brief [`task-briefs/task-window-pin-confide-dock.md`](../task-briefs/task-window-pin-confide-dock.md)。
+
+### `t42-wide-secondary-dock` · feature · 立即做 · P1 · 实现旁支 · 2026-10-23
+
+T42：宽屏帮助中心与成长旅程详情卡靠右/贴底，窄屏仍可居中。断点与 T41 倾诉相同。PO 2026-10-23 书面免 Brief 点头后开工。Brief [`task-briefs/task-wide-secondary-dock.md`](../task-briefs/task-wide-secondary-dock.md)。
+
+### `t45-sitting-picture` · feature · 实现中（feature/t45-sitting-picture） · 2026-10-23
+
+T45 静坐画面：正式 Focusing 视觉藏跳动分秒。规格见 `task-briefs/task-sitting-picture.md`。白名单 SB-22。不是 T47、不是 T44。
+
+### `t50-session-presence-summary` · feature · Phase 0 已合 #1394 · Phase 1 Brief 待合 · 2026-10-23
+
+**T50** 会话存在摘要。Phase 0：计时同坐结束打 `[SessionPresence]` + 环缓，不改结束句。Phase 1 Brief：用摘要偏置结束姿态 / 轻声选句 / 句库分桶；下次默认时长 v1 不做。不是 Presence Signals，不是观察纸。
+
+- Phase 0 Brief [`task-session-presence-summary-phase-0.md`](../task-briefs/task-session-presence-summary-phase-0.md)
+- Phase 1 Brief [`task-session-presence-summary-phase-1.md`](../task-briefs/task-session-presence-summary-phase-1.md)
+
+### `t51-awaken-invite` · feature · 进行中 · 本旁支 feature/t51-awaken-invite-orchestrator · 2026-10-23
+
+T51 觉照邀请编排：只邀请、不自动开练习。不改 T50。
+
+### `t34-help-center-operating` · feature · 立即做 · T34 · Brief 已点头 · 实现中 · 2026-10-22
+
+T34：Help Center 问卡提交接入 T10 同一封闭指令集。疑问句仍列卡。封闭集祈使走 B/C 确认，禁止静默写盘。不改倾诉发送链。
+
+### `docs-language-support-matrix` · note · 立即做 · 2026-10-21
+
+**T35 / T37** 语言矩阵与短答草稿；**T36** Brief 待 PO 冻结例外。权威 [`LANGUAGE_SUPPORT.md`](../LANGUAGE_SUPPORT.md)。
+
+### `t25-wide-more-five-icon-show` · feature · 实现旁支 · 待合 develop · 2026-10-21
+
+T25：宽屏底栏 ⋯ 须先出五组图标。#1307 已合。本刀删 `#sprite-stage` AABB 相交退化；矮窗 &lt;520 与顶缘 &lt;12px 仍直接列表。用户已确认点的是 ⋯ 不是指南针。Brief [`task-briefs/task-wide-more-five-icon-show.md`](../task-briefs/task-wide-more-five-icon-show.md)。
+
+### `t26-help-center-beside-question` · feature · 立即做 · P1 · 实现旁支（T25 已合） · 2026-10-21
+
+T26：Help Center 钮放在问号右边。简介与帮助中心互斥。菜单 Preferences 行保留。2026-10-21 Brief 已点头；T25 已合 develop。Brief [`task-briefs/task-help-center-beside-question.md`](../task-briefs/task-help-center-beside-question.md)。
+
+### `t27-stop-practice-breath-phase-tts` · feature · 实现中 · P2 · fix/stop-practice-breath-phase-tts · 2026-10-21
+
+T27：任何练习中间停 inhale/exhale 系统语音。结束句与其它播报保留。`HONESTY_BREATH_*` 文案保留。2026-10-21 Brief 已点头。Brief [`task-briefs/task-stop-practice-breath-phase-tts.md`](../task-briefs/task-stop-practice-breath-phase-tts.md)。
+
+### `t32-paraphrase-echo-guard` · feature · 进行中 · fix/confide-paraphrase-echo-guard · 2026-10-21
+
+T32 复述提问护栏：答句实词无新内容则 sanitize 拒收，走现网陪伴短句。禁止田野原句进拒收表。
+
+### `t33-generate-path-diagnosis` · feature · 诊断已交 · docs/t33-generate-path-diagnosis · 2026-10-21
+
+T33 只读：麦克风类碎片走观察翼 generate（茶句来自 corpus 回落）；Why meditation 已在问答翼 generate。不改运行时。
+
+### `t34-confide-speak-displayed-replies` · feature · 立即做 · T34 · Brief 已点头 · 实现中 · 2026-10-21
+
+T34：语音可用时，倾诉屏上每一句回复都朗读（含危机转介）。不改路由。停止办法保留。从 T29 拆出出声逻辑。
+
+### `t36-confide-ja-not-yet-open` · feature · 立即做 · 2026-10-21
+
+**T36** 日语倾诉暂未开放。冻结安全例外已写进 [`CONFIDE_NOW.md`](../CONFIDE_NOW.md)。Brief [`task-confide-ja-not-yet-open.md`](../task-briefs/task-confide-ja-not-yet-open.md)。
+
+### `confide-object-normalize-redirect-tts` · feature · 立即做 · T29 · Brief 已点头 · 实现中（fix/confide-object-normalize-redirect-tts） · 2026-10-20
+
+CR-47 对象闸通用归一（相邻两词拼接、连字符、受保护的单复数）+ Help Center 跳转句朗读 +「I'm here to listen」。不碰安全通道。权威 `task-briefs/task-confide-object-normalize-redirect-tts.md`。
+
+### `confide-operational-verb-tighten` · feature · 立即做 · T30 · 实现中（fix/confide-operational-verb-tighten） · 2026-10-20
+
+CR-47 how-to 收紧：认知动词（understand / know）走生成，不跳 Help Center、不念卡。不碰安全通道。权威 `task-briefs/task-confide-operational-verb-tighten.md`。叠 T29 #1362。
+
+### `electron-qa-2026-10-20` · note · 账本已记 · 未改运行时 · 2026-10-20
+
+Electron 壳抽测四条：扇形三图标根因、Help Center 问号旁钮、练习中 inhale/exhale 语音、练习纸 vs 健康地图。代号 **T25–T28**。旁路 [`issue-entries/docs-electron-qa-2026-10-20.md`](../issue-entries/docs-electron-qa-2026-10-20.md)。
+
+### `t31-confide-personal-fact-badge-row` · feature · 实现中 · 旁支 fix/confide-personal-fact-badge-row · 2026-10-20
+
+T31 个人事实补徽章行。问枚数 / 我有哪些时读 Idle 徽章包，不靠当天问法表。下载徽章与寅币句不走本行。Brief：`task-briefs/task-confide-personal-fact-badge-row.md`。
+
 ### `practice-paper` · feature · 方向锁已合 #1345 · 第一刀一卡随 T24 文档 · 2026-10-19
 
 练习观察纸（Practice Paper）。挂在成长旅程详情下半部。T18 方向锁 #1343 · #1345 已合。第一刀一张 Sit & Breath 卡，读 Journey Log 全部行（不按 `arrive` 拆、不读练习日总账填卡）。界面规格见 T24 Brief。
