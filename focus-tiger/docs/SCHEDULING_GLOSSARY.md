@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-26 · **T56 已合（口径）** · T57 Brief 已点头·排队中 · T58/T59 排队中·可选 · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · 影子流水 #1430 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 排队中可选 · T28 仍搁置）
+## 1. 当前队列（2026-10-26 · **T56 已合（口径）** · T60 须先于 T57 · T57 Brief 已点头·排队中 · T58/T59/T60 排队中·可选 · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · 影子流水 #1430 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 排队中可选 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -64,9 +64,10 @@
 | **未排期** · **T54** | 90 天实验 | 搁置 | 日历不启动。招呼 / 满 18 岁对照 / 抽签禁止。阶段 1 SSOT [`task-t54-stage1-preregistration.md`](./task-briefs/task-t54-stage1-preregistration.md)（#1421）。口令「开工 T54」「做 90 天实验」不执行 |
 | **可选** · **T55** | 陪伴契约 | 排队中 | PO 2026-10-25。文档 + 字面检查，不改界面。不挡 T34。Brief [`task-companion-contract.md`](./task-briefs/task-companion-contract.md)。盘点 #1419。契约正文 #1425。**不是** T54 |
 | **可选** · **T56** | 人机共修口径一页纸 | **已合 develop** | A 类。口径 [`CO_PRACTICE_POSITIONING.md`](./CO_PRACTICE_POSITIONING.md)；契约 **C-11**。**不是** T58 |
-| **可选** · **T57** | 邀请下场记录 | 排队中 | 只存本机。不改变邀请。Brief [`task-invite-outcome-record.md`](./task-briefs/task-invite-outcome-record.md) **已点头**。**不是** T58 |
-| **可选** · **T58** | Yin 适应层 v1 + 小本子 | 排队中 | 只变安静、不变积极。须 T57 合入后写代码。Brief [`task-yin-adaptation-v1.md`](./task-briefs/task-yin-adaptation-v1.md) **待再点头**。**不是** T54 效果证明 |
-| **可选** · **T59** | 「还是上次那个」时长文案 | 排队中 | B 类。时长记忆已在，只补一句。Brief [`task-still-last-duration-copy.md`](./task-briefs/task-still-last-duration-copy.md) 待点头。**不是** T58 |
+| **可选** · **T57** | 邀请下场记录 | 排队中 | 只存本机。不改变邀请。Brief [`task-invite-outcome-record.md`](./task-briefs/task-invite-outcome-record.md) **已点头**。**须 T60 已合**。**不是** T58 |
+| **可选** · **T58** | Yin 适应层 v1 + 小本子 | 排队中 | 只变安静、不变积极。须 **T60 → T57** 合入后写代码。Brief [`task-yin-adaptation-v1.md`](./task-briefs/task-yin-adaptation-v1.md) **待再点头**。**不是** T54 效果证明 |
+| **可选** · **T59** | 「还是上次那个」时长文案 | 排队中 | B 类。时长记忆已在，只补一句。英文 **Same as last time**。Brief [`task-still-last-duration-copy.md`](./task-briefs/task-still-last-duration-copy.md) 待点头。**不是** T58 |
+| **可选** · **T60** | 重置白名单补 T52 打卡键 | 排队中 | 删除名单漏了打卡键 + 反向扫描。排在 **T57 前**。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md) 待点头。**不是** T58 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -144,9 +145,10 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T44 Brief 开工」 | **T44 已合 #1410**。勿再开同内容快捷键旁支 |
 | 「按 T48 Brief 开工」或「复活 #1412」 | **T48 已合 #1414**。禁止复活 #1412 |
 | 「开工 T56」 | **T56 已合**（口径一页纸）。勿再开同内容口径旁支 |
-| 「按 T57 Brief 开工」 | Brief **已点头**。新 Chat 写本机下场。不改邀请 |
-| 「按 T58 Brief 开工」 | Brief **待再点头**。点头且 T57 已合才写代码 |
-| 「按 T59 Brief 开工」 | Brief 点头后：时长条旁一句「还是上次那个」。**不是** T58 |
+| 「按 T57 Brief 开工」 | Brief **已点头**。**须 T60 已合**。新 Chat 写本机下场。不改邀请 |
+| 「按 T58 Brief 开工」 | Brief **待再点头**。点头且 **T60 → T57** 已合才写代码 |
+| 「按 T59 Brief 开工」 | Brief 点头后：时长条旁一句「还是上次那个」。英文 Same as last time。**不是** T58 |
+| 「按 T60 Brief 开工」 | Brief 点头后：打卡键进重置白名单 + 反向扫描。排在 **T57 前**。**不是** T58 |
 
 ---
 
