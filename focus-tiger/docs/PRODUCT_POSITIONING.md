@@ -1,8 +1,8 @@
 # Focus Tiger · 产品定位
 # PRODUCT_POSITIONING.md
 
-> 版本：1.9
-> 最后更新：2026-10-18
+> 版本：1.10
+> 最后更新：2026-10-26
 
 本文档定义 Focus Tiger 的**品牌定位、核心使命与产品方向**，回答「为什么做、为用户创造什么价值、哪些方向符合品牌」。首要用户、JTBD、竞争替代品、成功指标、付费与隐私假设见 `MVP_PRODUCT_DEFINITION.md`（**付费双轨**：A Buy Yin a Tea（不解锁）+ B 进阶内容解锁；B 下 **Sanctuary Lifetime** 买断 ∪ **Yin Membership** 订阅互覆盖，细则见 `task-briefs/task-tech-direction-v1-shell-monetization.md`。**节日主题（Seasonal Theme）**属 B 轨时段氛围权益，见 `task-briefs/task-seasonal-theme-engine-v1.md`）。
 
@@ -14,6 +14,7 @@
 1a. `FROM_APP_TO_CULTURE.md`：**文化探索方向锁**（From App to Culture；验证框架；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
 1b. `YIN_EVOLUTION.md`：**陪伴成长意义层**（关系叙事；不改分数公式；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
 1c. `GROWTH_JOURNEY.md` + `PRACTICE_PAPER.md`：**走到哪**与**练习观察纸**（观察纸挂在旅程详情上；无健康分；方向锁见各文）；
+1d. `CO_PRACTICE_POSITIONING.md`：**人机共修口径**（叠加，不替换本文；能说 / 不能说；**无运行时**）；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
 3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
 4. `PRODUCT_MOMENTS.md`：一天中的 Five Moments 产品叙事框架（Arrive / Focus / Recover / Transition / Reflect），位于定位之下、任务排期之上；
@@ -44,6 +45,8 @@ Focus Tiger：一只陪伴你练习专注与觉察的小老虎。
 > Focus Tiger is a mindful digital companion that helps people cultivate focus, presence, and flow through regular practice, at their own pace.
 
 对外英文为默认表达。**v1.0.0 发版对外定位为 English + Japanese**（可点切换）；中文等语种字典可保留在工程内（draft），待审校并决定声称后再露出。
+
+**人机共修（2026-10-26 · T56）**：可以在「正念伙伴」之上叠加「一起练习」的说法，不另做入口，也不分成两套模式。哪些话现在可以说、哪些要等功能做出来才能说，只以 [`CO_PRACTICE_POSITIONING.md`](./CO_PRACTICE_POSITIONING.md) 为准。未实现的适应不得暗示（陪伴契约 **C-11**）。本段不改运行时。
 
 ---
 

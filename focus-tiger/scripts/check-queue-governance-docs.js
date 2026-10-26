@@ -51,6 +51,10 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   '.cursor/rules/focus-tiger-scheduling-glossary.mdc',
   '.cursor/rules/focus-tiger-core.mdc',
   'focus-tiger/docs/RULES_INDEX.md',
+  'focus-tiger/docs/CO_PRACTICE_POSITIONING.md',
+  'focus-tiger/docs/COMPANION_CONTRACT.md',
+  'focus-tiger/docs/PRODUCT_POSITIONING.md',
+  'focus-tiger/docs/task-entries/co-practice-positioning.md',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
