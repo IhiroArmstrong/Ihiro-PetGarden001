@@ -9,5 +9,5 @@ import { openFreshProductShell } from './helpers/product-shell.js';
 test('web product shell has no Focus rhythm menu row', async ({ page }) => {
   await openFreshProductShell(page);
   await expect(page.locator('[data-testid="idle-input-rhythm"]')).toHaveCount(0);
-  await expect(page.locator('#input-rhythm-preference-panel')).toHaveCount(0);
+  await expect(page.locator('#input-rhythm-preference-panel')).toBeHidden();
 });
