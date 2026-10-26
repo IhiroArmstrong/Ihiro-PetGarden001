@@ -221,6 +221,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `PRODUCT_MOMENTS.md` | Five Moments |
 | `COMPANION_CONTRACT.md` | **陪伴契约 SSOT**（`companion-contract`）：红线 C-01–C-11、并行开口通道、措辞与字面检查边界；T55；**无运行时** |
 | `CO_PRACTICE_POSITIONING.md` | **人机共修口径一页纸**（T56）：叠加定位；已实现 / 未实现对照；从属 `PRODUCT_POSITIONING` + **C-11**；**无运行时** |
+| `late-night-behavior-inventory.md` | **深夜相关行为只读盘点**（T56 跟进）：披毯 / 0–6 免责 / Work Transition / 提醒族；能否承接自设收工时间；**无运行时** |
 | `CALM_ACTION_WISDOM.md` | **Calm Action Wisdom** 内容规范 + 70 条 CMS（行为时刻；与 Quiet Line / Daily Wisdom / 静思典藏分池；**无运行时**） |
 | `CONTEMPLATIVE_ARCHIVE.md` | **静思典藏层**（Contemplative Archive）：长期纪念文学 + 12 条候选；第一枚印 = 芥子须弥；**无新运行时** |
 | `CORE_LOOP.md` | 单次会话状态机叙事 |
