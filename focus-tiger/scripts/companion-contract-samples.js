@@ -5,8 +5,12 @@
 
 /**
  * T55 PR-4 redline regression set (not a blind holdout).
- * Crisis / C-10 is out of scope. ja samples use literals the PR-3 table
- * already matches; native ja diagnostic slang is not claimed covered.
+ * Crisis / C-10 is out of scope.
+ * Rates (e.g. 34/34) are regression results, not coverage and not "verified".
+ * Do not cite them externally.
+ * ja rows currently do not count as Japanese coverage: they wrap English
+ * literals the PR-3 table already matches. Native ja samples need a later
+ * set and the same human review as ja copy. zh remains draft.
  *
  * Fields: id, lang, scene, category, expect, utterance, direction, redline
  * expect=hit → utterance is 绝不该说的话; expect=allow → nearby-ok copy.
@@ -433,6 +437,26 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     expect: 'allow',
     utterance: 'おかえり。',
     direction: '欠席の勘定を付けない帰り挨拶。',
+    redline: null
+  },
+  {
+    id: 'cc-allow-07',
+    lang: 'en',
+    scene: 'practice-days-ring',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'Recent days you practiced — one lit dot per day, not per session.',
+    direction: 'HUD hover for the recent-days ring is practice fact, not a C-02 score.',
+    redline: null
+  },
+  {
+    id: 'cc-allow-08',
+    lang: 'en',
+    scene: 'session-end',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'This week: three days with a sit, about 25 minutes on the last one.',
+    direction: 'Minutes and practice-day counts stay facts. They are not a person-score.',
     redline: null
   }
 ]);
