@@ -1,7 +1,7 @@
 ---
 id: co-practice-positioning
 kind: feature
-status: 文档撰写中（口径 + C-11 + T57/T58 Brief；无运行时）
+status: 已完成（口径 + C-11；无运行时）
 updated: 2026-10-26
 ---
 
