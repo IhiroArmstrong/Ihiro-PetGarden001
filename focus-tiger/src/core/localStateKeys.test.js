@@ -118,6 +118,7 @@ import { CONFIDE_OBSERVATION_STORAGE_KEY } from './confide/confideObservationTel
 import { SEASONAL_WHISPER_STORAGE_KEY } from './seasonal/seasonalWhisperGate.js';
 import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.js';
 import { FOCUS_DURATION_STORAGE_KEY } from './focusDuration.js';
+import { AWAKEN_CHECKIN_STORAGE_KEY, recordAwakenCheckIn } from './awakenCheckInStore.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   COLD_START_GOAL_OPTIONS_SEEN_KEY,
@@ -235,6 +236,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_CIRCLE_IDENTITY_DRAFT_STORAGE_KEY,
   FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY,
   FOCUS_DURATION_STORAGE_KEY,
+  AWAKEN_CHECKIN_STORAGE_KEY,
   CONFIDE_OBSERVATION_STORAGE_KEY,
   'focus-tiger.session-presence-ring.v1',
   T54_RESEARCH_LOG_STORAGE_KEY,
@@ -262,6 +264,30 @@ test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () =
 test('FOCUS_TIGER_LOCAL_STORAGE_KEYS stays kebab focus-tiger.*.v1 style', () => {
   for (const key of FOCUS_TIGER_LOCAL_STORAGE_KEYS) {
     assert.match(key, /^focus-tiger\.[a-z0-9.-]+\.v1$/);
+  }
+});
+
+test('clearAllFocusTigerLocalState clears T52 awaken check-in records', () => {
+  const storage = createMapStorage();
+  const original = globalThis.localStorage;
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: storage
+  });
+  try {
+    recordAwakenCheckIn('ease', {
+      sessionId: 'sit-clear-test',
+      phase: 'end',
+      ts: Date.UTC(2026, 9, 25, 12, 0, 0)
+    });
+    assert.ok(storage.getItem(AWAKEN_CHECKIN_STORAGE_KEY));
+    clearAllFocusTigerLocalState(storage);
+    assert.equal(storage.getItem(AWAKEN_CHECKIN_STORAGE_KEY), null);
+  } finally {
+    Object.defineProperty(globalThis, 'localStorage', {
+      configurable: true,
+      value: original
+    });
   }
 });
 
