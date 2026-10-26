@@ -56,14 +56,21 @@ export function pickT54ResearchReceiveFields(body) {
 }
 
 /**
- * Lab upload may run only when research consent is granted.
- * Default (unset) is not consented — never upload, never assign arm.
+ * Upload only when product-improve consent is granted and the receive
+ * endpoint is configured. Lab query `t54ResearchUpload=1` is debug-only
+ * and must never bypass missing consent.
  *
- * @param {{ consented?: boolean, labUploadEnabled?: boolean }} opts
+ * @param {{
+ *   consented?: boolean,
+ *   receiveConfigured?: boolean,
+ *   labUploadEnabled?: boolean
+ * }} opts
  */
 export function canUploadT54ResearchPayload({
   consented = false,
+  receiveConfigured = false,
   labUploadEnabled = false
 } = {}) {
-  return Boolean(consented) && Boolean(labUploadEnabled);
+  void labUploadEnabled;
+  return Boolean(consented) && Boolean(receiveConfigured);
 }

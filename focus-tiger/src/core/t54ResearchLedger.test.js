@@ -22,8 +22,12 @@ import {
   shouldAppendT54TimedFocusLog,
   shouldPostT54ResearchIngest,
   isT54LabUploadEnabled,
-  noteTimedFocusEndedForT54
+  noteTimedFocusEndedForT54,
+  hasT54ResearchConsent,
+  setT54ResearchConsent
 } from './t54ResearchLedger.js';
+import { MONETIZATION_FUNNEL_OPT_IN_STORAGE_KEY } from './monetizationFunnelOptIn.js';
+
 
 function mem() {
   const map = new Map();
@@ -84,12 +88,24 @@ test('timed focus self-open appends one local row without touching forbidden led
 test('scenario 1: without consent lab switch still cannot upload', () => {
   assert.equal(canUploadT54ResearchPayload({}), false);
   assert.equal(
-    canUploadT54ResearchPayload({ consented: false, labUploadEnabled: true }),
+    canUploadT54ResearchPayload({
+      consented: false,
+      receiveConfigured: true,
+      labUploadEnabled: true
+    }),
+    false
+  );
+  assert.equal(
+    canUploadT54ResearchPayload({ consented: true, receiveConfigured: false }),
     false
   );
   const storage = mem();
   assert.equal(
-    shouldPostT54ResearchIngest({ storage, search: '?t54ResearchUpload=1' }),
+    shouldPostT54ResearchIngest({
+      storage,
+      search: '?t54ResearchUpload=1',
+      receiveConfigured: true
+    }),
     false
   );
   storage.setItem(
@@ -97,10 +113,35 @@ test('scenario 1: without consent lab switch still cannot upload', () => {
     JSON.stringify({ granted: true })
   );
   assert.equal(
-    shouldPostT54ResearchIngest({ storage, search: '?t54ResearchUpload=1' }),
+    hasT54ResearchConsent(storage),
+    false,
+    'missing layer is not consent'
+  );
+  storage.setItem(
+    T54_RESEARCH_CONSENT_STORAGE_KEY,
+    JSON.stringify({
+      granted: true,
+      consentedAt: '2026-10-26T00:00:00.000Z',
+      layer: 'product_improve'
+    })
+  );
+  assert.equal(hasT54ResearchConsent(storage), true);
+  assert.equal(
+    shouldPostT54ResearchIngest({
+      storage,
+      search: '',
+      receiveConfigured: true
+    }),
     true
   );
-  assert.equal(shouldPostT54ResearchIngest({ storage, search: '' }), false);
+  assert.equal(
+    shouldPostT54ResearchIngest({
+      storage,
+      search: '?t54ResearchUpload=1',
+      receiveConfigured: false
+    }),
+    false
+  );
   assert.equal(isT54LabUploadEnabled(''), false);
 });
 
@@ -150,4 +191,21 @@ test('DEV reset whitelist includes T54 keys', () => {
   assert.ok(
     FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes(T54_RESEARCH_CONSENT_STORAGE_KEY)
   );
+});
+
+test('privacy toggle grants product_improve and does not rewrite funnel key', () => {
+  const storage = mem();
+  storage.setItem(MONETIZATION_FUNNEL_OPT_IN_STORAGE_KEY, '{"enabled":false}');
+  assert.equal(hasT54ResearchConsent(storage), false);
+  const on = setT54ResearchConsent(storage, true, () => new Date('2026-10-26T00:00:00.000Z'));
+  assert.equal(on.granted, true);
+  assert.equal(on.layer, 'product_improve');
+  assert.equal(hasT54ResearchConsent(storage), true);
+  assert.equal(
+    storage.getItem(MONETIZATION_FUNNEL_OPT_IN_STORAGE_KEY),
+    '{"enabled":false}'
+  );
+  const off = setT54ResearchConsent(storage, false);
+  assert.equal(off.granted, false);
+  assert.equal(hasT54ResearchConsent(storage), false);
 });

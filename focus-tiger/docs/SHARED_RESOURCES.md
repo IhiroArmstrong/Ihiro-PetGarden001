@@ -43,7 +43,8 @@
 | `focus-tiger.confide-observation.v1` | `confideObservationTelemetry` | Confide Batch 0 观察环缓（最多 500 条）：`confide_chip_tapped` / `confide_share`（`dataSource` + `matchedChipId`；**无**用户原文）；Web/Electron 渲染层；Electron 另追加 `userData/companion-l2/confide-observation.jsonl` |
 | `focus-tiger.session-presence-ring.v1` | `sessionPresenceSummary` | **T50 Phase 0** 会话存在摘要环缓（最多 40 条）：一场计时同坐结束压 `{ companionMode, plannedMinutes, actualSeconds, leaveCount, leaveTotalSeconds, leaveLongestSeconds, pauseCount, extended, endedEarly, durationMode }`；`console.log('[SessionPresence]')`；**不**写练习账本 / Presence Signals / 备份；标签估计器零消费端 |
 | `focus-tiger.t54-research-log.v1` | `t54ResearchLedger` | **T54** 计时专注研究流水（只追加）。**不**写练习日 / Journey / T50 环缓。默认不上送 |
-| `focus-tiger.t54-research-consent.v1` | `t54ResearchLedger` | **T54** 研究同意标志。本刀无同意页，保持未勾选；未同意永不上送 |
+| `focus-tiger.t54-research-consent.v1` | `t54ResearchLedger` | **T54** 研究同意：`{ granted, consentedAt, layer: "product_improve" }`。Privacy 默认关；未同意永不上送 |
+| `focus-tiger.t54-research-last-post.v1` | `t54ResearchUpload` | **T54** 上次上送指纹；内容相同则跳过重复写入 |
 | `focus-tiger.brand-yin-way-first-reflect.v1` | `brandYinWayFirstReflectGate` | 首次 `first_session_complete` 后 Reflect 底栏品牌句已展示（`{ shown }`）；双语仅该次 |
 | `focus-tiger.intentions.v1` | `SessionIntentionStore` | Choose 意图历史；Reflection 回显。本场闩在 `main`：`onReady` 写入、`beginFocus` 空 pending **不抹**已闩意图（`resolveSessionIntentionLatch`） |
 | `focus-tiger.reflections.v1` | `SessionEndFlow` | Reflection 非空答案最近 5 条（**非**趋势 SSOT）；freeText **90 天**与 presence-signals 对齐 prune；**本地** Backup & restore v2 白名单 |

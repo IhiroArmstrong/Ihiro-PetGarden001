@@ -383,6 +383,7 @@ import {
   snapshotFocusSessionForPresence
 } from './core/sessionPresenceSummary.js';
 import { noteTimedFocusEndedForT54 } from './core/t54ResearchLedger.js';
+import { scheduleT54ResearchIngest } from './core/t54ResearchUpload.js';
 import {
   pickPresenceWhisperKey,
   selectPresenceEndConsumers
@@ -5411,12 +5412,15 @@ async function init() {
       sessionPresenceCollector.finalize(
         snapshotFocusSessionForPresence(focusSession, { endedEarly: true })
       );
-      noteTimedFocusEndedForT54({
+      const t54Early = noteTimedFocusEndedForT54({
         session: focusSession,
         endedEarly: true,
         storage,
         search: String(globalThis.location?.search || '')
       });
+      if (t54Early?.ingestPath) {
+        scheduleT54ResearchIngest({ storage });
+      }
       focusSession.stop();
       bootSessionChrome.sessionUiGate.setCompletionPending(false);
       honestyGlowLevel = null;
@@ -5765,12 +5769,15 @@ async function init() {
     sessionPresenceCollector.finalize(
       snapshotFocusSessionForPresence(focusSession, { endedEarly: false })
     );
-    noteTimedFocusEndedForT54({
+    const t54Done = noteTimedFocusEndedForT54({
       session: focusSession,
       endedEarly: false,
       storage,
       search: String(globalThis.location?.search || '')
     });
+    if (t54Done?.ingestPath) {
+      scheduleT54ResearchIngest({ storage });
+    }
     focusSession.stop();
     honestyCheckIn.onTimedSessionCompleted(timedAwardMinutes);
     awardFocusCoins({

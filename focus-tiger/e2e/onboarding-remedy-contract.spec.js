@@ -103,6 +103,13 @@ test.describe('wide ? purpose only', () => {
     await expect(
       page.locator('#onboarding-privacy-sheet:not([hidden])')
     ).toBeVisible({ timeout: 5_000 });
+    const t54Toggle = page.locator(
+      '[data-testid="privacy-t54-research-opt-in-toggle"]'
+    );
+    await expect(t54Toggle).toBeVisible();
+    await expect(t54Toggle).not.toBeChecked();
+    await t54Toggle.check();
+    await expect(t54Toggle).toBeChecked();
     await expect(purposeCardVisible(page)).toBeHidden();
     await expect(page.locator('#onboarding-privacy-sheet')).toContainText(
       /on your device|do not sell/i

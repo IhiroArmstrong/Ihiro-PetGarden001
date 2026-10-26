@@ -45,6 +45,7 @@ import {
   T54_RESEARCH_LOG_STORAGE_KEY,
   T54_RESEARCH_CONSENT_STORAGE_KEY
 } from './t54ResearchLedger.js';
+import { LAST_POST_FINGERPRINT_KEY } from './t54ResearchUpload.js';
 import {
   createHintsSeenStore,
   HINTS_SEEN_STORAGE_KEY
@@ -238,6 +239,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.session-presence-ring.v1',
   T54_RESEARCH_LOG_STORAGE_KEY,
   T54_RESEARCH_CONSENT_STORAGE_KEY,
+  LAST_POST_FINGERPRINT_KEY,
   SEASONAL_WHISPER_STORAGE_KEY,
   DESKTOP_CHECKOUT_PENDING_STORAGE_KEY
 ]);

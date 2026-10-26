@@ -5,7 +5,7 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-09-04
+最后更新 / Last updated / 最終更新日: 2026-10-26
 
 ---
 
@@ -22,6 +22,8 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 除非你使用下文第 3 节的导出/导入自行迁移，你的习惯打卡、练习记录等数据默认**仅保存在你的设备本地**，本应用**不会自动将其上传到开发者服务器**。
 
 **安静同坐 / 灯火（默认开，可在 Privacy 关闭）**：你坐下时，本应用只向自有服务器发送一个**随机会话 id**，用于维持诚实的同坐人数。不含姓名、邮箱、练习日志或聊天。关闭后既不出现在计数里，也看不见别人的灯火。
+
+**可选的练习效果计数（研究，默认关）**：只有你在 Privacy 打开开关后，我们才会收到计时专注的去身份计数（例如有没有坐完、后来有没有回来）和一个重装即作废的本机研究代号。没有倾诉原文、邮箱或付款信息。随时可关。此开关与「支持阿寅」流程分享、云端个人化、练习备份各自独立。
 
 ### 3. 本地导出 / 导入
 
@@ -65,6 +67,8 @@ Unless you use local export/import (Section 3), your habit check-ins, practice r
 
 **Quiet Together / lanterns (on by default; off in Privacy):** while you sit, this app sends only a **random session id** to our server so a shared sit-count can stay honest. No name, email, practice log, or chat. If you turn it off, you neither appear in the count nor see others' lanterns.
 
+**Optional practice-effect counts (research, off by default):** only if you turn this on in Privacy do we receive de-identified counts about timed sits (for example whether a sit finished, and later whether you returned) plus a random research id that resets if you reinstall. No chat text, email, or payment details. You can turn it off anytime. This switch is independent of Support-flow sharing, cloud personalization, and practice backup.
+
 ### 3. Local Export / Import
 
 This app provides **local export/import** on the Privacy sheet. You can:
@@ -106,6 +110,8 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 第3節のエクスポート/インポートを使わない限り、習慣のチェックインや練習記録などは、デフォルトで**お使いの端末内にのみ保存**され、本アプリが**開発者のサーバーへ自動的にアップロードすることはありません**。
 
 **静かな同席 / 灯（初期オン、Privacy でオフ可）**：座っているあいだ、正直な人数のために**ランダムなセッション id** だけを自社サーバーへ送ります。名前・メール・練習ログ・チャットは含みません。オフにすると数えられず、他の灯も見えません。
+
+**任意の練習効果カウント（研究、初期オフ）**：Privacy でオンにしたときだけ、時間を決めた坐の回数など（終えたか、あとで戻ったか）と、再インストールで消える研究用の番号が届きます。会話の原文、メール、支払い情報は送りません。いつでもオフにできます。このスイッチは「阿寅を支える」導線共有・クラウド個人化・練習バックアップとは別です。
 
 ### 3. ローカルでのエクスポート / インポート
 
