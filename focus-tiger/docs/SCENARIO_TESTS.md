@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-23（T45 静坐画面藏跳动数字 · SB-22 · 场景 T / O）· 2026-10-22（T34 Help Center 问卡办理 · 场景 AX 1b）· 2026-10-21（T26 Idle 问号右边 Help Center 快捷钮 · 场景 AX 1c）· 2026-10-19（T24 成长旅程详情下半部一张 Sit & Breath 练习观察纸 · T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳 · T22 Help Center 顶部问卡打字/语音检索）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
+最近代码核对：2026-10-26（T53 Mac 输入节奏默认关 · Web 无面板 · T54 研究同意账本 + 影子流水不上线故事 · 队列/T56 治理文档）· 2026-10-23（T45 静坐画面藏跳动数字 · SB-22 · 场景 T / O）· 2026-10-22（T34 Help Center 问卡办理 · 场景 AX 1b）· 2026-10-21（T26 Idle 问号右边 Help Center 快捷钮 · 场景 AX 1c）· 2026-10-19（T24 成长旅程详情下半部一张 Sit & Breath 练习观察纸 · T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳 · T22 Help Center 顶部问卡打字/语音检索）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -1379,6 +1379,18 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **场景 AE · Electron · L2 · 步 1**：Help Center 问卡可点时，操作问法产品问 → **`data-source=help_center_redirect`**（0–1 秒内见跳转句）。问卡打不开仍短答 / 诚实空态。动机句仍 generate。情绪 / 个人事实 / 危机不得跳转。单测 `confideHelpCenterRedirect.test.js`。  
 3. **仍须人工**：观察纸空态与「只呼吸」变体观感；Help Center 语音框仅宽屏 Electron；T23 英文 `gs-h01`–`gs-h11`；窄屏 / Web 问卡不可达不跳转。  
 4. **TEST_TRACKER**：本旁支 `tracker:assemble` 折入 **568** 条碎片机器块；`tasks:assemble` 另开仅改 `TASKS.md` 的 `docs/*` PR（门禁禁止与本文同提交）。
+
+---
+
+## 2026-10-24–26 增量核对摘要（T53 输入节奏 · T54 研究同意/影子流水 · 队列治理文档）
+
+1. **背景**：自文首上次核对（2026-10-23）之后，合入 develop 的**用户面**主要是 **T53** Mac 输入节奏（#1437 `feature/t53-awaken-input-rhythm`，**默认关**）与 **T54** 研究同意账本（#1434 `feat/t54-research-consent`）；**T54 影子流水**（#1430）只写本机流水、**不改**用户可见招呼与回复。其余 #1435–#1443 为队列登记、T56 同坐/适应/时长/T59–T60 brief、治理大白话规则、T54 拆分——**不写进已上线故事**。
+2. **本次核对（增量，未升格新字母场景）**：
+   - **场景 W / Preferences（T53）**：Electron macOS 且开关打开时，Idle 菜单/偏好里可出现输入节奏说明与开关；**默认关**时批量测仍走原冷启动与觉照邀请故事。**Web / 非 Mac** 须见「仅桌面壳」类说明，**禁止**当缺口报「缺面板」。单测 `InputRhythmPreferenceUI.test.js`；`canUseInputRhythm()` 门闩。
+   - **场景 W / 研究同意（T54 · #1434）**：同意状态写入 `focus-tiger.t54-research-consent.v1`；**无**新菜单入口、**无**改 Confide 步 1 观感时，批量测**不**升格字母；须勿把影子流水当用户回复变更验收。
+   - **场景 AE**：T54 阶段 2 影子流水（#1430）**禁止**写入本摘要为「已上线行为」；仍走 10-13–14 增量 Confide 故事。
+3. **仍须人工 / 勿当缺口**：T53 开闸后 macOS 邀请时机与系统辅助功能权限；T54 同意文案与撤回路径（若有 UI）；影子流水仅 sealed 路径验收。
+4. **TEST_TRACKER / TASKS**：本批 EOD 另开 `docs/eod-tracker-assemble-2026-10-26` · `docs/eod-tasks-assemble-2026-10-26` PR 拼装碎片；**本文**只串故事。
 
 ---
 
