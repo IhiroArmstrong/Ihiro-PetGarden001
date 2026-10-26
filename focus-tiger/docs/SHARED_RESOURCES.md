@@ -26,6 +26,8 @@
 |---|---|---|
 
 | `userData/always-on-top.json` | `alwaysOnTopPolicy` / IPC `desktop:always-on-top-*` / `AlwaysOnTopPreferenceUI` | Electron 主窗始终在最前（**默认关**）；托盘勾选与 Preferences 玻璃卡同一状态；**不进**云端 / 练习备份；Web 无此文件 |
+| `userData/input-rhythm.json` | `inputRhythmPolicy` / IPC `desktop:input-rhythm-*` / `InputRhythmPreferenceUI` | Electron Mac 专注节奏开关（**默认关**）；无权限即 L0（**SB-21**）；**不进**云端 / 练习备份；Web 无此文件 |
+| `userData/input-rhythm-features.json` | `inputRhythmPolicy` 聚合统计 | 仅切换次数 / 退格率等；**禁止**键值 / 窗口标题；可一键清；**不进**云端 |
 | `userData/window-layout.json` | `windowLayoutPolicy` / IPC `desktop:window-layout-*` / `WindowLayoutPreferenceUI` | Electron 主窗适中陪伴窗上次布局（**默认普通窗**；不把全屏写成下次启动）；托盘 / Window 菜单 / Preferences 玻璃卡同一动作；**不进**云端 / 练习备份；Web 无此文件 |
 | `userData/window-layout.json` | `windowLayoutPolicy` / IPC `desktop:window-layout-*` / `WindowLayoutPreferenceUI` | Electron 主窗适中陪伴窗上次布局（**默认普通窗**；不把全屏写成下次启动）；托盘 / Window 菜单 / Preferences 玻璃卡同一动作；**不进**云端 / 练习备份；Web 无此文件 |
 | `userData/companion-l2/yin-personal-memory.json` | `yinPersonalMemoryPersistence` / IPC `desktop:yin-personal-memory-*` | Electron 专属 Personal Memory store（1a consent；1b Remember；1c Forget；1f `rememberOptOuts[]` + suppress）；**不进**云端 6 key；**本地** Backup & restore v2 `companionFiles`；Web 无此文件 |

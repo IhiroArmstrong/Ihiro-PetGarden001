@@ -51,7 +51,10 @@ export function decideAwakenInvite(input = {}) {
   if (hourCount >= AWAKEN_MAX_PER_HOUR) return deny('hour-cap');
 
   const lastActiveAt = Number(input.lastActiveAt) || 0;
-  if (lastActiveAt > 0 && now - lastActiveAt < AWAKEN_COOLDOWN_MS) {
+  const cooldownMs = Number.isFinite(Number(input.cooldownMs))
+    ? Math.max(0, Number(input.cooldownMs))
+    : AWAKEN_COOLDOWN_MS;
+  if (lastActiveAt > 0 && now - lastActiveAt < cooldownMs) {
     return deny('cooldown');
   }
 

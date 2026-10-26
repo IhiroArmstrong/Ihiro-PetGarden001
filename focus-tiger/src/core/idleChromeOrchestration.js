@@ -58,6 +58,7 @@ import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js'
  * @property {boolean} [systemTtsAvailable] macOS Electron wide System TTS menu row
  * @property {boolean} [alwaysOnTopAvailable] Electron Keep-in-front preference row
  * @property {boolean} [windowLayoutAvailable] Electron companion-window / fullscreen-sit row
+ * @property {boolean} [inputRhythmAvailable] Electron Mac Focus rhythm preference row
  */
 
 /**
@@ -134,6 +135,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     handler: 'onWindowLayout',
     close: true,
     stage: 'windowLayout'
+  },
+  'input-rhythm': {
+    handler: 'onInputRhythm',
+    close: true,
+    stage: 'inputRhythm'
   },
   'today-direction': { handler: 'onTodayDirection', close: true },
   'ground-exercise': { handler: 'onGroundExercise', close: true },
@@ -403,7 +409,8 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   quietTogether: 'ft-narrow-stage-quiet-together',
   focusCircle: 'ft-narrow-stage-focus-circle',
   alwaysOnTop: 'ft-narrow-stage-always-on-top',
-  windowLayout: 'ft-narrow-stage-window-layout'
+  windowLayout: 'ft-narrow-stage-window-layout',
+  inputRhythm: 'ft-narrow-stage-input-rhythm'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -415,6 +422,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   systemTts: 'ft-wide-stage-system-tts',
   alwaysOnTop: 'ft-wide-stage-always-on-top',
   windowLayout: 'ft-wide-stage-window-layout',
+  inputRhythm: 'ft-wide-stage-input-rhythm',
   localBackup: 'ft-wide-stage-local-backup',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -796,6 +804,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
           proxy: 'window-layout',
           labelKey: 'WINDOW_LAYOUT_MENU_LABEL',
           testId: 'idle-window-layout'
+        }
+      : null,
+    visibility.inputRhythmAvailable
+      ? {
+          proxy: 'input-rhythm',
+          labelKey: 'INPUT_RHYTHM_MENU_LABEL',
+          testId: 'idle-input-rhythm'
         }
       : null,
     {
