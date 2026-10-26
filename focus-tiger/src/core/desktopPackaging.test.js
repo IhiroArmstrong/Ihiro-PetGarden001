@@ -78,7 +78,9 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.ok(desktopPkg.build.files.includes('floatingMarker/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('alwaysOnTop/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('windowLayout/**/*.js'));
+    assert.ok(desktopPkg.build.files.includes('inputRhythm/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('native/**/*.swift'));
+    assert.equal(JSON.stringify(desktopPkg).includes('uiohook'), false);
   });
 
   it('preload exposes hide/show and shell visibility (Step B)', () => {
@@ -92,6 +94,8 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:open-preferences/);
     assert.match(preload, /desktop:always-on-top-get/);
     assert.match(preload, /desktop:always-on-top-set/);
+    assert.match(preload, /desktop:input-rhythm-get/);
+    assert.match(preload, /desktop:input-rhythm-set/);
     assert.match(preload, /desktop:window-layout-get/);
     assert.match(preload, /desktop:window-layout-apply/);
   });
@@ -102,6 +106,8 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(mainSrc, /desktop:open-preferences/);
     assert.match(mainSrc, /desktop:always-on-top-get/);
     assert.match(mainSrc, /desktop:always-on-top-set/);
+    assert.match(mainSrc, /desktop:input-rhythm-get/);
+    assert.match(mainSrc, /desktop:input-rhythm-set/);
     assert.match(mainSrc, /setAlwaysOnTop/);
     assert.match(mainSrc, /desktop:window-layout-get/);
     assert.match(mainSrc, /desktop:window-layout-apply/);

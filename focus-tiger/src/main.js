@@ -155,6 +155,7 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
 import { AlwaysOnTopPreferenceUI } from './ui/AlwaysOnTopPreferenceUI.js';
 import { WindowLayoutPreferenceUI } from './ui/WindowLayoutPreferenceUI.js';
+import { InputRhythmPreferenceUI } from './ui/InputRhythmPreferenceUI.js';
 import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
@@ -602,6 +603,10 @@ import {
   decideAwakenMidCheckIn
 } from './core/AwakenCheckInOrchestrator.js';
 import { InterventionOrchestrator } from './core/InterventionOrchestrator.js';
+import {
+  createRhythmTimingCache
+} from './core/inputRhythmBridge.js';
+import { effectiveAwakenCooldownMs } from './core/inputRhythmEngine.js';
 import {
   createHintsSeenStore,
   resolveAutoHintIds
@@ -1186,6 +1191,8 @@ async function init() {
   let systemTtsPreferenceUI = null;
   /** @type {AlwaysOnTopPreferenceUI | null} */
   let alwaysOnTopPreferenceUI = null;
+  /** @type {InputRhythmPreferenceUI | null} */
+  let inputRhythmPreferenceUI = null;
   /** @type {WindowLayoutPreferenceUI | null} */
   let windowLayoutPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
@@ -1220,6 +1227,7 @@ async function init() {
     getSpriteOverlay: () => spritePlayer.overlayEl
   });
   const awakenOrchestrator = new InterventionOrchestrator();
+  const rhythmTimingCache = createRhythmTimingCache();
   const mindfulReminderController = new MindfulReminderController({
     quotaManager: reminderQuotaManager,
     emotionController,
@@ -1534,6 +1542,13 @@ async function init() {
     }
   });
   window.__windowLayoutPreference = windowLayoutPreferenceUI;
+  inputRhythmPreferenceUI = new InputRhythmPreferenceUI(document.body, {
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-input-rhythm');
+      document.body.classList.remove('ft-narrow-stage-input-rhythm');
+    }
+  });
+  window.__inputRhythmPreference = inputRhythmPreferenceUI;
   const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-local-backup');
@@ -1991,13 +2006,20 @@ async function init() {
     const companionMode =
       focusSession.companionMode ||
       bootHonestyCompanion.companionModePicker.getSelectedMode();
+    void rhythmTimingCache.refresh();
     const decision = awakenOrchestrator.decide({
       ...input,
       focusing: true,
       companionMode,
       trayHidden: attentionSignals.hideReason === 'tray',
       yieldBusy: isAwakenInviteYieldBusy(),
-      inviteVisible: awakenInviteUI.isVisible()
+      inviteVisible: awakenInviteUI.isVisible(),
+      cooldownMs: effectiveAwakenCooldownMs(
+        rhythmTimingCache.timing({
+          companionMode,
+          awayFromTaskApp: input.kind === 'away'
+        })
+      )
     });
     if (!decision.show) return false;
     focusAwarenessCardUI.hide({ immediate: true });
@@ -4218,6 +4240,9 @@ async function init() {
     onWindowLayout: () => {
       windowLayoutPreferenceUI?.openPanel();
     },
+    onInputRhythm: () => {
+      inputRhythmPreferenceUI?.openPanel();
+    },
     onTodayDirection: () => {
       openTodayDirectionManual();
     },
@@ -4353,6 +4378,7 @@ async function init() {
       alwaysOnTopPreferenceUI?.closePanel();
       windowLayoutPreferenceUI?.closePanel();
       windowLayoutPreferenceUI?.closePanel();
+      inputRhythmPreferenceUI?.closePanel();
       localPracticeDataPanelUI.closePanel();
       quietTogetherPanelUI.closePanel();
       focusCirclePanelUI.closePanel();

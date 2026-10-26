@@ -39,6 +39,7 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   if (el.closest('#moment-whisper')) return true;
   if (el.closest('#awaken-invite')) return true;
   if (el.closest('#awaken-check-in')) return true;
+  if (el.closest('#input-rhythm-preference')) return true;
   if (el.closest('#onboarding-hint-help')) return true;
   if (el.closest('#onboarding-hint-help-center')) return true;
   if (el.closest('#ft-narrow-help-btn')) return true;

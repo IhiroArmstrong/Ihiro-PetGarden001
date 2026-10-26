@@ -19,6 +19,7 @@ import {
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
 import { canUseAlwaysOnTop } from '../core/alwaysOnTopBridge.js';
+import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
@@ -935,7 +936,8 @@ export class NarrowIdleShell {
         typeof localStorage !== 'undefined' ? localStorage : null
       ).menuEntries,
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
-      windowLayoutAvailable: canUseWindowLayout()
+      windowLayoutAvailable: canUseWindowLayout(),
+      inputRhythmAvailable: canUseInputRhythm()
     });
 
     this.listEl.innerHTML = '';

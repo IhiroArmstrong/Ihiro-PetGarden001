@@ -26,6 +26,7 @@ import {
 } from '../core/desktopCompanionGate.js';
 import { canUseSystemTts } from '../core/systemTtsBridge.js';
 import { canUseAlwaysOnTop } from '../core/alwaysOnTopBridge.js';
+import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
@@ -119,6 +120,7 @@ export class WideIdleMoreMenu {
      *     onSystemTts?: () => void,
      *     onAlwaysOnTop?: () => void,
      *     onWindowLayout?: () => void,
+     *     onInputRhythm?: () => void,
    *     onFiveMoments?: () => void,
      *     onJourneyLog?: () => void,
      *     onYinCoin?: () => void,
@@ -990,7 +992,8 @@ export class WideIdleMoreMenu {
         widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
       }),
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
-      windowLayoutAvailable: canUseWindowLayout()
+      windowLayoutAvailable: canUseWindowLayout(),
+      inputRhythmAvailable: canUseInputRhythm()
     });
 
     this.listEl.innerHTML = '';

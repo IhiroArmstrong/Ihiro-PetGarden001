@@ -101,6 +101,7 @@
 | **18** | `src/ui/NewsletterCaptureUI.js` | `#newsletter-capture-card` Stay in touch 可选邮件留资卡（⋯ / 抽屉；不存邮箱；无 entitlement） |
 | **18** | `src/ui/ConfideToYinUI.js` | `#confide-to-yin-card` 向阿寅倾诉卡（⋯ / 抽屉；**Web 检索不生成**；默认挂载关；QA `?confide=1`）。**Electron L1**：非低配宽屏同一卡内 `#confide-to-yin-desktop-status` 下载层（仍 z 18，不另开层） |
 | **18** | `src/ui/AlwaysOnTopPreferenceUI.js` | `#always-on-top-preference-panel` 始终在最前开关（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡，非系统 Sheet） |
+| **18** | `src/ui/InputRhythmPreferenceUI.js` | `#input-rhythm-preference-panel` 专注节奏开关（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡；不挡 Support FAB；复用设置卡，不新增 OVERLAY 行） |
 | **18** | `src/ui/WindowLayoutPreferenceUI.js` | `#window-layout-preference-panel` 适中陪伴窗 / 全屏静坐（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡，非系统 Sheet；不自绘红绿灯） |
 | **18** | `src/ui/WindowLayoutPreferenceUI.js` | `#window-layout-preference-panel` 适中陪伴窗 / 全屏静坐（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡，非系统 Sheet；不自绘红绿灯） |
 | **18** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 底部 placement |

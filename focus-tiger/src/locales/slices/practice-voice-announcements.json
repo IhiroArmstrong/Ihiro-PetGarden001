@@ -2,16 +2,16 @@
   "en": {
     "SYSTEM_TTS_TOGGLE_LABEL": "Speak practice guidance",
     "SYSTEM_TTS_TOGGLE_HINT": "When a practice shows a line, or when it ends, your Mac reads it aloud. Off by default. Does not affect Confide.",
-    "PRIVACY_SHEET_AI_INFERENCE": "AI companion features related to habits, check-ins, and practice guidance run on your device. Related inputs are processed on your device and are not sent to a third-party large language model provider. On the Mac app, Speak to type in Confide uses on-device speech recognition only — it is not a voice message and audio is not uploaded. Optional system voice announcements (practice lines, and when a practice ends) use on-device text-to-speech, are off by default, and are not a voice conversation."
+    "PRIVACY_SHEET_AI_INFERENCE": "AI companion features related to habits, check-ins, and practice guidance run on your device. Related inputs are processed on your device and are not sent to a third-party large language model provider. On the Mac app, Speak to type in Confide uses on-device speech recognition only — it is not a voice message and audio is not uploaded. Optional system voice announcements (practice lines, and when a practice ends) use on-device text-to-speech, are off by default, and are not a voice conversation. Optional Focus rhythm (Mac app, off by default) may notice key timing and backspaces on this device only; it does not store what you type or window titles, and it is never uploaded."
   },
   "zh": {
     "SYSTEM_TTS_TOGGLE_LABEL": "朗读练习引导",
     "SYSTEM_TTS_TOGGLE_HINT": "练习中弹出的句子，以及练习结束时，都会用 Mac 本机语音念出来。默认关闭。不影响倾诉朗读。",
-    "PRIVACY_SHEET_AI_INFERENCE": "与习惯、打卡、练习陪伴相关的 AI 对话在设备端处理；相关内容不会发送给第三方大模型服务商。Mac 版倾诉里的 Speak to type 仅使用本机语音识别，不是语音消息，音频不会上传。可选的系统语音播报（例如练习中的句子，以及练习结束时）使用本机朗读，默认关闭，不是语音对话。"
+    "PRIVACY_SHEET_AI_INFERENCE": "与习惯、打卡、练习陪伴相关的 AI 对话在设备端处理；相关内容不会发送给第三方大模型服务商。Mac 版倾诉里的 Speak to type 仅使用本机语音识别，不是语音消息，音频不会上传。可选的系统语音播报（例如练习中的句子，以及练习结束时）使用本机朗读，默认关闭，不是语音对话。可选的「专注节奏」（仅 Mac 电脑版，默认关）只在本机看按键间隔和是否退格；不保存你打的字或窗口标题，也不会上传。"
   },
   "ja": {
     "SYSTEM_TTS_TOGGLE_LABEL": "練習の案内を読み上げる",
     "SYSTEM_TTS_TOGGLE_HINT": "練習中に文が表示されたときと、練習が終わったときに、Mac の音声で読み上げます。既定はオフ。Confide の読み上げには影響しません。",
-    "PRIVACY_SHEET_AI_INFERENCE": "習慣、チェックイン、練習サポートに関連するAI対話は端末上で処理されます。関連する入力は端末外の第三者大規模言語モデル提供事業者へ送信されません。Mac版の打ち明けにおける Speak to type は端末内の音声認識のみを使い、音声メッセージではなく、音声はアップロードされません。任意のシステム音声アナウンス（例：練習中の文と、練習の終わり）は端末内の読み上げで、既定はオフであり、音声会話ではありません。"
+    "PRIVACY_SHEET_AI_INFERENCE": "習慣、チェックイン、練習サポートに関連するAI対話は端末上で処理されます。関連する入力は端末外の第三者大規模言語モデル提供事業者へ送信されません。Mac版の打ち明けにおける Speak to type は端末内の音声認識のみを使い、音声メッセージではなく、音声はアップロードされません。任意のシステム音声アナウンス（例：練習中の文と、練習の終わり）は端末内の読み上げで、既定はオフであり、音声会話ではありません。任意の「集中のリズム」（Macアプリのみ、既定オフ）は、この端末でキーの間隔とバックスペースの有無だけを見ます。打った文字や窓の題名は保存せず、送信もしません。"
   }
 }
