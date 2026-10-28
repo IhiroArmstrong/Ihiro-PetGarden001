@@ -1,0 +1,1 @@
+| T64 共修文案 · 问号简介 | 用户可见文案 | 待人工测试 | 菜单 → 问号简介（What Focus Tiger is）：正文末尾见「一起练习 / 不催不评判」（en/ja/zh 各语言）；身心免责全文含「不是禅师 / not a zen master」。375 窄屏可滚完免责。 | — | — | — | `src/locales/slices/co-practice-copy.json` · Brief PR #1458 | 2026-10-28 |
