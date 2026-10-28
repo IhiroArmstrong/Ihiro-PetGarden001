@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-26 · **T56 已合（口径）** · T60 须先于 T57 · T57 Brief 已点头·排队中 · T58/T59/T60 排队中·可选 · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · 影子流水 #1430 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 排队中可选 · T28 仍搁置）
+## 1. 当前队列（2026-10-28 · **T56 已合（口径）** · T60 须先于 T57 · T57 Brief 已点头·排队中 · T58/T59/T60 排队中·可选 · **T61/T62 搁置·未排期** · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · 影子流水 #1430 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 排队中可选 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -68,6 +68,8 @@
 | **可选** · **T58** | Yin 适应层 v1 + 小本子 | 排队中 | 只变安静、不变积极。须 **T60 → T57** 合入后写代码。Brief [`task-yin-adaptation-v1.md`](./task-briefs/task-yin-adaptation-v1.md) **待再点头**。**不是** T54 效果证明 |
 | **可选** · **T59** | 「还是上次那个」时长文案 | 排队中 | B 类。时长记忆已在，只补一句。英文 **Same as last time**。Brief [`task-still-last-duration-copy.md`](./task-briefs/task-still-last-duration-copy.md) 待点头。**不是** T58 |
 | **可选** · **T60** | 重置白名单补 T52 打卡键 | 排队中 | 删除名单漏了打卡键 + 反向扫描。排在 **T57 前**。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md) 待点头。**不是** T58 |
+| **未排期** · **T61** | 用户自设收工时间（B 类） | 搁置 | 须 **T60 → T57 → T58** 已合 + Brief 点头。盘点 #1448 · [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §6。Brief [`task-user-set-work-end-time.md`](./task-briefs/task-user-set-work-end-time.md) **待点头**。**不是** T58 |
+| **未排期** · **T62** | 晚间练习事实进练习纸 | 搁置 | 与 **T61** 分开。新记录 + 同意 + 删除名单；**不进** T54 研究分享。Brief [`task-evening-practice-facts-practice-paper.md`](./task-briefs/task-evening-practice-facts-practice-paper.md) **待点头** |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -149,6 +151,9 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T58 Brief 开工」 | Brief **待再点头**。点头且 **T60 → T57** 已合才写代码 |
 | 「按 T59 Brief 开工」 | Brief 点头后：时长条旁一句「还是上次那个」。英文 Same as last time。**不是** T58 |
 | 「按 T60 Brief 开工」 | Brief 点头后：打卡键进重置白名单 + 反向扫描。排在 **T57 前**。**不是** T58 |
+| 「按 T61 Brief 开工」 | Brief **待点头**。点头且 **T60 → T57 → T58** 已合才写收工时间 + 收工邀请。**不是** T58 |
+| 「开工 T61」 | **不执行**（须 Brief + 依赖链） |
+| 「按 T62 Brief 开工」 | Brief **待点头**。晚间练习事实进练习纸；与 **T61** 分开。**不进** T54 研究分享 |
 
 ---
 
