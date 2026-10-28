@@ -76,6 +76,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [focusAwarenessOpen]
  * @property {boolean} [awakenInviteOpen]
  * @property {boolean} [awakenCheckInOpen]
+ * @property {boolean} [workEndInviteOpen]
  * @property {boolean} [recoverResetPracticeOpen]
  * @property {boolean} [transitionMomentOpen]
  */
@@ -146,6 +147,7 @@ export function buildOverlaySnapshot(input = {}) {
     focusAwarenessOpen: Boolean(input.focusAwarenessOpen),
     awakenInviteOpen: Boolean(input.awakenInviteOpen),
     awakenCheckInOpen: Boolean(input.awakenCheckInOpen),
+    workEndInviteOpen: Boolean(input.workEndInviteOpen),
     recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
     transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };

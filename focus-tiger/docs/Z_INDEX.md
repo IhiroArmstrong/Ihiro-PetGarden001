@@ -19,6 +19,7 @@
 | **0** | `src/ui/SeasonalThemeChromeUI.js` | `#seasonal-theme-wash` 节日轻氛围（pointer-events:none；在角色/UI 下） |
 | **1** | `index.html` | `#poster` 启动海报图 |
 | **1** | `src/ui/ReminderPreferenceUI.js` | Reminder 时钟控件根（`.reminder-pref`），相对热力图簇内叠层 |
+| **1** | `src/ui/WorkEndPreferenceUI.js` | Work-end 时钟控件根（`.work-end-pref`），热力图簇内叠在 reminder 旁 |
 | **1** | `src/ui/IdleCompanionPipUI.js` | Idle Document PiP 入口（`.idle-companion-pip`），相对热力图簇内叠层；仅 Chromium 挂载 |
 | **2** | `index.html` | `#scene-canvas` 3D/WebGL 场景画布 |
 | **2** | `index.html` | FocusHUD 连胜环（`.ft-hud__streak`）相对 HUD 卡 |
@@ -131,6 +132,8 @@
 | **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Sound：Soundscape chrome 抬到菜单之上 |
 | **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Reminder：热力图簇 staging（面板本身见下行 **35**） |
 | **35** | `src/ui/ReminderPreferenceUI.js` | `#reminder-preference-panel` viewport-fixed 挂 `body`（须高于 onboarding tip z34；避开热力图簇 `backdrop-filter` 包含块） |
+| **35** | `src/ui/WorkEndPreferenceUI.js` | `#work-end-preference-panel` viewport-fixed 挂 `body`（T61 收工时间；同 reminder 面板层级） |
+| **1** | `src/ui/WorkEndPreferenceUI.js` | Work-end 时钟控件根（`.work-end-pref`），热力图簇内叠在 reminder 旁 |
 | **35** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Reminder：`#reminder-preference-panel` 再 pin 一层 |
 | **33** | `src/ui/NarrowIdleShell.js` | 窄屏 stage Reminder：偏好面板再抬一层（相对 staged 簇 **32**） |
 | **34** | `src/ui/ft-onboarding-hint-bubble.js` | Onboarding 提示气泡（Lit）；须高于窄壳主 CTA(~30) |
@@ -215,3 +218,4 @@
 ---
 
 *版本：1.0 · 2026-07-29 · Prompt 5 登记*
+
