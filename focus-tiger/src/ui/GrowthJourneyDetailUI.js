@@ -18,6 +18,13 @@ import {
   setPracticePaperHidden
 } from '../core/practicePaperFacts.js';
 import { getLocalDateKey } from '../utils/localDate.js';
+import { buildYinAdaptationNotebookLines } from '../core/yinAdaptationNotebook.js';
+import {
+  hideYinAdaptationNotebookLine,
+  isYinAdaptationEnabled,
+  setYinAdaptationEnabled,
+  suspendYinAdaptationRule
+} from '../core/yinAdaptationStore.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -116,6 +123,10 @@ export class GrowthJourneyDetailUI {
     this.rhythmEl.className = 'growth-journey-detail__rhythm';
     this.rhythmEl.dataset.testid = 'growth-journey-detail-rhythm';
 
+    this.notebookEl = document.createElement('section');
+    this.notebookEl.className = 'growth-journey-detail__notebook';
+    this.notebookEl.dataset.testid = 'yin-adaptation-notebook';
+
     this.paperEl = document.createElement('section');
     this.paperEl.className = 'growth-journey-detail__paper';
     this.paperEl.dataset.testid = 'practice-paper';
@@ -138,6 +149,7 @@ export class GrowthJourneyDetailUI {
       this.lotusRow,
       this.lifetimeEl,
       this.rhythmEl,
+      this.notebookEl,
       this.paperEl,
       this.closeBtn
     );
@@ -260,7 +272,69 @@ export class GrowthJourneyDetailUI {
       this.rhythmEl.appendChild(item);
     }
 
+    this._refreshNotebook();
     this._refreshPaper(practiceDates);
+  }
+
+  _refreshNotebook() {
+    const storage = this._storage();
+    this.notebookEl.replaceChildren();
+
+    const heading = document.createElement('p');
+    heading.className = 'growth-journey-detail__notebook-title';
+    heading.textContent = t('YIN_ADAPTATION_NOTEBOOK_TITLE');
+    this.notebookEl.appendChild(heading);
+
+    const toggleRow = document.createElement('label');
+    toggleRow.className = 'growth-journey-detail__notebook-toggle';
+    const toggle = document.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.checked = isYinAdaptationEnabled();
+    toggle.dataset.testid = 'yin-adaptation-toggle';
+    toggle.addEventListener('change', () => {
+      setYinAdaptationEnabled(toggle.checked);
+      this._refresh();
+    });
+    const toggleText = document.createElement('span');
+    toggleText.textContent = t('YIN_ADAPTATION_TOGGLE_LABEL');
+    toggleRow.append(toggle, toggleText);
+    this.notebookEl.appendChild(toggleRow);
+
+    const lines = buildYinAdaptationNotebookLines({ storage });
+    for (const line of lines) {
+      const row = document.createElement('div');
+      row.className = 'growth-journey-detail__notebook-line';
+      row.dataset.ruleId = line.id;
+      if (line.suspended) row.dataset.suspended = '1';
+      const text = document.createElement('p');
+      text.textContent = t(line.textKey);
+      text.dataset.testid = `yin-adaptation-line-${line.id}`;
+      row.appendChild(text);
+
+      const actions = document.createElement('div');
+      actions.className = 'growth-journey-detail__notebook-actions';
+      const correct = document.createElement('button');
+      correct.type = 'button';
+      correct.className = 'growth-journey-detail__notebook-btn';
+      correct.textContent = t('YIN_ADAPTATION_BTN_CORRECT');
+      correct.dataset.testid = `yin-adaptation-correct-${line.id}`;
+      correct.addEventListener('click', () => {
+        suspendYinAdaptationRule(line.id);
+        this._refresh();
+      });
+      const forget = document.createElement('button');
+      forget.type = 'button';
+      forget.className = 'growth-journey-detail__notebook-btn';
+      forget.textContent = t('YIN_ADAPTATION_BTN_FORGET');
+      forget.dataset.testid = `yin-adaptation-forget-${line.id}`;
+      forget.addEventListener('click', () => {
+        hideYinAdaptationNotebookLine(line.id);
+        this._refresh();
+      });
+      actions.append(correct, forget);
+      row.appendChild(actions);
+      this.notebookEl.appendChild(row);
+    }
   }
 
   _storage() {

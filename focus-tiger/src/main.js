@@ -610,6 +610,13 @@ import {
   recordInviteOutcome
 } from './core/inviteOutcomeStore.js';
 import {
+  applyInviteOutcomeForAdaptation,
+  inviteOutcomeKindFromAwakenPath,
+  isInviteKindAdaptationPaused,
+  recordManualFocusDurationAnchor,
+  resolveAdaptedFocusDurationHighlightMinutes
+} from './core/yinAdaptationStore.js';
+import {
   createRhythmTimingCache
 } from './core/inputRhythmBridge.js';
 import { effectiveAwakenCooldownMs } from './core/inputRhythmEngine.js';
@@ -1930,12 +1937,17 @@ async function init() {
   function settlePendingInviteOutcome(outcome) {
     if (!pendingInviteOutcomeKind) return;
     recordInviteOutcome(pendingInviteOutcomeKind, outcome);
+    applyInviteOutcomeForAdaptation(pendingInviteOutcomeKind, outcome);
     pendingInviteOutcomeKind = null;
   }
 
   function trackShownInviteOutcome(decision) {
     if (pendingInviteOutcomeKind) {
       recordInviteOutcome(
+        pendingInviteOutcomeKind,
+        INVITE_OUTCOME_VALUES.IGNORED
+      );
+      applyInviteOutcomeForAdaptation(
         pendingInviteOutcomeKind,
         INVITE_OUTCOME_VALUES.IGNORED
       );
@@ -1946,6 +1958,10 @@ async function init() {
   function trackShownInviteOutcomeKind(kind) {
     if (pendingInviteOutcomeKind) {
       recordInviteOutcome(
+        pendingInviteOutcomeKind,
+        INVITE_OUTCOME_VALUES.IGNORED
+      );
+      applyInviteOutcomeForAdaptation(
         pendingInviteOutcomeKind,
         INVITE_OUTCOME_VALUES.IGNORED
       );
@@ -1984,6 +2000,7 @@ async function init() {
   window.__awakenInvite = {
     showPause: () => {
       if (stateManager.state !== STATES.FOCUSING) return false;
+      if (isInviteKindAdaptationPaused(INVITE_OUTCOME_KINDS.AWAY)) return false;
       focusAwarenessCardUI.hide({ immediate: true });
       const shown = awakenInviteUI.tryShow('pause');
       if (shown) {
@@ -2063,6 +2080,9 @@ async function init() {
           companionMode,
           awayFromTaskApp: input.kind === 'away'
         })
+      ),
+      inviteAdaptationPaused: isInviteKindAdaptationPaused(
+        inviteOutcomeKindFromAwakenPath(input.kind, null)
       )
     });
     if (!decision.show) return false;
@@ -3313,6 +3333,10 @@ async function init() {
       FOCUS_DURATION_OPTIONS_MINUTES.includes(/** @type {10|15|25|45} */ (minutes))
     ) {
       savePreferredFocusDurationMinutes(minutes);
+      recordManualFocusDurationAnchor(
+        minutes,
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
     }
     focusSession.setDurationMode('fixed');
     focusSession.setTargetMinutes(minutes);
@@ -3323,7 +3347,10 @@ async function init() {
   }
 
   focusDurationPicker = new FocusDurationPickerUI({
-    preferredMinutes: () => loadPreferredFocusDurationMinutes(),
+    preferredMinutes: () =>
+      resolveAdaptedFocusDurationHighlightMinutes(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      ),
     preferredMode: () => loadPreferredFocusDurationMode(),
     showOpenEnded: () => isDesktopShellRuntime(),
     onDurationSelected: (minutes) => {
@@ -3331,6 +3358,10 @@ async function init() {
         pendingFocusDurationMode || bootHonestyCompanion.companionModePicker.getSelectedMode();
       pendingFocusDurationMode = null;
       savePreferredFocusDurationMinutes(minutes);
+      recordManualFocusDurationAnchor(
+        minutes,
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
       focusSession.setTargetMinutes(minutes);
       bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);

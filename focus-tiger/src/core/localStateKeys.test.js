@@ -120,6 +120,10 @@ import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.j
 import { FOCUS_DURATION_STORAGE_KEY } from './focusDuration.js';
 import { AWAKEN_CHECKIN_STORAGE_KEY, recordAwakenCheckIn } from './awakenCheckInStore.js';
 import { INVITE_OUTCOME_STORAGE_KEY } from './inviteOutcomeStore.js';
+import {
+  FOCUS_DURATION_MANUAL_ANCHOR_STORAGE_KEY,
+  YIN_ADAPTATION_STORAGE_KEY
+} from './yinAdaptationStore.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import {
   COLD_START_GOAL_OPTIONS_SEEN_KEY,
@@ -239,6 +243,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_DURATION_STORAGE_KEY,
   AWAKEN_CHECKIN_STORAGE_KEY,
   INVITE_OUTCOME_STORAGE_KEY,
+  YIN_ADAPTATION_STORAGE_KEY,
+  FOCUS_DURATION_MANUAL_ANCHOR_STORAGE_KEY,
   CONFIDE_OBSERVATION_STORAGE_KEY,
   'focus-tiger.session-presence-ring.v1',
   T54_RESEARCH_LOG_STORAGE_KEY,

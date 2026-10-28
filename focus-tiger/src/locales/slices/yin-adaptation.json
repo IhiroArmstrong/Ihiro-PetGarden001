@@ -1,0 +1,35 @@
+{
+  "en": {
+    "YIN_ADAPTATION_NOTEBOOK_TITLE": "What Yin keeps on this device",
+    "YIN_ADAPTATION_TOGGLE_LABEL": "Let Yin stay a little quieter when I ask",
+    "YIN_ADAPTATION_REMEMBER_DURATION": "Last focus length you chose is still here.",
+    "YIN_ADAPTATION_REMEMBER_CHECKIN": "Last end-of-sit check-in you tapped is still here.",
+    "YIN_ADAPTATION_INVITE_PAUSE": "You said not now a few times. This kind of nudge rests for a few days.",
+    "YIN_ADAPTATION_DURATION_SUGGEST": "You often marked tired at the end. Next time the default chip sits one step shorter than your last chosen length—you still tap to start.",
+    "YIN_ADAPTATION_BTN_CORRECT": "Stop adjusting this",
+    "YIN_ADAPTATION_BTN_FORGET": "Forget this line",
+    "PRIVACY_SHEET_YIN_ADAPTATION": "On this device, Yin may pause a kind of focus nudge for a few days after you dismiss it several times, or suggest a slightly shorter default chip when you often mark tired at the end. Nothing is uploaded. You can turn this off or forget it in your growth journey."
+  },
+  "zh": {
+    "YIN_ADAPTATION_NOTEBOOK_TITLE": "这台机器上 Yin 记得的事",
+    "YIN_ADAPTATION_TOGGLE_LABEL": "让我说先不用时，Yin 更安静一点",
+    "YIN_ADAPTATION_REMEMBER_DURATION": "你上次自己选过的专注时长还在。",
+    "YIN_ADAPTATION_REMEMBER_CHECKIN": "你上次结束时点过的顺/乱/倦还在。",
+    "YIN_ADAPTATION_INVITE_PAUSE": "你连续几次明确说先不用。这类提醒我先停几天。",
+    "YIN_ADAPTATION_DURATION_SUGGEST": "你近几次结束时点了倦。下次默认时长只比你上次自己拨过的短一档，仍要你点才开始。",
+    "YIN_ADAPTATION_BTN_CORRECT": "这条不再自动调",
+    "YIN_ADAPTATION_BTN_FORGET": "忘掉这句",
+    "PRIVACY_SHEET_YIN_ADAPTATION": "本机可根据你怎么处理邀请、以及结束时的「倦」，让某一类提醒停几天，或把开表前的默认时长建议下调一档；不上传；可在成长旅程关掉或忘掉。"
+  },
+  "ja": {
+    "YIN_ADAPTATION_NOTEBOOK_TITLE": "この端末に残っていること",
+    "YIN_ADAPTATION_TOGGLE_LABEL": "「今はいい」と言ったとき、Yin を少し静かにする",
+    "YIN_ADAPTATION_REMEMBER_DURATION": "前に選んだ集中の長さは、この端末に残っています。",
+    "YIN_ADAPTATION_REMEMBER_CHECKIN": "前回の終わりに選んだ感じ（楽／落ち着かない／疲れ）は残っています。",
+    "YIN_ADAPTATION_INVITE_PAUSE": "「今はいい」を続けたので、この種類の声かけは数日お休みします。",
+    "YIN_ADAPTATION_DURATION_SUGGEST": "終わりに「疲れ」を多く選んでいます。次は前回自分で選んだ長さより一段短いチップを提案します。始めるのはあなたのタップです。",
+    "YIN_ADAPTATION_BTN_CORRECT": "この調整は止める",
+    "YIN_ADAPTATION_BTN_FORGET": "この行を忘れる",
+    "PRIVACY_SHEET_YIN_ADAPTATION": "この端末では、招待への応答や終わりの「疲れ」に応じて、ある種類の声かけを数日止めたり、既定の時間チップを一段短く提案したりすることがあります。アップロードはしません。成長の旅でオフにしたり忘れたりできます。"
+  }
+}
