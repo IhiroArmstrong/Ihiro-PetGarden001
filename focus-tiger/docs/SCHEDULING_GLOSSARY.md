@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-28 · **T63 排队中·可选（契约面 Brief 待点头）** · **T57–T61 已合** · T62 仍搁置·未排期 · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
+## 1. 当前队列（2026-10-28 · **T64→T65 先于 T63** · 三份 Brief 待点头·排队中·可选 · **T57–T61 已合** · T62 仍搁置·未排期 · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -70,7 +70,9 @@
 | **可选** · **T60** | 重置白名单补 T52 打卡键 | **已合 develop** | #1447。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md)。**不是** T58 |
 | **可选** · **T61** | 用户自设收工时间（B 类） | **已合 develop** | #1455 MVP。盘点 #1448 · [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §6。Brief [`task-user-set-work-end-time.md`](./task-briefs/task-user-set-work-end-time.md)。**不是** T58。**不是** Yin 看出熬夜 |
 | **未排期** · **T62** | 晚间练习事实进练习纸 | 搁置 | 与 **T61** 分开。新记录 + 同意 + 删除名单；**不进** T54 研究分享。Brief [`task-evening-practice-facts-practice-paper.md`](./task-briefs/task-evening-practice-facts-practice-paper.md) **待点头** |
-| **可选** · **T63** | 共修契约面 | 排队中 | Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) **待点头**。只说明已有开口并指向已有开关。**不是** 分级干涉。**不是** T62 |
+| **可选** · **T63** | 共修契约面 | 排队中 | Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) **待点头**。**须 T64→T65 之后**。只说明已有开口并指向已有开关。**不是** 分级干涉。**不是** T62 |
+| **可选** · **T64** | 共修文案对齐 | 排队中 | Brief [`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) **待点头**。问号简介封闭两句。过 C-11。**不是** T63 / T65 |
+| **可选** · **T65** | 观察纸顺乱倦节律 | 排队中 | Brief [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md) **待点头**。只读 T52。**不是** T28 / T62 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -155,7 +157,9 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T61 Brief 开工」 | **T61 MVP 已合 #1455**。勿再开同内容收工旁支。**不是** T58。**不是** Yin 看出熬夜 |
 | 「开工 T61」 | **不执行**（已合；不是看出熬夜） |
 | 「按 T62 Brief 开工」 | Brief **待点头**。晚间练习事实进练习纸；与 **T61** 分开。**不进** T54 研究分享 |
-| 「按 T63 Brief 开工」 | Brief **待点头**。点头后新 Chat 写契约面。**不是** 分级干涉。**不是** T62 |
+| 「按 T63 Brief 开工」 | Brief **待点头**。**须 T64 与 T65 已合**（或 PO 书面改序）后新 Chat 写契约面。**不是** 分级干涉。**不是** T62 |
+| 「按 T64 Brief 开工」 | Brief **待点头**。点头后新 Chat 只改问号简介封闭两句。**不是** T63 / T65 |
+| 「按 T65 Brief 开工」 | Brief **待点头**。点头后新 Chat 观察纸只读 T52 三态。**不是** T28 / T62 |
 
 ---
 

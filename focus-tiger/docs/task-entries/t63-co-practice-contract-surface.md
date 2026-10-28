@@ -1,7 +1,7 @@
 ---
 id: t63-co-practice-contract-surface
 kind: feature
-status: 排队中（Brief 待点头；无运行时）
+status: 排队中（Brief 待点头；须 T64→T65 之后；无运行时）
 updated: 2026-10-28
 ---
 

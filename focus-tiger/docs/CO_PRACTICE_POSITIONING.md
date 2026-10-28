@@ -66,7 +66,9 @@ Focus Tiger 仍然是一只陪你练习专注和觉察的小老虎。可以再�
 | 适应或共修「已被证明有效」 | **未实现** | **T54** 分享开关（已合）与 **T54** 90 天实验（搁置）是两行。开关已合 ≠ 开工实验。口令「开工 T54」「做 90 天实验」仍不执行 | 不得说已评估有效 |
 | 用户自设收工时间（到点轻问） | **已实现** | **T61** #1455。只陪用户自己的钟 | 可说你设过几点收工。不得说 Yin 看出熬夜 |
 | 作息提醒（Yin 判断熬夜并开口） | **未实现 / 不做** | 盘点 [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md)。深夜披毯与 0–6 免责不是睡眠诊断。晚间练习事实 = **T62** 暂不做 | 不得说 Yin 看出你熬夜 |
-| 共修契约面（一处看清开口与开关） | **未实现** | **T63** Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) 待点头 | 上线前不得暗示「已经有一张总控」 |
+| 共修契约面（一处看清开口与开关） | **未实现** | **T63** Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) 待点头；**须 T64→T65 之后** | 上线前不得暗示「已经有一张总控」 |
+| 问号简介写「不是禅师」+「一起练习」 | **未实现** | **T64** Brief [`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) 待点头 | 上线前不得假装简介已经这么写 |
+| 观察纸看见近七日顺 / 乱 / 倦 | **未实现** | **T65** Brief [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md) 待点头。只读 T52，不打分 | 上线前不得说「已有觉察曲线」 |
 
 ---
 
@@ -84,6 +86,6 @@ Focus Tiger 仍然是一只陪你练习专注和觉察的小老虎。可以再�
 
 - **强度**：无新仪式、无打分、无第二套模式。
 - **语气**：本页不增加用户看见的句子。
-- **职责**：共修是说话方式。按人变安静是 **T58**，不是倾诉学习，也不是 **T54** 的分享开关。收工钟是 **T61**（用户自设）。**T63** 契约面未实现；深夜披毯不是「看出熬夜」。
+- **职责**：共修是说话方式。按人变安静是 **T58**，不是倾诉学习，也不是 **T54** 的分享开关。收工钟是 **T61**（用户自设）。文案对齐是 **T64**；观察纸三态是 **T65**；**T63** 契约面未实现且排在二者之后。深夜披毯不是「看出熬夜」。
 
 无用户路径变更。
