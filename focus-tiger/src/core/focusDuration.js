@@ -66,6 +66,20 @@ export function normalizeFocusDurationMinutes(minutes) {
 
 /**
  * @param {Storage | null | undefined} [storage]
+ * @returns {boolean}
+ */
+export function hasStoredFocusDurationPreference(storage) {
+  const store = storage === undefined ? browserLocalStorageOrNull() : storage;
+  if (!store) return false;
+  try {
+    return store.getItem(FOCUS_DURATION_STORAGE_KEY) != null;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * @param {Storage | null | undefined} [storage]
  * @returns {number}
  */
 export function loadPreferredFocusDurationMinutes(storage) {

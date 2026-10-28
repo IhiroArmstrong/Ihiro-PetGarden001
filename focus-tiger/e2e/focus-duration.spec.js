@@ -40,6 +40,7 @@ test('Focus duration: Leave cancels without Focusing', async ({ page }) => {
     .click();
   const picker = page.locator('#focus-duration-picker');
   await expect(picker).toBeVisible({ timeout: 5_000 });
+  await expect(picker.locator('#focus-duration-same-as-last-hint')).toHaveCount(0);
   await expect(picker.locator('#focus-duration-floor-hint')).toBeVisible();
   await expect(picker.locator('#focus-duration-floor-hint')).toContainText(/10/);
   await expect(picker.locator('#focus-coins-duration-hint')).toBeVisible();
@@ -66,4 +67,29 @@ test('Focus duration: ?sessionMinutes=1 skips picker', async ({ page }) => {
   await expect(page.locator('#btn-focus')).toContainText(/Rise|起身/i, {
     timeout: 15_000
   });
+});
+
+test('Focus duration: same-as-last hint when preference stored', async ({
+  page
+}) => {
+  await openFreshProductShell(page, { path: '/?product=1' });
+  await page.evaluate(() => {
+    localStorage.setItem(
+      'focus-tiger.focus-duration-pref.v1',
+      JSON.stringify({ minutes: 15, mode: 'fixed' })
+    );
+  });
+  await chooseReadingAndOpenCompanion(page);
+  const panel = page.locator('.session-start-dock__panel');
+  await panel
+    .locator('.session-start-dock__option')
+    .filter({ hasText: /Here & Now|当下同坐/i })
+    .click();
+  const picker = page.locator('#focus-duration-picker');
+  await expect(picker).toBeVisible({ timeout: 5_000 });
+  const hint = picker.locator('#focus-duration-same-as-last-hint');
+  await expect(hint).toBeVisible();
+  await expect(hint).toContainText(
+    /Same as last time|还是上次那个|前回と同じ時間/
+  );
 });

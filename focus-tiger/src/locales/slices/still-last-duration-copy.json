@@ -1,0 +1,11 @@
+{
+  "en": {
+    "FOCUS_DURATION_SAME_AS_LAST": "Same as last time"
+  },
+  "zh": {
+    "FOCUS_DURATION_SAME_AS_LAST": "还是上次那个"
+  },
+  "ja": {
+    "FOCUS_DURATION_SAME_AS_LAST": "前回と同じ時間"
+  }
+}
