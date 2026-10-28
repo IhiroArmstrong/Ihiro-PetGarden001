@@ -321,7 +321,7 @@ export async function clickHonestyCheckInEntry(page) {
 /**
  * 经宽屏 ⋯（若有）打开提醒等代理入口；Breath 走首页左球；Honesty Check-in 走菜单。
  * @param {import('@playwright/test').Page} page
- * @param {'honesty'|'breath'|'reminder'|'sound'|'language'} proxy
+ * @param {'honesty'|'breath'|'reminder'|'work-end'|'sound'|'language'} proxy
  */
 export async function clickWideMoreProxyOrDirect(page, proxy) {
   if (proxy === 'honesty') {
@@ -336,6 +336,7 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
     honesty: '#honesty-idle-entry',
     breath: '#micro-ritual-idle-entry',
     reminder: '#reminder-preference-toggle',
+    'work-end': '#work-end-preference-toggle',
     sound: '.ambient-soundscape__fab',
     language: '#language-preference-panel'
   }[proxy];
@@ -350,6 +351,17 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
     }
     await row.click();
     return;
+  }
+  if (proxy === 'work-end') {
+    const opened = await page.evaluate(() => {
+      const ui = window.__workEndInvite?.settings;
+      if (ui?.openPanel) {
+        ui.openPanel();
+        return true;
+      }
+      return false;
+    });
+    if (opened) return;
   }
   if (proxy === 'reminder') {
     const opened = await page.evaluate(() => {

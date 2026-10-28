@@ -52,5 +52,6 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   if (el.closest('#ft-narrow-options-drawer')) return true;
   // Reminder panel is body-fixed beside ⋯/drawer; clicks must not dismiss chrome.
   if (el.closest('#reminder-preference-panel')) return true;
+  if (el.closest('#work-end-preference-panel')) return true;
   return false;
 }

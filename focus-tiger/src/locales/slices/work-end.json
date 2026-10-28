@@ -10,7 +10,8 @@
     "WORK_END_CONFIRM_ARIA": "Save wrap-up time",
     "WORK_END_INVITE_PROMPT": "You said you'd wrap up by {{target}}. It's {{now}}. A short landing?",
     "WORK_END_INVITE_YES": "Yes",
-    "WORK_END_INVITE_NOT_NOW": "Not now"
+    "WORK_END_INVITE_NOT_NOW": "Not now",
+    "WORK_END_MENU_LABEL": "Wrap-up time"
   },
   "zh": {
     "WORK_END_PANEL_TITLE": "收工时间",
@@ -23,7 +24,8 @@
     "WORK_END_CONFIRM_ARIA": "保存收工时间",
     "WORK_END_INVITE_PROMPT": "你说想在 {{target}} 前收工。现在 {{now}}。要不要一小段收尾？",
     "WORK_END_INVITE_YES": "好",
-    "WORK_END_INVITE_NOT_NOW": "先不用"
+    "WORK_END_INVITE_NOT_NOW": "先不用",
+    "WORK_END_MENU_LABEL": "收工时间"
   },
   "ja": {
     "WORK_END_PANEL_TITLE": "切り上げの時間",
@@ -36,6 +38,7 @@
     "WORK_END_CONFIRM_ARIA": "切り上げ時間を保存",
     "WORK_END_INVITE_PROMPT": "{{target}} までに切り上げる、と決めていました。今は {{now}}。少し整えますか？",
     "WORK_END_INVITE_YES": "はい",
-    "WORK_END_INVITE_NOT_NOW": "今はしない"
+    "WORK_END_INVITE_NOT_NOW": "今はしない",
+    "WORK_END_MENU_LABEL": "切り上げの時間"
   }
 }

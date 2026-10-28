@@ -63,6 +63,17 @@ describe('workEndPreference', () => {
     assert.equal(out, 'By 23:00 now 22:45');
   });
 
+  it('evaluateWorkEndInvite respects T58 adaptation pause', () => {
+    const storage = memoryStorage();
+    setWorkEndPreference({ hour: 9, minute: 0 }, { storage });
+    const now = new Date('2026-10-28T10:00:00');
+    assert.equal(
+      evaluateWorkEndInvite({ now, storage, focusing: false, adaptationPaused: true })
+        .reason,
+      'adaptation-pause'
+    );
+  });
+
   it('evaluateWorkEndInvite respects focus yield and daily cap', () => {
     const storage = memoryStorage();
     setWorkEndPreference({ hour: 9, minute: 0 }, { storage });

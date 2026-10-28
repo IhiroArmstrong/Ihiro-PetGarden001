@@ -48,6 +48,7 @@ import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js'
  * @property {boolean} companionVisible
  * @property {boolean} [companionEnabled]
  * @property {boolean} reminderAvailable
+ * @property {boolean} [workEndAvailable]
  * @property {boolean} [newsletterSubmitted]
  * @property {boolean} [scenesEntitled] override; default = isEntitled(ritual.morning.access)
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
@@ -124,6 +125,7 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     prelude: 'onClearCompanion'
   },
   reminder: { handler: 'onReminder', close: true, stage: 'reminder' },
+  'work-end': { handler: 'onWorkEnd', close: true, stage: 'workEnd' },
   language: { handler: 'onLanguage', close: false, stage: 'language' },
   sound: { handler: 'onSound', close: true, stage: 'sound' },
   'always-on-top': {
@@ -403,6 +405,7 @@ export function syncSecondaryMenuHintDot(btn, show) {
 export const NARROW_STAGE_CLASS = Object.freeze({
   companion: 'ft-narrow-stage-companion',
   reminder: 'ft-narrow-stage-reminder',
+  workEnd: 'ft-narrow-stage-work-end',
   sound: 'ft-narrow-stage-sound',
   language: 'ft-narrow-stage-language',
   localBackup: 'ft-narrow-stage-local-backup',
@@ -417,6 +420,7 @@ export const NARROW_STAGE_CLASS = Object.freeze({
 export const WIDE_STAGE_CLASS = Object.freeze({
   companion: 'ft-wide-stage-companion',
   reminder: 'ft-wide-stage-reminder',
+  workEnd: 'ft-wide-stage-work-end',
   sound: 'ft-wide-stage-sound',
   language: 'ft-wide-stage-language',
   systemTts: 'ft-wide-stage-system-tts',
@@ -781,6 +785,13 @@ export function listSecondaryChromeEntries(surface, visibility) {
   pushLabeledGroup(out, 'MENU_GROUP_PREFERENCES', [
     visibility.reminderAvailable
       ? { proxy: 'reminder', labelKey: 'reminder.setting_title' }
+      : null,
+    visibility.workEndAvailable
+      ? {
+          proxy: 'work-end',
+          labelKey: 'WORK_END_MENU_LABEL',
+          testId: 'idle-work-end'
+        }
       : null,
     shouldOfferLanguagePicker()
       ? { proxy: 'language', labelKey: 'LANGUAGE_MENU_LABEL' }

@@ -319,7 +319,8 @@ describe('listSecondaryChromeEntries', () => {
     microRitualVisible: true,
     companionVisible: true,
     companionEnabled: true,
-    reminderAvailable: true
+    reminderAvailable: true,
+    workEndAvailable: true
   };
 
   it('includes mustard-seed-seal only when unlocked', () => {
@@ -364,6 +365,7 @@ describe('listSecondaryChromeEntries', () => {
         'focus-circle',
         'community',
         'reminder',
+        'work-end',
         'language',
         'sound',
         'today-direction',
@@ -412,6 +414,7 @@ describe('listSecondaryChromeEntries', () => {
         'focus-circle',
         'community',
         'reminder',
+        'work-end',
         'language',
         'sound',
         'today-direction',

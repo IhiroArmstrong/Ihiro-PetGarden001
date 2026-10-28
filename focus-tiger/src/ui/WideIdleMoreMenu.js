@@ -336,6 +336,7 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
+      WIDE_STAGE_CLASS.workEnd,
       WIDE_STAGE_CLASS.language,
       WIDE_STAGE_CLASS.systemTts
     );
@@ -350,6 +351,7 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
+      WIDE_STAGE_CLASS.workEnd,
       WIDE_STAGE_CLASS.language,
       WIDE_STAGE_CLASS.systemTts
     );
@@ -412,6 +414,7 @@ export class WideIdleMoreMenu {
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
+      WIDE_STAGE_CLASS.workEnd,
       WIDE_STAGE_CLASS.language,
       WIDE_STAGE_CLASS.systemTts
     );
@@ -971,6 +974,9 @@ export class WideIdleMoreMenu {
       ),
       reminderAvailable: Boolean(
         document.getElementById('reminder-preference-toggle')
+      ),
+      workEndAvailable: Boolean(
+        document.getElementById('work-end-preference-toggle')
       ),
       newsletterSubmitted: hasSubmittedNewsletter(),
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
@@ -1536,6 +1542,7 @@ export class WideIdleMoreMenu {
         body.ft-wide-park-secondary .session-start-dock__hint,
         body.ft-wide-park-secondary .ambient-soundscape__fab,
         body.ft-wide-park-secondary #reminder-preference-toggle,
+        body.ft-wide-park-secondary #work-end-preference-toggle,
         body:not(.ft-wide-show-dock-rise) #btn-focus,
         body:not(.ft-wide-show-dock-rise) #quick-start-focus {
           position: fixed !important;
@@ -1577,6 +1584,20 @@ export class WideIdleMoreMenu {
         body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__fab,
         body.ft-wide-park-secondary.ft-wide-stage-sound .ambient-soundscape__nudge {
           display: none !important;
+        }
+
+        body.ft-wide-park-secondary.ft-wide-stage-work-end .work-end-pref__panel {
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px)) !important;
+          transform: translateX(-50%) !important;
+          translate: none !important;
+          width: min(260px, calc(100vw - 48px)) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          z-index: ${Z.REMINDER_PANEL} !important;
         }
         body.ft-wide-park-secondary.ft-wide-stage-reminder .reminder-pref__panel {
           position: fixed !important;

@@ -4378,6 +4378,9 @@ async function init() {
     onReminder: () => {
       reminderPreferenceUI.openPanel();
     },
+    onWorkEnd: () => {
+      workEndPreferenceUI?.openPanel?.();
+    },
     onLanguage: () => {
       languagePreferenceUI.openPanel();
     },
@@ -4523,6 +4526,7 @@ async function init() {
     onClearStage: () => {
       bootHonestyCompanion.companionModePicker.hide();
       reminderPreferenceUI.closePanel();
+      workEndPreferenceUI?.closePanel?.();
       languagePreferenceUI.closePanel();
       alwaysOnTopPreferenceUI?.closePanel();
       windowLayoutPreferenceUI?.closePanel();
@@ -5531,8 +5535,10 @@ async function init() {
       document.body.classList.remove(
         'ft-narrow-stage-sound',
         'ft-narrow-stage-reminder',
+        'ft-narrow-stage-work-end',
         'ft-wide-stage-sound',
-        'ft-wide-stage-reminder'
+        'ft-wide-stage-reminder',
+        'ft-wide-stage-work-end'
       );
       document.body.classList.add(
         'ft-narrow-stage-companion',
@@ -6647,6 +6653,8 @@ async function init() {
         stateManager.state === STATES.DORMANT) &&
       !microOpen;
     if (!growthJourneyDetailAllowed) growthJourneyDetailUI?.close();
+    const idlePreferenceChromeVisible =
+      stateManager.state === STATES.IDLE && !microOpen;
     weeklyPracticeHeatmap.render({
       // Home presence chrome: Idle + Dormant (late-night cloak still shows the week).
       // Hide during Focusing / overlays / micro-ritual.
@@ -6655,12 +6663,8 @@ async function init() {
       eligibleMinutes: lotusPondStore.getScoreEligibleLifetimeMinutes(),
       stageFloor: readGrowthJourneyStageFloor(globalThis.localStorage)
     });
-    workEndPreferenceUI?.setVisible?.(
-      chromeIdleHeatmapVisible
-    );
-    reminderPreferenceUI.setVisible(
-      stateManager.state === STATES.IDLE && !microOpen
-    );
+    workEndPreferenceUI?.setVisible?.(idlePreferenceChromeVisible);
+    reminderPreferenceUI.setVisible(idlePreferenceChromeVisible);
     idleCompanionPipUI.syncVisibility();
     languagePreferenceUI.setFabVisible(
       stateManager.state === STATES.IDLE && !microOpen

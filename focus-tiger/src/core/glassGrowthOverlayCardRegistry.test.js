@@ -22,6 +22,7 @@ describe('glassGrowthOverlayCardRegistry (A3)', () => {
       if (proxy === 'sanctuary-nav') continue;
       if (
         proxy === 'reminder' ||
+        proxy === 'work-end' ||
         proxy === 'language' ||
         proxy === 'sound' ||
         proxy === 'always-on-top' ||
