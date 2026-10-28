@@ -604,6 +604,12 @@ import {
 } from './core/AwakenCheckInOrchestrator.js';
 import { InterventionOrchestrator } from './core/InterventionOrchestrator.js';
 import {
+  INVITE_OUTCOME_KINDS,
+  INVITE_OUTCOME_VALUES,
+  inviteKindFromAwakenDecision,
+  recordInviteOutcome
+} from './core/inviteOutcomeStore.js';
+import {
   createRhythmTimingCache
 } from './core/inputRhythmBridge.js';
 import { effectiveAwakenCooldownMs } from './core/inputRhythmEngine.js';
@@ -1739,6 +1745,8 @@ async function init() {
   /** @type {string} */
   let currentAwakenSitSessionId = '';
   let endAwakenCheckInOffered = false;
+  /** @type {'away' | 'extend' | 'long-sit' | null} */
+  let pendingInviteOutcomeKind = null;
   /** @type {GroundExerciseChoiceUI | null} */
   let groundExerciseChoiceUI = null;
 
@@ -1918,10 +1926,38 @@ async function init() {
   });
   window.__recoverResetPractice = recoverResetPracticeUI;
   window.__groundExerciseChoice = groundExerciseChoiceUI;
+
+  function settlePendingInviteOutcome(outcome) {
+    if (!pendingInviteOutcomeKind) return;
+    recordInviteOutcome(pendingInviteOutcomeKind, outcome);
+    pendingInviteOutcomeKind = null;
+  }
+
+  function trackShownInviteOutcome(decision) {
+    if (pendingInviteOutcomeKind) {
+      recordInviteOutcome(
+        pendingInviteOutcomeKind,
+        INVITE_OUTCOME_VALUES.IGNORED
+      );
+    }
+    pendingInviteOutcomeKind = inviteKindFromAwakenDecision(decision);
+  }
+
+  function trackShownInviteOutcomeKind(kind) {
+    if (pendingInviteOutcomeKind) {
+      recordInviteOutcome(
+        pendingInviteOutcomeKind,
+        INVITE_OUTCOME_VALUES.IGNORED
+      );
+    }
+    pendingInviteOutcomeKind = kind;
+  }
+
   awakenInviteUI = new AwakenInviteUI(overlayRoot, {
     requestSlot: requestAwakenInviteOverlaySlot,
     releaseSlot: releaseAwakenInviteOverlaySlot,
     onAccept: (kind) => {
+      settlePendingInviteOutcome(INVITE_OUTCOME_VALUES.ACCEPTED);
       if (kind === 'extend') {
         applyFocusSitAdjust(focusSession, { kind: 'add', minutes: 5 });
         refreshFocusSitAdjust();
@@ -1930,7 +1966,12 @@ async function init() {
       focusAwarenessCardUI.hide({ immediate: true });
       recoverResetPracticeUI?.show(RESET_ROUTES.GROUND);
     },
-    onDismiss: () => {
+    onDismiss: (reason) => {
+      settlePendingInviteOutcome(
+        reason === 'timeout'
+          ? INVITE_OUTCOME_VALUES.IGNORED
+          : INVITE_OUTCOME_VALUES.DISMISSED
+      );
       if (
         stateManager.state === STATES.FOCUSING &&
         focusSession.hasReachedTarget() &&
@@ -1945,7 +1986,10 @@ async function init() {
       if (stateManager.state !== STATES.FOCUSING) return false;
       focusAwarenessCardUI.hide({ immediate: true });
       const shown = awakenInviteUI.tryShow('pause');
-      if (shown) awakenOrchestrator.noteInviteShown();
+      if (shown) {
+        trackShownInviteOutcomeKind(INVITE_OUTCOME_KINDS.AWAY);
+        awakenOrchestrator.noteInviteShown();
+      }
       return shown;
     },
     offerAway: () =>
@@ -2025,6 +2069,7 @@ async function init() {
     focusAwarenessCardUI.hide({ immediate: true });
     const shown = awakenInviteUI.tryShow(decision.kind);
     if (!shown) return false;
+    trackShownInviteOutcome(decision);
     awakenOrchestrator.noteInviteShown();
     if (input.kind === 'extend') awakenOrchestrator.markExtendOffered();
     return true;

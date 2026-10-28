@@ -50,6 +50,14 @@ test('scan finds awaken-check-ins literal (T52 storage)', () => {
   assert.ok(literals.includes('focus-tiger.awaken-check-ins.v1'));
 });
 
+test('scan finds invite-outcomes literal (T57 storage)', () => {
+  const literals = scanFocusTigerLocalStorageKeyLiterals(SRC_ROOT);
+  assert.ok(literals.includes('focus-tiger.invite-outcomes.v1'));
+  assert.ok(
+    FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes('focus-tiger.invite-outcomes.v1')
+  );
+});
+
 test('T60 reset whitelist includes awaken check-ins and focus duration pref', () => {
   assert.ok(
     FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes('focus-tiger.awaken-check-ins.v1')
