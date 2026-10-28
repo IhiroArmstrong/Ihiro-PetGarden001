@@ -3,6 +3,8 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+import { recordEveningPracticeFactFromJourneyEntry } from './eveningPracticeFacts.js';
+
 /**
  * Journey Log · local practice trail (Tea Log pattern).
  *
@@ -228,6 +230,7 @@ export function appendJourneyLogEntry(
   const prev = readJourneyLog(storage);
   const entries = normalizeJourneyLogEntries([...prev.entries, row]);
   writeJourneyLog(storage, { entries });
+  recordEveningPracticeFactFromJourneyEntry(storage, row);
   return row;
 }
 
