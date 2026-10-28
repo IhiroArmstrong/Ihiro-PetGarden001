@@ -365,6 +365,7 @@ describe('listSecondaryChromeEntries', () => {
         'community',
         'reminder',
         'language',
+        'sound',
         'today-direction',
         'newsletter',
         'account',
@@ -412,6 +413,7 @@ describe('listSecondaryChromeEntries', () => {
         'community',
         'reminder',
         'language',
+        'sound',
         'today-direction',
         'newsletter',
         'account',
@@ -482,22 +484,17 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
-  it('wide more includes system-tts only when systemTtsAvailable', () => {
-    const off = listSecondaryChromeEntries('wide-more', allOn);
-    assert.ok(!off.some((e) => e.proxy === 'system-tts'));
-    const on = listSecondaryChromeEntries('wide-more', {
-      ...allOn,
-      systemTtsAvailable: true
-    });
-    const proxies = on.filter((e) => e.proxy).map((e) => e.proxy);
-    assert.ok(proxies.includes('system-tts'));
-    assert.ok(proxies.indexOf('system-tts') > proxies.indexOf('language'));
-    assert.ok(proxies.indexOf('system-tts') < proxies.indexOf('today-direction'));
-    const narrow = listSecondaryChromeEntries('narrow-drawer', {
-      ...allOn,
-      systemTtsAvailable: true
-    });
+  it('Preferences includes Sound on wide and narrow (system-tts menu row removed)', () => {
+    const wide = listSecondaryChromeEntries('wide-more', allOn);
+    const narrow = listSecondaryChromeEntries('narrow-drawer', allOn);
+    assert.ok(!wide.some((e) => e.proxy === 'system-tts'));
     assert.ok(!narrow.some((e) => e.proxy === 'system-tts'));
+    const wideProxies = wide.filter((e) => e.proxy).map((e) => e.proxy);
+    const narrowProxies = narrow.filter((e) => e.proxy).map((e) => e.proxy);
+    assert.ok(wideProxies.includes('sound'));
+    assert.ok(narrowProxies.includes('sound'));
+    assert.ok(wideProxies.indexOf('sound') > wideProxies.indexOf('language'));
+    assert.ok(wideProxies.indexOf('sound') < wideProxies.indexOf('today-direction'));
   });
 
   it('wide companion requires enabled !== false', () => {
@@ -508,7 +505,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(!entries.some((e) => e.proxy === 'companion'));
   });
 
-  it('language + five-moments + gift rows remain when secondary gates off (Sound is not a menu row)', () => {
+  it('language + five-moments + gift rows remain when secondary gates off (Sound stays in Preferences)', () => {
     const entries = listSecondaryChromeEntries('narrow-drawer', {
       microRitualVisible: false,
       companionVisible: false,
@@ -532,6 +529,7 @@ describe('listSecondaryChromeEntries', () => {
         'focus-circle',
         'community',
         'language',
+        'sound',
         'today-direction',
         'newsletter',
         'account',

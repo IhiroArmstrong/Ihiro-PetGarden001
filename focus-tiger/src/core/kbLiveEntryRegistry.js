@@ -382,6 +382,23 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'kb-live-sound',
+    surface: 'menu',
+    proxy: 'sound',
+    labelKeys: Object.freeze(['SOUND_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Sound',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'sound'",
+      'SOUND_MENU_LABEL',
+      '.ambient-soundscape__panel'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/ui/AmbientSoundscapeUI.js'
+    ])
+  }),
+  Object.freeze({
     id: 'kb-live-today-direction',
     surface: 'menu',
     proxy: 'today-direction',

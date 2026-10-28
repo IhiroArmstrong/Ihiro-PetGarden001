@@ -1,0 +1,29 @@
+{
+  "en": {
+    "HINT_AMBIENT_SOUNDSCAPE_WIDE": "Everything is quiet for now. Tap the note if you'd like sound.",
+    "HINT_AMBIENT_SOUNDSCAPE_NARROW": "Everything is quiet for now. Tap ♪ if you'd like sound.",
+    "AMBIENT_NOTE_HOVER": "Quiet for now. Tap for sound.",
+    "SOUND_MENU_LABEL": "Sound",
+    "AMBIENT_BLOCK_MUSIC": "Music",
+    "AMBIENT_BLOCK_SITTING_BELLS": "Sitting bells",
+    "AMBIENT_BLOCK_VOICE": "Voice"
+  },
+  "zh": {
+    "HINT_AMBIENT_SOUNDSCAPE_WIDE": "此刻很安静。想听声音，点那个音符。",
+    "HINT_AMBIENT_SOUNDSCAPE_NARROW": "此刻很安静。想听声音，点 ♪。",
+    "AMBIENT_NOTE_HOVER": "此刻很安静。点这里可以调声音。",
+    "SOUND_MENU_LABEL": "声音",
+    "AMBIENT_BLOCK_MUSIC": "音乐",
+    "AMBIENT_BLOCK_SITTING_BELLS": "坐禅铃声",
+    "AMBIENT_BLOCK_VOICE": "语音"
+  },
+  "ja": {
+    "HINT_AMBIENT_SOUNDSCAPE_WIDE": "いまは静かなままです。音がほしければ、音符をタップしてください。",
+    "HINT_AMBIENT_SOUNDSCAPE_NARROW": "いまは静かなままです。音がほしければ、♪ をタップしてください。",
+    "AMBIENT_NOTE_HOVER": "いまは静かです。タップして音を選べます。",
+    "SOUND_MENU_LABEL": "サウンド",
+    "AMBIENT_BLOCK_MUSIC": "ミュージック",
+    "AMBIENT_BLOCK_SITTING_BELLS": "坐りの鈴",
+    "AMBIENT_BLOCK_VOICE": "ボイス"
+  }
+}

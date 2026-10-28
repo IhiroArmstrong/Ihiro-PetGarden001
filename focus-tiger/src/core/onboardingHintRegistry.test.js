@@ -18,7 +18,8 @@ import {
   getHintTriggerMode,
   getHintTier,
   isClickTriggerHint,
-  isDetailedHint
+  isDetailedHint,
+  resolveOnboardingHintLocaleKey
 } from './onboardingHintRegistry.js';
 
 const VALID_TRIGGER_MODES = new Set(['auto', 'click', 'manual', 'legacy']);
@@ -136,6 +137,7 @@ test('every registry entry has localeKey present in en.json and zh.json', () => 
   const en = readLocale('en.json');
   const zh = readLocale('zh.json');
   for (const { id, localeKey } of ONBOARDING_HINT_REGISTRY) {
+    if (id === 'ambient-soundscape') continue;
     assert.ok(
       localeKey in en,
       `${id}: missing ${localeKey} in en.json`
@@ -145,6 +147,34 @@ test('every registry entry has localeKey present in en.json and zh.json', () => 
       `${id}: missing ${localeKey} in zh.json`
     );
   }
+});
+
+test('ambient-soundscape viewport copy lives in cold-start locale slice', () => {
+  const slice = readLocale('slices/cold-start-sound-entry.json');
+  for (const loc of ['en', 'zh', 'ja']) {
+    assert.ok(slice[loc].HINT_AMBIENT_SOUNDSCAPE_WIDE);
+    assert.ok(slice[loc].HINT_AMBIENT_SOUNDSCAPE_NARROW);
+    assert.ok(slice[loc].AMBIENT_NOTE_HOVER);
+  }
+});
+
+test('resolveOnboardingHintLocaleKey picks wide vs narrow ambient copy', () => {
+  const prev = globalThis.document;
+  globalThis.document = {
+    body: { classList: { contains: () => false } }
+  };
+  assert.equal(
+    resolveOnboardingHintLocaleKey('ambient-soundscape'),
+    'HINT_AMBIENT_SOUNDSCAPE_WIDE'
+  );
+  globalThis.document = {
+    body: { classList: { contains: (c) => c === 'ft-narrow-shell' } }
+  };
+  assert.equal(
+    resolveOnboardingHintLocaleKey('ambient-soundscape'),
+    'HINT_AMBIENT_SOUNDSCAPE_NARROW'
+  );
+  globalThis.document = prev;
 });
 
 test('every anchor entry has selector, placement, and tip', () => {

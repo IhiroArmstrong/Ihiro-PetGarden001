@@ -89,19 +89,19 @@ describe('IdleChromeFacade', () => {
       onSanctuaryNav: () => {
         nav += 1;
       },
-      onSystemTts: () => {
+      onSound: () => {
         voice += 1;
       },
       shouldShowSanctuaryNavPulse: () => true
     });
     assert.equal(typeof narrow.state.handlers.onSanctuaryNav, 'function');
     assert.equal(typeof wide.state.handlers.onSanctuaryNav, 'function');
-    assert.equal(typeof wide.state.handlers.onSystemTts, 'function');
+    assert.equal(typeof wide.state.handlers.onSound, 'function');
     assert.equal(typeof narrow.state.handlers.shouldShowSanctuaryNavPulse, 'function');
     assert.equal(typeof wide.state.handlers.shouldShowSanctuaryNavPulse, 'function');
     narrow.state.handlers.onSanctuaryNav();
     wide.state.handlers.onSanctuaryNav();
-    wide.state.handlers.onSystemTts();
+    wide.state.handlers.onSound();
     assert.equal(nav, 2);
     assert.equal(voice, 1);
     assert.equal(wide.state.handlers.shouldShowSanctuaryNavPulse(), true);

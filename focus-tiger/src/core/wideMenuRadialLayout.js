@@ -148,7 +148,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   community: 'MENU_GROUP_NOT_ALONE',
   reminder: 'MENU_GROUP_PREFERENCES',
   language: 'MENU_GROUP_PREFERENCES',
-  'system-tts': 'MENU_GROUP_PREFERENCES',
+  sound: 'MENU_GROUP_PREFERENCES',
   'always-on-top': 'MENU_GROUP_PREFERENCES',
   'input-rhythm': 'MENU_GROUP_PREFERENCES',
   'today-direction': 'MENU_GROUP_PREFERENCES',

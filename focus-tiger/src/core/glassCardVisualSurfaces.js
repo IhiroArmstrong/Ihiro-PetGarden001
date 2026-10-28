@@ -25,10 +25,10 @@
 /** @type {readonly A13GlassVisualSurface[]} */
 export const A13_GLASS_VISUAL_SURFACES = Object.freeze([
   Object.freeze({
-    id: 'system-tts',
-    openKind: 'dev-hook',
-    devHookGlobal: '__systemTtsPreference',
-    rootSelector: '#system-tts-preference-panel, .system-tts-pref__panel'
+    id: 'soundscape-panel',
+    openKind: 'menu-proxy',
+    menuProxy: 'sound',
+    rootSelector: '.ambient-soundscape__panel'
   }),
   Object.freeze({
     id: 'help-center',

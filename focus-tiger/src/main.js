@@ -152,7 +152,6 @@ import { IdleOrchestrator } from './character/IdleOrchestrator.js';
 import { t, tPool, tInLocale, setLocale, getLocale, onLocaleChange, bootLocaleFromPreference } from './locales/i18n.js';
 import { registerServiceWorker } from './pwa/registerServiceWorker.js';
 import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
-import { SystemTtsPreferenceUI } from './ui/SystemTtsPreferenceUI.js';
 import { AlwaysOnTopPreferenceUI } from './ui/AlwaysOnTopPreferenceUI.js';
 import { WindowLayoutPreferenceUI } from './ui/WindowLayoutPreferenceUI.js';
 import { InputRhythmPreferenceUI } from './ui/InputRhythmPreferenceUI.js';
@@ -1200,8 +1199,6 @@ async function init() {
   let reminderPreferenceUI = null;
   /** @type {LanguagePreferenceUI | null} */
   let languagePreferenceUI = null;
-  /** @type {SystemTtsPreferenceUI | null} */
-  let systemTtsPreferenceUI = null;
   /** @type {AlwaysOnTopPreferenceUI | null} */
   let alwaysOnTopPreferenceUI = null;
   /** @type {InputRhythmPreferenceUI | null} */
@@ -1528,12 +1525,6 @@ async function init() {
   );
   // Product + CI preview: e2e may open panel without ⋯ (narrow fallback)
   window.__languagePreference = languagePreferenceUI;
-  systemTtsPreferenceUI = new SystemTtsPreferenceUI(document.body, {
-    onClose: () => {
-      document.body.classList.remove('ft-wide-stage-system-tts');
-    }
-  });
-  window.__systemTtsPreference = systemTtsPreferenceUI;
   alwaysOnTopPreferenceUI = new AlwaysOnTopPreferenceUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-wide-stage-always-on-top');
@@ -4216,6 +4207,11 @@ async function init() {
   );
   mountSessionCues(bootAmbientHints, { Cues: SessionCueController });
   bootAmbientHints.sessionCues.preload();
+  const markAmbientSoundHintSeen = () => {
+    onboardingHintHost.hints?.markSeen('ambient-soundscape');
+    onboardingHintHost.hints?.hideBubble('ambient-soundscape');
+    onboardingHintHost.hints?.syncDiscoveryDots();
+  };
   // Avoid TDZ: AmbientSoundscapeUI paints during construct — use onboardingHintHost (declared with idle tap).
   // 挂 body：避免落在 pointer-events:none 的 ui-overlay 栈内，并压过调试栏
   const ambientSoundscapeUI = new AmbientSoundscapeUI(
@@ -4225,14 +4221,16 @@ async function init() {
       sessionCues: bootAmbientHints.sessionCues,
       onPanelOpened: () => {
         idleSecondaryPanelHost.close({ except: 'soundscape' });
-        onboardingHintHost.hints?.revealClickHint('ambient-soundscape');
+        markAmbientSoundHintSeen();
       },
       onTrackChosen: () => {
-        onboardingHintHost.hints?.markSeen('ambient-soundscape');
-        onboardingHintHost.hints?.hideBubble('ambient-soundscape');
+        markAmbientSoundHintSeen();
         idleChrome.syncMuteVisual({
           musicOn: ambientSoundscapeUI.wantsMusicOn()
         });
+      },
+      onSoundEngaged: () => {
+        markAmbientSoundHintSeen();
       },
       onToggleMusic: () => {
         // Mute/unmute alone does not clear the discovery mint — only choosing a track does.
@@ -4303,9 +4301,6 @@ async function init() {
     },
     onLanguage: () => {
       languagePreferenceUI.openPanel();
-    },
-    onSystemTts: () => {
-      systemTtsPreferenceUI?.openPanel();
     },
     onAlwaysOnTop: () => {
       alwaysOnTopPreferenceUI?.openPanel();
@@ -4450,7 +4445,6 @@ async function init() {
       bootHonestyCompanion.companionModePicker.hide();
       reminderPreferenceUI.closePanel();
       languagePreferenceUI.closePanel();
-      systemTtsPreferenceUI?.closePanel();
       alwaysOnTopPreferenceUI?.closePanel();
       windowLayoutPreferenceUI?.closePanel();
       windowLayoutPreferenceUI?.closePanel();

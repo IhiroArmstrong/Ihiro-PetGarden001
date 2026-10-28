@@ -38,13 +38,13 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-10-28 · 29 live rows · 41 approved catalog ids
+**Snapshot**: 2026-10-28 · 30 live rows · 41 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 0 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 1 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 1 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 1 | PO scope before drafting |
@@ -54,6 +54,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | menuPath | labelKeys |
 |---|---|---|---|
+| `kb-live-sound` | live | ⋯ → Preferences → Sound | `SOUND_MENU_LABEL` |
 
 ### Registry mapping drift (registry `catalogKbIds` ≠ canonical approved map)
 
