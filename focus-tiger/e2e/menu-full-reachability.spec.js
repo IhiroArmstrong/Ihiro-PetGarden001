@@ -203,6 +203,17 @@ async function openMenu(page, surface) {
       .isVisible()
       .catch(() => false);
     if (!shellVisible) {
+      // CI can re-show growth backdrops (e.g. #yin-coin-panel-backdrop) while Playwright
+      // retries the click — poll dismiss like the post-row gate in walkMenu.
+      await expect
+        .poll(
+          async () => {
+            await dismissVisibleGrowthBackdrops(page);
+            return await page.locator('.ft-overlay-backdrop.is-visible').count();
+          },
+          { timeout: 12_000 }
+        )
+        .toBe(0);
       await btn.click();
     }
     await expectWideMoreMenuShellVisible(page);
