@@ -1,0 +1,1 @@
+| T65 观察纸顺乱倦节律 | 成长旅程详情 · 练习观察纸 | **待人工测试**：近窗无结束打卡时不出现三态块；有结束打卡时见七个等宽位与标签；观察纸隐藏时整块不见；免责含「不是和昨天比」。**单测**：`practicePaperCheckInRhythm.test.js`。**e2e**：`practice-paper-check-in-rhythm.spec.js`。 | — | — | — | — | 2026-10-28 |

@@ -1,6 +1,6 @@
 # Task Brief · T65 观察纸露出顺·乱·倦节律
 
-> **状态**：**待点头**（2026-10-28）。点头前**禁止**写产品运行时。口令「按 T65 Brief 开工」= 本文件点头后新 Chat 写代码。  
+> **状态**：**已点头**（2026-10-28 PO 口令「按 T65 Brief 开工」）。  
 > **代号**：**T65**。槽位 **可选** · 状态 **排队中**。叠在 **T64** 文案之后、**T63** 契约面之前。  
 > **类**：**B 类**（观察纸多一块已有数据的看见）。过契约 **C-02 / C-09 / C-11**。en / ja **人审**。  
 > **从属**：[`PRACTICE_PAPER.md`](../PRACTICE_PAPER.md) · **T52** `awaken-check-ins.v1` · [`CO_PRACTICE_POSITIONING.md`](../CO_PRACTICE_POSITIONING.md)。  

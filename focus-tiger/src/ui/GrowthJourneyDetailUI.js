@@ -18,6 +18,12 @@ import {
   setPracticePaperHidden
 } from '../core/practicePaperFacts.js';
 import {
+  awakenCheckInLabelLocaleKey,
+  getPracticePaperCheckInRhythm
+} from '../core/practicePaperCheckInRhythm.js';
+import { AWAKEN_CHECKIN_STORAGE_KEY } from '../core/awakenCheckInStore.js';
+import { getStorage } from '../utils/Storage.js';
+import {
   clearEveningPracticeFactsLedger,
   getEveningPracticePaperFact,
   readEveningFactsConsent,
@@ -522,6 +528,8 @@ export class GrowthJourneyDetailUI {
     this.paperEl.appendChild(card);
     this.paperEl.appendChild(factsEl);
 
+    this._appendCheckInRhythmBlock(today);
+
     const hideBtn = document.createElement('button');
     hideBtn.type = 'button';
     hideBtn.className = 'growth-journey-detail__paper-toggle';
@@ -539,6 +547,39 @@ export class GrowthJourneyDetailUI {
     disclaimer.dataset.testid = 'practice-paper-disclaimer';
     disclaimer.textContent = t('PRACTICE_PAPER_DISCLAIMER');
     this.paperEl.appendChild(disclaimer);
+  }
+
+  _appendCheckInRhythmBlock(todayKey) {
+    let rows = [];
+    try {
+      rows = getStorage(AWAKEN_CHECKIN_STORAGE_KEY, []);
+    } catch {
+      rows = [];
+    }
+    const block = getPracticePaperCheckInRhythm(rows, todayKey);
+    if (!block) return;
+
+    const section = document.createElement('section');
+    section.className = 'growth-journey-detail__paper-check-in-rhythm';
+    section.dataset.testid = 'practice-paper-check-in-rhythm';
+
+    const title = document.createElement('p');
+    title.className = 'growth-journey-detail__paper-check-in-rhythm-title';
+    title.textContent = t('PRACTICE_PAPER_CHECKIN_RHYTHM_TITLE');
+    section.appendChild(title);
+
+    const slots = document.createElement('div');
+    slots.className = 'growth-journey-detail__paper-check-in-slots';
+    for (const slot of block.slots) {
+      const cell = document.createElement('span');
+      cell.className = 'growth-journey-detail__paper-check-in-slot';
+      if (slot.label) {
+        cell.textContent = t(awakenCheckInLabelLocaleKey(slot.label));
+      }
+      slots.appendChild(cell);
+    }
+    section.appendChild(slots);
+    this.paperEl.appendChild(section);
   }
 
   _injectStyles() {
@@ -678,6 +719,8 @@ export class GrowthJourneyDetailUI {
       .growth-journey-detail__paper-evening,
       .growth-journey-detail__paper-subtitle,
       .growth-journey-detail__paper-disclaimer,
+      .growth-journey-detail__paper-check-in-rhythm-title,
+      .growth-journey-detail__paper-check-in-slot,
       .growth-journey-detail__sit-breath-facts p {
         margin: 0 0 8px;
         font-size: 0.86rem;
@@ -688,6 +731,23 @@ export class GrowthJourneyDetailUI {
       .growth-journey-detail__paper-disclaimer {
         opacity: 0.72;
         font-size: 0.78rem;
+      }
+      .growth-journey-detail__paper-check-in-rhythm {
+        margin: 10px 0 0;
+      }
+      .growth-journey-detail__paper-check-in-rhythm-title {
+        margin: 0 0 6px;
+      }
+      .growth-journey-detail__paper-check-in-slots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .growth-journey-detail__paper-check-in-slot {
+        flex: 1 1 2.2em;
+        min-width: 2.2em;
+        text-align: center;
+        min-height: 1.3em;
       }
       .growth-journey-detail__sit-breath {
         appearance: none;
