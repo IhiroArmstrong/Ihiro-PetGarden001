@@ -24,7 +24,7 @@
 
 ## 治理 PR（允许改热点）
 
-- **仅**改热点 + 本 readme + changelog + 相关规则/脚本/WORKFLOW 的 PR 可以通过 `queue:check`。与队列同批登记 **T56** 时，允许同 PR 改 `CO_PRACTICE_POSITIONING.md`、`PRODUCT_POSITIONING.md`、`COMPANION_CONTRACT.md`；登记 **T61** 时允许同 PR 改 [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) 与对应 task-entries / Brief 骨架（见 `check-queue-governance-docs.js` 白名单）。  
+- **仅**改热点 + 本 readme + changelog + 相关规则/脚本/WORKFLOW 的 PR 可以通过 `queue:check`。与队列同批登记 **T56** 时，允许同 PR 改 `CO_PRACTICE_POSITIONING.md`、`PRODUCT_POSITIONING.md`、`COMPANION_CONTRACT.md`；登记 **T61** 时允许同 PR 改 [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) 与对应 task-entries / Brief 骨架；登记 **T63** 时允许同 PR 改契约面 Brief / task-entries 与 `CO_PRACTICE_POSITIONING.md`（见 `check-queue-governance-docs.js` 白名单）。  
 - `docs:check` 会按当天日期重写 [`kb-live-gap-audit.md`](./kb-live-gap-audit.md) 机器块日期；该文件允许与治理 PR 同批，避免挡队列更新。  
 - 合并前：`git fetch origin develop && git merge origin/develop`，一次性对齐语义（T 已合 / 立即做 / 旁支保留行）。  
 - 队列行：**先改 `SCHEDULING_GLOSSARY.md` §1**，再在同 PR 同步 `GLOSSARY.md`「当前任务」表（含风险列）。
