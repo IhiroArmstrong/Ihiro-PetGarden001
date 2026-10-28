@@ -1,0 +1,53 @@
+{
+  "en": {
+    "CO_PRACTICE_CONTRACT_TITLE": "How Yin may speak",
+    "CO_PRACTICE_CONTRACT_INTRO": "These are the places Yin may offer a quiet nudge. You can change each one below.",
+    "CO_PRACTICE_CONTRACT_ROW_FOCUS_INVITE": "Pause invites during focus",
+    "CO_PRACTICE_CONTRACT_ROW_DAILY_REMINDER": "Daily sit reminder",
+    "CO_PRACTICE_CONTRACT_ROW_WORK_END": "Work-end check-in",
+    "CO_PRACTICE_CONTRACT_ROW_RESEARCH": "Optional research counts",
+    "CO_PRACTICE_CONTRACT_ROW_ADAPTATION": "Quieter adaptation",
+    "CO_PRACTICE_CONTRACT_STATUS_OFF": "Off",
+    "CO_PRACTICE_CONTRACT_STATUS_ON": "On",
+    "CO_PRACTICE_CONTRACT_STATUS_AT_TIME": "Set for {time}",
+    "CO_PRACTICE_CONTRACT_STATUS_PAUSED": "Quiet until {date}",
+    "CO_PRACTICE_CONTRACT_STATUS_INVITE_QUIET": "Off while adaptation is off",
+    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "Use the switch in the notebook above.",
+    "CO_PRACTICE_CONTRACT_ACTION_CHANGE": "Change",
+    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "Open Privacy"
+  },
+  "zh": {
+    "CO_PRACTICE_CONTRACT_TITLE": "阿寅可能在哪里开口",
+    "CO_PRACTICE_CONTRACT_INTRO": "下面是阿寅可能轻声提醒的几处。你可以在这里看清状态，再去改。",
+    "CO_PRACTICE_CONTRACT_ROW_FOCUS_INVITE": "专注中的停一下邀请",
+    "CO_PRACTICE_CONTRACT_ROW_DAILY_REMINDER": "每日来坐提醒",
+    "CO_PRACTICE_CONTRACT_ROW_WORK_END": "收工轻问",
+    "CO_PRACTICE_CONTRACT_ROW_RESEARCH": "可选的研究计数分享",
+    "CO_PRACTICE_CONTRACT_ROW_ADAPTATION": "更安静的适应",
+    "CO_PRACTICE_CONTRACT_STATUS_OFF": "现在关着",
+    "CO_PRACTICE_CONTRACT_STATUS_ON": "开着",
+    "CO_PRACTICE_CONTRACT_STATUS_AT_TIME": "设在 {time}",
+    "CO_PRACTICE_CONTRACT_STATUS_PAUSED": "这类提醒先停到 {date}",
+    "CO_PRACTICE_CONTRACT_STATUS_INVITE_QUIET": "适应关着时，这类邀请也不开",
+    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "总开关在本页上方小本子。",
+    "CO_PRACTICE_CONTRACT_ACTION_CHANGE": "去改",
+    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "去 Privacy"
+  },
+  "ja": {
+    "CO_PRACTICE_CONTRACT_TITLE": "阿寅が声をかけるかもしれない場所",
+    "CO_PRACTICE_CONTRACT_INTRO": "ここでは、静かな声かけがあり得る場所を一覧できます。状態を確認してから変更できます。",
+    "CO_PRACTICE_CONTRACT_ROW_FOCUS_INVITE": "集中中の「少し休む」招待",
+    "CO_PRACTICE_CONTRACT_ROW_DAILY_REMINDER": "毎日の座るリマインド",
+    "CO_PRACTICE_CONTRACT_ROW_WORK_END": "終業前の軽い確認",
+    "CO_PRACTICE_CONTRACT_ROW_RESEARCH": "任意の研究用カウント共有",
+    "CO_PRACTICE_CONTRACT_ROW_ADAPTATION": "より静かな適応",
+    "CO_PRACTICE_CONTRACT_STATUS_OFF": "オフ",
+    "CO_PRACTICE_CONTRACT_STATUS_ON": "オン",
+    "CO_PRACTICE_CONTRACT_STATUS_AT_TIME": "{time} に設定",
+    "CO_PRACTICE_CONTRACT_STATUS_PAUSED": "{date} まで静か",
+    "CO_PRACTICE_CONTRACT_STATUS_INVITE_QUIET": "適応オフの間はこの招待もオフ",
+    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "総スイッチは上のノートにあります。",
+    "CO_PRACTICE_CONTRACT_ACTION_CHANGE": "変更",
+    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "プライバシーを開く"
+  }
+}

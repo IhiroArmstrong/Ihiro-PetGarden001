@@ -1506,6 +1506,7 @@ async function init() {
     {
       onPreferenceChange: () => {
         syncInAppReminderBanner();
+        growthJourneyDetailUI?.refreshIfOpen?.();
       },
       onOpen: () => {
         bootAmbientHints.onboardingHints?.markSeen('in-app-reminder');
@@ -1523,6 +1524,7 @@ async function init() {
     {
       onPreferenceChange: () => {
         syncWorkEndInvite();
+        growthJourneyDetailUI?.refreshIfOpen?.();
       },
       onClose: () => {
         document.body.classList.remove('ft-narrow-stage-work-end');
@@ -2868,7 +2870,16 @@ async function init() {
         readGrowthJourneyStageFloor(
           typeof localStorage !== 'undefined' ? localStorage : null
         ),
-      getPracticeDates: () => practiceDaysStore.getPracticedDateKeys()
+      getPracticeDates: () => practiceDaysStore.getPracticedDateKeys(),
+      onOpenReminderSettings: () => {
+        reminderPreferenceUI.openPanel();
+      },
+      onOpenWorkEndSettings: () => {
+        workEndPreferenceUI?.openPanel?.();
+      },
+      onOpenPrivacySettings: () => {
+        bootAmbientHints.onboardingHints?.openPrivacySheetForSettings?.();
+      }
     })
   );
   window.__growthJourneyDetail = growthJourneyDetailUI;
