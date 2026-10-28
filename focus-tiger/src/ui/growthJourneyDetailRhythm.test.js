@@ -33,5 +33,6 @@ test('practice paper hangs under the rhythm, as one Sit & Breath card', () => {
     /this\.rhythmEl,\s*this\.notebookEl,\s*this\.paperEl,\s*this\.closeBtn/s
   );
   assert.match(src, /practice-paper-sit-breath/);
+  assert.match(src, /practice-paper-check-in-rhythm/);
   assert.doesNotMatch(src, /arrive\s*===\s*true/);
 });

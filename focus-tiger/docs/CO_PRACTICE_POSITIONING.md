@@ -68,7 +68,7 @@ Focus Tiger 仍然是一只陪你练习专注和觉察的小老虎。可以再�
 | 作息提醒（Yin 判断熬夜并开口） | **未实现 / 不做** | 盘点 [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md)。深夜披毯与 0–6 免责不是睡眠诊断。晚间练习事实 = **T62** 暂不做 | 不得说 Yin 看出你熬夜 |
 | 共修契约面（一处看清开口与开关） | **未实现** | **T63** Brief **已点头**（2026-10-28）；[`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md)；**须 T64→T65 之后**写运行时 | 上线前不得暗示「已经有一张总控」 |
 | 问号简介写「不是禅师」+「一起练习」 | **未实现** | **T64** Brief [`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) 待点头 | 上线前不得假装简介已经这么写 |
-| 观察纸看见近七日顺 / 乱 / 倦 | **未实现** | **T65** Brief [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md) 待点头。只读 T52，不打分 | 上线前不得说「已有觉察曲线」 |
+| 观察纸看见近七日顺 / 乱 / 倦 | **已实现** | **T65** [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md)；只读 T52 结束打卡，不打分 | 仍禁止说「觉察曲线」或成长分数 |
 
 ---
 
