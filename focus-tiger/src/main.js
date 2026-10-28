@@ -86,6 +86,7 @@ import {
   WEEKLY_PRACTICE_HEATMAP_DAYS
 } from './ui/WeeklyPracticeHeatmap.js';
 import { ReminderPreferenceUI } from './ui/ReminderPreferenceUI.js';
+import { WorkEndPreferenceUI } from './ui/WorkEndPreferenceUI.js';
 import {
   createBootSceneAnimState,
   mountInAppReminderBanner
@@ -143,6 +144,10 @@ import {
   evaluateInAppReminderBanner,
   REMINDER_GENTLE_WAITING_MESSAGE_KEY
 } from './core/reminderPreference.js';
+import {
+  evaluateWorkEndInvite,
+  markWorkEndInviteShownForDate
+} from './core/workEndPreference.js';
 import { evaluateTodayDirectionOptionsRefreshBanner } from './core/todayDirectionOptionsBanner.js';
 import { FOCUS_SESSION_DEFAULT_MINUTES } from './utils/Constants.js';
 import { IncenseGreeting } from './effects/IncenseGreeting.js';
@@ -598,6 +603,7 @@ import { GroundExerciseChoiceUI } from './ui/GroundExerciseChoiceUI.js';
 import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
 import { RESET_ROUTES } from './ui/resetPracticeRoutes.js';
 import { AwakenInviteUI } from './ui/AwakenInviteUI.js';
+import { WorkEndInviteUI } from './ui/WorkEndInviteUI.js';
 import { AwakenCheckInUI } from './ui/AwakenCheckInUI.js';
 import {
   decideAwakenEndCheckIn,
@@ -998,6 +1004,7 @@ async function init() {
   let parrotMessengerPlayedThisPageSession = false;
   /** Assigned after Arrival / stores are ready. */
   let syncInAppReminderBanner = () => {};
+  let syncWorkEndInvite = () => {};
   /** Assigned after cold-start goal card wiring. */
   let openTodayDirectionManual = () => {};
   let openHomeSanctuaryNav = () => {};
@@ -1199,6 +1206,7 @@ async function init() {
   };
   /** Assigned after DailyCompletionStore is ready (soft notes need hasCompletedToday; cluster mount needs heatmap only). */
   let reminderPreferenceUI = null;
+  let workEndPreferenceUI = null;
   /** @type {LanguagePreferenceUI | null} */
   let languagePreferenceUI = null;
   /** @type {AlwaysOnTopPreferenceUI | null} */
@@ -1510,6 +1518,19 @@ async function init() {
       now: reminderNow
     }
   );
+  workEndPreferenceUI = new WorkEndPreferenceUI(
+    weeklyPracticeHeatmap.getClusterEl(),
+    {
+      onPreferenceChange: () => {
+        syncWorkEndInvite();
+      },
+      onClose: () => {
+        document.body.classList.remove('ft-narrow-stage-work-end');
+        document.body.classList.remove('ft-wide-stage-work-end');
+      },
+      now: reminderNow
+    }
+  );
   languagePreferenceUI = new LanguagePreferenceUI(
     document.body,
     withIdleOverlayOccupancySync({
@@ -1735,11 +1756,14 @@ async function init() {
   let transitionMomentSlotHeld = false;
   let recoverResetPracticeSlotHeld = false;
   let awakenInviteSlotHeld = false;
+  let workEndInviteSlotHeld = false;
   let awakenCheckInSlotHeld = false;
   /** @type {RecoverResetPracticeUI | null} */
   let recoverResetPracticeUI = null;
   /** @type {AwakenInviteUI | null} */
   let awakenInviteUI = null;
+  /** @type {WorkEndInviteUI | null} */
+  let workEndInviteUI = null;
   /** @type {AwakenCheckInUI | null} */
   let awakenCheckInUI = null;
   /** @type {string} */
@@ -1868,6 +1892,23 @@ async function init() {
   function releaseAwakenInviteOverlaySlot() {
     if (!awakenInviteSlotHeld) return;
     awakenInviteSlotHeld = false;
+  }
+
+  function requestWorkEndInviteOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.WORK_END_INVITE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({ workEndInviteOpen: false })
+    });
+    if (!decision.canShow) return false;
+    workEndInviteSlotHeld = true;
+    return true;
+  }
+
+  function releaseWorkEndInviteOverlaySlot() {
+    if (!workEndInviteSlotHeld) return;
+    workEndInviteSlotHeld = false;
   }
 
   function isAwakenInviteYieldBusy() {
@@ -2009,6 +2050,30 @@ async function init() {
         refocusSlotConsumed: true
       }),
     isVisible: () => awakenInviteUI?.isVisible() === true
+  };
+  workEndInviteUI = new WorkEndInviteUI(overlayRoot, {
+    requestSlot: requestWorkEndInviteOverlaySlot,
+    releaseSlot: releaseWorkEndInviteOverlaySlot,
+    now: reminderNow,
+    onAccept: () => {
+      settlePendingInviteOutcome(INVITE_OUTCOME_VALUES.ACCEPTED);
+      const config = getRitualConfig('work-transition');
+      if (config && isEntitled(config.accessFeatureKey)) {
+        openRitualFlowFromMenu(RITUAL_MENU_PROXIES['work-transition']);
+      }
+    },
+    onDismiss: (reason) => {
+      settlePendingInviteOutcome(
+        reason === 'timeout'
+          ? INVITE_OUTCOME_VALUES.IGNORED
+          : INVITE_OUTCOME_VALUES.DISMISSED
+      );
+    }
+  });
+  window.__workEndInvite = {
+    sync: () => syncWorkEndInvite(),
+    isVisible: () => workEndInviteUI?.isVisible?.() === true,
+    settings: workEndPreferenceUI
   };
   awakenCheckInUI = new AwakenCheckInUI(overlayRoot, {
     requestMidSlot: requestAwakenCheckInOverlaySlot,
@@ -3562,6 +3627,8 @@ async function init() {
       recoverResetPracticeOpen:
         recoverResetPracticeSlotHeld ||
         recoverResetPracticeUI?.isVisible?.() === true,
+      workEndInviteOpen:
+        workEndInviteSlotHeld || workEndInviteUI?.isVisible?.() === true,
       ...overrides
     });
   }
@@ -4913,6 +4980,31 @@ async function init() {
     }
     syncSoftUpdatePrompt();
     syncTodayDirectionOptionsBanner();
+    syncWorkEndInvite();
+  };
+
+  syncWorkEndInvite = () => {
+    workEndPreferenceUI?.refresh?.();
+    if (!workEndInviteUI) return;
+    const candidate = evaluateWorkEndInvite({
+      now: reminderNow,
+      focusing: stateManager.state === STATES.FOCUSING,
+      sessionBusy: deriveReminderBusySessionTarget(buildLiveOverlaySnapshot()),
+      inviteVisible: workEndInviteUI.isVisible(),
+      adaptationPaused: isInviteKindAdaptationPaused(
+        INVITE_OUTCOME_KINDS.WORK_END
+      )
+    });
+    if (!candidate.shouldShow) {
+      if (workEndInviteUI.isVisible()) {
+        workEndInviteUI.hide({ immediate: true });
+      }
+      return;
+    }
+    const shown = workEndInviteUI.tryShow();
+    if (!shown) return;
+    trackShownInviteOutcomeKind(INVITE_OUTCOME_KINDS.WORK_END);
+    markWorkEndInviteShownForDate(getLocalDateKey(reminderNow()));
   };
 
   syncTodayDirectionOptionsBanner = () => {
@@ -5084,6 +5176,7 @@ async function init() {
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
     awakenInviteUI?.hide({ immediate: true });
+    workEndInviteUI?.hide({ immediate: true });
     awakenCheckInUI?.hide({ immediate: true });
     awakenOrchestrator.stopSession();
     if (stopAmbient) {
@@ -6562,6 +6655,9 @@ async function init() {
       eligibleMinutes: lotusPondStore.getScoreEligibleLifetimeMinutes(),
       stageFloor: readGrowthJourneyStageFloor(globalThis.localStorage)
     });
+    workEndPreferenceUI?.setVisible?.(
+      chromeIdleHeatmapVisible
+    );
     reminderPreferenceUI.setVisible(
       stateManager.state === STATES.IDLE && !microOpen
     );

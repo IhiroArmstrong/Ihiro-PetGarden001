@@ -253,6 +253,22 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     }
   }),
   surface({
+    file: 'WorkEndInviteUI.js',
+    slotRequest: requestSlot(
+      ['requestSlot', 'releaseSlot'],
+      ['AWAKEN_INVITE', 'requestOverlaySlot']
+    ),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'local-cooldown-only' }),
+      success: Object.freeze({ mode: 'na', reason: 'local-cooldown-only' }),
+      fail: Object.freeze({ mode: 'na', reason: 'local-cooldown-only' })
+    }),
+    e2eOverlap: GAP,
+    trackerCoverage: GAP
+  }),
+  surface({
     file: 'AwakenCheckInUI.js',
     slotRequest: requestSlot(
       ['requestMidSlot', 'releaseMidSlot'],
@@ -355,6 +371,24 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       path: 'e2e/in-app-reminder.spec.js',
       tokens: Object.freeze(['ft-onboarding-hint-bubble', 'reminder-preference-saved'])
     },
+    trackerCoverage: GAP
+  }),
+  surface({
+    file: 'WorkEndPreferenceUI.js',
+    occupancy: false,
+    slotRequest: Object.freeze({
+      mode: 'na',
+      reason: 'settings-panel-not-arbitrated'
+    }),
+    zIndexFloor: bodyMin(),
+    mount: 'body',
+    mutationFeedback: mutationStates({
+      success: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze(['work-end-preference-saved'])
+      })
+    }),
+    e2eOverlap: GAP,
     trackerCoverage: GAP
   }),
   surface({

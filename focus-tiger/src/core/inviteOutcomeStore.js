@@ -17,7 +17,8 @@ export const INVITE_OUTCOME_MAX_ENTRIES = 240;
 export const INVITE_OUTCOME_KINDS = Object.freeze({
   AWAY: 'away',
   EXTEND: 'extend',
-  LONG_SIT: 'long-sit'
+  LONG_SIT: 'long-sit',
+  WORK_END: 'work-end'
 });
 
 export const INVITE_OUTCOME_VALUES = Object.freeze({
@@ -54,7 +55,8 @@ export function normalizeInviteOutcomeRows(rows) {
       typeof row === 'object' &&
       (row.kind === INVITE_OUTCOME_KINDS.AWAY ||
         row.kind === INVITE_OUTCOME_KINDS.EXTEND ||
-        row.kind === INVITE_OUTCOME_KINDS.LONG_SIT) &&
+        row.kind === INVITE_OUTCOME_KINDS.LONG_SIT ||
+        row.kind === INVITE_OUTCOME_KINDS.WORK_END) &&
       (row.outcome === INVITE_OUTCOME_VALUES.ACCEPTED ||
         row.outcome === INVITE_OUTCOME_VALUES.DISMISSED ||
         row.outcome === INVITE_OUTCOME_VALUES.IGNORED) &&
@@ -81,7 +83,8 @@ export function recordInviteOutcome(kind, outcome, ts, key = INVITE_OUTCOME_STOR
   if (
     kind !== INVITE_OUTCOME_KINDS.AWAY &&
     kind !== INVITE_OUTCOME_KINDS.EXTEND &&
-    kind !== INVITE_OUTCOME_KINDS.LONG_SIT
+    kind !== INVITE_OUTCOME_KINDS.LONG_SIT &&
+    kind !== INVITE_OUTCOME_KINDS.WORK_END
   ) {
     return false;
   }

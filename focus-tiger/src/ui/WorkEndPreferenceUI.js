@@ -1,0 +1,581 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
+ */
+
+/**
+ * 收工时间设置 · 挂在 Idle 热力图簇旁的小型时钟图标。
+ *
+ * 偏好形状：`{ hour, minute }` 或 `null`（见 `workEndPreference.js`）；
+ * **无 `enabled` 字段**——勾选开→写入 `{ hour, minute }`；
+ * 取消勾选→`setWorkEndPreference(null)` 清除。
+ *
+ * 面板文案：常显「每日时分」说明；情境软提示（已过时分 / 今日已练）可保存、可改时。
+ */
+
+import { t, onLocaleChange } from '../locales/i18n.js';
+import {
+  getWorkEndPreference,
+  setWorkEndPreference,
+  WORK_END_DAILY_BLURB_KEY,
+  WORK_END_ENABLE_LABEL_KEY,
+  WORK_END_PANEL_TITLE_KEY
+} from '../core/workEndPreference.js';
+import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import { Z } from './zIndexLayers.js';
+
+const CLOCK_ICON = `<svg class="work-end-pref__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm.75 3.5h-1.5v5.25l4.25 2.55.75-1.23-3.5-2.1V7.5z"/></svg>`;
+
+const DEFAULT_TIME = { hour: 22, minute: 0 };
+const FADE_MS = 260;
+const SAVED_FLASH_MS = 2200;
+const STYLE_ID = 'work-end-preference-styles';
+
+/**
+ * @param {{ hour: number, minute: number }} pref
+ * @returns {string}
+ */
+function toTimeInputValue(pref) {
+  const h = String(pref.hour).padStart(2, '0');
+  const m = String(pref.minute).padStart(2, '0');
+  return `${h}:${m}`;
+}
+
+/**
+ * @param {string} value
+ * @returns {{ hour: number, minute: number } | null}
+ */
+function parseTimeInputValue(value) {
+  const match = /^(\d{1,2}):(\d{2})(?::\d{2})?$/.exec(String(value || '').trim());
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (
+    !Number.isInteger(hour) ||
+    !Number.isInteger(minute) ||
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return null;
+  }
+  return { hour, minute };
+}
+
+export class WorkEndPreferenceUI {
+  /**
+   * @param {HTMLElement} mountRoot 通常传 `document.body`
+   * @param {object} [handlers]
+   * @param {() => void} [handlers.onPreferenceChange]
+   * @param {() => void} [handlers.onClose] 面板收起（含点外侧）
+   * @param {() => void} [handlers.onOpen] 面板展开（含首次发现 Hint 记已读）
+   * @param {() => boolean} [handlers.hasCompletedToday]
+   * @param {() => Date} [handlers.now]
+   */
+  constructor(mountRoot, handlers = {}) {
+    this.handlers = handlers;
+    this._expanded = false;
+    this._visible = true;
+    this._syncingTimeValue = false;
+
+    this.root = document.createElement('div');
+    this.root.id = 'work-end-preference';
+    this.root.className = 'work-end-pref work-end-pref--stacked';
+    this.root.hidden = false;
+
+    this.toggleBtn = document.createElement('button');
+    this.toggleBtn.type = 'button';
+    this.toggleBtn.id = 'work-end-preference-toggle';
+    this.toggleBtn.className = 'work-end-pref__toggle';
+    this.toggleBtn.innerHTML = CLOCK_ICON;
+    this.toggleBtn.setAttribute('aria-expanded', 'false');
+    this.toggleBtn.setAttribute('aria-controls', 'work-end-preference-panel');
+    this.toggleBtn.addEventListener('click', () => {
+      this._expanded = !this._expanded;
+      this._render();
+      if (this._expanded) this.handlers.onOpen?.();
+      else this.handlers.onClose?.();
+    });
+
+    this.panel = document.createElement('div');
+    this.panel.className = 'work-end-pref__panel';
+    this.panel.id = 'work-end-preference-panel';
+    this.panel.hidden = true;
+    this.panel.setAttribute('role', 'dialog');
+    this.panel.setAttribute('aria-labelledby', 'work-end-preference-title');
+
+    this.titleEl = document.createElement('p');
+    this.titleEl.id = 'work-end-preference-title';
+    this.titleEl.className = 'work-end-pref__title';
+
+    this.enableRow = document.createElement('label');
+    this.enableRow.className = 'work-end-pref__enable';
+    this.enableInput = document.createElement('input');
+    this.enableInput.type = 'checkbox';
+    this.enableInput.id = 'work-end-preference-enabled';
+    this.enableLabelText = document.createElement('span');
+    this.enableRow.append(this.enableInput, this.enableLabelText);
+    this.enableInput.addEventListener('change', () => this._onEnableChange());
+
+    this.timeRow = document.createElement('div');
+    this.timeRow.className = 'work-end-pref__time';
+    this.timeLabelText = document.createElement('span');
+    this.timeLabelText.className = 'work-end-pref__time-label';
+
+    this.timeControls = document.createElement('div');
+    this.timeControls.className = 'work-end-pref__time-controls';
+
+    this.timeInput = document.createElement('input');
+    this.timeInput.type = 'time';
+    this.timeInput.id = 'work-end-preference-time';
+    this.timeInput.step = '60';
+    // Native picker commit still saves; mid-edit `input` no longer auto-writes
+    // so → / Enter remain the clear "saved" affordance.
+    this.timeInput.addEventListener('change', () => {
+      if (this._syncingTimeValue) return;
+      this._commitTime({ flash: false });
+    });
+    this.timeInput.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      this._commitTime({ flash: true });
+    });
+
+    this.confirmBtn = document.createElement('button');
+    this.confirmBtn.type = 'button';
+    this.confirmBtn.id = 'work-end-preference-confirm';
+    this.confirmBtn.className = 'work-end-pref__confirm';
+    this.confirmBtn.textContent = '→';
+    this.confirmBtn.addEventListener('click', () => {
+      this._commitTime({ flash: true });
+    });
+
+    this.timeControls.append(this.timeInput, this.confirmBtn);
+
+    this.confirmHintEl = document.createElement('p');
+    this.confirmHintEl.id = 'work-end-preference-confirm-hint';
+    this.confirmHintEl.className = 'work-end-pref__confirm-hint';
+
+    this.savedBriefEl = document.createElement('p');
+    this.savedBriefEl.id = 'work-end-preference-saved';
+    this.savedBriefEl.className = 'work-end-pref__saved';
+    this.savedBriefEl.setAttribute('role', 'status');
+    this.savedBriefEl.setAttribute('aria-live', 'polite');
+    this.savedBriefEl.hidden = true;
+
+    this.timeRow.append(
+      this.timeLabelText,
+      this.timeControls,
+      this.confirmHintEl,
+      this.savedBriefEl
+    );
+    this._savedFlashUntil = 0;
+
+    this.blurbEl = document.createElement('p');
+    this.blurbEl.id = 'work-end-preference-daily-blurb';
+    this.blurbEl.className = 'work-end-pref__blurb';
+
+    this.statusEl = document.createElement('p');
+    this.statusEl.id = 'work-end-preference-status';
+    this.statusEl.className =
+      'work-end-pref__status work-end-pref__status--callout';
+    this.statusEl.setAttribute('role', 'status');
+    this.statusEl.hidden = true;
+
+    this.panel.append(
+      this.titleEl,
+      this.enableRow,
+      this.timeRow,
+      this.blurbEl,
+      this.statusEl
+    );
+    // Toggle stays in the heatmap cluster; panel mounts on body so it is not
+    // trapped in the cluster's backdrop-filter containing block (wide park
+    // used to open the sheet off to the left, looking like a dead click).
+    this.root.append(this.toggleBtn);
+    mountRoot.appendChild(this.root);
+    const doc = mountRoot.ownerDocument || document;
+    (doc.body || mountRoot).appendChild(this.panel);
+
+    this._onDocPointer = (event) => {
+      if (!this._expanded) return;
+      const target = /** @type {Node} */ (event.target);
+      if (this.root.contains(target) || this.panel.contains(target)) return;
+      if (shouldIgnoreOutsideDismissTarget(event.target)) return;
+      this._expanded = false;
+      this._render();
+      this.handlers.onClose?.();
+    };
+    document.addEventListener('pointerdown', this._onDocPointer, true);
+
+    this._unsubLocale = onLocaleChange(() => this._render());
+    this._injectStyles();
+    this._render();
+  }
+
+  isPanelOpen() {
+    return this._expanded && !this.panel.hidden;
+  }
+
+  /** Open the preference panel (⋯ / drawer proxy). */
+  openPanel() {
+    if (!this._visible) this.setVisible(true);
+    const wasOpen = this._expanded;
+    this._expanded = true;
+    this._render();
+    if (!wasOpen) this.handlers.onOpen?.();
+  }
+
+  setVisible(visible) {
+    const next = visible === true;
+    if (this._visible === next) return;
+    this._visible = next;
+    if (!next) this._expanded = false;
+    this._render();
+  }
+
+  /** Re-evaluate soft notes after practice / clock override changes. */
+  refresh() {
+    this._render();
+  }
+
+  closePanel() {
+    if (!this._expanded) return;
+    this._expanded = false;
+    this._render();
+    this.handlers.onClose?.();
+  }
+
+  dispose() {
+    document.removeEventListener('pointerdown', this._onDocPointer, true);
+    window.clearTimeout(this._savedFlashTimer);
+    this._unsubLocale();
+    this.panel.remove();
+    this.root.remove();
+  }
+
+  _onEnableChange() {
+    if (this.enableInput.checked) {
+      const parsed =
+        parseTimeInputValue(this.timeInput.value) || DEFAULT_TIME;
+      setWorkEndPreference(parsed);
+      this._syncTimeInputValue(toTimeInputValue(parsed));
+    } else {
+      setWorkEndPreference(null);
+    }
+    this._render();
+    this._notifyPreferenceChange();
+  }
+
+  /**
+   * Programmatic time writes must not re-enter `change` and steal confirm flash.
+   * @param {string} value
+   */
+  _syncTimeInputValue(value) {
+    this._syncingTimeValue = true;
+    this.timeInput.value = value;
+    this._syncingTimeValue = false;
+  }
+
+  _notifyPreferenceChange() {
+    const notify = this.handlers.onPreferenceChange;
+    if (!notify) return;
+    window.requestAnimationFrame(() => notify());
+  }
+
+  _commitTime({ flash }) {
+    if (!this.enableInput.checked) return;
+    const parsed = parseTimeInputValue(this.timeInput.value);
+    if (!parsed) return;
+    setWorkEndPreference(parsed);
+    if (flash) {
+      this._savedFlashUntil = Date.now() + SAVED_FLASH_MS;
+    }
+    this._syncTimeInputValue(toTimeInputValue(parsed));
+    this._render();
+    this._notifyPreferenceChange();
+  }
+
+  _onTimeChange() {
+    this._commitTime({ flash: false });
+  }
+
+  _render() {
+    const pref = getWorkEndPreference();
+    const enabled = Boolean(pref);
+    const displayPref = pref || DEFAULT_TIME;
+
+    this.titleEl.textContent = t(WORK_END_PANEL_TITLE_KEY);
+    this.enableLabelText.textContent = t(WORK_END_ENABLE_LABEL_KEY);
+    this.timeLabelText.textContent = t('WORK_END_TIME_LABEL');
+    this.confirmHintEl.textContent = t('WORK_END_CONFIRM_HINT');
+    this.blurbEl.textContent = t(WORK_END_DAILY_BLURB_KEY);
+    this.toggleBtn.setAttribute('aria-label', t('WORK_END_SETTINGS_ARIA'));
+    this.toggleBtn.setAttribute(
+      'aria-expanded',
+      this._expanded ? 'true' : 'false'
+    );
+    this.toggleBtn.classList.toggle('is-armed', enabled);
+
+    this.enableInput.checked = enabled;
+    this._syncTimeInputValue(toTimeInputValue(displayPref));
+    // 今日已练：时间仍可改（留给以后的日子）；仅「未开启」时禁用
+    this.timeInput.disabled = !enabled;
+    this.confirmBtn.disabled = !enabled;
+    this.timeRow.classList.toggle('is-disabled', !enabled);
+    this.confirmHintEl.hidden = !enabled;
+
+    const showSaved = Date.now() < this._savedFlashUntil;
+    const savedLabel = showSaved ? t('WORK_END_SAVED_BRIEF') : '';
+    this.savedBriefEl.hidden = !showSaved;
+    this.savedBriefEl.textContent = savedLabel;
+    this.confirmBtn.classList.toggle('is-saved', showSaved);
+    this.confirmBtn.textContent = showSaved ? '✓' : '→';
+    this.confirmBtn.setAttribute(
+      'aria-label',
+      showSaved ? savedLabel : t('WORK_END_CONFIRM_ARIA')
+    );
+    if (showSaved) {
+      const remain = this._savedFlashUntil - Date.now();
+      window.clearTimeout(this._savedFlashTimer);
+      this._savedFlashTimer = window.setTimeout(() => this._render(), remain + 20);
+    }
+
+    this.statusEl.hidden = true;
+    this.statusEl.textContent = '';
+    delete this.statusEl.dataset.note;
+
+    this.root.hidden = !this._visible;
+    const wasPanelHidden = this.panel.hidden;
+    this.panel.hidden = !this._visible || !this._expanded;
+    if (this._expanded && wasPanelHidden) {
+      this.panel.style.opacity = '0';
+      this.panel.style.transform = 'translateX(-50%) translateY(-8px)';
+      this.panel.getBoundingClientRect();
+      this.panel.style.opacity = '1';
+      this.panel.style.transform = 'translateX(-50%) translateY(0)';
+    }
+  }
+
+  _injectStyles() {
+    let style = document.getElementById(STYLE_ID);
+    if (!style) {
+      style = document.createElement('style');
+      style.id = STYLE_ID;
+      document.head.appendChild(style);
+    }
+    style.textContent = `
+      .work-end-pref {
+        position: relative;
+      }
+      .work-end-pref--stacked {
+        margin-left: 6px;
+        z-index: ${Z.LOCAL};
+        flex: 0 0 auto;
+        pointer-events: auto;
+        font-family: 'Noto Sans SC', system-ui, sans-serif;
+      }
+      .work-end-pref__toggle {
+        pointer-events: auto;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        border-radius: 50%;
+        background: rgba(255, 252, 245, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: rgba(74, 58, 40, 0.7);
+        cursor: pointer;
+        box-shadow: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 120ms ease, color 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+        opacity: 0.85;
+      }
+      .work-end-pref__toggle:hover {
+        color: rgba(72, 54, 38, 0.92);
+        opacity: 1;
+        box-shadow: 0 2px 10px rgba(44, 31, 20, 0.08);
+      }
+      .work-end-pref__toggle:active {
+        transform: scale(0.96);
+      }
+      .work-end-pref__toggle.is-armed {
+        color: rgba(139, 90, 46, 0.95);
+        opacity: 1;
+        box-shadow: 0 0 0 2px rgba(196, 122, 78, 0.22);
+      }
+      .work-end-pref__icon-svg {
+        width: 22px;
+        height: 22px;
+        display: block;
+      }
+      .work-end-pref__panel {
+        position: fixed;
+        left: 50%;
+        right: auto;
+        bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
+        transform: translateX(-50%);
+        z-index: ${Z.REMINDER_PANEL};
+        width: min(260px, calc(100vw - 36px));
+        padding: 16px 16px 14px;
+        border-radius: 18px;
+        background: rgba(255, 252, 245, 0.62);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(139, 115, 85, 0.14);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
+        color: #2c1f14;
+        transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
+        pointer-events: auto;
+      }
+      .work-end-pref__panel[hidden] {
+        display: none !important;
+      }
+      .work-end-pref__title {
+        margin: 0 0 12px;
+        font-size: 15px;
+        letter-spacing: 0.02em;
+        color: #4a3a28;
+        line-height: 1.5;
+        font-weight: 560;
+      }
+      .work-end-pref__enable {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 10px;
+        font-size: 13px;
+        color: #2c1f14;
+        cursor: pointer;
+      }
+      .work-end-pref__enable input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--color-accent, #b5623a);
+      }
+      .work-end-pref__time {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 12px;
+        color: rgba(44, 31, 20, 0.7);
+      }
+      .work-end-pref__time.is-disabled {
+        opacity: 0.45;
+      }
+      .work-end-pref__time-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .work-end-pref__time input[type='time'] {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.3);
+        background: rgba(255, 255, 255, 0.75);
+        color: #2c1f14;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+      .work-end-pref__confirm {
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.3);
+        background: rgba(255, 252, 245, 0.78);
+        color: #4a3a28;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+      }
+      .work-end-pref__confirm:active:not(:disabled) {
+        transform: scale(0.96);
+      }
+      .work-end-pref__confirm.is-saved {
+        background: rgba(130, 170, 115, 0.28);
+        border-color: rgba(95, 130, 85, 0.55);
+        color: rgba(55, 95, 48, 0.96);
+        box-shadow:
+          0 0 0 2px rgba(130, 170, 115, 0.22),
+          0 1px 0 rgba(255, 255, 255, 0.7) inset;
+      }
+      .work-end-pref__confirm-hint {
+        margin: 0;
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: rgba(44, 31, 20, 0.58);
+      }
+      .work-end-pref__confirm-hint[hidden] {
+        display: none !important;
+      }
+      .work-end-pref__saved {
+        margin: 0;
+        padding: 7px 10px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 560;
+        line-height: 1.35;
+        color: rgba(55, 95, 48, 0.96);
+        background: rgba(130, 170, 115, 0.16);
+        border: 1px solid rgba(95, 130, 85, 0.32);
+      }
+      .work-end-pref__saved[hidden] {
+        display: none !important;
+      }
+      .work-end-pref__blurb {
+        margin: 12px 0 0;
+        font-size: 12px;
+        line-height: 1.45;
+        font-style: italic;
+        color: rgba(44, 31, 20, 0.62);
+      }
+      /* Soft status callout: must read distinct from italic daily_blurb
+         (B/C notes were easy to miss as plain gray body text). */
+      .work-end-pref__status--callout {
+        margin: 10px 0 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        font-style: normal;
+        font-weight: 560;
+        letter-spacing: 0.01em;
+        color: #3a2a1c;
+        background: rgba(196, 154, 92, 0.16);
+        border: 1px solid rgba(139, 115, 85, 0.32);
+        border-left: 3px solid rgba(180, 118, 62, 0.72);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+      }
+      .work-end-pref__status--callout[data-note='reminder.past_time_note'] {
+        background: rgba(210, 150, 72, 0.15);
+        border-color: rgba(170, 120, 55, 0.34);
+        border-left-color: rgba(190, 120, 48, 0.78);
+      }
+      .work-end-pref__status--callout[data-note='reminder.practiced_today_note'] {
+        background: rgba(130, 150, 110, 0.18);
+        border-color: rgba(100, 125, 90, 0.34);
+        border-left-color: rgba(95, 130, 85, 0.78);
+      }
+      .work-end-pref__status[hidden] {
+        display: none !important;
+      }
+      @media (max-width: 420px) {
+        .work-end-pref {
+          order: 2;
+        }
+        .work-end-pref__panel {
+          width: min(260px, calc(100vw - 32px));
+        }
+      }
+    `;
+  }
+}

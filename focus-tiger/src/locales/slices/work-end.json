@@ -1,0 +1,41 @@
+{
+  "en": {
+    "WORK_END_PANEL_TITLE": "Wrap-up time",
+    "WORK_END_ENABLE_LABEL": "Remind me at my wrap-up time",
+    "WORK_END_DAILY_BLURB": "A gentle check-in at the time you choose — not a sleep coach.",
+    "WORK_END_TIME_LABEL": "Wrap-up time",
+    "WORK_END_CONFIRM_HINT": "Press → to save",
+    "WORK_END_SETTINGS_ARIA": "Wrap-up time settings",
+    "WORK_END_SAVED_BRIEF": "Saved",
+    "WORK_END_CONFIRM_ARIA": "Save wrap-up time",
+    "WORK_END_INVITE_PROMPT": "You said you'd wrap up by {{target}}. It's {{now}}. A short landing?",
+    "WORK_END_INVITE_YES": "Yes",
+    "WORK_END_INVITE_NOT_NOW": "Not now"
+  },
+  "zh": {
+    "WORK_END_PANEL_TITLE": "收工时间",
+    "WORK_END_ENABLE_LABEL": "到我设的收工时间时提醒我",
+    "WORK_END_DAILY_BLURB": "只对照你自己说的时间，轻轻问一句——不是睡眠建议。",
+    "WORK_END_TIME_LABEL": "收工时间",
+    "WORK_END_CONFIRM_HINT": "按 → 保存",
+    "WORK_END_SETTINGS_ARIA": "收工时间设置",
+    "WORK_END_SAVED_BRIEF": "已保存",
+    "WORK_END_CONFIRM_ARIA": "保存收工时间",
+    "WORK_END_INVITE_PROMPT": "你说想在 {{target}} 前收工。现在 {{now}}。要不要一小段收尾？",
+    "WORK_END_INVITE_YES": "好",
+    "WORK_END_INVITE_NOT_NOW": "先不用"
+  },
+  "ja": {
+    "WORK_END_PANEL_TITLE": "切り上げの時間",
+    "WORK_END_ENABLE_LABEL": "決めた時間にそっと知らせる",
+    "WORK_END_DAILY_BLURB": "自分で決めた時間の確認だけ。睡眠のアドバイスではありません。",
+    "WORK_END_TIME_LABEL": "切り上げの時間",
+    "WORK_END_CONFIRM_HINT": "→ で保存",
+    "WORK_END_SETTINGS_ARIA": "切り上げ時間の設定",
+    "WORK_END_SAVED_BRIEF": "保存しました",
+    "WORK_END_CONFIRM_ARIA": "切り上げ時間を保存",
+    "WORK_END_INVITE_PROMPT": "{{target}} までに切り上げる、と決めていました。今は {{now}}。少し整えますか？",
+    "WORK_END_INVITE_YES": "はい",
+    "WORK_END_INVITE_NOT_NOW": "今はしない"
+  }
+}

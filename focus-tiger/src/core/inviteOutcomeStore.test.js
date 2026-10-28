@@ -81,6 +81,22 @@ describe('inviteOutcomeStore', () => {
     );
   });
 
+
+  it('records work-end invite kind (T61)', () => {
+    withMockLocalStorage(() => {
+      assert.equal(
+        recordInviteOutcome(
+          INVITE_OUTCOME_KINDS.WORK_END,
+          INVITE_OUTCOME_VALUES.DISMISSED,
+          1000
+        ),
+        true
+      );
+      const rows = readInviteOutcomeRecords();
+      assert.equal(rows.at(-1).kind, INVITE_OUTCOME_KINDS.WORK_END);
+    });
+  });
+
   it('records accepted, dismissed, and ignored without copy fields', () => {
     withMockLocalStorage(() => {
       const ts = Date.UTC(2026, 9, 28, 8, 0, 0);
