@@ -1,6 +1,6 @@
 # Task Brief · T53 输入节奏（默认关 · 只定时机）
 
-> **状态（2026-10-26）**：Brief 已点头 2026-10-25；实现旁支。依赖 T50 口径 + **T51** 编排接口（把「节奏偏乱」当成邀请时机，不产出用户可见诊断）。  
+> **状态（2026-10-28）**：Brief 已点头 2026-10-25；**已合 develop #1437**（`feat(t53): default-off Mac input rhythm for invite timing`）。依赖 T50 口径 + **T51** 编排接口（把「节奏偏乱」当成邀请时机，不产出用户可见诊断）。**勿再开同内容实现旁支。**  
 > **类**：B 类（设置项 + 可选系统权限）。  
 > **平台**：仅 **Mac Electron**。Web / 窄屏 / 无壳 = 本刀不采集，行为保持 T51。
 
@@ -30,14 +30,14 @@
 
 ## 实现范围
 
-- [ ] 设置玻璃卡：开关默认关；打开才申请权限。  
-- [ ] Swift Helper：`CGEventTap` listenOnly；stdout 每秒 JSON 计数；无字符字段。  
-- [ ] SensorBridge：拉起/监护/授权后只重启 Helper。  
-- [ ] FeatureEngine：burstiness / backspace_ratio 等 **只进编排**，不进 UI 数字大字。透明面板可用「过去 5 分钟：退格较少 / 切换 2 次」等观察式短句，**禁止** 0–100 分。  
-- [ ] 分级：L0 无权限 = T51；L1 有权限 = 微调时机。  
-- [ ] 隐私：`PRIVACY_NOTICE.md` 三语同步（本刀必改，T50 不提前承诺未上线采集）。  
-- [ ] 单测：协议无内容字段；开关关 = 零事件；Flow 不因节奏邀请。  
-- [ ] 查库验收：特征表无 keycode/title。
+- [x] 设置玻璃卡：开关默认关；打开才申请权限。（#1437）  
+- [x] Swift Helper：`CGEventTap` listenOnly；stdout 每秒 JSON 计数；无字符字段。（#1437）  
+- [x] SensorBridge：拉起/监护/授权后只重启 Helper。（#1437）  
+- [x] FeatureEngine：burstiness / backspace_ratio 等 **只进编排**，不进 UI 数字大字。透明面板可用「过去 5 分钟：退格较少 / 切换 2 次」等观察式短句，**禁止** 0–100 分。（#1437）  
+- [x] 分级：L0 无权限 = T51；L1 有权限 = 微调时机。（#1437）  
+- [x] 隐私：`PRIVACY_NOTICE.md` 三语同步（本刀必改，T50 不提前承诺未上线采集）。（#1437）  
+- [x] 单测：协议无内容字段；开关关 = 零事件；Flow 不因节奏邀请。（#1437）  
+- [x] 查库验收：特征表无 keycode/title。（#1437）
 
 ## 变体矩阵
 
