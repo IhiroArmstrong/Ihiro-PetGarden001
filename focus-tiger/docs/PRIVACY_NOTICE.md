@@ -5,7 +5,7 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-10-26
+最后更新 / Last updated / 最終更新日: 2026-10-28
 
 ---
 
@@ -26,6 +26,8 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 **安静同坐 / 灯火（默认开，可在 Privacy 关闭）**：你坐下时，本应用只向自有服务器发送一个**随机会话 id**，用于维持诚实的同坐人数。不含姓名、邮箱、练习日志或聊天。关闭后既不出现在计数里，也看不见别人的灯火。
 
 **可选的练习效果计数（研究，默认关）**：只有你在 Privacy 打开开关后，我们才会收到计时专注的去身份计数（例如有没有坐完、后来有没有回来）和一个重装即作废的本机研究代号。没有倾诉原文、邮箱或付款信息。随时可关。此开关与「支持阿寅」流程分享、云端个人化、练习备份各自独立。
+
+**可选的晚间练习结束时刻（练习观察纸，默认关）**：只有你在成长旅程的练习观察纸里开启后，本机才会按日记录计时专注在本地凌晨 1 点到 6 点之间**结束**的日期和时刻，用于观察纸上一句中性事实。**不是**睡眠监测、**不上传**、**不进**研究分享、不进练习云备份。可随时关闭（关闭会清空已记录）或一键清除记录。
 
 ### 3. 本地导出 / 导入
 
@@ -73,6 +75,8 @@ Unless you use local export/import (Section 3), your habit check-ins, practice r
 
 **Optional practice-effect counts (research, off by default):** only if you turn this on in Privacy do we receive de-identified counts about timed sits (for example whether a sit finished, and later whether you returned) plus a random research id that resets if you reinstall. No chat text, email, or payment details. You can turn it off anytime. This switch is independent of Support-flow sharing, cloud personalization, and practice backup.
 
+**Optional late-evening end times (Practice Paper, off by default):** only if you turn this on in the Practice Paper section of Growth Journey does this device store, per calendar day, the local date and end time of timed sits that finish between 1:00 and 6:00 a.m., for one neutral line on that paper. This is **not** sleep monitoring, **not uploaded**, **not** included in research sharing, and **not** in practice cloud backup. You can turn it off anytime (turning off clears stored rows) or clear records in one tap.
+
 ### 3. Local Export / Import
 
 This app provides **local export/import** on the Privacy sheet. You can:
@@ -118,6 +122,8 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 **静かな同席 / 灯（初期オン、Privacy でオフ可）**：座っているあいだ、正直な人数のために**ランダムなセッション id** だけを自社サーバーへ送ります。名前・メール・練習ログ・チャットは含みません。オフにすると数えられず、他の灯も見えません。
 
 **任意の練習効果カウント（研究、初期オフ）**：Privacy でオンにしたときだけ、時間を決めた坐の回数など（終えたか、あとで戻ったか）と、再インストールで消える研究用の番号が届きます。会話の原文、メール、支払い情報は送りません。いつでもオフにできます。このスイッチは「阿寅を支える」導線共有・クラウド個人化・練習バックアップとは別です。
+
+**任意の夜遅い終了時刻（練習の観察紙、初期オフ）**：成長ジャーニー内の観察紙でオンにした場合のみ、午前 1 時から 6 時までに終わったタイマー座りについて、日付と終了時刻を端末内に記録し、紙に neutral な一行を出します。睡眠モニタリングではなく、アップロードも研究共有も練習クラウドバックアップにも含みません。オフにすると記録は消え、いつでも記録だけを消せます。
 
 ### 3. ローカルでのエクスポート / インポート
 

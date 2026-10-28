@@ -17,7 +17,12 @@
     "PRACTICE_PAPER_CARD_LAST": "Last time, {minutes} minutes.",
     "PRACTICE_PAPER_HIDE": "Hide this paper for now.",
     "PRACTICE_PAPER_SHOW": "Show Practice Paper",
-    "PRACTICE_PAPER_DISCLAIMER": "This is for self-observation, not a test or diagnosis."
+    "PRACTICE_PAPER_DISCLAIMER": "This is for self-observation, not a test or diagnosis.",
+    "PRACTICE_PAPER_EVENING_FACT": "In the last 7 days, {n} evenings included practice that ended late.",
+    "PRACTICE_PAPER_EVENING_DISCLOSURE": "If you turn this on, this device keeps only the local date and end time of timed sits that finish between 1:00 and 6:00 a.m. No sleep score, no upload, not shared for research.",
+    "PRACTICE_PAPER_EVENING_CONSENT_LABEL": "Record late-evening end times on this device",
+    "PRACTICE_PAPER_EVENING_CONFIRM": "Turn on",
+    "PRACTICE_PAPER_EVENING_CLEAR": "Clear recorded evenings"
   },
   "zh": {
     "PRACTICE_PAPER_TITLE": "练习观察纸",
@@ -37,7 +42,12 @@
     "PRACTICE_PAPER_CARD_LAST": "最近一次 {minutes} 分钟。",
     "PRACTICE_PAPER_HIDE": "先不看这张纸。",
     "PRACTICE_PAPER_SHOW": "显示练习观察纸",
-    "PRACTICE_PAPER_DISCLAIMER": "这是自我观察，不是测验或诊断。"
+    "PRACTICE_PAPER_DISCLAIMER": "这是自我观察，不是测验或诊断。",
+    "PRACTICE_PAPER_EVENING_FACT": "最近 7 天里，有 {n} 个晚上练到了很晚。",
+    "PRACTICE_PAPER_EVENING_DISCLOSURE": "打开后，本机只记录计时专注在本地凌晨 1 点到 6 点之间结束时的日期和时刻。不是睡眠分数，不上传，也不用于研究分享。",
+    "PRACTICE_PAPER_EVENING_CONSENT_LABEL": "在本机记录晚间结束时刻",
+    "PRACTICE_PAPER_EVENING_CONFIRM": "开启",
+    "PRACTICE_PAPER_EVENING_CLEAR": "清除已记录的晚间"
   },
   "ja": {
     "PRACTICE_PAPER_TITLE": "練習の観察紙",
@@ -57,6 +67,11 @@
     "PRACTICE_PAPER_CARD_LAST": "この前は {minutes} 分でした。",
     "PRACTICE_PAPER_HIDE": "今はこの紙を見ない。",
     "PRACTICE_PAPER_SHOW": "練習の観察紙を表示",
-    "PRACTICE_PAPER_DISCLAIMER": "これは自己観察のためであり、検査や診断ではありません。"
+    "PRACTICE_PAPER_DISCLAIMER": "これは自己観察のためであり、検査や診断ではありません。",
+    "PRACTICE_PAPER_EVENING_FACT": "この 7 日間、{n} 日の夜に遅くまで練習が続いていました。",
+    "PRACTICE_PAPER_EVENING_DISCLOSURE": "オンにすると、この端末は午前 1 時から 6 時までに終わったタイマー座りの日付と終了時刻だけを記録します。睡眠スコアではなく、アップロードも研究共有もしません。",
+    "PRACTICE_PAPER_EVENING_CONSENT_LABEL": "この端末で夜遅い終了時刻を記録する",
+    "PRACTICE_PAPER_EVENING_CONFIRM": "オンにする",
+    "PRACTICE_PAPER_EVENING_CLEAR": "記録した夜を消す"
   }
 }

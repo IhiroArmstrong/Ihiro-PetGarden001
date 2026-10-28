@@ -17,6 +17,12 @@ import {
   isPracticePaperHidden,
   setPracticePaperHidden
 } from '../core/practicePaperFacts.js';
+import {
+  clearEveningPracticeFactsLedger,
+  getEveningPracticePaperFact,
+  readEveningFactsConsent,
+  setEveningPracticeFactsConsent
+} from '../core/eveningPracticeFacts.js';
 import { getLocalDateKey } from '../utils/localDate.js';
 import { buildYinAdaptationNotebookLines } from '../core/yinAdaptationNotebook.js';
 import {
@@ -349,6 +355,77 @@ export class GrowthJourneyDetailUI {
     return this.handlers.getTodayKey?.() ?? getLocalDateKey(new Date());
   }
 
+  _appendEveningConsentControls(storage) {
+    const consent = readEveningFactsConsent(storage);
+    const wrap = document.createElement('div');
+    wrap.className = 'growth-journey-detail__paper-evening-controls';
+    wrap.dataset.testid = 'practice-paper-evening-controls';
+
+    const disclosure = document.createElement('p');
+    disclosure.className = 'growth-journey-detail__paper-evening-disclosure';
+    disclosure.dataset.testid = 'practice-paper-evening-disclosure';
+    disclosure.textContent = t('PRACTICE_PAPER_EVENING_DISCLOSURE');
+    wrap.appendChild(disclosure);
+
+    const label = document.createElement('label');
+    label.className = 'growth-journey-detail__paper-evening-toggle';
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.checked = consent.enabled;
+    input.dataset.testid = 'practice-paper-evening-consent';
+    const labelText = document.createElement('span');
+    labelText.textContent = t('PRACTICE_PAPER_EVENING_CONSENT_LABEL');
+    label.append(input, labelText);
+    wrap.appendChild(label);
+
+    let pendingEnable = false;
+    const confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.className = 'growth-journey-detail__paper-toggle';
+    confirmBtn.dataset.testid = 'practice-paper-evening-confirm';
+    confirmBtn.textContent = t('PRACTICE_PAPER_EVENING_CONFIRM');
+    confirmBtn.hidden = true;
+    confirmBtn.addEventListener('click', () => {
+      if (!setEveningPracticeFactsConsent(this._storage(), true)) return;
+      pendingEnable = false;
+      this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
+    });
+    wrap.appendChild(confirmBtn);
+
+    input.addEventListener('change', () => {
+      if (input.checked && !consent.enabled) {
+        input.checked = false;
+        pendingEnable = true;
+        confirmBtn.hidden = false;
+        return;
+      }
+      if (!input.checked && consent.enabled) {
+        if (!setEveningPracticeFactsConsent(this._storage(), false)) {
+          input.checked = true;
+          return;
+        }
+        pendingEnable = false;
+        confirmBtn.hidden = true;
+        this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
+      }
+    });
+
+    if (consent.enabled) {
+      const clearBtn = document.createElement('button');
+      clearBtn.type = 'button';
+      clearBtn.className = 'growth-journey-detail__paper-toggle';
+      clearBtn.dataset.testid = 'practice-paper-evening-clear';
+      clearBtn.textContent = t('PRACTICE_PAPER_EVENING_CLEAR');
+      clearBtn.addEventListener('click', () => {
+        if (!clearEveningPracticeFactsLedger(this._storage())) return;
+        this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
+      });
+      wrap.appendChild(clearBtn);
+    }
+
+    this.paperEl.appendChild(wrap);
+  }
+
   _refreshPaper(practiceDates) {
     const storage = this._storage();
     const today = this._todayKey();
@@ -375,6 +452,20 @@ export class GrowthJourneyDetailUI {
     rhythm.dataset.testid = 'practice-paper-rhythm';
     rhythm.textContent = t(sentence.key);
     this.paperEl.appendChild(rhythm);
+
+    const eveningFact = getEveningPracticePaperFact(storage, today);
+    if (eveningFact?.show) {
+      const evening = document.createElement('p');
+      evening.className = 'growth-journey-detail__paper-evening';
+      evening.dataset.testid = 'practice-paper-evening-fact';
+      evening.textContent = t(eveningFact.localeKey).replaceAll(
+        '{n}',
+        String(eveningFact.count)
+      );
+      this.paperEl.appendChild(evening);
+    }
+
+    this._appendEveningConsentControls(storage);
 
     const subtitle = document.createElement('p');
     subtitle.className = 'growth-journey-detail__paper-subtitle';
@@ -584,6 +675,7 @@ export class GrowthJourneyDetailUI {
         border-top: 1px solid rgba(44, 31, 20, 0.12);
       }
       .growth-journey-detail__paper-rhythm,
+      .growth-journey-detail__paper-evening,
       .growth-journey-detail__paper-subtitle,
       .growth-journey-detail__paper-disclaimer,
       .growth-journey-detail__sit-breath-facts p {
