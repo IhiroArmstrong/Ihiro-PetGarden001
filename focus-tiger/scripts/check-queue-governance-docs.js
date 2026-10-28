@@ -56,6 +56,12 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/COMPANION_CONTRACT.md',
   'focus-tiger/docs/PRODUCT_POSITIONING.md',
   'focus-tiger/docs/task-entries/co-practice-positioning.md',
+  'focus-tiger/docs/late-night-behavior-inventory.md',
+  'focus-tiger/docs/task-entries/late-night-behavior-inventory.md',
+  'focus-tiger/docs/task-entries/t61-user-set-work-end-time.md',
+  'focus-tiger/docs/task-entries/t62-evening-practice-facts-practice-paper.md',
+  'focus-tiger/docs/task-briefs/task-user-set-work-end-time.md',
+  'focus-tiger/docs/task-briefs/task-evening-practice-facts-practice-paper.md',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
