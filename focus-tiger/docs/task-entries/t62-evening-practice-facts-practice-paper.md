@@ -1,7 +1,7 @@
 ---
 id: t62-evening-practice-facts-practice-paper
 kind: note
-status: 搁置 · 未排期（Brief 扩写待点头）
+status: 已合 develop #1459
 updated: 2026-10-28
 ---
 
