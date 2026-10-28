@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-28 · **T56 已合（口径）** · T60 须先于 T57 · T57 Brief 已点头·排队中 · T58/T59/T60 排队中·可选 · **T61/T62 搁置·未排期** · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · 影子流水 #1430 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 排队中可选 · T28 仍搁置）
+## 1. 当前队列（2026-10-28 · **T64→T65 先于 T63** · **T63 Brief 已点头** · T64/T65 Brief 待点头·排队中·可选 · **T57–T61 已合** · T62 仍搁置·未排期 · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -59,17 +59,20 @@
 | **可选** · **T50** | 会话存在摘要 Phase 0 | **已合 develop** | #1394，第二步 #1401。A 类影子；不改可见行为。Brief [`task-session-presence-summary-phase-0.md`](./task-briefs/task-session-presence-summary-phase-0.md)。**不是** Presence Signals、**不是**键盘监控、**不是** T51、**不是** T54 |
 | **P2** · **T51** | 觉照邀请编排 | **已合 develop** | #1403。只邀请不自动开练习。口径见 [`DESIGN.md`](./DESIGN.md)「觉照邀请」。**不是** T50、**不是** T54 |
 | **P2** · **T52** | 觉照微打卡 | **已合 develop** | #1424。关单级手测另排。[`task-awaken-micro-check-in.md`](./task-briefs/task-awaken-micro-check-in.md)。**不是** T54 |
-| **可选** · **T53** | 输入节奏（默认关） | 排队中 | Brief 已点头 2026-10-25。Mac 击键间隔；无权限退回 T51。叠 T52 后。[`task-awaken-input-rhythm.md`](./task-briefs/task-awaken-input-rhythm.md) |
+| **可选** · **T53** | 输入节奏（默认关） | **已合 develop** | #1437。Mac 击键间隔；无权限退回 T51。[`task-awaken-input-rhythm.md`](./task-briefs/task-awaken-input-rhythm.md) |
 | **可选** · **T54** | 研究数据分享开关 | **已合 develop** | #1434。改进产品层。上送计时计数，**不含倾诉原文**。影子流水 #1430 已合。**不是** 90 天实验。**不是** A15–A17。**不是** T55 |
 | **未排期** · **T54** | 90 天实验 | 搁置 | 日历不启动。招呼 / 满 18 岁对照 / 抽签禁止。阶段 1 SSOT [`task-t54-stage1-preregistration.md`](./task-briefs/task-t54-stage1-preregistration.md)（#1421）。口令「开工 T54」「做 90 天实验」不执行 |
 | **可选** · **T55** | 陪伴契约 | 排队中 | PO 2026-10-25。文档 + 字面检查，不改界面。不挡 T34。Brief [`task-companion-contract.md`](./task-briefs/task-companion-contract.md)。盘点 #1419。契约正文 #1425。**不是** T54 |
 | **可选** · **T56** | 人机共修口径一页纸 | **已合 develop** | A 类。口径 [`CO_PRACTICE_POSITIONING.md`](./CO_PRACTICE_POSITIONING.md)；契约 **C-11**。**不是** T58 |
-| **可选** · **T57** | 邀请下场记录 | 排队中 | 只存本机。不改变邀请。Brief [`task-invite-outcome-record.md`](./task-briefs/task-invite-outcome-record.md) **已点头**。**须 T60 已合**。**不是** T58 |
-| **可选** · **T58** | Yin 适应层 v1 + 小本子 | 排队中 | 只变安静、不变积极。须 **T60 → T57** 合入后写代码。Brief [`task-yin-adaptation-v1.md`](./task-briefs/task-yin-adaptation-v1.md) **待再点头**。**不是** T54 效果证明 |
-| **可选** · **T59** | 「还是上次那个」时长文案 | 排队中 | B 类。时长记忆已在，只补一句。英文 **Same as last time**。Brief [`task-still-last-duration-copy.md`](./task-briefs/task-still-last-duration-copy.md) 待点头。**不是** T58 |
-| **可选** · **T60** | 重置白名单补 T52 打卡键 | 排队中 | 删除名单漏了打卡键 + 反向扫描。排在 **T57 前**。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md) 待点头。**不是** T58 |
-| **未排期** · **T61** | 用户自设收工时间（B 类） | 搁置 | 须 **T60 → T57 → T58** 已合 + Brief 点头。盘点 #1448 · [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §6。Brief [`task-user-set-work-end-time.md`](./task-briefs/task-user-set-work-end-time.md) **待点头**。**不是** T58 |
+| **可选** · **T57** | 邀请下场记录 | **已合 develop** | #1449。只存本机。Brief [`task-invite-outcome-record.md`](./task-briefs/task-invite-outcome-record.md)。**不是** T58 |
+| **可选** · **T58** | Yin 适应层 v1 + 小本子 | **已合 develop** | #1451。只变安静、不变积极。Brief [`task-yin-adaptation-v1.md`](./task-briefs/task-yin-adaptation-v1.md)。**不是** T54 效果证明 |
+| **可选** · **T59** | 「还是上次那个」时长文案 | **已合 develop** | #1454。英文 **Same as last time**。Brief [`task-still-last-duration-copy.md`](./task-briefs/task-still-last-duration-copy.md)。**不是** T58 |
+| **可选** · **T60** | 重置白名单补 T52 打卡键 | **已合 develop** | #1447。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md)。**不是** T58 |
+| **可选** · **T61** | 用户自设收工时间（B 类） | **已合 develop** | #1455 MVP。盘点 #1448 · [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §6。Brief [`task-user-set-work-end-time.md`](./task-briefs/task-user-set-work-end-time.md)。**不是** T58。**不是** Yin 看出熬夜 |
 | **未排期** · **T62** | 晚间练习事实进练习纸 | 搁置 | 与 **T61** 分开。新记录 + 同意 + 删除名单；**不进** T54 研究分享。Brief [`task-evening-practice-facts-practice-paper.md`](./task-briefs/task-evening-practice-facts-practice-paper.md) **待点头** |
+| **可选** · **T63** | 共修契约面 | 排队中 | Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) **已点头**（2026-10-28）。**须 T64→T65 之后**写运行时。只说明已有开口并指向已有开关。**不是** 分级干涉。**不是** T62 |
+| **可选** · **T64** | 共修文案对齐 | 排队中 | Brief [`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) **待点头**。问号简介封闭两句。过 C-11。**不是** T63 / T65 |
+| **可选** · **T65** | 观察纸顺乱倦节律 | 排队中 | Brief [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md) **待点头**。只读 T52。**不是** T28 / T62 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -90,7 +93,7 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 词条 | 含义 | 禁止当作同义词乱用 |
 |---|---|---|
 | **槽位 P1 / P2** | 当前在排、有明确分支或 PR 的工作 | 「#1 #2」「第一刀」「下一刀」（未写 P 编号时） |
-| **未排期** | PO 明确不安排。当前：**根因行动 A15–A17（T4）**；**T54** 90 天实验搁置 · 未排期——分享开关 #1434 已合，不占「立即做」 | 单独写「高风险全放下」（易让人以为整队取消）；把 T54 说成根因行动；把「开关已合」说成「90 天已启动」 |
+| **未排期** | PO 明确不安排。当前：**根因行动 A15–A17（T4）**；**T54** 90 天实验搁置 · 未排期——分享开关 #1434 已合，不占「立即做」；**T62** 晚间练习事实 | 单独写「高风险全放下」（易让人以为整队取消）；把 T54 说成根因行动；把「开关已合」说成「90 天已启动」 |
 | **纯文档 PR** | 不改 `src/` 运行时；`docs:check` 类验证 | 「文档刀」「账本 PR」（不说清是否动代码时） |
 | **产品旁支** | 改用户路径或发送链等运行时 | 「功能 PR」「实现刀」 |
 | **口令** | 用户一句话触发 Agent **开始执行**已排槽位（不是新任务名） | 把口令写成「又冒出来的一条安排」 |
@@ -141,19 +144,22 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按无声场出 T45 Brief」或「按 T45 Brief 开工」 | **T45 已合 #1402**。勿再开同内容静坐画面旁支。通知仍归 T44 |
 | 「出 T47 Brief」或「按 T47 Brief 开工」 | **T47 已合 #1404**。勿再开同内容收控件旁支。不得藏死 ⋯；Rise 不收 |
 | 「按 T52 Brief 开工」 | **T52 已合 #1424**。勿再开同内容打卡旁支。**不是** T54 |
-| 「按 T53 Brief 开工」 | **T53** 输入节奏。Brief 已点头。叠 T52 之后。无权限退回 T51。**不是**键盘指纹 / T50 |
+| 「按 T53 Brief 开工」 | **T53 已合 #1437**。勿再开同内容节奏旁支。**不是**键盘指纹 / T50 |
 | 「按 T40 Brief 开工」 | **T40 已合 #1406**。勿再开同内容字体旁支 |
 | 「按 T43 Brief 开工」 | **T43 已合 #1409**。勿再开同内容窗口旁支 |
 | 「按 T44 Brief 开工」 | **T44 已合 #1410**。勿再开同内容快捷键旁支 |
 | 「按 T48 Brief 开工」或「复活 #1412」 | **T48 已合 #1414**。禁止复活 #1412 |
 | 「开工 T56」 | **T56 已合**（口径一页纸）。勿再开同内容口径旁支 |
-| 「按 T57 Brief 开工」 | Brief **已点头**。**须 T60 已合**。新 Chat 写本机下场。不改邀请 |
-| 「按 T58 Brief 开工」 | Brief **待再点头**。点头且 **T60 → T57** 已合才写代码 |
-| 「按 T59 Brief 开工」 | Brief 点头后：时长条旁一句「还是上次那个」。英文 Same as last time。**不是** T58 |
-| 「按 T60 Brief 开工」 | Brief 点头后：打卡键进重置白名单 + 反向扫描。排在 **T57 前**。**不是** T58 |
-| 「按 T61 Brief 开工」 | Brief **待点头**。点头且 **T60 → T57 → T58** 已合才写收工时间 + 收工邀请。**不是** T58 |
-| 「开工 T61」 | **不执行**（须 Brief + 依赖链） |
+| 「按 T57 Brief 开工」 | **T57 已合 #1449**。勿再开同内容下场旁支 |
+| 「按 T58 Brief 开工」 | **T58 已合 #1451**。勿再开同内容适应旁支。不得说 Yin 懂你 |
+| 「按 T59 Brief 开工」 | **T59 已合 #1454**。勿再开同内容时长文句旁支。**不是** T58 |
+| 「按 T60 Brief 开工」 | **T60 已合 #1447**。勿再开同内容白名单旁支 |
+| 「按 T61 Brief 开工」 | **T61 MVP 已合 #1455**。勿再开同内容收工旁支。**不是** T58。**不是** Yin 看出熬夜 |
+| 「开工 T61」 | **不执行**（已合；不是看出熬夜） |
 | 「按 T62 Brief 开工」 | Brief **待点头**。晚间练习事实进练习纸；与 **T61** 分开。**不进** T54 研究分享 |
+| 「按 T63 Brief 开工」 | Brief **已点头**（2026-10-28）。**须 T64 与 T65 已合**（或 PO 书面改序）后新 Chat 写契约面。**不是** 分级干涉。**不是** T62 |
+| 「按 T64 Brief 开工」 | Brief **待点头**。点头后新 Chat 只改问号简介封闭两句。**不是** T63 / T65 |
+| 「按 T65 Brief 开工」 | Brief **待点头**。点头后新 Chat 观察纸只读 T52 三态。**不是** T28 / T62 |
 
 ---
 
