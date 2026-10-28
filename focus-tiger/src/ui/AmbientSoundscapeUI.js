@@ -26,6 +26,11 @@ import {
 } from '../audio/UserAmbientLibrary.js';
 import { syncSecondaryMenuHintDot } from '../core/idleChromeOrchestration.js';
 import { onEntitlementChange } from '../core/entitlement/entitlementGate.js';
+import { canUseSystemTts } from '../core/systemTtsBridge.js';
+import {
+  isSystemTtsAnnouncementsEnabled,
+  setSystemTtsAnnouncementsEnabled
+} from '../core/systemTtsPreference.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { Z } from './zIndexLayers.js';
 
@@ -62,6 +67,7 @@ export class AmbientSoundscapeUI {
    * @param {object} [handlers]
    * @param {() => void} [handlers.onPanelOpened]
    * @param {() => void} [handlers.onTrackChosen]
+   * @param {() => void} [handlers.onSoundEngaged]
    * @param {() => void} [handlers.onToggleMusic]
    * @param {(trackId: string) => void} [handlers.onLockedDeepTrack]
    * @param {import('../audio/SessionCueController.js').SessionCueController | null} [handlers.sessionCues]
@@ -76,8 +82,7 @@ export class AmbientSoundscapeUI {
     this._blockedTipTimer = null;
     /** Narrow drawer forced the Soundscape panel open while Idle. */
     this._narrowForcedPanel = false;
-    /** @type {'ambience' | 'chimes'} */
-    this._panelTab = 'ambience';
+    this._voiceSaveFailed = false;
 
     /** @type {{ id: string, label: string, addedAt: number }[]} */
     this._userTracks = [];
@@ -161,8 +166,21 @@ export class AmbientSoundscapeUI {
     this.titleEl = document.createElement('p');
     this.titleEl.className = 'ambient-soundscape__title';
 
+    this.panelScroll = document.createElement('div');
+    this.panelScroll.className = 'ambient-soundscape__panel-scroll';
+
+    this.musicBlockTitle = document.createElement('p');
+    this.musicBlockTitle.className = 'ambient-soundscape__block-title';
+
+    this.sittingBellsBlockTitle = document.createElement('p');
+    this.sittingBellsBlockTitle.className = 'ambient-soundscape__block-title';
+
+    this.practiceCueDivider = document.createElement('hr');
+    this.practiceCueDivider.className = 'ambient-soundscape__block-divider';
+
     this.tabBar = document.createElement('div');
     this.tabBar.className = 'ambient-soundscape__tabs';
+    this.tabBar.hidden = true;
     this.tabBar.setAttribute('role', 'tablist');
 
     this.tabAmbienceBtn = document.createElement('button');
@@ -310,7 +328,9 @@ export class AmbientSoundscapeUI {
       ? this.sessionCues.isEnabled()
       : true;
     this.cueToggleInput.addEventListener('change', () => {
-      this.sessionCues?.setEnabled(this.cueToggleInput.checked);
+      const enabled = this.cueToggleInput.checked;
+      this.sessionCues?.setEnabled(enabled);
+      if (enabled) this.handlers.onSoundEngaged?.();
     });
     this.cueToggleText = document.createElement('span');
     this.cueToggleText.className = 'ambient-soundscape__session-cues-text';
@@ -336,6 +356,7 @@ export class AmbientSoundscapeUI {
     this.intervalRhythmSelect.addEventListener('change', () => {
       const ms = Number(this.intervalRhythmSelect.value);
       this.sessionCues?.setIntervalMs(ms);
+      if (ms > 0) this.handlers.onSoundEngaged?.();
     });
     this.intervalRhythmHint = document.createElement('span');
     this.intervalRhythmHint.className = 'ambient-soundscape__field-hint';
@@ -386,26 +407,60 @@ export class AmbientSoundscapeUI {
       awarenessTextWrap
     );
 
-    this.ambiencePane.append(
+    this.voiceBlock = document.createElement('div');
+    this.voiceBlock.className = 'ambient-soundscape__voice-block';
+    this.voiceBlockTitle = document.createElement('p');
+    this.voiceBlockTitle.className = 'ambient-soundscape__block-title';
+    this.voiceToggleLabel = document.createElement('label');
+    this.voiceToggleLabel.className = 'ambient-soundscape__voice-toggle';
+    this.voiceToggleInput = document.createElement('input');
+    this.voiceToggleInput.type = 'checkbox';
+    this.voiceToggleInput.id = 'system-tts-announcements-toggle';
+    this.voiceToggleInput.className = 'ambient-soundscape__voice-toggle-input';
+    this.voiceToggleInput.addEventListener('change', () =>
+      this._onVoiceToggleChange()
+    );
+    this.voiceToggleText = document.createElement('span');
+    this.voiceToggleText.className = 'ambient-soundscape__voice-toggle-text';
+    this.voiceToggleHint = document.createElement('span');
+    this.voiceToggleHint.className = 'ambient-soundscape__field-hint';
+    this.voiceToggleHint.id = 'ambient-voice-toggle-hint';
+    this.voiceStatusEl = document.createElement('p');
+    this.voiceStatusEl.className = 'ambient-soundscape__voice-status';
+    this.voiceStatusEl.id = 'system-tts-preference-status';
+    this.voiceStatusEl.setAttribute('role', 'status');
+    this.voiceStatusEl.setAttribute('aria-live', 'polite');
+    const voiceCopyWrap = document.createElement('span');
+    voiceCopyWrap.className = 'ambient-soundscape__field-copy';
+    voiceCopyWrap.append(this.voiceToggleText, this.voiceToggleHint);
+    this.voiceToggleInput.setAttribute(
+      'aria-describedby',
+      `${this.voiceToggleHint.id} ${this.voiceStatusEl.id}`
+    );
+    this.voiceToggleLabel.append(this.voiceToggleInput, voiceCopyWrap);
+    this.voiceBlock.append(
+      this.voiceBlockTitle,
+      this.voiceToggleLabel,
+      this.voiceStatusEl
+    );
+
+    this.panelScroll.append(
+      this.musicBlockTitle,
       this.uploadHintEl,
       this.uploadRow,
       this.uploadErrEl,
       this.trackRow,
-      this.volumeLabel
-    );
-    this.chimesPane.append(
+      this.volumeLabel,
+      this.sittingBellsBlockTitle,
       this.chimeVolumeLabel,
       this.cueToggleLabel,
       this.intervalRhythmLabel,
-      this.awarenessToggleLabel
+      this.practiceCueDivider,
+      this.awarenessToggleLabel,
+      this.voiceBlock
     );
 
-    this.panel.append(
-      this.titleEl,
-      this.tabBar,
-      this.ambiencePane,
-      this.chimesPane
-    );
+    this.panel.append(this.titleEl, this.panelScroll);
     this.focusChrome.append(this.nudgeEl, this.panel, this.soundBtn);
     this.root.append(this.muteBtn, this.focusChrome);
     overlayRoot.appendChild(this.root);
@@ -509,11 +564,49 @@ export class AmbientSoundscapeUI {
   }
 
   /**
-   * @param {'ambience' | 'chimes'} tab
+   * @param {'ambience' | 'chimes'} _tab
+   * @deprecated Single-card layout; no-op.
    */
-  _setPanelTab(tab) {
-    this._panelTab = tab;
+  _setPanelTab(_tab) {
     this._renderPanel();
+  }
+
+  _onVoiceToggleChange() {
+    const enabled = this.voiceToggleInput.checked;
+    const result = setSystemTtsAnnouncementsEnabled(undefined, enabled);
+    this._voiceSaveFailed = !result.saved;
+    if (this._voiceSaveFailed) {
+      this.voiceToggleInput.checked = !enabled;
+    } else if (enabled) {
+      this.handlers.onSoundEngaged?.();
+    }
+    this._renderVoiceBlock();
+  }
+
+  _renderVoiceBlock() {
+    const showVoice = canUseSystemTts({
+      widthPx: typeof window !== 'undefined' ? window.innerWidth : 1280,
+      globalObj: typeof window !== 'undefined' ? window : undefined
+    });
+    this.voiceBlock.hidden = !showVoice;
+    if (!showVoice) return;
+    const enabled = isSystemTtsAnnouncementsEnabled();
+    this.voiceBlockTitle.textContent = t('AMBIENT_BLOCK_VOICE');
+    this.voiceToggleText.textContent = t('SYSTEM_TTS_TOGGLE_LABEL');
+    this.voiceToggleHint.textContent = t('SYSTEM_TTS_TOGGLE_HINT');
+    this.voiceToggleInput.checked = enabled;
+    this.voiceStatusEl.textContent = this._voiceSaveFailed
+      ? t('system_tts.save_failed')
+      : enabled
+        ? t('system_tts.status_on')
+        : t('system_tts.status_off');
+    this.voiceStatusEl.dataset.state = this._voiceSaveFailed
+      ? 'save-failed'
+      : 'ok';
+    this.voiceToggleInput.setAttribute(
+      'aria-invalid',
+      this._voiceSaveFailed ? 'true' : 'false'
+    );
   }
 
   async bootDefaultMusic() {
@@ -759,7 +852,9 @@ export class AmbientSoundscapeUI {
     }
     this._renderPanel();
     this.handlers.onToggleMusic?.();
-    this.handlers.onTrackChosen?.();
+    if (trackId !== AMBIENT_TRACK_OFF) {
+      this.handlers.onTrackChosen?.();
+    }
   }
 
   _maybeShowDefaultOnNudge() {
@@ -859,24 +954,10 @@ export class AmbientSoundscapeUI {
   }
 
   _renderPanel() {
-    this.titleEl.textContent = t('AMBIENT_TITLE');
-    this.tabAmbienceBtn.textContent = t('AMBIENT_TAB_AMBIENCE');
-    this.tabChimesBtn.textContent = t('AMBIENT_TAB_CHIMES');
-    this.tabAmbienceBtn.classList.toggle(
-      'is-active',
-      this._panelTab === 'ambience'
-    );
-    this.tabChimesBtn.classList.toggle('is-active', this._panelTab === 'chimes');
-    this.tabAmbienceBtn.setAttribute(
-      'aria-selected',
-      this._panelTab === 'ambience' ? 'true' : 'false'
-    );
-    this.tabChimesBtn.setAttribute(
-      'aria-selected',
-      this._panelTab === 'chimes' ? 'true' : 'false'
-    );
-    this.ambiencePane.hidden = this._panelTab !== 'ambience';
-    this.chimesPane.hidden = this._panelTab !== 'chimes';
+    this.titleEl.textContent = t('SOUND_MENU_LABEL');
+    this.musicBlockTitle.textContent = t('AMBIENT_BLOCK_MUSIC');
+    this.sittingBellsBlockTitle.textContent = t('AMBIENT_BLOCK_SITTING_BELLS');
+    this._muteTip?.setText(t('AMBIENT_NOTE_HOVER'));
     this.uploadHintEl.textContent = t('AMBIENT_UPLOAD_LOCAL_HINT');
     this.uploadBtn.textContent = t('AMBIENT_UPLOAD_BTN');
     this._syncVolumeChrome();
@@ -1058,6 +1139,7 @@ export class AmbientSoundscapeUI {
     );
     this._refreshMuteBtn();
     this._refreshSoundFab();
+    this._renderVoiceBlock();
   }
 
   /**
@@ -1396,6 +1478,50 @@ export class AmbientSoundscapeUI {
         letter-spacing: 0.04em;
         color: rgba(44, 31, 20, 0.7);
       }
+      .ambient-soundscape__panel-scroll {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: min(62vh, 420px);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(44, 31, 20, 0.22) transparent;
+      }
+      .ambient-soundscape__block-title {
+        margin: 4px 0 2px;
+        font-size: 11px;
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(44, 31, 20, 0.58);
+      }
+      .ambient-soundscape__block-divider {
+        border: 0;
+        border-top: 1px solid rgba(139, 115, 85, 0.16);
+        margin: 6px 0 2px;
+      }
+      .ambient-soundscape__voice-block[hidden] {
+        display: none !important;
+      }
+      .ambient-soundscape__voice-toggle {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        cursor: pointer;
+        margin: 0;
+      }
+      .ambient-soundscape__voice-toggle-input {
+        margin-top: 3px;
+        flex-shrink: 0;
+      }
+      .ambient-soundscape__voice-status {
+        margin: 4px 0 0 24px;
+        font-size: 11px;
+        color: rgba(44, 31, 20, 0.62);
+      }
+      .ambient-soundscape__voice-status[data-state='save-failed'] {
+        color: #8b2e2e;
+      }
       .ambient-soundscape__tabs {
         display: flex;
         gap: 6px;
@@ -1426,7 +1552,7 @@ export class AmbientSoundscapeUI {
         display: flex;
         flex-direction: column;
         gap: 6px;
-        max-height: min(36vh, 220px);
+        max-height: min(28vh, 160px);
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: rgba(44, 31, 20, 0.22) transparent;

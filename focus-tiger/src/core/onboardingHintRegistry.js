@@ -411,6 +411,32 @@ export function isClickTriggerHint(hintId) {
   return getHintTriggerMode(hintId) === 'click';
 }
 
+/** @returns {boolean} */
+function isNarrowShellViewport() {
+  try {
+    return Boolean(
+      typeof document !== 'undefined' &&
+        document.body?.classList.contains('ft-narrow-shell')
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Resolve locale key for hint bubble copy (viewport-specific overrides).
+ * @param {string} hintId
+ * @returns {string | undefined}
+ */
+export function resolveOnboardingHintLocaleKey(hintId) {
+  if (hintId === 'ambient-soundscape') {
+    return isNarrowShellViewport()
+      ? 'HINT_AMBIENT_SOUNDSCAPE_NARROW'
+      : 'HINT_AMBIENT_SOUNDSCAPE_WIDE';
+  }
+  return HINT_LOCALE_KEYS[hintId];
+}
+
 /**
  * @param {string} hintId
  * @returns {HintTier | null} 非 click 为 null（无圆点语义）

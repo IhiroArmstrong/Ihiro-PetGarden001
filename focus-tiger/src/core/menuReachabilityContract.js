@@ -99,9 +99,9 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#language-preference-panel'
   }),
-  'system-tts': Object.freeze({
+  sound: Object.freeze({
     kind: 'open-panel',
-    resultSelector: '#system-tts-preference'
+    resultSelector: '.ambient-soundscape__panel'
   }),
   'always-on-top': Object.freeze({
     kind: 'open-panel',

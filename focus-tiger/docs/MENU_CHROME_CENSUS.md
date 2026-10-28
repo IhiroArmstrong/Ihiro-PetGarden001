@@ -59,7 +59,7 @@
 | Sit / Rise、左球 Breath practice | 主路径，不是次级功能 |
 | 窄屏 ActionBar `?` | 产品简介 / hint，不是功能列表项 |
 | 宽屏簇 / 窄屏 ActionBar Help Center 快捷（`#onboarding-hint-help-center` / `#ft-narrow-help-center-btn`，T26） | **不是漏项。** 菜单 Preferences 已有同一张帮助中心（`help-center` / `idle-help-center`）。新钮是快捷，不搬家 |
-| 音符 / 环境音面板 | 编排注释显式排除；走 ActionBar / 右下 Sound FAB |
+| 音符 / 环境音面板 | **主入口**仍是角落音符 / 窄屏 ♪；Preferences 一行 **Sound**（`sound`）只打开**同一张**面板，作逃生舱（Brief 冷启动声音入口 · 2026-10-28） |
 | 左上日历 / 周热力图 | 内容导航；原则 4 把左上留给日历 |
 | 倾听耳（宽） | 倾诉另有菜单行 `confide`；耳是快捷 |
 | 桌面更新提示条 | 系统状态，不是功能入口（#758） |

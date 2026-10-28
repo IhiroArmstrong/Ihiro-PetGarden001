@@ -37,7 +37,8 @@ import {
   getHintTriggerMode,
   getHintTier,
   isClickTriggerHint,
-  isDetailedHint
+  isDetailedHint,
+  resolveOnboardingHintLocaleKey
 } from '../core/onboardingHintRegistry.js';
 import { ONBOARDING_HINT_ANCHORS } from './onboardingHintAnchors.js';
 import './ft-onboarding-hint-bubble.js';
@@ -1367,7 +1368,10 @@ export class OnboardingHintsUI {
    */
   _paint(hintId, { remedy = false, anchorNearHelp = false } = {}) {
     const bubble = this._ensureBubble(hintId);
-    const key = HINT_LOCALE_KEYS[hintId] || HINT_LOCALE_KEYS['help-fallback'];
+    const key =
+      resolveOnboardingHintLocaleKey(hintId) ||
+      HINT_LOCALE_KEYS[hintId] ||
+      HINT_LOCALE_KEYS['help-fallback'];
     const message = t(key);
     this._paintMeta.set(hintId, { remedy, anchorNearHelp });
 

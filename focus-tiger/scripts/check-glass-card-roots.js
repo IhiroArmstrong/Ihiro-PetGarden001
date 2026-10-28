@@ -24,8 +24,8 @@ const UI_DIR = join(PKG_ROOT, 'src/ui');
 /** Extra panel roots from the A11 Brief variant matrix, not in the drag deck. */
 export const GLASS_CARD_EXTRA_ROOT_TARGETS = Object.freeze([
   {
-    id: 'system-tts-preference-panel',
-    selectors: ['.system-tts-pref__panel', '#system-tts-preference-panel']
+    id: 'ambient-soundscape-panel',
+    selectors: ['.ambient-soundscape__panel']
   },
   {
     id: 'honesty-check-in',

@@ -145,9 +145,9 @@
 
 <!-- onboarding-hints-registry:anchors:end -->
 
-### 音乐提示（对应 ambient-soundscape 文案）
+### 音乐提示（对应 ambient-soundscape 文案 · 2026-10-28 冷启动声音入口）
 
-音乐 **默认关闭（opt-in）**。首次 Idle：右上音符见**薄荷绿脉冲**；悬停展开 tip（`HINT_AMBIENT_SOUNDSCAPE`），移开即收。**仅选曲**后永久 `markSeen`（mint 消）；点音符开面板**不清** mint。done 后悬停残余用自绘 glass tip（`AMBIENT_NOTE_HOVER`）；未读时由 mint tip 压掉 glass tip，避免双文案。**不**再使用常驻 `#ambient-note-label` 自绘气泡（2026-08-06 用户书面：点后长文案气泡行为不对，改回脉冲点 Hint）。**不**在 hint 中承诺光效变化。
+音乐 **默认关闭（opt-in）**。首次 Idle：右上音符（窄屏 ♪）见**薄荷绿脉冲**；悬停展开 tip（宽 `HINT_AMBIENT_SOUNDSCAPE_WIDE` / 窄 `HINT_AMBIENT_SOUNDSCAPE_NARROW`，locale slice `cold-start-sound-entry.json`），移开即收。**点开音符面板**，或**自行打开**背景乐 / 坐禅铃 / 间隔磬 / 系统朗读（Voice 块，Electron 且桥可用）任一后，永久 `markSeen`（mint 消）。done 后悬停残余用自绘 glass tip（`AMBIENT_NOTE_HOVER`：*Quiet for now. Tap for sound.*）；未读时由 mint tip 压掉 glass tip。**不**再使用常驻 `#ambient-note-label` 自绘气泡。**不**在 hint 中承诺光效变化。菜单 Preferences → **Sound** 打开同一张面板（非第二套设置）。
 
 ---
 

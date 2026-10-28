@@ -23,7 +23,7 @@ describe('glassGrowthOverlayCardRegistry (A3)', () => {
       if (
         proxy === 'reminder' ||
         proxy === 'language' ||
-        proxy === 'system-tts' ||
+        proxy === 'sound' ||
         proxy === 'always-on-top' ||
         proxy === 'input-rhythm'
       ) {

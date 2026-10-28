@@ -125,7 +125,7 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
   },
   reminder: { handler: 'onReminder', close: true, stage: 'reminder' },
   language: { handler: 'onLanguage', close: false, stage: 'language' },
-  'system-tts': { handler: 'onSystemTts', close: true, stage: 'systemTts' },
+  sound: { handler: 'onSound', close: true, stage: 'sound' },
   'always-on-top': {
     handler: 'onAlwaysOnTop',
     close: true,
@@ -785,13 +785,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
     shouldOfferLanguagePicker()
       ? { proxy: 'language', labelKey: 'LANGUAGE_MENU_LABEL' }
       : null,
-    surface === 'wide-more' && visibility.systemTtsAvailable
-      ? {
-          proxy: 'system-tts',
-          labelKey: 'system_tts.menu_label',
-          testId: 'idle-system-tts'
-        }
-      : null,
+    { proxy: 'sound', labelKey: 'SOUND_MENU_LABEL', testId: 'idle-sound' },
     visibility.alwaysOnTopAvailable
       ? {
           proxy: 'always-on-top',

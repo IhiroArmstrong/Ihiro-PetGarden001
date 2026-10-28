@@ -14,7 +14,7 @@ import {
 /**
  * Hint 收窄契约（2026-08-04）：
  * - 「?」→ 只出产品简介卡，绝不喷本页其它 tip / More tips 芯片
- * - 薄荷绿音符点：只有**选曲**才清；Rise / 会话结束不得清
+ * - 薄荷绿音符点：点开面板或打开任一系统声音后永久消失；Rise / 会话结束不得清
  *
  * @see docs/ONBOARDING_HINTS.md、docs/TEST_TRACKER.md
  */
@@ -252,5 +252,27 @@ test.describe('mint note dot lifecycle', () => {
     await riseSkipReflectionToIdle(page);
 
     await expect.poll(mintNow, { timeout: 8_000 }).toBe(true);
+  });
+
+  test('opening the note panel clears mint without choosing a track', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+
+    const mintNow = () =>
+      page.evaluate(() =>
+        Boolean(
+          document
+            .querySelector('.ambient-soundscape__mute')
+            ?.classList.contains('has-hint-mint')
+        )
+      );
+
+    await expect.poll(mintNow, { timeout: 8_000 }).toBe(true);
+    await page.locator('.ambient-soundscape__mute').click();
+    await expect(page.locator('.ambient-soundscape__panel')).toBeVisible({
+      timeout: 5_000
+    });
+    await expect.poll(mintNow, { timeout: 8_000 }).toBe(false);
   });
 });
