@@ -656,9 +656,7 @@ export class OnboardingHintsUI {
 
   /**
    * 「?」唯一动作：产品简介。绝不铺本页其它 Hints。
-   * Hover → adjacent card, no backdrop. Click / pin → same adjacent card until dismiss.
    * @param {{ markHelpDone?: boolean, pin?: boolean }} [opts]
-   * @returns {void}
    */
   openPurposeOnly({ markHelpDone = false, pin = false } = {}) {
     this._cancelPurposeHoverHide();
@@ -2269,6 +2267,12 @@ export class OnboardingHintsUI {
   /** @returns {boolean} */
   isPrivacySheetOpen() {
     return Boolean(this.privacySheet && !this.privacySheet.hidden);
+  }
+
+  /** T63 — open Privacy from Growth Journey contract; skip if already visible. */
+  openPrivacySheetForSettings() {
+    if (this.isPrivacySheetOpen()) return;
+    this._openPrivacySheetFromPurpose();
   }
 
   /** Close ? purpose card (+ backdrop + wellness detail). */

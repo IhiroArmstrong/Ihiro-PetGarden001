@@ -30,7 +30,10 @@ import {
   setEveningPracticeFactsConsent
 } from '../core/eveningPracticeFacts.js';
 import { getLocalDateKey } from '../utils/localDate.js';
-import { buildYinAdaptationNotebookLines } from '../core/yinAdaptationNotebook.js';
+import {
+  buildYinAdaptationNotebookLines
+} from '../core/yinAdaptationNotebook.js';
+import { buildCoPracticeContractRows } from '../core/coPracticeContractSurface.js';
 import {
   hideYinAdaptationNotebookLine,
   isYinAdaptationEnabled,
@@ -72,6 +75,9 @@ export class GrowthJourneyDetailUI {
    * @param {() => unknown} [handlers.getJourneyLog]
    * @param {() => Storage | null} [handlers.getStorage]
    * @param {() => string} [handlers.getTodayKey]
+   * @param {() => void} [handlers.onOpenReminderSettings]
+   * @param {() => void} [handlers.onOpenWorkEndSettings]
+   * @param {() => void} [handlers.onOpenPrivacySettings]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
@@ -139,6 +145,10 @@ export class GrowthJourneyDetailUI {
     this.notebookEl.className = 'growth-journey-detail__notebook';
     this.notebookEl.dataset.testid = 'yin-adaptation-notebook';
 
+    this.contractEl = document.createElement('section');
+    this.contractEl.className = 'growth-journey-detail__contract';
+    this.contractEl.dataset.testid = 'co-practice-contract';
+
     this.paperEl = document.createElement('section');
     this.paperEl.className = 'growth-journey-detail__paper';
     this.paperEl.dataset.testid = 'practice-paper';
@@ -162,6 +172,7 @@ export class GrowthJourneyDetailUI {
       this.lifetimeEl,
       this.rhythmEl,
       this.notebookEl,
+      this.contractEl,
       this.paperEl,
       this.closeBtn
     );
@@ -195,6 +206,11 @@ export class GrowthJourneyDetailUI {
   /** @returns {boolean} */
   isOpen() {
     return this._open;
+  }
+
+  /** Refresh detail copy when open (e.g. after settings panels save). */
+  refreshIfOpen() {
+    if (this._open) this._refresh();
   }
 
   open() {
@@ -285,7 +301,82 @@ export class GrowthJourneyDetailUI {
     }
 
     this._refreshNotebook();
+    this._refreshContract();
     this._refreshPaper(practiceDates);
+  }
+
+  /**
+   * @param {{ key: string, params?: Record<string, string> }} status
+   * @returns {string}
+   */
+  _formatContractStatus(status) {
+    let text = t(status.key);
+    if (status.params?.time) {
+      text = text.replaceAll('{time}', status.params.time);
+    }
+    if (status.params?.date) {
+      text = text.replaceAll('{date}', status.params.date);
+    }
+    return text;
+  }
+
+  _refreshContract() {
+    this.contractEl.replaceChildren();
+    const storage = this._storage();
+    const rows = buildCoPracticeContractRows({ storage, now: Date.now() });
+
+    const heading = document.createElement('p');
+    heading.className = 'growth-journey-detail__contract-title';
+    heading.textContent = t('CO_PRACTICE_CONTRACT_TITLE');
+    this.contractEl.appendChild(heading);
+
+    const intro = document.createElement('p');
+    intro.className = 'growth-journey-detail__contract-intro';
+    intro.textContent = t('CO_PRACTICE_CONTRACT_INTRO');
+    this.contractEl.appendChild(intro);
+
+    for (const row of rows) {
+      const line = document.createElement('div');
+      line.className = 'growth-journey-detail__contract-row';
+      line.dataset.rowId = row.id;
+
+      const label = document.createElement('p');
+      label.className = 'growth-journey-detail__contract-label';
+      label.textContent = t(row.labelKey);
+      line.appendChild(label);
+
+      const status = document.createElement('p');
+      status.className = 'growth-journey-detail__contract-status';
+      status.textContent = this._formatContractStatus(row.status);
+      line.appendChild(status);
+
+      if (row.hintKey) {
+        const hint = document.createElement('p');
+        hint.className = 'growth-journey-detail__contract-hint';
+        hint.textContent = t(row.hintKey);
+        line.appendChild(hint);
+      }
+
+      if (row.action && row.actionKey) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'growth-journey-detail__contract-action';
+        btn.dataset.testid = `co-practice-contract-action-${row.id}`;
+        btn.textContent = t(row.actionKey);
+        btn.addEventListener('click', () => {
+          if (row.action === 'reminder') {
+            this.handlers.onOpenReminderSettings?.();
+          } else if (row.action === 'work-end') {
+            this.handlers.onOpenWorkEndSettings?.();
+          } else if (row.action === 'privacy') {
+            this.handlers.onOpenPrivacySettings?.();
+          }
+        });
+        line.appendChild(btn);
+      }
+
+      this.contractEl.appendChild(line);
+    }
   }
 
   _refreshNotebook() {
@@ -714,6 +805,50 @@ export class GrowthJourneyDetailUI {
         margin: 4px 0 12px;
         padding-top: 8px;
         border-top: 1px solid rgba(44, 31, 20, 0.12);
+      }
+      .growth-journey-detail__contract {
+        margin: 8px 0 10px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(44, 31, 20, 0.12);
+      }
+      .growth-journey-detail__contract-title {
+        margin: 0 0 6px;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .growth-journey-detail__contract-intro,
+      .growth-journey-detail__contract-label,
+      .growth-journey-detail__contract-status,
+      .growth-journey-detail__contract-hint {
+        margin: 0 0 6px;
+        font-size: 0.82rem;
+        line-height: 1.4;
+        color: #2c1f14;
+      }
+      .growth-journey-detail__contract-intro,
+      .growth-journey-detail__contract-hint {
+        opacity: 0.72;
+      }
+      .growth-journey-detail__contract-row {
+        margin: 0 0 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(44, 31, 20, 0.08);
+      }
+      .growth-journey-detail__contract-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .growth-journey-detail__contract-action {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        font: inherit;
+        font-size: 0.8rem;
+        color: rgba(44, 31, 20, 0.72);
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 2px;
       }
       .growth-journey-detail__paper-rhythm,
       .growth-journey-detail__paper-evening,
