@@ -14,6 +14,7 @@ import {
   FOCUS_DURATION_STORAGE_KEY,
   hasExplicitSessionMinutesQuery,
   FOCUS_DURATION_MODE_OPEN,
+  hasStoredFocusDurationPreference,
   loadPreferredFocusDurationMinutes,
   loadPreferredFocusDurationMode,
   normalizeFocusDurationMinutes,
@@ -59,11 +60,13 @@ describe('focusDuration', () => {
         mem[k] = String(v);
       }
     };
+    assert.equal(hasStoredFocusDurationPreference(storage), false);
     assert.equal(
       resolveFocusSessionTargetMinutes('?product=1', storage),
       10
     );
     savePreferredFocusDurationMinutes(45, storage);
+    assert.equal(hasStoredFocusDurationPreference(storage), true);
     assert.equal(
       loadPreferredFocusDurationMinutes(storage),
       45

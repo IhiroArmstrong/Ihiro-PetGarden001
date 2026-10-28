@@ -72,6 +72,8 @@ const QUIET_BTN_CSS = [
   'padding:6px 10px'
 ].join(';');
 
+export const FOCUS_DURATION_SAME_AS_LAST_HINT_ID = 'focus-duration-same-as-last-hint';
+
 export class FocusDurationPickerUI {
   /**
    * @param {{
@@ -82,7 +84,8 @@ export class FocusDurationPickerUI {
    *   onLeave?: () => void,
    *   preferredMinutes?: () => number,
    *   preferredMode?: () => 'fixed' | 'open',
-   *   showOpenEnded?: () => boolean
+   *   showOpenEnded?: () => boolean,
+   *   showSameAsLastHint?: () => boolean
    * }} [handlers]
    */
   constructor(handlers = {}) {
@@ -93,6 +96,7 @@ export class FocusDurationPickerUI {
     this.phase = 'hidden';
     /** @type {HTMLElement | null} */
     this.root = null;
+    this._sameAsLastSuppressed = false;
     this._unsubLocale = onLocaleChange(() => {
       if (this.phase === 'pick') this._render();
     });
@@ -104,6 +108,7 @@ export class FocusDurationPickerUI {
 
   open() {
     this._ensureRoot();
+    this._sameAsLastSuppressed = false;
     this.phase = 'pick';
     this._render();
     this._fadeIn();
@@ -238,13 +243,26 @@ export class FocusDurationPickerUI {
 
     const row = document.createElement('div');
     row.style.cssText =
-      'display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px;';
+      'display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-bottom:14px;';
 
     const preferred = normalizeFocusDurationMinutes(
       this.handlers.preferredMinutes?.() ?? 25
     );
     const preferredMode = this.handlers.preferredMode?.() ?? 'fixed';
     const showOpenEnded = this.handlers.showOpenEnded?.() === true;
+    const showSameAsLast =
+      !this._sameAsLastSuppressed && this.handlers.showSameAsLastHint?.() === true;
+
+    if (showSameAsLast) {
+      const sameAsLast = document.createElement('span');
+      sameAsLast.id = FOCUS_DURATION_SAME_AS_LAST_HINT_ID;
+      sameAsLast.className = 'focus-duration-picker__same-as-last';
+      sameAsLast.dataset.focusDurationSameAsLast = '1';
+      sameAsLast.style.cssText =
+        'flex:0 1 100%;font-size:11px;line-height:1.4;color:#8a7a6a;text-align:center;font-weight:450;margin:0 0 2px;';
+      sameAsLast.textContent = t('FOCUS_DURATION_SAME_AS_LAST');
+      row.appendChild(sameAsLast);
+    }
 
     for (const minutes of FOCUS_DURATION_OPTIONS_MINUTES) {
       const chip = document.createElement('button');
@@ -260,7 +278,15 @@ export class FocusDurationPickerUI {
         /\{n\}/g,
         String(minutes)
       );
-      chip.addEventListener('click', () => this.selectDuration(minutes));
+      chip.addEventListener('click', () => {
+        if (
+          preferredMode !== FOCUS_DURATION_MODE_OPEN &&
+          minutes !== preferred
+        ) {
+          this._sameAsLastSuppressed = true;
+        }
+        this.selectDuration(minutes);
+      });
       row.appendChild(chip);
     }
 
@@ -275,7 +301,12 @@ export class FocusDurationPickerUI {
         openChip.style.fontWeight = '650';
       }
       openChip.textContent = t('focus_duration.open_chip');
-      openChip.addEventListener('click', () => this.selectOpenEnded());
+      openChip.addEventListener('click', () => {
+        if (preferredMode !== FOCUS_DURATION_MODE_OPEN) {
+          this._sameAsLastSuppressed = true;
+        }
+        this.selectOpenEnded();
+      });
       row.appendChild(openChip);
     }
 

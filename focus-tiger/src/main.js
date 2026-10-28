@@ -21,7 +21,9 @@ import {
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
 import {
+  FOCUS_DURATION_MODE_OPEN,
   FOCUS_DURATION_OPTIONS_MINUTES,
+  hasStoredFocusDurationPreference,
   loadPreferredFocusDurationMinutes,
   loadPreferredFocusDurationMode,
   resolveFocusSessionTargetMinutes,
@@ -3353,6 +3355,16 @@ async function init() {
       ),
     preferredMode: () => loadPreferredFocusDurationMode(),
     showOpenEnded: () => isDesktopShellRuntime(),
+    showSameAsLastHint: () => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      if (!hasStoredFocusDurationPreference(storage)) return false;
+      const storedMode = loadPreferredFocusDurationMode(storage);
+      if (storedMode === FOCUS_DURATION_MODE_OPEN) return true;
+      const storedMinutes = loadPreferredFocusDurationMinutes(storage);
+      const highlightMinutes = resolveAdaptedFocusDurationHighlightMinutes(storage);
+      return highlightMinutes === storedMinutes;
+    },
     onDurationSelected: (minutes) => {
       const mode =
         pendingFocusDurationMode || bootHonestyCompanion.companionModePicker.getSelectedMode();
