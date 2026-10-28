@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-28 · **T64→T65 先于 T63** · **T63 Brief 已点头** · T64/T65 Brief 待点头·排队中·可选 · **T57–T61 已合** · T62 仍搁置·未排期 · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
+## 1. 当前队列（2026-10-28 · **T64 先于 T63** · **T63 Brief 已点头** · T64 Brief 待点头·排队中·可选 · **T57–T62 · T65 已合** · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -69,10 +69,10 @@
 | **可选** · **T59** | 「还是上次那个」时长文案 | **已合 develop** | #1454。英文 **Same as last time**。Brief [`task-still-last-duration-copy.md`](./task-briefs/task-still-last-duration-copy.md)。**不是** T58 |
 | **可选** · **T60** | 重置白名单补 T52 打卡键 | **已合 develop** | #1447。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md)。**不是** T58 |
 | **可选** · **T61** | 用户自设收工时间（B 类） | **已合 develop** | #1455 MVP。盘点 #1448 · [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §6。Brief [`task-user-set-work-end-time.md`](./task-briefs/task-user-set-work-end-time.md)。**不是** T58。**不是** Yin 看出熬夜 |
-| **未排期** · **T62** | 晚间练习事实进练习纸 | 搁置 | 与 **T61** 分开。新记录 + 同意 + 删除名单；**不进** T54 研究分享。Brief [`task-evening-practice-facts-practice-paper.md`](./task-briefs/task-evening-practice-facts-practice-paper.md) **待点头** |
-| **可选** · **T63** | 共修契约面 | 排队中 | Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) **已点头**（2026-10-28）。**须 T64→T65 之后**写运行时。只说明已有开口并指向已有开关。**不是** 分级干涉。**不是** T62 |
+| **可选** · **T62** | 晚间练习事实进练习纸 | **已合 develop** | #1459。与 **T61** 分开。单独同意 + 删除名单；**不进** T54 研究分享。Brief 已点头并已实施。[`task-evening-practice-facts-practice-paper.md`](./task-briefs/task-evening-practice-facts-practice-paper.md) |
+| **可选** · **T63** | 共修契约面 | 排队中 | Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) **已点头**（2026-10-28）。**须 T64 已合**（**T65** #1461 已合）。只说明已有开口并指向已有开关。**不是** 分级干涉。**不是** T62 |
 | **可选** · **T64** | 共修文案对齐 | 排队中 | Brief [`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) **待点头**。问号简介封闭两句。过 C-11。**不是** T63 / T65 |
-| **可选** · **T65** | 观察纸顺乱倦节律 | 排队中 | Brief [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md) **待点头**。只读 T52。**不是** T28 / T62 |
+| **可选** · **T65** | 观察纸顺乱倦节律 | **已合 develop** | #1461。只读 T52；无新键。Brief 已实施。[`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md)。**不是** T28 / T62 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -93,7 +93,7 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 词条 | 含义 | 禁止当作同义词乱用 |
 |---|---|---|
 | **槽位 P1 / P2** | 当前在排、有明确分支或 PR 的工作 | 「#1 #2」「第一刀」「下一刀」（未写 P 编号时） |
-| **未排期** | PO 明确不安排。当前：**根因行动 A15–A17（T4）**；**T54** 90 天实验搁置 · 未排期——分享开关 #1434 已合，不占「立即做」；**T62** 晚间练习事实 | 单独写「高风险全放下」（易让人以为整队取消）；把 T54 说成根因行动；把「开关已合」说成「90 天已启动」 |
+| **未排期** | PO 明确不安排。当前：**根因行动 A15–A17（T4）**；**T54** 90 天实验搁置 · 未排期——分享开关 #1434 已合，不占「立即做」 | 单独写「高风险全放下」（易让人以为整队取消）；把 T54 说成根因行动；把「开关已合」说成「90 天已启动」 |
 | **纯文档 PR** | 不改 `src/` 运行时；`docs:check` 类验证 | 「文档刀」「账本 PR」（不说清是否动代码时） |
 | **产品旁支** | 改用户路径或发送链等运行时 | 「功能 PR」「实现刀」 |
 | **口令** | 用户一句话触发 Agent **开始执行**已排槽位（不是新任务名） | 把口令写成「又冒出来的一条安排」 |
@@ -156,10 +156,10 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T60 Brief 开工」 | **T60 已合 #1447**。勿再开同内容白名单旁支 |
 | 「按 T61 Brief 开工」 | **T61 MVP 已合 #1455**。勿再开同内容收工旁支。**不是** T58。**不是** Yin 看出熬夜 |
 | 「开工 T61」 | **不执行**（已合；不是看出熬夜） |
-| 「按 T62 Brief 开工」 | Brief **待点头**。晚间练习事实进练习纸；与 **T61** 分开。**不进** T54 研究分享 |
-| 「按 T63 Brief 开工」 | Brief **已点头**（2026-10-28）。**须 T64 与 T65 已合**（或 PO 书面改序）后新 Chat 写契约面。**不是** 分级干涉。**不是** T62 |
+| 「按 T62 Brief 开工」 | **T62 已合 #1459**。勿再开同内容晚间事实旁支。**不进** T54 研究分享 |
+| 「按 T63 Brief 开工」 | Brief **已点头**（2026-10-28）。**须 T64 已合**（**T65** #1461 已合；或 PO 书面改序）后新 Chat 写契约面。**不是** 分级干涉。**不是** T62 |
 | 「按 T64 Brief 开工」 | Brief **待点头**。点头后新 Chat 只改问号简介封闭两句。**不是** T63 / T65 |
-| 「按 T65 Brief 开工」 | Brief **待点头**。点头后新 Chat 观察纸只读 T52 三态。**不是** T28 / T62 |
+| 「按 T65 Brief 开工」 | **T65 已合 #1461**。勿再开同内容节律旁支。**不是** T28 / T62 |
 
 ---
 

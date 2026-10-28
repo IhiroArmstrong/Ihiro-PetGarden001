@@ -1,7 +1,7 @@
 ---
 id: t65-practice-paper-check-in-rhythm
 kind: feature
-status: 排队中（Brief 已点头 · 实现中）
+status: 已合 develop #1461
 updated: 2026-10-28
 ---
 
