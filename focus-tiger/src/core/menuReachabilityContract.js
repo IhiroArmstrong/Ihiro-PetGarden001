@@ -95,6 +95,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#reminder-preference-panel'
   }),
+  'work-end': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#work-end-preference-panel'
+  }),
   language: Object.freeze({
     kind: 'open-panel',
     resultSelector: '#language-preference-panel'

@@ -191,6 +191,7 @@ export class NarrowIdleShell {
     document.body.classList.remove(
       NARROW_STAGE_CLASS.companion,
       NARROW_STAGE_CLASS.reminder,
+      NARROW_STAGE_CLASS.workEnd,
       NARROW_STAGE_CLASS.sound
     );
   }
@@ -203,6 +204,7 @@ export class NarrowIdleShell {
     document.body.classList.remove(
       NARROW_STAGE_CLASS.companion,
       NARROW_STAGE_CLASS.reminder,
+      NARROW_STAGE_CLASS.workEnd,
       NARROW_STAGE_CLASS.sound
     );
   }
@@ -282,6 +284,7 @@ export class NarrowIdleShell {
       if (companionExpanded) {
         document.body.classList.remove(
           NARROW_STAGE_CLASS.reminder,
+          NARROW_STAGE_CLASS.workEnd,
           NARROW_STAGE_CLASS.sound
         );
       } else {
@@ -927,6 +930,9 @@ export class NarrowIdleShell {
       companionVisible: Boolean(companionEl && !companionEl.hidden),
       reminderAvailable: Boolean(
         document.getElementById('reminder-preference-toggle')
+      ),
+      workEndAvailable: Boolean(
+        document.getElementById('work-end-preference-toggle')
       ),
       newsletterSubmitted: hasSubmittedNewsletter(),
       mustardSeedSealUnlocked: resolveMustardSeedSeal(
@@ -1698,6 +1704,29 @@ export class NarrowIdleShell {
           z-index: ${Z.REMINDER_PANEL} !important;
         }
 
+
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-work-end #weekly-practice-heatmap-cluster {
+          left: 50% !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: max(88px, env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+          z-index: ${Z.NARROW_STAGE} !important;
+          position: fixed !important;
+        }
+        body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-work-end .work-end-pref__panel {
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          bottom: calc(max(88px, env(safe-area-inset-bottom, 0px) + 96px)) !important;
+          width: min(260px, calc(100vw - 32px)) !important;
+          transform: translateX(-50%) !important;
+          translate: none !important;
+          z-index: ${Z.REMINDER_PANEL} !important;
+        }
         /* Idle drawer Sound: Soundscape track panel only — never the red FAB */
         body.ft-narrow-shell.ft-narrow-park.ft-narrow-stage-sound .ambient-soundscape__focus-chrome {
           left: 50% !important;

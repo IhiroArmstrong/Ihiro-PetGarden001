@@ -147,6 +147,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   'focus-circle': 'MENU_GROUP_NOT_ALONE',
   community: 'MENU_GROUP_NOT_ALONE',
   reminder: 'MENU_GROUP_PREFERENCES',
+  'work-end': 'MENU_GROUP_PREFERENCES',
   language: 'MENU_GROUP_PREFERENCES',
   sound: 'MENU_GROUP_PREFERENCES',
   'always-on-top': 'MENU_GROUP_PREFERENCES',

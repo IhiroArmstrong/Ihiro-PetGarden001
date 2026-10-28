@@ -151,6 +151,7 @@ export class IdleChromeFacade {
     document.body.classList.remove(
       NARROW_STAGE_CLASS.companion,
       NARROW_STAGE_CLASS.reminder,
+      NARROW_STAGE_CLASS.workEnd,
       NARROW_STAGE_CLASS.sound,
       NARROW_STAGE_CLASS.language,
       NARROW_STAGE_CLASS.localBackup,
@@ -158,6 +159,7 @@ export class IdleChromeFacade {
       NARROW_STAGE_CLASS.focusCircle,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
+      WIDE_STAGE_CLASS.workEnd,
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.language,
       WIDE_STAGE_CLASS.localBackup,
