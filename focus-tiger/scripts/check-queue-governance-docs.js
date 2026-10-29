@@ -69,6 +69,11 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-briefs/task-practice-paper-check-in-rhythm.md',
   'focus-tiger/docs/task-entries/t65-practice-paper-check-in-rhythm.md',
   'focus-tiger/docs/task-entries/t55-companion-contract.md',
+  'focus-tiger/docs/CO_PRACTICE_GIFT_ART.md',
+  'focus-tiger/docs/task-briefs/task-co-practice-session-join-ledger.md',
+  'focus-tiger/docs/task-entries/t66-co-practice-session-join-ledger.md',
+  'focus-tiger/docs/task-entries/co-practice-gift-art.md',
+  'focus-tiger/docs/tracker-entries/docs-t66-co-practice-session-join-ledger.md',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
