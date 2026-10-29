@@ -580,6 +580,44 @@ test('fadeOutAndStop reaches silent endSession without restoring full volume', a
   assert.equal(ctrl.getDuckRatio(), 1);
 });
 
+test('startSittingMusic recipeSoundId null matches preferred-Off default path', async () => {
+  const audio = createMockAudio();
+  const storage = createMapStorage();
+  storage.setItem(
+    AMBIENT_PREF_STORAGE_KEY,
+    JSON.stringify({ enabled: false, trackId: AMBIENT_TRACK_OFF })
+  );
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage,
+    mountToDocument: false
+  });
+  const prefBefore = storage.getItem(AMBIENT_PREF_STORAGE_KEY);
+  ctrl.startSession();
+  await ctrl.startSittingMusic({ recipeSoundId: null });
+  assert.equal(ctrl.getTrackId(), DEFAULT_AMBIENT_TRACK_ID);
+  assert.equal(storage.getItem(AMBIENT_PREF_STORAGE_KEY), prefBefore);
+});
+
+test('startSittingMusic recipeSoundId plays that track without writing ambient-pref', async () => {
+  const audio = createMockAudio();
+  const storage = createMapStorage();
+  storage.setItem(
+    AMBIENT_PREF_STORAGE_KEY,
+    JSON.stringify({ enabled: false, trackId: AMBIENT_TRACK_OFF })
+  );
+  const ctrl = new AmbientSoundscapeController({
+    audio,
+    storage,
+    mountToDocument: false
+  });
+  const prefBefore = storage.getItem(AMBIENT_PREF_STORAGE_KEY);
+  ctrl.startSession();
+  await ctrl.startSittingMusic({ recipeSoundId: 'dreamland' });
+  assert.equal(ctrl.getTrackId(), 'dreamland');
+  assert.equal(storage.getItem(AMBIENT_PREF_STORAGE_KEY), prefBefore);
+});
+
 test('startSittingMusic plays default when preferred is Off without persisting enabled', async () => {
   const audio = createMockAudio();
   const storage = createMapStorage();

@@ -371,9 +371,20 @@ export class AmbientSoundscapeController {
   /**
    * Focusing 开坐：播 preferred；若为 Off 则默认曲。
    * `persist: false` —— 不把 enabled:true 写入 ambient-pref（Idle 冷启动仍静音）。
+   * Default sitting passes `recipeSoundId: null` so this path stays pre-recipe.
+   * Non-null id (A4 templates) plays that track for this session only.
+   * @param {{ recipeSoundId?: string | null }} [options]
    * @returns {Promise<void>}
    */
-  async startSittingMusic() {
+  async startSittingMusic({ recipeSoundId = null } = {}) {
+    if (typeof recipeSoundId === 'string' && recipeSoundId) {
+      const playId = resolvePlayableAmbientTrackId(recipeSoundId, {
+        storage: this._storage,
+        builtInTracks: AMBIENT_TRACKS
+      });
+      await this.setTrack(playId, { persist: false });
+      return;
+    }
     const preferred = this.getPreferredTrackId();
     const playId =
       preferred === AMBIENT_TRACK_OFF

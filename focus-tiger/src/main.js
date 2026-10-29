@@ -31,6 +31,11 @@ import {
   savePreferredOpenEndedFocus,
   shouldSkipFocusDurationPicker
 } from './core/focusDuration.js';
+import { readRitualRecipe } from './core/ritualRecipe/ritualRecipeStore.js';
+import {
+  emitRecipeSessionStarted,
+  resolveSittingSessionPlan
+} from './core/ritualRecipe/sittingSessionPlan.js';
 import {
   OPEN_ENDED_HARD_CAP_MS,
   takeOpenEndedNudges
@@ -5374,6 +5379,14 @@ async function init() {
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     bootSessionChrome.postChooseChrome.pending = false;
     focusSession.start({ companionMode });
+    const sittingPlan = resolveSittingSessionPlan({
+      recipe: readRitualRecipe(),
+      focusMode: focusSession.isOpenEnded()
+        ? FOCUS_DURATION_MODE_OPEN
+        : 'fixed',
+      durationSec: Math.round(Number(focusSession.targetMinutes) * 60)
+    });
+    emitRecipeSessionStarted(sittingPlan);
     currentAwakenSitSessionId = `sit-${Date.now()}`;
     endAwakenCheckInOffered = false;
     sessionPresenceCollector.begin();
@@ -5394,7 +5407,9 @@ async function init() {
     awakenOrchestrator.startSession(companionMode);
     bootAmbientHints.ambientSoundscape.startSession();
     ambientSoundscapeUI.setSessionActive(true);
-    void bootAmbientHints.ambientSoundscape.startSittingMusic().then(() => {
+    void bootAmbientHints.ambientSoundscape.startSittingMusic({
+      recipeSoundId: sittingPlan.soundId
+    }).then(() => {
       ambientSoundscapeUI.renderAfterAudition?.();
       idleChrome.syncMuteVisual({
         musicOn: ambientSoundscapeUI.wantsMusicOn()

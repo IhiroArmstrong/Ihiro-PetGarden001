@@ -1,6 +1,6 @@
 # Ritual Recipe · 资源清单 v0
 
-> **状态**：v0（Default 映射现网；Deep / ADHD / Evening 待设计填 id）  
+> **状态**：v0.1（Default 映射现网；Deep / ADHD / Evening `promptId` / `soundId` 已设计锁，A4 才可选）  
 > **消费者**：客户端导入降级 + 将来 Worker POST 拒写。**先部署 Worker 副本，再发 app**（A3b）。  
 > **禁止**：`user-*`、IndexedDB 自传曲。`snd.*` 与现网曲 id **只保留现网一套**。
 
@@ -10,12 +10,19 @@
 
 | id | 用途 | v0 状态 |
 |---|---|---|
-| `null` | 默认引导（现网常量/池） | **Default sitting 全段** |
-| `arrive.soft` | spec 示例 | 占位；未知于运行时 → null（A1c） |
+| `null` | 默认引导（现网常量/池） | **Default sitting 全段**；ADHD 全段也用 null（更少引导） |
+| `arrive.soft` | spec 示例 | 占位；A1c 未接线 → 运行时当未知降为 null |
 | `transition.hand` | spec 示例 | 占位 |
 | `reflect.line` | spec 示例 | 占位 |
+| `arrive.deep.quiet` | Deep Arrive | 设计锁；克制入座 |
+| `focus.deep.hold` | Deep Focus | 设计锁 |
+| `transition.deep.return` | Deep Transition | 设计锁 |
+| `reflect.deep.note` | Deep Reflect | 设计锁 |
+| `arrive.evening.soft` | Evening Arrive | 设计锁；收尾入座 |
+| `transition.evening.rest` | Evening Transition | 设计锁 |
+| `reflect.evening.close` | Evening Reflect | 设计锁 |
 
-Deep / ADHD / Evening 的各段 id：**待设计填表**。白名单可先含上列占位，未接线前一律当未知 → null。
+A1c 未接线前，非 null id 仍按「未知 → null」处理，**不改变 Default 现网引导**。
 
 ## `soundId`
 
@@ -36,7 +43,14 @@ Deep / ADHD / Evening 的各段 id：**待设计填表**。白名单可先含上
 | `kiss-the-sky` | |
 | `frozen-in-love` | |
 
-Default sitting：`soundId: null`（与改造前「不因配方改偏好」一致）。Deep / ADHD / Evening：**待设计**从本表挑，Evening 须与 Default **可区分**。
+### 官方模板选用
+
+| 模板 | `soundId` |
+|---|---|
+| Default sitting | `null`（不覆盖全局偏好） |
+| Deep work | `the-inner-sound` |
+| ADHD-friendly | `rain`（稳、连续） |
+| Evening close | `dreamland`（与 Default 同分，靠此 + prompt 区分） |
 
 ## `roomId`
 
@@ -50,7 +64,7 @@ Default sitting：`soundId: null`（与改造前「不因配方改偏好」一�
 
 | 模板 | `templateId`（暂定） | Focus | 差异 |
 |---|---|---|---|
-| Default sitting | `official.default` | 600s / 10 分 | 与改造前一致 |
-| Deep work | `official.deep` | 2700s / 45 分 | 音效 + 引导，待填 |
-| ADHD-friendly | `official.adhd` | 900s / 15 分 | 更少引导 + 稳音效；**无**短 Arrive 秒数 |
-| Evening close | `official.evening` | 600s / 10 分 | 须靠 sound + prompt 与 Default 区分 |
+| Default sitting | `official.default` | 600s / 10 分 | 全段 `promptId` null · `soundId` null · 与改造前一致 |
+| Deep work | `official.deep` | 2700s / 45 分 | `the-inner-sound` + Deep 四段 prompt |
+| ADHD-friendly | `official.adhd` | 900s / 15 分 | `rain`；全段 prompt null；**无**短 Arrive 秒数 |
+| Evening close | `official.evening` | 600s / 10 分 | `dreamland` + evening arrive/transition/reflect |

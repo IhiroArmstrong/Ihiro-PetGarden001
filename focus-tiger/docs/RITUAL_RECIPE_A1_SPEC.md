@@ -197,16 +197,18 @@
 
 Focus 仅 10 / 15 / 45 / 10 分。Evening 与 Default 同分，**必须**靠 `soundId` + `promptId` 区分。
 
-| 模板 | Focus | 差异（待设计填 id） |
-| --- | --- | --- |
-| Default sitting | 10 分 (600s) | 与改造前一致 |
-| Deep work | 45 分 (2700s) | 音效 + 引导，克制 |
-| ADHD-friendly | 15 分 (900s) | 更少引导 + 稳音效（**无**短 Arrive 秒数） |
-| Evening close | 10 分 (600s) | 收尾引导 + 柔音效 |
+| 模板 | Focus | `soundId` | `promptId` |
+| --- | --- | --- | --- |
+| Default sitting | 10 分 (600s) | `null` | 全段 `null`（与改造前一致） |
+| Deep work | 45 分 (2700s) | `the-inner-sound` | `arrive.deep.quiet` / `focus.deep.hold` / `transition.deep.return` / `reflect.deep.note` |
+| ADHD-friendly | 15 分 (900s) | `rain` | 全段 `null`（更少引导；**无**短 Arrive 秒数） |
+| Evening close | 10 分 (600s) | `dreamland` | `arrive.evening.soft` / Focus `null` / `transition.evening.rest` / `reflect.evening.close` |
 
 ## 11. 待决与隐私
 
-**会上点头：** chip 覆盖不写回；付费房间降级文案；四套 `promptId` / `soundId`。
+**已锁（本刀设计）：** Deep / ADHD / Evening 的 `promptId` / `soundId`（见上表 + 资源清单 v0.1）。
+
+**会上仍待点头：** chip 覆盖不写回配方（A1b 现网仍写 `focus-duration-pref`，**不**写配方）；付费房间降级文案。
 
 **隐私（阶段 1 同发 `PRIVACY_NOTICE.md`）：** 分享 KV 内容/TTL/撤销；限速 IP 仅内存；埋点 opt-in；Health 不在本阶段。
 
@@ -217,7 +219,7 @@ Focus 仅 10 / 15 / 45 / 10 分。Evening 与 Default 同分，**必须**靠 `so
 
 ## 13. 验收清单（A1）
 
-- [ ] Web + Mac 读写一致；Default sitting 与改造前一致（Arrive/Transition/Reflect 时序仍走代码常量）
+- [ ] Web + Mac 读写一致；Default sitting 与改造前一致（Arrive/Transition/Reflect 时序仍走代码常量）——A1b 已接线待验；A4 模板入口未开
 - [ ] 第 5 节单测 + 夹具（含废弃字段丢弃、Recover 迁移）
 - [ ] 埋点与看板判读；Worker 先于 app；隐私更新
 

@@ -1,7 +1,7 @@
 # Task Brief · 平台阶段 1 · Ritual Recipe（坐的配方）
 
-> **状态（2026-10-29）**：PO 口令「立刻开工」= **A1a + A5 骨架**（schema / 存储 / 单测 + 埋点事件与 opt-in 门闩）。**不**开 A2 编辑 UI。  
-> **类**：本刀 **A**（无新可点击控件；Default sitting 行为不变）。A2 / A3c / A4 入口 / Privacy 开关属后续 **B** 刀，须另 Brief 或扩本节后再点头。  
+> **状态（2026-10-29）**：PO 口令「立刻开工」= **A1b**（Default sitting 接开坐；行为 = 现网）+ 设计锁 Deep / ADHD / Evening `promptId` / `soundId`。**不**开 A2 编辑 UI。A1a + A5 骨架已合 #1467。  
+> **类**：本刀 **A**（无新可点击控件；Default sitting 行为必须 = 现在）。A2 / A3c / A4 入口 / Privacy 开关属后续 **B** 刀，须另 Brief 或扩本节后再点头。  
 > **真源**：[`RITUAL_RECIPE_A1_SPEC.md`](../RITUAL_RECIPE_A1_SPEC.md)（A1 Spec v0.2 薄 schema）。  
 > **资源清单 v0**：[`ritual-recipe-asset-catalog-v0.md`](../ritual-recipe-asset-catalog-v0.md)。  
 > **埋点看板判读**：[`RITUAL_RECIPE_ANALYTICS.md`](../RITUAL_RECIPE_ANALYTICS.md)。  
@@ -27,19 +27,18 @@
 | **b. 语气** | 无新用户文案。后续付费房间降级句须观察式，不得监工。 |
 | **c. 职责** | 配方存储 ≠ 练习备份 JSON、≠ `focus-duration-pref` 写回（chip 本场覆盖待会上锁）、≠ T54/漏斗埋点。Shortcuts 仅官方 `templateId`，不替代 Sit。 |
 
-**结论：无用户路径冲突。** 本刀不改开坐运行时（A1b）。
+**结论：无用户路径冲突。** A1b 把 Default 接到开坐，chip / 氛围乐偏好 / Recover 180s 与现网同一结果。
 
-## 范围（in）· 本刀 A1a + A5
+## 范围（in）· 本刀 A1b + 三套模板设计锁
 
 | 序号 | 内容 |
 |---|---|
-| **A1a** | `ritualRecipeSchema`：`validate` / `normalize` / `migrate`；§5 夹具单测；独立 key **不进**练习备份 |
-| **A5** | §9 事件名与属性；默认关；opt-in 门闩；看板文档（opt-in 偏差 / 旋钮偏薄 / Shortcuts 参考） |
-| **0.3** | 资源清单 v0：Default 映射现网 id；Deep / ADHD / Evening 待设计填 |
+| **A1b** | Default sitting 驱动现网：chip/open 本场覆盖、顶层 `soundId=null` 不改偏好、Recover 180s；开坐发 `recipe_session_started`（仍默认关） |
+| **0.3** | 资源清单 v0.1：锁 Deep / ADHD / Evening `promptId` / `soundId`；**不**做选择入口（A4） |
 
 ## 明确不做（本刀 + 阶段 1 整条）
 
-- 本刀：**不**接 FocusSession / chip / 开坐播；**不**加编辑 UI、导入预览 UI、Privacy 开关、Worker 短链。  
+- 本刀：**不**加编辑 UI、模板选择入口、导入预览 UI、Privacy 开关、Worker 短链；**不**把 chip 写回配方。  
 - 阶段 1：**不做** Health、Slack/Raycast、按段音效/房间、Recover 文案编辑、Arrive/Transition `durationSec`、`skippable`、UGC 广场。
 
 ## 开发顺序（一条主链 + 两条并行）
@@ -60,7 +59,7 @@
 | **A3c** | 分享 UI + `editToken` 本地 | 叠 A3b | A3b |
 | **B1** | Mac Shortcuts，仅官方 `templateId` | 1–2 周 | A4 + URL 定稿 |
 
-**会上待定（不挡 A1a）：** chip = 本场覆盖不写回配方；付费房间降级文案；三套模板 `promptId` / `soundId`。
+**会上待定（不挡 A1b）：** chip = 本场覆盖不写回配方（本刀已按现网继续写 duration pref）；付费房间降级文案。三套 `promptId` / `soundId` **已设计锁**。
 
 ## 用户场景 / 验收叙事
 
@@ -146,11 +145,11 @@
 
 ## 验收（本刀）
 
-- `node --test src/core/ritualRecipe/*.test.js src/core/localStateKeys.test.js` 绿  
-- `npm run audit:local-backup-coverage` 绿（配方 key **不在** export 白名单）  
-- Default 配方夹具：Focus 600s / `mode=fixed` / `soundId=null` / Recover 180 / companion `yin`  
-- 埋点：未 opt-in 时 `trackRecipeEvent` 不上送、不打用户标识、不含 `title`/`notes`
+- `node --test src/core/ritualRecipe/*.test.js src/audio/sittingAudioWiring.test.js src/core/MindfulReminderController.test.js` 绿  
+- Default sitting = 改造前：10 分默认、chip 写 duration pref 不写配方、`soundId=null` 走现网开坐播、Recover 180s  
+- Evening 与 Default 同分，靠 `dreamland` + evening prompt 区分；ADHD 全段 prompt null + `rain`  
+- 埋点：未 opt-in 时开坐不上送 `recipe_session_started`
 
 ## 保护面
 
-不改 FocusSession、chip 写盘、Ambient `enabled`、练习备份 schema、Privacy sheet、Confide。
+不改 chip 写盘目标（仍 `focus-duration-pref`）、Ambient `enabled` 持久化、练习备份 schema、Privacy sheet、Confide。不新增可点击入口。
