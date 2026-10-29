@@ -640,6 +640,12 @@ import {
   resolveAdaptedFocusDurationHighlightMinutes
 } from './core/yinAdaptationStore.js';
 import {
+  beginCoPracticeTimedSession,
+  completeCoPracticeTimedSession,
+  endCoPracticeTimedSessionActive,
+  summarizeCoPracticeJoinLedgerForDev
+} from './core/coPracticeSessionJoinLedger.js';
+import {
   createRhythmTimingCache
 } from './core/inputRhythmBridge.js';
 import { effectiveAwakenCooldownMs } from './core/inputRhythmEngine.js';
@@ -2030,16 +2036,26 @@ async function init() {
   window.__recoverResetPractice = recoverResetPracticeUI;
   window.__groundExerciseChoice = groundExerciseChoiceUI;
 
+  function recordInviteOutcomeForSession(kind, outcome, ts) {
+    const sessionId =
+      kind !== INVITE_OUTCOME_KINDS.WORK_END &&
+      stateManager.state === STATES.FOCUSING &&
+      currentAwakenSitSessionId
+        ? currentAwakenSitSessionId
+        : undefined;
+    recordInviteOutcome(kind, outcome, ts, undefined, sessionId);
+  }
+
   function settlePendingInviteOutcome(outcome) {
     if (!pendingInviteOutcomeKind) return;
-    recordInviteOutcome(pendingInviteOutcomeKind, outcome);
+    recordInviteOutcomeForSession(pendingInviteOutcomeKind, outcome);
     applyInviteOutcomeForAdaptation(pendingInviteOutcomeKind, outcome);
     pendingInviteOutcomeKind = null;
   }
 
   function trackShownInviteOutcome(decision) {
     if (pendingInviteOutcomeKind) {
-      recordInviteOutcome(
+      recordInviteOutcomeForSession(
         pendingInviteOutcomeKind,
         INVITE_OUTCOME_VALUES.IGNORED
       );
@@ -2053,7 +2069,7 @@ async function init() {
 
   function trackShownInviteOutcomeKind(kind) {
     if (pendingInviteOutcomeKind) {
-      recordInviteOutcome(
+      recordInviteOutcomeForSession(
         pendingInviteOutcomeKind,
         INVITE_OUTCOME_VALUES.IGNORED
       );
@@ -3531,6 +3547,10 @@ async function init() {
   });
   if (import.meta.env.DEV) {
     window.__focusDurationPicker = focusDurationPicker;
+    window.__coPracticeJoinLedgerSummary = () =>
+      summarizeCoPracticeJoinLedgerForDev(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
   }
 
   let hasEndedAnySession = false;
@@ -5442,7 +5462,16 @@ async function init() {
       durationSec: Math.round(Number(focusSession.targetMinutes) * 60)
     });
     emitRecipeSessionStarted(sittingPlan);
-    currentAwakenSitSessionId = `sit-${Date.now()}`;
+    const coPracticeStorage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const offeredDefaultMinutes = resolveAdaptedFocusDurationHighlightMinutes(
+      coPracticeStorage
+    );
+    currentAwakenSitSessionId =
+      beginCoPracticeTimedSession({
+        offeredDefaultMinutes,
+        startedAtMs: focusSession.startedAtMs ?? Date.now()
+      }) || '';
     endAwakenCheckInOffered = false;
     sessionPresenceCollector.begin();
     bootAmbientHints.onboardingHints?.markSeen('sit-button');
@@ -5710,6 +5739,7 @@ async function init() {
         scheduleT54ResearchIngest({ storage });
       }
       focusSession.stop();
+      endCoPracticeTimedSessionActive();
       bootSessionChrome.sessionUiGate.setCompletionPending(false);
       honestyGlowLevel = null;
       tigerCharacter.setFocusLevel(0);
@@ -6053,6 +6083,9 @@ async function init() {
     if (!bootSessionChrome.sessionUiGate.completionPending) return;
     const witnessElapsedSeconds = focusSession.getElapsedSeconds();
     const timedAwardMinutes = focusSession.resolveTimedAwardMinutes();
+    completeCoPracticeTimedSession({
+      actualCompletedMinutes: timedAwardMinutes
+    });
     stashPendingJourneyDraft({ completed: true });
     sessionPresenceCollector.finalize(
       snapshotFocusSessionForPresence(focusSession, { endedEarly: false })

@@ -97,6 +97,29 @@ describe('inviteOutcomeStore', () => {
     });
   });
 
+  it('optional sessionId on focus invite rows (T66) preserves legacy rows', () => {
+    withMockLocalStorage(() => {
+      assert.equal(
+        recordInviteOutcome(
+          INVITE_OUTCOME_KINDS.AWAY,
+          INVITE_OUTCOME_VALUES.ACCEPTED,
+          1000,
+          undefined,
+          'sit-1000-1'
+        ),
+        true
+      );
+      recordInviteOutcome(
+        INVITE_OUTCOME_KINDS.AWAY,
+        INVITE_OUTCOME_VALUES.DISMISSED,
+        1001
+      );
+      const rows = readInviteOutcomeRecords();
+      assert.equal(rows[0].sessionId, 'sit-1000-1');
+      assert.equal(rows[1].sessionId, undefined);
+    });
+  });
+
   it('records accepted, dismissed, and ignored without copy fields', () => {
     withMockLocalStorage(() => {
       const ts = Date.UTC(2026, 9, 28, 8, 0, 0);

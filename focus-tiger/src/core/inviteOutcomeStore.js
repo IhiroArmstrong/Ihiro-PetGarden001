@@ -60,7 +60,8 @@ export function normalizeInviteOutcomeRows(rows) {
       (row.outcome === INVITE_OUTCOME_VALUES.ACCEPTED ||
         row.outcome === INVITE_OUTCOME_VALUES.DISMISSED ||
         row.outcome === INVITE_OUTCOME_VALUES.IGNORED) &&
-      typeof row.ts === 'number'
+      typeof row.ts === 'number' &&
+      (row.sessionId == null || typeof row.sessionId === 'string')
   );
 }
 
@@ -77,9 +78,16 @@ export function readInviteOutcomeRecords(key = INVITE_OUTCOME_STORAGE_KEY) {
  * @param {InviteOutcomeValue} outcome
  * @param {number} [ts]
  * @param {string} [key]
+ * @param {string} [sessionId] T66 — same timed-focus session when set
  * @returns {boolean}
  */
-export function recordInviteOutcome(kind, outcome, ts, key = INVITE_OUTCOME_STORAGE_KEY) {
+export function recordInviteOutcome(
+  kind,
+  outcome,
+  ts,
+  key = INVITE_OUTCOME_STORAGE_KEY,
+  sessionId
+) {
   if (
     kind !== INVITE_OUTCOME_KINDS.AWAY &&
     kind !== INVITE_OUTCOME_KINDS.EXTEND &&
@@ -96,7 +104,12 @@ export function recordInviteOutcome(kind, outcome, ts, key = INVITE_OUTCOME_STOR
     return false;
   }
   const rows = readInviteOutcomeRecords(key);
-  rows.push({ kind, outcome, ts: Number(ts) || Date.now() });
+  /** @type {Record<string, unknown>} */
+  const row = { kind, outcome, ts: Number(ts) || Date.now() };
+  if (typeof sessionId === 'string' && sessionId.length > 0) {
+    row.sessionId = sessionId;
+  }
+  rows.push(row);
   const trimmed =
     rows.length > INVITE_OUTCOME_MAX_ENTRIES
       ? rows.slice(-INVITE_OUTCOME_MAX_ENTRIES)
@@ -111,7 +124,8 @@ export function recordInviteOutcome(kind, outcome, ts, key = INVITE_OUTCOME_STOR
       !readLast ||
       readLast.kind !== last.kind ||
       readLast.outcome !== last.outcome ||
-      readLast.ts !== last.ts
+      readLast.ts !== last.ts ||
+      readLast.sessionId !== last.sessionId
     ) {
       return false;
     }
