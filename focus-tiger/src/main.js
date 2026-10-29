@@ -33,6 +33,10 @@ import {
 } from './core/focusDuration.js';
 import { readRitualRecipe } from './core/ritualRecipe/ritualRecipeStore.js';
 import {
+  applyOfficialSittingTemplate,
+  resolveOfficialTemplateIdForRecipe
+} from './core/ritualRecipe/officialSittingTemplateSelection.js';
+import {
   emitRecipeSessionStarted,
   resolveSittingSessionPlan
 } from './core/ritualRecipe/sittingSessionPlan.js';
@@ -1616,7 +1620,13 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
       onMomentSelect: (momentId) => handleFiveMomentSelect(momentId),
-      onOpen: () => syncInAppReminderBanner()
+      onOpen: () => syncInAppReminderBanner(),
+      getActiveSittingTemplateId: () =>
+        resolveOfficialTemplateIdForRecipe(readRitualRecipe()),
+      onSittingTemplateSelect: (templateId) => {
+        applyOfficialSittingTemplate(templateId);
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+      }
     })
   );
   window.__fiveMomentsCompass = bootMomentHosts.fiveMomentsCompassUI;

@@ -13,6 +13,7 @@ import {
   FIVE_MOMENT_LABEL_KEYS,
   markFiveMomentsCompassSeen
 } from '../core/fiveMomentsCompassGate.js';
+import { SELECTABLE_OFFICIAL_SITTING_TEMPLATE_IDS } from '../core/ritualRecipe/officialSittingTemplateSelection.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
   GLASS_BLUR_CSS,
@@ -30,8 +31,16 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'five-moments-compass-styles-v3';
+const STYLE_ID = 'five-moments-compass-styles-v4';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
+
+/** @type {Readonly<Record<string, string>>} */
+const SITTING_TEMPLATE_LABEL_KEYS = Object.freeze({
+  'official.default': 'RITUAL_SITTING_TEMPLATE_DEFAULT',
+  'official.deep': 'RITUAL_SITTING_TEMPLATE_DEEP',
+  'official.adhd': 'RITUAL_SITTING_TEMPLATE_ADHD',
+  'official.evening': 'RITUAL_SITTING_TEMPLATE_EVENING'
+});
 
 export class FiveMomentsCompassUI {
   /**
@@ -40,6 +49,8 @@ export class FiveMomentsCompassUI {
    * @param {() => void} [handlers.onOpen]
    * @param {() => void} [handlers.onClose]
    * @param {(momentId: string) => void} [handlers.onMomentSelect]
+   * @param {(templateId: string) => void} [handlers.onSittingTemplateSelect]
+   * @param {() => string | null} [handlers.getActiveSittingTemplateId]
    * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
@@ -79,6 +90,23 @@ export class FiveMomentsCompassUI {
     this.chainEl.className = 'five-moments-compass__chain';
     this.chainEl.setAttribute('aria-label', 'Five moments');
 
+    this.sittingTemplatesSection = document.createElement('div');
+    this.sittingTemplatesSection.className =
+      'five-moments-compass__sitting-templates';
+    this.sittingTemplatesSection.dataset.testid =
+      'five-moments-sitting-templates';
+    this.sittingTemplatesLegend = document.createElement('p');
+    this.sittingTemplatesLegend.className =
+      'five-moments-compass__sitting-templates-label';
+    this.sittingTemplatesList = document.createElement('div');
+    this.sittingTemplatesList.className =
+      'five-moments-compass__sitting-templates-list';
+    this.sittingTemplatesList.setAttribute('role', 'listbox');
+    this.sittingTemplatesSection.append(
+      this.sittingTemplatesLegend,
+      this.sittingTemplatesList
+    );
+
     this.actions = document.createElement('div');
     this.actions.className = 'five-moments-compass__actions';
 
@@ -104,7 +132,13 @@ export class FiveMomentsCompassUI {
     this.closeBtn.addEventListener('click', () => this._dismiss(false));
 
     this.actions.append(this.skipBtn, this.primaryBtn, this.closeBtn);
-    this.root.append(this.titleEl, this.blurbEl, this.chainEl, this.actions);
+    this.root.append(
+      this.titleEl,
+      this.blurbEl,
+      this.chainEl,
+      this.sittingTemplatesSection,
+      this.actions
+    );
     mountRoot.appendChild(this.root);
 
     this._onKeyDown = (event) => {
@@ -134,6 +168,10 @@ export class FiveMomentsCompassUI {
     return this._open;
   }
 
+  refreshSittingTemplates() {
+    this._refreshSittingTemplates();
+  }
+
   /**
    * @param {{ firstRun?: boolean, markSeenOnOpen?: boolean }} [opts]
    */
@@ -143,6 +181,7 @@ export class FiveMomentsCompassUI {
       this._firstRun = firstRun;
       this._syncActionVisibility();
       this._refreshTexts();
+      this._refreshSittingTemplates();
       return;
     }
     this._firstRun = firstRun;
@@ -156,6 +195,7 @@ export class FiveMomentsCompassUI {
     this.root.classList.add('is-visible');
     this._syncActionVisibility();
     this._refreshTexts();
+    this._refreshSittingTemplates();
     const focusBtn = firstRun ? this.primaryBtn : this.closeBtn;
     focusBtn.focus({ preventScroll: true });
     this.handlers.onOpen?.();
@@ -221,6 +261,43 @@ export class FiveMomentsCompassUI {
       });
       li.appendChild(btn);
       this.chainEl.appendChild(li);
+    }
+    this._refreshSittingTemplates();
+  }
+
+  _refreshSittingTemplates() {
+    const canSelect =
+      !this._firstRun &&
+      typeof this.handlers.onSittingTemplateSelect === 'function';
+    this.sittingTemplatesSection.hidden = !canSelect;
+    if (!canSelect) return;
+
+    this.sittingTemplatesLegend.textContent = t('RITUAL_SITTING_STYLE_LABEL');
+    const activeId = this.handlers.getActiveSittingTemplateId?.() ?? null;
+    this.sittingTemplatesList.innerHTML = '';
+
+    for (const templateId of SELECTABLE_OFFICIAL_SITTING_TEMPLATE_IDS) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'five-moments-compass__sitting-template';
+      btn.dataset.templateId = templateId;
+      btn.dataset.testid = `sitting-template-${templateId.replace(/\./g, '-')}`;
+      btn.setAttribute('role', 'option');
+      btn.setAttribute(
+        'aria-selected',
+        activeId === templateId ? 'true' : 'false'
+      );
+      if (activeId === templateId) {
+        btn.classList.add('is-selected');
+      }
+      const labelKey = SITTING_TEMPLATE_LABEL_KEYS[templateId];
+      btn.textContent = labelKey ? t(labelKey) : templateId;
+      btn.addEventListener('click', () => {
+        if (activeId === templateId) return;
+        this.handlers.onSittingTemplateSelect?.(templateId);
+        this._refreshSittingTemplates();
+      });
+      this.sittingTemplatesList.appendChild(btn);
     }
   }
 
@@ -307,6 +384,44 @@ export class FiveMomentsCompassUI {
       .five-moments-compass__moment:disabled {
         cursor: default;
         opacity: 0.85;
+      }
+      .five-moments-compass__sitting-templates {
+        margin: 0 0 14px;
+      }
+      .five-moments-compass__sitting-templates[hidden] {
+        display: none !important;
+      }
+      .five-moments-compass__sitting-templates-label {
+        margin: 0 0 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      .five-moments-compass__sitting-templates-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .five-moments-compass__sitting-template {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 8px 10px;
+        text-align: left;
+        font: inherit;
+        font-size: 0.84rem;
+        border-radius: 12px;
+        background: ${GLASS_FILL_STRONG};
+        border: ${GLASS_BORDER};
+        color: inherit;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .five-moments-compass__sitting-template.is-selected {
+        box-shadow: inset 0 0 0 1.5px rgba(196, 165, 116, 0.85);
+      }
+      .five-moments-compass__sitting-template:active {
+        transform: scale(0.98);
       }
       .five-moments-compass__actions {
         display: flex;

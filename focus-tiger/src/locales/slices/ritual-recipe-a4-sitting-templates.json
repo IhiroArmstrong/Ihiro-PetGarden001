@@ -1,0 +1,23 @@
+{
+  "en": {
+    "RITUAL_SITTING_STYLE_LABEL": "Sitting style",
+    "RITUAL_SITTING_TEMPLATE_DEFAULT": "Default sitting",
+    "RITUAL_SITTING_TEMPLATE_DEEP": "Deep work (45 min)",
+    "RITUAL_SITTING_TEMPLATE_ADHD": "ADHD-friendly (15 min)",
+    "RITUAL_SITTING_TEMPLATE_EVENING": "Evening close (10 min)"
+  },
+  "zh": {
+    "RITUAL_SITTING_STYLE_LABEL": "坐法",
+    "RITUAL_SITTING_TEMPLATE_DEFAULT": "默认坐（10 分钟）",
+    "RITUAL_SITTING_TEMPLATE_DEEP": "深度工作（45 分钟）",
+    "RITUAL_SITTING_TEMPLATE_ADHD": "ADHD 友好（15 分钟）",
+    "RITUAL_SITTING_TEMPLATE_EVENING": "晚间收尾（10 分钟）"
+  },
+  "ja": {
+    "RITUAL_SITTING_STYLE_LABEL": "座り方",
+    "RITUAL_SITTING_TEMPLATE_DEFAULT": "デフォルト（10分）",
+    "RITUAL_SITTING_TEMPLATE_DEEP": "ディープワーク（45分）",
+    "RITUAL_SITTING_TEMPLATE_ADHD": "ADHD向け（15分）",
+    "RITUAL_SITTING_TEMPLATE_EVENING": "夜の締め（10分）"
+  }
+}

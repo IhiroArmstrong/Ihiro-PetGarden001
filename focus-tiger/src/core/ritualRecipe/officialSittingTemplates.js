@@ -5,7 +5,7 @@
 
 /**
  * Official sitting templates (design lock for A4).
- * Default is the live identity map. Deep / ADHD / Evening are not selectable yet.
+ * Default is the live identity map. A4 Compass UI selects among all four.
  * @see docs/ritual-recipe-asset-catalog-v0.md
  */
 
