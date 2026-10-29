@@ -31,8 +31,18 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'five-moments-compass-styles-v4';
+const STYLE_ID = 'five-moments-compass-styles-v5';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
+
+const FOCUS_MINUTE_CHIPS = Object.freeze([10, 15, 25, 45]);
+
+/** @type {Readonly<Record<string, string>>} */
+const RECIPE_MOMENT_LABEL_KEYS = Object.freeze({
+  arrive: 'RITUAL_RECIPE_EDIT_MOMENT_ARRIVE',
+  focus: 'RITUAL_RECIPE_EDIT_MOMENT_FOCUS',
+  transition: 'RITUAL_RECIPE_EDIT_MOMENT_TRANSITION',
+  reflect: 'RITUAL_RECIPE_EDIT_MOMENT_REFLECT'
+});
 
 /** @type {Readonly<Record<string, string>>} */
 const SITTING_TEMPLATE_LABEL_KEYS = Object.freeze({
@@ -51,6 +61,14 @@ export class FiveMomentsCompassUI {
    * @param {(momentId: string) => void} [handlers.onMomentSelect]
    * @param {(templateId: string) => void} [handlers.onSittingTemplateSelect]
    * @param {() => string | null} [handlers.getActiveSittingTemplateId]
+   * @param {() => import('../core/ritualRecipe/ritualRecipeSchema.js').RitualRecipe | null} [handlers.getRitualRecipe]
+   * @param {(minutesOrOpen: number | 'open') => void} [handlers.onRecipeFocusSelect]
+   * @param {(soundId: string | null) => void} [handlers.onRecipeSoundSelect]
+   * @param {(momentId: string, promptId: string | null) => void} [handlers.onRecipePromptSelect]
+   * @param {(momentId: string) => void} [handlers.onRecipeResetMoment]
+   * @param {() => void} [handlers.onRecipeResetAll]
+   * @param {(momentId: string) => readonly string[]} [handlers.listPromptIdsForMoment]
+   * @param {() => readonly string[]} [handlers.listSoundIds]
    * @param {Storage | null} [handlers.storage]
    */
   constructor(mountRoot, handlers = {}) {
@@ -107,6 +125,39 @@ export class FiveMomentsCompassUI {
       this.sittingTemplatesList
     );
 
+    this.recipeEditSection = document.createElement('div');
+    this.recipeEditSection.className = 'five-moments-compass__recipe-edit';
+    this.recipeEditSection.dataset.testid = 'ritual-recipe-edit';
+    this.recipeEditLegend = document.createElement('p');
+    this.recipeEditLegend.className =
+      'five-moments-compass__recipe-edit-label';
+    this.recipeEditFocusRow = document.createElement('div');
+    this.recipeEditFocusRow.className =
+      'five-moments-compass__recipe-edit-row';
+    this.recipeEditSoundRow = document.createElement('div');
+    this.recipeEditSoundRow.className =
+      'five-moments-compass__recipe-edit-row';
+    this.recipeEditMoments = document.createElement('div');
+    this.recipeEditMoments.className =
+      'five-moments-compass__recipe-edit-moments';
+    this.recipeEditResetAllBtn = document.createElement('button');
+    this.recipeEditResetAllBtn.type = 'button';
+    this.recipeEditResetAllBtn.className =
+      'five-moments-compass__recipe-edit-reset-all';
+    this.recipeEditResetAllBtn.dataset.testid = 'ritual-recipe-reset-all';
+    this.recipeEditResetAllBtn.addEventListener('click', () => {
+      this.handlers.onRecipeResetAll?.();
+      this._refreshRecipeEdit();
+      this._refreshSittingTemplates();
+    });
+    this.recipeEditSection.append(
+      this.recipeEditLegend,
+      this.recipeEditFocusRow,
+      this.recipeEditSoundRow,
+      this.recipeEditMoments,
+      this.recipeEditResetAllBtn
+    );
+
     this.actions = document.createElement('div');
     this.actions.className = 'five-moments-compass__actions';
 
@@ -137,6 +188,7 @@ export class FiveMomentsCompassUI {
       this.blurbEl,
       this.chainEl,
       this.sittingTemplatesSection,
+      this.recipeEditSection,
       this.actions
     );
     mountRoot.appendChild(this.root);
@@ -172,6 +224,10 @@ export class FiveMomentsCompassUI {
     this._refreshSittingTemplates();
   }
 
+  refreshRecipeEdit() {
+    this._refreshRecipeEdit();
+  }
+
   /**
    * @param {{ firstRun?: boolean, markSeenOnOpen?: boolean }} [opts]
    */
@@ -182,6 +238,7 @@ export class FiveMomentsCompassUI {
       this._syncActionVisibility();
       this._refreshTexts();
       this._refreshSittingTemplates();
+      this._refreshRecipeEdit();
       return;
     }
     this._firstRun = firstRun;
@@ -196,6 +253,7 @@ export class FiveMomentsCompassUI {
     this._syncActionVisibility();
     this._refreshTexts();
     this._refreshSittingTemplates();
+    this._refreshRecipeEdit();
     const focusBtn = firstRun ? this.primaryBtn : this.closeBtn;
     focusBtn.focus({ preventScroll: true });
     this.handlers.onOpen?.();
@@ -263,6 +321,7 @@ export class FiveMomentsCompassUI {
       this.chainEl.appendChild(li);
     }
     this._refreshSittingTemplates();
+    this._refreshRecipeEdit();
   }
 
   _refreshSittingTemplates() {
@@ -298,6 +357,146 @@ export class FiveMomentsCompassUI {
         this._refreshSittingTemplates();
       });
       this.sittingTemplatesList.appendChild(btn);
+    }
+  }
+
+  _canEditRecipe() {
+    return (
+      !this._firstRun &&
+      typeof this.handlers.getRitualRecipe === 'function' &&
+      typeof this.handlers.onRecipeFocusSelect === 'function'
+    );
+  }
+
+  _refreshRecipeEdit() {
+    const canEdit = this._canEditRecipe();
+    this.recipeEditSection.hidden = !canEdit;
+    if (!canEdit) return;
+
+    this.recipeEditLegend.textContent = t('RITUAL_RECIPE_EDIT_LABEL');
+    this.recipeEditResetAllBtn.textContent = t('RITUAL_RECIPE_EDIT_RESET_ALL');
+
+    const recipe = this.handlers.getRitualRecipe?.();
+    const focus = recipe?.moments?.focus;
+    const focusOpen = focus?.mode === 'open';
+    const focusMinutes = focusOpen
+      ? null
+      : Math.round(Number(focus?.durationSec ?? 600) / 60);
+
+    this.recipeEditFocusRow.innerHTML = '';
+    const focusLabel = document.createElement('span');
+    focusLabel.className = 'five-moments-compass__recipe-edit-row-label';
+    focusLabel.textContent = t('RITUAL_RECIPE_EDIT_FOCUS');
+    const focusBtns = document.createElement('div');
+    focusBtns.className = 'five-moments-compass__recipe-edit-chips';
+    for (const min of FOCUS_MINUTE_CHIPS) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'five-moments-compass__recipe-edit-chip';
+      btn.dataset.testid = `ritual-recipe-focus-${min}`;
+      btn.textContent = `${min}`;
+      if (!focusOpen && focusMinutes === min) {
+        btn.classList.add('is-selected');
+      }
+      btn.addEventListener('click', () => {
+        if (!focusOpen && focusMinutes === min) return;
+        this.handlers.onRecipeFocusSelect?.(min);
+        this._refreshRecipeEdit();
+        this._refreshSittingTemplates();
+      });
+      focusBtns.appendChild(btn);
+    }
+    const openBtn = document.createElement('button');
+    openBtn.type = 'button';
+    openBtn.className = 'five-moments-compass__recipe-edit-chip';
+    openBtn.dataset.testid = 'ritual-recipe-focus-open';
+    openBtn.textContent = t('RITUAL_RECIPE_EDIT_FOCUS_OPEN');
+    if (focusOpen) openBtn.classList.add('is-selected');
+    openBtn.addEventListener('click', () => {
+      if (focusOpen) return;
+      this.handlers.onRecipeFocusSelect?.('open');
+      this._refreshRecipeEdit();
+      this._refreshSittingTemplates();
+    });
+    focusBtns.appendChild(openBtn);
+    this.recipeEditFocusRow.append(focusLabel, focusBtns);
+
+    this.recipeEditSoundRow.innerHTML = '';
+    const soundLabel = document.createElement('span');
+    soundLabel.className = 'five-moments-compass__recipe-edit-row-label';
+    soundLabel.textContent = t('RITUAL_RECIPE_EDIT_SOUND');
+    const soundSelect = document.createElement('select');
+    soundSelect.className = 'five-moments-compass__recipe-edit-select';
+    soundSelect.dataset.testid = 'ritual-recipe-sound';
+    const prefOpt = document.createElement('option');
+    prefOpt.value = '';
+    prefOpt.textContent = t('RITUAL_RECIPE_EDIT_SOUND_USE_PREF');
+    soundSelect.appendChild(prefOpt);
+    const soundIds =
+      this.handlers.listSoundIds?.() ??
+      /** @type {readonly string[]} */ ([]);
+    for (const id of soundIds) {
+      const opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = id;
+      soundSelect.appendChild(opt);
+    }
+    soundSelect.value = recipe?.soundId ?? '';
+    soundSelect.addEventListener('change', () => {
+      const val = soundSelect.value;
+      this.handlers.onRecipeSoundSelect?.(val ? val : null);
+      this._refreshRecipeEdit();
+      this._refreshSittingTemplates();
+    });
+    this.recipeEditSoundRow.append(soundLabel, soundSelect);
+
+    this.recipeEditMoments.innerHTML = '';
+    const momentIds = ['arrive', 'focus', 'transition', 'reflect'];
+    for (const momentId of momentIds) {
+      const row = document.createElement('div');
+      row.className = 'five-moments-compass__recipe-edit-moment';
+      const label = document.createElement('span');
+      label.className = 'five-moments-compass__recipe-edit-row-label';
+      const labelKey = RECIPE_MOMENT_LABEL_KEYS[momentId];
+      label.textContent = labelKey ? t(labelKey) : momentId;
+      const select = document.createElement('select');
+      select.className = 'five-moments-compass__recipe-edit-select';
+      select.dataset.testid = `ritual-recipe-prompt-${momentId}`;
+      const defaultOpt = document.createElement('option');
+      defaultOpt.value = '';
+      defaultOpt.textContent = t('RITUAL_RECIPE_EDIT_PROMPT_DEFAULT');
+      select.appendChild(defaultOpt);
+      const promptIds =
+        this.handlers.listPromptIdsForMoment?.(momentId) ?? [];
+      for (const pid of promptIds) {
+        const opt = document.createElement('option');
+        opt.value = pid;
+        opt.textContent = pid;
+        select.appendChild(opt);
+      }
+      const current =
+        momentId === 'focus'
+          ? (recipe?.moments?.focus?.promptId ?? null)
+          : (recipe?.moments?.[momentId]?.promptId ?? null);
+      select.value = current ?? '';
+      select.addEventListener('change', () => {
+        const pid = select.value || null;
+        this.handlers.onRecipePromptSelect?.(momentId, pid);
+        this._refreshRecipeEdit();
+        this._refreshSittingTemplates();
+      });
+      const resetBtn = document.createElement('button');
+      resetBtn.type = 'button';
+      resetBtn.className = 'five-moments-compass__recipe-edit-reset-moment';
+      resetBtn.dataset.testid = `ritual-recipe-reset-${momentId}`;
+      resetBtn.textContent = t('RITUAL_RECIPE_EDIT_RESET_MOMENT');
+      resetBtn.addEventListener('click', () => {
+        this.handlers.onRecipeResetMoment?.(momentId);
+        this._refreshRecipeEdit();
+        this._refreshSittingTemplates();
+      });
+      row.append(label, select, resetBtn);
+      this.recipeEditMoments.appendChild(row);
     }
   }
 
@@ -421,6 +620,99 @@ export class FiveMomentsCompassUI {
         box-shadow: inset 0 0 0 1.5px rgba(196, 165, 116, 0.85);
       }
       .five-moments-compass__sitting-template:active {
+        transform: scale(0.98);
+      }
+      .five-moments-compass__recipe-edit {
+        margin: 0 0 14px;
+        padding-top: 4px;
+        border-top: ${GLASS_BORDER};
+      }
+      .five-moments-compass__recipe-edit[hidden] {
+        display: none !important;
+      }
+      .five-moments-compass__recipe-edit-label {
+        margin: 12px 0 10px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      .five-moments-compass__recipe-edit-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 10px;
+      }
+      .five-moments-compass__recipe-edit-row-label {
+        flex: 0 0 100%;
+        font-size: 0.78rem;
+        opacity: 0.88;
+      }
+      .five-moments-compass__recipe-edit-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .five-moments-compass__recipe-edit-chip {
+        appearance: none;
+        border: ${GLASS_BORDER};
+        background: ${GLASS_FILL_STRONG};
+        color: inherit;
+        font: inherit;
+        font-size: 0.78rem;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: transform 120ms ease;
+      }
+      .five-moments-compass__recipe-edit-chip.is-selected {
+        box-shadow: inset 0 0 0 1.5px rgba(196, 165, 116, 0.85);
+      }
+      .five-moments-compass__recipe-edit-chip:active {
+        transform: scale(0.97);
+      }
+      .five-moments-compass__recipe-edit-select {
+        flex: 1 1 160px;
+        min-width: 0;
+        font: inherit;
+        font-size: 0.8rem;
+        padding: 6px 8px;
+        border-radius: 10px;
+        border: ${GLASS_BORDER};
+        background: ${GLASS_FILL_STRONG};
+        color: inherit;
+      }
+      .five-moments-compass__recipe-edit-moments {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .five-moments-compass__recipe-edit-moment {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+      }
+      .five-moments-compass__recipe-edit-reset-moment,
+      .five-moments-compass__recipe-edit-reset-all {
+        appearance: none;
+        border: ${GLASS_BORDER};
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 0.76rem;
+        padding: 5px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: transform 120ms ease;
+      }
+      .five-moments-compass__recipe-edit-reset-all {
+        width: 100%;
+        margin-top: 4px;
+      }
+      .five-moments-compass__recipe-edit-reset-moment:active,
+      .five-moments-compass__recipe-edit-reset-all:active {
         transform: scale(0.98);
       }
       .five-moments-compass__actions {

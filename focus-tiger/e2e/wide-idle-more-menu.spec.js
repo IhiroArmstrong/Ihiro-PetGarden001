@@ -412,6 +412,34 @@ test('wide Idle: Five Moments Compass row opens card with backdrop dim', async (
   await expect(backdrop).toBeVisible({ timeout: 5_000 });
 });
 
+test('wide Idle: Compass ritual recipe edit forks user recipe on focus chip', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.evaluate(() => {
+    try {
+      localStorage.setItem('focus-tiger.five-moments-compass-seen.v1', '1');
+    } catch {
+      /* ignore */
+    }
+  });
+  const menu = await openWideMoreList(page, 'MENU_GROUP_PRACTICE');
+  await menu.locator('[data-proxy="five-moments"]').click();
+  const edit = page.getByTestId('ritual-recipe-edit');
+  await expect(edit).toBeVisible({ timeout: 5_000 });
+  await page.getByTestId('ritual-recipe-focus-25').click();
+  const authorType = await page.evaluate(() => {
+    try {
+      const raw = localStorage.getItem('focus-tiger.ritual-recipe.v1');
+      if (!raw) return null;
+      return JSON.parse(raw).authorType ?? null;
+    } catch {
+      return null;
+    }
+  });
+  expect(authorType).toBe('user');
+});
+
 test('wide Idle: Yin Collections row opens panel with backdrop dim', async ({
   page
 }) => {
