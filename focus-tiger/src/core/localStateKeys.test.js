@@ -125,6 +125,8 @@ import {
 import { CONFIDE_OBSERVATION_STORAGE_KEY } from './confide/confideObservationTelemetry.js';
 import { SEASONAL_WHISPER_STORAGE_KEY } from './seasonal/seasonalWhisperGate.js';
 import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.js';
+import { RITUAL_RECIPE_STORAGE_KEY } from './ritualRecipe/ritualRecipeStore.js';
+import { RITUAL_RECIPE_ANALYTICS_OPT_IN_STORAGE_KEY } from './ritualRecipe/recipeAnalytics.js';
 import { FOCUS_DURATION_STORAGE_KEY } from './focusDuration.js';
 import { AWAKEN_CHECKIN_STORAGE_KEY, recordAwakenCheckIn } from './awakenCheckInStore.js';
 import { INVITE_OUTCOME_STORAGE_KEY } from './inviteOutcomeStore.js';
@@ -263,7 +265,9 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   T54_RESEARCH_CONSENT_STORAGE_KEY,
   LAST_POST_FINGERPRINT_KEY,
   SEASONAL_WHISPER_STORAGE_KEY,
-  DESKTOP_CHECKOUT_PENDING_STORAGE_KEY
+  DESKTOP_CHECKOUT_PENDING_STORAGE_KEY,
+  RITUAL_RECIPE_STORAGE_KEY,
+  RITUAL_RECIPE_ANALYTICS_OPT_IN_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

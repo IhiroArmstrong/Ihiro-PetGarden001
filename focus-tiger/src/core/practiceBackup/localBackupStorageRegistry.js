@@ -86,6 +86,16 @@ export const LOCAL_BACKUP_EXCLUDE_ROWS = Object.freeze([
     key: 'focus-tiger.practice-backup.v1',
     tier: 'exclude-ephemeral',
     note: 'Device token / cloud opt-in — rebind on new device'
+  },
+  {
+    key: 'focus-tiger.ritual-recipe.v1',
+    tier: 'exclude-product',
+    note: 'Sitting recipe is preview-then-adopt; never overwrite-restore with practice backup'
+  },
+  {
+    key: 'focus-tiger.ritual-recipe-analytics-opt-in.v1',
+    tier: 'exclude-product',
+    note: 'Recipe analytics consent is independent of practice backup'
   }
 ]);
 
