@@ -12,7 +12,8 @@ import {
   CONFIDE_NARROW_MAX_PX,
   CONFIDE_WIDE_RAIL_MIN_PX,
   confideDockLeavesMidlineClear,
-  confideDockPlacement
+  confideDockPlacement,
+  confidePanelDockPlacement
 } from './confideDockPlacement.js';
 
 describe('confideDockPlacement', () => {
@@ -36,14 +37,19 @@ describe('confideDockPlacement', () => {
   });
 });
 
+describe('confidePanelDockPlacement (Confide card · T41 rail suspended)', () => {
+  it('keeps Confide centered at every width until PO re-enables dock', () => {
+    assert.equal(confidePanelDockPlacement(375), 'center');
+    assert.equal(confidePanelDockPlacement(700), 'center');
+    assert.equal(confidePanelDockPlacement(1280), 'center');
+  });
+});
+
 describe('ConfideToYinUI dock CSS', () => {
-  it('ships matching media queries so the card is not centered on wide', () => {
+  it('does not ship wide secondary dock media on the Confide root', () => {
     const here = dirname(fileURLToPath(import.meta.url));
-    const shared = readFileSync(join(here, 'wideSecondaryDockCss.js'), 'utf8');
     const confide = readFileSync(join(here, '../ui/ConfideToYinUI.js'), 'utf8');
-    assert.match(shared, /@media \(min-width: \$\{minWide\}px\) and \(max-width: \$\{maxStrip\}px\)/);
-    assert.match(shared, /right: max\(16px/);
-    assert.match(shared, /max-height: min\(42vh/);
-    assert.match(confide, /wideSecondaryDockCss\('\.confide-to-yin'/);
+    assert.doesNotMatch(confide, /wideSecondaryDockCss\('\.confide-to-yin'/);
+    assert.match(confide, /confidePanelDockPlacement/);
   });
 });

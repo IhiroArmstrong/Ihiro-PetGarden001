@@ -9,8 +9,7 @@
  */
 
 import { t, getLocale, onLocaleChange, setLocale } from '../locales/i18n.js';
-import { confideDockPlacement } from '../core/confideDockPlacement.js';
-import { wideSecondaryDockCss } from '../core/wideSecondaryDockCss.js';
+import { confidePanelDockPlacement } from '../core/confideDockPlacement.js';
 import { listPickerLocales } from '../locales/localePreference.js';
 import {
   canUseSystemTts,
@@ -610,7 +609,11 @@ export class ConfideToYinUI {
 
   _syncConfideDock() {
     const width = typeof window !== 'undefined' ? window.innerWidth : 0;
-    this.root.dataset.dock = confideDockPlacement(width);
+    this.root.dataset.dock = confidePanelDockPlacement(width);
+    if (typeof this.root.removeAttribute === 'function') {
+      this.root.removeAttribute('data-ft-glass-card');
+      delete this.root.dataset.ftGlassCard;
+    }
   }
 
   /**
@@ -2260,7 +2263,6 @@ export class ConfideToYinUI {
         transform: translate(-50%, 0);
         pointer-events: auto;
       }
-      ${wideSecondaryDockCss('.confide-to-yin', { slide: true })}
       .confide-to-yin__title {
         margin: 0 0 8px;
         font-size: 1.05rem;

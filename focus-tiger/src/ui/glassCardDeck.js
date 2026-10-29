@@ -80,6 +80,7 @@ export function glassCardAllowsTextSelect(target) {
  */
 export function glassCardAllowsDrag(target, card) {
   if (!card?.id || GLASS_CARD_KEEP_STYLESHEET_Z.has(card.id)) return false;
+  if (GLASS_CARD_NO_DRAG.has(card.id)) return false;
   if (!(target && typeof target.closest === 'function')) return false;
   if (target.closest(GLASS_CARD_INTERACTIVE)) return false;
   if (glassCardAllowsTextSelect(target)) return false;
@@ -90,6 +91,9 @@ export function glassCardAllowsDrag(target, card) {
 export const GLASS_CARD_KEEP_STYLESHEET_Z = Object.freeze(
   new Set(['yin-support-modal'])
 );
+
+/** Fixed layout cards — still in deck stack / max-open, but not pointer-dragged. */
+export const GLASS_CARD_NO_DRAG = Object.freeze(new Set(['confide-to-yin-card']));
 
 /**
  * @param {string} elementId
@@ -166,7 +170,9 @@ export function installGlassCardDeck(doc = document) {
   if (!doc?.body) return;
   for (const elementId of Object.values(GLASS_CARD_ELEMENT_IDS)) {
     const el = doc.getElementById(elementId);
-    if (el) el.dataset.ftGlassCard = '1';
+    if (!el) continue;
+    if (GLASS_CARD_NO_DRAG.has(elementId)) continue;
+    el.dataset.ftGlassCard = '1';
   }
   if (doc.body.dataset.ftGlassDeck === '1') return;
   doc.body.dataset.ftGlassDeck = '1';

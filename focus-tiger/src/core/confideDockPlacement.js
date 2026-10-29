@@ -28,3 +28,14 @@ export function confideDockPlacement(widthPx) {
 export function confideDockLeavesMidlineClear(placement) {
   return placement === 'right' || placement === 'bottom';
 }
+
+/**
+ * Confide panel only — T41 wide rail **temporarily suspended** (2026-10-29 PO).
+ * Listening pose is often blocked when docked; lip-sync is not a product path.
+ * Help Center / growth journey still use {@link confideDockPlacement} via T42.
+ * @param {number} [_widthPx]
+ * @returns {'center'}
+ */
+export function confidePanelDockPlacement(_widthPx) {
+  return 'center';
+}

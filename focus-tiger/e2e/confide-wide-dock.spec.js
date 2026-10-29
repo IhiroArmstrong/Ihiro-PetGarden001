@@ -25,22 +25,31 @@ async function openConfideCard(page) {
   await expect(page.getByTestId('confide-to-yin-card')).toBeVisible();
 }
 
-test('wide desktop Confide docks right of the midline', async ({ page }) => {
+test('wide desktop Confide stays centered (T41 dock suspended)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await openConfideCard(page);
   const card = page.getByTestId('confide-to-yin-card');
-  await expect(card).toHaveAttribute('data-dock', 'right');
+  await expect(card).toHaveAttribute('data-dock', 'center');
   const box = await card.boundingBox();
   expect(box).toBeTruthy();
-  expect(box.x).toBeGreaterThan(1280 * 0.5);
+  const mid = box.x + box.width / 2;
+  expect(Math.abs(mid - 1280 / 2)).toBeLessThan(80);
 });
 
-test('medium wide Confide docks as a bottom strip', async ({ page }) => {
+test('medium wide Confide stays centered (T41 dock suspended)', async ({ page }) => {
   await page.setViewportSize({ width: 700, height: 900 });
   await openConfideCard(page);
   const card = page.getByTestId('confide-to-yin-card');
-  await expect(card).toHaveAttribute('data-dock', 'bottom');
+  await expect(card).toHaveAttribute('data-dock', 'center');
   const box = await card.boundingBox();
   expect(box).toBeTruthy();
-  expect(box.y).toBeGreaterThan(900 * 0.45);
+  const mid = box.x + box.width / 2;
+  expect(Math.abs(mid - 700 / 2)).toBeLessThan(60);
+});
+
+test('Confide card is not a glass-card drag handle', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await openConfideCard(page);
+  const card = page.getByTestId('confide-to-yin-card');
+  await expect(card).not.toHaveAttribute('data-ft-glass-card', '1');
 });
