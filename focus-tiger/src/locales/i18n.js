@@ -113,6 +113,12 @@ export const COPY_POOLS = Object.freeze({
     'FOCUS_AWARENESS_1',
     'FOCUS_AWARENESS_2',
     'FOCUS_AWARENESS_3'
+  ],
+  /** Ritual Recipe · Deep work focus prompts (A1c). */
+  RITUAL_RECIPE_FOCUS_DEEP_HOLD: [
+    'RITUAL_RECIPE_FOCUS_DEEP_HOLD_1',
+    'RITUAL_RECIPE_FOCUS_DEEP_HOLD_2',
+    'RITUAL_RECIPE_FOCUS_DEEP_HOLD_3'
   ]
 });
 

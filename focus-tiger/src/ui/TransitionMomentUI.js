@@ -29,6 +29,7 @@ export class TransitionMomentUI {
    * @param {() => void} [handlers.onClose]
    * @param {() => void} [handlers.onPlayPalmsTogether]
    * @param {() => void} [handlers.onReturnIdle]
+   * @param {() => { id: string, text: string } | null} [handlers.resolveRecipeQuote]
    */
   constructor(mountRoot, store, handlers = {}) {
     this.mountRoot = mountRoot;
@@ -65,7 +66,10 @@ export class TransitionMomentUI {
     if (this._open) return false;
     if (this.handlers.requestSlot && !this.handlers.requestSlot()) return false;
 
-    const entry = this.store.resolveQuote(getLocale());
+    const recipeQuote = this.handlers.resolveRecipeQuote?.();
+    const entry =
+      recipeQuote ??
+      this.store.resolveQuote(getLocale());
     if (!entry?.text) {
       this.handlers.releaseSlot?.();
       return false;

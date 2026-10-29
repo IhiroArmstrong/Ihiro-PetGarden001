@@ -251,6 +251,8 @@ export class TigerReflectionMoment {
     this.companionObservationEl = null;
     this._reflectionCompanionBusy = false;
     this._reflectionCompanionSettled = false;
+    /** @type {readonly string[] | null} */
+    this._sessionQuestionKeys = null;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
     /** @type {VoiceInputChrome | null} */
@@ -261,6 +263,22 @@ export class TigerReflectionMoment {
 
   isOpen() {
     return Boolean(this.flow);
+  }
+
+  /**
+   * Ritual Recipe A1c: optional per-session Reflect question keys (length 3).
+   * @param {readonly string[] | null} keys
+   */
+  setSessionQuestionKeys(keys) {
+    if (keys && keys.length === 3) {
+      this._sessionQuestionKeys = keys;
+      return;
+    }
+    this._sessionQuestionKeys = null;
+  }
+
+  _questionKeys() {
+    return this._sessionQuestionKeys ?? REFLECTION_QUESTION_KEYS;
   }
 
   /**
@@ -282,7 +300,7 @@ export class TigerReflectionMoment {
         : null;
     this._intentionSource =
       this._sessionIntention && intentionSource === 'icon' ? 'icon' : 'typed';
-    this.flow = new ReflectionFlowState();
+    this.flow = new ReflectionFlowState(this._questionKeys().length);
     this._awaitingLastEchoHold = false;
     this._awaitingWisdomHold = false;
     this._reflectionCompanionBusy = false;
@@ -460,7 +478,7 @@ export class TigerReflectionMoment {
 
     const dots = document.createElement('div');
     dots.style.cssText = 'display:flex;gap:6px;';
-    this.dotEls = REFLECTION_QUESTION_KEYS.map(() => {
+    this.dotEls = this._questionKeys().map(() => {
       const dot = document.createElement('span');
       dot.style.cssText =
         'width:5px;height:5px;border-radius:50%;background:rgba(139,115,85,.25);transition:background 200ms ease;';
@@ -593,7 +611,7 @@ export class TigerReflectionMoment {
       stepIndex: this.flow.stepIndex,
       questionCount: this.flow.questionCount
     });
-    this.questionEl.textContent = t(REFLECTION_QUESTION_KEYS[qIndex]);
+    this.questionEl.textContent = t(this._questionKeys()[qIndex]);
     if (this.benefitHintEl) {
       this.benefitHintEl.textContent = t('REFLECTION_BENEFIT_HINT');
     }

@@ -35,6 +35,8 @@ export class FocusAwarenessCardUI {
     this._activeCopyKey = null;
     /** Session-local rotation (not lifetime seen). */
     this._poolIndex = 0;
+    /** @type {keyof typeof COPY_POOLS | null} */
+    this._sessionPoolKey = null;
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => {
       if (this._visible && this.root && this._activeCopyKey) {
@@ -51,7 +53,16 @@ export class FocusAwarenessCardUI {
   /** Reset pool cursor between Focus sessions. */
   resetSession() {
     this._poolIndex = 0;
+    this._sessionPoolKey = null;
     this.hide({ immediate: true });
+  }
+
+  /**
+   * @param {keyof typeof COPY_POOLS | null} poolKey
+   */
+  setSessionPoolKey(poolKey) {
+    this._sessionPoolKey = poolKey;
+    this._poolIndex = 0;
   }
 
   /**
@@ -61,7 +72,8 @@ export class FocusAwarenessCardUI {
   tryShow(opts = {}) {
     if (opts.busy === true) return false;
 
-    const keys = COPY_POOLS[POOL_KEY];
+    const poolName = this._sessionPoolKey ?? POOL_KEY;
+    const keys = COPY_POOLS[poolName];
     if (!keys || keys.length === 0) return false;
     const copyKey = keys[this._poolIndex % keys.length];
     this._poolIndex += 1;
