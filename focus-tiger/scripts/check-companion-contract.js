@@ -176,8 +176,12 @@ const SAMPLE_CATEGORY_TARGETS = Object.freeze({
   'C-04': 6,
   'C-07': 5,
   'C-09': 3,
-  'allow-neighbor': 8
+  'C-11': 5,
+  'allow-neighbor': 10
 });
+
+/** Total regression rows (bad + allow-neighbor); T55-more01 added C-11 + two allow neighbors. */
+export const COMPANION_CONTRACT_SAMPLE_COUNT = 49;
 
 /**
  * @param {typeof COMPANION_CONTRACT_SAMPLES} samples
@@ -207,8 +211,10 @@ export function evaluateCompanionContractSamples(samples = COMPANION_CONTRACT_SA
     counts[sample.category] = (counts[sample.category] || 0) + 1;
   }
 
-  if (samples.length !== 42) {
-    errors.push(`sample count ${samples.length} !== 42`);
+  if (samples.length !== COMPANION_CONTRACT_SAMPLE_COUNT) {
+    errors.push(
+      `sample count ${samples.length} !== ${COMPANION_CONTRACT_SAMPLE_COUNT}`
+    );
   }
   for (const [category, target] of Object.entries(SAMPLE_CATEGORY_TARGETS)) {
     if ((counts[category] || 0) !== target) {
