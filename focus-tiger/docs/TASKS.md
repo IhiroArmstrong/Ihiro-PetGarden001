@@ -545,6 +545,30 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `t61-user-set-work-end-time` · note · 搁置 · 未排期（Brief 待点头） · 2026-10-28
+
+用户自设收工时间 + 到点陪伴式邀请。B 类。须 **T60 → T57 → T58** 已合后才写代码。盘点 [`late-night-behavior-inventory.md`](../late-night-behavior-inventory.md) §2、§6。**不是** T58。
+
+### `t62-evening-practice-facts-practice-paper` · note · 已合 develop #1459 · 2026-10-28
+
+晚间练习事实进练习纸。与 **T61** 分开（T61 已合 #1455/#1456）。新本地 ledger + 单独同意 + T60 重置名单；**不进** T54 研究分享。盘点 §3。完整规格 [`task-evening-practice-facts-practice-paper.md`](../task-briefs/task-evening-practice-facts-practice-paper.md)。
+
+### `t63-co-practice-contract-surface` · feature · 排队中（Brief 已点头 2026-10-28；须 T64→T65 之后；无运行时） · 2026-10-28
+
+共修契约面：成长旅程详情里说明 Yin 可能开口的地方，并可去已有开关处关/降。不新增劝睡。规格 [`task-co-practice-contract-surface.md`](../task-briefs/task-co-practice-contract-surface.md)。
+
+### `t64-co-practice-copy-align` · feature · 排队中（Brief 待点头 · 实现中 · PR #1460） · 2026-10-28
+
+共修文案对齐：问号简介 `HINT_APP_PURPOSE_BODY` / `HINT_APP_PURPOSE_WELLNESS_BODY`（切片 `co-practice-copy.json`），补「不是禅师」+「一起练习、不催不评判」。卷/超卖扫描见 [`t64-co-practice-locale-scan.md`](../t64-co-practice-locale-scan.md)。规格 [`task-co-practice-copy-align.md`](../task-briefs/task-co-practice-copy-align.md)。
+
+### `t65-practice-paper-check-in-rhythm` · feature · 已合 develop #1461 · 2026-10-28
+
+观察纸露出 T52 顺/乱/倦近七日节律。不加新键、不打分。单测 `practicePaperCheckInRhythm.test.js`；e2e `practice-paper-check-in-rhythm.spec.js`。
+
+### `late-night-behavior-inventory` · note · 盘点已写（A 类；无运行时） · 2026-10-27
+
+T56 跟进：作息提醒未实现。只读盘点现网深夜行为；不改 T60→T57→T58 顺序。**T61/T62** 已治理登记（2026-10-28）。
+
 ### `co-practice-positioning` · feature · 已完成（口径 + C-11；无运行时） · 2026-10-26
 
 人机共修只加口径。适应层等 Brief 点头后再写代码。
