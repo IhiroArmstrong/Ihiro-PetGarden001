@@ -75,8 +75,13 @@ test('copyable lines on a glass card keep a text cursor and do not start a drag'
   assert.match(GLASS_CARD_DECK_STYLE, /user-select:\s*text/);
 });
 
-test('empty glass-card chrome still starts a drag', () => {
+test('Confide card never drags (fixed centered layout)', () => {
   const card = { id: 'confide-to-yin-card' };
+  assert.equal(glassCardAllowsDrag(fakePointerTarget(), card), false);
+});
+
+test('empty glass-card chrome still starts a drag', () => {
+  const card = { id: 'help-center' };
   assert.equal(glassCardAllowsDrag(fakePointerTarget(), card), true);
   assert.equal(glassCardAllowsTextSelect(fakePointerTarget()), false);
 });
