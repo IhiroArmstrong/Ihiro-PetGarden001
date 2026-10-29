@@ -1,0 +1,1 @@
+| T66 心念流 / 隐迹星云 v0 | UI可见 | 待人工测试 | **主路径**：⋯ → 偏好 → **心念流** → 开开关 → Idle 右下见 180×180 光点；开 Confide → 粒子略活；小虎回复后短时 third 档。**Focusing** 必藏。**默认关**。**测**：`node --test src/core/mindflowNebula/mindflowNebulaStore.test.js` · hover 见免责声明 · 不挡 Support FAB / Sit | — | — | — | `MindflowNebulaChromeUI.js` · Brief `task-mindflow-nebula-v0.md` | 2026-10-29 |

@@ -115,6 +115,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#input-rhythm-preference'
   }),
+  'mindflow-nebula': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#mindflow-nebula-preference'
+  }),
   'today-direction': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#cold-start-goal-card'

@@ -143,6 +143,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     close: true,
     stage: 'inputRhythm'
   },
+  'mindflow-nebula': {
+    handler: 'onMindflowNebula',
+    close: true,
+    stage: 'mindflowNebula'
+  },
   'today-direction': { handler: 'onTodayDirection', close: true },
   'ground-exercise': { handler: 'onGroundExercise', close: true },
   'five-moments': { handler: 'onFiveMoments', close: true },
@@ -413,7 +418,8 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   focusCircle: 'ft-narrow-stage-focus-circle',
   alwaysOnTop: 'ft-narrow-stage-always-on-top',
   windowLayout: 'ft-narrow-stage-window-layout',
-  inputRhythm: 'ft-narrow-stage-input-rhythm'
+  inputRhythm: 'ft-narrow-stage-input-rhythm',
+  mindflowNebula: 'ft-narrow-stage-mindflow-nebula'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -427,6 +433,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   alwaysOnTop: 'ft-wide-stage-always-on-top',
   windowLayout: 'ft-wide-stage-window-layout',
   inputRhythm: 'ft-wide-stage-input-rhythm',
+  mindflowNebula: 'ft-wide-stage-mindflow-nebula',
   localBackup: 'ft-wide-stage-local-backup',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -818,6 +825,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
           testId: 'idle-input-rhythm'
         }
       : null,
+    {
+      proxy: 'mindflow-nebula',
+      labelKey: 'MINDFLOW_NEBULA_MENU_LABEL',
+      testId: 'idle-mindflow-nebula'
+    },
     {
       proxy: 'today-direction',
       labelKey: 'TODAY_DIRECTION_MENU_LABEL',

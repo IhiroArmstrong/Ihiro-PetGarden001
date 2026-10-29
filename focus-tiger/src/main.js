@@ -37,6 +37,13 @@ import {
   resolveOfficialTemplateIdForRecipe
 } from './core/ritualRecipe/officialSittingTemplateSelection.js';
 import {
+  applyUserRecipeEdit,
+  listPromptIdsForMoment,
+  resetUserRecipeMoment,
+  resetUserRecipeToDefaultSitting,
+  RITUAL_RECIPE_SOUND_IDS
+} from './core/ritualRecipe/ritualRecipeUserEdit.js';
+import {
   emitRecipeSessionStarted,
   resolveSittingSessionPlan
 } from './core/ritualRecipe/sittingSessionPlan.js';
@@ -171,6 +178,10 @@ import { LanguagePreferenceUI } from './ui/LanguagePreferenceUI.js';
 import { AlwaysOnTopPreferenceUI } from './ui/AlwaysOnTopPreferenceUI.js';
 import { WindowLayoutPreferenceUI } from './ui/WindowLayoutPreferenceUI.js';
 import { InputRhythmPreferenceUI } from './ui/InputRhythmPreferenceUI.js';
+import { MindflowNebulaChromeUI } from './ui/MindflowNebulaChromeUI.js';
+import { MindflowNebulaPreferenceUI } from './ui/MindflowNebulaPreferenceUI.js';
+import { readMindflowNebulaEnabled } from './core/mindflowNebula/mindflowNebulaStore.js';
+import { getSystemTtsBridge } from './core/systemTtsBridge.js';
 import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
@@ -1222,6 +1233,14 @@ async function init() {
   let alwaysOnTopPreferenceUI = null;
   /** @type {InputRhythmPreferenceUI | null} */
   let inputRhythmPreferenceUI = null;
+  /** @type {MindflowNebulaChromeUI | null} */
+  let mindflowNebulaChrome = null;
+  /** @type {MindflowNebulaPreferenceUI | null} */
+  let mindflowNebulaPreferenceUI = null;
+  /** @type {null | (() => void)} */
+  let mindflowNebulaTtsUnsub = null;
+  /** @type {null | ReturnType<typeof setTimeout>} */
+  let mindflowNebulaSpeakTimer = null;
   /** @type {WindowLayoutPreferenceUI | null} */
   let windowLayoutPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
@@ -1580,6 +1599,41 @@ async function init() {
     }
   });
   window.__windowLayoutPreference = windowLayoutPreferenceUI;
+
+  const syncMindflowNebulaFromStorage = () => {
+    const enabled = readMindflowNebulaEnabled(
+      typeof localStorage !== 'undefined' ? localStorage : null
+    );
+    mindflowNebulaChrome?.setEnabled(enabled);
+    mindflowNebulaChrome?.refresh?.();
+  };
+  const clearMindflowNebulaSpeakPulse = () => {
+    if (mindflowNebulaSpeakTimer) {
+      clearTimeout(mindflowNebulaSpeakTimer);
+      mindflowNebulaSpeakTimer = null;
+    }
+    mindflowNebulaTtsUnsub?.();
+    mindflowNebulaTtsUnsub = null;
+    mindflowNebulaChrome?.setCompanionSpeaking(false);
+  };
+  const pulseMindflowNebulaCompanionSpeak = () => {
+    clearMindflowNebulaSpeakPulse();
+    mindflowNebulaChrome?.setCompanionSpeaking(true);
+    const bridge = getSystemTtsBridge();
+    if (bridge && typeof bridge.onStatus === 'function') {
+      let sawSpeaking = false;
+      mindflowNebulaTtsUnsub = bridge.onStatus((payload) => {
+        const status = payload && payload.status;
+        if (status === 'speaking') sawSpeaking = true;
+        if (sawSpeaking && (status === 'done' || status === 'error')) {
+          clearMindflowNebulaSpeakPulse();
+        }
+      });
+    }
+    mindflowNebulaSpeakTimer = setTimeout(() => {
+      clearMindflowNebulaSpeakPulse();
+    }, 6000);
+  };
   inputRhythmPreferenceUI = new InputRhythmPreferenceUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-wide-stage-input-rhythm');
@@ -1587,6 +1641,21 @@ async function init() {
     }
   });
   window.__inputRhythmPreference = inputRhythmPreferenceUI;
+
+  mindflowNebulaChrome = new MindflowNebulaChromeUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
+  window.__mindflowNebulaChrome = mindflowNebulaChrome;
+  mindflowNebulaPreferenceUI = new MindflowNebulaPreferenceUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onEnabledChange: () => syncMindflowNebulaFromStorage(),
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-mindflow-nebula');
+      document.body.classList.remove('ft-narrow-stage-mindflow-nebula');
+    }
+  });
+  window.__mindflowNebulaPreference = mindflowNebulaPreferenceUI;
+  syncMindflowNebulaFromStorage();
   const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-local-backup');
@@ -1626,7 +1695,45 @@ async function init() {
       onSittingTemplateSelect: (templateId) => {
         applyOfficialSittingTemplate(templateId);
         bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
-      }
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      getRitualRecipe: () => readRitualRecipe(),
+      onRecipeFocusSelect: (minutesOrOpen) => {
+        applyUserRecipeEdit({ focusMinutes: minutesOrOpen });
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipeSoundSelect: (soundId) => {
+        applyUserRecipeEdit({ soundId });
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipePromptSelect: (momentId, promptId) => {
+        applyUserRecipeEdit({
+          momentPrompt: {
+            momentId: /** @type {'arrive' | 'focus' | 'transition' | 'reflect'} */ (
+              momentId
+            ),
+            promptId
+          }
+        });
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipeResetMoment: (momentId) => {
+        resetUserRecipeMoment(
+          /** @type {'arrive' | 'focus' | 'transition' | 'reflect'} */ (momentId)
+        );
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipeResetAll: () => {
+        resetUserRecipeToDefaultSitting();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      listPromptIdsForMoment,
+      listSoundIds: () => RITUAL_RECIPE_SOUND_IDS
     })
   );
   window.__fiveMomentsCompass = bootMomentHosts.fiveMomentsCompassUI;
@@ -2324,10 +2431,15 @@ async function init() {
       closeGrowthOverlayCards({ except: 'confide' });
       wakeYinIfSleeping();
       emotionController.enterConfideListeningBaseline();
+      mindflowNebulaChrome?.setConfideOpen(true);
+      mindflowNebulaChrome?.refresh?.();
     },
     onClose: () => {
       companionIdleUnloadScheduler.schedule();
       emotionController.leaveConfideListeningBaseline();
+      clearMindflowNebulaSpeakPulse();
+      mindflowNebulaChrome?.setConfideOpen(false);
+      mindflowNebulaChrome?.refresh?.();
     },
     onOpenMemoryPanel: () => {
       closeGrowthOverlayCards({ except: 'yin-memory' });
@@ -2344,6 +2456,9 @@ async function init() {
     },
     onCloseJourneyLog: () => {
       journeyLogUI.close();
+    },
+    onReplied: () => {
+      pulseMindflowNebulaCompanionSpeak();
     },
     onReplyAckGesture: ({ route }) => {
       const emotionKey = confideReplyAckEmotionKey({ route });
@@ -3977,6 +4092,7 @@ async function init() {
   function beginBreathLanternPresence() {
     quietTogetherLanternsChrome.setContributing(true);
     focusCirclePresenceChrome.setFocusing(false);
+    mindflowNebulaChrome?.setFocusing(false);
     focusCircleBesideSeatsChrome.setFocusing(false);
     bootMomentHosts.focusCircleWitnessChrome.setFocusing(false);
     setFocusCirclePresenceContributing(true);
@@ -4421,6 +4537,9 @@ async function init() {
     },
     onInputRhythm: () => {
       inputRhythmPreferenceUI?.openPanel();
+    },
+    onMindflowNebula: () => {
+      mindflowNebulaPreferenceUI?.openPanel();
     },
     onTodayDirection: () => {
       openTodayDirectionManual();
@@ -5221,6 +5340,7 @@ async function init() {
     immersivePresenceUI.setFocusing(false);
     quietTogetherLanternsChrome.setFocusing(false);
     focusCirclePresenceChrome.setFocusing(false);
+    mindflowNebulaChrome?.setFocusing(false);
     focusCircleBesideSeatsChrome.setFocusing(false);
     bootMomentHosts.focusCircleWitnessChrome.setFocusing(false);
     void stopLanternHeartbeat();
@@ -5446,6 +5566,7 @@ async function init() {
     immersivePresenceUI.setFocusing(true);
     quietTogetherLanternsChrome.setFocusing(true);
     focusCirclePresenceChrome.setFocusing(true);
+    mindflowNebulaChrome?.setFocusing(true);
     focusCircleBesideSeatsChrome.setFocusing(true);
     bootMomentHosts.focusCircleWitnessChrome.setFocusing(true);
     startLanternHeartbeat();
