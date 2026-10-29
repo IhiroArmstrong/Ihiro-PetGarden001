@@ -62,4 +62,17 @@ describe('isQueueGovernanceCoPrAllowed', () => {
       true
     );
   });
+
+  it('allows T66 gift-art lock and join-ledger Brief with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/CO_PRACTICE_GIFT_ART.md',
+        'focus-tiger/docs/task-briefs/task-co-practice-session-join-ledger.md',
+        'focus-tiger/docs/task-entries/t66-co-practice-session-join-ledger.md'
+      ]),
+      null
+    );
+  });
 });
