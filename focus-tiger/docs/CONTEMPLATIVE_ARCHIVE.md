@@ -2,6 +2,7 @@
 
 > 地位：长期里程碑 **文学性纪念内容** 的规范 + 候选表。语气底线仍看 `EMOTION_BIBLE.md` §观察式；反馈分级仍看 `PRODUCT_POSITIONING.md` §八；统一练习 score 仍看 `practiceBadgeAward` / 芥子须弥 Brief。  
 > **无新运行时。** 本文件不改 Quiet Line 日抽、Daily Wisdom 14、Calm Action Wisdom 70、MilestoneGlow，也不新开第二枚纪念印。  
+> **不是**共修纪念画（画、独立 id、可接 T57/T58 证据）：见 [`CO_PRACTICE_GIFT_ART.md`](./CO_PRACTICE_GIFT_ART.md)。  
 > 产品露出：纪念印卡 **EN 主文 + 原文印面**（中/日可作印跋）；与 v1 金句池「产品句 en+ja、中文不进日签」不矛盾——这是合法例外。  
 > 日期：2026-09-06
 

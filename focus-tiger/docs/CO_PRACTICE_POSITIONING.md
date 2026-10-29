@@ -42,6 +42,7 @@ Focus Tiger 仍然是一只陪你练习专注和觉察的小老虎。可以再�
 - 倾诉原文会用来训练 Yin。
 - 专注进行中可以向 Yin 倾诉。
 - Yin 看出你熬夜、连续熬夜多少小时、该改善作息。
+- 因为「Yin 已适配你」而得到一张画、共修晋级礼（方向锁 [`CO_PRACTICE_GIFT_ART.md`](./CO_PRACTICE_GIFT_ART.md)；发放未实现）。
 
 「Yin 不是治疗师」与「不是禅师 / not a zen master」已写在问号简介身心免责（**T64**）。问号产品说明末尾已加「可以一起练习；不催、不评判」（**T64**）。
 
@@ -67,6 +68,7 @@ Focus Tiger 仍然是一只陪你练习专注和觉察的小老虎。可以再�
 | 用户自设收工时间（到点轻问） | **已实现** | **T61** #1455。只陪用户自己的钟 | 可说你设过几点收工。不得说 Yin 看出熬夜 |
 | 晚间练习事实（可选同意 · 练习纸中性句） | **已实现** | **T62** #1459。滚动 7 日去重；默认关；**不进** T54 分享 | 仅当用户开同意且观察纸有句时；不得说睡眠诊断或 Yin 看出熬夜 |
 | 作息提醒（Yin 判断熬夜并开口） | **未实现 / 不做** | 盘点 [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md)。深夜披毯与 0–6 免责不是睡眠诊断。**不是** T62 事实句 | 不得说 Yin 看出你熬夜 |
+| 共修纪念画（练到点发一张非货架画） | **未实现** | 方向锁 [`CO_PRACTICE_GIFT_ART.md`](./CO_PRACTICE_GIFT_ART.md)。T57/T58 已合 ≠ 已能算 B/C | 不得说晋级礼、适配礼、懂你所以给你画 |
 | 共修契约面（一处看清开口与开关） | **已实现** | **T63** #1463；[`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) | 可说成长旅程详情有说明与开关入口；不得说分级干涉或 Yin 懂你 |
 | 问号简介写「不是禅师」+「一起练习」 | **已实现** | **T64** #1460；[`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) | 可说问号简介已对齐 C-11；不得超卖未实现能力 |
 | 观察纸看见近七日顺 / 乱 / 倦 | **已实现** | **T65** [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md)；只读 T52 结束打卡，不打分 | 仍禁止说「觉察曲线」或成长分数 |

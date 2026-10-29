@@ -85,4 +85,4 @@
 
 ## 本版不做
 
-经验值、金币式成长、排行榜、等级、五维雷达或五条分数、成长倒退、百分比终点、远程阶段门槛、新的练习次数终身计数器、新的 `scoreFormula`。
+经验值、金币式成长、排行榜、等级、五维雷达或五条分数、成长倒退、百分比终点、远程阶段门槛、新的练习次数终身计数器、新的 `scoreFormula`。五个阶段名**不**当解锁器；共修纪念画的分钟门槛须错开 [`GROWTH_JOURNEY_IMPLEMENTATION.md`](./GROWTH_JOURNEY_IMPLEMENTATION.md) 的 35 / 360 / 720 / 2160，见 [`CO_PRACTICE_GIFT_ART.md`](./CO_PRACTICE_GIFT_ART.md)。
