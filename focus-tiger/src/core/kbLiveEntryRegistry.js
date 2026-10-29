@@ -398,6 +398,24 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/ui/AmbientSoundscapeUI.js'
     ])
   }),
+
+  Object.freeze({
+    id: 'kb-live-mindflow-nebula',
+    surface: 'menu',
+    proxy: 'mindflow-nebula',
+    labelKeys: Object.freeze(['MINDFLOW_NEBULA_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Mindflow nebula',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'mindflow-nebula'",
+      'MINDFLOW_NEBULA_MENU_LABEL',
+      'mindflow-nebula-preference'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/ui/MindflowNebulaPreferenceUI.js'
+    ])
+  }),
   Object.freeze({
     id: 'kb-live-today-direction',
     surface: 'menu',

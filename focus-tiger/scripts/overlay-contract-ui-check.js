@@ -53,6 +53,7 @@ const WHITELIST_FILES = new Set([
   'WideIdleMoreMenu.js',
   'HomeSanctuaryNavFanUI.js',
   'ReminderPreferenceUI.js',
+  'MindflowNebulaPreferenceUI.js',
   'ft-onboarding-hint-bubble.js',
   'HonestyBridgeCtaUI.js',
   'YinPersonalMemoryUI.js',

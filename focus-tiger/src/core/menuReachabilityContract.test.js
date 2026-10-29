@@ -11,6 +11,7 @@ import {
   listMenuReachabilityRows
 } from './menuReachabilityContract.js';
 import { listSecondaryChromeEntries } from './idleChromeOrchestration.js';
+import { wideMoreMenuGroupForProxy } from './wideMenuRadialLayout.js';
 
 describe('menuReachabilityContract', () => {
   it('covers every catalog proxy on wide and narrow Idle product=1', () => {
@@ -46,6 +47,20 @@ describe('menuReachabilityContract', () => {
     const account = rows.find((r) => r.proxy === 'account');
     assert.equal(account?.interactive, false);
     assert.equal(account?.contract.kind, 'static-row');
+  });
+
+  it('maps every wide-more clickable row to a menu group for e2e walk', () => {
+    const rows = listMenuReachabilityRows('wide-more');
+    const clickable = rows.filter(
+      (r) =>
+        r.contract.kind === 'open-panel' || r.contract.kind === 'open-external'
+    );
+    for (const row of clickable) {
+      assert.ok(
+        wideMoreMenuGroupForProxy(row.proxy),
+        `${row.proxy} needs WIDE_MORE_PROXY_MENU_GROUP (collapsed group hides row in menu-full-reachability)`
+      );
+    }
   });
 
   it('every open-panel mapping has a result selector', () => {

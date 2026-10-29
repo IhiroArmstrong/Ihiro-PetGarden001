@@ -1,0 +1,29 @@
+{
+  "en": {
+    "MINDFLOW_NEBULA_MENU_LABEL": "Mindflow nebula",
+    "MINDFLOW_NEBULA_PREF_TITLE": "Mindflow · latent trace",
+    "MINDFLOW_NEBULA_PREF_TOGGLE": "Show the nebula beside Yin",
+    "MINDFLOW_NEBULA_PREF_HINT": "A gentle particle field for mood, not a readout of thoughts. Off by default.",
+    "MINDFLOW_NEBULA_PREF_CLOSE": "Close",
+    "MINDFLOW_NEBULA_HOVER": "A poetic trace of dialogue flow—not a precise map of what anyone is thinking.",
+    "MINDFLOW_NEBULA_SAVE_FAILED": "Could not save this preference. Try again."
+  },
+  "zh": {
+    "MINDFLOW_NEBULA_MENU_LABEL": "心念流",
+    "MINDFLOW_NEBULA_PREF_TITLE": "心念流 · 隐迹星云",
+    "MINDFLOW_NEBULA_PREF_TOGGLE": "在小虎旁显示星云",
+    "MINDFLOW_NEBULA_PREF_HINT": "只是对话节奏的意象化光点，不是读心。默认关闭。",
+    "MINDFLOW_NEBULA_PREF_CLOSE": "关闭",
+    "MINDFLOW_NEBULA_HOVER": "这是对话过程中心念向量的流变投影，是意象化的展示，不代表精确的想法。",
+    "MINDFLOW_NEBULA_SAVE_FAILED": "偏好没能保存，请再试一次。"
+  },
+  "ja": {
+    "MINDFLOW_NEBULA_MENU_LABEL": "心の流れ",
+    "MINDFLOW_NEBULA_PREF_TITLE": "心の流れ · 痕跡の星雲",
+    "MINDFLOW_NEBULA_PREF_TOGGLE": "寅のそばに星雲を表示",
+    "MINDFLOW_NEBULA_PREF_HINT": "対話のリズムを映す粒子です。思考の読取りではありません。初期はオフ。",
+    "MINDFLOW_NEBULA_PREF_CLOSE": "閉じる",
+    "MINDFLOW_NEBULA_HOVER": "対話の流れをたとえた表示であり、正確な考えを示すものではありません。",
+    "MINDFLOW_NEBULA_SAVE_FAILED": "設定を保存できませんでした。もう一度お試しください。"
+  }
+}
