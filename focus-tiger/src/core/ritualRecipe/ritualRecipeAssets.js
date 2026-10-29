@@ -11,11 +11,21 @@
 
 export const RITUAL_RECIPE_DEFAULT_ROOM_ID = 'room.default';
 
-/** Placeholder prompt ids from A1 spec examples; unknown at runtime → null (A1c). */
+/**
+ * Catalog prompt ids. Default sitting uses null on every moment.
+ * Deep / ADHD / Evening ids are design-locked for A4; A1c maps them to locale/pools.
+ */
 export const RITUAL_RECIPE_PROMPT_IDS = Object.freeze([
   'arrive.soft',
   'transition.hand',
-  'reflect.line'
+  'reflect.line',
+  'arrive.deep.quiet',
+  'focus.deep.hold',
+  'transition.deep.return',
+  'reflect.deep.note',
+  'arrive.evening.soft',
+  'transition.evening.rest',
+  'reflect.evening.close'
 ]);
 
 export const RITUAL_RECIPE_SOUND_IDS = Object.freeze([

@@ -44,6 +44,7 @@ test('Companion expand stages wide+narrow so Breath home ball can hide', () => {
 
 test('Focusing auto-starts sitting music on the same gesture as the start bell', () => {
   assert.match(mainSrc, /ambientSoundscape\.startSittingMusic/);
+  assert.match(mainSrc, /recipeSoundId: sittingPlan\.soundId/);
   assert.equal((mainSrc.match(/sessionCues\.playStart/g) || []).length, 2);
 });
 
