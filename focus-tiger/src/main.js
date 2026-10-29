@@ -37,6 +37,13 @@ import {
   resolveOfficialTemplateIdForRecipe
 } from './core/ritualRecipe/officialSittingTemplateSelection.js';
 import {
+  applyUserRecipeEdit,
+  listPromptIdsForMoment,
+  resetUserRecipeMoment,
+  resetUserRecipeToDefaultSitting,
+  RITUAL_RECIPE_SOUND_IDS
+} from './core/ritualRecipe/ritualRecipeUserEdit.js';
+import {
   emitRecipeSessionStarted,
   resolveSittingSessionPlan
 } from './core/ritualRecipe/sittingSessionPlan.js';
@@ -1626,7 +1633,45 @@ async function init() {
       onSittingTemplateSelect: (templateId) => {
         applyOfficialSittingTemplate(templateId);
         bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
-      }
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      getRitualRecipe: () => readRitualRecipe(),
+      onRecipeFocusSelect: (minutesOrOpen) => {
+        applyUserRecipeEdit({ focusMinutes: minutesOrOpen });
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipeSoundSelect: (soundId) => {
+        applyUserRecipeEdit({ soundId });
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipePromptSelect: (momentId, promptId) => {
+        applyUserRecipeEdit({
+          momentPrompt: {
+            momentId: /** @type {'arrive' | 'focus' | 'transition' | 'reflect'} */ (
+              momentId
+            ),
+            promptId
+          }
+        });
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipeResetMoment: (momentId) => {
+        resetUserRecipeMoment(
+          /** @type {'arrive' | 'focus' | 'transition' | 'reflect'} */ (momentId)
+        );
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      onRecipeResetAll: () => {
+        resetUserRecipeToDefaultSitting();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
+        bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
+      },
+      listPromptIdsForMoment,
+      listSoundIds: () => RITUAL_RECIPE_SOUND_IDS
     })
   );
   window.__fiveMomentsCompass = bootMomentHosts.fiveMomentsCompassUI;
