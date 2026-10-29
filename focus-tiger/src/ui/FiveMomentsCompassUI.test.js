@@ -15,4 +15,5 @@ const src = readFileSync(join(here, 'FiveMomentsCompassUI.js'), 'utf8');
 test('Compass moment chips and card buttons have :active press (Z Reflect)', () => {
   assert.match(src, /\.five-moments-compass__moment:active:not\(:disabled\)/);
   assert.match(src, /\.five-moments-compass__btn:active/);
+  assert.match(src, /\.five-moments-compass__sitting-template:active/);
 });
