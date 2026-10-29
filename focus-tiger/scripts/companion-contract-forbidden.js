@@ -65,6 +65,31 @@ export const COMPANION_FORBIDDEN_PATTERNS = Object.freeze([
     id: 'c09-internal',
     redline: 'C-09',
     re: /\b(?:SETTLED|DRIFTING|STRUGGLING|FLOW_PROTECT|AWAY_INVITE|LONG_SIT_INVITE)\b/
+  },
+  {
+    id: 'c11-adapts-understands',
+    redline: 'C-11',
+    re: /越来越懂|更懂你了|understands you better|adapts to you|Yin is learning you/i
+  },
+  {
+    id: 'c11-unverified-efficacy',
+    redline: 'C-11',
+    re: /已评估有效|evaluated as effective|proven effective|共修(?:已经)?(?:被)?(?:证明|评估).*有效/i
+  },
+  {
+    id: 'c11-confide-training',
+    redline: 'C-11',
+    re: /倾诉原文|learns from (?:what )?you confide|from your confessions to train/i
+  },
+  {
+    id: 'c11-focus-confide',
+    redline: 'C-11',
+    re: /(?:while|during) (?:you )?focus(?:ing)?[, ]+(?:you can )?(?:open )?confide|专注(?:途中|进行中|的时候).*(?:倾诉|Confide)/i
+  },
+  {
+    id: 'c11-late-night-diagnosis',
+    redline: 'C-11',
+    re: /看出.*熬夜|noticed you stayed up|you stayed up too late again|连续熬夜/i
   }
 ]);
 

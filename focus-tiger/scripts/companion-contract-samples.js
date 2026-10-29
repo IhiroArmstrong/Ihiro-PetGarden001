@@ -380,6 +380,56 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     redline: 'C-09'
   },
   {
+    id: 'cc-c11-01',
+    lang: 'en',
+    scene: 'marketing',
+    category: 'C-11',
+    expect: 'hit',
+    utterance: 'Yin adapts to you and understands you better each day.',
+    direction: 'Do not imply personalization that is not shipped; see CO_PRACTICE_POSITIONING.',
+    redline: 'C-11'
+  },
+  {
+    id: 'cc-c11-02',
+    lang: 'en',
+    scene: 'marketing',
+    category: 'C-11',
+    expect: 'hit',
+    utterance: 'Co-practice has been evaluated as effective in our studies.',
+    direction: 'Do not claim efficacy until T54 90-day or equivalent is done and PO allows.',
+    redline: 'C-11'
+  },
+  {
+    id: 'cc-c11-03',
+    lang: 'en',
+    scene: 'confide',
+    category: 'C-11',
+    expect: 'hit',
+    utterance: 'Yin learns from what you confide to train the model.',
+    direction: 'Confide does not train on user confessions; do not suggest it.',
+    redline: 'C-11'
+  },
+  {
+    id: 'cc-c11-04',
+    lang: 'en',
+    scene: 'companion-hud',
+    category: 'C-11',
+    expect: 'hit',
+    utterance: 'While focusing, you can open Confide anytime.',
+    direction: 'Confide is not available during active focus; do not imply.',
+    redline: 'C-11'
+  },
+  {
+    id: 'cc-c11-05',
+    lang: 'zh',
+    scene: 'moment-whisper',
+    category: 'C-11',
+    expect: 'hit',
+    utterance: '阿寅看出你熬夜了，该早点休息。',
+    direction: 'No sleep diagnosis; T61 is user-set end time only, not Yin noticing late nights.',
+    redline: 'C-11'
+  },
+  {
     id: 'cc-allow-01',
     lang: 'en',
     scene: 'refocus',
@@ -457,6 +507,27 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     expect: 'allow',
     utterance: 'This week: three days with a sit, about 25 minutes on the last one.',
     direction: 'Minutes and practice-day counts stay facts. They are not a person-score.',
+    redline: null
+  },
+  {
+    id: 'cc-allow-09',
+    lang: 'en',
+    scene: 'focus-chip',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'Same as last time.',
+    direction: 'T59 duration echo is allowed; do not stack “Yin understands you” on top.',
+    redline: null
+  },
+  {
+    id: 'cc-allow-10',
+    lang: 'en',
+    scene: 'wellness-disclaimer',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance:
+      'We can practice together. No rush, no judgment. Yin is a practice companion, not a zen master.',
+    direction: 'T64 aligned copy; allowed co-practice + disclaimer without C-11 oversell.',
     redline: null
   }
 ]);

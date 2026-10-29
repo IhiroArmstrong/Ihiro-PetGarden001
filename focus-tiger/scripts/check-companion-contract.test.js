@@ -23,7 +23,7 @@ test('contract §D names regression vs coverage and ja gap', () => {
     join(dirname(fileURLToPath(import.meta.url)), '../docs/COMPANION_CONTRACT.md'),
     'utf8'
   );
-  assert.match(contract, /34\/34 是回归结果，不是覆盖率，也不是「已验证」/);
+  assert.match(contract, /39\/39 是回归结果（坏样本），不是覆盖率，也不是「已验证」/);
   assert.match(contract, /这个数字对外不能引用/);
   assert.match(contract, /日文目前实际上未覆盖/);
 });
@@ -63,6 +63,10 @@ test('forbidden literals hit the named redlines', () => {
   assert.equal(matchForbiddenPatterns('your flow index is 12')[0].redline, 'C-02');
   assert.equal(matchForbiddenPatterns('你错过了三天')[0].redline, 'C-04');
   assert.equal(matchForbiddenPatterns('SETTLED today')[0].redline, 'C-09');
+  assert.equal(
+    matchForbiddenPatterns('Yin adapts to you and understands you better each day.')[0].redline,
+    'C-11'
+  );
 });
 
 test('new live hit fails without an exemption', () => {
@@ -122,14 +126,14 @@ test('exempted hit passes at the listed id', () => {
 
 test('sample rates stay split and meet the proposed 1.0/1.0 gate', () => {
   const result = evaluateCompanionContract({ strings: [], exemptions: [] });
-  assert.equal(result.sample_bad_hit_rate, '34/34');
-  assert.equal(result.sample_allow_pass_rate, '8/8');
+  assert.equal(result.sample_bad_hit_rate, '39/39');
+  assert.equal(result.sample_allow_pass_rate, '10/10');
   assert.notEqual(result.sample_bad_hit_rate, result.sample_allow_pass_rate);
   assert.equal(result.ok, true, result.errors.join('; '));
 });
 
-test('sample set is 42 rows, no C-10, fields complete', () => {
-  assert.equal(COMPANION_CONTRACT_SAMPLES.length, 42);
+test('sample set is 49 rows, no C-10, fields complete', () => {
+  assert.equal(COMPANION_CONTRACT_SAMPLES.length, 49);
   const report = evaluateCompanionContractSamples();
   assert.deepEqual(report.errors, []);
   assert.ok(COMPANION_CONTRACT_SAMPLES.every((row) => row.category !== 'C-10'));
@@ -140,8 +144,8 @@ test('a missed bad sample drops bad-hit rate without mixing allow-pass', () => {
     index === 0 ? { ...row, utterance: 'Hello there.' } : row
   );
   const report = evaluateCompanionContractSamples(mutated);
-  assert.equal(report.sample_bad_hit_rate, '33/34');
-  assert.equal(report.sample_allow_pass_rate, '8/8');
+  assert.equal(report.sample_bad_hit_rate, '38/39');
+  assert.equal(report.sample_allow_pass_rate, '10/10');
   assert.ok(report.errors.some((err) => /cc-c01-01/.test(err)));
 });
 
