@@ -42,6 +42,7 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 - `focus-tiger.entitlement-cache.v1` — recompute on import (`practiceBackupEntitlementReconcile.js`)
 - `focus-tiger.daily-completions.v1` — derive from practice-days (`practiceBackupDailyCompletionReconcile.js`)
 - `focus-tiger.practice-backup.v1` — device cloud opt-in token
+- `focus-tiger.ritual-recipe.v1` / `focus-tiger.ritual-recipe-analytics-opt-in.v1` — sitting recipe + analytics opt-in (preview-adopt; never practice-backup overwrite)
 
 ---
 
@@ -62,3 +63,4 @@ npm run docs:check                    # includes audit above
 | 2026-09-13 | Step 1 reverse-enumeration draft (61 reset / 19 export) |
 | 2026-09-16 | PO decisions: entitlement recompute on import; v5 +9 keys; orphan reset fix; `localBackupStorageRegistry.js` + CI |
 | 2026-09-20 | Focus Essence Slice 3: v6 +1 key (`focus-essence.v1`); reset whitelist 66 keys |
+| 2026-10-29 | Ritual Recipe keys on reset whitelist; **not** exported (A1a) |

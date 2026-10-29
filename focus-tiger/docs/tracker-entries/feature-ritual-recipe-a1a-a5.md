@@ -1,0 +1,1 @@
+| 坐的配方 A1a schema + A5 埋点门闩 | 纯后端 | 仅单元测试覆盖 | **无 UI。** `ritualRecipeSchema` 校验/迁移/8KB；独立 `ritual-recipe.v1` **不进**练习备份；埋点默认关。**测**：`node --test src/core/ritualRecipe/*.test.js` · `localStateKeys.test.js` · `npm run audit:local-backup-coverage`。 | — | — | — | `src/core/ritualRecipe/` · Brief `task-ritual-recipe-phase1.md` | 2026-10-29 |
