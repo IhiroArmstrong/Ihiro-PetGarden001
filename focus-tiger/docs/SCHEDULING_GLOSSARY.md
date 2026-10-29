@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-10-28 · **T64 先于 T63** · **T63 Brief 已点头** · T64 Brief 待点头·排队中·可选 · **T57–T62 · T65 已合** · **T54 分享开关 #1434 已合·90 天仍搁置** · **T55 排队中·可选** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
+## 1. 当前队列（2026-10-29 · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -62,7 +62,7 @@
 | **可选** · **T53** | 输入节奏（默认关） | **已合 develop** | #1437。Mac 击键间隔；无权限退回 T51。[`task-awaken-input-rhythm.md`](./task-briefs/task-awaken-input-rhythm.md) |
 | **可选** · **T54** | 研究数据分享开关 | **已合 develop** | #1434。改进产品层。上送计时计数，**不含倾诉原文**。影子流水 #1430 已合。**不是** 90 天实验。**不是** A15–A17。**不是** T55 |
 | **未排期** · **T54** | 90 天实验 | 搁置 | 日历不启动。招呼 / 满 18 岁对照 / 抽签禁止。阶段 1 SSOT [`task-t54-stage1-preregistration.md`](./task-briefs/task-t54-stage1-preregistration.md)（#1421）。口令「开工 T54」「做 90 天实验」不执行 |
-| **可选** · **T55** | 陪伴契约 | 排队中 | PO 2026-10-25。文档 + 字面检查，不改界面。不挡 T34。Brief [`task-companion-contract.md`](./task-briefs/task-companion-contract.md)。盘点 #1419。契约正文 #1425。**不是** T54 |
+| **可选** · **T55** | 陪伴契约 | **已合 develop** | PR-1 #1419 · PR-2 #1425 · PR-3 #1426 · PR-4 #1429 · 补丁 #1431。`npm run check:companion-contract` 进 `docs:check`。不改界面。**不是** T54。**不是** 已验证干预规范 |
 | **可选** · **T56** | 人机共修口径一页纸 | **已合 develop** | A 类。口径 [`CO_PRACTICE_POSITIONING.md`](./CO_PRACTICE_POSITIONING.md)；契约 **C-11**。**不是** T58 |
 | **可选** · **T57** | 邀请下场记录 | **已合 develop** | #1449。只存本机。Brief [`task-invite-outcome-record.md`](./task-briefs/task-invite-outcome-record.md)。**不是** T58 |
 | **可选** · **T58** | Yin 适应层 v1 + 小本子 | **已合 develop** | #1451。只变安静、不变积极。Brief [`task-yin-adaptation-v1.md`](./task-briefs/task-yin-adaptation-v1.md)。**不是** T54 效果证明 |
@@ -70,8 +70,8 @@
 | **可选** · **T60** | 重置白名单补 T52 打卡键 | **已合 develop** | #1447。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md)。**不是** T58 |
 | **可选** · **T61** | 用户自设收工时间（B 类） | **已合 develop** | #1455 MVP。盘点 #1448 · [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §6。Brief [`task-user-set-work-end-time.md`](./task-briefs/task-user-set-work-end-time.md)。**不是** T58。**不是** Yin 看出熬夜 |
 | **可选** · **T62** | 晚间练习事实进练习纸 | **已合 develop** | #1459。与 **T61** 分开。单独同意 + 删除名单；**不进** T54 研究分享。Brief 已点头并已实施。[`task-evening-practice-facts-practice-paper.md`](./task-briefs/task-evening-practice-facts-practice-paper.md) |
-| **可选** · **T63** | 共修契约面 | 排队中 | Brief [`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) **已点头**（2026-10-28）。**须 T64 已合**（**T65** #1461 已合）。只说明已有开口并指向已有开关。**不是** 分级干涉。**不是** T62 |
-| **可选** · **T64** | 共修文案对齐 | 排队中 | Brief [`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) **待点头**。问号简介封闭两句。过 C-11。**不是** T63 / T65 |
+| **可选** · **T63** | 共修契约面 | **已合 develop** | #1463。Brief 已点头（2026-10-28）。成长旅程详情契约面 + 指向已有开关。**不是** 分级干涉。**不是** T62 |
+| **可选** · **T64** | 共修文案对齐 | **已合 develop** | #1460。问号简介「不是禅师」+「一起练习、不催不评判」。过 C-11。**不是** T63 / T65 |
 | **可选** · **T65** | 观察纸顺乱倦节律 | **已合 develop** | #1461。只读 T52；无新键。Brief 已实施。[`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md)。**不是** T28 / T62 |
 
 ### T46 不执行的路线（登记，不开工）
@@ -137,9 +137,9 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T54 阶段 2 影子流水开工」 | **已合** #1430。勿再开同内容影子旁支。**禁止**改招呼 |
 | 「按 T54 出研究同意说明页」 | **T54** Brief #1432。不改运行时 |
 | 「按 T54 研究同意 Brief 开工」 | **已合** #1434。勿再开同内容开关旁支。**禁止**改招呼 / 开 90 天 |
-| 「按 T55 Brief 做 PR-1 盘点」 | **T55** 只读盘点（#1419）；不改运行时。不挡 T34 |
-| 「开工 T55」 | 不得改用户可见界面。只允许文档 / 检查脚本，且须按 Brief 的 PR 序号 |
-| 「按盘点写契约」 | **T55 PR-2**：已合 #1425。须写明字面检查管不到倾诉现场生成 |
+| 「按 T55 Brief 做 PR-1 盘点」 | **T55 已合** #1419–#1429 · #1431。勿再开同内容旁支 |
+| 「开工 T55」 | **不执行**（字面检查与契约 SSOT 已合 develop）。「已知漏网」另开小任务 |
+| 「按盘点写契约」 | **T55 PR-2 已合 #1425**。勿再开同内容契约旁支 |
 | 「按 T39 Brief 开工」 | **T39 已合 #1393**。勿再开同内容铃默认旁支 |
 | 「按无声场出 T45 Brief」或「按 T45 Brief 开工」 | **T45 已合 #1402**。勿再开同内容静坐画面旁支。通知仍归 T44 |
 | 「出 T47 Brief」或「按 T47 Brief 开工」 | **T47 已合 #1404**。勿再开同内容收控件旁支。不得藏死 ⋯；Rise 不收 |
@@ -157,8 +157,8 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T61 Brief 开工」 | **T61 MVP 已合 #1455**。勿再开同内容收工旁支。**不是** T58。**不是** Yin 看出熬夜 |
 | 「开工 T61」 | **不执行**（已合；不是看出熬夜） |
 | 「按 T62 Brief 开工」 | **T62 已合 #1459**。勿再开同内容晚间事实旁支。**不进** T54 研究分享 |
-| 「按 T63 Brief 开工」 | Brief **已点头**（2026-10-28）。**须 T64 已合**（**T65** #1461 已合；或 PO 书面改序）后新 Chat 写契约面。**不是** 分级干涉。**不是** T62 |
-| 「按 T64 Brief 开工」 | Brief **待点头**。点头后新 Chat 只改问号简介封闭两句。**不是** T63 / T65 |
+| 「按 T63 Brief 开工」 | **T63 已合 #1463**。勿再开同内容契约面旁支。**不是** 分级干涉。**不是** T62 |
+| 「按 T64 Brief 开工」 | **T64 已合 #1460**。勿再开同内容问号简介旁支。**不是** T63 / T65 |
 | 「按 T65 Brief 开工」 | **T65 已合 #1461**。勿再开同内容节律旁支。**不是** T28 / T62 |
 
 ---

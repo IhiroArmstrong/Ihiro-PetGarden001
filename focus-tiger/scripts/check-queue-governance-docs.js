@@ -68,6 +68,7 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t64-co-practice-copy-align.md',
   'focus-tiger/docs/task-briefs/task-practice-paper-check-in-rhythm.md',
   'focus-tiger/docs/task-entries/t65-practice-paper-check-in-rhythm.md',
+  'focus-tiger/docs/task-entries/t55-companion-contract.md',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
