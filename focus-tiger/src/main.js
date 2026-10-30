@@ -48,6 +48,12 @@ import {
   resolveSittingSessionPlan
 } from './core/ritualRecipe/sittingSessionPlan.js';
 import {
+  clearActiveSittingPromptBindings,
+  getActiveRecipePromptBinding,
+  setActiveSittingPromptBindings,
+  syncSittingPromptBindingsFromStoredRecipe
+} from './core/ritualRecipe/sittingSessionPromptHost.js';
+import {
   OPEN_ENDED_HARD_CAP_MS,
   takeOpenEndedNudges
 } from './core/openEndedFocus.js';
@@ -1386,6 +1392,11 @@ async function init() {
         emotionController.playEmotion('idle', {
           crossFadeMs: CAPCUT_DISSOLVE_MS
         });
+      },
+      resolveRecipeQuote: () => {
+        const binding = getActiveRecipePromptBinding('transition');
+        if (binding?.kind !== 'localeKey') return null;
+        return { id: binding.key, text: t(binding.key) };
       }
     }
   );
@@ -4341,6 +4352,10 @@ async function init() {
 
   const reflectionOpen = reflectionMoment.open.bind(reflectionMoment);
   reflectionMoment.open = (options) => {
+    const reflectBinding = getActiveRecipePromptBinding('reflect');
+    reflectionMoment.setSessionQuestionKeys(
+      reflectBinding?.kind === 'localeKeys' ? reflectBinding.keys : null
+    );
     bootHonestyCompanion.companionModePicker.hide();
     bootHonestyCompanion.honestyCheckInUI.hideIdleEntry();
     reflectionOpen(options);
@@ -4950,6 +4965,10 @@ async function init() {
         lightProgression.beginArrival();
         syncOnboardingAutoHints();
       },
+      getWelcomeLocaleKey: () => {
+        const binding = getActiveRecipePromptBinding('arrive');
+        return binding?.kind === 'localeKey' ? binding.key : null;
+      },
       // Choose 确认：立刻开门闩；点头播完后展开 Companion 点选开表（L249）。
       // 预选 Here & Now / Flow 回流：onReady 已 beginFocus 时 suppress，勿再展开。
       // 16:9 点头 pingpong 并行；与前后动画 1s CapCut 叠化。
@@ -5243,6 +5262,9 @@ async function init() {
     bootAmbientHints.onboardingHints?.markSeen('dormant-open');
     bootAmbientHints.onboardingHints?.markSeen('honesty-optional');
     bootHonestyCompanion.arrivalPractice.start();
+    syncSittingPromptBindingsFromStoredRecipe(
+      typeof localStorage !== 'undefined' ? localStorage : null
+    );
     calmActionArriveStore.arm();
     bootAmbientHints.onboardingHints?.hideWellnessFirstCard({ markSeen: true, notify: false });
     resyncSessionChrome();
@@ -5346,6 +5368,7 @@ async function init() {
     void stopLanternHeartbeat();
     void stopFocusCircleHeartbeat();
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
+    clearActiveSittingPromptBindings();
   }
 
   function beginSessionCompleteIfNeeded() {
@@ -5516,6 +5539,13 @@ async function init() {
         : 'fixed',
       durationSec: Math.round(Number(focusSession.targetMinutes) * 60)
     });
+    setActiveSittingPromptBindings(sittingPlan.promptBinding);
+    const focusPrompt = sittingPlan.promptBinding.focus;
+    if (focusPrompt?.kind === 'pool') {
+      focusAwarenessCardUI.setSessionPoolKey(focusPrompt.poolKey);
+    } else {
+      focusAwarenessCardUI.setSessionPoolKey(null);
+    }
     emitRecipeSessionStarted(sittingPlan);
     currentAwakenSitSessionId = `sit-${Date.now()}`;
     endAwakenCheckInOffered = false;

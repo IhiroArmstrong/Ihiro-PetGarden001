@@ -10,6 +10,7 @@
  */
 
 import { isAllowedSoundId } from './ritualRecipeAssets.js';
+import { resolveRecipePromptBindingsForMoments } from './ritualRecipePromptBinding.js';
 import {
   RECIPE_ANALYTICS_EVENTS,
   trackRecipeEvent
@@ -34,6 +35,12 @@ import {
  *     focus: string | null,
  *     transition: string | null,
  *     reflect: string | null
+ *   },
+ *   promptBinding: {
+ *     arrive: import('./ritualRecipePromptBinding.js').RitualRecipePromptBinding | null,
+ *     focus: import('./ritualRecipePromptBinding.js').RitualRecipePromptBinding | null,
+ *     transition: import('./ritualRecipePromptBinding.js').RitualRecipePromptBinding | null,
+ *     reflect: import('./ritualRecipePromptBinding.js').RitualRecipePromptBinding | null
  *   }
  * }} SittingSessionPlan
  */
@@ -93,6 +100,13 @@ export function resolveSittingSessionPlan({
   if (isDefaultSittingRecipe(recipe)) source = 'default';
   else if (recipe?.authorType === 'official') source = 'official';
 
+  const promptId = {
+    arrive: recipe?.moments?.arrive?.promptId ?? null,
+    focus: recipe?.moments?.focus?.promptId ?? null,
+    transition: recipe?.moments?.transition?.promptId ?? null,
+    reflect: recipe?.moments?.reflect?.promptId ?? null
+  };
+
   return {
     source,
     focusMode: mode,
@@ -103,12 +117,8 @@ export function resolveSittingSessionPlan({
     recoverCooldownSec: Number.isFinite(Number(recipe?.moments?.recover?.cooldownSec))
       ? Number(recipe.moments.recover.cooldownSec)
       : RECOVER_COOLDOWN_SEC,
-    promptId: {
-      arrive: recipe?.moments?.arrive?.promptId ?? null,
-      focus: recipe?.moments?.focus?.promptId ?? null,
-      transition: recipe?.moments?.transition?.promptId ?? null,
-      reflect: recipe?.moments?.reflect?.promptId ?? null
-    }
+    promptId,
+    promptBinding: resolveRecipePromptBindingsForMoments(promptId)
   };
 }
 

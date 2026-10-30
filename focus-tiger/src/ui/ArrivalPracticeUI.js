@@ -59,6 +59,7 @@ import { Z } from './zIndexLayers.js';
  * @typedef {object} ArrivalPracticeUIHandlers
  * @property {(info?: ArrivalReadyInfo) => void} [onReady] 流程结束（面板已 hide）
  * @property {() => void} [onWelcome] 欢迎 beat 开始（可播 smiling）
+ * @property {() => string | null} [getWelcomeLocaleKey] Ritual recipe A1c welcome override
  * @property {() => void} [onCancel]
  *   Notice / Choose 选择框点外侧空白取消（回 Idle；不开表、不 Skip begin）
  * @property {() => void} [onBegin] Arrival 开始（光影冷灰氛围）
@@ -369,9 +370,12 @@ export class ArrivalPracticeUI {
     this.root.replaceChildren();
 
     if (this.state.step === ARRIVAL_STEPS.WELCOME) {
-      this.root.append(this._subtitle(t('ARRIVAL_WELCOME')));
+      const welcomeKey =
+        this.handlers.getWelcomeLocaleKey?.() ?? 'ARRIVAL_WELCOME';
+      const welcomeText = t(welcomeKey);
+      this.root.append(this._subtitle(welcomeText));
       maybeSpeakPracticeAnnouncement({
-        text: t('ARRIVAL_WELCOME'),
+        text: welcomeText,
         cueId: 'arrival:welcome'
       });
       return;

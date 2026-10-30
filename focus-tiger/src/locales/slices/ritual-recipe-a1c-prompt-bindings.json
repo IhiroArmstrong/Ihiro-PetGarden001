@@ -1,0 +1,47 @@
+{
+  "en": {
+    "RITUAL_RECIPE_PROMPT_ARRIVE_DEEP_QUIET": "Arrive quietly — nothing to fix first.",
+    "RITUAL_RECIPE_PROMPT_ARRIVE_EVENING_SOFT": "Let the day loosen as you sit down.",
+    "RITUAL_RECIPE_PROMPT_TRANSITION_DEEP_RETURN": "Before you move on — one slow breath with what you held.",
+    "RITUAL_RECIPE_PROMPT_TRANSITION_EVENING_REST": "Ease out of the work; let the shoulders drop a little.",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q1": "What stayed with you while you worked?",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q2": "Where did attention wander — without judging it?",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q3": "What is worth carrying into the next block?",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q1": "What can rest here for tonight?",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q2": "What felt heavy — even a little?",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q3": "What would make tomorrow gentler?",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_1": "Stay with one thread — gently.",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_2": "When you drift, notice, then return.",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_3": "Depth is repetition, not force."
+  },
+  "zh": {
+    "RITUAL_RECIPE_PROMPT_ARRIVE_DEEP_QUIET": "安静入座——不必先修正什么。",
+    "RITUAL_RECIPE_PROMPT_ARRIVE_EVENING_SOFT": "坐下时，让一天稍微松一点。",
+    "RITUAL_RECIPE_PROMPT_TRANSITION_DEEP_RETURN": "动身之前——和刚才专注的事一起慢慢吸一口气。",
+    "RITUAL_RECIPE_PROMPT_TRANSITION_EVENING_REST": "从工作中抽身；让肩膀松一点。",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q1": "专注时，什么一直留在你这里？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q2": "注意力曾飘向哪里——不必评判。",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q3": "什么值得带进下一段？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q1": "今晚可以先放下什么？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q2": "什么有点沉——哪怕只是一点？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q3": "怎样让明天轻一点？",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_1": "轻轻守住一条线。",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_2": "飘走了就注意到，再回来。",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_3": "深度是重复，不是用力。"
+  },
+  "ja": {
+    "RITUAL_RECIPE_PROMPT_ARRIVE_DEEP_QUIET": "静かに着席——先に直す必要はありません。",
+    "RITUAL_RECIPE_PROMPT_ARRIVE_EVENING_SOFT": "座るとき、一日を少しほどけさせましょう。",
+    "RITUAL_RECIPE_PROMPT_TRANSITION_DEEP_RETURN": "動く前に——いま保っていたものと、ゆっくり一息。",
+    "RITUAL_RECIPE_PROMPT_TRANSITION_EVENING_REST": "仕事から抜け出す；肩を少し下ろしましょう。",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q1": "集中しているあいだ、何が残っていましたか？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q2": "注意がどこへ流れたか——評価せずに。",
+    "RITUAL_RECIPE_PROMPT_REFLECT_DEEP_Q3": "次のブロックへ持っていきたいことは？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q1": "今夜はここに置いて休めることは？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q2": "少しでも重かったことは？",
+    "RITUAL_RECIPE_PROMPT_REFLECT_EVENING_Q3": "明日を少しやわらげるには？",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_1": "一本の糸に、やさしく。",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_2": "それたら気づき、戻る。",
+    "RITUAL_RECIPE_FOCUS_DEEP_HOLD_3": "深さは繰り返しで、力ではありません。"
+  }
+}

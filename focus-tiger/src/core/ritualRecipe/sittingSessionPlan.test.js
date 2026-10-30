@@ -64,6 +64,12 @@ test('Default plan with recipe duration is not a chip override', () => {
     transition: null,
     reflect: null
   });
+  assert.deepEqual(plan.promptBinding, {
+    arrive: null,
+    focus: null,
+    transition: null,
+    reflect: null
+  });
 });
 
 test('chip 25 minutes against Default is this-session override and does not mutate recipe', () => {
@@ -111,6 +117,7 @@ test('Deep template plan is official and distinct from Default', () => {
   assert.equal(plan.source, 'official');
   assert.equal(plan.soundId, 'the-inner-sound');
   assert.equal(plan.chipOverride, false);
+  assert.ok(plan.promptBinding.focus?.kind === 'pool');
 });
 
 test('recipe_session_started stays gated when analytics opt-in is off', () => {

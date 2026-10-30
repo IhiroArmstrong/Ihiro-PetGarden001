@@ -11,9 +11,9 @@
 | id | 用途 | v0 状态 |
 |---|---|---|
 | `null` | 默认引导（现网常量/池） | **Default sitting 全段**；ADHD 全段也用 null（更少引导） |
-| `arrive.soft` | spec 示例 | 占位；A1c 未接线 → 运行时当未知降为 null |
-| `transition.hand` | spec 示例 | 占位 |
-| `reflect.line` | spec 示例 | 占位 |
+| `arrive.soft` | spec 示例 | 占位；**未接线** → 运行时 null |
+| `transition.hand` | spec 示例 | 占位；**未接线** → 运行时 null |
+| `reflect.line` | spec 示例 | 占位；**未接线** → 运行时 null |
 | `arrive.deep.quiet` | Deep Arrive | 设计锁；克制入座 |
 | `focus.deep.hold` | Deep Focus | 设计锁 |
 | `transition.deep.return` | Deep Transition | 设计锁 |
@@ -22,7 +22,7 @@
 | `transition.evening.rest` | Evening Transition | 设计锁 |
 | `reflect.evening.close` | Evening Reflect | 设计锁 |
 
-A1c 未接线前，非 null id 仍按「未知 → null」处理，**不改变 Default 现网引导**。
+A1c 已接线：Deep / Evening 七段 id 见 `ritualRecipePromptBinding.js` + `ritual-recipe-a1c-prompt-bindings.json`。白名单内**未接线** id（含上表三个 spec 占位）→ 运行时 **null**，Default 现网引导不变。
 
 ## `soundId`
 
