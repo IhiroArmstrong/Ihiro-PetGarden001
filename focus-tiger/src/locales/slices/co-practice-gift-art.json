@@ -1,0 +1,47 @@
+{
+  "en": {
+    "CO_PRACTICE_GIFT_ART_MOUNTAIN_BOAT_TRAY_TITLE": "Mountain boat tray",
+    "CO_PRACTICE_GIFT_ART_MOUNTAIN_BOAT_TRAY_STORY": "A square tray of hills and a small boat. A piece we walked with.",
+    "CO_PRACTICE_GIFT_ART_PEONY_PHOENIX_PLATE_TITLE": "Peony phoenix plate",
+    "CO_PRACTICE_GIFT_ART_PEONY_PHOENIX_PLATE_STORY": "Peonies and a phoenix stay on the plate. Left from sitting together.",
+    "CO_PRACTICE_GIFT_ART_PEACH_CRANE_DISC_TITLE": "Peach crane disc",
+    "CO_PRACTICE_GIFT_ART_PEACH_CRANE_DISC_STORY": "Peaches and a crane on a round disc. Kept from the days we sat.",
+    "CO_PRACTICE_GIFT_ART_CLOSE": "Close",
+    "CO_PRACTICE_GIFT_ART_SAVE": "Save image",
+    "CO_PRACTICE_GIFT_ART_SAVE_PENDING": "Saving…",
+    "CO_PRACTICE_GIFT_ART_SAVE_OK": "Saved",
+    "CO_PRACTICE_GIFT_ART_SAVE_FAIL": "Could not save",
+    "CO_PRACTICE_GIFT_ART_RECEIVED_TITLE": "Pieces we walked with",
+    "CO_PRACTICE_GIFT_ART_RECEIVED_EMPTY": "No piece we walked with yet."
+  },
+  "zh": {
+    "CO_PRACTICE_GIFT_ART_MOUNTAIN_BOAT_TRAY_TITLE": "方盘山水行舟",
+    "CO_PRACTICE_GIFT_ART_MOUNTAIN_BOAT_TRAY_STORY": "方盘上是山和水，还有一只小船。一起走过留下的一张。",
+    "CO_PRACTICE_GIFT_ART_PEONY_PHOENIX_PLATE_TITLE": "牡丹凤凰盘",
+    "CO_PRACTICE_GIFT_ART_PEONY_PHOENIX_PLATE_STORY": "盘上是牡丹和凤凰。坐在一起留下的一张。",
+    "CO_PRACTICE_GIFT_ART_PEACH_CRANE_DISC_TITLE": "仙桃仙鹤圆盘",
+    "CO_PRACTICE_GIFT_ART_PEACH_CRANE_DISC_STORY": "圆盘上是桃和鹤。那些一起坐过的日子留下的一张。",
+    "CO_PRACTICE_GIFT_ART_CLOSE": "关闭",
+    "CO_PRACTICE_GIFT_ART_SAVE": "保存图片",
+    "CO_PRACTICE_GIFT_ART_SAVE_PENDING": "正在保存…",
+    "CO_PRACTICE_GIFT_ART_SAVE_OK": "已保存",
+    "CO_PRACTICE_GIFT_ART_SAVE_FAIL": "没能保存",
+    "CO_PRACTICE_GIFT_ART_RECEIVED_TITLE": "一起走的一张",
+    "CO_PRACTICE_GIFT_ART_RECEIVED_EMPTY": "还没有一起走的一张。"
+  },
+  "ja": {
+    "CO_PRACTICE_GIFT_ART_MOUNTAIN_BOAT_TRAY_TITLE": "山水と小舟の角盆",
+    "CO_PRACTICE_GIFT_ART_MOUNTAIN_BOAT_TRAY_STORY": "山と水、小さな舟。一緒に歩いた日の一枚。",
+    "CO_PRACTICE_GIFT_ART_PEONY_PHOENIX_PLATE_TITLE": "牡丹と鳳の皿",
+    "CO_PRACTICE_GIFT_ART_PEONY_PHOENIX_PLATE_STORY": "牡丹と鳳が残っている。一緒に坐った日の一枚。",
+    "CO_PRACTICE_GIFT_ART_PEACH_CRANE_DISC_TITLE": "桃と鶴の円盤",
+    "CO_PRACTICE_GIFT_ART_PEACH_CRANE_DISC_STORY": "桃と鶴の円。坐を重ねた日の一枚。",
+    "CO_PRACTICE_GIFT_ART_CLOSE": "閉じる",
+    "CO_PRACTICE_GIFT_ART_SAVE": "画像を保存",
+    "CO_PRACTICE_GIFT_ART_SAVE_PENDING": "保存しています…",
+    "CO_PRACTICE_GIFT_ART_SAVE_OK": "保存しました",
+    "CO_PRACTICE_GIFT_ART_SAVE_FAIL": "保存できませんでした",
+    "CO_PRACTICE_GIFT_ART_RECEIVED_TITLE": "一緒に歩いた一枚",
+    "CO_PRACTICE_GIFT_ART_RECEIVED_EMPTY": "まだ一緒に歩いた一枚はありません。"
+  }
+}

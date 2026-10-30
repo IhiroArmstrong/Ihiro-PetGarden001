@@ -653,8 +653,16 @@ import {
   beginCoPracticeTimedSession,
   completeCoPracticeTimedSession,
   endCoPracticeTimedSessionActive,
+  getActiveCoPracticeSessionId,
   summarizeCoPracticeJoinLedgerForDev
 } from './core/coPracticeSessionJoinLedger.js';
+import { CoPracticeGiftArtCardUI } from './ui/CoPracticeGiftArtCardUI.js';
+import { CO_PRACTICE_GIFT_ART_SURFACE_ENABLED } from './core/coPracticeGiftArtCatalog.js';
+import { noteCoPracticeGiftArtAfterTimedComplete } from './core/coPracticeGiftArtGrant.js';
+import {
+  fourScenesAllPass,
+  runCoPracticeGiftArtJoinFourScenes
+} from './core/coPracticeGiftArtDevSeed.js';
 import {
   createRhythmTimingCache
 } from './core/inputRhythmBridge.js';
@@ -1813,6 +1821,16 @@ async function init() {
    * }}
    */
   let pendingAfterMustardSeed = null;
+  const coPracticeGiftArtCardUI = new CoPracticeGiftArtCardUI(document.body, {
+    onOpen: () => {
+      resyncSessionChrome();
+    },
+    onClose: () => {
+      resyncSessionChrome();
+    }
+  });
+  window.__coPracticeGiftArtCard = coPracticeGiftArtCardUI;
+
   const mustardSeedSealCardUI = new MustardSeedSealCardUI(document.body, {
     storage: typeof localStorage !== 'undefined' ? localStorage : null,
     onOpen: () => {
@@ -3632,6 +3650,10 @@ async function init() {
       summarizeCoPracticeJoinLedgerForDev(
         typeof localStorage !== 'undefined' ? localStorage : null
       );
+    window.__coPracticeGiftArtJoinFourScenes = () => {
+      const result = runCoPracticeGiftArtJoinFourScenes();
+      return { ...result, allPass: fourScenesAllPass(result) };
+    };
   }
 
   let hasEndedAnySession = false;
@@ -3764,6 +3786,7 @@ async function init() {
         window.__groundExerciseChoice?.isOpen?.() === true,
       coldStartGoalOpen: window.__coldStartGoalCard?.isOpen?.() === true,
       mustardSeedOpen: window.__mustardSeedCard?.isOpen?.() === true,
+      giftArtOpen: coPracticeGiftArtCardUI.isOpen() === true,
       tipJarOpen: window.__tipJar?.isOpen?.() === true,
       supportModalOpen: window.__supportYin?.isOpen?.() === true,
       sanctuaryOpen: window.__sanctuaryUnlock?.isOpen?.() === true,
@@ -6189,9 +6212,16 @@ async function init() {
     if (!bootSessionChrome.sessionUiGate.completionPending) return;
     const witnessElapsedSeconds = focusSession.getElapsedSeconds();
     const timedAwardMinutes = focusSession.resolveTimedAwardMinutes();
+    const giftArtSessionId = getActiveCoPracticeSessionId();
     completeCoPracticeTimedSession({
       actualCompletedMinutes: timedAwardMinutes
     });
+    if (giftArtSessionId) {
+      noteCoPracticeGiftArtAfterTimedComplete({
+        sessionId: giftArtSessionId,
+        surfaceEnabled: CO_PRACTICE_GIFT_ART_SURFACE_ENABLED
+      });
+    }
     stashPendingJourneyDraft({ completed: true });
     sessionPresenceCollector.finalize(
       snapshotFocusSessionForPresence(focusSession, { endedEarly: false })
