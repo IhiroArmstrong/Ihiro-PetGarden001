@@ -4,7 +4,7 @@
  */
 
 /**
- * T66 — co-practice session join ledger (session id + offered-default vs completed minutes).
+ * T67 — co-practice session join ledger (session id + offered-default vs completed minutes).
  * Local only; no UI; not in practice cloud backup or T54 research payload.
  */
 

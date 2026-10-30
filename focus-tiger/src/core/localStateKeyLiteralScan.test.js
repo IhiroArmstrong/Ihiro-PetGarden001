@@ -58,7 +58,7 @@ test('scan finds invite-outcomes literal (T57 storage)', () => {
   );
 });
 
-test('scan finds session-duration-offer literal (T66 storage)', () => {
+test('scan finds session-duration-offer literal (T67 storage)', () => {
   const literals = scanFocusTigerLocalStorageKeyLiterals(SRC_ROOT);
   assert.ok(literals.includes('focus-tiger.session-duration-offer.v1'));
   assert.ok(
