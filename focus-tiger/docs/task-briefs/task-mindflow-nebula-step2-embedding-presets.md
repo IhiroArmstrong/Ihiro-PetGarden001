@@ -1,0 +1,112 @@
+# Task Brief · T66 第二步 · 心念流 embedding 投影 + 公案板块预设
+
+> **状态**：**待点头**。未点头不得写 `focus-tiger/src/**`。  
+> **代号**：**T66 第二步**（仍属 T66 心念流线；**不是**新术语表代号。v0 已完成 #1475；本刀是 v0 之上的扩展 Brief。）  
+> **类**：**B 类**（开关已开的用户会看到粒子布局/漂移语义变化；仍须过 **T55** / **C-11**：禁止读心、禁止疗效、禁止「看见 AI 在想什么」。）  
+> **依赖**：**T66 v0** #1475 已在 `origin/develop`（`MindflowNebulaChromeUI` · 三模式 · 默认关）。**T67** 接合账 #1478 与本刀无关。  
+> **旁支命名（硬）**：须 **`feature/t66-mindflow-step2-*`** 或 `docs/t66-mindflow-step2-*`；**禁止**复用 / 重开 `feature/t66-mindflow-nebula-v0` 或任何 v0 旁支名。  
+> **不是**：T50 会话摘要；Help Center embedding 检索；Confide 发送链改动；UMAP 实时重算每 token；判懂不懂、情绪诊断、分数。
+
+## 0. 大白话
+
+v0 的光点只跟三种节奏动，跟字义无关。第二步想试：把**本机已有**的文本向量（倾诉句、公案句、陪伴回复的**摘要级**特征——不是逐字、不是原文上云）投影到二维，让粒子在**板块**附近聚拢或漂移，仍保持「意象、非精确想法」。默认仍关；v0 开关关时本刀一切不算。先做**离线新颖度实验**定参数，再进产品；实验不过就不接发送链。
+
+## 1. 目标与非目标
+
+### 1.1 目标
+
+1. **阶段 A · 离线新颖度实验（无 UI）**  
+   - 仓外或 DEV 脚本：固定一批公案/意象句 + 负例（随机词、重复句），用与桌面 Confide **同族**的本机 embedding（或 PO 指定的单一本地模型路径），试 2D 投影（PCA / UMAP 二选一，Brief 点头时 PO 可锁一种）。  
+   - 输出：板块内凝聚度、跨板块分离度、新颖句到最近板块距离分布（**只报汇总 JSON**，原句不进仓）。  
+   - **通过线**：PO 在 Brief 点头前填「实验通过阈值」占位；点头时须写成数字或「本刀不做阶段 B」。
+
+2. **阶段 B · 板块预设（有 UI，仍默认关）**  
+   - 在 v0 画布上增加 **3～5 个命名板块**（locale 切片：意象名 + hover 免责声明延伸一句；**禁止**「这一簇=你在想 X」）。  
+   - 粒子位置 = v0 基础漂移 + **慢速 lerp**  toward 当前板块锚点；板块切换须 **≥800ms** 交叉，禁止整图跳变。  
+   - **驱动输入（硬）**：仅允许  
+     - Confide：**当前轮** companion 回复的 **embedding 摘要向量**（已有 pipeline 的向量或等价中间态；**禁止**读用户倾诉原文进新键）；  
+     - Idle/rest：回 v0 纯 rest，**不接** embedding；  
+     - `companion_speak`：仍用 v0 第三档速率，**不**逐 token 刷新投影。  
+   - 存储：新键仅板块 id + 上次投影坐标（float 对）；**禁止**存句向量原文、禁止存倾诉文本。
+
+3. **阶段 C · DEV 只读**  
+   - `?product=1`：`window.__mindflowNebulaStep2Debug()` 返回 `{ boardId, noveltyScoreProxy, embeddingReady }`（无原文）。
+
+### 1.2 非目标
+
+- 实时 UMAP/t-SNE 全量重算；每说一个字动一次图。  
+- 用粒子图做产品问检索、事实卡路由、Help Center。  
+- 上传 embedding、T54 研究字段、练习云备份新向量键（除非 PO 另开 Privacy Brief）。  
+- 替换 v0 三模式状态机；Focusing 仍隐藏；z-index 仍 CLUSTER 12。  
+- 「新颖度够高就解锁内容」类 FOMO。
+
+## 2. 数据与隐私
+
+| 项 | 口径 |
+|---|---|
+| 新 localStorage 键 | 建议 `focus-tiger.mindflow-nebula-board-state.v1`（板块 id + 归一化坐标）；须进 `FOCUS_TIGER_LOCAL_STORAGE_KEYS`；删除所有数据须清空 |
+| 向量来源 | 只读内存/已有 companion 侧向量；落盘仅坐标与 boardId |
+| T54 / 备份 | payload 与 Backup v6 **不得**含 board 状态以外的 embedding 字段 |
+| Confide 原文 | **禁止**新键存原文；影子日志仍守不存原句 |
+
+## 3. 冲突扫描
+
+对照 **AE** Confide、**T42** 不挡脸、**T47** Focusing、**T55** C-11、**T66 v0** 默认关、Support 受保护路径。
+
+| 轴 | 判断 |
+|---|---|
+| **强度** | 默认关；开开关才见板块漂移；无新必选仪式 |
+| **语气** | hover / 板块名仍强调意象、非读心；**禁止**「Yin 读懂你 / 你在想…」 |
+| **职责** | 不替代安全/觉照/研究开关；不替代 T50 摘要 UI |
+
+无未决冲突；**阶段 A 未过不得开工阶段 B**。
+
+## 变体矩阵
+
+| 变体 | 预期 |
+|---|---|
+| v0 开关关 | 无画布；本刀代码路径不跑 |
+| v0 开 + Idle | rest；无板块锚点（同 v0） |
+| v0 开 + Confide + embedding 未就绪 | 同 v0 confide 模式；status 可选 DEV 行「意象暂不可用」**不**弹窗 |
+| v0 开 + Confide + ready | 慢速迁入最近板块 |
+| Focusing | 隐藏 |
+| en / zh / ja | 板块意象名三语；免责声明 |
+| 375 / 宽屏 | 不挡 Sit / Support |
+
+## 点击反馈（0–1 秒）
+
+无新增可点击控件（仍仅 v0 偏好开关）。板块变化用户**无点击**；0–1s 内仅见粒子漂移加速/方向变化。点击反馈节合规跳过句：**本次无新增可点击交互，沿用 v0 偏好开关反馈。**
+
+## 边缘状态
+
+| 边缘 | 预期 |
+|---|---|
+| embedding 超时 | 保持 v0 confide 粒子；不写 board 键 |
+| 回复极短 / 空向量 | 不切换板块；不报错 |
+| 关 Confide | lerp 回 rest |
+| TTS 无 bridge | 同 v0：speak 6s 上限 |
+| 写盘失败 | 画布仍按 v0；不弹错 |
+| 升级无新键 | 当 v0 |
+
+## 共用机制核对
+
+不新建 z≥17 遮罩；不碰 `#yin-support-*`；canvas `pointer-events: none` 不变。
+
+## 后台网络
+
+不涉及（embedding 仍本机既有路径；**禁止**为投影新增自动下载）。
+
+## 验收
+
+- **阶段 A**：实验脚本 + 汇总 JSON；`npm run test:smoke` 不含原句。  
+- **阶段 B**：单测：board 状态 normalize；localStateKeys；T54/backup 扫描不含新敏感字段；投影 lerp 契约（mock 向量）。  
+- `test:smoke` 绿；**无新 e2e**（除非 PO 点头加一条 preference+Confide 壳锚点）。  
+- TRACKER：UI **待人工测试**（并入下一批）；阶段 A 行 **仅单元/实验室覆盖**。  
+- **禁句验收**：UI/文档不得出现「读心」「精确想法」「学会了你」。
+
+## 开工闸
+
+- PO 点头本 Brief 后，**新开 Chat**，口令「**按 T66 第二步 Brief 开工**」；旁支 **`feature/t66-mindflow-step2-*`**。  
+- **阶段 A 与 B 可分两个 PR**；B 依赖 A 的 PO 书面「实验通过」。  
+- 禁止在本 PR 改 GLOSSARY / SCHEDULING（治理会话改「第二步 Brief 待点头 → 排队中/立即做」）。  
+- 口令「再开 T66 nebula v0 旁支」仍 **不执行**。

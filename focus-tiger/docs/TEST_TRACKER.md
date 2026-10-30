@@ -334,6 +334,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
 <!-- tracker-fragments:begin -->
+| T66 第二步 · 心念流 embedding + 板块预设 Brief | 纯文档 | 仅单元测试覆盖 | **无运行时。** 本条验收 Brief 草稿已写入（2026-10-30 PO「立刻安排 Brief」）。点头前不得写 `src/`。旁支须 `feature/t66-mindflow-step2-*`，禁止复用 v0 旁支。 | — | — | — | `task-briefs/task-mindflow-nebula-step2-embedding-presets.md` | 2026-10-30 |
 | T67 共修场次接合账 Brief | 纯文档 | 仅单元测试覆盖 | **无界面。** 本条验收的是 Brief 与方向锁改口已写入，**不代表**已补账或已发画。点头后另 Chat 口令「按 T67 Brief 开工」才改 `src/`。 | — | — | — | `focus-tiger/docs/task-briefs/task-co-practice-session-join-ledger.md` | 2026-10-30 |
 | T66 心念流 / 隐迹星云 v0 | UI可见 | 待人工测试 | **主路径**：⋯ → 偏好 → **心念流** → 开开关 → Idle 右下见 180×180 光点；开 Confide → 粒子略活；小虎回复后短时 third 档。**Focusing** 必藏。**默认关**。**测**：`node --test src/core/mindflowNebula/mindflowNebulaStore.test.js` · hover 见免责声明 · 不挡 Support FAB / Sit · **#1475 已合 develop** | — | — | — | `MindflowNebulaChromeUI.js` · Brief `task-mindflow-nebula-v0.md` | 2026-10-30 |
 | 共修纪念画方向锁 | 纯文档 | 仅单元测试覆盖 | **无界面。** 权威：`CO_PRACTICE_GIFT_ART.md`。本条验收的是方向锁已写入并与三分法 / 成长旅程 / 典藏交叉引用，**不代表**已发画或已能量化适配。 | — | — | — | `focus-tiger/docs/CO_PRACTICE_GIFT_ART.md` | 2026-10-29 |

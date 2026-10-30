@@ -1,0 +1,1 @@
+| T66 第二步 · 心念流 embedding + 板块预设 Brief | 纯文档 | 仅单元测试覆盖 | **无运行时。** 本条验收 Brief 草稿已写入（2026-10-30 PO「立刻安排 Brief」）。点头前不得写 `src/`。旁支须 `feature/t66-mindflow-step2-*`，禁止复用 v0 旁支。 | — | — | — | `task-briefs/task-mindflow-nebula-step2-embedding-presets.md` | 2026-10-30 |
