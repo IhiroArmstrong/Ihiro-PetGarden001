@@ -1,0 +1,11 @@
+{
+  "brief": "t66-mindflow-step2-phase-a",
+  "phaseAPassed": false,
+  "note": "Run `cd focus-tiger && npm run audit:mindflow-nebula-step2-phase-a` in Terminal.app after embedding GGUF is cached. Commit updated summary only when phaseAPassed is true.",
+  "failures": ["pending:lab_not_run"],
+  "thresholds": {
+    "projection": "pca",
+    "cohesionMinMeanPairwiseCosine": 0.4,
+    "separationMarginBelowMinCohesion": 0.1
+  }
+}
