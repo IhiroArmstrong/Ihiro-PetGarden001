@@ -87,4 +87,18 @@ describe('isQueueGovernanceCoPrAllowed', () => {
       null
     );
   });
+
+  it('allows T67 gift-art grant Brief with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/CO_PRACTICE_GIFT_ART.md',
+        'focus-tiger/docs/task-briefs/task-co-practice-gift-art-grant.md',
+        'focus-tiger/docs/task-entries/t67-co-practice-gift-art-grant.md',
+        'focus-tiger/docs/tracker-entries/docs-t67-co-practice-gift-art-grant.md'
+      ]),
+      null
+    );
+  });
 });
