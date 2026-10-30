@@ -1,0 +1,29 @@
+{
+  "brief": "t66-mindflow-step2-phase-a",
+  "phaseAPassed": false,
+  "note": "Lab run 2026-10-30 on Qwen3-Embedding-0.6B-Q8_0. Per PO: strict thresholds; fail → no phase B UI.",
+  "failures": [
+    "separation:mist-ridge:still-pool",
+    "separation:mist-ridge:empty-bowl",
+    "separation:mist-ridge:night-pine",
+    "separation:still-pool:empty-bowl",
+    "separation:still-pool:night-pine",
+    "separation:empty-bowl:night-pine",
+    "novelty:negatives"
+  ],
+  "labMetrics": {
+    "cohesionPassAllBoards": true,
+    "paraphrasePassAllBoards": true,
+    "separationFailedPairs": 6,
+    "noveltyNegativeMedianDistance": 0.5612876437002812,
+    "noveltyBoardP90Reference": 1.8513939383720492,
+    "generatedAt": "2026-10-30T14:41:17.890Z",
+    "embeddingModel": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+    "jsonPath": "/tmp/ft-l0-lab/mindflow-nebula-step2-1793371277890.json"
+  },
+  "thresholds": {
+    "projection": "pca",
+    "cohesionMinMeanPairwiseCosine": 0.4,
+    "separationMarginBelowMinCohesion": 0.1
+  }
+}

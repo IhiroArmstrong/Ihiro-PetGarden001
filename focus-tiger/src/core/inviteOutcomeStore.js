@@ -78,7 +78,7 @@ export function readInviteOutcomeRecords(key = INVITE_OUTCOME_STORAGE_KEY) {
  * @param {InviteOutcomeValue} outcome
  * @param {number} [ts]
  * @param {string} [key]
- * @param {string} [sessionId] T66 — same timed-focus session when set
+ * @param {string} [sessionId] T67 — same timed-focus session when set
  * @returns {boolean}
  */
 export function recordInviteOutcome(

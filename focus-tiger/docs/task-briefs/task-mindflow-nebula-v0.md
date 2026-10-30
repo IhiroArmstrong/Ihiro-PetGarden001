@@ -89,6 +89,6 @@
 - `test:smoke` + 相关 `node --test` 绿。
 - tracker：UI 待人工测试（并入下一批批量验收）。
 
-## 第二步（未排期）
+## 第二步（未排期 · Brief 已起草）
 
-新颖度离线实验 → 本机 embedding → 板块预设；另 Brief。
+新颖度离线实验 → 本机 embedding → 板块预设。SSOT [`task-mindflow-nebula-step2-embedding-presets.md`](./task-mindflow-nebula-step2-embedding-presets.md)（**待点头**；实现旁支 `feature/t66-mindflow-step2-*`，**禁止**复用 v0 旁支）。

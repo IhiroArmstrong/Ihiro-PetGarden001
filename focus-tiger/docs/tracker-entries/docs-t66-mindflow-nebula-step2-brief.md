@@ -1,0 +1,1 @@
+| T66 第二步 · 心念流 embedding + 板块预设 Brief | 纯文档 | 仅单元测试覆盖 | **阶段 A**：实验室脚本 + 汇总 JSON；`phaseAPassed:false`  until PO lab pass。**阶段 B 未接**（保持 v0）。旁支 `feature/t66-mindflow-step2-*`。 | — | — | — | `task-briefs/task-mindflow-nebula-step2-embedding-presets.md` | 2026-10-30 |

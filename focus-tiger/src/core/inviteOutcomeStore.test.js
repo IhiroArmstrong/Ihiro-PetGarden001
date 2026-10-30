@@ -97,7 +97,7 @@ describe('inviteOutcomeStore', () => {
     });
   });
 
-  it('optional sessionId on focus invite rows (T66) preserves legacy rows', () => {
+  it('optional sessionId on focus invite rows (T67) preserves legacy rows', () => {
     withMockLocalStorage(() => {
       assert.equal(
         recordInviteOutcome(
