@@ -1,0 +1,1 @@
+| T67 共修场次接合账 | 纯逻辑 | 仅单元测试覆盖 | **无界面。** 计时开表颁发 `sessionId`；专注中邀请下场带同 id；开表记出示默认分钟、达标完成记实际分钟；只读汇总供以后纪念画分布（**不发画**）。T58 忘掉清账；删除所有数据 / T54 / 练习云备份不含本键。**#1478 已合 develop**。**测**：`node --test src/core/coPracticeSessionJoinLedger.test.js` · `npm run test:smoke`。无新 e2e。 | — | — | — | `coPracticeSessionJoinLedger.js` · Brief `task-co-practice-session-join-ledger.md` | 2026-10-30 |

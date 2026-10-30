@@ -66,7 +66,7 @@ function withMockLocalStorage(run) {
   }
 }
 
-describe('coPracticeSessionJoinLedger (T66)', () => {
+describe('coPracticeSessionJoinLedger (T67)', () => {
   it('mints non-colliding session ids for the same millisecond', () => {
     const a = mintCoPracticeSessionId(1000);
     const b = mintCoPracticeSessionId(1000);
