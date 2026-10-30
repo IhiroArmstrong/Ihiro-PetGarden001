@@ -25,6 +25,7 @@
     "companion:favorable-disagreement-mill": "node scripts/l0-run-favorable-disagreement-mill.js",
     "companion:observe-shuffle-screen": "node scripts/l0-observe-shuffle-screen.js",
     "companion:semantic-live-coldstart-probe": "node scripts/l0-semantic-live-coldstart-probe.js",
+    "companion:mindflow-nebula-step2-phase-a": "node scripts/mindflow-nebula-step2-novelty-lab.js",
     "companion:voice-input-probe": "node scripts/voice-input-probe.js",
     "companion:system-tts-probe": "node scripts/system-tts-probe.js",
     "companion:mood-veto-holdout": "node scripts/l0-kb-mood-veto-holdout-lab.js",
