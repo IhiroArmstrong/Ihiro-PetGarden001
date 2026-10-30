@@ -545,6 +545,46 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `co-practice-gift-art` · feature · 方向锁已合 #1472 · 未排期发画 · 下一刀 T66 补账 · 2026-10-29
+
+共修纪念画方向锁已合。PO 改口：C 为节奏稳定代理；B 只数专注中邀请被接受并坐完。发画仍未排期。下一刀 **T66** 只补账、不出画。
+
+### `confide-dock-suspend-no-drag` · feature · 实现旁支 · PR 待合 · 2026-10-29
+
+T41 倾诉贴边 **暂时停用**（各宽度居中 + 倾诉卡禁拖）；置顶与 T42 不变。Brief [`task-briefs/task-confide-dock-suspend-no-drag.md`](../task-briefs/task-confide-dock-suspend-no-drag.md) · 账本 [`issue-entries/fix-confide-dock-suspend-no-drag.md`](../issue-entries/fix-confide-dock-suspend-no-drag.md)。
+
+### `ritual-recipe-phase1` · feature · 进行中（A1a+A5 已合 #1467 · A1b 已合 #1469 · A4 已合 #1471 · A2 本支） · 2026-10-29
+
+平台阶段 1：坐的配方。Brief [`task-ritual-recipe-phase1.md`](../task-briefs/task-ritual-recipe-phase1.md)。A4 Brief [`task-ritual-recipe-a4-official-templates.md`](../task-briefs/task-ritual-recipe-a4-official-templates.md)。A2 Brief [`task-ritual-recipe-a2-edit-my-recipe.md`](../task-briefs/task-ritual-recipe-a2-edit-my-recipe.md)。真源 [`RITUAL_RECIPE_A1_SPEC.md`](../RITUAL_RECIPE_A1_SPEC.md)。顺序 A1a → A1b/A1c → A4 → **A2**；A5 与 A1a 并行；A3 在 A1a 后；B1 在 A4 后。一次 PR 一条线。总表新节因 `tasks:check` 不能进功能 PR，另开只改 `TASKS.md` 的文档 PR。
+
+### `t55-companion-contract` · feature · 已完成 · 已合 develop（PR-1 #1419 · PR-2 #1425 · PR-3 #1426 · PR-4 #1429 · 补丁 #1431） · 2026-10-29
+
+**T55** 陪伴契约。A 类。Brief [`task-companion-contract.md`](../task-briefs/task-companion-contract.md)。`npm run check:companion-contract` 进 `docs:check`。合入后补丁：近邻再加同坐环悬停与分钟/天数练习事实；§D 写明 34/34 是回归不是覆盖率/验证、对外不引用；日文样本目前不算覆盖。「已知漏网」一栏另开小任务。不改运行时。不是 T54。
+
+### `t55-more01-c11-samples` · note · 排队中 · 可选（PO 2026-10-29 点名） · 2026-10-29
+
+**T55-more01** 陪伴契约 C-11 回归样本。A 类。in：`companion-contract-samples` + `companion-contract-forbidden` C-11 字面模式；check 仍 1.0/1.0（39/39 · 10/10）。out：Confide 现场句、语义模型。验收：`npm run check:companion-contract`。不是 T55 主任务重开。
+
+### `t55-more02-known-gaps-registry` · note · 排队中 · 可选（PO 2026-10-29 点名） · 2026-10-29
+
+**T55-more02** 陪伴契约已知漏网登记。A 类。[`companion-contract-known-gaps.md`](../companion-contract-known-gaps.md)。out：语义检查器。验收：PO 过目表。不是 T55-more01 样本集。
+
+### `t63-co-practice-contract-surface` · feature · 已合 develop #1463 · 2026-10-29
+
+共修契约面：成长旅程详情里说明 Yin 可能开口的地方，并可去已有开关处关/降。不新增劝睡。规格 [`task-co-practice-contract-surface.md`](../task-briefs/task-co-practice-contract-surface.md)。
+
+### `t64-co-practice-copy-align` · feature · 已合 develop #1460 · 2026-10-29
+
+共修文案对齐：问号简介 `HINT_APP_PURPOSE_BODY` / `HINT_APP_PURPOSE_WELLNESS_BODY`（切片 `co-practice-copy.json`），补「不是禅师」+「一起练习、不催不评判」。卷/超卖扫描见 [`t64-co-practice-locale-scan.md`](../t64-co-practice-locale-scan.md)。规格 [`task-co-practice-copy-align.md`](../task-briefs/task-co-practice-copy-align.md)。
+
+### `t66-co-practice-session-join-ledger` · feature · Brief 待点头 · 排队中 · 可选 · 2026-10-29
+
+T66 共修场次接合账。只补场次 id 与出示默认分钟流水。不发画、不改 T57/T58 可见行为。SSOT Brief `task-co-practice-session-join-ledger.md`。方向锁 `CO_PRACTICE_GIFT_ART.md`。
+
+### `t66-mindflow-nebula-v0` · note · Brief 已点头 · 实现中 · 2026-10-29
+
+T66 心念流 / 隐迹星云 v0：可选 180×180 粒子画布；三种状态；无 embedding。Brief [`task-mindflow-nebula-v0.md`](../task-briefs/task-mindflow-nebula-v0.md)。
+
 ### `t61-user-set-work-end-time` · note · 搁置 · 未排期（Brief 待点头） · 2026-10-28
 
 用户自设收工时间 + 到点陪伴式邀请。B 类。须 **T60 → T57 → T58** 已合后才写代码。盘点 [`late-night-behavior-inventory.md`](../late-night-behavior-inventory.md) §2、§6。**不是** T58。
@@ -552,14 +592,6 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 ### `t62-evening-practice-facts-practice-paper` · note · 已合 develop #1459 · 2026-10-28
 
 晚间练习事实进练习纸。与 **T61** 分开（T61 已合 #1455/#1456）。新本地 ledger + 单独同意 + T60 重置名单；**不进** T54 研究分享。盘点 §3。完整规格 [`task-evening-practice-facts-practice-paper.md`](../task-briefs/task-evening-practice-facts-practice-paper.md)。
-
-### `t63-co-practice-contract-surface` · feature · 排队中（Brief 已点头 2026-10-28；须 T64→T65 之后；无运行时） · 2026-10-28
-
-共修契约面：成长旅程详情里说明 Yin 可能开口的地方，并可去已有开关处关/降。不新增劝睡。规格 [`task-co-practice-contract-surface.md`](../task-briefs/task-co-practice-contract-surface.md)。
-
-### `t64-co-practice-copy-align` · feature · 排队中（Brief 待点头 · 实现中 · PR #1460） · 2026-10-28
-
-共修文案对齐：问号简介 `HINT_APP_PURPOSE_BODY` / `HINT_APP_PURPOSE_WELLNESS_BODY`（切片 `co-practice-copy.json`），补「不是禅师」+「一起练习、不催不评判」。卷/超卖扫描见 [`t64-co-practice-locale-scan.md`](../t64-co-practice-locale-scan.md)。规格 [`task-co-practice-copy-align.md`](../task-briefs/task-co-practice-copy-align.md)。
 
 ### `t65-practice-paper-check-in-rhythm` · feature · 已合 develop #1461 · 2026-10-28
 
@@ -604,10 +636,6 @@ T53 输入节奏：默认关；无 Input Monitoring 退回 T51（SB-21）。只�
 ### `t54-shadow-pipeline` · feature · 排队中 · 可选（影子流水） · 2026-10-25
 
 **T54** 阶段 2 第一条：本机计时专注流水 + Worker 白名单接收口。A 类。不改招呼文案。Brief [`task-t54-stage2-shadow-pipeline.md`](../task-briefs/task-t54-stage2-shadow-pipeline.md)。不是 T50 / T51 / T52。不是 90 天实验。
-
-### `t55-companion-contract` · feature · PR-4 已合 #1429 · 合入后补丁（近邻+§D 口径） · 2026-10-25
-
-**T55** 陪伴契约。A 类。Brief [`task-companion-contract.md`](../task-briefs/task-companion-contract.md)。PR-1 盘点 #1419。PR-2 契约 #1425。PR-3 字面检查 #1426。PR-4 样本集 #1429。合入后补丁：近邻再加同坐环悬停与分钟/天数练习事实；§D 写明 34/34 是回归不是覆盖率/验证、对外不引用；日文样本目前不算覆盖。「已知漏网」一栏另开小任务。不改运行时。不挡 T34。不是 T54。不改队列热点文件。
 
 ### `session-end-observed-duration` · feature · 实现中 · feature/session-end-observed-duration · 2026-10-24
 
