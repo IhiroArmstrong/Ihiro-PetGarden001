@@ -1,7 +1,7 @@
 ---
 id: t66-mindflow-nebula-step2-embedding-presets
 kind: note
-status: Brief 草稿 · 待点头 · 未排期实现
+status: Brief 阈值已填 · 实现须新 Chat · 阶段 A 先于 B
 updated: 2026-10-30
 ---
 
