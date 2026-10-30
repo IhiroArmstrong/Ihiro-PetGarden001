@@ -334,6 +334,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
 <!-- tracker-fragments:begin -->
+| T66 第二步 · 心念流 embedding + 板块预设 Brief | 纯文档 | 仅单元测试覆盖 | **无运行时。** 本条验收 Brief 已写入且阶段 A 通过阈值已填（2026-10-30）。实现须新 Chat + `feature/t66-mindflow-step2-*`，禁止复用 v0 旁支。 | — | — | — | `task-briefs/task-mindflow-nebula-step2-embedding-presets.md` | 2026-10-30 |
 | T67 共修场次接合账 Brief | 纯文档 | 仅单元测试覆盖 | **无界面。** Brief 已点头（2026-10-30）；运行时 #1478 + 治理 #1484。本条验收 Brief 与 SHARED_RESOURCES 口径，**不代表**已发画。 | — | — | — | `focus-tiger/docs/task-briefs/task-co-practice-session-join-ledger.md` | 2026-10-30 |
 | T66 心念流 / 隐迹星云 v0 | UI可见 | 待人工测试 | **主路径**：⋯ → 偏好 → **心念流** → 开开关 → Idle 右下见 180×180 光点；开 Confide → 粒子略活；小虎回复后短时 third 档。**Focusing** 必藏。**默认关**。**测**：`node --test src/core/mindflowNebula/mindflowNebulaStore.test.js` · hover 见免责声明 · 不挡 Support FAB / Sit · **#1475 已合 develop** | — | — | — | `MindflowNebulaChromeUI.js` · Brief `task-mindflow-nebula-v0.md` | 2026-10-30 |
 | T67 共修场次接合账 | 纯逻辑 | 仅单元测试覆盖 | **无界面。** 计时开表颁发 `sessionId`；专注中邀请下场带同 id；开表记出示默认分钟、达标完成记实际分钟；只读汇总供以后纪念画分布（**不发画**）。T58 忘掉清账；删除所有数据 / T54 / 练习云备份不含本键。**#1478 已合 develop**。**测**：`node --test src/core/coPracticeSessionJoinLedger.test.js` · `npm run test:smoke`。无新 e2e。 | — | — | — | `coPracticeSessionJoinLedger.js` · Brief `task-co-practice-session-join-ledger.md` | 2026-10-30 |

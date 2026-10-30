@@ -1,0 +1,1 @@
+| T66 第二步 · 心念流 embedding + 板块预设 Brief | 纯文档 | 仅单元测试覆盖 | **无运行时。** 本条验收 Brief 已写入且阶段 A 通过阈值已填（2026-10-30；PCA；凝聚 0.40 / 分离 −0.10 / 新颖 P90）。实现须新 Chat + `feature/t66-mindflow-step2-*`，禁止复用 v0 旁支。 | — | — | — | `task-briefs/task-mindflow-nebula-step2-embedding-presets.md` | 2026-10-30 |
