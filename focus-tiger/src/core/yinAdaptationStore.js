@@ -20,6 +20,7 @@ import {
   INVITE_OUTCOME_VALUES,
   clearInviteOutcomeRecords
 } from './inviteOutcomeStore.js';
+import { clearSessionDurationOfferRecords } from './coPracticeSessionJoinLedger.js';
 import { AWAKEN_CHECKIN_STORAGE_KEY, normalizeCheckInRows } from './awakenCheckInStore.js';
 
 export const YIN_ADAPTATION_STORAGE_KEY = 'focus-tiger.yin-adaptation.v1';
@@ -281,6 +282,7 @@ export function hideYinAdaptationNotebookLine(ruleId, key = YIN_ADAPTATION_STORA
     ruleId === YIN_ADAPTATION_RULE_IDS.DURATION_SUGGEST
   ) {
     clearInviteOutcomeRecords();
+    clearSessionDurationOfferRecords();
     state.kindState = {};
   }
   writeYinAdaptationState(state, key);
@@ -288,6 +290,7 @@ export function hideYinAdaptationNotebookLine(ruleId, key = YIN_ADAPTATION_STORA
 
 export function forgetYinAdaptationTuning(key = YIN_ADAPTATION_STORAGE_KEY) {
   clearInviteOutcomeRecords();
+  clearSessionDurationOfferRecords();
   const state = readYinAdaptationState(key);
   state.kindState = {};
   state.suspendedRules = {};

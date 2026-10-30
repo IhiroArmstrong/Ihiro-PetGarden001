@@ -58,6 +58,14 @@ test('scan finds invite-outcomes literal (T57 storage)', () => {
   );
 });
 
+test('scan finds session-duration-offer literal (T66 storage)', () => {
+  const literals = scanFocusTigerLocalStorageKeyLiterals(SRC_ROOT);
+  assert.ok(literals.includes('focus-tiger.session-duration-offer.v1'));
+  assert.ok(
+    FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes('focus-tiger.session-duration-offer.v1')
+  );
+});
+
 test('scan finds yin adaptation literals (T58 storage)', () => {
   const literals = scanFocusTigerLocalStorageKeyLiterals(SRC_ROOT);
   assert.ok(literals.includes('focus-tiger.yin-adaptation.v1'));
