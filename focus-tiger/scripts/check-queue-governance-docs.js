@@ -38,9 +38,12 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   // docs:check rewrites the snapshot date on the calendar day of the commit
   'focus-tiger/docs/kb-live-gap-audit.md',
   'focus-tiger/docs/queue-governance-readme.md',
+  'focus-tiger/docs/TASKS.md',
+  'focus-tiger/docs/TEST_TRACKER.md',
   'focus-tiger/docs/CONFIDE_WORKING_AGREEMENT.md',
   'focus-tiger/scripts/check-queue-governance-docs.js',
   'focus-tiger/scripts/check-queue-governance-docs.test.js',
+  'focus-tiger/scripts/assemble-tasks.js',
   'focus-tiger/scripts/docs-check.js',
   'focus-tiger/scripts/batch-merge-develop-open-prs.sh',
   'focus-tiger/scripts/rules-authority-registry.js',
@@ -71,12 +74,17 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t55-companion-contract.md',
   'focus-tiger/docs/CO_PRACTICE_GIFT_ART.md',
   'focus-tiger/docs/task-briefs/task-co-practice-session-join-ledger.md',
+  'focus-tiger/docs/task-entries/t67-co-practice-session-join-ledger.md',
   'focus-tiger/docs/task-entries/t66-co-practice-session-join-ledger.md',
   'focus-tiger/docs/task-entries/co-practice-gift-art.md',
+  'focus-tiger/docs/tracker-entries/docs-t67-co-practice-session-join-ledger.md',
   'focus-tiger/docs/tracker-entries/docs-t66-co-practice-session-join-ledger.md',
   'focus-tiger/docs/task-briefs/task-co-practice-gift-art-grant.md',
   'focus-tiger/docs/task-entries/t67-co-practice-gift-art-grant.md',
   'focus-tiger/docs/tracker-entries/docs-t67-co-practice-gift-art-grant.md',
+  'focus-tiger/docs/task-briefs/task-mindflow-nebula-v0.md',
+  'focus-tiger/docs/task-entries/t66-mindflow-nebula-v0.md',
+  'focus-tiger/docs/tracker-entries/feature-t66-mindflow-nebula-v0.md',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
