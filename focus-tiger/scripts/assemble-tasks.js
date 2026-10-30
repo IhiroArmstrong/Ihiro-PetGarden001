@@ -23,6 +23,10 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import {
+  QUEUE_GOVERNANCE_HOTSPOTS,
+  queueGovernanceHotspotError
+} from './check-queue-governance-docs.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 export const ROOT = join(__dirname, '..')
@@ -398,10 +402,14 @@ export function runTasksFragmentCheck() {
       ).filter((path) => path !== TASKS_GIT_PATH)
     )
   ]
+  const allChanged = [...otherPaths, TASKS_GIT_PATH]
+  const governancePr =
+    queueGovernanceHotspotError(allChanged) === null &&
+    allChanged.some((path) => QUEUE_GOVERNANCE_HOTSPOTS.includes(path))
   const guard = evaluateTasksGuard({
     baseText,
     headText: tasksText,
-    otherPaths,
+    otherPaths: governancePr ? [] : otherPaths,
     entries
   })
   if (!guard.ok) {

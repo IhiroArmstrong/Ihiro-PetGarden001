@@ -545,9 +545,17 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `co-practice-gift-art` · feature · 方向锁已合 #1472 · 未排期发画 · 下一刀 T66 补账 · 2026-10-29
+### `co-practice-gift-art` · feature · 方向锁已合 #1472 · 未排期发画 · 下一刀 T67 补账 · 2026-10-30
 
-共修纪念画方向锁已合。PO 改口：C 为节奏稳定代理；B 只数专注中邀请被接受并坐完。发画仍未排期。下一刀 **T66** 只补账、不出画。
+共修纪念画方向锁已合。PO 改口：C 为节奏稳定代理；B 只数专注中邀请被接受并坐完。发画仍未排期。下一刀 **T67** 只补账、不出画。
+
+### `t66-mindflow-nebula-v0` · note · Brief 已点头 · 代码已合 #1475 · 关单级手测待批 · 2026-10-30
+
+T66 心念流 / 隐迹星云 v0：可选 180×180 粒子画布；三种状态；无 embedding。Brief [`task-mindflow-nebula-v0.md`](../task-briefs/task-mindflow-nebula-v0.md)。PR [#1475](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1475)。
+
+### `t67-co-practice-session-join-ledger` · feature · Brief 待点头 · 排队中 · 可选 · 2026-10-30
+
+T67 共修场次接合账（原 #1474 docs 误占 T66，2026-10-30 治理改号）。只补场次 id 与出示默认分钟流水。不发画、不改 T57/T58 可见行为。SSOT Brief `task-co-practice-session-join-ledger.md`。方向锁 `CO_PRACTICE_GIFT_ART.md`。
 
 ### `confide-dock-suspend-no-drag` · feature · 实现旁支 · PR 待合 · 2026-10-29
 
@@ -576,14 +584,6 @@ T41 倾诉贴边 **暂时停用**（各宽度居中 + 倾诉卡禁拖）；置�
 ### `t64-co-practice-copy-align` · feature · 已合 develop #1460 · 2026-10-29
 
 共修文案对齐：问号简介 `HINT_APP_PURPOSE_BODY` / `HINT_APP_PURPOSE_WELLNESS_BODY`（切片 `co-practice-copy.json`），补「不是禅师」+「一起练习、不催不评判」。卷/超卖扫描见 [`t64-co-practice-locale-scan.md`](../t64-co-practice-locale-scan.md)。规格 [`task-co-practice-copy-align.md`](../task-briefs/task-co-practice-copy-align.md)。
-
-### `t66-co-practice-session-join-ledger` · feature · Brief 待点头 · 排队中 · 可选 · 2026-10-29
-
-T66 共修场次接合账。只补场次 id 与出示默认分钟流水。不发画、不改 T57/T58 可见行为。SSOT Brief `task-co-practice-session-join-ledger.md`。方向锁 `CO_PRACTICE_GIFT_ART.md`。
-
-### `t66-mindflow-nebula-v0` · note · Brief 已点头 · 实现中 · 2026-10-29
-
-T66 心念流 / 隐迹星云 v0：可选 180×180 粒子画布；三种状态；无 embedding。Brief [`task-mindflow-nebula-v0.md`](../task-briefs/task-mindflow-nebula-v0.md)。
 
 ### `t61-user-set-work-end-time` · note · 搁置 · 未排期（Brief 待点头） · 2026-10-28
 
