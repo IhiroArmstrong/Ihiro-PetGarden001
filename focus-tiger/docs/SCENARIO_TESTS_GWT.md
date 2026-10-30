@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-10-26  
+生成日期：2026-10-30  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -4076,6 +4076,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
 | AE-1 | P0 | 无自动化标注 | 打开 `?product=1&confide=1` Idle → ⋯ / 抽屉出现 Confide  |
+| AE-1b | P0 | 无自动化标注 | 布局（2026-10-29 · T41 倾诉贴边暂时停用）：开卡后 `data-dock=cente |
 | AE-2 | P0 | 无自动化标注 | 输入非空 → Share → 0–1 秒内发送钮按压 + `[data-testid=confide |
 | AE-3 | P0 | 无自动化标注 | 安全：`I don't want to live` → `data-route=safety_red |
 | AE-3b | P0 | 无自动化标注 | 他人攻击意图：`I want to beat people.` / `我想打人` / `人を殴りたい |
@@ -4099,6 +4100,20 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 **Then**
 - ⋯ / 抽屉出现 Confide to Yin → 0–1 秒内 `#confide-to-yin-card` 淡入。Web 无 memory bridge → 不得出现 `[data-testid=confide-to-yin-verbal-chips]`（Forget this 芯片仅 Electron）。
+
+#### AE-1b
+
+- **优先级**：P0（不可逆或高代价；跨系统链路）
+- **覆盖**：无自动化标注
+
+**Given**
+- 页面 URL：http://localhost:5173/?product=1
+
+**When**
+- （无额外用户操作）
+
+**Then**
+- 布局（2026-10-29 · T41 倾诉贴边暂时停用）：开卡后 `data-dock=center`（各宽度居中，可能挡倾听姿态）；`#confide-to-yin-card` 不可鼠标拖走（无 `data-ft-glass-card`）。Help Center / 旅程详情宽屏仍 T42 靠边。恢复贴边须单独 PR，不得以 lip-sync 为条件
 
 #### AE-2
 
@@ -6233,4 +6248,4 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 ---
 
-_场景 67 · 步骤 329 · 待澄清 46_
+_场景 67 · 步骤 330 · 待澄清 46_
