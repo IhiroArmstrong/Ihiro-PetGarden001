@@ -63,14 +63,26 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
-  it('allows T66 gift-art lock and join-ledger Brief with glossary', () => {
+  it('allows T67 gift-art lock and join-ledger Brief with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([
         'focus-tiger/docs/GLOSSARY.md',
         'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
         'focus-tiger/docs/CO_PRACTICE_GIFT_ART.md',
         'focus-tiger/docs/task-briefs/task-co-practice-session-join-ledger.md',
-        'focus-tiger/docs/task-entries/t66-co-practice-session-join-ledger.md'
+        'focus-tiger/docs/task-entries/t67-co-practice-session-join-ledger.md'
+      ]),
+      null
+    );
+  });
+
+  it('allows T66 mindflow nebula v0 task shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/task-briefs/task-mindflow-nebula-v0.md',
+        'focus-tiger/docs/task-entries/t66-mindflow-nebula-v0.md'
       ]),
       null
     );
