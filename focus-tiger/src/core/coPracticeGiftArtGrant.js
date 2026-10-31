@@ -60,6 +60,25 @@ export function cumulativeBSatisfied(bDays, minCount, minSpanDays) {
 }
 
 /**
+ * Later pieces count B days after the previous grant day, not the whole ledger.
+ *
+ * @param {string[]} bDays
+ * @param {{ id: string, grantedDayKey?: string }[]} grants
+ * @param {{ order: number }} next
+ * @returns {string[]}
+ */
+export function bDaysForPiece(bDays, grants, next) {
+  const days = Array.isArray(bDays) ? bDays : [];
+  if (!next || next.order <= 1) return days;
+  const previous = CO_PRACTICE_GIFT_ART_PIECES.find(
+    (piece) => piece.order === next.order - 1
+  );
+  const prevGrant = (grants || []).find((row) => row.id === previous?.id);
+  if (!prevGrant?.grantedDayKey) return [];
+  return days.filter((day) => day > prevGrant.grantedDayKey);
+}
+
+/**
  * @param {string} sessionId
  * @param {object[]} [inviteRows]
  * @param {object[]} [durationRows]
@@ -124,7 +143,8 @@ export function evaluateCoPracticeGiftArtGrant(input) {
   if ((Number(input.lifetimeMinutes) || 0) < next.aMinutes) {
     return { grant: false, reason: 'a_short', pieceId: next.id };
   }
-  if (!cumulativeBSatisfied(input.bDays || [], next.bDays, next.bSpanDays)) {
+  const bWindow = bDaysForPiece(input.bDays || [], input.grants || [], next);
+  if (!cumulativeBSatisfied(bWindow, next.bDays, next.bSpanDays)) {
     return { grant: false, reason: 'b_short', pieceId: next.id };
   }
   if (!rhythmProxyPassesC(input.rhythmProxy)) {

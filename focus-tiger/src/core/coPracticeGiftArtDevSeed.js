@@ -47,6 +47,13 @@ export function runCoPracticeGiftArtJoinFourScenes() {
   completeCoPracticeTimedSession({ actualCompletedMinutes: 25 });
   const afterAccept = countCoPracticeBJoinDaySketches();
 
+  // Honesty check-in never mints a sit-* join id. A completed sit without
+  // an accepted invite is the ledger analogue: B must not move.
+  beginCoPracticeTimedSession({
+    offeredDefaultMinutes: 15,
+    startedAtMs: Date.now() + 2
+  });
+  completeCoPracticeTimedSession({ actualCompletedMinutes: 15 });
   const honestyB = countCoPracticeBJoinDaySketches();
 
   const sessionC = beginCoPracticeTimedSession({

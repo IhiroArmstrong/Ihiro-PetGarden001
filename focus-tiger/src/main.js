@@ -1821,12 +1821,18 @@ async function init() {
    * }}
    */
   let pendingAfterMustardSeed = null;
+  /** @type {string | null} */
+  let pendingGiftArtPieceId = null;
   const coPracticeGiftArtCardUI = new CoPracticeGiftArtCardUI(document.body, {
     onOpen: () => {
+      closeGrowthOverlayCards({ except: 'co-practice-gift-art' });
+      bootSessionChrome.sessionUiGate.setPostSessionOverlayActive(true);
       resyncSessionChrome();
     },
     onClose: () => {
-      resyncSessionChrome();
+      const pending = pendingAfterMustardSeed;
+      pendingAfterMustardSeed = null;
+      continueAfterGrowthCeremony(pending);
     }
   });
   window.__coPracticeGiftArtCard = coPracticeGiftArtCardUI;
@@ -2581,6 +2587,11 @@ async function init() {
         id: 'practice-imprint',
         ui: practiceImprintCardUI,
         close: () => practiceImprintCardUI.close()
+      },
+      {
+        id: 'co-practice-gift-art',
+        ui: coPracticeGiftArtCardUI,
+        close: () => coPracticeGiftArtCardUI.close()
       },
       {
         id: 'wallpapers',
@@ -6121,8 +6132,27 @@ async function init() {
 
   function continueAfterGrowthCeremony(pending) {
     if (maybeOfferPracticeImprintAfterCeremony(pending)) return;
+    if (maybeOfferCoPracticeGiftArtAfterCeremony(pending)) return;
     tipKindnessBadgesChrome.releaseAwardHold();
     resumeAfterBadgeAward(pending);
+  }
+
+  /**
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [opts]
+   * @returns {boolean}
+   */
+  function maybeOfferCoPracticeGiftArtAfterCeremony(opts = {}) {
+    if (!CO_PRACTICE_GIFT_ART_SURFACE_ENABLED) return false;
+    if (!pendingGiftArtPieceId) return false;
+    const pieceId = pendingGiftArtPieceId;
+    pendingGiftArtPieceId = null;
+    pendingAfterMustardSeed = opts;
+    closeGrowthOverlayCards({ except: 'co-practice-gift-art' });
+    coPracticeGiftArtCardUI.open({ pieceId });
+    return true;
   }
 
   /**
@@ -6217,10 +6247,13 @@ async function init() {
       actualCompletedMinutes: timedAwardMinutes
     });
     if (giftArtSessionId) {
-      noteCoPracticeGiftArtAfterTimedComplete({
+      const giftResult = noteCoPracticeGiftArtAfterTimedComplete({
         sessionId: giftArtSessionId,
         surfaceEnabled: CO_PRACTICE_GIFT_ART_SURFACE_ENABLED
       });
+      if (giftResult?.evaluation?.grant && giftResult.evaluation.pieceId) {
+        pendingGiftArtPieceId = giftResult.evaluation.pieceId;
+      }
     }
     stashPendingJourneyDraft({ completed: true });
     sessionPresenceCollector.finalize(

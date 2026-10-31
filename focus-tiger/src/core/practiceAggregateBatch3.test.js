@@ -22,6 +22,7 @@ describe('practiceAggregate Batch 3 — mustard ceremony wiring', () => {
     assert.match(mainSrc, /shouldOfferContemplativeArchiveSealAfterCeremony\(/);
     assert.match(mainSrc, /maybeOfferPracticeImprintAfterCeremony/);
     assert.match(mainSrc, /shouldOfferPracticeImprintAfterCeremony\(/);
+    assert.match(mainSrc, /maybeOfferCoPracticeGiftArtAfterCeremony/);
   });
 
   it('timed Sit finish uses shared helper', () => {

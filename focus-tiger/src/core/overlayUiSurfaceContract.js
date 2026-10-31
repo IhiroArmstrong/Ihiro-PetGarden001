@@ -138,7 +138,28 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
   glassCard('GroundExerciseChoiceUI.js'),
   glassCard('MustardSeedSealCardUI.js'),
   glassCard('PracticeImprintCardUI.js'),
-  glassCard('CoPracticeGiftArtCardUI.js'),
+  surface({
+    file: 'CoPracticeGiftArtCardUI.js',
+    slotRequest: deriveSlot(),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'grant-persisted-before-card' }),
+      success: Object.freeze({ mode: 'na', reason: 'close-does-not-write' }),
+      fail: Object.freeze({ mode: 'na', reason: 'close-does-not-write' })
+    }),
+    e2eOverlap: Object.freeze({
+      mode: 'na',
+      reason: 'surface-off-until-2a-records-on-grant-pr; collections empty-state unit-covered'
+    }),
+    trackerCoverage: Object.freeze({
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-t68-co-practice-gift-art.md'
+      ]),
+      tokens: Object.freeze(['待人工测试'])
+    })
+  }),
   glassCard('ConfideToYinUI.js'),
   glassCard('JourneyLogUI.js'),
   glassCard('HelpCenterUI.js'),

@@ -26,7 +26,12 @@ import {
   recordCoPracticeGiftArtBDay,
   writeCoPracticeGiftArtState
 } from './coPracticeGiftArtStore.js';
+import { readdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import giftArtCopy from '../locales/slices/co-practice-gift-art.json' with { type: 'json' };
 import {
+  bDaysForPiece,
   cumulativeBSatisfied,
   evaluateCoPracticeGiftArtGrant
 } from './coPracticeGiftArtGrant.js';
@@ -171,6 +176,35 @@ describe('T68 co-practice gift art', () => {
     assert.equal(laterNonB.reason, 'not_b_join_session');
   });
 
+  it('after 3 packed B days, a later B join that finally spans 21 days may grant', () => {
+    const ok = evaluateCoPracticeGiftArtGrant({
+      lifetimeMinutes: 150,
+      bDays: ['2026-01-01', '2026-01-05', '2026-01-10', '2026-01-22'],
+      grants: [],
+      rhythmProxy: passingC,
+      bDayAddedThisSession: true,
+      nowDayKey: '2026-01-22',
+      surfaceEnabled: true
+    });
+    assert.equal(ok.grant, true);
+    assert.equal(ok.pieceId, 'mountain-boat-tray');
+  });
+
+  it('piece 2 B window starts after piece 1 grant day', () => {
+    const days = [
+      '2026-01-01',
+      '2026-01-12',
+      '2026-01-22',
+      '2026-01-23',
+      '2026-01-24'
+    ];
+    const grants = [{ id: 'mountain-boat-tray', grantedDayKey: '2026-01-22' }];
+    assert.deepEqual(
+      bDaysForPiece(days, grants, CO_PRACTICE_GIFT_ART_PIECES[1]),
+      ['2026-01-23', '2026-01-24']
+    );
+  });
+
   it('does not grant when C is unavailable (adaptation off)', () => {
     const miss = evaluateCoPracticeGiftArtGrant({
       lifetimeMinutes: 150,
@@ -264,3 +298,45 @@ describe('T68 exposure fixtures (gate 2b)', () => {
     assert.equal(row.bDays, 0);
   });
 });
+
+describe('T68 gift-art filenames and copy', () => {
+  it('preview filenames do not collide with Art Collection or tea-gift previews', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const giftDir = join(here, '../../public/ui/co-practice-gift-art');
+    const saleDirs = [
+      join(here, '../../public/ui/art-collection'),
+      join(here, '../../public/ui/tea-gift')
+    ];
+    const giftNames = new Set(
+      readdirSync(giftDir).filter((name) => name.endsWith('.png'))
+    );
+    /** @type {string[]} */
+    const saleNames = [];
+    for (const dir of saleDirs) {
+      collectPngBasenames(dir, saleNames);
+    }
+    for (const name of giftNames) {
+      assert.equal(saleNames.includes(name), false, name);
+    }
+    assert.equal(giftNames.size, 3);
+  });
+
+  it('user-facing copy does not use forbidden ladder or adaptation words', () => {
+    const blob = JSON.stringify(giftArtCopy);
+    for (const banned of ['懂你', '适配', '晋级', 'Keep the streak', '共修成功']) {
+      assert.equal(blob.includes(banned), false, banned);
+    }
+  });
+});
+
+/**
+ * @param {string} dir
+ * @param {string[]} out
+ */
+function collectPngBasenames(dir, out) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) collectPngBasenames(full, out);
+    else if (entry.name.endsWith('.png')) out.push(entry.name);
+  }
+}
