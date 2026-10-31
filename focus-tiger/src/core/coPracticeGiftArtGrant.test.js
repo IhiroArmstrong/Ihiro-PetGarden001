@@ -19,7 +19,8 @@ import {
   CO_PRACTICE_GIFT_ART_STORAGE_KEY,
   CO_PRACTICE_GIFT_ART_SURFACE_ENABLED,
   listForSaleArtIds,
-  listGiftArtIds
+  listGiftArtIds,
+  shouldShowGiftArtCollectionSection
 } from './coPracticeGiftArtCatalog.js';
 import {
   readCoPracticeGiftArtState,
@@ -108,6 +109,30 @@ describe('T68 co-practice gift art', () => {
     assert.equal(CO_PRACTICE_GIFT_ART_PIECES[1].aProvisional, true);
     assert.equal(CO_PRACTICE_GIFT_ART_PIECES[2].grantEnabled, false);
     assert.equal(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED, false);
+  });
+
+  it('hides collections gift-art block when surface is off and nothing is granted', () => {
+    assert.equal(
+      shouldShowGiftArtCollectionSection({
+        surfaceEnabled: false,
+        grantCount: 0
+      }),
+      false
+    );
+    assert.equal(
+      shouldShowGiftArtCollectionSection({
+        surfaceEnabled: true,
+        grantCount: 0
+      }),
+      true
+    );
+    assert.equal(
+      shouldShowGiftArtCollectionSection({
+        surfaceEnabled: false,
+        grantCount: 1
+      }),
+      true
+    );
   });
 
   it('grants only when A∧B∧C and this sit newly recorded a B day', () => {

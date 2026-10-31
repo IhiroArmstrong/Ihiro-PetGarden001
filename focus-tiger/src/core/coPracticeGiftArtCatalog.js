@@ -13,8 +13,21 @@ import { ART_EDITION_SETS, TEA_GIFT_ART } from './artEditionCatalog.js';
 
 export const CO_PRACTICE_GIFT_ART_STORAGE_KEY = 'focus-tiger.co-practice-gift-art.v1';
 
-/** User-visible card + persist grant. Off until 2a records ship on the PR. */
+/** User-visible card + persist grant. Off until a dedicated switch PR. */
 export const CO_PRACTICE_GIFT_ART_SURFACE_ENABLED = false;
+
+/**
+ * Collections block is hidden while the surface is off and nothing has
+ * been granted (C-11: do not advertise an unimplemented gift).
+ *
+ * @param {{ surfaceEnabled?: boolean, grantCount?: number }} [opts]
+ */
+export function shouldShowGiftArtCollectionSection(opts = {}) {
+  const surfaceEnabled =
+    opts.surfaceEnabled ?? CO_PRACTICE_GIFT_ART_SURFACE_ENABLED;
+  const grantCount = Number(opts.grantCount) || 0;
+  return surfaceEnabled === true || grantCount > 0;
+}
 
 export const CO_PRACTICE_GIFT_ART_C = Object.freeze({
   bandwidthRatio: 0.2,

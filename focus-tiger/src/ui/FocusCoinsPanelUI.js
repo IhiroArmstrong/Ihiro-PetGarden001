@@ -26,7 +26,10 @@ import {
 import { listCompanionTitleRows } from '../core/collectionsTitles.js';
 import { describeCompanionMerch } from '../core/companionMerch.js';
 import { buildMindfulnessScrollDraft } from '../core/mindfulnessScroll.js';
-import { findGiftArtPiece } from '../core/coPracticeGiftArtCatalog.js';
+import {
+  findGiftArtPiece,
+  shouldShowGiftArtCollectionSection
+} from '../core/coPracticeGiftArtCatalog.js';
 import { readCoPracticeGiftArtState } from '../core/coPracticeGiftArtStore.js';
 import { saveCollectionPieceCard } from '../core/collectionPieceCard.js';
 import { isCollectionsArtBridgeInView } from '../core/collectionsArtBridgeGate.js';
@@ -735,9 +738,19 @@ export class FocusCoinsPanelUI {
 
   _renderGiftArtSection() {
     if (!this.giftArtTitleEl || !this.giftArtListEl) return;
+    const grants = readCoPracticeGiftArtState().grants;
+    const show = shouldShowGiftArtCollectionSection({
+      grantCount: grants.length
+    });
+    this.giftArtTitleEl.hidden = !show;
+    this.giftArtListEl.hidden = !show;
+    if (!show) {
+      this.giftArtListEl.replaceChildren();
+      this.giftArtTitleEl.textContent = '';
+      return;
+    }
     this.giftArtTitleEl.textContent = t('CO_PRACTICE_GIFT_ART_RECEIVED_TITLE');
     this.giftArtListEl.replaceChildren();
-    const grants = readCoPracticeGiftArtState().grants;
     if (!grants.length) {
       const empty = document.createElement('li');
       empty.className = 'yin-coin-panel__memorial-copy';

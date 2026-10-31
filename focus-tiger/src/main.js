@@ -660,10 +660,6 @@ import { CoPracticeGiftArtCardUI } from './ui/CoPracticeGiftArtCardUI.js';
 import { CO_PRACTICE_GIFT_ART_SURFACE_ENABLED } from './core/coPracticeGiftArtCatalog.js';
 import { noteCoPracticeGiftArtAfterTimedComplete } from './core/coPracticeGiftArtGrant.js';
 import {
-  fourScenesAllPass,
-  runCoPracticeGiftArtJoinFourScenes
-} from './core/coPracticeGiftArtDevSeed.js';
-import {
   createRhythmTimingCache
 } from './core/inputRhythmBridge.js';
 import { effectiveAwakenCooldownMs } from './core/inputRhythmEngine.js';
@@ -1823,6 +1819,7 @@ async function init() {
   let pendingAfterMustardSeed = null;
   /** @type {string | null} */
   let pendingGiftArtPieceId = null;
+  let giftArtPreviewOnly = false;
   const coPracticeGiftArtCardUI = new CoPracticeGiftArtCardUI(document.body, {
     onOpen: () => {
       closeGrowthOverlayCards({ except: 'co-practice-gift-art' });
@@ -1830,6 +1827,13 @@ async function init() {
       resyncSessionChrome();
     },
     onClose: () => {
+      const preview = giftArtPreviewOnly;
+      giftArtPreviewOnly = false;
+      resyncSessionChrome();
+      if (preview) {
+        bootSessionChrome.sessionUiGate.setPostSessionOverlayActive(false);
+        return;
+      }
       const pending = pendingAfterMustardSeed;
       pendingAfterMustardSeed = null;
       continueAfterGrowthCeremony(pending);
@@ -3661,9 +3665,15 @@ async function init() {
       summarizeCoPracticeJoinLedgerForDev(
         typeof localStorage !== 'undefined' ? localStorage : null
       );
-    window.__coPracticeGiftArtJoinFourScenes = () => {
-      const result = runCoPracticeGiftArtJoinFourScenes();
-      return { ...result, allPass: fourScenesAllPass(result) };
+    window.__coPracticeGiftArtJoinFourScenes = async () => {
+      const mod = await import('./core/coPracticeGiftArtDevSeed.js');
+      const result = mod.runCoPracticeGiftArtJoinFourScenes();
+      return { ...result, allPass: mod.fourScenesAllPass(result) };
+    };
+    window.__coPracticeGiftArtPreviewCard = (pieceId = 'mountain-boat-tray') => {
+      giftArtPreviewOnly = true;
+      coPracticeGiftArtCardUI.open({ pieceId });
+      return { pieceId, wroteGrant: false };
     };
   }
 

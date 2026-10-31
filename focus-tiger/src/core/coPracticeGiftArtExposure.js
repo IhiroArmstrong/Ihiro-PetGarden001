@@ -4,7 +4,10 @@
  */
 
 /**
- * T68 gate 2b — persona fixture using T57/T58 constants (not measured rates).
+ * T68 gate 2b — rate-model fixture, not a live InterventionOrchestrator run.
+ * Inputs: assumed invitesPerWeek × acceptRate, plus T58 pause only on
+ * always-refuse. T57 hour-cap / 10-min cooldown constants are imported
+ * for documentation; this loop does not call decideAwakenInvite.
  */
 
 import {
