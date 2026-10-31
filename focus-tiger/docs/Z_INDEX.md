@@ -86,6 +86,8 @@
 | **18** | `src/ui/HelpCenterUI.js` | `#help-center` 帮助中心（⋯ / 抽屉 Preferences；? 简介卡次级链；可浏览主题目录） |
 | **17** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-backdrop` 芥子须弥纪念印遮罩 |
 | **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换；保存 PNG） |
+| **17** | `src/ui/CoPracticeGiftArtCardUI.js` | `#co-practice-gift-art-backdrop` 共修纪念画遮罩（`overlayBackdrop`；低于 Support 25/26） |
+| **18** | `src/ui/CoPracticeGiftArtCardUI.js` | `#co-practice-gift-art-card` 共修纪念画（芥子/纪念印之后；开关默认关；不挡 ⋯） |
 | **17** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-backdrop` 阿寅静帧壁纸卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DigitalWallpapersCardUI.js` | `#digital-wallpapers-card` 阿寅静帧壁纸卡（⋯ / 抽屉；保存 PNG） |
 | **17** | `src/ui/ArtCollectionPanelUI.js` | `#art-collection-backdrop` Yin's Art Collection 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |

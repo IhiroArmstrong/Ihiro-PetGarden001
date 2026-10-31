@@ -26,6 +26,11 @@ import {
 import { listCompanionTitleRows } from '../core/collectionsTitles.js';
 import { describeCompanionMerch } from '../core/companionMerch.js';
 import { buildMindfulnessScrollDraft } from '../core/mindfulnessScroll.js';
+import {
+  findGiftArtPiece,
+  shouldShowGiftArtCollectionSection
+} from '../core/coPracticeGiftArtCatalog.js';
+import { readCoPracticeGiftArtState } from '../core/coPracticeGiftArtStore.js';
 import { saveCollectionPieceCard } from '../core/collectionPieceCard.js';
 import { isCollectionsArtBridgeInView } from '../core/collectionsArtBridgeGate.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
@@ -251,6 +256,14 @@ export class FocusCoinsPanelUI {
           'yin-coin-panel__list yin-coin-panel__imprints-list';
         this.imprintsListEl.dataset.testid = 'yin-coin-imprints-list';
         pane.append(this.imprintsListEl);
+        this.giftArtTitleEl = document.createElement('p');
+        this.giftArtTitleEl.className = 'yin-coin-panel__scroll-title';
+        this.giftArtTitleEl.dataset.testid = 'yin-coin-gift-art-title';
+        this.giftArtListEl = document.createElement('ul');
+        this.giftArtListEl.className =
+          'yin-coin-panel__list yin-coin-panel__gift-art-list';
+        this.giftArtListEl.dataset.testid = 'yin-coin-gift-art-list';
+        pane.append(this.giftArtTitleEl, this.giftArtListEl);
         this.tabPanes.set(tabId, pane);
         continue;
       }
@@ -498,6 +511,7 @@ export class FocusCoinsPanelUI {
     this._renderMemorialSection(
       this.handlers.getMemorialRows?.() ?? listCollectionsBehavioralScarcityRows()
     );
+    this._renderGiftArtSection();
     this._renderTitlesSection(listCompanionTitleRows(ctx));
     this._renderMerch(
       this.handlers.getMerchState?.() ?? {
@@ -721,6 +735,47 @@ export class FocusCoinsPanelUI {
    * Memory booklet tab — Save image when the period gate is met.
    * @param {ReturnType<typeof buildMindfulnessScrollDraft>} draft
    */
+
+  _renderGiftArtSection() {
+    if (!this.giftArtTitleEl || !this.giftArtListEl) return;
+    const grants = readCoPracticeGiftArtState().grants;
+    const show = shouldShowGiftArtCollectionSection({
+      grantCount: grants.length
+    });
+    this.giftArtTitleEl.hidden = !show;
+    this.giftArtListEl.hidden = !show;
+    if (!show) {
+      this.giftArtListEl.replaceChildren();
+      this.giftArtTitleEl.textContent = '';
+      return;
+    }
+    this.giftArtTitleEl.textContent = t('CO_PRACTICE_GIFT_ART_RECEIVED_TITLE');
+    this.giftArtListEl.replaceChildren();
+    if (!grants.length) {
+      const empty = document.createElement('li');
+      empty.className = 'yin-coin-panel__memorial-copy';
+      empty.dataset.testid = 'yin-coin-gift-art-empty';
+      empty.textContent = t('CO_PRACTICE_GIFT_ART_RECEIVED_EMPTY');
+      this.giftArtListEl.append(empty);
+      return;
+    }
+    for (const grant of grants) {
+      const piece = findGiftArtPiece(grant.id);
+      if (!piece) continue;
+      const li = document.createElement('li');
+      li.className = 'yin-coin-panel__memorial-row yin-coin-panel__memorial-row--unlocked';
+      li.dataset.testid = `yin-coin-gift-art-${piece.id}`;
+      const name = document.createElement('p');
+      name.className = 'yin-coin-panel__memorial-name';
+      name.textContent = t(piece.titleKey);
+      const copy = document.createElement('p');
+      copy.className = 'yin-coin-panel__memorial-copy';
+      copy.textContent = t(piece.storyKey);
+      li.append(name, copy);
+      this.giftArtListEl.append(li);
+    }
+  }
+
   _renderScrollSection(draft) {
     if (!this.scrollPaneBody) return;
     this.scrollPaneBody.replaceChildren();
