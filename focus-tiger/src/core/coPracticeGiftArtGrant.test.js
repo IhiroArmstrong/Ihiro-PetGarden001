@@ -27,7 +27,7 @@ import {
   recordCoPracticeGiftArtBDay,
   writeCoPracticeGiftArtState
 } from './coPracticeGiftArtStore.js';
-import { readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import giftArtCopy from '../locales/slices/co-practice-gift-art.json' with { type: 'json' };
@@ -365,3 +365,15 @@ function collectPngBasenames(dir, out) {
     else if (entry.name.endsWith('.png')) out.push(entry.name);
   }
 }
+
+describe('T68 glass deck gate (surface off)', () => {
+  it('main.js gates gift-art growth glass deck on CO_PRACTICE_GIFT_ART_SURFACE_ENABLED', () => {
+    assert.equal(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED, false);
+    const mainSrc = readFileSync(new URL('../main.js', import.meta.url), 'utf8');
+    assert.match(
+      mainSrc,
+      /CO_PRACTICE_GIFT_ART_SURFACE_ENABLED\s*\?[\s\S]*co-practice-gift-art/,
+      'gift-art must not join glass growth deck while surface is off'
+    );
+  });
+});

@@ -2592,11 +2592,17 @@ async function init() {
         ui: practiceImprintCardUI,
         close: () => practiceImprintCardUI.close()
       },
-      {
-        id: 'co-practice-gift-art',
-        ui: coPracticeGiftArtCardUI,
-        close: () => coPracticeGiftArtCardUI.close()
-      },
+      // Surface off: omit from glass growth deck — registration breaks
+      // Arrival keepQuickStart (scenario-a e2e) via closeGrowthOverlayCards.
+            ...(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED
+        ? [
+            {
+              id: 'co-practice-gift-art',
+              ui: coPracticeGiftArtCardUI,
+              close: () => coPracticeGiftArtCardUI.close()
+            }
+          ]
+        : []),
       {
         id: 'wallpapers',
         ui: digitalWallpapersCardUI,
