@@ -1,0 +1,1 @@
+| 记住—响应读层盘点 + Brief | 仅文档 | 待人工测试 | **本条验收的是**：产品看过盘点 §2 绕过表与 §3 矩阵后，能点头或改口 Brief 第一刀高亮跟「常用」还是「上次」。无 `src/` 改动。**不必**点 App。读 [`pref-state-read-inventory.md`](../pref-state-read-inventory.md) 与 [`task-briefs/task-remember-respond-read-layer.md`](../task-briefs/task-remember-respond-read-layer.md)。 | — | — | — | — | 2026-11-01 |
