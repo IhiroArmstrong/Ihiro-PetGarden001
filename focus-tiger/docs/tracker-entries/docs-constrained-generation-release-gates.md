@@ -1,0 +1,1 @@
+| 受限生成放行关卡 Brief | 纯文档 | 仅单元测试覆盖 | **无界面、无 src。** 本条验收的是关卡文档（通过线、回退、契约检查器复用、本机无原文日志、一键关停），**不代表**生成句已上线，也**不代表**疗效。读 [`task-constrained-generation-release-gates.md`](../task-briefs/task-constrained-generation-release-gates.md)。`git diff` 无 `src/`。不测开口通道。 | — | — | — | `focus-tiger/docs/task-briefs/task-constrained-generation-release-gates.md` | 2026-11-01 |
