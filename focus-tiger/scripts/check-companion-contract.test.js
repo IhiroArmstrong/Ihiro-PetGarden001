@@ -63,9 +63,11 @@ test('forbidden literals hit the named redlines', () => {
   assert.equal(matchForbiddenPatterns('your flow index is 12')[0].redline, 'C-02');
   assert.equal(matchForbiddenPatterns('你错过了三天')[0].redline, 'C-04');
   assert.equal(matchForbiddenPatterns('SETTLED today')[0].redline, 'C-09');
-  assert.equal(
-    matchForbiddenPatterns('Yin adapts to you and understands you better each day.')[0].redline,
-    'C-11'
+  assert.equal(matchForbiddenPatterns('只有我懂你')[0].redline, 'C-07');
+  assert.equal(matchForbiddenPatterns('已评估有效')[0].redline, 'C-11');
+  assert.deepEqual(
+    matchForbiddenPatterns('Yin is getting to know your rhythm. 越来越懂你.'),
+    []
   );
 });
 
