@@ -36,6 +36,8 @@ gh label create "line:phase1-a-b-c-testing" --color "1D76DB" --description "Loca
 gh label create "line:seasonal-theme-engine" --color "1D76DB" --description "节日主题引擎（Seasonal Theme · B 轨全年氛围）" --force
 gh label create "line:soundscape" --color "1D76DB" --description "音景（曲库/上传/试听/音符/Soundscape）" --force
 gh label create "line:habitat-shell" --color "1D76DB" --description "栖居壳层（菜单/叠层仲裁/Esc/响应式 chrome）" --force
+gh label create "line:collection-value-behavioral-scarcity" --color "1D76DB" --description "Collection value principles & behavioral scarcity display" --force
+gh label create "line:product-knowledge-base" --color "1D76DB" --description "产品知识库（条目生产 + Confide 检索/闸门）" --force
 
 # 类型 label
 gh label create "type:epic" --color "5319E7" --description "Epic Issue，代表一条长期开发任务线" --force

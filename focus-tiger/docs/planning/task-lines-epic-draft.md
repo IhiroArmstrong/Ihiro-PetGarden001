@@ -101,6 +101,8 @@
 | 23 | 节日主题引擎（`seasonal-theme-engine`） | **并行**。**耦合** #4（`theme.seasonal.access` · B 轨 ongoing）、#15（文案 en+ja 人审）、#20（PNG 姿态/背景可选）。**兼容** #7（氛围叠层，不改 Moment 机）。**零耦合** A 轨 Tip Jar。 | Phase 1–3 **已合** #233/#234/#238（圣诞）；Phase 4 = 配置+素材+文案，零引擎专支。**波次 1（2026-09-13 拍板）**：感恩 US/CA → 万圣 → 元旦/跨年（CSS wash + 文案审为主）。情人节须单独人设调性审。Brief：`task-seasonal-theme-engine-v1.md`。 |
 | 24 | 音景（`soundscape`） | **并行**。**耦合** #4（Deep 试听 / SKU 解锁文案）、#12（右上音符 mint hint）。**兼容** #1（Rise 停播 / Sit 后再播 / Sound gated）、#7、#15、#20（音符 dim 外观）。 | 认领曲库、上传、试听、音符钮、Soundscape 面板；**不**认领练习状态机（#1）或叠层仲裁（#25）。审计 `EPIC_COVERAGE_AUDIT.md` 2026-09-16 拍板建库。 |
 | 25 | 栖居壳层（`habitat-shell`） | **并行**。**耦合** #20（backdrop dim rollout 与 Idle chrome dim）、#1（Idle chrome 编排）。**兼容** #12 hints、#7、#15、#13（SB-19 录入卡不得被菜单 dismiss 误关）。 | 菜单/抽屉逃生舱、Esc 栈、叠层槽仲裁、精灵通道占用、响应式 chrome、z-index；**不**认领 PNG 序列美术（#20）。切片 #773 已挂本线。 |
+| 26 | Collection Value & Behavioral Scarcity（`collection-value-behavioral-scarcity`） | **并行**。**耦合** #6 #14 #1（数字资产 / 行为稀缺展示与寅币、花园、练习账本口径）。**兼容** #20。 | Epic #888；原则与行为稀缺 Brief 已合；实现另口令。 |
+| 27 | 产品知识库（`product-knowledge-base`） | **并行**。**耦合** #13（Confide 检索/闸门/fallback · embedding 生命周期 · #919 工作闸）。**兼容** #15 #635。 | Epic #933；认领产品说明书短答 + catalog + 诚实空态；**不**认领情绪语料/急救条目。Agent 扇出补挂见 `task-lines-issue-map.md` §「Agent 扇出」。 |
 
 ## 已拍板
 
@@ -110,3 +112,6 @@
 4. **关系默认**：Epic 并行 + 正文耦合/兼容；原生 blocks 只打子切片；逻辑先后写备注。
 5. **#23 节日主题引擎**（2026-09-13）：Epic #742；Phase 4 波次 1 切片 = 感恩 #743、万圣 #744、元旦/跨年 #745。
 6. **#24 音景 + #25 栖居壳层**（2026-09-16）：Epic #792 / #793；slug `soundscape` / `habitat-shell`；#773 改挂 `line:habitat-shell`。工作室流程 PR 不进产品 Epic（`type:process` 标签 + guard 豁免，见 `WORKFLOW.md`）。
+7. **#26 Collection Value**（2026-09-20）：Epic #888；slug `collection-value-behavioral-scarcity`。
+8. **#27 产品知识库**（2026-09-22）：Epic #933；slug `product-knowledge-base`。
+9. **Agent 扇出不新开 Epic**（2026-09-30 PO + 2026-11-01 对照表）：共修/配方/契约/适应/心念流/Help Center/语音/读层等扇出 **补挂** 上表 Epic；映射 SSOT `task-lines-issue-map.md` §「Agent 扇出 · 补挂 Epic」。T54 研究、纯 CI/治理 **非** 产品 Epic。

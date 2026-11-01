@@ -6,7 +6,7 @@
 
 仓库：https://github.com/IhiroArmstrong/Ihiro-PetGarden001
 
-## Epic（25，跳过已作废表行 #16）
+## Epic（26，跳过已作废表行 #16）
 
 | 表行 | slug | Issue | 标题 |
 |---|---|---|---|
@@ -36,6 +36,27 @@
 | 24 | `soundscape` | [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) | 音景（Soundscape · 曲库/上传/试听/音符） |
 | 25 | `habitat-shell` | [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) | 栖居壳层（Habitat Shell · 菜单/叠层/Esc/chrome） |
 | 26 | `collection-value-behavioral-scarcity` | [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) | Collection Value & Behavioral Scarcity · 数字资产原则 / 行为稀缺展示 |
+| 27 | `product-knowledge-base` | [#933](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/933) | 产品知识库（条目生产 + Confide 检索/闸门） |
+
+## Agent 扇出 · 补挂 Epic（2026-09-30 PO + 2026-10～11 Agents）
+
+> **不是新 Epic**：下列是 Agent 会话里长出来的**任务扇出**（Brief / 实现 / 治理代号 T*）。PR 仍须 `Relates to` / `Closes` 指向**已有 Epic 或切片**；**禁止**为每一扇出再开 `type:epic`（2026-09-30 盘点 + PO 书面：不限时专注 → #627；语音/朗读 → #631；不新建 Epic 凑数）。
+
+| 扇出（人话） | 主 Epic | 耦合 Epic / 切片 | 代表 Brief / 文档 | PR 引用习惯 |
+|---|---|---|---|---|
+| 人机共修（T56–T68 · 口径 / 接合账 / 纪念画） | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) | [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) 画不出货架 · [#640](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/640) 可见生长 · [#643](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/643) 旅程面 | `CO_PRACTICE_POSITIONING.md` · `task-co-practice-*` | `Relates to #627`（运行时）+ 画 `Relates to #632` |
+| 坐的配方（ritual-recipe A1–A4…） | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) | [#628](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/628) 仪式流 · [#792](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/792) 氛围曲 | `RITUAL_RECIPE_A1_SPEC.md` · `task-ritual-recipe-*` | `Relates to #627` |
+| 陪伴契约（T55 · 字面检查） | 跨线 SSOT | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 开口通道 · [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) 不替代安全 | `COMPANION_CONTRACT.md` · `task-companion-contract.md` | 文档/脚本 PR `Relates to #627` |
+| Yin 适应 / 小本子（T58） | [#634](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/634) | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 时长 chip | `task-yin-adaptation-v1.md` | `Relates to #634` |
+| 心念流 / Mindflow nebula（T66） | [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) | [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) 不读心 · 偏好 chrome | `task-mindflow-nebula-v0.md` · step2 Brief | `Relates to #793` |
+| Help Center / 问卡 / 办理（T22–T34） | [#933](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/933) | [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) 跳转 · [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) 壳层 dock | `task-help-center-*` · `task-confide-help-center-*` | 检索 `Relates to #933`；Confide 跳转 `Relates to #639` |
+| 产品知识库闸门 / 诚实空态（#934 等） | [#933](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/933) | [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) | `task-confide-kb-routing-gate.md` · `product-knowledge-base.md` | 切片 `Closes #934` 类（非 Epic） |
+| 语音 / 系统 TTS / 指令入口（T9 等） | [#631](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/631) | [#635](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/635) Operating · [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) 不混倾诉 | `task-system-tts-v1.md` · `task-yin-voice-command-entry.md` | `Relates to #631` |
+| 不限时专注 / Open-ended Sit | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) | — | develop 合入 PR 补挂（2026-09-30） | `Relates to #627` |
+| 电脑版十二条（T38–T49 · chrome） | [#793](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/793) | [#631](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/631) 壳 · [#639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/639) 倾诉 chrome | `GLOSSARY.md` 对照表 | 按实际改动的线 `Relates to` |
+| 受限生成放行关卡（待治理代号） | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) | T55 契约检查器 · **不**扩 Confide 开放生成 | `task-constrained-generation-release-gates.md` | 文档 PR `Relates to #627` |
+| 记住—响应读层（盘点 / Brief 旁支） | [#634](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/634) | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 时长 · `ritual-recipe` 键 | `pref-state-read-inventory.md` · `task-yin-adaptation-v1.md` | 待治理 T 号登记后补 PR 引用 |
+| T54 90 天实验 / 研究分享 | **非产品 Epic** | Privacy 开关已合 · 实验仍搁置 | `task-t54-*` · `GLOSSARY.md` | 流程/治理 PR 用 `type:process` 或文档；**不**新建 Epic |
 
 ## 审计与切片（真先后）
 
@@ -139,3 +160,21 @@
 | Epic #26 | CREATE [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) |
 | Project 挂板 | #888 加入 Focus Tiger 开发任务线看板 #1 |
 | 已合文档归属 | PR [#886](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/886) 原则 · PR [#887](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/887) 行为稀缺方案 |
+
+## 建库执行记录（2026-09-22 · #27 产品知识库）
+
+| 步骤 | 结果 |
+|---|---|
+| label `line:product-knowledge-base` | CREATE（`--force`） |
+| Epic #27 | CREATE [#933](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/933) |
+| Project 挂板 | #933 加入 Focus Tiger 开发任务线看板 #1 |
+| 已合文档归属 | #918–#931 批次 · 检索 #924 · 闸门 Brief #925 |
+
+## 对照表同步（2026-11-01 · Agent 扇出补挂）
+
+| 步骤 | 结果 |
+|---|---|
+| 地面真相 | `gh issue list --label type:epic` → **26** 条（#627–#647、#742、#792、#793、#888、#933） |
+| Project 挂板 | **26/26** Epic 已在 **Focus Tiger 开发任务线看板**（Project #1）；无漏挂 |
+| 仓内对照表 | 补 **#933** 表行 + 上表「Agent 扇出 · 补挂 Epic」 |
+| Epic 正文 | 未批量改 GitHub 正文；子任务仍以各 Epic「已知子任务/PR」+ 上表为准 |
