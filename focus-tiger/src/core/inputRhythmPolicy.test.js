@@ -12,6 +12,7 @@ import {
   DEFAULT_INPUT_RHYTHM_PREFS,
   clearInputRhythmFeatures,
   loadInputRhythmPrefs,
+  resetInputRhythmForDeleteAll,
   saveInputRhythmFeatures,
   saveInputRhythmPrefs
 } from '../../desktop/inputRhythm/inputRhythmPolicy.js';
@@ -33,6 +34,21 @@ describe('inputRhythmPolicy', () => {
     assert.equal('title' in features, false);
     assert.equal(features.switchCount5m, 2);
     clearInputRhythmFeatures(dir);
+    assert.equal(fs.existsSync(path.join(dir, 'input-rhythm-features.json')), false);
+  });
+
+  it('resetInputRhythmForDeleteAll disables switch and clears features', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ft-rhythm-reset-'));
+    saveInputRhythmPrefs(dir, { enabled: true });
+    saveInputRhythmFeatures(dir, {
+      switchCount5m: 1,
+      keyCount5m: 1,
+      backspaceCount5m: 0,
+      backspaceRatio5m: 0,
+      updatedAt: 1
+    });
+    resetInputRhythmForDeleteAll(dir);
+    assert.equal(loadInputRhythmPrefs(dir).enabled, false);
     assert.equal(fs.existsSync(path.join(dir, 'input-rhythm-features.json')), false);
   });
 });
