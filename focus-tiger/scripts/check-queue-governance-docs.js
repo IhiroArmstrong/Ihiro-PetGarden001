@@ -91,6 +91,9 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t69-desk-habit-literature.md',
   'focus-tiger/docs/task-entries/t70-user-set-desk-start-anchor.md',
   'focus-tiger/docs/tracker-entries/docs-t69-desk-habit-literature.md',
+  'focus-tiger/docs/task-briefs/task-co-practice-ambient-field-t72.md',
+  'focus-tiger/docs/task-entries/t71-co-practice-three-layer-lock.md',
+  'focus-tiger/docs/task-entries/t72-co-practice-ambient-field.md',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
