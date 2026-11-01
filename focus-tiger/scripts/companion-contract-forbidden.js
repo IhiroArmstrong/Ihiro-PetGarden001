@@ -67,11 +67,6 @@ export const COMPANION_FORBIDDEN_PATTERNS = Object.freeze([
     re: /\b(?:SETTLED|DRIFTING|STRUGGLING|FLOW_PROTECT|AWAY_INVITE|LONG_SIT_INVITE)\b/
   },
   {
-    id: 'c11-adapts-understands',
-    redline: 'C-11',
-    re: /越来越懂|更懂你了|understands you better|adapts to you|Yin is learning you/i
-  },
-  {
     id: 'c11-unverified-efficacy',
     redline: 'C-11',
     re: /已评估有效|evaluated as effective|proven effective|共修(?:已经)?(?:被)?(?:证明|评估).*有效/i
