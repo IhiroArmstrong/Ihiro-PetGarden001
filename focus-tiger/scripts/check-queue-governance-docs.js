@@ -91,6 +91,18 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t69-desk-habit-literature.md',
   'focus-tiger/docs/task-entries/t70-user-set-desk-start-anchor.md',
   'focus-tiger/docs/tracker-entries/docs-t69-desk-habit-literature.md',
+  'focus-tiger/docs/task-briefs/task-co-practice-ambient-field-t72.md',
+  'focus-tiger/docs/task-entries/t71-co-practice-three-layer-lock.md',
+  'focus-tiger/docs/task-entries/t72-co-practice-ambient-field.md',
+  'focus-tiger/docs/PRINCIPLES.md',
+  'focus-tiger/docs/task-briefs/task-user-set-desk-start-anchor.md',
+  'focus-tiger/docs/companion-contract-known-gaps.md',
+  'focus-tiger/docs/issue-entries/docs-t69-po-co-practice-goal.md',
+  'focus-tiger/docs/tracker-entries/docs-t69-po-co-practice-goal.md',
+  'focus-tiger/scripts/companion-contract-forbidden.js',
+  'focus-tiger/scripts/companion-contract-samples.js',
+  'focus-tiger/scripts/check-companion-contract.test.js',
+  '.cursor/rules/focus-tiger-docs.mdc',
   'focus-tiger/docs/co-practice-stable-prefs-inventory.md',
   'focus-tiger/docs/pref-state-read-inventory.md',
   'focus-tiger/docs/task-briefs/task-co-practice-stable-prefs-l1-l2.md',
@@ -152,6 +164,26 @@ function refExists(rev) {
  */
 export function changedPathsAgainstDevelop(baseRef, headRev = '') {
   const head = headRev || 'HEAD';
+  const merging = !headRev && refExists('MERGE_HEAD');
+  if (merging) {
+    const vsBase = execFileSync(
+      'git',
+      ['diff', '--name-only', baseRef],
+      { cwd: REPO_ROOT, encoding: 'utf8' }
+    );
+    const stagedVsBase = execFileSync(
+      'git',
+      ['diff', '--name-only', '--cached', baseRef],
+      { cwd: REPO_ROOT, encoding: 'utf8' }
+    );
+    return [
+      ...new Set(
+        [...vsBase.split('\n'), ...stagedVsBase.split('\n')]
+          .map((line) => line.trim())
+          .filter(Boolean)
+      )
+    ];
+  }
   const committed = execFileSync(
     'git',
     ['diff', '--name-only', `${baseRef}...${head}`],

@@ -117,7 +117,7 @@
 | `focus-tiger.ritual-recipe.v1` | `ritualRecipeStore` | 当前「坐的配方」JSON（schema v1）。**不进**练习备份 / 云端快照；外来配方须预览后采用（A3）。DEV 重置清。见 `RITUAL_RECIPE_A1_SPEC.md` |
 | `focus-tiger.ritual-recipe-analytics-opt-in.v1` | `recipeAnalytics` | 配方埋点同意 `{ enabled, consentedAt }`；**默认关**；无用户标识。**不进**练习备份。Privacy 开关另刀 |
 
-一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
+一键清空：**删除全部本地数据**须走 `clearAllFocusTigerUserData()`（`src/core/focusTigerUserDataClear.js`：localStorage 白名单 + sessionStorage DEV 键 + Electron **输入节奏** 回默认关 + IndexedDB 用户氛围乐）。DEV「重置全部本地状态」已接此入口；其它 Privacy 删除按钮须同调，禁止只调 `clearAllFocusTigerLocalState()`。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
 **排期 key**：无。`five-moments-compass-seen` / `moment-whispers-seen` / `journey-log` 已接线。
 
