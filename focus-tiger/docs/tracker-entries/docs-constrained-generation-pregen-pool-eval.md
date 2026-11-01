@@ -1,0 +1,1 @@
+| 受限生成预生成池评估 | 纯文档 | 仅单元测试覆盖 | **无界面、无 src。** 本条验收的是路径 A 评估稿（内存池、空闲填池、池空率、探针局限、四通道冷热代码表），**不代表**池已实现，也**不代表**生成句已上线。读 [`task-constrained-generation-pregen-pool-eval.md`](../task-briefs/task-constrained-generation-pregen-pool-eval.md)。`git diff` 无 `src/`。不测开口通道。 | — | — | — | `focus-tiger/docs/task-briefs/task-constrained-generation-pregen-pool-eval.md` | 2026-11-01 |
