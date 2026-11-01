@@ -110,13 +110,14 @@
 | `focus-tiger.daily-zen-quote-pool-v2.v1` | `dailyZenQuote` / `DailyZenQuoteCardUI` | Quiet Line 混合池同日锁：`{ dateKey, key, opened }`；`key` 来自经典 `DAILY_ZEN_QUOTE` ∪ 洞察种子 `DAILY_ZEN_QUOTE_INSIGHT`；`opened` = 当场打开过卡片。与 Daily Wisdom **分池分 key**；**不**写 tip / Sanctuary / 徽章 |
 | `focus-tiger.idle-companion-pip.v1` | `idleCompanionPipGate` / `IdleCompanionPipUI` | Idle Document PiP 实验原型：`{ used, usedAt }`。只记是否曾打开过浮窗，供后续是否加大投入参考；**不得**用于提醒 / 激励 / 限频。Safari 等不支持时入口不挂载 |
 | `focus-tiger.focus-duration-pref.v1` | `focusDuration` / `#focus-duration-picker` | Sit→Focus 开表前 chip 偏好（10 / 15 / 25 / 45；默认 10）；与 Breath 左球分轨；DEV 重置须清；**本地** Backup & restore v5+ 白名单 |
+| `focus-tiger.co-practice-gift-art.v1` | `coPracticeGiftArtStore` / T68 grant | 共修纪念画累计 B 日 + 已发 id；**不进** T54 / 练习云备份；T58 忘掉**不**清；出卡开关默认关 |
 | `focus-tiger.session-duration-offer.v1` | `coPracticeSessionJoinLedger` / timed `beginFocusWithMode` | T67 场次接合账：每场计时专注 `sessionId` + 开表时 Yin 出示默认分钟 + 达标完成时实际分钟；**不进** T54 / 练习云备份 / 本地 Backup v6；T58「忘掉」与 `clearInviteOutcomeRecords` 同清；DEV `window.__coPracticeJoinLedgerSummary()` |
 | `focus-tiger.focus-coins.v1` | `FocusCoinsStore` / `applyFocusCoinsGrant` / `applyBreathPracticeFocusCoinsGrant` / `applyFocusCoinsRedeem` / `FocusCoinsPanelUI` | 寅币钱包：`{ balance, ownedIds, equippedTitle, lifetimeMarks, dateKey, day, session }`。L1 发点（Stay 达标 + **Breath 坐满按 Stay 档**）；L2 `__focusCoins.redeem(skuId)` 花点留下只增不减 `ownedIds`。清供 8 可兑为珍藏卡；晨露/须弥滤镜已拆（不点亮莲花/蒲团）。L3 `#yin-coin-panel` 只列 `listShopFocusCoinSkus()` = `FOCUS_COIN_CURIO_SHOP_IDS`。币标：`/ui/focus-coins/yin-coin-mark.png` 抬头、`yin-coin-mark-icon.png` 余额/价格（#354 定稿）；SKU 卡面为 collection-objects 透明图；**不**叠 `#sprite-stage`。时长 chip `#focus-coins-duration-hint`。`?focusCoins=0` 关闸完全不写、菜单行隐藏。**本地** Preferences 备份 **v4+ whitelist**（2026-09-13 起 coin；v6 见 essence）；**不**满足 `isEntitled`；**不**写 Tea / Sanctuary `badgeIds`；**不**改莲花池自动开花 |
 | `focus-tiger.focus-essence.v1` | `FocusEssenceStore` / `applyFocusEssenceGrant` / `applyBreathPracticeFocusEssenceGrant` | Focus Essence（精進）只增账本：`{ essenceTotal, dateKey, day, session }`。与 Coin **同事件同点数同封顶**；**无** balance/ownedIds/redeem/UI。`?focusEssence=0` 独立关闸（**不**与 `?focusCoins=0` 共用）。`essenceTotal` 从 0 起、不回溯历史 Coin。**本地** Preferences 备份 **v6 whitelist**（2026-09-20）；导入后 `main.js` reload essence store |
 | `focus-tiger.ritual-recipe.v1` | `ritualRecipeStore` | 当前「坐的配方」JSON（schema v1）。**不进**练习备份 / 云端快照；外来配方须预览后采用（A3）。DEV 重置清。见 `RITUAL_RECIPE_A1_SPEC.md` |
 | `focus-tiger.ritual-recipe-analytics-opt-in.v1` | `recipeAnalytics` | 配方埋点同意 `{ enabled, consentedAt }`；**默认关**；无用户标识。**不进**练习备份。Privacy 开关另刀 |
 
-一键清空：DEV「重置全部本地状态」→ `clearAllFocusTigerLocalState()`（`src/core/localStateKeys.js`）。
+一键清空：**删除全部本地数据**须走 `clearAllFocusTigerUserData()`（`src/core/focusTigerUserDataClear.js`：localStorage 白名单 + sessionStorage DEV 键 + Electron **输入节奏** 回默认关 + IndexedDB 用户氛围乐）。DEV「重置全部本地状态」已接此入口；其它 Privacy 删除按钮须同调，禁止只调 `clearAllFocusTigerLocalState()`。
 **验收**：L-logic（`localStateKeys.test.js` / `npm run test:smoke`），勿人工逐 key。
 **排期 key**：无。`five-moments-compass-seen` / `moment-whispers-seen` / `journey-log` 已接线。
 

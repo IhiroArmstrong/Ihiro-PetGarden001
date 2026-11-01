@@ -34,7 +34,7 @@
 
 | 键 / 位置 | 摘要 | 与 C-11 关系 | 建议 |
 |---|---|---|---|
-| `YIN_MEMORY_CONSENT_BLURB`（en/zh Confide 记忆同意） | en 含 *understand you better over time*；zh 含「更懂你」 | 与「未实现不得暗示更懂你」表意冲突 | 遗留；[`t64-co-practice-locale-scan.md`](./t64-co-practice-locale-scan.md) 已标 **遗留**；改 copy 单开 B 类 |
+| `YIN_MEMORY_CONSENT_BLURB`（en/zh Confide 记忆同意） | en 含 *understand you better over time*；zh 含「更懂你」 | **已对齐**人机共修目标（2026-11-01）：适应层已实现后可以说越来越懂你。仍禁止「只有我懂你」 | 保持；新句仍过人审 |
 | `HINT_APP_PURPOSE_*`（co-practice 切片） | T64 已对齐「一起练习 / not a zen master」 | **已实现** 行允许 | 保持；新句仍过人审 |
 | `REFLECTION_ECHO_4` 等 | 「We understand」非 C-07/C-11 声称 | 低 | 若扩扫描通道再复核 |
 

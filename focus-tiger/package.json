@@ -79,6 +79,7 @@
     "audit:growth-metrics": "node scripts/audit-growth-metrics.js",
     "audit:growth-metrics:sync": "node scripts/audit-growth-metrics.js --write",
     "audit:local-backup-coverage": "node scripts/audit-local-backup-coverage.js",
+    "audit:shared-resources-reset": "node scripts/audit-shared-resources-reset-coverage.js",
     "audit:read-hybrid-gapfill": "node scripts/audit-read-hybrid-gapfill.js",
     "audit:confide-semantic-shadow": "node scripts/audit-confide-semantic-shadow.js",
     "audit:stage2b-po-seeded-gate": "node scripts/audit-confide-stage2b-po-seeded.js",

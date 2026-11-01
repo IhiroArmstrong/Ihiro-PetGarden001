@@ -85,6 +85,21 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-briefs/task-mindflow-nebula-v0.md',
   'focus-tiger/docs/task-entries/t66-mindflow-nebula-v0.md',
   'focus-tiger/docs/tracker-entries/feature-t66-mindflow-nebula-v0.md',
+  'focus-tiger/docs/desk-habit-literature-inventory.md',
+  'focus-tiger/docs/ISSUE_LEDGER.md',
+  'focus-tiger/docs/issue-entries/docs-t69-desk-habit-literature.md',
+  'focus-tiger/docs/task-entries/t69-desk-habit-literature.md',
+  'focus-tiger/docs/task-entries/t70-user-set-desk-start-anchor.md',
+  'focus-tiger/docs/tracker-entries/docs-t69-desk-habit-literature.md',
+  'focus-tiger/docs/PRINCIPLES.md',
+  'focus-tiger/docs/task-briefs/task-user-set-desk-start-anchor.md',
+  'focus-tiger/docs/companion-contract-known-gaps.md',
+  'focus-tiger/docs/issue-entries/docs-t69-po-co-practice-goal.md',
+  'focus-tiger/docs/tracker-entries/docs-t69-po-co-practice-goal.md',
+  'focus-tiger/scripts/companion-contract-forbidden.js',
+  'focus-tiger/scripts/companion-contract-samples.js',
+  'focus-tiger/scripts/check-companion-contract.test.js',
+  '.cursor/rules/focus-tiger-docs.mdc',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 

@@ -18,7 +18,7 @@ import { FOCUS_TIGER_LOCAL_STORAGE_KEYS } from './localStateKeys.js';
 const SRC_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Frozen at T60 — shrink-only (remove rows when key joins reset whitelist). */
-const T60_LITERAL_EXCEPTION_COUNT = 14;
+const T60_LITERAL_EXCEPTION_COUNT = 12;
 
 test('FOCUS_TIGER_LOCAL_STORAGE_KEY_LITERAL_EXCEPTIONS is shrink-only', () => {
   assert.equal(
@@ -70,6 +70,15 @@ test('scan finds yin adaptation literals (T58 storage)', () => {
   const literals = scanFocusTigerLocalStorageKeyLiterals(SRC_ROOT);
   assert.ok(literals.includes('focus-tiger.yin-adaptation.v1'));
   assert.ok(literals.includes('focus-tiger.focus-duration-manual-anchor.v1'));
+});
+
+test('T60 reset whitelist includes open-ended nudge and practice-paper-hidden literals', () => {
+  assert.ok(
+    FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes('focus-tiger.open-ended-nudge.v1')
+  );
+  assert.ok(
+    FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes('focus-tiger.practice-paper-hidden.v1')
+  );
 });
 
 test('T60 reset whitelist includes awaken check-ins and focus duration pref', () => {
