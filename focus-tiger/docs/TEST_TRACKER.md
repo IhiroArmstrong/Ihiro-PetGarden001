@@ -334,7 +334,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
 <!-- tracker-fragments:begin -->
-| Agent 扇出补挂 Epic 对照表 | 纯后端 | 仅单元测试覆盖 | **无用户路径。** 核对 `task-lines-issue-map.md` 含 #933 与「Agent 扇出 · 补挂 Epic」表；GitHub `type:epic` 26 条均在看板 #1；本 PR 不改运行时。 | — | — | — | `docs/planning/task-lines-issue-map.md` | 2026-11-01 |
+| PO 五条新 Epic + 子切片 #1500–#1521 | 纯后端 | 仅单元测试覆盖 | **无用户路径。** 核对 #1495–#1499 与 `task-lines-issue-map.md` 切片表；看板已挂。 | — | — | — | `docs/planning/task-lines-issue-map.md` · `epic-bodies-po-2026-11-01.md` | 2026-11-01 |
 | T69 桌面习惯文献对照 | 纯文档 | 仅单元测试覆盖 | 无用户路径。核对口径表新行与盘点 §0 六句；口令「做成水瓶宠物 / 问早餐 / 环境光日程」不执行。 | — | — | — | `docs/desk-habit-literature-inventory.md` | 2026-10-31 |
 | T68 共修纪念画出卡与珍藏只读区 | UI | 待人工测试 | 开关关时坐完不应出卡，珍藏印记页不应出现「收到的画 / 一起走的一张」区块。DEV `?product=1`：`__coPracticeGiftArtJoinFourScenes()` 四场景；`__coPracticeGiftArtPreviewCard()` 只出卡不写账。宽窄屏各看一次预览，⋯ 仍可点。生产构建产物里不应有 DEV 种子函数名。10 天内 3 个 B 日之后若不在 B 场再坐，不应出画。 | — | — | — | 单测 grant/B 场/跨度/珍藏区块隐藏/文件名不撞货架/删除白名单/曝光夹具/2a 四场景；e2e 出卡锚待开关打开后补 | 2026-10-31 |
 | T66 第二步 · 心念流 embedding + 板块预设 Brief | 纯文档 | 仅单元测试覆盖 | **阶段 A**：实验室脚本 + 汇总 JSON；`phaseAPassed:false`  until PO lab pass。**阶段 B 未接**（保持 v0）。旁支 `feature/t66-mindflow-step2-*`。 | — | — | — | `task-briefs/task-mindflow-nebula-step2-embedding-presets.md` | 2026-10-30 |

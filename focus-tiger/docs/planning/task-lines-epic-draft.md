@@ -103,6 +103,11 @@
 | 25 | 栖居壳层（`habitat-shell`） | **并行**。**耦合** #20（backdrop dim rollout 与 Idle chrome dim）、#1（Idle chrome 编排）。**兼容** #12 hints、#7、#15、#13（SB-19 录入卡不得被菜单 dismiss 误关）。 | 菜单/抽屉逃生舱、Esc 栈、叠层槽仲裁、精灵通道占用、响应式 chrome、z-index；**不**认领 PNG 序列美术（#20）。切片 #773 已挂本线。 |
 | 26 | Collection Value & Behavioral Scarcity（`collection-value-behavioral-scarcity`） | **并行**。**耦合** #6 #14 #1（数字资产 / 行为稀缺展示与寅币、花园、练习账本口径）。**兼容** #20。 | Epic #888；原则与行为稀缺 Brief 已合；实现另口令。 |
 | 27 | 产品知识库（`product-knowledge-base`） | **并行**。**耦合** #13（Confide 检索/闸门/fallback · embedding 生命周期 · #919 工作闸）。**兼容** #15 #635。 | Epic #933；认领产品说明书短答 + catalog + 诚实空态；**不**认领情绪语料/急救条目。Agent 扇出补挂见 `task-lines-issue-map.md` §「Agent 扇出」。 |
+| 28 | 人机共修（`co-practice`） | **并行**。**耦合** #1 专注钩 · #632 礼物轨 · T55 契约 · #630 请茶边界。**兼容** C-11 · #15。 | Epic #1495；SSOT `CO_PRACTICE_POSITIONING.md` · 纪念画 `CO_PRACTICE_GIFT_ART.md`。2026-11-01 PO 独立 Epic。 |
+| 29 | Yin 数字艺术珍藏与 Focus Coin 策略（`yin-digital-assets`） | **并行**。**耦合** #632 #888 实现 Epic · #630 支付 · #28 礼物轨 · #646 参数。**兼容** 数字资产原则 · C-11。 | Epic #1496 策略伞；**不**替代关闭 #632/#888。 |
+| 30 | 产品研究与使用证据（`product-research-evidence`） | **并行**。**耦合** #28 共修对照 · #31 上送白名单 · Privacy。**兼容** Never-Cloud。 | Epic #1497；T54 开关/流水已合；90 天仍搁置。 |
+| 31 | 越来越懂你（`responsive-personalization`） | **并行**。**耦合** #627 偏好 · #634 YPE · #28 邀请暂停 · T55 · #30 研究字段。**兼容** C-11。 | Epic #1498；T58 已合；读层 Brief 待点头。 |
+| 32 | 进展可视化（`progress-visualization`） | **并行**。**耦合** #640 #643 实现 Epic · #627 写侧 · #632 展示 · #28 T63 契约面。**兼容** YIN_EVOLUTION · Charter。 | Epic #1499。 |
 
 ## 已拍板
 
@@ -114,4 +119,4 @@
 6. **#24 音景 + #25 栖居壳层**（2026-09-16）：Epic #792 / #793；slug `soundscape` / `habitat-shell`；#773 改挂 `line:habitat-shell`。工作室流程 PR 不进产品 Epic（`type:process` 标签 + guard 豁免，见 `WORKFLOW.md`）。
 7. **#26 Collection Value**（2026-09-20）：Epic #888；slug `collection-value-behavioral-scarcity`。
 8. **#27 产品知识库**（2026-09-22）：Epic #933；slug `product-knowledge-base`。
-9. **Agent 扇出不新开 Epic**（2026-09-30 PO + 2026-11-01 对照表）：共修/配方/契约/适应/心念流/Help Center/语音/读层等扇出 **补挂** 上表 Epic；映射 SSOT `task-lines-issue-map.md` §「Agent 扇出 · 补挂 Epic」。T54 研究、纯 CI/治理 **非** 产品 Epic。
+9. **#28–#32 五条重点 Epic**（2026-11-01 PO）：#1495 人机共修 · #1496 数字资产策略伞 · #1497 产品研究证据 · #1498 越来越懂你 · #1499 进展可视化；子切片 #1500–#1521。映射 SSOT `task-lines-issue-map.md`。旧 #632/#888/#640/#643/#634 **保持开放**作实现分区。

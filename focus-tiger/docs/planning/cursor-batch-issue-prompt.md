@@ -38,6 +38,11 @@ gh label create "line:soundscape" --color "1D76DB" --description "音景（曲�
 gh label create "line:habitat-shell" --color "1D76DB" --description "栖居壳层（菜单/叠层仲裁/Esc/响应式 chrome）" --force
 gh label create "line:collection-value-behavioral-scarcity" --color "1D76DB" --description "Collection value principles & behavioral scarcity display" --force
 gh label create "line:product-knowledge-base" --color "1D76DB" --description "产品知识库（条目生产 + Confide 检索/闸门）" --force
+gh label create "line:co-practice" --color "1D76DB" --description "人机共修（Co-Practice · 产品定位）" --force
+gh label create "line:yin-digital-assets" --color "1D76DB" --description "Yin 数字艺术珍藏与 Focus Coin 策略伞" --force
+gh label create "line:product-research-evidence" --color "1D76DB" --description "产品研究与使用证据（T54 等）" --force
+gh label create "line:responsive-personalization" --color "1D76DB" --description "越来越懂你（读层 · 适应 · C-11）" --force
+gh label create "line:progress-visualization" --color "1D76DB" --description "进展可视化（旅程 · 莲花 · 指标）" --force
 
 # 类型 label
 gh label create "type:epic" --color "5319E7" --description "Epic Issue，代表一条长期开发任务线" --force
