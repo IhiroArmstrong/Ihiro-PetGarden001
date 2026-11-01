@@ -34,9 +34,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEY_LITERAL_EXCEPTIONS = Object.freeze([
   'focus-tiger.confide-help-entry-daily.v1',
   'focus-tiger.focus-circle-beside.v1',
   'focus-tiger.landscape-hint-dismissed.v1',
-  'focus-tiger.open-ended-nudge.v1',
   'focus-tiger.practice-imprint.v1',
-  'focus-tiger.practice-paper-hidden.v1',
   'focus-tiger.yin-art-notice.v1',
   'focus-tiger.yin-art-ownership.v1',
   'focus-tiger.yin-art-session.v1'
