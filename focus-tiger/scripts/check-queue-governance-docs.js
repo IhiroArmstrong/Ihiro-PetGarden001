@@ -91,6 +91,12 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t69-desk-habit-literature.md',
   'focus-tiger/docs/task-entries/t70-user-set-desk-start-anchor.md',
   'focus-tiger/docs/tracker-entries/docs-t69-desk-habit-literature.md',
+  'focus-tiger/docs/co-practice-stable-prefs-inventory.md',
+  'focus-tiger/docs/pref-state-read-inventory.md',
+  'focus-tiger/docs/task-briefs/task-co-practice-stable-prefs-l1-l2.md',
+  'focus-tiger/docs/task-entries/t73-co-practice-stable-prefs.md',
+  'focus-tiger/docs/task-entries/t74-co-practice-continue-slot.md',
+  'focus-tiger/docs/task-entries/t75-co-practice-stable-breath-companion.md',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
