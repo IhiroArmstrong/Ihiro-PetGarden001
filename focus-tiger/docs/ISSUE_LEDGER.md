@@ -96,3 +96,4 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 独立bug | Confide 日语无语言闸，语义危机层对假名 fail-open，未测委婉说法可进情绪桶或生成 | 2026-10-21 分析师复核 · 本机对 `origin/develop` `09f11959` | 旁路 [`issue-entries/docs-language-support-matrix.md`](./issue-entries/docs-language-support-matrix.md)。政策：过安全后暂未开放。**T35/T37** 文档；**T36** 运行时待冻结例外点头。 | 跟进中 |
 | 优化建议 | 同类研究表（FocusBuddy / Brainy / 平静技术 / 早餐宠物 / 依恋 / 双向共适应）对照现网 | 2026-10-31 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-desk-habit-literature.md`](./issue-entries/docs-t69-desk-habit-literature.md)。盘点 **T69**。开桌锚点 **T70** 搁置。早餐问询 / 日程灯 / 照料宠物 / 健康仪表盘不做。 | 跟进中 |
 
+| 优化建议 | PO 纠正：早餐善意应与熬夜同形；用户须感知越来越懂你；人机共修目标写入原则 | 2026-11-01 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-po-co-practice-goal.md`](./issue-entries/docs-t69-po-co-practice-goal.md)。纠正 #1491 锁。T70 Brief 待点头。 | 跟进中 |

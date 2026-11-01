@@ -94,6 +94,15 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-briefs/task-co-practice-ambient-field-t72.md',
   'focus-tiger/docs/task-entries/t71-co-practice-three-layer-lock.md',
   'focus-tiger/docs/task-entries/t72-co-practice-ambient-field.md',
+  'focus-tiger/docs/PRINCIPLES.md',
+  'focus-tiger/docs/task-briefs/task-user-set-desk-start-anchor.md',
+  'focus-tiger/docs/companion-contract-known-gaps.md',
+  'focus-tiger/docs/issue-entries/docs-t69-po-co-practice-goal.md',
+  'focus-tiger/docs/tracker-entries/docs-t69-po-co-practice-goal.md',
+  'focus-tiger/scripts/companion-contract-forbidden.js',
+  'focus-tiger/scripts/companion-contract-samples.js',
+  'focus-tiger/scripts/check-companion-contract.test.js',
+  '.cursor/rules/focus-tiger-docs.mdc',
   '.github/PULL_REQUEST_TEMPLATE.md'
 ]);
 
