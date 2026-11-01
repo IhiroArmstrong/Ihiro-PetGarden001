@@ -646,9 +646,12 @@ import {
   applyInviteOutcomeForAdaptation,
   inviteOutcomeKindFromAwakenPath,
   isInviteKindAdaptationPaused,
-  recordManualFocusDurationAnchor,
-  resolveAdaptedFocusDurationHighlightMinutes
+  recordManualFocusDurationAnchor
 } from './core/yinAdaptationStore.js';
+import {
+  noteFocusDurationChipChosen,
+  resolveHighlightFocusMinutes
+} from './core/prefStateResolver.js';
 import {
   beginCoPracticeTimedSession,
   completeCoPracticeTimedSession,
@@ -3597,11 +3600,15 @@ async function init() {
       Number.isFinite(minutes) &&
       FOCUS_DURATION_OPTIONS_MINUTES.includes(/** @type {10|15|25|45} */ (minutes))
     ) {
-      savePreferredFocusDurationMinutes(minutes);
-      recordManualFocusDurationAnchor(
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      noteFocusDurationChipChosen({
         minutes,
-        typeof localStorage !== 'undefined' ? localStorage : null
-      );
+        storage,
+        source: 'voice-picker'
+      });
+      savePreferredFocusDurationMinutes(minutes);
+      recordManualFocusDurationAnchor(minutes, storage);
     }
     focusSession.setDurationMode('fixed');
     focusSession.setTargetMinutes(minutes);
@@ -3613,7 +3620,7 @@ async function init() {
 
   focusDurationPicker = new FocusDurationPickerUI({
     preferredMinutes: () =>
-      resolveAdaptedFocusDurationHighlightMinutes(
+      resolveHighlightFocusMinutes(
         typeof localStorage !== 'undefined' ? localStorage : null
       ),
     preferredMode: () => loadPreferredFocusDurationMode(),
@@ -3621,22 +3628,17 @@ async function init() {
     showSameAsLastHint: () => {
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
-      if (!hasStoredFocusDurationPreference(storage)) return false;
-      const storedMode = loadPreferredFocusDurationMode(storage);
-      if (storedMode === FOCUS_DURATION_MODE_OPEN) return true;
-      const storedMinutes = loadPreferredFocusDurationMinutes(storage);
-      const highlightMinutes = resolveAdaptedFocusDurationHighlightMinutes(storage);
-      return highlightMinutes === storedMinutes;
+      return hasStoredFocusDurationPreference(storage);
     },
     onDurationSelected: (minutes) => {
       const mode =
         pendingFocusDurationMode || bootHonestyCompanion.companionModePicker.getSelectedMode();
       pendingFocusDurationMode = null;
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      noteFocusDurationChipChosen({ minutes, storage, source: 'chip' });
       savePreferredFocusDurationMinutes(minutes);
-      recordManualFocusDurationAnchor(
-        minutes,
-        typeof localStorage !== 'undefined' ? localStorage : null
-      );
+      recordManualFocusDurationAnchor(minutes, storage);
       focusSession.setTargetMinutes(minutes);
       bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);
@@ -5619,7 +5621,7 @@ async function init() {
     emitRecipeSessionStarted(sittingPlan);
     const coPracticeStorage =
       typeof localStorage !== 'undefined' ? localStorage : null;
-    const offeredDefaultMinutes = resolveAdaptedFocusDurationHighlightMinutes(
+    const offeredDefaultMinutes = resolveHighlightFocusMinutes(
       coPracticeStorage
     );
     currentAwakenSitSessionId =
