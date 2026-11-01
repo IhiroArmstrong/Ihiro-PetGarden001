@@ -36,6 +36,7 @@ alwaysApply: false
 | `docs/CALM_ACTION_WISDOM.md` | **Calm Action Wisdom**：长度/禁词/Moment 标签/去重；70 条 CMS；与 Quiet Line / Daily Wisdom / 静思典藏分池；**无运行时** |
 | `docs/CONTEMPLATIVE_ARCHIVE.md` | **静思典藏层**：长期纪念文学规范 + 12 条候选；第一枚印 = 芥子须弥；**无新运行时** |
 | `docs/CO_PRACTICE_GIFT_ART.md` | **共修纪念画方向锁**：请茶谢礼的练习版；触发 A/B/C 形状；礼物轨 ≠ 货架轨；**无运行时** |
+| `docs/desk-habit-literature-inventory.md` | **桌面习惯文献对照（T69）**：FocusBuddy / Brainy / 平静技术 vs 现网；早餐灯与照料宠物不做；开桌锚点见 T70 |
 | `docs/CORE_LOOP.md` | **单次会话七步状态机**：Arrive→Focus→Recover→Reflect→Grow；与 Five Moments 的粒度关系 |
 | `docs/ARRIVE_MOMENT_DESIGN.md` | Arrival Practice 交互详规（v2：Notice/Choose 点选为主） |
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |

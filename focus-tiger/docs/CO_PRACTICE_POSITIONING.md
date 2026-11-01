@@ -72,6 +72,13 @@ Focus Tiger 仍然是一只陪你练习专注和觉察的小老虎。可以再�
 | 共修契约面（一处看清开口与开关） | **已实现** | **T63** #1463；[`task-co-practice-contract-surface.md`](./task-briefs/task-co-practice-contract-surface.md) | 可说成长旅程详情有说明与开关入口；不得说分级干涉或 Yin 懂你 |
 | 问号简介写「不是禅师」+「一起练习」 | **已实现** | **T64** #1460；[`task-co-practice-copy-align.md`](./task-briefs/task-co-practice-copy-align.md) | 可说问号简介已对齐 C-11；不得超卖未实现能力 |
 | 观察纸看见近七日顺 / 乱 / 倦 | **已实现** | **T65** [`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md)；只读 T52 结束打卡，不打分 | 仍禁止说「觉察曲线」或成长分数 |
+| 小型互惠：不愧疚、易原谅 | **已实现（部分）** | **C-04**；归来问候不带账；**T58** 拒绝后停几天。盘点 **T69** | 可说一起坐、不催。不得说需要你喂养或照料 |
+| 照料式电子宠物互惠（索取饮水/健康） | **不做** | [`PRODUCT_POSITIONING.md`](./PRODUCT_POSITIONING.md)；**T69** | 不得说阿寅会饿、会生病、要你负责 |
+| 数字健康状态仪表盘 | **不做** | [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md)；**T28** 搁置；**T69** | 不得说健康分或数字健康宠物 |
+| 早餐 / 饮食问询 | **不做** | [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §4；**T69** | 不得问吃了没、不得因长期不吃开口 |
+| 环境光日程提醒 | **不做** | **T69**。现网用金环、**T48**、提醒横幅、**T44** 通知 | 不得说用灯光报日程 |
+| 闭环已被证明随时间更协同 | **未实现** | **T54** 90 天仍搁置。**不是**新任务 | 不得说已评估有效 |
+| 用户自设开桌锚点（到点问要不要先坐） | **未实现** | **T70** 搁置 · Brief 待点头。**不是**早餐问询 | 未实现不得暗示 |
 
 ---
 

@@ -1,7 +1,8 @@
 # 队列文档治理（防 PR 冲突）
 
 > 索引：`RULES_INDEX.md` → `queue-governance` · 门禁：`npm run queue:check`（并入 `docs:check`）  
-> 配套：[`CONFIDE_WORKING_AGREEMENT.md`](./CONFIDE_WORKING_AGREEMENT.md) §3 · [`TEST_TRACKER.md`](./TEST_TRACKER.md)「拼装触发」
+> 配套：[`CONFIDE_WORKING_AGREEMENT.md`](./CONFIDE_WORKING_AGREEMENT.md) §3 · [`TEST_TRACKER.md`](./TEST_TRACKER.md)「拼装触发」  
+> 问题账本新行：[`ISSUE_LEDGER.md`](./ISSUE_LEDGER.md) + [`issue-entries/`](./issue-entries/readme.md)；条文 [`.cursor/rules/focus-tiger-issue-ledger.mdc`](../../.cursor/rules/focus-tiger-issue-ledger.mdc)（`RULES_INDEX` → `issue-ledger`）。
 
 ## 热点文件（全队账本）
 
@@ -24,7 +25,7 @@
 
 ## 治理 PR（允许改热点）
 
-- **仅**改热点 + 本 readme + changelog + 相关规则/脚本/WORKFLOW 的 PR 可以通过 `queue:check`。与队列同批登记 **T56** 时，允许同 PR 改 `CO_PRACTICE_POSITIONING.md`、`PRODUCT_POSITIONING.md`、`COMPANION_CONTRACT.md`；登记 **T61** 时允许同 PR 改 [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) 与对应 task-entries / Brief 骨架；登记 **T63 / T64 / T65** 时允许同 PR 改对应 Brief / task-entries 与 `CO_PRACTICE_POSITIONING.md`；登记 **T66**（心念流 nebula）时允许同 PR 改 [`task-mindflow-nebula-v0.md`](./task-briefs/task-mindflow-nebula-v0.md) 与 `t66-mindflow-nebula-v0` task-entries / tracker；登记 **T67**（共修接合账）时允许同 PR 改 [`CO_PRACTICE_GIFT_ART.md`](./CO_PRACTICE_GIFT_ART.md) 与接合账 Brief / task-entries / tracker；登记 **T68**（共修纪念画发放）时允许同 PR 改发放 Brief / task-entries / tracker 碎片与方向锁 §9（见 `check-queue-governance-docs.js` 白名单）。  
+- **仅**改热点 + 本 readme + changelog + 相关规则/脚本/WORKFLOW 的 PR 可以通过 `queue:check`。与队列同批登记 **T56** 时，允许同 PR 改 `CO_PRACTICE_POSITIONING.md`、`PRODUCT_POSITIONING.md`、`COMPANION_CONTRACT.md`；登记 **T61** 时允许同 PR 改 [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) 与对应 task-entries / Brief 骨架；登记 **T63 / T64 / T65** 时允许同 PR 改对应 Brief / task-entries 与 `CO_PRACTICE_POSITIONING.md`；登记 **T66**（心念流 nebula）时允许同 PR 改 [`task-mindflow-nebula-v0.md`](./task-briefs/task-mindflow-nebula-v0.md) 与 `t66-mindflow-nebula-v0` task-entries / tracker；登记 **T67**（共修接合账）时允许同 PR 改 [`CO_PRACTICE_GIFT_ART.md`](./CO_PRACTICE_GIFT_ART.md) 与接合账 Brief / task-entries / tracker；登记 **T68**（共修纪念画发放）时允许同 PR 改发放 Brief / task-entries / tracker 碎片与方向锁 §9；登记 **T69 / T70**（桌面习惯文献对照 / 开桌锚点）时允许同 PR 改 [`desk-habit-literature-inventory.md`](./desk-habit-literature-inventory.md)、`ISSUE_LEDGER.md`、对应 issue-entries / task-entries / tracker 与 `CO_PRACTICE_POSITIONING.md`（见 `check-queue-governance-docs.js` 白名单）。  
 - `docs:check` 会按当天日期重写 [`kb-live-gap-audit.md`](./kb-live-gap-audit.md) 机器块日期；该文件允许与治理 PR 同批，避免挡队列更新。  
 - 合并前：`git fetch origin develop && git merge origin/develop`，一次性对齐语义（T 已合 / 立即做 / 旁支保留行）。  
 - 队列行：**先改 `SCHEDULING_GLOSSARY.md` §1**，再在同 PR 同步 `GLOSSARY.md`「当前任务」表（含风险列）。

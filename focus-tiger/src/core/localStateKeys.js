@@ -43,6 +43,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.awaken-check-ins.v1',
   'focus-tiger.invite-outcomes.v1',
   'focus-tiger.session-duration-offer.v1',
+  'focus-tiger.co-practice-gift-art.v1',
   'focus-tiger.yin-adaptation.v1',
   'focus-tiger.focus-duration-manual-anchor.v1',
   'focus-tiger.session-cues.v1',

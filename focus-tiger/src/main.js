@@ -653,8 +653,12 @@ import {
   beginCoPracticeTimedSession,
   completeCoPracticeTimedSession,
   endCoPracticeTimedSessionActive,
+  getActiveCoPracticeSessionId,
   summarizeCoPracticeJoinLedgerForDev
 } from './core/coPracticeSessionJoinLedger.js';
+import { CoPracticeGiftArtCardUI } from './ui/CoPracticeGiftArtCardUI.js';
+import { CO_PRACTICE_GIFT_ART_SURFACE_ENABLED } from './core/coPracticeGiftArtCatalog.js';
+import { noteCoPracticeGiftArtAfterTimedComplete } from './core/coPracticeGiftArtGrant.js';
 import {
   createRhythmTimingCache
 } from './core/inputRhythmBridge.js';
@@ -1813,6 +1817,30 @@ async function init() {
    * }}
    */
   let pendingAfterMustardSeed = null;
+  /** @type {string | null} */
+  let pendingGiftArtPieceId = null;
+  let giftArtPreviewOnly = false;
+  const coPracticeGiftArtCardUI = new CoPracticeGiftArtCardUI(document.body, {
+    onOpen: () => {
+      closeGrowthOverlayCards({ except: 'co-practice-gift-art' });
+      bootSessionChrome.sessionUiGate.setPostSessionOverlayActive(true);
+      resyncSessionChrome();
+    },
+    onClose: () => {
+      const preview = giftArtPreviewOnly;
+      giftArtPreviewOnly = false;
+      resyncSessionChrome();
+      if (preview) {
+        bootSessionChrome.sessionUiGate.setPostSessionOverlayActive(false);
+        return;
+      }
+      const pending = pendingAfterMustardSeed;
+      pendingAfterMustardSeed = null;
+      continueAfterGrowthCeremony(pending);
+    }
+  });
+  window.__coPracticeGiftArtCard = coPracticeGiftArtCardUI;
+
   const mustardSeedSealCardUI = new MustardSeedSealCardUI(document.body, {
     storage: typeof localStorage !== 'undefined' ? localStorage : null,
     onOpen: () => {
@@ -2564,6 +2592,17 @@ async function init() {
         ui: practiceImprintCardUI,
         close: () => practiceImprintCardUI.close()
       },
+      // Surface off: omit from glass growth deck — registration breaks
+      // Arrival keepQuickStart (scenario-a e2e) via closeGrowthOverlayCards.
+            ...(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED
+        ? [
+            {
+              id: 'co-practice-gift-art',
+              ui: coPracticeGiftArtCardUI,
+              close: () => coPracticeGiftArtCardUI.close()
+            }
+          ]
+        : []),
       {
         id: 'wallpapers',
         ui: digitalWallpapersCardUI,
@@ -3632,6 +3671,16 @@ async function init() {
       summarizeCoPracticeJoinLedgerForDev(
         typeof localStorage !== 'undefined' ? localStorage : null
       );
+    window.__coPracticeGiftArtJoinFourScenes = async () => {
+      const mod = await import('./core/coPracticeGiftArtDevSeed.js');
+      const result = mod.runCoPracticeGiftArtJoinFourScenes();
+      return { ...result, allPass: mod.fourScenesAllPass(result) };
+    };
+    window.__coPracticeGiftArtPreviewCard = (pieceId = 'mountain-boat-tray') => {
+      giftArtPreviewOnly = true;
+      coPracticeGiftArtCardUI.open({ pieceId });
+      return { pieceId, wroteGrant: false };
+    };
   }
 
   let hasEndedAnySession = false;
@@ -3764,6 +3813,7 @@ async function init() {
         window.__groundExerciseChoice?.isOpen?.() === true,
       coldStartGoalOpen: window.__coldStartGoalCard?.isOpen?.() === true,
       mustardSeedOpen: window.__mustardSeedCard?.isOpen?.() === true,
+      giftArtOpen: coPracticeGiftArtCardUI.isOpen() === true,
       tipJarOpen: window.__tipJar?.isOpen?.() === true,
       supportModalOpen: window.__supportYin?.isOpen?.() === true,
       sanctuaryOpen: window.__sanctuaryUnlock?.isOpen?.() === true,
@@ -6098,8 +6148,27 @@ async function init() {
 
   function continueAfterGrowthCeremony(pending) {
     if (maybeOfferPracticeImprintAfterCeremony(pending)) return;
+    if (maybeOfferCoPracticeGiftArtAfterCeremony(pending)) return;
     tipKindnessBadgesChrome.releaseAwardHold();
     resumeAfterBadgeAward(pending);
+  }
+
+  /**
+   * @param {{
+   *   sessionEndOpts?: { completed?: boolean, intention?: string, intentionSource?: string },
+   *   onContinue?: () => void
+   * }} [opts]
+   * @returns {boolean}
+   */
+  function maybeOfferCoPracticeGiftArtAfterCeremony(opts = {}) {
+    if (!CO_PRACTICE_GIFT_ART_SURFACE_ENABLED) return false;
+    if (!pendingGiftArtPieceId) return false;
+    const pieceId = pendingGiftArtPieceId;
+    pendingGiftArtPieceId = null;
+    pendingAfterMustardSeed = opts;
+    closeGrowthOverlayCards({ except: 'co-practice-gift-art' });
+    coPracticeGiftArtCardUI.open({ pieceId });
+    return true;
   }
 
   /**
@@ -6189,9 +6258,19 @@ async function init() {
     if (!bootSessionChrome.sessionUiGate.completionPending) return;
     const witnessElapsedSeconds = focusSession.getElapsedSeconds();
     const timedAwardMinutes = focusSession.resolveTimedAwardMinutes();
+    const giftArtSessionId = getActiveCoPracticeSessionId();
     completeCoPracticeTimedSession({
       actualCompletedMinutes: timedAwardMinutes
     });
+    if (giftArtSessionId) {
+      const giftResult = noteCoPracticeGiftArtAfterTimedComplete({
+        sessionId: giftArtSessionId,
+        surfaceEnabled: CO_PRACTICE_GIFT_ART_SURFACE_ENABLED
+      });
+      if (giftResult?.evaluation?.grant && giftResult.evaluation.pieceId) {
+        pendingGiftArtPieceId = giftResult.evaluation.pieceId;
+      }
+    }
     stashPendingJourneyDraft({ completed: true });
     sessionPresenceCollector.finalize(
       snapshotFocusSessionForPresence(focusSession, { endedEarly: false })
