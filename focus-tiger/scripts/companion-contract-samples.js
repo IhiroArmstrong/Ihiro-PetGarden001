@@ -385,8 +385,8 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     scene: 'marketing',
     category: 'C-11',
     expect: 'hit',
-    utterance: 'Yin adapts to you and understands you better each day.',
-    direction: 'Do not imply personalization that is not shipped; see CO_PRACTICE_POSITIONING.',
+    utterance: 'Yin noticed you stayed up too late again.',
+    direction: 'Do not diagnose late nights. User-set work-end and goodwill rest toasts are not sleep coaching.',
     redline: 'C-11'
   },
   {

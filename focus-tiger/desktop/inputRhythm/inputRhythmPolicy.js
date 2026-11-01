@@ -116,3 +116,9 @@ export function clearInputRhythmFeatures(userDataDir) {
   }
   return { ...EMPTY_INPUT_RHYTHM_FEATURES };
 }
+
+/** Privacy / DEV delete-all: switch off + drop aggregated features. */
+export function resetInputRhythmForDeleteAll(userDataDir) {
+  saveInputRhythmPrefs(userDataDir, { ...DEFAULT_INPUT_RHYTHM_PREFS });
+  return clearInputRhythmFeatures(userDataDir);
+}

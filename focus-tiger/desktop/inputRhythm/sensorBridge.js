@@ -13,6 +13,7 @@ import {
   clearInputRhythmFeatures,
   loadInputRhythmFeatures,
   loadInputRhythmPrefs,
+  resetInputRhythmForDeleteAll,
   saveInputRhythmFeatures,
   saveInputRhythmPrefs
 } from './inputRhythmPolicy.js';
@@ -136,7 +137,8 @@ export function createInputRhythmSensorBridge({
     },
     clear() {
       window.clear();
-      clearInputRhythmFeatures(userDataDir);
+      stopHelper();
+      resetInputRhythmForDeleteAll(userDataDir);
       return snapshot();
     },
     openInputMonitoringSettings() {

@@ -6778,16 +6778,14 @@ async function init() {
       );
       if (!confirmed) return;
 
-      const {
-        clearAllFocusTigerLocalState,
-        clearDevResetSessionState,
-        markDevResetToast
-      } = await import('./core/localStateKeys.js');
+      const { clearAllFocusTigerUserData } = await import(
+        './core/focusTigerUserDataClear.js'
+      );
+      const { markDevResetToast } = await import('./core/localStateKeys.js');
       const { clearAllUserAmbientTracks } = await import(
         './audio/UserAmbientLibrary.js'
       );
-      clearAllFocusTigerLocalState();
-      clearDevResetSessionState();
+      await clearAllFocusTigerUserData();
       await clearAllUserAmbientTracks();
       markDevResetToast();
       window.location.reload();
@@ -6809,16 +6807,14 @@ async function init() {
       );
       if (!confirmed) return;
 
-      const {
-        clearAllFocusTigerLocalState,
-        clearDevResetSessionState,
-        markDevBootIdle
-      } = await import('./core/localStateKeys.js');
+      const { clearAllFocusTigerUserData } = await import(
+        './core/focusTigerUserDataClear.js'
+      );
+      const { markDevBootIdle } = await import('./core/localStateKeys.js');
       const { clearAllUserAmbientTracks } = await import(
         './audio/UserAmbientLibrary.js'
       );
-      clearAllFocusTigerLocalState();
-      clearDevResetSessionState();
+      await clearAllFocusTigerUserData();
       await clearAllUserAmbientTracks();
       markDevBootIdle();
       window.location.reload();
