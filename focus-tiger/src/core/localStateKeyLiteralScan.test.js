@@ -97,3 +97,13 @@ test('T60 reset whitelist includes awaken check-ins and focus duration pref', ()
     FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes('focus-tiger.focus-duration-pref.v1')
   );
 });
+
+test('scan finds companion-channel recent-id literal (R copy picker)', () => {
+  const literals = scanFocusTigerLocalStorageKeyLiterals(SRC_ROOT);
+  assert.ok(literals.includes('focus-tiger.companion-channel-recent-ids.v1'));
+  assert.ok(
+    FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes(
+      'focus-tiger.companion-channel-recent-ids.v1'
+    )
+  );
+});

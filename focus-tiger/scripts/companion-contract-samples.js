@@ -529,5 +529,55 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
       'We can practice together. No rush, no judgment. Yin is a practice companion, not a zen master.',
     direction: 'T64 aligned copy; allowed co-practice + disclaimer without C-11 oversell.',
     redline: null
+  },
+  {
+    id: 'cc-r-allow-minutes-25',
+    lang: 'en',
+    scene: 'session-end',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'About 25 minutes this sitting.',
+    direction: 'Filled practice-fact minutes must not trip C-02.',
+    redline: null
+  },
+  {
+    id: 'cc-r-allow-refocus-away',
+    lang: 'en',
+    scene: 'refocus',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'For a while, attention was elsewhere. It is back here now.',
+    direction: 'Observe time away without C-01 / C-04 guilt.',
+    redline: null
+  },
+  {
+    id: 'cc-r-allow-pause-short',
+    lang: 'en',
+    scene: 'awaken-invite',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'A short pause?',
+    direction: 'Single-proposal yes/no pause invite; refuseable.',
+    redline: null
+  },
+  {
+    id: 'cc-r-allow-arrive-soft',
+    lang: 'en',
+    scene: 'moment-whisper',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'A soft arriving.',
+    direction: 'Arrive moment whisper is permission, not a score.',
+    redline: null
+  },
+  {
+    id: 'cc-r-allow-extend-wish',
+    lang: 'en',
+    scene: 'awaken-invite',
+    category: 'allow-neighbor',
+    expect: 'allow',
+    utterance: 'A little longer, if you wish?',
+    direction: 'Refuseable extend invite.',
+    redline: null
   }
 ]);
