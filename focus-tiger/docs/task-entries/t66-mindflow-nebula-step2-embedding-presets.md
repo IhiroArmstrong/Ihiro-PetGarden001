@@ -1,8 +1,8 @@
 ---
 id: t66-mindflow-nebula-step2-embedding-presets
 kind: note
-status: Brief 阈值已填 · 实现须新 Chat · 阶段 A 先于 B
-updated: 2026-10-30
+status: 阶段 A 未过 · 阶段 B 搁置 · PO 方案 A 2026-11-01
+updated: 2026-11-01
 ---
 
-T66 第二步：离线新颖度实验 → 本机 embedding 2D 投影 → 公案板块预设。依赖 v0 #1475。SSOT [`task-mindflow-nebula-step2-embedding-presets.md`](../task-briefs/task-mindflow-nebula-step2-embedding-presets.md)。实现须新旁支 `feature/t66-mindflow-step2-*`，禁止复用 v0 旁支。
+T66 第二步：Brief #1487 · 阶段 A lab #1488（`phaseAPassed:false`）。**不做** embedding 板块 UI；线上心念流仅 v0 #1475。SSOT [`task-mindflow-nebula-step2-embedding-presets.md`](../task-briefs/task-mindflow-nebula-step2-embedding-presets.md)。复跑须新 Brief。
