@@ -167,7 +167,7 @@ test('companion-channel-copy pack is scanned and review fields lock', () => {
   assert.equal(channelRows.length, 40);
   assert.ok(channelRows.every((row) => row.file === 'content/companion-channel-copy/en.json'));
   const pack = readCompanionChannelCopyPack();
-  assert.equal(pack.overlayLive, false);
+  assert.equal(pack.overlayLive, true);
   assert.deepEqual(evaluateCompanionChannelCopyReview(pack), []);
   const mutated = structuredClone(pack);
   mutated.channels[0].lines[0].text = 'About {minutes} {minuteUnit} this sitting!';
@@ -181,9 +181,9 @@ test('companion-channel-copy pack is scanned and review fields lock', () => {
   assert.ok(
     evaluateCompanionChannelCopyReview(mutated).some((err) => /reviewer is blank/.test(err))
   );
-  const liveOn = structuredClone(pack);
-  liveOn.overlayLive = true;
+  const liveOff = structuredClone(pack);
+  liveOff.overlayLive = false;
   assert.ok(
-    evaluateCompanionChannelCopyReview(liveOn).some((err) => /overlayLive must stay false/.test(err))
+    evaluateCompanionChannelCopyReview(liveOff).some((err) => /overlayLive must be true/.test(err))
   );
 });

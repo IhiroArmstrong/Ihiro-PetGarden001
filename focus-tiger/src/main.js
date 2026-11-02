@@ -193,6 +193,8 @@ import { readPresenceFieldEnabled } from './effects/presence-field/presenceField
 import { getSystemTtsBridge } from './core/systemTtsBridge.js';
 import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
+import { formatCompanionChannelLine } from './core/companionChannelCopyDisplay.js';
+
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -1306,7 +1308,18 @@ async function init() {
     quotaManager: reminderQuotaManager,
     emotionController,
     toast: mindfulToast,
-    getCopy: tPool,
+    getCopy: (poolKey) => {
+      if (poolKey === 'REFOCUS_ACKNOWLEDGE') {
+        return (
+          formatCompanionChannelLine({
+            channelId: 'refocus',
+            subtypeId: 'acknowledge',
+            locale: getLocale()
+          }) || tPool(poolKey)
+        );
+      }
+      return tPool(poolKey);
+    },
     onReminderShown: (type) => {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();

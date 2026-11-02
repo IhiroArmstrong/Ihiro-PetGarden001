@@ -8,7 +8,8 @@
  * Not a top Banner; not Hint auto spray.
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { t, onLocaleChange, getLocale } from '../locales/i18n.js';
+import { formatCompanionChannelLine } from '../core/companionChannelCopyDisplay.js';
 import { markMomentWhisperSeen } from '../core/momentWhispersGate.js';
 import { ypeMayShowMomentWhisper } from '../core/yinPersonalizationEngine.js';
 import { homeClearanceTopCss } from './homeChromeClearance.js';
@@ -84,7 +85,15 @@ export class MomentWhisperUI {
 
     const copyKey = COPY_KEYS[key];
     if (!copyKey) return false;
-    const text = t(copyKey);
+    let text = t(copyKey);
+    if (key === 'arrive') {
+      text =
+        formatCompanionChannelLine({
+          channelId: 'moment-whisper',
+          subtypeId: 'arrive',
+          locale: getLocale()
+        }) || text;
+    }
     if (!text) return false;
 
     const root = document.createElement('button');

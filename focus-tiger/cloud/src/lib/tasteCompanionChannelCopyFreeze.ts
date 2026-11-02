@@ -51,12 +51,13 @@ function isPublishableLine(line: PackLine): boolean {
 
 /**
  * Deploy surface: only reviewed rows with reviewer name + hash fields.
- * overlayLive stays false until a written deploy.
+ * overlayLive follows content pack (step 4 deploy).
  */
 export function buildCompanionChannelCopyPayload(): CompanionChannelCopyResponse | null {
 	const raw = pack as Pack;
 	if (raw.schemaVersion !== COMPANION_CHANNEL_COPY_SCHEMA_VERSION) return null;
 	if (raw.locale !== "en") return null;
+	if (raw.overlayLive !== true) return null;
 	if (!Array.isArray(raw.channels)) return null;
 
 	const channels: CompanionChannelCopyResponse["companionChannelCopy"]["channels"] =
@@ -93,7 +94,7 @@ export function buildCompanionChannelCopyPayload(): CompanionChannelCopyResponse
 	return {
 		schemaVersion: COMPANION_CHANNEL_COPY_SCHEMA_VERSION,
 		locale: "en",
-		overlayLive: false,
+		overlayLive: true,
 		companionChannelCopy: { channels },
 		variantSeed: channels[0]?.lines[0]?.id ?? "0",
 	};

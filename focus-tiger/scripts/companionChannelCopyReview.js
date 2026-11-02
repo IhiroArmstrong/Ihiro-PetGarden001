@@ -72,9 +72,9 @@ export function evaluateCompanionChannelCopyReview(pack) {
   if (pack?.locale !== 'en') {
     errors.push('companion-channel-copy locale must be en (ja not expanded)');
   }
-  if (pack?.overlayLive !== false) {
+  if (pack?.overlayLive !== true) {
     errors.push(
-      'companion-channel-copy overlayLive must stay false until PO written deploy'
+      'companion-channel-copy overlayLive must be true after deploy step 4'
     );
   }
 

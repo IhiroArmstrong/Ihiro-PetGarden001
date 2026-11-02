@@ -50,13 +50,14 @@ function channelLines(channelId, subtypeId) {
   ).lines;
 }
 
-test('overlayLive stays false so openings keep freeze-table ids', () => {
-  assert.equal(COMPANION_CHANNEL_COPY_OVERLAY_LIVE, false);
-  assert.equal(PACK.overlayLive, false);
+test('overlayLive off keeps freeze-table ids', () => {
+  assert.equal(COMPANION_CHANNEL_COPY_OVERLAY_LIVE, true);
+  assert.equal(PACK.overlayLive, true);
   const resolved = resolveCompanionChannelCopy({
     channelId: 'session-end',
     subtypeId: 'observed-minutes',
     locale: 'en',
+    overlayLive: false,
     overlayLines: channelLines('session-end', 'observed-minutes')
   });
   assert.equal(resolved.source, 'freeze');
