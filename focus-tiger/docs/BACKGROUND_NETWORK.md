@@ -85,7 +85,7 @@
 
 | 问 | 结论 |
 |---|---|
-| 触发 | `prefetchTasteLayer` 在 `waitUntilCanApply` 之后 `Promise.all`：`/api/quiet-line` + **`/api/confide-copy`**（与权重/日签同槽；`?tasteLayer=0` 全关）。**不**在 Confide Send 热路径发请求。 |
+| 触发 | `prefetchTasteLayer` 在 `waitUntilCanApply` 之后 `Promise.all`：`/api/quiet-line` + **`/api/confide-copy`** + **`/api/companion-channel-copy`**（与权重/日签同槽；`?tasteLayer=0` 全关）。**不**在 Confide Send 热路径发请求。四通道句包 `overlayLive: false` 时只标 cloud-ok，不采用 overlay。 |
 | Q1 | 与品味层同一错峰：`canApply` 看 Arrival / Honesty / Reflection chrome；仍可能与精灵预加载窗口相邻（错峰债务见 §4，本 PR **不**顺手改开机时机）。 |
 | Q2 | overlay 仅内存；冻表相同只标 cloud-ok，不另存副本。 |
 | Q3 | 失败/超时用本地句；Send 0–1s 不待网。低速网 Idle 呼吸仍须人工（TRACKER）。 |

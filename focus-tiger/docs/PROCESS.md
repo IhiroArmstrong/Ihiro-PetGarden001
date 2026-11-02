@@ -177,6 +177,7 @@
 
 - **Confide boundary EN 生产分叉 Redeploy（2026-09-03 · `chore/confide-boundary-prod-fork-verify`）**：Worker `CONFIDE_BOUNDARY_RESPECT` = `Nothing needs to be said. Yin is still here.`；locale 冻表不改。Version `78199a3b-37a2-4e62-a2c4-57233777ab96`。Brief `task-confide-boundary-prod-fork.md`。
 - **Confide 句库 overlay（2026-09-03 · #548）**：`prefetchTasteLayer` 并行 `/api/confide-copy`；3 条模板键 + 19 条 corpus id；未知 schema 丢；Send 不待网。在场 EN 分叉 **#550**。Brief `task-confide-copy-overlay.md`。
+- **四通道英语句包 overlay（2026-11-02）**：`prefetchTasteLayer` 并行 `/api/companion-channel-copy`；`overlayLive: false` 只标 cloud-ok、开口仍冻表；未知 schema / 非法 key / 哈希不符丢。Brief `task-constrained-generation-expanded-retrieval-impl.md` 第 3 步。
 - **冻表 vs 现网可分叉（2026-09-02 · 纯文档）**：git 冻表 = 公开兜底；Worker 可与仓库分叉，分叉后禁止把灵魂数字写回 freeze。SSOT `ANTI_PLAGIARISM_LAYER.md` §3.1。本切片 **无 Redeploy**。
 - **防剽窃层方向锁（2026-09-02 · 2026-09-06 补值得四测）**：品味云 / YPE 云 / 句包 overlay。准入四问 **与** 值得保护四测（复制/成熟/性价比/可维护）分开。SSOT `ANTI_PLAGIARISM_LAYER.md` §3 / §3.2。Quiet Line **#543**；YPE V2 **#545**（管道在、秘密薄）；Confide copy **#548**。
 - **芥子须弥第三 case · 乐五斋诗稿〇九〇二（2026-09-02）**：同一纪念印、同一 score≥21；Case 2 揭示后再完成一次计时出第三首（乾坤縱橫…所向無痕皆披靡）；菜单轮换已揭示诗；旧档仍先出 Case 2。TRACKER 待人工。

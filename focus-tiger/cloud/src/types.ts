@@ -129,6 +129,31 @@ export interface CalmActionCopyResponse {
 	variantSeed: string;
 }
 
+export interface CompanionChannelCopyLine {
+	id: string;
+	text: string;
+	reviewed: true;
+	reviewer: string;
+	reviewerType: string;
+	reviewedOn: string;
+	contentHash: string;
+}
+
+export interface CompanionChannelCopyResponse {
+	schemaVersion: number;
+	locale: string;
+	overlayLive: boolean;
+	companionChannelCopy: {
+		channels: Array<{
+			channelId: string;
+			subtypeId: string;
+			anchorId: string;
+			lines: CompanionChannelCopyLine[];
+		}>;
+	};
+	variantSeed: string;
+}
+
 export interface EmotionWeightResponse {
 	schemaVersion: number;
 	variant: string;
