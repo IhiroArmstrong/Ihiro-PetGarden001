@@ -374,6 +374,38 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     }
   }),
   surface({
+    file: 'PresenceFieldPreferenceUI.js',
+    occupancy: false,
+    slotRequest: Object.freeze({
+      mode: 'na',
+      reason: 'settings-panel-not-arbitrated'
+    }),
+    zIndexFloor: Object.freeze({
+      mode: 'na',
+      reason: 'settings-panel-z-15-same-band-as-mindflow-pref'
+    }),
+    mount: 'body',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'local-sync-write' }),
+      success: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze(['presence-field-toggle'])
+      }),
+      fail: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze(['PRESENCE_FIELD_SAVE_FAILED'])
+      })
+    }),
+    e2eOverlap: GAP,
+    trackerCoverage: {
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-presence-field-v0.md'
+      ]),
+      tokens: Object.freeze(['待人工测试'])
+    }
+  }),
+  surface({
     file: 'ReminderPreferenceUI.js',
     occupancy: false,
     slotRequest: Object.freeze({

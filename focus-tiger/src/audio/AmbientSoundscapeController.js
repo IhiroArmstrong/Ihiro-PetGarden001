@@ -290,6 +290,8 @@ export class AmbientSoundscapeController {
     this._schedule = schedule;
     this._cancelSchedule = cancelSchedule;
     this._volume = AMBIENT_DEFAULT_VOLUME;
+    /** Live sit-together envelope (1 = untouched). Not persisted. */
+    this._presenceFieldGain = 1;
     this._audio =
       audio ||
       (typeof document !== 'undefined'
@@ -543,9 +545,13 @@ export class AmbientSoundscapeController {
 
   _applyLiveVolume() {
     if (!this._audio) return;
+    const field =
+      Number.isFinite(this._presenceFieldGain) && this._presenceFieldGain > 0
+        ? this._presenceFieldGain
+        : 1;
     const live = Math.min(
       1,
-      Math.max(0, this._volume * this._duckRatio)
+      Math.max(0, this._volume * this._duckRatio * field)
     );
     try {
       this._audio.volume = live;
@@ -1110,6 +1116,20 @@ export class AmbientSoundscapeController {
     this._volume = Math.min(1, Math.max(0, Number(volume) || 0));
     this._applyLiveVolume();
     this._syncCreditSegment();
+  }
+
+  /**
+   * Sit-together live envelope. Not persisted.
+   * @param {number} gain
+   */
+  setPresenceFieldEnvelope(gain) {
+    this._presenceFieldGain = Math.max(0.7, Math.min(1.12, Number(gain) || 1));
+    this._applyLiveVolume();
+  }
+
+  clearPresenceFieldEnvelope() {
+    this._presenceFieldGain = 1;
+    this._applyLiveVolume();
   }
 
   getPlayedSeconds() {

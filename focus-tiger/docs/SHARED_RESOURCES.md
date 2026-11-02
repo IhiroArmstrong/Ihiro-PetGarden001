@@ -78,6 +78,7 @@
 | `focus-tiger.locale-greeting.v1` | `localeGreeting` / Dispatcher `LANGUAGE_CHANGED` | 切语问候同日限频：`{ dateKey, locales[] }`；ja→`bookReading`；en→`teaDrinking`（皆单程+CapCut）。**写入时机**：`playEmotion` 开播成功后 `markLocaleGreetingPlayed`（resolve 不预扣） |
 | `focus-tiger.scene-anim-daily.v1` | `sceneAnimationDispatcher` | 欢迎池等同日额度：`{ dateKey, welcome }`（吹花与欢迎池同日 XOR 共用此旗）。**DEV 复测**勿手清：`window.__ftDebug.resetScenario('day1-flower-card' \| 'day1-flower-only' \| 'welcome-quota-blocks-flower')`（配方 `debugScenarioReset.js`；生产构建不挂钩子） |
 | `focus-tiger.flower-welcome.v1` | `flowerWelcomeGate` | 吹花门闩：`{ lastOpenDateKey, firstBubbleDone, lastCopyKey }`（Day1 / ≥3 日久别；文案轮换记账）。与上行日旗成套；漏清日旗会像「占用是花、动画不播」 |
+| `focus-tiger.presence-field-enabled.v1` | `presenceFieldStore` / `PresenceFieldSession` | 智能场开关（`'1'`=开，缺省关）。**不**进练习云备份。DEV 重置须清。≠ `presence-signals` |
 | `focus-tiger.idle-yin-tap-hint.v1` | `idleYinTapHintGate` | 冷启动额头发现气泡已读：`'1'` 后不再出现 |
 | `focus-tiger.flower-welcome-flag.v1` | `flowerWelcomeGate` | 吹花产品路径开关（`0`/`1`）；亦可用 `?flowerWelcome=0\|1` |
 | `focus-tiger.cold-start-goal-seen.v1` | `coldStartGoalGate` | 冷启动四选卡已读（`'1'`）；二次打开不再出卡；DEV 重置清 |

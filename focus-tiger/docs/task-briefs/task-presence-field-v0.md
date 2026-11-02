@@ -1,6 +1,6 @@
 # Task Brief · 智能场 v0 / Presence Field（同坐耦合场）
 
-> **状态**：**待点头**（2026-11-02 起草）。**点头后才改 `src/`。**  
+> **状态**：**已点头**（2026-11-02 PO：按智能场 v0 Brief 开工 · 大任务；四条补丁见 §4 / §5 / §9 / §10）。**点头后写代码。**  
 > **工程名**：`presence-field`。对外：**智能场 / Presence Field**。  
 > **类**：**B 类**（可选可见氛围 + 菜单开关；会改 Focusing 金晕观感）。过 **T55 / C-11**（禁止读心、禁止疗效）。  
 > **T 号**：交给治理会话登记。实现旁支与 PR 只写「智能场 v0 / presence-field」，**禁止自编 T71**。  
@@ -55,11 +55,13 @@
 
 | 模式 | 何时 | 序参量目标 \(r^\*\) | 用户看见 |
 |---|---|---|---|
-| `scatter` | 进入 Focusing 后约 0–45s | 0.15–0.35 | 金晕略不齐，脉动各跳各的 |
-| `lock` | 过阈值（滞回：进 ≥0.62、出 &lt;0.40） | 0.75–0.95 | 一次可感到的收拢 |
+| `scatter` | 进入 Focusing 后；**最短**约 45s 内只允许 scatter | 0.15–0.35 | 金晕略不齐，脉动各跳各的 |
+| `lock` | **同时**满足：已过最短 scatter **且** \(r\) 自然 ≥0.62（滞回出 &lt;0.40） | 0.75–0.95 | 一次可感到的收拢（涌现，不是倒计时到点硬切） |
 | `rest` | 锁相后 | 保持高；视觉振幅几乎退到背景 | 极静；T45 仍少数字 |
 | `detune` | **仅**已达 Recover **展示门槛**的离开（&gt;60s；沿用现链） | 短暂降 \(r\) | 失谐；**不弹窗、不说话** |
 | `off` | 开关关 / 非 Focusing / 功能藏 | — | 零额外节点、零额外声；金晕回库存 `updateFocusGlow` |
+
+**进 lock（2026-11-02 点头补丁）**：45s 是**最短 scatter 时长**，不是定时器触发 lock。最短时长之后才把耦合 \(K\) 提到「邀请收拢」（`invite-lock`），**仍须**序参量 \(r\) 自己爬过 0.62 才切 `lock`。禁止「满 45s 强制 lock」。
 
 **滞回**：避免在 0.62 附近抖。进 `lock` 须 \(r\) 升过 0.62；回 `scatter` 须掉到 0.40 以下（`rest` 不因微扰掉回 scatter）。
 
@@ -69,7 +71,8 @@
 
 - \(N\) 相位 \(\theta_i\)，N ∈ [12, 24]。  
 - \(\dot\theta_i = \omega_i + K r \sin(\Psi - \theta_i) + \sigma \xi_i\)；\(r e^{i\Psi} = \frac1N\sum e^{i\theta_j}\)。  
-- \(K\) 由模式给定，**不是**用户主滑杆。  
+- \(K\) 由模式 / 耦合档给定，**不是**用户主滑杆，**不**读键鼠或切窗。因此 lock **会对每个开了场的人发生**——这是同坐氛围的时间结构，**不是**专注度反馈。  
+- Hover / 偏好 hint / tracker **禁止**滑向「你进入状态了 / 你更专注了」。只写：同坐的氛围、意象化、非读心、非疗效、非分数。  
 - 内部测试：`?presenceField=1&presenceFieldDebug=1` 才出 K / 噪声滑杆（英文内部标签即可；不进三语文案）。`?presenceField=1` 仅当次会话强制开场，**不**写 localStorage，除非用户又点开关。
 
 ## 6. 声（可选）
@@ -113,8 +116,8 @@
 | T39 铃关 | 任意 | 场不得响铃 | 单测：不调用铃 API |
 | 氛围已播 | Focusing + 开关开 | 可轻推包络；不换曲 | 待人工 |
 | 氛围未播 | Focusing + 开关开 | 只有光，无新声 | 单测 |
-| 375 / 宽屏 | Focusing | 不挡 Sit/Support；晕在外围 | 待人工 |
-| en / zh / ja | 菜单行 + 偏好卡 + hover | 切片三语一致键；无 Kuramoto 字 | `locale` 切片 + 既有 ja 守卫 |
+| 375 / 768 / 宽屏 | Focusing | 不挡 Sit/Support/脸；晕在外围 | 本刀单测 DOM 不盖 `#sprite-stage` 中心；**PR 附 375、768、宽屏截图**；tracker 写清要看什么 |
+| en / zh / ja | 菜单行 + 偏好卡 + hover | 切片三语一致键；无 Kuramoto 字；不写「进入状态」 | `locale` 切片 + 既有 ja 守卫 |
 | Recover &gt;60s | 已 Focusing 且开 | 一次 detune，不弹窗 | 单测滞回 + 模式 |
 | SB-01 / SB-02 | 短离 | 场不 detune、无新表面 | 单测：短离不切 detune |
 | Across tools | 切窗去别处 | **不** detune | 单测：visibility 不驱动 |
@@ -127,7 +130,7 @@
 | 控件 / 入口 | 点击后 0–1 秒内用户看到什么 | 持久化三态 |
 |---|---|---|
 | ⋯ / 抽屉「智能场」 | 玻璃卡展开；开关可见（同心念流行） | — |
-| 偏好开关打开 | checkbox 立即勾上；若当前 **Focusing**，下一帧出现场；若 Idle，只记住偏好、**仍无场** | 挂起：无额外转圈（本地同步写）。成功：勾上。失败：status `role=status` 礼貌提示（切片 `PRESENCE_FIELD_SAVE_FAILED`） |
+| 偏好开关打开 | checkbox 立即勾上；若当前 **Focusing**，下一帧出现场；若 Idle，只记住偏好、**仍无场** | 挂起：无额外转圈（本地同步写）。成功：勾上。失败：开关**回弹** + status `role=status` 礼貌提示（`PRESENCE_FIELD_SAVE_FAILED`）；**单测锁：回弹后 `enabled===false` 且 Focusing 也无场节点** |
 | 偏好开关关闭 | checkbox 立即取消；场节点当帧拆除 | 同上三态 |
 | 关闭钮 / Esc / 点外 | 卡收起；场是否显示只跟开关+Focusing，不跟卡是否打开 | — |
 | 金晕 / 晕瓣本身 | 不可点（`pointer-events: none`） | 不在白名单的沉默不算点击；无点击 |
@@ -174,9 +177,11 @@
 2. 开且 Focusing：有场；开且 Idle：无场。  
 3. scatter→lock 滞回（0.62 / 0.40）不抖。  
 4. 开关关：拆节点。  
-5. storage key 在白名单；DEV 重置清除。  
-6. 无 debug query：无 K 滑杆。  
-7. visibility / 短离不切 `detune`。
+5. 写盘失败：开关回弹且无场 DOM（即使 Focusing）。  
+6. 未过最短 scatter 或 \(r&lt;0.62\)：不得进 `lock`。  
+7. storage key 在白名单；DEV 重置清除。  
+8. 无 debug query：无 K 滑杆。  
+9. visibility / 短离不切 `detune`。
 
 **命令（实现收尾，本 Brief 回合不跑）**：`node --test` 本目录；`npm run test:payment-contract`（因动了共享光层，须证明付款可点未被误伤）；`npm run test:smoke` 一次。
 

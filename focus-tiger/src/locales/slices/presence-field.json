@@ -1,0 +1,29 @@
+{
+  "en": {
+    "PRESENCE_FIELD_MENU_LABEL": "Presence Field",
+    "PRESENCE_FIELD_PREF_TITLE": "Presence Field",
+    "PRESENCE_FIELD_PREF_TOGGLE": "Show a sit-together glow while focusing",
+    "PRESENCE_FIELD_PREF_HINT": "An atmosphere of sitting together—not a focus score, not mind-reading, not therapy. Off by default.",
+    "PRESENCE_FIELD_PREF_CLOSE": "Close",
+    "PRESENCE_FIELD_HOVER": "A sit-together atmosphere. Not a reading of your attention, and not a treatment.",
+    "PRESENCE_FIELD_SAVE_FAILED": "Could not save this preference. Try again."
+  },
+  "zh": {
+    "PRESENCE_FIELD_MENU_LABEL": "智能场",
+    "PRESENCE_FIELD_PREF_TITLE": "智能场",
+    "PRESENCE_FIELD_PREF_TOGGLE": "专注时显示同坐光晕",
+    "PRESENCE_FIELD_PREF_HINT": "同坐的氛围，不是专注度反馈，不是读心，不是疗效。默认关闭。",
+    "PRESENCE_FIELD_PREF_CLOSE": "关闭",
+    "PRESENCE_FIELD_HOVER": "同坐的意象化氛围，不是在读你的注意力，也不是疗效。",
+    "PRESENCE_FIELD_SAVE_FAILED": "偏好没能保存，请再试一次。"
+  },
+  "ja": {
+    "PRESENCE_FIELD_MENU_LABEL": "同席の場",
+    "PRESENCE_FIELD_PREF_TITLE": "同席の場",
+    "PRESENCE_FIELD_PREF_TOGGLE": "集中中に同席の光を表示",
+    "PRESENCE_FIELD_PREF_HINT": "一緒に座る雰囲気です。集中の点数でも、読心でも、治療でもありません。初期はオフ。",
+    "PRESENCE_FIELD_PREF_CLOSE": "閉じる",
+    "PRESENCE_FIELD_HOVER": "同席をたとえた雰囲気であり、注意の読取りでも治療でもありません。",
+    "PRESENCE_FIELD_SAVE_FAILED": "設定を保存できませんでした。もう一度お試しください。"
+  }
+}

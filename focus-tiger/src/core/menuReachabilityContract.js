@@ -119,6 +119,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#mindflow-nebula-preference'
   }),
+  'presence-field': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#presence-field-preference'
+  }),
   'today-direction': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#cold-start-goal-card'
