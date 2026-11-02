@@ -94,6 +94,13 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t69-desk-habit-literature.md',
   'focus-tiger/docs/task-entries/t70-user-set-desk-start-anchor.md',
   'focus-tiger/docs/tracker-entries/docs-t69-desk-habit-literature.md',
+  'focus-tiger/docs/task-briefs/task-co-practice-ambient-field-t72.md',
+  'focus-tiger/docs/task-entries/t71-co-practice-three-layer-lock.md',
+  'focus-tiger/docs/task-entries/t72-co-practice-ambient-field.md',
+  'focus-tiger/docs/task-briefs/task-remember-respond-read-layer.md',
+  'focus-tiger/docs/pref-state-read-inventory.md',
+  'focus-tiger/docs/task-entries/t73-remember-respond-read-layer.md',
+  'focus-tiger/docs/tracker-entries/docs-t73-remember-respond-read-layer.md',
   'focus-tiger/docs/PRINCIPLES.md',
   'focus-tiger/docs/task-briefs/task-user-set-desk-start-anchor.md',
   'focus-tiger/docs/companion-contract-known-gaps.md',
@@ -157,6 +164,20 @@ function refExists(rev) {
  * @returns {string[]}
  */
 export function changedPathsAgainstDevelop(baseRef, headRev = '') {
+  // Merge in progress: index vs develop is the governance PR unique set.
+  // Mixing staged incoming develop files with hotspot edits would false-fail
+  // `git merge origin/develop` on docs/* queue PRs (batch-merge-develop-open-prs).
+  if (!headRev && refExists('MERGE_HEAD')) {
+    const merging = execFileSync(
+      'git',
+      ['diff', '--name-only', '--cached', baseRef],
+      { cwd: REPO_ROOT, encoding: 'utf8' }
+    );
+    return merging
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
   const head = headRev || 'HEAD';
   const committed = execFileSync(
     'git',

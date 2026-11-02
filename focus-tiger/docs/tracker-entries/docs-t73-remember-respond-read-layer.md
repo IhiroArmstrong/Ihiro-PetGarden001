@@ -1,0 +1,1 @@
+| T73 记住—响应读层 Brief 点头 | 仅文档 | 待人工测试 | **本条验收的是**：Brief 已含排除沿用上次、倦优先于常用、常用窗口近 12 次；术语表有 T73 行。无 `src/`。读 [`task-remember-respond-read-layer.md`](../task-briefs/task-remember-respond-read-layer.md)。第一刀另开 Chat。 | — | — | — | — | 2026-11-01 |
