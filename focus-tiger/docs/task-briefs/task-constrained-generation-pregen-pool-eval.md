@@ -1,6 +1,6 @@
 # 受限生成 · 预生成池评估（路径 A · 只评估不实现）
 
-> **状态**：**评估稿（2026-11-01）**。PO 圈选 §4.1.1 **(A) 先评估预生成池**。本文件 **不是** 实现 Brief，**不是** 阶段 1 开工许可。  
+> **状态**：**评估稿（2026-11-01）**。PO 圈选 §4.1.1 **(A) 先评估预生成池**。实现 Brief 已登记 **T74** [`task-constrained-generation-pregen-pool.md`](./task-constrained-generation-pregen-pool.md)（**待点头**）。本文件仍 **不是** 阶段 1 开工许可。  
 > **类**：**A 类**（纯文档）。将来「空闲时生成变体、开口时取用」是 **B 类**，须另开 Brief 再点头。  
 > **父 Brief**：[受限生成放行关卡](task-constrained-generation-release-gates.md) · [阶段 0 结论页](task-constrained-generation-stage-0.md)。  
 > **不是**：**T54** 90 天。**不是** 倾诉开放生成。**不是** 当拍现场生成。**不是** 改 `src/`。
@@ -160,7 +160,7 @@
 
 ## 6. 下一刀（须另 Brief，本 PR 不做）
 
-1. **B 类实现 Brief**：空闲填池 + 开口取用 + 池空日志字段 + kill switch。  
+1. **B 类实现 Brief**：**已写成 T74** [`task-constrained-generation-pregen-pool.md`](./task-constrained-generation-pregen-pool.md)（待点头）。空闲填池 + 开口取用 + 池空日志字段 + kill switch。  
 2. 若 PO 认为池不可接受 → 走 **(B) 缩范围**（仅到达句），本评估退为附录。  
 3. 阶段 1 红队题目改为抽「入池句 + 故意坏样本不得入池」，**不是** 开口现场 generate。
 
