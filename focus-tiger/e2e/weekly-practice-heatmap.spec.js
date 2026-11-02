@@ -303,10 +303,10 @@ test('375 home: Five Moments on canvas; drawer Soundscape + Reminder respond', a
     page.locator('.ft-narrow-sheet__item[data-proxy="honesty"]')
   ).toHaveCount(1);
 
-  // Sound row removed — music via ActionBar ♪
+  // Census 2026-10-28: ActionBar ♪ is primary; Preferences Sound is escape hatch.
   await expect(
-    page.locator('.ft-narrow-sheet__item', { hasText: /^Sound$|声景|声音/i })
-  ).toHaveCount(0);
+    page.locator('.ft-narrow-sheet__item[data-proxy="sound"]')
+  ).toHaveCount(1);
   await expect(
     page.locator('.ft-narrow-sheet__item .ft-secondary-menu-hint-dot').first()
   ).toBeVisible({ timeout: 5_000 });
@@ -405,12 +405,16 @@ test('375: ActionBar note opens Soundscape panel (same as drawer Sound)', async 
     0
   );
 
-  // Prefer a track inside the panel — preference flips on (not mute-toggle)
+  // Prefer a track inside the panel — preference flips on (not mute-toggle).
+  // Inner scroller / upload row can intercept Playwright's viewport click on 375.
   await page
     .locator('.ambient-soundscape__track')
     .filter({ hasNotText: /Off|关闭|关/i })
     .first()
-    .click();
+    .evaluate((el) => {
+      el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      /** @type {HTMLButtonElement} */ (el).click();
+    });
   await expect
     .poll(async () => {
       return page.evaluate(() => {
