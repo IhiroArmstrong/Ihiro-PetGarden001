@@ -407,6 +407,8 @@ export async function clickWideMoreProxyOrDirect(page, proxy) {
  */
 export async function openCompanionHint(page) {
   if (await openWideMoreMenuIfPresent(page)) {
+    // T25 radial: ⋯ opens five group icons first; companion lives in Practice.
+    await pickWideMoreRadialGroup(page, 'MENU_GROUP_PRACTICE');
     await page.locator('#ft-wide-more-menu [data-proxy="companion"]').click();
   } else {
     await page.locator('.session-start-dock__hint').evaluate((el) => {

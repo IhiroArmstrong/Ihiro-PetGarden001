@@ -713,7 +713,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
   const out = [];
 
   // Breath practice is the home left ball — never list in drawer / ⋯.
-  // Sound lives only on top-right note / narrow ♪ (2026-07-30) — not a menu row.
+  // Sound: ActionBar ♪ is primary; Preferences `sound` row is census escape hatch.
 
   const yinCoinVisible =
     typeof visibility.yinCoinVisible === 'boolean'
