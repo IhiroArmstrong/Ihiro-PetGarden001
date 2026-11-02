@@ -1,0 +1,3 @@
+| T73 第二刀 Brief 点头 | 仅文档 | 待人工测试 | **本条验收的是**：第二刀 Brief 含说出所见、要/不要、T62 复用、变体矩阵与点击反馈；术语表 T73 为立即做。无 `src/`。读 [`task-remember-respond-second-knife.md`](../task-briefs/task-remember-respond-second-knife.md)。写代码另开 Chat。 | — | — | — | — | 2026-11-02 |
+| T74 预生成池 Brief | 仅文档 | 待人工测试 | **本条验收的是**：T74 已登记；**预生成池 Brief 搁置**（PO 选 R）；下一刀读扩库说明书 #1537，**不是**本 Brief 点头实现。无 `src/`。 | — | — | — | — | 2026-11-02 |
+| T75 适应开 vs 不开一页纸 | 仅文档 | 待人工测试 | **本条验收的是**：对照方案写清观察两组、与 T54 90 天分列；**页首标注目前无汇总通道、不可执行**；入组改为「打开过旅程小本子」。读 [`adaptation-on-off-research-protocol.md`](../adaptation-on-off-research-protocol.md)。 | — | — | — | — | 2026-11-02 |

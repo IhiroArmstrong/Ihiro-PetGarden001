@@ -130,4 +130,20 @@ describe('isQueueGovernanceCoPrAllowed', () => {
       null
     );
   });
+
+  it('allows T73 second-knife / T74 / T75 shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/task-briefs/task-remember-respond-second-knife.md',
+        'focus-tiger/docs/task-briefs/task-constrained-generation-pregen-pool.md',
+        'focus-tiger/docs/adaptation-on-off-research-protocol.md',
+        'focus-tiger/docs/task-entries/t74-constrained-generation-pregen-pool.md',
+        'focus-tiger/docs/task-entries/t75-adaptation-on-off-protocol.md',
+        'focus-tiger/docs/tracker-entries/docs-t73-t74-t75-governance.md'
+      ]),
+      null
+    );
+  });
 });
