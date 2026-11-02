@@ -134,6 +134,7 @@ import { PRACTICE_PAPER_HIDDEN_KEY } from './practicePaperFacts.js';
 import { AWAKEN_CHECKIN_STORAGE_KEY, recordAwakenCheckIn } from './awakenCheckInStore.js';
 import { INVITE_OUTCOME_STORAGE_KEY } from './inviteOutcomeStore.js';
 import { SESSION_DURATION_OFFER_STORAGE_KEY } from './coPracticeSessionJoinLedger.js';
+import { PREF_STATE_READ_STORAGE_KEY } from './prefStateResolver.js';
 import { CO_PRACTICE_GIFT_ART_STORAGE_KEY } from './coPracticeGiftArtCatalog.js';
 import {
   FOCUS_DURATION_MANUAL_ANCHOR_STORAGE_KEY,
@@ -266,6 +267,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   AWAKEN_CHECKIN_STORAGE_KEY,
   INVITE_OUTCOME_STORAGE_KEY,
   SESSION_DURATION_OFFER_STORAGE_KEY,
+  PREF_STATE_READ_STORAGE_KEY,
   CO_PRACTICE_GIFT_ART_STORAGE_KEY,
   YIN_ADAPTATION_STORAGE_KEY,
   FOCUS_DURATION_MANUAL_ANCHOR_STORAGE_KEY,

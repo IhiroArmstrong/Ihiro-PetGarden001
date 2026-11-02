@@ -10,9 +10,9 @@
 
 import {
   FOCUS_DURATION_MODE_OPEN,
-  loadPreferredFocusDurationMinutes,
   loadPreferredFocusDurationMode
 } from '../focusDuration.js';
+import { resolveHighlightFocusMinutes } from '../prefStateResolver.js';
 import { readRitualRecipe } from './ritualRecipeStore.js';
 import { resolveSittingSessionPlan } from './sittingSessionPlan.js';
 
@@ -65,7 +65,7 @@ export function getActiveRecipePromptBinding(moment) {
 export function syncSittingPromptBindingsFromStoredRecipe(storage) {
   const recipe = readRitualRecipe(storage);
   const mode = loadPreferredFocusDurationMode(storage);
-  const minutes = loadPreferredFocusDurationMinutes(storage);
+  const minutes = resolveHighlightFocusMinutes(storage);
   const plan = resolveSittingSessionPlan({
     recipe,
     focusMode:
