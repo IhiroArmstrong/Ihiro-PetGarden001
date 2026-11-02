@@ -1,6 +1,6 @@
 # 受限生成 · 阶段 0 结论页（warm/cold · 内存双基线 · 模型冻结）
 
-> **状态**：**§4.1.1 已圈选（2026-11-01）** → **(A) 先评估预生成池**（评估稿已合 [#1531](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1531)）。**2026-11-02**：评估可留下，但 **下一刀是对比说明**，**不是** 路径 A 的 B 类实现 Brief。关卡 Brief 已条件点头并合入 develop（[PR #1492](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1492)）。阶段 0 脚手架已合（[PR #1529](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1529)）。对比：[池化 vs 扩库 vs 缩范围](task-constrained-generation-pool-vs-expanded-retrieval.md)。**禁止**阶段 1 红队（本圈选 **不是** 阶段 1 许可；对比未点头 **也不是** 实现许可）。  
+> **状态**：**§4.1.1 已圈选（2026-11-01）** → **(A) 先评估预生成池**（评估稿已合 [#1531](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1531)）。**2026-11-02**：对比已点头走 **R**（#1533）。下一刀是 [扩库说明书](task-constrained-generation-expanded-retrieval-spec.md)，**不是** 路径 A 的 B 类实现 Brief。关卡 Brief 已条件点头并合入 develop（[PR #1492](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1492)）。阶段 0 脚手架已合（[PR #1529](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1529)）。对比：[池化 vs 扩库 vs 缩范围](task-constrained-generation-pool-vs-expanded-retrieval.md)。**禁止**阶段 1 红队（本圈选 **不是** 阶段 1 许可；选 R **也不是** 生成臂许可）。  
 > **本刀**：文档 + 实验室脚手架。**零用户可见生成句**。不接线口通道。  
 > **父 Brief**：[受限生成放行关卡](task-constrained-generation-release-gates.md)。  
 > **类**：**A 类**。  
@@ -10,7 +10,7 @@
 
 ## 0. 大白话
 
-关卡已经写死。模型冻结、热/冷判定、内存怎么量都已写清。实验室加载探针已跑：中位约三秒、九十五分位约三点八秒，还没开始编句。屏幕上的陪伴句仍然是仓库里的固定句。PO 已圈选「先评估预生成池」，评估稿已合；四通道各十次手测按分析师建议用代码路径代替，不当成放行当拍生成的证据。**下一步是对比三条路，不是写实现 Brief。**
+关卡已经写死。模型冻结、热/冷判定、内存怎么量都已写清。实验室加载探针已跑：中位约三秒、九十五分位约三点八秒，还没开始编句。屏幕上的陪伴句仍然是仓库里的固定句。PO 已圈选「先评估预生成池」，评估稿已合；四通道各十次手测按分析师建议用代码路径代替，不当成放行当拍生成的证据。**下一步是扩库说明书，不是写本机池实现 Brief。阶段 1 继续禁止。**
 
 ---
 
@@ -146,9 +146,9 @@ cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-q
 |---|---|---|
 | **继续 · warm 实验室** | 四通道 cold 占比低，或可预 warm 且与用户路径等价 | **未选**（与专注立即卸载冲突） |
 | **(B) 缩 scope** | 多数通道 cold 且当拍不可行 | **备选退路**（池评估失败时只留到达句） |
-| **(A) 预生成池** | 多数 cold 但仍要变体 | **2026-11-01 已圈选：先评估**（#1531 已合）。**2026-11-02**：评估可留下；**实现 Brief 冻结**，直至 [对比说明](task-constrained-generation-pool-vs-expanded-retrieval.md) 点头且仍选 A。也 **不得** 开始阶段 1 |
+| **(A) 预生成池** | 多数 cold 但仍要变体 | **2026-11-01 已圈选：先评估**（#1531 已合）。**2026-11-02**：对比已点头走 **R**；路径 A 实现 Brief **冻结**（骨架暂存，见对比说明 §4.2）。也 **不得** 开始阶段 1 |
 
-圈选依据：加载探针 p50/p95 已击穿多数通道预算 + 代码路径三通道近乎全冷。**圈选评估 ≠ 阶段 1 开工。对比未点头 ≠ 可以写实现 Brief。**
+圈选依据：加载探针 p50/p95 已击穿多数通道预算 + 代码路径三通道近乎全冷。**圈选评估 ≠ 阶段 1 开工。选 R ≠ 可以写路径 A 实现 Brief。**
 
 ---
 
