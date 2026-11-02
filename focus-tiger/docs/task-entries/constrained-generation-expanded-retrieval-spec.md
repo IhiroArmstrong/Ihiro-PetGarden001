@@ -1,7 +1,7 @@
 ---
 id: constrained-generation-expanded-retrieval-spec
 kind: feature
-status: PO 条件点头已锁 · 无运行时 · 禁止阶段 1
+status: PO 条件点头已锁 · 英语 Brief 已点头 · 无运行时 · 禁止阶段 1
 updated: 2026-11-02
 ---
 
