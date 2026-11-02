@@ -104,6 +104,19 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T76 quiet-sit Brief with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/task-briefs/task-t76-cold-start-quiet-sit.md',
+        'focus-tiger/docs/task-entries/t76-cold-start-quiet-sit.md',
+        'focus-tiger/docs/tracker-entries/docs-t76-cold-start-quiet-sit.md'
+      ]),
+      null
+    );
+  });
+
   it('allows T67 gift-art grant Brief with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([

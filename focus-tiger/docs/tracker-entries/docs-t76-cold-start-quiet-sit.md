@@ -1,0 +1,1 @@
+| T76 冷启动静修入口 Brief | 纯文档 | 待人工测试 | **只验 Brief 锁稿**，不测运行时。打开 `task-briefs/task-t76-cold-start-quiet-sit.md`：四项 EN/JA、禁止第五项、第 1 项须 no guidance、首次直坐仅自动首卡、Sit 仍走到达、VERSION 1→2 沿用旧横幅。点头口令「按 T76 B1 开工」后另开实现旁支。 | **2026-11-02** 分析师三轮拍板写入 Brief。 | — | — | `task-t76-cold-start-quiet-sit.md` | 2026-11-02 |
