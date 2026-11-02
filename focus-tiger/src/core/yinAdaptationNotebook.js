@@ -3,7 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
-import { loadPreferredFocusDurationMinutes, FOCUS_DURATION_STORAGE_KEY } from './focusDuration.js';
+import { FOCUS_DURATION_STORAGE_KEY } from './focusDuration.js';
 import { AWAKEN_CHECKIN_STORAGE_KEY, normalizeCheckInRows } from './awakenCheckInStore.js';
 import {
   YIN_ADAPTATION_RULE_IDS,
@@ -12,6 +12,15 @@ import {
   readYinAdaptationState,
   shouldSuggestLowerFocusDuration
 } from './yinAdaptationStore.js';
+import { getEveningPracticePaperFact } from './eveningPracticeFacts.js';
+import { getLocalDateKey } from '../utils/localDate.js';
+import { resolvePrefStateReadModel } from './prefStateResolver.js';
+
+export const PREF_NOTEBOOK_LINE_IDS = Object.freeze({
+  EVENING_SLOT: 'pref-evening-slot',
+  HABITUAL_SEEN: 'pref-habitual-seen',
+  HABITUAL_CONFIRM: 'pref-habitual-confirm'
+});
 
 function hasFocusDurationPref(storage) {
   if (!storage) return false;
@@ -39,8 +48,10 @@ function lastEndCheckInLabel(storage) {
 export function buildYinAdaptationNotebookLines(opts = {}) {
   const storage = opts.storage ?? null;
   const now = Number(opts.now) || Date.now();
+  const todayKey = opts.todayKey || getLocalDateKey(new Date(now));
   const state = readYinAdaptationState();
   const lines = [];
+  const pref = resolvePrefStateReadModel(storage);
 
   if (
     !state.hiddenLines[YIN_ADAPTATION_RULE_IDS.REMEMBER_DURATION] &&
@@ -88,10 +99,37 @@ export function buildYinAdaptationNotebookLines(opts = {}) {
     });
   }
 
+  const eveningFact = getEveningPracticePaperFact(storage, todayKey);
+  if (eveningFact?.show) {
+    lines.push({
+      id: PREF_NOTEBOOK_LINE_IDS.EVENING_SLOT,
+      textKey: eveningFact.localeKey,
+      textParams: { n: String(eveningFact.count) },
+      kind: 'fact'
+    });
+  }
+
+  if (pref.habitualFocusMinutes != null) {
+    lines.push({
+      id: PREF_NOTEBOOK_LINE_IDS.HABITUAL_SEEN,
+      textKey: 'PREF_HABITUAL_SEEN',
+      textParams: { n: String(pref.habitualFocusMinutes) },
+      kind: 'fact'
+    });
+  }
+
+  if (pref.needsHabitualConfirm && pref.habitualFocusMinutes != null) {
+    lines.push({
+      id: PREF_NOTEBOOK_LINE_IDS.HABITUAL_CONFIRM,
+      textKey: 'PREF_HABITUAL_CONFIRM',
+      textParams: { n: String(pref.habitualFocusMinutes) },
+      kind: 'confirm'
+    });
+  }
+
   return lines;
 }
 
 export function yinAdaptationNotebookHasContent(storage) {
   return buildYinAdaptationNotebookLines({ storage }).length > 0;
 }
-

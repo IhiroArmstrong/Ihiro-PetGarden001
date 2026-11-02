@@ -18,7 +18,8 @@ import {
   PREF_STATE_READ_STORAGE_KEY,
   resolveHabitualFocusMinutesFromPicks,
   resolveHighlightFocusMinutes,
-  resolvePrefStateReadModel
+  resolvePrefStateReadModel,
+  setHabitualHighlightConsent
 } from './prefStateResolver.js';
 import { T54_RESEARCH_RECEIVE_FIELDS } from './t54ResearchReceive.js';
 import { setYinAdaptationEnabled } from './yinAdaptationStore.js';
@@ -260,6 +261,93 @@ describe('prefStateResolver', () => {
     assert.equal(T54_RESEARCH_RECEIVE_FIELDS.includes(PREF_STATE_READ_STORAGE_KEY), false);
     assert.equal(T54_RESEARCH_RECEIVE_FIELDS.includes('habitualFocusMinutes'), false);
     assert.equal(T54_RESEARCH_RECEIVE_FIELDS.includes('qualifyingManualPicks'), false);
+    assert.equal(T54_RESEARCH_RECEIVE_FIELDS.includes('habitualHighlightConsent'), false);
+    assert.equal(T54_RESEARCH_RECEIVE_FIELDS.includes('habitualProposalAcceptedCount'), false);
+  });
+
+  it('reject habitual: highlight falls back to last; tired still wins after accept', () => {
+    withMockLocalStorage((storage) => {
+      storage.setItem(
+        PREF_STATE_READ_STORAGE_KEY,
+        JSON.stringify({
+          qualifyingManualPicks: [
+            { minutes: 25, at: 1 },
+            { minutes: 25, at: 2 },
+            { minutes: 25, at: 3 }
+          ]
+        })
+      );
+      savePreferredFocusDurationMinutes(25, storage);
+      assert.equal(resolvePrefStateReadModel(storage).needsHabitualConfirm, true);
+      assert.equal(setHabitualHighlightConsent('rejected', storage, 50), true);
+      const afterNo = resolvePrefStateReadModel(storage);
+      assert.equal(afterNo.habitualFocusMinutes, 25);
+      assert.equal(afterNo.needsHabitualConfirm, false);
+      assert.equal(afterNo.skipHabitualHighlight, true);
+      assert.equal(afterNo.highlightFocusMinutes, 25);
+      savePreferredFocusDurationMinutes(10, storage);
+      assert.equal(resolvePrefStateReadModel(storage).highlightFocusMinutes, 10);
+    });
+  });
+
+  it('accept habitual does not change highlight order; tired still wins', () => {
+    withMockLocalStorage((storage) => {
+      storage.setItem(
+        'focus-tiger.focus-duration-manual-anchor.v1',
+        JSON.stringify({ minutes: 25, ts: 1 })
+      );
+      savePreferredFocusDurationMinutes(25, storage);
+      storage.setItem(
+        PREF_STATE_READ_STORAGE_KEY,
+        JSON.stringify({
+          qualifyingManualPicks: [
+            { minutes: 25, at: 1 },
+            { minutes: 25, at: 2 },
+            { minutes: 25, at: 3 }
+          ]
+        })
+      );
+      assert.equal(setHabitualHighlightConsent('accepted', storage, 40), true);
+      const model = resolvePrefStateReadModel(storage);
+      assert.equal(model.needsHabitualConfirm, false);
+      assert.equal(model.highlightFocusMinutes, 25);
+      for (let i = 0; i < 3; i += 1) {
+        appendAwakenCheckIn(
+          { sessionId: `yes${i}`, ts: 3000 + i, label: 'tired', phase: 'end' },
+          AWAKEN_CHECKIN_STORAGE_KEY
+        );
+      }
+      const tired = resolvePrefStateReadModel(storage);
+      assert.equal(tired.tiredSuggestsShorter, true);
+      assert.equal(tired.highlightFocusMinutes, 15);
+    });
+  });
+
+  it('after reject, three new qualifying 25s re-ask and still skip until answered', () => {
+    withMockLocalStorage((storage) => {
+      storage.setItem(
+        PREF_STATE_READ_STORAGE_KEY,
+        JSON.stringify({
+          qualifyingManualPicks: [
+            { minutes: 25, at: 1 },
+            { minutes: 25, at: 2 },
+            { minutes: 25, at: 3 }
+          ]
+        })
+      );
+      savePreferredFocusDurationMinutes(25, storage);
+      setHabitualHighlightConsent('rejected', storage, 10);
+      savePreferredFocusDurationMinutes(10, storage);
+      for (let i = 0; i < 3; i += 1) {
+        noteFocusDurationChipChosen({ minutes: 25, storage, at: 20 + i });
+      }
+      savePreferredFocusDurationMinutes(25, storage);
+      const model = resolvePrefStateReadModel(storage);
+      assert.equal(model.habitualFocusMinutes, 25);
+      assert.equal(model.needsHabitualConfirm, true);
+      assert.equal(model.skipHabitualHighlight, true);
+      assert.equal(model.highlightFocusMinutes, 25);
+    });
   });
 
   it('resolveHighlightFocusMinutes matches the read model highlight', () => {

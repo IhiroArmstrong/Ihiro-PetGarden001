@@ -31,4 +31,37 @@ test.describe('Yin adaptation notebook (T58)', () => {
     await page.getByTestId('yin-adaptation-forget-remember-duration').click();
     await expect(line).toHaveCount(0);
   });
+
+  test('habitual confirm yes/no: no hides the question', async ({ page }) => {
+    await openFreshProductShell(page, {
+      query: { sessionMinutes: 1 }
+    });
+
+    await page.evaluate(() => {
+      localStorage.setItem(
+        'focus-tiger.focus-duration-pref.v1',
+        JSON.stringify({ minutes: 25, mode: 'fixed' })
+      );
+      localStorage.setItem(
+        'focus-tiger.pref-state-read.v1',
+        JSON.stringify({
+          qualifyingManualPicks: [
+            { minutes: 25, at: 1 },
+            { minutes: 25, at: 2 },
+            { minutes: 25, at: 3 }
+          ]
+        })
+      );
+      window.__growthJourneyDetail?.open?.();
+    });
+
+    await expect(page.getByTestId('growth-journey-detail')).toBeVisible({
+      timeout: 10_000
+    });
+    await expect(page.getByTestId('yin-adaptation-line-pref-habitual-confirm')).toBeVisible({
+      timeout: 10_000
+    });
+    await page.getByTestId('yin-pref-habitual-no').click();
+    await expect(page.getByTestId('yin-adaptation-line-pref-habitual-confirm')).toHaveCount(0);
+  });
 });
