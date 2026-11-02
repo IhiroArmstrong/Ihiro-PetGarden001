@@ -323,6 +323,30 @@ describe('prefStateResolver', () => {
     });
   });
 
+  it('after reject, only post-reject qualifying picks count toward re-ask (pre-reject window ignored)', () => {
+    withMockLocalStorage((storage) => {
+      storage.setItem(
+        PREF_STATE_READ_STORAGE_KEY,
+        JSON.stringify({
+          qualifyingManualPicks: [
+            { minutes: 25, at: 1 },
+            { minutes: 25, at: 2 },
+            { minutes: 25, at: 3 }
+          ]
+        })
+      );
+      savePreferredFocusDurationMinutes(10, storage);
+      setHabitualHighlightConsent('rejected', storage, 100);
+      noteFocusDurationChipChosen({ minutes: 25, storage, at: 101 });
+      noteFocusDurationChipChosen({ minutes: 25, storage, at: 102 });
+      const mid = resolvePrefStateReadModel(storage);
+      assert.equal(mid.habitualFocusMinutes, 25);
+      assert.equal(mid.needsHabitualConfirm, false);
+      assert.equal(mid.skipHabitualHighlight, true);
+      assert.equal(mid.highlightFocusMinutes, 10);
+    });
+  });
+
   it('after reject, three new qualifying 25s re-ask and still skip until answered', () => {
     withMockLocalStorage((storage) => {
       storage.setItem(
