@@ -3,10 +3,10 @@ import { describe, it } from "node:test";
 import { buildCompanionChannelCopyPayload } from "./tasteCompanionChannelCopyFreeze.ts";
 
 describe("buildCompanionChannelCopyPayload", () => {
-	it("publishes only reviewed English channels and keeps overlayLive false", () => {
+	it("publishes only reviewed English channels and keeps overlayLive true when pack is live", () => {
 		const payload = buildCompanionChannelCopyPayload();
 		assert.ok(payload);
-		assert.equal(payload.overlayLive, false);
+		assert.equal(payload.overlayLive, true);
 		assert.equal(payload.locale, "en");
 		assert.equal(payload.schemaVersion, 1);
 		assert.equal(payload.companionChannelCopy.channels.length, 5);

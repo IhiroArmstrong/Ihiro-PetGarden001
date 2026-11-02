@@ -7,7 +7,8 @@
  * T51 non-modal awaken invite (z≈17). Does not steal window focus.
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { t, onLocaleChange, getLocale } from '../locales/i18n.js';
+import { formatCompanionChannelLine } from '../core/companionChannelCopyDisplay.js';
 import { AWAKEN_AUTO_DISMISS_MS } from '../core/InterventionOrchestrator.js';
 import { homeClearanceTopCss } from './homeChromeClearance.js';
 import { Z } from './zIndexLayers.js';
@@ -157,9 +158,14 @@ export class AwakenInviteUI {
     const yes = this.root.querySelector('.awaken-invite__yes');
     const no = this.root.querySelector('.awaken-invite__no');
     if (prompt) {
-      prompt.textContent = t(
-        pause ? 'AWAKEN_INVITE_PAUSE_PROMPT' : 'AWAKEN_INVITE_EXTEND_PROMPT'
-      );
+      const subtypeId = pause ? 'pause' : 'extend';
+      prompt.textContent =
+        formatCompanionChannelLine({
+          channelId: 'awaken-invite',
+          subtypeId,
+          locale: getLocale()
+        }) ||
+        t(pause ? 'AWAKEN_INVITE_PAUSE_PROMPT' : 'AWAKEN_INVITE_EXTEND_PROMPT');
     }
     if (yes) {
       yes.textContent = t(pause ? 'AWAKEN_INVITE_YES' : 'AWAKEN_INVITE_EXTEND_YES');

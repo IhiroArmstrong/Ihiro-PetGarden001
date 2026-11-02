@@ -3,8 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
-import { t } from '../locales/i18n.js';
-import { fillCompanionChannelSlots } from './companionChannelCopyPicker.js';
+import { formatCompanionChannelLine } from './companionChannelCopyDisplay.js';
 
 /** @type {number} */
 export const SESSION_END_DURATION_MIN_ELAPSED_SECONDS = 30;
@@ -28,8 +27,10 @@ export function resolveObservedSessionMinutes(elapsedSeconds) {
 export function formatObservedSessionDurationLine(elapsedSeconds) {
   const minutes = resolveObservedSessionMinutes(elapsedSeconds);
   if (minutes === null) return null;
-  const line = fillCompanionChannelSlots(String(t('SESSION_END_OBSERVED_MINUTES')), {
-    minutes
+  const line = formatCompanionChannelLine({
+    channelId: 'session-end',
+    subtypeId: 'observed-minutes',
+    slots: { minutes }
   });
   const trimmed = line.trim();
   return trimmed || null;

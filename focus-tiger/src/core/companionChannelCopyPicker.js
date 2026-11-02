@@ -4,7 +4,7 @@
  */
 
 /** Kill switch. Steps 1–3 stay false; flipping true needs a written deploy. */
-export const COMPANION_CHANNEL_COPY_OVERLAY_LIVE = false;
+export const COMPANION_CHANNEL_COPY_OVERLAY_LIVE = true;
 
 export const COMPANION_CHANNEL_RECENT_IDS_KEY =
   'focus-tiger.companion-channel-recent-ids.v1';

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "locale": "en",
-  "overlayLive": false,
+  "overlayLive": true,
   "reviewer": "Claude (AI)",
   "reviewerType": "ai",
   "reviewedOn": "2026-11-02",
