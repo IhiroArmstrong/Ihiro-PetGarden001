@@ -66,6 +66,12 @@ test('scan finds pref-state-read literal (T73 storage)', () => {
   );
 });
 
+test('companion-channel-recent-ids is on delete-all whitelist (R expanded copy step 1)', () => {
+  assert.ok(
+    FOCUS_TIGER_LOCAL_STORAGE_KEYS.includes('focus-tiger.companion-channel-recent-ids.v1')
+  );
+});
+
 test('scan finds session-duration-offer literal (T67 storage)', () => {
   const literals = scanFocusTigerLocalStorageKeyLiterals(SRC_ROOT);
   assert.ok(literals.includes('focus-tiger.session-duration-offer.v1'));

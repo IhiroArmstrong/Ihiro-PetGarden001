@@ -32,6 +32,11 @@ import { CALM_ACTION_REFLECT_EN } from '../src/content/calm-action-wisdom/calm-a
 import { CALM_ACTION_REFLECT_JA } from '../src/content/calm-action-wisdom/calm-action-reflect.ja.js';
 import { CALM_ACTION_TRANSITION_EN } from '../src/content/calm-action-wisdom/calm-action-transition.en.js';
 import { CALM_ACTION_TRANSITION_JA } from '../src/content/calm-action-wisdom/calm-action-transition.ja.js';
+import {
+  collectCompanionChannelCopyStrings,
+  readCompanionChannelCopyEn,
+  validateCompanionChannelCopyEn
+} from './companion-channel-copy-en.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, '..');
@@ -167,6 +172,9 @@ export function collectLiveStrings() {
     }
   }
 
+  const channelCopy = readCompanionChannelCopyEn(PKG_ROOT);
+  out.push(...collectCompanionChannelCopyStrings(channelCopy));
+
   return out.filter((item) => item.text);
 }
 
@@ -177,11 +185,11 @@ const SAMPLE_CATEGORY_TARGETS = Object.freeze({
   'C-07': 5,
   'C-09': 3,
   'C-11': 5,
-  'allow-neighbor': 10
+  'allow-neighbor': 15
 });
 
-/** Total regression rows (bad + allow-neighbor); T55-more01 added C-11 + two allow neighbors. */
-export const COMPANION_CONTRACT_SAMPLE_COUNT = 49;
+/** Total regression rows (bad + allow-neighbor); R 扩库 Brief added five allow neighbors. */
+export const COMPANION_CONTRACT_SAMPLE_COUNT = 54;
 
 /**
  * @param {typeof COMPANION_CONTRACT_SAMPLES} samples
@@ -294,6 +302,13 @@ export function evaluateCompanionContract({
   const live = strings || collectLiveStrings();
   const hits = [];
   const coverage = {};
+
+  try {
+    const channelCopy = readCompanionChannelCopyEn(PKG_ROOT);
+    errors.push(...validateCompanionChannelCopyEn(channelCopy));
+  } catch (err) {
+    errors.push(`companion-channel-copy en: ${err.message}`);
+  }
 
   for (const item of live) {
     coverage[item.channel] = (coverage[item.channel] || 0) + 1;

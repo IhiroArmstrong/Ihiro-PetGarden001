@@ -9,6 +9,10 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  readCompanionChannelCopyEn,
+  validateCompanionChannelCopyEn
+} from './companion-channel-copy-en.js';
+import {
   collectLiveStrings,
   evaluateCompanionContract,
   evaluateCompanionContractSamples,
@@ -129,13 +133,13 @@ test('exempted hit passes at the listed id', () => {
 test('sample rates stay split and meet the proposed 1.0/1.0 gate', () => {
   const result = evaluateCompanionContract({ strings: [], exemptions: [] });
   assert.equal(result.sample_bad_hit_rate, '39/39');
-  assert.equal(result.sample_allow_pass_rate, '10/10');
+  assert.equal(result.sample_allow_pass_rate, '15/15');
   assert.notEqual(result.sample_bad_hit_rate, result.sample_allow_pass_rate);
   assert.equal(result.ok, true, result.errors.join('; '));
 });
 
-test('sample set is 49 rows, no C-10, fields complete', () => {
-  assert.equal(COMPANION_CONTRACT_SAMPLES.length, 49);
+test('sample set is 54 rows, no C-10, fields complete', () => {
+  assert.equal(COMPANION_CONTRACT_SAMPLES.length, 54);
   const report = evaluateCompanionContractSamples();
   assert.deepEqual(report.errors, []);
   assert.ok(COMPANION_CONTRACT_SAMPLES.every((row) => row.category !== 'C-10'));
@@ -147,11 +151,41 @@ test('a missed bad sample drops bad-hit rate without mixing allow-pass', () => {
   );
   const report = evaluateCompanionContractSamples(mutated);
   assert.equal(report.sample_bad_hit_rate, '38/39');
-  assert.equal(report.sample_allow_pass_rate, '10/10');
+  assert.equal(report.sample_allow_pass_rate, '15/15');
   assert.ok(report.errors.some((err) => /cc-c01-01/.test(err)));
 });
 
 test('live product copy matches exemption caps', () => {
   assert.equal(COMPANION_CONTRACT_EXEMPTIONS.length, 0);
   assert.equal(runCompanionContractCheck(), true);
+});
+
+test('companion-channel-copy en.json passes review hash gate', () => {
+  const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const doc = readCompanionChannelCopyEn(pkgRoot);
+  assert.deepEqual(validateCompanionChannelCopyEn(doc), []);
+  assert.equal(doc.overlayLive, false);
+});
+
+test('companion-channel-copy hash mismatch fails validation', () => {
+  const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const doc = readCompanionChannelCopyEn(pkgRoot);
+  const broken = structuredClone(doc);
+  broken.pools.sessionEndObservedMinutes[0].text = 'About {minutes} {minuteUnit} this sitting!!';
+  assert.ok(
+    validateCompanionChannelCopyEn(broken).some((err) => /contentHash mismatch/.test(err))
+  );
+});
+
+test('companion-channel-copy strings are scanned for forbidden patterns', () => {
+  const live = collectLiveStrings();
+  const copyRows = live.filter((row) => row.channel === 'companion-channel-copy');
+  assert.equal(copyRows.length, 40);
+  for (const row of copyRows) {
+    assert.deepEqual(matchForbiddenPatterns(row.text), []);
+  }
+});
+
+test('About 1 minute filled line is allow-neighbor clean', () => {
+  assert.deepEqual(matchForbiddenPatterns('About 1 minute this sitting.'), []);
 });

@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "overlayLive": false,
+  "pools": {
+    "sessionEndObservedMinutes": [
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES",
+        "text": "About {minutes} {minuteUnit} this sitting.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "957317498519c6ffe2b51be57923459909fe2972e66d9a46f6d78bd2651b2fed"
+      },
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES_2",
+        "text": "This sitting: about {minutes} {minuteUnit}.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "09b89d30843e8b1cac97b817ae560c186dec36d6d3c75610d63609ce53968fa5"
+      },
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES_3",
+        "text": "About {minutes} {minuteUnit} just now.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "502a3a864a2b53411f1c763791e725861389ffde953da4dc7c5197ca55bf7446"
+      },
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES_4",
+        "text": "The sitting lasted about {minutes} {minuteUnit}.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "f2e9ae385b6b8c7b16b037e791c9859712ce6965bb79e0031b293e7774719c41"
+      },
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES_5",
+        "text": "Around {minutes} {minuteUnit} in this sitting.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "6ccc740353e01efa1f4b9fc6353e3591c3ccd649f8dad9433470d137b52e4ab9"
+      },
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES_6",
+        "text": "About {minutes} {minuteUnit} of sitting.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "a2dbd1a03f90774694389110c411687e04fd4c4c2404611977216edb8cef04a3"
+      },
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES_7",
+        "text": "This time: about {minutes} {minuteUnit}.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "f73b0f28985a7dc1fa07acb3562bac83119a32da2cfd5855d9489f00fd89dc87"
+      },
+      {
+        "id": "SESSION_END_OBSERVED_MINUTES_8",
+        "text": "Sitting time: about {minutes} {minuteUnit}.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "7fa541a30b2325261ced21ec1c5b7f7ac79b496d77665bcb7be7e87f10186d30"
+      }
+    ],
+    "awakenInvitePause": [
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT",
+        "text": "Three breaths, or feel the ground?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "e874e4dea323f8b2b07c14228987c87a7f927f17efefc543f7a9ab0d764dc16c"
+      },
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT_2",
+        "text": "A short pause?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "3afed87907308f64a156e74b1d64e6df541c8f3da9f30921bb2e63e586b56a95"
+      },
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT_3",
+        "text": "Feel the ground for a moment?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "6ed6d6457fb6846977ab699edcb347817e5c31152ecea75e5b154a3be6af671b"
+      },
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT_4",
+        "text": "Three quiet breaths, if you wish?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "14384fdb6951379a8da89cb7c4a02aaef60c963d6ebb6de29355c0208637c8eb"
+      },
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT_5",
+        "text": "Rest here for a moment?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "d7c49875dfc67189468cdf2dca41f66898b24e03fb4253cf406764de62674581"
+      },
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT_6",
+        "text": "A pause, if you'd like one?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "bcb9c4f7620a77fb774171796a129840482ae70129cd10d1b28d3546525ed9ac"
+      },
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT_7",
+        "text": "A few breaths here?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "ddc8844bd2797a7caf480a03b2ea5a1178939d99c54257fdd0ee5832602e6ba9"
+      },
+      {
+        "id": "AWAKEN_INVITE_PAUSE_PROMPT_8",
+        "text": "Feel the seat under you?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "e7d51ebeb1dfbe7c92f2be15851f6e460ffa5f6f8e47a61e66de8f3359ea5606"
+      }
+    ],
+    "awakenInviteExtend": [
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT",
+        "text": "Sit a little longer?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "08b374a9a00a9c5b55ede86e265e705874b1a3afe0c7f7cccf91fdfe9c158235"
+      },
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT_2",
+        "text": "Stay for a few more minutes?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "9ff84163eda361417c39902339fa6ef24cec5fe145173a373b55f773f02d8b1c"
+      },
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT_3",
+        "text": "Continue sitting a little?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "762412af0c6f43ae65cb894333fe5fc2eb5ed72ed50dc9f7d202795651cf1c9b"
+      },
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT_4",
+        "text": "A little longer, if you wish?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "0d4fbd725c291460ddb52bfbe94e232f272285cb7a7c59a0574d688da197030c"
+      },
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT_5",
+        "text": "Stay with it a little longer?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "1b2b33b5f3346032b800cb07c256b3c897f86beca5678b75b305ecda5f79ca6e"
+      },
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT_6",
+        "text": "Sit on for a short while?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "18678104dc12c8e40ab5d823935ff08c35f1381183f09c6baa9c36f68b9b2653"
+      },
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT_7",
+        "text": "Another few minutes here?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "3d099dfacb71cea925e1ef88db65ee7949885797f52d7d5f6499dcc00819eeee"
+      },
+      {
+        "id": "AWAKEN_INVITE_EXTEND_PROMPT_8",
+        "text": "Keep sitting a little longer?",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "2306021ef6a3852ee852f215f05c5fe4cd43cd2dfccf87a9252cb4f9f43ed4de"
+      }
+    ],
+    "refocusAcknowledge": [
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_1",
+        "text": "Attention wandered for a while. Now it has returned here.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "0604aafdc10c712fb8c1a4fd8630fb87326e54e092c19980743bf2301c39cfe4"
+      },
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_2",
+        "text": "That moment has passed. Attention is back with this breath.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "73ae7c9a9473b07e048d24f22a65b1cd6202a52a0721361718c80eab6b7a2c43"
+      },
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_3",
+        "text": "There was a moment elsewhere. Now there is this moment of return.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "9ac9a7b5cf4168643dd395472e595cf295ca34520db420ffb54e1880dac95be9"
+      },
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_4",
+        "text": "Attention left for a while. It is here again.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "92bf2b921a150cd9691896c49fc5bbe6cfffb1be2a790582d5e5fc91e597d6f3"
+      },
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_5",
+        "text": "Attention was away for a stretch. It is back with this breath.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "94d49641355aee916d1c217d44b7cee0397e6287948be38621b1a4d02b138610"
+      },
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_6",
+        "text": "For a while, attention was elsewhere. It is back here now.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "836875b182aa005ad9c5b06411e167cbc674ece76f00c0b64f2f8898d5054dd1"
+      },
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_7",
+        "text": "Attention moved around. It has come back to this place.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "609cd277ad546f515fca470b773c119d091efba2616005149dbb565613d4a160"
+      },
+      {
+        "id": "REFOCUS_ACKNOWLEDGE_8",
+        "text": "Some time was spent elsewhere. Now there is this return.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "f070616c4141eb6ea1fe41f52d907dd216d29555280378e9fdfd6a5c63b7dff8"
+      }
+    ],
+    "momentWhisperArrive": [
+      {
+        "id": "MOMENT_WHISPER_ARRIVE",
+        "text": "A soft arriving.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "259804ab6283efda37405941d47ab1def3f19a5be2b894b023f8803dc9788611"
+      },
+      {
+        "id": "MOMENT_WHISPER_ARRIVE_2",
+        "text": "Here, for now.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "34a900a2fa542fd46e6524947d6521b0199c555323fef7eb6f83bcdcc7fa6e88"
+      },
+      {
+        "id": "MOMENT_WHISPER_ARRIVE_3",
+        "text": "Arriving, quietly.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "faf4b38cdc214608b833afbb910ba68f293d2a8439fba078338db085f907f54d"
+      },
+      {
+        "id": "MOMENT_WHISPER_ARRIVE_4",
+        "text": "This moment of arriving.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "11ca3ae544ff9b5feb81790012b66ee1559b338c2a7583db8780c729dbffc147"
+      },
+      {
+        "id": "MOMENT_WHISPER_ARRIVE_5",
+        "text": "Softly here.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "50dcbae713c97d78272b7959e5884d9f42b592130b47bc497a9fa31f777d5af6"
+      },
+      {
+        "id": "MOMENT_WHISPER_ARRIVE_6",
+        "text": "A quiet arrival.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "4a57474e5bef15c2f5c47bba2c18ff294a44ed28f84d890e136788cbcf783e98"
+      },
+      {
+        "id": "MOMENT_WHISPER_ARRIVE_7",
+        "text": "Arrived, without hurry.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "42ea8aae7ad0f0d4ac54c7641e44699929d0fd735d9df70aa452aff99bc961fb"
+      },
+      {
+        "id": "MOMENT_WHISPER_ARRIVE_8",
+        "text": "Here, gently.",
+        "reviewed": true,
+        "reviewer": "Claude (AI)",
+        "reviewerType": "ai",
+        "reviewedOn": "2026-11-02",
+        "contentHash": "d26b5fea41ad094d1e85bcdf699b4e604bb08b92be2edc3d2f1c4fa8d77ddb97"
+      }
+    ]
+  }
+}

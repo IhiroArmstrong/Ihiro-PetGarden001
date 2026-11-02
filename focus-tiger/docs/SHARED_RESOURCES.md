@@ -54,6 +54,7 @@
 | `focus-tiger.presence-signals-disclosure-seen.v1` | `presenceSignalsDisclosureGate` | 首次 Notice 入账披露行已展示（一生一次；非 Yin Memory Consent） |
 | `focus-tiger.presence-freetext-l3-consent.v1` | `presenceFreeTextL3Consent` | Presence freeText 首次将被 L3 读取时的单独同意（`granted` / `denied` / unset）；与 Yin Memory Consent 分离 |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆；**本地** Backup & restore v2 白名单 |
+| `focus-tiger.companion-channel-recent-ids.v1` | （R 扩库 step 2+ picker） | 四通道英语 overlay 最近模板 id 环：`{ [channelId]: { [subtypeId]: { [locale]: string[] } } }`。**不进** T54 研究分享 / 练习云备份 / 本地 Backup 导出。DEV 删除全部清 |
 | `focus-tiger.ype-companion-style.v1` | `yinPersonalizationEngine` | L1 陪伴档 quiet/default/warm；What Yin remembers 邻接可改；`default` 即关掉个人化；**不进**练习备份 |
 | `focus-tiger.ype-cloud-personalization-consent.v1` | `ypeCloudPersonalizationConsent` | L2 第四条同意 + 本机 `ype_profile_id`；默认关；OFF 排队删云；**不进**练习备份 |
 | `focus-tiger.ype-personalization-pack.v1` | `ypePersonalizationPack` | L2 云端 Pack 缓存（schema v1）；关同意须丢弃；相同 JSON 跳过重写；**不进**练习备份 |
