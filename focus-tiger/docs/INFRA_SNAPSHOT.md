@@ -29,7 +29,7 @@
 | Secrets required（**仅名称**） | `STRIPE_SECRET_KEY` · `STRIPE_WEBHOOK_SECRET` · `RESEND_API_KEY` · `RESTORE_OTP_PEPPER` |
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
-| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy`；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
+| 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy` · **`/api/companion-channel-copy`**（英语四通道 · `overlayLive: true` 自 Version `8eb8e1f6` · #1546）；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
 | 生产 Worker Version | 见下表 **`prod_worker_version`**（`2ac135c3-…` · 2026-10-11 · `2fb19eaf`）。客户端 `practiceBackupCloudEnabled` 仍为 false。 |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
@@ -60,7 +60,7 @@
 | Art Collection | `/api/create-art-collection-checkout-session` · `/api/confirm-art-collection-session` · `/api/verify-art-collection` · `GET /api/art-collection-hd`（短时链接，付清且未退款才发文件）· 可选 R2 `ART_COLLECTION_HD`（键 `private/art-hd/{hdId}.png`，原图不进 Git）· Stripe `price_data`（无单独 Price id）· `charge.refunded` → 撤销拥有（保留 `revokedAt` 行） |
 | Restore OTP | `/api/restore/request-otp` |
 | Practice backup | `/api/practice-backup/request-otp` · `verify` · `put` · `get` · `delete` |
-| Taste layer | `/api/daily-message` · `/api/emotion-weight` |
+| Taste layer | `/api/daily-message` · `/api/emotion-weight` · `/api/quiet-line` · `/api/confide-copy` · `/api/calm-action-copy` · `/api/companion-channel-copy` · `/api/growth-metrics-config` |
 | Funnel / YPE | `/api/monetization-funnel-ingest` · `/api/ype-personalization-ingest` · `/api/ype-personalization-delete` |
 | Quiet Together | `/api/lantern-presence`（`TIP_KV` `lantern:v1:live` · TTL 120s） |
 | Focus Circle | `/api/focus-circle`（`TIP_KV` `circle:v1:*` + `circle:v1:sit:{id}` + `circle:v1:here:{id}` + `circle:v1:online:{id}` + `circle:v1:witness:{id}` · 最多 8 人 · presence TTL 120s · `online_*` TTL 120s · was-here 日历日 · witness 滚动 24h） |
@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `fe48e9f2-92d4-402e-8523-5e3187067a99` |
-| `prod_verified_at` | 2026-10-11 晚（本机 `wrangler deploy` · 源 `origin/develop` `8398c840` · **#1153** Focus Circle `onlineCount` + `online_heartbeat` / `online_leave`（`circle:v1:online:*`）· `POST /api/focus-circle` `create` → `onlineCount: 1` OK · `GET /health` OK）。与 develop 对齐：含 **#1153** 陪坐轮廓云端人数、**#1126** 哥窑两套五件等已合 develop 项。 |
+| `prod_worker_version` | `8eb8e1f6-375f-44ec-9909-8a419e7377f7` |
+| `prod_verified_at` | 2026-11-02（本机 `wrangler deploy` · 源 `origin/develop` `6605a4f9` · **#1546** 四通道英语句包 · `POST /api/companion-channel-copy` `locale=en` → `overlayLive: true` · 5 通道各 8 行 · `GET /health` OK）。仍含先前生产能力（Focus Circle online、结账等）；**客户端**须已合 develop 且 `?product=1` 预取后英语用户才见轮换句。 |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
@@ -285,6 +285,6 @@ docs/CONFIDE_EXECUTABLE_INTENTS.md
 
 | task / PR | client | cloud | paired | 备注 |
 |---|---|---|---|---|
-| （空） | — | — | — | 新任务在旁路或 PR 填一行，勿改历史行 |
+| **#1546** companion-channel-copy step 4 | `develop` `6605a4f9`（客户端 overlay live） | `cloud` `POST /api/companion-channel-copy` · Version `8eb8e1f6` | `worker=yes` · `client=develop`（Electron/5173 仍看本地 bundle） | Worker 已口令「部署」；**已部署站点**须 main/发布 bundle 含 #1546 才全链路；5173+develop 可验 |
 
 **漂移**：`cloud/**` 已在 `stale_after_paths`；配对表不替代 redeploy 口令与 `prod_worker_version` 行。
