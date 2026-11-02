@@ -76,6 +76,22 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T66 step2 shelved shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/GLOSSARY_CHANGELOG.md',
+        'focus-tiger/docs/SCHEDULING_CHANGELOG.md',
+        'focus-tiger/docs/task-briefs/task-mindflow-nebula-step2-embedding-presets.md',
+        'focus-tiger/docs/task-entries/t66-mindflow-nebula-step2-embedding-presets.md',
+        'focus-tiger/docs/tracker-entries/docs-t66-mindflow-nebula-step2-brief.md',
+        'focus-tiger/docs/TEST_TRACKER.md'
+      ]),
+      null
+    );
+  });
+
   it('allows T66 mindflow nebula v0 task shards with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([

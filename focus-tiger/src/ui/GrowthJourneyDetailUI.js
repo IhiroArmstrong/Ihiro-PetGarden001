@@ -33,6 +33,7 @@ import { getLocalDateKey } from '../utils/localDate.js';
 import {
   buildYinAdaptationNotebookLines
 } from '../core/yinAdaptationNotebook.js';
+import { setHabitualHighlightConsent } from '../core/prefStateResolver.js';
 import { buildCoPracticeContractRows } from '../core/coPracticeContractSurface.js';
 import {
   hideYinAdaptationNotebookLine,
@@ -403,39 +404,73 @@ export class GrowthJourneyDetailUI {
     toggleRow.append(toggle, toggleText);
     this.notebookEl.appendChild(toggleRow);
 
-    const lines = buildYinAdaptationNotebookLines({ storage });
+    const lines = buildYinAdaptationNotebookLines({
+      storage,
+      todayKey: this._todayKey()
+    });
     for (const line of lines) {
       const row = document.createElement('div');
       row.className = 'growth-journey-detail__notebook-line';
       row.dataset.ruleId = line.id;
+      if (line.kind) row.dataset.kind = line.kind;
       if (line.suspended) row.dataset.suspended = '1';
       const text = document.createElement('p');
-      text.textContent = t(line.textKey);
+      let copy = t(line.textKey);
+      if (line.textParams && typeof line.textParams === 'object') {
+        for (const [token, value] of Object.entries(line.textParams)) {
+          copy = copy.replaceAll(`{${token}}`, String(value));
+        }
+      }
+      text.textContent = copy;
       text.dataset.testid = `yin-adaptation-line-${line.id}`;
       row.appendChild(text);
 
       const actions = document.createElement('div');
       actions.className = 'growth-journey-detail__notebook-actions';
-      const correct = document.createElement('button');
-      correct.type = 'button';
-      correct.className = 'growth-journey-detail__notebook-btn';
-      correct.textContent = t('YIN_ADAPTATION_BTN_CORRECT');
-      correct.dataset.testid = `yin-adaptation-correct-${line.id}`;
-      correct.addEventListener('click', () => {
-        suspendYinAdaptationRule(line.id);
-        this._refresh();
-      });
-      const forget = document.createElement('button');
-      forget.type = 'button';
-      forget.className = 'growth-journey-detail__notebook-btn';
-      forget.textContent = t('YIN_ADAPTATION_BTN_FORGET');
-      forget.dataset.testid = `yin-adaptation-forget-${line.id}`;
-      forget.addEventListener('click', () => {
-        hideYinAdaptationNotebookLine(line.id);
-        this._refresh();
-      });
-      actions.append(correct, forget);
-      row.appendChild(actions);
+      if (line.kind === 'confirm') {
+        const yes = document.createElement('button');
+        yes.type = 'button';
+        yes.className = 'growth-journey-detail__notebook-btn';
+        yes.textContent = t('PREF_HABITUAL_YES');
+        yes.dataset.testid = 'yin-pref-habitual-yes';
+        yes.addEventListener('click', () => {
+          const ok = setHabitualHighlightConsent('accepted', storage);
+          if (!ok) return;
+          this._refresh();
+        });
+        const no = document.createElement('button');
+        no.type = 'button';
+        no.className = 'growth-journey-detail__notebook-btn';
+        no.textContent = t('PREF_HABITUAL_NO');
+        no.dataset.testid = 'yin-pref-habitual-no';
+        no.addEventListener('click', () => {
+          const ok = setHabitualHighlightConsent('rejected', storage);
+          if (!ok) return;
+          this._refresh();
+        });
+        actions.append(yes, no);
+      } else if (line.kind !== 'fact') {
+        const correct = document.createElement('button');
+        correct.type = 'button';
+        correct.className = 'growth-journey-detail__notebook-btn';
+        correct.textContent = t('YIN_ADAPTATION_BTN_CORRECT');
+        correct.dataset.testid = `yin-adaptation-correct-${line.id}`;
+        correct.addEventListener('click', () => {
+          suspendYinAdaptationRule(line.id);
+          this._refresh();
+        });
+        const forget = document.createElement('button');
+        forget.type = 'button';
+        forget.className = 'growth-journey-detail__notebook-btn';
+        forget.textContent = t('YIN_ADAPTATION_BTN_FORGET');
+        forget.dataset.testid = `yin-adaptation-forget-${line.id}`;
+        forget.addEventListener('click', () => {
+          hideYinAdaptationNotebookLine(line.id);
+          this._refresh();
+        });
+        actions.append(correct, forget);
+      }
+      if (actions.childNodes.length) row.appendChild(actions);
       this.notebookEl.appendChild(row);
     }
   }

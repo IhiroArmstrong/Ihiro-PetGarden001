@@ -51,7 +51,7 @@
 
 | 扇出（人话） | 主 Epic | 耦合 Epic / 切片 | 代表 Brief / 文档 | PR 引用习惯 |
 |---|---|---|---|---|
-| 人机共修（T56–T68） | [#1495](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1495) | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 开表 · T55 契约 | `CO_PRACTICE_*` · `task-co-practice-*` | `Relates to #1495` |
+| 人机共修（T56–T68） | [#1495](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1495) | [#627](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/627) 开表 · T55 契约 | `CO_PRACTICE_*` · `task-co-practice-*` | 切片 PR **`Closes #1500`–`#1506`**（见下表）；Epic 耦合可另加 `Closes #1495` |
 | Yin 数字艺术 + 寅币策略 | [#1496](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1496) | [#632](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/632) · [#888](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/888) · [#630](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/630) | `FOCUS_COINS.md` · 行为稀缺 Brief | 运行时 `Relates to #632`；原则 `Relates to #888`；策略索引 `Relates to #1496` |
 | T54 / 90 天 / 使用证据 | [#1497](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1497) | [#1495](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1495) 共修对照 | `task-t54-*` | `Relates to #1497` |
 | 越来越懂你 / 读层 / T58 | [#1498](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1498) | [#634](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/634) YPE | `pref-state-read-inventory.md` · T58 | `Relates to #1498` |
@@ -63,15 +63,17 @@
 
 ## 人机共修 · 切片（2026-11-01 · 父 #1495）
 
-| 类型 | Issue | 标题 | 备注 |
-|---|---|---|---|
-| 切片 | [#1500](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1500) | 口径 SSOT · T56 | 文档已合 |
-| 切片 | [#1501](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1501) | 契约面 · T63 | #1463 已合 |
-| 切片 | [#1502](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1502) | 文案对齐 · T64 | #1460 已合 |
-| 切片 | [#1503](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1503) | 场次接合账 · T67 | #1478 已合 |
-| 切片 | [#1504](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1504) | 纪念画方向锁 | #1472 |
-| 切片 | [#1505](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1505) | 纪念画发放 · T68 | Brief 已点头 · #1490 |
-| 切片 | [#1506](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1506) | 陪伴契约 · T55 | 耦合开口通道 |
+> **Issue # ≠ PR #**（GitHub 两套流水号）。本表 = 一眼对照；Projects **Linked pull requests** 列靠已合 PR 正文 **`Closes #15xx`**（`WORKFLOW.md` · `git-pr-task-line-ref`）。**2026-11-02** 已对下列已合 PR 跑 `backfill-open-pr-task-line-refs.sh --merged`（17 条映射）。
+
+| 类型 | Issue | T | 标题 | PR（地面真相 · 可点） | 状态 | 父 Epic |
+|---|---|---|---|---|---|---|
+| 切片 | [#1500](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1500) | T56 | 口径 SSOT | [#1436](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1436) · [#1438](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1438) · [#1435](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1435) · [#1439](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1439) | 文档已合 · Issue 仍 OPEN（索引） | #1495 |
+| 切片 | [#1501](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1501) | T63 | 契约面 | [#1463](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1463) | 已合 | #1495 |
+| 切片 | [#1502](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1502) | T64 | 文案对齐 | [#1460](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1460) | 已合 | #1495 |
+| 切片 | [#1503](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1503) | T67 | 场次接合账 | [#1478](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1478) · Brief `task-co-practice-session-join-ledger.md` | 已合 | #1495 |
+| 切片 | [#1504](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1504) | — | 纪念画方向锁 | [#1472](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1472) · `CO_PRACTICE_GIFT_ART.md` | 已合 | #1495 |
+| 切片 | [#1505](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1505) | T68 | 纪念画发放 | [#1490](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1490) · Brief `task-co-practice-gift-art-grant.md` | 表面 off · runtime 待闸 | #1495 |
+| 切片 | [#1506](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/1506) | T55 | 陪伴契约（开口通道） | [#1417](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1417)–[#1431](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1431) · [#1470](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1470) · `COMPANION_CONTRACT.md` | 文档已合 · 与 #1495 耦合 | #1495 |
 
 ## 数字资产策略 · 切片（2026-11-01 · 父 #1496）
 
@@ -239,3 +241,11 @@
 | Project 挂板 | #1495–#1521 加入 Focus Tiger 开发任务线看板 #1 |
 | 正文 SSOT | [`epic-bodies-po-2026-11-01.md`](./epic-bodies-po-2026-11-01.md) |
 | 与旧 Epic 关系 | **不关闭** #632/#888/#640/#643/#634；新 Epic 为策略/重点伞 + 索引切片 |
+
+## 建库执行记录（2026-11-02 · #1495 人机共修 · PR↔切片 Linked 回填）
+
+| 步骤 | 结果 |
+|---|---|
+| 对照表 | 上表「人机共修 · 切片」增 **T 列 + 可点 PR 列**；Agent 扇出行改为 **`Closes #1500`–`#1506`** |
+| 脚本 | `backfill-open-pr-task-line-refs.sh --merged` 映射 #1417–#1490 等 → #1500–#1506（**17** 条已执行） |
+| 验收 | 各切片 Issue **Development / Projects Linked pull requests** 出现对应 PR；Epic #1495 仍 **OPEN** |
