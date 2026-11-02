@@ -79,6 +79,7 @@ import {
 } from './flowerWelcomeGate.js';
 import { IDLE_YIN_TAP_HINT_STORAGE_KEY } from './idleYinTapHintGate.js';
 import { STORAGE_KEY as MINDFLOW_NEBULA_ENABLED_STORAGE_KEY } from './mindflowNebula/mindflowNebulaStore.js';
+import { STORAGE_KEY as PRESENCE_FIELD_ENABLED_STORAGE_KEY } from '../effects/presence-field/presenceFieldStore.js';
 import { INTENTION_STORAGE_KEY } from './SessionIntentionStore.js';
 import { REFLECTION_STORAGE_KEY } from './SessionEndFlow.js';
 import { PRESENCE_SIGNALS_STORAGE_KEY } from './presenceSignalsGate.js';
@@ -226,6 +227,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FLOWER_WELCOME_FLAG_STORAGE_KEY,
   IDLE_YIN_TAP_HINT_STORAGE_KEY,
   MINDFLOW_NEBULA_ENABLED_STORAGE_KEY,
+  PRESENCE_FIELD_ENABLED_STORAGE_KEY,
   TIP_JAR_STORAGE_KEY,
   CONTEXTUAL_TEA_TIP_STORAGE_KEY,
   MONETIZATION_FUNNEL_STORAGE_KEY,

@@ -148,6 +148,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     close: true,
     stage: 'mindflowNebula'
   },
+  'presence-field': {
+    handler: 'onPresenceField',
+    close: true,
+    stage: 'presenceField'
+  },
   'today-direction': { handler: 'onTodayDirection', close: true },
   'ground-exercise': { handler: 'onGroundExercise', close: true },
   'five-moments': { handler: 'onFiveMoments', close: true },
@@ -419,7 +424,8 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   alwaysOnTop: 'ft-narrow-stage-always-on-top',
   windowLayout: 'ft-narrow-stage-window-layout',
   inputRhythm: 'ft-narrow-stage-input-rhythm',
-  mindflowNebula: 'ft-narrow-stage-mindflow-nebula'
+  mindflowNebula: 'ft-narrow-stage-mindflow-nebula',
+  presenceField: 'ft-narrow-stage-presence-field'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -434,6 +440,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   windowLayout: 'ft-wide-stage-window-layout',
   inputRhythm: 'ft-wide-stage-input-rhythm',
   mindflowNebula: 'ft-wide-stage-mindflow-nebula',
+  presenceField: 'ft-wide-stage-presence-field',
   localBackup: 'ft-wide-stage-local-backup',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -829,6 +836,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
       proxy: 'mindflow-nebula',
       labelKey: 'MINDFLOW_NEBULA_MENU_LABEL',
       testId: 'idle-mindflow-nebula'
+    },
+    {
+      proxy: 'presence-field',
+      labelKey: 'PRESENCE_FIELD_MENU_LABEL',
+      testId: 'idle-presence-field'
     },
     {
       proxy: 'today-direction',
