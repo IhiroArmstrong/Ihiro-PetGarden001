@@ -160,6 +160,7 @@ import {
   DEV_RESET_TOAST_SESSION_KEY,
   DEV_BOOT_IDLE_SESSION_KEY
 } from './localStateKeys.js';
+import { COMPANION_CHANNEL_RECENT_IDS_KEY } from './companionChannelCopyPicker.js';
 
 function createMapStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -281,7 +282,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   SEASONAL_WHISPER_STORAGE_KEY,
   DESKTOP_CHECKOUT_PENDING_STORAGE_KEY,
   RITUAL_RECIPE_STORAGE_KEY,
-  RITUAL_RECIPE_ANALYTICS_OPT_IN_STORAGE_KEY
+  RITUAL_RECIPE_ANALYTICS_OPT_IN_STORAGE_KEY,
+  COMPANION_CHANNEL_RECENT_IDS_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

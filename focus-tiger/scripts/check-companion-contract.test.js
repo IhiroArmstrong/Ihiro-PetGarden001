@@ -14,6 +14,11 @@ import {
   evaluateCompanionContractSamples,
   runCompanionContractCheck
 } from './check-companion-contract.js';
+import {
+  evaluateCompanionChannelCopyReview,
+  hashCompanionChannelText,
+  readCompanionChannelCopyPack
+} from './companionChannelCopyReview.js';
 import { COMPANION_CONTRACT_HONESTY, matchForbiddenPatterns } from './companion-contract-forbidden.js';
 import { COMPANION_CONTRACT_EXEMPTIONS } from './companion-contract-exemptions.js';
 import { COMPANION_CONTRACT_SAMPLES } from './companion-contract-samples.js';
@@ -129,13 +134,13 @@ test('exempted hit passes at the listed id', () => {
 test('sample rates stay split and meet the proposed 1.0/1.0 gate', () => {
   const result = evaluateCompanionContract({ strings: [], exemptions: [] });
   assert.equal(result.sample_bad_hit_rate, '39/39');
-  assert.equal(result.sample_allow_pass_rate, '10/10');
+  assert.equal(result.sample_allow_pass_rate, '15/15');
   assert.notEqual(result.sample_bad_hit_rate, result.sample_allow_pass_rate);
   assert.equal(result.ok, true, result.errors.join('; '));
 });
 
-test('sample set is 49 rows, no C-10, fields complete', () => {
-  assert.equal(COMPANION_CONTRACT_SAMPLES.length, 49);
+test('sample set is 54 rows, no C-10, fields complete', () => {
+  assert.equal(COMPANION_CONTRACT_SAMPLES.length, 54);
   const report = evaluateCompanionContractSamples();
   assert.deepEqual(report.errors, []);
   assert.ok(COMPANION_CONTRACT_SAMPLES.every((row) => row.category !== 'C-10'));
@@ -147,11 +152,38 @@ test('a missed bad sample drops bad-hit rate without mixing allow-pass', () => {
   );
   const report = evaluateCompanionContractSamples(mutated);
   assert.equal(report.sample_bad_hit_rate, '38/39');
-  assert.equal(report.sample_allow_pass_rate, '10/10');
+  assert.equal(report.sample_allow_pass_rate, '15/15');
   assert.ok(report.errors.some((err) => /cc-c01-01/.test(err)));
 });
 
 test('live product copy matches exemption caps', () => {
   assert.equal(COMPANION_CONTRACT_EXEMPTIONS.length, 0);
   assert.equal(runCompanionContractCheck(), true);
+});
+
+test('companion-channel-copy pack is scanned and review fields lock', () => {
+  const live = collectLiveStrings();
+  const channelRows = live.filter((row) => row.channel === 'companion-channel-copy');
+  assert.equal(channelRows.length, 40);
+  assert.ok(channelRows.every((row) => row.file === 'content/companion-channel-copy/en.json'));
+  const pack = readCompanionChannelCopyPack();
+  assert.equal(pack.overlayLive, false);
+  assert.deepEqual(evaluateCompanionChannelCopyReview(pack), []);
+  const mutated = structuredClone(pack);
+  mutated.channels[0].lines[0].text = 'About {minutes} {minuteUnit} this sitting!';
+  assert.ok(
+    evaluateCompanionChannelCopyReview(mutated).some((err) => /contentHash does not match/.test(err))
+  );
+  mutated.channels[0].lines[0].contentHash = hashCompanionChannelText(
+    mutated.channels[0].lines[0].text
+  );
+  mutated.channels[0].lines[0].reviewer = '  ';
+  assert.ok(
+    evaluateCompanionChannelCopyReview(mutated).some((err) => /reviewer is blank/.test(err))
+  );
+  const liveOn = structuredClone(pack);
+  liveOn.overlayLive = true;
+  assert.ok(
+    evaluateCompanionChannelCopyReview(liveOn).some((err) => /overlayLive must stay false/.test(err))
+  );
 });
