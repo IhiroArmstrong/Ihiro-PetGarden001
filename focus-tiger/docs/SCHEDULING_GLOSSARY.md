@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-11-01 · **T73 记住—响应读层 Brief 已点头** · **T76–T78 稳定偏好 Brief 已点头** · **T60 #1525 已合** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
+## 1. 当前队列（2026-11-02 · **T73 第二刀 Brief 已点头** · **T74 预生成池 Brief 待点头** · **T75 适应开 vs 不开一页纸已写** · **T73 第一刀 #1530 已合** · **T66 第二步 embedding 板块搁置（#1488 阶段 A 未过）** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -67,23 +67,23 @@
 | **可选** · **T57** | 邀请下场记录 | **已合 develop** | #1449。只存本机。Brief [`task-invite-outcome-record.md`](./task-briefs/task-invite-outcome-record.md)。**不是** T58 |
 | **可选** · **T58** | Yin 适应层 v1 + 小本子 | **已合 develop** | #1451。只变安静、不变积极。Brief [`task-yin-adaptation-v1.md`](./task-briefs/task-yin-adaptation-v1.md)。**不是** T54 效果证明 |
 | **可选** · **T59** | 「还是上次那个」时长文案 | **已合 develop** | #1454。英文 **Same as last time**。Brief [`task-still-last-duration-copy.md`](./task-briefs/task-still-last-duration-copy.md)。**不是** T58 |
-| **可选** · **T60** | 重置白名单补 T52 打卡键 | **已合 develop** | #1447 · 补强 #1525。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md)。**不是** T58 |
+| **可选** · **T60** | 重置白名单补 T52 打卡键 | **已合 develop** | #1447。Brief [`task-reset-whitelist-t52-keys.md`](./task-briefs/task-reset-whitelist-t52-keys.md)。**不是** T58 |
 | **可选** · **T61** | 用户自设收工时间（B 类） | **已合 develop** | #1455 MVP。盘点 #1448 · [`late-night-behavior-inventory.md`](./late-night-behavior-inventory.md) §6。Brief [`task-user-set-work-end-time.md`](./task-briefs/task-user-set-work-end-time.md)。**不是** T58。**不是** Yin 看出熬夜 |
 | **可选** · **T62** | 晚间练习事实进练习纸 | **已合 develop** | #1459。与 **T61** 分开。单独同意 + 删除名单；**不进** T54 研究分享。Brief 已点头并已实施。[`task-evening-practice-facts-practice-paper.md`](./task-briefs/task-evening-practice-facts-practice-paper.md) |
 | **可选** · **T63** | 共修契约面 | **已合 develop** | #1463。Brief 已点头（2026-10-28）。成长旅程详情契约面 + 指向已有开关。**不是** 分级干涉。**不是** T62 |
 | **可选** · **T64** | 共修文案对齐 | **已合 develop** | #1460。问号简介「不是禅师」+「一起练习、不催不评判」。过 C-11。**不是** T63 / T65 |
 | **可选** · **T65** | 观察纸顺乱倦节律 | **已合 develop** | #1461。只读 T52；无新键。Brief 已实施。[`task-practice-paper-check-in-rhythm.md`](./task-briefs/task-practice-paper-check-in-rhythm.md)。**不是** T28 / T62 |
-| **可选** · **T66** | 心念流 / Mindflow nebula v0 | **已合 develop** · #1475 | Brief [`task-mindflow-nebula-v0.md`](./task-briefs/task-mindflow-nebula-v0.md)。默认关；关单级手测另排。口令「再开 T66 nebula v0 旁支」**不执行**。第二步 embedding **未排期** |
+| **可选** · **T66** | 心念流 / Mindflow nebula v0 | **已合 develop** · #1475 | Brief [`task-mindflow-nebula-v0.md`](./task-briefs/task-mindflow-nebula-v0.md)。默认关；关单级手测另排。口令「再开 T66 nebula v0 旁支」**不执行**。**第二步**见下行 **搁置** |
+| **搁置** · **T66 第二步** | 心念流 embedding + 板块预设 | **阶段 A 未过 · 不接 UI** | Brief #1487 · lab #1488 · `phaseAPassed:false`。PO 方案 A：线上 **仅 v0**。Brief [`task-mindflow-nebula-step2-embedding-presets.md`](./task-briefs/task-mindflow-nebula-step2-embedding-presets.md)。复跑须 **新 Brief**（改方法，不是换标定）。口令「按 T66 第二步 Brief 开工」**不执行**阶段 B |
 | **可选** · **T67** | 共修场次接合账 | **已合 develop** | #1478。只补账、不出画。Brief [`task-co-practice-session-join-ledger.md`](./task-briefs/task-co-practice-session-join-ledger.md)。口令「按 T67 Brief 开工」= 勿再开同内容旁支。**不是** 纪念画发放 |
 | **可选** · **T68** | 共修纪念画发放 | **排队中** · Brief 已点头 | 出卡 + 珍藏只读。Brief [`task-co-practice-gift-art-grant.md`](./task-briefs/task-co-practice-gift-art-grant.md)。§1 四闸（含曝光模型填表）未过不写 `src/`。**不是** 货架。**不是** T67 |
 | **可选** · **T69** | 桌面习惯文献对照 | **已完成**（盘点） | A 类。[`desk-habit-literature-inventory.md`](./desk-habit-literature-inventory.md)。水瓶宠物 / 健康仪表盘 / 日程灯 **不做**。早餐善意走 **T70**。闭环评测仍归 **T54** 90 天 |
 | **可选** · **T70** | 用户自设开桌锚点 | **搁置** · Brief 待点头 | T61 同形；到点问要不要先坐，可含早餐善意。口令「每天问早餐」= 走本 Brief。**不是** T61 |
 | **可选** · **T71** | 三层共修方向锁 | **已完成** | A 类 · [`CO_PRACTICE_POSITIONING.md`](./CO_PRACTICE_POSITIONING.md) §6。**无运行时** |
 | **可选** · **T72** | 环境场再收敛 | **搁置** · Brief 骨架 | 默认零新茶盏/烛火；须 SANCTUARY A.1。Brief [`task-co-practice-ambient-field-t72.md`](./task-briefs/task-co-practice-ambient-field-t72.md)。**不是** T70 · **不是** 第二套界面 |
-| **可选** · **T73** | 记住—响应读层 | **排队中** · Brief 已点头 | 读门包装现网时长三读法。Brief [`task-remember-respond-read-layer.md`](./task-briefs/task-remember-respond-read-layer.md)。口令「按 T73 Brief 开工第一刀」= 新 Chat。**不是** T58 重做 · **不是** T69 |
-| **可选** · **T76** | 稳定偏好层 · Focus · L2 | **排队中** · Brief 已点头 | PR-1。盘点 [`co-practice-stable-prefs-inventory.md`](./co-practice-stable-prefs-inventory.md) · Brief [`task-co-practice-stable-prefs-l1-l2.md`](./task-briefs/task-co-practice-stable-prefs-l1-l2.md)。开表计票；**不是** chip 浏览计数。**不是** T73。T60 #1525 **已合** |
-| **可选** · **T77** | 续练位 | **排队中** · 依赖 T76 | PR-2。常做配置一键开练；v1 **无时段词**。**不是** feature-affinity |
-| **可选** · **T78** | Breath · Companion 稳定偏好 | **排队中** · 依赖 T76 | PR-3。与 Focus 分轨。**不是** T77 |
+| **可选** · **T73** | 记住—响应读层 | **立即做** · 第二刀 Brief 已点头 | 第一刀 **已合** #1530。第二刀 [`task-remember-respond-second-knife.md`](./task-briefs/task-remember-respond-second-knife.md)。口令「按 T73 Brief 开工第二刀」= 新 Chat。**不是** T69、**不是** T54 |
+| **可选** · **T74** | 受限生成预生成池 | **排队中** · Brief 待点头 | B 类。[`task-constrained-generation-pregen-pool.md`](./task-constrained-generation-pregen-pool.md)。不插 T73 第二刀前接线。**不是** 倾诉开放生成 |
+| **可选** · **T75** | 适应开 vs 不开对照方案 | **已完成**（一页纸） | A 类。[`adaptation-on-off-research-protocol.md`](./adaptation-on-off-research-protocol.md)。写了 ≠ 开工 90 天 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -175,15 +175,17 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T67 Brief 开工」 | **T67 已合 #1478**。勿再开同内容补账旁支。**不是** 纪念画发放 |
 | 「按 T68 Brief 开工」 | **须 Brief 已点头 + §1 四闸都过**（含曝光模型填表 + 画稿入库 + 门槛数字补节）后新 Chat。口语「按 T67 发画 Brief 开工」同义 |
 | 「再开 T66 nebula v0 旁支」 | **不执行**（#1475 已合 develop） |
-| 「按 T66 第二步 Brief 开工」 | **未排期**（embedding / 板块预设须另 Brief 点头） |
+| 「按 T66 第二步 Brief 开工」 | **不执行**阶段 B（#1488 阶段 A 未过 · PO 方案 A 搁置 · 2026-11-01）。#1487/#1488 已合 develop 作实验档案。线上仅 v0 #1475。「换标定再跑 A」**不执行**（须 **新 Brief** 改方法） |
 | 「开工共修纪念画」 | **§1 四闸未过时不执行写 src**。先填 T68 Brief 曝光模型表 |
 | 「做成水瓶宠物」或「做成 FocusBuddy」 | **不执行**。见 **T69** 盘点。互惠走共修，不走照料宠物 |
 | 「环境光日程灯」 | **不执行**。现网已有金环 / 降亮度 / 横幅 / 通知 |
 | 「每天问早餐」 | 走 **T70** Brief（待点头）。**不是** 饮食仪表盘 |
 | 「按 T70 Brief 开工」 | **须 Brief 点头**后新 Chat。**不是** T61 收工。可含早餐善意 |
 | 「按 T72 Brief 开工」 | **不执行**（Brief 未点头 · SANCTUARY A.1 未过）。默认不加茶盏/烛火新美术。**不是** T70 |
-| 「按 T73 Brief 开工第一刀」或「按记住—响应 Brief 开工」 | **须新 Chat** 写 `src/`。包装读门，不重写 T58。**不是** T69 |
-| 「按 L1 Brief 开工」或「按稳定偏好 Brief 开工」 | **T76** 新 worktree。**不是** T73 记住—响应 |
+| 「按 T73 Brief 开工第一刀」或「按记住—响应 Brief 开工」 | **T73 第一刀已合 #1530**。勿再开同内容读门旁支。**不是** T69 |
+| 「按 T73 Brief 开工第二刀」 | **须新 Chat** 写 `src/`。说出所见 + 要/不要。Brief [`task-remember-respond-second-knife.md`](./task-briefs/task-remember-respond-second-knife.md) |
+| 「按 T74 Brief 开工」 | **须 Brief 点头**后新 Chat。空闲填池。**不是** 倾诉开放生成。**不插** T73 第二刀前面 |
+| 「按 T75 Brief 开工」或「写适应开 vs 不开一页纸」 | **T75 已写**。勿再开同内容对照旁支。**不是** 开工 90 天 |
 | 「按 T69 Brief 开工」 | **不执行**（T69 是桌面习惯文献对照，已完成）。读层是 **T73** |
 
 ---

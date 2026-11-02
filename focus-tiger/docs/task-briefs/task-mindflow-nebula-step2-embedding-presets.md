@@ -1,6 +1,6 @@
 # Task Brief · T66 第二步 · 心念流 embedding 投影 + 公案板块预设
 
-> **状态**：**阶段 A 通过阈值已填（2026-10-30）**。口令「按 T66 第二步 Brief 开工」视为点头；**实现须新 Chat**（#1486 已合 + 本 Brief 开工闸）。未新 Chat 不得写 `focus-tiger/src/**`。  
+> **状态**：**阶段 A 已跑未过（#1488 · 2026-10-30）· 阶段 B 产品搁置（PO 方案 A · 2026-11-01）**。Brief 阈值仍锁 2026-10-30 严线；**不接** Confide 板块 UI。阶段 A 基建已合 develop；`fixtures/mindflow-nebula-step2-phase-a-summary.json` · `phaseAPassed: false`。复跑或改方法须 **新 Brief**。  
 > **代号**：**T66 第二步**（仍属 T66 心念流线；**不是**新术语表代号。v0 已完成 #1475；本刀是 v0 之上的扩展 Brief。）  
 > **类**：**B 类**（开关已开的用户会看到粒子布局/漂移语义变化；仍须过 **T55** / **C-11**：禁止读心、禁止疗效、禁止「看见 AI 在想什么」。）  
 > **依赖**：**T66 v0** #1475 已在 `origin/develop`（`MindflowNebulaChromeUI` · 三模式 · 默认关）。**T67** 接合账 #1478 与本刀无关。  
@@ -111,9 +111,11 @@ v0 的光点只跟三种节奏动，跟字义无关。第二步想试：把**本
 - TRACKER：UI **待人工测试**（并入下一批）；阶段 A 行 **仅单元/实验室覆盖**。  
 - **禁句验收**：UI/文档不得出现「读心」「精确想法」「学会了你」。
 
-## 开工闸
+## 开工闸（2026-11-01 更新）
 
-- 阈值已填后，口令「**按 T66 第二步 Brief 开工**」= 点头；仍须 **新开 Chat** 才写代码；旁支 **`feature/t66-mindflow-step2-*`**。  
-- **阶段 A 与 B 可分两个 PR**；B 依赖阶段 A 汇总 JSON 达到上列数字（或 PO 书面「实验通过」）。  
-- 禁止在本 PR 改 GLOSSARY / SCHEDULING（治理会话：T67 已完成；T66 第二步 Brief 已填阈值 / 排队中）。  
+- **阶段 A**：#1488 已合 develop；Terminal 跑严线 **未过**（`fixtures/mindflow-nebula-step2-phase-a-summary.json` · `phaseAPassed: false`）。  
+- **阶段 B**：**产品搁置**（PO 方案 A）。**不执行**板块 UI / Confide 向量接线。线上心念流 **仅 v0** #1475。  
+- 口令「**按 T66 第二步 Brief 开工**」**不执行**阶段 B；「换标定再跑 A」**不执行**（须 **新 Brief** 改方法，不是换题库）。  
+- 复跑或新方法：须 PO **新 Brief** + 新 Chat；旁支仍 `feature/t66-mindflow-step2-*` 或 `docs/*`。  
+- 术语表 / 排期：**治理 docs PR** 登记 **搁置**（见 GLOSSARY「T66 第二步」节）。  
 - 口令「再开 T66 nebula v0 旁支」仍 **不执行**。
