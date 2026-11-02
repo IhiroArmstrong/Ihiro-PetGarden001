@@ -84,6 +84,7 @@
 | **可选** · **T73** | 记住—响应读层 | **立即做** · 第二刀 Brief 已点头 | 第一刀 **已合** #1530。第二刀 [`task-remember-respond-second-knife.md`](./task-briefs/task-remember-respond-second-knife.md)。口令「按 T73 Brief 开工第二刀」= 新 Chat。**不是** T69、**不是** T54 |
 | **可选** · **T74** | 受限生成预生成池 | **排队中** · Brief 待点头 | B 类。[`task-constrained-generation-pregen-pool.md`](./task-constrained-generation-pregen-pool.md)。不插 T73 第二刀前接线。**不是** 倾诉开放生成 |
 | **可选** · **T75** | 适应开 vs 不开对照方案 | **已完成**（一页纸） | A 类。[`adaptation-on-off-research-protocol.md`](./adaptation-on-off-research-protocol.md)。写了 ≠ 开工 90 天 |
+| **P1** · **T76** | 冷启动静修入口 | **排队中** · Brief 待点头 | 人话：第一次打开就能安静坐。Brief [`task-t76-cold-start-quiet-sit.md`](./task-briefs/task-t76-cold-start-quiet-sit.md)。B1 卡面+纠错+直坐同 PR；B2 帮助别名 P2。**不是** T71、**不是** 禅修引擎 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -185,6 +186,10 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T73 Brief 开工第一刀」或「按记住—响应 Brief 开工」 | **T73 第一刀已合 #1530**。勿再开同内容读门旁支。**不是** T69 |
 | 「按 T73 Brief 开工第二刀」 | **须新 Chat** 写 `src/`。说出所见 + 要/不要。Brief [`task-remember-respond-second-knife.md`](./task-briefs/task-remember-respond-second-knife.md) |
 | 「按 T74 Brief 开工」 | **须 Brief 点头**后新 Chat。空闲填池。**不是** 倾诉开放生成。**不插** T73 第二刀前面 |
+| 「按 T76 Brief 开工」 | **不写 `src/`**（A 类 Brief 本 PR）。实现须点头 |
+| 「按 T76 B1 开工」 | **须 Brief 点头**后新 Chat，基线 `origin/develop`。卡面+路由纠错+首次直坐 **同 PR** |
+| 「按 T76 B2 开工」 | P2 帮助别名；B1 合入后或 PO 允许并行文档 |
+| 「开工禅修模式」或「加第五项」或「首页第四球」 | **不执行**。见 **T76** Brief |
 | 「按 T75 Brief 开工」或「写适应开 vs 不开一页纸」 | **T75 已写**。勿再开同内容对照旁支。**不是** 开工 90 天 |
 | 「按 T69 Brief 开工」 | **不执行**（T69 是桌面习惯文献对照，已完成）。读层是 **T73** |
 

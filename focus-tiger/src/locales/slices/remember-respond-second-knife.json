@@ -1,0 +1,20 @@
+{
+  "en": {
+    "PREF_HABITUAL_SEEN": "When you last changed the duration chips yourself, you often chose {n} minutes.",
+    "PREF_HABITUAL_CONFIRM": "Next time before sitting, keep highlighting this usual {n}-minute chip?",
+    "PREF_HABITUAL_YES": "Yes",
+    "PREF_HABITUAL_NO": "No"
+  },
+  "zh": {
+    "PREF_HABITUAL_SEEN": "你近几次自己拨档时，常选 {n} 分钟。",
+    "PREF_HABITUAL_CONFIRM": "下次开表前，要不要继续按常选的 {n} 分钟来高亮？",
+    "PREF_HABITUAL_YES": "要",
+    "PREF_HABITUAL_NO": "不要"
+  },
+  "ja": {
+    "PREF_HABITUAL_SEEN": "自分で分数を選んだ最近の回数では、よく {n} 分を選んでいます。",
+    "PREF_HABITUAL_CONFIRM": "次に座る前、いつも選んでいる {n} 分を先に示してよいですか？",
+    "PREF_HABITUAL_YES": "はい",
+    "PREF_HABITUAL_NO": "いいえ"
+  }
+}
