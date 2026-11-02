@@ -17,12 +17,21 @@ import {
   CALM_ACTION_REFLECT_EN
 } from '../content/calm-action-wisdom/index.js';
 import { COPY_POOLS, getLocale } from '../locales/i18n.js';
+import { hashCompanionChannelText } from './companionChannelCopyHash.js';
 
 export const TASTE_LAYER_SCHEMA_VERSION = 1;
 /** Quiet Line mixed-pool overlay only; other taste slices stay on schema 1. */
 export const QUIET_LINE_OVERLAY_SCHEMA_VERSION = 2;
 /** Calm Action Recover + Arrive + Reflect pool overlay (C1+C2+C4 runtime). */
 export const CALM_ACTION_OVERLAY_SCHEMA_VERSION = 2;
+export const COMPANION_CHANNEL_COPY_OVERLAY_SCHEMA_VERSION = 1;
+export const COMPANION_CHANNEL_COPY_CHANNEL_KEYS = Object.freeze([
+  'session-end:observed-minutes',
+  'awaken-invite:pause',
+  'awaken-invite:extend',
+  'refocus:acknowledge',
+  'moment-whisper:arrive'
+]);
 
 const RISE_KEYS = new Set(['riseStretchCasual', 'teaDrinking', 'bookReading']);
 const WELCOME_KEYS = new Set(['magicBookReading', 'nodGreeting']);
@@ -126,6 +135,31 @@ const CALM_ACTION_REFLECT_ID_SET = new Set(CALM_ACTION_REFLECT_IDS);
  * }} TasteCalmActionCopyOverlay
  */
 
+/**
+ * @typedef {{
+ *   id: string,
+ *   text: string,
+ *   reviewed: true,
+ *   reviewer: string,
+ *   reviewerType: string,
+ *   reviewedOn: string,
+ *   contentHash: string
+ * }} CompanionChannelCopyLine
+ */
+
+/**
+ * @typedef {{
+ *   locale: string,
+ *   overlayLive: boolean,
+ *   channels: ReadonlyArray<{
+ *     channelId: string,
+ *     subtypeId: string,
+ *     anchorId: string,
+ *     lines: ReadonlyArray<CompanionChannelCopyLine>
+ *   }>
+ * }} TasteCompanionChannelCopyOverlay
+ */
+
 /** @type {TasteWeightOverlay | null} */
 let weightOverlay = null;
 /** @type {TasteDailyWisdomOverlay | null} */
@@ -136,12 +170,15 @@ let quietLineOverlay = null;
 let confideCopyOverlay = null;
 /** @type {TasteCalmActionCopyOverlay | null} */
 let calmActionCopyOverlay = null;
+/** @type {TasteCompanionChannelCopyOverlay | null} */
+let companionChannelCopyOverlay = null;
 /** Cloud v1 validated even when we skip retaining a freeze-identical copy. */
 let weightCloudOk = false;
 let dailyCloudOk = false;
 let quietLineCloudOk = false;
 let confideCopyCloudOk = false;
 let calmActionCopyCloudOk = false;
+let companionChannelCopyCloudOk = false;
 
 /**
  * @param {unknown} raw
@@ -439,6 +476,92 @@ export function parseCalmActionCopyOverlay(body, expectedLocale) {
   };
 }
 
+
+/**
+ * @param {unknown} body
+ * @param {string} [expectedLocale]
+ * @returns {Promise<TasteCompanionChannelCopyOverlay | null>}
+ */
+export async function parseCompanionChannelCopyOverlay(body, expectedLocale) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return null;
+  const o = /** @type {Record<string, unknown>} */ (body);
+  if (o.schemaVersion !== COMPANION_CHANNEL_COPY_OVERLAY_SCHEMA_VERSION) return null;
+  if (o.overlayLive !== true && o.overlayLive !== false) return null;
+  const rawLocale = typeof o.locale === 'string' ? o.locale.trim() : '';
+  if (rawLocale !== 'en') return null;
+  if (expectedLocale && expectedLocale !== 'en' && expectedLocale !== '') {
+    const want = expectedLocale === 'ja' || expectedLocale === 'zh' ? expectedLocale : 'en';
+    if (want !== 'en') return null;
+  }
+  const pack = o.companionChannelCopy;
+  if (!pack || typeof pack !== 'object' || Array.isArray(pack)) return null;
+  const channelsRaw = /** @type {{ channels?: unknown }} */ (pack).channels;
+  if (!Array.isArray(channelsRaw) || channelsRaw.length !== COMPANION_CHANNEL_COPY_CHANNEL_KEYS.length) {
+    return null;
+  }
+  const allowed = new Set(COMPANION_CHANNEL_COPY_CHANNEL_KEYS);
+  const seenKeys = new Set();
+  /** @type {TasteCompanionChannelCopyOverlay['channels'] extends ReadonlyArray<infer C> ? C[] : never} */
+  const channels = [];
+  for (const channel of channelsRaw) {
+    if (!channel || typeof channel !== 'object') return null;
+    const channelId = /** @type {{ channelId?: unknown }} */ (channel).channelId;
+    const subtypeId = /** @type {{ subtypeId?: unknown }} */ (channel).subtypeId;
+    const anchorId = /** @type {{ anchorId?: unknown }} */ (channel).anchorId;
+    const linesRaw = /** @type {{ lines?: unknown }} */ (channel).lines;
+    if (typeof channelId !== 'string' || typeof subtypeId !== 'string') return null;
+    const key = `${channelId}:${subtypeId}`;
+    if (!allowed.has(key) || seenKeys.has(key)) return null;
+    seenKeys.add(key);
+    if (!Array.isArray(linesRaw) || linesRaw.length === 0) return null;
+    /** @type {CompanionChannelCopyLine[]} */
+    const lines = [];
+    const seenIds = new Set();
+    for (const line of linesRaw) {
+      if (!line || typeof line !== 'object') return null;
+      const id = /** @type {{ id?: unknown }} */ (line).id;
+      const text = /** @type {{ text?: unknown }} */ (line).text;
+      const reviewed = /** @type {{ reviewed?: unknown }} */ (line).reviewed;
+      const reviewer = /** @type {{ reviewer?: unknown }} */ (line).reviewer;
+      const reviewerType = /** @type {{ reviewerType?: unknown }} */ (line).reviewerType;
+      const reviewedOn = /** @type {{ reviewedOn?: unknown }} */ (line).reviewedOn;
+      const contentHash = /** @type {{ contentHash?: unknown }} */ (line).contentHash;
+      if (typeof id !== 'string' || !id.trim() || seenIds.has(id)) return null;
+      if (typeof text !== 'string' || !text.trim()) return null;
+      if (reviewed !== true) continue;
+      if (typeof reviewer !== 'string' || !reviewer.trim()) continue;
+      if (typeof reviewerType !== 'string' || !reviewerType.trim()) continue;
+      if (typeof reviewedOn !== 'string' || !reviewedOn.trim()) continue;
+      if (typeof contentHash !== 'string' || !contentHash.trim()) continue;
+      const digest = await hashCompanionChannelText(text);
+      if (digest !== contentHash.trim().toLowerCase()) continue;
+      seenIds.add(id);
+      lines.push({
+        id,
+        text: text.trim(),
+        reviewed: true,
+        reviewer: reviewer.trim(),
+        reviewerType: reviewerType.trim(),
+        reviewedOn: reviewedOn.trim(),
+        contentHash: contentHash.trim().toLowerCase()
+      });
+    }
+    if (lines.length === 0) return null;
+    channels.push({
+      channelId,
+      subtypeId,
+      anchorId: typeof anchorId === 'string' ? anchorId : '',
+      lines: Object.freeze(lines.map((e) => Object.freeze({ ...e })))
+    });
+  }
+  if (seenKeys.size !== COMPANION_CHANNEL_COPY_CHANNEL_KEYS.length) return null;
+  return {
+    locale: 'en',
+    overlayLive: o.overlayLive === true,
+    channels: Object.freeze(channels)
+  };
+}
+
 /** @returns {TasteWeightOverlay | null} */
 export function getTasteWeightOverlay() {
   return weightOverlay;
@@ -462,6 +585,11 @@ export function getTasteConfideCopyOverlay() {
 /** @returns {TasteCalmActionCopyOverlay | null} */
 export function getTasteCalmActionCopyOverlay() {
   return calmActionCopyOverlay;
+}
+
+/** @returns {TasteCompanionChannelCopyOverlay | null} */
+export function getTasteCompanionChannelCopyOverlay() {
+  return companionChannelCopyOverlay;
 }
 
 /** @param {TasteWeightOverlay | null} next */
@@ -489,6 +617,11 @@ export function setTasteCalmActionCopyOverlay(next) {
   calmActionCopyOverlay = next;
 }
 
+/** @param {TasteCompanionChannelCopyOverlay | null} next */
+export function setTasteCompanionChannelCopyOverlay(next) {
+  companionChannelCopyOverlay = next;
+}
+
 /** Mark cloud weights as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteWeightCloudOk() {
   weightCloudOk = true;
@@ -512,6 +645,10 @@ export function markTasteConfideCopyCloudOk() {
 /** Mark cloud Calm Action copy as schemaVersion 1 OK without retaining a duplicate freeze copy. */
 export function markTasteCalmActionCopyCloudOk() {
   calmActionCopyCloudOk = true;
+}
+
+export function markTasteCompanionChannelCopyCloudOk() {
+  companionChannelCopyCloudOk = true;
 }
 
 /** @returns {boolean} */
@@ -539,17 +676,24 @@ export function isTasteCalmActionCopyCloudConfirmed() {
   return calmActionCopyCloudOk || Boolean(calmActionCopyOverlay);
 }
 
+/** @returns {boolean} */
+export function isTasteCompanionChannelCopyCloudConfirmed() {
+  return companionChannelCopyCloudOk || Boolean(companionChannelCopyOverlay);
+}
+
 export function resetTasteLayerOverlayForTests() {
   weightOverlay = null;
   dailyWisdomOverlay = null;
   quietLineOverlay = null;
   confideCopyOverlay = null;
   calmActionCopyOverlay = null;
+  companionChannelCopyOverlay = null;
   weightCloudOk = false;
   dailyCloudOk = false;
   quietLineCloudOk = false;
   confideCopyCloudOk = false;
   calmActionCopyCloudOk = false;
+  companionChannelCopyCloudOk = false;
 }
 
 /**

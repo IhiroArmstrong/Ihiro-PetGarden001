@@ -2,7 +2,7 @@
 
 > **Status**: Step 2–3 wired (2026-09-16) · registry SSOT + CI audit  
 > **Companion code**: `src/core/practiceBackup/localBackupStorageRegistry.js` · `practiceBackupSnapshot.js`  
-> **Reset whitelist**: `src/core/localStateKeys.js` (**92** keys) · `docs/SHARED_RESOURCES.md` §1 · `npm run audit:shared-resources-reset`  
+> **Reset whitelist**: `src/core/localStateKeys.js` (**93** keys) · `docs/SHARED_RESOURCES.md` §1 · `npm run audit:shared-resources-reset`  
 > **Related**: `practice-aggregate-registry.md` · `DEV_WORKFLOW_QUALITY.md` §6.25
 
 ---
@@ -43,6 +43,7 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 - `focus-tiger.daily-completions.v1` — derive from practice-days (`practiceBackupDailyCompletionReconcile.js`)
 - `focus-tiger.practice-backup.v1` — device cloud opt-in token
 - `focus-tiger.ritual-recipe.v1` / `focus-tiger.ritual-recipe-analytics-opt-in.v1` — sitting recipe + analytics opt-in (preview-adopt; never practice-backup overwrite)
+- `focus-tiger.companion-channel-recent-ids.v1` — four-channel copy recent template ids; not practice memory
 
 ---
 

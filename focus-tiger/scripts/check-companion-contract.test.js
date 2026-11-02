@@ -9,15 +9,16 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  readCompanionChannelCopyEn,
-  validateCompanionChannelCopyEn
-} from './companion-channel-copy-en.js';
-import {
   collectLiveStrings,
   evaluateCompanionContract,
   evaluateCompanionContractSamples,
   runCompanionContractCheck
 } from './check-companion-contract.js';
+import {
+  evaluateCompanionChannelCopyReview,
+  hashCompanionChannelText,
+  readCompanionChannelCopyPack
+} from './companionChannelCopyReview.js';
 import { COMPANION_CONTRACT_HONESTY, matchForbiddenPatterns } from './companion-contract-forbidden.js';
 import { COMPANION_CONTRACT_EXEMPTIONS } from './companion-contract-exemptions.js';
 import { COMPANION_CONTRACT_SAMPLES } from './companion-contract-samples.js';
@@ -160,32 +161,29 @@ test('live product copy matches exemption caps', () => {
   assert.equal(runCompanionContractCheck(), true);
 });
 
-test('companion-channel-copy en.json passes review hash gate', () => {
-  const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
-  const doc = readCompanionChannelCopyEn(pkgRoot);
-  assert.deepEqual(validateCompanionChannelCopyEn(doc), []);
-  assert.equal(doc.overlayLive, false);
-});
-
-test('companion-channel-copy hash mismatch fails validation', () => {
-  const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
-  const doc = readCompanionChannelCopyEn(pkgRoot);
-  const broken = structuredClone(doc);
-  broken.pools.sessionEndObservedMinutes[0].text = 'About {minutes} {minuteUnit} this sitting!!';
-  assert.ok(
-    validateCompanionChannelCopyEn(broken).some((err) => /contentHash mismatch/.test(err))
-  );
-});
-
-test('companion-channel-copy strings are scanned for forbidden patterns', () => {
+test('companion-channel-copy pack is scanned and review fields lock', () => {
   const live = collectLiveStrings();
-  const copyRows = live.filter((row) => row.channel === 'companion-channel-copy');
-  assert.equal(copyRows.length, 40);
-  for (const row of copyRows) {
-    assert.deepEqual(matchForbiddenPatterns(row.text), []);
-  }
-});
-
-test('About 1 minute filled line is allow-neighbor clean', () => {
-  assert.deepEqual(matchForbiddenPatterns('About 1 minute this sitting.'), []);
+  const channelRows = live.filter((row) => row.channel === 'companion-channel-copy');
+  assert.equal(channelRows.length, 40);
+  assert.ok(channelRows.every((row) => row.file === 'content/companion-channel-copy/en.json'));
+  const pack = readCompanionChannelCopyPack();
+  assert.equal(pack.overlayLive, false);
+  assert.deepEqual(evaluateCompanionChannelCopyReview(pack), []);
+  const mutated = structuredClone(pack);
+  mutated.channels[0].lines[0].text = 'About {minutes} {minuteUnit} this sitting!';
+  assert.ok(
+    evaluateCompanionChannelCopyReview(mutated).some((err) => /contentHash does not match/.test(err))
+  );
+  mutated.channels[0].lines[0].contentHash = hashCompanionChannelText(
+    mutated.channels[0].lines[0].text
+  );
+  mutated.channels[0].lines[0].reviewer = '  ';
+  assert.ok(
+    evaluateCompanionChannelCopyReview(mutated).some((err) => /reviewer is blank/.test(err))
+  );
+  const liveOn = structuredClone(pack);
+  liveOn.overlayLive = true;
+  assert.ok(
+    evaluateCompanionChannelCopyReview(liveOn).some((err) => /overlayLive must stay false/.test(err))
+  );
 });

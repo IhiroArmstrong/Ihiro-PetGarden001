@@ -11,11 +11,6 @@
  * / `debugScenarioReset.js` 场景配方（残余风险：场景映射仍是人工清单）。
  */
 
-import { COMPANION_CHANNEL_RECENT_IDS_STORAGE_KEY } from './companionChannelRecentIds.js';
-
-/** R 扩库 overlay： per-channel recent template ids (step 1 whitelist only). */
-export { COMPANION_CHANNEL_RECENT_IDS_STORAGE_KEY };
-
 export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.daily-completions.v1',
   'focus-tiger.focus-session-end.v1',
@@ -32,7 +27,6 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.presence-signals-disclosure-seen.v1',
   'focus-tiger.presence-freetext-l3-consent.v1',
   'focus-tiger.companion-mode.v1',
-  COMPANION_CHANNEL_RECENT_IDS_STORAGE_KEY,
   'focus-tiger.cold-start-goal-seen.v1',
   'focus-tiger.cold-start-goal-options-seen.v1',
   'focus-tiger.home-sanctuary-nav-seen.v1',
@@ -47,6 +41,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.ambient-nudge.seen.v1',
   'focus-tiger.ambient-pref.v1',
   'focus-tiger.awaken-check-ins.v1',
+  'focus-tiger.companion-channel-recent-ids.v1',
   'focus-tiger.invite-outcomes.v1',
   'focus-tiger.session-duration-offer.v1',
   'focus-tiger.pref-state-read.v1',

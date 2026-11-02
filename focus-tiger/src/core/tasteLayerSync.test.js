@@ -4,6 +4,9 @@
  */
 
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, test } from 'node:test';
 
 import { DAILY_WISDOM_EN } from '../content/daily-wisdom/index.js';
@@ -23,7 +26,9 @@ import {
   getTasteQuietLineOverlay,
   getTasteWeightOverlay,
   isTasteCalmActionCopyCloudConfirmed,
+  isTasteCompanionChannelCopyCloudConfirmed,
   isTasteConfideCopyCloudConfirmed,
+  getTasteCompanionChannelCopyOverlay,
   isTasteDailyWisdomCloudConfirmed,
   isTasteQuietLineCloudConfirmed,
   isTasteWeightCloudConfirmed,
@@ -100,12 +105,27 @@ const freezeCalmActionCopy = {
   reflect: CALM_ACTION_REFLECT_EN.map((e) => ({ id: e.id, text: e.text }))
 };
 
+const companionChannelPack = JSON.parse(
+  readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), '../../content/companion-channel-copy/en.json'),
+    'utf8'
+  )
+);
+
+const freezeCompanionChannelCopy = {
+  schemaVersion: 1,
+  locale: 'en',
+  overlayLive: false,
+  companionChannelCopy: { channels: companionChannelPack.channels }
+};
+
 function tastePostJson(path, weightOverride) {
   if (path === '/api/emotion-weight') return weightOverride ?? freezeWeight;
   if (path === '/api/daily-message') return freezeDaily;
   if (path === '/api/quiet-line') return freezeQuietLine;
   if (path === '/api/confide-copy') return freezeConfideCopy;
   if (path === '/api/calm-action-copy') return freezeCalmActionCopy;
+  if (path === '/api/companion-channel-copy') return freezeCompanionChannelCopy;
   throw new Error(`unexpected ${path}`);
 }
 
@@ -148,7 +168,8 @@ test('prefetchTasteLayer confirms freeze-identical v1 without retaining overlay 
     dailyWisdom: true,
     quietLine: true,
     confideCopy: true,
-    calmActionCopy: true
+    calmActionCopy: true,
+    companionChannelCopy: true
   });
   assert.equal(getTasteWeightOverlay(), null);
   assert.equal(getTasteDailyWisdomOverlay(), null);
@@ -159,12 +180,15 @@ test('prefetchTasteLayer confirms freeze-identical v1 without retaining overlay 
   assert.equal(isTasteQuietLineCloudConfirmed(), true);
   assert.equal(isTasteConfideCopyCloudConfirmed(), true);
   assert.equal(isTasteCalmActionCopyCloudConfirmed(), true);
+  assert.equal(isTasteCompanionChannelCopyCloudConfirmed(), true);
+  assert.equal(getTasteCompanionChannelCopyOverlay(), null);
   assert.deepEqual(getTasteLayerStatus(), {
     weights: true,
     dailyWisdom: true,
     quietLine: true,
     confideCopy: true,
     calmActionCopy: true,
+    companionChannelCopy: true,
     honestyLongMinMinutes: 30
   });
 });
@@ -182,7 +206,8 @@ test('prefetchTasteLayer retains overlay when weights differ from local freeze',
     dailyWisdom: true,
     quietLine: true,
     confideCopy: true,
-    calmActionCopy: true
+    calmActionCopy: true,
+    companionChannelCopy: true
   });
   assert.equal(getTasteWeightOverlay()?.honestyLongMinMinutes, 45);
   assert.equal(getTasteDailyWisdomOverlay(), null);
@@ -203,7 +228,8 @@ test('prefetchTasteLayer defers retaining a different table while canApply is fa
     dailyWisdom: true,
     quietLine: true,
     confideCopy: true,
-    calmActionCopy: true
+    calmActionCopy: true,
+    companionChannelCopy: true
   });
   assert.equal(getTasteWeightOverlay(), null);
   assert.equal(isTasteWeightCloudConfirmed(), false);
@@ -225,7 +251,8 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     dailyWisdom: false,
     quietLine: false,
     confideCopy: false,
-    calmActionCopy: false
+    calmActionCopy: false,
+    companionChannelCopy: false
   });
   assert.equal(getTasteWeightOverlay(), null);
   assert.equal(isTasteWeightCloudConfirmed(), false);
@@ -246,7 +273,8 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     dailyWisdom: false,
     quietLine: false,
     confideCopy: false,
-    calmActionCopy: false
+    calmActionCopy: false,
+    companionChannelCopy: false
   });
 
   const timed = await prefetchTasteLayer({
@@ -262,7 +290,8 @@ test('prefetchTasteLayer keeps local tables on stub mock / 4xx / timeout', async
     dailyWisdom: false,
     quietLine: false,
     confideCopy: false,
-    calmActionCopy: false
+    calmActionCopy: false,
+    companionChannelCopy: false
   });
 });
 
@@ -283,6 +312,7 @@ test('prefetchTasteLayer does not fetch when disabled', async () => {
     dailyWisdom: false,
     quietLine: false,
     confideCopy: false,
-    calmActionCopy: false
+    calmActionCopy: false,
+    companionChannelCopy: false
   });
 });

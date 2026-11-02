@@ -33,10 +33,10 @@ import { CALM_ACTION_REFLECT_JA } from '../src/content/calm-action-wisdom/calm-a
 import { CALM_ACTION_TRANSITION_EN } from '../src/content/calm-action-wisdom/calm-action-transition.en.js';
 import { CALM_ACTION_TRANSITION_JA } from '../src/content/calm-action-wisdom/calm-action-transition.ja.js';
 import {
-  collectCompanionChannelCopyStrings,
-  readCompanionChannelCopyEn,
-  validateCompanionChannelCopyEn
-} from './companion-channel-copy-en.js';
+  COMPANION_CHANNEL_COPY_REL,
+  evaluateCompanionChannelCopyReview,
+  readCompanionChannelCopyPack
+} from './companionChannelCopyReview.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, '..');
@@ -172,8 +172,20 @@ export function collectLiveStrings() {
     }
   }
 
-  const channelCopy = readCompanionChannelCopyEn(PKG_ROOT);
-  out.push(...collectCompanionChannelCopyStrings(channelCopy));
+  const companionPack = readCompanionChannelCopyPack();
+  for (const channel of companionPack.channels || []) {
+    for (const line of channel.lines || []) {
+      out.push(
+        row(
+          'companion-channel-copy',
+          companionPack.locale || 'en',
+          line.id,
+          line.text,
+          COMPANION_CHANNEL_COPY_REL
+        )
+      );
+    }
+  }
 
   return out.filter((item) => item.text);
 }
@@ -188,7 +200,7 @@ const SAMPLE_CATEGORY_TARGETS = Object.freeze({
   'allow-neighbor': 15
 });
 
-/** Total regression rows (bad + allow-neighbor); R 扩库 Brief added five allow neighbors. */
+/** Total regression rows (bad + allow-neighbor); R English copy Brief added five allow neighbors. */
 export const COMPANION_CONTRACT_SAMPLE_COUNT = 54;
 
 /**
@@ -303,13 +315,6 @@ export function evaluateCompanionContract({
   const hits = [];
   const coverage = {};
 
-  try {
-    const channelCopy = readCompanionChannelCopyEn(PKG_ROOT);
-    errors.push(...validateCompanionChannelCopyEn(channelCopy));
-  } catch (err) {
-    errors.push(`companion-channel-copy en: ${err.message}`);
-  }
-
   for (const item of live) {
     coverage[item.channel] = (coverage[item.channel] || 0) + 1;
     for (const match of matchForbiddenPatterns(item.text)) {
@@ -344,6 +349,12 @@ export function evaluateCompanionContract({
 
   const sampleReport = evaluateCompanionContractSamples(samples);
   errors.push(...sampleReport.errors);
+
+  try {
+    errors.push(...evaluateCompanionChannelCopyReview(readCompanionChannelCopyPack()));
+  } catch (err) {
+    errors.push(`companion-channel-copy unreadable: ${err instanceof Error ? err.message : String(err)}`);
+  }
 
   return {
     ok: errors.length === 0,

@@ -537,7 +537,7 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     category: 'allow-neighbor',
     expect: 'allow',
     utterance: 'About 25 minutes this sitting.',
-    direction: 'Filled session-end fact line; must not trip C-02 as a person-score.',
+    direction: 'Filled practice-fact minutes must not trip C-02.',
     redline: null
   },
   {
@@ -547,7 +547,7 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     category: 'allow-neighbor',
     expect: 'allow',
     utterance: 'For a while, attention was elsewhere. It is back here now.',
-    direction: 'Observational refocus pool copy; not C-01/C-04 blame.',
+    direction: 'Observe time away without C-01 / C-04 guilt.',
     redline: null
   },
   {
@@ -557,7 +557,7 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     category: 'allow-neighbor',
     expect: 'allow',
     utterance: 'A short pause?',
-    direction: 'Single-offer yes/no pause invite; replaces or-branch neighbor.',
+    direction: 'Single-proposal yes/no pause invite; refuseable.',
     redline: null
   },
   {
@@ -567,7 +567,7 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     category: 'allow-neighbor',
     expect: 'allow',
     utterance: 'A soft arriving.',
-    direction: 'Arrival whisper; observation not grading.',
+    direction: 'Arrive moment whisper is permission, not a score.',
     redline: null
   },
   {
@@ -577,7 +577,7 @@ export const COMPANION_CONTRACT_SAMPLES = Object.freeze([
     category: 'allow-neighbor',
     expect: 'allow',
     utterance: 'A little longer, if you wish?',
-    direction: 'Refusable extend invite; not pressure.',
+    direction: 'Refuseable extend invite.',
     redline: null
   }
 ]);

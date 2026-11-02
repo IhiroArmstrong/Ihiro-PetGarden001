@@ -54,7 +54,6 @@
 | `focus-tiger.presence-signals-disclosure-seen.v1` | `presenceSignalsDisclosureGate` | 首次 Notice 入账披露行已展示（一生一次；非 Yin Memory Consent） |
 | `focus-tiger.presence-freetext-l3-consent.v1` | `presenceFreeTextL3Consent` | Presence freeText 首次将被 L3 读取时的单独同意（`granted` / `denied` / unset）；与 Yin Memory Consent 分离 |
 | `focus-tiger.companion-mode.v1` | `CompanionModePicker` / `FocusSession` | 上次 Companion 模式记忆；**本地** Backup & restore v2 白名单 |
-| `focus-tiger.companion-channel-recent-ids.v1` | （R 扩库 step 2+ picker） | 四通道英语 overlay 最近模板 id 环：`{ [channelId]: { [subtypeId]: { [locale]: string[] } } }`。**不进** T54 研究分享 / 练习云备份 / 本地 Backup 导出。DEV 删除全部清 |
 | `focus-tiger.ype-companion-style.v1` | `yinPersonalizationEngine` | L1 陪伴档 quiet/default/warm；What Yin remembers 邻接可改；`default` 即关掉个人化；**不进**练习备份 |
 | `focus-tiger.ype-cloud-personalization-consent.v1` | `ypeCloudPersonalizationConsent` | L2 第四条同意 + 本机 `ype_profile_id`；默认关；OFF 排队删云；**不进**练习备份 |
 | `focus-tiger.ype-personalization-pack.v1` | `ypePersonalizationPack` | L2 云端 Pack 缓存（schema v1）；关同意须丢弃；相同 JSON 跳过重写；**不进**练习备份 |
@@ -71,6 +70,7 @@
 | `focus-tiger.ambient-nudge.seen.v1` | `AmbientSoundscapeUI` | Ambient 首次轻提示已读 |
 | `focus-tiger.ambient-pref.v1` | `AmbientSoundscapeController` | 背景音乐开关偏好 + 上次曲目（**Idle / 冷启动**默认关 / opt-in；曲目默认 Mer-Ka-Ba；可含 `user-*`）。**开坐**（Focusing `startSittingMusic` / Breath `playTrackEphemeral`）自动播但不把 `enabled:true` 写回此 key；**本地** Backup & restore v2 白名单（不含 IndexedDB 上传 blobs） |
 | `focus-tiger.awaken-check-ins.v1` | `awakenCheckInStore` / T52 觉照微打卡 | 本机 `{ sessionId, ts, label, phase }` 环缓（顺 / 乱 / 倦）；**不**上传、**不进**练习云备份；DEV 重置须清 |
+| `focus-tiger.companion-channel-recent-ids.v1` | `companionChannelCopyPicker` | 四通道句包最近模板 id 环 `{ [channelId]: { [subtypeId]: { [locale]: string[] } } }`。**不进** T54 研究分享、练习云备份、本地 Backup 导出。`overlayLive` 关时开口仍走冻表，不写此键。删除全部本地数据须清 |
 | `focus-tiger.session-cues.v1` | `sessionCuePreference` + `SessionCueController` + Soundscape | 开始/结束铃总开关（**默认关** · T39）；已写盘布尔值不强制改；**间隔节奏** `sessionIntervalMs`：`0`（默认）/ `180000` / `300000`（不跟总开关绑死）；**觉察卡** `focusAwarenessCardEnabled`（默认开，可单独关）；**Focusing 与 Breath practice 共用**；音量跟 Soundscape volume bar（默认 0.45）再乘 **0.5 相对增益**（瞬态磬不得按 HTMLAudio 1.0 或与音乐同一数字就当「一样响」）；资产 `/audio/cues/`；**不**走 Ambient entitlement / Sound Gate；**本地** Backup & restore v2 白名单 |
 | `focus-tiger.system-tts-pref.v1` | `systemTtsPreference` + Soundscape Voice 块 + `systemTtsAnnouncements` | 全局系统播报开关（**默认关**）；Electron 音符面板 Voice 块（**非**独立 `#system-tts-preference`）；专注达标结束可念短句；**不**控制 Confide 倾诉朗读；**本地** Backup & restore v2 白名单 |
 | `focus-tiger.open-ended-nudge.v1` | `openEndedNudgePreference` + `OpenEndedNudgeUI` | 开放式专注 90 分钟 / 3 小时温和提示（缺省=开）。只存 `{ enabled }`。**不进**练习备份。关了之后本机不再出这两句 |
@@ -186,7 +186,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | `collectionsWaveHello` | Yin's Collections 挥手点播（底栏 Play；抽屉不列 SKU） | 播已入库 `waveHello`；勿接欢迎池 / 10min 自主；勿改 PNG |
 | `goldenHaloPalms` | Honesty≥30 试验 | 替 breathHaloHq 产品路径；调试仍可播 HQ |
 | `sceneAnimationDispatcher` | 场景语义事件 → 加权/冷却 → `playEmotion` | Slice A′+B；业务勿平行 if-else |
-| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 + Quiet Line 混合句池（`overlayQuietLineTextForKey`）+ **Confide 句库**（`overlayConfideTemplateTextForKey` / `overlayConfideCorpusTextForId`） | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩 / Confide Send。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取（含 Quiet Line / Confide copy）。`prefetchTasteLayer` 并行拉 `/api/quiet-line` + `/api/confide-copy`；拉取不得与精灵预加载 / Arrival·Honesty CapCut 抢主线程；冻结表相同不另存副本（`RB-20260820-L330`）。扩池须过 `ANTI_PLAGIARISM_LAYER.md` 准入四问 **且** 值得保护四测。**冻表 vs 现网分叉**见该文 §3.1；兑现清单 §3.2.2（本行不锁生产数字） |
+| 品味层 overlay（内存，非 localStorage） | `tasteLayerOverlay` / `tasteLayerSync`；Dispatcher 池 + Honesty 分档阈值 + `dailyWisdom` 池 + Quiet Line 混合句池（`overlayQuietLineTextForKey`）+ **Confide 句库**（`overlayConfideTemplateTextForKey` / `overlayConfideCorpusTextForId`）+ **四通道句包**（`/api/companion-channel-copy` · `companionChannelCopy` 字段；`overlayLive: false` 不采用） | 未知 / 缺失 `schemaVersion` → 本地冻结表。**禁止**接 Sit 门闩 / Confide Send。**禁止**改 `HonestyCheckInController` 来读 overlay。`?tasteLayer=0` 关拉取（含 Quiet Line / Confide copy / companion-channel-copy）。`prefetchTasteLayer` 并行拉 `/api/quiet-line` + `/api/confide-copy` + `/api/companion-channel-copy`；拉取不得与精灵预加载 / Arrival·Honesty CapCut 抢主线程；冻结表相同不另存副本（`RB-20260820-L330`）。扩池须过 `ANTI_PLAGIARISM_LAYER.md` 准入四问 **且** 值得保护四测。**冻表 vs 现网分叉**见该文 §3.1；兑现清单 §3.2.2（本行不锁生产数字） |
 | 调试试播全表 | `#emotion-debug-ui` / `__spritePlayer` | 不含生产调度 |
 
 完整键见 `EmotionController.js` 的 `EMOTIONS` / `EMOTION_KEYS`；情绪语义权威仍为 `EMOTION_BIBLE.md`。
