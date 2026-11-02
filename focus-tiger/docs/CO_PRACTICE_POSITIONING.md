@@ -90,6 +90,7 @@ Focus Tiger 仍然是一只陪你练习专注和觉察的小老虎。可以再�
 | 开表计数的稳定偏好（≥3/5）+ L2 事实句 + 不是这样 | **未实现** | **T76** · Brief 已点头 [`task-co-practice-stable-prefs-l1-l2.md`](./task-briefs/task-co-practice-stable-prefs-l1-l2.md)；盘点 [`co-practice-stable-prefs-inventory.md`](./co-practice-stable-prefs-inventory.md) | §3 改已实现前：不得说 Yin 常做某分钟 |
 | 续练位（常做配置一键开练） | **未实现** | **T77** · 依赖 T76；v1 **无时段词** | 未实现不得写「晚间常练」类文案 |
 | Breath / Companion 稳定偏好 | **未实现** | **T78** · 依赖 T76 | 未实现不得说 Yin 记得常选陪伴模式 |
+| 觉察哲思第一例（带着问题坐一会儿） | **未实现** | **T79** · Brief 待点头 | 未实现不得说已有公案课或禅师带参 |
 
 ---
 

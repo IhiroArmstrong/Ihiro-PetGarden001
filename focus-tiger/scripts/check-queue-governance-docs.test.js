@@ -104,6 +104,22 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T79 contemplative inquiry Brief with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/CO_PRACTICE_POSITIONING.md',
+        'focus-tiger/docs/task-briefs/task-t79-contemplative-inquiry.md',
+        'focus-tiger/docs/task-entries/t79-contemplative-inquiry.md',
+        'focus-tiger/docs/tracker-entries/docs-t79-contemplative-inquiry.md',
+        'focus-tiger/docs/drafts/koan-parents-before-birth-copy-for-review-en.md',
+        'focus-tiger/docs/drafts/koan-parents-before-birth-copy-locked-zh.md'
+      ]),
+      null
+    );
+  });
+
   it('allows T76 quiet-sit Brief with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([
