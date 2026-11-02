@@ -45,6 +45,7 @@
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
 | L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |
 | Stage 2 live 冷启动探针（Prompt 8） | `focus-tiger/desktop/scripts/l0-semantic-live-coldstart-probe.js` |
+| 受限生成阶段 0 warm/cold 加载探针（无 generate、无原文） | `focus-tiger/desktop/scripts/constrained-gen-warm-cold-probe.js` · `cd focus-tiger/desktop && npm run companion:constrained-gen-warm-cold` · JSON 在 `/tmp/ft-l0-lab/constrained-gen-warm-cold-*.json` · **不能**代替 Electron 四通道 ≥10 次实测 |
 | Voice Input Slice 0 探针（Speak-to-type · macOS on-device STT） | `focus-tiger/desktop/scripts/voice-input-probe.js` · `focus-tiger/desktop/voiceInput/` · Brief `task-voice-input-v1.md` |
 | System TTS Slice 0 探针（macOS AVSpeechSynthesizer · 无麦） | `focus-tiger/desktop/scripts/system-tts-probe.js` · `focus-tiger/desktop/systemTts/` · Brief `task-system-tts-v1.md` |
 | L3 打乱配对夹具（#823 方案 B · 仓库内） | `focus-tiger/desktop/companion/l3ObserveShuffleFixtures.js` |

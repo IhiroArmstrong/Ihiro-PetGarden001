@@ -1,0 +1,1 @@
+| 受限生成阶段 0 准备页 | 纯文档 + 实验室脚手架 | 仅单元测试覆盖 | **无界面。** 本条验收的是冻结表、`modelWarm` 口径、内存双基线说明与实验室 load 探针，**不代表**四通道 cold 占比已测，也**不代表**生成句已上线。读 [`task-constrained-generation-stage-0.md`](../task-briefs/task-constrained-generation-stage-0.md)。不测开口通道。实验室探针须系统终端 + Metal，不进 smoke。 | — | — | — | `focus-tiger/docs/task-briefs/task-constrained-generation-stage-0.md` | 2026-11-01 |

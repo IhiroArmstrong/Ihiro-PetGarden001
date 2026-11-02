@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-11-01 · **T73–T75 稳定偏好 Brief 已点头** · **T60 #1525 已合** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
+## 1. 当前队列（2026-11-01 · **T73 记住—响应读层 Brief 已点头** · **T76–T78 稳定偏好 Brief 已点头** · **T60 #1525 已合** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -80,9 +80,10 @@
 | **可选** · **T70** | 用户自设开桌锚点 | **搁置** · Brief 待点头 | T61 同形；到点问要不要先坐，可含早餐善意。口令「每天问早餐」= 走本 Brief。**不是** T61 |
 | **可选** · **T71** | 三层共修方向锁 | **已完成** | A 类 · [`CO_PRACTICE_POSITIONING.md`](./CO_PRACTICE_POSITIONING.md) §6。**无运行时** |
 | **可选** · **T72** | 环境场再收敛 | **搁置** · Brief 骨架 | 默认零新茶盏/烛火；须 SANCTUARY A.1。Brief [`task-co-practice-ambient-field-t72.md`](./task-briefs/task-co-practice-ambient-field-t72.md)。**不是** T70 · **不是** 第二套界面 |
-| **可选** · **T73** | 稳定偏好层 · Focus · L2 | **排队中** · Brief 已点头 | PR-1。盘点 [`co-practice-stable-prefs-inventory.md`](./co-practice-stable-prefs-inventory.md) · Brief [`task-co-practice-stable-prefs-l1-l2.md`](./task-briefs/task-co-practice-stable-prefs-l1-l2.md)。开表计票；**不是** chip 浏览计数。T60 #1525 **已合** |
-| **可选** · **T74** | 续练位 | **排队中** · 依赖 T73 | PR-2。常做配置一键开练；v1 **无时段词**。**不是** feature-affinity |
-| **可选** · **T75** | Breath · Companion 稳定偏好 | **排队中** · 依赖 T73 | PR-3。与 Focus 分轨。**不是** T74 |
+| **可选** · **T73** | 记住—响应读层 | **排队中** · Brief 已点头 | 读门包装现网时长三读法。Brief [`task-remember-respond-read-layer.md`](./task-briefs/task-remember-respond-read-layer.md)。口令「按 T73 Brief 开工第一刀」= 新 Chat。**不是** T58 重做 · **不是** T69 |
+| **可选** · **T76** | 稳定偏好层 · Focus · L2 | **排队中** · Brief 已点头 | PR-1。盘点 [`co-practice-stable-prefs-inventory.md`](./co-practice-stable-prefs-inventory.md) · Brief [`task-co-practice-stable-prefs-l1-l2.md`](./task-briefs/task-co-practice-stable-prefs-l1-l2.md)。开表计票；**不是** chip 浏览计数。**不是** T73。T60 #1525 **已合** |
+| **可选** · **T77** | 续练位 | **排队中** · 依赖 T76 | PR-2。常做配置一键开练；v1 **无时段词**。**不是** feature-affinity |
+| **可选** · **T78** | Breath · Companion 稳定偏好 | **排队中** · 依赖 T76 | PR-3。与 Focus 分轨。**不是** T77 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -181,6 +182,9 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「每天问早餐」 | 走 **T70** Brief（待点头）。**不是** 饮食仪表盘 |
 | 「按 T70 Brief 开工」 | **须 Brief 点头**后新 Chat。**不是** T61 收工。可含早餐善意 |
 | 「按 T72 Brief 开工」 | **不执行**（Brief 未点头 · SANCTUARY A.1 未过）。默认不加茶盏/烛火新美术。**不是** T70 |
+| 「按 T73 Brief 开工第一刀」或「按记住—响应 Brief 开工」 | **须新 Chat** 写 `src/`。包装读门，不重写 T58。**不是** T69 |
+| 「按 L1 Brief 开工」或「按稳定偏好 Brief 开工」 | **T76** 新 worktree。**不是** T73 记住—响应 |
+| 「按 T69 Brief 开工」 | **不执行**（T69 是桌面习惯文献对照，已完成）。读层是 **T73** |
 
 ---
 
