@@ -19,6 +19,8 @@ import {
   CONFIDE_COPY_CORPUS_IDS,
   parseConfideCopyOverlay,
   parseCalmActionCopyOverlay,
+  parseCompanionChannelCopyOverlay,
+  COMPANION_CHANNEL_COPY_OVERLAY_SCHEMA_VERSION,
   parseDailyMessageOverlay,
   parseEmotionWeightOverlay,
   parseQuietLineOverlay,
@@ -272,3 +274,56 @@ test('parseCalmActionCopyOverlay rejects unknown schema, locale mismatch, and il
     null
   );
 });
+
+test('parseCompanionChannelCopyOverlay accepts reviewed hashed en pack with overlayLive false', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { dirname, join } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const pack = JSON.parse(
+    readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../content/companion-channel-copy/en.json'),
+      'utf8'
+    )
+  );
+  const parsed = await parseCompanionChannelCopyOverlay(
+    {
+      schemaVersion: COMPANION_CHANNEL_COPY_OVERLAY_SCHEMA_VERSION,
+      locale: pack.locale,
+      overlayLive: false,
+      companionChannelCopy: { channels: pack.channels }
+    },
+    'en'
+  );
+  assert.ok(parsed);
+  assert.equal(parsed.overlayLive, false);
+  assert.equal(parsed.locale, 'en');
+  assert.equal(parsed.channels.length, 5);
+  assert.equal(parsed.channels.reduce((n, c) => n + c.lines.length, 0), 40);
+});
+
+test('parseCompanionChannelCopyOverlay rejects unknown schema, ja, hash mismatch, and illegal keys', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { dirname, join } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const pack = JSON.parse(
+    readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../content/companion-channel-copy/en.json'),
+      'utf8'
+    )
+  );
+  const body = {
+    schemaVersion: COMPANION_CHANNEL_COPY_OVERLAY_SCHEMA_VERSION,
+    locale: 'en',
+    overlayLive: false,
+    companionChannelCopy: { channels: pack.channels }
+  };
+  assert.equal(await parseCompanionChannelCopyOverlay({ ...body, schemaVersion: 2 }, 'en'), null);
+  assert.equal(await parseCompanionChannelCopyOverlay({ ...body, locale: 'ja' }, 'en'), null);
+  const badHash = structuredClone(body);
+  badHash.companionChannelCopy.channels[0].lines = badHash.companionChannelCopy.channels[0].lines.map((line) => ({ ...line, contentHash: '0'.repeat(64) }));
+  assert.equal(await parseCompanionChannelCopyOverlay(badHash, 'en'), null);
+  const badKey = structuredClone(body);
+  badKey.companionChannelCopy.channels[0].channelId = 'quiet-line';
+  assert.equal(await parseCompanionChannelCopyOverlay(badKey, 'en'), null);
+});
+

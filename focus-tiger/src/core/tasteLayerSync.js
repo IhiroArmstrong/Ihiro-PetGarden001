@@ -36,21 +36,25 @@ import {
   CONFIDE_COPY_TEMPLATE_KEYS,
   getTasteWeightOverlay,
   isTasteCalmActionCopyCloudConfirmed,
+  isTasteCompanionChannelCopyCloudConfirmed,
   isTasteConfideCopyCloudConfirmed,
   isTasteDailyWisdomCloudConfirmed,
   isTasteQuietLineCloudConfirmed,
   isTasteWeightCloudConfirmed,
   markTasteCalmActionCopyCloudOk,
+  markTasteCompanionChannelCopyCloudOk,
   markTasteConfideCopyCloudOk,
   markTasteDailyWisdomCloudOk,
   markTasteQuietLineCloudOk,
   markTasteWeightCloudOk,
   parseCalmActionCopyOverlay,
+  parseCompanionChannelCopyOverlay,
   parseConfideCopyOverlay,
   parseDailyMessageOverlay,
   parseEmotionWeightOverlay,
   parseQuietLineOverlay,
   setTasteCalmActionCopyOverlay,
+  setTasteCompanionChannelCopyOverlay,
   setTasteConfideCopyOverlay,
   setTasteDailyWisdomOverlay,
   setTasteQuietLineOverlay,
@@ -232,6 +236,8 @@ let pendingQuietLine = null;
 let pendingConfideCopy = null;
 /** @type {import('./tasteLayerOverlay.js').TasteCalmActionCopyOverlay | null} */
 let pendingCalmActionCopy = null;
+/** @type {import('./tasteLayerOverlay.js').TasteCompanionChannelCopyOverlay | null} */
+let pendingCompanionChannelCopy = null;
 /** @type {ReturnType<typeof setTimeout> | 0} */
 let flushTimer = 0;
 
@@ -267,6 +273,11 @@ export function flushPendingTasteLayerApply(canApply = () => true) {
     pendingCalmActionCopy = null;
     applied = true;
   }
+  if (pendingCompanionChannelCopy) {
+    setTasteCompanionChannelCopyOverlay(pendingCompanionChannelCopy);
+    pendingCompanionChannelCopy = null;
+    applied = true;
+  }
   return applied;
 }
 
@@ -277,7 +288,7 @@ function schedulePendingFlush(canApply) {
   if (flushTimer) return;
   const tick = () => {
     flushTimer = 0;
-    if (!pendingWeight && !pendingDaily && !pendingQuietLine && !pendingConfideCopy && !pendingCalmActionCopy) return;
+    if (!pendingWeight && !pendingDaily && !pendingQuietLine && !pendingConfideCopy && !pendingCalmActionCopy && !pendingCompanionChannelCopy) return;
     if (canApply()) {
       flushPendingTasteLayerApply(canApply);
       return;
@@ -308,6 +319,7 @@ async function waitUntilCanApply(canApply, waitApplyMs) {
  *   quietLine: boolean,
  *   confideCopy: boolean,
  *   calmActionCopy: boolean,
+ *   companionChannelCopy: boolean,
  *   honestyLongMinMinutes: number | null
  * }}
  */
@@ -317,12 +329,14 @@ export function getTasteLayerStatus() {
   const quietLine = isTasteQuietLineCloudConfirmed();
   const confideCopy = isTasteConfideCopyCloudConfirmed();
   const calmActionCopy = isTasteCalmActionCopyCloudConfirmed();
+  const companionChannelCopy = isTasteCompanionChannelCopyCloudConfirmed();
   return {
     weights,
     dailyWisdom,
     quietLine,
     confideCopy,
     calmActionCopy,
+    companionChannelCopy,
     honestyLongMinMinutes:
       getTasteWeightOverlay()?.honestyLongMinMinutes ??
       (weights ? HONESTY_LONG_MIN_MINUTES : null)
@@ -335,6 +349,7 @@ export function resetTasteLayerSyncForTests() {
   pendingQuietLine = null;
   pendingConfideCopy = null;
   pendingCalmActionCopy = null;
+  pendingCompanionChannelCopy = null;
   if (flushTimer) {
     clearTimeout(flushTimer);
     flushTimer = 0;
@@ -351,7 +366,7 @@ export function resetTasteLayerSyncForTests() {
  * @param {string} [opts.cloudBaseUrl]
  * @param {() => boolean} [opts.canApply]
  * @param {number} [opts.waitApplyMs]
- * @returns {Promise<{ weights: boolean, dailyWisdom: boolean, quietLine: boolean, confideCopy: boolean, calmActionCopy: boolean }>}
+ * @returns {Promise<{ weights: boolean, dailyWisdom: boolean, quietLine: boolean, confideCopy: boolean, calmActionCopy: boolean, companionChannelCopy: boolean }>}
  */
 export async function prefetchTasteLayer(opts = {}) {
   const search =
@@ -364,7 +379,8 @@ export async function prefetchTasteLayer(opts = {}) {
       dailyWisdom: false,
       quietLine: false,
       confideCopy: false,
-      calmActionCopy: false
+      calmActionCopy: false,
+      companionChannelCopy: false
     };
   }
 
@@ -376,7 +392,7 @@ export async function prefetchTasteLayer(opts = {}) {
   const locale = opts.locale || getLocale() || 'en';
   const localDate = opts.localDate || getLocalDateKey(new Date());
 
-  const [weightResult, dailyResult, quietLineResult, confideCopyResult, calmActionCopyResult] =
+  const [weightResult, dailyResult, quietLineResult, confideCopyResult, calmActionCopyResult, companionChannelCopyResult] =
     await Promise.allSettled([
     withTimeout(
       postJson('/api/emotion-weight', {
@@ -411,6 +427,12 @@ export async function prefetchTasteLayer(opts = {}) {
         body: JSON.stringify({ locale, localDate })
       }),
       timeoutMs
+    ),
+    withTimeout(
+      postJson('/api/companion-channel-copy', {
+        body: JSON.stringify({ locale, localDate })
+      }),
+      timeoutMs
     )
   ]);
 
@@ -419,6 +441,7 @@ export async function prefetchTasteLayer(opts = {}) {
   let quietLine = false;
   let confideCopy = false;
   let calmActionCopy = false;
+  let companionChannelCopy = false;
 
   if (weightResult.status === 'fulfilled') {
     const parsed = parseEmotionWeightOverlay(weightResult.value);
@@ -500,5 +523,24 @@ export async function prefetchTasteLayer(opts = {}) {
     }
   }
 
-  return { weights, dailyWisdom, quietLine, confideCopy, calmActionCopy };
+  if (companionChannelCopyResult.status === 'fulfilled') {
+    const parsed = await parseCompanionChannelCopyOverlay(
+      companionChannelCopyResult.value,
+      locale
+    );
+    if (parsed) {
+      companionChannelCopy = true;
+      if (parsed.overlayLive !== true) {
+        markTasteCompanionChannelCopyCloudOk();
+      } else if (canApply()) {
+        setTasteCompanionChannelCopyOverlay(parsed);
+        markTasteCompanionChannelCopyCloudOk();
+      } else {
+        pendingCompanionChannelCopy = parsed;
+        schedulePendingFlush(canApply);
+      }
+    }
+  }
+
+  return { weights, dailyWisdom, quietLine, confideCopy, calmActionCopy, companionChannelCopy };
 }

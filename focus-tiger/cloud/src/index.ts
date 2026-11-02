@@ -14,6 +14,7 @@ import { handleDailyMessage } from "./routes/dailyMessage";
 import { handleQuietLine } from "./routes/quietLine";
 import { handleConfideCopy } from "./routes/confideCopy";
 import { handleCalmActionCopy } from "./routes/calmActionCopy";
+import { handleCompanionChannelCopy } from "./routes/companionChannelCopy";
 import { handleEmotionWeight } from "./routes/emotionWeight";
 import { handleMonetizationFunnelIngest } from "./routes/monetizationFunnelIngest";
 import { handleCreateTipCheckoutSession } from "./routes/createTipCheckoutSession";
@@ -100,6 +101,7 @@ export default {
 				url.pathname === "/api/quiet-line" ||
 				url.pathname === "/api/confide-copy" ||
 				url.pathname === "/api/calm-action-copy" ||
+				url.pathname === "/api/companion-channel-copy" ||
 				url.pathname === "/api/emotion-weight" ||
 				url.pathname === "/api/monetization-funnel-ingest" ||
 				url.pathname === "/api/ype-personalization-ingest" ||
@@ -570,6 +572,16 @@ export default {
 				);
 			}
 			return withCors(await handleCalmActionCopy(request), origin);
+		}
+
+		if (url.pathname === "/api/companion-channel-copy") {
+			if (request.method !== "POST") {
+				return withCors(
+					errorJson(405, "method_not_allowed", "Use POST"),
+					origin,
+				);
+			}
+			return withCors(await handleCompanionChannelCopy(request), origin);
 		}
 
 		if (url.pathname === "/api/emotion-weight") {
