@@ -1,6 +1,6 @@
 # 受限生成 · 四通道扩库说明书（R · 文档先行）
 
-> **状态**：**说明书（2026-11-02）· PO 条件点头（五处补丁后锁定）**。点头本页 **不等于** 现网已换句。下一刀 B 类 Brief：[英语句稿 + overlay](task-constrained-generation-expanded-retrieval-impl.md) **待点头**。  
+> **状态**：**说明书（2026-11-02）· PO 条件点头（五处补丁后锁定）**。点头本页 **不等于** 现网已换句。下一刀 B 类 Brief：[英语句稿 + overlay](task-constrained-generation-expanded-retrieval-impl.md) **已点头（2026-11-02 · 句稿与审核字段修订后锁定）**。  
 > **类**：**A 类**（纯文档）。**零 `src/`**。真改进网句 / overlay 运行时 = **B 类**，须另开实现 Brief 再点头。  
 > **父页**：[对比说明 #1533](task-constrained-generation-pool-vs-expanded-retrieval.md) · [放行关卡](task-constrained-generation-release-gates.md) · [阶段 0](task-constrained-generation-stage-0.md)。  
 > **拍板**：PO 2026-11-02 点头对比、选 **R**；**2026-11-02 条件点头本说明书**（子类型计数、overlay 双闸、重置白名单、N 取半、en/ja 审核人闸）。**阶段 1 继续禁止**。  
@@ -209,7 +209,7 @@ B 类实现 Brief **必须** 含：源文件路径、部署前扫描命令、客
 ## 9. 明确不做（本 PR）
 
 - 不改 `src/`、不接线口、不画开关、不写新 locale 句子。  
-- 不写 B 类实现 Brief（#1537 当时；可见句 Brief 现为 [impl](task-constrained-generation-expanded-retrieval-impl.md)，**待点头**）。  
+- 不写 B 类实现 Brief（#1537 当时；可见句 Brief 现为 [impl](task-constrained-generation-expanded-retrieval-impl.md)，**已点头 · 2026-11-02**）。  
 - 不开阶段 1。  
 - 不改 `GLOSSARY.md` / `SCHEDULING_GLOSSARY.md`。  
 - 不启动 T54。  
@@ -220,8 +220,8 @@ B 类实现 Brief **必须** 含：源文件路径、部署前扫描命令、客
 
 ## 10. 下一刀（说明书已条件点头）
 
-1. **B 类实现 Brief 已起草**：[英语句稿 + overlay](task-constrained-generation-expanded-retrieval-impl.md)（§2.1 子类型 8 条、近邻样本、§5.1.1 双闸、§3 重置白名单）。**待 PO 点头**；点头前零 `src/`、不上 overlay。  
-2. **英语审核人**：PO 授权 Agent = 起草 + CI，**不是** §4.1 点名；补母语审稿人名字后，句稿才可标「人审完成」。  
+1. **B 类实现 Brief 已点头**：[英语句稿 + overlay](task-constrained-generation-expanded-retrieval-impl.md)（单一提议是非问、`{minutes}` 单复数、句级审核哈希、锚句点「要」= GROUND）。点头后第 1–3 步仍零可见新句；`overlayLive` 假。  
+2. **英语审核人**：Claude（AI），2026-11-02 PO 书面口头授权。**不是**母语人工审。对外只写「AI 审稿 + 契约检查」。母语者抽 10 条为软待办，不阻塞第 4 步。  
 3. **日语审核人**：仍未点名 → 只扩英语。点名后可并行 ja（4–6 或 8–12 / 子类型）。  
 4. 口令「开始阶段 1 红队」「按预生成池评估写实现 Brief」→ **不执行**。  
 5. 个性化骨架保持暂存，直到 §7 三条同时满足。
