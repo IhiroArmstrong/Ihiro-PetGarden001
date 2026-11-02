@@ -85,6 +85,9 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-briefs/task-mindflow-nebula-v0.md',
   'focus-tiger/docs/task-entries/t66-mindflow-nebula-v0.md',
   'focus-tiger/docs/tracker-entries/feature-t66-mindflow-nebula-v0.md',
+  'focus-tiger/docs/task-briefs/task-mindflow-nebula-step2-embedding-presets.md',
+  'focus-tiger/docs/task-entries/t66-mindflow-nebula-step2-embedding-presets.md',
+  'focus-tiger/docs/tracker-entries/docs-t66-mindflow-nebula-step2-brief.md',
   'focus-tiger/docs/desk-habit-literature-inventory.md',
   'focus-tiger/docs/ISSUE_LEDGER.md',
   'focus-tiger/docs/issue-entries/docs-t69-desk-habit-literature.md',
@@ -169,6 +172,20 @@ function refExists(rev) {
  * @returns {string[]}
  */
 export function changedPathsAgainstDevelop(baseRef, headRev = '') {
+  // Merge in progress: index vs develop is the governance PR unique set.
+  // Mixing staged incoming develop files with hotspot edits would false-fail
+  // `git merge origin/develop` on docs/* queue PRs (batch-merge-develop-open-prs).
+  if (!headRev && refExists('MERGE_HEAD')) {
+    const merging = execFileSync(
+      'git',
+      ['diff', '--name-only', '--cached', baseRef],
+      { cwd: REPO_ROOT, encoding: 'utf8' }
+    );
+    return merging
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
   const head = headRev || 'HEAD';
   const committed = execFileSync(
     'git',
