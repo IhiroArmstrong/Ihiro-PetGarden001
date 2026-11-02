@@ -54,6 +54,7 @@ const WHITELIST_FILES = new Set([
   'HomeSanctuaryNavFanUI.js',
   'ReminderPreferenceUI.js',
   'MindflowNebulaPreferenceUI.js',
+  'PresenceFieldPreferenceUI.js',
   'ft-onboarding-hint-bubble.js',
   'HonestyBridgeCtaUI.js',
   'YinPersonalMemoryUI.js',

@@ -187,6 +187,9 @@ import { InputRhythmPreferenceUI } from './ui/InputRhythmPreferenceUI.js';
 import { MindflowNebulaChromeUI } from './ui/MindflowNebulaChromeUI.js';
 import { MindflowNebulaPreferenceUI } from './ui/MindflowNebulaPreferenceUI.js';
 import { readMindflowNebulaEnabled } from './core/mindflowNebula/mindflowNebulaStore.js';
+import { PresenceFieldPreferenceUI } from './ui/PresenceFieldPreferenceUI.js';
+import { PresenceFieldSession } from './effects/presence-field/presenceFieldSession.js';
+import { readPresenceFieldEnabled } from './effects/presence-field/presenceFieldStore.js';
 import { getSystemTtsBridge } from './core/systemTtsBridge.js';
 import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from './core/systemTtsAnnouncements.js';
 import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
@@ -1260,6 +1263,10 @@ async function init() {
   let mindflowNebulaTtsUnsub = null;
   /** @type {null | ReturnType<typeof setTimeout>} */
   let mindflowNebulaSpeakTimer = null;
+  /** @type {PresenceFieldSession | null} */
+  let presenceFieldSession = null;
+  /** @type {PresenceFieldPreferenceUI | null} */
+  let presenceFieldPreferenceUI = null;
   /** @type {WindowLayoutPreferenceUI | null} */
   let windowLayoutPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
@@ -1303,6 +1310,7 @@ async function init() {
     onReminderShown: (type) => {
       if (type === 'refocus' || type === 'activeRecover') {
         lightProgression.playRecoverDisturbance();
+        presenceFieldSession?.notifyRecoverDisplay();
       }
       if (type === 'activeRecover') {
         bootMomentHosts.calmActionRecoverCardUI.tryShowAfterActiveRecover();
@@ -1680,6 +1688,37 @@ async function init() {
   });
   window.__mindflowNebulaPreference = mindflowNebulaPreferenceUI;
   syncMindflowNebulaFromStorage();
+  const syncPresenceFieldFromStorage = () => {
+    const enabled = readPresenceFieldEnabled(
+      typeof localStorage !== 'undefined' ? localStorage : null
+    );
+    presenceFieldSession?.setEnabled(enabled);
+  };
+  presenceFieldSession = new PresenceFieldSession({
+    lightProgression,
+    ambient: {
+      isAudiblePlaying: () =>
+        Boolean(bootAmbientHints.ambientSoundscape?.isAudiblePlaying?.()),
+      setPresenceFieldEnvelope: (gain) => {
+        bootAmbientHints.ambientSoundscape?.setPresenceFieldEnvelope?.(gain);
+      },
+      clearPresenceFieldEnvelope: () => {
+        bootAmbientHints.ambientSoundscape?.clearPresenceFieldEnvelope?.();
+      }
+    },
+    storage: typeof localStorage !== 'undefined' ? localStorage : null
+  });
+  window.__presenceFieldSession = presenceFieldSession;
+  presenceFieldPreferenceUI = new PresenceFieldPreferenceUI(document.body, {
+    storage: typeof localStorage !== 'undefined' ? localStorage : null,
+    onEnabledChange: () => syncPresenceFieldFromStorage(),
+    onClose: () => {
+      document.body.classList.remove('ft-wide-stage-presence-field');
+      document.body.classList.remove('ft-narrow-stage-presence-field');
+    }
+  });
+  window.__presenceFieldPreference = presenceFieldPreferenceUI;
+  syncPresenceFieldFromStorage();
   const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-local-backup');
@@ -4176,6 +4215,7 @@ async function init() {
     quietTogetherLanternsChrome.setContributing(true);
     focusCirclePresenceChrome.setFocusing(false);
     mindflowNebulaChrome?.setFocusing(false);
+    presenceFieldSession?.setFocusing(false);
     focusCircleBesideSeatsChrome.setFocusing(false);
     bootMomentHosts.focusCircleWitnessChrome.setFocusing(false);
     setFocusCirclePresenceContributing(true);
@@ -4627,6 +4667,9 @@ async function init() {
     },
     onMindflowNebula: () => {
       mindflowNebulaPreferenceUI?.openPanel();
+    },
+    onPresenceField: () => {
+      presenceFieldPreferenceUI?.openPanel();
     },
     onTodayDirection: () => {
       openTodayDirectionManual();
@@ -5435,6 +5478,7 @@ async function init() {
     quietTogetherLanternsChrome.setFocusing(false);
     focusCirclePresenceChrome.setFocusing(false);
     mindflowNebulaChrome?.setFocusing(false);
+    presenceFieldSession?.setFocusing(false);
     focusCircleBesideSeatsChrome.setFocusing(false);
     bootMomentHosts.focusCircleWitnessChrome.setFocusing(false);
     void stopLanternHeartbeat();
@@ -5678,6 +5722,7 @@ async function init() {
     quietTogetherLanternsChrome.setFocusing(true);
     focusCirclePresenceChrome.setFocusing(true);
     mindflowNebulaChrome?.setFocusing(true);
+    presenceFieldSession?.setFocusing(true);
     focusCircleBesideSeatsChrome.setFocusing(true);
     bootMomentHosts.focusCircleWitnessChrome.setFocusing(true);
     startLanternHeartbeat();
@@ -6883,6 +6928,10 @@ async function init() {
     tigerCharacter.setFocusLevel(visualLevel);
     focusVisualizer.update(visualLevel);
     lightProgression.updateFocusGlow(visualLevel, delta);
+    presenceFieldSession?.tick({
+      deltaSec: delta,
+      glowSuppressed: emotionController.shouldSuppressRuntimeGlow()
+    });
     tigerCharacter.update(delta);
     dynamicMotion.update(delta);
     transitionFX.update(delta);

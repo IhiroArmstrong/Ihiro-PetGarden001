@@ -33,6 +33,7 @@
 | **3** | `src/character/SpriteSequencePlayer.js` | 2D 情绪序列层（`#sprite-overlay`）：在 canvas 之上、`#ui-overlay` 之下。**子层**：`#sprite-stage`（阿寅）。可见莲花在 `#growth-journey-detail` 内 `#growth-journey-lotus-row`，不新开全局 z，Idle overlay 不再种植 |
 | **3** | `ui-kit/components/streak-meter.js` | 连胜环下方 label 提示 |
 | **4** | `src/effects/LightProgression.js` | 光影 FX 根（`#light-progression-fx`）全屏特效层 |
+| **2** | `src/effects/presence-field/presenceFieldSession.js` | 智能场晕瓣挂在 `#light-progression-rim` 子节点（与金晕同带、角色后方；`pointer-events: none`；Focusing 才有；默认关） |
 | **4** | `src/effects/IncenseGreeting.js` | 一炷香问候粒子/特效全屏层 |
 | **10** | `index.html` | `#ui-overlay` 主 UI 叠层根（多数面板/按钮挂这里） |
 | **11** | `src/ui/TipKindnessBadgesChrome.js` | Idle 阿寅旁练习/善意徽章条（`#yin-tip-kindness-badges`；**mid-right** beside Yin，勿压右上 Support/mute；Focusing 隐藏） |
@@ -48,6 +49,8 @@
 | **14** | `src/ui/OpenEndedNudgeUI.js` | 开放式专注温和提示（`#open-ended-nudge`；左上 HUD 下；非模态；不盖底部觉察卡） |
 | **14** | `src/ui/MicroRitualUI.js` | 微仪式 Idle 文字入口（对称 Honesty） |
 | **15** | `src/ui/MindflowNebulaPreferenceUI.js` | 心念流偏好玻璃卡（） |
+| **15** | `src/ui/PresenceFieldPreferenceUI.js` | 智能场偏好玻璃卡（`#presence-field-preference`；默认关） |
+| **15** | `src/effects/presence-field/presenceFieldSession.js` | 智能场内部 debug 滑杆（仅 `?presenceFieldDebug=1`；低于 Support FAB） |
 | **15** | `src/ui/HonestyCheckInUI.js` | Honesty Check-in 主面板 |
 | **15** | `src/ui/ArrivalPracticeUI.js` | Arrival Practice 底部叠层 |
 | **15** | `src/ui/MicroRitualUI.js` | 微仪式主面板 |

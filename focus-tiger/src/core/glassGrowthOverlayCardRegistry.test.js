@@ -27,7 +27,8 @@ describe('glassGrowthOverlayCardRegistry (A3)', () => {
         proxy === 'sound' ||
         proxy === 'always-on-top' ||
         proxy === 'input-rhythm' ||
-        proxy === 'mindflow-nebula'
+        proxy === 'mindflow-nebula' ||
+        proxy === 'presence-field'
       ) {
         continue;
       }

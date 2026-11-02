@@ -417,6 +417,23 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'kb-live-presence-field',
+    surface: 'menu',
+    proxy: 'presence-field',
+    labelKeys: Object.freeze(['PRESENCE_FIELD_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Presence Field',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'presence-field'",
+      'PRESENCE_FIELD_MENU_LABEL',
+      'presence-field-preference'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/ui/PresenceFieldPreferenceUI.js'
+    ])
+  }),
+  Object.freeze({
     id: 'kb-live-today-direction',
     surface: 'menu',
     proxy: 'today-direction',
