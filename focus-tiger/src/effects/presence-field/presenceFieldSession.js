@@ -122,8 +122,10 @@ export class PresenceFieldSession {
     this._mode = resolved.mode;
 
     if (!resolved.visible || tick.glowSuppressed) {
-      this._teardownVisual();
-      this._ambient?.clearPresenceFieldEnvelope?.();
+      if (this._lobes.length > 0 || this._mode !== 'off') {
+        this._teardownVisual();
+        this._ambient?.clearPresenceFieldEnvelope?.();
+      }
       return;
     }
 
@@ -164,12 +166,21 @@ export class PresenceFieldSession {
     };
   }
 
-  _rimEl() {
-    return this._light?._ensureRimGlow?.() || document.getElementById('light-progression-rim');
+  /**
+   * @param {boolean} [create]
+   * @returns {HTMLElement | null}
+   */
+  _rimEl(create = false) {
+    const existing =
+      typeof document !== 'undefined'
+        ? document.getElementById('light-progression-rim')
+        : null;
+    if (existing || !create) return existing;
+    return this._light?._ensureRimGlow?.() || null;
   }
 
   _ensureLobes() {
-    const rim = this._rimEl();
+    const rim = this._rimEl(true);
     if (!rim) return;
     if (this._lobes.length === OSCILLATOR_COUNT && this._lobes[0]?.isConnected) {
       return;
@@ -232,10 +243,11 @@ export class PresenceFieldSession {
   }
 
   _teardownVisual() {
+    const hadLobes = this._lobes.length > 0;
     for (const lobe of this._lobes) lobe.remove();
     this._lobes = [];
-    const rim = this._rimEl();
-    if (rim) {
+    const rim = this._rimEl(false);
+    if (rim && hadLobes) {
       rim.removeAttribute('title');
       rim.style.filter =
         'drop-shadow(0 0 28px rgba(240,192,96,.22))';

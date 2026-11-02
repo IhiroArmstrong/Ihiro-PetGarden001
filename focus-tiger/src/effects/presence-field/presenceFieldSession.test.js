@@ -259,3 +259,26 @@ test('failed persist rebound: focusing still has no field nodes', () => {
     restore();
   }
 });
+
+test('idle ticks do not ensure rim glow or mutate rim', () => {
+  const { lightProgression, restore } = installDom();
+  let ensureCalls = 0;
+  lightProgression._ensureRimGlow = () => {
+    ensureCalls += 1;
+    return document.getElementById('light-progression-rim');
+  };
+  try {
+    const session = new PresenceFieldSession({
+      lightProgression,
+      storage: storage(false),
+      search: ''
+    });
+    session.tick({ deltaSec: 0.016 });
+    session.tick({ deltaSec: 0.016 });
+    session.tick({ deltaSec: 0.016 });
+    assert.equal(ensureCalls, 0);
+    session.destroy();
+  } finally {
+    restore();
+  }
+});
