@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # preToolUse — explore-only tool-call budget (tiered soft ask / hard deny).
+# hooks.json: failClosed false (runner crash must not lock whole Chat; see SHARED_RESOURCES §7.3).
 # Productive calls (StrReplace, bounded Read, git, smoke) are not counted and
 # are never hard-denied by this hook.
 source "$(dirname "${BASH_SOURCE[0]}")/lib_common.sh"

@@ -947,17 +947,18 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 
 **Cursor Agent 终端权限（仓库级）**：见 [`.cursor/permissions.json`](../../.cursor/permissions.json)（细粒度 `terminalAllowlist`：只读/本地 git、只读 gh、`npm run|test|install`；**禁止**裸 `git` / `gh`）。破坏性 / 有远程影响的命令另由 [`.cursor/hooks/gate-destructive-shell.sh`](../../.cursor/hooks/gate-destructive-shell.sh)（`beforeShellExecution`，`failClosed`）强制确认——弹出 **Run** 不等于「等人工测完」；也不依赖 Auto-review 的 `autoRun.block_instructions`。
 
-#### 已知问题 · `gate-destructive-shell` × `zsh ENOENT`（2026-08-07 · 待排查）
+#### 已知问题 · Cursor hooks × `zsh ENOENT`（2026-08-07 · 间歇 · 待 Cursor 侧排查）
 
-> **现象**：Cursor 报 `Hook ".cursor/hooks/gate-destructive-shell.sh" failed … spawn /bin/zsh ENOENT`，且因 **`failClosed: true`** 该次 Shell 调用被**硬拦**。  
-> **匹配范围**（`.cursor/hooks.json`）：仅当命令匹配  
+> **现象**：Cursor 报 `Hook ".cursor/hooks/….sh" failed … spawn /bin/zsh ENOENT`。hook 进程**未启动**（不是脚本内 `jq`/逻辑 exit 1）。  
+> **根因层**：Cursor hook runner 偶发找不到 `/bin/zsh`（长会话、Reload 后宿主异常、沙箱等）；本机 Terminal 里 `/bin/zsh` 通常仍在。  
+> **与 `failClosed` 的组合（2026-11-03 策略）**：  
+> - **安全 / 高代价**（子 Agent、IDE Browser、破坏性 shell、重 e2e、`read_file_gate`、`shell_guard`）：仍 **`failClosed: true`** → runner 起不来时 **硬拒该次动作**（例如命中 matcher 的 `git push` 会失败，不是无防护放行）。  
+> - **治理 / 预算**（`session_gate.sh`、`tool_budget.sh`）：**`failClosed: false`** → runner 起不来时 **fail open**，避免整 Chat 无法发消息或用工具；PR 断会话与探索硬顶可能短暂失效，须靠 `focus-tiger-agent-token-cost.mdc` 与口令纪律补位。  
+> **`gate-destructive-shell` 匹配范围**（`.cursor/hooks.json`）：仅当命令匹配  
 > `git (push|reset|clean|rebase|merge)` / `gh pr merge` / `gh repo delete` 等时才会跑本 hook——**不是**所有 Shell、也不是所有 `git`（例如 `git status` / `git commit` / `git log` 不经此闸）。  
 > **匹配过宽（已知误伤）**：正则里的 `merge\b` 也会命中 **`git merge-base`**（`merge` 与 `-base` 之间是词界），导致只读的祖先查询被当成破坏性 `merge` 去问闸。后续修 matcher 时应收窄（例如要求 `merge` 后为空格/行尾，或显式排除 `merge-base`）。  
-> **失效含义（重要）**：  
-> 1. Hook **脚本能跑通**时：返回 `permission: ask` → 弹确认卡；**防护有效**。  
-> 2. Hook **进程起不来**（本例：`spawn /bin/zsh ENOENT`）且 `failClosed`：Cursor **拒绝执行**该命令 → **不是**「跳过闸门静默放行」。push/merge 等会失败，而不是在无防护下偷偷成功。  
-> 3. 因此：**不是「所有 push 永久失效」**；是「命中 matcher 的命令，在 hook runner 偶发起不来 zsh 时被硬拦」。同会话里先前多次 `git push` 成功，说明闸门多数时候可用；ENOENT 为**间歇 / 环境**问题（Cursor 钩子宿主找不到 `/bin/zsh`），待日后排查（PATH、Cursor hooks runtime、是否应用了错误的 shell）。  
-> 4. **临时绕过**：本机终端手动 `git push` / `gh pr create`（不经 Agent hooks）即可，与 2026-08-07 Sanctuary Unlock 本地 commit 待手推场景一致。
+> **恢复步骤**：`bash .cursor/hooks/ensure-permissions.sh` → **Developer: Reload Window** → 仍不行退出 Cursor 重开。  
+> **临时绕过（破坏性 git/gh）**：本机终端手动 `git push` / `gh pr create`（不经 Agent hooks），与 2026-08-07 Sanctuary Unlock 本地 commit 待手推场景一致。
 
 ### 推荐流程（任务收尾默认 push + PR）
 
