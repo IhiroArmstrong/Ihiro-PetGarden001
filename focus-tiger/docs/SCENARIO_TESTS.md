@@ -1,7 +1,7 @@
 # SCENARIO_TESTS.md — 用户场景操作故事测试脚本
 
 创建日期：2026-07-19  
-最近代码核对：2026-10-30（T66 心念流 / 隐迹星云 v0 偏好开关 · 默认关 · Focusing 隐藏 · Confide 第三档粒子 · #1475）· 2026-10-30（坐的配方 A2 五时 Compass 内改「我的坐法」· #1476 · A1b Default 接线 #1469 仍仅单测）· 2026-10-29（Confide 倾诉贴边暂时停用 + 倾诉卡禁拖 · T41 置顶/T42 次级靠边不变）· 2026-10-29（T63 同坐契约面 · T64 问号卡同坐文案 · T65 练习纸 T52 收工节奏 · T62 晚间练习事实 opt-in · T61 用户自定收工时刻 · T59 时长「还是上次那个」· 冷启动音效入口 #1428 · T60 reset 白名单 · T57 本地邀请结果记账 · T58 适应 v1）· 2026-10-26（T53 Mac 输入节奏默认关 · Web 无面板 · T54 研究同意账本 + 影子流水不上线故事 · 队列/T56 治理文档）· 2026-10-23（T45 静坐画面藏跳动数字 · SB-22 · 场景 T / O）· 2026-10-22（T34 Help Center 问卡办理 · 场景 AX 1b）· 2026-10-21（T26 Idle 问号右边 Help Center 快捷钮 · 场景 AX 1c）· 2026-10-19（T24 成长旅程详情下半部一张 Sit & Breath 练习观察纸 · T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳 · T22 Help Center 顶部问卡打字/语音检索）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
+最近代码核对：2026-11-03（Presence Field v0 可选同坐金晕 · 默认关 · 菜单「智能场」· #1532 · Idle tick 不再误造金 rim 邻接 fix）· 2026-11-03（英语四通道 session-end / awaken / refocus / moment-arrive · overlayLive 开 · #1544–#1546 · Worker 部署记录 #1547 不升格故事）· 2026-11-02（T73 旅程本时长读回 + 拒绝后再问走 picks · #1541 · 仍走场景 Z / AE 邻接）· 2026-10-30（T66 心念流 / 隐迹星云 v0 偏好开关 · 默认关 · Focusing 隐藏 · Confide 第三档粒子 · #1475）· 2026-10-30（坐的配方 A2 五时 Compass 内改「我的坐法」· #1476 · A1b Default 接线 #1469 仍仅单测）· 2026-10-29（Confide 倾诉贴边暂时停用 + 倾诉卡禁拖 · T41 置顶/T42 次级靠边不变）· 2026-10-29（T63 同坐契约面 · T64 问号卡同坐文案 · T65 练习纸 T52 收工节奏 · T62 晚间练习事实 opt-in · T61 用户自定收工时刻 · T59 时长「还是上次那个」· 冷启动音效入口 #1428 · T60 reset 白名单 · T57 本地邀请结果记账 · T58 适应 v1）· 2026-10-26（T53 Mac 输入节奏默认关 · Web 无面板 · T54 研究同意账本 + 影子流水不上线故事 · 队列/T56 治理文档）· 2026-10-23（T45 静坐画面藏跳动数字 · SB-22 · 场景 T / O）· 2026-10-22（T34 Help Center 问卡办理 · 场景 AX 1b）· 2026-10-21（T26 Idle 问号右边 Help Center 快捷钮 · 场景 AX 1c）· 2026-10-19（T24 成长旅程详情下半部一张 Sit & Breath 练习观察纸 · T23 高置信度产品问跳转 Help Center 问卡 · 问卡不可达不跳 · T22 Help Center 顶部问卡打字/语音检索）· 2026-10-17（CR-52 确认的练习时长问不再进 sad）· 2026-10-15（Confide 产品问须操作问法才进诚实空态 · CR-47）· 2026-10-14（莲花迁入 Where you are 横排 · 哥窑冰裂纹 G1/G2 五件套 · 宽屏菜单打开艺术收藏 · 珍藏桥句子在标题下可见 · 菜单 Records 抬头与同日存图不覆盖 · 旅程节奏刻度分开 · 圈子痕迹让开来过一行 · 问号卡不再重复今日方向 · 称号名不再占用青瓷器物名 · 点器物先见大图 · Honesty 选项恢复安静描边 · 指南针扇形与语音开关可从菜单打开 · 闲置页不再出现 undefined · 帮助中心可从菜单和问号卡点开 · 场景 AX · 磁州窑红绿彩五件套上架 · 请茶核销后金鸭原图可还原 · 货架三张预览去掉生成印 · 首页旅程短行可点开「Where you are」· 场景 AV · 珍藏第一次结缘后一次指向艺术收藏 · 场景 AW · 买下的画可存成 chosen card · 结缘器物可存成安静凭证 · 高清只在核销购买后下发 · 青瓷浮雕五件套 · 请你坐在旁边一次码 · 场景 AU · 2026-10-03 Q4 身旁章颁发飞入 · 2026-10-01 Collections 称号 Tab + 正念卷轴收藏 · Journey 同坐行导出日卡图 · 窄屏竖向建议横屏（不挡 Sit）· Confide 危机改写影子观察 + TTS 朗读收口 + 危机词误伤收窄 · 开场呼吸后再做 taste-layer/版本检查 · Yin 收藏 earned/purchased/support 三轨原则 · Companion GGUF 与 Electron L1 共享缓存 · 官方场景清库 `__ftDebug.resetScenario` · 仅 DEV · 同坐旁席剪影 · 灯笼压在 arrive 玻璃之上 · Support 订阅压在 dim 之上 · Collections 可读玻璃卡 · Enso 回蒲团 · 指南针铰在右下扇角 · Support 结账点击契约 #1161 · Idle 菜单单行代理表 · Honesty 空态链 Help Center · 情绪旁白不进 KB 诚实空态 · Stage 2b 灰度默认 shadow · Electron 中文 mood veto 本地开关 · Confide holdout lab 密封路径 · 全菜单可达 e2e · A7 boot 绑定外提 #1192–#1201）
 
 **权威路径**：`focus-tiger/docs/SCENARIO_TESTS.md`  
 **Given-When-Then 改写版（2026-09-23）**：[`SCENARIO_TESTS_GWT.md`](./SCENARIO_TESTS_GWT.md)（备份：`archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`；**E2E 优先级 P0/P1/P2 编写规范 + 自动打标**见 GWT 文首 §编写规范；Agent 规则 `scenario-gwt-priority`）  
@@ -39,6 +39,8 @@
   - `confideHelpCenterRedirect.test.js` — **AE** T23 产品问跳转 Help Center（**非** Web harness 全故事）
   - `teaGiftHd.test.js` — **AW** 请茶核销后把金鸭预览换成本机已有的原图（**非**真付、**非**观感）
   - `confidePracticeFacts` · `yinPersonalMemory*` · `desktopCompanionL2Route` — **AG** 练习事实 / Consent / Remember / 注入 / 口头 Forget（**非**完整 Confide 故事 e2e）
+  - `presenceFieldSession.test.js` · `presenceFieldMode.test.js` — **Presence Field v0** 开关 / Focusing 晕瓣 / lock·滞回（**非** Safari 观感 e2e）
+  - `companionChannelCopyDisplay.test.js` · `check:companion-contract` — **四通道英语句包** overlay 采用与冻表回退（**非**完整 Awaken/Recover 故事 e2e）
 - **二者全绿 ≠ 序列观感通过**（Idle 不闪、Stripe 真付、吹花 CapCut、Tiger Anchor 观感、Presence 披露时长、Electron memory 面板等仍人工；见 `DEV_WORKFLOW_QUALITY.md` §6.1 覆盖分层）
 各场景标题下须写清覆盖**层**（单元 / 控制器集成 / DOM 用户链路）与**测到哪一步**；禁止只写「已自动化」而不写范围。
 
@@ -1404,6 +1406,18 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **场景 AE**：T54 阶段 2 影子流水（#1430）**禁止**写入本摘要为「已上线行为」；仍走 10-13–14 增量 Confide 故事。
 3. **仍须人工 / 勿当缺口**：T53 开闸后 macOS 邀请时机与系统辅助功能权限；T54 同意文案与撤回路径（若有 UI）；影子流水仅 sealed 路径验收。
 4. **TEST_TRACKER / TASKS**：本批 EOD 另开 `docs/eod-tracker-assemble-2026-10-26` · `docs/eod-tasks-assemble-2026-10-26` PR 拼装碎片；**本文**只串故事。
+
+---
+
+## 2026-10-30–11-03 增量核对摘要（Presence Field · 四通道英语 copy · T73 读层）
+
+1. **背景**：自文首上次核对（2026-10-30）之后，合入 develop 的**用户面**包括：**Presence Field v0** 可选 Focusing 同坐金晕（#1532，**默认关**；`?presenceField=1` 当次强制开不写盘）· **英语四通道句包** step 1–4（#1542–#1546；#1546 开 `overlayLive` 后 session-end / awaken / refocus / moment-arrive 可走 overlay，仍受 `?tasteLayer=0` 冻表）· **T73** 旅程本时长读回与拒绝后再问走 picks（#1541）。**T68** 赠画仪式（#1490 区间）与 **T60** reset 白名单（#1457 邻接）已在 develop 祖先链，本批**不**重复升格字母。**#1547** 仅为 Worker 部署记录 PR，**不写进已上线故事**。
+2. **本次核对（增量，未升格新字母场景）**：
+   - **场景 A / T / X（Presence Field）**：开关在 Idle 菜单「智能场」；**开**且进入 Focusing 时阿寅外围可有金晕瓣（`[data-testid=presence-field-lobe]`），**Idle 无场**；与 T66 心念流（专注中心粒子）**并存时**批量测须分别开关，勿把默认关当缺口。**禁止**把 Idle 背景金 rim 误当智能场（#1532 邻接 fix 只认 Focusing 场）。
+   - **场景 Y / B / 觉照邀请（四通道 copy）**：overlayLive 且预取成功时，英语 **Moment arrive / Recover refocus / Session end / Awaken invite** 等通道句可换为 overlay 池句；失败或未拉取仍走冻表。**禁止**把 AI 审稿写成「用户已验收母语」；**禁止**把 Worker 部署记录当成 copy 已换句。
+   - **场景 Z / AG 邻接（T73）**：Confide / 旅程本可读「 usual duration」类读回；用户拒绝后再问 habitual 须走 picks 而非 paraphrase echo（#1541 单测 + 路由邻接，**非**完整 Z 故事 e2e）。
+3. **仍须人工 / 勿当缺口**：Presence Field 375/768/宽屏晕不挡脸与 Support（见 TEST_TRACKER「智能场 v0」行）；四通道 overlay 观感与 near-match 边界；T73 读回语气与空库诚实句。
+4. **TEST_TRACKER / TASKS**：本批 EOD 另开 `docs/eod-sync-2026-11-03` PR 拼装 **652** 条 tracker 碎片 + **170** 条 task 状态片；**本文**只串故事。
 
 ---
 
