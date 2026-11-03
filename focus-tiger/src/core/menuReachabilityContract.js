@@ -67,6 +67,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#daily-zen-quote-card'
   }),
+  'contemplative-inquiry': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#contemplative-inquiry-card'
+  }),
   'zen-cinema': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#zen-cinema-card'

@@ -46,6 +46,7 @@ import {
   T54_RESEARCH_CONSENT_STORAGE_KEY
 } from './t54ResearchLedger.js';
 import { LAST_POST_FINGERPRINT_KEY } from './t54ResearchUpload.js';
+import { CONTEMPLATIVE_INQUIRY_STORAGE_KEY } from './contemplativeInquiryMemory.js';
 import {
   createHintsSeenStore,
   HINTS_SEEN_STORAGE_KEY
@@ -283,7 +284,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   DESKTOP_CHECKOUT_PENDING_STORAGE_KEY,
   RITUAL_RECIPE_STORAGE_KEY,
   RITUAL_RECIPE_ANALYTICS_OPT_IN_STORAGE_KEY,
-  COMPANION_CHANNEL_RECENT_IDS_KEY
+  COMPANION_CHANNEL_RECENT_IDS_KEY,
+  CONTEMPLATIVE_INQUIRY_STORAGE_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

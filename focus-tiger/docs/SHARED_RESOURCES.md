@@ -57,6 +57,7 @@
 | `focus-tiger.ype-companion-style.v1` | `yinPersonalizationEngine` | L1 陪伴档 quiet/default/warm；What Yin remembers 邻接可改；`default` 即关掉个人化；**不进**练习备份 |
 | `focus-tiger.ype-cloud-personalization-consent.v1` | `ypeCloudPersonalizationConsent` | L2 第四条同意 + 本机 `ype_profile_id`；默认关；OFF 排队删云；**不进**练习备份 |
 | `focus-tiger.ype-personalization-pack.v1` | `ypePersonalizationPack` | L2 云端 Pack 缓存（schema v1）；关同意须丢弃；相同 JSON 跳过重写；**不进**练习备份 |
+| `focus-tiger.contemplative-inquiry-ex1.v1` | `contemplativeInquiryMemory` | T79 带着问题坐一会儿：防火墙已看过 / 全局关闭 / 回访次数。**不进**练习云备份 / 备份六键 |
 | `focus-tiger.quiet-together.v1` | `quietTogetherPreference` | Quiet Together 可关（缺省=开）。只存 `{ enabled }`。会话 UUID **不**进 localStorage |
 | `focus-tiger.focus-circle.v1` | `focusCircleMembership` | 本机入圈 `{ circleId, memberId, code, memberCount? }`；无账号。Privacy / My circle 开着时轮询 `status`；**禁止**用迟到的 status 覆盖更新的 leave/join；429 保持上次人数、不回落到 1 |
 | `focus-tiger.focus-circle-witness-responded.v1` | `focusCircleWitness` | 本机已回应 traceId 列表（防重复 picker） |
@@ -263,6 +264,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | snapshotField / 源 | 默认计入 sceneAnim `overlayBusy` | 例外（须单独划界） | 实现锚 |
 |---|---|---|---|
 | `languageOpen` | 是（语言面板开着挡摸头 / 进睡 / 多数场景动画） | **切语问候不得被面板自己挡住**：问候路径须把 `languageOpen` 视为 false（面板即切换入口） | `main.js` `overlayBusyForLocaleGreeting`；`ritualFlowHudWiring.test.js` |
+| `contemplativeInquiryOpen` | 是（T79 练习卡开着挡摸头 / 进睡） | **无例外**。切语问候仍走现网 `overlayBusyForLocaleGreeting`（本卡不改 languageOpen） | `ContemplativeInquiryUI.js`；`overlaySlotContractRegistry.js` CONTEMPLATIVE_INQUIRY |
 | 其它 `OVERLAY_SOURCE_CONTRACTS` 行 | 按 `readers` / `deriveSceneAnimOverlayBusy` | 无则写「无例外」；新增源时必须填本列 | `overlaySlotContractRegistry.js` |
 
 新增会被算进 `overlayBusy` 的面板时：先补本表一行（含「无例外」或点名不得误伤的交互），再接线。禁止只测「面板能打开」。
@@ -276,6 +278,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 微仪式 `MicroRitualUI` | `phase === 'breath'` | `getElapsedSeconds()` / `getProgress()` | `microBreathing` → `overlayBreathing` |
 | 进阶仪式 `RitualFlowUI`（Morning / Emotional Reset / Work Transition） | `isBreathing()` | `getElapsedSeconds()` / `getProgress()` | `ritualBreathing` → `overlayBreathing` |
 | 正式 Focus 会话 | `FocusSession` focusing | 会话 elapsed / target | 非 overlay 路径（既有 HUD） |
+| T79 带着问题坐一会儿 | `ContemplativeInquiryUI.isSitting()`（仅非 Focusing，避免叠两套计时） | `getElapsedSeconds()` / `getProgress()` / 5 分钟墙钟 | `inquirySitting` → `overlayBreathing`；**不**写入练习日 / Focus 芯片 |
 
 契约锁（源码字符串）：`ritualFlowHudWiring.test.js`。新 breath 流程不得只测面板内圆环，须写明左上角 Focusing + elapsed 仍推进。正式 Focus 会话（T45）**视觉藏** `#hud-time`（**SB-22**），DOM 仍写秒数；微仪式 / RitualFlow overlay 墙钟不套坐图画藏数字。
 

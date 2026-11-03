@@ -17,6 +17,7 @@ export const GLASS_CARD_MAX_OPEN = 2;
 export const GLASS_CARD_ELEMENT_IDS = Object.freeze({
   support: 'yin-support-modal',
   quote: 'daily-zen-quote-card',
+  'contemplative-inquiry': 'contemplative-inquiry-card',
   'mustard-seed': 'mustard-seed-seal-card',
   'practice-imprint': 'practice-imprint-card',
   wallpapers: 'digital-wallpapers-card',

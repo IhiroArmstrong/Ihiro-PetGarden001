@@ -282,6 +282,23 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0021'])
   }),
   Object.freeze({
+    id: 'kb-live-contemplative-inquiry',
+    surface: 'menu',
+    proxy: 'contemplative-inquiry',
+    labelKeys: Object.freeze(['CI_EX1_MENU_LABEL']),
+    menuPath: '⋯ → Inspiration → Sit with a question',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'contemplative-inquiry'",
+      'CI_EX1_MENU_LABEL'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/locales/slices/contemplative-inquiry-ex1.json'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
     id: 'kb-live-zen-cinema',
     surface: 'menu',
     proxy: 'zen-cinema',

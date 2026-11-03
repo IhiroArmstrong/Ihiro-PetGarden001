@@ -317,6 +317,7 @@ import {
   readFocusCircleMembership
 } from './core/focusCircleMembership.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
+import { ContemplativeInquiryUI } from './ui/ContemplativeInquiryUI.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import { PracticeImprintCardUI } from './ui/PracticeImprintCardUI.js';
 import {
@@ -1864,6 +1865,8 @@ async function init() {
     withIdleOverlayOccupancySync({})
   );
   window.__dailyZenQuoteCard = dailyZenQuoteCardUI;
+  /** @type {ContemplativeInquiryUI | null} */
+  let contemplativeInquiryUI = null;
   /**
    * Continuation after mustard / contemplative archive auto card closes.
    * @type {null | {
@@ -2577,6 +2580,27 @@ async function init() {
     })
   );
   window.__confideToYin = confideToYinUI;
+  contemplativeInquiryUI = new ContemplativeInquiryUI(
+    document.body,
+    withIdleOverlayOccupancySync({
+      onMenuVisibilityChange: () => {
+        idleChrome.wide.refreshSecondaryHintDots?.();
+        idleChrome.narrow.refreshSecondaryHintDots?.();
+      },
+      onAcknowledge: () => {
+        emotionController.playEmotion('MindfulAcknowledge');
+      },
+      onLand: () => {
+        closeGrowthOverlayCards({ except: 'ground-exercise' });
+        groundExerciseChoiceUI?.open();
+      },
+      onCrisis: () => {
+        closeGrowthOverlayCards({ except: 'confide' });
+        confideToYinUI.open();
+      }
+    })
+  );
+  window.__contemplativeInquiryCard = contemplativeInquiryUI;
   confideToYinUI.bindDesktopCompanion(getDesktopCompanionBridge());
   if (isDesktopShellRuntime()) {
     bindDesktopCompanionShellUnload(
@@ -2637,6 +2661,11 @@ async function init() {
     const cards = [
       { id: 'support', ui: bootMomentHosts.supportYinModalUI, close: () => bootMomentHosts.supportYinModalUI.close() },
       { id: 'quote', ui: dailyZenQuoteCardUI, close: () => dailyZenQuoteCardUI.close() },
+      {
+        id: 'contemplative-inquiry',
+        ui: contemplativeInquiryUI,
+        close: () => contemplativeInquiryUI.close()
+      },
       {
         id: 'mustard-seed',
         ui: mustardSeedSealCardUI,
@@ -3881,6 +3910,8 @@ async function init() {
         window.__growthJourneyDetail?.isOpen?.() === true,
       coinPanelOpen: window.__yinCoinPanel?.isOpen?.() === true,
       quoteOpen: window.__dailyZenQuoteCard?.isOpen?.() === true,
+      contemplativeInquiryOpen:
+        window.__contemplativeInquiryCard?.isOpen?.() === true,
       wallpapersOpen: window.__digitalWallpapersCard?.isOpen?.() === true,
       artCollectionOpen: window.__artCollectionPanel?.isOpen?.() === true,
       cinemaOpen: window.__zenCinemaCard?.isOpen?.() === true,
@@ -4730,6 +4761,10 @@ async function init() {
       closeGrowthOverlayCards({ except: 'quote' });
       dailyZenQuoteCardUI.open();
     },
+    onContemplativeInquiry: () => {
+      closeGrowthOverlayCards({ except: 'contemplative-inquiry' });
+      contemplativeInquiryUI.open();
+    },
     onMustardSeedSeal: () => {
       closeGrowthOverlayCards({ except: 'mustard-seed' });
       mustardSeedSealCardUI.open({ mode: 'menu' });
@@ -5474,6 +5509,7 @@ async function init() {
     transitionMomentUI.close();
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
+    contemplativeInquiryUI?.close();
     awakenInviteUI?.hide({ immediate: true });
     workEndInviteUI?.hide({ immediate: true });
     awakenCheckInUI?.hide({ immediate: true });
@@ -5721,6 +5757,7 @@ async function init() {
     bootMomentHosts.calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
     recoverResetPracticeUI?.resetSession();
+    contemplativeInquiryUI?.close();
     awakenInviteUI?.hide({ immediate: true });
     awakenCheckInUI?.hide({ immediate: true });
     bootAmbientHints.onboardingHints?.closePurposeCard?.();
@@ -5938,6 +5975,7 @@ async function init() {
       transitionMomentUI.close();
       groundExerciseChoiceUI?.close();
       recoverResetPracticeUI?.hide({ immediate: true });
+      contemplativeInquiryUI?.close();
       bootAmbientHints.ambientSoundscape.cancelDuck();
       endFocusChrome();
       const riseElapsedSeconds = focusSession.getElapsedSeconds();
@@ -6916,9 +6954,22 @@ async function init() {
       : null;
     const microProgress = microBreathing ? bootHonestyCompanion.microRitualUI.getProgress() : null;
     const ritualProgress = ritualBreathing ? ritualFlowUI.getProgress() : null;
-    const overlayBreathing = microBreathing || ritualBreathing;
-    const overlayElapsed = microBreathing ? microElapsed : ritualElapsed;
-    const overlayProgress = microProgress ?? ritualProgress;
+    const inquirySitting =
+      stateManager.state !== STATES.FOCUSING &&
+      contemplativeInquiryUI?.isSitting?.() === true;
+    const inquiryElapsed = inquirySitting
+      ? contemplativeInquiryUI.getElapsedSeconds()
+      : null;
+    const inquiryProgress = inquirySitting
+      ? contemplativeInquiryUI.getProgress()
+      : null;
+    const overlayBreathing = microBreathing || ritualBreathing || inquirySitting;
+    const overlayElapsed = microBreathing
+      ? microElapsed
+      : ritualBreathing
+        ? ritualElapsed
+        : inquiryElapsed;
+    const overlayProgress = microProgress ?? ritualProgress ?? inquiryProgress;
 
     const focusLevel =
       overlayProgress != null
@@ -6983,7 +7034,9 @@ async function init() {
         targetSeconds:
           ((microBreathing
             ? bootHonestyCompanion.microRitualUI?.getDurationMinutes?.()
-            : ritualFlowUI?.getDurationMinutes?.()) ?? 1) * 60,
+            : ritualBreathing
+              ? ritualFlowUI?.getDurationMinutes?.()
+              : contemplativeInquiryUI?.getDurationMinutes?.()) ?? 1) * 60,
         ambient: bootAmbientHints.ambientSoundscape
       });
     }
@@ -6999,7 +7052,9 @@ async function init() {
       sessionTargetMinutes: overlayBreathing
         ? microBreathing
           ? bootHonestyCompanion.microRitualUI?.getDurationMinutes?.()
-          : ritualFlowUI?.getDurationMinutes?.()
+          : ritualBreathing
+            ? ritualFlowUI?.getDurationMinutes?.()
+            : contemplativeInquiryUI?.getDurationMinutes?.()
         : focusSession.isOpenEnded()
           ? null
           : focusSession.targetMinutes,

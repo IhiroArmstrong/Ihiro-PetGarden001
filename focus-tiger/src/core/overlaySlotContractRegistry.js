@@ -55,6 +55,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   GROWTH_JOURNEY_DETAIL: 'growth-journey-detail',
   YIN_COIN: 'yin-coin',
   DAILY_QUOTE: 'daily-quote',
+  CONTEMPLATIVE_INQUIRY: 'contemplative-inquiry',
   WALLPAPERS: 'wallpapers',
   ART_COLLECTION: 'art-collection',
   ZEN_CINEMA: 'zen-cinema',
@@ -343,6 +344,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#daily-zen-quote-card',
     snapshotField: 'quoteOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 12,
+    readers: 'T79 Sit-with-a-question card; overlayBusy; independent 5-minute wall clock',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#contemplative-inquiry-card',
+    snapshotField: 'contemplativeInquiryOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.WALLPAPERS,
@@ -675,6 +687,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'GrowthJourneyDetailUI.js': [OVERLAY_SOURCES.GROWTH_JOURNEY_DETAIL],
   'FocusCoinsPanelUI.js': [OVERLAY_SOURCES.YIN_COIN],
   'DailyZenQuoteCardUI.js': [OVERLAY_SOURCES.DAILY_QUOTE],
+  'ContemplativeInquiryUI.js': [OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY],
   'DigitalWallpapersCardUI.js': [OVERLAY_SOURCES.WALLPAPERS],
   'ArtCollectionPanelUI.js': [OVERLAY_SOURCES.ART_COLLECTION],
   'ZenCinemaCardUI.js': [OVERLAY_SOURCES.ZEN_CINEMA],
