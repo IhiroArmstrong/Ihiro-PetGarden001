@@ -21,7 +21,16 @@ export const COLD_START_GOAL_SESSION_KEY =
  * Bump ONLY when `COLD_START_GOAL_CHOICES` add/remove/replace an id —
  * NOT copy/i18n tweaks. Brief: task-today-direction-help-entry-and-options-version.md
  */
-export const COLD_START_GOAL_OPTIONS_VERSION = 1;
+export const COLD_START_GOAL_OPTIONS_VERSION = 2;
+
+/** Users who saw the card before this bump actually saw version 1. */
+export const COLD_START_GOAL_OPTIONS_VERSION_BEFORE_T76 = 1;
+
+export const COLD_START_DIRECT_SIT_HINT_KEY =
+  'focus-tiger.cold-start-direct-sit-hint.v1';
+
+export const COLD_START_DIRECT_SIT_PENDING_KEY =
+  'focus-tiger.cold-start-direct-sit-pending.v1';
 
 export const COLD_START_GOAL_OPTIONS_SEEN_KEY =
   'focus-tiger.cold-start-goal-options-seen.v1';
@@ -29,22 +38,27 @@ export const COLD_START_GOAL_OPTIONS_SEEN_KEY =
 /** Persistent “already saw the four-choice card”. */
 export const COLD_START_GOAL_RESET_LOCAL_KEYS = Object.freeze([
   COLD_START_GOAL_SEEN_KEY,
-  COLD_START_GOAL_OPTIONS_SEEN_KEY
+  COLD_START_GOAL_OPTIONS_SEEN_KEY,
+  COLD_START_DIRECT_SIT_HINT_KEY
 ]);
 
 /** This-tab choice; DEV / scenario reset must drop it with the seen flag. */
 export const COLD_START_GOAL_RESET_SESSION_KEYS = Object.freeze([
-  COLD_START_GOAL_SESSION_KEY
+  COLD_START_GOAL_SESSION_KEY,
+  COLD_START_DIRECT_SIT_PENDING_KEY
 ]);
 
-/** @typedef {'focus' | 'calm' | 'study-work' | 'browse'} ColdStartGoalChoice */
+/** @typedef {'mindfulness' | 'breath' | 'study-work' | 'browse'} ColdStartGoalChoice */
 
 export const COLD_START_GOAL_CHOICES = Object.freeze([
-  'focus',
-  'calm',
+  'mindfulness',
+  'breath',
   'study-work',
   'browse'
 ]);
+
+/** Removed in T76. Session-only; never a profile field. */
+export const COLD_START_GOAL_LEGACY_CHOICES = Object.freeze(['focus', 'calm']);
 
 /**
  * @param {Storage | null | undefined} storage
@@ -117,7 +131,10 @@ export function migrateColdStartGoalOptionsSeen(storage) {
   if (!storage?.getItem) return;
   try {
     if (storage.getItem(COLD_START_GOAL_OPTIONS_SEEN_KEY) != null) return;
-    markColdStartGoalOptionsVersionSeen(storage);
+    markColdStartGoalOptionsVersionSeen(
+      storage,
+      COLD_START_GOAL_OPTIONS_VERSION_BEFORE_T76
+    );
   } catch {
     // ignore
   }
@@ -167,31 +184,86 @@ export function getColdStartGoalSessionChoice(sessionStorage) {
   if (!sessionStorage?.getItem) return null;
   try {
     const raw = sessionStorage.getItem(COLD_START_GOAL_SESSION_KEY);
-    return COLD_START_GOAL_CHOICES.includes(raw) ? raw : null;
+    if (COLD_START_GOAL_CHOICES.includes(raw)) return raw;
+    if (COLD_START_GOAL_LEGACY_CHOICES.includes(raw)) {
+      try {
+        sessionStorage.removeItem(COLD_START_GOAL_SESSION_KEY);
+      } catch {
+        // ignore
+      }
+    }
+    return null;
   } catch {
     return null;
   }
 }
 
 /**
- * Map choice → existing product surface (session navigation only).
+ * Remember that the sitting which just started came from the four-choice card.
+ * @param {Storage | null | undefined} sessionStorage
+ * @returns {void}
+ */
+export function markColdStartDirectSitPending(sessionStorage) {
+  if (!sessionStorage?.setItem) return;
+  try {
+    sessionStorage.setItem(COLD_START_DIRECT_SIT_PENDING_KEY, '1');
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * One lifetime toast after a direct-sit started from the four-choice card.
+ * @param {Storage | null | undefined} storage
+ * @param {Storage | null | undefined} sessionStorage
+ * @returns {boolean}
+ */
+export function consumeColdStartDirectSitHint(storage, sessionStorage) {
+  let pending = false;
+  try {
+    pending = sessionStorage?.getItem?.(COLD_START_DIRECT_SIT_PENDING_KEY) === '1';
+  } catch {
+    pending = false;
+  }
+  if (!pending) return false;
+  try {
+    sessionStorage.removeItem(COLD_START_DIRECT_SIT_PENDING_KEY);
+  } catch {
+    // ignore
+  }
+  try {
+    if (storage?.getItem?.(COLD_START_DIRECT_SIT_HINT_KEY) === '1') return false;
+  } catch {
+    return false;
+  }
+  try {
+    storage?.setItem?.(COLD_START_DIRECT_SIT_HINT_KEY, '1');
+  } catch {
+    // still show once this session
+  }
+  return true;
+}
+
+/**
+ * Map choice → existing product surface.
+ * Direct sit skips Arrival. Legacy focus/calm must not navigate.
  *
- * @param {ColdStartGoalChoice} choice
+ * @param {string} choice
  * @returns {
  *   | { type: 'micro-ritual', minutes: number }
- *   | { type: 'companion' }
+ *   | { type: 'direct-sit', mode: 'stay' | 'acrossTools', minutes: number }
  *   | { type: 'browse' }
  *   | null
  * }
  */
 export function resolveColdStartGoalAction(choice) {
   switch (choice) {
-    case 'focus':
+    case 'mindfulness':
+      return { type: 'direct-sit', mode: 'stay', minutes: 10 };
+    case 'breath':
       return { type: 'micro-ritual', minutes: 1 };
-    case 'calm':
-      return { type: 'companion' };
     case 'study-work':
-      return { type: 'micro-ritual', minutes: 20 };
+      return { type: 'direct-sit', mode: 'acrossTools', minutes: 25 };
     case 'browse':
       return { type: 'browse' };
     default:

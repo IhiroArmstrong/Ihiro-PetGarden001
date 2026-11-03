@@ -231,7 +231,9 @@ import {
   resolveColdStartGoalAction,
   shouldOfferColdStartGoalCard,
   migrateColdStartGoalOptionsSeen,
-  markColdStartGoalOptionsVersionSeen
+  markColdStartGoalOptionsVersionSeen,
+  markColdStartDirectSitPending,
+  consumeColdStartDirectSitHint
 } from './core/coldStartGoalGate.js';
 import { shouldShowHomeSanctuaryNavPulse } from './core/homeSanctuaryNavGate.js';
 import {
@@ -2848,6 +2850,14 @@ async function init() {
     });
   }
 
+
+  function maybeToastColdStartDirectSitHint() {
+    const local = typeof localStorage !== 'undefined' ? localStorage : null;
+    const session = typeof sessionStorage !== 'undefined' ? sessionStorage : null;
+    if (!consumeColdStartDirectSitHint(local, session)) return;
+    mindfulToast.show(t('COLD_START_DIRECT_SIT_HINT'), { visibleMs: 6400 });
+  }
+
   function handleColdStartGoalSelect(choice) {
     const action = resolveColdStartGoalAction(choice);
     if (choice !== 'browse') {
@@ -2857,9 +2867,31 @@ async function init() {
       syncTodayDirectionOptionsBanner();
     }
     if (!action || action.type === 'browse') return;
-    if (action.type === 'companion') {
+    if (action.type === 'direct-sit') {
+      if (
+        reflectionMoment?.isOpen?.() ||
+        bootHonestyCompanion.microRitualUI?.isOpen?.() ||
+        focusDurationPicker?.isOpen?.() ||
+        honestyBridge?.isVisible?.() ||
+        bootHonestyCompanion.arrivalPractice?.isOpen?.()
+      ) {
+        mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
+        return;
+      }
       closeGrowthOverlayCards();
-      bootHonestyCompanion.companionModePicker.open();
+      sessionEndFlow.cancelPending();
+      honestyBridge?.hide();
+      bootHonestyCompanion.honestyCheckInUI.hide();
+      bootHonestyCompanion.companionModePicker.hide();
+      focusDurationPicker?.hide();
+      pendingFocusDurationMode = null;
+      bootHonestyCompanion.companionModePicker.commitStoredMode(action.mode);
+      focusSession.setTargetMinutes(action.minutes);
+      bootSessionChrome.syncArrivalGateReady(true);
+      markColdStartDirectSitPending(
+        typeof sessionStorage !== 'undefined' ? sessionStorage : null
+      );
+      beginFocusWithMode(action.mode);
       resyncSessionChrome();
       syncOnboardingAutoHints();
       return;
@@ -5983,6 +6015,8 @@ async function init() {
       sessionPresenceCollector.finalize(
         snapshotFocusSessionForPresence(focusSession, { endedEarly: true })
       );
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
       const t54Early = noteTimedFocusEndedForT54({
         session: focusSession,
         endedEarly: true,
@@ -6022,6 +6056,7 @@ async function init() {
         intentionSource: currentIntentionSource,
         elapsedSeconds: riseElapsedSeconds
       });
+      maybeToastColdStartDirectSitHint();
       onFocusCircleRiseSideEffects(riseElapsedSeconds);
       currentSessionIntention = '';
       currentIntentionSource = 'typed';
@@ -6373,6 +6408,8 @@ async function init() {
     sessionPresenceCollector.finalize(
       snapshotFocusSessionForPresence(focusSession, { endedEarly: false })
     );
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
     const t54Done = noteTimedFocusEndedForT54({
       session: focusSession,
       endedEarly: false,
@@ -6408,6 +6445,7 @@ async function init() {
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
     maybeOfferGrowthSealAfterBaselineCeremony({ sessionEndOpts: endOpts });
+    maybeToastColdStartDirectSitHint();
     onFocusCircleRiseSideEffects(witnessElapsedSeconds);
     bootAmbientHints.onboardingHints?.markSeen('rise-button');
   }

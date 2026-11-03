@@ -29,6 +29,8 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.companion-mode.v1',
   'focus-tiger.cold-start-goal-seen.v1',
   'focus-tiger.cold-start-goal-options-seen.v1',
+  'focus-tiger.cold-start-direct-sit-hint.v1',
+  'focus-tiger.cold-start-direct-sit-pending.v1',
   'focus-tiger.home-sanctuary-nav-seen.v1',
   'focus-tiger.collections-art-bridge-seen.v1',
   'focus-tiger.reminder-quota.v1',
@@ -118,7 +120,8 @@ export const DEV_BOOT_IDLE_SESSION_KEY = 'focus-tiger.dev-boot-idle.v1';
 
 /** sessionStorage：DEV 一键重置须清掉的会话 key（与 local 白名单分开维护）。 */
 export const DEV_RESET_SESSION_KEYS = Object.freeze([
-  'focus-tiger.cold-start-goal-choice.v1'
+  'focus-tiger.cold-start-goal-choice.v1',
+  'focus-tiger.cold-start-direct-sit-pending.v1'
 ]);
 
 function getSessionStorage() {
