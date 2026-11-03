@@ -471,6 +471,13 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(focusVsMeditation.hit, true);
     assert.equal(focusVsMeditation.id, 'KB-EDU-0003');
     assert.match(focusVsMeditation.text || '', /does not coach breathing/i);
+    assert.match(focusVsMeditation.text || '', /quiet sit/i);
+    assert.match(focusVsMeditation.text || '', /no voice guidance/i);
+    assert.doesNotMatch(focusVsMeditation.text || '', /generic meditation class/i);
+
+    const zazen = retrieveProductKnowledge('zazen');
+    assert.equal(zazen.hit, true);
+    assert.equal(zazen.id, 'KB-EDU-0003');
 
     const entryMap = retrieveProductKnowledge('mindfulness in this app');
     assert.equal(entryMap.hit, true);

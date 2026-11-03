@@ -1,8 +1,8 @@
 ---
 id: t76-cold-start-quiet-sit
 kind: feature
-status: Brief 待点头 · 排队中 · P1
-updated: 2026-11-02
+status: B1 已合 #1550 · B2 进行中 · P2
+updated: 2026-11-03
 ---
 
-T76 冷启动静修入口。A 类 Brief 本 PR。B1 点头后改卡面、修呼吸错路、首次直坐；B2 帮助别名 P2。不是禅修引擎，不是 T71。
+T76 冷启动静修入口。B1 卡面/纠错/直坐已合 #1550。B2 帮助别名指向同坐、EDU-0003 改为无语音指导的默坐。不是禅修引擎，不是 T71。

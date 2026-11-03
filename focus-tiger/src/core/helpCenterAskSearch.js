@@ -20,6 +20,7 @@ import {
 import { isConfideOperationalProductAskShape } from './confide/confideProductKnowledgeSemantic.js';
 import { resolveVoiceCommandOutcome } from './voiceCommandOutcome.js';
 import { classifyHelpCenterOperatingCommand } from './yinVoiceCommandEntry.js';
+import { resolveHelpCenterQuietSitAliasArticles } from './helpCenterQuietSitAliases.js';
 
 export const HELP_CENTER_ASK_MAX_CARDS = 3;
 
@@ -195,6 +196,12 @@ export function searchHelpCenterAskCards(text, opts = {}) {
   const topScore = ranked[0]?.score ?? 0;
   /** @type {string[]} */
   const articleIds = [];
+
+  for (const aliasId of resolveHelpCenterQuietSitAliasArticles(normalizedText)) {
+    if (articleIds.includes(aliasId)) continue;
+    const exists = HELP_CENTER_ARTICLES.some((row) => row.id === aliasId);
+    if (exists) articleIds.push(aliasId);
+  }
 
   const pushKb = (kbId) => {
     if (!kbId || !kbIdAllowedInAskResults(kbId, normalizedText, ctx)) return;
