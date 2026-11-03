@@ -368,7 +368,9 @@ _（无）_
 > **地位**：与 §1–§6 产品共享面互补。本节登记 **Cursor IDE Agent** 在仓库内的硬闸门与运行时目录，供改 hook / 新会话验收 / 排查「Agent 无法改文件或跑命令」时对照。  
 > **SSOT 接线**：`.cursor/hooks.json` + `.cursor/hooks/*.sh`；策略叙事见 `PROCESS.md`「Cursor Agent 终端权限」、`focus-tiger-agent-token-cost.mdc`（含 `agent-tool-budget` 分档）、`focus-tiger-browser-energy.mdc`（IDE Browser 硬禁）。
 
-### 7.1 已接线闸门（`failClosed: true`）
+### 7.1 已接线闸门
+
+**`failClosed: true`（安全 / 高代价 · runner 起不来则硬拒该次动作）**
 
 | Hook 脚本 | 事件 | 匹配 / 行为 | 用户可见拦截 |
 |---|---|---|---|
@@ -377,8 +379,18 @@ _（无）_
 | `gate-destructive-shell.sh` | `beforeShellExecution` | `git push\|reset\|clean\|rebase\|merge`；`gh pr merge`；`gh repo delete` | `permission: ask` — 远程 / 破坏性 git·gh 须确认 |
 | `gate-full-e2e-dispatch.sh` | `beforeShellExecution` | `gh workflow run`；`gh run watch\|rerun`；长 `sleep`（≥60s） | `permission: ask` — 全量 e2e / CI 轮询须确认 |
 | `gate-local-heavy-e2e.sh` | `beforeShellExecution` | `test:e2e`；`playwright test`；多 spec 链式 | `permission: deny` — 本地重 e2e 硬拦（逃生：`RUN_E2E_LOCAL=true`） |
-| `session_gate.sh` | `beforeSubmitPrompt` | PR 已合并 → 断会话；口令「大任务」「开工」「继续」选档并重置**探索**计数；「大任务」提醒先列预期文件/函数清单；新会话上的「继续」会提醒应留在本 Chat | `continue: false` 或放行 |
-| `tool_budget.sh` | `preToolUse` | 按 `budget_tier` **只计探索类**；`Read` 对齐 200/400 粒度；连续 8 次探索无改文件先软停；软 ask / 硬 deny 须附探索快照 | 探索耗尽时提示在**本对话**发「继续 &lt;任务&gt;」；不拦改文件/git |
+| `shell_guard.sh` | `beforeShellExecution` | 通用 shell 护栏 | 见脚本 |
+| `read_file_gate.sh` | `beforeReadFile` | 大文件 / 粒度读闸 | 见脚本 |
+
+**`failClosed: false`（治理 / 预算 · runner 起不来则 fail open，避免整会话瘫痪）**
+
+| Hook 脚本 | 事件 | 匹配 / 行为 | 正常时效果 |
+|---|---|---|---|
+| `session_gate.sh` | `beforeSubmitPrompt` | PR 已合并 → 断会话；口令「大任务」「开工」「继续」选档并重置**探索**计数 | `continue: false` 或放行 |
+| `tool_budget.sh` | `preToolUse` | 按 `budget_tier` **只计探索类**；Read 200/400 粒度；连续探索软/硬顶 | 探索耗尽时 ask/deny |
+| `after_shell_merge_detect.sh` | `afterShellExecution` | PR 合并检测写 `merged` 标记 | 侧车状态 |
+
+> **2026-11-03**：`session_gate` / `tool_budget` 改为 **`failClosed: false`**，因 Cursor 间歇 `spawn /bin/zsh ENOENT` 曾配合 `failClosed: true` 锁死整 Chat；安全类 hook 仍 fail closed。规则与口令纪律仍见 `focus-tiger-agent-token-cost.mdc`。
 
 **`stop`**：空数组（2026-07-21 起不再发 Git 同步系统通知；`remind-git-sync.sh` 保留未挂）。
 
@@ -396,8 +408,9 @@ _（无）_
 
 | 现象 | 处理 |
 |---|---|
-| Hook 报 `failed … spawn` / 会话无法 Shell·写文件 | 确认 `.cursor/hooks/*.sh` 具 **可执行位**（`chmod +x .cursor/hooks/*.sh`），然后 **Developer: Reload Window** |
-| `failClosed: true` 且 hook 进程起不来 | Cursor **硬拒绝**该次调用（非静默放行）；见 `PROCESS.md`「`gate-destructive-shell` × `zsh ENOENT`」 |
+| Hook 报 `failed … spawn` / 会话无法 Shell·写文件 | 1）`bash .cursor/hooks/ensure-permissions.sh`（或 `chmod +x .cursor/hooks/*.sh`）→ 2）**Developer: Reload Window** → 仍不行则退出 Cursor 重开 |
+| `session_gate` / `tool_budget` + `spawn /bin/zsh ENOENT` | **2026-11-03 起**两 hook 为 **`failClosed: false`**：runner 起不来时 **fail open**，Agent 可继续；PR 断会话 / 探索预算可能短暂失效，靠 rules + 口令补位 |
+| 安全类 hook + `failClosed: true` + runner 起不来 | Cursor **硬拒绝**该次动作（非静默放行）；见 `PROCESS.md`「Cursor hooks × `zsh ENOENT`」 |
 | 临时绕过破坏性闸 | 本机终端手动 `git push` / `gh pr create`（不经 Agent hooks） |
 
 ### 7.4 新会话验收清单（改 hook 后、合 develop 前）

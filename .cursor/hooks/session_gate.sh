@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # beforeSubmitPrompt — PR merge gate + per-conversation tool-budget tier selection.
+# hooks.json: failClosed false (runner crash must not lock whole Chat; see SHARED_RESOURCES §7.3).
 source "$(dirname "${BASH_SOURCE[0]}")/lib_common.sh"
 
 INPUT=$(read_stdin_json)

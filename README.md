@@ -13,12 +13,13 @@ v1.0.0 ships **English only**.
 
 ## For developers (local)
 
-After **clone / unzip / cloud sync**, restore Cursor hook execute bits once (zip and some sync tools drop `+x`):
+After **clone / unzip / cloud sync / new git worktree**, restore Cursor hook execute bits once (zip and some sync tools drop `+x`):
 
 ```bash
-chmod +x .cursor/hooks/*.sh
-# or: bash .cursor/hooks/ensure-permissions.sh
+bash .cursor/hooks/ensure-permissions.sh
 ```
+
+Then **Developer: Reload Window** in Cursor so hook runner picks up `+x` (optional but recommended after sync).
 
 Then:
 
