@@ -1,0 +1,1 @@
+| T79 觉察哲思第一例 Brief | 纯文档 | 待人工测试 | **只验 Brief 与三语暂定稿**，不测运行时。打开 `task-briefs/task-t79-contemplative-inquiry.md`：独立菜单行、不进每日一句、5 分钟不进 Focus 芯片、第四选项三语已锁、B 类中文「现在不用想明白什么」。点头口令「按 T79 Brief 开工」后另开实现旁支。 | **2026-11-03** PO 停等中文外审并要求立刻安排。 | — | — | `task-t79-contemplative-inquiry.md` | 2026-11-03 |
