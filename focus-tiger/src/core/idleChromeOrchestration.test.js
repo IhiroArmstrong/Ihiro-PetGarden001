@@ -340,8 +340,9 @@ describe('listSecondaryChromeEntries', () => {
     const quoteIdx = proxies.indexOf('daily-quote');
     const sealIdx = proxies.indexOf('mustard-seed-seal');
     assert.ok(quoteIdx >= 0);
-    assert.equal(proxies[quoteIdx + 1], 'zen-cinema');
-    assert.equal(sealIdx, quoteIdx + 2);
+    assert.equal(proxies[quoteIdx + 1], 'contemplative-inquiry');
+    assert.equal(proxies[quoteIdx + 2], 'zen-cinema');
+    assert.equal(sealIdx, quoteIdx + 3);
   });
 
   it('narrow drawer omits honesty and breath; includes companion/reminder/language/five-moments/zen-cinema/…', () => {
@@ -358,6 +359,7 @@ describe('listSecondaryChromeEntries', () => {
         'presence-signals',
         'yin-coin',
         'daily-quote',
+        'contemplative-inquiry',
         'zen-cinema',
         'wallpapers',
         'art-collection',
@@ -409,6 +411,7 @@ describe('listSecondaryChromeEntries', () => {
         'presence-signals',
         'yin-coin',
         'daily-quote',
+        'contemplative-inquiry',
         'zen-cinema',
         'wallpapers',
         'art-collection',
@@ -431,6 +434,19 @@ describe('listSecondaryChromeEntries', () => {
         'ritual-emotional-reset',
         'ritual-work-transition'
       ]
+    );
+  });
+
+  it('hides contemplative-inquiry when globally disabled', () => {
+    const shown = listSecondaryChromeEntries('wide-more', allOn);
+    assert.ok(shown.some((e) => e.proxy === 'contemplative-inquiry'));
+    const hidden = listSecondaryChromeEntries('wide-more', {
+      ...allOn,
+      contemplativeInquiryVisible: false
+    });
+    assert.equal(
+      hidden.some((e) => e.proxy === 'contemplative-inquiry'),
+      false
     );
   });
 
@@ -529,6 +545,7 @@ describe('listSecondaryChromeEntries', () => {
         'presence-signals',
         'yin-coin',
         'daily-quote',
+        'contemplative-inquiry',
         'zen-cinema',
         'wallpapers',
         'art-collection',

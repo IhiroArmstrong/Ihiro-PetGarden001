@@ -64,6 +64,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [growthJourneyDetailOpen]
  * @property {boolean} [coinPanelOpen]
  * @property {boolean} [quoteOpen]
+ * @property {boolean} [contemplativeInquiryOpen]
  * @property {boolean} [wallpapersOpen]
  * @property {boolean} [artCollectionOpen]
  * @property {boolean} [cinemaOpen]
@@ -90,7 +91,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  *   'compassOpen' | 'coldStartGoalOpen' | 'mustardSeedOpen' | 'giftArtOpen' | 'tipJarOpen' | 'supportModalOpen' |
  *   'sanctuaryOpen' | 'membershipOpen' | 'flowerWelcomeVisible' |
  *   'welcomeSequencePlaying' | 'secondaryMenuOpen' |
- *   'confideOpen' | 'journeyOpen' | 'helpCenterOpen' | 'growthJourneyDetailOpen' | 'coinPanelOpen' | 'quoteOpen' | 'wallpapersOpen' | 'artCollectionOpen' |
+ *   'confideOpen' | 'journeyOpen' | 'helpCenterOpen' | 'growthJourneyDetailOpen' | 'coinPanelOpen' | 'quoteOpen' | 'contemplativeInquiryOpen' | 'wallpapersOpen' | 'artCollectionOpen' |
  *   'cinemaOpen' | 'newsletterOpen' | 'presenceOpen' | 'languageOpen' |
  *   'purposeCardOpen' | 'privacySheetOpen' | 'focusCircleWitnessLeaveVisible' |
  *   'focusCircleWitnessRespondOpen' | 'focusAwarenessOpen' |
@@ -136,6 +137,7 @@ export function buildOverlaySnapshot(input = {}) {
     growthJourneyDetailOpen: Boolean(input.growthJourneyDetailOpen),
     coinPanelOpen: Boolean(input.coinPanelOpen),
     quoteOpen: Boolean(input.quoteOpen),
+    contemplativeInquiryOpen: Boolean(input.contemplativeInquiryOpen),
     wallpapersOpen: Boolean(input.wallpapersOpen),
     artCollectionOpen: Boolean(input.artCollectionOpen),
     cinemaOpen: Boolean(input.cinemaOpen),
@@ -279,6 +281,7 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
  */
 export function deriveFocusingSoftCardBusy(snapshot) {
   if (snapshot.recoverResetPracticeOpen) return true;
+  if (snapshot.contemplativeInquiryOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
   if (snapshot.awakenInviteOpen) return true;
   if (snapshot.awakenCheckInOpen) return true;
@@ -497,6 +500,9 @@ function activeGrowthCard(snapshot) {
   if (snapshot.groundExerciseChoiceOpen) {
     return OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE;
   }
+  if (snapshot.contemplativeInquiryOpen) {
+    return OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY;
+  }
   return null;
 }
 
@@ -629,6 +635,9 @@ function collectTransitionMomentYield(snapshot) {
   if (snapshot.recoverResetPracticeOpen) {
     blockers.push(OVERLAY_SOURCES.RECOVER_RESET_PRACTICE);
   }
+  if (snapshot.contemplativeInquiryOpen) {
+    blockers.push(OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY);
+  }
   if (snapshot.focusDurationPickerOpen) {
     blockers.push(OVERLAY_SOURCES.FOCUS_DURATION_PICKER);
   }
@@ -658,6 +667,9 @@ function collectRecoverResetBaseYield(snapshot) {
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
   if (snapshot.groundExerciseChoiceOpen) {
     blockers.push(OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE);
+  }
+  if (snapshot.contemplativeInquiryOpen) {
+    blockers.push(OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY);
   }
   if (snapshot.mustardSeedOpen) {
     blockers.push(OVERLAY_SOURCES.GROWTH_MUSTARD_SEED);

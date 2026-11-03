@@ -14,6 +14,7 @@
 export const GLASS_GROWTH_OVERLAY_CARD_IDS = Object.freeze([
   'support',
   'quote',
+  'contemplative-inquiry',
   'mustard-seed',
   'practice-imprint',
   'wallpapers',
@@ -44,6 +45,7 @@ export const GLASS_GROWTH_OVERLAY_CARD_IDS = Object.freeze([
  */
 export const MENU_PROXY_TO_GROWTH_OVERLAY_CARD_ID = Object.freeze({
   'daily-quote': 'quote',
+  'contemplative-inquiry': 'contemplative-inquiry',
   'mustard-seed-seal': 'mustard-seed',
   wallpapers: 'wallpapers',
   'art-collection': 'art-collection',

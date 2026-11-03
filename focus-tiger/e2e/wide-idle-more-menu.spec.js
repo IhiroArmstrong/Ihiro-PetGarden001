@@ -32,7 +32,8 @@ const WIDE_MORE_ROW_GROUP = Object.freeze({
   reminder: 'MENU_GROUP_PREFERENCES',
   language: 'MENU_GROUP_PREFERENCES',
   'zen-cinema': 'MENU_GROUP_INSPIRATION',
-  'daily-quote': 'MENU_GROUP_INSPIRATION'
+  'daily-quote': 'MENU_GROUP_INSPIRATION',
+  'contemplative-inquiry': 'MENU_GROUP_INSPIRATION'
 });
 
 /**

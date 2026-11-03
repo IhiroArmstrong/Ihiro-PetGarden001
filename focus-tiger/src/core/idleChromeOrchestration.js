@@ -19,6 +19,7 @@ import { isEntitled } from './entitlement/entitlementGate.js';
 import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js';
+import { isContemplativeInquiryMenuVisible } from './contemplativeInquiryMemory.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -54,6 +55,7 @@ import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js'
  * @property {boolean} [confideUserVisible] override; default = isConfideUserVisible()
  * @property {boolean} [companionGeneration] Electron wide L1 only; ignored on narrow-drawer
  * @property {boolean} [mustardSeedSealUnlocked] memorial seal menu after score unlock
+ * @property {boolean} [contemplativeInquiryVisible] T79 Sit-with-a-question; default = not globally off
  * @property {Array<{ proxy: string, labelKey: string }>} [contemplativeArchiveSealMenus]
  * @property {boolean} [yinCoinVisible] override; default = isFocusCoinsAwardEnabled()
  * @property {boolean} [systemTtsAvailable] macOS Electron wide System TTS menu row
@@ -163,6 +165,7 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
   confide: { handler: 'onConfide', close: true },
   'zen-cinema': { handler: 'onZenCinema', close: true },
   'daily-quote': { handler: 'onDailyQuote', close: true },
+  'contemplative-inquiry': { handler: 'onContemplativeInquiry', close: true },
   'mustard-seed-seal': { handler: 'onMustardSeedSeal', close: true },
   wallpapers: { handler: 'onWallpapers', close: true },
   'art-collection': { handler: 'onArtCollection', close: true },
@@ -762,8 +765,20 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : null
   ]);
 
+  const contemplativeInquiryVisible =
+    typeof visibility.contemplativeInquiryVisible === 'boolean'
+      ? visibility.contemplativeInquiryVisible
+      : isContemplativeInquiryMenuVisible();
+
   pushLabeledGroup(out, 'MENU_GROUP_INSPIRATION', [
     { proxy: 'daily-quote', labelKey: 'DAILY_ZEN_QUOTE_MENU_LABEL' },
+    contemplativeInquiryVisible
+      ? {
+          proxy: 'contemplative-inquiry',
+          labelKey: 'CI_EX1_MENU_LABEL',
+          testId: 'idle-contemplative-inquiry'
+        }
+      : null,
     {
       proxy: 'zen-cinema',
       labelKey: 'ZEN_CINEMA_MENU_LABEL',

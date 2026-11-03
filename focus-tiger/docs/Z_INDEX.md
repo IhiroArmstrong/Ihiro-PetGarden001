@@ -84,8 +84,10 @@
 | **16** | `src/ui/LandscapeSuggestUI.js` | `#ft-landscape-suggest` 窄屏竖屏横屏建议条（非模态；dismiss 后不再出；不挡 Sit） |
 | **17** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-backdrop` Zen Cinema 遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **17** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-backdrop` 今日静语卡遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
+| **17** | `src/ui/ContemplativeInquiryUI.js` | `#contemplative-inquiry-backdrop` T79 带着问题坐一会儿遮罩（`overlayBackdrop` · `BLANK_CLOSES`；玻璃卡层 18，不得 inline 压过 Support 25/26） |
 | **17** | `src/ui/HelpCenterUI.js` | `#help-center-backdrop` 帮助中心遮罩（`overlayBackdrop` · `BLANK_CLOSES`） |
 | **18** | `src/ui/DailyZenQuoteCardUI.js` | `#daily-zen-quote-card` 今日静语卡（⋯ / 抽屉；保存 PNG） |
+| **18** | `src/ui/ContemplativeInquiryUI.js` | `#contemplative-inquiry-card` T79 带着问题坐一会儿（Inspiration；`Z.GLASS_CARD`；不进 Support 付款路径） |
 | **18** | `src/ui/HelpCenterUI.js` | `#help-center` 帮助中心（⋯ / 抽屉 Preferences；? 简介卡次级链；可浏览主题目录） |
 | **17** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-backdrop` 芥子须弥纪念印遮罩 |
 | **18** | `src/ui/MustardSeedSealCardUI.js` | `#mustard-seed-seal-card` 芥子须弥纪念印（完成仪式后按未揭示 case 出卡；其后 ⋯ / 抽屉轮换；保存 PNG） |

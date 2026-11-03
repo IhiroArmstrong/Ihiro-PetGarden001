@@ -139,6 +139,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   'presence-signals': 'MENU_GROUP_RECORDS',
   'yin-coin': 'MENU_GROUP_RECORDS',
   'daily-quote': 'MENU_GROUP_INSPIRATION',
+  'contemplative-inquiry': 'MENU_GROUP_INSPIRATION',
   'zen-cinema': 'MENU_GROUP_INSPIRATION',
   'mustard-seed-seal': 'MENU_GROUP_INSPIRATION',
   wallpapers: 'MENU_GROUP_INSPIRATION',
