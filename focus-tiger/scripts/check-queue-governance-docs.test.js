@@ -104,6 +104,21 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T80 co-practice research pack with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/CO_PRACTICE_POSITIONING.md',
+        'focus-tiger/docs/drafts/co-practice-research-data-pack-v0.1.md',
+        'focus-tiger/docs/task-briefs/task-co-practice-research-upload.md',
+        'focus-tiger/docs/task-entries/t80-co-practice-research-pack.md',
+        'focus-tiger/docs/tracker-entries/docs-t80-co-practice-research-pack.md'
+      ]),
+      null
+    );
+  });
+
   it('allows T79 contemplative inquiry Brief with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([

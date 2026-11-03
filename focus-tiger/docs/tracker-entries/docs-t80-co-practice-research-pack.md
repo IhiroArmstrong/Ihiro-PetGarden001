@@ -1,0 +1,1 @@
+| T80 研究共修方案包 | 纯文档 | 待人工测试 | **只验说明书，不测运行时。** 打开 [`drafts/co-practice-research-data-pack-v0.1.md`](../drafts/co-practice-research-data-pack-v0.1.md)：八条设计要点有对照表；第 0/1/2 层字段齐全；中英日同意文案在；首次练习定位句在；隐私三层英文稿在；T81–T86 已排队。点头 T81–T84 后另开实现旁支。口令「开工 T54」仍不执行。 | — | — | — | `drafts/co-practice-research-data-pack-v0.1.md` | 2026-11-03 |
