@@ -34,10 +34,14 @@ const STYLE_ID = 'cold-start-goal-card-styles-v1';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 const CHOICE_LABEL_KEYS = Object.freeze({
-  focus: 'COLD_START_GOAL_FOCUS',
-  calm: 'COLD_START_GOAL_CALM',
+  mindfulness: 'COLD_START_GOAL_MINDFULNESS',
+  breath: 'COLD_START_GOAL_BREATH',
   'study-work': 'COLD_START_GOAL_STUDY',
   browse: 'COLD_START_GOAL_BROWSE'
+});
+
+const CHOICE_HINT_KEYS = Object.freeze({
+  mindfulness: 'COLD_START_GOAL_MINDFULNESS_HINT'
 });
 
 export class ColdStartGoalCardUI {
@@ -191,7 +195,17 @@ export class ColdStartGoalCardUI {
       btn.dataset.choice = id;
       btn.dataset.testid = `cold-start-goal-${id}`;
       btn.setAttribute('role', 'option');
-      btn.textContent = t(CHOICE_LABEL_KEYS[id]);
+      const label = document.createElement('span');
+      label.className = 'cold-start-goal-card__option-label';
+      label.textContent = t(CHOICE_LABEL_KEYS[id]);
+      btn.appendChild(label);
+      const hintKey = CHOICE_HINT_KEYS[id];
+      if (hintKey) {
+        const hint = document.createElement('span');
+        hint.className = 'cold-start-goal-card__option-hint';
+        hint.textContent = t(hintKey);
+        btn.appendChild(hint);
+      }
       btn.disabled = !canChoose;
       btn.addEventListener('click', () => {
         if (id === 'browse') this.handlers.onBrowse?.();
@@ -243,6 +257,16 @@ export class ColdStartGoalCardUI {
         display: flex;
         flex-direction: column;
         gap: 8px;
+      }
+      .cold-start-goal-card__option-label {
+        display: block;
+      }
+      .cold-start-goal-card__option-hint {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.82rem;
+        line-height: 1.35;
+        opacity: 0.72;
       }
       .cold-start-goal-card__option {
         width: 100%;

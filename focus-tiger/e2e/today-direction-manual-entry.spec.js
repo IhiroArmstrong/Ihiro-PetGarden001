@@ -58,7 +58,7 @@ test('wide Preferences today-direction row opens goal card manually', async ({
   await row.click();
 
   await expect(page.locator(GOAL_CARD)).toBeVisible({ timeout: 5_000 });
-  await page.locator('[data-testid="cold-start-goal-focus"]').click();
+  await page.locator('[data-testid="cold-start-goal-breath"]').click();
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 8_000 });
   await expect(ritual).toHaveAttribute('data-micro-ritual-phase', 'breath');

@@ -6,10 +6,15 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  COLD_START_DIRECT_SIT_HINT_KEY,
+  COLD_START_DIRECT_SIT_PENDING_KEY,
   COLD_START_GOAL_OPTIONS_SEEN_KEY,
   COLD_START_GOAL_OPTIONS_VERSION,
+  COLD_START_GOAL_OPTIONS_VERSION_BEFORE_T76,
   COLD_START_GOAL_SEEN_KEY,
   COLD_START_GOAL_SESSION_KEY,
+  consumeColdStartDirectSitHint,
+  markColdStartDirectSitPending,
   getColdStartGoalSessionChoice,
   getSeenColdStartGoalOptionsVersion,
   hasSeenColdStartGoalCard,
@@ -29,6 +34,9 @@ function makeStorage() {
     getItem: (key) => (key in map ? map[key] : null),
     setItem: (key, value) => {
       map[key] = String(value);
+    },
+    removeItem: (key) => {
+      delete map[key];
     }
   };
 }
@@ -50,11 +58,16 @@ describe('coldStartGoalGate', () => {
 
   it('session choice stays in sessionStorage only', () => {
     const session = makeStorage();
-    setColdStartGoalSessionChoice(session, 'focus');
-    assert.equal(getColdStartGoalSessionChoice(session), 'focus');
-    assert.equal(session.getItem(COLD_START_GOAL_SESSION_KEY), 'focus');
+    setColdStartGoalSessionChoice(session, 'mindfulness');
+    assert.equal(getColdStartGoalSessionChoice(session), 'mindfulness');
+    assert.equal(session.getItem(COLD_START_GOAL_SESSION_KEY), 'mindfulness');
     setColdStartGoalSessionChoice(session, 'bogus');
-    assert.equal(getColdStartGoalSessionChoice(session), 'focus');
+    assert.equal(getColdStartGoalSessionChoice(session), 'mindfulness');
+    session.setItem(COLD_START_GOAL_SESSION_KEY, 'focus');
+    assert.equal(getColdStartGoalSessionChoice(session), null);
+    assert.equal(session.getItem(COLD_START_GOAL_SESSION_KEY), null);
+    session.setItem(COLD_START_GOAL_SESSION_KEY, 'calm');
+    assert.equal(getColdStartGoalSessionChoice(session), null);
   });
 
   it('options refresh: migrate legacy seen without options key', () => {
@@ -64,9 +77,9 @@ describe('coldStartGoalGate', () => {
     migrateColdStartGoalOptionsSeen(storage);
     assert.equal(
       getSeenColdStartGoalOptionsVersion(storage),
-      COLD_START_GOAL_OPTIONS_VERSION
+      COLD_START_GOAL_OPTIONS_VERSION_BEFORE_T76
     );
-    assert.equal(shouldOfferColdStartGoalOptionsRefresh(storage), false);
+    assert.equal(shouldOfferColdStartGoalOptionsRefresh(storage), true);
   });
 
   it('options refresh: stale version offers until mark', () => {
@@ -84,19 +97,36 @@ describe('coldStartGoalGate', () => {
   });
 
   it('resolveColdStartGoalAction maps to product surfaces', () => {
-    assert.deepEqual(resolveColdStartGoalAction('focus'), {
+    assert.deepEqual(resolveColdStartGoalAction('mindfulness'), {
+      type: 'direct-sit',
+      mode: 'stay',
+      minutes: 10
+    });
+    assert.deepEqual(resolveColdStartGoalAction('breath'), {
       type: 'micro-ritual',
       minutes: 1
     });
     assert.deepEqual(resolveColdStartGoalAction('study-work'), {
-      type: 'micro-ritual',
-      minutes: 20
-    });
-    assert.deepEqual(resolveColdStartGoalAction('calm'), {
-      type: 'companion'
+      type: 'direct-sit',
+      mode: 'acrossTools',
+      minutes: 25
     });
     assert.deepEqual(resolveColdStartGoalAction('browse'), { type: 'browse' });
+    assert.equal(resolveColdStartGoalAction('focus'), null);
+    assert.equal(resolveColdStartGoalAction('calm'), null);
     assert.equal(resolveColdStartGoalAction('nope'), null);
+  });
+
+  it('direct-sit hint is once per install', () => {
+    const local = makeStorage();
+    const session = makeStorage();
+    assert.equal(consumeColdStartDirectSitHint(local, session), false);
+    markColdStartDirectSitPending(session);
+    assert.equal(consumeColdStartDirectSitHint(local, session), true);
+    assert.equal(local.getItem(COLD_START_DIRECT_SIT_HINT_KEY), '1');
+    markColdStartDirectSitPending(session);
+    assert.equal(consumeColdStartDirectSitHint(local, session), false);
+    assert.equal(session.getItem(COLD_START_DIRECT_SIT_PENDING_KEY), null);
   });
 
   it('null storage is safe', () => {
@@ -104,6 +134,6 @@ describe('coldStartGoalGate', () => {
     assert.equal(shouldOfferColdStartGoalCard(null), true);
     markColdStartGoalSeen(null);
     assert.equal(getColdStartGoalSessionChoice(null), null);
-    setColdStartGoalSessionChoice(null, 'focus');
+    setColdStartGoalSessionChoice(null, 'mindfulness');
   });
 });

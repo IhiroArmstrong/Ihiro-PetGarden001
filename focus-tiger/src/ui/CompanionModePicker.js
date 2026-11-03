@@ -394,6 +394,21 @@ export class CompanionModePicker {
   }
 
   /**
+   * Write a mode without opening Arrival. Used by the cold-start direct sit.
+   * @param {import('../core/FocusSession.js').CompanionMode} mode
+   */
+  commitStoredMode(mode) {
+    if (
+      mode !== COMPANION_MODE_STAY &&
+      mode !== COMPANION_MODE_STEP_AWAY &&
+      mode !== COMPANION_MODE_ACROSS_TOOLS
+    ) {
+      return;
+    }
+    this._commitMode(mode);
+  }
+
+  /**
    * @param {import('../core/FocusSession.js').CompanionMode} mode
    */
   _selectMode(mode) {
