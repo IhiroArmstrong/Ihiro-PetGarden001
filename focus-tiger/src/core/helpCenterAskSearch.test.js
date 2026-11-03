@@ -75,6 +75,15 @@ test('unrelated gibberish returns empty ask results', () => {
   assert.deepEqual(result.articleIds, []);
 });
 
+test('quiet-sit aliases list Sit-with-Yin cards, not an empty miss', () => {
+  for (const q of ['zazen', 'meditation', 'mindfulness', '坐禅', '瞑想', 'Zen practice']) {
+    const result = searchHelpCenterAskCards(q, { embeddingState: 'not_ready' });
+    assert.equal(result.empty, false, q);
+    assert.ok(result.articleIds.includes('KB-EDU-0003'), q);
+    assert.ok(result.articleIds.includes('KB-FUNC-0001'), q);
+  }
+});
+
 test('focus start imperative is outside the closed S2 set so Help Center only searches', () => {
   assert.equal(isHelpCenterAskImperativeShape('Start a 25-minute focus'), true);
   const policy = resolveHelpCenterAskSubmitPolicy('Start a 25-minute focus');

@@ -5882,7 +5882,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 > **E2E 优先级**：P0 · 跨系统链路
 > **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。左下问号右边另有 Help Center 快捷（T26），打开同一张卡。
-> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录、问卡检索、Idle 快捷、T34 办理确认；不碰付款、不改练习记录）。
+> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录、问卡检索、Idle 快捷、T34 办理确认、T76 B2 静修别名；不碰付款、不改练习记录）。
 > **点击**：菜单行、问号卡上的链、问号右边快捷钮，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。顶部 **问卡**输入（可打字或 **Speak to type**，宽屏 Electron）→ 疑问句 **0–1 秒内**见匹配主题列表；封闭集祈使 **0–1 秒内**见 T10 同档复述确认（**禁止**静默写备份）。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
 
 ### 步骤总览

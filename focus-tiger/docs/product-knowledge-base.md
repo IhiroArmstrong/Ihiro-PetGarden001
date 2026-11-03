@@ -676,8 +676,8 @@
   适用场景: 分不清 focus / meditation / 正念 在公众说法里各指什么，或问「我这是在冥想吗」（不是正在求被带着做）
   内容正文: |
     事实键（en）：Are focus practice, meditation, and mindfulness the same thing, or is Sit with Yin a Focus sit rather than a generic meditation class?
-    短答（en）：In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger the main path is called Sit with Yin — a Focus sit with Yin, not a generic meditation class. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.
-    分工：纯「正念是什么」→ KB-EDU-0002；菜单路径 → KB-FUNC-0001 / 0011 / KB-EDU-0004。近义只用事实键；形状只 what-is。禁止把「有什么好处」写进短答或 keywords。
+    短答（en）：In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger, Sit with Yin is this product's quiet sit with Yin — no voice guidance. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.
+    分工：纯「正念是什么」→ KB-EDU-0002；菜单路径 → KB-FUNC-0001 / 0011 / KB-EDU-0004。近义只用事实键；形状只 what-is。禁止把「有什么好处」写进短答或 keywords。T76 B2：帮助搜索别名 zazen / 坐禅 / 瞑想 / Zen practice 指向本条同坐说明，短答不得写成「我们没有冥想」。
   禁止事项核查:
     具体步骤指令: 否
     治疗类表述: 否
@@ -693,8 +693,8 @@
   风险标记: 否
   yin_may_retrieve: 是
   适用产品版本: 现网产品壳（Sit 10 分钟起 · 左球 Breath practice）
-  更新时间: 2026-10-16
-  检索关键词: [专注和冥想有什么区别, focus vs meditation, 正念和冥想一样吗, 我这是在冥想吗, Focus sit and meditation, meditation vs focus sit, 专注和冥想, 正念和专注是一回事吗]
+  更新时间: 2026-11-03
+  检索关键词: [专注和冥想有什么区别, focus vs meditation, 正念和冥想一样吗, 我这是在冥想吗, Focus sit and meditation, meditation vs focus sit, 专注和冥想, 正念和专注是一回事吗, zazen, 坐禅, 瞑想, Zen practice]
 
 - id: KB-EDU-0004
   所属库: 陪伴可检索
