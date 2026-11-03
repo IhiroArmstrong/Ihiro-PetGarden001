@@ -5977,6 +5977,8 @@ async function init() {
       sessionPresenceCollector.finalize(
         snapshotFocusSessionForPresence(focusSession, { endedEarly: true })
       );
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
       const t54Early = noteTimedFocusEndedForT54({
         session: focusSession,
         endedEarly: true,
@@ -6368,6 +6370,8 @@ async function init() {
     sessionPresenceCollector.finalize(
       snapshotFocusSessionForPresence(focusSession, { endedEarly: false })
     );
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
     const t54Done = noteTimedFocusEndedForT54({
       session: focusSession,
       endedEarly: false,
