@@ -1,7 +1,7 @@
 ---
 id: guided-meditation-media-delivery
 kind: feature
-status: P0 审计文档已写 · 待合 docs PR · 不写运行时
+status: P0 审计已交稿 · PO 2026-11-04 拍板 · 待合 PR #1558 · 不写运行时
 updated: 2026-11-04
 ---
 

@@ -1,117 +1,111 @@
 # Task Brief：语音+文案引导正念冥想（Guided Meditation）P0 只读审计
 
-> 状态：draft · 范围：只读审计 + 文档，**不写运行时代码** · 权威路径：`focus-tiger/docs/task-briefs/task-guided-meditation-p0-audit.md`  
-> 姊妹篇（媒体交付）：[`task-guided-meditation-media-delivery.md`](./task-guided-meditation-media-delivery.md)  
-> 开工口令（待 PO 确认后使用）：`开工引导冥想P0审计`
+> 状态：**P0 审计已交稿（2026-11-04）** · **§7 已由 PO 拍板（2026-11-04 汇总）** · 范围：只读审计 + 文档，**不写运行时代码**  
+> 对照表：[`guided-meditation-p0-audit.md`](../guided-meditation-p0-audit.md)  
+> 内容规格：[`guided-meditation-p0-content-spec.md`](../guided-meditation-p0-content-spec.md)  
+> P1 草稿：[`task-guided-meditation-mvp.md`](./task-guided-meditation-mvp.md)  
+> 姊妹篇（媒体交付）：[`task-guided-meditation-media-delivery.md`](./task-guided-meditation-media-delivery.md) · [`guided-meditation-media-delivery-audit.md`](../guided-meditation-media-delivery-audit.md)  
+> 开工口令：`开工引导冥想P0审计` · MVP：`按引导冥想 MVP Brief 开工`（**未点头不执行**）
 
 ---
 
 ## 0. 大白话总结（给 PO）
 
-我们想在产品里加一个「跟着声音或影片做正念冥想」的功能：引导声一句句走，屏幕上可同步文字。它要有自己的菜单入口，以后冷启动的目标选择卡也要多一个「想学冥想」的选项。
+产品里要加「跟着你的原创声音（和画面）做引导冥想」：菜单里一项，点课再拉云端影片，Web 边下边播。练习分钟要进和静坐、呼吸同一本账，但不能和「无引导同坐」/help 文案打架。
 
-这一轮**只查不改**：播放器能不能撑住、练习时长怎么计入、会不会和现有叠层打架、入口放哪里。体积、云端下载与缓存**不在本 Brief 里审**，改看姊妹篇。
-
-需要 PO 做的决定都集中在 §7。媒体怎么送到手上已在姊妹篇 §7 拍过。
+P0 只查不改。体积与下载看姊妹篇；本 Brief 管播放器、计入、叠层、入口。媒体 §7 与主 §7 均已拍板。
 
 ---
 
 ## 1. 背景与目标
 
-- 现状：产品已有语音播放与配乐能力（Idle/CapCut 播放器等）、Sit with Yin（静坐计时）、MicroRitual（呼吸）、Ground exercise（独立菜单入口）、Arrival Practice。
-- 新功能定位：**Guided Meditation = 有声音（或影片）引导的练习**，与「静坐计时」「调息」「接地」并列但体验不同；不并入 Recover 桶。
-- 目标：确认可行性与风险，产出可直接进入 P1 MVP 的 Brief 依据。
+- 现状：Idle/CapCut 配乐、Sit、Breath、Ground、Arrival；T76 冷启动第 1 项已是 **10 分钟无引导直坐**。
+- 定位：**Guided Meditation** 与静坐/呼吸/接地并列；不并入 Recover；不做「系统在猜你心情」叙事。
+- 目标：P1 MVP 依据 + 与 [`practice-aggregate-registry.md`](../practice-aggregate-registry.md) 对齐的计入语义。
 
 ## 2. 本轮不做（硬边界）
 
-- 不写任何运行时代码、不改文案文件、不改资源、不改仲裁。
-- 不新建 overlay source，不改菜单，不改冷启动四选卡，不加 `COLD_START_GOAL_OPTIONS_VERSION`。
-- **练习记录 / 倾诉原文仍不进云。** 课程媒体的托管与下载归姊妹篇，不在本 Brief 重复审计，也不在本 Brief 上传文件。
-- 不声称任何治疗、健康或医疗功效。
-- 不在中文上对外宣称（仍只 claim en + ja；zh 仅作为草稿）。
+- 不写运行时代码、不改 locale、不改菜单/四选卡、不加 `COLD_START_GOAL_OPTIONS_VERSION`。
+- **冷启动第五项不做**（PO 2026-11-04）。以后若做，倾向在第 1 项选完后二级选「无引导直坐 / 有声引导 3 分钟」——**第一幕审计收口后再评估**。
+- 倾诉/练习备份不上云；**课程媒体**走姊妹篇 R2，不进安装包、不进 Git。
+- 不宣称疗效；对外 **MVP 先只上英文课**（课卡标语言）；ja 母版以后补。
+- **成片配乐 App 内授权核实前不上传 R2**（姊妹篇 H7）。
 
 ## 3. 审计项
 
-每项请给出：**现状事实（附文件/函数位置）→ 是否满足 → 缺口 → 建议**。
-
 ### A. 播放器能力
-1. 现有语音播放与音乐播放走哪条通道？（Idle/CapCut 播放器还是别的）能否同时放「语音轨 + 音乐轨」并分别调音量？
-2. 能否支持：暂停/继续、结束并淡出、语音与文案按时间轴逐句同步（cue 点）、**视频课**用 `<video>` 或等价（姊妹篇：视频课默认播视频、音画合轨）。
-3. 失败与降级：媒体加载失败、被系统打断（切后台、电话/通知）时的行为？
-4. Electron 壳与纯 Web 两端是否行为一致？
+
+见 [`guided-meditation-p0-audit.md`](../guided-meditation-p0-audit.md) §A。视频课默认 `<video>` + 合轨 AAC；cue 文案高亮；不复用系统 TTS 当课。
 
 ### B. 音频体积与加载
 
-**本项不在此重复审计。** 改读：
+**不在此重复审计。** SSOT：
 
-- Brief [`task-guided-meditation-media-delivery.md`](./task-guided-meditation-media-delivery.md) §7
-- [`guided-meditation-media-delivery-audit.md`](../guided-meditation-media-delivery-audit.md) H3–H5、H8
+- [`task-guided-meditation-media-delivery.md`](./task-guided-meditation-media-delivery.md) §7  
+- [`guided-meditation-media-delivery-audit.md`](../guided-meditation-media-delivery-audit.md) H1–H5、H8  
 - [`guided-meditation-media-delivery-spec.md`](../guided-meditation-media-delivery-spec.md)
 
-摘要（已拍）：课免费；视频课默认播视频；点课才下；不进安装包；R2 公开桶；不做后台预下载。
+摘要：课免费；默认播视频；Web 流式；点课才下；R2 公开桶；无后台预下载；纯音频仅退路。
 
-### C. 计入练习（防重蹈累计时长漏洞）
-1. 现有写入钩子（`onPracticeDay`、`completeMicroRitual` 等）与读取侧：新练习要接哪些？
-2. 在 `practice-aggregate-registry.md` 中该来源应登记为「计入」还是「故意排除」？给出建议与理由。
-3. 完成判定：播放到哪个比例算完成？中途退出是否计入、按实际时长还是不计？列出选项并给出建议。
-4. 对 Journey Log、莲花池、徽章/score、Confide practice_facts 的影响逐一核对。
+### C. 计入练习
 
-### D. 仲裁与叠层
-1. 属于哪一级：会话硬态还是 VISUAL_PRIMARY？与 Focusing、Honesty、吹花、Compass、wellness 的冲突矩阵。
-2. 是否需要精灵通道仲裁（`spriteChannelArbitration.js`）介入？播放期间 Yin 的姿态（静坐/陪伴/隐藏）？
-3. 套用 `OVERLAY_UI_SURFACE` 七列契约，列出本功能应填的各列草案。
-4. 是否会命中「叠层开着就把菜单藏起来」类问题（菜单渲染不得依赖叠层仲裁）。
+见对照表 §C。PO 完成规则见 §7 与本 Brief 下方「计入语义」。
 
-### E. 入口与导航
-1. 在「更多」菜单中的位置草案（邻近 Ground exercise），宽屏/窄屏两种挂载点。
-2. 对照 `MENU_CHROME_CENSUS.md` 补一行。
-3. 课程列表页形态：单页列表还是二级面板？避免新增阻断式模态（遵守「减少模态」原则）。
-4. 冷启动第五项的落点：选后直达哪一课；与 `COLD_START_GOAL_OPTIONS_VERSION` 机制、`?` 内「重新选择今日方向」链接的关系；**硬前置：冷启动第一幕审计收口**，本轮只写依赖，不动代码。
+### D–G
 
-### F. 内容与授权
-1. 引导词一律**原创**，不得摘抄第三方成品课程文本；给出原创脚本的结构模板（落座→锚定→走神→拉回→收尾）与长度规格。
-2. 候选首批 3 课：3 分钟呼吸锚定 / 5 分钟身体与声音觉察 / 10 分钟完整练习。（仅为候选。）**已入库母版**「何谓禅」为 21 分 43 秒，见源文件清单，不自动当成 3 分钟入门。
-3. 语音来源三选一的对比与建议：运行时 TTS / 预渲染高质量 TTS 音频 / 真人录音。已有 MP4 走姊妹篇转码，不在此重审交付。
-4. 配乐：本条视频课已合轨；其它课是否复用现有音乐资源见本项。授权范围是否覆盖商用分发（H7 姊妹篇交叉）。
-5. 安全与边界文案草案：随时可停、可睁眼、不做健康功效宣称。
-
-### G. i18n 与测试
-1. en/ja 文案键位规划；zh 仅草稿，不对外。
-2. e2e 与单测需要覆盖的场景清单草案（入口可达、播放/暂停/结束、计入练习、与 Focusing/Honesty 互斥、加载失败降级、叠层卡死回归）。媒体下载用例以姊妹篇 H9 为准。
+见对照表 §D–G 与 [`guided-meditation-p0-content-spec.md`](../guided-meditation-p0-content-spec.md)。
 
 ## 4. 产出物
 
-1. `guided-meditation-p0-audit.md`：A–G 对照表（B 只引用姊妹篇）。
-2. P1 MVP Brief 草稿：`task-guided-meditation-mvp.md`。
-3. 内容规格附件。
-4. 在 `PROCESS.md` 登记进度；不改 `TASKS.md`。
+1. `guided-meditation-p0-audit.md`（A–G；B 引用姊妹篇）  
+2. `task-guided-meditation-mvp.md`  
+3. `guided-meditation-p0-content-spec.md`  
+4. `PROCESS.md` 速览（与媒体交付合并一条）
 
 ## 5. 约束与红线
 
-- 只读 + 文档；若发现必须改代码才能确认的事，写进「需实测」清单而不是动手。
-- 不得把「已合入」写成「已验证」。
-- 不得为凑完整而猜测；没核实到的写「未核实」。
+- 只读 + 文档；未核实写「未核实/需实测」。  
+- **上线前必改（P1 硬门禁）**：Help/KB **EDU-0003** 等现写「Sit with Yin … **no voice guidance**」须与「另有带声音的引导课」并存，禁止前后矛盾。锚点：`help-center.json` · `productKnowledgeCatalog.json` · `SCENARIO_TESTS` 问卡 alias · e2e `help-center-quiet-sit-aliases.spec.js`。
 
 ## 6. 验收
 
-- A–G 每项均有结论或明确标注「未核实/需实测」（B 可用引用句交差）。
-- 冲突矩阵、练习钩子清单齐全；体积评估以姊妹篇为准。
-- 未出现任何运行时代码改动。
+- A–G 有结论或未核实；B 用姊妹篇引用交差。  
+- 计入规则已与 `practice-aggregate-registry.md` 对照写清。  
+- diff 仅 docs（媒体 PR 另含 `/*.mp4` gitignore）。
 
-## 7. 待 PO 拍板（主 Brief · 媒体项已在姊妹篇拍完）
+## 7. PO 拍板（2026-11-04 汇总）
 
-1. 入口命名与位置（建议：更多菜单内一项 Guided Meditation，挨着 Ground exercise）。
-2. 语音来源（建议：已有真人/成片 MP4 的课用母版；没有成片的课再议 TTS）。
-3. 首批课程清单与时长（已有一节 21:43；是否还要 3/5/10 分钟课）。
-4. 完成判定与计入规则。
-5. 冷启动第五项是否在 MVP 之后立即做（依赖第一幕审计收口）。
+| 题 | 决定 |
+|---|---|
+| 入口 | 更多菜单 **Guided Meditation**，在 **Ground exercise 下方** |
+| 语音 | **优先成片原声**（第一课 MP4）；TTS **仅**以后补短课备选 |
+| 首批课 | **22 分钟长片先上**；**优先**从母版剪 **3–5 分钟入门**（比长片更重要）；10 分钟课非 MVP 硬门槛 |
+| 计入 | **短课（≤10 分标称）**：播到 **≥90%** 或收尾段确认结束 → 记入**标称分钟**。**长课（>10 分）**：**实际播放 ≥3 分钟**起，按**实际整分钟**写入 `onPracticeDay` / 莲花；不足 3 分钟不计练习日。须登记 `guided-meditation` 进 `PRACTICE_BASELINE_SOURCE_IDS`（见对照表 §C2） |
+| 冷启动第五项 | **不做**；以后二级选留 P2+ |
+| 语言 | **先英文**；课卡标 `English`；无 ja 母版不宣称 ja 课 |
+| 默认播放 | **视频**（姊妹篇）；Web **边下边播** |
+| 授权 / 上传 | **先核实**配乐与 App 内分发；**核实后再上传** |
 
-## 8. 排期草案
+媒体交付（托管、缓存、免费、预下载）见姊妹篇 §7，不重复。
+
+## 8. 计入语义（对照聚合注册表）
+
+写入侧 SSOT：`main.js` `onPracticeDay({ durationMinutes, sourceId })` → `PracticeDaysStore` + `LotusPondStore.notePracticeMinutes`（[`practice-aggregate-registry.md`](../practice-aggregate-registry.md) §Baseline）。
+
+| PO 规则 | 聚合语义 |
+|---|---|
+| 长课 ≥3 分钟实际播放 | `durationMinutes = floor(实际播放秒/60)`，**不是** 22 分钟标称；仍 `sourceId: 'guided-meditation'` |
+| 短课 ≥90% | `durationMinutes = 标称课时长`（3/5/10） |
+| 未达阈值 | **不**调用 `onPracticeDay`；不亮练习日 |
+| 读取侧 | 登记基线源后，Confide `practice_facts` / 徽章 `score` / 印 经 `resolvePracticeAggregate()` 自动含新分钟与日 |
+
+Journey 行：建议完成且过 Reflection/轻确认后写入（对齐 Sit/Breath），文案为「引导冥想」非 Sit。
+
+## 9. 排期草案
 
 | 阶段 | 内容 |
 |---|---|
-| P0 | 本 Brief + 姊妹篇媒体交付审计 |
-| P0.5 | 原创短课脚本（en/ja）如仍要 3/5/10 分钟线；已有长片文案时间轴 |
-| P1 | MVP：菜单入口 + 课程列表 + 播放页 + 计入 + 仲裁 + 点课下载 |
-| P2 | 冷启动第五项（等第一幕审计收口） |
-| P3 | 扩课、Idle「今日一课」（须叠层仲裁，不得进 Focusing） |
+| P0 | 本 Brief + 姊妹篇媒体审计（**合并 PR #1558**） |
+| P0.5 | 母版剪辑 3–5 分 + cue 稿；授权核实；**不上传直至授权 OK** |
+| P1 | 菜单 + 列表 + 播放 + 点课下载/流式 + 计入 + 仲裁 + **Help/KB 改口** + e2e |
+| P2+ | 冷启动二级选（第一幕审计后）；ja 课；TTS 补短课 |
