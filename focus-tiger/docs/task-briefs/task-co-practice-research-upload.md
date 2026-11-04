@@ -1,6 +1,6 @@
 # Task Brief · T81 研究共修上传接口（周聚合 + 白名单）
 
-> **状态（2026-11-03）**：**待点头**。点头前 **不得写 `src/`**。  
+> **状态（2026-11-03）**：**待点头**。点头前 **不得写 `src/`**。S0 文档冻结已在 T80 修订 PR。  
 > **代号**：**T81**。人话：设备上先把一周练了几次算成几个数字，用随机编号发给我们自己的接口；接口只收白名单，多出来的字段扔掉，并用测试锁住。  
 > **槽位**：可选。状态 **排队中**。  
 > **类**：实现时 **A 类倾向**（无新可见同意 UI）。若本刀误加开关/文案 → 升 **B**，停工改走 **T82**。  
@@ -53,7 +53,18 @@
 7. CI：fixture 含未知字段、情绪路由、原文键、精确 timestamp → 不得进入 `accepted`。撤掉白名单过滤，这些测试必须红。  
 8. `SHARED_RESOURCES.md` 补研究键；`BACKGROUND_NETWORK.md` 三问写在本 Brief 第 8 节，实现 PR 再答实测。
 
-chipId / route.class 冻结：开工 S0 对照 `confideVerbalHintChips.js` 与路由枚举，把方案包 §2.2 写成 `Object.freeze` 数组。心情芯片与安全/情绪路由不进数组。
+chipId / route.class：**S0 已冻结**（方案包 §2.2 · [`DATA_DICTIONARY.md`](../research/DATA_DICTIONARY.md) · [`research-payload.v1.schema.json`](../research/research-payload.v1.schema.json)）。实现写成 `Object.freeze`，禁止再发明 `fallback` / `generate`。
+
+切片（一 PR 一切片；模型以 Cursor 当前列表为准）：
+
+| 切片 | 内容 | 模型 |
+| --- | --- | --- |
+| S1 | `buildWeeklyPayload` 无网络 | Composer 2.5 / Fast OFF |
+| S3 | `POST /api/research/v1/weekly` · `DELETE /api/research/v1/study/:studyId` | Grok 4.6 / Medium / Fast OFF |
+| S4 | CI 五项守门 | Grok 4.6 / Medium / Fast OFF |
+| S5 | 周调度 0–24h | Composer 2.5 / Fast OFF |
+
+顺序：S1 → S4(a)(b) → S3 → S4(c)(d)(e) → S5。S2 同意页走 **T82**。
 
 ## 4. 范围（out）
 

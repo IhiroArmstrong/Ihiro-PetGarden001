@@ -1,0 +1,273 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "research-payload.v1.schema.json",
+  "title": "Focus Tiger Practice Study weekly payload v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "studyId",
+    "schemaVersion",
+    "week",
+    "tenureWeeks",
+    "locale",
+    "platform",
+    "consent",
+    "t1"
+  ],
+  "properties": {
+    "studyId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "week": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-W[0-9]{2}$"
+    },
+    "tenureWeeks": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 260
+    },
+    "locale": {
+      "type": "string",
+      "enum": [
+        "en",
+        "ja",
+        "zh"
+      ]
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "web",
+        "mac",
+        "win"
+      ]
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "v",
+        "tier2"
+      ],
+      "properties": {
+        "v": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tier2": {
+          "type": "boolean"
+        }
+      }
+    },
+    "t1": {
+      "$ref": "#/$defs/t1"
+    }
+  },
+  "$defs": {
+    "count200": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 200
+    },
+    "count500": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 500
+    },
+    "practiceBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "started",
+        "completed",
+        "minutes"
+      ],
+      "properties": {
+        "started": {
+          "$ref": "#/$defs/count200"
+        },
+        "completed": {
+          "$ref": "#/$defs/count200"
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10080
+        }
+      }
+    },
+    "t1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "practice",
+        "dayMask",
+        "timeSlots",
+        "companion",
+        "retention",
+        "flags"
+      ],
+      "properties": {
+        "practice": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sit",
+            "breath",
+            "honesty",
+            "micro"
+          ],
+          "properties": {
+            "sit": {
+              "$ref": "#/$defs/practiceBlock"
+            },
+            "breath": {
+              "$ref": "#/$defs/practiceBlock"
+            },
+            "honesty": {
+              "$ref": "#/$defs/practiceBlock"
+            },
+            "micro": {
+              "$ref": "#/$defs/practiceBlock"
+            }
+          }
+        },
+        "dayMask": {
+          "type": "string",
+          "pattern": "^[01]{7}$"
+        },
+        "timeSlots": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "morning",
+            "afternoon",
+            "evening",
+            "lateNight"
+          ],
+          "properties": {
+            "morning": {
+              "$ref": "#/$defs/count200"
+            },
+            "afternoon": {
+              "$ref": "#/$defs/count200"
+            },
+            "evening": {
+              "$ref": "#/$defs/count200"
+            },
+            "lateNight": {
+              "$ref": "#/$defs/count200"
+            }
+          }
+        },
+        "companion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "confideOpened",
+            "confideSent",
+            "chips",
+            "route",
+            "sitWithYin"
+          ],
+          "properties": {
+            "confideOpened": {
+              "$ref": "#/$defs/count500"
+            },
+            "confideSent": {
+              "$ref": "#/$defs/count500"
+            },
+            "chips": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "forget_this": {
+                  "$ref": "#/$defs/count500"
+                },
+                "dont_save_this": {
+                  "$ref": "#/$defs/count500"
+                },
+                "practice_duration": {
+                  "$ref": "#/$defs/count500"
+                },
+                "practice_compare": {
+                  "$ref": "#/$defs/count500"
+                }
+              }
+            },
+            "route": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "help_center_redirect": {
+                  "$ref": "#/$defs/count500"
+                },
+                "query_practice_duration": {
+                  "$ref": "#/$defs/count500"
+                },
+                "language_not_yet_open": {
+                  "$ref": "#/$defs/count500"
+                }
+              }
+            },
+            "sitWithYin": {
+              "$ref": "#/$defs/count200"
+            }
+          }
+        },
+        "retention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "daysSinceLastPractice",
+            "longestGapDays",
+            "comebacks"
+          ],
+          "properties": {
+            "daysSinceLastPractice": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 365
+            },
+            "longestGapDays": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 365
+            },
+            "comebacks": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 7
+            }
+          }
+        },
+        "flags": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "localAi",
+            "focusCircle",
+            "reminders"
+          ],
+          "properties": {
+            "localAi": {
+              "type": "boolean"
+            },
+            "focusCircle": {
+              "type": "boolean"
+            },
+            "reminders": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}

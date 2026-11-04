@@ -1,6 +1,6 @@
 # 研究共修数据方案包 v0.1
 
-草案 · 2026-11-03 · 待 PO 拍板，待隐私律师与伦理顾问审阅  
+草案 · 2026-11-03 · 修订 2026-11-04 · PO 第 0 节仍待书面圈选 · **内部隐私审核已做（产品授权）** · 对真实用户打开前建议持牌律师副署 · 伦理顾问仍待  
 代号：**T80**（人话：把「愿意参加的人，每周只分享几个汇总数字」写成可执行的字段、文案和后续任务）  
 **不是**：**T54** 已上线的 Privacy「改进产品」计时计数开关。**不是** T54 90 天实验。口令「开工 T54」仍不执行。
 
@@ -24,6 +24,44 @@
 | 8 | 主体与伦理审查时机 | **发表论文或对外宣称「研究产品」之前**必须有书面伦理意见。第一版上传接口可在顾问函进行中开发，**不得**在无顾问函时对外说已通过伦理审查 |
 
 其余方案为何较弱：把新研究塞进现有 T54 开关会把「改进产品计数」和「共修研究周汇总」混成一次同意，律师和用户都更难理解；第一版就上问卷会把体验问题混进可能被当成健康数据的回答。
+
+---
+
+## 0.1 内部隐私审核（2026-11-04 · 产品授权）
+
+你授权本回合按隐私律师角色审方案包。**这是产品内部关闸，不是持牌律师对监管机关或期刊的法律意见书。** 对真实用户打开前，仍建议请持牌律师在本意见上副署（对应后续任务 R-11）。伦理审查（R-12）不能用本审核代替。
+
+**可以按此方案往下做文档与实验室接口的理由**
+
+- 默认关闭、独立入口、不预勾、无奖励、先给真实样例：符合「知情 + 自愿 + 可撤回」。
+- 第 0 层（原文、Memory、情绪词、安全路由）写进 schema / CI，而不只写进政策。
+- 18 岁自述、不收集出生日期：对未成年人规则更干净。
+- 周聚合、粗时段、未知字段丢弃：符合数据最小化。
+- 删除凭据即 studyId、与账单分库、不持久化 IP：方向正确。
+- 第 2 层问卷第一版不上：避免把「心情/帮助感」做成健康数据争议。
+
+**必须改口或写进政策的点（已写入本文同意文案）**
+
+1. **不要写「完全匿名」**。studyId 在 24 个月里仍能串起同一设备的周节奏，法律上多半是**假名数据**。中英日处理说明已改。
+2. **dayMask** 比「本周练了几天」更像个人轨迹。可以收，**禁止按个人公开发布**。
+3. **locale × platform** 是间接识别符。维持「不足 10 人不发布」，交叉表同样适用。
+4. **T54 与本研究不得用同一 ID、不得在同一秒对齐上传**，以免两套「去身份」数据对上。
+5. **`fallback` / `generate` 不得作为 route.class**。它们是分类残差，可能含未命中的心情倾诉。S0 已冻结功能类三枚，见 §2.2。
+6. 撤回时若 DELETE 失败：界面仍须清掉本机 ID，并**排队重试删除**；不得说「已经在服务器上删掉」除非请求成功或进入重试队列。
+7. Worker / CDN 访问日志必须对本路径关闭。政策只可写「不保存 IP」，不可写「传输中看不到 IP」。
+8. 上线前填数据控制者与联系邮箱。推荐沿用 Twinsology / hello@twinsology.com，除非你另定。跨境（若 Cloudflare 在美/欧）须在隐私政策写清。
+9. 发表论文或对外说「科学研究」之前：伦理书面意见（R-12）。内部本审核**不够**。
+
+**对第 0 节 6 项的审核结论（同意推荐，除非你圈改）**
+
+| # | 结论 |
+| --- | --- |
+| 1 保留 24 个月 | 同意。到期删除或只留不可指回个人的汇总。 |
+| 2 locale / platform | 同意上传。发布时 k≥10。 |
+| 3 首次练习后轻提示 | 同意。两次上限 + 设置常驻入口。专注中禁止。 |
+| 4 问卷不上第一版 | **强烈同意。** |
+| 5 控制者占位 | 开发可用占位；**对真实用户打开前必须实填。** |
+| 6 差分隐私后置 | 同意。有 dayMask 与纵贯 ID 时，噪声是加分项不是第一版门槛。 |
 
 ---
 
@@ -102,14 +140,32 @@
 | evening | 17:00–21:59 |
 | lateNight | 22:00–04:59 |
 
-**chipId 冻结（实现 **T81** S0 再对照代码锁测试）**
+**chipId 冻结（S0 已对照 `confideVerbalHintChips.js`）**
 
 现网口头芯片 id 见 `CONFIDE_VERBAL_HINT_CHIP_ID`。研究只计**非情绪**芯片：
 
 - 可计：`forget_this`、`dont_save_this`、`practice_duration`、`practice_compare`
 - **不计（第 0 层）**：`presence_trend`、`presence_recent`（问心情）
 
-**route.class**：只含功能类（知识库短答、练习查询、自由闲聊生成、其他功能问句）。**情绪类和安全类一律不计数、不上传。** 具体枚举 **T81** S0 对照代码冻结。
+**route.class 冻结（S0 已对照 `confideRoutes.js` / 可执行工具 / 回复戳）**
+
+只计**功能类戳**，不计分类残差、不计情绪、不计安全、不计入 Memory / 心情工具。H1 已有 `confideOpened` / `confideSent`，不必用 `fallback` / `generate` 再描一条「闲聊」。
+
+| 可上传的 class | 现网锚点 | 为何算功能类 |
+| --- | --- | --- |
+| `help_center_redirect` | `CONFIDE_HELP_CENTER_REDIRECT_REPLY_ROUTE` | 产品问跳 Help Center |
+| `query_practice_duration` | `CONFIDE_TOOL_ID.QUERY_PRACTICE_DURATION` | 练习时长查询 |
+| `language_not_yet_open` | `CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN` | 语种未开放提示，非心理状态 |
+
+| 永不计数（第 0 层） | 现网锚点 | 原因 |
+| --- | --- | --- |
+| `safety_redirect` · `safety_care` · `aggression_toward_others` | `CONFIDE_ROUTE` | 安全 / 伤害 |
+| `anxious` · `tired` · `stuck` · `sad` · `scattered` | `CONFIDE_EMOTION_BUCKETS` | 情绪桶 |
+| `fallback` · `generate` | 分类残差 / 生成回复戳 | 可能夹带未命中的心情倾诉 |
+| `query_presence_trend` | 心情趋势工具 | 心理状态 |
+| `query_memory_list` · `forget_memory_entry` | Memory 工具 | 记忆面 |
+
+未知 class 与未知 chipId：**丢弃、不计、不入库**。增枚举必须改 schemaVersion 并过 CI。
 
 ### 2.3 第 2 层：可选问卷（t2，单独同意，第一版不上线）
 
@@ -209,7 +265,7 @@
 
 **我们永远不会收集**：你写的任何文字、Yin 对你说的话、记忆内容、情绪标签、你的位置、你的账号或邮箱。
 
-**数据怎么处理**：与你的账号无关，只用一个随机编号；单独存放，保留 24 个月；只做汇总研究，不出售、不用于广告。
+**数据怎么处理**：不与你的姓名、邮箱或账号配对。我们用一个只存在本机的随机编号，把每周数字串起来。这不是「完全匿名」（同一编号下仍能看出一周周的练习节奏），但我们不会把它连回账号。单独存放，保留 24 个月；只做汇总研究，不出售、不用于广告。个人的按日练习格子（dayMask）只用于内部统计，不会按个人公开发布。
 
 你可以随时在「设置 › 研究共修」中退出，并删除已经发送的数据。
 
@@ -238,7 +294,7 @@ You can choose to share a few weekly summary numbers, under a random ID, to help
 
 **What we never collect**: anything you type, anything Yin says to you, Memory content, emotion labels, your location, your account or email.
 
-**How it is handled**: Not linked to your account, only a random ID. Stored separately and kept for 24 months. Used only in aggregate for research. Never sold, never used for ads.
+**How it is handled**: Not linked to your name, email, or account. A random ID that lives only on this device lets us connect weekly numbers. That is not full anonymity (the same ID still shows a practice rhythm over weeks), but we will not join it to an account. Stored separately and kept for 24 months. Used only in aggregate for research. Never sold, never used for ads. Your day-by-day practice grid (dayMask) is not published as an individual record.
 
 You can leave any time in Settings › Practice Study and delete what we have received.
 
@@ -267,7 +323,7 @@ Leave confirmation: **You have left the study.** The random ID on this device is
 
 **決して収集しないもの**：あなたが入力した文章、Yinがあなたに返した言葉、メモリの内容、感情ラベル、位置情報、アカウントやメールアドレス。
 
-**データの扱い**：アカウントとは結びつけず、ランダムな番号のみで管理します。専用の保管場所に24か月間保存し、集計したうえで研究にのみ使用します。販売や広告への利用は一切しません。
+**データの扱い**：氏名・メール・アカウントとは結びつけません。この端末だけにあるランダムな番号で、週ごとの数字をつなぎます。完全な匿名ではありません（同じ番号の下では練習のリズムが見えます）が、アカウントには接合しません。専用の保管場所に24か月間保存し、集計したうえで研究にのみ使用します。販売や広告への利用は一切しません。日ごとの練習格子（dayMask）を個人単位で公表することはありません。
 
 いつでも「設定 › 練習リサーチ」から参加をやめ、送信済みのデータの削除を求めることができます。
 
@@ -364,6 +420,24 @@ This Practice Study is independent of the existing Privacy switch for optional t
 本项与 Privacy 里现有的「可选练习效果计数（改进产品）」相互独立。
 
 ---
+
+## 6.1 实现切片（来自草案 002 · 映射到 T80–T86）
+
+一 PR 一切片。口令按切片来，不混 PR。
+
+| 切片 | 内容 | 映射 | 建议模型（以 Cursor 当前列表为准） |
+| --- | --- | --- | --- |
+| S0 | 只读核实 + 字典 + 冻结枚举 | **本修订已完成文档侧**；对照表见 [`../research/DATA_DICTIONARY.md`](../research/DATA_DICTIONARY.md) | Composer 2.5 / Fast OFF |
+| S1 | 设备端周聚合器，无网络 | **T81** 第一刀 | Composer 2.5 / Fast OFF |
+| S2 | 同意页与设置 | **T82** | Composer 2.5 / Fast OFF |
+| S3 | Worker POST/DELETE | **T81** 第二刀 | Grok 4.6 / Medium / Fast OFF |
+| S4 | CI 五项守门 | **T81** 与 S1/S3 同批测试，出错代价高 | Grok 4.6 / Medium / Fast OFF |
+| S5 | 周上传调度 | **T81** 第三刀 | Composer 2.5 / Fast OFF |
+| S6 | 第 2 层问卷 | **T85** 搁置 | — |
+
+建议顺序：S0（已做）→ S1 → S4(a)(b) → S3 → S2 → S4(c)(d)(e) → S5。
+
+对真实用户打开前必须：S4 五项绿、隐私政策已更新（T84）、持牌律师副署（R-11）、人工走通同意/撤回/删除。伦理意见（R-12）可晚于实验室接口，但必须早于任何分析结果发布。律师排期最长，**现在就该约持牌副署**；内部审核不能代替。
 
 ## 7 执行顺序（点头后）
 
