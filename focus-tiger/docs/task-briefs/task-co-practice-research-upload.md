@@ -46,8 +46,8 @@
 
 1. 本机周聚合器：按方案包 §2.2 从现网练习完成记录、Confide 打开/发送计数、允许的 chipId、功能类 route、开关快照，在设备上算出一周一条。不读倾诉原文、Memory、情绪词。  
 2. 序列化器：同意页将来展示的 JSON **必须**走同一函数。  
-3. Worker：`POST /api/co-practice-research-ingest`（名称可微调，不得复用 t54 路径）。白名单 + 范围校验。未知字段 drop+counter。越界 400 整包拒收。  
-4. `DELETE /api/co-practice-research-ingest`（或并列 path）：body 或签名凭据为 studyId；线上删；测试锁「删后 GET 不到」。  
+3. Worker（**冻结路径**）：`POST /api/co-practice-research-ingest`。白名单 + 范围校验。未知字段 drop+counter。越界 400 整包拒收。  
+4. `DELETE /api/co-practice-research-ingest/:studyId`（**路径参数**，不用请求 body）：studyId 即凭据；线上删；测试锁「删后 GET 不到」。  
 5. 存储与 Stripe / entitlement / 账号 KV **命名空间隔离**。不写 IP、不写 User-Agent 到研究库。  
 6. 客户端：已同意且配置了 API 时，每周最多一次，随机延后 0–24h；payload 指纹相同则跳过写盘与 POST。  
 7. CI 五项（002 S4，必过）：  
@@ -55,7 +55,7 @@
    (b) 依赖图：上传模块不得引用 Confide 原文、Memory、情绪标签模块；  
    (c) 未同意时零请求 e2e（含预取/探测/心跳）；  
    (d) 撤回后零请求且本机 studyId 已清除 e2e；  
-   (e) 同意页预览与实际上传 golden 对比（同一序列化器）。  
+   (e) 同意页预览与实际上传 golden 对比（同一序列化器；golden：[`research-payload.v1.golden.json`](../research/research-payload.v1.golden.json)）。  
    故意注入自由文本字段时 CI 必须红。  
 8. `SHARED_RESOURCES.md` 补研究键；`BACKGROUND_NETWORK.md` 三问写在本 Brief 第 8 节，实现 PR 再答实测。
 
@@ -66,7 +66,7 @@ chipId / route.class：**S0 已冻结**（方案包 §2.2 · [`DATA_DICTIONARY.m
 | 切片 | 内容 | 模型 |
 | --- | --- | --- |
 | S1 | `buildWeeklyPayload` 无网络 | Composer 2.5 / Fast OFF |
-| S3 | `POST /api/research/v1/weekly` · `DELETE /api/research/v1/study/:studyId` | Grok 4.6 / Medium / Fast OFF |
+| S3 | `POST /api/co-practice-research-ingest` · `DELETE /api/co-practice-research-ingest/:studyId` | Grok 4.6 / Medium / Fast OFF |
 | S4 | CI 五项守门 | Grok 4.6 / Medium / Fast OFF |
 | S5 | 周调度 0–24h | Composer 2.5 / Fast OFF |
 

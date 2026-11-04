@@ -1,7 +1,8 @@
 # Practice Study · 数据字典（schema v1）
 
 > **S0 · 2026-11-04**。从属 [`../drafts/co-practice-research-data-pack-v0.1.md`](../drafts/co-practice-research-data-pack-v0.1.md)。  
-> 实现冻结：chipId / route.class 以本文 + 方案包 §2.2 为准。改枚举必须升 `schemaVersion`。
+> 实现冻结：chipId / route.class 以本文 + 方案包 §2.2 为准。改枚举必须升 `schemaVersion`。  
+> Golden 样例（S4(e)）：[`research-payload.v1.golden.json`](./research-payload.v1.golden.json)
 
 ## 信封
 
