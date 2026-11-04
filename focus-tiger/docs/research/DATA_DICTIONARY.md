@@ -45,3 +45,7 @@ chipId 禁止：`presence_trend` · `presence_recent`
 
 route.class 可上传：`help_center_redirect` · `query_practice_duration` · `language_not_yet_open`  
 route.class 禁止：`safety_redirect` · `safety_care` · `aggression_toward_others` · `anxious` · `tired` · `stuck` · `sad` · `scattered` · `fallback` · `generate` · `query_presence_trend` · `query_memory_list` · `forget_memory_entry`
+
+## 第 0 层（永不出现在 schema）
+
+Confide 原文、Yin 回复原文、Memory 摘要、Journey Log 正文、情绪词/情绪桶、安全路由、任何自由文本、精确时间戳、位置、持久 IP、设备指纹、账号/邮箱/付款/寅币、出生日期。未知字段：丢弃并计数，不入库。

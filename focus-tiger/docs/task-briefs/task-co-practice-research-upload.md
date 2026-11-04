@@ -50,7 +50,13 @@
 4. `DELETE /api/co-practice-research-ingest`（或并列 path）：body 或签名凭据为 studyId；线上删；测试锁「删后 GET 不到」。  
 5. 存储与 Stripe / entitlement / 账号 KV **命名空间隔离**。不写 IP、不写 User-Agent 到研究库。  
 6. 客户端：已同意且配置了 API 时，每周最多一次，随机延后 0–24h；payload 指纹相同则跳过写盘与 POST。  
-7. CI：fixture 含未知字段、情绪路由、原文键、精确 timestamp → 不得进入 `accepted`。撤掉白名单过滤，这些测试必须红。  
+7. CI 五项（002 S4，必过）：  
+   (a) 载荷 schema 里每个字符串字段必须是枚举（见 `research-payload.v1.schema.json`）；  
+   (b) 依赖图：上传模块不得引用 Confide 原文、Memory、情绪标签模块；  
+   (c) 未同意时零请求 e2e（含预取/探测/心跳）；  
+   (d) 撤回后零请求且本机 studyId 已清除 e2e；  
+   (e) 同意页预览与实际上传 golden 对比（同一序列化器）。  
+   故意注入自由文本字段时 CI 必须红。  
 8. `SHARED_RESOURCES.md` 补研究键；`BACKGROUND_NETWORK.md` 三问写在本 Brief 第 8 节，实现 PR 再答实测。
 
 chipId / route.class：**S0 已冻结**（方案包 §2.2 · [`DATA_DICTIONARY.md`](../research/DATA_DICTIONARY.md) · [`research-payload.v1.schema.json`](../research/research-payload.v1.schema.json)）。实现写成 `Object.freeze`，禁止再发明 `fallback` / `generate`。
@@ -127,6 +133,10 @@ chipId / route.class：**S0 已冻结**（方案包 §2.2 · [`DATA_DICTIONARY.m
 
 - [ ] 未知字段 fixture：accepted 不含该键。  
 - [ ] 原文 / 情绪路由 / timestamp 键无法入库。  
+- [ ] S4(a) 字符串字段皆为枚举。  
+- [ ] S4(b) 上传模块不依赖 Confide 原文 / Memory / 情绪标签。  
+- [ ] S4(c)(d) 未同意与撤回后零请求。  
+- [ ] S4(e) 预览与实际上传同一序列化器。  
 - [ ] 未同意零 POST（含实验室 query 不得绕过正式同意；DEV 夹具键须明显命名且默认关）。  
 - [ ] DELETE 后读不到。  
 - [ ] `npm run test:smoke` 绿。无新用户可见 e2e（无 UI）。  
