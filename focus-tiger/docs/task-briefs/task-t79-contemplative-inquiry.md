@@ -1,8 +1,8 @@
 # Task Brief · T79 觉察哲思第一例（带着问题坐一会儿）
 
-> **状态（2026-11-03）**：**待点头** — 本文件为 **A 类**口径锁（本 PR 只落文档 + 三语文案）。**不得写 `src/`，直到 PO 书面点头。**  
+> **状态（2026-11-04）**：**Brief 已点头**（PO 2026-11-03/04）· **运行时 #1551 已合 develop** · 关单级手测仍 **待勾**（[`feature-t79-contemplative-inquiry.md`](../tracker-entries/feature-t79-contemplative-inquiry.md)）。  
 > **代号**：**T79**。人话：菜单里多一项可选练习：小虎抛一句很老的问题，陪你安静坐约五分钟，回来只问感受，再用三次呼吸落地。  
-> **槽位**：**可选**。状态 **立即做** · Brief 待点头。  
+> **槽位**：**可选**。状态 **已完成**（代码）· 手测待勾。  
 > **类**：本 PR **A 类**。实现 **B 类**（新菜单入口、新叠层、新固定话术、本机 5 分钟墙钟）。  
 > **依赖**：`origin/develop` tip。文案 SSOT：[`drafts/koan-parents-before-birth-copy-for-review-en.md`](../drafts/koan-parents-before-birth-copy-for-review-en.md) · [`drafts/koan-parents-before-birth-copy-for-review-ja.md`](../drafts/koan-parents-before-birth-copy-for-review-ja.md) · [`drafts/koan-parents-before-birth-copy-locked-zh.md`](../drafts/koan-parents-before-birth-copy-locked-zh.md)。合并记录 [`drafts/koan-parents-before-birth-copy-v3-trilingual-change-log.md`](../drafts/koan-parents-before-birth-copy-v3-trilingual-change-log.md)。  
 > **不是**：**T51** 觉照邀请。**不是** Quiet Line / 每日一句。**不是** 倾诉闲聊解释公案。**不是** T76 冷启动静修入口。**不是** 禅修课 / 第五项 / 首页第四球。**不是** 把「禅宗」写进体验层。
@@ -11,7 +11,7 @@
 
 ## 0. 大白话
 
-产品里还没有「带着一个老问题安静坐一会儿」这条路。英文和日语稿已经按你的同意收成暂定可用版；中文不再等外审，按同一套走法暂定。点头之后才做界面。点头之前用户在 App 里仍然看不到这一项。
+产品里已有「带着一个老问题安静坐一会儿」可选栏目（**#1551 已合 develop**）。en/ja/zh 按暂定稿接线。关单级手测仍待你在验收树点一遍；合入 ≠ 你已验收。
 
 ---
 
