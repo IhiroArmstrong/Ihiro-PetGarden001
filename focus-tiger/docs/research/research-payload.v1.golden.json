@@ -1,0 +1,28 @@
+{
+  "studyId": "9b1f2c7e-0000-4000-8000-000000000000",
+  "schemaVersion": 1,
+  "week": "2026-W46",
+  "tenureWeeks": 3,
+  "locale": "en",
+  "platform": "mac",
+  "consent": { "v": 1, "tier2": false },
+  "t1": {
+    "practice": {
+      "sit": { "started": 4, "completed": 3, "minutes": 45 },
+      "breath": { "started": 2, "completed": 2, "minutes": 10 },
+      "honesty": { "started": 1, "completed": 1, "minutes": 3 },
+      "micro": { "started": 0, "completed": 0, "minutes": 0 }
+    },
+    "dayMask": "1011010",
+    "timeSlots": { "morning": 5, "afternoon": 0, "evening": 2, "lateNight": 0 },
+    "companion": {
+      "confideOpened": 2,
+      "confideSent": 3,
+      "chips": { "practice_compare": 1 },
+      "route": { "help_center_redirect": 2 },
+      "sitWithYin": 1
+    },
+    "retention": { "daysSinceLastPractice": 1, "longestGapDays": 2, "comebacks": 1 },
+    "flags": { "localAi": true, "focusCircle": false, "reminders": true }
+  }
+}
