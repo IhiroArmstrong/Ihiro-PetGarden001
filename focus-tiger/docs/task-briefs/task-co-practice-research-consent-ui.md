@@ -80,5 +80,5 @@
 - 未同意：零网络（含预取）。样例 JSON 只在本机序列化。
 - 新浮层登记仲裁（建议 SECONDARY），过 OVERLAY_UI_SURFACE；专注/仪式中不出现。
 - en / ja 为 ready，zh 为 draft；含义以方案包 §3 为准。
-- 撤回：清本机 studyId + `DELETE /api/research/v1/study/:studyId`；失败则排队重试，不得谎称云端已删。
+- 撤回：清本机 studyId + `DELETE /api/co-practice-research-ingest`，`Authorization: Bearer <studyId>`；失败则排队重试，不得谎称云端已删。
 - 对应 002：R-04、R-05、R-06。

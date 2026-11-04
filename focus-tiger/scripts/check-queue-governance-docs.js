@@ -120,6 +120,7 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/research/DATA_DICTIONARY.md',
   'focus-tiger/docs/research/research-payload.v1.schema.json',
   'focus-tiger/docs/research/research-payload.v1.golden.json',
+  'focus-tiger/docs/research/practice-study-dpia-self-check-v1.md',
   'focus-tiger/docs/task-briefs/task-co-practice-research-pack.md',
   'focus-tiger/docs/task-briefs/task-co-practice-research-upload.md',
   'focus-tiger/docs/task-briefs/task-co-practice-research-consent-ui.md',

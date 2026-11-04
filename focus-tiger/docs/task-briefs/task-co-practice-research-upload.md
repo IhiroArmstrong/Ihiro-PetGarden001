@@ -21,7 +21,7 @@
 
 1. 第 0 层永不收集；未知字段丢弃；类型越界整包拒收。  
 2. 只上传周聚合，不上传原始事件流。  
-3. studyId = 设备生成的 UUIDv4，不从账号/邮箱/指纹派生；DELETE 的凭据就是它。  
+3. studyId = 设备生成的 UUIDv4，不从账号/邮箱/指纹派生；DELETE 凭据为 `Authorization: Bearer <studyId>`（不进 URL、不用 body）。  
 4. 与 T54 路径、存储、同意键全部独立。  
 5. 第一版无第 2 层问卷、无差分隐私噪声。  
 6. 未同意（T82 未上线前视为未同意）永不上送。本刀可先用 DEV / 实验室键写同意夹具，**不得**在正式 Privacy 或安装流程露出。
@@ -47,7 +47,7 @@
 1. 本机周聚合器：按方案包 §2.2 从现网练习完成记录、Confide 打开/发送计数、允许的 chipId、功能类 route、开关快照，在设备上算出一周一条。不读倾诉原文、Memory、情绪词。  
 2. 序列化器：同意页将来展示的 JSON **必须**走同一函数。  
 3. Worker（**冻结路径**）：`POST /api/co-practice-research-ingest`。白名单 + 范围校验。未知字段 drop+counter。越界 400 整包拒收。  
-4. `DELETE /api/co-practice-research-ingest/:studyId`（**路径参数**，不用请求 body）：studyId 即凭据；线上删；测试锁「删后 GET 不到」。  
+4. `DELETE /api/co-practice-research-ingest`：studyId 放在 `Authorization: Bearer <uuid>`（合法 UUIDv4）；**不进 URL**、不用 body；线上删；测试锁「删后 GET 不到」。  
 5. 存储与 Stripe / entitlement / 账号 KV **命名空间隔离**。不写 IP、不写 User-Agent 到研究库。  
 6. 客户端：已同意且配置了 API 时，每周最多一次，随机延后 0–24h；payload 指纹相同则跳过写盘与 POST。  
 7. CI 五项（002 S4，必过）：  
@@ -66,7 +66,7 @@ chipId / route.class：**S0 已冻结**（方案包 §2.2 · [`DATA_DICTIONARY.m
 | 切片 | 内容 | 模型 |
 | --- | --- | --- |
 | S1 | `buildWeeklyPayload` 无网络 | Composer 2.5 / Fast OFF |
-| S3 | `POST /api/co-practice-research-ingest` · `DELETE /api/co-practice-research-ingest/:studyId` | Grok 4.6 / Medium / Fast OFF |
+| S3 | `POST /api/co-practice-research-ingest` · `DELETE` + Bearer studyId · 滥用防护三项 | Grok 4.6 / Medium / Fast OFF |
 | S4 | CI 五项守门 | Grok 4.6 / Medium / Fast OFF |
 | S5 | 周调度 0–24h | Composer 2.5 / Fast OFF |
 
@@ -93,7 +93,7 @@ chipId / route.class：**S0 已冻结**（方案包 §2.2 · [`DATA_DICTIONARY.m
 | 未知字段 | POST 夹带 `transcript` | drop，不入库 | CI 必红若未过滤 |
 | 越界 minutes | `minutes: 999999` | 整包 400 | 单测 |
 | 重复周 | 同 studyId 同 week 两次 | 覆盖为一条 | 单测 |
-| DELETE | 凭 studyId | 之后读不到 | 单测 |
+| DELETE | Bearer studyId | 之后读不到 | 单测 |
 | Electron / Web | 同一聚合器 | 行为同；platform 枚举不同 | 单测 |
 | overlay 窗口 | Arrival/Honesty/Reflection 开着 | 不发；排到之后 | 单测调度 |
 
@@ -130,6 +130,14 @@ chipId / route.class：**S0 已冻结**（方案包 §2.2 · [`DATA_DICTIONARY.m
 ---
 
 ## 10. 验收
+
+
+**S3 滥用防护（方案包 §2.5 #10 · 必验收）**
+
+- [ ] 请求体超过大小上限 → 413 或 400，不入库。  
+- [ ] 边缘限流触发 → 429；限流计数**不**写入研究库、不持久化 IP。  
+- [ ] POST `studyId` 非 UUIDv4 或 DELETE Bearer 非 UUIDv4 → 400。  
+- [ ] 文档：预注册/分析计划注明 POST 无法认证、可能混入伪造周包。
 
 - [ ] 未知字段 fixture：accepted 不含该键。  
 - [ ] 原文 / 情绪路由 / timestamp 键无法入库。  

@@ -2,7 +2,8 @@
 
 > **S0 · 2026-11-04**。从属 [`../drafts/co-practice-research-data-pack-v0.1.md`](../drafts/co-practice-research-data-pack-v0.1.md)。  
 > 实现冻结：chipId / route.class 以本文 + 方案包 §2.2 为准。改枚举必须升 `schemaVersion`。  
-> Golden 样例（S4(e)）：[`research-payload.v1.golden.json`](./research-payload.v1.golden.json)
+> Golden 样例（S4(e)）：[`research-payload.v1.golden.json`](./research-payload.v1.golden.json)  
+> DPIA 自查（R-13）：[`practice-study-dpia-self-check-v1.md`](./practice-study-dpia-self-check-v1.md)
 
 ## 信封
 

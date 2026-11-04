@@ -55,12 +55,12 @@
 3. **locale × platform** 是间接识别符。维持「不足 10 人不发布」，交叉表同样适用。
 4. **T54 与本研究不得用同一 ID、不得在同一秒对齐上传**，以免两套「去身份」数据对上。
 5. **`fallback` / `generate` 不得作为 route.class**。它们是分类残差，可能含未命中的心情倾诉。S0 已冻结功能类三枚，见 §2.2。
-6. 撤回时若 DELETE 失败：界面仍须清掉本机 ID，并**排队重试删除**；不得说「已经在服务器上删掉」除非请求成功或进入重试队列。
-7. Worker / CDN 访问日志必须对本路径关闭。政策只可写「不保存 IP」，不可写「传输中看不到 IP」。
+6. 撤回时若 DELETE 失败：界面仍须清掉本机 ID，并**排队重试删除**；不得说「已经在服务器上删掉」除非请求成功或进入重试队列。DELETE 凭据走 `Authorization: Bearer <studyId>`，**不得**把 studyId 放进 URL（避免进边缘日志与浏览器历史）。
+7. Worker / CDN 访问日志必须对本路径关闭；Bearer 凭据**不得**写入持久日志。政策只可写「不保存 IP」，不可写「传输中看不到 IP」。
 8. 数据控制者：**Twinsology** · **hello@twinsology.com**（PO 拍板 #5）。跨境（若 Cloudflare 在美/欧）须在隐私政策写清。
-9. 发表论文或对外说「科学研究」之前：伦理书面意见（R-12）。内部本审核**不够**。
+9. 发表论文或对外称「研究产品 / 带科学研究的共修」之前：伦理书面意见（R-12）。内部本审核**不够**。在 R-12 之前，§4.1 首次提示**不得**含「科学研究 / informed by research / 裏打ち」类定位（见 §4.1）。
 
-**对第 0 节 6 项的审核结论（同意推荐，除非你圈改）**
+**对第 0 节 #1–#6 的审核结论（PO 已于 2026-11-04 拍板 #1–#8；下表保留当时内部意见）**
 
 | # | 结论 |
 | --- | --- |
@@ -87,7 +87,7 @@
 | 6 | 只对 18 岁以上开放 | §3 勾选 | T54 **没有**满 18 岁勾选（当时明确不做对照入组） | **T82** |
 | 7 | 公开数据字典与保留期限；小样本不发布 | §2、§6 | 无官网字段页 | **T84** 应用内政策；**T86** 官网页 |
 | 8 | 独立伦理审查（发表论文几乎都要） | §8 | **没有** | **T86** |
-| 附加 | 第一次练完后的定位提示（desk-work / 习惯 / 带科学研究的共修） | §4 | **没有** | **T83** |
+| 附加 | 第一次练完后的轻提示（桌面共修 + 可选 weekly 研究入口；**R-12 前不写「研究产品」定位**） | §4 | **没有** | **T83** |
 | 附加 | 该句纳入问号简介 + 隐私政策三层英文 | §4.2、§6 | 问号无此句；政策无三层 | **T84** |
 
 三层数据本身：
@@ -114,7 +114,7 @@
 
 | 字段 | 取值 | 说明 | 服务 |
 | --- | --- | --- | --- |
-| studyId | 随机 UUIDv4 | 开启时在设备上生成；不从账号、邮箱、设备指纹派生；退出即删除；同时是删除凭据 | 去重、删除 |
+| studyId | 随机 UUIDv4 | 开启时在设备上生成；不从账号、邮箱、设备指纹派生；退出即删除；DELETE 凭据（`Authorization: Bearer`，不进 URL） | 去重、删除 |
 | schemaVersion | 整数 | 不认识的版本整包丢弃 | 解析 |
 | week | `YYYY-Www` | ISO 周，不含具体日期 | 时间轴 |
 | tenureWeeks | 0–260 | 加入研究后第几周 | H1–H3 |
@@ -202,11 +202,12 @@
 2. 每个 studyId 每周一条，重复上传按周覆盖。
 3. 此端点不写入 IP 与 User-Agent，关闭请求日志。传输中服务器会短暂经手 IP，政策写「不保存」，不写「看不到」。
 4. 存储与付费、账号数据物理分离，独立数据库或命名空间，静态加密。
-5. 删除：`DELETE /api/co-practice-research-ingest/:studyId`（路径参数，**不用**请求 body）；studyId 即凭据；线上立即删除，备份最长 30 天内清除。
-6. 保留：24 个月（待拍板 #1）。
+5. 删除：`DELETE /api/co-practice-research-ingest`（路径中**无** studyId）。凭据：`Authorization: Bearer <studyId>`（须合法 UUIDv4；**不用**请求 body）。线上立即删除，备份最长 30 天内清除。边缘不得持久记录 Bearer 值。
+6. 保留：24 个月（PO 拍板 #1）。
 7. 访问：仅 PO 与指定分析人，访问留痕。
 8. 发布：分组不足 10 人不发布；不发布个人轨迹。
 9. 节奏：每周一次，设备端随机延后 0–24 小时；失败静默重试，不打断动效。
+10. **滥用防护（S3 必验收）**：请求体大小上限（建议 ≤32 KiB，实现可微调须写进运行手册）；Cloudflare / 边缘**限流**（按 IP 或指纹做速率限制，**不**把 IP 写入研究库）；POST 信封 `studyId` 与 DELETE Bearer 值均须通过 UUIDv4 校验，否则 400。**上传无法认证真实参与者**——数据集可能混入伪造行；预注册（R-14）与分析计划须写明并规划清洗规则。
 
 与现网 T54 `/api/t54-research-ingest`：**新路径**，例如 `/api/co-practice-research-ingest`。禁止把周聚合字段塞进旧白名单凑合。
 
@@ -249,7 +250,7 @@
 
 ---
 
-## 3 同意页文案（草案，待律师审阅）
+## 3 同意页文案（草案 · 待 PO 审阅 · 已拍板字段见 §0）
 
 实现：**T82**。切片 `src/locales/slices/co-practice-research-consent.json`。禁止改 `en.json` / `zh.json` / `ja.json`。
 
@@ -356,27 +357,31 @@ Leave confirmation: **You have left the study.** The random ID on this device is
 
 **不是**安装欢迎。**不是** T51 觉照邀请。**不是** T76 冷启动。专注 / Arrival / Honesty / Reflection 进行中禁止出现。
 
-### 4.1 锁定候选（点头后实现不得改口；律师可改标点）
+### 4.1 锁定候选（PO 已拍板 · 点头后实现不得改口）
+
+**与 §0 #8 / R-12 对齐**：在拿到外部伦理书面意见之前，提示**只**描述人机共修 + 可选 weekly 汇总研究，**不得**写「研究产品」「informed by research」「科学研究」「裏打ち」等对外研究定位。R-12 到位后，另 Brief 恢复「带科学研究的人机共修」定位句（可写入 §4.2 / 问号 / `CO_PRACTICE_POSITIONING`）。
 
 禁止子串：已证明有效、诊疗、训练模型、不带任何隐私痕迹、干预、临床病名、寅币奖励。
 
 **en**
 
-We make a human–AI co-practice product for desk work, informed by research. We protect your privacy by default. If you want, you can learn about an optional weekly summary study—nothing in the app changes either way.
+We make a human–AI co-practice product for desk work. Your privacy is protected by default. If you'd like, you can learn about an optional weekly summary study—nothing in the app changes either way.
 
 **zh**
 
-我们做的是一款带科学研究的人机共修产品，陪你安静练习桌面工作。默认保护你的隐私。若你想了解，可以看看可选的「研究共修」——每周只分享几个汇总数字；不参加也一切照常。
+我们做的是一款人机共修产品，陪你安静练习桌面工作。默认保护你的隐私。如果你想了解，可以看看可选的「研究共修」：每周只分享几个汇总数字，不参加也一切照常。
 
 **ja**
 
-私たちは、研究に裏打ちされた人とAIの共修製品です。デスクワークの練習に静かに寄り添います。プライバシーを最優先に守ります。任意の週次集計研究について知りたい場合だけご案内します。参加しなくても、使い方は変わりません。
+私たちは、人とAIが一緒に練習する製品です。デスクワークの練習に静かに寄り添います。プライバシーを最優先に守ります。任意の週次集計研究について知りたい場合だけご案内します。参加しなくても、使い方は変わりません。
 
 按钮：了解研究共修 / 暂不　·　Learn about Practice Study / Not now　·　練習リサーチについて / 今はしない
 
-### 4.2 纳入问号与产品定位（T83 / T84，点头后）
+### 4.2 纳入问号与产品定位（T83 / T84 · R-12 后）
 
-这句是定位的一部分，优化完成后写入：
+**R-12 之前**：问号与 `CO_PRACTICE_POSITIONING` **不加**「带科学研究的人机共修」叠加句；仅 §4.1 轻提示 + 同意页内研究说明。
+
+**R-12 之后**（另 Brief 点头）可写入：
 
 1. 问号简介 `HINT_APP_PURPOSE_BODY`（**T64** 已有「一起练习、不催不评判」）。须改「不挖矿 / no data mining」的绝对口气：改成「默认本地；研究共修仅自愿周汇总」，避免与自愿研究矛盾。
 2. [`CO_PRACTICE_POSITIONING.md`](../CO_PRACTICE_POSITIONING.md) §1 叠加层可加一句「带科学研究的人机共修」，**不得**说已证明有效。
@@ -420,8 +425,8 @@ We make a human–AI co-practice product for desk work, informed by research. We
 | R-10 | 应用内隐私政策 + 官网字段页 | **T84** 应用内；**T86** 官网 | 政策无研究共修三层；无官网页 |
 | R-11 | 持牌律师书面审阅 | **PO 豁免（§0.1）**；重开条件见 §0.1 | 内部审核已做；**不是**法律意见 |
 | R-12 | 外部伦理意见 | **T86** | 无；发表分析前必过 |
-| R-13 | 轻量 DPIA / 处理活动记录 | **T86** | 是否强制由 PO 重开持牌审阅时一并定 |
-| R-14 | 研究预注册（假设与分析计划） | **T80** 文档后置 | **不是** T54 90 天预注册 |
+| R-13 | 轻量 DPIA / 处理活动记录 | **T80** | **已做** [`../research/practice-study-dpia-self-check-v1.md`](../research/practice-study-dpia-self-check-v1.md)（一页自查，非律师意见） |
+| R-14 | 研究预注册（假设与分析计划） | **T80** 文档后置 | **不是** T54 90 天预注册；须写明 **POST 无法认证**、数据集可能含伪造周包与清洗规则 |
 | R-15 | 邀请话术与样本量 | **T83** | 首次提示文案已锁候选 |
 | R-16 | 运行手册（访问、删除、泄露应急） | **T81** 合入时草稿 + **T86** | 无 |
 | R-17 | DMG / Setapp / Mac App Store 数据声明 | **T86** | 无 |
@@ -435,7 +440,7 @@ We make a human–AI co-practice product for desk work, informed by research. We
 
 ## 6 隐私政策三层说明（英文定稿候选 · T84 写入 `PRIVACY_NOTICE.md`）
 
-中英日三版须等价；冲突时仍以中文为准（现网惯例）。下列英文供律师审；中日由同一结构翻译，不另发明规则。
+中英日三版须等价；冲突时仍以中文为准（现网惯例）。下列英文供 PO / T84 审阅定稿；中日由同一结构翻译，不另发明规则。
 
 **Recommended English block (new subsection under Default Data Storage)**
 
@@ -522,7 +527,7 @@ This Practice Study is independent of the existing Privacy switch for optional t
 | 轴 | 判断 |
 | --- | --- |
 | a. 强度 | 轻提示一次，轻于 Honesty / 危机。不得比结束庆祝更重，不得在 overlayBusy 时出现 |
-| b. 语气 | 可选、可关、无奖励。禁止疗效、禁止「已证明」。定位句说长期潜力，不说诊断 |
+| b. 语气 | 可选、可关、无奖励。禁止疗效、禁止「已证明」。§4.1 只描述可选 weekly 研究，R-12 前禁止「研究产品」定位 |
 | c. 职责 | **不替代** T54 改进产品开关；**不替代** 90 天实验；**不替代** 漏斗。新研究线独立 |
 
 疑点（须你点头，不替你改现网）：设计要点 1 要求独立开关、不放进 Privacy 勾选。现网 T54 **已经在 Privacy 里**。本包推荐**并存**。若你要求「只留一个研究开关」，须另 Brief 做迁移，本包不默默关掉 T54。
