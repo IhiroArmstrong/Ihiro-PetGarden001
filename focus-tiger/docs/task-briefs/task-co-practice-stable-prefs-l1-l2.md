@@ -1,10 +1,10 @@
 # Task Brief · 共修稳定偏好 L1 + L2（记住 · 说出 · 可纠正）
 
-> **状态**：**已点头**（2026-11-01 PO 书面「按三条勘误点头」）。点头后实现走 **T76** 新 worktree，本 docs PR 不写 `src/`。  
+> **状态**：**已点头**（2026-11-01 PO 书面「按三条勘误点头」）。点头后实现走 **T87** 新 worktree，本 docs PR 不写 `src/`。  
 > **地面真相**：[`co-practice-stable-prefs-inventory.md`](../co-practice-stable-prefs-inventory.md)。  
 > **类**：**B 类**（用户可见：预选、L2 事实句、续练位、纠正/忘掉）。过 **T55** **C-01 / C-08 / C-09 / C-11**；L2 句须过 **`npm run check:companion-contract`**。  
 > **从属**：[`CO_PRACTICE_POSITIONING.md`](../CO_PRACTICE_POSITIONING.md) · **T58**（不重做变安静数字）· **T59** · **T63** 契约面 · **T67** 接合账 · **T68** 曝光夹具（验收挂钩，不改已锁档位）。  
-> **实现拆分**：**T76** PR-1 → **T77** PR-2 → **T78** PR-3（见 §12）。**T60** 补强 [#1525](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1525) **已合** `origin/develop`（`de3f6403`，merge 2026-11-01）。
+> **实现拆分**：**T87** PR-1 → **T77** PR-2 → **T78** PR-3（见 §12）。**T60** 补强 [#1525](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1525) **已合** `origin/develop`（`de3f6403`，merge 2026-11-01）。
 
 ---
 
@@ -92,7 +92,7 @@ Yin 要记住的不该是「你在时长条上点过一圈」，而是「你真�
 
 ## 5. 变体矩阵（A10 · 全维度规则）
 
-图例：**PR-1** = T76 · **PR-2** = T77 · **PR-3** = T78 · **—** = 本 Brief 仅锁规则
+图例：**PR-1** = T87 · **PR-2** = T77 · **PR-3** = T78 · **—** = 本 Brief 仅锁规则
 
 ### 5.1 Focus 分钟 × 状态
 
@@ -170,7 +170,7 @@ Yin 要记住的不该是「你在时长条上点过一圈」，而是「你真�
 
 ## 9. 验收（点头后 · 分 PR）
 
-### T76 PR-1
+### T87 PR-1
 
 - 单测：计票矩阵 §1.3 全覆盖；suppress 14d；忘掉清 anchor 不清 pref；未开表不涨票。  
 - 改 chip 浏览行为单测（与现网 diff 说明）。  
@@ -188,7 +188,7 @@ Yin 要记住的不该是「你在时长条上点过一圈」，而是「你真�
 
 ### T68 挂钩（**不重开档位**）
 
-- **T76 合 develop 后**：复跑 **T68 Brief** 曝光夹具（C 通过率）；若相对点头基线 **显著升高**，PO 决定是否微调 T68 C 文案/阈值——**不在本 Brief 改 T68 第 1 档数字**。
+- **T87 合 develop 后**：复跑 **T68 Brief** 曝光夹具（C 通过率）；若相对点头基线 **显著升高**，PO 决定是否微调 T68 C 文案/阈值——**不在本 Brief 改 T68 第 1 档数字**。
 
 ---
 
@@ -201,7 +201,7 @@ T62 新句、菜单重排、feature-affinity、到达 Notice 预选、T54 字段
 ## 11. PO 已锁决策（2026-11-01）
 
 1. 盘点落盘 + 本 Brief + 术语表 **同一 docs PR**。  
-2. PR 顺序：**#1525 T60 已合** → 本 docs（Brief 点头）→ **T76 → T77 → T78**。  
+2. PR 顺序：**#1525 T60 已合** → 本 docs（Brief 点头）→ **T87 → T77 → T78**。  
 3. v1 无 feature-affinity；续练 = 配置续练。  
 4. T68：曝光夹具复跑，不重开已锁第 1 档。  
 5. **三条勘误（点头条件）**：计票 = 改选后开表；晋升 = 滚动 3/5 非连续；无 stable 时隐藏续练位。
@@ -212,11 +212,11 @@ T62 新句、菜单重排、feature-affinity、到达 Notice 预选、T54 字段
 
 | 代号 | 名称 | 状态（点头后） | PR |
 |---|---|---|---|
-| **T76** | 稳定偏好层 · Focus · L2 纠正 | 排队中 · Brief 已点头 | PR-1 |
-| **T77** | 续练位 | 排队中 · 依赖 T76 | PR-2 |
-| **T78** | Breath · Companion 稳定维度 | 排队中 · 依赖 T76 | PR-3 |
+| **T87** | 稳定偏好层 · Focus · L2 纠正 | 立即做 · Brief 已点头 | PR-1 |
+| **T77** | 续练位 | 排队中 · 依赖 T87 | PR-2 |
+| **T78** | Breath · Companion 稳定维度 | 排队中 · 依赖 T87 | PR-3 |
 
-口令「按 L1 Brief 开工」= **T76 新 worktree**；「续练位」= **T77**；「Breath 稳定偏好」= **T78**。
+口令「按 L1 Brief 开工」= **T87 新 worktree**；「续练位」= **T77**；「Breath 稳定偏好」= **T78**。
 
 ---
 

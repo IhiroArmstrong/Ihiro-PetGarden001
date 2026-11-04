@@ -1,0 +1,1 @@
+| T87/T77/T78 稳定偏好队列登记 | 纯文档 | 仅单元测试覆盖 | 读 [`GLOSSARY.md`](../GLOSSARY.md) 与 [`SCHEDULING_GLOSSARY.md`](../SCHEDULING_GLOSSARY.md) §1：T87 立即做（PR-1）、T77/T78 排队中依赖 T87；T76 仍是冷启动。`git diff` 无 `src/`。不测界面。 | — | — | — | `docs/t87-stable-prefs-queue` | 2026-11-04 |

@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-11-04 · **T79 #1551 已合** · **T76 B1 #1550 · B2 #1553 已合** · **T80 #1554 已合** · **T81–T84 Brief 待点头** · **T85/T86 搁置** · **T73 第二刀 Brief 已点头** · **T74 预生成池 Brief 待点头** · **T75 适应开 vs 不开一页纸已写** · **T73 第一刀 #1530 已合** · **T66 第二步 embedding 板块搁置（#1488 阶段 A 未过）** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
+## 1. 当前队列（2026-11-04 · **【新增】T87 稳定偏好 PR-1 立即做** · **T77 / T78 排队中** · **T79 #1551 已合** · **T76 B1 #1550 · B2 #1553 已合** · **T80 #1554 已合** · **T81–T84 Brief 待点头** · **T85/T86 搁置** · **T73 第二刀 Brief 已点头** · **T74 预生成池 Brief 待点头** · **T75 适应开 vs 不开一页纸已写** · **T73 第一刀 #1530 已合** · **T66 第二步 embedding 板块搁置（#1488 阶段 A 未过）** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -84,7 +84,9 @@
 | **可选** · **T73** | 记住—响应读层 | **立即做** · 第二刀 Brief 已点头 | 第一刀 **已合** #1530。第二刀 [`task-remember-respond-second-knife.md`](./task-briefs/task-remember-respond-second-knife.md)。口令「按 T73 Brief 开工第二刀」= 新 Chat。**不是** T69、**不是** T54 |
 | **可选** · **T74** | 受限生成预生成池 | **排队中** · Brief 待点头 | B 类。[`task-constrained-generation-pregen-pool.md`](./task-constrained-generation-pregen-pool.md)。不插 T73 第二刀前接线。**不是** 倾诉开放生成 |
 | **可选** · **T75** | 适应开 vs 不开对照方案 | **已完成**（一页纸） | A 类。[`adaptation-on-off-research-protocol.md`](./adaptation-on-off-research-protocol.md)。写了 ≠ 开工 90 天 |
-| **P1** · **T76** | 冷启动静修入口 | **已完成** · B1 #1550 · B2 #1553 | 人话：第一次打开就能安静坐。Brief [`task-t76-cold-start-quiet-sit.md`](./task-briefs/task-t76-cold-start-quiet-sit.md)。关单级手测并入下一批。**不是** T71、**不是** 禅修引擎 |
+| **P1** · **T76** | 冷启动静修入口 | **已完成** · B1 #1550 · B2 #1553 | 人话：第一次打开就能安静坐。Brief [`task-t76-cold-start-quiet-sit.md`](./task-briefs/task-t76-cold-start-quiet-sit.md)。关单级手测并入下一批。**不是** T71、**不是** 禅修引擎、**不是** 稳定偏好 |
+| **可选** · **T77** | 续练位 | **排队中** · 依赖 T87 | 人话：常做的那一套一键接着练。v1 无时段词。依赖 **T87**。**不是** T76 |
+| **可选** · **T78** | Breath / Companion 稳定偏好 | **排队中** · 依赖 T87 | 人话：呼吸分钟与陪伴模式也记住常选。依赖 **T87**。**不是** T76 |
 | **可选** · **T79** | 觉察哲思第一例 | **已完成** · Brief 已点头 · #1551 | 人话：带着一个很老的问题安静坐一会儿。Brief [`task-t79-contemplative-inquiry.md`](./task-briefs/task-t79-contemplative-inquiry.md)。关单级手测待勾。**不是** T51、**不是** Quiet Line、**不是** T76 |
 | **可选** · **T80** | 研究共修方案包 | **已完成** · #1554 | 人话：字段、同意文案、以后怎么做写成说明书。包 [`drafts/co-practice-research-data-pack-v0.1.md`](./drafts/co-practice-research-data-pack-v0.1.md)。**不是** T54、**不是** 90 天 |
 | **可选** · **T81** | 研究共修上传接口 | **排队中** · Brief 待点头 | 周聚合 + 白名单 Worker + CI。Brief [`task-co-practice-research-upload.md`](./task-briefs/task-co-practice-research-upload.md)。**不是** T54 ingest |
@@ -93,6 +95,7 @@
 | **可选** · **T84** | 问号与隐私政策三层 | **排队中** · Brief 待点头 | 定位句 + 三层政策。Brief [`task-co-practice-research-privacy-help.md`](./task-briefs/task-co-practice-research-privacy-help.md) |
 | **未排期** · **T85** | 研究共修第 2 层问卷 | **搁置** | 第一版不上。Brief [`task-co-practice-research-tier2-survey.md`](./task-briefs/task-co-practice-research-tier2-survey.md) |
 | **未排期** · **T86** | 官网字典与伦理审查 | **搁置** | 公开字段页 + 顾问函。Brief [`task-co-practice-research-public-ethics.md`](./task-briefs/task-co-practice-research-public-ethics.md) |
+| **可选** · **T87** | 稳定偏好层 PR-1 | **立即做** · Brief 已点头 | 人话：记住你常练哪一种分钟，可以说出来、也可以说不是这样。Brief [`task-co-practice-stable-prefs-l1-l2.md`](./task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动、**不是** T73 读门 |
 
 ### T46 不执行的路线（登记，不开工）
 
@@ -194,10 +197,11 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T73 Brief 开工第一刀」或「按记住—响应 Brief 开工」 | **T73 第一刀已合 #1530**。勿再开同内容读门旁支。**不是** T69 |
 | 「按 T73 Brief 开工第二刀」 | **须新 Chat** 写 `src/`。说出所见 + 要/不要。Brief [`task-remember-respond-second-knife.md`](./task-briefs/task-remember-respond-second-knife.md) |
 | 「按 T74 Brief 开工」 | **须 Brief 点头**后新 Chat。空闲填池。**不是** 倾诉开放生成。**不插** T73 第二刀前面 |
-| 「按 T76 Brief 开工」 | Brief 已点头；**勿再开** A 类口径旁支 |
+| 「按 T76 Brief 开工」 | Brief 已点头；**勿再开** 冷启动口径旁支。**不是** 稳定偏好 |
 | 「按 T76 B1 开工」 | **T76 B1 已合 #1550**。勿再开同内容旁支 |
 | 「按 T76 B2 开工」 | **T76 B2 已合 #1553**。勿再开同内容旁支 |
 | 「开工禅修模式」或「加第五项」或「首页第四球」 | **不执行**。见 **T76** Brief |
+| 「按 T76 Brief 开工稳定偏好」或「开工 T76 稳定层」 | **不执行**。稳定偏好 PR-1 是 **T87** |
 | 「按 T75 Brief 开工」或「写适应开 vs 不开一页纸」 | **T75 已写**。勿再开同内容对照旁支。**不是** 开工 90 天 |
 | 「按 T69 Brief 开工」 | **不执行**（T69 是桌面习惯文献对照，已完成）。读层是 **T73** |
 | 「按 T79 Brief 开工」 | **T79 已合 #1551** · Brief 已点头。勿再开同内容旁支。关单级手测待勾。**不是** T51、**不是** Quiet Line |
@@ -208,6 +212,9 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T83 Brief 开工」 | **须 Brief 点头**后新 Chat。首次练习后提示。**不是** T51 |
 | 「按 T84 Brief 开工」 | **须 Brief 点头**后新 Chat。问号 + 隐私政策三层 |
 | 「按 T85 Brief 开工」或「按 T86 Brief 开工」 | **不执行**（搁置 · 未排期） |
+| 「按 T87 Brief 开工」或「按 stable-prefs Brief 开工 PR-1」 | **须新 Chat** 写 `src/`。Brief 已点头。**不是** T76 |
+| 「按 T77 Brief 开工」 | **须 T87 合入**后新 Chat。续练位。v1 无时段词 |
+| 「按 T78 Brief 开工」 | **须 T87 合入**后新 Chat。Breath / Companion 稳定维度 |
 
 ---
 

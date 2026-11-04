@@ -1,8 +1,8 @@
 ---
 id: t75-co-practice-stable-breath-companion
-kind: feature
-status: Brief 待点头 · 依赖 T76
-updated: 2026-11-01
+kind: note
+status: 已改号 · 见 T78
+updated: 2026-11-04
 ---
 
-T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。
+历史片：Breath/Companion 稳定维度曾挂本 id。现行代号 **T78**（依赖 T87）。T75 现行 = 适应开 vs 不开对照方案。
