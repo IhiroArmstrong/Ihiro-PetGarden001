@@ -64,6 +64,8 @@
 
 **近期落地（待人工测试）**：
 
+- **引导冥想媒体交付 P0 审计（2026-11-04 · 纯文档）**：云端按需下载 + 本地缓存。PO 已拍：视频课默认播视频、音画合轨、课免费、不做后台预下载。源文件不进 Git。权威 [`task-briefs/task-guided-meditation-media-delivery.md`](./task-briefs/task-guided-meditation-media-delivery.md) · [`guided-meditation-media-delivery-audit.md`](./guided-meditation-media-delivery-audit.md)。主 Brief B 项改为引用本篇。无运行时。
+
 - **宽屏菜单三刀（2026-10-17 · 已合 develop · 待人工测试）**：付费 #1289 · 归类 #1305 · 五图标扇形 #1307。窄屏仍是抽屉；`innerHeight < 520px` 宽屏退化为列表。Brief [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。不得再因口令重开三刀。
 
 - **Voice Input V1 Brief（2026-09-24 · 纯文档）**：`task-voice-input-v1.md`。共用 Speak to type；首发只挂倾诉 / Arrival 手写意图 / Reflection 三问；Electron 英语；倾诉禁止注入云 STT。拍板 ≠ 开工；第一口令「开工 Voice Input 探针」。

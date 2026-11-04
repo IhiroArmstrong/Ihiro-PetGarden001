@@ -73,3 +73,6 @@ focus-tiger/art-reference/models/sources/*
 
 # Art-collection masters are not part of the public repo.
 focus-tiger/private/art-collection-hd/
+
+# Guided meditation video masters: inventory in docs; files stay on disk / R2.
+/*.mp4

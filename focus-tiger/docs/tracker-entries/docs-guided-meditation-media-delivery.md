@@ -1,0 +1,1 @@
+| 引导冥想媒体交付 P0 审计 | 纯文档 | 待人工测试 | **只验说明书，不测播放、不测下载。** 打开 `guided-meditation-media-delivery-audit.md`：H1–H9 有结论或未核实；源清单第一课 21:43 / 129MiB / 单 AAC 轨；spec 有桌面与 Web 状态机与降级表。打开姊妹 Brief：B 项改为引用媒体交付篇。不打开 YouTube 当验收。不把 MP4 提交进 Git。 | — | — | — | `docs/guided-meditation-media-delivery-audit.md` | 2026-11-04 |
