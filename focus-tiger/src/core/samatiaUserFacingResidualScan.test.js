@@ -12,7 +12,8 @@ import {
   isSamatiaScanLineWhitelisted,
   scanSamatiaA2UserFacingResiduals,
   scanSamatiaBUserFacingResiduals,
-  scanSamatiaCUserFacingResiduals
+  scanSamatiaCUserFacingResiduals,
+  scanSamatiaDUserFacingResiduals
 } from './samatiaUserFacingResidualScan.js';
 import { DESKTOP_DISPLAY_NAME } from '../../desktop/trayPolicy.js';
 import desktopPackage from '../../desktop/package.json' with { type: 'json' };
@@ -87,6 +88,15 @@ test('T87-B: A2 + Electron display scan has no legacy public product name', () =
 
 test('T87-C: marketing HTML and store listings have no legacy public product name', () => {
   const hits = scanSamatiaCUserFacingResiduals(focusTigerRoot);
+  assert.deepEqual(
+    hits,
+    [],
+    hits.map((h) => `${h.file}:${h.line} ${h.snippet}`).join('\n')
+  );
+});
+
+test('T87-D: Checkout hardcoded copy scan has no legacy public product name', () => {
+  const hits = scanSamatiaDUserFacingResiduals(focusTigerRoot);
   assert.deepEqual(
     hits,
     [],

@@ -122,13 +122,15 @@
 
 ### Stripe Price（非 Secret · 仓库已记）
 
-| 产品 | Price id | 备注 |
-|---|---|---|
-| Tip / Tea | `price_1U4nanFuIhgJPGLidoTdxobW` | US$4.99 · vars 已接线 |
-| Sanctuary Lifetime | `price_1U22T4FuIhgJPGLiT0hcEWxY` | vars 已接线 |
-| Yin Membership | `price_1U2r5lFuIhgJPGLiEPOhJbst` | vars 已接线 |
-| Focus Tiger Pro | `price_1U6EB1FuIhgJPGLiuciuX1to` | US$12.99/月 · vars 已接线 |
-| Companion Add-on | `price_1U6GnXFuIhgJPGLiNlXs0IKe` | US$29.99 一次 · SKU `companion.addon.lifetime` |
+| 产品 | Price id | 顾客可见 Product name（T87-D · Dashboard） | 备注 |
+|---|---|---|---|
+| Tip / Tea | `price_1U4nanFuIhgJPGLidoTdxobW` | （保持现网中性名） | US$4.99 · vars 已接线 |
+| Sanctuary Lifetime | `price_1U22T4FuIhgJPGLiT0hcEWxY` | （保持现网中性名） | vars 已接线 |
+| Yin Membership | `price_1U2r5lFuIhgJPGLiEPOhJbst` | **Samatia · Yin Membership** | vars 已接线 |
+| Samatia Pro | `price_1U6EB1FuIhgJPGLiuciuX1to` | **Samatia Pro** | US$12.99/月 · vars 已接线 |
+| Companion Add-on | `price_1U6GnXFuIhgJPGLiNlXs0IKe` | （Brief 未强制改名） | US$29.99 一次 · SKU `companion.addon.lifetime` |
+
+PO 逐步操作：[`samatia-stripe-dashboard-checklist.txt`](./samatia-stripe-dashboard-checklist.txt)。内部 `planId` 仍为 `focus-tiger-pro`。
 
 ---
 

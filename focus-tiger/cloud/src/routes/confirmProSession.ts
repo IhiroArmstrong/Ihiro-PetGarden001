@@ -58,7 +58,7 @@ export async function handleConfirmProSession(
 	}
 
 	if (!isProProductMetadata(session.metadata)) {
-		return errorJson(403, "not_pro", "Session is not a Focus Tiger Pro purchase");
+		return errorJson(403, "not_pro", "Session is not a Samatia Pro purchase");
 	}
 
 	if (session.mode && session.mode !== "subscription") {
