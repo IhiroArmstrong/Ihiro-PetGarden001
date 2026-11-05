@@ -71,6 +71,7 @@
       "systemTts/**/*.html",
       "native/**/*.swift",
       "updater/**/*.js",
+      "guidedMeditation/**/*.js",
       "../src/core/desktopUpdaterChannel.js",
       "../src/core/desktopUpdaterState.js",
       "companion/**/*.js",

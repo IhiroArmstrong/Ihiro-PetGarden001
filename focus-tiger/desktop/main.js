@@ -734,6 +734,13 @@ if (gotSingleInstanceLock) {
     )
   );
 
+  const { registerGuidedMeditationIpc } = await import(
+    './guidedMeditation/guidedMeditationIpc.js'
+  );
+  registerGuidedMeditationIpc(ipcMain, {
+    getUserDataDir: () => app.getPath('userData')
+  });
+
   if (process.env.FT_COMPANION_L0 === '1') {
     const { runL0BenchInMain } = await import('./companion/l0Main.js');
     try {

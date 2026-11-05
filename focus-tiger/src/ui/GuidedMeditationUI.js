@@ -16,7 +16,13 @@ import {
   resolveGuidedMeditationCredit,
   sumPlayedSeconds
 } from '../core/guidedMeditationLessons.js';
-import { fetchVerifiedGuidedMeditationVideo } from '../core/guidedMeditationMediaVerify.js';
+import { isDesktopShellRuntime } from '../core/desktopShell.js';
+import {
+  bufferedFraction,
+  formatDownloadProgress,
+  resolveGuidedMeditationPlaybackMode
+} from '../core/guidedMeditationPlayback.js';
+import { resolveGuidedMeditationMediaSrc } from '../core/guidedMeditationDesktopMedia.js';
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
@@ -52,6 +58,9 @@ export class GuidedMeditationUI {
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
     this._credited = false;
+    this._preferAudio = false;
+    this._downloadLabel = '';
+    this._bufferLabel = '';
     /** @type {AbortController | null} */
     this._loadAbort = null;
     /** @type {string | null} */
@@ -103,13 +112,19 @@ export class GuidedMeditationUI {
     this.video.setAttribute('playsinline', '');
     this.video.setAttribute('controls', '');
     this.video.preload = 'metadata';
-    this.video.addEventListener('waiting', () => this._setStatus('loading'));
+    this.video.addEventListener('waiting', () => this._setBufferingStatus());
+    this.video.addEventListener('progress', () => {
+      if (this.statusEl.dataset.state === 'buffering') this._setBufferingStatus();
+    });
     this.video.addEventListener('playing', () => this._setStatus('playing'));
     this.video.addEventListener('pause', () => {
       if (!this.video.ended && this._lessonId) this._setStatus('paused');
     });
     this.video.addEventListener('ended', () => this._tryCredit());
-    this.video.addEventListener('error', () => this._setStatus('need-network'));
+    this.video.addEventListener('error', () => {
+      this._setStatus('error-retryable');
+      this.retryBtn.hidden = false;
+    });
 
     this.playerActions = document.createElement('div');
     this.playerActions.className = 'guided-meditation__player-actions';
@@ -141,10 +156,26 @@ export class GuidedMeditationUI {
     this.retryBtn.dataset.testid = 'guided-meditation-retry';
     this.retryBtn.hidden = true;
     this.retryBtn.addEventListener('click', () => {
-      if (this._lessonId) this._openLesson(this._lessonId);
+      if (this._lessonId) {
+        this._openLesson(this._lessonId, { preferAudio: this._preferAudio });
+      }
     });
 
-    this.playerActions.append(this.pauseBtn, this.endBtn, this.backBtn, this.retryBtn);
+    this.audioBtn = document.createElement('button');
+    this.audioBtn.type = 'button';
+    this.audioBtn.className = 'guided-meditation__btn guided-meditation__btn--ghost';
+    this.audioBtn.dataset.testid = 'guided-meditation-audio-fallback';
+    this.audioBtn.addEventListener('click', () => {
+      if (this._lessonId) this._openLesson(this._lessonId, { preferAudio: true });
+    });
+
+    this.playerActions.append(
+      this.pauseBtn,
+      this.audioBtn,
+      this.endBtn,
+      this.backBtn,
+      this.retryBtn
+    );
     this.playerEl.append(
       this.lessonTitleEl,
       this.statusEl,
@@ -248,18 +279,20 @@ export class GuidedMeditationUI {
 
   /**
    * @param {string} lessonId
+   * @param {{ preferAudio?: boolean }} [opts]
    */
-  _openLesson(lessonId) {
+  _openLesson(lessonId, opts = {}) {
     const lesson = findGuidedMeditationLesson(lessonId);
     if (!lesson || !isGuidedMeditationMediaConfigured()) return;
     this._abortLoad();
     this._lessonId = lessonId;
     this._credited = false;
+    this._preferAudio = Boolean(opts.preferAudio);
     this.listEl.hidden = true;
     this.playerEl.hidden = false;
     this.lessonTitleEl.textContent = t(lesson.titleKey);
     this.retryBtn.hidden = true;
-    this._setStatus('loading');
+    this._setStatus(this._preferAudio ? 'audio' : 'preparing');
     this._refreshTexts();
 
     if (globalThis.__FT_GUIDED_MEDITATION_MOCK_MEDIA__ === true) {
@@ -269,23 +302,49 @@ export class GuidedMeditationUI {
 
     const controller = new AbortController();
     this._loadAbort = controller;
-    void fetchVerifiedGuidedMeditationVideo({
-      url: lesson.videoUrl,
-      expectedSha256: lesson.deliverySha256,
-      expectedBytes: lesson.deliveryBytes,
-      signal: controller.signal
+    const mode = resolveGuidedMeditationPlaybackMode(isDesktopShellRuntime());
+    const rendition = this._preferAudio
+      ? {
+          kind: 'audio',
+          url: lesson.audioUrl,
+          sha256: lesson.audioSha256,
+          bytes: lesson.audioBytes,
+          mime: 'audio/mp4',
+          objectHash: lesson.audioSha256 || 'audio'
+        }
+      : {
+          kind: 'video',
+          url: lesson.videoUrl,
+          sha256: lesson.deliverySha256,
+          bytes: lesson.deliveryBytes,
+          mime: 'video/mp4',
+          objectHash: lesson.deliverySha256
+        };
+
+    const playSrc = (src) => {
+      if (this._lessonId !== lessonId || controller.signal.aborted) return;
+      this.video.src = src;
+      this.video.load();
+      void this.video.play().catch(() => {
+        if (controller.signal.aborted || this._lessonId !== lessonId) return;
+        this._setStatus('error-retryable');
+        this.retryBtn.hidden = false;
+      });
+    };
+
+    if (mode === 'stream') {
+      playSrc(rendition.url);
+      return;
+    }
+
+    void resolveGuidedMeditationMediaSrc(rendition, lesson.id, (info) => {
+      if (this._lessonId !== lessonId || controller.signal.aborted) return;
+      this._downloadLabel = formatDownloadProgress(info.received, info.total);
+      this._setStatus('fetching');
     })
-      .then((blob) => {
+      .then((result) => {
         if (this._lessonId !== lessonId || controller.signal.aborted) return;
-        this._revokeObjectUrl();
-        this._objectUrl = URL.createObjectURL(blob);
-        this.video.src = this._objectUrl;
-        this.video.load();
-        return this.video.play();
-      })
-      .then(() => {
-        if (this._lessonId !== lessonId || controller.signal.aborted) return;
-        this._setStatus('playing');
+        playSrc(result.src);
       })
       .catch((err) => {
         if (controller.signal.aborted || err?.name === 'AbortError') return;
@@ -296,6 +355,14 @@ export class GuidedMeditationUI {
       .finally(() => {
         if (this._loadAbort === controller) this._loadAbort = null;
       });
+  }
+
+  _setBufferingStatus() {
+    if (!this._lessonId) return;
+    const frac = bufferedFraction(this.video);
+    this._bufferLabel =
+      frac == null ? '' : `${Math.round(frac * 100)}%`;
+    this._setStatus('buffering');
   }
 
   _togglePause() {
@@ -361,20 +428,31 @@ export class GuidedMeditationUI {
   }
 
   /**
-   * @param {'loading' | 'playing' | 'paused' | 'need-network' | 'error-retryable' | 'incomplete' | 'credited'} state
+   * @param {'loading' | 'preparing' | 'buffering' | 'fetching' | 'playing' | 'paused' | 'audio' | 'need-network' | 'error-retryable' | 'incomplete' | 'credited'} state
    */
   _setStatus(state) {
     this.statusEl.dataset.state = state;
     const keys = {
       loading: 'GUIDED_MEDITATION_STATUS_LOADING',
+      preparing: 'GUIDED_MEDITATION_STATUS_PREPARING',
+      buffering: 'GUIDED_MEDITATION_STATUS_BUFFERING',
+      fetching: 'GUIDED_MEDITATION_STATUS_FETCHING',
       playing: 'GUIDED_MEDITATION_STATUS_PLAYING',
       paused: 'GUIDED_MEDITATION_STATUS_PAUSED',
+      audio: 'GUIDED_MEDITATION_STATUS_AUDIO',
       'need-network': 'GUIDED_MEDITATION_STATUS_NEED_NETWORK',
       'error-retryable': 'GUIDED_MEDITATION_STATUS_ERROR_RETRYABLE',
       incomplete: 'GUIDED_MEDITATION_STATUS_INCOMPLETE',
       credited: 'GUIDED_MEDITATION_STATUS_CREDITED'
     };
-    this.statusEl.textContent = t(keys[state] || keys.loading);
+    let text = t(keys[state] || keys.loading);
+    if (state === 'buffering' && this._bufferLabel) {
+      text = `${text} ${this._bufferLabel}`;
+    }
+    if (state === 'fetching' && this._downloadLabel) {
+      text = `${text} ${this._downloadLabel}`;
+    }
+    this.statusEl.textContent = text;
     if (state !== 'error-retryable') this.retryBtn.hidden = true;
   }
 
@@ -387,6 +465,7 @@ export class GuidedMeditationUI {
     this.endBtn.textContent = t('GUIDED_MEDITATION_END');
     this.backBtn.textContent = t('GUIDED_MEDITATION_BACK');
     this.retryBtn.textContent = t('GUIDED_MEDITATION_RETRY');
+    this.audioBtn.textContent = t('GUIDED_MEDITATION_LISTEN_AUDIO');
     if (this._lessonId) {
       const lesson = findGuidedMeditationLesson(this._lessonId);
       if (lesson) this.lessonTitleEl.textContent = t(lesson.titleKey);

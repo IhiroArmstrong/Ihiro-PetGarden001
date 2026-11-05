@@ -43,6 +43,7 @@ test('Practice menu opens Guided meditation; short lesson can credit', async ({
     timeout: 3_000
   });
   await expect(page.getByTestId('guided-meditation-status')).toBeVisible();
+  await expect(page.getByTestId('guided-meditation-audio-fallback')).toBeVisible();
 
   const credited = await page.evaluate(() =>
     window.__guidedMeditation?.creditFromTestHook?.(

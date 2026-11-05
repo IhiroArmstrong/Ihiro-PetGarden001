@@ -28,13 +28,13 @@
 
 ## 配乐授权（T88 · 对外前须填实）
 
-> 成片音轨里的配乐。YouTube 宣传授权 **不等于** App 内播放。Cursor **不得编造**来源。空行 = 尚未核实，**不得对外**。本表不是运行时门闩。
+> 成片音轨里的配乐。YouTube 宣传授权 **不等于** App 内播放。Cursor **不得编造**来源。空行 = 尚未核实，**不得对外**。本表不是运行时门闩。下列长片行 PO 已于 2026-11-05 书面核实（H7 App 内播放拍板）。
 
 | 字段 | 值 |
 |---|---|
-| 来源 | （PO 待填：曲名 / 作者 / 库存或委托） |
-| 授权范围 | （PO 待填：是否含 App 内播放与合轨分发；是否含短课剪辑） |
-| 核实日期 | （PO 待填 · `YYYY-MM-DD`） |
+| 来源 | 成片合轨配乐（PO 未另交曲名/作者细目） |
+| 授权范围 | App 内播放与合轨分发；含短课独立交付片（H7 拍板） |
+| 核实日期 | 2026-11-05 |
 
 ### 交付片（R2 · delivery-video · 2026-11-06）
 
@@ -48,6 +48,15 @@
 | 交付大小 | 136 179 423 bytes（~130 MiB · faststart remux） |
 | 画面 | H.264 1272×720 · AAC 128k · faststart |
 | 对外发布前 | 须把应用内 `GUIDED_MEDITATION_MEDIA_HOST` 换为**自定义域**（禁止长期依赖 r2.dev） |
+
+### 交付片（R2 · delivery-audio · 2026-11-06）
+
+| 字段 | 值 |
+|---|---|
+| 播放 URL | `{公开根}/v1/what-is-zen-ancient-wisdom.m4a` |
+| 交付 SHA-256 | `5596b7eba0877e9afef8dec8bd5a9446cf92b0b386177baf98bbd9b4782df123` |
+| 交付大小 | 10 753 157 bytes（~10.3 MiB · AAC 64k · faststart） |
+| 抽轨 | `ffmpeg -i delivery-video.mp4 -vn -c:a aac -b:a 64k -movflags +faststart` |
 
 
 ## 已入库 · 短课（独立片，不从长片再剪）
@@ -80,6 +89,15 @@
 | 交付大小 | 28 523 034 bytes（~27.2 MiB） |
 | 画面 | H.264 1272×720 · AAC 128k · faststart（自 HEVC 1080p 母版转码） |
 | 母版 SHA-256 | `94b8f05596d5654f6f2cddd88802d791fa110666967b5a6b2d21e7dae55db00c`（HEVC 原片，**非**播放校验值） |
+
+### 交付片（R2 · delivery-audio · 2026-11-06）
+
+| 字段 | 值 |
+|---|---|
+| 播放 URL | `{公开根}/v1/concepts-habits-intro.m4a` |
+| 交付 SHA-256 | `f035a80640370e257acd0a6627545deb88bd13b6fcd83f2eb7f9c820f7792161` |
+| 交付大小 | 2 343 753 bytes（~2.2 MiB · AAC 64k · faststart） |
+| 抽轨 | 从 delivery-video 抽 AAC 64k |
 
 ## 空行模板（PO 复制）
 
