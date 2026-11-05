@@ -1,0 +1,22 @@
+T87-C DNS cutover (PO / Cloudflare / 万网). Not applied by this PR.
+
+Do not announce samatia.net, attach the custom domain, or set
+SAMATIA_CANONICAL_LIVE until the Brief trademark checklist is done
+(USPTO / EUIPO / J-PlatPat classes 9, 41, 42, 44, 45; App Store / Play;
+samatia.com holder; 万网 real-name + email).
+
+1. Cloudflare Pages project twinsology-marketing
+   - Add custom domains: samatia.net and www.samatia.net (HTTPS)
+   - Do not set Pages env SAMATIA_CANONICAL_LIVE until those domains are Active
+
+2. After HTTPS is green, set Pages env:
+   SAMATIA_CANONICAL_LIVE=1
+   Then twinsology.com and www.twinsology.com 301 to https://samatia.net (same path).
+   www.samatia.net already 301s to samatia.net without this flag.
+
+3. samatia.net mail — reject, do not send. Do not edit twinsology.com MX/SPF/DKIM.
+
+   TXT  @  "v=spf1 -all"
+   TXT  _dmarc  "v=DMARC1; p=reject; adkim=s; aspf=s;"
+
+4. mailto stays hello@twinsology.com

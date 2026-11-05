@@ -12,6 +12,9 @@ import { describe, it } from 'node:test';
 const dir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(dir, '..');
 const html = readFileSync(join(dir, 'index.html'), 'utf8');
+const jaHtml = readFileSync(join(dir, 'ja.html'), 'utf8');
+const storeEn = readFileSync(join(dir, 'store-listing-en.txt'), 'utf8');
+const storeJa = readFileSync(join(dir, 'store-listing-ja.txt'), 'utf8');
 const css = readFileSync(join(dir, 'styles.css'), 'utf8');
 const redirects = readFileSync(join(dir, '_redirects'), 'utf8');
 const privacy = readFileSync(join(dir, 'privacy.html'), 'utf8');
@@ -32,16 +35,26 @@ const sharedInviteUrl = sharedInviteMatch?.[1] ?? '';
 
 describe('marketing-site Slice 0 contract', () => {
   it('uses the locked public hostname', () => {
-    assert.match(html, /rel="canonical" href="https:\/\/twinsology\.com\/"/);
+    assert.match(html, /rel="canonical" href="https:\/\/samatia\.net\/"/);
     assert.match(html, /mailto:hello@twinsology\.com/);
   });
 
   it('names the product and studio without a practice-app CTA', () => {
-    assert.match(html, /Focus Tiger™/);
+    assert.match(html, /Samatia™/);
     assert.match(html, /Yin/);
     assert.match(html, /Twinsology/);
+    assert.doesNotMatch(html, /<h1>Focus Tiger/);
     assert.doesNotMatch(html, /workers\.dev/i);
     assert.doesNotMatch(html, /focustiger\.app/i);
+  });
+
+  it('keeps English pronunciation and Japanese first-screen reading note', () => {
+    assert.match(html, /Pronounced sa-MAH-tee-ah/);
+    assert.match(jaHtml, /Samatia（サマティア）/);
+    assert.match(jaHtml, /rel="canonical" href="https:\/\/samatia\.net\/ja\.html"/);
+    assert.match(jaHtml, /mailto:hello@twinsology\.com/);
+    assert.match(storeEn, /Pronounced sa-MAH-tee-ah/);
+    assert.match(storeJa, /Samatia（サマティア）/);
   });
 
   it('keeps www → apex in Pages _worker.js, not domain-level _redirects', () => {
@@ -51,9 +64,12 @@ describe('marketing-site Slice 0 contract', () => {
     );
     const workerSource = readFileSync(join(dir, '_worker.js'), 'utf8');
     const redirectSource = readFileSync(join(dir, 'www-redirect.js'), 'utf8');
-    assert.match(redirectSource, /www\.twinsology\.com/);
-    assert.match(redirectSource, /url\.hostname = 'twinsology\.com'/);
+    assert.match(redirectSource, /TWINSOLOGY_APEX/);
+    assert.match(redirectSource, /www\.\$\{TWINSOLOGY_APEX\}/);
+    assert.match(redirectSource, /samatia\.net/);
+    assert.match(redirectSource, /SAMATIA_CANONICAL_LIVE/);
     assert.match(redirectSource, /Response\.redirect\([^,]+,\s*301\)/);
+    assert.match(workerSource, /redirectMarketingHost/);
     assert.match(workerSource, /env\.ASSETS\.fetch/);
   });
 

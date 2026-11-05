@@ -300,7 +300,7 @@ Focus Tiger 不采用「用户专注 → 小老虎更健康；用户离开 → �
 
 Focus Tiger™ is a product of Twinsology.
 
-**公开营销域（2026-08-20 拍板 · 2026-09-03 现网上线）**：`https://twinsology.com`（Slice 0 静态页在 `marketing-site/`；Cloudflare Pages `twinsology-marketing`；练习壳不因本条搬家）。详见 `task-briefs/task-marketing-site.md`。
+**公开营销域（2026-08-20 拍板 · 2026-09-03 现网上线 · T87-C 产品门面）**：产品 canonical **`https://samatia.net/`**（静态页仍在 `marketing-site/`；Cloudflare Pages `twinsology-marketing`）。`twinsology.com` 产品页在 Pages 环境变量 `SAMATIA_CANONICAL_LIVE=1` 后 301 到 samatia.net。**公开宣布新域名之前**须过 Brief 商标检索闸。发信仍 `hello@twinsology.com`。练习壳不因本条搬家。详见 `task-briefs/task-samatia-user-facing-rename.md` · `task-briefs/task-marketing-site.md`。
 
 Created by Ihiro Armstrong / Twinsology.
 
