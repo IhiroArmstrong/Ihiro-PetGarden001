@@ -170,7 +170,7 @@ cd focus-tiger && npm run check:branch-freshness
 2. **唯一依据**是 `git log` / `git diff` / `git branch --contains` / `npm run check:branch-freshness` 等命令返回的结果（须对照 `origin/develop`，勿只看本分支过期树）。  
 3. 若文档措辞与 git 事实冲突、或时间上可能不同步（例：Brief 仍写「须口令开工」，但相关 commit 已合入 develop）：**以 git 事实为准**，并在回复中写明发现了文档滞后。  
 4. **禁止**用「文档还这么写」跳过 git 检查；也**禁止**把 `agent-token-cost` 的省 token / 少工具调用理解成可以跳过本条（验证类 git 命令几乎零成本，见该文件「验证类 vs 探索类」）。
-5. **任务切片「开 / 继续 / 下一步」**：须 **`gh` PR 状态 + develop 合入** 先于 Brief / PROCESS「下一步」（SSOT：`WORKFLOW.md` → `git-pr-next-step-gate`；常驻 `focus-tiger-pr-next-step-gate.mdc`）。OPEN/MERGED 的 PR 证明已开工或已合时，**禁止**当未开工重实现同一刀。
+5. **任务切片「开 / 继续 / 下一步」**：须先查 **有没有 PR（不论是否已合）**；OPEN 且有实质 commit 即视为开发可能已完成。合没合只决定「待合」还是「已在 develop」（SSOT：`WORKFLOW.md` → `git-pr-next-step-gate`；常驻 `focus-tiger-pr-next-step-gate.mdc`）。**禁止**因未合而重开同一刀。
 
 ## 标「已通过」门禁（强制 · 防止记入≠验证到位）
 

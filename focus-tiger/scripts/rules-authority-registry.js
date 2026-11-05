@@ -282,13 +282,13 @@ export const RULE_AUTHORITY_TOPICS = [
   },
   {
     id: 'git-pr-next-step-gate',
-    title: '任务切片开工/继续/下一步须先查 GitHub PR 与 develop 合入',
+    title: '任务切片开工/继续/下一步须先查有没有 PR（不论是否已合）',
     ssotPath: 'WORKFLOW.md',
     ssotSection: '任务切片：开工 / 继续 / 下一步须先查 PR',
     ssotMustContain: [
       /git-pr-next-step-gate/,
       /gh pr list/,
-      /MERGED.*develop/,
+      /不论是否已合/,
       /OPEN.*实质 commit/,
       /Brief.*不能.*单独/
     ],
@@ -307,8 +307,8 @@ export const RULE_AUTHORITY_TOPICS = [
     forbiddenOutsideSsot: [
       {
         id: 'brief-next-step-as-truth',
-        pattern: /(?:只|仅凭).*(?:Brief|PROCESS).*下一步.*(?:即可|就开|开工)/,
-        note: '下一步须先 gh PR + develop，不得只凭文档下一步'
+        pattern: /(?:无需|不必|不用)(?:先)?查(?:有没有 )?PR/,
+        note: '禁止主张可跳过 gh 查 PR'
       }
     ]
   },
