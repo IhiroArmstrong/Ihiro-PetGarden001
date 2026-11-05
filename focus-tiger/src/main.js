@@ -320,6 +320,7 @@ import {
 } from './core/focusCircleMembership.js';
 import { DailyZenQuoteCardUI } from './ui/DailyZenQuoteCardUI.js';
 import { ContemplativeInquiryUI } from './ui/ContemplativeInquiryUI.js';
+import { resolveContemplativeInquiryMenuClick } from './core/contemplativeInquiryFocusingYield.js';
 import { MustardSeedSealCardUI } from './ui/MustardSeedSealCardUI.js';
 import { PracticeImprintCardUI } from './ui/PracticeImprintCardUI.js';
 import {
@@ -4794,6 +4795,18 @@ async function init() {
       dailyZenQuoteCardUI.open();
     },
     onContemplativeInquiry: () => {
+      const action = resolveContemplativeInquiryMenuClick({
+        focusing: stateManager.state === STATES.FOCUSING
+      });
+      if (action === 'hint-rise') {
+        const toastEl = mindfulToast.element;
+        toastEl.dataset.testid = 'contemplative-inquiry-focusing-yield';
+        mindfulToast.show(t('CI_EX1_FOCUSING_YIELD'), { placement: 'center' });
+        return;
+      }
+      if (mindfulToast.element.dataset.testid === 'contemplative-inquiry-focusing-yield') {
+        delete mindfulToast.element.dataset.testid;
+      }
       closeGrowthOverlayCards({ except: 'contemplative-inquiry' });
       contemplativeInquiryUI.open();
     },

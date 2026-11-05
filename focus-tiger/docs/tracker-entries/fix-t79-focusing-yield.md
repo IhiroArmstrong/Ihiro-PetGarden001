@@ -1,0 +1,1 @@
+| T79 专注中菜单让位 | UI可见 | 待人工测试 | Safari 验收树：Sit 进入专注 → 边缘唤出 ⋯ → Inspiration → 带着问题坐一会儿。0–1s 见中置提示先点起身；本练习卡不开；底钮仍是 Rise。Idle 再点同一行仍开防火墙。关单覆盖分工 · 自动化：`contemplativeInquiryFocusingYield.test.js`（没修会红：focusing 仍返回 open）· e2e 只锁 Idle 开卡（专注中 ⋯ 为 edge-recall，Playwright 点不到，须人工锁路径）· 人工：中置句观感。 | — | — | — | `fix/t79-focusing-yield` | 2026-11-04 |

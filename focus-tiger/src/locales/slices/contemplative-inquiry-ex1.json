@@ -28,7 +28,8 @@
     "CI_EX1_EXIT_B": "Yin: Something feels a little off. Let’s pause. Nothing to figure out right now.",
     "CI_EX1_TRY_LATER": "If you want to try again, you can come back on your own.",
     "CI_EX1_TALK": "Talk with Yin",
-    "CI_EX1_CLOSE": "Close"
+    "CI_EX1_CLOSE": "Close",
+    "CI_EX1_FOCUSING_YIELD": "This sit is still going. Rise first, then open Sit with a question."
   },
   "zh": {
     "CI_EX1_MENU_LABEL": "带着问题坐一会儿",
@@ -59,7 +60,8 @@
     "CI_EX1_EXIT_B": "寅：有一点不对劲。我们先停。现在不用想明白什么。",
     "CI_EX1_TRY_LATER": "若还想试，可以自己再来。",
     "CI_EX1_TALK": "去跟阿寅说说",
-    "CI_EX1_CLOSE": "关闭"
+    "CI_EX1_CLOSE": "关闭",
+    "CI_EX1_FOCUSING_YIELD": "这场还在坐。先点起身，再打开带着问题坐一会儿。"
   },
   "ja": {
     "CI_EX1_MENU_LABEL": "問いと一緒に坐る",
@@ -90,6 +92,7 @@
     "CI_EX1_EXIT_B": "寅：ちょっと落ち着かないみたい。いったん止めよう。いまは、考えなくていいよ。",
     "CI_EX1_TRY_LATER": "また試したくなったら、自分から入ってね。",
     "CI_EX1_TALK": "寅に話す",
-    "CI_EX1_CLOSE": "閉じる"
+    "CI_EX1_CLOSE": "閉じる",
+    "CI_EX1_FOCUSING_YIELD": "いまはまだ坐っています。先に Rise してから、「問いと一緒に坐る」を開いてください。"
   }
 }
