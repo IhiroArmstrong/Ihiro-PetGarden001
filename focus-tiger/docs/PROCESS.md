@@ -64,7 +64,7 @@
 
 **近期落地（待人工测试）**：
 
-- **Guided Meditation P0（2026-11-04 · 纯文档 · 合并 PR #1558）**：主审计 [`guided-meditation-p0-audit.md`](./guided-meditation-p0-audit.md) + 媒体 [`guided-meditation-media-delivery-audit.md`](./guided-meditation-media-delivery-audit.md) + MVP 草稿 [`task-briefs/task-guided-meditation-mvp.md`](./task-briefs/task-guided-meditation-mvp.md)。PO 已拍：菜单入口、原声优先、22 分长片 + 优先剪 3–5 分入门、长课计满 3 分起按实际分钟、短课九成、**冷启动第五项不做**、先英文、授权前不上传、Web 边下边播。**P1 硬门禁**：Help EDU-0003「无语音指导」须与引导课并存改口。无运行时。PR #1557 并入 #1558。
+- **Guided Meditation P0（2026-11-04 · 纯文档 · 合并 PR #1558）**：主 Brief [`task-briefs/task-guided-meditation-p0-audit.md`](./task-briefs/task-guided-meditation-p0-audit.md) · 主审计 [`guided-meditation-p0-audit.md`](./guided-meditation-p0-audit.md) · 内容规格 [`guided-meditation-p0-content-spec.md`](./guided-meditation-p0-content-spec.md) + 媒体 Brief [`task-briefs/task-guided-meditation-media-delivery.md`](./task-briefs/task-guided-meditation-media-delivery.md) · 媒体 [`guided-meditation-media-delivery-audit.md`](./guided-meditation-media-delivery-audit.md) + MVP 草稿 [`task-briefs/task-guided-meditation-mvp.md`](./task-briefs/task-guided-meditation-mvp.md)。PO 已拍：菜单入口、原声优先、22 分长片 + 优先剪 3–5 分入门、长课计满 3 分起按实际分钟、短课九成、**冷启动第五项不做**、先英文、授权前不上传、Web 边下边播。**P1 硬门禁**：Help EDU-0003「无语音指导」须与引导课并存改口。无运行时。PR #1557 并入 #1558。
 
 - **宽屏菜单三刀（2026-10-17 · 已合 develop · 待人工测试）**：付费 #1289 · 归类 #1305 · 五图标扇形 #1307。窄屏仍是抽屉；`innerHeight < 520px` 宽屏退化为列表。Brief [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。不得再因口令重开三刀。
 
