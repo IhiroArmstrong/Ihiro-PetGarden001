@@ -4,9 +4,10 @@
  */
 
 /**
- * T87-A2 residual scan: legacy public product name in user-facing runtime copy.
- * Scope grows per `task-samatia-user-facing-rename.md` (A1 surface + A2 pools/prompts).
- * Full release gate waits until B/C/D merge; this module gates A2 paths only.
+ * T87 residual scan: legacy public product name in user-facing runtime copy.
+ * Scope grows per `task-samatia-user-facing-rename.md`.
+ * A2 = locale/KB/pools. B adds Electron display name / tray / About / permission copy.
+ * Full release gate waits until A1–A2 + B + C + D merge; this module is not that gate.
  */
 
 import fs from 'node:fs';
@@ -34,6 +35,15 @@ export const SAMATIA_A2_SCAN_REL_PATHS = Object.freeze([
   'cloud/src/routes/desktopCheckoutReturn.ts'
 ]);
 
+/** Extra paths scanned at T87-B (Electron user-visible config). */
+export const SAMATIA_B_SCAN_REL_PATHS = Object.freeze([
+  'desktop/package.json',
+  'desktop/main.js',
+  'desktop/trayPolicy.js',
+  'desktop/native/macos-speech-helper-Info.plist',
+  'desktop/native/macos-input-rhythm-helper-Info.plist'
+]);
+
 const COPYRIGHT_HEADER_MARK = 'Focus Tiger™ is a product of Twinsology';
 
 /**
@@ -58,9 +68,30 @@ export function isSamatiaScanLineWhitelisted(line) {
  * @returns {SamatiaResidualHit[]}
  */
 export function scanSamatiaA2UserFacingResiduals(focusTigerRoot) {
+  return scanSamatiaUserFacingResiduals(focusTigerRoot, SAMATIA_A2_SCAN_REL_PATHS);
+}
+
+/**
+ * T87-B = A2 surface + Electron display name / tray / About / permission strings.
+ * @param {string} focusTigerRoot
+ * @returns {SamatiaResidualHit[]}
+ */
+export function scanSamatiaBUserFacingResiduals(focusTigerRoot) {
+  return scanSamatiaUserFacingResiduals(focusTigerRoot, [
+    ...SAMATIA_A2_SCAN_REL_PATHS,
+    ...SAMATIA_B_SCAN_REL_PATHS
+  ]);
+}
+
+/**
+ * @param {string} focusTigerRoot absolute path to focus-tiger/
+ * @param {readonly string[]} relPaths
+ * @returns {SamatiaResidualHit[]}
+ */
+export function scanSamatiaUserFacingResiduals(focusTigerRoot, relPaths) {
   /** @type {SamatiaResidualHit[]} */
   const hits = [];
-  for (const rel of SAMATIA_A2_SCAN_REL_PATHS) {
+  for (const rel of relPaths) {
     const abs = path.join(focusTigerRoot, rel);
     if (!fs.existsSync(abs)) {
       hits.push({ file: rel, line: 0, snippet: '[missing file]' });
