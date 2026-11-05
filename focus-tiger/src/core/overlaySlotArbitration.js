@@ -48,6 +48,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [postSessionOverlayActive] Gate field (may include mustard bypass)
  * @property {boolean} [compassOpen]
  * @property {boolean} [groundExerciseChoiceOpen]
+ * @property {boolean} [guidedMeditationOpen]
  * @property {boolean} [coldStartGoalOpen]
  * @property {boolean} [mustardSeedOpen]
  * @property {boolean} [giftArtOpen]
@@ -121,6 +122,7 @@ export function buildOverlaySnapshot(input = {}) {
     postSessionOverlayActive: Boolean(input.postSessionOverlayActive),
     compassOpen: Boolean(input.compassOpen),
     groundExerciseChoiceOpen: Boolean(input.groundExerciseChoiceOpen),
+    guidedMeditationOpen: Boolean(input.guidedMeditationOpen),
     coldStartGoalOpen: Boolean(input.coldStartGoalOpen),
     mustardSeedOpen: Boolean(input.mustardSeedOpen),
     giftArtOpen: Boolean(input.giftArtOpen),
@@ -282,6 +284,7 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
 export function deriveFocusingSoftCardBusy(snapshot) {
   if (snapshot.recoverResetPracticeOpen) return true;
   if (snapshot.contemplativeInquiryOpen) return true;
+  if (snapshot.guidedMeditationOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
   if (snapshot.awakenInviteOpen) return true;
   if (snapshot.awakenCheckInOpen) return true;
@@ -500,6 +503,9 @@ function activeGrowthCard(snapshot) {
   if (snapshot.groundExerciseChoiceOpen) {
     return OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE;
   }
+  if (snapshot.guidedMeditationOpen) {
+    return OVERLAY_SOURCES.GUIDED_MEDITATION;
+  }
   if (snapshot.contemplativeInquiryOpen) {
     return OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY;
   }
@@ -667,6 +673,9 @@ function collectRecoverResetBaseYield(snapshot) {
   if (snapshot.compassOpen) blockers.push(OVERLAY_SOURCES.GROWTH_COMPASS);
   if (snapshot.groundExerciseChoiceOpen) {
     blockers.push(OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE);
+  }
+  if (snapshot.guidedMeditationOpen) {
+    blockers.push(OVERLAY_SOURCES.GUIDED_MEDITATION);
   }
   if (snapshot.contemplativeInquiryOpen) {
     blockers.push(OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY);

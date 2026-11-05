@@ -31,7 +31,8 @@ import { DailyCompletionStore } from './DailyCompletionStore.js';
 export const PRACTICE_BASELINE_SOURCE_IDS = Object.freeze([
   'sit-timed',
   'honesty-checkin',
-  'breath-micro-ritual'
+  'breath-micro-ritual',
+  'guided-meditation'
 ]);
 
 /**

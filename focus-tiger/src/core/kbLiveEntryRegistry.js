@@ -147,6 +147,23 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0002'])
   }),
   Object.freeze({
+    id: 'kb-live-guided-meditation',
+    surface: 'menu',
+    proxy: 'guided-meditation',
+    labelKeys: Object.freeze(['GUIDED_MEDITATION_MENU_LABEL']),
+    menuPath: '⋯ → Practice → Guided meditation',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'guided-meditation'",
+      'GUIDED_MEDITATION_MENU_LABEL'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/locales/slices/guided-meditation.json'
+    ]),
+    catalogKbIds: Object.freeze(['KB-EDU-0003'])
+  }),
+  Object.freeze({
     id: 'kb-live-five-moments',
     surface: 'menu',
     proxy: 'five-moments',

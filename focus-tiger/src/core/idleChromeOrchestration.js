@@ -20,6 +20,7 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js';
 import { isContemplativeInquiryMenuVisible } from './contemplativeInquiryMemory.js';
+import { isGuidedMeditationMediaConfigured } from './guidedMeditationLessons.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -157,6 +158,7 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
   },
   'today-direction': { handler: 'onTodayDirection', close: true },
   'ground-exercise': { handler: 'onGroundExercise', close: true },
+  'guided-meditation': { handler: 'onGuidedMeditation', close: true },
   'five-moments': { handler: 'onFiveMoments', close: true },
   honesty: { handler: 'onHonesty', close: true },
   'journey-log': { handler: 'onJourneyLog', close: true },
@@ -742,6 +744,9 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : null,
     // Menu entry stays top-right ⋯ / narrow grabber (MENU_CHROME_CENSUS §1 #4).
     { proxy: 'ground-exercise', labelKey: 'GROUND_EXERCISE_MENU_LABEL' },
+    isGuidedMeditationMediaConfigured()
+      ? { proxy: 'guided-meditation', labelKey: 'GUIDED_MEDITATION_MENU_LABEL' }
+      : null,
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
     { proxy: 'honesty', labelKey: 'HONESTY_IDLE_ENTRY' },
     confideVisible || companionGeneration

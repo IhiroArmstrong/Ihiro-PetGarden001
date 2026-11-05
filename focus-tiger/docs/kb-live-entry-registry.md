@@ -24,7 +24,7 @@ This table answers: **which product surfaces are live in code right now**, which
 
 > **机器块 · 勿手改**。真源：`src/core/kbLiveEntryRegistry.js`。刷新：`npm run audit:kb-live-entries -- --write`。
 
-**Row count**: 33 (28 menu/ritual · 4 home-ball · 1 hud)
+**Row count**: 34 (29 menu/ritual · 4 home-ball · 1 hud)
 
 | id | surface | proxy | liveStatus | menuPath | labelKeys | catalogKbIds |
 |---|---|---|---|---|---|---|
@@ -34,6 +34,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-breath` | home-ball | — | live | Idle left orb · Breath practice (not in ⋯ menu) | `QUICK_START_ARIA` `micro_ritual.pick_duration` `micro_ritual.leave` | `KB-FUNC-0011` |
 | `kb-live-companion` | menu | `companion` | conditional | ⋯ → Practice → How shall we sit? | `COMPANION_MODE_HINT` `COMPANION_MODE_TITLE` | `KB-FUNC-0008` |
 | `kb-live-ground` | menu | `ground-exercise` | live | ⋯ → Practice → Ground exercise | `GROUND_EXERCISE_MENU_LABEL` | `KB-FUNC-0002` |
+| `kb-live-guided-meditation` | menu | `guided-meditation` | live | ⋯ → Practice → Guided meditation | `GUIDED_MEDITATION_MENU_LABEL` | `KB-EDU-0003` |
 | `kb-live-five-moments` | menu | `five-moments` | live | ⋯ → Practice → Five Moments | `FIVE_MOMENTS_MENU_LABEL` | `KB-FUNC-0019` |
 | `kb-live-honesty` | menu | `honesty` | live | ⋯ → Practice → Honest check-in | `HONESTY_IDLE_ENTRY` | `KB-FUNC-0020` |
 | `kb-live-journey-log` | menu | `journey-log` | live | ⋯ → Practice → Journey log | `JOURNEY_LOG_MENU_LABEL` | `KB-FUNC-0012` |

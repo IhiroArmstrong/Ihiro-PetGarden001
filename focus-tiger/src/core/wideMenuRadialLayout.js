@@ -132,6 +132,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   'sanctuary-nav': 'MENU_GROUP_PRACTICE',
   companion: 'MENU_GROUP_PRACTICE',
   'ground-exercise': 'MENU_GROUP_PRACTICE',
+  'guided-meditation': 'MENU_GROUP_PRACTICE',
   'five-moments': 'MENU_GROUP_PRACTICE',
   honesty: 'MENU_GROUP_PRACTICE',
   confide: 'MENU_GROUP_PRACTICE',

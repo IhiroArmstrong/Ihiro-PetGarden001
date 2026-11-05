@@ -62,20 +62,20 @@ Sources that **should** feed cumulative practice metrics (via the shared write h
 
 > **机器块 · 勿手改**。真源：`src/core/practiceAggregateConsumerRegistry.js`。刷新：`npm run audit:practice-coverage -- --write`。
 
-**Baseline sources**: `sit-timed` · `honesty-checkin` · `breath-micro-ritual`
+**Baseline sources**: `sit-timed` · `honesty-checkin` · `breath-micro-ritual` · `guided-meditation`
 
 | id | P | batch | status | module | anchors | reflected |
 |---|---:|---:|---|---|---|---|
-| `confide-practice-facts-duration` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `confide-practice-facts-compare` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `tip-kindness-badges` | P0 | 2 | ok | `src/core/tipKindnessBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `sanctuary-badges` | P0 | 2 | ok | `src/core/sanctuaryBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `mustard-seed-seal-score` | P0 | 4 | ok | `src/core/mustardSeedSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `contemplative-archive-seal-score` | P0 | 4 | ok | `src/core/contemplativeArchiveSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `collections-behavioral-scarcity` | P1 | 5 | ok | `src/core/collectionsBehavioralScarcity.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `mustard-seed-seal-ceremony` | P1 | 3 | ok | `src/main.js` | `maybeOfferGrowthSealAfterBaselineCeremony` `shouldOfferMustardSeedSealAfterCeremony(` `shouldOfferContemplativeArchiveSealAfterCeremony(` `shouldOfferPracticeImprintAfterCeremony(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `practice-imprint-badges` | P1 | 5 | ok | `src/core/practiceImprint.js` | `resolvePracticeImprint(` `syncPracticeImprintAwards(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
-| `practice-imprint-ceremony` | P1 | — | ok | `src/main.js` | `maybeOfferPracticeImprintAfterCeremony` `practiceImprintCardUI.open` | `sit-timed` `honesty-checkin` `breath-micro-ritual` |
+| `confide-practice-facts-duration` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `confide-practice-facts-compare` | P0 | 1 | ok | `src/core/confide/confidePracticeFacts.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `tip-kindness-badges` | P0 | 2 | ok | `src/core/tipKindnessBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `sanctuary-badges` | P0 | 2 | ok | `src/core/sanctuaryBadges.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `mustard-seed-seal-score` | P0 | 4 | ok | `src/core/mustardSeedSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `contemplative-archive-seal-score` | P0 | 4 | ok | `src/core/contemplativeArchiveSeal.js` | `resolvePracticeAggregateFromStorage(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `collections-behavioral-scarcity` | P1 | 5 | ok | `src/core/collectionsBehavioralScarcity.js` | `resolvePracticeAggregate(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `mustard-seed-seal-ceremony` | P1 | 3 | ok | `src/main.js` | `maybeOfferGrowthSealAfterBaselineCeremony` `shouldOfferMustardSeedSealAfterCeremony(` `shouldOfferContemplativeArchiveSealAfterCeremony(` `shouldOfferPracticeImprintAfterCeremony(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `practice-imprint-badges` | P1 | 5 | ok | `src/core/practiceImprint.js` | `resolvePracticeImprint(` `syncPracticeImprintAwards(` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
+| `practice-imprint-ceremony` | P1 | — | ok | `src/main.js` | `maybeOfferPracticeImprintAfterCeremony` `practiceImprintCardUI.open` | `sit-timed` `honesty-checkin` `breath-micro-ritual` `guided-meditation` |
 | `focus-coins-redeem` | P1 | 2 | wire-only | `src/core/focusCoinsRedeem.js` | `resolvePracticeAggregate(` | — |
 | `support-modal-tea-first` | P1 | 2 | wire-only | `src/main.js` | `resolvePracticeAggregate(` | — |
 | `lotus-pond-bloom` | P1 | — | wire-only | `src/core/LotusPondStore.js` | `addMinutes(` | — |

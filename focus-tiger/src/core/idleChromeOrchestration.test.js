@@ -353,6 +353,7 @@ describe('listSecondaryChromeEntries', () => {
         'sanctuary-nav',
         'companion',
         'ground-exercise',
+        'guided-meditation',
         'five-moments',
         'honesty',
         'journey-log',
@@ -405,6 +406,7 @@ describe('listSecondaryChromeEntries', () => {
         'sanctuary-nav',
         'companion',
         'ground-exercise',
+        'guided-meditation',
         'five-moments',
         'honesty',
         'journey-log',
@@ -539,6 +541,7 @@ describe('listSecondaryChromeEntries', () => {
       [
         'sanctuary-nav',
         'ground-exercise',
+        'guided-meditation',
         'five-moments',
         'honesty',
         'journey-log',

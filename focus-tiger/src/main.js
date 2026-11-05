@@ -199,6 +199,9 @@ import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
+import { GuidedMeditationUI } from './ui/GuidedMeditationUI.js';
+import { resolveGuidedMeditationMenuClick } from './core/guidedMeditationBusyYield.js';
+import { isGuidedMeditationMediaConfigured } from './core/guidedMeditationLessons.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
@@ -2003,6 +2006,8 @@ async function init() {
   let pendingInviteOutcomeKind = null;
   /** @type {GroundExerciseChoiceUI | null} */
   let groundExerciseChoiceUI = null;
+  /** @type {GuidedMeditationUI | null} */
+  let guidedMeditationUI = null;
 
   function requestWitnessLeaveOverlaySlot() {
     const decision = requestOverlaySlot({
@@ -2195,8 +2200,13 @@ async function init() {
     },
     onClose: () => syncIdleYinTap()
   });
+  guidedMeditationUI = new GuidedMeditationUI(overlayRoot, {
+    onClose: () => syncIdleYinTap(),
+    onPracticeDay: (payload) => noteGuidedMeditationPracticeDay(payload)
+  });
   window.__recoverResetPractice = recoverResetPracticeUI;
   window.__groundExerciseChoice = groundExerciseChoiceUI;
+  window.__guidedMeditation = guidedMeditationUI;
 
   function recordInviteOutcomeForSession(kind, outcome, ts) {
     const sessionId =
@@ -2718,6 +2728,11 @@ async function init() {
         id: 'ground-exercise',
         ui: groundExerciseChoiceUI,
         close: () => groundExerciseChoiceUI?.close()
+      },
+      {
+        id: 'guided-meditation',
+        ui: guidedMeditationUI,
+        close: () => guidedMeditationUI?.close()
       },
       { id: 'moments', ui: bootMomentHosts.fiveMomentsCompassUI, close: () => bootMomentHosts.fiveMomentsCompassUI.close() },
       {
@@ -3876,6 +3891,7 @@ async function init() {
       presenceSignalsPanelUI?.isOpen?.() === true ||
       confideToYinUI?.isOpen?.() === true ||
       groundExerciseChoiceUI?.isOpen?.() === true ||
+      guidedMeditationUI?.isOpen?.() === true ||
       bootMomentHosts.fiveMomentsCompassUI?.isOpen?.() === true ||
       bootMomentHosts.supportYinModalUI?.isOpen?.() === true ||
       sanctuaryUnlockUI?.isOpen?.() === true ||
@@ -3927,6 +3943,7 @@ async function init() {
       compassOpen: window.__fiveMomentsCompass?.isOpen?.() === true,
       groundExerciseChoiceOpen:
         window.__groundExerciseChoice?.isOpen?.() === true,
+      guidedMeditationOpen: window.__guidedMeditation?.isOpen?.() === true,
       coldStartGoalOpen: window.__coldStartGoalCard?.isOpen?.() === true,
       mustardSeedOpen: window.__mustardSeedCard?.isOpen?.() === true,
       giftArtOpen: coPracticeGiftArtCardUI.isOpen() === true,
@@ -4766,6 +4783,25 @@ async function init() {
       closeGrowthOverlayCards({ except: 'ground-exercise' });
       groundExerciseChoiceUI?.open();
     },
+    onGuidedMeditation: () => {
+      if (!isGuidedMeditationMediaConfigured()) return;
+      const action = resolveGuidedMeditationMenuClick({
+        focusing: stateManager.state === STATES.FOCUSING,
+        honestyBusy:
+          typeof window.__honestyCheckInUI?.phase === 'string' &&
+          window.__honestyCheckInUI.phase !== 'hidden',
+        breathBusy: window.__microRitualUI?.isOpen?.() === true
+      });
+      if (action === 'busy') {
+        mindfulToast.show(t('GUIDED_MEDITATION_BUSY_HINT'), {
+          placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+          visibleMs: 4_500
+        });
+        return;
+      }
+      closeGrowthOverlayCards({ except: 'guided-meditation' });
+      guidedMeditationUI?.open();
+    },
     onFiveMoments: () => {
       closeGrowthOverlayCards({ except: 'moments' });
       bootMomentHosts.fiveMomentsCompassUI.open({ markSeenOnOpen: true });
@@ -5541,6 +5577,21 @@ async function init() {
     window.__retentionFunnel = retentionFunnelStore;
   }
 
+  function noteGuidedMeditationPracticeDay({ durationMinutes, sourceId } = {}) {
+    practiceDaysStore.markToday(durationMinutes);
+    lotusPondRuntime.notePracticeMinutes(durationMinutes);
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    if (sourceId) {
+      syncJourneyPracticeMemories(storage, {
+        sourceId,
+        practiceDaysStore,
+        lotusPondStore: lotusPondRuntime.store,
+        now
+      });
+    }
+  }
+
   function endFocusChrome({ stopAmbient = true } = {}) {
     bootAmbientHints.ambientSoundscape.clearSitPauseHold();
     attentionSignals.setEnabled(false);
@@ -5553,6 +5604,7 @@ async function init() {
     calmActionArriveCardUI.hide({ immediate: true });
     transitionMomentUI.close();
     groundExerciseChoiceUI?.close();
+    guidedMeditationUI?.close();
     recoverResetPracticeUI?.hide({ immediate: true });
     contemplativeInquiryUI?.close();
     awakenInviteUI?.hide({ immediate: true });
@@ -5801,6 +5853,7 @@ async function init() {
     calmActionRecoverStore.resetSession();
     bootMomentHosts.calmActionRecoverCardUI.resetSession();
     groundExerciseChoiceUI?.close();
+    guidedMeditationUI?.close();
     recoverResetPracticeUI?.resetSession();
     contemplativeInquiryUI?.close();
     awakenInviteUI?.hide({ immediate: true });
@@ -6019,6 +6072,7 @@ async function init() {
       calmActionArriveCardUI.hide({ immediate: true });
       transitionMomentUI.close();
       groundExerciseChoiceUI?.close();
+      guidedMeditationUI?.close();
       recoverResetPracticeUI?.hide({ immediate: true });
       contemplativeInquiryUI?.close();
       bootAmbientHints.ambientSoundscape.cancelDuck();

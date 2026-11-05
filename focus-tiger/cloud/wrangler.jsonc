@@ -31,6 +31,12 @@
  *   npx wrangler r2 bucket create focus-tiger-art-hd
  *   Bind it as ART_COLLECTION_HD. Keys: private/art-hd/{hdId}.png
  *
+ * Guided meditation delivery (public read; swap r2.dev → custom domain before launch):
+ *   npx wrangler r2 bucket create focus-tiger-guided-media
+ *   npx wrangler r2 bucket dev-url enable focus-tiger-guided-media
+ *   npm exec wrangler -- r2 bucket cors set focus-tiger-guided-media --file=r2/focus-tiger-guided-media.cors.json -y
+ *   npm exec wrangler -- r2 object put focus-tiger-guided-media/KEY --file=PATH --content-type=video/mp4 --remote
+ *
  * Prices (Dashboard):
  *   Tip → STRIPE_PRICE_ID (one-time)
  *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID (one-time)

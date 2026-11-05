@@ -26,6 +26,51 @@
 | 量测日期 | 2026-11-04 |
 | 量测方法 | `ls` + MP4 `moov` 盒 + macOS `mdls` / `afinfo` |
 
+### 交付片（R2 · delivery-video · 2026-11-06）
+
+| 字段 | 值 |
+|---|---|
+| 桶 | `focus-tiger-guided-media`（公开读） |
+| 公开根（**仅 dev/QA**） | `https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev` |
+| 播放 URL | `{公开根}/v1/what-is-zen-ancient-wisdom.mp4` |
+| 规范键（含哈希） | `guided-meditation/v1/what-is-zen-ancient-wisdom/67898a1efc878ab82f991fe777394b8effff5f73ce9a331431af3c281383459b.mp4` |
+| 交付 SHA-256 | `67898a1efc878ab82f991fe777394b8effff5f73ce9a331431af3c281383459b` |
+| 交付大小 | 136 179 423 bytes（~130 MiB · faststart remux） |
+| 画面 | H.264 1272×720 · AAC 128k · faststart |
+| 对外发布前 | 须把应用内 `GUIDED_MEDITATION_MEDIA_HOST` 换为**自定义域**（禁止长期依赖 r2.dev） |
+
+
+## 已入库 · 短课（独立片，不从长片再剪）
+
+| 字段 | 值 |
+|---|---|
+| `lessonId` | `concepts-habits-intro` |
+| 展示名 | 正念冥想引导 · 概念与习惯小课 |
+| 本机路径（PO 工作区，不进仓库） | `/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/正念冥想引导-5分钟小课程001.mp4` |
+| 建议对象键 | `guided-meditation/v1/concepts-habits-intro/master.mp4` |
+| SHA-256 | `94b8f05596d5654f6f2cddd88802d791fa110666967b5a6b2d21e7dae55db00c` |
+| 大小 | 327 603 529 bytes（312.43 MiB） |
+| 时长 | 约 281 s（4 分 41 秒 · PO 标称） |
+| 画面 | HEVC · 1080p（交付须转 H.264 + AAC + faststart；**不进 Git**） |
+| 音轨 | 合轨（与长片同样不可无损分轨） |
+| 语言 | 英语旁白（文件名中文）；日语版无 |
+| 内容 | 正念冥想练习开头的概念与修行习惯小辅导，**不是**呼吸/坐姿引导 |
+| 与长片关系 | 长片开头含同类 4:41 段落；本课用**独立文件**，不从 22 分母版再剪 |
+| 量测日期 | 2026-11-05 |
+
+### 交付片（R2 · delivery-video · 2026-11-06）
+
+| 字段 | 值 |
+|---|---|
+| 桶 | `focus-tiger-guided-media` |
+| 公开根（**仅 dev/QA**） | `https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev` |
+| 播放 URL | `{公开根}/v1/concepts-habits-intro.mp4` |
+| 规范键（含哈希） | `guided-meditation/v1/concepts-habits-intro/b49bcf602716c10248d9cb3055b6574175a60d9835f51504befaded2a6533c5d.mp4` |
+| 交付 SHA-256 | `b49bcf602716c10248d9cb3055b6574175a60d9835f51504befaded2a6533c5d` |
+| 交付大小 | 28 523 034 bytes（~27.2 MiB） |
+| 画面 | H.264 1272×720 · AAC 128k · faststart（自 HEVC 1080p 母版转码） |
+| 母版 SHA-256 | `94b8f05596d5654f6f2cddd88802d791fa110666967b5a6b2d21e7dae55db00c`（HEVC 原片，**非**播放校验值） |
+
 ## 空行模板（PO 复制）
 
 | 字段 | 值 |
@@ -44,6 +89,6 @@
 
 ## 和主 Brief 候选课时的差
 
-主 Brief 曾列 3 / 5 / 10 分钟候选。**PO 2026-11-04：** 本母版 **22:43 先上**；**优先**从本片剪 **3–5 分钟入门**（须 PO 听感定切点，Cursor 不猜）。10 分钟课非 MVP 硬门槛。
+**PO 2026-11-05：** 首批上 **长片 + 独立 4:41 短课**（短课不从 22 分再剪）。H7 App 内播放已拍板。短课已转 H.264 并上 R2（见各课「交付片」表）。
 
 **剪辑任务（P0.5）：** 在未上传前用非破坏性工程文件试剪；导出仍走 `delivery-video` + cue JSON。
