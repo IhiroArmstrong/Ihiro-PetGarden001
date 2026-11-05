@@ -5,6 +5,10 @@ SAMATIA_CANONICAL_LIVE until the Brief trademark checklist is done
 (USPTO / EUIPO / J-PlatPat classes 9, 41, 42, 44, 45; App Store / Play;
 samatia.com holder; 万网 real-name + email).
 
+PO 2026-11-06: public product domain is samatia.net only; do not acquire
+samatia.com (third-party GoDaddy privacy). FAQ / colophon may say .net is
+official; .com is not operated by Twinsology.
+
 1. Cloudflare Pages project twinsology-marketing
    - Add custom domains: samatia.net and www.samatia.net (HTTPS)
    - Do not set Pages env SAMATIA_CANONICAL_LIVE until those domains are Active
