@@ -145,7 +145,12 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       pending: Object.freeze({
         mode: 'token',
         files: Object.freeze(['src/ui/GuidedMeditationUI.js']),
-        tokens: Object.freeze(['GUIDED_MEDITATION_STATUS_LOADING'])
+        tokens: Object.freeze([
+          'GUIDED_MEDITATION_STATUS_LOADING',
+          'GUIDED_MEDITATION_STATUS_PREPARING',
+          'GUIDED_MEDITATION_STATUS_BUFFERING',
+          'GUIDED_MEDITATION_STATUS_FETCHING'
+        ])
       }),
       success: Object.freeze({
         mode: 'token',

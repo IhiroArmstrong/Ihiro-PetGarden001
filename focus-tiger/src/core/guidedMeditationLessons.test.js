@@ -5,6 +5,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import {
   GUIDED_MEDITATION_LESSONS,
@@ -33,6 +34,22 @@ describe('guidedMeditationLessons', () => {
     const long = findGuidedMeditationLesson('what-is-zen-ancient-wisdom');
     assert.equal(long?.kind, 'long');
     assert.equal(long?.durationSec, 1303);
+    assert.match(short?.videoUrl || '', new RegExp(`^${GUIDED_MEDITATION_MEDIA_HOST}/`));
+    assert.match(short?.audioUrl || '', /\.m4a$/);
+    assert.match(short?.audioSha256 || '', /^[a-f0-9]{64}$/);
+    assert.equal(short?.audioBytes, 2343753);
+    assert.equal(long?.deliveryBytes, 136179423);
+    assert.match(long?.audioSha256 || '', /^[a-f0-9]{64}$/);
+    assert.equal(long?.audioBytes, 10753157);
+  });
+
+  it('does not fetch whole files in the web player', () => {
+    const ui = readFileSync(
+      new URL('../ui/GuidedMeditationUI.js', import.meta.url),
+      'utf8'
+    );
+    assert.equal(ui.includes('fetchVerifiedGuidedMeditationVideo'), false);
+    assert.match(ui, /resolveGuidedMeditationPlaybackMode/);
   });
 
   it('credits a short lesson at 90% for nominal minutes', () => {

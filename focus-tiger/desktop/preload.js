@@ -162,6 +162,20 @@ desktopShell.confideObservation = {
     ipcRenderer.invoke('desktop:confide-observation-append', record)
 };
 
+desktopShell.guidedMeditation = {
+  fetchRendition: (payload) =>
+    ipcRenderer.invoke('desktop:guided-meditation-fetch', payload || {}),
+  removeCache: (payload) =>
+    ipcRenderer.invoke('desktop:guided-meditation-cache-remove', payload || {}),
+  onProgress: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = (_event, payload) => cb(payload);
+    ipcRenderer.on('desktop:guided-meditation-progress', wrapped);
+    return () =>
+      ipcRenderer.removeListener('desktop:guided-meditation-progress', wrapped);
+  }
+};
+
 if (voiceInputProbeAllowed) {
   desktopShell.voiceInputProbe = createVoiceInputBridge();
 }

@@ -14,6 +14,49 @@
 
 语音与配乐 **不分轨**。
 
+### 1.1 ffmpeg 交付命令（两课各跑一遍）
+
+母版路径见 [`guided-meditation-source-inventory.md`](./guided-meditation-source-inventory.md)。输出文件名须含 **delivery 文件 SHA-256 前缀**（与对象键 `{hash}` 一致），上传后把完整 `sha256` / `bytes` 写回 `guidedMeditationLessons.js` 的 `DELIVERY` 表。
+
+**长课 · `what-is-zen-ancient-wisdom`（H.264 母版）**
+
+```bash
+ffmpeg -i "/path/to/what-is-zen-master.mp4" \
+  -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
+  -c:a aac -b:a 128k -movflags +faststart \
+  "delivery-video.mp4"
+
+ffmpeg -i "/path/to/what-is-zen-master.mp4" -vn \
+  -c:a aac -b:a 64k -movflags +faststart \
+  "delivery-audio.m4a"
+```
+
+**短课 · `concepts-habits-intro`（HEVC 须先转 H.264）**
+
+```bash
+ffmpeg -i "/path/to/concepts-habits-intro-master.mp4" \
+  -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
+  -c:a aac -b:a 128k -movflags +faststart \
+  "delivery-video.mp4"
+
+ffmpeg -i "/path/to/concepts-habits-intro-master.mp4" -vn \
+  -c:a aac -b:a 64k -movflags +faststart \
+  "delivery-audio.m4a"
+```
+
+量测：`shasum -a 256 delivery-video.mp4` · `stat -f%z`（macOS）或 `wc -c`。
+
+纯音频从 **已上云的 delivery-video** 抽轨即可（不必再转视频）：
+
+```bash
+ffmpeg -i "concepts-habits-intro.mp4" -vn -c:a aac -b:a 64k -movflags +faststart \
+  "concepts-habits-intro.m4a"
+ffmpeg -i "what-is-zen-ancient-wisdom.mp4" -vn -c:a aac -b:a 64k -movflags +faststart \
+  "what-is-zen-ancient-wisdom.m4a"
+```
+
+运行时**单一常量**：`GUIDED_MEDITATION_MEDIA_HOST`（`guidedMeditationLessons.js`）。对外发布前换成自定义域（建议 `https://media.twinsology.com`），**不要**长期用 `*.r2.dev`。合 `main` 时 `check:guided-media-host --release-gate` 会因 r2.dev **失败**。
+
 ## 2. Manifest 草案
 
 ```json
@@ -62,6 +105,43 @@
 
 假设：R2 出站 $0；存储 ≈ 已上传字节；每次完整播放 ≈ 1 次 Class B 读 + 若干 Range。  
 免费额度是否盖住，看当时文件总字节与播放次数。第一课 0.13 GiB 存储本身很小。
+
+### 3.1 CORS（Web 边下边播）
+
+现网公开桶 CORS 为 `*`（PO：可接受，本刀不收紧）。Web 用 `<video src="https://…mp4">` 走 Range，**不**整片 `fetch`。Electron 主进程下载，**不**走浏览器 CORS。
+
+若日后收紧，示例：
+
+```json
+[
+  {
+    "AllowedOrigins": [
+      "https://app.example.com",
+      "http://localhost:5173",
+      "http://127.0.0.1:5173"
+    ],
+    "AllowedMethods": ["GET", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "ExposeHeaders": ["ETag", "Content-Length", "Content-Type"],
+    "MaxAgeSeconds": 86400
+  }
+]
+```
+
+**Electron 桌面**：主进程 `fetch` 下载到 `userData/guided-meditation/`，`<video src=file://…>` 播放，**不**走浏览器 CORS。
+
+### 3.2 上传缓存头
+
+每个公开对象：`Cache-Control: public, max-age=31536000, immutable`（换内容 = 换 `{hash}` 路径，禁止覆盖）。上传脚本：`focus-tiger/scripts/guided-meditation-r2-upload.mjs`。
+
+### 3.3 生产域名与 Cloudflare 缓存
+
+- 在 R2 桶 **Custom Domains** 绑 `media.<你的域>`（PO 后台操作）。  
+- 第二次请求同一 URL 应见 `cf-cache-status: HIT`（可用 `curl -I`）。  
+- **单文件缓存上限已核实（2026-11-06）**：Cloudflare 官方文档写明 Free / Pro / Business **512 MB**；长课 ~130 MB 在范围内。文件须从 **R2 自定义域**提供，不要放到别处再靠 CDN 回源。  
+- 自定义域验证通过、应用已切常量后，在桶设置 **关闭 Public Development URL（`*.r2.dev`）**。
+
+发布前人工清单：[`guided-meditation-media-release-checklist.md`](./guided-meditation-media-release-checklist.md)。
 
 ## 4. 状态机
 
