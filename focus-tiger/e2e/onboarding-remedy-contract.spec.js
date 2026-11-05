@@ -92,7 +92,7 @@ test.describe('wide ? purpose only', () => {
     ).toBeVisible();
     await expect(
       page.locator('.onboarding-app-purpose__colophon-mark')
-    ).toHaveText('Focus Tiger™');
+    ).toHaveText('Samatia™');
     await expect(
       page.locator('.onboarding-app-purpose__colophon-byline')
     ).toContainText('Ihiro Armstrong / Twinsology');

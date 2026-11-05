@@ -1,0 +1,53 @@
+{
+  "en": {
+    "APP_TITLE": "Samatia",
+    "BRAND_YIN_WAY_SEAL": "Walking the Yin Way. · Samatia",
+    "FIVE_MOMENTS_CARD_BLURB": "Samatia isn’t only a timer. It’s five gentle companions across a day: Arrive → Focus → Recover → Transition → Reflect.",
+    "HINT_APP_PURPOSE_COLOPHON_MARK": "Samatia™",
+    "HINT_APP_PURPOSE_DESKTOP_RAM_BODY": "On Mac and Windows PCs with 8 GB of RAM or less, loading a local companion model can add heavy memory pressure and may slow the whole app. We do not recommend that companion on those machines. Samatia hides the entry by default.",
+    "HINT_APP_PURPOSE_TITLE": "What Samatia is",
+    "HINT_APP_PURPOSE_WELLNESS_SUMMARY": "Samatia is a mindfulness tool, not medical or clinical therapy.",
+    "JOURNEY_LOG_BACKUP_CONSENT": "I agree to back up these practice traces to Samatia’s cloud.",
+    "LOCAL_DATA_IMPORT_ERR_FORMAT": "This file is not a valid Samatia backup.",
+    "NEWSLETTER_CARD_BLURB": "Samatia is updated regularly to fix known errors, and to share a better version — the latest release. We can send those notes to your mailbox — quietly, unsubscribe anytime.",
+    "PRIVACY_SHEET_FULL_LEAD": "Below is the full privacy notice for Samatia (plain language), aligned with our published policy.",
+    "SUPPORT_DESKTOP_RAM_NOTE": "Note: On Mac and Windows PCs with 8 GB of RAM or less, the optional on-device companion can add heavy memory pressure and may slow the whole app. We do not recommend that companion on those machines. Samatia hides the entry by default.",
+    "SUPPORT_PRO_TITLE": "Samatia Pro",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "On-device Local AI runs in the desktop app, not in this browser. After you unlock it, open Samatia on Mac or Windows to talk with Yin locally.",
+    "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
+  },
+  "zh": {
+    "APP_TITLE": "Samatia",
+    "BRAND_YIN_WAY_SEAL": "體驗寅之道。 · Samatia",
+    "FIVE_MOMENTS_CARD_BLURB": "Samatia 不只是计时器。它是一天中五个温柔的陪伴时刻：Arrive → Focus → Recover → Transition → Reflect。",
+    "HINT_APP_PURPOSE_COLOPHON_MARK": "Samatia™",
+    "HINT_APP_PURPOSE_DESKTOP_RAM_BODY": "内存在 8GB 及以下的 Mac 与 Windows 电脑上，加载本地陪伴模型可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Samatia 默认隐藏入口。",
+    "HINT_APP_PURPOSE_TITLE": "Samatia 是什麼",
+    "HINT_APP_PURPOSE_WELLNESS_SUMMARY": "Samatia 是正念练习工具，不是医疗或临床心理治疗。",
+    "JOURNEY_LOG_BACKUP_CONSENT": "我同意将上述练习痕迹备份到 Samatia 云端。",
+    "LOCAL_DATA_IMPORT_ERR_FORMAT": "这不是有效的 Samatia 备份文件。",
+    "NEWSLETTER_CARD_BLURB": "本应用会定期更新，以修复已知问题，并提供更好的最新版本。我们可以把这些说明发到你的邮箱——安静送达，随时可退订。",
+    "PRIVACY_SHEET_FULL_LEAD": "以下为 Samatia 完整隐私声明（通俗表述），与公开发布的政策正文一致。",
+    "SUPPORT_DESKTOP_RAM_NOTE": "提示：内存在 8GB 及以下的 Mac 与 Windows 电脑上，可选的端侧陪伴可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Samatia 默认隐藏入口。",
+    "SUPPORT_PRO_TITLE": "Samatia Pro",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "本机 Local AI 只在桌面应用里运行，网页版没有。解锁后请在 Mac 或 Windows 打开 Samatia，才能在本机与阿寅倾诉。",
+    "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
+  },
+  "ja": {
+    "APP_TITLE": "Samatia",
+    "BRAND_YIN_WAY_SEAL": "寅の道を歩む。 · Samatia",
+    "FIVE_MOMENTS_CARD_BLURB": "Samatiaはタイマーだけではありません。一日のなかで寄り添う五つの時間です：到着 → フォーカス → 回復 → 切り替え → ふりかえり。",
+    "HINT_APP_PURPOSE_COLOPHON_MARK": "Samatia™",
+    "HINT_APP_PURPOSE_DESKTOP_RAM_BODY": "メモリ 8GB 以下の Mac および Windows PC では、ローカルのコンパニオンモデルを読み込むとメモリ圧が高くなり、アプリ全体が遅くなることがあります。それらの機器ではこのコンパニオンはおすすめしません。Samatia は初期状態で入口を出しません。",
+    "HINT_APP_PURPOSE_TITLE": "Samatia（サマティア）",
+    "HINT_APP_PURPOSE_WELLNESS_SUMMARY": "Samatiaはマインドフルネスの道具であり、医療や臨床心理療法ではありません。",
+    "JOURNEY_LOG_BACKUP_CONSENT": "これらの練習のあとを Samatia のクラウドに控えることに同意します。",
+    "LOCAL_DATA_IMPORT_ERR_FORMAT": "有効なSamatiaバックアップではありません。",
+    "NEWSLETTER_CARD_BLURB": "Samatia は既知の不具合を直し、よりよい最新版をお届けするために定期更新されます。そのお知らせをメールで送れます——静かに、いつでも解除できます。",
+    "PRIVACY_SHEET_FULL_LEAD": "以下は Samatia の完全なプライバシー通知（平易な言葉）です。公開ポリシーと内容を揃えています。",
+    "SUPPORT_DESKTOP_RAM_NOTE": "ご注意：メモリ 8GB 以下の Mac および Windows PC では、任意の端末内コンパニオンがメモリ圧を高め、アプリ全体を遅くすることがあります。それらの機器ではおすすめしません。Samatia は初期状態で入口を出しません。",
+    "SUPPORT_PRO_TITLE": "Samatia Pro",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "端末内の Local AI はデスクトップアプリでのみ動きます。このブラウザにはありません。解除後は Mac または Windows の Samatia を開くと、寅と端末内で話せます。",
+    "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
+  }
+}

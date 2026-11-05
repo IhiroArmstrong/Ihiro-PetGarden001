@@ -21,6 +21,8 @@ import {
   fileHasCopyrightHeader,
   listCopyrightHeaderFiles
 } from '../../scripts/copyright-header.js';
+import { mergeLocalePack } from '../locales/mergeLocaleSlices.js';
+import { LOCALE_SLICES } from '../locales/localeSliceModules.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -34,7 +36,7 @@ test('file-header ownership names Twinsology and the author', () => {
 });
 
 test('in-app colophon is creator-first (not the file-header legal line)', () => {
-  assert.equal(PURPOSE_COLOPHON_MARK, 'Focus Tiger™');
+  assert.equal(PURPOSE_COLOPHON_MARK, 'Samatia™');
   assert.equal(
     PURPOSE_COLOPHON_BYLINE,
     'Created by Ihiro Armstrong / Twinsology'
@@ -53,8 +55,15 @@ test('in-app colophon is creator-first (not the file-header legal line)', () => 
 
 test('locale colophon keys match the in-app constants', () => {
   const localesDir = join(here, '../locales');
-  for (const name of ['en.json', 'ja.json', 'zh.json']) {
-    const map = JSON.parse(readFileSync(join(localesDir, name), 'utf8'));
+  const bases = {
+    en: JSON.parse(readFileSync(join(localesDir, 'en.json'), 'utf8')),
+    ja: JSON.parse(readFileSync(join(localesDir, 'ja.json'), 'utf8')),
+    zh: JSON.parse(readFileSync(join(localesDir, 'zh.json'), 'utf8'))
+  };
+  const { dictionaries, errors } = mergeLocalePack(bases, LOCALE_SLICES);
+  assert.equal(errors.length, 0, errors.join('; '));
+  for (const locale of ['en', 'ja', 'zh']) {
+    const map = dictionaries[locale];
     assert.equal(map.HINT_APP_PURPOSE_COLOPHON_MARK, PURPOSE_COLOPHON_MARK);
     assert.equal(map.HINT_APP_PURPOSE_COLOPHON_BYLINE, PURPOSE_COLOPHON_BYLINE);
     assert.equal(

@@ -148,7 +148,7 @@ describe('privacyNoticeCopy', () => {
   it('en + ja + zh purpose colophon is creator-first English credit', () => {
     for (const file of ['en.json', 'ja.json', 'zh.json']) {
       const map = loadLocale(file);
-      assert.equal(map.HINT_APP_PURPOSE_COLOPHON_MARK, 'Focus Tiger™');
+      assert.equal(map.HINT_APP_PURPOSE_COLOPHON_MARK, 'Samatia™');
       assert.equal(
         map.HINT_APP_PURPOSE_COLOPHON_BYLINE,
         'Created by Ihiro Armstrong / Twinsology'
