@@ -8,7 +8,8 @@
  * Scope grows per `task-samatia-user-facing-rename.md`.
  * A2 = locale/KB/pools. B adds Electron display name / tray / About / permission copy.
  * C adds marketing HTML, store-listing drafts, and DNS cutover notes.
- * Full release gate waits until A1–A2 + B + C + D merge; this module is not that gate.
+ * D adds Checkout-related hardcoded customer-visible strings in cloud routes.
+ * Full release gate waits until A1–A2 + B + C + D merge; scanSamatiaD is that gate surface.
  */
 
 import fs from 'node:fs';
@@ -54,6 +55,11 @@ export const SAMATIA_C_SCAN_REL_FROM_REPO = Object.freeze([
   'marketing-site/404.html',
   'marketing-site/store-listing-en.txt',
   'marketing-site/store-listing-ja.txt'
+]);
+
+/** Extra paths scanned at T87-D (Stripe Checkout hardcoded customer-visible copy). */
+export const SAMATIA_D_SCAN_REL_PATHS = Object.freeze([
+  'cloud/src/routes/confirmProSession.ts'
 ]);
 
 const COPYRIGHT_HEADER_MARK = 'Focus Tiger™ is a product of Twinsology';
@@ -105,6 +111,18 @@ export function scanSamatiaCUserFacingResiduals(focusTigerRoot) {
   return [
     ...scanSamatiaBUserFacingResiduals(focusTigerRoot),
     ...scanSamatiaUserFacingResiduals(repoRoot, SAMATIA_C_SCAN_REL_FROM_REPO)
+  ];
+}
+
+/**
+ * T87-D = C surface + Checkout hardcoded customer-visible strings.
+ * @param {string} focusTigerRoot
+ * @returns {SamatiaResidualHit[]}
+ */
+export function scanSamatiaDUserFacingResiduals(focusTigerRoot) {
+  return [
+    ...scanSamatiaCUserFacingResiduals(focusTigerRoot),
+    ...scanSamatiaUserFacingResiduals(focusTigerRoot, SAMATIA_D_SCAN_REL_PATHS)
   ];
 }
 

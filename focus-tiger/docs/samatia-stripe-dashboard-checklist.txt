@@ -1,0 +1,32 @@
+T87-D Stripe Dashboard (PO only). Not applied by Agent PRs.
+
+Do not announce samatia.net or change Public details business URL to samatia.net
+until the Brief trademark checklist is done (see marketing-site/samatia-dns-cutover.txt).
+
+Checkout line items use Stripe Product display names on each Price. Price IDs in
+wrangler vars stay unchanged; rename Products in Dashboard only.
+
+1. Products → rename customer-visible Product name (keep Price IDs):
+   - Membership recurring (was Focus Tiger Base / Yin Membership):
+     **Samatia · Yin Membership**
+   - Pro recurring (Support card 4, price_1U6EB1FuIhgJPGLiuciuX1to):
+     **Samatia Pro**
+   - Optional consistency (Brief does not require renames if already neutral):
+     Tip / Tea · Sanctuary Lifetime · AI Companion Add-on — no "Focus Tiger" on receipt
+
+2. Settings → Public details:
+   - Business name (DBA): **Samatia**
+   - Business website: **https://samatia.net** (only after trademark gate + domain live)
+   - Support email stays hello@twinsology.com
+
+3. Settings → Branding → Statement descriptor:
+   - Prefer **SAMATIA** (must match DBA or website per Stripe rules)
+   - If rejected: prefix TWINSOLOGY, suffix SAMATIA (often shows as TWINSOLOGY* SAMATIA)
+
+4. Verify in Stripe Test Mode before Live:
+   - Support → Membership Subscribe → Checkout title shows Samatia · Yin Membership
+   - Support → Samatia Pro → Checkout title shows Samatia Pro
+   - Receipt / Customer portal merchant line shows Samatia (after Public details)
+
+5. Worker redeploy is not required for Dashboard-only Product renames (Price IDs unchanged).
+   Redeploy only if cloud route copy changed in git (this PR: confirm-pro error message).
