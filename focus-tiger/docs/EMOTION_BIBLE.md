@@ -504,7 +504,7 @@ MilestoneGlow (110)  >  Celebrating (100)  >  WakeUp (90)  >  IncenseComplete (8
 
 ### 当前阶段
 
-- 产品名统一为 **Focus Tiger**，产品默认面向海外市场，**英文（`en`）为默认语言**。
+- 产品名：用户可见 **Samatia**（T87 Brief）；内部仓库与源码版权头仍可称 Focus Tiger。产品默认面向海外市场，**英文（`en`）为默认语言**。
 - `src/locales/en.json` 与 `src/locales/zh.json` 保持完整同构；中文作为可切换备选语言保留。
 - 文档/代码注释可保留中文或英文（不影响 UI）。
 - 所有面向用户的 UI 展示文案必须走字典机制；dev-only 调试面板不纳入产品字典。

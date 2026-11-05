@@ -27,7 +27,7 @@ export const PURPOSE_COLOPHON_KEYS = Object.freeze([
   'HINT_APP_PURPOSE_COLOPHON_COPYRIGHT'
 ]);
 
-export const PURPOSE_COLOPHON_MARK = 'Focus Tiger™';
+export const PURPOSE_COLOPHON_MARK = 'Samatia™';
 export const PURPOSE_COLOPHON_BYLINE =
   'Created by Ihiro Armstrong / Twinsology';
 export const PURPOSE_COLOPHON_COPYRIGHT =

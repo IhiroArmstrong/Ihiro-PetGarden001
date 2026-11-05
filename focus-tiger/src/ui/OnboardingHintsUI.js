@@ -17,7 +17,7 @@
  * @see ONBOARDING_HINTS.md
  */
 
-import { t, onLocaleChange } from '../locales/i18n.js';
+import { t, getLocale, onLocaleChange } from '../locales/i18n.js';
 import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import {
   GLASS_BLUR_CSS,
@@ -1926,10 +1926,15 @@ export class OnboardingHintsUI {
     title.id = 'onboarding-app-purpose-title';
     title.className = 'onboarding-app-purpose__title';
 
+    const pronunciation = document.createElement('p');
+    pronunciation.className = 'onboarding-app-purpose__pronunciation';
+    pronunciation.dataset.testid = 'onboarding-purpose-pronunciation';
+    pronunciation.hidden = true;
+
     const body = document.createElement('p');
     body.className = 'onboarding-app-purpose__body';
 
-    brand.append(title, body);
+    brand.append(title, pronunciation, body);
 
     const wellness = document.createElement('div');
     wellness.className = 'onboarding-app-purpose__wellness';
@@ -2050,6 +2055,7 @@ export class OnboardingHintsUI {
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
+    this._purposePronunciationEl = pronunciation;
     this._purposeBodyEl = body;
     this._purposeWellnessSummaryEl = wellnessSummary;
     this._purposeWellnessLinkEl = wellnessLink;
@@ -2073,6 +2079,18 @@ export class OnboardingHintsUI {
   _refreshPurposeCardCopy() {
     if (!this.purposeCard) return;
     this._purposeTitleEl.textContent = t('HINT_APP_PURPOSE_TITLE');
+    if (this._purposePronunciationEl) {
+      const pronunciationKey = 'HINT_APP_PURPOSE_PRONUNCIATION';
+      const pronunciationLine = t(pronunciationKey);
+      const showPronunciation =
+        getLocale() === 'en' &&
+        pronunciationLine &&
+        pronunciationLine !== pronunciationKey;
+      this._purposePronunciationEl.hidden = !showPronunciation;
+      this._purposePronunciationEl.textContent = showPronunciation
+        ? pronunciationLine
+        : '';
+    }
     this._purposeBodyEl.textContent = t('HINT_APP_PURPOSE_BODY');
     if (this._purposeWellnessSummaryEl) {
       this._purposeWellnessSummaryEl.textContent = t(
