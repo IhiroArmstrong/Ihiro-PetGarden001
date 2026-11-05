@@ -1,5 +1,5 @@
 /**
- * Focus Tiger — macOS Speech helper (Slice 0 probe).
+ * Samatia — macOS Speech helper (Slice 0 probe).
  * Commands: gate | transcribe [--max-seconds N] | tts-gate | speak [--text T] [--rate R]
  * Stop early: write "stop\n" to stdin during transcribe or speak.
  */
@@ -226,7 +226,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
   // Lockstep with VOICE_PRODUCT_CONTEXTUAL_STRINGS in src/core/voiceProductLexicon.js
   request.contextualStrings = [
     "Yin",
-    "Focus Tiger",
+    "Samatia",
     "Confide",
     "Sanctuary",
     "Quiet Together",

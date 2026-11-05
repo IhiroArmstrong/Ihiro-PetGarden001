@@ -139,7 +139,7 @@ export function renderMustardSeedSealCanvas(opts) {
   ctx.fillStyle = MUSTARD_SEAL_EXPORT_CARD.inkMuted;
   ctx.font = '400 24px system-ui, -apple-system, sans-serif';
   ctx.fillText(
-    opts.footer || 'Walking the Yin Way. · Focus Tiger',
+    opts.footer || 'Walking the Yin Way. · Samatia',
     canvas.width / 2,
     footerY
   );

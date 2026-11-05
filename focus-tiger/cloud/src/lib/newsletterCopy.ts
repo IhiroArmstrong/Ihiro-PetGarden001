@@ -25,7 +25,7 @@ export function newsletterWelcomeCopy(opts: {
 		const text = [
 			"こんにちは。",
 			"",
-			"阿寅の、ときどきのお便りリストに入りました。連続記録も、売り込みもありません。この宛先を書いたからといって、Focus Tiger の練習や解除は何も変わりません。",
+			"阿寅の、ときどきのお便りリストに入りました。連続記録も、売り込みもありません。この宛先を書いたからといって、Samatia の練習や解除は何も変わりません。",
 			"",
 			"小さな近況、季節の一言、坐ってみる価値のある練習——送る理由があるときだけ届きます。届かない日も、それでよいのです。",
 			"",
@@ -33,7 +33,7 @@ export function newsletterWelcomeCopy(opts: {
 			url,
 			"",
 			"阿寅",
-			"Focus Tiger",
+			"Samatia",
 		].join("\n");
 		return { subject, text, html: newsletterWelcomeHtml(text, url) };
 	}
@@ -42,7 +42,7 @@ export function newsletterWelcomeCopy(opts: {
 		const text = [
 			"你好。",
 			"",
-			"你已在阿寅偶尔写信的名单上。没有连续打卡，也没有推销。留下这个邮箱，不会改变 Focus Tiger 的练习或任何解锁。",
+			"你已在阿寅偶尔写信的名单上。没有连续打卡，也没有推销。留下这个邮箱，不会改变 Samatia 的练习或任何解锁。",
 			"",
 			"只有值得写的时候才会寄出——一点近况、一句时节、一次值得坐下来的练习。某封没读，也完全可以。",
 			"",
@@ -50,7 +50,7 @@ export function newsletterWelcomeCopy(opts: {
 			url,
 			"",
 			"阿寅",
-			"Focus Tiger",
+			"Samatia",
 		].join("\n");
 		return { subject, text, html: newsletterWelcomeHtml(text, url) };
 	}
@@ -58,7 +58,7 @@ export function newsletterWelcomeCopy(opts: {
 	const text = [
 		"Hello.",
 		"",
-		"You're on Yin's occasional list. There is no streak to keep, and nothing in Focus Tiger changes because you wrote this address.",
+		"You're on Yin's occasional list. There is no streak to keep, and nothing in Samatia changes because you wrote this address.",
 		"",
 		"When there is something worth sending — a small update, a seasonal note, a practice worth sitting with — it will arrive here. Skipping a letter is also fine.",
 		"",
@@ -66,7 +66,7 @@ export function newsletterWelcomeCopy(opts: {
 		url,
 		"",
 		"Yin",
-		"Focus Tiger",
+		"Samatia",
 	].join("\n");
 	return { subject, text, html: newsletterWelcomeHtml(text, url) };
 }
@@ -108,7 +108,7 @@ export function newsletterUnsubscribePageCopy(opts: {
 	if (locale === "ja") {
 		return {
 			title: "配信を停止しました",
-			body: "この宛先へは、もうお便りしません。Focus Tiger の練習はそのままです。",
+			body: "この宛先へは、もうお便りしません。Samatia の練習はそのままです。",
 		};
 	}
 	if (locale === "zh") {
@@ -119,7 +119,7 @@ export function newsletterUnsubscribePageCopy(opts: {
 	}
 	return {
 		title: "You've been unsubscribed",
-		body: "Yin won't write to this address again. Your practice in Focus Tiger is unchanged.",
+		body: "Yin won't write to this address again. Your practice in Samatia is unchanged.",
 	};
 }
 

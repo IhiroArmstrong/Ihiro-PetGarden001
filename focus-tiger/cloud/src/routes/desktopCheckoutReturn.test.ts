@@ -12,7 +12,7 @@ describe("desktopCheckoutReturn route", () => {
 		assert.equal(res.status, 200);
 		const html = await res.text();
 		assert.match(html, /focus-tiger:\/\/app\/\?product=1&pro_session=cs_test_abc/);
-		assert.match(html, /Returning to the Focus Tiger desktop app/);
+		assert.match(html, /Returning to the Samatia desktop app/);
 		assert.match(html, /You can close this browser tab/);
 		assert.match(html, /location\.replace/);
 	});

@@ -100,7 +100,7 @@ export function paintJourneyDailyCard(ctx, card) {
   }
   if (line) ctx.fillText(line, cx, y);
   ctx.font = '400 22px system-ui, sans-serif';
-  ctx.fillText('Focus Tiger', cx, h - 70);
+  ctx.fillText('Samatia', cx, h - 70);
   ctx.textAlign = 'left';
 }
 
