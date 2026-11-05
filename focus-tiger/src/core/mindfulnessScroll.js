@@ -148,7 +148,7 @@ export function paintMindfulnessScroll(ctx, draft, labels) {
   }
   if (line) ctx.fillText(line, 72, y);
   ctx.font = '400 20px system-ui, sans-serif';
-  ctx.fillText('Focus Tiger · with Yin', 72, h - 90);
+  ctx.fillText('Samatia · with Yin', 72, h - 90);
 }
 
 /**

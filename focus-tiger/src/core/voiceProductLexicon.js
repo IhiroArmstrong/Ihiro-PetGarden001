@@ -16,7 +16,7 @@
 /** Boosted during recognition. Keep short; Apple caps usefulness past ~100. */
 export const VOICE_PRODUCT_CONTEXTUAL_STRINGS = Object.freeze([
   'Yin',
-  'Focus Tiger',
+  'Samatia',
   'Confide',
   'Sanctuary',
   'Quiet Together',

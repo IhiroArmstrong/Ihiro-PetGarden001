@@ -27,16 +27,16 @@ export function handleDesktopCheckoutReturn(request: Request): Response {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="refresh" content="0;url=${safeHref}" />
-  <title>Focus Tiger</title>
+  <title>Samatia</title>
   <style>
     body { font-family: system-ui, sans-serif; background: #f5efe6; color: #3d3429; margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; text-align: center; }
     a { color: #6b5344; }
   </style>
 </head>
 <body>
-  <p>Returning to the Focus Tiger desktop app…</p>
+  <p>Returning to the Samatia desktop app…</p>
   <p>You can close this browser tab.</p>
-  <p><a href="${safeHref}">Open Focus Tiger</a></p>
+  <p><a href="${safeHref}">Open Samatia</a></p>
   <script>window.location.replace(${jsHref});</script>
 </body>
 </html>`;
