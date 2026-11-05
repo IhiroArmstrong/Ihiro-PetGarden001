@@ -68,6 +68,10 @@ describe('marketing-site Slice 1 contract', () => {
     assert.match(html, /Walking the Yin Way\?/);
     assert.match(
       html,
+      /Wellness isn&rsquo;t only about the gym\. Many people overlook a more[\s\S]*?foundational practice: training the mind\./
+    );
+    assert.match(
+      html,
       /Your practice and what you tell Yin stay on this device\./
     );
     assert.match(html, /hero-yin-idle\.png/);
