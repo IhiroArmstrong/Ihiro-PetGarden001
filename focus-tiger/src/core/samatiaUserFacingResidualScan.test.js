@@ -11,7 +11,8 @@ import { fileURLToPath } from 'node:url';
 import {
   isSamatiaScanLineWhitelisted,
   scanSamatiaA2UserFacingResiduals,
-  scanSamatiaBUserFacingResiduals
+  scanSamatiaBUserFacingResiduals,
+  scanSamatiaCUserFacingResiduals
 } from './samatiaUserFacingResidualScan.js';
 import { DESKTOP_DISPLAY_NAME } from '../../desktop/trayPolicy.js';
 import desktopPackage from '../../desktop/package.json' with { type: 'json' };
@@ -77,6 +78,15 @@ test('T87-B: Electron productName, appId, and tray display name are Samatia', ()
 
 test('T87-B: A2 + Electron display scan has no legacy public product name', () => {
   const hits = scanSamatiaBUserFacingResiduals(focusTigerRoot);
+  assert.deepEqual(
+    hits,
+    [],
+    hits.map((h) => `${h.file}:${h.line} ${h.snippet}`).join('\n')
+  );
+});
+
+test('T87-C: marketing HTML and store listings have no legacy public product name', () => {
+  const hits = scanSamatiaCUserFacingResiduals(focusTigerRoot);
   assert.deepEqual(
     hits,
     [],

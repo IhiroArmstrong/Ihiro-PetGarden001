@@ -7,6 +7,7 @@
  * T87 residual scan: legacy public product name in user-facing runtime copy.
  * Scope grows per `task-samatia-user-facing-rename.md`.
  * A2 = locale/KB/pools. B adds Electron display name / tray / About / permission copy.
+ * C adds marketing HTML, store-listing drafts, and DNS cutover notes.
  * Full release gate waits until A1–A2 + B + C + D merge; this module is not that gate.
  */
 
@@ -42,6 +43,17 @@ export const SAMATIA_B_SCAN_REL_PATHS = Object.freeze([
   'desktop/trayPolicy.js',
   'desktop/native/macos-speech-helper-Info.plist',
   'desktop/native/macos-input-rhythm-helper-Info.plist'
+]);
+
+/** Extra paths scanned at T87-C (repo-root relative, not under focus-tiger/). */
+export const SAMATIA_C_SCAN_REL_FROM_REPO = Object.freeze([
+  'marketing-site/index.html',
+  'marketing-site/ja.html',
+  'marketing-site/privacy.html',
+  'marketing-site/wellness.html',
+  'marketing-site/404.html',
+  'marketing-site/store-listing-en.txt',
+  'marketing-site/store-listing-ja.txt'
 ]);
 
 const COPYRIGHT_HEADER_MARK = 'Focus Tiger™ is a product of Twinsology';
@@ -81,6 +93,19 @@ export function scanSamatiaBUserFacingResiduals(focusTigerRoot) {
     ...SAMATIA_A2_SCAN_REL_PATHS,
     ...SAMATIA_B_SCAN_REL_PATHS
   ]);
+}
+
+/**
+ * T87-C = B surface + marketing HTML / store-listing drafts.
+ * @param {string} focusTigerRoot
+ * @returns {SamatiaResidualHit[]}
+ */
+export function scanSamatiaCUserFacingResiduals(focusTigerRoot) {
+  const repoRoot = path.join(focusTigerRoot, '..');
+  return [
+    ...scanSamatiaBUserFacingResiduals(focusTigerRoot),
+    ...scanSamatiaUserFacingResiduals(repoRoot, SAMATIA_C_SCAN_REL_FROM_REPO)
+  ];
 }
 
 /**
