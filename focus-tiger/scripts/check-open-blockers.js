@@ -14,7 +14,8 @@
  * Default: print inventory (open blockers, overdue, malformed, legacy); exit 0.
  * --release-gate: exit 1 if any overdue OR malformed open release-blocker;
  *   legacy-unclassified alone still exit 0 (reminder only). Unparseable table
- *   rows warn in inventory but do not exit 1.
+ *   rows warn in inventory but do not exit 1. Also fails if guided-meditation
+ *   media host still contains r2.dev (T88).
  *
  * Usage: cd focus-tiger && npm run check:open-blockers
  *        cd focus-tiger && npm run check:open-blockers -- --release-gate
@@ -24,6 +25,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { loadTrackerCorpus, TRACKER_PATH } from './assemble-tracker.js'
+import { runGuidedMediaHostCheck } from './check-guided-meditation-media-host.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
@@ -275,6 +277,9 @@ if (releaseGate) {
   console.log(
     'RELEASE GATE OK: no overdue or malformed open release-blockers.'
   )
+  const mediaHost = runGuidedMediaHostCheck({ releaseGate: true })
+  console.log(mediaHost.message)
+  if (!mediaHost.ok) process.exit(1)
 }
 
 process.exit(0)

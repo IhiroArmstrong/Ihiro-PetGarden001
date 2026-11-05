@@ -1,0 +1,22 @@
+name: guided-media-host release gate
+
+# Hard-stop shipping r2.dev media URLs to the production branch.
+# develop / QA may still use r2.dev (script default is warn + exit 0).
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  guided-media-host:
+    name: check:guided-media-host --release-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fail if media host still contains r2.dev
+        working-directory: focus-tiger
+        run: node scripts/check-guided-meditation-media-host.js --release-gate

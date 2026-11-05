@@ -1,0 +1,1 @@
+| T88 引导冥想对外前加固（Brief + r2.dev 发布拦截） | 纯文档 / 发布脚本 | 仅单元测试覆盖 | **不测播放。** 读 Brief `task-t88-guided-meditation-release-hardening.md`：Web 边下边播与 Electron 整片校验分端；inventory 授权三列可空。`npm run check:guided-media-host` 现网 r2.dev 应警告且绿；加 `--release-gate` 应红。不代表已对外、不代表 Electron 已手测。 | — | — | — | `docs/task-briefs/task-t88-guided-meditation-release-hardening.md` | 2026-11-06 |
