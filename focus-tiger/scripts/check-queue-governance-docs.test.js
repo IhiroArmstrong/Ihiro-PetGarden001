@@ -162,6 +162,22 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T88 guided-meditation release-hardening shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/task-briefs/task-t88-guided-meditation-release-hardening.md',
+        'focus-tiger/docs/task-entries/t88-guided-meditation-release-hardening.md',
+        'focus-tiger/docs/tracker-entries/docs-t88-guided-meditation-release-hardening.md',
+        'focus-tiger/docs/guided-meditation-source-inventory.md',
+        'focus-tiger/scripts/check-guided-meditation-media-host.js',
+        '.github/workflows/guided-media-host-release-gate.yml'
+      ]),
+      null
+    );
+  });
+
   it('allows T73 second-knife / T74 / T75 shards with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([

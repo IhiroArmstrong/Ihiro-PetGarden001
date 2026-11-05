@@ -711,7 +711,8 @@ git tag -a vX.Y.Z -m "稳定发布点说明"
 2. **CI 是否有环境配置问题导致的误报**（而非真实业务失败）  
 3. **这次改动是否涉及状态机 / 门闩 / 跨模块逻辑 / 主观体验**（观感、动画、文案语气等）——如果是，要求走完 [`focus-tiger/docs/SCENARIO_TESTS.md`](focus-tiger/docs/SCENARIO_TESTS.md) 里相关场景的人工验收  
 4. **[`TEST_TRACKER.md`](focus-tiger/docs/TEST_TRACKER.md) 里是否有和这次改动直接相关、且仍标「有问题」的未关闭项**——如果有，需要先关闭或明确记录为「已知问题，不影响此次合并」  
-5. **负责人自己是否清楚这次改动具体是什么、为什么改**
+5. **负责人自己是否清楚这次改动具体是什么、为什么改**  
+6. **引导冥想媒体根地址不得仍含 `r2.dev`**（`cd focus-tiger && npm run check:guided-media-host -- --release-gate`；已挂进 `check:open-blockers -- --release-gate`。develop / QA 可用 r2.dev，合 **main** 不行）
 
 **量级裁剪**：
 
