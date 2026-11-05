@@ -241,6 +241,29 @@ gh pr create --base develop --head "$(git branch --show-current)" --title "…" 
 2. **发现更晚活动 → 先问用户**：若同仓库已有更晚相关活动（例如已存在同方向 PR、远端 tip 已前进、CI 刚变红/变绿、其他分支上有更新的合并门禁相关提交），须 **先向用户确认**，不得按手头旧指令执行到底。  
 3. **可查的客观信号（不依赖读其他会话）**：开放中的 PR、PR tip SHA、CI run 状态与时间、`git log` / `origin/*` 与本地 tip 对比、最近 push 时间戳等。
 
+### 任务切片：开工 / 继续 / 下一步须先查 PR（`git-pr-next-step-gate`）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-pr-next-step-gate`）。常驻摘要：`.cursor/rules/focus-tiger-pr-next-step-gate.mdc`。  
+> **第一问（完成证据）**：**有没有 PR**（`--state all`：OPEN **和** MERGED）。**不论是否已合**：同切片已有 PR 且带实质 commit → 开发**可能已完成**，禁止当未开工。Brief、`TASKS.md`、`PROCESS.md`「下一步」、交接里的「合 develop 后再开 …」**不能**单独当「还要再开同一刀」。  
+> **第二问（合没合）**：只决定对用户说「待合」还是「已在 develop、可开下一刀」——**不得**因还没合就当成还没做。
+
+**触发**：用户或交接出现具名切片口令（例：开 T87-A2、继续 CR-50、下一刀、立刻开工某 Brief 切片）或 Agent 准备建议「下一步应开某 T 号」。
+
+**开工前必做**（验证类；不受 `agent-token-cost` 省 token 约束）：
+
+1. 用 **`gh pr list --state all --search "<T 号 / 分支关键词>"`** 查**有没有 PR**（OPEN 即算）；有号则 `gh pr view` + 需要时 `gh pr checks`  
+2. `git fetch origin develop` + `git log origin/develop`：仅回答第二问（是否已合）
+
+**结论规则**：
+
+| PR 事实 | 开发是否可能已完成 | Agent 行为 |
+|---|---|---|
+| 同切片 **OPEN** 且 PR 上已有实质 commit | **是**（代码已在 PR） | 汇报 URL + CI；**禁止**当未开工重开；默认 = 审/合/按评论改 |
+| 同切片 **MERGED** 进 develop | **是**（已在主干） | 汇报已合；**禁止**再实现同一刀；真实下一步 = 下一刀 |
+| 无相关 PR 且 develop 无 merge | 否 | 才可按 Brief 新开旁支 |
+
+**反例（禁止）**：#1565 已 **OPEN** 全绿，仍执行「开 T87-A2」——应汇报 **已有 PR、待合**，不得因未合进 develop 而重做。
+
 ### 并行 Cursor 会话：必须用 git worktree 隔离写操作
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-parallel-worktree`）。「跨会话指令冲突」管的是 PR / push / 合 `main` 的冷静；**本条管的是文件系统隔离**。二者互补，不互相替代。
