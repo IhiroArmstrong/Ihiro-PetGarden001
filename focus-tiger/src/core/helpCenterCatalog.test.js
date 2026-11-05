@@ -107,4 +107,8 @@ test('help center gap article locale keys exist in en zh ja', () => {
     slice.en.HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_BODY,
     /1, 3, 5, 10, or 20 minutes/
   );
+  assert.match(
+    slice.en.HELP_CENTER_ARTICLE_KB_EDU_0002_BODY,
+    /Wellness isn't only about the gym\. Many people overlook a more foundational practice: training the mind\./
+  );
 });
