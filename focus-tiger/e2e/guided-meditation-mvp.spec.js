@@ -15,6 +15,9 @@ test.use({ viewport: { width: 1280, height: 900 } });
 test('Practice menu opens Guided meditation; short lesson can credit', async ({
   page
 }) => {
+  await page.addInitScript(() => {
+    globalThis.__FT_GUIDED_MEDITATION_MOCK_MEDIA__ = true;
+  });
   await openFreshProductShell(page);
   await dismissColdStartOverlay(page);
 

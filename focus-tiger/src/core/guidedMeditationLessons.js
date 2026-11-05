@@ -5,12 +5,17 @@
 
 /**
  * Guided Meditation catalog + completion credit (P1 MVP).
- * Media files are not in Git; URLs are placeholders until R2 upload.
+ * Media files are not in Git; delivery URLs point at R2 (swap host before public launch).
  */
 
 export const GUIDED_MEDITATION_SOURCE_ID = 'guided-meditation';
 
-export const GUIDED_MEDITATION_MEDIA_HOST = 'https://guided-meditation.invalid';
+/**
+ * Public read root for delivery MP4s. **r2.dev is dev/QA only** (rate limits, no cache/WAF).
+ * Replace this single constant with a custom media subdomain before external release.
+ */
+export const GUIDED_MEDITATION_MEDIA_HOST =
+  'https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev';
 
 export const GUIDED_MEDITATION_LONG_MIN_PLAYED_SEC = 180;
 
@@ -26,6 +31,8 @@ export const GUIDED_MEDITATION_LONG_MIN_PLAYED_SEC = 180;
  * @property {string} titleKey
  * @property {string} blurbKey
  * @property {string} videoUrl
+ * @property {string} deliverySha256 lowercase hex of delivery-video bytes on R2
+ * @property {number} deliveryBytes exact byte length of delivery-video
  */
 
 /** @type {readonly GuidedMeditationLesson[]} */
@@ -38,7 +45,10 @@ export const GUIDED_MEDITATION_LESSONS = Object.freeze([
     locales: Object.freeze(['en']),
     titleKey: 'GUIDED_MEDITATION_LESSON_SHORT_TITLE',
     blurbKey: 'GUIDED_MEDITATION_LESSON_SHORT_BLURB',
-    videoUrl: `${GUIDED_MEDITATION_MEDIA_HOST}/v1/concepts-habits-intro.mp4`
+    videoUrl: `${GUIDED_MEDITATION_MEDIA_HOST}/v1/concepts-habits-intro.mp4`,
+    deliverySha256:
+      'b49bcf602716c10248d9cb3055b6574175a60d9835f51504befaded2a6533c5d',
+    deliveryBytes: 28523034
   }),
   Object.freeze({
     id: 'what-is-zen-ancient-wisdom',
@@ -48,9 +58,27 @@ export const GUIDED_MEDITATION_LESSONS = Object.freeze([
     locales: Object.freeze(['en']),
     titleKey: 'GUIDED_MEDITATION_LESSON_LONG_TITLE',
     blurbKey: 'GUIDED_MEDITATION_LESSON_LONG_BLURB',
-    videoUrl: `${GUIDED_MEDITATION_MEDIA_HOST}/v1/what-is-zen-ancient-wisdom.mp4`
+    videoUrl: `${GUIDED_MEDITATION_MEDIA_HOST}/v1/what-is-zen-ancient-wisdom.mp4`,
+    deliverySha256:
+      '67898a1efc878ab82f991fe777394b8effff5f73ce9a331431af3c281383459b',
+    deliveryBytes: 136179423
   })
 ]);
+
+/**
+ * Menu + playback gate: host configured and every lesson has delivery integrity fields.
+ * @returns {boolean}
+ */
+export function isGuidedMeditationMediaConfigured() {
+  if (!GUIDED_MEDITATION_MEDIA_HOST || GUIDED_MEDITATION_MEDIA_HOST.includes('.invalid')) {
+    return false;
+  }
+  return GUIDED_MEDITATION_LESSONS.every((row) => {
+    const sha = String(row.deliverySha256 || '').trim();
+    const bytes = Number(row.deliveryBytes);
+    return sha.length === 64 && Number.isFinite(bytes) && bytes > 0;
+  });
+}
 
 /**
  * @param {string} id

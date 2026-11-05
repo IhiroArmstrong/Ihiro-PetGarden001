@@ -155,7 +155,10 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       fail: Object.freeze({
         mode: 'token',
         files: Object.freeze(['src/ui/GuidedMeditationUI.js']),
-        tokens: Object.freeze(['GUIDED_MEDITATION_STATUS_NEED_NETWORK'])
+        tokens: Object.freeze([
+          'GUIDED_MEDITATION_STATUS_NEED_NETWORK',
+          'GUIDED_MEDITATION_STATUS_ERROR_RETRYABLE'
+        ])
       })
     }),
     e2eOverlap: Object.freeze({

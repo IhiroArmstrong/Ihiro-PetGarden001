@@ -51,6 +51,7 @@
 ## 3. 托管
 
 - 桶：新建 R2 `focus-tiger-guided-media`（公开读）。  
+- **r2.dev 公开根仅 dev/QA**（Cloudflare 限速、无缓存/WAF）；**对外发布前**须换自定义媒体子域，应用只改 `GUIDED_MEDITATION_MEDIA_HOST` 一处。  
 - 不绑用户。不经 Worker 流式传输整片。  
 - Worker 至多：`GET /api/guided-meditation-manifest`（可选；也可纯 R2 JSON）。  
 - YouTube 只引流。
@@ -136,11 +137,15 @@ Focusing / Arrival / Honesty 进行中：不自动开始下载；不弹窗。已
 - 与 DMG 更新同时下载是否抢带宽  
 - Cloudflare 套餐与自定义域
 
-## 10. 首批两课（PO 2026-11-05）
+## 10. 首批两课（PO 2026-11-05 · 上云 2026-11-06）
 
-| id | 课型 | durationSec | 源 |
-|---|---|---|---|
-| `concepts-habits-intro` | short | 281 | 独立 4:41 概念与习惯小课（HEVC 母版须转 H.264；不进 Git） |
-| `what-is-zen-ancient-wisdom` | long | 1303 | 现有 22 分母版 |
+| id | 课型 | durationSec | 播放 URL（r2.dev · 换域前） | delivery SHA-256 | bytes |
+|---|---|---:|---|---:|---:|
+| `concepts-habits-intro` | short | 281 | `…/v1/concepts-habits-intro.mp4` | `b49bcf602716c10248d9cb3055b6574175a60d9835f51504befaded2a6533c5d` | 28523034 |
+| `what-is-zen-ancient-wisdom` | long | 1303 | `…/v1/what-is-zen-ancient-wisdom.mp4` | `67898a1efc878ab82f991fe777394b8effff5f73ce9a331431af3c281383459b` | 136179423 |
 
-短课**不**从长片再剪。占位播放域 `guided-meditation.invalid`；R2 公开桶上传为下一刀。
+公开根：`https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev`（应用常量 `GUIDED_MEDITATION_MEDIA_HOST`）。
+
+P1 播放：整片 `fetch` + **SHA-256 校验**通过后 `blob:` 播放（校验值上表）；桶须 **CORS**（线上策略见 `cloud/r2/focus-tiger-guided-media.cors.json`，当前 `allowed.origins: ["*"]` 以便 Web + Electron fetch）且对象支持 **Accept-Ranges**（对象直链已测 `206 Partial Content`；P1 校验路径整片 fetch 后本地 blob 拖动不依赖 Range）。
+
+短课**不**从长片再剪。

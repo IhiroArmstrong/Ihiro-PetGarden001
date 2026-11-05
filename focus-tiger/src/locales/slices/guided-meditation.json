@@ -15,6 +15,8 @@
     "GUIDED_MEDITATION_STATUS_PLAYING": "Playing",
     "GUIDED_MEDITATION_STATUS_PAUSED": "Paused",
     "GUIDED_MEDITATION_STATUS_NEED_NETWORK": "Needs a network connection. You can close and try again.",
+    "GUIDED_MEDITATION_STATUS_ERROR_RETRYABLE": "Could not load this lesson. You can retry or go back.",
+    "GUIDED_MEDITATION_RETRY": "Retry",
     "GUIDED_MEDITATION_STATUS_INCOMPLETE": "Stopped early — this sit was not counted.",
     "GUIDED_MEDITATION_STATUS_CREDITED": "This sit was counted.",
     "GUIDED_MEDITATION_BUSY_HINT": "Finish this sit, Honesty, or Breath first, then open Guided meditation."
@@ -35,6 +37,8 @@
     "GUIDED_MEDITATION_STATUS_PLAYING": "播放中",
     "GUIDED_MEDITATION_STATUS_PAUSED": "已暂停",
     "GUIDED_MEDITATION_STATUS_NEED_NETWORK": "需要网络。可以关闭后再试。",
+    "GUIDED_MEDITATION_STATUS_ERROR_RETRYABLE": "无法加载这节课。可以重试或返回列表。",
+    "GUIDED_MEDITATION_RETRY": "重试",
     "GUIDED_MEDITATION_STATUS_INCOMPLETE": "提前结束，这次不计入练习。",
     "GUIDED_MEDITATION_STATUS_CREDITED": "这次已计入练习。",
     "GUIDED_MEDITATION_BUSY_HINT": "请先结束这次静坐、补登或呼吸，再打开引导冥想。"
@@ -55,6 +59,8 @@
     "GUIDED_MEDITATION_STATUS_PLAYING": "再生中",
     "GUIDED_MEDITATION_STATUS_PAUSED": "一時停止",
     "GUIDED_MEDITATION_STATUS_NEED_NETWORK": "通信が必要です。閉じてから再試行できます。",
+    "GUIDED_MEDITATION_STATUS_ERROR_RETRYABLE": "読み込めませんでした。再試行するか一覧に戻れます。",
+    "GUIDED_MEDITATION_RETRY": "再試行",
     "GUIDED_MEDITATION_STATUS_INCOMPLETE": "途中で終えたため、今回は数えません。",
     "GUIDED_MEDITATION_STATUS_CREDITED": "今回の坐を数えました。",
     "GUIDED_MEDITATION_BUSY_HINT": "まず今の坐、Honesty、または呼吸を終えてから、ガイド瞑想を開いてください。"

@@ -9,13 +9,17 @@ import assert from 'node:assert/strict';
 import {
   GUIDED_MEDITATION_LESSONS,
   GUIDED_MEDITATION_SOURCE_ID,
+  GUIDED_MEDITATION_MEDIA_HOST,
   findGuidedMeditationLesson,
+  isGuidedMeditationMediaConfigured,
   resolveGuidedMeditationCredit
 } from './guidedMeditationLessons.js';
 
 describe('guidedMeditationLessons', () => {
   it('lists the English short intro and long sit, not a clip of the long film', () => {
     assert.equal(GUIDED_MEDITATION_SOURCE_ID, 'guided-meditation');
+    assert.match(GUIDED_MEDITATION_MEDIA_HOST, /^https:\/\//);
+    assert.equal(isGuidedMeditationMediaConfigured(), true);
     assert.deepEqual(
       GUIDED_MEDITATION_LESSONS.map((row) => row.id),
       ['concepts-habits-intro', 'what-is-zen-ancient-wisdom']
@@ -23,6 +27,8 @@ describe('guidedMeditationLessons', () => {
     const short = findGuidedMeditationLesson('concepts-habits-intro');
     assert.equal(short?.kind, 'short');
     assert.equal(short?.durationSec, 281);
+    assert.equal(short?.deliveryBytes, 28523034);
+    assert.match(short?.deliverySha256 || '', /^[a-f0-9]{64}$/);
     assert.equal(short?.locales[0], 'en');
     const long = findGuidedMeditationLesson('what-is-zen-ancient-wisdom');
     assert.equal(long?.kind, 'long');
