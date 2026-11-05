@@ -161,6 +161,10 @@ test('EN wide: option 1 one-click Focusing; overlay gone; Rise then Sit arrives'
   await page.setViewportSize({ width: 1280, height: 800 });
   await openFirstRunGoalCard(page);
 
+  const lede = page.getByTestId('cold-start-goal-mindfulness-lede');
+  await expect(lede).toBeVisible();
+  await expect(lede).toContainText(/training the mind/i);
+
   await expect(page.locator('[data-testid="cold-start-goal-mindfulness"]')).toContainText(
     /Mindfulness & meditation/i
   );
@@ -215,6 +219,10 @@ test('JA wide: option 1 copy + one-click Focusing; overlay gone', async ({
   await page.setViewportSize({ width: 1280, height: 800 });
   await openFirstRunGoalCard(page, { locale: 'ja' });
 
+  const lede = page.getByTestId('cold-start-goal-mindfulness-lede');
+  await expect(lede).toBeVisible();
+  await expect(lede).toContainText('心を整える');
+
   await expect(page.locator('[data-testid="cold-start-goal-mindfulness"]')).toContainText(
     'マインドフルネス・瞑想'
   );
@@ -232,6 +240,8 @@ test('EN 375: four options tappable; option 3 one-click Focusing; Rise clear', a
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 375, height: 667 });
   await openFirstRunGoalCard(page);
+
+  await expect(page.getByTestId('cold-start-goal-mindfulness-lede')).toBeVisible();
 
   for (const id of OPTION_IDS) {
     const opt = page.locator(`[data-testid="cold-start-goal-${id}"]`);

@@ -1,0 +1,1 @@
+| 冷启动四选卡正念引导语 | UI/文案 | 待人工测试 | **首跑自动卡**：清库 `?product=1&flowerWelcome=0`，四选卡标题下见 en/ja 引导语，第一项副标仍在。**手动重开**：⋯ Preferences「重新选择今日方向」→ 无引导语。**375 ja**：引导语可读、四项可点（e2e 1280 ja + 375 四选项）。`COLD_START_GOAL_OPTIONS_VERSION` 仍为 2。本地 `:5173/?product=1` | — | — | — | `ColdStartGoalCardUI.js` · `cold-start-quiet-sit.json` | 2026-11-05 |
