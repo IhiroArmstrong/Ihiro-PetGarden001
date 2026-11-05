@@ -121,6 +121,14 @@ h1 {
   font-size: 1.05rem;
 }
 
+.mind-training-hook {
+  margin: 1.1rem 0 0;
+  max-width: 32rem;
+  line-height: 1.6;
+  font-size: 1.02rem;
+  color: var(--color-ink);
+}
+
 .quiet {
   margin: 1rem 0 0;
   max-width: 28rem;

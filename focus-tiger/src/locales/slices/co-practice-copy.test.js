@@ -37,6 +37,10 @@ describe('co-practice-copy slice (T64)', () => {
 
   it('en purpose adds practice together without hype', () => {
     const en = loadMerged('en');
+    assert.match(
+      en.HINT_APP_PURPOSE_BODY,
+      /Wellness isn't only about the gym\. Many people overlook a more foundational practice: training the mind\./
+    );
     assert.match(en.HINT_APP_PURPOSE_BODY, /We can practice together\. No rush, no judgment\./);
     assert.match(en.HINT_APP_PURPOSE_BODY, /no ads, no data mining/i);
   });
@@ -52,6 +56,7 @@ describe('co-practice-copy slice (T64)', () => {
   it('zh wellness adds 不是禅师', () => {
     const zh = loadMerged('zh');
     assert.match(zh.HINT_APP_PURPOSE_WELLNESS_BODY, /不是禅师/);
+    assert.match(zh.HINT_APP_PURPOSE_BODY, /正念冥想，是一扇入口/);
     assert.match(zh.HINT_APP_PURPOSE_BODY, /一起练习。不催，不评判/);
   });
 
@@ -59,6 +64,7 @@ describe('co-practice-copy slice (T64)', () => {
     const ja = loadMerged('ja');
     assert.match(ja.HINT_APP_PURPOSE_WELLNESS_BODY, /禅師ではありません/);
     assert.doesNotMatch(ja.HINT_APP_PURPOSE_WELLNESS_BODY, /悟りを保証/);
+    assert.match(ja.HINT_APP_PURPOSE_BODY, /マインドフルネス瞑想は、その入り口です/);
     assert.match(ja.HINT_APP_PURPOSE_BODY, /一緒に練習できます/);
   });
 });
