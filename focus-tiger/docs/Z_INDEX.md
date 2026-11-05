@@ -73,6 +73,8 @@
 | **18** | `src/ui/LanguagePreferenceUI.js` | `#language-preference` 语言面板（FAB / ⋯ / 抽屉打开） |
 | **18** | `src/ui/ZenCinemaCardUI.js` | `#zen-cinema-card` Zen Cinema 确认卡（⋯ / 抽屉；将打开 YouTube） |
 | **18** | `src/ui/GroundExerciseChoiceUI.js` | `#ground-exercise-choice` Idle「更多」→ 接地练习两按钮选择卡 |
+| **17** | `src/ui/GuidedMeditationUI.js` | `#guided-meditation-backdrop` 引导冥想遮罩（`overlayBackdrop` · `BLANK_CLOSES`；复用 `Z.OVERLAY_DIM`） |
+| **18** | `src/ui/GuidedMeditationUI.js` | `#guided-meditation` 引导冥想列表与播放卡（复用 `Z.GLASS_CARD`；不进 Support 付款路径） |
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
 | **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
 | **18** | `src/ui/GrowthJourneyDetailUI.js` | `#growth-journey-detail` 成长旅程详情（点首页短轨迹；下半屏只读纸；Esc / 点外关掉） |

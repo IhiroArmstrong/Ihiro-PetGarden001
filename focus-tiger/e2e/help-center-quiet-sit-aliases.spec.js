@@ -33,6 +33,7 @@ test.describe('Help Center quiet-sit aliases (T76 B2)', () => {
     await expect(article).toBeVisible({ timeout: 8_000 });
     await expect(article).toContainText(/quiet sit/i);
     await expect(article).toContainText(/no voice guidance/i);
+    await expect(article).toContainText(/Guided meditation/i);
     await expect(article).not.toContainText(/generic meditation class/i);
   });
 });

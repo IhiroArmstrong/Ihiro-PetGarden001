@@ -119,6 +119,19 @@ const PRACTICE_EXPERIENCE_ROWS = Object.freeze([
     ceremonySaveArtifactId: null
   }),
   Object.freeze({
+    practiceKindId: 'guided-meditation',
+    baselineWriteSourceId: 'guided-meditation',
+    endVoiceMode: 'practice-announcement',
+    endVoiceLocaleKey: 'GUIDED_MEDITATION_STATUS_CREDITED',
+    endVoiceLocaleSource: 'fixed',
+    endVoiceWiringRelativePath: 'ui/GuidedMeditationUI.js',
+    endVoiceWiringMarkers: Object.freeze([
+      'onPracticeDay',
+      "sourceId: 'guided-meditation'"
+    ]),
+    ceremonySaveArtifactId: null
+  }),
+  Object.freeze({
     practiceKindId: 'recover-reset',
     baselineWriteSourceId: null,
     endVoiceMode: 'multi-step-ui',

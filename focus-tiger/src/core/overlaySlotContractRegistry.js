@@ -26,6 +26,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   COMPANION_PICKER: 'companion-picker',
   GROWTH_COMPASS: 'growth-compass',
   GROUND_EXERCISE_CHOICE: 'ground-exercise-choice',
+  GUIDED_MEDITATION: 'guided-meditation',
   GROWTH_MUSTARD_SEED: 'growth-mustard-seed',
   GROWTH_PRACTICE_IMPRINT: 'growth-practice-imprint',
   GROWTH_CO_PRACTICE_GIFT_ART: 'growth-co-practice-gift-art',
@@ -244,6 +245,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
     dismissRoot: '#ground-exercise-choice',
     snapshotField: 'groundExerciseChoiceOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.GUIDED_MEDITATION,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 10,
+    readers: 'GuidedMeditationUI.open (Idle menu → Guided meditation)',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#guided-meditation',
+    snapshotField: 'guidedMeditationOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.GROWTH_MUSTARD_SEED,
@@ -678,6 +690,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'ColdStartGoalCardUI.js': [OVERLAY_SOURCES.COLD_START_GOAL],
   'FiveMomentsCompassUI.js': [OVERLAY_SOURCES.GROWTH_COMPASS],
   'GroundExerciseChoiceUI.js': [OVERLAY_SOURCES.GROUND_EXERCISE_CHOICE],
+  'GuidedMeditationUI.js': [OVERLAY_SOURCES.GUIDED_MEDITATION],
   'MustardSeedSealCardUI.js': [OVERLAY_SOURCES.GROWTH_MUSTARD_SEED],
   'PracticeImprintCardUI.js': [OVERLAY_SOURCES.GROWTH_PRACTICE_IMPRINT],
   'CoPracticeGiftArtCardUI.js': [OVERLAY_SOURCES.GROWTH_CO_PRACTICE_GIFT_ART],

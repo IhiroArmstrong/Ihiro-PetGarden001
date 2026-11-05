@@ -37,7 +37,8 @@ describe('practiceAggregate', () => {
     assert.deepEqual([...PRACTICE_BASELINE_SOURCE_IDS], [
       'sit-timed',
       'honesty-checkin',
-      'breath-micro-ritual'
+      'breath-micro-ritual',
+      'guided-meditation'
     ]);
   });
 

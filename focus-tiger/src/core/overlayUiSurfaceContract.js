@@ -136,6 +136,41 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
   glassCard('ColdStartGoalCardUI.js'),
   glassCard('FiveMomentsCompassUI.js'),
   glassCard('GroundExerciseChoiceUI.js'),
+  surface({
+    file: 'GuidedMeditationUI.js',
+    slotRequest: deriveSlot(),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({
+        mode: 'token',
+        files: Object.freeze(['src/ui/GuidedMeditationUI.js']),
+        tokens: Object.freeze(['GUIDED_MEDITATION_STATUS_LOADING'])
+      }),
+      success: Object.freeze({
+        mode: 'token',
+        files: Object.freeze(['src/ui/GuidedMeditationUI.js']),
+        tokens: Object.freeze(['GUIDED_MEDITATION_STATUS_CREDITED'])
+      }),
+      fail: Object.freeze({
+        mode: 'token',
+        files: Object.freeze(['src/ui/GuidedMeditationUI.js']),
+        tokens: Object.freeze(['GUIDED_MEDITATION_STATUS_NEED_NETWORK'])
+      })
+    }),
+    e2eOverlap: Object.freeze({
+      mode: 'token',
+      files: Object.freeze(['e2e/guided-meditation-mvp.spec.js']),
+      tokens: Object.freeze(['guided-meditation', 'ft-wide-more-btn'])
+    }),
+    trackerCoverage: Object.freeze({
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-guided-meditation-mvp.md'
+      ]),
+      tokens: Object.freeze(['待人工测试'])
+    })
+  }),
   glassCard('MustardSeedSealCardUI.js'),
   glassCard('PracticeImprintCardUI.js'),
   surface({

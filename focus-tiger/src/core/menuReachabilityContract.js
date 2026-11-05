@@ -39,6 +39,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#ground-exercise-choice'
   }),
+  'guided-meditation': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#guided-meditation'
+  }),
   'five-moments': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#five-moments-compass'

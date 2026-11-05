@@ -29,6 +29,7 @@ export const GLASS_CARD_ELEMENT_IDS = Object.freeze({
   confide: 'confide-to-yin-card',
   cinema: 'zen-cinema-card',
   'ground-exercise': 'ground-exercise-choice',
+  'guided-meditation': 'guided-meditation',
   moments: 'five-moments-compass',
   'cold-start-goal': 'cold-start-goal-card',
   journey: 'journey-log',

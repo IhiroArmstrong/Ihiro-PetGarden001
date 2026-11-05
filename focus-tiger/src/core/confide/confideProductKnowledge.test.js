@@ -473,6 +473,7 @@ describe('confide product knowledge retrieval', () => {
     assert.match(focusVsMeditation.text || '', /does not coach breathing/i);
     assert.match(focusVsMeditation.text || '', /quiet sit/i);
     assert.match(focusVsMeditation.text || '', /no voice guidance/i);
+    assert.match(focusVsMeditation.text || '', /Guided meditation/i);
     assert.doesNotMatch(focusVsMeditation.text || '', /generic meditation class/i);
 
     const zazen = retrieveProductKnowledge('zazen');

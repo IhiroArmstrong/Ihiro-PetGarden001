@@ -135,3 +135,12 @@ Focusing / Arrival / Honesty 进行中：不自动开始下载；不弹窗。已
 - 弱网流畅度 vs Idle 呼吸（若下载与 Idle 同屏）  
 - 与 DMG 更新同时下载是否抢带宽  
 - Cloudflare 套餐与自定义域
+
+## 10. 首批两课（PO 2026-11-05）
+
+| id | 课型 | durationSec | 源 |
+|---|---|---|---|
+| `concepts-habits-intro` | short | 281 | 独立 4:41 概念与习惯小课（HEVC 母版须转 H.264；不进 Git） |
+| `what-is-zen-ancient-wisdom` | long | 1303 | 现有 22 分母版 |
+
+短课**不**从长片再剪。占位播放域 `guided-meditation.invalid`；R2 公开桶上传为下一刀。
