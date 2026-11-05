@@ -68,7 +68,7 @@ export function restoreOtpEmailCopy(opts: {
 		return {
 			subject: "Practice memory backup code",
 			text: [
-				`Your Focus Tiger practice-memory backup code is: ${opts.code}`,
+				`Your Samatia practice-memory backup code is: ${opts.code}`,
 				``,
 				`It expires in about ${opts.ttlMinutes} minutes.`,
 				`If you did not request this, you can ignore this email.`,

@@ -45,8 +45,8 @@
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "appId": "com.twinsology.focus-tiger",
-    "productName": "Focus Tiger",
+    "appId": "com.twinsology.samatia",
+    "productName": "Samatia",
     "asar": true,
     "asarUnpack": [
       "**/*.node",
@@ -101,8 +101,8 @@
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Focus Tiger uses the microphone only when you tap Speak to type in Confide, Arrival, or Reflection.",
-        "NSSpeechRecognitionUsageDescription": "Focus Tiger transcribes your speech on device when you tap Speak to type."
+        "NSMicrophoneUsageDescription": "Samatia uses the microphone only when you tap Speak to type in Confide, Arrival, or Reflection.",
+        "NSSpeechRecognitionUsageDescription": "Samatia transcribes your speech on device when you tap Speak to type."
       },
       "target": [
         {

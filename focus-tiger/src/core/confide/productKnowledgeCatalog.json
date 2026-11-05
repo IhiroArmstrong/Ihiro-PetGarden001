@@ -236,7 +236,7 @@
     },
     {
       "id": "KB-FUNC-0017",
-      "shortAnswerEn": "On-device Local AI runs in the Focus Tiger desktop app on Mac or Windows — not in this browser. You can still practice and open Confide where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.",
+      "shortAnswerEn": "On-device Local AI runs in the Samatia desktop app on Mac or Windows — not in this browser. You can still practice and open Confide where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.",
       "keywords": [
         "网页不能聊",
         "浏览器没有本地 AI",
@@ -390,7 +390,7 @@
         "what-is",
         "why-compare"
       ],
-      "shortAnswerEn": "In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Focus Tiger, Sit with Yin is this product's quiet sit with Yin — no voice guidance. A separate Guided meditation lesson in More → Practice has voice and picture when you want to follow along. Sit with Yin stays a quiet sit. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.",
+      "shortAnswerEn": "In everyday language, meditation is a broad umbrella for many quiet practices. Focus practice usually means keeping attention on one chosen object for a while. Mindfulness often names open, non-judging awareness of the present moment. The words overlap, but they are not identical. In Samatia, Sit with Yin is this product's quiet sit with Yin — no voice guidance. A separate Guided meditation lesson in More → Practice has voice and picture when you want to follow along. Sit with Yin stays a quiet sit. Shorter pauses use Breath practice on the left orb; see KB-FUNC-0011 for how that differs from Sit. Yin explains the words only; Yin does not coach breathing or guide steps here. Reading this is enough; nothing here to follow along with.",
       "keywords": [
         "专注和冥想有什么区别",
         "focus vs meditation",
@@ -649,8 +649,8 @@
         "whether",
         "how"
       ],
-      "capabilityStatementEn": "That Focus Tiger is built so people who cannot tap comfortably can often speak instead; on the Mac desktop app Yin can listen for short English operating requests that run the same local actions as taps, with confirmation before writing files; words stay on this device.",
-      "shortAnswerEn": "When tapping is hard, Focus Tiger is built so you can often speak instead. On the Mac desktop app, Yin can listen for short English requests that run the same local actions you would tap — for example starting a focus sit, ending with Rise, or backing up your practice data after Yin repeats what will happen and you say yes. Open More (⋯) or the drawer → Practice → Confide to Yin, or use Yin's listen entry when it is on screen. Example: Hi Yin, please backup all the app data for me. Your words stay on this device. More menu actions join over time. Yin only points here and does not read long scripts aloud.",
+      "capabilityStatementEn": "That Samatia is built so people who cannot tap comfortably can often speak instead; on the Mac desktop app Yin can listen for short English operating requests that run the same local actions as taps, with confirmation before writing files; words stay on this device.",
+      "shortAnswerEn": "When tapping is hard, Samatia is built so you can often speak instead. On the Mac desktop app, Yin can listen for short English requests that run the same local actions you would tap — for example starting a focus sit, ending with Rise, or backing up your practice data after Yin repeats what will happen and you say yes. Open More (⋯) or the drawer → Practice → Confide to Yin, or use Yin's listen entry when it is on screen. Example: Hi Yin, please backup all the app data for me. Your words stay on this device. More menu actions join over time. Yin only points here and does not read long scripts aloud.",
       "keywords": [
         "voice command",
         "speak instead of tap",

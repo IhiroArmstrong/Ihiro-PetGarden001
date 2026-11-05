@@ -7,6 +7,9 @@
  * Step B tray policy (no Electron import — unit-testable).
  */
 
+/** Dock / menu bar / tray tooltip / About panel. Packaged `productName` must match. */
+export const DESKTOP_DISPLAY_NAME = 'Samatia';
+
 export const HIDE_REASON_TRAY = 'tray';
 export const HIDE_REASON_NONE = 'none';
 

@@ -37,6 +37,7 @@ import {
   HIDE_REASON_NONE,
   HIDE_REASON_TRAY,
   shouldQuitOnWindowClose,
+  DESKTOP_DISPLAY_NAME,
   trayMenuLabels
 } from './trayPolicy.js';
 import { attachCompanionL1Ipc } from './companion/l1Ipc.js';
@@ -73,6 +74,11 @@ protocol.registerSchemesAsPrivileged([
     }
   }
 ]);
+
+app.setName(DESKTOP_DISPLAY_NAME);
+if (process.platform === 'darwin') {
+  app.setAboutPanelOptions({ applicationName: DESKTOP_DISPLAY_NAME });
+}
 
 /** Keep in sync with `src/core/cloudApiClient.js` `DEFAULT_CLOUD_API_BASE_URL`. */
 const DEFAULT_CLOUD_API_BASE = 'https://focus-tiger-cloud.ihiro.workers.dev';
@@ -541,7 +547,7 @@ function applyTrayMenu() {
 function createTray() {
   if (tray) return tray;
   tray = new Tray(trayIconImage());
-  tray.setToolTip('Focus Tiger');
+  tray.setToolTip(DESKTOP_DISPLAY_NAME);
   applyTrayMenu();
   tray.on('click', () => showMainWindow());
   return tray;

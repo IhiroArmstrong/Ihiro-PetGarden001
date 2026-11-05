@@ -5,8 +5,9 @@
 
 /**
  * Production GGUF cache dir shared by lab probes and Electron L1.
- * Darwin uses `Focus Tiger/companion-l0`, not Electron `userData`
- * (`focus-tiger-desktop`), which would re-download a model already on disk.
+ * Darwin uses `Focus Tiger/companion-l0` (internal cache folder, not Dock
+ * name), not Electron `userData` (`focus-tiger-desktop` in desktop:dev,
+ * `Samatia` when packaged), which would re-download a model already on disk.
  */
 
 import path from 'node:path';

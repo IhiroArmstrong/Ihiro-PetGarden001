@@ -492,7 +492,7 @@ export function renderDailyZenQuoteCanvas(opts) {
 
   ctx.fillStyle = QUIET_LINE_CARD.inkMuted;
   ctx.font = '400 28px system-ui, -apple-system, sans-serif';
-  ctx.fillText(opts.footer || 'Walking the Yin Way. · Focus Tiger', padX, footerY);
+  ctx.fillText(opts.footer || 'Walking the Yin Way. · Samatia', padX, footerY);
   if (opts.dateKey) {
     ctx.fillText(
       formatQuietLineFooterDate(opts.dateKey, opts.locale),

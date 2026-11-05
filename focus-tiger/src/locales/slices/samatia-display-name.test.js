@@ -41,3 +41,12 @@ test('T87-A1: merged locales expose Samatia as user-visible product name', () =>
   assert.match(slice.en.HINT_APP_PURPOSE_PRONUNCIATION, /sa-MAH-tee-ah/);
   assert.doesNotMatch(JSON.stringify(slice.zh), /三摩莎/);
 });
+
+test('T87-A2: merged voice-access and export paths say Samatia', () => {
+  for (const locale of ['en', 'zh', 'ja']) {
+    const m = loadMerged(locale);
+    assert.doesNotMatch(String(m.HINT_APP_PURPOSE_VOICE_ACCESS_BODY || ''), /Focus Tiger|フォーカス・タイガー/);
+    assert.match(String(m.BRAND_YIN_WAY_SEAL || ''), /Samatia/);
+  }
+});
+

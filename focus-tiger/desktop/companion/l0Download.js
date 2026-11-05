@@ -57,8 +57,10 @@ export function isGgufCachedAt(destPath, minBytes = L0_MODEL_MIN_BYTES) {
 
 /**
  * Electron `desktop:dev` uses package `name` userData (`focus-tiger-desktop`),
- * while the packaged app uses productName (`Focus Tiger`). A complete GGUF in
- * either folder must be reused — do not start a second multi-GB download.
+ * while the packaged Dock name is `Samatia`. Darwin GGUF cache stays
+ * `Application Support/Focus Tiger/companion-l0` (no user-data migration).
+ * A complete GGUF in either folder must be reused — do not start a second
+ * multi-GB download.
  *
  * @param {{
  *   userDataDir?: string,
