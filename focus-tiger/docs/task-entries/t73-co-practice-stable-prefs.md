@@ -1,8 +1,8 @@
 ---
 id: t73-co-practice-stable-prefs
-kind: feature
-status: Brief 已点头 · 排队实现
-updated: 2026-11-01
+kind: note
+status: 已改号 · 见 T87
+updated: 2026-11-04
 ---
 
-T76 稳定偏好层 PR-1：改选后开表才计票、滚动 3/5、`stable-prefs.v1`、Focus 分钟、L2 事实句、「不是这样」/ 忘掉扩展。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md) · 盘点 [`co-practice-stable-prefs-inventory.md`](../co-practice-stable-prefs-inventory.md)。T60 补强 [#1525](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1525) 已合。
+历史片：稳定偏好 PR-1 曾误挂 T73/T76。现行代号 **T87**。勿按本片开工。T73 现行 = 记住—响应读层。
