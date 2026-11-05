@@ -155,7 +155,16 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t73-co-practice-stable-prefs.md',
   'focus-tiger/docs/task-entries/t74-co-practice-continue-slot.md',
   'focus-tiger/docs/task-entries/t75-co-practice-stable-breath-companion.md',
-  '.github/PULL_REQUEST_TEMPLATE.md'
+  '.github/PULL_REQUEST_TEMPLATE.md',
+  'focus-tiger/docs/task-briefs/task-t88-guided-meditation-release-hardening.md',
+  'focus-tiger/docs/task-entries/t88-guided-meditation-release-hardening.md',
+  'focus-tiger/docs/tracker-entries/docs-t88-guided-meditation-release-hardening.md',
+  'focus-tiger/docs/guided-meditation-source-inventory.md',
+  'focus-tiger/docs/guided-meditation-media-delivery-spec.md',
+  'focus-tiger/scripts/check-guided-meditation-media-host.js',
+  'focus-tiger/scripts/check-guided-meditation-media-host.test.js',
+  'focus-tiger/scripts/check-open-blockers.js',
+  '.github/workflows/guided-media-host-release-gate.yml'
 ]);
 
 /**

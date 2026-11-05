@@ -1,0 +1,37 @@
+---
+description: 口令「开/继续/下一步」须先查有没有 PR（不论是否已合）——禁止凭 Brief 重开工
+alwaysApply: true
+---
+
+# Focus Tiger · 下一步须先查有没有 PR（pr-next-step-gate · 常驻）
+
+> **条文 SSOT**：[`WORKFLOW.md`](../WORKFLOW.md)「任务切片：开工 / 继续 / 下一步须先查 PR」。  
+> 索引：`RULES_INDEX.md` → `git-pr-next-step-gate`。与 `git-cross-session`、`branch-freshness` /「地面真相优先级」配套，**不**互相替代。
+
+## 第一问（硬闸）：有没有 PR？
+
+用户或交接出现 **开 T* / 继续 T* / 下一刀 / 立刻开工（具名切片）** 时，**在第一次**写产品代码、或回复「从零开工」**之前**：
+
+用 `gh pr list --state all`（OPEN **和** MERGED 都查）。**不论是否已合进 develop**：只要同切片 **已有 PR 且带实质实现 commit**，即视为 **开发可能已完成**，**禁止**当未开工重实现。
+
+合没合 **不是**「这刀做没做完」的门槛，只回答第二问。
+
+## 第二问（合没合）：用户下一步做什么？
+
+| PR 事实 | 开发是否可能已完成 | 对用户该说什么 |
+|---|---|---|
+| **OPEN** + 实质 commit | **是**（代码已在 PR 上） | 待合 / 看 CI / 按评论改；**禁止**再开旁支 |
+| **MERGED** + develop 上有 merge | **是**（已在主干） | 这刀已在 develop；真实下一步 = **下一刀** |
+| **无 PR**（且 develop 无相关 merge） | 否 | 才可按 Brief 新开旁支 |
+
+`git fetch origin develop` + `git log` 只服务第二问，**不得**因「还没合」就当成「还没做」。
+
+## 禁止（屡犯即浪费 token）
+
+- 只读 Brief / PROCESS「下一步」就执行「开 T87-A2」。  
+- 发现 **OPEN** PR（例 #1565 全绿）仍当从零开工。  
+- 把「须先查 PR + 是否已合」理解成 **只有 MERGED 才算完成**。
+
+## 汇报
+
+须含：**有没有 PR**、**号**、**OPEN/MERGED/CLOSED**、**head 分支**；合入只写「待合」或「已合」——再写请用户做什么。

@@ -15,7 +15,7 @@
  * --release-gate: exit 1 if any overdue OR malformed open release-blocker;
  *   legacy-unclassified alone still exit 0 (reminder only). Unparseable table
  *   rows warn in inventory but do not exit 1. Also fails if guided-meditation
- *   media host still contains r2.dev.
+ *   media host still contains r2.dev (T88).
  *
  * Usage: cd focus-tiger && npm run check:open-blockers
  *        cd focus-tiger && npm run check:open-blockers -- --release-gate

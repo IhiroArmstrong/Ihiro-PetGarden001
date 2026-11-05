@@ -25,6 +25,7 @@ alwaysApply: true
 - 接**实现类**任务前 → 先 `Read` **`focus-tiger-docs.mdc`**。
 - 声称修好 / 交互修复收尾 / commit·push 前 → 先 `Read` **`focus-tiger-regression-lock.mdc`**。
 - 回答某功能是否已实现 / 已开工 / 已合入（**含随口提问**）→ 先 `Read` **`focus-tiger-regression-lock.mdc`**（「分支新鲜度」+「地面真相优先级」）；**禁止**只凭 Brief/计划文档措辞下结论。细则勿在本文件复述。
+- 口令 **开 / 继续 / 下一刀 / 交接里的「再开 T*」** → 须先 **`gh` 查有没有 PR（OPEN 也算开发可能已完成）**（`WORKFLOW.md` → `git-pr-next-step-gate`；常驻 `focus-tiger-pr-next-step-gate.mdc`）；**禁止**只读 Brief / PROCESS「下一步」就重开同一刀；**禁止**因「还没合 develop」就当未开工。
 
 ## 汇报格式（开头 + 末尾）
 

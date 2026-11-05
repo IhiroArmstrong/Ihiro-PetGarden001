@@ -169,6 +169,8 @@ streaming --(失败/无网)--> need_network
 playing --(够缓存)--> cached_session（本会话/Cache API，不承诺永久离线）
 ```
 
+**#1567 债（T88）**：现网 Web 与 Electron **都**整片 `fetch` + SHA-256 再 `blob:`，与上表不一致。对外前须按 T88 Brief 把 Web 改回直链 Range；Electron 保留整片校验并落盘。r2.dev 不得进 main。
+
 ## 5. 课卡文案态（草案，键位留给 locale slice）
 
 | 态 | 用户看见 |
