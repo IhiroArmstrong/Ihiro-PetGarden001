@@ -1,0 +1,44 @@
+---
+description: 口令「开/继续/下一步」须先查 GitHub PR 与合入事实——禁止凭 Brief/PROCESS 下一步重开工
+alwaysApply: true
+---
+
+# Focus Tiger · 下一步须先查 PR（pr-next-step-gate · 常驻）
+
+> **条文 SSOT**：[`WORKFLOW.md`](../WORKFLOW.md)「任务切片：开工 / 继续 / 下一步须先查 PR」。  
+> 索引：`RULES_INDEX.md` → `git-pr-next-step-gate`。与 `git-cross-session`、`branch-freshness` /「地面真相优先级」配套，**不**互相替代。
+
+## 何时触发（硬闸）
+
+用户或交接摘要出现 **开 T* / 继续 T* / 下一刀 / 立刻开工（具名切片）/ 合 develop 后再开 …** 等「要动下一项功能」的指令时，**在第一次** `StrReplace` / `Write` 产品代码、或回复里写「开始实现 / 从零开工」**之前**须完成本节检查。
+
+## 必须先做（验证类 · 不受省 token 约束）
+
+1. `git fetch origin develop`（失败则停，不得假装已查）。  
+2. **`gh` 查 PR**（至少其一，常并行）：  
+   - `gh pr list --state all --search "<T 号或分支关键词>" --limit 10`  
+   - 已知 PR 号 → `gh pr view <n> --json state,mergedAt,headRefName,url,commits`  
+   - `gh pr checks <n>` 或 `checks_read`（若将汇报 CI / 合 develop）  
+3. `git log origin/develop --oneline -20`（或 `git branch --contains <merge-sha>`）核对 **是否已 MERGED**。
+
+## 如何下结论（禁止用 MD 当完成证据）
+
+| 证据 | 能否单独证明「这刀已完成 / 不必再开」 |
+|---|---|
+| Brief / `TASKS.md` / `PROCESS.md`「下一步」/ 会话交接 / `GLOSSARY` 排期 | **否** |
+| **MERGED** PR + `origin/develop` 上的 merge commit | **是（已合）** |
+| **OPEN** PR + 非空实现 commit +（若已跑）CI 摘要 | **是（已开工，勿重实现）** |
+
+- **已 MERGED** → 汇报「这刀已在 develop」+ PR 链接 + merge hash；**禁止**再「开同一刀」写代码；真实下一步 = **下一刀** 或 **请你合 OPEN 的后续 PR**。  
+- **OPEN 且已有实质 diff** → 汇报 PR 状态与 CI；**禁止**当未开工重走 Brief 实现；默认 = 等你合 / 补 CI / 按 PR 评论改，**不是**新开旁支 duplicate。  
+- **无 PR、develop 无相关 merge** → 才可按 Brief 新开旁支。
+
+## 禁止（屡犯即浪费 token）
+
+- 只读 Brief 切片表或 PROCESS「下一步」就执行「开 T87-A2」类指令。  
+- 用户消息里**复述了旧交接的「下一步」**但未核对 PR → **仍以 gh + develop 为准**。  
+- 发现 #1565 已 OPEN 全绿，仍长文「立刻开工」并重复跑已存在的测试矩阵。
+
+## 汇报要求
+
+结论须含：**PR 号或「无 PR」**、**state（OPEN/MERGED/CLOSED）**、**head 分支名**、**相对 develop 是「已合 / 待合 / 未开工」**——再写你要用户做什么。

@@ -281,6 +281,38 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-pr-next-step-gate',
+    title: '任务切片开工/继续/下一步须先查 GitHub PR 与 develop 合入',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '任务切片：开工 / 继续 / 下一步须先查 PR',
+    ssotMustContain: [
+      /git-pr-next-step-gate/,
+      /gh pr list/,
+      /MERGED.*develop/,
+      /OPEN.*实质 commit/,
+      /Brief.*不能.*单独/
+    ],
+    topicSignals: [
+      /git-pr-next-step-gate/,
+      /下一步须先查 PR/,
+      /pr-next-step-gate/
+    ],
+    mustCite: [/WORKFLOW\.md|focus-tiger-pr-next-step-gate\.mdc/],
+    restatementFingerprints: [
+      /gh pr list/,
+      /禁止.*当未开工重开/,
+      /PROCESS\.md.*下一步/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'brief-next-step-as-truth',
+        pattern: /(?:只|仅凭).*(?:Brief|PROCESS).*下一步.*(?:即可|就开|开工)/,
+        note: '下一步须先 gh PR + develop，不得只凭文档下一步'
+      }
+    ]
+  },
+  {
     id: 'git-parallel-worktree',
     title: '并行 Cursor 会话须用 git worktree 隔离写操作',
     ssotPath: 'WORKFLOW.md',

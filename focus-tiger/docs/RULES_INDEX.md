@@ -45,6 +45,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-semver-release` | 语义化版本与稳定发布点（tag，非 release 分支） | `WORKFLOW.md` | 语义化版本与稳定发布点 |
 | `git-agent-commit` | Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main | `.cursor/rules/focus-tiger-regression-lock.mdc` | Commit 汇报与分支门禁 |
 | `git-cross-session` | 跨会话指令冲突处理（开 PR / 合并 / push 前） | `WORKFLOW.md` | 跨会话指令冲突处理 |
+| `git-pr-next-step-gate` | 任务切片开工/继续/下一步须先查 GitHub PR 与 develop 合入 | `WORKFLOW.md` | 任务切片：开工 / 继续 / 下一步须先查 PR |
 | `git-parallel-worktree` | 并行 Cursor 会话须用 git worktree 隔离写操作 | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-hygiene` | 闲置 worktree 只读盘点 + 口令拆除（不可逆） | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-occupancy` | 工作树占用检测与 `.ft-session-lock`（一树一线） | `WORKFLOW.md` | 工作树占用检测与 `.ft-session-lock` |
