@@ -2,6 +2,7 @@
   "en": {
     "COLD_START_GOAL_MINDFULNESS": "Mindfulness & meditation",
     "COLD_START_GOAL_MINDFULNESS_HINT": "Sit quietly with Yin, no guidance",
+    "COLD_START_GOAL_MINDFULNESS_LEDE": "Wellness isn't only about the gym. Many people overlook a more foundational practice: training the mind.",
     "COLD_START_GOAL_BREATH": "Follow your breath",
     "COLD_START_GOAL_BROWSE": "Just looking",
     "COLD_START_DIRECT_SIT_HINT": "Next time, Sit with Yin can start with a short arrival. That can make settling easier."
@@ -9,6 +10,7 @@
   "zh": {
     "COLD_START_GOAL_MINDFULNESS": "Mindfulness & meditation",
     "COLD_START_GOAL_MINDFULNESS_HINT": "Sit quietly with Yin, no guidance",
+    "COLD_START_GOAL_MINDFULNESS_LEDE": "健康不只有健身房。很多人忽略了一种更基本的练习：训练内心。",
     "COLD_START_GOAL_BREATH": "Follow your breath",
     "COLD_START_GOAL_BROWSE": "Just looking",
     "COLD_START_DIRECT_SIT_HINT": "Next time, Sit with Yin can start with a short arrival. That can make settling easier."
@@ -16,6 +18,7 @@
   "ja": {
     "COLD_START_GOAL_MINDFULNESS": "マインドフルネス・瞑想",
     "COLD_START_GOAL_MINDFULNESS_HINT": "ガイドなしで、阿寅と静かに座る",
+    "COLD_START_GOAL_MINDFULNESS_LEDE": "運動は、からだを整えるすてきな習慣。心を整える練習にも、目を向けてみませんか。",
     "COLD_START_GOAL_BREATH": "呼吸に合わせる",
     "COLD_START_GOAL_BROWSE": "見てみるだけ",
     "COLD_START_DIRECT_SIT_HINT": "次に一緒に座るときは、短い到着から始められます。落ち着きやすくなります。"

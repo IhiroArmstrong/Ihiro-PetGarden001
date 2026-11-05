@@ -18,3 +18,14 @@ test('ColdStartGoalCardUI supports manual re-open without rewriting seen flag', 
   assert.match(src, /if \(manual && choice === 'browse'\)/);
   assert.match(src, /if \(!manual\) \{\s*markColdStartGoalSeen/);
 });
+
+test('ColdStartGoalCardUI shows mindfulness lede only on automatic first-run open', () => {
+  assert.match(src, /COLD_START_GOAL_MINDFULNESS_LEDE/);
+  assert.match(src, /cold-start-goal-mindfulness-lede/);
+  assert.match(src, /const show = this\._open && !this\._manual/);
+  assert.match(src, /removeAttribute\('aria-describedby'\)/);
+  assert.match(
+    src,
+    /setAttribute\(\s*[\r\n\s]*'aria-describedby',\s*[\r\n\s]*'cold-start-goal-mindfulness-lede'/
+  );
+});

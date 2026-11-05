@@ -29,6 +29,9 @@ test('375 drawer today-direction row opens goal card; Esc dismisses without navi
   await row.click();
 
   await expect(page.locator(GOAL_CARD)).toBeVisible({ timeout: 5_000 });
+  await expect(
+    page.getByTestId('cold-start-goal-mindfulness-lede')
+  ).toBeHidden();
   await page.keyboard.press('Escape');
   await expect(page.locator(GOAL_CARD)).toBeHidden({ timeout: 5_000 });
   await expect(page.locator('#micro-ritual')).toBeHidden();
@@ -58,6 +61,9 @@ test('wide Preferences today-direction row opens goal card manually', async ({
   await row.click();
 
   await expect(page.locator(GOAL_CARD)).toBeVisible({ timeout: 5_000 });
+  await expect(
+    page.getByTestId('cold-start-goal-mindfulness-lede')
+  ).toBeHidden();
   await page.locator('[data-testid="cold-start-goal-breath"]').click();
   const ritual = page.locator('#micro-ritual');
   await expect(ritual).toBeVisible({ timeout: 8_000 });

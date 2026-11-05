@@ -5,7 +5,7 @@
 
 /**
  * Cold-start goal card — 1 question, 4 options, first-run only.
- * Brief: docs/task-briefs/task-cold-start-goal-onboarding.md
+ * Brief: docs/task-briefs/task-cold-start-goal-mindfulness-lede.md
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -43,6 +43,8 @@ const CHOICE_LABEL_KEYS = Object.freeze({
 const CHOICE_HINT_KEYS = Object.freeze({
   mindfulness: 'COLD_START_GOAL_MINDFULNESS_HINT'
 });
+
+const MINDFULNESS_LEDE_KEY = 'COLD_START_GOAL_MINDFULNESS_LEDE';
 
 export class ColdStartGoalCardUI {
   /**
@@ -87,6 +89,12 @@ export class ColdStartGoalCardUI {
     this.titleEl.id = 'cold-start-goal-title';
     this.titleEl.className = 'cold-start-goal-card__title';
 
+    this.ledeEl = document.createElement('p');
+    this.ledeEl.id = 'cold-start-goal-mindfulness-lede';
+    this.ledeEl.className = 'cold-start-goal-card__lede';
+    this.ledeEl.dataset.testid = 'cold-start-goal-mindfulness-lede';
+    this.ledeEl.hidden = true;
+
     this.optionsEl = document.createElement('div');
     this.optionsEl.className = 'cold-start-goal-card__options';
     this.optionsEl.setAttribute('role', 'listbox');
@@ -95,7 +103,7 @@ export class ColdStartGoalCardUI {
       t('COLD_START_GOAL_OPTIONS_ARIA')
     );
 
-    this.root.append(this.titleEl, this.optionsEl);
+    this.root.append(this.titleEl, this.ledeEl, this.optionsEl);
     mountRoot.appendChild(this.root);
 
     this._onKeyDown = (event) => {
@@ -149,6 +157,7 @@ export class ColdStartGoalCardUI {
     if (!this._open) return;
     this._open = false;
     this._manual = false;
+    this._syncMindfulnessLede();
     hideOverlayBackdrop(this.backdrop);
     this.root.classList.remove('is-visible');
     window.setTimeout(() => {
@@ -183,8 +192,25 @@ export class ColdStartGoalCardUI {
     this.root.remove();
   }
 
+  _syncMindfulnessLede() {
+    const show = this._open && !this._manual;
+    if (show) {
+      this.ledeEl.textContent = t(MINDFULNESS_LEDE_KEY);
+      this.ledeEl.hidden = false;
+      this.root.setAttribute(
+        'aria-describedby',
+        'cold-start-goal-mindfulness-lede'
+      );
+      return;
+    }
+    this.ledeEl.hidden = true;
+    this.ledeEl.textContent = '';
+    this.root.removeAttribute('aria-describedby');
+  }
+
   _refreshTexts() {
     this.titleEl.textContent = t('COLD_START_GOAL_TITLE');
+    this._syncMindfulnessLede();
     this.optionsEl.setAttribute('aria-label', t('COLD_START_GOAL_OPTIONS_ARIA'));
     this.optionsEl.innerHTML = '';
     const canChoose = typeof this.handlers.onChoice === 'function';
@@ -247,11 +273,19 @@ export class ColdStartGoalCardUI {
         pointer-events: auto;
       }
       .cold-start-goal-card__title {
-        margin: 0 0 14px;
+        margin: 0 0 10px;
         font-size: 1.05rem;
         font-weight: 600;
         letter-spacing: 0.01em;
         line-height: 1.35;
+      }
+      .cold-start-goal-card__lede {
+        margin: 0 0 12px;
+        font-size: 0.88rem;
+        font-weight: 400;
+        line-height: 1.45;
+        letter-spacing: 0.01em;
+        opacity: 0.88;
       }
       .cold-start-goal-card__options {
         display: flex;
