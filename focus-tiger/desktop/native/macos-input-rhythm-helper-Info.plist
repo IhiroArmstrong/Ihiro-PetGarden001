@@ -11,7 +11,7 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Focus Tiger Rhythm</string>
+    <string>Samatia Rhythm</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -21,6 +21,6 @@
     <key>LSUIElement</key>
     <true/>
     <key>NSAppleEventsUsageDescription</key>
-    <string>Focus Tiger notices typing cadence only when you turn on Focus rhythm. It never stores what you type.</string>
+    <string>Samatia notices typing cadence only when you turn on Focus rhythm. It never stores what you type.</string>
   </dict>
 </plist>

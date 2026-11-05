@@ -10,8 +10,11 @@ import { fileURLToPath } from 'node:url';
 
 import {
   isSamatiaScanLineWhitelisted,
-  scanSamatiaA2UserFacingResiduals
+  scanSamatiaA2UserFacingResiduals,
+  scanSamatiaBUserFacingResiduals
 } from './samatiaUserFacingResidualScan.js';
+import { DESKTOP_DISPLAY_NAME } from '../../desktop/trayPolicy.js';
+import desktopPackage from '../../desktop/package.json' with { type: 'json' };
 import { retrieveProductKnowledge } from './confide/confideProductKnowledge.js';
 import productKnowledgeCatalog from './confide/productKnowledgeCatalog.json' with { type: 'json' };
 
@@ -63,4 +66,20 @@ test('T87-A2: Confide KB baseline — same ids, answers say Samatia not Focus Ti
   assert.ok(kb39);
   assert.match(String(kb39.shortAnswerEn || ''), /Samatia/);
   assert.doesNotMatch(String(kb39.shortAnswerEn || ''), /Focus Tiger/);
+});
+
+test('T87-B: Electron productName, appId, and tray display name are Samatia', () => {
+  assert.equal(desktopPackage.build.productName, 'Samatia');
+  assert.equal(desktopPackage.build.appId, 'com.twinsology.samatia');
+  assert.equal(DESKTOP_DISPLAY_NAME, 'Samatia');
+  assert.equal(DESKTOP_DISPLAY_NAME, desktopPackage.build.productName);
+});
+
+test('T87-B: A2 + Electron display scan has no legacy public product name', () => {
+  const hits = scanSamatiaBUserFacingResiduals(focusTigerRoot);
+  assert.deepEqual(
+    hits,
+    [],
+    hits.map((h) => `${h.file}:${h.line} ${h.snippet}`).join('\n')
+  );
 });
