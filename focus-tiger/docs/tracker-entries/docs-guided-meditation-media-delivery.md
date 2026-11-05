@@ -1,0 +1,1 @@
+| Guided Meditation P0（主+媒体合并） | 纯文档 | 待人工测试 | **只验说明书。** 打开 `guided-meditation-p0-audit.md` + `guided-meditation-media-delivery-audit.md`：PO 拍板已写入（原声、22 分+剪 3–5 分、长课计满 3 分起、短课九成、冷启动第五项不做、先英文、授权前不上传、Help §F2 上线门禁）。`task-guided-meditation-p0-audit.md` 仅一份且 B 项引用媒体篇。PR #1557 已并入 #1558。不测播放。 | — | — | — | `docs/guided-meditation-p0-audit.md` | 2026-11-04 |
