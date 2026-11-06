@@ -221,12 +221,12 @@ Focusing / Arrival / Honesty 进行中：不自动开始下载；不弹窗。已
 
 ## 10. 首批两课（PO 2026-11-05 · 上云 2026-11-06）
 
-| id | 课型 | durationSec | 播放 URL（r2.dev · 换域前） | delivery SHA-256 | bytes |
+| id | 课型 | durationSec | 播放 URL（path under `GUIDED_MEDITATION_MEDIA_HOST`） | delivery SHA-256 | bytes |
 |---|---|---:|---|---:|---:|
 | `concepts-habits-intro` | short | 281 | `…/v1/concepts-habits-intro.mp4` | `b49bcf602716c10248d9cb3055b6574175a60d9835f51504befaded2a6533c5d` | 28523034 |
 | `what-is-zen-ancient-wisdom` | long | 1303 | `…/v1/what-is-zen-ancient-wisdom.mp4` | `67898a1efc878ab82f991fe777394b8effff5f73ce9a331431af3c281383459b` | 136179423 |
 
-公开根：`https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev`（应用常量 `GUIDED_MEDITATION_MEDIA_HOST`）。
+公开根（生产）：`https://media.twinsology.com`（应用常量 `GUIDED_MEDITATION_MEDIA_HOST`）。历史 dev/QA：`https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev`。
 
 P1 播放：整片 `fetch` + **SHA-256 校验**通过后 `blob:` 播放（校验值上表）；桶须 **CORS**（线上策略见 `cloud/r2/focus-tiger-guided-media.cors.json`，当前 `allowed.origins: ["*"]` 以便 Web + Electron fetch）且对象支持 **Accept-Ranges**（对象直链已测 `206 Partial Content`；P1 校验路径整片 fetch 后本地 blob 拖动不依赖 Range）。
 
