@@ -47,15 +47,16 @@
 
 不纳入评分：其它 git worktree、依赖安装目录、对话记录、历史审计草稿堆。主仓根上另有未入库的研究共修方案草稿和引导冥想任务稿，它们不是本目录的一部分。
 
-## 和六份任务的对应
+## 和 Task Brief 的对应（v1.1 · 七份）
 
 | 任务 | 优先对照的现成材料 |
 |---|---|
 | B1 架构与代码 | ARCHITECTURE、PRINCIPLES、叠层与付款契约 |
 | B2 测试与项目管理 | DEV_WORKFLOW_QUALITY、SCENARIO_TESTS、TASKS、TEST_TRACKER、WORKFLOW |
-| B3 功能与场景 | MVP 定义里的六类替代、SCENARIO_TESTS、功能冲突审查 |
-| B4 体验、无障碍、语言、性能 | 定位文档、三语文案、RESPONSIVE_LAYOUT；性能以实测数为准 |
-| B5 安全、隐私、合规 | 备份、研究数据同意、支付；结论写成「对照某要求有没有缺口」，不写成法律意见 |
-| B6 陪伴质量与安全 | 倾诉路由与评测分层文档；危机用例只写意图，不写方法 |
+| B3 功能与场景 | **MVP 定义「六类竞争替代」**、SCENARIO_TESTS、功能冲突审查 |
+| B4a 体验与欧美适配 | 定位文档、三语文案、RESPONSIVE_LAYOUT；**性能数字以第 0 轮 `facts/` 为准** |
+| B4b 无障碍与多语言 | 三语资源、axe / 读屏抽测；不与冷启动数值绑成同一份必交付 |
+| B5 安全、隐私、合规 | 备份、研究数据同意、支付；**同意文案↔实际网络请求**；密钥与依赖扫描；结论写成「对照某要求有没有缺口」，不写成法律意见 |
+| B6 陪伴质量与安全 | 倾诉路由与评测分层文档；危机用例只写意图，不写方法；**与 B5 先核对 wellness / 非儿童用户可见声明** |
 
-异议和暂不执行的部分见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。
+尺子与流程见 [AUDIT_BASELINE.md](AUDIT_BASELINE.md) v1.1。过程异议原文见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。

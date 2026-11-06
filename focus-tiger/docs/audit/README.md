@@ -2,30 +2,28 @@
 
 用户可见产品名是 **Samatia**。仓库和内部文档仍叫 Focus Tiger。本目录是这次「完整基线审计」的资料正本。
 
-状态：**资料已入库，审计还没开跑。** `AUDIT_BASELINE.md` 与六份 Brief 保持分析师原稿（只加了入库注记）。异议还没写进尺子，见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。在异议被采纳或明确搁置之前，不要用这份评分卡做「能不能发布」的裁决。
+状态：**基准 v1.1 已按 PO 书面采纳定稿；审计尚未执行。** 先读 [AUDIT_BASELINE.md](AUDIT_BASELINE.md)。历史讨论见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。背景索引见 [CONTEXT.md](CONTEXT.md)。
+
+**当前执行队列（v1.1）**：第 0 轮（否决导向取证）→ **B5**、**B6** → 独立会话复核两者 P0/P1 → 再开 B1–B3、B4a、B4b。
 
 ## 先读什么
 
 | 文件 | 作用 |
 |---|---|
-| [CONTEXT.md](CONTEXT.md) | 背景、已有计划、已有知识的索引。审计时先读这份，再按图去读仓库里的原文档 |
-| [REVIEW_NOTES.md](REVIEW_NOTES.md) | 入库时对分析师方案的异议。未采纳前，Brief 里的通过线不能直接当硬门槛 |
-| [AUDIT_BASELINE.md](AUDIT_BASELINE.md) | 分析师写的评分基准原稿 |
-| [briefs/](briefs/) | 六份任务说明原稿 |
+| [CONTEXT.md](CONTEXT.md) | 背景、已有计划、已有知识的索引 |
+| [AUDIT_BASELINE.md](AUDIT_BASELINE.md) | 评分基准 v1.1（未检、归一化分、否决收窄、无发布裁决） |
+| [REVIEW_NOTES.md](REVIEW_NOTES.md) | 入库异议原文（已采纳；基准以 AUDIT_BASELINE 为准） |
+| [briefs/](briefs/) | Task Brief：B1–B3、**B4a**、**B4b**、B5、B6 |
 
-## 目录（分析师原建议）
+## 目录
 
 | 路径 | 说明 |
 |---|---|
-| `AUDIT_BASELINE.md` | 评分标准、否决项、分级、证据要求、流程 |
-| `briefs/B1` … `B6` | 六个独立审计任务 |
-| `facts/<日期>/` | 第 0 轮工具取证。现在还没有 |
-| `findings/<日期>/` | 各任务报告、评分卡、风险登记、90 天计划。现在还没有 |
-
-原稿建议的顺序：第 0 轮取证 → B1–B6 各开独立会话 → 另一轮复核高风险结论 → 汇总 → 整改 → 真人试用 → 发布前只查否决项。
-
-入库时的执行建议（理由见 REVIEW_NOTES）：先做一小轮和否决项有关的取证，再跑 B5、B6。其余维度等尺子修订后再开。
+| `AUDIT_BASELINE.md` | 基准 |
+| `briefs/B1` … `B3`、`B4a`、`B4b`、`B5`、`B6` | 七份任务说明 |
+| `facts/<日期>/` | 第 0 轮事实底稿 |
+| `findings/<日期>/` | 各任务报告、评分卡、风险登记、90 天计划 |
 
 ## 原稿来源
 
-分析师文件原先放在主仓根目录的 `项目审计1106/`（未纳入 git）。正本以本目录为准。
+分析师初稿曾放在主仓根目录的 `项目审计1106/`（未纳入 git）。**以本目录为 SSOT**。
