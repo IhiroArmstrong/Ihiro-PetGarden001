@@ -11,12 +11,10 @@
 export const GUIDED_MEDITATION_SOURCE_ID = 'guided-meditation';
 
 /**
- * Public read root for delivery files. **r2.dev is dev/QA only** (rate limits, no cache/WAF).
- * Replace this single constant with a custom media subdomain before external release
- * (recommended: `https://media.twinsology.com`).
+ * Public read root for delivery MP4/M4A on R2 (same object paths as dev).
+ * Historical dev-only host was `*.r2.dev` (rate limits, no cache/WAF).
  */
-export const GUIDED_MEDITATION_MEDIA_HOST =
-  'https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev';
+export const GUIDED_MEDITATION_MEDIA_HOST = 'https://media.twinsology.com';
 
 export const GUIDED_MEDITATION_LONG_MIN_PLAYED_SEC = 180;
 

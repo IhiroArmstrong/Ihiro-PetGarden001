@@ -41,13 +41,14 @@
 | 字段 | 值 |
 |---|---|
 | 桶 | `focus-tiger-guided-media`（公开读） |
-| 公开根（**仅 dev/QA**） | `https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev` |
+| 应用公开根（生产） | `https://media.twinsology.com` |
+| r2.dev 临时根（仅 dev/QA，关公开访问前须已切常量） | `https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev` |
 | 播放 URL | `{公开根}/v1/what-is-zen-ancient-wisdom.mp4` |
 | 规范键（含哈希） | `guided-meditation/v1/what-is-zen-ancient-wisdom/67898a1efc878ab82f991fe777394b8effff5f73ce9a331431af3c281383459b.mp4` |
 | 交付 SHA-256 | `67898a1efc878ab82f991fe777394b8effff5f73ce9a331431af3c281383459b` |
 | 交付大小 | 136 179 423 bytes（~130 MiB · faststart remux） |
 | 画面 | H.264 1272×720 · AAC 128k · faststart |
-| 对外发布前 | 须把应用内 `GUIDED_MEDITATION_MEDIA_HOST` 换为**自定义域**（禁止长期依赖 r2.dev） |
+| 应用常量 | `GUIDED_MEDITATION_MEDIA_HOST` → 生产根（与上栏一致） |
 
 ### 交付片（R2 · delivery-audio · 2026-11-06）
 
@@ -82,7 +83,8 @@
 | 字段 | 值 |
 |---|---|
 | 桶 | `focus-tiger-guided-media` |
-| 公开根（**仅 dev/QA**） | `https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev` |
+| 应用公开根（生产） | `https://media.twinsology.com` |
+| r2.dev 临时根（仅 dev/QA） | `https://pub-6c48f2ff7b7a48739a7da5ab8cab4a68.r2.dev` |
 | 播放 URL | `{公开根}/v1/concepts-habits-intro.mp4` |
 | 规范键（含哈希） | `guided-meditation/v1/concepts-habits-intro/b49bcf602716c10248d9cb3055b6574175a60d9835f51504befaded2a6533c5d.mp4` |
 | 交付 SHA-256 | `b49bcf602716c10248d9cb3055b6574175a60d9835f51504befaded2a6533c5d` |
