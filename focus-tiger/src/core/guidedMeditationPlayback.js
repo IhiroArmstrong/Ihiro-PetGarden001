@@ -5,7 +5,7 @@
 
 /**
  * Web streams HTTPS Range on <video src>. Electron downloads the whole file first.
- * Audio fallback is user-initiated (or Electron cache miss after video failure).
+ * Audio fallback is user-initiated only. Do not auto-switch tracks.
  */
 
 /**
