@@ -20,6 +20,9 @@ export const GUIDED_MEDITATION_MEDIA_HOST =
 
 export const GUIDED_MEDITATION_LONG_MIN_PLAYED_SEC = 180;
 
+/** Ignore seek jumps: only consecutive timeupdate deltas count as listened time. */
+export const GUIDED_MEDITATION_PLAY_DELTA_MAX_SEC = 2;
+
 /**
  * @typedef {'short' | 'long'} GuidedMeditationKind
  *
@@ -108,16 +111,33 @@ export function findGuidedMeditationLesson(id) {
 }
 
 /**
- * @param {HTMLVideoElement | null | undefined} video
- * @returns {number}
+ * Accumulate wall-clock play time. Seek / scrub jumps do not add.
+ * Replaying a span does add (the person listened again).
+ *
+ * @param {{ playedSec?: number, lastTime?: number | null }} prev
+ * @param {number} currentTime
+ * @param {{ paused?: boolean, seeking?: boolean }} [flags]
+ * @returns {{ playedSec: number, lastTime: number | null }}
  */
-export function sumPlayedSeconds(video) {
-  if (!video?.played) return 0;
-  let total = 0;
-  for (let i = 0; i < video.played.length; i += 1) {
-    total += video.played.end(i) - video.played.start(i);
+export function accumulatePlayedSeconds(prev = {}, currentTime, flags = {}) {
+  const playedSec = Number(prev.playedSec);
+  const acc = Number.isFinite(playedSec) && playedSec > 0 ? playedSec : 0;
+  const now = Number(currentTime);
+  if (!Number.isFinite(now) || now < 0) {
+    return { playedSec: acc, lastTime: prev.lastTime ?? null };
   }
-  return total;
+  if (flags.paused || flags.seeking) {
+    return { playedSec: acc, lastTime: now };
+  }
+  const last = Number(prev.lastTime);
+  if (!Number.isFinite(last)) {
+    return { playedSec: acc, lastTime: now };
+  }
+  const delta = now - last;
+  if (delta > 0 && delta <= GUIDED_MEDITATION_PLAY_DELTA_MAX_SEC) {
+    return { playedSec: acc + delta, lastTime: now };
+  }
+  return { playedSec: acc, lastTime: now };
 }
 
 /**

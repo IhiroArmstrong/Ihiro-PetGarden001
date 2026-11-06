@@ -44,6 +44,9 @@ test('Practice menu opens Guided meditation; short lesson can credit', async ({
   });
   await expect(page.getByTestId('guided-meditation-status')).toBeVisible();
   await expect(page.getByTestId('guided-meditation-audio-fallback')).toBeVisible();
+  await expect(page.getByTestId('guided-meditation-video')).not.toHaveAttribute(
+    'crossorigin'
+  );
 
   const credited = await page.evaluate(() =>
     window.__guidedMeditation?.creditFromTestHook?.(

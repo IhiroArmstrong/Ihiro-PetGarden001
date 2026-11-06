@@ -13,8 +13,8 @@ import {
   GUIDED_MEDITATION_LESSONS,
   findGuidedMeditationLesson,
   isGuidedMeditationMediaConfigured,
-  resolveGuidedMeditationCredit,
-  sumPlayedSeconds
+  accumulatePlayedSeconds,
+  resolveGuidedMeditationCredit
 } from '../core/guidedMeditationLessons.js';
 import { isDesktopShellRuntime } from '../core/desktopShell.js';
 import {
@@ -59,6 +59,9 @@ export class GuidedMeditationUI {
     this._popEscapeLayer = null;
     this._credited = false;
     this._preferAudio = false;
+    /** @type {{ playedSec: number, lastTime: number | null }} */
+    this._playAcc = { playedSec: 0, lastTime: null };
+    this._seeking = false;
     this._downloadLabel = '';
     this._bufferLabel = '';
     /** @type {AbortController | null} */
@@ -112,6 +115,18 @@ export class GuidedMeditationUI {
     this.video.setAttribute('playsinline', '');
     this.video.setAttribute('controls', '');
     this.video.preload = 'metadata';
+    this.video.addEventListener('timeupdate', () => this._tickPlayed());
+    this.video.addEventListener('seeking', () => {
+      this._seeking = true;
+      this._tickPlayed();
+    });
+    this.video.addEventListener('seeked', () => {
+      this._seeking = false;
+      this._playAcc = {
+        playedSec: this._playAcc.playedSec,
+        lastTime: this.video.currentTime
+      };
+    });
     this.video.addEventListener('waiting', () => this._setBufferingStatus());
     this.video.addEventListener('progress', () => {
       if (this.statusEl.dataset.state === 'buffering') this._setBufferingStatus();
@@ -287,6 +302,7 @@ export class GuidedMeditationUI {
     this._abortLoad();
     this._lessonId = lessonId;
     this._credited = false;
+    this._resetPlayed();
     this._preferAudio = Boolean(opts.preferAudio);
     this.listEl.hidden = true;
     this.playerEl.hidden = false;
@@ -377,7 +393,24 @@ export class GuidedMeditationUI {
   _tryCredit() {
     const lesson = findGuidedMeditationLesson(this._lessonId || '');
     if (!lesson) return false;
-    return this._applyCredit(lesson, sumPlayedSeconds(this.video));
+    this._tickPlayed();
+    return this._applyCredit(lesson, this._playAcc.playedSec);
+  }
+
+  _tickPlayed() {
+    this._playAcc = accumulatePlayedSeconds(
+      this._playAcc,
+      this.video.currentTime,
+      {
+        paused: this.video.paused,
+        seeking: this._seeking || this.video.seeking
+      }
+    );
+  }
+
+  _resetPlayed() {
+    this._playAcc = { playedSec: 0, lastTime: null };
+    this._seeking = false;
   }
 
   /**
@@ -408,6 +441,7 @@ export class GuidedMeditationUI {
 
   _stopVideo() {
     this._abortLoad();
+    this._resetPlayed();
     this.video.pause();
     this.video.removeAttribute('src');
     this.video.load();
