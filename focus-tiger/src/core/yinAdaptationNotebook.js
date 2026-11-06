@@ -15,6 +15,10 @@ import {
 import { getEveningPracticePaperFact } from './eveningPracticeFacts.js';
 import { getLocalDateKey } from '../utils/localDate.js';
 import { resolvePrefStateReadModel } from './prefStateResolver.js';
+import {
+  STABLE_FOCUS_NOTEBOOK_LINE_ID,
+  resolveStableFocusL2Fact
+} from './stablePrefsStore.js';
 
 export const PREF_NOTEBOOK_LINE_IDS = Object.freeze({
   EVENING_SLOT: 'pref-evening-slot',
@@ -124,6 +128,20 @@ export function buildYinAdaptationNotebookLines(opts = {}) {
       textKey: 'PREF_HABITUAL_CONFIRM',
       textParams: { n: String(pref.habitualFocusMinutes) },
       kind: 'confirm'
+    });
+  }
+
+  const stableFact = resolveStableFocusL2Fact(storage, now);
+  if (
+    stableFact &&
+    isYinAdaptationEnabled() &&
+    !state.hiddenLines[STABLE_FOCUS_NOTEBOOK_LINE_ID]
+  ) {
+    lines.push({
+      id: STABLE_FOCUS_NOTEBOOK_LINE_ID,
+      textKey: 'STABLE_FOCUS_L2_FACT',
+      textParams: { n: String(stableFact.minutes) },
+      kind: 'fact'
     });
   }
 

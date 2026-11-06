@@ -42,6 +42,10 @@ import {
   suspendYinAdaptationRule
 } from '../core/yinAdaptationStore.js';
 import {
+  rejectStableFocusNotQuite,
+  STABLE_FOCUS_NOTEBOOK_LINE_ID
+} from '../core/stablePrefsStore.js';
+import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
   GLASS_FILL,
@@ -318,6 +322,9 @@ export class GrowthJourneyDetailUI {
     if (status.params?.date) {
       text = text.replaceAll('{date}', status.params.date);
     }
+    if (status.params?.n) {
+      text = text.replaceAll('{n}', status.params.n);
+    }
     return text;
   }
 
@@ -449,6 +456,17 @@ export class GrowthJourneyDetailUI {
           this._refresh();
         });
         actions.append(yes, no);
+      } else if (line.id === STABLE_FOCUS_NOTEBOOK_LINE_ID) {
+        const notQuite = document.createElement('button');
+        notQuite.type = 'button';
+        notQuite.className = 'growth-journey-detail__notebook-btn';
+        notQuite.textContent = t('STABLE_FOCUS_NOT_QUITE');
+        notQuite.dataset.testid = 'stable-focus-not-quite';
+        notQuite.addEventListener('click', () => {
+          rejectStableFocusNotQuite(this._storage());
+          this._refresh();
+        });
+        actions.append(notQuite);
       } else if (line.kind !== 'fact') {
         const correct = document.createElement('button');
         correct.type = 'button';

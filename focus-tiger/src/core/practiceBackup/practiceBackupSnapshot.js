@@ -10,7 +10,8 @@
 import {
   PRACTICE_BACKUP_EXPORT_KEYS,
   PRACTICE_BACKUP_V5_ADDED_KEYS,
-  PRACTICE_BACKUP_V6_ADDED_KEYS
+  PRACTICE_BACKUP_V6_ADDED_KEYS,
+  PRACTICE_BACKUP_V7_ADDED_KEYS
 } from './localBackupStorageRegistry.js';
 import {
   attachStageFloorToLotusValue,
@@ -21,7 +22,7 @@ import {
   readGrowthJourneyStageFloor
 } from '../growthJourneyStage.js';
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 6;
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 7;
 
 /** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
 export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
@@ -67,6 +68,11 @@ export const PRACTICE_BACKUP_V5_STORE_KEYS = Object.freeze([
 export const PRACTICE_BACKUP_V6_STORE_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V5_STORE_KEYS,
   ...PRACTICE_BACKUP_V6_ADDED_KEYS
+]);
+
+export const PRACTICE_BACKUP_V7_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V6_STORE_KEYS,
+  ...PRACTICE_BACKUP_V7_ADDED_KEYS
 ]);
 
 export const PRACTICE_BACKUP_STORE_KEYS = PRACTICE_BACKUP_EXPORT_KEYS;
@@ -115,6 +121,9 @@ export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   if (schemaVersion === 3) return PRACTICE_BACKUP_V3_STORE_KEYS;
   if (schemaVersion === 4) return PRACTICE_BACKUP_V4_STORE_KEYS;
   if (schemaVersion === 5) return PRACTICE_BACKUP_V5_STORE_KEYS;
+  if (schemaVersion === 6) {
+    return PRACTICE_BACKUP_V6_STORE_KEYS;
+  }
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
   }
@@ -455,6 +464,11 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       return Number(parsed.balance) <= 0 && (!Array.isArray(parsed.ownedIds) || parsed.ownedIds.length === 0);
     case 'focus-tiger.focus-essence.v1':
       return Number(parsed.essenceTotal) <= 0;
+    case 'focus-tiger.stable-prefs.v1': {
+      const votes = Array.isArray(parsed.focusVoteWindow) ? parsed.focusVoteWindow : [];
+      const hasStable = parsed.focusMinutes && typeof parsed.focusMinutes === 'object';
+      return !hasStable && votes.length === 0 && parsed.focusAwaitingVote !== true;
+    }
     case 'focus-tiger.focus-duration-pref.v1': {
       const minutes = Number(parsed.minutes);
       return !Number.isFinite(minutes) || minutes <= 0;
