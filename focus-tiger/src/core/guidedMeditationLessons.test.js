@@ -148,4 +148,21 @@ describe('guidedMeditationLessons', () => {
       null
     );
   });
+
+  it('does not accumulate while paused (covers audio-only and tab background pause)', () => {
+    let acc = { playedSec: 0, lastTime: null };
+    for (let t = 0; t <= 10; t += 1) {
+      acc = accumulatePlayedSeconds(acc, t, { paused: false, seeking: false });
+    }
+    assert.equal(acc.playedSec, 10);
+    acc = accumulatePlayedSeconds(acc, 10, { paused: true, seeking: false });
+    assert.equal(acc.playedSec, 10);
+    for (let t = 11; t <= 15; t += 1) {
+      acc = accumulatePlayedSeconds(acc, t, {
+        paused: t < 13,
+        seeking: false
+      });
+    }
+    assert.equal(acc.playedSec, 13);
+  });
 });
