@@ -1,0 +1,1 @@
+| 引导冥想 Web 流式计入与发布拦截（T88 B） | UI可见 | 待人工测试 | **终端已覆盖：** 拖进度条不计入学时；长课满 3 分钟整分钟公式；授权空行只在发布拦截失败；video 无 crossorigin；只听音频钮仍在。**人只补：** Safari 短课一眼（边下边播、准备/缓冲句）；电脑版真机并入批量测试。**不代表**已换自定义域、不代表已对外。 | — | — | — | `GuidedMeditationUI.js` · `guidedMeditationLessons.js` · `check-guided-meditation-media-host.js` | 2026-11-06 |

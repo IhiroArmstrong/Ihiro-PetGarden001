@@ -11,6 +11,7 @@ import {
   GUIDED_MEDITATION_LESSONS,
   GUIDED_MEDITATION_SOURCE_ID,
   GUIDED_MEDITATION_MEDIA_HOST,
+  accumulatePlayedSeconds,
   findGuidedMeditationLesson,
   isGuidedMeditationMediaConfigured,
   resolveGuidedMeditationCredit
@@ -43,13 +44,15 @@ describe('guidedMeditationLessons', () => {
     assert.equal(long?.audioBytes, 10753157);
   });
 
-  it('does not fetch whole files in the web player', () => {
+  it('does not fetch whole files in the web player and omits crossorigin', () => {
     const ui = readFileSync(
       new URL('../ui/GuidedMeditationUI.js', import.meta.url),
       'utf8'
     );
     assert.equal(ui.includes('fetchVerifiedGuidedMeditationVideo'), false);
     assert.match(ui, /resolveGuidedMeditationPlaybackMode/);
+    assert.match(ui, /playSrc\(rendition\.url\)/);
+    assert.equal(/crossorigin/i.test(ui), false);
   });
 
   it('credits a short lesson at 90% for nominal minutes', () => {
@@ -98,5 +101,68 @@ describe('guidedMeditationLessons', () => {
       }),
       { durationMinutes: 21 }
     );
+  });
+
+  it('counts consecutive play deltas and ignores seek jumps', () => {
+    let acc = { playedSec: 0, lastTime: null };
+    for (let t = 0; t <= 253; t += 1) {
+      acc = accumulatePlayedSeconds(acc, t, { paused: false, seeking: false });
+    }
+    assert.equal(acc.playedSec, 253);
+    assert.deepEqual(
+      resolveGuidedMeditationCredit({
+        kind: 'short',
+        durationSec: 281,
+        nominalMinutes: 5,
+        playedSec: acc.playedSec
+      }),
+      { durationMinutes: 5 }
+    );
+
+    const afterScrub = accumulatePlayedSeconds(acc, 280, {
+      paused: false,
+      seeking: false
+    });
+    assert.equal(afterScrub.playedSec, 253);
+    assert.equal(
+      resolveGuidedMeditationCredit({
+        kind: 'short',
+        durationSec: 281,
+        nominalMinutes: 5,
+        playedSec: afterScrub.playedSec
+      })?.durationMinutes,
+      5
+    );
+
+    let seekOnly = { playedSec: 0, lastTime: null };
+    seekOnly = accumulatePlayedSeconds(seekOnly, 0, { paused: false });
+    seekOnly = accumulatePlayedSeconds(seekOnly, 260, { paused: false });
+    assert.equal(seekOnly.playedSec, 0);
+    assert.equal(
+      resolveGuidedMeditationCredit({
+        kind: 'short',
+        durationSec: 281,
+        nominalMinutes: 5,
+        playedSec: seekOnly.playedSec
+      }),
+      null
+    );
+  });
+
+  it('does not accumulate while paused (covers audio-only and tab background pause)', () => {
+    let acc = { playedSec: 0, lastTime: null };
+    for (let t = 0; t <= 10; t += 1) {
+      acc = accumulatePlayedSeconds(acc, t, { paused: false, seeking: false });
+    }
+    assert.equal(acc.playedSec, 10);
+    acc = accumulatePlayedSeconds(acc, 10, { paused: true, seeking: false });
+    assert.equal(acc.playedSec, 10);
+    for (let t = 11; t <= 15; t += 1) {
+      acc = accumulatePlayedSeconds(acc, t, {
+        paused: t < 13,
+        seeking: false
+      });
+    }
+    assert.equal(acc.playedSec, 13);
   });
 });

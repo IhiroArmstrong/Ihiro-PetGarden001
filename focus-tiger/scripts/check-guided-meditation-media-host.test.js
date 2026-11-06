@@ -11,6 +11,8 @@ import {
   evaluateGuidedMediaHostGate,
   mediaHostLooksLikeR2Dev,
   parseGuidedMeditationMediaHosts,
+  parseMusicLicenseFields,
+  evaluateMusicLicenseGate,
   runGuidedMediaHostCheck
 } from './check-guided-meditation-media-host.js';
 
@@ -86,5 +88,54 @@ describe('runGuidedMediaHostCheck against catalog source', () => {
       assert.equal(live.ok, true);
       assert.equal(inventory.ok, true);
     }
+  });
+});
+
+describe('music license release gate', () => {
+  const filled = `## 配乐授权
+
+| 字段 | 值 |
+|---|---|
+| 来源 | 成片合轨配乐 |
+| 授权范围 | App 内播放 |
+| 核实日期 | 2026-11-05 |
+
+## 空行模板
+
+| 字段 | 值 |
+|---|---|
+| lessonId | |
+`;
+
+  it('ignores the empty-row template and accepts a filled license table', () => {
+    const parsed = parseMusicLicenseFields(filled);
+    assert.equal(parsed.emptyKeys.length, 0);
+    const r = evaluateMusicLicenseGate({ markdown: filled, mode: 'release' });
+    assert.equal(r.ok, true);
+    assert.equal(r.empty, false);
+  });
+
+  it('fails --release-gate on an empty license cell, but inventory stays green', () => {
+    const empty = `## 配乐授权
+
+| 字段 | 值 |
+|---|---|
+| 来源 | |
+| 授权范围 | App 内播放 |
+| 核实日期 | 2026-11-05 |
+`;
+    const release = evaluateMusicLicenseGate({ markdown: empty, mode: 'release' });
+    const inventory = evaluateMusicLicenseGate({
+      markdown: empty,
+      mode: 'inventory'
+    });
+    assert.equal(release.ok, false);
+    assert.equal(inventory.ok, true);
+    assert.match(release.message, /empty cell/);
+  });
+
+  it('live inventory has the three license cells filled', () => {
+    const live = runGuidedMediaHostCheck({ releaseGate: false });
+    assert.equal(live.licenseEmpty, false);
   });
 });
