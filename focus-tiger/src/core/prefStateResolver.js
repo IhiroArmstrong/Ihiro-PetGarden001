@@ -25,6 +25,7 @@ import {
   resolveAdaptedFocusDurationHighlightMinutes,
   shouldSuggestLowerFocusDuration
 } from './yinAdaptationStore.js';
+import { resolveStableFocusFixedMinutes } from './stablePrefsStore.js';
 
 export const PREF_STATE_READ_STORAGE_KEY = 'focus-tiger.pref-state-read.v1';
 
@@ -320,10 +321,13 @@ export function resolvePrefStateReadModel(storage) {
   const consentView = describeHabitualHighlightConsent(ledger, habitualFocusMinutes);
   const adaptationEnabled = isYinAdaptationEnabled();
   const tiredSuggestsShorter = shouldSuggestLowerFocusDuration(store);
+  const stableFixed = resolveStableFocusFixedMinutes(store);
   /** @type {number} */
   let highlightFocusMinutes = FOCUS_DURATION_DEFAULT_MINUTES;
   if (tiredSuggestsShorter) {
     highlightFocusMinutes = resolveAdaptedFocusDurationHighlightMinutes(store);
+  } else if (stableFixed != null) {
+    highlightFocusMinutes = stableFixed;
   } else if (habitualFocusMinutes != null && !consentView.skipHabitualHighlight) {
     highlightFocusMinutes = habitualFocusMinutes;
   } else if (hasStoredFocusDurationPreference(store)) {

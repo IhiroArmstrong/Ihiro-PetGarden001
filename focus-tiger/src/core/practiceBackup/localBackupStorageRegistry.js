@@ -25,6 +25,11 @@ export const PRACTICE_BACKUP_V6_ADDED_KEYS = Object.freeze([
   'focus-tiger.focus-essence.v1'
 ]);
 
+/** Keys added in schema v7 (2026-11-06 · T87 stable prefs). */
+export const PRACTICE_BACKUP_V7_ADDED_KEYS = Object.freeze([
+  'focus-tiger.stable-prefs.v1'
+]);
+
 /** Keys added in schema v5 (2026-09-16). */
 export const PRACTICE_BACKUP_V5_ADDED_KEYS = Object.freeze([
   'focus-tiger.focus-duration-pref.v1',
@@ -64,7 +69,8 @@ export const PRACTICE_BACKUP_EXPORT_KEYS = Object.freeze([
   'focus-tiger.sanctuary-entitlement.v1',
   'focus-tiger.focus-coins.v1',
   ...PRACTICE_BACKUP_V5_ADDED_KEYS,
-  ...PRACTICE_BACKUP_V6_ADDED_KEYS
+  ...PRACTICE_BACKUP_V6_ADDED_KEYS,
+  ...PRACTICE_BACKUP_V7_ADDED_KEYS
 ]);
 
 /**

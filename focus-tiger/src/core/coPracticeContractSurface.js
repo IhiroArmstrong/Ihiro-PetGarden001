@@ -18,6 +18,7 @@ import {
   normalizeYinAdaptationState,
   readYinAdaptationState
 } from './yinAdaptationStore.js';
+import { resolveStableFocusFixedMinutes } from './stablePrefsStore.js';
 
 /** @typedef {'reminder' | 'work-end' | 'privacy'} CoPracticeContractAction */
 
@@ -37,7 +38,8 @@ export const CO_PRACTICE_CONTRACT_ROW_IDS = Object.freeze({
   DAILY_REMINDER: 'daily-reminder',
   WORK_END: 'work-end',
   RESEARCH: 'research-share',
-  ADAPTATION: 'adaptation-note'
+  ADAPTATION: 'adaptation-note',
+  STABLE_PREFS: 'stable-prefs-focus'
 });
 
 /**
@@ -105,6 +107,8 @@ export function buildCoPracticeContractRows(opts = {}) {
   const adaptationState = readAdaptationStateFromStorage(storage);
   const adaptationEnabled = adaptationState.enabled !== false;
   const pauseUntil = maxActiveInvitePauseUntilState(adaptationState, now);
+
+  const stableMinutes = resolveStableFocusFixedMinutes(storage, now);
 
   /** @type {CoPracticeContractRow} */
   const focusInvite = {
@@ -187,5 +191,20 @@ export function buildCoPracticeContractRows(opts = {}) {
     hintKey: 'CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE'
   };
 
-  return [focusInvite, dailyReminder, workEnd, research, adaptation];
+  /** @type {CoPracticeContractRow} */
+  const stablePrefs = {
+    id: CO_PRACTICE_CONTRACT_ROW_IDS.STABLE_PREFS,
+    labelKey: 'CO_PRACTICE_CONTRACT_ROW_STABLE_PREFS',
+    status:
+      !adaptationEnabled
+        ? { key: 'CO_PRACTICE_CONTRACT_STABLE_PREFS_HIDDEN' }
+        : stableMinutes == null
+          ? { key: 'CO_PRACTICE_CONTRACT_STABLE_PREFS_INSUFFICIENT' }
+          : { key: 'CO_PRACTICE_CONTRACT_STABLE_PREFS_ACTIVE', params: { n: String(stableMinutes) } },
+    action: null,
+    actionKey: null,
+    hintKey: 'CO_PRACTICE_CONTRACT_STABLE_PREFS_HINT'
+  };
+
+  return [focusInvite, dailyReminder, workEnd, research, adaptation, stablePrefs];
 }

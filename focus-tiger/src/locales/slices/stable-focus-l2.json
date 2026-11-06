@@ -1,0 +1,14 @@
+{
+  "en": {
+    "STABLE_FOCUS_L2_FACT": "You often practice for {n} minutes.",
+    "STABLE_FOCUS_NOT_QUITE": "Not quite"
+  },
+  "zh": {
+    "STABLE_FOCUS_L2_FACT": "你常做 {n} 分钟。",
+    "STABLE_FOCUS_NOT_QUITE": "不是这样"
+  },
+  "ja": {
+    "STABLE_FOCUS_L2_FACT": "よく {n} 分で練習しています。",
+    "STABLE_FOCUS_NOT_QUITE": "ちょっと違う"
+  }
+}

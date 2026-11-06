@@ -21,6 +21,7 @@ import {
   COMPANION_MODE_ACROSS_TOOLS
 } from './core/FocusSession.js';
 import {
+  FOCUS_DURATION_MODE_FIXED,
   FOCUS_DURATION_MODE_OPEN,
   FOCUS_DURATION_OPTIONS_MINUTES,
   hasStoredFocusDurationPreference,
@@ -31,6 +32,13 @@ import {
   savePreferredOpenEndedFocus,
   shouldSkipFocusDurationPicker
 } from './core/focusDuration.js';
+import {
+  clearFocusStableAwaitingVote,
+  onFocusSessionBeginStablePrefs,
+  setFocusStableAwaitingVoteExplicit,
+  setFocusStableAwaitingVoteForOpenEnded,
+  setFocusStableAwaitingVoteFromChip
+} from './core/stablePrefsStore.js';
 import { readRitualRecipe } from './core/ritualRecipe/ritualRecipeStore.js';
 import {
   applyOfficialSittingTemplate,
@@ -2903,6 +2911,10 @@ async function init() {
       pendingFocusDurationMode = null;
       bootHonestyCompanion.companionModePicker.commitStoredMode(action.mode);
       focusSession.setTargetMinutes(action.minutes);
+      setFocusStableAwaitingVoteExplicit(
+        true,
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
       bootSessionChrome.syncArrivalGateReady(true);
       markColdStartDirectSitPending(
         typeof sessionStorage !== 'undefined' ? sessionStorage : null
@@ -3719,7 +3731,12 @@ async function init() {
     focusDurationPicker?.hide();
     bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
     if (openEnded) {
+      const storageVoice =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const wasOpenAlready =
+        loadPreferredFocusDurationMode(storageVoice) === FOCUS_DURATION_MODE_OPEN;
       savePreferredOpenEndedFocus();
+      setFocusStableAwaitingVoteForOpenEnded(wasOpenAlready, storageVoice);
       focusSession.setDurationMode('open');
       beginFocusWithMode(mode);
       showVoiceCommandUndoToast(t('VOICE_COMMAND_STARTED_OPEN'));
@@ -3731,13 +3748,14 @@ async function init() {
     ) {
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
-      noteFocusDurationChipChosen({
+      const chipNote = noteFocusDurationChipChosen({
         minutes,
         storage,
         source: 'voice-picker'
       });
       savePreferredFocusDurationMinutes(minutes);
       recordManualFocusDurationAnchor(minutes, storage);
+      setFocusStableAwaitingVoteFromChip(chipNote.recordedQualifying, storage);
     }
     focusSession.setDurationMode('fixed');
     focusSession.setTargetMinutes(minutes);
@@ -3765,7 +3783,8 @@ async function init() {
       pendingFocusDurationMode = null;
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
-      noteFocusDurationChipChosen({ minutes, storage, source: 'chip' });
+      const chipNote = noteFocusDurationChipChosen({ minutes, storage, source: 'chip' });
+      setFocusStableAwaitingVoteFromChip(chipNote.recordedQualifying, storage);
       savePreferredFocusDurationMinutes(minutes);
       recordManualFocusDurationAnchor(minutes, storage);
       focusSession.setTargetMinutes(minutes);
@@ -3776,7 +3795,12 @@ async function init() {
       const mode =
         pendingFocusDurationMode || bootHonestyCompanion.companionModePicker.getSelectedMode();
       pendingFocusDurationMode = null;
+      const storageOpen =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const wasOpenAlready =
+        loadPreferredFocusDurationMode(storageOpen) === FOCUS_DURATION_MODE_OPEN;
       savePreferredOpenEndedFocus();
+      setFocusStableAwaitingVoteForOpenEnded(wasOpenAlready, storageOpen);
       focusSession.setDurationMode('open');
       bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
       beginFocusWithMode(mode);
@@ -3788,6 +3812,9 @@ async function init() {
       beginVoiceFocusFromPicker({ openEnded: true });
     },
     onLeave: () => {
+      clearFocusStableAwaitingVote(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
       pendingFocusDurationMode = null;
       bootHonestyCompanion.companionModePicker.setIdleChromeVisible(true);
       bootHonestyCompanion.companionModePicker.setMicroRitualActive(false);
@@ -5737,6 +5764,10 @@ async function init() {
       focusSession.setTargetMinutes(
         resolveDemoSessionMinutes(location.search)
       );
+      setFocusStableAwaitingVoteExplicit(
+        false,
+        typeof localStorage !== 'undefined' ? localStorage : null
+      );
       beginFocusWithMode(companionMode);
       return;
     }
@@ -5794,6 +5825,15 @@ async function init() {
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     bootSessionChrome.postChooseChrome.pending = false;
     focusSession.start({ companionMode });
+    onFocusSessionBeginStablePrefs({
+      durationMode: focusSession.isOpenEnded()
+        ? FOCUS_DURATION_MODE_OPEN
+        : FOCUS_DURATION_MODE_FIXED,
+      targetMinutes: focusSession.targetMinutes,
+      storage:
+        typeof localStorage !== 'undefined' ? localStorage : null,
+      at: focusSession.startedAtMs ?? Date.now()
+    });
     const sittingPlan = resolveSittingSessionPlan({
       recipe: readRitualRecipe(),
       focusMode: focusSession.isOpenEnded()

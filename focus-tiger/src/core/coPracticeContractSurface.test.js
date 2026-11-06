@@ -16,6 +16,7 @@ import {
 } from './t54ResearchLedger.js';
 import { INVITE_OUTCOME_KINDS } from './inviteOutcomeStore.js';
 import { YIN_ADAPTATION_STORAGE_KEY } from './yinAdaptationStore.js';
+import { STABLE_PREFS_STORAGE_KEY } from './stablePrefsStore.js';
 import {
   buildCoPracticeContractRows,
   CO_PRACTICE_CONTRACT_ROW_IDS,
@@ -121,5 +122,49 @@ describe('coPracticeContractSurface', () => {
     const research = rows.find((r) => r.id === CO_PRACTICE_CONTRACT_ROW_IDS.RESEARCH);
     assert.equal(research?.status.key, 'CO_PRACTICE_CONTRACT_STATUS_ON');
     assert.equal(research?.action, 'privacy');
+  });
+
+  it('shows stable prefs insufficient when no promotion yet', () => {
+    const storage = memoryStorage();
+    storage.setItem(
+      YIN_ADAPTATION_STORAGE_KEY,
+      JSON.stringify({
+        enabled: true,
+        kindState: {},
+        suspendedRules: {},
+        hiddenLines: {},
+        legacyPrefSeeded: false
+      })
+    );
+    storage.setItem(STABLE_PREFS_STORAGE_KEY, '{}');
+    const rows = buildCoPracticeContractRows({ storage, now: Date.UTC(2026, 9, 28) });
+    const stable = rows.find((r) => r.id === CO_PRACTICE_CONTRACT_ROW_IDS.STABLE_PREFS);
+    assert.equal(stable?.status.key, 'CO_PRACTICE_CONTRACT_STABLE_PREFS_INSUFFICIENT');
+  });
+
+  it('hides stable prefs row detail when adaptation is off', () => {
+    const storage = memoryStorage();
+    storage.setItem(
+      YIN_ADAPTATION_STORAGE_KEY,
+      JSON.stringify({
+        enabled: false,
+        kindState: {},
+        suspendedRules: {},
+        hiddenLines: {},
+        legacyPrefSeeded: false
+      })
+    );
+    storage.setItem(
+      STABLE_PREFS_STORAGE_KEY,
+      JSON.stringify({
+        focusMinutes: { kind: 'fixed', minutes: 25, lastUsedAt: Date.UTC(2026, 9, 28) },
+        focusVoteWindow: [],
+        focusSuppressUntil: 0,
+        focusAwaitingVote: false
+      })
+    );
+    const rows = buildCoPracticeContractRows({ storage, now: Date.UTC(2026, 9, 28) });
+    const stable = rows.find((r) => r.id === CO_PRACTICE_CONTRACT_ROW_IDS.STABLE_PREFS);
+    assert.equal(stable?.status.key, 'CO_PRACTICE_CONTRACT_STABLE_PREFS_HIDDEN');
   });
 });
