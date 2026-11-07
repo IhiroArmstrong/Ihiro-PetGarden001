@@ -23,6 +23,9 @@ export const NEWSLETTER_SUBSCRIBE_RATE_LIMIT_PER_MINUTE = 5;
 export const LANTERN_PRESENCE_RATE_LIMIT_PER_MINUTE = 40;
 export const FOCUS_CIRCLE_RATE_LIMIT_PER_MINUTE = 20;
 
+/** T81 practice study ingest / delete (per IP; no study rows on 429). */
+export const CO_PRACTICE_RESEARCH_INGEST_RATE_LIMIT_PER_MINUTE = 20;
+
 /**
  * Stripe webhook: exempt from global 60/min, but still capped to blunt
  * unsigned flood DoS on HMAC verification (product: ~300/min/IP).

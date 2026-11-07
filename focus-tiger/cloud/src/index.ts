@@ -9,6 +9,7 @@ import {
 	VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
 	LANTERN_PRESENCE_RATE_LIMIT_PER_MINUTE,
 	FOCUS_CIRCLE_RATE_LIMIT_PER_MINUTE,
+	CO_PRACTICE_RESEARCH_INGEST_RATE_LIMIT_PER_MINUTE,
 } from "./middleware/rateLimit";
 import { handleDailyMessage } from "./routes/dailyMessage";
 import { handleQuietLine } from "./routes/quietLine";
@@ -48,6 +49,10 @@ import { handleUnsubscribeNewsletter } from "./routes/unsubscribeNewsletter";
 import { handleYpePersonalizationIngest } from "./routes/ypePersonalizationIngest";
 import { handleYpePersonalizationDelete } from "./routes/ypePersonalizationDelete";
 import { handleT54ResearchIngest } from "./routes/t54ResearchIngest";
+import {
+	handleCoPracticeResearchIngestDelete,
+	handleCoPracticeResearchIngestPost,
+} from "./routes/coPracticeResearchIngest";
 import { handleDesktopCheckoutReturn } from "./routes/desktopCheckoutReturn";
 import { handleLanternPresence } from "./routes/lanternPresence";
 import { handleFocusCircle } from "./routes/focusCircle";
@@ -107,6 +112,7 @@ export default {
 				url.pathname === "/api/ype-personalization-ingest" ||
 				url.pathname === "/api/ype-personalization-delete" ||
 				url.pathname === "/api/t54-research-ingest" ||
+				url.pathname === "/api/co-practice-research-ingest" ||
 				url.pathname === "/api/growth-metrics-config" ||
 				url.pathname === "/api/lantern-presence" ||
 				url.pathname === "/api/focus-circle" ||
@@ -654,6 +660,31 @@ export default {
 				);
 			}
 			return withCors(await handleT54ResearchIngest(request, env), origin);
+		}
+
+		if (url.pathname === "/api/co-practice-research-ingest") {
+			const cprLimited = enforceRateLimit(request, {
+				limit: CO_PRACTICE_RESEARCH_INGEST_RATE_LIMIT_PER_MINUTE,
+				bucketPrefix: "co-practice-research-ingest",
+			});
+			if (cprLimited) return withCors(cprLimited, origin);
+
+			if (request.method === "POST") {
+				return withCors(
+					await handleCoPracticeResearchIngestPost(request, env),
+					origin,
+				);
+			}
+			if (request.method === "DELETE") {
+				return withCors(
+					await handleCoPracticeResearchIngestDelete(request, env),
+					origin,
+				);
+			}
+			return withCors(
+				errorJson(405, "method_not_allowed", "Use POST or DELETE"),
+				origin,
+			);
 		}
 
 		if (url.pathname === "/api/lantern-presence") {
