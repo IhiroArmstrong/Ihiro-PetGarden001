@@ -16,6 +16,7 @@ import {
   retireLegacyProductionGgufs,
   trySeedProductionFromSpikeCache
 } from './l0SpikeSeed.js';
+import { verifyGgufSha256 } from './l0GgufSha256.js';
 
 export const L0_DOWNLOAD_ATTEMPTS_PER_URL = 5;
 export const L0_DOWNLOAD_RETRY_DELAYS_MS = [2000, 4000, 8000, 16000, 32000];
@@ -200,6 +201,7 @@ function partBytes(destPath) {
  * @param {{
  *   onProgress?: (info: { received: number, total: number | null }) => void,
  *   minBytes?: number,
+ *   expectedSha256?: string,
  *   fetch?: typeof fetch,
  *   sleep?: (ms: number) => Promise<void>
  * }} [opts]
@@ -222,6 +224,9 @@ export async function ensureGgufDownloaded(destPath, urlOrUrls, opts = {}) {
     const bytes = fs.statSync(destPath).size;
     const meta = readDownloadMeta(destPath);
     if (isGgufDownloadComplete(bytes, meta?.expectedBytes, minBytes)) {
+      if (opts.expectedSha256) {
+        verifyGgufSha256(destPath, opts.expectedSha256);
+      }
       return { path: destPath, bytes, downloaded: false };
     }
   }
@@ -240,6 +245,9 @@ export async function ensureGgufDownloaded(destPath, urlOrUrls, opts = {}) {
           fetch: fetchFn
         });
         if (isGgufDownloadComplete(result.bytes, result.expectedBytes, minBytes)) {
+          if (opts.expectedSha256) {
+            verifyGgufSha256(destPath, opts.expectedSha256);
+          }
           return {
             path: destPath,
             bytes: result.bytes,

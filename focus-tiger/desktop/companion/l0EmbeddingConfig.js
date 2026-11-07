@@ -19,6 +19,7 @@ export const L0_EMBEDDING_PROFILE_KEY = ACTIVE.key;
 export const L0_EMBEDDING_MODEL_ID = ACTIVE.modelId;
 export const L0_EMBEDDING_MODEL_FILENAME = ACTIVE.filename;
 export const L0_EMBEDDING_MODEL_EXPECTED_BYTES = ACTIVE.expectedBytes;
+export const L0_EMBEDDING_MODEL_SHA256 = ACTIVE.expectedSha256;
 export const L0_EMBEDDING_MODEL_MIN_BYTES = ACTIVE.minBytes;
 export const L0_EMBEDDING_MODEL_URLS = ACTIVE.urls;
 
