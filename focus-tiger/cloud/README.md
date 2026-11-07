@@ -61,6 +61,10 @@ curl -s http://127.0.0.1:8787/health
 | `POST` | `/api/practice-backup/delete` | `{ email, code }` 或 `{ email, deviceToken }` → 删云端快照（关闭备份） |
 | `POST` | `/api/newsletter/subscribe` | `{ email, locale? }` → `{ ok: true }` 仅当欢迎信已发过或 Resend 接受；失败 **502** `welcome_unsent`（名单仍写入，无 `welcomeSentAt` 可重发） |
 | `GET`/`POST` | `/api/newsletter/unsubscribe` | `?token=` → HTML 退订页（GET）或 `{ ok: true }`（POST one-click）；从 KV 删除 |
+| `POST` | `/api/co-practice-research-ingest` | T81 练习研究周聚合白名单 JSON → `CO_PRACTICE_RESEARCH_KV` 键 `cpr:v1:{studyId}:{week}`；未知字段丢弃；越界 400；体 ≤32 KiB |
+| `DELETE` | `/api/co-practice-research-ingest` | `Authorization: Bearer <studyId>`（UUIDv4）→ 删该 studyId 下全部周行 |
+
+`CO_PRACTICE_RESEARCH_KV` 与 T54 / YPE / backup **分绑**；deploy 前 `wrangler kv namespace create CO_PRACTICE_RESEARCH_KV`（见 `wrangler.jsonc` 头注释）。**POST 不认证参与者身份**——见 [`../docs/research/DATA_DICTIONARY.md`](../docs/research/DATA_DICTIONARY.md) S3 注记。
 
 ### 限流
 
@@ -72,6 +76,7 @@ curl -s http://127.0.0.1:8787/health
 | `/api/newsletter/subscribe` | **5/min/IP**（防 Resend 刷信） |
 | `/api/newsletter/unsubscribe` | **10/min/IP** |
 | `/api/stripe-webhook` | **豁免全局**；仍 **300/min/IP**（防 HMAC 刷量） |
+| `/api/co-practice-research-ingest` | **20/min/IP**（研究 ingest / 撤回） |
 
 `daily-message` / `emotion-weight` 现为 **schemaVersion 1 冻结表 overlay**（前端可选接线）。未知 `schemaVersion` 或不完整池 → 客户端静默用本地表。生产 Worker **须明确「部署」** 后才从历史 mock 换成 v1。**2026-08-20 本机 deploy**：`https://focus-tiger-cloud.ihiro.workers.dev` Version **`5b5b3451-4c35-4d9b-b27b-622b72ed673e`**；`POST /api/emotion-weight` 已含 `schemaVersion: 1`。**同日 #378**：`POST /api/monetization-funnel-ingest` 的 layout 白名单已合 `develop`，**尚未**进该 Version。用户书面「部署」；Cloud Agent **无** `CLOUDFLARE_API_TOKEN`，**禁止** `wrangler deploy --temporary`。产品范围与四问见 [`../docs/PROCESS.md`](../docs/PROCESS.md) Backlog「云端品味层」。
 
