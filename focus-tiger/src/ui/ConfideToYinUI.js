@@ -44,6 +44,10 @@ import {
   resolveConfideSemanticCrisisMode,
   shouldAttemptConfideSemanticCrisis
 } from '../core/confide/confideSemanticCrisisLayer.js';
+import {
+  confideSemanticCrisisBlocksL3Generate,
+  createConfideSemanticCrisisGenerateAttestation
+} from '../core/confide/confideSemanticCrisisGenerateGate.js';
 import { applyConfideStage2bLive } from '../core/confide/confideSemanticStage2b.js';
 import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
@@ -219,6 +223,8 @@ export class ConfideToYinUI {
     this.handlers = handlers;
     this._open = false;
     this._sessionExclude = new Set();
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._companion = null;
@@ -525,6 +531,8 @@ export class ConfideToYinUI {
     this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
@@ -554,6 +562,8 @@ export class ConfideToYinUI {
     this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
@@ -1574,6 +1584,8 @@ export class ConfideToYinUI {
       return;
     }
     if (!canSubmitConfideText(text)) return;
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     tickConfideSafetyGenerateLatchOnUserSend(this._safetyGenerateLatch);
     const hit = resolveConfideReply({
       text,
@@ -1649,6 +1661,10 @@ export class ConfideToYinUI {
       } catch {
         crisisScore = null;
       }
+      this._semanticCrisisGenerateAttestation = {
+        scored: true,
+        embeddingOk: Boolean(crisisScore?.embeddingOk)
+      };
       if (!this._open || epoch !== this._sendEpoch) {
         this._sending = false;
         this._syncSendEnabled();
@@ -2240,7 +2256,15 @@ export class ConfideToYinUI {
         generateEnabled: Boolean(this._companionStatus?.generateEnabled),
         generateLayerOpen: this._generateLayerOpen,
         hasGenerateFn: typeof this._companion?.generate === 'function'
-      }) && !isConfideSafetyGenerateLatchActive(this._safetyGenerateLatch);
+      }) &&
+      !isConfideSafetyGenerateLatchActive(this._safetyGenerateLatch) &&
+      !confideSemanticCrisisBlocksL3Generate({
+        route: hit.route,
+        text,
+        wideViewport: this._viewportAllowsGenerateLayer(),
+        scored: this._semanticCrisisGenerateAttestation.scored,
+        embeddingOk: this._semanticCrisisGenerateAttestation.embeddingOk
+      });
     if (!wantGenerate) {
       this._sessionExclude.add(hit.line.id);
       this._showReply(

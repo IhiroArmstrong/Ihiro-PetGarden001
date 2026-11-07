@@ -587,6 +587,8 @@ describe('desktop companion L2 isolation', () => {
     assert.equal(runtime.includes('buildConfideReadHybridPrompt'), false);
     
     assert.match(ui, /ypeMayUseCompanionGenerate/);
+    assert.match(ui, /confideSemanticCrisisBlocksL3Generate/);
+    assert.match(ui, /confideSemanticCrisisGenerateGate/);
     assert.match(ui, /isConfideSafetyGenerateLatchActive/);
     assert.match(ui, /confideSafetyGenerateLatch/);
     assert.match(ui, /companionStyle:/);
