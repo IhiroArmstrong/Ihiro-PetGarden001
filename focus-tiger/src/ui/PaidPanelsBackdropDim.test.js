@@ -218,7 +218,10 @@ describe('Paid panels SB-19 overlay backdrop', () => {
       assert.equal(ui.helpResourcesPanel.hidden, true);
       ui._toggleHelpResourcesPanel();
       assert.equal(ui.helpResourcesPanel.hidden, false);
-      assert.match(String(ui.helpResourcesPanel.textContent), /crisis line|热线|相談窓口/i);
+      assert.match(
+        String(ui.helpResourcesPanel.textContent),
+        /crisis helpline|本地求助热线|相談窓口/i
+      );
       const supportModal = mountRoot.children.find((node) => node?.id === 'yin-support-modal');
       assert.equal(supportModal, undefined);
     } finally {

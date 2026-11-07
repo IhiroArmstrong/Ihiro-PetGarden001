@@ -109,7 +109,7 @@ describe('reflectionCompanionValidation', () => {
     });
     assert.equal(resolved.skipGenerate, true);
     assert.equal(resolved.source, REFLECTION_COMPANION_SOURCE.CORPUS_SAFETY);
-    assert.match(resolved.text, /crisis line/i);
+    assert.match(resolved.text, /crisis helpline/i);
     assert.doesNotMatch(resolved.text, /try harder/i);
   });
 
