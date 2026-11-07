@@ -97,9 +97,9 @@
 | **未排期** · **T86** | 官网字典与伦理审查 | **搁置** | 公开字段页 + 顾问函。Brief [`task-co-practice-research-public-ethics.md`](./task-briefs/task-co-practice-research-public-ethics.md) |
 | **可选** · **T87** | 稳定偏好层 PR-1 | **立即做** · Brief 已点头 | 人话：记住你常练哪一种分钟，可以说出来、也可以说不是这样。Brief [`task-co-practice-stable-prefs-l1-l2.md`](./task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动、**不是** T73 读门 |
 | **可选** · **T88** | 引导冥想对外前加固 | **立即做** · Brief 待点头 | 人话：网页边下边播、下载有进度、正式版不许还指向 r2.dev。#1567 已合 ≠ 对外。Brief [`task-t88-guided-meditation-release-hardening.md`](./task-briefs/task-t88-guided-meditation-release-hardening.md)。口令「按 T88 Brief 开工 Web 流式」须点头后新 Chat。**不是** T76、**不是** 收紧 CORS |
-| **P1** · **T89** | B5/B6 第 2 轮交叉复核 | **立即做** · 只读 | 人话：换另一家模型，把安全和隐私的严重问题再核一遍，先在改产品之前跑。Brief [`audit/briefs/R2-cross-review-b5-b6.md`](./audit/briefs/R2-cross-review-b5-b6.md)。口令「开 R2」= 新 Chat。**不是** 写整改 |
+| **P1** · **T89** | B5/B6 第 2 轮交叉复核 | **立即做** · 只读 | 人话：换另一家高档模型，把安全和隐私的严重问题再核一遍。整改前用例钉在 `845aa8e0` 的独立工作副本，产品整改不必等这次跑完。Brief [`audit/briefs/R2-cross-review-b5-b6.md`](./audit/briefs/R2-cross-review-b5-b6.md)。口令「开 R2」= 新 Chat。**不是** 写整改 |
 | **P2** · **T90** | 语义危机没打分就回固定句 | **排队中** · B 类 Brief 未点头 | 人话：生成之前必须先有危机分数，没有就用固定句。对应 10-01 / 10-06。口令「按 T90 Brief 开工」点头前不写 src |
-| **P2** · **T91** | 安全路由后若干轮不生成 | **排队中** · 轮数未定 | 人话：一旦走进安全回复，接下来几轮不再让模型自由写。对应 10-03。轮数等外部顾问01。**不是** T92 |
+| **P2** · **T91** | 安全路由后若干轮不生成 | **排队中** · 机制可先合 | 人话：一旦走进安全回复，接下来几轮不再让模型自由写。对应 10-03。锁定几轮等外部顾问01，机制本身不必等。**不是** T92 |
 | **P2** · **T92** | 安全回复写上求助资源 | **阻塞** | 人话：安全句里加上当地可打的电话或网站。对应 10-04。外部顾问01 的心理健康背景尚未在仓库确认 |
 
 ### T46 不执行的路线（登记，不开工）
