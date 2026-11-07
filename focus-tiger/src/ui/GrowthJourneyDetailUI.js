@@ -464,6 +464,7 @@ export class GrowthJourneyDetailUI {
         notQuite.dataset.testid = 'stable-focus-not-quite';
         notQuite.addEventListener('click', () => {
           rejectStableFocusNotQuite(this._storage());
+          window.__coPracticeContinueSlotChrome?.sync?.();
           this._refresh();
         });
         actions.append(notQuite);

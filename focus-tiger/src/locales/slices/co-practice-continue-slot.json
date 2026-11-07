@@ -1,0 +1,17 @@
+{
+  "en": {
+    "CO_PRACTICE_CONTINUE_SLOT_ARIA": "Continue your usual practice setup",
+    "CO_PRACTICE_CONTINUE_SLOT_LABEL": "Continue your usual: {minutes} min · {template}",
+    "CO_PRACTICE_CONTINUE_SLOT_CUSTOM_TEMPLATE": "Your sitting recipe"
+  },
+  "zh": {
+    "CO_PRACTICE_CONTINUE_SLOT_ARIA": "用你常做的练习配置一键开练",
+    "CO_PRACTICE_CONTINUE_SLOT_LABEL": "继续你常做的：{minutes} 分钟 · {template}",
+    "CO_PRACTICE_CONTINUE_SLOT_CUSTOM_TEMPLATE": "你的坐法配方"
+  },
+  "ja": {
+    "CO_PRACTICE_CONTINUE_SLOT_ARIA": "いつもの練習設定で続ける",
+    "CO_PRACTICE_CONTINUE_SLOT_LABEL": "いつもの：{minutes}分 · {template}",
+    "CO_PRACTICE_CONTINUE_SLOT_CUSTOM_TEMPLATE": "あなたの坐りレシピ"
+  }
+}

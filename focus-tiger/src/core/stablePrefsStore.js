@@ -47,10 +47,27 @@ export const STABLE_FOCUS_NOTEBOOK_LINE_ID = 'stable-focus-minutes-fact';
  * }} StableFocusVote
  *
  * @typedef {{
+ *   signature: string,
+ *   templateId: string | null,
+ *   recipeSnapshot?: import('./ritualRecipe/ritualRecipeSchema.js').RitualRecipe | null,
+ *   lastUsedAt?: number
+ * }} StablePracticeConfigDimState
+ *
+ * @typedef {{
+ *   signature: string,
+ *   templateId: string | null,
+ *   at: number
+ * }} StablePracticeConfigVote
+ *
+ * @typedef {{
  *   focusMinutes?: StableFocusDimState,
  *   focusVoteWindow: StableFocusVote[],
  *   focusSuppressUntil: number,
- *   focusAwaitingVote: boolean
+ *   focusAwaitingVote: boolean,
+ *   practiceConfig?: StablePracticeConfigDimState,
+ *   practiceVoteWindow: StablePracticeConfigVote[],
+ *   practiceSuppressUntil: number,
+ *   practiceAwaitingVote: boolean
  * }} StablePrefsV1
  */
 
@@ -58,7 +75,10 @@ export function defaultStablePrefsState() {
   return {
     focusVoteWindow: [],
     focusSuppressUntil: 0,
-    focusAwaitingVote: false
+    focusAwaitingVote: false,
+    practiceVoteWindow: [],
+    practiceSuppressUntil: 0,
+    practiceAwaitingVote: false
   };
 }
 
@@ -111,6 +131,53 @@ export function normalizeStablePrefsState(raw) {
   base.focusSuppressUntil = Number.isFinite(sup) && sup > 0 ? sup : 0;
 
   base.focusAwaitingVote = o.focusAwaitingVote === true;
+
+  const pc = o.practiceConfig;
+  if (pc && typeof pc === 'object') {
+    const p = /** @type {Record<string, unknown>} */ (pc);
+    const signature = typeof p.signature === 'string' ? p.signature.trim() : '';
+    if (signature) {
+      const templateId =
+        typeof p.templateId === 'string' && p.templateId.trim()
+          ? p.templateId.trim()
+          : null;
+      const lastUsedAt = Number(p.lastUsedAt);
+      /** @type {StablePracticeConfigDimState} */
+      const row = {
+        signature,
+        templateId,
+        lastUsedAt: Number.isFinite(lastUsedAt) && lastUsedAt > 0 ? lastUsedAt : undefined
+      };
+      if (p.recipeSnapshot && typeof p.recipeSnapshot === 'object') {
+        row.recipeSnapshot = /** @type {import('./ritualRecipe/ritualRecipeSchema.js').RitualRecipe} */ (
+          p.recipeSnapshot
+        );
+      }
+      base.practiceConfig = row;
+    }
+  }
+
+  if (Array.isArray(o.practiceVoteWindow)) {
+    /** @type {StablePracticeConfigVote[]} */
+    const out = [];
+    for (const row of o.practiceVoteWindow) {
+      if (!row || typeof row !== 'object') continue;
+      const r = /** @type {Record<string, unknown>} */ (row);
+      const signature = typeof r.signature === 'string' ? r.signature.trim() : '';
+      const at = Number(r.at);
+      if (!signature || !Number.isFinite(at)) continue;
+      const templateId =
+        typeof r.templateId === 'string' && r.templateId.trim() ? r.templateId.trim() : null;
+      out.push({ signature, templateId, at });
+    }
+    base.practiceVoteWindow = out.slice(-FOCUS_STABLE_WINDOW);
+  }
+
+  const practiceSup = Number(o.practiceSuppressUntil);
+  base.practiceSuppressUntil =
+    Number.isFinite(practiceSup) && practiceSup > 0 ? practiceSup : 0;
+
+  base.practiceAwaitingVote = o.practiceAwaitingVote === true;
 
   return base;
 }
