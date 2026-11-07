@@ -24,6 +24,7 @@
 | `facts/<日期>/` | 第 0 轮事实底稿 |
 | `findings/<日期>/` | 各任务报告、评分卡、风险登记、90 天计划 |
 | `governance-drafts/` | 待治理会话落账的草稿（非 SSOT） |
+| `governance-drafts/` | 待治理会话落账的草稿（非 SSOT） |
 
 ## 原稿来源
 
