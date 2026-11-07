@@ -142,6 +142,31 @@
 - **未**找到「Focus Tiger / 任意 SPA 结束按钮 → 记入 Mindful Minutes」的完整第三方验收。Instagram 等 **内嵌 WKWebView** 常拦自定义协议；iOS 18.1 起用 Shortcuts 当「逃出内嵌浏览器」的招也有失效报告（[inapp-debugger#8](https://github.com/shalanah/inapp-debugger/issues/8)）。
 - **结论**：Safari / 本机主屏打开的网页 **可以写进验收 D**；**微信 / Instagram 内嵌、以及 Electron 包里的页** 标已知失败面。Electron 结束按钮：若本机 Shortcuts URL 打不开，隐藏按钮或提示「请在 iPhone 上记」。
 
+### 5.4 Raycast Quicklink / Alfred（无需官方扩展）
+
+深链解析合入后，启动器只需打开与 §3.1 相同的 URL。**不必**单独做 Raycast Extension 或 Alfred workflow 二进制发布（与 [`task-ritual-recipe-phase1.md`](./task-ritual-recipe-phase1.md) 阶段 1「不做 Slack/Raycast 扩展」不矛盾：那是配方市场的范围，本条是 **Quicklink/URL 动作**，零维护）。
+
+| 启动器 | 步骤 | 链接（电脑版示例） |
+|---|---|---|
+| **Raycast** | `Create Quicklink`（Raycast Manual · Quicklinks）→ Link 填 deeplink → Name 如 `Samatia · Sit 5m` → 可选热键 | `focus-tiger://app/?product=1&start=sit&min=5` |
+| **Alfred** | Workflow → **Open URL** 或 **Custom Search** → URL 同上 | 同上 |
+| **参数化** | Raycast Quicklink 支持 `{argument}` 占位；若要做「喊分钟数」，须 minutes 仍落在白名单 `1/3/5/10/20`，否则解析层丢弃 | 例：`…&min={argument name="Minutes"}`（实现前在 Help 写清表） |
+
+**他人验证（2026-11-08 搜一轮）**：Raycast 官方文档列 deeplink（含 `shortcuts://`、`spotify://` 等）可直接作 Quicklink Link；未找到第三方完整验收 **`focus-tiger://` + 未注册协议的 Electron 包**。验收须 **层 C**：已安装 Samatia 电脑版且 `app.setAsDefaultProtocolClient('focus-tiger')` 已跑过。**未装壳**时点击无响应 = 已知限制，须在 Help 诚实写明。
+
+**认为最合理的是**：食谱写 Raycast/Alfred 一行配置，**不**排「官方 Raycast 扩展」独立 Brief。弱方案是另写 TypeScript 扩展（维护 OAuth/版本与 Mac 人群重叠收益不成比例）。
+
+### 5.5 将来 · Markdown 导出边界（占位 · 无运行时 · 等深链/日历有使用信号再写姊妹 Brief）
+
+架构师与同事 2 均提到 Obsidian / 本地 vault。**本 Brief 不实现**；仅锁边界，避免将来 Brief 默认导出倾诉或 Memory。
+
+| 默认导出 | 默认 **不**导出 |
+|---|---|
+| 本地日期 / 时区、练习类型（sit/breath/micro）、本场分钟数、可选「来自深链/日历」来源标记 | Confide 原文、Honesty 补登自由文本、Memory 摘要、姓名/邮箱、寅币/付款、T54 研究分享 payload |
+| 格式：单文件 Markdown 或按日落盘到用户 **自选文件夹**（须文件选择器或路径设置，默认关） | 静默上传、Notion/Obsidian 插件 OAuth、云同步 |
+
+**启用率信号**：仅本机计数（深链开坐次数、`.ics` 下载次数），沿用 [`RETENTION_FUNNEL.md`](../RETENTION_FUNNEL.md) 占位 `RetentionTelemetry` 模式；**禁止**在本产品线暗示云端 A/B 或 90 天实验对照（T54 90 天仍 **搁置**）。若日后汇总须走已有研究共修同意路径（T81+），**不得**另开上报通道。
+
 ---
 
 ## 6. 精灵通道 × 叠层仲裁（busy / 冷启动）— 待 PO 拍板
@@ -267,11 +292,19 @@
 
 ## 13. 待 PO 拍板
 
-1. busy：**拒绝（推荐）** vs 排队？  
-2. 冷启动：**defer 一次（推荐）** vs 丢弃 vs 跳过到达（不推荐）？  
-3. Health 按钮：**默认关（推荐，且与开工口令一致）** vs 默认开？  
-4. Breath / micro 是否第一刀就做，还是第一刀 **只 Sit**？（推荐第一刀只 Sit，降低与 Honesty 呼吸叠层误伤。）  
-5. Epic 挂线：见交付说明（推荐复用栖居壳层，不新建「上下游整合」）。
+> **地面真相（2026-11-08）**：说明书合并 PR [#1596](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1596) 已于 **2026-11-07** 合入 `develop`（`7c82e361`）。**点头 ≠ 已做进 App**；实现仍无 OPEN/MERGED 运行时 PR（开工前再 `gh pr list`）。  
+> **合成 Agent + 分析师（2026-11-08）一致推荐**（PO 一行书面「点头」后视为锁，可抄进实现 PR 描述）：
+
+1. busy：**拒绝**（付款/倾诉中不突然开坐）。  
+2. 冷启动：**defer 一次**（先走完开场/T76，再应用链接里的时长；不跳过到达）。  
+3. Health 按钮：**默认关**（设置里开；用户手势触发）。  
+4. 第一刀实现：**只 Sit**；Breath/micro 等解析与白名单单测绿后再加。  
+5. Epic：**挂栖居壳层 #793**，不新建「上下游整合」。  
+6. Raycast/Alfred：**食谱 §5.4**，不单独扩展 Brief。  
+7. Things / Notion / Slack / Zapier / iOS 原生壳：**继续不做**（与 §1 拍板一致）。  
+8. Markdown 导出：**等深链 + 日历有人用再写姊妹 Brief**；边界见 §5.5。
+
+仍须 PO 对 §13 第 1–4 条书面点头后，口令 `按深链 Shortcuts Brief 开工解析层` 才执行。
 
 ---
 
