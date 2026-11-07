@@ -1,0 +1,57 @@
+{
+  "@lit-labs/ssr-dom-shim@1.6.0": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/lit/lit",
+    "publisher": "Google LLC",
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/@lit-labs/ssr-dom-shim",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/@lit-labs/ssr-dom-shim/README.md"
+  },
+  "@lit/reactive-element@2.1.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/lit/lit",
+    "publisher": "Google LLC",
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/@lit/reactive-element",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/@lit/reactive-element/LICENSE"
+  },
+  "@types/trusted-types@2.0.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/@types/trusted-types",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/@types/trusted-types/LICENSE"
+  },
+  "focus-tiger@0.0.0": {
+    "licenses": "UNLICENSED",
+    "private": true,
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/LICENSE"
+  },
+  "lit-element@4.2.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/lit/lit",
+    "publisher": "Google LLC",
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/lit-element",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/lit-element/LICENSE"
+  },
+  "lit-html@3.3.3": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/lit/lit",
+    "publisher": "Google LLC",
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/lit-html",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/lit-html/LICENSE"
+  },
+  "lit@3.3.3": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/lit/lit",
+    "publisher": "Google LLC",
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/lit",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/lit/LICENSE"
+  },
+  "three@0.178.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/mrdoob/three.js",
+    "publisher": "mrdoob",
+    "path": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/three",
+    "licenseFile": "/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/node_modules/three/LICENSE"
+  }
+}
+

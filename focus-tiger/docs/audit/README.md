@@ -2,7 +2,7 @@
 
 用户可见产品名是 **Samatia**。仓库和内部文档仍叫 Focus Tiger。本目录是这次「完整基线审计」的资料正本。
 
-状态：**基准 v1.1 已按 PO 书面采纳定稿；审计尚未执行。** 先读 [AUDIT_BASELINE.md](AUDIT_BASELINE.md)。历史讨论见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。背景索引见 [CONTEXT.md](CONTEXT.md)。
+状态：**基准 v1.1 已定稿（#1581 已合 develop）；第 0 轮事实底稿见 [facts/2026-11-06/](facts/2026-11-06/INDEX.md)。** B5/B6 待开。先读 [AUDIT_BASELINE.md](AUDIT_BASELINE.md)。历史讨论见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。背景索引见 [CONTEXT.md](CONTEXT.md)。
 
 **当前执行队列（v1.1）**：第 0 轮（否决导向取证）→ **B5**、**B6** → 独立会话复核两者 P0/P1 → 再开 B1–B3、B4a、B4b。
 
