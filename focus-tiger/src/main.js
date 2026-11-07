@@ -39,6 +39,15 @@ import {
   setFocusStableAwaitingVoteForOpenEnded,
   setFocusStableAwaitingVoteFromChip
 } from './core/stablePrefsStore.js';
+import {
+  clearPracticeConfigAwaitingVote,
+  notePracticeConfigManualChange,
+  onPracticeConfigSessionBegin
+} from './core/stablePracticeConfigPrefs.js';
+import {
+  applyCoPracticeContinueSlotConfig,
+  resolveCoPracticeContinueSlot
+} from './core/coPracticeContinueSlot.js';
 import { readRitualRecipe } from './core/ritualRecipe/ritualRecipeStore.js';
 import {
   applyOfficialSittingTemplate,
@@ -211,6 +220,7 @@ import { GuidedMeditationUI } from './ui/GuidedMeditationUI.js';
 import { resolveGuidedMeditationMenuClick } from './core/guidedMeditationBusyYield.js';
 import { isGuidedMeditationMediaConfigured } from './core/guidedMeditationLessons.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
+import { CoPracticeContinueSlotChrome } from './ui/CoPracticeContinueSlotChrome.js';
 import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
 import { JourneyLogUI } from './ui/JourneyLogUI.js';
 import { HelpCenterUI } from './ui/HelpCenterUI.js';
@@ -1775,6 +1785,9 @@ async function init() {
   );
   window.__zenCinemaCard = zenCinemaCardUI;
 
+  const coPracticeContinueSlotChrome = new CoPracticeContinueSlotChrome();
+  window.__coPracticeContinueSlotChrome = coPracticeContinueSlotChrome;
+
   mountFiveMomentsCompass(
     bootMomentHosts,
     document.body,
@@ -1784,18 +1797,33 @@ async function init() {
       getActiveSittingTemplateId: () =>
         resolveOfficialTemplateIdForRecipe(readRitualRecipe()),
       onSittingTemplateSelect: (templateId) => {
-        applyOfficialSittingTemplate(templateId);
+        applyOfficialSittingTemplate(
+          templateId,
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        notePracticeConfigManualChange(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        coPracticeContinueSlotChrome?.sync?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
       },
       getRitualRecipe: () => readRitualRecipe(),
       onRecipeFocusSelect: (minutesOrOpen) => {
         applyUserRecipeEdit({ focusMinutes: minutesOrOpen });
+        notePracticeConfigManualChange(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        coPracticeContinueSlotChrome?.sync?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
       },
       onRecipeSoundSelect: (soundId) => {
         applyUserRecipeEdit({ soundId });
+        notePracticeConfigManualChange(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        coPracticeContinueSlotChrome?.sync?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
       },
@@ -1808,6 +1836,10 @@ async function init() {
             promptId
           }
         });
+        notePracticeConfigManualChange(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        coPracticeContinueSlotChrome?.sync?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
       },
@@ -1815,6 +1847,10 @@ async function init() {
         resetUserRecipeMoment(
           /** @type {'arrive' | 'focus' | 'transition' | 'reflect'} */ (momentId)
         );
+        notePracticeConfigManualChange(
+          typeof localStorage !== 'undefined' ? localStorage : null
+        );
+        coPracticeContinueSlotChrome?.sync?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshSittingTemplates?.();
         bootMomentHosts.fiveMomentsCompassUI?.refreshRecipeEdit?.();
       },
@@ -4166,7 +4202,7 @@ async function init() {
     syncConfideEarChrome();
     syncTransitionMomentTrigger();
     refreshFocusSitAdjust();
-
+    coPracticeContinueSlotChrome?.sync?.();
   }
 
   idleYinTapAnchor = new IdleYinTapAnchorUI(
@@ -5825,17 +5861,25 @@ async function init() {
     bootHonestyCompanion.companionModePicker.setIdleChromeVisible(false);
     bootSessionChrome.postChooseChrome.pending = false;
     focusSession.start({ companionMode });
+    const coPracticeStorage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
     onFocusSessionBeginStablePrefs({
       durationMode: focusSession.isOpenEnded()
         ? FOCUS_DURATION_MODE_OPEN
         : FOCUS_DURATION_MODE_FIXED,
       targetMinutes: focusSession.targetMinutes,
-      storage:
-        typeof localStorage !== 'undefined' ? localStorage : null,
+      storage: coPracticeStorage,
       at: focusSession.startedAtMs ?? Date.now()
     });
+    const recipeAtBegin = readRitualRecipe(coPracticeStorage);
+    onPracticeConfigSessionBegin({
+      recipe: recipeAtBegin,
+      storage: coPracticeStorage,
+      at: focusSession.startedAtMs ?? Date.now()
+    });
+    coPracticeContinueSlotChrome?.sync?.();
     const sittingPlan = resolveSittingSessionPlan({
-      recipe: readRitualRecipe(),
+      recipe: recipeAtBegin,
       focusMode: focusSession.isOpenEnded()
         ? FOCUS_DURATION_MODE_OPEN
         : 'fixed',
@@ -5849,8 +5893,6 @@ async function init() {
       focusAwarenessCardUI.setSessionPoolKey(null);
     }
     emitRecipeSessionStarted(sittingPlan);
-    const coPracticeStorage =
-      typeof localStorage !== 'undefined' ? localStorage : null;
     const offeredDefaultMinutes = resolveHighlightFocusMinutes(
       coPracticeStorage
     );
@@ -5931,6 +5973,55 @@ async function init() {
     bootArrivalFocus.focusInput.beginFocusing(focusButton);
     maybeOfferMomentWhisper('focus', { delayMs: 600 });
   }
+
+  function handleCoPracticeContinueSlot() {
+    const storage = typeof localStorage !== 'undefined' ? localStorage : null;
+    const model = resolveCoPracticeContinueSlot(storage);
+    if (!model) return;
+    if (
+      reflectionMoment?.isOpen?.() ||
+      bootHonestyCompanion.microRitualUI?.isOpen?.() ||
+      focusDurationPicker?.isOpen?.() ||
+      honestyBridge?.isVisible?.() ||
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() ||
+      stateManager.state === STATES.FOCUSING
+    ) {
+      mindfulToast.show(t('COMPANION_SELECT_BLOCKED'));
+      return;
+    }
+    closeGrowthOverlayCards();
+    sessionEndFlow.cancelPending();
+    honestyBridge?.hide();
+    bootHonestyCompanion.honestyCheckInUI.hide();
+    bootHonestyCompanion.companionModePicker.hide();
+    focusDurationPicker?.hide();
+    pendingFocusDurationMode = null;
+    clearPracticeConfigAwaitingVote(storage);
+    setFocusStableAwaitingVoteFromChip(false, storage);
+    applyCoPracticeContinueSlotConfig(model, storage);
+    if (model.durationMode === FOCUS_DURATION_MODE_OPEN) {
+      savePreferredOpenEndedFocus(storage);
+      focusSession.setTargetMinutes(loadPreferredFocusDurationMinutes(storage));
+    } else {
+      savePreferredFocusDurationMinutes(model.minutes, storage);
+      focusSession.setTargetMinutes(model.minutes);
+    }
+    const mode = bootHonestyCompanion.companionModePicker.getSelectedMode();
+    bootSessionChrome.syncArrivalGateReady(true);
+    beginFocusWithMode(mode);
+    resyncSessionChrome();
+    syncOnboardingAutoHints();
+  }
+
+  coPracticeContinueSlotChrome.setHandlers({
+    canContinue: () =>
+      stateManager.state !== STATES.FOCUSING &&
+      bootHonestyCompanion.arrivalPractice?.isOpen?.() !== true &&
+      reflectionMoment?.isOpen?.() !== true &&
+      bootHonestyCompanion.microRitualUI?.isOpen?.() !== true &&
+      focusDurationPicker?.isOpen?.() !== true,
+    onContinue: () => handleCoPracticeContinueSlot()
+  });
 
   companionModeHandlers.canBeginFocus = (mode) =>
     bootSessionChrome.sessionUiGate.canBeginFocusOnCompanionModeSelect(mode, {
