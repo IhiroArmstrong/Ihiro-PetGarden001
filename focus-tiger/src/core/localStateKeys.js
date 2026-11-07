@@ -103,6 +103,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.focus-circle-identity-hidden.v1',
   'focus-tiger.focus-duration-pref.v1',
   'focus-tiger.confide-observation.v1',
+  'focus-tiger.co-practice-research-week-ledger.v1',
   'focus-tiger.session-presence-ring.v1',
   'focus-tiger.t54-research-log.v1',
   'focus-tiger.t54-research-consent.v1',

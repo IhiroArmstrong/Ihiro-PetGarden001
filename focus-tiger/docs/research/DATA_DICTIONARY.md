@@ -28,11 +28,11 @@
 | practice.micro.* | MicroRitual 完成 | **部分已有**；需周聚合 |
 | dayMask | 练习日历按本地周 | **需派生**；禁止按个人发布 |
 | timeSlots.* | 练习**开始**的本地钟点 | **多半缺口**（若只存日期） |
-| companion.confideOpened | Confide 开面板 | **缺口**（现网遥测多为本机 log） |
-| companion.confideSent | 点发送 | **缺口**；只计次数 |
-| companion.chips.* | `trackConfideChipTapped` | **缺口**周计数；枚举已冻 |
-| companion.route.* | 回复戳 / 工具 id，不是原文 | **缺口**；枚举已冻 |
-| companion.sitWithYin | 一起坐 / Quiet Together | **需 S1 对照现网键**；没有则本字段恒 0 直到补点 |
+| companion.confideOpened | Confide 开面板 | **T81 S1** · `coPracticeResearchWeekLedger` 周桶 + `ConfideToYinUI.open` 打点 |
+| companion.confideSent | 点发送 | **T81 S1** · 由 `confide-observation.v1` 周聚合（`confide_share` 次数） |
+| companion.chips.* | `trackConfideChipTapped` | **T81 S1** · observation 周聚合；仅冻结 chipId |
+| companion.route.* | 回复戳 / 工具 id，不是原文 | **T81 S1** · `coPracticeResearchWeekLedger` 功能类 route + `_showReply` 映射 |
+| companion.sitWithYin | 一起坐 / Quiet Together | **S1 无现网次数键** · 聚合恒 0；`noteCoPracticeResearchSitWithYin` 预留 |
 | retention.* | 练习完成日 | **部分已有**（T54 粒度不同，不可复用其 payload） |
 | flags.localAi | 本地 AI 开关 | **已有**偏好 |
 | flags.focusCircle | Focus Circle | **需对照键名** |

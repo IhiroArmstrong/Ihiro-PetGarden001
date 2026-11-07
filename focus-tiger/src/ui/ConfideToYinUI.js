@@ -87,6 +87,11 @@ import {
   trackConfideShare,
   trackKbRetrievalMiss
 } from '../core/confide/confideObservationTelemetry.js';
+import {
+  mapConfideReplyToResearchRouteClass,
+  noteCoPracticeResearchConfideOpened,
+  noteCoPracticeResearchRouteClass
+} from '../core/coPracticeResearchWeeklyPayload.js';
 import { resolveConfideHelpEntryEnabled } from '../core/confide/confideHelpEntryGate.js';
 import { recordConfideHelpEntryOpen } from '../core/confide/confideHelpEntryTelemetry.js';
 import { formatConfideSafetyResourceGuidance } from '../core/confide/confideSafetyResources.js';
@@ -498,6 +503,7 @@ export class ConfideToYinUI {
     if (this.handlers.canOpen && !this.handlers.canOpen()) return;
     this.handlers.onOpen?.();
     this._open = true;
+    noteCoPracticeResearchConfideOpened();
     showOverlayBackdrop(this.backdrop);
     this.root.hidden = false;
     this.inputEl.value = '';
@@ -833,6 +839,10 @@ export class ConfideToYinUI {
       { dataSource: shown.source, userText: asked },
       { translate: t }
     );
+    const researchRouteClass = mapConfideReplyToResearchRouteClass(shown);
+    if (researchRouteClass) {
+      noteCoPracticeResearchRouteClass(undefined, researchRouteClass);
+    }
     this._l2Turns.push({ role: 'user', text: asked });
     this._l2Turns.push({
       role: 'yin',
