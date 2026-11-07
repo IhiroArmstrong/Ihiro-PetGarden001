@@ -46,6 +46,6 @@
 
 1. 合并 [R2 Brief](../briefs/R2-cross-review-b5-b6.md)（PR #1592）入 develop。  
 2. 治理会话落上表进 `TASKS.md`。  
-3. **固定 `r2_baseline_commit`** → 开 R2 全新会话（Grok 4.6 / High / Fast OFF）跑整改前 §4.2/§4.3。  
+3. **固定 `r2_baseline_commit`** → 开 R2 全新会话（另一家厂商；示例 Grok 4.7 / High / Fast OFF）跑整改前 §4.2/§4.3。正式任务代号在治理 docs PR 的 `GLOSSARY.md` / `SCHEDULING_GLOSSARY.md`（T89 复核，T90–T92 三项整改）。本文件不是队列 SSOT。  
 4. 并行开实现任务（每项单独 PR）：优先 P0 **audit-fix-10-01**，其次 P2 快赢与 9-02(a)。  
 5. 整改合入后 R2 会话补跑对比 → 定稿 R2 findings → 再开 B1–B4。
