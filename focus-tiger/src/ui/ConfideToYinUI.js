@@ -44,6 +44,10 @@ import {
   resolveConfideSemanticCrisisMode,
   shouldAttemptConfideSemanticCrisis
 } from '../core/confide/confideSemanticCrisisLayer.js';
+import {
+  confideSemanticCrisisBlocksL3Generate,
+  createConfideSemanticCrisisGenerateAttestation
+} from '../core/confide/confideSemanticCrisisGenerateGate.js';
 import { applyConfideStage2bLive } from '../core/confide/confideSemanticStage2b.js';
 import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
@@ -212,6 +216,8 @@ export class ConfideToYinUI {
     this.handlers = handlers;
     this._open = false;
     this._sessionExclude = new Set();
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     this._generateFailStreak = 0;
     this._companion = null;
     this._unsubCompanion = null;
@@ -517,6 +523,8 @@ export class ConfideToYinUI {
     this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
@@ -545,6 +553,8 @@ export class ConfideToYinUI {
     this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
@@ -1558,6 +1568,8 @@ export class ConfideToYinUI {
       return;
     }
     if (!canSubmitConfideText(text)) return;
+    this._semanticCrisisGenerateAttestation =
+      createConfideSemanticCrisisGenerateAttestation();
     const hit = resolveConfideReply({
       text,
       localDate: formatLocalDateYmd(),
@@ -1632,6 +1644,10 @@ export class ConfideToYinUI {
       } catch {
         crisisScore = null;
       }
+      this._semanticCrisisGenerateAttestation = {
+        scored: true,
+        embeddingOk: Boolean(crisisScore?.embeddingOk)
+      };
       if (!this._open || epoch !== this._sendEpoch) {
         this._sending = false;
         this._syncSendEnabled();
@@ -2217,12 +2233,20 @@ export class ConfideToYinUI {
       );
       return 'sync';
     }
-    const wantGenerate = ypeMayUseCompanionGenerate({
-      route: hit.route,
-      generateEnabled: Boolean(this._companionStatus?.generateEnabled),
-      generateLayerOpen: this._generateLayerOpen,
-      hasGenerateFn: typeof this._companion?.generate === 'function'
-    });
+    const wantGenerate =
+      ypeMayUseCompanionGenerate({
+        route: hit.route,
+        generateEnabled: Boolean(this._companionStatus?.generateEnabled),
+        generateLayerOpen: this._generateLayerOpen,
+        hasGenerateFn: typeof this._companion?.generate === 'function'
+      }) &&
+      !confideSemanticCrisisBlocksL3Generate({
+        route: hit.route,
+        text,
+        wideViewport: this._viewportAllowsGenerateLayer(),
+        scored: this._semanticCrisisGenerateAttestation.scored,
+        embeddingOk: this._semanticCrisisGenerateAttestation.embeddingOk
+      });
     if (!wantGenerate) {
       this._sessionExclude.add(hit.line.id);
       this._showReply(
