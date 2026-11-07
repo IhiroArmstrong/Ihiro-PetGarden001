@@ -126,6 +126,7 @@ import {
   FOCUS_CIRCLE_IDENTITY_HIDDEN_STORAGE_KEY
 } from './focusCircleIdentity.js';
 import { CONFIDE_OBSERVATION_STORAGE_KEY } from './confide/confideObservationTelemetry.js';
+import { CO_PRACTICE_RESEARCH_WEEK_LEDGER_KEY } from './coPracticeResearchWeekLedger.js';
 import { SEASONAL_WHISPER_STORAGE_KEY } from './seasonal/seasonalWhisperGate.js';
 import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.js';
 import { RITUAL_RECIPE_STORAGE_KEY } from './ritualRecipe/ritualRecipeStore.js';
@@ -282,6 +283,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   YIN_ADAPTATION_STORAGE_KEY,
   FOCUS_DURATION_MANUAL_ANCHOR_STORAGE_KEY,
   CONFIDE_OBSERVATION_STORAGE_KEY,
+  CO_PRACTICE_RESEARCH_WEEK_LEDGER_KEY,
   'focus-tiger.session-presence-ring.v1',
   T54_RESEARCH_LOG_STORAGE_KEY,
   T54_RESEARCH_CONSENT_STORAGE_KEY,
