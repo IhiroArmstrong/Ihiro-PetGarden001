@@ -1,8 +1,8 @@
 # 治理草稿 · B5/B6 审计整改队列（2026-11-07）
 
 > **用途**：供治理会话复制进 `TASKS.md` / `TEST_TRACKER.md`。**非 SSOT**——合入须治理 docs PR。  
-> **来源**：PO 2026-11-07 登记表 + [R2 Brief](../briefs/R2-cross-review-b5-b6.md) §8。  
-> **R2 基线**：并行整改合入 `develop` 前，由执行方固定 `r2_baseline_commit` 并完成 R2 §4.2/§4.3 整改前跑次（见 R2 Brief §0.4）。
+> **来源**：PO 2026-11-07 登记表 + [R2 Brief](../briefs/R2-cross-review-b5-b6.md) §8（**v1.2**）。  
+> **R2 基线**：`r2_baseline_commit` = **`845aa8e0`**（并行整改 PR 开写前 `origin/develop` 顶端，Merge #1591）。R2 §4.2/§4.3 **整改前**跑次须在该 SHA 的**独立 worktree** 完成；**并行整改合入 develop 不等** R2 整改前跑次。
 
 ## 主队列（8 条 · 去重后）
 
@@ -14,7 +14,7 @@
 | audit-fix-10-02 | 10-02：他人伤害意图 | P1（待 R2） | **等 R2 复测** | — | R2 §4.4 | 复测后再定是否并入 V2 |
 | audit-fix-10-05 | 10-05：多语言危机语义一致 | P1 | 10-03 之后 | M | 10-03 机制 | |
 | audit-fix-9-01 | 9-01：改名后应用内提示（旧版导出 → 本版导入） | P1 | 公开发布前必须完成 | S | 无 | 紧迫度看旧版装机量；自动迁移另开 Brief |
-| audit-fix-9-02 | 9-02：**(a)** CI 补扫 desktop/cloud **立即**；**(b)** Electron 升级单独排期 | P1 | (a) 立即；(b) 单独迭代 | S / L | (b) 桌面壳回归 | |
+| audit-fix-9-02 | 9-02：**(a)** CI `dependency-audit` 覆盖 `desktop/`、`cloud/` **立即**；**(b)** Electron 升级单独排期 | P1 | (a) 立即；(b) 单独迭代 | S / L | (b) 桌面壳回归 | **(a)** 与下表 9-15 可各开一 PR；**(a)** 不单独立「9-02-ci」第二行 |
 | audit-fix-9-03-10-08 | 9-03 + 10-08 合并：本地模型下载哈希 / 固定引用 | P1 | 可并行 | S | 无 | 任务账只保留一条；B6 10-08 交叉引用 |
 
 ## P2 快赢（顺手登记）
@@ -22,30 +22,37 @@
 | ID | 发现 | 级别 | 成本 | 备注 |
 |---|---|---|---|---|
 | audit-fix-9-15 | 9-15：云备份 Worker 写入路由下线（前端已关、明文快照休眠风险） | P2 | S | |
-| audit-fix-9-02-ci | 9-02：`dependency-audit.yml` 覆盖 `desktop/` 与 `cloud/` | P2 | S | 可与 9-02(a) 同一实现 PR |
+
+## `r2_baseline_commit` 核对（2026-11-07 · 执行会话）
+
+| 核对项 | 结果 |
+|---|---|
+| `git diff --stat ec0fc0c7..845aa8e0` | **非仅文档**：含 T77/T81 等 **51** 个路径、约 6k 行 src/cloud/desktop 变更 |
+| 与 B5/B6 报告静态审计点 | B5/B6 合在 `ec0fc0c7` 之后；`845aa8e0` 为整改开工前 develop 顶端，**须 worktree 检出** |
+| 相对并行整改 | 10-01 / 9-02(a) / 9-15 **不等** R2 整改前跑次 |
 
 ## 建议复制块（治理会话 → TASKS.md）
 
 ```markdown
 ### 基线审计整改（B5/B6 · 2026-11-07 治理登记）
 
-- **R2 基线 commit**：`<SHA>`（整改 PR 合入前固定；见 audit/governance-drafts/2026-11-07-b5-b6-remediation-queue.md）
+- **R2 基线 commit**：`845aa8e0`（整改前 §4.2/§4.3 仅用该 SHA 的 worktree；见 audit/governance-drafts/2026-11-07-b5-b6-remediation-queue.md）
 - P0 · audit-fix-10-01：生成放行绑定语义打分 — 立即 / S
 - P1 · audit-fix-10-03：会话内锁生成 — 本迭代 / M（轮数·外部顾问01）
 - P1 · audit-fix-10-04：具体求助资源 — 本迭代 / 依赖外部顾问01
 - P1 · audit-fix-10-02：他人伤害 — **阻塞于 R2**，复测后定级
 - P1 · audit-fix-10-05：多语言一致 — 10-03 后
 - P1 · audit-fix-9-01：改名恢复应用内提示 — 公开发布前 / S
-- P1 · audit-fix-9-02：CI 补扫立即；Electron 升级另排
+- P1 · audit-fix-9-02(a)：dependency-audit 含 desktop/cloud — 立即 / S
+- P1 · audit-fix-9-02(b)：Electron 升级 — 另迭代
 - P1 · audit-fix-9-03-10-08：模型下载校验（合并登记）
 - P2 · audit-fix-9-15：Worker 写入路由下线
-- P2 · audit-fix-9-02-ci：dependency-audit desktop/cloud（可与 9-02(a) 合并）
 ```
 
 ## 与 R2 的并行顺序（PO）
 
-1. 合并 [R2 Brief](../briefs/R2-cross-review-b5-b6.md)（PR #1592）入 develop。  
+1. 合并 [R2 Brief](../briefs/R2-cross-review-b5-b6.md)（PR #1592，**v1.2**）入 develop。  
 2. 治理会话落上表进 `TASKS.md`。  
-3. **固定 `r2_baseline_commit`** → 开 R2 全新会话（另一家厂商；示例 Grok 4.7 / High / Fast OFF）跑整改前 §4.2/§4.3。正式任务代号在治理 docs PR 的 `GLOSSARY.md` / `SCHEDULING_GLOSSARY.md`（T89 复核，T90–T92 三项整改）。本文件不是队列 SSOT。  
-4. 并行开实现任务（每项单独 PR）：优先 P0 **audit-fix-10-01**，其次 P2 快赢与 9-02(a)。  
+3. R2 全新会话（**另一家厂商高档模型**；不写死型号）在 **`845aa8e0` worktree** 跑整改前 §4.2/§4.3 并写报告。正式任务代号在治理 docs PR 的 `GLOSSARY.md` / `SCHEDULING_GLOSSARY.md`（T89 复核，T90–T92 三项整改）。  
+4. 并行开实现任务（每项单独 PR）：优先 P0 **audit-fix-10-01**，其次 **9-02(a)** 与 **audit-fix-9-15**。  
 5. 整改合入后 R2 会话补跑对比 → 定稿 R2 findings → 再开 B1–B4。

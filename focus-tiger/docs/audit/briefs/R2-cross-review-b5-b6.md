@@ -1,11 +1,11 @@
-> **入库注记（2026-11-07 · v1.1）**：正本在 `focus-tiger/docs/audit/`。正文里的 `docs/audit/` 都指本目录。背景见 [CONTEXT.md](../CONTEXT.md)，总基准见 [AUDIT_BASELINE.md](../AUDIT_BASELINE.md) v1.1 §9「第 2 轮 · 汇总与复核」。v1.0 = PR #1592 首版；v1.1 = PO 四轮修订（V1 必做抓包、10-02 计数口径、封存检查、整改前基线 commit）。
+> **入库注记（2026-11-07 · v1.2）**：正本在 `focus-tiger/docs/audit/`。正文里的 `docs/audit/` 都指本目录。背景见 [CONTEXT.md](../CONTEXT.md)，总基准见 [AUDIT_BASELINE.md](../AUDIT_BASELINE.md) v1.1 §9「第 2 轮 · 汇总与复核」。v1.0 = PR #1592 首版；v1.1 = PO 四轮修订；**v1.2 = PO 拍板**（V1 主进程+渲染双层抓包、复核模型不写具体型号、`r2_baseline_commit` 固定 SHA + 独立 worktree，**不**卡并行整改合入）。
 
 # Task Brief R2 — 第 2 轮：B5 + B6 交叉复核
 
 - 所属基准：`AUDIT_BASELINE.md` v1.1
 - 负责维度：⑨ 安全、隐私与合规；⑩ AI 质量与安全（**复核**，不是重审 B5/B6）；否决项 **V1–V4** 判定
 - 建议执行方式：**全新独立会话**，且不得是撰写 B5、B6 或改本 Brief 的会话；一个会话只做本 Brief
-- 建议模型：**另一家厂商的高档模型**。同一家再开一个新会话不算独立。本次示例：xAI Grok 4.7 · High · **Fast OFF**（若写 B5/B6 的就是这一家，报告里改写实际使用的另一家）。须能操作 **macOS 桌面真机**。V1 只记实际请求，不要求 Charles / mitmproxy 全流程
+- 建议模型：**另一家厂商的高档模型**（同一家再开一个新会话不算独立；若撰写 B5/B6 或改本 Brief 的会话即该厂商，报告里须写明实际使用的**另一家**厂商与档位）。须能操作 **macOS 桌面真机**。**禁止**在本 Brief 写死具体型号或版本号。V1 只记实际请求，不要求 Charles / mitmproxy 全流程
 - 输出目录：`docs/audit/findings/<日期>/`
 
 ## 0. 开工前置（缺一则停下汇报，不开工）
@@ -13,7 +13,7 @@
 1. B5、B6 报告均已合入 `develop`（截至 2026-11-07：B5 = PR **#1589** **已合**；B6 = PR **#1587** **已合**）。**禁止**把「重做 B6」当作下一步——B6 报告已存在，本轮是**复核**。
 2. 用 `gh pr list --state all --search "R2 in:title"` 确认没有同名复核 PR 已含实质报告。
 3. 先通读：`AUDIT_BASELINE.md`、`findings/2026-11-07/B5-security-privacy-compliance-findings.md`、`findings/2026-11-07/B6-ai-quality-safety-findings.md`、`facts/2026-11-06/INDEX.md`。
-4. **固定整改前基线 commit**：记 `r2_baseline_commit` = 执行 R2 时 `origin/develop` 的 SHA（**须在并行 §8 整改合入 develop 之前**固定并写入报告页眉）。§4.2 与 §4.3 **必须先在此 commit 上跑完并存档**，再允许在整改后 commit 上重跑对比。
+4. **固定整改前基线 commit**：PO 拍板后写入 `r2_baseline_commit`（治理草稿登记 SHA；**截至 2026-11-07：`845aa8e0`** = 并行整改开工前 `origin/develop` 顶端）。R2 执行方在**该 SHA 的独立 git worktree** 内完成 §4.2、§4.3 **整改前**跑次并存档；**并行 §8 整改 PR 合入 develop 不必等待**上述跑次结束。§4.2、§4.3 整改后对比在合入后 `develop` 顶端重跑。页眉须写 worktree 路径或 `git worktree list` 一行。相对 B5 静态审计时点 `ec0fc0c7`，该 SHA 已含 T77/T81 等产品合入——不得以「仅文档差」代替 worktree 检出。
 5. **封存卷门禁**（约 1 分钟，不过则停）：开跑 §4.2 余弦分之前，列出即将读取的每一个输入文件。文件名或路径里不得出现 `s-v*`、`a-v*`、`b-v*`（含 `sealed-s-v1.json`、`sealed-s-v2.json`）。已知反例：`desktop/scripts/l0-safety-literal-semantic-curve.js` 的 `main` 会读 `~/Documents/ft-private/confide-safety-blind-zh/` 下这两个文件；文件头写「不占封存额度」不能代替本检查。看到封存文件 → **停下汇报**，不得占用封存额度（`docs/CONFIDE_STATUS.md` §2 G1）。检查结果写入报告（查了哪些路径、有没有命中）。
 
 ## 1. 目标
@@ -73,7 +73,7 @@
 ### 4.1 否决项复核
 
 - [ ] **V2**：基于 §4.2–§4.5 的新证据，给出 通过 / 未通过 / 未检。与 B6 不同时须写明证据差异
-- [ ] **V1（必做 · 最小版）**：用**默认设置**启动一次桌面版，完成**一次练习**，再把各个同意开关**各开、各关一遍**，记录实际发出的请求（主机、路径、发生在同意之前还是之后）。对照 B5 §2 网络清单与 §3 同意对照，抽样 ≥5 条。DevTools Network 即可，不要求完整代理抓包。静态代码不能单独维持「通过」。仅当桌面壳无法启动时标 **未检** 并写原因
+- [ ] **V1（必做 · 最小版）**：用**默认设置**启动一次桌面版，完成**一次练习**，再把各个同意开关**各开、各关一遍**，记录实际发出的请求（主机、路径、发生在同意之前还是之后）。对照 B5 §2 网络清单与 §3 同意对照，抽样 ≥5 条。静态代码不能单独维持「通过」。**抓包须双层（禁止只靠渲染进程 DevTools Network）**：B5 已记桌面云 API 经主进程 `desktop:cloud-post`（`desktop/main.js`）转发，模型拉取（`desktop/companion/l0Download.js` 等）与更新检查（`desktop/updater/`）也在主进程 / Node 子进程，渲染进程 Network **看不到**这部分。**(A) 主进程与 Chromium 栈**：用 Electron/Chromium 开关启动（经 `desktop/scripts/dev.js` 给 `electron` 追加参数，或打包版等效配置），至少包含 `--log-net-log=<绝对路径>.json`；大文件可加 `--net-log-max-file-size`（单位字节）。会话结束后用 Chromium **net-export**（`chrome://net-export`）或官方 NetLog 查看器解析，列出主机与路径。**(B) Node 侧出站**（`fetch` 模型镜像、Worker 基址等不进 net-log 的部分）：同一会话用 macOS 进程级连接观察（示例：`lsof -nP -p <主进程 pid> -i` 在练习前/开关切换后各抽样一次；或 `log stream` 过滤 `Samatia` / `Electron` 进程名）补全清单。**(C) 渲染进程**：DevTools Network **仅作补充**（品味层、5173 开发态直连等）。报告 §6 写明 (A)(B)(C) 工具与各抽到 ≥几条。仅当桌面壳无法启动时标 **未检** 并写原因
 - [ ] **V3**：完成 §4.0 链式核对——逐条映射：品味层 / 远程 JSON 字段 → 最终 DOM API（`textContent` / `innerHTML` / 属性等）
 - [ ] **V4**：导出 → 导入往返；改名后旧 Application Support 目录是否仍可读；**单独结论**：应用内是否看得见 §4.0(2)(a) 所述恢复步骤（9-01）
 
@@ -159,7 +159,7 @@ B5、B6 原报告**不改写**；结论只写在本轮文件；原条目「复�
 ## 6. 证据要求
 
 - 真机：OS、机型、commit、模型文件与大小、窗口宽度
-- 抓包：工具、证书安装方式、抽样会话说明（**禁止**在正文复述 token / 密钥）
+- 抓包：§4.1 V1 的 (A) net-log 路径与解析方式、(B) 主进程/Node 连接观察方式、(C) 渲染 DevTools 补充范围；抽样会话说明（**禁止**在正文复述 token / 密钥；net-log 含敏感模式时勿把 cookie/token 贴进报告）
 - 每条复核结论：至少一条**新**证据；推翻须说明原证据为何不成立
 - 危机样本：意图 + 脱敏表达；**禁止**方法细节
 
@@ -188,9 +188,8 @@ B5、B6 原报告**不改写**；结论只写在本轮文件；原条目「复�
 | 动作 | 对应发现 | 成本 |
 |---|---|---|
 | 云备份 Worker **写入路由下线**（前端已关） | 9-15 | S |
-| `dependency-audit.yml` 加 `desktop/` 与 `cloud/`（若与上表 9-02(a) 同 PR 可合并） | 9-02 | S |
 
-**与 R2 时序**：并行整改 PR **合入前**，必须先固定 `r2_baseline_commit` 并完成 §4.2、§4.3 整改前跑次。合入后重跑对比。
+**与 R2 时序**：`r2_baseline_commit` 固定后，§4.2、§4.3 **整改前**跑次在**该 SHA 的 worktree** 完成；**并行整改 PR 可随时合入 develop**，不必等 R2 整改前跑次。每项整改合入后 R2 在 develop 顶端补跑对比。
 
 ## 9. 完成标准（Definition of Done）
 
