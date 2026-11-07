@@ -47,6 +47,13 @@ import {
 import { applyConfideStage2bLive } from '../core/confide/confideSemanticStage2b.js';
 import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
+  armConfideSafetyGenerateLatch,
+  createConfideSafetyGenerateLatchState,
+  isConfideSafetyGenerateLatchActive,
+  resolveConfideSafetyGenerateLockTurns,
+  tickConfideSafetyGenerateLatchOnUserSend
+} from '../core/confide/confideSafetyGenerateLatch.js';
+import {
   buildConfideShadowContextualText,
   priorConfideTurnForLiveClassify,
   priorConfideTurnForShadow
@@ -212,6 +219,7 @@ export class ConfideToYinUI {
     this.handlers = handlers;
     this._open = false;
     this._sessionExclude = new Set();
+    this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._companion = null;
     this._unsubCompanion = null;
@@ -517,6 +525,7 @@ export class ConfideToYinUI {
     this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
+    this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
@@ -545,6 +554,7 @@ export class ConfideToYinUI {
     this._hideThinkingIndicator();
     this._l2Turns = [];
     this._sessionExclude = new Set();
+    this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
@@ -827,6 +837,12 @@ export class ConfideToYinUI {
    */
   _showReply(shown, userText) {
     this._hideThinkingIndicator();
+    if (shown.route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
+      armConfideSafetyGenerateLatch(
+        this._safetyGenerateLatch,
+        resolveConfideSafetyGenerateLockTurns()
+      );
+    }
     const asked = typeof userText === 'string' ? userText.trim() : '';
     this.userEl.textContent = asked;
     this.userEl.hidden = !asked;
@@ -1558,6 +1574,7 @@ export class ConfideToYinUI {
       return;
     }
     if (!canSubmitConfideText(text)) return;
+    tickConfideSafetyGenerateLatchOnUserSend(this._safetyGenerateLatch);
     const hit = resolveConfideReply({
       text,
       localDate: formatLocalDateYmd(),
@@ -2217,12 +2234,13 @@ export class ConfideToYinUI {
       );
       return 'sync';
     }
-    const wantGenerate = ypeMayUseCompanionGenerate({
-      route: hit.route,
-      generateEnabled: Boolean(this._companionStatus?.generateEnabled),
-      generateLayerOpen: this._generateLayerOpen,
-      hasGenerateFn: typeof this._companion?.generate === 'function'
-    });
+    const wantGenerate =
+      ypeMayUseCompanionGenerate({
+        route: hit.route,
+        generateEnabled: Boolean(this._companionStatus?.generateEnabled),
+        generateLayerOpen: this._generateLayerOpen,
+        hasGenerateFn: typeof this._companion?.generate === 'function'
+      }) && !isConfideSafetyGenerateLatchActive(this._safetyGenerateLatch);
     if (!wantGenerate) {
       this._sessionExclude.add(hit.line.id);
       this._showReply(
