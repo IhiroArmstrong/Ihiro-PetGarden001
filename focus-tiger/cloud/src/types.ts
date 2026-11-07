@@ -29,6 +29,8 @@ export interface Env {
 	TASTE_LAYER_KV: KVNamespace;
 	/** T54 de-identified study rows only (not YPE / backup / funnel / tip). Bind on deploy. */
 	T54_RESEARCH_KV?: KVNamespace;
+	/** T81 practice study weekly aggregates (not T54 / YPE / backup / funnel / tip). */
+	CO_PRACTICE_RESEARCH_KV?: KVNamespace;
 
 	STRIPE_SECRET_KEY?: string;
 	STRIPE_WEBHOOK_SECRET?: string;

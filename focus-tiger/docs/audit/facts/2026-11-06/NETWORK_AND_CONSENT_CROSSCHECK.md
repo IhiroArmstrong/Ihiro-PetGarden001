@@ -28,6 +28,7 @@
 | `/api/practice-backup/*` | 练习云备份 |
 | `/api/restore/request-otp` | OTP 恢复 |
 | `/api/t54-research-ingest` | T54 研究（consent） |
+| `/api/co-practice-research-ingest` | T81 练习研究周聚合（consent · T82 未上线前客户端零发） |
 | `/api/verify-*` | 验证 |
 | `/api/ype-personalization-ingest` / `delete` | YPE（consent） |
 
