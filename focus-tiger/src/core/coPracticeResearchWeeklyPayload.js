@@ -106,6 +106,10 @@ function buildPracticeWeekAggregate(storage, weekKey) {
       honesty.started += 1;
       if (completed) honesty.completed += 1;
       honesty.minutes += actualMinutes;
+    } else if (source === 'breath') {
+      breath.started += 1;
+      if (completed) breath.completed += 1;
+      breath.minutes += actualMinutes;
     } else if (source === T54_LOG_SOURCE.RITUAL) {
       micro.started += 1;
       if (completed) micro.completed += 1;

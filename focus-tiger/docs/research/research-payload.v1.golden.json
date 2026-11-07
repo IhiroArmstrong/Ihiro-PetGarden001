@@ -22,7 +22,7 @@
       "route": { "help_center_redirect": 2 },
       "sitWithYin": 1
     },
-    "retention": { "daysSinceLastPractice": 1, "longestGapDays": 2, "comebacks": 1 },
+    "retention": { "daysSinceLastPractice": 1, "longestGapDays": 1, "comebacks": 1 },
     "flags": { "localAi": true, "focusCircle": false, "reminders": true }
   }
 }
