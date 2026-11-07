@@ -5,7 +5,7 @@
  */
 
 /**
- * T81 S4(a)(b) — practice study upload CI guards.
+ * T81 S4(a)(b)(c)(d)(e) — practice study upload CI guards.
  *
  *   node scripts/check-co-practice-research-ci.js
  *
@@ -13,9 +13,10 @@
  * S4(b): coPracticeResearch* upload modules must not import Confide originals, Memory, or emotion buckets.
  */
 
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateCoPracticeResearchGoldenBuild } from '../src/core/coPracticeResearchGoldenFixture.js';
 
 const PKG_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -215,6 +216,39 @@ function main() {
     ok = false;
     problems.push('[S4(b)] coPracticeResearch upload module imports:');
     problems.push(...depHits.map((h) => `  - ${h}`));
+  }
+
+  const uploadModulePath = join(coreDir, 'coPracticeResearchUpload.js');
+  if (!existsSync(uploadModulePath)) {
+    ok = false;
+    problems.push('[S4(c)(d)] missing coPracticeResearchUpload.js');
+  } else {
+    const uploadSource = readFileSync(uploadModulePath, 'utf8');
+    const requiredS4c = [
+      'shouldPostCoPracticeResearchIngest',
+      'probeCoPracticeResearchReceive',
+      'revokeCoPracticeResearchAndDeleteRemote',
+      'serializeCoPracticeResearchPayload'
+    ];
+    for (const token of requiredS4c) {
+      if (!uploadSource.includes(token)) {
+        ok = false;
+        problems.push(`[S4(c)(d)] coPracticeResearchUpload.js must reference ${token}`);
+      }
+    }
+  }
+
+  const serializePath = join(coreDir, 'coPracticeResearchSerialize.js');
+  if (!existsSync(serializePath)) {
+    ok = false;
+    problems.push('[S4(e)] missing coPracticeResearchSerialize.js');
+  } else {
+    const goldenHits = validateCoPracticeResearchGoldenBuild();
+    if (goldenHits.length > 0) {
+      ok = false;
+      problems.push('[S4(e)] golden serializer fixture:');
+      problems.push(...goldenHits.map((h) => `  - ${h}`));
+    }
   }
 
   if (!ok) {

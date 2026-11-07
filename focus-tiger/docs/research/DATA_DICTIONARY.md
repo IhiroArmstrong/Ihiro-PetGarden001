@@ -3,7 +3,7 @@
 > **S0 · 2026-11-04**。从属 [`../drafts/co-practice-research-data-pack-v0.1.md`](../drafts/co-practice-research-data-pack-v0.1.md)。  
 > 实现冻结：chipId / route.class 以本文 + 方案包 §2.2 为准。改枚举必须升 `schemaVersion`。  
 > Golden 样例（S4(e)）：[`research-payload.v1.golden.json`](./research-payload.v1.golden.json)  
-> CI S4(a)(b)：`npm run lint:co-practice-research-ci`（schema 字符串无自由文本；`coPracticeResearch*` 禁引情绪桶 / Memory / Confide 原文路径）。  
+> CI S4(a)–(e)：`npm run lint:co-practice-research-ci`（schema 字符串无自由文本；`coPracticeResearch*` 禁引情绪桶 / Memory / Confide 原文路径；未同意/撤回零 POST；预览与上传共用 `coPracticeResearchSerialize` + golden 对照）。  
 > DPIA 自查（R-13）：[`practice-study-dpia-self-check-v1.md`](./practice-study-dpia-self-check-v1.md)  
 > **S3 Worker（2026-11-07）**：`POST` / `DELETE` `/api/co-practice-research-ingest` · KV 键 `cpr:v1:{studyId}:{week}` · 体上限 32 KiB · 边缘限流 20/min/IP（不计入研究库）。**POST 无法认证真实参与者**，数据集可能含伪造周包；预注册与分析计划须写明（方案包 §2.5 #10）。
 

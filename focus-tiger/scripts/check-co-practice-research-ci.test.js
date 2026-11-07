@@ -15,6 +15,7 @@ import {
   scanCoPracticeResearchUploadDeps,
   validateResearchPayloadSchemaStrings
 } from './check-co-practice-research-ci.js';
+import { validateCoPracticeResearchGoldenBuild } from '../src/core/coPracticeResearchGoldenFixture.js';
 
 const PKG_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -46,6 +47,13 @@ describe('T81 S4(a) research payload schema strings', () => {
       }
     });
     assert.equal(hits.length, 0);
+  });
+});
+
+describe('T81 S4(e) golden fixture', () => {
+  it('buildWeeklyPayload matches research-payload.v1.golden.json', () => {
+    const hits = validateCoPracticeResearchGoldenBuild();
+    assert.equal(hits.length, 0, hits.join('; '));
   });
 });
 
