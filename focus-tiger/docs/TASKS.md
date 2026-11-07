@@ -545,17 +545,187 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `co-practice-gift-art` · feature · 方向锁已合 #1472 · 未排期发画 · 下一刀 T67 补账 · 2026-10-30
+### `deep-link-shortcuts-cookbook` · feature · Brief 待点头（纯文档） · 2026-11-07
 
-共修纪念画方向锁已合。PO 改口：C 为节奏稳定代理；B 只数专注中邀请被接受并坐完。发画仍未排期。下一刀 **T67** 只补账、不出画。
+深链 + Shortcuts 食谱。Web query 与已有 `focus-tiger://app` 落到同一开坐 action。Health 只走用户手势 + 快捷指令回写 Mindful Minutes。不是 T49 原生壳，不是 Ritual Recipe B1，不是读 Health。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。
+
+### `ics-reminder-export` · feature · Brief 待点头（纯文档 · 依赖深链解析） · 2026-11-07
+
+提醒设置「添加到日历」：本机生成 .ics，无云无 OAuth。诚实句禁止「同步」。事件 URL 走深链。不是 webcal，不是日历 API。Brief [`task-briefs/task-ics-reminder-export.md`](../task-briefs/task-ics-reminder-export.md)。
+
+### `t87-samatia-user-facing-rename` · feature · T87-A1 #1563 · T87-A2 #1565 · T87-B #1568 已合 develop · T87-C 旁支实现中 · 2026-11-06
+
+用户可见产品名改为 Samatia（Brief [`task-samatia-user-facing-rename.md`](../task-briefs/task-samatia-user-facing-rename.md)）。A1 locale+文档、A2 句池/提示词、B 桌面显示名已合。本片跟进 T87-C 宣传站 + 域名预备（公开宣布 samatia.net 仍须商标闸）。发布硬闸仍是 A1～A2 + B + C + D 全合且全范围扫描绿。**不是** T87 稳定偏好 PR-1（`t87-co-practice-stable-prefs`）。**不是** T86。
+
+### `t88-guided-meditation-release-hardening` · feature · 立即做 · 可选 · A 刀已合 #1572 · #1571 已合 develop · B 刀（计入秒数/授权拦截/只听音频）本旁支 · 2026-11-06
+
+T88 引导冥想对外前加固。#1567 / #1571 / #1572 已合 develop ≠ 对外。本片：Web 直链沿用 #1571；补实际播放秒数计入、授权空行进 `--release-gate`、保留只听音频钮。不是 T76，不是收紧 CORS，不是部署。
+
+### `guided-meditation-mvp` · feature · 实现旁支进行中 · 2026-11-05
+
+引导冥想 P1：Practice 组菜单、英文长片 + 4:41 概念习惯短课（独立片，不从 22 分再剪）、App 内 `<video>`、练习账 `guided-meditation`、Help EDU-0003 与无语音同坐并存。H7 App 内播放 PO 已拍板。原片不进 Git；R2 上传另刀。
+
+### `guided-meditation-media-delivery` · feature · P0 审计已交稿 · PO 2026-11-04 拍板 · 待合 PR #1558 · 不写运行时 · 2026-11-04
+
+引导冥想媒体交付（云端托管 + 按需下载 + 本地缓存）。本回合只读审计 + 文档。PO 已拍：视频课默认播视频、语音配乐不分轨、课免费、不做后台预下载。源文件不进 Git。
+
+### `t73-co-practice-stable-prefs` · note · 已改号 · 见 T87 · 2026-11-04
+
+历史片：稳定偏好 PR-1 曾误挂 T73/T76。现行代号 **T87**。勿按本片开工。T73 现行 = 记住—响应读层。
+
+### `t74-co-practice-continue-slot` · note · 已改号 · 见 T77 · 2026-11-04
+
+历史片：续练位曾挂本 id。现行代号 **T77**（依赖 T87）。T74 现行 = 预生成池。
+
+### `t75-co-practice-stable-breath-companion` · note · 已改号 · 见 T78 · 2026-11-04
+
+历史片：Breath/Companion 稳定维度曾挂本 id。现行代号 **T78**（依赖 T87）。T75 现行 = 适应开 vs 不开对照方案。
+
+### `t76-cold-start-quiet-sit` · feature · 已完成 · P1 · B1 #1550 · B2 #1553 已合 develop · 2026-11-04
+
+T76 冷启动静修入口。B1 卡面/纠错/直坐 #1550；B2 帮助别名 #1553。关单级手测并入下一批。不是禅修引擎，不是 T71。
+
+### `t77-co-practice-continue-slot` · feature · 排队中 · 可选 · 依赖 T87 · 2026-11-04
+
+T77 续练位 PR-2：常做练习配置一键开练；v1 无时段词；叠层仲裁。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md) §3。**不是** T76 冷启动。
+
+### `t78-co-practice-stable-breath-companion` · feature · 排队中 · 可选 · 依赖 T87 · 2026-11-04
+
+T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动。
+
+### `t79-contemplative-inquiry` · feature · 已完成 · 可选 · #1551 已合 develop · 关单级手测待勾 · 2026-11-04
+
+T79 觉察哲思第一例。Brief 已点头；运行时 #1551 已合 develop。Inspiration 菜单行 + 固定话术 + 5 分钟墙钟。不是 T51、不是 Quiet Line、不是倾诉讲公案。
+
+### `t80-co-practice-research-pack` · feature · 已完成 · 可选 · #1554 已合 develop · 2026-11-04
+
+T80 研究共修方案包。A 类 #1554 已合。字段字典、中英日同意文案、后续 T81–T86 Brief。不是 T54，不是 90 天实验。
+
+### `t87-co-practice-stable-prefs` · feature · 立即做 · 可选 · Brief 已点头 · 未写 src · 2026-11-04
+
+T87 稳定偏好层 PR-1（原盘点误写 T76，T76 已给冷启动）。改选后开表才计票、滚动 3/5、`stable-prefs.v1`、Focus 分钟、L2 事实句、「不是这样」/ 忘掉扩展。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。口令「按 T87 Brief 开工」= 新 Chat。**不是** T76、**不是** T73。
+
+### `t81-co-practice-research-upload` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
+
+T81 研究共修上传接口。周聚合 + 白名单 Worker + CI。点头前不写 src。不是 T54 ingest。
+
+### `t82-co-practice-research-consent-ui` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
+
+T82 研究共修同意页。独立入口，不放进 Privacy 勾选。B 类。点头前不写 src。
+
+### `t83-co-practice-research-first-sit-prompt` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
+
+T83 首次练习后研究共修定位提示。依赖 T82。不是 T51、不是 T76。
+
+### `t84-co-practice-research-privacy-help` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
+
+T84 问号简介与隐私政策三层说明。与 T82 同发更稳。不是新开关。
+
+### `t85-co-practice-research-tier2-survey` · feature · 搁置 · 未排期 · 2026-11-03
+
+T85 研究共修第 2 层问卷。第一版不上。不是临床量表。口令按 T85 Brief 开工不执行。
+
+### `t86-co-practice-research-public-ethics` · feature · 搁置 · 未排期 · 2026-11-03
+
+T86 官网数据字典、伦理审查、差分隐私后置。口令按 T86 Brief 开工不执行。不是 T81 代码锁。
+
+### `companion-channel-en-copy-step1` · feature · 进行中 · 第 1–2 步（content + picker，overlayLive 关） · 2026-11-02
+
+四通道英语句稿实现第 1–2 步。用户仍见冻表。换句开关保持关。第 3 步 overlay 管道另开独立 PR。第 4 步须另一次书面「部署」。AI 审稿 ≠ 人审完成。
+
+### `constrained-generation-expanded-retrieval-impl` · feature · B 类 Brief 已点头 · 无运行时 · overlay 仍关 · AI 审稿非人审 · 2026-11-02
+
+四通道英语句稿 + 句包 overlay Brief。SSOT [`task-constrained-generation-expanded-retrieval-impl.md`](../task-briefs/task-constrained-generation-expanded-retrieval-impl.md)。PO 点头（句稿修订 + 审核字段）。审稿人 Claude（AI），非母语人工审。不是阶段 1、不是 T54、不上 overlay。
+
+### `constrained-generation-expanded-retrieval-spec` · feature · PO 条件点头已锁 · 英语 Brief 已点头 · 无运行时 · 禁止阶段 1 · 2026-11-02
+
+受限生成四通道扩库说明书（R）。A 类纯文档。SSOT [`task-constrained-generation-expanded-retrieval-spec.md`](../task-briefs/task-constrained-generation-expanded-retrieval-spec.md)。PO 条件点头（子类型、overlay 双闸、重置白名单、N 取半、en/ja 审核人）。不是实现、不是阶段 1、不是 T54。
+
+### `constrained-generation-pool-vs-retrieval` · feature · 对比已点头走 R · #1533 已合 · 禁止阶段 1 · 2026-11-02
+
+受限生成：池化本机 vs 离线扩库 vs 缩范围。A 类纯文档。SSOT [`task-constrained-generation-pool-vs-expanded-retrieval.md`](../task-briefs/task-constrained-generation-pool-vs-expanded-retrieval.md)。PO 2026-11-02 点头走 R。增量 **暂不检验**（不是已证明没有）。骨架暂存。下一刀扩库说明书。不是实现、不是阶段 1、不是 T54。
+
+### `constrained-generation-pregen-pool-eval` · feature · 评估稿已合 #1531 · 对比已点头走 R · 禁止路径 A 实现 Brief · 2026-11-02
+
+受限生成预生成池评估。A 类纯文档。SSOT [`task-constrained-generation-pregen-pool-eval.md`](../task-briefs/task-constrained-generation-pregen-pool-eval.md)。PO 圈选 §4.1.1 (A)；#1531 已合。**2026-11-02** 对比点头走 R；下一刀扩库说明书，不是 B 类池化实现。不是阶段 1、不是 T54。
+
+### `constrained-generation-stage-0` · feature · 探针已记 · 对比已点头走 R · 禁止阶段 1 · 2026-11-02
+
+受限生成阶段 0。A 类。SSOT [`task-constrained-generation-stage-0.md`](../task-briefs/task-constrained-generation-stage-0.md)。父关卡已条件点头。PO 圈选 (A) 评估（#1531 已合）。**2026-11-02** 对比点头走 R；路径 A 实现 Brief 冻结。禁止阶段 1。不是 T54。不是倾诉开放生成。
+
+### `presence-field-v0` · feature · Brief 已点头 · 实现中 · 旁支 feature/presence-field-v0 · 2026-11-02
+
+智能场 v0（同坐耦合场）。T 号交治理会话登记；本片不用自编 T 号。PO 已点头并补：最短 scatter + r 涌现进 lock；失败回弹无场单测；PR 附 375/768/宽屏截图。
+
+### `t73-remember-respond-read-layer` · note · T73 第一刀已合 #1530 · 第二刀见 t73-remember-respond-second-knife · 2026-11-02
+
+记住—响应读层：盘点 + 父 Brief 已点头。第一刀读门已合。**不是** T58 重做、**不是** T69。
+
+### `t73-remember-respond-second-knife` · feature · 本支 feature/t73-remember-respond-second-knife · T73 第二刀运行时 · 2026-11-02
+
+记住—响应第二刀：旅程小本子说出所见 + 要/不要。复用 T62 晚间槽。点不要则跳过常用高亮。不改 T58 数字。**不是** T54、**不是** T74。
+
+### `t74-constrained-generation-pregen-pool` · feature · 本支 docs/t73-t74-t75-governance · T74 Brief 待点头 · 不得写 src · 2026-11-02
+
+受限生成预生成池 B 类 Brief：空闲填池、开口取用、kill switch。不插 T73 第二刀前面接线。**不是** 倾诉开放生成、**不是** T54。
+
+### `t75-adaptation-on-off-protocol` · note · 本支 docs/t73-t74-t75-governance · T75 一页纸已写 · 2026-11-02
+
+适应开 vs 不开观察对照方案。写了 ≠ 开工 90 天。口令「开工 T54」不执行。
+
+### `co-practice-ambient-field` · feature · 搁置 · Brief 骨架未点头 · 2026-11-01
+
+环境场再收敛。Brief `task-co-practice-ambient-field-t72.md`。默认零新茶盏/烛火美术。PO 2026-11-01 暂不排实现。
+
+### `co-practice-three-layer-lock` · feature · 已完成（docs · PO 2026-11-01 点头） · 2026-11-01
+
+三层共修方向锁写入 `CO_PRACTICE_POSITIONING.md` §6 + §3 表行。代号 **T71**。无运行时。
+
+### `constrained-generation-release-gates` · feature · Brief 待 PO 点头 · 无运行时 · 2026-11-01
+
+受限生成放行关卡。A 类纯文档。SSOT [`task-constrained-generation-release-gates.md`](../task-briefs/task-constrained-generation-release-gates.md)。**2026-11-01 PO 条件点头**：阶段 1 须先 §4.1 warm/cold + 内存双基线 + PO 书面认可。
+
+### `t66-mindflow-nebula-step2-embedding-presets` · note · 阶段 A 未过 · 阶段 B 搁置 · PO 方案 A 2026-11-01 · 2026-11-01
+
+T66 第二步：Brief #1487 · 阶段 A lab #1488（`phaseAPassed:false`）。**不做** embedding 板块 UI；线上心念流仅 v0 #1475。SSOT [`task-mindflow-nebula-step2-embedding-presets.md`](../task-briefs/task-mindflow-nebula-step2-embedding-presets.md)。复跑须新 Brief。
+
+### `t68-co-practice-gift-art` · feature · 已合 develop · 出卡开关关 · 批量手测排队 · 可选 · 2026-11-01
+
+T68 共修纪念画发放。**#1490** 已合 `origin/develop`（`3eb2cd4`）；合入后另有 **#1491** 线文档与 `a1c687b0` 玻璃卡 deck 门禁（surface 关时不进叠层拖拽名单）。
+
+闸 4 仅第 1 档生效。**出卡开关仍关**；打开开关须**独立小 PR**（文案/图/QA 预览点头后，不在本线顺手翻）。
+
+手测：**并入下一批批量验收**（tracker 仍「待人工测试」）。5173 QA 树须 `npm run sync:qa-develop` 后按脚本 **restart** 行重启 Vite。
+
+2a DEV（仅 DEV）：`window.__coPracticeGiftArtJoinFourScenes()` · `window.__coPracticeJoinLedgerSummary()` · 预览 `window.__coPracticeGiftArtPreviewCard()`（不写账）。
+
+### `t70-user-set-desk-start-anchor` · feature · 搁置 · 可选 · Brief 待点头 · 2026-11-01
+
+T70 用户自设开桌锚点（人话：你自己设开始伏案的时刻，到点问要不要先坐一下；可含早餐善意）。形状抄 T61。无用户目标时不得猜「你长期没吃」。口令「按 T70 Brief 开工」须点头后新 Chat。
+
+### `t73-remember-respond-first-knife` · feature · 本支 feature/t73-remember-respond-read-layer · T73 第一刀读门 · 2026-11-01
+
+记住—响应读层第一刀：账本 + resolver。开表前高亮 = 倦短一档 → 常用（近 12 次合格手动、次数严格第一，并列则无常用）→ 上次 → 10。点高亮不计合格手动。不改 T58 数字。**不是** T69、**不是** 第二刀提议确认。
+
+### `t69-desk-habit-literature` · feature · 盘点已写（A 类；无运行时） · 2026-10-31
+
+T69 桌面习惯文献对照。SSOT [`desk-habit-literature-inventory.md`](../desk-habit-literature-inventory.md)。不抄水瓶宠物 / 健康仪表盘 / 日程灯。早餐善意走 **T70**。2026-11-01 PO 纠正写入盘点。
+
+### `co-practice-gift-art` · feature · 方向锁已合 #1472 · T67 接合账 #1478 已合 · 发画 T68 Brief 已点头（§1 四闸未过不写 src） · 2026-10-30
+
+共修纪念画方向锁已合。PO 改口：C 为节奏稳定代理；B 只数专注中邀请被接受并坐完。**T67** 接合账 #1478 已合。发画走 **T68** Brief（已点头；闸 2 功能验证 + 曝光模型；v1 三张）。口语/分支仍可见 T67 发画 Brief。
 
 ### `t66-mindflow-nebula-v0` · note · Brief 已点头 · 代码已合 #1475 · 关单级手测待批 · 2026-10-30
 
 T66 心念流 / 隐迹星云 v0：可选 180×180 粒子画布；三种状态；无 embedding。Brief [`task-mindflow-nebula-v0.md`](../task-briefs/task-mindflow-nebula-v0.md)。PR [#1475](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1475)。
 
-### `t67-co-practice-session-join-ledger` · feature · Brief 待点头 · 排队中 · 可选 · 2026-10-30
+### `t67-co-practice-gift-art-grant` · feature · T68 Brief 已点头（PO 改三处·闸 4 待再点头）· 排队中 · 可选 · 2026-10-30
 
-T67 共修场次接合账（原 #1474 docs 误占 T66，2026-10-30 治理改号）。只补场次 id 与出示默认分钟流水。不发画、不改 T57/T58 可见行为。SSOT Brief `task-co-practice-session-join-ledger.md`。方向锁 `CO_PRACTICE_GIFT_ART.md`。
+T68 共修纪念画发放（分支名仍带 t67）。B 累计+跨度；A 150/480/1200（2–3 暂定）；曝光估算待夹具；画 id mountain-boat-tray 等。§1 四闸全过才写 `src/`。
+
+### `t67-co-practice-session-join-ledger` · feature · Brief 已点头 · 代码已合 #1478 · 仅单元测试 · 2026-10-30
+
+T67 共修场次接合账（治理 #1484 改号）。只补场次 id 与出示默认分钟流水。不发画、不改 T57/T58 可见行为。SSOT [`task-co-practice-session-join-ledger.md`](../task-briefs/task-co-practice-session-join-ledger.md)。方向锁 [`CO_PRACTICE_GIFT_ART.md`](../CO_PRACTICE_GIFT_ART.md)。PR [#1478](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1478)。
 
 ### `confide-dock-suspend-no-drag` · feature · 实现旁支 · PR 待合 · 2026-10-29
 
