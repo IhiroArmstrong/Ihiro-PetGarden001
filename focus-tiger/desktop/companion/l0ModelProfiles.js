@@ -16,6 +16,7 @@
  *   modelId: string,
  *   filename: string,
  *   expectedBytes: number,
+ *   expectedSha256: string,
  *   minBytes: number,
  *   urls: string[],
  *   promptFamily: L0PromptFamily,
@@ -32,6 +33,9 @@ export const L0_MODEL_PROFILES = Object.freeze({
     filename: 'Gemma-4-E4B-it-UD-Q4_K_XL-unsloth.gguf',
     /** unsloth/gemma-4-E4B-it-qat-GGUF · Hugging Face API 2026-09-17 */
     expectedBytes: 4_215_695_776,
+    /** HF X-Linked-ETag 2026-11-07 */
+    expectedSha256:
+      'df0fd4ee07072c607c29a0a1cb4f98918426cca12f45a2776bdd6ee6d09a4de3',
     minBytes: 4_000_000_000,
     urls: [
       'https://huggingface.co/unsloth/gemma-4-E4B-it-qat-GGUF/resolve/main/gemma-4-E4B-it-qat-UD-Q4_K_XL.gguf',
@@ -48,6 +52,8 @@ export const L0_MODEL_PROFILES = Object.freeze({
     filename: 'Gemma-4-E4B-it-Q4_K_M.gguf',
     /** jc-builds/Gemma-4-E4B-it-GGUF · Hugging Face API 2026-09-16 */
     expectedBytes: 5_335_290_592,
+    expectedSha256:
+      'fd2ae1ed20977482bab64d55904f99e16d233b1234da3bd38864e16bf41962e0',
     minBytes: 5_000_000_000,
     urls: [
       'https://huggingface.co/jc-builds/Gemma-4-E4B-it-GGUF/resolve/main/Gemma-4-E4B-it-Q4_K_M.gguf',
@@ -62,6 +68,8 @@ export const L0_MODEL_PROFILES = Object.freeze({
     modelId: 'Qwen3-1.7B-Q4_K_M',
     filename: 'Qwen3-1.7B-Q4_K_M.gguf',
     expectedBytes: 1_107_409_472,
+    expectedSha256:
+      'b139949c5bd74937ad8ed8c8cf3d9ffb1e99c866c823204dc42c0d91fa181897',
     minBytes: 1_100_000_000,
     urls: [
       'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf',

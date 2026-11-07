@@ -36,6 +36,9 @@ export const L0_LEGACY_MODEL_FILENAMES = Object.freeze([
 
 export const L0_MODEL_EXPECTED_BYTES = ACTIVE.expectedBytes;
 
+/** Hugging Face X-Linked-ETag SHA-256 for active GGUF (9-03 / 10-08). */
+export const L0_MODEL_SHA256 = ACTIVE.expectedSha256;
+
 /** Hugging Face resolve URL (follows to CDN). */
 export const L0_MODEL_URL = ACTIVE.urls[0];
 
