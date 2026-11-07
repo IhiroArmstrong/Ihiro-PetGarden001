@@ -1,6 +1,6 @@
 name: Dependency audit (npm)
 
-# Scheduled + manual: fail on high/critical advisories in focus-tiger lockfile.
+# Scheduled + manual: fail on high/critical advisories in web, desktop, and cloud lockfiles.
 # Not a PR Required check (Dependabot PRs + human triage); keeps a periodic signal.
 on:
   schedule:
@@ -9,12 +9,25 @@ on:
 
 jobs:
   npm-audit:
-    name: npm audit (high+)
+    name: npm audit (high+) · ${{ matrix.package }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: focus-tiger
+            dir: focus-tiger
+            lockfile: focus-tiger/package-lock.json
+          - package: desktop
+            dir: focus-tiger/desktop
+            lockfile: focus-tiger/desktop/package-lock.json
+          - package: cloud
+            dir: focus-tiger/cloud
+            lockfile: focus-tiger/cloud/package-lock.json
     defaults:
       run:
-        working-directory: focus-tiger
+        working-directory: ${{ matrix.dir }}
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +35,7 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-          cache-dependency-path: focus-tiger/package-lock.json
+          cache-dependency-path: ${{ matrix.lockfile }}
 
       - name: Install dependencies
         run: npm ci
