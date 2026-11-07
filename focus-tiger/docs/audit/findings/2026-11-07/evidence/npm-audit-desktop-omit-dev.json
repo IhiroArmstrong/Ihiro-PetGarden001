@@ -1,0 +1,166 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@simple-git/argv-parser": {
+      "name": "@simple-git/argv-parser",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1241198,
+          "name": "@simple-git/argv-parser",
+          "dependency": "@simple-git/argv-parser",
+          "title": "simple-git: `VISUAL` editor environment variable is omitted from unsafe editor detection",
+          "url": "https://github.com/advisories/GHSA-v5rq-49vh-5v5c",
+          "severity": "critical",
+          "cwe": [
+            "CWE-78",
+            "CWE-184"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<2.0.1"
+        }
+      ],
+      "effects": [
+        "simple-git"
+      ],
+      "range": "<2.0.1",
+      "nodes": [
+        "node_modules/@simple-git/argv-parser"
+      ],
+      "fixAvailable": true
+    },
+    "js-yaml": {
+      "name": "js-yaml",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1193727,
+          "name": "js-yaml",
+          "dependency": "js-yaml",
+          "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+          "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-407"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=4.0.0 <4.3.2"
+        }
+      ],
+      "effects": [],
+      "range": "4.0.0 - 4.3.1",
+      "nodes": [
+        "node_modules/js-yaml"
+      ],
+      "fixAvailable": true
+    },
+    "node-llama-cpp": {
+      "name": "node-llama-cpp",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "simple-git"
+      ],
+      "effects": [],
+      "range": "2.1.0 - 3.22.2",
+      "nodes": [
+        "node_modules/node-llama-cpp"
+      ],
+      "fixAvailable": true
+    },
+    "simple-git": {
+      "name": "simple-git",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        "@simple-git/argv-parser",
+        {
+          "source": 1241199,
+          "name": "simple-git",
+          "dependency": "simple-git",
+          "title": "simple-git unsafe-operation guard does not block trailer command configuration",
+          "url": "https://github.com/advisories/GHSA-x6jw-m9v5-85vh",
+          "severity": "critical",
+          "cwe": [
+            "CWE-78",
+            "CWE-184"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=3.15.0 <4.0.1"
+        },
+        {
+          "source": 1241200,
+          "name": "simple-git",
+          "dependency": "simple-git",
+          "title": "simple-git allows command execution through unblocked Git configuration includes",
+          "url": "https://github.com/advisories/GHSA-g4wm-2vf7-vfgr",
+          "severity": "high",
+          "cwe": [
+            "CWE-77",
+            "CWE-78"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+          },
+          "range": "<=3.36.0"
+        },
+        {
+          "source": 1244059,
+          "name": "simple-git",
+          "dependency": "simple-git",
+          "title": "simple-git: unsafe-operations plugin bypass via git long-option abbreviation (--receive-p/--exe) -> command execution (residual of CVE-2026-28291)",
+          "url": "https://github.com/advisories/GHSA-858h-whjf-mvg5",
+          "severity": "high",
+          "cwe": [
+            "CWE-77",
+            "CWE-88"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+          },
+          "range": "<=3.36.0"
+        }
+      ],
+      "effects": [
+        "node-llama-cpp"
+      ],
+      "range": "<=4.0.1",
+      "nodes": [
+        "node_modules/simple-git"
+      ],
+      "fixAvailable": true
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 2,
+      "critical": 2,
+      "total": 4
+    },
+    "dependencies": {
+      "prod": 143,
+      "dev": 281,
+      "optional": 49,
+      "peer": 13,
+      "peerOptional": 0,
+      "total": 446
+    }
+  }
+}

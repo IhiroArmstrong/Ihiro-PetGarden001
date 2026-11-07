@@ -1,0 +1,1738 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@electron/universal": {
+      "name": "@electron/universal",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "effects": [
+        "app-builder-lib"
+      ],
+      "range": "1.5.0 || 2.0.0 - 3.0.3",
+      "nodes": [
+        "node_modules/@electron/universal"
+      ],
+      "fixAvailable": {
+        "name": "electron-builder",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@simple-git/argv-parser": {
+      "name": "@simple-git/argv-parser",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1241198,
+          "name": "@simple-git/argv-parser",
+          "dependency": "@simple-git/argv-parser",
+          "title": "simple-git: `VISUAL` editor environment variable is omitted from unsafe editor detection",
+          "url": "https://github.com/advisories/GHSA-v5rq-49vh-5v5c",
+          "severity": "critical",
+          "cwe": [
+            "CWE-78",
+            "CWE-184"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<2.0.1"
+        }
+      ],
+      "effects": [
+        "simple-git"
+      ],
+      "range": "<2.0.1",
+      "nodes": [
+        "node_modules/@simple-git/argv-parser"
+      ],
+      "fixAvailable": true
+    },
+    "@xmldom/xmldom": {
+      "name": "@xmldom/xmldom",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1158518,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: XML fragment injection via invalid EntityReference.nodeName during requireWellFormed serialization",
+          "url": "https://github.com/advisories/GHSA-6gmq-8vp8-gcm6",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-116"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "source": 1193696,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: Processing Instruction Target Injection Bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-c7q8-3ch8-vqpv",
+          "severity": "high",
+          "cwe": [
+            "CWE-91"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "source": 1193700,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: DocType `name` Injection Bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-27p8-2357-5qqv",
+          "severity": "high",
+          "cwe": [
+            "CWE-91"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "source": 1193705,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: Parser silently accepts a not-well-formed end tag whose name is followed by a line break and trailing content",
+          "url": "https://github.com/advisories/GHSA-6h8r-xr42-gp59",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1286"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "source": 1193708,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: Quadratic-time attribute deduplication",
+          "url": "https://github.com/advisories/GHSA-8344-3jmq-59r6",
+          "severity": "high",
+          "cwe": [
+            "CWE-407"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "source": 1193709,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: End-tag Whitespace-Trim Regex ReDoS — quadratic backtracking in the 0.8.x end-tag parser",
+          "url": "https://github.com/advisories/GHSA-x4fp-j954-r2f4",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-1333"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "source": 1193712,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: Quadratic-memory consumption",
+          "url": "https://github.com/advisories/GHSA-965w-775f-mr7g",
+          "severity": "high",
+          "cwe": [
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "source": 1193715,
+          "name": "@xmldom/xmldom",
+          "dependency": "@xmldom/xmldom",
+          "title": "xmldom: Quadratic-time parsing via the malformed-input recovery path — `parseElementStartPart` re-scan and `normalize()` adjacent-text merge",
+          "url": "https://github.com/advisories/GHSA-93r5-fhx6-vmg9",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-407"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=0.7.0 <=0.8.14"
+        }
+      ],
+      "effects": [],
+      "range": "<=0.8.14",
+      "nodes": [
+        "node_modules/@xmldom/xmldom"
+      ],
+      "fixAvailable": true
+    },
+    "app-builder-lib": {
+      "name": "app-builder-lib",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@electron/universal",
+        "dmg-builder",
+        "electron-builder-squirrel-windows",
+        "minimatch"
+      ],
+      "effects": [
+        "dmg-builder",
+        "electron-builder",
+        "electron-builder-squirrel-windows"
+      ],
+      "range": ">=24.13.4-alpha.0",
+      "nodes": [
+        "node_modules/app-builder-lib"
+      ],
+      "fixAvailable": {
+        "name": "electron-builder",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "brace-expansion": {
+      "name": "brace-expansion",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1240100,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-407"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+          },
+          "range": "<1.1.21"
+        },
+        {
+          "source": 1240101,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-407"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+          },
+          "range": ">=2.0.0 <2.1.7"
+        },
+        {
+          "source": 1240103,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-407"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+          },
+          "range": ">=4.0.0 <5.0.12"
+        },
+        {
+          "source": 1240104,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": "<1.1.20"
+        },
+        {
+          "source": 1240105,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=2.0.0 <2.1.6"
+        },
+        {
+          "source": 1240107,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=4.0.0 <5.0.11"
+        },
+        {
+          "source": 1240108,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": "<1.1.19"
+        },
+        {
+          "source": 1240109,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=2.0.0 <2.1.5"
+        },
+        {
+          "source": 1240111,
+          "name": "brace-expansion",
+          "dependency": "brace-expansion",
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=4.0.0 <5.0.10"
+        }
+      ],
+      "effects": [],
+      "range": "<=1.1.20 || 2.0.0 - 2.1.6 || 4.0.0 - 5.0.11",
+      "nodes": [
+        "node_modules/@electron/asar/node_modules/brace-expansion",
+        "node_modules/@electron/universal/node_modules/brace-expansion",
+        "node_modules/brace-expansion",
+        "node_modules/dir-compare/node_modules/brace-expansion",
+        "node_modules/filelist/node_modules/brace-expansion",
+        "node_modules/glob/node_modules/brace-expansion"
+      ],
+      "fixAvailable": true
+    },
+    "dmg-builder": {
+      "name": "dmg-builder",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "app-builder-lib"
+      ],
+      "effects": [
+        "electron-builder"
+      ],
+      "range": "24.13.4-alpha.0 - 25.0.6 || >=25.1.2",
+      "nodes": [
+        "node_modules/dmg-builder"
+      ],
+      "fixAvailable": {
+        "name": "electron-builder",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "electron": {
+      "name": "electron",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1116041,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: AppleScript injection in app.moveToApplicationsFolder on macOS",
+          "url": "https://github.com/advisories/GHSA-5rqw-r77c-jp79",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-78"
+          ],
+          "cvss": {
+            "score": 6.5,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:L"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116045,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Service worker can spoof executeJavaScript IPC replies",
+          "url": "https://github.com/advisories/GHSA-xj5x-m3f3-5x3h",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-290",
+            "CWE-345"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:N"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116049,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Incorrect origin passed to permission request handler for iframe requests",
+          "url": "https://github.com/advisories/GHSA-r5p7-gp4j-qhrx",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 5.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116053,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Out-of-bounds read in second-instance IPC on macOS and Linux",
+          "url": "https://github.com/advisories/GHSA-3c8v-cfp5-9885",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-125"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:L"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116057,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: nodeIntegrationInWorker not correctly scoped in shared renderer processes",
+          "url": "https://github.com/advisories/GHSA-xwr5-m59h-vwqr",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-653"
+          ],
+          "cvss": {
+            "score": 6.8,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116060,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Use-after-free in offscreen child window paint callback",
+          "url": "https://github.com/advisories/GHSA-532v-xpq5-8h95",
+          "severity": "high",
+          "cwe": [
+            "CWE-416"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+          },
+          "range": "<39.8.1"
+        },
+        {
+          "source": 1116064,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Registry key path injection in app.setAsDefaultProtocolClient on Windows",
+          "url": "https://github.com/advisories/GHSA-mwmh-mq4g-g6gr",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-20",
+            "CWE-74"
+          ],
+          "cvss": {
+            "score": 4.7,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116068,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Use-after-free in download save dialog callback",
+          "url": "https://github.com/advisories/GHSA-9w97-2464-8783",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-416"
+          ],
+          "cvss": {
+            "score": 5.8,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:L/A:L"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116072,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Use-after-free in WebContents fullscreen, pointer-lock, and keyboard-lock permission callbacks",
+          "url": "https://github.com/advisories/GHSA-8337-3p73-46f4",
+          "severity": "high",
+          "cwe": [
+            "CWE-416"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116076,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Use-after-free in PowerMonitor on Windows and macOS",
+          "url": "https://github.com/advisories/GHSA-jjp3-mq3x-295m",
+          "severity": "high",
+          "cwe": [
+            "CWE-416"
+          ],
+          "cvss": {
+            "score": 7,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116084,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Unquoted executable path in app.setLoginItemSettings on Windows",
+          "url": "https://github.com/advisories/GHSA-jfqx-fxh3-c62j",
+          "severity": "low",
+          "cwe": [
+            "CWE-428"
+          ],
+          "cvss": {
+            "score": 3.9,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:L/I:L/A:L"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116088,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: HTTP Response Header Injection in custom protocol handlers and webRequest",
+          "url": "https://github.com/advisories/GHSA-4p4r-m79c-wq3v",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-74",
+            "CWE-113"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:H/A:N"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116092,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: USB device selection not validated against filtered device list",
+          "url": "https://github.com/advisories/GHSA-9899-m83m-qhpj",
+          "severity": "low",
+          "cwe": [
+            "CWE-862"
+          ],
+          "cvss": {
+            "score": 3.3,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:L/I:L/A:N"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1116111,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Use-after-free in offscreen shared texture release() callback",
+          "url": "https://github.com/advisories/GHSA-8x5q-pvf5-64mp",
+          "severity": "low",
+          "cwe": [
+            "CWE-416"
+          ],
+          "cvss": {
+            "score": 2.3,
+            "vectorString": "CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:L"
+          },
+          "range": ">=33.0.0-alpha.1 <39.8.5"
+        },
+        {
+          "source": 1116259,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Crash in clipboard.readImage() on malformed clipboard image data",
+          "url": "https://github.com/advisories/GHSA-f37v-82c4-4x64",
+          "severity": "low",
+          "cwe": [
+            "CWE-476"
+          ],
+          "cvss": {
+            "score": 2.8,
+            "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:N/I:N/A:L"
+          },
+          "range": "<39.8.5"
+        },
+        {
+          "source": 1116320,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Named window.open targets not scoped to the opener's browsing context",
+          "url": "https://github.com/advisories/GHSA-f3pv-wv63-48x8",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-668"
+          ],
+          "cvss": {
+            "score": 6,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:L/I:L/A:L"
+          },
+          "range": "<39.8.5"
+        },
+        {
+          "source": 1117459,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Renderer command-line switch injection via undocumented commandLineSwitches webPreference",
+          "url": "https://github.com/advisories/GHSA-9wfr-w7mm-pc7f",
+          "severity": "high",
+          "cwe": [
+            "CWE-88",
+            "CWE-912"
+          ],
+          "cvss": {
+            "score": 7.7,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:H"
+          },
+          "range": "<38.8.6"
+        },
+        {
+          "source": 1136551,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Parent process code-sign check is spoofable",
+          "url": "https://github.com/advisories/GHSA-jm7p-cc5g-qwxx",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-367"
+          ],
+          "cvss": {
+            "score": 6.3,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+          },
+          "range": "<39.8.8"
+        },
+        {
+          "source": 1136552,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Custom protocol with supportFetchAPI but not corsEnabled allows cross-origin reads",
+          "url": "https://github.com/advisories/GHSA-v3j7-r9gq-3gjw",
+          "severity": "high",
+          "cwe": [
+            "CWE-942"
+          ],
+          "cvss": {
+            "score": 7.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N"
+          },
+          "range": "<39.8.10"
+        },
+        {
+          "source": 1136559,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Extension tab APIs operate across session boundaries",
+          "url": "https://github.com/advisories/GHSA-m55f-7gqj-fr98",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-284"
+          ],
+          "cvss": {
+            "score": 6.6,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:H/I:L/A:N"
+          },
+          "range": "<39.8.8"
+        },
+        {
+          "source": 1136560,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: shell.openPath path validation bypass via embedded null byte",
+          "url": "https://github.com/advisories/GHSA-5c9j-mhmv-5xgx",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-20",
+            "CWE-158"
+          ],
+          "cvss": {
+            "score": 6,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:N"
+          },
+          "range": "<39.8.6"
+        },
+        {
+          "source": 1136567,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Context isolation bypass via Function.prototype.bind hijack",
+          "url": "https://github.com/advisories/GHSA-h7rp-cf8h-j98x",
+          "severity": "high",
+          "cwe": [
+            "CWE-693"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:L/A:N"
+          },
+          "range": "<39.8.9"
+        },
+        {
+          "source": 1136571,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Cross-origin iframe can position native autofill popup",
+          "url": "https://github.com/advisories/GHSA-x8rc-wpg4-grpf",
+          "severity": "low",
+          "cwe": [
+            "CWE-1021"
+          ],
+          "cvss": {
+            "score": 3.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:N/I:L/A:N"
+          },
+          "range": "<39.8.8"
+        },
+        {
+          "source": 1136575,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Permission Check Handler Receives Main Frame Origin Instead of Requesting Iframe Origin",
+          "url": "https://github.com/advisories/GHSA-9pf5-hg6p-4pwp",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          },
+          "range": "<39.8.7"
+        },
+        {
+          "source": 1136579,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Off-screen rendering trusts GPU-supplied geometry over shared-memory size",
+          "url": "https://github.com/advisories/GHSA-pfmc-3mgc-p6fp",
+          "severity": "low",
+          "cwe": [
+            "CWE-125"
+          ],
+          "cvss": {
+            "score": 3.9,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:L/I:N/A:L"
+          },
+          "range": "<39.8.10"
+        },
+        {
+          "source": 1136590,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: HTTP redirect followed into local file loader",
+          "url": "https://github.com/advisories/GHSA-v64r-4m7r-3mvq",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-918"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          },
+          "range": "<39.8.8"
+        },
+        {
+          "source": 1136597,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: window.open features string controls some window options considered privileged",
+          "url": "https://github.com/advisories/GHSA-v93f-fgjr-hjrj",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-20"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": "<39.8.8"
+        },
+        {
+          "source": 1136607,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Sandboxed iframe can bypass the allow-popups restriction via the OpenURL navigation path",
+          "url": "https://github.com/advisories/GHSA-9f4c-93c8-jc8g",
+          "severity": "high",
+          "cwe": [
+            "CWE-693",
+            "CWE-1021"
+          ],
+          "cvss": {
+            "score": 7.2,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:N"
+          },
+          "range": "<39.8.10"
+        },
+        {
+          "source": 1136634,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Sandboxed iframes can launch external protocol handlers",
+          "url": "https://github.com/advisories/GHSA-p2rr-rvmm-c5fp",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-284"
+          ],
+          "cvss": {
+            "score": 5.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N"
+          },
+          "range": "<39.8.8"
+        },
+        {
+          "source": 1136647,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: DevTools embedder handler executes arbitrary files via shell open",
+          "url": "https://github.com/advisories/GHSA-f2r8-jv7c-xqmp",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-78"
+          ],
+          "cvss": {
+            "score": 6.9,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N"
+          },
+          "range": "<39.8.9"
+        },
+        {
+          "source": 1136651,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: contextBridge object copy honors prototype setters",
+          "url": "https://github.com/advisories/GHSA-ff2p-hmqr-hxm4",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1321"
+          ],
+          "cvss": {
+            "score": 5.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N"
+          },
+          "range": "<39.8.9"
+        },
+        {
+          "source": 1136659,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: DevTools JavaScript Injection via Unsanitized Dock State Parameter",
+          "url": "https://github.com/advisories/GHSA-4f78-qhmw-8j8m",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-94",
+            "CWE-116"
+          ],
+          "cvss": {
+            "score": 5.7,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:N"
+          },
+          "range": "<39.8.7"
+        },
+        {
+          "source": 1239973,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron drops inherited HTML sandbox restrictions for popups opened through OpenURLFromTab",
+          "url": "https://github.com/advisories/GHSA-hq2x-r82h-9wj4",
+          "severity": "high",
+          "cwe": [
+            "CWE-346",
+            "CWE-693"
+          ],
+          "cvss": {
+            "score": 8.2,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+          },
+          "range": "<41.10.4"
+        },
+        {
+          "source": 1239977,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
+          "url": "https://github.com/advisories/GHSA-gr2m-v5gq-v685",
+          "severity": "high",
+          "cwe": [
+            "CWE-266",
+            "CWE-693"
+          ],
+          "cvss": {
+            "score": 8.2,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N"
+          },
+          "range": "<41.10.6"
+        },
+        {
+          "source": 1239981,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: File and HTTP protocol handlers allow cross-origin reads without corsEnabled",
+          "url": "https://github.com/advisories/GHSA-j84w-jfhq-vhvj",
+          "severity": "high",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 7.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N"
+          },
+          "range": "<41.10.6"
+        },
+        {
+          "source": 1240060,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Local race condition in Squirrel.Mac update installation on macOS",
+          "url": "https://github.com/advisories/GHSA-vv43-5jgx-7qv8",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-367"
+          ],
+          "cvss": {
+            "score": 6.7,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:H"
+          },
+          "range": "<39.8.10"
+        },
+        {
+          "source": 1241657,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: <webview> can enable Node.js integration in Web Workers despite embedder restrictions",
+          "url": "https://github.com/advisories/GHSA-9qh4-3jw8-366w",
+          "severity": "high",
+          "cwe": [
+            "CWE-269",
+            "CWE-1188"
+          ],
+          "cvss": {
+            "score": 8.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:H/A:H"
+          },
+          "range": "<41.10.6"
+        },
+        {
+          "source": 1242756,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: HID and USB permission checks can be attributed to the wrong origin",
+          "url": "https://github.com/advisories/GHSA-fw47-9c62-h3vw",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 5.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N"
+          },
+          "range": "<42.11.3"
+        },
+        {
+          "source": 1242835,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: SameSite cookie restrictions are not applied to windows opened from links",
+          "url": "https://github.com/advisories/GHSA-2p8c-gr87-2676",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-352"
+          ],
+          "cvss": {
+            "score": 4.2,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:L/A:N"
+          },
+          "range": "<42.11.3"
+        },
+        {
+          "source": 1242839,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Pointer lock permission requests can be attributed to the wrong frame",
+          "url": "https://github.com/advisories/GHSA-x562-297c-g43g",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 5.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:L"
+          },
+          "range": "<42.11.9"
+        },
+        {
+          "source": 1242843,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Extension tabs.query returns tab URLs and titles without the tabs permission",
+          "url": "https://github.com/advisories/GHSA-98mx-cjp9-gchm",
+          "severity": "low",
+          "cwe": [
+            "CWE-862"
+          ],
+          "cvss": {
+            "score": 3.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:L/I:N/A:N"
+          },
+          "range": "<42.11.1"
+        },
+        {
+          "source": 1242850,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Frame subscription trusts GPU-supplied frame geometry",
+          "url": "https://github.com/advisories/GHSA-3qxv-5xgr-q7w9",
+          "severity": "low",
+          "cwe": [
+            "CWE-125"
+          ],
+          "cvss": {
+            "score": 3.9,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:L/I:N/A:L"
+          },
+          "range": "<42.11.6"
+        },
+        {
+          "source": 1242854,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Off-screen rendering on macOS trusts GPU-supplied frame geometry",
+          "url": "https://github.com/advisories/GHSA-h3v5-h239-pg29",
+          "severity": "low",
+          "cwe": [
+            "CWE-125"
+          ],
+          "cvss": {
+            "score": 3.9,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:L/I:N/A:L"
+          },
+          "range": "<42.11.6"
+        },
+        {
+          "source": 1242858,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: openExternal permission requests can be attributed to the wrong origin",
+          "url": "https://github.com/advisories/GHSA-997q-gvvc-jwmx",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 5.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N"
+          },
+          "range": "<42.11.3"
+        },
+        {
+          "source": 1243069,
+          "name": "electron",
+          "dependency": "electron",
+          "title": "Electron: Mitigation for compromised eMudhra intermediate certificates",
+          "url": "https://github.com/advisories/GHSA-jr5w-w6x2-84p9",
+          "severity": "high",
+          "cwe": [
+            "CWE-299"
+          ],
+          "cvss": {
+            "score": 7.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          },
+          "range": "<42.11.16"
+        },
+        "extract-zip"
+      ],
+      "effects": [],
+      "range": "<=42.11.15 || 43.0.0-alpha.1 - 43.0.0-beta.8",
+      "nodes": [
+        "node_modules/electron"
+      ],
+      "fixAvailable": {
+        "name": "electron",
+        "version": "45.2.3",
+        "isSemVerMajor": true
+      }
+    },
+    "electron-builder": {
+      "name": "electron-builder",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "app-builder-lib",
+        "dmg-builder"
+      ],
+      "effects": [],
+      "range": "19.25.0 || 24.13.4-alpha.0 - 25.0.6 || >=25.1.2",
+      "nodes": [
+        "node_modules/electron-builder"
+      ],
+      "fixAvailable": {
+        "name": "electron-builder",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "electron-builder-squirrel-windows": {
+      "name": "electron-builder-squirrel-windows",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "app-builder-lib"
+      ],
+      "effects": [],
+      "range": "24.13.4-alpha.0 - 25.0.6 || >=25.1.2",
+      "nodes": [
+        "node_modules/electron-builder-squirrel-windows"
+      ],
+      "fixAvailable": true
+    },
+    "extract-zip": {
+      "name": "extract-zip",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1139346,
+          "name": "extract-zip",
+          "dependency": "extract-zip",
+          "title": "extract-zip unvalidated symlink path traversal",
+          "url": "https://github.com/advisories/GHSA-jmr9-qjv8-65gv",
+          "severity": "high",
+          "cwe": [
+            "CWE-22"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N"
+          },
+          "range": "<=2.0.1"
+        },
+        {
+          "source": 1193685,
+          "name": "extract-zip",
+          "dependency": "extract-zip",
+          "title": "extract-zip allows arbitrary file writes through symlink archive entries",
+          "url": "https://github.com/advisories/GHSA-7pqw-9j4j-h8q3",
+          "severity": "high",
+          "cwe": [
+            "CWE-22"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:H"
+          },
+          "range": "<=2.0.1"
+        }
+      ],
+      "effects": [
+        "electron"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/extract-zip"
+      ],
+      "fixAvailable": {
+        "name": "electron",
+        "version": "45.2.3",
+        "isSemVerMajor": true
+      }
+    },
+    "fast-uri": {
+      "name": "fast-uri",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1158521,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to host confusion via skipped IDN canonicalization on scheme-relative references",
+          "url": "https://github.com/advisories/GHSA-5jgf-p345-68v8",
+          "severity": "high",
+          "cwe": [
+            "CWE-436"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": ">=3.1.3 <3.1.6"
+        },
+        {
+          "source": 1158524,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to server-side request forgery via malformed IPv6 normalization",
+          "url": "https://github.com/advisories/GHSA-f65p-4m7j-42xc",
+          "severity": "high",
+          "cwe": [
+            "CWE-20",
+            "CWE-918"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": ">=3.0.0 <3.1.6"
+        },
+        {
+          "source": 1158527,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to server-side request forgery via repeated hostname percent-decoding",
+          "url": "https://github.com/advisories/GHSA-fph4-wmhf-6fwf",
+          "severity": "high",
+          "cwe": [
+            "CWE-174",
+            "CWE-918"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": ">=3.1.2 <3.1.6"
+        },
+        {
+          "source": 1158530,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to host confusion via percent-encoded scheme normalization",
+          "url": "https://github.com/advisories/GHSA-jqff-g426-hqxp",
+          "severity": "high",
+          "cwe": [
+            "CWE-177"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": ">=3.0.0 <3.1.6"
+        },
+        {
+          "source": 1239943,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to authority injection via an unvalidated port in serialize",
+          "url": "https://github.com/advisories/GHSA-qw65-cvwx-89v3",
+          "severity": "high",
+          "cwe": [
+            "CWE-116"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": ">=3.0.0 <3.1.7"
+        },
+        {
+          "source": 1240091,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to inconsistent host case normalization via percent-encoded octets",
+          "url": "https://github.com/advisories/GHSA-hrr3-gc8f-f4qj",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-178"
+          ],
+          "cvss": {
+            "score": 4.8,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+          },
+          "range": ">=3.0.0 <3.1.8"
+        },
+        {
+          "source": 1243098,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding",
+          "url": "https://github.com/advisories/GHSA-w74x-v6f9-j3xg",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-172",
+            "CWE-180"
+          ],
+          "cvss": {
+            "score": 6.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+          },
+          "range": ">=3.0.0 <3.1.9"
+        },
+        {
+          "source": 1243101,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to improper path equivalence in relative reference normalization",
+          "url": "https://github.com/advisories/GHSA-xhq7-xmqj-769h",
+          "severity": "low",
+          "cwe": [
+            "CWE-41"
+          ],
+          "cvss": {
+            "score": 3.7,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": ">=3.0.0 <3.1.9"
+        },
+        {
+          "source": 1243104,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to host confusion via unchecked WHATWG host canonicalization",
+          "url": "https://github.com/advisories/GHSA-wjr9-j795-jxcr",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-20",
+            "CWE-436"
+          ],
+          "cvss": {
+            "score": 4.8,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N"
+          },
+          "range": ">=3.1.3 <3.1.9"
+        },
+        {
+          "source": 1243107,
+          "name": "fast-uri",
+          "dependency": "fast-uri",
+          "title": "fast-uri vulnerable to scheme injection via an unescaped first-segment colon in suffix references",
+          "url": "https://github.com/advisories/GHSA-333x-w4r6-6crp",
+          "severity": "low",
+          "cwe": [
+            "CWE-41",
+            "CWE-116"
+          ],
+          "cvss": {
+            "score": 3.7,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": ">=3.0.0 <3.1.9"
+        }
+      ],
+      "effects": [],
+      "range": "3.0.0 - 3.1.8",
+      "nodes": [
+        "node_modules/fast-uri"
+      ],
+      "fixAvailable": true
+    },
+    "js-yaml": {
+      "name": "js-yaml",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1193727,
+          "name": "js-yaml",
+          "dependency": "js-yaml",
+          "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+          "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+          "severity": "high",
+          "cwe": [
+            "CWE-400",
+            "CWE-407"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=4.0.0 <4.3.2"
+        }
+      ],
+      "effects": [],
+      "range": "4.0.0 - 4.3.1",
+      "nodes": [
+        "node_modules/js-yaml"
+      ],
+      "fixAvailable": true
+    },
+    "minimatch": {
+      "name": "minimatch",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1244623,
+          "name": "minimatch",
+          "dependency": "minimatch",
+          "title": "minimatch has potential denial of service via globparts amplification",
+          "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-405"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=7.0.0 <11.0.1"
+        }
+      ],
+      "effects": [
+        "@electron/universal",
+        "app-builder-lib"
+      ],
+      "range": "7.0.0 - 11.0.0",
+      "nodes": [
+        "node_modules/@electron/universal/node_modules/minimatch",
+        "node_modules/minimatch"
+      ],
+      "fixAvailable": {
+        "name": "electron-builder",
+        "version": "25.1.0",
+        "isSemVerMajor": true
+      }
+    },
+    "node-llama-cpp": {
+      "name": "node-llama-cpp",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "simple-git"
+      ],
+      "effects": [],
+      "range": "2.1.0 - 3.22.2",
+      "nodes": [
+        "node_modules/node-llama-cpp"
+      ],
+      "fixAvailable": true
+    },
+    "simple-git": {
+      "name": "simple-git",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        "@simple-git/argv-parser",
+        {
+          "source": 1241199,
+          "name": "simple-git",
+          "dependency": "simple-git",
+          "title": "simple-git unsafe-operation guard does not block trailer command configuration",
+          "url": "https://github.com/advisories/GHSA-x6jw-m9v5-85vh",
+          "severity": "critical",
+          "cwe": [
+            "CWE-78",
+            "CWE-184"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=3.15.0 <4.0.1"
+        },
+        {
+          "source": 1241200,
+          "name": "simple-git",
+          "dependency": "simple-git",
+          "title": "simple-git allows command execution through unblocked Git configuration includes",
+          "url": "https://github.com/advisories/GHSA-g4wm-2vf7-vfgr",
+          "severity": "high",
+          "cwe": [
+            "CWE-77",
+            "CWE-78"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+          },
+          "range": "<=3.36.0"
+        },
+        {
+          "source": 1244059,
+          "name": "simple-git",
+          "dependency": "simple-git",
+          "title": "simple-git: unsafe-operations plugin bypass via git long-option abbreviation (--receive-p/--exe) -> command execution (residual of CVE-2026-28291)",
+          "url": "https://github.com/advisories/GHSA-858h-whjf-mvg5",
+          "severity": "high",
+          "cwe": [
+            "CWE-77",
+            "CWE-88"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+          },
+          "range": "<=3.36.0"
+        }
+      ],
+      "effects": [
+        "node-llama-cpp"
+      ],
+      "range": "<=4.0.1",
+      "nodes": [
+        "node_modules/simple-git"
+      ],
+      "fixAvailable": true
+    },
+    "undici": {
+      "name": "undici",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1239934,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici vulnerable to Denial of Service via unhandled error in WebSocket permessage-deflate decompression",
+          "url": "https://github.com/advisories/GHSA-3wwx-pv8p-q78v",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-248"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=6.25.0 <6.28.1"
+        },
+        {
+          "source": 1240039,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici vulnerable to downstream response splitting via retry interceptor",
+          "url": "https://github.com/advisories/GHSA-r53p-7pc4-xj5r",
+          "severity": "low",
+          "cwe": [
+            "CWE-444"
+          ],
+          "cvss": {
+            "score": 3.7,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": "<6.28.1"
+        },
+        {
+          "source": 1240042,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici vulnerable to Denial of Service via unrequested WebSocket subprotocol",
+          "url": "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
+          "severity": "high",
+          "cwe": [
+            "CWE-248",
+            "CWE-252"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=6.7.0 <6.28.1"
+        },
+        {
+          "source": 1243079,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici vulnerable to Denial of Service via unbounded memory in the EventSource parser",
+          "url": "https://github.com/advisories/GHSA-4qv8-2p9j-2685",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=6.5.0 <6.29.1"
+        },
+        {
+          "source": 1243114,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici vulnerable to Denial of Service via unhandled error on excessive content-encodings",
+          "url": "https://github.com/advisories/GHSA-xjj6-f33q-929c",
+          "severity": "high",
+          "cwe": [
+            "CWE-248",
+            "CWE-459"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=6.23.0 <6.29.1"
+        },
+        {
+          "source": 1243476,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici vulnerable to TLS certificate validation bypass via dropped tls options in Agent",
+          "url": "https://github.com/advisories/GHSA-2m5v-pch6-74hx",
+          "severity": "high",
+          "cwe": [
+            "CWE-295"
+          ],
+          "cvss": {
+            "score": 7.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          },
+          "range": ">=4.0.0 <6.29.1"
+        },
+        {
+          "source": 1243479,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici vulnerable to Denial of Service via TLS 1.2 certificate-changing renegotiation",
+          "url": "https://github.com/advisories/GHSA-qrxm-fqhp-jwvm",
+          "severity": "high",
+          "cwe": [
+            "CWE-248",
+            "CWE-617"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=4.2.1 <6.29.1"
+        },
+        {
+          "source": 1243482,
+          "name": "undici",
+          "dependency": "undici",
+          "title": "undici WebSocket client vulnerable to Denial of Service via unbounded automatic PONG buffering",
+          "url": "https://github.com/advisories/GHSA-9fm3-97px-rjf6",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-405",
+            "CWE-770"
+          ],
+          "cvss": {
+            "score": 5.9,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=5.15.0 <6.29.1"
+        }
+      ],
+      "effects": [],
+      "range": "<=6.29.0",
+      "nodes": [
+        "node_modules/undici"
+      ],
+      "fixAvailable": true
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 6,
+      "high": 8,
+      "critical": 2,
+      "total": 16
+    },
+    "dependencies": {
+      "prod": 143,
+      "dev": 281,
+      "optional": 49,
+      "peer": 13,
+      "peerOptional": 0,
+      "total": 446
+    }
+  }
+}
