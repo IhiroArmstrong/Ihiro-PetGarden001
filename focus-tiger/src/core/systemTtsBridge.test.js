@@ -120,7 +120,7 @@ describe('systemTtsBridge', () => {
     assert.equal(
       shouldSpeakConfideReply(
         CONFIDE_ROUTE.SAFETY_REDIRECT,
-        'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line.'
+        'Heard. If this feels too heavy to hold alone, please call your local crisis helpline.'
       ),
       true
     );
@@ -178,7 +178,7 @@ describe('systemTtsBridge', () => {
   it('lets stop interrupt a crisis line the same as any other line', async () => {
     const shell = fakeShell();
     const line =
-      'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line.';
+      'Heard. If this feels too heavy to hold alone, please call your local crisis helpline.';
     assert.equal(speakSystemTts({ text: line, globalObj: shell.globalObj }), true);
     await flush();
     assert.equal(stopSystemTts(shell.globalObj), true);

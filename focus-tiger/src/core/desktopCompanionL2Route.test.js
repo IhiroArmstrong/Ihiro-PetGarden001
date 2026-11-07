@@ -254,7 +254,7 @@ describe('desktop companion L2 persona / sanitize', () => {
 
   it('drops corpus-backed exchanges from Recent turns (safety-01 pair)', () => {
     const safety =
-      'Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help.';
+      'Heard. If this feels too heavy to hold alone, please call your local crisis helpline. Yin is here — not a substitute for professional help.';
     const prompt = buildCompanionL2Prompt({
       text: 'Whom do you like?',
       locale: 'en',
@@ -589,6 +589,8 @@ describe('desktop companion L2 isolation', () => {
     assert.match(ui, /ypeMayUseCompanionGenerate/);
     assert.match(ui, /confideSemanticCrisisBlocksL3Generate/);
     assert.match(ui, /confideSemanticCrisisGenerateGate/);
+    assert.match(ui, /isConfideSafetyGenerateLatchActive/);
+    assert.match(ui, /confideSafetyGenerateLatch/);
     assert.match(ui, /companionStyle:/);
     assert.match(ui, /companion\.generate/);
     const turnPushes = ui.match(/this\._l2Turns\.push\(/g) || [];

@@ -37,6 +37,10 @@ import { handleVerifyPracticeBackup } from "./routes/verifyPracticeBackup";
 import { handlePutPracticeBackup } from "./routes/putPracticeBackup";
 import { handleGetPracticeBackup } from "./routes/getPracticeBackup";
 import { handleDeletePracticeBackup } from "./routes/deletePracticeBackup";
+import {
+	PRACTICE_BACKUP_CLOUD_WRITES_DISABLED,
+	practiceBackupCloudWritesDisabledJson,
+} from "./lib/practiceBackupWritesDisabled";
 import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleVerifyCompanionAddon } from "./routes/verifyCompanionAddon";
@@ -184,6 +188,9 @@ export default {
 					errorJson(405, "method_not_allowed", "Use POST"),
 					origin,
 				);
+			}
+			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const otpLimited = enforceRateLimit(request, {
 				limit: RESTORE_OTP_REQUEST_RATE_LIMIT_PER_MINUTE,

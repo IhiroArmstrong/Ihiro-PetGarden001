@@ -22,8 +22,8 @@ describe('confide help entry (CR-46 P3)', () => {
 
   it('resource panel reuses safety-01 guidance in three locales', () => {
     const en = formatConfideSafetyResourceGuidance('en');
-    assert.match(en, /crisis line/i);
-    assert.match(formatConfideSafetyResourceGuidance('zh'), /热线|专业帮助/);
+    assert.match(en, /crisis helpline/i);
+    assert.match(formatConfideSafetyResourceGuidance('zh'), /请您拨打本地求助热线/);
     assert.match(formatConfideSafetyResourceGuidance('ja'), /相談窓口/);
   });
 

@@ -13,6 +13,7 @@
  *   modelId: string,
  *   filename: string,
  *   expectedBytes: number,
+ *   expectedSha256: string,
  *   minBytes: number,
  *   urls: string[],
  *   displayCode: string,
@@ -28,6 +29,8 @@ export const L0_EMBEDDING_PROFILES = Object.freeze({
     filename: 'Qwen3-Embedding-0.6B-Q8_0.gguf',
     /** Qwen/Qwen3-Embedding-0.6B-GGUF · Hugging Face API 2026-09-19 */
     expectedBytes: 639_150_592,
+    expectedSha256:
+      '06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439',
     minBytes: 600_000_000,
     urls: [
       'https://huggingface.co/Qwen/Qwen3-Embedding-0.6B-GGUF/resolve/main/Qwen3-Embedding-0.6B-Q8_0.gguf',

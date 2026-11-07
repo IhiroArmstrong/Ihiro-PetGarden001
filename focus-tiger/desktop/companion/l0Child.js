@@ -14,7 +14,7 @@
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { L0_MODEL_FILENAME, L0_MODEL_URLS } from './l0Config.js';
+import { L0_MODEL_FILENAME, L0_MODEL_SHA256, L0_MODEL_URLS } from './l0Config.js';
 import { ensureGgufDownloaded } from './l0Download.js';
 import { runL0Inference } from './l0Probe.js';
 
@@ -64,6 +64,7 @@ async function main() {
 
   emit({ event: 'status', message: 'download' });
   const dl = await ensureGgufDownloaded(modelPath, L0_MODEL_URLS, {
+    expectedSha256: L0_MODEL_SHA256,
     onProgress: ({ received, total }) => {
       process.stderr.write(
         `l0 download ${received}${total ? `/${total}` : ''}\n`

@@ -37,7 +37,7 @@ test('resolveConfideReply: English do-not-want-to-live is safety-01, not tea', (
   assert.equal(hit.line.id, 'safety-01');
   assert.match(
     hit.line.en,
-    /^Heard\. If this feels too heavy to hold alone, please reach someone you trust/
+    /^Heard\. If this feels too heavy to hold alone, please call your local crisis helpline/
   );
 });
 

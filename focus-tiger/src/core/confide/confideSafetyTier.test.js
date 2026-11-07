@@ -52,6 +52,6 @@ describe('confide safety tier skeleton (CR-46)', () => {
       key === 'CONFIDE_SAFETY_CARE_PLACEHOLDER' ? '[PLACEHOLDER_MID_CARE]' : ''
     );
     assert.match(text, /PLACEHOLDER_MID_CARE/);
-    assert.match(text, /crisis line/i);
+    assert.match(text, /crisis helpline/i);
   });
 });

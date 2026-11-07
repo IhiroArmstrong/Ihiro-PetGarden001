@@ -84,7 +84,7 @@ const ZH_TEMPLATES: ConfideCopyTemplateEntry[] = [
 const EN_CORPUS: ConfideCopyCorpusEntry[] = [
 	{
 		id: "safety-01",
-		text: "Heard. If this feels too heavy to hold alone, please reach someone you trust or a local crisis line. Yin is here — not a substitute for professional help.",
+		text: "Heard. If this feels too heavy to hold alone, please call your local crisis helpline. Yin is here — not a substitute for professional help.",
 	},
 	{ id: "fallback-01", text: "Heard. Yin nods quietly." },
 	{ id: "fallback-02", text: "What you said stays here." },
