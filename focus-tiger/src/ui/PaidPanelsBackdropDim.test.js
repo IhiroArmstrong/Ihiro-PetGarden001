@@ -192,14 +192,14 @@ describe('Paid panels SB-19 overlay backdrop', () => {
     }
   });
 
-  it('ConfideToYinUI help-resources entry hidden by default (T14 product mount off)', () => {
+  it('ConfideToYinUI help-resources entry visible by default (T14 product mount on)', () => {
     const previous = process.env.FT_CONFIDE_HELP_ENTRY;
     delete process.env.FT_CONFIDE_HELP_ENTRY;
     const { mountRoot, restore } = makeBackdropTestHarness();
     try {
       const ui = new ConfideToYinUI(mountRoot);
       ui.open();
-      assert.equal(ui.helpResourcesLink.hidden, true);
+      assert.equal(ui.helpResourcesLink.hidden, false);
     } finally {
       restore();
       if (previous === undefined) delete process.env.FT_CONFIDE_HELP_ENTRY;
@@ -209,7 +209,7 @@ describe('Paid panels SB-19 overlay backdrop', () => {
 
   it('ConfideToYinUI help-resources entry expands in-card panel (CR-46 P3)', () => {
     const previous = process.env.FT_CONFIDE_HELP_ENTRY;
-    process.env.FT_CONFIDE_HELP_ENTRY = 'on';
+    delete process.env.FT_CONFIDE_HELP_ENTRY;
     const { mountRoot, restore } = makeBackdropTestHarness();
     try {
       const ui = new ConfideToYinUI(mountRoot);
