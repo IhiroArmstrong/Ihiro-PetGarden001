@@ -56,4 +56,4 @@ Listening and how-to replies are ready in English. Other languages are not yet o
 
 1. `looksLikeJapaneseConfideText` → semantic crisis **does not run**; literal route kept.  
 2. Confide send path has **no** “not yet open” language gate.  
-3. `FT_CONFIDE_HELP_ENTRY` defaults **off**.
+3. `FT_CONFIDE_HELP_ENTRY` defaults **on** (`off` hides the in-card help link).
