@@ -52,11 +52,17 @@ test('safety-01 points to real help and is not a substitute (aligns with wellnes
   const line = CONFIDE_CORPUS.find((l) => l.id === 'safety-01');
   assert.ok(line);
   assert.match(line.en, /crisis helpline/i);
+  assert.match(line.en, /local emergency number/i);
   assert.match(line.en, /not a substitute for professional help/i);
   assert.match(line.ja, /相談窓口/);
+  assert.match(line.ja, /救急電話/);
   assert.match(line.ja, /専門援助の代わりにはなれない/);
   assert.match(line.zh, /请您拨打本地求助热线/);
+  assert.match(line.zh, /当地紧急电话/);
   assert.match(line.zh, /专业帮助/);
+  assert.doesNotMatch(line.zh, /\d{3}/);
+  assert.doesNotMatch(line.en, /\d{3}/);
+  assert.doesNotMatch(line.ja, /\d{3}/);
 });
 
 test('pickConfideLine: safety never falls through to zen fallback pool', () => {

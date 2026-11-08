@@ -30,7 +30,7 @@
 
 | id | zh（方向 · 未定稿） | en（方向 · 未定稿） | ja | review |
 |---|---|---|---|---|
-| safety-01 | 听见了。若此刻很难独自撑住，请您拨打本地求助热线。寅陪着，却不能代替专业帮助。 | Heard. If this feels too heavy to hold alone, please call your local crisis helpline. Yin is here — not a substitute for professional help. | 聴いた。一人で抱えきれない時は、お近くの相談窓口へ電話してください。寅はここにいる——専門援助の代わりにはなれない。 | **ok** |
+| safety-01 | 听见了。若此刻很难独自撑住，请您拨打本地求助热线。若情况紧急，请拨打当地紧急电话。寅陪着，却不能代替专业帮助。 | Heard. If this feels too heavy to hold alone, please call your local crisis helpline. If you are in immediate danger, please call your local emergency number. Yin is here — not a substitute for professional help. | 聴いた。一人で抱えきれない時は、お近くの相談窓口へ電話してください。緊急のときは、お近くの救急電話へかけてください。寅はここにいる——専門援助の代わりにはなれない。 | **ok** |
 
 > 运行时同源：`src/core/confide/confideCorpus.js`。关键词表见 `confideSafetyKeywords.js`。文案已人审 `ok`；**产品挂载**仍由 `CONFIDE_USER_MOUNT_ENABLED` 控制（当前 `false` → Idle 菜单不对真实用户挂出）。QA：`?product=1&confide=1`。  
 > **与 Wellness 免责对齐（2026-08-14）**：本句指向真实求助渠道（信任的人 / 当地热线 / crisis line / 相談窓口），并写明「不能代替专业帮助 / not a substitute」——与应用内「不是诊疗、不能替代咨询师」同一边界；**不改写**已审 `ok` 原文。权威：`PRODUCT_POSITIONING.md`「Wellness disclaimer」。  
