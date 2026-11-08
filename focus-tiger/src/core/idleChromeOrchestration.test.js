@@ -378,6 +378,7 @@ describe('listSecondaryChromeEntries', () => {
         'account',
         'help-center',
         'local-backup',
+        'practice-study',
         'membership',
         'ritual-morning',
         'ritual-emotional-reset',
@@ -431,6 +432,7 @@ describe('listSecondaryChromeEntries', () => {
         'account',
         'help-center',
         'local-backup',
+        'practice-study',
         'membership',
         'ritual-morning',
         'ritual-emotional-reset',
@@ -564,6 +566,7 @@ describe('listSecondaryChromeEntries', () => {
         'account',
         'help-center',
         'local-backup',
+        'practice-study',
         'membership',
         'ritual-morning',
         'ritual-emotional-reset',
@@ -613,12 +616,14 @@ describe('listSecondaryChromeEntries', () => {
   it('membership row sits after local-backup and immediately above Rituals group', () => {
     const entries = listSecondaryChromeEntries('wide-more', allOn);
     const localBackupIdx = entries.findIndex((e) => e.proxy === 'local-backup');
+    const practiceStudyIdx = entries.findIndex((e) => e.proxy === 'practice-study');
     const membershipIdx = entries.findIndex((e) => e.proxy === 'membership');
     const ritualsIdx = entries.findIndex(
       (e) => e.labelKey === 'ritual.menu_group'
     );
     assert.ok(localBackupIdx >= 0);
-    assert.equal(membershipIdx, localBackupIdx + 1);
+    assert.equal(practiceStudyIdx, localBackupIdx + 1);
+    assert.equal(membershipIdx, practiceStudyIdx + 1);
     assert.equal(ritualsIdx, membershipIdx + 1);
     assert.equal(entries[ritualsIdx]?.kind, 'group-label');
     assert.equal(entries[membershipIdx]?.labelKey, 'MENU_SUBSCRIPTION_ROW');
