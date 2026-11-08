@@ -592,6 +592,11 @@ import {
   createCoPracticeResearchUploadScheduler,
   nextCoPracticeResearchUploadDelayMs
 } from './core/coPracticeResearchWeeklySchedule.js';
+import {
+  evaluateCoPracticeResearchFirstSitPrompt,
+  recordFirstSitPromptDismiss,
+  recordFirstSitPromptLearn
+} from './core/coPracticeResearchFirstSitPrompt.js';
 import { flushCoPracticeResearchIngest } from './core/coPracticeResearchUpload.js';
 import {
   getGrowthMetricsStatus,
@@ -666,6 +671,7 @@ import { RecoverResetPracticeUI } from './ui/RecoverResetPracticeUI.js';
 import { RESET_ROUTES } from './ui/resetPracticeRoutes.js';
 import { AwakenInviteUI } from './ui/AwakenInviteUI.js';
 import { WorkEndInviteUI } from './ui/WorkEndInviteUI.js';
+import { PracticeStudyFirstSitInviteUI } from './ui/PracticeStudyFirstSitInviteUI.js';
 import { AwakenCheckInUI } from './ui/AwakenCheckInUI.js';
 import {
   decideAwakenEndCheckIn,
@@ -1079,6 +1085,7 @@ async function init() {
   let parrotMessengerPlayedThisPageSession = false;
   /** Assigned after Arrival / stores are ready. */
   let syncInAppReminderBanner = () => {};
+  let syncPracticeStudyFirstSitInvite = () => {};
   let syncWorkEndInvite = () => {};
   /** Assigned after cold-start goal card wiring. */
   let openTodayDirectionManual = () => {};
@@ -2050,6 +2057,7 @@ async function init() {
   let recoverResetPracticeSlotHeld = false;
   let awakenInviteSlotHeld = false;
   let workEndInviteSlotHeld = false;
+  let practiceStudyFirstSitInviteSlotHeld = false;
   let awakenCheckInSlotHeld = false;
   /** @type {RecoverResetPracticeUI | null} */
   let recoverResetPracticeUI = null;
@@ -2057,6 +2065,8 @@ async function init() {
   let awakenInviteUI = null;
   /** @type {WorkEndInviteUI | null} */
   let workEndInviteUI = null;
+  /** @type {PracticeStudyFirstSitInviteUI | null} */
+  let practiceStudyFirstSitInviteUI = null;
   /** @type {AwakenCheckInUI | null} */
   let awakenCheckInUI = null;
   /** @type {string} */
@@ -2204,6 +2214,25 @@ async function init() {
   function releaseWorkEndInviteOverlaySlot() {
     if (!workEndInviteSlotHeld) return;
     workEndInviteSlotHeld = false;
+  }
+
+  function requestPracticeStudyFirstSitInviteOverlaySlot() {
+    const decision = requestOverlaySlot({
+      source: OVERLAY_SOURCES.PRACTICE_STUDY_FIRST_SIT_INVITE,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildLiveOverlaySnapshot({
+        practiceStudyFirstSitInviteOpen: false
+      })
+    });
+    if (!decision.canShow) return false;
+    practiceStudyFirstSitInviteSlotHeld = true;
+    return true;
+  }
+
+  function releasePracticeStudyFirstSitInviteOverlaySlot() {
+    if (!practiceStudyFirstSitInviteSlotHeld) return;
+    practiceStudyFirstSitInviteSlotHeld = false;
   }
 
   function isAwakenInviteYieldBusy() {
@@ -2384,6 +2413,29 @@ async function init() {
     sync: () => syncWorkEndInvite(),
     isVisible: () => workEndInviteUI?.isVisible?.() === true,
     settings: workEndPreferenceUI
+  };
+  practiceStudyFirstSitInviteUI = new PracticeStudyFirstSitInviteUI(
+    overlayRoot,
+    {
+      requestSlot: requestPracticeStudyFirstSitInviteOverlaySlot,
+      releaseSlot: releasePracticeStudyFirstSitInviteOverlaySlot,
+      onLearn: () => {
+        const storage =
+          typeof localStorage !== 'undefined' ? localStorage : null;
+        recordFirstSitPromptLearn(storage);
+        closeGrowthOverlayCards({ except: 'practice-study' });
+        practiceStudyConsentPanelUI.openPanel();
+      },
+      onDismiss: () => {
+        const storage =
+          typeof localStorage !== 'undefined' ? localStorage : null;
+        recordFirstSitPromptDismiss(storage, Date.now());
+      }
+    }
+  );
+  window.__practiceStudyFirstSitInvite = {
+    sync: () => syncPracticeStudyFirstSitInvite(),
+    isVisible: () => practiceStudyFirstSitInviteUI?.isVisible?.() === true
   };
   awakenCheckInUI = new AwakenCheckInUI(overlayRoot, {
     requestMidSlot: requestAwakenCheckInOverlaySlot,
@@ -4070,6 +4122,9 @@ async function init() {
         recoverResetPracticeUI?.isVisible?.() === true,
       workEndInviteOpen:
         workEndInviteSlotHeld || workEndInviteUI?.isVisible?.() === true,
+      practiceStudyFirstSitInviteOpen:
+        practiceStudyFirstSitInviteSlotHeld ||
+        practiceStudyFirstSitInviteUI?.isVisible?.() === true,
       ...overrides
     });
   }
@@ -4621,9 +4676,12 @@ async function init() {
     // Product-equivalent sitting: stash before Reflection so Skip still logs.
     const draft = microRitualJourneyDraft(durationMinutes);
     if (draft) pendingJourneyDraft = draft;
-    maybeOfferGrowthSealAfterBaselineCeremony({
+    const growthOffered = maybeOfferGrowthSealAfterBaselineCeremony({
       sessionEndOpts: { completed: true }
     });
+    if (!growthOffered) {
+      syncPracticeStudyFirstSitInvite();
+    }
     onFocusCircleRiseSideEffects(durationMinutes * 60);
   }
 
@@ -5486,6 +5544,34 @@ async function init() {
     syncSoftUpdatePrompt();
     syncTodayDirectionOptionsBanner();
     syncWorkEndInvite();
+    syncPracticeStudyFirstSitInvite();
+  };
+
+  syncPracticeStudyFirstSitInvite = () => {
+    if (!practiceStudyFirstSitInviteUI) return;
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const snapshot = buildLiveOverlaySnapshot();
+    const candidate = evaluateCoPracticeResearchFirstSitPrompt({
+      storage,
+      nowMs: Date.now(),
+      hasQualifiedPractice:
+        practiceDaysStore.getPracticedDateKeys().length >= 1,
+      focusing: stateManager.state === STATES.FOCUSING,
+      sessionBusy: deriveReminderBusySessionTarget(snapshot),
+      inviteVisible: practiceStudyFirstSitInviteUI.isVisible(),
+      coldStartGoalOpen: snapshot.coldStartGoalOpen,
+      postSessionOverlayActive: snapshot.postSessionOverlayActive,
+      completionPending: snapshot.completionPending,
+      sessionState: snapshot.sessionState
+    });
+    if (!candidate.shouldShow) {
+      if (practiceStudyFirstSitInviteUI.isVisible()) {
+        practiceStudyFirstSitInviteUI.hide({ immediate: true });
+      }
+      return;
+    }
+    practiceStudyFirstSitInviteUI.tryShow();
   };
 
   syncWorkEndInvite = () => {
@@ -6468,6 +6554,7 @@ async function init() {
       bootSessionChrome.sessionUiGate.setPostSessionOverlayActive(false);
       resyncSessionChrome();
     }
+    syncPracticeStudyFirstSitInvite();
   }
 
   /**
@@ -6672,7 +6759,12 @@ async function init() {
     };
     currentSessionIntention = '';
     currentIntentionSource = 'typed';
-    maybeOfferGrowthSealAfterBaselineCeremony({ sessionEndOpts: endOpts });
+    const growthOffered = maybeOfferGrowthSealAfterBaselineCeremony({
+      sessionEndOpts: endOpts
+    });
+    if (!growthOffered) {
+      syncPracticeStudyFirstSitInvite();
+    }
     maybeToastColdStartDirectSitHint();
     onFocusCircleRiseSideEffects(witnessElapsedSeconds);
     bootAmbientHints.onboardingHints?.markSeen('rise-button');

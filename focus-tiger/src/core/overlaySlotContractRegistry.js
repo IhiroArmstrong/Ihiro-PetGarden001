@@ -39,6 +39,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   AWAKEN_INVITE: 'awaken-invite',
   AWAKEN_CHECK_IN: 'awaken-check-in',
   WORK_END_INVITE: 'work-end-invite',
+  PRACTICE_STUDY_FIRST_SIT_INVITE: 'practice-study-first-sit-invite',
   CALM_ACTION_RECOVER: 'calm-action-recover',
   CALM_ACTION_ARRIVE: 'calm-action-arrive',
   TRANSITION_MOMENT: 'transition-moment',
@@ -565,6 +566,16 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     snapshotField: 'workEndInviteOpen'
   }),
   contract({
+    id: OVERLAY_SOURCES.PRACTICE_STUDY_FIRST_SIT_INVITE,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 24,
+    readers:
+      'PracticeStudyFirstSitInviteUI.tryShow (Idle; after first qualified practice)',
+    blocksIdleYinTap: false,
+    blocksEnterSleep: false,
+    snapshotField: 'practiceStudyFirstSitInviteOpen'
+  }),
+  contract({
     id: OVERLAY_SOURCES.CALM_ACTION_RECOVER,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
@@ -728,6 +739,9 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'AwakenInviteUI.js': [OVERLAY_SOURCES.AWAKEN_INVITE],
   'AwakenCheckInUI.js': [OVERLAY_SOURCES.AWAKEN_CHECK_IN],
   'WorkEndInviteUI.js': [OVERLAY_SOURCES.WORK_END_INVITE],
+  'PracticeStudyFirstSitInviteUI.js': [
+    OVERLAY_SOURCES.PRACTICE_STUDY_FIRST_SIT_INVITE
+  ],
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
   'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],
   'TransitionMomentUI.js': [OVERLAY_SOURCES.TRANSITION_MOMENT],
