@@ -175,6 +175,13 @@ async function dismissVisibleGrowthBackdrops(page) {
         /* ignore */
       }
     }
+  });
+  const coinBackdrop = page.getByTestId('yin-coin-panel-backdrop');
+  if (await coinBackdrop.isVisible().catch(() => false)) {
+    await coinBackdrop.click({ position: { x: 12, y: 12 }, timeout: 4_000 }).catch(() => {});
+    await expect(coinBackdrop).toBeHidden({ timeout: 5_000 }).catch(() => {});
+  }
+  await page.evaluate(() => {
     for (const el of document.querySelectorAll('.ft-overlay-backdrop')) {
       el.classList.remove('is-visible');
       el.hidden = true;
@@ -204,17 +211,25 @@ async function openMenu(page, surface) {
       .catch(() => false);
     if (!shellVisible) {
       // CI can re-show growth backdrops (e.g. #yin-coin-panel-backdrop) while Playwright
-      // retries the click — poll dismiss like the post-row gate in walkMenu.
+      // retries the click — dismiss + click inside the same poll so count=0 cannot race
+      // with a backdrop that pops back before the separate btn.click().
       await expect
         .poll(
           async () => {
             await dismissVisibleGrowthBackdrops(page);
-            return await page.locator('.ft-overlay-backdrop.is-visible').count();
+            if ((await page.locator('.ft-overlay-backdrop.is-visible').count()) > 0) {
+              return false;
+            }
+            try {
+              await btn.click({ timeout: 500 });
+              return true;
+            } catch {
+              return false;
+            }
           },
-          { timeout: 12_000 }
+          { timeout: 15_000 }
         )
-        .toBe(0);
-      await btn.click();
+        .toBe(true);
     }
     await expectWideMoreMenuShellVisible(page);
     return;
