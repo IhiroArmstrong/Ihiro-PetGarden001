@@ -16,6 +16,7 @@ import {
   PRIVACY_SHEET_FULL_LEAD_KEY,
   PRIVACY_SHEET_YPE_OPT_IN_KEYS,
   findPrivacyKeysWithForbiddenCloudBrand,
+  findPracticeStudyForbiddenSubstrings,
   findYpeConsentForbiddenSubstrings,
   privacyCopyMentionsForbiddenCloudBrand
 } from './privacyNoticeCopy.js';
@@ -204,5 +205,18 @@ describe('privacyNoticeCopy', () => {
         );
       }
     }
+  });
+  it('en + ja privacy sheet mentions optional Practice Study independently of T54', () => {
+    for (const file of ['en.json', 'ja.json', 'zh.json']) {
+      const map = loadLocale(file);
+      assert.match(map.PRIVACY_SHEET_DEFAULT_STORAGE, /Practice Study|研究共修|練習リサーチ/);
+      assert.match(map.PRIVACY_SHEET_DEFAULT_STORAGE, /independent|相互独立|独立/);
+    }
+  });
+
+  it('practice study copy avoids forbidden efficacy / clinical claims', () => {
+    const en = loadLocale('en.json');
+    const blobs = [en.HINT_APP_PURPOSE_BODY, en.PRIVACY_SHEET_DEFAULT_STORAGE].join('\n');
+    assert.deepEqual(findPracticeStudyForbiddenSubstrings(blobs), []);
   });
 });

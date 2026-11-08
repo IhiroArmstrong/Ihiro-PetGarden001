@@ -42,7 +42,9 @@ describe('co-practice-copy slice (T64)', () => {
       /Wellness isn't only about the gym\. Many people overlook a more foundational practice: training the mind\./
     );
     assert.match(en.HINT_APP_PURPOSE_BODY, /We can practice together\. No rush, no judgment\./);
-    assert.match(en.HINT_APP_PURPOSE_BODY, /no ads, no data mining/i);
+    assert.match(en.HINT_APP_PURPOSE_BODY, /no ads/i);
+    assert.match(en.HINT_APP_PURPOSE_BODY, /Practice Study/i);
+    assert.doesNotMatch(en.HINT_APP_PURPOSE_BODY, /no data mining/i);
   });
 
   it('en wellness adds not a zen master after clinical disclaimer', () => {

@@ -96,6 +96,27 @@ export const YPE_CONSENT_FORBIDDEN_SUBSTRINGS = Object.freeze([
  * @param {string} text
  * @returns {string[]}
  */
+
+export const PRACTICE_STUDY_COPY_FORBIDDEN_SUBSTRINGS = Object.freeze([
+  'proven effective',
+  '已证明',
+  '诊疗',
+  'train the model',
+  '训练模型',
+  'diagnose, treat, cure'
+]);
+
+/**
+ * @param {string} text
+ * @returns {string[]}
+ */
+export function findPracticeStudyForbiddenSubstrings(text) {
+  const hay = String(text || '').toLowerCase();
+  return PRACTICE_STUDY_COPY_FORBIDDEN_SUBSTRINGS.filter((needle) =>
+    hay.includes(String(needle).toLowerCase())
+  );
+}
+
 export function findYpeConsentForbiddenSubstrings(text) {
   const hay = String(text || '').toLowerCase();
   return YPE_CONSENT_FORBIDDEN_SUBSTRINGS.filter((needle) =>
