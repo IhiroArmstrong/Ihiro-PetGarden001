@@ -97,3 +97,6 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 优化建议 | 同类研究表（FocusBuddy / Brainy / 平静技术 / 早餐宠物 / 依恋 / 双向共适应）对照现网 | 2026-10-31 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-desk-habit-literature.md`](./issue-entries/docs-t69-desk-habit-literature.md)。盘点 **T69**。开桌锚点 **T70** 搁置。早餐问询 / 日程灯 / 照料宠物 / 健康仪表盘不做。 | 跟进中 |
 
 | 优化建议 | PO 纠正：早餐善意应与熬夜同形；用户须感知越来越懂你；人机共修目标写入原则 | 2026-11-01 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-po-co-practice-goal.md`](./issue-entries/docs-t69-po-co-practice-goal.md)。纠正 #1491 锁。T70 Brief 待点头。 | 跟进中 |
+| 技术债 | audit-fix-9-15：云备份 Worker 写入路由仍在线（前端云备份写入已关） | 2026-11-07 B5 · PO 并行整改 P2 | 旁路 [`issue-entries/feat-t14-help-default-on-ledger-2026-11-08.md`](./issue-entries/feat-t14-help-default-on-ledger-2026-11-08.md)。代码 #1602 已合；Worker 下线另 PR。 | 未跟进 |
+| 技术债 | T97：危机题卷须有资质标注人；PO 设 **2026-11-22** 汇报点（两周期限） | 2026-11-08 PO 书面 · R2 后续 | 旁路同上。Brief `task-t97-crisis-annotator-qualification.md`。阻塞第 2/3 刀 `src`。 | 阻塞 |
+| 优化建议 | R2-lite 补跑：向量模型 **就绪 / 未就绪** 两配置须对照危机路由 | 2026-11-08 PO 书面 | 旁路同上。默认下载行为见 `l0EmbeddingProfiles`；实证待窄复跑。 | 未跟进 |
