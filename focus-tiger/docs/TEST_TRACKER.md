@@ -3,7 +3,7 @@
 维护规则：Cursor 每完成一项具有用户可感知效果的改动，必须**登记验收行**（状态默认「待人工测试」），
 并在消息里明确说「这项需要你测试」。纯后端/逻辑改动登记为「仅单元测试覆盖」，不需要用户测试，但仍要登记，防止遗漏。
 
-**权威路径**：`focus-tiger/docs/TEST_TRACKER.md`（勿在仓库根目录另建副本）。拼装真源（新增行）：[`tracker-entries/`](./tracker-entries/)。
+**权威路径**：`focus-tiger/docs/TEST_TRACKER.md`（勿在仓库根目录另建副本）。拼装真源（新增行）：[`tracker-entries/`](./tracker-entries/)。队列热点门禁见 [`queue-governance-readme.md`](./queue-governance-readme.md)。
 
 ### 新增行走碎片（2026-08-20 起 · 试点 · 强制）
 
@@ -334,6 +334,15 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
 <!-- tracker-fragments:begin -->
+| 邮箱登录 P0 Brief + develop 核实 | 纯文档 | 仅单元测试覆盖 | **无运行时。** 读 Brief `task-email-sign-in-p0.md`：事实表是否写清云备份 410/前端关、灰行占位、合并整包覆盖。不测界面。 | — | — | docs/email-sign-in-p0 | `docs/task-briefs/task-email-sign-in-p0.md` | 2026-11-08 |
+| 账本：安装包六条、T97 期限、10-05 归第 4 刀 | 纯文档 | 仅单元测试覆盖 | **无界面。** 读术语表「第一份安装包六条门槛」、T97 期限 2026-11-22、T94 第 4 刀含 10-05。`npm run queue:check`。 | PO 2026-11-08 拍板六条 | — | — | `GLOSSARY.md` · `SCHEDULING_GLOSSARY.md` | 2026-11-08 |
+| T93/T94/T95 治理登记 | 纯文档 | 仅单元测试覆盖 | **无界面。** 读术语表：T93=邮箱登录；T94=识别率四刀说明；T95=9-02b 相对日。`npm run queue:check`。不测 Electron 升级、不测危机打分改口。 | — | — | — | `docs/gov-t93-t95-queue` | 2026-11-08 |
+| T94 刀序与归属补丁 | 纯文档 | 仅单元测试覆盖 | **无界面。** 读术语表：刀序第 3→2→4；10-05 归第 3 刀；中档关怀搁置；T97 资质阻塞；T93 槽位只写 P1。`npm run queue:check`。 | — | — | — | `docs/gov-t94-followup` | 2026-11-08 |
+| 9-15b 备份路由全 410 | 纯后端 | 仅单元测试覆盖 | **无界面。** 申请验证码 / 校验 / 写入 / 读取 / 删除 在写入关闭时一律 410 `practice_backup_disabled`。现网要等生产 Worker 再部署才生效。单测：`cd cloud && npm test` 中 `practiceBackupWritesDisabled.test.ts`。 | PO 2026-11-08：9-15 只闸了发验证码 | — | — | `cloud/src/index.ts` | 2026-11-08 |
+| 缩窄窗口 · 有向量时仍打危机分 | 纯后端 | 待人工测试 | **主路径**：Electron 本机向量已加载 → 把窗口缩到 &lt;480px → 发非关键字危机转述 → **须**仍走语义打分，命中则 `safety_redirect`。**对照**：网页/无向量窄窗 → 不因本刀把全部兜底改成固定句。**不测**：窄窗自由生成（生成层宽屏门槛不变）。自动化：`confideSemanticCrisisLayer.test.js` · `confideSemanticCrisisGenerateGate.test.js`。 | 分析师 2026-11-08：宽度绑生成层，不是安全必须；PO 点头现在做 | — | 扩大识别覆盖，不调 0.78 | `fix/confide-semantic-crisis-narrow-window` | 2026-11-08 |
+| T91 补 · 安全后锁生成直到退出应用 | UI可见 | 待人工测试 | **主路径**：Electron Confide 发危机句 → 固定安全句 → 再发非危机兜底句 → **不得** `source=generate`。**回流**：关掉倾诉面板再打开 → 再发非危机兜底句仍不得 generate。**解除**：完全退出应用再开 → 未走安全路由前可以 generate。自动化：`confideSafetyGenerateLatch.test.js`。 | PO/分析师 2026-11-08：会话=退出应用前；关面板解锁等于没锁 | — | 叠在缩窄窗口 #1612 | `fix/t91-safety-latch-until-app-exit` | 2026-11-08 |
+| T92 补 · 第二句紧急电话（三语、不写号码） | UI可见 | 待人工测试 | **主路径**：危机句 → safety-01 中文含 **当地紧急电话**、英文 **local emergency number**、日文 **救急電話**；仍含第一句本地热线。**禁止**出现 911/110/988 等具体号码。**回流**：帮助入口面板（若开）同一段文案。自动化：`confideCorpus.test.js` · `confideHelpEntry.test.js`。 | 分析师 2026-11-08：第二句紧急电话、不写号码、三种语言 | — | 不替代顾问核实地区资源 | `fix/t92-safety-emergency-second-sentence` | 2026-11-08 |
+| T96 未覆盖语言求助兜底 | 文案 | 待人工测试 | Electron 宽屏倾诉：发假名闲聊，回复仍是还没有开放，且含本地求助热线；发死にたい仍是安全转介不是未开放。 | — | — | — | Electron desktop:dev 宽屏 Confide | 2026-11-08 |
 | 深链 + Shortcuts 食谱 Brief | 纯文档 | 仅单元测试覆盖 | **本条验收的是文档**：Brief 含白名单、busy/冷启动待拍板、Shortcuts 三食谱、验收 A–D、明确不做。**不代表**深链已接线或 Health 能写入。点头后另开实现旁支。路径：`docs/task-briefs/task-deep-link-shortcuts-cookbook.md` | — | — | — | 无运行时 · 勿 `?product=1` 当本 Brief 已上线 | 2026-11-07 |
 | 提醒 .ics 导出 Brief | 纯文档 | 仅单元测试覆盖 | **本条验收的是文档**：Brief 含诚实「不同步」、UID 三客户端未承诺覆盖、时区推荐浮动、依赖深链 URL。**不代表**设置里已有下载钮。 | — | — | — | 无运行时 | 2026-11-07 |
 | 9-02(a) CI dependency-audit 覆盖 desktop/cloud | 纯后端 | 仅单元测试覆盖 | **无界面。** GitHub Actions `Dependency audit (npm)` 须对 `focus-tiger`、`focus-tiger/desktop`、`focus-tiger/cloud` 各跑 `npm ci` + `npm audit --audit-level=high`。手动 dispatch 一次确认三 job 均完成（desktop 可能红 = 已知 Electron 债，仍须报信号）。 | B5 9-02 | — | audit-fix-9-02 | `fix/audit-9-02-dependency-audit-ci` | 2026-11-07 |
