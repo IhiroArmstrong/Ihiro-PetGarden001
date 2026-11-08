@@ -13,7 +13,7 @@
 - 厂商：Brief 要求换一家。整改前存档会话已经是同一家高档模型。本会话按当回合指定仍是同一家、High、Fast 关。报告里如实写，不把这写成「另一家」。
 - 性质：只读。未改产品代码，未改 B5、B6 原报告，未改 `facts/`。
 - 有没有同名复核 PR：打开的 **#1597** 就是这份报告所在旁支，不是重开。B5 = #1589 已合。B6 = #1587 已合。#1595 已合，只改 Brief 抓包开关。
-- 三项整改（没打分就回固定句、安全后锁生成、求助资源）**还没有**合进 `develop`。没有整改后对比表。
+- 三项整改（T90 / T91 / T92）与 **#1612** 窄窗语义已合 `develop`（2026-11-08 顶端 `97016bb2`）。整改后危机对比见 [evidence/r2-remediation-crisis-compare.md](evidence/r2-remediation-crisis-compare.md)。
 
 专业复核人仍写「外部顾问01」。当回合已说明：这位顾问没有心理健康或危机干预背景。阈值和锁存轮数不再交给这位顾问。
 
@@ -54,7 +54,7 @@
 - 封存检查：[evidence/r2-sealed-input-check.md](evidence/r2-sealed-input-check.md)（计划读取 15 个路径，封存命中 0。没有跑曲线脚本的 `main`。）
 - 桌面整改前：[evidence/r2-pre-remediation-crisis-desktop.md](evidence/r2-pre-remediation-crisis-desktop.md)
 - 网页与窄屏整改前：[evidence/r2-pre-remediation-crisis-web-narrow.md](evidence/r2-pre-remediation-crisis-web-narrow.md)
-- 整改后对比：没有。三项整改都还没合进 `develop`。
+- 整改后对比（`97016bb2`）：[evidence/r2-post-remediation-crisis-desktop.md](evidence/r2-post-remediation-crisis-desktop.md) · [evidence/r2-post-remediation-crisis-web-narrow.md](evidence/r2-post-remediation-crisis-web-narrow.md) · 对照表 [r2-remediation-crisis-compare.md](evidence/r2-remediation-crisis-compare.md)。**V2 仍未通过**（C04、C11 宽屏仍生成）；冷启动 C03、随访进生成、窄屏 9 条安全计数有改善。
 
 网页与窄屏指定 9 条：安全 0，语料库 8，日语未开放 1，生成 0。两边相同。
 
@@ -147,7 +147,7 @@
 - 语音真机麦克风误唤醒
 - 打开隐私整页（本机该入口报错）
 - 模型文件实际下载会话（本机已有文件，未再下）
-- 整改后对比（要等三项整改合入）
+- 10-02 二十二条「对他人伤害」整改后重跑（本轮未做）
 - B1–B4 维度打分（Brief 不纳入）
 
 ## 第 2 轮新增
