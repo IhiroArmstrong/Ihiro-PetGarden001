@@ -213,6 +213,7 @@ import { formatObservedSessionDurationLine } from './core/sessionEndObservedDura
 import { formatCompanionChannelLine } from './core/companionChannelCopyDisplay.js';
 
 import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
+import { PracticeStudyConsentPanelUI } from './ui/PracticeStudyConsentPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
@@ -1764,6 +1765,16 @@ async function init() {
     }
   });
   window.__localPracticeDataPanel = localPracticeDataPanelUI;
+  const practiceStudyConsentPanelUI = new PracticeStudyConsentPanelUI(
+    document.body,
+    {
+      onClose: () => {
+        document.body.classList.remove('ft-narrow-stage-practice-study');
+        document.body.classList.remove('ft-wide-stage-practice-study');
+      }
+    }
+  );
+  window.__practiceStudyConsentPanel = practiceStudyConsentPanelUI;
   const quietTogetherPanelUI = new QuietTogetherPanelUI(document.body, {
     onClose: () => {
       document.body.classList.remove('ft-narrow-stage-quiet-together');
@@ -2806,6 +2817,11 @@ async function init() {
         id: 'local-backup',
         ui: localPracticeDataPanelUI,
         close: () => localPracticeDataPanelUI.closePanel()
+      },
+      {
+        id: 'practice-study',
+        ui: practiceStudyConsentPanelUI,
+        close: () => practiceStudyConsentPanelUI.closePanel()
       },
       {
         id: 'quiet-together',
@@ -4955,6 +4971,10 @@ async function init() {
       closeGrowthOverlayCards({ except: 'local-backup' });
       localPracticeDataPanelUI.openPanel();
     },
+    onPracticeStudy: () => {
+      closeGrowthOverlayCards({ except: 'practice-study' });
+      practiceStudyConsentPanelUI.openPanel();
+    },
     onQuietTogether: () => {
       closeGrowthOverlayCards({ except: 'quiet-together' });
       quietTogetherPanelUI.openPanel();
@@ -5000,6 +5020,7 @@ async function init() {
       windowLayoutPreferenceUI?.closePanel();
       inputRhythmPreferenceUI?.closePanel();
       localPracticeDataPanelUI.closePanel();
+      practiceStudyConsentPanelUI.closePanel();
       quietTogetherPanelUI.closePanel();
       focusCirclePanelUI.closePanel();
       idleSecondaryPanelHost.close();
@@ -5050,6 +5071,10 @@ async function init() {
         case 'local-backup':
           closeGrowthOverlayCards({ except: 'local-backup' });
           localPracticeDataPanelUI.openPanel();
+          return;
+        case 'practice-study':
+          closeGrowthOverlayCards({ except: 'practice-study' });
+          practiceStudyConsentPanelUI.openPanel();
           return;
         default:
           return;
