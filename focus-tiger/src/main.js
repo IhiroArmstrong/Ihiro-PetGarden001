@@ -45,6 +45,14 @@ import {
   onPracticeConfigSessionBegin
 } from './core/stablePracticeConfigPrefs.js';
 import {
+  noteBreathMinutesChipChosen,
+  noteCompanionModeManualPick,
+  onBreathSessionBeginStablePrefs,
+  onCompanionSessionBeginStablePrefs,
+  setBreathStableAwaitingVoteFromChip,
+  setCompanionStableAwaitingVoteFromPick
+} from './core/stableBreathCompanionPrefs.js';
+import {
   applyCoPracticeContinueSlotConfig,
   resolveCoPracticeContinueSlot
 } from './core/coPracticeContinueSlot.js';
@@ -3645,6 +3653,12 @@ async function init() {
   window.__companionModePicker = bootHonestyCompanion.companionModePicker;
 
   mountMicroRitualUI(bootHonestyCompanion, document.getElementById('ui-overlay'), {
+    onDurationSelected: (minutes) => {
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const chipNote = noteBreathMinutesChipChosen({ minutes, storage });
+      setBreathStableAwaitingVoteFromChip(chipNote.recordedQualifying, storage);
+    },
     onIdleEntryClick: () => {
       if (
         stateManager.state === STATES.FOCUSING ||
@@ -3665,6 +3679,15 @@ async function init() {
     resolveDurationMs: () =>
       MICRO_RITUAL_MS_OVERRIDE != null ? MICRO_RITUAL_MS_OVERRIDE : undefined,
     onBreathStart: () => {
+      const coPracticeStorage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      const breathMinutes =
+        bootHonestyCompanion.microRitualUI?.getDurationMinutes?.() ?? 1;
+      onBreathSessionBeginStablePrefs({
+        minutes: breathMinutes,
+        storage: coPracticeStorage,
+        at: Date.now()
+      });
       beginBreathLanternPresence();
       lightProgression.beginBreath();
       // Timed Breath practice sits with the existing Idle 闭目坐禅 loop
@@ -5901,6 +5924,11 @@ async function init() {
       storage: coPracticeStorage,
       at: focusSession.startedAtMs ?? Date.now()
     });
+    onCompanionSessionBeginStablePrefs({
+      mode: companionMode,
+      storage: coPracticeStorage,
+      at: focusSession.startedAtMs ?? Date.now()
+    });
     const recipeAtBegin = readRitualRecipe(coPracticeStorage);
     onPracticeConfigSessionBegin({
       recipe: recipeAtBegin,
@@ -6070,6 +6098,13 @@ async function init() {
   };
 
   companionModeHandlers.onModeSelected = (mode) => {
+    const coPracticeStorage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const modePick = noteCompanionModeManualPick({ mode, storage: coPracticeStorage });
+    setCompanionStableAwaitingVoteFromPick(
+      modePick.recordedQualifying,
+      coPracticeStorage
+    );
     calmActionArriveCardUI.hide({ immediate: true });
     bootAmbientHints.onboardingHints?.markSeen('companion-mode');
     if (mode === COMPANION_MODE_STAY) bootAmbientHints.onboardingHints?.markSeen('companion-stay');
