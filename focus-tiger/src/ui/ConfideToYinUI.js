@@ -633,6 +633,12 @@ export class ConfideToYinUI {
     });
   }
 
+  _semanticCrisisEmbeddingReady() {
+    return Boolean(
+      this._companion && typeof this._companion.scoreSemanticCrisis === 'function'
+    );
+  }
+
   _syncConfideDock() {
     const width = typeof window !== 'undefined' ? window.innerWidth : 0;
     this.root.dataset.dock = confidePanelDockPlacement(width);
@@ -1610,14 +1616,14 @@ export class ConfideToYinUI {
       void this._companion.appendTurnLog(shadowRow);
     }
     const wideViewport = this._viewportAllowsGenerateLayer();
+    const embeddingReady = this._semanticCrisisEmbeddingReady();
     const crisisEligible =
       shouldAttemptConfideSemanticCrisis({
         literalRoute: hit.route,
         text,
-        wideViewport
-      }) &&
-      this._companion &&
-      typeof this._companion.scoreSemanticCrisis === 'function';
+        wideViewport,
+        embeddingReady
+      }) && embeddingReady;
     if (
       crisisEligible ||
       (shouldRunConfideSemanticShadow({ route: hit.route }) &&
@@ -1650,10 +1656,9 @@ export class ConfideToYinUI {
       shouldAttemptConfideSemanticCrisis({
         literalRoute: hit.route,
         text: asked,
-        wideViewport: this._viewportAllowsGenerateLayer()
-      }) &&
-      this._companion &&
-      typeof this._companion.scoreSemanticCrisis === 'function'
+        wideViewport: this._viewportAllowsGenerateLayer(),
+        embeddingReady: this._semanticCrisisEmbeddingReady()
+      }) && this._semanticCrisisEmbeddingReady()
     ) {
       let crisisScore = null;
       try {
@@ -2262,6 +2267,7 @@ export class ConfideToYinUI {
         route: hit.route,
         text,
         wideViewport: this._viewportAllowsGenerateLayer(),
+        embeddingReady: this._semanticCrisisEmbeddingReady(),
         scored: this._semanticCrisisGenerateAttestation.scored,
         embeddingOk: this._semanticCrisisGenerateAttestation.embeddingOk
       });

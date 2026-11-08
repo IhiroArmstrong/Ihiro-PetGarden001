@@ -6,7 +6,11 @@
 /**
  * Confide semantic crisis layer (CR-44 · S1).
  * Runs only after the literal safety / aggression classifiers miss.
- * Embedding not ready / Japanese / Web·narrow → keep the literal route.
+ * Embedding not ready / Japanese → keep the literal route.
+ * Viewport width used to skip this layer (it was tied to the desktop
+ * generate-layer ≥~480px gate). That dropped scoring when a customer
+ * resized the Electron window. Scoring now follows vector readiness,
+ * not width. Generate itself may still stay wide-only.
  */
 
 import { hashConfidePrivateText } from './confidePrivacy.js';
@@ -88,6 +92,7 @@ export function semanticCrisisScoreBucket(score) {
  *   literalRoute?: string | null,
  *   text?: string | null,
  *   wideViewport?: boolean,
+ *   embeddingReady?: boolean,
  *   mode?: string | null,
  *   env?: NodeJS.ProcessEnv | null
  * }} [opts]
@@ -97,6 +102,7 @@ export function shouldAttemptConfideSemanticCrisis({
   literalRoute = null,
   text = '',
   wideViewport = false,
+  embeddingReady = false,
   mode = null,
   env
 } = {}) {
@@ -107,7 +113,10 @@ export function shouldAttemptConfideSemanticCrisis({
       ? mode
       : resolveConfideSemanticCrisisMode(env);
   if (resolvedMode === CONFIDE_SEMANTIC_CRISIS_MODE.OFF) return false;
-  if (!wideViewport) return false;
+  // Narrow without vectors: keep literal-only (web / no model).
+  // Narrow with vectors: still score. Wide without vectors: still
+  // attempt so T90 can block uns scored generate.
+  if (!wideViewport && !embeddingReady) return false;
   if (!literalRoute) return false;
   if (
     literalRoute === CONFIDE_ROUTE.SAFETY_REDIRECT ||
