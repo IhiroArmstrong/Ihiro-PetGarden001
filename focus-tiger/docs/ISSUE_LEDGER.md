@@ -98,6 +98,7 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 
 | 优化建议 | PO 纠正：早餐善意应与熬夜同形；用户须感知越来越懂你；人机共修目标写入原则 | 2026-11-01 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-po-co-practice-goal.md`](./issue-entries/docs-t69-po-co-practice-goal.md)。纠正 #1491 锁。T70 Brief 待点头。 | 跟进中 |
 | 独立bug | R2L-01：隐私设置页打开抛 `_refreshT54ResearchOptInCopy is not a function`，研究/个性化/付费同意开关无法操作 | 2026-11-08 R2-lite 独立复核 · PO 书面 | 旁路 [`issue-entries/fix-r2l-01-privacy-sheet-crash.md`](./issue-entries/fix-r2l-01-privacy-sheet-crash.md)。阻塞 V1 运行时验证。 | 跟进中 |
-| 技术债 | audit-fix-9-15：练习备份 Worker 写入路由 410 闸（9-15b） | 2026-11-07 B5 · PO 并行整改 P2 | 旁路 [`issue-entries/feat-t14-help-default-on-ledger-2026-11-08.md`](./issue-entries/feat-t14-help-default-on-ledger-2026-11-08.md)。#1629 已合 develop；**生产 Worker 待部署**。 | 跟进中 |
-| 技术债 | T97：危机题卷须有资质标注人；PO 设 **2026-11-22** 汇报点（两周期限） | 2026-11-08 PO 书面 · R2 后续 | 旁路同上。Brief `task-t97-crisis-annotator-qualification.md`。阻塞第 2/3 刀 `src`。 | 阻塞 |
+| 技术债 | audit-fix-9-15：练习备份 Worker 写入路由 410 闸（9-15b） | 2026-11-08 PO · 生产探测 | 旁路 [`issue-entries/docs-gov-dmg-gate-1620-followup.md`](./issue-entries/docs-gov-dmg-gate-1620-followup.md)。#1629 已合 develop；**生产 Worker 待部署**。 | 跟进中 |
+| 技术债 | 生产 Worker 探测须只打无副作用请求 | 2026-11-08 PO · 生产探测 | 旁路同上。已发生：健康检查、申请验证码、空写入、假令牌读取。无写入成功。 | 跟进中 |
+| 技术债 | T97：危机题卷须有资质标注人；PO 设 **2026-11-22** 汇报点（两周期限） | 2026-11-08 PO 书面 · R2 后续 | 旁路 [`issue-entries/docs-gov-dmg-gate-1620-followup.md`](./issue-entries/docs-gov-dmg-gate-1620-followup.md)。Brief `task-t97-crisis-annotator-qualification.md`。阻塞第 2/3 刀 `src`。 | 阻塞 |
 | 优化建议 | R2-lite 补跑：向量模型 **就绪 / 未就绪** 两配置须对照危机路由 | 2026-11-08 PO 书面 | 旁路同上。默认下载行为见 `l0EmbeddingProfiles`；实证待窄复跑。 | 未跟进 |

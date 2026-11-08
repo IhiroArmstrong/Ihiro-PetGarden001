@@ -1,7 +1,7 @@
 ---
 id: t94-v2-recognition-four-knives
 kind: feature
-status: 已完成（说明）· P2 · 无运行时 · 刀序第 3→2→4 · 第 2–4 刀待 Brief
+status: 已完成（说明）· P2 · 无运行时 · 刀序第 3→2→4 · 10-05 修复归第 4 刀 · 第 2–4 刀待 Brief
 updated: 2026-11-08
 ---
 
