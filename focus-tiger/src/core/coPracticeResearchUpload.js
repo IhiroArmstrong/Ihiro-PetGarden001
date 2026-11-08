@@ -23,6 +23,7 @@ import {
 } from './coPracticeResearchReceive.js';
 import { buildWeeklyPayload } from './coPracticeResearchWeeklyPayload.js';
 import { serializeCoPracticeResearchPayload } from './coPracticeResearchSerialize.js';
+import { clearCoPracticeResearchWeeklySchedule } from './coPracticeResearchWeeklySchedule.js';
 
 export const CO_PRACTICE_RESEARCH_LAST_POST_KEY =
   'focus-tiger.co-practice-research-last-post.v1';
@@ -252,6 +253,7 @@ export async function revokeCoPracticeResearchAndDeleteRemote(opts = {}) {
   } catch {
     /* ignore */
   }
+  clearCoPracticeResearchWeeklySchedule(storage);
   return { studyId, localCleared: true, deleteResult };
 }
 

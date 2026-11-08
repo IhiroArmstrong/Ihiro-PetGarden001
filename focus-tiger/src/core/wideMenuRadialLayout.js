@@ -161,6 +161,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   account: 'MENU_GROUP_PREFERENCES',
   'help-center': 'MENU_GROUP_PREFERENCES',
   'local-backup': 'MENU_GROUP_PREFERENCES',
+  'practice-study': 'MENU_GROUP_PREFERENCES',
   membership: 'MENU_GROUP_PREFERENCES'
 });
 
