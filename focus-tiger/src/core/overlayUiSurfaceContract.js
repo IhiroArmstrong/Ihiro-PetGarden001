@@ -335,6 +335,22 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     trackerCoverage: GAP
   }),
   surface({
+    file: 'PracticeStudyFirstSitInviteUI.js',
+    slotRequest: requestSlot(
+      ['requestSlot', 'releaseSlot'],
+      ['PRACTICE_STUDY_FIRST_SIT_INVITE', 'requestOverlaySlot']
+    ),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'local-dismiss-only' }),
+      success: Object.freeze({ mode: 'na', reason: 'local-dismiss-only' }),
+      fail: Object.freeze({ mode: 'na', reason: 'local-dismiss-only' })
+    }),
+    e2eOverlap: GAP,
+    trackerCoverage: GAP
+  }),
+  surface({
     file: 'AwakenCheckInUI.js',
     slotRequest: requestSlot(
       ['requestMidSlot', 'releaseMidSlot'],

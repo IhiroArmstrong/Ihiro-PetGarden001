@@ -80,6 +80,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [awakenInviteOpen]
  * @property {boolean} [awakenCheckInOpen]
  * @property {boolean} [workEndInviteOpen]
+ * @property {boolean} [practiceStudyFirstSitInviteOpen]
  * @property {boolean} [recoverResetPracticeOpen]
  * @property {boolean} [transitionMomentOpen]
  */
@@ -154,6 +155,9 @@ export function buildOverlaySnapshot(input = {}) {
     awakenInviteOpen: Boolean(input.awakenInviteOpen),
     awakenCheckInOpen: Boolean(input.awakenCheckInOpen),
     workEndInviteOpen: Boolean(input.workEndInviteOpen),
+    practiceStudyFirstSitInviteOpen: Boolean(
+      input.practiceStudyFirstSitInviteOpen
+    ),
     recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
     transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };

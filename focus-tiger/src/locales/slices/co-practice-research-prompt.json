@@ -1,0 +1,17 @@
+{
+  "en": {
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_BODY": "We make a human–AI co-practice product for desk work. Your privacy is protected by default. If you'd like, you can learn about an optional weekly summary study—nothing in the app changes either way.",
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_LEARN": "Learn about Practice Study",
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_NOT_NOW": "Not now"
+  },
+  "zh": {
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_BODY": "我们做的是一款人机共修产品，陪你安静练习桌面工作。默认保护你的隐私。如果你想了解，可以看看可选的「研究共修」：每周只分享几个汇总数字，不参加也一切照常。",
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_LEARN": "了解研究共修",
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_NOT_NOW": "暂不"
+  },
+  "ja": {
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_BODY": "私たちは、人とAIが一緒に練習する製品です。デスクワークの練習に静かに寄り添います。プライバシーを最優先に守ります。任意の週次集計研究について知りたい場合だけご案内します。参加しなくても、使い方は変わりません。",
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_LEARN": "練習リサーチについて",
+    "CO_PRACTICE_RESEARCH_FIRST_SIT_NOT_NOW": "今はしない"
+  }
+}
