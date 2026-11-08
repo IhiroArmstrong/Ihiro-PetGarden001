@@ -2568,6 +2568,19 @@ export class OnboardingHintsUI {
     }
   }
 
+  _refreshT54ResearchOptInCopy() {
+    if (!this._privacyT54OptInCheck) return;
+    this._privacyT54OptInCheck.checked = hasT54ResearchConsent(
+      globalThis.localStorage
+    );
+    if (this._privacyT54OptInText) {
+      this._privacyT54OptInText.textContent = t('T54_RESEARCH_CONSENT_LABEL');
+    }
+    if (this._privacyT54OptInHint) {
+      this._privacyT54OptInHint.textContent = t('T54_RESEARCH_CONSENT_HINT');
+    }
+  }
+
   _refreshPrivacySheetCopy() {
     if (!this.privacySheet) return;
     this._privacyTitleEl.textContent = t('PRIVACY_SHEET_TITLE');
