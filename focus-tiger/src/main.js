@@ -588,6 +588,11 @@ import {
 } from './core/tasteLayerSync.js';
 import { nextBootNetworkDelayMs } from './core/tasteLayerBootSchedule.js';
 import {
+  createCoPracticeResearchUploadScheduler,
+  nextCoPracticeResearchUploadDelayMs
+} from './core/coPracticeResearchWeeklySchedule.js';
+import { flushCoPracticeResearchIngest } from './core/coPracticeResearchUpload.js';
+import {
   getGrowthMetricsStatus,
   prefetchGrowthMetricsConfig,
   resetGrowthMetricsConfigSyncForTests
@@ -6714,6 +6719,25 @@ async function init() {
     }
   });
   startTastePrefetchOnce();
+
+  const coPracticeResearchUploadScheduler = createCoPracticeResearchUploadScheduler({
+    isOverlayBusy: isSceneAnimOverlayBusy,
+    nextDelayMs: nextCoPracticeResearchUploadDelayMs,
+    schedule: (fn, ms) => window.setTimeout(fn, ms),
+    storage: bootStorage,
+    runUpload: () =>
+      flushCoPracticeResearchIngest({
+        storage: bootStorage,
+        search: location.search
+      })
+  });
+  coPracticeResearchUploadScheduler.start();
+  document.addEventListener('ft:co-practice-research-consent-granted', () => {
+    coPracticeResearchUploadScheduler.start();
+  });
+  if (import.meta.env.DEV) {
+    window.__coPracticeResearchUploadScheduler = coPracticeResearchUploadScheduler;
+  }
 
   /** After welcome / flower first paint: occupancy resets but idle loop may not. */
   function ensureIdleBaselineAfterWelcome() {
