@@ -36,6 +36,7 @@ export const GLASS_GROWTH_OVERLAY_CARD_IDS = Object.freeze([
   'yin-memory',
   'yin-coin',
   'local-backup',
+  'practice-study',
   'quiet-together',
   'focus-circle'
 ]);
@@ -65,6 +66,7 @@ export const MENU_PROXY_TO_GROWTH_OVERLAY_CARD_ID = Object.freeze({
   'yin-coin': 'yin-coin',
   'help-center': 'help-center',
   'local-backup': 'local-backup',
+  'practice-study': 'practice-study',
   'quiet-together': 'quiet-together',
   'focus-circle': 'focus-circle'
 });
