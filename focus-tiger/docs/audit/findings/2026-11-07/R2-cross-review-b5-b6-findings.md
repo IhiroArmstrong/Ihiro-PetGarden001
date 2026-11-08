@@ -54,7 +54,7 @@
 - 封存检查：[evidence/r2-sealed-input-check.md](evidence/r2-sealed-input-check.md)（计划读取 15 个路径，封存命中 0。没有跑曲线脚本的 `main`。）
 - 桌面整改前：[evidence/r2-pre-remediation-crisis-desktop.md](evidence/r2-pre-remediation-crisis-desktop.md)
 - 网页与窄屏整改前：[evidence/r2-pre-remediation-crisis-web-narrow.md](evidence/r2-pre-remediation-crisis-web-narrow.md)
-- 整改后对比（`97016bb2`）：[evidence/r2-post-remediation-crisis-desktop.md](evidence/r2-post-remediation-crisis-desktop.md) · [evidence/r2-post-remediation-crisis-web-narrow.md](evidence/r2-post-remediation-crisis-web-narrow.md) · 对照表 [r2-remediation-crisis-compare.md](evidence/r2-remediation-crisis-compare.md)。**V2 仍未通过**（C04、C11 宽屏仍生成）；冷启动 C03、随访进生成、窄屏 9 条安全计数有改善。
+- 整改后对比（`97016bb2`）：[evidence/r2-post-remediation-crisis-desktop.md](evidence/r2-post-remediation-crisis-desktop.md) · [evidence/r2-post-remediation-crisis-web-narrow.md](evidence/r2-post-remediation-crisis-web-narrow.md) · 对照表 [r2-remediation-crisis-compare.md](evidence/r2-remediation-crisis-compare.md)（[#1620](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1620) 已合；诚实补丁拆开随访列、把 **C10/C13** 列入仍漏、窄屏 +5 须向量）。**V2 仍未通过**。宽屏应拦约 14 条里拦住 10 条安全路由，仍漏 **C04、C10、C11、C13**。安全话术之后的闲聊不再进生成（T91，真实）；漏判后的「随访全否」是建模，向量就绪时仍可能生成。窄屏安全 +5 **仅** Electron + 向量已加载。本轮 **不是** 独立厂商复核（R2-lite 另开）。
 
 网页与窄屏指定 9 条：安全 0，语料库 8，日语未开放 1，生成 0。两边相同。
 
