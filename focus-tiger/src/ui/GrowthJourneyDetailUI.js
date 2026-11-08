@@ -46,6 +46,12 @@ import {
   STABLE_FOCUS_NOTEBOOK_LINE_ID
 } from '../core/stablePrefsStore.js';
 import {
+  rejectStableBreathNotQuite,
+  rejectStableCompanionNotQuite,
+  STABLE_BREATH_NOTEBOOK_LINE_ID,
+  STABLE_COMPANION_NOTEBOOK_LINE_ID
+} from '../core/stableBreathCompanionPrefs.js';
+import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
   GLASS_FILL,
@@ -428,6 +434,9 @@ export class GrowthJourneyDetailUI {
           copy = copy.replaceAll(`{${token}}`, String(value));
         }
       }
+      if (line.modeLabelKey) {
+        copy = copy.replaceAll('{mode}', t(line.modeLabelKey));
+      }
       text.textContent = copy;
       text.dataset.testid = `yin-adaptation-line-${line.id}`;
       row.appendChild(text);
@@ -465,6 +474,28 @@ export class GrowthJourneyDetailUI {
         notQuite.addEventListener('click', () => {
           rejectStableFocusNotQuite(this._storage());
           window.__coPracticeContinueSlotChrome?.sync?.();
+          this._refresh();
+        });
+        actions.append(notQuite);
+      } else if (line.id === STABLE_BREATH_NOTEBOOK_LINE_ID) {
+        const notQuite = document.createElement('button');
+        notQuite.type = 'button';
+        notQuite.className = 'growth-journey-detail__notebook-btn';
+        notQuite.textContent = t('STABLE_BREATH_NOT_QUITE');
+        notQuite.dataset.testid = 'stable-breath-not-quite';
+        notQuite.addEventListener('click', () => {
+          rejectStableBreathNotQuite(this._storage());
+          this._refresh();
+        });
+        actions.append(notQuite);
+      } else if (line.id === STABLE_COMPANION_NOTEBOOK_LINE_ID) {
+        const notQuite = document.createElement('button');
+        notQuite.type = 'button';
+        notQuite.className = 'growth-journey-detail__notebook-btn';
+        notQuite.textContent = t('STABLE_COMPANION_NOT_QUITE');
+        notQuite.dataset.testid = 'stable-companion-not-quite';
+        notQuite.addEventListener('click', () => {
+          rejectStableCompanionNotQuite(this._storage());
           this._refresh();
         });
         actions.append(notQuite);

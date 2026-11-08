@@ -1,0 +1,14 @@
+{
+  "en": {
+    "STABLE_COMPANION_L2_FACT": "You often choose {mode}.",
+    "STABLE_COMPANION_NOT_QUITE": "Not quite"
+  },
+  "zh": {
+    "STABLE_COMPANION_L2_FACT": "你常选 {mode}。",
+    "STABLE_COMPANION_NOT_QUITE": "不是这样"
+  },
+  "ja": {
+    "STABLE_COMPANION_L2_FACT": "よく {mode} を選んでいます。",
+    "STABLE_COMPANION_NOT_QUITE": "ちょっと違う"
+  }
+}

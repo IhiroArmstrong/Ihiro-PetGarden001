@@ -59,11 +59,24 @@ export const STABLE_FOCUS_NOTEBOOK_LINE_ID = 'stable-focus-minutes-fact';
  *   at: number
  * }} StablePracticeConfigVote
  *
+ * @typedef {{ minutes: number, lastUsedAt?: number }} StableBreathDimState
+ * @typedef {{ minutes: number, at: number }} StableBreathVote
+ * @typedef {{ mode: string, lastUsedAt?: number }} StableCompanionDimState
+ * @typedef {{ mode: string, at: number }} StableCompanionVote
+ *
  * @typedef {{
  *   focusMinutes?: StableFocusDimState,
  *   focusVoteWindow: StableFocusVote[],
  *   focusSuppressUntil: number,
  *   focusAwaitingVote: boolean,
+ *   breathMinutes?: StableBreathDimState,
+ *   breathVoteWindow: StableBreathVote[],
+ *   breathSuppressUntil: number,
+ *   breathAwaitingVote: boolean,
+ *   companionMode?: StableCompanionDimState,
+ *   companionVoteWindow: StableCompanionVote[],
+ *   companionSuppressUntil: number,
+ *   companionAwaitingVote: boolean,
  *   practiceConfig?: StablePracticeConfigDimState,
  *   practiceVoteWindow: StablePracticeConfigVote[],
  *   practiceSuppressUntil: number,
@@ -76,6 +89,12 @@ export function defaultStablePrefsState() {
     focusVoteWindow: [],
     focusSuppressUntil: 0,
     focusAwaitingVote: false,
+    breathVoteWindow: [],
+    breathSuppressUntil: 0,
+    breathAwaitingVote: false,
+    companionVoteWindow: [],
+    companionSuppressUntil: 0,
+    companionAwaitingVote: false,
     practiceVoteWindow: [],
     practiceSuppressUntil: 0,
     practiceAwaitingVote: false
@@ -131,6 +150,72 @@ export function normalizeStablePrefsState(raw) {
   base.focusSuppressUntil = Number.isFinite(sup) && sup > 0 ? sup : 0;
 
   base.focusAwaitingVote = o.focusAwaitingVote === true;
+
+  const bm = o.breathMinutes;
+  if (bm && typeof bm === 'object') {
+    const b = /** @type {Record<string, unknown>} */ (bm);
+    const minutes = Number(b.minutes);
+    const lastUsedAt = Number(b.lastUsedAt);
+    if (Number.isFinite(minutes) && minutes > 0) {
+      base.breathMinutes = {
+        minutes,
+        lastUsedAt: Number.isFinite(lastUsedAt) && lastUsedAt > 0 ? lastUsedAt : undefined
+      };
+    }
+  }
+
+  if (Array.isArray(o.breathVoteWindow)) {
+    /** @type {StableBreathVote[]} */
+    const out = [];
+    for (const row of o.breathVoteWindow) {
+      if (!row || typeof row !== 'object') continue;
+      const r = /** @type {Record<string, unknown>} */ (row);
+      const at = Number(r.at);
+      const minutes = Number(r.minutes);
+      if (!Number.isFinite(at) || !Number.isFinite(minutes)) continue;
+      out.push({ minutes, at });
+    }
+    base.breathVoteWindow = out.slice(-FOCUS_STABLE_WINDOW);
+  }
+
+  const breathSup = Number(o.breathSuppressUntil);
+  base.breathSuppressUntil =
+    Number.isFinite(breathSup) && breathSup > 0 ? breathSup : 0;
+
+  base.breathAwaitingVote = o.breathAwaitingVote === true;
+
+  const cm = o.companionMode;
+  if (cm && typeof cm === 'object') {
+    const c = /** @type {Record<string, unknown>} */ (cm);
+    const mode = typeof c.mode === 'string' ? c.mode.trim() : '';
+    const lastUsedAt = Number(c.lastUsedAt);
+    if (mode) {
+      base.companionMode = {
+        mode,
+        lastUsedAt: Number.isFinite(lastUsedAt) && lastUsedAt > 0 ? lastUsedAt : undefined
+      };
+    }
+  }
+
+  if (Array.isArray(o.companionVoteWindow)) {
+    /** @type {StableCompanionVote[]} */
+    const out = [];
+    for (const row of o.companionVoteWindow) {
+      if (!row || typeof row !== 'object') continue;
+      const r = /** @type {Record<string, unknown>} */ (row);
+      const at = Number(r.at);
+      const mode = typeof r.mode === 'string' ? r.mode.trim() : '';
+      if (!Number.isFinite(at) || !mode) continue;
+      out.push({ mode, at });
+    }
+    base.companionVoteWindow = out.slice(-FOCUS_STABLE_WINDOW);
+  }
+
+  const companionSup = Number(o.companionSuppressUntil);
+  base.companionSuppressUntil =
+    Number.isFinite(companionSup) && companionSup > 0 ? companionSup : 0;
+
+  base.companionAwaitingVote = o.companionAwaitingVote === true;
 
   const pc = o.practiceConfig;
   if (pc && typeof pc === 'object') {

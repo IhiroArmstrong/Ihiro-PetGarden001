@@ -19,6 +19,12 @@ import {
   STABLE_FOCUS_NOTEBOOK_LINE_ID,
   resolveStableFocusL2Fact
 } from './stablePrefsStore.js';
+import {
+  STABLE_BREATH_NOTEBOOK_LINE_ID,
+  STABLE_COMPANION_NOTEBOOK_LINE_ID,
+  resolveStableBreathL2Fact,
+  resolveStableCompanionL2Fact
+} from './stableBreathCompanionPrefs.js';
 
 export const PREF_NOTEBOOK_LINE_IDS = Object.freeze({
   EVENING_SLOT: 'pref-evening-slot',

@@ -1,0 +1,14 @@
+{
+  "en": {
+    "STABLE_BREATH_L2_FACT": "You often breathe for {n} minutes.",
+    "STABLE_BREATH_NOT_QUITE": "Not quite"
+  },
+  "zh": {
+    "STABLE_BREATH_L2_FACT": "你常做 {n} 分钟的呼吸练习。",
+    "STABLE_BREATH_NOT_QUITE": "不是这样"
+  },
+  "ja": {
+    "STABLE_BREATH_L2_FACT": "よく {n} 分の呼吸をしています。",
+    "STABLE_BREATH_NOT_QUITE": "ちょっと違う"
+  }
+}
