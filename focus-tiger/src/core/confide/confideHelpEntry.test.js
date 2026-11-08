@@ -23,8 +23,11 @@ describe('confide help entry (CR-46 P3)', () => {
   it('resource panel reuses safety-01 guidance in three locales', () => {
     const en = formatConfideSafetyResourceGuidance('en');
     assert.match(en, /crisis helpline/i);
+    assert.match(en, /local emergency number/i);
     assert.match(formatConfideSafetyResourceGuidance('zh'), /请您拨打本地求助热线/);
+    assert.match(formatConfideSafetyResourceGuidance('zh'), /当地紧急电话/);
     assert.match(formatConfideSafetyResourceGuidance('ja'), /相談窓口/);
+    assert.match(formatConfideSafetyResourceGuidance('ja'), /救急電話/);
   });
 
   it('daily click log has no text field', () => {

@@ -38,9 +38,9 @@ export const CONFIDE_CORPUS = Object.freeze([
   Object.freeze({
     id: 'safety-01',
     route: CONFIDE_ROUTE.SAFETY_REDIRECT,
-    zh: '听见了。若此刻很难独自撑住，请您拨打本地求助热线。寅陪着，却不能代替专业帮助。',
-    en: 'Heard. If this feels too heavy to hold alone, please call your local crisis helpline. Yin is here — not a substitute for professional help.',
-    ja: '聴いた。一人で抱えきれない時は、お近くの相談窓口へ電話してください。寅はここにいる——専門援助の代わりにはなれない。',
+    zh: '听见了。若此刻很难独自撑住，请您拨打本地求助热线。若情况紧急，请拨打当地紧急电话。寅陪着，却不能代替专业帮助。',
+    en: 'Heard. If this feels too heavy to hold alone, please call your local crisis helpline. If you are in immediate danger, please call your local emergency number. Yin is here — not a substitute for professional help.',
+    ja: '聴いた。一人で抱えきれない時は、お近くの相談窓口へ電話してください。緊急のときは、お近くの救急電話へかけてください。寅はここにいる——専門援助の代わりにはなれない。',
     review: 'ok'
   }),
 
