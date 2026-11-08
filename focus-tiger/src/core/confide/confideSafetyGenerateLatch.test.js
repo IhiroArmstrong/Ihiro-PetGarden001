@@ -3,37 +3,39 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
-import { describe, it } from 'node:test';
+import { afterEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   armConfideSafetyGenerateLatch,
   createConfideSafetyGenerateLatchState,
+  getConfideSafetyGenerateLatchState,
   isConfideSafetyGenerateLatchActive,
-  resolveConfideSafetyGenerateLockTurns,
+  resetConfideSafetyGenerateLatchForTests,
   tickConfideSafetyGenerateLatchOnUserSend
 } from './confideSafetyGenerateLatch.js';
 
-describe('confideSafetyGenerateLatch T91', () => {
-  it('arms and counts down on each user send', () => {
+afterEach(() => {
+  resetConfideSafetyGenerateLatchForTests();
+});
+
+describe('confideSafetyGenerateLatch T91 process lock', () => {
+  it('stays locked after many user sends', () => {
     const state = createConfideSafetyGenerateLatchState();
     assert.equal(isConfideSafetyGenerateLatchActive(state), false);
-    armConfideSafetyGenerateLatch(state, 2);
+    armConfideSafetyGenerateLatch(state);
     assert.equal(isConfideSafetyGenerateLatchActive(state), true);
     tickConfideSafetyGenerateLatchOnUserSend(state);
-    assert.equal(isConfideSafetyGenerateLatchActive(state), true);
     tickConfideSafetyGenerateLatchOnUserSend(state);
-    assert.equal(isConfideSafetyGenerateLatchActive(state), false);
+    tickConfideSafetyGenerateLatchOnUserSend(state);
+    tickConfideSafetyGenerateLatchOnUserSend(state);
+    assert.equal(isConfideSafetyGenerateLatchActive(state), true);
   });
 
-  it('resolveConfideSafetyGenerateLockTurns respects env override', () => {
-    assert.equal(resolveConfideSafetyGenerateLockTurns({}), 3);
-    assert.equal(
-      resolveConfideSafetyGenerateLockTurns({ FT_CONFIDE_SAFETY_GENERATE_LOCK_TURNS: '5' }),
-      5
-    );
-    assert.equal(
-      resolveConfideSafetyGenerateLockTurns({ FT_CONFIDE_SAFETY_GENERATE_LOCK_TURNS: '0' }),
-      3
-    );
+  it('survives a new card instance that shares the process latch', () => {
+    const processState = getConfideSafetyGenerateLatchState();
+    armConfideSafetyGenerateLatch(processState);
+    const reopened = getConfideSafetyGenerateLatchState();
+    assert.equal(reopened, processState);
+    assert.equal(isConfideSafetyGenerateLatchActive(reopened), true);
   });
 });

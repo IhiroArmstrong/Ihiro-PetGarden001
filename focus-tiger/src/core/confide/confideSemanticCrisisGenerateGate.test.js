@@ -51,6 +51,32 @@ describe('confideSemanticCrisisGenerateGate T90', () => {
     );
   });
 
+  it('does not force-block narrow fallback when embeddings are absent', () => {
+    assert.equal(
+      confideSemanticCrisisBlocksL3Generate({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: 'I feel empty inside',
+        wideViewport: false,
+        embeddingReady: false,
+        scored: false
+      }),
+      false
+    );
+  });
+
+  it('blocks narrow fallback generate when vectors are ready but unscored', () => {
+    assert.equal(
+      confideSemanticCrisisBlocksL3Generate({
+        route: CONFIDE_ROUTE.FALLBACK,
+        text: 'I feel empty inside',
+        wideViewport: false,
+        embeddingReady: true,
+        scored: false
+      }),
+      true
+    );
+  });
+
   it('does not block non-fallback routes', () => {
     assert.equal(
       confideSemanticCrisisBlocksL3Generate({

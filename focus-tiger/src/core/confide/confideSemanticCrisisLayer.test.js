@@ -97,6 +97,15 @@ describe('confide semantic crisis layer (CR-44 S1)', () => {
     assert.equal(
       shouldAttemptConfideSemanticCrisis({
         literalRoute: CONFIDE_ROUTE.FALLBACK,
+        text: 'plain',
+        wideViewport: false,
+        embeddingReady: true
+      }),
+      true
+    );
+    assert.equal(
+      shouldAttemptConfideSemanticCrisis({
+        literalRoute: CONFIDE_ROUTE.FALLBACK,
         text: '死にたい',
         wideViewport: true
       }),

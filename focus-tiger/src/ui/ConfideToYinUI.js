@@ -52,9 +52,8 @@ import { applyConfideStage2bLive } from '../core/confide/confideSemanticStage2b.
 import { CONFIDE_SEMANTIC_ROUTING_MODE } from '../core/confide/confideSemanticRoutingConfig.js';
 import {
   armConfideSafetyGenerateLatch,
-  createConfideSafetyGenerateLatchState,
+  getConfideSafetyGenerateLatchState,
   isConfideSafetyGenerateLatchActive,
-  resolveConfideSafetyGenerateLockTurns,
   tickConfideSafetyGenerateLatchOnUserSend
 } from '../core/confide/confideSafetyGenerateLatch.js';
 import {
@@ -225,7 +224,7 @@ export class ConfideToYinUI {
     this._sessionExclude = new Set();
     this._semanticCrisisGenerateAttestation =
       createConfideSemanticCrisisGenerateAttestation();
-    this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
+    this._safetyGenerateLatch = getConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._companion = null;
     this._unsubCompanion = null;
@@ -533,7 +532,7 @@ export class ConfideToYinUI {
     this._sessionExclude = new Set();
     this._semanticCrisisGenerateAttestation =
       createConfideSemanticCrisisGenerateAttestation();
-    this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
+    this._safetyGenerateLatch = getConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
@@ -564,7 +563,7 @@ export class ConfideToYinUI {
     this._sessionExclude = new Set();
     this._semanticCrisisGenerateAttestation =
       createConfideSemanticCrisisGenerateAttestation();
-    this._safetyGenerateLatch = createConfideSafetyGenerateLatchState();
+    this._safetyGenerateLatch = getConfideSafetyGenerateLatchState();
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
@@ -631,6 +630,12 @@ export class ConfideToYinUI {
       hasBridge: Boolean(this._companion) || hasDesktopCompanionBridge(),
       widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
     });
+  }
+
+  _semanticCrisisEmbeddingReady() {
+    return Boolean(
+      this._companion && typeof this._companion.scoreSemanticCrisis === 'function'
+    );
   }
 
   _syncConfideDock() {
@@ -848,10 +853,7 @@ export class ConfideToYinUI {
   _showReply(shown, userText) {
     this._hideThinkingIndicator();
     if (shown.route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
-      armConfideSafetyGenerateLatch(
-        this._safetyGenerateLatch,
-        resolveConfideSafetyGenerateLockTurns()
-      );
+      armConfideSafetyGenerateLatch(this._safetyGenerateLatch);
     }
     const asked = typeof userText === 'string' ? userText.trim() : '';
     this.userEl.textContent = asked;
@@ -1610,14 +1612,14 @@ export class ConfideToYinUI {
       void this._companion.appendTurnLog(shadowRow);
     }
     const wideViewport = this._viewportAllowsGenerateLayer();
+    const embeddingReady = this._semanticCrisisEmbeddingReady();
     const crisisEligible =
       shouldAttemptConfideSemanticCrisis({
         literalRoute: hit.route,
         text,
-        wideViewport
-      }) &&
-      this._companion &&
-      typeof this._companion.scoreSemanticCrisis === 'function';
+        wideViewport,
+        embeddingReady
+      }) && embeddingReady;
     if (
       crisisEligible ||
       (shouldRunConfideSemanticShadow({ route: hit.route }) &&
@@ -1650,10 +1652,9 @@ export class ConfideToYinUI {
       shouldAttemptConfideSemanticCrisis({
         literalRoute: hit.route,
         text: asked,
-        wideViewport: this._viewportAllowsGenerateLayer()
-      }) &&
-      this._companion &&
-      typeof this._companion.scoreSemanticCrisis === 'function'
+        wideViewport: this._viewportAllowsGenerateLayer(),
+        embeddingReady: this._semanticCrisisEmbeddingReady()
+      }) && this._semanticCrisisEmbeddingReady()
     ) {
       let crisisScore = null;
       try {
@@ -2262,6 +2263,7 @@ export class ConfideToYinUI {
         route: hit.route,
         text,
         wideViewport: this._viewportAllowsGenerateLayer(),
+        embeddingReady: this._semanticCrisisEmbeddingReady(),
         scored: this._semanticCrisisGenerateAttestation.scored,
         embeddingOk: this._semanticCrisisGenerateAttestation.embeddingOk
       });

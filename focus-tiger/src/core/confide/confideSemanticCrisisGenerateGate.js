@@ -6,7 +6,7 @@
 /**
  * T90 · audit-fix-10-01 / 10-06: L3 generate on fallback requires semantic
  * crisis layer to have scored this send with a ready embedding when the layer
- * would apply (wide viewport, non-ja, etc.).
+ * would apply (vectors ready or wide viewport, non-ja, etc.).
  */
 
 import { CONFIDE_ROUTE } from './confideRoutes.js';
@@ -26,6 +26,7 @@ export function createConfideSemanticCrisisGenerateAttestation() {
  *   route?: string | null,
  *   text?: string | null,
  *   wideViewport?: boolean,
+ *   embeddingReady?: boolean,
  *   scored?: boolean,
  *   embeddingOk?: boolean,
  *   env?: NodeJS.ProcessEnv | null
@@ -36,6 +37,7 @@ export function confideSemanticCrisisBlocksL3Generate({
   route = null,
   text = '',
   wideViewport = false,
+  embeddingReady = false,
   scored = false,
   embeddingOk = false,
   env
@@ -45,6 +47,7 @@ export function confideSemanticCrisisBlocksL3Generate({
     literalRoute: route,
     text,
     wideViewport,
+    embeddingReady,
     env
   });
   if (!mustScore) return false;

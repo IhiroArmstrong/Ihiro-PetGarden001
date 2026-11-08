@@ -4,57 +4,54 @@
  */
 
 /**
- * T91 · audit-fix-10-03 (session leg): after a safety_redirect corpus reply,
- * disable Confide L3 generate for the next N user sends in this card session.
- * Round count may be tuned when external advisor01 confirms; mechanism ships first.
+ * T91 · audit-fix-10-03 (process leg): after a safety_redirect corpus reply,
+ * disable Confide L3 generate until this app process exits.
+ * Closing the Confide panel must not clear the lock (that was the 3-turn
+ * session-card hole). Web tab reload / Electron quit resets it.
  */
 
-import { confideBrowserSafeEnv } from './confideSemanticRoutingConfig.js';
+/** @typedef {{ lockedUntilProcessExit: boolean }} ConfideSafetyGenerateLatchState */
 
-/** @typedef {{ turnsRemaining: number }} ConfideSafetyGenerateLatchState */
-
-export const DEFAULT_CONFIDE_SAFETY_GENERATE_LOCK_TURNS = 3;
+let processLatch = createConfideSafetyGenerateLatchState();
 
 /**
  * @returns {ConfideSafetyGenerateLatchState}
  */
 export function createConfideSafetyGenerateLatchState() {
-  return { turnsRemaining: 0 };
+  return { lockedUntilProcessExit: false };
 }
 
 /**
- * @param {NodeJS.ProcessEnv | null | undefined} [env]
- * @returns {number}
+ * Shared lock for this JS process (one Electron renderer / one tab).
+ * @returns {ConfideSafetyGenerateLatchState}
  */
-export function resolveConfideSafetyGenerateLockTurns(env) {
-  const raw = Number(confideBrowserSafeEnv(env).FT_CONFIDE_SAFETY_GENERATE_LOCK_TURNS);
-  if (Number.isFinite(raw) && raw >= 1 && raw <= 12) return Math.floor(raw);
-  return DEFAULT_CONFIDE_SAFETY_GENERATE_LOCK_TURNS;
+export function getConfideSafetyGenerateLatchState() {
+  return processLatch;
+}
+
+/** @internal tests only */
+export function resetConfideSafetyGenerateLatchForTests() {
+  processLatch = createConfideSafetyGenerateLatchState();
 }
 
 /**
- * @param {ConfideSafetyGenerateLatchState | null | undefined} state
- * @param {number} [turns]
+ * @param {ConfideSafetyGenerateLatchState | null | undefined} [state]
  */
-export function armConfideSafetyGenerateLatch(state, turns = DEFAULT_CONFIDE_SAFETY_GENERATE_LOCK_TURNS) {
+export function armConfideSafetyGenerateLatch(state = processLatch) {
   if (!state) return;
-  const n = Number(turns);
-  state.turnsRemaining = Number.isFinite(n) && n > 0 ? Math.floor(n) : DEFAULT_CONFIDE_SAFETY_GENERATE_LOCK_TURNS;
+  state.lockedUntilProcessExit = true;
 }
 
 /**
- * Call once per user send (before routing).
- * @param {ConfideSafetyGenerateLatchState | null | undefined} state
+ * Kept so send-path call sites stay stable. Process lock does not count down.
+ * @param {ConfideSafetyGenerateLatchState | null | undefined} [_state]
  */
-export function tickConfideSafetyGenerateLatchOnUserSend(state) {
-  if (!state || state.turnsRemaining <= 0) return;
-  state.turnsRemaining -= 1;
-}
+export function tickConfideSafetyGenerateLatchOnUserSend(_state) {}
 
 /**
  * @param {ConfideSafetyGenerateLatchState | null | undefined} state
  * @returns {boolean}
  */
 export function isConfideSafetyGenerateLatchActive(state) {
-  return Boolean(state && state.turnsRemaining > 0);
+  return Boolean(state && state.lockedUntilProcessExit);
 }
