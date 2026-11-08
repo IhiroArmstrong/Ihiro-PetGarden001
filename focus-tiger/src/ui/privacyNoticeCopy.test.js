@@ -219,4 +219,15 @@ describe('privacyNoticeCopy', () => {
     const blobs = [en.HINT_APP_PURPOSE_BODY, en.PRIVACY_SHEET_DEFAULT_STORAGE].join('\n');
     assert.deepEqual(findPracticeStudyForbiddenSubstrings(blobs), []);
   });
+
+  it('privacy sheet refresh defines T54 research opt-in handler (R2L-01)', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const purpose = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
+    assert.match(purpose, /_refreshT54ResearchOptInCopy\(\)\s*\{/);
+    assert.match(
+      purpose,
+      /_refreshT54ResearchOptInCopy[\s\S]*hasT54ResearchConsent/
+    );
+    assert.match(purpose, /privacy-t54-research-opt-in-toggle/);
+  });
 });

@@ -97,5 +97,6 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 优化建议 | 同类研究表（FocusBuddy / Brainy / 平静技术 / 早餐宠物 / 依恋 / 双向共适应）对照现网 | 2026-10-31 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-desk-habit-literature.md`](./issue-entries/docs-t69-desk-habit-literature.md)。盘点 **T69**。开桌锚点 **T70** 搁置。早餐问询 / 日程灯 / 照料宠物 / 健康仪表盘不做。 | 跟进中 |
 
 | 优化建议 | PO 纠正：早餐善意应与熬夜同形；用户须感知越来越懂你；人机共修目标写入原则 | 2026-11-01 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-po-co-practice-goal.md`](./issue-entries/docs-t69-po-co-practice-goal.md)。纠正 #1491 锁。T70 Brief 待点头。 | 跟进中 |
-| 技术债 | 9-15 发验证码已 410，校验/写入/读取/删除仍通（9-15b） | 2026-11-08 PO · 生产探测 | 旁路 [`issue-entries/docs-gov-dmg-gate-1620-followup.md`](./issue-entries/docs-gov-dmg-gate-1620-followup.md)。扩闸独立功能 PR。 | 跟进中 |
+| 独立bug | R2L-01：隐私设置页打开抛 `_refreshT54ResearchOptInCopy is not a function`，研究/个性化/付费同意开关无法操作 | 2026-11-08 R2-lite 独立复核 · PO 书面 | 旁路 [`issue-entries/fix-r2l-01-privacy-sheet-crash.md`](./issue-entries/fix-r2l-01-privacy-sheet-crash.md)。阻塞 V1 运行时验证。 | 跟进中 |
+| 技术债 | 9-15b：练习备份 Worker 五路由 410 闸 | 2026-11-08 PO · 生产探测 | 旁路 [`issue-entries/docs-gov-dmg-gate-1620-followup.md`](./issue-entries/docs-gov-dmg-gate-1620-followup.md)。#1629 已合 develop；**生产 Worker 待部署**。 | 跟进中 |
 | 技术债 | 生产 Worker 探测须只打无副作用请求 | 2026-11-08 PO · 生产探测 | 旁路同上。已发生：健康检查、申请验证码、空写入、假令牌读取。无写入成功。 | 跟进中 |
