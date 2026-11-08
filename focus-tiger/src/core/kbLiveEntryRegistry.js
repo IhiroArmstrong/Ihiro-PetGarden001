@@ -587,6 +587,23 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0003', 'KB-FUNC-0015'])
   }),
   Object.freeze({
+    id: 'kb-live-practice-study',
+    surface: 'menu',
+    proxy: 'practice-study',
+    labelKeys: Object.freeze(['PRACTICE_STUDY_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Practice Study',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'practice-study'",
+      'PRACTICE_STUDY_MENU_LABEL'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'docs/task-briefs/task-co-practice-research-consent-ui.md'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
     id: 'kb-live-community',
     surface: 'menu',
     proxy: 'community',
