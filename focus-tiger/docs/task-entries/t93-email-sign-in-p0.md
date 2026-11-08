@@ -1,7 +1,7 @@
 ---
 id: t93-email-sign-in-p0
 kind: feature
-status: 立即做 · P1（建议）· Brief 已写 · 无运行时 · 术语表未登记
+status: 排队中 · P1 · Brief 已写 #1605 · 术语表已登记 · 实现待 §4 点头
 updated: 2026-11-08
 ---
 

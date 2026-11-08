@@ -162,6 +162,26 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T93/T94/T95 governance shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/PROCESS.md',
+        'focus-tiger/docs/task-briefs/task-email-sign-in-p0.md',
+        'focus-tiger/docs/task-entries/t93-email-sign-in-p0.md',
+        'focus-tiger/docs/task-briefs/task-v2-recognition-four-knives.md',
+        'focus-tiger/docs/task-entries/t94-v2-recognition-four-knives.md',
+        'focus-tiger/docs/task-briefs/task-t95-electron-shell-upgrade.md',
+        'focus-tiger/docs/task-entries/t95-electron-shell-upgrade.md',
+        'focus-tiger/docs/tracker-entries/docs-gov-t93-t95-queue.md',
+        'focus-tiger/docs/audit/findings/2026-11-08/B2-testing-release-pm-findings.md',
+        'focus-tiger/src/locales/localeSliceModules.js'
+      ]),
+      null
+    );
+  });
+
   it('allows T88 guided-meditation release-hardening shards with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([

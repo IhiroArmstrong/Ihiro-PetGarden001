@@ -164,7 +164,18 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/scripts/check-guided-meditation-media-host.js',
   'focus-tiger/scripts/check-guided-meditation-media-host.test.js',
   'focus-tiger/scripts/check-open-blockers.js',
-  '.github/workflows/guided-media-host-release-gate.yml'
+  '.github/workflows/guided-media-host-release-gate.yml',
+  'focus-tiger/docs/PROCESS.md',
+  'focus-tiger/docs/task-briefs/task-email-sign-in-p0.md',
+  'focus-tiger/docs/task-entries/t93-email-sign-in-p0.md',
+  'focus-tiger/docs/task-briefs/task-v2-recognition-four-knives.md',
+  'focus-tiger/docs/task-entries/t94-v2-recognition-four-knives.md',
+  'focus-tiger/docs/task-briefs/task-t95-electron-shell-upgrade.md',
+  'focus-tiger/docs/task-entries/t95-electron-shell-upgrade.md',
+  'focus-tiger/docs/tracker-entries/docs-gov-t93-t95-queue.md',
+  'focus-tiger/docs/audit/findings/2026-11-08/B2-testing-release-pm-findings.md',
+  // docs:check may rewrite the slice index while the pre-commit smoke runs
+  'focus-tiger/src/locales/localeSliceModules.js'
 ]);
 
 /**
