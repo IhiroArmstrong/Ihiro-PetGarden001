@@ -210,6 +210,9 @@ export default {
 					origin,
 				);
 			}
+			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
+			}
 			const verifyLimited = enforceRateLimit(request, {
 				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
 				bucketPrefix: "practice-backup-verify",
@@ -224,6 +227,9 @@ export default {
 					errorJson(405, "method_not_allowed", "Use POST"),
 					origin,
 				);
+			}
+			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const limited = enforceRateLimit(request, {
 				limit: RATE_LIMIT_PER_MINUTE,
@@ -240,6 +246,9 @@ export default {
 					origin,
 				);
 			}
+			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
+			}
 			const limited = enforceRateLimit(request, {
 				limit: RATE_LIMIT_PER_MINUTE,
 				bucketPrefix: "practice-backup-get",
@@ -254,6 +263,9 @@ export default {
 					errorJson(405, "method_not_allowed", "Use POST"),
 					origin,
 				);
+			}
+			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const limited = enforceRateLimit(request, {
 				limit: VERIFY_TIP_RATE_LIMIT_PER_MINUTE,
