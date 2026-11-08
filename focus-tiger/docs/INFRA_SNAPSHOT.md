@@ -30,7 +30,7 @@
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
 | 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy` · **`/api/companion-channel-copy`**（英语四通道 · `overlayLive: true` 自 Version `8eb8e1f6` · #1546）；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
-| 生产 Worker Version | 见下表 **`prod_worker_version`**（`2ac135c3-…` · 2026-10-11 · `2fb19eaf`）。客户端 `practiceBackupCloudEnabled` 仍为 false。 |
+| 生产 Worker Version | 见下表 **`prod_worker_version`**（`6a32aff5-…` · 2026-11-08 · `098b2902` · 含 9-15）。客户端 `practiceBackupCloudEnabled` 仍为 false。 |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `8eb8e1f6-375f-44ec-9909-8a419e7377f7` |
-| `prod_verified_at` | 2026-11-02（本机 `wrangler deploy` · 源 `origin/develop` `6605a4f9` · **#1546** 四通道英语句包 · `POST /api/companion-channel-copy` `locale=en` → `overlayLive: true` · 5 通道各 8 行 · `GET /health` OK）。仍含先前生产能力（Focus Circle online、结账等）；**客户端**须已合 develop 且 `?product=1` 预取后英语用户才见轮换句。 |
+| `prod_worker_version` | `6a32aff5-a717-4d56-9bed-d5f025d97f3e` |
+| `prod_verified_at` | 2026-11-08（本机 `wrangler deploy` · 源 `origin/develop` `098b2902` · **#1602 9-15** 练习备份写入路由下线 · Worker `focus-tiger-cloud` · 帐号 `13709691005@163.com` · `GET /health` OK）。先前生产能力（四通道英语句包 #1546、Focus Circle、结账）仍在该 Version。未对 `POST /api/practice-backup/*` 做本机 HTTP 复核（工具拦了备份 POST）。 |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
