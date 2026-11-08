@@ -51,7 +51,7 @@
 | 项 | 结论 | 证据 | 置信度 |
 |---|---|---|---|
 | 落地到哪 | Prompt 11.5/12 曾合入（#270/#272 等），生产发过码（TRACKER 2026-08-13 书面）。**现在用户侧已关死。** | `practiceBackupCloudEnabled = false`；Journey 角落面板 `if (!practiceBackupCloudEnabled)` 不渲染 | 高 |
-| Worker | **#1602 已合**：`POST /api/practice-backup/*` 全部 **410** `practice_backup_disabled`（B5 9-15，等加密方案）。路由代码仍在。 | `cloud/src/index.ts` · `practiceBackupWritesDisabled.ts` | 高 |
+| Worker | **#1602 已合、#1615 已部署**。现网 `POST /api/practice-backup/request-otp` 返回 **410** `practice_backup_disabled`。`put` / `get` / `delete` 在当前源码里**没有**同样的 410 闸，空 body 会 400，带看起来合法的邮箱仍会走鉴权（get 见过 401）。前端闸仍关。 | `cloud/src/index.ts` · `practiceBackupWritesDisabled.ts` | 高 |
 | 默认 | 关。opt-in 键 `focus-tiger.practice-backup.v1` 本机可能仍有历史 enabled，但 flag 让 upload/restore 直接 skip。 | `practiceBackupSync.js` 多处 early return | 高 |
 | 云端白名单 | Worker schema **v2 八 key**：journey-log、practice-days、milestone-glow、entitlement-ownership、ritual-completions、mustard-seed-seal、lotus-pond、growth-journey-stage。不含 tip-jar cache、entitlement-cache、Confide 原文。 | `cloud/src/lib/practiceBackupKv.ts`；客户端 `PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS` | 高 |
 | 本地导出 | 另一套 schema **v7**，键更多（含偏好、Presence 等）。云端 **没有**跟到 v7。 | `practiceBackupSnapshot.js` `PRACTICE_BACKUP_SCHEMA_VERSION = 7` vs 云 v2 | 高 |
@@ -348,7 +348,7 @@ Focus Circle 本机 ID **本刀不动**。P1：显示名只是该邮箱下的可
    - **我认为最合理的是 A。** 用户要的是「一条明显路径」，不是两个半套。
 
 3. **T93 是否写入术语表**  
-   - **已登记（2026-11-08）**：T93 = 邮箱登录 P0 · P1 · 排队中 · 风险高（隐私/合并）。识别率说明是 **T94**，禁止占用 T93  
+   - **已登记（2026-11-08）**：T93 = 邮箱登录（第一份 DMG 门闩）· 排期槽位 **P1** · 排队中 · 风险高（隐私/合并；合入前须 B5 增量复核）。识别率说明是 **T94**，禁止占用 T93。不要把审计「P0」写进槽位列。
    - **我认为最合理的是 A。** 本文件已挂 Epic #5/#631；热点文件留给治理 PR，避免和别的队列 PR 互撞。
 
 4. **Setapp/MAS 默认关云登录**  

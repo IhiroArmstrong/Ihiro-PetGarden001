@@ -162,6 +162,25 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T96/T97 and T94 follow-up shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/PROCESS.md',
+        'focus-tiger/docs/queue-governance-readme.md',
+        'focus-tiger/docs/task-briefs/task-v2-recognition-four-knives.md',
+        'focus-tiger/docs/task-briefs/task-t96-uncovered-language-help.md',
+        'focus-tiger/docs/task-entries/t96-uncovered-language-help.md',
+        'focus-tiger/docs/task-briefs/task-t97-crisis-annotator-qualification.md',
+        'focus-tiger/docs/task-entries/t97-crisis-annotator-qualification.md',
+        'focus-tiger/docs/tracker-entries/docs-gov-t94-followup.md',
+        'focus-tiger/scripts/check-queue-governance-docs.js'
+      ]),
+      null
+    );
+  });
+
   it('allows T93/T94/T95 governance shards with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([
