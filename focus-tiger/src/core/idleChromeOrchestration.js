@@ -182,6 +182,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     close: true,
     stage: 'localBackup'
   },
+  'practice-study': {
+    handler: 'onPracticeStudy',
+    close: true,
+    stage: 'practiceStudy'
+  },
   'quiet-together': {
     handler: 'onQuietTogether',
     close: true,
@@ -424,6 +429,7 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   sound: 'ft-narrow-stage-sound',
   language: 'ft-narrow-stage-language',
   localBackup: 'ft-narrow-stage-local-backup',
+  practiceStudy: 'ft-narrow-stage-practice-study',
   quietTogether: 'ft-narrow-stage-quiet-together',
   focusCircle: 'ft-narrow-stage-focus-circle',
   alwaysOnTop: 'ft-narrow-stage-always-on-top',
@@ -447,6 +453,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   mindflowNebula: 'ft-wide-stage-mindflow-nebula',
   presenceField: 'ft-wide-stage-presence-field',
   localBackup: 'ft-wide-stage-local-backup',
+  practiceStudy: 'ft-wide-stage-practice-study',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
 });
@@ -886,6 +893,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
       testId: 'idle-help-center'
     },
     { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' },
+    {
+      proxy: 'practice-study',
+      labelKey: 'PRACTICE_STUDY_MENU_LABEL',
+      testId: 'idle-practice-study'
+    },
     {
       proxy: 'membership',
       labelKey: 'MENU_SUBSCRIPTION_ROW',

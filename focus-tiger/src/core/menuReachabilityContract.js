@@ -154,6 +154,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#local-practice-data-panel'
   }),
+  'practice-study': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#practice-study-consent-panel'
+  }),
   membership: Object.freeze({
     kind: 'open-panel',
     resultSelector: '#yin-membership-card'
