@@ -64,9 +64,12 @@ test('T36: kana after safety is not-yet-open, not mood or generate', () => {
   });
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN);
-  assert.equal(hit.line.en, formatConfideJapaneseNotYetOpenReply());
+  assert.equal(hit.line.en, formatConfideJapaneseNotYetOpenReply('en'));
   assert.match(hit.line.en, new RegExp(CONFIDE_JA_NOT_YET_OPEN_EN));
   assert.match(hit.line.en, new RegExp(CONFIDE_JA_NOT_YET_OPEN_JA));
+  assert.match(hit.line.en, /please call your local crisis helpline/);
+  assert.match(hit.line.zh, /请您拨打本地求助热线/);
+  assert.match(hit.line.ja, /相談窓口/);
   assert.doesNotMatch(hit.line.en, /cannot be used|不能使用|使えません/);
   assert.equal(
     shouldUseDesktopCompanionGenerate({ ...readyOpen, route: hit.route }),
@@ -86,4 +89,22 @@ test('T36: mixed English + kana is not-yet-open; English-only unchanged', () => 
 test('T36: Chinese is not hard-blocked', () => {
   assert.equal(confideClassify('我不想活了'), CONFIDE_ROUTE.SAFETY_REDIRECT);
   assert.equal(confideClassify('我好难过'), CONFIDE_ROUTE.SAD);
+});
+
+test('T96: kana not-yet-open appends T92 help; explicit crisis stays safety-01', () => {
+  const hit = resolveConfideReply({
+    text: 'こんにちは、今日は疲れた',
+    localDate: '2026-10-21'
+  });
+  assert.equal(hit.route, CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN);
+  assert.match(hit.line.en, /please call your local crisis helpline/);
+  assert.match(hit.line.en, /local emergency number/);
+  assert.match(hit.line.zh, /请您拨打本地求助热线/);
+  assert.match(hit.line.ja, /相談窓口/);
+  const crisis = resolveConfideReply({
+    text: '死にたい',
+    localDate: '2026-10-21'
+  });
+  assert.equal(crisis.route, CONFIDE_ROUTE.SAFETY_REDIRECT);
+  assert.equal(crisis.line.id, 'safety-01');
 });

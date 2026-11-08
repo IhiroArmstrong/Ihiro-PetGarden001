@@ -12,6 +12,7 @@
 import { looksLikeJapaneseConfideText } from './confideSemanticCrisisLayer.js';
 import { confideBrowserSafeEnv } from './confideSemanticRoutingConfig.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import { formatConfideSafetyResourceGuidance } from './confideSafetyResources.js';
 
 export const CONFIDE_JA_NOT_YET_OPEN_ENV = 'FT_CONFIDE_JA_NOT_YET_OPEN';
 
@@ -52,11 +53,28 @@ export function shouldApplyJapaneseConfideNotYetOpen(text, env) {
 }
 
 /**
- * Combined notice: English lead + fixed Japanese companion line.
+ * @param {string} [locale]
+ * @param {string} notice
  * @returns {string}
  */
-export function formatConfideJapaneseNotYetOpenReply() {
-  return `${CONFIDE_JA_NOT_YET_OPEN_EN}\n${CONFIDE_JA_NOT_YET_OPEN_JA}`;
+function withUncoveredLanguageHelp(locale, notice) {
+  const help = formatConfideSafetyResourceGuidance(locale).trim();
+  return help ? `${notice}\n${help}` : notice;
+}
+
+/**
+ * Combined notice: English lead + fixed Japanese companion line + T92 help.
+ * Uncovered-language fallback is not a crisis classifier; it still shows the
+ * helpline so a missed crisis is not left without an entry.
+ * @param {string} [locale]
+ * @returns {string}
+ */
+export function formatConfideJapaneseNotYetOpenReply(locale = 'en') {
+  const notice =
+    locale === 'zh'
+      ? `${CONFIDE_JA_NOT_YET_OPEN_ZH}\n${CONFIDE_JA_NOT_YET_OPEN_JA}`
+      : `${CONFIDE_JA_NOT_YET_OPEN_EN}\n${CONFIDE_JA_NOT_YET_OPEN_JA}`;
+  return withUncoveredLanguageHelp(locale, notice);
 }
 
 /**
@@ -70,12 +88,11 @@ export function formatConfideJapaneseNotYetOpenReply() {
  * }}
  */
 export function buildJapaneseConfideNotYetOpenLine() {
-  const combined = formatConfideJapaneseNotYetOpenReply();
   return {
     id: CONFIDE_JA_NOT_YET_OPEN_LINE_ID,
     route: CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN,
-    en: combined,
-    zh: `${CONFIDE_JA_NOT_YET_OPEN_ZH}\n${CONFIDE_JA_NOT_YET_OPEN_JA}`,
-    ja: combined
+    en: formatConfideJapaneseNotYetOpenReply('en'),
+    zh: formatConfideJapaneseNotYetOpenReply('zh'),
+    ja: formatConfideJapaneseNotYetOpenReply('ja')
   };
 }
