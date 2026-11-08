@@ -98,3 +98,6 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 
 | 优化建议 | PO 纠正：早餐善意应与熬夜同形；用户须感知越来越懂你；人机共修目标写入原则 | 2026-11-01 PO 书面 · 本会话 | 旁路 [`issue-entries/docs-t69-po-co-practice-goal.md`](./issue-entries/docs-t69-po-co-practice-goal.md)。纠正 #1491 锁。T70 Brief 待点头。 | 跟进中 |
 | 独立bug | R2L-01：隐私设置页打开抛 `_refreshT54ResearchOptInCopy is not a function`，研究/个性化/付费同意开关无法操作 | 2026-11-08 R2-lite 独立复核 · PO 书面 | 旁路 [`issue-entries/fix-r2l-01-privacy-sheet-crash.md`](./issue-entries/fix-r2l-01-privacy-sheet-crash.md)。阻塞 V1 运行时验证。 | 跟进中 |
+| 独立bug | R2L-02：390px 窄窗倾诉 Share 被 `#ft-narrow-home-ctas` 挡住，Enter 仍可发送 | 2026-11-08 R2-lite 补跑 #1632 · PO 书面 P2 | 旁路 [`issue-entries/docs-gov-plan-a-confide-inventory-2026-11-08.md`](./issue-entries/docs-gov-plan-a-confide-inventory-2026-11-08.md)。倾诉对客打开前必须修。 | 未跟进 |
+| 优化建议 | 方案 A：第一份安装包保持倾诉产品挂载关闭；V2 改为打开倾诉的门槛 | 2026-11-08 PO 书面 · #1632 后 | 旁路同上。盘点 T98。已购陪伴宽屏仍可开倾诉；沉思问询「想聊聊」有死路。 | 跟进中 |
+| 优化建议 | 第 4 刀备选：默认拒绝生成，只有明确良性话题才放行 | 2026-11-08 PO 书面 · 10-02 补跑 | 旁路同上。写入 T94 说明；实现仍待第 4 刀 Brief。 | 未跟进 |

@@ -177,6 +177,9 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t96-uncovered-language-help.md',
   'focus-tiger/docs/task-briefs/task-t97-crisis-annotator-qualification.md',
   'focus-tiger/docs/task-entries/t97-crisis-annotator-qualification.md',
+  'focus-tiger/docs/task-entries/t98-confide-mount-off-inventory.md',
+  'focus-tiger/docs/audit/findings/2026-11-08/confide-mount-off-entry-inventory.md',
+  'focus-tiger/docs/issue-entries/docs-gov-plan-a-confide-inventory-2026-11-08.md',
   'focus-tiger/docs/tracker-entries/docs-gov-t94-followup.md',
   'focus-tiger/docs/audit/findings/2026-11-08/B2-testing-release-pm-findings.md',
   // docs:check may rewrite the slice index while the pre-commit smoke runs
