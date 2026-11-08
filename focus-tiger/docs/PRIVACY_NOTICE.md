@@ -5,7 +5,7 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-10-28
+最后更新 / Last updated / 最終更新日: 2026-11-08
 
 ---
 
@@ -26,6 +26,17 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 **安静同坐 / 灯火（默认开，可在 Privacy 关闭）**：你坐下时，本应用只向自有服务器发送一个**随机会话 id**，用于维持诚实的同坐人数。不含姓名、邮箱、练习日志或聊天。关闭后既不出现在计数里，也看不见别人的灯火。
 
 **可选的练习效果计数（研究，默认关）**：只有你在 Privacy 打开开关后，我们才会收到计时专注的去身份计数（例如有没有坐完、后来有没有回来）和一个重装即作废的本机研究代号。没有倾诉原文、邮箱或付款信息。随时可关。此开关与「支持阿寅」流程分享、云端个人化、练习备份各自独立。
+
+
+**研究共修（可选，默认关，独立入口，不是 Privacy 勾选）**
+
+第 0 层永不收集：你输入的任何文字、Yin 的回复、Memory 摘要、情绪词、安全路由命中、精确时间、位置、付款、邮箱、账号。
+
+年满 18 岁并自愿打开后，第 1 层每周只上传数字：各类练习的次数与时长、粗粒度时段、是否打开 Confide 以及非心情快捷选项的点击次数（无原文）、中断与回来、若干功能开关。随机研究编号只存在本机，不从账号派生。可随时退出；退出时删除本机编号并请求删除该编号下已存数据。第 1 层保留 24 个月，与账单分开放，不出售、不做广告。不足 10 人的分组不发布。
+
+第 2 层是可选的每周产品体验题（非临床量表），须单独同意。第一版不上线。
+
+本项与 Privacy 里现有的「可选练习效果计数（改进产品）」相互独立。
 
 **可选的晚间练习结束时刻（练习观察纸，默认关）**：只有你在成长旅程的练习观察纸里开启后，本机才会按日记录计时专注在本地凌晨 1 点到 6 点之间**结束**的日期和时刻，用于观察纸上一句中性事实。**不是**睡眠监测、**不上传**、**不进**研究分享、不进练习云备份。可随时关闭（关闭会清空已记录）或一键清除记录。
 
@@ -74,6 +85,18 @@ Unless you use local export/import (Section 3), your habit check-ins, practice r
 **Quiet Together / lanterns (on by default; off in Privacy):** while you sit, this app sends only a **random session id** to our server so a shared sit-count can stay honest. No name, email, practice log, or chat. If you turn it off, you neither appear in the count nor see others' lanterns.
 
 **Optional practice-effect counts (research, off by default):** only if you turn this on in Privacy do we receive de-identified counts about timed sits (for example whether a sit finished, and later whether you returned) plus a random research id that resets if you reinstall. No chat text, email, or payment details. You can turn it off anytime. This switch is independent of Support-flow sharing, cloud personalization, and practice backup.
+
+
+
+**Practice Study (optional; off by default; separate from Privacy checkboxes)**
+
+We never collect Layer 0: anything you type, anything Yin says, Memory summaries, emotion words, safety-route hits, precise timestamps, location, payment, email, or account identifiers.
+
+If you are 18 or older and you opt in, Layer 1 is a weekly packet of numbers only: how often and how long you practiced each kind of session, rough time of day, whether you opened Confide and which non-mood quick options you tapped (counts, never text), whether you took days off and came back, and a few feature on/off flags. A random study ID lives on your device and is not derived from your account. You can leave anytime; leaving deletes the ID on the device and asks us to delete what we stored under that ID. We keep Layer 1 for 24 months, store it apart from billing, do not sell it, and do not use it for ads. Groups smaller than 10 people are not published.
+
+Layer 2 is an optional weekly product question (not a clinical scale), behind a separate opt-in. It is not in the first release.
+
+This Practice Study is independent of the existing Privacy switch for optional timed-sit research counts used to improve the product.
 
 **Optional late-evening end times (Practice Paper, off by default):** only if you turn this on in the Practice Paper section of Growth Journey does this device store, per calendar day, the local date and end time of timed sits that finish between 1:00 and 6:00 a.m., for one neutral line on that paper. This is **not** sleep monitoring, **not uploaded**, **not** included in research sharing, and **not** in practice cloud backup. You can turn it off anytime (turning off clears stored rows) or clear records in one tap.
 

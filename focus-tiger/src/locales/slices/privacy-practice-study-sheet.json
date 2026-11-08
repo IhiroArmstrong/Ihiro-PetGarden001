@@ -1,0 +1,11 @@
+{
+  "en": {
+    "PRIVACY_SHEET_DEFAULT_STORAGE": "Unless you use export/import yourself, habit check-ins and practice records stay on your device by default. This app does not automatically upload them to our servers. Quiet Together (on by default, off in Privacy) only sends a random session id while you sit so a shared lantern count can stay honest — not your name, email, or practice log. Practice Study (optional, off by default, separate from Privacy checkboxes): if you are 18+ and opt in, we receive weekly summary numbers only—no text you type, no chat, no payment details. You can leave anytime; leaving deletes the on-device study id and asks us to delete stored data for that id. This is independent of the optional timed-sit research counts switch above."
+  },
+  "zh": {
+    "PRIVACY_SHEET_DEFAULT_STORAGE": "除非你使用导出/导入，习惯打卡与练习记录默认仅保存在你的设备本地，本应用不会自动上传到开发者服务器。安静同坐（默认开，可在本页关闭）仅在你坐下时发送随机会话 id，用来维持诚实的灯火人数——不含姓名、邮箱或练习日志。 研究共修（可选，默认关，独立入口，不是 Privacy 勾选）：年满 18 岁并自愿参加后，每周只上传汇总数字，不含你输入的文字、聊天或付款信息。可随时退出；退出会删除本机研究编号并请求删除该编号下已存数据。与上文「可选练习效果计数」相互独立。"
+  },
+  "ja": {
+    "PRIVACY_SHEET_DEFAULT_STORAGE": "エクスポート/インポートを使わない限り、習慣のチェックインや練習記録はデフォルトで端末内にのみ保存され、開発者のサーバーへ自動アップロードされません。静かな同席（初期オン、本ページでオフ可）は座っているあいだランダムなセッション id だけを送り、正直な灯の人数を保ちます。名前・メール・練習ログは送りません。 練習リサーチ（任意・初期オフ・Privacy のチェックとは別入口）：18 歳以上で参加した場合のみ、週次の集計数字を受け取ります。入力テキストやチャット、支払い情報は含みません。いつでも退出でき、退出時は端末の study id を削除し、その id の保存データ削除を依頼します。上記の任意タイマー研究カウントとは独立です。"
+  }
+}
