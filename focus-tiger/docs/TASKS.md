@@ -545,6 +545,30 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `t78-co-practice-stable-breath-companion` · feature · 待合 · 可选 · PR-3 实现中 · 2026-11-08
+
+T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动。
+
+### `t93-email-sign-in-p0` · feature · 排队中 · 槽位 P1 · Brief 已写 #1605 · 实现待 R2-lite 后且 §4 点头 · 合入前 B5 增量复核 · 2026-11-08
+
+T93 邮箱登录（第一份 DMG 门闩；槽位 P1）。挂苹果 DMG Epic #5 / #631。方案 B：无密码 OTP，复用 practice-backup。合入前须 B5 增量复核。不是把审计 P0 写成槽位。不是识别率。
+
+### `t94-v2-recognition-four-knives` · feature · 已完成（说明）· P2 · 无运行时 · 刀序第 3→2→4 · 10-05 修复归第 4 刀 · 第 2–4 刀待 Brief · 2026-11-08
+
+T94 识别率四刀说明（V2）。第 1 刀窗口变窄仍打分已合 #1612。实现顺序：新题（开发集+封存卷）→ 阈值 → 未拦住。不是 T93 邮箱登录。口令「开工识别率」在分刀 Brief 点头前不写 src。
+
+### `t95-electron-shell-upgrade` · feature · 排队中 · P1 · 9-02b · 对客安装包发出前完成 · 2026-11-08
+
+T95 电脑壳升级 + 更新通道。相对日：两周内开工准备；发出前完成；壳升级后至少一周回归。现在不为手测升级。不是换壳方案。
+
+### `t96-uncovered-language-help` · feature · 立即做 · P2 · 未覆盖语言固定句带 T92 求助 · 2026-11-08
+
+T96 未覆盖语言求助兜底。日语未开放固定句接上 T92 求助句。不改阈值。不是 T94 第 2–4 刀。实现旁支独立。
+
+### `t97-crisis-annotator-qualification` · note · 阻塞 · P2 · 人选期限 2026-11-22 · 2026-11-08
+
+T97 危机题卷标注资质。外部顾问01 无此背景记载。出题者不得是写分类器的同一会话。第 2/3 刀与第 4 刀 10-05 修复都依赖。期限 2026-11-22；找不到则 PO 书面风险接受。
+
 ### `deep-link-shortcuts-cookbook` · feature · Brief 待点头（纯文档） · 2026-11-07
 
 深链 + Shortcuts 食谱。Web query 与已有 `focus-tiger://app` 落到同一开坐 action。Health 只走用户手势 + 快捷指令回写 Mindful Minutes。不是 T49 原生壳，不是 Ritual Recipe B1，不是读 Health。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。
@@ -588,10 +612,6 @@ T76 冷启动静修入口。B1 卡面/纠错/直坐 #1550；B2 帮助别名 #155
 ### `t77-co-practice-continue-slot` · feature · 排队中 · 可选 · 依赖 T87 · 2026-11-04
 
 T77 续练位 PR-2：常做练习配置一键开练；v1 无时段词；叠层仲裁。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md) §3。**不是** T76 冷启动。
-
-### `t78-co-practice-stable-breath-companion` · feature · 排队中 · 可选 · 依赖 T87 · 2026-11-04
-
-T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动。
 
 ### `t79-contemplative-inquiry` · feature · 已完成 · 可选 · #1551 已合 develop · 关单级手测待勾 · 2026-11-04
 
