@@ -78,6 +78,8 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t66-co-practice-session-join-ledger.md',
   'focus-tiger/docs/task-entries/co-practice-gift-art.md',
   'focus-tiger/docs/tracker-entries/docs-t67-co-practice-session-join-ledger.md',
+  'focus-tiger/docs/ISSUE_LEDGER.md',
+  'focus-tiger/docs/issue-entries/feat-t14-help-default-on-ledger-2026-11-08.md',
   'focus-tiger/docs/tracker-entries/docs-t66-co-practice-session-join-ledger.md',
   'focus-tiger/docs/task-briefs/task-co-practice-gift-art-grant.md',
   'focus-tiger/docs/task-entries/t67-co-practice-gift-art-grant.md',
