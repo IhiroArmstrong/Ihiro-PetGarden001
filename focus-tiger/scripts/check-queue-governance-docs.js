@@ -188,6 +188,7 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t99-required-smoke-gates.md',
   'focus-tiger/docs/tracker-entries/docs-t99-required-smoke-gates.md',
   'focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md',
+  'focus-tiger/scripts/pr-smoke-e2e-subset.test.js',
   'focus-tiger/scripts/pr-smoke-path-routes.js',
   'focus-tiger/scripts/pr-smoke-path-routes.test.js',
   'focus-tiger/scripts/pre-push-startup-smoke.js',

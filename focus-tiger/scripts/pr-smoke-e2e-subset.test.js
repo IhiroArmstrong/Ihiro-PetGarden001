@@ -19,6 +19,7 @@ describe('PR smoke e2e subset (menu walk demoted)', () => {
     const smoke = pkg.scripts['test:e2e:smoke']
     const dedicated = pkg.scripts['test:e2e:menu-reachability']
     assert.match(smoke, /product-shell\.smoke/)
+    assert.match(smoke, /--project=chromium/)
     assert.doesNotMatch(smoke, /menu-full-reachability/)
     assert.doesNotMatch(smoke, /menu full reachability/)
     assert.match(dedicated, /menu-full-reachability\.spec\.js/)

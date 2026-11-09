@@ -81,7 +81,7 @@ Agent 的价值在于"改代码 + 判断结果"，不是"占用会话等大规�
 ## 可以在本地/Agent 会话直接跑的场景
 - 单元测试（`npm run test` / `test:smoke` 中的控制器逻辑；A6：`lint:main-use-before-define` 已并入 `test:smoke`）
 - **单个** e2e spec：`npm run test:e2e:changed -- e2e/foo.spec.js`（硬顶 1）
-- `npm run test:e2e:smoke` / `npm run test:pr-smoke` / `npm run smoke:required`（默认**不含**菜单走完；菜单改动由 husky `pre-push` 按路径表加跑。门闩见 `PR_SMOKE_FAILURE_CLASSES.md`）
+- `npm run test:e2e:smoke` / `npm run test:pr-smoke` / `npm run smoke:required`（只跑 `chromium` 工程，不含 `local-acceptance`；默认**不含**菜单走完；菜单改动由 husky `pre-push` 按路径表加跑。门闩见 `PR_SMOKE_FAILURE_CLASSES.md`）
 - husky `pre-push`：非文档推送强制 `test:e2e:smoke`；命中菜单路径再跑 `test:e2e:menu-reachability`。仅 `.md`/`.mdc` 可跳过。紧急：`FT_SKIP_PRE_PUSH_SMOKE=1`（旧名 `FT_SKIP_PRE_PUSH_STARTUP=1` 仍认），须在 PR 写明。`pre-commit` 先跑入口行数闸再 `test:smoke`。
 - 预期几秒到几十秒内出结果的快速验证
 
