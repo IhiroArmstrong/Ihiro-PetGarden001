@@ -76,3 +76,7 @@ focus-tiger/private/art-collection-hd/
 
 # Guided meditation video masters: inventory in docs; files stay on disk / R2.
 /*.mp4
+
+# Stripe Dashboard exports (contain customer emails). Brief only keeps tallies.
+/Stripe-Sandbox*.csv
+/*unified_payments.csv

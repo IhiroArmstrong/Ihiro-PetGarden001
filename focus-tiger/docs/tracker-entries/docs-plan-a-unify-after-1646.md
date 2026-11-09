@@ -1,0 +1,1 @@
+| 方案 A 说明统一（#1646 已合） | 纯文档 | 仅单元测试覆盖 | **无界面。** 读 Brief / 术语表 / B3 看板 / RR-14：Sandbox 只写汇总数字；#1646 已合；Worker 未部署。`npm run docs:check` · `npm run queue:check`。 | — | — | — | `docs/plan-a-unify-after-1646` · 本 PR | 2026-11-10 |

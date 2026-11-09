@@ -1,15 +1,15 @@
 # Task Brief · 方案 A 选项 1：安装包前已购也不开倾诉；第四卡与第五卡都先停新结账
 
-> **状态（2026-11-09 夜）**：**安装包 QA 参数只读核对已完成（源码 + 单测，不是签名安装包）。** 实现已在 [#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646)（OPEN · `feature/plan-a-option1-confide-sale-gate` · Worker 410 默认关 + 客户端闸门 / 两卡 / 文案 · 待合 develop / CI）。本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641)。Sandbox CSV 是政策侧面证据，**不**代替 Live 笔数，也**不**代替「签名安装包已实测」。  
+> **状态（2026-11-10）**：**实现已合 develop**（[#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646) · merge `ec0e9faa`）。客户端闸门、两张卡、文案、Worker **源码** 410 默认关都在共用版本里。**生产 Worker 尚未 Redeploy** → 线上接口仍可能新开结账。Sandbox 已付流水是开发自测，**真实客户 0；Live 笔数不适用**。安装包 QA 参数：源码 + 单测已核对，**不是**签名安装包实测。本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) / [#1642](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1642) / [#1651](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1651)。  
 > **类**：**B**。会改客人能不能看见倾诉，以及 Support 里能不能新买 Pro、能不能新买陪伴加购。  
-> **基线**：`origin/develop@d54f11a8`（含 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)、[#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)、[#1638](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1638)、[#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)、[#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641)）。上一版写的 `ead9213d` 已过期。  
-> **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。该盘点已合 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)。  
+> **基线**：`origin/develop@ec0e9faa`（含 #1646）。上一版写的 `d54f11a8` / OPEN 旁支已过期。  
+> **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。该盘点已合 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)；盘点当时的「已购宽屏可开」已被 #1646 代码闸收掉。  
 > **PO 书面（2026-11-09 晚）**  
 > - 选项 1：**是**。第一份安装包发出前，已经买了陪伴的人也不开倾诉。  
 > - 第五卡：倾诉评审（V2）通过前，不新售陪伴加购。已买过的留下、变淡、不能再付款。  
 > - 第四卡：**也先停新结账**。判断只看一件事：去掉本机倾诉之后，剩下的会员进阶是否仍值这个价。你这次的默认是「不确定或偏少，先停」。若日后书面确认「仍值这个价」，再改口继续卖。停售可逆；卖出去再收回不可逆。  
 > - 已订阅的人：线上笔数出来后，如有活跃订阅，由你决定是否通知、提供取消或退款、或暂停收款。在这句决定之前，不取消、不拦截续订，也先不选定通知或退款方案。  
-> **实现**（开工句贴出之后，分两个请求，各自单独分支，都跑 `npm run test:payment-contract`）：先做服务端两个新结账接口的关闭开关；再做客户端闸门、两张卡、文案和测试。不要叠在已合并的 [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) 上。本说明本身还没开工。
+> **实现**：**沿用 #1646 为唯一实现分支，不再拆成 Worker / 客户端两个 PR。** 产品尚未发布，没有线上客户会继续买，拆 PR 的理由不成立。勿再开同内容旁支。
 
 ## 一句话目标
 
@@ -19,9 +19,22 @@
 
 #1639 把第四卡锁成「继续卖，文案改成现在买了也不会出现倾诉」。2026-11-09 晚你改口：第四卡也先停新结账。下面各节按这句改口写。#1639 里没写的七处门槛写在「开工前仍须单独完成的核对」。
 
+## 合入后的地面事实（2026-11-10）
+
+对照 `origin/develop@ec0e9faa`（#1646 已合）：
+
+- `canOpenConfidePanel`：挂载 false 时，已购陪伴 / 生成层 **不能**再打开面板（实验室仅 `isClientQaHarnessAllowed`）。
+- 宽屏菜单 / 倾听耳：挂载关着时不插入倾诉行。
+- Support：未购不渲染可新开的第四卡 / 第五卡；已购加购卡淡化。会员 **$6.99** 卡仍卖，文案不含倾诉。
+- Worker 源码：`POST /api/create-pro-checkout-session` 与 `create-companion-addon-checkout-session` 走 `isPlanAOption1NewCheckoutDisabled`（缺变量 / 非 `true`/`1` → 410）。`create-membership-checkout-session`、`create-membership-portal-session`、`confirm-pro-session`、webhook **未**走该闸。开关每次请求读 `env`，无模块缓存。
+- 沙箱自测：默认关后 Pro / 加购会 410。本地或测试环境须设 Worker 变量 **`PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=true`**（或 `1`）才能走通付款。**切 Live 密钥之前，该变量不得为开。**
+- 生产 Worker **未** Redeploy：客户端已关、线上接口未关。
+
+下面「现在的地面事实」是 **#1646 合入前** 的快照，保留作对照，不再代表 develop。
+
 ## 现在的地面事实
 
-2026-11-09 晚对照 **当前** `origin/develop` 重读，不是对照术语表，也不是对照 `ead9213d`：
+2026-11-09 晚对照当时 `origin/develop` 重读（**合入前**），不是对照术语表，也不是对照 `ead9213d`：
 
 - `canOpenConfidePanel` 在 `companionGeneration === true` 且安全语料通过时，**即使挂载是 false 也返回 true**（`confideUserVisibilityGate.js`）。挂载 false 挡不住已购宽屏。
 - 宽屏菜单在 `companionGeneration` 为真时仍插入倾诉行（`idleChromeOrchestration.js`），测试名就叫「挂载关着也显示」。
@@ -31,20 +44,32 @@
 - Worker 仍暴露 `POST /api/create-pro-checkout-session` 与 `POST /api/create-companion-addon-checkout-session`；仅藏 UI 不够，旧客户端或脚本可直连。
 - [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) **已合并**。打开被拒时，`onOpenBlocked` 会取 `confideOpenBlockedUserMessage`，这句话走 T92 求助句（`formatConfideSafetyResourceGuidance`）。入口登记里，沉思问询「想聊聊」标的是「必须给出这句」。语音危机转倾诉、帮助中心转倾诉在同一份登记里仍写着 **未核实**。本说明不把这两条写成已经盖住。
 
-T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏不成立。本决定把那条例外收掉。术语表仍写「已购陪伴宽屏仍可开倾诉」——那是盘点当时的事实，**本 Brief 与实现旁支都不改术语表**。实现合并后须**另开治理 docs PR** 更正该句（见「交付顺序」）。
+T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏不成立。#1646 把那条例外收掉。术语表旧句「已购陪伴宽屏仍可开倾诉」是盘点当时的事实，由本治理 docs PR 更正。
 
 ## 已购与 Stripe 核对（Brief 政策输入）
 
-**政策（本 Brief）**：不撤销本地 / 云端已购记录；**本刀不做自动退款**。若 Live 出现非零笔数，Support 口径与（若需要）法务确认退款渠道由 PO 在合实现前拍板。**不得**把 KV 为零或 Sandbox 导出写成「没有人买过」或「Live 零笔」。
+**政策（本 Brief）**：不撤销本地 / 云端已购记录；**本刀不做自动退款**。产品尚未发布：Sandbox 全是开发自测，**真实客户为 0**。退款、通知、活跃订阅在发布前不处理。CSV **勿 commit**（含邮箱）；下文只留汇总数字。
 
-| 来源 | 2026-11-09 结果 | 说明 |
+金额与产品对应已对照 `wrangler.jsonc` Price ID + 客户端标价常量（`MEMBERSHIP_PRICE_DISPLAY` / `FOCUS_TIGER_PRO_PRICE_DISPLAY` / `INFRA_SNAPSHOT`），**不是**只凭 CSV 空 metadata 列推断：
+
+| Price ID（`wrangler.jsonc` vars） | 产品 | 标价 | Sandbox 已付笔数 |
+|---|---|---|---|
+| `price_1U6EB1FuIhgJPGLiuciuX1to` | Pro（第四卡） | US$12.99/月 | 19 |
+| `price_1U6GnXFuIhgJPGLiNlXs0IKe` | 陪伴加购（第五卡） | US$29.99 一次 | 1 |
+| `price_1U2r5lFuIhgJPGLiEPOhJbst` | 会员 / Base（仍在卖） | US$6.99/月 | 21 |
+| `price_1U22T4FuIhgJPGLiT0hcEWxY` | 圣所终身 | US$89.99 一次 | 8 |
+| `price_1U4nanFuIhgJPGLidoTdxobW` | 请茶 | US$4.99 | 3 |
+
+Sandbox 导出另有 $9.95 × 1、$9.99 × 1（metadata `art-collection` 1），**不是** Pro / 会员 / 加购。
+
+| 来源 | 2026-11-09 / 2026-11-10 结果 | 说明 |
 |---|---|---|
-| 生产 `SANCTUARY_KV` 前缀 `companion-addon:` | **0** 键 | `wrangler kv key list` · 加购 confirm/webhook 邮箱索引 |
-| 生产 `MEMBERSHIP_KV` 前缀 `membership:` | **0** 键 | 含 `confirm-pro-session` 写入的 Pro 订阅索引 |
-| Stripe Dashboard **Live** / Stripe CLI | **未查 Live**（产品未发布；本机不 login Live） | 仍须日后 Dashboard Live 核 Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（Pro）、**`price_1U6GnXFuIhgJPGLiNlXs0IKe`**（加购）之 **paid** Checkout |
-| Stripe **Sandbox** 导出 `Stripe-Sandbox成功付款所有记录unified_payments.csv` | **54** 笔 Status=Paid（仓库根 PO 工作副本；**含顾客邮箱，勿 commit**） | 按金额对照现网标价：**Pro $12.99 × 19**；**加购 $29.99 × 1**；会员 $6.99 × 21；圣所 $89.99 × 8；请茶 $4.99 × 3；$9.95 × 1；$9.99 × 1（metadata `art-collection` 1）。**只作政策侧面**，不是 Live |
+| 生产 `SANCTUARY_KV` 前缀 `companion-addon:` | **0** 键 | `wrangler kv key list` |
+| 生产 `MEMBERSHIP_KV` 前缀 `membership:` | **0** 键 | 含 `confirm-pro-session` 写入的 Pro 索引 |
+| Stripe Dashboard **Live** | **不适用**（产品未发布；流水全是 Sandbox 自测） | 日后切 Live 密钥前：确认 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED` **不是**开 |
+| Stripe **Sandbox** 已付导出 | **54** 行，全部 Paid；退款 0；日期 2026-08-10–2026-10-30；邮箱 2 个（51+3 行）。$12.99：19 笔 / 7 客户；$6.99：21 笔 / 8 客户，与 $12.99 客户无重叠 | **只写汇总。不入库 CSV、不写邮箱。** |
 
-Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。退款、通知、暂停收款仍等 Live 看完再决定。
+Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订阅先不处理。
 
 ## 范围（in）
 
@@ -76,9 +101,9 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。退款、通知�
 - 不把沉思问询、语音、帮助中心的提示再做一遍。#1637 已在共用版本里。本旁支不 cherry-pick 那笔提交，不重做 T92 toast 逻辑，除非付款契约强制。
 - 不改第四卡与第五卡「已是 Pro 则不显示加购卡」的互斥。
 - 不改 Support 按钮层级、遮罩、玻璃卡 z-index，不给 Support 模态写 inline z-index。
-- 不改术语表、任务总表、问题账本已有行，不改 B3 看板（**治理 PR 另开**）。
+- 不改任务总表、问题账本已有行。术语表 T98 句与 B3 看板由本治理 PR 更正。
 - 不新开后台下载或别的网络请求（410 路由不算新下载）。
-- 不在本说明里填写线上购买笔数。笔数来自 Stripe 线上模式，不由模型估计。
+- 不把 Sandbox 自测写成 Live 客户。上表只留汇总数字。
 
 ## 第四卡：已锁的做法
 
@@ -103,15 +128,15 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。退款、通知�
 
 下面七处已经写进本说明。三条核对不必全部做完再开工。真正挡住写代码的，只有安装包参数那一条（只读，做完立刻可以贴开工句）。线上笔数、语音和帮助中心可以并行，不挡代码，但挡住退款说明和「已核对」这几个字。没做完的，不得写成已核对。
 
-| # | 要写进说明的事 | 本回合 |
+| # | 要写进说明的事 | 2026-11-10 |
 |---|---|---|
-| 1 | 服务端也关，而且默认关闭。变量缺失或读取失败时新结账一律拒绝。续订与会员管理入口不要受影响。Worker 部署后才算线上已关。 | 已写入范围。开关与部署都还没做。先于客户端。 |
-| 2 | 核实安装包不接受 QA 参数，含深链能否把 `?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro` 带进应用。加一条生产构建下参数不生效的测试。 | **源码已核实（2026-11-09 夜）。** 生产冷启动只加载 `focus-tiger://app/index.html?product=1`。结账回跳 `navigateDesktopCheckoutReturn` **会原样转发** URL search（QA 参数可能搭车）。生产 / 非 `FT_QA_BOOT` 构建下 `isClientQaHarnessAllowed` 为假时，这些 query **不能**开倾诉、不能伪造已购；`?entitlementMock=` 也不能切 mock 提供者。锁：`clientQaHarnessGate.test.js` · `desktopPackaging.test.js`。**未**拆签名 `.dmg` 实测。 |
-| 3 | 查清线上模式里真实的加购笔数和 Pro 购买笔数。如有活跃订阅，由你决定是否通知、提供取消或退款、或暂停收款。 | **Sandbox 已扫；Live 未查。** 见上表。不挡代码。挡住退款说明与「Live 零笔」。 |
-| 4 | 更正过期事实。#1637 已合并。基线随 develop 向前走；实现开工时若共用版本又向前走，再对一次当时的顶端。 | **已更正**（见「现在的地面事实」与文首基线）。 |
-| 5 | 全盘检索隐私页、简介卡、帮助中心、官网、商店页面里的倾诉 / 陪伴句子。 | **未检索。** 列入实现旁支，本文件不改那些页面。 |
-| 6 | 确认「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **部分。** 「想聊聊」在入口登记里是「必须提示」，打开被拒的回调会取 T92 句子。语音危机、帮助中心在登记里仍是未核实。只读核对可与代码并行，不挡这两个实现请求；没核对完不得写成已核对。 |
-| 7 | 实现合并后立刻跟一个治理文档：更正术语表「已购宽屏可开倾诉」，看板写成「草稿、未打分、已合并」。 | 已写入「交付顺序」。本文件与实现旁支都不改术语表和看板。 |
+| 1 | 服务端也关，而且默认关闭。变量缺失或读取失败时新结账一律拒绝。续订与会员管理入口不要受影响。Worker 部署后才算线上已关。 | **源码已合。** `isPlanAOption1NewCheckoutDisabled` 缺变量 / 非 true\|1 → 410；每次请求读 env。门户 / 会员新购 / confirm / webhook 未走该闸。单测未单独锁「门户在闸开时仍 200」。**生产 Worker 未部署。** |
+| 2 | 核实安装包不接受 QA 参数，含深链。 | **源码 + 单测已核实（注入 `qaHarnessAllowed: false`）。** 结账回跳会转发 query；生产 harness 须忽略。**未**用真正 `MODE=production` 打包、**未**拆签名 `.dmg`。Electron 生产构建是否走该闸 = **未核实**。 |
+| 3 | 查清线上模式笔数 / 活跃订阅。 | **Sandbox 54 笔自测；真实客户 0；Live 不适用。** 活跃订阅先不处理。 |
+| 4 | 更正过期事实。 | **已更正**（文首 +「合入后的地面事实」）。#1641/#1642 与 #1646 后只保留这一份口径：Sandbox 自测、#1646 已合、Worker 未部署。 |
+| 5 | 全盘检索倾诉 / 陪伴句子。 | **部分。** 切片 `plan-a-option1-support-sale-stop.json` 覆盖 Support Pro/加购。总账 `zh.json` 仍留旧 Pro 句，运行时切片覆盖。隐私页 / 帮助中心 / 官网未做完整客人面检索。 |
+| 6 | 「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **部分。** 「想聊聊」经 `onOpenBlocked` → T92。`voiceCommandGate.js` **无** `confide` 字符串。帮助中心 `isHelpCenterAskDestinationReachable` 只判断问卡 DOM，**不**断言转倾诉失败时弹出 T92。入口登记这两行仍写未核实。 |
+| 7 | 治理文档：术语表 + B3 看板。 | **本 PR。** |
 
 ## 变体矩阵
 
@@ -212,17 +237,15 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。退款、通知�
 
 ## 冲突与后续
 
-- 无同内容的实现 PR。盘点 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633) 已合，只读。#1639 是本文件的旧版，第四卡结论已被本节取代。
+- 实现 PR [#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646) **已合 develop**。盘点 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633) 已合，只读。#1639 是本文件的旧版，第四卡结论已被本节取代。勿再开同内容旁支。
 - [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) **已合**（T92 toast）；本旁支禁止重复或回滚该行为。
 
-## 交付顺序（PO 2026-11-09 晚）
+## 交付顺序（2026-11-10 更新）
 
-1. **本 Brief 再补三句**（仍是 [#1642](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1642)）：开关默认关闭；会员管理入口保留；活跃订阅的通知 / 取消 / 退款 / 暂停收款等笔数出来后由你决定。补完可以合。  
-2. **安装包参数与深链**：只读核对。这是贴开工句之前要做完的唯一一条。  
-3. **先做的实现请求**：两个新结账接口的关闭开关（默认关闭，缺失也拒绝），加测试，保留会员管理入口，续订不改。部署 Worker 之后，才算线上接口已关，旧客户端也生效。  
-4. **后做的实现请求**：客户端闸门、第四卡和第五卡、三语文案、生产构建下 QA 参数不生效的测试、文案全盘检索。客户端对「已关闭」给一句说明，不显示原始错误。两个实现请求各自单独分支，都跑 `npm run test:payment-contract`。  
-5. **并行、不挡代码**：你查 Stripe 线上笔数；另做语音危机和帮助中心是否带 T92 求助句的只读核对。这两件挡住退款说明和「已核对」，不挡住第 3、4 步的代码。  
-6. **治理 docs PR**：术语表更正「已购宽屏可开倾诉」；B3 看板「草稿、未打分、已合并」。  
-7. 其后：签名公证核实、B1、T93（邮箱登录）、T95（电脑壳升级）。不在这两个实现请求里。
+1. **#1646 已合 develop。** 不再拆两个实现 PR，勿再开同内容旁支。  
+2. **部署生产 Worker**（须口头「部署」）：之后才算线上接口已关。部署后记 Version id。  
+3. **本治理 docs PR**：统一本说明（Sandbox 汇总、Price ID、七点状态）、术语表、B3 看板、RR-14。  
+4. **仍未做完、方案 A 不能写成完成**：真正生产模式打包测 QA 参数；签名安装包深链；语音 / 帮助中心 T92；文案全盘检索。  
+5. **其后另会话**：签名公证核实、T97 人选、T93 / T95、B4a/b、安装包五场景走查。不在本 PR。
 
-开工句等第 2 步有结论后再贴，原文是：按这份 Brief 开工，分两个请求：先 Worker 新结账关闭开关（默认关闭，保留订阅管理入口，续订不受影响），再客户端闸门、卡片、文案、测试。本文件现在还不等于已经贴出这句话。
+沙箱测 Pro / 加购：在测试 Worker 设 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=true`。切 Live 密钥前确认该变量**不是**开（RR-14）。
