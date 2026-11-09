@@ -1,0 +1,86 @@
+{
+  "sample": 50,
+  "from": "2026-11-07T05:33:24Z",
+  "to": "2026-11-09T10:03:15Z",
+  "buckets": {
+    "<=200": 33,
+    "201-800": 13,
+    "801-2000": 3,
+    ">2000": 1
+  },
+  "median": {
+    "n": 1633,
+    "add": 120,
+    "del": 13,
+    "files": 11,
+    "churn": 133,
+    "title": "[Logic] docs(gov): lock Plan A Confide-off inventory as T98",
+    "mergedAt": "2026-11-09T10:01:32Z"
+  },
+  "top8": [
+    {
+      "n": 1589,
+      "churn": 2409,
+      "files": 4,
+      "add": 2409,
+      "del": 0,
+      "title": "docs(audit): B5 security, privacy & compliance findings (2026-11-07)"
+    },
+    {
+      "n": 1591,
+      "churn": 1018,
+      "files": 17,
+      "add": 1016,
+      "del": 2,
+      "title": "feat(t81): S3 practice study Worker ingest"
+    },
+    {
+      "n": 1593,
+      "churn": 930,
+      "files": 14,
+      "add": 926,
+      "del": 4,
+      "title": "feat(t81): S4(c)(d)(e) practice study consent gate and golden CI"
+    },
+    {
+      "n": 1608,
+      "churn": 828,
+      "files": 10,
+      "add": 826,
+      "del": 2,
+      "title": "feat(T78): stable Breath minutes and Companion mode (PR-3)"
+    },
+    {
+      "n": 1617,
+      "churn": 713,
+      "files": 10,
+      "add": 711,
+      "del": 2,
+      "title": "feat(t83): first-sit Practice Study positioning invite"
+    },
+    {
+      "n": 1611,
+      "churn": 603,
+      "files": 15,
+      "add": 599,
+      "del": 4,
+      "title": "feat(t82): Practice Study consent panel (S2)"
+    },
+    {
+      "n": 1609,
+      "churn": 603,
+      "files": 15,
+      "add": 599,
+      "del": 4,
+      "title": "docs(queue): sync stable-prefs + research upload queue (2026-11-08)"
+    },
+    {
+      "n": 1596,
+      "churn": 531,
+      "files": 6,
+      "add": 530,
+      "del": 1,
+      "title": "docs: deep-link Shortcuts cookbook + ICS export briefs"
+    }
+  ]
+}

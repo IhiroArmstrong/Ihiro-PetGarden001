@@ -1,0 +1,421 @@
+{
+  "generatedBy": "node focus-tiger/docs/audit/findings/2026-11-09/evidence/b1-static-scan.mjs",
+  "scope": "focus-tiger/src/**/*.js relative imports only",
+  "jsFiles": 1225,
+  "prodFiles": 691,
+  "testFiles": 534,
+  "prodLines": 153794,
+  "testLines": 66917,
+  "byTop": {
+    "audio": {
+      "files": 14,
+      "lines": 4338
+    },
+    "boot": {
+      "files": 12,
+      "lines": 716
+    },
+    "character": {
+      "files": 18,
+      "lines": 3842
+    },
+    "components": {
+      "files": 4,
+      "lines": 872
+    },
+    "content": {
+      "files": 12,
+      "lines": 871
+    },
+    "core": {
+      "files": 906,
+      "lines": 139948
+    },
+    "effects": {
+      "files": 12,
+      "lines": 2619
+    },
+    "environment": {
+      "files": 1,
+      "lines": 79
+    },
+    "feedback": {
+      "files": 3,
+      "lines": 250
+    },
+    "input": {
+      "files": 8,
+      "lines": 1209
+    },
+    "locales": {
+      "files": 14,
+      "lines": 1333
+    },
+    "main.js": {
+      "files": 1,
+      "lines": 7704
+    },
+    "pwa": {
+      "files": 2,
+      "lines": 115
+    },
+    "render-compare.js": {
+      "files": 1,
+      "lines": 99
+    },
+    "ui": {
+      "files": 211,
+      "lines": 56488
+    },
+    "utils": {
+      "files": 6,
+      "lines": 228
+    }
+  },
+  "topProd": [
+    {
+      "r": "main.js",
+      "n": 7704
+    },
+    {
+      "r": "ui/OnboardingHintsUI.js",
+      "n": 3551
+    },
+    {
+      "r": "ui/ConfideToYinUI.js",
+      "n": 2664
+    },
+    {
+      "r": "ui/NarrowIdleShell.js",
+      "n": 1880
+    },
+    {
+      "r": "ui/AmbientSoundscapeUI.js",
+      "n": 1774
+    },
+    {
+      "r": "ui/FocusCoinsPanelUI.js",
+      "n": 1723
+    },
+    {
+      "r": "core/EmotionController.js",
+      "n": 1622
+    },
+    {
+      "r": "ui/WideIdleMoreMenu.js",
+      "n": 1620
+    },
+    {
+      "r": "audio/AmbientSoundscapeController.js",
+      "n": 1262
+    },
+    {
+      "r": "core/confide/confideKbRoutingMatrix.js",
+      "n": 1165
+    },
+    {
+      "r": "ui/SupportYinModalUI.js",
+      "n": 1157
+    },
+    {
+      "r": "ui/GrowthJourneyDetailUI.js",
+      "n": 1017
+    },
+    {
+      "r": "ui/TigerReflectionMoment.js",
+      "n": 999
+    },
+    {
+      "r": "core/idleChromeOrchestration.js",
+      "n": 957
+    },
+    {
+      "r": "ui/HelpCenterUI.js",
+      "n": 930
+    },
+    {
+      "r": "core/overlaySlotArbitration.js",
+      "n": 900
+    },
+    {
+      "r": "ui/CompanionModePicker.js",
+      "n": 862
+    },
+    {
+      "r": "ui/MembershipUnlockUI.js",
+      "n": 818
+    },
+    {
+      "r": "character/SpriteSequencePlayer.js",
+      "n": 801
+    },
+    {
+      "r": "core/tasteLayerOverlay.js",
+      "n": 790
+    },
+    {
+      "r": "ui/TipJarUI.js",
+      "n": 786
+    },
+    {
+      "r": "effects/IncenseGreeting.js",
+      "n": 767
+    },
+    {
+      "r": "ui/MustardSeedSealCardUI.js",
+      "n": 756
+    },
+    {
+      "r": "core/overlaySlotContractRegistry.js",
+      "n": 754
+    },
+    {
+      "r": "ui/FiveMomentsCompassUI.js",
+      "n": 753
+    }
+  ],
+  "cycleSample": [
+    [
+      "core/journeyLogGate.js",
+      "core/eveningPracticeFacts.js",
+      "core/journeyLogGate.js"
+    ],
+    [
+      "core/journeyLogGate.js",
+      "core/eveningPracticeFacts.js",
+      "core/practicePaperFacts.js",
+      "core/journeyLogGate.js"
+    ],
+    [
+      "core/yinPersonalizationEngine.js",
+      "core/ypePersonalizationPack.js",
+      "core/yinPersonalizationEngine.js"
+    ],
+    [
+      "core/tasteLayerOverlay.js",
+      "content/calm-action-wisdom/index.js",
+      "core/tasteLayerOverlay.js"
+    ],
+    [
+      "core/EmotionController.js",
+      "character/PoseManager.js",
+      "core/EmotionController.js"
+    ],
+    [
+      "core/EmotionController.js",
+      "effects/IncenseGreeting.js",
+      "core/EmotionController.js"
+    ],
+    [
+      "core/FocusSession.js",
+      "core/focusDuration.js",
+      "core/FocusSession.js"
+    ],
+    [
+      "core/yinAdaptationStore.js",
+      "core/coPracticeSessionJoinLedger.js",
+      "core/yinAdaptationStore.js"
+    ],
+    [
+      "core/coPracticeResearchUpload.js",
+      "core/coPracticeResearchWeeklySchedule.js",
+      "core/coPracticeResearchUpload.js"
+    ],
+    [
+      "core/yinPersonalMemory/yinPersonalMemoryForget.js",
+      "core/yinPersonalMemory/yinPersonalMemoryRemember.js",
+      "core/confide/confidePracticeFacts.js",
+      "core/confide/confideBoundaryRespect.js",
+      "core/yinPersonalMemory/yinPersonalMemoryVerbalForget.js",
+      "core/yinPersonalMemory/yinPersonalMemoryForget.js"
+    ],
+    [
+      "core/yinPersonalMemory/yinPersonalMemorySuppress.js",
+      "core/yinPersonalMemory/yinPersonalMemoryForget.js",
+      "core/yinPersonalMemory/yinPersonalMemoryRemember.js",
+      "core/confide/confidePracticeFacts.js",
+      "core/confide/confideBoundaryRespect.js",
+      "core/yinPersonalMemory/yinPersonalMemoryVerbalForget.js",
+      "core/yinPersonalMemory/yinPersonalMemorySuppress.js"
+    ],
+    [
+      "core/yinPersonalMemory/yinPersonalMemorySuppress.js",
+      "core/yinPersonalMemory/yinPersonalMemoryForget.js",
+      "core/yinPersonalMemory/yinPersonalMemoryRemember.js",
+      "core/yinPersonalMemory/yinPersonalMemorySuppress.js"
+    ]
+  ],
+  "unresolvedCount": 6,
+  "unresolvedSample": [
+    "components/breath-pacer/breath-pacer.js -> ./components/breath-pacer/breath-pacer.js",
+    "components/breath-pacer/breath-pacer.js -> ./breath-halo.css?inline",
+    "core/entitlement/index.js -> ./entitlement/entitlementGate.js",
+    "core/practicePaperFacts.test.js -> ./src/utils/localDate.js",
+    "core/practicePaperFacts.test.js -> ./src/core/practicePaperFacts.js",
+    "ui/daily-wisdom.js -> ./ui/daily-wisdom.js"
+  ],
+  "cross": {
+    "audio -> core": 3,
+    "boot -> audio": 2,
+    "boot -> ui": 10,
+    "boot -> input": 1,
+    "boot -> core": 3,
+    "character -> utils": 5,
+    "character -> core": 2,
+    "character -> ui": 1,
+    "components -> locales": 1,
+    "content -> core": 1,
+    "core -> utils": 57,
+    "core -> content": 19,
+    "core -> character": 9,
+    "core -> ui": 12,
+    "core -> effects": 4,
+    "core -> feedback": 1,
+    "core -> locales": 39,
+    "core -> audio": 1,
+    "effects -> character": 2,
+    "effects -> utils": 4,
+    "effects -> ui": 3,
+    "effects -> core": 1,
+    "effects -> locales": 1,
+    "feedback -> utils": 4,
+    "input -> locales": 1,
+    "input -> character": 2,
+    "input -> core": 2,
+    "main.js -> core": 185,
+    "main.js -> character": 5,
+    "main.js -> feedback": 3,
+    "main.js -> input": 4,
+    "main.js -> ui": 88,
+    "main.js -> boot": 6,
+    "main.js -> utils": 2,
+    "main.js -> effects": 5,
+    "main.js -> locales": 1,
+    "main.js -> pwa": 1,
+    "main.js -> audio": 5,
+    "render-compare.js -> utils": 1,
+    "ui -> locales": 100,
+    "ui -> core": 407,
+    "ui -> audio": 5,
+    "ui -> utils": 4,
+    "ui -> effects": 1,
+    "ui -> content": 1
+  },
+  "emptyCatchCount": 0,
+  "emptyCatch": [],
+  "quietCatchSample": [
+    "audio/AmbientSoundscapeController.js:240 :: return normalizeAmbientPref(null);",
+    "audio/AmbientSoundscapeController.js:248 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:517 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:559 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:603 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:622 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:667 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:797 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:806 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:915 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:1047 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:1073 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:1081 :: /* ignore */",
+    "audio/AmbientSoundscapeController.js:1220 :: /* ignore */",
+    "audio/SessionCueController.js:55 :: /* ignore */",
+    "audio/SessionCueController.js:376 :: /* ignore */",
+    "audio/SessionCueController.js:409 :: /* ignore */",
+    "audio/SessionCueController.js:414 :: /* ignore */",
+    "audio/UserAmbientLibrary.js:199 :: /* ignore */",
+    "audio/UserAmbientLibrary.js:357 :: /* private mode / IDB missing */",
+    "audio/ambientAudition.js:52 :: /* keep default */",
+    "audio/sessionCuePreference.js:130 :: return defaultSessionCuePref();",
+    "audio/sessionCuePreference.js:147 :: /* ignore quota / private mode */",
+    "core/DailyCompletionStore.js:19 :: return null;",
+    "core/DailyCompletionStore.js:154 :: // 损坏或不可用时回退内存态",
+    "core/DailyCompletionStore.js:169 :: // 持久化失败时仍保留本次运行期状态",
+    "core/DailyWisdomStore.js:19 :: return null;",
+    "core/DailyWisdomStore.js:159 :: /* ignore */",
+    "core/DailyWisdomStore.js:175 :: /* ignore */",
+    "core/FocusEssenceStore.js:24 :: return null;"
+  ],
+  "threeImportFiles": [
+    "character/Actions.js",
+    "character/PoseManager.js",
+    "character/TigerCharacter.js",
+    "core/PostProcessing.js",
+    "core/Renderer.js",
+    "core/Scene.js",
+    "effects/DynamicMotion.js",
+    "effects/IncenseGreeting.js",
+    "environment/MeditationCushion.js",
+    "feedback/Ambience.js",
+    "feedback/FocusVisualizer.js",
+    "feedback/TransitionFX.js",
+    "input/PointerInteraction.js",
+    "main.js",
+    "render-compare.js",
+    "utils/Loaders.js",
+    "utils/configurePBRTextures.js"
+  ],
+  "schemaVersionProdFiles": [
+    "core/coPracticeResearchWeeklyPayload.js",
+    "core/confide/confideProductKnowledge.js",
+    "core/focusCircleBeside.js",
+    "core/focusCircleIdentity.js",
+    "core/focusCircleMembership.js",
+    "core/focusCirclePresence.js",
+    "core/focusCircleWasHere.js",
+    "core/focusCircleWitness.js",
+    "core/growthMetricsConfigOverlay.js",
+    "core/monetizationFunnelUpload.js",
+    "core/practiceBackup/practiceBackupLocalIo.js",
+    "core/practiceBackup/practiceBackupSnapshot.js",
+    "core/practiceBackup/practiceBackupSync.js",
+    "core/quietTogetherPresence.js",
+    "core/ritualRecipe/officialSittingTemplateSelection.js",
+    "core/ritualRecipe/ritualRecipeSchema.js",
+    "core/sceneAnimationDispatcher.js",
+    "core/tasteLayerOverlay.js",
+    "core/yinPersonalMemory/yinPersonalMemorySchema.js",
+    "core/ypePersonalizationPack.js",
+    "core/ypePersonalizationSync.js"
+  ],
+  "localStorageDirectFileCount": 6,
+  "localStorageDirectTop": [
+    {
+      "r": "core/OnboardingHintsStore.js",
+      "n": 2
+    },
+    {
+      "r": "core/localStorageCapacityAudit.js",
+      "n": 2
+    },
+    {
+      "r": "ui/AmbientSoundscapeUI.js",
+      "n": 2
+    },
+    {
+      "r": "ui/CompanionModePicker.js",
+      "n": 2
+    },
+    {
+      "r": "core/presenceSignalsGate.js",
+      "n": 1
+    },
+    {
+      "r": "main.js",
+      "n": 1
+    }
+  ],
+  "hardcodedUrlSample": [
+    "core/cloudApiClient.js https://focus-tiger-cloud.ihiro.workers.dev",
+    "core/communityLink.js https://twinsology.com/#community",
+    "core/communityLink.js https://join.slack.com/t/focustigercommunity/shared_invite/zt-48ced3q4y-gEbQ98CwCzVHIZy1WlEY7w",
+    "core/guidedMeditationLessons.js https://media.twinsology.com",
+    "core/zenCinemaConfig.js https://youtu.be/RV46qrvG1pw",
+    "core/zenCinemaConfig.js https://youtu.be/xawM6cgJSrE",
+    "core/zenCinemaConfig.js https://youtu.be/xpcPXJ95-00",
+    "core/zenCinemaConfig.js https://youtu.be/amZwKxj32ww",
+    "core/zenCinemaConfig.js https://youtu.be/CpEKlYyKxGU",
+    "core/zenCinemaConfig.js https://youtu.be/-pi1S408Ikg",
+    "ui/presenceLanternIcons.js http://www.w3.org/2000/svg",
+    "ui/sanctuaryNavCompassIcon.js http://www.w3.org/2000/svg"
+  ]
+}
