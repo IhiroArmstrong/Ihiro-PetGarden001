@@ -18,8 +18,8 @@
 
 | 字段 | 值 |
 |---|---|
-| **截至 SHA** | `6543154`（Merge **#1647** → develop；B1 扫描取证仍为 `d54f11a` 见 JSON `gitSha`） |
-| **看板最后更新** | 2026-11-09 · 登记册首版 |
+| **截至 SHA** | `65431541`（Merge **#1647** → develop；扫描取证仍为 `d54f11a` 见 JSON `gitSha`） |
+| **看板最后更新** | 2026-11-09 · reset +6 核对稿；⑪ 登记册首版（#1649） |
 | **基准文档** | [`AUDIT_BASELINE.md`](../AUDIT_BASELINE.md) v1.1 |
 | **否决阻断（现状）** | **V-02 未通过**（[RISK_REGISTER.md](../RISK_REGISTER.md) 单列）；证据仍见 B6/R2。发布裁决不在此目录 |
 
@@ -38,7 +38,7 @@
 | 安全/AI | `2026-11-07/B5-*.md`、`B6-*.md` | B5/B6 各轮 | #1589 · #1587 | **MERGED** | 本轮 B1 不重判 V1–V4 |
 | ⑪ | [`RISK_REGISTER.md`](../RISK_REGISTER.md) | **已建立**（v1.0 · 本 PR 不打 0–4） | **#1649** | **OPEN** | 否决只认册内 **V-02**；B1 的 1-01…不是册主键 |
 
-第 0 轮事实：[`facts/2026-11-06/`](../facts/2026-11-06/INDEX.md)（备份覆盖当时 **31 / 99**；现 develop **31 / 105** 见 B1 §2.4 **待核对**）。
+第 0 轮事实：[`facts/2026-11-06/`](../facts/2026-11-06/INDEX.md)（备份覆盖当时 **31 / 99**；现 develop **31 / 105**。+6 已核对：均不进 export，见 [`2026-11-09/B1-reset-plus6-export-review.md`](2026-11-09/B1-reset-plus6-export-review.md)）。
 
 ---
 
@@ -49,9 +49,9 @@
 | 顺序 | 工作 | 类型 |
 |---:|---|---|
 | ✓ | B1 小修 + 看板 + cloud/仲裁文档 | **#1643** / #1644→旁支已叠入 |
-| ✓ | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · **#1647 MERGED** |
+| ✓ | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · **MERGED** [#1647](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1647) |
+| ✓ | reset +6 钥匙 vs export 核对 | 只读 · [`B1-reset-plus6-export-review.md`](2026-11-09/B1-reset-plus6-export-review.md)；改 JS 排除名单另刀 |
 | → | `RISK_REGISTER.md` 首版 | docs · **OPEN** [#1649](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1649) |
-| — | reset +6 钥匙 vs export 核对 | 只读 · 新会话 |
 | — | B4a / B4b | 审计轮次 |
 | — | B1 工具取证（体积、重复、复杂度等） | facts 目录 |
 
