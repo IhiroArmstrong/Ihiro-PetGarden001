@@ -37,7 +37,7 @@
 cd focus-tiger && ./scripts/batch-merge-develop-open-prs.sh
 ```
 
-脚本会对 `mergeable=CONFLICTING` 的 open PR 尝试 `merge origin/develop`；若仍有 `GLOSSARY` / `SCHEDULING` / `CONFIDE_*` 冲突，会 **中止** 并列出分支，须按治理 PR 口径手工对齐后 push。
+脚本会对 `mergeable=CONFLICTING` 的 open PR 尝试 `merge origin/develop`。若冲突**仅**在 `docs:sync` 机器块（清单与 `scripts/docs-sync.js` 的 `DOCS_SYNC_MACHINE_BLOCK_PATHS` 一致，常见为 `kb-live-gap-audit.md` 日期/行数戳），脚本会 **保留 `origin/develop` 版本** 并完成 merge、push。若仍有 `GLOSSARY` / `SCHEDULING` / `CONFIDE_*` 或其它文件冲突，会 **中止** 并列出分支，须按治理 PR 口径手工对齐后 push。
 
 ## 观察期后的下一步（未实施）
 
