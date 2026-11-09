@@ -334,6 +334,7 @@ Safari：`http://127.0.0.1:5173/?product=1`
 | 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
 |---|---|---|---|---|---|---|---|---|
 <!-- tracker-fragments:begin -->
+| B3 产品场景审计首稿（部分） | 纯文档 | 仅单元测试覆盖 | **无界面。** 读 `audit/findings/2026-11-09/B3-product-scenarios-findings.md`：维度⑤未打分；五核心场景须在 macOS 安装包补走。`npm run docs:check`。 | — | — | — | `docs/audit-b3-product-scenarios` · PR #1638 | 2026-11-09 |
 | 邮箱登录 P0 Brief + develop 核实 | 纯文档 | 仅单元测试覆盖 | **无运行时。** 读 Brief `task-email-sign-in-p0.md`：事实表是否写清云备份 410/前端关、灰行占位、合并整包覆盖。不测界面。 | — | — | docs/email-sign-in-p0 | `docs/task-briefs/task-email-sign-in-p0.md` | 2026-11-08 |
 | 账本：安装包六条、T97 期限、10-05 归第 4 刀 | 纯文档 | 仅单元测试覆盖 | **无界面。** 读术语表「第一份安装包六条门槛」、T97 期限 2026-11-22、T94 第 4 刀含 10-05。`npm run queue:check`。 | PO 2026-11-08 拍板六条 | — | — | `GLOSSARY.md` · `SCHEDULING_GLOSSARY.md` | 2026-11-08 |
 | T93/T94/T95 治理登记 | 纯文档 | 仅单元测试覆盖 | **无界面。** 读术语表：T93=邮箱登录；T94=识别率四刀说明；T95=9-02b 相对日。`npm run queue:check`。不测 Electron 升级、不测危机打分改口。 | — | — | — | `docs/gov-t93-t95-queue` | 2026-11-08 |

@@ -1,0 +1,1 @@
+| B3 产品场景审计首稿（部分） | 纯文档 | 仅单元测试覆盖 | **无界面。** 读 `audit/findings/2026-11-09/B3-product-scenarios-findings.md`：维度⑤未打分；五核心场景须在 macOS 安装包补走。`npm run docs:check`。 | — | — | — | `docs/audit-b3-product-scenarios` · PR #1638 | 2026-11-09 |
