@@ -49,7 +49,7 @@
 | 顺序 | 工作 | 类型 |
 |---:|---|---|
 | — | B1 小修 + 本看板 | docs · **本 PR** |
-| — | `ARCHITECTURE.md` cloud + 仲裁先后页 | docs · **并行 PR** |
+| — | `ARCHITECTURE.md` cloud + [`ARBITRATION_PRECEDENCE.md`](../../ARBITRATION_PRECEDENCE.md) | docs · **#1644**（叠 PR1） |
 | — | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · 另 PR |
 | — | reset +6 钥匙 vs export 核对 | 只读 · 新会话 |
 | — | `RISK_REGISTER.md` 首版 | docs · 新会话 |
