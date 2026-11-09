@@ -5,8 +5,10 @@
 
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 const repo = path.resolve('focus-tiger');
+const gitRoot = path.dirname(repo);
 const root = path.join(repo, 'src');
 
 function walk(dir, acc = []) {
@@ -175,8 +177,17 @@ for (const f of files) {
 }
 lsDirect.sort((a, b) => b.n - a.n);
 
+let gitSha = 'unknown';
+try {
+  gitSha = execSync('git rev-parse HEAD', { cwd: gitRoot, encoding: 'utf8' }).trim();
+} catch {
+  /* not a git checkout */
+}
+
 const out = {
   generatedBy: 'node focus-tiger/docs/audit/findings/2026-11-09/evidence/b1-static-scan.mjs',
+  gitSha,
+  generatedAt: new Date().toISOString(),
   scope: 'focus-tiger/src/**/*.js relative imports only',
   jsFiles: files.length,
   prodFiles,
