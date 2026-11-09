@@ -43,11 +43,12 @@
 | `focus-tiger.honesty-bridge.v1` | `HonestyBridgeStore` | 桥接 CTA 诊断标记（不限次出现）；场景 D·N |
 | `focus-tiger.retention-funnel.v1` | `RetentionFunnelStore` | 留存漏斗占位戳：`firstOpenAt` / dayN 已打标记 / `firstSessionCompleteAt`；仅 `console.log` sink，无第三方。见 `RETENTION_FUNNEL.md` |
 | `focus-tiger.confide-observation.v1` | `confideObservationTelemetry` | Confide Batch 0 观察环缓（最多 500 条）：`confide_chip_tapped` / `confide_share`（`dataSource` + `matchedChipId`；**无**用户原文）；Web/Electron 渲染层；Electron 另追加 `userData/companion-l2/confide-observation.jsonl` |
-| `focus-tiger.co-practice-research-week-ledger.v1` | `coPracticeResearchWeekLedger` / `buildWeeklyPayload` | **T81** 研究共修周整数账本（按 ISO 周桶）：`confideOpened`、功能类 `route.*`；**无**倾诉原文；`confideSent` / 允许 chip 由 observation 环缓周聚合；`sitWithYin` 尚无现网键时恒 0；**不进** T54 / 练习云备份 |
-| `focus-tiger.co-practice-research-consent.v1` | `coPracticeResearchConsent` | **T81** 研究共修同意（独立于 T54）：`{ granted, consentedAt, studyId (UUIDv4), consentVersion, tier2 }`；默认关；T82 用户可见入口写入 |
-| `focus-tiger.co-practice-research-last-post.v1` | `coPracticeResearchUpload` | **T81** 上次周包序列化指纹；相同则跳过 POST |
-| `focus-tiger.co-practice-research-weekly-schedule.v1` | `coPracticeResearchWeeklySchedule` | **T81 S5** 本周是否已触发周上送：`{ lastPostedWeek }`；撤回同意时清除 |
-| `focus-tiger.dev-co-practice-research-consent-fixture.v1` | （仅测试 / DEV 夹具） | **禁止**生产默认读取；单测与实验室显式授予同意用 |
+| `focus-tiger.co-practice-research-week-ledger.v1` | `coPracticeResearchWeekLedger` / `buildWeeklyPayload` | **T81** 研究共修周整数账本（按 ISO 周桶）：`confideOpened`、功能类 `route.*`；**无**倾诉原文；`confideSent` / 允许 chip 由 observation 环缓周聚合；`sitWithYin` 尚无现网键时恒 0；**不进** T54 / 练习云备份 / **本地 Backup 导出** |
+| `focus-tiger.co-practice-research-consent.v1` | `coPracticeResearchConsent` | **T81** 研究共修同意（独立于 T54）：`{ granted, consentedAt, studyId (UUIDv4), consentVersion, tier2 }`；默认关；T82 用户可见入口写入。**不进**练习云备份 / **本地 Backup 导出** |
+| `focus-tiger.co-practice-research-last-post.v1` | `coPracticeResearchUpload` | **T81** 上次周包序列化指纹；相同则跳过 POST。**不进**练习云备份 / **本地 Backup 导出** |
+| `focus-tiger.co-practice-research-weekly-schedule.v1` | `coPracticeResearchWeeklySchedule` | **T81 S5** 本周是否已触发周上送：`{ lastPostedWeek }`；撤回同意时清除。**不进**练习云备份 / **本地 Backup 导出** |
+| `focus-tiger.co-practice-research-first-sit-prompt.v1` | `coPracticeResearchFirstSitPrompt` | **T83** 首次练习后研究定位轻提示门闩：`{ showCount, lastDismissedAt, finished }`；最多 2 次、暂不 30 天。**不进** T54 / 练习云备份 / **本地 Backup 导出**。DEV 重置须清 |
+| `focus-tiger.dev-co-practice-research-consent-fixture.v1` | （仅测试 / DEV 夹具） | **禁止**生产默认读取；单测与实验室显式授予同意用。**豁免**：永不进 Backup 导出；仍须进 reset 白名单 |
 | `focus-tiger.session-presence-ring.v1` | `sessionPresenceSummary` | **T50 Phase 0** 会话存在摘要环缓（最多 40 条）：一场计时同坐结束压 `{ companionMode, plannedMinutes, actualSeconds, leaveCount, leaveTotalSeconds, leaveLongestSeconds, pauseCount, extended, endedEarly, durationMode }`；`console.log('[SessionPresence]')`；**不**写练习账本 / Presence Signals / 备份；标签估计器零消费端 |
 | `focus-tiger.t54-research-log.v1` | `t54ResearchLedger` | **T54** 计时专注研究流水（只追加）。**不**写练习日 / Journey / T50 环缓。默认不上送 |
 | `focus-tiger.t54-research-consent.v1` | `t54ResearchLedger` | **T54** 研究同意：`{ granted, consentedAt, layer: "product_improve" }`。Privacy 默认关；未同意永不上送 |
