@@ -25,6 +25,7 @@ import { runLocaleSliceCheck } from './check-locale-slices.js';
 import { runOverlayContractUiCheck } from './overlay-contract-ui-check.js';
 import { runPracticeAggregateCoverageAudit } from './audit-practice-coverage.js';
 import { runGrowthMetricsAudit } from './audit-growth-metrics.js';
+import { runB1ArchitectureGateAudit } from './audit-b1-architecture-gate.js';
 import { runLocalBackupCoverageAudit } from './audit-local-backup-coverage.js';
 import { runSharedResourcesResetCoverageAuditCli } from './audit-shared-resources-reset-coverage.js';
 import { runKbLiveEntryAudit } from './audit-kb-live-entries.js';
@@ -58,6 +59,7 @@ function main() {
   if (!runGlassCardRootCheck()) ok = false;
   if (!runPracticeAggregateCoverageAudit()) ok = false;
   if (!runGrowthMetricsAudit()) ok = false;
+  if (!runB1ArchitectureGateAudit()) ok = false;
   if (!runLocalBackupCoverageAudit()) ok = false;
   if (!runSharedResourcesResetCoverageAuditCli()) ok = false;
   if (!runKbLiveEntryAudit()) ok = false;
