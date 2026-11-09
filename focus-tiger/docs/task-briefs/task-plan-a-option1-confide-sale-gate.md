@@ -1,6 +1,6 @@
 # Task Brief · 方案 A 选项 1：安装包前已购也不开倾诉；第四卡与第五卡都先停新结账
 
-> **状态（2026-11-09 晚）**：**三句已补，未开工。** 本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) 已合 develop 的核对表与关闸措辞。安装包参数只读核对完成之前，不写「按这份 Brief 开工」。核对完再由你贴开工句。本回合不写那句。  
+> **状态（2026-11-09 夜）**：**安装包 QA 参数只读核对已完成（源码 + 单测，不是签名安装包）。** 实现已在 [#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646)（OPEN · 待 CI）。本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641)。Sandbox CSV 是政策侧面证据，**不**代替 Live 笔数，也**不**代替「签名安装包已实测」。  
 > **类**：**B**。会改客人能不能看见倾诉，以及 Support 里能不能新买 Pro、能不能新买陪伴加购。  
 > **基线**：`origin/develop@d54f11a8`（含 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)、[#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)、[#1638](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1638)、[#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)、[#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641)）。上一版写的 `ead9213d` 已过期。  
 > **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。该盘点已合 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)。  
@@ -35,15 +35,16 @@ T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏�
 
 ## 已购与 Stripe 核对（Brief 政策输入）
 
-**政策（本 Brief）**：不撤销本地 / 云端已购记录；**本刀不做自动退款**。若 Live 出现非零笔数，Support 口径与（若需要）法务确认退款渠道由 PO 在合实现前拍板；**当前侧面证据支持按「零笔或极低」写法起草**。
+**政策（本 Brief）**：不撤销本地 / 云端已购记录；**本刀不做自动退款**。若 Live 出现非零笔数，Support 口径与（若需要）法务确认退款渠道由 PO 在合实现前拍板。**不得**把 KV 为零或 Sandbox 导出写成「没有人买过」或「Live 零笔」。
 
 | 来源 | 2026-11-09 结果 | 说明 |
 |---|---|---|
 | 生产 `SANCTUARY_KV` 前缀 `companion-addon:` | **0** 键 | `wrangler kv key list` · 加购 confirm/webhook 邮箱索引 |
 | 生产 `MEMBERSHIP_KV` 前缀 `membership:` | **0** 键 | 含 `confirm-pro-session` 写入的 Pro 订阅索引 |
-| Stripe Dashboard **Live** / Stripe CLI | **本机 CLI 无 API key**（`~/.config/stripe/config.toml` 未写入 test_mode_key / live_mode_key） | PO 须在终端完成 `stripe login` 或 Dashboard 核对 Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（Pro）、**`price_1U6GnXFuIhgJPGLiNlXs0IKe`**（加购）之 **paid** Checkout |
+| Stripe Dashboard **Live** / Stripe CLI | **未查 Live**（产品未发布；本机不 login Live） | 仍须日后 Dashboard Live 核 Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（Pro）、**`price_1U6GnXFuIhgJPGLiNlXs0IKe`**（加购）之 **paid** Checkout |
+| Stripe **Sandbox** 导出 `Stripe-Sandbox成功付款所有记录unified_payments.csv` | **54** 笔 Status=Paid（仓库根 PO 工作副本；**含顾客邮箱，勿 commit**） | 按金额对照现网标价：**Pro $12.99 × 19**；**加购 $29.99 × 1**；会员 $6.99 × 21；圣所 $89.99 × 8；请茶 $4.99 × 3；$9.95 × 1；$9.99 × 1（metadata `art-collection` 1）。**只作政策侧面**，不是 Live |
 
-Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。KV 为零只是侧面记录，不是线上笔数。退款、通知、暂停收款仍等你在 Stripe 线上模式看完再决定。代码可以先写，不得把 KV 为零写成「没有人买过」。
+Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。退款、通知、暂停收款仍等 Live 看完再决定。
 
 ## 范围（in）
 
@@ -105,8 +106,8 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。KV 为零只是�
 | # | 要写进说明的事 | 本回合 |
 |---|---|---|
 | 1 | 服务端也关，而且默认关闭。变量缺失或读取失败时新结账一律拒绝。续订与会员管理入口不要受影响。Worker 部署后才算线上已关。 | 已写入范围。开关与部署都还没做。先于客户端。 |
-| 2 | 核实安装包不接受 QA 参数，含深链能否把 `?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro` 带进应用。加一条生产构建下参数不生效的测试。 | **未核实。** 这是开工前唯一要先做完的只读核对。做完再贴开工句，再写那条测试。 |
-| 3 | 查清线上模式里真实的加购笔数和 Pro 购买笔数。如有活跃订阅，由你决定是否通知、提供取消或退款、或暂停收款。 | **未查。** 你自己看 Stripe 线上模式。不挡代码。挡住退款说明。本文件不写估计数字。 |
+| 2 | 核实安装包不接受 QA 参数，含深链能否把 `?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro` 带进应用。加一条生产构建下参数不生效的测试。 | **源码已核实（2026-11-09 夜）。** 生产冷启动只加载 `focus-tiger://app/index.html?product=1`。结账回跳 `navigateDesktopCheckoutReturn` **会原样转发** URL search（QA 参数可能搭车）。生产 / 非 `FT_QA_BOOT` 构建下 `isClientQaHarnessAllowed` 为假时，这些 query **不能**开倾诉、不能伪造已购；`?entitlementMock=` 也不能切 mock 提供者。锁：`clientQaHarnessGate.test.js` · `desktopPackaging.test.js`。**未**拆签名 `.dmg` 实测。 |
+| 3 | 查清线上模式里真实的加购笔数和 Pro 购买笔数。如有活跃订阅，由你决定是否通知、提供取消或退款、或暂停收款。 | **Sandbox 已扫；Live 未查。** 见上表。不挡代码。挡住退款说明与「Live 零笔」。 |
 | 4 | 更正过期事实。#1637 已合并。基线随 develop 向前走；实现开工时若共用版本又向前走，再对一次当时的顶端。 | **已更正**（见「现在的地面事实」与文首基线）。 |
 | 5 | 全盘检索隐私页、简介卡、帮助中心、官网、商店页面里的倾诉 / 陪伴句子。 | **未检索。** 列入实现旁支，本文件不改那些页面。 |
 | 6 | 确认「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **部分。** 「想聊聊」在入口登记里是「必须提示」，打开被拒的回调会取 T92 句子。语音危机、帮助中心在登记里仍是未核实。只读核对可与代码并行，不挡这两个实现请求；没核对完不得写成已核对。 |
