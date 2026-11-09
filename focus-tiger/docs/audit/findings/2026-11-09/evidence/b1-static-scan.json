@@ -1,5 +1,7 @@
 {
   "generatedBy": "node focus-tiger/docs/audit/findings/2026-11-09/evidence/b1-static-scan.mjs",
+  "gitSha": "d54f11a83ab6a148f8a7883ea09ebeb7da93eb39",
+  "generatedAt": "2026-11-09T11:22:02.584Z",
   "scope": "focus-tiger/src/**/*.js relative imports only",
   "jsFiles": 1225,
   "prodFiles": 691,

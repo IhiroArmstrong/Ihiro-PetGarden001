@@ -77,6 +77,12 @@ TransitionFX单独处理"切换瞬间"的一次性过场，不长期持有状态
 
 ---
 
+## 运行时仲裁（谁先说话）
+
+产品里有多套「占屏 / 改姿态 / 倾诉路由」裁决器，**不要**默认合并成一个大函数。阅读与改 bug 时的分层顺序、文件对应关系：**[`ARBITRATION_PRECEDENCE.md`](ARBITRATION_PRECEDENCE.md)**（SSOT）。叠层数字仍只认 [`Z_INDEX.md`](Z_INDEX.md)。
+
+---
+
 ## 项目目录结构 v5.0
 
 ```
@@ -88,6 +94,7 @@ focus-tiger/
 │  ├─ TASKS.md
 │  ├─ PRINCIPLES.md
 │  ├─ ARCHITECTURE.md
+│  ├─ ARBITRATION_PRECEDENCE.md   # 运行时仲裁分层与「谁先说话」（只读地图；见上文专节）
 │  ├─ ANTI_PLAGIARISM_LAYER.md    # 防剽窃层方向锁（品味云∪YPE云∪句包 overlay）
 │  ├─ YIN_PERSONAL_MEMORY.md      # 阿寅个人记忆架构 V1（方向锁；≠ 练习云备份 / Journey / turns）
 │  ├─ YIN_PERSONALIZATION_ENGINE.md # Yin Personalization Engine V1（方向锁；L0/L1 本地；L2 ingest + V2 白名单 insight；≠ Memory / 品味层 / Qwen）
@@ -98,15 +105,14 @@ focus-tiger/
 │     ├─ task00-brief-project-scaffold.md
 │     └─ task01-brief-gray-to-gold-visual.md
 │
-├─ cloud/                         # Cloudflare Workers API（独立包；与 Vite 前端解耦）
-│  ├─ README.md                   # wrangler dev + curl 验收
+├─ cloud/                         # Cloudflare Workers API（独立 TypeScript 包；与 Vite 前端解耦）
+│  ├─ README.md                   # 路由表、wrangler dev、部署验收（**本目录 SSOT**）
 │  ├─ wrangler.jsonc
 │  ├─ package.json                # name: focus-tiger-cloud
-│  └─ src/                        # stub：POST /api/daily-message、/api/emotion-weight
-│     # 2026-07-22：校验 + 内存限流
-│     # 2026-07-30：v1.0.0 纯本地发布 — 保留本目录作云端扩展点；禁止核心路径硬依赖云请求
-│     # 2026-09-04：Quiet Together POST /api/lantern-presence（TIP_KV `lantern:v1:live`）；生产须「部署」
-│     # 2026-08-20：用户已书面部署；Cloud 无 Cloudflare 登录，现网仍旧 mock。四问筛选尺见 PROCESS Backlog
+│  └─ src/                        # Worker 实现：Stripe 结账/Webhook、会员、备份 OTP、Focus Circle、品味 overlay 等（非「仅占位 stub」）
+│     # 默认生产基址：`src/core/cloudApiClient.js`；TLS / 桌面 IPC 转发见 B5（`docs/audit/findings/2026-11-07/B5-security-privacy-compliance-findings.md`）
+│     # v1.0.0 起：练习核心路径不得硬依赖云；失败须可降级（`BACKGROUND_NETWORK.md`）
+│     # 本地联调：`cd focus-tiger/cloud && npm run dev` → 127.0.0.1:8787（与现网 Worker 非同一进程）
 │
 ├─ art-reference/                 # 三视图等美术参考图，仅供开发参考，不参与构建
 │  └─ tiger-turnaround/

@@ -2,14 +2,15 @@
 
 - 基准：[`AUDIT_BASELINE.md`](../../AUDIT_BASELINE.md) v1.1 · Brief：[`briefs/B1-architecture-code.md`](../../briefs/B1-architecture-code.md)
 - 事实底稿：[`facts/2026-11-06/`](../../facts/2026-11-06/INDEX.md)（第 0 轮）。本轮补扫见 [`evidence/b1-static-scan.json`](evidence/b1-static-scan.json)
-- 审计基线：`origin/develop` @ `f1e8a9f8`（Merge #1637）。该提交包含交接里点名的 #1633（merge `432ea198`）以及 #1636。取证时 develop 尖端已不是 #1633 本身
-- 审计日期：2026-11-09 · 方式：**只读**（未改产品代码、未改任务账、未改 `ARCHITECTURE.md`）
+- 审计基线：`origin/develop` @ `d54f11a`（#1640 B1 首稿合入后的 develop 尖端）。静态扫描与本文数字一律以 [`evidence/b1-static-scan.json`](evidence/b1-static-scan.json) 的 `gitSha` 为准（与上项一致时只写短 SHA）
+- 首稿入库：**#1640**（2026-11-09 合 develop）。本文件为 PO 批示后的**小修**（统一取证 SHA、定级、备份钥匙指针、看板）；不包含守门实现或 `ARCHITECTURE.md` 正文修订（另 PR）
+- 审计日期：2026-11-09 · 方式：**只读**（未改产品代码、未改任务账）
 - 用户可见产品名：**Samatia**（仓库与代码标识仍为 Focus Tiger）
 - 与已合报告的关系：B5（#1589）、B6（#1587）、R2 / R2-lite 已在 develop。本轮**不重判** V1–V4
 - 复核状态：全部条目 **未复核**
 - 本报告**不是**发布裁决
 
-PR 检索（开工前）：`gh pr list --state all --search "B1"` 命中的是已合的旁支说明（含 T76 冷启动 #1550 的字样、R2、深链 Brief），**没有**「架构与代码质量」这份 B1 的 OPEN 或 MERGED PR。T76 那一刀已合，本报告不重开。
+PR 检索（首稿开工前，2026-11-09）：无其它「B1 架构与代码质量」OPEN PR。首稿 **#1640** 已合；小修走单独 docs PR。T76 冷启动 #1550 不重开。
 
 ---
 
@@ -35,7 +36,7 @@ PR 检索（开工前）：`gh pr list --state all --search "B1"` 命中的是�
 
 维度 11：□ 已建立并评分　☑ 未建立（不参与归一化）
 
-打分理由（推断，绑在已检子集上）：权威文档和一批契约检查是稳定的（状态机机器块、z-index、可见性、付款可点、三条专用 lint）。模块方向大体是界面调用核心（`ui → core` 407 处，反向 12 处）。同一窗口里最近 50 个合进 develop 的 PR，多数改动很小。拉低到 2 的是：入口文件又长又直接碰三维库、相对 import 有环且 CI 不拦、全库没有 eslint / 类型检查、架构目录注释仍把云写成占位。这是「有做法但不稳定」，不到「稳定可复现」。
+打分理由（推断，绑在已检子集上）：权威文档和一批契约检查是稳定的（状态机机器块、z-index、可见性、付款可点、三条专用 lint）。模块方向大体是界面调用核心（`ui → core` 407 处，反向 12 处）。同一窗口里最近 50 个合进 develop 的 PR，多数改动很小。拉低到 2 的是：入口体积过大且与架构叙述不一致、相对 import 有环且 CI 不拦（**P2 维护债**，非发布前必拆）、全库没有 eslint / 类型检查、架构目录注释仍把云写成占位。这是「有做法但不稳定」，不到「稳定可复现」。
 
 ## 结论（基线）
 
@@ -60,8 +61,8 @@ PR 检索（开工前）：`gh pr list --state all --search "B1"` 命中的是�
 
 | 编号 | 级别 | 标题 | 成本 | 影响面 |
 |---|---|---|---|---|
-| 1-01 | **P1** | 入口 `main.js` 7691 行，并直接 import Three.js，和架构文档写的「只拼装」不一致 | L | 内部 |
-| 1-02 | **P1** | 相对 import 有环（扫描见 12 环），CI 不检查 | M | 内部 |
+| 1-01 | **P2** | 入口 `main.js` 7704 行，并直接 import Three.js，和架构文档写的「只拼装」不一致 | L | 内部 |
+| 1-02 | **P2** | 相对 import 有环（扫描见 12 环），CI 不检查 | M | 内部 |
 | 1-03 | P2 | `core` 反向引用 `ui`（含在 core 里 new 界面类） | M | 内部 |
 | 1-04 | P2 | 装了 eslint，但没有配置、也没有全库类型检查 | M | 内部 |
 | 1-05 | P2 | `schemaVersion` 散落在各功能；备份和坐配方有自己的迁移，没有统一迁移器 | M | 内部 |
@@ -75,7 +76,7 @@ PR 检索（开工前）：`gh pr list --state all --search "B1"` 命中的是�
 
 ## 1. 本轮怎么扫的
 
-在 `origin/develop` @ `ead9213d` 上只读执行：
+在 `origin/develop` @ `d54f11a` 上只读执行（扫描 JSON 内 `gitSha` 与 `generatedAt` 为取证时刻）：
 
 ```bash
 node focus-tiger/docs/audit/findings/2026-11-09/evidence/b1-static-scan.mjs
@@ -118,7 +119,7 @@ gh pr list --repo IhiroArmstrong/Ihiro-PetGarden001 --state merged --base develo
 
 C4 图：**方法未采用**。不因此扣分。
 
-独立 ADR 目录：**方法未采用**。用上表代替。不因此判不过线；不过线来自 1-01、1-02、1-06，不是因为没有 ADR 文件夹。
+独立 ADR 目录：**方法未采用**。用上表代替。不因此判不过线；不过线来自结构性维护债（含 1-01、1-02、1-04）与 1-06，不是因为没有 ADR 文件夹。
 
 ### 2.2 模块边界（已检）
 
@@ -148,7 +149,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
 
 本地读写大多走 `src/utils/Storage.js`。生产代码里直接出现 `localStorage.` 的只有 6 个文件（扫描 Top：`OnboardingHintsStore.js`、`localStorageCapacityAudit.js`、`AmbientSoundscapeUI.js`、`CompanionModePicker.js`、`presenceSignalsGate.js`、`main.js`）。本轮没有把每一把存储钥匙的读写入口画成一张图。
 
-备份快照有显式版本和按版本展开的钥匙表：`PRACTICE_BACKUP_SCHEMA_VERSION = 7`（`src/core/practiceBackup/practiceBackupSnapshot.js:25`），v1 钥匙表仍被接受（同文件约 27–35 行）。坐配方有 `migrateAndNormalizeRecipe`（`src/core/ritualRecipe/ritualRecipeSchema.js:225`）。另外约 19 个生产文件各自出现 `schemaVersion`，本轮没有逐个做「旧数据升级走查」。第 0 轮已记出口钥匙与重置钥匙数量不一致。2026-11-09 本分支跑 `npm run docs:check` 时，同一脚本打印 **31 export keys、105 reset keys**。这仍是覆盖缺口，不在这里重跑走查，也不上升成「数据不可恢复」（那是 V4，本轮不重判）。
+备份快照有显式版本和按版本展开的钥匙表：`PRACTICE_BACKUP_SCHEMA_VERSION = 7`（`src/core/practiceBackup/practiceBackupSnapshot.js:25`），v1 钥匙表仍被接受（同文件约 27–35 行）。坐配方有 `migrateAndNormalizeRecipe`（`src/core/ritualRecipe/ritualRecipeSchema.js:225`）。另外约 19 个生产文件各自出现 `schemaVersion`，本轮没有逐个做「旧数据升级走查」。第 0 轮 facts 记 **31 export / 99 reset**；本 SHA 重跑 `npm run audit:local-backup-coverage` 为 **31 export / 105 reset**（reset **+6**，export 不变）。**待核对**：多出的 6 把 reset 是否应进 export 白名单——单独只读任务，**本报告不定级**（见 1-05）。不上升成 V4（本轮不重判）。
 
 ### 2.5 多套仲裁（名单已检，运行时冲突未检）
 
@@ -166,7 +167,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
 
 ### 2.6 构建体积与测试时长（未检）
 
-源码行数已有（§1，对齐 `f1e8a9f8`）。没有读取 `vite build` 产物字节，也没有在本机重跑测试金字塔计时。develop 上菜单可达那一条（run `42598029402`，`ead9213d`）大约 2 分钟且成功；那不是整份测试时长，不拿来打分。
+源码行数已有（§1，对齐 `d54f11a` / JSON `gitSha`）。没有读取 `vite build` 产物字节，也没有在本机重跑测试金字塔计时。develop 上菜单可达 CI 约 2 分钟且成功（历史 run，不作为本 SHA 的完整测试时长证据）；不拿来打分。
 
 ### 2.7 ISO/IEC 25010（仅已检子项）
 
@@ -250,25 +251,25 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
 
 ### 1-01 入口文件又长又直接碰三维库
 
-- 级别：P1
+- 级别：P2（PO 2026-11-09：内部维护债，非发布前必拆；缓解 = 行数「只增不减」守门，另 PR）
 - 类型：事实
 - 检状态：已检
 - 修复成本：L
 - 影响面：内部
 - 描述：`src/main.js` 7704 行。文件开头直接 `import * as THREE from 'three'`，并调用 `createRenderer`。`ARCHITECTURE.md` 写入口「只做拼装+主循环调度，不直接碰 Three.js 底层对象」。
 - 证据：
-  - 行数：[`evidence/b1-static-scan.json`](evidence/b1-static-scan.json) 的 `topProd`（`f1e8a9f8` 重扫）
+  - 行数：[`evidence/b1-static-scan.json`](evidence/b1-static-scan.json) 的 `topProd` 与 `gitSha`
   - `src/main.js:8` 注释要求三维调用留在 Renderer/Scene；`:10-11` 仍 `import * as THREE`
   - `docs/ARCHITECTURE.md` 目录树里对 `main.js` 的那句职责（约 127 行）
 - 影响：改坐姿、改开机、改三维，经常落在同一个文件里，评审和回归都放大。文档读者会以为入口不碰三维对象。
-- 建议整改：新的拼装放进已有的 `src/boot/`，把 `import * as THREE` 移出 `main.js`。不要在一次 PR 里重写这 7704 行。
+- 建议整改：近期守门防行数上升；结构性拆分（`src/boot/`、移出 `from 'three'`）**发布后另排**，不要在一次 PR 里重写 7704 行。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记
 - 复核状态：未复核
 
 ### 1-02 相对 import 有环，CI 不拦
 
-- 级别：P1
+- 级别：P2（PO 2026-11-09：内部维护债；近期缓解 = 环数 / core→ui「只增不减」守门对比 **develop 基线**，另 PR）
 - 类型：事实
 - 检状态：已检
 - 修复成本：M
@@ -281,7 +282,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
   - 扫描列出的长环（未逐行打开）：`yinPersonalMemoryForget.js` → `yinPersonalMemoryRemember.js` → `confidePracticeFacts.js` → `confideBoundaryRespect.js` → `yinPersonalMemoryVerbalForget.js` → 回到 Forget
   - CI：`.github/workflows/pr-smoke.yml` 的步骤里没有环检查
 - 影响：改记忆或练习记录时，加载顺序和测试替身容易互相拽住。现在靠人眼，守门不存在。
-- 建议整改：先把共享的纯函数抽到不被回引的叶子文件，打断已复核的两环和扫描里的长环；再加一条只报 `src` 相对 import 环的检查进冒烟。
+- 建议整改：先上 CI 守门（新增环或 core→ui 超基线则失败；基线变更须 PO 批准，PR 不得自抬 develop 上的基线）；打断长环与抽叶子文件按优先级渐进，不要求发布前一次修完。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记
 - 复核状态：未复核
@@ -334,7 +335,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
   - `src/core/practiceBackup/practiceBackupSnapshot.js:25` `PRACTICE_BACKUP_SCHEMA_VERSION = 7`；同文件 v1 钥匙表仍存在
   - `src/core/ritualRecipe/ritualRecipeSchema.js:225` `migrateAndNormalizeRecipe`
   - 扫描：21 个生产文件出现 `schemaVersion`（名单在 JSON）
-- 影响：新存储钥匙可能忘了进备份白名单。第 0 轮覆盖脚本已经记过出口钥匙和重置钥匙数量不一致；那是体验/备份完整性风险，B5 已把「看起来像进度清空」另记为 P1，这里不升成否决。
+- 影响：新存储钥匙可能忘了进备份白名单。第 0 轮 **31/99**，本 SHA **31/105**（reset +6）——**待核对**是否应进 export（单独任务，本条不定级）。B5 已把「看起来像进度清空」另记；这里不升成否决。
 - 建议整改：继续用现有 `audit:local-backup-coverage` 当闸；新的 `schemaVersion` 要在该功能的测试里写明旧版样本。不必先做一套大一统迁移框架。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记（备份覆盖脚本已在；本条不新开实现）
@@ -352,7 +353,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
   - `docs/ARCHITECTURE.md:104`（`cloud/src` 仍注 stub）；同文件 `:108`（`2026-08-20`「现网仍旧 mock」）
   - 已合 B5：`findings/2026-11-07/B5-security-privacy-compliance-findings.md` 对 `src/core/cloudApiClient.js` 默认基址的引用
 - 影响：按架构文档做边界判断的人，会把已经存在的云路径当成还没上线。
-- 建议整改：改目录注释：cloud 是独立 Worker 包，哪些路径默认会请求、哪些写死关闭，指到 B5 的网络表，不要再写 stub / mock。本审计 PR 按 Brief 不改这份权威文档。
+- 建议整改：改目录注释：cloud 是独立 Worker 包，哪些路径默认会请求、哪些写死关闭，指到 B5 的网络表，不要再写 stub / mock（**跟进 docs PR #1644**，非本小修范围）。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记
 - 复核状态：未复核
@@ -367,7 +368,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
 - 描述：叠层槽位、精灵通道、倾诉路由影子、会话 UI 门、可见性契约各自有模块和测试。没有一份说明「同一次点击先问谁」。
 - 证据：§2.5 的文件名单。本轮没有复现两套规则互相否定。
 - 影响：后来的人会再写第三套仲裁。这是可维护性风险，不是已证实的用户故障。
-- 建议整改：在架构文档加一页「谁先说话」，每个名字对应现有文件。未证明冲突之前，不要合并这些模块。
+- 建议整改：在 `docs/` 加一页「谁先说话」，每个名字对应现有文件（**跟进 docs PR #1644** · `ARBITRATION_PRECEDENCE.md`）。未证明冲突之前，不要合并这些模块。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记
 - 复核状态：未复核
@@ -426,9 +427,9 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
 
 | 顺序 | 何时 | 做什么 | 对应 | 完成时能看到 |
 |---|---|---|---|---|
-| 1 | 30 天内 | 打断已复核的两环和扫描里的长环；冒烟增加相对 import 环检查 | 1-02 | 环列表变短，CI 会红 |
-| 2 | 30 天内 | 改 `ARCHITECTURE.md` 的 cloud 注释，并加一页仲裁先后（只文档） | 1-06、1-07 | 文档不再写 stub/mock |
-| 3 | 60 天内 | 新拼装进 `boot/`；`main.js` 不再 `import * as THREE`。不要求一次拆完 7704 行 | 1-01 | 入口文件不再出现 `from 'three'` |
+| 1 | 跟进 PR | 冒烟增加 import 环、core→ui、`main.js` 行数「只增不减」；计数对比 **develop 基线**（PR 不可自抬基线） | 1-01、1-02 | 新增违反时 CI 红 |
+| 2 | 跟进 PR | 改 `ARCHITECTURE.md` 的 cloud 注释，并加仲裁先后说明页（只文档） | 1-06、1-07 | 文档不再写 stub/mock |
+| 3 | 发布后 | 新拼装进 `boot/`；`main.js` 不再 `import * as THREE`。不要求一次拆完 7704 行 | 1-01 | 入口文件不再出现 `from 'three'` |
 | 4 | 60–90 天 | eslint 先报告后失败；布局常数从 `ui` 挪走，core 不再 `new` 界面壳 | 1-03、1-04 | PR 上能看到通用 lint |
 | 5 | 随做随做 | 新存储继续过备份覆盖脚本；不为「统一迁移框架」单独立项，除非走查证明旧数据读失败 | 1-05 | 覆盖脚本仍绿 |
 
@@ -438,7 +439,7 @@ P0 没有，所以上表不阻断其它已排产品工作。要不要插队，�
 
 ## 8. 风险登记
 
-组织级风险登记册：**未建立**。维度 11 不参与归一化，也不判过线。上面的 P1/P2 是这份发现稿里的条目，不是已编号的登记册行。
+组织级风险登记册：**未建立**（计划落盘 `docs/audit/RISK_REGISTER.md`，另会话）。维度 11 不参与归一化，也不判过线。上面的 P2/P3 是这份发现稿里的条目，不是已编号的登记册行。
 
 ---
 

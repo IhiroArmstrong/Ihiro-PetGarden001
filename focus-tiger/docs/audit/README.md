@@ -2,9 +2,9 @@
 
 用户可见产品名是 **Samatia**。仓库和内部文档仍叫 Focus Tiger。本目录是这次「完整基线审计」的资料正本。
 
-状态：**基准 v1.1 已定稿（#1581 已合 develop）；第 0 轮事实底稿见 [facts/2026-11-06/](facts/2026-11-06/INDEX.md)。** B5（#1589）、B6（#1587）报告已合 develop（`findings/2026-11-07/`）。B2 测试发布首稿（部分）已合 **#1616**（`findings/2026-11-08/B2-testing-release-pm-findings.md`）。B3 产品场景首稿（部分 · 未打分）已合 **#1638**。B1 架构与代码质量首稿 OPEN **#1640**（`findings/2026-11-09/B3-product-scenarios-findings.md`）。第 2 轮复核 Brief（**v1.2**）：[briefs/R2-cross-review-b5-b6.md](briefs/R2-cross-review-b5-b6.md)（PR **#1592**）。先读 [AUDIT_BASELINE.md](AUDIT_BASELINE.md)。历史讨论见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。背景索引见 [CONTEXT.md](CONTEXT.md)。
+状态：**基准 v1.1 已定稿（#1581 已合 develop）；第 0 轮事实底稿见 [facts/2026-11-06/](facts/2026-11-06/INDEX.md)。** B5（#1589）、B6（#1587）、R2（#1592 Brief + 报告）、B2（#1616）、B3（#1638）、B1（#1640）首稿均已合 develop。各轮 PR、截至 SHA、队列：**只认 [findings/README.md](findings/README.md) 看板**（审计 PR 须同批更新）。先读 [AUDIT_BASELINE.md](AUDIT_BASELINE.md)。历史讨论见 [REVIEW_NOTES.md](REVIEW_NOTES.md)。背景索引见 [CONTEXT.md](CONTEXT.md)。
 
-**当前执行队列（v1.1）**：第 0 轮 → B5、B6（**已完成**）→ **[R2 第 2 轮交叉复核](briefs/R2-cross-review-b5-b6.md)**（独立会话）→ **B2/B3 首稿（部分）已登记** → **B1 首稿 OPEN #1640** → 待开 **B4a、B4b**；B3 缺口 = 安装包上五核心场景实机。V2 为当前唯一否决阻断项；低成本整改可与 R2 并行（见 R2 Brief §8）。
+**当前执行队列（v1.1）**：见看板「队列」表。待开：**B4a、B4b**；B3 缺口 = 安装包五核心场景实机；B1 跟进 = 小修/守门/工具取证（见看板）。V2 为当前唯一否决阻断项（见 B6/R2）。
 
 ## 先读什么
 
@@ -22,7 +22,9 @@
 | `AUDIT_BASELINE.md` | 基准 |
 | `briefs/B1` … `B3`、`B4a`、`B4b`、`B5`、`B6`、`R2` | 分轮任务说明（R2 = 第 2 轮 B5/B6 交叉复核，**v1.2**） |
 | `facts/<日期>/` | 第 0 轮事实底稿 |
-| `findings/<日期>/` | 各任务报告、评分卡、风险登记、90 天计划 |
+| [`findings/README.md`](findings/README.md) | **审计状态看板**（PR、SHA、队列 SSOT） |
+| `findings/<日期>/` | 各任务报告、评分卡、90 天计划 |
+| [`RISK_REGISTER.md`](RISK_REGISTER.md) | 组织级风险登记册（待建） |
 | `governance-drafts/` | 待治理会话落账的草稿（非 SSOT） |
 
 ## 原稿来源

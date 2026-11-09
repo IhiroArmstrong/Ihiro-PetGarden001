@@ -1,17 +1,59 @@
-# 审计发现
+# 审计状态看板（SSOT）
 
-报告按日期放在子文件夹。v1.1 文件名示例见 [`briefs/`](../briefs/) 各 Brief §5。
+用户可见产品名 **Samatia**；仓库标识仍为 Focus Tiger。
 
-## 已入库（develop 或 OPEN PR）
+## 维护规则（强制）
 
-| 日期 | 文件 | 状态 |
-|---|---|---|
-| 2026-11-07 | `B5-security-privacy-compliance-findings.md`、`B6-ai-quality-safety-findings.md` | 已合 develop |
-| 2026-11-08 | `B2-testing-release-pm-findings.md`（部分） | 已合 #1616 |
-| 2026-11-08 | `R2-lite-cross-review-findings.md`、`confide-mount-off-entry-inventory.md` 等 | 治理登记见旁支 |
-| 2026-11-09 | [`B3-product-scenarios-findings.md`](2026-11-09/B3-product-scenarios-findings.md)（部分 · 未打分） | 已合 **#1638** |
-| 2026-11-09 | [`B1-architecture-code-findings.md`](2026-11-09/B1-architecture-code-findings.md)（部分已检 · ①② 各 2 分，不过线） | OPEN **#1640** |
+每一份**入库 develop 的审计 PR**（新报告、小修、证据重扫）必须在同 PR 内更新本文件：
 
-待写：`B4a-uiux-western-findings.md`、`B4b-a11y-i18n-findings.md`。
+1. 表内对应行的 **PR #**、**状态**、**develop 截至 SHA**（`git rev-parse origin/develop` 或证据 JSON 的 `gitSha`）。
+2. 若重跑取证，在「备注」写证据路径与是否改分/改定级。
+3. 队列「待开」行随进度删减或移到上表。
 
-只读审计：产品代码不在本目录改。
+报告正文仍在 `findings/<日期>/`；索引与队列**只认本页**（[`audit/README.md`](../README.md) 队列段落随本页同步，不得与之矛盾）。
+
+---
+
+## 截至 develop
+
+| 字段 | 值 |
+|---|---|
+| **截至 SHA** | `d54f11a`（本看板小修 PR 取证时尖端；合入后以 PR merge 后 `origin/develop` 为准） |
+| **看板最后更新** | 2026-11-09 · B1 小修 + 重扫 |
+| **基准文档** | [`AUDIT_BASELINE.md`](../AUDIT_BASELINE.md) v1.1 |
+| **否决阻断（现状）** | V2 仍见 B6/R2；发布裁决不在此目录 |
+
+---
+
+## 维度与报告
+
+| 维度 | 报告文件 | 检状态 / 得分 | PR | 状态 | 备注 |
+|---:|---|---|---:|---|---|
+| ①② | [`2026-11-09/B1-architecture-code-findings.md`](2026-11-09/B1-architecture-code-findings.md) | 部分已检 · ①② 各 **2** | #1640 首稿；小修 **OPEN**（本旁支） | 已合 + 小修待合 | 取证 `b1-static-scan.json` · `gitSha`；1-01/1-02 **P2** |
+| ③④ | [`2026-11-08/B2-testing-release-pm-findings.md`](2026-11-08/B2-testing-release-pm-findings.md) | 部分 | #1616 | **MERGED** | |
+| ⑤ | [`2026-11-09/B3-product-scenarios-findings.md`](2026-11-09/B3-product-scenarios-findings.md) | 部分 · **未打分** | #1638 | **MERGED** | 缺口：安装包五核心场景实机 |
+| ⑥ | `B4a-uiux-western-findings.md` | — | — | **未开始** | Brief 已有 |
+| ⑦ | `B4b-a11y-i18n-findings.md` | — | — | **未开始** | Brief 已有 |
+| ⑨⑩ | [`2026-11-07/R2-cross-review-b5-b6-findings.md`](2026-11-07/R2-cross-review-b5-b6-findings.md) 等 | R2 已检；R2-lite 补记见 `2026-11-08/` | #1592 Brief；复核多篇 | **MERGED** | ⑨ **2** · ⑩ **1**（R2 报告内） |
+| 安全/AI | `2026-11-07/B5-*.md`、`B6-*.md` | B5/B6 各轮 | #1589 · #1587 | **MERGED** | 本轮 B1 不重判 V1–V4 |
+| ⑪ | [`RISK_REGISTER.md`](../RISK_REGISTER.md) | **未建立** | — | 未开始 | 另会话；字段见 PO 批示 |
+
+第 0 轮事实：[`facts/2026-11-06/`](../facts/2026-11-06/INDEX.md)（备份覆盖当时 **31 / 99**；现 develop **31 / 105** 见 B1 §2.4 **待核对**）。
+
+---
+
+## 队列（建议顺序 · 非 SSOT 排期）
+
+与 PO 2026-11-09 一致；**发布关键路径**（Plan A Brief、公证、T97/T93/T95）在其它 Chat 优先于 B1 卫生项。
+
+| 顺序 | 工作 | 类型 |
+|---:|---|---|
+| — | B1 小修 + 本看板 | docs · **本 PR** |
+| — | `ARCHITECTURE.md` cloud + [`ARBITRATION_PRECEDENCE.md`](../../ARBITRATION_PRECEDENCE.md) | docs · **#1644**（叠 PR1） |
+| — | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · 另 PR |
+| — | reset +6 钥匙 vs export 核对 | 只读 · 新会话 |
+| — | `RISK_REGISTER.md` 首版 | docs · 新会话 |
+| — | B4a / B4b | 审计轮次 |
+| — | B1 工具取证（体积、重复、复杂度等） | facts 目录 |
+
+只读审计：**不在此目录改产品代码**。
