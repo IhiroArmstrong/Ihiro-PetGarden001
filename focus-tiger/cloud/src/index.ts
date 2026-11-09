@@ -41,6 +41,10 @@ import {
 	PRACTICE_BACKUP_CLOUD_WRITES_DISABLED,
 	practiceBackupCloudWritesDisabledJson,
 } from "./lib/practiceBackupWritesDisabled";
+import {
+	isPlanAOption1NewCheckoutDisabled,
+	planAOption1NewCheckoutDisabledJson,
+} from "./lib/planAOption1NewCheckoutDisabled";
 import { handleVerifySanctuary } from "./routes/verifySanctuary";
 import { handleVerifyMembership } from "./routes/verifyMembership";
 import { handleVerifyCompanionAddon } from "./routes/verifyCompanionAddon";
@@ -517,6 +521,9 @@ export default {
 					origin,
 				);
 			}
+			if (isPlanAOption1NewCheckoutDisabled(env)) {
+				return withCors(planAOption1NewCheckoutDisabledJson(), origin);
+			}
 			return withCors(
 				await handleCreateCompanionAddonCheckoutSession(request, env),
 				origin,
@@ -542,6 +549,9 @@ export default {
 					errorJson(405, "method_not_allowed", "Use POST"),
 					origin,
 				);
+			}
+			if (isPlanAOption1NewCheckoutDisabled(env)) {
+				return withCors(planAOption1NewCheckoutDisabledJson(), origin);
 			}
 			return withCors(await handleCreateProCheckoutSession(request, env), origin);
 		}

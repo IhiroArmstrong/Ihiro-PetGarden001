@@ -1,0 +1,20 @@
+{
+  "en": {
+    "SUPPORT_PRO_BLURB": "Everything in Yin Membership, plus the desktop companion tier. Confide is not open to guests in this release; we are not selling new Pro checkout right now.",
+    "SUPPORT_COMPANION_ADDON_BLURB": "Your add-on purchase remains on this account. Confide is not open to guests yet; we are not selling new companion add-on checkout.",
+    "SUPPORT_COMPANION_ADDON_CTA_OWNED": "Purchased — entry not open yet",
+    "SUPPORT_CHECKOUT_SALE_PAUSED": "New checkout for this offer is paused right now."
+  },
+  "zh": {
+    "SUPPORT_PRO_BLURB": "含阿寅会员全部进阶层与桌面陪伴层。倾诉尚未对客人开放；Pro 新结账现已暂停。",
+    "SUPPORT_COMPANION_ADDON_BLURB": "加购记录仍保留在本账号。倾诉尚未对客人开放；陪伴加购新结账现已暂停。",
+    "SUPPORT_COMPANION_ADDON_CTA_OWNED": "已购买 · 入口尚未开放",
+    "SUPPORT_CHECKOUT_SALE_PAUSED": "此项新结账现已暂停。"
+  },
+  "ja": {
+    "SUPPORT_PRO_BLURB": "阿寅メンバーシップの進階に加え、デスクトップコンパニオン層があります。コンファイドはこの版ではゲストに開いていません。新規 Pro 決済は現在停止しています。",
+    "SUPPORT_COMPANION_ADDON_BLURB": "アドオンの購入記録は残ります。コンファイドはまだゲストに開いていません。新規アドオン決済は停止中です。",
+    "SUPPORT_COMPANION_ADDON_CTA_OWNED": "購入済み · 入口はまだ開いていません",
+    "SUPPORT_CHECKOUT_SALE_PAUSED": "このオファーの新規決済は現在停止しています。"
+  }
+}

@@ -16,6 +16,7 @@ import {
   COMPANION_ADDON_LIFETIME_ITEM_ID,
   COMPANION_ADDON_LIFETIME_SKU
 } from './entitlement/companionAddonSku.js';
+import { isClientQaHarnessAllowed } from './clientQaHarnessGate.js';
 
 export const COMPANION_ENTITLEMENT_STORAGE_KEY =
   'focus-tiger.companion-entitlement.v1';
@@ -111,14 +112,16 @@ export function isCompanionEntitledMockSearch(search = '') {
  * @param {Storage | null} [opts.storage]
  * @param {() => Date} [opts.now]
  * @param {string} [opts.search]
+ * @param {boolean} [opts.qaHarnessAllowed]
  * @returns {boolean}
  */
 export function isProSubscriptionActive({
   storage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null,
   now = () => new Date(),
-  search = typeof location !== 'undefined' ? location.search : ''
+  search = typeof location !== 'undefined' ? location.search : '',
+  qaHarnessAllowed = isClientQaHarnessAllowed()
 } = {}) {
-  if (isCompanionEntitledMockSearch(search)) return true;
+  if (qaHarnessAllowed && isCompanionEntitledMockSearch(search)) return true;
   const sub = getEntitlementState({ storage, now }).subscription;
   const planId = readEntitlementCache(storage).subscription.planId;
   return sub.entitled === true && planId === FOCUS_TIGER_PRO_PLAN_ID;
@@ -146,16 +149,21 @@ export function isCompanionAddonActive({
  * @param {Storage | null} [opts.storage]
  * @param {() => Date} [opts.now]
  * @param {string} [opts.search]
+ * @param {boolean} [opts.qaHarnessAllowed]
  * @returns {boolean}
  */
 export function isCompanionEntitled({
   storage = typeof globalThis !== 'undefined' ? globalThis.localStorage : null,
   now = () => new Date(),
-  search = typeof location !== 'undefined' ? location.search : ''
+  search = typeof location !== 'undefined' ? location.search : '',
+  qaHarnessAllowed = isClientQaHarnessAllowed()
 } = {}) {
-  if (isCompanionEntitledHarness(search)) return true;
-  if (isCompanionEntitledMockSearch(search)) return true;
-  return isProSubscriptionActive({ storage, now, search }) || isCompanionAddonActive({ storage });
+  if (qaHarnessAllowed && isCompanionEntitledHarness(search)) return true;
+  if (qaHarnessAllowed && isCompanionEntitledMockSearch(search)) return true;
+  return (
+    isProSubscriptionActive({ storage, now, search, qaHarnessAllowed }) ||
+    isCompanionAddonActive({ storage })
+  );
 }
 
 /**

@@ -78,42 +78,14 @@ test('payment click contract: Support CTAs hit themselves not the dim', async ({
     await assertCenterHitsTarget(page, selector);
   }
 
-  const proCta = page.locator('[data-testid="yin-support-pro-cta"]');
-  await expect(proCta).toBeVisible();
-  await proCta.click();
+  await expect(page.locator('[data-testid="yin-support-pro-cta"]')).toBeHidden();
 
-  await expect
-    .poll(
-      async () => {
-        const modalOpen = await page
-          .locator('#yin-support-modal.is-visible')
-          .isVisible()
-          .catch(() => false);
-        const inlineError = await page
-          .locator('[data-testid="yin-support-pro-checkout-status"]')
-          .isVisible()
-          .catch(() => false);
-        return checkoutUrls.length > 0 || (modalOpen && inlineError) || modalOpen;
-      },
-      { timeout: 8_000 }
-    )
-    .toBeTruthy();
+  const proCard = page.locator('[data-testid="yin-support-pro-card"]');
+  if ((await proCard.count()) > 0) {
+    await expect(proCard).toBeHidden();
+  }
 
-  const modalGone = await page
-    .locator('#yin-support-modal.is-visible')
-    .isHidden()
-    .catch(() => true);
-  const errorVisible = await page
-    .locator('[data-testid="yin-support-pro-checkout-status"]')
-    .isVisible()
-    .catch(() => false);
-  const startedCheckout = checkoutUrls.length > 0;
-  expect(
-    startedCheckout || errorVisible || !modalGone,
-    'Subscribe must not close Support via the dim with no checkout and no error'
-  ).toBeTruthy();
-  expect(
-    modalGone && !startedCheckout && !errorVisible,
-    'regression: click landed on #yin-support-backdrop'
-  ).toBe(false);
+  await assertCenterHitsTarget(page, '[data-testid="yin-support-close"]');
+  await page.locator('[data-testid="yin-support-close"]').click();
+  await expect(page.locator('#yin-support-modal.is-visible')).toHaveCount(0);
 });

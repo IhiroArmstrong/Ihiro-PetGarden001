@@ -740,9 +740,6 @@ export function listSecondaryChromeEntries(surface, visibility) {
     typeof visibility.confideUserVisible === 'boolean'
       ? visibility.confideUserVisible
       : isConfideUserVisible();
-  // Desktop L1 may show Confide on wide Electron when the companion bridge exists.
-  const companionGeneration =
-    surface === 'wide-more' && visibility.companionGeneration === true;
 
   pushLabeledGroup(out, 'MENU_GROUP_PRACTICE', [
     { proxy: 'sanctuary-nav', labelKey: 'SANCTUARY_NAV_MENU_LABEL' },
@@ -756,11 +753,10 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : null,
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },
     { proxy: 'honesty', labelKey: 'HONESTY_IDLE_ENTRY' },
-    confideVisible || companionGeneration
+    confideVisible
       ? {
           proxy: 'confide',
-          labelKey: 'CONFIDE_MENU_LABEL',
-          testId: companionGeneration ? 'idle-confide-desktop' : undefined
+          labelKey: 'CONFIDE_MENU_LABEL'
         }
       : null
   ]);

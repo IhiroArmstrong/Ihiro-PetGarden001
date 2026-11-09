@@ -8,6 +8,9 @@
  * Lifetime and the Lifetime AI add-on stay on the grid after purchase.
  */
 
+/** Plan A option 1: stop new Pro / companion add-on checkout (reversible). */
+export const PLAN_A_OPTION1_STOP_NEW_CHECKOUT = true;
+
 /**
  * @param {object} [opts]
  * @param {boolean} [opts.lifetimeActive]
@@ -35,11 +38,16 @@ export function supportPaidCardPresentation({
 } = {}) {
   const sanctuarySettled = lifetimeActive === true;
   const membershipSettled = membershipActive === true;
-  const showPro =
+  let showPro =
     lifetimeActive !== true &&
     proActive !== true &&
     companionEntitled !== true;
-  const showAddon = lifetimeActive === true && proActive !== true;
+  let showAddon = lifetimeActive === true && proActive !== true;
+  if (PLAN_A_OPTION1_STOP_NEW_CHECKOUT) {
+    showPro = false;
+    showAddon =
+      lifetimeActive === true && proActive !== true && addonActive === true;
+  }
   const addonSettled = showAddon && addonActive === true;
   const showWebLocalAiNote =
     isDesktopShell !== true && (showPro === true || showAddon === true);

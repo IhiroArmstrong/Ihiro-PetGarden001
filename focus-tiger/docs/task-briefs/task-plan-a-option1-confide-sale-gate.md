@@ -1,6 +1,6 @@
 # Task Brief · 方案 A 选项 1：安装包前已购也不开倾诉；第四卡与第五卡都先停新结账
 
-> **状态（2026-11-09 晚）**：**三句已补，未开工。** 本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) 已合 develop 的核对表与关闸措辞。安装包参数只读核对完成之前，不写「按这份 Brief 开工」。核对完再由你贴开工句。本回合不写那句。  
+> **状态（2026-11-09 晚）**：**实现旁支 `feature/plan-a-option1-confide-sale-gate` 已开工（Worker 410 默认关 + 客户端闸门 / 两卡 / 文案）。Stripe 笔数仍以 Sandbox 导出表为准（无 Live）。安装包 QA 参数深链只读核对 **未在本 PR 标成已证实**。  
 > **类**：**B**。会改客人能不能看见倾诉，以及 Support 里能不能新买 Pro、能不能新买陪伴加购。  
 > **基线**：`origin/develop@d54f11a8`（含 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)、[#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)、[#1638](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1638)、[#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)、[#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641)）。上一版写的 `ead9213d` 已过期。  
 > **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。该盘点已合 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)。  

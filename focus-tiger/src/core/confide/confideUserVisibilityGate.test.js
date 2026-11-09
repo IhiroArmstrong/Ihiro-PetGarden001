@@ -54,11 +54,19 @@ test('chrome stage: only idle allowed', () => {
 test('canOpenConfidePanel: harness OR mount, and idle only', () => {
   assert.equal(canOpenConfidePanel({ search: '', stage: 'idle' }), false);
   assert.equal(
-    canOpenConfidePanel({ search: '?confide=1', stage: 'idle' }),
+    canOpenConfidePanel({
+      search: '?confide=1',
+      stage: 'idle',
+      qaHarnessAllowed: true
+    }),
     true
   );
   assert.equal(
-    canOpenConfidePanel({ search: '?confide=1', stage: 'focusing' }),
+    canOpenConfidePanel({
+      search: '?confide=1',
+      stage: 'focusing',
+      qaHarnessAllowed: true
+    }),
     false
   );
   assert.equal(
@@ -81,21 +89,24 @@ test('canOpenConfidePanel: harness OR mount, and idle only', () => {
   );
 });
 
-test('canOpenConfidePanel: desktop companion generation is Idle + safety only', () => {
-  assert.equal(
-    canOpenConfidePanel({
-      search: '',
-      stage: 'idle',
-      companionGeneration: true
-    }),
-    true
-  );
+test('canOpenConfidePanel: companion purchase does not bypass mount-off (Plan A option 1)', () => {
   assert.equal(
     canOpenConfidePanel({
       search: '',
       stage: 'idle',
       companionGeneration: true,
-      safetyOk: () => false
+      safetyOk: () => true
+    }),
+    false
+  );
+});
+
+test('canOpenConfidePanel: ?confide=1 ignored when QA harness is off (production build)', () => {
+  assert.equal(
+    canOpenConfidePanel({
+      search: '?confide=1',
+      stage: 'idle',
+      qaHarnessAllowed: false
     }),
     false
   );
@@ -104,19 +115,28 @@ test('canOpenConfidePanel: desktop companion generation is Idle + safety only', 
 test('ear chrome visibility matches canOpen (no dead click)', () => {
   assert.equal(shouldShowConfideEarChrome({ search: '', stage: 'idle' }), false);
   assert.equal(
-    shouldShowConfideEarChrome({ search: '?confide=1', stage: 'idle' }),
+    shouldShowConfideEarChrome({
+      search: '?confide=1',
+      stage: 'idle',
+      qaHarnessAllowed: true
+    }),
     true
   );
   assert.equal(
-    shouldShowConfideEarChrome({ search: '?confide=1', stage: 'focusing' }),
+    shouldShowConfideEarChrome({
+      search: '?confide=1',
+      stage: 'focusing',
+      qaHarnessAllowed: true
+    }),
     false
   );
   assert.equal(
     shouldShowConfideEarChrome({
       search: '',
       stage: 'idle',
-      companionGeneration: true
+      companionGeneration: true,
+      safetyOk: () => true
     }),
-    true
+    false
   );
 });
