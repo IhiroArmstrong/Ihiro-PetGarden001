@@ -605,8 +605,18 @@ export class SupportYinModalUI {
         return;
       }
       this._showInlineCheckoutError(kind, errorKey);
-    } catch {
-      this._showInlineCheckoutError(kind, errorKey);
+    } catch (err) {
+      const status = /** @type {{ status?: number }} */ (err)?.status;
+      const body = /** @type {{ body?: { error?: string } }} */ (err)?.body;
+      const code =
+        body && typeof body === 'object' && body.error
+          ? String(body.error)
+          : '';
+      if (status === 410 && code === 'plan_a_new_checkout_disabled') {
+        this._showInlineCheckoutError(kind, 'SUPPORT_CHECKOUT_SALE_PAUSED');
+      } else {
+        this._showInlineCheckoutError(kind, errorKey);
+      }
     }
   }
 

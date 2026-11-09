@@ -20,6 +20,7 @@
  * @property {boolean} [expectWarmGlass] default true; idle chrome may be false
  * @property {Record<string, string>} [shellQuery] extra `?product=1` query keys
  * @property {string} [devHookGlobal] `window[global].openPanel()` for Electron-only rows
+ * @property {boolean} [qaHarnessRequired] Plan A: guest mount off; Playwright still opens via `?confide=1` + `FT_QA_BOOT`
  */
 
 /** @type {readonly A13GlassVisualSurface[]} */
@@ -81,6 +82,7 @@ export const A13_GLASS_VISUAL_SURFACES = Object.freeze([
     openKind: 'dev-hook',
     devHookGlobal: '__confideToYin',
     shellQuery: { confide: '1', flowerWelcome: '0' },
+    qaHarnessRequired: true,
     rootSelector: '#confide-to-yin-card'
   }),
   Object.freeze({

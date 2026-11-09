@@ -681,13 +681,13 @@ describe('listSecondaryChromeEntries', () => {
     assert.equal(row?.labelKey, 'CONFIDE_MENU_LABEL');
   });
 
-  it('desktop companionGeneration shows Confide on wide-more only', () => {
+  it('companionGeneration alone does not show Confide when mount is off (Plan A)', () => {
     const wide = listSecondaryChromeEntries('wide-more', {
       ...allOn,
       confideUserVisible: false,
       companionGeneration: true
     });
-    assert.equal(wide.some((e) => e.proxy === 'confide'), true);
+    assert.equal(wide.some((e) => e.proxy === 'confide'), false);
     const narrow = listSecondaryChromeEntries('narrow-drawer', {
       ...allOn,
       confideUserVisible: false,
