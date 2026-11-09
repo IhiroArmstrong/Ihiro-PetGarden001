@@ -2,7 +2,7 @@
 
 > **Status**: Step 2–3 wired (2026-09-16) · registry SSOT + CI audit  
 > **Companion code**: `src/core/practiceBackup/localBackupStorageRegistry.js` · `practiceBackupSnapshot.js`  
-> **Reset whitelist**: `src/core/localStateKeys.js` (**94** keys) · `docs/SHARED_RESOURCES.md` §1 · `npm run audit:shared-resources-reset`  
+> **Reset whitelist**: `src/core/localStateKeys.js` (**105** keys) · `docs/SHARED_RESOURCES.md` §1 · `npm run audit:shared-resources-reset`  
 > **Related**: `practice-aggregate-registry.md` · `DEV_WORKFLOW_QUALITY.md` §6.25
 
 ---
@@ -45,6 +45,13 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 - `focus-tiger.practice-backup.v1` — device cloud opt-in token
 - `focus-tiger.ritual-recipe.v1` / `focus-tiger.ritual-recipe-analytics-opt-in.v1` — sitting recipe + analytics opt-in (preview-adopt; never practice-backup overwrite)
 - `focus-tiger.companion-channel-recent-ids.v1` — four-channel copy recent template ids; not practice memory
+- T81/T83 Practice Study keys (reset **+6** vs 2026-11-06 facts 99; **do not export** — see [`audit/findings/2026-11-09/B1-reset-plus6-export-review.md`](audit/findings/2026-11-09/B1-reset-plus6-export-review.md)):
+  - `focus-tiger.co-practice-research-week-ledger.v1`
+  - `focus-tiger.co-practice-research-consent.v1`
+  - `focus-tiger.co-practice-research-last-post.v1`
+  - `focus-tiger.co-practice-research-weekly-schedule.v1`
+  - `focus-tiger.co-practice-research-first-sit-prompt.v1`
+  - `focus-tiger.dev-co-practice-research-consent-fixture.v1` (DEV fixture; never export)
 
 ---
 
@@ -67,3 +74,4 @@ npm run docs:check                    # includes audit above
 | 2026-09-20 | Focus Essence Slice 3: v6 +1 key (`focus-essence.v1`); reset whitelist 66 keys |
 | 2026-10-29 | Ritual Recipe keys on reset whitelist; **not** exported (A1a) |
 | 2026-11-06 | T87 stable prefs: v7 +1 export key `stable-prefs.v1` |
+| 2026-11-09 | Reset whitelist **105** (facts 99 + T81/T83 six research keys). Export stays **31**. Six keys documented as NOT exported. |

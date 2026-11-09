@@ -149,7 +149,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
 
 本地读写大多走 `src/utils/Storage.js`。生产代码里直接出现 `localStorage.` 的只有 6 个文件（扫描 Top：`OnboardingHintsStore.js`、`localStorageCapacityAudit.js`、`AmbientSoundscapeUI.js`、`CompanionModePicker.js`、`presenceSignalsGate.js`、`main.js`）。本轮没有把每一把存储钥匙的读写入口画成一张图。
 
-备份快照有显式版本和按版本展开的钥匙表：`PRACTICE_BACKUP_SCHEMA_VERSION = 7`（`src/core/practiceBackup/practiceBackupSnapshot.js:25`），v1 钥匙表仍被接受（同文件约 27–35 行）。坐配方有 `migrateAndNormalizeRecipe`（`src/core/ritualRecipe/ritualRecipeSchema.js:225`）。另外约 19 个生产文件各自出现 `schemaVersion`，本轮没有逐个做「旧数据升级走查」。第 0 轮 facts 记 **31 export / 99 reset**；本 SHA 重跑 `npm run audit:local-backup-coverage` 为 **31 export / 105 reset**（reset **+6**，export 不变）。**待核对**：多出的 6 把 reset 是否应进 export 白名单——单独只读任务，**本报告不定级**（见 1-05）。不上升成 V4（本轮不重判）。
+备份快照有显式版本和按版本展开的钥匙表：`PRACTICE_BACKUP_SCHEMA_VERSION = 7`（`src/core/practiceBackup/practiceBackupSnapshot.js:25`），v1 钥匙表仍被接受（同文件约 27–35 行）。坐配方有 `migrateAndNormalizeRecipe`（`src/core/ritualRecipe/ritualRecipeSchema.js:225`）。另外约 19 个生产文件各自出现 `schemaVersion`，本轮没有逐个做「旧数据升级走查」。第 0 轮 facts 记 **31 export / 99 reset**；`origin/develop` @ `65431541` 重跑 `npm run audit:local-backup-coverage` 为 **31 export / 105 reset**（reset **+6**，export 不变）。**已核对**（[`B1-reset-plus6-export-review.md`](B1-reset-plus6-export-review.md)）：多出的 6 把全是 T81/T83 研究共修键，**均不进** export。1-05 **仍不定级变更**（保持 P2）。不上升成 V4（本轮不重判）。
 
 ### 2.5 多套仲裁（名单已检，运行时冲突未检）
 
@@ -335,7 +335,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
   - `src/core/practiceBackup/practiceBackupSnapshot.js:25` `PRACTICE_BACKUP_SCHEMA_VERSION = 7`；同文件 v1 钥匙表仍存在
   - `src/core/ritualRecipe/ritualRecipeSchema.js:225` `migrateAndNormalizeRecipe`
   - 扫描：21 个生产文件出现 `schemaVersion`（名单在 JSON）
-- 影响：新存储钥匙可能忘了进备份白名单。第 0 轮 **31/99**，本 SHA **31/105**（reset +6）——**待核对**是否应进 export（单独任务，本条不定级）。B5 已把「看起来像进度清空」另记；这里不升成否决。
+- 影响：新存储钥匙可能忘了进备份白名单。第 0 轮 **31/99**，现 develop **31/105**（reset +6）。**已核对**：六把均为 T81/T83 研究共修键，建议档 = 仅 reset / 豁免，**不进** export（见 [`B1-reset-plus6-export-review.md`](B1-reset-plus6-export-review.md)）。本条仍不定级变更（P2）。B5 已把「看起来像进度清空」另记；这里不升成否决。
 - 建议整改：继续用现有 `audit:local-backup-coverage` 当闸；新的 `schemaVersion` 要在该功能的测试里写明旧版样本。不必先做一套大一统迁移框架。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记（备份覆盖脚本已在；本条不新开实现）
