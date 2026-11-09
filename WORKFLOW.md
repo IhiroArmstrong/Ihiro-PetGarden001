@@ -58,14 +58,14 @@
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `chat-openable-file-links`）。按需层摘要见 `.cursor/rules/focus-tiger-chat-openable-file-links.mdc`（`alwaysApply: true`）。
 
-仓库文件须可点开。Agent 交付或请用户打开的**任何文件**，**禁止**只把路径包在反引号里（如 `` `focus-tiger/docs/foo.md` ``）——对话里这不是链接，点了打不开；也**禁止**只给链接而不写本机绝对路径——用户在 Cursor / Finder 里很难找。
+仓库文件须可点开。Agent 交付或请用户打开的**任何文件**，**禁止**只把路径包在反引号里（如 `` `focus-tiger/docs/foo.md` ``）——对话里这不是链接，点了打不开。
 
 **必须同时满足：**
 
 1. **Markdown 链接**，锚点用短名，地址用**相对仓库根**的路径：`[Voice Input V1 Brief](focus-tiger/docs/task-briefs/task-voice-input-v1.md)`
-2. **本机绝对路径**（单独一行）：`/Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001/focus-tiger/docs/task-briefs/task-voice-input-v1.md`
-3. 文件已在 GitHub 上（当前旁支或 `develop`）时，**再给一条 https 网页链接**（浏览器一定能开）。
-4. 这条回复就是要用户**立刻**看该文件时：Agent **还须** `open_resource`（`file://` 绝对路径）在编辑器打开，**并**执行 `open -R '<绝对路径>'` 在 Finder 定位。
+2. 文件已在 GitHub 上（当前旁支或 `develop`）时，**再给一条 https 网页链接**（浏览器一定能开）。
+
+**本机绝对路径**仅在用户要手动进终端 / Finder 时补充，不作默认强制。**禁止** Agent 在未获明确要求时自动 `open_resource` 或 `open -R` 访达定位——会打断正常工作；仅用户明确要「编辑器打开 / 访达定位 / 帮我点开」时才做。
 
 用户要「单独一份」时：主动问是否复制到 **Desktop / Downloads**，或 **commit + push** 后给 GitHub 网页链接——不要静默假设。
 
