@@ -1,5 +1,5 @@
 ---
-description: 用户可见回复里文件须可点开、可定位——Markdown 链接 + 本机绝对路径；立刻看须 open_resource + Finder
+description: 用户可见回复里文件须可点开——Markdown 链接 + GitHub https；禁止默认 open_resource / Finder 打断
 alwaysApply: true
 ---
 
@@ -9,20 +9,23 @@ alwaysApply: true
 
 Agent 交付或请用户打开的**任何文件**（仓库内 md / 源码 / 规则 / Brief / 产物等）：
 
-## 回复里必须同时给
+## 回复里必须给
 
-1. **Markdown 链接**：`[短名](相对仓库根的路径)`（仓库内文件）。
-2. **本机绝对路径**（单独一行，便于复制 / Finder / 终端）：`/Users/…/Zen-tiger-Pet-garden001/focus-tiger/docs/foo.md`。
-3. 已推到 GitHub 时再给 **https 网页链接**。
+1. **Markdown 链接**：`[短名](相对仓库根的路径)`（仓库内文件，对话里可点）。
+2. 已推到 GitHub 时 **再给** **https 网页链接**（浏览器可开）。
+
+**本机绝对路径**（`/Users/…/…`）仅在用户要复制进终端 / Finder 手动操作时给，**不**作为默认强制项。
 
 **禁止**只写反引号路径（如 `` `focus-tiger/docs/foo.md` ``）——对话里点不开。
 
-## 要用户立刻看
+## 禁止默认「立刻看」式自动打开
 
-同时执行：
+**禁止**在未明确要求时自动：
 
-- `open_resource`（`file://` + 绝对路径）——在编辑器打开；
-- `open -R '<绝对路径>'`——在 Finder 定位到该文件。
+- `open_resource`（编辑器里弹开文件）；
+- `open -R`（访达里定位文件）。
+
+上述操作会打断正常工作。仅当用户**明确**说要在编辑器打开、要在访达里定位、或「帮我点开」时，才执行其一（仍**不**默认同时访达 + 编辑器）。
 
 ## 用户要「单独一份」
 

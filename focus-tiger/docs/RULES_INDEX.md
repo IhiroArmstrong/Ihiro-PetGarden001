@@ -153,7 +153,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `scenario-gwt-priority` | 「场景 E2E 优先级 P0/P1/P2 见 `SCENARIO_TESTS_GWT.md` §编写规范 + `generate-scenario-tests-gwt.py`」；`.cursor/rules/focus-tiger-scenario-gwt-priority.mdc` 可一行引用 | 把 0–1 秒补句排期表当 E2E 优先级；手改 GWT 优先级列；新增场景不打五维清单 |
 | `tracker-eod-sync` | 「下班前 Git 同步须拼装 `TEST_TRACKER` 碎片见 regression-lock 第 7 条 / `PROCESS` Git 同步节奏 step 0b」；`git-agent-commit` / `TEST_TRACKER.md`「拼装触发」P1 可一行引用 | 下班前 sync 只 push 不跑 `tracker:assemble`；在功能 PR 里拼装；把碎片直接复制进 `SCENARIO_TESTS` |
 | `background-network` | 「后台网络三问见 `BACKGROUND_NETWORK.md`」；PR 模板 / Cursor 规则可引用三问；PROCESS / Brief 可一行引用 | 主张请求快就可以和动效重叠；主张未变化也可无条件覆盖本地副本；只测请求成败当验收；在非 SSOT 复述三问全文 |
-| `chat-openable-file-links` | 「文件须可点开、可定位见 `WORKFLOW.md`」；core / user-action-steps / alwaysApply 摘要可一行引用 | 主张反引号路径就算链接；只给链接不写绝对路径；完整复述四条必须；把代码围栏当打开文件的替代；静默复制到 Desktop 不先问 |
+| `chat-openable-file-links` | 「文件须可点开见 `WORKFLOW.md`」；core / user-action-steps / alwaysApply 摘要可一行引用 | 主张反引号路径就算链接；未明确要求就 `open_resource` / 访达 `open -R`；完整复述旧版四条必须；把代码围栏当打开文件的替代；静默复制到 Desktop 不先问 |
 | `batch-before-human` | 「减少人工测试与审核见 `testing-strategy.mdc`」；core 按需索引 / user-action-steps 可一行引用 | 已有批量命令仍把整表交给人逐条点；把离线筛选说成口径已上涨 |
 | `confide-en-first-qa` | 「Confide 功能测试英文第一优先见 `PRINCIPLES.md` R-0 评测语言」；`testing-strategy.mdc` / 路由跟进清单可一行引用 | 主张只测中文即可关单；主张 CR-02「英文这次不改」等于英文空态可长期接受；完整复述评测语言条 |
 
@@ -305,6 +305,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-11-05 | 新增 `git-pr-next-step-gate`：下一步须先查**有没有 PR**（OPEN 也算开发可能已完成）；合没合只决定待合 vs 已在 develop。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/focus-tiger-pr-next-step-gate.mdc` |
 |---|---|
 | 2026-10-29 | 产品表新增 `CO_PRACTICE_GIFT_ART.md`（共修纪念画方向锁；A/B/C 形状；礼物轨 ≠ 货架；**不排期**；不进 rules-authority 机器块） |
+| 2026-11-09 | 收敛 `chat-openable-file-links`：默认须 Markdown + GitHub https；**禁止**未明确要求时 `open_resource` / 访达 `open -R`；本机绝对路径改可选。SSOT `WORKFLOW.md` + `.cursor/rules/focus-tiger-chat-openable-file-links.mdc` |
 | 2026-10-17 | 新增 `pr-smoke-failure-classes`：PR smoke 失败四种根因 + 菜单走完移出默认必跑（nightly / 合入 develop / 路径触发仍跑）。SSOT `PR_SMOKE_FAILURE_CLASSES.md`；`ci-failure-triage` 增 Step 0 归类与重跑上限 1 次 |
 | 2026-10-15 | 扩展 `confide-class-blind`：R-Confide-No-Symptom-List。Confide 问答修复禁止按症状扩说法名单；允许改判定机制、补事实卡（不补问法）或安全分类机制。SSOT `PRINCIPLES.md`；测试纪律仍 `.cursor/rules/testing-strategy.mdc`。不新开 rules-authority 主题 |
 | 2026-10-13 | A6：`src/main.js` ESLint `no-use-before-define`（仅变量）进 `test:smoke`（`lint:main-use-before-define`）；#1139 夹具必须红。SSOT `DOC_CODE_CONTRACT.md` |
