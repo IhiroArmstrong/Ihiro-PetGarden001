@@ -302,8 +302,9 @@ cd focus-tiger && npm run rules:doc-sync
 > **本日志为历史记录**，当前生效规则请查阅各主题 **SSOT 源文件**（见上方索引表），**不要以本日志任意一条历史记录作为当前依据。**
 
 | 日期 | 说明 |
-| 2026-11-05 | 新增 `git-pr-next-step-gate`：下一步须先查**有没有 PR**（OPEN 也算开发可能已完成）；合没合只决定待合 vs 已在 develop。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/focus-tiger-pr-next-step-gate.mdc` |
 |---|---|
+| 2026-11-09 | T99：必跑冒烟改为机械闸（`pre-push` `test:e2e:smoke`、行数闸前移、玻璃卡读挂载开关）。SSOT 仍 `PR_SMOKE_FAILURE_CLASSES.md`；常驻 `.cursor/rules/focus-tiger-pr-smoke-gates.mdc`。**已废止**：仅靠 `pre-push` 跑 `test:e2e:startup` 即视为必跑已拦 |
+| 2026-11-05 | 新增 `git-pr-next-step-gate`：下一步须先查**有没有 PR**（OPEN 也算开发可能已完成）；合没合只决定待合 vs 已在 develop。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/focus-tiger-pr-next-step-gate.mdc` |
 | 2026-10-29 | 产品表新增 `CO_PRACTICE_GIFT_ART.md`（共修纪念画方向锁；A/B/C 形状；礼物轨 ≠ 货架；**不排期**；不进 rules-authority 机器块） |
 | 2026-11-09 | 收敛 `chat-openable-file-links`：默认须 Markdown + GitHub https；**禁止**未明确要求时 `open_resource` / 访达 `open -R`；本机绝对路径改可选。SSOT `WORKFLOW.md` + `.cursor/rules/focus-tiger-chat-openable-file-links.mdc` |
 | 2026-10-17 | 新增 `pr-smoke-failure-classes`：PR smoke 失败四种根因 + 菜单走完移出默认必跑（nightly / 合入 develop / 路径触发仍跑）。SSOT `PR_SMOKE_FAILURE_CLASSES.md`；`ci-failure-triage` 增 Step 0 归类与重跑上限 1 次 |

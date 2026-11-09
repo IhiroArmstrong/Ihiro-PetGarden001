@@ -5,19 +5,23 @@
  */
 
 /**
- * Husky pre-push gate (A5 / R4): run a single startup Playwright spec unless
- * every file in the push is documentation (.md / .mdc).
+ * Husky pre-push gate (A5 + T99): required browser smoke unless every file
+ * in the push is documentation (.md / .mdc). Menu-path extras come from
+ * `pr-smoke-path-routes.js`.
  *
- * Policy: focus-tiger/docs/root-cause-audit-2026-10-12.md §4 A5
+ * Policy: focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md
  */
 
 import { spawnSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createInterface } from 'node:readline'
+import { extraPrePushNpmScripts } from './pr-smoke-path-routes.js'
 
 export const ZERO_SHA = '0'.repeat(40)
+/** @deprecated alias kept so existing skip docs still work */
 export const SKIP_ENV = 'FT_SKIP_PRE_PUSH_STARTUP'
+export const SKIP_ENV_SMOKE = 'FT_SKIP_PRE_PUSH_SMOKE'
 
 const ZERO_RE = /^0{40}$/
 
@@ -106,8 +110,14 @@ function defaultRunGit(args) {
  * @param {string} [opts.cwd]
  * @returns {{ ok: boolean, status: number }}
  */
-export function runStartupSmoke({ cwd } = {}) {
-  const r = spawnSync('npm', ['run', 'test:e2e:startup'], {
+/**
+ * @param {string} script
+ * @param {object} [opts]
+ * @param {string} [opts.cwd]
+ * @returns {{ ok: boolean, status: number }}
+ */
+export function runNpmScript(script, { cwd } = {}) {
+  const r = spawnSync('npm', ['run', script], {
     cwd,
     stdio: 'inherit',
     env: process.env,
@@ -115,6 +125,11 @@ export function runStartupSmoke({ cwd } = {}) {
   })
   const status = r.status == null ? 1 : r.status
   return { ok: status === 0, status }
+}
+
+/** @deprecated A5 name; T99 runs `test:e2e:smoke` instead */
+export function runStartupSmoke({ cwd } = {}) {
+  return runNpmScript('test:e2e:smoke', { cwd })
 }
 
 async function readStdin() {
@@ -125,17 +140,28 @@ async function readStdin() {
   return chunks.join('\n')
 }
 
+function envFlagTrue(env, name) {
+  return env[name] === '1' || env[name] === 'true'
+}
+
 export async function main({
   env = process.env,
   readInput = readStdin,
   runGit = defaultRunGit,
-  runSmoke = runStartupSmoke,
+  runNpm = runNpmScript,
+  runSmoke,
   log = console,
   focusTigerDir
 } = {}) {
-  if (env[SKIP_ENV] === '1' || env[SKIP_ENV] === 'true') {
+  const run = runSmoke
+    ? (script, opts) =>
+        script === 'test:e2e:smoke' ? runSmoke(opts) : runNpm(script, opts)
+    : runNpm
+
+  if (envFlagTrue(env, SKIP_ENV_SMOKE) || envFlagTrue(env, SKIP_ENV)) {
+    const which = envFlagTrue(env, SKIP_ENV_SMOKE) ? SKIP_ENV_SMOKE : SKIP_ENV
     log.error(
-      `pre-push: skipped startup smoke (${SKIP_ENV}=1). Report this skip in the PR.`
+      `pre-push: skipped required browser smoke (${which}=1). Report this skip in the PR.`
     )
     return 0
   }
@@ -144,20 +170,30 @@ export async function main({
   const files = collectPushedFiles({ updates, runGit })
   if (shouldSkipStartupSmoke(files)) {
     log.error(
-      'pre-push: docs-only (.md/.mdc) or empty push — skipping startup smoke.'
+      'pre-push: docs-only (.md/.mdc) or empty push — skipping required browser smoke.'
     )
     return 0
   }
 
   const here = dirname(fileURLToPath(import.meta.url))
   const cwd = focusTigerDir || join(here, '..')
-  log.error('pre-push: running startup smoke (test:e2e:startup)…')
-  const smoke = runSmoke({ cwd })
+  log.error('pre-push: running required browser smoke (test:e2e:smoke)…')
+  const smoke = run('test:e2e:smoke', { cwd })
   if (!smoke.ok) {
     log.error(
-      'pre-push: startup smoke failed. App did not become ready, or a page error fired. Push blocked (A5).'
+      'pre-push: test:e2e:smoke failed. Push blocked (T99). Fix locally; do not wait for GitHub.'
     )
     return smoke.status || 1
+  }
+
+  const extras = extraPrePushNpmScripts(files)
+  for (const script of extras) {
+    log.error(`pre-push: path extra — npm run ${script}`)
+    const extra = run(script, { cwd })
+    if (!extra.ok) {
+      log.error(`pre-push: ${script} failed. Push blocked (T99 path route).`)
+      return extra.status || 1
+    }
   }
   return 0
 }

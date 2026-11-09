@@ -1,0 +1,3 @@
+# Raising architecture baselines is PO-gated (T99). Feature PRs must not
+# bump these numbers; extract logic instead.
+focus-tiger/docs/audit/b1-architecture-gate-baseline.json @IhiroArmstrong
