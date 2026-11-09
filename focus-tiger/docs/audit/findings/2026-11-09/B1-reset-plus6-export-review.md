@@ -31,7 +31,7 @@
 
 1. `SHARED_RESOURCES.md` 补 T83 `first-sit-prompt` 行，并写清六把**亦不进本地 Backup 导出**。
 2. `docs/local-backup-storage-registry.md` reset 计数仍写 **94**（滞后）；改为 **105**，并把六把列入「Explicitly NOT exported」。
-3. **后续实现 PR**（需口令，不在本回合）：`LOCAL_BACKUP_EXCLUDE_ROWS` 补这六把（`exclude-product` / `exclude-ephemeral`），与 recipe 键同一闸。无口令不得改产品代码。
+3. **后续实现 PR**（本刀）：`LOCAL_BACKUP_EXCLUDE_ROWS` 已补这六把（`exclude-product` / `exclude-ephemeral`），并让 `audit:local-backup-coverage` 对清空名单里未分类的钥匙失败；新增钥匙对照 `origin/develop`。
 
 ## 冲突扫描
 

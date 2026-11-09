@@ -5,7 +5,10 @@
 
 /**
  * Focus Tiger 全部 localStorage key（一键重置用）。
- * 新增 key 时：同步本列表 + docs/SHARED_RESOURCES.md。
+ * 新增 key 时：同步本列表 + docs/SHARED_RESOURCES.md，
+ * 并在同一 PR 把该 key 写入 PRACTICE_BACKUP_EXPORT_KEYS 或
+ * LOCAL_BACKUP_EXCLUDE_ROWS / LOCAL_BACKUP_RESET_ONLY_KEYS
+ * （`npm run audit:local-backup-coverage` 对未分类会失败）。
  * 若新 key 参与冷启动欢迎 / 吹花 / 四选卡门闩，还须改
  * `FLOWER_WELCOME_RESET_LOCAL_KEYS` / `WELCOME_DAILY_QUOTA_RESET_LOCAL_KEYS`
  * / `debugScenarioReset.js` 场景配方（残余风险：场景映射仍是人工清单）。

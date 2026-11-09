@@ -36,6 +36,8 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 
 **Companion fields** (Electron): `yinPersonalMemory`
 
+CI classification (2026-11-09): every reset-whitelist key must appear in **export** or **exclude**. `npm run audit:local-backup-coverage` fails on unclassified keys, and on keys added vs `origin/develop` that this PR did not classify. Promoting a key to export still requires snapshot schema + I1–I3 in `DEV_WORKFLOW_QUALITY.md` §6.25.
+
 **Explicitly NOT exported**:
 
 - `companion-l2/turns.jsonl` (`confideTurnsJsonl`) — local debug log only; retention on device via `confideTurnsJsonlRetention.js` (see `confide-turns-jsonl-backup-exclude.md`)
@@ -75,3 +77,4 @@ npm run docs:check                    # includes audit above
 | 2026-10-29 | Ritual Recipe keys on reset whitelist; **not** exported (A1a) |
 | 2026-11-06 | T87 stable prefs: v7 +1 export key `stable-prefs.v1` |
 | 2026-11-09 | Reset whitelist **105** (facts 99 + T81/T83 six research keys). Export stays **31**. Six keys documented as NOT exported. |
+| 2026-11-09 | `LOCAL_BACKUP_EXCLUDE_ROWS` covers all non-export reset keys (six T81/T83 named + T54 + remaining reset-only). Audit fails on unclassified keys and on new keys vs `origin/develop`. |
