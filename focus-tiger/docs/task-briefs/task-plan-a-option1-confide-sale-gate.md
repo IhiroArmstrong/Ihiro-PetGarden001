@@ -1,9 +1,9 @@
 # Task Brief · 方案 A 选项 1：安装包前已购也不开倾诉；第四卡与第五卡都先停新结账
 
-> **状态（2026-11-09 晚）**：**说明已补，未开工。** 本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)。写 `focus-tiger/src` 或 Worker 之前，仍须你另写「按这份 Brief 开工」。本回合不写那句。  
+> **状态（2026-11-09 晚）**：**说明已补，未开工。** 本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) 已合 develop 的核对表与关闸措辞。写 `focus-tiger/src` 或 Worker 之前，仍须你另写「按这份 Brief 开工」。本回合不写那句。  
 > **类**：**B**。会改客人能不能看见倾诉，以及 Support 里能不能新买 Pro、能不能新买陪伴加购。  
-> **基线**：`origin/develop@c93f657f`（含 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)、[#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)、[#1638](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1638)、[#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)）。上一版写的 `ead9213d` 已过期。  
-> **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。  
+> **基线**：`origin/develop@d54f11a8`（含 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)、[#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)、[#1638](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1638)、[#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)、[#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641)）。上一版写的 `ead9213d` 已过期。  
+> **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。该盘点已合 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)。  
 > **PO 书面（2026-11-09 晚）**  
 > - 选项 1：**是**。第一份安装包发出前，已经买了陪伴的人也不开倾诉。  
 > - 第五卡：倾诉评审（V2）通过前，不新售陪伴加购。已买过的留下、变淡、不能再付款。  
@@ -12,7 +12,7 @@
 
 ## 一句话目标
 
-挂载仍关着的时候，付过钱也不能打开倾诉。第五卡不再新售。第四卡不再新开 Pro 结账。已经订着的 Pro 继续有效，续订照旧。已经买过的加购留下、变淡、不能再付款。这一刀不自动退款。已经付钱的人怎么说明、走不走退款，等线上笔数出来再由你写下一句。
+挂载仍关着的时候，付过钱也不能打开倾诉。第五卡不再新售。第四卡不再新开 Pro 结账。已经订着的 Pro 继续有效，续订照旧。已经买过的加购留下、变淡、不能再付款。服务端与安装包不得用旧接口或 URL 参数绕过。这一刀不自动退款。已经付钱的人怎么说明、走不走退款，等线上笔数出来再由你写下一句。
 
 ## 与 #1639 的差别
 
@@ -20,45 +20,60 @@
 
 ## 现在的地面事实
 
-2026-11-09 晚对照 `origin/develop@c93f657f` 重读，不是对照术语表，也不是对照 `ead9213d`：
+2026-11-09 晚对照 **当前** `origin/develop` 重读，不是对照术语表，也不是对照 `ead9213d`：
 
-- `canOpenConfidePanel` 在 `companionGeneration === true` 且安全语料通过时，**先返回 true**，还没看挂载（`confideUserVisibilityGate.js`）。挂载 false 挡不住已购宽屏。
-- 宽屏菜单在生成层为真时仍会插入倾诉行。这条仍是「挂载关着也显示」，本说明没有改测试。
-- `isCompanionEntitled` 为真的条件仍是：Pro 订阅有效，或终身陪伴加购有效，或实验室参数 `?companionEntitled=1` / `?entitlementMock=pro`。它只表示「账上有陪伴」。本 Brief 不改这个函数怎么判断「已经买过」。
-- 第五卡：已买圣所终身、且不是 Pro 时仍可出现并可新开加购结账；买完后淡化。
-- 第四卡文案仍写成「另加桌面端本机倾诉」。第五卡文案仍写成一次性解锁本机阿寅。网页底注仍写成解锁后可以在电脑上倾诉。
-- `/api/create-pro-checkout-session` 与 `/api/create-companion-addon-checkout-session` 都还没有「停止新结账」开关。Pro 处理函数直接读 Stripe 密钥并建会话。
+- `canOpenConfidePanel` 在 `companionGeneration === true` 且安全语料通过时，**即使挂载是 false 也返回 true**（`confideUserVisibilityGate.js`）。挂载 false 挡不住已购宽屏。
+- 宽屏菜单在 `companionGeneration` 为真时仍插入倾诉行（`idleChromeOrchestration.js`），测试名就叫「挂载关着也显示」。
+- `isCompanionEntitled` 为真的条件是：Pro 订阅有效，或终身陪伴加购有效，或实验室参数 `?companionEntitled=1` / `?entitlementMock=pro`。它只表示「账上有陪伴」，**本 Brief 不改这个函数的购买判断逻辑**；但须在 **生产构建** 禁用 URL 参数伪造（见下文「生产构建 · QA 参数」）。
+- 第五卡：已买圣所终身、且不是 Pro 时，`showAddon === true`。没买加购时按钮仍可结账；买完后卡片留下并淡化（`supportPaidCardPresentation.js`）。
+- 第四卡 Pro 文案现在写成「另加桌面端本机倾诉」。第五卡文案写成「一次性解锁本机阿寅」。网页底注写成解锁后可以在电脑上倾诉。
+- Worker 仍暴露 `POST /api/create-pro-checkout-session` 与 `POST /api/create-companion-addon-checkout-session`；仅藏 UI 不够，旧客户端或脚本可直连。
 - [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) **已合并**。打开被拒时，`onOpenBlocked` 会取 `confideOpenBlockedUserMessage`，这句话走 T92 求助句（`formatConfideSafetyResourceGuidance`）。入口登记里，沉思问询「想聊聊」标的是「必须给出这句」。语音危机转倾诉、帮助中心转倾诉在同一份登记里仍写着 **未核实**。本说明不把这两条写成已经盖住。
 
-T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏不成立。本决定把那条例外收掉。术语表仍写「已购陪伴宽屏仍可开倾诉」。**本 Brief 与后面的实现旁支都不改术语表。** 实现合并之后，立刻另开治理文档，改这一句，并把 B3 看板从「OPEN #1638」改成「草稿、未打分、已合并」。
+T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏不成立。本决定把那条例外收掉。术语表仍写「已购陪伴宽屏仍可开倾诉」——那是盘点当时的事实，**本 Brief 与实现旁支都不改术语表**。实现合并后须**另开治理 docs PR** 更正该句（见「交付顺序」）。
+
+## 已购与 Stripe 核对（Brief 政策输入）
+
+**政策（本 Brief）**：不撤销本地 / 云端已购记录；**本刀不做自动退款**。若 Live 出现非零笔数，Support 口径与（若需要）法务确认退款渠道由 PO 在合实现前拍板；**当前侧面证据支持按「零笔或极低」写法起草**。
+
+| 来源 | 2026-11-09 结果 | 说明 |
+|---|---|---|
+| 生产 `SANCTUARY_KV` 前缀 `companion-addon:` | **0** 键 | `wrangler kv key list` · 加购 confirm/webhook 邮箱索引 |
+| 生产 `MEMBERSHIP_KV` 前缀 `membership:` | **0** 键 | 含 `confirm-pro-session` 写入的 Pro 订阅索引 |
+| Stripe Dashboard **Live** / Stripe CLI | **本机 CLI 无 API key**（`~/.config/stripe/config.toml` 未写入 test_mode_key / live_mode_key） | PO 须在终端完成 `stripe login` 或 Dashboard 核对 Price **`price_1U6EB1FuIhgJPGLiuciuX1to`**（Pro）、**`price_1U6GnXFuIhgJPGLiNlXs0IKe`**（加购）之 **paid** Checkout |
+
+Tracker 里第四 / 五卡人工验收多写 **Stripe Test**；KV 为零不代表 Dashboard Live 绝对为零，但实现旁支可按「无已知 Live 加购 KV 行」写已购边缘状态。
 
 ## 范围（in）
 
 - 挂载为 false 时，`companionGeneration` **不能**再让 `canOpenConfidePanel` / 倾听耳 / 宽屏倾诉行变成可开。安全语料仍须通过；阶段仍须是 idle。
-- 未购陪伴加购：第五卡不出现，不能新开加购结账。
-- 已购陪伴加购：第五卡仍在，淡化，按钮不可点，不能再开 Stripe。本地已购记录保留，不撤销，不在这刀退款。
-- 未订阅 Pro：第四卡不再新开结账。不画出可付款按钮，避免点了没反应。
-- 已订阅 Pro：订阅保持，续订不取消、不被这刀的开关拦住。第四卡按现有「已订阅不再卖第二次」处理。倾诉仍不开。
-- 服务端同时关上新结账：加购接口与 Pro 新结账接口各有关闭开关。旧版客户端或脚本直接打接口也拿不到付款地址。续订不走这两条接口，不受影响。开关要等 Worker **部署**才在线上生效；只改客户端不算关上。部署仍须你另写「部署」，本说明不部署。
-- 三语说明：会员进阶与本机倾诉现在都不对新客人开放；已经订着的不受影响；买过加购的购买还在，倾诉入口还没对客人打开。不写「即将开放」「限时」。
-- 网页底注改成「现在还没对客人打开」，不再写「解锁后就能倾诉」。
+- **未购** Pro：**不出现可新开的第四卡结账**（不出现可点 CTA，或根本不渲染可购第四卡——实现二选一，须与 `npm run test:payment-contract` 一致）。
+- **未购** 陪伴加购：第五卡不出现，不能新开加购结账。
+- **已购** Pro：**订阅保持，续订不取消、不被这刀的开关拦住**；第四卡按现有「已订阅不再卖第二次」处理。倾诉仍不开。
+- **已购** 陪伴加购：对应卡仍在、淡化、按钮不可点，不能再开 Stripe；本地已购记录保留，不撤销，不在这刀退款。
+- 第四卡、第五卡、网页底注及 **文案全盘**（见下）：三语说明倾诉**现在不对客人打开**；不出现「解锁即可倾诉」「另加本机倾诉可立即使用」等承诺。
 - 新句子写 `src/locales/slices/` 一片（en / zh / ja 同键），覆盖总账旧键。不改 `en.json` / `zh.json` / `ja.json`。
-- 开发与实验室里，`?confide=1` 在 idle 仍可打开面板。这不是对客入口。
-- 安装包与生产构建不接受 QA 参数，包括深链带进 `?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro`。加一条生产构建下这些参数不生效的测试。
-- 同一实现旁支改下面会红的测试预期，并改 `SCENARIO_TESTS.md` 里「终身后第五卡可点」「已购宽屏出现倾诉行」「第四卡可新开结账」的对应句子。
-- 全盘检索对客文案：隐私页、简介卡、帮助中心、官网、商店页面里所有提到倾诉或陪伴购买的句子。实现旁支列出每一处，并把「买了就能倾诉」改成与本决定一致的说法。本说明文件不改那些页面。
+- **服务端关闸**：`POST /api/create-pro-checkout-session` 与 `POST /api/create-companion-addon-checkout-session` 在闸门开启时返回 **410**（或项目内与 `practiceBackupWritesDisabled` 同形的统一 JSON），文案对客诚实（暂未开放售卖）。旧版客户端或脚本直接打接口也拿不到付款地址。续订不走这两条接口，不受影响。**须 redeploy Worker** 后才算线上生效；只改客户端不算关上。
+- **生产构建 · QA 参数**：`?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro`（及文档列出的相关 mock）在 **非开发构建** 必须**不生效**（不得借此开面板或伪造 Pro）。开发 / `MODE=development` / Playwright 开发构建可保留。须核实桌面结账深链 **`focus-tiger://app`**（及现有 `navigateDesktopCheckoutReturn` 路径）**不得**把上述 query 带进可发布安装包。实现旁支加单测或 e2e：**生产构建**下带这些 query 仍不能开倾诉 / 不能伪造 entitlement。
+- 实验室（仅开发构建）：`?confide=1` 在 idle 仍可打开面板。这不是对客入口。
+- **求助出口**：倾诉对客人全关后，**T14 倾诉卡内常驻求助链无人可见**；客人危机出口依赖 [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)「想聊聊」toast（**T92 求助句**）与语音等——实现前抽样核对 en/zh/ja 为 T92 文案，不单依赖 Ledger 旧描述。
+- 同一实现旁支改下面会红的测试预期，并改 `SCENARIO_TESTS.md` 里「终身后第五卡可点」「已购宽屏出现倾诉行」「未购可点 Pro」等句子。
+
+### 文案全盘（实现旁支必做检索）
+
+除第四卡、第五卡、Support 网页底注外，**检索**（rg / 审计脚本）所有客人可见面：隐私页、产品简介卡、帮助中心切片、官网 / 营销静态页、商店说明（若有）。任何语言不得仍承诺「现已可倾诉 / local AI chat 已开放」。命中清单贴实现 PR；本 Brief 不逐条枚举。
 
 ## 范围（out）
 
 - 不把 `CONFIDE_USER_MOUNT_ENABLED` 改成 true。不宣布评审已通过。
-- 不改 `isCompanionEntitled` 的购买判断，不删已购缓存。
+- 不改 `isCompanionEntitled` 的**购买记录**读写语义，不删已购缓存，不做自动退款。
 - 不在笔数出来之前承诺退款，也不在这刀里做退款。
 - 不取消已有 Pro 订阅，不拦截续订。
-- 不把沉思问询、语音、帮助中心的提示再做一遍。#1637 已在共用版本里。本旁支不 cherry-pick 那笔提交。
+- 不把沉思问询、语音、帮助中心的提示再做一遍。#1637 已在共用版本里。本旁支不 cherry-pick 那笔提交，不重做 T92 toast 逻辑，除非付款契约强制。
 - 不改第四卡与第五卡「已是 Pro 则不显示加购卡」的互斥。
 - 不改 Support 按钮层级、遮罩、玻璃卡 z-index，不给 Support 模态写 inline z-index。
-- 不改术语表、任务总表、问题账本已有行，不改 B3 看板。这些放在实现合并后的治理文档。
-- 不新开后台下载或别的网络请求。
+- 不改术语表、任务总表、问题账本已有行，不改 B3 看板（**治理 PR 另开**）。
+- 不新开后台下载或别的网络请求（410 路由不算新下载）。
 - 不在本说明里填写线上购买笔数。笔数来自 Stripe 线上模式，不由模型估计。
 
 ## 第四卡：已锁的做法
@@ -69,6 +84,13 @@ T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏�
 
 先前 #1639 建议继续卖、只改文案。那条不再执行。只有你日后书面写明「去掉倾诉后，剩下的会员进阶仍值这个价」，才恢复新结账。
 
+| 卡 | 新结账 | 已购 |
+|---|---|---|
+| 第四卡 Pro | **关闭** | 记录保留；卡按现有已购规则隐藏或淡化；**Stripe 订阅账单不由本刀取消** |
+| 第五卡 陪伴加购 | **关闭** | 卡保留、淡化、不可再付 |
+
+两卡溢价核心都关联「本机倾诉」。**停新结账可逆**，已卖难收回。
+
 ## 开工前仍须单独完成的核对
 
 下面七处已经写进本说明。其中有三条本回合只登记、没有做完。没做完的，不得在实现汇报里写成已核对。
@@ -78,28 +100,29 @@ T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏�
 | 1 | 服务端也关。加购新结账加关闭开关；第四卡停售时，Pro 新结账同样处理。续订不要受影响。Worker 要部署才在线上生效。 | 已写入范围。开关与部署都还没做。 |
 | 2 | 核实安装包不接受 QA 参数，含深链能否把 `?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro` 带进应用。加一条生产构建下参数不生效的测试。 | **未核实。** 另开只读核对，再写那条测试。 |
 | 3 | 查清线上模式里真实的加购笔数和 Pro 购买笔数，再决定已付款用户的说明和退款渠道。 | **未查。** 直接看 Stripe 线上记录。本文件不写估计数字。 |
-| 4 | 更正过期事实。#1637 已合并。基线改为 `c93f657f`，并按这一版重读闸门与结账接口。 | **已更正**（见「现在的地面事实」）。实现开工时若共用版本又向前走，再对一次当时的顶端。 |
+| 4 | 更正过期事实。#1637 已合并。基线随 develop 向前走；实现开工时若共用版本又向前走，再对一次当时的顶端。 | **已更正**（见「现在的地面事实」与文首基线）。 |
 | 5 | 全盘检索隐私页、简介卡、帮助中心、官网、商店页面里的倾诉 / 陪伴句子。 | **未检索。** 列入实现旁支，本文件不改那些页面。 |
 | 6 | 确认「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **部分。** 「想聊聊」在入口登记里是「必须提示」，打开被拒的回调会取 T92 句子。语音危机、帮助中心在登记里仍是未核实。 |
-| 7 | 实现合并后立刻跟一个治理文档：更正术语表「已购宽屏可开倾诉」，看板写成「草稿、未打分、已合并」。 | 已写入合并之后的下一步。本文件与实现旁支都不改术语表和看板。 |
+| 7 | 实现合并后立刻跟一个治理文档：更正术语表「已购宽屏可开倾诉」，看板写成「草稿、未打分、已合并」。 | 已写入「交付顺序」。本文件与实现旁支都不改术语表和看板。 |
 
 ## 变体矩阵
 
 | 变体 | 入口 / 前置状态 | 预期（可见结果） | 自动化 |
 |---|---|---|---|
-| 网页，未买终身，未订阅 Pro | Support | 不见可点的第四卡结账，不见第五卡。没有新开的 Pro 或加购付款 | `supportPaidCardPresentation.test.js`；付款契约 |
+| 网页，未买终身，未订阅 Pro | Support | **不见可新开 Pro 的第四卡**（或见卡但 CTA 不可点且不调 checkout API）。不见第五卡。无「现在能倾诉」文案 | `supportPaidCardPresentation.test.js`；付款契约 |
 | 网页或电脑，已买终身，未买加购，未订阅 Pro | Support | 圣所卡淡化。第五卡不出现。第四卡不新开结账 | 同上 |
 | 已订阅 Pro | Support | 第四卡按现有已订阅规则，不再卖第二次。订阅还在。菜单、耳朵、面板都不出现倾诉 | 已有已订阅呈现；闸门测试 |
 | 已买加购 | Support | 第五卡仍在、淡化、按钮不可点。文案说明购买还在，倾诉入口还没对客人打开。点按钮不开 Stripe | 已有淡化测试；文案片 |
 | 已买 Pro 或已买加购 | 宽屏电脑，无实验室参数 | 账上仍算已购陪伴。倾诉行、耳朵、面板都不出现 | `confideUserVisibilityGate.test.js` · `desktopCompanionL1.test.js` |
 | 宽屏电脑，生成层为真，挂载 false | Idle ⋯ | 没有倾诉行 | `desktopCompanionL1.test.js` · `idleChromeOrchestration.test.js` |
 | 窄屏 | 抽屉 | 仍没有桌面倾诉行 | 现有窄屏测试保持 |
-| 开发构建，`?confide=1`，idle | 实验室 | 面板可以打开 | 现有 harness 测试保持 |
-| 开发构建，`?confide=1`，专注中 | 实验室 | 仍不能开 | 现有测试保持 |
-| 开发构建，`?companionEntitled=1` 且没有 `?confide=1` | 实验室 | 账上算已购，对客入口仍不开 | 补一条闸门测试 |
-| 安装包 / 生产构建 | 深链或启动参数带上述三个 QA 参数 | 参数不打开倾诉，也不假冒已购 | 生产构建测试；核对完成前不得写成已证实 |
-| 直接调用 Pro 或加购结账接口 | 旧客户端或脚本 | 得到关闭，不是 Stripe 地址。续订不受这条影响 | 路由测试；付款契约 |
-| en / zh / ja | 第四卡停售说明、已购第五卡、网页底注 | 同一含义。日文不留英文原句 | 文案片；`npm run locale:slices` |
+| `?confide=1`，idle | **仅开发构建** | 面板可以打开 | harness 测试保持 |
+| `?confide=1`，专注中 | **仅开发构建** | 仍不能开 | 现有测试保持 |
+| `?confide=1`，**生产构建** | idle | **不**因 query 开面板 | **本刀新增** |
+| `?companionEntitled=1` / `?entitlementMock=pro`，**生产构建** | 无 `?confide=1` | 不伪造已购、不开客人倾诉入口 | **本刀新增** |
+| 安装包 / 生产构建 | 深链或启动参数带上述 QA 参数 | 参数不打开倾诉，也不假冒已购 | 生产构建测试；核对完成前不得写成已证实 |
+| 直接调用 Pro 或加购结账接口 | 旧客户端或脚本 | **410**（Worker 部署后），不是 Stripe 地址。续订不受这条影响 | 路由测试；付款契约 |
+| en / zh / ja | 第四卡停售说明、已购第五卡、网页底注、求助相关 | 同一含义。日文不留英文原句 | 文案片；`npm run locale:slices` |
 | 请茶 / 会员 / 圣所 | Support | 结账与已购淡化与现在相同 | 付款契约必须仍绿 |
 | 已有 Pro 订阅续订 | Stripe 续订 | 不取消、不因关闭开关失败 | 本刀不改续订路径；汇报里写明未改 |
 
@@ -108,11 +131,11 @@ T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏�
 | 控件 / 入口 | 点击后 0–1 秒内用户看到什么 | 持久化 |
 |---|---|---|
 | 未购第五卡 | 没有这张卡，点不到 | — |
+| 未购第四卡 Pro | 没有可购第四卡，点不到 | — |
 | 已购第五卡按钮 | 按钮不可点，不跳转付款 | 不写新的购买 |
-| 未订阅第四卡 | 没有可点的结账按钮，不跳转付款 | 不写新订阅 |
-| 已订阅第四卡 | 与现在相同：不再提供第二次购买 | 不新开订阅；已有订阅不删 |
+| 已购第四卡 | 按现有已购 Pro 规则（隐藏或淡化），不跳转新结账 | 不新开订阅；已有订阅不删 |
 | 倾诉菜单行、倾听耳 | 挂载关着时不渲染，没有可点的空按钮 | — |
-| 开发构建 `?confide=1` | idle 打开面板 | — |
+| 实验室 `?confide=1`（开发构建） | idle 打开面板 | — |
 | 安装包里的同一参数 | 不打开面板 | 不写已购 |
 
 按设计点不到的入口是「不画出来」，不是点了没反应。不新增静默白名单条目。
@@ -124,39 +147,40 @@ T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏�
 | 已买加购 | 卡留下、淡化、不能再付款。购买记录还在。不在这刀退款 |
 | 已订阅 Pro | 订阅与续订保持。倾诉仍不开 |
 | 已买终身且已是 Pro | 仍不显示第五卡（现有互斥）。不新开加购结账，也不新开 Pro 结账 |
-| 加购或 Pro 付款已经发生、人还在回跳页 | 允许把这笔已经付的记成已购。禁止从卡上再开一笔新结账 |
+| 加购 / Pro 付款已在进行、人还在回跳页 | 允许把**已完成**的 session 记成已购并淡化。禁止从 Support 再开**新** checkout |
+| 旧版客户端调 checkout API | Worker **410**，无 Stripe URL |
 | 窄屏 / 低配 / 网页 | 本来就没有桌面倾诉行。保持 |
-| 专注中、到来、有其它遮罩 | 即使开发构建带了实验室参数，也不能开。保持 |
+| 专注中、到来、有其它遮罩 | 即使开发 harness，生产构建也不能开。保持 |
 | 安全语料不通过 | 不能开。保持 |
 | 三语 | 不出现「即将开放」「限时」这类催促 |
 | 线上已有购买，笔数还没查 | 说明里不写退款承诺，也不写「没有人买过」 |
 
 ## 共用机制核对
 
-本次不新建可点击叠层，不改 Support 模态的样式表层（大卡保持登记表上的层级，不得写成 inline）。不触及 overlayBusy，不触及 HUD 呼吸驱动。Support 右上按钮、遮罩、请茶、会员、圣所的点击目标不改层级。第四卡与第五卡只改「未购时是否还能新开结账」。
+本次不新建可点击叠层，不改 Support 模态的样式表层（大卡保持登记表上的层级，不得写成 inline）。不触及 overlayBusy，不触及 HUD 呼吸驱动。Support 右上按钮、遮罩、请茶、会员、圣所的点击目标不改层级。第四 / 五卡只改「未购不可购」与已购淡化；**第四卡 CTA**（`[data-testid=yin-support-pro-cta]`）与 **第五卡** 同属受保护路径。
 
 ## 受保护付款路径
 
-这一刀碰到付钱的入口。实现代码之前先按这个范围做，不顺手改旁边的卡。
+- 第四卡：`#yin-support-pro-card` · `[data-testid=yin-support-pro-cta]` · `POST /api/create-pro-checkout-session`
+- 第五卡：`#yin-support-companion-addon-card` · `[data-testid=yin-support-companion-addon-cta]` · `POST /api/create-companion-addon-checkout-session`
 
-- 第五卡：`#yin-support-companion-addon-card`、`[data-testid=yin-support-companion-addon-cta]`、`/api/create-companion-addon-checkout-session`。未购不再新开结账；已购仍淡化且不能再付。
-- 第四卡：`[data-testid=yin-support-pro-cta]`、卡 `[data-testid=yin-support-pro-card]`、`/api/create-pro-checkout-session`。未订阅不再新开结账。已订阅的呈现与续订不改成取消。
-- 排除：右上 Support 按钮、遮罩、请茶、会员、圣所、玻璃卡 z-index、inline 层级。
-- 包含受保护路径：是（第四卡与第五卡）。
+- 作用于：未购不得新开结账；已购仍淡化且不可点。
+- 包含受保护路径：**是**（两卡 + 两路由）。
+- 排除：不改右上 Support FAB、不改遮罩、不改请茶 / 会员 / 圣所 / z-index。
 
-实现旁支完成前须跑 `cd focus-tiger && npm run test:payment-contract`。没跑或失败，不得写成已修好。客户端改完而 Worker 未部署时，线上接口仍能新开结账，汇报里必须写成「客户端已关、线上接口未关」。
+实现旁支完成前须跑 `cd focus-tiger && npm run test:payment-contract`。没跑或失败，不得写成已修好。Worker 410 变更 **deploy 后**须在 PR 或 Tracker 记 Version id。客户端改完而 Worker 未部署时，线上接口仍能新开结账，汇报里必须写成「客户端已关、线上接口未关」。
 
 ## 不涉及后台网络
 
-不新增自动请求。少掉的是客人点第四卡或第五卡才会发生的新结账。已付回跳确认沿用现有路径。关闭开关是客人（或旧客户端）发起结账时的拒绝，不是后台轮询。
+不新增自动拉取。少掉的是客人点第四 / 五卡才会发起的 checkout。已付回跳 confirm 沿用现有路径（**不**封 `confirm-pro-session` / `confirm-companion-addon-session`，否则误伤已在途付款）。关闭开关是客人（或旧客户端）发起结账时的拒绝，不是后台轮询。
 
 ## 冲突扫描
 
 对照了 Support 付款场景（终身之后第五卡出现并可点；第四卡仍可新开 Pro）和桌面宽屏倾诉行（生成层开着就出现，即使挂载关着）。
 
-- 强度：少掉两个新结账入口、少一行菜单。没有比恢复练习更重的新步骤。
+- 强度：少两张可购卡、少一行菜单。没有比恢复练习更重的新步骤。
 - 语气：说明只陈述「现在不对新客人开放」。不责备、不催买、不写「即将开放」。
-- 职责：付钱买 Pro 或加购，和「倾诉对客人开着」，不再写成同一件事。这和现在的场景句子相反。你已在 2026-11-09 晚决定第四卡也停新结账。实现旁支改那些场景句子。本 Brief 文件不改 `SCENARIO_TESTS.md`。
+- 职责：付钱买 Pro 或加购，和「倾诉对客人开着」，不再写成同一件事。实现旁支改 `SCENARIO_TESTS.md` 对应句；本 Brief 文件不改该文件正文。
 
 不新开倾诉面板，所以不改睡觉时打开倾诉要不要叫醒。那条仍留给真正打开倾诉的时候。
 
@@ -164,18 +188,24 @@ T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏�
 
 开工后的代码旁支至少改这些预期（撤掉「已购 / 生成层可以在挂载关时打开」或「未订阅仍可新开 Pro」就会红，红了才算锁住）：
 
-- `confideUserVisibilityGate.test.js`：`companionGeneration: true`、挂载 false、idle、安全语料通过 → 改为不能开。耳朵显隐与它一致。`CONFIDE_USER_MOUNT_ENABLED === false` 与开发构建 `?confide=1` 的用例保持。
-- `desktopCompanionL1.test.js`：标题为挂载关闭仍显示倾诉行的用例，改为不显示；「生成层在 idle 能开」改为不能开。专注中、安全语料失败、窄屏不漏行，保持。
-- `idleChromeOrchestration.test.js`：「desktop companionGeneration shows Confide on wide-more only」在挂载 false 时改为宽屏也不显示该行。
-- `supportPaidCardPresentation.test.js`：未订阅看不到可点的 Pro 结账；已买终身但 `addonActive` 不是 true → `showAddon === false`。已买加购 → 仍 `showAddon === true` 且淡化。已订阅 Pro 的现有呈现保持。
+- `confideUserVisibilityGate.test.js`：`companionGeneration: true`、挂载 false、idle、安全语料通过 → 改为不能开。耳朵显隐与它一致。开发构建下 `?confide=1` 用例保持；**补生产构建下 query 无效**。
+- `desktopCompanionL1.test.js`：挂载关闭仍显示倾诉行 → 不显示；「生成层在 idle 能开」→ 不能开。专注中、安全语料失败、窄屏不漏行，保持。
+- `idleChromeOrchestration.test.js`：挂载 false 时宽屏也不显示倾诉行。
+- `supportPaidCardPresentation.test.js`：已买终身未购加购 → `showAddon === false`；已买加购 → 仍 `showAddon === true` 且淡化；**未购 Pro 不可展示可点第四卡**。已订阅 Pro 的现有呈现保持。
+- `focus-tiger/cloud`：`createProCheckoutSession` / `createCompanionAddonCheckoutSession` 闸门单测（410 体例）。
 - 生产构建：`?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro` 不打开倾诉、不假冒已购。安装包深链的只读核对写进同一旁支的说明，核对完成前这组预期不得标成已证实。
-- Pro 与加购的新建结账路由：关闭时返回拒绝，不返回 Stripe 地址。
 
-若付款契约或菜单契约还断言「未购加购卡可点」或「未订阅 Pro 可新开结账」，同一旁支改掉，不另开 PR。
+若付款契约或菜单契约还断言「未购加购卡 / 未购 Pro 卡可点」，同一旁支改掉，不另开 PR。
 
 ## 冲突与后续
 
-- 无同内容的实现 PR。盘点 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633) 已合，那是只读。#1639 是本文件的旧版，第四卡结论已被本节取代。
-- [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) 已合并。禁止把那笔提交再 cherry-pick 进来。
-- 实现合并之后的下一份是治理文档：术语表、B3 看板「草稿、未打分、已合并」。不要和闸门改动放在同一个 PR。
-- 签名公证核实、架构审计、邮箱登录的增量复核、电脑壳升级，都不在本说明的实现旁支里。
+- 无同内容的实现 PR。盘点 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633) 已合，只读。#1639 是本文件的旧版，第四卡结论已被本节取代。
+- [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) **已合**（T92 toast）；本旁支禁止重复或回滚该行为。
+
+## 交付顺序（PO 2026-11-09）
+
+1. **本 Brief 增补**（docs PR [#1642](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1642)，#1639 / #1641 后续）— 晚间改口与核对表落盘。  
+2. **实现旁支**：闸门、第四 / 五卡 UI、文案、测试、双 checkout **410** → `npm run test:payment-contract`。  
+3. **部署 Worker**，验证 410 与在途 confirm 仍可用；记 Version。  
+4. **治理 docs PR**：`GLOSSARY.md` 等更正「已购宽屏可开倾诉」等与产品不一致句；B3 看板「草稿、未打分、已合并」。  
+5. 其后：签名公证核实、B1、T93/T95（不在本 Brief 范围）。
