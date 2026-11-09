@@ -913,6 +913,7 @@
 |---|---|
 | I1 | 备份 whitelist 变更 PR：test plan **必须**含「A 端导出 → B 端清库导入 → 用户可见状态一致」（徽章枚数、寅币余额、莲花朵数等），不得只写 serialize 单测 |
 | I2 | 新增 backup key 时同步查 `SHARED_RESOURCES` + 展示 orchestration（Idle 徽章、寅币 panel、`getEntitlementState` 等），禁止只改 `practiceBackupSnapshot.js` |
+| I2b | 新增 `FOCUS_TIGER_LOCAL_STORAGE_KEYS` 条目时，**同一 PR** 必须把它写入 `PRACTICE_BACKUP_EXPORT_KEYS`（进备份）或 `LOCAL_BACKUP_EXCLUDE_ROWS` / `LOCAL_BACKUP_RESET_ONLY_KEYS`（明确不导出）。`audit:local-backup-coverage` 对未分类钥匙以及相对 `origin/develop` 的新增钥匙失败。补六把研究键名单只是清理；分类强制才是闸。 |
 | I3 | 凡 in-memory store（`FocusCoinsStore`、`LotusPondStore`…）对应持久 key 进 backup → **必须** `reloadFromStorage` + 挂 `subscribePracticeDataImported`（或等价 refresh） |
 | I4 | 单测禁止把「故意排除 backup」锁成永久契约；若产品改口径纳入 backup，须改断言并补 round-trip 用例 |
 | I5 | TRACKER 备份行 schema 版本号与 `PRACTICE_BACKUP_SCHEMA_VERSION` 同步（v3→v4），避免文档仍写 v2/6 key |
