@@ -353,7 +353,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
   - `docs/ARCHITECTURE.md:104`（`cloud/src` 仍注 stub）；同文件 `:108`（`2026-08-20`「现网仍旧 mock」）
   - 已合 B5：`findings/2026-11-07/B5-security-privacy-compliance-findings.md` 对 `src/core/cloudApiClient.js` 默认基址的引用
 - 影响：按架构文档做边界判断的人，会把已经存在的云路径当成还没上线。
-- 建议整改：改目录注释：cloud 是独立 Worker 包，哪些路径默认会请求、哪些写死关闭，指到 B5 的网络表，不要再写 stub / mock（**跟进 docs PR**，非本小修范围）。
+- 建议整改：改目录注释：cloud 是独立 Worker 包，哪些路径默认会请求、哪些写死关闭，指到 B5 的网络表，不要再写 stub / mock（**跟进 docs PR #1644**，非本小修范围）。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记
 - 复核状态：未复核
@@ -368,7 +368,7 @@ PR 冒烟（`.github/workflows/pr-smoke.yml`）会跑 `test:smoke`（含 `docs:c
 - 描述：叠层槽位、精灵通道、倾诉路由影子、会话 UI 门、可见性契约各自有模块和测试。没有一份说明「同一次点击先问谁」。
 - 证据：§2.5 的文件名单。本轮没有复现两套规则互相否定。
 - 影响：后来的人会再写第三套仲裁。这是可维护性风险，不是已证实的用户故障。
-- 建议整改：在 `docs/` 加一页「谁先说话」，每个名字对应现有文件（**跟进 docs PR**）。未证明冲突之前，不要合并这些模块。
+- 建议整改：在 `docs/` 加一页「谁先说话」，每个名字对应现有文件（**跟进 docs PR #1644** · `ARBITRATION_PRECEDENCE.md`）。未证明冲突之前，不要合并这些模块。
 - 建议负责人：待治理登记
 - 关联任务账条目：待治理登记
 - 复核状态：未复核
