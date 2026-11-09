@@ -14,6 +14,7 @@ import { A11_DARK_VOICE_CARD_BEFORE_1147 } from '../../scripts/fixtures/a11-dark
 import { classifyGlassRootFill } from '../../scripts/check-glass-card-roots.js';
 import { GLASS_FILL } from '../ui/glassPanelStyles.js';
 import { A13_GLASS_VISUAL_SURFACES } from './glassCardVisualSurfaces.js';
+import { canOpenConfidePanel } from './confide/confideUserVisibilityGate.js';
 import {
   isDarkGlassPlateRgb,
   isOpaqueCreamPlateRgb,
@@ -24,6 +25,29 @@ import {
 
 test('A13 surface manifest has twelve entries', () => {
   assert.equal(A13_GLASS_VISUAL_SURFACES.length, 12);
+});
+
+test('confide-card glass row is QA-harness-only while guest mount is off', () => {
+  const row = A13_GLASS_VISUAL_SURFACES.find((s) => s.id === 'confide-card');
+  assert.ok(row);
+  assert.equal(row.qaHarnessRequired, true);
+  assert.equal(row.shellQuery?.confide, '1');
+  assert.equal(
+    canOpenConfidePanel({
+      search: '?confide=1',
+      stage: 'idle',
+      qaHarnessAllowed: false
+    }),
+    false
+  );
+  assert.equal(
+    canOpenConfidePanel({
+      search: '?confide=1',
+      stage: 'idle',
+      qaHarnessAllowed: true
+    }),
+    true
+  );
 });
 
 test('GLASS_FILL token string stable for scanners', () => {

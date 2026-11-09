@@ -8,7 +8,10 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
-import { isClientQaHarnessAllowed } from './clientQaHarnessGate.js';
+import {
+  isClientQaHarnessAllowed,
+  parseEntitlementMockSearchIfQaHarness
+} from './clientQaHarnessGate.js';
 import { isCompanionEntitled } from './companionEntitlement.js';
 import { canOpenConfidePanel } from './confide/confideUserVisibilityGate.js';
 
@@ -31,9 +34,24 @@ describe('clientQaHarnessGate', () => {
   });
 
   it('production main does not honor ?entitlementMock= without QA harness', () => {
-    assert.match(
-      mainSrc,
-      /isClientQaHarnessAllowed\(\)\s*&&\s*parseEntitlementMockSearch/
+    assert.match(mainSrc, /parseEntitlementMockSearchIfQaHarness\(/);
+    assert.doesNotMatch(mainSrc, /parseEntitlementMockSearch\(/);
+  });
+
+  it('parseEntitlementMockSearchIfQaHarness is null when harness is off', () => {
+    assert.equal(
+      parseEntitlementMockSearchIfQaHarness('?entitlementMock=both', {
+        viteDev: false,
+        viteQaBoot: ''
+      }),
+      null
+    );
+    assert.equal(
+      parseEntitlementMockSearchIfQaHarness('?entitlementMock=both', {
+        viteDev: true,
+        viteQaBoot: ''
+      }),
+      'both'
     );
   });
 

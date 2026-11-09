@@ -649,8 +649,7 @@ import {
 } from './core/entitlement/entitlementGate.js';
 import { createCloudEntitlementProvider } from './core/entitlement/cloudEntitlementProvider.js';
 import { getCloudApiBaseUrl } from './core/cloudApiClient.js';
-import { parseEntitlementMockSearch } from './core/entitlement/mockEntitlementProvider.js';
-import { isClientQaHarnessAllowed } from './core/clientQaHarnessGate.js';
+import { parseEntitlementMockSearchIfQaHarness } from './core/clientQaHarnessGate.js';
 import { FocusDurationPickerUI } from './ui/FocusDurationPickerUI.js';
 import {
   hasMicroRitualMsOverride,
@@ -1037,8 +1036,7 @@ async function init() {
 
   // Entitlement provider: cloud when API base set; mock for lab / ?entitlementMock=.
   {
-    const mockOverride =
-      isClientQaHarnessAllowed() && parseEntitlementMockSearch(location.search);
+    const mockOverride = parseEntitlementMockSearchIfQaHarness(location.search);
     if (mockOverride || !getCloudApiBaseUrl()) {
       setEntitlementProvider(
         createMockEntitlementProvider({ search: location.search })
