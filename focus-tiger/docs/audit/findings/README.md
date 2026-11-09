@@ -18,8 +18,8 @@
 
 | 字段 | 值 |
 |---|---|
-| **截至 SHA** | `d54f11a`（本看板小修 PR 取证时尖端；合入后以 PR merge 后 `origin/develop` 为准） |
-| **看板最后更新** | 2026-11-09 · B1 小修 + 重扫 |
+| **截至 SHA** | `5ee23bc`（Merge **#1643** → develop；扫描取证仍为 `d54f11a` 见 JSON `gitSha`） |
+| **看板最后更新** | 2026-11-09 · #1643 合入后 |
 | **基准文档** | [`AUDIT_BASELINE.md`](../AUDIT_BASELINE.md) v1.1 |
 | **否决阻断（现状）** | V2 仍见 B6/R2；发布裁决不在此目录 |
 
@@ -29,7 +29,7 @@
 
 | 维度 | 报告文件 | 检状态 / 得分 | PR | 状态 | 备注 |
 |---:|---|---|---:|---|---|
-| ①② | [`2026-11-09/B1-architecture-code-findings.md`](2026-11-09/B1-architecture-code-findings.md) | 部分已检 · ①② 各 **2** | #1640 首稿；小修 **OPEN**（本旁支） | 已合 + 小修待合 | 取证 `b1-static-scan.json` · `gitSha`；1-01/1-02 **P2** |
+| ①② | [`2026-11-09/B1-architecture-code-findings.md`](2026-11-09/B1-architecture-code-findings.md) | 部分已检 · ①② 各 **2** | #1640 首稿；小修 **#1643**（含 #1644 叠并） | **MERGED** | 取证 `gitSha`=`d54f11a`；1-01/1-02 **P2**；1-06/1-07 见 [`ARBITRATION_PRECEDENCE.md`](../../ARBITRATION_PRECEDENCE.md) |
 | ③④ | [`2026-11-08/B2-testing-release-pm-findings.md`](2026-11-08/B2-testing-release-pm-findings.md) | 部分 | #1616 | **MERGED** | |
 | ⑤ | [`2026-11-09/B3-product-scenarios-findings.md`](2026-11-09/B3-product-scenarios-findings.md) | 部分 · **未打分** | #1638 | **MERGED** | 缺口：安装包五核心场景实机 |
 | ⑥ | `B4a-uiux-western-findings.md` | — | — | **未开始** | Brief 已有 |
@@ -48,8 +48,7 @@
 
 | 顺序 | 工作 | 类型 |
 |---:|---|---|
-| — | B1 小修 + 本看板 | docs · **本 PR** |
-| — | `ARCHITECTURE.md` cloud + [`ARBITRATION_PRECEDENCE.md`](../../ARBITRATION_PRECEDENCE.md) | docs · **#1644**（叠 PR1） |
+| ✓ | B1 小修 + 看板 + cloud/仲裁文档 | **#1643** / #1644→旁支已叠入 |
 | — | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · 另 PR |
 | — | reset +6 钥匙 vs export 核对 | 只读 · 新会话 |
 | — | `RISK_REGISTER.md` 首版 | docs · 新会话 |
