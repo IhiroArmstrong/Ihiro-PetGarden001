@@ -418,6 +418,10 @@ import { ConfideToYinUI } from './ui/ConfideToYinUI.js';
 import { YinPersonalMemoryUI } from './ui/YinPersonalMemoryUI.js';
 import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
+import {
+  CONFIDE_OPEN_BLOCKED_TOAST_TESTID,
+  confideOpenBlockedUserMessage
+} from './core/confide/confideOpenBlockedFeedback.js';
 import { confideReplyAckEmotionKey } from './core/confideReplyAckGesture.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { getMonetizationFunnelStore } from './core/monetizationIntentFunnel.js';
@@ -2672,6 +2676,15 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
     canOpen: canOpenConfideNow,
+    onOpenBlocked: () => {
+      const message = confideOpenBlockedUserMessage(getLocale());
+      if (!message) return;
+      mindfulToast.element.dataset.testid = CONFIDE_OPEN_BLOCKED_TOAST_TESTID;
+      mindfulToast.show(message, {
+        placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+        visibleMs: 12_000
+      });
+    },
     onOpen: () => {
       companionIdleUnloadScheduler.cancel();
       closeGrowthOverlayCards({ except: 'confide' });

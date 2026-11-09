@@ -214,6 +214,7 @@ export class ConfideToYinUI {
    * @param {(info: { route: string, lineId: string, source?: string }) => void} [handlers.onReplied]
    * @param {(info: { route: string, lineId: string, source?: string }) => void} [handlers.onReplyAckGesture]
    * @param {() => boolean} [handlers.canOpen]
+   * @param {() => void} [handlers.onOpenBlocked] when canOpen rejects — surface T92 help (Plan A dead-end)
    * @param {() => void} [handlers.onOpenMemoryPanel]
    * @param {(memoryId: string) => void} [handlers.onMemoryForgotten]
    * @param {() => void} [handlers.onMemoryRemembered]
@@ -513,7 +514,10 @@ export class ConfideToYinUI {
 
   open() {
     if (this._open) return;
-    if (this.handlers.canOpen && !this.handlers.canOpen()) return;
+    if (this.handlers.canOpen && !this.handlers.canOpen()) {
+      this.handlers.onOpenBlocked?.();
+      return;
+    }
     this.handlers.onOpen?.();
     this._open = true;
     noteCoPracticeResearchConfideOpened();
