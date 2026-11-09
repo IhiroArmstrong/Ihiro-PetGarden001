@@ -49,7 +49,7 @@
 | 顺序 | 工作 | 类型 |
 |---:|---|---|
 | ✓ | B1 小修 + 看板 + cloud/仲裁文档 | **#1643** / #1644→旁支已叠入 |
-| — | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · 另 PR |
+| → | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · **OPEN**（`ci/b1-architecture-import-gate`） |
 | — | reset +6 钥匙 vs export 核对 | 只读 · 新会话 |
 | — | `RISK_REGISTER.md` 首版 | docs · 新会话 |
 | — | B4a / B4b | 审计轮次 |
