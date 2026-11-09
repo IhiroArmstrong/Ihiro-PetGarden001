@@ -105,3 +105,6 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 技术债 | 生产 Worker 探测须只打无副作用请求 | 2026-11-08 PO · 生产探测 | 旁路同上。已发生：健康检查、申请验证码、空写入、假令牌读取。无写入成功。 | 跟进中 |
 | 技术债 | T97：危机题卷须有资质标注人；PO 设 **2026-11-22** 汇报点（两周期限） | 2026-11-08 PO 书面 · R2 后续 | 旁路 [`issue-entries/docs-gov-dmg-gate-1620-followup.md`](./issue-entries/docs-gov-dmg-gate-1620-followup.md)。Brief `task-t97-crisis-annotator-qualification.md`。阻塞第 2/3 刀 `src`。 | 阻塞 |
 | 优化建议 | R2-lite 补跑：向量模型 **就绪 / 未就绪** 两配置须对照危机路由 | 2026-11-08 PO 书面 | 旁路同上。默认下载行为见 `l0EmbeddingProfiles`；实证待窄复跑。 | 未跟进 |
+| 优化建议 | B3·5-01：场景剧本仍以网页 `?product=1` 为主路径，对客验收须改走 macOS 安装包 | 2026-11-09 B3 首稿 · #1638 | 旁路 [`issue-entries/docs-audit-b3-product-scenarios-2026-11-09.md`](./issue-entries/docs-audit-b3-product-scenarios-2026-11-09.md)。发现稿 §5-01。 | 未跟进 |
+| 优化建议 | B3·5-02：「只做专注陪伴」与多入口表面是否一致，须安装包冷启动第一眼清单 | 2026-11-09 B3 首稿 · #1638 | 旁路同上。发现稿 §5-02。 | 未跟进 |
+| 技术债 | B3·5-05：欢迎/提醒/节奏统计默认开关未在安装包设置里核对 | 2026-11-09 B3 首稿 · #1638 | 旁路同上。发现稿 §5-05。 | 未跟进 |
