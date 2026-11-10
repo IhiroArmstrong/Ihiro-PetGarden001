@@ -15,6 +15,7 @@
  */
 
 import { isConfideSafetyCorpusOk } from './confideCorpus.js';
+import { isClientQaHarnessAllowed } from '../clientQaHarnessGate.js';
 
 /**
  * Flip to true only when Confide is intentionally user-launched
@@ -68,7 +69,8 @@ export function isConfideChromeStageAllowed(stage) {
  * @param {string} [opts.stage]
  * @param {() => boolean} [opts.safetyOk]
  * @param {boolean} [opts.mountEnabled]
- * @param {boolean} [opts.companionGeneration] Electron wide L1 generate layer
+ * @param {boolean} [opts.companionGeneration] ignored (Plan A option 1: purchase does not open Confide while mount is off)
+ * @param {boolean} [opts.qaHarnessAllowed]
  * @returns {boolean}
  */
 export function canOpenConfidePanel({
@@ -76,14 +78,14 @@ export function canOpenConfidePanel({
   stage = 'idle',
   safetyOk = isConfideSafetyCorpusOk,
   mountEnabled = CONFIDE_USER_MOUNT_ENABLED,
-  companionGeneration = false
+  companionGeneration = false,
+  qaHarnessAllowed = isClientQaHarnessAllowed()
 } = {}) {
+  void companionGeneration;
   if (!isConfideChromeStageAllowed(stage)) return false;
-  if (companionGeneration === true && safetyOk() === true) return true;
-  return (
-    isConfideUserVisible({ safetyOk, mountEnabled }) ||
-    isConfideDevHarness(search)
-  );
+  const harnessAllowed =
+    qaHarnessAllowed === true && isConfideDevHarness(search);
+  return isConfideUserVisible({ safetyOk, mountEnabled }) || harnessAllowed;
 }
 
 /**

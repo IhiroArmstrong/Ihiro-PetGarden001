@@ -43,11 +43,23 @@ function memStorage() {
 }
 
 describe('companionEntitlement', () => {
-  test('harness ?companionEntitled=1 grants access', () => {
+  test('harness ?companionEntitled=1 grants access only when QA build gate is on', () => {
     assert.equal(isCompanionEntitledHarness('?product=1&companionEntitled=1'), true);
     assert.equal(
-      isCompanionEntitled({ storage: memStorage(), search: '?companionEntitled=1' }),
+      isCompanionEntitled({
+        storage: memStorage(),
+        search: '?companionEntitled=1',
+        qaHarnessAllowed: true
+      }),
       true
+    );
+    assert.equal(
+      isCompanionEntitled({
+        storage: memStorage(),
+        search: '?companionEntitled=1',
+        qaHarnessAllowed: false
+      }),
+      false
     );
   });
 

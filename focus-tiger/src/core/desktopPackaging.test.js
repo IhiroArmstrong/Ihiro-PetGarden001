@@ -172,4 +172,14 @@ describe('desktop IPC allowlists', () => {
     );
     assert.equal(isDesktopCheckoutReturnUrl('http://127.0.0.1:5173/?product=1'), false);
   });
+
+  it('checkout return search forwards extra keys (QA params can ride; production harness must ignore)', () => {
+    const url =
+      'focus-tiger://app/?product=1&pro_session=cs_test_abc&confide=1&companionEntitled=1&entitlementMock=pro';
+    assert.equal(isDesktopCheckoutReturnUrl(url), true);
+    const search = desktopCheckoutReturnSearch(url);
+    assert.match(search, /confide=1/);
+    assert.match(search, /companionEntitled=1/);
+    assert.match(search, /entitlementMock=pro/);
+  });
 });

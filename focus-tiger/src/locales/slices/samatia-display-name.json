@@ -13,7 +13,7 @@
     "PRIVACY_SHEET_FULL_LEAD": "Below is the full privacy notice for Samatia (plain language), aligned with our published policy.",
     "SUPPORT_DESKTOP_RAM_NOTE": "Note: On Mac and Windows PCs with 8 GB of RAM or less, the optional on-device companion can add heavy memory pressure and may slow the whole app. We do not recommend that companion on those machines. Samatia hides the entry by default.",
     "SUPPORT_PRO_TITLE": "Samatia Pro",
-    "SUPPORT_WEB_LOCAL_AI_NOTE": "On-device Local AI runs in the desktop app, not in this browser. After you unlock it, open Samatia on Mac or Windows to talk with Yin locally.",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "On-device Local AI will run in the desktop app when Confide opens for guests. It is not open in this release; this browser cannot start it.",
     "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
   },
   "zh": {
@@ -30,7 +30,7 @@
     "PRIVACY_SHEET_FULL_LEAD": "以下为 Samatia 完整隐私声明（通俗表述），与公开发布的政策正文一致。",
     "SUPPORT_DESKTOP_RAM_NOTE": "提示：内存在 8GB 及以下的 Mac 与 Windows 电脑上，可选的端侧陪伴可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Samatia 默认隐藏入口。",
     "SUPPORT_PRO_TITLE": "Samatia Pro",
-    "SUPPORT_WEB_LOCAL_AI_NOTE": "本机 Local AI 只在桌面应用里运行，网页版没有。解锁后请在 Mac 或 Windows 打开 Samatia，才能在本机与阿寅倾诉。",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "本机 Local AI 将在倾诉对客人开放后于桌面应用运行。本版本尚未开放；此浏览器无法启动。",
     "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
   },
   "ja": {
@@ -47,7 +47,7 @@
     "PRIVACY_SHEET_FULL_LEAD": "以下は Samatia の完全なプライバシー通知（平易な言葉）です。公開ポリシーと内容を揃えています。",
     "SUPPORT_DESKTOP_RAM_NOTE": "ご注意：メモリ 8GB 以下の Mac および Windows PC では、任意の端末内コンパニオンがメモリ圧を高め、アプリ全体を遅くすることがあります。それらの機器ではおすすめしません。Samatia は初期状態で入口を出しません。",
     "SUPPORT_PRO_TITLE": "Samatia Pro",
-    "SUPPORT_WEB_LOCAL_AI_NOTE": "端末内の Local AI はデスクトップアプリでのみ動きます。このブラウザにはありません。解除後は Mac または Windows の Samatia を開くと、寅と端末内で話せます。",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "端末内 Local AI は、コンファイドがゲストに開いた後にデスクトップアプリで動きます。この版では未公開で、このブラウザでは起動できません。",
     "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
   }
 }

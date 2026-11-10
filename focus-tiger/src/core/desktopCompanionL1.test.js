@@ -155,16 +155,14 @@ describe('desktop companion L1 Confide chrome', () => {
     confideUserVisible: false
   };
 
-  it('shows the Confide row on wide-more when companionGeneration is on, even if mount is closed', () => {
+  it('does not show Confide on wide-more when only companionGeneration is on', () => {
     const hidden = listSecondaryChromeEntries('wide-more', allOn);
     assert.equal(hidden.some((e) => e.proxy === 'confide'), false);
     const open = listSecondaryChromeEntries('wide-more', {
       ...allOn,
       companionGeneration: true
     });
-    const row = open.find((e) => e.proxy === 'confide');
-    assert.equal(row?.labelKey, 'CONFIDE_MENU_LABEL');
-    assert.equal(row?.testId, 'idle-confide-desktop');
+    assert.equal(open.some((e) => e.proxy === 'confide'), false);
   });
 
   it('does not leak the desktop companion Confide row into the narrow drawer', () => {
@@ -175,7 +173,7 @@ describe('desktop companion L1 Confide chrome', () => {
     assert.equal(entries.some((e) => e.proxy === 'confide'), false);
   });
 
-  it('can open Confide from companion generation on Idle only', () => {
+  it('cannot open Confide from companion generation alone (Plan A mount-off)', () => {
     assert.equal(
       canOpenConfidePanel({
         search: '',
@@ -183,7 +181,7 @@ describe('desktop companion L1 Confide chrome', () => {
         companionGeneration: true,
         safetyOk: () => true
       }),
-      true
+      false
     );
     assert.equal(
       canOpenConfidePanel({

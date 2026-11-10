@@ -24,7 +24,7 @@
 | `facts/<日期>/` | 第 0 轮事实底稿 |
 | [`findings/README.md`](findings/README.md) | **审计状态看板**（PR、SHA、队列 SSOT） |
 | `findings/<日期>/` | 各任务报告、评分卡、90 天计划 |
-| [`RISK_REGISTER.md`](RISK_REGISTER.md) | 组织级风险登记册（v1.0 首版） |
+| [`RISK_REGISTER.md`](RISK_REGISTER.md) | 组织级风险登记册（v1.1.1） |
 | `governance-drafts/` | 待治理会话落账的草稿（非 SSOT） |
 
 ## 原稿来源

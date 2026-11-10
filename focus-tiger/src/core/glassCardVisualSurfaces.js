@@ -21,7 +21,7 @@
  * @property {Record<string, string>} [shellQuery] extra `?product=1` query keys
  * @property {string} [devHookGlobal] `window[global].openPanel()` for Electron-only rows
  * @property {'confide-user-or-harness'} [visibilityDependsOn] read product gate before asserting visible
- * @property {boolean} [qaHarnessRequired] true when guest mount is off and e2e must pass `?confide=1`
+ * @property {boolean} [qaHarnessRequired] Plan A: guest mount off; Playwright still opens via `?confide=1` + `FT_QA_BOOT`
  */
 
 /** @type {readonly A13GlassVisualSurface[]} */

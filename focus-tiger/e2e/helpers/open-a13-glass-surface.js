@@ -67,7 +67,15 @@ export async function openA13GlassSurface(page, surface) {
       else if (typeof ui?.open === 'function') ui.open();
     }, globalName);
     const root = String(surface.rootSelector).split(',')[0].trim();
-    await expect(page.locator(root).first()).toBeVisible({ timeout: 8_000 });
+    const locator = page.locator(root).first();
+    if (surface.qaHarnessRequired) {
+      await expect(
+        locator,
+        `${surface.id} stays hidden for guests; Playwright must use FT_QA_BOOT=1 + ${JSON.stringify(surface.shellQuery || {})}`
+      ).toBeVisible({ timeout: 8_000 });
+    } else {
+      await expect(locator).toBeVisible({ timeout: 8_000 });
+    }
     return;
   }
 
