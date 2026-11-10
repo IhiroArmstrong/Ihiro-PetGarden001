@@ -1,10 +1,10 @@
 # Task Brief · 深链 + Shortcuts 食谱
 
-> **状态（2026-11-07）**：**待 PO 点头** · 纯文档 · **无运行时**。  
+> **状态**：**PO 已点头（2026-11-10 ·「深链+ics」）** · Brief 已锁 · **无运行时**（实现另开旁支）。  
 > **人话**：让外部一键打开 App 并开始一场白名单练习；练习结束后可选「记入健康」——只走用户自己装的快捷指令，不读健康数据、不做 iOS 原生壳。  
 > **类**：实现时为 **B 类**（会改启动路径、结束画面按钮、设置开关）。本 PR 只锁 Brief。  
 > **槽位建议**：可选 · 点头后才「立即做」。**本 PR 不改** [`GLOSSARY.md`](../GLOSSARY.md) / [`SCHEDULING_GLOSSARY.md`](../SCHEDULING_GLOSSARY.md)（热点文件）。建议治理会话另登 T 号（勿抢并行审计可能占用的 T89）。  
-> **git 依据（开工前再核）**：`origin/develop` 上 **没有** 深链开坐 / Shortcuts Health 回写的 OPEN 或 MERGED 实现 PR（2026-11-07 `gh pr list` 检索为空）。  
+> **git 依据（开工前再核）**：Brief 文档 #1596 · #1604 已合 `develop`。截至 **2026-11-10** `gh pr list`：**无** 深链开坐 / Health 回写 OPEN 实现 PR。  
 > **不是**：**T49** 换原生壳。**不是** HealthKit / Capacitor。**不是** 读睡眠/HRV。**不是** Ritual Recipe 阶段 1 的 **B1**（官方 `templateId` 开坐，见 [`task-ritual-recipe-phase1.md`](./task-ritual-recipe-phase1.md)）。**不是** T44 全局快捷键扩面。**不是** 账号 / OAuth / 云。**不是** `.ics` 导出（见姊妹 Brief [`task-ics-reminder-export.md`](./task-ics-reminder-export.md)，依赖本 Brief 的 URL 字段）。
 
 **口令（点头后）**：`按深链 Shortcuts Brief 开工解析层`（先 A 刀单测，禁止一 PR 做完 Web+Electron+Health 按钮）。
@@ -304,7 +304,7 @@
 7. Things / Notion / Slack / Zapier / iOS 原生壳：**继续不做**（与 §1 拍板一致）。  
 8. Markdown 导出：**等深链 + 日历有人用再写姊妹 Brief**；边界见 §5.5。
 
-仍须 PO 对 §13 第 1–4 条书面点头后，口令 `按深链 Shortcuts Brief 开工解析层` 才执行。
+**PO 点头（2026-11-10）**：书面「深链+ics 点头」— §13 第 1–8 条 **已锁**。**口令已可用**：`按深链 Shortcuts Brief 开工解析层`（A 刀：解析纯函数 + 单测，不接线 UI、不做 Health 钮）。
 
 ---
 
