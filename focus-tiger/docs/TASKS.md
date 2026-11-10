@@ -553,6 +553,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 T93 第一刀只改云恢复写盘：本地为权威并集。不开 `practiceBackupCloudEnabled`，不改菜单灰行，不部署 Worker。
 
+### `t93-email-sign-in-d2` · note · D2 实现旁支 feature/t93-email-sign-in-d2 · Worker 默认允许发验证码 · 未部署 · 菜单登录仍灰 · 2026-11-10
+
+T93 第二刀：Worker 去掉写死 410，改成环境旗标。缺省允许发码；审计可设 `PRACTICE_BACKUP_WRITES_DISABLED=true` 保持关闭。客户端仍关云闸，菜单登录仍不可点。本刀不部署生产 Worker。
+
 ### `t93-email-sign-in-p0` · feature · 立即做 · 槽位 P1 · Brief #1605 · §4 已点头（2026-11-10）· 第一刀 D1 合并去重不开闸 · 合入前须 B5 增量复核 · 2026-11-10
 
 T93 邮箱登录（第一份 DMG 门闩；槽位 P1）。挂苹果 DMG Epic #5 / #631。方案 B：无密码 OTP，复用 practice-backup。§4 已点头：明文开闸、入口只留 Preferences、Setapp/MAS 关云登录。口令「开工邮箱登录 P0」须新 Chat；第一刀只做合并去重，不开云闸。合入前须 B5 增量复核。不是把审计 P0 写成槽位。不是识别率。
