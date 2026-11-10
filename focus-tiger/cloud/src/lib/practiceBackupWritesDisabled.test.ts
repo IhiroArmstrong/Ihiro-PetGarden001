@@ -1,6 +1,6 @@
 /**
- * 9-15b: every practice-backup route must return the same 410 gate.
- * Would fail on #1602 tip: index.ts called the helper once (request-otp only).
+ * T93 D2: default env allows OTP/writes; audit env can keep 410.
+ * Would fail on 9-15b tip: helper was a hard-coded true constant.
  */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -20,9 +20,68 @@ const PATHS = [
 	"/api/practice-backup/delete",
 ];
 
-describe("practiceBackupWritesDisabled · 9-15b", () => {
-	it("keeps the cloud writes flag on", () => {
-		assert.match(helperSrc, /export const PRACTICE_BACKUP_CLOUD_WRITES_DISABLED = true/);
+function isPracticeBackupCloudWritesDisabled(env?: {
+	PRACTICE_BACKUP_WRITES_DISABLED?: string;
+}): boolean {
+	try {
+		const raw = env?.PRACTICE_BACKUP_WRITES_DISABLED;
+		return raw === "true" || raw === "1";
+	} catch {
+		return false;
+	}
+}
+
+function isPracticeBackupCloudPathDisabled(
+	pathname: string,
+	env?: { PRACTICE_BACKUP_WRITES_DISABLED?: string },
+): boolean {
+	return isPracticeBackupCloudWritesDisabled(env) && PATHS.includes(pathname);
+}
+
+describe("practiceBackupWritesDisabled · T93 D2", () => {
+	it("defaults to allowed when env is missing or unreadable", () => {
+		assert.match(helperSrc, /return raw === "true" \|\| raw === "1"/);
+		assert.match(helperSrc, /return false;/);
+		assert.equal(isPracticeBackupCloudWritesDisabled(undefined), false);
+		assert.equal(isPracticeBackupCloudWritesDisabled({}), false);
+		assert.equal(
+			isPracticeBackupCloudWritesDisabled({
+				PRACTICE_BACKUP_WRITES_DISABLED: "false",
+			}),
+			false,
+		);
+	});
+
+	it("returns 410 only when audit env is true or 1", () => {
+		assert.equal(
+			isPracticeBackupCloudWritesDisabled({
+				PRACTICE_BACKUP_WRITES_DISABLED: "true",
+			}),
+			true,
+		);
+		assert.equal(
+			isPracticeBackupCloudWritesDisabled({
+				PRACTICE_BACKUP_WRITES_DISABLED: "1",
+			}),
+			true,
+		);
+		assert.equal(
+			isPracticeBackupCloudPathDisabled("/api/practice-backup/request-otp", {
+				PRACTICE_BACKUP_WRITES_DISABLED: "true",
+			}),
+			true,
+		);
+		assert.equal(
+			isPracticeBackupCloudPathDisabled("/api/practice-backup/request-otp", {}),
+			false,
+		);
+	});
+
+	it("does not keep the 9-15b hard-coded true constant", () => {
+		assert.doesNotMatch(
+			helperSrc,
+			/export const PRACTICE_BACKUP_CLOUD_WRITES_DISABLED = true/,
+		);
 	});
 
 	it("lists request-otp, verify, put, get, and delete", () => {
@@ -36,12 +95,13 @@ describe("practiceBackupWritesDisabled · 9-15b", () => {
 		assert.match(helperSrc, /practice_backup_disabled/);
 	});
 
-	it("calls the 410 helper once per listed path in index.ts", () => {
+	it("gates each listed path with the env helper in index.ts", () => {
+		assert.match(indexSrc, /isPracticeBackupCloudWritesDisabled\(env\)/);
 		const calls = indexSrc.split("practiceBackupCloudWritesDisabledJson(").length - 1;
 		assert.equal(
 			calls,
 			PATHS.length,
-			"index.ts must gate every practice-backup route, not only request-otp",
+			"index.ts must still be able to return 410 on every practice-backup route",
 		);
 		for (const path of PATHS) {
 			assert.match(indexSrc, new RegExp(path.replaceAll("/", "\\/")));

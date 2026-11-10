@@ -78,6 +78,13 @@ export interface Env {
 	/** Optional alias of ALLOWED_ORIGIN (comma-separated). */
 	ALLOWED_ORIGINS?: string;
 
+	/**
+	 * T93 D2: set `true`/`1` to keep practice-backup routes 410 (audit).
+	 * Missing / other values → OTP and snapshot routes are allowed in source.
+	 * Production stays 410 until a deploy of this code.
+	 */
+	PRACTICE_BACKUP_WRITES_DISABLED?: string;
+
 	/** Resend From header, e.g. "Yin <restore@twinsology.com>". */
 	RESEND_FROM?: string;
 	/** Newsletter welcome From — hello@ only; never fall back to RESEND_FROM. */
