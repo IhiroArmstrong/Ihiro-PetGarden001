@@ -545,6 +545,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `deep-link-shortcuts-cookbook` · feature · A 刀解析层进行中（纯函数 + 单测） · 2026-11-10
+
+深链 + Shortcuts 食谱。Web query 与已有 `focus-tiger://app` 落到同一开坐 action。Health 只走用户手势 + 快捷指令回写 Mindful Minutes。不是 T49 原生壳，不是 Ritual Recipe B1，不是读 Health。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。
+
 ### `locale-base-sync-plan-a` · feature · 进行中 · 本旁支 · 2026-11-10
 
 方案 A Support 四键从切片抄进 en/zh/ja。深链不改 locale 路由/query。新文案仍走切片。
@@ -588,10 +592,6 @@ T96 未覆盖语言求助兜底。日语未开放固定句接上 T92 求助句�
 ### `t98-confide-mount-off-inventory` · note · 已完成 · P1 · 只读盘点 · 2026-11-08
 
 T98 倾诉默认关闭入口盘点。交付：`docs/audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`。口令「按 T98 再盘一遍」除非代码面变，否则勿再开同内容旁支。
-
-### `deep-link-shortcuts-cookbook` · feature · Brief 待点头（纯文档） · 2026-11-07
-
-深链 + Shortcuts 食谱。Web query 与已有 `focus-tiger://app` 落到同一开坐 action。Health 只走用户手势 + 快捷指令回写 Mindful Minutes。不是 T49 原生壳，不是 Ritual Recipe B1，不是读 Health。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。
 
 ### `ics-reminder-export` · feature · Brief 待点头（纯文档 · 依赖深链解析） · 2026-11-07
 
