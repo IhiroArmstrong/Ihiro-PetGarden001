@@ -41,10 +41,22 @@ const baseOk = {
   postSessionOverlayActive: false,
   completionPending: false,
   sessionState: STATES.IDLE,
-  nowMs: Date.parse('2026-11-08T12:00:00.000Z')
+  nowMs: Date.parse('2026-11-08T12:00:00.000Z'),
+  releaseMenuEnabled: true
 };
 
 describe('T83 coPracticeResearch first-sit prompt', () => {
+  it('blocks when first-ship release gate is off', () => {
+    const storage = memoryStorage();
+    const c = evaluateCoPracticeResearchFirstSitPrompt({
+      ...baseOk,
+      storage,
+      releaseMenuEnabled: false
+    });
+    assert.equal(c.shouldShow, false);
+    assert.equal(c.reason, 'release-gate');
+  });
+
   it('blocks until qualified practice exists', () => {
     const storage = memoryStorage();
     const c = evaluateCoPracticeResearchFirstSitPrompt({

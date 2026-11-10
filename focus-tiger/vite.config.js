@@ -53,6 +53,13 @@ function focusTigerVersionPlugin() {
           // ?qaSeedStreak= / ?qaLotusBlooms= without shipping those hooks to users.
           'import.meta.env.VITE_FT_QA_BOOT': JSON.stringify(
             process.env.FT_QA_BOOT === '1' ? '1' : ''
+          ),
+          // Internal QA only — must stay off in desktop pack builds (see practiceStudyReleaseGate).
+          'import.meta.env.VITE_FT_PRACTICE_STUDY_MENU': JSON.stringify(
+            process.env.FT_PRACTICE_STUDY_MENU === '1' ||
+            process.env.VITE_FT_PRACTICE_STUDY_MENU === '1'
+              ? '1'
+              : ''
           )
         }
       };

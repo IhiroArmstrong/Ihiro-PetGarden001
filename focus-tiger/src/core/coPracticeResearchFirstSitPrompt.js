@@ -8,6 +8,7 @@
  */
 
 import { hasCoPracticeResearchConsent } from './coPracticeResearchConsent.js';
+import { isPracticeStudyMenuReleaseEnabled } from './practiceStudyReleaseGate.js';
 import { STATES } from './StateManager.js';
 
 export const CO_PRACTICE_RESEARCH_FIRST_SIT_PROMPT_KEY =
@@ -139,8 +140,16 @@ export function recordFirstSitPromptDismiss(storage, nowMs = Date.now()) {
  * @param {boolean} [input.postSessionOverlayActive]
  * @param {boolean} [input.completionPending]
  * @param {string} [input.sessionState]
+ * @param {boolean} [input.releaseMenuEnabled] test override; default = release gate
  */
 export function evaluateCoPracticeResearchFirstSitPrompt(input = {}) {
+  const releaseMenuEnabled =
+    input.releaseMenuEnabled !== undefined
+      ? input.releaseMenuEnabled === true
+      : isPracticeStudyMenuReleaseEnabled();
+  if (!releaseMenuEnabled) {
+    return { shouldShow: false, reason: 'release-gate' };
+  }
   const storage = resolveStorage(input.storage);
   if (hasCoPracticeResearchConsent(storage)) {
     return { shouldShow: false, reason: 'already-enrolled' };

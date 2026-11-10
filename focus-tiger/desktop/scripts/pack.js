@@ -10,21 +10,26 @@ import { fileURLToPath } from 'node:url';
 const desktopDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const focusTigerRoot = path.join(desktopDir, '..');
 
-function assertReleaseQaBootEnvUnset() {
+function assertPlanALiveShipPackEnvUnset() {
   const offenders = [];
-  for (const key of ['FT_QA_BOOT', 'VITE_FT_QA_BOOT']) {
+  for (const key of [
+    'FT_QA_BOOT',
+    'VITE_FT_QA_BOOT',
+    'FT_PRACTICE_STUDY_MENU',
+    'VITE_FT_PRACTICE_STUDY_MENU'
+  ]) {
     const v = process.env[key];
     if (v === '1' || v === 'true' || v === true) offenders.push(key);
   }
   if (offenders.length > 0) {
     console.error(
-      `desktop pack: refuse release build with QA boot env set: ${offenders.join(', ')}`
+      `desktop pack: refuse release build with live-ship QA flags set: ${offenders.join(', ')}`
     );
     process.exit(1);
   }
 }
 
-assertReleaseQaBootEnvUnset();
+assertPlanALiveShipPackEnvUnset();
 
 const vite = spawnSync('npm', ['run', 'build'], {
   cwd: focusTigerRoot,

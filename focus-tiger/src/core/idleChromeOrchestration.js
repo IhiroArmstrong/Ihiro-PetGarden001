@@ -15,6 +15,7 @@
 
 import { shouldOfferLanguagePicker } from '../locales/localePreference.js';
 import { listRitualConfigs } from './RitualFlow.js';
+import { isPracticeStudyMenuReleaseEnabled } from './practiceStudyReleaseGate.js';
 import { isEntitled } from './entitlement/entitlementGate.js';
 import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
@@ -889,11 +890,15 @@ export function listSecondaryChromeEntries(surface, visibility) {
       testId: 'idle-help-center'
     },
     { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' },
-    {
-      proxy: 'practice-study',
-      labelKey: 'PRACTICE_STUDY_MENU_LABEL',
-      testId: 'idle-practice-study'
-    },
+    ...(isPracticeStudyMenuReleaseEnabled()
+      ? [
+          {
+            proxy: 'practice-study',
+            labelKey: 'PRACTICE_STUDY_MENU_LABEL',
+            testId: 'idle-practice-study'
+          }
+        ]
+      : []),
     {
       proxy: 'membership',
       labelKey: 'MENU_SUBSCRIPTION_ROW',
