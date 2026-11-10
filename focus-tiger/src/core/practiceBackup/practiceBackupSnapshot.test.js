@@ -150,6 +150,63 @@ describe('practiceBackupSnapshot', () => {
     assert.equal(lotus.lifetimeMinutes, 360);
   });
 
+  it('cloud restore keeps local-only journey rows when cloud key is null', () => {
+    const localEntry = {
+      at: '2026-01-01T00:00:00.000Z',
+      minutes: 10,
+      arrive: true,
+      reflect: false
+    };
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': JSON.stringify({ entries: [localEntry] })
+    });
+    const snap = {
+      schemaVersion: PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION,
+      savedAt: '2026-08-12T00:00:00.000Z',
+      stores: Object.fromEntries(
+        PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS.map((k) => [k, null])
+      )
+    };
+    writePracticeBackupCloudStoresRaw(storage, snap);
+    const journey = JSON.parse(storage.getItem('focus-tiger.journey-log.v1'));
+    assert.equal(journey.entries.length, 1);
+    assert.equal(journey.entries[0].at, localEntry.at);
+  });
+
+  it('cloud restore unions journey rows instead of overwriting', () => {
+    const localOnly = {
+      at: '2026-01-01T00:00:00.000Z',
+      minutes: 10,
+      arrive: true,
+      reflect: false
+    };
+    const cloudOnly = {
+      at: '2026-02-01T00:00:00.000Z',
+      minutes: 15,
+      arrive: false,
+      reflect: true
+    };
+    const storage = memStorage({
+      'focus-tiger.journey-log.v1': JSON.stringify({ entries: [localOnly] })
+    });
+    const snap = {
+      schemaVersion: PRACTICE_BACKUP_CLOUD_SCHEMA_VERSION,
+      savedAt: '2026-08-12T00:00:00.000Z',
+      stores: Object.fromEntries(
+        PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS.map((k) => {
+          if (k === 'focus-tiger.journey-log.v1') {
+            return [k, { entries: [cloudOnly] }];
+          }
+          return [k, null];
+        })
+      )
+    };
+    writePracticeBackupCloudStoresRaw(storage, snap);
+    const journey = JSON.parse(storage.getItem('focus-tiger.journey-log.v1'));
+    const ats = journey.entries.map((row) => row.at).sort();
+    assert.deepEqual(ats, [localOnly.at, cloudOnly.at]);
+  });
+
   it('parsePracticeBackupCloudSnapshotClient accepts legacy v1', () => {
     const snap = {
       schemaVersion: 1,
