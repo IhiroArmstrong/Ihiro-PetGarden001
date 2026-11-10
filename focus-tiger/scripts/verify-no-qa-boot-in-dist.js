@@ -16,6 +16,20 @@ import { fileURLToPath } from 'node:url';
 const rootDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const distDir = path.join(rootDir, 'dist');
 
+
+/** Patterns that must not appear when production build inlined QA boot ON. */
+const FORBIDDEN_INLINED = [
+  'VITE_FT_QA_BOOT","1"',
+  "VITE_FT_QA_BOOT', '1'",
+  'VITE_FT_QA_BOOT":"1"',
+  'VITE_FT_QA_BOOT===!0',
+  'VITE_FT_QA_BOOT===true',
+  'VITE_FT_QA_BOOT===1',
+  'VITE_FT_QA_BOOT==!0',
+  'VITE_FT_QA_BOOT==true',
+  'VITE_FT_QA_BOOT==1',
+];
+
 const FORBIDDEN = [
   'qaSeedStreak',
   'qaSeedMinutes',
@@ -55,6 +69,11 @@ for (const file of walkJsFiles(distDir)) {
   for (const token of FORBIDDEN) {
     if (text.includes(token)) {
       hits.push({ file: path.relative(rootDir, file), token });
+    }
+  }
+  for (const token of FORBIDDEN_INLINED) {
+    if (text.includes(token)) {
+      hits.push({ file: path.relative(rootDir, file), token: `inlined:${token}` });
     }
   }
 }

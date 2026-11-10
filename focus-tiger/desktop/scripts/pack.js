@@ -10,6 +10,22 @@ import { fileURLToPath } from 'node:url';
 const desktopDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const focusTigerRoot = path.join(desktopDir, '..');
 
+function assertReleaseQaBootEnvUnset() {
+  const offenders = [];
+  for (const key of ['FT_QA_BOOT', 'VITE_FT_QA_BOOT']) {
+    const v = process.env[key];
+    if (v === '1' || v === 'true' || v === true) offenders.push(key);
+  }
+  if (offenders.length > 0) {
+    console.error(
+      `desktop pack: refuse release build with QA boot env set: ${offenders.join(', ')}`
+    );
+    process.exit(1);
+  }
+}
+
+assertReleaseQaBootEnvUnset();
+
 const vite = spawnSync('npm', ['run', 'build'], {
   cwd: focusTigerRoot,
   stdio: 'inherit',
@@ -17,6 +33,14 @@ const vite = spawnSync('npm', ['run', 'build'], {
   shell: process.platform === 'win32'
 });
 if (vite.status !== 0) process.exit(vite.status ?? 1);
+
+const verify = spawnSync('npm', ['run', 'build:verify-no-qa-boot'], {
+  cwd: focusTigerRoot,
+  stdio: 'inherit',
+  env: process.env,
+  shell: process.platform === 'win32'
+});
+if (verify.status !== 0) process.exit(verify.status ?? 1);
 
 const pack = spawnSync(
   'npm',
