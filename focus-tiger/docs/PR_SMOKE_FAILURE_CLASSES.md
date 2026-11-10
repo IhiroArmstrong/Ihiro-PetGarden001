@@ -65,6 +65,23 @@
 
 ---
 
+## 机械闸（T99 · 2026-11-09）
+
+口头纪律不够。下列已由钩子 / CI / CODEOWNERS 拦住；其余仍靠 Agent 规则。
+
+| 条 | 机制 | 仍靠自觉的部分 |
+|---|---|---|
+| 推送前必跑浏览器冒烟 | husky `pre-push` → `npm run test:e2e:smoke`；文档-only 跳过 | `FT_SKIP_PRE_PUSH_SMOKE=1` 可绕过，须在 PR 写明 |
+| 改菜单再跑菜单走完 | 路径表 [`scripts/pr-smoke-path-routes.js`](../scripts/pr-smoke-path-routes.js)；CI `pr-smoke.yml` 与 pre-push **共用** | — |
+| 入口 `main.js` 不加行 | `pre-commit` 先跑 `audit:b1-architecture-gate`；超 cap 拒绝并提示抽到 `src/core/` / `src/ui/` | 抬上限须单独基线 PR + PO 点头 |
+| 禁止功能 PR 改行数基线 | [`.github/CODEOWNERS`](../../.github/CODEOWNERS) 钉死 `b1-architecture-gate-baseline.json` | GitHub 须开启 CODEOWNERS 审查 |
+| 可见性跟开关 | 倾诉玻璃卡走 `shouldAssertA13SurfaceVisible`（挂载关且无 `?confide=1` → 不要求看得见） | 其它写死可见性的 spec 仍须改测试同批 |
+| 红灯先归类 | Agent 规则 `ci-failure-triage` Step 0；重跑上限 1 | **未做**：CI 自动正则贴种类评论（后续） |
+
+**本刀不做**：种类 1/2 清零计划、flaky 观察集、每周红灯统计、CI 自动归类评论。
+
+---
+
 ## 团队防范清单
 
 **看红灯时**

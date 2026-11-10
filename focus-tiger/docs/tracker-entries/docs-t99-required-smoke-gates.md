@@ -1,0 +1,1 @@
+| T99 必跑失败机械闸 | 纯后端 | 仅单元测试覆盖 | 本条验收的是钩子与读开关：`pre-commit` 先拦 `main.js` 行数；`pre-push` 跑 `test:e2e:smoke`（菜单路径再跑菜单走完）；倾诉玻璃卡用 `shouldAssertA13SurfaceVisible`。不代表产品交互已关单。 | — | — | — | `PR_SMOKE_FAILURE_CLASSES.md` · `.husky/pre-push` · `a13SurfaceVisibility.js` | 2026-11-09 |

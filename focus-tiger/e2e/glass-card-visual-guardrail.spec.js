@@ -14,6 +14,7 @@ import {
   openA13GlassSurface,
   prepareIdleWideShell
 } from './helpers/open-a13-glass-surface.js';
+import { shouldAssertA13SurfaceVisible } from '../src/core/a13SurfaceVisibility.js';
 
 /**
  * A13 · Key card warm-glass guardrails + optional element screenshots.
@@ -30,7 +31,17 @@ test.describe('A13 glass card visual guardrail · wide Idle', () => {
     test(`${surface.id} · warm sanctuary glass (not dark plate)`, async ({
       page
     }) => {
+      const search = new URLSearchParams(surface.shellQuery || {}).toString();
+      const expectVisible = shouldAssertA13SurfaceVisible(surface, {
+        search: search ? `?${search}` : ''
+      });
       await prepareIdleWideShell(page, surface);
+      if (!expectVisible) {
+        await expect(page.locator(surface.rootSelector).first()).toBeHidden({
+          timeout: 3_000
+        });
+        return;
+      }
       await openA13GlassSurface(page, surface);
 
       if (surface.expectWarmGlass === false) {
@@ -58,6 +69,14 @@ test.describe('A13 glass card visual guardrail · wide Idle', () => {
         'chromium project only'
       );
 
+      const search = new URLSearchParams(surface.shellQuery || {}).toString();
+      const expectVisible = shouldAssertA13SurfaceVisible(surface, {
+        search: search ? `?${search}` : ''
+      });
+      test.skip(
+        !expectVisible,
+        `${surface.id}: product mount off and no QA harness — skip screenshot`
+      );
       await prepareIdleWideShell(page, surface);
       await openA13GlassSurface(page, surface);
       const target = page.locator(surface.rootSelector).first();

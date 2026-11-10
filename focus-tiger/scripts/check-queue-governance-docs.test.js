@@ -204,6 +204,22 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T99 required-smoke-gate shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md',
+        'focus-tiger/scripts/pr-smoke-path-routes.js',
+        '.husky/pre-push',
+        '.github/CODEOWNERS',
+        '.cursor/rules/focus-tiger-pr-smoke-gates.mdc',
+        'focus-tiger/src/core/a13SurfaceVisibility.js'
+      ]),
+      null
+    );
+  });
+
   it('allows T88 guided-meditation release-hardening shards with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([

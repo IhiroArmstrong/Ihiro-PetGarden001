@@ -5,6 +5,9 @@ cd "$(dirname "$0")/.." || exit 1
 # Session lock + primary-develop checkout gate (Prompt 3)
 node focus-tiger/scripts/gate-session-lock-precommit.js || exit $?
 
+# T99: fail fast on main.js line cap / import cycles before the full smoke
+node focus-tiger/scripts/audit-b1-architecture-gate.js || exit $?
+
 # Refresh derived doc machine blocks before docs:check (kb-live-gap-audit drift guard)
 cd focus-tiger && npm run docs:sync || exit $?
 cd .. || exit 1
