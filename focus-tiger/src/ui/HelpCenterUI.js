@@ -57,6 +57,10 @@ import {
   wideSecondaryDockPlacement
 } from '../core/wideSecondaryDockCss.js';
 import { Z } from './zIndexLayers.js';
+import {
+  HELP_CENTER_ASK_SAFETY_T92_TESTID,
+  helpCenterAskSafetyT92Message
+} from '../core/confide/confidePlanAHelpCenterAskSafety.js';
 
 const STYLE_ID = 'help-center-ui-styles-v1';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -392,7 +396,7 @@ export class HelpCenterUI {
       this._hideOperatingPanel();
       this._askSearching = false;
       this._syncAskStatus();
-      this._renderAskResults(true);
+      this._renderAskSafetyT92();
       return;
     }
     if (policy.shouldExecute && policy.decision) {
@@ -585,6 +589,16 @@ export class HelpCenterUI {
       changed: true,
       undo: () => setLocale(previous, { persist: true })
     };
+  }
+
+  _renderAskSafetyT92() {
+    this.askResultsEl.replaceChildren();
+    this.askResultsEl.hidden = false;
+    const line = document.createElement('p');
+    line.className = 'help-center__ask-safety-t92';
+    line.dataset.testid = HELP_CENTER_ASK_SAFETY_T92_TESTID;
+    line.textContent = helpCenterAskSafetyT92Message(getLocale());
+    this.askResultsEl.append(line);
   }
 
   /**
@@ -800,6 +814,7 @@ export class HelpCenterUI {
         cursor: wait;
       }
       .help-center__ask-status,
+      .help-center__ask-safety-t92,
       .help-center__ask-empty,
       .help-center__ask-results-label,
       .help-center__operating-line {
