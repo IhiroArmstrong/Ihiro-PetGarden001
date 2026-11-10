@@ -47,6 +47,7 @@ CI classification (2026-11-09): every reset-whitelist key must appear in **expor
 - `focus-tiger.practice-backup.v1` — device cloud opt-in token
 - `focus-tiger.ritual-recipe.v1` / `focus-tiger.ritual-recipe-analytics-opt-in.v1` — sitting recipe + analytics opt-in (preview-adopt; never practice-backup overwrite)
 - `focus-tiger.companion-channel-recent-ids.v1` — four-channel copy recent template ids; not practice memory
+- YPE / personalization (reset-only; **not** in the **31** export keys — SSOT `localBackupStorageRegistry.js` `LOCAL_BACKUP_RESET_ONLY_KEYS`): `focus-tiger.ype-companion-style.v1`, `focus-tiger.ype-cloud-personalization-consent.v1`, `focus-tiger.ype-personalization-pack.v1`. Same class as evening-practice facts / awaken check-ins (export v2 backlog; backup UI still needs **「不会带走」** copy).
 - T81/T83 Practice Study keys (reset **+6** vs 2026-11-06 facts 99; **do not export** — see [`audit/findings/2026-11-09/B1-reset-plus6-export-review.md`](audit/findings/2026-11-09/B1-reset-plus6-export-review.md)):
   - `focus-tiger.co-practice-research-week-ledger.v1`
   - `focus-tiger.co-practice-research-consent.v1`
