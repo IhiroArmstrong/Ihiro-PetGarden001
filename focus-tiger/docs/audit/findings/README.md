@@ -18,8 +18,8 @@
 
 | 字段 | 值 |
 |---|---|
-| **截至 SHA** | `65431541`（Merge **#1647** → develop；扫描取证仍为 `d54f11a` 见 JSON `gitSha`） |
-| **看板最后更新** | 2026-11-09 · ⑪ 登记册 v1.1.1（RR-15 降级 · RR-21 T81 未审计） |
+| **截至 SHA** | `ec0e9faa`（Merge **#1646** → develop；B1 扫描取证仍为 `d54f11a` 见 JSON `gitSha`） |
+| **看板最后更新** | 2026-11-10 · 方案 A #1646 已合 · B3 仍草稿未打分 · 登记册 v1.1.2 |
 | **基准文档** | [`AUDIT_BASELINE.md`](../AUDIT_BASELINE.md) v1.1 |
 | **否决阻断（现状）** | **V-02 未通过**（[RISK_REGISTER.md](../RISK_REGISTER.md) 单列）；证据仍见 B6/R2。发布裁决不在此目录 |
 
@@ -31,12 +31,12 @@
 |---:|---|---|---:|---|---|
 | ①② | [`2026-11-09/B1-architecture-code-findings.md`](2026-11-09/B1-architecture-code-findings.md) | 部分已检 · ①② 各 **2** | #1640 首稿；小修 **#1643**（含 #1644 叠并） | **MERGED** | 取证 `gitSha`=`d54f11a`；1-01/1-02 **P2**；1-06/1-07 见 [`ARBITRATION_PRECEDENCE.md`](../../ARBITRATION_PRECEDENCE.md) |
 | ③④ | [`2026-11-08/B2-testing-release-pm-findings.md`](2026-11-08/B2-testing-release-pm-findings.md) | 部分 | #1616 | **MERGED** | |
-| ⑤ | [`2026-11-09/B3-product-scenarios-findings.md`](2026-11-09/B3-product-scenarios-findings.md) | 部分 · **未打分** | #1638 | **MERGED** | 缺口：安装包五核心场景实机 |
+| ⑤ | [`2026-11-09/B3-product-scenarios-findings.md`](2026-11-09/B3-product-scenarios-findings.md) | 部分 · **草稿、未打分** | #1638 首稿；方案 A **#1646 MERGED** | **MERGED** | 缺口：安装包五核心场景实机。#1646 已合 ≠ 本维打分。Worker 未部署 |
 | ⑥ | `B4a-uiux-western-findings.md` | — | — | **未开始** | Brief 已有 |
 | ⑦ | `B4b-a11y-i18n-findings.md` | — | — | **未开始** | Brief 已有 |
 | ⑨⑩ | [`2026-11-07/R2-cross-review-b5-b6-findings.md`](2026-11-07/R2-cross-review-b5-b6-findings.md) 等 | R2 已检；R2-lite 补记见 `2026-11-08/` | #1592 Brief；复核多篇 | **MERGED** | ⑨ **2** · ⑩ **1**（R2 报告内） |
 | 安全/AI | `2026-11-07/B5-*.md`、`B6-*.md` | B5/B6 各轮 | #1589 · #1587 | **MERGED** | 本轮 B1 不重判 V1–V4 |
-| ⑪ | [`RISK_REGISTER.md`](../RISK_REGISTER.md) | **已建立**（v1.0 已合 **#1649**；v1.1.1 更正在本 PR） | **#1652** | **OPEN** | 否决只认 **V-02**；下次整册复查 **2027-02-09**；T97 硬点 **2026-11-22**。RR-15 = 分类未强制；RR-21 = T81 上传未经审计 |
+| ⑪ | [`RISK_REGISTER.md`](../RISK_REGISTER.md) | **已建立** v1.1.2 · **本 PR 不打分** | #1649 首版；#1652 v1.1.1；本 PR 更 RR-14 | **MERGED** | 否决只认 **V-02**。RR-14 残余：Worker 未部署；切 Live 前开关不得为开 |
 
 第 0 轮事实：[`facts/2026-11-06/`](../facts/2026-11-06/INDEX.md)（备份覆盖当时 **31 / 99**；现 develop **31 / 105**。+6 已核对：均不进 export，见 [`2026-11-09/B1-reset-plus6-export-review.md`](2026-11-09/B1-reset-plus6-export-review.md)）。
 
@@ -52,7 +52,8 @@
 | ✓ | import 环 / core→ui / `main.js` 守门（对比 develop 基线） | ci · **MERGED** [#1647](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1647) |
 | ✓ | reset +6 钥匙 vs export 核对 | 只读 · [`B1-reset-plus6-export-review.md`](2026-11-09/B1-reset-plus6-export-review.md)；**#1648 MERGED**（文档债已含 105 / T83）；JS 分类闸另 PR |
 | ✓ | `RISK_REGISTER.md` 首版 | docs · **MERGED** [#1649](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1649) |
-| → | 登记册 v1.1.1 事实更正（含 RR-15 / RR-21） | docs · **OPEN** [#1652](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1652) |
+| ✓ | 登记册 v1.1.1 事实更正（含 RR-15 / RR-21） | docs · **MERGED** [#1652](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1652) |
+| → | 方案 A 说明统一 + RR-14 合入后口径 | docs · 本 PR |
 | — | B4a / B4b | 审计轮次 |
 | — | B1 工具取证（体积、重复、复杂度等） | facts 目录 |
 
