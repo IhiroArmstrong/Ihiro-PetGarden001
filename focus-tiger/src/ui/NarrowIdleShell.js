@@ -1501,9 +1501,11 @@ export class NarrowIdleShell {
         opacity: 0.62;
         cursor: pointer;
       }
-      .ft-narrow-sheet__item:disabled {
+      .ft-narrow-sheet__item:disabled,
+      .ft-narrow-sheet__item.is-static {
         opacity: 0.48;
         cursor: not-allowed;
+        pointer-events: none;
       }
       .ft-narrow-sheet__item .ft-secondary-menu-lock {
         margin-left: 8px;

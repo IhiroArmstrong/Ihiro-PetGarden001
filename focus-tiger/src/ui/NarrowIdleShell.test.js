@@ -16,6 +16,13 @@ test('narrow drawer rows have :active press (Journey log 0–1s)', () => {
   assert.match(src, /\.ft-narrow-sheet__item:active:not\(:disabled\)/);
 });
 
+test('narrow static placeholder rows do not intercept clicks (menu-full-reachability)', () => {
+  assert.match(
+    src,
+    /\.ft-narrow-sheet__item\.is-static[\s\S]*pointer-events:\s*none/
+  );
+});
+
 test('narrow ActionBar has Idle Confide ear slot (hidden until gate)', () => {
   assert.match(src, /id="ft-narrow-confide-btn"/);
   assert.match(src, /icon-confide-to-yin\.png/);
