@@ -89,7 +89,7 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(zh.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
     assert.match(ja.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
     assert.equal(en.SUPPORT_SANCTUARY_CTA_OWNED, 'Unlocked');
-    assert.equal(en.SUPPORT_COMPANION_ADDON_CTA_OWNED, 'Unlocked');
+    assert.equal(en.SUPPORT_COMPANION_ADDON_CTA_OWNED, 'Purchased — entry not open yet');
     assert.match(en.SUPPORT_WEB_LOCAL_AI_NOTE, /desktop app/i);
     assert.equal(
       formatSupportPrice(en.SUPPORT_MEMBERSHIP_PRICE, MEMBERSHIP_PRICE_DISPLAY),

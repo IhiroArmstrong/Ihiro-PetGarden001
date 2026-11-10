@@ -115,3 +115,76 @@ export function localeHotspotError(paths) {
   if (hit.length === 0) return null;
   return `不要改 ${hit.join('、')}。新文案写 focus-tiger/src/locales/slices/<name>.json`;
 }
+
+const ALIGNMENT_OK_EXACT = Object.freeze([
+  ...LOCALE_HOTSPOTS,
+  'focus-tiger/src/locales/mergeLocaleSlices.js',
+  'focus-tiger/src/locales/mergeLocaleSlices.test.js',
+  'focus-tiger/scripts/check-locale-slices.js'
+]);
+
+/**
+ * Paths allowed alongside a base↔slice alignment PR.
+ * @param {string} path
+ * @returns {boolean}
+ */
+export function isLocaleBaseAlignmentCompanionPath(path) {
+  if (ALIGNMENT_OK_EXACT.includes(path)) return true;
+  if (path.endsWith('.test.js')) return true;
+  if (path === 'focus-tiger/src/locales/slices/readme.md') return true;
+  if (path.startsWith('focus-tiger/docs/')) return true;
+  if (
+    path.startsWith('focus-tiger/src/') ||
+    path.startsWith('focus-tiger/cloud/') ||
+    path.startsWith('focus-tiger/desktop/')
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Allow editing en/zh/ja only when every changed string already exists on a
+ * slice (copy slice → base) and the PR is not mixed with product runtime.
+ *
+ * @param {{
+ *   paths: string[],
+ *   oldBases: Record<string, Record<string, string>>,
+ *   newBases: Record<string, Record<string, string>>,
+ *   slices: { data: Record<string, Record<string, string>> }[]
+ * }} args
+ * @returns {string | null}
+ */
+export function localeHotspotAlignmentError({ paths, oldBases, newBases, slices }) {
+  const hit = paths.filter((path) => LOCALE_HOTSPOTS.includes(path));
+  if (hit.length === 0) return null;
+
+  const mixed = paths.filter((path) => !isLocaleBaseAlignmentCompanionPath(path));
+  if (mixed.length > 0) {
+    return `总账对齐须单独 PR，不要和功能代码混在一起：${mixed.slice(0, 5).join('、')}`;
+  }
+
+  /** @type {Record<string, Record<string, string>>} */
+  const fromSlices = { en: {}, zh: {}, ja: {} };
+  for (const slice of slices) {
+    for (const locale of SLICE_LOCALES) {
+      Object.assign(fromSlices[locale], slice.data?.[locale] || {});
+    }
+  }
+
+  for (const locale of SLICE_LOCALES) {
+    const oldDict = oldBases[locale] || {};
+    const newDict = newBases[locale] || {};
+    const keys = new Set([...Object.keys(oldDict), ...Object.keys(newDict)]);
+    for (const key of keys) {
+      if (oldDict[key] === newDict[key]) continue;
+      if (newDict[key] === undefined) {
+        return `总账删了 ${locale}.${key}。对齐只许覆盖，不许删键`;
+      }
+      if (fromSlices[locale][key] !== newDict[key]) {
+        return `${locale}.${key} 的新值须与已有切片一致，不要在总账里另写一句`;
+      }
+    }
+  }
+  return null;
+}
