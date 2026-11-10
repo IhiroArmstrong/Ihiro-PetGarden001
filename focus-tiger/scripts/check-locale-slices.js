@@ -14,6 +14,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  localeHotspotAlignmentError,
   localeHotspotError,
   mergeLocalePack
 } from '../src/locales/mergeLocaleSlices.js';
@@ -191,10 +192,26 @@ export function runLocaleSliceCheck() {
     console.log('[locale:slices] 未找到 origin/develop，跳过总表改动检查。');
     return true;
   }
-  const hotspot = localeHotspotError(changedPaths(baseRef, headRev));
+  const paths = changedPaths(baseRef, headRev);
+  const hotspot = localeHotspotError(paths);
   if (hotspot) {
-    console.error(`[locale:slices] FAILED — ${hotspot}`);
-    return false;
+    const oldBases = {
+      en: baseFromRev(baseRef, 'en.json'),
+      zh: baseFromRev(baseRef, 'zh.json'),
+      ja: baseFromRev(baseRef, 'ja.json')
+    };
+    const alignment = localeHotspotAlignmentError({
+      paths,
+      oldBases,
+      newBases: bases,
+      slices
+    });
+    if (alignment) {
+      console.error(`[locale:slices] FAILED — ${hotspot}`);
+      console.error(`[locale:slices] FAILED — ${alignment}`);
+      return false;
+    }
+    console.log('[locale:slices] OK — 总账改动仅与已有切片对齐。');
   }
   return true;
 }

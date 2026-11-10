@@ -7,6 +7,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   mergeLocalePack,
+  localeHotspotAlignmentError,
   localeHotspotError,
   validateLocaleSlice
 } from './mergeLocaleSlices.js';
@@ -74,6 +75,59 @@ describe('localeHotspotError', () => {
     assert.match(
       localeHotspotError(['focus-tiger/src/locales/en.json']) || '',
       /en\.json/
+    );
+  });
+});
+
+describe('localeHotspotAlignmentError', () => {
+  const slices = [{ data: slice }];
+  const oldBases = {
+    en: { ART_NOTE: 'stale' },
+    zh: { ART_NOTE: '旧' },
+    ja: { ART_NOTE: '旧' }
+  };
+  const alignedBases = {
+    en: { ART_NOTE: 'A quiet note.' },
+    zh: { ART_NOTE: '一句安静的提示。' },
+    ja: { ART_NOTE: '静かな一言。' }
+  };
+
+  it('allows copying slice strings onto the three bases', () => {
+    assert.equal(
+      localeHotspotAlignmentError({
+        paths: [
+          'focus-tiger/src/locales/en.json',
+          'focus-tiger/src/locales/slices/readme.md'
+        ],
+        oldBases,
+        newBases: alignedBases,
+        slices
+      }),
+      null
+    );
+  });
+
+  it('rejects invented base copy and mixed product files', () => {
+    assert.match(
+      localeHotspotAlignmentError({
+        paths: ['focus-tiger/src/locales/en.json'],
+        oldBases,
+        newBases: { ...alignedBases, en: { ART_NOTE: 'invented' } },
+        slices
+      }) || '',
+      /en\.ART_NOTE/
+    );
+    assert.match(
+      localeHotspotAlignmentError({
+        paths: [
+          'focus-tiger/src/locales/en.json',
+          'focus-tiger/src/ui/SupportYinModalUI.js'
+        ],
+        oldBases,
+        newBases: alignedBases,
+        slices
+      }) || '',
+      /SupportYinModalUI/
     );
   });
 });

@@ -5,8 +5,8 @@
 
 /**
  * Plan A option 1: Support Pro / add-on copy (merged runtime) must not resurrect
- * legacy on-device Confide sale promises. Base en/zh/ja may still carry stale keys
- * until a governance base-sync PR; slices are the feature-PR path.
+ * legacy on-device Confide sale promises. Bases may be aligned to the slice
+ * (copy-only); new copy still goes in slices.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,7 +20,8 @@ import planASlice from './plan-a-option1-support-sale-stop.json' with { type: 'j
 const KEYS = [
   'SUPPORT_PRO_BLURB',
   'SUPPORT_COMPANION_ADDON_BLURB',
-  'SUPPORT_COMPANION_ADDON_CTA_OWNED'
+  'SUPPORT_COMPANION_ADDON_CTA_OWNED',
+  'SUPPORT_CHECKOUT_SALE_PAUSED'
 ];
 
 const here = dirname(fileURLToPath(import.meta.url));
