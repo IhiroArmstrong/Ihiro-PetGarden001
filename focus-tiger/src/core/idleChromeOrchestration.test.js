@@ -719,7 +719,7 @@ describe('listSecondaryChromeEntries', () => {
         if (!row.proxy) continue;
         if (row.interactive === false) {
           if (row.proxy === 'account') {
-            assert.equal(row.handler, undefined);
+            assert.equal(typeof row.handler, 'string');
           }
           continue;
         }

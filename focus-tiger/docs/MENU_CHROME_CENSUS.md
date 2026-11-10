@@ -93,3 +93,8 @@
 ## 5. 宽屏五图标索引（2026-10-16 · 未开工）
 
 方向已点头，运行时未改。登录灰行与「印揭晓前不进菜单」维持上文。付费行、分组和扇形的后续三刀见 [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。本表 §1 第 4 条「⋯ 在宽屏、左上留给日历」在第三刀之前仍然有效；第三刀只把展开方式改成底部 `⋯` 上方的五个图标，不把入口搬去左上。
+
+
+## T93 D3（2026-11-10）
+
+第 3 条灰行已改为 Preferences 真入口 `idle-account-email-restore`（开 `#email-journey-restore-panel`）。Journey 角落不再当登录。Setapp / MAS 仍不可点。购买恢复仍走原卡。

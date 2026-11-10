@@ -220,7 +220,7 @@ import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from '
 import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
 import { formatCompanionChannelLine } from './core/companionChannelCopyDisplay.js';
 
-import { LocalPracticeDataPanelUI } from './ui/LocalPracticeDataPanelUI.js';
+import { bindPreferenceBackupChrome, createPreferenceBackupPanels } from './ui/preferenceBackupPanels.js';
 import { PracticeStudyConsentPanelUI } from './ui/PracticeStudyConsentPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -1782,13 +1782,23 @@ async function init() {
   });
   window.__presenceFieldPreference = presenceFieldPreferenceUI;
   syncPresenceFieldFromStorage();
-  const localPracticeDataPanelUI = new LocalPracticeDataPanelUI(document.body, {
-    onClose: () => {
-      document.body.classList.remove('ft-narrow-stage-local-backup');
-      document.body.classList.remove('ft-wide-stage-local-backup');
-    }
-  });
+  // T93 D3: email restore lives in preferenceBackupPanels so main.js stays
+  // at the B1 line cap. Local file backup and email OTP share this helper.
+  // closeGrowthOverlayCards is a function declaration (hoisted) in this scope.
+  // Store channels keep the menu row grey via idleChromeOrchestration.
+  // Journey log corner is not a login; do not re-open that chain here.
+  // Worker 410 still shows EMAIL_JOURNEY_STATUS_UNAVAILABLE until deploy.
+  // Idle flush of practice backup stays on the existing busy probe.
+  // Protected payment paths are not in this deck card.
+  // D4 sit-complete prompt and Electron empty-library restore are out of scope.
+  // Setapp / MAS compile channel still disables the clickable row.
+  const preferenceBackupPanels = createPreferenceBackupPanels(document.body);
+  const localPracticeDataPanelUI = preferenceBackupPanels.localPracticeDataPanelUI;
   window.__localPracticeDataPanel = localPracticeDataPanelUI;
+  const preferenceBackupChrome = bindPreferenceBackupChrome({
+    closeGrowthOverlayCards,
+    ...preferenceBackupPanels
+  });
   const practiceStudyConsentPanelUI = new PracticeStudyConsentPanelUI(
     document.body,
     {
@@ -2891,11 +2901,7 @@ async function init() {
         close: () => yinPersonalMemoryUI.close()
       },
       { id: 'yin-coin', ui: yinCoinPanelUI, close: () => yinCoinPanelUI?.close() },
-      {
-        id: 'local-backup',
-        ui: localPracticeDataPanelUI,
-        close: () => localPracticeDataPanelUI.closePanel()
-      },
+      ...preferenceBackupPanels.overlayCards,
       {
         id: 'practice-study',
         ui: practiceStudyConsentPanelUI,
@@ -5066,10 +5072,8 @@ async function init() {
     onHelpCenterChrome: () => {
       openHelpCenterFromChrome();
     },
-    onLocalBackup: () => {
-      closeGrowthOverlayCards({ except: 'local-backup' });
-      localPracticeDataPanelUI.openPanel();
-    },
+    onLocalBackup: preferenceBackupChrome.onLocalBackup,
+    onAccount: preferenceBackupChrome.onAccount,
     onPracticeStudy: () => {
       closeGrowthOverlayCards({ except: 'practice-study' });
       practiceStudyConsentPanelUI.openPanel();
@@ -5118,7 +5122,7 @@ async function init() {
       windowLayoutPreferenceUI?.closePanel();
       windowLayoutPreferenceUI?.closePanel();
       inputRhythmPreferenceUI?.closePanel();
-      localPracticeDataPanelUI.closePanel();
+      preferenceBackupChrome.closePreferenceBackupPanels();
       practiceStudyConsentPanelUI.closePanel();
       quietTogetherPanelUI.closePanel();
       focusCirclePanelUI.closePanel();
@@ -5167,16 +5171,12 @@ async function init() {
           closeGrowthOverlayCards({ except: 'newsletter' });
           newsletterCaptureUI.open();
           return;
-        case 'local-backup':
-          closeGrowthOverlayCards({ except: 'local-backup' });
-          localPracticeDataPanelUI.openPanel();
-          return;
         case 'practice-study':
           closeGrowthOverlayCards({ except: 'practice-study' });
           practiceStudyConsentPanelUI.openPanel();
           return;
         default:
-          return;
+          if (preferenceBackupChrome.onDesktopShortcut(proxy)) return;
       }
     }
   });

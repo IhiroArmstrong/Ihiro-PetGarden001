@@ -38,6 +38,7 @@ export const GLASS_CARD_ELEMENT_IDS = Object.freeze({
   presence: 'presence-signals-panel',
   'yin-coin': 'yin-coin-panel',
   'local-backup': 'local-practice-data-panel',
+  'email-journey-restore': 'email-journey-restore-panel',
   'practice-study': 'practice-study-consent-panel',
   'quiet-together': 'quiet-together-panel',
   'focus-circle': 'focus-circle-panel'

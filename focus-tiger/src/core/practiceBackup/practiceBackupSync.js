@@ -380,6 +380,62 @@ export async function maybeRestorePracticeBackupOnBoot(opts = {}) {
 }
 
 /**
+ * After email verify: pull cloud snapshot and union-merge into local.
+ * Unlike boot restore, local records are kept (D1 merge).
+ *
+ * @param {object} [opts]
+ * @param {Storage | null} [opts.storage]
+ * @param {typeof postCloudJson} [opts.postJson]
+ * @param {Date} [opts.now]
+ */
+export async function pullAndMergePracticeBackup(opts = {}) {
+  if (!practiceBackupCloudEnabled) {
+    return { ok: false, reason: 'cloud_disabled', skipped: true };
+  }
+  const storage =
+    opts.storage ??
+    (typeof localStorage !== 'undefined' ? localStorage : null);
+  const postJson = opts.postJson ?? postCloudJson;
+  const state = readPracticeBackupOptIn(storage);
+  if (!canPracticeBackupUpload(state)) {
+    return { ok: false, reason: 'not_consented', skipped: true };
+  }
+  try {
+    const body = await postJson('/api/practice-backup/get', {
+      body: JSON.stringify({
+        email: state.email,
+        deviceToken: state.deviceToken
+      })
+    });
+    const snapRaw = body && typeof body === 'object' ? body.snapshot : null;
+    if (!snapRaw) {
+      return { ok: true, skipped: true, reason: 'no_snapshot' };
+    }
+    const parsed = parsePracticeBackupCloudSnapshotClient(snapRaw);
+    if (!parsed.ok) {
+      return { ok: false, reason: parsed.reason };
+    }
+    applyPracticeBackupCloudSnapshot(storage, parsed.snapshot, {
+      now: opts.now instanceof Date ? opts.now : undefined
+    });
+    await reconcileEntitlementAfterPracticeRestore(storage, {
+      now: opts.now instanceof Date ? opts.now : undefined
+    });
+    writePracticeBackupOptIn(storage, {
+      ...readPracticeBackupOptIn(storage),
+      lastRestoreAt: new Date().toISOString()
+    });
+    return { ok: true, merged: true };
+  } catch (err) {
+    if (isPracticeBackupCloudDisabledError(err)) {
+      return { ok: false, reason: 'practice_backup_disabled' };
+    }
+    const msg = err instanceof Error ? err.message : 'restore_failed';
+    return { ok: false, reason: msg };
+  }
+}
+
+/**
  * Disable backup: OTP delete cloud snapshot, then clear local opt-in.
  * @param {object} opts
  * @param {Storage | null} [opts.storage]
@@ -405,6 +461,9 @@ export async function disablePracticeBackupAndDeleteCloud(opts) {
       })
     });
   } catch (err) {
+    if (isPracticeBackupCloudDisabledError(err)) {
+      return { ok: false, reason: 'practice_backup_disabled' };
+    }
     const msg = err instanceof Error ? err.message : 'delete_failed';
     return { ok: false, reason: msg };
   }

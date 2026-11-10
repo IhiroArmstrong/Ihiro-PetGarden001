@@ -86,6 +86,7 @@ async function settleAfterRow(page) {
       '__journeyLog',
       '__languagePreference',
       '__localPracticeDataPanel',
+      '__emailJourneyRestorePanel',
       '__quietTogetherPanel',
       '__focusCirclePanel',
       '__zenCinemaCard',

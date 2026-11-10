@@ -403,34 +403,10 @@ export class JourneyLogUI {
   }
 
   _refreshBackupPanel() {
-    if (!practiceBackupCloudEnabled) {
-      this.backupLink.hidden = true;
-      this.backupPanel.hidden = true;
-      this._backupPanelOpen = false;
-      return;
-    }
-    this.backupLink.hidden = false;
-    const opt = readPracticeBackupOptIn(this._storage);
-    const on = Boolean(opt.enabled && opt.deviceToken);
-    this.backupLink.textContent = on
-      ? t('JOURNEY_LOG_BACKUP_LINK_ON')
-      : t('JOURNEY_LOG_BACKUP_LINK_OFF');
-    this.backupPanel.hidden = !this._backupPanelOpen;
-    this.consentLabel.hidden = on;
-    this.enableBtn.hidden = on;
-    this.disableBtn.hidden = !on;
-    if (on && opt.email) this.emailInput.value = opt.email;
-    if (on && this._backupPanelOpen) {
-      this.backupWhere.hidden = false;
-      this.backupWhere.textContent = practiceBackupWhereText(
-        opt,
-        t,
-        getLocale()
-      );
-    } else {
-      this.backupWhere.hidden = true;
-      this.backupWhere.textContent = '';
-    }
+    // T93 D3: Journey corner is not a login. Preferences owns the email entry.
+    this.backupLink.hidden = true;
+    this.backupPanel.hidden = true;
+    this._backupPanelOpen = false;
   }
 
   /**
