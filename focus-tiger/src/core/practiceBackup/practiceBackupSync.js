@@ -36,6 +36,7 @@ import {
   reconcileEntitlementCacheAfterRestore
 } from './practiceBackupEntitlementReconcile.js';
 import { practiceBackupCloudEnabled } from './practiceBackupCloudEnabled.js';
+import { isPracticeBackupCloudDisabledError } from './practiceBackupCloudHttp.js';
 
 export const PRACTICE_BACKUP_DEBOUNCE_MS = 10 * 60 * 1000;
 export const PRACTICE_BACKUP_MIN_UPLOAD_GAP_MS = 60 * 1000;
@@ -430,9 +431,16 @@ export function enablePracticeBackupOptIn(storage, creds) {
 }
 
 export async function requestPracticeBackupOtp(email, postJson = postCloudJson) {
-  return postJson('/api/practice-backup/request-otp', {
-    body: JSON.stringify({ email })
-  });
+  try {
+    return await postJson('/api/practice-backup/request-otp', {
+      body: JSON.stringify({ email })
+    });
+  } catch (err) {
+    if (isPracticeBackupCloudDisabledError(err) && err && typeof err === 'object') {
+      /** @type {{ reason?: string }} */ (err).reason = 'practice_backup_disabled';
+    }
+    throw err;
+  }
 }
 
 export async function verifyPracticeBackupOtp(

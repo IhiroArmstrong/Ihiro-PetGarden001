@@ -80,6 +80,7 @@
 | 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 起已在生产 vars |
 - **切 Live 前（客户端）**：`npm run build` 后须 `npm run build:verify-no-qa-boot`；`desktop/scripts/pack.js` 在 `FT_QA_BOOT`/`VITE_FT_QA_BOOT` 为开时拒绝打包（见 `scripts/release-build-qa-guard.test.js`）。
 | Plan A 新结账闸 + 9-15b | 本 Version `04a56014` 已含。Pro / 陪伴加购新结账 410。会员门户未关。请茶 / 会员 / 圣所新结账不在这道闸里 |
+| T93 D2 practice-backup 源码默认开闸 | **未部署。** 生产仍 410。合入后源码缺 `PRACTICE_BACKUP_WRITES_DISABLED` 则允许 OTP/快照路由；须另下「部署」口令才上线 |
 
 ---
 

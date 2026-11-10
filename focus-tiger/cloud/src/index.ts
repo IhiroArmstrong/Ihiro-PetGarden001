@@ -38,7 +38,7 @@ import { handlePutPracticeBackup } from "./routes/putPracticeBackup";
 import { handleGetPracticeBackup } from "./routes/getPracticeBackup";
 import { handleDeletePracticeBackup } from "./routes/deletePracticeBackup";
 import {
-	PRACTICE_BACKUP_CLOUD_WRITES_DISABLED,
+	isPracticeBackupCloudWritesDisabled,
 	practiceBackupCloudWritesDisabledJson,
 } from "./lib/practiceBackupWritesDisabled";
 import {
@@ -193,7 +193,7 @@ export default {
 					origin,
 				);
 			}
-			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+			if (isPracticeBackupCloudWritesDisabled(env)) {
 				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const otpLimited = enforceRateLimit(request, {
@@ -214,7 +214,7 @@ export default {
 					origin,
 				);
 			}
-			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+			if (isPracticeBackupCloudWritesDisabled(env)) {
 				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const verifyLimited = enforceRateLimit(request, {
@@ -232,7 +232,7 @@ export default {
 					origin,
 				);
 			}
-			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+			if (isPracticeBackupCloudWritesDisabled(env)) {
 				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const limited = enforceRateLimit(request, {
@@ -250,7 +250,7 @@ export default {
 					origin,
 				);
 			}
-			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+			if (isPracticeBackupCloudWritesDisabled(env)) {
 				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const limited = enforceRateLimit(request, {
@@ -268,7 +268,7 @@ export default {
 					origin,
 				);
 			}
-			if (PRACTICE_BACKUP_CLOUD_WRITES_DISABLED) {
+			if (isPracticeBackupCloudWritesDisabled(env)) {
 				return withCors(practiceBackupCloudWritesDisabledJson(), origin);
 			}
 			const limited = enforceRateLimit(request, {

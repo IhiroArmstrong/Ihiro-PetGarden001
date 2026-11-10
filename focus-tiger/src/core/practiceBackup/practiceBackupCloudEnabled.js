@@ -6,7 +6,7 @@
 /**
  * Practice-memory cloud backup UI + silent sync gate.
  * When false: no upload/restore, Journey Log backup panel hidden.
- * Worker routes remain for a future encrypted release.
+ * T93 D2 does not flip this; Worker OTP is env-gated separately.
  */
 export let practiceBackupCloudEnabled = false;
 
