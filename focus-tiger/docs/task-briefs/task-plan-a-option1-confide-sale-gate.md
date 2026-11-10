@@ -1,6 +1,6 @@
 # Task Brief · 方案 A 选项 1：安装包前已购也不开倾诉；第四卡与第五卡都先停新结账
 
-> **状态（2026-11-10）**：**实现已合 develop**（[#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646) · merge `ec0e9faa`）。客户端闸门、两张卡、文案、Worker **源码** 410 默认关都在共用版本里。**生产 Worker 尚未 Redeploy** → 线上接口仍可能新开结账。Sandbox 已付流水是开发自测，**真实客户 0；Live 笔数不适用**。安装包 QA 参数：[#1659](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1659) 已合（develop `af4c337c`）。2026-11-10 用生产构建的 `--dir` 包实测，深链带上的实验室参数没有打开倾诉，也没有解锁会员。这次测量直接读应用页面，屏幕上的系统「允许」框用不上，没有改系统权限。仍不是公证过的签名 `.dmg`。本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) / [#1642](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1642) / [#1651](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1651)。  
+> **状态（2026-11-10）**：**实现已合 develop**（[#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646) · merge `ec0e9faa`）。客户端闸门、两张卡、文案、Worker 源码与新结账 410 默认关均在共用版本。**生产 Worker 已部署**（Version `04a56014-3aaa-4422-bb3c-d5b13abb9ae5` · 2026-11-09；账本见 [#1658](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1658) · [`INFRA_SNAPSHOT.md`](../INFRA_SNAPSHOT.md)）。该 Version 只代表该次部署；他人再动 Worker 后须重新 HTTP 探测再改账本。切 Live 密钥之前仍须确认 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED` **不是**开。Sandbox 已付流水是开发自测，**真实客户 0；Live 笔数不适用**。安装包 QA 参数：[#1659](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1659) 已合（develop `af4c337c`）。2026-11-10 用生产构建的 `--dir` 包实测，深链带上的实验室参数没有打开倾诉，也没有解锁会员。这次测量直接读应用页面，屏幕上的系统「允许」框用不上，没有改系统权限。仍不是公证过的签名 `.dmg`。本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) / [#1642](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1642) / [#1651](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1651)。  
 > **类**：**B**。会改客人能不能看见倾诉，以及 Support 里能不能新买 Pro、能不能新买陪伴加购。  
 > **基线**：`origin/develop@ec0e9faa`（含 #1646）。上一版写的 `d54f11a8` / OPEN 旁支已过期。  
 > **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。该盘点已合 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)；盘点当时的「已购宽屏可开」已被 #1646 代码闸收掉。  
@@ -28,7 +28,7 @@
 - Support：未购不渲染可新开的第四卡 / 第五卡；已购加购卡淡化。会员 **$6.99** 卡仍卖，文案不含倾诉。
 - Worker 源码：`POST /api/create-pro-checkout-session` 与 `create-companion-addon-checkout-session` 走 `isPlanAOption1NewCheckoutDisabled`（缺变量 / 非 `true`/`1` → 410）。`create-membership-checkout-session`、`create-membership-portal-session`、`confirm-pro-session`、webhook **未**走该闸。开关每次请求读 `env`，无模块缓存。
 - 沙箱自测：默认关后 Pro / 加购会 410。本地或测试环境须设 Worker 变量 **`PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=true`**（或 `1`）才能走通付款。**切 Live 密钥之前，该变量不得为开。**
-- 生产 Worker **未** Redeploy：客户端已关、线上接口未关。
+- **生产 Worker 已部署**（`04a56014-…`）：线上 Pro / 加购新结账 POST 为 **410**；会员门户与新会员购结账**未**走该闸。Version 以 `INFRA_SNAPSHOT` 为准，再部署后须重探。
 
 下面「现在的地面事实」是 **#1646 合入前** 的快照，保留作对照，不再代表 develop。
 
@@ -130,11 +130,11 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 
 | # | 要写进说明的事 | 2026-11-10 |
 |---|---|---|
-| 1 | 服务端也关，而且默认关闭。变量缺失或读取失败时新结账一律拒绝。续订与会员管理入口不要受影响。Worker 部署后才算线上已关。 | **源码已合。** `isPlanAOption1NewCheckoutDisabled` 缺变量 / 非 true\|1 → 410；每次请求读 env。门户 / 会员新购 / confirm / webhook 未走该闸。单测未单独锁「门户在闸开时仍 200」。**生产 Worker 未部署。** |
+| 1 | 服务端也关，而且默认关闭。变量缺失或读取失败时新结账一律拒绝。续订与会员管理入口不要受影响。Worker 部署后才算线上已关。 | **源码已合 + 生产已部署**（`04a56014-…` · [#1658](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1658)）。Pro / 加购 POST **410**；`create-membership-portal-session` **未**走新结账闸（[#1665](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1665) 单测）。切 Live 前仍须核对 Worker 变量 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED` 不是开。 |
 | 2 | 核实安装包不接受 QA 参数，含深链。 | **2026-11-10 `--dir` 生产包已测（`MODE=production`，`VITE_FT_QA_BOOT` 为空；临时本机签名后才能启动）。** 冷启动 `focus-tiger://app/?product=1` 再分别加上 `confide=1`、`companionEntitled=1`、`entitlementMock=pro`、`entitlementMock=subscription`：参数留在页面地址里；倾诉卡、倾听耳、窄屏倾诉钮都是隐藏且 `display:none`，和没有这些参数时一样。菜单仍是 `idle-membership-cta`，仪式锁仍是 3。应用已经开着时，`open` 那条链接在 2.5 秒内没有改页面地址。不带连字符的 `focustiger://` 没有应用认领。测量直接读应用页面，屏幕上的系统「允许」框用不上，没有改系统权限。仍不是公证过的 `.dmg`。见已合 [#1659](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1659)。 |
 | 3 | 查清线上模式笔数 / 活跃订阅。 | **Sandbox 54 笔自测；真实客户 0；Live 不适用。** 活跃订阅先不处理。 |
-| 4 | 更正过期事实。 | **已更正**（文首 +「合入后的地面事实」）。#1641/#1642 与 #1646 后只保留这一份口径：Sandbox 自测、#1646 已合、Worker 未部署。 |
-| 5 | 全盘检索倾诉 / 陪伴句子。 | **已做（本旁支）。** 切片 `plan-a-option1-support-sale-stop.json` + `help-center.json` 客人面改句；`npm run check:plan-a-guest-confide-copy` 扫合并后主表面 + `marketing-site/*.html`。总账 `zh.json` 等仍留旧句，运行时切片覆盖。 |
+| 4 | 更正过期事实。 | **已更正**（文首 +「合入后的地面事实」 + 七点 #1）。口径：Sandbox 自测、#1646 已合、生产 Worker 已部署（Version 见 [#1658](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1658) · `INFRA_SNAPSHOT`；再部署后须重探）。 |
+| 5 | 全盘检索倾诉 / 陪伴句子。 | **已做（[#1664](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1664)）。** 切片 `plan-a-option1-support-sale-stop.json` + `help-center.json` 客人面改句；`npm run check:plan-a-guest-confide-copy` 扫合并后主表面 + `marketing-site/*.html`。总账 `zh.json` 等仍留旧句，运行时切片覆盖。 |
 | 6 | 「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **部分。** 「想聊聊」经 `onOpenBlocked` → T92。`voiceCommandGate.js` **无** `confide` 字符串。帮助中心 `isHelpCenterAskDestinationReachable` 只判断问卡 DOM，**不**断言转倾诉失败时弹出 T92。入口登记这两行仍写未核实。 |
 | 7 | 治理文档：术语表 + B3 看板。 | **本 PR。** |
 
@@ -243,8 +243,8 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 ## 交付顺序（2026-11-10 更新）
 
 1. **#1646 已合 develop。** 不再拆两个实现 PR，勿再开同内容旁支。  
-2. **部署生产 Worker**（须口头「部署」）：之后才算线上接口已关。部署后记 Version id。  
-3. **本治理 docs PR**：统一本说明（Sandbox 汇总、Price ID、七点状态）、术语表、B3 看板、RR-14。  
+2. **生产 Worker 已部署**（`04a56014-…` · [#1658](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1658)）；线上 Pro / 加购新结账 POST 为 410。再部署后须重探并改账本。  
+3. **本治理 docs PR**（[#1668](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1668)）：统一本说明（Sandbox 汇总、Price ID、七点状态）、术语表、B3 看板、RR-14。  
 4. **仍未做完、方案 A 不能写成完成**：公证签名 `.dmg` 上再测一次深链；语音 / 帮助中心 **T92 行为**核对（文案全盘检索已做）。`--dir` 生产包的深链结果见上面第 2 点（[#1659](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1659) 已合，不要重做生产包启动）。  
 5. **其后另会话**：签名公证核实、T97 人选、T93 / T95、B4a/b、安装包五场景走查。不在本 PR。
 
