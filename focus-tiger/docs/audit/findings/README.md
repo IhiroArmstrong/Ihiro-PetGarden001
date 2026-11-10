@@ -37,7 +37,7 @@
 | ⑨⑩ | [`2026-11-07/R2-cross-review-b5-b6-findings.md`](2026-11-07/R2-cross-review-b5-b6-findings.md) 等 | R2 已检；R2-lite 补记见 `2026-11-08/` | #1592 Brief；复核多篇 | **MERGED** | ⑨ **2** · ⑩ **1**（R2 报告内） |
 | 安全/AI | `2026-11-07/B5-*.md`、`B6-*.md` | B5/B6 各轮 | #1589 · #1587 | **MERGED** | 本轮 B1 不重判 V1–V4 |
 | ⑪ | [`RISK_REGISTER.md`](../RISK_REGISTER.md) | **已建立** v1.1.2 · **本 PR 不改登记册正文** | #1649 首版；#1652 v1.1.1 | **MERGED** | 否决只认 **V-02**。RR-21 仍开放；建议句见下行，不在本页改状态 |
-| ⑨ | [`2026-11-10/B5-t81-t93-incremental-findings.md`](2026-11-10/B5-t81-t93-incremental-findings.md) | 代码层已读 · **抓包未做 · 未判通过** | 本 PR | **待合** | 阅读点 `3e2bd9bd`。安装包未打开。不覆盖 V-01 残余 |
+| ⑨ | [`2026-11-10/B5-t81-t93-incremental-findings.md`](2026-11-10/B5-t81-t93-incremental-findings.md) | 代码层已读 · **抓包未做 · 未判通过** | [#1670](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1670) | **待合** | 阅读点 `3e2bd9bd`。安装包未打开。不覆盖 V-01 残余 |
 
 第 0 轮事实：[`facts/2026-11-06/`](../facts/2026-11-06/INDEX.md)（备份覆盖当时 **31 / 99**；现 develop **31 / 105**。+6 已核对：均不进 export，见 [`2026-11-09/B1-reset-plus6-export-review.md`](2026-11-09/B1-reset-plus6-export-review.md)）。
 
