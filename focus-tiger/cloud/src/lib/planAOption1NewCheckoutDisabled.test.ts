@@ -70,4 +70,15 @@ describe("planAOption1NewCheckoutDisabled", () => {
 			/\/api\/create-pro-checkout-session[\s\S]{0,600}isPlanAOption1NewCheckoutDisabled/,
 		);
 	});
+
+	it("membership portal route stays outside Plan A new-checkout gate", () => {
+		const portalBlock =
+			indexSrc.match(
+				/if \(url\.pathname === "\/api\/create-membership-portal-session"\)[\s\S]{0,900}/,
+			)?.[0] ?? "";
+		assert.ok(portalBlock.length > 0, "expected membership portal route block");
+		assert.doesNotMatch(portalBlock, /isPlanAOption1NewCheckoutDisabled/);
+		assert.doesNotMatch(portalBlock, /planAOption1NewCheckoutDisabledJson/);
+		assert.match(portalBlock, /handleCreateMembershipPortalSession/);
+	});
 });
