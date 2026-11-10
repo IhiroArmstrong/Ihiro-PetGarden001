@@ -42,7 +42,7 @@
 - 第五卡：已买圣所终身、且不是 Pro 时，`showAddon === true`。没买加购时按钮仍可结账；买完后卡片留下并淡化（`supportPaidCardPresentation.js`）。
 - 第四卡 Pro 文案现在写成「另加桌面端本机倾诉」。第五卡文案写成「一次性解锁本机阿寅」。网页底注写成解锁后可以在电脑上倾诉。
 - Worker 仍暴露 `POST /api/create-pro-checkout-session` 与 `POST /api/create-companion-addon-checkout-session`；仅藏 UI 不够，旧客户端或脚本可直连。
-- [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) **已合并**。打开被拒时，`onOpenBlocked` 会取 `confideOpenBlockedUserMessage`，这句话走 T92 求助句（`formatConfideSafetyResourceGuidance`）。入口登记里，沉思问询「想聊聊」标的是「必须给出这句」。语音危机转倾诉、帮助中心转倾诉在同一份登记里仍写着 **未核实**。本说明不把这两条写成已经盖住。
+- [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637) **已合并**；[#1673](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1673) **已合并**（2026-11-10）。打开被拒时，`onOpenBlocked` 会取 `confideOpenBlockedUserMessage`（T92）。三条入口 **代码面已核对**：① 沉思问询「想聊聊」→ `confideToYinUI.open` → toast；② 宽屏 PTT 危机 → `submitVoiceCommandRaw` → 打不开则同 toast、不继续 send；③ Help Center 问卡危机 → `help-center-ask-safety-t92` 内联同文案。登记见 `confideOpenEntryRegistry.js`。
 
 T98 写过：若对外说「安装包用户进不了倾诉」，对已购宽屏不成立。#1646 把那条例外收掉。术语表旧句「已购陪伴宽屏仍可开倾诉」是盘点当时的事实，由本治理 docs PR 更正。
 
@@ -85,7 +85,7 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 - **客户端（后做，另一个请求）**：收到「已关闭」时，0–1 秒内给一句说明，不显示原始错误。闸门、第四卡、第五卡、三语文案、生产构建下 QA 参数不生效的测试、文案全盘检索，都在这一支。
 - **生产构建 · QA 参数**：`?confide=1`、`?companionEntitled=1`、`?entitlementMock=pro`（及文档列出的相关 mock）在 **非开发构建** 必须**不生效**（不得借此开面板或伪造 Pro）。开发 / `MODE=development` / Playwright 开发构建可保留。须核实桌面结账深链 **`focus-tiger://app`**（及现有 `navigateDesktopCheckoutReturn` 路径）**不得**把上述 query 带进可发布安装包。实现旁支加单测或 e2e：**生产构建**下带这些 query 仍不能开倾诉 / 不能伪造 entitlement。
 - 实验室（仅开发构建）：`?confide=1` 在 idle 仍可打开面板。这不是对客入口。
-- **求助出口**：倾诉对客人全关后，**T14 倾诉卡内常驻求助链无人可见**。客人危机出口依赖 [#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)「想聊聊」提示（**T92 求助句**）。语音危机和帮助中心是否也带这句，只读核对与代码并行；没核对完不得写成已核对。
+- **求助出口**：倾诉对客人全关后，**T14 倾诉卡内常驻求助链无人可见**。危机出口三条均已接 T92（见上 · #1637 / #1673）。**关单级肉眼**仍登记 `TEST_TRACKER`（`fix-confide-open-blocked-t92-toast` · `fix-plan-a-t92-voice-help-behavior`），不得把「代码已核对」写成「手测已过」。
 - 客户端那个请求改下面会红的界面测试预期，并改 `SCENARIO_TESTS.md` 里「终身后第五卡可点」「已购宽屏出现倾诉行」「未购可点 Pro」等句子。服务端那个请求只改结账路由和会员门户仍可开的测试。
 
 ### 文案全盘（实现旁支必做检索）
@@ -135,7 +135,7 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 | 3 | 查清线上模式笔数 / 活跃订阅。 | **Sandbox 54 笔自测；真实客户 0；Live 不适用。** 活跃订阅先不处理。 |
 | 4 | 更正过期事实。 | **已更正**（文首 +「合入后的地面事实」 + 七点 #1）。口径：Sandbox 自测、#1646 已合、生产 Worker 已部署（Version 见 [#1658](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1658) · `INFRA_SNAPSHOT`；再部署后须重探）。 |
 | 5 | 全盘检索倾诉 / 陪伴句子。 | **已做（[#1664](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1664)）。** 切片 `plan-a-option1-support-sale-stop.json` + `help-center.json` 客人面改句；`npm run check:plan-a-guest-confide-copy` 扫合并后主表面 + `marketing-site/*.html`。总账 `zh.json` 等仍留旧句，运行时切片覆盖。 |
-| 6 | 「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **部分。** 「想聊聊」经 `onOpenBlocked` → T92。`voiceCommandGate.js` **无** `confide` 字符串。帮助中心 `isHelpCenterAskDestinationReachable` 只判断问卡 DOM，**不**断言转倾诉失败时弹出 T92。入口登记这两行仍写未核实。 |
+| 6 | 「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **已做（代码面 · 2026-11-10 · [#1673](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1673)）。** ①「想聊聊」→ `onOpenBlocked` toast（[#1637](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1637)）。② PTT 危机 → `submitVoiceCommandRaw` → 打开被拒 → 同 toast、不 `_onSend`。③ Help Center 危机问句 → `help-center-ask-safety-t92` 内联 `confideOpenBlockedUserMessage`。自动化：`confidePlanAHelpCenterAskSafety.test.js` · `confideOpenEntryRegistry.test.js`。肉眼关单见 TEST_TRACKER。 |
 | 7 | 治理文档：术语表 + B3 看板。 | **本 PR。** |
 
 ## 变体矩阵
@@ -245,7 +245,7 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 1. **#1646 已合 develop。** 不再拆两个实现 PR，勿再开同内容旁支。  
 2. **生产 Worker 已部署**（`04a56014-…` · [#1658](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1658)）；线上 Pro / 加购新结账 POST 为 410。再部署后须重探并改账本。  
 3. **本治理 docs PR**（[#1668](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1668)）：统一本说明（Sandbox 汇总、Price ID、七点状态）、术语表、B3 看板、RR-14。  
-4. **仍未做完、方案 A 不能写成完成**：公证签名 `.dmg` 上再测一次深链；语音 / 帮助中心 **T92 行为**核对（文案全盘检索已做）。`--dir` 生产包的深链结果见上面第 2 点（[#1659](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1659) 已合，不要重做生产包启动）。  
+4. **仍未做完、方案 A 不能写成完成**：公证签名 `.dmg` 上再测一次深链（`--dir` 生产包 [#1659](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1659) 已测；**不是**公证包）。**第 6 点 T92 三条代码面已核对**（[#1673](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1673)）。文案全盘检索已做（[#1664](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1664)）。  
 5. **其后另会话**：签名公证核实、T97 人选、T93 / T95、B4a/b、安装包五场景走查。不在本 PR。
 
 沙箱测 Pro / 加购：在测试 Worker 设 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=true`。切 Live 密钥前确认该变量**不是**开（RR-14）。
