@@ -30,7 +30,7 @@
 | Secrets 生产态（名称级） | `RESTORE_OTP_PEPPER` + `RESEND_API_KEY` **已 put**（2026-08-13）；Stripe secrets 生产已用（Tip/Sanctuary/Membership 路径） |
 | `RESEND_FROM` / `NEWSLETTER_FROM`（vars） | `Yin <restore@twinsology.com>` · `Yin <hello@twinsology.com>`（Newsletter **禁止**回退 restore@） |
 | 品味层 | `schemaVersion: 1` overlay；`/api/emotion-weight` · `/api/daily-message` · `/api/quiet-line` · `/api/confide-copy` · **`/api/companion-channel-copy`**（英语四通道 · `overlayLive: true` 自 Version `8eb8e1f6` · #1546）；失败静默本地冻结表。**权重/ Honesty 门槛** → `TASTE_LAYER_KV`（git 冻表 `tasteLayerFreeze.ts` 兜底；KV 空=冻表）。花园数值 → `GROWTH_METRICS_KV`。**2026-09-16 生产分叉**（Version `f0ddf1b4`）：KV `honestyLongMinMinutes: 20` · `lotusFirstBloomMinutes: 20`（git 冻表仍 30 / 25）。审计：`REMOTE_PARAM_CANDIDATES.md` · changelogs |
-| 生产 Worker Version | 见下表 **`prod_worker_version`**（`6a32aff5-…` · 2026-11-08 · `098b2902` · 含 9-15）。客户端 `practiceBackupCloudEnabled` 仍为 false。 |
+| 生产 Worker Version | 见下表 **`prod_worker_version`**（`04a56014-…` · 2026-11-09 · cloud 源与 `2201ba5b` 相同 · 含 9-15b 与 Plan A 新结账 410）。客户端 `practiceBackupCloudEnabled` 仍为 false。 |
 | OTP / Newsletter 人工备注 | 无效邮箱 → 400；2026-08-16 Newsletter KV 写入 **测试 OK**；`wrangler login` 前 Safari 切 CF 帐号；有 `CLOUDFLARE_API_TOKEN` 须先 `unset` |
 
 ### KV bindings
@@ -71,13 +71,14 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `6a32aff5-a717-4d56-9bed-d5f025d97f3e` |
-| `prod_verified_at` | 2026-11-08（本机 `wrangler deploy` · 源 `origin/develop` `098b2902` · **#1602 9-15** 练习备份写入路由下线 · Worker `focus-tiger-cloud` · 帐号 `13709691005@163.com` · `GET /health` OK）。先前生产能力（四通道英语句包 #1546、Focus Circle、结账）仍在该 Version。未对 `POST /api/practice-backup/*` 做本机 HTTP 复核（工具拦了备份 POST）。 |
+| `prod_worker_version` | `04a56014-3aaa-4422-bb3c-d5b13abb9ae5` |
+| `prod_verified_at` | 2026-11-10（**本回合未再部署**。`wrangler deployments status` 100% 已是该 Version · 创建 2026-11-09T15:04:07Z · 作者 `13709691005@163.com` · Worker `focus-tiger-cloud`。脚本含 `planAOption1NewCheckoutDisabled` 与 9-15b。`PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED` 未设置，缺省拒绝。HTTP：`POST /api/create-pro-checkout-session` 与 `POST /api/create-companion-addon-checkout-session` → **410** `plan_a_new_checkout_disabled`；`POST /api/create-membership-portal-session` 假邮箱 → **400** `invalid_email`（路由未关；无真实订阅凭证，未打开 Stripe 门户）。`POST /api/practice-backup/get` → **410** `practice_backup_disabled`。cloud/ 自 `2201ba5b` 至 `origin/develop` `3d852ffa` 无差异。账本上一行 `6a32aff5` / `098b2902` 之后还有未记入的 `b814d4e4`（2026-11-08T11:02:11Z）与本 Version。） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
 | （本 Version `2e94d4c0` 起）漏斗 ingest layout / YPE L2 ingest / Pro+Add-on Checkout / `pageOrigin` 回跳 | 2026-09-01 本机 Redeploy 已从 `fix/overlay-three-questions` 上传；Safari 结账回跳仍须人工 |
 | 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 起已在生产 vars |
+| Plan A 新结账闸 + 9-15b | 本 Version `04a56014` 已含。Pro / 陪伴加购新结账 410。会员门户未关。请茶 / 会员 / 圣所新结账不在这道闸里 |
 
 ---
 
