@@ -197,8 +197,25 @@ describe('isQueueGovernanceCoPrAllowed', () => {
         'focus-tiger/docs/task-briefs/task-t95-electron-shell-upgrade.md',
         'focus-tiger/docs/task-entries/t95-electron-shell-upgrade.md',
         'focus-tiger/docs/tracker-entries/docs-gov-t93-t95-queue.md',
+        'focus-tiger/docs/tracker-entries/docs-t93-brief-s4-lock.md',
         'focus-tiger/docs/audit/findings/2026-11-08/B2-testing-release-pm-findings.md',
         'focus-tiger/src/locales/localeSliceModules.js'
+      ]),
+      null
+    );
+  });
+
+  it('allows T99 required-smoke-gate shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md',
+        'focus-tiger/scripts/pr-smoke-path-routes.js',
+        '.husky/pre-push',
+        '.github/CODEOWNERS',
+        '.cursor/rules/focus-tiger-pr-smoke-gates.mdc',
+        'focus-tiger/src/core/a13SurfaceVisibility.js'
       ]),
       null
     );

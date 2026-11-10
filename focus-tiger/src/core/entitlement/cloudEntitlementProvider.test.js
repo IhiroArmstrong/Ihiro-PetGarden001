@@ -121,4 +121,25 @@ describe('cloudEntitlementProvider', () => {
     );
     assert.equal(storage.getItem(MEMBERSHIP_DEVICE_CREDENTIAL_KEY), null);
   });
+
+  it('createMembershipPortalSession uses portal API (not Plan A checkout gate)', async () => {
+    const storage = memoryStorage();
+    writeMembershipDeviceCredential(storage, {
+      email: 'subscribed@example.com',
+      deviceToken: 'b'.repeat(32)
+    });
+    let path = '';
+    const { url } = await createMembershipPortalSession({
+      storage,
+      postJson: async (p, init) => {
+        path = p;
+        const body = JSON.parse(String(init?.body ?? '{}'));
+        assert.equal(body.email, 'subscribed@example.com');
+        assert.equal(body.deviceToken, 'b'.repeat(32));
+        return { url: 'https://billing.stripe.com/p/session/test_portal' };
+      }
+    });
+    assert.equal(path, '/api/create-membership-portal-session');
+    assert.match(url, /billing\.stripe\.com/);
+  });
 });

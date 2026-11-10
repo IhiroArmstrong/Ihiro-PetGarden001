@@ -5,7 +5,7 @@
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import {
@@ -181,5 +181,37 @@ describe('desktop IPC allowlists', () => {
     assert.match(search, /confide=1/);
     assert.match(search, /companionEntitled=1/);
     assert.match(search, /entitlementMock=pro/);
+  });
+});
+
+describe('packaged desktop src imports', () => {
+  it('copies src next to the asar so updater startup imports resolve', () => {
+    const extra = desktopPkg.build.extraResources;
+    const srcCopy = extra.find(
+      (item) => item && item.from === '../src' && item.to === 'src'
+    );
+    assert.ok(srcCopy, 'extraResources must place ../src at Resources/src');
+    assert.ok(
+      srcCopy.filter.includes('!**/*.test.js'),
+      'packaged src must omit unit tests'
+    );
+    const updaterSrc = readFileSync(
+      join(
+        dirname(fileURLToPath(import.meta.url)),
+        '../../desktop/updater/updaterRuntime.js'
+      ),
+      'utf8'
+    );
+    assert.match(
+      updaterSrc,
+      /from '\.\.\/\.\.\/src\/core\/desktopUpdaterChannel\.js'/
+    );
+    const resolved = normalize(
+      join(
+        'Resources/app.asar/updater',
+        '../../src/core/desktopUpdaterChannel.js'
+      )
+    );
+    assert.equal(resolved, 'Resources/src/core/desktopUpdaterChannel.js');
   });
 });

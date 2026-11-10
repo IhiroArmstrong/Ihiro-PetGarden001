@@ -569,6 +569,10 @@ T96 未覆盖语言求助兜底。日语未开放固定句接上 T92 求助句�
 
 T97 危机题卷标注资质。外部顾问01 无此背景记载。出题者不得是写分类器的同一会话。第 2/3 刀与第 4 刀 10-05 修复都依赖。期限 2026-11-22；找不到则 PO 书面风险接受。
 
+### `t98-confide-mount-off-inventory` · note · 已完成 · P1 · 只读盘点 · 2026-11-08
+
+T98 倾诉默认关闭入口盘点。交付：`docs/audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`。口令「按 T98 再盘一遍」除非代码面变，否则勿再开同内容旁支。
+
 ### `deep-link-shortcuts-cookbook` · feature · Brief 待点头（纯文档） · 2026-11-07
 
 深链 + Shortcuts 食谱。Web query 与已有 `focus-tiger://app` 落到同一开坐 action。Health 只走用户手势 + 快捷指令回写 Mindful Minutes。不是 T49 原生壳，不是 Ritual Recipe B1，不是读 Health。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。

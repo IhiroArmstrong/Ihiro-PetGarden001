@@ -12,7 +12,10 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { computeB1ArchitectureGateMetrics } from './b1-architecture-gate-scan.js';
-import { runB1ArchitectureGateAudit } from './audit-b1-architecture-gate.js';
+import {
+  formatB1MetricExceedsError,
+  runB1ArchitectureGateAudit
+} from './audit-b1-architecture-gate.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -29,5 +32,13 @@ describe('audit:b1-architecture-gate', () => {
     assert.equal(current.coreToUiCrossImports, baseline.metrics.coreToUiCrossImports);
     assert.equal(current.mainJsLineCount, baseline.metrics.mainJsLineCount);
     assert.equal(runB1ArchitectureGateAudit(), true);
+  });
+
+  it('main.js over-cap message tells the agent to extract, not --write', () => {
+    const msg = formatB1MetricExceedsError('mainJsLineCount', 7705, 7704);
+    assert.match(msg, /7705 lines \(cap 7704\)/);
+    assert.match(msg, /src\/core\/ or src\/ui\//);
+    assert.match(msg, /Do not run --write on a feature PR/);
+    assert.match(msg, /CODEOWNERS/);
   });
 });

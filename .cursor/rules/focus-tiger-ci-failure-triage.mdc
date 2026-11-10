@@ -34,7 +34,9 @@ alwaysApply: false
 | **4** 语法 / 夹具 | 修这个 PR |
 | 噪声 `Error: boom` | 忽略（模拟 PWA 注册失败） |
 
-**重跑上限**：同一 PR、同一报错，Agent 最多自动 `gh run rerun` **1** 次；仍红则停下报告。禁止连续重跑 2～3 轮。
+**重跑上限**：同一 PR、同一报错，Agent 最多自动 `gh run rerun` **1** 次；仍红则停下报告。禁止连续重跑 2～3 轮。种类 1 / 2 禁止当产品回归连着重跑。
+
+**推送前**：非文档改动须已通过 husky `pre-push` 的 `test:e2e:smoke`（T99）。见 `focus-tiger-pr-smoke-gates.mdc`。
 
 **开 PR 描述**（改菜单 / 共享生成文件时）：见该 SSOT「Agent 开 PR 时」第 4–5 条；PR 模板有对应勾选。
 

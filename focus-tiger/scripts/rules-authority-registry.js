@@ -44,6 +44,7 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   '.cursor/rules/focus-tiger-session-handoff.mdc',
   '.cursor/rules/focus-tiger-brief-before-user-visible.mdc',
   '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
+  '.cursor/rules/focus-tiger-pr-smoke-gates.mdc',
   '.cursor/rules/focus-tiger-ui-bug-triage.mdc',
   '.cursor/rules/focus-tiger-issue-ledger.mdc',
   '.cursor/rules/focus-tiger-companion-debug.mdc',
@@ -1742,7 +1743,9 @@ export const RULE_AUTHORITY_TOPICS = [
       /pr-smoke-failure-classes/,
       /菜单走完超时/,
       /test:e2e:menu-reachability/,
-      /menu-reachability-trigger-paths/
+      /menu-reachability-trigger-paths/,
+      /pr-smoke-path-routes/,
+      /机械闸（T99/
     ],
     topicSignals: [
       /pr-smoke-failure-classes/,
@@ -1776,11 +1779,13 @@ export const RULE_AUTHORITY_TOPICS = [
       'focus-tiger/docs/GLOSSARY.md',
       'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
       'focus-tiger/docs/TEST_TRACKER.md',
-      '.cursor/rules/testing-strategy.mdc'
+      '.cursor/rules/testing-strategy.mdc',
+      '.cursor/rules/focus-tiger-pr-smoke-gates.mdc'
     ],
     restatementExemptFiles: [
       'focus-tiger/docs/RULES_INDEX.md',
-      '.cursor/rules/focus-tiger-ci-failure-triage.mdc'
+      '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
+      '.cursor/rules/focus-tiger-pr-smoke-gates.mdc'
     ]
   },
   {

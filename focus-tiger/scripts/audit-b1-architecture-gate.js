@@ -28,6 +28,28 @@ const METRIC_KEYS = [
 ];
 
 /**
+ * @param {string} key
+ * @param {number} value
+ * @param {number} limit
+ * @returns {string}
+ */
+export function formatB1MetricExceedsError(key, value, limit) {
+  if (key === 'mainJsLineCount') {
+    return (
+      `[audit:b1-architecture-gate] main.js is ${value} lines (cap ${limit}). ` +
+      'Extract new logic to src/core/ or src/ui/ — do not grow the entry file. ' +
+      'Raising the cap needs a dedicated baseline PR and PO approval ' +
+      '(CODEOWNERS: focus-tiger/docs/audit/b1-architecture-gate-baseline.json). ' +
+      'Do not run --write on a feature PR.'
+    );
+  }
+  return (
+    `[audit:b1-architecture-gate] ${key} ${value} exceeds baseline ${limit} ` +
+    '(B1 §7 — fix code or open baseline PR with PO approval; do not --write on a feature PR)'
+  );
+}
+
+/**
  * @returns {boolean}
  */
 export function runB1ArchitectureGateAudit({ write = false } = {}) {
@@ -58,9 +80,7 @@ export function runB1ArchitectureGateAudit({ write = false } = {}) {
     const limit = baseline.metrics[key];
     const value = current[key];
     if (value > limit) {
-      console.error(
-        `[audit:b1-architecture-gate] ${key} ${value} exceeds baseline ${limit} (B1 §7 — fix code or open baseline PR with PO approval; do not --write on a feature PR)`
-      );
+      console.error(formatB1MetricExceedsError(key, value, limit));
       ok = false;
     }
   }

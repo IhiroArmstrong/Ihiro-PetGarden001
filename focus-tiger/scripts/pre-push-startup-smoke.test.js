@@ -8,6 +8,7 @@ import assert from 'node:assert/strict'
 import {
   ZERO_SHA,
   SKIP_ENV,
+  SKIP_ENV_SMOKE,
   isDocsOnlyPath,
   shouldSkipStartupSmoke,
   parsePrePushStdin,
@@ -88,7 +89,7 @@ describe('pre-push startup smoke (A5 / R4)', () => {
     })
     assert.equal(code, 0)
     assert.equal(ran, false)
-    assert.match(logs.join('\n'), /skipped startup smoke/)
+    assert.match(logs.join('\n'), /skipped required browser smoke/)
   })
 
   it('skips smoke for docs-only push', async () => {
@@ -111,6 +112,47 @@ describe('pre-push startup smoke (A5 / R4)', () => {
     })
     assert.equal(code, 0)
     assert.equal(ran, false)
+  })
+
+  it('skips smoke when the T99 SKIP env is set', async () => {
+    let ran = false
+    const logs = []
+    const code = await main({
+      env: { [SKIP_ENV_SMOKE]: '1' },
+      readInput: async () => '',
+      runSmoke: () => {
+        ran = true
+        return { ok: true, status: 0 }
+      },
+      log: { error: (m) => logs.push(m) }
+    })
+    assert.equal(code, 0)
+    assert.equal(ran, false)
+    assert.match(logs.join('\n'), /FT_SKIP_PRE_PUSH_SMOKE/)
+  })
+
+  it('runs menu extra after required smoke when menu paths change', async () => {
+    const ran = []
+    const code = await main({
+      env: {},
+      readInput: async () => `refs/heads/feat local1 refs/heads/feat remote1\n`,
+      runGit: (args) => {
+        if (args[0] === 'diff') {
+          return {
+            ok: true,
+            stdout: 'focus-tiger/src/ui/WideIdleMoreMenu.js\n'
+          }
+        }
+        return { ok: true, stdout: '' }
+      },
+      runNpm: (script) => {
+        ran.push(script)
+        return { ok: true, status: 0 }
+      },
+      log: { error: () => {} }
+    })
+    assert.deepEqual(ran, ['test:e2e:smoke', 'test:e2e:menu-reachability'])
+    assert.equal(code, 0)
   })
 
   it('runs smoke and fails closed when the spec is red', async () => {

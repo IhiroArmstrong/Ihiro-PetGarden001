@@ -96,9 +96,17 @@
 
 ---
 
+## 用户可见行为与检查（T99）
+
+- [ ] **未**改入口可见性 / 菜单 / 倾诉挂载 → 勾此项并跳过下面
+- [ ] 改了哪些用户看得见的行为：________
+- [ ] 同一 PR 已改对应测试（开关开→可见；开关关→不可见或跳过）。说明：________
+- [ ] `src/main.js` 行数：**未增加** / 已抽到其它文件 / **禁止**在本功能 PR 改 `b1-architecture-gate-baseline.json`
+
 ## 冒烟测试
 
-- [ ] 已在本地跑过 **`cd focus-tiger && npm run test:pr-smoke`**（逻辑冒烟 + 浏览器壳子集，约 2–4 分钟）
+- [ ] 已在本地跑过 **`cd focus-tiger && npm run smoke:required`**（= `test:pr-smoke`；逻辑冒烟 + 浏览器壳子集）。结果：________ passed / ________ failed
+- [ ] husky `pre-push` 已跑 `test:e2e:smoke`（或写明 `FT_SKIP_PRE_PUSH_SMOKE=1` 原因）
 - [ ] （可选）合并前再跑完整套件：`npm run test:e2e` · `npm run test:e2e:visibility` · `npm run docs:check`
 
 > CI：每次 PR→`develop` 都会上报 **`test:pr-smoke`**（无 `focus-tiger/**` 改动时为成功 no-op）与 **`pre-merge with develop`**。改产品代码时 smoke 含逻辑冒烟 + 短壳 e2e smoke + **`npm run build` 产物检查**。**菜单走完**不在默认必跑集；改菜单路径时 `pr-smoke` 额外一步仍跑，另有 nightly / 合入 develop 后（见 `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md`）。完整 e2e / visibility / doc-contract 另触发。  

@@ -21,6 +21,7 @@ import {
   normalizeGrowthJourneyStage,
   readGrowthJourneyStageFloor
 } from '../growthJourneyStage.js';
+import { mergePracticeBackupCloudStoreValue } from './practiceBackupCloudMerge.js';
 
 export const PRACTICE_BACKUP_SCHEMA_VERSION = 7;
 
@@ -575,7 +576,8 @@ export function writePracticeBackupStoresRaw(storage, snapshot) {
 }
 
 /**
- * Write cloud snapshot keys only (v1 or v2). Stage floor merges max(local, cloud).
+ * Write cloud snapshot keys only (v1 or v2). Union merge (T93 D1);
+ * cloud null must not delete a local key. Stage floor still max(local, cloud).
  * @param {Storage | null | undefined} storage
  * @param {PracticeBackupSnapshot} snapshot
  */
@@ -592,32 +594,34 @@ export function writePracticeBackupCloudStoresRaw(storage, snapshot) {
       if (key === 'focus-tiger.lotus-pond.v1' && val && typeof val === 'object') {
         val = lotusValueWithoutStageFloor(val);
       }
-      if (key === GROWTH_JOURNEY_STAGE_FLOOR_KEY && val && typeof val === 'object') {
-        const incoming = normalizeGrowthJourneyStage(
-          /** @type {{ highestStage?: unknown }} */ (val).highestStage
-        );
-        if (incoming) {
-          mergeGrowthJourneyStageFloorFromLotus(storage, {
-            growthJourneyStageFloor: incoming
-          });
+      if (key === GROWTH_JOURNEY_STAGE_FLOOR_KEY) {
+        if (val && typeof val === 'object') {
+          const incoming = normalizeGrowthJourneyStage(
+            /** @type {{ highestStage?: unknown }} */ (val).highestStage
+          );
+          if (incoming) {
+            mergeGrowthJourneyStageFloorFromLotus(storage, {
+              growthJourneyStageFloor: incoming
+            });
+            wrote += 1;
+            continue;
+          }
         }
+        skipped += 1;
         continue;
       }
-      if (val == null) {
-        if (storage.getItem(key) == null) {
-          skipped += 1;
-        } else {
-          storage.removeItem(key);
-          wrote += 1;
-        }
+      const localVal = parsePracticeBackupStorageRaw(storage.getItem(key));
+      const merged = mergePracticeBackupCloudStoreValue(key, localVal, val);
+      if (merged == null) {
+        skipped += 1;
+        continue;
+      }
+      const next = stringifyPracticeBackupStorageValue(merged);
+      if (storageTextUnchanged(storage.getItem(key), next)) {
+        skipped += 1;
       } else {
-        const next = stringifyPracticeBackupStorageValue(val);
-        if (storageTextUnchanged(storage.getItem(key), next)) {
-          skipped += 1;
-        } else {
-          storage.setItem(key, next);
-          wrote += 1;
-        }
+        storage.setItem(key, next);
+        wrote += 1;
       }
     } catch {
       // ignore quota
