@@ -3,18 +3,33 @@
     "SUPPORT_PRO_BLURB": "Everything in Yin Membership, plus the desktop companion tier. Confide is not open to guests in this release; we are not selling new Pro checkout right now.",
     "SUPPORT_COMPANION_ADDON_BLURB": "Your add-on purchase remains on this account. Confide is not open to guests yet; we are not selling new companion add-on checkout.",
     "SUPPORT_COMPANION_ADDON_CTA_OWNED": "Purchased — entry not open yet",
-    "SUPPORT_CHECKOUT_SALE_PAUSED": "New checkout for this offer is paused right now."
+    "SUPPORT_CHECKOUT_SALE_PAUSED": "New checkout for this offer is paused right now.",
+    "SUPPORT_PRO_BENEFIT_2": "Desktop companion tier (Confide not open to guests in this release)",
+    "CONTENT_UNLOCK_COMPANION_UPSELL": "Sanctuary Lifetime unlocks advanced scenes. On-device Yin (Confide) is not open to guests in this release; companion add-on checkout is paused.",
+    "CONTENT_UNLOCK_COMPANION_CTA": "Companion entry not open yet",
+    "SUPPORT_COMPANION_ADDON_CTA": "Add-on checkout paused",
+    "SUPPORT_COMPANION_ADDON_ERROR": "Confide is not open to guests in this release; companion add-on checkout is paused."
   },
   "zh": {
     "SUPPORT_PRO_BLURB": "含阿寅会员全部进阶层与桌面陪伴层。倾诉尚未对客人开放；Pro 新结账现已暂停。",
     "SUPPORT_COMPANION_ADDON_BLURB": "加购记录仍保留在本账号。倾诉尚未对客人开放；陪伴加购新结账现已暂停。",
     "SUPPORT_COMPANION_ADDON_CTA_OWNED": "已购买 · 入口尚未开放",
-    "SUPPORT_CHECKOUT_SALE_PAUSED": "此项新结账现已暂停。"
+    "SUPPORT_CHECKOUT_SALE_PAUSED": "此项新结账现已暂停。",
+    "SUPPORT_PRO_BENEFIT_2": "桌面陪伴层（倾诉尚未对客人开放）",
+    "CONTENT_UNLOCK_COMPANION_UPSELL": "圣所终身版已解锁进阶场景。本机阿寅（倾诉）尚未对客人开放；陪伴加购新结账现已暂停。",
+    "CONTENT_UNLOCK_COMPANION_CTA": "陪伴入口尚未开放",
+    "SUPPORT_COMPANION_ADDON_CTA": "加购结账已暂停",
+    "SUPPORT_COMPANION_ADDON_ERROR": "倾诉尚未对客人开放；陪伴加购新结账现已暂停。"
   },
   "ja": {
     "SUPPORT_PRO_BLURB": "阿寅メンバーシップの進階に加え、デスクトップコンパニオン層があります。コンファイドはこの版ではゲストに開いていません。新規 Pro 決済は現在停止しています。",
     "SUPPORT_COMPANION_ADDON_BLURB": "アドオンの購入記録は残ります。コンファイドはまだゲストに開いていません。新規アドオン決済は停止中です。",
     "SUPPORT_COMPANION_ADDON_CTA_OWNED": "購入済み · 入口はまだ開いていません",
-    "SUPPORT_CHECKOUT_SALE_PAUSED": "このオファーの新規決済は現在停止しています。"
+    "SUPPORT_CHECKOUT_SALE_PAUSED": "このオファーの新規決済は現在停止しています。",
+    "SUPPORT_PRO_BENEFIT_2": "デスクトップコンパニオン層（コンファイドはゲストに未公開）",
+    "CONTENT_UNLOCK_COMPANION_UPSELL": "サンクチュアリ生涯版で上級シーンが使えます。端末内コンパニオン（コンファイド）はゲストに開いていません。アドオン新規決済は停止中です。",
+    "CONTENT_UNLOCK_COMPANION_CTA": "コンパニオン入口は未公開",
+    "SUPPORT_COMPANION_ADDON_CTA": "アドオン決済停止中",
+    "SUPPORT_COMPANION_ADDON_ERROR": "コンファイドはゲストに開いていません。アドオン新規決済は停止中です。"
   }
 }
