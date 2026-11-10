@@ -72,8 +72,6 @@
       "native/**/*.swift",
       "updater/**/*.js",
       "guidedMeditation/**/*.js",
-      "../src/core/desktopUpdaterChannel.js",
-      "../src/core/desktopUpdaterState.js",
       "companion/**/*.js",
       {
         "from": "../dist",
@@ -93,6 +91,15 @@
       {
         "from": "../public/audio",
         "to": "audio"
+      },
+      {
+        "from": "../src",
+        "to": "src",
+        "filter": [
+          "**/*",
+          "!**/*.test.js",
+          "!**/*.spec.js"
+        ]
       }
     ],
     "mac": {

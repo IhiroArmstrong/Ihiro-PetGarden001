@@ -1,6 +1,6 @@
 # Task Brief · 方案 A 选项 1：安装包前已购也不开倾诉；第四卡与第五卡都先停新结账
 
-> **状态（2026-11-10）**：**实现已合 develop**（[#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646) · merge `ec0e9faa`）。客户端闸门、两张卡、文案、Worker **源码** 410 默认关都在共用版本里。**生产 Worker 尚未 Redeploy** → 线上接口仍可能新开结账。Sandbox 已付流水是开发自测，**真实客户 0；Live 笔数不适用**。安装包 QA 参数：源码 + 单测已核对，**不是**签名安装包实测。本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) / [#1642](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1642) / [#1651](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1651)。  
+> **状态（2026-11-10）**：**实现已合 develop**（[#1646](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1646) · merge `ec0e9faa`）。客户端闸门、两张卡、文案、Worker **源码** 410 默认关都在共用版本里。**生产 Worker 尚未 Redeploy** → 线上接口仍可能新开结账。Sandbox 已付流水是开发自测，**真实客户 0；Live 笔数不适用**。安装包 QA 参数：2026-11-10 用生产构建的 `--dir` 包实测，深链带上的实验室参数没有打开倾诉，也没有解锁会员。仍不是公证过的签名 `.dmg`。本文件取代已合并的 [#1639](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1639)，并吸收 [#1641](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1641) / [#1642](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1642) / [#1651](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1651)。  
 > **类**：**B**。会改客人能不能看见倾诉，以及 Support 里能不能新买 Pro、能不能新买陪伴加购。  
 > **基线**：`origin/develop@ec0e9faa`（含 #1646）。上一版写的 `d54f11a8` / OPEN 旁支已过期。  
 > **依据**：T98（倾诉默认关闭时的入口盘点）[`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](../audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。该盘点已合 [#1633](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1633)；盘点当时的「已购宽屏可开」已被 #1646 代码闸收掉。  
@@ -131,7 +131,7 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 | # | 要写进说明的事 | 2026-11-10 |
 |---|---|---|
 | 1 | 服务端也关，而且默认关闭。变量缺失或读取失败时新结账一律拒绝。续订与会员管理入口不要受影响。Worker 部署后才算线上已关。 | **源码已合。** `isPlanAOption1NewCheckoutDisabled` 缺变量 / 非 true\|1 → 410；每次请求读 env。门户 / 会员新购 / confirm / webhook 未走该闸。单测未单独锁「门户在闸开时仍 200」。**生产 Worker 未部署。** |
-| 2 | 核实安装包不接受 QA 参数，含深链。 | **源码 + 单测已核实（注入 `qaHarnessAllowed: false`）。** 结账回跳会转发 query；生产 harness 须忽略。**未**用真正 `MODE=production` 打包、**未**拆签名 `.dmg`。Electron 生产构建是否走该闸 = **未核实**。 |
+| 2 | 核实安装包不接受 QA 参数，含深链。 | **2026-11-10 `--dir` 生产包已测（`MODE=production`，`VITE_FT_QA_BOOT` 为空；临时本机签名后才能启动）。** 冷启动 `focus-tiger://app/?product=1` 再分别加上 `confide=1`、`companionEntitled=1`、`entitlementMock=pro`、`entitlementMock=subscription`：参数留在页面地址里；倾诉卡、倾听耳、窄屏倾诉钮都是隐藏且 `display:none`，和没有这些参数时一样。菜单仍是 `idle-membership-cta`，仪式锁仍是 3。应用已经开着时，`open` 那条链接在 2.5 秒内没有改页面地址。不带连字符的 `focustiger://` 没有应用认领。仍不是公证过的 `.dmg`。 |
 | 3 | 查清线上模式笔数 / 活跃订阅。 | **Sandbox 54 笔自测；真实客户 0；Live 不适用。** 活跃订阅先不处理。 |
 | 4 | 更正过期事实。 | **已更正**（文首 +「合入后的地面事实」）。#1641/#1642 与 #1646 后只保留这一份口径：Sandbox 自测、#1646 已合、Worker 未部署。 |
 | 5 | 全盘检索倾诉 / 陪伴句子。 | **部分。** 切片 `plan-a-option1-support-sale-stop.json` 覆盖 Support Pro/加购。总账 `zh.json` 仍留旧 Pro 句，运行时切片覆盖。隐私页 / 帮助中心 / 官网未做完整客人面检索。 |
@@ -245,7 +245,7 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 1. **#1646 已合 develop。** 不再拆两个实现 PR，勿再开同内容旁支。  
 2. **部署生产 Worker**（须口头「部署」）：之后才算线上接口已关。部署后记 Version id。  
 3. **本治理 docs PR**：统一本说明（Sandbox 汇总、Price ID、七点状态）、术语表、B3 看板、RR-14。  
-4. **仍未做完、方案 A 不能写成完成**：真正生产模式打包测 QA 参数；签名安装包深链；语音 / 帮助中心 T92；文案全盘检索。  
+4. **仍未做完、方案 A 不能写成完成**：公证签名 `.dmg` 上再测一次深链；语音 / 帮助中心 T92；文案全盘检索。`--dir` 生产包的深链结果见上面第 2 点。  
 5. **其后另会话**：签名公证核实、T97 人选、T93 / T95、B4a/b、安装包五场景走查。不在本 PR。
 
 沙箱测 Pro / 加购：在测试 Worker 设 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=true`。切 Live 密钥前确认该变量**不是**开（RR-14）。
