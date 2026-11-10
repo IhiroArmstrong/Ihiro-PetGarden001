@@ -1,0 +1,1 @@
+| T93 Brief §4 点头 | 纯文档 | 仅单元测试覆盖 | **无界面。** 读 Brief：明文开闸、入口只留 Preferences、Setapp/MAS 关云登录。读术语表：T93=立即做 · 第一刀 D1 不开闸。`npm run queue:check`。不测登录、不测开云闸。 | — | — | — | `docs/t93-brief-s4-lock` | 2026-11-10 |
