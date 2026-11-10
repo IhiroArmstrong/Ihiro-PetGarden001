@@ -45,12 +45,14 @@ export const CONFIDE_OPEN_ENTRY_REGISTRY = Object.freeze([
   Object.freeze({
     id: 'voice-crisis-to-confide',
     policy: 'visible-must-feedback',
-    note: 'T98 · unverified this sprint — registry slot; audit must re-check voiceCommandGate / companion L2'
+    note:
+      'Push-to-talk → submitVoiceCommandRaw → ConfideToYinUI.open; mount off → onOpenBlocked T92 toast (Plan A §6)'
   }),
   Object.freeze({
     id: 'help-center-ask-crisis-redirect',
     policy: 'visible-must-feedback',
-    note: 'T98 · help center ask → confide path; verify isHelpCenterAskDestinationReachable when mount off'
+    note:
+      'Help Center ask safety policy → help-center-ask-safety-t92 inline T92 (confidePlanAHelpCenterAskSafety)'
   })
 ]);
 

@@ -1361,7 +1361,13 @@ export class ConfideToYinUI {
    */
   submitVoiceCommandRaw(raw) {
     this._voiceRawForSend = String(raw || '');
-    if (!this._open) this.open();
+    if (!this._open) {
+      this.open();
+      if (!this._open) {
+        this._voiceRawForSend = null;
+        return;
+      }
+    }
     this._onSend();
   }
 
@@ -1579,8 +1585,9 @@ export class ConfideToYinUI {
     const text = this.inputEl.value;
     const raw = this._voiceRawForSend || text;
     this._voiceRawForSend = null;
-    if (!canSubmitConfideText(raw)) return;
-    const decision = classifyYinVoiceEntry(raw, {
+    const sendText = String(raw ?? '').trim();
+    if (!canSubmitConfideText(sendText)) return;
+    const decision = classifyYinVoiceEntry(sendText, {
       enabled: canRouteSpokenYinCommand({
         widthPx: typeof window !== 'undefined' ? window.innerWidth : 0
       })
@@ -1589,12 +1596,11 @@ export class ConfideToYinUI {
       void this._runOperatingCommand(decision);
       return;
     }
-    if (!canSubmitConfideText(text)) return;
     this._semanticCrisisGenerateAttestation =
       createConfideSemanticCrisisGenerateAttestation();
     tickConfideSafetyGenerateLatchOnUserSend(this._safetyGenerateLatch);
     const hit = resolveConfideReply({
-      text,
+      text: sendText,
       localDate: formatLocalDateYmd(),
       salt: this._l2Turns.length,
       excludeIds: this._sessionExclude,
@@ -1605,7 +1611,7 @@ export class ConfideToYinUI {
     });
     if (!hit) return;
     const shadowRow = buildCrisisParaphraseShadowTurnLog({
-      text,
+      text: sendText,
       locale: getLocale()
     });
     if (
@@ -1620,7 +1626,7 @@ export class ConfideToYinUI {
     const crisisEligible =
       shouldAttemptConfideSemanticCrisis({
         literalRoute: hit.route,
-        text,
+        text: sendText,
         wideViewport,
         embeddingReady
       }) && embeddingReady;
@@ -1630,10 +1636,10 @@ export class ConfideToYinUI {
         this._companion &&
         typeof this._companion.semanticLiveClassify === 'function')
     ) {
-      void this._applyLiveSemanticThenDispatch(text, hit);
+      void this._applyLiveSemanticThenDispatch(sendText, hit);
       return;
     }
-    this._dispatchClassifiedSend(text, hit);
+    this._dispatchClassifiedSend(sendText, hit);
   }
 
   /**
