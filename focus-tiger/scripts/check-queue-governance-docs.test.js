@@ -252,4 +252,20 @@ describe('isQueueGovernanceCoPrAllowed', () => {
       null
     );
   });
+
+  it('allows T97 pass-line shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/task-briefs/task-t97-crisis-annotator-qualification.md',
+        'focus-tiger/docs/task-entries/t97-crisis-annotator-qualification.md',
+        'focus-tiger/docs/audit/RISK_REGISTER.md',
+        'focus-tiger/docs/issue-entries/docs-gov-t97-pass-line.md',
+        'focus-tiger/docs/tracker-entries/docs-gov-t97-pass-line.md',
+        'focus-tiger/docs/PROCESS.md'
+      ]),
+      null
+    );
+  });
 });

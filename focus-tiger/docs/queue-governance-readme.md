@@ -31,6 +31,8 @@
 - 队列行：**先改 `SCHEDULING_GLOSSARY.md` §1**，再在同 PR 同步 `GLOSSARY.md`「当前任务」表（含风险列）。
 - **电脑版十二条对照**（`GLOSSARY.md` 专节，对照号 1–12）：只许改状态 / 执行序附注，**禁止删行或把 12 行缩成更少**。T38–T49 对应该 12 行。
 
+- **T97 过关线（2026-11-10）**：与术语表同批时，还可改已列入白名单的 T97 Brief、task-entry、四刀说明、`RISK_REGISTER.md`、`PROCESS.md`，以及 `issue-entries/docs-gov-t97-pass-line.md`、`tracker-entries/docs-gov-t97-pass-line.md`。不改产品运行时。
+
 ## 批量消冲突（develop 刚合入队列变更后）
 
 ```bash

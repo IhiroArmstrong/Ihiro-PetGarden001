@@ -545,13 +545,29 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `locale-base-sync-plan-a` · feature · 进行中 · 本旁支 · 2026-11-10
+
+方案 A Support 四键从切片抄进 en/zh/ja。深链不改 locale 路由/query。新文案仍走切片。
+
+### `t93-email-sign-in-d1` · note · D1 实现旁支 feature/t93-email-sign-in-d1 · 客户端并集去重 · 云闸仍关 · 2026-11-10
+
+T93 第一刀只改云恢复写盘：本地为权威并集。不开 `practiceBackupCloudEnabled`，不改菜单灰行，不部署 Worker。
+
+### `t93-email-sign-in-p0` · feature · 立即做 · 槽位 P1 · Brief #1605 · §4 已点头（2026-11-10）· 第一刀 D1 合并去重不开闸 · 合入前须 B5 增量复核 · 2026-11-10
+
+T93 邮箱登录（第一份 DMG 门闩；槽位 P1）。挂苹果 DMG Epic #5 / #631。方案 B：无密码 OTP，复用 practice-backup。§4 已点头：明文开闸、入口只留 Preferences、Setapp/MAS 关云登录。口令「开工邮箱登录 P0」须新 Chat；第一刀只做合并去重，不开云闸。合入前须 B5 增量复核。不是把审计 P0 写成槽位。不是识别率。
+
+### `t97-crisis-annotator-qualification` · note · 已完成 · P2 · 2026-11-10 过关线已改 · 2026-11-10
+
+T97 危机题卷标注资质。PO 2026-11-10：不做自建标注。V2 过关线改为产品免责声明 + 引导用户找当地资源。2026-11-22 找人期限作废，标注人要求不算拦路虎。识别率缺口仍在，倾诉仍默认关。外部顾问01 仍不得标危机题。
+
+### `t99-required-smoke-gates` · note · 立即做 · P1 · 2026-11-09
+
+T99 必跑失败机械闸：husky pre-push 跑 `test:e2e:smoke`；pre-commit 先拦入口行数；倾诉玻璃卡读挂载开关。不改用户画面。种类 1/2 清零、CI 自动归类评论不在本刀。口令「按 T99 开工」= 本治理旁支。
+
 ### `t78-co-practice-stable-breath-companion` · feature · 待合 · 可选 · PR-3 实现中 · 2026-11-08
 
 T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动。
-
-### `t93-email-sign-in-p0` · feature · 排队中 · 槽位 P1 · Brief 已写 #1605 · 实现待 R2-lite 后且 §4 点头 · 合入前 B5 增量复核 · 2026-11-08
-
-T93 邮箱登录（第一份 DMG 门闩；槽位 P1）。挂苹果 DMG Epic #5 / #631。方案 B：无密码 OTP，复用 practice-backup。合入前须 B5 增量复核。不是把审计 P0 写成槽位。不是识别率。
 
 ### `t94-v2-recognition-four-knives` · feature · 已完成（说明）· P2 · 无运行时 · 刀序第 3→2→4 · 10-05 修复归第 4 刀 · 第 2–4 刀待 Brief · 2026-11-08
 
@@ -564,10 +580,6 @@ T95 电脑壳升级 + 更新通道。相对日：两周内开工准备；发出�
 ### `t96-uncovered-language-help` · feature · 立即做 · P2 · 未覆盖语言固定句带 T92 求助 · 2026-11-08
 
 T96 未覆盖语言求助兜底。日语未开放固定句接上 T92 求助句。不改阈值。不是 T94 第 2–4 刀。实现旁支独立。
-
-### `t97-crisis-annotator-qualification` · note · 阻塞 · P2 · 人选期限 2026-11-22 · 2026-11-08
-
-T97 危机题卷标注资质。外部顾问01 无此背景记载。出题者不得是写分类器的同一会话。第 2/3 刀与第 4 刀 10-05 修复都依赖。期限 2026-11-22；找不到则 PO 书面风险接受。
 
 ### `t98-confide-mount-off-inventory` · note · 已完成 · P1 · 只读盘点 · 2026-11-08
 
