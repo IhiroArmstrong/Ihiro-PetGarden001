@@ -197,6 +197,7 @@ describe('isQueueGovernanceCoPrAllowed', () => {
         'focus-tiger/docs/task-briefs/task-t95-electron-shell-upgrade.md',
         'focus-tiger/docs/task-entries/t95-electron-shell-upgrade.md',
         'focus-tiger/docs/tracker-entries/docs-gov-t93-t95-queue.md',
+        'focus-tiger/docs/tracker-entries/docs-t93-brief-s4-lock.md',
         'focus-tiger/docs/audit/findings/2026-11-08/B2-testing-release-pm-findings.md',
         'focus-tiger/src/locales/localeSliceModules.js'
       ]),
