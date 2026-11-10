@@ -134,7 +134,7 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 | 2 | 核实安装包不接受 QA 参数，含深链。 | **2026-11-10 `--dir` 生产包已测（`MODE=production`，`VITE_FT_QA_BOOT` 为空；临时本机签名后才能启动）。** 冷启动 `focus-tiger://app/?product=1` 再分别加上 `confide=1`、`companionEntitled=1`、`entitlementMock=pro`、`entitlementMock=subscription`：参数留在页面地址里；倾诉卡、倾听耳、窄屏倾诉钮都是隐藏且 `display:none`，和没有这些参数时一样。菜单仍是 `idle-membership-cta`，仪式锁仍是 3。应用已经开着时，`open` 那条链接在 2.5 秒内没有改页面地址。不带连字符的 `focustiger://` 没有应用认领。仍不是公证过的 `.dmg`。 |
 | 3 | 查清线上模式笔数 / 活跃订阅。 | **Sandbox 54 笔自测；真实客户 0；Live 不适用。** 活跃订阅先不处理。 |
 | 4 | 更正过期事实。 | **已更正**（文首 +「合入后的地面事实」）。#1641/#1642 与 #1646 后只保留这一份口径：Sandbox 自测、#1646 已合、Worker 未部署。 |
-| 5 | 全盘检索倾诉 / 陪伴句子。 | **部分。** 切片 `plan-a-option1-support-sale-stop.json` 覆盖 Support Pro/加购。总账 `zh.json` 仍留旧 Pro 句，运行时切片覆盖。隐私页 / 帮助中心 / 官网未做完整客人面检索。 |
+| 5 | 全盘检索倾诉 / 陪伴句子。 | **已做（本旁支）。** 切片 `plan-a-option1-support-sale-stop.json` + `help-center.json` 客人面改句；`npm run check:plan-a-guest-confide-copy` 扫合并后主表面 + `marketing-site/*.html`。总账 `zh.json` 等仍留旧句，运行时切片覆盖。 |
 | 6 | 「想聊聊」、语音危机、帮助中心转倾诉都显示 T92 求助句。 | **部分。** 「想聊聊」经 `onOpenBlocked` → T92。`voiceCommandGate.js` **无** `confide` 字符串。帮助中心 `isHelpCenterAskDestinationReachable` 只判断问卡 DOM，**不**断言转倾诉失败时弹出 T92。入口登记这两行仍写未核实。 |
 | 7 | 治理文档：术语表 + B3 看板。 | **本 PR。** |
 
@@ -245,7 +245,7 @@ Tracker 里第四 / 五卡人工验收多写 **Stripe Test**。Sandbox 活跃订
 1. **#1646 已合 develop。** 不再拆两个实现 PR，勿再开同内容旁支。  
 2. **部署生产 Worker**（须口头「部署」）：之后才算线上接口已关。部署后记 Version id。  
 3. **本治理 docs PR**：统一本说明（Sandbox 汇总、Price ID、七点状态）、术语表、B3 看板、RR-14。  
-4. **仍未做完、方案 A 不能写成完成**：公证签名 `.dmg` 上再测一次深链；语音 / 帮助中心 T92；文案全盘检索。`--dir` 生产包的深链结果见上面第 2 点。  
+4. **仍未做完、方案 A 不能写成完成**：公证签名 `.dmg` 上再测一次深链；语音 / 帮助中心 **T92 行为**核对（文案全盘检索已做）。`--dir` 生产包的深链结果见上面第 2 点（[#1659](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1659) 已合）。  
 5. **其后另会话**：签名公证核实、T97 人选、T93 / T95、B4a/b、安装包五场景走查。不在本 PR。
 
 沙箱测 Pro / 加购：在测试 Worker 设 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=true`。切 Live 密钥前确认该变量**不是**开（RR-14）。
