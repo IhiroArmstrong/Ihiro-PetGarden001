@@ -32,6 +32,22 @@ export function emotionKeyForPaymentThanks(kind) {
 }
 
 /**
+ * True when the query is a Stripe/desktop checkout return (including art).
+ * Safe for Electron main — no confirm/network imports.
+ *
+ * @param {string} [search]
+ * @returns {boolean}
+ */
+export function isCheckoutReturnSearch(search = '') {
+  const raw = String(search || '');
+  const params = new URLSearchParams(
+    raw.startsWith('?') ? raw.slice(1) : raw
+  );
+  if ((params.get('art_session') || '').startsWith('cs_')) return true;
+  return peekCheckoutReturnThanksKind(raw) != null;
+}
+
+/**
  * Peek Checkout return query (before consume/confirm strips it).
  *
  * @param {string} [search]

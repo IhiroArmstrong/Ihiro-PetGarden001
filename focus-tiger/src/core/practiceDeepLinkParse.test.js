@@ -71,6 +71,12 @@ describe('parsePracticeDeepLinkUnlessCheckout', () => {
       minutes: 5
     });
     assert.equal(parsePracticeDeepLinkUnlessCheckout(search), null);
+    assert.equal(
+      parsePracticeDeepLinkUnlessCheckout(
+        '?product=1&art_session=cs_test_art&start=sit&min=5'
+      ),
+      null
+    );
   });
 
   it('still parses practice when only product=1 is present', () => {

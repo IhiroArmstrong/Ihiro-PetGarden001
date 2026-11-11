@@ -75,6 +75,7 @@ describe('desktop packaging contract (Step B tray)', () => {
   it('packs trayPolicy.js with the shell', () => {
     assert.ok(desktopPkg.build.files.includes('trayPolicy.js'));
     assert.ok(desktopPkg.build.files.includes('checkoutReturnDelivery.js'));
+    assert.ok(desktopPkg.build.files.includes('practiceDeepLinkDispatch.js'));
     assert.ok(desktopPkg.build.files.includes('floatingMarker/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('alwaysOnTop/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('windowLayout/**/*.js'));
@@ -99,6 +100,7 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:input-rhythm-set/);
     assert.match(preload, /desktop:window-layout-get/);
     assert.match(preload, /desktop:window-layout-apply/);
+    assert.match(preload, /desktop:practice-deep-link/);
   });
 
   it('macOS Application menu wires Cmd+, to open Preferences', () => {
@@ -142,6 +144,10 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(mainSrc, /setAsDefaultProtocolClient\(\s*['"]focus-tiger['"]/);
     assert.match(mainSrc, /navigateDesktopCheckoutReturn/);
     assert.match(mainSrc, /isDesktopCheckoutReturnUrl/);
+    assert.match(mainSrc, /classifyDesktopDeepLink/);
+    assert.match(mainSrc, /desktop:practice-deep-link/);
+    assert.match(mainSrc, /handleDesktopDeepLink/);
+    assert.match(mainSrc, /kind !== 'checkout'/);
   });
 });
 
@@ -206,6 +212,14 @@ describe('packaged desktop src imports', () => {
       updaterSrc,
       /from '\.\.\/\.\.\/src\/core\/desktopUpdaterChannel\.js'/
     );
+    const dispatchSrc = readFileSync(
+      join(
+        dirname(fileURLToPath(import.meta.url)),
+        '../../desktop/practiceDeepLinkDispatch.js'
+      ),
+      'utf8'
+    );
+    assert.match(dispatchSrc, /from '\.\.\/src\/core\/practiceDeepLinkParse\.js'/);
     const resolved = normalize(
       join(
         'Resources/app.asar/updater',

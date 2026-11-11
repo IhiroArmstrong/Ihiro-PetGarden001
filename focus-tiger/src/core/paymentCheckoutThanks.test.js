@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import {
   PAYMENT_THANKS_EMOTIONS,
   emotionKeyForPaymentThanks,
+  isCheckoutReturnSearch,
   peekCheckoutReturnThanksKind,
   resolveCheckoutReturnWelcomeGate
 } from './paymentCheckoutThanks.js';
@@ -42,6 +43,9 @@ describe('paymentCheckoutThanks', () => {
       'membership'
     );
     assert.equal(peekCheckoutReturnThanksKind('?product=1'), null);
+    assert.equal(isCheckoutReturnSearch('?product=1&art_session=cs_test_art'), true);
+    assert.equal(isCheckoutReturnSearch('?product=1&pro_session=cs_test_abc'), true);
+    assert.equal(isCheckoutReturnSearch('?product=1&start=sit&min=5'), false);
     assert.equal(
       peekCheckoutReturnThanksKind('?sanctuary=cancel'),
       null

@@ -33,6 +33,7 @@ import {
   isAllowedExternalUrl,
   isDesktopCheckoutReturnUrl
 } from './ipcGuard.js';
+import { classifyDesktopDeepLink } from './practiceDeepLinkDispatch.js';
 import {
   HIDE_REASON_NONE,
   HIDE_REASON_TRAY,
@@ -88,6 +89,7 @@ const DEV_LOAD_URL = 'http://127.0.0.1:5173/?product=1';
 let mainWindow = null;
 /** @type {string | null} */
 let pendingCheckoutReturnUrl = null;
+let pendingPracticeDeepLinkUrl = null;
 /** @type {import('./companion/l1Runtime.js').CompanionL1Runtime | null} */
 let companionRuntime = null;
 /** @type {ReturnType<typeof createDesktopUpdaterRuntime> | null} */
@@ -287,12 +289,60 @@ function navigateDesktopCheckoutReturn(rawUrl) {
  * @param {string} rawUrl
  */
 function handleDesktopCheckoutReturn(rawUrl) {
-  if (!isDesktopCheckoutReturnUrl(rawUrl)) return;
+  if (classifyDesktopDeepLink(rawUrl).kind !== 'checkout') return;
   if (!app.isReady()) {
     pendingCheckoutReturnUrl = rawUrl;
     return;
   }
   navigateDesktopCheckoutReturn(rawUrl);
+}
+
+/**
+ * @param {string} rawUrl `focus-tiger://app/?product=1&start=sit&min=5`
+ */
+function navigateDesktopPracticeDeepLink(rawUrl) {
+  const classified = classifyDesktopDeepLink(rawUrl);
+  const search = classified.search || desktopCheckoutReturnSearch(rawUrl);
+  showMainWindow();
+  const win = mainWindow;
+  if (!win || win.isDestroyed()) return;
+  const plan = planDesktopCheckoutReturn({
+    pageUrl: win.webContents.getURL(),
+    isLoading: win.webContents.isLoading(),
+    search
+  });
+  if (plan.mode === 'in-page') {
+    win.webContents.send('desktop:practice-deep-link', plan.search);
+    return;
+  }
+  const qs = plan.search;
+  if (isDevMode()) {
+    const base = DEV_LOAD_URL.split('?')[0];
+    void win.loadURL(`${base}?${qs}`);
+    return;
+  }
+  void win.loadURL(`${DESKTOP_CUSTOM_ORIGIN}/index.html?${qs}`);
+}
+
+/**
+ * @param {string} rawUrl
+ */
+function handleDesktopDeepLink(rawUrl) {
+  const classified = classifyDesktopDeepLink(rawUrl);
+  if (classified.kind === 'foreign') return;
+  if (classified.kind === 'checkout') {
+    handleDesktopCheckoutReturn(rawUrl);
+    return;
+  }
+  if (classified.kind === 'open') {
+    if (app.isReady()) showMainWindow();
+    return;
+  }
+  if (!app.isReady()) {
+    pendingPracticeDeepLinkUrl = rawUrl;
+    return;
+  }
+  navigateDesktopPracticeDeepLink(rawUrl);
 }
 
 function registerDesktopCheckoutProtocol() {
@@ -308,27 +358,32 @@ function registerDesktopCheckoutProtocol() {
     app.setAsDefaultProtocolClient('focus-tiger');
   }
 
-  const onCheckoutDeepLink = (event, url) => {
+  const onDesktopDeepLink = (event, url) => {
     if (event && typeof event.preventDefault === 'function') {
       event.preventDefault();
     }
-    handleDesktopCheckoutReturn(url);
+    handleDesktopDeepLink(url);
   };
 
   if (process.platform === 'darwin') {
     app.on('will-finish-launching', () => {
-      app.on('open-url', onCheckoutDeepLink);
+      app.on('open-url', onDesktopDeepLink);
     });
   } else {
-    app.on('open-url', onCheckoutDeepLink);
+    app.on('open-url', onDesktopDeepLink);
   }
 }
 
-const coldStartCheckoutUrl = process.argv.find((arg) =>
-  isDesktopCheckoutReturnUrl(arg)
-);
-if (coldStartCheckoutUrl) {
-  pendingCheckoutReturnUrl = coldStartCheckoutUrl;
+const coldStartDeepLinkUrl = process.argv.find((arg) => {
+  const kind = classifyDesktopDeepLink(arg).kind;
+  return kind === 'checkout' || kind === 'practice' || kind === 'discard';
+});
+if (coldStartDeepLinkUrl) {
+  if (classifyDesktopDeepLink(coldStartDeepLinkUrl).kind === 'checkout') {
+    pendingCheckoutReturnUrl = coldStartDeepLinkUrl;
+  } else {
+    pendingPracticeDeepLinkUrl = coldStartDeepLinkUrl;
+  }
 }
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock();
@@ -336,8 +391,8 @@ if (!gotSingleInstanceLock) {
   app.quit();
 } else {
   app.on('second-instance', (_event, argv) => {
-    const deepLink = argv.find((arg) => isDesktopCheckoutReturnUrl(arg));
-    if (deepLink) handleDesktopCheckoutReturn(deepLink);
+    const deepLink = argv.find((arg) => classifyDesktopDeepLink(arg).kind !== 'foreign');
+    if (deepLink) handleDesktopDeepLink(deepLink);
     else showMainWindow();
   });
 
@@ -845,6 +900,10 @@ if (gotSingleInstanceLock) {
   if (pendingCheckoutReturnUrl) {
     navigateDesktopCheckoutReturn(pendingCheckoutReturnUrl);
     pendingCheckoutReturnUrl = null;
+  }
+  if (pendingPracticeDeepLinkUrl) {
+    navigateDesktopPracticeDeepLink(pendingPracticeDeepLinkUrl);
+    pendingPracticeDeepLinkUrl = null;
   }
 
   app.on('activate', () => {

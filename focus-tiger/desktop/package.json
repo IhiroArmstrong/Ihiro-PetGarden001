@@ -65,6 +65,7 @@
       "inputRhythm/**/*.js",
       "floatingMarker/**/*.js",
       "checkoutReturnDelivery.js",
+      "practiceDeepLinkDispatch.js",
       "voiceInput/**/*.js",
       "voiceInput/**/*.html",
       "systemTts/**/*.js",
