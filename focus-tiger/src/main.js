@@ -220,7 +220,7 @@ import { maybeSpeakFocusEndAnnouncement, maybeSpeakPracticeAnnouncement } from '
 import { formatObservedSessionDurationLine } from './core/sessionEndObservedDuration.js';
 import { formatCompanionChannelLine } from './core/companionChannelCopyDisplay.js';
 
-import { bindPreferenceBackupChrome, createPreferenceBackupPanels } from './ui/preferenceBackupPanels.js';
+import { bindPreferenceBackupChrome, createPreferenceBackupPanels, mountEmailJourneyD4Chrome } from './ui/preferenceBackupPanels.js';
 import { PracticeStudyConsentPanelUI } from './ui/PracticeStudyConsentPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -1783,16 +1783,6 @@ async function init() {
   });
   window.__presenceFieldPreference = presenceFieldPreferenceUI;
   syncPresenceFieldFromStorage();
-  // T93 D3: email restore lives in preferenceBackupPanels so main.js stays
-  // at the B1 line cap. Local file backup and email OTP share this helper.
-  // closeGrowthOverlayCards is a function declaration (hoisted) in this scope.
-  // Store channels keep the menu row grey via idleChromeOrchestration.
-  // Journey log corner is not a login; do not re-open that chain here.
-  // Worker 410 still shows EMAIL_JOURNEY_STATUS_UNAVAILABLE until deploy.
-  // Idle flush of practice backup stays on the existing busy probe.
-  // Protected payment paths are not in this deck card.
-  // D4 sit-complete prompt and Electron empty-library restore are out of scope.
-  // Setapp / MAS compile channel still disables the clickable row.
   const preferenceBackupPanels = createPreferenceBackupPanels(document.body);
   const localPracticeDataPanelUI = preferenceBackupPanels.localPracticeDataPanelUI;
   window.__localPracticeDataPanel = localPracticeDataPanelUI;
@@ -2460,6 +2450,13 @@ async function init() {
     sync: () => syncPracticeStudyFirstSitInvite(),
     isVisible: () => practiceStudyFirstSitInviteUI?.isVisible?.() === true
   };
+  mountEmailJourneyD4Chrome({
+    overlayRoot, requestOverlaySlot, buildLiveOverlaySnapshot, stateManager, STATES,
+    onOpenRestore: preferenceBackupChrome.onAccount,
+    getPracticedDateCount: () => window.__practiceDaysStore?.getPracticedDateKeys?.().length || 0,
+    deriveReminderBusySessionTarget,
+    isPracticeStudyInviteVisible: () => practiceStudyFirstSitInviteUI?.isVisible?.() === true
+  });
   awakenCheckInUI = new AwakenCheckInUI(overlayRoot, {
     requestMidSlot: requestAwakenCheckInOverlaySlot,
     releaseMidSlot: releaseAwakenCheckInOverlaySlot
@@ -4167,6 +4164,7 @@ async function init() {
       practiceStudyFirstSitInviteOpen:
         practiceStudyFirstSitInviteSlotHeld ||
         practiceStudyFirstSitInviteUI?.isVisible?.() === true,
+      emailJourneySitPromptOpen: window.__emailJourneyD4?.isSitPromptVisible?.() === true,
       ...overrides
     });
   }
@@ -5584,7 +5582,7 @@ async function init() {
   };
 
   syncPracticeStudyFirstSitInvite = () => {
-    if (!practiceStudyFirstSitInviteUI) return;
+    if (practiceStudyFirstSitInviteUI) {
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
     const snapshot = buildLiveOverlaySnapshot();
@@ -5605,9 +5603,11 @@ async function init() {
       if (practiceStudyFirstSitInviteUI.isVisible()) {
         practiceStudyFirstSitInviteUI.hide({ immediate: true });
       }
-      return;
+    } else {
+      practiceStudyFirstSitInviteUI.tryShow();
     }
-    practiceStudyFirstSitInviteUI.tryShow();
+    }
+    window.__emailJourneyD4?.sync?.();
   };
 
   syncWorkEndInvite = () => {

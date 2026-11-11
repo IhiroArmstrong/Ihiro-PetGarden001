@@ -351,6 +351,27 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     trackerCoverage: GAP
   }),
   surface({
+    file: 'EmailJourneySitCompletePromptUI.js',
+    slotRequest: Object.freeze({
+      mode: 'request',
+      uiTokens: Object.freeze(['requestSlot', 'releaseSlot']),
+      wiringFiles: Object.freeze(['src/ui/emailJourneyD4Chrome.js']),
+      wiringTokens: Object.freeze([
+        'EMAIL_JOURNEY_SIT_PROMPT',
+        'requestOverlaySlot'
+      ])
+    }),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: mutationStates({
+      pending: Object.freeze({ mode: 'na', reason: 'local-dismiss-only' }),
+      success: Object.freeze({ mode: 'na', reason: 'opens-restore-panel' }),
+      fail: Object.freeze({ mode: 'na', reason: 'local-dismiss-only' })
+    }),
+    e2eOverlap: GAP,
+    trackerCoverage: GAP
+  }),
+  surface({
     file: 'AwakenCheckInUI.js',
     slotRequest: requestSlot(
       ['requestMidSlot', 'releaseMidSlot'],

@@ -81,6 +81,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [awakenCheckInOpen]
  * @property {boolean} [workEndInviteOpen]
  * @property {boolean} [practiceStudyFirstSitInviteOpen]
+ * @property {boolean} [emailJourneySitPromptOpen]
  * @property {boolean} [recoverResetPracticeOpen]
  * @property {boolean} [transitionMomentOpen]
  */
@@ -158,6 +159,7 @@ export function buildOverlaySnapshot(input = {}) {
     practiceStudyFirstSitInviteOpen: Boolean(
       input.practiceStudyFirstSitInviteOpen
     ),
+    emailJourneySitPromptOpen: Boolean(input.emailJourneySitPromptOpen),
     recoverResetPracticeOpen: Boolean(input.recoverResetPracticeOpen),
     transitionMomentOpen: Boolean(input.transitionMomentOpen)
   };
@@ -802,6 +804,16 @@ export function requestOverlaySlot(req) {
   if (source === OVERLAY_SOURCES.AWAKEN_INVITE) {
     if (deriveFocusingSoftCardBusy(snapshot)) {
       mustYieldTo.push('focusing-soft-card-busy');
+    }
+    if (snapshot.confideOpen) mustYieldTo.push(OVERLAY_SOURCES.CONFIDE);
+    if (snapshot.supportModalOpen) {
+      mustYieldTo.push(OVERLAY_SOURCES.SUPPORT_MODAL);
+    }
+  }
+
+  if (source === OVERLAY_SOURCES.EMAIL_JOURNEY_SIT_PROMPT) {
+    if (snapshot.practiceStudyFirstSitInviteOpen) {
+      mustYieldTo.push(OVERLAY_SOURCES.PRACTICE_STUDY_FIRST_SIT_INVITE);
     }
     if (snapshot.confideOpen) mustYieldTo.push(OVERLAY_SOURCES.CONFIDE);
     if (snapshot.supportModalOpen) {

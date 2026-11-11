@@ -40,6 +40,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   AWAKEN_CHECK_IN: 'awaken-check-in',
   WORK_END_INVITE: 'work-end-invite',
   PRACTICE_STUDY_FIRST_SIT_INVITE: 'practice-study-first-sit-invite',
+  EMAIL_JOURNEY_SIT_PROMPT: 'email-journey-sit-complete-prompt',
   CALM_ACTION_RECOVER: 'calm-action-recover',
   CALM_ACTION_ARRIVE: 'calm-action-arrive',
   TRANSITION_MOMENT: 'transition-moment',
@@ -576,6 +577,16 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     snapshotField: 'practiceStudyFirstSitInviteOpen'
   }),
   contract({
+    id: OVERLAY_SOURCES.EMAIL_JOURNEY_SIT_PROMPT,
+    kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+    tier: 24,
+    readers:
+      'EmailJourneySitCompletePromptUI.tryShow (Idle; after first sit; yields payment/T83)',
+    blocksIdleYinTap: false,
+    blocksEnterSleep: false,
+    snapshotField: 'emailJourneySitPromptOpen'
+  }),
+  contract({
     id: OVERLAY_SOURCES.CALM_ACTION_RECOVER,
     kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
     tier: 24,
@@ -741,6 +752,9 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'WorkEndInviteUI.js': [OVERLAY_SOURCES.WORK_END_INVITE],
   'PracticeStudyFirstSitInviteUI.js': [
     OVERLAY_SOURCES.PRACTICE_STUDY_FIRST_SIT_INVITE
+  ],
+  'EmailJourneySitCompletePromptUI.js': [
+    OVERLAY_SOURCES.EMAIL_JOURNEY_SIT_PROMPT
   ],
   'CalmActionRecoverCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_RECOVER],
   'CalmActionArriveCardUI.js': [OVERLAY_SOURCES.CALM_ACTION_ARRIVE],

@@ -134,6 +134,7 @@ import {
 import { CO_PRACTICE_RESEARCH_LAST_POST_KEY } from './coPracticeResearchUpload.js';
 import { CO_PRACTICE_RESEARCH_WEEKLY_SCHEDULE_KEY } from './coPracticeResearchWeeklySchedule.js';
 import { CO_PRACTICE_RESEARCH_FIRST_SIT_PROMPT_KEY } from './coPracticeResearchFirstSitPrompt.js';
+import { EMAIL_JOURNEY_SIT_COMPLETE_PROMPT_KEY } from './practiceBackup/emailJourneySitCompletePrompt.js';
 import { SEASONAL_WHISPER_STORAGE_KEY } from './seasonal/seasonalWhisperGate.js';
 import { DESKTOP_CHECKOUT_PENDING_STORAGE_KEY } from './desktopCheckoutPending.js';
 import { RITUAL_RECIPE_STORAGE_KEY } from './ritualRecipe/ritualRecipeStore.js';
@@ -295,6 +296,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   CO_PRACTICE_RESEARCH_LAST_POST_KEY,
   CO_PRACTICE_RESEARCH_WEEKLY_SCHEDULE_KEY,
   CO_PRACTICE_RESEARCH_FIRST_SIT_PROMPT_KEY,
+  EMAIL_JOURNEY_SIT_COMPLETE_PROMPT_KEY,
   CO_PRACTICE_RESEARCH_DEV_FIXTURE_KEY,
   'focus-tiger.session-presence-ring.v1',
   T54_RESEARCH_LOG_STORAGE_KEY,

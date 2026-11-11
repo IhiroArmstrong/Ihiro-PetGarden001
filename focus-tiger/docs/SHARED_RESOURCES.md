@@ -48,6 +48,7 @@
 | `focus-tiger.co-practice-research-last-post.v1` | `coPracticeResearchUpload` | **T81** 上次周包序列化指纹；相同则跳过 POST。**不进**练习云备份 / **本地 Backup 导出** |
 | `focus-tiger.co-practice-research-weekly-schedule.v1` | `coPracticeResearchWeeklySchedule` | **T81 S5** 本周是否已触发周上送：`{ lastPostedWeek }`；撤回同意时清除。**不进**练习云备份 / **本地 Backup 导出** |
 | `focus-tiger.co-practice-research-first-sit-prompt.v1` | `coPracticeResearchFirstSitPrompt` | **T83** 首次练习后研究定位轻提示门闩：`{ showCount, lastDismissedAt, finished }`；最多 2 次、暂不 30 天。**不进** T54 / 练习云备份 / **本地 Backup 导出**。DEV 重置须清 |
+| `focus-tiger.email-journey-sit-complete-prompt.v1` | `emailJourneySitCompletePrompt` | **T93 D4** 坐完一次邮箱找回轻提示：`{ dismissed }`；「先不用」永久关。**不进**练习云备份 / **本地 Backup 导出**。DEV 重置须清 |
 | `focus-tiger.dev-co-practice-research-consent-fixture.v1` | （仅测试 / DEV 夹具） | **禁止**生产默认读取；单测与实验室显式授予同意用。**豁免**：永不进 Backup 导出；仍须进 reset 白名单 |
 | `focus-tiger.session-presence-ring.v1` | `sessionPresenceSummary` | **T50 Phase 0** 会话存在摘要环缓（最多 40 条）：一场计时同坐结束压 `{ companionMode, plannedMinutes, actualSeconds, leaveCount, leaveTotalSeconds, leaveLongestSeconds, pauseCount, extended, endedEarly, durationMode }`；`console.log('[SessionPresence]')`；**不**写练习账本 / Presence Signals / 备份；标签估计器零消费端 |
 | `focus-tiger.t54-research-log.v1` | `t54ResearchLedger` | **T54** 计时专注研究流水（只追加）。**不**写练习日 / Journey / T50 环缓。默认不上送 |

@@ -44,6 +44,8 @@ const WHITELIST_FILES = new Set([
   'LocalPracticeDataUI.js',
   'LocalPracticeDataPanelUI.js',
   'EmailJourneyRestorePanelUI.js',
+  'EmailJourneyEmptyLibraryChipUI.js',
+  'emailJourneyD4Chrome.js',
   'preferenceBackupPanels.js',
   'PracticeStudyConsentPanelUI.js',
   'QuietTogetherPanelUI.js',

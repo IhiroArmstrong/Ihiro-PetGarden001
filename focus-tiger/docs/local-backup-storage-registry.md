@@ -55,6 +55,8 @@ CI classification (2026-11-09): every reset-whitelist key must appear in **expor
   - `focus-tiger.co-practice-research-weekly-schedule.v1`
   - `focus-tiger.co-practice-research-first-sit-prompt.v1`
   - `focus-tiger.dev-co-practice-research-consent-fixture.v1` (DEV fixture; never export)
+- T93 D4 sit-complete prompt latch (reset-only; **do not export**):
+  - `focus-tiger.email-journey-sit-complete-prompt.v1`
 
 ---
 

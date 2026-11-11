@@ -6,6 +6,8 @@
 import { LocalPracticeDataPanelUI } from './LocalPracticeDataPanelUI.js';
 import { EmailJourneyRestorePanelUI } from './EmailJourneyRestorePanelUI.js';
 
+export { mountEmailJourneyD4Chrome } from './emailJourneyD4Chrome.js';
+
 /**
  * Preferences file backup + email restore. Lives outside main.js so D3
  * does not raise the architecture line cap.
