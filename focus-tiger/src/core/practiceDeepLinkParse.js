@@ -9,7 +9,7 @@
  */
 
 import { MICRO_RITUAL_DURATION_OPTIONS_MINUTES } from './MicroRitual.js';
-import { checkoutKindFromSearch } from './desktopCheckoutConfirm.js';
+import { isCheckoutReturnSearch } from './paymentCheckoutThanks.js';
 
 /** @typedef {'sit' | 'breath' | 'micro'} PracticeDeepLinkStart */
 
@@ -104,6 +104,6 @@ export function parsePracticeDeepLink(search) {
  * @returns {PracticeDeepLinkIntent | null}
  */
 export function parsePracticeDeepLinkUnlessCheckout(search) {
-  if (checkoutKindFromSearch(search)) return null;
+  if (isCheckoutReturnSearch(search)) return null;
   return parsePracticeDeepLink(search);
 }

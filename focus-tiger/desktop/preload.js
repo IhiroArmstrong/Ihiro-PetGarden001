@@ -104,6 +104,13 @@ const desktopShell = {
     ipcRenderer.on('desktop:checkout-return', wrapped);
     return () => ipcRenderer.removeListener('desktop:checkout-return', wrapped);
   },
+  onPracticeDeepLink: (cb) => {
+    if (typeof cb !== 'function') return () => {};
+    const wrapped = (_event, search) => cb(search);
+    ipcRenderer.on('desktop:practice-deep-link', wrapped);
+    return () =>
+      ipcRenderer.removeListener('desktop:practice-deep-link', wrapped);
+  },
   showSessionEndNotification: (payload) =>
     ipcRenderer.invoke('desktop:session-end-notification', payload)
 };

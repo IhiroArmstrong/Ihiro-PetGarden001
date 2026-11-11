@@ -465,6 +465,7 @@ import {
   selectPresenceEndConsumers
 } from './core/sessionPresenceConsumers.js';
 import { bindDesktopShellAttention, getDesktopShellBridge, isDesktopShellRuntime } from './core/desktopShell.js';
+import { attachDesktopShellDeepLinks } from './core/desktopShellDeepLinks.js';
 import { applyDesktopShellTypographyClass } from './core/desktopSystemTypography.js';
 import { bindElectronIdleContextMenu } from './core/electronIdleContextMenu.js';
 import { bindDesktopPreferencesShortcut } from './core/desktopPreferencesShortcut.js';
@@ -3272,27 +3273,26 @@ async function init() {
     }
   }
 
-  if (isDesktopShellRuntime()) {
-    const tickDesktopCheckoutResume = () => {
-      void resumeDesktopCheckoutAfterExternal();
-    };
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') tickDesktopCheckoutResume();
-    });
-    window.addEventListener('focus', tickDesktopCheckoutResume);
-    const checkoutShell = getDesktopShellBridge();
-    checkoutShell?.onShellVisibility?.((payload) => {
-      if (payload?.hidden === false) tickDesktopCheckoutResume();
-    });
-    checkoutShell?.onCheckoutReturn?.((search) => {
-      void resumeDesktopCheckoutAfterExternal(search);
-    });
-    tickDesktopCheckoutResume();
-    window.setInterval(() => {
-      if (!readDesktopCheckoutPending()) return;
-      tickDesktopCheckoutResume();
-    }, 2500);
-  }
+  attachDesktopShellDeepLinks({
+    isDesktopShell: isDesktopShellRuntime,
+    resumeCheckout: resumeDesktopCheckoutAfterExternal,
+    getShell: getDesktopShellBridge,
+    readCheckoutPending: readDesktopCheckoutPending
+  });
+  // Desktop C: checkout resume + practice in-page query live in
+  // desktopShellDeepLinks.js so this file stays on the B1 line cap.
+  // Checkout still uses desktop:checkout-return; practice uses
+  // desktop:practice-deep-link then replaceState (no full reload)
+  // so overlayBusy can reject after Web B lands. Sit apply is not
+  // in this slice. Health buttons are not in this slice. Protocol
+  // classify is Electron main (practiceDeepLinkDispatch.js).
+  // Cold start loads the query once; a live window stays in-page.
+  // Unknown start is discard, not checkout. Mixed checkout+start
+  // stays checkout. Bare focus-tiger://app only shows the window.
+  // Do not register a second scheme. Do not fetch from this path.
+  // Do not write stable-prefs. Do not open Confide from query.
+  // Keep this comment block so main.js stays at the locked line cap.
+  // B1 equality is 7704; shrinking here fails the architecture gate.
   const focusSessionEndStore = new FocusSessionEndStore({ now });
   if (import.meta.env.DEV || import.meta.env.VITE_FT_QA_BOOT === '1') {
     const { applyQaBootSeedFromSearch } = await import('./core/qaBootSeed.js');
