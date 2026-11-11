@@ -801,6 +801,42 @@ describe('overlaySlotContractRegistry', () => {
   });
 });
 
+describe('email journey sit prompt · T93 D4', () => {
+  it('yields to Support and T83, not to idle', () => {
+    const idle = requestOverlaySlot({
+      source: OVERLAY_SOURCES.EMAIL_JOURNEY_SIT_PROMPT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildOverlaySnapshot({ sessionState: STATES.IDLE })
+    });
+    assert.equal(idle.canShow, true);
+    const support = requestOverlaySlot({
+      source: OVERLAY_SOURCES.EMAIL_JOURNEY_SIT_PROMPT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildOverlaySnapshot({
+        sessionState: STATES.IDLE,
+        supportModalOpen: true
+      })
+    });
+    assert.equal(support.canShow, false);
+    assert.ok(support.mustYieldTo.includes(OVERLAY_SOURCES.SUPPORT_MODAL));
+    const t83 = requestOverlaySlot({
+      source: OVERLAY_SOURCES.EMAIL_JOURNEY_SIT_PROMPT,
+      kind: OVERLAY_SLOT_KIND.VISUAL_SECONDARY,
+      intent: 'show',
+      snapshot: buildOverlaySnapshot({
+        sessionState: STATES.IDLE,
+        practiceStudyFirstSitInviteOpen: true
+      })
+    });
+    assert.equal(t83.canShow, false);
+    assert.ok(
+      t83.mustYieldTo.includes(OVERLAY_SOURCES.PRACTICE_STUDY_FIRST_SIT_INVITE)
+    );
+  });
+});
+
 describe('honesty phase helpers alignment', () => {
   it('isHonestyPhaseBusy excludes prompt', () => {
     assert.equal(isHonestyPhaseBusy('prompt'), false);

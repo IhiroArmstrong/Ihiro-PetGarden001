@@ -24,6 +24,9 @@
     "EMAIL_JOURNEY_STATUS_NETWORK": "Could not reach the cloud. Retry when you can. Practice here still works.",
     "EMAIL_JOURNEY_STATUS_CONSENT": "Please agree before enabling.",
     "EMAIL_JOURNEY_BOUND": "Saved as",
+    "EMAIL_JOURNEY_SIT_PROMPT": "Want a way back if this device forgets?",
+    "EMAIL_JOURNEY_NOT_NOW": "Not now",
+    "EMAIL_JOURNEY_EMPTY_RESTORE": "Restore from email",
     "PRIVACY_SHEET_CLOUD": "You may optionally save practice days with an email code. Snapshots are stored as readable records (not encrypted). Confide words, personal memory, and research notes stay on this device. You can sign out or delete the cloud copy in Preferences. Store editions (Setapp / Mac App Store) keep this off."
   },
   "zh": {
@@ -51,6 +54,9 @@
     "EMAIL_JOURNEY_STATUS_NETWORK": "连不上云端。可以稍后重试。这边的练习不受影响。",
     "EMAIL_JOURNEY_STATUS_CONSENT": "请先勾选同意。",
     "EMAIL_JOURNEY_BOUND": "已保存为",
+    "EMAIL_JOURNEY_SIT_PROMPT": "如果这台设备忘了，要留一条回来的路吗？",
+    "EMAIL_JOURNEY_NOT_NOW": "先不用",
+    "EMAIL_JOURNEY_EMPTY_RESTORE": "从邮箱恢复",
     "PRIVACY_SHEET_CLOUD": "你可以用邮箱验证码选择保存练习天数。快照按可读记录存放（目前不加密）。倾诉原文、个人记忆与研究笔记仍留本机。可在设置里登出或删除云端副本。Setapp / Mac App Store 版本默认关闭此项。"
   },
   "ja": {
@@ -78,6 +84,9 @@
     "EMAIL_JOURNEY_STATUS_NETWORK": "クラウドに届きませんでした。あとで再試行できます。こちらの練習はそのままです。",
     "EMAIL_JOURNEY_STATUS_CONSENT": "先に同意してください。",
     "EMAIL_JOURNEY_BOUND": "保存先",
+    "EMAIL_JOURNEY_SIT_PROMPT": "この端末が忘れても戻れるようにしますか？",
+    "EMAIL_JOURNEY_NOT_NOW": "今はしない",
+    "EMAIL_JOURNEY_EMPTY_RESTORE": "メールから戻す",
     "PRIVACY_SHEET_CLOUD": "任意で、メール確認コードにより練習日を保存できます。控えは読める記録として保存し（今は暗号化しません）。打ち明けの原文・個人記憶・研究メモはこの端末に残ります。設定からサインアウト、またはクラウド控えを削除できます。Setapp / Mac App Store 版ではオフです。"
   }
 }

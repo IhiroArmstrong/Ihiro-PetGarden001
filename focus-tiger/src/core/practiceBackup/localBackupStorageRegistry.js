@@ -130,6 +130,11 @@ export const LOCAL_BACKUP_NAMED_EXCLUDE_ROWS = Object.freeze([
     note: 'T83 first-sit prompt latch; hints-seen class; T83 is reset-only'
   },
   {
+    key: 'focus-tiger.email-journey-sit-complete-prompt.v1',
+    tier: 'exclude-ephemeral',
+    note: 'T93 D4 sit-complete email prompt forever-dismiss; hints-seen class; reset-only'
+  },
+  {
     key: 'focus-tiger.dev-co-practice-research-consent-fixture.v1',
     tier: 'exclude-product',
     note: 'DEV/test fixture; never export; must remain on reset whitelist'

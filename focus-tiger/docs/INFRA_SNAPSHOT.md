@@ -71,8 +71,8 @@
 
 | 字段 | 值 |
 |---|---|
-| `prod_worker_version` | `04a56014-3aaa-4422-bb3c-d5b13abb9ae5` |
-| `prod_verified_at` | 2026-11-10（**本回合未再部署**。`wrangler deployments status` 100% 已是该 Version · 创建 2026-11-09T15:04:07Z · 作者 `13709691005@163.com` · Worker `focus-tiger-cloud`。脚本含 `planAOption1NewCheckoutDisabled` 与 9-15b。`PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED` 未设置，缺省拒绝。HTTP：`POST /api/create-pro-checkout-session` 与 `POST /api/create-companion-addon-checkout-session` → **410** `plan_a_new_checkout_disabled`；`POST /api/create-membership-portal-session` 假邮箱 → **400** `invalid_email`（路由未关；无真实订阅凭证，未打开 Stripe 门户）。`POST /api/practice-backup/get` → **410** `practice_backup_disabled`。cloud/ 自 `2201ba5b` 至 `origin/develop` `3d852ffa` 无差异。账本上一行 `6a32aff5` / `098b2902` 之后还有未记入的 `b814d4e4`（2026-11-08T11:02:11Z）与本 Version。） |
+| `prod_worker_version` | `3c393134-ea7b-40c6-97b3-c4ad264c0d64` |
+| `prod_verified_at` | 2026-11-11（用户口令「部署」。`wrangler deployments status` 100% Version `3c393134` · 创建 2026-11-11T05:32:38Z · 作者 `13709691005@163.com` · Worker `focus-tiger-cloud`。HTTP：`GET /health` → 200；`POST /api/practice-backup/request-otp` 无效邮箱 → **400** `invalid_email`（不再 410）。Plan A 新结账仍 410。未用真邮箱发信。） |
 
 | 源码 `develop` 有 · 生产 Version **可能未含** | 说明 |
 |---|---|
@@ -80,7 +80,7 @@
 | 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 起已在生产 vars |
 - **切 Live 前（客户端）**：`npm run build` 后须 `npm run build:verify-no-qa-boot`；`desktop/scripts/pack.js` 在 `FT_QA_BOOT`/`VITE_FT_QA_BOOT` 为开时拒绝打包（见 `scripts/release-build-qa-guard.test.js`）。
 | Plan A 新结账闸 + 9-15b | 本 Version `04a56014` 已含。Pro / 陪伴加购新结账 410。会员门户未关。请茶 / 会员 / 圣所新结账不在这道闸里 |
-| T93 D2 practice-backup 源码默认开闸 | **未部署。** 生产仍 410。合入后源码缺 `PRACTICE_BACKUP_WRITES_DISABLED` 则允许 OTP/快照路由；须另下「部署」口令才上线 |
+| T93 D2 practice-backup 源码默认开闸 | **已部署** Version `3c393134`。缺 `PRACTICE_BACKUP_WRITES_DISABLED` 时 OTP/快照路由允许。审计环境可设该变量保持 410。 |
 
 ---
 

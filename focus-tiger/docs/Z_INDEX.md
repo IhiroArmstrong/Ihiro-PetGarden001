@@ -235,3 +235,5 @@
 |  | 18 | Preferences Practice Study consent glass card |
 
 | **16** | `src/ui/EmailJourneyRestorePanelUI.js` | `.email-journey-restore-panel` 设置里用邮箱保存/找回（与本地备份同层 DOCK，T93 D3） |
+| **17** | `src/ui/EmailJourneySitCompletePromptUI.js` | `.email-journey-sit-complete-prompt` 坐完一次轻提示（T93 D4 · OVERLAY_DIM；让路付款 / T83） |
+| **17** | `src/ui/EmailJourneyEmptyLibraryChipUI.js` | `.email-journey-empty-library-chip` 电脑空库次级钮（T93 D4 · 非第一幕弹窗） |
