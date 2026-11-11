@@ -38,6 +38,7 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.collections-art-bridge-seen.v1',
   'focus-tiger.reminder-quota.v1',
   'focus-tiger.reminder-preference.v1',
+  'focus-tiger.ics-reminder-sequence.v1',
   'focus-tiger.work-end-preference.v1',
   'focus-tiger.work-end-invite-day.v1',
   'focus-tiger.evening-practice-facts-consent.v1',

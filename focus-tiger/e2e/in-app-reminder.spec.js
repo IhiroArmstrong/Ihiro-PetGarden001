@@ -3,6 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import { dismissColdStartOverlay } from './helpers/cold-start-overlay.js';
 import {
@@ -305,4 +306,35 @@ test('cold start flower bubble: reminder panel still opens and saves', async ({
   await page.locator(TIME).fill('09:30');
   await page.locator('#reminder-preference-confirm').click();
   await expect(page.locator('#reminder-preference-saved')).toBeVisible();
+});
+
+test('calendar export is disabled until reminder is on, then downloads ics', async ({
+  page
+}) => {
+  await openIdleForReminderTests(page);
+  await openReminderPanel(page);
+
+  const exportBtn = page.locator('#reminder-preference-ics-export');
+  await expect(exportBtn).toBeVisible();
+  await expect(exportBtn).toBeDisabled();
+  await expect(page.locator('#reminder-preference-ics-disabled')).toBeVisible();
+  await expect(page.locator('#reminder-preference-ics-honesty')).toContainText(
+    /does not update itself|不会自己跟着/
+  );
+
+  await page.locator(ENABLED).check();
+  await expect(exportBtn).toBeEnabled();
+  await page.locator('#reminder-preference-ics-weekdays').check();
+
+  const downloadPromise = page.waitForEvent('download');
+  await exportBtn.click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/\.ics$/);
+  const saved = test.info().outputPath('focus-tiger-sit.ics');
+  await download.saveAs(saved);
+  const body = readFileSync(saved, 'utf8');
+  expect(body).toContain('BEGIN:VCALENDAR');
+  expect(body).toContain('start=sit');
+  expect(body).toContain('BYDAY=MO,TU,WE,TH,FR');
+  expect(body).not.toContain('同步');
 });
