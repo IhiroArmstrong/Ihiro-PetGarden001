@@ -3,7 +3,7 @@
 > 本文档为条文草案，供内部评审。三种语言版本内容保持一致；如有出入，以中文版为准。  
 > **产品内权威副本**：`focus-tiger/docs/PRIVACY_NOTICE.md`（与 i18n / Privacy 页同步维护）。
 
-最后更新 / Last updated / 最終更新日: 2026-08-28
+最后更新 / Last updated / 最終更新日: 2026-11-11
 
 ---
 
@@ -31,11 +31,9 @@
 - 当前导出/导入覆盖的数据范围为：**旅程记录、练习日历、里程碑已播放标记、永久拥有标记、进阶仪式完成记录、芥子须弥纪念印**（6 类练习记忆快照）。
 - **不包含**：反思日记原文、倾诉（Confide）对话记录、阿寅个人记忆、偏好设置、氛围乐上传等。这些内容请留在本机或暂不支持跨设备迁移。
 
-### 4. 云端备份
+### 4. 可选的邮箱练习快照（云端）
 
-**本应用当前未提供云端备份功能。** 你的数据默认仅保存在设备本地，并可通过上述本地导出/导入自行备份与迁移。
-
-若未来上线云端备份功能，我们将在功能上线前更新本隐私声明，向你说明：存储内容、存储位置、是否加密、以及你可行使的关闭与删除权利，**默认关闭**，并征得你的同意后再启用。
+条文以产品内权威副本为准：`focus-tiger/docs/PRIVACY_NOTICE.md`。摘要：可用邮箱验证码选择保存练习快照（明文 JSON，目前不加密）；默认关闭；设置里可删除云端副本；仅登出不会删云。倾诉原文、个人记忆与研究笔记不上云。Setapp / Mac App Store 关闭此项。
 
 ### 5. 你的权利
 
@@ -69,11 +67,9 @@ Please note:
 - The current scope covers: **Journey Log, practice calendar, milestone markers, permanent ownership marks, advanced ritual completions, and the Mustard Seed seal** (6-key practice-memory snapshot).
 - It **does not include**: raw reflection journal entries, Confide conversation logs, Yin personal memory, preferences, or ambient music uploads. Those remain on-device or are not supported for migration yet.
 
-### 4. Cloud Backup
+### 4. Optional email practice snapshot (cloud)
 
-**This app does not currently offer a cloud backup feature.** Your data is stored locally by default, and you can back it up or move it to another device yourself using local export/import as described above.
-
-If we introduce cloud backup in the future, we will update this privacy notice before launch to explain what is stored, where it is stored, whether it is encrypted, and how you can turn it off or delete it — **off by default**, and only enabled with your consent.
+Canonical text: `focus-tiger/docs/PRIVACY_NOTICE.md`. Summary: optional email-code snapshot of practice traces, stored as readable JSON (not encrypted); off by default; delete the cloud copy in Preferences; sign-out does not delete it. Confide words, personal memory, and research notes stay on-device. Off in Setapp / Mac App Store.
 
 ### 5. Your Rights
 
@@ -107,11 +103,9 @@ If we introduce cloud backup in the future, we will update this privacy notice b
 - 現在の対象範囲：**旅の記録、練習カレンダー、節目マーカー、永久所有印、進階儀式の完了、芥子の印**（6 keyの練習メモリスナップショット）。
 - **対象外**：振り返り日記の原文、打ち明け（Confide）の会話ログ、寅の個人記憶、設定、雰囲気音のアップロードなど。
 
-### 4. クラウドバックアップ
+### 4. 任意のメール練習スナップショット（クラウド）
 
-**本アプリは現在、クラウドバックアップ機能を提供していません。** データはデフォルトで端末内にのみ保存され、上記のローカルエクスポート/インポート機能によりご自身でバックアップ・移行が可能です。
-
-将来クラウドバックアップ機能を導入する場合は、提供開始前に本プライバシーポリシーを更新し、保存内容、保存場所、暗号化の有無、無効化・削除の方法について説明したうえで、**デフォルトでは無効**の状態とし、お客様の同意を得たうえで有効化します。
+本文は製品内の権威版 `focus-tiger/docs/PRIVACY_NOTICE.md` に従います。要約：メール確認コードで練習控えを任意保存（読める JSON、いまは非暗号化）。初期オフ。設定からクラウド控えを削除。サインアウトだけでは消えません。打ち明け原文・個人記憶・研究メモは端末に残します。Setapp / Mac App Store ではオフです。
 
 ### 5. お客様の権利
 
@@ -124,6 +118,6 @@ If we introduce cloud backup in the future, we will update this privacy notice b
 ## 内部备注（不对用户展示 / Internal notes, not shown to users）
 
 - [x] 导出/导入范围 = 练习备份 6 key；三语已填。
-- [x] Journey Log 云端备份 UI 已隐藏；`PRACTICE_BACKUP_CLOUD_ENABLED = false` 阻断静默上传/恢复。
+- [x] 官网 / 网页：设置里「用邮箱保存或找回」已开闸；快照明文。商店渠道关。权威条文见 `focus-tiger/docs/PRIVACY_NOTICE.md` §4。
 - [x] 联系方式 = hello@twinsology.com
 - [ ] 法务/合规复核前，上线前仍建议人工过目。

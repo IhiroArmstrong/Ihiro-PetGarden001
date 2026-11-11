@@ -27,7 +27,7 @@
     "EMAIL_JOURNEY_SIT_PROMPT": "Want a way back if this device forgets?",
     "EMAIL_JOURNEY_NOT_NOW": "Not now",
     "EMAIL_JOURNEY_EMPTY_RESTORE": "Restore from email",
-    "PRIVACY_SHEET_CLOUD": "You may optionally save practice days with an email code. Snapshots are stored as readable records (not encrypted). Confide words, personal memory, and research notes stay on this device. You can sign out or delete the cloud copy in Preferences. Store editions (Setapp / Mac App Store) keep this off."
+    "PRIVACY_SHEET_CLOUD": "You may optionally save a practice snapshot with an email code (journey, practice days, milestones, ownership marks, rituals, Mustard Seed seal, lotus pond, growth-stage floor). Snapshots are readable JSON, not encrypted. Confide words, personal memory, and research notes stay on this device. Sign out does not delete the cloud copy; delete it in Preferences. Local export/import still works. Store editions (Setapp / Mac App Store) keep this off."
   },
   "zh": {
     "EMAIL_JOURNEY_MENU_LABEL": "用邮箱保存或找回",
@@ -57,7 +57,7 @@
     "EMAIL_JOURNEY_SIT_PROMPT": "如果这台设备忘了，要留一条回来的路吗？",
     "EMAIL_JOURNEY_NOT_NOW": "先不用",
     "EMAIL_JOURNEY_EMPTY_RESTORE": "从邮箱恢复",
-    "PRIVACY_SHEET_CLOUD": "你可以用邮箱验证码选择保存练习天数。快照按可读记录存放（目前不加密）。倾诉原文、个人记忆与研究笔记仍留本机。可在设置里登出或删除云端副本。Setapp / Mac App Store 版本默认关闭此项。"
+    "PRIVACY_SHEET_CLOUD": "你可以用邮箱验证码选择保存一份练习快照（旅程、练习日历、里程碑、拥有标记、仪式、芥子印、莲花池、成长阶段下限）。快照是可读 JSON，目前不加密。倾诉原文、个人记忆与研究笔记仍留本机。仅登出不会删除云端副本；请在设置里删除。本地导出/导入仍可用。Setapp / Mac App Store 版本关闭此项。"
   },
   "ja": {
     "EMAIL_JOURNEY_MENU_LABEL": "メールで保存・復元",
@@ -87,6 +87,6 @@
     "EMAIL_JOURNEY_SIT_PROMPT": "この端末が忘れても戻れるようにしますか？",
     "EMAIL_JOURNEY_NOT_NOW": "今はしない",
     "EMAIL_JOURNEY_EMPTY_RESTORE": "メールから戻す",
-    "PRIVACY_SHEET_CLOUD": "任意で、メール確認コードにより練習日を保存できます。控えは読める記録として保存し（今は暗号化しません）。打ち明けの原文・個人記憶・研究メモはこの端末に残ります。設定からサインアウト、またはクラウド控えを削除できます。Setapp / Mac App Store 版ではオフです。"
+    "PRIVACY_SHEET_CLOUD": "任意で、メール確認コードにより練習の控えを保存できます（旅・練習日・節目・所有印・儀式・芥子・蓮の池・成長段階の下限）。控えは読める JSON で、いまは暗号化しません。打ち明けの原文・個人記憶・研究メモはこの端末に残ります。サインアウトだけではクラウド控えは消えません。設定から削除してください。ローカルの書き出し/読み込みも使えます。Setapp / Mac App Store 版ではオフです。"
   }
 }
