@@ -1,0 +1,14 @@
+{
+  "en": {
+    "PRACTICE_DEEP_LINK_DISCARD": "This link isn't used here.",
+    "PRACTICE_DEEP_LINK_BUSY": "This side is busy — finish first, then try the link again."
+  },
+  "zh": {
+    "PRACTICE_DEEP_LINK_DISCARD": "这个链接这边用不上。",
+    "PRACTICE_DEEP_LINK_BUSY": "这边正忙，先结束再点链接。"
+  },
+  "ja": {
+    "PRACTICE_DEEP_LINK_DISCARD": "このリンクはここでは使いません。",
+    "PRACTICE_DEEP_LINK_BUSY": "いま忙しいので、終わってからもう一度リンクを開いてください。"
+  }
+}

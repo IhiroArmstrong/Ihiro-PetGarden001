@@ -171,6 +171,13 @@ import {
   scheduleLiftLoadingMask,
   markAppReady
 } from './boot/boot-arrival-focus-ready.js';
+import {
+  attachPracticeDeepLinkWebHost,
+  handleSitClickWhenIdleChrome,
+  productSitIdleOpts,
+  takePracticeDeepLinkFocusMinutes
+} from './core/practiceDeepLinkMainAttach.js';
+
 import { TodayDirectionOptionsBannerUI } from './ui/TodayDirectionOptionsBannerUI.js';
 import { SoftUpdatePromptUI } from './ui/SoftUpdatePromptUI.js';
 import { LandscapeSuggestUI } from './ui/LandscapeSuggestUI.js';
@@ -5948,9 +5955,10 @@ async function init() {
   function requestBeginFocusWithMode(companionMode) {
     focusDurationPicker?.hide();
     bootHonestyCompanion.microRitualUI?.hide();
-    if (shouldSkipFocusDurationPicker(location.search)) {
+    const deepLinkMinutes = takePracticeDeepLinkFocusMinutes();
+    if (deepLinkMinutes != null || shouldSkipFocusDurationPicker(location.search)) {
       focusSession.setTargetMinutes(
-        resolveDemoSessionMinutes(location.search)
+        deepLinkMinutes ?? resolveDemoSessionMinutes(location.search)
       );
       setFocusStableAwaitingVoteExplicit(
         false,
@@ -6317,28 +6325,12 @@ async function init() {
   mountFocusInput(
     bootArrivalFocus,
     () => {
-      if (bootSessionChrome.sessionUiGate.completionPending) return false;
-      sessionEndFlow.cancelPending();
-      honestyBridge?.hide();
-      bootHonestyCompanion.honestyCheckInUI.hide();
-
-      if (bootHonestyCompanion.arrivalPractice.isOpen()) {
-        // 仪式进行中：Sit 不再充当 Skip — begin；快速开表请用 ⚡ Quick Start
-        return false;
-      }
-
-      const sitAction = bootSessionChrome.sessionUiGate.resolveSitClickWhenIdle({
-        isFocusing: stateManager.state === STATES.FOCUSING,
-        microRitualOpen: isMicroRitualSitLatchActive()
-      });
-      if (sitAction === 'ignore') return false;
-      if (sitAction === 'start-arrival') {
-        startArrivalPracticeFromChrome();
-        return false;
-      }
-
-      requestBeginFocusWithMode(bootHonestyCompanion.companionModePicker.getSelectedMode());
-      return true;
+      takePracticeDeepLinkFocusMinutes();
+      return handleSitClickWhenIdleChrome(productSitIdleOpts({
+        STATES, bootSessionChrome, bootHonestyCompanion, stateManager,
+        isMicroRitualSitLatchActive, sessionEndFlow, honestyBridge,
+        startArrivalPracticeFromChrome, requestBeginFocusWithMode
+      }));
     },
     () => {
       const riseAction = bootSessionChrome.sessionUiGate.resolveRiseClickDuringFocus({
@@ -7693,7 +7685,15 @@ async function init() {
 
   // E2E readiness: all primary UI/controllers are wired, initial syncs ran,
   // and the product shell can now be safely queried/clicked.
-  markAppReady(window);
+  // Deep-link B: attach marks app ready (do not call markAppReady twice).
+  attachPracticeDeepLinkWebHost({
+    window, location, t, mindfulToast, STATES, markAppReady,
+    isSceneAnimOverlayBusy, isWelcomeFirstPaintPlaying, coldStartGoalCardUI,
+    shouldDeferForColdStartGoal: () => shouldOfferColdStartGoalCard(localStorage),
+    bootSessionChrome, bootHonestyCompanion, stateManager,
+    isMicroRitualSitLatchActive, sessionEndFlow, honestyBridge,
+    startArrivalPracticeFromChrome, requestBeginFocusWithMode
+  });
 
   animate();
 }
