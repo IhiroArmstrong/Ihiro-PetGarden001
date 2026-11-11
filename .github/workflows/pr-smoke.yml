@@ -80,7 +80,13 @@ jobs:
 
       - name: Install Playwright Chromium
         if: steps.paths.outputs.product == 'true'
-        run: npx playwright install chromium --with-deps
+        run: |
+          set -euo pipefail
+          if npx playwright install chromium --with-deps; then
+            exit 0
+          fi
+          echo "with-deps failed (often GitHub-hosted apt mirror DNS); installing browser binary only"
+          npx playwright install chromium
 
       - name: Browser smoke (Playwright subset)
         if: steps.paths.outputs.product == 'true'
