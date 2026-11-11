@@ -182,13 +182,13 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 |---|---|
 | Primary | **?** → purpose card → **Privacy** → `#onboarding-privacy-sheet`（**完整隐私声明** §1–§5；i18n 对齐本页） |
 | Export / import | Privacy sheet §3 · `#privacy-local-data-mount` |
-| Cloud backup UI | **Hidden** (`practiceBackupCloudEnabled = false`); no silent upload while disabled |
+| Cloud backup UI | **Preferences → Save or restore with email** (`practiceBackupCloudEnabled = true`). Optional OTP. Snapshots are readable practice records, not encrypted. Journey corner is not a login. Setapp / MAS keep this off. |
 
 ## Engineering notes (not user-facing)
 
 - Local export/import reuses `practiceBackupSnapshot.js` schema (6 whitelist keys).
-- Cloud Worker routes remain for a future encrypted release; runtime upload/restore gated by `practiceBackupCloudEnabled.js`.
-- Legacy `focus-tiger.practice-backup.v1` opt-in in localStorage does **not** trigger upload while cloud is disabled.
+- Cloud Worker routes are live in source (D2); production mail still needs a deploy. Runtime upload/restore gated by `practiceBackupCloudEnabled.js` (D3 on).
+- Opt-in key `focus-tiger.practice-backup.v1` enables silent Idle flush after the user verifies an email in Preferences.
 
 ## Questions
 

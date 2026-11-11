@@ -42,11 +42,12 @@ describe('menuReachabilityContract', () => {
     assert.equal(morning?.contract.resultSelector, '#yin-membership-card');
   });
 
-  it('treats account placeholder as a static row', () => {
+  it('treats account as the email restore open-panel', () => {
     const rows = listMenuReachabilityRows('wide-more');
     const account = rows.find((r) => r.proxy === 'account');
-    assert.equal(account?.interactive, false);
-    assert.equal(account?.contract.kind, 'static-row');
+    assert.equal(account?.interactive, true);
+    assert.equal(account?.contract.kind, 'open-panel');
+    assert.equal(account?.contract.resultSelector, '#email-journey-restore-panel');
   });
 
   it('maps every wide-more clickable row to a menu group for e2e walk', () => {

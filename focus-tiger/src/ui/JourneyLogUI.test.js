@@ -18,8 +18,9 @@ test('Journey Log close and backup controls have :active press (Z 0–1s)', () =
   assert.match(src, /cursor: default/);
 });
 
-test('cloud backup link hidden when cloud backup feature is disabled', () => {
-  assert.match(src, /practiceBackupCloudEnabled/);
+test('cloud backup link stays hidden; Preferences owns email restore', () => {
+  assert.match(src, /backupLink.hidden = true/);
+  assert.match(src, /Preferences owns the email entry/);
 });
 
 test('Journey Log resubscribes to local import refresh and unsubscribes on destroy', () => {

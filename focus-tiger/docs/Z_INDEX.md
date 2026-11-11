@@ -233,3 +233,5 @@
 *版本：1.0 · 2026-07-29 · Prompt 5 登记*
 
 |  | 18 | Preferences Practice Study consent glass card |
+
+| **16** | `src/ui/EmailJourneyRestorePanelUI.js` | `.email-journey-restore-panel` 设置里用邮箱保存/找回（与本地备份同层 DOCK，T93 D3） |

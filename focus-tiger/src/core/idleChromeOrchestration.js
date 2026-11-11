@@ -21,6 +21,9 @@ import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js';
 import { isContemplativeInquiryMenuVisible } from './contemplativeInquiryMemory.js';
 import { isGuidedMeditationMediaConfigured } from './guidedMeditationLessons.js';
+import { resolveUpdateChannel } from './desktopUpdaterChannel.js';
+import { practiceBackupCloudEnabled } from './practiceBackup/practiceBackupCloudEnabled.js';
+import { isEmailJourneyCloudUiAllowedForChannel } from './practiceBackup/emailJourneyRestoreStatus.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -181,6 +184,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     handler: 'onLocalBackup',
     close: true,
     stage: 'localBackup'
+  },
+  account: {
+    handler: 'onAccount',
+    close: true,
+    stage: 'emailJourney'
   },
   'practice-study': {
     handler: 'onPracticeStudy',
@@ -421,6 +429,14 @@ export function syncSecondaryMenuHintDot(btn, show) {
   }
 }
 
+
+function isEmailJourneyMenuInteractive(visibility = {}) {
+  if (visibility.emailJourneyCloudUi === false) return false;
+  if (!practiceBackupCloudEnabled) return false;
+  const env = typeof process !== 'undefined' && process.env ? process.env : {};
+  return isEmailJourneyCloudUiAllowedForChannel(resolveUpdateChannel(env));
+}
+
 /** Narrow park / stage body classes (single spelling). */
 export const NARROW_STAGE_CLASS = Object.freeze({
   companion: 'ft-narrow-stage-companion',
@@ -429,6 +445,7 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   sound: 'ft-narrow-stage-sound',
   language: 'ft-narrow-stage-language',
   localBackup: 'ft-narrow-stage-local-backup',
+  emailJourney: 'ft-narrow-stage-email-journey',
   practiceStudy: 'ft-narrow-stage-practice-study',
   quietTogether: 'ft-narrow-stage-quiet-together',
   focusCircle: 'ft-narrow-stage-focus-circle',
@@ -453,6 +470,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   mindflowNebula: 'ft-wide-stage-mindflow-nebula',
   presenceField: 'ft-wide-stage-presence-field',
   localBackup: 'ft-wide-stage-local-backup',
+  emailJourney: 'ft-wide-stage-email-journey',
   practiceStudy: 'ft-wide-stage-practice-study',
   quietTogether: 'ft-wide-stage-quiet-together',
   focusCircle: 'ft-wide-stage-focus-circle'
@@ -877,12 +895,30 @@ export function listSecondaryChromeEntries(surface, visibility) {
           interactive: false
         }
       : { proxy: 'newsletter', labelKey: 'NEWSLETTER_MENU_LABEL' },
-    {
-      proxy: 'account',
-      labelKey: 'ACCOUNT_MENU_PLACEHOLDER',
-      interactive: false,
-      testId: 'idle-account-placeholder'
-    },
+    isEmailJourneyMenuInteractive(visibility)
+      ? {
+          proxy: 'account',
+          labelKey: 'EMAIL_JOURNEY_MENU_LABEL',
+          testId: 'idle-account-email-restore'
+        }
+      : {
+          proxy: 'account',
+          labelKey: isEmailJourneyCloudUiAllowedForChannel(
+            resolveUpdateChannel(
+              typeof process !== 'undefined' && process.env ? process.env : {}
+            )
+          )
+            ? 'ACCOUNT_MENU_PLACEHOLDER'
+            : 'EMAIL_JOURNEY_MENU_STORE_OFF',
+          interactive: false,
+          testId: isEmailJourneyCloudUiAllowedForChannel(
+            resolveUpdateChannel(
+              typeof process !== 'undefined' && process.env ? process.env : {}
+            )
+          )
+            ? 'idle-account-placeholder'
+            : 'idle-account-store-off'
+        },
     {
       proxy: 'help-center',
       labelKey: 'HELP_CENTER_MENU_LABEL',

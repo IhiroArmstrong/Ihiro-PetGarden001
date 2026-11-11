@@ -5,10 +5,10 @@
 
 /**
  * Practice-memory cloud backup UI + silent sync gate.
- * When false: no upload/restore, Journey Log backup panel hidden.
- * T93 D2 does not flip this; Worker OTP is env-gated separately.
+ * When false: no upload/restore. Journey Log corner stays hidden even when true
+ * (T93 D3: Preferences is the only email entry).
  */
-export let practiceBackupCloudEnabled = false;
+export let practiceBackupCloudEnabled = true;
 
 /** @param {boolean} value */
 export function setPracticeBackupCloudEnabledForTests(value) {

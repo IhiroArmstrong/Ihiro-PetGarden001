@@ -140,7 +140,8 @@ export const MENU_REACHABILITY = Object.freeze({
     resultSelector: '#newsletter-capture-card'
   }),
   account: Object.freeze({
-    kind: 'static-row'
+    kind: 'open-panel',
+    resultSelector: '#email-journey-restore-panel'
   }),
   community: Object.freeze({
     kind: 'open-external',

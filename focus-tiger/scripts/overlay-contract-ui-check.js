@@ -43,6 +43,8 @@ const WHITELIST_FILES = new Set([
   'IdleCompanionPipUI.js',
   'LocalPracticeDataUI.js',
   'LocalPracticeDataPanelUI.js',
+  'EmailJourneyRestorePanelUI.js',
+  'preferenceBackupPanels.js',
   'PracticeStudyConsentPanelUI.js',
   'QuietTogetherPanelUI.js',
   'FocusCirclePanelUI.js',
