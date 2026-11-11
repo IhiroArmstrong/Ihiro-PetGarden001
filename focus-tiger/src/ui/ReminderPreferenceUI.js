@@ -19,6 +19,19 @@ import {
   setReminderPreference,
   resolveReminderPreferencePanelNotes
 } from '../core/reminderPreference.js';
+import { isDesktopShellRuntime } from '../core/desktopShell.js';
+import {
+  hasStoredFocusDurationPreference,
+  loadPreferredFocusDurationMinutes
+} from '../core/focusDuration.js';
+import {
+  buildIcsReminderEventUrl,
+  buildIcsReminderUid,
+  buildReminderIcs,
+  bumpIcsReminderSequence,
+  downloadTextFile
+} from '../core/icsReminderExport.js';
+import { RETENTION_EVENTS, trackRetentionEvent } from '../core/RetentionTelemetry.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import { Z } from './zIndexLayers.js';
 
@@ -76,6 +89,9 @@ export class ReminderPreferenceUI {
     this._expanded = false;
     this._visible = true;
     this._syncingTimeValue = false;
+    this._icsRepeat = 'daily';
+    this._icsIncludeAlarm = false;
+    this._icsExportState = 'idle';
 
     this.root = document.createElement('div');
     this.root.id = 'reminder-preference';
@@ -181,12 +197,103 @@ export class ReminderPreferenceUI {
     this.statusEl.setAttribute('role', 'status');
     this.statusEl.hidden = true;
 
+    this.icsSection = document.createElement('div');
+    this.icsSection.className = 'reminder-pref__ics';
+    this.icsSection.id = 'reminder-preference-ics';
+
+    this.icsLegend = document.createElement('p');
+    this.icsLegend.className = 'reminder-pref__ics-legend';
+    this.icsLegend.id = 'reminder-preference-ics-legend';
+
+    this.icsRepeatRow = document.createElement('div');
+    this.icsRepeatRow.className = 'reminder-pref__ics-repeat';
+    this.icsRepeatRow.setAttribute('role', 'radiogroup');
+    this.icsRepeatRow.setAttribute('aria-labelledby', 'reminder-preference-ics-legend');
+
+    this.icsDailyLabel = document.createElement('label');
+    this.icsDailyLabel.className = 'reminder-pref__ics-choice';
+    this.icsDailyInput = document.createElement('input');
+    this.icsDailyInput.type = 'radio';
+    this.icsDailyInput.name = 'reminder-preference-ics-repeat';
+    this.icsDailyInput.value = 'daily';
+    this.icsDailyInput.id = 'reminder-preference-ics-daily';
+    this.icsDailyText = document.createElement('span');
+    this.icsDailyLabel.append(this.icsDailyInput, this.icsDailyText);
+    this.icsDailyInput.addEventListener('change', () => {
+      if (this.icsDailyInput.checked) this._icsRepeat = 'daily';
+    });
+
+    this.icsWeekdaysLabel = document.createElement('label');
+    this.icsWeekdaysLabel.className = 'reminder-pref__ics-choice';
+    this.icsWeekdaysInput = document.createElement('input');
+    this.icsWeekdaysInput.type = 'radio';
+    this.icsWeekdaysInput.name = 'reminder-preference-ics-repeat';
+    this.icsWeekdaysInput.value = 'weekdays';
+    this.icsWeekdaysInput.id = 'reminder-preference-ics-weekdays';
+    this.icsWeekdaysText = document.createElement('span');
+    this.icsWeekdaysLabel.append(this.icsWeekdaysInput, this.icsWeekdaysText);
+    this.icsWeekdaysInput.addEventListener('change', () => {
+      if (this.icsWeekdaysInput.checked) this._icsRepeat = 'weekdays';
+    });
+
+    this.icsRepeatRow.append(this.icsDailyLabel, this.icsWeekdaysLabel);
+
+    this.icsAlarmLabel = document.createElement('label');
+    this.icsAlarmLabel.className = 'reminder-pref__ics-choice';
+    this.icsAlarmInput = document.createElement('input');
+    this.icsAlarmInput.type = 'checkbox';
+    this.icsAlarmInput.id = 'reminder-preference-ics-alarm';
+    this.icsAlarmText = document.createElement('span');
+    this.icsAlarmLabel.append(this.icsAlarmInput, this.icsAlarmText);
+    this.icsAlarmInput.addEventListener('change', () => {
+      this._icsIncludeAlarm = this.icsAlarmInput.checked === true;
+    });
+
+    this.icsHonesty = document.createElement('p');
+    this.icsHonesty.className = 'reminder-pref__ics-honesty';
+    this.icsHonesty.id = 'reminder-preference-ics-honesty';
+
+    this.icsExportBtn = document.createElement('button');
+    this.icsExportBtn.type = 'button';
+    this.icsExportBtn.id = 'reminder-preference-ics-export';
+    this.icsExportBtn.className = 'reminder-pref__ics-export';
+    this.icsExportBtn.addEventListener('click', () => this._onIcsExport());
+
+    this.icsDisabledHint = document.createElement('p');
+    this.icsDisabledHint.id = 'reminder-preference-ics-disabled';
+    this.icsDisabledHint.className = 'reminder-pref__ics-disabled';
+
+    this.icsPendingEl = document.createElement('p');
+    this.icsPendingEl.id = 'reminder-preference-ics-pending';
+    this.icsPendingEl.className = 'reminder-pref__ics-pending';
+    this.icsPendingEl.setAttribute('role', 'status');
+    this.icsPendingEl.setAttribute('aria-live', 'polite');
+    this.icsPendingEl.hidden = true;
+
+    this.icsFailEl = document.createElement('p');
+    this.icsFailEl.id = 'reminder-preference-ics-fail';
+    this.icsFailEl.className = 'reminder-pref__ics-fail';
+    this.icsFailEl.setAttribute('role', 'status');
+    this.icsFailEl.hidden = true;
+
+    this.icsSection.append(
+      this.icsLegend,
+      this.icsRepeatRow,
+      this.icsAlarmLabel,
+      this.icsHonesty,
+      this.icsExportBtn,
+      this.icsDisabledHint,
+      this.icsPendingEl,
+      this.icsFailEl
+    );
+
     this.panel.append(
       this.titleEl,
       this.enableRow,
       this.timeRow,
       this.blurbEl,
-      this.statusEl
+      this.statusEl,
+      this.icsSection
     );
     // Toggle stays in the heatmap cluster; panel mounts on body so it is not
     // trapped in the cluster's backdrop-filter containing block (wide park
@@ -299,6 +406,54 @@ export class ReminderPreferenceUI {
     this._commitTime({ flash: false });
   }
 
+  _onIcsExport() {
+    const pref = getReminderPreference();
+    if (!pref) return;
+    this._icsExportState = 'pending';
+    this._render();
+    try {
+      const isDesktop = isDesktopShellRuntime();
+      const preferredMinutes = hasStoredFocusDurationPreference()
+        ? loadPreferredFocusDurationMinutes()
+        : undefined;
+      const eventUrl = buildIcsReminderEventUrl({
+        isDesktop,
+        origin: globalThis.location?.origin || '',
+        minutes: preferredMinutes
+      });
+      const uid = buildIcsReminderUid(
+        isDesktop ? 'app' : globalThis.location?.host || '',
+        isDesktop
+      );
+      const sequence = bumpIcsReminderSequence();
+      const body = buildReminderIcs({
+        preference: pref,
+        repeat: this._icsRepeat === 'weekdays' ? 'weekdays' : 'daily',
+        includeAlarm: this._icsIncludeAlarm === true,
+        summary: t('ICS_REMINDER_SUMMARY'),
+        description: t('ICS_REMINDER_DESCRIPTION'),
+        eventUrl,
+        uid,
+        sequence,
+        durationMinutes: preferredMinutes
+      });
+      downloadTextFile({
+        filename: 'focus-tiger-sit.ics',
+        body,
+        document: this.panel.ownerDocument || document
+      });
+      trackRetentionEvent(RETENTION_EVENTS.ICS_REMINDER_EXPORT, {
+        repeat: this._icsRepeat,
+        alarm: this._icsIncludeAlarm === true
+      });
+      this._icsExportState = 'idle';
+      this._render();
+    } catch {
+      this._icsExportState = 'fail';
+      this._render();
+    }
+  }
+
   _render() {
     const pref = getReminderPreference();
     const enabled = Boolean(pref);
@@ -355,6 +510,30 @@ export class ReminderPreferenceUI {
       this.statusEl.textContent = '';
       delete this.statusEl.dataset.note;
     }
+
+    this.icsLegend.textContent = t('ICS_REMINDER_REPEAT_LEGEND');
+    this.icsDailyText.textContent = t('ICS_REMINDER_REPEAT_DAILY');
+    this.icsWeekdaysText.textContent = t('ICS_REMINDER_REPEAT_WEEKDAYS');
+    this.icsAlarmText.textContent = t('ICS_REMINDER_ALARM');
+    this.icsHonesty.textContent = t('ICS_REMINDER_HONESTY');
+    this.icsExportBtn.textContent =
+      this._icsExportState === 'pending'
+        ? t('ICS_REMINDER_PENDING')
+        : t('ICS_REMINDER_ADD');
+    this.icsDisabledHint.textContent = t('ICS_REMINDER_DISABLED_HINT');
+    this.icsPendingEl.textContent = t('ICS_REMINDER_PENDING');
+    this.icsFailEl.textContent = t('ICS_REMINDER_FAIL');
+    this.icsDailyInput.checked = this._icsRepeat !== 'weekdays';
+    this.icsWeekdaysInput.checked = this._icsRepeat === 'weekdays';
+    this.icsAlarmInput.checked = this._icsIncludeAlarm === true;
+    this.icsExportBtn.disabled = !enabled || this._icsExportState === 'pending';
+    this.icsDailyInput.disabled = !enabled;
+    this.icsWeekdaysInput.disabled = !enabled;
+    this.icsAlarmInput.disabled = !enabled;
+    this.icsDisabledHint.hidden = enabled;
+    this.icsPendingEl.hidden = this._icsExportState !== 'pending';
+    this.icsFailEl.hidden = this._icsExportState !== 'fail';
+    this.icsSection.classList.toggle('is-disabled', !enabled);
 
     this.root.hidden = !this._visible;
     const wasPanelHidden = this.panel.hidden;
@@ -573,6 +752,70 @@ export class ReminderPreferenceUI {
         border-left-color: rgba(95, 130, 85, 0.78);
       }
       .reminder-pref__status[hidden] {
+        display: none !important;
+      }
+      .reminder-pref__ics {
+        margin: 12px 0 0;
+        padding-top: 10px;
+        border-top: 1px solid rgba(139, 115, 85, 0.18);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .reminder-pref__ics.is-disabled .reminder-pref__ics-export {
+        opacity: 0.45;
+      }
+      .reminder-pref__ics-legend,
+      .reminder-pref__ics-honesty,
+      .reminder-pref__ics-disabled {
+        margin: 0;
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: rgba(44, 31, 20, 0.62);
+      }
+      .reminder-pref__ics-repeat {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+      }
+      .reminder-pref__ics-choice {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #2c1f14;
+        cursor: pointer;
+      }
+      .reminder-pref__ics-export {
+        align-self: stretch;
+        min-height: 40px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(139, 115, 85, 0.3);
+        background: rgba(255, 252, 245, 0.78);
+        color: #4a3a28;
+        font-size: 13px;
+        font-weight: 560;
+        cursor: pointer;
+      }
+      .reminder-pref__ics-export:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+      .reminder-pref__ics-export:disabled {
+        cursor: not-allowed;
+      }
+      .reminder-pref__ics-pending,
+      .reminder-pref__ics-fail {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .reminder-pref__ics-fail {
+        color: rgba(140, 70, 48, 0.96);
+      }
+      .reminder-pref__ics-pending[hidden],
+      .reminder-pref__ics-fail[hidden],
+      .reminder-pref__ics-disabled[hidden] {
         display: none !important;
       }
       @media (max-width: 420px) {

@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-11-10  
+生成日期：2026-11-11  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -1104,6 +1104,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 常显说明 `#reminder-preference-daily-blurb`（`reminder.daily_blurb`）：明示这是每天的时分，到点且今日未练会出顶部轻提示
 - `#reminder-preference-status` 出 `reminder.past_time_note`（软提示，不拦保存）；须为 callout（衬底+左边线，非斜体灰字），与 `daily_blurb` 可区分
 - status 出 `reminder.practiced_today_note`（同样 callout 显眼）；时间框仍可改（留给以后的日子），不得灰掉锁定
+- 添加到日历（`#reminder-preference-ics-export`）：提醒未开时钮禁用 + `#reminder-preference-ics-disabled`。已开时点一下 0–1 秒内见 pending「正在准备文件」，随后浏览器下载 `.ics`（每日或工作日单选只影响文件，不写回提醒键）。诚实句禁止「同步」。失败见 `#reminder-preference-ics-fail`，可再点。单测/集成覆盖生成字符串；E2E 只锁点击与禁用
 
 #### P1-3
 
