@@ -496,17 +496,35 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     zIndexFloor: bodyMin(),
     mount: 'body',
     mutationFeedback: mutationStates({
+      pending: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze(['reminder-preference-ics-pending'])
+      }),
       success: Object.freeze({
         mode: 'token',
         tokens: Object.freeze(['reminder-preference-saved'])
+      }),
+      fail: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze(['reminder-preference-ics-fail'])
       })
     }),
     e2eOverlap: {
       mode: 'spec',
       path: 'e2e/in-app-reminder.spec.js',
-      tokens: Object.freeze(['ft-onboarding-hint-bubble', 'reminder-preference-saved'])
+      tokens: Object.freeze([
+        'ft-onboarding-hint-bubble',
+        'reminder-preference-saved',
+        'reminder-preference-ics-export'
+      ])
     },
-    trackerCoverage: GAP
+    trackerCoverage: {
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-ics-reminder-export.md'
+      ]),
+      tokens: Object.freeze(['待人工测试'])
+    }
   }),
   surface({
     file: 'WorkEndPreferenceUI.js',

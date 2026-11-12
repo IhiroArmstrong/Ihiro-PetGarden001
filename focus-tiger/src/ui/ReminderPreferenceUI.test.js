@@ -38,4 +38,13 @@ describe('ReminderPreferenceUI layering + confirm affordance', () => {
     const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
     assert.match(src, /window\.requestAnimationFrame\(\(\) => notify\(\)\)/);
   });
+
+  it('adds calendar export controls without a new overlay surface', () => {
+    const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
+    assert.match(src, /id = 'reminder-preference-ics-export'/);
+    assert.match(src, /id = 'reminder-preference-ics-pending'/);
+    assert.match(src, /id = 'reminder-preference-ics-fail'/);
+    assert.match(src, /ICS_REMINDER_HONESTY/);
+    assert.doesNotMatch(src, /overlayBusy/);
+  });
 });

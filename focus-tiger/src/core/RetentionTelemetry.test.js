@@ -186,3 +186,7 @@ test('bridge helpers emit shown / accepted / declined names', () => {
     RETENTION_EVENTS.DORMANT_BRIDGE_DECLINED
   ]);
 });
+
+test('ICS_REMINDER_EXPORT constant is stable', () => {
+  assert.equal(RETENTION_EVENTS.ICS_REMINDER_EXPORT, 'ics_reminder_export');
+});
