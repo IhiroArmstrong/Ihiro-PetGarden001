@@ -1,0 +1,41 @@
+{
+  "en": {
+    "ICS_REMINDER_ADD": "Add to calendar",
+    "ICS_REMINDER_REPEAT_LEGEND": "For this file only — it does not change the in-app reminder.",
+    "ICS_REMINDER_REPEAT_DAILY": "Every day",
+    "ICS_REMINDER_REPEAT_WEEKDAYS": "Weekdays",
+    "ICS_REMINDER_ALARM": "Include a calendar alert",
+    "ICS_REMINDER_HONESTY": "After you change the reminder in the app, export again. Old calendar events may still be there. Some calendars add a second copy. This file does not update itself.",
+    "ICS_REMINDER_DISABLED_HINT": "Turn on the reminder first.",
+    "ICS_REMINDER_PENDING": "Preparing the file",
+    "ICS_REMINDER_FAIL": "Could not prepare the file. Try again.",
+    "ICS_REMINDER_SUMMARY": "Focus Tiger · Sit",
+    "ICS_REMINDER_DESCRIPTION": "A sit reminder. After you change the app reminder, export again; old events may remain. Some calendars may add a second copy. This file does not update itself."
+  },
+  "zh": {
+    "ICS_REMINDER_ADD": "添加到日历",
+    "ICS_REMINDER_REPEAT_LEGEND": "只影响这份文件，不会改 App 里的提醒。",
+    "ICS_REMINDER_REPEAT_DAILY": "每天",
+    "ICS_REMINDER_REPEAT_WEEKDAYS": "工作日",
+    "ICS_REMINDER_ALARM": "在日历里加闹钟",
+    "ICS_REMINDER_HONESTY": "改了 App 里的提醒后，请重新导出。旧的日历条目可能还在。有的日历会再添一条。日历不会自己跟着 App 变。",
+    "ICS_REMINDER_DISABLED_HINT": "请先打开提醒。",
+    "ICS_REMINDER_PENDING": "正在准备文件",
+    "ICS_REMINDER_FAIL": "文件没准备好，请再试一次。",
+    "ICS_REMINDER_SUMMARY": "坐禅小老虎 · 静坐",
+    "ICS_REMINDER_DESCRIPTION": "静坐提醒。改了 App 里的提醒后请重新导出；旧条目可能还在。有的日历会再添一条。日历不会自己跟着 App 变。"
+  },
+  "ja": {
+    "ICS_REMINDER_ADD": "カレンダーに追加",
+    "ICS_REMINDER_REPEAT_LEGEND": "このファイルだけに効きます。アプリ内のリマインダーは変わりません。",
+    "ICS_REMINDER_REPEAT_DAILY": "毎日",
+    "ICS_REMINDER_REPEAT_WEEKDAYS": "平日",
+    "ICS_REMINDER_ALARM": "カレンダーの通知を付ける",
+    "ICS_REMINDER_HONESTY": "アプリ側の時刻を変えたら、もう一度書き出してください。古い予定は残ることがあります。カレンダーによっては二重になることもあります。自動では追従しません。",
+    "ICS_REMINDER_DISABLED_HINT": "先にリマインダーをオンにしてください。",
+    "ICS_REMINDER_PENDING": "ファイルを準備しています",
+    "ICS_REMINDER_FAIL": "ファイルを作れませんでした。もう一度どうぞ。",
+    "ICS_REMINDER_SUMMARY": "Focus Tiger · 静坐",
+    "ICS_REMINDER_DESCRIPTION": "静坐のリマインダーです。アプリ側を変えたら書き直してください。古い予定は残ることがあり、二重になるカレンダーもあります。自動では追従しません。"
+  }
+}
