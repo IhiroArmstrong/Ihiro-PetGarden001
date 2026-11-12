@@ -354,6 +354,18 @@ export const HELP_CENTER_ARTICLES = Object.freeze([
     sectionId: 'data',
     titleKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE',
     bodyKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-DEVICES-SAFARI',
+    sectionId: 'start',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY'
+  }),
+  Object.freeze({
+    id: 'HELP-APPLE-HEALTH-LOG',
+    sectionId: 'data',
+    titleKey: 'HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE',
+    bodyKey: 'HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY'
   })
 ]);
 

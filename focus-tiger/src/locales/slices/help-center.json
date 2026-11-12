@@ -3,6 +3,8 @@
     "HELP_CENTER_MENU_LABEL": "Help Center",
     "HINT_APP_PURPOSE_HELP_CENTER_LINK": "Browse all topics → open Help Center",
     "HINT_APP_PURPOSE_HELP_CENTER_LINK_ARIA": "Open Help Center with all topics",
+    "HINT_APP_PURPOSE_WEB_ACCESS_TITLE": "Phones and tablets",
+    "HINT_APP_PURPOSE_WEB_ACCESS_BODY": "Use Safari on iPhone or iPad to open Samatia. There is no App Store app in this release. Optional Apple Health mindful minutes use your own Shortcuts recipe — see Help Center for what is and is not supported.",
     "HELP_CENTER_TITLE": "Help Center",
     "HELP_CENTER_CLOSE": "Close",
     "HELP_CENTER_BACK_TO_TOPICS": "All topics",
@@ -111,12 +113,18 @@
     "HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE": "What the lotus blooms mean",
     "HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY": "Lotus blooms are quiet traces of time you have sat. They are not ranks, scores, or a character evolution track.\n\nOpen Where you are from the home journey line. Up to twelve blooms sit in a row between the next-step sentence and your lifetime minutes. The home seat no longer draws flowers in front of Yin.",
     "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE": "Badges are not focus coins",
-    "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY": "A badge may look like a Focus Coin, but it is a keepsake. You cannot spend a badge in Yin's Collections.\n\nFocus coins are earned by sitting or breathing, and you spend those under Yin's Collections. If you already have a badge, tap it in the badge frame to download the picture."
+    "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY": "A badge may look like a Focus Coin, but it is a keepsake. You cannot spend a badge in Yin's Collections.\n\nFocus coins are earned by sitting or breathing, and you spend those under Yin's Collections. If you already have a badge, tap it in the badge frame to download the picture.",
+    "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE": "iPhone and iPad (Safari, no App Store app)",
+    "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY": "Samatia runs in Safari on iPhone and iPad. There is no App Store or TestFlight app in this release — open the website in Safari. You can add it to your Home Screen for a full-screen shortcut.\n\nPractice data stays on that device. The desktop app and another browser on the same account do not share the same local store.\n\nA native iOS shell is not on the current roadmap; when that changes, we will say so here.",
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE": "Optional Apple Health mindful minutes",
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia does not use Apple's system health SDK and does not read Apple Health. Journey Log on this device is separate local history — not Health data.\n\nIf you turn on the optional preference, a Log to Health button after a sit can open your Shortcuts app to run your installed mindful-minutes shortcut (you set it up once; permissions are between you and Apple, not a Samatia sign-in).\n\nSupported path: iPhone or iPad, page opened in Safari — not WeChat or other in-app browsers. Mac has no Health app; the desktop app does not promise this button. The preference is off until you enable it."
   },
   "zh": {
     "HELP_CENTER_MENU_LABEL": "帮助中心",
     "HINT_APP_PURPOSE_HELP_CENTER_LINK": "查看全部主题 → 打开帮助中心",
     "HINT_APP_PURPOSE_HELP_CENTER_LINK_ARIA": "打开帮助中心浏览全部主题",
+    "HINT_APP_PURPOSE_WEB_ACCESS_TITLE": "手机与平板",
+    "HINT_APP_PURPOSE_WEB_ACCESS_BODY": "请在 iPhone 或 iPad 上用 Safari 打开 Samatia。目前没有 App Store 安装包。可选「记入 Apple Health 正念分钟」须用你自己装的快捷指令——详见帮助中心的支持范围说明。",
     "HELP_CENTER_TITLE": "帮助中心",
     "HELP_CENTER_CLOSE": "关闭",
     "HELP_CENTER_BACK_TO_TOPICS": "全部主题",
@@ -225,12 +233,18 @@
     "HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE": "莲花出现表示什么",
     "HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY": "莲花是你坐过的安静痕迹，不是等级、分数，也不是角色进化条。\n\n从首页旅程短行打开「你在这里」。最多十二朵排在下一小步和累计分钟之间。主屏阿寅身前不再画花。",
     "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE": "徽章不能当寅币花",
-    "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY": "徽章长得像寅币，只是纪念，不能拿到珍藏里花掉。\n\n寅币靠同坐或呼吸获得，在阿寅珍藏里结缘。已有徽章时，在展示框里点按即可下载图片。"
+    "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY": "徽章长得像寅币，只是纪念，不能拿到珍藏里花掉。\n\n寅币靠同坐或呼吸获得，在阿寅珍藏里结缘。已有徽章时，在展示框里点按即可下载图片。",
+    "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE": "iPhone / iPad 如何用（Safari，无 App）",
+    "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY": "请在 iPhone、iPad 上用 Safari 打开 Samatia。本阶段没有 App Store 或 TestFlight 安装包，可把网站加到主屏幕当快捷方式。\n\n练习数据留在该设备本机，与电脑版或其它浏览器不共用同一份本地库。\n\niOS 原生壳当前不在路线图；若有变动会在此更新。",
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE": "可选：记入 Apple Health 正念分钟",
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia 不使用 HealthKit，也不会读取 Apple Health。旅程记录是本机留痕，不是健康数据。\n\n若你在设置里打开可选开关，同坐结束后可能出现「记入健康」按钮，会调起你自装的正念分钟快捷指令（须先按食谱安装；健康权限是你与苹果之间的事，不是 Samatia 账号授权）。\n\n仅承诺：iPhone / iPad 上用 Safari 打开的网页；微信等内嵌浏览器不承诺。Mac 无健康 App，电脑版不承诺该按钮。开关默认关闭。"
   },
   "ja": {
     "HELP_CENTER_MENU_LABEL": "ヘルプセンター",
     "HINT_APP_PURPOSE_HELP_CENTER_LINK": "すべてのトピックを見る → ヘルプセンター",
     "HINT_APP_PURPOSE_HELP_CENTER_LINK_ARIA": "ヘルプセンターでトピック一覧を開く",
+    "HINT_APP_PURPOSE_WEB_ACCESS_TITLE": "スマホとタブレット",
+    "HINT_APP_PURPOSE_WEB_ACCESS_BODY": "iPhone または iPad では Safari で Samatia を開いてください。App Store アプリは現時点でありません。Apple Health への任意記録はご自身のショートカットが必要です。対応範囲はヘルプセンターを参照。",
     "HELP_CENTER_TITLE": "ヘルプセンター",
     "HELP_CENTER_CLOSE": "閉じる",
     "HELP_CENTER_BACK_TO_TOPICS": "トピック一覧",
@@ -339,6 +353,10 @@
     "HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE": "蓮の花は何を表すか",
     "HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY": "蓮は坐った時間の静かな跡です。等級・点数・キャラクター進化ではありません。\n\nホームの旅程から Where you are を開くと、次の一歩と累計分数のあいだに最大十二輪が並びます。ホームの寅の前には花を描きません。",
     "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE": "バッジはコインではない",
-    "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY": "バッジはフォーカスコインに似ていても記念品です。Yin's Collections では使えません。\n\nコインは同坐や呼吸で得て、コレクションで使います。バッジがあるときは枠内をタップして画像を保存できます。"
+    "HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY": "バッジはフォーカスコインに似ていても記念品です。Yin's Collections では使えません。\n\nコインは同坐や呼吸で得て、コレクションで使います。バッジがあるときは枠内をタップして画像を保存できます。",
+    "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE": "iPhone / iPad（Safari・アプリなし）",
+    "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY": "Samatia は iPhone / iPad の Safari で動きます。現リリースに App Store / TestFlight アプリはありません。ホーム画面に追加して全画面ショートカットにできます。\n\n練習データはその端末に残ります。デスクトップアプリや別ブラウザとローカル保存は共有しません。\n\nネイティブ iOS シェルは現ロードマップにありません。変更時はここで告知します。",
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE": "任意：Apple Health のマインドフル分数",
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia は Apple のシステム健康 SDK を使わず、Apple Health を読みません。ジャーニーログは端末内の履歴であり Health データではありません。\n\n任意設定をオンにすると、同坐後に Health へ記録ボタンが出る場合があり、インストール済みのマインドフル分数ショートカットを起動します（レシピは自分で一度セットアップ。権限は Apple との間）。\n\n対応：iPhone / iPad の Safari のみ。WeChat 等のアプリ内ブラウザは非対応。Mac に Health アプリはなく、デスクトップはボタンを約束しません。設定はデフォルトオフ。"
   }
 }

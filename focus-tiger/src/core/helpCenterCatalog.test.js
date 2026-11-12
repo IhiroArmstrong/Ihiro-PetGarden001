@@ -53,7 +53,9 @@ const HELP_CENTER_GAP_IDS = Object.freeze([
   'HELP-BREATH-DURATION',
   'HELP-LOTUS-BLOOMS',
   'HELP-BUY-COLLECTIONS',
-  'HELP-BADGE-NOT-COIN'
+  'HELP-BADGE-NOT-COIN',
+  'HELP-DEVICES-SAFARI',
+  'HELP-APPLE-HEALTH-LOG'
 ]);
 
 test('help center gap articles are allowlisted and absent from confide catalog', () => {
@@ -75,7 +77,7 @@ test('help center gap articles are allowlisted and absent from confide catalog',
 test('help center keeps 42 KB-traced articles after gap add', () => {
   const kbish = HELP_CENTER_ARTICLES.filter((row) => row.id.startsWith('KB-'));
   assert.equal(kbish.length, 42);
-  assert.equal(HELP_CENTER_ARTICLES.length, 46);
+  assert.equal(HELP_CENTER_ARTICLES.length, 48);
 });
 
 test('help center gap article locale keys exist in en zh ja', () => {

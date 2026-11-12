@@ -166,6 +166,8 @@ describe('privacyNoticeCopy', () => {
     const purpose = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
     const support = readFileSync(join(here, 'SupportYinModalUI.js'), 'utf8');
     assert.match(purpose, /onboarding-purpose-desktop-ram/);
+    assert.match(purpose, /onboarding-purpose-web-access/);
+    assert.match(purpose, /HINT_APP_PURPOSE_WEB_ACCESS_BODY/);
     assert.match(purpose, /isDesktopShellRuntime/);
     assert.match(purpose, /HINT_APP_PURPOSE_DESKTOP_RAM_BODY/);
     assert.match(purpose, /HINT_APP_PURPOSE_VOICE_ACCESS_BODY/);
@@ -180,7 +182,7 @@ describe('privacyNoticeCopy', () => {
     const purpose = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
     assert.match(
       purpose,
-      /card\.append\(brand, desktopRam, voiceAccess, links, colophon, actions\)/
+      /card\.append\(brand, desktopRam, voiceAccess, webAccess, links, colophon, actions\)/
     );
     assert.match(
       purpose,
