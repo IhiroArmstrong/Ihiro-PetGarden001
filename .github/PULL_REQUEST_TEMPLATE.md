@@ -109,7 +109,7 @@
 - [ ] husky `pre-push` 已跑 `test:e2e:smoke`（或写明 `FT_SKIP_PRE_PUSH_SMOKE=1` 原因）
 - [ ] （可选）合并前再跑完整套件：`npm run test:e2e` · `npm run test:e2e:visibility` · `npm run docs:check`
 
-> CI：每次 PR→`develop` 都会上报 **`test:pr-smoke`**（无 `focus-tiger/**` 改动时为成功 no-op）与 **`pre-merge with develop`**。改产品代码时 smoke 含逻辑冒烟 + 短壳 e2e smoke + **`npm run build` 产物检查**。**菜单走完**不在默认必跑集；改菜单路径时 `pr-smoke` 额外一步仍跑，另有 nightly / 合入 develop 后（见 `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md`）。完整 e2e / visibility / doc-contract 另触发。  
+> CI：每次 PR→`develop` 都会上报 **`test:pr-smoke`**（无 `focus-tiger/**` 改动时为成功 no-op）与 **`pre-merge with develop`**。改产品代码时 smoke 含逻辑冒烟 + 短壳 e2e smoke + **`npm run build` 产物检查**。**菜单走完**不在 Required `test:pr-smoke`（改菜单路径也不加跑）；nightly / 合入 develop 后见 `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md`。完整 e2e / visibility / doc-contract 另触发。  
 > **关单级人工验收**只认 `origin/develop` tip（见 `TEST_TRACKER.md`）——合入之后批量测；**合入资格 = CI 绿**。勿在长期落后的 feature 分支上关单。
 
 - [ ] 已对照 smoke 根因表，本 PR 的红灯（若有）不属于已知基建问题（种类 1/2 见 `PR_SMOKE_FAILURE_CLASSES.md`）

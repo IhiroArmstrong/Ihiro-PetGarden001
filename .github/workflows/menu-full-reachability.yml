@@ -1,9 +1,8 @@
 name: menu-full-reachability
 
 # Idle menu full walk (wide ⋯ → narrow drawer). Not a develop Required check.
-# Default PR smoke no longer includes this spec (flake amplifier).
+# Not in PR smoke, even when menu paths change (shared-page flake amplifier).
 # Runs: nightly, every push to develop, and workflow_dispatch.
-# Menu-touching PRs still run it inside pr-smoke.yml (path filter).
 # SSOT: focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md
 #
 # Owner: PO (Armstrong). Notify: GitHub Watch → Custom → Actions email.

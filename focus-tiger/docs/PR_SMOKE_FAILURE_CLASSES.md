@@ -13,7 +13,7 @@
 
 | 种类 | 根因 | 性质 | 处理 |
 |---|---|---|---|
-| **1. 菜单走完超时** | `menu-full-reachability`（宽屏 Idle → 窄屏抽屉）在 CI 上点击/滚动超时、页面打不开 | 测试不稳 | **已移出**每个 PR 的必跑 `test:e2e:smoke`。nightly + 合入 develop 后 + 改菜单路径的 PR 仍跑 |
+| **1. 菜单走完超时** | `menu-full-reachability`（宽屏 Idle → 窄屏抽屉）在 CI 上点击/滚动超时、页面打不开；同一页串档，前一档残留会传染 | 测试不稳 | **已移出** Required `test:pr-smoke` 与 `pre-push`（含改菜单路径）。nightly + 合入 develop 后仍跑。失败档不属于本 PR 功能时标种类 1，禁止在功能 PR 里反复补丁 |
 | **2. 语言包索引竞态** | 并行测试改共享生成文件 `localeSliceModules.js`，别的测试读到半成品，报缺 `LOCALE_SLICES` | 测试基建竞态 | **T11** #1322；本刀不处理 |
 | **3. 菜单选择器叠了两个** | `#ft-wide-more-radial` 和 `#ft-wide-more-menu` 同时命中 | 改菜单的 PR 自己的测试债 | 该 PR 同批修选择器；本刀不改产品代码 |
 | **4. PR 自己的语法/夹具错** | 如变量重复声明 | 该 PR 的代码问题 | 修这个 PR |
@@ -28,16 +28,16 @@
 | 时机 | 是否跑 `test:e2e:menu-reachability` |
 |---|---|
 | 每个 PR 的 Required `test:pr-smoke`（默认浏览器冒烟） | **否**。只留启动/短壳：产品壳、scenario A 开表、付款契约、玻璃护栏 |
-| PR 改动命中下方路径清单 | **是**（`pr-smoke.yml` 额外一步，仍算同一个 Required check） |
+| PR 改动命中下方菜单核心路径 | **否**（不再绑进同一个 Required check；档间状态未隔离前，旧面板关慢会挡住无关功能） |
 | 合入 `develop` 之后 | **是**（`menu-full-reachability.yml` `push`） |
 | 每日定时 | **是**（同 workflow `schedule`，UTC 04:30） |
 | 手动 | **是**（`workflow_dispatch`） |
 
-本地改菜单：`cd focus-tiger && npm run test:e2e:changed -- e2e/menu-full-reachability.spec.js`（单 spec 硬顶见 `.cursor/rules/testing-strategy.mdc`，`e2e-local-budget`）。
+本地改菜单（可选，非 pre-push 必过）：`cd focus-tiger && npm run test:e2e:changed -- e2e/menu-full-reachability.spec.js`（单 spec 硬顶见 `.cursor/rules/testing-strategy.mdc`，`e2e-local-budget`）。建议用正式构建，不要只靠开发模式。
 
-### 路径清单（PR 额外一步）
+### 菜单核心路径（本地可选走查；不是 PR 必过关）
 
-真源：[`scripts/menu-reachability-trigger-paths.js`](../scripts/menu-reachability-trigger-paths.js)。命中任一即跑菜单走完：
+真源：[`scripts/menu-reachability-trigger-paths.js`](../scripts/menu-reachability-trigger-paths.js)。这些文件是菜单编排核心，改到时仍应在本地考虑跑走查，但 **Required `test:pr-smoke` / husky pre-push 不再因此加跑**：
 
 - `focus-tiger/src/ui/NarrowIdleShell*`
 - `focus-tiger/src/ui/WideIdleMoreMenu*`
@@ -72,7 +72,7 @@
 | 条 | 机制 | 仍靠自觉的部分 |
 |---|---|---|
 | 推送前必跑浏览器冒烟 | husky `pre-push` → `npm run test:e2e:smoke`；文档-only 跳过 | `FT_SKIP_PRE_PUSH_SMOKE=1` 可绕过，须在 PR 写明 |
-| 改菜单再跑菜单走完 | 路径表 [`scripts/pr-smoke-path-routes.js`](../scripts/pr-smoke-path-routes.js)；CI `pr-smoke.yml` 与 pre-push **共用** | — |
+| 改菜单再跑菜单走完 | **已废止（必过关）**。菜单走完只在 nightly / 合入 develop 后。路径表 [`scripts/menu-reachability-trigger-paths.js`](../scripts/menu-reachability-trigger-paths.js) 仅标明菜单核心文件。其它路径加跑仍看 [`scripts/pr-smoke-path-routes.js`](../scripts/pr-smoke-path-routes.js)（玻璃护栏在默认 smoke 内） | 本地仍可用 `test:e2e:changed` 单跑 |
 | 入口 `main.js` 不加行 | `pre-commit` 先跑 `audit:b1-architecture-gate`；超 cap 拒绝并提示抽到 `src/core/` / `src/ui/` | 抬上限须单独基线 PR + PO 点头 |
 | 禁止功能 PR 改行数基线 | [`.github/CODEOWNERS`](../../.github/CODEOWNERS) 钉死 `b1-architecture-gate-baseline.json` | GitHub 须开启 CODEOWNERS 审查 |
 | 可见性跟开关 | 倾诉玻璃卡走 `shouldAssertA13SurfaceVisible`（挂载关且无 `?confide=1` → 不要求看得见） | 其它写死可见性的 spec 仍须改测试同批 |
@@ -97,11 +97,13 @@
 2. 压测、破坏性测试必须写临时或 probe 文件，禁止碰生产路径上的共享文件。
 3. 一个选择器必须只命中一个节点。宽/窄两套菜单不得共用会命中多个节点的 locator。
 4. 新增的 e2e 先在 nightly 稳定跑一段时间，再考虑进 PR 必跑。
+5. **不得通过删除 CSS 类（如 `is-visible`）让检查通过。** 只走面板自己的关闭路径（点离开 / 点遮罩），等到根节点真正隐藏或消失再进下一档。
+6. 点了但目标不出现 → 先查最上层遮挡者（报错应写出最上层元素），不要猜。
 
 **改菜单时**
 
 1. 选择器和测试同批修改。PR 描述写明「已确认宽/窄菜单选择器各只命中一个节点」。
-2. 本地跑一次菜单走完，再推送。
+2. 本地可用正式构建跑一次菜单走完；**不是**合入必过关。失败档不属于本次功能时标种类 1，不要在功能 PR 里连补。
 
 **CI 范围**
 
