@@ -213,6 +213,8 @@ describe('privacyNoticeCopy', () => {
       const map = loadLocale(file);
       assert.match(map.PRIVACY_SHEET_DEFAULT_STORAGE, /Practice Study|研究共修|練習リサーチ/);
       assert.match(map.PRIVACY_SHEET_DEFAULT_STORAGE, /independent|相互独立|独立/);
+      assert.match(map.PRIVACY_SHEET_DEFAULT_STORAGE, /updates\.twinsology\.com/);
+      assert.match(map.PRIVACY_SHEET_DEFAULT_STORAGE, /IP/);
     }
   });
 

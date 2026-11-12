@@ -27,6 +27,8 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 
 **安静同坐 / 灯火（默认开，可在 Privacy 关闭）**：你坐下时，本应用只向自有服务器发送一个**随机会话 id**，用于维持诚实的同坐人数。不含姓名、邮箱、练习日志或聊天。关闭后既不出现在计数里，也看不见别人的灯火。该请求可能经 **Cloudflare** 到达我们托管的接口。
 
+**电脑版检查更新（空闲时）**：安装包可能会向我们托管的更新地址 `https://updates.twinsology.com/` 询问是否有新版本。该请求会带上应用版本，更新服务器因此能看到你的 **IP** 和版本号；不含练习内容、聊天或姓名。没有新版本、或你选择暂不安装时，不会下载安装包。
+
 **启动时的公开配置**：打开应用时，本机可能向自有服务器拉取公开配置与已购权益状态（例如功能是否对该渠道开放）。这不是把你的练习记录上传。
 
 **可选的练习效果计数（研究，默认关）**：只有你在 Privacy 打开开关后，我们才会收到计时专注的去身份计数（例如有没有坐完、后来有没有回来）和一个重装即作废的本机研究代号。没有倾诉原文、邮箱或付款信息。随时可关。
@@ -83,6 +85,8 @@ Optional **Focus rhythm** (Mac app only, **off by default**): when you turn it o
 Unless you use local export/import (Section 3), your habit check-ins, practice records, and similar data are stored **only on your local device by default**. This app **does not automatically upload this data to our servers** as a personal backup.
 
 **Quiet Together / lanterns (on by default; off in Privacy):** while you sit, this app sends only a **random session id** to our server so a shared sit-count can stay honest. No name, email, practice log, or chat. If you turn it off, you neither appear in the count nor see others' lanterns. That request may reach our API via **Cloudflare**.
+
+**Desktop update check (when idle):** the Mac app may ask our update host `https://updates.twinsology.com/` whether a newer version exists. That check includes the app version, so the host can see your **IP** address and version. It does not include practice content, chat, or your name. If nothing is new, or you skip, no installer is downloaded.
 
 **Public config at launch:** the app may fetch public configuration and entitlement status from our servers. That is not an upload of your practice log.
 
@@ -141,6 +145,8 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 
 **静かな同席 / 灯（初期オン、Privacy でオフ可）**：座っているあいだ、正直な人数のために**ランダムなセッション id** だけを自社サーバーへ送ります。名前・メール・練習ログ・チャットは含みません。この通信は **Cloudflare** 経由のことがあります。
 
+**デスクトップの更新確認（待ち時間中）**：インストール済みのアプリは、更新用ホスト `https://updates.twinsology.com/` に新しい版があるか尋ねることがあります。この確認にはアプリの版番号が含まれ、ホストは **IP** アドレスと版番号を知り得ます。練習内容・チャット・氏名は含みません。新しい版がない、または見送る場合、インストーラはダウンロードしません。
+
 **起動時の公開設定**：アプリ起動時、公開設定や購入状態を自社サーバーから取得することがあります。練習ログのアップロードではありません。
 
 **任意の練習効果カウント（研究、初期オフ）**：Privacy でオンにしたときだけ、時間を決めた坐の回数などと、再インストールで消える研究用の番号が届きます。会話の原文、メール、支払い情報は送りません。
@@ -192,6 +198,7 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 - Local export/import SSOT = `PRACTICE_BACKUP_EXPORT_KEYS` in `localBackupStorageRegistry.js` (**31 keys** as of schema v7). Legacy cloud snapshot was 6 keys; live Worker schema is **8** `PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS`. Do not tell users “export is 6 keys” or “export excludes all preferences.”
 - First-invite ship: `practiceBackupCloudEnabled` must be **false** in the packed dist (release-flag assert). D1–D4 runtime remains in source for a later public open. Production probes should still look closed.
 - Practice Study / T81 weekly upload / Hugging Face model fetch: first-package capture list must show none of these as live customer traffic unless the user opened Confide semantics download.
+- Packaged Mac update checks may hit `https://updates.twinsology.com/` (IP + app version only). Capture allowlists must list that host; it is not a practice-content upload.
 - Opt-in key `focus-tiger.practice-backup.v1` must not silent-flush while the client gate is off.
 
 ## Questions

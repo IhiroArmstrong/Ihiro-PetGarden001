@@ -140,6 +140,17 @@ Brief：`task-quiet-together-lanterns-mvp.md`。
 | Q2 | 成员 JSON 相同则 `writeFocusCircleMembership` 已跳过。429 / 失败不把人数写成 1。迟到 status 不覆盖 leave/join。 |
 | Q3 | status 8s 超时；create/join/leave 12s 超时后恢复按钮。失败不挡 Sit / Idle 呼吸。 |
 
+### 7. 电脑版检查更新（generic feed · `updates.twinsology.com`）
+
+| 问 | 结论 |
+|---|---|
+| 触发 | 已打包且自建更新开着时，Idle 约 **2500ms** 后 `checkForUpdates`（与练习备份同一错峰）。Focusing 不轮询。开发 unpackaged 且未设 `FT_UPDATE_FEED_URL` 时不请求。 |
+| Q1 | 已错峰。禁止与 Arrival / Honesty / Reflection 叠化或 Idle 呼吸第一拍同步发。 |
+| Q2 | 清单未变不另写练习数据；只记跳过版本等更新器状态。 |
+| Q3 | 空闲且尚无版本时失败吞掉，不挡 Sit。慢网不卡呼吸（主进程 HTTP，不进渲染叠化）。 |
+
+**抓包允许出现的请求（第一份安装包 · 电脑版）：** `https://updates.twinsology.com/`（以及该主机下 `latest-mac.yml` / 安装包路径）。可见信息限于 IP 与应用版本，不含练习内容。未建存储桶或 DNS 未绑定时，请求失败仍算允许出现的主机，不算「偷偷连未知域」。
+
 ---
 
 ## 修复任务怎么排（本回合只立项）
