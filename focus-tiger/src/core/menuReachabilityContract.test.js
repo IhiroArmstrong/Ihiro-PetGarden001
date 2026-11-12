@@ -12,6 +12,7 @@ import {
 } from './menuReachabilityContract.js';
 import { listSecondaryChromeEntries } from './idleChromeOrchestration.js';
 import { wideMoreMenuGroupForProxy } from './wideMenuRadialLayout.js';
+import { setPracticeBackupCloudEnabledForTests } from './practiceBackup/practiceBackupCloudEnabled.js';
 
 describe('menuReachabilityContract', () => {
   it('covers every catalog proxy on wide and narrow Idle product=1', () => {
@@ -42,12 +43,26 @@ describe('menuReachabilityContract', () => {
     assert.equal(morning?.contract.resultSelector, '#yin-membership-card');
   });
 
-  it('treats account as the email restore open-panel', () => {
+  it('keeps account grey on the first-invite cloud gate', () => {
     const rows = listMenuReachabilityRows('wide-more');
     const account = rows.find((r) => r.proxy === 'account');
-    assert.equal(account?.interactive, true);
-    assert.equal(account?.contract.kind, 'open-panel');
-    assert.equal(account?.contract.resultSelector, '#email-journey-restore-panel');
+    assert.equal(account?.interactive, false);
+  });
+
+  it('treats account as the email restore open-panel when the gate is on', () => {
+    setPracticeBackupCloudEnabledForTests(true);
+    try {
+      const rows = listMenuReachabilityRows('wide-more');
+      const account = rows.find((r) => r.proxy === 'account');
+      assert.equal(account?.interactive, true);
+      assert.equal(account?.contract.kind, 'open-panel');
+      assert.equal(
+        account?.contract.resultSelector,
+        '#email-journey-restore-panel'
+      );
+    } finally {
+      setPracticeBackupCloudEnabledForTests(false);
+    }
   });
 
   it('maps every wide-more clickable row to a menu group for e2e walk', () => {

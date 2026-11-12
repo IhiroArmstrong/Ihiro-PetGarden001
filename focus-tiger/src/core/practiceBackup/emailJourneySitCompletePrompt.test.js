@@ -12,6 +12,7 @@ import {
   evaluateEmailJourneySitCompletePrompt,
   recordEmailJourneySitCompletePromptDismiss
 } from './emailJourneySitCompletePrompt.js';
+import { setPracticeBackupCloudEnabledForTests } from './practiceBackupCloudEnabled.js';
 
 function memoryStorage(seed = {}) {
   const map = new Map(Object.entries(seed));
@@ -38,7 +39,17 @@ const ready = {
 };
 
 describe('emailJourneySitCompletePrompt · T93 D4', () => {
+  it('stays hidden on the first-invite cloud gate', () => {
+    const storage = memoryStorage();
+    assert.equal(
+      evaluateEmailJourneySitCompletePrompt({ ...ready, storage }).reason,
+      'cloud-gate-off'
+    );
+  });
+
   it('shows once after a sit when unbound, then forever-dismiss hides it', () => {
+    setPracticeBackupCloudEnabledForTests(true);
+    try {
     const storage = memoryStorage();
     assert.equal(
       evaluateEmailJourneySitCompletePrompt({ ...ready, storage }).shouldShow,
@@ -50,9 +61,14 @@ describe('emailJourneySitCompletePrompt · T93 D4', () => {
       'dismissed'
     );
     assert.ok(storage.getItem(EMAIL_JOURNEY_SIT_COMPLETE_PROMPT_KEY));
+    } finally {
+      setPracticeBackupCloudEnabledForTests(false);
+    }
   });
 
   it('does not show before a sit, while celebrating, or when already bound', () => {
+    setPracticeBackupCloudEnabledForTests(true);
+    try {
     const storage = memoryStorage();
     assert.equal(
       evaluateEmailJourneySitCompletePrompt({
@@ -78,9 +94,14 @@ describe('emailJourneySitCompletePrompt · T93 D4', () => {
       evaluateEmailJourneySitCompletePrompt({ ...ready, storage }).reason,
       'already-bound'
     );
+    } finally {
+      setPracticeBackupCloudEnabledForTests(false);
+    }
   });
 
   it('yields to store channels, support, and the research first-sit invite', () => {
+    setPracticeBackupCloudEnabledForTests(true);
+    try {
     const storage = memoryStorage();
     assert.equal(
       evaluateEmailJourneySitCompletePrompt({
@@ -106,5 +127,8 @@ describe('emailJourneySitCompletePrompt · T93 D4', () => {
       }).reason,
       'other-post-sit'
     );
+    } finally {
+      setPracticeBackupCloudEnabledForTests(false);
+    }
   });
 });

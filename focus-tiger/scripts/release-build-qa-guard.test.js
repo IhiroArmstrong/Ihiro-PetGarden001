@@ -26,3 +26,13 @@ test('verify-no-qa-boot-in-dist rejects inlined VITE_FT_QA_BOOT on', () => {
   assert.match(verifySrc, /FORBIDDEN_INLINED/);
   assert.match(verifySrc, /VITE_FT_QA_BOOT/);
 });
+
+test('desktop pack verifies first-invite cloud backup gate is off', () => {
+  assert.match(packSrc, /build:verify-cloud-gate/);
+  const cloudVerifySrc = readFileSync(
+    path.join(root, 'scripts/verify-first-pack-cloud-gate.js'),
+    'utf8'
+  );
+  assert.match(cloudVerifySrc, /practiceBackupCloudEnabled = false/);
+  assert.match(cloudVerifySrc, /practiceBackupCloudEnabled=!0/);
+});
