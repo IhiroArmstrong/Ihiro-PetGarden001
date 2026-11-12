@@ -159,6 +159,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     close: true,
     stage: 'presenceField'
   },
+  'health-shortcut-log': {
+    handler: 'onHealthShortcutLog',
+    close: true,
+    stage: 'healthShortcutLog'
+  },
   'today-direction': { handler: 'onTodayDirection', close: true },
   'ground-exercise': { handler: 'onGroundExercise', close: true },
   'guided-meditation': { handler: 'onGuidedMeditation', close: true },
@@ -453,7 +458,8 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   windowLayout: 'ft-narrow-stage-window-layout',
   inputRhythm: 'ft-narrow-stage-input-rhythm',
   mindflowNebula: 'ft-narrow-stage-mindflow-nebula',
-  presenceField: 'ft-narrow-stage-presence-field'
+  presenceField: 'ft-narrow-stage-presence-field',
+  healthShortcutLog: 'ft-narrow-stage-health-shortcut-log'
 });
 
 /** Wide park / stage body classes (single spelling). */
@@ -469,6 +475,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   inputRhythm: 'ft-wide-stage-input-rhythm',
   mindflowNebula: 'ft-wide-stage-mindflow-nebula',
   presenceField: 'ft-wide-stage-presence-field',
+  healthShortcutLog: 'ft-wide-stage-health-shortcut-log',
   localBackup: 'ft-wide-stage-local-backup',
   emailJourney: 'ft-wide-stage-email-journey',
   practiceStudy: 'ft-wide-stage-practice-study',
@@ -882,6 +889,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
       proxy: 'presence-field',
       labelKey: 'PRESENCE_FIELD_MENU_LABEL',
       testId: 'idle-presence-field'
+    },
+    {
+      proxy: 'health-shortcut-log',
+      labelKey: 'HEALTH_SHORTCUT_MENU_LABEL',
+      testId: 'idle-health-shortcut-log'
     },
     {
       proxy: 'today-direction',

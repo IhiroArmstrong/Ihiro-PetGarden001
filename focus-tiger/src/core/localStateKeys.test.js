@@ -19,6 +19,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { DailyCompletionStore, DAILY_COMPLETION_STORAGE_KEY } from './DailyCompletionStore.js';
+import { HEALTH_SHORTCUT_LOG_ENABLED_KEY } from './healthShortcutLogPreference.js';
 import {
   FocusSessionEndStore,
   FOCUS_SESSION_END_STORAGE_KEY
@@ -309,7 +310,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   RITUAL_RECIPE_STORAGE_KEY,
   RITUAL_RECIPE_ANALYTICS_OPT_IN_STORAGE_KEY,
   COMPANION_CHANNEL_RECENT_IDS_KEY,
-  CONTEMPLATIVE_INQUIRY_STORAGE_KEY
+  CONTEMPLATIVE_INQUIRY_STORAGE_KEY,
+  HEALTH_SHORTCUT_LOG_ENABLED_KEY
 ]);
 
 test('whitelist matches every module STORAGE_KEY (no orphan / no missing)', () => {

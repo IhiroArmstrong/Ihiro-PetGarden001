@@ -381,7 +381,8 @@ test('smoke C: Rise incomplete → no completion record; Reflection after MANUAL
     assert.deepEqual(opened, {
       intention,
       intentionSource: 'icon',
-      sessionDurationLine: null
+      sessionDurationLine: null,
+      elapsedSeconds: 0
     });
   } finally {
     globalThis.setTimeout = realSetTimeout;

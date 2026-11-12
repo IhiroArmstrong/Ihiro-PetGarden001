@@ -53,5 +53,6 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   // Reminder panel is body-fixed beside ⋯/drawer; clicks must not dismiss chrome.
   if (el.closest('#reminder-preference-panel')) return true;
   if (el.closest('#work-end-preference-panel')) return true;
+  if (el.closest('#health-shortcut-log-preference-panel')) return true;
   return false;
 }
