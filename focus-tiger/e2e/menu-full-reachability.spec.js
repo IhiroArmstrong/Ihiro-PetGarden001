@@ -169,12 +169,35 @@ async function scrollMenuRowIntoView(item) {
  * @param {'wide-more' | 'narrow-drawer'} surface
  */
 
-/** @param {import('@playwright/test').Page} page */
+/**
+ * Close growth cards and strip leftover overlay scrims.
+ * Yin-coin (and similar) can re-add `.is-visible` on a later frame in CI;
+ * close + strip twice around one animation frame so the walk can continue.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<number>} remaining `.ft-overlay-backdrop.is-visible` count
+ */
 async function dismissVisibleGrowthBackdrops(page) {
   await page.evaluate(() => {
-    for (const name of ['__yinCoinPanel', '__zenCinemaCard', '__dailyZenQuoteCard']) {
+    for (const name of [
+      '__yinCoinPanel',
+      '__zenCinemaCard',
+      '__dailyZenQuoteCard'
+    ]) {
+      const ui = window[name];
+      if (!ui) continue;
       try {
-        window[name]?.close?.();
+        ui.close?.();
+      } catch {
+        /* ignore */
+      }
+      try {
+        ui.closePanel?.();
+      } catch {
+        /* ignore */
+      }
+      try {
+        ui.hide?.();
       } catch {
         /* ignore */
       }
@@ -185,19 +208,20 @@ async function dismissVisibleGrowthBackdrops(page) {
     await coinBackdrop.click({ position: { x: 12, y: 12 }, timeout: 4_000 }).catch(() => {});
     await expect(coinBackdrop).toBeHidden({ timeout: 5_000 }).catch(() => {});
   }
-  await page.evaluate(() => {
-    for (const el of document.querySelectorAll('.ft-overlay-backdrop')) {
-      el.classList.remove('is-visible');
-      el.hidden = true;
-      el.setAttribute('aria-hidden', 'true');
-    }
-    document.body.classList.remove('ft-idle-overlay-chrome-dim');
+  return await page.evaluate(async () => {
+    const strip = () => {
+      for (const el of document.querySelectorAll('.ft-overlay-backdrop')) {
+        el.classList.remove('is-visible');
+        el.hidden = true;
+        el.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('ft-idle-overlay-chrome-dim');
+    };
+    strip();
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
+    strip();
+    return document.querySelectorAll('.ft-overlay-backdrop.is-visible').length;
   });
-  await page
-    .locator('.ft-overlay-backdrop.is-visible')
-    .first()
-    .waitFor({ state: 'hidden', timeout: 8_000 })
-    .catch(() => {});
 }
 
 async function openMenu(page, surface) {
@@ -328,8 +352,7 @@ async function walkMenu(page, surface, menuSelector) {
       .poll(
         async () => {
           await settleAfterRow(page);
-          await dismissVisibleGrowthBackdrops(page);
-          return await page.locator('.ft-overlay-backdrop.is-visible').count();
+          return await dismissVisibleGrowthBackdrops(page);
         },
         {
           timeout: 12_000,
