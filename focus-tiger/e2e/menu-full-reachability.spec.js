@@ -133,23 +133,18 @@ async function settleAfterRow(page) {
     window.__wideIdleMoreMenu?.setIdle?.(true);
     window.__narrowIdleShell?.setSuppressed?.(false);
     window.__narrowIdleShell?.setIdle?.(true);
+    const ritual = window.__ritualFlowUI;
+    try {
+      if (ritual?.isOpen?.()) ritual.leave?.();
+      else ritual?.hide?.();
+    } catch {
+      /* production builds do not publish __ritualFlowUI */
+    }
   });
   for (let n = 0; n < 2; n++) {
     await page.keyboard.press('Escape');
   }
-  await page.evaluate(() => {
-    for (const el of document.querySelectorAll('.ft-overlay-backdrop.is-visible')) {
-      el.classList.remove('is-visible');
-      el.hidden = true;
-      el.setAttribute('aria-hidden', 'true');
-    }
-    document.body.classList.remove('ft-idle-overlay-chrome-dim');
-  });
-  await page
-    .locator('.ft-overlay-backdrop.is-visible')
-    .first()
-    .waitFor({ state: 'hidden', timeout: 8_000 })
-    .catch(() => {});
+  await dismissRitualFlow(page);
 }
 
 /**
@@ -170,9 +165,23 @@ async function scrollMenuRowIntoView(item) {
  */
 
 /**
- * Close growth cards and strip leftover overlay scrims.
- * Yin-coin (and similar) can re-add `.is-visible` on a later frame in CI;
- * close + strip twice around one animation frame so the walk can continue.
+ * Production `npm run build` does not set `window.__ritualFlowUI` (DEV only).
+ * The open card stays `pointer-events: auto` over the bottom of the narrow
+ * drawer, so the last ritual row's click never reaches the menu. Leave is
+ * the real control on every ritual step.
+ *
+ * @param {import('@playwright/test').Page} page
+ */
+async function dismissRitualFlow(page) {
+  const leave = page.locator('#ritual-flow [data-ritual-leave]');
+  if ((await leave.count()) > 0) {
+    await leave.first().click({ timeout: 2_000, force: true }).catch(() => {});
+  }
+}
+
+/**
+ * Close growth cards through their own close path.
+ * Do not strip `.is-visible` — a painted-over scrim still eats the next click.
  *
  * @param {import('@playwright/test').Page} page
  * @returns {Promise<number>} remaining `.ft-overlay-backdrop.is-visible` count
@@ -206,21 +215,37 @@ async function dismissVisibleGrowthBackdrops(page) {
   const coinBackdrop = page.getByTestId('yin-coin-panel-backdrop');
   if (await coinBackdrop.isVisible().catch(() => false)) {
     await coinBackdrop.click({ position: { x: 12, y: 12 }, timeout: 4_000 }).catch(() => {});
-    await expect(coinBackdrop).toBeHidden({ timeout: 5_000 }).catch(() => {});
   }
-  return await page.evaluate(async () => {
-    const strip = () => {
-      for (const el of document.querySelectorAll('.ft-overlay-backdrop')) {
-        el.classList.remove('is-visible');
-        el.hidden = true;
-        el.setAttribute('aria-hidden', 'true');
-      }
-      document.body.classList.remove('ft-idle-overlay-chrome-dim');
-    };
-    strip();
-    await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
-    strip();
-    return document.querySelectorAll('.ft-overlay-backdrop.is-visible').length;
+  for (let n = 0; n < 4; n += 1) {
+    const backdrop = page.locator('.ft-overlay-backdrop.is-visible').first();
+    if ((await backdrop.count()) === 0) break;
+    if (!(await backdrop.isVisible().catch(() => false))) break;
+    await backdrop.click({ position: { x: 8, y: 8 }, timeout: 2_000 }).catch(() => {});
+  }
+  return page.locator('.ft-overlay-backdrop.is-visible').count();
+}
+
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {import('@playwright/test').Locator} item
+ */
+async function clickBlockerSummary(page, item) {
+  return item.evaluate((el) => {
+    const rect = el.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    if (x < 0 || y < 0 || x > window.innerWidth || y > window.innerHeight) {
+      return { owns: true, desc: 'offscreen', x: Math.round(x), y: Math.round(y) };
+    }
+    const top = document.elementFromPoint(x, y);
+    const owns = Boolean(top && (top === el || el.contains(top)));
+    const id = top?.id ? `#${top.id}` : '';
+    const testId = top?.getAttribute?.('data-testid');
+    const proxy = top?.getAttribute?.('data-proxy');
+    const desc = top
+      ? `${top.tagName.toLowerCase()}${id}${testId ? `[data-testid=${testId}]` : ''}${proxy ? `[data-proxy=${proxy}]` : ''}`
+      : 'none';
+    return { owns, desc, x: Math.round(x), y: Math.round(y) };
   });
 }
 
@@ -265,12 +290,40 @@ async function openMenu(page, surface) {
   const grabber = page.locator('.ft-narrow-grabber');
   await expect(grabber, 'drawer grabber').toBeVisible({ timeout: 8_000 });
   const drawer = page.locator('#ft-narrow-options-drawer');
-  if ((await drawer.getAttribute('aria-hidden')) !== 'false') {
-    await grabber.click();
-  }
-  await expect(drawer).toHaveAttribute('aria-hidden', 'false', {
-    timeout: 8_000
-  });
+  await expect
+    .poll(
+      async () => {
+        const left = await dismissVisibleGrowthBackdrops(page);
+        if ((await drawer.getAttribute('aria-hidden')) === 'false') return 'open';
+        if (left > 0) {
+          const ids = await page
+            .locator('.ft-overlay-backdrop.is-visible')
+            .evaluateAll((els) =>
+              els
+                .map((el) => el.id || el.getAttribute('data-testid') || 'backdrop')
+                .join(',')
+            );
+          return `blocked ${ids}`;
+        }
+        try {
+          await grabber.click({ timeout: 1_000 });
+        } catch (err) {
+          return `grabber ${err instanceof Error ? err.message : 'click failed'}`;
+        }
+        if ((await drawer.getAttribute('aria-hidden')) === 'false') return 'open';
+        return grabber.evaluate((el) => {
+          const rect = el.getBoundingClientRect();
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+          const top = document.elementFromPoint(x, y);
+          const id = top?.id ? `#${top.id}` : '';
+          const testId = top?.getAttribute?.('data-testid');
+          return `closed top=${top ? top.tagName.toLowerCase() : 'none'}${id}${testId ? `[data-testid=${testId}]` : ''}`;
+        });
+      },
+      { timeout: 12_000 }
+    )
+    .toBe('open');
   await expect(drawer.locator('.ft-narrow-sheet__list [data-proxy]').first()).toBeVisible({
     timeout: 8_000
   });
@@ -299,9 +352,24 @@ async function assertOpenedResult(page, contract, proxy) {
   const selector = contract.resultSelector;
   expect(selector, `${proxy} resultSelector`).toBeTruthy();
   const result = page.locator(selector).first();
-  await expect(result, `${proxy} result visible`).toBeVisible({
-    timeout: 8_000
-  });
+  await expect
+    .poll(
+      async () => {
+        if (await result.isVisible().catch(() => false)) return 'visible';
+        return page.evaluate((name) => {
+          const x = Math.floor(window.innerWidth / 2);
+          const y = Math.floor(window.innerHeight / 2);
+          const node = document.elementFromPoint(x, y);
+          if (!node) return `hidden ${name} top=none @${x},${y}`;
+          const id = node.id ? `#${node.id}` : '';
+          const testId = node.getAttribute('data-testid');
+          const rowProxy = node.getAttribute('data-proxy');
+          return `hidden ${name} top=${node.tagName.toLowerCase()}${id}${testId ? `[data-testid=${testId}]` : ''}${rowProxy ? `[data-proxy=${rowProxy}]` : ''} @${x},${y}`;
+        }, proxy);
+      },
+      { timeout: 8_000 }
+    )
+    .toBe('visible');
   const text = ((await result.innerText()) || '').trim();
   if (proxy !== 'sanctuary-nav') {
     expect(text.length, `${proxy} non-empty text`).toBeGreaterThan(0);
@@ -343,7 +411,15 @@ async function walkMenu(page, surface, menuSelector) {
     await expect(item, `row ${row.proxy} listed`).toBeVisible({
       timeout: 8_000
     });
+    await item.evaluate((el) => {
+      el.scrollIntoView({ block: 'center', inline: 'nearest' });
+    });
     if (row.proxy === 'reminder') await item.hover();
+    const blocker = await clickBlockerSummary(page, item);
+    expect(
+      blocker.owns,
+      `${row.proxy} click blocked by ${blocker.desc} @${blocker.x},${blocker.y} (${surface})`
+    ).toBe(true);
     await item.click({
       timeout: surface === 'narrow-drawer' ? 30_000 : 20_000
     });
@@ -352,14 +428,16 @@ async function walkMenu(page, surface, menuSelector) {
       .poll(
         async () => {
           await settleAfterRow(page);
-          return await dismissVisibleGrowthBackdrops(page);
+          const backdrops = await dismissVisibleGrowthBackdrops(page);
+          const ritualLeft = await page.locator('#ritual-flow').count();
+          return backdrops === 0 && ritualLeft === 0;
         },
         {
           timeout: 12_000,
-          message: `visible .ft-overlay-backdrop after menu row ${row.proxy} (${surface})`
+          message: `menu row ${row.proxy} (${surface}) still open: visible backdrop or #ritual-flow`
         }
       )
-      .toBe(0);
+      .toBe(true);
     opened.push(row.proxy);
   }
 
