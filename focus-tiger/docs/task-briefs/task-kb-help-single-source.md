@@ -1,6 +1,6 @@
 # Task Brief · 一份事实源、多个出口（知识库 + Help Center）
 
-> **状态（2026-11-12）**：**设计已锁**（PO 书面：两条闸、probe 测试、菜单对照红在代码表、Practice Study / Mindflow 先草稿不入库）。  
+> **状态（2026-11-12）**：**已锁**（PO 四条补丁已写入：帮助篇数对账、`HELP-*` 不再新增、第 2 刀清单禁止照抄、仅帮助中心问到走现网空态）。第 1 刀已放行，须**新 Chat** + 独立旁支。  
 > **类**：分刀。第 1–2、5 刀偏 **A**（目录字段、CI、文档口径）；第 1 刀回填帮助正文与第 3–4 刀成稿属 **B**（用户看得见的帮助文 / 可能被阿寅念的短答）。  
 > **分支建议**：`docs/kb-help-single-source-brief`（本 Brief）→ 实现另开 `feature/kb-help-single-source-*`。  
 > **不是**：把 Help Center 和倾诉合成一张卡。**不是** T84。**不是** T93 / T99 插队。**不是** 从 Epic / PR 正文起草说明书。
@@ -54,7 +54,7 @@
 
 | 字段 | 类型 | 规则 |
 |---|---|---|
-| `id` | 稳定 id | `KB-FUNC-*` / `KB-EDU-*`；回填后允许保留已上线的 `HELP-DEVICES-SAFARI` / `HELP-APPLE-HEALTH-LOG` 作为目录 id（避免问卡别名断裂） |
+| `id` | 稳定 id | 存量：`KB-FUNC-*` / `KB-EDU-*`，以及已上线的 `HELP-DEVICES-SAFARI` / `HELP-APPLE-HEALTH-LOG`（保留以免问卡别名断裂）。**新增一律 `KB-FUNC-*`（科普概念仍 `KB-EDU-*`）。禁止再新增 `HELP-*`。** |
 | `yinMayRetrieve` | boolean | `true` 才进入 Confide 索引 |
 | `helpCenterVisible` | boolean | `true` 才进入 Help Center 生成器 |
 | `shortAnswerEn` | string | 帮助中心正文与（若可检索）阿寅短答的同一事实句；仅帮助中心允许略长，仍禁止念急救引导语 |
@@ -74,7 +74,8 @@
 1. 目录不得含 `KB-PSY-DRAFT-*`、不得含文档里 `审核状态` ≠ 已通过 的 id。  
 2. `yinMayRetrieve === false` → `probeProductKnowledgeCatalog` 对关键词、标题、短答片段、常见问法 **都不得**返回该 `id`。正式 `retrieve` / 语义近邻同样跳过。  
 3. `helpCenterVisible === true` 的每条，Help Center manifest 必须有对应文章（取代「凡 catalog 条目都有帮助文」的旧断言：改为「凡帮助可见才必须有」）。  
-4. 帮助中心 locale 正文由生成器从目录写出；禁止再手写与目录并行的第二份 `HELP_*_BODY`（生成结果可提交，但源是目录）。
+4. **篇数对账（第 1 刀必测）**：帮助中心文章数 = 目录里 `helpCenterVisible: true` 的条目数。生成器改写**前、后各对账一次**；差异必须为 **0**，否则须有书面解释（只允许「故意下架某篇」且点名 id）。禁止生成器悄悄丢篇却全绿。  
+5. 帮助中心 locale 正文由生成器从目录写出；禁止再手写与目录并行的第二份 `HELP_*_BODY`（生成结果可提交，但源是目录）。
 
 **0006 特例**：进文件；`yinMayRetrieve: false`；`helpCenterVisible: true`。阿寅问「呼吸练习在哪」仍只允许打到 **0011 / 0001**。Help Center 可保留左球盘点篇。登记表 `kb-live-help-center` 挂 0006 不再算「未批准」。
 
@@ -98,13 +99,15 @@
 
 实现时**禁止**把 1–4 揉进同一个功能 PR。第 5 刀文档口径可与第 2 刀同批。
 
+**第 1 刀再强调：不要顺手做第 2 刀。** 本刀只动 schema、生成器、检索跳过、回填三篇。菜单登记 CI 是另一类红灯；混进同一 PR，出问题无法定位。
+
 ### 第 1 刀 · 两字段 + 回填（B 含帮助正文）
 
-- 目录 schema：逐条 `yinMayRetrieve` / `helpCenterVisible`。现有可检索条目默认两字段皆 `true`（与现网「进文件即可检索 + 皆有帮助文」对齐）。  
+- 目录 schema：逐条 `yinMayRetrieve` / `helpCenterVisible`。现有**已在目录且可检索**的条目默认两字段皆 `true`（与现网「进文件即可检索 + 皆有帮助文」对齐）。**不含**当时还不在目录里的 0006 / Safari / Health——这三篇按下一子弹回填为 `false` / `true`，不要先标 true 再改。  
 - 回填：`KB-FUNC-0006`、`HELP-DEVICES-SAFARI`、`HELP-APPLE-HEALTH-LOG` → 仅帮助中心。  
-- 生成器改为读 `helpCenterVisible`；删游离手写正文。  
+- 生成器改为读 `helpCenterVisible`；删游离手写正文。生成前后做**篇数对账**（见硬闸第 4 条）。  
 - **probe / 检索跳过测试**必须同批合入（红绿对照：回填前若 0006 不在文件则先加夹具条目证明 `false` 不会被命中）。  
-- 不改倾诉发送链、不改危机路由、不插队 T93。
+- 不改倾诉发送链、不改危机路由、不插队 T93。**不**改菜单登记表、**不**上菜单 CI 红灯。
 
 ### 第 2 刀 · 菜单代码表 ↔ 登记表 CI 红灯（A）
 
@@ -126,7 +129,9 @@
 
 **Sound 不要当成「登记漏项」。** 现网：`kb-live-sound` 已 live、无 `catalogKbIds` → 缺口审计的「无批准链接」。0037 已在目录且可检索，但正文写闲置屏控件、文档自称无独立菜单行。第 2 刀只保证 `sound` 继续登记；**链 0037 / 改指路留给第 3 刀**。
 
-第 2 刀须在 develop 核实后再登记的菜单 `proxy`（代码里已有、登记表截至 Brief 撰写日未见对应 `kb-live-*`；**实现时重跑对照，以当时 develop 为准**）：
+> **此清单为撰写日快照，不得照抄入登记表。** 第 2 刀必须在当时的 `origin/develop` 重跑 `listSecondaryChromeEntries` ↔ 登记表对照，以那次输出为准。
+
+第 2 刀须在 develop 核实后再登记的菜单 `proxy`（代码里已有、登记表截至 Brief 撰写日未见对应 `kb-live-*`）：
 
 - `account`（邮箱找回真入口；只登记，不写帮助/短答）  
 - `work-end`、`always-on-top`、`window-layout`、`input-rhythm`  
@@ -152,7 +157,7 @@
 
 ### 第 4 刀 · 电脑壳与共修线（B）
 
-默认 **仅帮助中心**。只有「用户会在倾诉里自然问到入口/限制」才把 `yinMayRetrieve` 打开。每条仍走权威源起草 + 语气抽查。邮箱找回文案仍等 T93 行为稳定。
+默认 **仅帮助中心**。新增 id 用 `KB-FUNC-*`，**不要**再开 `HELP-*`。只有「用户会在倾诉里自然问到入口/限制」才把 `yinMayRetrieve` 打开。每条仍走权威源起草 + 语气抽查。邮箱找回文案仍等 T93 行为稳定。
 
 ### 第 5 刀 · 过期文档（可与第 2 刀同批）
 
@@ -176,6 +181,7 @@
 | 宽/窄 Web | 浏览器 | Safari 篇可检索；问号摘要仍指 Help Center | 既有 `helpCenterAskSearch` alias |
 | Confide 宽屏 | `?product=1&confide=1` 且倾诉可开 | `yinMayRetrieve: false` 的 id **不得**出现在 `data-source=product_knowledge` | **本刀必补** probe + 检索跳过；夹具含 0006 与 HELP 两篇关键词 |
 | 倾诉问呼吸 | 同上 | 仍 0011 或 0001，不得 0006 | 既有矩阵 + 本刀补负例 |
+| 倾诉问 Safari / Health | 同上 | `product_knowledge_honesty` 现网空态；不得 generate、不得念 HELP 正文、不得新加「去帮助中心」句 | 本刀补：probe 不命中 + 路由仍空态（不改空态文案） |
 
 ---
 
@@ -197,6 +203,7 @@
 | T93 邮箱通道关 / 商店渠道 | `account` 行可能不可点；登记仍在，帮助文案未写 |
 | Language 条件出现 | 第 2 刀登记为 conditional；第 3 刀仍不起草 |
 | 仪式未解锁 | 菜单行可锁；登记可标 entitlement-gated，不豁免漏登 |
+| 倾诉问到仅帮助中心的内容（Safari / Health / 0006 盘点细节等） | **走现网诚实空态**。不得编答案，也不得在空态里加「去 Help Center 看全文」之类新引导。空态加指路是新行为，须单独拍板，**不在第 1–4 刀做** |
 
 ---
 
@@ -218,7 +225,9 @@
 - 不把急救型标「仅帮助中心」混进目录。  
 - 不把 CI 打在 Markdown 普查表上。  
 - 不把 Sound 当漏登记（与缺短答链分开）。  
-- 不在本线点头 T84、不开工 90 天实验。
+- 不在本线点头 T84、不开工 90 天实验。  
+- 不在诚实空态里加「去帮助中心看看」（须另拍板）。  
+- 第 1 刀 PR **禁止**顺手做第 2 刀（菜单登记 CI）。
 
 ---
 
@@ -230,7 +239,9 @@
 - [ ] 0006 + Safari + Health 在目录且 `yinMayRetrieve === false`。  
 - [ ] probe / 正式检索：上述 id 对任何问法不命中。  
 - [ ] 帮助中心可见篇由生成器出自目录；无游离第二份正文。  
-- [ ] `kb-live-help-center` 挂 0006 不再落入「未批准 id」。
+- [ ] 生成前后篇数对账：文章数 = `helpCenterVisible: true` 条数，差异 0 或书面点名解释。  
+- [ ] `kb-live-help-center` 挂 0006 不再落入「未批准 id」。  
+- [ ] 未改菜单登记 CI（那是第 2 刀）。
 
 **第 2 刀**
 
@@ -245,6 +256,6 @@
 
 ## 开工闸
 
-- 设计已锁。写 `src/` 仍须口令「按本 Brief 开工第 N 刀」+ 新 Chat + 独立旁支。  
-- 第 1 刀 B 类：变体矩阵与 probe 测试不得省略。  
+- **第 1 刀已放行**（PO 2026-11-12 四条补丁后锁死）。写 `src/` 仍须口令「按本 Brief 开工第 1 刀」+ **新 Chat** + 独立旁支 `feature/kb-help-single-source-k1`（名称可微调，**不要**接在本 Brief 文档旁支上改代码）。  
+- 第 1 刀 B 类：变体矩阵、probe 跳过、**篇数对账**不得省略。  
 - 代号未进术语表前，PR 标题用本 Brief 文件名，不自造 T 号。

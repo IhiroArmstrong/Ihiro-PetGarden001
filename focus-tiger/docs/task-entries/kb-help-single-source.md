@@ -1,7 +1,7 @@
 ---
 id: kb-help-single-source
 kind: feature
-status: Brief 已锁 · 实现按刀另开
+status: Brief 已锁（四条补丁）· 第 1 刀须新 Chat
 updated: 2026-11-12
 ---
 
