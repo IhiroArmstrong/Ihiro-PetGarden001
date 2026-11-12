@@ -5,7 +5,7 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-11-08
+最后更新 / Last updated / 最終更新日: 2026-11-11
 
 ---
 
@@ -54,16 +54,23 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 - **导出/导入范围**：旅程记录（Journey Log）、练习日历、里程碑已播放标记、永久拥有标记、进阶仪式完成记录、芥子须弥纪念印（与练习记忆快照相同的 6 类 key）。
 - **不包含**：反思日记（`reflections`）、倾诉（Confide）对话、阿寅个人记忆、偏好设置、氛围乐上传、寅币等。
 
-### 4. 云端备份
+### 4. 可选的邮箱练习快照（云端）
 
-**本应用当前未提供云端备份功能。** 你的数据默认仅保存在设备本地，并可通过上述本地导出/导入自行备份与迁移。
+你可以用邮箱验证码，选择把一份练习快照保存到我们的服务器，以便换电脑、换浏览器或本机被清空后找回。这是可选的，**默认关闭**；你未验证邮箱前不会上传。Setapp 与 Mac App Store 版本关闭此项。本地导出/导入（第 3 节）仍然可用，且不经过云端。
 
-若未来上线云端备份，我们将在功能上线前更新本隐私声明，说明存储内容、存储位置、是否加密、关闭与删除方式，**默认关闭**，并征得你的同意后再启用。
+**会存什么：** 旅程记录、练习日历、里程碑已播放标记、永久拥有标记、进阶仪式完成记录、芥子须弥纪念印、莲花池、成长阶段下限。与设置里「用邮箱保存或找回」同一份名单。
+
+**不会存：** 倾诉原文、阿寅个人记忆、研究共修编号与周包、反思日记原文、付款卡细节。
+
+**怎么存：** 快照以可读的 JSON **明文**存放（目前不加密），按你验证过的邮箱索引。
+
+**怎么删除云端副本：** 打开 ⋯ → 设置 → 用邮箱保存或找回 →「删除云端副本」（须再填验证码）。仅在此设备登出**不会**删除云端副本。恢复时采用并集：不会用云端空值覆盖掉本机独有记录。
 
 ### 5. 你的权利
 
 - 你可随时删除本应用中的本地数据（应用内重置或卸载应用）。
 - 你可随时导出练习备份文件，用于自行备份或迁移。
+- 若已用邮箱保存快照，可在设置里删除云端副本（须再填验证码）；仅登出不会删除云端副本。
 - 如对本声明有疑问，请联系：**hello@twinsology.com**
 
 ---
@@ -114,16 +121,23 @@ Please note:
 - **Scope**: Journey Log, practice calendar, milestone markers, permanent ownership marks, advanced ritual completions, and the Mustard Seed seal (same 6-key practice-memory snapshot as engineering whitelist).
 - **Not included**: reflection journal entries, Confide conversations, Yin personal memory, preferences, ambient music uploads, Focus Coins, etc.
 
-### 4. Cloud Backup
+### 4. Optional email practice snapshot (cloud)
 
-**This app does not currently offer cloud backup.** Your data stays on your device by default; use local export/import to back up or move devices.
+You may optionally save a practice snapshot to our servers with an email code, so you can bring it back on another computer or browser, or after this device is cleared. It is **off by default**; nothing is uploaded until you verify an email. Setapp and Mac App Store editions keep this off. Local export/import (Section 3) still works and does not go through the cloud.
 
-If we introduce cloud backup later, we will update this notice before launch, explain what is stored, where, and whether it is encrypted, how to turn it off or delete it, keep it **off by default**, and enable it only with your consent.
+**What is stored:** Journey Log, practice calendar, milestone markers, permanent ownership marks, advanced ritual completions, the Mustard Seed seal, lotus pond, and growth-stage floor. Same list as Preferences → Save or restore with email.
+
+**What is not stored:** Confide words, Yin personal memory, research-study IDs and weekly packets, raw reflection journal entries, or payment-card details.
+
+**How it is stored:** Snapshots are stored as readable JSON (**not encrypted**), indexed by the email you verified.
+
+**How to delete the cloud copy:** ⋯ → Preferences → Save or restore with email → Delete cloud copy (another email code is required). Signing out on this device does **not** delete the cloud copy. Restore uses a union merge: a cloud null does not wipe records that exist only on this device.
 
 ### 5. Your Rights
 
 - You may delete local data anytime (in-app reset or uninstall).
 - You may export your practice backup file anytime.
+- If you saved a snapshot with email, you may delete the cloud copy in Preferences (another code is required). Signing out does not delete it.
 - Questions: **hello@twinsology.com**
 
 ---
@@ -162,16 +176,23 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 - **対象範囲**：旅の記録、練習カレンダー、節目マーカー、永久所有印、進階儀式の完了、芥子の印（エンジニアリング上の6 keyスナップショットと同一）。
 - **対象外**：振り返り日記、打ち明け、寅の個人記憶、設定、雰囲気音アップロード、寅コインなど。
 
-### 4. クラウドバックアップ
+### 4. 任意のメール練習スナップショット（クラウド）
 
-**本アプリは現在、クラウドバックアップ機能を提供していません。** データはデフォルトで端末内にのみ保存され、上記のローカルエクスポート/インポートでバックアップ・移行が可能です。
+メール確認コードで、練習の控えを当社サーバーへ保存できます。別のパソコンやブラウザ、またはこの端末が空になったあとに戻せます。任意で、**初期はオフ**です。メールを確認するまでアップロードしません。Setapp / Mac App Store 版ではオフです。第3節のローカルエクスポート/インポートはこれまでどおり使え、クラウドを経由しません。
 
-将来導入する場合は、提供前に本ポリシーを更新し、保存内容・場所・暗号化の有無・無効化/削除方法を説明し、**デフォルトはオフ**とし、同意を得たうえで有効化します。
+**保存するもの：** 旅の記録、練習カレンダー、節目マーカー、永久所有印、進階儀式の完了、芥子の印、蓮の池、成長段階の下限。設定の「メールで保存・復元」と同じ名簿です。
+
+**保存しないもの：** 打ち明けの原文、寅の個人記憶、研究共修の番号と週次パケット、振り返り日記の原文、支払いカードの詳細。
+
+**保存の仕方：** 控えは読める JSON の**平文**（いまは暗号化しません）。確認したメールで索引します。
+
+**クラウド控えの消し方：** ⋯ → 設定 → メールで保存・復元 →「クラウド控えを削除」（確認コードがもう一度必要）。この端末からサインアウトしただけではクラウド控えは消えません。復元は和集合です。クラウド側が空でも、こちらだけの記録は上書きしません。
 
 ### 5. お客様の権利
 
 - いつでも端末内のローカルデータを削除できます（アプリ内リセットまたはアンインストール）。
 - いつでも練習バックアップファイルをエクスポートできます。
+- メールで控えを保存した場合、設定からクラウド控えを削除できます（確認コードがもう一度必要）。サインアウトだけでは消えません。
 - お問い合わせ：**hello@twinsology.com**
 
 ---
@@ -187,7 +208,7 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 ## Engineering notes (not user-facing)
 
 - Local export/import reuses `practiceBackupSnapshot.js` schema (6 whitelist keys).
-- Cloud Worker routes are live in source (D2); production mail still needs a deploy. Runtime upload/restore gated by `practiceBackupCloudEnabled.js` (D3 on).
+- Cloud Worker routes are live; production Worker `3c393134` (2026-11-11) no longer returns 410 on practice-backup. Runtime upload/restore gated by `practiceBackupCloudEnabled.js` (D3 on). Snapshots are plaintext JSON in KV, keyed by verified email.
 - Opt-in key `focus-tiger.practice-backup.v1` enables silent Idle flush after the user verifies an email in Preferences.
 
 ## Questions
