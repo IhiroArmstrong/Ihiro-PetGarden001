@@ -156,6 +156,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   'input-rhythm': 'MENU_GROUP_PREFERENCES',
   'mindflow-nebula': 'MENU_GROUP_PREFERENCES',
   'presence-field': 'MENU_GROUP_PREFERENCES',
+  'health-shortcut-log': 'MENU_GROUP_PREFERENCES',
   'today-direction': 'MENU_GROUP_PREFERENCES',
   newsletter: 'MENU_GROUP_PREFERENCES',
   account: 'MENU_GROUP_PREFERENCES',

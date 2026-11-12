@@ -1,0 +1,35 @@
+{
+  "en": {
+    "HEALTH_SHORTCUT_MENU_LABEL": "Log to Health (Shortcuts)",
+    "HEALTH_SHORTCUT_PREF_TITLE": "After practice · Health",
+    "HEALTH_SHORTCUT_PREF_TOGGLE": "Offer to log Mindful Minutes via Shortcuts when a sit ends",
+    "HEALTH_SHORTCUT_PREF_HINT": "Off by default. Only opens Shortcuts when you tap the button—nothing is read from Health. Needs the cookbook shortcut on your iPhone or iPad.",
+    "HEALTH_SHORTCUT_PREF_CLOSE": "Close",
+    "HEALTH_SHORTCUT_SAVE_FAILED": "Could not save this preference. Try again.",
+    "HEALTH_SHORTCUT_LOG_BUTTON": "Log to Health",
+    "HEALTH_SHORTCUT_LOG_HINT": "Opens Shortcuts if you installed the recipe. Nothing uploads to our servers.",
+    "HEALTH_SHORTCUT_INSTALL_HINT": "Install the “Focus Tiger Log Mindful Minutes” shortcut from the cookbook first."
+  },
+  "zh": {
+    "HEALTH_SHORTCUT_MENU_LABEL": "记入健康（快捷指令）",
+    "HEALTH_SHORTCUT_PREF_TITLE": "练习结束后 · 健康",
+    "HEALTH_SHORTCUT_PREF_TOGGLE": "同坐结束后可提供按钮，用快捷指令记入正念分钟",
+    "HEALTH_SHORTCUT_PREF_HINT": "默认关闭。只有你点按钮才会打开快捷指令，不读取健康数据。须在 iPhone / iPad 上按食谱安装快捷指令。",
+    "HEALTH_SHORTCUT_PREF_CLOSE": "关闭",
+    "HEALTH_SHORTCUT_SAVE_FAILED": "偏好没能保存，请再试一次。",
+    "HEALTH_SHORTCUT_LOG_BUTTON": "记入健康",
+    "HEALTH_SHORTCUT_LOG_HINT": "若已按食谱安装快捷指令，将打开快捷指令。不上传我们的服务器。",
+    "HEALTH_SHORTCUT_INSTALL_HINT": "请先按食谱安装「Focus Tiger Log Mindful Minutes」快捷指令。"
+  },
+  "ja": {
+    "HEALTH_SHORTCUT_MENU_LABEL": "ヘルスに記録（ショートカット）",
+    "HEALTH_SHORTCUT_PREF_TITLE": "練習後 · ヘルス",
+    "HEALTH_SHORTCUT_PREF_TOGGLE": "同席のあと、ショートカットでマインドフル分数を記録するボタンを出す",
+    "HEALTH_SHORTCUT_PREF_HINT": "初期はオフ。ボタンを押したときだけショートカットを開きます。ヘルスから読み取りはしません。iPhone / iPad でレシピのショートカットが必要です。",
+    "HEALTH_SHORTCUT_PREF_CLOSE": "閉じる",
+    "HEALTH_SHORTCUT_SAVE_FAILED": "設定を保存できませんでした。もう一度お試しください。",
+    "HEALTH_SHORTCUT_LOG_BUTTON": "ヘルスに記録",
+    "HEALTH_SHORTCUT_LOG_HINT": "レシピ通りにショートカットを入れていれば開きます。こちらのサーバーには送りません。",
+    "HEALTH_SHORTCUT_INSTALL_HINT": "先にレシピの「Focus Tiger Log Mindful Minutes」ショートカットを入れてください。"
+  }
+}

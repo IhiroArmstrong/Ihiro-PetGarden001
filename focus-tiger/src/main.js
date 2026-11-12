@@ -220,6 +220,7 @@ import { MindflowNebulaChromeUI } from './ui/MindflowNebulaChromeUI.js';
 import { MindflowNebulaPreferenceUI } from './ui/MindflowNebulaPreferenceUI.js';
 import { readMindflowNebulaEnabled } from './core/mindflowNebula/mindflowNebulaStore.js';
 import { PresenceFieldPreferenceUI } from './ui/PresenceFieldPreferenceUI.js';
+import { mountHealthShortcutLogPreference, wireHealthShortcutLogIdleHandler } from './boot/boot-health-shortcut-log.js';
 import { PresenceFieldSession } from './effects/presence-field/presenceFieldSession.js';
 import { readPresenceFieldEnabled } from './effects/presence-field/presenceFieldStore.js';
 import { getSystemTtsBridge } from './core/systemTtsBridge.js';
@@ -1327,6 +1328,7 @@ async function init() {
   let presenceFieldSession = null;
   /** @type {PresenceFieldPreferenceUI | null} */
   let presenceFieldPreferenceUI = null;
+  let healthShortcutLogPreferenceUI = null;
   /** @type {WindowLayoutPreferenceUI | null} */
   let windowLayoutPreferenceUI = null;
   const focusButton = document.getElementById('btn-focus');
@@ -1789,6 +1791,9 @@ async function init() {
     }
   });
   window.__presenceFieldPreference = presenceFieldPreferenceUI;
+  healthShortcutLogPreferenceUI = mountHealthShortcutLogPreference(document.body);
+  // health-shortcut-log preference panel (Brief §5.3; default off)
+  wireHealthShortcutLogIdleHandler(idleChrome, healthShortcutLogPreferenceUI);
   syncPresenceFieldFromStorage();
   const preferenceBackupPanels = createPreferenceBackupPanels(document.body);
   const localPracticeDataPanelUI = preferenceBackupPanels.localPracticeDataPanelUI;
@@ -4942,9 +4947,6 @@ async function init() {
     onWindowLayout: () => {
       windowLayoutPreferenceUI?.openPanel();
     },
-    onWindowLayout: () => {
-      windowLayoutPreferenceUI?.openPanel();
-    },
     onInputRhythm: () => {
       inputRhythmPreferenceUI?.openPanel();
     },
@@ -5124,8 +5126,6 @@ async function init() {
       workEndPreferenceUI?.closePanel?.();
       languagePreferenceUI.closePanel();
       alwaysOnTopPreferenceUI?.closePanel();
-      windowLayoutPreferenceUI?.closePanel();
-      windowLayoutPreferenceUI?.closePanel();
       inputRhythmPreferenceUI?.closePanel();
       preferenceBackupChrome.closePreferenceBackupPanels();
       practiceStudyConsentPanelUI.closePanel();

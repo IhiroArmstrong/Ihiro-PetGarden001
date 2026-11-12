@@ -468,6 +468,23 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     ])
   }),
   Object.freeze({
+    id: 'kb-live-health-shortcut-log',
+    surface: 'menu',
+    proxy: 'health-shortcut-log',
+    labelKeys: Object.freeze(['HEALTH_SHORTCUT_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Log to Health (Shortcuts)',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'health-shortcut-log'",
+      'HEALTH_SHORTCUT_MENU_LABEL',
+      'health-shortcut-log-preference'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/ui/HealthShortcutLogPreferenceUI.js'
+    ])
+  }),
+  Object.freeze({
     id: 'kb-live-today-direction',
     surface: 'menu',
     proxy: 'today-direction',

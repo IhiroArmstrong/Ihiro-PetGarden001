@@ -129,7 +129,8 @@ export class SessionEndFlow {
       this.reflectionMoment.open({
         intention: echo,
         intentionSource,
-        sessionDurationLine
+        sessionDurationLine,
+        elapsedSeconds
       });
     }, pauseMs);
   }

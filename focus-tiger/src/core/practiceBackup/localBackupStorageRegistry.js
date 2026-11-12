@@ -212,6 +212,7 @@ export const LOCAL_BACKUP_RESET_ONLY_KEYS = Object.freeze([
   'focus-tiger.mindfulness-scroll.v1',
   'focus-tiger.mindflow-nebula-enabled.v1',
   'focus-tiger.presence-field-enabled.v1',
+  'focus-tiger.health-shortcut-log-enabled.v1',
   'focus-tiger.practice-paper-hidden.v1',
   'focus-tiger.daily-wisdom.v1',
   'focus-tiger.daily-zen-quote-pool-v2.v1',

@@ -50,6 +50,7 @@
 | **14** | `src/ui/MicroRitualUI.js` | 微仪式 Idle 文字入口（对称 Honesty） |
 | **15** | `src/ui/MindflowNebulaPreferenceUI.js` | 心念流偏好玻璃卡（） |
 | **15** | `src/ui/PresenceFieldPreferenceUI.js` | 智能场偏好玻璃卡（`#presence-field-preference`；默认关） |
+| **15** | `src/ui/HealthShortcutLogPreferenceUI.js` | Health 快捷指令偏好（`#health-shortcut-log-preference`；默认关） |
 | **15** | `src/effects/presence-field/presenceFieldSession.js` | 智能场内部 debug 滑杆（仅 `?presenceFieldDebug=1`；低于 Support FAB） |
 | **15** | `src/ui/HonestyCheckInUI.js` | Honesty Check-in 主面板 |
 | **15** | `src/ui/ArrivalPracticeUI.js` | Arrival Practice 底部叠层 |

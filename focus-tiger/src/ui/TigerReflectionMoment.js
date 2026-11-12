@@ -66,6 +66,10 @@ import {
 import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
 import { VoiceInputChrome } from './VoiceInputChrome.js';
 import { Z } from './zIndexLayers.js';
+import {
+  mountReflectionHealthShortcut,
+  syncReflectionHealthShortcut
+} from './reflectionHealthShortcutMount.js';
 
 export { ReflectionFlowState, REFLECTION_QUESTION_KEYS };
 export { mountReflectionDailyWisdom } from './reflectionDailyWisdomMount.js';
@@ -257,6 +261,9 @@ export class TigerReflectionMoment {
     this._popEscapeLayer = null;
     /** @type {VoiceInputChrome | null} */
     this._voiceInputChrome = null;
+    this._sessionElapsedSeconds = 0;
+    /** @type {ReturnType<typeof mountReflectionHealthShortcut> | null} */
+    this._healthShortcutMount = null;
 
     this._unsubscribeLocale = onLocaleChange(() => this._refreshTexts());
   }
@@ -286,13 +293,16 @@ export class TigerReflectionMoment {
    * @param {string} [options.intention]
    * @param {'icon' | 'typed' | string} [options.intentionSource]
    * @param {string | null} [options.sessionDurationLine]
+   * @param {number} [options.elapsedSeconds]
    */
   open({
     intention = '',
     intentionSource = 'typed',
-    sessionDurationLine = null
+    sessionDurationLine = null,
+    elapsedSeconds = 0
   } = {}) {
     if (this.root) return;
+    this._sessionElapsedSeconds = Number(elapsedSeconds) || 0;
     this._sessionIntention = normalizeIntentionText(intention);
     this._sessionDurationLine =
       typeof sessionDurationLine === 'string' && sessionDurationLine.trim()
@@ -529,6 +539,9 @@ export class TigerReflectionMoment {
     this.questionBlockEl.appendChild(this.companionInviteBtn);
     this.root.appendChild(this.questionBlockEl);
     this.root.appendChild(footer);
+    this._healthShortcutMount = mountReflectionHealthShortcut(this.root, {
+      elapsedSeconds: this._sessionElapsedSeconds
+    });
     if (this.calmActionReflectStore) {
       const calm = mountReflectionCalmAction(
         this.root,
@@ -626,6 +639,7 @@ export class TigerReflectionMoment {
       );
     }
     this._syncReflectionCompanionOffer();
+    this._syncHealthShortcutButton();
   }
 
   _syncReflectionCompanionOffer() {
@@ -878,6 +892,16 @@ export class TigerReflectionMoment {
     this.skipAllBtn.hidden = wisdom;
     this.skipBtn.style.display = wisdom ? 'none' : '';
     this.skipAllBtn.style.display = wisdom ? 'none' : '';
+    this._syncHealthShortcutButton();
+  }
+
+  _syncHealthShortcutButton() {
+    if (!this._healthShortcutMount) return;
+    const { host, button, hint } = this._healthShortcutMount;
+    syncReflectionHealthShortcut(host, button, hint, {
+      elapsedSeconds: this._sessionElapsedSeconds,
+      wisdomHold: this._awaitingWisdomHold
+    });
   }
 
   /** Keep last-question echo on screen; input becomes read-only. */
@@ -952,6 +976,7 @@ export class TigerReflectionMoment {
     this.flow = null;
     this._sessionIntention = '';
     this._sessionDurationLine = null;
+    this._sessionElapsedSeconds = 0;
     this._intentionSource = null;
     this._companionEchoKey = null;
     this._awaitingLastEchoHold = false;
@@ -994,5 +1019,6 @@ export class TigerReflectionMoment {
     this.calmActionHost = null;
     this.calmActionLineEl = null;
     this.brandTaglineHost = null;
+    this._healthShortcutMount = null;
   }
 }

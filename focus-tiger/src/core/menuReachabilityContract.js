@@ -131,6 +131,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#presence-field-preference'
   }),
+  'health-shortcut-log': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#health-shortcut-log-preference'
+  }),
   'today-direction': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#cold-start-goal-card'

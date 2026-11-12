@@ -28,7 +28,8 @@ describe('glassGrowthOverlayCardRegistry (A3)', () => {
         proxy === 'always-on-top' ||
         proxy === 'input-rhythm' ||
         proxy === 'mindflow-nebula' ||
-        proxy === 'presence-field'
+        proxy === 'presence-field' ||
+        proxy === 'health-shortcut-log'
       ) {
         continue;
       }
