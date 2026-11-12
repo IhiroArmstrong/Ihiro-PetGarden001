@@ -90,3 +90,11 @@ test('focus start imperative is outside the closed S2 set so Help Center only se
   assert.equal(policy.shouldExecute, false);
   assert.equal(policy.shouldSearch, true);
 });
+
+
+test('platform aliases list Safari device and Apple Health articles', () => {
+  const device = searchHelpCenterAskCards('Is there an App Store app?');
+  assert.ok(device.articleIds.includes('HELP-DEVICES-SAFARI'));
+  const health = searchHelpCenterAskCards('Can I log mindful minutes to Apple Health?');
+  assert.ok(health.articleIds.includes('HELP-APPLE-HEALTH-LOG'));
+});

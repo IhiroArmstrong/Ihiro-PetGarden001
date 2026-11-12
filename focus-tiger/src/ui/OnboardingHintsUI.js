@@ -1985,6 +1985,20 @@ export class OnboardingHintsUI {
 
     voiceAccess.append(voiceAccessTitle, voiceAccessBody);
 
+    const webAccess = document.createElement('div');
+    webAccess.id = 'onboarding-purpose-web-access';
+    webAccess.className = 'onboarding-app-purpose__desktop-ram';
+    webAccess.dataset.testid = 'onboarding-purpose-web-access';
+    webAccess.hidden = true;
+
+    const webAccessTitle = document.createElement('h3');
+    webAccessTitle.className = 'onboarding-app-purpose__desktop-ram-title';
+
+    const webAccessBody = document.createElement('p');
+    webAccessBody.className = 'onboarding-app-purpose__desktop-ram-body';
+
+    webAccess.append(webAccessTitle, webAccessBody);
+
     const todayDirection = document.createElement('button');
     todayDirection.type = 'button';
     todayDirection.className =
@@ -2051,7 +2065,7 @@ export class OnboardingHintsUI {
 
     links.append(helpCenter, wellness, privacy, todayDirection);
     actions.append(dismiss);
-    card.append(brand, desktopRam, voiceAccess, links, colophon, actions);
+    card.append(brand, desktopRam, voiceAccess, webAccess, links, colophon, actions);
     this.mountRoot.appendChild(card);
     this.purposeCard = card;
     this._purposeTitleEl = title;
@@ -2065,6 +2079,9 @@ export class OnboardingHintsUI {
     this._purposeVoiceAccessEl = voiceAccess;
     this._purposeVoiceAccessTitleEl = voiceAccessTitle;
     this._purposeVoiceAccessBodyEl = voiceAccessBody;
+    this._purposeWebAccessEl = webAccess;
+    this._purposeWebAccessTitleEl = webAccessTitle;
+    this._purposeWebAccessBodyEl = webAccessBody;
     this._purposeTodayDirectionEl = todayDirection;
     this._purposeHelpCenterEl = helpCenter;
     this._purposePrivacyEl = privacy;
@@ -2132,6 +2149,20 @@ export class OnboardingHintsUI {
     if (this._purposeVoiceAccessBodyEl) {
       this._purposeVoiceAccessBodyEl.textContent = t(
         'HINT_APP_PURPOSE_VOICE_ACCESS_BODY'
+      );
+    }
+    const showWebAccess = !showDesktopRam;
+    if (this._purposeWebAccessEl) {
+      this._purposeWebAccessEl.hidden = !showWebAccess;
+    }
+    if (this._purposeWebAccessTitleEl) {
+      this._purposeWebAccessTitleEl.textContent = t(
+        'HINT_APP_PURPOSE_WEB_ACCESS_TITLE'
+      );
+    }
+    if (this._purposeWebAccessBodyEl) {
+      this._purposeWebAccessBodyEl.textContent = t(
+        'HINT_APP_PURPOSE_WEB_ACCESS_BODY'
       );
     }
     if (this._purposeTodayDirectionEl) {
