@@ -131,7 +131,7 @@ describe('pre-push startup smoke (A5 / R4)', () => {
     assert.match(logs.join('\n'), /FT_SKIP_PRE_PUSH_SMOKE/)
   })
 
-  it('runs menu extra after required smoke when menu paths change', async () => {
+  it('does not run menu full-walk extra when menu paths change', async () => {
     const ran = []
     const code = await main({
       env: {},
@@ -151,7 +151,7 @@ describe('pre-push startup smoke (A5 / R4)', () => {
       },
       log: { error: () => {} }
     })
-    assert.deepEqual(ran, ['test:e2e:smoke', 'test:e2e:menu-reachability'])
+    assert.deepEqual(ran, ['test:e2e:smoke'])
     assert.equal(code, 0)
   })
 

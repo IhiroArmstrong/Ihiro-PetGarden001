@@ -1,3 +1,3 @@
 # ci/pr-smoke-demote-menu-reachability
 
-| PR smoke 移出菜单走完（T12） | 纯后端 | 仅单元测试覆盖 | 本条验收的是 CI 范围：默认 `test:e2e:smoke` 不再含 `menu-full-reachability`；`scripts/pr-smoke-e2e-subset.test.js` 锁住。不代表菜单产品交互已关单。改菜单文件的 PR 仍应在 `pr-smoke` 看到额外一步；nightly workflow `menu-full-reachability` 可手动触发。 | — | — | — | `PR_SMOKE_FAILURE_CLASSES.md` · `npm run test:e2e:menu-reachability` | 2026-10-17 |
+| PR smoke 移出菜单走完（T12） | 纯后端 | 仅单元测试覆盖 | 本条验收的是 CI 范围：Required `test:pr-smoke` 与 pre-push 都不含 `menu-full-reachability`（改菜单路径也不加跑）；`scripts/pr-smoke-e2e-subset.test.js` 锁住。不代表菜单产品交互已关单。nightly / 合入 develop 后由 workflow `menu-full-reachability` 跑。 | — | — | — | `PR_SMOKE_FAILURE_CLASSES.md` · `npm run test:e2e:menu-reachability` | 2026-11-12 |

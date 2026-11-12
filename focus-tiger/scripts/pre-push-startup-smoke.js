@@ -6,8 +6,8 @@
 
 /**
  * Husky pre-push gate (A5 + T99): required browser smoke unless every file
- * in the push is documentation (.md / .mdc). Menu-path extras come from
- * `pr-smoke-path-routes.js`.
+ * in the push is documentation (.md / .mdc). Optional path extras come from
+ * `pr-smoke-path-routes.js` (menu full-walk is not one of them).
  *
  * Policy: focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md
  */

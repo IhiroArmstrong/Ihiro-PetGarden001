@@ -1,8 +1,8 @@
 ---
 id: pr-smoke-demote-menu-reachability
 kind: feature
-status: 进行中 · T12
-updated: 2026-10-17
+status: 已完成 · T12 后续 · 2026-11-12
+updated: 2026-11-12
 ---
 
-从每个 PR 的必跑 `test:e2e:smoke` 拿掉 `menu-full-reachability`（种类 1 时序不稳）。nightly、合入 develop 后、以及改菜单路径的 PR 仍跑。不改产品代码。
+从 Required `test:pr-smoke` / pre-push 拿掉 `menu-full-reachability`（种类 1 时序不稳；档间未隔离）。nightly、合入 develop 后仍跑。改菜单路径也不再加跑必过关。不改产品代码。

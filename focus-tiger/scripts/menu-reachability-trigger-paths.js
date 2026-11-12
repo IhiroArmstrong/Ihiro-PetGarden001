@@ -4,9 +4,10 @@
  */
 
 /**
- * Path filter for the Idle menu full-walk e2e (wide ⋯ → narrow drawer).
- * SSOT for `pr-smoke.yml` extra step. Keep the grep in that workflow in sync
- * (`scripts/pr-smoke-e2e-subset.test.js` compares the two).
+ * Menu-core file list for the Idle full-walk e2e (wide ⋯ → narrow drawer).
+ * Local optional: `npm run test:e2e:changed -- e2e/menu-full-reachability.spec.js`.
+ * Not a Required PR / pre-push extra (shared-page flake). Nightly + push to
+ * develop: `.github/workflows/menu-full-reachability.yml`.
  *
  * Docs: `docs/PR_SMOKE_FAILURE_CLASSES.md`（`pr-smoke-failure-classes`）.
  */

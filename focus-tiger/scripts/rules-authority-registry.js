@@ -1736,7 +1736,7 @@ export const RULE_AUTHORITY_TOPICS = [
   {
     id: 'pr-smoke-failure-classes',
     title:
-      'PR smoke 失败归类与菜单走完门闩（必跑子集 / nightly / 路径触发）',
+      'PR smoke 失败归类与菜单走完门闩（必跑子集 / nightly；走完不进 Required）',
     ssotPath: 'focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md',
     ssotSection: 'PR_SMOKE_FAILURE_CLASSES.md — PR smoke 失败归类与菜单走完门闩',
     ssotMustContain: [
@@ -1765,6 +1765,12 @@ export const RULE_AUTHORITY_TOPICS = [
         pattern:
           /每个 PR.{0,24}必跑.{0,48}menu-full-reachability/,
         note: '菜单走完已移出默认 PR 必跑 smoke；禁止写成仍每 PR 必跑'
+      },
+      {
+        id: 'menu-walk-path-triggered-required',
+        pattern:
+          /改菜单路径时.{0,24}pr-smoke.{0,24}额外一步/,
+        note: '改菜单路径也不再把菜单走完绑进 Required pr-smoke'
       }
     ],
     citeExemptFiles: [
