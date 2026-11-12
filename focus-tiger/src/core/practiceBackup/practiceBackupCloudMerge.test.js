@@ -9,8 +9,8 @@ import { mergePracticeBackupCloudStoreValue } from './practiceBackupCloudMerge.j
 import { practiceBackupCloudEnabled } from './practiceBackupCloudEnabled.js';
 
 describe('mergePracticeBackupCloudStoreValue (T93 D1)', () => {
-  it('keeps the D3 client cloud gate on', () => {
-    assert.equal(practiceBackupCloudEnabled, true);
+  it('keeps the first-invite client cloud gate off', () => {
+    assert.equal(practiceBackupCloudEnabled, false);
   });
 
   it('keeps local when cloud is null', () => {
