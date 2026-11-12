@@ -101,7 +101,10 @@ async function settleAfterRow(page) {
       '__newsletterCapture',
       '__honestyCheckInUI',
       '__ritualFlowUI',
-      '__inAppReminder'
+      '__inAppReminder',
+      '__mindflowNebulaPreference',
+      '__presenceFieldPreference',
+      '__healthShortcutLogPreference'
     ];
     for (const name of names) {
       const ui = window[name];
@@ -328,7 +331,10 @@ async function walkMenu(page, surface, menuSelector) {
           await dismissVisibleGrowthBackdrops(page);
           return await page.locator('.ft-overlay-backdrop.is-visible').count();
         },
-        { timeout: 12_000 }
+        {
+          timeout: 12_000,
+          message: `visible .ft-overlay-backdrop after menu row ${row.proxy} (${surface})`
+        }
       )
       .toBe(0);
     opened.push(row.proxy);
