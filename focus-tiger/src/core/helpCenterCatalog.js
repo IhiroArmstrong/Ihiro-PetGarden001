@@ -4,12 +4,19 @@
  */
 
 /**
- * User-facing Help Center manifest (explicit allowlist).
- * SSOT for browsable articles — NOT the Confide retrieval catalog.
+ * User-facing Help Center manifest — generated from catalog
+ * `helpCenterVisible` rows. Fact sentences live in
+ * `productKnowledgeCatalog.json`.
  *
+ * @see docs/task-briefs/task-kb-help-single-source.md
  * @see docs/task-briefs/task-user-help-center.md
- * @see docs/product-knowledge-base.md (KB ids for traceability only)
  */
+
+import catalog from './confide/productKnowledgeCatalog.json' with { type: 'json' };
+import {
+  helpCenterLocaleStem,
+  listHelpCenterVisibleCatalogEntries
+} from './confide/productKnowledgeCatalogGate.js';
 
 /**
  * @typedef {object} HelpCenterSection
@@ -35,339 +42,43 @@ export const HELP_CENTER_SECTIONS = Object.freeze([
   Object.freeze({ id: 'learn', labelKey: 'HELP_CENTER_SECTION_LEARN' })
 ]);
 
+/**
+ * @param {object} entry
+ * @returns {HelpCenterArticle}
+ */
+function articleFromCatalogEntry(entry) {
+  const stem = helpCenterLocaleStem(entry.id);
+  /** @type {HelpCenterArticle} */
+  const row = {
+    id: entry.id,
+    sectionId: entry.helpSectionId,
+    titleKey: `${stem}_TITLE`,
+    bodyKey: `${stem}_BODY`
+  };
+  if (String(entry.id).startsWith('KB-')) {
+    row.kbTraceId = entry.id;
+  }
+  return Object.freeze(row);
+}
+
 /** @type {readonly HelpCenterArticle[]} */
-export const HELP_CENTER_ARTICLES = Object.freeze([
-  Object.freeze({
-    id: 'KB-FUNC-0001',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0001_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0001_BODY',
-    kbTraceId: 'KB-FUNC-0001'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0004',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0004_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0004_BODY',
-    kbTraceId: 'KB-FUNC-0004'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0007',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0007_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0007_BODY',
-    kbTraceId: 'KB-FUNC-0007'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0008',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0008_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0008_BODY',
-    kbTraceId: 'KB-FUNC-0008'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0011',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0011_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0011_BODY',
-    kbTraceId: 'KB-FUNC-0011'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0029',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0029_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0029_BODY',
-    kbTraceId: 'KB-FUNC-0029'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0030',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0030_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0030_BODY',
-    kbTraceId: 'KB-FUNC-0030'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0031',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0031_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0031_BODY',
-    kbTraceId: 'KB-FUNC-0031'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0032',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0032_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0032_BODY',
-    kbTraceId: 'KB-FUNC-0032'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0034',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0034_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0034_BODY',
-    kbTraceId: 'KB-FUNC-0034'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0037',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY',
-    kbTraceId: 'KB-FUNC-0037'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0002',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0002_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0002_BODY',
-    kbTraceId: 'KB-FUNC-0002'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0006',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0006_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0006_BODY',
-    kbTraceId: 'KB-FUNC-0006'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0013',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0013_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0013_BODY',
-    kbTraceId: 'KB-FUNC-0013'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0019',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0019_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0019_BODY',
-    kbTraceId: 'KB-FUNC-0019'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0020',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0020_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0020_BODY',
-    kbTraceId: 'KB-FUNC-0020'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0021',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0021_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0021_BODY',
-    kbTraceId: 'KB-FUNC-0021'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0022',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0022_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0022_BODY',
-    kbTraceId: 'KB-FUNC-0022'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0023',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0023_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0023_BODY',
-    kbTraceId: 'KB-FUNC-0023'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0024',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0024_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0024_BODY',
-    kbTraceId: 'KB-FUNC-0024'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0025',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0025_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0025_BODY',
-    kbTraceId: 'KB-FUNC-0025'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0026',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0026_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0026_BODY',
-    kbTraceId: 'KB-FUNC-0026'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0027',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0027_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0027_BODY',
-    kbTraceId: 'KB-FUNC-0027'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0028',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0028_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0028_BODY',
-    kbTraceId: 'KB-FUNC-0028'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0038',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0038_BODY',
-    kbTraceId: 'KB-FUNC-0038'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0003',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0003_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0003_BODY',
-    kbTraceId: 'KB-FUNC-0003'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0012',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0012_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0012_BODY',
-    kbTraceId: 'KB-FUNC-0012'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0015',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0015_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0015_BODY',
-    kbTraceId: 'KB-FUNC-0015'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0018',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0018_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0018_BODY',
-    kbTraceId: 'KB-FUNC-0018'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0033',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0033_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0033_BODY',
-    kbTraceId: 'KB-FUNC-0033'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0035',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0035_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0035_BODY',
-    kbTraceId: 'KB-FUNC-0035'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0036',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0036_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0036_BODY',
-    kbTraceId: 'KB-FUNC-0036'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0005',
-    sectionId: 'companion',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0005_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0005_BODY',
-    kbTraceId: 'KB-FUNC-0005'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0010',
-    sectionId: 'companion',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0010_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0010_BODY',
-    kbTraceId: 'KB-FUNC-0010'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0014',
-    sectionId: 'companion',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0014_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0014_BODY',
-    kbTraceId: 'KB-FUNC-0014'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0016',
-    sectionId: 'companion',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0016_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0016_BODY',
-    kbTraceId: 'KB-FUNC-0016'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0017',
-    sectionId: 'companion',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0017_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0017_BODY',
-    kbTraceId: 'KB-FUNC-0017'
-  }),
-  Object.freeze({
-    id: 'KB-FUNC-0039',
-    sectionId: 'companion',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0039_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_FUNC_0039_BODY',
-    kbTraceId: 'KB-FUNC-0039'
-  }),
-  Object.freeze({
-    id: 'KB-EDU-0001',
-    sectionId: 'learn',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0001_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_EDU_0001_BODY',
-    kbTraceId: 'KB-EDU-0001'
-  }),
-  Object.freeze({
-    id: 'KB-EDU-0002',
-    sectionId: 'learn',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0002_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_EDU_0002_BODY',
-    kbTraceId: 'KB-EDU-0002'
-  }),
-  Object.freeze({
-    id: 'KB-EDU-0003',
-    sectionId: 'learn',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0003_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_EDU_0003_BODY',
-    kbTraceId: 'KB-EDU-0003'
-  }),
-  Object.freeze({
-    id: 'KB-EDU-0004',
-    sectionId: 'learn',
-    titleKey: 'HELP_CENTER_ARTICLE_KB_EDU_0004_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_KB_EDU_0004_BODY',
-    kbTraceId: 'KB-EDU-0004'
-  }),
-  Object.freeze({
-    id: 'HELP-BREATH-DURATION',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BREATH_DURATION_BODY'
-  }),
-  Object.freeze({
-    id: 'HELP-LOTUS-BLOOMS',
-    sectionId: 'practice',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_LOTUS_BLOOMS_BODY'
-  }),
-  Object.freeze({
-    id: 'HELP-BUY-COLLECTIONS',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BUY_COLLECTIONS_BODY'
-  }),
-  Object.freeze({
-    id: 'HELP-BADGE-NOT-COIN',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_BADGE_NOT_COIN_BODY'
-  }),
-  Object.freeze({
-    id: 'HELP-DEVICES-SAFARI',
-    sectionId: 'start',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY'
-  }),
-  Object.freeze({
-    id: 'HELP-APPLE-HEALTH-LOG',
-    sectionId: 'data',
-    titleKey: 'HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE',
-    bodyKey: 'HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY'
-  })
-]);
+export const HELP_CENTER_ARTICLES = Object.freeze(
+  listHelpCenterVisibleCatalogEntries(catalog).map(articleFromCatalogEntry)
+);
+
+/**
+ * Help article count must equal catalog `helpCenterVisible: true` rows.
+ * @returns {{ articleCount: number, helpVisibleCount: number, delta: number }}
+ */
+export function reconcileHelpCenterArticleCount() {
+  const helpVisibleCount = listHelpCenterVisibleCatalogEntries(catalog).length;
+  const articleCount = HELP_CENTER_ARTICLES.length;
+  return {
+    articleCount,
+    helpVisibleCount,
+    delta: articleCount - helpVisibleCount
+  };
+}
 
 /**
  * @param {string} sectionId

@@ -10,6 +10,7 @@
  */
 
 import catalog from './productKnowledgeCatalog.json' with { type: 'json' };
+import { isYinRetrievableCatalogEntry } from './productKnowledgeCatalogGate.js';
 import { confideObjectKeywordMatches } from './confideObjectNormalize.js';
 import { isPracticeFactsQuestion } from './confidePracticeFacts.js';
 import {
@@ -36,6 +37,7 @@ export function listConfideCatalogNounKeywords() {
   /** @type {string[]} */
   const out = [];
   for (const entry of catalog.entries || []) {
+    if (!isYinRetrievableCatalogEntry(entry)) continue;
     for (const keyword of entry.keywords || []) {
       if (isAskShapeKeyword(keyword)) continue;
       const k = String(keyword || '').trim();

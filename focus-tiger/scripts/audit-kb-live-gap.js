@@ -60,7 +60,6 @@ const INSERT_AFTER = '## Gap audit (machine block)';
 
 /** Draft / unapproved ids documented in product-knowledge-base.md §4.2 */
 export const KB_UNAPPROVED_IDS = Object.freeze([
-  'KB-FUNC-0006',
   'KB-FUNC-0009'
 ]);
 
@@ -105,6 +104,7 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform / concept facts). */
 export const KB_CROSS_CUTTING_APPROVED_IDS = Object.freeze([
+  'KB-FUNC-0006',
   'KB-FUNC-0014',
   'KB-FUNC-0016',
   'KB-FUNC-0017',
@@ -115,7 +115,13 @@ export const KB_CROSS_CUTTING_APPROVED_IDS = Object.freeze([
   'KB-FUNC-0035',
   'KB-FUNC-0036',
   'KB-FUNC-0037',
-  'KB-FUNC-0038'
+  'KB-FUNC-0038',
+  'HELP-BREATH-DURATION',
+  'HELP-LOTUS-BLOOMS',
+  'HELP-BUY-COLLECTIONS',
+  'HELP-BADGE-NOT-COIN',
+  'HELP-DEVICES-SAFARI',
+  'HELP-APPLE-HEALTH-LOG'
 ]);
 
 /**
