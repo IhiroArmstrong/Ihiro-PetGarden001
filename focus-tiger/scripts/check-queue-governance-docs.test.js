@@ -253,6 +253,20 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows first-pack privacy notice with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/PRIVACY_NOTICE.md',
+        'focus-tiger/docs/audit/first-package-written-risk-acceptance.md',
+        'focus-tiger/docs/audit/RISK_REGISTER.md',
+        'focus-tiger/docs/tracker-entries/docs-first-pack-privacy-glossary.md'
+      ]),
+      null
+    );
+  });
+
   it('allows T97 pass-line shards with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([
