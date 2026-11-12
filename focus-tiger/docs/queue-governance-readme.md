@@ -32,6 +32,7 @@
 - **电脑版十二条对照**（`GLOSSARY.md` 专节，对照号 1–12）：只许改状态 / 执行序附注，**禁止删行或把 12 行缩成更少**。T38–T49 对应该 12 行。
 
 - **T97 过关线（2026-11-10）**：与术语表同批时，还可改已列入白名单的 T97 Brief、task-entry、四刀说明、`RISK_REGISTER.md`、`PROCESS.md`，以及 `issue-entries/docs-gov-t97-pass-line.md`、`tracker-entries/docs-gov-t97-pass-line.md`。不改产品运行时。
+- **首包隐私与术语对齐（2026-11-12）**：与术语表同批时，允许改 [`PRIVACY_NOTICE.md`](./PRIVACY_NOTICE.md)、[`audit/first-package-written-risk-acceptance.md`](./audit/first-package-written-risk-acceptance.md) 与对应 tracker 碎片。不改产品运行时。
 
 ## 批量消冲突（develop 刚合入队列变更后）
 
