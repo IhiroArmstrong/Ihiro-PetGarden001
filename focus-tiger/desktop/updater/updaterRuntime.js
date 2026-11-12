@@ -10,6 +10,7 @@ import {
   isSelfHostedUpdaterEnabled,
   resolveUpdateChannel
 } from '../../src/core/desktopUpdaterChannel.js';
+import { resolveUpdaterFeedUrl } from '../../src/core/desktopUpdateFeedUrl.js';
 import { mapUrgencyForMvp } from '../../src/core/desktopUpdaterState.js';
 
 const CHECK_IDLE_DELAY_MS = 2500;
@@ -57,9 +58,9 @@ export function createDesktopUpdaterRuntime(deps) {
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
 
-  const feedUrl = String(
-    deps.env?.FT_UPDATE_FEED_URL || process.env.FT_UPDATE_FEED_URL || ''
-  ).trim();
+  const feedUrl = resolveUpdaterFeedUrl(deps.env || process.env, {
+    isPackaged: Boolean(deps.app.isPackaged)
+  });
   if (enabled && feedUrl) {
     autoUpdater.setFeedURL({ provider: 'generic', url: feedUrl });
   }

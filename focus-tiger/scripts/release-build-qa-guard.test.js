@@ -36,3 +36,14 @@ test('desktop pack verifies first-invite cloud backup gate is off', () => {
   assert.match(cloudVerifySrc, /practiceBackupCloudEnabled = false/);
   assert.match(cloudVerifySrc, /practiceBackupCloudEnabled=!0/);
 });
+
+test('desktop pack verifies update feed is https on the locked host', () => {
+  assert.match(packSrc, /build:verify-update-feed/);
+  const feedVerifySrc = readFileSync(
+    path.join(root, 'scripts/verify-first-pack-update-feed.js'),
+    'utf8'
+  );
+  assert.match(feedVerifySrc, /CANONICAL_UPDATE_FEED_HOST/);
+  assert.match(feedVerifySrc, /evaluateUpdateFeedUrl/);
+  assert.match(feedVerifySrc, /PRIVACY_NOTICE\.md must name/);
+});
