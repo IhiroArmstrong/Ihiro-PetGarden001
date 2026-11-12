@@ -6,10 +6,14 @@
 /**
  * Confide product knowledge retrieval — retrieve-not-generate short answers.
  * SSOT: docs/product-knowledge-base.md + task-confide-kb-routing-gate.md
- * Only indexes catalog entries pre-filtered to yin_may_retrieve ∧ 审核已通过.
+ * Only indexes catalog entries with yinMayRetrieve === true (help-only rows stay out).
  */
 
 import catalog from './productKnowledgeCatalog.json' with { type: 'json' };
+import {
+  isYinRetrievableCatalogEntry,
+  listYinRetrievableCatalogEntries
+} from './productKnowledgeCatalogGate.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { normalizeConfideIntentText } from './confideBoundaryRespect.js';
 import { confideObjectKeywordMatches } from './confideObjectNormalize.js';
@@ -75,7 +79,7 @@ export function isConfideKbRetrievalEnabled(env) {
  * @returns {readonly { id: string, shortAnswerEn: string, keywords: string[] }[]}
  */
 export function listRetrievableProductKnowledgeEntries() {
-  return catalog.entries;
+  return listYinRetrievableCatalogEntries(catalog);
 }
 
 /**
@@ -84,7 +88,7 @@ export function listRetrievableProductKnowledgeEntries() {
  */
 export function getRetrievableProductKnowledgeEntry(id) {
   const entry = catalog.entries.find((row) => row.id === id);
-  if (!entry?.shortAnswerEn) return null;
+  if (!isYinRetrievableCatalogEntry(entry) || !entry?.shortAnswerEn) return null;
   return { id: entry.id, shortAnswerEn: entry.shortAnswerEn };
 }
 
@@ -209,6 +213,7 @@ export function scoreProductKnowledgeEntries(text, entries = listRetrievableProd
   /** @type {{ id: string, score: number, shortAnswerEn: string }[]} */
   const scored = [];
   for (const entry of entries) {
+    if (entry?.yinMayRetrieve === false) continue;
     let score = 0;
     for (const kw of entry.keywords || []) {
       if (keywordMatches(raw, kw)) score += 1;

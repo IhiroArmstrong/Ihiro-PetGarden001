@@ -238,7 +238,7 @@
     短答（en）：On the home seat, tap the left orb — Breath practice. Pick how long (chips from 1 minute up). It is a soft sit with Yin, not a full Focus session. Yin only points here and does not read the in-breath / out-breath coaching lines aloud.
     指路：Idle 左球 `#ft-wide-home-quickstart` / `#ft-narrow-home-quickstart`（`QUICK_START_ARIA`）→ 时长 chip `micro_ritual.pick_duration` → 点选即开。Leave（`micro_ritual.leave`）结束、不记账、不进 Reflection、不写 Journey log；完成且关 Reflection 才入账（见 `MICRO_RITUAL_PLAN.md`）。**不在** ⋯ / 抽屉；Companion 三选一展开时宽屏左球隐藏（`ft-wide-stage-companion`）。
     与 0001 分工：0001 = 主钮 Sit 完整同坐（10 分钟起）；本条 = 左球短坐入口。
-    **检索口径（2026-09-22）**：避免与 0001 / 0011 三处呼吸入口打架 — registry 已链 **0011**；可检索问法走 0011（Breath vs Sit）+ 0001（主路径起步）。本条正文仅作盘点参考（Leave / 不记账等细节），**不进** `productKnowledgeCatalog.json`。
+    **检索口径（2026-09-22）**：避免与 0001 / 0011 三处呼吸入口打架 — registry 已链 **0011**；可检索问法走 0011（Breath vs Sit）+ 0001（主路径起步）。本条正文仅作盘点参考（Leave / 不记账等细节）。第 1 刀已进 `productKnowledgeCatalog.json`，`yinMayRetrieve: false`（仅帮助中心）；可检索问法仍走 0011+0001。
     禁止：把 `RESET_BREATH_*` / `BREATH_PHASE_*` 引导语写入本条或倾诉检索块（与 `KB-PSY-DRAFT-0002` 分工）。
   yin_may_retrieve: 否
   来源: 界面文案
