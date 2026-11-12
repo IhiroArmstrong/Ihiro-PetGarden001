@@ -10,8 +10,6 @@
  * Docs: `docs/PR_SMOKE_FAILURE_CLASSES.md`（`pr-smoke-failure-classes`）.
  */
 
-import { MENU_REACHABILITY_TRIGGER_PATH_RE } from './menu-reachability-trigger-paths.js'
-
 /**
  * @typedef {object} PrSmokePathRoute
  * @property {string} id
@@ -22,12 +20,6 @@ import { MENU_REACHABILITY_TRIGGER_PATH_RE } from './menu-reachability-trigger-p
 
 /** @type {readonly PrSmokePathRoute[]} */
 export const PR_SMOKE_PATH_ROUTES = Object.freeze([
-  Object.freeze({
-    id: 'menu-reachability',
-    pathRe: MENU_REACHABILITY_TRIGGER_PATH_RE,
-    npmScript: 'test:e2e:menu-reachability',
-    inDefaultE2eSmoke: false
-  }),
   Object.freeze({
     id: 'glass-visual',
     pathRe:

@@ -82,7 +82,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `issue-ledger` | 问题账本：总表只加稳定摘要，进度写 issue-entries（并行 PR 不改同一行） | `.cursor/rules/focus-tiger-issue-ledger.mdc` | Focus Tiger · Issue Ledger（问题闭环追踪 · 按需层） |
 | `brief-before-user-visible` | B 类用户可见改动开工前必须先锁定 Brief（「立刻开工」不能跳过；有疑问默认 B 类） | `WORKFLOW.md` | 用户可见改动：Brief 开工门禁（A/B 类任务 · 2026-09-21） |
 | `ci-failure-triage` | CI/Smoke 失败排查前置检查（先取日志、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ci-failure-triage.mdc` | Focus Tiger · CI/Smoke 失败排查前置检查（ci-failure-triage · 按需层） |
-| `pr-smoke-failure-classes` | PR smoke 失败归类与菜单走完门闩（必跑子集 / nightly / 路径触发） | `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md` | PR_SMOKE_FAILURE_CLASSES.md — PR smoke 失败归类与菜单走完门闩 |
+| `pr-smoke-failure-classes` | PR smoke 失败归类与菜单走完门闩（必跑子集 / nightly；走完不进 Required） | `focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md` | PR_SMOKE_FAILURE_CLASSES.md — PR smoke 失败归类与菜单走完门闩 |
 | `ui-bug-triage` | UI/交互回归排查前置检查（先取锚点、后探索；探索最多 5 轮） | `.cursor/rules/focus-tiger-ui-bug-triage.mdc` | Focus Tiger · UI/交互回归排查前置检查（ui-bug-triage · 按需层） |
 | `layered-bug-diagnostics` | 多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑） | `.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc` | Focus Tiger · 多层系统集成 bug 排查（layered-bug-diagnostics · 按需层） |
 | `companion-contract` | Yin 陪伴契约（红线、并行开口通道、措辞与字面检查边界） | `focus-tiger/docs/COMPANION_CONTRACT.md` | §A 红线（Yin 不做什么） |
@@ -281,7 +281,7 @@ cd focus-tiger && npm run rules:doc-sync
 | 文档-代码 | `gate` / `hints` / `state` 三类 `*-doc-check.js` |
 | CI | `.github/workflows/focus-tiger-doc-contract-check.yml` |
 | PR 轻量冒烟 | `.github/workflows/pr-smoke.yml`（Required on `develop`） |
-| 菜单走完（nightly / 合入 develop） | `.github/workflows/menu-full-reachability.yml`（非 Required；路径触发仍在 `pr-smoke.yml`。见 `pr-smoke-failure-classes`） |
+| 菜单走完（nightly / 合入 develop） | `.github/workflows/menu-full-reachability.yml`（非 Required；不进 `pr-smoke.yml`。见 `pr-smoke-failure-classes`） |
 | 全量 e2e（夜间+手动） | `.github/workflows/focus-tiger-e2e-full.yml`（**`schedule` 读默认分支 YAML，现为 `develop`**；见 `ENV_CONFIG.md` §3） |
 | 环境与密钥规则 | `docs/ENV_CONFIG.md` · 现状摘要 `docs/INFRA_SNAPSHOT.md` |
 
@@ -303,6 +303,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-12 | `pr-smoke-failure-classes`：超长菜单走完从 Required `test:pr-smoke` / pre-push 拿掉（改菜单路径也不再加跑）。nightly + 合入 develop 后仍跑。**已废止**：改菜单路径时 `pr-smoke` 额外一步仍算必过关 |
 | 2026-11-09 | T99：必跑冒烟改为机械闸（`pre-push` `test:e2e:smoke`、行数闸前移、玻璃卡读挂载开关）。SSOT 仍 `PR_SMOKE_FAILURE_CLASSES.md`；常驻 `.cursor/rules/focus-tiger-pr-smoke-gates.mdc`。**已废止**：仅靠 `pre-push` 跑 `test:e2e:startup` 即视为必跑已拦 |
 | 2026-11-05 | 新增 `git-pr-next-step-gate`：下一步须先查**有没有 PR**（OPEN 也算开发可能已完成）；合没合只决定待合 vs 已在 develop。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/focus-tiger-pr-next-step-gate.mdc` |
 | 2026-10-29 | 产品表新增 `CO_PRACTICE_GIFT_ART.md`（共修纪念画方向锁；A/B/C 形状；礼物轨 ≠ 货架；**不排期**；不进 rules-authority 机器块） |

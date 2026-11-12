@@ -21,6 +21,7 @@ import { isConfideOperationalProductAskShape } from './confide/confideProductKno
 import { resolveVoiceCommandOutcome } from './voiceCommandOutcome.js';
 import { classifyHelpCenterOperatingCommand } from './yinVoiceCommandEntry.js';
 import { resolveHelpCenterQuietSitAliasArticles } from './helpCenterQuietSitAliases.js';
+import { resolveHelpCenterPlatformAliasArticles } from './helpCenterPlatformAliases.js';
 
 export const HELP_CENTER_ASK_MAX_CARDS = 3;
 
@@ -198,6 +199,12 @@ export function searchHelpCenterAskCards(text, opts = {}) {
   const articleIds = [];
 
   for (const aliasId of resolveHelpCenterQuietSitAliasArticles(normalizedText)) {
+    if (articleIds.includes(aliasId)) continue;
+    const exists = HELP_CENTER_ARTICLES.some((row) => row.id === aliasId);
+    if (exists) articleIds.push(aliasId);
+  }
+
+  for (const aliasId of resolveHelpCenterPlatformAliasArticles(normalizedText)) {
     if (articleIds.includes(aliasId)) continue;
     const exists = HELP_CENTER_ARTICLES.some((row) => row.id === aliasId);
     if (exists) articleIds.push(aliasId);

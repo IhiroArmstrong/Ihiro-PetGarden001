@@ -26,3 +26,24 @@ test('verify-no-qa-boot-in-dist rejects inlined VITE_FT_QA_BOOT on', () => {
   assert.match(verifySrc, /FORBIDDEN_INLINED/);
   assert.match(verifySrc, /VITE_FT_QA_BOOT/);
 });
+
+test('desktop pack verifies first-invite cloud backup gate is off', () => {
+  assert.match(packSrc, /build:verify-cloud-gate/);
+  const cloudVerifySrc = readFileSync(
+    path.join(root, 'scripts/verify-first-pack-cloud-gate.js'),
+    'utf8'
+  );
+  assert.match(cloudVerifySrc, /practiceBackupCloudEnabled = false/);
+  assert.match(cloudVerifySrc, /practiceBackupCloudEnabled=!0/);
+});
+
+test('desktop pack verifies update feed is https on the locked host', () => {
+  assert.match(packSrc, /build:verify-update-feed/);
+  const feedVerifySrc = readFileSync(
+    path.join(root, 'scripts/verify-first-pack-update-feed.js'),
+    'utf8'
+  );
+  assert.match(feedVerifySrc, /CANONICAL_UPDATE_FEED_HOST/);
+  assert.match(feedVerifySrc, /evaluateUpdateFeedUrl/);
+  assert.match(feedVerifySrc, /PRIVACY_NOTICE\.md must name/);
+});

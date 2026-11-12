@@ -8,7 +8,6 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { MENU_REACHABILITY_TRIGGER_PATH_RE } from './menu-reachability-trigger-paths.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = join(root, '..')
@@ -26,16 +25,13 @@ describe('PR smoke e2e subset (menu walk demoted)', () => {
     assert.match(dedicated, /menu full reachability/)
   })
 
-  it('pr-smoke.yml path grep matches MENU_REACHABILITY_TRIGGER_PATH_RE', () => {
+  it('pr-smoke.yml does not run menu-full-reachability as a Required extra', () => {
     const yml = readFileSync(
       join(repoRoot, '.github/workflows/pr-smoke.yml'),
       'utf8'
     )
-    assert.match(yml, /id: menu_paths/)
-    assert.match(yml, /npm run test:e2e:menu-reachability/)
-    assert.ok(
-      yml.includes(MENU_REACHABILITY_TRIGGER_PATH_RE),
-      'pr-smoke.yml grep -E pattern must equal MENU_REACHABILITY_TRIGGER_PATH_RE'
-    )
+    assert.doesNotMatch(yml, /id: menu_paths/)
+    assert.doesNotMatch(yml, /npm run test:e2e:menu-reachability/)
+    assert.match(yml, /npm run test:e2e:smoke/)
   })
 })

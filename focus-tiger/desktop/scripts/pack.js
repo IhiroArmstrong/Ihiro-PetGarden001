@@ -42,6 +42,26 @@ const verify = spawnSync('npm', ['run', 'build:verify-no-qa-boot'], {
 });
 if (verify.status !== 0) process.exit(verify.status ?? 1);
 
+const verifyCloud = spawnSync(
+  'npm',
+  ['run', 'build:verify-cloud-gate', '--', '--require-dist'],
+  {
+    cwd: focusTigerRoot,
+    stdio: 'inherit',
+    env: process.env,
+    shell: process.platform === 'win32'
+  }
+);
+if (verifyCloud.status !== 0) process.exit(verifyCloud.status ?? 1);
+
+const verifyFeed = spawnSync('npm', ['run', 'build:verify-update-feed'], {
+  cwd: focusTigerRoot,
+  stdio: 'inherit',
+  env: process.env,
+  shell: process.platform === 'win32'
+});
+if (verifyFeed.status !== 0) process.exit(verifyFeed.status ?? 1);
+
 const pack = spawnSync(
   'npm',
   ['exec', '--', 'electron-builder', '--mac', 'dmg', '--arm64'],
