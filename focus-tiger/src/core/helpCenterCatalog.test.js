@@ -11,8 +11,17 @@ import assert from 'node:assert/strict';
 import {
   HELP_CENTER_ARTICLES,
   findHelpCenterArticle,
-  listHelpCenterArticlesForSection
+  listHelpCenterArticlesForSection,
+  reconcileHelpCenterArticleCount
 } from './helpCenterCatalog.js';
+import {
+  catalogEntryExportError,
+  GRANDFATHERED_HELP_CENTER_IDS,
+  HELP_ONLY_BACKFILL_IDS,
+  helpCenterLocaleStem,
+  isYinRetrievableCatalogEntry,
+  listHelpCenterVisibleCatalogEntries
+} from './confide/productKnowledgeCatalogGate.js';
 
 const catalog = JSON.parse(
   readFileSync(
@@ -21,10 +30,24 @@ const catalog = JSON.parse(
   )
 );
 
+const slice = JSON.parse(
+  readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), '../locales/slices/help-center.json'),
+    'utf8'
+  )
+);
+
 test('help center articles never include internal ops kb ids', () => {
   for (const row of HELP_CENTER_ARTICLES) {
     assert.ok(!row.id.startsWith('KB-OPS-'));
     assert.ok(!row.kbTraceId?.startsWith('KB-OPS-'));
+  }
+});
+
+test('catalog export contract: no forbidden combos or draft ids', () => {
+  for (const entry of catalog.entries) {
+    assert.equal(catalogEntryExportError(entry), null, entry.id);
+    assert.ok(!String(entry.id).startsWith('KB-PSY-DRAFT-'), entry.id);
   }
 });
 
@@ -38,67 +61,59 @@ test('findHelpCenterArticle resolves known id', () => {
   assert.equal(findHelpCenterArticle('missing'), null);
 });
 
-test('every approved catalog entry has a help center article', () => {
+test('every help-visible catalog entry has a help center article', () => {
   const helpIds = new Set(HELP_CENTER_ARTICLES.map((row) => row.id));
-  for (const entry of catalog.entries) {
+  for (const entry of listHelpCenterVisibleCatalogEntries(catalog)) {
     assert.ok(helpIds.has(entry.id), `missing help article for ${entry.id}`);
   }
+});
+
+test('help center article count matches helpCenterVisible rows', () => {
+  const recon = reconcileHelpCenterArticleCount();
+  assert.equal(recon.delta, 0);
+  assert.equal(recon.articleCount, recon.helpVisibleCount);
+  assert.equal(recon.articleCount, 48);
 });
 
 test('help center includes breath inventory article KB-FUNC-0006', () => {
   assert.ok(findHelpCenterArticle('KB-FUNC-0006'));
 });
 
-const HELP_CENTER_GAP_IDS = Object.freeze([
-  'HELP-BREATH-DURATION',
-  'HELP-LOTUS-BLOOMS',
-  'HELP-BUY-COLLECTIONS',
-  'HELP-BADGE-NOT-COIN',
-  'HELP-DEVICES-SAFARI',
-  'HELP-APPLE-HEALTH-LOG'
-]);
-
-test('help center gap articles are allowlisted and absent from confide catalog', () => {
-  const catalogIds = new Set(catalog.entries.map((entry) => entry.id));
-  const practice = listHelpCenterArticlesForSection('practice').map((row) => row.id);
-  const data = listHelpCenterArticlesForSection('data').map((row) => row.id);
-  assert.ok(practice.includes('HELP-BREATH-DURATION'));
-  assert.ok(practice.includes('HELP-LOTUS-BLOOMS'));
-  assert.ok(data.includes('HELP-BUY-COLLECTIONS'));
-  assert.ok(data.includes('HELP-BADGE-NOT-COIN'));
-  for (const id of HELP_CENTER_GAP_IDS) {
-    const row = findHelpCenterArticle(id);
-    assert.ok(row, `missing help article ${id}`);
-    assert.equal(row.kbTraceId, undefined);
-    assert.equal(catalogIds.has(id), false, `${id} must not enter Confide catalog`);
+test('help-only backfill rows are in catalog and not yin-retrievable', () => {
+  const byId = Object.fromEntries(catalog.entries.map((row) => [row.id, row]));
+  for (const id of HELP_ONLY_BACKFILL_IDS) {
+    const entry = byId[id];
+    assert.ok(entry, `missing catalog row ${id}`);
+    assert.equal(entry.yinMayRetrieve, false);
+    assert.equal(entry.helpCenterVisible, true);
+    assert.equal(isYinRetrievableCatalogEntry(entry), false);
+    assert.ok(findHelpCenterArticle(id));
   }
 });
 
-test('help center keeps 42 KB-traced articles after gap add', () => {
-  const kbish = HELP_CENTER_ARTICLES.filter((row) => row.id.startsWith('KB-'));
-  assert.equal(kbish.length, 42);
-  assert.equal(HELP_CENTER_ARTICLES.length, 48);
+test('grandfathered HELP-* ids stay help-only; no new HELP-* prefix beyond the set', () => {
+  for (const entry of catalog.entries) {
+    if (String(entry.id).startsWith('HELP-')) {
+      assert.ok(
+        GRANDFATHERED_HELP_CENTER_IDS.includes(entry.id),
+        `new HELP-* id not allowed: ${entry.id}`
+      );
+      assert.equal(entry.yinMayRetrieve, false);
+    }
+  }
 });
 
-test('help center gap article locale keys exist in en zh ja', () => {
-  const slice = JSON.parse(
-    readFileSync(
-      join(
-        dirname(fileURLToPath(import.meta.url)),
-        '../locales/slices/help-center.json'
-      ),
-      'utf8'
-    )
-  );
-  for (const id of HELP_CENTER_GAP_IDS) {
-    const stem = `HELP_CENTER_ARTICLE_${id.replaceAll('-', '_')}`;
-    for (const loc of ['en', 'zh', 'ja']) {
-      const title = slice[loc][`${stem}_TITLE`];
-      const body = slice[loc][`${stem}_BODY`];
-      assert.equal(typeof title, 'string', `${loc} ${stem}_TITLE`);
-      assert.ok(title.length > 0, `${loc} ${stem}_TITLE empty`);
-      assert.equal(typeof body, 'string', `${loc} ${stem}_BODY`);
-      assert.ok(body.length > 0, `${loc} ${stem}_BODY empty`);
+test('help-only English bodies match catalog; every visible row has a locale body', () => {
+  for (const entry of listHelpCenterVisibleCatalogEntries(catalog)) {
+    const key = `${helpCenterLocaleStem(entry.id)}_BODY`;
+    assert.equal(typeof slice.en[key], 'string', key);
+    assert.ok(slice.en[key].length > 0, `${key} empty`);
+    if (entry.yinMayRetrieve === false) {
+      assert.equal(slice.en[key], entry.shortAnswerEn, entry.id);
+    }
+    for (const loc of ['zh', 'ja']) {
+      assert.equal(typeof slice[loc][key], 'string', `${loc} ${key}`);
+      assert.ok(slice[loc][key].length > 0, `${loc} ${key} empty`);
     }
   }
   assert.match(
@@ -113,4 +128,7 @@ test('help center gap article locale keys exist in en zh ja', () => {
     slice.en.HELP_CENTER_ARTICLE_KB_EDU_0002_BODY,
     /Wellness isn't only about the gym\. Many people overlook a more foundational practice: training the mind\./
   );
+  assert.ok(listHelpCenterArticlesForSection('practice').map((row) => row.id).includes('HELP-BREATH-DURATION'));
+  assert.ok(listHelpCenterArticlesForSection('data').map((row) => row.id).includes('HELP-BADGE-NOT-COIN'));
+  assert.ok(listHelpCenterArticlesForSection('start').map((row) => row.id).includes('HELP-DEVICES-SAFARI'));
 });

@@ -1,0 +1,3 @@
+# feature/kb-help-single-source-k1
+
+| 帮助中心与知识库一份事实源（第 1 刀：出口字段 + 三篇仅帮助中心回填） | UI可见 | 待人工测试 | **主路径（`?product=1` Idle）**：⋯ Preferences → Help Center。目录仍能打开。Practice 仍见呼吸盘点篇；Start 见 iPhone/Safari 篇；Your data 见 Apple Health 篇。点开后 0–1 秒内见正文。**回流**：关掉帮助中心再开，三篇仍在。**负例（仅 Electron 宽屏倾诉，入口开着时）**：问 Safari / Apple Health / 呼吸盘点细节 → 走现网空态，不要新加「去帮助中心看看」。问左球呼吸入口仍应落到现网短答（0011/0001），不是盘点篇。自动化：`helpCenterCatalog.test.js` · `productKnowledgeCatalogGate.test.js` · `confideHelpOnlyHonesty.test.js` · `npm run test:smoke`。 | — | — | — | `?product=1` · `[data-testid=idle-help-center]` · `[data-testid=help-center-topic-KB-FUNC-0006]` · `[data-testid=help-center-topic-HELP-DEVICES-SAFARI]` · `[data-testid=help-center-topic-HELP-APPLE-HEALTH-LOG]` | 2026-11-12 |

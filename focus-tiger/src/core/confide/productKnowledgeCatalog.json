@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "source": "focus-tiger/docs/product-knowledge-base.md",
-  "gate": "yin_may_retrieve:yes AND audit_status:approved",
+  "gate": "per-entry yinMayRetrieve and helpCenterVisible; unapproved drafts stay out of this file",
   "entries": [
     {
       "id": "KB-FUNC-0001",
@@ -19,7 +19,11 @@
         "begin sitting",
         "practice focus",
         "need to practice focus"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 0
     },
     {
       "id": "KB-FUNC-0002",
@@ -34,7 +38,11 @@
         "Look Around",
         "5-4-3-2-1",
         "grounding"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 11
     },
     {
       "id": "KB-FUNC-0003",
@@ -49,7 +57,11 @@
         "换设备",
         "backup",
         "restore"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 25
     },
     {
       "id": "KB-FUNC-0004",
@@ -66,7 +78,11 @@
         "进度条",
         "soft aim",
         "today's sitting"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 1
     },
     {
       "id": "KB-FUNC-0005",
@@ -81,7 +97,11 @@
         "Esc",
         "exit confide",
         "close confide"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "companion",
+      "helpCenterOrder": 32
     },
     {
       "id": "KB-FUNC-0007",
@@ -95,7 +115,11 @@
         "stop sitting",
         "end sit",
         "end this sit"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 2
     },
     {
       "id": "KB-FUNC-0008",
@@ -113,7 +137,11 @@
         "Here and Now",
         "三种陪法",
         "companion mode where"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 3
     },
     {
       "id": "KB-FUNC-0010",
@@ -128,7 +156,11 @@
         "耳朵",
         "confide to yin",
         "listening ear"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "companion",
+      "helpCenterOrder": 33
     },
     {
       "id": "KB-FUNC-0011",
@@ -152,7 +184,11 @@
         "how to breathe",
         "how can I take a breath",
         "take a breath for"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 4
     },
     {
       "id": "KB-FUNC-0012",
@@ -169,7 +205,11 @@
         "journey log 在哪",
         "查看练习",
         "practice calendar"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 26
     },
     {
       "id": "KB-FUNC-0013",
@@ -185,7 +225,11 @@
         "presence signals",
         "情绪面板",
         "mood record where"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 13
     },
     {
       "id": "KB-FUNC-0014",
@@ -198,7 +242,11 @@
         "Forget",
         "Show me what you remember",
         "what yin remembers"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "companion",
+      "helpCenterOrder": 34
     },
     {
       "id": "KB-FUNC-0015",
@@ -219,7 +267,11 @@
         "哪些数据",
         "what's in the backup",
         "what does backup include"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 27
     },
     {
       "id": "KB-FUNC-0016",
@@ -232,7 +284,11 @@
         "释放模型",
         "model unload",
         "while you sit"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "companion",
+      "helpCenterOrder": 35
     },
     {
       "id": "KB-FUNC-0017",
@@ -246,7 +302,11 @@
         "Safari",
         "browser",
         "not in this browser"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "companion",
+      "helpCenterOrder": 36
     },
     {
       "id": "KB-FUNC-0018",
@@ -260,7 +320,11 @@
         "攒币",
         "怎么攒",
         "focus coin"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 28
     },
     {
       "id": "KB-FUNC-0019",
@@ -277,7 +341,11 @@
         "compass",
         "five moments",
         "5 moments"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 14
     },
     {
       "id": "KB-FUNC-0020",
@@ -298,7 +366,11 @@
         "补登从哪进",
         "honesty check-in",
         "honest check in"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 15
     },
     {
       "id": "KB-FUNC-0021",
@@ -316,7 +388,11 @@
         "quiet line card",
         "a quiet line",
         "daily quote"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 16
     },
     {
       "id": "KB-FUNC-0022",
@@ -340,7 +416,11 @@
         "Mindful Theater在哪",
         "Mindful Theater 从哪开",
         "正念剧场"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 17
     },
     {
       "id": "KB-FUNC-0023",
@@ -359,7 +439,11 @@
         "save image wallpaper",
         "wallpapers menu",
         "where are wallpapers"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 18
     },
     {
       "id": "KB-EDU-0001",
@@ -370,7 +454,11 @@
         "接地练习原理",
         "grounding 是什么意思",
         "grounding meaning"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "learn",
+      "helpCenterOrder": 38
     },
     {
       "id": "KB-EDU-0002",
@@ -381,7 +469,11 @@
         "正念定义",
         "mindfulness meaning",
         "什么是正念"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "learn",
+      "helpCenterOrder": 39
     },
     {
       "id": "KB-EDU-0003",
@@ -404,7 +496,11 @@
         "坐禅",
         "瞑想",
         "Zen practice"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "learn",
+      "helpCenterOrder": 40
     },
     {
       "id": "KB-EDU-0004",
@@ -418,7 +514,11 @@
         "breath vs sit where",
         "概念对应入口",
         "从哪开始专注"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "learn",
+      "helpCenterOrder": 41
     },
     {
       "id": "KB-FUNC-0024",
@@ -434,7 +534,11 @@
         "morning check-in",
         "morning ritual",
         "where is morning ritual"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 19
     },
     {
       "id": "KB-FUNC-0025",
@@ -450,7 +554,11 @@
         "reset ritual menu",
         "emotional reset",
         "where is emotional reset"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 20
     },
     {
       "id": "KB-FUNC-0026",
@@ -466,7 +574,11 @@
         "过渡仪式",
         "work transition",
         "where is work transition"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 21
     },
     {
       "id": "KB-FUNC-0027",
@@ -482,7 +594,11 @@
         "worldwide lanterns",
         "quiet together",
         "where is quiet together"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 22
     },
     {
       "id": "KB-FUNC-0028",
@@ -498,7 +614,11 @@
         "circle join code",
         "focus circle menu",
         "where is focus circle"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 23
     },
     {
       "id": "KB-FUNC-0029",
@@ -514,7 +634,11 @@
         "今日方向从哪开",
         "choose today direction",
         "where is today's direction"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 5
     },
     {
       "id": "KB-FUNC-0030",
@@ -530,7 +654,11 @@
         "导航从哪开",
         "navigate the sanctuary",
         "where is sanctuary nav"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 6
     },
     {
       "id": "KB-FUNC-0031",
@@ -546,7 +674,11 @@
         "join community",
         "community link",
         "our community"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 7
     },
     {
       "id": "KB-FUNC-0032",
@@ -562,7 +694,11 @@
         "membership from menu",
         "会员从哪开",
         "cancel anytime membership"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 8
     },
     {
       "id": "KB-FUNC-0033",
@@ -583,7 +719,11 @@
         "set a reminder",
         "Remind me",
         "提醒时间"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 29
     },
     {
       "id": "KB-FUNC-0034",
@@ -594,7 +734,11 @@
         "need a pomodoro",
         "how to start a pomodoro",
         "can i start a pomodoro"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 9
     },
     {
       "id": "KB-FUNC-0035",
@@ -605,7 +749,11 @@
         "下载寅币",
         "怎么下载寅币",
         "如何下载寅币"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 30
     },
     {
       "id": "KB-FUNC-0036",
@@ -615,7 +763,11 @@
         "download my badge",
         "我可以下载我的徽章",
         "下载我的徽章"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 31
     },
     {
       "id": "KB-FUNC-0037",
@@ -628,7 +780,11 @@
       "shortAnswerEn": "Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.",
       "keywords": [
         "background music"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 10
     },
     {
       "id": "KB-FUNC-0038",
@@ -640,7 +796,11 @@
       "shortAnswerEn": "You do not have to check in. Sit with Yin works without it. Honesty Check-in, under More (⋯) or the drawer → Practice, only records quiet time you already did somewhere else. It is optional, and missing a day does not take anything away.",
       "keywords": [
         "Honesty Check-in"
-      ]
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 24
     },
     {
       "id": "KB-FUNC-0039",
@@ -663,6 +823,98 @@
         "语音办理",
         "语音备份",
         "阿寅倾听"
+      ],
+      "yinMayRetrieve": true,
+      "helpCenterVisible": true,
+      "helpSectionId": "companion",
+      "helpCenterOrder": 37
+    },
+    {
+      "id": "KB-FUNC-0006",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 12,
+      "shortAnswerEn": "On Idle, tap the left orb for Breath practice — a shorter sit with Yin, without opening the full Focus duration picker.",
+      "keywords": [
+        "呼吸练习盘点",
+        "left orb inventory",
+        "Leave 不记账细节",
+        "KB-FUNC-0006 inventory"
+      ]
+    },
+    {
+      "id": "HELP-BREATH-DURATION",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 42,
+      "shortAnswerEn": "Breath practice on the left orb offers 1, 3, 5, 10, or 20 minutes. Twenty minutes is the longest Breath sitting.\n\nA full Sit with Yin starts at 10 minutes and uses different chips (10 / 15 / 25 / 45). Breath practice is the shorter pause, not a second Focus session.",
+      "keywords": [
+        "How long Breath practice can last",
+        "1, 3, 5, 10, or 20 minutes"
+      ]
+    },
+    {
+      "id": "HELP-LOTUS-BLOOMS",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 43,
+      "shortAnswerEn": "Lotus blooms are quiet traces of time you have sat. They are not ranks, scores, or a character evolution track.\n\nOpen Where you are from the home journey line. Up to twelve blooms sit in a row between the next-step sentence and your lifetime minutes. The home seat no longer draws flowers in front of Yin.",
+      "keywords": [
+        "What the lotus blooms mean"
+      ]
+    },
+    {
+      "id": "HELP-BUY-COLLECTIONS",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 44,
+      "shortAnswerEn": "There are two shelves.\n\nYin's Collections (fan Collection, or More → Yin's Collections) uses focus coins you earn by sitting. Those pieces cannot be bought with money.\n\nYin's Art Collection (More → Yin's Art Collection) is a separate paid art shelf. Choose a set, leave an email, and check out if you want the prints.",
+      "keywords": [
+        "Buying Yin's Collections"
+      ]
+    },
+    {
+      "id": "HELP-BADGE-NOT-COIN",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 45,
+      "shortAnswerEn": "A badge may look like a Focus Coin, but it is a keepsake. You cannot spend a badge in Yin's Collections.\n\nFocus coins are earned by sitting or breathing, and you spend those under Yin's Collections. If you already have a badge, tap it in the badge frame to download the picture.",
+      "keywords": [
+        "Badges are not focus coins"
+      ]
+    },
+    {
+      "id": "HELP-DEVICES-SAFARI",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 46,
+      "shortAnswerEn": "Samatia runs in Safari on iPhone and iPad. There is no App Store or TestFlight app in this release — open the website in Safari. You can add it to your Home Screen for a full-screen shortcut.\n\nPractice data stays on that device. The desktop app and another browser on the same account do not share the same local store.\n\nA native iOS shell is not on the current roadmap; when that changes, we will say so here.",
+      "keywords": [
+        "Safari on iPhone",
+        "no App Store app",
+        "TestFlight",
+        "Home Screen shortcut",
+        "iPad Safari"
+      ]
+    },
+    {
+      "id": "HELP-APPLE-HEALTH-LOG",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 47,
+      "shortAnswerEn": "Samatia does not use Apple's system health SDK and does not read Apple Health. Journey Log on this device is separate local history — not Health data.\n\nIf you turn on the optional preference, a Log to Health button after a sit can open your Shortcuts app to run your installed mindful-minutes shortcut (you set it up once; permissions are between you and Apple, not a Samatia sign-in).\n\nSupported path: iPhone or iPad, page opened in Safari — not WeChat or other in-app browsers. Mac has no Health app; the desktop app does not promise this button. The preference is off until you enable it.",
+      "keywords": [
+        "Apple Health",
+        "HealthKit",
+        "Log to Health",
+        "mindful minutes shortcut"
       ]
     }
   ]
