@@ -945,6 +945,103 @@
         "同席の場",
         "Presence Field inventory"
       ]
+    },
+    {
+      "id": "KB-FUNC-0044",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 50,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Wrap-up time.\n\nYou can choose a time for a gentle check-in at the end of your day — not a sleep coach.\n\nOff until you turn it on. Yin only points here.",
+      "keywords": [
+        "Wrap-up time",
+        "收工时间",
+        "切り上げの時間",
+        "Wrap-up time inventory"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0045",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 51,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Keep in front (Mac or Windows desktop app only).\n\nThe companion window can stay above other apps. Off by default.\n\nSafari and the website never pin themselves. Yin only points here.",
+      "keywords": [
+        "Keep in front",
+        "始终在最前",
+        "常に手前に表示",
+        "Keep in front inventory"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0046",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 52,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Window (desktop app only).\n\nChoose a regular window, a modest companion window beside your work, or system fullscreen.\n\nYin only points here.",
+      "keywords": [
+        "Window layout",
+        "窗口",
+        "ウィンドウ",
+        "Window inventory"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0047",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 53,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Focus rhythm (Mac desktop app only).\n\nOff by default. When on, this Mac may notice typing cadence and backspaces — not your words, window titles, or a score.\n\nSafari and the website never listen. Yin only points here.",
+      "keywords": [
+        "Focus rhythm",
+        "专注节律",
+        "Focus rhythm inventory"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0048",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 54,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Log to Health (Shortcuts).\n\nOff by default. After a sit, a button can open Shortcuts to run your mindful-minutes recipe on iPhone or iPad in Safari — not a HealthKit read.\n\nThe Mac desktop app does not promise this button. Yin only points here.",
+      "keywords": [
+        "Log to Health",
+        "记入健康",
+        "Shortcuts mindful minutes",
+        "Log to Health inventory"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0049",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "data",
+      "helpCenterOrder": 55,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Stay in touch.\n\nOptional email for known-error fixes and release notes — not a sales list. Unsubscribe anytime.\n\nYin only points here.",
+      "keywords": [
+        "Stay in touch",
+        "保持联络",
+        "つながる",
+        "Stay in touch inventory"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0050",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "practice",
+      "helpCenterOrder": 56,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Inspiration → Yin's Art Collection.\n\nVessel-inspired drawings you can buy or save. Purchase needs an email; records can be restored on another device with that email.\n\nYin only points here and does not read prices aloud.",
+      "keywords": [
+        "Yin's Art Collection",
+        "阿寅的艺术品",
+        "寅の芸術コレクション",
+        "Art Collection inventory"
+      ]
     }
   ]
 }
