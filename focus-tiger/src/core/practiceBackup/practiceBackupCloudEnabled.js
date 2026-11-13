@@ -8,10 +8,11 @@
  * When false: no upload/restore. Journey Log corner stays hidden even when true
  * (T93 D3: Preferences is the only email entry).
  *
- * First-invite ship: keep this **false**. Opening it is a later public release,
- * not the invite DMG. Pack verifies the default stays off.
+ * Direct / Electron / web: **true** (T93 PO 2026-11-13). Setapp / MAS still
+ * hide the row via `isEmailJourneyCloudUiAllowedForChannel`.
+ * Pack verifies the source default stays on.
  */
-export let practiceBackupCloudEnabled = false;
+export let practiceBackupCloudEnabled = true;
 
 /** @param {boolean} value */
 export function setPracticeBackupCloudEnabledForTests(value) {

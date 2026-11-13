@@ -13,8 +13,8 @@ import { practiceBackupCloudEnabled } from './practiceBackupCloudEnabled.js';
 import { requestPracticeBackupOtp } from './practiceBackupSync.js';
 
 describe('practiceBackupCloudHttp · T93 D2 dual-state', () => {
-  it('keeps the first-invite client cloud gate off', () => {
-    assert.equal(practiceBackupCloudEnabled, false);
+  it('keeps the direct-channel client cloud gate on', () => {
+    assert.equal(practiceBackupCloudEnabled, true);
   });
 
   it('treats 410 practice_backup_disabled as the still-closed Worker', () => {

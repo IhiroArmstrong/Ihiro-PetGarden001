@@ -5,8 +5,8 @@
  */
 
 /**
- * First-invite ship: client cloud backup gate must stay off in source
- * and must not be inlined on in packed dist.
+ * Direct-channel ship: client cloud backup gate must stay on in source
+ * (Setapp / MAS still hide the Preferences row at runtime).
  *
  * Usage: node scripts/verify-first-pack-cloud-gate.js [--require-dist]
  */
@@ -15,13 +15,13 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const SOURCE_OFF_LINE =
-  'export let practiceBackupCloudEnabled = false;';
+export const SOURCE_ON_LINE =
+  'export let practiceBackupCloudEnabled = true;';
 
+/** Packed dist accidentally inlined the old invite-off default. */
 export const FORBIDDEN_INLINED = [
-  'practiceBackupCloudEnabled=!0',
-  'practiceBackupCloudEnabled=true',
-  'practiceBackupCloudEnabled===!0'
+  'practiceBackupCloudEnabled=!1',
+  'practiceBackupCloudEnabled=false'
 ];
 
 /**
@@ -29,11 +29,11 @@ export const FORBIDDEN_INLINED = [
  * @returns {{ ok: true } | { ok: false, error: string }}
  */
 export function evaluateSourceCloudGate(src) {
-  if (!src.includes(SOURCE_OFF_LINE)) {
+  if (!src.includes(SOURCE_ON_LINE)) {
     return {
       ok: false,
       error:
-        'verify-first-pack-cloud-gate: source default must be `export let practiceBackupCloudEnabled = false;`'
+        'verify-first-pack-cloud-gate: source default must be `export let practiceBackupCloudEnabled = true;`'
     };
   }
   return { ok: true };
@@ -100,7 +100,7 @@ if (!isCli) {
       process.exit(1);
     }
     console.log(
-      'verify-first-pack-cloud-gate: OK (source default false; dist not present)'
+      'verify-first-pack-cloud-gate: OK (source default true; dist not present)'
     );
     process.exit(0);
   }
@@ -113,7 +113,7 @@ if (!isCli) {
   );
 
   if (hits.length > 0) {
-    console.error('Cloud backup gate inlined ON in production dist:');
+    console.error('Cloud backup gate inlined OFF in production dist:');
     for (const hit of hits) {
       console.error(`  - ${hit.token} in ${hit.file}`);
     }
@@ -121,6 +121,6 @@ if (!isCli) {
   }
 
   console.log(
-    'verify-first-pack-cloud-gate: OK (source default false; dist has no ON inline)'
+    'verify-first-pack-cloud-gate: OK (source default true; dist has no OFF inline)'
   );
 }

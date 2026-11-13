@@ -45,20 +45,25 @@ describe('emailJourneyEmptyLibrary · T93 D4', () => {
     assert.equal(isPracticeBackupCloudWhitelistEmpty(filled), false);
   });
 
-  it('hides the Mac chip on the first-invite cloud gate', () => {
-    const storage = memoryStorage();
-    assert.equal(
-      evaluateEmailJourneyEmptyLibraryChip({
-        storage,
-        isDesktop: true,
-        firstSceneOpen: false,
-        welcomeSequencePlaying: false,
-        focusing: false,
-        sessionState: STATES.IDLE,
-        channel: 'direct'
-      }).reason,
-      'cloud-gate-off'
-    );
+  it('hides the Mac chip when tests force the cloud gate off', () => {
+    setPracticeBackupCloudEnabledForTests(false);
+    try {
+      const storage = memoryStorage();
+      assert.equal(
+        evaluateEmailJourneyEmptyLibraryChip({
+          storage,
+          isDesktop: true,
+          firstSceneOpen: false,
+          welcomeSequencePlaying: false,
+          focusing: false,
+          sessionState: STATES.IDLE,
+          channel: 'direct'
+        }).reason,
+        'cloud-gate-off'
+      );
+    } finally {
+      setPracticeBackupCloudEnabledForTests(true);
+    }
   });
 
   it('shows the Mac chip after first scene only, and hides when bound', () => {
@@ -94,7 +99,7 @@ describe('emailJourneyEmptyLibrary · T93 D4', () => {
       'already-bound'
     );
     } finally {
-      setPracticeBackupCloudEnabledForTests(false);
+      setPracticeBackupCloudEnabledForTests(true);
     }
   });
 });
