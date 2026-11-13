@@ -71,7 +71,7 @@
 
 - **T93 / T94 / T95 治理登记（2026-11-08 · 纯文档）**：T93 = 邮箱登录（**立即做** · 槽位 P1 · Brief #1605 · §4 已点头）。T94 = 识别率四刀说明（说明已锁 · P2 · [`task-v2-recognition-four-knives.md`](./task-briefs/task-v2-recognition-four-knives.md)；第 1 刀 #1612 已合；**禁止**再叫 T93）。T95 = 电脑壳升级 + 更新通道（排队 · P1 · 对客安装包发出前完成；两周内开工准备；升级后至少一周回归；现在不为手测升级）。口令「开工识别率」在第 2–4 刀 Brief 点头前不写 `src/`。
 
-- **邮箱登录 P0 Brief + develop 核实（2026-11-08 · 纯文档 · 无运行时）**：[`task-briefs/task-email-sign-in-p0.md`](./task-briefs/task-email-sign-in-p0.md)。PO 已书面要求方案 B（邮箱验证码、无密码）；P0 并入第一份正式 DMG 门闩。地面真相：练习云备份前端关 + Worker #1602 410；灰行 `idle-account-placeholder` 仍不可点；云恢复现为整包覆盖。**已登记 T93**。§4 已于 2026-11-10 点头。口令「开工邮箱登录 P0」须**新对话**；第一刀 D1 不开闸。挂 Epic [#631](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/631)。
+- **邮箱登录 P0（2026-11-13 · T93 D5 说明书）**：D1–D4 已合；生产 Worker 已部署。**2026-11-12 首包关闸发**：不对客打开邮箱找回；Web 菜单仍灰行。开闸后 Preferences 真入口 `idle-account-email-restore`。C+D 手测不挡邀请包。Brief [`task-briefs/task-email-sign-in-p0.md`](./task-briefs/task-email-sign-in-p0.md)。挂 Epic [#631](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/631)。
 
 - **深链 + Shortcuts 食谱 / .ics 导出 Brief（2026-11-07 · 纯文档 · 待 PO 点头）**：[`task-briefs/task-deep-link-shortcuts-cookbook.md`](./task-briefs/task-deep-link-shortcuts-cookbook.md) · [`task-briefs/task-ics-reminder-export.md`](./task-briefs/task-ics-reminder-export.md)。PO 已拍：先开这两份 Brief；iOS 原生壳暂不进路线图；Health 只走 Shortcuts 回写、不读、不做 HealthKit。复用 Electron 已有 `focus-tiger://app`，不新开 scheme。无运行时。点头 ≠ 开工代码。Epic 建议挂栖居壳层 #793（协议耦合 #5），**不**自行新建「上下游整合」。
 
@@ -1321,7 +1321,7 @@ Git **默认不会**在每次 `commit` 后由 hook 自动 push；`commit` 只写
 #### 暂停项（2026-08-28 · 本地导出优先）
 
 - **产品面**：云端备份 UI 隐藏；`practiceBackupCloudEnabled = false` 阻断静默 upload/restore（Worker 路由保留待加密方案）。
-- **替代**：Privacy 页本地导出/导入（同 6 key 快照）；政策写「当前不提供云端备份」。
+- **替代**：Privacy 页本地导出/导入（同 6 key 快照）仍在；可选邮箱保存明文快照见 Preferences「用邮箱保存或找回」与 `PRIVACY_NOTICE.md` §4。
 - **Backlog · 曾 opt-in 用户**：本机仍可能有 `practice-backup.v1` enabled 标记但被 flag 静默跳过 → 评估 **一次性轻提示**（例：「云端备份暂不可用，请用本地导出」）；**非**本 PR 范围。
 
 - **状态**：产品口径 **已拍板**；A **运行时已合 develop**（#272）；生产路由+KV **已 redeploy**；**OTP secrets 已补**（2026-08-13）；TRACKER 仍待空库恢复 / 关备份（关单只认 develop tip）。  

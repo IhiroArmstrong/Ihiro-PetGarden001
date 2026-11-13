@@ -14,7 +14,7 @@
 1. 起点就是现在停在底部控制排里的 `#ft-wide-more-btn`。五个图标在它上方浅浅展开，不新开角落，不盖住寅的脸。
 2. 悬停只显示组名。打开某一组必须点一下（或键盘回车）。
 3. 首页不加 PRO 勋章。右上 Support 五张卡仍只在 `#yin-support-fab`。
-4. **登录**：Preferences 保留灰色 “Sign in (coming soon)”，`interactive: false`，不能点，点了不弹提示。维持 [MENU_CHROME_CENSUS.md](../MENU_CHROME_CENSUS.md) §1 第 3 条（2026-09-26）：真账号要等圈子跨设备认人开工，或「换设备 / 清缓存后找不回来」的具体投诉满 3 次。
+4. **登录 / 旅程找回**：开闸时 Preferences 真入口「用邮箱保存或找回」（`idle-account-email-restore`，#1679）。首包关闸时 Web 仍是灰行。Circle 统一 Login 仍不写。商店渠道不可点。维持 [MENU_CHROME_CENSUS.md](../MENU_CHROME_CENSUS.md) §1 第 3 条。
 5. 英文组名不改：Practice & moments、Records、Quiet gifts、You are not alone、Preferences。
 6. **静思印**：芥子须弥及以后的印，揭晓之后才出现在 Quiet gifts。揭晓前不列出、不做淡锁。门槛仍只看累计练习（[CONTEMPLATIVE_ARCHIVE.md](../CONTEMPLATIVE_ARCHIVE.md)）。
 7. 社区（Join our community）挪进 You are not alone。Choose today's direction again 与 Stay in touch 留在 Preferences。
@@ -27,7 +27,7 @@
 | Records | Journey log；Presence moments；Yin's Collections（寅币闸开时） |
 | Quiet gifts | A Quiet Line；Zen Cinema；Wallpapers；Yin's Art Collection；**已揭晓**的静思印 |
 | You are not alone | Quiet together worldwide；My circle；Join our community |
-| Preferences | 提醒（可用时）；Language（提供语言选择时）；Voice announcements（仅宽屏且可用）；Choose today's direction again；Stay in touch；Sign in 灰行；Help Center；Backup & restore；**Subscription**（见下） |
+| Preferences | 提醒（可用时）；Language（提供语言选择时）；Voice announcements（仅宽屏且可用）；Choose today's direction again；Stay in touch；账号行（开闸可点 / 关闸灰行）；Help Center；Backup & restore；**Subscription**（见下） |
 
 不收进这套菜单：坐下 / 呼吸 / 诚实打卡三颗主球、环境音、左上日历、窄屏问号、Support 五卡。
 
@@ -63,7 +63,7 @@
 | 刀 | 改什么 | 不改什么 | develop |
 |---|---|---|---|
 | **1 付费** | 去掉菜单里的会员状态行；仪式锁可点并打开会员卡；Preferences 增加 Subscription 行 | 不挪社区；不做扇形；不改 Support FAB | **已合 #1289** |
-| **2 归类** | 社区挪进 You are not alone；今日方向与 Stay in touch 留在 Preferences | 不改外观；不改登录灰行；不改印的揭晓 | **已合 #1305** |
+| **2 归类** | 社区挪进 You are not alone；今日方向与 Stay in touch 留在 Preferences | 不改外观；当时不改登录灰行（后由 T93 D3 换成真入口）；不改印的揭晓 | **已合 #1305** |
 | **3 扇形** | 宽屏 `⋯` 上五个图标 + 点击后的列表；高度退化、减弱动画、键盘 | 窄屏抽屉不动 | **已合 #1307** |
 
 第一刀单独验付费。归类不并进第一刀：付费测试若要撤回，不会把分组一起撤掉。
@@ -86,7 +86,7 @@
 | 矮窗口 | 第三刀，图标会挡脸或被切掉 | 直接列表，无扇形 | 第三刀补 |
 | 减弱动画 | 第三刀，系统开启 | 淡入，无绽放 | 第三刀补 |
 | en / zh / ja | 新行文案 | 三语都有；不把 “Premium unlocked” 留给新行 | 第一刀 locale 测试 |
-| 登录灰行 | 三刀之后 | 仍在 Preferences，禁用 | 现有占位测试保持红如果被删 |
+| 用邮箱保存或找回 | 三刀之后 · T93 D3 | 开闸真入口；首包关闸 Web 灰行；商店不可点 | 普查 §1 第 3 行 |
 | 未揭晓的印 | Quiet gifts | 行不存在 | 现有 `mustardSeedSealUnlocked: false` 测试保持 |
 
 ## 点击反馈（0–1 秒）
@@ -96,7 +96,7 @@
 | 未购仪式行 | 淡墨锁所在的行有按下；会员卡出现 | 本点击不写权益。卡内付款沿用会员卡现有三态 |
 | 已购仪式行 | `#ritual-flow` 出现 | — |
 | Preferences · Subscription | 会员卡出现（未购=订阅视图，已购=已订阅视图） | 同会员卡，本行自己不写盘 |
-| 登录灰行 | 无按下、无新层 | 按设计不生效。不是失败。保持 `disabled`，不新增静默白名单条目 |
+| 用邮箱保存或找回 | 开闸：0–1 秒内开 `#email-journey-restore-panel`；关闸 Web：无新层 | 商店渠道：不可点，不是失败 |
 | 五个组图标（第三刀） | 该组列表出现；悬停只出组名，不出列表 | — |
 | 矮窗口的 `⋯`（第三刀） | 直接出现列表 | — |
 

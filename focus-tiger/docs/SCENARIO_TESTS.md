@@ -571,7 +571,7 @@
 2. 宽屏 ⋯ / 窄屏抽屉 **Journey log** → **0–1 秒内**：菜单行 `:active` 按压缩放（宽屏 `.ft-wide-more__item`；窄屏 `.ft-narrow-sheet__item`）+ ⋯/抽屉收起 + `#journey-log` 开始淡入（~220ms `is-visible`）。随后见日期 + 分钟 + arrived & reflected（Skip Reflection 则 reflect 降级；缺 Arrival 则无 focus 降级文案）。菜单里 Journey log / Presence moments / Yin's Collections 上面有抬头 **Records**（中文「记录」，#1128）。同一天两行各点 Save image，须落下两个不同文件名，系统不得问是否替换。空列表见 empty 文案，仍算「已开卡」，不要报成哑点击。
 3. **回流**：Close / 点外侧 / Esc → **0–1 秒内**：关钮 `:active` 按压 + 卡开始淡出；Idle Sit / ⋯ 或抽屉 grabber **仍可见**。刷新后条目仍在；再完成一场 → 新行在列表（上限约 30，裁旧）。
 4. **Compass Reflect**（与场景 Y 交叉）：点 Reflect 芯片 → **0–1 秒内**：芯片 `:active` 按压 + `#five-moments-compass` 收起 + 同一张 `#journey-log` 淡入。
-5. **备份角**（开卡之后；与开卡反馈分开验）：角落备份链 → **0–1 秒内**：链 `:active` 下压 + `#journey-log-backup-panel` 展开或收起。**Send code** → 立刻见 Sending…（`JOURNEY_LOG_BACKUP_STATUS_SENDING`）再变成发到邮箱的说明。**Enable** 成功须换一句可见状态（勿再用同一句 Backup enabled 让人以为没反应）。详测见 TRACKER 练习记忆备份行。
+5. **邮箱保存或找回**（开卡之后；与开卡反馈分开验）：Journey 角落不再承担登录。**首包关闸**：⋯ → Preferences → 账号行灰、不可点（`idle-account-placeholder`）。**开闸后**：⋯ → Preferences → **用邮箱保存或找回** → **0–1 秒内** `#email-journey-restore-panel` 展开。**Send code** → 立刻见 Sending… 再变成发到邮箱的说明。成功须换一句可见状态。详测见 TRACKER 邮箱登录行。
 6. **列表行只读**：点某一天**不会**展开 Daily Card / Save image（Brief `task-journey-daily-card.md` 未接线）。这不是「开卡点了没反应」。
 7. **字段 `insightSpark`**：仅当当日 Quiet Line 抽中洞察种子句 **且当场打开过** Quiet Line 时，该条（或同日已有条目被补标）带本地 `insightSpark: true`，行末见安静小符号 `◦`（`[data-testid=journey-log-insight-spark]`）。未打开 Quiet Line、或当日句是经典金句 → **无**符号。旧条目缺该字段 → 降级为无标记。刷新后标记仍在。与徽章 / Tea / Sanctuary **无**联动。
 8. **375**：卡可关、不挡 Sit。
