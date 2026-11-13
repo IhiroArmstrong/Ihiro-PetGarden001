@@ -8,7 +8,7 @@ alwaysApply: true
 > **种类表 SSOT**：[`focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md`](../../focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md)（`pr-smoke-failure-classes`）。  
 > 钩子会拦一部分；本文件管 Agent 在钩子之外仍须做的。
 
-1. **红灯先归类，再修或重跑。** 对照种类表。种类 1 / 2 = 已知基建，禁止当产品回归连着重跑。种类 4 = 必须改这个 PR。同一报错最多自动重跑 **1** 次。
+1. **红灯先归类，再修或重跑。** 对照种类表。种类 1 / 2 = 已知基建，禁止当产品回归连着重跑。种类 4 = 必须改这个 PR。同一报错最多自动重跑 **1** 次。同种类**代码补丁**上限、无关档禁止连补：见 `focus-tiger-ci-failure-triage.mdc`「修补上限」。E2E 禁止假关：见 `testing-strategy.mdc`。
 2. **推送前本机必跑。** 非文档推送：husky `pre-push` 跑 `npm run test:e2e:smoke`。超长菜单走完**不**进 pre-push / Required `test:pr-smoke`（见 `PR_SMOKE_FAILURE_CLASSES.md`）。逻辑冒烟已在 `pre-commit` 的 `test:smoke`。紧急跳过须 `FT_SKIP_PRE_PUSH_SMOKE=1`（或旧名 `FT_SKIP_PRE_PUSH_STARTUP=1`）并在 PR 写明。命令别名：`npm run smoke:required`（= `test:pr-smoke`）。PR 描述贴通过/失败一行。
 3. **改用户看得见的东西，同一提交改检查。** 关掉倾诉入口，就不得仍断言「倾诉卡片必须看得见」——读 `shouldAssertA13SurfaceVisible` / 挂载开关；开关关 → 断言不可见或跳过该卡。
 4. **功能 PR 不要给 `src/main.js` 加行。** 上限见 `docs/audit/b1-architecture-gate-baseline.json`（当前 7704）。多出来的逻辑抽到 `src/core/` 或 `src/ui/`。抬上限只能单独开基线 PR，且须 PO 点头。禁止在功能 PR 里 `--write` 基线。`pre-commit` 会先跑行数闸。

@@ -751,7 +751,11 @@ export const RULE_AUTHORITY_TOPICS = [
       /禁止仅凭本地 commit 声称已修复/
     ],
     restatementThreshold: 3,
-    restatementExemptFiles: ['focus-tiger/docs/DEV_WORKFLOW_QUALITY.md'],
+    restatementExemptFiles: [
+      'focus-tiger/docs/DEV_WORKFLOW_QUALITY.md',
+      '.cursor/rules/testing-strategy.mdc',
+      '.cursor/rules/focus-tiger-ci-failure-triage.mdc'
+    ],
     forbiddenOutsideSsot: [
       {
         id: 'local-green-equals-fixed',
@@ -1253,7 +1257,9 @@ export const RULE_AUTHORITY_TOPICS = [
       /只允许 1 个/,
       /RUN_E2E_LOCAL=true/,
       /gate-local-heavy-e2e\.sh/,
-      /run-e2e-changed\.js/
+      /run-e2e-changed\.js/,
+      /E2E 关闭与点击诚信/,
+      /待 CI 验证/
     ],
     topicSignals: [
       /e2e-local-budget/,
@@ -1694,7 +1700,8 @@ export const RULE_AUTHORITY_TOPICS = [
       /Step 0/,
       /Step A/,
       /连续 5 次/,
-      /禁止.*地毯式/
+      /禁止.*地毯式/,
+      /修补上限/
     ],
     topicSignals: [
       /ci-failure-triage/,
@@ -1745,7 +1752,9 @@ export const RULE_AUTHORITY_TOPICS = [
       /test:e2e:menu-reachability/,
       /menu-reachability-trigger-paths/,
       /pr-smoke-path-routes/,
-      /机械闸（T99/
+      /机械闸（T99/,
+      /不扩大必过关卡/,
+      /建议配套/
     ],
     topicSignals: [
       /pr-smoke-failure-classes/,
@@ -1791,7 +1800,8 @@ export const RULE_AUTHORITY_TOPICS = [
     restatementExemptFiles: [
       'focus-tiger/docs/RULES_INDEX.md',
       '.cursor/rules/focus-tiger-ci-failure-triage.mdc',
-      '.cursor/rules/focus-tiger-pr-smoke-gates.mdc'
+      '.cursor/rules/focus-tiger-pr-smoke-gates.mdc',
+      '.cursor/rules/testing-strategy.mdc'
     ]
   },
   {
