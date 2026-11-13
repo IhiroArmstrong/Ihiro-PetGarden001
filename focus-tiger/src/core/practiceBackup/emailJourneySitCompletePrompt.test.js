@@ -39,12 +39,17 @@ const ready = {
 };
 
 describe('emailJourneySitCompletePrompt · T93 D4', () => {
-  it('stays hidden on the first-invite cloud gate', () => {
-    const storage = memoryStorage();
-    assert.equal(
-      evaluateEmailJourneySitCompletePrompt({ ...ready, storage }).reason,
-      'cloud-gate-off'
-    );
+  it('stays hidden when tests force the cloud gate off', () => {
+    setPracticeBackupCloudEnabledForTests(false);
+    try {
+      const storage = memoryStorage();
+      assert.equal(
+        evaluateEmailJourneySitCompletePrompt({ ...ready, storage }).reason,
+        'cloud-gate-off'
+      );
+    } finally {
+      setPracticeBackupCloudEnabledForTests(true);
+    }
   });
 
   it('shows once after a sit when unbound, then forever-dismiss hides it', () => {
@@ -62,7 +67,7 @@ describe('emailJourneySitCompletePrompt · T93 D4', () => {
     );
     assert.ok(storage.getItem(EMAIL_JOURNEY_SIT_COMPLETE_PROMPT_KEY));
     } finally {
-      setPracticeBackupCloudEnabledForTests(false);
+      setPracticeBackupCloudEnabledForTests(true);
     }
   });
 
@@ -95,7 +100,7 @@ describe('emailJourneySitCompletePrompt · T93 D4', () => {
       'already-bound'
     );
     } finally {
-      setPracticeBackupCloudEnabledForTests(false);
+      setPracticeBackupCloudEnabledForTests(true);
     }
   });
 
@@ -128,7 +133,7 @@ describe('emailJourneySitCompletePrompt · T93 D4', () => {
       'other-post-sit'
     );
     } finally {
-      setPracticeBackupCloudEnabledForTests(false);
+      setPracticeBackupCloudEnabledForTests(true);
     }
   });
 });

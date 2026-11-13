@@ -8,36 +8,36 @@ import test from 'node:test';
 import {
   evaluateSourceCloudGate,
   findForbiddenCloudGateInlines,
-  SOURCE_OFF_LINE
+  SOURCE_ON_LINE
 } from './verify-first-pack-cloud-gate.js';
 
-test('source default false passes', () => {
-  assert.equal(evaluateSourceCloudGate(`${SOURCE_OFF_LINE}\n`).ok, true);
+test('source default true passes', () => {
+  assert.equal(evaluateSourceCloudGate(`${SOURCE_ON_LINE}\n`).ok, true);
 });
 
-test('source default true fails (would pack a live email restore)', () => {
+test('source default false fails (would hide email restore)', () => {
   const result = evaluateSourceCloudGate(
-    'export let practiceBackupCloudEnabled = true;\n'
+    'export let practiceBackupCloudEnabled = false;\n'
   );
   assert.equal(result.ok, false);
 });
 
-test('minified dist with gate ON fails', () => {
-  const hits = findForbiddenCloudGateInlines([
-    {
-      file: 'dist/assets/app.js',
-      text: 'let practiceBackupCloudEnabled=!0,foo=1'
-    }
-  ]);
-  assert.equal(hits.length, 1);
-  assert.equal(hits[0].token, 'practiceBackupCloudEnabled=!0');
-});
-
-test('clean dist with gate off has no forbidden inline', () => {
+test('minified dist with gate OFF fails', () => {
   const hits = findForbiddenCloudGateInlines([
     {
       file: 'dist/assets/app.js',
       text: 'let practiceBackupCloudEnabled=!1,foo=1'
+    }
+  ]);
+  assert.equal(hits.length, 1);
+  assert.equal(hits[0].token, 'practiceBackupCloudEnabled=!1');
+});
+
+test('dist with gate on has no forbidden inline', () => {
+  const hits = findForbiddenCloudGateInlines([
+    {
+      file: 'dist/assets/app.js',
+      text: 'let practiceBackupCloudEnabled=!0,foo=1'
     }
   ]);
   assert.equal(hits.length, 0);

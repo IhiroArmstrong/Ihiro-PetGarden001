@@ -1,0 +1,1 @@
+| 一份事实源第 4 刀 | UI可见 | 待人工测试 | 帮助中心见 KB-FUNC-0044–0050；`yinMayRetrieve: false`；阿寅问走诚实空态。自动化：`node --test src/core/confide/kbHelpSingleSourceK4.test.js`。依赖 #1705 合入后再叠 PR 或 rebase。 | — | — | — | Help Center → 收工/置顶/窗口等 | 2026-11-13 |

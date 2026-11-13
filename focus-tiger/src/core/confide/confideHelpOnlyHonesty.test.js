@@ -17,7 +17,14 @@ const HELP_ONLY_IDS = new Set([
   'HELP-DEVICES-SAFARI',
   'HELP-APPLE-HEALTH-LOG',
   'KB-FUNC-0040',
-  'KB-FUNC-0041'
+  'KB-FUNC-0041',
+  'KB-FUNC-0044',
+  'KB-FUNC-0045',
+  'KB-FUNC-0046',
+  'KB-FUNC-0047',
+  'KB-FUNC-0048',
+  'KB-FUNC-0049',
+  'KB-FUNC-0050'
 ]);
 
 describe('help-only catalog rows stay on the live honesty empty state', () => {
@@ -39,7 +46,10 @@ describe('help-only catalog rows stay on the live honesty empty state', () => {
       '呼吸练习盘点',
       'KB-FUNC-0006 inventory',
       'Sit with a question inventory',
-      'Presence Field inventory'
+      'Presence Field inventory',
+      'Wrap-up time inventory',
+      'Art Collection inventory',
+      'Log to Health inventory'
     ]) {
       const probe = probeProductKnowledgeCatalog(text);
       assert.equal(HELP_ONLY_IDS.has(probe.id), false, `${text} -> ${probe.id}`);

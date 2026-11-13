@@ -13,8 +13,8 @@ import {
 import { practiceBackupCloudEnabled } from './practiceBackupCloudEnabled.js';
 
 describe('emailJourneyRestoreStatus · T93 D3', () => {
-  it('keeps the first-invite client cloud gate off', () => {
-    assert.equal(practiceBackupCloudEnabled, false);
+  it('keeps the direct-channel client cloud gate on', () => {
+    assert.equal(practiceBackupCloudEnabled, true);
   });
 
   it('rejects empty or malformed email before send', () => {

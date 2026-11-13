@@ -102,7 +102,14 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-reminder': Object.freeze(['KB-FUNC-0033']),
   'kb-live-sound': Object.freeze(['KB-FUNC-0037']),
   'kb-live-contemplative-inquiry': Object.freeze(['KB-FUNC-0040']),
-  'kb-live-presence-field': Object.freeze(['KB-FUNC-0041'])
+  'kb-live-presence-field': Object.freeze(['KB-FUNC-0041']),
+  'kb-live-work-end': Object.freeze(['KB-FUNC-0044']),
+  'kb-live-always-on-top': Object.freeze(['KB-FUNC-0045']),
+  'kb-live-window-layout': Object.freeze(['KB-FUNC-0046']),
+  'kb-live-input-rhythm': Object.freeze(['KB-FUNC-0047']),
+  'kb-live-health-shortcut-log': Object.freeze(['KB-FUNC-0048']),
+  'kb-live-newsletter': Object.freeze(['KB-FUNC-0049']),
+  'kb-live-art-collection': Object.freeze(['KB-FUNC-0050'])
 });
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform / concept facts). */

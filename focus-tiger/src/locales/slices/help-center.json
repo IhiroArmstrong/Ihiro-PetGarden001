@@ -121,7 +121,21 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0040_TITLE": "Sit with a question",
     "HELP_CENTER_ARTICLE_KB_FUNC_0040_BODY": "Open More (⋯) or the drawer → Inspiration → Sit with a question.\n\nIt is an optional awareness sit with a classic koan. It is not a religious practice and not therapy. You can skip it or leave anytime.\n\nYin only points here and does not read the question or steps aloud.",
     "HELP_CENTER_ARTICLE_KB_FUNC_0041_TITLE": "Presence Field",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "Open More (⋯) or the drawer → Preferences → Presence Field.\n\nYou can show a sit-together glow while focusing. It is an atmosphere of sitting together — not a focus score, not mind-reading, and not therapy.\n\nIt stays off until you turn it on."
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "Open More (⋯) or the drawer → Preferences → Presence Field.\n\nYou can show a sit-together glow while focusing. It is an atmosphere of sitting together — not a focus score, not mind-reading, and not therapy.\n\nIt stays off until you turn it on.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0044_TITLE": "Wrap-up time",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0044_BODY": "Open More (⋯) or the drawer → Preferences → Wrap-up time.\n\nYou can choose a time for a gentle check-in at the end of your day — not a sleep coach.\n\nOff until you turn it on. Yin only points here.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0045_TITLE": "Keep in front",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0045_BODY": "Open More (⋯) or the drawer → Preferences → Keep in front (Mac or Windows desktop app only).\n\nThe companion window can stay above other apps. Off by default.\n\nSafari and the website never pin themselves. Yin only points here.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0046_TITLE": "Window",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0046_BODY": "Open More (⋯) or the drawer → Preferences → Window (desktop app only).\n\nChoose a regular window, a modest companion window beside your work, or system fullscreen.\n\nYin only points here.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0047_TITLE": "Focus rhythm",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0047_BODY": "Open More (⋯) or the drawer → Preferences → Focus rhythm (Mac desktop app only).\n\nOff by default. When on, this Mac may notice typing cadence and backspaces — not your words, window titles, or a score.\n\nSafari and the website never listen. Yin only points here.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0048_TITLE": "Log to Health (Shortcuts)",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0048_BODY": "Open More (⋯) or the drawer → Preferences → Log to Health (Shortcuts).\n\nOff by default. After a sit, a button can open Shortcuts to run your mindful-minutes recipe on iPhone or iPad in Safari — not a HealthKit read.\n\nThe Mac desktop app does not promise this button. Yin only points here.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0049_TITLE": "Stay in touch",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0049_BODY": "Open More (⋯) or the drawer → Preferences → Stay in touch.\n\nOptional email for known-error fixes and release notes — not a sales list. Unsubscribe anytime.\n\nYin only points here.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_TITLE": "Yin's Art Collection",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "Open More (⋯) or the drawer → Inspiration → Yin's Art Collection.\n\nVessel-inspired drawings you can buy or save. Purchase needs an email; records can be restored on another device with that email.\n\nYin only points here and does not read prices aloud."
   },
   "zh": {
     "HELP_CENTER_MENU_LABEL": "帮助中心",
@@ -245,7 +259,21 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0040_TITLE": "带着问题坐一会儿",
     "HELP_CENTER_ARTICLE_KB_FUNC_0040_BODY": "打开 ⋯ 或底栏抽屉 → 灵感 → 带着问题坐一会儿。\n\n这是一段可选的觉察练习，问题来自古典公案。它不属于信仰，也不是心理咨询。可以先不进，也可以随时离开。\n\n阿寅只指路，不会把问题和步骤念出来。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0041_TITLE": "智能场",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 智能场。\n\n专注时可以显示同坐光晕。这是同坐的氛围，不是专注度、不是读心、不是疗效。\n\n默认关闭，直到你打开。"
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 智能场。\n\n专注时可以显示同坐光晕。这是同坐的氛围，不是专注度、不是读心、不是疗效。\n\n默认关闭，直到你打开。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0044_TITLE": "收工时间",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0044_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 收工时间。\n\n可自选一天里轻轻对照收工的时间问一句，不是睡眠教练。\n\n默认关闭，打开才提醒。阿寅只指路。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0045_TITLE": "始终在最前",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0045_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 始终在最前（仅 Mac / Windows 桌面壳）。\n\n陪伴窗口可浮在其它应用之上，默认关。Safari 与网页版不会置顶。阿寅只指路。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0046_TITLE": "窗口",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0046_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 窗口（仅桌面壳）。\n\n可选普通窗口、窄伴窗口或系统全屏。阿寅只指路。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0047_TITLE": "专注节律",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0047_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 专注节律（仅 Mac 桌面壳）。\n\n默认关。打开后本机可觉察按键节奏与回删，不记你打的字、窗口名，也不打分。Safari 与网页版不会监听。阿寅只指路。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0048_TITLE": "记入健康（快捷指令）",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0048_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 记入健康（快捷指令）。\n\n默认关。同坐结束后可出现按钮，在 iPhone / iPad 的 Safari 里打开快捷指令跑你的正念分钟食谱，不读取 HealthKit。\n\nMac 桌面壳不承诺此按钮。阿寅只指路。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0049_TITLE": "保持联络",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0049_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 保持联络。\n\n可选留邮箱收已知问题修复与版本说明，不是推销名单，随时可退订。阿寅只指路。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_TITLE": "阿寅的艺术品",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "打开 ⋯ 或底栏抽屉 → 灵感 → 阿寅的艺术品。\n\n受器物启发的画，可购买或保存。购买须留邮箱，换设备可用该邮箱找回记录。\n\n阿寅只指路，不会念价格。"
   },
   "ja": {
     "HELP_CENTER_MENU_LABEL": "ヘルプセンター",
@@ -369,6 +397,20 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0040_TITLE": "問いと一緒に坐る",
     "HELP_CENTER_ARTICLE_KB_FUNC_0040_BODY": "⋯ または引き出し → インスピレーション → 問いと一緒に坐る。\n\n古典公案の問いを持って坐る、任意の気づきの練習です。宗教的な実践でもカウンセリングでもありません。今はしない、いつでもやめる、どちらも大丈夫です。\n\n寅は場所を示すだけで、問いと手順を読み上げません。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0041_TITLE": "同席の場",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "⋯ または引き出し → 設定 → 同席の場。\n\n集中中に同席の光を出せます。一緒に座る雰囲気であり、集中の点数でも読心でも治療でもありません。\n\n自分で入れるまでオフのままです。"
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "⋯ または引き出し → 設定 → 同席の場。\n\n集中中に同席の光を出せます。一緒に座る雰囲気であり、集中の点数でも読心でも治療でもありません。\n\n自分で入れるまでオフのままです。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0044_TITLE": "切り上げの時間",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0044_BODY": "⋯ または引き出し → 設定 → 切り上げの時間。\n\n一日の終わりにそっと確認する時刻を選べます。睡眠コーチではありません。\n\nオフが既定。寅は場所を示すだけです。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0045_TITLE": "常に手前に表示",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0045_BODY": "⋯ または引き出し → 設定 → 常に手前に表示（Mac / Windows デスクトップアプリのみ）。\n\n伴走ウィンドウを他のアプリの上に置けます。既定はオフ。Safari とウェブでは使えません。寅は場所を示すだけです。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0046_TITLE": "ウィンドウ",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0046_BODY": "⋯ または引き出し → 設定 → ウィンドウ（デスクトップアプリのみ）。\n\n通常・コンパニオン・フルスクリーンを選べます。寅は場所を示すだけです。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0047_TITLE": "集中リズム",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0047_BODY": "⋯ または引き出し → 設定 → 集中リズム（Mac デスクトップアプリのみ）。\n\n既定はオフ。オン時はキー間隔とバックスペースにだけ反応し、文字やタイトルは取らず、スコアにもしません。Safari とウェブは監視しません。寅は場所を示すだけです。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0048_TITLE": "Health へ記録（ショートカット）",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0048_BODY": "⋯ または引き出し → 設定 → Health へ記録（ショートカット）。\n\n既定はオフ。同坐のあと、iPhone / iPad の Safari でショートカットを開くボタンが出ることがあります（HealthKit は読みません）。Mac デスクトップでは保証しません。寅は場所を示すだけです。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0049_TITLE": "つながる",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0049_BODY": "⋯ または引き出し → 設定 → つながる。\n\n任意のメールで既知の不具合修正やリリース案内を受け取れます。販売リストではなく、いつでも解除できます。寅は場所を示すだけです。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_TITLE": "寅の芸術コレクション",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "⋯ または引き出し → インスピレーション → 寅の芸術コレクション。\n\n器に着想した絵を購入・保存できます。購入にはメールが必要で、別端末はそのメールで取り戻せます。\n\n寅は場所を示すだけで、価格は読み上げません。"
   }
 }
