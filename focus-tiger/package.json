@@ -114,6 +114,8 @@
     "audit:kb-live-entries:sync": "node scripts/audit-kb-live-entries.js --write",
     "audit:kb-live-gap": "node scripts/audit-kb-live-gap.js",
     "audit:kb-live-gap:sync": "node scripts/audit-kb-live-gap.js --write",
+    "audit:menu-chrome-census": "node scripts/audit-menu-chrome-census.js",
+    "audit:menu-chrome-census:sync": "node scripts/audit-menu-chrome-census.js --write",
     "test:observe-shuffle-screen": "npm --prefix desktop run companion:observe-shuffle-screen",
     "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe",
     "test:constrained-gen-warm-cold-probe": "npm --prefix desktop run companion:constrained-gen-warm-cold",
