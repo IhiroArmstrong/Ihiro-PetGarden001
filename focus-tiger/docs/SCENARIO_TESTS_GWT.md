@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-11-11  
+生成日期：2026-11-13  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -2708,7 +2708,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 | Z-2 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | 宽屏 ⋯ / 窄屏抽屉 Journey log → 0–1 秒内：菜单行 `:active` 按压缩 |
 | Z-3 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | 回流：Close / 点外侧 / Esc → 0–1 秒内：关钮 `:active` 按压 + 卡开 |
 | Z-4 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | Compass Reflect（与场景 Y 交叉）：点 Reflect 芯片 → 0–1 秒内：芯片 |
-| Z-5 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | 备份角（开卡之后；与开卡反馈分开验）：角落备份链 → 0–1 秒内：链 `:active` 下压 + |
+| Z-5 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | 邮箱保存或找回（开卡之后；与开卡反馈分开验）：Journey 角落不再承担登录。首包关闸：⋯ → P |
 | Z-6 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | 列表行只读：点某一天不会展开 Daily Card / Save image（Brief `task |
 | Z-7 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | 字段 `insightSpark`：仅当当日 Quiet Line 抽中洞察种子句 且当场打开过 Q |
 | Z-8 | P1 | 已在 `journeyLogGate.test.js` 覆盖；完整链路仍须人工 | 375：卡可关、不挡 Sit。 |
@@ -2783,10 +2783,10 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 页面 URL：http://localhost:5173/?product=1
 
 **When**
-- 备份角（开卡之后；与开卡反馈分开验）：角落备份链
+- 邮箱保存或找回（开卡之后；与开卡反馈分开验）：Journey 角落不再承担登录。首包关闸：⋯
 
 **Then**
-- 0–1 秒内：链 `:active` 下压 + `#journey-log-backup-panel` 展开或收起。Send code → 立刻见 Sending…（`JOURNEY_LOG_BACKUP_STATUS_SENDING`）再变成发到邮箱的说明。Enable 成功须换一句可见状态（勿再用同一句 Backup enabled 让人以为没反应）。详测见 TRACKER 练习记忆备份行。
+- Preferences → 账号行灰、不可点（`idle-account-placeholder`）。开闸后：⋯ → Preferences → 用邮箱保存或找回 → 0–1 秒内 `#email-journey-restore-panel` 展开。Send code → 立刻见 Sending… 再变成发到邮箱的说明。成功须换一句可见状态。详测见 TRACKER 邮箱登录行。
 
 #### Z-6
 

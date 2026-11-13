@@ -1,9 +1,9 @@
 # MENU_CHROME_CENSUS.md — 角落按钮 vs 菜单对照
 
 创建日期：2026-09-14  
-修订：2026-09-26 钉第 3 条「轻量身份 Brief」重新评估触发（无运行时）  
-状态：**纯文档 · 不改菜单运行时**  
-基线：`origin/develop` `39bb141d`（#759 已合）；本修订相对当时 `origin/develop` tip  
+修订：2026-11-13 T93 D5 把第 3 条灰行剧本改成 Preferences 真入口（无运行时）  
+状态：**纯文档 · 不改菜单运行时**（真入口已由 T93 D3 #1679 合入）  
+基线：`origin/develop` `0b2ebc90`；第 3 条运行时锚 `#1679`  
 权威路径：`focus-tiger/docs/MENU_CHROME_CENSUS.md`  
 姊妹审计：[`LABEL_HINT_TIP_AUDIT.md`](./LABEL_HINT_TIP_AUDIT.md)（说明信号，不重复）  
 原则硬句：[`PRINCIPLES.md`](./PRINCIPLES.md)「菜单逃生舱」  
@@ -21,10 +21,10 @@
 |---|---|---|---|---|---|---|
 | **1** | 菜单入口不能因叠层卡死消失；挂在最外层、不依赖 overlay / sprite 仲裁；Esc 或长按空白清空叠层 | **同意逃生舱。Esc 只关最上一层。不做长按空白清空全部。** 第一刀做「叠层时入口仍在」；Esc 放第二刀 | **已完成行为。** #757：宽屏 `⋯` / 窄屏 grabber 在 overlay suppress 时仍可见可开。#759：`overlayEscapeStack` — Esc 只关顶层（菜单 → 再 Esc 才关 Reflection） | **本 PR 写入 PRINCIPLES 硬句。** 此前只有代码注释，原则文档没有 | 长按清空：**按约定不做。** 硬句若未合入则文档仍缺（本 PR 补） | **无第三刀代码。** 合入本 PR 后本条关文档账。人工复测 #757+#759 |
 | **2** | 菜单收纳所有「只有按钮、没有入口」的功能（语言、Support Yin、寅币商店、设置等）作降级路径 | **同意普查，作为第二刀**；不把快捷按钮拆掉 | **行为大半早已在菜单里；#759 只补了漏项 Zen Cinema。** 语言 / 提醒 / 寅币 / 倾诉 / 会员 CTA 已在 `listSecondaryChromeEntries`。Support Yin **五卡（仅 FAB 模态；`SupportYinModalUI.js`）**——菜单只有一行 membership 降级入口，是 2026-08-15 既有产品决定，不是漏挂 | **#759 没有交出对照表**（这才叫普查没做完）。本文件补表 | 表里标「故意不进菜单」的项（环境音 ♪、`?` 帮助、左上日历）**不改为菜单行**，除非你另拍板。Support 五卡是否再挂进菜单：**不默认改**（**2026-09-15 拍板**：五卡不进菜单；菜单 membership 一行已够） | **无菜单重写。** 新角落按钮必须先改本表再决定是否进 `listSecondaryChromeEntries` |
-| **3** | 要不要基础 Login/Logout；至少「恢复购买 / 账号与设备」占位 | **同意先占位、不急着做账号** | **占位已完成。** #759：Preferences → Sign in (coming soon)，`interactive: false`，`testId=idle-account-placeholder` | 占位文案在 locale `ACCOUNT_MENU_PLACEHOLDER` | **真 Login / Logout / 恢复购买：未开工。** 统一「轻量身份 / 账号与设备」Brief **现在不写**（证据不够：Restore / 备份 OTP / Circle 暗号 仍各自撑得住；无「因无统一身份而出事」的具体投诉账）。**禁止**把灰行做成假可点 | **重新评估触发（2026-09-26 PO）**：（A）开工 **Circle 跨设备认人**（复用现有邮箱 OTP 把同一人绑回 member；**不是** 2e 昵称层——2e 已合 #615，本刀明确不做跨设备）时，**必须先**写统一 Brief，把 Restore / 备份 OTP / Circle / YPE 怎么接到同一入口说清；（B）若在（A）之前出现「换设备 / 清缓存后东西找不回来」的**具体投诉 ≥3 次**，提前写 Brief，不必等（A）。在此之前维持灰行。禁止无投诉、无跨设备开工令就写架构预判 |
+| **3** | 要不要基础 Login/Logout；至少「恢复购买 / 账号与设备」占位 | **同意先占位、不急着做账号**；T93 另开「用邮箱保存或找回」 | **双态。** 开闸：#1679 Preferences 真入口 `idle-account-email-restore`，开 `#email-journey-restore-panel`。首包关闸（2026-11-12）：Web 仍灰行 `idle-account-placeholder`。Setapp / MAS：`idle-account-store-off`，不可点。Journey 角落不再当登录。购买恢复仍走原卡 | 开闸文案切片 `email-journey-restore`；关闸占位 `ACCOUNT_MENU_PLACEHOLDER` | **Circle 统一 Login / Logout /「账号与设备」仍不写。** 禁止把商店渠道做成假可点 | **统一身份触发仍未到（2026-09-26 PO）**：（A）开工 **Circle 跨设备认人** 须先写统一 Brief；（B）或换设备/清缓存找不回投诉 ≥3。T93 旅程找回 **不算** 统一 Login。首包关闸发，不对客打开邮箱找回 |
 | **4** | 入口放右上角齿轮或 `⋯`；左上留给日历；不要两边都塞菜单 | **同意右上 `⋯`，左上日历** | **早已如此，两刀都没改位置。** 宽屏 `#ft-wide-more-btn` 右上；窄屏 grabber 底缘抽屉。左上仍是打卡/热力图 | 代码里曾有 TODO「audit 后再搬菜单位置」——**位置已拍死，不应再搬** | 无功能缺口 | **禁止再提案左上汉堡。** TODO 改为指向本文 |
 
-**一句话：** 四条里，1/3/4 的约定行为已在 #757+#759；2 的「漏项补行」已做，缺的是这张表；1 的「写成硬原则」本 PR 补。没有第三条代码刀，除非触发点到了要写统一身份 Brief / 真账号，或把 Support 五卡再挂进菜单（**2026-09-15 拍板：五卡不必**；五卡仅 FAB，菜单已有 membership 入口）。**2026-09-26：** 第 3 条触发点已钉进上表「下一步」，不是无限期空置、也不是现在写 Brief。
+**一句话：** 四条里，1/4 的约定行为已在 #757+#759；第 3 条代码已有 Preferences 真入口（#1679），首包关闸时 Web 仍灰行；Circle 统一账号仍不写。2 的「漏项补行」已做。Support 五卡不必进菜单（**2026-09-15 拍板**）。
 
 ---
 
@@ -48,7 +48,7 @@
 | Practice | companion、ground-exercise、five-moments、honesty、journey-log、presence-signals、yin-coin、yin-art、confide |
 | Inspiration | daily-quote、**zen-cinema**（#759 补漏）、mustard-seed-seal（解锁后）、静思印、wallpapers |
 | Not alone | quiet-together、focus-circle |
-| Preferences | reminder、language、newsletter、**account 占位**（#759）、**help-center**、local-backup、**Subscription**（第一刀） |
+| Preferences | reminder、language、newsletter、**账号行**（开闸 `idle-account-email-restore`；关闸 Web 灰行；商店 `store-off`）、**help-center**、local-backup、**Subscription**（第一刀） |
 | You are not alone | quiet-together、focus-circle、**community**（第二刀） |
 | 其它 | membership CTA/unlocked；Rituals 场景（按 entitlement 锁） |
 
@@ -69,7 +69,7 @@
 | 项 | 补前 | 补后 |
 |---|---|---|
 | Zen Cinema | handler 已有，列表漏了 | Inspiration 组可见并可开卡 |
-| Sign in | 无 | Preferences 灰行，不可点 |
+| Sign in / 用邮箱保存或找回 | 无 | 开闸：Preferences 真入口；关闸 Web：灰行不可点；商店渠道不可点 |
 
 ---
 
@@ -90,11 +90,6 @@
 
 新加 Idle 常驻可点 chrome 时：先在本表 2.1–2.3 加一行，再决定是否进 `listSecondaryChromeEntries`。只加 FAB、不改本表 = 普查回退。
 
-## 5. 宽屏五图标索引（2026-10-16 · 未开工）
+## 5. 宽屏五图标索引（2026-10-16 · 三刀已合）
 
-方向已点头，运行时未改。登录灰行与「印揭晓前不进菜单」维持上文。付费行、分组和扇形的后续三刀见 [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。本表 §1 第 4 条「⋯ 在宽屏、左上留给日历」在第三刀之前仍然有效；第三刀只把展开方式改成底部 `⋯` 上方的五个图标，不把入口搬去左上。
-
-
-## T93 D3（2026-11-10）
-
-第 3 条灰行已改为 Preferences 真入口 `idle-account-email-restore`（开 `#email-journey-restore-panel`）。Journey 角落不再当登录。Setapp / MAS 仍不可点。购买恢复仍走原卡。
+「印揭晓前不进菜单」维持。账号行见 §1 第 3 行（开闸真入口 / 首包关闸灰行）。付费行、分组和扇形见 [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。本表 §1 第 4 条「⋯ 在宽屏、左上留给日历」仍然有效。
