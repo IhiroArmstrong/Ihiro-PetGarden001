@@ -72,7 +72,7 @@ test('help center article count matches helpCenterVisible rows', () => {
   const recon = reconcileHelpCenterArticleCount();
   assert.equal(recon.delta, 0);
   assert.equal(recon.articleCount, recon.helpVisibleCount);
-  assert.equal(recon.articleCount, 50);
+  assert.equal(recon.articleCount, 57);
 });
 
 test('help center includes breath inventory article KB-FUNC-0006', () => {

@@ -129,6 +129,31 @@ const KB_DRAFT_LOCALE_KEYS = Object.freeze({
     'PRACTICE_STUDY_MENU_LABEL',
     'PRACTICE_STUDY_INTRO',
     'PRACTICE_STUDY_NEVER_BODY'
+  ]),
+  'KB-FUNC-0044': Object.freeze(['WORK_END_MENU_LABEL', 'WORK_END_DAILY_BLURB']),
+  'KB-FUNC-0045': Object.freeze([
+    'ALWAYS_ON_TOP_MENU_LABEL',
+    'ALWAYS_ON_TOP_TOGGLE_HINT'
+  ]),
+  'KB-FUNC-0046': Object.freeze([
+    'WINDOW_LAYOUT_MENU_LABEL',
+    'WINDOW_LAYOUT_COMPANION_HINT'
+  ]),
+  'KB-FUNC-0047': Object.freeze([
+    'INPUT_RHYTHM_MENU_LABEL',
+    'INPUT_RHYTHM_TOGGLE_HINT'
+  ]),
+  'KB-FUNC-0048': Object.freeze([
+    'HEALTH_SHORTCUT_MENU_LABEL',
+    'HEALTH_SHORTCUT_PREF_HINT'
+  ]),
+  'KB-FUNC-0049': Object.freeze([
+    'NEWSLETTER_MENU_LABEL',
+    'NEWSLETTER_CARD_BLURB'
+  ]),
+  'KB-FUNC-0050': Object.freeze([
+    'ART_COLLECTION_MENU_LABEL',
+    'ART_COLLECTION_BLURB'
   ])
 });
 
@@ -180,6 +205,24 @@ describe('audit-kb-live-gap helpers', () => {
       JSON.parse(
         readFileSync(
           join(ROOT, 'src/locales/slices/mindflow-nebula.json'),
+          'utf8'
+        )
+      ).en,
+      JSON.parse(
+        readFileSync(join(ROOT, 'src/locales/slices/work-end.json'), 'utf8')
+      ).en,
+      JSON.parse(
+        readFileSync(join(ROOT, 'src/locales/slices/always-on-top.json'), 'utf8')
+      ).en,
+      JSON.parse(
+        readFileSync(join(ROOT, 'src/locales/slices/window-layout.json'), 'utf8')
+      ).en,
+      JSON.parse(
+        readFileSync(join(ROOT, 'src/locales/slices/input-rhythm.json'), 'utf8')
+      ).en,
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'src/locales/slices/health-shortcut-log.json'),
           'utf8'
         )
       ).en,

@@ -1211,6 +1211,56 @@
 > **权威源（0042–0043 草稿）**：`src/locales/slices/mindflow-nebula.json` · `src/locales/slices/co-practice-research-consent.json` · `src/core/mindflowNebula/mindflowNebulaStore.js` · `src/core/coPracticeResearchConsent.js` · `src/core/practiceBackup/localBackupStorageRegistry.js`
 <!-- kb-k3-t84-drafts:end -->
 
+### 4.17 电脑壳与共修线（已通过 · 仅帮助中心 · 第 4 刀）
+
+> **Status**：`task-kb-help-single-source.md` 第 4 刀。进目录、`yinMayRetrieve: false`。`account` 文案仍等 T93。
+
+```yaml
+- id: KB-FUNC-0044
+  标题: Wrap-up time
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [WORK_END_MENU_LABEL, WORK_END_DAILY_BLURB]
+
+- id: KB-FUNC-0045
+  标题: Keep in front
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [ALWAYS_ON_TOP_MENU_LABEL, ALWAYS_ON_TOP_TOGGLE_HINT]
+
+- id: KB-FUNC-0046
+  标题: Window (desktop)
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [WINDOW_LAYOUT_MENU_LABEL, WINDOW_LAYOUT_COMPANION_HINT]
+
+- id: KB-FUNC-0047
+  标题: Focus rhythm
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [INPUT_RHYTHM_MENU_LABEL, INPUT_RHYTHM_TOGGLE_HINT]
+
+- id: KB-FUNC-0048
+  标题: Log to Health (Shortcuts)
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [HEALTH_SHORTCUT_MENU_LABEL, HEALTH_SHORTCUT_PREF_HINT]
+
+- id: KB-FUNC-0049
+  标题: Stay in touch
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [NEWSLETTER_MENU_LABEL, NEWSLETTER_CARD_BLURB]
+
+- id: KB-FUNC-0050
+  标题: Yin's Art Collection
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [ART_COLLECTION_MENU_LABEL, ART_COLLECTION_BLURB]
+```
+
+> **权威源（0044–0050）**：`src/locales/slices/work-end.json` · `always-on-top.json` · `window-layout.json` · `input-rhythm.json` · `health-shortcut-log.json` · `en.json`（Newsletter）· `ArtCollectionPanelUI.js`
+
 ### 4.3 内部排障草案（不进倾诉索引）
 
 ```yaml

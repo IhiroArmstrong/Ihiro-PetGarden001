@@ -38,16 +38,16 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-11-13 · 56 live rows · 50 approved catalog ids
+**Snapshot**: 2026-11-13 · 56 live rows · 57 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 18 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 15 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
-| conditional/gated-off without approved KB | 6 | PO scope before drafting |
+| conditional/gated-off without approved KB | 2 | PO scope before drafting |
 | cross-cutting approved (no live row) | 17 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
@@ -55,10 +55,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | liveId | liveStatus | menuPath | labelKeys |
 |---|---|---|---|
 | `kb-live-mustard-seed-seal` | entitlement-gated | ⋯ → Inspiration → Mustard Seed · Sumeru (after unlock) | `MUSTARD_SEED_SEAL_MENU_LABEL` |
-| `kb-live-art-collection` | live | ⋯ → Inspiration → Yin's Art Collection | `ART_COLLECTION_MENU_LABEL` |
 | `kb-live-mindflow-nebula` | live | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` |
-| `kb-live-health-shortcut-log` | live | ⋯ → Preferences → Log to Health (Shortcuts) | `HEALTH_SHORTCUT_MENU_LABEL` |
-| `kb-live-newsletter` | live | ⋯ → Preferences → Stay in touch | `NEWSLETTER_MENU_LABEL` `NEWSLETTER_MENU_CONFIRMED` |
 | `kb-live-practice-study` | live | ⋯ → Preferences → Practice Study | `PRACTICE_STUDY_MENU_LABEL` |
 | `kb-live-archive-seal-ca-01-old-pond` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-01) | `CONTEMPLATIVE_ARCHIVE_CA01_MENU_LABEL` |
 | `kb-live-archive-seal-ca-02-cherry-blossoms` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-02) | `CONTEMPLATIVE_ARCHIVE_CA02_MENU_LABEL` |
@@ -87,11 +84,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | menuPath | note |
 |---|---|---|---|
-| `kb-live-work-end` | conditional | ⋯ → Preferences → Wrap-up time | conditional / optional surface — draft after PO confirms scope |
 | `kb-live-language` | conditional | ⋯ → Preferences → Language | conditional / optional surface — draft after PO confirms scope |
-| `kb-live-always-on-top` | conditional | ⋯ → Preferences → Keep in front (Electron) | conditional / optional surface — draft after PO confirms scope |
-| `kb-live-window-layout` | conditional | ⋯ → Preferences → Window (Electron) | conditional / optional surface — draft after PO confirms scope |
-| `kb-live-input-rhythm` | conditional | ⋯ → Preferences → Focus rhythm (Electron) | conditional / optional surface — draft after PO confirms scope |
 | `kb-live-account` | conditional | ⋯ → Preferences → Save or restore with email | conditional / optional surface — draft after PO confirms scope |
 
 ### Cross-cutting approved catalog rows (no live row required)

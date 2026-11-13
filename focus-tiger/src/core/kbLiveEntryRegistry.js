@@ -377,7 +377,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js'
     ]),
-    catalogKbIds: Object.freeze([])
+    catalogKbIds: Object.freeze(['KB-FUNC-0050'])
   }),
   Object.freeze({
     id: 'kb-live-quiet-together',
@@ -446,7 +446,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js'
     ]),
-    catalogKbIds: Object.freeze([])
+    catalogKbIds: Object.freeze(['KB-FUNC-0044'])
   }),
   Object.freeze({
     id: 'kb-live-language',
@@ -496,7 +496,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js'
     ]),
-    catalogKbIds: Object.freeze([])
+    catalogKbIds: Object.freeze(['KB-FUNC-0045'])
   }),
   Object.freeze({
     id: 'kb-live-window-layout',
@@ -512,7 +512,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js'
     ]),
-    catalogKbIds: Object.freeze([])
+    catalogKbIds: Object.freeze(['KB-FUNC-0046'])
   }),
   Object.freeze({
     id: 'kb-live-input-rhythm',
@@ -528,7 +528,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js'
     ]),
-    catalogKbIds: Object.freeze([])
+    catalogKbIds: Object.freeze(['KB-FUNC-0047'])
   }),
 
   Object.freeze({
@@ -581,7 +581,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/ui/HealthShortcutLogPreferenceUI.js'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0048'])
   }),
   Object.freeze({
     id: 'kb-live-today-direction',
@@ -635,7 +636,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js'
     ]),
-    catalogKbIds: Object.freeze([])
+    catalogKbIds: Object.freeze(['KB-FUNC-0049'])
   }),
   Object.freeze({
     id: 'kb-live-account',
