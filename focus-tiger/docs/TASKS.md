@@ -549,6 +549,14 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 一份事实源第 2 刀：`listSecondaryChromeEntries` 的非豁免 `proxy` 必须在 `kbLiveEntryRegistry.js` 有一行，缺行 `docs:check` 红灯。豁免表与普查 §2.3 互链。不写帮助正文 / 不链 Sound 0037（第 3 刀）。Brief [`task-kb-help-single-source.md`](../task-briefs/task-kb-help-single-source.md)。
 
+### `t93-email-sign-in-d5` · feature · 文档刀 · 改过时灰行说明书 · 不测真人 · 2026-11-13
+
+T93 D5：普查 / 场景 Z / TRACKER 去掉「永远灰行、没有真入口」的过时句，改成双态：首包关闸 Web 灰行；开闸 Preferences 真入口。不改 `src/`。不测真人。Circle 统一 Login 仍不写。
+
+### `t95-electron-shell-upgrade` · feature · 立即做 · P1 · 9-02b · 准备窗口已开 · 壳先不升 · 2026-11-13
+
+T95 电脑壳升级 + 更新通道。发包装日 2026-12-08。目标大版本 45（对照补丁 45.3.2；实现当天取最新 45 稳定补丁）。升壳合入不晚于 2026-12-01。对客根地址 `https://updates.twinsology.com/`；测试前缀 `/prep/`。存储桶未建；公证未做过。壳版本本回合不改。现在不为手测升级。不是换壳方案。
+
 ### `deep-link-shortcuts-cookbook` · feature · Health 记入钮 + Preferences 开关（feature/health-shortcut-log）；深链 A/B/C 已合 · 2026-11-12
 
 深链 + Shortcuts 食谱。A/B/C 已合（#1675/#1678/#1681）。Health 片：Preferences「结束后可记入健康」（默认关）+ 反思结束 wisdom 面 `shortcuts://` 手势钮（仅 iOS/iPadOS）。不是 T49 原生壳，不是 Ritual Recipe B1。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。
@@ -568,10 +576,6 @@ Help Center：`HELP-DEVICES-SAFARI`、`HELP-APPLE-HEALTH-LOG`；Web 问号块 `o
 ### `pr-smoke-demote-menu-reachability` · feature · 已完成 · T12 后续 · 2026-11-12 · 2026-11-12
 
 从 Required `test:pr-smoke` / pre-push 拿掉 `menu-full-reachability`（种类 1 时序不稳；档间未隔离）。nightly、合入 develop 后仍跑。改菜单路径也不再加跑必过关。不改产品代码。
-
-### `t95-electron-shell-upgrade` · feature · 排队中 · P1 · 9-02b · 域名已拍板 · 壳升级未开工 · 2026-11-12
-
-T95 电脑壳升级 + 更新通道。更新地址已拍板 `https://updates.twinsology.com/`；声明与发布旗本刀写入。存储桶未建；公证未做过。壳升级仍须另口令。现在不为手测升级。不是换壳方案。
 
 ### `ics-reminder-export` · feature · 实现中 · 运行时旁支（依赖深链 A/B 已合） · 2026-11-11
 
