@@ -52,6 +52,7 @@ alwaysApply: true
 | 口令「开工」「立刻开工」等且可能改用户可见回复/等待/路由 | `focus-tiger-brief-before-user-visible.mdc`（`RULES_INDEX` → `brief-before-user-visible`） |
 | CI/smoke/PR checks 失败且未附失败日志 | `focus-tiger-ci-failure-triage.mdc`（`RULES_INDEX` → `ci-failure-triage`） |
 | CI/smoke 红灯归类 / 重跑上限 / 菜单走完是否必跑 | `PR_SMOKE_FAILURE_CLASSES.md`（`pr-smoke-failure-classes`）+ `focus-tiger-ci-failure-triage.mdc` |
+| 编写/修改 E2E 关闭逻辑、冒烟修复汇报、CI 只复现的时序失败 | `testing-strategy.mdc`（关闭诚信 / 诊断 / 正式构建对齐）+ `focus-tiger-ci-failure-triage.mdc`（修补上限） |
 | 推送前必跑冒烟 / `main.js` 行数上限 / 可见性跟开关 | `focus-tiger-pr-smoke-gates.mdc`（常驻 T99）+ `PR_SMOKE_FAILURE_CLASSES.md` |
 | UI/交互回归 bug（菜单无反应、点击无反馈等）且未给锚点 | `focus-tiger-ui-bug-triage.mdc`（`RULES_INDEX` → `ui-bug-triage`） |
 | CI/单测绿但手动复测失败 | `focus-tiger-ui-bug-triage.mdc` **Step A0**（先核对官方 `resetScenario` / `SCENARIO_TESTS`，再怀疑代码） |

@@ -34,7 +34,14 @@ alwaysApply: false
 | **4** 语法 / 夹具 | 修这个 PR |
 | 噪声 `Error: boom` | 忽略（模拟 PWA 注册失败） |
 
-**重跑上限**：同一 PR、同一报错，Agent 最多自动 `gh run rerun` **1** 次；仍红则停下报告。禁止连续重跑 2～3 轮。种类 1 / 2 禁止当产品回归连着重跑。
+**重跑上限**：同一 PR、同一报错，Agent 最多自动 `gh run rerun` **1** 次；仍红则停下报告。禁止连续重跑 2～3 轮。种类 1 / 2 禁止当产品回归连着重跑。禁止同一句报错**不改代码**就重跑碰运气。
+
+**修补上限（与重跑并列）**
+
+- 汇报须写明：**失败档名**、**报错原文**、**所属种类**。
+- 失败档名不是本改动新增的功能 → 先标 **种类 1（菜单走完不稳 / 档间传染）**，请人决定是否单独处理；**禁止**在功能 PR 里为无关档位叠加补丁。
+- 同一类失败**修过 1 次仍红** → **第 2 次必须停下**，汇报根因假设并请人决定，再继续。
+- **禁止**同一类失败连续补第 3 次。
 
 **推送前**：非文档改动须已通过 husky `pre-push` 的 `test:e2e:smoke`（T99）。见 `focus-tiger-pr-smoke-gates.mdc`。
 
@@ -123,9 +130,9 @@ alwaysApply: false
 - `source-read-granularity`：Step B 定点读码时适用
 - `agent-token-cost` §3：仍禁 `gh run watch`；本条不授权轮询
 - `agent-token-cost` §5–§6：CI/smoke 失败排查场景下，本条 Step C 的 **5 轮硬顶**优先于 §5 笼统上限；§6「失败分析摘要」**必须基于 Step A 提取的日志**，禁止臆测
-- `testing-strategy.mdc`（`RULES_INDEX` → `e2e-local-budget`）：修完后本地验证仍遵守 e2e 硬顶；本条不改为本地跑全量
-- `regression-lock` / §7：声称修好仍须五证 + 人工关单；**已合 develop ≠ 已修复**
-- `pr-smoke-failure-classes`：种类表与菜单走完门闩见 `PR_SMOKE_FAILURE_CLASSES.md`；本文件只锁「先归类、限重跑」
+- `testing-strategy.mdc`（`RULES_INDEX` → `e2e-local-budget`）：修完后本地验证仍遵守 e2e 硬顶；本条不改为本地跑全量。E2E **关闭/点击诚信**、失败诊断、CI 只复现时的正式构建对齐见该文件对应节。
+- `regression-lock` / §7：声称修好仍须五证 + 人工关单；**已合 develop ≠ 已修复**。冒烟/E2E 修复汇报：写真实根因与证据（CI 日志、点击被哪一层挡住）；本地须与 CI 同构建方式；**CI 未出结果写「待 CI 验证」**。禁止「看起来修好了 / 应该稳了」；禁止以本地通过代替 CI 通过。
+- `pr-smoke-failure-classes`：种类表与菜单走完门闩见 `PR_SMOKE_FAILURE_CLASSES.md`；本文件只锁「先归类、限重跑、限同种类补丁」
 
 ## 汇报
 
