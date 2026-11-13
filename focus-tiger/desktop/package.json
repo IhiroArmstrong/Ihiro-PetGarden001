@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "bytenode": "^1.7.0",
-    "electron": "^37.2.6",
+    "electron": "45.3.1",
     "electron-builder": "^26.0.12"
   },
   "build": {
@@ -103,8 +103,12 @@
         ]
       }
     ],
+    "dmg": {
+      "title": "Samatia — macOS 13 Ventura or later"
+    },
     "mac": {
       "category": "public.app-category.lifestyle",
+      "minimumSystemVersion": "13.0",
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "entitlements.mac.plist",

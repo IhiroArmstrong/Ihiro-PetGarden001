@@ -4,8 +4,10 @@
  */
 
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { assertDesktopShellPin } from '../../src/core/desktopShellPin.js';
 
 const desktopDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const focusTigerRoot = path.join(desktopDir, '..');
@@ -25,6 +27,14 @@ function assertReleaseQaBootEnvUnset() {
 }
 
 assertReleaseQaBootEnvUnset();
+
+const shellPin = assertDesktopShellPin(
+  JSON.parse(readFileSync(path.join(desktopDir, 'package.json'), 'utf8'))
+);
+if (!shellPin.ok) {
+  console.error(`desktop pack: ${shellPin.error}`);
+  process.exit(1);
+}
 
 const vite = spawnSync('npm', ['run', 'build'], {
   cwd: focusTigerRoot,

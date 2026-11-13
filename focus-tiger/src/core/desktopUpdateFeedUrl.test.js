@@ -44,6 +44,19 @@ describe('desktopUpdateFeedUrl', () => {
     );
   });
 
+  it('accepts the internal /prep/ prefix on the locked host', () => {
+    const result = evaluateUpdateFeedUrl('https://updates.twinsology.com/prep/');
+    assert.equal(result.ok, true);
+    assert.equal(result.url, 'https://updates.twinsology.com/prep/');
+    assert.equal(
+      resolveUpdaterFeedUrl(
+        { FT_UPDATE_FEED_URL: 'https://updates.twinsology.com/prep' },
+        { isPackaged: false }
+      ),
+      'https://updates.twinsology.com/prep/'
+    );
+  });
+
   it('packaged builds default to the canonical URL; unpackaged stay quiet', () => {
     assert.equal(resolveUpdaterFeedUrl({}, { isPackaged: true }), CANONICAL_UPDATE_FEED_URL);
     assert.equal(resolveUpdaterFeedUrl({}, { isPackaged: false }), '');
