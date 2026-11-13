@@ -183,7 +183,7 @@ cd focus-tiger && npm run rules:doc-sync
 | [`.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc`](../../.cursor/rules/focus-tiger-layered-bug-diagnostics.mdc) | **SSOT**：多层系统集成 bug 排查（诊断先于猜测性修复；连续 2 次修复失败须停改逻辑；`layered-bug-diagnostics`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-companion-debug.mdc`](../../.cursor/rules/focus-tiger-companion-debug.mdc) | **SSOT**：调试/优化桌面本地 AI companion（先定点、限日志、循环上限、简单调试不升档；`companion-debug`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-source-read-granularity.mdc`](../../.cursor/rules/focus-tiger-source-read-granularity.mdc) | **SSOT**：源码读取粒度（大文件先定位再片段读；`source-read-granularity`；**按需加载，非 alwaysApply**） |
-| [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶（`e2e-local-budget`）与减少人工测试与审核（`batch-before-human`） |
+| [`.cursor/rules/testing-strategy.mdc`](../../.cursor/rules/testing-strategy.mdc) | **SSOT**：本地 e2e 硬顶（`e2e-local-budget`）、减少人工测试与审核（`batch-before-human`）、E2E 关闭/点击诚信与失败诊断 |
 | [`.cursor/rules/focus-tiger-interaction-feedback.mdc`](../../.cursor/rules/focus-tiger-interaction-feedback.mdc) | Agent 摘要：可点击交互 PR 必答 0–1s / 沉默白名单（**非** SSOT；全文见 `INTERACTION_FEEDBACK_PRINCIPLES.md`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-feature-conflict-review.mdc`](../../.cursor/rules/focus-tiger-feature-conflict-review.mdc) | Agent 摘要：实现前冲突扫描（**非** SSOT；全文见 `FEATURE_CONFLICT_REVIEW.md`；**glob 注入，非 alwaysApply**） |
 | [`.cursor/rules/focus-tiger-scenario-gwt-priority.mdc`](../../.cursor/rules/focus-tiger-scenario-gwt-priority.mdc) | Agent 摘要：场景 E2E 优先级 P0/P1/P2 五维打标 + GWT 生成器重跑（**非** SSOT；全文见 `SCENARIO_TESTS_GWT.md` §编写规范；**glob 注入，非 alwaysApply**） |
@@ -303,6 +303,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-13 | 冒烟失败处理：先归类 + 同种类补丁上限（`ci-failure-triage`）；E2E 禁止假关 / 失败诊断 / 正式构建对齐（`testing-strategy.mdc`）；不扩大必过关卡 + 静态拦截仅建议配套（`PR_SMOKE_FAILURE_CLASSES.md`）。不新开 rules-authority 主题 |
 | 2026-11-12 | `pr-smoke-failure-classes`：超长菜单走完从 Required `test:pr-smoke` / pre-push 拿掉（改菜单路径也不再加跑）。nightly + 合入 develop 后仍跑。**已废止**：改菜单路径时 `pr-smoke` 额外一步仍算必过关 |
 | 2026-11-09 | T99：必跑冒烟改为机械闸（`pre-push` `test:e2e:smoke`、行数闸前移、玻璃卡读挂载开关）。SSOT 仍 `PR_SMOKE_FAILURE_CLASSES.md`；常驻 `.cursor/rules/focus-tiger-pr-smoke-gates.mdc`。**已废止**：仅靠 `pre-push` 跑 `test:e2e:startup` 即视为必跑已拦 |
 | 2026-11-05 | 新增 `git-pr-next-step-gate`：下一步须先查**有没有 PR**（OPEN 也算开发可能已完成）；合没合只决定待合 vs 已在 develop。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/focus-tiger-pr-next-step-gate.mdc` |
