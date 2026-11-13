@@ -30,6 +30,7 @@ import { runLocalBackupCoverageAudit } from './audit-local-backup-coverage.js';
 import { runSharedResourcesResetCoverageAuditCli } from './audit-shared-resources-reset-coverage.js';
 import { runKbLiveEntryAudit } from './audit-kb-live-entries.js';
 import { runKbLiveGapAudit } from './audit-kb-live-gap.js';
+import { runMenuChromeCensusAudit } from './audit-menu-chrome-census.js';
 import { runMutationM01Check } from './mutation-m01-check.js';
 import { runZIndexRegistryCheck } from './z-index-registry-check.js';
 import { runProtectedPathLayerCheck } from './protected-path-layer-check.js';
@@ -65,6 +66,7 @@ function main() {
   if (!runSharedResourcesResetCoverageAuditCli()) ok = false;
   if (!runKbLiveEntryAudit()) ok = false;
   if (!runKbLiveGapAudit()) ok = false;
+  if (!runMenuChromeCensusAudit()) ok = false;
   if (!runMutationM01Check()) ok = false;
   if (!runConfideAcceptanceDevsetLeakAudit()) ok = false;
   if (!runQueueGovernanceCheck()) ok = false;
