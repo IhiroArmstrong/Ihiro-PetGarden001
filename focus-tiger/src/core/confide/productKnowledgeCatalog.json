@@ -777,9 +777,10 @@
         "how"
       ],
       "capabilityStatementEn": "Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.",
-      "shortAnswerEn": "Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.",
+      "shortAnswerEn": "Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time. You can also open More (⋯) or the drawer → Preferences → Sound for the same panel.",
       "keywords": [
-        "background music"
+        "background music",
+        "Sound"
       ],
       "yinMayRetrieve": true,
       "helpCenterVisible": true,
@@ -915,6 +916,34 @@
         "HealthKit",
         "Log to Health",
         "mindful minutes shortcut"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0040",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "learn",
+      "helpCenterOrder": 48,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Inspiration → Sit with a question.\n\nIt is an optional awareness sit with a classic koan. It is not a religious practice and not therapy. You can skip it or leave anytime.\n\nYin only points here and does not read the question or steps aloud.",
+      "keywords": [
+        "Sit with a question",
+        "带着问题坐一会儿",
+        "問いと一緒に坐る",
+        "Sit with a question inventory"
+      ]
+    },
+    {
+      "id": "KB-FUNC-0041",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 49,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Presence Field.\n\nYou can show a sit-together glow while focusing. It is an atmosphere of sitting together — not a focus score, not mind-reading, and not therapy.\n\nIt stays off until you turn it on.",
+      "keywords": [
+        "Presence Field",
+        "智能场",
+        "同席の場",
+        "Presence Field inventory"
       ]
     }
   ]

@@ -14,12 +14,16 @@
 | KB-FUNC-0031 | 社区从哪开（不念邀请链接） | 同上 |
 | KB-FUNC-0032 | 会员从哪开（不念价格，不把订阅说成必须坐下） | 同上 |
 | KB-FUNC-0033 | 提醒从哪开（写明菜单 conditional；不混 stretch / away reminders） | `product-knowledge-base.md` §4.11 |
+| KB-FUNC-0040 | Sit with a question（仅帮助中心，不进倾诉） | `product-knowledge-base.md` §4.15 |
+| KB-FUNC-0041 | Presence Field（仅帮助中心，不进倾诉） | `product-knowledge-base.md` §4.15 |
 
 ## 2. 还没写短答，等你定要不要写
 
 | 菜单 | 现状 |
 |---|---|
-| 语言 Language | 菜单不一定出现。先定范围，再起草。 |
+| 语言 Language | 菜单不一定出现。先定范围，再起草。第 3 刀仍不动。 |
+| Mindflow nebula | 草稿在 `product-knowledge-base.md` §4.16。**不进目录**，等 T84。 |
+| Practice Study | 同上。机器核：默认未参加、同意键在备份登记表、不念倾诉原文。 |
 
 ## 3. 保持不进检索（不用在语气会上审）
 

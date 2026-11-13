@@ -109,6 +109,26 @@ const KB_DRAFT_LOCALE_KEYS = Object.freeze({
     'reminder.enable_label',
     'reminder.daily_blurb',
     'MENU_GROUP_PREFERENCES'
+  ]),
+  'KB-FUNC-0040': Object.freeze([
+    'CI_EX1_MENU_LABEL',
+    'CI_EX1_FIREWALL_BODY',
+    'CI_EX1_NOT_NOW'
+  ]),
+  'KB-FUNC-0041': Object.freeze([
+    'PRESENCE_FIELD_MENU_LABEL',
+    'PRESENCE_FIELD_PREF_TOGGLE',
+    'PRESENCE_FIELD_PREF_HINT'
+  ]),
+  'KB-FUNC-0042-DRAFT': Object.freeze([
+    'MINDFLOW_NEBULA_MENU_LABEL',
+    'MINDFLOW_NEBULA_PREF_TOGGLE',
+    'MINDFLOW_NEBULA_PREF_HINT'
+  ]),
+  'KB-FUNC-0043-DRAFT': Object.freeze([
+    'PRACTICE_STUDY_MENU_LABEL',
+    'PRACTICE_STUDY_INTRO',
+    'PRACTICE_STUDY_NEVER_BODY'
   ])
 });
 
@@ -144,12 +164,46 @@ describe('audit-kb-live-gap helpers', () => {
     const en = JSON.parse(
       readFileSync(join(ROOT, 'src/locales/en.json'), 'utf8')
     );
+    const slices = [
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'src/locales/slices/contemplative-inquiry-ex1.json'),
+          'utf8'
+        )
+      ).en,
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'src/locales/slices/presence-field.json'),
+          'utf8'
+        )
+      ).en,
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'src/locales/slices/mindflow-nebula.json'),
+          'utf8'
+        )
+      ).en,
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'src/locales/slices/co-practice-research-consent.json'),
+          'utf8'
+        )
+      ).en,
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'src/locales/slices/menu-subscription-pay.json'),
+          'utf8'
+        )
+      ).en
+    ];
     for (const [id, keys] of Object.entries(KB_DRAFT_LOCALE_KEYS)) {
       for (const key of keys) {
-        assert.ok(
-          typeof en[key] === 'string' && en[key].trim().length > 0,
-          `${id} locale key missing or empty: ${key}`
-        );
+        const hit =
+          (typeof en[key] === 'string' && en[key].trim().length > 0) ||
+          slices.some(
+            (pack) => typeof pack[key] === 'string' && pack[key].trim().length > 0
+          );
+        assert.ok(hit, `${id} locale key missing or empty: ${key}`);
       }
     }
   });
@@ -171,6 +225,9 @@ describe('audit-kb-live-gap helpers', () => {
     assert.equal(candidateIds.includes('kb-live-membership'), false);
     assert.equal(candidateIds.includes('kb-live-sit'), false);
     assert.equal(candidateIds.includes('kb-live-ground'), false);
+    assert.equal(candidateIds.includes('kb-live-sound'), false);
+    assert.equal(candidateIds.includes('kb-live-contemplative-inquiry'), false);
+    assert.equal(candidateIds.includes('kb-live-presence-field'), false);
   });
 
   it('covers every approved catalog id via canonical or cross-cutting map', () => {

@@ -58,6 +58,8 @@ describe('confide product knowledge retrieval', () => {
     assert.equal(ids.includes('KB-FUNC-0036'), true);
     assert.equal(ids.includes('KB-FUNC-0037'), true);
     assert.equal(ids.includes('KB-FUNC-0038'), true);
+    assert.equal(ids.includes('KB-FUNC-0040'), false);
+    assert.equal(ids.includes('KB-FUNC-0041'), false);
     assert.equal(ids.includes('KB-EDU-0001'), true);
     assert.equal(ids.includes('KB-EDU-0004'), true);
   });

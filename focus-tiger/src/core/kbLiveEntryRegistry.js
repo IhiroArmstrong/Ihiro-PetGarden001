@@ -317,7 +317,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/locales/slices/contemplative-inquiry-ex1.json'
     ]),
-    catalogKbIds: Object.freeze([])
+    catalogKbIds: Object.freeze(['KB-FUNC-0040'])
   }),
   Object.freeze({
     id: 'kb-live-zen-cinema',
@@ -479,7 +479,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/ui/AmbientSoundscapeUI.js'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0037'])
   }),
   Object.freeze({
     id: 'kb-live-always-on-top',
@@ -562,7 +563,8 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     authoritativeSources: Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/ui/PresenceFieldPreferenceUI.js'
-    ])
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0041'])
   }),
   Object.freeze({
     id: 'kb-live-health-shortcut-log',
@@ -715,7 +717,9 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'KB-FUNC-0036',
       'KB-FUNC-0037',
       'KB-FUNC-0038',
-      'KB-FUNC-0039'
+      'KB-FUNC-0039',
+      'KB-FUNC-0040',
+      'KB-FUNC-0041'
     ])
   }),
   Object.freeze({

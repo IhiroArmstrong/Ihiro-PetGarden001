@@ -15,7 +15,9 @@ import { resolveProductKnowledgeGateAction } from './confideProductKnowledgeSema
 const HELP_ONLY_IDS = new Set([
   'KB-FUNC-0006',
   'HELP-DEVICES-SAFARI',
-  'HELP-APPLE-HEALTH-LOG'
+  'HELP-APPLE-HEALTH-LOG',
+  'KB-FUNC-0040',
+  'KB-FUNC-0041'
 ]);
 
 describe('help-only catalog rows stay on the live honesty empty state', () => {
@@ -35,7 +37,9 @@ describe('help-only catalog rows stay on the live honesty empty state', () => {
       'Apple Health',
       'HealthKit',
       '呼吸练习盘点',
-      'KB-FUNC-0006 inventory'
+      'KB-FUNC-0006 inventory',
+      'Sit with a question inventory',
+      'Presence Field inventory'
     ]) {
       const probe = probeProductKnowledgeCatalog(text);
       assert.equal(HELP_ONLY_IDS.has(probe.id), false, `${text} -> ${probe.id}`);
