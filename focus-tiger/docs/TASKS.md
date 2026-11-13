@@ -545,9 +545,37 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `deep-link-shortcuts-cookbook` · feature · B 刀 Web Sit 接线进行中（busy 拒绝 · 冷启动 defer · 只 Sit）；C 刀 Electron 分发已合 #1681 · 2026-11-11
+### `kb-help-single-source-k2` · feature · 进行中 · 第 2 刀实现旁支 · 2026-11-13
 
-深链 + Shortcuts 食谱。A 刀解析已合 #1675。C 刀 Electron 分发已合 #1681。本片 = Web 读 `start`/`min`、busy 拒绝、冷启动 defer、只接线 Sit（PO §13-4）。Health 开关/结束钮不在本片。不是 T49 原生壳，不是 Ritual Recipe B1。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。
+一份事实源第 2 刀：`listSecondaryChromeEntries` 的非豁免 `proxy` 必须在 `kbLiveEntryRegistry.js` 有一行，缺行 `docs:check` 红灯。豁免表与普查 §2.3 互链。不写帮助正文 / 不链 Sound 0037（第 3 刀）。Brief [`task-kb-help-single-source.md`](../task-briefs/task-kb-help-single-source.md)。
+
+### `deep-link-shortcuts-cookbook` · feature · Health 记入钮 + Preferences 开关（feature/health-shortcut-log）；深链 A/B/C 已合 · 2026-11-12
+
+深链 + Shortcuts 食谱。A/B/C 已合（#1675/#1678/#1681）。Health 片：Preferences「结束后可记入健康」（默认关）+ 反思结束 wisdom 面 `shortcuts://` 手势钮（仅 iOS/iPadOS）。不是 T49 原生壳，不是 Ritual Recipe B1。Brief [`task-briefs/task-deep-link-shortcuts-cookbook.md`](../task-briefs/task-deep-link-shortcuts-cookbook.md)。
+
+### `help-center-platform-health` · feature · 待合 PR · 2026-11-12
+
+Help Center：`HELP-DEVICES-SAFARI`、`HELP-APPLE-HEALTH-LOG`；Web 问号块 `onboarding-purpose-web-access`。Brief `task-help-center-platform-health.md`。
+
+### `kb-help-single-source` · feature · Brief 已锁（四条补丁）· 第 1 刀须新 Chat · 2026-11-12
+
+一份事实源、两个出口字段（阿寅可检索 / 帮助中心可见）。Brief [`task-kb-help-single-source.md`](../task-briefs/task-kb-help-single-source.md)。口令「按 Brief 开工第 N 刀」须新 Chat。不插队 T93 / T99。不改 GLOSSARY。
+
+### `kb-help-single-source-k1` · feature · 进行中 · 第 1 刀实现旁支 · 2026-11-12
+
+一份事实源第 1 刀：目录逐条出口字段、帮助中心由 `helpCenterVisible` 生成、回填 0006 / Safari / Health 为仅帮助中心。不改菜单登记 CI（第 2 刀）。Brief [`task-kb-help-single-source.md`](../task-briefs/task-kb-help-single-source.md)。
+
+### `pr-smoke-demote-menu-reachability` · feature · 已完成 · T12 后续 · 2026-11-12 · 2026-11-12
+
+从 Required `test:pr-smoke` / pre-push 拿掉 `menu-full-reachability`（种类 1 时序不稳；档间未隔离）。nightly、合入 develop 后仍跑。改菜单路径也不再加跑必过关。不改产品代码。
+
+### `t95-electron-shell-upgrade` · feature · 排队中 · P1 · 9-02b · 域名已拍板 · 壳升级未开工 · 2026-11-12
+
+T95 电脑壳升级 + 更新通道。更新地址已拍板 `https://updates.twinsology.com/`；声明与发布旗本刀写入。存储桶未建；公证未做过。壳升级仍须另口令。现在不为手测升级。不是换壳方案。
+
+### `ics-reminder-export` · feature · 实现中 · 运行时旁支（依赖深链 A/B 已合） · 2026-11-11
+
+提醒设置「添加到日历」：本机生成 .ics，无云无 OAuth。诚实句禁止「同步」。事件 URL 走深链。不是 webcal，不是日历 API。Brief [`task-briefs/task-ics-reminder-export.md`](../task-briefs/task-ics-reminder-export.md)。
 
 ### `t93-brief-status-2026-11-11` · note · 纯文档 · Brief 头部与 §3.9 门闩已按 D1–D4 合入实况刷新 · 2026-11-11
 
@@ -560,6 +588,10 @@ T93 D4：坐完一次邮箱找回轻提示 + Electron 空库「从邮箱恢复�
 ### `t93-practice-backup-worker-deploy-2026-11-11` · deploy · 已部署生产 Worker 3c393134 · 2026-11-11
 
 `focus-tiger-cloud` 生产 Version `3c393134-ea7b-40c6-97b3-c4ad264c0d64`（2026-11-11T05:32:38Z）。练习备份 OTP/读写不再默认 410。无效邮箱探测 `request-otp` → 400 `invalid_email`。未用真邮箱发信。
+
+### `t93-privacy-notice-s4` · feature · 文档刀 · 隐私 §4 与开闸对齐 · DMG 门闩补开闸后 B5 · 2026-11-11
+
+T93 用户可见隐私声明 §4 改为与邮箱保存一致（存什么、明文、如何删云）。Brief §3.9 增加「开闸后 B5 增量复核（含 Playwright 请求记录）」。D5 灰行剧本只列清单、本片不改普查/场景。不是运行时。不是部署。
 
 ### `locale-base-sync-plan-a` · feature · 进行中 · 本旁支 · 2026-11-10
 
@@ -597,10 +629,6 @@ T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨
 
 T94 识别率四刀说明（V2）。第 1 刀窗口变窄仍打分已合 #1612。实现顺序：新题（开发集+封存卷）→ 阈值 → 未拦住。不是 T93 邮箱登录。口令「开工识别率」在分刀 Brief 点头前不写 src。
 
-### `t95-electron-shell-upgrade` · feature · 排队中 · P1 · 9-02b · 对客安装包发出前完成 · 2026-11-08
-
-T95 电脑壳升级 + 更新通道。相对日：两周内开工准备；发出前完成；壳升级后至少一周回归。现在不为手测升级。不是换壳方案。
-
 ### `t96-uncovered-language-help` · feature · 立即做 · P2 · 未覆盖语言固定句带 T92 求助 · 2026-11-08
 
 T96 未覆盖语言求助兜底。日语未开放固定句接上 T92 求助句。不改阈值。不是 T94 第 2–4 刀。实现旁支独立。
@@ -608,10 +636,6 @@ T96 未覆盖语言求助兜底。日语未开放固定句接上 T92 求助句�
 ### `t98-confide-mount-off-inventory` · note · 已完成 · P1 · 只读盘点 · 2026-11-08
 
 T98 倾诉默认关闭入口盘点。交付：`docs/audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`。口令「按 T98 再盘一遍」除非代码面变，否则勿再开同内容旁支。
-
-### `ics-reminder-export` · feature · Brief 待点头（纯文档 · 依赖深链解析） · 2026-11-07
-
-提醒设置「添加到日历」：本机生成 .ics，无云无 OAuth。诚实句禁止「同步」。事件 URL 走深链。不是 webcal，不是日历 API。Brief [`task-briefs/task-ics-reminder-export.md`](../task-briefs/task-ics-reminder-export.md)。
 
 ### `t87-samatia-user-facing-rename` · feature · T87-A1 #1563 · T87-A2 #1565 · T87-B #1568 已合 develop · T87-C 旁支实现中 · 2026-11-06
 
@@ -1037,10 +1061,6 @@ T9：在 T8 `--curves-only` 回放上强制 PO 读数规则与「作废卷回放
 ### `fix-locale-slice-index-frozen-during-tests` · feature · 进行中 · 2026-10-17
 
 并行 `test:smoke` 期间冻结 `localeSliceModules.js`。原子写不够：压测若仍改共享索引，holdout CLI 会误报缺 `LOCALE_SLICES`。无用户路径。
-
-### `pr-smoke-demote-menu-reachability` · feature · 进行中 · T12 · 2026-10-17
-
-从每个 PR 的必跑 `test:e2e:smoke` 拿掉 `menu-full-reachability`（种类 1 时序不稳）。nightly、合入 develop 后、以及改菜单路径的 PR 仍跑。不改产品代码。
 
 ### `wide-menu-community-slice` · feature · 已合 develop #1305 · 待人工测试 · 纯归类（不含扇形） · 2026-10-17
 
