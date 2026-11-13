@@ -43,16 +43,26 @@
 
 ### 2.2 菜单里已有的功能（SSOT 分组）
 
-| 组 | 菜单 proxy（可见时） |
+手写对照表已停用。以下机器块与 `listSecondaryChromeEntries` 对齐；漏登由 `docs:check` 的 kb live 菜单对照红灯，不对照本表 Markdown。
+
+<!-- menu-chrome-census-proxies:begin -->
+
+> **机器块 · 勿手改**。真源：`listSecondaryChromeEntries`（`idleChromeOrchestration.js`）。刷新：`npm run audit:menu-chrome-census -- --write`。角落豁免见 §2.3 与 `src/core/kbLiveMenuChromeExemptions.js`。
+
+| 组 locale key | 菜单 proxy（审计最大可见集） |
 |---|---|
-| Practice | companion、ground-exercise、five-moments、honesty、journey-log、presence-signals、yin-coin、yin-art、confide |
-| Inspiration | daily-quote、**zen-cinema**（#759 补漏）、mustard-seed-seal（解锁后）、静思印、wallpapers |
-| Not alone | quiet-together、focus-circle |
-| Preferences | reminder、language、newsletter、**account 占位**（#759）、**help-center**、local-backup、**Subscription**（第一刀） |
-| You are not alone | quiet-together、focus-circle、**community**（第二刀） |
-| 其它 | membership CTA/unlocked；Rituals 场景（按 entitlement 锁） |
+| `MENU_GROUP_PRACTICE` | `sanctuary-nav` · `companion` · `ground-exercise` · `guided-meditation` · `five-moments` · `honesty` · `confide` |
+| `MENU_GROUP_RECORDS` | `journey-log` · `presence-signals` · `yin-coin` |
+| `MENU_GROUP_INSPIRATION` | `daily-quote` · `contemplative-inquiry` · `zen-cinema` · `mustard-seed-seal` · `contemplative-archive-seal:ca-01-old-pond` · `contemplative-archive-seal:ca-02-cherry-blossoms` · `contemplative-archive-seal:ca-03-morning-field` · `contemplative-archive-seal:ca-04-empty-room` · `contemplative-archive-seal:ca-05-bird-has-flown` · `contemplative-archive-seal:ca-06-spring-water` · `contemplative-archive-seal:ca-07-distant-mountain` · `contemplative-archive-seal:ca-08-moonlight` · `contemplative-archive-seal:ca-09-still-tree` · `contemplative-archive-seal:ca-10-sound-after-bell` · `contemplative-archive-seal:ca-11-falling-leaf` · `contemplative-archive-seal:ca-12-cypress-old-lane` · `wallpapers` · `art-collection` |
+| `MENU_GROUP_NOT_ALONE` | `quiet-together` · `focus-circle` · `community` |
+| `MENU_GROUP_PREFERENCES` | `reminder` · `work-end` · `language` · `sound` · `always-on-top` · `window-layout` · `input-rhythm` · `mindflow-nebula` · `presence-field` · `health-shortcut-log` · `today-direction` · `newsletter` · `account` · `help-center` · `local-backup` · `practice-study` · `membership` |
+| `ritual.menu_group` | `ritual-morning` · `ritual-emotional-reset` · `ritual-work-transition` |
+
+<!-- menu-chrome-census-proxies:end -->
 
 ### 2.3 故意不进菜单（不是漏项）
+
+代码豁免表（核实日 **2026-11-13**）：[`src/core/kbLiveMenuChromeExemptions.js`](../src/core/kbLiveMenuChromeExemptions.js)。豁免的是角落 / 主路径 chrome，**不是**菜单 `proxy`。`help-center` / `sound` / `confide` 菜单行仍须登记。
 
 | 角落入口 | 为什么不进菜单 |
 |---|---|
@@ -88,7 +98,7 @@
 
 ## 4. 维护
 
-新加 Idle 常驻可点 chrome 时：先在本表 2.1–2.3 加一行，再决定是否进 `listSecondaryChromeEntries`。只加 FAB、不改本表 = 普查回退。
+新加 Idle 常驻可点 chrome 时：先决定是否进 `listSecondaryChromeEntries`；进了就必须在 `kbLiveEntryRegistry.js` 有一行。§2.2 跑 `npm run audit:menu-chrome-census -- --write`。角落入口改 §2.3 并同步 `kbLiveMenuChromeExemptions.js`。只加 FAB、不改豁免表 = 普查回退。
 
 ## 5. 宽屏五图标索引（2026-10-16 · 未开工）
 

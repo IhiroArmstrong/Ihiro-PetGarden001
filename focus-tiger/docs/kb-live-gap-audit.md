@@ -38,16 +38,16 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-11-12 · 36 live rows · 48 approved catalog ids
+**Snapshot**: 2026-11-13 · 56 live rows · 48 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 6 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 21 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
-| conditional/gated-off without approved KB | 1 | PO scope before drafting |
+| conditional/gated-off without approved KB | 6 | PO scope before drafting |
 | cross-cutting approved (no live row) | 18 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
@@ -55,11 +55,26 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | liveId | liveStatus | menuPath | labelKeys |
 |---|---|---|---|
 | `kb-live-contemplative-inquiry` | live | ⋯ → Inspiration → Sit with a question | `CI_EX1_MENU_LABEL` |
+| `kb-live-mustard-seed-seal` | entitlement-gated | ⋯ → Inspiration → Mustard Seed · Sumeru (after unlock) | `MUSTARD_SEED_SEAL_MENU_LABEL` |
+| `kb-live-art-collection` | live | ⋯ → Inspiration → Yin's Art Collection | `ART_COLLECTION_MENU_LABEL` |
 | `kb-live-sound` | live | ⋯ → Preferences → Sound | `SOUND_MENU_LABEL` |
 | `kb-live-mindflow-nebula` | live | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` |
 | `kb-live-presence-field` | live | ⋯ → Preferences → Presence Field | `PRESENCE_FIELD_MENU_LABEL` |
 | `kb-live-health-shortcut-log` | live | ⋯ → Preferences → Log to Health (Shortcuts) | `HEALTH_SHORTCUT_MENU_LABEL` |
+| `kb-live-newsletter` | live | ⋯ → Preferences → Stay in touch | `NEWSLETTER_MENU_LABEL` `NEWSLETTER_MENU_CONFIRMED` |
 | `kb-live-practice-study` | live | ⋯ → Preferences → Practice Study | `PRACTICE_STUDY_MENU_LABEL` |
+| `kb-live-archive-seal-ca-01-old-pond` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-01) | `CONTEMPLATIVE_ARCHIVE_CA01_MENU_LABEL` |
+| `kb-live-archive-seal-ca-02-cherry-blossoms` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-02) | `CONTEMPLATIVE_ARCHIVE_CA02_MENU_LABEL` |
+| `kb-live-archive-seal-ca-03-morning-field` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-03) | `CONTEMPLATIVE_ARCHIVE_CA03_MENU_LABEL` |
+| `kb-live-archive-seal-ca-04-empty-room` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-04) | `CONTEMPLATIVE_ARCHIVE_CA04_MENU_LABEL` |
+| `kb-live-archive-seal-ca-05-bird-has-flown` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-05) | `CONTEMPLATIVE_ARCHIVE_CA05_MENU_LABEL` |
+| `kb-live-archive-seal-ca-06-spring-water` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-06) | `CONTEMPLATIVE_ARCHIVE_CA06_MENU_LABEL` |
+| `kb-live-archive-seal-ca-07-distant-mountain` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-07) | `CONTEMPLATIVE_ARCHIVE_CA07_MENU_LABEL` |
+| `kb-live-archive-seal-ca-08-moonlight` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-08) | `CONTEMPLATIVE_ARCHIVE_CA08_MENU_LABEL` |
+| `kb-live-archive-seal-ca-09-still-tree` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-09) | `CONTEMPLATIVE_ARCHIVE_CA09_MENU_LABEL` |
+| `kb-live-archive-seal-ca-10-sound-after-bell` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-10) | `CONTEMPLATIVE_ARCHIVE_CA10_MENU_LABEL` |
+| `kb-live-archive-seal-ca-11-falling-leaf` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-11) | `CONTEMPLATIVE_ARCHIVE_CA11_MENU_LABEL` |
+| `kb-live-archive-seal-ca-12-cypress-old-lane` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-12) | `CONTEMPLATIVE_ARCHIVE_CA12_MENU_LABEL` |
 
 ### Registry mapping drift (registry `catalogKbIds` ≠ canonical approved map)
 
@@ -75,7 +90,12 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | liveId | liveStatus | menuPath | note |
 |---|---|---|---|
+| `kb-live-work-end` | conditional | ⋯ → Preferences → Wrap-up time | conditional / optional surface — draft after PO confirms scope |
 | `kb-live-language` | conditional | ⋯ → Preferences → Language | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-always-on-top` | conditional | ⋯ → Preferences → Keep in front (Electron) | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-window-layout` | conditional | ⋯ → Preferences → Window (Electron) | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-input-rhythm` | conditional | ⋯ → Preferences → Focus rhythm (Electron) | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-account` | conditional | ⋯ → Preferences → Save or restore with email | conditional / optional surface — draft after PO confirms scope |
 
 ### Cross-cutting approved catalog rows (no live row required)
 
@@ -119,5 +139,5 @@ CI / smoke: `npm run audit:kb-live-gap` (no write) is part of `npm run docs:chec
 | 1 | Static live-entry registry | **已合 develop** (#929) |
 | 2 | Gap audit (this doc) | **已合 develop** (#931) · registry drift cleared |
 | 3 | Expand retrieval keywords on passed rows (fact unchanged) | **本旁支** · catalog keywords only |
-| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | **0019–0032 已入库**（闸门 **34**）· batch-2 存活面候选清零 · 待人工审的项收在 `docs/kb-po-review-queue.md`，不逐条另请 |
+| 4 | Authoritative-source draft → machine verify → PO tone spot-check → catalog | 以本节**机器块**为准。「batch-2 存活面候选清零」只描述当时那一批（0019–0032）入库；之后漏登菜单行登记进 live registry 但尚未链 catalog 时，计数会再出现。待人工审的项收在 `docs/kb-po-review-queue.md`。 |
 | 手册 | `docs/internal-handbook/` | **雏形已开**（2026-10-01）· 不从本审计灌正文 |
