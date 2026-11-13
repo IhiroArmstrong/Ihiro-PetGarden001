@@ -22,7 +22,9 @@ export const GRANDFATHERED_HELP_CENTER_IDS = Object.freeze([
 export const HELP_ONLY_BACKFILL_IDS = Object.freeze([
   'KB-FUNC-0006',
   'HELP-DEVICES-SAFARI',
-  'HELP-APPLE-HEALTH-LOG'
+  'HELP-APPLE-HEALTH-LOG',
+  'KB-FUNC-0040',
+  'KB-FUNC-0041'
 ]);
 
 const HELP_SECTIONS = new Set(['start', 'practice', 'data', 'companion', 'learn']);

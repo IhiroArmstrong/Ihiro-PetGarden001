@@ -38,28 +38,25 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-11-13 · 56 live rows · 48 approved catalog ids
+**Snapshot**: 2026-11-13 · 56 live rows · 50 approved catalog ids
 
 ### Summary counts
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 21 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 18 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
 | conditional/gated-off without approved KB | 6 | PO scope before drafting |
-| cross-cutting approved (no live row) | 18 | keep as behavior/platform facts |
+| cross-cutting approved (no live row) | 17 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
 
 | liveId | liveStatus | menuPath | labelKeys |
 |---|---|---|---|
-| `kb-live-contemplative-inquiry` | live | ⋯ → Inspiration → Sit with a question | `CI_EX1_MENU_LABEL` |
 | `kb-live-mustard-seed-seal` | entitlement-gated | ⋯ → Inspiration → Mustard Seed · Sumeru (after unlock) | `MUSTARD_SEED_SEAL_MENU_LABEL` |
 | `kb-live-art-collection` | live | ⋯ → Inspiration → Yin's Art Collection | `ART_COLLECTION_MENU_LABEL` |
-| `kb-live-sound` | live | ⋯ → Preferences → Sound | `SOUND_MENU_LABEL` |
 | `kb-live-mindflow-nebula` | live | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` |
-| `kb-live-presence-field` | live | ⋯ → Preferences → Presence Field | `PRESENCE_FIELD_MENU_LABEL` |
 | `kb-live-health-shortcut-log` | live | ⋯ → Preferences → Log to Health (Shortcuts) | `HEALTH_SHORTCUT_MENU_LABEL` |
 | `kb-live-newsletter` | live | ⋯ → Preferences → Stay in touch | `NEWSLETTER_MENU_LABEL` `NEWSLETTER_MENU_CONFIRMED` |
 | `kb-live-practice-study` | live | ⋯ → Preferences → Practice Study | `PRACTICE_STUDY_MENU_LABEL` |
@@ -109,7 +106,6 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 - `KB-EDU-0004`
 - `KB-FUNC-0035`
 - `KB-FUNC-0036`
-- `KB-FUNC-0037`
 - `KB-FUNC-0038`
 - `HELP-BREATH-DURATION`
 - `HELP-LOTUS-BLOOMS`

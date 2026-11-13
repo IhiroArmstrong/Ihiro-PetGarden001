@@ -1038,7 +1038,7 @@
 
 ### 4.14 背景音乐开关 / 打卡不是强迫签到（已通过 · catalog 已入库）
 
-> **Status**: **PO 2026-10-16 Brief** [`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md) · **已进** `productKnowledgeCatalog.json` · **0037 / 0038** 无独立菜单行，记入 cross-cutting · 闸门 **41 条**。近义只用 `factKeyEn`（问句形事实键）+ 问法形状轴；短答不进 embedding。0020 补 where/how 事实键，与 0038 whether-required 分轨。关单仍须 `sealed-v3` 未见英文批。
+> **Status**: **PO 2026-10-16 Brief** [`task-briefs/task-confide-fact-key-ask-role.md`](./task-briefs/task-confide-fact-key-ask-role.md) · **已进** `productKnowledgeCatalog.json` · **0038** 仍是行为事实（无独立菜单）。**0037** 与菜单 `sound` 同一块环境音面板（闲置屏音符 + ⋯ → Preferences → Sound），第 3 刀已链 `kb-live-sound`，不再当 cross-cutting。近义只用 `factKeyEn`（问句形事实键）+ 问法形状轴；短答不进 embedding。0020 补 where/how 事实键，与 0038 whether-required 分轨。关单仍须 `sealed-v3` 未见英文批。
 
 ```yaml
 - id: KB-FUNC-0037
@@ -1050,17 +1050,17 @@
   内容正文: |
     事实键（en）：Where is the idle-screen control that turns background music or ambient sound on or off?
     能力说明（en，文档参考）：Where the idle-screen control turns background music or ambient sound on or off, and that it stays off until the person turns it on.
-    短答（en）：Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time.
-    禁止：曲目名单；上传步骤；为新问法追加 keywords。
+    短答（en）：Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on. A sit may play music for that sit without switching this on for next time. You can also open More (⋯) or the drawer → Preferences → Sound for the same panel.
+    禁止：曲目名单；上传步骤；叠第二条 Sound 知识库 id。
   yin_may_retrieve: 是
-  来源: 界面文案 + PO Brief
+  来源: 界面文案 + PO Brief + 第 3 刀菜单链
   审核状态: 已通过
-  审核人: PO（2026-10-15 · task-confide-fact-card-near-match）
+  审核人: PO（2026-10-15 · task-confide-fact-card-near-match；菜单链 2026-11-13 按 task-kb-help-single-source 第 3 刀）
   风险标记: 否
-  适用产品版本: 现网 Idle 音乐控件
-  更新时间: 2026-10-15
-  locale_keys: [AMBIENT_MUSIC_ON_ARIA, HINT_AMBIENT_SOUNDSCAPE]
-  检索关键词: [background music]
+  适用产品版本: 现网 Idle 音乐控件 + Preferences → Sound
+  更新时间: 2026-11-13
+  locale_keys: [AMBIENT_MUSIC_ON_ARIA, HINT_AMBIENT_SOUNDSCAPE, SOUND_MENU_LABEL]
+  检索关键词: [background music, Sound]
 
 - id: KB-FUNC-0038
   所属库: 陪伴可检索
@@ -1115,7 +1115,101 @@
 
 > **权威源（0039）**：`src/core/confide/productKnowledgeCatalog.json` · `src/locales/slices/help-center.json` · `src/locales/en.json` / `ja.json`
 
-> **权威源（0037–0038）**：`src/locales/en.json`（`AMBIENT_MUSIC_ON_ARIA` / `HINT_AMBIENT_SOUNDSCAPE` / `HINT_HONESTY_OPTIONAL`）· `src/core/confide/productKnowledgeCatalog.json`
+> **权威源（0037–0038）**：`src/locales/en.json`（`AMBIENT_MUSIC_ON_ARIA` / `HINT_AMBIENT_SOUNDSCAPE` / `HINT_HONESTY_OPTIONAL`）· `src/locales/slices/cold-start-sound-entry.json`（`SOUND_MENU_LABEL`）· `src/ui/AmbientSoundscapeUI.js` · `src/core/confide/productKnowledgeCatalog.json`
+
+### 4.15 Sit with a question / Presence Field（已通过 · 仅帮助中心）
+
+> **Status**：`task-kb-help-single-source.md` 第 3 刀。进目录、`yinMayRetrieve: false`。阿寅问入口走现网诚实空态，不念正文。
+
+```yaml
+- id: KB-FUNC-0040
+  所属库: 仅帮助中心
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Sit with a question
+  适用场景: 想找 Inspiration 里「带着问题坐一会儿」
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Inspiration → Sit with a question. It is an optional awareness sit with a classic koan. It is not a religious practice and not therapy. You can skip it or leave anytime. Yin only points here and does not read the question or steps aloud.
+    禁止：念公案原文、防火墙长文、把选项当标准答案。
+  yin_may_retrieve: 否
+  来源: locale CI_EX1_* + 菜单代码表
+  审核状态: 已通过
+  审核人: PO（2026-11-12 锁 Brief；第 3 刀按 locked 口径入库仅帮助中心）
+  风险标记: 否
+  适用产品版本: 现网 Inspiration → Sit with a question
+  更新时间: 2026-11-13
+  locale_keys: [CI_EX1_MENU_LABEL, CI_EX1_FIREWALL_BODY, CI_EX1_NOT_NOW]
+  检索关键词: [Sit with a question, 带着问题坐一会儿, 問いと一緒に坐る]
+
+- id: KB-FUNC-0041
+  所属库: 仅帮助中心
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Presence Field
+  适用场景: 想找 Preferences 里智能场 / 同坐光晕
+  内容正文: |
+    短答（en）：Open More (⋯) or the drawer → Preferences → Presence Field. You can show a sit-together glow while focusing. It is an atmosphere of sitting together — not a focus score, not mind-reading, and not therapy. It stays off until you turn it on.
+    禁止：说成专注分数、读心、疗效。
+  yin_may_retrieve: 否
+  来源: locale PRESENCE_FIELD_* + 菜单代码表
+  审核状态: 已通过
+  审核人: PO（2026-11-12 锁 Brief；第 3 刀按 locked 口径入库仅帮助中心）
+  风险标记: 否
+  适用产品版本: 现网 Preferences → Presence Field（默认关）
+  更新时间: 2026-11-13
+  locale_keys: [PRESENCE_FIELD_MENU_LABEL, PRESENCE_FIELD_PREF_TOGGLE, PRESENCE_FIELD_PREF_HINT]
+  检索关键词: [Presence Field, 智能场, 同席の場]
+```
+
+> **权威源（0040–0041）**：`src/locales/slices/contemplative-inquiry-ex1.json` · `src/locales/slices/presence-field.json` · `src/core/idleChromeOrchestration.js`
+
+<!-- kb-k3-t84-drafts:begin -->
+### 4.16 Mindflow nebula / Practice Study（待审草稿 · 不进目录 JSON）
+
+> **Status**：第 3 刀只出草稿。入库条件 = T84 点头。机器核：默认关、备份/重置登记表有键、不含倾诉原文。Language 仍不动。
+
+```yaml
+- id: KB-FUNC-0042
+  所属库: 待审草稿
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Mindflow nebula
+  适用场景: 想找 Preferences 里心念流
+  内容正文: |
+    短答草稿（en）：Open More (⋯) or the drawer → Preferences → Mindflow nebula. You can show a gentle particle field beside Yin. It is a poetic trace of dialogue flow, not a readout of thoughts. It stays off until you turn it on.
+    禁止：读心声称；念倾诉原文；在 T84 前写入 productKnowledgeCatalog.json。
+  yin_may_retrieve: 否
+  来源: locale MINDFLOW_NEBULA_* + mindflowNebulaStore 默认关
+  审核状态: 待审
+  审核人: —
+  风险标记: 否（T84 政策成稿另线）
+  适用产品版本: 现网 Preferences → Mindflow nebula（默认关）
+  更新时间: 2026-11-13
+  locale_keys: [MINDFLOW_NEBULA_MENU_LABEL, MINDFLOW_NEBULA_PREF_TOGGLE, MINDFLOW_NEBULA_PREF_HINT]
+  检索关键词: []
+
+- id: KB-FUNC-0043
+  所属库: 待审草稿
+  一级分类: 产品功能
+  二级分类: 操作入口
+  标题: Practice Study
+  适用场景: 想找 Preferences 里研究共修
+  内容正文: |
+    短答草稿（en）：Open More (⋯) or the drawer → Preferences → Practice Study. You can choose to share a few weekly summary numbers under a random ID. Sitting works the same whether or not you join. There is no reward for joining. The study never collects anything you type, anything Yin says, Memory content, emotion labels, location, or your account.
+    禁止：念灯笼数字或邀请码；把参加说成必须；在 T84 前写入 productKnowledgeCatalog.json。
+  yin_may_retrieve: 否
+  来源: locale PRACTICE_STUDY_* + coPracticeResearchConsent 默认未参加
+  审核状态: 待审
+  审核人: —
+  风险标记: 否（T84 政策成稿另线）
+  适用产品版本: 现网 Preferences → Practice Study（默认未参加）
+  更新时间: 2026-11-13
+  locale_keys: [PRACTICE_STUDY_MENU_LABEL, PRACTICE_STUDY_INTRO, PRACTICE_STUDY_NEVER_BODY]
+  检索关键词: []
+```
+
+> **权威源（0042–0043 草稿）**：`src/locales/slices/mindflow-nebula.json` · `src/locales/slices/co-practice-research-consent.json` · `src/core/mindflowNebula/mindflowNebulaStore.js` · `src/core/coPracticeResearchConsent.js` · `src/core/practiceBackup/localBackupStorageRegistry.js`
+<!-- kb-k3-t84-drafts:end -->
 
 ### 4.3 内部排障草案（不进倾诉索引）
 

@@ -99,7 +99,10 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-sanctuary-nav': Object.freeze(['KB-FUNC-0030']),
   'kb-live-community': Object.freeze(['KB-FUNC-0031']),
   'kb-live-membership': Object.freeze(['KB-FUNC-0032']),
-  'kb-live-reminder': Object.freeze(['KB-FUNC-0033'])
+  'kb-live-reminder': Object.freeze(['KB-FUNC-0033']),
+  'kb-live-sound': Object.freeze(['KB-FUNC-0037']),
+  'kb-live-contemplative-inquiry': Object.freeze(['KB-FUNC-0040']),
+  'kb-live-presence-field': Object.freeze(['KB-FUNC-0041'])
 });
 
 /** Approved catalog rows with no dedicated live surface (behavior / platform / concept facts). */
@@ -114,7 +117,6 @@ export const KB_CROSS_CUTTING_APPROVED_IDS = Object.freeze([
   'KB-EDU-0004',
   'KB-FUNC-0035',
   'KB-FUNC-0036',
-  'KB-FUNC-0037',
   'KB-FUNC-0038',
   'HELP-BREATH-DURATION',
   'HELP-LOTUS-BLOOMS',

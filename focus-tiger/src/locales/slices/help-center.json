@@ -43,7 +43,7 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0034_TITLE": "Pomodoro in Samatia",
     "HELP_CENTER_ARTICLE_KB_FUNC_0034_BODY": "A pomodoro here is a 25-minute Sit with Yin.\n\nTap Sit with Yin, then choose 25 minutes.\n\nIt does not start a short-break cycle.\n\nWhen the duration microphone is available, you can also say Start a pomodoro.",
     "HELP_CENTER_ARTICLE_KB_FUNC_0037_TITLE": "Background music",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY": "Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on.\n\nA sit may play music for that sit without switching this on for next time.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY": "Tap the music control on the idle screen to turn background music on or off. It stays off until you turn it on.\n\nA sit may play music for that sit without switching this on for next time.\n\nYou can also open More (⋯) or the drawer → Preferences → Sound for the same panel.",
     "HELP_CENTER_ARTICLE_KB_FUNC_0002_TITLE": "Ground exercise",
     "HELP_CENTER_ARTICLE_KB_FUNC_0002_BODY": "Open More (⋯) or the bottom drawer → Practice → Ground exercise (above The 5 Moments). Steps play in the exercise UI. Confide is not open to guests in this release; Yin does not read exercise scripts aloud in Confide.",
     "HELP_CENTER_ARTICLE_KB_FUNC_0006_TITLE": "Breath practice (left orb)",
@@ -117,7 +117,11 @@
     "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE": "iPhone and iPad (Safari, no App Store app)",
     "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY": "Samatia runs in Safari on iPhone and iPad. There is no App Store or TestFlight app in this release — open the website in Safari. You can add it to your Home Screen for a full-screen shortcut.\n\nPractice data stays on that device. The desktop app and another browser on the same account do not share the same local store.\n\nA native iOS shell is not on the current roadmap; when that changes, we will say so here.",
     "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE": "Optional Apple Health mindful minutes",
-    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia does not use Apple's system health SDK and does not read Apple Health. Journey Log on this device is separate local history — not Health data.\n\nIf you turn on the optional preference, a Log to Health button after a sit can open your Shortcuts app to run your installed mindful-minutes shortcut (you set it up once; permissions are between you and Apple, not a Samatia sign-in).\n\nSupported path: iPhone or iPad, page opened in Safari — not WeChat or other in-app browsers. Mac has no Health app; the desktop app does not promise this button. The preference is off until you enable it."
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia does not use Apple's system health SDK and does not read Apple Health. Journey Log on this device is separate local history — not Health data.\n\nIf you turn on the optional preference, a Log to Health button after a sit can open your Shortcuts app to run your installed mindful-minutes shortcut (you set it up once; permissions are between you and Apple, not a Samatia sign-in).\n\nSupported path: iPhone or iPad, page opened in Safari — not WeChat or other in-app browsers. Mac has no Health app; the desktop app does not promise this button. The preference is off until you enable it.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0040_TITLE": "Sit with a question",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0040_BODY": "Open More (⋯) or the drawer → Inspiration → Sit with a question.\n\nIt is an optional awareness sit with a classic koan. It is not a religious practice and not therapy. You can skip it or leave anytime.\n\nYin only points here and does not read the question or steps aloud.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_TITLE": "Presence Field",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "Open More (⋯) or the drawer → Preferences → Presence Field.\n\nYou can show a sit-together glow while focusing. It is an atmosphere of sitting together — not a focus score, not mind-reading, and not therapy.\n\nIt stays off until you turn it on."
   },
   "zh": {
     "HELP_CENTER_MENU_LABEL": "帮助中心",
@@ -163,7 +167,7 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0034_TITLE": "番茄钟在这里指什么",
     "HELP_CENTER_ARTICLE_KB_FUNC_0034_BODY": "此处番茄钟指 25 分钟同坐；不含短休息循环；语音可说 start a pomodoro。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0037_TITLE": "背景音乐",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY": "点主页上的音乐控件开关背景音乐。默认关闭，直到你打开。一次同坐里放的音乐，不会替你把下次也打开。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY": "点主页上的音乐控件开关背景音乐。默认关闭，直到你打开。一次同坐里放的音乐，不会替你把下次也打开。也可以打开 ⋯ 或底栏抽屉 → 偏好 → 声音，同一块环境音面板。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0002_TITLE": "接地练习",
     "HELP_CENTER_ARTICLE_KB_FUNC_0002_BODY": "菜单练习里的接地练习。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0006_TITLE": "呼吸练习",
@@ -237,7 +241,11 @@
     "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE": "iPhone / iPad 如何用（Safari，无 App）",
     "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY": "请在 iPhone、iPad 上用 Safari 打开 Samatia。本阶段没有 App Store 或 TestFlight 安装包，可把网站加到主屏幕当快捷方式。\n\n练习数据留在该设备本机，与电脑版或其它浏览器不共用同一份本地库。\n\niOS 原生壳当前不在路线图；若有变动会在此更新。",
     "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE": "可选：记入 Apple Health 正念分钟",
-    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia 不使用 HealthKit，也不会读取 Apple Health。旅程记录是本机留痕，不是健康数据。\n\n若你在设置里打开可选开关，同坐结束后可能出现「记入健康」按钮，会调起你自装的正念分钟快捷指令（须先按食谱安装；健康权限是你与苹果之间的事，不是 Samatia 账号授权）。\n\n仅承诺：iPhone / iPad 上用 Safari 打开的网页；微信等内嵌浏览器不承诺。Mac 无健康 App，电脑版不承诺该按钮。开关默认关闭。"
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia 不使用 HealthKit，也不会读取 Apple Health。旅程记录是本机留痕，不是健康数据。\n\n若你在设置里打开可选开关，同坐结束后可能出现「记入健康」按钮，会调起你自装的正念分钟快捷指令（须先按食谱安装；健康权限是你与苹果之间的事，不是 Samatia 账号授权）。\n\n仅承诺：iPhone / iPad 上用 Safari 打开的网页；微信等内嵌浏览器不承诺。Mac 无健康 App，电脑版不承诺该按钮。开关默认关闭。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0040_TITLE": "带着问题坐一会儿",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0040_BODY": "打开 ⋯ 或底栏抽屉 → 灵感 → 带着问题坐一会儿。\n\n这是一段可选的觉察练习，问题来自古典公案。它不属于信仰，也不是心理咨询。可以先不进，也可以随时离开。\n\n阿寅只指路，不会把问题和步骤念出来。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_TITLE": "智能场",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 智能场。\n\n专注时可以显示同坐光晕。这是同坐的氛围，不是专注度、不是读心、不是疗效。\n\n默认关闭，直到你打开。"
   },
   "ja": {
     "HELP_CENTER_MENU_LABEL": "ヘルプセンター",
@@ -283,7 +291,7 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0034_TITLE": "ポモドーロ",
     "HELP_CENTER_ARTICLE_KB_FUNC_0034_BODY": "ポモドーロ＝25分の Sit。休憩サイクルなし。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0037_TITLE": "背景音楽",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY": "待機画面の音楽コントロールで背景音楽のオン／オフ。自分で入れるまでオフのまま。同坐中の再生は、次回までオンにはしません。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0037_BODY": "待機画面の音楽コントロールで背景音楽のオン／オフ。自分で入れるまでオフのまま。同坐中の再生は、次回までオンにはしません。⋯ または引き出し → 設定 → サウンドでも、同じ環境音パネルが開きます。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0002_TITLE": "グラウンディング",
     "HELP_CENTER_ARTICLE_KB_FUNC_0002_BODY": "⋯ → 練習 → グラウンディング。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0006_TITLE": "呼吸練習",
@@ -357,6 +365,10 @@
     "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_TITLE": "iPhone / iPad（Safari・アプリなし）",
     "HELP_CENTER_ARTICLE_HELP_DEVICES_SAFARI_BODY": "Samatia は iPhone / iPad の Safari で動きます。現リリースに App Store / TestFlight アプリはありません。ホーム画面に追加して全画面ショートカットにできます。\n\n練習データはその端末に残ります。デスクトップアプリや別ブラウザとローカル保存は共有しません。\n\nネイティブ iOS シェルは現ロードマップにありません。変更時はここで告知します。",
     "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_TITLE": "任意：Apple Health のマインドフル分数",
-    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia は Apple のシステム健康 SDK を使わず、Apple Health を読みません。ジャーニーログは端末内の履歴であり Health データではありません。\n\n任意設定をオンにすると、同坐後に Health へ記録ボタンが出る場合があり、インストール済みのマインドフル分数ショートカットを起動します（レシピは自分で一度セットアップ。権限は Apple との間）。\n\n対応：iPhone / iPad の Safari のみ。WeChat 等のアプリ内ブラウザは非対応。Mac に Health アプリはなく、デスクトップはボタンを約束しません。設定はデフォルトオフ。"
+    "HELP_CENTER_ARTICLE_HELP_APPLE_HEALTH_LOG_BODY": "Samatia は Apple のシステム健康 SDK を使わず、Apple Health を読みません。ジャーニーログは端末内の履歴であり Health データではありません。\n\n任意設定をオンにすると、同坐後に Health へ記録ボタンが出る場合があり、インストール済みのマインドフル分数ショートカットを起動します（レシピは自分で一度セットアップ。権限は Apple との間）。\n\n対応：iPhone / iPad の Safari のみ。WeChat 等のアプリ内ブラウザは非対応。Mac に Health アプリはなく、デスクトップはボタンを約束しません。設定はデフォルトオフ。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0040_TITLE": "問いと一緒に坐る",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0040_BODY": "⋯ または引き出し → インスピレーション → 問いと一緒に坐る。\n\n古典公案の問いを持って坐る、任意の気づきの練習です。宗教的な実践でもカウンセリングでもありません。今はしない、いつでもやめる、どちらも大丈夫です。\n\n寅は場所を示すだけで、問いと手順を読み上げません。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_TITLE": "同席の場",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0041_BODY": "⋯ または引き出し → 設定 → 同席の場。\n\n集中中に同席の光を出せます。一緒に座る雰囲気であり、集中の点数でも読心でも治療でもありません。\n\n自分で入れるまでオフのままです。"
   }
 }

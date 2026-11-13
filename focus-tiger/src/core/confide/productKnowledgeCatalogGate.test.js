@@ -79,12 +79,16 @@ describe('help-only rows never win probe even with leftover keywords', () => {
       'Apple Health',
       'HealthKit',
       '呼吸练习盘点',
-      'KB-FUNC-0006 inventory'
+      'KB-FUNC-0006 inventory',
+      'Sit with a question inventory',
+      'Presence Field inventory'
     ]) {
       const result = probeProductKnowledgeCatalog(text);
       assert.notEqual(result.id, 'KB-FUNC-0006', text);
       assert.notEqual(result.id, 'HELP-DEVICES-SAFARI', text);
       assert.notEqual(result.id, 'HELP-APPLE-HEALTH-LOG', text);
+      assert.notEqual(result.id, 'KB-FUNC-0040', text);
+      assert.notEqual(result.id, 'KB-FUNC-0041', text);
     }
   });
 });
