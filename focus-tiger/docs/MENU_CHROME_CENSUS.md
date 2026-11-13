@@ -21,10 +21,10 @@
 |---|---|---|---|---|---|---|
 | **1** | 菜单入口不能因叠层卡死消失；挂在最外层、不依赖 overlay / sprite 仲裁；Esc 或长按空白清空叠层 | **同意逃生舱。Esc 只关最上一层。不做长按空白清空全部。** 第一刀做「叠层时入口仍在」；Esc 放第二刀 | **已完成行为。** #757：宽屏 `⋯` / 窄屏 grabber 在 overlay suppress 时仍可见可开。#759：`overlayEscapeStack` — Esc 只关顶层（菜单 → 再 Esc 才关 Reflection） | **本 PR 写入 PRINCIPLES 硬句。** 此前只有代码注释，原则文档没有 | 长按清空：**按约定不做。** 硬句若未合入则文档仍缺（本 PR 补） | **无第三刀代码。** 合入本 PR 后本条关文档账。人工复测 #757+#759 |
 | **2** | 菜单收纳所有「只有按钮、没有入口」的功能（语言、Support Yin、寅币商店、设置等）作降级路径 | **同意普查，作为第二刀**；不把快捷按钮拆掉 | **行为大半早已在菜单里；#759 只补了漏项 Zen Cinema。** 语言 / 提醒 / 寅币 / 倾诉 / 会员 CTA 已在 `listSecondaryChromeEntries`。Support Yin **五卡（仅 FAB 模态；`SupportYinModalUI.js`）**——菜单只有一行 membership 降级入口，是 2026-08-15 既有产品决定，不是漏挂 | **#759 没有交出对照表**（这才叫普查没做完）。本文件补表 | 表里标「故意不进菜单」的项（环境音 ♪、`?` 帮助、左上日历）**不改为菜单行**，除非你另拍板。Support 五卡是否再挂进菜单：**不默认改**（**2026-09-15 拍板**：五卡不进菜单；菜单 membership 一行已够） | **无菜单重写。** 新角落按钮必须先改本表再决定是否进 `listSecondaryChromeEntries` |
-| **3** | 要不要基础 Login/Logout；至少「恢复购买 / 账号与设备」占位 | **同意先占位、不急着做账号**；T93 另开「用邮箱保存或找回」 | **双态。** 开闸：#1679 Preferences 真入口 `idle-account-email-restore`，开 `#email-journey-restore-panel`。首包关闸（2026-11-12）：Web 仍灰行 `idle-account-placeholder`。Setapp / MAS：`idle-account-store-off`，不可点。Journey 角落不再当登录。购买恢复仍走原卡 | 开闸文案切片 `email-journey-restore`；关闸占位 `ACCOUNT_MENU_PLACEHOLDER` | **Circle 统一 Login / Logout /「账号与设备」仍不写。** 禁止把商店渠道做成假可点 | **统一身份触发仍未到（2026-09-26 PO）**：（A）开工 **Circle 跨设备认人** 须先写统一 Brief；（B）或换设备/清缓存找不回投诉 ≥3。T93 旅程找回 **不算** 统一 Login。首包关闸发，不对客打开邮箱找回 |
+| **3** | 要不要基础 Login/Logout；至少「恢复购买 / 账号与设备」占位 | **同意先占位、不急着做账号**；T93 另开「用邮箱保存或找回」 | **双态。** 开闸（2026-11-13）：Preferences 真入口 `idle-account-email-restore`，开 `#email-journey-restore-panel`。Setapp / MAS：`idle-account-store-off`，不可点。Journey 角落不再当登录。购买恢复仍走原卡 | 开闸文案切片 `email-journey-restore`；关闸占位 `ACCOUNT_MENU_PLACEHOLDER` | **Circle 统一 Login / Logout /「账号与设备」仍不写。** 禁止把商店渠道做成假可点 | **统一身份触发仍未到（2026-09-26 PO）**：（A）开工 **Circle 跨设备认人** 须先写统一 Brief；（B）或换设备/清缓存找不回投诉 ≥3。T93 旅程找回 **不算** 统一 Login。网页与自有电脑版已开邮箱找回 |
 | **4** | 入口放右上角齿轮或 `⋯`；左上留给日历；不要两边都塞菜单 | **同意右上 `⋯`，左上日历** | **早已如此，两刀都没改位置。** 宽屏 `#ft-wide-more-btn` 右上；窄屏 grabber 底缘抽屉。左上仍是打卡/热力图 | 代码里曾有 TODO「audit 后再搬菜单位置」——**位置已拍死，不应再搬** | 无功能缺口 | **禁止再提案左上汉堡。** TODO 改为指向本文 |
 
-**一句话：** 四条里，1/4 的约定行为已在 #757+#759；第 3 条代码已有 Preferences 真入口（#1679），首包关闸时 Web 仍灰行；Circle 统一账号仍不写。2 的「漏项补行」已做。Support 五卡不必进菜单（**2026-09-15 拍板**）。
+**一句话：** 四条里，1/4 的约定行为已在 #757+#759；第 3 条代码已有 Preferences 真入口（#1679），2026-11-13 网页与自有电脑版开闸；Circle 统一账号仍不写。2 的「漏项补行」已做。Support 五卡不必进菜单（**2026-09-15 拍板**）。
 
 ---
 

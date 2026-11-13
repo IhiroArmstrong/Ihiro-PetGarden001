@@ -9,30 +9,30 @@ import { listSecondaryChromeEntries } from './idleChromeOrchestration.js';
 import { setPracticeBackupCloudEnabledForTests } from './practiceBackup/practiceBackupCloudEnabled.js';
 
 describe('idle account menu · T93 D3', () => {
-  it('keeps the Preferences email row non-interactive on the first-invite gate', () => {
+  it('makes the Preferences email row clickable when the cloud gate is on', () => {
     const rows = listSecondaryChromeEntries('wide-more', {
       reminderAvailable: false,
       newsletterSubmitted: true
     });
     const account = rows.find((r) => r.proxy === 'account');
-    assert.equal(account?.interactive, false);
-    assert.notEqual(account?.testId, 'idle-account-email-restore');
+    assert.equal(account?.interactive, undefined);
+    assert.equal(account?.testId, 'idle-account-email-restore');
+    assert.equal(account?.handler, 'onAccount');
+    assert.equal(account?.labelKey, 'EMAIL_JOURNEY_MENU_LABEL');
   });
 
-  it('makes the Preferences email row clickable when the gate is on', () => {
-    setPracticeBackupCloudEnabledForTests(true);
+  it('greys the Preferences email row when tests force the gate off', () => {
+    setPracticeBackupCloudEnabledForTests(false);
     try {
       const rows = listSecondaryChromeEntries('wide-more', {
         reminderAvailable: false,
         newsletterSubmitted: true
       });
       const account = rows.find((r) => r.proxy === 'account');
-      assert.equal(account?.interactive, undefined);
-      assert.equal(account?.testId, 'idle-account-email-restore');
-      assert.equal(account?.handler, 'onAccount');
-      assert.equal(account?.labelKey, 'EMAIL_JOURNEY_MENU_LABEL');
+      assert.equal(account?.interactive, false);
+      assert.notEqual(account?.testId, 'idle-account-email-restore');
     } finally {
-      setPracticeBackupCloudEnabledForTests(false);
+      setPracticeBackupCloudEnabledForTests(true);
     }
   });
 

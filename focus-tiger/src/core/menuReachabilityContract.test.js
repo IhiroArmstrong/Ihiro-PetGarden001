@@ -43,25 +43,25 @@ describe('menuReachabilityContract', () => {
     assert.equal(morning?.contract.resultSelector, '#yin-membership-card');
   });
 
-  it('keeps account grey on the first-invite cloud gate', () => {
+  it('treats account as the email restore open-panel when the gate is on', () => {
     const rows = listMenuReachabilityRows('wide-more');
     const account = rows.find((r) => r.proxy === 'account');
-    assert.equal(account?.interactive, false);
+    assert.equal(account?.interactive, true);
+    assert.equal(account?.contract.kind, 'open-panel');
+    assert.equal(
+      account?.contract.resultSelector,
+      '#email-journey-restore-panel'
+    );
   });
 
-  it('treats account as the email restore open-panel when the gate is on', () => {
-    setPracticeBackupCloudEnabledForTests(true);
+  it('keeps account grey when tests force the cloud gate off', () => {
+    setPracticeBackupCloudEnabledForTests(false);
     try {
       const rows = listMenuReachabilityRows('wide-more');
       const account = rows.find((r) => r.proxy === 'account');
-      assert.equal(account?.interactive, true);
-      assert.equal(account?.contract.kind, 'open-panel');
-      assert.equal(
-        account?.contract.resultSelector,
-        '#email-journey-restore-panel'
-      );
+      assert.equal(account?.interactive, false);
     } finally {
-      setPracticeBackupCloudEnabledForTests(false);
+      setPracticeBackupCloudEnabledForTests(true);
     }
   });
 
