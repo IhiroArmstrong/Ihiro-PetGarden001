@@ -22,6 +22,10 @@ import {
   listKbLiveMenuProxyRows
 } from '../src/core/kbLiveEntryRegistry.js';
 import { listSecondaryChromeEntries } from '../src/core/idleChromeOrchestration.js';
+import {
+  CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX,
+  listEnabledContemplativeArchiveSealEntries
+} from '../src/core/memorialSealDirectory.js';
 import { loadMergedFromDisk } from './check-locale-slices.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -79,16 +83,28 @@ function readModule(relPath, cache) {
  * @returns {import('../src/core/idleChromeOrchestration.js').SecondaryEntryVisibility}
  */
 export function buildKbLiveMenuAuditVisibility() {
+  const contemplativeArchiveSealMenus = listEnabledContemplativeArchiveSealEntries().map(
+    (entry) => ({
+      proxy: `${CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX}${entry.id}`,
+      labelKey: entry.menuLabelKey || entry.cardTitleKey || entry.id
+    })
+  );
   return {
     microRitualVisible: true,
     companionVisible: true,
     companionEnabled: true,
     reminderAvailable: true,
+    workEndAvailable: true,
     confideUserVisible: true,
     yinCoinVisible: true,
     mustardSeedSealUnlocked: true,
+    contemplativeInquiryVisible: true,
     scenesEntitled: true,
-    newsletterSubmitted: false
+    newsletterSubmitted: false,
+    alwaysOnTopAvailable: true,
+    windowLayoutAvailable: true,
+    inputRhythmAvailable: true,
+    contemplativeArchiveSealMenus
   };
 }
 
@@ -109,23 +125,15 @@ export function diffMenuProxyCoverage(registryRows, menuRows) {
       .filter((proxy) => typeof proxy === 'string')
   );
 
-  const optionalProxies = new Set([
-    'companion',
-    'reminder',
-    'language',
-    'yin-coin',
-    'confide',
-    'mustard-seed-seal',
-    'newsletter',
-    'account',
-    'art-collection'
-  ]);
+  // Runtime gates that can hide a registered row even with max audit visibility.
+  // Extra menu proxies are never skipped: missing registry = CI red.
+  const absentFromDumpOk = new Set(['language', 'guided-meditation']);
 
   const missingFromMenu = [...registryProxies].filter(
-    (proxy) => !menuProxies.has(proxy) && !optionalProxies.has(proxy)
+    (proxy) => !menuProxies.has(proxy) && !absentFromDumpOk.has(proxy)
   );
   const extraInMenu = [...menuProxies].filter(
-    (proxy) => !registryProxies.has(proxy) && !optionalProxies.has(proxy)
+    (proxy) => !registryProxies.has(proxy)
   );
 
   return { missingFromMenu, extraInMenu };
@@ -290,6 +298,7 @@ export function runKbLiveEntryAudit({ write = false } = {}) {
   );
   for (const row of listKbLiveMenuProxyRows()) {
     if (!row.proxy || row.surface === 'ritual') continue;
+    if (row.proxy.startsWith(CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX)) continue;
     const proxyAnchor = `proxy: '${row.proxy}'`;
     if (!orchestrationSrc.includes(proxyAnchor)) {
       console.error(

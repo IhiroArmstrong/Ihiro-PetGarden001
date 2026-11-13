@@ -13,6 +13,10 @@
  */
 
 import { listRitualConfigs } from './RitualFlow.js';
+import {
+  CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX,
+  listEnabledContemplativeArchiveSealEntries
+} from './memorialSealDirectory.js';
 
 /** Approved catalog ids for entitlement-gated RitualFlow menu proxies. */
 const RITUAL_CATALOG_KB_IDS = Object.freeze({
@@ -330,6 +334,22 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0022'])
   }),
   Object.freeze({
+    id: 'kb-live-mustard-seed-seal',
+    surface: 'menu',
+    proxy: 'mustard-seed-seal',
+    labelKeys: Object.freeze(['MUSTARD_SEED_SEAL_MENU_LABEL']),
+    menuPath: '⋯ → Inspiration → Mustard Seed · Sumeru (after unlock)',
+    liveStatus: 'entitlement-gated',
+    codeAnchors: Object.freeze([
+      "proxy: 'mustard-seed-seal'",
+      'MUSTARD_SEED_SEAL_MENU_LABEL'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
     id: 'kb-live-wallpapers',
     surface: 'menu',
     proxy: 'wallpapers',
@@ -342,6 +362,22 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     ]),
     authoritativeSources: Object.freeze(['src/core/idleChromeOrchestration.js']),
     catalogKbIds: Object.freeze(['KB-FUNC-0023'])
+  }),
+  Object.freeze({
+    id: 'kb-live-art-collection',
+    surface: 'menu',
+    proxy: 'art-collection',
+    labelKeys: Object.freeze(['ART_COLLECTION_MENU_LABEL']),
+    menuPath: '⋯ → Inspiration → Yin\'s Art Collection',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'art-collection'",
+      'idle-art-collection'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
   }),
   Object.freeze({
     id: 'kb-live-quiet-together',
@@ -400,6 +436,19 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0033'])
   }),
   Object.freeze({
+    id: 'kb-live-work-end',
+    surface: 'menu',
+    proxy: 'work-end',
+    labelKeys: Object.freeze(['WORK_END_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Wrap-up time',
+    liveStatus: 'conditional',
+    codeAnchors: Object.freeze(["proxy: 'work-end'", 'idle-work-end']),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
     id: 'kb-live-language',
     surface: 'menu',
     proxy: 'language',
@@ -431,6 +480,54 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/core/idleChromeOrchestration.js',
       'src/ui/AmbientSoundscapeUI.js'
     ])
+  }),
+  Object.freeze({
+    id: 'kb-live-always-on-top',
+    surface: 'menu',
+    proxy: 'always-on-top',
+    labelKeys: Object.freeze(['ALWAYS_ON_TOP_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Keep in front (Electron)',
+    liveStatus: 'conditional',
+    codeAnchors: Object.freeze([
+      "proxy: 'always-on-top'",
+      'idle-always-on-top'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
+    id: 'kb-live-window-layout',
+    surface: 'menu',
+    proxy: 'window-layout',
+    labelKeys: Object.freeze(['WINDOW_LAYOUT_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Window (Electron)',
+    liveStatus: 'conditional',
+    codeAnchors: Object.freeze([
+      "proxy: 'window-layout'",
+      'idle-window-layout'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
+    id: 'kb-live-input-rhythm',
+    surface: 'menu',
+    proxy: 'input-rhythm',
+    labelKeys: Object.freeze(['INPUT_RHYTHM_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Focus rhythm (Electron)',
+    liveStatus: 'conditional',
+    codeAnchors: Object.freeze([
+      "proxy: 'input-rhythm'",
+      'idle-input-rhythm'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
   }),
 
   Object.freeze({
@@ -521,6 +618,42 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
       'src/main.js'
     ]),
     catalogKbIds: Object.freeze(['KB-FUNC-0030'])
+  }),
+  Object.freeze({
+    id: 'kb-live-newsletter',
+    surface: 'menu',
+    proxy: 'newsletter',
+    labelKeys: Object.freeze([
+      'NEWSLETTER_MENU_LABEL',
+      'NEWSLETTER_MENU_CONFIRMED'
+    ]),
+    menuPath: '⋯ → Preferences → Stay in touch',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze(["proxy: 'newsletter'", 'NEWSLETTER_MENU_LABEL']),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
+    id: 'kb-live-account',
+    surface: 'menu',
+    proxy: 'account',
+    labelKeys: Object.freeze([
+      'EMAIL_JOURNEY_MENU_LABEL',
+      'ACCOUNT_MENU_PLACEHOLDER',
+      'EMAIL_JOURNEY_MENU_STORE_OFF'
+    ]),
+    menuPath: '⋯ → Preferences → Save or restore with email',
+    liveStatus: 'conditional',
+    codeAnchors: Object.freeze([
+      "proxy: 'account'",
+      'idle-account-email-restore'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
   }),
   Object.freeze({
     id: 'kb-live-help-center',
@@ -667,6 +800,40 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
 ]);
 
 /**
+ * Contemplative Archive menu proxies derived from the enabled CA directory.
+ * @returns {readonly KbLiveEntryRow[]}
+ */
+export function listKbLiveArchiveSealEntryRows() {
+  return listEnabledContemplativeArchiveSealEntries().map((entry) =>
+    Object.freeze({
+      id: `kb-live-archive-seal-${entry.id}`,
+      surface: 'menu',
+      proxy: `${CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX}${entry.id}`,
+      labelKeys: Object.freeze([
+        entry.menuLabelKey || entry.cardTitleKey || entry.id
+      ]),
+      menuPath: `⋯ → Inspiration → Contemplative Archive (${entry.catalogId})`,
+      liveStatus: 'entitlement-gated',
+      gate: Object.freeze({
+        moduleRelPath: 'src/core/memorialSealCatalogCa.js',
+        anchor: entry.id,
+        note: 'Menu after score unlock / reveal'
+      }),
+      codeAnchors: Object.freeze([
+        CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX,
+        entry.menuLabelKey || entry.id
+      ]),
+      authoritativeSources: Object.freeze([
+        'src/core/memorialSealDirectory.js',
+        'src/core/memorialSealCatalogCa.js',
+        'src/core/idleChromeOrchestration.js'
+      ]),
+      catalogKbIds: Object.freeze([])
+    })
+  );
+}
+
+/**
  * RitualFlow rows derived from code SSOT (entitlement-gated menu proxies).
  * @returns {readonly KbLiveEntryRow[]}
  */
@@ -702,7 +869,11 @@ export function listKbLiveRitualEntryRows() {
  * @returns {readonly KbLiveEntryRow[]}
  */
 export function listAllKbLiveEntryRows() {
-  return Object.freeze([...KB_LIVE_ENTRY_ROWS, ...listKbLiveRitualEntryRows()]);
+  return Object.freeze([
+    ...KB_LIVE_ENTRY_ROWS,
+    ...listKbLiveArchiveSealEntryRows(),
+    ...listKbLiveRitualEntryRows()
+  ]);
 }
 
 /**
