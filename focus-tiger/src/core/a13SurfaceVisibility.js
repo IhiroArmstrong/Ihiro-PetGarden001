@@ -12,6 +12,7 @@ import {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideDevHarness
 } from './confide/confideUserVisibilityGate.js'
+import { isHomeSanctuaryNavEnabled } from './homeSanctuaryNavEnabled.js'
 
 /**
  * @param {import('./glassCardVisualSurfaces.js').A13GlassVisualSurface | null | undefined} surface
@@ -27,7 +28,11 @@ export function shouldAssertA13SurfaceVisible(
     mountEnabled = CONFIDE_USER_MOUNT_ENABLED
   } = {}
 ) {
-  if (!surface || surface.visibilityDependsOn !== 'confide-user-or-harness') {
+  if (!surface) return true
+  if (surface.visibilityDependsOn === 'home-sanctuary-nav') {
+    return isHomeSanctuaryNavEnabled()
+  }
+  if (surface.visibilityDependsOn !== 'confide-user-or-harness') {
     return true
   }
   const harnessSearch =

@@ -24,6 +24,7 @@ import { isGuidedMeditationMediaConfigured } from './guidedMeditationLessons.js'
 import { resolveUpdateChannel } from './desktopUpdaterChannel.js';
 import { practiceBackupCloudEnabled } from './practiceBackup/practiceBackupCloudEnabled.js';
 import { isEmailJourneyCloudUiAllowedForChannel } from './practiceBackup/emailJourneyRestoreStatus.js';
+import { isHomeSanctuaryNavEnabled } from './homeSanctuaryNavEnabled.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -767,7 +768,9 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : isConfideUserVisible();
 
   pushLabeledGroup(out, 'MENU_GROUP_PRACTICE', [
-    { proxy: 'sanctuary-nav', labelKey: 'SANCTUARY_NAV_MENU_LABEL' },
+    isHomeSanctuaryNavEnabled()
+      ? { proxy: 'sanctuary-nav', labelKey: 'SANCTUARY_NAV_MENU_LABEL' }
+      : null,
     companionOk
       ? { proxy: 'companion', labelKey: 'COMPANION_MODE_HINT' }
       : null,
