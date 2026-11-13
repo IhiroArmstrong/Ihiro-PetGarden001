@@ -8,10 +8,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const hints = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
 const shell = readFileSync(join(here, 'NarrowIdleShell.js'), 'utf8');
+const glyphSrc = readFileSync(join(here, 'helpCenterBesideGlyph.js'), 'utf8');
 
 test('wide Idle mounts Help Center chrome to the right of ?', () => {
   assert.match(hints, /id = 'onboarding-hint-help-center'/);
@@ -27,4 +29,11 @@ test('narrow ActionBar mounts Help Center chrome beside ?', () => {
   assert.match(shell, /id="ft-narrow-help-center-btn"/);
   assert.match(shell, /data-proxy="help-center-beside"/);
   assert.match(shell, /onHelpCenterChrome/);
+});
+
+test('Help Center beside ? uses compass glyph (not book)', () => {
+  assert.match(glyphSrc, /ft-help-center-beside-compass/);
+  assert.doesNotMatch(HELP_CENTER_BESIDE_GLYPH, /M6\.2 4\.2h11\.1/);
+  assert.match(hints, /from '\.\/helpCenterBesideGlyph\.js'/);
+  assert.match(shell, /from '\.\/helpCenterBesideGlyph\.js'/);
 });
