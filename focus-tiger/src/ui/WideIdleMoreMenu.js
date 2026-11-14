@@ -1586,32 +1586,6 @@ export class WideIdleMoreMenu {
           display: none !important;
         }
 
-        body.ft-wide-park-secondary.ft-wide-stage-work-end .work-end-pref__panel {
-          position: fixed !important;
-          left: 50% !important;
-          right: auto !important;
-          bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px)) !important;
-          transform: translateX(-50%) !important;
-          translate: none !important;
-          width: min(260px, calc(100vw - 48px)) !important;
-          opacity: 1 !important;
-          visibility: visible !important;
-          pointer-events: auto !important;
-          z-index: ${Z.REMINDER_PANEL} !important;
-        }
-        body.ft-wide-park-secondary.ft-wide-stage-reminder .reminder-pref__panel {
-          position: fixed !important;
-          left: 50% !important;
-          right: auto !important;
-          bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px)) !important;
-          transform: translateX(-50%) !important;
-          translate: none !important;
-          width: min(260px, calc(100vw - 48px)) !important;
-          opacity: 1 !important;
-          visibility: visible !important;
-          pointer-events: auto !important;
-          z-index: ${Z.REMINDER_PANEL} !important;
-        }
       }
     `;
     document.head.appendChild(style);

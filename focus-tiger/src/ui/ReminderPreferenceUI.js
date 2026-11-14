@@ -32,7 +32,20 @@ import {
   downloadTextFile
 } from '../core/icsReminderExport.js';
 import { RETENTION_EVENTS, trackRetentionEvent } from '../core/RetentionTelemetry.js';
+import { wideSecondaryDockCss } from '../core/wideSecondaryDockCss.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
+import {
+  installPreferencePanelDockListener,
+  onPreferencePanelOpen,
+  syncPreferencePanelDock
+} from './preferencePanelWideDock.js';
+import {
+  GLASS_BLUR_CSS,
+  GLASS_BORDER,
+  GLASS_FILL,
+  GLASS_RADIUS,
+  GLASS_SHADOW
+} from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
 const CLOCK_ICON = `<svg class="reminder-pref__icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm.75 3.5h-1.5v5.25l4.25 2.55.75-1.23-3.5-2.1V7.5z"/></svg>`;
@@ -107,6 +120,7 @@ export class ReminderPreferenceUI {
     this.toggleBtn.setAttribute('aria-controls', 'reminder-preference-panel');
     this.toggleBtn.addEventListener('click', () => {
       this._expanded = !this._expanded;
+      if (this._expanded) onPreferencePanelOpen(this.panel, 'reminder-preference');
       this._render();
       if (this._expanded) this.handlers.onOpen?.();
       else this.handlers.onClose?.();
@@ -122,6 +136,7 @@ export class ReminderPreferenceUI {
     this.titleEl = document.createElement('p');
     this.titleEl.id = 'reminder-preference-title';
     this.titleEl.className = 'reminder-pref__title';
+    this.titleEl.setAttribute('data-ft-glass-drag-chrome', '1');
 
     this.enableRow = document.createElement('label');
     this.enableRow.className = 'reminder-pref__enable';
@@ -314,8 +329,12 @@ export class ReminderPreferenceUI {
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
 
+    this._offDockResize = installPreferencePanelDockListener(this.panel, () =>
+      syncPreferencePanelDock(this.panel)
+    );
     this._unsubLocale = onLocaleChange(() => this._render());
     this._injectStyles();
+    syncPreferencePanelDock(this.panel);
     this._render();
   }
 
@@ -328,6 +347,7 @@ export class ReminderPreferenceUI {
     if (!this._visible) this.setVisible(true);
     const wasOpen = this._expanded;
     this._expanded = true;
+    onPreferencePanelOpen(this.panel, 'reminder-preference');
     this._render();
     if (!wasOpen) this.handlers.onOpen?.();
   }
@@ -354,6 +374,7 @@ export class ReminderPreferenceUI {
 
   dispose() {
     document.removeEventListener('pointerdown', this._onDocPointer, true);
+    this._offDockResize?.();
     window.clearTimeout(this._savedFlashTimer);
     this._unsubLocale();
     this.panel.remove();
@@ -540,10 +561,8 @@ export class ReminderPreferenceUI {
     this.panel.hidden = !this._visible || !this._expanded;
     if (this._expanded && wasPanelHidden) {
       this.panel.style.opacity = '0';
-      this.panel.style.transform = 'translateX(-50%) translateY(-8px)';
       this.panel.getBoundingClientRect();
       this.panel.style.opacity = '1';
-      this.panel.style.transform = 'translateX(-50%) translateY(0)';
     }
   }
 
@@ -599,7 +618,7 @@ export class ReminderPreferenceUI {
         height: 22px;
         display: block;
       }
-      .reminder-pref__panel {
+      #reminder-preference-panel {
         position: fixed;
         left: 50%;
         right: auto;
@@ -608,17 +627,16 @@ export class ReminderPreferenceUI {
         z-index: ${Z.REMINDER_PANEL};
         width: min(260px, calc(100vw - 36px));
         padding: 16px 16px 14px;
-        border-radius: 18px;
-        background: rgba(255, 252, 245, 0.62);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(139, 115, 85, 0.14);
-        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
+        border-radius: ${GLASS_RADIUS};
+        background: ${GLASS_FILL};
+        ${GLASS_BLUR_CSS};
+        border: ${GLASS_BORDER};
+        box-shadow: ${GLASS_SHADOW};
         color: #2c1f14;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
         pointer-events: auto;
       }
-      .reminder-pref__panel[hidden] {
+      #reminder-preference-panel[hidden] {
         display: none !important;
       }
       .reminder-pref__title {
@@ -826,6 +844,7 @@ export class ReminderPreferenceUI {
           width: min(260px, calc(100vw - 32px));
         }
       }
+      ${wideSecondaryDockCss('#reminder-preference-panel')}
     `;
   }
 }

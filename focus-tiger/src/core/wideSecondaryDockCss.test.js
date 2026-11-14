@@ -37,4 +37,12 @@ describe('T42 surfaces use the shared dock CSS', () => {
     assert.match(help, /wideSecondaryDockCss\('#help-center'\)/);
     assert.match(journey, /wideSecondaryDockCss\('\.growth-journey-detail'/);
   });
+
+  it('Idle preference panels import the helper', () => {
+    const ui = dirname(fileURLToPath(import.meta.url));
+    const reminder = readFileSync(join(ui, '../ui/ReminderPreferenceUI.js'), 'utf8');
+    const workEnd = readFileSync(join(ui, '../ui/WorkEndPreferenceUI.js'), 'utf8');
+    assert.match(reminder, /wideSecondaryDockCss\('#reminder-preference-panel'\)/);
+    assert.match(workEnd, /wideSecondaryDockCss\('#work-end-preference-panel'\)/);
+  });
 });
