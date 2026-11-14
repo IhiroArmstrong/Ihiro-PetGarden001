@@ -51,7 +51,7 @@
 
 | 组 locale key | 菜单 proxy（审计最大可见集） |
 |---|---|
-| `MENU_GROUP_PRACTICE` | `sanctuary-nav` · `companion` · `ground-exercise` · `guided-meditation` · `five-moments` · `honesty` · `confide` |
+| `MENU_GROUP_PRACTICE` | `companion` · `ground-exercise` · `guided-meditation` · `five-moments` · `honesty` · `confide` |
 | `MENU_GROUP_RECORDS` | `journey-log` · `presence-signals` · `yin-coin` |
 | `MENU_GROUP_INSPIRATION` | `daily-quote` · `contemplative-inquiry` · `zen-cinema` · `mustard-seed-seal` · `contemplative-archive-seal:ca-01-old-pond` · `contemplative-archive-seal:ca-02-cherry-blossoms` · `contemplative-archive-seal:ca-03-morning-field` · `contemplative-archive-seal:ca-04-empty-room` · `contemplative-archive-seal:ca-05-bird-has-flown` · `contemplative-archive-seal:ca-06-spring-water` · `contemplative-archive-seal:ca-07-distant-mountain` · `contemplative-archive-seal:ca-08-moonlight` · `contemplative-archive-seal:ca-09-still-tree` · `contemplative-archive-seal:ca-10-sound-after-bell` · `contemplative-archive-seal:ca-11-falling-leaf` · `contemplative-archive-seal:ca-12-cypress-old-lane` · `wallpapers` · `art-collection` |
 | `MENU_GROUP_NOT_ALONE` | `quiet-together` · `focus-circle` · `community` |

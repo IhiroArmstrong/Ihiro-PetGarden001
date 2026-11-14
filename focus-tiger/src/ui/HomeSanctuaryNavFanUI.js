@@ -10,6 +10,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { isHomeSanctuaryNavEnabled } from '../core/homeSanctuaryNavEnabled.js';
 import { markHomeSanctuaryNavSeen } from '../core/homeSanctuaryNavGate.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
@@ -108,7 +109,13 @@ export class HomeSanctuaryNavFanUI {
       this.open();
     });
 
-    mountRoot.append(this.backdrop, this.root, this.fab);
+    if (isHomeSanctuaryNavEnabled()) {
+      mountRoot.append(this.backdrop, this.root, this.fab);
+    } else {
+      this.fab.hidden = true;
+      this.fab.setAttribute('aria-hidden', 'true');
+      mountRoot.append(this.backdrop, this.root);
+    }
 
     this.backdrop.addEventListener('click', () => {
       if (this._ignoreOpeningPointer) return;
@@ -139,6 +146,7 @@ export class HomeSanctuaryNavFanUI {
    * @returns {void}
    */
   open(opts = {}) {
+    if (!isHomeSanctuaryNavEnabled()) return;
     if (this._open) return;
     this._open = true;
     markHomeSanctuaryNavSeen(this._storage);

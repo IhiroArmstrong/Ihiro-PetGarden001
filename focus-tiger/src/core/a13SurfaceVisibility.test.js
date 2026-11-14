@@ -54,4 +54,11 @@ describe('shouldAssertA13SurfaceVisible', () => {
     const help = A13_GLASS_VISUAL_SURFACES.find((s) => s.id === 'help-center')
     assert.equal(shouldAssertA13SurfaceVisible(help, { mountEnabled: false }), true)
   })
+
+  it('skips sanctuary-nav fan while the home nav flag is off', () => {
+    const fan = A13_GLASS_VISUAL_SURFACES.find((s) => s.id === 'sanctuary-nav-fan')
+    assert.ok(fan)
+    assert.equal(fan.visibilityDependsOn, 'home-sanctuary-nav')
+    assert.equal(shouldAssertA13SurfaceVisible(fan), false)
+  })
 })
