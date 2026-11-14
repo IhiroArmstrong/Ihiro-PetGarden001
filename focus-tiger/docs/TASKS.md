@@ -545,17 +545,94 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `confide-en-restore-ja-ui-off` · feature · 旁支实现中 · 英文挂载开 · 日语界面关 · 2026-11-14
+
+首发暂时不做日语倾诉。英文恢复菜单、耳朵与面板。Brief [`task-confide-en-restore-ja-ui-off.md`](../task-briefs/task-confide-en-restore-ja-ui-off.md)。T36 仍只拦英文界面里的日语输入。
+
+### `guided-meditation-script-v1` · feature · P1 实现旁支进行中 · 2026-11-14
+
+脚本引导冥想 v1（PO 2026-11-14 点头）。列表与播放器 **supersede** 视频 MVP；R2/T88 代码搁置不删。
+
+课 ID：`breath-anchor-beginner` · `body-scan-relaxation` · `thoughts-letting-go`。
+
+### Set 1 — Basic Breath Awareness
+
+Use: first open / quick centering.
+
+1. Settle — sit stable, back easy, shoulders drop, hands on knees. Then: if comfortable close eyes; or lower gaze. Pause 5s.
+2. Notice natural breath — no force; cool in, warm out. Pause 15s.
+3. Breath as anchor — inhale clear, exhale soften; wander is normal, return kindly. Pause 20s.
+4. Return — carry stillness, wiggle fingers/toes, open eyes. Pause 0s.
+
+### Set 2 — Body Scan & Relaxation
+
+Use: sedentary fatigue. Step 1 adds the same eyes-open permission as Set 1.
+
+1. Grounding + three deep breaths. Pause 10s.
+2. Relax head and face, drop shoulders. Pause 15s.
+3. Soften torso and limbs to the feet. Pause 20s.
+4. Whole-body rest. Pause 20s.
+5. Gentle close. Pause 0s.
+
+### Set 3 — Mindful Awareness & Letting Go
+
+Use: scattered to-do mind. Step 1 adds eyes-open permission. Step 4: “Each time you notice and return, you are quietly training your focus.”
+
+1. Create inner space. Pause 5s.
+2. Observe thoughts arising. Pause 15s.
+3. Watch thoughts like scenery. Pause 20s.
+4. Return to the present. Pause 20s.
+5. Complete. Pause 0s.
+
+运行时句子以 `guidedMeditationScriptCatalog.js` 为准。
+
+### `help-center-ask-answer-tts` · feature · 实现中 · fix/help-center-ask-answer-tts · 2026-11-14
+
+帮助中心问卡在宽屏电脑版朗读最接近一篇说明（标题+正文）。空态与 T92 句念屏上字。办理指令仍走现网复述。Arrival / Reflection 听写没有语义检索，不在本刀。
+
+### `pro-addon-checkout-restore` · feature · 进行中 · C6 / §C Pro·陪伴加购新购 · 2026-11-14 · 2026-11-14
+
+英文 Confide 恢复后，恢复 Support 第四卡 Pro 与第五卡陪伴加购新结账；客户端闸 + Worker 默认开 + 文案切片 `pro-addon-checkout-restore.json`。生产 Worker 须 redeploy 后线上才不 410。
+
+### `t93-privacy-gate-dual-copy` · feature · 首包关闸 Privacy §4 双态 · 补 #1683/#1708 文案裂口 · 2026-11-14
+
+#1689 已锁首包 `PRIVACY_NOTICE.md` 关闸口径；#1708 把 §4 改回「可选用邮箱」。应用内切片亦一律开闸句。本片：恢复产品 SSOT 首包 §4；Privacy 卡按 `practiceBackupCloudEnabled` 在 `PRIVACY_SHEET_CLOUD` / `PRIVACY_SHEET_CLOUD_GATE_ON` 间切换。不是开闸 B5 抓包。不是改 Worker。
+
+### `t94-knife-3-item-protocol` · feature · 进行中 · 第 3 刀 Brief 已锁 · 无运行时 · 题面不进仓 · 2026-11-14
+
+T94 第 3 刀：开发集 + 封存卷协议与 10-05 语种测量表。不写 src、不编题、不自标。Brief [`task-t94-knife-3-item-protocol.md`](../task-briefs/task-t94-knife-3-item-protocol.md)。第 2 / 第 4 刀另 Brief。
+
+### `t94-v2-recognition-four-knives` · feature · 已完成（说明）· P2 · 无运行时 · 刀序第 3→2→4 · 第 3 刀 Brief 已锁 · 第 2、4 刀待 Brief · 2026-11-14
+
+T94 识别率四刀说明（V2）。第 1 刀窗口变窄仍打分已合 #1612。第 3 刀协议 Brief [`task-t94-knife-3-item-protocol.md`](../task-briefs/task-t94-knife-3-item-protocol.md)（题面不进仓）。实现顺序：新题 → 阈值 → 未拦住。不是 T93 邮箱登录。口令「开工识别率」仍不写 src。
+
+### `disable-home-sanctuary-nav` · note · 实现旁支 fix/disable-sanctuary-nav · 指南针 FAB 与菜单 Navigate sanctuary 关掉 · 2026-11-13
+
+PO 2026-11-13：指南针圆钮与菜单栖居导航内容无用且不对，两边都关。开关 `HOME_SANCTUARY_NAV_ENABLED`。不改 TASKS 总表。
+
 ### `kb-help-single-source-k2` · feature · 进行中 · 第 2 刀实现旁支 · 2026-11-13
 
 一份事实源第 2 刀：`listSecondaryChromeEntries` 的非豁免 `proxy` 必须在 `kbLiveEntryRegistry.js` 有一行，缺行 `docs:check` 红灯。豁免表与普查 §2.3 互链。不写帮助正文 / 不链 Sound 0037（第 3 刀）。Brief [`task-kb-help-single-source.md`](../task-briefs/task-kb-help-single-source.md)。
+
+### `kb-help-single-source-k3` · feature · 进行中 · 第 3 刀实现旁支 · 2026-11-13
+
+一份事实源第 3 刀：五个点名菜单。Sound 链已有 0037 并补 Preferences → Sound。Sit with a question / Presence Field 进目录仅帮助中心。Mindflow / Practice Study 只出待审草稿。Language 不动。Brief [`task-kb-help-single-source.md`](../task-briefs/task-kb-help-single-source.md)。
+
+### `kb-help-single-source-k4` · feature · 进行中 · 第 4 刀实现旁支 · 2026-11-13
+
+一份事实源第 4 刀：电脑壳 Preferences（收工、置顶、窗口、节律、健康快捷指令）+ 共修线旁支（保持联络、艺术品集）。默认仅帮助中心，不写 account 文案。Brief [`task-kb-help-single-source.md`](../task-briefs/task-kb-help-single-source.md)。
+
+### `t93-email-cloud-gate-on` · note · 实现旁支 feature/t93-open-email-cloud-gate · 客户端云闸默认开 · 2026-11-13
+
+T93：网页 / 自有电脑版打开练习云备份客户端闸。设置里「用邮箱保存或找回」可点。Setapp / Mac App Store 仍关。隐私卡与 `PRIVACY_NOTICE.md` §4 改成与明文快照一致。
 
 ### `t93-email-sign-in-d5` · feature · 文档刀 · 改过时灰行说明书 · 不测真人 · 2026-11-13
 
 T93 D5：普查 / 场景 Z / TRACKER 去掉「永远灰行、没有真入口」的过时句，改成双态：首包关闸 Web 灰行；开闸 Preferences 真入口。不改 `src/`。不测真人。Circle 统一 Login 仍不写。
 
-### `t95-electron-shell-upgrade` · feature · 立即做 · P1 · 9-02b · 准备窗口已开 · 壳先不升 · 2026-11-13
+### `t95-electron-shell-upgrade` · feature · 立即做 · P1 · 9-02b · 升壳实现中 · Electron 45.3.1 · 2026-11-13
 
-T95 电脑壳升级 + 更新通道。发包装日 2026-12-08。目标大版本 45（对照补丁 45.3.2；实现当天取最新 45 稳定补丁）。升壳合入不晚于 2026-12-01。对客根地址 `https://updates.twinsology.com/`；测试前缀 `/prep/`。存储桶未建；公证未做过。壳版本本回合不改。现在不为手测升级。不是换壳方案。
+T95 电脑壳升级 + 更新通道。发包装日 2026-12-08。升壳合入不晚于 2026-12-01，否则 12 月 8 日整日顺延。目标大版本 45。GitHub 当天稳定标签是 45.3.2；npm 没有该版本，可安装钉是 45.3.1，不升 46。最低 macOS 13。对客根地址 `https://updates.twinsology.com/`；测试前缀 `/prep/`（`FT_UPDATE_FEED_URL`）。存储桶未建；公证未做过。原生库加载失败时，电脑上的倾诉语义分和短生成一起不可用，走现有语料退路。不改倾诉发送链。
 
 ### `deep-link-shortcuts-cookbook` · feature · Health 记入钮 + Preferences 开关（feature/health-shortcut-log）；深链 A/B/C 已合 · 2026-11-12
 
@@ -628,10 +705,6 @@ T99 必跑失败机械闸：husky pre-push 跑 `test:e2e:smoke`；pre-commit 先
 ### `t78-co-practice-stable-breath-companion` · feature · 待合 · 可选 · PR-3 实现中 · 2026-11-08
 
 T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动。
-
-### `t94-v2-recognition-four-knives` · feature · 已完成（说明）· P2 · 无运行时 · 刀序第 3→2→4 · 10-05 修复归第 4 刀 · 第 2–4 刀待 Brief · 2026-11-08
-
-T94 识别率四刀说明（V2）。第 1 刀窗口变窄仍打分已合 #1612。实现顺序：新题（开发集+封存卷）→ 阈值 → 未拦住。不是 T93 邮箱登录。口令「开工识别率」在分刀 Brief 点头前不写 src。
 
 ### `t96-uncovered-language-help` · feature · 立即做 · P2 · 未覆盖语言固定句带 T92 求助 · 2026-11-08
 
