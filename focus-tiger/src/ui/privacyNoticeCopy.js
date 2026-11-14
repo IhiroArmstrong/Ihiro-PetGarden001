@@ -3,10 +3,25 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+import { practiceBackupCloudEnabled } from '../core/practiceBackup/practiceBackupCloudEnabled.js';
+
 /**
  * In-app Privacy sheet copy keys + guards (local-first; no iCloud promise).
  * Product SSOT narrative: docs/PRIVACY_NOTICE.md · Brief task-in-app-privacy-and-purpose-copy.
  */
+
+/** §4 body when practice cloud gate is off (first invite pack). */
+export const PRIVACY_SHEET_CLOUD_KEY = 'PRIVACY_SHEET_CLOUD';
+
+/** §4 body when practice cloud gate is on (dev / post-gate ship). */
+export const PRIVACY_SHEET_CLOUD_GATE_ON_KEY = 'PRIVACY_SHEET_CLOUD_GATE_ON';
+
+/** @returns {string} locale key for Privacy sheet §4 body */
+export function resolvePrivacySheetCloudBodyKey() {
+  return practiceBackupCloudEnabled
+    ? PRIVACY_SHEET_CLOUD_GATE_ON_KEY
+    : PRIVACY_SHEET_CLOUD_KEY;
+}
 
 /** Intro paragraph before numbered sections. */
 export const PRIVACY_SHEET_INTRO_KEY = 'PRIVACY_SHEET_INTRO';
