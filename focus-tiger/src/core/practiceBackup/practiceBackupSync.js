@@ -37,6 +37,7 @@ import {
 } from './practiceBackupEntitlementReconcile.js';
 import { practiceBackupCloudEnabled } from './practiceBackupCloudEnabled.js';
 import { isPracticeBackupCloudDisabledError } from './practiceBackupCloudHttp.js';
+import { backfillLotusPondStoreForImport } from './practiceBackupLotusBackfill.js';
 
 export const PRACTICE_BACKUP_DEBOUNCE_MS = 10 * 60 * 1000;
 export const PRACTICE_BACKUP_MIN_UPLOAD_GAP_MS = 60 * 1000;
@@ -126,7 +127,8 @@ export function normalizeSnapshotStoresForApply(snapshot, opts = {}) {
       stores[key] = null;
     }
   }
-  return { ...snapshot, stores };
+  const withLotus = backfillLotusPondStoreForImport(stores);
+  return { ...snapshot, stores: withLotus };
 }
 
 /**
