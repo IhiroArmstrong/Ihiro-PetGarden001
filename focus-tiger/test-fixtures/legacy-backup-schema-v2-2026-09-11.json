@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 2,
+  "savedAt": "2026-09-11T05:21:27.718Z",
+  "stores": {
+    "focus-tiger.journey-log.v1": {
+      "entries": [
+        {
+          "at": "2026-09-01T18:32:11.314Z",
+          "minutes": 3,
+          "arrive": false,
+          "reflect": true,
+          "insightSpark": true
+        },
+        {
+          "at": "2026-09-04T09:40:54.398Z",
+          "minutes": 3,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-04T09:43:59.090Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-04T09:52:16.257Z",
+          "minutes": 6,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-04T13:02:33.443Z",
+          "minutes": 3,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-04T13:36:05.494Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-04T13:40:12.956Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-04T16:03:29.880Z",
+          "minutes": 3,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-06T14:14:17.212Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": true
+        },
+        {
+          "at": "2026-09-06T14:45:44.432Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": true
+        },
+        {
+          "at": "2026-09-06T14:59:20.624Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-06T15:29:15.865Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-06T15:31:42.613Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-11T04:33:00.862Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-11T04:37:17.592Z",
+          "minutes": 1,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-11T04:39:16.146Z",
+          "minutes": 2,
+          "arrive": false,
+          "reflect": false
+        },
+        {
+          "at": "2026-09-11T04:50:00.607Z",
+          "minutes": 10,
+          "arrive": false,
+          "reflect": false
+        }
+      ],
+      "memories": [
+        {
+          "kind": "milestone",
+          "id": "first-practice",
+          "at": "2026-08-23T12:00:00.000Z"
+        },
+        {
+          "kind": "milestone",
+          "id": "streak-7",
+          "at": "2026-08-29T12:00:00.000Z"
+        },
+        {
+          "kind": "milestone",
+          "id": "first-lotus",
+          "at": "2026-09-11T03:38:22.579Z"
+        },
+        {
+          "kind": "milestone",
+          "id": "practice-variety",
+          "at": "2026-09-11T04:49:47.275Z"
+        }
+      ],
+      "sourcesSeen": [
+        "honesty-checkin",
+        "sit-timed"
+      ]
+    },
+    "focus-tiger.practice-days.v1": {
+      "days": [
+        {
+          "date": "2026-08-27",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-08-28",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-08-29",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-08-30",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-08-31",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-01",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-02",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-03",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-04",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-05",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-06",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-07",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-08",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-09",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-10",
+          "totalMinutes": 25
+        },
+        {
+          "date": "2026-09-11",
+          "totalMinutes": 30
+        }
+      ]
+    },
+    "focus-tiger.milestone-glow.v1": {
+      "played": [
+        "streak-7"
+      ]
+    },
+    "focus-tiger.entitlement-ownership.v1": null,
+    "focus-tiger.ritual-completions.v1": null,
+    "focus-tiger.mustard-seed-seal.v1": {
+      "revealed": true,
+      "revealedAt": "2026-09-06T14:42:32.151Z",
+      "scoreAtReveal": 22,
+      "revealedCaseIds": [
+        "mustard-seed-sumeru",
+        "hero-not-pond",
+        "no-trace-might"
+      ],
+      "lastShownCaseId": "mustard-seed-sumeru"
+    },
+    "focus-tiger.presence-signals.v1": {
+      "entries": [
+        {
+          "id": "refl-2026-09-01T18:32:11.307Z-notice-1",
+          "at": "2026-09-01T18:32:11.307Z",
+          "source": "reflection_q1",
+          "freeText": "OK",
+          "presenceSessionId": "6e313efa-7552-47c5-898f-84ba64b9a39b"
+        },
+        {
+          "id": "refl-2026-09-01T18:32:11.307Z-emotion-2",
+          "at": "2026-09-01T18:32:11.307Z",
+          "source": "reflection_q2",
+          "freeText": "OK",
+          "presenceSessionId": "6e313efa-7552-47c5-898f-84ba64b9a39b"
+        },
+        {
+          "id": "refl-2026-09-01T18:32:11.307Z-nextFocus-3",
+          "at": "2026-09-01T18:32:11.307Z",
+          "source": "reflection_q3",
+          "freeText": "OK",
+          "presenceSessionId": "6e313efa-7552-47c5-898f-84ba64b9a39b"
+        },
+        {
+          "id": "da0945fc-e4d0-4f3d-a145-cde506786291",
+          "at": "2026-09-01T18:47:19.207Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "89bf7ad9-cb7e-4b7e-a625-0edf11fb8150"
+        },
+        {
+          "id": "598db24a-d09d-42c0-b158-17a6ed0089dc",
+          "at": "2026-09-04T09:43:28.929Z",
+          "source": "arrival_notice",
+          "emotionTag": "okay",
+          "presenceSessionId": "149e9224-89e0-4dce-9723-1ada383acce4"
+        },
+        {
+          "id": "cf4e650f-9d01-4cda-8b77-798316d9ac01",
+          "at": "2026-09-04T09:43:49.525Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "aead1d5b-82e7-4c3c-8e27-92eee9181df9"
+        },
+        {
+          "id": "28312302-dd4b-4abe-bc20-ac76100af6d2",
+          "at": "2026-09-04T09:46:10.755Z",
+          "source": "arrival_notice",
+          "emotionTag": "okay",
+          "presenceSessionId": "3ace67e9-79ff-49e3-a399-32a76ef91f61"
+        },
+        {
+          "id": "ebf79e8e-9c6e-4e41-a2c2-180750ecfbd0",
+          "at": "2026-09-04T09:46:31.114Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "ee7e3741-06cf-4a32-a5a9-2d3e6d5563b9"
+        },
+        {
+          "id": "f747df1e-955f-4bcb-860a-e7261e034fd0",
+          "at": "2026-09-04T11:09:16.167Z",
+          "source": "arrival_notice",
+          "emotionTag": "okay",
+          "presenceSessionId": "e763c96a-8ff4-40dc-8b87-e0537d10a162"
+        },
+        {
+          "id": "c0a7e7b8-eb1b-4a14-b500-caaabbe52214",
+          "at": "2026-09-04T11:09:36.076Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "fd2884cc-47c0-435b-a258-0481827d76a9"
+        },
+        {
+          "id": "refl-2026-09-06T14:14:17.207Z-notice-1",
+          "at": "2026-09-06T14:14:17.207Z",
+          "source": "reflection_q1",
+          "freeText": "g g",
+          "presenceSessionId": "28d402ea-934d-4d5e-b3fa-7a91f1a08965"
+        },
+        {
+          "id": "refl-2026-09-06T14:14:17.207Z-emotion-2",
+          "at": "2026-09-06T14:14:17.207Z",
+          "source": "reflection_q2",
+          "freeText": "gg",
+          "presenceSessionId": "28d402ea-934d-4d5e-b3fa-7a91f1a08965"
+        },
+        {
+          "id": "refl-2026-09-06T14:14:17.207Z-nextFocus-3",
+          "at": "2026-09-06T14:14:17.207Z",
+          "source": "reflection_q3",
+          "freeText": "gg",
+          "presenceSessionId": "28d402ea-934d-4d5e-b3fa-7a91f1a08965"
+        },
+        {
+          "id": "441d7b25-826c-4ca8-8b3a-9454920b143a",
+          "at": "2026-09-06T14:40:45.438Z",
+          "source": "arrival_notice",
+          "emotionTag": "calm",
+          "presenceSessionId": "639c188a-42ff-495a-b4f5-7c2635ef5327"
+        },
+        {
+          "id": "7e3cbdd7-1565-4a1c-9ebf-3ce725f52e5f",
+          "at": "2026-09-06T14:41:04.047Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "2782e603-5507-4b86-8a3e-9e325fae418c"
+        },
+        {
+          "id": "refl-2026-09-06T14:45:44.432Z-notice-1",
+          "at": "2026-09-06T14:45:44.432Z",
+          "source": "reflection_q1",
+          "freeText": "gg",
+          "presenceSessionId": "37c8c44f-835c-4e01-a439-5e5d494e301d"
+        },
+        {
+          "id": "refl-2026-09-06T14:45:44.432Z-emotion-2",
+          "at": "2026-09-06T14:45:44.432Z",
+          "source": "reflection_q2",
+          "freeText": "gg",
+          "presenceSessionId": "37c8c44f-835c-4e01-a439-5e5d494e301d"
+        },
+        {
+          "id": "refl-2026-09-06T14:45:44.432Z-nextFocus-3",
+          "at": "2026-09-06T14:45:44.432Z",
+          "source": "reflection_q3",
+          "freeText": "gg",
+          "presenceSessionId": "37c8c44f-835c-4e01-a439-5e5d494e301d"
+        },
+        {
+          "id": "ad4f077b-95ab-4600-bf3c-5134c1ae552f",
+          "at": "2026-09-06T14:57:30.603Z",
+          "source": "arrival_notice",
+          "emotionTag": "busyMind",
+          "presenceSessionId": "7ffc4bd3-9b78-4e56-bdb2-4c2771ae4885"
+        },
+        {
+          "id": "1a04b5c4-1060-4958-9add-c398575cabbe",
+          "at": "2026-09-06T14:57:49.430Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "b4afd83e-724c-4520-ba18-f387f4871818"
+        },
+        {
+          "id": "05b9ab0a-882c-434f-b6a2-9660286d7dfb",
+          "at": "2026-09-06T15:03:46.895Z",
+          "source": "arrival_notice",
+          "emotionTag": "lowEnergy",
+          "presenceSessionId": "463c7427-3efb-4b62-bb66-6dc25f42feb2"
+        },
+        {
+          "id": "628ca542-668d-4e4a-9469-03e1a670be28",
+          "at": "2026-09-06T15:20:18.008Z",
+          "source": "arrival_notice",
+          "emotionTag": "busyMind",
+          "presenceSessionId": "f9b06d16-7d99-4014-b5f7-6a22270d90cb"
+        },
+        {
+          "id": "5476ce57-396e-4293-a9f2-eb9457e1a414",
+          "at": "2026-09-06T15:27:19.639Z",
+          "source": "arrival_notice",
+          "emotionTag": "busyMind",
+          "presenceSessionId": "93e33826-f865-4b5e-acd3-ce6e5224df8c"
+        },
+        {
+          "id": "a0cb0880-67a2-4250-8cfc-29f1a7157fbd",
+          "at": "2026-09-06T15:27:37.876Z",
+          "source": "arrival_choose",
+          "freeText": "🧘 Meditation",
+          "presenceSessionId": "a74302c1-6913-471c-87fb-9b2be05a3d95"
+        },
+        {
+          "id": "70d2a592-a615-4b8e-9097-69fc7b141938",
+          "at": "2026-09-06T15:29:46.148Z",
+          "source": "arrival_notice",
+          "emotionTag": "busyMind",
+          "presenceSessionId": "e40c0b92-9dfa-43ab-8d2e-c0e62936effd"
+        },
+        {
+          "id": "2b98f830-b380-4433-b665-ef16231274e0",
+          "at": "2026-09-06T15:30:23.330Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "067b3d4e-82c7-4250-90c5-63eaf3bb6f8f"
+        },
+        {
+          "id": "ba0f80e9-0d47-450c-8565-04722e1f0854",
+          "at": "2026-09-11T04:28:47.598Z",
+          "source": "arrival_notice",
+          "emotionTag": "busyMind",
+          "presenceSessionId": "ed7aa8e4-3977-4fae-9482-19c1b10c72ee"
+        },
+        {
+          "id": "3fcb85bd-39cd-4caf-b50f-bb796566de61",
+          "at": "2026-09-11T04:29:55.648Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "0bf9f92d-9fac-4cf0-b8e0-bf8eeb88ce83"
+        },
+        {
+          "id": "743c7996-bd38-4065-a4f8-72f3f84f8750",
+          "at": "2026-09-11T04:33:28.293Z",
+          "source": "arrival_notice",
+          "emotionTag": "busyMind",
+          "presenceSessionId": "07453677-04c6-483f-87f7-6c7fa202bd0f"
+        },
+        {
+          "id": "a3421153-78d3-4c1e-b35e-d67e9c7e505b",
+          "at": "2026-09-11T04:36:43.974Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "895d677e-0a58-439f-b7cc-9ae05df4bfd1"
+        },
+        {
+          "id": "eaeb5b69-19a2-4a3b-836b-ac9f7f96332b",
+          "at": "2026-09-11T04:37:43.473Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "c2e60c62-ffcf-4209-888e-e6c7f40bd1e7"
+        },
+        {
+          "id": "45addd6b-3bf6-4fad-805e-6ebed44bd105",
+          "at": "2026-09-11T04:39:20.840Z",
+          "source": "arrival_notice",
+          "emotionTag": "busyMind",
+          "presenceSessionId": "3fc1827b-21a8-42bb-a270-a02b1a7a8517"
+        },
+        {
+          "id": "2c658059-39bb-4162-ac85-5dcfe0b36609",
+          "at": "2026-09-11T04:39:42.227Z",
+          "source": "arrival_choose",
+          "freeText": "🎨 Creative Work",
+          "presenceSessionId": "63aa74fc-41f2-49ee-bf29-9751f0d739d3"
+        },
+        {
+          "id": "rit-ritual-emotional-reset-1789103008621-emotion-1",
+          "at": "2026-09-11T05:03:49.322Z",
+          "source": "ritual_chip",
+          "emotionTag": "anxious",
+          "ritualId": "emotional-reset",
+          "field": "emotion",
+          "ritualSessionId": "ritual-emotional-reset-1789103008621",
+          "ritualCompleted": false,
+          "retrospectiveMentioned": false,
+          "presenceSessionId": "44d45c7a-ec05-4a46-a8f6-f39cd613a2af"
+        }
+      ]
+    },
+    "focus-tiger.presence-freetext-l3-consent.v1": null,
+    "focus-tiger.reflections.v1": [
+      {
+        "createdAt": 1788287531307,
+        "presenceSessionId": "6e313efa-7552-47c5-898f-84ba64b9a39b",
+        "notice": "OK",
+        "emotion": "OK",
+        "nextFocus": "OK"
+      },
+      {
+        "createdAt": 1788704057207,
+        "presenceSessionId": "28d402ea-934d-4d5e-b3fa-7a91f1a08965",
+        "notice": "g g",
+        "emotion": "gg",
+        "nextFocus": "gg"
+      },
+      {
+        "createdAt": 1788705944432,
+        "presenceSessionId": "37c8c44f-835c-4e01-a439-5e5d494e301d",
+        "notice": "gg",
+        "emotion": "gg",
+        "nextFocus": "gg"
+      }
+    ],
+    "focus-tiger.locale.v1": "en",
+    "focus-tiger.reminder-preference.v1": null,
+    "focus-tiger.companion-mode.v1": "acrossTools",
+    "focus-tiger.ambient-pref.v1": {
+      "enabled": false,
+      "trackId": "kiss-the-sky"
+    },
+    "focus-tiger.session-cues.v1": null,
+    "focus-tiger.contemplative-archive-seals.v1": null
+  }
+}
