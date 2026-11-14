@@ -38,9 +38,9 @@ Buttons: **Come in** / **Not now**
 
 ## 1. The question
 
-> Yin: Want to try a very old question together? It’s from a classic koan: Before your parents gave birth to you, what were you like?
+> Yin: Want to try a very old question together? It’s from a classic koan: Before your parents were born, what did you look like?
 
-**[K1 product-provisional]** Matches locked zh: 「父母未生你之前，你是什么样？」 Classic title on the card may still differ. Later changes: **zh + en + ja together**.
+**[K1 product-provisional]** Matches locked zh: 「父母未生前，你是什么样？」 Classic title on the card may still differ. Later changes: **zh + en + ja together**.
 
 ---
 

@@ -5,6 +5,20 @@
 
 ---
 
+## 重要 · 2026-11-13（K1 时间锚纠正）
+
+公案原意是**父母尚未出生**（父母未生前），不是「父母生下你之前」。三语第 1 步问句与 zh 锁定稿已同改：
+
+| 语言 | 新问句锚点 |
+| --- | --- |
+| zh | 父母**未生前**，你是什么样？ |
+| en | Before your parents **were born**, what did you **look like**? |
+| ja | 父母が**まだ生まれていないとき**、あなたはどんな**姿**だった？ |
+
+「About this question」仍可用古典名（本来面目 / original face）。
+
+---
+
 ## 重要 · 2026-11-03
 
 1. **停等中文外审。** 不再等 Claude Doc 批注回来再合并。  
@@ -43,8 +57,8 @@
 
 | ID | 内容 | 上线句 |
 | --- | --- | --- |
-| K1 | 时间锚点 | zh「父母未生你之前」；en `Before your parents gave birth to you`；ja 父母が**あなたを生む**前。卡/标题仍可用古典名 |
-| K2 | 问法 | zh「你是什么样」；en what were you **like**；ja どんなものだった |
+| K1 | 时间锚点 | zh「父母未生前」；en `Before your parents were born`；ja 父母が**まだ生まれていないとき**。卡/标题仍可用古典名 |
+| K2 | 问法 | zh「你是什么样」；en what did you **look like**；ja どんな**姿**だった |
 
 ---
 
