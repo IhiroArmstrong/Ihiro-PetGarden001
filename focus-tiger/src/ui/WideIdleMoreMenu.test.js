@@ -101,14 +101,11 @@ describe('wide more menu click reception', () => {
     assert.match(src, /companionOpen/);
   });
 
-  it('stages the reminder panel on-canvas (not the empty heatmap stub)', () => {
+  it('does not re-center wide reminder panels (T42 lives on ReminderPreferenceUI)', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
-    assert.match(
-      src,
-      /ft-wide-stage-reminder \.reminder-pref__panel/
-    );
-    assert.match(src, /pointer-events: auto !important/);
+    assert.doesNotMatch(src, /ft-wide-stage-reminder \.reminder-pref__panel/);
+    assert.doesNotMatch(src, /ft-wide-stage-work-end \.work-end-pref__panel/);
   });
 
   it('clearStage skips onClearStage while a growth glass card is the overlay', () => {

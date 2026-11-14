@@ -16,9 +16,10 @@ import {
   GLASS_CARD_TEXT_SELECT
 } from './glassCardDeck.js';
 
-function fakePointerTarget({ interactive = false, text = false } = {}) {
+function fakePointerTarget({ interactive = false, text = false, dragChrome = false } = {}) {
   return {
     closest(sel) {
+      if (sel === '[data-ft-glass-drag-chrome]') return dragChrome ? { id: 'chrome' } : null;
       if (sel === GLASS_CARD_INTERACTIVE) return interactive ? { id: 'control' } : null;
       if (sel === GLASS_CARD_TEXT_SELECT) return text ? { id: 'copy' } : null;
       return null;
@@ -84,6 +85,15 @@ test('empty glass-card chrome still starts a drag', () => {
   const card = { id: 'help-center' };
   assert.equal(glassCardAllowsDrag(fakePointerTarget(), card), true);
   assert.equal(glassCardAllowsTextSelect(fakePointerTarget()), false);
+});
+
+test('preference panels keep z35 in the deck and title chrome can drag', () => {
+  assert.equal(glassCardInlineZIndex('reminder-preference-panel', { isFront: true }), '35');
+  const card = { id: 'reminder-preference-panel' };
+  assert.equal(
+    glassCardAllowsDrag(fakePointerTarget({ dragChrome: true }), card),
+    true
+  );
 });
 
 test('buttons stay pointer-hit and Support still does not drag', () => {
