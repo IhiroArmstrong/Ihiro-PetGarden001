@@ -21,17 +21,10 @@ test('HelpCenterUI mounts T22 ask-card anchors on the index view', () => {
   assert.match(src, /help-center-ask-submit/);
   assert.match(src, /help-center-ask-empty/);
   assert.match(src, /help-center-ask-card-/);
+  assert.doesNotMatch(src, /onTranscriptCommitted:\s*\(\)\s*=>\s*void this\._submitAsk/);
 });
 
-test('HelpCenterUI auto-matches topics after voice transcript when not operating-listen', () => {
-  assert.match(src, /onTranscriptCommitted:/);
-  assert.match(src, /if \(this\._operatingListenResolve\) return/);
-  assert.match(src, /void this\._submitAsk\(\)/);
-  assert.match(src, /askInput\.type = 'text'/);
-  assert.match(src, /help-center__ask-submit--go/);
-});
-
-test('HelpCenterUI mounts T34 operating confirm anchors', () => {
+test('HelpCenterUI mounts T34 operating confirm anchors and does not auto-search on transcript', () => {
   assert.match(src, /help-center-operating/);
   assert.match(src, /help-center-operating-confirm/);
   assert.match(src, /help-center-operating-cancel/);
