@@ -1,5 +1,7 @@
 # Task Brief：Guided Meditation P1 MVP（草稿 · 待 PO 点头）
 
+> **视频线 superseded by script v1**（PO 2026-11-14）：列表与播放器行为以 [`task-guided-meditation-script-v1.md`](./task-guided-meditation-script-v1.md) 为准。本 Brief 的 `<video>` / R2 SHA 菜单门槛 **不再实现新投入**；R2 代码搁置不删。
+
 > 状态：draft · **PO 2026-11-04 方向已拍板** · **未点头 MVP Brief 不得写 `src/`**  
 > 依赖：P0 [`guided-meditation-p0-audit.md`](../guided-meditation-p0-audit.md) · 媒体 [`guided-meditation-media-delivery-audit.md`](../guided-meditation-media-delivery-audit.md) · P0.5 剪辑/授权/cue  
 > 类：B 类（用户可见入口、练习、文案、Help 改口）  

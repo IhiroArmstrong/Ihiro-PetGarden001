@@ -146,10 +146,9 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
         mode: 'token',
         files: Object.freeze(['src/ui/GuidedMeditationUI.js']),
         tokens: Object.freeze([
-          'GUIDED_MEDITATION_STATUS_LOADING',
-          'GUIDED_MEDITATION_STATUS_PREPARING',
-          'GUIDED_MEDITATION_STATUS_BUFFERING',
-          'GUIDED_MEDITATION_STATUS_FETCHING'
+          'GUIDED_MEDITATION_STATUS_SPEAKING',
+          'GUIDED_MEDITATION_STATUS_SILENCE',
+          'GUIDED_MEDITATION_STATUS_WEB_TEXT'
         ])
       }),
       success: Object.freeze({
@@ -161,8 +160,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
         mode: 'token',
         files: Object.freeze(['src/ui/GuidedMeditationUI.js']),
         tokens: Object.freeze([
-          'GUIDED_MEDITATION_STATUS_NEED_NETWORK',
-          'GUIDED_MEDITATION_STATUS_ERROR_RETRYABLE'
+          'GUIDED_MEDITATION_STATUS_INCOMPLETE'
         ])
       })
     }),
@@ -174,7 +172,7 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     trackerCoverage: Object.freeze({
       mode: 'token',
       files: Object.freeze([
-        'docs/tracker-entries/feature-guided-meditation-mvp.md'
+        'docs/tracker-entries/feature-guided-meditation-script-v1.md'
       ]),
       tokens: Object.freeze(['待人工测试'])
     })

@@ -18,8 +18,15 @@ import {
   findPrivacyKeysWithForbiddenCloudBrand,
   findPracticeStudyForbiddenSubstrings,
   findYpeConsentForbiddenSubstrings,
-  privacyCopyMentionsForbiddenCloudBrand
+  privacyCopyMentionsForbiddenCloudBrand,
+  PRIVACY_SHEET_CLOUD_KEY,
+  PRIVACY_SHEET_CLOUD_GATE_ON_KEY,
+  resolvePrivacySheetCloudBodyKey
 } from './privacyNoticeCopy.js';
+import {
+  practiceBackupCloudEnabled,
+  setPracticeBackupCloudEnabledForTests
+} from '../core/practiceBackup/practiceBackupCloudEnabled.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const localesDir = join(here, '../locales');
@@ -222,6 +229,32 @@ describe('privacyNoticeCopy', () => {
     const en = loadLocale('en.json');
     const blobs = [en.HINT_APP_PURPOSE_BODY, en.PRIVACY_SHEET_DEFAULT_STORAGE].join('\n');
     assert.deepEqual(findPracticeStudyForbiddenSubstrings(blobs), []);
+  });
+
+  it('privacy §4 cloud body key tracks practiceBackupCloudEnabled', () => {
+    const prior = practiceBackupCloudEnabled;
+    setPracticeBackupCloudEnabledForTests(false);
+  try {
+      assert.equal(resolvePrivacySheetCloudBodyKey(), PRIVACY_SHEET_CLOUD_KEY);
+      const offZh = loadLocale('zh.json');
+      assert.match(offZh[PRIVACY_SHEET_CLOUD_KEY], /不提供云端备份/);
+      const offEn = loadLocale('en.json');
+      assert.match(offEn[PRIVACY_SHEET_CLOUD_KEY], /does not currently offer cloud backup/i);
+      assert.equal(typeof offZh[PRIVACY_SHEET_CLOUD_GATE_ON_KEY], 'string');
+    } finally {
+      setPracticeBackupCloudEnabledForTests(prior);
+    }
+    setPracticeBackupCloudEnabledForTests(true);
+    try {
+      assert.equal(resolvePrivacySheetCloudBodyKey(), PRIVACY_SHEET_CLOUD_GATE_ON_KEY);
+      const onEn = loadLocale('en.json');
+      assert.match(
+        onEn[PRIVACY_SHEET_CLOUD_GATE_ON_KEY],
+        /Optional email save|readable records/i
+      );
+    } finally {
+      setPracticeBackupCloudEnabledForTests(prior);
+    }
   });
 
   it('privacy sheet refresh defines T54 research opt-in handler (R2L-01)', () => {

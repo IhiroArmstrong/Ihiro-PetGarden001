@@ -7,14 +7,22 @@
  * Guided Meditation must not stack on Focusing, Honesty, or Breath.
  * The menu row stays clickable (escape hatch) and shows a reason.
  *
- * @param {{ focusing?: boolean, honestyBusy?: boolean, breathBusy?: boolean }} [input]
+ * @param {{
+ *   focusing?: boolean,
+ *   honestyBusy?: boolean,
+ *   breathBusy?: boolean,
+ *   recoverBusy?: boolean,
+ *   confideBusy?: boolean
+ * }} [input]
  * @returns {'busy' | 'open'}
  */
 export function resolveGuidedMeditationMenuClick(input = {}) {
   if (
     input.focusing === true ||
     input.honestyBusy === true ||
-    input.breathBusy === true
+    input.breathBusy === true ||
+    input.recoverBusy === true ||
+    input.confideBusy === true
   ) {
     return 'busy';
   }

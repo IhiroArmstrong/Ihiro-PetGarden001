@@ -27,4 +27,15 @@ describe('resolveGuidedMeditationMenuClick', () => {
       'busy'
     );
   });
+
+  it('yields during Ground recover or Confide (Tier0 busy)', () => {
+    assert.equal(
+      resolveGuidedMeditationMenuClick({ recoverBusy: true }),
+      'busy'
+    );
+    assert.equal(
+      resolveGuidedMeditationMenuClick({ confideBusy: true }),
+      'busy'
+    );
+  });
 });
