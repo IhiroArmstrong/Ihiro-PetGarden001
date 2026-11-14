@@ -27,7 +27,7 @@ test('A13 surface manifest has twelve entries', () => {
   assert.equal(A13_GLASS_VISUAL_SURFACES.length, 12);
 });
 
-test('confide-card glass row is QA-harness-only while guest mount is off', () => {
+test('confide-card glass row: production ignores ?confide=1 when mount is off', () => {
   const row = A13_GLASS_VISUAL_SURFACES.find((s) => s.id === 'confide-card');
   assert.ok(row);
   assert.equal(row.qaHarnessRequired, true);
@@ -36,7 +36,9 @@ test('confide-card glass row is QA-harness-only while guest mount is off', () =>
     canOpenConfidePanel({
       search: '?confide=1',
       stage: 'idle',
-      qaHarnessAllowed: false
+      qaHarnessAllowed: false,
+      mountEnabled: false,
+      locale: 'en'
     }),
     false
   );
@@ -44,7 +46,9 @@ test('confide-card glass row is QA-harness-only while guest mount is off', () =>
     canOpenConfidePanel({
       search: '?confide=1',
       stage: 'idle',
-      qaHarnessAllowed: true
+      qaHarnessAllowed: true,
+      mountEnabled: false,
+      locale: 'en'
     }),
     true
   );

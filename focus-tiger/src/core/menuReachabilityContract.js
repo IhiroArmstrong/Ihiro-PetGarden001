@@ -185,7 +185,7 @@ export const MENU_REACHABILITY = Object.freeze({
 export const MENU_RESULT_FORBIDDEN_TEXT = VISIBLE_TEXT_POISON_RE;
 
 /**
- * Default Idle visibility for `?product=1` web (not Electron L1 / not Confide ship).
+ * Default Idle visibility for `?product=1` web (English first-ship Confide on).
  * @type {import('./idleChromeOrchestration.js').SecondaryEntryVisibility}
  */
 export const PRODUCT_IDLE_MENU_VISIBILITY = Object.freeze({
@@ -193,7 +193,7 @@ export const PRODUCT_IDLE_MENU_VISIBILITY = Object.freeze({
   companionVisible: true,
   companionEnabled: true,
   reminderAvailable: true,
-  confideUserVisible: false,
+  confideUserVisible: true,
   companionGeneration: false,
   mustardSeedSealUnlocked: false,
   systemTtsAvailable: false,

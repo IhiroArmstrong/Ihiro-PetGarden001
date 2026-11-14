@@ -73,7 +73,9 @@ describe('companionEntitlement · production QA params', () => {
       canOpenConfidePanel({
         search,
         stage: 'idle',
-        qaHarnessAllowed: false
+        qaHarnessAllowed: false,
+        mountEnabled: false,
+        locale: 'en'
       }),
       false
     );
