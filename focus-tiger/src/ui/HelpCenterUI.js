@@ -9,6 +9,7 @@
  * Brief: docs/task-briefs/task-user-help-center.md
  *        docs/task-briefs/task-help-center-beside-question.md
  *        docs/task-briefs/task-help-center-operating-commands.md
+ *        docs/task-briefs/task-help-center-ask-answer-tts.md
  *        docs/task-briefs/task-wide-secondary-dock.md
  */
 
@@ -23,6 +24,7 @@ import {
   resolveHelpCenterAskSubmitPolicy,
   searchHelpCenterAskCards
 } from '../core/helpCenterAskSearch.js';
+import { buildHelpCenterClosestAnswerSpeakText, shouldSpeakHelpCenterAskSurface } from '../core/helpCenterAskSpeak.js';
 import { getDesktopCompanionBridge } from '../core/desktopCompanionGate.js';
 import { downloadPracticeExport } from '../core/practiceBackup/practiceBackupLocalIo.js';
 import {
@@ -31,9 +33,11 @@ import {
 } from '../core/yinVoiceCommandEntry.js';
 import { runYinVoiceCommand } from '../core/yinVoiceCommandRunner.js';
 import {
+  canUseSystemTts,
   getSystemTtsBridge,
   mapLocaleToTtsLocale,
-  speakSystemTts
+  speakSystemTts,
+  stopSystemTts
 } from '../core/systemTtsBridge.js';
 import { VoiceInputChrome } from './VoiceInputChrome.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
@@ -307,6 +311,7 @@ export class HelpCenterUI {
   close() {
     if (!this._open) return;
     this._cancelOperatingListen('cancel');
+    stopSystemTts();
     this._open = false;
     this._activeArticleId = null;
     this.root.hidden = true;
@@ -328,8 +333,9 @@ export class HelpCenterUI {
 
   /**
    * @param {string} articleId
+   * @param {{ speak?: boolean }} [opts]
    */
-  _openArticle(articleId) {
+  _openArticle(articleId, { speak = false } = {}) {
     const row = findHelpCenterArticle(articleId);
     if (!row) return;
     this._activeArticleId = articleId;
@@ -339,6 +345,7 @@ export class HelpCenterUI {
     this.articleEl.hidden = false;
     this.confideNoteEl.hidden = true;
     this._render();
+    if (speak) this._speakClosestAskAnswer({ articleIds: [articleId] });
   }
 
   _syncAskStatus() {
@@ -397,6 +404,9 @@ export class HelpCenterUI {
       this._askSearching = false;
       this._syncAskStatus();
       this._renderAskSafetyT92();
+      this._speakClosestAskAnswer({
+        safetyText: helpCenterAskSafetyT92Message(getLocale())
+      });
       return;
     }
     if (policy.shouldExecute && policy.decision) {
@@ -419,6 +429,10 @@ export class HelpCenterUI {
     this._askSearching = false;
     this._syncAskStatus();
     this._renderAskResults(result.empty);
+    this._speakClosestAskAnswer({
+      articleIds: result.articleIds,
+      empty: result.empty
+    });
   }
 
   _operatingConfirmTranscript() {
@@ -637,12 +651,40 @@ export class HelpCenterUI {
       btn.className = 'help-center__ask-card';
       btn.dataset.testid = `help-center-ask-card-${articleId}`;
       btn.textContent = t(row.titleKey);
-      btn.addEventListener('click', () => this._openArticle(articleId));
+      btn.addEventListener('click', () => this._openArticle(articleId, { speak: true }));
       li.append(btn);
       list.append(li);
     }
 
     this.askResultsEl.append(heading, list);
+  }
+
+  /**
+   * Electron wide System TTS: speak the closest ask-card answer (or empty/T92
+   * line). Voice announcements preference does not gate this path — same
+   * split as Confide reply speech.
+   *
+   * @param {{
+   *   articleIds?: string[],
+   *   empty?: boolean,
+   *   safetyText?: string
+   * }} [opts]
+   */
+  _speakClosestAskAnswer({ articleIds = [], empty = false, safetyText = '' } = {}) {
+    const text = buildHelpCenterClosestAnswerSpeakText({
+      articleIds,
+      empty,
+      emptyText: t('HELP_CENTER_ASK_EMPTY'),
+      safetyText,
+      translate: t
+    });
+    if (!shouldSpeakHelpCenterAskSurface(text)) return;
+    const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
+    if (!canUseSystemTts({ widthPx })) return;
+    speakSystemTts({
+      text,
+      locale: mapLocaleToTtsLocale(getLocale())
+    });
   }
 
   _render() {

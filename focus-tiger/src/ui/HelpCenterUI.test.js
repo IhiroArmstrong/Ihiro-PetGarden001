@@ -50,7 +50,16 @@ test('help center close hides the card in the same turn as the click', () => {
   const closeAt = src.indexOf('  close() {');
   const closeFn = src.slice(closeAt, src.indexOf('  _showIndex() {', closeAt));
   assert.match(closeFn, /_cancelOperatingListen/);
+  assert.match(closeFn, /stopSystemTts\(\)/);
   assert.match(closeFn, /this\.root\.hidden = true/);
   assert.match(closeFn, /hideOverlayBackdrop\(this\.backdrop, \{ fadeMs: FADE_MS \}\)/);
   assert.doesNotMatch(closeFn, /hideOverlayBackdrop\(this\.backdrop, FADE_MS/);
+});
+
+test('HelpCenterUI speaks the closest ask-card answer after search', () => {
+  assert.match(src, /buildHelpCenterClosestAnswerSpeakText/);
+  assert.match(src, /_speakClosestAskAnswer/);
+  assert.match(src, /canUseSystemTts/);
+  assert.match(src, /_openArticle\(articleId, \{ speak: true \}\)/);
+  assert.doesNotMatch(src, /_openArticle\(article\.id, \{ speak: true \}\)/);
 });

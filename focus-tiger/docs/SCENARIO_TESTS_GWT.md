@@ -5883,7 +5883,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 > **E2E 优先级**：P0 · 跨系统链路
 > **地位**：把已经写好的说明收成一份可点的目录。**≠** 倾诉检索（场景 AE）、**≠** 问号卡本身（场景 W）。问号卡只留一条链进这里。左下问号右边另有 Help Center 快捷（T26），打开同一张卡。
-> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录、问卡检索、Idle 快捷、T34 办理确认、T76 B2 静修别名；不碰付款、不改练习记录）。
+> **单元**：`helpCenterCatalog.test.js` · `HelpCenterUI.test.js` · `helpCenterAskSearch.test.js` · `helpCenterAskSpeak.test.js`。**非**从菜单点开的完整浏览器故事。E2E 优先级 **P1**（可点目录、问卡检索、Idle 快捷、T34 办理确认、T76 B2 静修别名；不碰付款、不改练习记录）。朗读走单测；Web e2e **不**听系统声。
 > **点击**：菜单行、问号卡上的链、问号右边快捷钮，点后 **0–1 秒内**见帮助中心。点一条主题 **0–1 秒内**见该篇标题和正文。顶部 **问卡**输入（可打字或 **Speak to type**，宽屏 Electron）→ 疑问句 **0–1 秒内**见匹配主题列表；封闭集祈使 **0–1 秒内**见 T10 同档复述确认（**禁止**静默写备份）。Close / 背板 **0–1 秒内**收起。打不开时须见面板或失败，不得静默。
 
 ### 步骤总览
@@ -5903,7 +5903,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AX-1
 
 - **优先级**：P0（跨系统链路）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖；已在 `helpCenterAskSpeak.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5918,7 +5918,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AX-1b
 
 - **优先级**：P0（跨系统链路）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖；已在 `helpCenterAskSpeak.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5927,12 +5927,12 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 顶部问卡输入 `How do I back up my data?`（或等价产品问）
 
 **Then**
-- 0–1 秒内见相关主题行；点一行 → 同步骤 2 见正文。禁止静默写备份。`Back up now` / `Hi Yin, please backup…` → 0–1 秒内见 B 档复述 + 确认/取消（T34）；点取消不得写出备份文件。危机句进框 → 不办理。无关句 → 空列表或弱匹配，不得静默。e2e：`help-center-operating.spec.js`。
+- 0–1 秒内见相关主题行；点一行 → 同步骤 2 见正文。Electron 宽屏： 见卡后 0–1 秒内开始朗读最接近一篇的标题+正文（空态 / 危机 T92 句念屏上同一句）；关卡立刻停。Web / 窄屏只见字、不念。禁止静默写备份。`Back up now` / `Hi Yin, please backup…` → 0–1 秒内见 B 档复述 + 确认/取消（T34）；点取消不得写出备份文件。危机句进框 → 不办理。无关句 → 空列表或弱匹配，不得静默。e2e：`help-center-operating.spec.js`。单测：`helpCenterAskSpeak.test.js`。
 
 #### AX-1c
 
 - **优先级**：P0（跨系统链路）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖；已在 `helpCenterAskSpeak.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5947,7 +5947,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AX-2
 
 - **优先级**：P0（跨系统链路）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖；已在 `helpCenterAskSpeak.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5961,7 +5961,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AX-3
 
 - **优先级**：P0（跨系统链路）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖；已在 `helpCenterAskSpeak.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5975,7 +5975,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AX-4
 
 - **优先级**：P0（跨系统链路）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖；已在 `helpCenterAskSpeak.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
@@ -5989,7 +5989,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 #### AX-5
 
 - **优先级**：P0（跨系统链路）
-- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖
+- **覆盖**：已在 `helpCenterCatalog.test.js` 覆盖；已在 `HelpCenterUI.test.js` 覆盖；已在 `helpCenterAskSearch.test.js` 覆盖；已在 `helpCenterAskSpeak.test.js` 覆盖
 
 **Given**
 - 页面 URL：http://localhost:5173/?product=1
