@@ -12,12 +12,9 @@ import {
 
 test.use({ viewport: { width: 1280, height: 900 } });
 
-test('Practice menu opens Guided meditation; short lesson can credit', async ({
+test('Practice menu opens Guided meditation; script lesson can credit', async ({
   page
 }) => {
-  await page.addInitScript(() => {
-    globalThis.__FT_GUIDED_MEDITATION_MOCK_MEDIA__ = true;
-  });
   await openFreshProductShell(page);
   await dismissColdStartOverlay(page);
 
@@ -32,26 +29,26 @@ test('Practice menu opens Guided meditation; short lesson can credit', async ({
   await expect(card).toBeVisible({ timeout: 3_000 });
   await expect(page.locator('#ft-wide-more-btn')).toBeVisible();
   await expect(
-    page.getByTestId('guided-meditation-lesson-concepts-habits-intro')
+    page.getByTestId('guided-meditation-lesson-breath-anchor-beginner')
   ).toBeVisible();
   await expect(
-    page.getByTestId('guided-meditation-lesson-what-is-zen-ancient-wisdom')
+    page.getByTestId('guided-meditation-lesson-body-scan-relaxation')
+  ).toBeVisible();
+  await expect(
+    page.getByTestId('guided-meditation-lesson-thoughts-letting-go')
   ).toBeVisible();
 
-  await page.getByTestId('guided-meditation-lesson-concepts-habits-intro').click();
+  await page.getByTestId('guided-meditation-lesson-breath-anchor-beginner').click();
   await expect(page.getByTestId('guided-meditation-player')).toBeVisible({
     timeout: 3_000
   });
-  await expect(page.getByTestId('guided-meditation-status')).toBeVisible();
-  await expect(page.getByTestId('guided-meditation-audio-fallback')).toBeVisible();
-  await expect(page.getByTestId('guided-meditation-video')).not.toHaveAttribute(
-    'crossorigin'
-  );
+  await expect(page.getByTestId('guided-meditation-sentence')).toBeVisible();
+  await expect(page.getByTestId('guided-meditation-video')).toHaveCount(0);
 
   const credited = await page.evaluate(() =>
     window.__guidedMeditation?.creditFromTestHook?.(
-      'concepts-habits-intro',
-      253
+      'breath-anchor-beginner',
+      60
     )
   );
   expect(credited).toBe(true);

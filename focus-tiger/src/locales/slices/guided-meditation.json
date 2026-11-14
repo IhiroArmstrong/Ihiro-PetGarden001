@@ -24,7 +24,21 @@
     "GUIDED_MEDITATION_RETRY": "Retry",
     "GUIDED_MEDITATION_STATUS_INCOMPLETE": "Stopped early — this sit was not counted.",
     "GUIDED_MEDITATION_STATUS_CREDITED": "This sit was counted.",
-    "GUIDED_MEDITATION_BUSY_HINT": "Finish this sit, Honesty, or Breath first, then open Guided meditation."
+    "GUIDED_MEDITATION_BUSY_HINT": "Finish this sit, Honesty, Breath, Ground, or a talk with Yin first, then open Guided meditation.",
+    "GUIDED_MEDITATION_SCRIPT_BREATH_TITLE": "Basic breath awareness (about 3 min)",
+    "GUIDED_MEDITATION_SCRIPT_BREATH_BLURB": "A short sit to settle and follow the breath — spoken step by step.",
+    "GUIDED_MEDITATION_SCRIPT_BODY_TITLE": "Body scan and relaxation (about 5 min)",
+    "GUIDED_MEDITATION_SCRIPT_BODY_BLURB": "Release tension from head to feet. Yin sits with you.",
+    "GUIDED_MEDITATION_SCRIPT_THOUGHTS_TITLE": "Noticing thoughts and letting go (about 6 min)",
+    "GUIDED_MEDITATION_SCRIPT_THOUGHTS_BLURB": "Watch thoughts pass without chasing them, then return to this breath.",
+    "GUIDED_MEDITATION_STATUS_SPEAKING": "Listening…",
+    "GUIDED_MEDITATION_STATUS_SILENCE": "Quiet — stay with this moment.",
+    "GUIDED_MEDITATION_STATUS_WEB_TEXT": "Voice guidance needs the desktop app. You can still follow the words here.",
+    "GUIDED_MEDITATION_COMPANION_HINT": "Yin sits with you. You do not need to watch the screen.",
+    "GUIDED_MEDITATION_PREV": "Previous step",
+    "GUIDED_MEDITATION_NEXT": "Next step",
+    "GUIDED_MEDITATION_VOICE_ON": "Voice guidance on",
+    "GUIDED_MEDITATION_VOICE_OFF": "Voice guidance off"
   },
   "zh": {
     "GUIDED_MEDITATION_MENU_LABEL": "引导冥想",
@@ -51,7 +65,21 @@
     "GUIDED_MEDITATION_RETRY": "重试",
     "GUIDED_MEDITATION_STATUS_INCOMPLETE": "提前结束，这次不计入练习。",
     "GUIDED_MEDITATION_STATUS_CREDITED": "这次已计入练习。",
-    "GUIDED_MEDITATION_BUSY_HINT": "请先结束这次静坐、补登或呼吸，再打开引导冥想。"
+    "GUIDED_MEDITATION_BUSY_HINT": "请先结束这次静坐、补登、呼吸、落地练习或倾诉，再打开引导冥想。",
+    "GUIDED_MEDITATION_SCRIPT_BREATH_TITLE": "基础呼吸觉察（约 3 分钟）",
+    "GUIDED_MEDITATION_SCRIPT_BREATH_BLURB": "安顿下来、跟着呼吸走的短课，一句一句念给你听。",
+    "GUIDED_MEDITATION_SCRIPT_BODY_TITLE": "身体扫描与放松（约 5 分钟）",
+    "GUIDED_MEDITATION_SCRIPT_BODY_BLURB": "从头到脚松开紧绷。阿寅坐在旁边陪你。",
+    "GUIDED_MEDITATION_SCRIPT_THOUGHTS_TITLE": "觉察念头并放下（约 6 分钟）",
+    "GUIDED_MEDITATION_SCRIPT_THOUGHTS_BLURB": "看念头经过、不去追，再回到这一口气。",
+    "GUIDED_MEDITATION_STATUS_SPEAKING": "正在听…",
+    "GUIDED_MEDITATION_STATUS_SILENCE": "静一静，停在这一刻。",
+    "GUIDED_MEDITATION_STATUS_WEB_TEXT": "语音指导需要电脑版。你仍可以在这里跟着文字做。",
+    "GUIDED_MEDITATION_COMPANION_HINT": "阿寅坐在旁边陪你。不必盯着屏幕。",
+    "GUIDED_MEDITATION_PREV": "上一步",
+    "GUIDED_MEDITATION_NEXT": "下一步",
+    "GUIDED_MEDITATION_VOICE_ON": "语音指导开",
+    "GUIDED_MEDITATION_VOICE_OFF": "语音指导关"
   },
   "ja": {
     "GUIDED_MEDITATION_MENU_LABEL": "ガイド瞑想",
@@ -78,6 +106,20 @@
     "GUIDED_MEDITATION_RETRY": "再試行",
     "GUIDED_MEDITATION_STATUS_INCOMPLETE": "途中で終えたため、今回は数えません。",
     "GUIDED_MEDITATION_STATUS_CREDITED": "今回の坐を数えました。",
-    "GUIDED_MEDITATION_BUSY_HINT": "まず今の坐、Honesty、または呼吸を終えてから、ガイド瞑想を開いてください。"
+    "GUIDED_MEDITATION_BUSY_HINT": "まず今の坐、Honesty、呼吸、グラウンド、または傾聴を終えてから、ガイド瞑想を開いてください。",
+    "GUIDED_MEDITATION_SCRIPT_BREATH_TITLE": "呼吸に気づく（約3分）",
+    "GUIDED_MEDITATION_SCRIPT_BREATH_BLURB": "落ち着いて呼吸をたどる短い坐。一文ずつ読み上げます。",
+    "GUIDED_MEDITATION_SCRIPT_BODY_TITLE": "ボディスキャンとゆるめ（約5分）",
+    "GUIDED_MEDITATION_SCRIPT_BODY_BLURB": "頭から足先まで力を抜きます。寅がそばで坐っています。",
+    "GUIDED_MEDITATION_SCRIPT_THOUGHTS_TITLE": "思いに気づき、手放す（約6分）",
+    "GUIDED_MEDITATION_SCRIPT_THOUGHTS_BLURB": "思考を追わずに見送り、いまの呼吸へ戻ります。",
+    "GUIDED_MEDITATION_STATUS_SPEAKING": "聞いています…",
+    "GUIDED_MEDITATION_STATUS_SILENCE": "静かに、この瞬間にいます。",
+    "GUIDED_MEDITATION_STATUS_WEB_TEXT": "音声ガイドはデスクトップ版が必要です。ここでは文字のまま進められます。",
+    "GUIDED_MEDITATION_COMPANION_HINT": "寅がそばで坐っています。画面を見つめなくて大丈夫です。",
+    "GUIDED_MEDITATION_PREV": "前のステップ",
+    "GUIDED_MEDITATION_NEXT": "次のステップ",
+    "GUIDED_MEDITATION_VOICE_ON": "音声ガイドオン",
+    "GUIDED_MEDITATION_VOICE_OFF": "音声ガイドオフ"
   }
 }

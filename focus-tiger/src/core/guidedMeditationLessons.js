@@ -18,6 +18,9 @@ export const GUIDED_MEDITATION_MEDIA_HOST = 'https://media.twinsology.com';
 
 export const GUIDED_MEDITATION_LONG_MIN_PLAYED_SEC = 180;
 
+/** Script lessons: credit after this many effective practice seconds, or on complete. */
+export const GUIDED_MEDITATION_SCRIPT_MIN_CREDIT_SEC = 60;
+
 /** Ignore seek jumps: only consecutive timeupdate deltas count as listened time. */
 export const GUIDED_MEDITATION_PLAY_DELTA_MAX_SEC = 2;
 
@@ -144,6 +147,14 @@ export function accumulatePlayedSeconds(prev = {}, currentTime, flags = {}) {
  */
 export function resolveGuidedMeditationCredit(input = {}) {
   const playedSec = Number(input.playedSec);
+  if (input.delivery === 'script') {
+    if (!Number.isFinite(playedSec) || playedSec < 0) return null;
+    const completed = input.completed === true;
+    if (!completed && playedSec < GUIDED_MEDITATION_SCRIPT_MIN_CREDIT_SEC) {
+      return null;
+    }
+    return { durationMinutes: Math.max(1, Math.round(playedSec / 60) || 1) };
+  }
   const durationSec = Number(input.durationSec);
   if (!Number.isFinite(playedSec) || playedSec < 0) return null;
   if (input.kind === 'short') {
