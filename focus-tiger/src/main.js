@@ -235,7 +235,7 @@ import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { GuidedMeditationUI } from './ui/GuidedMeditationUI.js';
 import { resolveGuidedMeditationMenuClick } from './core/guidedMeditationBusyYield.js';
-import { isGuidedMeditationMediaConfigured } from './core/guidedMeditationLessons.js';
+import { isGuidedMeditationAvailable } from './core/guidedMeditationScriptCatalog.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { CoPracticeContinueSlotChrome } from './ui/CoPracticeContinueSlotChrome.js';
 import { HomeSanctuaryNavFanUI } from './ui/HomeSanctuaryNavFanUI.js';
@@ -4975,13 +4975,13 @@ async function init() {
       groundExerciseChoiceUI?.open();
     },
     onGuidedMeditation: () => {
-      if (!isGuidedMeditationMediaConfigured()) return;
+      if (!isGuidedMeditationAvailable()) return;
       const action = resolveGuidedMeditationMenuClick({
         focusing: stateManager.state === STATES.FOCUSING,
-        honestyBusy:
-          typeof window.__honestyCheckInUI?.phase === 'string' &&
-          window.__honestyCheckInUI.phase !== 'hidden',
-        breathBusy: window.__microRitualUI?.isOpen?.() === true
+        honestyBusy: typeof window.__honestyCheckInUI?.phase === 'string' && window.__honestyCheckInUI.phase !== 'hidden',
+        breathBusy: window.__microRitualUI?.isOpen?.() === true,
+        recoverBusy: recoverResetPracticeUI?.isVisible?.() === true,
+        confideBusy: window.__confideToYin?.isOpen?.() === true
       });
       if (action === 'busy') {
         mindfulToast.show(t('GUIDED_MEDITATION_BUSY_HINT'), {

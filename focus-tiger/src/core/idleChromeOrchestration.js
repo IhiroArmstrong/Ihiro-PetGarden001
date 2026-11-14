@@ -20,7 +20,7 @@ import { isConfideUserVisible } from './confide/confideUserVisibilityGate.js';
 import { isFocusCoinsAwardEnabled } from './focusCoinsAwardGate.js';
 import { contemplativeArchiveSealIdFromProxy } from './memorialSealDirectory.js';
 import { isContemplativeInquiryMenuVisible } from './contemplativeInquiryMemory.js';
-import { isGuidedMeditationMediaConfigured } from './guidedMeditationLessons.js';
+import { isGuidedMeditationAvailable } from './guidedMeditationScriptCatalog.js';
 import { resolveUpdateChannel } from './desktopUpdaterChannel.js';
 import { practiceBackupCloudEnabled } from './practiceBackup/practiceBackupCloudEnabled.js';
 import { isEmailJourneyCloudUiAllowedForChannel } from './practiceBackup/emailJourneyRestoreStatus.js';
@@ -776,7 +776,7 @@ export function listSecondaryChromeEntries(surface, visibility) {
       : null,
     // Menu entry stays top-right ⋯ / narrow grabber (MENU_CHROME_CENSUS §1 #4).
     { proxy: 'ground-exercise', labelKey: 'GROUND_EXERCISE_MENU_LABEL' },
-    isGuidedMeditationMediaConfigured()
+    isGuidedMeditationAvailable()
       ? { proxy: 'guided-meditation', labelKey: 'GUIDED_MEDITATION_MENU_LABEL' }
       : null,
     { proxy: 'five-moments', labelKey: 'FIVE_MOMENTS_MENU_LABEL' },

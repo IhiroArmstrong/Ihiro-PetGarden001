@@ -1,5 +1,7 @@
 # Guided Meditation P0 只读审计
 
+> **视频线 superseded by script v1**（PO 2026-11-14）：§A1「禁止把冥想稿塞进 `speakSystemTts`」由专用通道 [`guidedMeditationSpeech.js`](../src/core/guidedMeditationSpeech.js) **supersede**（仍禁止走 `maybeSpeakPracticeAnnouncement`）。播放器改为脚本状态机，不依赖 R2 SHA。权威 Brief：[`task-briefs/task-guided-meditation-script-v1.md`](./task-briefs/task-guided-meditation-script-v1.md)。
+
 > 日期：2026-11-04 · 基线：`origin/develop` `9a19b7cc`（#1556）  
 > Brief：[`task-briefs/task-guided-meditation-p0-audit.md`](./task-briefs/task-guided-meditation-p0-audit.md)  
 > 范围：只读。无运行时代码。未核实项与需实测项单独列出。  

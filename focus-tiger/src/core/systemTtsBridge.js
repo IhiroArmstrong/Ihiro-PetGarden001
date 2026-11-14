@@ -80,14 +80,15 @@ export function hasSystemTtsBridge(globalObj = globalThis) {
  * Returns synchronously so callers keep their "did we dispatch" contract, while
  * the stop→speak order is still guaranteed by chaining.
  *
- * @param {{ text?: string, locale?: string, globalObj?: object, onFinished?: () => void }} payload
+ * @param {{ text?: string, locale?: string, globalObj?: object, onFinished?: () => void, rate?: number }} payload
  * @returns {boolean} true when a speak request was dispatched
  */
 export function speakSystemTts({
   text,
   locale,
   globalObj = globalThis,
-  onFinished
+  onFinished,
+  rate: _rate
 } = {}) {
   const bridge = getSystemTtsBridge(globalObj);
   if (!bridge || typeof bridge.speak !== 'function') return false;

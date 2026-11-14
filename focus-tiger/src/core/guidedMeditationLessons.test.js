@@ -44,15 +44,18 @@ describe('guidedMeditationLessons', () => {
     assert.equal(long?.audioBytes, 10753157);
   });
 
-  it('does not fetch whole files in the web player and omits crossorigin', () => {
+  it('script player has no video element and does not use practice-announcement TTS', () => {
     const ui = readFileSync(
       new URL('../ui/GuidedMeditationUI.js', import.meta.url),
       'utf8'
     );
-    assert.equal(ui.includes('fetchVerifiedGuidedMeditationVideo'), false);
-    assert.match(ui, /resolveGuidedMeditationPlaybackMode/);
-    assert.match(ui, /playSrc\(rendition\.url\)/);
-    assert.equal(/crossorigin/i.test(ui), false);
+    const speech = readFileSync(
+      new URL('./guidedMeditationSpeech.js', import.meta.url),
+      'utf8'
+    );
+    assert.equal(/createElement\(['"]video['"]\)/.test(ui), false);
+    assert.equal(speech.includes('systemTtsAnnouncements'), false);
+    assert.match(ui, /guidedMeditationScriptEngine/);
   });
 
   it('credits a short lesson at 90% for nominal minutes', () => {
