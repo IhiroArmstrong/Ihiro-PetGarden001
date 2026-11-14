@@ -21,4 +21,10 @@ describe('HealthShortcutLogPreferenceUI', () => {
   test('uses panel z-index layer', () => {
     assert.match(src, /z-index: \$\{Z\.PANEL\}/);
   });
+
+  test('disables toggle when health shortcut preference unavailable', () => {
+    assert.match(src, /canConfigureHealthShortcutLogPreference/);
+    assert.match(src, /toggleInput\.disabled = !canConfigure/);
+    assert.match(src, /HEALTH_SHORTCUT_PREF_UNAVAILABLE/);
+  });
 });
