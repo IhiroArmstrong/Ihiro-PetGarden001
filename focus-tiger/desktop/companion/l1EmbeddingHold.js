@@ -9,6 +9,10 @@
  */
 
 import {
+  getLlamaOrMarkNativeDown,
+  importNodeLlamaOrMarkDown
+} from './nativeLlamaAvailability.js';
+import {
   CONFIDE_SEMANTIC_LIBRARY_A,
   CONFIDE_SEMANTIC_LIBRARY_B,
   CONFIDE_SEMANTIC_LIBRARY_C,
@@ -76,10 +80,12 @@ export async function loadEmbeddingHold(opts) {
   const crisisThreshold = resolveConfideSemanticCrisisCosine(opts.env);
 
   onProgress('import node-llama-cpp (embedding)');
-  const { getLlama } = await import('node-llama-cpp');
+  const { getLlama } = await importNodeLlamaOrMarkDown(
+    () => import('node-llama-cpp')
+  );
 
   onProgress('getLlama (embedding)');
-  const llama = await getLlama();
+  const llama = await getLlamaOrMarkNativeDown(getLlama);
 
   onProgress('loadEmbeddingModel');
   const model = await llama.loadModel({ modelPath: opts.modelPath });

@@ -10,6 +10,10 @@
 
 import { L0_PROMPT_FAMILY } from './l0Config.js';
 import {
+  getLlamaOrMarkNativeDown,
+  importNodeLlamaOrMarkDown
+} from './nativeLlamaAvailability.js';
+import {
   disposeChatSession,
   disposeContextQuietly,
   openFreshChatSession
@@ -67,9 +71,11 @@ export async function loadModelHold(opts) {
   let gpu = 'unknown';
 
   onProgress('import node-llama-cpp');
-  const { getLlama, LlamaChatSession } = await import('node-llama-cpp');
+  const { getLlama, LlamaChatSession } = await importNodeLlamaOrMarkDown(
+    () => import('node-llama-cpp')
+  );
   onProgress('getLlama');
-  llama = await getLlama();
+  llama = await getLlamaOrMarkNativeDown(getLlama);
   gpu =
     llama && llama.gpu != null
       ? String(llama.gpu)
