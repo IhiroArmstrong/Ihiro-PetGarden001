@@ -4,10 +4,9 @@
  */
 
 /**
- * Wide ⋯ radial index geometry (knife 3).
- * SSOT for height degenerate rules — keep in sync with
- * `docs/task-briefs/task-wide-menu-radial-index.md` and T25
- * `docs/task-briefs/task-wide-more-five-icon-show.md`.
+ * Wide ⋯ radial index geometry.
+ * SSOT: `docs/task-briefs/task-wide-menu-radial-150.md`
+ * (150° fan; prior 95°–175° / 96px in knife 3 / T25 superseded).
  */
 
 import { WIDE_HOME_CTA_BOTTOM_PX, WIDE_HOME_SIT_PX } from '../ui/homeChromeClearance.js';
@@ -40,18 +39,41 @@ export function isWideMenuViewport(innerWidth, mqMinWidth480Matches = false) {
 export const WIDE_MENU_RADIAL_MIN_INNER_HEIGHT_PX = 520;
 
 /** Arc radius from `#ft-wide-more-btn` center (px). */
-export const WIDE_MENU_RADIAL_RADIUS_PX = 96;
+export const WIDE_MENU_RADIAL_RADIUS_PX = 152;
 
 /** Round group icon diameter (px). */
 export const WIDE_MENU_RADIAL_ICON_PX = 44;
 
-/** Degrees from +X; icons fan up-left above ⋯. */
-export const WIDE_MENU_RADIAL_ANGLES_DEG = Object.freeze([
-  95, 115, 135, 155, 175
-]);
+/** Fan span: rightmost on +X, then counter-clockwise. */
+export const WIDE_MENU_RADIAL_ARC_SPAN_DEG = 150;
+
+/** Rightmost ball sits on the horizontal through ⋯ (degrees from +X). */
+export const WIDE_MENU_RADIAL_START_DEG = 0;
+
+/**
+ * Even steps on the 150° fan. n=5 → 30° (0, 30, 60, 90, 120).
+ * @param {number} count
+ * @returns {ReadonlyArray<number>}
+ */
+export function wideMenuRadialAnglesDeg(count) {
+  const n = Math.max(1, Math.floor(Number(count) || 1));
+  if (n === 1) return Object.freeze([WIDE_MENU_RADIAL_START_DEG]);
+  const step = WIDE_MENU_RADIAL_ARC_SPAN_DEG / n;
+  return Object.freeze(
+    Array.from(
+      { length: n },
+      (_, i) => WIDE_MENU_RADIAL_START_DEG + i * step
+    )
+  );
+}
+
+/** Degrees from +X for the current five groups. */
+export const WIDE_MENU_RADIAL_ANGLES_DEG = wideMenuRadialAnglesDeg(
+  WIDE_MENU_RADIAL_GROUP_KEYS.length
+);
 
 const ICON_PAD_PX = 8;
-const VIEWPORT_TOP_SAFE_PX = 12;
+const VIEWPORT_EDGE_SAFE_PX = 12;
 
 /**
  * @param {number} anchorX
@@ -59,17 +81,20 @@ const VIEWPORT_TOP_SAFE_PX = 12;
  * @returns {ReadonlyArray<{ groupKey: string, cx: number, cy: number }>}
  */
 export function layoutWideMenuRadialIcons(anchorX, anchorY) {
+  const keys = WIDE_MENU_RADIAL_GROUP_KEYS;
+  const angles = wideMenuRadialAnglesDeg(keys.length);
   const out = [];
-  for (let i = 0; i < WIDE_MENU_RADIAL_GROUP_KEYS.length; i++) {
-    const deg = WIDE_MENU_RADIAL_ANGLES_DEG[i];
+  for (let i = 0; i < keys.length; i++) {
+    const deg = angles[i];
     const rad = (deg * Math.PI) / 180;
     const cx = anchorX + Math.cos(rad) * WIDE_MENU_RADIAL_RADIUS_PX;
     const cy = anchorY - Math.sin(rad) * WIDE_MENU_RADIAL_RADIUS_PX;
     out.push(
       Object.freeze({
-        groupKey: WIDE_MENU_RADIAL_GROUP_KEYS[i],
+        groupKey: keys[i],
         cx,
-        cy
+        cy,
+        deg
       })
     );
   }
@@ -113,11 +138,14 @@ export function estimateWideMoreBtnAnchor(innerWidth, innerHeight) {
  */
 export function shouldDegenerateWideMenuRadial(win, anchor) {
   const h = win.innerHeight ?? 0;
+  const w = win.innerWidth ?? 0;
   if (h > 0 && h < WIDE_MENU_RADIAL_MIN_INNER_HEIGHT_PX) return true;
   const spots = layoutWideMenuRadialIcons(anchor.x, anchor.y);
   for (const spot of spots) {
     const box = wideMenuRadialIconBBox(spot);
-    if (box.top < VIEWPORT_TOP_SAFE_PX) return true;
+    if (box.top < VIEWPORT_EDGE_SAFE_PX) return true;
+    if (box.left < VIEWPORT_EDGE_SAFE_PX) return true;
+    if (w > 0 && box.right > w - VIEWPORT_EDGE_SAFE_PX) return true;
   }
   return false;
 }

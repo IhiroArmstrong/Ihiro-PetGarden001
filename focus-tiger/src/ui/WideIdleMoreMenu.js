@@ -41,7 +41,7 @@ import {
 } from '../core/wideMenuRadialLayout.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v7';
+const STYLE_ID = 'ft-wide-idle-more-styles-v8';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
 const DEFAULT_EXPANDED_MENU_GROUPS = [
   DEFAULT_EXPANDED_MENU_GROUP,
@@ -864,11 +864,6 @@ export class WideIdleMoreMenu {
         event.stopPropagation();
         this._openRadialGroup(groupKey);
       });
-      attachGlassHoverTip(btn, {
-        placement: 'top',
-        tipId: `ft-wide-more-radial-tip-${groupKey}`,
-        text: t(groupKey)
-      });
       this.radialRoot.appendChild(btn);
     }
     this._placeRadial();
@@ -886,8 +881,12 @@ export class WideIdleMoreMenu {
     spots.forEach((spot, idx) => {
       const btn = buttons[idx];
       if (!btn) return;
+      const rad = ((spot.deg ?? 0) * Math.PI) / 180;
       btn.style.left = `${spot.cx}px`;
       btn.style.top = `${spot.cy}px`;
+      btn.style.setProperty('--radial-i', String(idx));
+      btn.style.setProperty('--radial-nx', String(Math.cos(rad)));
+      btn.style.setProperty('--radial-ny', String(-Math.sin(rad)));
     });
     this.radialRoot.style.setProperty('--radial-anchor-x', `${ax}px`);
     this.radialRoot.style.setProperty('--radial-anchor-y', `${ay}px`);
@@ -1347,24 +1346,23 @@ export class WideIdleMoreMenu {
       .ft-wide-more-radial__name {
         position: absolute;
         left: 50%;
-        bottom: calc(100% + 4px);
-        transform: translateX(-50%);
-        max-width: 120px;
-        padding: 2px 6px;
-        border-radius: 6px;
-        background: rgba(255, 252, 245, 0.92);
-        font-size: 10px;
+        top: 50%;
+        transform: translate(-50%, -50%)
+          translate(
+            calc(var(--radial-nx, 0) * 52px),
+            calc(var(--radial-ny, -1) * 52px)
+          );
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: rgba(255, 252, 245, 0.9);
+        box-shadow: 0 2px 8px rgba(44, 31, 20, 0.08);
+        font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.02em;
         color: rgba(74, 58, 40, 0.9);
         white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 120ms ease;
-      }
-      .ft-wide-more-radial__icon:hover .ft-wide-more-radial__name,
-      .ft-wide-more-radial__icon:focus-visible .ft-wide-more-radial__name {
         opacity: 1;
+        pointer-events: none;
       }
       .ft-wide-more-radial__icon:active {
         transform: translate(-50%, -50%) scale(0.94);
