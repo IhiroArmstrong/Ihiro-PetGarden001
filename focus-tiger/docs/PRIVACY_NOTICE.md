@@ -5,9 +5,9 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-11-13
+最后更新 / Last updated / 最終更新日: 2026-11-14
 
-本页描述**当前邀请制安装包**。该版本不收款。网页、自有电脑版可选用邮箱保存练习天数；Setapp / Mac App Store 渠道仍不提供邮箱云端找回。以本页与安装包实际行为为准。
+本页描述**当前邀请制第一份安装包**。该版本不收款、不提供邮箱云端找回。代码里可能仍有后续版本才会打开的入口；以本页与安装包实际行为为准。
 
 ---
 
@@ -57,9 +57,9 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 
 ### 4. 云端备份 / 邮箱找回
 
-网页与自有电脑版可在设置里**选用邮箱**保存约 8 类练习记忆快照（旅程记录、练习日历、里程碑、永久拥有、进阶仪式、芥子印、莲花池、成长阶段下限）。**不含**倾诉原文、个人记忆、研究编号。快照以可读记录存放，**目前不加密**。你可以在同一入口登出本机或删除云端副本。Setapp / Mac App Store 渠道关闭该入口。
+**本版本当前未提供云端备份，也不提供「填邮箱就能找回」。** 换机请使用第 3 节的本地导出/导入。
 
-本地导出/导入（第 3 节）仍然可用，不需要邮箱。
+代码里已有可选的邮箱练习快照能力（约 8 类：旅程记录、练习日历、里程碑、永久拥有、进阶仪式、芥子印、莲花池、成长阶段下限；不含倾诉原文、个人记忆、研究编号）。**第一份安装包关闭该入口**；生产云端探测仍应表现为关闭。若日后打开，我们会先更新本声明，说明存什么、是否加密、如何删除，并征得你的同意。
 
 ### 5. 你的权利
 
@@ -116,9 +116,9 @@ Please note:
 
 ### 4. Cloud backup / email restore
 
-On web and our own Mac build you may **optionally** save about **8** practice-memory classes to an email (Journey Log, practice calendar, milestones, ownership, rituals, Mustard Seed seal, lotus pond, growth-stage floor). **Not included:** Confide words, personal memory, research IDs. Snapshots are stored as readable records and are **not encrypted**. You can sign out on this device or delete the cloud copy from the same Preferences row. Setapp / Mac App Store builds keep this entry closed.
+**This version does not currently offer cloud backup, and does not promise “enter email to restore.”** Use Section 3 local export/import to move devices.
 
-Section 3 local export/import still works without email.
+The product codebase already contains an optional email snapshot of about **8** practice-memory classes (Journey Log, practice calendar, milestones, ownership, rituals, Mustard Seed seal, lotus pond, growth-stage floor — not Confide words, personal memory, or research IDs). **This first installer keeps that entry closed**; production probes should still see it closed. If we open it later, we will update this notice first, explain what is stored, whether it is encrypted, how to delete, and ask for consent.
 
 ### 5. Your Rights
 
@@ -172,9 +172,9 @@ Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声�
 
 ### 4. クラウドバックアップ / メール復元
 
-ウェブと自社 Mac 版では、設定から任意で約 8 類の練習控えをメールに保存できます（旅の記録、練習カレンダー、節目、所有印、儀式、芥子の印、蓮の池、成長段階の下限）。打ち明け原文・寅の個人記憶・研究番号は含みません。控えは読める記録として保存し、**今は暗号化しません**。同じ入口でこの端末からサインアウトするか、クラウド控えを削除できます。Setapp / Mac App Store 版ではこの入口を閉じます。
+**本バージョンは現在、クラウドバックアップを提供せず、「メールを入れれば戻せる」とも約束しません。** 機種変更は第3節のローカルエクスポート/インポートを使ってください。
 
-第3節のローカルエクスポート/インポートはメールなしでも使えます。
+コード上は約 8 類の任意メール控えがありますが、**最初のインストーラでは入口を閉じます**。本番の疎通確認でも閉じている必要があります。将来開く場合は、保存内容・暗号化・削除方法を先に本ポリシーで示し、同意を得ます。
 
 ### 5. お客様の権利
 

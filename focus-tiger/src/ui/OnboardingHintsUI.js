@@ -57,7 +57,9 @@ import {
   PRIVACY_SHEET_FULL_LEAD_KEY,
   PRIVACY_SHEET_SECTIONS,
   PRIVACY_SHEET_TAIL_KEYS,
-  PRIVACY_SHEET_YPE_OPT_IN_KEYS
+  PRIVACY_SHEET_YPE_OPT_IN_KEYS,
+  PRIVACY_SHEET_CLOUD_KEY,
+  resolvePrivacySheetCloudBodyKey
 } from './privacyNoticeCopy.js';
 import {
   isMonetizationFunnelOptInEnabled,
@@ -2617,7 +2619,10 @@ export class OnboardingHintsUI {
     this._privacyTitleEl.textContent = t('PRIVACY_SHEET_TITLE');
     this._privacyBackEl.textContent = t('PRIVACY_SHEET_BACK');
     for (const p of this._privacyBodyEl.querySelectorAll('[data-privacy-key]')) {
-      const key = p.getAttribute('data-privacy-key');
+      let key = p.getAttribute('data-privacy-key');
+      if (key === PRIVACY_SHEET_CLOUD_KEY) {
+        key = resolvePrivacySheetCloudBodyKey();
+      }
       if (key) p.textContent = t(key);
     }
     this._refreshYpeOptInCopy();
