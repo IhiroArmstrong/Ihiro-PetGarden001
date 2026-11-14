@@ -301,13 +301,29 @@ export const VISIBILITY_CONTRACTS = Object.freeze([
     role: 'HomeCtas',
     must: 'visible',
     narrowSelector:
-      '#ft-sanctuary-nav-compass-fab, #ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty',
+      '#ft-narrow-home-quickstart, #ft-narrow-home-sit, #ft-narrow-home-honesty',
     testAnchorNarrow:
       'e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…',
     lockStatus: 'locked',
     source: 'L284 窄屏主屏 home CTAs · PR #986 sanctuary-nav compass',
     notes:
-      '指南针在右下角 FAB；主球 Quick · Sit · Honesty；Honesty 不得 false-disabled'
+      '主球 Quick · Sit · Honesty；指南针 FAB 已关（idle-compass-fab-disabled）'
+  },
+  {
+    id: 'idle-compass-fab-disabled',
+    state: 'idle',
+    viewport: 'both',
+    role: 'HomeCtas',
+    must: 'hidden',
+    wideSelector: '#ft-sanctuary-nav-compass-fab',
+    narrowSelector: '#ft-sanctuary-nav-compass-fab',
+    testAnchorWide:
+      'e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…',
+    testAnchorNarrow:
+      'e2e/weekly-practice-heatmap.spec.js › 375 viewport: narrow ActionBar + home CTAs…',
+    lockStatus: 'locked',
+    source: 'PO 2026-11-13 · 指南针圆钮与 Navigate sanctuary 一并关掉',
+    notes: 'FAB 不挂 DOM；菜单 proxy sanctuary-nav 也不进目录'
   },
   {
     id: 'heatmap-hidden-when-focusing',

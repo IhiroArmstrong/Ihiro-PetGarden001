@@ -13,6 +13,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'HomeSanctuaryNavFanUI.js'), 'utf8');
 
 test('the sanctuary compass FAB sits at the bottom-right fan hinge', () => {
+  assert.match(src, /isHomeSanctuaryNavEnabled\(\)/);
   assert.match(src, /ft-sanctuary-nav-compass-fab/);
   assert.match(src, /right: calc\(16px \+ \$\{COMPASS_FAB_PX\}px \+ 12px\)/);
   assert.match(src, /dataset\.fanAnchor = 'corner'/);

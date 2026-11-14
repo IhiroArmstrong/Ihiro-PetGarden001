@@ -15,6 +15,18 @@ export const PLAN_A_KEY_LABEL_ALLOWLIST = new Set([
   'HINT_APP_PURPOSE_DESKTOP_RAM_TITLE'
 ]);
 
+/** Support / unlock cards may describe purchasable on-device Confide (sale restored). */
+export const PLAN_A_SUPPORT_CHECKOUT_SALE_KEYS = new Set([
+  'SUPPORT_PRO_BLURB',
+  'SUPPORT_PRO_BENEFIT_2',
+  'SUPPORT_COMPANION_ADDON_BLURB',
+  'SUPPORT_COMPANION_ADDON_CTA',
+  'SUPPORT_COMPANION_ADDON_CTA_OWNED',
+  'CONTENT_UNLOCK_COMPANION_UPSELL',
+  'CONTENT_UNLOCK_COMPANION_CTA',
+  'SUPPORT_WEB_LOCAL_AI_NOTE'
+]);
+
 export const PLAN_A_GUEST_COPY_KEY_PREFIXES = [
   'HELP_CENTER_',
   'HINT_APP_PURPOSE_',
@@ -112,6 +124,9 @@ export function hasPlanASafePhrase(text) {
 export function assessPlanAGuestConfideLine(key, text) {
   const value = String(text ?? '');
   if (PLAN_A_KEY_LABEL_ALLOWLIST.has(key)) {
+    return { ok: true };
+  }
+  if (PLAN_A_SUPPORT_CHECKOUT_SALE_KEYS.has(key)) {
     return { ok: true };
   }
   if (!isPlanAGuestCopyKey(key)) {

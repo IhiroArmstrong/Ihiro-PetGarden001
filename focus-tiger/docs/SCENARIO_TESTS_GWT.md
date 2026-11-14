@@ -4076,7 +4076,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AE-1 | P0 | 无自动化标注 | 打开 `?product=1&confide=1` Idle → ⋯ / 抽屉出现 Confide  |
+| AE-1 | P0 | 无自动化标注 | 打开 `?product=1`（英文）Idle → ⋯ / 抽屉出现 Confide to Yin  |
 | AE-1b | P0 | 无自动化标注 | 布局（2026-10-29 · T41 倾诉贴边暂时停用）：开卡后 `data-dock=cente |
 | AE-2 | P0 | 无自动化标注 | 输入非空 → Share → 0–1 秒内发送钮按压 + `[data-testid=confide |
 | AE-3 | P0 | 无自动化标注 | 安全：`I don't want to live` → `data-route=safety_red |
@@ -4097,10 +4097,10 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Companion 状态为 Idle（`#sprite-stage` 可见，无 `#focus-hud`）
 
 **When**
-- 打开 `?product=1&confide=1` Idle
+- 打开 `?product=1`（英文）Idle
 
 **Then**
-- ⋯ / 抽屉出现 Confide to Yin → 0–1 秒内 `#confide-to-yin-card` 淡入。Web 无 memory bridge → 不得出现 `[data-testid=confide-to-yin-verbal-chips]`（Forget this 芯片仅 Electron）。
+- ⋯ / 抽屉出现 Confide to Yin → 0–1 秒内 `#confide-to-yin-card` 淡入。Web 无 memory bridge → 不得出现 `[data-testid=confide-to-yin-verbal-chips]`（Forget this 芯片仅 Electron）。日语对照：切到日本語 → 0–1 秒内 无该行、无耳；QA `?confide=1` 也打不开。
 
 #### AE-1b
 

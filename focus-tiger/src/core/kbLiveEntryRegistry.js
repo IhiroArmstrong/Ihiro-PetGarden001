@@ -268,13 +268,13 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     proxy: 'confide',
     labelKeys: Object.freeze(['CONFIDE_MENU_LABEL']),
     menuPath: '⋯ → Practice → Confide to Yin (wide ear shortcut)',
-    liveStatus: 'gated-default-off',
+    liveStatus: 'conditional',
     gate: Object.freeze({
       moduleRelPath: 'src/core/confide/confideUserVisibilityGate.js',
-      anchor: 'CONFIDE_USER_MOUNT_ENABLED = false',
+      anchor: 'CONFIDE_USER_MOUNT_ENABLED = true',
       queryParam: 'confide',
       queryOffValue: null,
-      note: 'Product mount off by default; ?confide=1 QA harness; Electron wide L1 may show row when companionGeneration'
+      note: 'First ship: English UI mount on; locale === ja hides menu, ear, shortcut, and panel'
     }),
     codeAnchors: Object.freeze([
       "proxy: 'confide'",
@@ -609,7 +609,11 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     proxy: 'sanctuary-nav',
     labelKeys: Object.freeze(['SANCTUARY_NAV_MENU_LABEL']),
     menuPath: '⋯ → Practice → Navigate sanctuary (wide home compass ball shortcut)',
-    liveStatus: 'live',
+    liveStatus: 'gated-default-off',
+    gate: Object.freeze({
+      moduleRelPath: 'src/core/homeSanctuaryNavEnabled.js',
+      anchor: 'HOME_SANCTUARY_NAV_ENABLED = false'
+    }),
     codeAnchors: Object.freeze([
       "proxy: 'sanctuary-nav'",
       'SANCTUARY_NAV_MENU_LABEL',

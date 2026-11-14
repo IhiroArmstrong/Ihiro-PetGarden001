@@ -22,6 +22,11 @@ import { resolveCompanionL0ModelDir } from './l0ModelDir.js';
 import { errorMessage as embeddingErrorMessage, loadEmbeddingHold } from './l1EmbeddingHold.js';
 import { errorMessage, loadModelHold } from './l1Hold.js';
 import { createLlamaWorkGate } from './l1LlamaWorkGate.js';
+import {
+  NATIVE_LLAMA_UNAVAILABLE,
+  isNativeLlamaDown,
+  noteNativeLlamaFailure
+} from './nativeLlamaAvailability.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -72,26 +77,42 @@ async function main() {
     chatWaitTimeoutMs: L1_ENSURE_READY_TIMEOUT_MS
   });
 
+  async function emitNativeUnavailable() {
+    await emit({ event: 'error', message: NATIVE_LLAMA_UNAVAILABLE });
+  }
+
   async function ensure() {
+    if (isNativeLlamaDown()) {
+      await emitNativeUnavailable();
+      return;
+    }
     if (session) {
       await emit({ event: 'status', phase: 'ready' });
       await emit({ event: 'ready' });
       return;
     }
-    const dl = await downloadModel(modelPath);
-    await emit({
-      event: 'status',
-      phase: 'loading',
-      message: dl.path
-    });
-    session = await llamaWorkGate.run('chat', () =>
-      loadModelHold({
-        modelPath: dl.path,
-        onProgress: (msg) => {
-          void emit({ event: 'status', phase: 'loading', message: msg });
-        }
-      })
-    );
+    try {
+      const dl = await downloadModel(modelPath);
+      await emit({
+        event: 'status',
+        phase: 'loading',
+        message: dl.path
+      });
+      session = await llamaWorkGate.run('chat', () =>
+        loadModelHold({
+          modelPath: dl.path,
+          onProgress: (msg) => {
+            void emit({ event: 'status', phase: 'loading', message: msg });
+          }
+        })
+      );
+    } catch (err) {
+      if (noteNativeLlamaFailure(err) || isNativeLlamaDown()) {
+        await emitNativeUnavailable();
+        return;
+      }
+      throw err;
+    }
     await emit({ event: 'status', phase: 'ready' });
     await emit({ event: 'ready' });
   }
@@ -149,10 +170,18 @@ async function main() {
   }
 
   async function ensureEmbeddingReady() {
+    if (isNativeLlamaDown()) {
+      await emitNativeUnavailable();
+      return;
+    }
     try {
       await ensureEmbedding();
       await emit({ event: 'embedding_ready' });
     } catch (err) {
+      if (noteNativeLlamaFailure(err) || isNativeLlamaDown()) {
+        await emitNativeUnavailable();
+        return;
+      }
       await emit({
         event: 'embedding_error',
         message: embeddingErrorMessage(err)
@@ -216,6 +245,7 @@ async function main() {
           const id = typeof payload.id === 'string' ? payload.id : '';
           try {
             if (!session) await ensure();
+            if (isNativeLlamaDown()) return;
             if (!session || typeof session.generate !== 'function') {
               throw new Error('companion_session_missing');
             }
@@ -494,6 +524,7 @@ async function main() {
           const id = typeof payload.id === 'string' ? payload.id : '';
           try {
             if (!session) await ensure();
+            if (isNativeLlamaDown()) return;
             if (!session || typeof session.generate !== 'function') {
               throw new Error('companion_session_missing');
             }

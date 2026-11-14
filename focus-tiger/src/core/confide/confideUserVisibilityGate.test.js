@@ -10,37 +10,65 @@ import {
   CONFIDE_USER_MOUNT_ENABLED,
   isConfideChromeStageAllowed,
   isConfideDevHarness,
+  isConfideLocaleAllowed,
   isConfideUserVisible,
   shouldShowConfideEarChrome
 } from './confideUserVisibilityGate.js';
 import { isConfideSafetyCorpusOk } from './confideCorpus.js';
 
-test('safety copy is human-ok; product mount still closed by default', () => {
+test('safety copy is human-ok; product mount on for non-ja first ship', () => {
   assert.equal(isConfideSafetyCorpusOk(), true);
-  assert.equal(CONFIDE_USER_MOUNT_ENABLED, false);
-  assert.equal(isConfideUserVisible(), false);
+  assert.equal(CONFIDE_USER_MOUNT_ENABLED, true);
+  assert.equal(isConfideLocaleAllowed('en'), true);
+  assert.equal(isConfideLocaleAllowed('zh'), true);
+  assert.equal(isConfideLocaleAllowed('ja'), false);
+  assert.equal(isConfideUserVisible({ locale: 'en' }), true);
+  assert.equal(isConfideUserVisible({ locale: 'ja' }), false);
 });
 
-test('user-visible requires mountEnabled AND safety ok', () => {
+test('user-visible requires mountEnabled AND safety ok AND non-ja locale', () => {
   assert.equal(
-    isConfideUserVisible({ safetyOk: () => true, mountEnabled: false }),
+    isConfideUserVisible({
+      safetyOk: () => true,
+      mountEnabled: false,
+      locale: 'en'
+    }),
     false
   );
   assert.equal(
-    isConfideUserVisible({ safetyOk: () => false, mountEnabled: true }),
+    isConfideUserVisible({
+      safetyOk: () => false,
+      mountEnabled: true,
+      locale: 'en'
+    }),
     false
   );
   assert.equal(
-    isConfideUserVisible({ safetyOk: () => true, mountEnabled: true }),
+    isConfideUserVisible({
+      safetyOk: () => true,
+      mountEnabled: true,
+      locale: 'en'
+    }),
     true
   );
+  assert.equal(
+    isConfideUserVisible({
+      safetyOk: () => true,
+      mountEnabled: true,
+      locale: 'ja'
+    }),
+    false
+  );
 });
 
-test('dev harness ?confide=1 does not imply user-visible', () => {
+test('dev harness ?confide=1 does not imply user-visible when mount is off', () => {
   assert.equal(isConfideDevHarness('?confide=1'), true);
   assert.equal(isConfideDevHarness('product=1&confide=1'), true);
   assert.equal(isConfideDevHarness('?product=1'), false);
-  assert.equal(isConfideUserVisible(), false);
+  assert.equal(
+    isConfideUserVisible({ mountEnabled: false, locale: 'en' }),
+    false
+  );
 });
 
 test('chrome stage: only idle allowed', () => {
@@ -51,12 +79,29 @@ test('chrome stage: only idle allowed', () => {
   assert.equal(isConfideChromeStageAllowed('bridge'), false);
 });
 
-test('canOpenConfidePanel: harness OR mount, and idle only', () => {
-  assert.equal(canOpenConfidePanel({ search: '', stage: 'idle' }), false);
+test('canOpenConfidePanel: English idle mount on; Japanese UI never opens', () => {
+  assert.equal(
+    canOpenConfidePanel({ search: '', stage: 'idle', locale: 'en' }),
+    true
+  );
+  assert.equal(
+    canOpenConfidePanel({ search: '', stage: 'idle', locale: 'ja' }),
+    false
+  );
   assert.equal(
     canOpenConfidePanel({
       search: '?confide=1',
       stage: 'idle',
+      locale: 'ja',
+      qaHarnessAllowed: true
+    }),
+    false
+  );
+  assert.equal(
+    canOpenConfidePanel({
+      search: '?confide=1',
+      stage: 'idle',
+      locale: 'en',
       qaHarnessAllowed: true
     }),
     true
@@ -65,6 +110,7 @@ test('canOpenConfidePanel: harness OR mount, and idle only', () => {
     canOpenConfidePanel({
       search: '?confide=1',
       stage: 'focusing',
+      locale: 'en',
       qaHarnessAllowed: true
     }),
     false
@@ -74,7 +120,8 @@ test('canOpenConfidePanel: harness OR mount, and idle only', () => {
       search: '',
       stage: 'idle',
       safetyOk: () => true,
-      mountEnabled: true
+      mountEnabled: true,
+      locale: 'en'
     }),
     true
   );
@@ -83,7 +130,8 @@ test('canOpenConfidePanel: harness OR mount, and idle only', () => {
       search: '',
       stage: 'arrival',
       safetyOk: () => true,
-      mountEnabled: true
+      mountEnabled: true,
+      locale: 'en'
     }),
     false
   );
@@ -95,7 +143,9 @@ test('canOpenConfidePanel: companion purchase does not bypass mount-off (Plan A 
       search: '',
       stage: 'idle',
       companionGeneration: true,
-      safetyOk: () => true
+      safetyOk: () => true,
+      mountEnabled: false,
+      locale: 'en'
     }),
     false
   );
@@ -106,18 +156,28 @@ test('canOpenConfidePanel: ?confide=1 ignored when QA harness is off (production
     canOpenConfidePanel({
       search: '?confide=1',
       stage: 'idle',
-      qaHarnessAllowed: false
+      qaHarnessAllowed: false,
+      mountEnabled: false,
+      locale: 'en'
     }),
     false
   );
 });
 
 test('ear chrome visibility matches canOpen (no dead click)', () => {
-  assert.equal(shouldShowConfideEarChrome({ search: '', stage: 'idle' }), false);
+  assert.equal(
+    shouldShowConfideEarChrome({ search: '', stage: 'idle', locale: 'en' }),
+    true
+  );
+  assert.equal(
+    shouldShowConfideEarChrome({ search: '', stage: 'idle', locale: 'ja' }),
+    false
+  );
   assert.equal(
     shouldShowConfideEarChrome({
       search: '?confide=1',
       stage: 'idle',
+      locale: 'en',
       qaHarnessAllowed: true
     }),
     true
@@ -126,6 +186,7 @@ test('ear chrome visibility matches canOpen (no dead click)', () => {
     shouldShowConfideEarChrome({
       search: '?confide=1',
       stage: 'focusing',
+      locale: 'en',
       qaHarnessAllowed: true
     }),
     false
@@ -135,7 +196,9 @@ test('ear chrome visibility matches canOpen (no dead click)', () => {
       search: '',
       stage: 'idle',
       companionGeneration: true,
-      safetyOk: () => true
+      safetyOk: () => true,
+      mountEnabled: false,
+      locale: 'en'
     }),
     false
   );

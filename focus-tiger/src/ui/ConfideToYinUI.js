@@ -9,6 +9,7 @@
  */
 
 import { t, getLocale, onLocaleChange, setLocale } from '../locales/i18n.js';
+import { isConfideLocaleAllowed } from '../core/confide/confideUserVisibilityGate.js';
 import { confidePanelDockPlacement } from '../core/confideDockPlacement.js';
 import { listPickerLocales } from '../locales/localePreference.js';
 import {
@@ -493,7 +494,10 @@ export class ConfideToYinUI {
     };
     document.addEventListener('keydown', this._onKeyDown);
 
-    this._unsubLocale = onLocaleChange(() => this._applyCopy());
+    this._unsubLocale = onLocaleChange((locale) => {
+      this._applyCopy();
+      if (!isConfideLocaleAllowed(locale) && this._open) this.close();
+    });
     this._onResize = () => {
       this._syncConfideDock();
       this._syncGenerateLayerForViewport();

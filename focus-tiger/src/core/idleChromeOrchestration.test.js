@@ -350,12 +350,12 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
-        'sanctuary-nav',
         'companion',
         'ground-exercise',
         'guided-meditation',
         'five-moments',
         'honesty',
+        'confide',
         'journey-log',
         'presence-signals',
         'yin-coin',
@@ -405,12 +405,12 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
-        'sanctuary-nav',
         'companion',
         'ground-exercise',
         'guided-meditation',
         'five-moments',
         'honesty',
+        'confide',
         'journey-log',
         'presence-signals',
         'yin-coin',
@@ -543,11 +543,11 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
-        'sanctuary-nav',
         'ground-exercise',
         'guided-meditation',
         'five-moments',
         'honesty',
+        'confide',
         'journey-log',
         'presence-signals',
         'yin-coin',

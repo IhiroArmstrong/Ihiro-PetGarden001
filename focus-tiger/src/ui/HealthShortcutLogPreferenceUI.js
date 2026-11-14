@@ -8,6 +8,7 @@ import {
   readHealthShortcutLogEnabled,
   writeHealthShortcutLogEnabled
 } from '../core/healthShortcutLogPreference.js';
+import { canConfigureHealthShortcutLogPreference } from '../core/healthShortcutPlatform.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   GLASS_BLUR_CSS,
@@ -94,6 +95,7 @@ export class HealthShortcutLogPreferenceUI {
     this._unsubLocale = onLocaleChange(() => this._applyCopy());
     this._applyCopy();
     this._syncToggleFromStorage();
+    this._syncToggleAvailability();
     this._injectStyles();
   }
 
@@ -102,6 +104,7 @@ export class HealthShortcutLogPreferenceUI {
     this.root.hidden = false;
     this.panel.hidden = false;
     this._syncToggleFromStorage();
+    this._syncToggleAvailability();
     this.statusEl.hidden = true;
     this.handlers.onOpen?.();
   }
@@ -122,6 +125,10 @@ export class HealthShortcutLogPreferenceUI {
   }
 
   _onToggle() {
+    if (!canConfigureHealthShortcutLogPreference()) {
+      this.toggleInput.checked = readHealthShortcutLogEnabled(this._storage);
+      return;
+    }
     const next = this.toggleInput.checked;
     const ok = writeHealthShortcutLogEnabled(this._storage, next);
     if (!ok) {
@@ -136,8 +143,17 @@ export class HealthShortcutLogPreferenceUI {
   _applyCopy() {
     this.titleEl.textContent = t('HEALTH_SHORTCUT_PREF_TITLE');
     this.toggleText.textContent = t('HEALTH_SHORTCUT_PREF_TOGGLE');
-    this.hintEl.textContent = t('HEALTH_SHORTCUT_PREF_HINT');
     this.closeBtn.textContent = t('HEALTH_SHORTCUT_PREF_CLOSE');
+    this._syncToggleAvailability();
+  }
+
+  _syncToggleAvailability() {
+    const canConfigure = canConfigureHealthShortcutLogPreference();
+    this.toggleInput.disabled = !canConfigure;
+    this.toggleLabel.classList.toggle('is-disabled', !canConfigure);
+    this.hintEl.textContent = canConfigure
+      ? t('HEALTH_SHORTCUT_PREF_HINT')
+      : t('HEALTH_SHORTCUT_PREF_UNAVAILABLE');
   }
 
   _injectStyles() {
@@ -176,6 +192,13 @@ export class HealthShortcutLogPreferenceUI {
   gap: 8px;
   font-size: 14px;
   cursor: pointer;
+}
+.health-shortcut-pref__toggle.is-disabled {
+  cursor: default;
+  opacity: 0.82;
+}
+.health-shortcut-pref__toggle.is-disabled input {
+  cursor: not-allowed;
 }
 .health-shortcut-pref__hint {
   margin: 0;

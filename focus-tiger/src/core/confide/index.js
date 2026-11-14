@@ -78,6 +78,7 @@ export {
 export { formatConfideProductKnowledgeHonestyReply } from './confideProductKnowledgeHonesty.js';
 export {
   CONFIDE_USER_MOUNT_ENABLED,
+  isConfideLocaleAllowed,
   isConfideUserVisible,
   isConfideDevHarness,
   isConfideChromeStageAllowed,

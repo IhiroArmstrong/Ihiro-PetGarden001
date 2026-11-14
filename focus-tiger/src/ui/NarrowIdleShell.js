@@ -4,6 +4,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { shouldShowConfideEarChrome } from '../core/confide/confideUserVisibilityGate.js';
 
 import {
   EDGE_RECALL_HIT_PX,
@@ -34,6 +35,7 @@ import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import { Z } from './zIndexLayers.js';
+import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v24';
 const NARROW_MQ = '(max-width: 479px)';
@@ -141,6 +143,16 @@ export class NarrowIdleShell {
       this._syncActionBarStateFromHud();
       this._tickWallClock();
       this._refreshHomeCtas();
+      this.setConfideEarVisible(
+        shouldShowConfideEarChrome({
+          search:
+            typeof location !== 'undefined' && location?.search
+              ? location.search
+              : '',
+          stage: this._idle ? 'idle' : 'focusing'
+        })
+      );
+      if (this._sheetOpen) this._refreshDrawerItems();
     });
     // Clone after heatmap's same-tick listener (shell is constructed first).
     this._unsubPracticeImport = subscribePracticeDataImported(() => {
@@ -487,7 +499,7 @@ export class NarrowIdleShell {
         ?
       </button>
       <button type="button" class="ft-narrow-action-bar__btn" id="ft-narrow-help-center-btn" data-proxy="help-center-beside" data-testid="ft-narrow-help-center-btn" aria-label="">
-        <svg class="ft-narrow-help-center-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.2 4.2h11.1c1 0 1.8.8 1.8 1.8v13.1c0 .8-.9 1.2-1.5.7L16 18.1l-1.7 1.7c-.6.5-1.5.1-1.5-.7V6.5H6.2c-.5 0-.9.4-.9.9v11.2H3.2V7.4c0-1.8 1.4-3.2 3-3.2z"/></svg>
+        ${HELP_CENTER_BESIDE_GLYPH}
       </button>
       <button type="button" class="ft-narrow-action-bar__btn is-confide" id="ft-narrow-confide-btn" data-proxy="confide" data-testid="ft-narrow-confide-btn" hidden aria-label="">
         <img class="ft-narrow-action-bar__confide-img" src="${ICON_CONFIDE}" alt="" width="28" height="28" draggable="false" decoding="async" />

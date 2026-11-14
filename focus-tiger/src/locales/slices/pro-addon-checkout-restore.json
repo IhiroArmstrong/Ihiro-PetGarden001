@@ -1,0 +1,26 @@
+{
+  "en": {
+    "SUPPORT_PRO_BLURB": "Everything in Yin Membership, plus Confide with on-device Yin on a capable desktop.",
+    "SUPPORT_COMPANION_ADDON_BLURB": "Already own Sanctuary Lifetime? Unlock on-device Yin once — no subscription.",
+    "SUPPORT_COMPANION_ADDON_CTA_OWNED": "Unlocked",
+    "SUPPORT_PRO_BENEFIT_2": "Local AI companion in Electron (wide screen, capable PC)",
+    "CONTENT_UNLOCK_COMPANION_UPSELL": "Sanctuary Lifetime unlocks advanced scenes. Add on-device Yin when you are ready — one-time, no subscription.",
+    "CONTENT_UNLOCK_COMPANION_CTA": "Unlock AI Companion"
+  },
+  "zh": {
+    "SUPPORT_PRO_BLURB": "含阿寅会员全部进阶层，另加桌面端本机倾诉（需合格电脑与 Electron）。",
+    "SUPPORT_COMPANION_ADDON_BLURB": "已买圣所终身？一次性解锁本机阿寅，无需再订订阅。",
+    "SUPPORT_COMPANION_ADDON_CTA_OWNED": "已解锁",
+    "SUPPORT_PRO_BENEFIT_2": "Electron 宽屏本机智能体",
+    "CONTENT_UNLOCK_COMPANION_UPSELL": "圣所终身版已解锁进阶场景。若需要，可一次性加购本机 AI 陪伴——无需订阅。",
+    "CONTENT_UNLOCK_COMPANION_CTA": "解锁 AI 陪伴"
+  },
+  "ja": {
+    "SUPPORT_PRO_BLURB": "阿寅メンバーシップの進階レイヤーに加え、対応デスクトップの Electron で端末内コンパニオン。",
+    "SUPPORT_COMPANION_ADDON_BLURB": "サンクチュアリ生涯版をお持ちですか？端末内阿寅を一度の購入で解放。",
+    "SUPPORT_COMPANION_ADDON_CTA_OWNED": "解除済み",
+    "SUPPORT_PRO_BENEFIT_2": "Electron ワイド画面のローカル AI",
+    "CONTENT_UNLOCK_COMPANION_UPSELL": "サンクチュアリ生涯版で上級シーンが使えます。端末内コンパニオンは一度きりの追加購入で。",
+    "CONTENT_UNLOCK_COMPANION_CTA": "AI コンパニオンを解放"
+  }
+}

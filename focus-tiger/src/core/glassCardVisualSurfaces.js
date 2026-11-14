@@ -75,6 +75,7 @@ export const A13_GLASS_VISUAL_SURFACES = Object.freeze([
   Object.freeze({
     id: 'sanctuary-nav-fan',
     openKind: 'sanctuary-nav',
+    visibilityDependsOn: 'home-sanctuary-nav',
     rootSelector: '#home-sanctuary-nav-fan .home-sanctuary-nav-fan__disc',
     expectWarmGlass: false
   }),

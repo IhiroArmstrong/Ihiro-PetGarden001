@@ -179,7 +179,9 @@ describe('desktop companion L1 Confide chrome', () => {
         search: '',
         stage: 'idle',
         companionGeneration: true,
-        safetyOk: () => true
+        safetyOk: () => true,
+        mountEnabled: false,
+        locale: 'en'
       }),
       false
     );

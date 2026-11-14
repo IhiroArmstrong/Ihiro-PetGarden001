@@ -16,6 +16,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isCompanionL1Allowed } from './l1Capability.js';
 import {
+  NATIVE_LLAMA_UNAVAILABLE,
+  companionErrorDisablesSemanticScore
+} from './nativeLlamaAvailability.js';
+import {
   applyCompanionEvent,
   createCompanionStatus,
   isEmbeddingShadowPhase,
@@ -289,7 +293,14 @@ export class CompanionL1Runtime {
         });
       }
       this._semanticCrisisWaiters.clear();
-      this._embeddingShadowGate.reset();
+      if (companionErrorDisablesSemanticScore(ev.message)) {
+        this._embeddingShadowGate.applyEvent({
+          event: 'embedding_error',
+          message: NATIVE_LLAMA_UNAVAILABLE
+        });
+      } else {
+        this._embeddingShadowGate.reset();
+      }
     }
     this._push();
   }

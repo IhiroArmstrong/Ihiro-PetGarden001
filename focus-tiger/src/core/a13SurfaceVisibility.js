@@ -10,29 +10,38 @@
 
 import {
   CONFIDE_USER_MOUNT_ENABLED,
-  isConfideDevHarness
+  isConfideDevHarness,
+  isConfideLocaleAllowed
 } from './confide/confideUserVisibilityGate.js'
+import { isHomeSanctuaryNavEnabled } from './homeSanctuaryNavEnabled.js'
 
 /**
  * @param {import('./glassCardVisualSurfaces.js').A13GlassVisualSurface | null | undefined} surface
  * @param {object} [opts]
  * @param {string} [opts.search]
  * @param {boolean} [opts.mountEnabled]
+ * @param {string} [opts.locale]
  * @returns {boolean}
  */
 export function shouldAssertA13SurfaceVisible(
   surface,
   {
     search = '',
-    mountEnabled = CONFIDE_USER_MOUNT_ENABLED
+    mountEnabled = CONFIDE_USER_MOUNT_ENABLED,
+    locale = 'en'
   } = {}
 ) {
-  if (!surface || surface.visibilityDependsOn !== 'confide-user-or-harness') {
+  if (!surface) return true
+  if (surface.visibilityDependsOn === 'home-sanctuary-nav') {
+    return isHomeSanctuaryNavEnabled()
+  }
+  if (surface.visibilityDependsOn !== 'confide-user-or-harness') {
     return true
   }
   const harnessSearch =
     surface.shellQuery && surface.shellQuery.confide === '1'
       ? 'confide=1'
       : search
+  if (!isConfideLocaleAllowed(locale)) return false
   return mountEnabled === true || isConfideDevHarness(harnessSearch)
 }
