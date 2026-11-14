@@ -8,8 +8,8 @@
  * Lifetime and the Lifetime AI add-on stay on the grid after purchase.
  */
 
-/** Plan A option 1: stop new Pro / companion add-on checkout (reversible). */
-export const PLAN_A_OPTION1_STOP_NEW_CHECKOUT = true;
+/** When true, hides new Pro / companion add-on checkout cards (reversible). */
+export const PLAN_A_OPTION1_STOP_NEW_CHECKOUT = false;
 
 /**
  * @param {object} [opts]

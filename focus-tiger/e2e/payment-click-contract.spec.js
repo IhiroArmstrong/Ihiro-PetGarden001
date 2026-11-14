@@ -78,12 +78,9 @@ test('payment click contract: Support CTAs hit themselves not the dim', async ({
     await assertCenterHitsTarget(page, selector);
   }
 
-  await expect(page.locator('[data-testid="yin-support-pro-cta"]')).toBeHidden();
-
-  const proCard = page.locator('[data-testid="yin-support-pro-card"]');
-  if ((await proCard.count()) > 0) {
-    await expect(proCard).toBeHidden();
-  }
+  const proCta = page.locator('[data-testid="yin-support-pro-cta"]');
+  await expect(proCta).toBeVisible();
+  await assertCenterHitsTarget(page, '[data-testid="yin-support-pro-cta"]');
 
   await assertCenterHitsTarget(page, '[data-testid="yin-support-close"]');
   await page.locator('[data-testid="yin-support-close"]').click();

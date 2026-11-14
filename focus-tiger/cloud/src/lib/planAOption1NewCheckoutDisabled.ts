@@ -1,6 +1,6 @@
 /**
- * Plan A option 1: new Pro / companion add-on checkout stays off unless explicitly enabled.
- * Missing or unreadable env → refuse (fail closed).
+ * Pro / companion add-on checkout gate (reversible).
+ * Default open; set PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=false to pause again.
  */
 import { errorJson } from "./http";
 
@@ -12,8 +12,9 @@ export function isPlanAOption1NewCheckoutDisabled(
 ): boolean {
 	try {
 		const raw = env?.PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED;
+		if (raw === "false" || raw === "0") return true;
 		if (raw === "true" || raw === "1") return false;
-		return true;
+		return false;
 	} catch {
 		return true;
 	}
