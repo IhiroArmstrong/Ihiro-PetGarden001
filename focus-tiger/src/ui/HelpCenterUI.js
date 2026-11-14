@@ -130,8 +130,9 @@ export class HelpCenterUI {
     this.askRow.className = 'help-center__ask-row';
 
     this.askInput = document.createElement('input');
-    this.askInput.type = 'search';
+    this.askInput.type = 'text';
     this.askInput.className = 'help-center__ask-input';
+    this.askInput.setAttribute('enterkeyhint', 'go');
     this.askInput.dataset.testid = 'help-center-ask-input';
     this.askInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
@@ -142,7 +143,7 @@ export class HelpCenterUI {
 
     this.askSubmitBtn = document.createElement('button');
     this.askSubmitBtn.type = 'button';
-    this.askSubmitBtn.className = 'help-center__ask-submit';
+    this.askSubmitBtn.className = 'help-center__ask-submit help-center__ask-submit--go';
     this.askSubmitBtn.dataset.testid = 'help-center-ask-submit';
     this.askSubmitBtn.addEventListener('click', () => void this._submitAsk());
 
@@ -207,6 +208,12 @@ export class HelpCenterUI {
       onInputApplied: () => {
         this._askSearching = false;
         this._syncAskStatus();
+      },
+      onTranscriptCommitted: () => {
+        if (this._operatingListenResolve) return;
+        const text = String(this.askInput.value || '').trim();
+        if (!text) return;
+        void this._submitAsk();
       }
     });
 
@@ -665,7 +672,8 @@ export class HelpCenterUI {
     this.closeBtn.textContent = t('HELP_CENTER_CLOSE');
     this.askLabelEl.textContent = t('HELP_CENTER_ASK_LABEL');
     this.askInput.placeholder = t('HELP_CENTER_ASK_PLACEHOLDER');
-    this.askSubmitBtn.textContent = t('HELP_CENTER_ASK_SUBMIT');
+    this.askSubmitBtn.textContent = '→';
+    this.askSubmitBtn.setAttribute('title', t('HELP_CENTER_ASK_SUBMIT'));
     this.askSubmitBtn.setAttribute('aria-label', t('HELP_CENTER_ASK_SUBMIT_ARIA'));
     this._syncOperatingLabels();
     this._syncAskStatus();
@@ -802,6 +810,12 @@ export class HelpCenterUI {
         cursor: pointer;
         background: ${GLASS_FILL_STRONG};
         color: inherit;
+      }
+      .help-center__ask-submit--go {
+        min-width: 2.75rem;
+        padding: 10px 11px;
+        font-size: 1.05rem;
+        line-height: 1;
       }
       .help-center__ask-submit:hover:not(:disabled) {
         filter: brightness(0.98);
