@@ -17,8 +17,9 @@ describe('shouldAssertA13SurfaceVisible', () => {
     assert.equal(confide.visibilityDependsOn, 'confide-user-or-harness')
     assert.equal(confide.qaHarnessRequired, true)
     assert.equal(confide.shellQuery?.confide, '1')
-    assert.equal(CONFIDE_USER_MOUNT_ENABLED, false)
-    assert.equal(shouldAssertA13SurfaceVisible(confide), true)
+    assert.equal(CONFIDE_USER_MOUNT_ENABLED, true)
+    assert.equal(shouldAssertA13SurfaceVisible(confide, { locale: 'en' }), true)
+    assert.equal(shouldAssertA13SurfaceVisible(confide, { locale: 'ja' }), false)
   })
 
   it('does not require the card when mount is off and harness is absent', () => {
@@ -44,9 +45,18 @@ describe('shouldAssertA13SurfaceVisible', () => {
     assert.equal(
       shouldAssertA13SurfaceVisible(noHarness, {
         search: '?product=1',
-        mountEnabled: true
+        mountEnabled: true,
+        locale: 'en'
       }),
       true
+    )
+    assert.equal(
+      shouldAssertA13SurfaceVisible(noHarness, {
+        search: '?product=1',
+        mountEnabled: true,
+        locale: 'ja'
+      }),
+      false
     )
   })
 

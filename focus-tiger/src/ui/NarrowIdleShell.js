@@ -4,6 +4,7 @@
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
+import { shouldShowConfideEarChrome } from '../core/confide/confideUserVisibilityGate.js';
 
 import {
   EDGE_RECALL_HIT_PX,
@@ -142,6 +143,16 @@ export class NarrowIdleShell {
       this._syncActionBarStateFromHud();
       this._tickWallClock();
       this._refreshHomeCtas();
+      this.setConfideEarVisible(
+        shouldShowConfideEarChrome({
+          search:
+            typeof location !== 'undefined' && location?.search
+              ? location.search
+              : '',
+          stage: this._idle ? 'idle' : 'focusing'
+        })
+      );
+      if (this._sheetOpen) this._refreshDrawerItems();
     });
     // Clone after heatmap's same-tick listener (shell is constructed first).
     this._unsubPracticeImport = subscribePracticeDataImported(() => {
