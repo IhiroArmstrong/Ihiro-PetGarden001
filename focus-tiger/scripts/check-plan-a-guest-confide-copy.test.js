@@ -15,12 +15,20 @@ import {
 } from './check-plan-a-guest-confide-copy.js';
 
 describe('plan-a guest confide copy policy', () => {
-  it('rejects old Support unlock promise without slice override', () => {
+  it('rejects help-center unlock promise without closed-to-guests caveat', () => {
+    const verdict = assessPlanAGuestConfideLine(
+      'HELP_CENTER_INTRO',
+      'After you unlock it, open Focus Tiger on Mac or Windows to talk with Yin locally.'
+    );
+    assert.equal(verdict.ok, false);
+  });
+
+  it('allows Support checkout keys to describe purchasable on-device Confide', () => {
     const verdict = assessPlanAGuestConfideLine(
       'SUPPORT_WEB_LOCAL_AI_NOTE',
       'After you unlock it, open Focus Tiger on Mac or Windows to talk with Yin locally.'
     );
-    assert.equal(verdict.ok, false);
+    assert.equal(verdict.ok, true);
   });
 
   it('accepts explicit not-open-to-guests caveat', () => {

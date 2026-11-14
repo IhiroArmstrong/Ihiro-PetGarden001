@@ -10,6 +10,8 @@ import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 import { formatSupportPrice } from '../ui/SupportYinModalUI.js';
 import { MEMBERSHIP_PRICE_DISPLAY } from '../core/membershipCheckout.js';
+import { mergeLocalePack } from '../locales/mergeLocaleSlices.js';
+import { LOCALE_SLICES } from '../locales/localeSliceModules.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const en = JSON.parse(
@@ -89,7 +91,8 @@ describe('SupportYinModalUI helpers', () => {
     assert.match(zh.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
     assert.match(ja.SUPPORT_MEMBERSHIP_PRICE, /\$\{price\}/);
     assert.equal(en.SUPPORT_SANCTUARY_CTA_OWNED, 'Unlocked');
-    assert.equal(en.SUPPORT_COMPANION_ADDON_CTA_OWNED, 'Purchased — entry not open yet');
+    const { dictionaries } = mergeLocalePack({ en, zh, ja }, LOCALE_SLICES);
+    assert.equal(dictionaries.en.SUPPORT_COMPANION_ADDON_CTA_OWNED, 'Unlocked');
     assert.match(en.SUPPORT_WEB_LOCAL_AI_NOTE, /desktop app/i);
     assert.equal(
       formatSupportPrice(en.SUPPORT_MEMBERSHIP_PRICE, MEMBERSHIP_PRICE_DISPLAY),
