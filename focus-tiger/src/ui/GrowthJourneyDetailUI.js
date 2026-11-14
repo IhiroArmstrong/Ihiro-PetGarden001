@@ -163,6 +163,10 @@ export class GrowthJourneyDetailUI {
     this.paperEl = document.createElement('section');
     this.paperEl.className = 'growth-journey-detail__paper';
     this.paperEl.dataset.testid = 'practice-paper';
+    // Practice-paper taps must not start glass-card drag (steals checkbox / Turn on).
+    this.paperEl.addEventListener('pointerdown', (event) => {
+      event.stopPropagation();
+    });
 
     this._paperExpanded = false;
 
@@ -579,6 +583,7 @@ export class GrowthJourneyDetailUI {
         input.checked = false;
         pendingEnable = true;
         confirmBtn.hidden = false;
+        confirmBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         return;
       }
       if (!input.checked && consent.enabled) {
@@ -890,6 +895,22 @@ export class GrowthJourneyDetailUI {
         margin: 4px 0 12px;
         padding-top: 8px;
         border-top: 1px solid rgba(44, 31, 20, 0.12);
+      }
+      .growth-journey-detail__paper-evening-controls {
+        margin: 0 0 10px;
+      }
+      .growth-journey-detail__paper-evening-toggle {
+        display: inline-flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin: 0 0 6px;
+        cursor: pointer;
+      }
+      .growth-journey-detail__paper-evening-disclosure {
+        margin: 0 0 8px;
+        font-size: 0.82rem;
+        line-height: 1.4;
+        opacity: 0.84;
       }
       .growth-journey-detail__contract {
         margin: 8px 0 10px;
