@@ -46,7 +46,7 @@
 
 ## 一、产品约束（先于分类体系）
 
-1. **Local AI 不是开放问答。** 仅 Electron 宽屏、用户主动打开「向阿寅倾诉 / Confide to Yin」时，才可能短生成。系统操作（备份、更新、改设置）不经阿寅之口逐步讲解，最多指路到界面。
+1. **Local AI 不是开放问答。** 仅 Electron 宽屏、用户主动打开「向阿寅倾诉 / Chat with Yin」时，才可能短生成。系统操作（备份、更新、改设置）不经阿寅之口逐步讲解，最多指路到界面。
 2. **知识库 ≠ 帮助中心。** Confide 仍只检索已审核短答；用户可浏览主题见 HelpCenterUI + helpCenterCatalog.js（显式 allowlist，不含内部排障）。
 3. **已有独立练习入口的内容不重写第二套脚本。** 只登记「在哪、叫什么、怎么进」。引导语以 locale 现网为准（例：`RESET_GROUND_*` / `RESET_LOOK_*`），不进倾诉检索正文。
 4. **心理类字段禁止临床标签。** 「适用场景」只写可观察情境，不写诊断名。
@@ -107,7 +107,7 @@
 | 接地练习 | ⋯ → Practice → Ground exercise（Five Moments **上方**） | 抽屉同位置 | Ground exercise / グラウンディング / 接地练习；两钮 Feel the Ground / Look Around（ja：足元を感じる / 周りを見渡す；zh：感受地面 / 环顾四周） |
 | 本地备份 | ⋯ → Preferences → Backup & restore | 抽屉 Preferences 组 | Backup & restore / バックアップと復元 / 备份与恢复（`LOCAL_BACKUP_MENU_LABEL`）。隐私文案写作「设置 → 备份与恢复」 |
 | 可选云备份 | ⋯ → Practice → Journey log | 抽屉同组 | Journey log / 旅程留痕；行文 Bind email for optional cloud backup / 绑定邮箱可获得云端备份（`JOURNEY_LOG_BACKUP_LINK_OFF`） |
-| 倾诉 | ⋯ → Practice → Confide to Yin；宽屏另有倾听耳 | 抽屉有菜单行，**无**本机生成 | Confide to Yin / 寅に打ち明ける / 向阿寅倾诉。发送 Share / 伝える；关闭 Close / 閉じる / 关闭；取消 Cancel / キャンセル / 取消 |
+| 倾诉 | ⋯ → Practice → Chat with Yin；宽屏另有倾听耳 | 抽屉有菜单行，**无**本机生成 | Chat with Yin / 寅と話す / 向阿寅倾诉。发送 Share / 伝える；关闭 Close / 閉じる / 关闭；取消 Cancel / キャンセル / 取消 |
 | 今日进度 | 左上 HUD 条 | 同左 | Today's shared sitting / 今日同坐（`HUD_PROGRESS_SHARED_SITTING`）；默认约 25 分钟软顶，**界面不写「一炷香」** |
 
 专注同坐时长从 **10 分钟**起选（`focus_duration.hint`）。更短的停顿走左球 **Breath practice**，不是主钮 Sit。
@@ -314,7 +314,7 @@
   标题: 倾诉从哪里开
   适用场景: 想跟阿寅说几句，不知道入口在哪
   内容正文: |
-    短答（en）：Open More (⋯) or the drawer → Practice → Confide to Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.
+    短答（en）：Open More (⋯) or the drawer → Practice → Chat with Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.
     窄屏：菜单有 Confide 行，无本机模型生成（见 0017）。
   yin_may_retrieve: 是
   来源: 界面文案
@@ -390,7 +390,7 @@
   标题: What Yin remembers 从哪看
   适用场景: 想逐条查看或删掉阿寅记住的观察，而不只是在倾诉里口头问「你还记得什么」
   内容正文: |
-    短答（en）：Open Confide to Yin, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Confide lists a short summary — the full list is in that panel.
+    短答（en）：Open Chat with Yin, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Chat with Yin lists a short summary — the full list is in that panel.
     与 CI-03 分工：CI-03 = 口头列摘要；本条 = UI 指路 + Forget 入口。
   yin_may_retrieve: 是
   来源: 界面文案

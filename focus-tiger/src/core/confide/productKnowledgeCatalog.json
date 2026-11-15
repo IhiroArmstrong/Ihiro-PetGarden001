@@ -145,12 +145,14 @@
     },
     {
       "id": "KB-FUNC-0010",
-      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Confide to Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Chat with Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.",
       "keywords": [
         "倾诉",
         "Confide",
         "向阿寅倾诉",
         "寅に打ち明ける",
+        "寅と話す",
+        "Chat with Yin",
         "从哪里说",
         "Share",
         "耳朵",
@@ -233,7 +235,7 @@
     },
     {
       "id": "KB-FUNC-0014",
-      "shortAnswerEn": "Open Confide to Yin, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Confide lists a short summary — the full list is in that panel.",
+      "shortAnswerEn": "Open Chat with Yin, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Chat with Yin lists a short summary — the full list is in that panel.",
       "keywords": [
         "阿寅记得什么",
         "What Yin remembers",
@@ -811,7 +813,7 @@
         "how"
       ],
       "capabilityStatementEn": "That Samatia is built so people who cannot tap comfortably can often speak instead; on the Mac desktop app Yin can listen for short English operating requests that run the same local actions as taps, with confirmation before writing files; words stay on this device.",
-      "shortAnswerEn": "When tapping is hard, Samatia is built so you can often speak instead. On the Mac desktop app, Yin can listen for short English requests that run the same local actions you would tap — for example starting a focus sit, ending with Rise, or backing up your practice data after Yin repeats what will happen and you say yes. Open More (⋯) or the drawer → Practice → Confide to Yin, or use Yin's listen entry when it is on screen. Example: Hi Yin, please backup all the app data for me. Your words stay on this device. More menu actions join over time. Yin only points here and does not read long scripts aloud.",
+      "shortAnswerEn": "When tapping is hard, Samatia is built so you can often speak instead. On the Mac desktop app, Yin can listen for short English requests that run the same local actions you would tap — for example starting a focus sit, ending with Rise, or backing up your practice data after Yin repeats what will happen and you say yes. Open More (⋯) or the drawer → Practice → Chat with Yin, or use Yin's listen entry when it is on screen. Example: Hi Yin, please backup all the app data for me. Your words stay on this device. More menu actions join over time. Yin only points here and does not read long scripts aloud.",
       "keywords": [
         "voice command",
         "speak instead of tap",

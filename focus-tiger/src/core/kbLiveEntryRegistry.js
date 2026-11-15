@@ -267,7 +267,7 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     surface: 'menu',
     proxy: 'confide',
     labelKeys: Object.freeze(['CONFIDE_MENU_LABEL']),
-    menuPath: '⋯ → Practice → Confide to Yin (wide ear shortcut)',
+    menuPath: '⋯ → Practice → Chat with Yin (wide ear shortcut)',
     liveStatus: 'conditional',
     gate: Object.freeze({
       moduleRelPath: 'src/core/confide/confideUserVisibilityGate.js',

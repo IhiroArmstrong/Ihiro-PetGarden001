@@ -219,7 +219,7 @@ Tiger Reflection Moment（结束反思，已实现·MVP）：
     本 key 为会话 bundle 回顾；V2 可收敛为从 presence-signals 聚合
 
 向阿寅倾诉（Confide to Yin · 2026-08-10 拍板 · 2026-08-18 桌面窄例外 · 2026-08-22 第二入口）：
-  与 Reflection 分轨。Idle 入口：**宽屏左上倾听耳** + **窄屏 ActionBar 耳钮** + ⋯/抽屉行（桌面与 Web **同一张卡** `#confide-to-yin-card`）。文案：向阿寅倾诉 / Confide to Yin / 寅に打ち明ける。禅意倾听者；
+  与 Reflection 分轨。Idle 入口：**宽屏左上倾听耳** + **窄屏 ActionBar 耳钮** + ⋯/抽屉行（桌面与 Web **同一张卡** `#confide-to-yin-card`）。文案：向阿寅倾诉 / Chat with Yin / 寅と話す。禅意倾听者；
   本地规则分类 + 人工语料检索；匹配失败固定兜底。Web / PWA 仍禁运行时生成。
   仅 Electron：安全阀与语料都未接住时允许受约束短生成——不是全面允许生成。
   权威：`PRODUCT_POSITIONING.md`「禅意倾听者」；Web Brief `task-confide-to-yin-v1.md`；

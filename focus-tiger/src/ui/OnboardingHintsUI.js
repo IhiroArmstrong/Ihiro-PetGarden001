@@ -490,6 +490,9 @@ export class OnboardingHintsUI {
     this.onHelpCenter = onHelpCenter;
     this.onHelpCenterChrome = onHelpCenterChrome;
     this.onHelpCenterClose = onHelpCenterClose;
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('ft:open-privacy-sheet', this._onOpenPrivacySheetEvent);
+    }
     /** @type {(() => void) | null} */
     this._popPurposeEscape = null;
     this._helpChromePinned = false;
@@ -2321,6 +2324,15 @@ export class OnboardingHintsUI {
   }
 
   /** T63 — open Privacy from Growth Journey contract; skip if already visible. */
+  _onOpenPrivacySheetEvent = (event) => {
+    this.openPrivacySheetForSettings();
+    const anchor = event?.detail?.anchor;
+    if (!anchor || typeof document === 'undefined') return;
+    requestAnimationFrame(() => {
+      document.getElementById(anchor)?.scrollIntoView?.({ block: 'start' });
+    });
+  };
+
   openPrivacySheetForSettings() {
     if (this.isPrivacySheetOpen()) return;
     this._openPrivacySheetFromPurpose();
@@ -2374,6 +2386,7 @@ export class OnboardingHintsUI {
       const heading = document.createElement('h3');
       heading.className = 'onboarding-privacy-sheet__section-title';
       heading.dataset.privacyKey = section.titleKey;
+      if (section.id) heading.id = section.id;
       body.appendChild(heading);
 
       const p = document.createElement('p');

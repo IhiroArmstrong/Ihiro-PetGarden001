@@ -202,6 +202,10 @@ import {
   shouldHandleStandaloneMemorySuppress
 } from '../core/yinPersonalMemory/yinPersonalMemorySuppress.js';
 import { Z } from './zIndexLayers.js';
+import {
+  hasValidConfideConsent,
+  recordConfideConsent
+} from '../core/confide/confideConsent.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v3';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -247,6 +251,7 @@ export class ConfideToYinUI {
     this._memoryState = null;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
+    this._chatConsentSaving = false;
 
     this.backdrop = createOverlayBackdrop(mountRoot, {
       id: 'confide-to-yin-backdrop',
@@ -347,6 +352,97 @@ export class ConfideToYinUI {
       this.memoryConsentTitle,
       this.memoryConsentCopy,
       this.memoryConsentActions
+    );
+
+    this.consentWrap = document.createElement('div');
+    this.consentWrap.className = 'confide-to-yin__chat-consent';
+    this.consentWrap.dataset.testid = 'confide-consent-modal';
+    this.consentWrap.hidden = true;
+    this.consentWrap.setAttribute('role', 'dialog');
+    this.consentWrap.setAttribute('aria-modal', 'true');
+    this.consentWrap.setAttribute('aria-labelledby', 'confide-consent-title');
+
+    this.consentTitle = document.createElement('p');
+    this.consentTitle.id = 'confide-consent-title';
+    this.consentTitle.className = 'confide-to-yin__chat-consent-title';
+
+    this.consentIntro = document.createElement('p');
+    this.consentIntro.className = 'confide-to-yin__chat-consent-intro';
+
+    this.consentReconsent = document.createElement('p');
+    this.consentReconsent.className = 'confide-to-yin__chat-consent-reconsent';
+    this.consentReconsent.hidden = true;
+
+    this.consentError = document.createElement('p');
+    this.consentError.className = 'confide-to-yin__chat-consent-error';
+    this.consentError.dataset.testid = 'confide-consent-error';
+    this.consentError.setAttribute('role', 'alert');
+    this.consentError.setAttribute('aria-live', 'assertive');
+    this.consentError.hidden = true;
+
+    this.consentItem1 = this._createConsentCheckbox('item1', 'confide-consent-item1');
+    this.consentItem2 = this._createConsentCheckbox('item2', 'confide-consent-item2');
+    this.consentAge = this._createConsentCheckbox('age', 'confide-consent-age');
+
+    this.consentCrisis = document.createElement('div');
+    this.consentCrisis.className = 'confide-to-yin__chat-consent-crisis';
+    this.consentCrisis.dataset.testid = 'confide-consent-crisis';
+    this.consentCrisisTitle = document.createElement('p');
+    this.consentCrisisTitle.className = 'confide-to-yin__chat-consent-crisis-title';
+    this.consentCrisisBody = document.createElement('p');
+    this.consentCrisisBody.className = 'confide-to-yin__chat-consent-crisis-body';
+    this.consentCrisis.append(this.consentCrisisTitle, this.consentCrisisBody);
+
+    this.consentTermsLink = document.createElement('button');
+    this.consentTermsLink.type = 'button';
+    this.consentTermsLink.className = 'confide-to-yin__chat-consent-link';
+    this.consentTermsLink.dataset.testid = 'confide-consent-terms';
+    this.consentTermsLink.addEventListener('click', () => {
+      if (typeof window === 'undefined' || typeof window.dispatchEvent !== 'function') return;
+      window.dispatchEvent(
+        new CustomEvent('ft:open-privacy-sheet', { detail: { anchor: 'confide-consent' } })
+      );
+    });
+
+    this.consentHelpLink = document.createElement('button');
+    this.consentHelpLink.type = 'button';
+    this.consentHelpLink.className = 'confide-to-yin__chat-consent-link';
+    this.consentHelpLink.dataset.testid = 'confide-consent-help';
+    this.consentHelpLink.addEventListener('click', () => {
+      if (this.helpResourcesLink?.hidden) return;
+      if (!this._helpResourcesExpanded) this._toggleHelpResourcesPanel();
+    });
+
+    this.consentConfirmBtn = document.createElement('button');
+    this.consentConfirmBtn.type = 'button';
+    this.consentConfirmBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--primary';
+    this.consentConfirmBtn.dataset.testid = 'confide-consent-confirm';
+    this.consentConfirmBtn.addEventListener('click', () => this._onChatConsentConfirm());
+
+    this.consentDeclineBtn = document.createElement('button');
+    this.consentDeclineBtn.type = 'button';
+    this.consentDeclineBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--ghost';
+    this.consentDeclineBtn.dataset.testid = 'confide-consent-decline';
+    this.consentDeclineBtn.addEventListener('click', () => this.close());
+
+    this.consentActions = document.createElement('div');
+    this.consentActions.className = 'confide-to-yin__chat-consent-actions';
+    this.consentActions.append(this.consentConfirmBtn, this.consentDeclineBtn);
+
+    this.consentWrap.append(
+      this.consentTitle,
+      this.consentIntro,
+      this.consentReconsent,
+      this.consentError,
+      this.consentItem1.row,
+      this.consentItem2.row,
+      this.consentAge.row,
+      this.consentCrisis,
+      this.consentTermsLink,
+      this.consentHelpLink,
+      this.consentActions
     );
 
     this.inputWrap = document.createElement('div');
@@ -470,6 +566,7 @@ export class ConfideToYinUI {
     this.root.append(
       this.titleEl,
       this.blurbEl,
+      this.consentWrap,
       this.chipWrap,
       this.statusWrap,
       this.memoryConsentWrap,
@@ -544,20 +641,24 @@ export class ConfideToYinUI {
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
+    this._chatConsentSaving = false;
     this._hideMemoryConsent();
+    this._resetChatConsentBoxes();
     this._sendEpoch += 1;
     this._sending = false;
+    this._syncChatConsentUi();
     this._syncSendEnabled();
     this._collapseHelpResourcesPanel();
     this._syncHelpEntryVisibility();
     this._syncGenerateLayerForViewport({ ensure: true });
     void this._refreshMemoryState().then(() => {
       if (!this._open) return;
-      this._maybeOfferMemoryConsentOnOpen();
+      if (hasValidConfideConsent()) this._maybeOfferMemoryConsentOnOpen();
     });
     requestAnimationFrame(() => {
       this.root.classList.add('is-visible');
-      this.inputEl.focus();
+      if (hasValidConfideConsent()) this.inputEl.focus();
+      else this.consentItem1.input.focus();
     });
   }
 
@@ -575,6 +676,7 @@ export class ConfideToYinUI {
     this._generateFailStreak = 0;
     this._pendingL3Send = null;
     this._memoryConsentSaving = false;
+    this._chatConsentSaving = false;
     this._hideMemoryConsent();
     this._collapseHelpResourcesPanel();
     this.hideGenerateLayer({ unload: false });
@@ -740,6 +842,8 @@ export class ConfideToYinUI {
     if (this.thinkingCopyEl && this.thinkingEl && !this.thinkingEl.hidden) {
       this.thinkingCopyEl.textContent = `${t('CONFIDE_PANEL_THINKING')}…`;
     }
+    this._applyChatConsentCopy();
+    if (this._open) this._syncChatConsentUi();
     this._renderDesktopStatus();
   }
 
@@ -783,9 +887,129 @@ export class ConfideToYinUI {
 
   _syncSendEnabled() {
     const ok = canSubmitConfideText(this.inputEl.value);
-    const consentPending =
+    const memoryPending =
       Boolean(this.memoryConsentWrap) && !this.memoryConsentWrap.hidden;
-    this.sendBtn.disabled = this._sending || !ok || consentPending;
+    const chatPending = !hasValidConfideConsent();
+    this.sendBtn.disabled =
+      this._sending || !ok || memoryPending || chatPending;
+  }
+
+  /**
+   * @param {'item1' | 'item2' | 'age'} kind
+   * @param {string} testId
+   */
+  _createConsentCheckbox(kind, testId) {
+    const row = document.createElement('label');
+    row.className = 'confide-to-yin__chat-consent-row';
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.className = 'confide-to-yin__chat-consent-box';
+    input.dataset.testid = testId;
+    input.dataset.kind = kind;
+    const text = document.createElement('span');
+    text.className = 'confide-to-yin__chat-consent-label';
+    input.addEventListener('change', () => {
+      this.consentError.hidden = true;
+    });
+    row.append(input, text);
+    return { row, input, text };
+  }
+
+  _resetChatConsentBoxes() {
+    for (const box of [this.consentItem1, this.consentItem2, this.consentAge]) {
+      box.input.checked = false;
+    }
+    this.consentError.hidden = true;
+  }
+
+  _applyChatConsentCopy() {
+    if (!this.consentWrap) return;
+    this.consentTitle.textContent = t('CONFIDE_CONSENT_MODAL_TITLE');
+    this.consentIntro.textContent = t('CONFIDE_CONSENT_MODAL_INTRO');
+    this.consentReconsent.textContent = t('CONFIDE_CONSENT_RECONSENT');
+    this.consentItem1.text.textContent = t('CONFIDE_CONSENT_ITEM1');
+    this.consentItem2.text.textContent = t('CONFIDE_CONSENT_ITEM2');
+    this.consentAge.text.textContent = t('CONFIDE_CONSENT_AGE');
+    this.consentCrisisTitle.textContent = t('CONFIDE_CONSENT_CRISIS_TITLE');
+    this.consentCrisisBody.textContent = t('CONFIDE_CONSENT_CRISIS_BODY');
+    this.consentTermsLink.textContent = t('CONFIDE_CONSENT_TERMS_LINK');
+    this.consentHelpLink.textContent = t('CONFIDE_CONSENT_HELP_LINK');
+    this.consentConfirmBtn.textContent = t('CONFIDE_CONSENT_CONFIRM');
+    this.consentDeclineBtn.textContent = t('CONFIDE_CONSENT_DECLINE');
+    const errKind = this.consentError.dataset.kind;
+    if (errKind === 'save') {
+      this.consentError.textContent = t('CONFIDE_CONSENT_SAVE_ERROR');
+    } else {
+      this.consentError.textContent = t('CONFIDE_CONSENT_ERROR');
+    }
+  }
+
+  _syncChatConsentUi() {
+    const needed = !hasValidConfideConsent();
+    this.consentWrap.hidden = !needed;
+    this.inputWrap.hidden = needed;
+    this.inputEl.disabled = needed;
+    this.sendBtn.hidden = needed;
+    if (this.cancelBtn) this.cancelBtn.hidden = needed;
+    if (needed) {
+      this.chipWrap.hidden = true;
+      this.consentReconsent.hidden = true;
+    } else if (this._open) {
+      this._renderVerbalHintChips();
+    }
+    this._syncSendEnabled();
+  }
+
+  _showChatConsentError(kind = 'incomplete') {
+    this.consentError.dataset.kind = kind;
+    this.consentError.textContent =
+      kind === 'save'
+        ? t('CONFIDE_CONSENT_SAVE_ERROR')
+        : t('CONFIDE_CONSENT_ERROR');
+    this.consentError.hidden = false;
+    const first =
+      !this.consentItem1.input.checked
+        ? this.consentItem1.input
+        : !this.consentItem2.input.checked
+          ? this.consentItem2.input
+          : this.consentAge.input;
+    first.focus();
+  }
+
+  _onChatConsentConfirm() {
+    if (this._chatConsentSaving) return;
+    const item1 = this.consentItem1.input.checked;
+    const item2 = this.consentItem2.input.checked;
+    const age = this.consentAge.input.checked;
+    if (!item1 || !item2 || !age) {
+      this._showChatConsentError();
+      return;
+    }
+    this._chatConsentSaving = true;
+    this.consentConfirmBtn.dataset.state = 'pending';
+    const result = recordConfideConsent({
+      item1: true,
+      item2: true,
+      age: true,
+      locale: getLocale(),
+      platform:
+        typeof window !== 'undefined' && window.desktopShell?.isDesktop
+          ? 'electron'
+          : 'web'
+    });
+    this._chatConsentSaving = false;
+    this.consentConfirmBtn.dataset.state = result.ok ? 'ok' : 'failed';
+    if (!result.ok) {
+      this._showChatConsentError('save');
+      return;
+    }
+    this.consentError.hidden = true;
+    this._syncChatConsentUi();
+    void this._refreshMemoryState().then(() => {
+      if (!this._open) return;
+      this._maybeOfferMemoryConsentOnOpen();
+    });
+    this.inputEl.focus();
   }
 
   /** @returns {void} */
@@ -1114,6 +1338,9 @@ export class ConfideToYinUI {
     const enabled = resolveConfideHelpEntryEnabled();
     if (this.helpResourcesLink) {
       this.helpResourcesLink.hidden = !enabled;
+    }
+    if (this.consentHelpLink) {
+      this.consentHelpLink.hidden = !enabled;
     }
     if (!enabled) {
       this._collapseHelpResourcesPanel();
@@ -1586,6 +1813,11 @@ export class ConfideToYinUI {
       }
     }
     if (this._sending || this._operatingOwnsMic) return;
+    if (!hasValidConfideConsent()) {
+      this._syncChatConsentUi();
+      this._showChatConsentError();
+      return;
+    }
     const text = this.inputEl.value;
     const raw = this._voiceRawForSend || text;
     this._voiceRawForSend = null;
@@ -2399,6 +2631,78 @@ export class ConfideToYinUI {
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
+      }
+      .confide-to-yin__chat-consent {
+        margin: 0 0 12px;
+        padding: 10px 12px 12px;
+        border-radius: 12px;
+        background: ${GLASS_FILL_STRONG};
+        border: 1px solid rgba(122, 83, 64, 0.18);
+      }
+      .confide-to-yin__chat-consent-title {
+        margin: 0 0 6px;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      .confide-to-yin__chat-consent-intro,
+      .confide-to-yin__chat-consent-reconsent,
+      .confide-to-yin__chat-consent-crisis-body {
+        margin: 0 0 10px;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        opacity: 0.92;
+      }
+      .confide-to-yin__chat-consent-error {
+        margin: 0 0 10px;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        color: #9a3b2f;
+      }
+      .confide-to-yin__chat-consent-row {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        margin: 0 0 10px;
+        font-size: 0.8rem;
+        line-height: 1.45;
+        cursor: pointer;
+      }
+      .confide-to-yin__chat-consent-box {
+        margin-top: 3px;
+        flex: 0 0 auto;
+      }
+      .confide-to-yin__chat-consent-crisis {
+        margin: 8px 0 10px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        background: rgba(122, 83, 64, 0.08);
+      }
+      .confide-to-yin__chat-consent-crisis-title {
+        margin: 0 0 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .confide-to-yin__chat-consent-link {
+        appearance: none;
+        display: block;
+        border: none;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 0.78rem;
+        opacity: 0.8;
+        cursor: pointer;
+        padding: 0;
+        margin: 0 0 8px;
+        text-align: left;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .confide-to-yin__chat-consent-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
       }
       .confide-to-yin__memory-list-link {
         appearance: none;

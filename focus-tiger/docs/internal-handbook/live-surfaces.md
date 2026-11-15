@@ -19,7 +19,7 @@ Source: `src/core/kbLiveEntryRegistry.js`. Refresh: `node scripts/write-internal
 | `kb-live-journey-log` | menu | live | ⋯ → Practice → Journey log | JOURNEY_LOG_MENU_LABEL | KB-FUNC-0012 |
 | `kb-live-presence-signals` | menu | live | ⋯ → Practice → Presence signals | PRESENCE_SIGNALS_MENU_LABEL | KB-FUNC-0013 |
 | `kb-live-yin-coin` | menu | gated-default-on | ⋯ → Practice → Yin Coin | YIN_COIN_MENU_LABEL | KB-FUNC-0018 |
-| `kb-live-confide` | menu | conditional | ⋯ → Practice → Confide to Yin (wide ear shortcut) | CONFIDE_MENU_LABEL | KB-FUNC-0005 KB-FUNC-0010 KB-FUNC-0039 |
+| `kb-live-confide` | menu | conditional | ⋯ → Practice → Chat with Yin (wide ear shortcut) | CONFIDE_MENU_LABEL | KB-FUNC-0005 KB-FUNC-0010 KB-FUNC-0039 |
 | `kb-live-daily-quote` | menu | live | ⋯ → Inspiration → Daily quote | DAILY_ZEN_QUOTE_MENU_LABEL | KB-FUNC-0021 |
 | `kb-live-contemplative-inquiry` | menu | live | ⋯ → Inspiration → Sit with a question | CI_EX1_MENU_LABEL | KB-FUNC-0040 |
 | `kb-live-zen-cinema` | menu | live | ⋯ → Inspiration → Mindful Theater | ZEN_CINEMA_MENU_LABEL | KB-FUNC-0022 |

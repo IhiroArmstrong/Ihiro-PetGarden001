@@ -40,6 +40,11 @@ export const PRIVACY_SHEET_SECTIONS = Object.freeze([
     bodyKey: 'PRIVACY_SHEET_AI_INFERENCE'
   },
   {
+    id: 'confide-consent',
+    titleKey: 'PRIVACY_SHEET_SEC_CONFIDE_TITLE',
+    bodyKey: 'PRIVACY_SHEET_CONFIDE_CONSENT'
+  },
+  {
     id: 'storage',
     titleKey: 'PRIVACY_SHEET_SEC_2_TITLE',
     bodyKey: 'PRIVACY_SHEET_DEFAULT_STORAGE'
