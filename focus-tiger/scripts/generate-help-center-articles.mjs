@@ -75,8 +75,8 @@ const TITLE_BY_ID = {
     ja: 'どのように坐りますか？'
   },
   'KB-FUNC-0010': {
-    en: 'Opening Confide to Yin',
-    zh: '向阿寅倾诉从哪里开',
+    en: 'Opening Chat with Yin',
+    zh: '和阿寅聊聊从哪里开',
     ja: '寅に話すを開く'
   },
   'KB-FUNC-0011': {

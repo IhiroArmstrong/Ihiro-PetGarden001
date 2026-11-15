@@ -108,7 +108,7 @@ describe('T68 co-practice gift art', () => {
     assert.equal(CO_PRACTICE_GIFT_ART_PIECES[1].grantEnabled, false);
     assert.equal(CO_PRACTICE_GIFT_ART_PIECES[1].aProvisional, true);
     assert.equal(CO_PRACTICE_GIFT_ART_PIECES[2].grantEnabled, false);
-    assert.equal(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED, false);
+    assert.equal(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED, true);
   });
 
   it('hides collections gift-art block when surface is off and nothing is granted', () => {
@@ -366,14 +366,14 @@ function collectPngBasenames(dir, out) {
   }
 }
 
-describe('T68 glass deck gate (surface off)', () => {
-  it('main.js gates gift-art growth glass deck on CO_PRACTICE_GIFT_ART_SURFACE_ENABLED', () => {
-    assert.equal(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED, false);
+describe('T68 glass deck gate (surface flag)', () => {
+  it('main.js still gates gift-art growth glass deck on CO_PRACTICE_GIFT_ART_SURFACE_ENABLED', () => {
+    assert.equal(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED, true);
     const mainSrc = readFileSync(new URL('../main.js', import.meta.url), 'utf8');
     assert.match(
       mainSrc,
       /CO_PRACTICE_GIFT_ART_SURFACE_ENABLED\s*\?[\s\S]*co-practice-gift-art/,
-      'gift-art must not join glass growth deck while surface is off'
+      'gift-art joins glass growth deck only while surface is on'
     );
   });
 });

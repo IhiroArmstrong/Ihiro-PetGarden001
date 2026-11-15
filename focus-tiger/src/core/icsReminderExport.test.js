@@ -102,7 +102,7 @@ describe('icsReminderExport', () => {
     assert.match(ics, /start=sit/);
     assert.doesNotMatch(ics, /VALARM/);
     assert.doesNotMatch(ics, /同步/);
-    assert.doesNotMatch(ics, /Confide|倾诉/);
+    assert.doesNotMatch(ics, /Confide|倾诉|Chat with Yin|寅と話す|和阿寅聊聊/);
     assert.match(ics, /\r\n/);
   });
 

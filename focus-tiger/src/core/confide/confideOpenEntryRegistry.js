@@ -33,9 +33,10 @@ export const CONFIDE_OPEN_ENTRY_REGISTRY = Object.freeze([
     note: 'productKeyboardShortcuts only fires onConfide when confideAllowed'
   }),
   Object.freeze({
-    id: 'contemplative-inquiry-crisis',
+    id: 'contemplative-inquiry-support',
     policy: 'visible-must-feedback',
-    note: 'CI_EX1_TALK routes onCrisis → confideToYinUI.open; mount off must toast T92'
+    note:
+      'CI_EX1_NEED_SUPPORT → support-bridge → confideToYinUI.open({ blockedVariant: entitlement }); mount off → entitlement toast, not T92'
   }),
   Object.freeze({
     id: 'desktop-companion-paid-wide',

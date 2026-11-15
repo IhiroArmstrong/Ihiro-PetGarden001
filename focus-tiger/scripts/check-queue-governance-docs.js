@@ -154,6 +154,8 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t77-co-practice-continue-slot.md',
   'focus-tiger/docs/task-entries/t78-co-practice-stable-breath-companion.md',
   'focus-tiger/docs/tracker-entries/docs-t87-stable-prefs-queue.md',
+  'focus-tiger/docs/tracker-entries/docs-t87-t84-develop-qa-hand-test.md',
+  'focus-tiger/docs/audit/develop-qa-t87-t84-hand-test-checklist.md',
   'focus-tiger/docs/task-entries/t73-co-practice-stable-prefs.md',
   'focus-tiger/docs/task-entries/t74-co-practice-continue-slot.md',
   'focus-tiger/docs/task-entries/t75-co-practice-stable-breath-companion.md',

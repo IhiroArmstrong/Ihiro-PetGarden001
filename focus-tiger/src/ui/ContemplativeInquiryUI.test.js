@@ -28,6 +28,12 @@ test('ContemplativeInquiryUI early end still lands; fourth option is Exit B', ()
   assert.match(src, /_goLanding\('b'\)/);
   assert.match(src, /CI_EX1_EXIT_B/);
   assert.match(src, /CI_EX1_LANDING/);
-  assert.match(src, /onCrisis/);
+  assert.match(src, /onRequestConfide/);
+  assert.doesNotMatch(
+    src,
+    /_step === 'question'[\s\S]*contemplative-inquiry-talk/
+  );
+  assert.match(src, /contemplative-inquiry-need-support/);
+  assert.match(src, /support-bridge/);
   assert.match(src, /onLand/);
 });

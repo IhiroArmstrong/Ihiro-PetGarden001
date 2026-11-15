@@ -228,6 +228,7 @@ func runTranscribe(localeId: String, maxSeconds: Double) {
     "Yin",
     "Samatia",
     "Confide",
+    "Chat with Yin",
     "Sanctuary",
     "Quiet Together",
     "Focus Circle",

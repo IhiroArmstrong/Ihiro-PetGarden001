@@ -7,6 +7,9 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "pack": "node scripts/pack.js",
+    "pack:prep": "FT_T95_PACK_PROBE=1 node scripts/pack.js",
+    "shell:check": "node scripts/assertInstalledElectron.js",
+    "llama:bake": "node scripts/bakeLlamaBinaryForPack.js",
     "companion:l0": "node scripts/l0-bench.js",
     "companion:spike-17b": "node scripts/l0-spike-17b.js",
     "companion:tool-call": "node scripts/l0-tool-call-probe.js",
@@ -114,7 +117,7 @@
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Samatia uses the microphone only when you tap Speak to type in Confide, Arrival, or Reflection.",
+        "NSMicrophoneUsageDescription": "Samatia uses the microphone only when you tap Speak to type in Chat with Yin, Arrival, or Reflection.",
         "NSSpeechRecognitionUsageDescription": "Samatia transcribes your speech on device when you tap Speak to type."
       },
       "target": [

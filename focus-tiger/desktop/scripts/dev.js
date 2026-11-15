@@ -3,7 +3,7 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -106,6 +106,13 @@ if (viteAlreadyUp) {
     process.exit(1);
   }
 }
+
+const shellCheck = spawnSync(process.execPath, ['scripts/assertInstalledElectron.js'], {
+  cwd: desktopDir,
+  stdio: 'inherit',
+  env: process.env
+});
+if (shellCheck.status !== 0) process.exit(shellCheck.status ?? 1);
 
 const electronBin = String(electronPath || '').trim();
 const electron = spawnDevChild(electronBin, ['.', '--dev'], {

@@ -428,9 +428,9 @@ import { YinPersonalMemoryUI } from './ui/YinPersonalMemoryUI.js';
 import { ConfideEarChromeUI } from './ui/ConfideEarChromeUI.js';
 import { canOpenConfidePanel } from './core/confide/confideUserVisibilityGate.js';
 import {
-  CONFIDE_OPEN_BLOCKED_TOAST_TESTID,
-  confideOpenBlockedUserMessage
-} from './core/confide/confideOpenBlockedFeedback.js';
+  showConfideOpenBlockedToast
+} from './core/confide/confideOpenBlockedToast.js';
+// Blocked-confide toast: safety (T92) vs entitlement (T79 contemplative support bridge).
 import { confideReplyAckEmotionKey } from './core/confideReplyAckGesture.js';
 import { consumeTipReturnQuery } from './core/tipJarGate.js';
 import { getMonetizationFunnelStore } from './core/monetizationIntentFunnel.js';
@@ -2697,13 +2697,13 @@ async function init() {
     document.body,
     withIdleOverlayOccupancySync({
     canOpen: canOpenConfideNow,
-    onOpenBlocked: () => {
-      const message = confideOpenBlockedUserMessage(getLocale());
-      if (!message) return;
-      mindfulToast.element.dataset.testid = CONFIDE_OPEN_BLOCKED_TOAST_TESTID;
-      mindfulToast.show(message, {
-        placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
-        visibleMs: 12_000
+    // Plan A dead-end guard: must toast when canOpen rejects (default safety / T92).
+    onOpenBlocked: (blockedVariant) => {
+      showConfideOpenBlockedToast({
+        toast: mindfulToast,
+        locale: getLocale(),
+        blockedVariant,
+        placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE
       });
     },
     onOpen: () => {
@@ -2761,9 +2761,9 @@ async function init() {
         closeGrowthOverlayCards({ except: 'ground-exercise' });
         groundExerciseChoiceUI?.open();
       },
-      onCrisis: () => {
+      onRequestConfide: () => {
         closeGrowthOverlayCards({ except: 'confide' });
-        confideToYinUI.open();
+        confideToYinUI.open({ blockedVariant: 'entitlement' });
       }
     })
   );

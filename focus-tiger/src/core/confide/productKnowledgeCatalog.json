@@ -86,7 +86,7 @@
     },
     {
       "id": "KB-FUNC-0005",
-      "shortAnswerEn": "Tap Close on the Confide card, or Cancel if you have not sent. Esc closes the top overlay first. There is no voice command to exit. Yin does not judge why you stop. While you Sit, the local model unloads so sitting can stay smooth.",
+      "shortAnswerEn": "Tap Close on the Chat with Yin card, or Cancel if you have not sent. Esc closes the top overlay first. There is no voice command to exit. Yin does not judge why you stop. While you Sit, the local model unloads so sitting can stay smooth.",
       "keywords": [
         "结束倾诉",
         "Close",
@@ -194,7 +194,7 @@
     },
     {
       "id": "KB-FUNC-0012",
-      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Journey log to see your practice trail on this device. In Confide you can also ask how long you have practiced — Yin reads what is written down here, not a second ledger.",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Journey log to see your practice trail on this device. In Chat with Yin you can also ask how long you have practiced — Yin reads what is written down here, not a second ledger.",
       "keywords": [
         "练习记录",
         "Journey log",
@@ -215,7 +215,7 @@
     },
     {
       "id": "KB-FUNC-0013",
-      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Presence moments. These are small check-ins saved on this device. In Confide you can ask what your mood has looked like recently — Yin summarizes what is written here, not a diagnosis.",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Presence moments. These are small check-ins saved on this device. In Chat with Yin you can ask what your mood has looked like recently — Yin summarizes what is written here, not a diagnosis.",
       "keywords": [
         "Presence moments",
         "情绪记录",
@@ -277,7 +277,7 @@
     },
     {
       "id": "KB-FUNC-0016",
-      "shortAnswerEn": "On desktop, the local companion model unloads while you Sit so focusing can stay smooth. Finish or Rise first, then open Confide again if you need to talk.",
+      "shortAnswerEn": "On desktop, the local companion model unloads while you Sit so focusing can stay smooth. Finish or Rise first, then open Chat with Yin again if you need to talk.",
       "keywords": [
         "同坐不能倾诉",
         "模型卸载",
@@ -294,7 +294,7 @@
     },
     {
       "id": "KB-FUNC-0017",
-      "shortAnswerEn": "On-device Local AI runs in the Samatia desktop app on Mac or Windows — not in this browser. You can still practice and open Confide where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.",
+      "shortAnswerEn": "On-device Local AI runs in the Samatia desktop app on Mac or Windows — not in this browser. You can still practice and open Chat with Yin where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.",
       "keywords": [
         "网页不能聊",
         "浏览器没有本地 AI",

@@ -190,8 +190,12 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       fail: Object.freeze({ mode: 'na', reason: 'close-does-not-write' })
     }),
     e2eOverlap: Object.freeze({
-      mode: 'na',
-      reason: 'surface-off-until-2a-records-on-grant-pr; collections empty-state unit-covered'
+      mode: 'token',
+      files: Object.freeze(['e2e/co-practice-gift-art.spec.js']),
+      tokens: Object.freeze([
+        'co-practice-gift-art-card',
+        'ft-wide-more-btn'
+      ])
     }),
     trackerCoverage: Object.freeze({
       mode: 'token',

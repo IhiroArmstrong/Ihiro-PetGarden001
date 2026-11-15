@@ -40,6 +40,34 @@ describe('plan-a guest confide copy policy', () => {
       true
     );
     assert.equal(hasPlanASafePhrase('倾诉尚未对客人开放'), true);
+    assert.equal(
+      assessPlanAGuestConfideLine(
+        'HELP_CENTER_INTRO',
+        'Chat with Yin is not open to guests in this release.'
+      ).ok,
+      true
+    );
+  });
+
+  it('rejects new-name immediately-available promises without a caveat', () => {
+    assert.equal(
+      assessPlanAGuestConfideLine(
+        'HELP_CENTER_INTRO',
+        'Chat with Yin is ready now on this device.'
+      ).ok,
+      false
+    );
+    assert.equal(
+      assessPlanAGuestConfideLine('HELP_CENTER_INTRO', '打开「和阿寅聊聊」即可开始。').ok,
+      false
+    );
+    assert.equal(
+      assessPlanAGuestConfideLine(
+        'HELP_CENTER_INTRO',
+        '寅と話すは今すぐ使えます。'
+      ).ok,
+      false
+    );
   });
 
   it('merged runtime copy passes Plan A guest scan', () => {

@@ -3,7 +3,7 @@
     "EMAIL_JOURNEY_MENU_LABEL": "Save or restore with email",
     "EMAIL_JOURNEY_MENU_STORE_OFF": "Email restore not on this store",
     "EMAIL_JOURNEY_PANEL_TITLE": "Save this journey with email",
-    "EMAIL_JOURNEY_PANEL_BLURB": "Optional. A code lets you bring practice days back on another computer or browser. Confide words stay on this device.",
+    "EMAIL_JOURNEY_PANEL_BLURB": "Optional. A code lets you bring practice days back on another computer or browser. Chat with Yin words stay on this device.",
     "EMAIL_JOURNEY_PRIVACY": "Snapshots are stored in the cloud as readable practice records, not encrypted. You can sign out here or delete the cloud copy. Purchases stay on their own restore cards.",
     "EMAIL_JOURNEY_EMAIL": "Email",
     "EMAIL_JOURNEY_CODE": "Code",
@@ -27,13 +27,13 @@
     "EMAIL_JOURNEY_SIT_PROMPT": "Want a way back if this device forgets?",
     "EMAIL_JOURNEY_NOT_NOW": "Not now",
     "EMAIL_JOURNEY_EMPTY_RESTORE": "Restore from email",
-    "PRIVACY_SHEET_CLOUD_GATE_ON": "Optional email save stores practice-day snapshots in the cloud as readable records, not encrypted. You can sign out on this device or delete the cloud copy. Confide words stay on this device. Purchases use their own restore cards. Local export/import on this sheet still works without email."
+    "PRIVACY_SHEET_CLOUD_GATE_ON": "Optional email save stores practice-day snapshots in the cloud as readable records, not encrypted. You can sign out on this device or delete the cloud copy. Chat with Yin words stay on this device. Purchases use their own restore cards. Local export/import on this sheet still works without email."
   },
   "zh": {
     "EMAIL_JOURNEY_MENU_LABEL": "用邮箱保存或找回",
     "EMAIL_JOURNEY_MENU_STORE_OFF": "此商店版本不提供邮箱找回",
     "EMAIL_JOURNEY_PANEL_TITLE": "用邮箱保存这段旅程",
-    "EMAIL_JOURNEY_PANEL_BLURB": "可选。验证码可以在另一台电脑或浏览器把练习天数找回来。倾诉原文仍留在本机。",
+    "EMAIL_JOURNEY_PANEL_BLURB": "可选。验证码可以在另一台电脑或浏览器把练习天数找回来。和阿寅聊聊的原文仍留在本机。",
     "EMAIL_JOURNEY_PRIVACY": "云端快照按可读的练习记录存放，目前不加密。你可以在此登出，或删除云端副本。购买恢复仍走原来的卡片。",
     "EMAIL_JOURNEY_EMAIL": "邮箱",
     "EMAIL_JOURNEY_CODE": "验证码",
@@ -57,13 +57,13 @@
     "EMAIL_JOURNEY_SIT_PROMPT": "如果这台设备忘了，要留一条回来的路吗？",
     "EMAIL_JOURNEY_NOT_NOW": "先不用",
     "EMAIL_JOURNEY_EMPTY_RESTORE": "从邮箱恢复",
-    "PRIVACY_SHEET_CLOUD_GATE_ON": "可选的邮箱保存会把练习天数快照以可读记录存到云端，目前不加密。你可以在此登出，或删除云端副本。倾诉原文仍留在本机。购买恢复仍走原来的卡片。本页的本地导出/导入不需要邮箱也能用。"
+    "PRIVACY_SHEET_CLOUD_GATE_ON": "可选的邮箱保存会把练习天数快照以可读记录存到云端，目前不加密。你可以在此登出，或删除云端副本。和阿寅聊聊的原文仍留在本机。购买恢复仍走原来的卡片。本页的本地导出/导入不需要邮箱也能用。"
   },
   "ja": {
     "EMAIL_JOURNEY_MENU_LABEL": "メールで保存・復元",
     "EMAIL_JOURNEY_MENU_STORE_OFF": "このストア版ではメール復元はありません",
     "EMAIL_JOURNEY_PANEL_TITLE": "メールで旅を残す",
-    "EMAIL_JOURNEY_PANEL_BLURB": "任意です。確認コードで、別のパソコンやブラウザに練習日を戻せます。打ち明けの原文はこの端末に残ります。",
+    "EMAIL_JOURNEY_PANEL_BLURB": "任意です。確認コードで、別のパソコンやブラウザに練習日を戻せます。寅と話すの原文はこの端末に残ります。",
     "EMAIL_JOURNEY_PRIVACY": "クラウドの控えは読める練習記録として保存し、今は暗号化しません。ここでサインアウトするか、クラウド控えを削除できます。購入の復元は従来のカードのままです。",
     "EMAIL_JOURNEY_EMAIL": "メール",
     "EMAIL_JOURNEY_CODE": "確認コード",
@@ -87,6 +87,6 @@
     "EMAIL_JOURNEY_SIT_PROMPT": "この端末が忘れても戻れるようにしますか？",
     "EMAIL_JOURNEY_NOT_NOW": "今はしない",
     "EMAIL_JOURNEY_EMPTY_RESTORE": "メールから戻す",
-    "PRIVACY_SHEET_CLOUD_GATE_ON": "任意のメール保存は、練習日の控えを読める記録としてクラウドに置き、今は暗号化しません。ここでサインアウトするか、クラウド控えを削除できます。打ち明けの原文はこの端末に残ります。購入の復元は従来のカードのままです。本画面のローカルエクスポート/インポートはメールなしでも使えます。"
+    "PRIVACY_SHEET_CLOUD_GATE_ON": "任意のメール保存は、練習日の控えを読める記録としてクラウドに置き、今は暗号化しません。ここでサインアウトするか、クラウド控えを削除できます。寅と話すの原文はこの端末に残ります。購入の復元は従来のカードのままです。本画面のローカルエクスポート/インポートはメールなしでも使えます。"
   }
 }

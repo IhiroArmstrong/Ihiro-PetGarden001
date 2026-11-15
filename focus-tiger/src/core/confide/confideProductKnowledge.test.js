@@ -213,6 +213,9 @@ describe('confide product knowledge retrieval', () => {
     const kb = retrieveProductKnowledge(text);
     assert.equal(kb.hit, true);
     assert.equal(kb.id, 'KB-FUNC-0010');
+    assert.match(kb.text, /Chat with Yin/);
+    assert.doesNotMatch(kb.text, /向阿寅倾诉|Confide to Yin/);
+    assert.doesNotMatch(kb.text, /倾诉/);
     assert.equal(
       shouldUseDesktopCompanionGenerate({ ...readyOpen, route }) &&
         !isConfideKbRetrievalCandidate(route, text),
