@@ -41,8 +41,15 @@ export const GLASS_CARD_ELEMENT_IDS = Object.freeze({
   'email-journey-restore': 'email-journey-restore-panel',
   'practice-study': 'practice-study-consent-panel',
   'quiet-together': 'quiet-together-panel',
-  'focus-circle': 'focus-circle-panel'
+  'focus-circle': 'focus-circle-panel',
+  'reminder-preference': 'reminder-preference-panel',
+  'work-end-preference': 'work-end-preference-panel'
 });
+
+/** Above onboarding tips (z34); still in the drag deck. */
+export const GLASS_CARD_ELEVATED_Z = Object.freeze(
+  new Set(['reminder-preference-panel', 'work-end-preference-panel'])
+);
 
 export const GLASS_CARD_INTERACTIVE =
   'button, a, input, textarea, select, label, summary, [role="button"], [role="checkbox"], [role="radio"], [contenteditable="true"]';
@@ -86,6 +93,7 @@ export function glassCardAllowsDrag(target, card) {
   if (!card?.id || GLASS_CARD_KEEP_STYLESHEET_Z.has(card.id)) return false;
   if (GLASS_CARD_NO_DRAG.has(card.id)) return false;
   if (!(target && typeof target.closest === 'function')) return false;
+  if (target.closest('[data-ft-glass-drag-chrome]')) return true;
   if (target.closest(GLASS_CARD_INTERACTIVE)) return false;
   if (glassCardAllowsTextSelect(target)) return false;
   return true;
@@ -106,6 +114,9 @@ export const GLASS_CARD_NO_DRAG = Object.freeze(new Set(['confide-to-yin-card'])
  */
 export function glassCardInlineZIndex(elementId, { isFront = false } = {}) {
   if (GLASS_CARD_KEEP_STYLESHEET_Z.has(elementId)) return null;
+  if (GLASS_CARD_ELEVATED_Z.has(elementId)) {
+    return String(Z.REMINDER_PANEL);
+  }
   return isFront ? String(Z.GLASS_CARD_FRONT) : String(Z.GLASS_CARD);
 }
 
@@ -201,7 +212,9 @@ export function installGlassCardDeck(doc = document) {
     card.style.bottom = 'auto';
     card.style.transform = 'none';
     card.style.margin = '0';
-    card.style.zIndex = String(Z.GLASS_CARD_FRONT);
+    card.style.zIndex = String(
+      GLASS_CARD_ELEVATED_Z.has(card.id) ? Z.REMINDER_PANEL : Z.GLASS_CARD_FRONT
+    );
     drag = {
       card,
       dx: event.clientX - rect.left,

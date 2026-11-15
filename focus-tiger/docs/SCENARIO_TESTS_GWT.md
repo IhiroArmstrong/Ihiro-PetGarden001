@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-11-14  
+生成日期：2026-11-15  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -1097,7 +1097,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 若今日已练
 
 **Then**
-- 0–1 秒内：行 `:active` 按压 + `#reminder-preference-panel` 在视口内居中偏下展开（不得被悬停 tip 吞掉点击、也不得只关菜单而无面板）：
+- 0–1 秒内：行 `:active` 按压 + `#reminder-preference-panel` 展开（不得被悬停 tip 吞掉点击、也不得只关菜单而无面板）。布局（T42）：`≤479` 仍可居中偏下；`≥480` `data-dock` 为 `bottom` 或 `right`，不得水平盖住阿寅中线；标题区（`data-ft-glass-drag-chrome`）可拖。收工偏好 `#work-end-preference-panel` 同规则。
 - 标题：`reminder.setting_title`（EN "When should I remind you" / ZH「什么时候提醒你」）
 - 写入 `{ hour, minute }` 到 `focus-tiger.reminder-preference.v1`
 - `#reminder-preference-confirm` + 说明 `#reminder-preference-confirm-hint`（点 → 或回车保存）；→ / Enter 后短暂见 `#reminder-preference-saved`；原生 time 选完（`change`）仍写入；过去时分允许保存
@@ -4076,7 +4076,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AE-1 | P0 | 无自动化标注 | 打开 `?product=1`（英文）Idle → ⋯ / 抽屉出现 Confide to Yin  |
+| AE-1 | P0 | 无自动化标注 | 打开 `?product=1`（英文）Idle → ⋯ / 抽屉出现 Chat with Yin → |
 | AE-1b | P0 | 无自动化标注 | 布局（2026-10-29 · T41 倾诉贴边暂时停用）：开卡后 `data-dock=cente |
 | AE-2 | P0 | 无自动化标注 | 输入非空 → Share → 0–1 秒内发送钮按压 + `[data-testid=confide |
 | AE-3 | P0 | 无自动化标注 | 安全：`I don't want to live` → `data-route=safety_red |
@@ -4100,7 +4100,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 打开 `?product=1`（英文）Idle
 
 **Then**
-- ⋯ / 抽屉出现 Confide to Yin → 0–1 秒内 `#confide-to-yin-card` 淡入。Web 无 memory bridge → 不得出现 `[data-testid=confide-to-yin-verbal-chips]`（Forget this 芯片仅 Electron）。日语对照：切到日本語 → 0–1 秒内 无该行、无耳；QA `?confide=1` 也打不开。
+- ⋯ / 抽屉出现 Chat with Yin → 0–1 秒内 `#confide-to-yin-card` 淡入。首次无同意时须先见 `[data-testid=confide-consent-modal]`，勾全三项后才可输入发送。Web 无 memory bridge → 不得出现 `[data-testid=confide-to-yin-verbal-chips]`（Forget this 芯片仅 Electron）。日语对照：切到日本語 → 0–1 秒内 无该行、无耳；QA `?confide=1` 也打不开。
 
 #### AE-1b
 
@@ -4211,12 +4211,12 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| AE-1 | P0 | 无自动化标注 | Idle 宽窗 → ⋯ → Confide to Yin（`[data-testid=idle-co |
+| AE-1 | P0 | 无自动化标注 | Idle 宽窗 → ⋯ → Chat with Yin（`[data-testid=idle-con |
 | AE-2 | P0 | 无自动化标注 | Share 或 textarea 里 Enter（对得上情绪桶 / 安全阀）→ 0–1 秒内发送钮按 |
 | AE-3 | P0 | 无自动化标注 | Focusing 卸载：Sit→Focusing → companion 状态不再 ready；Sh |
 | AE-4 | P0 | 无自动化标注 | 拖窄关层：拖到 ≤479 → 生成层关掉；窄屏抽屉 无 Confide 行。 |
 | AE-5 | P0 | 无自动化标注 | 对照：低配 ≤8GB / Web `?product=1` → 无 companion key、无该 |
-| AE-6 | P0 | 无自动化标注 | 睡态唤醒（交叉 AD · #491）：DORMANT 或 sleeping 姿态下 → ⋯ Conf |
+| AE-6 | P0 | 无自动化标注 | 睡态唤醒（交叉 AD · #491）：DORMANT 或 sleeping 姿态下 → ⋯ Chat |
 
 ### Given-When-Then 明细
 
@@ -4233,7 +4233,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - Idle 宽窗
 
 **Then**
-- ⋯ → Confide to Yin（`[data-testid=idle-confide-desktop]`）→ 0–1 秒内玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见隐晦代号 `Model4E4`（默认 Gemma4-E4B；小字淡色；禁止裸显 `Gemma-4-E4B-it-Q4_K_M`；回退 Qwen 时为 `Model317`；不是独立 HUD；Safari Web 无此行）。T14（#1627）：默认可见卡内帮助链（`FT_CONFIDE_HELP_ENTRY=off` 才关）；点链 0–1 秒内卡内展开 crisis 指引、草稿仍在；禁止改走 `#yin-support-modal`。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：仅一条 `Forget this`（或当前 locale 金句）；禁止出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → 0–1 秒内 textarea 填入该金句、Share 仍可点、不自动发送。
+- ⋯ → Chat with Yin（`[data-testid=idle-confide-desktop]`）→ 0–1 秒内玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见隐晦代号 `Model4E4`（默认 Gemma4-E4B；小字淡色；禁止裸显 `Gemma-4-E4B-it-Q4_K_M`；回退 Qwen 时为 `Model317`；不是独立 HUD；Safari Web 无此行）。T14（#1627）：默认可见卡内帮助链（`FT_CONFIDE_HELP_ENTRY=off` 才关）；点链 0–1 秒内卡内展开 crisis 指引、草稿仍在；禁止改走 `#yin-support-modal`。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：仅一条 `Forget this`（或当前 locale 金句）；禁止出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → 0–1 秒内 textarea 填入该金句、Share 仍可点、不自动发送。
 
 #### AE-2
 
@@ -4305,7 +4305,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 睡态唤醒（交叉 AD · #491）：DORMANT 或 sleeping 姿态下
 
 **Then**
-- ⋯ Confide to Yin 或倾听耳 → 0–1 秒内 `dormantWake`，玻璃卡后 Yin 为 idle 坐姿（禁止仍 sleeping）。与 场景 AE · Web 步 6 同契约。
+- ⋯ Chat with Yin 或倾听耳 → 0–1 秒内 `dormantWake`，玻璃卡后 Yin 为 idle 坐姿（禁止仍 sleeping）。与 场景 AE · Web 步 6 同契约。
 
 ---
 ## 场景 AE：AE · Electron L2（宽屏 fallback 短生成 · 口令已执行）
@@ -6210,7 +6210,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - AC-2 · 挥手点播：点底栏 请阿寅挥挥手 → 0–1 秒内钮 `:active` 按压 + 阿寅开始 `wave-hello` 正放一次，约 1s CapCut 回坐禅；挥手序列须在面板外可见（不得被玻璃挡住）
 - AD-2 · Welcome 后短切 tab：本页已 Welcome / Idle → 切到其他标签约 1 分钟再回 → 仍 Idle 醒着，不得披毯（#341）。
 - AD-6 · hidden≥2h 回前台（无叠层）：窗口 hidden ≥2h 再 visible，且 无 Reflection/Arrival/Honesty/Support 叠层 → 可按拍板进 DORMANT
-- AE-6 · 睡态唤醒（交叉 AD · #491）：DORMANT 或 sleeping 姿态下 → ⋯ Confide to Yin 或倾听耳 → 0–1 秒内 `dormantWake`，玻璃卡后 Yin 为 
+- AE-6 · 睡态唤醒（交叉 AD · #491）：DORMANT 或 sleeping 姿态下 → ⋯ Chat with Yin 或倾听耳 → 0–1 秒内 `dormantWake`，玻璃卡后 Yin 为 i
 - AE-6 · 睡态唤醒（交叉 AD · #491）：在 DORMANT 或 `sleeping` / `cloakSleep` 姿态下（见 场景 D 步 1–2 或 场景 AD 深夜窗）→ 开 Confide（ha
 - AF-1 · 首次披露：清 `focus-tiger.presence-signals-disclosure-seen.v1` → `?product=1` → Sit → Arrival → Notice 任点 
 - AI-2 · DEV 清 6 whitelist key（保留 `focus-tiger.practice-backup.v1`）→ 硬刷新 → 约 2.5s 后自动恢复。

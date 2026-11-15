@@ -91,6 +91,15 @@ describe('wide more menu click reception', () => {
     assert.match(src, /aria-expanded/);
   });
 
+  it('radial group list orphans rows when a non-active group label is skipped', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(
+      src,
+      /if \(!showGroup\) \{[\s\S]*sectionItems = null;[\s\S]*continue;/
+    );
+  });
+
   it('hides the Breath/Quick home ball while Companion 三选一 is staged', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
@@ -101,14 +110,11 @@ describe('wide more menu click reception', () => {
     assert.match(src, /companionOpen/);
   });
 
-  it('stages the reminder panel on-canvas (not the empty heatmap stub)', () => {
+  it('does not re-center wide reminder panels (T42 lives on ReminderPreferenceUI)', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
-    assert.match(
-      src,
-      /ft-wide-stage-reminder \.reminder-pref__panel/
-    );
-    assert.match(src, /pointer-events: auto !important/);
+    assert.doesNotMatch(src, /ft-wide-stage-reminder \.reminder-pref__panel/);
+    assert.doesNotMatch(src, /ft-wide-stage-work-end \.work-end-pref__panel/);
   });
 
   it('clearStage skips onClearStage while a growth glass card is the overlay', () => {
@@ -146,6 +152,12 @@ describe('wide more menu click reception', () => {
     assert.match(src, /attachGlassHoverTip/);
     assert.match(src, /_quickHomeTip\?\.setText/);
     assert.doesNotMatch(src, /sitHomeBtn\.title\s*=/);
+  });
+
+  it('does not hang a second glass tip on radial group icons', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.doesNotMatch(src, /ft-wide-more-radial-tip-/);
   });
 
   it('hides ⋯ during Honesty bridge but keeps escape hatch for overlay suppress', () => {

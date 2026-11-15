@@ -12,7 +12,8 @@ import {
   DESKTOP_ELECTRON_PIN,
   MAC_INSTALLER_TITLE,
   MAC_MINIMUM_SYSTEM_VERSION,
-  assertDesktopShellPin
+  assertDesktopShellPin,
+  assertInstalledElectronVersions
 } from './desktopShellPin.js';
 
 const desktopPkg = JSON.parse(
@@ -50,4 +51,28 @@ describe('T95 desktop shell pin', () => {
     });
     assert.equal(hidden.ok, false);
   });
+
+  it('fails when the installed binary is not the pinned Electron', () => {
+    const mismatch = assertInstalledElectronVersions({
+      pin: DESKTOP_ELECTRON_PIN,
+      packageVersion: '37.10.3',
+      binaryVersion: 'v37.10.3'
+    });
+    assert.equal(mismatch.ok, false);
+
+    const missing = assertInstalledElectronVersions({
+      pin: DESKTOP_ELECTRON_PIN,
+      packageVersion: '',
+      binaryVersion: ''
+    });
+    assert.equal(missing.ok, false);
+
+    const matched = assertInstalledElectronVersions({
+      pin: DESKTOP_ELECTRON_PIN,
+      packageVersion: DESKTOP_ELECTRON_PIN,
+      binaryVersion: 'v' + DESKTOP_ELECTRON_PIN
+    });
+    assert.equal(matched.ok, true);
+  });
 });
+

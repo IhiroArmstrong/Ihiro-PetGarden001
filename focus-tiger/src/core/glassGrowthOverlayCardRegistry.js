@@ -17,6 +17,7 @@ export const GLASS_GROWTH_OVERLAY_CARD_IDS = Object.freeze([
   'contemplative-inquiry',
   'mustard-seed',
   'practice-imprint',
+  'co-practice-gift-art',
   'wallpapers',
   'art-collection',
   'sanctuary',

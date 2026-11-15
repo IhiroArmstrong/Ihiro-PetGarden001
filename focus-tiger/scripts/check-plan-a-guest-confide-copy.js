@@ -104,7 +104,7 @@ export function scanMarketingSiteHtml() {
       });
       continue;
     }
-    if (/confide|倾诉|コンファイド/i.test(text)) {
+    if (/confide|倾诉|コンファイド|寅と話す/i.test(text)) {
       hits.push({
         file: `marketing-site/${file}`,
         reason: 'marketing html mentions Confide without guest-closed caveat'

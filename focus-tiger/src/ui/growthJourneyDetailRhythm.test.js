@@ -36,3 +36,11 @@ test('practice paper hangs under the rhythm, as one Sit & Breath card', () => {
   assert.match(src, /practice-paper-check-in-rhythm/);
   assert.doesNotMatch(src, /arrive\s*===\s*true/);
 });
+
+test('practice paper evening consent stops glass-card drag on pointerdown', () => {
+  assert.match(
+    src,
+    /this\.paperEl\.addEventListener\('pointerdown',\s*\(event\)\s*=>\s*\{\s*event\.stopPropagation\(\);/s
+  );
+  assert.match(src, /confirmBtn\.scrollIntoView/);
+});

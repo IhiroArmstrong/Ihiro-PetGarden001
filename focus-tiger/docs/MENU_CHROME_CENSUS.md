@@ -102,4 +102,4 @@
 
 ## 5. 宽屏五图标索引（2026-10-16 · 三刀已合）
 
-「印揭晓前不进菜单」维持。账号行见 §1 第 3 行（开闸真入口 / 首包关闸灰行）。付费行、分组和扇形见 [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。本表 §1 第 4 条「⋯ 在宽屏、左上留给日历」仍然有效。
+「印揭晓前不进菜单」维持。账号行见 §1 第 3 行（开闸真入口 / 首包关闸灰行）。付费行、分组见 [`task-briefs/task-wide-menu-radial-index.md`](./task-briefs/task-wide-menu-radial-index.md)。宽屏扇面几何（150° / 30° 步进）见 [`task-briefs/task-wide-menu-radial-150.md`](./task-briefs/task-wide-menu-radial-150.md)。本表 §1 第 4 条「⋯ 在宽屏、左上留给日历」仍然有效。

@@ -13,8 +13,8 @@ import { ART_EDITION_SETS, TEA_GIFT_ART } from './artEditionCatalog.js';
 
 export const CO_PRACTICE_GIFT_ART_STORAGE_KEY = 'focus-tiger.co-practice-gift-art.v1';
 
-/** User-visible card + persist grant. Off until a dedicated switch PR. */
-export const CO_PRACTICE_GIFT_ART_SURFACE_ENABLED = false;
+/** User-visible card + persist grant. On after T68 switch PR (PO 2026-11-15). */
+export const CO_PRACTICE_GIFT_ART_SURFACE_ENABLED = true;
 
 /**
  * Collections block is hidden while the surface is off and nothing has

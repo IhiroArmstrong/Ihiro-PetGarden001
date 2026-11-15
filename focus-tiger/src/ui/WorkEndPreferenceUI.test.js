@@ -14,7 +14,14 @@ const here = dirname(fileURLToPath(import.meta.url));
 describe('WorkEndPreferenceUI layering + confirm affordance (T61 §2)', () => {
   it('panel sits above onboarding hint bubbles (z35 > z34)', () => {
     const src = readFileSync(join(here, 'WorkEndPreferenceUI.js'), 'utf8');
-    assert.match(src, /\.work-end-pref__panel[\s\S]*z-index: \$\{Z\.REMINDER_PANEL\}/);
+    assert.match(src, /#work-end-preference-panel[\s\S]*z-index: \$\{Z\.REMINDER_PANEL\}/);
+  });
+
+  it('uses T42 wide dock CSS and glass drag chrome on title', () => {
+    const src = readFileSync(join(here, 'WorkEndPreferenceUI.js'), 'utf8');
+    assert.match(src, /wideSecondaryDockCss\('#work-end-preference-panel'\)/);
+    assert.match(src, /data-ft-glass-drag-chrome/);
+    assert.match(src, /onPreferencePanelOpen\(this\.panel, 'work-end-preference'\)/);
   });
 
   it('confirm button has visible press feedback', () => {
