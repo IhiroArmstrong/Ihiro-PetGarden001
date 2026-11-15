@@ -630,6 +630,10 @@ T84 问号简介与隐私政策三层说明。与 T82 同发更稳。Brief PO 20
 
 T87 稳定偏好层 PR-1（原盘点误写 T76，T76 已给冷启动）。改选后开表才计票、滚动 3/5、`stable-prefs.v1`、Focus 分钟、L2 事实句、「不是这样」/ 忘掉扩展。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。口令「按 T87 Brief 开工」= **勿再开同内容旁支**。**不是** T76、**不是** T73。
 
+### `t88-guided-meditation-release-hardening` · feature · 已完成 · 可选 · #1567/#1571/#1572/#1579/#1580 已合 develop · 2026-11-14
+
+T88 引导冥想对外前加固。A/B/C 刀与媒体根 #1580 已合 develop。**合 develop ≠ 对外**。遗留：Brief §8 Electron 短课手测并入批量验收；正式绑域/关 r2 公开 = 控制台运维。口令「按 T88 Brief 开工 Web 流式」= **勿再开同内容旁支**。不是 T76，不是收紧 CORS。未来的「脚本引导冥想」须另登记，不是本片重开。
+
 ### `t93-privacy-gate-dual-copy` · feature · 首包关闸 Privacy §4 双态 · 补 #1683/#1708 文案裂口 · 2026-11-14
 
 #1689 已锁首包 `PRIVACY_NOTICE.md` 关闸口径；#1708 把 §4 改回「可选用邮箱」。应用内切片亦一律开闸句。本片：恢复产品 SSOT 首包 §4；Privacy 卡按 `practiceBackupCloudEnabled` 在 `PRIVACY_SHEET_CLOUD` / `PRIVACY_SHEET_CLOUD_GATE_ON` 间切换。不是开闸 B5 抓包。不是改 Worker。
@@ -749,10 +753,6 @@ T98 倾诉默认关闭入口盘点。交付：`docs/audit/findings/2026-11-08/co
 ### `t87-samatia-user-facing-rename` · feature · T87-A1 #1563 · T87-A2 #1565 · T87-B #1568 已合 develop · T87-C 旁支实现中 · 2026-11-06
 
 用户可见产品名改为 Samatia（Brief [`task-samatia-user-facing-rename.md`](../task-briefs/task-samatia-user-facing-rename.md)）。A1 locale+文档、A2 句池/提示词、B 桌面显示名已合。本片跟进 T87-C 宣传站 + 域名预备（公开宣布 samatia.net 仍须商标闸）。发布硬闸仍是 A1～A2 + B + C + D 全合且全范围扫描绿。**不是** T87 稳定偏好 PR-1（`t87-co-practice-stable-prefs`）。**不是** T86。
-
-### `t88-guided-meditation-release-hardening` · feature · 立即做 · 可选 · A 刀已合 #1572 · #1571 已合 develop · B 刀（计入秒数/授权拦截/只听音频）本旁支 · 2026-11-06
-
-T88 引导冥想对外前加固。#1567 / #1571 / #1572 已合 develop ≠ 对外。本片：Web 直链沿用 #1571；补实际播放秒数计入、授权空行进 `--release-gate`、保留只听音频钮。不是 T76，不是收紧 CORS，不是部署。
 
 ### `guided-meditation-mvp` · feature · 实现旁支进行中 · 2026-11-05
 
