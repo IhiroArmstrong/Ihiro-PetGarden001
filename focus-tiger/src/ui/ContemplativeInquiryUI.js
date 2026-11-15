@@ -297,7 +297,7 @@ export class ContemplativeInquiryUI {
       return;
     }
 
-    if (this._step === 'sit-again' {
+    if (this._step === 'sit-again') {
       this._setBodyText(t('CI_EX1_SIT_AGAIN'));
       this.actions.append(
         this._btn(t('CI_EX1_COME_IN'), 'contemplative-inquiry-come-in', () => {
