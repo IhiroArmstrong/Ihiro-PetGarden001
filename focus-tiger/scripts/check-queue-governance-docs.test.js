@@ -256,6 +256,18 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+  it('allows T100 output-gate brief with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/task-briefs/task-output-gate-p0.md',
+        'focus-tiger/docs/tracker-entries/docs-t100-pr1-merged-brief-wiring.md'
+      ]),
+      null
+    );
+  });
+
   it('allows first-pack privacy notice with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([
