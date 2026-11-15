@@ -154,6 +154,12 @@ describe('wide more menu click reception', () => {
     assert.doesNotMatch(src, /sitHomeBtn\.title\s*=/);
   });
 
+  it('does not hang a second glass tip on radial group icons', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.doesNotMatch(src, /ft-wide-more-radial-tip-/);
+  });
+
   it('hides ⋯ during Honesty bridge but keeps escape hatch for overlay suppress', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');

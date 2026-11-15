@@ -7,13 +7,16 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { WIDE_HOME_CTA_BOTTOM_PX, WIDE_HOME_SIT_PX } from '../ui/homeChromeClearance.js';
 import {
+  WIDE_MENU_RADIAL_ARC_SPAN_DEG,
   WIDE_MENU_RADIAL_GROUP_KEYS,
   WIDE_MENU_RADIAL_ICON_PX,
   WIDE_MENU_RADIAL_MIN_INNER_HEIGHT_PX,
+  WIDE_MENU_RADIAL_RADIUS_PX,
   estimateWideMoreBtnAnchor,
   isWideMenuViewport,
   layoutWideMenuRadialIcons,
   shouldDegenerateWideMenuRadial,
+  wideMenuRadialAnglesDeg,
   wideMenuRadialIconBBox
 } from './wideMenuRadialLayout.js';
 
@@ -23,14 +26,34 @@ describe('wideMenuRadialLayout', () => {
     assert.equal(isWideMenuViewport(480, false), true);
   });
 
-  it('lays out five groups on the radial index', () => {
+  it('places five groups on a 150° fan, rightmost on the horizon', () => {
+    assert.deepEqual(wideMenuRadialAnglesDeg(5), [0, 30, 60, 90, 120]);
+    assert.equal(WIDE_MENU_RADIAL_ARC_SPAN_DEG, 150);
     const spots = layoutWideMenuRadialIcons(400, 600);
     assert.equal(spots.length, WIDE_MENU_RADIAL_GROUP_KEYS.length);
     assert.deepEqual(
       spots.map((s) => s.groupKey),
       [...WIDE_MENU_RADIAL_GROUP_KEYS]
     );
-    assert.ok(spots.every((s) => s.cy < 600));
+    assert.deepEqual(
+      spots.map((s) => s.deg),
+      [0, 30, 60, 90, 120]
+    );
+    assert.equal(spots[0].cy, 600);
+    assert.equal(spots[0].cx, 400 + WIDE_MENU_RADIAL_RADIUS_PX);
+    const minChord = WIDE_MENU_RADIAL_ICON_PX + 12;
+    for (let i = 1; i < spots.length; i++) {
+      const dx = spots[i].cx - spots[i - 1].cx;
+      const dy = spots[i].cy - spots[i - 1].cy;
+      assert.ok(
+        Math.hypot(dx, dy) >= minChord,
+        `gap between ${spots[i - 1].groupKey} and ${spots[i].groupKey}`
+      );
+    }
+  });
+
+  it('redistributes extra primary groups evenly on the same 150° fan', () => {
+    assert.deepEqual(wideMenuRadialAnglesDeg(6), [0, 25, 50, 75, 100, 125]);
   });
 
   it('degenerates when viewport is shorter than the measured floor', () => {
@@ -69,8 +92,18 @@ describe('wideMenuRadialLayout', () => {
   it('degenerates when a fan icon top edge clips the 12px safe inset', () => {
     assert.equal(
       shouldDegenerateWideMenuRadial(
-        { innerHeight: 720, document: {} },
+        { innerHeight: 720, innerWidth: 1280, document: {} },
         { x: 400, y: 40 }
+      ),
+      true
+    );
+  });
+
+  it('degenerates when the rightmost ball would clip the viewport edge', () => {
+    assert.equal(
+      shouldDegenerateWideMenuRadial(
+        { innerHeight: 720, innerWidth: 480, document: {} },
+        { x: 440, y: 640 }
       ),
       true
     );
