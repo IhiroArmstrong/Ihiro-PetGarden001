@@ -52,3 +52,39 @@ export function assertDesktopShellPin(pkg) {
   }
   return { ok: true };
 }
+
+/**
+ * The lockfile pin, the installed electron package, and the binary that
+ * actually launches must be the same version. A lock that says 45 while
+ * the binary still prints 37 is a failed install, not a successful upgrade.
+ *
+ * @param {{ pin: string, packageVersion?: string, binaryVersion?: string }} input
+ * @returns {{ ok: true } | { ok: false, error: string }}
+ */
+export function assertInstalledElectronVersions(input) {
+  const pinVersion = String(input?.pin || '').trim();
+  const installed = String(input?.packageVersion || '').trim();
+  const binary = String(input?.binaryVersion || '').trim().replace(/^v/, '');
+  if (!pinVersion) {
+    return { ok: false, error: 'desktop electron pin is empty' };
+  }
+  if (!installed) {
+    return {
+      ok: false,
+      error: `desktop/node_modules/electron is missing; package.json pins ${pinVersion}. Run npm install in focus-tiger/desktop.`
+    };
+  }
+  if (!binary) {
+    return {
+      ok: false,
+      error: `Electron binary missing or did not print a version; package.json pins ${pinVersion}, installed package is ${installed}.`
+    };
+  }
+  if (installed !== pinVersion || binary !== pinVersion) {
+    return {
+      ok: false,
+      error: `installed Electron does not match the pin. package.json ${pinVersion}, node_modules ${installed}, binary ${binary}.`
+    };
+  }
+  return { ok: true };
+}

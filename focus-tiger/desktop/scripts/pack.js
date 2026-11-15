@@ -36,6 +36,18 @@ if (!shellPin.ok) {
   process.exit(1);
 }
 
+function runDesktopNode(script, extraEnv = {}) {
+  const run = spawnSync(process.execPath, [script], {
+    cwd: desktopDir,
+    stdio: 'inherit',
+    env: { ...process.env, ...extraEnv }
+  });
+  if (run.status !== 0) process.exit(run.status ?? 1);
+}
+
+runDesktopNode(path.join(desktopDir, 'scripts/assertInstalledElectron.js'));
+runDesktopNode(path.join(desktopDir, 'scripts/bakeLlamaBinaryForPack.js'));
+
 const vite = spawnSync('npm', ['run', 'build'], {
   cwd: focusTigerRoot,
   stdio: 'inherit',
@@ -72,14 +84,39 @@ const verifyFeed = spawnSync('npm', ['run', 'build:verify-update-feed'], {
 });
 if (verifyFeed.status !== 0) process.exit(verifyFeed.status ?? 1);
 
-const pack = spawnSync(
+const probePack = process.env.FT_T95_PACK_PROBE === '1';
+const builderEnv = { ...process.env };
+if (probePack) builderEnv.CSC_IDENTITY_AUTO_DISCOVERY = 'false';
+const builderArgs = probePack
+  ? ['exec', '--', 'electron-builder', '--mac', 'dir', '--arm64']
+  : ['exec', '--', 'electron-builder', '--mac', 'dmg', '--arm64'];
+const built = spawnSync('npm', builderArgs, {
+  cwd: desktopDir,
+  stdio: 'inherit',
+  env: builderEnv,
+  shell: process.platform === 'win32'
+});
+if (built.status !== 0) process.exit(built.status ?? 1);
+if (!probePack) process.exit(0);
+
+runDesktopNode(path.join(desktopDir, 'scripts/recordPackSignature.js'));
+const probed = spawnSync(process.execPath, [path.join(desktopDir, 'scripts/probePackagedLlamaGui.js')], {
+  cwd: desktopDir,
+  stdio: 'inherit',
+  env: {
+    ...process.env,
+    FT_UPDATE_FEED_URL: process.env.FT_UPDATE_FEED_URL || 'https://updates.twinsology.com/prep/'
+  }
+});
+const dmg = spawnSync(
   'npm',
-  ['exec', '--', 'electron-builder', '--mac', 'dmg', '--arm64'],
+  ['exec', '--', 'electron-builder', '--mac', 'dmg', '--arm64', '--prepackaged', 'release/mac-arm64/Samatia.app'],
   {
     cwd: desktopDir,
     stdio: 'inherit',
-    env: process.env,
+    env: builderEnv,
     shell: process.platform === 'win32'
   }
 );
-process.exit(pack.status ?? 1);
+if (dmg.status !== 0) process.exit(dmg.status ?? 1);
+process.exit(probed.status ?? 1);
