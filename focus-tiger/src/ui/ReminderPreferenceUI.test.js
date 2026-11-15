@@ -14,7 +14,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 describe('ReminderPreferenceUI layering + confirm affordance', () => {
   it('panel sits above onboarding hint bubbles (z35 > z34)', () => {
     const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
-    assert.match(src, /\.reminder-pref__panel[\s\S]*z-index: \$\{Z\.REMINDER_PANEL\}/);
+    assert.match(src, /#reminder-preference-panel[\s\S]*z-index: \$\{Z\.REMINDER_PANEL\}/);
   });
 
   it('confirm button has visible press feedback', () => {
@@ -37,6 +37,13 @@ describe('ReminderPreferenceUI layering + confirm affordance', () => {
   it('preference side-effects defer until after saved flash paints', () => {
     const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
     assert.match(src, /window\.requestAnimationFrame\(\(\) => notify\(\)\)/);
+  });
+
+  it('uses T42 wide dock CSS and glass drag chrome on title', () => {
+    const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
+    assert.match(src, /wideSecondaryDockCss\('#reminder-preference-panel'\)/);
+    assert.match(src, /data-ft-glass-drag-chrome/);
+    assert.match(src, /onPreferencePanelOpen\(this\.panel, 'reminder-preference'\)/);
   });
 
   it('adds calendar export controls without a new overlay surface', () => {

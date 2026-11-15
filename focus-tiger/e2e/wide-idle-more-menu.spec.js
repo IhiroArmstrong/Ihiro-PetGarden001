@@ -172,10 +172,10 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
   await expect(reminderPanel).toBeVisible({
     timeout: 5_000
   });
+  await expect(reminderPanel).toHaveAttribute('data-dock', 'right');
   const box = await reminderPanel.boundingBox();
   expect(box).toBeTruthy();
-  expect(box.x).toBeGreaterThanOrEqual(0);
-  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.x).toBeGreaterThan((page.viewportSize()?.width || 1280) * 0.5);
   const vp = page.viewportSize();
   expect(box.x + box.width).toBeLessThanOrEqual((vp?.width || 1280) + 2);
   expect(box.y + box.height).toBeLessThanOrEqual((vp?.height || 800) + 2);

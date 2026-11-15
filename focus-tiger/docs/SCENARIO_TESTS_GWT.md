@@ -1097,7 +1097,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 若今日已练
 
 **Then**
-- 0–1 秒内：行 `:active` 按压 + `#reminder-preference-panel` 在视口内居中偏下展开（不得被悬停 tip 吞掉点击、也不得只关菜单而无面板）：
+- 0–1 秒内：行 `:active` 按压 + `#reminder-preference-panel` 展开（不得被悬停 tip 吞掉点击、也不得只关菜单而无面板）。布局（T42）：`≤479` 仍可居中偏下；`≥480` `data-dock` 为 `bottom` 或 `right`，不得水平盖住阿寅中线；标题区（`data-ft-glass-drag-chrome`）可拖。收工偏好 `#work-end-preference-panel` 同规则。
 - 标题：`reminder.setting_title`（EN "When should I remind you" / ZH「什么时候提醒你」）
 - 写入 `{ hour, minute }` 到 `focus-tiger.reminder-preference.v1`
 - `#reminder-preference-confirm` + 说明 `#reminder-preference-confirm-hint`（点 → 或回车保存）；→ / Enter 后短暂见 `#reminder-preference-saved`；原生 time 选完（`change`）仍写入；过去时分允许保存
