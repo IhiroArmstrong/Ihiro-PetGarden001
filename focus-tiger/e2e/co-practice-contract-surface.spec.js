@@ -4,13 +4,19 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { openFreshProductShell } from './helpers/product-shell.js';
+import {
+  expandWideMoreMenuGroup,
+  openFreshProductShell,
+  openWideMoreMenuIfPresent
+} from './helpers/product-shell.js';
 
 test.use({ viewport: { width: 1280, height: 900 } });
 
 test('Preferences shows co-practice contract surface', async ({ page }) => {
   await openFreshProductShell(page);
-  await page.getByTestId('ft-wide-more-btn').click();
+  const opened = await openWideMoreMenuIfPresent(page);
+  expect(opened, 'wide ⋯ must be available').toBe(true);
+  await expandWideMoreMenuGroup(page, 'MENU_GROUP_PREFERENCES');
   await page.getByTestId('idle-co-practice-contract').click();
   const contract = page.getByTestId('co-practice-contract');
   await expect(contract).toBeVisible({ timeout: 5_000 });

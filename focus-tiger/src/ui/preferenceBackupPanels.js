@@ -59,6 +59,7 @@ export function createPreferenceBackupPanels(mountRoot) {
     localPracticeDataPanelUI,
     emailJourneyRestorePanelUI,
     coPracticeContractPanelUI,
+    // Order must match GLASS_GROWTH_OVERLAY_CARD_IDS (assertGlassGrowthOverlayCardOrder).
     overlayCards: [
       {
         id: 'local-backup',
@@ -66,14 +67,14 @@ export function createPreferenceBackupPanels(mountRoot) {
         close: () => localPracticeDataPanelUI.closePanel()
       },
       {
-        id: 'email-journey-restore',
-        ui: emailJourneyRestorePanelUI,
-        close: () => emailJourneyRestorePanelUI.closePanel()
-      },
-      {
         id: 'co-practice-contract',
         ui: coPracticeContractPanelUI,
         close: () => coPracticeContractPanelUI.closePanel()
+      },
+      {
+        id: 'email-journey-restore',
+        ui: emailJourneyRestorePanelUI,
+        close: () => emailJourneyRestorePanelUI.closePanel()
       }
     ]
   };
