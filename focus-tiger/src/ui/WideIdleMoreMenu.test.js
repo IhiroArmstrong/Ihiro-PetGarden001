@@ -91,6 +91,15 @@ describe('wide more menu click reception', () => {
     assert.match(src, /aria-expanded/);
   });
 
+  it('radial group list orphans rows when a non-active group label is skipped', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(
+      src,
+      /if \(!showGroup\) \{[\s\S]*sectionItems = null;[\s\S]*continue;/
+    );
+  });
+
   it('hides the Breath/Quick home ball while Companion 三选一 is staged', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');

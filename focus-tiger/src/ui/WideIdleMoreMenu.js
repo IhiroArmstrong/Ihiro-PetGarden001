@@ -1014,7 +1014,10 @@ export class WideIdleMoreMenu {
             item.labelKey === this._activeListGroup ||
             (item.labelKey === 'ritual.menu_group' &&
               this._activeListGroup === 'MENU_GROUP_PRACTICE');
-          if (!showGroup) continue;
+          if (!showGroup) {
+            sectionItems = null;
+            continue;
+          }
         }
         const expanded = radialListOnly
           ? true
