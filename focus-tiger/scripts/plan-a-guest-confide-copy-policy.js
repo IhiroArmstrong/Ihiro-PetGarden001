@@ -37,7 +37,7 @@ export const PLAN_A_GUEST_COPY_KEY_PREFIXES = [
 
 /** @type {RegExp} */
 export const PLAN_A_CONFIDE_TOPIC_RE =
-  /confide|倾诉|コンファイド|local ai|本机.*(倾诉|陪伴|模型|生成)|端末内.*(ai|コンパニオン|生成)|companion add-on|ai companion|unlock.*companion|companion.*unlock|向阿寅倾诉|unlock it.*yin/i;
+  /confide|倾诉|コンファイド|寅と話す|local ai|本机.*(倾诉|陪伴|模型|生成)|端末内.*(ai|コンパニオン|生成)|companion add-on|ai companion|unlock.*companion|companion.*unlock|向阿寅倾诉|unlock it.*yin/i;
 
 /** @type {RegExp[]} */
 export const PLAN_A_SAFE_PHRASES = [
