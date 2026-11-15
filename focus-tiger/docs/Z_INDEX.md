@@ -164,6 +164,7 @@
 |---|---|---|
 | **16** | `src/ui/FocusCirclePanelUI.js` | `.focus-circle-panel` Focus Circle 面板；与 dock 同带 |
 | **16** | `src/ui/LocalPracticeDataPanelUI.js` | `.local-practice-data-panel` 本地练习数据面板（导出 / 重置） |
+| **16** | `src/ui/CoPracticeContractPanelUI.js` | `.co-practice-contract-panel` 偏好 · 阿寅可能在哪里开口（T63） |
 | **16** | `src/ui/PracticeStudyConsentPanelUI.js` | `.practice-study-consent-panel` Practice Study 同意卡（Preferences） |
 |  | 18 | Preferences · Practice Study consent glass card |
 | **16** | `src/ui/PresenceSignalsPanelUI.js` | `.presence-signals-panel` 在场信号面板（内含 z2 子层） |

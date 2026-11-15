@@ -567,6 +567,24 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0041'])
   }),
   Object.freeze({
+    id: 'kb-live-co-practice-contract',
+    surface: 'menu',
+    proxy: 'co-practice-contract',
+    labelKeys: Object.freeze(['CO_PRACTICE_CONTRACT_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → How Yin may speak',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'co-practice-contract'",
+      'CO_PRACTICE_CONTRACT_MENU_LABEL',
+      'co-practice-contract-panel'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/ui/CoPracticeContractPanelUI.js'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
     id: 'kb-live-health-shortcut-log',
     surface: 'menu',
     proxy: 'health-shortcut-log',

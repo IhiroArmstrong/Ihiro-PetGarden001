@@ -24,7 +24,7 @@ This table answers: **which product surfaces are live in code right now**, which
 
 > **机器块 · 勿手改**。真源：`src/core/kbLiveEntryRegistry.js`。刷新：`npm run audit:kb-live-entries -- --write`。
 
-**Row count**: 56 (51 menu/ritual · 4 home-ball · 1 hud)
+**Row count**: 57 (52 menu/ritual · 4 home-ball · 1 hud)
 
 | id | surface | proxy | liveStatus | menuPath | labelKeys | catalogKbIds |
 |---|---|---|---|---|---|---|
@@ -58,6 +58,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-input-rhythm` | menu | `input-rhythm` | conditional | ⋯ → Preferences → Focus rhythm (Electron) | `INPUT_RHYTHM_MENU_LABEL` | `KB-FUNC-0047` |
 | `kb-live-mindflow-nebula` | menu | `mindflow-nebula` | live | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` | — |
 | `kb-live-presence-field` | menu | `presence-field` | live | ⋯ → Preferences → Presence Field | `PRESENCE_FIELD_MENU_LABEL` | `KB-FUNC-0041` |
+| `kb-live-co-practice-contract` | menu | `co-practice-contract` | live | ⋯ → Preferences → How Yin may speak | `CO_PRACTICE_CONTRACT_MENU_LABEL` |  |
 | `kb-live-health-shortcut-log` | menu | `health-shortcut-log` | live | ⋯ → Preferences → Log to Health (Shortcuts) | `HEALTH_SHORTCUT_MENU_LABEL` | `KB-FUNC-0048` |
 | `kb-live-today-direction` | menu | `today-direction` | live | ⋯ → Preferences → Choose today's direction again | `TODAY_DIRECTION_MENU_LABEL` | `KB-FUNC-0029` |
 | `kb-live-sanctuary-nav` | menu | `sanctuary-nav` | gated-default-off | ⋯ → Practice → Navigate sanctuary (wide home compass ball shortcut) | `SANCTUARY_NAV_MENU_LABEL` | `KB-FUNC-0030` |
