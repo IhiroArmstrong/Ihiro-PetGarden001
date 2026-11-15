@@ -40,7 +40,7 @@ const ROOT_ID = 'contemplative-inquiry-card';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 /**
- * @typedef {'firewall' | 'sit-again' | 'question' | 'invite' | 'sit' | 'after' | 'landing' | 'knowledge'} InquiryStep
+ * @typedef {'firewall' | 'support-bridge' | 'sit-again' | 'question' | 'invite' | 'sit' | 'after' | 'landing' | 'knowledge'} InquiryStep
  */
 
 export class ContemplativeInquiryUI {
@@ -52,7 +52,7 @@ export class ContemplativeInquiryUI {
    * @param {() => void} [handlers.onMenuVisibilityChange]
    * @param {() => void} [handlers.onAcknowledge]
    * @param {() => void} [handlers.onLand]
-   * @param {() => void} [handlers.onCrisis]
+   * @param {() => void} [handlers.onRequestConfide]
    * @param {Storage | null} [handlers.storage]
    * @param {number} [handlers.sitMs]
    */
@@ -274,15 +274,30 @@ export class ContemplativeInquiryUI {
           this.handlers.onMenuVisibilityChange?.();
           this.close();
         }, 'ghost'),
-        this._btn(t('CI_EX1_TALK'), 'contemplative-inquiry-talk', () => {
-          this.close();
-          this.handlers.onCrisis?.();
+        this._btn(t('CI_EX1_NEED_SUPPORT'), 'contemplative-inquiry-need-support', () => {
+          this._step = 'support-bridge';
+          this._renderStep();
         }, 'ghost')
       );
       return;
     }
 
-    if (this._step === 'sit-again') {
+    if (this._step === 'support-bridge') {
+      this._setBodyText(t('CI_EX1_SUPPORT_BRIDGE'));
+      this.actions.append(
+        this._btn(t('CI_EX1_SUPPORT_CONTINUE'), 'contemplative-inquiry-support-continue', () => {
+          this.close();
+          this.handlers.onRequestConfide?.();
+        }),
+        this._btn(t('CI_EX1_NOT_NOW'), 'contemplative-inquiry-support-back', () => {
+          this._step = 'firewall';
+          this._renderStep();
+        }, 'ghost')
+      );
+      return;
+    }
+
+    if (this._step === 'sit-again' {
       this._setBodyText(t('CI_EX1_SIT_AGAIN'));
       this.actions.append(
         this._btn(t('CI_EX1_COME_IN'), 'contemplative-inquiry-come-in', () => {
@@ -319,10 +334,6 @@ export class ContemplativeInquiryUI {
         this._btn(t('CI_EX1_ABOUT'), 'contemplative-inquiry-about', () => {
           this._step = 'knowledge';
           this._renderStep();
-        }, 'ghost'),
-        this._btn(t('CI_EX1_TALK'), 'contemplative-inquiry-talk', () => {
-          this.close();
-          this.handlers.onCrisis?.();
         }, 'ghost')
       );
       return;
