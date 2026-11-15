@@ -61,7 +61,12 @@ import {
   saveWindowLayoutPrefs
 } from './windowLayout/windowLayoutPolicy.js';
 
+import { runT95LlamaGuiProbeIfRequested } from './companion/t95LlamaGuiProbe.js';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const t95ProbeCode = await runT95LlamaGuiProbeIfRequested(process.argv);
+if (t95ProbeCode != null) process.exit(t95ProbeCode);
 
 protocol.registerSchemesAsPrivileged([
   {
