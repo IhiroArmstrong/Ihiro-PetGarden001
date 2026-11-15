@@ -5,13 +5,19 @@
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { formatConfideJapaneseNotYetOpenReply } from '../confide/confideJapaneseNotYetOpen.js';
 import { formatConfideSafetyResourceGuidance } from '../confide/confideSafetyResources.js';
+import { expandAllowSet } from './outputGateAllowFixtures.js';
 import { inspectModelOutput } from './outputGateRules.js';
 import {
+  formatT96UncoveredLanguageReply,
   guardedGenerate,
-  neutralPoolSelfHits,
-  OUTPUT_GATE_PATHS
+  OUTPUT_GATE_PATHS,
+  uniqueNeutralLines,
+  neutralPoolSelfHits
 } from './outputGate.js';
+
+const GATE_VERSION = '2026-11-16-pr2';
 
 const BASES = {
   G1: {
@@ -93,29 +99,6 @@ function expand(base) {
   return WRAPS.map((wrap) => wrap(base));
 }
 
-const ALLOW = [
-  'Sit a while. Tea is still warm.',
-  'What you said stays here.',
-  'Heard. The knot is still there.',
-  'The doctor sat quietly.',
-  'Tea?',
-  '12 minutes.',
-  '坐一会儿。茶还热着。',
-  '你说的，留在这里。',
-  '医生坐在旁边。',
-  '茶？',
-  '十二分钟。',
-  '少し坐ろう。茶はまだ温かい。',
-  'あなたの言葉はここに置く。',
-  '医者はそばに座っている。',
-  '茶？',
-  'The window is pale.',
-  'Wind comes; wind goes.',
-  '寅在这儿。',
-  '窓の外は静かだ。',
-  'A bell, then quiet.'
-];
-
 const DURATION = [
   '120 minutes',
   'Sit for 120 minutes.',
@@ -128,10 +111,16 @@ const DURATION = [
   '180秒です。'
 ];
 
-test('neutral pool does not block itself', () => {
+test('neutral pool is mood-free and has two distinct lines per language', () => {
   for (const locale of ['en', 'zh', 'ja']) {
     assert.deepEqual(neutralPoolSelfHits(locale), [], locale);
+    const lines = uniqueNeutralLines(locale);
+    assert.ok(lines.length >= 2, locale);
   }
+});
+
+test('read-hybrid-classify is not a gated generate path', () => {
+  assert.equal(OUTPUT_GATE_PATHS.includes('read-hybrid-classify'), false);
 });
 
 test('violation surfaces are all blocked, twenty per category and language', async () => {
@@ -147,27 +136,40 @@ test('violation surfaces are all blocked, twenty per category and language', asy
           generate: () => sample
         });
         assert.notEqual(gated.text, sample);
-        assert.equal(gated.gateVersion, '2026-11-15-pr2');
+        assert.equal(gated.gateVersion, GATE_VERSION);
         if (category === 'G5' || category === 'G6') {
           assert.equal(gated.verdict, 'late_crisis');
-          assert.equal(gated.lockFreeGeneration, true);
+          assert.equal(gated.triggersGenerationLock, true);
           assert.equal(gated.text, formatConfideSafetyResourceGuidance(lang));
         } else {
           assert.equal(gated.verdict, 'neutral_fallback');
-          assert.equal(gated.lockFreeGeneration, false);
+          assert.equal(gated.triggersGenerationLock, false);
         }
       }
     }
   }
 });
 
-test('near sentences stay, and practice durations are counted apart', async () => {
+test('near sentences stay at the same scale as the violation set', async () => {
+  const allow = expandAllowSet();
+  assert.equal(allow.length, 20 * 3 * 20);
   let blocked = 0;
-  for (const line of ALLOW) {
-    const found = inspectModelOutput(line);
-    if (found.category || found.uncovered) blocked += 1;
+  /** @type {string[]} */
+  const blockedLines = [];
+  for (const row of allow) {
+    const found = inspectModelOutput(row.text);
+    if (found.category || found.uncovered) {
+      blocked += 1;
+      if (blockedLines.length < 8) blockedLines.push(`${found.category}:${row.text}`);
+    }
   }
-  assert.ok(blocked / ALLOW.length <= 0.02, `allow blocked ${blocked}/${ALLOW.length}`);
+  assert.ok(
+    blocked / allow.length <= 0.02,
+    `allow blocked ${blocked}/${allow.length} ${blockedLines.join(' | ')}`
+  );
+});
+
+test('practice durations stay blocked by G9 and are counted apart', async () => {
   let durationBlocked = 0;
   for (const line of DURATION) {
     const gated = await guardedGenerate('confide-chat-l3', {
@@ -179,7 +181,17 @@ test('near sentences stay, and practice durations are counted apart', async () =
   assert.equal(durationBlocked, DURATION.length);
 });
 
-test('unregistered path, thrown generator, and uncovered language do not return the original', async () => {
+test('uncovered language uses the T96 sentence', async () => {
+  const other = await guardedGenerate('reflection-companion', {
+    generate: () => '안녕하세요 오늘'
+  });
+  assert.equal(other.verdict, 'uncovered_language');
+  assert.equal(other.text, formatT96UncoveredLanguageReply('en'));
+  assert.equal(other.text, formatConfideJapaneseNotYetOpenReply('en'));
+  assert.notEqual(other.text, '안녕하세요 오늘');
+});
+
+test('unregistered path and thrown generator do not return the original', async () => {
   const missing = await guardedGenerate('not-a-path', {
     generate: () => 'you may have depression'
   });
@@ -192,16 +204,10 @@ test('unregistered path, thrown generator, and uncovered language do not return 
     }
   });
   assert.equal(thrown.verdict, 'generator_failed');
-
-  const other = await guardedGenerate('reflection-companion', {
-    generate: () => '안녕하세요 오늘'
-  });
-  assert.equal(other.verdict, 'uncovered_language');
-  assert.notEqual(other.text, '안녕하세요 오늘');
 });
 
 test('a clean sentence passes and does not repeat the previous fallback', async () => {
-  const passed = await guardedGenerate('read-hybrid-classify', {
+  const passed = await guardedGenerate('confide-observe-l3', {
     generate: () => 'Sit a while. Tea is still warm.',
     previousText: 'Sit a while. Tea is still warm.'
   });

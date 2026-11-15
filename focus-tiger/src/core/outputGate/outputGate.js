@@ -17,26 +17,51 @@ import { formatConfideJapaneseNotYetOpenReply } from '../confide/confideJapanese
 import { formatConfideSafetyResourceGuidance } from '../confide/confideSafetyResources.js';
 import { inspectModelOutput } from './outputGateRules.js';
 
-export const OUTPUT_GATE_VERSION = '2026-11-15-pr2';
+export const OUTPUT_GATE_VERSION = '2026-11-16-pr2';
 
-/** Product paths from the PR-1 inventory that can reach a completion. */
+/**
+ * T96 #1622 shipped uncovered-language copy as this function: the
+ * not-yet-open notice plus the T92 helpline. Output that is not en/zh/ja
+ * uses that same sentence. It is not a second Japanese-only product path.
+ * @param {string} [locale]
+ * @returns {string}
+ */
+export function formatT96UncoveredLanguageReply(locale = 'en') {
+  return formatConfideJapaneseNotYetOpenReply(locale);
+}
+
+/**
+ * Visible companion generate paths from the PR-1 inventory.
+ * `read-hybrid-classify` is not listed: it returns a tool draft, and the
+ * defense is to accept only registered tool ids.
+ */
 export const OUTPUT_GATE_PATHS = Object.freeze([
   'confide-observe-l3',
   'confide-chat-l3',
   'confide-observe-retry',
-  'reflection-companion',
-  'read-hybrid-classify'
+  'reflection-companion'
 ]);
 
+/** Neutral pool: fallback-* only. No mood-bucket lines. */
 const NEUTRAL_POOL_IDS = Object.freeze([
+  'fallback-01',
   'fallback-02',
-  'fallback-03',
-  'anxious-02',
-  'tired-01',
-  'tired-03'
+  'fallback-03'
 ]);
 
 const registered = new Set(OUTPUT_GATE_PATHS);
+
+/**
+ * @param {string} locale
+ * @returns {string[]}
+ */
+export function uniqueNeutralLines(locale = 'en') {
+  const lines = NEUTRAL_POOL_IDS.map((id) => {
+    const row = CONFIDE_CORPUS.find((item) => item.id === id);
+    return row ? confideLineText(row, locale).trim() : '';
+  }).filter(Boolean);
+  return [...new Set(lines)];
+}
 
 /**
  * @param {string} locale
@@ -44,10 +69,7 @@ const registered = new Set(OUTPUT_GATE_PATHS);
  * @returns {string}
  */
 export function pickNeutralFallback(locale = 'en', previousText = '') {
-  const lines = NEUTRAL_POOL_IDS.map((id) => {
-    const row = CONFIDE_CORPUS.find((item) => item.id === id);
-    return row ? confideLineText(row, locale) : '';
-  }).filter(Boolean);
+  const lines = uniqueNeutralLines(locale);
   const previous = String(previousText || '').trim();
   const next = lines.find((line) => line.trim() !== previous);
   return next || lines[0] || '';
@@ -82,7 +104,7 @@ export function neutralPoolSelfHits(locale = 'en') {
  *   gateVersion: string,
  *   verdict: 'pass' | 'neutral_fallback' | 'late_crisis' | 'uncovered_language' | 'unregistered' | 'generator_failed',
  *   category: string | null,
- *   lockFreeGeneration: boolean
+ *   triggersGenerationLock: boolean
  * }>}
  */
 export async function guardedGenerate(pathId, genArgs = {}) {
@@ -91,7 +113,7 @@ export async function guardedGenerate(pathId, genArgs = {}) {
   const base = {
     gateVersion: OUTPUT_GATE_VERSION,
     category: null,
-    lockFreeGeneration: false
+    triggersGenerationLock: false
   };
   if (!registered.has(pathId)) {
     return {
@@ -127,7 +149,7 @@ export async function guardedGenerate(pathId, genArgs = {}) {
       text: formatConfideSafetyResourceGuidance(locale),
       verdict: 'late_crisis',
       category: found.category,
-      lockFreeGeneration: true
+      triggersGenerationLock: true
     };
   }
   if (found.category) {
@@ -141,7 +163,7 @@ export async function guardedGenerate(pathId, genArgs = {}) {
   if (found.uncovered) {
     return {
       ...base,
-      text: formatConfideJapaneseNotYetOpenReply(locale),
+      text: formatT96UncoveredLanguageReply(locale),
       verdict: 'uncovered_language'
     };
   }
