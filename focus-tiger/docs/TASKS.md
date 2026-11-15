@@ -545,6 +545,14 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `chat-with-yin-consent` · feature · 实现中 · 旁支 feature/chat-with-yin-consent · 2026-11-15
+
+B 类。Brief `task-chat-with-yin-consent.md`。PO 2026-11-15 点头开工：可见名 Chat with Yin / 寅と話す，首次三项勾选，本机同意，不进备份。
+
+### `chat-with-yin-copy-leftover` · feature · 实现中 · 旁支 docs/chat-with-yin-copy-leftover · 2026-11-15
+
+#1730 合入后漏网：重跑场景 GWT；日文帮助「コンファイド」→「寅と話す」。标识符不改。
+
 ### `confide-en-restore-ja-ui-off` · feature · 旁支实现中 · 英文挂载开 · 日语界面关 · 2026-11-14
 
 首发暂时不做日语倾诉。英文恢复菜单、耳朵与面板。Brief [`task-confide-en-restore-ja-ui-off.md`](../task-briefs/task-confide-en-restore-ja-ui-off.md)。T36 仍只拦英文界面里的日语输入。
@@ -593,6 +601,38 @@ Use: scattered to-do mind. Step 1 adds eyes-open permission. Step 4: “Each tim
 ### `pro-addon-checkout-restore` · feature · 进行中 · C6 / §C Pro·陪伴加购新购 · 2026-11-14 · 2026-11-14
 
 英文 Confide 恢复后，恢复 Support 第四卡 Pro 与第五卡陪伴加购新结账；客户端闸 + Worker 默认开 + 文案切片 `pro-addon-checkout-restore.json`。生产 Worker 须 redeploy 后线上才不 410。
+
+### `t77-co-practice-continue-slot` · feature · 已完成 · 可选 · #1584 已合 develop · 2026-11-14
+
+T77 续练位 PR-2：常做练习配置一键开练；v1 无时段词；叠层仲裁。依赖 **T87** #1582。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md) §3。关单级手测见 [`develop-qa-t87-t84-hand-test-checklist.md`](../audit/develop-qa-t87-t84-hand-test-checklist.md)。**不是** T76 冷启动。
+
+### `t78-co-practice-stable-breath-companion` · feature · 已完成 · 可选 · #1608 已合 develop · 2026-11-14
+
+T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。依赖 **T87** #1582。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。关单级手测见 [`develop-qa-t87-t84-hand-test-checklist.md`](../audit/develop-qa-t87-t84-hand-test-checklist.md)。**不是** T76 冷启动。
+
+### `t81-co-practice-research-upload` · feature · 已完成 · 可选 · #1585/#1588/#1591/#1593/#1610 已合 develop · 2026-11-14
+
+T81 研究共修上传接口。周聚合 + 白名单 Worker + CI。Brief PO 2026-11-14 点头。不是 T54 ingest。
+
+### `t82-co-practice-research-consent-ui` · feature · 已完成 · 可选 · #1611 已合 develop · 2026-11-14
+
+T82 研究共修同意页。独立入口，不放进 Privacy 勾选。B 类。Brief PO 2026-11-14 点头。
+
+### `t83-co-practice-research-first-sit-prompt` · feature · 已完成 · 可选 · #1617 已合 develop · 2026-11-14
+
+T83 首次练习后研究共修定位提示。依赖 T82 #1611。Brief PO 2026-11-14 点头。不是 T51、不是 T76。
+
+### `t84-co-practice-research-privacy-help` · feature · 已完成 · 可选 · #1618 已合 develop · 2026-11-14
+
+T84 问号简介与隐私政策三层说明。与 T82 同发更稳。Brief PO 2026-11-14 点头。不是新开关。
+
+### `t87-co-practice-stable-prefs` · feature · 已完成 · 可选 · #1582 已合 develop · 2026-11-14
+
+T87 稳定偏好层 PR-1（原盘点误写 T76，T76 已给冷启动）。改选后开表才计票、滚动 3/5、`stable-prefs.v1`、Focus 分钟、L2 事实句、「不是这样」/ 忘掉扩展。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。口令「按 T87 Brief 开工」= **勿再开同内容旁支**。**不是** T76、**不是** T73。
+
+### `t88-guided-meditation-release-hardening` · feature · 已完成 · 可选 · #1567/#1571/#1572/#1579/#1580 已合 develop · 2026-11-14
+
+T88 引导冥想对外前加固。A/B/C 刀与媒体根 #1580 已合 develop。**合 develop ≠ 对外**。遗留：Brief §8 Electron 短课手测并入批量验收；正式绑域/关 r2 公开 = 控制台运维。口令「按 T88 Brief 开工 Web 流式」= **勿再开同内容旁支**。不是 T76，不是收紧 CORS。未来的「脚本引导冥想」须另登记，不是本片重开。
 
 ### `t93-privacy-gate-dual-copy` · feature · 首包关闸 Privacy §4 双态 · 补 #1683/#1708 文案裂口 · 2026-11-14
 
@@ -702,10 +742,6 @@ T97 危机题卷标注资质。PO 2026-11-10：不做自建标注。V2 过关线
 
 T99 必跑失败机械闸：husky pre-push 跑 `test:e2e:smoke`；pre-commit 先拦入口行数；倾诉玻璃卡读挂载开关。不改用户画面。种类 1/2 清零、CI 自动归类评论不在本刀。口令「按 T99 开工」= 本治理旁支。
 
-### `t78-co-practice-stable-breath-companion` · feature · 待合 · 可选 · PR-3 实现中 · 2026-11-08
-
-T78 PR-3：Breath 计时分钟 + Companion 模式稳定维度（与 Focus 分轨）。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。**不是** T76 冷启动。
-
 ### `t96-uncovered-language-help` · feature · 立即做 · P2 · 未覆盖语言固定句带 T92 求助 · 2026-11-08
 
 T96 未覆盖语言求助兜底。日语未开放固定句接上 T92 求助句。不改阈值。不是 T94 第 2–4 刀。实现旁支独立。
@@ -717,10 +753,6 @@ T98 倾诉默认关闭入口盘点。交付：`docs/audit/findings/2026-11-08/co
 ### `t87-samatia-user-facing-rename` · feature · T87-A1 #1563 · T87-A2 #1565 · T87-B #1568 已合 develop · T87-C 旁支实现中 · 2026-11-06
 
 用户可见产品名改为 Samatia（Brief [`task-samatia-user-facing-rename.md`](../task-briefs/task-samatia-user-facing-rename.md)）。A1 locale+文档、A2 句池/提示词、B 桌面显示名已合。本片跟进 T87-C 宣传站 + 域名预备（公开宣布 samatia.net 仍须商标闸）。发布硬闸仍是 A1～A2 + B + C + D 全合且全范围扫描绿。**不是** T87 稳定偏好 PR-1（`t87-co-practice-stable-prefs`）。**不是** T86。
-
-### `t88-guided-meditation-release-hardening` · feature · 立即做 · 可选 · A 刀已合 #1572 · #1571 已合 develop · B 刀（计入秒数/授权拦截/只听音频）本旁支 · 2026-11-06
-
-T88 引导冥想对外前加固。#1567 / #1571 / #1572 已合 develop ≠ 对外。本片：Web 直链沿用 #1571；补实际播放秒数计入、授权空行进 `--release-gate`、保留只听音频钮。不是 T76，不是收紧 CORS，不是部署。
 
 ### `guided-meditation-mvp` · feature · 实现旁支进行中 · 2026-11-05
 
@@ -746,10 +778,6 @@ T88 引导冥想对外前加固。#1567 / #1571 / #1572 已合 develop ≠ 对�
 
 T76 冷启动静修入口。B1 卡面/纠错/直坐 #1550；B2 帮助别名 #1553。关单级手测并入下一批。不是禅修引擎，不是 T71。
 
-### `t77-co-practice-continue-slot` · feature · 排队中 · 可选 · 依赖 T87 · 2026-11-04
-
-T77 续练位 PR-2：常做练习配置一键开练；v1 无时段词；叠层仲裁。依赖 **T87**。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md) §3。**不是** T76 冷启动。
-
 ### `t79-contemplative-inquiry` · feature · 已完成 · 可选 · #1551 已合 develop · 关单级手测待勾 · 2026-11-04
 
 T79 觉察哲思第一例。Brief 已点头；运行时 #1551 已合 develop。Inspiration 菜单行 + 固定话术 + 5 分钟墙钟。不是 T51、不是 Quiet Line、不是倾诉讲公案。
@@ -757,26 +785,6 @@ T79 觉察哲思第一例。Brief 已点头；运行时 #1551 已合 develop。I
 ### `t80-co-practice-research-pack` · feature · 已完成 · 可选 · #1554 已合 develop · 2026-11-04
 
 T80 研究共修方案包。A 类 #1554 已合。字段字典、中英日同意文案、后续 T81–T86 Brief。不是 T54，不是 90 天实验。
-
-### `t87-co-practice-stable-prefs` · feature · 立即做 · 可选 · Brief 已点头 · 未写 src · 2026-11-04
-
-T87 稳定偏好层 PR-1（原盘点误写 T76，T76 已给冷启动）。改选后开表才计票、滚动 3/5、`stable-prefs.v1`、Focus 分钟、L2 事实句、「不是这样」/ 忘掉扩展。SSOT [`task-co-practice-stable-prefs-l1-l2.md`](../task-briefs/task-co-practice-stable-prefs-l1-l2.md)。口令「按 T87 Brief 开工」= 新 Chat。**不是** T76、**不是** T73。
-
-### `t81-co-practice-research-upload` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
-
-T81 研究共修上传接口。周聚合 + 白名单 Worker + CI。点头前不写 src。不是 T54 ingest。
-
-### `t82-co-practice-research-consent-ui` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
-
-T82 研究共修同意页。独立入口，不放进 Privacy 勾选。B 类。点头前不写 src。
-
-### `t83-co-practice-research-first-sit-prompt` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
-
-T83 首次练习后研究共修定位提示。依赖 T82。不是 T51、不是 T76。
-
-### `t84-co-practice-research-privacy-help` · feature · 排队中 · 可选 · Brief 待点头 · 2026-11-03
-
-T84 问号简介与隐私政策三层说明。与 T82 同发更稳。不是新开关。
 
 ### `t85-co-practice-research-tier2-survey` · feature · 搁置 · 未排期 · 2026-11-03
 
