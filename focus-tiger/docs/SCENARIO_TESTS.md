@@ -763,6 +763,8 @@
 
 ## 场景 AE：向阿寅倾诉 · Chat with Yin（Web harness · Electron L1/L2）
 
+> **用户可见名称**：Chat with Yin / 寅と話す / 和阿寅聊聊。
+
 > **政策**：2026-08-10 检索不生成仍有效；**2026-08-18 窄例外** = 仅 Electron 宽屏第 3 层短生成（L2），Web / 窄屏 / ≤8GB **仍检索**。与 Support 付费 **零耦合**；Checkout / 第四卡 Pro / 第五卡 Add-on **未接**。  
 > **单元**：`confideClassify` / `confideReplyFlow` / `confideOrchestration` 闸门；Electron：`desktopCompanionL1.test.js` · `desktopCompanionL2Route.test.js`。  
 > **仍须人工**：Slice 0「练了多久」精确数字（合入后）；危机 `safety-01` 英文转介句回归；`depressed`→sad 禁 generate 回归。关单「能聊」已关（2026-08-25）。

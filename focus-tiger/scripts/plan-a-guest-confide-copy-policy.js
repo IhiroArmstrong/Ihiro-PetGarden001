@@ -37,7 +37,7 @@ export const PLAN_A_GUEST_COPY_KEY_PREFIXES = [
 
 /** @type {RegExp} */
 export const PLAN_A_CONFIDE_TOPIC_RE =
-  /confide|倾诉|コンファイド|local ai|本机.*(倾诉|陪伴|模型|生成)|端末内.*(ai|コンパニオン|生成)|companion add-on|ai companion|unlock.*companion|companion.*unlock|向阿寅倾诉|unlock it.*yin/i;
+  /confide|倾诉|コンファイド|Chat with Yin|寅と話す|和阿寅聊聊|local ai|本机.*(倾诉|陪伴|模型|生成|和阿寅聊聊)|端末内.*(ai|コンパニオン|生成)|companion add-on|ai companion|unlock.*companion|companion.*unlock|向阿寅倾诉|unlock it.*yin/i;
 
 /** @type {RegExp[]} */
 export const PLAN_A_SAFE_PHRASES = [
@@ -45,9 +45,13 @@ export const PLAN_A_SAFE_PHRASES = [
   /not open in this release/i,
   /not open yet/i,
   /not available until Confide opens/i,
+  /not available until Chat with Yin opens/i,
   /checkout is paused/i,
   /intended path only/i,
   /when Confide opens/i,
+  /when Chat with Yin opens/i,
+  /until Chat with Yin opens/i,
+  /aloud in Chat with Yin/i,
   /when it opens/i,
   /尚未对客人开放/,
   /本版本尚未开放/,
@@ -64,9 +68,13 @@ export const PLAN_A_SAFE_PHRASES = [
   /決済は停止/,
   /将来の経路/,
   /ゲスト向けに開くまで/,
+  /寅と話すがゲストに開/i,
+  /和阿寅聊聊尚未/,
+  /和阿寅聊聊对客人开放后/,
   /not available in this build/i,
   /checkout is not available/i,
   /does not read them aloud in Confide/i,
+  /does not read them aloud in Chat with Yin/i,
   /hides the entry by default/i,
   /入口を出しません/,
   /初期状態で入口/
@@ -75,20 +83,28 @@ export const PLAN_A_SAFE_PHRASES = [
 /** @type {RegExp[]} */
 export const PLAN_A_FORBIDDEN_WITHOUT_SAFE = [
   /after you unlock/i,
-  /解锁后.*(倾诉|阿寅|本机|打开)/,
+  /解锁后.*(倾诉|阿寅|本机|打开|和阿寅聊聊)/,
   /解开.*倾诉/,
+  /解开.*和阿寅聊聊/,
   /confide with on-device/i,
+  /Chat with Yin with on-device/i,
   /talk with yin locally/i,
   /才能在本机与阿寅倾诉/,
+  /才能在本机和阿寅聊聊/,
   /話せます/,
   /open confide to yin/i,
+  /open Chat with Yin/i,
   /open confide,/i,
   /打开「向阿寅倾诉」/,
+  /打开「和阿寅聊聊」/,
+  /Chat with Yin is ready now/i,
+  /寅と話すは今すぐ使えます/,
   /unlock companion/i,
   /unlock ai companion/i,
   /解锁 ai 陪伴/i,
   /companion.*immediately/i,
-  /立即使用.*倾诉/
+  /立即使用.*倾诉/,
+  /立即使用.*和阿寅聊聊/
 ];
 
 /**
