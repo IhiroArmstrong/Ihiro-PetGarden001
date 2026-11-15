@@ -43,6 +43,7 @@ const WHITELIST_FILES = new Set([
   'IdleCompanionPipUI.js',
   'LocalPracticeDataUI.js',
   'LocalPracticeDataPanelUI.js',
+  'CoPracticeContractPanelUI.js',
   'EmailJourneyRestorePanelUI.js',
   'EmailJourneyEmptyLibraryChipUI.js',
   'emailJourneyD4Chrome.js',

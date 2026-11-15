@@ -4,6 +4,7 @@
  */
 
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import {
   GLASS_GROWTH_OVERLAY_CARD_IDS,
@@ -43,6 +44,23 @@ describe('glassGrowthOverlayCardRegistry (A3)', () => {
         `menu proxy "${proxy}" maps to unknown deck id "${mapped}"`
       );
     }
+  });
+
+  it('preferenceBackupPanels overlayCards follow SSOT order between yin-coin and practice-study', () => {
+    const src = readFileSync(
+      new URL('../ui/preferenceBackupPanels.js', import.meta.url),
+      'utf8'
+    );
+    const overlayBlock = src.match(/overlayCards:\s*\[([\s\S]*?)\n\s*\]/)?.[1];
+    assert.ok(overlayBlock, 'overlayCards array missing');
+    const ids = [...overlayBlock.matchAll(/\bid:\s*'([^']+)'/g)].map(
+      (m) => m[1]
+    );
+    const start = GLASS_GROWTH_OVERLAY_CARD_IDS.indexOf('local-backup');
+    assert.deepEqual(
+      ids,
+      GLASS_GROWTH_OVERLAY_CARD_IDS.slice(start, start + ids.length)
+    );
   });
 
   it('keeps proxy → deck ids inside the SSOT deck list', () => {

@@ -5,8 +5,26 @@
 
 import { LocalPracticeDataPanelUI } from './LocalPracticeDataPanelUI.js';
 import { EmailJourneyRestorePanelUI } from './EmailJourneyRestorePanelUI.js';
+import { CoPracticeContractPanelUI } from './CoPracticeContractPanelUI.js';
 
 export { mountEmailJourneyD4Chrome } from './emailJourneyD4Chrome.js';
+
+/**
+ * @param {ReturnType<typeof bindPreferenceBackupChrome>} preferenceBackupChrome
+ * @param {{
+ *   reminderPreferenceUI: { openPanel: () => void },
+ *   workEndPreferenceUI?: { openPanel?: () => void },
+ *   bootAmbientHints: { onboardingHints?: { openPrivacySheetForSettings?: () => void } }
+ * }} runtime
+ */
+export function wireCoPracticeContractRuntime(preferenceBackupChrome, runtime) {
+  preferenceBackupChrome.wireCoPracticeContractOpeners({
+    onOpenReminderSettings: () => runtime.reminderPreferenceUI.openPanel(),
+    onOpenWorkEndSettings: () => runtime.workEndPreferenceUI?.openPanel?.(),
+    onOpenPrivacySettings: () =>
+      runtime.bootAmbientHints.onboardingHints?.openPrivacySheetForSettings?.()
+  });
+}
 
 /**
  * Preferences file backup + email restore. Lives outside main.js so D3
@@ -27,17 +45,31 @@ export function createPreferenceBackupPanels(mountRoot) {
       document.body.classList.remove('ft-wide-stage-email-journey');
     }
   });
+  const coPracticeContractPanelUI = new CoPracticeContractPanelUI(mountRoot, {
+    onClose: () => {
+      document.body.classList.remove('ft-narrow-stage-co-practice-contract');
+      document.body.classList.remove('ft-wide-stage-co-practice-contract');
+    }
+  });
   if (typeof window !== 'undefined') {
     window.__emailJourneyRestorePanel = emailJourneyRestorePanelUI;
+    window.__coPracticeContractPanel = coPracticeContractPanelUI;
   }
   return {
     localPracticeDataPanelUI,
     emailJourneyRestorePanelUI,
+    coPracticeContractPanelUI,
+    // Order must match GLASS_GROWTH_OVERLAY_CARD_IDS (assertGlassGrowthOverlayCardOrder).
     overlayCards: [
       {
         id: 'local-backup',
         ui: localPracticeDataPanelUI,
         close: () => localPracticeDataPanelUI.closePanel()
+      },
+      {
+        id: 'co-practice-contract',
+        ui: coPracticeContractPanelUI,
+        close: () => coPracticeContractPanelUI.closePanel()
       },
       {
         id: 'email-journey-restore',
@@ -52,14 +84,16 @@ export function createPreferenceBackupPanels(mountRoot) {
  * @param {{
  *   closeGrowthOverlayCards: (opts?: { except?: string | null }) => void,
  *   localPracticeDataPanelUI: LocalPracticeDataPanelUI,
- *   emailJourneyRestorePanelUI: EmailJourneyRestorePanelUI
+ *   emailJourneyRestorePanelUI: EmailJourneyRestorePanelUI,
+ *   coPracticeContractPanelUI: CoPracticeContractPanelUI,
  * }} deps
  */
 export function bindPreferenceBackupChrome(deps) {
   const {
     closeGrowthOverlayCards,
     localPracticeDataPanelUI,
-    emailJourneyRestorePanelUI
+    emailJourneyRestorePanelUI,
+    coPracticeContractPanelUI
   } = deps;
   return {
     onLocalBackup: () => {
@@ -70,9 +104,22 @@ export function bindPreferenceBackupChrome(deps) {
       closeGrowthOverlayCards({ except: 'email-journey-restore' });
       emailJourneyRestorePanelUI.openPanel();
     },
+    onCoPracticeContract: () => {
+      closeGrowthOverlayCards({ except: 'co-practice-contract' });
+      document.body.classList.add('ft-narrow-stage-co-practice-contract');
+      document.body.classList.add('ft-wide-stage-co-practice-contract');
+      coPracticeContractPanelUI.openPanel();
+    },
     closePreferenceBackupPanels: () => {
       localPracticeDataPanelUI.closePanel();
       emailJourneyRestorePanelUI.closePanel();
+      coPracticeContractPanelUI.closePanel();
+    },
+    /**
+     * @param {{ onOpenReminderSettings?: () => void, onOpenWorkEndSettings?: () => void, onOpenPrivacySettings?: () => void }} openers
+     */
+    wireCoPracticeContractOpeners(openers) {
+      coPracticeContractPanelUI.setSettingsOpeners(openers);
     },
     /**
      * @param {string} proxy

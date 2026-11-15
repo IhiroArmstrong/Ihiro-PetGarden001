@@ -186,6 +186,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
   newsletter: { handler: 'onNewsletter', close: true },
   community: { handler: 'onCommunity', close: true },
   'help-center': { handler: 'onHelpCenter', close: true },
+  'co-practice-contract': {
+    handler: 'onCoPracticeContract',
+    close: true,
+    stage: 'coPracticeContract'
+  },
   'local-backup': {
     handler: 'onLocalBackup',
     close: true,
@@ -450,6 +455,7 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   workEnd: 'ft-narrow-stage-work-end',
   sound: 'ft-narrow-stage-sound',
   language: 'ft-narrow-stage-language',
+  coPracticeContract: 'ft-narrow-stage-co-practice-contract',
   localBackup: 'ft-narrow-stage-local-backup',
   emailJourney: 'ft-narrow-stage-email-journey',
   practiceStudy: 'ft-narrow-stage-practice-study',
@@ -477,6 +483,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   mindflowNebula: 'ft-wide-stage-mindflow-nebula',
   presenceField: 'ft-wide-stage-presence-field',
   healthShortcutLog: 'ft-wide-stage-health-shortcut-log',
+  coPracticeContract: 'ft-wide-stage-co-practice-contract',
   localBackup: 'ft-wide-stage-local-backup',
   emailJourney: 'ft-wide-stage-email-journey',
   practiceStudy: 'ft-wide-stage-practice-study',
@@ -848,6 +855,11 @@ export function listSecondaryChromeEntries(surface, visibility) {
   ]);
 
   pushLabeledGroup(out, 'MENU_GROUP_PREFERENCES', [
+    {
+      proxy: 'co-practice-contract',
+      labelKey: 'CO_PRACTICE_CONTRACT_MENU_LABEL',
+      testId: 'idle-co-practice-contract'
+    },
     visibility.reminderAvailable
       ? { proxy: 'reminder', labelKey: 'reminder.setting_title' }
       : null,
