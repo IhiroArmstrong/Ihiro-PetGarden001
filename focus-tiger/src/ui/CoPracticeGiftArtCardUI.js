@@ -4,7 +4,7 @@
  */
 
 /**
- * T68 gift-art ceremony card. Surface stays closed until the grant switch is on.
+ * T68 gift-art ceremony card. Surface on after the dedicated switch PR.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
