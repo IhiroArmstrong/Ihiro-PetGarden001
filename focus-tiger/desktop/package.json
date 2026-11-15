@@ -117,7 +117,7 @@
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Samatia uses the microphone only when you tap Speak to type in Confide, Arrival, or Reflection.",
+        "NSMicrophoneUsageDescription": "Samatia uses the microphone only when you tap Speak to type in Chat with Yin, Arrival, or Reflection.",
         "NSSpeechRecognitionUsageDescription": "Samatia transcribes your speech on device when you tap Speak to type."
       },
       "target": [

@@ -17,15 +17,15 @@
 
 本应用中与习惯、打卡、练习陪伴相关的 AI 对话功能，使用**设备端（本地）模型**进行推理。你输入的相关内容仅在你的设备上完成计算，**不会发送给第三方大模型服务商**。
 
-Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别把你说的话转成文字；**不是语音消息**，录音**不会上传**。第一份安装包里，倾诉入口默认关闭。
+Mac 版「和阿寅聊聊」中的 **Speak to type** 仅使用本机语音识别把你说的话转成文字；**不是语音消息**，录音**不会上传**。第一份安装包里，和阿寅聊聊入口默认关闭。
 
 可选的「专注节奏」（仅 Mac 电脑版，**默认关闭**）：打开且系统允许输入监控后，本机只看按键**间隔**和是否退格，用来稍微调整邀请时机。**不保存**你打的字、**不读**窗口标题、**不上传**、不显示分数。关掉或未授权则退回只看出没离开窗口、坐了多久。
 
-### 向阿寅倾诉（Chat with Yin） {#confide-consent}
+### 和阿寅聊聊（Chat with Yin） {#confide-consent}
 
-**不能替代专业照护。** 「向阿寅倾诉」不能替代持证心理健康专业从业者。如果出现持续的心理困扰或自伤想法，请主动寻求专业帮助。
+**不能替代专业照护。** 「和阿寅聊聊」不能替代持证心理健康专业从业者。如果出现持续的心理困扰或自伤想法，请主动寻求专业帮助。
 
-**不提供精神健康评估、诊断或治疗。** 对于情绪相关对话，Samatia 不提供任何精神健康评估、诊断或治疗建议。使用「向阿寅倾诉」即表示你知晓并同意上述内容。首次使用勾选只保存在本机，不进入练习备份导出。
+**不提供精神健康评估、诊断或治疗。** 对于情绪相关对话，Samatia 不提供任何精神健康评估、诊断或治疗建议。使用「和阿寅聊聊」即表示你知晓并同意上述内容。首次使用勾选只保存在本机，不进入练习备份导出。
 
 ### 2. 默认数据存储
 
@@ -37,7 +37,7 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 
 **启动时的公开配置**：打开应用时，本机可能向自有服务器拉取公开配置与已购权益状态（例如功能是否对该渠道开放）。这不是把你的练习记录上传。
 
-**可选的练习效果计数（研究，默认关）**：只有你在 Privacy 打开开关后，我们才会收到计时专注的去身份计数（例如有没有坐完、后来有没有回来）和一个重装即作废的本机研究代号。没有倾诉原文、邮箱或付款信息。随时可关。
+**可选的练习效果计数（研究，默认关）**：只有你在 Privacy 打开开关后，我们才会收到计时专注的去身份计数（例如有没有坐完、后来有没有回来）和一个重装即作废的本机研究代号。没有和阿寅聊聊的原文、邮箱或付款信息。随时可关。
 
 **研究共修：本版本暂不提供。** 菜单里不应出现「研究共修」入口，也不会按周上送研究数据包。下文仅作日后开放时的说明，不代表本安装包已提供该功能。
 
@@ -59,13 +59,13 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 - 导出文件**未加密**；**请自行妥善保管**。文件离开你的设备后，其安全性由你自行负责。
 - 导入会**覆盖**目标设备上对应的本机数据；本机已有数据时须勾选确认后再继续。
 - **导出范围（与工程白名单一致，当前 31 项键）**，主要包括：旅程记录、练习日历、里程碑标记、永久拥有标记、进阶仪式、芥子印、莲花池、部分偏好（语言、提醒、陪伴模式、氛围、语音等）、练习观察相关记录、部分已购标记与寅币账本、稳定偏好。名单以设置里「备份与恢复」实际勾选的键为准。
-- **不包含**：倾诉（Confide）对话原文、阿寅个人记忆、研究共修编号与周包、云端登录令牌、派生缓存。反思日记键在导出白名单内；若你从未写过日记，导出文件里对应项为空。
+- **不包含**：和阿寅聊聊（和阿寅聊聊）对话原文、阿寅个人记忆、研究共修编号与周包、云端登录令牌、派生缓存。反思日记键在导出白名单内；若你从未写过日记，导出文件里对应项为空。
 
 ### 4. 云端备份 / 邮箱找回
 
 **本版本当前未提供云端备份，也不提供「填邮箱就能找回」。** 换机请使用第 3 节的本地导出/导入。
 
-代码里已有可选的邮箱练习快照能力（约 8 类：旅程记录、练习日历、里程碑、永久拥有、进阶仪式、芥子印、莲花池、成长阶段下限；不含倾诉原文、个人记忆、研究编号）。**第一份安装包关闭该入口**；生产云端探测仍应表现为关闭。若日后打开，我们会先更新本声明，说明存什么、是否加密、如何删除，并征得你的同意。
+代码里已有可选的邮箱练习快照能力（约 8 类：旅程记录、练习日历、里程碑、永久拥有、进阶仪式、芥子印、莲花池、成长阶段下限；不含和阿寅聊聊的原文、个人记忆、研究编号）。**第一份安装包关闭该入口**；生产云端探测仍应表现为关闭。若日后打开，我们会先更新本声明，说明存什么、是否加密、如何删除，并征得你的同意。
 
 ### 5. 你的权利
 
@@ -124,13 +124,13 @@ Please note:
 - Exported files are **not encrypted**; **you are responsible for keeping them safe**.
 - Import **overwrites** matching on-device records; confirm if data already exists.
 - **Export scope (engineering whitelist, currently 31 keys)** includes Journey Log, practice calendar, milestone markers, ownership marks, ritual completions, the Mustard Seed seal, lotus pond, some preferences (locale, reminders, companion mode, ambient, TTS, and similar), practice-paper related rows, some entitlement marks and Focus Coins, and stable prefs. The live list is the Backup & restore registry.
-- **Not included:** Confide conversation text, Yin personal memory, research-study IDs and weekly packets, cloud login tokens, derived caches. The reflections key is on the export whitelist; if you never wrote a journal, that field is empty.
+- **Not included:** Chat with Yin conversation text, Yin personal memory, research-study IDs and weekly packets, cloud login tokens, derived caches. The reflections key is on the export whitelist; if you never wrote a journal, that field is empty.
 
 ### 4. Cloud backup / email restore
 
 **This version does not currently offer cloud backup, and does not promise “enter email to restore.”** Use Section 3 local export/import to move devices.
 
-The product codebase already contains an optional email snapshot of about **8** practice-memory classes (Journey Log, practice calendar, milestones, ownership, rituals, Mustard Seed seal, lotus pond, growth-stage floor — not Confide words, personal memory, or research IDs). **This first installer keeps that entry closed**; production probes should still see it closed. If we open it later, we will update this notice first, explain what is stored, whether it is encrypted, how to delete, and ask for consent.
+The product codebase already contains an optional email snapshot of about **8** practice-memory classes (Journey Log, practice calendar, milestones, ownership, rituals, Mustard Seed seal, lotus pond, growth-stage floor — not Chat with Yin words, personal memory, or research IDs). **This first installer keeps that entry closed**; production probes should still see it closed. If we open it later, we will update this notice first, explain what is stored, whether it is encrypted, how to delete, and ask for consent.
 
 ### 5. Your Rights
 
@@ -147,7 +147,7 @@ The product codebase already contains an optional email snapshot of about **8** 
 
 習慣、チェックイン、練習サポートに関連するAI対話機能は、**端末上（オンデバイス）のモデル**で推論を行います。関連する入力内容はすべてお使いの端末上で処理され、**第三者の大規模言語モデル提供事業者へ送信されることはありません**。
 
-Mac版「寅と話す」の **Speak to type** は、端末内の音声認識のみで話した内容を文字にします。**音声メッセージではありません**。音声は**アップロードされません**。この招待版では打ち明け入口は既定オフです。
+Mac版「寅と話す」の **Speak to type** は、端末内の音声認識のみで話した内容を文字にします。**音声メッセージではありません**。音声は**アップロードされません**。この招待版では寅と話す入口は既定オフです。
 
 任意の「集中のリズム」（Macアプリのみ、**既定オフ**）：オンにし、入力モニタリングが許可されたとき、この端末はキーの**間隔**とバックスペースの有無だけを見て誘いのタイミングを少しずらします。打った文字・窓の題名・点数は保存せず、送信もしません。
 
@@ -186,7 +186,7 @@ Mac版「寅と話す」の **Speak to type** は、端末内の音声認識の�
 - エクスポートファイルは**暗号化されていません**。**ご自身の責任で保管してください**。
 - インポートは該当する端末データを**上書き**します。
 - **対象範囲（現在 31 キー）**：旅の記録、練習カレンダー、節目、所有印、儀式、芥子の印、蓮の池、一部の設定（言語・リマインダー・同伴モードなど）、観察紙関連、一部の権利印と寅コイン、安定した好み。実リストは設定のバックアップ画面に従います。
-- **対象外**：打ち明け原文、寅の個人記憶、研究共修の番号と週次パケット、クラウドログイントークン、派生キャッシュ。振り返り日記のキーはエクスポート対象に含まれます。書いていなければ空です。
+- **対象外**：寅と話すの原文、寅の個人記憶、研究共修の番号と週次パケット、クラウドログイントークン、派生キャッシュ。振り返り日記のキーはエクスポート対象に含まれます。書いていなければ空です。
 
 ### 4. クラウドバックアップ / メール復元
 
@@ -215,7 +215,7 @@ Mac版「寅と話す」の **Speak to type** は、端末内の音声認識の�
 
 - Local export/import SSOT = `PRACTICE_BACKUP_EXPORT_KEYS` in `localBackupStorageRegistry.js` (**31 keys** as of schema v7). Legacy cloud snapshot was 6 keys; live Worker schema is **8** `PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS`. Do not tell users “export is 6 keys” or “export excludes all preferences.”
 - First-invite ship: `practiceBackupCloudEnabled` must be **false** in the packed dist (release-flag assert). D1–D4 runtime remains in source for a later public open. Production probes should still look closed.
-- Practice Study / T81 weekly upload / Hugging Face model fetch: first-package capture list must show none of these as live customer traffic unless the user opened Confide semantics download.
+- Practice Study / T81 weekly upload / Hugging Face model fetch: first-package capture list must show none of these as live customer traffic unless the user opened 寅と話す semantics download.
 - Packaged Mac update checks may hit `https://updates.twinsology.com/` (IP + app version only). Capture allowlists must list that host; it is not a practice-content upload.
 - Opt-in key `focus-tiger.practice-backup.v1` must not silent-flush while the client gate is off.
 

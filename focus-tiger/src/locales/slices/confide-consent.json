@@ -21,9 +21,9 @@
     "PRIVACY_SHEET_CONFIDE_CONSENT": "Not a Substitute for Professional Care. Chat with Yin is not a substitute for a licensed mental health professional. If you experience ongoing psychological distress or thoughts of self-harm, you should proactively seek professional help.\n\nNo Mental Health Assessment, Diagnosis, or Treatment. In emotion-related conversations, Samatia does not provide any mental health assessment, diagnosis, or treatment advice. By using Chat with Yin, you acknowledge and agree to these terms. The first-use checkboxes stay on this device and are not included in practice backup export."
   },
   "zh": {
-    "CONFIDE_MENU_LABEL": "向阿寅倾诉",
-    "CONFIDE_EAR_TOOLTIP": "向阿寅倾诉",
-    "CONFIDE_PANEL_TITLE": "向阿寅倾诉",
+    "CONFIDE_MENU_LABEL": "和阿寅聊聊",
+    "CONFIDE_EAR_TOOLTIP": "和阿寅聊聊",
+    "CONFIDE_PANEL_TITLE": "和阿寅聊聊",
     "CONFIDE_CONSENT_MODAL_TITLE": "开始之前",
     "CONFIDE_CONSENT_MODAL_INTRO": "请阅读并勾选下面全部选项后继续。",
     "CONFIDE_CONSENT_ITEM1": "我确认：使用「向阿寅倾诉」时，清楚知晓本工具不能替代持证心理健康专业从业者。如果出现持续的心理困扰或自伤想法，我会主动寻求专业帮助。",
@@ -38,7 +38,7 @@
     "CONFIDE_CONSENT_CRISIS_TITLE": "若你此刻需要帮助",
     "CONFIDE_CONSENT_CRISIS_BODY": "若此刻很难独自撑住，请拨打本地求助热线。若情况紧急，请拨打当地紧急电话。寅不能代替专业帮助。",
     "CONFIDE_CONSENT_RECONSENT": "这些说明有更新，请再确认一次。",
-    "PRIVACY_SHEET_SEC_CONFIDE_TITLE": "向阿寅倾诉",
+    "PRIVACY_SHEET_SEC_CONFIDE_TITLE": "和阿寅聊聊",
     "PRIVACY_SHEET_CONFIDE_CONSENT": "不能替代专业照护。「向阿寅倾诉」不能替代持证心理健康专业从业者。如果出现持续的心理困扰或自伤想法，请主动寻求专业帮助。\n\n不提供精神健康评估、诊断或治疗。对于情绪相关对话，Samatia 不提供任何精神健康评估、诊断或治疗建议。使用「向阿寅倾诉」即表示你知晓并同意上述内容。首次使用勾选只保存在本机，不进入练习备份导出。"
   },
   "ja": {

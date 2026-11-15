@@ -21,7 +21,7 @@
     <key>LSUIElement</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Samatia uses the microphone only when you tap Speak to type in Confide, Arrival, or Reflection.</string>
+    <string>Samatia uses the microphone only when you tap Speak to type in Chat with Yin, Arrival, or Reflection.</string>
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>Samatia transcribes your speech on this Mac when you tap Speak to type.</string>
   </dict>

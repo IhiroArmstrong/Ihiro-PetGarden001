@@ -1,0 +1,44 @@
+{
+  "en": {
+    "RESET_OVERWHELMED_CONFIDE_LINK": "Chat with Yin",
+    "CONFIDE_DESKTOP_STATUS_READY": "Local model is ready on this computer. Quiet Chat with Yin lines still come first; unmatched words may get a short on-device sentence.",
+    "CONFIDE_DESKTOP_STATUS_ERROR": "Couldn’t prepare the local model. You can still chat with Yin with the usual short replies.",
+    "PRIVACY_SHEET_EXPORT_IMPORT": "You can export and import a local backup file (plain JSON, not encrypted) from Preferences → Backup & restore. Scope includes Journey Log, practice calendar, presence check-ins, reflections, Chat with Yin conversation log, Yin personal memory, preferences, milestone markers, ritual completions, and the Mustard Seed seal. Ambient music uploads are not included.",
+    "PRIVACY_SHEET_YPE_OPT_IN_HINT": "Off by default. If you turn this on, we send a small set of structured signals from this device—such as focus completion, reflection frequency, your chosen companion style, and practice-day counts. We never send your Chat with Yin words or Yin's memory summaries. These signals are used to personalize how Yin keeps you company over time. Yin still works offline, and you can turn this off anytime.",
+    "PRIVACY_SHEET_YPE_OPT_IN_DETAIL_2": "What stays on this device? Your Chat with Yin conversations, Yin's personal memories, and the text of what you say to Yin.",
+    "PRIVACY_SHEET_YPE_OPT_IN_DETAIL_5": "Turning this off does not disable Yin, Focus, Chat with Yin, Memory, or other local features.",
+    "LOCAL_DATA_CAT_CONFIDE_TURNS": "Chat with Yin conversation log",
+    "YIN_MEMORY_PANEL_EMPTY": "Nothing here yet — Yin only remembers after you allow it in Chat with Yin.",
+    "YIN_MEMORY_PANEL_EMPTY_GRANTED": "Nothing kept yet. Yin notes a few repeating observations — not every Chat with Yin reply.",
+    "YIN_MEMORY_WHY_CONFIDE": "From what you shared in Chat with Yin on {date}.",
+    "YIN_MEMORY_WHY_CONFIDE_NO_DATE": "From what you shared in Chat with Yin."
+  },
+  "zh": {
+    "RESET_OVERWHELMED_CONFIDE_LINK": "和阿寅聊聊",
+    "CONFIDE_DESKTOP_STATUS_READY": "本地模型已在这台电脑上就绪。仍先用安静的「和阿寅聊聊」短句；对不上的话，可能会用本机短句回应。",
+    "CONFIDE_DESKTOP_STATUS_ERROR": "本地模型没能准备好。你仍可用原来的短句继续和阿寅聊聊。",
+    "PRIVACY_SHEET_EXPORT_IMPORT": "可在「设置 → 备份与恢复」导出/导入本地备份文件（明文 JSON，未加密）。范围含：旅程记录、练习日历、观察打卡、反思日记、和阿寅聊聊对话记录、阿寅个人记忆、偏好设置、里程碑、仪式完成、芥子须弥印。不含氛围乐上传文件。",
+    "PRIVACY_SHEET_YPE_OPT_IN_HINT": "默认关闭。开启后，我们会从这台设备发送少量结构化信号，例如专注完成情况、反思频率、你选择的陪伴方式和练习日计数。我们不会发送你的和阿寅聊聊的原文或阿寅的记忆摘要。这些信号只用于逐步个人化阿寅的陪伴方式。没有网络，阿寅也能照常工作；你可以随时关闭。",
+    "PRIVACY_SHEET_YPE_OPT_IN_DETAIL_2": "留在本机的？ 和阿寅聊聊对话、阿寅的个人记忆、你对阿寅说的正文。",
+    "PRIVACY_SHEET_YPE_OPT_IN_DETAIL_5": "关闭此功能不会关闭阿寅、专注、和阿寅聊聊、记忆或其他本地功能。",
+    "LOCAL_DATA_CAT_CONFIDE_TURNS": "和阿寅聊聊对话记录",
+    "YIN_MEMORY_PANEL_EMPTY": "还没有——需在和阿寅聊聊里允许后才会记住。",
+    "YIN_MEMORY_PANEL_EMPTY_GRANTED": "还没有记下观察。阿寅只留下少量反复出现的事，不是和阿寅聊聊里的每一句。",
+    "YIN_MEMORY_WHY_CONFIDE": "来自 {date} 在和阿寅聊聊里说过的话。",
+    "YIN_MEMORY_WHY_CONFIDE_NO_DATE": "来自你在和阿寅聊聊里说过的话。"
+  },
+  "ja": {
+    "RESET_OVERWHELMED_CONFIDE_LINK": "寅と話す",
+    "CONFIDE_DESKTOP_STATUS_READY": "ローカルモデルの準備ができました。静かな定型の寅と話す文が先で、当てはまらない言葉は、このパソコンで短い一文になることがあります。",
+    "CONFIDE_DESKTOP_STATUS_ERROR": "ローカルモデルを準備できませんでした。いつもの短い返事で寅と話せます。",
+    "PRIVACY_SHEET_EXPORT_IMPORT": "「設定 → バックアップと復元」からローカルバックアップ（平文JSON、暗号化なし）をエクスポート/インポートできます。対象：旅の記録、練習カレンダー、観察チェックイン、振り返り日記、寅と話すの会話記録、寅の個人記憶、設定、節目、儀式の完了、芥子の印。雰囲気音のアップロードは含みません。",
+    "PRIVACY_SHEET_YPE_OPT_IN_HINT": "初期設定はオフです。オンにすると、この端末から少量の構造化シグナル（集中の完了状況、振り返りの頻度、あなたが選んだ寄り添い方、練習日の回数など）を送ります。寅と話すの原文や、寅の記憶の要約は送りません。これらのシグナルは、寅があなたに寄り添う方法を少しずつ合わせるためだけに使われます。ネットがなくても寅は普段どおり動きます。いつでもオフにできます。",
+    "PRIVACY_SHEET_YPE_OPT_IN_DETAIL_2": "この端末に残るものは？ 寅と話すの会話、寅の個人的な記憶、寅に話した本文。",
+    "PRIVACY_SHEET_YPE_OPT_IN_DETAIL_5": "オフにしても、寅・集中・寅と話す・記憶などのローカル機能はオフになりません。",
+    "LOCAL_DATA_CAT_CONFIDE_TURNS": "寅と話すの会話記録",
+    "YIN_MEMORY_PANEL_EMPTY": "まだありません——寅と話すで許可したあとに覚えます。",
+    "YIN_MEMORY_PANEL_EMPTY_GRANTED": "まだ観察はありません。寅は繰り返すことだけを残し、寅と話すのすべての返事は覚えません。",
+    "YIN_MEMORY_WHY_CONFIDE": "{date} の寅と話すで共有したことから。",
+    "YIN_MEMORY_WHY_CONFIDE_NO_DATE": "寅と話すで共有したことから。"
+  }
+}

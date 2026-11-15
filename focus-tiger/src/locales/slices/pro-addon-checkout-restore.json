@@ -1,6 +1,6 @@
 {
   "en": {
-    "SUPPORT_PRO_BLURB": "Everything in Yin Membership, plus Confide with on-device Yin on a capable desktop.",
+    "SUPPORT_PRO_BLURB": "Everything in Yin Membership, plus Chat with Yin with on-device Yin on a capable desktop.",
     "SUPPORT_COMPANION_ADDON_BLURB": "Already own Sanctuary Lifetime? Unlock on-device Yin once — no subscription.",
     "SUPPORT_COMPANION_ADDON_CTA_OWNED": "Unlocked",
     "SUPPORT_PRO_BENEFIT_2": "Local AI companion in Electron (wide screen, capable PC)",
@@ -8,7 +8,7 @@
     "CONTENT_UNLOCK_COMPANION_CTA": "Unlock AI Companion"
   },
   "zh": {
-    "SUPPORT_PRO_BLURB": "含阿寅会员全部进阶层，另加桌面端本机倾诉（需合格电脑与 Electron）。",
+    "SUPPORT_PRO_BLURB": "含阿寅会员全部进阶层，另加桌面端本机和阿寅聊聊（需合格电脑与 Electron）。",
     "SUPPORT_COMPANION_ADDON_BLURB": "已买圣所终身？一次性解锁本机阿寅，无需再订订阅。",
     "SUPPORT_COMPANION_ADDON_CTA_OWNED": "已解锁",
     "SUPPORT_PRO_BENEFIT_2": "Electron 宽屏本机智能体",
