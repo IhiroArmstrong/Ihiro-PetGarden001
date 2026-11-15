@@ -150,6 +150,11 @@ export const LOCAL_BACKUP_NAMED_EXCLUDE_ROWS = Object.freeze([
     note: 'T54 consent must not restore without a fresh in-app grant'
   },
   {
+    key: 'focus-tiger.confide-consent.v1',
+    tier: 'exclude-product',
+    note: 'Chat with Yin first-use consent stays on this device; do not copy via practice backup'
+  },
+  {
     key: 'focus-tiger.t54-research-last-post.v1',
     tier: 'exclude-ephemeral',
     note: 'T54 last POST fingerprint; device throttle'

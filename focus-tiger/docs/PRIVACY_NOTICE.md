@@ -5,7 +5,7 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-11-14
+最后更新 / Last updated / 最終更新日: 2026-11-15
 
 本页描述**当前邀请制第一份安装包**。该版本不收款、不提供邮箱云端找回。代码里可能仍有后续版本才会打开的入口；以本页与安装包实际行为为准。
 
@@ -20,6 +20,12 @@
 Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别把你说的话转成文字；**不是语音消息**，录音**不会上传**。第一份安装包里，倾诉入口默认关闭。
 
 可选的「专注节奏」（仅 Mac 电脑版，**默认关闭**）：打开且系统允许输入监控后，本机只看按键**间隔**和是否退格，用来稍微调整邀请时机。**不保存**你打的字、**不读**窗口标题、**不上传**、不显示分数。关掉或未授权则退回只看出没离开窗口、坐了多久。
+
+### 向阿寅倾诉（Chat with Yin） {#confide-consent}
+
+**不能替代专业照护。** 「向阿寅倾诉」不能替代持证心理健康专业从业者。如果出现持续的心理困扰或自伤想法，请主动寻求专业帮助。
+
+**不提供精神健康评估、诊断或治疗。** 对于情绪相关对话，Samatia 不提供任何精神健康评估、诊断或治疗建议。使用「向阿寅倾诉」即表示你知晓并同意上述内容。首次使用勾选只保存在本机，不进入练习备份导出。
 
 ### 2. 默认数据存储
 
@@ -76,9 +82,15 @@ Mac 版「向阿寅倾诉」中的 **Speak to type** 仅使用本机语音识别
 
 AI companion features related to habits, check-ins, and practice guidance run **on your device (on-device model)**. Your related inputs are processed entirely on your device and are **never sent to a third-party large language model provider**.
 
-On the Mac app, **Speak to type** in Confide uses **on-device speech recognition** only to turn speech into text. It is **not a voice message**; audio is **not uploaded**. In this first invite build, Confide stays off by default.
+On the Mac app, **Speak to type** in Chat with Yin uses **on-device speech recognition** only to turn speech into text. It is **not a voice message**; audio is **not uploaded**. In this first invite build, Chat with Yin stays off by default.
 
 Optional **Focus rhythm** (Mac app only, **off by default**): when you turn it on and the system allows Input Monitoring, this device may notice key **timing** and backspaces to time a quiet invite. It does **not** store what you type, window titles, or a score, and it is **never uploaded**. If it is off or not permitted, invites again use leaving the window and how long you have sat.
+
+### Chat with Yin {#confide-consent}
+
+**Not a Substitute for Professional Care.** Chat with Yin is not a substitute for a licensed mental health professional. If you experience ongoing psychological distress or thoughts of self-harm, you should proactively seek professional help.
+
+**No Mental Health Assessment, Diagnosis, or Treatment.** In emotion-related conversations, Samatia does not provide any mental health assessment, diagnosis, or treatment advice. By using Chat with Yin, you acknowledge and agree to these terms. First-use checkboxes stay on this device and are not included in practice backup export.
 
 ### 2. Default Data Storage
 
@@ -135,9 +147,15 @@ The product codebase already contains an optional email snapshot of about **8** 
 
 習慣、チェックイン、練習サポートに関連するAI対話機能は、**端末上（オンデバイス）のモデル**で推論を行います。関連する入力内容はすべてお使いの端末上で処理され、**第三者の大規模言語モデル提供事業者へ送信されることはありません**。
 
-Mac版「寅に打ち明ける」の **Speak to type** は、端末内の音声認識のみで話した内容を文字にします。**音声メッセージではありません**。音声は**アップロードされません**。この招待版では打ち明け入口は既定オフです。
+Mac版「寅と話す」の **Speak to type** は、端末内の音声認識のみで話した内容を文字にします。**音声メッセージではありません**。音声は**アップロードされません**。この招待版では打ち明け入口は既定オフです。
 
 任意の「集中のリズム」（Macアプリのみ、**既定オフ**）：オンにし、入力モニタリングが許可されたとき、この端末はキーの**間隔**とバックスペースの有無だけを見て誘いのタイミングを少しずらします。打った文字・窓の題名・点数は保存せず、送信もしません。
+
+### 寅と話す {#confide-consent}
+
+**専門的ケアの代替ではありません。** 「寅と話す」は、資格を有する心の健康の専門家の代わりにはなりません。継続的な心の不調や自傷の考えがある場合は、自ら専門家にご相談ください。
+
+**精神的健康に関する評価・診断・治療は行いません。** 気持ちや感情に関する会話において、Samatia は精神的な健康状態の評価、診断、治療に関する助言を一切行いません。「寅と話す」をご利用になることにより、これらの内容を理解し、同意したものとみなされます。初回のチェックは端末内のみに保存され、練習バックアップの書き出しには含まれません。
 
 ### 2. デフォルトのデータ保存
 

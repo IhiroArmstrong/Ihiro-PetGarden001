@@ -761,7 +761,7 @@
 
 ---
 
-## 场景 AE：向阿寅倾诉 · Confide to Yin（Web harness · Electron L1/L2）
+## 场景 AE：向阿寅倾诉 · Chat with Yin（Web harness · Electron L1/L2）
 
 > **政策**：2026-08-10 检索不生成仍有效；**2026-08-18 窄例外** = 仅 Electron 宽屏第 3 层短生成（L2），Web / 窄屏 / ≤8GB **仍检索**。与 Support 付费 **零耦合**；Checkout / 第四卡 Pro / 第五卡 Add-on **未接**。  
 > **单元**：`confideClassify` / `confideReplyFlow` / `confideOrchestration` 闸门；Electron：`desktopCompanionL1.test.js` · `desktopCompanionL2Route.test.js`。  
@@ -771,7 +771,7 @@
 
 **前提**：首发英文挂载开（`CONFIDE_USER_MOUNT_ENABLED=true`）。英文 Idle ⋯/抽屉 **有** Confide 行 + 倾听耳。界面切到日语（`locale === 'ja'`）则行、耳、快捷键、面板都关。T36 仍只作为英文界面下日语输入的发送链兜底。
 
-1. 打开 **`?product=1`**（英文）Idle → ⋯ / 抽屉出现 **Confide to Yin** → **0–1 秒内** `#confide-to-yin-card` 淡入。Web **无** memory bridge → **不得**出现 `[data-testid=confide-to-yin-verbal-chips]`（Forget this 芯片仅 Electron）。**日语对照**：切到日本語 → **0–1 秒内** 无该行、无耳；QA `?confide=1` 也打不开。  
+1. 打开 **`?product=1`**（英文）Idle → ⋯ / 抽屉出现 **Chat with Yin** → **0–1 秒内** `#confide-to-yin-card` 淡入。首次无同意时须先见 `[data-testid=confide-consent-modal]`，勾全三项后才可输入发送。Web **无** memory bridge → **不得**出现 `[data-testid=confide-to-yin-verbal-chips]`（Forget this 芯片仅 Electron）。**日语对照**：切到日本語 → **0–1 秒内** 无该行、无耳；QA `?confide=1` 也打不开。  
 1b. **布局（2026-10-29 · T41 倾诉贴边暂时停用）**：开卡后 `data-dock=center`（各宽度居中，可能挡倾听姿态）；`#confide-to-yin-card` **不可**鼠标拖走（无 `data-ft-glass-card`）。Help Center / 旅程详情宽屏仍 **T42** 靠边。恢复贴边须单独 PR，**不得**以 lip-sync 为条件。  
 2. 输入非空 → Share → **0–1 秒内**发送钮按压 + `[data-testid=confide-to-yin-reply]` 见回应（**`data-source=corpus`**；Web **禁止** generate）。  
 3. **安全**：`I don't want to live` → `data-route=safety_redirect`，英文须是 **safety-01** 转介句（Heard. If this feels too heavy…），**禁止**茶句；危机回复左侧 **偏棕**竖线。**T92（#1598 / #1614）**：中文须含 **「请您拨打本地求助热线」** 且第二句提 **当地紧急电话**（英文 **local crisis helpline** + **local emergency number**；日文 **救急電話**）。**禁止**过期各国具体号码清单与 911/110/988 等号码。  
@@ -785,12 +785,12 @@
 
 **前提**：`cd /Users/armstronghesapplelaptop/Downloads/Zen-tiger-Pet-garden001-wt-develop-qa/focus-tiger` → `npm --prefix desktop install` → `npm run desktop:dev`。**勿**与 `dev:qa` 抢 5173。非低配宽屏（≥480）；Web Safari 同 URL **不算**本场景。
 
-1. Idle 宽窗 → ⋯ → **Confide to Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见隐晦代号 **`Model4E4`**（默认 Gemma4-E4B；小字淡色；**禁止**裸显 `Gemma-4-E4B-it-Q4_K_M`；回退 Qwen 时为 `Model317`；不是独立 HUD；Safari Web **无**此行）。**T14（#1627）**：默认可见卡内帮助链（`FT_CONFIDE_HELP_ENTRY=off` 才关）；点链 **0–1 秒内**卡内展开 crisis 指引、草稿仍在；**禁止**改走 `#yin-support-modal`。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：**仅**一条 `Forget this`（或当前 locale 金句）；**禁止**出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → **0–1 秒内** textarea 填入该金句、Share **仍可点**、**不**自动发送。  
+1. Idle 宽窗 → ⋯ → **Chat with Yin**（`[data-testid=idle-confide-desktop]`）→ **0–1 秒内**玻璃卡淡入 + `[data-testid=confide-to-yin-desktop-status]` 见准备/下载/加载文案（未下完可见 progress）。就绪后同一条状态区下方 `[data-testid=confide-to-yin-desktop-model]` 须见隐晦代号 **`Model4E4`**（默认 Gemma4-E4B；小字淡色；**禁止**裸显 `Gemma-4-E4B-it-Q4_K_M`；回退 Qwen 时为 `Model317`；不是独立 HUD；Safari Web **无**此行）。**T14（#1627）**：默认可见卡内帮助链（`FT_CONFIDE_HELP_ENTRY=off` 才关）；点链 **0–1 秒内**卡内展开 crisis 指引、草稿仍在；**禁止**改走 `#yin-support-modal`。抬头可见 `[data-testid=confide-to-yin-verbal-chips]`：**仅**一条 `Forget this`（或当前 locale 金句）；**禁止**出现 Don't save / How long have I practiced? / 两周情绪 芯片。点芯片 → **0–1 秒内** textarea 填入该金句、Share **仍可点**、**不**自动发送。  
 2. Share **或** textarea 里 **Enter**（对得上情绪桶 / 安全阀）→ **0–1 秒内**发送钮按压/disabled + `[data-testid=confide-to-yin-reply]` **`data-source=corpus`**。**Shift+Enter** 只换行、不发送。下载中 Share/Enter **仍**有检索回复（非哑点击）。**Stage 2 live**：安全阀仍立刻 corpus。embedding **已 ready** 时情绪桶可先见「正在听」再出 corpus（防「累积了多久」类误进 tired）。embedding **未 ready** 时立刻字面路由、不得干等冷启动。回滚 `FT_CONFIDE_SEMANTIC_ROUTING=shadow`。  
 3. **Focusing 卸载**：Sit→Focusing → companion 状态不再 ready；Share **不得**走生成。Rise 后再开 ⋯ 仍有该行。  
 4. **拖窄关层**：拖到 ≤479 → 生成层关掉；窄屏抽屉 **无** Confide 行。  
 5. **对照**：低配 ≤8GB / Web `?product=1` → **无** companion key、无该行。
-6. **睡态唤醒（交叉 AD · #491）**：DORMANT 或 sleeping 姿态下 → ⋯ **Confide to Yin** 或倾听耳 → **0–1 秒内** `dormantWake`，玻璃卡后 Yin 为 **idle 坐姿**（**禁止**仍 sleeping）。与 **场景 AE · Web** 步 6 同契约。
+6. **睡态唤醒（交叉 AD · #491）**：DORMANT 或 sleeping 姿态下 → ⋯ **Chat with Yin** 或倾听耳 → **0–1 秒内** `dormantWake`，玻璃卡后 Yin 为 **idle 坐姿**（**禁止**仍 sleeping）。与 **场景 AE · Web** 步 6 同契约。
    *[单元：`desktopCompanionL1.test.js` Confide dormant-wake 契约；**非** CapCut 观感 DOM]*
 
 ### AE · Electron L2（宽屏 fallback 短生成 · 口令已执行）
@@ -1110,7 +1110,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 | **AB** | Electron 托盘收起 ≠ 走神 | **已升格** → 见上文「场景 AB」；脚手架后测；**SB-18** |
 | **AC** | 寅币抽屉（L3） | **已升格** → 见上文「场景 AC」；与 Q 付费入口隔离 |
 | **AD** | 精灵占用仲裁（睡/欢迎/付款） | **已升格** → 见上文「场景 AD」；Web Safari QA 树；吸收 #341/#347 |
-| **AE** | Confide to Yin（Web harness + Electron L1/L2） | **已升格** → 见上文「场景 AE」；Web 仍检索；Electron 宽屏才 generate |
+| **AE** | Chat with Yin（Web harness + Electron L1/L2） | **已升格** → 见上文「场景 AE」；Web 仍检索；Electron 宽屏才 generate |
 | **AF** | Presence Signals（Notice / Ritual / Reflection） | **已升格** → 见上文「场景 AF」；#435/#441/#439；90 天 cutoff #440 |
 | **AG** | Yin Personal Memory（Electron L2 延伸） | **已升格** → 见上文「场景 AG」；Slice 0 已关；1a–1e 待人工 |
 | **AH** | Overlay slot 首卡队列（PR2） | **已升格** → 见上文「场景 AH」；PR1 仅单测 |

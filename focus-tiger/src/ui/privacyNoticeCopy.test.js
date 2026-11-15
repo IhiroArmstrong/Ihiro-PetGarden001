@@ -57,7 +57,7 @@ describe('privacyNoticeCopy', () => {
     for (const file of ['en.json', 'ja.json']) {
       const map = loadLocale(file);
       assert.match(map[PRIVACY_SHEET_FULL_LEAD_KEY], /full privacy|完全なプライバシー/i);
-      assert.equal(PRIVACY_SHEET_SECTIONS.length, 5);
+      assert.equal(PRIVACY_SHEET_SECTIONS.length, 6);
       for (const section of PRIVACY_SHEET_SECTIONS) {
         assert.equal(typeof map[section.titleKey], 'string', `${file} ${section.titleKey}`);
         assert.equal(typeof map[section.bodyKey], 'string', `${file} ${section.bodyKey}`);
@@ -99,6 +99,16 @@ describe('privacyNoticeCopy', () => {
           /device|端末/i.test(map.PRIVACY_SHEET_INTRO)
       );
     }
+  });
+
+  it('en + ja Chat with Yin privacy section is present', () => {
+    const en = loadLocale('en.json');
+    const ja = loadLocale('ja.json');
+    assert.match(en.PRIVACY_SHEET_SEC_CONFIDE_TITLE, /Chat with Yin/);
+    assert.match(en.PRIVACY_SHEET_CONFIDE_CONSENT, /not a substitute/i);
+    assert.match(en.PRIVACY_SHEET_CONFIDE_CONSENT, /assessment, diagnosis, or treatment/i);
+    assert.match(ja.PRIVACY_SHEET_SEC_CONFIDE_TITLE, /寅と話す/);
+    assert.doesNotMatch(en.PRIVACY_SHEET_CONFIDE_CONSENT, /988|911/);
   });
 
   it('en + ja wellness disclaimer states practice, not clinical care', () => {
