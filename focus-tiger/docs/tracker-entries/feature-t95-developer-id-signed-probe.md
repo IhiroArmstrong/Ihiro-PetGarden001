@@ -1,0 +1,5 @@
+# feature/t95-developer-id-signed-probe
+
+| 功能 | 类型（UI可见 / 纯后端） | 状态 | 测试步骤 | 用户反馈 | 严重度 | 处理承诺 | 本地访问路径 | 最后更新日期 |
+|---|---|---|---|---|---|---|---|---|
+| 本机有 Developer ID 时，试包用正式身份签，并核对硬化运行时后模型库仍能加载 | UI可见 | 待人工测试 | **主路径：** `pack:prep` 在钥匙串有 Developer ID Application 时不再关掉自动发现。打出的 `Samatia.app` 身份是 Developer ID，带 runtime 标志；真界面进程加载已固化模型库。**钥匙串：** 该证书须「使用系统默认设置」，不要勾成「始终信任」，否则 codesign 会报无法连到根。**公证：** 本机没有 `notarytool` 钥匙串档案时保持未公证，不得写成客户安装包已验证。**禁止**对整包做临时签名。 | — | — | — | `focus-tiger/desktop` · `release/mac-arm64/Samatia.app` | 2026-11-16 |

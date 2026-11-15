@@ -8,6 +8,10 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assertDesktopShellPin } from '../../src/core/desktopShellPin.js';
+import {
+  hasDeveloperIdApplicationIdentity,
+  readCodesigningIdentityList
+} from '../../src/core/packSignatureInspect.js';
 
 const desktopDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const focusTigerRoot = path.join(desktopDir, '..');
@@ -86,7 +90,12 @@ if (verifyFeed.status !== 0) process.exit(verifyFeed.status ?? 1);
 
 const probePack = process.env.FT_T95_PACK_PROBE === '1';
 const builderEnv = { ...process.env };
-if (probePack) builderEnv.CSC_IDENTITY_AUTO_DISCOVERY = 'false';
+const canSignWithDeveloperId = hasDeveloperIdApplicationIdentity(
+  readCodesigningIdentityList()
+);
+if (probePack && !canSignWithDeveloperId) {
+  builderEnv.CSC_IDENTITY_AUTO_DISCOVERY = 'false';
+}
 const builderArgs = probePack
   ? ['exec', '--', 'electron-builder', '--mac', 'dir', '--arm64']
   : ['exec', '--', 'electron-builder', '--mac', 'dmg', '--arm64'];

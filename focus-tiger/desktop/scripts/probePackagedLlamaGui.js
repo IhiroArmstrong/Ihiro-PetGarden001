@@ -4,22 +4,19 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  findPackagedMacApp,
+  inspectPackagedAppSignature
+} from '../../src/core/packSignatureInspect.js';
 
 const desktopDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const releaseDir = path.join(desktopDir, 'release');
 const reportPath = path.join(releaseDir, 't95-llama-gui-probe.json');
 
-function findApp() {
-  const macDir = path.join(releaseDir, 'mac-arm64');
-  if (!existsSync(macDir)) return '';
-  const name = readdirSync(macDir).find((entry) => entry.endsWith('.app'));
-  return name ? path.join(macDir, name) : '';
-}
-
-const appPath = findApp();
+const appPath = findPackagedMacApp(releaseDir);
 if (!appPath) {
   console.error('llama gui probe: no release/mac-arm64/*.app — pack the dir first');
   process.exit(1);
@@ -45,5 +42,12 @@ if (!existsSync(reportPath)) {
   process.exit(run.status || 1);
 }
 const report = JSON.parse(readFileSync(reportPath, 'utf8'));
-console.log(`llama gui probe: guiProcessLoaded=${report.guiProcessLoaded === true} developerIdSigned=false notarized=false`);
+const signature = inspectPackagedAppSignature(appPath);
+report.developerIdSigned = signature.developerIdSigned === true;
+report.hardenedRuntimeVerified = signature.hardenedRuntimeVerified === true;
+report.notarized = signature.notarized === true;
+writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
+console.log(
+  `llama gui probe: guiProcessLoaded=${report.guiProcessLoaded === true} developerIdSigned=${report.developerIdSigned} notarized=${report.notarized} hardenedRuntimeVerified=${report.hardenedRuntimeVerified}`
+);
 process.exit(report.guiProcessLoaded === true ? 0 : 1);
