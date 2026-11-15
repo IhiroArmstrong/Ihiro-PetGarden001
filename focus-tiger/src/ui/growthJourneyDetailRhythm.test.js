@@ -27,10 +27,15 @@ test('lotus row sits between the next step and lifetime, never wraps', () => {
   assert.match(src, /flex-wrap: nowrap/);
 });
 
+test('Growth Journey omits co-practice contract host', () => {
+  assert.doesNotMatch(src, /co-practice-contract/);
+  assert.doesNotMatch(src, /buildCoPracticeContractRows/);
+});
+
 test('practice paper hangs under the rhythm, as one Sit & Breath card', () => {
   assert.match(
     src,
-    /this\.rhythmEl,\s*this\.notebookEl,\s*this\.contractEl,\s*this\.paperEl,\s*this\.closeBtn/s
+    /this\.rhythmEl,\s*this\.notebookEl,\s*this\.paperEl,\s*this\.closeBtn/s
   );
   assert.match(src, /practice-paper-sit-breath/);
   assert.match(src, /practice-paper-check-in-rhythm/);

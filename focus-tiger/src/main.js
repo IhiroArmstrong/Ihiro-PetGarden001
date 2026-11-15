@@ -229,6 +229,7 @@ import { formatObservedSessionDurationLine } from './core/sessionEndObservedDura
 import { formatCompanionChannelLine } from './core/companionChannelCopyDisplay.js';
 
 import { bindPreferenceBackupChrome, createPreferenceBackupPanels, mountEmailJourneyD4Chrome } from './ui/preferenceBackupPanels.js';
+import { wireCoPracticeContractRuntime } from './ui/preferenceBackupPanels.js';
 import { PracticeStudyConsentPanelUI } from './ui/PracticeStudyConsentPanelUI.js';
 import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
@@ -3355,18 +3356,16 @@ async function init() {
         readGrowthJourneyStageFloor(
           typeof localStorage !== 'undefined' ? localStorage : null
         ),
-      getPracticeDates: () => practiceDaysStore.getPracticedDateKeys(),
-      onOpenReminderSettings: () => {
-        reminderPreferenceUI.openPanel();
-      },
-      onOpenWorkEndSettings: () => {
-        workEndPreferenceUI?.openPanel?.();
-      },
-      onOpenPrivacySettings: () => {
-        bootAmbientHints.onboardingHints?.openPrivacySheetForSettings?.();
-      }
+      getPracticeDates: () => practiceDaysStore.getPracticedDateKeys()
     })
   );
+  // T63 · contract surface is under ⋯ Preferences.
+  // Wire after reminder / work-end panels exist.
+  wireCoPracticeContractRuntime(preferenceBackupChrome, {
+    reminderPreferenceUI,
+    workEndPreferenceUI,
+    bootAmbientHints
+  });
   window.__growthJourneyDetail = growthJourneyDetailUI;
   const lotusPondRuntime = new LotusPondRuntime({
     store: lotusPondStore,
@@ -5080,6 +5079,7 @@ async function init() {
       openHelpCenterFromChrome();
     },
     onLocalBackup: preferenceBackupChrome.onLocalBackup,
+    onCoPracticeContract: preferenceBackupChrome.onCoPracticeContract,
     onAccount: preferenceBackupChrome.onAccount,
     onPracticeStudy: () => {
       closeGrowthOverlayCards({ except: 'practice-study' });

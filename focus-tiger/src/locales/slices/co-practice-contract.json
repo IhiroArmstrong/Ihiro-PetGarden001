@@ -17,9 +17,11 @@
     "CO_PRACTICE_CONTRACT_STATUS_AT_TIME": "Set for {time}",
     "CO_PRACTICE_CONTRACT_STATUS_PAUSED": "Quiet until {date}",
     "CO_PRACTICE_CONTRACT_STATUS_INVITE_QUIET": "Off while adaptation is off",
-    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "Use the switch in the notebook above.",
+    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "Adaptation switch lives in Where you are (home journey line).",
     "CO_PRACTICE_CONTRACT_ACTION_CHANGE": "Change",
-    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "Open Privacy"
+    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "Open Privacy",
+    "CO_PRACTICE_CONTRACT_MENU_LABEL": "How Yin may speak",
+    "CO_PRACTICE_CONTRACT_PANEL_CLOSE": "Close"
   },
   "zh": {
     "CO_PRACTICE_CONTRACT_TITLE": "阿寅可能在哪里开口",
@@ -39,9 +41,11 @@
     "CO_PRACTICE_CONTRACT_STATUS_AT_TIME": "设在 {time}",
     "CO_PRACTICE_CONTRACT_STATUS_PAUSED": "这类提醒先停到 {date}",
     "CO_PRACTICE_CONTRACT_STATUS_INVITE_QUIET": "适应关着时，这类邀请也不开",
-    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "总开关在本页上方小本子。",
+    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "适应总开关在首页旅程打开的「你在这里」小本子里。",
     "CO_PRACTICE_CONTRACT_ACTION_CHANGE": "去改",
-    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "去 Privacy"
+    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "去 Privacy",
+    "CO_PRACTICE_CONTRACT_MENU_LABEL": "阿寅可能在哪里开口",
+    "CO_PRACTICE_CONTRACT_PANEL_CLOSE": "关闭"
   },
   "ja": {
     "CO_PRACTICE_CONTRACT_TITLE": "阿寅が声をかけるかもしれない場所",
@@ -61,8 +65,10 @@
     "CO_PRACTICE_CONTRACT_STATUS_AT_TIME": "{time} に設定",
     "CO_PRACTICE_CONTRACT_STATUS_PAUSED": "{date} まで静か",
     "CO_PRACTICE_CONTRACT_STATUS_INVITE_QUIET": "適応オフの間はこの招待もオフ",
-    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "総スイッチは上のノートにあります。",
+    "CO_PRACTICE_CONTRACT_ADAPTATION_SWITCH_ABOVE": "適応の総スイッチは、ホームの旅路から開く「いまの位置」のノートにあります。",
     "CO_PRACTICE_CONTRACT_ACTION_CHANGE": "変更",
-    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "プライバシーを開く"
+    "CO_PRACTICE_CONTRACT_ACTION_PRIVACY": "プライバシーを開く",
+    "CO_PRACTICE_CONTRACT_MENU_LABEL": "阿寅が声をかけるかもしれない場所",
+    "CO_PRACTICE_CONTRACT_PANEL_CLOSE": "閉じる"
   }
 }
