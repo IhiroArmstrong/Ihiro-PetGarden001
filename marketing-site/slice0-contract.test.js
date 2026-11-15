@@ -111,6 +111,24 @@ describe('marketing-site Slice 1 contract', () => {
     assert.match(wellness, /prevent any disease/i);
   });
 
+  it('links privacy and wellness to each other with Chat with Yin legal terms', () => {
+    assert.match(privacy, /href="\.\/wellness\.html"/);
+    assert.match(wellness, /href="\.\/privacy\.html/);
+    assert.match(privacy, /id="confide-consent"/);
+    assert.match(
+      privacy,
+      /Not a Substitute for Professional Care[\s\S]*Chat with Yin/
+    );
+    assert.match(
+      privacy,
+      /No Mental Health Assessment, Diagnosis, or Treatment/
+    );
+    assert.match(privacy, /専門的ケアの代替ではありません/);
+    assert.match(privacy, /精神的健康に関する評価・診断・治療は行いません/);
+    assert.doesNotMatch(privacy, /\bConfide\b/);
+    assert.match(wellness, /privacy\.html#confide-consent/);
+  });
+
   it('does not promise download or fake navigation', () => {
     assert.doesNotMatch(html, /Download App/i);
     assert.doesNotMatch(html, /\[ Practice \]/);
