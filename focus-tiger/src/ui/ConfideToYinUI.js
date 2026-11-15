@@ -613,10 +613,12 @@ export class ConfideToYinUI {
     return this._open;
   }
 
-  open() {
+  open(options = {}) {
     if (this._open) return;
+    const blockedVariant =
+      options.blockedVariant === 'entitlement' ? 'entitlement' : 'safety';
     if (this.handlers.canOpen && !this.handlers.canOpen()) {
-      this.handlers.onOpenBlocked?.();
+      this.handlers.onOpenBlocked?.(blockedVariant);
       return;
     }
     this.handlers.onOpen?.();

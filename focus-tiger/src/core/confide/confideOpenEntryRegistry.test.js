@@ -33,7 +33,7 @@ describe('confideOpenEntryRegistry', () => {
     const visible = CONFIDE_OPEN_ENTRY_REGISTRY.filter(
       (row) => row.policy === 'visible-must-feedback'
     );
-    assert.ok(visible.some((row) => row.id === 'contemplative-inquiry-crisis'));
+    assert.ok(visible.some((row) => row.id === 'contemplative-inquiry-support'));
     for (const row of visible) {
       assert.ok(row.note.length > 10, row.id);
     }
@@ -49,11 +49,13 @@ describe('confideOpenEntryRegistry', () => {
 
   it('main.js wires confide open blocked toast handler', () => {
     assert.match(mainSrc, /onOpenBlocked/);
-    assert.match(mainSrc, /CONFIDE_OPEN_BLOCKED_TOAST_TESTID|confide-open-blocked-safety-help/);
-    assert.match(mainSrc, /confideOpenBlockedUserMessage/);
+    assert.match(mainSrc, /showConfideOpenBlockedToast/);
   });
 
-  it('contemplative inquiry crisis still routes through confideToYinUI.open', () => {
-    assert.match(mainSrc, /onCrisis:[\s\S]*?confideToYinUI\.open\(\)/);
+  it('contemplative inquiry support routes confide open with entitlement blocked variant', () => {
+    assert.match(
+      mainSrc,
+      /onRequestConfide:[\s\S]*?confideToYinUI\.open\(\{ blockedVariant: 'entitlement' \}\)/
+    );
   });
 });

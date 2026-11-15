@@ -27,9 +27,11 @@
     "CI_EX1_EXIT_A": "Yin: Sounds like the mind is trying to grab a fixed answer. You can set that down for now, along with the question.",
     "CI_EX1_EXIT_B": "Yin: Something feels a little off. Let’s pause. Nothing to figure out right now.",
     "CI_EX1_TRY_LATER": "If you want to try again, you can come back on your own.",
-    "CI_EX1_TALK": "Talk with Yin",
     "CI_EX1_CLOSE": "Close",
-    "CI_EX1_FOCUSING_YIELD": "This sit is still going. Rise first, then open Sit with a question."
+    "CI_EX1_FOCUSING_YIELD": "This sit is still going. Rise first, then open Sit with a question.",
+    "CI_EX1_NEED_SUPPORT": "Hard to hold this alone right now",
+    "CI_EX1_SUPPORT_BRIDGE": "Yin: Let’s set this question down for now. If it feels too heavy to hold alone, you can open Confide to talk — or reach someone you trust.\n\nThis isn’t about answering the koan.",
+    "CI_EX1_SUPPORT_CONTINUE": "Continue to Confide"
   },
   "zh": {
     "CI_EX1_MENU_LABEL": "带着问题坐一会儿",
@@ -59,9 +61,11 @@
     "CI_EX1_EXIT_A": "寅：听起来，脑子想抓住一个固定答案。那个劲，连同这个问题，都可以先放下。",
     "CI_EX1_EXIT_B": "寅：有一点不对劲。我们先停。现在不用想明白什么。",
     "CI_EX1_TRY_LATER": "若还想试，可以自己再来。",
-    "CI_EX1_TALK": "去跟阿寅说说",
     "CI_EX1_CLOSE": "关闭",
-    "CI_EX1_FOCUSING_YIELD": "这场还在坐。先点起身，再打开带着问题坐一会儿。"
+    "CI_EX1_FOCUSING_YIELD": "这场还在坐。先点起身，再打开带着问题坐一会儿。",
+    "CI_EX1_NEED_SUPPORT": "此刻很难独自撑住",
+    "CI_EX1_SUPPORT_BRIDGE": "寅：我们先放下这道题。若觉得太难独自扛着，可以打开「向阿寅倾诉」说一说，或找信得过的人。\n\n这不是为了讲明白公案。",
+    "CI_EX1_SUPPORT_CONTINUE": "继续去倾诉"
   },
   "ja": {
     "CI_EX1_MENU_LABEL": "問いと一緒に坐る",
@@ -91,8 +95,10 @@
     "CI_EX1_EXIT_A": "寅：はっきりした答えをつかもうとしているみたい。その気持ちは、いまはこの問いといっしょに置いておいてもいい。",
     "CI_EX1_EXIT_B": "寅：ちょっと落ち着かないみたい。いったん止めよう。いまは、考えなくていいよ。",
     "CI_EX1_TRY_LATER": "また試したくなったら、自分から入ってね。",
-    "CI_EX1_TALK": "寅に話す",
     "CI_EX1_CLOSE": "閉じる",
-    "CI_EX1_FOCUSING_YIELD": "いまはまだ坐っています。先に Rise してから、「問いと一緒に坐る」を開いてください。"
+    "CI_EX1_FOCUSING_YIELD": "いまはまだ坐っています。先に Rise してから、「問いと一緒に坐る」を開いてください。",
+    "CI_EX1_NEED_SUPPORT": "いま一人では辛い",
+    "CI_EX1_SUPPORT_BRIDGE": "寅：いったんこの問いは置こう。抱えきれないときは、コンファイドを開いて話すことも、信頼できる人に連絡することもできるよ。\n\n公案の答えを説明するためじゃない。",
+    "CI_EX1_SUPPORT_CONTINUE": "コンファイドへ進む"
   }
 }
