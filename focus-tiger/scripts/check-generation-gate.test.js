@@ -31,4 +31,14 @@ test('report mode matches the tree and does not require a failing exit', () => {
   assert.equal(report.scanned.cloudHits.length, 0);
   assert.ok(report.scanned.promptSites.includes('desktop/companion/l1Hold.js:111'));
   assert.match(report.lines.join('\n'), /cloud-llm-result=已查、无/);
+  assert.match(report.lines.join('\n'), /product-generate=guardedGenerate/);
+});
+
+test('check mode stays green when product generate is wired', () => {
+  const report = runGenerationGateReport({
+    check: true,
+    root: join(here, '../'),
+    docText: doc
+  });
+  assert.equal(report.exitCode, 0);
 });

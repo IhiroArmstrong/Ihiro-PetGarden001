@@ -232,7 +232,17 @@ export function runGenerationGateReport(opts = {}) {
     scanned.cloudHits.length;
   /** @type {string[]} */
   const lines = [];
-  lines.push('[generation-gate] mode=report');
+  let runtimeText = '';
+  try {
+    runtimeText = readFileSync(join(root, 'desktop/companion/l1Runtime.js'), 'utf8');
+  } catch {
+    runtimeText = '';
+  }
+  const productWired = /guardedGenerate\s*\(/.test(runtimeText);
+  if (!productWired) {
+    drift += 1;
+  }
+  lines.push(`[generation-gate] mode=${opts.check ? 'check' : 'report'}`);
   lines.push(`[generation-gate] surfaces=${rows.length}`);
   lines.push(`[generation-gate] prompt-sites=${scanned.promptSites.length}`);
   for (const site of scanned.promptSites) lines.push(`  prompt ${site}`);
@@ -255,9 +265,14 @@ export function runGenerationGateReport(opts = {}) {
     lines.push('[generation-gate] cloud-llm-result=已查、无');
   }
   lines.push(
+    productWired
+      ? '[generation-gate] product-generate=guardedGenerate'
+      : '[generation-gate] product-generate=unwired'
+  );
+  lines.push(
     drift === 0
       ? '[generation-gate] drift=0'
-      : `[generation-gate] drift=${drift} (report-only; --check exits 1)`
+      : `[generation-gate] drift=${drift}${opts.check ? '' : ' (report-only; --check exits 1)'}`
   );
   const exitCode = opts.check && drift > 0 ? 1 : 0;
   return { exitCode, lines, drift, scanned, rows, diff };

@@ -133,10 +133,25 @@ describe('reflectionCompanionValidation', () => {
       answers: { notice: 'wind' },
       locale: 'en',
       generateReady: true,
-      generateResult: { ok: true, text: '  Wind moved.  ' }
+      generateResult: {
+        ok: true,
+        text: '  Wind moved.  ',
+        gateVersion: '2026-11-16-en-first'
+      }
     });
     assert.equal(resolved.source, REFLECTION_COMPANION_SOURCE.GENERATE);
     assert.equal(resolved.text, 'Wind moved.');
     assert.equal(resolved.skipGenerate, false);
+  });
+
+  it('ready generate without a gate version uses corpus fallback', () => {
+    const resolved = resolveReflectionCompanionObservation({
+      answers: { notice: 'wind' },
+      locale: 'en',
+      generateReady: true,
+      generateResult: { ok: true, text: 'You may have depression' }
+    });
+    assert.equal(resolved.source, REFLECTION_COMPANION_SOURCE.CORPUS_FALLBACK);
+    assert.doesNotMatch(resolved.text, /depression/i);
   });
 });
