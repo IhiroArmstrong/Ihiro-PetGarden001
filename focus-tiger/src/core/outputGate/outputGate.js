@@ -17,9 +17,10 @@ import { formatConfideJapaneseNotYetOpenReply } from '../confide/confideJapanese
 import { formatConfideSafetyResourceGuidance } from '../confide/confideSafetyResources.js';
 import { inspectModelOutput } from './outputGateRules.js';
 
-export const OUTPUT_GATE_VERSION = '2026-11-16-pr2b';
+export const OUTPUT_GATE_VERSION = '2026-11-16-en-first';
 
-export const COVERED_USER_LOCALES = Object.freeze(['en', 'zh', 'ja']);
+/** First Confide ship is English only. zh / ja UI still uses the T96 notice. */
+export const COVERED_USER_LOCALES = Object.freeze(['en']);
 
 /**
  * @param {string} [locale]
@@ -31,8 +32,8 @@ export function isCoveredUserLocale(locale) {
 
 /**
  * T96 #1622 shipped uncovered-language copy as this function: the
- * not-yet-open notice plus the T92 helpline. Output that is not en/zh/ja
- * uses that same sentence. It is not a second Japanese-only product path.
+ * not-yet-open notice plus the T92 helpline. First-ship Confide is English
+ * only, so any non-English user locale uses that same sentence.
  * @param {string} [locale]
  * @returns {string}
  */
@@ -56,7 +57,10 @@ export const OUTPUT_GATE_PATHS = Object.freeze([
 const NEUTRAL_POOL_IDS = Object.freeze([
   'fallback-01',
   'fallback-02',
-  'fallback-03'
+  'fallback-03',
+  'fallback-04',
+  'fallback-05',
+  'fallback-06'
 ]);
 
 const registered = new Set(OUTPUT_GATE_PATHS);
@@ -125,6 +129,13 @@ export async function guardedGenerate(pathId, genArgs = {}) {
     category: null,
     triggersGenerationLock: false
   };
+  if (!isCoveredUserLocale(locale)) {
+    return {
+      ...base,
+      text: formatT96UncoveredLanguageReply(locale),
+      verdict: 'uncovered_language'
+    };
+  }
   if (!registered.has(pathId)) {
     return {
       ...base,

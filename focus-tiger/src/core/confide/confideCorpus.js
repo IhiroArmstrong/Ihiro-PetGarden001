@@ -103,6 +103,30 @@ export const CONFIDE_CORPUS = Object.freeze([
     ja: '少し坐ろう。茶はまだ温かい。',
     review: 'ok'
   }),
+  Object.freeze({
+    id: 'fallback-04',
+    route: CONFIDE_ROUTE.FALLBACK,
+    zh: '还在。不急。',
+    en: 'Still here. No rush.',
+    ja: 'まだいる。急がない。',
+    review: 'ok'
+  }),
+  Object.freeze({
+    id: 'fallback-05',
+    route: CONFIDE_ROUTE.FALLBACK,
+    zh: '房间安静。寅坐着。',
+    en: 'The room is quiet. Yin sits.',
+    ja: '部屋は静か。寅は坐っている。',
+    review: 'ok'
+  }),
+  Object.freeze({
+    id: 'fallback-06',
+    route: CONFIDE_ROUTE.FALLBACK,
+    zh: '一口气。再一口。',
+    en: 'A breath. Then another.',
+    ja: '一息。また一息。',
+    review: 'ok'
+  }),
 
   // —— anxious ——
   Object.freeze({

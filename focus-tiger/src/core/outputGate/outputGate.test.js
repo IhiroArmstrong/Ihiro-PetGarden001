@@ -19,7 +19,7 @@ import {
   neutralPoolSelfHits
 } from './outputGate.js';
 
-const GATE_VERSION = '2026-11-16-pr2b';
+const GATE_VERSION = '2026-11-16-en-first';
 const JAPANESE_NOT_OPEN = /日语|Japanese|日本語/;
 const CORPUS_G10_OK = new Set(['safety-01', 'sad-01']);
 
@@ -115,11 +115,11 @@ const DURATION = [
   '180秒です。'
 ];
 
-test('neutral pool is mood-free and has two distinct lines per language', () => {
+test('neutral pool is mood-free and has six distinct lines per language', () => {
   for (const locale of ['en', 'zh', 'ja']) {
     assert.deepEqual(neutralPoolSelfHits(locale), [], locale);
     const lines = uniqueNeutralLines(locale);
-    assert.ok(lines.length >= 2, locale);
+    assert.ok(lines.length >= 6, locale);
   }
 });
 
@@ -136,7 +136,7 @@ test('violation surfaces are all blocked, twenty per category and language', asy
         const found = inspectModelOutput(sample);
         assert.equal(found.category, category, `${category} ${lang}: ${sample}`);
         const gated = await guardedGenerate('confide-observe-l3', {
-          locale: lang,
+          locale: 'en',
           generate: () => sample
         });
         assert.notEqual(gated.text, sample);
@@ -144,7 +144,7 @@ test('violation surfaces are all blocked, twenty per category and language', asy
         if (category === 'G5' || category === 'G6') {
           assert.equal(gated.verdict, 'late_crisis');
           assert.equal(gated.triggersGenerationLock, true);
-          assert.equal(gated.text, formatConfideSafetyResourceGuidance(lang));
+          assert.equal(gated.text, formatConfideSafetyResourceGuidance('en'));
         } else {
           assert.equal(gated.verdict, 'neutral_fallback');
           assert.equal(gated.triggersGenerationLock, false);
@@ -212,27 +212,37 @@ test('practice durations stay blocked by G9 and are counted apart', async () => 
 test('uncovered user locale uses the T96 sentence', async () => {
   const other = await guardedGenerate('reflection-companion', {
     locale: 'ko',
-    generate: () => '안녕하세요 오늘'
+    generate: () => 'Sit a while. Tea is still warm.'
   });
   assert.equal(other.verdict, 'uncovered_language');
   assert.equal(other.text, formatT96UncoveredLanguageReply('ko'));
   assert.equal(other.text, formatConfideJapaneseNotYetOpenReply('ko'));
-  assert.notEqual(other.text, '안녕하세요 오늘');
+  assert.notEqual(other.text, 'Sit a while. Tea is still warm.');
 });
 
-test('covered user locale with other-language output uses a neutral line', async () => {
-  for (const locale of ['en', 'zh', 'ja']) {
-    const other = await guardedGenerate('reflection-companion', {
+test('zh and ja user locales are not first-ship Confide languages', async () => {
+  for (const locale of ['zh', 'ja']) {
+    const gated = await guardedGenerate('confide-chat-l3', {
       locale,
-      generate: () => '안녕하세요 오늘'
+      generate: () => 'Sit a while. Tea is still warm.'
     });
-    const pool = uniqueNeutralLines(locale);
-    assert.equal(other.verdict, 'uncovered_language');
-    assert.ok(pool.includes(other.text), locale);
-    assert.doesNotMatch(other.text, JAPANESE_NOT_OPEN);
-    assert.notEqual(other.text, formatT96UncoveredLanguageReply(locale));
-    assert.notEqual(other.text, '안녕하세요 오늘');
+    assert.equal(gated.verdict, 'uncovered_language', locale);
+    assert.equal(gated.text, formatT96UncoveredLanguageReply(locale));
+    assert.match(gated.text, JAPANESE_NOT_OPEN);
   }
+});
+
+test('English locale with other-language output uses a neutral line', async () => {
+  const other = await guardedGenerate('reflection-companion', {
+    locale: 'en',
+    generate: () => '안녕하세요 오늘'
+  });
+  const pool = uniqueNeutralLines('en');
+  assert.equal(other.verdict, 'uncovered_language');
+  assert.ok(pool.includes(other.text));
+  assert.doesNotMatch(other.text, JAPANESE_NOT_OPEN);
+  assert.notEqual(other.text, formatT96UncoveredLanguageReply('en'));
+  assert.notEqual(other.text, '안녕하세요 오늘');
 });
 
 test('unregistered path and thrown generator do not return the original', async () => {
