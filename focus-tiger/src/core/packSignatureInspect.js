@@ -24,6 +24,19 @@ export function parseStaplerValidate(text, status) {
   return Number(status) === 0 && /The validate action worked/i.test(blob);
 }
 
+export function parseNotarytoolWaitOutput(text, exitCode) {
+  const blob = String(text || '');
+  const idMatch = blob.match(/id:\s*([0-9a-f-]{36})/i);
+  const statusMatch = blob.match(/status:\s*(\w+)/i);
+  const status = statusMatch ? statusMatch[1] : '';
+  return {
+    accepted: /status:\s*Accepted/i.test(blob),
+    status,
+    submissionId: idMatch ? idMatch[1] : '',
+    okExit: Number(exitCode) === 0
+  };
+}
+
 export function hasDeveloperIdApplicationIdentity(identityListText) {
   return /Developer ID Application:/.test(String(identityListText || ''));
 }
@@ -43,6 +56,32 @@ export function findPackagedMacApp(releaseDir) {
   return name ? path.join(macDir, name) : '';
 }
 
+/** Newest non-blockmap `.dmg` in `desktop/release` (prep or customer pack). */
+export function findReleaseDmg(releaseDir) {
+  if (!existsSync(releaseDir)) return '';
+  const name = readdirSync(releaseDir).find(
+    (entry) => entry.endsWith('.dmg') && !entry.endsWith('.blockmap')
+  );
+  return name ? path.join(releaseDir, name) : '';
+}
+
+export function stapleArtifactsWithXcrun(paths) {
+  const targets = paths.filter(Boolean);
+  const results = [];
+  for (const target of targets) {
+    const stapled = spawnSync('xcrun', ['stapler', 'staple', target], {
+      encoding: 'utf8'
+    });
+    const text = `${stapled.stdout || ''}\n${stapled.stderr || ''}`;
+    results.push({
+      path: target,
+      ok: stapled.status === 0,
+      text: text.trim()
+    });
+  }
+  return results;
+}
+
 export function inspectPackagedAppSignature(appPath) {
   if (!appPath || !existsSync(appPath)) {
     return {
@@ -58,7 +97,9 @@ export function inspectPackagedAppSignature(appPath) {
   });
   const codesignText = `${codesign.stdout || ''}\n${codesign.stderr || ''}`;
   const parsed = parseCodesignVerbose(codesignText);
-  const stapler = spawnSync('stapler', ['validate', appPath], { encoding: 'utf8' });
+  const stapler = spawnSync('xcrun', ['stapler', 'validate', appPath], {
+    encoding: 'utf8'
+  });
   const staplerText = `${stapler.stdout || ''}\n${stapler.stderr || ''}`;
   return {
     ...parsed,

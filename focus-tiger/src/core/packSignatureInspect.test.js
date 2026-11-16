@@ -12,6 +12,7 @@ import {
   hasDeveloperIdApplicationIdentity,
   packagedAppBundleFromExecPath,
   parseCodesignVerbose,
+  parseNotarytoolWaitOutput,
   parseStaplerValidate
 } from './packSignatureInspect.js';
 
@@ -21,6 +22,10 @@ const packSrc = readFileSync(
 );
 const entitlements = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), '../../desktop/entitlements.mac.plist'),
+  'utf8'
+);
+const inspectSrc = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), 'packSignatureInspect.js'),
   'utf8'
 );
 
@@ -45,6 +50,13 @@ Authority=Apple Root CA
     assert.equal(parseCodesignVerbose('').hardenedRuntimeVerified, false);
     assert.equal(parseStaplerValidate('The validate action worked!', 0), true);
     assert.equal(parseStaplerValidate('error', 1), false);
+    const wait = parseNotarytoolWaitOutput(
+      'id: 11111111-2222-3333-4444-555555555555\nstatus: Accepted\n',
+      0
+    );
+    assert.equal(wait.accepted, true);
+    assert.equal(wait.submissionId, '11111111-2222-3333-4444-555555555555');
+    assert.equal(parseNotarytoolWaitOutput('status: Invalid', 1).accepted, false);
   });
 
   it('finds a Developer ID Application line in security identity output', () => {
@@ -70,5 +82,26 @@ Authority=Apple Root CA
     assert.match(packSrc, /if \(probePack && !canSignWithDeveloperId\)/);
     assert.match(packSrc, /CSC_IDENTITY_AUTO_DISCOVERY/);
     assert.match(entitlements, /com\.apple\.security\.cs\.disable-library-validation/);
+    const notarizeSrc = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../desktop/scripts/notarizePrepDmg.js'),
+      'utf8'
+    );
+    const stapleSrc = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../desktop/scripts/staplePrepArtifacts.js'),
+      'utf8'
+    );
+    const pipelineSrc = readFileSync(
+      join(
+        dirname(fileURLToPath(import.meta.url)),
+        '../../desktop/scripts/runPrepSignNotarizeStaple.js'
+      ),
+      'utf8'
+    );
+    assert.match(notarizeSrc, /--keychain-profile/);
+    assert.match(notarizeSrc, /samatia-notary/);
+    assert.equal(notarizeSrc.includes('.p8'), false);
+    assert.match(stapleSrc, /xcrun/);
+    assert.match(pipelineSrc, /prep pipeline/);
+    assert.match(inspectSrc, /spawnSync\('xcrun', \['stapler'/);
   });
 });
