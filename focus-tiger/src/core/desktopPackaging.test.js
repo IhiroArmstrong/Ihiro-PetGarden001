@@ -82,6 +82,7 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.ok(desktopPkg.build.files.includes('inputRhythm/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('native/**/*.swift'));
     assert.ok(desktopPkg.build.files.includes('guidedMeditation/**/*.js'));
+    assert.ok(desktopPkg.build.files.includes('!node_modules/node-llama-cpp/llama/xpack/**'));
     assert.equal(JSON.stringify(desktopPkg).includes('uiohook'), false);
   });
 
