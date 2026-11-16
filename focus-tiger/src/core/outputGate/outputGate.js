@@ -17,7 +17,17 @@ import { formatConfideJapaneseNotYetOpenReply } from '../confide/confideJapanese
 import { formatConfideSafetyResourceGuidance } from '../confide/confideSafetyResources.js';
 import { inspectModelOutput } from './outputGateRules.js';
 
-export const OUTPUT_GATE_VERSION = '2026-11-16-pr2';
+export const OUTPUT_GATE_VERSION = '2026-11-16-pr2b';
+
+export const COVERED_USER_LOCALES = Object.freeze(['en', 'zh', 'ja']);
+
+/**
+ * @param {string} [locale]
+ * @returns {boolean}
+ */
+export function isCoveredUserLocale(locale) {
+  return COVERED_USER_LOCALES.includes(String(locale || ''));
+}
 
 /**
  * T96 #1622 shipped uncovered-language copy as this function: the
@@ -163,7 +173,9 @@ export async function guardedGenerate(pathId, genArgs = {}) {
   if (found.uncovered) {
     return {
       ...base,
-      text: formatT96UncoveredLanguageReply(locale),
+      text: isCoveredUserLocale(locale)
+        ? pickNeutralFallback(locale, previousText)
+        : formatT96UncoveredLanguageReply(locale),
       verdict: 'uncovered_language'
     };
   }

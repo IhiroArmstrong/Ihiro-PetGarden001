@@ -7,7 +7,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { formatConfideJapaneseNotYetOpenReply } from '../confide/confideJapaneseNotYetOpen.js';
 import { formatConfideSafetyResourceGuidance } from '../confide/confideSafetyResources.js';
-import { expandAllowSet } from './outputGateAllowFixtures.js';
+import { CONFIDE_CORPUS, confideLineText } from '../confide/confideCorpus.js';
+import { CONFIDE_MULTILANG_CHITCHAT_FIXTURES } from '../confide/confideMultilangChitchatFixtures.js';
+import { expandAllowSet, uniqueAllowBaseCount } from './outputGateAllowFixtures.js';
 import { inspectModelOutput } from './outputGateRules.js';
 import {
   formatT96UncoveredLanguageReply,
@@ -17,7 +19,9 @@ import {
   neutralPoolSelfHits
 } from './outputGate.js';
 
-const GATE_VERSION = '2026-11-16-pr2';
+const GATE_VERSION = '2026-11-16-pr2b';
+const JAPANESE_NOT_OPEN = /日语|Japanese|日本語/;
+const CORPUS_G10_OK = new Set(['safety-01', 'sad-01']);
 
 const BASES = {
   G1: {
@@ -152,7 +156,8 @@ test('violation surfaces are all blocked, twenty per category and language', asy
 
 test('near sentences stay at the same scale as the violation set', async () => {
   const allow = expandAllowSet();
-  assert.equal(allow.length, 20 * 3 * 20);
+  assert.equal(uniqueAllowBaseCount(), 60);
+  assert.equal(allow.length, uniqueAllowBaseCount() * 20);
   let blocked = 0;
   /** @type {string[]} */
   const blockedLines = [];
@@ -169,6 +174,29 @@ test('near sentences stay at the same scale as the violation set', async () => {
   );
 });
 
+test('CONFIDE_CORPUS and six-locale freeze table self-check with the gate', () => {
+  /** @type {string[]} */
+  const unexpected = [];
+  for (const row of CONFIDE_CORPUS) {
+    for (const loc of ['en', 'zh', 'ja']) {
+      const text = confideLineText(row, loc);
+      const found = inspectModelOutput(text);
+      if (!found.category && !found.uncovered) continue;
+      if (found.category === 'G10' && CORPUS_G10_OK.has(row.id)) continue;
+      unexpected.push(`${row.id}/${loc}:${found.category || 'uncovered'}`);
+    }
+  }
+  assert.deepEqual(unexpected, []);
+
+  let freezeBlocked = 0;
+  for (const row of CONFIDE_MULTILANG_CHITCHAT_FIXTURES) {
+    const found = inspectModelOutput(row.text);
+    if (found.category || found.uncovered) freezeBlocked += 1;
+  }
+  assert.equal(CONFIDE_MULTILANG_CHITCHAT_FIXTURES.length, 108);
+  assert.equal(freezeBlocked, 0);
+});
+
 test('practice durations stay blocked by G9 and are counted apart', async () => {
   let durationBlocked = 0;
   for (const line of DURATION) {
@@ -181,14 +209,30 @@ test('practice durations stay blocked by G9 and are counted apart', async () => 
   assert.equal(durationBlocked, DURATION.length);
 });
 
-test('uncovered language uses the T96 sentence', async () => {
+test('uncovered user locale uses the T96 sentence', async () => {
   const other = await guardedGenerate('reflection-companion', {
+    locale: 'ko',
     generate: () => '안녕하세요 오늘'
   });
   assert.equal(other.verdict, 'uncovered_language');
-  assert.equal(other.text, formatT96UncoveredLanguageReply('en'));
-  assert.equal(other.text, formatConfideJapaneseNotYetOpenReply('en'));
+  assert.equal(other.text, formatT96UncoveredLanguageReply('ko'));
+  assert.equal(other.text, formatConfideJapaneseNotYetOpenReply('ko'));
   assert.notEqual(other.text, '안녕하세요 오늘');
+});
+
+test('covered user locale with other-language output uses a neutral line', async () => {
+  for (const locale of ['en', 'zh', 'ja']) {
+    const other = await guardedGenerate('reflection-companion', {
+      locale,
+      generate: () => '안녕하세요 오늘'
+    });
+    const pool = uniqueNeutralLines(locale);
+    assert.equal(other.verdict, 'uncovered_language');
+    assert.ok(pool.includes(other.text), locale);
+    assert.doesNotMatch(other.text, JAPANESE_NOT_OPEN);
+    assert.notEqual(other.text, formatT96UncoveredLanguageReply(locale));
+    assert.notEqual(other.text, '안녕하세요 오늘');
+  }
 });
 
 test('unregistered path and thrown generator do not return the original', async () => {

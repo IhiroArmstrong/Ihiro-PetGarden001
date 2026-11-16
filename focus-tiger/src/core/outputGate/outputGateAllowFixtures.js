@@ -117,3 +117,10 @@ export function expandAllowSet() {
   }
   return rows;
 }
+
+/** Distinct synthetic bases (not wraps). 20 per locale × 3 locales. */
+export function uniqueAllowBaseCount() {
+  return (
+    ALLOW_BASES.en.length + ALLOW_BASES.zh.length + ALLOW_BASES.ja.length
+  );
+}
