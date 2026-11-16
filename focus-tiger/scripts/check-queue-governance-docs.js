@@ -181,6 +181,8 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t95-electron-shell-upgrade.md',
   'focus-tiger/docs/tracker-entries/docs-gov-t93-t95-queue.md',
   'focus-tiger/docs/tracker-entries/docs-t93-brief-s4-lock.md',
+  'focus-tiger/docs/task-briefs/task-output-gate-p0.md',
+  'focus-tiger/docs/tracker-entries/docs-t100-pr1-merged-brief-wiring.md',
   'focus-tiger/docs/task-briefs/task-t96-uncovered-language-help.md',
   'focus-tiger/docs/task-entries/t96-uncovered-language-help.md',
   'focus-tiger/docs/task-briefs/task-t97-crisis-annotator-qualification.md',
