@@ -545,6 +545,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `t100-output-gate` · feature · 立即做 · P2 · PR-1 #1740 已合 · PR-2 #1741 已合 · 首发只英语与回落池 #1744 已合 · PR-3 #1745 接线待合 · 2026-11-16
+
+T100 输出侧刚性闸。说明已点头。盘点与未接线闸已合。本片记录：第一份发布「和阿寅聊聊」只英语；中性回落池扩到每语 6 句。PR-3（#1745）把闸接到 companion 生成路径。
+
 ### `chat-with-yin-consent` · feature · 实现中 · 旁支 feature/chat-with-yin-consent · 2026-11-15
 
 B 类。Brief `task-chat-with-yin-consent.md`。PO 2026-11-15 点头开工：可见名 Chat with Yin / 寅と話す，首次三项勾选，本机同意，不进备份。
@@ -552,6 +556,14 @@ B 类。Brief `task-chat-with-yin-consent.md`。PO 2026-11-15 点头开工：可
 ### `chat-with-yin-copy-leftover` · feature · 实现中 · 旁支 docs/chat-with-yin-copy-leftover · 2026-11-15
 
 #1730 合入后漏网：重跑场景 GWT；日文帮助「コンファイド」→「寅と話す」。标识符不改。
+
+### `t68-co-practice-gift-art` · feature · 已合 develop · 出卡开关开 · 批量手测排队 · 可选 · 2026-11-15
+
+T68 共修纪念画发放。**#1490** 已合 `origin/develop`（运行时，当时开关关）。本支 **开关开**（独立小 PR）。闸 4 仅第 1 档生效；第 2、3 档仍 provisional。
+
+手测：**并入下一批批量验收**（tracker 仍「待人工测试」）。5173 QA 树须 `npm run sync:qa-develop` 后按脚本 **restart** 行重启 Vite。
+
+2a DEV（仅 DEV）：`window.__coPracticeGiftArtJoinFourScenes()` · `window.__coPracticeJoinLedgerSummary()` · 预览 `window.__coPracticeGiftArtPreviewCard()`（不写账）。
 
 ### `confide-en-restore-ja-ui-off` · feature · 旁支实现中 · 英文挂载开 · 日语界面关 · 2026-11-14
 
@@ -853,16 +865,6 @@ T86 官网数据字典、伦理审查、差分隐私后置。口令按 T86 Brief
 ### `t66-mindflow-nebula-step2-embedding-presets` · note · 阶段 A 未过 · 阶段 B 搁置 · PO 方案 A 2026-11-01 · 2026-11-01
 
 T66 第二步：Brief #1487 · 阶段 A lab #1488（`phaseAPassed:false`）。**不做** embedding 板块 UI；线上心念流仅 v0 #1475。SSOT [`task-mindflow-nebula-step2-embedding-presets.md`](../task-briefs/task-mindflow-nebula-step2-embedding-presets.md)。复跑须新 Brief。
-
-### `t68-co-practice-gift-art` · feature · 已合 develop · 出卡开关关 · 批量手测排队 · 可选 · 2026-11-01
-
-T68 共修纪念画发放。**#1490** 已合 `origin/develop`（`3eb2cd4`）；合入后另有 **#1491** 线文档与 `a1c687b0` 玻璃卡 deck 门禁（surface 关时不进叠层拖拽名单）。
-
-闸 4 仅第 1 档生效。**出卡开关仍关**；打开开关须**独立小 PR**（文案/图/QA 预览点头后，不在本线顺手翻）。
-
-手测：**并入下一批批量验收**（tracker 仍「待人工测试」）。5173 QA 树须 `npm run sync:qa-develop` 后按脚本 **restart** 行重启 Vite。
-
-2a DEV（仅 DEV）：`window.__coPracticeGiftArtJoinFourScenes()` · `window.__coPracticeJoinLedgerSummary()` · 预览 `window.__coPracticeGiftArtPreviewCard()`（不写账）。
 
 ### `t70-user-set-desk-start-anchor` · feature · 搁置 · 可选 · Brief 待点头 · 2026-11-01
 
