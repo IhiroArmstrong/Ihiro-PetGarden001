@@ -119,6 +119,7 @@
     "audit:menu-chrome-census": "node scripts/audit-menu-chrome-census.js",
     "audit:menu-chrome-census:sync": "node scripts/audit-menu-chrome-census.js --write",
     "test:observe-shuffle-screen": "npm --prefix desktop run companion:observe-shuffle-screen",
+    "audit:output-gate-redteam": "npm --prefix desktop run companion:output-gate-redteam",
     "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe",
     "test:constrained-gen-warm-cold-probe": "npm --prefix desktop run companion:constrained-gen-warm-cold",
     "audit:mindflow-nebula-step2-phase-a": "npm --prefix desktop run companion:mindflow-nebula-step2-phase-a",
