@@ -8,6 +8,7 @@
     "dev": "node scripts/dev.js",
     "pack": "node scripts/pack.js",
     "pack:prep": "FT_T95_PACK_PROBE=1 node scripts/pack.js",
+    "notarize:prep": "node scripts/notarizePrepDmg.js",
     "shell:check": "node scripts/assertInstalledElectron.js",
     "llama:bake": "node scripts/bakeLlamaBinaryForPack.js",
     "companion:l0": "node scripts/l0-bench.js",

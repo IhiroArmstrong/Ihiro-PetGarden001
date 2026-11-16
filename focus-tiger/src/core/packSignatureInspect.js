@@ -24,6 +24,19 @@ export function parseStaplerValidate(text, status) {
   return Number(status) === 0 && /The validate action worked/i.test(blob);
 }
 
+export function parseNotarytoolWaitOutput(text, exitCode) {
+  const blob = String(text || '');
+  const idMatch = blob.match(/id:\s*([0-9a-f-]{36})/i);
+  const statusMatch = blob.match(/status:\s*(\w+)/i);
+  const status = statusMatch ? statusMatch[1] : '';
+  return {
+    accepted: /status:\s*Accepted/i.test(blob),
+    status,
+    submissionId: idMatch ? idMatch[1] : '',
+    okExit: Number(exitCode) === 0
+  };
+}
+
 export function hasDeveloperIdApplicationIdentity(identityListText) {
   return /Developer ID Application:/.test(String(identityListText || ''));
 }
