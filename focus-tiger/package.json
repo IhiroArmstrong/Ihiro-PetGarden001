@@ -64,6 +64,7 @@
     "sync:qa-develop": "node scripts/sync-qa-develop-worktree.js",
     "desktop:dev": "npm --prefix desktop run dev",
     "desktop:build": "npm --prefix desktop run pack",
+    "desktop:prep-sign-notarize-staple": "npm --prefix desktop run prep:sign-notarize-staple",
     "desktop:companion-l0": "npm --prefix desktop run companion:l0",
     "desktop:companion-spike-17b": "npm --prefix desktop run companion:spike-17b",
     "session-lock:heartbeat": "node scripts/session-lock-heartbeat.js",

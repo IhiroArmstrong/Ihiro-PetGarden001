@@ -95,3 +95,5 @@
 | 测试前缀 | `https://updates.twinsology.com/prep/` | 只给内部包。用环境变量 `FT_UPDATE_FEED_URL` 指向它 |
 
 不用 `http://127.0.0.1`。2026-11-12 起，更新地址必须是 https，并且主机必须是 `updates.twinsology.com`。测试前缀只多一层路径，主机不变。未签名的试包不要传到对客根地址。存储桶还没建；建桶和上传不在本说明里完成。
+
+**发版周重复流程（2026-11-16 起）**：签名 → 公证 → 贴票 与 存桶 + `/prep/` 分轨登记，见 [`t95-desktop-release-week-checklist.md`](../t95-desktop-release-week-checklist.md)。试包公证彩排不等于客户包已上传。
