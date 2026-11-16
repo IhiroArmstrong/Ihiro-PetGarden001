@@ -33,11 +33,13 @@ const note = {
   notarized: inspected.notarized === true,
   adHocSigned: inspected.adHocSigned === true,
   hardenedRuntimeVerified: inspected.hardenedRuntimeVerified === true,
-  detail: inspected.developerIdSigned
-    ? 'Packaged app is Developer ID signed. Notarization is separate and stays false until stapler validate succeeds.'
-    : hasDeveloperIdApplicationIdentity(identityText)
-      ? 'Developer ID identities exist, but the packaged app is not Developer ID signed. electron-builder owns signing; this script does not ad-hoc resign the app.'
-      : 'No Developer ID on this Mac. The package stays unsigned. Ad-hoc signing the app was not applied because it invalidates Electron Framework (Team ID mismatch) and the GUI process cannot start.'
+  detail: inspected.notarized
+    ? 'Packaged app is Developer ID signed with hardened runtime, and stapler validate succeeded.'
+    : inspected.developerIdSigned
+      ? 'Packaged app is Developer ID signed. Notarization is separate and stays false until stapler validate succeeds.'
+      : hasDeveloperIdApplicationIdentity(identityText)
+        ? 'Developer ID identities exist, but the packaged app is not Developer ID signed. electron-builder owns signing; this script does not ad-hoc resign the app.'
+        : 'No Developer ID on this Mac. The package stays unsigned. Ad-hoc signing the app was not applied because it invalidates Electron Framework (Team ID mismatch) and the GUI process cannot start.'
 };
 writeFileSync(notePath, JSON.stringify(note, null, 2) + '\n');
 console.log(note.detail);

@@ -24,6 +24,10 @@ const entitlements = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), '../../desktop/entitlements.mac.plist'),
   'utf8'
 );
+const inspectSrc = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), 'packSignatureInspect.js'),
+  'utf8'
+);
 
 describe('T95 pack signature inspect', () => {
   it('treats Developer ID + runtime flags as signed with hardened runtime, not ad hoc', () => {
@@ -85,5 +89,6 @@ Authority=Apple Root CA
     assert.match(notarizeSrc, /--keychain-profile/);
     assert.match(notarizeSrc, /samatia-notary/);
     assert.equal(notarizeSrc.includes('.p8'), false);
+    assert.match(inspectSrc, /spawnSync\('xcrun', \['stapler'/);
   });
 });

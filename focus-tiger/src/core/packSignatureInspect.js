@@ -71,7 +71,9 @@ export function inspectPackagedAppSignature(appPath) {
   });
   const codesignText = `${codesign.stdout || ''}\n${codesign.stderr || ''}`;
   const parsed = parseCodesignVerbose(codesignText);
-  const stapler = spawnSync('stapler', ['validate', appPath], { encoding: 'utf8' });
+  const stapler = spawnSync('xcrun', ['stapler', 'validate', appPath], {
+    encoding: 'utf8'
+  });
   const staplerText = `${stapler.stdout || ''}\n${stapler.stderr || ''}`;
   return {
     ...parsed,
