@@ -1,27 +1,27 @@
-# 生成路径登记表（T100 PR-1）
+# 生成路径登记表（T100）
 
-人话：把「模型写完、人还没看见」的每条路点名。这一份只盘点，不改用户看见的句子。闸还没接上。
+人话：把「模型写完、人还没看见」的每条路点名。可见生成路径在 `l1Runtime.generate` 里过闸。
 
-**基线**：开工时 `origin/develop` = `561635fccc4800d0aa8bd80f030a441d2ea15881`（#1739 已合）。  
-**状态**：盘点。`outputGate` 未建。生产构建没有闸。  
+**基线**：接线开工于 `feature/t100-en-first-fallback-pool`（#1744）。  
+**状态**：产品 `generate` 先进入 `guardedGenerate`。检索混合仍不过闸。  
 **说明书**：[`task-output-gate-p0.md`](./task-briefs/task-output-gate-p0.md) 第 6、8 节。  
-**检查**：`cd focus-tiger && npm run check:generation-gate`。默认只打印。加 `--check` 才在表和代码对不上时退出 1。这一步还没放进必跑冒烟；接到必跑是后面的接线 PR。
+**检查**：`cd focus-tiger && npm run check:generation-gate`（`--check`，进 `docs:check`）。
 
 ## 登记表
 
-`anchor` 是本地模型 `chat.prompt` / `session.prompt` 的那一行。多条用户路径可以共用同一个 `anchor`。`—` 表示这条不调用补全。`visible` = 模型原文会不会出现在界面上。闸列今天一律是「未接线」。
+`anchor` 是本地模型 `chat.prompt` / `session.prompt` 的那一行。多条用户路径可以共用同一个 `anchor`。`—` 表示这条不调用补全。`visible` = 模型原文会不会出现在界面上。可见的 4 条产品路径走 `guardedGenerate`。检索混合和实验脚本不走闸。
 
 | pathId | entry | call | sink | gate | fallback | testId | visible | anchor |
 |---|---|---|---|---|---|---|---|---|
-| confide-observe-l3 | `src/ui/ConfideToYinUI.js` `_runL3Generate` 1511，由 `_continueAfterToolRouting` 2533 进入。观察翼：用户句不是闲聊问句。 | `desktop/companion/l1Runtime.js` `generate` 453；观察翼判定 485–486；组提示 527。子进程 `l1Child.js` 232 的 `generate `。 | `ConfideToYinUI.js` 1095 `replyEl.textContent`。展示的是 `result.text`（1545），也就是消毒后的句子。 | 未接线 | 先 `sanitizeCompanionL2Reply`（`l1Runtime.js` 560，实现在 `l2Sanitize.js`）。失败则 `_showGenerateFailureFallback` 1464，气泡改成语料句。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
-| confide-chat-l3 | 同上一个入口。闲聊翼：`isCompanionChatGenerateLine`（`l2Persona.js` 230，运行时 486）。日语和多语闲聊（#774）走这里，没有第二条 `prompt()`。 | 同上，共用 `l1Hold.js` 的 `chat.prompt`。闲聊不走观察套话重试（`maxAttempts` 在非观察翼是 1，509）。 | 同上 1095。 | 未接线 | 同上。闲聊没有第二轮套话重试。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
-| confide-observe-retry | 没有单独按钮。观察翼 `maxAttempts = 2`（`l1Runtime.js` 509–574）。第一轮被套话分打中才再生成一次。 | 同一次 `chat.prompt`。 | 只有最后被留下的那句进 1095。被丢掉的那轮不进气泡。 | 未接线 | 两轮都失败才走语料回落。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
-| reflection-companion | `src/ui/TigerReflectionMoment.js` `_onReflectionCompanionInvite` 746。`purpose: reflection_companion`。仅实验室开关允许时才调。 | `l1Runtime.js` 463、521 `buildReflectionCompanionPrompt`。 | `_showReflectionCompanionObservation` 754。 | 未接线 | 模型没准备好或调用失败时，同一函数改走固定观察句（706、735）。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
-| read-hybrid-classify | `ConfideToYinUI.js` `_tryReadHybridThenContinue` 2247 `classifyReadTool`。正则没命中才调。 | `l1Runtime.js` `classifyReadTool` 643。子进程 `l1Child.js` 511 `classify-read-tool`。模型吐的是工具调用草稿，不是陪伴句。 | 界面用 `resolveConfideReadHybridToolFromRaw`（2254）换成登记过的事实句或说明句。模型原文不进气泡。 | 未接线 | 解析失败就继续后面的固定路由，不展示原文。 | none-until-pr3 | no | desktop/companion/l1Hold.js:111 |
-| lab-l0-probe | `desktop/companion/l0Probe.js`。实验脚本，不挂界面。 | 同文件 `session.prompt`。 | 无界面。 | 未接线 | 无产品回落。 | lab-only | no | desktop/companion/l0Probe.js:104 |
-| lab-l0-spike17 | `desktop/companion/l0Spike17Probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。 | 未接线 | 无产品回落。 | lab-only | no | desktop/companion/l0Spike17Probe.js:89 |
-| lab-tool-call-probe | `desktop/scripts/l0-tool-call-probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。结果写实验室目录。 | 未接线 | 无产品回落。 | lab-only | no | desktop/scripts/l0-tool-call-probe.js:94 |
-| lab-intent-diagnostic | `desktop/scripts/l0-intent-diagnostic-probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。 | 未接线 | 无产品回落。 | lab-only | no | desktop/scripts/l0-intent-diagnostic-probe.js:216 |
+| confide-observe-l3 | `src/ui/ConfideToYinUI.js` `_runL3Generate` 1511，由 `_continueAfterToolRouting` 2533 进入。观察翼：用户句不是闲聊问句。 | `desktop/companion/l1Runtime.js` `generate` 453；观察翼判定 485–486；组提示 527。子进程 `l1Child.js` 232 的 `generate `。 | `ConfideToYinUI.js` 1095 `replyEl.textContent`。展示的是 `result.text`（1545），也就是消毒后的句子。 | `l1Runtime.generate` → `guardedGenerate` | 先 `sanitizeCompanionL2Reply`（`l1Runtime.js` 560，实现在 `l2Sanitize.js`）。失败则 `_showGenerateFailureFallback` 1464，气泡改成语料句。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
+| confide-chat-l3 | 同上一个入口。闲聊翼：`isCompanionChatGenerateLine`（`l2Persona.js` 230，运行时 486）。日语和多语闲聊（#774）走这里，没有第二条 `prompt()`。 | 同上，共用 `l1Hold.js` 的 `chat.prompt`。闲聊不走观察套话重试（`maxAttempts` 在非观察翼是 1，509）。 | 同上 1095。 | `l1Runtime.generate` → `guardedGenerate` | 同上。闲聊没有第二轮套话重试。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
+| confide-observe-retry | 没有单独按钮。观察翼 `maxAttempts = 2`（`l1Runtime.js` 509–574）。第一轮被套话分打中才再生成一次。 | 同一次 `chat.prompt`。 | 只有最后被留下的那句进 1095。被丢掉的那轮不进气泡。 | `l1Runtime.generate` → `guardedGenerate` | 两轮都失败才走语料回落。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
+| reflection-companion | `src/ui/TigerReflectionMoment.js` `_onReflectionCompanionInvite` 746。`purpose: reflection_companion`。仅实验室开关允许时才调。 | `l1Runtime.js` 463、521 `buildReflectionCompanionPrompt`。 | `_showReflectionCompanionObservation` 754。 | `l1Runtime.generate` → `guardedGenerate` | 模型没准备好或调用失败时，同一函数改走固定观察句（706、735）。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:111 |
+| read-hybrid-classify | `ConfideToYinUI.js` `_tryReadHybridThenContinue` 2247 `classifyReadTool`。正则没命中才调。 | `l1Runtime.js` `classifyReadTool` 643。子进程 `l1Child.js` 511 `classify-read-tool`。模型吐的是工具调用草稿，不是陪伴句。 | 界面用 `resolveConfideReadHybridToolFromRaw`（2254）换成登记过的事实句或说明句。模型原文不进气泡。 | 不过闸（工具草稿） | 解析失败就继续后面的固定路由，不展示原文。 | none-until-pr3 | no | desktop/companion/l1Hold.js:111 |
+| lab-l0-probe | `desktop/companion/l0Probe.js`。实验脚本，不挂界面。 | 同文件 `session.prompt`。 | 无界面。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | desktop/companion/l0Probe.js:104 |
+| lab-l0-spike17 | `desktop/companion/l0Spike17Probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | desktop/companion/l0Spike17Probe.js:89 |
+| lab-tool-call-probe | `desktop/scripts/l0-tool-call-probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。结果写实验室目录。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | desktop/scripts/l0-tool-call-probe.js:94 |
+| lab-intent-diagnostic | `desktop/scripts/l0-intent-diagnostic-probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | desktop/scripts/l0-intent-diagnostic-probe.js:216 |
 | help-center-ask | `src/core/helpCenterAskSearch.js` 从 `HELP_CENTER_ARTICLES` 检索。`HelpCenterUI.js` 没有 `generate`。 | 无补全。 | 帮助卡正文是目录里的原文。 | 不适用 | 不适用 | catalog-not-model | no | — |
 | contemplative-inquiry | `src/ui/ContemplativeInquiryUI.js`。沉思探问用固定句。文件里没有 `generate` 或 `prompt(`。 | 无补全。 | 固定文案。 | 不适用 | 不适用 | fixed-copy | no | — |
 | voice-forward | `VoiceInputChrome` 把听到的话填进输入框。倾诉里接着 `_onSend`（`ConfideToYinUI.js` 1604）。反思页同样只是填输入。 | 无第二条补全。听到的话若后来发送，仍走上面已登记的路径。 | 语音本身不另画一句模型回复。 | 不适用 | 不适用 | forwards-into-registered-paths | no | — |

@@ -165,6 +165,8 @@ export function resolveReflectionCompanionObservation({
   if (
     generateReady &&
     generateResult?.ok &&
+    typeof generateResult.gateVersion === 'string' &&
+    generateResult.gateVersion.trim() &&
     typeof generateResult.text === 'string' &&
     generateResult.text.trim()
   ) {

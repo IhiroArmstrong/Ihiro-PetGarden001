@@ -1,7 +1,7 @@
 ---
 id: t100-output-gate
 kind: feature
-status: 立即做 · P2 · PR-1 #1740 已合 · PR-2 #1741 已合 · 本刀首发只英语与回落池 · PR-3 未接线
+status: 立即做 · P2 · PR-1 #1740 已合 · PR-2 #1741 已合 · 英语回落池 #1744 · PR-3 接线本旁支
 updated: 2026-11-16
 ---
 
