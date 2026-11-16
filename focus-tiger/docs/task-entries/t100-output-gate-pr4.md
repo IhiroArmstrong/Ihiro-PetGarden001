@@ -1,8 +1,8 @@
 ---
 id: t100-output-gate-pr4
 kind: note
-status: PR-4 层 B 红队进行中
-updated: 2026-11-16
+status: PR-4 第 1 轮审阅中
+updated: 2026-11-17
 ---
 
-T100 下一刀是层 B 红队（说明书第 8 节 PR-4）。#1744 / #1745 已合 develop。本片不改队列热点。提示包由 xAI 写出，满足「非 Anthropic 出题」；PO 抽查标注仍待做。
+T100 PR-4 第 1 轮是记录，不是闸验证。有效采样 12；实验室管线（模型 + 闸模块）；未经过 #1745 的 `l1Runtime`；「真逃逸 0」待 PO。第 2 轮方案只写文档、不跑。
