@@ -73,12 +73,22 @@ describe('wide more menu click reception', () => {
     assert.match(src, /this\.radialRoot\?\.contains\(target\)/);
   });
 
+  it('keeps the H1 side nav while a group sheet is open', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(
+      src,
+      /const listPhase = Boolean\(this\._activeListGroup\);[\s\S]*this\.radialRoot\.hidden = false;/
+    );
+  });
+
   it('docks the ⋯ sheet to the right edge instead of growing over Yin', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
     assert.match(src, /ft-wide-more__backdrop/);
-    assert.match(src, /width: min\(360px, calc\(100vw - 48px\)\)/);
-    assert.match(src, /max-width: 380px/);
+    assert.match(src, /width: min\(520px, calc\(100vw - 48px\)\)/);
+    assert.match(src, /max-width: 560px/);
+    assert.match(src, /height: auto;/);
     assert.match(src, /z-index: \$\{Z\.SUPPORT_MODAL\}/);
     assert.doesNotMatch(src, /bottom: calc\(100% \+ 10px\)/);
   });
@@ -163,6 +173,7 @@ describe('wide more menu click reception', () => {
   it('wide ⋯ index is a labeled side nav, not a polar fan', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /ft-pref-card/);
     assert.match(src, /ft-wide-more-sidenav/);
     assert.match(src, /HOME_SIDE_NAV_HEADING/);
     assert.doesNotMatch(src, /layoutWideMenuRadialIcons/);

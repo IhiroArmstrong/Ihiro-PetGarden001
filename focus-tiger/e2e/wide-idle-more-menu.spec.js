@@ -193,6 +193,13 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
 
   await openWideMoreList(page, 'MENU_GROUP_PREFERENCES');
   await expandWideMoreMenuGroup(page, 'MENU_GROUP_PREFERENCES');
+  await expect(page.locator('#ft-wide-more-menu .ft-pref-card')).toHaveCount(5);
+  await expect(
+    page.locator('#ft-wide-more-menu [data-proxy="help-center"]')
+  ).toBeVisible();
+  await expect(
+    page.locator('#ft-wide-more-menu [data-proxy="membership"]')
+  ).toBeVisible();
   const reminderRow = page.locator('#ft-wide-more-menu [data-proxy="reminder"]');
   await reminderRow.scrollIntoViewIfNeeded();
   // Hover first: in-app-reminder tip used to steal the row click.

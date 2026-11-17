@@ -25,6 +25,10 @@ import { resolveUpdateChannel } from './desktopUpdaterChannel.js';
 import { practiceBackupCloudEnabled } from './practiceBackup/practiceBackupCloudEnabled.js';
 import { isEmailJourneyCloudUiAllowedForChannel } from './practiceBackup/emailJourneyRestoreStatus.js';
 import { isHomeSanctuaryNavEnabled } from './homeSanctuaryNavEnabled.js';
+import {
+  flattenPreferenceCenterEntries,
+  listPreferenceCenterSubgroups
+} from './preferencesCenterCatalog.js';
 
 
 /** @typedef {'narrow' | 'wide'} IdleChromeViewport */
@@ -74,7 +78,7 @@ import { isHomeSanctuaryNavEnabled } from './homeSanctuaryNavEnabled.js';
  * @property {string} [proxy]
  * @property {string} [handler]
  * @property {string} labelKey
- * @property {'item' | 'group-label'} [kind]
+ * @property {'item' | 'group-label' | 'sub-group-label'} [kind]
  * @property {string} [featureKey]
  * @property {boolean} [locked]
  * @property {boolean} [interactive] false = visible confirmation row, not clickable
@@ -269,7 +273,13 @@ export function resolveSecondaryChromeDispatch(proxy) {
  * @returns {SecondaryChromeEntry}
  */
 function attachSecondaryHandler(item) {
-  if (!item || item.kind === 'group-label' || !item.proxy || item.handler) {
+  if (
+    !item ||
+    item.kind === 'group-label' ||
+    item.kind === 'sub-group-label' ||
+    !item.proxy ||
+    item.handler
+  ) {
     return item;
   }
   const spec = resolveSecondaryChromeDispatch(item.proxy);
@@ -671,7 +681,7 @@ export function resolveRoleVisibility(input) {
       sit: 'hidden',
       quickStart: 'visible',
       honesty: 'hidden',
-      moreOrGrabber: 'hidden',
+      moreOrGrabber: 'visible',
       actionBar: narrow ? 'visible' : 'na'
     };
   }
@@ -854,117 +864,43 @@ export function listSecondaryChromeEntries(surface, visibility) {
     { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' }
   ]);
 
-  pushLabeledGroup(out, 'MENU_GROUP_PREFERENCES', [
-    {
-      proxy: 'co-practice-contract',
-      labelKey: 'CO_PRACTICE_CONTRACT_MENU_LABEL',
-      testId: 'idle-co-practice-contract'
-    },
-    visibility.reminderAvailable
-      ? { proxy: 'reminder', labelKey: 'reminder.setting_title' }
-      : null,
-    visibility.workEndAvailable
-      ? {
-          proxy: 'work-end',
-          labelKey: 'WORK_END_MENU_LABEL',
-          testId: 'idle-work-end'
-        }
-      : null,
-    shouldOfferLanguagePicker()
-      ? { proxy: 'language', labelKey: 'LANGUAGE_MENU_LABEL' }
-      : null,
-    { proxy: 'sound', labelKey: 'SOUND_MENU_LABEL', testId: 'idle-sound' },
-    visibility.alwaysOnTopAvailable
-      ? {
-          proxy: 'always-on-top',
-          labelKey: 'ALWAYS_ON_TOP_MENU_LABEL',
-          testId: 'idle-always-on-top'
-        }
-      : null,
-    visibility.windowLayoutAvailable
-      ? {
-          proxy: 'window-layout',
-          labelKey: 'WINDOW_LAYOUT_MENU_LABEL',
-          testId: 'idle-window-layout'
-        }
-      : null,
-    visibility.inputRhythmAvailable
-      ? {
-          proxy: 'input-rhythm',
-          labelKey: 'INPUT_RHYTHM_MENU_LABEL',
-          testId: 'idle-input-rhythm'
-        }
-      : null,
-    {
-      proxy: 'mindflow-nebula',
-      labelKey: 'MINDFLOW_NEBULA_MENU_LABEL',
-      testId: 'idle-mindflow-nebula'
-    },
-    {
-      proxy: 'presence-field',
-      labelKey: 'PRESENCE_FIELD_MENU_LABEL',
-      testId: 'idle-presence-field'
-    },
-    {
-      proxy: 'health-shortcut-log',
-      labelKey: 'HEALTH_SHORTCUT_MENU_LABEL',
-      testId: 'idle-health-shortcut-log'
-    },
-    {
-      proxy: 'today-direction',
-      labelKey: 'TODAY_DIRECTION_MENU_LABEL',
-      testId: 'idle-today-direction'
-    },
-    visibility.newsletterSubmitted
-      ? {
-          proxy: 'newsletter',
-          labelKey: 'NEWSLETTER_MENU_CONFIRMED',
-          interactive: false
-        }
-      : { proxy: 'newsletter', labelKey: 'NEWSLETTER_MENU_LABEL' },
-    isEmailJourneyMenuInteractive(visibility)
-      ? {
-          proxy: 'account',
-          labelKey: 'EMAIL_JOURNEY_MENU_LABEL',
-          testId: 'idle-account-email-restore'
-        }
-      : {
-          proxy: 'account',
-          labelKey: isEmailJourneyCloudUiAllowedForChannel(
-            resolveUpdateChannel(
-              typeof process !== 'undefined' && process.env ? process.env : {}
-            )
+  const accountRow = isEmailJourneyMenuInteractive(visibility)
+    ? {
+        proxy: 'account',
+        labelKey: 'EMAIL_JOURNEY_MENU_LABEL',
+        testId: 'idle-account-email-restore',
+        kind: 'action'
+      }
+    : {
+        proxy: 'account',
+        labelKey: isEmailJourneyCloudUiAllowedForChannel(
+          resolveUpdateChannel(
+            typeof process !== 'undefined' && process.env ? process.env : {}
           )
-            ? 'ACCOUNT_MENU_PLACEHOLDER'
-            : 'EMAIL_JOURNEY_MENU_STORE_OFF',
-          interactive: false,
-          testId: isEmailJourneyCloudUiAllowedForChannel(
-            resolveUpdateChannel(
-              typeof process !== 'undefined' && process.env ? process.env : {}
-            )
+        )
+          ? 'ACCOUNT_MENU_PLACEHOLDER'
+          : 'EMAIL_JOURNEY_MENU_STORE_OFF',
+        interactive: false,
+        testId: isEmailJourneyCloudUiAllowedForChannel(
+          resolveUpdateChannel(
+            typeof process !== 'undefined' && process.env ? process.env : {}
           )
-            ? 'idle-account-placeholder'
-            : 'idle-account-store-off'
-        },
-    {
-      proxy: 'help-center',
-      labelKey: 'HELP_CENTER_MENU_LABEL',
-      testId: 'idle-help-center'
-    },
-    { proxy: 'local-backup', labelKey: 'LOCAL_BACKUP_MENU_LABEL' },
-    {
-      proxy: 'practice-study',
-      labelKey: 'PRACTICE_STUDY_MENU_LABEL',
-      testId: 'idle-practice-study'
-    },
-    {
-      proxy: 'membership',
-      labelKey: 'MENU_SUBSCRIPTION_ROW',
-      testId: hasUnlockedAdvancedScenes(visibility)
+        )
+          ? 'idle-account-placeholder'
+          : 'idle-account-store-off',
+        kind: 'action'
+      };
+
+  const prefEntries = flattenPreferenceCenterEntries(
+    listPreferenceCenterSubgroups(visibility, {
+      shouldOfferLanguagePicker,
+      accountRow,
+      membershipTestId: hasUnlockedAdvancedScenes(visibility)
         ? 'idle-membership-unlocked'
         : 'idle-membership-cta'
-    }
-  ]);
+    })
+  );
+  pushLabeledGroup(out, 'MENU_GROUP_PREFERENCES', prefEntries);
 
   // Sanctuary / Tea / full Membership catalog stay on the top-right Support FAB.
   // Preferences · Subscription opens the existing membership card (knife 1).
@@ -1008,7 +944,7 @@ export function listPreferencesGroupProxies(surface, visibility) {
       inGroup = entry.labelKey === 'MENU_GROUP_PREFERENCES';
       continue;
     }
-    if (!inGroup || !entry.proxy) continue;
+    if (!inGroup || entry.kind === 'sub-group-label' || !entry.proxy) continue;
     proxies.push(entry.proxy);
   }
   return proxies;
