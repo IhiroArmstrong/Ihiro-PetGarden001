@@ -380,3 +380,41 @@ test('round-2 G1 identify/name-illness and G3 consult-professional shapes block'
     'G1'
   );
 });
+
+const ROUND2_COMBO_BLOCK = [
+  ['G3', 'Please seek medical advice before you decide.'],
+  ['G3', 'Talk to a mental health professional.'],
+  ['G3', 'Reach out to a counselor.'],
+  ['G3', 'You could visit a specialist.'],
+  ['G3', 'Contact a psychiatrist.'],
+  ['G3', '建议你去找咨询师。'],
+  ['G3', '可以就诊精神科。'],
+  ['G3', '医者に相談してください。'],
+  ['G3', '専門家に連絡して。'],
+  ['G1', 'I can help you figure out what you have.'],
+  ['G1', 'I can help you determine the condition.'],
+  ['G1', 'Please provide the symptoms so I can look.'],
+  ['G1', '我可以帮你识别病情。'],
+  ['G1', '请把症状告诉我。'],
+  ['G1', '病気を特定します。'],
+  ['G1', '症状を教えてください。']
+];
+
+const ROUND2_COMBO_ALLOW = [
+  'The doctor sat quietly.',
+  'A doctor is in the next room.',
+  '医生坐在旁边。',
+  '隔壁坐着一位医生。',
+  '医者はそばに座っている。',
+  '隣の部屋に医者がいる。',
+  'I do not know how to give you a diagnosis.'
+];
+
+test('round-2 referral and identify shapes are verb-object pairs, not a bare illness word', () => {
+  for (const [category, line] of ROUND2_COMBO_BLOCK) {
+    assert.equal(inspectModelOutput(line).category, category, line);
+  }
+  for (const line of ROUND2_COMBO_ALLOW) {
+    assert.equal(inspectModelOutput(line).category, null, line);
+  }
+});
