@@ -34,14 +34,12 @@ import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import {
   WIDE_MENU_RADIAL_GROUP_KEYS,
-  WIDE_MENU_RADIAL_ICON_PX,
   isWideMenuViewport,
-  layoutWideMenuRadialIcons,
   shouldDegenerateWideMenuRadialForButton
 } from '../core/wideMenuRadialLayout.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v8';
+const STYLE_ID = 'ft-wide-idle-more-styles-v9';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
 const DEFAULT_EXPANDED_MENU_GROUPS = [
   DEFAULT_EXPANDED_MENU_GROUP,
@@ -447,6 +445,8 @@ export class WideIdleMoreMenu {
     this.homeCtas.className = 'ft-wide-home-ctas';
     this.homeCtas.id = 'ft-wide-home-ctas';
     this.homeCtas.innerHTML = `
+      <button type="button" class="ft-home-begin-practice" id="ft-home-begin-practice" data-proxy="sit" data-testid="ft-home-begin-practice"></button>
+      <div class="ft-wide-home-ctas__row">
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-wide-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -456,10 +456,12 @@ export class WideIdleMoreMenu {
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-honesty" data-proxy="honesty" aria-label="">
         <img class="ft-wide-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
+      </div>
     `;
     this.sanctuaryNavHomeBtn = document.getElementById(
       'ft-sanctuary-nav-compass-fab'
     );
+    this.beginPracticeBtn = this.homeCtas.querySelector('#ft-home-begin-practice');
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
     this.honestyHomeBtn = this.homeCtas.querySelector('#ft-wide-home-honesty');
@@ -500,7 +502,7 @@ export class WideIdleMoreMenu {
 
     this.radialRoot = document.createElement('div');
     this.radialRoot.id = 'ft-wide-more-radial';
-    this.radialRoot.className = 'ft-wide-more-radial';
+    this.radialRoot.className = 'ft-wide-more-radial ft-wide-more-sidenav';
     this.radialRoot.hidden = true;
     this.radialRoot.setAttribute('role', 'toolbar');
     this.radialRoot.dataset.testid = 'ft-wide-more-radial';
@@ -649,23 +651,32 @@ export class WideIdleMoreMenu {
       }
 
       const focusEl = document.getElementById('btn-focus');
+      const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
+      const sitHidden =
+        Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden;
       if (this.sitHomeBtn) {
         const sitLabel = focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
         setAttrIfChanged(this.sitHomeBtn, 'aria-label', sitLabel);
         this._sitHomeTip?.setText(sitLabel);
-        const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
         setBoolPropIfChanged(this.sitHomeBtn, 'disabled', !sitOk);
         setAttrIfChanged(
           this.sitHomeBtn,
           'aria-disabled',
           sitOk ? 'false' : 'true'
         );
-        setBoolPropIfChanged(
-          this.sitHomeBtn,
-          'hidden',
-          // keepQuickStart: force-hide Sit (CSS is-arrival-quick is belt).
-          Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden
+        setBoolPropIfChanged(this.sitHomeBtn, 'hidden', sitHidden);
+      }
+      if (this.beginPracticeBtn) {
+        const beginLabel = t('HOME_BEGIN_PRACTICE');
+        this.beginPracticeBtn.textContent = beginLabel;
+        setAttrIfChanged(this.beginPracticeBtn, 'aria-label', beginLabel);
+        setBoolPropIfChanged(this.beginPracticeBtn, 'disabled', !sitOk);
+        setAttrIfChanged(
+          this.beginPracticeBtn,
+          'aria-disabled',
+          sitOk ? 'false' : 'true'
         );
+        setBoolPropIfChanged(this.beginPracticeBtn, 'hidden', sitHidden);
       }
 
       const quickEl = document.getElementById('quick-start-focus');
@@ -844,6 +855,11 @@ export class WideIdleMoreMenu {
   _refreshRadial() {
     if (!this.radialRoot) return;
     this.radialRoot.innerHTML = '';
+    this.radialRoot.setAttribute('aria-label', t('HOME_SIDE_NAV_HEADING'));
+    const heading = document.createElement('p');
+    heading.className = 'ft-wide-more-radial__heading';
+    heading.textContent = t('HOME_SIDE_NAV_HEADING');
+    this.radialRoot.appendChild(heading);
     /** @type {Record<string, string>} */
     const glyph = {
       MENU_GROUP_PRACTICE: '◎',
@@ -866,30 +882,11 @@ export class WideIdleMoreMenu {
       });
       this.radialRoot.appendChild(btn);
     }
-    this._placeRadial();
   }
 
   /** @returns {void} */
   _placeRadial() {
-    if (!this.radialRoot || !this.moreBtn) return;
-    const rect = this.moreBtn.getBoundingClientRect();
-    if (rect.width < 8 || rect.height < 8) return;
-    const ax = rect.left + rect.width / 2;
-    const ay = rect.top + rect.height / 2;
-    const spots = layoutWideMenuRadialIcons(ax, ay);
-    const buttons = this.radialRoot.querySelectorAll('.ft-wide-more-radial__icon');
-    spots.forEach((spot, idx) => {
-      const btn = buttons[idx];
-      if (!btn) return;
-      const rad = ((spot.deg ?? 0) * Math.PI) / 180;
-      btn.style.left = `${spot.cx}px`;
-      btn.style.top = `${spot.cy}px`;
-      btn.style.setProperty('--radial-i', String(idx));
-      btn.style.setProperty('--radial-nx', String(Math.cos(rad)));
-      btn.style.setProperty('--radial-ny', String(-Math.sin(rad)));
-    });
-    this.radialRoot.style.setProperty('--radial-anchor-x', `${ax}px`);
-    this.radialRoot.style.setProperty('--radial-anchor-y', `${ay}px`);
+    // H1: labeled side nav is CSS-positioned; polar fan geometry retired.
   }
 
   /**
@@ -912,9 +909,15 @@ export class WideIdleMoreMenu {
   _handleMenuKeyDown(event) {
     if (!this._menuOpen || this._menuFlat) return;
     if (!this._activeListGroup) {
-      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      if (
+        event.key === 'ArrowRight' ||
+        event.key === 'ArrowLeft' ||
+        event.key === 'ArrowDown' ||
+        event.key === 'ArrowUp'
+      ) {
         event.preventDefault();
-        const delta = event.key === 'ArrowRight' ? 1 : -1;
+        const delta =
+          event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
         const len = WIDE_MENU_RADIAL_GROUP_KEYS.length;
         this._radialFocusIdx =
           (this._radialFocusIdx + delta + len) % len;
@@ -1155,19 +1158,54 @@ export class WideIdleMoreMenu {
 
       .ft-wide-home-ctas {
         display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        flex: 1 1 auto;
+        min-width: 0;
+        pointer-events: auto;
+      }
+      .ft-wide-home-ctas__row {
+        display: flex;
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
         gap: 8px;
-        flex: 1 1 auto;
-        min-width: 0;
-        pointer-events: auto;
+        width: 100%;
+      }
+      .ft-home-begin-practice {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 10px 22px;
+        min-height: 40px;
+        border: none;
+        border-radius: 999px;
+        background: #b08948;
+        color: #fffaf2;
+        font-size: 0.92rem;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.12);
+      }
+      .ft-home-begin-practice:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+      .ft-home-begin-practice:disabled,
+      .ft-home-begin-practice[aria-disabled="true"],
+      .ft-home-begin-practice[hidden] {
+        opacity: 0.45;
+      }
+      .ft-home-begin-practice[hidden] {
+        display: none !important;
       }
       .ft-wide-home-ctas[hidden] {
         display: none !important;
       }
       /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
+      .ft-wide-home-ctas.is-arrival-quick #ft-home-begin-practice,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
         display: none !important;
       }
@@ -1310,72 +1348,100 @@ export class WideIdleMoreMenu {
       }
       .ft-wide-more-radial {
         position: fixed;
-        inset: 0;
+        top: 50%;
+        right: max(16px, env(safe-area-inset-right, 0px));
+        left: auto;
+        bottom: auto;
+        transform: translateY(-50%);
         z-index: ${Z.SUPPORT_MODAL};
-        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: min(280px, calc(100vw - 48px));
+        max-height: min(72vh, 560px);
+        margin: 0;
+        padding: 14px 12px 12px;
+        overflow: auto;
+        pointer-events: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: rgba(255, 252, 245, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.08);
       }
       .ft-wide-more-radial[hidden] {
         display: none !important;
       }
+      .ft-wide-more-radial__heading {
+        margin: 0 8px 6px;
+        font-size: 0.72rem;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: rgba(74, 58, 40, 0.55);
+      }
       .ft-wide-more-radial__icon {
-        position: fixed;
-        width: ${WIDE_MENU_RADIAL_ICON_PX}px;
-        height: ${WIDE_MENU_RADIAL_ICON_PX}px;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 44px;
         margin: 0;
-        padding: 0;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        background: rgba(255, 252, 245, 0.88);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        padding: 8px 12px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        background: transparent;
         color: rgba(74, 58, 40, 0.92);
-        font-size: 18px;
-        line-height: 1;
+        font-size: 15px;
+        line-height: 1.2;
+        text-align: left;
         cursor: pointer;
         pointer-events: auto;
-        box-shadow:
-          0 1px 0 rgba(255, 255, 255, 0.9) inset,
-          0 3px 10px rgba(44, 31, 20, 0.1);
-        transition: transform 180ms ease, opacity 180ms ease;
+        transition: background 160ms ease, transform 160ms ease;
+      }
+      .ft-wide-more-radial__icon:hover,
+      .ft-wide-more-radial__icon:focus-visible {
+        background: rgba(255, 252, 245, 0.95);
+        border-color: rgba(139, 115, 85, 0.22);
       }
       .ft-wide-more-radial__glyph {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        height: 100%;
+        flex: 0 0 28px;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: rgba(255, 252, 245, 0.9);
+        font-size: 14px;
       }
       .ft-wide-more-radial__name {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%)
-          translate(
-            calc(var(--radial-nx, 0) * 52px),
-            calc(var(--radial-ny, -1) * 52px)
-          );
-        padding: 3px 8px;
-        border-radius: 999px;
-        background: rgba(255, 252, 245, 0.9);
-        box-shadow: 0 2px 8px rgba(44, 31, 20, 0.08);
-        font-size: 11px;
+        position: static;
+        transform: none;
+        padding: 0;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+        font-size: 0.92rem;
         font-weight: 600;
-        letter-spacing: 0.02em;
-        color: rgba(74, 58, 40, 0.9);
-        white-space: nowrap;
+        letter-spacing: 0.01em;
+        color: rgba(74, 58, 40, 0.92);
+        white-space: normal;
         opacity: 1;
         pointer-events: none;
       }
       .ft-wide-more-radial__icon:active {
-        transform: translate(-50%, -50%) scale(0.94);
+        transform: scale(0.99);
       }
       @media (prefers-reduced-motion: reduce) {
         .ft-wide-more-radial__icon {
           transition: opacity 120ms ease;
         }
         body.ft-wide-more-radial-open .ft-wide-more-radial__icon {
-          transform: translate(-50%, -50%);
+          transform: none;
         }
       }
       .ft-wide-more__menu {

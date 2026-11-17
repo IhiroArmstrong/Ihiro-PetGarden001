@@ -65,7 +65,7 @@ describe('wide more menu click reception', () => {
     assert.match(src, /\.ft-wide-more__item:active:not\(:disabled\)/);
   });
 
-  it('does not dismiss ⋯ when the click is an onboarding tip, menu chrome, or five-icon radial', () => {
+  it('does not dismiss ⋯ when the click is an onboarding tip, menu chrome, or side nav', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
     assert.match(src, /shouldIgnoreOutsideDismissTarget/);
@@ -158,6 +158,26 @@ describe('wide more menu click reception', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
     assert.doesNotMatch(src, /ft-wide-more-radial-tip-/);
+  });
+
+  it('wide ⋯ index is a labeled side nav, not a polar fan', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /ft-wide-more-sidenav/);
+    assert.match(src, /HOME_SIDE_NAV_HEADING/);
+    assert.doesNotMatch(src, /layoutWideMenuRadialIcons/);
+  });
+
+  it('Begin Practice proxies Sit and hides with the Sit ball', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /id="ft-home-begin-practice"/);
+    assert.match(src, /HOME_BEGIN_PRACTICE/);
+    assert.match(
+      src,
+      /ft-wide-home-ctas\.is-arrival-quick #ft-home-begin-practice/
+    );
+    assert.match(src, /this\.beginPracticeBtn\.textContent = beginLabel/);
   });
 
   it('hides ⋯ during Honesty bridge but keeps escape hatch for overlay suppress', () => {
