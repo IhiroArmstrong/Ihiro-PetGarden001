@@ -1,0 +1,14 @@
+{
+  "en": {
+    "HOME_BEGIN_PRACTICE": "Begin Practice",
+    "HOME_SIDE_NAV_HEADING": "Navigation"
+  },
+  "zh": {
+    "HOME_BEGIN_PRACTICE": "开始练习",
+    "HOME_SIDE_NAV_HEADING": "导航"
+  },
+  "ja": {
+    "HOME_BEGIN_PRACTICE": "練習をはじめる",
+    "HOME_SIDE_NAV_HEADING": "メニュー"
+  }
+}

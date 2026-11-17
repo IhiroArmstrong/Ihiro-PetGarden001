@@ -1,7 +1,7 @@
 ---
 id: home-ux-architecture
 kind: feature
-status: H0 方向锁已写 · H1 侧边名单 + Begin Practice 立刻做
+status: H0 已合 #1755 · H1 侧边名单 + Begin Practice 本 PR
 updated: 2026-11-17
 ---
 
