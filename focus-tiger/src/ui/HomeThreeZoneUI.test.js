@@ -24,7 +24,7 @@ describe('HomeThreeZoneUI H2 skeleton', () => {
 
   it('moves the heatmap cluster under the HUD on wide Idle', () => {
     assert.match(src, /body\.ft-home-three-zone #weekly-practice-heatmap-cluster/);
-    assert.match(src, /top: calc\(max\(18px/);
+    assert.match(src, /top: max\(240px/);
     assert.match(src, /bottom: auto/);
   });
 
