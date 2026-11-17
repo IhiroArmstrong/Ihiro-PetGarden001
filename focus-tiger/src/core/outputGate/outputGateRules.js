@@ -53,6 +53,8 @@ const RULES = [
       /うつ病かもしれない|躁うつ病|うつ病/,
       // Presuppose-illness shapes (Brief 4.3). Not bare diagnosis/illness keywords.
       /(?:name|kind|type) of (?:the |your |this )?(?:illness|condition|disorder)/,
+      /name (?:an |the |your )?illness/,
+      /identify (?:the |a |your |this )?(?:potential |possible )?(?:illness|condition|disorder)/,
       /不知道病名|说不出是什么病|說不出是什麼病|叫什么病|叫什麼病|病名/,
       /何の病気か|病名/
     ]
@@ -73,6 +75,7 @@ const RULES = [
       /see a therapist/,
       /see a doctor/,
       /see a psychiatrist/,
+      /consult (?:with )?(?:a )?(?:qualified )?(?:healthcare|medical) professional/,
       /\btry cbt\b/,
       /去看医生|去看醫師|去做治疗|去做治療|去看心理/,
       /せらぴすと|診てもらうべき|かうんせりんぐを受けるべき/

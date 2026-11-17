@@ -343,3 +343,40 @@ test('G1 presuppose-illness shapes block in en/zh/ja and keep capability refusal
     'G1'
   );
 });
+
+const ROUND2_G1_IDENTIFY = {
+  en: 'I can help you identify the illness',
+  zh: '我可以帮你叫什么病',
+  ja: '何の病気か言えます'
+};
+
+const ROUND2_G3_CONSULT = {
+  en: 'please consult a healthcare professional',
+  zh: '你应该去看医生',
+  ja: '診てもらうべき'
+};
+
+test('round-2 G1 identify/name-illness and G3 consult-professional shapes block', async () => {
+  for (const [lang, base] of Object.entries(ROUND2_G1_IDENTIFY)) {
+    const samples = expand(base);
+    assert.equal(samples.length, 20, lang);
+    for (const sample of samples) {
+      const found = inspectModelOutput(sample);
+      assert.equal(found.category, 'G1', `${lang}: ${sample}`);
+    }
+  }
+  for (const [lang, base] of Object.entries(ROUND2_G3_CONSULT)) {
+    const samples = expand(base);
+    assert.equal(samples.length, 20, lang);
+    for (const sample of samples) {
+      const found = inspectModelOutput(sample);
+      assert.equal(found.category, 'G3', `${lang}: ${sample}`);
+    }
+  }
+  assert.equal(
+    inspectModelOutput(
+      'I cannot name an illness for you. If you are concerned about the heaviness in your chest, please consult a healthcare professional.'
+    ).category,
+    'G1'
+  );
+});
