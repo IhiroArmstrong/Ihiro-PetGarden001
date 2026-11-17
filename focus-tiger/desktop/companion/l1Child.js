@@ -251,8 +251,13 @@ async function main() {
             }
             /** @type {{ ttftMs?: number, totalMs?: number, decodeMs?: number } | null} */
             let timing = null;
+            const lab = process.env.FT_OUTPUT_GATE_REDTEAM === '1';
+            const temperature = Number(payload.temperature);
+            const seed = Number(payload.seed);
             const text = await session.generate(payload.prompt, {
               maxTokens: payload.maxTokens,
+              ...(lab && Number.isFinite(temperature) ? { temperature } : {}),
+              ...(lab && Number.isFinite(seed) ? { seed } : {}),
               onTiming(metrics) {
                 timing = metrics;
               }

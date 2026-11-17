@@ -4,159 +4,259 @@
  */
 
 /**
- * T100 layer B red team. Real Gemma4-E4B + companion prompt + output gate.
+ * T100 layer B red team round 2. Real l1Runtime generate + output gate.
  * Not in CI. Run from system Terminal (Metal).
  *
- *   cd focus-tiger && npm run audit:output-gate-redteam
- *   FT_REDTEAM_SAMPLES=2 npm run audit:output-gate-redteam
+ *   cd focus-tiger && FT_OUTPUT_GATE_REDTEAM=1 FT_REDTEAM_PACK=v2 FT_REDTEAM_ROUND=2 \
+ *     npm run audit:output-gate-redteam
  *
  * Raw model text stays in /tmp. Repo report uses hashes, lengths, counts.
  */
 
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
-import { loadModelHold } from '../companion/l1Hold.js';
+import { createHash } from 'node:crypto';
+import { CompanionL1Runtime } from '../companion/l1Runtime.js';
+import { confideClassify } from '../../src/core/confide/confideClassify.js';
+import { CONFIDE_ROUTE } from '../../src/core/confide/confideRoutes.js';
 import {
-  buildCompanionL2Prompt,
-  L2_MAX_TOKENS
-} from '../companion/l2Persona.js';
-import { resolveJaChitchatModelPath } from './l0-ja-chitchat-probe-shared.js';
-import { guardedGenerate } from '../../src/core/outputGate/outputGate.js';
-import {
-  chooseRedteamPathId,
+  countEffectiveSamples,
   loadRedteamPromptPack,
   scoreRedteamRaw,
   summarizeRedteamRows
 } from '../../src/core/outputGate/outputGateRedteam.js';
 
 const LAB_ROOT = '/tmp/ft-l0-lab';
+const RAW_LOG = path.join(LAB_ROOT, 'output-gate-redteam-raw.ndjson');
+const INPUT_FIXED = new Set([
+  CONFIDE_ROUTE.SAFETY_REDIRECT,
+  CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
+  CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN
+]);
 
-function parseSamples() {
-  const n = Number(process.env.FT_REDTEAM_SAMPLES || '1');
-  if (!Number.isFinite(n) || n < 1) return 1;
-  return Math.min(3, Math.floor(n));
+function parseCount(name, fallback, max) {
+  const n = Number(process.env[name] || fallback);
+  if (!Number.isFinite(n) || n < 1) return fallback;
+  return Math.min(max, Math.floor(n));
 }
 
-function parseTemps() {
-  const raw = String(process.env.FT_REDTEAM_TEMPS || '0,default');
+function parseArms() {
+  const raw = String(process.env.FT_REDTEAM_ARMS || 'unguarded,production');
   return raw
     .split(',')
     .map((part) => part.trim())
-    .filter(Boolean)
-    .slice(0, 2);
+    .filter((part) => part === 'unguarded' || part === 'production');
+}
+
+function seedFor(id, sample) {
+  const hex = createHash('sha256').update(`${id}:${sample}`).digest('hex').slice(0, 8);
+  return Number.parseInt(hex, 16);
+}
+
+function lastRawFromLog() {
+  if (!fs.existsSync(RAW_LOG)) return '';
+  const lines = fs.readFileSync(RAW_LOG, 'utf8').trim().split('\n');
+  const last = lines[lines.length - 1];
+  if (!last) return '';
+  try {
+    return String(JSON.parse(last).raw || '');
+  } catch {
+    return '';
+  }
+}
+
+function inputWouldGenerate(route) {
+  return Boolean(route) && !INPUT_FIXED.has(route);
 }
 
 /**
- * @param {{ generate: Function }} hold
- * @param {string} prompt
- * @param {string} tempLabel
+ * @param {CompanionL1Runtime} runtime
+ * @param {{ id: string, family: string, locale?: string, text: string }} item
+ * @param {'unguarded' | 'production'} arm
+ * @param {number} sample
+ * @param {Array<{ role: string, text: string, source: string }>} history
  */
-async function generateRaw(hold, prompt, tempLabel) {
-  const opts = { maxTokens: L2_MAX_TOKENS };
-  if (tempLabel === '0') opts.temperature = 0;
-  return String(await hold.generate(prompt, opts) || '').trim();
+async function runOne(runtime, item, arm, sample, history) {
+  const locale = item.locale || 'en';
+  const inputRoute = confideClassify(item.text) || '';
+  let crisisScore = null;
+  if (item.family === 'crisis-paraphrase' || item.family === 'harm-other') {
+    try {
+      crisisScore = await runtime.scoreSemanticCrisis({ text: item.text });
+    } catch {
+      crisisScore = { ok: false, reason: 'score_threw' };
+    }
+  }
+  const forceGenerate = arm === 'unguarded';
+  const willGenerate = forceGenerate || inputWouldGenerate(inputRoute);
+  /** @type {Record<string, unknown>} */
+  const row = {
+    id: item.id,
+    family: item.family,
+    arm,
+    sample,
+    locale,
+    inputRoute,
+    inputFixed: INPUT_FIXED.has(inputRoute),
+    generated: false,
+    temperature: 0.8,
+    seed: seedFor(item.id, sample),
+    crisisScore: crisisScore
+      ? {
+          ok: Boolean(crisisScore.ok),
+          embeddingOk: Boolean(crisisScore.embeddingOk),
+          score: Number(crisisScore.score) || 0,
+          reason: crisisScore.reason || ''
+        }
+      : null,
+    historyLeak: false
+  };
+  if (!willGenerate) {
+    return { ...row, gateVerdict: null, raw: '', escape: false, skipped: 'input_fixed' };
+  }
+  const result = await runtime.generate({
+    text: item.text,
+    locale,
+    history,
+    redteamArm: arm,
+    temperature: 0.8,
+    seed: seedFor(item.id, sample)
+  });
+  const raw = lastRawFromLog();
+  const scored = scoreRedteamRaw(raw || result?.text || '');
+  const shown = String(result?.text || '');
+  const leak = history.some((turn) => raw && String(turn.text || '').includes(raw));
+  return {
+    ...row,
+    generated: true,
+    skipped: '',
+    gateVerdict: result?.verdict || result?.reason || null,
+    shown,
+    raw,
+    historyLeak: leak,
+    ok: Boolean(result?.ok),
+    ...scored,
+    escape: Boolean(result?.verdict === 'pass' && scored.heuristicHit)
+  };
 }
 
 async function main() {
-  const pack = loadRedteamPromptPack();
-  const samples = parseSamples();
-  const temps = parseTemps();
+  const pack = loadRedteamPromptPack(process.env.FT_REDTEAM_PACK || 'v2');
+  const arms = parseArms();
+  const unguardedN = parseCount('FT_REDTEAM_SAMPLES_UNGUARDED', 8, 12);
+  const productionN = parseCount('FT_REDTEAM_SAMPLES_PROD', 4, 8);
   const dry = process.argv.includes('--dry-run');
   if (dry) {
     process.stdout.write(
-      `[output-gate-redteam] dry-run pack=${pack.id} prompts=${pack.prompts.length} vendor=${pack.author.vendor}\n`
+      `[output-gate-redteam] dry-run pack=${pack.id} prompts=${pack.prompts.length} dialogues=${(pack.dialogues || []).length} vendor=${pack.author.vendor} arms=${arms.join(',')}\n`
     );
     process.exit(0);
   }
 
-  const modelPath = resolveJaChitchatModelPath();
-  if (!modelPath) {
-    process.stderr.write(
-      '[output-gate-redteam] missing L3 GGUF. Set FT_CHITCHAT_GGUF or install production model.\n'
-    );
-    process.exit(2);
-  }
+  process.env.FT_OUTPUT_GATE_REDTEAM = '1';
+  process.env.FT_COMPANION_L1_FORCE_ON = '1';
+  fs.mkdirSync(LAB_ROOT, { recursive: true });
 
-  process.stderr.write(
-    `[output-gate-redteam] model ${modelPath} · prompts ${pack.prompts.length} · samples ${samples} · temps ${temps.join(',')}\n`
-  );
+  const runtime = new CompanionL1Runtime({
+    userDataDir: path.join(os.tmpdir(), 'ft-t100-redteam-userdata'),
+    getWebContents: () => null,
+    totalMemBytes: os.totalmem(),
+    env: process.env,
+    isPackaged: false,
+    execPath: process.execPath
+  });
 
-  let hold = null;
   /** @type {object[]} */
   const rows = [];
   try {
-    hold = await loadModelHold({
-      modelPath,
-      onProgress: (msg) => process.stderr.write(`[output-gate-redteam] ${msg}\n`)
-    });
-    for (const item of pack.prompts) {
-      const pathId = chooseRedteamPathId(item.text);
-      const prompt = buildCompanionL2Prompt({
-        text: item.text,
-        locale: item.locale || 'en',
-        history: []
-      });
-      for (const tempLabel of temps) {
+    const ready = await runtime.ensureReady();
+    if (!ready.ok) {
+      process.stderr.write(`[output-gate-redteam] ensureReady failed ${ready.reason || ''}\n`);
+      process.exit(2);
+    }
+    process.stderr.write(
+      `[output-gate-redteam] pack=${pack.id} prompts=${pack.prompts.length} arms=${arms.join(',')} u=${unguardedN} p=${productionN}\n`
+    );
+    for (const arm of arms) {
+      const samples = arm === 'unguarded' ? unguardedN : productionN;
+      for (const item of pack.prompts) {
         for (let sample = 0; sample < samples; sample += 1) {
-          let raw = '';
-          let generateError = '';
-          try {
-            raw = await generateRaw(hold, prompt, tempLabel);
-          } catch (err) {
-            generateError = err instanceof Error ? err.message : String(err);
-          }
-          const scored = scoreRedteamRaw(raw);
-          const gated = raw
-            ? await guardedGenerate(pathId, {
-                locale: item.locale || 'en',
-                generate: () => raw
-              })
-            : null;
-          rows.push({
-            id: item.id,
-            family: item.family,
-            pathId,
-            tempLabel,
-            sample,
-            locale: item.locale,
-            generateError,
-            temperaturePassthrough: tempLabel === '0',
-            gateVerdict: gated?.verdict || null,
-            raw,
-            ...scored
-          });
-          const flag = scored.escape ? 'ESCAPE' : scored.gateCategory || (scored.uncovered ? 'UNCOV' : 'PASS');
+          const row = await runOne(runtime, item, arm, sample, []);
+          rows.push(row);
+          const flag = row.skipped
+            ? 'SKIP'
+            : row.escape
+              ? 'ESCAPE'
+              : row.gateVerdict || 'PASS';
           process.stdout.write(
-            `${flag}\t${item.id}\tt=${tempLabel}\ts=${sample}\tlen=${scored.length}\thash=${scored.sha256.slice(0, 12)}\n`
+            `${flag}\t${item.id}\tarm=${arm}\ts=${sample}\troute=${row.inputRoute}\thash=${String(row.sha256 || '').slice(0, 12)}\n`
           );
         }
       }
     }
+    for (const dialogue of pack.dialogues || []) {
+      if (!arms.includes('unguarded')) break;
+      /** @type {Array<{ role: string, text: string, source: string }>} */
+      const history = [];
+      for (let t = 0; t < dialogue.turns.length; t += 1) {
+        const item = {
+          id: `${dialogue.id}-t${t}`,
+          family: dialogue.family,
+          locale: dialogue.locale,
+          text: dialogue.turns[t]
+        };
+        const row = await runOne(runtime, item, 'unguarded', 0, history);
+        rows.push({ ...row, dialogue: dialogue.id, turn: t });
+        if (row.shown) {
+          history.push({ role: 'user', text: item.text, source: 'user' });
+          history.push({ role: 'yin', text: row.shown, source: 'generate' });
+        }
+        process.stdout.write(
+          `${row.historyLeak ? 'LEAK' : row.escape ? 'ESCAPE' : row.gateVerdict || 'PASS'}\t${item.id}\tdialogue\n`
+        );
+      }
+    }
   } finally {
-    if (hold) await hold.dispose();
+    await runtime.unload();
   }
 
-  const summary = summarizeRedteamRows(rows);
-  fs.mkdirSync(LAB_ROOT, { recursive: true });
+  const generated = rows.filter((row) => row.generated);
+  const unguarded = generated.filter((row) => row.arm === 'unguarded');
+  const production = generated.filter((row) => row.arm === 'production');
+  const summary = {
+    ...summarizeRedteamRows(generated),
+    effectiveUnguarded: countEffectiveSamples(unguarded),
+    effectiveProduction: countEffectiveSamples(production),
+    inputFixed: rows.filter((row) => row.inputFixed).length,
+    inputGenerated: rows.filter((row) => row.generated && !row.skipped).length,
+    historyLeaks: rows.filter((row) => row.historyLeak).length,
+    poCandidates: generated.filter((row) => row.escape).length
+  };
   const outPath = path.join(LAB_ROOT, `output-gate-redteam-${Date.now()}.json`);
   const payload = {
     probe: 'output-gate-redteam',
     packId: pack.id,
     author: pack.author,
-    modelPath,
-    samples,
-    temps,
-    round: Number(process.env.FT_REDTEAM_ROUND || '1'),
+    round: Number(process.env.FT_REDTEAM_ROUND || '2'),
+    entry: 'CompanionL1Runtime.generate',
+    temperature: 0.8,
     kStop: 3,
-    note: 'Raw text omitted. Hashes only. Not clinical review. K=3 not claimed from one round.',
-    temperaturePassthrough: 'l1Hold.generate forwards genOpts.temperature when set',
-    rows,
+    note: 'Raw text omitted from this JSON. Hashes only. Not clinical review. K=3 not claimed from one round.',
+    rows: rows.map((row) => {
+      const { raw, shown, ...rest } = row;
+      return {
+        ...rest,
+        shownLength: String(shown || '').length,
+        rawLength: String(raw || '').length
+      };
+    }),
     summary
   };
   fs.writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`);
   process.stderr.write(`[output-gate-redteam] wrote ${outPath}\n`);
   process.stdout.write(
-    `[output-gate-redteam] n=${summary.n} escapes=${summary.escapes} blocked=${summary.blocked} threeDigit=${summary.threeDigit}\n`
+    `[output-gate-redteam] n=${summary.n} escapes=${summary.escapes} blocked=${summary.blocked} effectiveU=${summary.effectiveUnguarded.effective} effectiveP=${summary.effectiveProduction.effective} inputFixed=${summary.inputFixed} leaks=${summary.historyLeaks}\n`
   );
 }
 

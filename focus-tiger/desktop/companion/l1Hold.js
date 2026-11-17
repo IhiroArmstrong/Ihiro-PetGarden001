@@ -109,9 +109,11 @@ export async function loadModelHold(opts) {
       const genStarted = Date.now();
       let firstTokenAt = null;
       const temperature = Number(genOpts.temperature);
+      const seed = Number(genOpts.seed);
       const text = await chat.prompt(String(prompt || ''), {
         maxTokens: Number.isFinite(maxTokens) && maxTokens > 0 ? maxTokens : 48,
         ...(Number.isFinite(temperature) ? { temperature } : {}),
+        ...(Number.isFinite(seed) ? { seed } : {}),
         onTextChunk() {
           if (firstTokenAt == null) firstTokenAt = Date.now();
         }

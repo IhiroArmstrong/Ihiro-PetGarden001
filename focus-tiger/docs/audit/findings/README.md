@@ -36,7 +36,7 @@
 | ⑦ | `B4b-a11y-i18n-findings.md` | — | — | **未开始** | Brief 已有 |
 | ⑨⑩ | [`2026-11-07/R2-cross-review-b5-b6-findings.md`](2026-11-07/R2-cross-review-b5-b6-findings.md) 等 | R2 已检；R2-lite 补记见 `2026-11-08/` | #1592 Brief；复核多篇 | **MERGED** | ⑨ **2** · ⑩ **1**（R2 报告内） |
 | 安全/AI | `2026-11-07/B5-*.md`、`B6-*.md` | B5/B6 各轮 | #1589 · #1587 | **MERGED** | 本轮 B1 不重判 V1–V4 |
-| T100 | [`2026-11-16/t100-output-gate-layer-b-redteam.md`](2026-11-16/t100-output-gate-layer-b-redteam.md) | 第 1 轮记录 · **闸未验证** | [#1747](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1747) | **待合** | 有效采样 12；实验室管线；未走 #1745 `l1Runtime`。第 2 轮方案只文档：[`t100-output-gate-layer-b-redteam-round-2-plan.md`](2026-11-16/t100-output-gate-layer-b-redteam-round-2-plan.md) |
+| T100 | [`2026-11-16/t100-output-gate-layer-b-redteam.md`](2026-11-16/t100-output-gate-layer-b-redteam.md) | 第 1 轮记录 · **闸未验证** | [#1747](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1747) | **MERGED** | 有效采样 12；实验室管线。第 2 轮方案：[`t100-output-gate-layer-b-redteam-round-2-plan.md`](2026-11-16/t100-output-gate-layer-b-redteam-round-2-plan.md)。#1752 已合。 |
 | ⑪ | [`RISK_REGISTER.md`](../RISK_REGISTER.md) | **已建立** v1.1.2 · **本 PR 不改登记册正文** | #1649 首版；#1652 v1.1.1 | **MERGED** | 否决只认 **V-02**。RR-21 仍开放；建议句见下行，不在本页改状态 |
 | ⑨ | [`2026-11-10/B5-t81-t93-incremental-findings.md`](2026-11-10/B5-t81-t93-incremental-findings.md) | 代码层已读 · **抓包未做 · 未判通过** | [#1670](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1670) | **待合** | 阅读点 `3e2bd9bd`。安装包未打开。不覆盖 V-01 残余 |
 
