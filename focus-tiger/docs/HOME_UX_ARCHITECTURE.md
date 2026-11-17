@@ -73,7 +73,7 @@
 | **H1** | 侧边名单 + Begin Practice | 立刻做（叠在本锁之后） |
 | **H2** | 三块区域骨架 | 立刻做（H1 #1756 已合）；Brief [`task-briefs/task-home-ux-h2.md`](./task-briefs/task-home-ux-h2.md) |
 | **H3** | 首页纪念物一件 + 件数 + 进收藏 | 排队 |
-| **H4** | Support 降优先级（功能不删） | 排队；付款面须复检 |
+| **H4** | Support 降优先级（功能不删） | 立刻做（H2 #1758 已合；不挡 H3）；Brief [`task-briefs/task-home-ux-h4.md`](./task-briefs/task-home-ux-h4.md) |
 | **H5** | 短问候轮换 | 骨架稳定后 |
 | **H6** | 窄屏同一套结构 + 过渡 | 骨架稳定后 |
 

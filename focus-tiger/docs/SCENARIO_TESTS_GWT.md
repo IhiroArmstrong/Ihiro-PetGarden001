@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-11-15  
+生成日期：2026-11-18  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -1245,7 +1245,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| Q1-1 | P0 | 无自动化标注 | `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → 0 |
+| Q1-1 | P0 | 无自动化标注 | `?product=1` Idle → 右上（音符左侧）`#yin-support-fab`（默认小 |
 | Q1-2 | P0 | 无自动化标注 | 见三卡（头图暖纸底；三 CTA 同款米色立体，Join Membership 不得蒲团橙白字）： |
 | Q1-3 | P0 | 无自动化标注 | Maybe later 为文字链关闭（非全宽描边钮）。0–1 秒内：链按压 + 模态收起，Idle  |
 | Q1-4 | P0 | 无自动化标注 | 375：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。 |
@@ -1266,7 +1266,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - `?product=1` Idle
 
 **Then**
-- 右上（音符左侧）`#yin-support-fab` → 0–1 秒内：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
+- 右上（音符左侧）`#yin-support-fab`（默认小标；hover / 键盘焦点 / 展开后才见完整药丸）→ 0–1 秒内：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
 
 #### Q1-2
 
