@@ -200,9 +200,7 @@ export class HomeThreeZoneUI {
     style.textContent = `
       @media (min-width: 480px) {
         body.ft-home-three-zone #weekly-practice-heatmap-cluster {
-          top: max(240px, calc(max(18px, env(safe-area-inset-top, 0px)) + 220px));
-          bottom: auto;
-          left: max(16px, env(safe-area-inset-left, 0px));
+          /* Keep original left-bottom so #onboarding-hint-help stays clickable. */
         }
         body.ft-home-three-zone #weekly-practice-heatmap-cluster::before {
           content: attr(data-zone-label);

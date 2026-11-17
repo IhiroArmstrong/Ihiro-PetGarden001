@@ -22,10 +22,9 @@ describe('HomeThreeZoneUI H2 skeleton', () => {
     );
   });
 
-  it('moves the heatmap cluster under the HUD on wide Idle', () => {
-    assert.match(src, /body\.ft-home-three-zone #weekly-practice-heatmap-cluster/);
-    assert.match(src, /top: max\(240px/);
-    assert.match(src, /bottom: auto/);
+  it('does not relocate the heatmap cluster over the help mark', () => {
+    assert.match(src, /onboarding-hint-help stays clickable/);
+    assert.doesNotMatch(src, /bottom: auto/);
   });
 
   it('hides the wide Confide ear in favor of a labeled row', () => {
@@ -45,7 +44,7 @@ describe('HomeThreeZoneUI H2 skeleton', () => {
   });
 
   it('reserves the memorabilia slot for H3 and hides the rail when ⋯ is open', () => {
-    assert.match(src, /id="ft-home-memorabilia-slot"|SLOT_ID = 'ft-home-memorabilia-slot'/);
+    assert.match(src, /SLOT_ID = 'ft-home-memorabilia-slot'/);
     assert.match(src, /ft-wide-more-open \.ft-home-zone-memories/);
     assert.match(src, /@media \(max-width: 479px\)/);
   });

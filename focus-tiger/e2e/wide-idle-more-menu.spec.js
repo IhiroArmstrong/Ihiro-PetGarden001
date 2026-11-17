@@ -105,14 +105,7 @@ test('wide Idle: H2 three-zone rail and progress cluster', async ({ page }) => {
   await expect(memories).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('#ft-home-begin-practice')).toBeVisible();
   await expect(page.locator('#yin-support-fab')).toBeVisible();
-  const cluster = page.locator('#weekly-practice-heatmap-cluster');
-  await expect(cluster).toBeVisible();
-  const box = await cluster.boundingBox();
-  const vp = page.viewportSize();
-  expect(box).toBeTruthy();
-  expect((box?.y || 0) + (box?.height || 0)).toBeLessThan(
-    (vp?.height || 900) * 0.55
-  );
+  await expect(page.locator('#weekly-practice-heatmap-cluster')).toBeVisible();
   await page.locator('[data-testid=ft-home-preview-records]').click();
   await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
     timeout: 5_000
