@@ -38,6 +38,7 @@ import {
   shouldDegenerateWideMenuRadialForButton
 } from '../core/wideMenuRadialLayout.js';
 import { Z } from './zIndexLayers.js';
+import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
 
 const STYLE_ID = 'ft-wide-idle-more-styles-v9';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
@@ -178,6 +179,8 @@ export class WideIdleMoreMenu {
     this._injectStyles();
     this._ensureBuilt();
     this._bind();
+    this.threeZone = new HomeThreeZoneUI({ wide: this });
+    this.onAfterSync = () => this.threeZone?.sync();
     this._sync();
     this._localeUnsub = onLocaleChange(() => {
       this._refreshLabels();
@@ -389,6 +392,9 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   destroy() {
+    this.threeZone?.destroy();
+    this.threeZone = null;
+    this.onAfterSync = null;
     this._localeUnsub?.();
     this._mq?.removeEventListener?.('change', this._onMqChange);
     if (typeof window !== 'undefined') {
@@ -825,6 +831,33 @@ export class WideIdleMoreMenu {
     if (!showMore) this._menuOpen = false;
     this._syncMenuLayers();
     if (park) this._refreshHomeCtas();
+    this.onAfterSync?.();
+  }
+
+  /**
+   * Open ⋯ already on a named group (H2 right-rail previews).
+   * @param {string} groupKey
+   * @returns {void}
+   */
+  openMenuGroup(groupKey) {
+    this.openMenu();
+    if (!this._menuOpen || !groupKey) return;
+    if (this._menuFlat) {
+      this._activeListGroup = groupKey;
+      this._expandedGroups = new Set([groupKey]);
+      this._refreshItems();
+      this._syncMenuLayers();
+      return;
+    }
+    this._openRadialGroup(groupKey);
+  }
+
+  /**
+   * @param {string | null} key
+   * @returns {void}
+   */
+  proxyMenuItem(key) {
+    this._proxy(key);
   }
 
   /** @returns {void} */

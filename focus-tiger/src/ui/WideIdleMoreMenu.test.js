@@ -180,6 +180,15 @@ describe('wide more menu click reception', () => {
     assert.match(src, /this\.beginPracticeBtn\.textContent = beginLabel/);
   });
 
+  it('exposes openMenuGroup and proxyMenuItem for the H2 right rail', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /openMenuGroup\(groupKey\)/);
+    assert.match(src, /proxyMenuItem\(key/);
+    assert.match(src, /this\.onAfterSync\?\.\(\)/);
+    assert.match(src, /new HomeThreeZoneUI/);
+  });
+
   it('hides ⋯ during Honesty bridge but keeps escape hatch for overlay suppress', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
