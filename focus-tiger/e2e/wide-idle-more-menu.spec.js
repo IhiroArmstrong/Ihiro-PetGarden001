@@ -99,6 +99,23 @@ test('wide Idle: Sit ball opens Arrival', async ({ page }) => {
   });
 });
 
+test('wide Idle: H2 three-zone rail and progress cluster', async ({ page }) => {
+  await openFreshProductShell(page);
+  const memories = page.locator('#ft-home-zone-memories');
+  await expect(memories).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#ft-home-begin-practice')).toBeVisible();
+  await expect(page.locator('#yin-support-fab')).toBeVisible();
+  await expect(page.locator('#weekly-practice-heatmap-cluster')).toBeVisible();
+  await page.locator('[data-testid=ft-home-preview-records]').click();
+  await expect(page.locator('#ft-wide-more-menu')).toBeVisible({
+    timeout: 5_000
+  });
+  await expect(
+    page.locator('.ft-wide-more__section-header[data-group="MENU_GROUP_RECORDS"]')
+  ).toBeVisible();
+  await expect(memories).toBeHidden();
+});
+
 test('wide Idle: Begin Practice opens Arrival', async ({ page }) => {
   await openFreshProductShell(page);
   const begin = page.locator('#ft-home-begin-practice');

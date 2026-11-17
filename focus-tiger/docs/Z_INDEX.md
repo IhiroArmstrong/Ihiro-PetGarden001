@@ -42,6 +42,7 @@
 | **4** | `src/ui/SanctuaryEnsoMarkChrome.js` | Sanctuary Enso 页面左下角印记（`#yin-sanctuary-enso-mark`）；代码为 z4（与 FX 同带，**不是** kindness 11）。宽屏真左下角、375 抬到三球之上；`pointer-events: none`；Focusing 淡化。A12 对账只改正表，未改运行时数字 |
 | **12** | `src/ui/MindflowNebulaChromeUI.js` | 心念流粒子画布（；pointer-events none；Focusing 隐藏） |
 | **12** | `src/ui/WeeklyPracticeHeatmap.js` | 周练习热力图簇（含 Reminder 时钟、成长旅程短轨迹；短轨迹不新开一层） |
+| **12** | `src/ui/HomeThreeZoneUI.js` | 宽屏 Idle 右栏记忆轻入口（`#ft-home-zone-memories`）；与热力簇同带；⋯ 打开时隐藏；低于 Support FAB 24 / ⋯ 遮罩 25 |
 | **12** | `src/ui/ActiveRecoverAnchorUI.js` | Focusing Tiger Anchor（轻触阿寅 / 幽灵提示）；冷却期微光+提示 hidden、**invisible hit 仍在**（FB-01）；`#ui-overlay` 内；须低于 dock Rise(16) 与 toast(18/40) |
 | **12** | `src/ui/IdleYinTapAnchorUI.js` | Idle 轻点阿寅额头 `#idle-yin-tap-anchor`（invisible hit，`top:30%` 盖额头；无微光）；与 Active Recover **互斥**（Idle vs Focusing）；须低于 dock Sit(16) |
 | **12** | `src/ui/TransitionMomentTriggerUI.js` | Idle Transition 微入口 `#transition-moment-trigger`（热力图簇邻接；Focusing 隐藏；低于 dock Sit(16)） |
