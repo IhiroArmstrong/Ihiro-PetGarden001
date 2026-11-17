@@ -116,6 +116,18 @@ test('wide Idle: H2 three-zone rail and progress cluster', async ({ page }) => {
   await expect(memories).toBeHidden();
 });
 
+test('wide Idle: H3 memorabilia slot opens Yins Collections', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  const enter = page.locator('[data-testid=ft-home-memorabilia-enter]');
+  await expect(enter).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('[data-testid=ft-home-memorabilia-count]')).toBeVisible();
+  await enter.click();
+  await expect(page.locator('#yin-coin-panel')).toBeVisible({ timeout: 8_000 });
+  await expect(page.locator('#yin-support-fab')).toBeVisible();
+});
+
 test('wide Idle: Begin Practice opens Arrival', async ({ page }) => {
   await openFreshProductShell(page);
   const begin = page.locator('#ft-home-begin-practice');
