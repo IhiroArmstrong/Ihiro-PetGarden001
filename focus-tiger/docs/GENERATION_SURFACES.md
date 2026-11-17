@@ -13,11 +13,11 @@
 
 | pathId | entry | call | sink | gate | fallback | testId | visible | anchor |
 |---|---|---|---|---|---|---|---|---|
-| confide-observe-l3 | `src/ui/ConfideToYinUI.js` `_runL3Generate` 1511，由 `_continueAfterToolRouting` 2533 进入。观察翼：用户句不是闲聊问句。 | `desktop/companion/l1Runtime.js` `generate` 453；观察翼判定 485–486；组提示 527。子进程 `l1Child.js` 232 的 `generate `。 | `ConfideToYinUI.js` 1095 `replyEl.textContent`。展示的是 `result.text`（1545），也就是消毒后的句子。 | `l1Runtime.generate` → `guardedGenerate` | 先 `sanitizeCompanionL2Reply`（`l1Runtime.js` 560，实现在 `l2Sanitize.js`）。失败则 `_showGenerateFailureFallback` 1464，气泡改成语料句。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:112 |
-| confide-chat-l3 | 同上一个入口。闲聊翼：`isCompanionChatGenerateLine`（`l2Persona.js` 230，运行时 486）。日语和多语闲聊（#774）走这里，没有第二条 `prompt()`。 | 同上，共用 `l1Hold.js` 的 `chat.prompt`。闲聊不走观察套话重试（`maxAttempts` 在非观察翼是 1，509）。 | 同上 1095。 | `l1Runtime.generate` → `guardedGenerate` | 同上。闲聊没有第二轮套话重试。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:112 |
-| confide-observe-retry | 没有单独按钮。观察翼 `maxAttempts = 2`（`l1Runtime.js` 509–574）。第一轮被套话分打中才再生成一次。 | 同一次 `chat.prompt`。 | 只有最后被留下的那句进 1095。被丢掉的那轮不进气泡。 | `l1Runtime.generate` → `guardedGenerate` | 两轮都失败才走语料回落。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:112 |
-| reflection-companion | `src/ui/TigerReflectionMoment.js` `_onReflectionCompanionInvite` 746。`purpose: reflection_companion`。仅实验室开关允许时才调。 | `l1Runtime.js` 463、521 `buildReflectionCompanionPrompt`。 | `_showReflectionCompanionObservation` 754。 | `l1Runtime.generate` → `guardedGenerate` | 模型没准备好或调用失败时，同一函数改走固定观察句（706、735）。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:112 |
-| read-hybrid-classify | `ConfideToYinUI.js` `_tryReadHybridThenContinue` 2247 `classifyReadTool`。正则没命中才调。 | `l1Runtime.js` `classifyReadTool` 643。子进程 `l1Child.js` 511 `classify-read-tool`。模型吐的是工具调用草稿，不是陪伴句。 | 界面用 `resolveConfideReadHybridToolFromRaw`（2254）换成登记过的事实句或说明句。模型原文不进气泡。 | 不过闸（工具草稿） | 解析失败就继续后面的固定路由，不展示原文。 | none-until-pr3 | no | desktop/companion/l1Hold.js:112 |
+| confide-observe-l3 | `src/ui/ConfideToYinUI.js` `_runL3Generate` 1511，由 `_continueAfterToolRouting` 2533 进入。观察翼：用户句不是闲聊问句。 | `desktop/companion/l1Runtime.js` `generate` 453；观察翼判定 485–486；组提示 527。子进程 `l1Child.js` 232 的 `generate `。 | `ConfideToYinUI.js` 1095 `replyEl.textContent`。展示的是 `result.text`（1545），也就是消毒后的句子。 | `l1Runtime.generate` → `guardedGenerate` | 先 `sanitizeCompanionL2Reply`（`l1Runtime.js` 560，实现在 `l2Sanitize.js`）。失败则 `_showGenerateFailureFallback` 1464，气泡改成语料句。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:113 |
+| confide-chat-l3 | 同上一个入口。闲聊翼：`isCompanionChatGenerateLine`（`l2Persona.js` 230，运行时 486）。日语和多语闲聊（#774）走这里，没有第二条 `prompt()`。 | 同上，共用 `l1Hold.js` 的 `chat.prompt`。闲聊不走观察套话重试（`maxAttempts` 在非观察翼是 1，509）。 | 同上 1095。 | `l1Runtime.generate` → `guardedGenerate` | 同上。闲聊没有第二轮套话重试。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:113 |
+| confide-observe-retry | 没有单独按钮。观察翼 `maxAttempts = 2`（`l1Runtime.js` 509–574）。第一轮被套话分打中才再生成一次。 | 同一次 `chat.prompt`。 | 只有最后被留下的那句进 1095。被丢掉的那轮不进气泡。 | `l1Runtime.generate` → `guardedGenerate` | 两轮都失败才走语料回落。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:113 |
+| reflection-companion | `src/ui/TigerReflectionMoment.js` `_onReflectionCompanionInvite` 746。`purpose: reflection_companion`。仅实验室开关允许时才调。 | `l1Runtime.js` 463、521 `buildReflectionCompanionPrompt`。 | `_showReflectionCompanionObservation` 754。 | `l1Runtime.generate` → `guardedGenerate` | 模型没准备好或调用失败时，同一函数改走固定观察句（706、735）。 | none-until-pr3 | yes | desktop/companion/l1Hold.js:113 |
+| read-hybrid-classify | `ConfideToYinUI.js` `_tryReadHybridThenContinue` 2247 `classifyReadTool`。正则没命中才调。 | `l1Runtime.js` `classifyReadTool` 643。子进程 `l1Child.js` 511 `classify-read-tool`。模型吐的是工具调用草稿，不是陪伴句。 | 界面用 `resolveConfideReadHybridToolFromRaw`（2254）换成登记过的事实句或说明句。模型原文不进气泡。 | 不过闸（工具草稿） | 解析失败就继续后面的固定路由，不展示原文。 | none-until-pr3 | no | desktop/companion/l1Hold.js:113 |
 | lab-l0-probe | `desktop/companion/l0Probe.js`。实验脚本，不挂界面。 | 同文件 `session.prompt`。 | 无界面。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | desktop/companion/l0Probe.js:104 |
 | lab-l0-spike17 | `desktop/companion/l0Spike17Probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | desktop/companion/l0Spike17Probe.js:89 |
 | lab-tool-call-probe | `desktop/scripts/l0-tool-call-probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。结果写实验室目录。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | desktop/scripts/l0-tool-call-probe.js:94 |
@@ -34,17 +34,15 @@
 
 | wrapperId | what | anchor |
 |---|---|---|
-| child-l3-generate | `l1Child.js` 收到 `generate ` 后调用 `session.generate` | desktop/companion/l1Child.js:254 |
-| child-read-hybrid | `l1Child.js` 收到 `classify-read-tool ` 后调用 `session.generate` | desktop/companion/l1Child.js:533 |
+| child-l3-generate | `l1Child.js` 收到 `generate ` 后调用 `session.generate` | desktop/companion/l1Child.js:257 |
+| child-read-hybrid | `l1Child.js` 收到 `classify-read-tool ` 后调用 `session.generate` | desktop/companion/l1Child.js:538 |
 | lab-spike17-generate | `l0Spike17Probe.js` 实验循环调用 `session.generate`。仍落到同文件的 `chat.prompt`，不挂界面。 | desktop/companion/l0Spike17Probe.js:173 |
 | lab-observe-shuffle | `l0-observe-shuffle-screen.js` 调用 `hold.generate`。实验脚本，不挂界面。 | desktop/scripts/l0-observe-shuffle-screen.js:105 |
 | lab-ja-chitchat | `l0-ja-chitchat-probe-shared.js` 调用 `hold.generate`。实验脚本，不挂界面。日语闲聊的产品路径仍是 `confide-chat-l3`。 | desktop/scripts/l0-ja-chitchat-probe-shared.js:337 |
 | lab-confide-latency | `l0-confide-latency-probe.js` 调用 `hold.generate`。实验脚本，不挂界面。 | desktop/scripts/l0-confide-latency-probe.js:72 |
-| lab-output-gate-redteam | `l0-output-gate-redteam.js` 调用 `hold.generate` 再过闸模块。实验室管线，不挂界面。 | desktop/scripts/l0-output-gate-redteam.js:57 |
-
 ## 流式
 
-`l1Hold.js` 112–118 的 `onTextChunk` 只记下第一个 token 的时间，不把半句交给界面。界面在整段 `prompt()` 返回之后才拿到字符串。等待时用的是已有的「正在听」占位（`_showPendingReply`），不是未过闸的半句。今天没有把未完成 token 画出来的路径。
+`l1Hold.js` 113–119 的 `onTextChunk` 只记下第一个 token 的时间，不把半句交给界面。界面在整段 `prompt()` 返回之后才拿到字符串。等待时用的是已有的「正在听」占位（`_showPendingReply`），不是未过闸的半句。今天没有把未完成 token 画出来的路径。
 
 ## 模型原文写回哪里
 

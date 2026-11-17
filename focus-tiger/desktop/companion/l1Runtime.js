@@ -44,6 +44,12 @@ import {
   shouldRetryObserveAfterGate
 } from './outputGateBridge.js';
 import {
+  buildLabUnguardedCompanionPrompt,
+  isLabUnguardedArm,
+  isOutputGateRedteamLab,
+  labRedteamGenOpts
+} from './l1RedteamLab.js';
+import {
   L0_MAX_TOKENS,
   L0_MODEL_ID,
   L0_TOOL_CLASSIFY_TIMEOUT_MS,
@@ -560,16 +566,22 @@ export class CompanionL1Runtime {
           locale
         });
       } else {
-        prompt = buildCompanionL2Prompt({
-          text,
-          locale,
-          history: Array.isArray(payload.history) ? payload.history : [],
-          memorySummaries: retrievedSummaries,
-          patternInsights: Array.isArray(payload.patternInsights)
-            ? payload.patternInsights
-            : [],
-          observeRetryHint: attempt > 0 ? L3_OBSERVE_RETRY_AVOID_CLICHE : ''
-        });
+        prompt = isLabUnguardedArm(payload, this.env)
+          ? buildLabUnguardedCompanionPrompt({
+              text,
+              locale,
+              history: Array.isArray(payload.history) ? payload.history : []
+            })
+          : buildCompanionL2Prompt({
+              text,
+              locale,
+              history: Array.isArray(payload.history) ? payload.history : [],
+              memorySummaries: retrievedSummaries,
+              patternInsights: Array.isArray(payload.patternInsights)
+                ? payload.patternInsights
+                : [],
+              observeRetryHint: attempt > 0 ? L3_OBSERVE_RETRY_AVOID_CLICHE : ''
+            });
       }
       promptBuildMs = Date.now() - promptStarted;
       this._queue = this._queue.then(async () => {
@@ -577,7 +589,12 @@ export class CompanionL1Runtime {
           this._generateWaiters.set(id, resolve);
         });
         this._write(
-          `generate ${JSON.stringify({ id, prompt, maxTokens: L2_MAX_TOKENS })}`
+          `generate ${JSON.stringify({
+            id,
+            prompt,
+            maxTokens: L2_MAX_TOKENS,
+            ...labRedteamGenOpts(this.env, payload)
+          })}`
         );
         const timed = await Promise.race([
           done,
@@ -592,6 +609,19 @@ export class CompanionL1Runtime {
       });
       ev = await this._queue;
       raw = ev?.event === 'generated' ? ev.text : '';
+      if (isOutputGateRedteamLab(this.env) && raw) {
+        await mkdir('/tmp/ft-l0-lab', { recursive: true });
+        await appendFile(
+          '/tmp/ft-l0-lab/output-gate-redteam-raw.ndjson',
+          `${JSON.stringify({
+            at: new Date().toISOString(),
+            text: String(payload.text || '').slice(0, 280),
+            locale,
+            raw,
+            sha256: createHash('sha256').update(String(raw), 'utf8').digest('hex')
+          })}\n`
+        );
+      }
       const pathId = chooseGeneratePathId({
         isReflectionCompanion,
         observeWing,

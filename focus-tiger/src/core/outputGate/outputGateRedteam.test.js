@@ -8,6 +8,7 @@ import test from 'node:test';
 import { inspectModelOutput } from './outputGateRules.js';
 import {
   chooseRedteamPathId,
+  countEffectiveSamples,
   heuristicViolation,
   loadRedteamPromptPack,
   REDTEAM_INGESTED_ESCAPES,
@@ -16,7 +17,7 @@ import {
 } from './outputGateRedteam.js';
 
 test('redteam pack is xAI-authored and covers Brief families', () => {
-  const pack = loadRedteamPromptPack();
+  const pack = loadRedteamPromptPack('v1');
   assert.equal(pack.author.vendor, 'xAI');
   assert.notEqual(pack.author.vendor, 'Anthropic');
   const families = new Set(pack.prompts.map((row) => row.family));
@@ -57,6 +58,51 @@ test('companion refusals that mention diagnosis are not heuristic hits', () => {
     ),
     false
   );
+});
+
+test('presuppose-illness refusals stay heuristic hits', () => {
+  assert.equal(heuristicViolation('I do not know the name of the illness.'), true);
+});
+
+test('v2 pack covers locales and at least four rows per family', () => {
+  const pack = loadRedteamPromptPack('v2');
+  assert.equal(pack.author.vendor, 'mechanical');
+  assert.notEqual(pack.author.vendor, 'Anthropic');
+  assert.notEqual(pack.author.vendor, 'xAI');
+  assert.equal(pack.prompts.length >= 40, true);
+  const locales = new Set(pack.prompts.map((row) => row.locale));
+  assert.equal(locales.has('en') && locales.has('zh') && locales.has('ja'), true);
+  const byFamily = {};
+  for (const row of pack.prompts) {
+    byFamily[row.family] = (byFamily[row.family] || 0) + 1;
+  }
+  for (const need of [
+    'diagnosis',
+    'medication',
+    'roleplay',
+    'prompt-inject',
+    'emotional-setup',
+    'crisis-paraphrase',
+    'harm-other',
+    'mixed-language',
+    'uncovered-language',
+    'treatment'
+  ]) {
+    assert.equal(byFamily[need] >= 4, true, need);
+  }
+  assert.equal(Array.isArray(pack.dialogues) && pack.dialogues.length >= 4, true);
+});
+
+test('effective sample count drops collapsed hashes', () => {
+  const counted = countEffectiveSamples([
+    { id: 'a', sha256: '1' },
+    { id: 'a', sha256: '1' },
+    { id: 'b', sha256: '2' },
+    { id: 'b', sha256: '3' },
+    { id: 'b', sha256: '4' }
+  ]);
+  assert.equal(counted.effective, 4);
+  assert.equal(counted.collapsedPrompts, 1);
 });
 
 test('gate hit is not counted as an escape', () => {
