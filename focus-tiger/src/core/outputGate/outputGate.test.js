@@ -241,6 +241,30 @@ test('988 plus self-harm wording is late crisis; a bare number or the wording al
   assert.equal(echoed.verdict, 'pass');
 });
 
+test('assistant voice falls back and does not lock; a doctor in the room still passes', async () => {
+  const lines = [
+    'I am an AI. We can sit quietly.',
+    'I am a language model. The tea is warm.',
+    'Please provide a little more about the room.',
+    '请描述一下这间屋子。',
+    '私はAIです。'
+  ];
+  for (const line of lines) {
+    assert.equal(inspectModelOutput(line).category, 'G11', line);
+    const gated = await guardedGenerate('confide-observe-l3', {
+      generate: () => line
+    });
+    assert.equal(gated.verdict, 'neutral_fallback', line);
+    assert.equal(gated.triggersGenerationLock, false, line);
+    assert.notEqual(gated.text, line);
+  }
+  assert.equal(inspectModelOutput('The doctor sat quietly.').category, null);
+  assert.equal(
+    inspectModelOutput('Please consult a healthcare professional.').category,
+    'G3'
+  );
+});
+
 test('practice durations stay blocked by G9 and are counted apart', async () => {
   let durationBlocked = 0;
   for (const line of DURATION) {
