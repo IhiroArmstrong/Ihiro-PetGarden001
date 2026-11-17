@@ -46,7 +46,7 @@ import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
 import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
 import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v12';
+const STYLE_ID = 'ft-wide-idle-more-styles-v13';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
 const DEFAULT_EXPANDED_MENU_GROUPS = [
   DEFAULT_EXPANDED_MENU_GROUP,
@@ -1477,11 +1477,11 @@ export class WideIdleMoreMenu {
       .ft-wide-more-radial {
         position: fixed;
         top: 50%;
-        right: max(16px, env(safe-area-inset-right, 0px));
+        right: calc(max(12px, env(safe-area-inset-right, 0px)) + min(400px, 100vw - 48px) + 8px);
         left: auto;
         bottom: auto;
         transform: translateY(-50%);
-        z-index: ${Z.SUPPORT_MODAL + 1};
+        z-index: ${Z.SUPPORT_MODAL};
         display: flex;
         flex-direction: column;
         gap: 6px;
@@ -1579,9 +1579,9 @@ export class WideIdleMoreMenu {
         bottom: auto;
         left: auto;
         transform: none;
-        width: min(520px, calc(100vw - 48px));
+        width: min(400px, calc(100vw - 48px));
         min-width: 0;
-        max-width: 560px;
+        max-width: 420px;
         max-height: calc(100dvh - 32px - 96px);
         height: auto;
         display: flex;
@@ -1593,7 +1593,7 @@ export class WideIdleMoreMenu {
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         box-shadow: 0 4px 18px rgba(44, 31, 20, 0.08);
-        z-index: ${Z.SUPPORT_MODAL};
+        z-index: ${Z.SUPPORT_MODAL + 1};
         overflow: hidden;
       }
       .ft-wide-more__menu[hidden] {
