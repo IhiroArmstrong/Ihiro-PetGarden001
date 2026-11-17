@@ -1537,16 +1537,25 @@ export class ConfideToYinUI {
     )
       .then((result) => {
         if (!this._open || epoch !== this._sendEpoch) return;
-        if (result?.ok && result.text) {
+        if (result?.ok && result.text && result.gateVersion) {
           this._generateFailStreak = nextGenerateFailStreak(
             this._generateFailStreak,
             true
           );
+          const lateCrisis = result.verdict === 'late_crisis';
+          const uncovered = result.verdict === 'uncovered_language';
+          if (lateCrisis || result.triggersGenerationLock) {
+            armConfideSafetyGenerateLatch(this._safetyGenerateLatch);
+          }
           this._showReply(
             {
-              route: CONFIDE_GENERATE_REPLY_ROUTE,
+              route: lateCrisis
+                ? CONFIDE_ROUTE.SAFETY_REDIRECT
+                : uncovered
+                  ? CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN
+                  : CONFIDE_GENERATE_REPLY_ROUTE,
               text: result.text,
-              source: 'generate'
+              source: lateCrisis || uncovered ? 'corpus' : 'generate'
             },
             text
           );

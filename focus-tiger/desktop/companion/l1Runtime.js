@@ -9,7 +9,7 @@
  */
 
 import { spawn } from 'node:child_process';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { appendFile, mkdir } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -37,6 +37,12 @@ import {
   priorRepeatableYinRepliesFromHistory,
   sanitizeCompanionL2Reply
 } from './l2Sanitize.js';
+import {
+  chooseGeneratePathId,
+  guardedGenerate,
+  isCoveredUserLocale,
+  shouldRetryObserveAfterGate
+} from './outputGateBridge.js';
 import {
   L0_MAX_TOKENS,
   L0_MODEL_ID,
@@ -477,13 +483,41 @@ export class CompanionL1Runtime {
     ) {
       return { ok: false, reason: 'empty_reflection' };
     }
+    const locale = typeof payload.locale === 'string' ? payload.locale : 'en';
+    const observeWing =
+      !isReflectionCompanion && !isCompanionChatGenerateLine(text);
+    if (!isCoveredUserLocale(locale)) {
+      const gated = await guardedGenerate(
+        chooseGeneratePathId({ isReflectionCompanion, observeWing, attempt: 0 }),
+        { locale, generate: async () => 'unused' }
+      );
+      const timing = { wallMs: Date.now() - wallStarted };
+      await this._appendTurnLog({
+        at: new Date().toISOString(),
+        kind: 'l3_generate',
+        locale,
+        text,
+        raw: '',
+        reply: gated.text,
+        gateVersion: gated.gateVersion,
+        verdict: gated.verdict,
+        ok: true,
+        reason: gated.verdict,
+        timing
+      });
+      return {
+        ok: true,
+        text: gated.text,
+        gateVersion: gated.gateVersion,
+        verdict: gated.verdict,
+        triggersGenerationLock: gated.triggersGenerationLock,
+        timing
+      };
+    }
     const ready = await this.ensureReady();
     if (!ready.ok || this.status.phase !== 'ready') {
       return { ok: false, reason: ready.reason || 'not_ready' };
     }
-    const locale = typeof payload.locale === 'string' ? payload.locale : 'en';
-    const observeWing =
-      !isReflectionCompanion && !isCompanionChatGenerateLine(text);
     let retrievedSummaries = [];
     let promptBuildMs;
     let memoryRetrieveMsCaptured;
@@ -512,6 +546,8 @@ export class CompanionL1Runtime {
     let ev = null;
     let lastReason = 'empty_or_banned';
     let sanitizeMs = 0;
+    /** @type {Awaited<ReturnType<typeof guardedGenerate>> | null} */
+    let lastGated = null;
 
     for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
       const id = randomUUID();
@@ -556,21 +592,47 @@ export class CompanionL1Runtime {
       });
       ev = await this._queue;
       raw = ev?.event === 'generated' ? ev.text : '';
+      const pathId = chooseGeneratePathId({
+        isReflectionCompanion,
+        observeWing,
+        attempt
+      });
+      lastGated = await guardedGenerate(pathId, {
+        locale,
+        previousText: priorRepeatableYinRepliesFromHistory(payload.history)[0] || '',
+        generate: () => raw
+      });
+      if (lastGated.verdict !== 'pass') {
+        lastReason = lastGated.verdict;
+        sanitized = lastGated.text;
+        break;
+      }
       const sanitizeStarted = Date.now();
-      sanitized = sanitizeCompanionL2Reply(raw, {
+      sanitized = sanitizeCompanionL2Reply(lastGated.text, {
         priorReplies: priorRepeatableYinRepliesFromHistory(payload.history),
         userText: text
       });
       sanitizeMs = Date.now() - sanitizeStarted;
       if (!sanitized) {
         lastReason = ev?.event === 'timeout' ? 'timeout' : ev?.message || 'empty_or_banned';
+        lastGated = null;
         break;
       }
+      lastGated = { ...lastGated, text: sanitized };
       if (!observeWing) break;
       const cliche = await this._scoreObserveClicheReply(sanitized);
-      if (!cliche.flagged) break;
+      if (
+        !shouldRetryObserveAfterGate({
+          observeWing,
+          verdict: lastGated.verdict,
+          clicheFlagged: cliche.flagged
+        })
+      ) {
+        break;
+      }
       lastReason = 'observe_cliche';
       sanitized = null;
+      lastGated = null;
     }
 
     const model = this._modelTimingFromChildEvent(ev);
@@ -582,20 +644,36 @@ export class CompanionL1Runtime {
       sanitizeMs,
       model
     };
+    const visible = lastGated?.text || sanitized || '';
     const record = {
       at: new Date().toISOString(),
       kind: 'l3_generate',
       locale: payload.locale || 'en',
       text,
-      raw: String(raw || '').slice(0, 400),
-      reply: sanitized,
-      ok: Boolean(sanitized),
-      reason: sanitized ? 'ok' : lastReason,
+      raw: '',
+      reply: visible || null,
+      outputLength: String(raw || '').length,
+      outputHash: raw
+        ? createHash('sha256').update(String(raw), 'utf8').digest('hex').slice(0, 16)
+        : '',
+      gateVersion: lastGated?.gateVersion || '',
+      verdict: lastGated?.verdict || lastReason,
+      ok: Boolean(visible && lastGated?.gateVersion),
+      reason: lastGated?.gateVersion ? lastGated.verdict : lastReason,
       timing
     };
     await this._appendTurnLog(record);
-    if (!sanitized) return { ok: false, reason: record.reason, timing };
-    return { ok: true, text: sanitized, timing };
+    if (!visible || !lastGated?.gateVersion) {
+      return { ok: false, reason: record.reason, timing };
+    }
+    return {
+      ok: true,
+      text: visible,
+      gateVersion: lastGated.gateVersion,
+      verdict: lastGated.verdict,
+      triggersGenerationLock: lastGated.triggersGenerationLock,
+      timing
+    };
   }
 
   /**

@@ -40,6 +40,7 @@ import { runConfideAcceptanceDevsetLeakAudit } from './audit-confide-acceptance-
 import { runQueueGovernanceCheck } from './check-queue-governance-docs.js';
 import { runCompanionContractCheck } from './check-companion-contract.js';
 import { runPlanAGuestConfideCopyCheck } from './check-plan-a-guest-confide-copy.js';
+import { runGenerationGateReport } from './check-generation-gate.js';
 
 function main() {
   let ok = true;
@@ -72,6 +73,11 @@ function main() {
   if (!runQueueGovernanceCheck()) ok = false;
   if (!runCompanionContractCheck()) ok = false;
   if (!runPlanAGuestConfideCopyCheck()) ok = false;
+  {
+    const generation = runGenerationGateReport({ check: true });
+    for (const line of generation.lines) console.log(line);
+    if (generation.exitCode !== 0) ok = false;
+  }
 
   if (!ok) {
     console.error(
