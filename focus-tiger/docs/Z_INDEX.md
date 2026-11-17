@@ -135,6 +135,7 @@
 | **25** | `src/ui/WideIdleMoreMenu.js` | `#ft-wide-more-backdrop` 宽屏 ⋯ 浅遮罩（挂 `body`，盖过整个 `#ui-overlay`） |
 | **26** | `src/ui/SupportYinModalUI.js` | `#yin-support-modal` Support 三卡模态（Sanctuary + Membership + Tea；`#ui-overlay` 内） |
 | **26** | `src/ui/WideIdleMoreMenu.js` | `#ft-wide-more-menu` 宽屏 ⋯ 右侧 sheet（挂 `body`；打开时在 Support FAB 之上） |
+| **26** | `src/ui/WideIdleMoreMenu.js` | `#ft-wide-more-radial` 宽屏 ⋯ 侧边名单（H1；挂 `body`；与 sheet 同层，不同时显示） |
 | **27** | `src/ui/OnboardingHintsUI.js` | 用途说明卡（`.onboarding-app-purpose`） |
 | **28** | `src/ui/OnboardingHintsUI.js` | Hints 目录芯片（`.ft-hint-catalog-chip`，如「More tips」） |
 | **29** | `src/ui/OnboardingHintsUI.js` | 应用内隐私说明（`#onboarding-privacy-sheet`；高于简介卡） |

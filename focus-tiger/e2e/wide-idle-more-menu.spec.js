@@ -15,10 +15,10 @@ import {
 } from './helpers/product-shell.js';
 
 /**
- * Wide Idle (≥480): three home balls (Breath · Sit · Honesty) + ⋯ right sheet.
+ * Wide Idle (≥480): Begin Practice + three home balls + ⋯ labeled side nav.
  */
 
-// Wide + tall enough that T25 keeps the five-icon radial (not the short-window list).
+// Wide + tall enough that the ⋯ index is the side nav (not the short-window list).
 test.use({ viewport: { width: 1280, height: 900 } });
 
 /** Row proxy → click-hint id (Language has none by design). Breath is home ball. */
@@ -99,6 +99,16 @@ test('wide Idle: Sit ball opens Arrival', async ({ page }) => {
   });
 });
 
+test('wide Idle: Begin Practice opens Arrival', async ({ page }) => {
+  await openFreshProductShell(page);
+  const begin = page.locator('#ft-home-begin-practice');
+  await expect(begin).toBeVisible({ timeout: 15_000 });
+  await begin.click();
+  await expect(page.locator('#arrival-practice')).toBeVisible({
+    timeout: 15_000
+  });
+});
+
 test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
   page
 }) => {
@@ -111,6 +121,13 @@ test('wide ⋯ sheet docks to the right and leaves the midline clear', async ({
   await expect(
     page.locator('#ft-wide-more-radial:not([hidden]) .ft-wide-more-radial__icon')
   ).toHaveCount(5);
+  const navBox = await page.locator('#ft-wide-more-radial').boundingBox();
+  const vpNav = page.viewportSize();
+  expect(navBox).toBeTruthy();
+  expect(navBox.x).toBeGreaterThan((vpNav?.width || 1280) * 0.45);
+  await expect(
+    page.locator('#ft-wide-more-radial .ft-wide-more-radial__heading')
+  ).toBeVisible();
   const radialMode = await page
     .locator('#ft-wide-more-radial')
     .isVisible()
