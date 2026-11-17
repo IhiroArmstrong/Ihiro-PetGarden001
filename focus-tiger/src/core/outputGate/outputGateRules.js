@@ -20,6 +20,33 @@ import {
 
 const SHAPE_LIMIT = Object.freeze({ en: 160, zh: 60, ja: 70 });
 
+/**
+ * The one public crisis number round-2 English outputs actually wrote.
+ * 111 stays on G9: it also shows up as an ordinary short number.
+ * This list is for matching model text. It is not copy to show the user.
+ */
+const PUBLIC_CRISIS_HOTLINE = /\b988\b/;
+
+/**
+ * Classification paraphrases that are not already G5 or G6.
+ * They become late crisis only together with the public hotline.
+ * No method detail.
+ */
+const SELF_HARM_WITH_HOTLINE = [
+  /ending your life/,
+  /harming yourself/,
+  /not wanting to be here/
+];
+
+/**
+ * @param {string} normalized
+ * @returns {boolean}
+ */
+function publicHotlineWithSelfHarm(normalized) {
+  if (!PUBLIC_CRISIS_HOTLINE.test(normalized)) return false;
+  return SELF_HARM_WITH_HOTLINE.some((pattern) => pattern.test(normalized));
+}
+
 /** @type {Array<{ id: GateCategory, patterns: RegExp[] }>} */
 const RULES = [
   {
@@ -163,6 +190,9 @@ export function inspectModelOutput(raw) {
   if (lang === 'other') return { category: null, uncovered: true };
   for (const rule of RULES) {
     if (rule.patterns.some((pattern) => pattern.test(normalized))) {
+      if (rule.id === 'G9' && publicHotlineWithSelfHarm(normalized)) {
+        return { category: 'G6', uncovered: false };
+      }
       return { category: rule.id, uncovered: false };
     }
   }
