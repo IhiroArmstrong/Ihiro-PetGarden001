@@ -44,6 +44,7 @@
 | Stage 2 未修补同义变体筛选（Prompt 12） | `focus-tiger/desktop/scripts/l0-screen-stage2-synonyms.js` |
 | 有利分歧制造机（60 候选 · Prompt 12 续） | `focus-tiger/desktop/scripts/l0-run-favorable-disagreement-mill.js` |
 | L3 观察翼打乱配对批量（Prompt 13 层 B） | `focus-tiger/desktop/scripts/l0-observe-shuffle-screen.js` |
+| T100 输出闸层 B 红队（Gemma4-E4B · 不进 CI） | `focus-tiger/desktop/scripts/l0-output-gate-redteam.js` · `cd focus-tiger && npm run audit:output-gate-redteam` · **实验室管线**（模型 + 闸模块），不是 `l1Runtime`。第 1 轮 `default` 温度 = 库默认 0。JSON 在 `/tmp/ft-l0-lab/output-gate-redteam-*.json` · stdout 只打 hash / 计数；12 句原文在报告附录 |
 | Stage 2 live 冷启动探针（Prompt 8） | `focus-tiger/desktop/scripts/l0-semantic-live-coldstart-probe.js` |
 | 受限生成阶段 0 warm/cold 加载探针（无 generate、无原文） | `focus-tiger/desktop/scripts/constrained-gen-warm-cold-probe.js` · `cd focus-tiger/desktop && npm run companion:constrained-gen-warm-cold` · JSON 在 `/tmp/ft-l0-lab/constrained-gen-warm-cold-*.json` · **不能**代替 Electron 四通道 ≥10 次实测 |
 | Voice Input Slice 0 探针（Speak-to-type · macOS on-device STT） | `focus-tiger/desktop/scripts/voice-input-probe.js` · `focus-tiger/desktop/voiceInput/` · Brief `task-voice-input-v1.md` |

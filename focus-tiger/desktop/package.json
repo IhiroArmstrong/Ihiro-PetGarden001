@@ -30,6 +30,7 @@
     "companion:kb-near-calibrate": "node scripts/l0-kb-near-calibrate.js",
     "companion:favorable-disagreement-mill": "node scripts/l0-run-favorable-disagreement-mill.js",
     "companion:observe-shuffle-screen": "node scripts/l0-observe-shuffle-screen.js",
+    "companion:output-gate-redteam": "node scripts/l0-output-gate-redteam.js",
     "companion:semantic-live-coldstart-probe": "node scripts/l0-semantic-live-coldstart-probe.js",
     "companion:constrained-gen-warm-cold": "node scripts/constrained-gen-warm-cold-probe.js",
     "companion:mindflow-nebula-step2-phase-a": "node scripts/mindflow-nebula-step2-novelty-lab.js",
