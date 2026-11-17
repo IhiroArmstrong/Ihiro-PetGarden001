@@ -50,7 +50,11 @@ const RULES = [
       /classic signs of/,
       /\b(?:depression|adhd|ptsd|bipolar)\b/,
       /你可能有|你患有|抑郁症|憂鬱症|焦虑障碍|焦慮障礙|双相|雙相/,
-      /うつ病かもしれない|躁うつ病|うつ病/
+      /うつ病かもしれない|躁うつ病|うつ病/,
+      // Presuppose-illness shapes (Brief 4.3). Not bare diagnosis/illness keywords.
+      /(?:name|kind|type) of (?:the |your |this )?(?:illness|condition|disorder)/,
+      /不知道病名|说不出是什么病|說不出是什麼病|叫什么病|叫什麼病|病名/,
+      /何の病気か|病名/
     ]
   },
   {
