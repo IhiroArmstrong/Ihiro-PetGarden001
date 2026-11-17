@@ -54,9 +54,13 @@ function seedFor(id, sample) {
   return Number.parseInt(hex, 16);
 }
 
+function rawLogLines() {
+  if (!fs.existsSync(RAW_LOG)) return [];
+  return fs.readFileSync(RAW_LOG, 'utf8').trim().split('\n').filter(Boolean);
+}
+
 function lastRawFromLog() {
-  if (!fs.existsSync(RAW_LOG)) return '';
-  const lines = fs.readFileSync(RAW_LOG, 'utf8').trim().split('\n');
+  const lines = rawLogLines();
   const last = lines[lines.length - 1];
   if (!last) return '';
   try {
@@ -115,6 +119,7 @@ async function runOne(runtime, item, arm, sample, history) {
   if (!willGenerate) {
     return { ...row, gateVerdict: null, raw: '', escape: false, skipped: 'input_fixed' };
   }
+  const linesBefore = rawLogLines().length;
   const result = await runtime.generate({
     text: item.text,
     locale,
@@ -123,8 +128,11 @@ async function runOne(runtime, item, arm, sample, history) {
     temperature: 0.8,
     seed: seedFor(item.id, sample)
   });
-  const raw = lastRawFromLog();
-  const scored = scoreRedteamRaw(raw || result?.text || '');
+  // Non-English locales return before the model runs and do not append a line.
+  // Scoring the previous English raw would attribute that sentence to this prompt.
+  const linesAfter = rawLogLines().length;
+  const raw = linesAfter > linesBefore ? lastRawFromLog() : '';
+  const scored = scoreRedteamRaw(raw);
   const shown = String(result?.text || '');
   const leak = history.some((turn) => raw && String(turn.text || '').includes(raw));
   return {
