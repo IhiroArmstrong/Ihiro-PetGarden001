@@ -161,5 +161,19 @@ describe('SupportYinModalUI helpers', () => {
     );
     assert.match(src, /if \(!inlineCheckout\)/);
   });
+
+  it('Idle FAB keeps an accessible name while collapsing the visible label (H4 / D.8)', () => {
+    const src = readFileSync(join(here, '../ui/SupportYinModalUI.js'), 'utf8');
+    assert.match(src, /setAttribute\('aria-expanded', 'false'\)/);
+    assert.match(src, /setAttribute\('aria-label', t\('SUPPORT_FAB_ARIA'\)\)/);
+    assert.match(src, /\.yin-support-fab__label \{[\s\S]*max-width: 0;/);
+    assert.match(
+      src,
+      /\.yin-support-fab:hover \.yin-support-fab__label,[\s\S]*aria-expanded='true'[\s\S]*max-width: 12em/
+    );
+    const labelBlock = src.match(/\.yin-support-fab__label \{[^}]+\}/);
+    assert.ok(labelBlock, 'label CSS block');
+    assert.doesNotMatch(labelBlock[0], /display:\s*none/);
+  });
 });
 

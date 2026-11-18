@@ -258,6 +258,6 @@ Quiet Object Surface / Quiet Drawer **优先**：侧停、缩小、下半屏，�
 5. **D PR 1 · Presence**（D.2）：人时、`···` 删除、纸感、侧停优先。不改存储。
 6. **D PR 2 · Quiet Drawer**（D.3）：accordion、字重、宽屏 max-width。不改分组。
 7. **D PR 3 · Collections chrome**（D.4）：Object Card、Gold 分级、Bond 视觉降权、缺口句。不改账本 / SKU / 币名 / 抬头浮雕标。
-8. **D.8 Support 小标**：独立 PR，与 C.1/C.2 串行；不绑进 D PR 3。
+8. **D.8 Support 小标**：独立 PR（首页刀 **H4**）；与 C.1/C.2 不同文件即可并行；不绑进 D PR 3。
 
 主屏 C 与次级 D **尽量不共享同一批 chrome 文件**。脸部安全区（A.8）若 Idle 主卡仍压嘴/下巴，另开构图 PR，不要绑进 C.3 或 D PR 1。
