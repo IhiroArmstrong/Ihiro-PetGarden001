@@ -34,6 +34,7 @@ import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBa
 import {
   NARROW_COPY_ABOVE_HOME_GAP_PX,
   NARROW_HOME_CTA_BOTTOM_PX,
+  NARROW_HOME_GREETING_STACK_PX,
   NARROW_HOME_SIT_PX,
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
@@ -42,8 +43,9 @@ import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import { Z } from './zIndexLayers.js';
 import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
+import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v25';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v26';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -56,7 +58,7 @@ const WALL_CLOCK_TICK_MS = 1_000;
 
 /** Bottom-anchored copy that coexists with `#ft-narrow-home-ctas` on Idle/Dormant. */
 const NARROW_HOME_COPY_CLEARANCE_BOTTOM = narrowHomeCopyClearanceBottomPx();
-const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
+const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_HOME_GREETING_STACK_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
@@ -525,6 +527,9 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
+      <p class="ft-narrow-home-idle-greeting" id="ft-narrow-home-idle-greeting" data-testid="ft-narrow-home-idle-greeting"></p>
+      <button type="button" class="ft-narrow-home-begin-practice" id="ft-narrow-home-begin-practice" data-proxy="sit" data-testid="ft-narrow-home-begin-practice"></button>
+      <div class="ft-narrow-home-ctas__row">
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -534,6 +539,7 @@ export class NarrowIdleShell {
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
+      </div>
     `;
 
     this.grabber = document.createElement('button');
@@ -574,6 +580,10 @@ export class NarrowIdleShell {
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
     this.sanctuaryNavHomeBtn = document.getElementById(
       'ft-sanctuary-nav-compass-fab'
+    );
+    this.greetingEl = this.homeCtas.querySelector('#ft-narrow-home-idle-greeting');
+    this.beginPracticeBtn = this.homeCtas.querySelector(
+      '#ft-narrow-home-begin-practice'
     );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
@@ -895,17 +905,33 @@ export class NarrowIdleShell {
     }
 
     const focusEl = document.getElementById('btn-focus');
+    const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
+    const sitHidden =
+      Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden;
+    if (this.greetingEl) {
+      this.greetingEl.textContent = t(pickHomeIdleGreetingKey());
+      this.greetingEl.hidden = sitHidden;
+    }
+    if (this.beginPracticeBtn) {
+      const beginLabel = t('HOME_BEGIN_PRACTICE');
+      this.beginPracticeBtn.textContent = beginLabel;
+      this.beginPracticeBtn.setAttribute('aria-label', beginLabel);
+      this.beginPracticeBtn.disabled = !sitOk;
+      this.beginPracticeBtn.setAttribute(
+        'aria-disabled',
+        sitOk ? 'false' : 'true'
+      );
+      this.beginPracticeBtn.hidden = sitHidden;
+    }
     if (this.sitHomeBtn) {
       const sitLabel =
         focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
       this.sitHomeBtn.setAttribute('aria-label', sitLabel);
       this._sitHomeTip?.setText(sitLabel);
-      const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
       this.sitHomeBtn.disabled = !sitOk;
       this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
       // keepQuickStart: force-hide Sit (Honesty may leave #btn-focus visible).
-      this.sitHomeBtn.hidden =
-        Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden;
+      this.sitHomeBtn.hidden = sitHidden;
     }
 
     const quickEl = document.getElementById('quick-start-focus');
@@ -1226,6 +1252,8 @@ export class NarrowIdleShell {
         pointer-events: none;
       }
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-begin-practice,
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-idle-greeting,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
         display: none !important;
       }
@@ -1351,10 +1379,53 @@ export class NarrowIdleShell {
         padding: 0 16px;
         box-sizing: border-box;
         display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+      }
+      .ft-narrow-home-ctas__row {
+        display: flex;
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
         gap: 0;
+        width: 100%;
+      }
+      .ft-narrow-home-idle-greeting {
+        margin: 0;
+        padding: 0 8px;
+        max-width: 18rem;
+        text-align: center;
+        font-size: 0.84rem;
+        font-weight: 450;
+        line-height: 1.35;
+        color: #5c4a38;
+        pointer-events: none;
+      }
+      .ft-narrow-home-idle-greeting[hidden] {
+        display: none !important;
+      }
+      .ft-narrow-home-begin-practice {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 9px 20px;
+        min-height: 38px;
+        border: none;
+        border-radius: 999px;
+        background: #b08948;
+        color: #fffaf2;
+        font-size: 0.88rem;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.12);
+      }
+      .ft-narrow-home-begin-practice:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+      .ft-narrow-home-begin-practice[hidden] {
+        display: none !important;
       }
       .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
         visibility: hidden;

@@ -16,10 +16,10 @@ import {
 } from './homeChromeClearance.js';
 
 describe('homeChromeClearance', () => {
-  it('narrow clearance sits above Sit ball band (~147px + gap)', () => {
+  it('narrow clearance sits above greeting + Begin Practice + Sit band', () => {
     const px = narrowHomeCopyClearanceBottomPx();
-    assert.ok(px >= 160, `expected ≥160, got ${px}`);
-    assert.ok(px <= 180, `expected ≤180, got ${px}`);
+    assert.ok(px >= 230, `expected ≥230, got ${px}`);
+    assert.ok(px <= 260, `expected ≤260, got ${px}`);
   });
 
   it('narrow top clearance clears ActionBar (10+48+8)', () => {
