@@ -94,6 +94,7 @@ export class SupportYinModalUI {
     this.fab.dataset.testid = 'yin-support-fab';
     this.fab.setAttribute('aria-haspopup', 'dialog');
     this.fab.setAttribute('aria-controls', 'yin-support-modal');
+    this.fab.setAttribute('aria-expanded', 'false');
 
     this.fabImg = document.createElement('img');
     this.fabImg.className = 'yin-support-fab__img';
@@ -855,10 +856,11 @@ export class SupportYinModalUI {
         z-index: ${Z.IDLE_FAB};
         display: inline-flex;
         align-items: center;
-        gap: 10px;
+        gap: 0;
         max-width: min(240px, calc(100vw - 130px));
         /* Align chrome with ambient mute: soft glass, stronger blur */
-        padding: 8px 14px 8px 8px;
+        /* Idle default is a compact mark (D.8); hover/focus/open restore the pill */
+        padding: 8px;
         border-radius: 999px;
         border: 1px solid rgba(139, 115, 85, 0.18);
         background: rgba(255, 252, 245, 0.55);
@@ -871,9 +873,13 @@ export class SupportYinModalUI {
         cursor: pointer;
         font: inherit;
         pointer-events: auto;
-        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease, background 180ms ease, opacity 180ms ease;
+        transition: transform 120ms ease, box-shadow 160ms ease, color 160ms ease, background 180ms ease, opacity 180ms ease, padding 180ms ease, gap 180ms ease;
       }
-      .yin-support-fab:hover {
+      .yin-support-fab:hover,
+      .yin-support-fab:focus-visible,
+      .yin-support-fab[aria-expanded='true'] {
+        padding: 8px 14px 8px 8px;
+        gap: 10px;
         color: rgba(72, 54, 38, 0.92);
         background: rgba(255, 252, 245, 0.72);
         box-shadow:
@@ -900,6 +906,22 @@ export class SupportYinModalUI {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: max-width 180ms ease, opacity 160ms ease;
+      }
+      .yin-support-fab:hover .yin-support-fab__label,
+      .yin-support-fab:focus-visible .yin-support-fab__label,
+      .yin-support-fab[aria-expanded='true'] .yin-support-fab__label {
+        max-width: 12em;
+        opacity: 1;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .yin-support-fab,
+        .yin-support-fab__label {
+          transition: none;
+        }
       }
       .yin-support-backdrop {
         position: fixed;
@@ -1142,6 +1164,12 @@ export class SupportYinModalUI {
           top: 10px;
           /* Narrow mute is 40px @ right:10 */
           right: 58px;
+          padding: 5px;
+          gap: 0;
+        }
+        .yin-support-fab:hover,
+        .yin-support-fab:focus-visible,
+        .yin-support-fab[aria-expanded='true'] {
           padding: 5px 10px 5px 5px;
           gap: 6px;
         }

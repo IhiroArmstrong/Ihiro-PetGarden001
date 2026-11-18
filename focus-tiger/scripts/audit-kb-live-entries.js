@@ -238,8 +238,9 @@ export function runKbLiveEntryAudit({ write = false } = {}) {
       }
     }
     if (row.codeAnchors.length > 0 && srcSources.length > 0) {
+      const menuCatalogRel = 'src/core/preferencesCenterCatalog.js';
       for (const anchor of row.codeAnchors) {
-        const found = srcSources.some((relPath) =>
+        const found = [...srcSources, menuCatalogRel].some((relPath) =>
           readModule(relPath, moduleCache).includes(anchor)
         );
         if (!found) {
@@ -296,11 +297,18 @@ export function runKbLiveEntryAudit({ write = false } = {}) {
     'src/core/idleChromeOrchestration.js',
     moduleCache
   );
+  const preferenceCatalogSrc = readModule(
+    'src/core/preferencesCenterCatalog.js',
+    moduleCache
+  );
   for (const row of listKbLiveMenuProxyRows()) {
     if (!row.proxy || row.surface === 'ritual') continue;
     if (row.proxy.startsWith(CONTEMPLATIVE_ARCHIVE_SEAL_PROXY_PREFIX)) continue;
     const proxyAnchor = `proxy: '${row.proxy}'`;
-    if (!orchestrationSrc.includes(proxyAnchor)) {
+    if (
+      !orchestrationSrc.includes(proxyAnchor) &&
+      !preferenceCatalogSrc.includes(proxyAnchor)
+    ) {
       console.error(
         `[audit:kb-live-entries] ${row.id}: proxy anchor missing in idleChromeOrchestration.js: ${proxyAnchor}`
       );

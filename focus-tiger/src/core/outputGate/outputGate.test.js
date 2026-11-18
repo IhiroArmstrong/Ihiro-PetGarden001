@@ -264,7 +264,6 @@ test('assistant voice falls back and does not lock; a doctor in the room still p
     'G3'
   );
 });
-
 test('practice durations stay blocked by G9 and are counted apart', async () => {
   let durationBlocked = 0;
   for (const line of DURATION) {

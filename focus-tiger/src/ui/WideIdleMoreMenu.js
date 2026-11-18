@@ -25,7 +25,11 @@ import {
   hasDesktopCompanionBridge
 } from '../core/desktopCompanionGate.js';
 import { canUseSystemTts } from '../core/systemTtsBridge.js';
-import { canUseAlwaysOnTop } from '../core/alwaysOnTopBridge.js';
+import {
+  canUseAlwaysOnTop,
+  readAlwaysOnTopEnabled,
+  writeAlwaysOnTopEnabled
+} from '../core/alwaysOnTopBridge.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
@@ -39,8 +43,10 @@ import {
 } from '../core/wideMenuRadialLayout.js';
 import { Z } from './zIndexLayers.js';
 import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
+import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
+import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v9';
+const STYLE_ID = 'ft-wide-idle-more-styles-v13';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
 const DEFAULT_EXPANDED_MENU_GROUPS = [
   DEFAULT_EXPANDED_MENU_GROUP,
@@ -502,9 +508,23 @@ export class WideIdleMoreMenu {
     this.menu.setAttribute('role', 'menu');
     this.menu.hidden = true;
 
+    this.sheetHead = document.createElement('div');
+    this.sheetHead.className = 'ft-wide-more__head';
+    this.sheetTitle = document.createElement('p');
+    this.sheetTitle.className = 'ft-wide-more__title';
+    this.sheetClose = document.createElement('button');
+    this.sheetClose.type = 'button';
+    this.sheetClose.className = 'ft-wide-more__close';
+    this.sheetClose.dataset.testid = 'ft-wide-more-close';
+    this.sheetClose.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this.closeMenu();
+    });
+    this.sheetHead.append(this.sheetTitle, this.sheetClose);
+
     this.listEl = document.createElement('ul');
     this.listEl.className = 'ft-wide-more__list';
-    this.menu.appendChild(this.listEl);
+    this.menu.append(this.sheetHead, this.listEl);
 
     this.radialRoot = document.createElement('div');
     this.radialRoot.id = 'ft-wide-more-radial';
@@ -562,6 +582,12 @@ export class WideIdleMoreMenu {
       const item = e.target.closest('[data-proxy]');
       if (!item || item.disabled) return;
       const key = item.getAttribute('data-proxy');
+      if (item.dataset.prefKind === 'toggle') {
+        e.preventDefault();
+        e.stopPropagation();
+        void this._onPrefToggle(key, item);
+        return;
+      }
       const entryMeta = {
         locked: item.classList.contains('is-locked'),
         interactive: item.classList.contains('is-static') ? false : undefined
@@ -597,6 +623,10 @@ export class WideIdleMoreMenu {
     if (!this.moreBtn) return;
     this.moreBtn.setAttribute('aria-label', t('WIDE_MORE_ARIA'));
     this.menu?.setAttribute('aria-label', t('WIDE_MORE_ARIA'));
+    if (this.sheetClose) {
+      this.sheetClose.setAttribute('aria-label', t('PREF_CENTER_CLOSE'));
+      this.sheetClose.textContent = '×';
+    }
     if (this.homeCtas) {
       this.homeCtas.setAttribute('aria-label', t('NARROW_SHEET_TITLE'));
     }
@@ -879,8 +909,9 @@ export class WideIdleMoreMenu {
     }
     const listPhase = Boolean(this._activeListGroup);
     if (this.menu) this.menu.hidden = !listPhase;
-    if (this.radialRoot) this.radialRoot.hidden = listPhase;
-    document.body.classList.toggle('ft-wide-more-radial-open', !listPhase);
+    // H1 side nav stays while a group sheet is open so the user can switch groups.
+    if (this.radialRoot) this.radialRoot.hidden = false;
+    document.body.classList.toggle('ft-wide-more-radial-open', true);
     if (!listPhase) this._placeRadial();
   }
 
@@ -1040,8 +1071,15 @@ export class WideIdleMoreMenu {
     this.listEl.innerHTML = '';
     const radialListOnly =
       !this._menuFlat && Boolean(this._activeListGroup);
+    if (this.sheetTitle) {
+      this.sheetTitle.textContent = radialListOnly
+        ? t(this._activeListGroup)
+        : t('WIDE_MORE_ARIA');
+    }
     /** @type {HTMLUListElement | null} */
     let sectionItems = null;
+    /** @type {HTMLUListElement | null} */
+    let cardItems = null;
     for (const item of entries) {
       if (item.kind === 'group-label') {
         if (radialListOnly) {
@@ -1051,6 +1089,7 @@ export class WideIdleMoreMenu {
               this._activeListGroup === 'MENU_GROUP_PRACTICE');
           if (!showGroup) {
             sectionItems = null;
+            cardItems = null;
             continue;
           }
         }
@@ -1083,9 +1122,25 @@ export class WideIdleMoreMenu {
         sectionItems.hidden = !expanded;
         sectionLi.append(header, sectionItems);
         this.listEl.appendChild(sectionLi);
+        cardItems = null;
+        continue;
+      }
+      if (item.kind === 'sub-group-label') {
+        if (!sectionItems) continue;
+        const card = document.createElement('li');
+        card.className = 'ft-pref-card';
+        card.setAttribute('role', 'none');
+        const cardHead = document.createElement('p');
+        cardHead.className = 'ft-pref-card__label';
+        cardHead.textContent = t(item.labelKey);
+        cardItems = document.createElement('ul');
+        cardItems.className = 'ft-pref-card__items';
+        card.append(cardHead, cardItems);
+        sectionItems.appendChild(card);
         continue;
       }
       if (!sectionItems) continue;
+      const host = cardItems || sectionItems;
       const li = document.createElement('li');
       li.setAttribute('role', 'none');
       const btn = document.createElement('button');
@@ -1093,7 +1148,20 @@ export class WideIdleMoreMenu {
       btn.className = 'ft-wide-more__item';
       btn.setAttribute('role', 'menuitem');
       btn.dataset.proxy = item.proxy;
-      btn.textContent = t(item.labelKey);
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      if (item.prefKind) {
+        fillPreferencesCenterRow(btn, {
+          label: t(item.labelKey),
+          hint: item.prefHintKey ? t(item.prefHintKey) : '',
+          status: readPreferenceCenterStatus(item.proxy, { t, storage }),
+          icon: item.prefIcon || '',
+          prefKind: item.prefKind,
+          toggleOn: item.proxy === 'always-on-top' && this._alwaysOnTopOn === true
+        });
+      } else {
+        btn.textContent = t(item.labelKey);
+      }
       if (item.testId) btn.dataset.testid = item.testId;
       if (item.emphasis === 'beige-cta') {
         btn.classList.add('is-beige-cta');
@@ -1118,8 +1186,35 @@ export class WideIdleMoreMenu {
         });
       }
       li.appendChild(btn);
-      sectionItems.appendChild(li);
+      host.appendChild(li);
     }
+    if (radialListOnly) void this._hydratePrefToggles();
+  }
+
+  /**
+   * @returns {Promise<void>}
+   */
+  async _hydratePrefToggles() {
+    this._alwaysOnTopOn = await readAlwaysOnTopEnabled();
+    const sw = this.listEl?.querySelector(
+      '[data-proxy="always-on-top"] [data-pref-switch]'
+    );
+    if (sw) sw.dataset.on = this._alwaysOnTopOn ? '1' : '0';
+  }
+
+  /**
+   * @param {string} key
+   * @param {HTMLElement} item
+   * @returns {Promise<void>}
+   */
+  async _onPrefToggle(key, item) {
+    if (key !== 'always-on-top') return;
+    const sw = item.querySelector('[data-pref-switch]');
+    const next = !(this._alwaysOnTopOn === true);
+    if (sw) sw.dataset.on = next ? '1' : '0';
+    const result = await writeAlwaysOnTopEnabled(next);
+    this._alwaysOnTopOn = result.enabled;
+    if (sw) sw.dataset.on = result.enabled ? '1' : '0';
   }
 
   /**
@@ -1382,7 +1477,7 @@ export class WideIdleMoreMenu {
       .ft-wide-more-radial {
         position: fixed;
         top: 50%;
-        right: max(16px, env(safe-area-inset-right, 0px));
+        right: calc(max(12px, env(safe-area-inset-right, 0px)) + min(400px, 100vw - 48px) + 8px);
         left: auto;
         bottom: auto;
         transform: translateY(-50%);
@@ -1481,38 +1576,178 @@ export class WideIdleMoreMenu {
         position: fixed;
         top: max(16px, env(safe-area-inset-top, 0px));
         right: max(12px, env(safe-area-inset-right, 0px));
-        bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
+        bottom: auto;
         left: auto;
         transform: none;
-        width: min(360px, calc(100vw - 48px));
+        width: min(400px, calc(100vw - 48px));
         min-width: 0;
-        max-width: 380px;
+        max-width: 420px;
+        max-height: calc(100dvh - 32px - 96px);
+        height: auto;
         display: flex;
         flex-direction: column;
-        padding: 8px;
-        border-radius: 14px;
-        border: 1px solid rgba(139, 115, 85, 0.28);
-        background: rgba(255, 252, 245, 0.62);
+        padding: 10px 12px 12px;
+        border-radius: 16px;
+        border: 1px solid rgba(139, 115, 85, 0.22);
+        background: rgba(255, 252, 245, 0.88);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.06);
-        z-index: ${Z.SUPPORT_MODAL};
+        box-shadow: 0 4px 18px rgba(44, 31, 20, 0.08);
+        z-index: ${Z.SUPPORT_MODAL + 1};
         overflow: hidden;
       }
       .ft-wide-more__menu[hidden] {
         display: none !important;
       }
+      .ft-wide-more__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex: 0 0 auto;
+        padding: 4px 4px 10px 8px;
+      }
+      .ft-wide-more__title {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+        color: rgba(74, 58, 40, 0.92);
+      }
+      .ft-wide-more__close {
+        width: 32px;
+        height: 32px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: rgba(74, 58, 40, 0.55);
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .ft-wide-more__close:hover,
+      .ft-wide-more__close:focus-visible {
+        background: rgba(255, 252, 245, 0.95);
+        color: rgba(74, 58, 40, 0.88);
+      }
       .ft-wide-more__list {
         list-style: none;
         margin: 0;
-        padding: 0;
+        padding: 0 2px 4px;
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 16px;
         flex: 1 1 auto;
         min-height: 0;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(92, 67, 48, 0.22) transparent;
+      }
+      .ft-wide-more__list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .ft-wide-more__list::-webkit-scrollbar-thumb {
+        background: rgba(92, 67, 48, 0.18);
+        border-radius: 999px;
+      }
+      .ft-wide-more__list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .ft-pref-card {
+        list-style: none;
+        margin: 0;
+        padding: 6px 0 2px;
+        border-radius: 14px;
+        background: rgba(255, 252, 245, 0.72);
+        border: 1px solid rgba(139, 115, 85, 0.16);
+      }
+      .ft-pref-card__label {
+        margin: 0;
+        padding: 8px 16px 4px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(92, 67, 48, 0.55);
+      }
+      .ft-pref-card__items {
+        list-style: none;
+        margin: 0;
+        padding: 0 4px 4px;
+      }
+      .ft-pref-row {
+        position: relative;
+        overflow: visible;
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        min-height: 64px;
+        padding: 10px 14px 10px 12px !important;
+        text-align: left;
+      }
+      .ft-pref-row__icon {
+        flex: 0 0 22px;
+        color: rgba(92, 67, 48, 0.55);
+        font-size: 15px;
+        text-align: center;
+      }
+      .ft-pref-row__copy {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .ft-pref-row__title {
+        font-size: 15px;
+        font-weight: 600;
+        color: rgba(74, 58, 40, 0.94);
+      }
+      .ft-pref-row__hint {
+        font-size: 12px;
+        font-weight: 400;
+        color: rgba(92, 67, 48, 0.58);
+      }
+      .ft-pref-row__trail {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(92, 67, 48, 0.5);
+        font-size: 13px;
+      }
+      .ft-pref-row__chevron {
+        font-size: 18px;
+        line-height: 1;
+        opacity: 0.55;
+      }
+      .ft-pref-row__switch {
+        width: 40px;
+        height: 24px;
+        border-radius: 999px;
+        background: rgba(139, 115, 85, 0.22);
+        position: relative;
+      }
+      .ft-pref-row__switch::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(44, 31, 20, 0.16);
+        transition: transform 160ms ease;
+      }
+      .ft-pref-row__switch[data-on="1"] {
+        background: #7d9a6a;
+      }
+      .ft-pref-row__switch[data-on="1"]::after {
+        transform: translateX(16px);
       }
       .ft-wide-more__section {
         list-style: none;
