@@ -45,8 +45,9 @@ import { Z } from './zIndexLayers.js';
 import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
 import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
 import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
+import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v13';
+const STYLE_ID = 'ft-wide-idle-more-styles-v14';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
 const DEFAULT_EXPANDED_MENU_GROUPS = [
   DEFAULT_EXPANDED_MENU_GROUP,
@@ -457,6 +458,7 @@ export class WideIdleMoreMenu {
     this.homeCtas.className = 'ft-wide-home-ctas';
     this.homeCtas.id = 'ft-wide-home-ctas';
     this.homeCtas.innerHTML = `
+      <p class="ft-home-idle-greeting" id="ft-home-idle-greeting" data-testid="ft-home-idle-greeting"></p>
       <button type="button" class="ft-home-begin-practice" id="ft-home-begin-practice" data-proxy="sit" data-testid="ft-home-begin-practice"></button>
       <div class="ft-wide-home-ctas__row">
       <button type="button" class="ft-wide-home-ctas__btn is-asset" id="ft-wide-home-quickstart" data-proxy="quickstart" aria-label="">
@@ -473,6 +475,7 @@ export class WideIdleMoreMenu {
     this.sanctuaryNavHomeBtn = document.getElementById(
       'ft-sanctuary-nav-compass-fab'
     );
+    this.greetingEl = this.homeCtas.querySelector('#ft-home-idle-greeting');
     this.beginPracticeBtn = this.homeCtas.querySelector('#ft-home-begin-practice');
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-wide-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-wide-home-quickstart');
@@ -701,6 +704,10 @@ export class WideIdleMoreMenu {
           sitOk ? 'false' : 'true'
         );
         setBoolPropIfChanged(this.sitHomeBtn, 'hidden', sitHidden);
+      }
+      if (this.greetingEl) {
+        this.greetingEl.textContent = t(pickHomeIdleGreetingKey());
+        setBoolPropIfChanged(this.greetingEl, 'hidden', sitHidden);
       }
       if (this.beginPracticeBtn) {
         const beginLabel = t('HOME_BEGIN_PRACTICE');
@@ -1302,6 +1309,21 @@ export class WideIdleMoreMenu {
         gap: 8px;
         width: 100%;
       }
+      .ft-home-idle-greeting {
+        margin: 0 0 2px;
+        padding: 0 12px;
+        max-width: 22rem;
+        text-align: center;
+        font-size: 0.88rem;
+        font-weight: 450;
+        letter-spacing: 0.01em;
+        line-height: 1.35;
+        color: #5c4a38;
+        pointer-events: none;
+      }
+      .ft-home-idle-greeting[hidden] {
+        display: none !important;
+      }
       .ft-home-begin-practice {
         box-sizing: border-box;
         margin: 0;
@@ -1334,6 +1356,7 @@ export class WideIdleMoreMenu {
       /* Arrival keepQuickStart: CSS belt matches NarrowIdleShell.is-arrival-quick */
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-sit,
       .ft-wide-home-ctas.is-arrival-quick #ft-home-begin-practice,
+      .ft-wide-home-ctas.is-arrival-quick #ft-home-idle-greeting,
       .ft-wide-home-ctas.is-arrival-quick #ft-wide-home-honesty {
         display: none !important;
       }
