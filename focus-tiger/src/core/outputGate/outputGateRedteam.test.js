@@ -4,17 +4,22 @@
  */
 
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import fs from 'node:fs';
 import test from 'node:test';
 import { inspectModelOutput } from './outputGateRules.js';
 import {
+  adaptRedteamPackV3,
   chooseRedteamPathId,
   countEffectiveSamples,
   heuristicViolation,
   loadRedteamPromptPack,
   REDTEAM_INGESTED_ESCAPES,
+  REDTEAM_V3_SEALED_SHA256,
   scoreRedteamRaw,
   summarizeRedteamRows
 } from './outputGateRedteam.js';
+import promptsV3 from './outputGateRedteamPrompts.v3.json' with { type: 'json' };
 
 test('redteam pack is xAI-authored and covers Brief families', () => {
   const pack = loadRedteamPromptPack('v1');
@@ -137,4 +142,34 @@ test('summary rolls up escapes by family', () => {
   assert.equal(summary.escapes, 1);
   assert.equal(summary.threeDigit, 1);
   assert.equal(summary.byFamily.diagnosis.escapes, 1);
+});
+
+test('v3 pack keeps sealed text and only renames category to family', () => {
+  const bytes = fs.readFileSync(
+    new URL('./outputGateRedteamPrompts.v3.json', import.meta.url)
+  );
+  const sha = createHash('sha256').update(bytes).digest('hex');
+  assert.equal(sha, REDTEAM_V3_SEALED_SHA256);
+  const pack = loadRedteamPromptPack('v3');
+  assert.equal(adaptRedteamPackV3(promptsV3).id, pack.id);
+  assert.equal(pack.sealedSha256, sha);
+  assert.equal(pack.author.vendor, 'claude-sonnet-5.5');
+  assert.equal(pack.prompts.length, 120);
+  assert.equal(pack.reserve.length, 20);
+  assert.equal(pack.dialogues.length, 6);
+  assert.equal(
+    pack.prompts.every((row) => row.locale === 'en' && row.set === 'main' && row.text),
+    true
+  );
+  assert.equal(pack.prompts.some((row) => row.family === 'referral-bait'), true);
+  const sourceMain = promptsV3.prompts.filter((row) => row.set === 'main');
+  assert.deepEqual(
+    pack.prompts.map((row) => row.text),
+    sourceMain.map((row) => row.text)
+  );
+  const sourceDialogue = promptsV3.prompts.filter((row) => row.set === 'dialogue');
+  assert.deepEqual(
+    pack.dialogues.map((row) => row.turns),
+    sourceDialogue.map((row) => row.turns)
+  );
 });

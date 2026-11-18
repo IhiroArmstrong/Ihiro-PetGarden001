@@ -7,8 +7,15 @@
  * T100 layer B red team round 2. Real l1Runtime generate + output gate.
  * Not in CI. Run from system Terminal (Metal).
  *
- *   cd focus-tiger && FT_OUTPUT_GATE_REDTEAM=1 FT_REDTEAM_PACK=v2 FT_REDTEAM_ROUND=2 \
+ *   cd focus-tiger && FT_OUTPUT_GATE_REDTEAM=1 FT_REDTEAM_PACK=v3 FT_REDTEAM_ROUND=3 \
  *     npm run audit:output-gate-redteam
+ *
+ * Preflight (10 main prompts × 8 unguarded seeds; median distinct hashes must be >= 4):
+ *   FT_OUTPUT_GATE_REDTEAM=1 FT_REDTEAM_PACK=v3 FT_REDTEAM_PREFLIGHT=1 \
+ *     npm run audit:output-gate-redteam
+ *
+ * Input-side fixed lines, no model:
+ *   FT_REDTEAM_PACK=v3 npm run audit:output-gate-redteam -- --route-dry
  *
  * Raw model text stays in /tmp. Repo report uses hashes, lengths, counts.
  */
@@ -23,6 +30,7 @@ import { CONFIDE_ROUTE } from '../../src/core/confide/confideRoutes.js';
 import {
   countEffectiveSamples,
   loadRedteamPromptPack,
+  REDTEAM_V3_SEALED_SHA256,
   scoreRedteamRaw,
   summarizeRedteamRows
 } from '../../src/core/outputGate/outputGateRedteam.js';
@@ -149,15 +157,44 @@ async function runOne(runtime, item, arm, sample, history) {
   };
 }
 
+function median(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  if (!sorted.length) return 0;
+  const mid = Math.floor(sorted.length / 2);
+  if (sorted.length % 2) return sorted[mid];
+  return (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+function routeDryRun(pack) {
+  const fixed = [];
+  for (const item of pack.prompts) {
+    const route = confideClassify(item.text) || '';
+    if (INPUT_FIXED.has(route)) fixed.push(`${item.id}\t${route}`);
+  }
+  process.stdout.write(
+    `[output-gate-redteam] route-dry pack=${pack.id} main=${pack.prompts.length} inputFixed=${fixed.length} sealed=${pack.sealedSha256 || ''}\n`
+  );
+  for (const line of fixed) process.stdout.write(`${line}\n`);
+}
+
 async function main() {
   const pack = loadRedteamPromptPack(process.env.FT_REDTEAM_PACK || 'v2');
-  const arms = parseArms();
+  const preflight = process.env.FT_REDTEAM_PREFLIGHT === '1';
+  if (preflight) {
+    pack.prompts = pack.prompts.slice(0, 10);
+  }
+  const arms = preflight ? ['unguarded'] : parseArms();
+  const v3 = String(pack.id || '').includes('v3');
   const unguardedN = parseCount('FT_REDTEAM_SAMPLES_UNGUARDED', 8, 12);
-  const productionN = parseCount('FT_REDTEAM_SAMPLES_PROD', 4, 8);
+  const productionN = parseCount('FT_REDTEAM_SAMPLES_PROD', v3 ? 6 : 4, 8);
   const dry = process.argv.includes('--dry-run');
+  if (process.argv.includes('--route-dry')) {
+    routeDryRun(pack);
+    process.exit(0);
+  }
   if (dry) {
     process.stdout.write(
-      `[output-gate-redteam] dry-run pack=${pack.id} prompts=${pack.prompts.length} dialogues=${(pack.dialogues || []).length} vendor=${pack.author.vendor} arms=${arms.join(',')}\n`
+      `[output-gate-redteam] dry-run pack=${pack.id} prompts=${pack.prompts.length} reserve=${(pack.reserve || []).length} dialogues=${(pack.dialogues || []).length} vendor=${pack.author.vendor} arms=${arms.join(',')} u=${unguardedN} p=${productionN} sealed=${pack.sealedSha256 || REDTEAM_V3_SEALED_SHA256}\n`
     );
     process.exit(0);
   }
@@ -204,7 +241,7 @@ async function main() {
       }
     }
     for (const dialogue of pack.dialogues || []) {
-      if (!arms.includes('unguarded')) break;
+      if (preflight || !arms.includes('unguarded')) break;
       /** @type {Array<{ role: string, text: string, source: string }>} */
       const history = [];
       for (let t = 0; t < dialogue.turns.length; t += 1) {
@@ -246,7 +283,7 @@ async function main() {
     probe: 'output-gate-redteam',
     packId: pack.id,
     author: pack.author,
-    round: Number(process.env.FT_REDTEAM_ROUND || '2'),
+    round: Number(process.env.FT_REDTEAM_ROUND || (v3 ? '3' : '2')),
     entry: 'CompanionL1Runtime.generate',
     temperature: 0.8,
     kStop: 3,
@@ -266,6 +303,20 @@ async function main() {
   process.stdout.write(
     `[output-gate-redteam] n=${summary.n} escapes=${summary.escapes} blocked=${summary.blocked} effectiveU=${summary.effectiveUnguarded.effective} effectiveP=${summary.effectiveProduction.effective} inputFixed=${summary.inputFixed} leaks=${summary.historyLeaks}\n`
   );
+  if (preflight) {
+    /** @type {Record<string, Set<string>>} */
+    const byId = {};
+    for (const row of unguarded) {
+      if (!byId[row.id]) byId[row.id] = new Set();
+      if (row.sha256) byId[row.id].add(row.sha256);
+    }
+    const counts = pack.prompts.map((item) => (byId[item.id] ? byId[item.id].size : 0));
+    const med = median(counts);
+    process.stdout.write(
+      `[output-gate-redteam] preflight prompts=${counts.length} median=${med} counts=${counts.join(',')}\n`
+    );
+    if (med < 4) process.exitCode = 3;
+  }
 }
 
 main().catch((err) => {

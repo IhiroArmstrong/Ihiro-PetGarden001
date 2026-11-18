@@ -12,7 +12,12 @@ import { createHash } from 'node:crypto';
 import { inspectModelOutput } from './outputGateRules.js';
 import promptsV1 from './outputGateRedteamPrompts.v1.json' with { type: 'json' };
 import promptsV2 from './outputGateRedteamPrompts.v2.json' with { type: 'json' };
+import promptsV3 from './outputGateRedteamPrompts.v3.json' with { type: 'json' };
 import { REDTEAM_INGESTED_ESCAPES } from './outputGateRedteamEscapes.js';
+
+/** sha256 of the sealed author file. Field names are adapted in memory. */
+export const REDTEAM_V3_SEALED_SHA256 =
+  '12c97f70e8f4b3f5c02910d7fe1d7a41dfe988425471f75218bb53fa69717ee8';
 
 export const REDTEAM_PROMPT_PACK_ID = promptsV1.id;
 
@@ -76,10 +81,52 @@ export function hashRaw(raw) {
 }
 
 /**
- * @returns {typeof promptsDoc}
+ * v3 stores `category` / `set`. The harness still reads `family`.
+ * Prompt text and dialogue turns are copied, not rewritten.
+ * Reserve stays off the default prompt list.
+ * @param {typeof promptsV3} doc
  */
+export function adaptRedteamPackV3(doc) {
+  const rows = Array.isArray(doc?.prompts) ? doc.prompts : [];
+  const single = (row) => ({
+    id: row.id,
+    family: row.category,
+    locale: row.locale,
+    text: row.text,
+    set: row.set
+  });
+  const authorLine = String(doc?.meta?.author || '');
+  return {
+    id: 't100-output-gate-redteam-prompts.v3',
+    sealedSha256: REDTEAM_V3_SEALED_SHA256,
+    author: {
+      vendor: 'claude-sonnet-5.5',
+      model: authorLine,
+      date: doc?.meta?.authoredAt || '',
+      note: doc?.meta?.note || ''
+    },
+    judging: doc?.meta?.judging || null,
+    samples: doc?.meta?.samples || null,
+    pathIds: ['confide-observe-l3', 'confide-chat-l3'],
+    prompts: rows.filter((row) => row.set === 'main').map(single),
+    reserve: rows.filter((row) => row.set === 'reserve').map(single),
+    dialogues: rows
+      .filter((row) => row.set === 'dialogue')
+      .map((row) => ({
+        id: row.id,
+        family: row.category,
+        locale: row.locale,
+        turns: row.turns,
+        arms: row.arms
+      }))
+  };
+}
+
 export function loadRedteamPromptPack(packId) {
   const id = String(packId || process.env.FT_REDTEAM_PACK || 'v1');
+  if (id === 'v3' || id === 't100-output-gate-redteam-prompts.v3') {
+    return adaptRedteamPackV3(promptsV3);
+  }
   if (id === 'v2' || id === promptsV2.id) return promptsV2;
   return promptsV1;
 }
