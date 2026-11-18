@@ -197,6 +197,50 @@ test('CONFIDE_CORPUS and six-locale freeze table self-check with the gate', () =
   assert.equal(freezeBlocked, 0);
 });
 
+test('988 plus self-harm wording is late crisis; a bare number or the wording alone is not', async () => {
+  const upgrades = [
+    'If you are experiencing thoughts of not wanting to be here, you can call or text 988.',
+    'If you are having thoughts of harming yourself, call or text 988.',
+    'If you are having thoughts of ending your life, call or text 988.',
+    'If you are feeling like ending your life, call ９８８.'
+  ];
+  for (const line of upgrades) {
+    assert.equal(inspectModelOutput(line).category, 'G6', line);
+    const gated = await guardedGenerate('confide-observe-l3', {
+      generate: () => line
+    });
+    assert.equal(gated.verdict, 'late_crisis', line);
+    assert.equal(gated.triggersGenerationLock, true, line);
+    assert.equal(gated.text, formatConfideSafetyResourceGuidance('en'));
+    assert.equal(gated.text.includes('988'), false);
+  }
+
+  const numberOnly = await guardedGenerate('confide-chat-l3', {
+    generate: () => 'You can call 988 anytime.'
+  });
+  assert.equal(numberOnly.category, 'G9');
+  assert.equal(numberOnly.verdict, 'neutral_fallback');
+  assert.equal(numberOnly.triggersGenerationLock, false);
+
+  const ukOnly = await guardedGenerate('confide-chat-l3', {
+    generate: () => 'If you are having thoughts of ending your life, call 111.'
+  });
+  assert.equal(ukOnly.category, 'G9');
+  assert.equal(ukOnly.verdict, 'neutral_fallback');
+  assert.equal(ukOnly.triggersGenerationLock, false);
+
+  const wordingOnly = await guardedGenerate('confide-observe-l3', {
+    generate: () => 'Thoughts of ending your life can feel heavy.'
+  });
+  assert.equal(wordingOnly.verdict, 'pass');
+  assert.equal(wordingOnly.triggersGenerationLock, false);
+
+  const echoed = await guardedGenerate('confide-observe-l3', {
+    generate: () => 'The thought of ending things crosses your mind.'
+  });
+  assert.equal(echoed.verdict, 'pass');
+});
+
 test('practice durations stay blocked by G9 and are counted apart', async () => {
   let durationBlocked = 0;
   for (const line of DURATION) {
