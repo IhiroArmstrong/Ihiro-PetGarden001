@@ -208,12 +208,17 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
     page.locator('ft-onboarding-hint-bubble[data-hint-id="sit-button"][open]')
   ).toHaveCount(0, { timeout: 5_000 });
   await reminderRow.click();
-  await expect(page.locator('#ft-wide-more-menu')).toBeHidden();
   const reminderPanel = page.locator('#reminder-preference-panel');
+  await expect(page.locator('#ft-wide-more-menu')).toBeVisible();
+  await expect(
+    page.locator('#ft-wide-more-menu [data-testid="ft-pref-sheet-back"]')
+  ).toBeVisible({
+    timeout: 5_000
+  });
   await expect(reminderPanel).toBeVisible({
     timeout: 5_000
   });
-  await expect(reminderPanel).toHaveAttribute('data-dock', 'right');
+  await expect(reminderPanel).toHaveAttribute('data-pref-sheet-embed', '1');
   const box = await reminderPanel.boundingBox();
   expect(box).toBeTruthy();
   expect(box.x).toBeGreaterThan((page.viewportSize()?.width || 1280) * 0.5);

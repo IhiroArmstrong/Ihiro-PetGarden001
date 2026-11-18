@@ -206,4 +206,13 @@ describe('wide more menu click reception', () => {
     assert.match(src, /moreRole === 'edge-recall'/);
     assert.match(src, /_honestyBridgeActive/);
   });
+
+  it('keeps the Preferences sheet open for embedded glass cards (H8)', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /shouldEmbedPreferenceInSheet/);
+    assert.match(src, /_enterPreferencePage/);
+    assert.match(src, /ft-pref-sheet-back/);
+    assert.match(src, /if \(this\._prefPage\) return;/);
+  });
 });

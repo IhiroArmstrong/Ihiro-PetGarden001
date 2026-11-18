@@ -328,6 +328,7 @@ export class ReminderPreferenceUI {
       this.handlers.onClose?.();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
+    this.panel.addEventListener('ft-pref-embed-close', () => this.closePanel());
 
     this._offDockResize = installPreferencePanelDockListener(this.panel, () =>
       syncPreferencePanelDock(this.panel)

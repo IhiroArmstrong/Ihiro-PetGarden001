@@ -26,6 +26,14 @@ import {
 } from '../core/alwaysOnTopBridge.js';
 import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
 import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
+import {
+  adoptPreferencePanelIntoSheet,
+  preferenceSheetEmbedCss,
+  queryPreferenceSheetPanel,
+  releasePreferencePanelFromSheet,
+  requestClosePreferencePanel,
+  shouldEmbedPreferenceInSheet
+} from '../core/preferenceSheetEmbed.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
@@ -43,7 +51,7 @@ import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import { Z } from './zIndexLayers.js';
 import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v25';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v26';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -371,6 +379,7 @@ export class NarrowIdleShell {
     // re-firing onSheetChange → syncOnboardingAutoHints on every chrome resync
     // can stack-overflow (Choose → postChoose keepQuickStart path).
     if (!this._sheetOpen) return;
+    this._exitPreferencePage({ refresh: false });
     this._sheetOpen = false;
     if (this._moreOrGrabberRole() === 'edge-recall') {
       this._grabberEdgeRevealed = false;
@@ -381,6 +390,65 @@ export class NarrowIdleShell {
     this.sheet?.setAttribute('aria-hidden', 'true');
     this.backdrop?.setAttribute('hidden', '');
     this.handlers.onSheetChange?.(false);
+  }
+
+  /**
+   * @param {string} proxy
+   * @returns {void}
+   */
+  _enterPreferencePage(proxy) {
+    this._prefPage = proxy;
+    document.body.classList.add('ft-pref-sheet-embed');
+    if (this.listEl) this.listEl.hidden = true;
+    if (this.prefPageSlot) this.prefPageSlot.hidden = false;
+    if (this.prefBack) {
+      this.prefBack.hidden = false;
+      this.prefBack.textContent = t('PREF_CENTER_BACK');
+    }
+    this._popPrefEscape?.();
+    this._popPrefEscape = pushOverlayEscapeLayer({
+      id: 'narrow-pref-page',
+      dismiss: () => this._exitPreferencePage()
+    });
+  }
+
+  /**
+   * @returns {void}
+   */
+  _adoptPreferencePage() {
+    if (!this._prefPage || !this.prefPageSlot) return;
+    const tryAdopt = () => {
+      if (!this._prefPage || !this.prefPageSlot) return;
+      const panel = queryPreferenceSheetPanel(this._prefPage);
+      if (panel) adoptPreferencePanelIntoSheet(panel, this.prefPageSlot);
+    };
+    tryAdopt();
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(tryAdopt);
+    }
+  }
+
+  /**
+   * @param {{ refresh?: boolean }} [opts]
+   * @returns {void}
+   */
+  _exitPreferencePage(opts = {}) {
+    const refresh = opts.refresh !== false;
+    if (!this._prefPage) {
+      document.body.classList.remove('ft-pref-sheet-embed');
+      return;
+    }
+    const panel = queryPreferenceSheetPanel(this._prefPage);
+    requestClosePreferencePanel(this._prefPage);
+    releasePreferencePanelFromSheet(panel);
+    this._prefPage = null;
+    this._popPrefEscape?.();
+    this._popPrefEscape = null;
+    document.body.classList.remove('ft-pref-sheet-embed');
+    if (this.listEl) this.listEl.hidden = false;
+    if (this.prefPageSlot) this.prefPageSlot.hidden = true;
+    if (this.prefBack) this.prefBack.hidden = true;
+    if (refresh) this._refreshItems?.();
   }
 
   /**
@@ -406,7 +474,8 @@ export class NarrowIdleShell {
       'ft-narrow-park',
       'ft-narrow-idle',
       'ft-narrow-focusing',
-      'ft-narrow-hide-sit-dock'
+      'ft-narrow-hide-sit-dock',
+      'ft-pref-sheet-embed'
     );
   }
 
@@ -554,11 +623,13 @@ export class NarrowIdleShell {
     this.sheet.innerHTML = `
       <div class="ft-narrow-sheet__handle" aria-hidden="true"></div>
       <div class="ft-narrow-sheet__head">
+        <button type="button" class="ft-pref-sheet-back" data-testid="ft-pref-sheet-back-narrow" hidden></button>
         <h2 class="ft-narrow-sheet__title" data-role="sheet-title"></h2>
         <button type="button" class="ft-narrow-sheet__close" data-role="close" aria-label=""></button>
       </div>
       <div class="ft-narrow-sheet__heatmap" data-role="heatmap-slot" hidden></div>
       <ul class="ft-narrow-sheet__list" data-role="list"></ul>
+      <div class="ft-pref-sheet-page" data-testid="ft-pref-sheet-page" hidden></div>
     `;
 
     this.shell.appendChild(this.actionBar);
@@ -572,6 +643,12 @@ export class NarrowIdleShell {
     this.stateEl = this.actionBar.querySelector('[data-role="state"]');
     this.listEl = this.sheet.querySelector('[data-role="list"]');
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
+    this.prefBack = this.sheet.querySelector('[data-testid="ft-pref-sheet-back-narrow"]');
+    this.prefPageSlot = this.sheet.querySelector('[data-testid="ft-pref-sheet-page"]');
+    this.prefBack?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this._exitPreferencePage();
+    });
     this.sanctuaryNavHomeBtn = document.getElementById(
       'ft-sanctuary-nav-compass-fab'
     );
@@ -750,6 +827,14 @@ export class NarrowIdleShell {
         locked: item.classList.contains('is-locked'),
         interactive: item.classList.contains('is-static') ? false : undefined
       };
+      if (shouldEmbedPreferenceInSheet(key)) {
+        this._enterPreferencePage(key);
+        requestAnimationFrame(() => {
+          this._proxy(key, entryMeta);
+          this._adoptPreferencePage();
+        });
+        return;
+      }
       this.closeSheet();
       // Let close paint, then trigger underlying control
       requestAnimationFrame(() => this._proxy(key, entryMeta));
@@ -1152,8 +1237,14 @@ export class NarrowIdleShell {
         handlers: this.handlers,
         closeFirst: true,
         runPrelude: false,
-        clearStage: () => this.clearStage(),
-        close: () => this.closeSheet(),
+        clearStage: () => {
+          if (this._prefPage) return;
+          this.clearStage();
+        },
+        close: () => {
+          if (this._prefPage) return;
+          this.closeSheet();
+        },
         addStage: (stage) => {
           const cls = NARROW_STAGE_CLASS[stage];
           if (cls) document.body.classList.add(cls);
@@ -2040,6 +2131,7 @@ export class NarrowIdleShell {
           bottom: auto !important;
         }
       }
+      ${preferenceSheetEmbedCss()}
     `;
     document.head.appendChild(style);
   }

@@ -45,8 +45,16 @@ import { Z } from './zIndexLayers.js';
 import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
 import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
 import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
+import {
+  adoptPreferencePanelIntoSheet,
+  preferenceSheetEmbedCss,
+  queryPreferenceSheetPanel,
+  releasePreferencePanelFromSheet,
+  requestClosePreferencePanel,
+  shouldEmbedPreferenceInSheet
+} from '../core/preferenceSheetEmbed.js';
 
-const STYLE_ID = 'ft-wide-idle-more-styles-v13';
+const STYLE_ID = 'ft-wide-idle-more-styles-v14';
 const DEFAULT_EXPANDED_MENU_GROUP = 'MENU_GROUP_PRACTICE';
 const DEFAULT_EXPANDED_MENU_GROUPS = [
   DEFAULT_EXPANDED_MENU_GROUP,
@@ -293,6 +301,7 @@ export class WideIdleMoreMenu {
    */
   closeMenu() {
     if (!this._menuOpen) return;
+    this._exitPreferencePage({ refresh: false });
     this._menuOpen = false;
     this._activeListGroup = null;
     this._popEscapeLayer?.();
@@ -305,6 +314,65 @@ export class WideIdleMoreMenu {
     this._sync();
     this.moreBtn?.setAttribute('aria-expanded', 'false');
     this.handlers.onMenuChange?.(false);
+  }
+
+  /**
+   * @param {string} proxy
+   * @returns {void}
+   */
+  _enterPreferencePage(proxy) {
+    this._prefPage = proxy;
+    document.body.classList.add('ft-pref-sheet-embed');
+    if (this.listEl) this.listEl.hidden = true;
+    if (this.prefPageSlot) this.prefPageSlot.hidden = false;
+    if (this.prefBack) {
+      this.prefBack.hidden = false;
+      this.prefBack.textContent = t('PREF_CENTER_BACK');
+    }
+    this._popPrefEscape?.();
+    this._popPrefEscape = pushOverlayEscapeLayer({
+      id: 'wide-pref-page',
+      dismiss: () => this._exitPreferencePage()
+    });
+  }
+
+  /**
+   * @returns {void}
+   */
+  _adoptPreferencePage() {
+    if (!this._prefPage || !this.prefPageSlot) return;
+    const tryAdopt = () => {
+      if (!this._prefPage || !this.prefPageSlot) return;
+      const panel = queryPreferenceSheetPanel(this._prefPage);
+      if (panel) adoptPreferencePanelIntoSheet(panel, this.prefPageSlot);
+    };
+    tryAdopt();
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(tryAdopt);
+    }
+  }
+
+  /**
+   * @param {{ refresh?: boolean }} [opts]
+   * @returns {void}
+   */
+  _exitPreferencePage(opts = {}) {
+    const refresh = opts.refresh !== false;
+    if (!this._prefPage) {
+      document.body.classList.remove('ft-pref-sheet-embed');
+      return;
+    }
+    const panel = queryPreferenceSheetPanel(this._prefPage);
+    requestClosePreferencePanel(this._prefPage);
+    releasePreferencePanelFromSheet(panel);
+    this._prefPage = null;
+    this._popPrefEscape?.();
+    this._popPrefEscape = null;
+    document.body.classList.remove('ft-pref-sheet-embed');
+    if (this.listEl) this.listEl.hidden = false;
+    if (this.prefPageSlot) this.prefPageSlot.hidden = true;
+    if (this.prefBack) this.prefBack.hidden = true;
+    if (refresh) this._refreshItems();
   }
 
   /**
@@ -421,6 +489,7 @@ export class WideIdleMoreMenu {
       'ft-wide-show-dock-rise',
       'ft-wide-more-open',
       'ft-wide-home-ctas',
+      'ft-pref-sheet-embed',
       WIDE_STAGE_CLASS.sound,
       WIDE_STAGE_CLASS.companion,
       WIDE_STAGE_CLASS.reminder,
@@ -520,11 +589,24 @@ export class WideIdleMoreMenu {
       event.stopPropagation();
       this.closeMenu();
     });
-    this.sheetHead.append(this.sheetTitle, this.sheetClose);
+    this.prefBack = document.createElement('button');
+    this.prefBack.type = 'button';
+    this.prefBack.className = 'ft-pref-sheet-back';
+    this.prefBack.dataset.testid = 'ft-pref-sheet-back';
+    this.prefBack.hidden = true;
+    this.prefBack.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this._exitPreferencePage();
+    });
+    this.sheetHead.append(this.prefBack, this.sheetTitle, this.sheetClose);
 
     this.listEl = document.createElement('ul');
     this.listEl.className = 'ft-wide-more__list';
-    this.menu.append(this.sheetHead, this.listEl);
+    this.prefPageSlot = document.createElement('div');
+    this.prefPageSlot.className = 'ft-pref-sheet-page';
+    this.prefPageSlot.dataset.testid = 'ft-pref-sheet-page';
+    this.prefPageSlot.hidden = true;
+    this.menu.append(this.sheetHead, this.listEl, this.prefPageSlot);
 
     this.radialRoot = document.createElement('div');
     this.radialRoot.id = 'ft-wide-more-radial';
@@ -592,6 +674,14 @@ export class WideIdleMoreMenu {
         locked: item.classList.contains('is-locked'),
         interactive: item.classList.contains('is-static') ? false : undefined
       };
+      if (shouldEmbedPreferenceInSheet(key)) {
+        this._enterPreferencePage(key);
+        requestAnimationFrame(() => {
+          this._proxy(key, entryMeta);
+          this._adoptPreferencePage();
+        });
+        return;
+      }
       this.closeMenu();
       requestAnimationFrame(() => this._proxy(key, entryMeta));
     });
@@ -1229,8 +1319,14 @@ export class WideIdleMoreMenu {
         handlers: this.handlers,
         closeFirst: false,
         runPrelude: true,
-        clearStage: () => this.clearStage(),
-        close: () => this.closeMenu(),
+        clearStage: () => {
+          if (this._prefPage) return;
+          this.clearStage();
+        },
+        close: () => {
+          if (this._prefPage) return;
+          this.closeMenu();
+        },
         addStage: (stage) => {
           const cls = WIDE_STAGE_CLASS[stage];
           if (cls) document.body.classList.add(cls);
@@ -1922,6 +2018,7 @@ export class WideIdleMoreMenu {
         }
 
       }
+      ${preferenceSheetEmbedCss()}
     `;
     document.head.appendChild(style);
   }
