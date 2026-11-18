@@ -41,7 +41,7 @@ test("Yin's Collections scrolls inside an inner viewport, not the frosted shell"
 });
 
 test("Yin's Collections is a compact readable card, not a full-height frost slab", () => {
-  assert.match(src, /yin-coin-panel-styles-v8/);
+  assert.match(src, /yin-coin-panel-styles-v9/);
   assert.match(src, /GLASS_FILL_STRONG/);
   assert.match(src, /max-height: min\(72vh, 640px\)/);
   assert.match(src, /yin-coin-panel__btn--chrome-close/);
