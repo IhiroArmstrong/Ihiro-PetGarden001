@@ -66,6 +66,19 @@ test('narrow home CTAs keep Quick · Sit · Honesty; compass lives on the corner
   );
 });
 
+test('H6 narrow Idle greeting and Begin Practice sit above the three balls', () => {
+  assert.match(src, /id="ft-narrow-home-idle-greeting"/);
+  assert.match(src, /id="ft-narrow-home-begin-practice"/);
+  assert.match(src, /pickHomeIdleGreetingKey/);
+  assert.match(src, /HOME_BEGIN_PRACTICE/);
+  assert.match(src, /data-proxy="sit"/);
+  assert.match(
+    src,
+    /ft-narrow-idle-shell\.is-arrival-quick #ft-narrow-home-begin-practice/
+  );
+  assert.match(src, /pointer-events: none/);
+});
+
 test('openSheet dismisses idle visual-primary overlays before opening drawer', () => {
   assert.match(src, /_dismissIdleVisualPrimaryOverlays/);
   assert.match(

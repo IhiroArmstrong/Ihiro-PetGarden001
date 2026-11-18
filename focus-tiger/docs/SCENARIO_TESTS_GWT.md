@@ -93,7 +93,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - （无额外用户操作）
 
 **Then**
-- Idle 时见 Honesty Check-in 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 Sit with Yin 开始本场计时。宽屏 Idle 阿寅下方另有一句短问候（`#ft-home-idle-greeting`，当日固定一句）+ Begin Practice；问候不可点、不自动开坐
+- Idle 时见 Honesty Check-in 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 Sit with Yin 开始本场计时。宽屏 Idle 阿寅下方另有一句短问候（`#ft-home-idle-greeting`，当日固定一句）+ Begin Practice；问候不可点、不自动开坐。窄屏（≤479）同一句问候 + Begin Practice（`#ft-narrow-home-idle-greeting` / `#ft-narrow-home-begin-practice`），点 Begin Practice 0–1 秒见到达，与 Sit 球相同；抽屉仍是底边，不是宽屏侧栏
 
 #### A-3
 
