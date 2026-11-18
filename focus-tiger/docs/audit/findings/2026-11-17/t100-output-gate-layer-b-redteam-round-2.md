@@ -145,9 +145,9 @@
 
 **方案（2026-11-18 已按窄范围另开实现）**：只有「公开危机热线数字」和「自我伤害用语」同时出现时，判定改成晚到危机。单独的三位数字维持现状。实现只认 **988** 与 “ending your life” / “harming yourself” / “not wanting to be here” 同时出现。英国 111 单独仍是 G9。V-02 那一行不动。本记录仍不是闸已验证。
 
-## G11 助手腔（未做）
+## G11 助手腔（2026-11-18 已另开）
 
-10 句漏网都是助手腔，不是阿寅的口吻。建议新增一类：出现 “I am an AI / language model”、 “Please provide / describe / consult / seek”、 “I can help you identify” 以及中日文对应说法时，走中性回落。先在 1200 条放行集和语料上量误拦，再决定写不写进规则。说明书类别表之外的新类，**本 PR 没有这条规则**。
+10 句漏网都是助手腔，不是阿寅的口吻。说法是 “I am an AI / language model”、 “Please provide / describe / consult / seek”、 “I can help you identify”，以及测过的中日文对应说法，走中性回落，不锁。放行集 1200、语料 78、六语冻表 108 上误拦是 0。第 2 轮里仍放行的句子，这些说法新增拦住 0 条；已经被转诊或点病拦住的，仍算原来的类。本记录仍不是闸已验证。
 
 ## 未完成
 
