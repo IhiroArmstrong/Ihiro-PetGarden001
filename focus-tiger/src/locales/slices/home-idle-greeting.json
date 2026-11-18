@@ -1,0 +1,20 @@
+{
+  "en": {
+    "HOME_IDLE_GREETING_1": "Yin is here.",
+    "HOME_IDLE_GREETING_2": "Whenever you are ready.",
+    "HOME_IDLE_GREETING_3": "A quiet sit is enough.",
+    "HOME_IDLE_GREETING_4": "Sit when you like."
+  },
+  "zh": {
+    "HOME_IDLE_GREETING_1": "阿寅在这儿。",
+    "HOME_IDLE_GREETING_2": "准备好了再坐就好。",
+    "HOME_IDLE_GREETING_3": "安静坐一会儿就够。",
+    "HOME_IDLE_GREETING_4": "想坐的时候再坐。"
+  },
+  "ja": {
+    "HOME_IDLE_GREETING_1": "寅はここにいるよ。",
+    "HOME_IDLE_GREETING_2": "準備ができたらでいいよ。",
+    "HOME_IDLE_GREETING_3": "静かに坐るだけでいい。",
+    "HOME_IDLE_GREETING_4": "坐りたくなったら坐ろう。"
+  }
+}
