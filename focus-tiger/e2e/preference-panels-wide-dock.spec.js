@@ -4,21 +4,16 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  expandWideMoreMenuGroup,
-  openFreshProductShell
-} from './helpers/product-shell.js';
+import { openFreshProductShell } from './helpers/product-shell.js';
 
 /**
  * @param {import('@playwright/test').Page} page
  */
-async function openReminderFromWideMenu(page) {
+async function openReminderFromClock(page) {
   await openFreshProductShell(page);
-  await page.locator('#ft-wide-more-btn').click();
-  await expandWideMoreMenuGroup(page, 'MENU_GROUP_PREFERENCES');
-  const row = page.locator('#ft-wide-more-menu [data-proxy="reminder"]');
-  await row.hover();
-  await row.click();
+  const toggle = page.locator('#reminder-preference-toggle');
+  await expect(toggle).toBeVisible({ timeout: 5_000 });
+  await toggle.click();
   const panel = page.locator('#reminder-preference-panel');
   await expect(panel).toBeVisible({ timeout: 5_000 });
   return panel;
@@ -26,7 +21,7 @@ async function openReminderFromWideMenu(page) {
 
 test('wide desktop reminder panel docks right of the midline', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  const panel = await openReminderFromWideMenu(page);
+  const panel = await openReminderFromClock(page);
   await expect(panel).toHaveAttribute('data-dock', 'right');
   await expect(panel).toHaveAttribute('data-ft-glass-card', '1');
   const box = await panel.boundingBox();
@@ -36,7 +31,7 @@ test('wide desktop reminder panel docks right of the midline', async ({ page }) 
 
 test('medium wide reminder panel docks as a bottom strip', async ({ page }) => {
   await page.setViewportSize({ width: 700, height: 900 });
-  const panel = await openReminderFromWideMenu(page);
+  const panel = await openReminderFromClock(page);
   await expect(panel).toHaveAttribute('data-dock', 'bottom');
   const box = await panel.boundingBox();
   expect(box).toBeTruthy();
@@ -45,7 +40,7 @@ test('medium wide reminder panel docks as a bottom strip', async ({ page }) => {
 
 test('reminder title chrome is draggable on wide', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  const panel = await openReminderFromWideMenu(page);
+  const panel = await openReminderFromClock(page);
   const before = await panel.boundingBox();
   const title = panel.locator('#reminder-preference-title');
   const titleBox = await title.boundingBox();

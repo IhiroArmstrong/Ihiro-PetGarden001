@@ -25,7 +25,8 @@
     "PREF_CENTER_HINT_SUBSCRIPTION": "Membership and advanced rituals",
     "PREF_CENTER_STATUS_OFF": "Off",
     "PREF_CENTER_STATUS_ON": "On",
-    "PREF_CENTER_CLOSE": "Close"
+    "PREF_CENTER_CLOSE": "Close",
+    "PREF_CENTER_BACK": "Back to Preferences"
   },
   "zh": {
     "PREF_CENTER_GROUP_EXPERIENCE": "01 · 你的体验",
@@ -53,7 +54,8 @@
     "PREF_CENTER_HINT_SUBSCRIPTION": "会员与进阶仪式",
     "PREF_CENTER_STATUS_OFF": "关",
     "PREF_CENTER_STATUS_ON": "开",
-    "PREF_CENTER_CLOSE": "关闭"
+    "PREF_CENTER_CLOSE": "关闭",
+    "PREF_CENTER_BACK": "返回偏好设置"
   },
   "ja": {
     "PREF_CENTER_GROUP_EXPERIENCE": "01 · 体験",
@@ -81,6 +83,7 @@
     "PREF_CENTER_HINT_SUBSCRIPTION": "メンバーシップと高度な儀礼",
     "PREF_CENTER_STATUS_OFF": "オフ",
     "PREF_CENTER_STATUS_ON": "オン",
-    "PREF_CENTER_CLOSE": "閉じる"
+    "PREF_CENTER_CLOSE": "閉じる",
+    "PREF_CENTER_BACK": "設定に戻る"
   }
 }

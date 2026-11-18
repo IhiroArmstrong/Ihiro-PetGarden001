@@ -58,25 +58,32 @@ export function mountCoPracticeContractSurface(host, handlers = {}) {
 
   for (const row of rows) {
     const line = document.createElement('div');
-    line.className = 'co-practice-contract__row';
+    line.className = 'co-practice-contract__row ft-pref-row';
     line.dataset.rowId = row.id;
 
-    const label = document.createElement('p');
-    label.className = 'co-practice-contract__label';
-    label.textContent = t(row.labelKey);
-    line.appendChild(label);
+    const copy = document.createElement('div');
+    copy.className = 'ft-pref-row__copy';
 
-    const status = document.createElement('p');
-    status.className = 'co-practice-contract__status';
-    status.textContent = formatContractStatus(row.status);
-    line.appendChild(status);
+    const label = document.createElement('p');
+    label.className = 'co-practice-contract__label ft-pref-row__title';
+    label.textContent = t(row.labelKey);
+    copy.appendChild(label);
 
     if (row.hintKey) {
       const hint = document.createElement('p');
-      hint.className = 'co-practice-contract__hint';
+      hint.className = 'co-practice-contract__hint ft-pref-row__hint';
       hint.textContent = t(row.hintKey);
-      line.appendChild(hint);
+      copy.appendChild(hint);
     }
+
+    const trail = document.createElement('div');
+    trail.className = 'ft-pref-row__trail';
+    const status = document.createElement('p');
+    status.className = 'co-practice-contract__status ft-pref-row__status';
+    status.textContent = formatContractStatus(row.status);
+    trail.appendChild(status);
+
+    line.append(copy, trail);
 
     if (row.action && row.actionKey) {
       const btn = document.createElement('button');
@@ -125,9 +132,20 @@ export function injectCoPracticeContractPanelStyles() {
       opacity: 0.88;
     }
     .co-practice-contract__row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
       margin-top: 12px;
       padding-top: 12px;
       border-top: 1px solid rgba(80, 55, 30, 0.12);
+    }
+    .co-practice-contract__row.ft-pref-row .ft-pref-row__copy {
+      flex: 1 1 auto;
+    }
+    .co-practice-contract__row.ft-pref-row .ft-pref-row__trail {
+      flex: 0 0 auto;
+      text-align: right;
     }
     .co-practice-contract__action {
       margin-top: 8px;

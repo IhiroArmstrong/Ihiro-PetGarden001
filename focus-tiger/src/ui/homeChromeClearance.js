@@ -34,6 +34,15 @@ export const NARROW_HOME_CTA_BOTTOM_PX = 64;
 /** Matches NarrowIdleShell `HOME_SIT_PX` (72 × 1.155). */
 export const NARROW_HOME_SIT_PX = Math.round(72 * 1.155);
 
+/** H6: greeting line + Begin Practice + two stack gaps above the Sit row. */
+export const NARROW_HOME_GREETING_PX = 24;
+export const NARROW_HOME_BEGIN_PX = 40;
+export const NARROW_HOME_STACK_GAP_PX = 8;
+export const NARROW_HOME_GREETING_STACK_PX =
+  NARROW_HOME_GREETING_PX +
+  NARROW_HOME_BEGIN_PX +
+  NARROW_HOME_STACK_GAP_PX * 2;
+
 /** Air between Sit ball top and copy bottom edge. */
 export const NARROW_COPY_ABOVE_HOME_GAP_PX = 16;
 
@@ -60,6 +69,7 @@ export function narrowHomeCopyClearanceBottomPx() {
   return (
     NARROW_HOME_CTA_BOTTOM_PX +
     NARROW_HOME_SIT_PX +
+    NARROW_HOME_GREETING_STACK_PX +
     NARROW_COPY_ABOVE_HOME_GAP_PX
   );
 }
@@ -83,7 +93,7 @@ export function isNarrowHomeChromeViewport(win = globalThis) {
 export function homeClearanceBottomCss(win = globalThis) {
   if (isNarrowHomeChromeViewport(win)) {
     const px = narrowHomeCopyClearanceBottomPx();
-    return `max(${px}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
+    return `max(${px}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_HOME_GREETING_STACK_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
   }
   return `${WIDE_COPY_BOTTOM_PX}px`;
 }

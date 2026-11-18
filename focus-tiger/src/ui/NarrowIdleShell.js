@@ -26,6 +26,14 @@ import {
 } from '../core/alwaysOnTopBridge.js';
 import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
 import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
+import {
+  adoptPreferencePanelIntoSheet,
+  preferenceSheetEmbedCss,
+  queryPreferenceSheetPanel,
+  releasePreferencePanelFromSheet,
+  requestClosePreferencePanel,
+  shouldEmbedPreferenceInSheet
+} from '../core/preferenceSheetEmbed.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
@@ -34,6 +42,7 @@ import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBa
 import {
   NARROW_COPY_ABOVE_HOME_GAP_PX,
   NARROW_HOME_CTA_BOTTOM_PX,
+  NARROW_HOME_GREETING_STACK_PX,
   NARROW_HOME_SIT_PX,
   narrowHomeCopyClearanceBottomPx
 } from './homeChromeClearance.js';
@@ -42,8 +51,9 @@ import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import { Z } from './zIndexLayers.js';
 import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
+import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v25';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v26';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -56,7 +66,7 @@ const WALL_CLOCK_TICK_MS = 1_000;
 
 /** Bottom-anchored copy that coexists with `#ft-narrow-home-ctas` on Idle/Dormant. */
 const NARROW_HOME_COPY_CLEARANCE_BOTTOM = narrowHomeCopyClearanceBottomPx();
-const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
+const NARROW_HOME_COPY_CLEARANCE_CSS = `max(${NARROW_HOME_COPY_CLEARANCE_BOTTOM}px, calc(${NARROW_HOME_CTA_BOTTOM_PX}px + ${NARROW_HOME_SIT_PX}px + ${NARROW_HOME_GREETING_STACK_PX}px + ${NARROW_COPY_ABOVE_HOME_GAP_PX}px + env(safe-area-inset-bottom, 0px)))`;
 
 /** UI icon assets (not sprite frames) — `public/icons/` */
 const ICON_SIT = '/icons/icon-sit-with-yin.png?v=4';
@@ -371,6 +381,7 @@ export class NarrowIdleShell {
     // re-firing onSheetChange → syncOnboardingAutoHints on every chrome resync
     // can stack-overflow (Choose → postChoose keepQuickStart path).
     if (!this._sheetOpen) return;
+    this._exitPreferencePage({ refresh: false });
     this._sheetOpen = false;
     if (this._moreOrGrabberRole() === 'edge-recall') {
       this._grabberEdgeRevealed = false;
@@ -381,6 +392,65 @@ export class NarrowIdleShell {
     this.sheet?.setAttribute('aria-hidden', 'true');
     this.backdrop?.setAttribute('hidden', '');
     this.handlers.onSheetChange?.(false);
+  }
+
+  /**
+   * @param {string} proxy
+   * @returns {void}
+   */
+  _enterPreferencePage(proxy) {
+    this._prefPage = proxy;
+    document.body.classList.add('ft-pref-sheet-embed');
+    if (this.listEl) this.listEl.hidden = true;
+    if (this.prefPageSlot) this.prefPageSlot.hidden = false;
+    if (this.prefBack) {
+      this.prefBack.hidden = false;
+      this.prefBack.textContent = t('PREF_CENTER_BACK');
+    }
+    this._popPrefEscape?.();
+    this._popPrefEscape = pushOverlayEscapeLayer({
+      id: 'narrow-pref-page',
+      dismiss: () => this._exitPreferencePage()
+    });
+  }
+
+  /**
+   * @returns {void}
+   */
+  _adoptPreferencePage() {
+    if (!this._prefPage || !this.prefPageSlot) return;
+    const tryAdopt = () => {
+      if (!this._prefPage || !this.prefPageSlot) return;
+      const panel = queryPreferenceSheetPanel(this._prefPage);
+      if (panel) adoptPreferencePanelIntoSheet(panel, this.prefPageSlot);
+    };
+    tryAdopt();
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(tryAdopt);
+    }
+  }
+
+  /**
+   * @param {{ refresh?: boolean }} [opts]
+   * @returns {void}
+   */
+  _exitPreferencePage(opts = {}) {
+    const refresh = opts.refresh !== false;
+    if (!this._prefPage) {
+      document.body.classList.remove('ft-pref-sheet-embed');
+      return;
+    }
+    const panel = queryPreferenceSheetPanel(this._prefPage);
+    requestClosePreferencePanel(this._prefPage);
+    releasePreferencePanelFromSheet(panel);
+    this._prefPage = null;
+    this._popPrefEscape?.();
+    this._popPrefEscape = null;
+    document.body.classList.remove('ft-pref-sheet-embed');
+    if (this.listEl) this.listEl.hidden = false;
+    if (this.prefPageSlot) this.prefPageSlot.hidden = true;
+    if (this.prefBack) this.prefBack.hidden = true;
+    if (refresh) this._refreshItems?.();
   }
 
   /**
@@ -406,7 +476,8 @@ export class NarrowIdleShell {
       'ft-narrow-park',
       'ft-narrow-idle',
       'ft-narrow-focusing',
-      'ft-narrow-hide-sit-dock'
+      'ft-narrow-hide-sit-dock',
+      'ft-pref-sheet-embed'
     );
   }
 
@@ -525,6 +596,9 @@ export class NarrowIdleShell {
     this.homeCtas.id = 'ft-narrow-home-ctas';
     this.homeCtas.setAttribute('aria-label', '');
     this.homeCtas.innerHTML = `
+      <p class="ft-narrow-home-idle-greeting" id="ft-narrow-home-idle-greeting" data-testid="ft-narrow-home-idle-greeting"></p>
+      <button type="button" class="ft-narrow-home-begin-practice" id="ft-narrow-home-begin-practice" data-proxy="sit" data-testid="ft-narrow-home-begin-practice"></button>
+      <div class="ft-narrow-home-ctas__row">
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-quickstart" data-proxy="quickstart" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_QUICK}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
@@ -534,6 +608,7 @@ export class NarrowIdleShell {
       <button type="button" class="ft-narrow-home-ctas__btn is-asset" id="ft-narrow-home-honesty" data-proxy="honesty" aria-label="">
         <img class="ft-narrow-home-ctas__img" src="${ICON_HONESTY}" alt="" width="${HOME_CTA_PX}" height="${HOME_CTA_PX}" draggable="false" decoding="async" />
       </button>
+      </div>
     `;
 
     this.grabber = document.createElement('button');
@@ -554,11 +629,13 @@ export class NarrowIdleShell {
     this.sheet.innerHTML = `
       <div class="ft-narrow-sheet__handle" aria-hidden="true"></div>
       <div class="ft-narrow-sheet__head">
+        <button type="button" class="ft-pref-sheet-back" data-testid="ft-pref-sheet-back-narrow" hidden></button>
         <h2 class="ft-narrow-sheet__title" data-role="sheet-title"></h2>
         <button type="button" class="ft-narrow-sheet__close" data-role="close" aria-label=""></button>
       </div>
       <div class="ft-narrow-sheet__heatmap" data-role="heatmap-slot" hidden></div>
       <ul class="ft-narrow-sheet__list" data-role="list"></ul>
+      <div class="ft-pref-sheet-page" data-testid="ft-pref-sheet-page" hidden></div>
     `;
 
     this.shell.appendChild(this.actionBar);
@@ -572,8 +649,18 @@ export class NarrowIdleShell {
     this.stateEl = this.actionBar.querySelector('[data-role="state"]');
     this.listEl = this.sheet.querySelector('[data-role="list"]');
     this.heatmapSlot = this.sheet.querySelector('[data-role="heatmap-slot"]');
+    this.prefBack = this.sheet.querySelector('[data-testid="ft-pref-sheet-back-narrow"]');
+    this.prefPageSlot = this.sheet.querySelector('[data-testid="ft-pref-sheet-page"]');
+    this.prefBack?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this._exitPreferencePage();
+    });
     this.sanctuaryNavHomeBtn = document.getElementById(
       'ft-sanctuary-nav-compass-fab'
+    );
+    this.greetingEl = this.homeCtas.querySelector('#ft-narrow-home-idle-greeting');
+    this.beginPracticeBtn = this.homeCtas.querySelector(
+      '#ft-narrow-home-begin-practice'
     );
     this.sitHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-sit');
     this.quickHomeBtn = this.homeCtas.querySelector('#ft-narrow-home-quickstart');
@@ -750,6 +837,14 @@ export class NarrowIdleShell {
         locked: item.classList.contains('is-locked'),
         interactive: item.classList.contains('is-static') ? false : undefined
       };
+      if (shouldEmbedPreferenceInSheet(key)) {
+        this._enterPreferencePage(key);
+        requestAnimationFrame(() => {
+          this._proxy(key, entryMeta);
+          this._adoptPreferencePage();
+        });
+        return;
+      }
       this.closeSheet();
       // Let close paint, then trigger underlying control
       requestAnimationFrame(() => this._proxy(key, entryMeta));
@@ -895,17 +990,33 @@ export class NarrowIdleShell {
     }
 
     const focusEl = document.getElementById('btn-focus');
+    const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
+    const sitHidden =
+      Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden;
+    if (this.greetingEl) {
+      this.greetingEl.textContent = t(pickHomeIdleGreetingKey());
+      this.greetingEl.hidden = sitHidden;
+    }
+    if (this.beginPracticeBtn) {
+      const beginLabel = t('HOME_BEGIN_PRACTICE');
+      this.beginPracticeBtn.textContent = beginLabel;
+      this.beginPracticeBtn.setAttribute('aria-label', beginLabel);
+      this.beginPracticeBtn.disabled = !sitOk;
+      this.beginPracticeBtn.setAttribute(
+        'aria-disabled',
+        sitOk ? 'false' : 'true'
+      );
+      this.beginPracticeBtn.hidden = sitHidden;
+    }
     if (this.sitHomeBtn) {
       const sitLabel =
         focusEl?.textContent?.trim() || t('BTN_FOCUS_START');
       this.sitHomeBtn.setAttribute('aria-label', sitLabel);
       this._sitHomeTip?.setText(sitLabel);
-      const sitOk = Boolean(focusEl) && !focusEl.hidden && !focusEl.disabled;
       this.sitHomeBtn.disabled = !sitOk;
       this.sitHomeBtn.setAttribute('aria-disabled', sitOk ? 'false' : 'true');
       // keepQuickStart: force-hide Sit (Honesty may leave #btn-focus visible).
-      this.sitHomeBtn.hidden =
-        Boolean(this._keepQuickStart) || !focusEl || focusEl.hidden;
+      this.sitHomeBtn.hidden = sitHidden;
     }
 
     const quickEl = document.getElementById('quick-start-focus');
@@ -1152,8 +1263,14 @@ export class NarrowIdleShell {
         handlers: this.handlers,
         closeFirst: true,
         runPrelude: false,
-        clearStage: () => this.clearStage(),
-        close: () => this.closeSheet(),
+        clearStage: () => {
+          if (this._prefPage) return;
+          this.clearStage();
+        },
+        close: () => {
+          if (this._prefPage) return;
+          this.closeSheet();
+        },
         addStage: (stage) => {
           const cls = NARROW_STAGE_CLASS[stage];
           if (cls) document.body.classList.add(cls);
@@ -1226,6 +1343,8 @@ export class NarrowIdleShell {
         pointer-events: none;
       }
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-sit,
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-begin-practice,
+      .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-idle-greeting,
       .ft-narrow-idle-shell.is-arrival-quick #ft-narrow-home-honesty {
         display: none !important;
       }
@@ -1351,10 +1470,53 @@ export class NarrowIdleShell {
         padding: 0 16px;
         box-sizing: border-box;
         display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+      }
+      .ft-narrow-home-ctas__row {
+        display: flex;
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
         gap: 0;
+        width: 100%;
+      }
+      .ft-narrow-home-idle-greeting {
+        margin: 0;
+        padding: 0 8px;
+        max-width: 18rem;
+        text-align: center;
+        font-size: 0.84rem;
+        font-weight: 450;
+        line-height: 1.35;
+        color: #5c4a38;
+        pointer-events: none;
+      }
+      .ft-narrow-home-idle-greeting[hidden] {
+        display: none !important;
+      }
+      .ft-narrow-home-begin-practice {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 9px 20px;
+        min-height: 38px;
+        border: none;
+        border-radius: 999px;
+        background: #b08948;
+        color: #fffaf2;
+        font-size: 0.88rem;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(44, 31, 20, 0.12);
+      }
+      .ft-narrow-home-begin-practice:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+      .ft-narrow-home-begin-practice[hidden] {
+        display: none !important;
       }
       .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
         visibility: hidden;
@@ -2040,6 +2202,7 @@ export class NarrowIdleShell {
           bottom: auto !important;
         }
       }
+      ${preferenceSheetEmbedCss()}
     `;
     document.head.appendChild(style);
   }
