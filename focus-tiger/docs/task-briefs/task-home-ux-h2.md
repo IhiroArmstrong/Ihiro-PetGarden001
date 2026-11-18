@@ -92,3 +92,5 @@
 - 宽屏 Idle：成长一行在左上计时下方，不在左下三球旁。  
 - 右栏带字四入口（Confide 随闸）；点组名打开既有 ⋯ 列表。  
 - Support Yin 仍在右上。窄屏无本刀右栏。
+
+下一刀：[`task-home-ux-h3.md`](./task-home-ux-h3.md)。

@@ -1,0 +1,26 @@
+{
+  "en": {
+    "HOME_MEMORABILIA_SEAL": "Memorial seal",
+    "HOME_MEMORABILIA_ARCHIVE": "Quiet archive seal",
+    "HOME_MEMORABILIA_ITEM": "Keepsake",
+    "HOME_MEMORABILIA_EMPTY": "Your collection is still quiet",
+    "HOME_MEMORABILIA_COUNT": "{count} in the collection",
+    "HOME_MEMORABILIA_ENTER": "Open collection"
+  },
+  "zh": {
+    "HOME_MEMORABILIA_SEAL": "纪念印",
+    "HOME_MEMORABILIA_ARCHIVE": "静思典藏印",
+    "HOME_MEMORABILIA_ITEM": "纪念物",
+    "HOME_MEMORABILIA_EMPTY": "收藏还是安静的",
+    "HOME_MEMORABILIA_COUNT": "收藏里有 {count} 件",
+    "HOME_MEMORABILIA_ENTER": "进入收藏"
+  },
+  "ja": {
+    "HOME_MEMORABILIA_SEAL": "記念の印",
+    "HOME_MEMORABILIA_ARCHIVE": "静思の典蔵印",
+    "HOME_MEMORABILIA_ITEM": "記念",
+    "HOME_MEMORABILIA_EMPTY": "コレクションはまだ静かです",
+    "HOME_MEMORABILIA_COUNT": "コレクション {count} 点",
+    "HOME_MEMORABILIA_ENTER": "コレクションを開く"
+  }
+}

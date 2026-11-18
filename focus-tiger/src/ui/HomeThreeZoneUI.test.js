@@ -43,8 +43,9 @@ describe('HomeThreeZoneUI H2 skeleton', () => {
     assert.match(wide, /proxyMenuItem\(key/);
   });
 
-  it('reserves the memorabilia slot for H3 and hides the rail when ⋯ is open', () => {
+  it('fills the memorabilia slot and hides the rail when ⋯ is open', () => {
     assert.match(src, /SLOT_ID = 'ft-home-memorabilia-slot'/);
+    assert.match(src, /new HomeMemorabiliaSlotUI/);
     assert.match(src, /ft-wide-more-open \.ft-home-zone-memories/);
     assert.match(src, /@media \(max-width: 479px\)/);
   });
