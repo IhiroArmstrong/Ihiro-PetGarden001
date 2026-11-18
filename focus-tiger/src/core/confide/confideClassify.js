@@ -27,6 +27,7 @@ import {
 import { matchesAggressionTowardOthers } from './confideAggressionKeywords.js';
 import { isPracticeFactsQuestion } from './confidePracticeFacts.js';
 import { matchesSafetyRedirect } from './confideSafetyKeywords.js';
+import { matchesEnglishCrisisEndorsementOrFarewell } from './confideCrisisRequestShape.js';
 import { observeConfideProductAskBlock } from './confideProductAskBlockObserve.js';
 import { shouldApplyJapaneseConfideNotYetOpen } from './confideJapaneseNotYetOpen.js';
 import {
@@ -43,7 +44,10 @@ export function confideClassify(text, env) {
   const raw = typeof text === 'string' ? text : '';
   if (!raw.trim()) return null;
 
-  if (matchesSafetyRedirect(raw)) {
+  if (
+    matchesSafetyRedirect(raw) ||
+    matchesEnglishCrisisEndorsementOrFarewell(raw)
+  ) {
     return CONFIDE_ROUTE.SAFETY_REDIRECT;
   }
 
