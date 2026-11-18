@@ -19,7 +19,13 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import { hasSubmittedNewsletter } from '../core/newsletter/newsletterCaptureGate.js';
-import { canUseAlwaysOnTop } from '../core/alwaysOnTopBridge.js';
+import {
+  canUseAlwaysOnTop,
+  readAlwaysOnTopEnabled,
+  writeAlwaysOnTopEnabled
+} from '../core/alwaysOnTopBridge.js';
+import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
+import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
@@ -37,7 +43,7 @@ import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import { Z } from './zIndexLayers.js';
 import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
 
-const STYLE_ID = 'ft-narrow-idle-shell-styles-v24';
+const STYLE_ID = 'ft-narrow-idle-shell-styles-v25';
 const NARROW_MQ = '(max-width: 479px)';
 const SWIPE_OPEN_PX = 56;
 const SWIPE_CLOSE_PX = 48;
@@ -734,6 +740,12 @@ export class NarrowIdleShell {
       const item = e.target.closest('[data-proxy]');
       if (!item || item.disabled) return;
       const key = item.getAttribute('data-proxy');
+      if (item.dataset.prefKind === 'toggle') {
+        e.preventDefault();
+        e.stopPropagation();
+        void this._onPrefToggle(key, item);
+        return;
+      }
       const entryMeta = {
         locked: item.classList.contains('is-locked'),
         interactive: item.classList.contains('is-static') ? false : undefined
@@ -959,9 +971,24 @@ export class NarrowIdleShell {
     });
 
     this.listEl.innerHTML = '';
+    /** @type {HTMLUListElement | null} */
+    let cardItems = null;
     for (const item of entries) {
+      if (item.kind === 'sub-group-label') {
+        const card = document.createElement('li');
+        card.className = 'ft-pref-card';
+        const cardHead = document.createElement('p');
+        cardHead.className = 'ft-pref-card__label';
+        cardHead.textContent = t(item.labelKey);
+        cardItems = document.createElement('ul');
+        cardItems.className = 'ft-pref-card__items';
+        card.append(cardHead, cardItems);
+        this.listEl.appendChild(card);
+        continue;
+      }
       const li = document.createElement('li');
       if (item.kind === 'group-label') {
+        cardItems = null;
         const label = document.createElement('div');
         label.className = 'ft-narrow-sheet__group';
         label.dataset.group = item.labelKey;
@@ -974,7 +1001,20 @@ export class NarrowIdleShell {
       btn.type = 'button';
       btn.className = 'ft-narrow-sheet__item';
       btn.dataset.proxy = item.proxy;
-      btn.textContent = t(item.labelKey);
+      const storage =
+        typeof localStorage !== 'undefined' ? localStorage : null;
+      if (item.prefKind) {
+        fillPreferencesCenterRow(btn, {
+          label: t(item.labelKey),
+          hint: item.prefHintKey ? t(item.prefHintKey) : '',
+          status: readPreferenceCenterStatus(item.proxy, { t, storage }),
+          icon: item.prefIcon || '',
+          prefKind: item.prefKind,
+          toggleOn: item.proxy === 'always-on-top' && this._alwaysOnTopOn === true
+        });
+      } else {
+        btn.textContent = t(item.labelKey);
+      }
       if (item.testId) btn.dataset.testid = item.testId;
       if (item.emphasis === 'beige-cta') {
         btn.classList.add('is-beige-cta');
@@ -999,8 +1039,9 @@ export class NarrowIdleShell {
         });
       }
       li.appendChild(btn);
-      this.listEl.appendChild(li);
+      (cardItems || this.listEl).appendChild(li);
     }
+    void this._hydratePrefToggles();
 
     // Quiet week strip: clone day columns (cell + dow + today) into the sheet
     const source = document.getElementById('weekly-practice-heatmap');
@@ -1053,6 +1094,32 @@ export class NarrowIdleShell {
       this.heatmapSlot.hidden = true;
       this.heatmapSlot.innerHTML = '';
     }
+  }
+
+  /**
+   * @returns {Promise<void>}
+   */
+  async _hydratePrefToggles() {
+    this._alwaysOnTopOn = await readAlwaysOnTopEnabled();
+    const sw = this.listEl?.querySelector(
+      '[data-proxy="always-on-top"] [data-pref-switch]'
+    );
+    if (sw) sw.dataset.on = this._alwaysOnTopOn ? '1' : '0';
+  }
+
+  /**
+   * @param {string} key
+   * @param {HTMLElement} item
+   * @returns {Promise<void>}
+   */
+  async _onPrefToggle(key, item) {
+    if (key !== 'always-on-top') return;
+    const sw = item.querySelector('[data-pref-switch]');
+    const next = !(this._alwaysOnTopOn === true);
+    if (sw) sw.dataset.on = next ? '1' : '0';
+    const result = await writeAlwaysOnTopEnabled(next);
+    this._alwaysOnTopOn = result.enabled;
+    if (sw) sw.dataset.on = result.enabled ? '1' : '0';
   }
 
   /**
@@ -1484,7 +1551,93 @@ export class NarrowIdleShell {
         padding: 0;
         display: flex;
         flex-direction: column;
+        gap: 12px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(92, 67, 48, 0.22) transparent;
+      }
+      .ft-pref-card {
+        list-style: none;
+        margin: 0;
+        padding: 4px 0;
+        border-radius: 14px;
+        background: rgba(255, 252, 245, 0.72);
+        border: 1px solid rgba(139, 115, 85, 0.16);
+      }
+      .ft-pref-card__label {
+        margin: 0;
+        padding: 8px 14px 2px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(92, 67, 48, 0.55);
+      }
+      .ft-pref-card__items {
+        list-style: none;
+        margin: 0;
+        padding: 0 4px 4px;
+      }
+      .ft-narrow-sheet .ft-pref-row {
+        position: relative;
+        overflow: visible;
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 8px 12px !important;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      .ft-pref-row__icon {
+        flex: 0 0 20px;
+        color: rgba(92, 67, 48, 0.55);
+      }
+      .ft-pref-row__copy {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .ft-pref-row__title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .ft-pref-row__hint {
+        font-size: 12px;
+        font-weight: 400;
+        color: rgba(92, 67, 48, 0.58);
+      }
+      .ft-pref-row__trail {
+        display: flex;
+        align-items: center;
         gap: 6px;
+        color: rgba(92, 67, 48, 0.5);
+        font-size: 12px;
+      }
+      .ft-pref-row__switch {
+        width: 38px;
+        height: 22px;
+        border-radius: 999px;
+        background: rgba(139, 115, 85, 0.22);
+        position: relative;
+      }
+      .ft-pref-row__switch::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+      }
+      .ft-pref-row__switch[data-on="1"] {
+        background: #7d9a6a;
+      }
+      .ft-pref-row__switch[data-on="1"]::after {
+        transform: translateX(16px);
       }
       .ft-narrow-sheet__item {
         position: relative;

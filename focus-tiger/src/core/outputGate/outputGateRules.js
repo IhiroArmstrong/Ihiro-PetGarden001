@@ -20,6 +20,33 @@ import {
 
 const SHAPE_LIMIT = Object.freeze({ en: 160, zh: 60, ja: 70 });
 
+/**
+ * The one public crisis number round-2 English outputs actually wrote.
+ * 111 stays on G9: it also shows up as an ordinary short number.
+ * This list is for matching model text. It is not copy to show the user.
+ */
+const PUBLIC_CRISIS_HOTLINE = /\b988\b/;
+
+/**
+ * Classification paraphrases that are not already G5 or G6.
+ * They become late crisis only together with the public hotline.
+ * No method detail.
+ */
+const SELF_HARM_WITH_HOTLINE = [
+  /ending your life/,
+  /harming yourself/,
+  /not wanting to be here/
+];
+
+/**
+ * @param {string} normalized
+ * @returns {boolean}
+ */
+function publicHotlineWithSelfHarm(normalized) {
+  if (!PUBLIC_CRISIS_HOTLINE.test(normalized)) return false;
+  return SELF_HARM_WITH_HOTLINE.some((pattern) => pattern.test(normalized));
+}
+
 /** @type {Array<{ id: GateCategory, patterns: RegExp[] }>} */
 const RULES = [
   {
@@ -53,8 +80,16 @@ const RULES = [
       /うつ病かもしれない|躁うつ病|うつ病/,
       // Presuppose-illness shapes (Brief 4.3). Not bare diagnosis/illness keywords.
       /(?:name|kind|type) of (?:the |your |this )?(?:illness|condition|disorder)/,
+      /name (?:an |the |your )?illness/,
+      /identify (?:the |a |your |this )?(?:potential |possible )?(?:illness|condition|disorder)/,
+      /help you (?:to )?(?:identify|determine|figure out|name)(?:\s+\w+){0,6}\s+(?:(?:the|a|an|your|this|potential|possible)\s+)*(?:illness|condition|disorder|what you have)/,
+      /provide (?:the |your |any )?(?:symptoms|details)(?:\s+\w+){0,10}\s+so i can/,
       /不知道病名|说不出是什么病|說不出是什麼病|叫什么病|叫什麼病|病名/,
-      /何の病気か|病名/
+      /(?:帮你|帮您|帮我)(?:识别|判断|找出|确认|说出)(?:出)?(?:什么病|是什么病|病情|疾病|障碍|状况)/,
+      /(?:把症状|提供症状)(?:告诉我|给我|描述)/,
+      /何の病気か|病名/,
+      /病気を(?:特定|判断|見極|みきわめ|言い当て)/,
+      /症状を(?:教えて|おしえて)/
     ]
   },
   {
@@ -70,12 +105,13 @@ const RULES = [
   {
     id: 'G3',
     patterns: [
-      /see a therapist/,
-      /see a doctor/,
-      /see a psychiatrist/,
+      /\b(?:consult|see|seek|visit|contact|talk to|reach out to)\b(?:\s+\w+){0,6}\s+(?:mental health professional|healthcare professional|healthcare provider|medical professional|professional help|medical advice|psychiatrist|counselor|counsellor|therapist|specialist|doctor)\b/,
       /\btry cbt\b/,
       /去看医生|去看醫師|去做治疗|去做治療|去看心理/,
-      /せらぴすと|診てもらうべき|かうんせりんぐを受けるべき/
+      /(?:去看|去找|咨询|聯繫|联系|就诊)(?:[\u4e00-\u9fff]{0,6})?(?:医生|醫師|医师|治疗师|治療師|咨询师|諮詢師|心理医生|心理醫生|精神科|专业人士|專業人士|专业帮助|專業幫助|医疗建议|醫療建議)/,
+      /せらぴすと|診てもらうべき|かうんせりんぐを受けるべき/,
+      /(?:医者|医師|いしゃ|専門家|せんもんか|かうんせらー|精神科|せいしんか)に(?:相談|そうだん|診てもら|みてもら|連絡|れんらく)/,
+      /受診して|受診を/
     ]
   },
   {
@@ -154,6 +190,9 @@ export function inspectModelOutput(raw) {
   if (lang === 'other') return { category: null, uncovered: true };
   for (const rule of RULES) {
     if (rule.patterns.some((pattern) => pattern.test(normalized))) {
+      if (rule.id === 'G9' && publicHotlineWithSelfHarm(normalized)) {
+        return { category: 'G6', uncovered: false };
+      }
       return { category: rule.id, uncovered: false };
     }
   }

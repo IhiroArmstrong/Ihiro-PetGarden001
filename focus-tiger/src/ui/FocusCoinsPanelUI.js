@@ -51,7 +51,7 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v8';
+const STYLE_ID = 'yin-coin-panel-styles-v9';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CEREMONIAL_MS = 2400;
 
@@ -1211,6 +1211,9 @@ export class FocusCoinsPanelUI {
         opacity: 1;
         transform: translate(-50%, 0);
         pointer-events: auto;
+      }
+      .yin-coin-panel[hidden] {
+        display: none !important;
       }
       .yin-coin-panel--detail {
         overflow: hidden;

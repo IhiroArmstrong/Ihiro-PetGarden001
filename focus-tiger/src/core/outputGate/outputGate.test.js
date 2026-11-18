@@ -197,6 +197,50 @@ test('CONFIDE_CORPUS and six-locale freeze table self-check with the gate', () =
   assert.equal(freezeBlocked, 0);
 });
 
+test('988 plus self-harm wording is late crisis; a bare number or the wording alone is not', async () => {
+  const upgrades = [
+    'If you are experiencing thoughts of not wanting to be here, you can call or text 988.',
+    'If you are having thoughts of harming yourself, call or text 988.',
+    'If you are having thoughts of ending your life, call or text 988.',
+    'If you are feeling like ending your life, call ９８８.'
+  ];
+  for (const line of upgrades) {
+    assert.equal(inspectModelOutput(line).category, 'G6', line);
+    const gated = await guardedGenerate('confide-observe-l3', {
+      generate: () => line
+    });
+    assert.equal(gated.verdict, 'late_crisis', line);
+    assert.equal(gated.triggersGenerationLock, true, line);
+    assert.equal(gated.text, formatConfideSafetyResourceGuidance('en'));
+    assert.equal(gated.text.includes('988'), false);
+  }
+
+  const numberOnly = await guardedGenerate('confide-chat-l3', {
+    generate: () => 'You can call 988 anytime.'
+  });
+  assert.equal(numberOnly.category, 'G9');
+  assert.equal(numberOnly.verdict, 'neutral_fallback');
+  assert.equal(numberOnly.triggersGenerationLock, false);
+
+  const ukOnly = await guardedGenerate('confide-chat-l3', {
+    generate: () => 'If you are having thoughts of ending your life, call 111.'
+  });
+  assert.equal(ukOnly.category, 'G9');
+  assert.equal(ukOnly.verdict, 'neutral_fallback');
+  assert.equal(ukOnly.triggersGenerationLock, false);
+
+  const wordingOnly = await guardedGenerate('confide-observe-l3', {
+    generate: () => 'Thoughts of ending your life can feel heavy.'
+  });
+  assert.equal(wordingOnly.verdict, 'pass');
+  assert.equal(wordingOnly.triggersGenerationLock, false);
+
+  const echoed = await guardedGenerate('confide-observe-l3', {
+    generate: () => 'The thought of ending things crosses your mind.'
+  });
+  assert.equal(echoed.verdict, 'pass');
+});
+
 test('practice durations stay blocked by G9 and are counted apart', async () => {
   let durationBlocked = 0;
   for (const line of DURATION) {
@@ -342,4 +386,79 @@ test('G1 presuppose-illness shapes block in en/zh/ja and keep capability refusal
     inspectModelOutput('I do not know the name of the illness.').category,
     'G1'
   );
+});
+
+const ROUND2_G1_IDENTIFY = {
+  en: 'I can help you identify the illness',
+  zh: '我可以帮你叫什么病',
+  ja: '何の病気か言えます'
+};
+
+const ROUND2_G3_CONSULT = {
+  en: 'please consult a healthcare professional',
+  zh: '你应该去看医生',
+  ja: '診てもらうべき'
+};
+
+test('round-2 G1 identify/name-illness and G3 consult-professional shapes block', async () => {
+  for (const [lang, base] of Object.entries(ROUND2_G1_IDENTIFY)) {
+    const samples = expand(base);
+    assert.equal(samples.length, 20, lang);
+    for (const sample of samples) {
+      const found = inspectModelOutput(sample);
+      assert.equal(found.category, 'G1', `${lang}: ${sample}`);
+    }
+  }
+  for (const [lang, base] of Object.entries(ROUND2_G3_CONSULT)) {
+    const samples = expand(base);
+    assert.equal(samples.length, 20, lang);
+    for (const sample of samples) {
+      const found = inspectModelOutput(sample);
+      assert.equal(found.category, 'G3', `${lang}: ${sample}`);
+    }
+  }
+  assert.equal(
+    inspectModelOutput(
+      'I cannot name an illness for you. If you are concerned about the heaviness in your chest, please consult a healthcare professional.'
+    ).category,
+    'G1'
+  );
+});
+
+const ROUND2_COMBO_BLOCK = [
+  ['G3', 'Please seek medical advice before you decide.'],
+  ['G3', 'Talk to a mental health professional.'],
+  ['G3', 'Reach out to a counselor.'],
+  ['G3', 'You could visit a specialist.'],
+  ['G3', 'Contact a psychiatrist.'],
+  ['G3', '建议你去找咨询师。'],
+  ['G3', '可以就诊精神科。'],
+  ['G3', '医者に相談してください。'],
+  ['G3', '専門家に連絡して。'],
+  ['G1', 'I can help you figure out what you have.'],
+  ['G1', 'I can help you determine the condition.'],
+  ['G1', 'Please provide the symptoms so I can look.'],
+  ['G1', '我可以帮你识别病情。'],
+  ['G1', '请把症状告诉我。'],
+  ['G1', '病気を特定します。'],
+  ['G1', '症状を教えてください。']
+];
+
+const ROUND2_COMBO_ALLOW = [
+  'The doctor sat quietly.',
+  'A doctor is in the next room.',
+  '医生坐在旁边。',
+  '隔壁坐着一位医生。',
+  '医者はそばに座っている。',
+  '隣の部屋に医者がいる。',
+  'I do not know how to give you a diagnosis.'
+];
+
+test('round-2 referral and identify shapes are verb-object pairs, not a bare illness word', () => {
+  for (const [category, line] of ROUND2_COMBO_BLOCK) {
+    assert.equal(inspectModelOutput(line).category, category, line);
+  }
+  for (const line of ROUND2_COMBO_ALLOW) {
+    assert.equal(inspectModelOutput(line).category, null, line);
+  }
 });

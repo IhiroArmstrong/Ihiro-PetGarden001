@@ -364,7 +364,7 @@
 
 ### Q1 · Support Modal（统一入口）
 
-1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab` → **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
+1. `?product=1` Idle → 右上（音符左侧）`#yin-support-fab`（默认小标；hover / 键盘焦点 / 展开后才见完整药丸）→ **0–1 秒内**：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
 2. 见三卡（头图暖纸底；三 CTA 同款米色立体，Join Membership **不得**蒲团橙白字）：
    - **未完成过任何一次记账练习**（清 `practice-days.v1` 与 `lotus-pond.v1`；勿用 `?qaSeedStreak=` / `?qaLotusBlooms=`）：顺序 **Tea → Sanctuary → Membership**（375 最上为请茶）；**Suggested** 在 Tea 卡（`[data-testid=yin-support-suggested-badge][data-host=tea]`）。Sanctuary / Membership 仍完整可点，价文案不变。
    - **已完成过至少一次**（Focus 达标 / Honesty 成功 / Breath 完成，不论时长）：顺序恢复 **Sanctuary → Membership → Tea**；Suggested 回 Sanctuary（`data-host=sanctuary`）。此态**永久**（久别再开仍如此）。未达标 Rise **不得**切到 Sanctuary 优先。

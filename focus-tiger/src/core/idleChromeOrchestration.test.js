@@ -241,13 +241,13 @@ describe('resolveRoleVisibility (stage × viewport)', () => {
     });
   });
 
-  it('arrival: Sit/Honesty/More hidden; Quick Start visible (both viewports)', () => {
+  it('arrival: Sit/Honesty hidden; Quick Start + More stay (escape hatch)', () => {
     for (const viewport of /** @type {const} */ (['narrow', 'wide'])) {
       const r = resolveRoleVisibility({ stage: 'arrival', viewport });
       assert.equal(r.sit, 'hidden');
       assert.equal(r.quickStart, 'visible');
       assert.equal(r.honesty, 'hidden');
-      assert.equal(r.moreOrGrabber, 'hidden');
+      assert.equal(r.moreOrGrabber, 'visible');
     }
   });
 
@@ -370,12 +370,12 @@ describe('listSecondaryChromeEntries', () => {
         'co-practice-contract',
         'reminder',
         'work-end',
-        'language',
-        'sound',
+        'today-direction',
         'mindflow-nebula',
         'presence-field',
+        'language',
+        'sound',
         'health-shortcut-log',
-        'today-direction',
         'newsletter',
         'account',
         'help-center',
@@ -397,6 +397,18 @@ describe('listSecondaryChromeEntries', () => {
         'MENU_GROUP_NOT_ALONE',
         'MENU_GROUP_PREFERENCES',
         'ritual.menu_group'
+      ]
+    );
+    assert.deepEqual(
+      entries
+        .filter((e) => e.kind === 'sub-group-label')
+        .map((e) => e.labelKey),
+      [
+        'PREF_CENTER_GROUP_EXPERIENCE',
+        'PREF_CENTER_GROUP_PRACTICE',
+        'PREF_CENTER_GROUP_SPACE',
+        'PREF_CENTER_GROUP_DEVICES',
+        'PREF_CENTER_GROUP_ACCOUNT'
       ]
     );
   });
@@ -426,12 +438,12 @@ describe('listSecondaryChromeEntries', () => {
         'co-practice-contract',
         'reminder',
         'work-end',
-        'language',
-        'sound',
+        'today-direction',
         'mindflow-nebula',
         'presence-field',
+        'language',
+        'sound',
         'health-shortcut-log',
-        'today-direction',
         'newsletter',
         'account',
         'help-center',
@@ -525,7 +537,9 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(wideProxies.includes('sound'));
     assert.ok(narrowProxies.includes('sound'));
     assert.ok(wideProxies.indexOf('sound') > wideProxies.indexOf('language'));
-    assert.ok(wideProxies.indexOf('sound') < wideProxies.indexOf('today-direction'));
+    assert.ok(
+      wideProxies.indexOf('today-direction') < wideProxies.indexOf('sound')
+    );
   });
 
   it('wide companion requires enabled !== false', () => {
@@ -562,12 +576,12 @@ describe('listSecondaryChromeEntries', () => {
         'focus-circle',
         'community',
         'co-practice-contract',
-        'language',
-        'sound',
+        'today-direction',
         'mindflow-nebula',
         'presence-field',
+        'language',
+        'sound',
         'health-shortcut-log',
-        'today-direction',
         'newsletter',
         'account',
         'help-center',

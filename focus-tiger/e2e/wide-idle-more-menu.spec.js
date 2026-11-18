@@ -127,7 +127,6 @@ test('wide Idle: H3 memorabilia slot opens Yins Collections', async ({
   await expect(page.locator('#yin-coin-panel')).toBeVisible({ timeout: 8_000 });
   await expect(page.locator('#yin-support-fab')).toBeVisible();
 });
-
 test('wide Idle: Begin Practice opens Arrival', async ({ page }) => {
   await openFreshProductShell(page);
   const begin = page.locator('#ft-home-begin-practice');
@@ -205,6 +204,13 @@ test('wide Idle: ⋯ opens companion + reminder panels', async ({ page }) => {
 
   await openWideMoreList(page, 'MENU_GROUP_PREFERENCES');
   await expandWideMoreMenuGroup(page, 'MENU_GROUP_PREFERENCES');
+  await expect(page.locator('#ft-wide-more-menu .ft-pref-card')).toHaveCount(5);
+  await expect(
+    page.locator('#ft-wide-more-menu [data-proxy="help-center"]')
+  ).toBeVisible();
+  await expect(
+    page.locator('#ft-wide-more-menu [data-proxy="membership"]')
+  ).toBeVisible();
   const reminderRow = page.locator('#ft-wide-more-menu [data-proxy="reminder"]');
   await reminderRow.scrollIntoViewIfNeeded();
   // Hover first: in-app-reminder tip used to steal the row click.

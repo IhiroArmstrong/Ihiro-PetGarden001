@@ -72,9 +72,11 @@
 | **H0** | 本锁 + Brief | 本 PR |
 | **H1** | 侧边名单 + Begin Practice | 立刻做（叠在本锁之后） |
 | **H2** | 三块区域骨架 | 立刻做（H1 #1756 已合）；Brief [`task-briefs/task-home-ux-h2.md`](./task-briefs/task-home-ux-h2.md) |
-| **H3** | 首页纪念物一件 + 件数 + 进收藏 | 立刻做（叠 H2 #1758）；Brief [`task-briefs/task-home-ux-h3.md`](./task-briefs/task-home-ux-h3.md) |
-| **H4** | Support 降优先级（功能不删） | 排队；付款面须复检 |
+| **H3** | 首页纪念物一件 + 件数 + 进收藏 | 本 PR（叠 H2 #1758）；Brief [`task-briefs/task-home-ux-h3.md`](./task-briefs/task-home-ux-h3.md) |
+| **H4** | Support 降优先级（功能不删） | 立刻做（H2 #1758 已合；不挡 H3）；Brief [`task-briefs/task-home-ux-h4.md`](./task-briefs/task-home-ux-h4.md) |
 | **H5** | 短问候轮换 | 骨架稳定后 |
 | **H6** | 窄屏同一套结构 + 过渡 | 骨架稳定后 |
+| **H7** | Preferences 分组中心（列表信息架构） | 立刻做（叠 H1） |
+| **H8** | Preferences 子页同一套纸 | H7 合入后 |
 
 T100（输出侧刚性闸）可并行，互不挡路。
