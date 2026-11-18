@@ -16,7 +16,7 @@ import {
   visibleLength
 } from './normalizeOutput.js';
 
-/** @typedef {'G1'|'G2'|'G3'|'G4'|'G5'|'G6'|'G7'|'G8'|'G9'|'G10'} GateCategory */
+/** @typedef {'G1'|'G2'|'G3'|'G4'|'G5'|'G6'|'G7'|'G8'|'G9'|'G10'|'G11'} GateCategory */
 
 const SHAPE_LIMIT = Object.freeze({ en: 160, zh: 60, ja: 70 });
 
@@ -142,6 +142,20 @@ const RULES = [
       /\byou must\b/,
       /你应该|你應該|你必须|你必須|一定要/,
       /べき|しなければならない/
+    ]
+  },
+  {
+    id: 'G11',
+    patterns: [
+      /\bi am an ai\b/,
+      /language model/,
+      /\bi can help you identify\b/,
+      /\bplease (?:provide|describe|consult|seek)\b/,
+      /我是(?:人工智能|ai|一个ai)/,
+      /请(?:提供|描述|咨询|寻求)/,
+      /我可以帮你(?:识别|找出)/,
+      /私は(?:ai|人工知能|言語モデル)/,
+      /提供してください|説明してください|相談してください/
     ]
   },
   {

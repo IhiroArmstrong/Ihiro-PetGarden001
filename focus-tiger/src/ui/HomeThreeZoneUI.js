@@ -10,6 +10,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { shouldShowConfideEarChrome } from '../core/confide/confideUserVisibilityGate.js';
 import { Z } from './zIndexLayers.js';
+import { HomeMemorabiliaSlotUI } from './HomeMemorabiliaSlotUI.js';
 
 const STYLE_ID = 'ft-home-three-zone-styles-v1';
 const ROOT_ID = 'ft-home-zone-memories';
@@ -49,9 +50,14 @@ export class HomeThreeZoneUI {
     this.headingEl = null;
     this.confideBtn = null;
     this.slotEl = null;
+    this.memorabilia = null;
     if (typeof document === 'undefined') return;
     this._injectStyles();
     this._build();
+    this.memorabilia = new HomeMemorabiliaSlotUI({
+      slot: this.slotEl,
+      wide: this.wide
+    });
     this._unsubLocale = onLocaleChange(() => {
       this._refreshLabels();
       this.sync();
@@ -83,12 +89,15 @@ export class HomeThreeZoneUI {
     this._paintProgressLabel(show);
     this._syncConfideRow();
     this._refreshLabels();
+    this.memorabilia?.sync(show);
   }
 
   /** @returns {void} */
   destroy() {
     this._unsubLocale?.();
     this._unsubLocale = null;
+    this.memorabilia?.destroy();
+    this.memorabilia = null;
     this.root?.remove();
     this.root = null;
     document.getElementById(STYLE_ID)?.remove();

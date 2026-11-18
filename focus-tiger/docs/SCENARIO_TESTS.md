@@ -99,7 +99,7 @@
 
 1. 打开 App（建议 `?product=1`）。当日零完成时，阿寅应是 **Idle 闭目坐禅**，**不是** sleeping。  
    *[单元/控制器：零完成 → `HonestyCheckInController.onAppReady` 保持 IDLE + 调 `showIdleEntry` → smoke A1；**非** Idle 序列 DOM / 闭目观感]*
-2. Idle 时见 **Honesty Check-in** 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 **Sit with Yin** 开始本场计时。
+2. Idle 时见 **Honesty Check-in** 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 **Sit with Yin** 开始本场计时。宽屏 Idle 阿寅下方另有一句短问候（`#ft-home-idle-greeting`，当日固定一句）+ **Begin Practice**；问候不可点、不自动开坐。
 3. 打开产品后**不应自动有音乐**；右上音符钮（窄屏 Idle = ActionBar ♪）打开 **Soundscape 面板**选曲（与菜单 / 抽屉 Sound 同效；默认曲目 Mer-Ka-Ba；若浏览器拦播放，在面板内再点选解锁）。关音乐选 **Off**；不必先 Sit。
 4. Arrival Practice 展开：
    a. 欢迎 beat（~2 秒气泡，`ARRIVAL_WELCOME`）

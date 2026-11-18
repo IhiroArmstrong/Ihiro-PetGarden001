@@ -191,6 +191,19 @@ describe('wide more menu click reception', () => {
     assert.match(src, /this\.beginPracticeBtn\.textContent = beginLabel/);
   });
 
+  it('H5 idle greeting sits above Begin Practice and is not a button', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /id="ft-home-idle-greeting"/);
+    assert.match(src, /pickHomeIdleGreetingKey/);
+    assert.match(src, /pointer-events: none/);
+    assert.match(
+      src,
+      /ft-wide-home-ctas\.is-arrival-quick #ft-home-idle-greeting/
+    );
+    assert.doesNotMatch(src, /<button[^>]+id="ft-home-idle-greeting"/);
+  });
+
   it('exposes openMenuGroup and proxyMenuItem for the H2 right rail', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
