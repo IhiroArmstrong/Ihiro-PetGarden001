@@ -485,3 +485,31 @@ test('round-2 referral and identify shapes are verb-object pairs, not a bare ill
     assert.equal(inspectModelOutput(line).category, null, line);
   }
 });
+
+const DOCTOR_DISORDER_BLOCK = [
+  'Disorders are things a grown-up helps a doctor look at.',
+  'A doctor should look at this disorder.',
+  'A physician can examine the illness.',
+  '请医生检查这个疾病。',
+  '医生判断这是一种障碍。',
+  '障害は医者が見るもの。'
+];
+
+const DOCTOR_DISORDER_ALLOW = [
+  'This is a disorder.',
+  'The doctor sat quietly.',
+  'A doctor can look at the window.',
+  'Disorders are heavy. A doctor can look at the window.',
+  '这是一种障碍。',
+  '医生坐在旁边。',
+  '病院で待っている。'
+];
+
+test('same-sentence doctor, illness noun, and handling verb is G3', () => {
+  for (const line of DOCTOR_DISORDER_BLOCK) {
+    assert.equal(inspectModelOutput(line).category, 'G3', line);
+  }
+  for (const line of DOCTOR_DISORDER_ALLOW) {
+    assert.equal(inspectModelOutput(line).category, null, line);
+  }
+});

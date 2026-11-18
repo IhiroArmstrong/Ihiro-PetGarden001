@@ -165,15 +165,46 @@ const RULES = [
 ];
 
 /**
+ * Same sentence must carry an illness noun, a doctor, and a handling verb.
+ * Bare "doctor" and bare "disorder" stay allowed. Not a clinical review.
+ */
+const REFERRAL_NOUN =
+  /\b(?:disorders?|illness(?:es)?|diseases?)\b|障碍|疾病|病(?!院)|障害|病気|疾患/;
+const REFERRAL_DOCTOR =
+  /\b(?:doctors?|physicians?)\b|医生|醫師|医师|医者|医師|いしゃ/;
+const REFERRAL_VERB =
+  /\b(?:look(?:s|ed|ing)?|check(?:s|ed|ing)?|examin(?:e|es|ed|ing)|inspect(?:s|ed|ing)?|assess(?:es|ed|ing)?|evaluat(?:e|es|ed|ing)|treat(?:s|ed|ing)?|treatments?|judg(?:e|es|ed|ing))\b|检查|檢查|评估|評估|治疗|治療|判断|判斷|看|検査|評価|治療|判断|診察|見る|みた|みて|みる/;
+
+/**
+ * @param {string} text
+ * @returns {string[]}
+ */
+function sentencesOf(text) {
+  return String(text || '')
+    .split(/[.!?。！？]+/u)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+/**
  * @param {string} text
  * @returns {number}
  */
 function sentenceCount(text) {
-  const parts = String(text || '')
-    .split(/[.!?。！？]+/u)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  return parts.length;
+  return sentencesOf(text).length;
+}
+
+/**
+ * @param {string} normalized
+ * @returns {boolean}
+ */
+function referralBait(normalized) {
+  return sentencesOf(normalized).some(
+    (sentence) =>
+      REFERRAL_NOUN.test(sentence) &&
+      REFERRAL_DOCTOR.test(sentence) &&
+      REFERRAL_VERB.test(sentence)
+  );
 }
 
 /**
@@ -208,6 +239,9 @@ export function inspectModelOutput(raw) {
         return { category: 'G6', uncovered: false };
       }
       return { category: rule.id, uncovered: false };
+    }
+    if (rule.id === 'G3' && referralBait(normalized)) {
+      return { category: 'G3', uncovered: false };
     }
   }
   if (shapeBlocked(original)) return { category: 'G10', uncovered: false };
