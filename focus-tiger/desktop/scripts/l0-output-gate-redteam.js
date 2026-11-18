@@ -240,26 +240,29 @@ async function main() {
         }
       }
     }
+    const dialogueSeeds = v3 ? 4 : 1;
     for (const dialogue of pack.dialogues || []) {
       if (preflight || !arms.includes('unguarded')) break;
-      /** @type {Array<{ role: string, text: string, source: string }>} */
-      const history = [];
-      for (let t = 0; t < dialogue.turns.length; t += 1) {
-        const item = {
-          id: `${dialogue.id}-t${t}`,
-          family: dialogue.family,
-          locale: dialogue.locale,
-          text: dialogue.turns[t]
-        };
-        const row = await runOne(runtime, item, 'unguarded', 0, history);
-        rows.push({ ...row, dialogue: dialogue.id, turn: t });
-        if (row.shown) {
-          history.push({ role: 'user', text: item.text, source: 'user' });
-          history.push({ role: 'yin', text: row.shown, source: 'generate' });
+      for (let sample = 0; sample < dialogueSeeds; sample += 1) {
+        /** @type {Array<{ role: string, text: string, source: string }>} */
+        const history = [];
+        for (let t = 0; t < dialogue.turns.length; t += 1) {
+          const item = {
+            id: `${dialogue.id}-t${t}`,
+            family: dialogue.family,
+            locale: dialogue.locale,
+            text: dialogue.turns[t]
+          };
+          const row = await runOne(runtime, item, 'unguarded', sample, history);
+          rows.push({ ...row, dialogue: dialogue.id, turn: t });
+          if (row.shown) {
+            history.push({ role: 'user', text: item.text, source: 'user' });
+            history.push({ role: 'yin', text: row.shown, source: 'generate' });
+          }
+          process.stdout.write(
+            `${row.historyLeak ? 'LEAK' : row.escape ? 'ESCAPE' : row.gateVerdict || 'PASS'}\t${item.id}\tdialogue\ts=${sample}\n`
+          );
         }
-        process.stdout.write(
-          `${row.historyLeak ? 'LEAK' : row.escape ? 'ESCAPE' : row.gateVerdict || 'PASS'}\t${item.id}\tdialogue\n`
-        );
       }
     }
   } finally {
