@@ -33,6 +33,13 @@ export function resetPreferencePanelDragGeometry(panel) {
  */
 export function onPreferencePanelOpen(panel, deckHandleId) {
   resetPreferencePanelDragGeometry(panel);
+  if (
+    document.body.classList.contains('ft-pref-sheet-embed') ||
+    panel.dataset.prefSheetEmbed === '1'
+  ) {
+    panel.style.removeProperty('z-index');
+    return;
+  }
   syncPreferencePanelDock(panel);
   bringGlassCardToFront(deckHandleId, panel.ownerDocument || document);
 }
@@ -48,6 +55,7 @@ export function installPreferencePanelDockListener(panel, syncDock) {
   }
   const onResize = () => {
     if (panel.hidden) return;
+    if (panel.dataset.prefSheetEmbed === '1') return;
     resetPreferencePanelDragGeometry(panel);
     syncDock();
   };
