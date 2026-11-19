@@ -56,6 +56,13 @@ test('narrow grabber keeps swipe aria-label but hides visible hint text', () => 
   assert.match(src, /\.ft-narrow-grabber::before/);
 });
 
+test('R2L-02: home CTAs drop clicks while Thought Drop card is open', () => {
+  assert.match(
+    src,
+    /body:has\(#confide-to-yin-card\.is-visible\) \.ft-narrow-home-ctas[\s\S]*pointer-events:\s*none/
+  );
+});
+
 test('narrow home CTAs keep Quick · Sit · Honesty; compass lives on the corner FAB', () => {
   assert.doesNotMatch(src, /id="ft-narrow-home-sanctuary-nav"/);
   assert.match(src, /ft-sanctuary-nav-compass-fab/);

@@ -1,13 +1,13 @@
 {
   "en": {
     "SYSTEM_TTS_TOGGLE_LABEL": "Speak practice guidance",
-    "SYSTEM_TTS_TOGGLE_HINT": "When a practice shows a line, or when it ends, your Mac reads it aloud. Off by default. Does not affect Chat with Yin.",
-    "PRIVACY_SHEET_AI_INFERENCE": "AI companion features related to habits, check-ins, and practice guidance run on your device. Related inputs are processed on your device and are not sent to a third-party large language model provider. On the Mac app, Speak to type in Chat with Yin uses on-device speech recognition only — it is not a voice message and audio is not uploaded. Optional system voice announcements (practice lines, and when a practice ends) use on-device text-to-speech, are off by default, and are not a voice conversation. Optional Focus rhythm (Mac app, off by default) may notice key timing and backspaces on this device only; it does not store what you type or window titles, and it is never uploaded."
+    "SYSTEM_TTS_TOGGLE_HINT": "When a practice shows a line, or when it ends, your Mac reads it aloud. Off by default. Does not affect Thought Drop.",
+    "PRIVACY_SHEET_AI_INFERENCE": "AI companion features related to habits, check-ins, and practice guidance run on your device. Related inputs are processed on your device and are not sent to a third-party large language model provider. On the Mac app, Speak to type in Thought Drop uses on-device speech recognition only — it is not a voice message and audio is not uploaded. Optional system voice announcements (practice lines, and when a practice ends) use on-device text-to-speech, are off by default, and are not a voice conversation. Optional Focus rhythm (Mac app, off by default) may notice key timing and backspaces on this device only; it does not store what you type or window titles, and it is never uploaded."
   },
   "zh": {
     "SYSTEM_TTS_TOGGLE_LABEL": "朗读练习引导",
-    "SYSTEM_TTS_TOGGLE_HINT": "练习中弹出的句子，以及练习结束时，都会用 Mac 本机语音念出来。默认关闭。不影响和阿寅聊聊朗读。",
-    "PRIVACY_SHEET_AI_INFERENCE": "与习惯、打卡、练习陪伴相关的 AI 对话在设备端处理；相关内容不会发送给第三方大模型服务商。Mac 版和阿寅聊聊里的 Speak to type 仅使用本机语音识别，不是语音消息，音频不会上传。可选的系统语音播报（例如练习中的句子，以及练习结束时）使用本机朗读，默认关闭，不是语音对话。可选的「专注节奏」（仅 Mac 电脑版，默认关）只在本机看按键间隔和是否退格；不保存你打的字或窗口标题，也不会上传。"
+    "SYSTEM_TTS_TOGGLE_HINT": "练习中弹出的句子，以及练习结束时，都会用 Mac 本机语音念出来。默认关闭。不影响觉察一句朗读。",
+    "PRIVACY_SHEET_AI_INFERENCE": "与习惯、打卡、练习陪伴相关的 AI 对话在设备端处理；相关内容不会发送给第三方大模型服务商。Mac 版觉察一句里的 Speak to type 仅使用本机语音识别，不是语音消息，音频不会上传。可选的系统语音播报（例如练习中的句子，以及练习结束时）使用本机朗读，默认关闭，不是语音对话。可选的「专注节奏」（仅 Mac 电脑版，默认关）只在本机看按键间隔和是否退格；不保存你打的字或窗口标题，也不会上传。"
   },
   "ja": {
     "SYSTEM_TTS_TOGGLE_LABEL": "練習の案内を読み上げる",

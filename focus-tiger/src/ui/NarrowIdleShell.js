@@ -1523,6 +1523,12 @@ export class NarrowIdleShell {
         visibility: hidden;
         pointer-events: none;
       }
+      /* R2L-02: NarrowIdleShell is z30 on body; Confide lives in #ui-overlay z10.
+         Do not raise the card (Support stack). Hide home balls while the card is open. */
+      body:has(#confide-to-yin-card.is-visible) .ft-narrow-home-ctas {
+        visibility: hidden;
+        pointer-events: none;
+      }
       /* PNG assets already include the sphere + glyph — no CSS ball chrome.
          display:inline-flex would otherwise beat UA [hidden]{display:none}. */
       .ft-narrow-home-ctas__btn.is-asset[hidden] {
