@@ -549,6 +549,10 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 CR-49 续刀：同一问法形状上，一张卡最多 3 句事实键。先只扩 0037 / 0038 / 0020，各两句同形状事实键。短答不进向量。0.80 不动。说明稿在 #1775。关单仍须新封存英文未见批。
 
+### `marketing-thought-drop-legal-excerpt` · feature · Brief 已锁窄 B · PO 点头续篇 · 实现旁支 · 2026-11-19
+
+路线 X 阶段 2 续：公网 `marketing-site/` 法律摘录对齐 Thought Drop（入口已开、一次一句、固定句、非对话）。Brief [`task-marketing-thought-drop-legal-excerpt.md`](../task-briefs/task-marketing-thought-drop-legal-excerpt.md)。不是 Help/KB、不进 `focus-tiger/src`。
+
 ### `noticing-fixed-line-library` · feature · 接线旁支 feature/noticing-fixed-line-wire · 2026-11-19
 
 觉察一句固定句库 v0.3 接到非危机回复。危机仍走 safety-01。生成代码不删、默认不进气泡。不是打开自由聊天。不是修 R2L-02。
