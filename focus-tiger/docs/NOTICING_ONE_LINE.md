@@ -69,7 +69,7 @@
 | 语言 | 本锁 |
 |---|---|
 | 中文 | **觉察一句**。不用「留言板」「倾诉」「Chat」。 |
-| 英文 | **建议（待点头）：Thought Drop**。菜单短名；副标另写一句降低预期。 |
+| 英文 | **Thought Drop**（PO 2026-11-19 点头）。菜单短名；副标降低预期。 |
 | 日文 | 入口仍隐。打开日另定，不在本锁发明。 |
 | 代码 | `confide*` 标识符与 `data-testid` 不改，除非单独 Brief。 |
 
@@ -112,8 +112,8 @@
 ## 5. 三步（每步单独 PR，不顺手删生成代码）
 
 1. **本文件（本步）**：方向锁。  
-2. **分离试验**：无界面。过线标准写进该步 Brief，点头后再跑。第一版开门 **不** 依赖本步：A/B 两类句子都必须在危机时同样安全，路由错了没有安全代价。  
-3. **改名与一次一句界面**：固定句你们定稿后才切可见名；生成代码仍保留、默认不走。
+2. **分离试验**：无界面。过线标准写进该步独立 Brief，点头后再跑；分不开则对外只留接住 / 邀你坐。第一版开门 **不** 依赖本步：A/B 两类句子都必须在危机时同样安全，路由错了没有安全代价。  
+3. **改名与一次一句界面**：英文 Thought Drop 已点头。可见名 + 副标 + 生成不进用户气泡见 Brief [`task-noticing-one-line-rename.md`](./task-briefs/task-noticing-one-line-rename.md)。固定句你们定稿后才切可见名；生成代码仍保留、默认不走。
 
 开门四闸与 12/5 失败即关门：[`audit/first-package-open-gate-v2.md`](./audit/first-package-open-gate-v2.md)。  
 句库 Brief（含 v0.2 草稿）：[`task-briefs/task-noticing-fixed-line-library.md`](./task-briefs/task-noticing-fixed-line-library.md)。  
