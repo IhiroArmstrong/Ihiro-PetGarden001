@@ -6,6 +6,7 @@
 import { CONFIDE_ROUTE } from '../confide/confideRoutes.js';
 import { normalizeVisibleConfideReply } from '../confide/confideReplyUniqueness.js';
 import catalog from './noticingFixedLines.json' with { type: 'json' };
+import { isNoticingLiveKind } from './noticingLabelDisposition.js';
 
 export const NOTICING_FIXED_LINE_VERSION = 'v0.3';
 export const NOTICING_HOLD_KIND = 'hold';
@@ -116,6 +117,7 @@ export function lintNoticingFixedLine(line) {
     if (String(line.zh).includes('坐')) errors.push('hold-zh-sit');
     if (/\bsittings?\b|\bsit\b/i.test(line.en)) errors.push('hold-en-sit');
   }
+  if (!isNoticingLiveKind(line.kind)) errors.push('kind-not-live');
   if (line.kind === NOTICING_INVITE_KIND) {
     if (!ZH_INVITE_OPTIONAL.test(line.zh)) errors.push('invite-zh-optional');
     const en = String(line.en);
@@ -151,6 +153,7 @@ export function pickNoticingFixedLine({
   excludeIds = [],
   excludeNormalizedTexts = []
 } = {}) {
+  // embedding / classHint / isolationClass / kindFilter are ignored on purpose.
   if (!shouldUseNoticingFixedLine(route)) return null;
   const exclude =
     excludeIds instanceof Set
@@ -172,6 +175,8 @@ export function pickNoticingFixedLine({
     if (filtered.length) pool = filtered;
   }
   if (pool.length === 0) pool = [...NOTICING_FIXED_LINES];
+  pool = pool.filter((row) => isNoticingLiveKind(row.kind));
+  if (pool.length === 0) return null;
   const idx =
     Math.abs(dateSeed(localDate) + (Number(salt) || 0) + String(route).length) %
     pool.length;
