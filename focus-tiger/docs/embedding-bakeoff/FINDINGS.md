@@ -68,7 +68,7 @@
 
 以后凡是对照或诊断，基线都写成：**现有 Qwen3-Embedding-0.6B（Q8_0）**。不把 Qwen 1.6B 写成基线。换模型不是当前第一步。
 
-Phase 0b 的只读诊断见 [FINDINGS_2.md](./FINDINGS_2.md)。结尾标记只测量、不改生产，见 [FINDINGS_3.md](./FINDINGS_3.md)。
+Phase 0b 的只读诊断见 [FINDINGS_2.md](./FINDINGS_2.md)。结尾标记只测量、不改生产，见 [FINDINGS_3.md](./FINDINGS_3.md)。危险层未见评测集的存放与 PO 采纳（无原句）见 [CRISIS_UNSEEN_SET.md](./CRISIS_UNSEEN_SET.md)。
 
 ## 待确认
 
