@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 import {
   catalogEntryEmbeddingPhrases,
   catalogEntryEmbeddingText,
+  catalogFactKeyPhrases,
   decideKbNearMatch,
   splitCatalogCapabilitySentences
 } from './kbNearMatch.js';
@@ -92,10 +93,14 @@ describe('catalogEntryEmbeddingText', () => {
       /Where is the idle-screen control that turns background music or ambient sound on or off/
     );
     const checkinPhrases = catalogEntryEmbeddingPhrases(byId['KB-FUNC-0038']);
-    assert.equal(checkinPhrases.length, 1);
+    assert.equal(checkinPhrases.length, 2);
     assert.match(
       checkinPhrases[0],
       /Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in/
+    );
+    assert.equal(
+      checkinPhrases[1],
+      'Do I have to check in or keep a streak, or is sitting with Yin optional?'
     );
     assert.equal(
       checkinPhrases.some((row) => row.includes('You do not have to check in')),
@@ -108,6 +113,19 @@ describe('catalogEntryEmbeddingText', () => {
       /Are focus practice, meditation, and mindfulness the same thing/
     );
     assert.equal(eduPhrases[0].includes('Yin explains the words only'), false);
+    assert.equal(catalogEntryEmbeddingPhrases(byId['KB-FUNC-0037']).length, 2);
+    assert.equal(catalogEntryEmbeddingPhrases(byId['KB-FUNC-0020']).length, 2);
+    assert.equal(
+      catalogEntryEmbeddingPhrases(byId['KB-FUNC-0037']).some((row) =>
+        row.includes('Tap the music control')
+      ),
+      false
+    );
+    assert.deepEqual(
+      catalogFactKeyPhrases({ factKeyEn: ['one', 'two', 'three', 'four'] }),
+      ['one', 'two', 'three']
+    );
+    assert.deepEqual(catalogFactKeyPhrases({ factKeyEn: 'single' }), ['single']);
   });
 
   it('splits a two-sentence capability into two phrases and still ignores keyword asks', () => {

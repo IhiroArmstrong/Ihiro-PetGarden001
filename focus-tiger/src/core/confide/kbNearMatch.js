@@ -66,13 +66,34 @@ export function splitCatalogCapabilitySentences(text) {
 }
 
 /**
- * Retrieval phrases for one card: each capability sentence, then the whole
- * short answer as one unit. Keywords never enter this list — adding a failed
- * ask to keywords must not change the phrases.
+ * @param {{
+ *   factKeyEn?: string | readonly string[],
+ *   capabilityStatementEn?: string,
+ *   shortAnswerEn?: string,
+ *   keywords?: readonly string[]
+ * }} entry
+ * @returns {string[]}
+ */
+export function catalogFactKeyPhrases(entry) {
+  const raw = entry?.factKeyEn;
+  const list = Array.isArray(raw) ? raw : typeof raw === 'string' ? [raw] : [];
+  const phrases = [];
+  for (const item of list) {
+    const text = String(item || '').trim();
+    if (text) phrases.push(text);
+    if (phrases.length >= 3) break;
+  }
+  return phrases;
+}
+
+/**
+ * Retrieval phrases for one card: declared fact keys when present, else each
+ * capability sentence, then the whole short answer as one unit. Keywords never
+ * enter this list — adding a failed ask to keywords must not change the phrases.
  * Short-answer sentences stay glued so shared "Open More" lines do not steal
  * neighbors from other cards.
  * @param {{
- *   factKeyEn?: string,
+ *   factKeyEn?: string | readonly string[],
  *   capabilityStatementEn?: string,
  *   shortAnswerEn?: string,
  *   keywords?: readonly string[]
@@ -80,8 +101,8 @@ export function splitCatalogCapabilitySentences(text) {
  * @returns {string[]}
  */
 export function catalogEntryEmbeddingPhrases(entry) {
-  const factKey = String(entry?.factKeyEn || '').trim();
-  if (factKey) return [factKey];
+  const factKeys = catalogFactKeyPhrases(entry);
+  if (factKeys.length) return factKeys;
   const phrases = splitCatalogCapabilitySentences(entry?.capabilityStatementEn);
   const shortAnswer = String(entry?.shortAnswerEn || '').trim();
   if (shortAnswer) phrases.push(shortAnswer);
@@ -90,7 +111,7 @@ export function catalogEntryEmbeddingPhrases(entry) {
 
 /**
  * @param {{
- *   factKeyEn?: string,
+ *   factKeyEn?: string | readonly string[],
  *   capabilityStatementEn?: string,
  *   shortAnswerEn?: string,
  *   keywords?: readonly string[]
