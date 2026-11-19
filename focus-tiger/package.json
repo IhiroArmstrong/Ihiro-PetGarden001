@@ -123,6 +123,7 @@
     "test:semantic-live-coldstart-probe": "npm --prefix desktop run companion:semantic-live-coldstart-probe",
     "test:constrained-gen-warm-cold-probe": "npm --prefix desktop run companion:constrained-gen-warm-cold",
     "audit:mindflow-nebula-step2-phase-a": "npm --prefix desktop run companion:mindflow-nebula-step2-phase-a",
+    "audit:noticing-one-line-isolation": "npm --prefix desktop run companion:noticing-one-line-isolation",
     "test:voice-input-probe": "node --test desktop/voiceInput/speechProvider.test.js",
     "test:system-tts-probe": "node --test desktop/systemTts/ttsProvider.test.js desktop/voiceInput/macosSpeechNative.test.js"
   },
