@@ -1,0 +1,1 @@
+| Thought Drop 帮助/KB 可见名 | Help Center Companion 区 + Confide 内短答 | 待人工测试 | **主路径**：英文 Help → Companion：标题 Thought Drop，正文承认入口已开、不是对话、模型不写进气泡。中文：觉察一句。Confide 内问「怎么打开」短答路径 ⋯ → Practice → Thought Drop。**对照**：日语 Help 仍写入口未开。**回流**：关 Help 再开同一篇。自动化：`check:plan-a-guest-confide-copy` · `confideProductKnowledge.test.js`。 | — | — | — | `?product=1` Help Center | 2026-11-19 |

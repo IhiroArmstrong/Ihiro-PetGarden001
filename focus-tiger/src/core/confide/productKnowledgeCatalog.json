@@ -86,7 +86,7 @@
     },
     {
       "id": "KB-FUNC-0005",
-      "shortAnswerEn": "Tap Close on the Chat with Yin card, or Cancel if you have not sent. Esc closes the top overlay first. There is no voice command to exit. Yin does not judge why you stop. While you Sit, the local model unloads so sitting can stay smooth.",
+      "shortAnswerEn": "Tap Close on the Thought Drop card, or Cancel if you have not sent. Esc closes the top overlay first. There is no voice command to exit. Yin does not judge why you stop. While you Sit, the local model unloads so sitting can stay smooth.",
       "keywords": [
         "结束倾诉",
         "Close",
@@ -145,7 +145,7 @@
     },
     {
       "id": "KB-FUNC-0010",
-      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Chat with Yin. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Thought Drop. On a wide desktop screen there is also a listening ear shortcut. Type a few words and tap Share. Nothing leaves this device on desktop; in a browser, on-device generation is not available — Yin still listens with short, quiet lines where the product allows.",
       "keywords": [
         "倾诉",
         "Confide",
@@ -194,7 +194,7 @@
     },
     {
       "id": "KB-FUNC-0012",
-      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Journey log to see your practice trail on this device. In Chat with Yin you can also ask how long you have practiced — Yin reads what is written down here, not a second ledger.",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Journey log to see your practice trail on this device. In Thought Drop you can also ask how long you have practiced — Yin reads what is written down here, not a second ledger.",
       "keywords": [
         "练习记录",
         "Journey log",
@@ -215,7 +215,7 @@
     },
     {
       "id": "KB-FUNC-0013",
-      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Presence moments. These are small check-ins saved on this device. In Chat with Yin you can ask what your mood has looked like recently — Yin summarizes what is written here, not a diagnosis.",
+      "shortAnswerEn": "Open More (⋯) or the drawer → Practice → Presence moments. These are small check-ins saved on this device. In Thought Drop you can ask what your mood has looked like recently — Yin summarizes what is written here, not a diagnosis.",
       "keywords": [
         "Presence moments",
         "情绪记录",
@@ -235,7 +235,7 @@
     },
     {
       "id": "KB-FUNC-0014",
-      "shortAnswerEn": "Open Chat with Yin, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Chat with Yin lists a short summary — the full list is in that panel.",
+      "shortAnswerEn": "Open Thought Drop, then tap What Yin remembers inside the card. You can forget any row there. Saying「Show me what you remember」in Thought Drop lists a short summary — the full list is in that panel.",
       "keywords": [
         "阿寅记得什么",
         "What Yin remembers",
@@ -277,7 +277,7 @@
     },
     {
       "id": "KB-FUNC-0016",
-      "shortAnswerEn": "On desktop, the local companion model unloads while you Sit so focusing can stay smooth. Finish or Rise first, then open Chat with Yin again if you need to talk.",
+      "shortAnswerEn": "On desktop, the local companion model unloads while you Sit so focusing can stay smooth. Finish or Rise first, then open Thought Drop again if you need to talk.",
       "keywords": [
         "同坐不能倾诉",
         "模型卸载",
@@ -294,7 +294,7 @@
     },
     {
       "id": "KB-FUNC-0017",
-      "shortAnswerEn": "On-device Local AI runs in the Samatia desktop app on Mac or Windows — not in this browser. You can still practice and open Chat with Yin where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.",
+      "shortAnswerEn": "On-device Local AI runs in the Samatia desktop app on Mac or Windows — not in this browser. You can still practice and open Thought Drop where the product allows; short quiet lines may appear, but browser-side model download and generation are not shipped.",
       "keywords": [
         "网页不能聊",
         "浏览器没有本地 AI",
@@ -822,7 +822,7 @@
         "how"
       ],
       "capabilityStatementEn": "That Samatia is built so people who cannot tap comfortably can often speak instead; on the Mac desktop app Yin can listen for short English operating requests that run the same local actions as taps, with confirmation before writing files; words stay on this device.",
-      "shortAnswerEn": "When tapping is hard, Samatia is built so you can often speak instead. On the Mac desktop app, Yin can listen for short English requests that run the same local actions you would tap — for example starting a focus sit, ending with Rise, or backing up your practice data after Yin repeats what will happen and you say yes. Open More (⋯) or the drawer → Practice → Chat with Yin, or use Yin's listen entry when it is on screen. Example: Hi Yin, please backup all the app data for me. Your words stay on this device. More menu actions join over time. Yin only points here and does not read long scripts aloud.",
+      "shortAnswerEn": "When tapping is hard, Samatia is built so you can often speak instead. On the Mac desktop app, Yin can listen for short English requests that run the same local actions you would tap — for example starting a focus sit, ending with Rise, or backing up your practice data after Yin repeats what will happen and you say yes. Open More (⋯) or the drawer → Practice → Thought Drop, or use Yin's listen entry when it is on screen. Example: Hi Yin, please backup all the app data for me. Your words stay on this device. More menu actions join over time. Yin only points here and does not read long scripts aloud.",
       "keywords": [
         "voice command",
         "speak instead of tap",
