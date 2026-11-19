@@ -41,13 +41,14 @@ describe('confideGenerateFailureFallbackEvaluate', () => {
     assert.equal(result.actual.generateEligible, true);
   });
 
-  it('corpus control still allows fallback-02 on normal retrieve', () => {
+  it('corpus control uses noticing A/B lines, not privacy jackets', () => {
     const row = CONFIDE_GENERATE_FAILURE_FALLBACK_FIXTURES.find(
       (fixture) => fixture.id === 'gf-control-weather-en'
     );
     assert.ok(row);
     const result = evaluateGenerateFailureFallbackRow(row);
     assert.equal(result.pass, true, result.failures.join('; '));
-    assert.ok(result.actual.fallbackIdsSeen.includes('fallback-02'));
+    assert.ok(result.actual.fallbackIdsSeen.every((id) => /^[AB]-\d{2}$/.test(id)));
+    assert.ok(!result.actual.fallbackIdsSeen.includes('fallback-02'));
   });
 });
