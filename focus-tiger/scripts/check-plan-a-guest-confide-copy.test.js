@@ -23,12 +23,12 @@ describe('plan-a guest confide copy policy', () => {
     assert.equal(verdict.ok, false);
   });
 
-  it('allows Support checkout keys to describe purchasable on-device Confide', () => {
+  it('rejects old Support unlock promise without slice override', () => {
     const verdict = assessPlanAGuestConfideLine(
       'SUPPORT_WEB_LOCAL_AI_NOTE',
       'After you unlock it, open Focus Tiger on Mac or Windows to talk with Yin locally.'
     );
-    assert.equal(verdict.ok, true);
+    assert.equal(verdict.ok, false);
   });
 
   it('accepts explicit not-open-to-guests caveat', () => {

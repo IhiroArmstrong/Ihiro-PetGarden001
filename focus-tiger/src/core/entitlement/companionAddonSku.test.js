@@ -86,8 +86,8 @@ describe('companion.addon.lifetime SKU isolation', () => {
     );
   });
 
-  it('offers the add-on only to Lifetime holders', () => {
-    assert.equal(mayOfferCompanionLifetimeAddon({ lifetimeActive: true }), true);
+  it('offers the add-on only to Lifetime holders when new checkout is open', () => {
+    assert.equal(mayOfferCompanionLifetimeAddon({ lifetimeActive: true }), false);
     assert.equal(mayOfferCompanionLifetimeAddon({ lifetimeActive: false }), false);
     assert.equal(mayOfferCompanionLifetimeAddon({}), false);
   });
