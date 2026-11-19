@@ -112,8 +112,12 @@
 ## 5. 三步（每步单独 PR，不顺手删生成代码）
 
 1. **本文件（本步）**：方向锁。  
-2. **分离试验**：无界面。过线标准写进该步 Brief，点头后再跑。  
+2. **分离试验**：无界面。过线标准写进该步 Brief，点头后再跑。第一版开门 **不** 依赖本步：A/B 两类句子都必须在危机时同样安全，路由错了没有安全代价。  
 3. **改名与一次一句界面**：固定句你们定稿后才切可见名；生成代码仍保留、默认不走。
+
+开门四闸与 12/5 失败即关门：[`audit/first-package-open-gate-v2.md`](./audit/first-package-open-gate-v2.md)。  
+句库 Brief（含 v0.2 草稿）：[`task-briefs/task-noticing-fixed-line-library.md`](./task-briefs/task-noticing-fixed-line-library.md)。  
+结构零生成 Brief：[`task-briefs/task-noticing-no-generate-invariant.md`](./task-briefs/task-noticing-no-generate-invariant.md)。
 
 字面检查管得到固定句；管不到现场生成——这是收回生成的产品理由之一。
 
