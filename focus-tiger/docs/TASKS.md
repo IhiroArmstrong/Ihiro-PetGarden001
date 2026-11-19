@@ -545,9 +545,85 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `t100-output-gate` · feature · 立即做 · P2 · PR-1 #1740 已合 · PR-2 #1741 已合 · 首发只英语与回落池 #1744 已合 · PR-3 #1745 接线待合 · 2026-11-16
+### `confide-fact-card-surface-forms` · note · Brief 已写 · 待 PO 点头 · 未改发送链 · 2026-11-19
 
-T100 输出侧刚性闸。说明已点头。盘点与未接线闸已合。本片记录：第一份发布「和阿寅聊聊」只英语；中性回落池扩到每语 6 句。PR-3（#1745）把闸接到 companion 生成路径。
+CR-49 续刀：同一问法形状上，一张卡最多 3 句事实键。先只扩 0037 / 0038 / 0020。不把短答或失败原句推进向量。不放低 0.80。危险层未见题 PO 已接受，不再纠结。
+
+### `noticing-one-line` · feature · 方向锁已写 · 待合 docs PR · 2026-11-19
+
+路线 X：同一入口降为觉察一句。收回桌面现场生成。第一份安装包要开入口。代号待治理会话登记。不是 T98 再盘、不是打开自由聊天。
+
+### `pro-addon-checkout-restore` · feature · 搁置 · PO 2026-11-19 关闭自由生成，暂停 Pro / 陪伴加购新结账 · 2026-11-19
+
+~~英文 Confide 恢复后恢复新结账~~ → **已撤回**：与 [`task-plan-a-option1-confide-sale-gate.md`](../task-briefs/task-plan-a-option1-confide-sale-gate.md) 选项 1 对齐；客户端 `PLAN_A_OPTION1_STOP_NEW_CHECKOUT=true`、切片 `plan-a-option1-support-sale-stop.json`、Worker 缺 env 默认 410。
+
+### `home-ux-h4` · feature · 进行中 · 旁支 feature/h4-support-deprioritize · 2026-11-18
+
+H4：Idle Support FAB 默认小标，hover / focus / 展开后完整药丸。功能不删。不必等 H3 #1759。
+
+### `home-ux-h5` · feature · 进行中 · 旁支 feature/h5-home-greeting · 2026-11-18
+
+H5：宽屏 Idle 阿寅下方短问候，按本地日轮换四句。不可点。不是 Quiet Line。
+
+### `home-ux-h6` · feature · 进行中 · 旁支 feature/h6-narrow-home-structure · 2026-11-18
+
+H6：窄屏 Idle 补上与宽屏同一句问候和 Begin Practice。抽屉仍底边。
+
+### `preferences-center-h8` · feature · H8 实现中 · 叠 H7 #1760 · 2026-11-18
+
+Preferences 子页统一：既有偏好玻璃卡收进 Preferences 同一张纸，返回键回列表。Sound / Help / Membership 不收进 sheet。
+
+### `t100-assistant-voice-neutral` · note · 助手腔已改走中性回落 · 闸仍未验证 · 2026-11-18
+
+T100：助手腔说法改走中性回落，不锁后续生成。放行集 1200、语料 78、六语冻表 108 上误拦是 0。转诊和点病仍算原来的类。这不是闸已验证。
+
+### `t100-crisis-hotline-and-self-harm` · note · 窄规则已写 · 闸仍未验证 · 2026-11-18
+
+T100：模型原文里同时出现 988 和自我伤害用语时，改走现有求助句并锁后续生成。练习时长、单独的 988、单独的转述、英国 111 维持原样。这不是闸已验证。
+
+### `t100-crisis-input-fixed-line` · note · 说明稿数字已锁定 · 已写开工 · 刀 1 可改代码 · 盲测未封存 · 2026-11-18
+
+T100 旁支：英文危机语境里的求附和、代写告别、问号码，进门就走现有求助句。同一页说明。2026-11-18 已锁定刀 1 ≥95%（每类 ≥90%）、刀 2 ≥90%、良性误拦 ≤2/至少 120（硬良性至少 40，其中最多 1）。已写开工。分类器只看当前一句。盲测仍未封存。输出闸仍是 0/3。
+
+### `t100-crisis-input-knife-1` · feature · 刀 1 已接进门分类 · 盲测未封存 · 未过第 7 节数字 · 2026-11-18
+
+英文里，求附和「想离开 / 想死是合理的」，或代写说话人自己的告别，在生成之前走现有 safety_redirect。只看当前这一句。不改输出闸，K 仍是 0/3。封存盲测还没有，这刀不宣称识别率已过。
+
+### `home-ux-architecture` · feature · H0 已合 #1755 · H1 侧边名单 + Begin Practice 本 PR · 2026-11-17
+
+首页交互架构重设计。方向锁 `HOME_UX_ARCHITECTURE.md`。H0 本片；H1 叠 PR。不改 TASKS 总表。不是指南针复活，不是 T25 径向回归。
+
+### `preferences-center` · feature · H7 待合 · 叠 H2 #1758 · 2026-11-17
+
+Preferences Center：H7 信息架构与分组列表；H8 子页统一另 PR。
+
+### `t100-g1-presuppose-illness` · feature · T100 PR-2 补丁 · 预设有病句式 · 2026-11-17
+
+T100 PR-2 补丁。Brief 4.3 句式：拦「叫不出病名」这类预设，不把 diagnosis / illness 当单词关键词。层 A 加该子类必拦样本与 capability / 茶名 / 难过 放行句。不另开说明书。
+
+### `t100-output-gate` · feature · 立即做 · P2 · PR-1/2/3 已合 · PR-4 第 1 轮审阅中 · 预设句式补丁 #1752 · 2026-11-17
+
+T100 输出侧刚性闸。说明已点头。PR-1 #1740、PR-2 #1741、PR-3 英语回落池 #1744、接线 #1745 已合。PR-4 第 1 轮：PO 判定 1/12 预设类漏网（rt-observe-mood）。句式补丁 #1752。不重开接线。
+
+### `t100-output-gate-pr4` · note · PR-4 第 1 轮审阅中 · 2026-11-17
+
+T100 PR-4 第 1 轮是记录，不是闸验证。有效采样 12；实验室管线（模型 + 闸模块）；未经过 #1745 的 `l1Runtime`；「真逃逸 0」待 PO。第 2 轮方案只写文档、不跑。
+
+### `t100-output-gate-pr5` · note · PR-1/2/3 已合，PR-4 第 1 轮审阅中 · PR-5 措辞待合 · 2026-11-17
+
+T100 说明书第 8 节 PR-5。风险册只记「已接线；红队仅 1 轮、有效采样 12、未降档、V-02 不变」。不宣称闸已验证，不宣称识别缺口已补。
+
+### `t100-output-gate-round-2-harness` · note · 第 2 轮管线已写 · 跑批另记 · 2026-11-17
+
+T100 层 B 第 2 轮实验室入口改为 `CompanionL1Runtime.generate`。去护栏臂只在 `FT_OUTPUT_GATE_REDTEAM=1`。不改输入路由。本片不表示闸已验证，也不表示第 2 轮已跑完。
+
+### `t100-output-gate-round-2-record` · note · PR-4 第 2 轮记录审阅中 · 2026-11-17
+
+T100 PR-4 第 2 轮是记录加层 A 补句式，不是闸验证。去护栏有效样本 213，生产 98，均未达方案约 400 / 200。启发式逃逸 10，Cursor 判漏网，PO 未抽查。K=3 本轮不计。不改 V-02。
+
+### `t100-rr22-round1-escape` · note · #1748 已合后的风险册补句 · 2026-11-17
+
+#1748 已合。补一句：红队第 1 轮发现 1 个预设类漏网，补规则中。V-02 不改。
 
 ### `chat-with-yin-consent` · feature · 实现中 · 旁支 feature/chat-with-yin-consent · 2026-11-15
 
@@ -609,10 +685,6 @@ Use: scattered to-do mind. Step 1 adds eyes-open permission. Step 4: “Each tim
 ### `help-center-ask-answer-tts` · feature · 实现中 · fix/help-center-ask-answer-tts · 2026-11-14
 
 帮助中心问卡在宽屏电脑版朗读最接近一篇说明（标题+正文）。空态与 T92 句念屏上字。办理指令仍走现网复述。Arrival / Reflection 听写没有语义检索，不在本刀。
-
-### `pro-addon-checkout-restore` · feature · 进行中 · C6 / §C Pro·陪伴加购新购 · 2026-11-14 · 2026-11-14
-
-英文 Confide 恢复后，恢复 Support 第四卡 Pro 与第五卡陪伴加购新结账；客户端闸 + Worker 默认开 + 文案切片 `pro-addon-checkout-restore.json`。生产 Worker 须 redeploy 后线上才不 410。
 
 ### `t77-co-practice-continue-slot` · feature · 已完成 · 可选 · #1584 已合 develop · 2026-11-14
 
