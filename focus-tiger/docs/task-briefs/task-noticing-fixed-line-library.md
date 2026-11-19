@@ -3,7 +3,7 @@
 **任务号**：不新开代号。挂开门闸 G2–G4 与 T100 关单第 1 项。治理会话登记前实现旁支不得自编 T 号。  
 **人话**：用户写下不是危机的那一句，只用已经审过的固定句接住，或可选地邀请坐一会儿。句子本身必须在「其实是危机」时也安全。求助按钮做在每条回复下面，不写进句子里。  
 **类别**：B 类（用户看见的回复文案）。本 PR **只锁 Brief + 草稿附录**，不改 `src/`、不把草稿当已定稿。  
-**状态**：PO 2026-11-19 点头写文档。句库仍待语气审 + 安全审。审稿退回宁可少而稳，不为凑 15 条放宽禁词。  
+**状态**：PO 2026-11-19 点头写文档。附录 **v0.3**（A/B 各 20）。**PO 语气审**：同日书面「该审核的已审」。**独立安全审仍缺**，G4 未绿。审稿退回宁可少而稳，不为凑 15 条放宽禁词。  
 **日期**：2026-11-19  
 **从属**：[`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) · [开门门禁 v2](../audit/first-package-open-gate-v2.md) · [结构 Brief](./task-noticing-no-generate-invariant.md) · [`COMPANION_CONTRACT.md`](../COMPANION_CONTRACT.md)
 
@@ -24,7 +24,7 @@
 - 不定稿危机转介句（第 0 档沿用现网 safety-01）。  
 - 不自动开练习。B 类只是话，不是 Sit 按钮。  
 - 不开放日语。  
-- 不把附录 v0.2 当成已过审。  
+- 不把附录当成已过 G4（缺独立安全审则不得接线）。  
 - 情绪选项按钮（累、焦虑、难过、生气）推迟。
 
 ---
@@ -82,37 +82,32 @@
 5. 是否有陪伴承诺或排他性（「一直」「只有我」）？  
 6. B 类：是否缺少「不坐也可以」？
 
-通过：两份均全部通过；审稿期间句库不改动。起草人、语气审、安全审分离。英文建议另请英语母语者审语气（不挡 12/5 的 G4 最低线：PO 语气 + 独立安全审）。
+通过：两份均全部通过；审稿期间句库不改动。起草人、语气审、安全审分离。英文建议另请英语母语者审语气（不挡 12/5 的 G4 最低线：PO 语气 + 独立安全审）。重点看 **B-19** 英文 *you can also choose not to*。
+
+**2026-11-19 审稿进度**
+
+| 份 | 状态 |
+|---|---|
+| 语气（PO） | 已书面完成（含 v0.3 本批） |
+| 安全（另一会话） | **未完成**。G4 仍红，直到这份过且期间附录不改 |
+
+建议以本附录 v0.3 为冻结候选（目标不晚于 11/26）。本会话收到安全审退回之前 **不再改附录**。安全审应覆盖新增 A-16–A-20、改写 B-09/B-10、新增 B-16–B-20；其余沿用已审原文。B-16「也没有任何问题」/ *perfectly fine* 贴近淡化，请安全审点名。
 
 仓内 5–10 条自编漏接型夹具：只验落到哪类回复、求助入口在不在。不用评测集原句，不算识别率。
 
 ---
 
-## 6. v0.2 草稿附录（待审，不是定稿）
+## 6. v0.3 草稿附录（A/B 各 20；PO 语气已审，独立安全审未过）
 
-下列为分析师 2026-11-19 草稿。实现不得在两份审稿通过前把这些句子接进用户气泡。
+相对 v0.2：B-09、B-10 改写以过 lint；新增 A-16–A-20、B-16–B-20。实现不得在 G4 两份审稿都通过前把这些句子接进用户气泡。
 
-**已知会撞第 3 节 lint、定稿前必须改：**
-
-| ID | 原因 |
-|---|---|
-| B-09 | 中文无「不坐 / 不想 / 不愿意 / 不接受 / 不用做 / 可以不」 |
-| B-10 | 中文「什么都不做」未命中可选表达表 |
+分析师人工核对（10 条新句 + 2 条改写）：未命中禁词；A 类中文无「坐」、英文无 sit/sitting；B 类均含可选表达。**以日后 CI lint 实跑为准。** 本附录不再列 B-09/B-10 为已知失败。
 
 ### A.1 硬规则
 
-（与第 2 节相同，附录原文保留如下，便于整段给审稿人。）
+（与第 2 节相同。）
 
-1. 每一句在"用户其实处于危机"时也必须安全：不淡化、不给建议、不附和。  
-2. 求助入口不写进句子，统一为每条回复下方的固定行（标签与现有 UI 一致，不写号码）。  
-3. A 类：单纯接住，不含邀请、不含建议。  
-4. B 类：先接住，再以可选口气邀请；必须明说"不坐也可以"；不自动开练习。  
-5. 不点名情绪（不写"你好像……""听起来你……"），不暗示 Yin 在评估用户。  
-6. 不诊断、不说教、不承诺好转、不说"只有我懂你"、不承诺"一直陪"。  
-7. 同一会话不重复同一句；轮换只记句子 ID，不存用户原文。  
-8. 每句中文不超过 40 字，英文不超过 25 词；每句最多一个邀请。
-
-### A.2 A 类 · 接住（15 条）
+### A.2 A 类 · 接住（20 条）
 
 | ID | 中文 | English |
 |---|---|---|
@@ -131,8 +126,13 @@
 | A-13 | 你不用把它说得更清楚。我在听。 | You don't have to make it any clearer. I'm listening. |
 | A-14 | 这一句来到这里了，我收下了。 | This line has arrived here, and I've taken it in. |
 | A-15 | 它不需要被评判。我只是收下它。 | It doesn't need to be judged. I'm simply taking it in. |
+| A-16 | 这一句，我读了。它在这里。 | I read this line. It's here. |
+| A-17 | 谢谢你愿意把它写在这里。 | Thank you for being willing to put it here. |
+| A-18 | 我看到了你写下的这一句。 | I see the line you wrote down. |
+| A-19 | 这一句没有被忽略。它被好好收下了。 | This line wasn't overlooked. It has been received with care. |
+| A-20 | 我停下来，读了这一句。 | I paused and read this line. |
 
-### A.3 B 类 · 邀你坐一会儿（15 条）
+### A.3 B 类 · 邀你坐一会儿（20 条）
 
 | ID | 中文 | English |
 |---|---|---|
@@ -144,13 +144,18 @@
 | B-06 | 谢谢你说出来。想坐就坐，不想也不用勉强。 | Thank you for saying it. Sit if you like; no need to force it. |
 | B-07 | 我读到这一句了。想的话，可以安静坐一小会儿；不想，这里不要求你做什么。 | I read this line. If you want, you can sit quietly for a little while; if not, nothing is asked of you here. |
 | B-08 | 这一句我收下了。想坐一坐，随时可以；不坐，也不影响什么。 | I've taken this line in. If you'd like to sit, you can at any time; if not, nothing changes. |
-| B-09 | 谢谢你写下它。坐一小会儿是一个选择，不是要求。 | Thank you for writing it down. Sitting for a little while is a choice, not a requirement. |
-| B-10 | 我听到了。你可以选择坐一会儿，也可以什么都不做，两种都可以。 | I heard it. You can choose to sit for a while or do nothing at all; either is fine. |
+| B-09 | 谢谢你写下它。坐一小会儿是个选择；不想坐，也完全可以。 | Thank you for writing it down. Sitting for a little while is a choice; if you'd rather not, that's fine. |
+| B-10 | 我听到了。你可以坐一会儿，也可以不坐，两种都可以。 | I heard it. You can sit for a while, or not; either is fine. |
 | B-11 | 这一句，被好好读过了。想坐一会儿的话，坐坐也行；不想，就停在这里。 | This line has been read with care. If you'd like to sit, you can; if not, we'll stop here. |
 | B-12 | 不用解释它。想坐一小会儿的话可以；不想，也完全可以。 | No need to explain it. If you'd like to sit for a little while, you can; if not, that's fine too. |
 | B-13 | 这一句有分量，我收到了。坐一会儿是个邀请，你可以不接受。 | This line has weight, and I've received it. Sitting for a while is an invitation you can decline. |
 | B-14 | 谢谢你让我知道。愿意的话，可以坐一小会儿；不愿意，什么都不用做。 | Thank you for letting me know. If you're willing, you can sit for a little while; if not, you don't have to do anything. |
 | B-15 | 我看见你写下的这一句了。坐一坐也行，不坐也行，由你决定。 | I see the line you wrote. Sitting or not is fine; it's up to you. |
+| B-16 | 这一句我读到了。想坐一小会儿的话可以；不想，也没有任何问题。 | I read this line. If you'd like to sit for a little while, you can; if not, that's perfectly fine. |
+| B-17 | 谢谢你写下它。我们可以坐一小会儿，也可以不坐，由你决定。 | Thank you for writing it down. We can sit for a little while, or not; it's up to you. |
+| B-18 | 这一句，我认真读过了。愿意的话可以坐一坐；不愿意，就不用做什么。 | I read this line carefully. If you're willing, you can sit for a bit; if not, you don't need to do anything. |
+| B-19 | 它已经被收下了。想坐一会儿，这里可以；也可以不坐。 | It has been taken in. If you want to sit for a while, you can here; you can also choose not to. |
+| B-20 | 我看到你写的了。坐一小会儿是个邀请；不接受，也完全可以。 | I see what you wrote. Sitting for a little while is an invitation; declining is perfectly fine. |
 
 ---
 
@@ -209,4 +214,4 @@
 
 ## 12. 口令
 
-句库扩写与审稿在仓外 / 本附录上继续，不经实现会话。接线须 **新 Chat**：「按句库 Brief 开工」，且 G4 两份审稿已通过、B-09/B-10 已改。T95 优先。本会话不改 `src/`。
+句库扩写与审稿在仓外继续，**不进实现会话**。B-09/B-10 已改写。接线须 **新 Chat**：「按句库 Brief 开工」，且 G4 两份审稿已通过（PO 语气已过，仍欠独立安全审）。T95 优先。本会话不改 `src/`。 R2L-02 另项，勿拖到包装最后一周。
