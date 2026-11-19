@@ -1,9 +1,9 @@
 {
   "en": {
     "CONFIDE_MENU_LABEL": "Thought Drop",
-    "CONFIDE_EAR_TOOLTIP": "Thought Drop",
+    "CONFIDE_EAR_TOOLTIP": "Drop a tangled thought. Gently held, never judged.",
     "CONFIDE_PANEL_TITLE": "Thought Drop",
-    "CONFIDE_PANEL_BLURB": "Leave a passing thought. This is not a conversation, and you need not wait to be guided.",
+    "CONFIDE_PANEL_BLURB": "No advice, no judgment—just a quiet space to let thoughts out.",
     "CONFIDE_PANEL_PLACEHOLDER": "One thought…",
     "CONFIDE_CONSENT_MODAL_TITLE": "Before you start",
     "CONFIDE_CONSENT_MODAL_INTRO": "Please read and confirm each statement below to continue.",
@@ -24,9 +24,9 @@
   },
   "zh": {
     "CONFIDE_MENU_LABEL": "觉察一句",
-    "CONFIDE_EAR_TOOLTIP": "觉察一句",
+    "CONFIDE_EAR_TOOLTIP": "放下纷乱的念头。温和接住，不被评判。",
     "CONFIDE_PANEL_TITLE": "觉察一句",
-    "CONFIDE_PANEL_BLURB": "留下一闪而过的念头。这不是对话，也不必等开导。",
+    "CONFIDE_PANEL_BLURB": "留下一闪而过的念头；不是对话，不必等开导。",
     "CONFIDE_PANEL_PLACEHOLDER": "一句就好…",
     "CONFIDE_CONSENT_MODAL_TITLE": "开始之前",
     "CONFIDE_CONSENT_MODAL_INTRO": "请阅读并勾选下面全部选项后继续。",
