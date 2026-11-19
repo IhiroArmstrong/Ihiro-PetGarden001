@@ -139,8 +139,12 @@ export function evaluateGenerateFailureFallbackRow(row) {
       }
     }
     actual.fallbackIdsSeen = [...ids].sort();
-    if (!ids.has('fallback-02')) {
-      failures.push('normal corpus path must still be able to pick fallback-02');
+    const noticingIds = [...ids].filter((id) => /^[AB]-\d{2}$/.test(id));
+    if (noticingIds.length === 0) {
+      failures.push('normal corpus path must pick noticing A/B lines');
+    }
+    if ([...ids].some((id) => id === 'fallback-02' || id === 'safety-01')) {
+      failures.push('normal corpus path must not use privacy or safety jackets');
     }
   } else {
     failures.push(`unknown kind ${row.kind}`);
