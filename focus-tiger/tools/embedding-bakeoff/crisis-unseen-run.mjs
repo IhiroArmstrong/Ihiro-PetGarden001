@@ -8,7 +8,10 @@
  * Stdout is counts only. Never prints item.text.
  *
  *   cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 \
+ *     FT_CRISIS_UNSEEN_VERSION=crisis-unseen-en/v2 \
  *     node tools/embedding-bakeoff/crisis-unseen-run.mjs
+ *
+ * Each holdout_set_version runs once. v1 is already burned.
  */
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
@@ -26,16 +29,25 @@ import {
 } from '../../src/core/confide/confideSemanticCrisisLayer.js';
 import { confirmRhetoricalCrisisUse } from '../../src/core/confide/confideRhetoricalCrisisConfirm.js';
 
-const SET_PATH = path.join(
+const PRIVATE_DIR = path.join(
   os.homedir(),
   'Documents',
   'ft-private',
-  'ft-private--confide-crisis-unseen',
-  'confide-crisis-unseen-2026-11-19-candidate-draft.json'
+  'ft-private--confide-crisis-unseen'
 );
-const PRIVATE_DIR = path.dirname(SET_PATH);
+const SET_FILES = {
+  'crisis-unseen-en/v1': 'confide-crisis-unseen-2026-11-19-candidate-draft.json',
+  'crisis-unseen-en/v2': 'confide-crisis-unseen-2026-11-19-v2.json'
+};
+const REQUESTED_VERSION = process.env.FT_CRISIS_UNSEEN_VERSION || 'crisis-unseen-en/v2';
+const SET_BASENAME = SET_FILES[REQUESTED_VERSION];
+if (!SET_BASENAME) {
+  process.stderr.write(`[crisis-unseen] unknown version ${REQUESTED_VERSION}\n`);
+  process.exit(1);
+}
+const SET_PATH = path.join(PRIVATE_DIR, SET_BASENAME);
 const RUNS_PATH = path.join(PRIVATE_DIR, 'crisis-unseen-runs.json');
-const EXPECTED_VERSION = 'crisis-unseen-en/v1';
+const EXPECTED_VERSION = REQUESTED_VERSION;
 
 function round4(n) {
   return Number.isFinite(n) ? Math.round(n * 10000) / 10000 : null;
@@ -107,7 +119,11 @@ const hold = await loadEmbeddingHold({
   onProgress: (msg) => process.stderr.write(`[crisis-unseen] ${msg}\n`)
 });
 
-const items = Array.isArray(data.items) ? data.items : [];
+const items = Array.isArray(data.items)
+  ? data.items
+  : Array.isArray(data.examples)
+    ? data.examples
+    : [];
 const byLabel = {
   explicit_self_harm: emptyBucket(),
   rhetorical: emptyBucket(),
@@ -158,7 +174,7 @@ try {
     if (applied) bucket.semanticApplied += 1;
     rows.push({
       id: item.id,
-      lang: item.lang,
+      lang: item.lang || item.language,
       label,
       severity: item.severity,
       expectedRoute: item.expected_route,
@@ -186,8 +202,9 @@ const fatigueFp = rows.filter(
   (r) => r.label === 'fatigue_or_life_stress' && r.finalRoute === CONFIDE_ROUTE.SAFETY_REDIRECT
 );
 
+const slug = version.replace(/\//g, '-');
 const report = {
-  probe: 'crisis-unseen-en-v1',
+  probe: slug,
   holdoutSetVersion: version,
   contentHash,
   n: rows.length,
@@ -205,7 +222,7 @@ const report = {
   rows
 };
 
-const outPath = path.join(PRIVATE_DIR, `crisis-unseen-en-v1-run-${Date.now()}.json`);
+const outPath = path.join(PRIVATE_DIR, `${slug}-run-${Date.now()}.json`);
 await writeFile(outPath, `${JSON.stringify(report, null, 2)}\n`);
 ledger.versions[version] = {
   status: 'complete',
