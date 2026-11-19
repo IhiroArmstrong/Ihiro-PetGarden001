@@ -553,17 +553,29 @@ CR-49 续刀：同一问法形状上，一张卡最多 3 句事实键。先只�
 
 觉察一句固定句库 v0.3 接到非危机回复。危机仍走 safety-01。生成代码不删、默认不进气泡。不是打开自由聊天。不是修 R2L-02。
 
-### `noticing-one-line` · feature · 方向锁 #1777 · 实验室架子 #1781 · 真向量未过线 · 2026-11-19
+### `noticing-g1-release-no-generate` · feature · 实现中 · feature/noticing-release-no-generate-g1 · 2026-11-19
 
-路线 X：同一入口降为觉察一句。收回桌面现场生成。第一份安装包要开入口。代号待治理会话登记。不是 T98 再盘、不是打开自由聊天。分离试验真向量 `isolationPassed: false`（摘要 `fixtures/noticing-one-line-isolation-summary.json`）；Brief `task-noticing-one-line-isolation.md`。对外只留接住 / 邀你坐。R2L-02 窄窗发送钮另排，本步不修。改名 #1782/#1783 已合；隐私扫尾 #1786 已合；**阶段 2** Help + KB catalog → `thought-drop-guest-help-kb-catalog`（窄口径 B 已锁）。
+G1：发布构建里倾诉发送走不到可见生成。登记表 `releaseReach` + `check:generation-gate` + 打包闸。不删生成代码。不是句库、不是 R2L-02。
+
+### `noticing-label-disposition` · feature · Brief 已锁 · 代码旁支 feature/noticing-label-disposition · 2026-11-19
+
+PO 2026-11-19：取消「说不清」；高危不另造分类器；接住/邀坐不当成模型能分开的两类。Brief [`task-noticing-label-disposition.md`](../task-briefs/task-noticing-label-disposition.md)。不改金句正文。实验室四类夹具只作失败档案。
+
+### `noticing-one-line` · feature · 方向锁 #1777 · 实验室未过线 · PO 标签处置已锁 · 开门三份文档另片 · 2026-11-19
+
+路线 X：同一入口降为觉察一句。收回桌面现场生成。第一份安装包要开入口。代号待治理会话登记。开门门禁 v2 / 句库 / 结构零生成见 `noticing-open-gate-briefs`。不是 T98 再盘、不是打开自由聊天。分离试验真向量 `isolationPassed: false`。PO 2026-11-19：取消「说不清」；高危不另造分类器；接住/邀坐不当向量两类。Brief `task-noticing-label-disposition.md`。改名 #1782/#1783 已合；隐私 #1786 已合；Help catalog #1790 已合；R2L-02 #1791 已合。
 
 ### `noticing-one-line-isolation-scores` · feature · 真向量已跑 · isolationPassed false · 2026-11-19
 
-分离试验真 embedding（现网 Qwen3-Embedding-0.6B）。摘要 [`fixtures/noticing-one-line-isolation-summary.json`](../../fixtures/noticing-one-line-isolation-summary.json)。四类质心分离未过；产品关键对 hold vs invite_sit 未过。凝聚过。非危机句对现网危机原型最大余弦 < 0.78。不得写成四类已分开。发送链本刀不改。不是改名、不是 R2L-02。
+分离试验真 embedding（现网 Qwen3-Embedding-0.6B）。摘要 [`fixtures/noticing-one-line-isolation-summary.json`](../../fixtures/noticing-one-line-isolation-summary.json)。四类质心分离未过；产品关键对 hold vs invite_sit 未过。凝聚过。非危机句对现网危机原型最大余弦 < 0.78。不得写成四类已分开。PO 2026-11-19 处置：取消 unclear；crisis 不并类；hold/invite 不当向量两类。发送链本刀不改。不是改名、不是 R2L-02。
 
 ### `noticing-one-line-rename` · feature · 改名 Thought Drop / 觉察一句 · 生成不进气泡 · 2026-11-19
 
 第三步：可见名英文 Thought Drop、中文觉察一句；副标一次一句；桌面 generate 不进用户气泡。代码不删。不是分离试验、不是 R2L-02。
+
+### `noticing-open-gate-briefs` · feature · 附录 v0.3 · PO 语气已审 · G4 欠独立安全审 · 未改 src · 2026-11-19
+
+觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审已书面完成。独立安全审未过，不得接线。不是打开自由生成，不新开 T 号。
 
 ### `pro-addon-checkout-restore` · feature · 搁置 · PO 2026-11-19 关闭自由生成，暂停 Pro / 陪伴加购新结账 · 2026-11-19
 
