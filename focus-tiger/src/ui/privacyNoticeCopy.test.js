@@ -101,10 +101,10 @@ describe('privacyNoticeCopy', () => {
     }
   });
 
-  it('en + ja Chat with Yin privacy section is present', () => {
+  it('en + ja Thought Drop privacy section is present', () => {
     const en = loadLocale('en.json');
     const ja = loadLocale('ja.json');
-    assert.match(en.PRIVACY_SHEET_SEC_CONFIDE_TITLE, /Chat with Yin/);
+    assert.match(en.PRIVACY_SHEET_SEC_CONFIDE_TITLE, /Thought Drop/);
     assert.match(en.PRIVACY_SHEET_CONFIDE_CONSENT, /not a substitute/i);
     assert.match(en.PRIVACY_SHEET_CONFIDE_CONSENT, /assessment, diagnosis, or treatment/i);
     assert.match(ja.PRIVACY_SHEET_SEC_CONFIDE_TITLE, /寅と話す/);

@@ -221,7 +221,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
 | `ENV_CONFIG.md` | **环境密钥隔离规则**（客户端禁 Secret；dev/prod；CI Secrets 时机）；现状事实见 `INFRA_SNAPSHOT` |
 | `PRODUCT_MOMENTS.md` | Five Moments |
-| `NOTICING_ONE_LINE.md` | **觉察一句 / Route X 方向锁**（收回桌面现场生成；第一份安装包打开同一入口；中文「觉察一句」；英文建议 Thought Drop 待点头；不存原句；**无运行时**；从属定位稿） |
+| `NOTICING_ONE_LINE.md` | **觉察一句 / Route X 方向锁**（收回桌面现场生成；第一份安装包打开同一入口；中文「觉察一句」；英文 Thought Drop 已点头；不存原句；从属定位稿） |
 | `COMPANION_CONTRACT.md` | **陪伴契约 SSOT**（`companion-contract`）：红线 C-01–C-11、并行开口通道、措辞与字面检查边界；T55；**无运行时** |
 | `companion-contract-known-gaps.md` | **陪伴契约已知漏网登记**（`companion-contract-known-gaps`）：字面抓不住类型、扫描通道外遗留、风险与后续手段；T55-more02；**无运行时** |
 | `CO_PRACTICE_POSITIONING.md` | **人机共修口径一页纸**（T56）：叠加定位；已实现 / 未实现对照；从属 `PRODUCT_POSITIONING` + **C-11**；**无运行时** |
