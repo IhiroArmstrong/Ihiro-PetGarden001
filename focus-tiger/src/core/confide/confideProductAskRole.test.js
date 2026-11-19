@@ -57,13 +57,16 @@ describe('catalog fact keys and ask-role lanes', () => {
 
   it('uses locked fact keys for 0020 / 0037 / 0038 without short-answer bleed', () => {
     assert.deepEqual(catalogEntryEmbeddingPhrases(byId['KB-FUNC-0037']), [
-      'Where is the idle-screen control that turns background music or ambient sound on or off?'
+      'Where is the idle-screen control that turns background music or ambient sound on or off?',
+      'How do I turn background music or ambient sound on or off from the idle screen?'
     ]);
     assert.deepEqual(catalogEntryEmbeddingPhrases(byId['KB-FUNC-0038']), [
-      'Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in?'
+      'Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in?',
+      'Do I have to check in or keep a streak, or is sitting with Yin optional?'
     ]);
     assert.deepEqual(catalogEntryEmbeddingPhrases(byId['KB-FUNC-0020']), [
-      'Where do I open Honesty Check-in to record quiet time I already did elsewhere?'
+      'Where do I open Honesty Check-in to record quiet time I already did elsewhere?',
+      'How do I open Honesty Check-in to record quiet time I already did elsewhere?'
     ]);
     const withFailedAsk = {
       ...byId['KB-FUNC-0038'],
