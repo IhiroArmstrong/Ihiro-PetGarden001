@@ -111,22 +111,27 @@ describe('marketing-site Slice 1 contract', () => {
     assert.match(wellness, /prevent any disease/i);
   });
 
-  it('links privacy and wellness to each other with Chat with Yin legal terms', () => {
+  it('links privacy and wellness to each other with Thought Drop legal terms', () => {
     assert.match(privacy, /href="\.\/wellness\.html"/);
     assert.match(wellness, /href="\.\/privacy\.html/);
-    assert.match(privacy, /id="confide-consent"/);
+    assert.match(privacy, /id="thought-drop-consent"/);
     assert.match(
       privacy,
-      /Not a Substitute for Professional Care[\s\S]*Chat with Yin/
+      /Not a Substitute for Professional Care[\s\S]*Thought Drop/
     );
     assert.match(
       privacy,
       /No Mental Health Assessment, Diagnosis, or Treatment/
     );
+    assert.match(privacy, /one passing thought/i);
+    assert.match(privacy, /not a conversation/i);
+    assert.match(privacy, /fixed lines/i);
+    assert.doesNotMatch(privacy, /not open to guests/i);
     assert.match(privacy, /専門的ケアの代替ではありません/);
     assert.match(privacy, /精神的健康に関する評価・診断・治療は行いません/);
+    assert.match(privacy, /初期状態で当該入口を出しません/);
     assert.doesNotMatch(privacy, /\bConfide\b/);
-    assert.match(wellness, /privacy\.html#confide-consent/);
+    assert.match(wellness, /privacy\.html#thought-drop-consent/);
   });
 
   it('does not promise download or fake navigation', () => {
