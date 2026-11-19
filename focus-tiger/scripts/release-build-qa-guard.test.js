@@ -37,6 +37,10 @@ test('desktop pack verifies direct-channel cloud backup gate is on', () => {
   assert.match(cloudVerifySrc, /practiceBackupCloudEnabled=!1/);
 });
 
+test('desktop pack verifies confide send cannot reach generate (G1)', () => {
+  assert.match(packSrc, /build:verify-confide-release-no-generate/);
+});
+
 test('desktop pack verifies update feed is https on the locked host', () => {
   assert.match(packSrc, /build:verify-update-feed/);
   const feedVerifySrc = readFileSync(

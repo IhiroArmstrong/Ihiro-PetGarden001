@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  collectReleaseNoGenerateErrors,
   parseGenerationSurfaces,
   runGenerationGateReport
 } from './check-generation-gate.js';
@@ -32,6 +33,7 @@ test('report mode matches the tree and does not require a failing exit', () => {
   assert.ok(report.scanned.promptSites.includes('desktop/companion/l1Hold.js:113'));
   assert.match(report.lines.join('\n'), /cloud-llm-result=已查、无/);
   assert.match(report.lines.join('\n'), /product-generate=guardedGenerate/);
+  assert.match(report.lines.join('\n'), /release-no-generate=ok/);
 });
 
 test('check mode stays green when product generate is wired', () => {
@@ -41,4 +43,35 @@ test('check mode stays green when product generate is wired', () => {
     docText: doc
   });
   assert.equal(report.exitCode, 0);
+});
+
+test('G1: confide visible generate rows are not release-reachable', () => {
+  const rows = parseGenerationSurfaces(doc);
+  for (const id of ['confide-observe-l3', 'confide-chat-l3', 'confide-observe-retry']) {
+    const row = rows.find((item) => item.pathId === id);
+    assert.ok(row, id);
+    assert.equal(row.visible, 'yes');
+    assert.equal(row.releaseReach, 'no');
+  }
+  const errors = collectReleaseNoGenerateErrors({
+    rows,
+    root: join(here, '../')
+  });
+  assert.deepEqual(errors, []);
+});
+
+test('G1 fails when a confide row claims releaseReach yes', () => {
+  const broken = doc.replace(
+    '| confide-observe-l3 |',
+    '| confide-observe-l3 |'
+  ).replace(
+    '| none-until-pr3 | yes | no | desktop/companion/l1Hold.js:113 |',
+    '| none-until-pr3 | yes | yes | desktop/companion/l1Hold.js:113 |'
+  );
+  const rows = parseGenerationSurfaces(broken);
+  const errors = collectReleaseNoGenerateErrors({
+    rows,
+    root: join(here, '../')
+  });
+  assert.ok(errors.some((err) => /confide-observe-l3 releaseReach must be no/.test(err)));
 });
