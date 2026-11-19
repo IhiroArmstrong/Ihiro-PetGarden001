@@ -4,8 +4,9 @@
  */
 
 /**
- * Pro / companion add-on checkout restored: merged Support copy uses
- * pro-addon-checkout-restore slice (not sale-stop).
+ * Plan A option 1: Support Pro / add-on copy (merged runtime) must not resurrect
+ * legacy on-device Confide sale promises. Bases may be aligned to the slice
+ * (copy-only); new copy still goes in slices.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -14,19 +15,14 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mergeLocalePack } from '../mergeLocaleSlices.js';
 import { LOCALE_SLICES } from '../localeSliceModules.js';
-import restoreSlice from './pro-addon-checkout-restore.json' with { type: 'json' };
+import planASlice from './plan-a-option1-support-sale-stop.json' with { type: 'json' };
 
 const KEYS = [
   'SUPPORT_PRO_BLURB',
   'SUPPORT_COMPANION_ADDON_BLURB',
-  'SUPPORT_COMPANION_ADDON_CTA_OWNED'
+  'SUPPORT_COMPANION_ADDON_CTA_OWNED',
+  'SUPPORT_CHECKOUT_SALE_PAUSED'
 ];
-
-const SALE_STOP_PATTERNS = {
-  en: [/checkout is paused/i, /not selling new Pro/i, /entry not open yet/i],
-  zh: [/新结账现已暂停/, /入口尚未开放/],
-  ja: [/決済は停止/, /入口はまだ開いていません/]
-};
 
 const here = dirname(fileURLToPath(import.meta.url));
 const localesDir = join(here, '..');
@@ -42,21 +38,33 @@ function loadMerged(locale) {
   return dictionaries[locale];
 }
 
-test('merged Support keys match pro-addon-checkout-restore slice', () => {
+test('Plan A: merged Support keys match plan-a slice (subscribed / sale-stop copy)', () => {
   for (const locale of ['en', 'zh', 'ja']) {
     const merged = loadMerged(locale);
     for (const key of KEYS) {
-      assert.equal(merged[key], restoreSlice[locale][key], `${locale}.${key}`);
+      assert.equal(merged[key], planASlice[locale][key], `${locale}.${key}`);
     }
+  }
+});
+
+const FORBIDDEN_IN_MERGED = {
+  zh: [/另加桌面端本机.*聊聊/, /一次性解锁本机阿寅/],
+  en: [/Chat with Yin with on-device Yin/, /Unlock on-device Yin once/],
+  ja: [/端末内阿寅を一度の購入で解放/]
+};
+
+test('Plan A: merged Support copy has no legacy on-device Confide sale promise', () => {
+  for (const [locale, patterns] of Object.entries(FORBIDDEN_IN_MERGED)) {
+    const merged = loadMerged(locale);
     const blob = KEYS.map((k) => String(merged[k] ?? '')).join('\n');
-    for (const pattern of SALE_STOP_PATTERNS[locale]) {
+    for (const pattern of patterns) {
       assert.doesNotMatch(blob, pattern, locale);
     }
   }
 });
 
-test('locale slices: sale-stop removed, restore slice present', () => {
+test('locale slices: sale-stop present, restore slice removed', () => {
   const names = LOCALE_SLICES.map((s) => s.filename);
-  assert.equal(names.includes('plan-a-option1-support-sale-stop.json'), false);
-  assert.equal(names.includes('pro-addon-checkout-restore.json'), true);
+  assert.equal(names.includes('plan-a-option1-support-sale-stop.json'), true);
+  assert.equal(names.includes('pro-addon-checkout-restore.json'), false);
 });
