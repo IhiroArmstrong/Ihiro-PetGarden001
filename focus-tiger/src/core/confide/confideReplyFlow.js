@@ -9,13 +9,20 @@
 
 import { canSubmitConfideText, confideClassify } from './confideClassify.js';
 import { buildJapaneseConfideNotYetOpenLine } from './confideJapaneseNotYetOpen.js';
-import {
-  CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS,
-  confideLineText,
-  pickConfideLine
-} from './confideCorpus.js';
+import { confideLineText, pickConfideLine } from './confideCorpus.js';
 import { lastRepeatableYinReplyText } from './confideReplyUniqueness.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
+import {
+  pickNoticingFixedLine,
+  shouldUseNoticingFixedLine
+} from '../noticingOneLine/noticingFixedLineLibrary.js';
+
+function pickVisibleNonCrisisLine(opts) {
+  if (shouldUseNoticingFixedLine(opts.route)) {
+    return pickNoticingFixedLine(opts);
+  }
+  return pickConfideLine(opts);
+}
 
 /**
  * @param {object} opts
@@ -40,13 +47,11 @@ export function resolveConfideReply({
   if (route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) {
     return { route, line: buildJapaneseConfideNotYetOpenLine() };
   }
-  const line = pickConfideLine({
+  const line = pickVisibleNonCrisisLine({
     route,
     localDate,
     salt,
     excludeIds,
-    hardExcludeIds:
-      route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS ? ['aggression-04'] : [],
     excludeNormalizedTexts,
     locale
   });
@@ -69,7 +74,7 @@ export function resolveConfideCorpusForRoute({
   locale = 'en'
 } = {}) {
   if (!route) return null;
-  const line = pickConfideLine({
+  const line = pickVisibleNonCrisisLine({
     route,
     localDate,
     salt,
@@ -106,12 +111,11 @@ export function resolveCorpusFallbackAfterGenerateFailure({
       : new Set(Array.isArray(excludeIds) ? excludeIds : []);
   if (failedLineId) extra.add(failedLineId);
   const lastVisible = lastRepeatableYinReplyText(history);
-  const line = pickConfideLine({
+  const line = pickVisibleNonCrisisLine({
     route: CONFIDE_ROUTE.FALLBACK,
     localDate,
     salt,
     excludeIds: extra,
-    hardExcludeIds: CONFIDE_GENERATE_FAILURE_CORPUS_EXCLUDE_IDS,
     excludeNormalizedTexts: lastVisible ? [lastVisible] : [],
     locale
   });
