@@ -4,8 +4,9 @@
  */
 
 /**
- * Isolation corpus: noticing / acceptance / focus / koan-adjacent lines
- * labeled as hold | invite_sit | unclear. Lab + unit tests only.
+ * Isolation corpus (failed archive): hold | invite_sit | unclear.
+ * Lab + unit tests only. Not a live classifier. PO 2026-11-19: unclear cancelled;
+ * crisis stays on the live safety layer; hold vs invite_sit are not vector classes.
  * Crisis class uses live CONFIDE_SEMANTIC_CRISIS_PROTOTYPES (not listed here).
  * Smoke / lab stdout must use ids, not these strings.
  */

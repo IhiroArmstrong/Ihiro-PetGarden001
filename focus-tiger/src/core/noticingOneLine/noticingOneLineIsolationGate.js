@@ -8,7 +8,8 @@ import { readNoticingOneLineIsolationPassed } from './noticingOneLineIsolationEv
 
 /**
  * Extra internal labels stay closed until the committed lab JSON is isolationPassed true.
- * This file does not change the send chain.
+ * This file does not change the send chain. Four-class cutover is also closed by
+ * noticingLabelDisposition even if a future lab JSON were true — that needs a new Brief.
  */
 export function isNoticingOneLineIsolationPassed() {
   return readNoticingOneLineIsolationPassed(isolationSummary);
