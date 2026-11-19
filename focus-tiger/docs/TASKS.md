@@ -545,17 +545,49 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `confide-fact-card-surface-forms` · note · Brief 已写 · 待 PO 点头 · 未改发送链 · 2026-11-19
+### `confide-fact-card-surface-forms` · feature · 实现中 · 待人工测试 · 不得写换说法已接住 · 2026-11-19
 
-CR-49 续刀：同一问法形状上，一张卡最多 3 句事实键。先只扩 0037 / 0038 / 0020。不把短答或失败原句推进向量。不放低 0.80。危险层未见题 PO 已接受，不再纠结。
+CR-49 续刀：同一问法形状上，一张卡最多 3 句事实键。先只扩 0037 / 0038 / 0020，各两句同形状事实键。短答不进向量。0.80 不动。说明稿在 #1775。关单仍须新封存英文未见批。
 
-### `noticing-one-line` · feature · 方向锁已写 · 待合 docs PR · 2026-11-19
+### `noticing-fixed-line-library` · feature · 接线旁支 feature/noticing-fixed-line-wire · 2026-11-19
 
-路线 X：同一入口降为觉察一句。收回桌面现场生成。第一份安装包要开入口。代号待治理会话登记。不是 T98 再盘、不是打开自由聊天。
+觉察一句固定句库 v0.3 接到非危机回复。危机仍走 safety-01。生成代码不删、默认不进气泡。不是打开自由聊天。不是修 R2L-02。
+
+### `noticing-g1-release-no-generate` · feature · 实现中 · feature/noticing-release-no-generate-g1 · 2026-11-19
+
+G1：发布构建里倾诉发送走不到可见生成。登记表 `releaseReach` + `check:generation-gate` + 打包闸。不删生成代码。不是句库、不是 R2L-02。
+
+### `noticing-label-disposition` · feature · Brief 已锁 · 代码旁支 feature/noticing-label-disposition · 2026-11-19
+
+PO 2026-11-19：取消「说不清」；高危不另造分类器；接住/邀坐不当成模型能分开的两类。Brief [`task-noticing-label-disposition.md`](../task-briefs/task-noticing-label-disposition.md)。不改金句正文。实验室四类夹具只作失败档案。
+
+### `noticing-one-line` · feature · 方向锁 #1777 · 实验室未过线 · PO 标签处置已锁 · 开门三份文档另片 · 2026-11-19
+
+路线 X：同一入口降为觉察一句。收回桌面现场生成。第一份安装包要开入口。代号待治理会话登记。开门门禁 v2 / 句库 / 结构零生成见 `noticing-open-gate-briefs`。不是 T98 再盘、不是打开自由聊天。分离试验真向量 `isolationPassed: false`。PO 2026-11-19：取消「说不清」；高危不另造分类器；接住/邀坐不当向量两类。Brief `task-noticing-label-disposition.md`。改名 #1782/#1783 已合；隐私 #1786 已合；Help catalog #1790 已合；R2L-02 #1791 已合。
+
+### `noticing-one-line-isolation-scores` · feature · 真向量已跑 · isolationPassed false · 2026-11-19
+
+分离试验真 embedding（现网 Qwen3-Embedding-0.6B）。摘要 [`fixtures/noticing-one-line-isolation-summary.json`](../../fixtures/noticing-one-line-isolation-summary.json)。四类质心分离未过；产品关键对 hold vs invite_sit 未过。凝聚过。非危机句对现网危机原型最大余弦 < 0.78。不得写成四类已分开。PO 2026-11-19 处置：取消 unclear；crisis 不并类；hold/invite 不当向量两类。发送链本刀不改。不是改名、不是 R2L-02。
+
+### `noticing-one-line-rename` · feature · 改名 Thought Drop / 觉察一句 · 生成不进气泡 · 2026-11-19
+
+第三步：可见名英文 Thought Drop、中文觉察一句；副标一次一句；桌面 generate 不进用户气泡。代码不删。不是分离试验、不是 R2L-02。
+
+### `noticing-open-gate-briefs` · feature · 附录 v0.3 · PO 语气已审 · G4 欠独立安全审 · 未改 src · 2026-11-19
+
+觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审已书面完成。独立安全审未过，不得接线。不是打开自由生成，不新开 T 号。
 
 ### `pro-addon-checkout-restore` · feature · 搁置 · PO 2026-11-19 关闭自由生成，暂停 Pro / 陪伴加购新结账 · 2026-11-19
 
 ~~英文 Confide 恢复后恢复新结账~~ → **已撤回**：与 [`task-plan-a-option1-confide-sale-gate.md`](../task-briefs/task-plan-a-option1-confide-sale-gate.md) 选项 1 对齐；客户端 `PLAN_A_OPTION1_STOP_NEW_CHECKOUT=true`、切片 `plan-a-option1-support-sale-stop.json`、Worker 缺 env 默认 410。
+
+### `r2l-02-narrow-confide-share` · feature · 实现中 · fix/r2l-02-narrow-confide-share · 2026-11-19
+
+R2L-02：390px 觉察一句发送钮被 `#ft-narrow-home-ctas` 挡住。本支只关三球点击，不抬倾诉卡 z。不是帮助中心旧名，不是四类向量路由。
+
+### `thought-drop-guest-help-kb-catalog` · feature · Brief 已锁窄口径 B · PO 点头 · #1786 已合 · 待实现旁支 · 2026-11-19
+
+路线 X 阶段 2：Help Center 与 KB catalog 对齐 Thought Drop / 觉察一句，并承认入口已开（一次一句、非生成、非解锁陪伴）。Brief [`task-thought-drop-guest-help-kb-catalog.md`](../task-briefs/task-thought-drop-guest-help-kb-catalog.md)。不是 Confide 发送链、不是付款面。
 
 ### `home-ux-h4` · feature · 进行中 · 旁支 feature/h4-support-deprioritize · 2026-11-18
 
