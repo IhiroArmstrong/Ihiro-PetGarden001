@@ -89,7 +89,7 @@
 | 份 | 状态 |
 |---|---|
 | 语气（PO） | 已书面完成（含 v0.3 本批） |
-| 安全（另一会话） | **已完成**（2026-11-19；[ findings ](../audit/findings/2026-11-19/noticing-fixed-line-library-g4-security-review.md)）。附录 v0.3 审稿期间未改 |
+| 安全（另一会话） | **已完成**（2026-11-19；[G4 安全审](../audit/findings/2026-11-19/noticing-fixed-line-library-g4-security-review.md)）。附录 v0.3 审稿期间未改 |
 
 建议以本附录 v0.3 为冻结候选（目标不晚于 11/26）。本会话收到安全审退回之前 **不再改附录**。安全审应覆盖新增 A-16–A-20、改写 B-09/B-10、新增 B-16–B-20；其余沿用已审原文。B-16「也没有任何问题」/ *perfectly fine* 贴近淡化，请安全审点名。
 
