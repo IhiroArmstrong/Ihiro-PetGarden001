@@ -101,7 +101,7 @@ describe('privacyNoticeCopy', () => {
     }
   });
 
-  it('en + ja confide privacy section is present', () => {
+  it('en + ja Thought Drop privacy section is present', () => {
     const en = loadLocale('en.json');
     const ja = loadLocale('ja.json');
     assert.match(en.PRIVACY_SHEET_SEC_CONFIDE_TITLE, /Thought Drop/);
