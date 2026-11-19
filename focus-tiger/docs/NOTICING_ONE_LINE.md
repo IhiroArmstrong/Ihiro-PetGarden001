@@ -99,20 +99,21 @@
 - 不得为刷漏接下调 0.78。  
 - 两版不得加总当一次过关。v1 统计下界未过；产品接受 ≠ 临床关单。
 
-**没有证明的（分离试验仍要做）：**
+**分离试验真向量（2026-11-19 · 已跑未过线）：**
 
-- 「接住 / 邀你坐 / 高危 / 说不清」四类在觉察、接纳、专注、公案这类近义句上能否分开。  
+- 现网 **Qwen3-Embedding-0.6B**。摘要 [`fixtures/noticing-one-line-isolation-summary.json`](../fixtures/noticing-one-line-isolation-summary.json) · `isolationPassed: false`。无原句。  
+- 四类标定各自凝聚过线；**任意两类质心分离全部失败**。产品关键对 **hold vs invite_sit** 失败。  
+- 非危机标定/复述对现网危机原型：36 句、0 次 ≥0.78（最大约 0.74）。高危仍走现网安全层，不另造分类器。  
+- **产品口径**：对外永远只留接住 / 邀你坐。禁止写成「四类已分开」。更多内部标签须新 Brief 且不得下调 0.78。  
 - T66 第二步已证明：静思近义句在同一套向量上板间过同质，阶段 B 未接 UI。本锁 **禁止** 另换 bge-m3 当第一版方案。  
 - 写题人不是执业临床。律师或关单若要独立临床审，这份不能代替。
-
-分离试验（无界面、第二步）：只用现网向量模型。分不开 → 对外永远只留接住 / 邀你坐。过线才允许更多内部标签。高危仍走现网安全层，不另造一套危险分类。
 
 ---
 
 ## 5. 三步（每步单独 PR，不顺手删生成代码）
 
 1. **本文件（本步）**：方向锁。  
-2. **分离试验**：无界面。Brief [`task-noticing-one-line-isolation.md`](./task-briefs/task-noticing-one-line-isolation.md)（过线已锁；PO 书面本步立刻开工）。真 embedding 实验室 `npm run audit:noticing-one-line-isolation`。未过线不得把四类写成已分开；分不开则对外只留接住 / 邀你坐。  
+2. **分离试验**：无界面。Brief [`task-noticing-one-line-isolation.md`](./task-briefs/task-noticing-one-line-isolation.md)。真 embedding 已跑，**未过线**（`isolationPassed: false`）。对外只留接住 / 邀你坐。不得把四类写成已分开。  
 3. **改名与一次一句界面**：英文 Thought Drop 已点头。可见名 + 副标 + 生成不进用户气泡见 Brief [`task-noticing-one-line-rename.md`](./task-briefs/task-noticing-one-line-rename.md)。生成代码仍保留、默认不走。
 
 字面检查管得到固定句；管不到现场生成——这是收回生成的产品理由之一。

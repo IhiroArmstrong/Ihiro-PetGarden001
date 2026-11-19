@@ -1,10 +1,10 @@
 # Task Brief · 觉察一句分离试验（无界面）
 
-> **状态**：PO 2026-11-19 书面：三步不变；本步立刻开工；Thought Drop 已同意（改名放第三步）；入口已开。Brief 不再等点头。  
+> **状态**：真向量已跑（2026-11-19）· `isolationPassed: false`。架子 #1781。Thought Drop 改名另步。入口已开。不得写成四类已分开。  
 > **代号**：`noticing-one-line`（方向锁未登记 T 号；实现旁支不得自编 T 号）  
 > **类**：**A 类**（影子 / 实验室。不改变用户看到的回复、等待或路由。）  
-> **依赖**：方向锁 [`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) 已合 #1777。  
-> **旁支**：`feature/noticing-one-line-isolation`  
+> **依赖**：方向锁 [`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) 已合 #1777。实验室架子已合 #1781。  
+> **旁支**：`docs/noticing-one-line-isolation-scores`  
 > **不是**：改名 / 一次一句界面 / 删生成代码 / T66 第二步板块 UI / 换 bge-m3 / 另造危险分类器 / 修 R2L-02 窄窗发送钮。
 
 ## 0. 大白话
@@ -92,7 +92,7 @@
 - 实验室：`cd focus-tiger && FT_SEMANTIC_ACCEPTANCE_NO_DOWNLOAD=1 npm run audit:noticing-one-line-isolation`（系统终端 / Metal）。  
 - `test:smoke` 绿。无新 e2e。  
 - TRACKER：仅单元/实验室覆盖。  
-- 真跑结果未进仓或 `isolationPassed:false` 时，文档不得写成「四类已分开」。
+- 真跑结果已进仓：[`fixtures/noticing-one-line-isolation-summary.json`](../../fixtures/noticing-one-line-isolation-summary.json) · `isolationPassed:false`。文档不得写成「四类已分开」。
 
 ## 后续（不在本 PR）
 
