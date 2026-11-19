@@ -3,6 +3,8 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+import { PLAN_A_OPTION1_STOP_NEW_CHECKOUT } from '../supportPaidCardPresentation.js';
+
 /**
  * Desktop on-device companion · Lifetime one-time add-on SKU (Plan A).
  *
@@ -64,5 +66,6 @@ export function companionAddonIsCatalogIsolated(catalog) {
  * @returns {boolean}
  */
 export function mayOfferCompanionLifetimeAddon({ lifetimeActive } = {}) {
+  if (PLAN_A_OPTION1_STOP_NEW_CHECKOUT) return false;
   return lifetimeActive === true;
 }

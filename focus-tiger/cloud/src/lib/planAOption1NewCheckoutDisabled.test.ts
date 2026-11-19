@@ -19,38 +19,30 @@ function isPlanAOption1NewCheckoutDisabled(env: {
 }): boolean {
 	try {
 		const raw = env?.PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED;
-		if (raw === "false" || raw === "0") return true;
 		if (raw === "true" || raw === "1") return false;
-		return false;
+		return true;
 	} catch {
 		return true;
 	}
 }
 
 describe("planAOption1NewCheckoutDisabled", () => {
-	it("helper fails closed only on env read errors", () => {
-		assert.match(helperSrc, /catch\s*\{[\s\S]*return true/);
-		assert.match(helperSrc, /return false;\s*\}\s*catch/);
+	it("helper defaults closed (missing env is fail-closed)", () => {
+		assert.match(helperSrc, /return true;\s*\}\s*catch/);
 		assert.match(helperSrc, /PLAN_A_NEW_CHECKOUT_ERROR/);
 	});
 
-	it("logic: missing env allows checkout (restored default)", () => {
-		assert.equal(isPlanAOption1NewCheckoutDisabled({}), false);
+	it("logic: missing or non-true env keeps checkout off", () => {
+		assert.equal(isPlanAOption1NewCheckoutDisabled({}), true);
 		assert.equal(
 			isPlanAOption1NewCheckoutDisabled({
 				PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED: "false",
 			}),
 			true,
 		);
-		assert.equal(
-			isPlanAOption1NewCheckoutDisabled({
-				PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED: "0",
-			}),
-			true,
-		);
 	});
 
-	it("logic: explicit true/1 also allows checkout", () => {
+	it("logic: explicit true/1 is the only reopen path", () => {
 		assert.equal(
 			isPlanAOption1NewCheckoutDisabled({
 				PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED: "true",
