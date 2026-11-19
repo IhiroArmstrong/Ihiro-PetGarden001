@@ -112,7 +112,7 @@
 ## 5. 三步（每步单独 PR，不顺手删生成代码）
 
 1. **本文件（本步）**：方向锁。  
-2. **分离试验**：无界面。过线标准写进该步 Brief，点头后再跑。  
+2. **分离试验**：无界面。Brief [`task-noticing-one-line-isolation.md`](./task-briefs/task-noticing-one-line-isolation.md)（过线已锁；PO 书面本步立刻开工）。真 embedding 实验室 `npm run audit:noticing-one-line-isolation`。未过线不得把四类写成已分开。  
 3. **改名与一次一句界面**：固定句你们定稿后才切可见名；生成代码仍保留、默认不走。
 
 字面检查管得到固定句；管不到现场生成——这是收回生成的产品理由之一。
