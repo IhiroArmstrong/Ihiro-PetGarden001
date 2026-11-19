@@ -1,7 +1,7 @@
 ---
 id: noticing-label-disposition
 kind: feature
-status: Brief 已锁 · 代码刀待合
+status: Brief 已锁 · 代码旁支 feature/noticing-label-disposition
 updated: 2026-11-19
 ---
 

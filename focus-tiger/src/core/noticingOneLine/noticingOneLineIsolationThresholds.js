@@ -8,6 +8,7 @@ import { DEFAULT_CONFIDE_SEMANTIC_CRISIS_COSINE } from '../confide/confideSemant
 /** @readonly */
 export const NOTICING_ONE_LINE_ISOLATION = Object.freeze({
   brief: 'noticing-one-line-isolation',
+  /** Failed four-class lab archive. Product routing uses noticingLabelDisposition. */
   embeddingModel: 'Qwen3-Embedding-0.6B',
   minCalibrationPerClass: 8,
   minParaphrasePerNonCrisisClass: 4,
