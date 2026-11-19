@@ -1,0 +1,1 @@
+| 觉察一句标签处置（文档锁） | 文档 | 仅单元测试覆盖 | 口径：取消「说不清」；高危走现网安全层；接住/邀坐不走向量分类。本片无界面。代码锁见下一刀 `noticing-label-disposition`。 | — | — | — | Brief [`task-noticing-label-disposition.md`](../task-briefs/task-noticing-label-disposition.md) | 2026-11-19 |
