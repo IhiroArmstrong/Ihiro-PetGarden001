@@ -79,7 +79,7 @@
 | （本 Version `2e94d4c0` 起）漏斗 ingest layout / YPE L2 ingest / Pro+Add-on Checkout / `pageOrigin` 回跳 | 2026-09-01 本机 Redeploy 已从 `fix/overlay-three-questions` 上传；Safari 结账回跳仍须人工 |
 | 请茶 `STRIPE_PRICE_ID` US$4.99 | 2026-08-20 起已在生产 vars |
 - **切 Live 前（客户端）**：`npm run build` 后须 `npm run build:verify-no-qa-boot`；`desktop/scripts/pack.js` 在 `FT_QA_BOOT`/`VITE_FT_QA_BOOT` 为开时拒绝打包（见 `scripts/release-build-qa-guard.test.js`）。
-| Plan A 新结账闸 + 9-15b | **develop（2026-11-19）**：源码默认**拒绝** Pro / 加购新结账（缺 env 或 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED` 非 `true|1` → 410）。仅显式 `true|1` 时允许。客户端 `PLAN_A_OPTION1_STOP_NEW_CHECKOUT=true` 隐藏第四 / 五卡。生产 Worker 须 redeploy 后线上才与源码一致。会员门户未关。请茶 / 会员 / 圣所新结账不在这道闸里 |
+| Plan A 新结账闸 + 9-15b | **生产已部署** Version `bdd3b68a-df8d-439f-92d3-b89c330c71a2`（2026-11-19）；HTTP 探针：Pro/加购 checkout POST → **410** `plan_a_new_checkout_disabled`。缺 env 默认关；仅 `PLAN_A_OPTION1_NEW_CHECKOUT_ENABLED=true|1` 可重开。客户端藏第四/五卡。会员门户未关。 |
 | T93 D2 practice-backup 源码默认开闸 | **已部署** Version `3c393134`。缺 `PRACTICE_BACKUP_WRITES_DISABLED` 时 OTP/快照路由允许。审计环境可设该变量保持 410。 |
 
 ---

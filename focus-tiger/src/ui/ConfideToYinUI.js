@@ -121,6 +121,7 @@ import {
   formatHelpCenterExcerpt
 } from '../core/confide/confideHelpCenterExcerpt.js';
 import { findHelpCenterArticle } from '../core/helpCenterCatalog.js';
+import { noticingOneLineAllowsDesktopGenerate } from '../core/confide/noticingOneLineGenerateGate.js';
 import { buildConfideReadHybridPrompt } from '../core/confide/confideToolCallParse.js';
 import {
   readYpeCompanionStyle,
@@ -2509,6 +2510,7 @@ export class ConfideToYinUI {
       return 'sync';
     }
     const wantGenerate =
+      noticingOneLineAllowsDesktopGenerate() &&
       ypeMayUseCompanionGenerate({
         route: hit.route,
         generateEnabled: Boolean(this._companionStatus?.generateEnabled),

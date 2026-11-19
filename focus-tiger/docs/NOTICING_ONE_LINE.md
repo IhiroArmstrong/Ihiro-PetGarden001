@@ -69,7 +69,7 @@
 | 语言 | 本锁 |
 |---|---|
 | 中文 | **觉察一句**。不用「留言板」「倾诉」「Chat」。 |
-| 英文 | **建议（待点头）：Thought Drop**。菜单短名；副标另写一句降低预期。 |
+| 英文 | **Thought Drop**（PO 2026-11-19 点头）。菜单短名；副标降低预期。 |
 | 日文 | 入口仍隐。打开日另定，不在本锁发明。 |
 | 代码 | `confide*` 标识符与 `data-testid` 不改，除非单独 Brief。 |
 
@@ -112,8 +112,8 @@
 ## 5. 三步（每步单独 PR，不顺手删生成代码）
 
 1. **本文件（本步）**：方向锁。  
-2. **分离试验**：无界面。Brief [`task-noticing-one-line-isolation.md`](./task-briefs/task-noticing-one-line-isolation.md)（过线已锁；PO 书面本步立刻开工）。真 embedding 实验室 `npm run audit:noticing-one-line-isolation`。未过线不得把四类写成已分开。  
-3. **改名与一次一句界面**：固定句你们定稿后才切可见名；生成代码仍保留、默认不走。
+2. **分离试验**：无界面。Brief [`task-noticing-one-line-isolation.md`](./task-briefs/task-noticing-one-line-isolation.md)（过线已锁；PO 书面本步立刻开工）。真 embedding 实验室 `npm run audit:noticing-one-line-isolation`。未过线不得把四类写成已分开；分不开则对外只留接住 / 邀你坐。  
+3. **改名与一次一句界面**：英文 Thought Drop 已点头。可见名 + 副标 + 生成不进用户气泡见 Brief [`task-noticing-one-line-rename.md`](./task-briefs/task-noticing-one-line-rename.md)。生成代码仍保留、默认不走。
 
 字面检查管得到固定句；管不到现场生成——这是收回生成的产品理由之一。
 

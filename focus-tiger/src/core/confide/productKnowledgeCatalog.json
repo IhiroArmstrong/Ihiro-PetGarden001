@@ -351,7 +351,10 @@
     },
     {
       "id": "KB-FUNC-0020",
-      "factKeyEn": "Where do I open Honesty Check-in to record quiet time I already did elsewhere?",
+      "factKeyEn": [
+        "Where do I open Honesty Check-in to record quiet time I already did elsewhere?",
+        "How do I open Honesty Check-in to record quiet time I already did elsewhere?"
+      ],
       "askRoleShapes": [
         "where",
         "how"
@@ -773,7 +776,10 @@
     },
     {
       "id": "KB-FUNC-0037",
-      "factKeyEn": "Where is the idle-screen control that turns background music or ambient sound on or off?",
+      "factKeyEn": [
+        "Where is the idle-screen control that turns background music or ambient sound on or off?",
+        "How do I turn background music or ambient sound on or off from the idle screen?"
+      ],
       "askRoleShapes": [
         "where",
         "how"
@@ -791,7 +797,10 @@
     },
     {
       "id": "KB-FUNC-0038",
-      "factKeyEn": "Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in?",
+      "factKeyEn": [
+        "Is Honesty Check-in or a daily streak required, or can I sit with Yin without checking in?",
+        "Do I have to check in or keep a streak, or is sitting with Yin optional?"
+      ],
       "askRoleShapes": [
         "whether-required"
       ],
