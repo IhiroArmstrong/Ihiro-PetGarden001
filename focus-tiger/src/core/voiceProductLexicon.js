@@ -19,6 +19,7 @@ export const VOICE_PRODUCT_CONTEXTUAL_STRINGS = Object.freeze([
   'Samatia',
   'Confide',
   'Chat with Yin',
+  'Thought Drop',
   'Sanctuary',
   'Quiet Together',
   'Focus Circle',

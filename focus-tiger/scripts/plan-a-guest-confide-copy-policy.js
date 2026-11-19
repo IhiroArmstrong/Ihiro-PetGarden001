@@ -10,6 +10,9 @@
 /** Keys that are short labels / section titles — not purchase promises by themselves. */
 export const PLAN_A_KEY_LABEL_ALLOWLIST = new Set([
   'HELP_CENTER_SECTION_COMPANION',
+  'HELP_CENTER_ARTICLE_KB_FUNC_0005_TITLE',
+  'HELP_CENTER_ARTICLE_KB_FUNC_0010_TITLE',
+  'HELP_CENTER_ARTICLE_KB_FUNC_0016_TITLE',
   'SUPPORT_COMPANION_ADDON_TITLE',
   'SUPPORT_COMPANION_ADDON_IMG_ALT',
   'HINT_APP_PURPOSE_DESKTOP_RAM_TITLE'
@@ -25,7 +28,7 @@ export const PLAN_A_GUEST_COPY_KEY_PREFIXES = [
 
 /** @type {RegExp} */
 export const PLAN_A_CONFIDE_TOPIC_RE =
-  /confide|倾诉|コンファイド|Chat with Yin|寅と話す|和阿寅聊聊|local ai|本机.*(倾诉|陪伴|模型|生成|和阿寅聊聊)|端末内.*(ai|コンパニオン|生成)|companion add-on|ai companion|unlock.*companion|companion.*unlock|向阿寅倾诉|unlock it.*yin/i;
+  /confide|倾诉|コンファイド|Chat with Yin|Thought Drop|寅と話す|和阿寅聊聊|觉察一句|local ai|本机.*(倾诉|陪伴|模型|生成|和阿寅聊聊|觉察一句)|端末内.*(ai|コンパニオン|生成)|companion add-on|ai companion|unlock.*companion|companion.*unlock|向阿寅倾诉|unlock it.*yin/i;
 
 /** @type {RegExp[]} */
 export const PLAN_A_SAFE_PHRASES = [
@@ -65,7 +68,15 @@ export const PLAN_A_SAFE_PHRASES = [
   /does not read them aloud in Chat with Yin/i,
   /hides the entry by default/i,
   /入口を出しません/,
-  /初期状態で入口/
+  /初期状態で入口/,
+  /not a conversation/i,
+  /does not write into the bubble/i,
+  /one passing thought/i,
+  /fixed lines/i,
+  /不是对话/,
+  /不把模型现场写/,
+  /一次一句/,
+  /固定句/
 ];
 
 /** @type {RegExp[]} */

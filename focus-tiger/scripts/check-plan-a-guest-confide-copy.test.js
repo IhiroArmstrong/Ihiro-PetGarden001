@@ -49,6 +49,23 @@ describe('plan-a guest confide copy policy', () => {
     );
   });
 
+  it('accepts Thought Drop open-as-one-thought caveat (narrow B)', () => {
+    assert.equal(
+      assessPlanAGuestConfideLine(
+        'HELP_CENTER_INTRO',
+        'Thought Drop is open: leave one passing thought — not a conversation, and the desktop model does not write into the bubble.'
+      ).ok,
+      true
+    );
+    assert.equal(
+      assessPlanAGuestConfideLine(
+        'HELP_CENTER_INTRO',
+        '觉察一句入口已开：留下一闪而过的念头——不是对话，桌面模型不会把现场生成写进气泡。'
+      ).ok,
+      true
+    );
+  });
+
   it('rejects new-name immediately-available promises without a caveat', () => {
     assert.equal(
       assessPlanAGuestConfideLine(

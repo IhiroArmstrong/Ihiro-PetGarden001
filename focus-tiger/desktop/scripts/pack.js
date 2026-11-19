@@ -88,6 +88,18 @@ const verifyFeed = spawnSync('npm', ['run', 'build:verify-update-feed'], {
 });
 if (verifyFeed.status !== 0) process.exit(verifyFeed.status ?? 1);
 
+const verifyNoGenerate = spawnSync(
+  'npm',
+  ['run', 'build:verify-confide-release-no-generate'],
+  {
+    cwd: focusTigerRoot,
+    stdio: 'inherit',
+    env: process.env,
+    shell: process.platform === 'win32'
+  }
+);
+if (verifyNoGenerate.status !== 0) process.exit(verifyNoGenerate.status ?? 1);
+
 const probePack = process.env.FT_T95_PACK_PROBE === '1';
 const builderEnv = { ...process.env };
 const canSignWithDeveloperId = hasDeveloperIdApplicationIdentity(

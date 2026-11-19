@@ -141,7 +141,7 @@
 | **28** | `src/ui/OnboardingHintsUI.js` | Hints 目录芯片（`.ft-hint-catalog-chip`，如「More tips」） |
 | **29** | `src/ui/OnboardingHintsUI.js` | 应用内隐私说明（`#onboarding-privacy-sheet`；高于简介卡） |
 | **29** | `src/ui/OnboardingHintsUI.js` | Wellness QA 卡（`#onboarding-wellness-first`；仅 `?wellnessFirst=1`；与 Privacy Sheet 同带） |
-| **30** | `src/ui/NarrowIdleShell.js` | NarrowIdleShell 固定壳（ActionBar / 抽屉 / 主屏三球）；须高于 Ambient(22) 才能点 ♪ / ? |
+| **30** | `src/ui/NarrowIdleShell.js` | NarrowIdleShell 固定壳（ActionBar / 抽屉 / 主屏三球）；须高于 Ambient(22) 才能点 ♪ / ?。**R2L-02**：`#confide-to-yin-card.is-visible` 时 `#ft-narrow-home-ctas` `pointer-events: none`（不抬倾诉卡 z，避免压 Support 25/26） |
 | **32** | `src/ui/NarrowIdleShell.js` | 窄屏 stage：Companion dock / Reminder 热力图簇 / Soundscape chrome 抬到壳之上 |
 | **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Sound：Soundscape chrome 抬到菜单之上 |
 | **32** | `src/ui/WideIdleMoreMenu.js` | 宽屏 stage Reminder：热力图簇 staging（面板本身见下行 **35**） |

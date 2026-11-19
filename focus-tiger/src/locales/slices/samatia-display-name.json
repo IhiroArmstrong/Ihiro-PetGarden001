@@ -13,7 +13,7 @@
     "PRIVACY_SHEET_FULL_LEAD": "Below is the full privacy notice for Samatia (plain language), aligned with our published policy.",
     "SUPPORT_DESKTOP_RAM_NOTE": "Note: On Mac and Windows PCs with 8 GB of RAM or less, the optional on-device companion can add heavy memory pressure and may slow the whole app. We do not recommend that companion on those machines. Samatia hides the entry by default.",
     "SUPPORT_PRO_TITLE": "Samatia Pro",
-    "SUPPORT_WEB_LOCAL_AI_NOTE": "On-device Local AI will run in the desktop app when Chat with Yin opens for guests. It is not open in this release; this browser cannot start it.",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "On-device Local AI will run in the desktop app when Thought Drop needs on-device generation. Generation is not open in this release; this browser cannot start it. Thought Drop still uses fixed lines — not a conversation.",
     "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
   },
   "zh": {
@@ -30,7 +30,7 @@
     "PRIVACY_SHEET_FULL_LEAD": "以下为 Samatia 完整隐私声明（通俗表述），与公开发布的政策正文一致。",
     "SUPPORT_DESKTOP_RAM_NOTE": "提示：内存在 8GB 及以下的 Mac 与 Windows 电脑上，可选的端侧陪伴可能造成较大内存压力，甚至拖慢整个应用。不建议在这些机器上使用该陪伴；Samatia 默认隐藏入口。",
     "SUPPORT_PRO_TITLE": "Samatia Pro",
-    "SUPPORT_WEB_LOCAL_AI_NOTE": "本机 Local AI 将在和阿寅聊聊对客人开放后于桌面应用运行。本版本尚未开放；此浏览器无法启动。",
+    "SUPPORT_WEB_LOCAL_AI_NOTE": "本机 Local AI 现场生成仍未开放；此浏览器无法启动。觉察一句仍用固定句——不是对话。",
     "HINT_APP_PURPOSE_PRONUNCIATION": "Pronounced sa-MAH-tee-ah"
   },
   "ja": {

@@ -1,0 +1,115 @@
+{
+  "brief": "noticing-one-line-isolation",
+  "isolationPassed": false,
+  "note": "Lab run 2026-11-19 on Qwen3-Embedding-0.6B-Q8_0. No utterances. Fail → outward labels stay hold / invite_sit only; do not claim four classes separated.",
+  "failures": [
+    "separation:hold:invite_sit",
+    "separation:hold:unclear",
+    "separation:hold:crisis",
+    "separation:invite_sit:unclear",
+    "separation:invite_sit:crisis",
+    "separation:unclear:crisis",
+    "separation:hold:invite_sit:product_critical"
+  ],
+  "classes": [
+    {
+      "id": "hold",
+      "calibrationCount": 8,
+      "paraphraseCount": 4,
+      "cohesionMeanPairwiseCosine": 0.6862999393944301,
+      "cohesionPass": true
+    },
+    {
+      "id": "invite_sit",
+      "calibrationCount": 8,
+      "paraphraseCount": 4,
+      "cohesionMeanPairwiseCosine": 0.6854886649190879,
+      "cohesionPass": true
+    },
+    {
+      "id": "unclear",
+      "calibrationCount": 8,
+      "paraphraseCount": 4,
+      "cohesionMeanPairwiseCosine": 0.6840416843382082,
+      "cohesionPass": true
+    },
+    {
+      "id": "crisis",
+      "calibrationCount": 15,
+      "paraphraseCount": 0,
+      "cohesionMeanPairwiseCosine": 0.7291829388259898,
+      "cohesionPass": true
+    }
+  ],
+  "separations": [
+    {
+      "a": "hold",
+      "b": "invite_sit",
+      "centroidCosine": 0.8961096189099192,
+      "maxAllowedCentroidCosine": 0.5854886649190879,
+      "pass": false
+    },
+    {
+      "a": "hold",
+      "b": "unclear",
+      "centroidCosine": 0.9477722687333912,
+      "maxAllowedCentroidCosine": 0.5840416843382082,
+      "pass": false
+    },
+    {
+      "a": "hold",
+      "b": "crisis",
+      "centroidCosine": 0.7903711223910224,
+      "maxAllowedCentroidCosine": 0.5862999393944301,
+      "pass": false
+    },
+    {
+      "a": "invite_sit",
+      "b": "unclear",
+      "centroidCosine": 0.8917725046392276,
+      "maxAllowedCentroidCosine": 0.5840416843382082,
+      "pass": false
+    },
+    {
+      "a": "invite_sit",
+      "b": "crisis",
+      "centroidCosine": 0.7427843090790609,
+      "maxAllowedCentroidCosine": 0.5854886649190879,
+      "pass": false
+    },
+    {
+      "a": "unclear",
+      "b": "crisis",
+      "centroidCosine": 0.7725126183104751,
+      "maxAllowedCentroidCosine": 0.5840416843382082,
+      "pass": false
+    }
+  ],
+  "productCriticalSeparation": {
+    "a": "hold",
+    "b": "invite_sit",
+    "centroidCosine": 0.8961096189099192,
+    "maxAllowedCentroidCosine": 0.5854886649190879,
+    "pass": false
+  },
+  "crisisFalsePositive": {
+    "scored": 36,
+    "hits": 0,
+    "maxCosine": 0.7375058402900503,
+    "threshold": 0.78,
+    "pass": true
+  },
+  "thresholds": {
+    "brief": "noticing-one-line-isolation",
+    "embeddingModel": "Qwen3-Embedding-0.6B",
+    "minCalibrationPerClass": 8,
+    "minParaphrasePerNonCrisisClass": 4,
+    "cohesionMinMeanPairwiseCosine": 0.4,
+    "separationMarginBelowMinCohesion": 0.1,
+    "productCriticalPair": ["hold", "invite_sit"],
+    "crisisClassId": "crisis",
+    "crisisFalsePositiveMaxCosine": 0.78
+  },
+  "generatedAt": "2026-11-19T08:21:27.699Z",
+  "embeddingModel": "Qwen3-Embedding-0.6B-Q8_0.gguf"
+}

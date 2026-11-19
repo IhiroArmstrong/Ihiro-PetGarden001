@@ -110,7 +110,8 @@ export function parseGenerationSurfaces(text) {
     rows.push({
       pathId: rec.pathId,
       anchor: rec.anchor || '',
-      visible: rec.visible || ''
+      visible: rec.visible || '',
+      releaseReach: rec.releaseReach || ''
     });
   }
   return rows;
@@ -209,6 +210,89 @@ export function diffPromptSites(sites, rows) {
   return { missingFromTable, missingFromCode, anchors };
 }
 
+/** Confide rows that still exist as visible generate code, but must not be reachable in a release pack. */
+export const CONFIDE_RELEASE_UNREACHABLE_PATH_IDS = Object.freeze([
+  'confide-observe-l3',
+  'confide-chat-l3',
+  'confide-observe-retry'
+]);
+
+/**
+ * G1: production send path cannot reach user-visible generate.
+ * Binary. Does not sample replies and does not delete generate code.
+ *
+ * @param {{
+ *   rows: Array<{ pathId: string, visible: string, releaseReach: string }>,
+ *   root?: string
+ * }} opts
+ * @returns {string[]}
+ */
+export function collectReleaseNoGenerateErrors(opts) {
+  const root = opts.root || PKG_ROOT;
+  const rows = opts.rows || [];
+  /** @type {string[]} */
+  const errors = [];
+  for (const id of CONFIDE_RELEASE_UNREACHABLE_PATH_IDS) {
+    const row = rows.find((item) => item.pathId === id);
+    if (!row) {
+      errors.push(`missing-row ${id}`);
+      continue;
+    }
+    if (row.visible !== 'yes') {
+      errors.push(`${id} visible must stay yes (code remains; gate is dormant)`);
+    }
+    if (row.releaseReach !== 'no') {
+      errors.push(`${id} releaseReach must be no`);
+    }
+  }
+  const reflection = rows.find((item) => item.pathId === 'reflection-companion');
+  if (reflection && reflection.releaseReach !== 'lab') {
+    errors.push('reflection-companion releaseReach must be lab');
+  }
+  let gateSrc = '';
+  try {
+    gateSrc = readFileSync(join(root, 'src/core/confide/noticingOneLineGenerateGate.js'), 'utf8');
+  } catch {
+    errors.push('missing noticingOneLineGenerateGate.js');
+    return errors;
+  }
+  if (/\bprocess\.env\b/.test(gateSrc)) {
+    errors.push('noticingOneLineGenerateGate must not flip from process.env');
+  }
+  if (
+    !/export function noticingOneLineAllowsDesktopGenerate\(\) \{\s*return false;\s*\}/.test(
+      gateSrc
+    )
+  ) {
+    errors.push('noticingOneLineAllowsDesktopGenerate must return false with no env flip');
+  }
+  let uiSrc = '';
+  try {
+    uiSrc = readFileSync(join(root, 'src/ui/ConfideToYinUI.js'), 'utf8');
+  } catch {
+    errors.push('missing ConfideToYinUI.js');
+    return errors;
+  }
+  if (!/wantGenerate =\s*noticingOneLineAllowsDesktopGenerate\(\) &&/.test(uiSrc)) {
+    errors.push('Confide send path must AND noticingOneLineAllowsDesktopGenerate()');
+  }
+  const l3Calls = uiSrc.match(/this\._runL3Generate\s*\(/g) || [];
+  if (l3Calls.length !== 2) {
+    errors.push(`ConfideToYinUI _runL3Generate call count ${l3Calls.length} (expected 2)`);
+  }
+  let packSrc = '';
+  try {
+    packSrc = readFileSync(join(root, 'desktop/scripts/pack.js'), 'utf8');
+  } catch {
+    errors.push('missing desktop/scripts/pack.js');
+    return errors;
+  }
+  if (!/build:verify-confide-release-no-generate/.test(packSrc)) {
+    errors.push('desktop pack must run build:verify-confide-release-no-generate');
+  }
+  return errors;
+}
+
 /**
  * @param {{ check?: boolean, root?: string, docText?: string }} [opts]
  * @returns {{ exitCode: number, lines: string[] }}
@@ -224,7 +308,7 @@ export function runGenerationGateReport(opts = {}) {
   const wrapperSet = new Set(wrappers);
   const wrapperMissingFromTable = scanned.wrapperSites.filter((site) => !wrapperSet.has(site));
   const wrapperMissingFromCode = wrappers.filter((site) => !scanned.wrapperSites.includes(site));
-  const drift =
+  let drift =
     diff.missingFromTable.length +
     diff.missingFromCode.length +
     wrapperMissingFromTable.length +
@@ -242,6 +326,8 @@ export function runGenerationGateReport(opts = {}) {
   if (!productWired) {
     drift += 1;
   }
+  const releaseErrors = collectReleaseNoGenerateErrors({ rows, root });
+  drift += releaseErrors.length;
   lines.push(`[generation-gate] mode=${opts.check ? 'check' : 'report'}`);
   lines.push(`[generation-gate] surfaces=${rows.length}`);
   lines.push(`[generation-gate] prompt-sites=${scanned.promptSites.length}`);
@@ -270,12 +356,18 @@ export function runGenerationGateReport(opts = {}) {
       : '[generation-gate] product-generate=unwired'
   );
   lines.push(
+    releaseErrors.length === 0
+      ? '[generation-gate] release-no-generate=ok'
+      : `[generation-gate] release-no-generate=fail ${releaseErrors.length}`
+  );
+  for (const err of releaseErrors) lines.push(`  g1 ${err}`);
+  lines.push(
     drift === 0
       ? '[generation-gate] drift=0'
       : `[generation-gate] drift=${drift}${opts.check ? '' : ' (report-only; --check exits 1)'}`
   );
   const exitCode = opts.check && drift > 0 ? 1 : 0;
-  return { exitCode, lines, drift, scanned, rows, diff };
+  return { exitCode, lines, drift, scanned, rows, diff, releaseErrors };
 }
 
 const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];

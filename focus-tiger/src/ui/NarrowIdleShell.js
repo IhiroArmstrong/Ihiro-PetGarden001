@@ -705,7 +705,8 @@ export class NarrowIdleShell {
       this._confideTip = attachGlassHoverTip(confideBtn, {
         placement: 'bottom',
         tipId: 'ft-narrow-confide-tip',
-        text: t('CONFIDE_EAR_TOOLTIP')
+        text: t('CONFIDE_EAR_TOOLTIP'),
+        multiline: true
       });
     }
     const muteBtn = this.actionBar?.querySelector('#ft-narrow-mute-btn');
@@ -1519,6 +1520,12 @@ export class NarrowIdleShell {
         display: none !important;
       }
       .ft-narrow-idle-shell.is-sheet-open .ft-narrow-home-ctas {
+        visibility: hidden;
+        pointer-events: none;
+      }
+      /* R2L-02: NarrowIdleShell is z30 on body; Confide lives in #ui-overlay z10.
+         Do not raise the card (Support stack). Hide home balls while the card is open. */
+      body:has(#confide-to-yin-card.is-visible) .ft-narrow-home-ctas {
         visibility: hidden;
         pointer-events: none;
       }

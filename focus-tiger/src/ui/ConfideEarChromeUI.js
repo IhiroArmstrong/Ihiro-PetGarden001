@@ -168,9 +168,9 @@ export class ConfideEarChromeUI {
         left: calc(100% + 8px);
         top: 50%;
         transform: translateY(-50%) translateX(-4px);
-        max-width: min(220px, calc(100vw - 86px));
-        padding: 5px 10px;
-        border-radius: 999px;
+        max-width: min(240px, calc(100vw - 86px));
+        padding: 6px 11px;
+        border-radius: 12px;
         border: 1px solid rgba(139, 115, 85, 0.14);
         background: rgba(255, 252, 245, 0.62);
         backdrop-filter: blur(8px);
@@ -180,8 +180,9 @@ export class ConfideEarChromeUI {
         font-size: 12px;
         font-weight: 500;
         letter-spacing: 0.01em;
-        line-height: 1.3;
-        white-space: nowrap;
+        line-height: 1.35;
+        white-space: normal;
+        text-wrap: balance;
         pointer-events: none;
         opacity: 0;
         transition: opacity 180ms ease, transform 180ms ease;
