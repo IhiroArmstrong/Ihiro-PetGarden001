@@ -111,6 +111,33 @@ describe('privacyNoticeCopy', () => {
     assert.doesNotMatch(en.PRIVACY_SHEET_CONFIDE_CONSENT, /988|911/);
   });
 
+  it('en + zh privacy, backup, and local-data labels use Thought Drop visible name', () => {
+    const en = loadLocale('en.json');
+    const zh = loadLocale('zh.json');
+    const enKeys = [
+      'PRIVACY_SHEET_EXPORT_IMPORT',
+      'PRIVACY_SHEET_AI_INFERENCE',
+      'PRIVACY_SHEET_CLOUD_GATE_ON',
+      'LOCAL_DATA_CAT_CONFIDE_TURNS',
+      'YIN_MEMORY_PANEL_EMPTY'
+    ];
+    for (const key of enKeys) {
+      assert.match(en[key], /Thought Drop/, `${key} should name Thought Drop`);
+      assert.doesNotMatch(en[key], /Chat with Yin/, `${key} should not say Chat with Yin`);
+    }
+    const zhKeys = [
+      'PRIVACY_SHEET_EXPORT_IMPORT',
+      'PRIVACY_SHEET_AI_INFERENCE',
+      'PRIVACY_SHEET_CLOUD_GATE_ON',
+      'LOCAL_DATA_CAT_CONFIDE_TURNS',
+      'YIN_MEMORY_PANEL_EMPTY'
+    ];
+    for (const key of zhKeys) {
+      assert.match(zh[key], /觉察一句/, `${key} should name 觉察一句`);
+      assert.doesNotMatch(zh[key], /和阿寅聊聊/, `${key} should not say 和阿寅聊聊`);
+    }
+  });
+
   it('en + ja wellness disclaimer states practice, not clinical care', () => {
     const en = loadLocale('en.json');
     const ja = loadLocale('ja.json');
