@@ -63,6 +63,8 @@ focus-tiger/art-reference/models/sources/*
 /*.rtf
 # Mood-veto zh devset SSOT is focus-tiger/fixtures/ — never a second copy at repo root
 /confide-mood-veto-devset-zh-v1.json
+# Crisis unseen candidate drafts stay off-repo (utterances, not product copy)
+/confide-crisis-unseen-*.json
 
 # Worktree session occupancy lock (Agent; never commit)
 .ft-session-lock
