@@ -705,7 +705,8 @@ export class NarrowIdleShell {
       this._confideTip = attachGlassHoverTip(confideBtn, {
         placement: 'bottom',
         tipId: 'ft-narrow-confide-tip',
-        text: t('CONFIDE_EAR_TOOLTIP')
+        text: t('CONFIDE_EAR_TOOLTIP'),
+        multiline: true
       });
     }
     const muteBtn = this.actionBar?.querySelector('#ft-narrow-mute-btn');
