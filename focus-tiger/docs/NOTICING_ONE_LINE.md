@@ -117,7 +117,7 @@
 3. **改名与一次一句界面**：英文 Thought Drop 已点头。可见名 + 副标 + 生成不进用户气泡见 Brief [`task-noticing-one-line-rename.md`](./task-briefs/task-noticing-one-line-rename.md)。固定句你们定稿后才切可见名；生成代码仍保留、默认不走。  
 4. **标签处置锁代码**：Brief [`task-noticing-label-disposition.md`](./task-briefs/task-noticing-label-disposition.md)。不改用户看见的句库内容；只禁止向量分接住/邀坐、禁止复活「说不清」、禁止另造高危分类器。
 
-开门四闸与 12/5 失败即关门：[`audit/first-package-open-gate-v2.md`](./audit/first-package-open-gate-v2.md)。  
+开门四闸与 12/5 判定（红记残余、**永不藏入口**）：[`audit/first-package-open-gate-v2.md`](./audit/first-package-open-gate-v2.md)。  
 句库 Brief（含 v0.2 草稿）：[`task-briefs/task-noticing-fixed-line-library.md`](./task-briefs/task-noticing-fixed-line-library.md)。  
 结构零生成 Brief：[`task-briefs/task-noticing-no-generate-invariant.md`](./task-briefs/task-noticing-no-generate-invariant.md)。
 
