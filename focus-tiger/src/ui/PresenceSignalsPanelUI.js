@@ -395,10 +395,10 @@ export class PresenceSignalsPanelUI {
       @media (min-width: 480px) {
         .presence-signals-panel {
           top: max(16px, env(safe-area-inset-top, 0px));
+          left: auto;
           right: max(12px, env(safe-area-inset-right, 0px));
           bottom: max(108px, calc(env(safe-area-inset-bottom, 0px) + 96px));
-          left: max(56vw, calc(100vw - 360px));
-          width: auto;
+          width: min(360px, calc(100vw - 48px));
           max-height: none;
           transform: translate(12px, 0);
         }

@@ -19,7 +19,9 @@ test('Presence panel uses sanctuary glass and right dock on wide', () => {
   assert.doesNotMatch(src, /PAPER_FILL/);
   assert.doesNotMatch(src, /rgba\(255, 249, 240, 0\.98\)/);
   assert.match(src, /@media \(min-width: 480px\)/);
-  assert.match(src, /left: max\(56vw, calc\(100vw - 360px\)\)/);
+  assert.match(src, /left: auto;/);
+  assert.match(src, /width: min\(360px, calc\(100vw - 48px\)\)/);
+  assert.doesNotMatch(src, /width: auto;/);
 });
 
 test('Presence delete is behind overflow menu, not a row button', () => {

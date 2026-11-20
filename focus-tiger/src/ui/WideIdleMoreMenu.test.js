@@ -112,6 +112,16 @@ describe('wide more menu click reception', () => {
     assert.match(src, /aria-expanded/);
   });
 
+  it('radial group sheet hides section header that duplicates the sheet title', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /skipRadialDuplicateHeader/);
+    assert.match(
+      src,
+      /item\.labelKey === this\._activeListGroup/
+    );
+  });
+
   it('radial group list orphans rows when a non-active group label is skipped', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
