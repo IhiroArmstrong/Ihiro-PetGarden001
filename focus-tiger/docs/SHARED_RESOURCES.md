@@ -288,7 +288,7 @@ UI：Idle 常驻 `#weekly-practice-heatmap`（亮 = `null \|\| >0`）；非 Idle
 | 微仪式 `MicroRitualUI` | `phase === 'breath'` | `getElapsedSeconds()` / `getProgress()` | `microBreathing` → `overlayBreathing` |
 | 进阶仪式 `RitualFlowUI`（Morning / Emotional Reset / Work Transition） | `isBreathing()` | `getElapsedSeconds()` / `getProgress()` | `ritualBreathing` → `overlayBreathing` |
 | 正式 Focus 会话 | `FocusSession` focusing | 会话 elapsed / target | 非 overlay 路径（既有 HUD） |
-| T79 带着问题坐一会儿 | `ContemplativeInquiryUI.isSitting()`（仅非 Focusing，避免叠两套计时） | `getElapsedSeconds()` / `getProgress()` / 5 分钟墙钟 | `inquirySitting` → `overlayBreathing`；HUD `liveClockOverlay: false` 走 T45 静坐画面（藏跳动数字）；**不**写入练习日 / Focus 芯片 |
+| T79 带着问题坐一会儿 | `ContemplativeInquiryUI.isSitting()`（仅非 Focusing，避免叠两套计时） | `getElapsedSeconds()` / `getProgress()` / 5 分钟墙钟 | `inquirySitting` → `overlayBreathing`；**不**写入练习日 / Focus 芯片 |
 
 契约锁（源码字符串）：`ritualFlowHudWiring.test.js`。新 breath 流程不得只测面板内圆环，须写明左上角 Focusing + elapsed 仍推进。正式 Focus 会话（T45）**视觉藏** `#hud-time`（**SB-22**），DOM 仍写秒数；微仪式 / RitualFlow overlay 墙钟不套坐图画藏数字。
 

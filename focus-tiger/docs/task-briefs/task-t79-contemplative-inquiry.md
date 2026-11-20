@@ -1,6 +1,6 @@
 # Task Brief · T79 觉察哲思第一例（带着问题坐一会儿）
 
-> **状态（2026-11-21）**：坐阶段画面改与主静坐同一套，见 [`task-t79-sitting-picture-parity.md`](./task-t79-sitting-picture-parity.md)。**Brief 已点头**（PO 2026-11-03/04）· **运行时 #1551 已合 develop** · 关单级手测仍 **待勾**（[`feature-t79-contemplative-inquiry.md`](../tracker-entries/feature-t79-contemplative-inquiry.md)）。  
+> **状态（2026-11-04）**：**Brief 已点头**（PO 2026-11-03/04）· **运行时 #1551 已合 develop** · 关单级手测仍 **待勾**（[`feature-t79-contemplative-inquiry.md`](../tracker-entries/feature-t79-contemplative-inquiry.md)）。  
 > **代号**：**T79**。人话：菜单里多一项可选练习：小虎抛一句很老的问题，陪你安静坐约五分钟，回来只问感受，再用三次呼吸落地。  
 > **槽位**：**可选**。状态 **已完成**（代码）· 手测待勾。  
 > **类**：本 PR **A 类**。实现 **B 类**（新菜单入口、新叠层、新固定话术、本机 5 分钟墙钟）。  

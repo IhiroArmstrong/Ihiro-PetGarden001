@@ -66,10 +66,5 @@ describe('shouldHideSittingPictureDigits', () => {
       shouldHideSittingPictureDigits({ focusing: false, overlayHud: false }),
       false
     );
-    assert.equal(
-      shouldHideSittingPictureDigits({ focusing: true, overlayHud: false }),
-      true,
-      'T79 inquiry sitting uses sitting-picture digits (not overlay clock)'
-    );
   });
 });

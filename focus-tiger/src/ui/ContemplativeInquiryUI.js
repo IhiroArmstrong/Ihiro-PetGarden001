@@ -111,16 +111,6 @@ export class ContemplativeInquiryUI {
     });
   }
 
-  /** Recede the glass card so the sit step matches T45 sitting picture. */
-  _syncSitSurface() {
-    const sitting = this._step === 'sit';
-    this.root.classList.toggle('is-sitting-picture', sitting);
-    this.root.dataset.sittingPicture = sitting ? '1' : '0';
-    if (!this._open) return;
-    if (sitting) hideOverlayBackdrop(this.backdrop, { fadeMs: 0 });
-    else showOverlayBackdrop(this.backdrop);
-  }
-
   isOpen() {
     return this._open;
   }
@@ -167,7 +157,6 @@ export class ContemplativeInquiryUI {
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
     this._renderStep();
-    this._syncSitSurface();
     this.handlers.onOpen?.();
   }
 
@@ -223,7 +212,6 @@ export class ContemplativeInquiryUI {
       this._renderSitClock();
     }, 1000);
     this._renderStep();
-    this._syncSitSurface();
   }
 
   _goAfter() {
@@ -265,7 +253,6 @@ export class ContemplativeInquiryUI {
   }
 
   _renderStep() {
-    this._syncSitSurface();
     this.titleEl.textContent = t('CI_EX1_MENU_LABEL');
     this.actions.replaceChildren();
     const mem = readContemplativeInquiryMemory(this._storage);
@@ -367,7 +354,6 @@ export class ContemplativeInquiryUI {
       const clock = document.createElement('p');
       clock.className = 'contemplative-inquiry-card__clock';
       clock.dataset.testid = 'contemplative-inquiry-clock';
-      clock.setAttribute('aria-hidden', 'true');
       this.bodyEl.appendChild(clock);
       this._renderSitClock();
       this.actions.append(
@@ -375,7 +361,6 @@ export class ContemplativeInquiryUI {
           this._goLanding('');
         }, 'ghost')
       );
-      this._syncSitSurface();
       return;
     }
 
@@ -457,27 +442,6 @@ export class ContemplativeInquiryUI {
       .contemplative-inquiry-card.is-visible {
         opacity: 1;
         transform: translate(-50%, 0);
-      }
-      .contemplative-inquiry-card.is-sitting-picture {
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        width: auto;
-        padding: 0;
-        pointer-events: none;
-      }
-      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__title,
-      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__clock {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-      }
-      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__actions {
-        pointer-events: auto;
       }
       .contemplative-inquiry-card__title {
         margin: 0 0 8px;
