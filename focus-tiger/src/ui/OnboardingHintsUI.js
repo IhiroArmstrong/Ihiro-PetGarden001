@@ -3050,6 +3050,28 @@ export class OnboardingHintsUI {
       .weekly-practice-heatmap-cluster .onboarding-hint-help__glyph {
         margin-top: 11px;
       }
+      .onboarding-hint-help-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+      .onboarding-hint-help-center .onboarding-hint-help__mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        line-height: 1;
+      }
+      .onboarding-hint-help-center .onboarding-hint-help__glyph,
+      .weekly-practice-heatmap-cluster
+        .onboarding-hint-help-center
+        .onboarding-hint-help__glyph {
+        width: 22px;
+        height: 22px;
+        margin: 0;
+      }
       body:has(#help-center:not([hidden])) .weekly-practice-heatmap-cluster {
         z-index: ${Z.AMBIENT};
       }

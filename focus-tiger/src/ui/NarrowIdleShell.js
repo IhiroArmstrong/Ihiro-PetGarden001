@@ -1395,11 +1395,18 @@ export class NarrowIdleShell {
       .ft-narrow-action-bar__btn:active {
         transform: scale(0.96);
       }
+      #ft-narrow-help-center-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
       .ft-narrow-help-center-glyph {
         display: block;
-        width: 18px;
-        height: 18px;
-        margin: 0 auto;
+        width: 22px;
+        height: 22px;
+        margin: 0;
+        flex: 0 0 auto;
       }
       .ft-narrow-action-bar__btn.is-confide {
         padding: 0;
