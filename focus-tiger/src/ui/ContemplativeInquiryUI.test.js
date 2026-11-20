@@ -21,6 +21,19 @@ test('ContemplativeInquiryUI uses glass card layer and overlay dim, not Support 
   assert.doesNotMatch(src, /Z\.SUPPORT_MODAL/);
 });
 
+test('ContemplativeInquiryUI sit step uses sitting picture, not a visible countdown card', () => {
+  assert.match(src, /is-sitting-picture/);
+  assert.match(src, /dataset\.sittingPicture/);
+  assert.doesNotMatch(src, /FocusSession/);
+  assert.match(src, /contemplative-inquiry-end-early/);
+  assert.match(src, /_goLanding\(''\)/);
+});
+
+test('main HUD hides sitting-picture digits during T79 sit', () => {
+  const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
+  assert.match(mainSrc, /liveClockOverlay: !inquirySitting/);
+});
+
 test('ContemplativeInquiryUI early end still lands; fourth option is Exit B', () => {
   assert.match(src, /contemplative-inquiry-end-early/);
   assert.match(src, /_goLanding\(''\)/);

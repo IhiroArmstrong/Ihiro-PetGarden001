@@ -157,7 +157,8 @@ export class FocusHUD {
       Math.max(0, opts.practiceRingFilled ?? 0)
     );
 
-    const overlayHud = opts.treatAsFocusing === true;
+    const overlayHud =
+      opts.treatAsFocusing === true && opts.liveClockOverlay !== false;
     const hideDigits = shouldHideSittingPictureDigits({
       focusing: live.focusing,
       overlayHud
