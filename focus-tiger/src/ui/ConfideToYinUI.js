@@ -208,7 +208,7 @@ import {
   recordConfideConsent
 } from '../core/confide/confideConsent.js';
 
-const STYLE_ID = 'confide-to-yin-card-styles-v3';
+const STYLE_ID = 'confide-to-yin-card-styles-v4';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 export class ConfideToYinUI {
@@ -765,6 +765,10 @@ export class ConfideToYinUI {
    * @param {{ ensure?: boolean }} [opts]
    */
   _syncGenerateLayerForViewport({ ensure = false } = {}) {
+    if (!noticingOneLineAllowsDesktopGenerate()) {
+      this.hideGenerateLayer({ unload: false });
+      return;
+    }
     const allowed = this._viewportAllowsGenerateLayer();
     if (this._open && this._generateLayerOpen && shouldCloseDesktopCompanionGenerateLayer({
       generateLayerOpen: true,
@@ -837,7 +841,7 @@ export class ConfideToYinUI {
       this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
     }
     if (this.helpResourcesLink) {
-      this.helpResourcesLink.textContent = t('CONFIDE_HELP_RESOURCES_ENTRY_PLACEHOLDER');
+      this.helpResourcesLink.textContent = t('CONFIDE_HELP_RESOURCES_ENTRY');
     }
     if (this.helpResourcesPanel) {
       this.helpResourcesPanel.textContent = formatConfideSafetyResourceGuidance(getLocale());
@@ -2625,10 +2629,11 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__memory-consent {
         margin: 10px 0 4px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: ${GLASS_FILL_STRONG};
-        border: 1px solid rgba(122, 83, 64, 0.18);
+        padding: 10px 0 0;
+        border-radius: 0;
+        background: transparent;
+        border: none;
+        border-top: 1px solid rgba(122, 83, 64, 0.12);
       }
       .confide-to-yin__memory-consent-title {
         margin: 0 0 6px;
@@ -2649,11 +2654,12 @@ export class ConfideToYinUI {
         flex-wrap: wrap;
       }
       .confide-to-yin__chat-consent {
-        margin: 0 0 12px;
-        padding: 10px 12px 12px;
-        border-radius: 12px;
-        background: ${GLASS_FILL_STRONG};
-        border: 1px solid rgba(122, 83, 64, 0.18);
+        margin: 0 0 14px;
+        padding: 12px 0 0;
+        border-radius: 0;
+        background: transparent;
+        border: none;
+        border-top: 1px solid rgba(122, 83, 64, 0.12);
       }
       .confide-to-yin__chat-consent-title {
         margin: 0 0 6px;
@@ -2694,9 +2700,9 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__chat-consent-crisis {
         margin: 8px 0 10px;
-        padding: 8px 10px;
-        border-radius: 10px;
-        background: rgba(122, 83, 64, 0.08);
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(122, 83, 64, 0.06);
       }
       .confide-to-yin__chat-consent-crisis-title {
         margin: 0 0 4px;
@@ -2760,10 +2766,11 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__help-resources {
         margin: 0 0 10px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: ${GLASS_FILL_STRONG};
-        border: 1px solid rgba(122, 83, 64, 0.18);
+        padding: 10px 0 0;
+        border-radius: 0;
+        background: transparent;
+        border: none;
+        border-top: 1px solid rgba(122, 83, 64, 0.12);
         font-size: 13px;
         line-height: 1.45;
         color: #5a4030;
@@ -2774,9 +2781,10 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__desktop-status {
         margin: 0 0 12px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: ${GLASS_FILL_STRONG};
+        padding: 10px 0 0;
+        border-radius: 0;
+        background: transparent;
+        border-top: 1px solid rgba(122, 83, 64, 0.12);
       }
       .confide-to-yin__desktop-status[hidden] {
         display: none;
