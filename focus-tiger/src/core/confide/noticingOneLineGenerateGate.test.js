@@ -18,4 +18,8 @@ test('Route X keeps generate code but Confide UI must not send it to the bubble'
   );
   assert.match(ui, /noticingOneLineAllowsDesktopGenerate\(\)/);
   assert.match(ui, /wantGenerate =\s*noticingOneLineAllowsDesktopGenerate\(\) &&/);
+  assert.match(
+    ui,
+    /if \(!noticingOneLineAllowsDesktopGenerate\(\)\) \{\s*this\.hideGenerateLayer/
+  );
 });
