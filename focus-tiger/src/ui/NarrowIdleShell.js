@@ -24,8 +24,7 @@ import {
   readAlwaysOnTopEnabled,
   writeAlwaysOnTopEnabled
 } from '../core/alwaysOnTopBridge.js';
-import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
-import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
+import { paintSecondaryChromeMenuRow } from './secondaryMenuRowRender.js';
 import {
   adoptPreferencePanelIntoSheet,
   preferenceSheetEmbedCss,
@@ -1085,6 +1084,10 @@ export class NarrowIdleShell {
     this.listEl.innerHTML = '';
     /** @type {HTMLUListElement | null} */
     let cardItems = null;
+    /** @type {HTMLUListElement | null} */
+    let groupCardItems = null;
+  /** @type {string | null} */
+  let currentGroupKey = null;
     for (const item of entries) {
       if (item.kind === 'sub-group-label') {
         const card = document.createElement('li');
@@ -1101,12 +1104,28 @@ export class NarrowIdleShell {
       const li = document.createElement('li');
       if (item.kind === 'group-label') {
         cardItems = null;
+        groupCardItems = null;
+        currentGroupKey = item.labelKey;
         const label = document.createElement('div');
         label.className = 'ft-narrow-sheet__group';
         label.dataset.group = item.labelKey;
         label.textContent = t(item.labelKey);
         li.appendChild(label);
         this.listEl.appendChild(li);
+        if (
+          currentGroupKey &&
+          currentGroupKey !== 'MENU_GROUP_PREFERENCES'
+        ) {
+          const groupCard = document.createElement('li');
+          groupCard.className = 'ft-pref-card';
+          const groupHead = document.createElement('p');
+          groupHead.className = 'ft-pref-card__label';
+          groupHead.textContent = t(currentGroupKey);
+          groupCardItems = document.createElement('ul');
+          groupCardItems.className = 'ft-pref-card__items';
+          groupCard.append(groupHead, groupCardItems);
+          this.listEl.appendChild(groupCard);
+        }
         continue;
       }
       const btn = document.createElement('button');
@@ -1115,18 +1134,11 @@ export class NarrowIdleShell {
       btn.dataset.proxy = item.proxy;
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
-      if (item.prefKind) {
-        fillPreferencesCenterRow(btn, {
-          label: t(item.labelKey),
-          hint: item.prefHintKey ? t(item.prefHintKey) : '',
-          status: readPreferenceCenterStatus(item.proxy, { t, storage }),
-          icon: item.prefIcon || '',
-          prefKind: item.prefKind,
-          toggleOn: item.proxy === 'always-on-top' && this._alwaysOnTopOn === true
-        });
-      } else {
-        btn.textContent = t(item.labelKey);
-      }
+      paintSecondaryChromeMenuRow(btn, item, {
+        t,
+        storage,
+        alwaysOnTopOn: this._alwaysOnTopOn
+      });
       if (item.testId) btn.dataset.testid = item.testId;
       if (item.emphasis === 'beige-cta') {
         btn.classList.add('is-beige-cta');
@@ -1151,7 +1163,7 @@ export class NarrowIdleShell {
         });
       }
       li.appendChild(btn);
-      (cardItems || this.listEl).appendChild(li);
+      (cardItems || groupCardItems || this.listEl).appendChild(li);
     }
     void this._hydratePrefToggles();
 
