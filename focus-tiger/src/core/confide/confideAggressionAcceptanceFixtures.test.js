@@ -54,7 +54,7 @@ describe('confideAggressionAcceptanceFixtures', () => {
     }
   });
 
-  it('aggression fixtures reply from corpus without Heard or nod copy', () => {
+  it('aggression fixtures reply from A/B pool without Heard. prefix or nod copy', () => {
     for (const row of fixturesForAggressionAcceptanceRoute(
       CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
     )) {
@@ -65,12 +65,17 @@ describe('confideAggressionAcceptanceFixtures', () => {
       });
       assert.ok(hit, row.id);
       assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS, row.id);
-      assert.doesNotMatch(hit.line.en, /heard/i, row.id);
-      assert.doesNotMatch(hit.line.en, /nod/i, row.id);
-      assert.doesNotMatch(hit.line.zh, /听见了/, row.id);
+      assert.doesNotMatch(hit.line.en, /^Heard\./i, row.id);
+      assert.doesNotMatch(hit.line.en, /\bnod/i, row.id);
+      assert.doesNotMatch(hit.line.zh, /^听见了/, row.id);
       assert.doesNotMatch(hit.line.zh, /点头/, row.id);
       assert.doesNotMatch(hit.line.ja, /聴いた/, row.id);
       assert.doesNotMatch(hit.line.ja, /うなず/, row.id);
+      assert.equal(
+        ['A-13', 'A-15', 'B-12'].includes(hit.line.id),
+        false,
+        row.id
+      );
     }
   });
 

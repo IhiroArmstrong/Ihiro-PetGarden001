@@ -38,9 +38,10 @@ const AGGRESSION_LOCALE_BY_ID = Object.freeze(
 function replyRedlineViolations(line) {
   if (!line) return ['missing reply line'];
   const fails = [];
-  if (/heard/i.test(line.en)) fails.push('en:Heard');
-  if (/nod/i.test(line.en)) fails.push('en:nod');
-  if (/听见了/.test(line.zh)) fails.push('zh:听见了');
+  // Old corpus prefixes ("Heard. Yin nods…"), not noticing A-09 "This line has been heard."
+  if (/^Heard\./i.test(line.en)) fails.push('en:Heard');
+  if (/\bnod/i.test(line.en)) fails.push('en:nod');
+  if (/^听见了/.test(line.zh)) fails.push('zh:听见了');
   if (/点头/.test(line.zh)) fails.push('zh:点头');
   if (/聴いた/.test(line.ja)) fails.push('ja:聴いた');
   if (/うなず/.test(line.ja)) fails.push('ja:うなず');

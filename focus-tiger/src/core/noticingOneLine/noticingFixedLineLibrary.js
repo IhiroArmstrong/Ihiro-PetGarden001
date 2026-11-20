@@ -8,7 +8,7 @@ import { normalizeVisibleConfideReply } from '../confide/confideReplyUniqueness.
 import catalog from './noticingFixedLines.json' with { type: 'json' };
 import { isNoticingLiveKind } from './noticingLabelDisposition.js';
 
-export const NOTICING_FIXED_LINE_VERSION = 'v0.3';
+export const NOTICING_FIXED_LINE_VERSION = 'v0.3.1';
 export const NOTICING_HOLD_KIND = 'hold';
 export const NOTICING_INVITE_KIND = 'invite_sit';
 

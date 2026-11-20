@@ -3,7 +3,7 @@
 **任务号**：不新开代号。挂开门闸 G2–G4 与 T100 关单第 1 项。治理会话登记前实现旁支不得自编 T 号。  
 **人话**：用户写下不是危机的那一句，只用已经审过的固定句接住，或可选地邀请坐一会儿。句子本身必须在「其实是危机」时也安全。求助按钮做在每条回复下面，不写进句子里。  
 **类别**：B 类（用户看见的回复文案）。本 PR **只锁 Brief + 草稿附录**，不改 `src/`、不把草稿当已定稿。  
-**状态**：PO 2026-11-19 点头写文档。附录 **v0.3**（A/B 各 20）**已冻结**。**PO 语气审**：同日书面「该审核的已审」。**独立安全审**：2026-11-19 另一会话书面通过（见 [G4 安全审](../audit/findings/2026-11-19/noticing-fixed-line-library-g4-security-review.md)）；G4 **两份齐（当时六项）**。2026-11-20 增补审稿第 7 项与夹具规格，**不改附录**。审稿退回宁可少而稳，不为凑 15 条放宽禁词。  
+**状态**：PO 2026-11-19 点头写文档。附录 **v0.3** 已冻结并接线。**PO 语气审** + **独立安全审（六项）** 同日齐（[G4 安全审](../audit/findings/2026-11-19/noticing-fixed-line-library-g4-security-review.md)）。2026-11-20 增补第 7 项；同日补审后从轮换删除 A-13 / A-15 / B-12（[第 7 项补审](../audit/findings/2026-11-20/noticing-fixed-line-library-item7-review.md)）。现网 **A 18 / B 19**（`v0.3.1`）。审稿退回宁可少而稳，不为凑 15 条放宽禁词。  
 **日期**：2026-11-19  
 **从属**：[`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) · [开门门禁 v2](../audit/first-package-open-gate-v2.md) · [结构 Brief](./task-noticing-no-generate-invariant.md) · [`COMPANION_CONTRACT.md`](../COMPANION_CONTRACT.md)
 
@@ -98,22 +98,21 @@ B 类的额外问法（并入第 7 项）：对一个正在气头上的人，「
 | 语气（PO） | 已书面完成（含 v0.3 本批） |
 | 安全（另一会话） | **已完成**（2026-11-19；[G4 安全审](../audit/findings/2026-11-19/noticing-fixed-line-library-g4-security-review.md)）。附录 v0.3 审稿期间未改 |
 
-附录 **v0.3 已冻结**。第 7 项是 2026-11-20 增补，**不**回溯把 11/19 六项通过改判为红。下次改附录（含下表观察句）须两份审稿按 1–7 重跑。**本文件此版不改附录正文、不换 A-15。** 换句会重开 G4，12/5 前不值得为「看起来更好」动冻结库。
+附录 **v0.3 已冻结**（六项）。第 7 项补审见 [2026-11-20 稿](../audit/findings/2026-11-20/noticing-fixed-line-library-item7-review.md)：不回溯改红 11/19；被标句**删除**不改写。新增或改写句子须两份审稿按第 1–7 项重跑。
 
-**下次改句观察（分析师 2026-11-20；仅文档）**
+**第 7 项补审结果（删除，不改写）**
 
-| ID | 风险点 | 本版动作 |
-|---|---|---|
-| A-15 | 「不需要被评判」在伤害他人场景可能读成默许 | **不换句**。下次改库时优先改写并过 lint + 第 1–7 项两份审稿 |
-| A-13 | 「不用把它说得更清楚」可能被读成不必细说所做之事 | 下次审稿重点看 |
-| A-05 | 「不用证明什么」同上，风险较低 | 下次审稿重点看 |
-| B 类整体 | 「坐一会儿」可能被读成冷静建议 | 靠「先接住、明说可不坐」；第 7 项 B 类额外问法 |
+| ID | 结果 |
+|---|---|
+| A-15 · A-13 · B-12 | 7b「是」→ 已移出轮换 |
+| A-05 | 否；残余见补审稿 |
+| B 类整体（坐一会儿 / 消消气） | 否；明说可不坐 | |
 
 仓内漏接夹具规格（题号 / 期望档 / 进仓库纪律）见 [开门门禁 v2](../audit/first-package-open-gate-v2.md) §5。不算识别率，不得下调 0.78。实现另开 Chat。
 
 ---
 
-## 6. v0.3 草稿附录（A/B 各 20；PO 语气已审，独立安全审已过）
+## 6. 轮换附录（v0.3.1 · A 18 / B 19；六项已过；第 7 项补审后删三句）
 
 相对 v0.2：B-09、B-10 改写以过 lint；新增 A-16–A-20、B-16–B-20。实现不得在 G4 两份审稿都通过前把这些句子接进用户气泡。
 
@@ -123,7 +122,7 @@ B 类的额外问法（并入第 7 项）：对一个正在气头上的人，「
 
 （与第 2 节相同。）
 
-### A.2 A 类 · 接住（20 条）
+### A.2 A 类 · 接住（18 条 · 已删 A-13 / A-15）
 
 | ID | 中文 | English |
 |---|---|---|
@@ -139,16 +138,14 @@ B 类的额外问法（并入第 7 项）：对一个正在气头上的人，「
 | A-10 | 谢谢你写下这一句。我读到了。 | Thank you for writing this line. I read it. |
 | A-11 | 这一句不需要答案。它被收到了。 | This line doesn't need an answer. It has been received. |
 | A-12 | 我读完了这一句，认真读的。 | I finished reading this line. I read it carefully. |
-| A-13 | 你不用把它说得更清楚。我在听。 | You don't have to make it any clearer. I'm listening. |
 | A-14 | 这一句来到这里了，我收下了。 | This line has arrived here, and I've taken it in. |
-| A-15 | 它不需要被评判。我只是收下它。 | It doesn't need to be judged. I'm simply taking it in. |
 | A-16 | 这一句，我读了。它在这里。 | I read this line. It's here. |
 | A-17 | 谢谢你愿意把它写在这里。 | Thank you for being willing to put it here. |
 | A-18 | 我看到了你写下的这一句。 | I see the line you wrote down. |
 | A-19 | 这一句没有被忽略。它被好好收下了。 | This line wasn't overlooked. It has been received with care. |
 | A-20 | 我停下来，读了这一句。 | I paused and read this line. |
 
-### A.3 B 类 · 邀你坐一会儿（20 条）
+### A.3 B 类 · 邀你坐一会儿（19 条 · 已删 B-12）
 
 | ID | 中文 | English |
 |---|---|---|
@@ -163,7 +160,6 @@ B 类的额外问法（并入第 7 项）：对一个正在气头上的人，「
 | B-09 | 谢谢你写下它。坐一小会儿是个选择；不想坐，也完全可以。 | Thank you for writing it down. Sitting for a little while is a choice; if you'd rather not, that's fine. |
 | B-10 | 我听到了。你可以坐一会儿，也可以不坐，两种都可以。 | I heard it. You can sit for a while, or not; either is fine. |
 | B-11 | 这一句，被好好读过了。想坐一会儿的话，坐坐也行；不想，就停在这里。 | This line has been read with care. If you'd like to sit, you can; if not, we'll stop here. |
-| B-12 | 不用解释它。想坐一小会儿的话可以；不想，也完全可以。 | No need to explain it. If you'd like to sit for a little while, you can; if not, that's fine too. |
 | B-13 | 这一句有分量，我收到了。坐一会儿是个邀请，你可以不接受。 | This line has weight, and I've received it. Sitting for a while is an invitation you can decline. |
 | B-14 | 谢谢你让我知道。愿意的话，可以坐一小会儿；不愿意，什么都不用做。 | Thank you for letting me know. If you're willing, you can sit for a little while; if not, you don't have to do anything. |
 | B-15 | 我看见你写下的这一句了。坐一坐也行，不坐也行，由你决定。 | I see the line you wrote. Sitting or not is fine; it's up to you. |
@@ -230,4 +226,4 @@ B 类的额外问法（并入第 7 项）：对一个正在气头上的人，「
 
 ## 12. 口令
 
-附录 v0.3 **已接线**（#1789）。改句须 **新 Chat**，且两份审稿按第 1–7 项重跑。漏接夹具实现另开 Chat（规格见门禁页 §5）。T95 优先。本会话不改 `src/`。
+附录 v0.3 **已接线**（#1789）。独立安全审（六项）**已完成**（#1799），不是「仍欠」。第 7 项补审 **已完成**（删 A-13 / A-15 / B-12，不重开 G4）。新增或改写句子须 **新 Chat**，两份审稿按第 1–7 项重跑。漏接夹具实现另开 Chat（规格见门禁页 §5；先要仓外 10 条短句）。T95 优先。
