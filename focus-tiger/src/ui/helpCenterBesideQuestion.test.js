@@ -37,3 +37,12 @@ test('Help Center beside ? uses compass glyph (not book)', () => {
   assert.match(hints, /from '\.\/helpCenterBesideGlyph\.js'/);
   assert.match(shell, /from '\.\/helpCenterBesideGlyph\.js'/);
 });
+
+test('Help Center compass glyph is centered in the round chrome (regression)', () => {
+  assert.match(hints, /\.onboarding-hint-help-center \.onboarding-hint-help__glyph/);
+  assert.match(hints, /margin: 0;/);
+  assert.match(hints, /width: 22px/);
+  assert.match(shell, /#ft-narrow-help-center-btn/);
+  assert.match(shell, /align-items: center/);
+  assert.match(shell, /\.ft-narrow-help-center-glyph[\s\S]*width: 22px/);
+});
