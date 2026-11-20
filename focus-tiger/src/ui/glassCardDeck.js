@@ -59,16 +59,28 @@ export const GLASS_CARD_INTERACTIVE =
 export const GLASS_CARD_TEXT_SELECT =
   'p, h1, h2, h3, h4, h5, h6, li, dt, dd, blockquote, pre, code, small, time, figcaption, caption, th, td, legend, address, span';
 
+/** Title rows are drag handles even when they use copyable tags (`p` / `h2`). */
+export const GLASS_CARD_DRAG_TITLE =
+  '[data-ft-glass-drag-chrome], [class*="__title"], [class*="__heading"]';
+
+/** Floating panels in the drag deck but outside max-open / handle registry. */
+export const GLASS_CARD_EXTRA_ELEMENT_IDS = Object.freeze(['ft-home-zone-memories']);
+
 export const GLASS_CARD_DECK_STYLE = `
     [data-ft-glass-card="1"] { cursor: grab; }
     [data-ft-glass-card="1"]:active { cursor: grabbing; }
-    [data-ft-glass-card="1"] :is(${GLASS_CARD_TEXT_SELECT}) {
+    [data-ft-glass-card="1"] :is(${GLASS_CARD_TEXT_SELECT}):not(${GLASS_CARD_DRAG_TITLE}) {
       cursor: text;
       user-select: text;
       -webkit-user-select: text;
     }
-    [data-ft-glass-card="1"] :is(${GLASS_CARD_TEXT_SELECT}):active {
+    [data-ft-glass-card="1"] :is(${GLASS_CARD_TEXT_SELECT}):not(${GLASS_CARD_DRAG_TITLE}):active {
       cursor: text;
+    }
+    [data-ft-glass-card="1"] ${GLASS_CARD_DRAG_TITLE} {
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
     }
     [data-ft-glass-card="1"] :is(button, a, label),
     [data-ft-glass-card="1"] :is(button, a, label) * { cursor: pointer; }
@@ -94,7 +106,7 @@ export function glassCardAllowsDrag(target, card) {
   if (!card?.id || GLASS_CARD_KEEP_STYLESHEET_Z.has(card.id)) return false;
   if (GLASS_CARD_NO_DRAG.has(card.id)) return false;
   if (!(target && typeof target.closest === 'function')) return false;
-  if (target.closest('[data-ft-glass-drag-chrome]')) return true;
+  if (target.closest(GLASS_CARD_DRAG_TITLE)) return true;
   if (target.closest(GLASS_CARD_INTERACTIVE)) return false;
   if (glassCardAllowsTextSelect(target)) return false;
   return true;
@@ -184,7 +196,11 @@ export function bringGlassCardToFront(handleId, doc = document) {
  */
 export function installGlassCardDeck(doc = document) {
   if (!doc?.body) return;
-  for (const elementId of Object.values(GLASS_CARD_ELEMENT_IDS)) {
+  const deckIds = [
+    ...Object.values(GLASS_CARD_ELEMENT_IDS),
+    ...GLASS_CARD_EXTRA_ELEMENT_IDS
+  ];
+  for (const elementId of deckIds) {
     const el = doc.getElementById(elementId);
     if (!el) continue;
     if (GLASS_CARD_NO_DRAG.has(elementId)) continue;

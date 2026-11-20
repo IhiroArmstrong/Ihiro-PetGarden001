@@ -11,15 +11,23 @@ import {
   glassCardIdsToClose,
   glassCardInlineZIndex,
   GLASS_CARD_DECK_STYLE,
+  GLASS_CARD_DRAG_TITLE,
   GLASS_CARD_INTERACTIVE,
   GLASS_CARD_KEEP_STYLESHEET_Z,
   GLASS_CARD_TEXT_SELECT
 } from './glassCardDeck.js';
 
-function fakePointerTarget({ interactive = false, text = false, dragChrome = false } = {}) {
+function fakePointerTarget({
+  interactive = false,
+  text = false,
+  dragChrome = false,
+  titleHandle = false
+} = {}) {
   return {
     closest(sel) {
-      if (sel === '[data-ft-glass-drag-chrome]') return dragChrome ? { id: 'chrome' } : null;
+      if (sel === GLASS_CARD_DRAG_TITLE) {
+        return dragChrome || titleHandle ? { id: 'title-chrome' } : null;
+      }
       if (sel === GLASS_CARD_INTERACTIVE) return interactive ? { id: 'control' } : null;
       if (sel === GLASS_CARD_TEXT_SELECT) return text ? { id: 'copy' } : null;
       return null;
@@ -85,6 +93,12 @@ test('empty glass-card chrome still starts a drag', () => {
   const card = { id: 'help-center' };
   assert.equal(glassCardAllowsDrag(fakePointerTarget(), card), true);
   assert.equal(glassCardAllowsTextSelect(fakePointerTarget()), false);
+});
+
+test('card title rows drag even when they use copyable tags', () => {
+  const card = { id: 'help-center' };
+  const titleHit = fakePointerTarget({ text: true, titleHandle: true });
+  assert.equal(glassCardAllowsDrag(titleHit, card), true);
 });
 
 test('preference panels keep z35 in the deck and title chrome can drag', () => {

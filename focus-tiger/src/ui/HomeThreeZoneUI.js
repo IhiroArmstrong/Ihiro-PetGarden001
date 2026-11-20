@@ -113,6 +113,7 @@ export class HomeThreeZoneUI {
     this.root.className = 'ft-home-zone-memories';
     this.root.hidden = true;
     this.root.dataset.testid = ROOT_ID;
+    this.root.dataset.ftGlassCard = '1';
     this.root.setAttribute('aria-labelledby', 'ft-home-zone-memories-heading');
 
     this.headingEl = document.createElement('p');
