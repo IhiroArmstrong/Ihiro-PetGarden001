@@ -43,8 +43,7 @@ import {
 } from '../core/wideMenuRadialLayout.js';
 import { Z } from './zIndexLayers.js';
 import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
-import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
-import { readPreferenceCenterStatus } from '../core/preferencesCenterStatus.js';
+import { paintSecondaryChromeMenuRow } from './secondaryMenuRowRender.js';
 import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
 import {
   adoptPreferencePanelIntoSheet,
@@ -1247,18 +1246,11 @@ export class WideIdleMoreMenu {
       btn.dataset.proxy = item.proxy;
       const storage =
         typeof localStorage !== 'undefined' ? localStorage : null;
-      if (item.prefKind) {
-        fillPreferencesCenterRow(btn, {
-          label: t(item.labelKey),
-          hint: item.prefHintKey ? t(item.prefHintKey) : '',
-          status: readPreferenceCenterStatus(item.proxy, { t, storage }),
-          icon: item.prefIcon || '',
-          prefKind: item.prefKind,
-          toggleOn: item.proxy === 'always-on-top' && this._alwaysOnTopOn === true
-        });
-      } else {
-        btn.textContent = t(item.labelKey);
-      }
+      paintSecondaryChromeMenuRow(btn, item, {
+        t,
+        storage,
+        alwaysOnTopOn: this._alwaysOnTopOn
+      });
       if (item.testId) btn.dataset.testid = item.testId;
       if (item.emphasis === 'beige-cta') {
         btn.classList.add('is-beige-cta');
