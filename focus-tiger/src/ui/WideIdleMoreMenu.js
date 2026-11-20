@@ -1193,31 +1193,36 @@ export class WideIdleMoreMenu {
         const expanded = radialListOnly
           ? true
           : this._expandedGroups.has(item.labelKey);
+        const skipRadialDuplicateHeader =
+          radialListOnly && item.labelKey === this._activeListGroup;
         const sectionLi = document.createElement('li');
         sectionLi.className = 'ft-wide-more__section';
         sectionLi.dataset.group = item.labelKey;
         sectionLi.setAttribute('role', 'none');
 
-        const header = document.createElement('button');
-        header.type = 'button';
-        header.className = 'ft-wide-more__section-header';
-        header.dataset.group = item.labelKey;
-        header.textContent = t(item.labelKey);
-        header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        header.addEventListener('click', (event) => {
-          event.stopPropagation();
-          if (this._expandedGroups.has(item.labelKey)) {
-            this._expandedGroups.delete(item.labelKey);
-          } else {
-            this._expandedGroups.add(item.labelKey);
-          }
-          this._refreshItems();
-        });
-
         sectionItems = document.createElement('ul');
         sectionItems.className = 'ft-wide-more__section-items';
         sectionItems.hidden = !expanded;
-        sectionLi.append(header, sectionItems);
+        if (skipRadialDuplicateHeader) {
+          sectionLi.append(sectionItems);
+        } else {
+          const header = document.createElement('button');
+          header.type = 'button';
+          header.className = 'ft-wide-more__section-header';
+          header.dataset.group = item.labelKey;
+          header.textContent = t(item.labelKey);
+          header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+          header.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (this._expandedGroups.has(item.labelKey)) {
+              this._expandedGroups.delete(item.labelKey);
+            } else {
+              this._expandedGroups.add(item.labelKey);
+            }
+            this._refreshItems();
+          });
+          sectionLi.append(header, sectionItems);
+        }
         this.listEl.appendChild(sectionLi);
         cardItems = null;
         continue;
