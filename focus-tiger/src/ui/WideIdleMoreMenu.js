@@ -893,6 +893,9 @@ export class WideIdleMoreMenu {
     this._mq?.addEventListener?.('change', this._onMqChange);
     this._onResize = () => {
       if (!this._isWide()) this.closeMenu();
+      else if (this._activeListGroup) {
+        this._positionGroupSheet(this._activeListGroup);
+      }
       this._sync();
     };
     if (typeof window !== 'undefined') {
@@ -1008,7 +1011,48 @@ export class WideIdleMoreMenu {
     // H1 side nav stays while a group sheet is open so the user can switch groups.
     if (this.radialRoot) this.radialRoot.hidden = false;
     document.body.classList.toggle('ft-wide-more-radial-open', true);
-    if (!listPhase) this._placeRadial();
+    if (!listPhase) {
+      this._placeRadial();
+      this._clearGroupSheetPosition();
+    } else if (this._activeListGroup) {
+      this._positionGroupSheet(this._activeListGroup);
+    }
+  }
+
+  /** @returns {void} */
+  _clearGroupSheetPosition() {
+    this.menu?.style.removeProperty('top');
+  }
+
+  /**
+   * Dock the group list so its top edge lines up with the active side-nav row.
+   * @param {string} groupKey
+   * @returns {void}
+   */
+  _positionGroupSheet(groupKey) {
+    if (!this.menu || this._menuFlat || !groupKey || this.menu.hidden) {
+      this._clearGroupSheetPosition();
+      return;
+    }
+    const row = this.radialRoot?.querySelector(
+      `.ft-wide-more-radial__icon[data-group="${groupKey}"]`
+    );
+    if (!row) return;
+    const align = () => {
+      if (!this.menu || this.menu.hidden || this._activeListGroup !== groupKey) return;
+      const rowRect = row.getBoundingClientRect();
+      const menuHeight = this.menu.offsetHeight;
+      const safeTop = 16;
+      const safeBottom = 16;
+      const maxTop = Math.max(safeTop, window.innerHeight - safeBottom - menuHeight);
+      const top = Math.min(Math.max(rowRect.top, safeTop), maxTop);
+      this.menu.style.top = `${Math.round(top)}px`;
+    };
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(align);
+    } else {
+      align();
+    }
   }
 
   /** @returns {void} */
