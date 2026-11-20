@@ -19,6 +19,11 @@ describe('ConfideToYinUI consent wiring', () => {
     assert.match(src, /recordConfideConsent\(/);
     assert.match(src, /_onChatConsentConfirm/);
     assert.match(src, /CONFIDE_CONSENT_ERROR/);
+    assert.match(src, /_revealChatConsentError/);
+    assert.match(
+      src,
+      /this\.consentHelpLink,\s*\n\s*this\.consentError,\s*\n\s*this\.consentActions/
+    );
     assert.doesNotMatch(src, /988|0120-279-338/);
   });
 });

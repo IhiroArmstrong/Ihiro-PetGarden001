@@ -379,6 +379,7 @@ export class ConfideToYinUI {
     this.consentError.dataset.testid = 'confide-consent-error';
     this.consentError.setAttribute('role', 'alert');
     this.consentError.setAttribute('aria-live', 'assertive');
+    this.consentError.tabIndex = -1;
     this.consentError.hidden = true;
 
     this.consentItem1 = this._createConsentCheckbox('item1', 'confide-consent-item1');
@@ -436,13 +437,13 @@ export class ConfideToYinUI {
       this.consentTitle,
       this.consentIntro,
       this.consentReconsent,
-      this.consentError,
       this.consentItem1.row,
       this.consentItem2.row,
       this.consentAge.row,
       this.consentCrisis,
       this.consentTermsLink,
       this.consentHelpLink,
+      this.consentError,
       this.consentActions
     );
 
@@ -970,13 +971,12 @@ export class ConfideToYinUI {
         ? t('CONFIDE_CONSENT_SAVE_ERROR')
         : t('CONFIDE_CONSENT_ERROR');
     this.consentError.hidden = false;
-    const first =
-      !this.consentItem1.input.checked
-        ? this.consentItem1.input
-        : !this.consentItem2.input.checked
-          ? this.consentItem2.input
-          : this.consentAge.input;
-    first.focus();
+  }
+
+  /** Keeps the consent alert beside the confirm CTA inside the scrollable card. */
+  _revealChatConsentError() {
+    this.consentError.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    this.consentError.focus({ preventScroll: true });
   }
 
   _onChatConsentConfirm() {
@@ -986,6 +986,7 @@ export class ConfideToYinUI {
     const age = this.consentAge.input.checked;
     if (!item1 || !item2 || !age) {
       this._showChatConsentError();
+      this._revealChatConsentError();
       return;
     }
     this._chatConsentSaving = true;
@@ -1004,6 +1005,7 @@ export class ConfideToYinUI {
     this.consentConfirmBtn.dataset.state = result.ok ? 'ok' : 'failed';
     if (!result.ok) {
       this._showChatConsentError('save');
+      this._revealChatConsentError();
       return;
     }
     this.consentError.hidden = true;
@@ -1828,6 +1830,7 @@ export class ConfideToYinUI {
     if (!hasValidConfideConsent()) {
       this._syncChatConsentUi();
       this._showChatConsentError();
+      this._revealChatConsentError();
       return;
     }
     const text = this.inputEl.value;
@@ -2667,9 +2670,14 @@ export class ConfideToYinUI {
       }
       .confide-to-yin__chat-consent-error {
         margin: 0 0 10px;
-        font-size: 0.8rem;
+        padding: 8px 10px;
+        font-size: 0.82rem;
+        font-weight: 600;
         line-height: 1.4;
         color: #9a3b2f;
+        border-radius: 8px;
+        background: rgba(154, 59, 47, 0.1);
+        outline: none;
       }
       .confide-to-yin__chat-consent-row {
         display: flex;
