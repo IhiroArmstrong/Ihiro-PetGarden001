@@ -80,7 +80,7 @@ cd focus-tiger && node --test src/core/noticingOneLine/noticingFixedLineLibrary.
 
 - 附录 v0.3 **冻结**；接线会话不得在未新开审稿前改句。  
 - 实现接线须：**G4 语气 + 安全均已绿**（本文件补全安全腿）且按 Brief §12 口令单独开 Chat。  
-- 12/5 四闸任一条仍红 → 12/8 藏入口，不顺延包装日。
+- 12/5 四闸任一条仍红 → 12/8 不顺延；记书面风险残余，**不藏入口**（PO 2026-11-20，见开门门禁 v2 §2）。
 
 ---
 
