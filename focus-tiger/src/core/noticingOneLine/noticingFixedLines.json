@@ -84,25 +84,11 @@
     "ja": "この一文を、丁寧に読み終えました。"
   },
   {
-    "id": "A-13",
-    "kind": "hold",
-    "zh": "你不用把它说得更清楚。我在听。",
-    "en": "You don't have to make it any clearer. I'm listening.",
-    "ja": "もっと明らかにしなくてよいです。聴いています。"
-  },
-  {
     "id": "A-14",
     "kind": "hold",
     "zh": "这一句来到这里了，我收下了。",
     "en": "This line has arrived here, and I've taken it in.",
     "ja": "この一文はここに届き、受け取りました。"
-  },
-  {
-    "id": "A-15",
-    "kind": "hold",
-    "zh": "它不需要被评判。我只是收下它。",
-    "en": "It doesn't need to be judged. I'm simply taking it in.",
-    "ja": "裁かれる必要はありません。ただ受け取っています。"
   },
   {
     "id": "A-16",
@@ -215,13 +201,6 @@
     "zh": "这一句，被好好读过了。想坐一会儿的话，坐坐也行；不想，就停在这里。",
     "en": "This line has been read with care. If you'd like to sit, you can; if not, we'll stop here.",
     "ja": "この一文を丁寧に読みました。座りたければ座ってよく、望まなければここで止めます。"
-  },
-  {
-    "id": "B-12",
-    "kind": "invite_sit",
-    "zh": "不用解释它。想坐一小会儿的话可以；不想，也完全可以。",
-    "en": "No need to explain it. If you'd like to sit for a little while, you can; if not, that's fine too.",
-    "ja": "説明は要りません。よければ少し座れますし、座らなくても構いません。"
   },
   {
     "id": "B-13",

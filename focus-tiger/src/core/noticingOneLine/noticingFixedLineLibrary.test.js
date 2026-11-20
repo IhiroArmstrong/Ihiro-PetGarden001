@@ -23,17 +23,24 @@ import {
 
 const here = dirname(fileURLToPath(import.meta.url));
 
-test('v0.3 library is 20 hold + 20 invite and unique IDs', () => {
-  assert.equal(NOTICING_FIXED_LINES.length, 40);
+test('v0.3.1 library is 18 hold + 19 invite; item-7 drops stay out', () => {
+  const ids = NOTICING_FIXED_LINES.map((l) => l.id);
+  assert.equal(NOTICING_FIXED_LINES.length, 37);
   assert.equal(
     NOTICING_FIXED_LINES.filter((l) => l.kind === NOTICING_HOLD_KIND).length,
-    20
+    18
   );
   assert.equal(
     NOTICING_FIXED_LINES.filter((l) => l.kind === NOTICING_INVITE_KIND).length,
-    20
+    19
   );
-  assert.equal(new Set(NOTICING_FIXED_LINES.map((l) => l.id)).size, 40);
+  assert.ok(ids.filter((id) => id.startsWith('A-')).length >= 15);
+  assert.ok(ids.filter((id) => id.startsWith('B-')).length >= 15);
+  assert.equal(new Set(ids).size, 37);
+  assert.equal(
+    ids.some((id) => id === 'A-13' || id === 'A-15' || id === 'B-12'),
+    false
+  );
 });
 
 test('phrase-library lint passes for every A/B line', () => {
