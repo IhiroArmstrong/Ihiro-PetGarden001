@@ -82,6 +82,17 @@ describe('wide more menu click reception', () => {
     );
   });
 
+  it('aligns the group sheet top with the active side-nav row', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /_positionGroupSheet\(groupKey\)/);
+    assert.match(src, /getBoundingClientRect\(\)/);
+    assert.match(
+      src,
+      /const listPhase = Boolean\(this\._activeListGroup\);[\s\S]*_positionGroupSheet\(this\._activeListGroup\)/
+    );
+  });
+
   it('docks the ⋯ sheet to the right edge instead of growing over Yin', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
