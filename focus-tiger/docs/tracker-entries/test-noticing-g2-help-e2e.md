@@ -1,0 +1,1 @@
+| 开门 G2 求助入口点测 | UI可见 | 待人工测试 | **终端已覆盖**：英文宽屏发非危机句（A/B）与安全句（safety-01）后，同一卡内 `[data-testid=confide-to-yin-help-resources]` 可见可点，点开卡内指引、不进 `#yin-support-modal`（`e2e/noticing-g2-help-resources.spec.js`）。**人只补**：Electron 真机手感 1 句。本条不代表 G1/G3/G4 全绿，不代表对客开门。 | — | — | — | `?product=1&confide=1` Thought Drop | 2026-11-20 |
