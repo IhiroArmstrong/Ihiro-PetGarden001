@@ -1,0 +1,1 @@
+| T79 带着问题坐与主静坐同一画面 | UI可见 | 待人工测试 | Idle ⋯ Inspiration 带着问题坐一会儿：过防火墙与抛问后开始坐，应见栖居静坐（不见玻璃卡大倒计时、不见跳秒）。提前结束出落地，不是接地。专注中点该行仍先起身。自动化：`ContemplativeInquiryUI.test.js` sitting-picture · `liveClockOverlay: !inquirySitting` · focusing yield 仍绿。人工：宽屏与 375 坐满观感。 | — | — | — | `http://127.0.0.1:5173/?product=1` | 2026-11-21 |
