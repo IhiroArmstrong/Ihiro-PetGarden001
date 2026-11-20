@@ -22,6 +22,7 @@ import { VISIBLE_TEXT_POISON_RE } from './visibleTextPoison.js';
  * @typedef {object} MenuReachContract
  * @property {MenuReachKind} kind
  * @property {string} [resultSelector] panel / sheet that must be visible
+ * @property {boolean} [menuMustHide] Idle ⋯ / drawer must not stay on top of the result
  * @property {string} [popupUrlIncludes] substring of window.open URL
  */
 
@@ -57,7 +58,8 @@ export const MENU_REACHABILITY = Object.freeze({
   }),
   'journey-log': Object.freeze({
     kind: 'open-panel',
-    resultSelector: '#journey-log'
+    resultSelector: '#journey-log',
+    menuMustHide: true
   }),
   'presence-signals': Object.freeze({
     kind: 'open-panel',

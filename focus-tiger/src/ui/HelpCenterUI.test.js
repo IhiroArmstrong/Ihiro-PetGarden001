@@ -70,3 +70,11 @@ test('HelpCenterUI speaks the closest ask-card answer after search', () => {
   assert.match(src, /_openArticle\(articleId, \{ speak: true \}\)/);
   assert.doesNotMatch(src, /_openArticle\(article\.id, \{ speak: true \}\)/);
 });
+
+test('HelpCenterUI ask submit opens the first article body, not speech-only', () => {
+  const submitAt = src.indexOf('  async _submitAsk() {');
+  assert.ok(submitAt >= 0);
+  const submitFn = src.slice(submitAt, src.indexOf('  _operatingConfirmTranscript()', submitAt));
+  assert.match(submitFn, /const firstId = result\.articleIds\[0\]/);
+  assert.match(submitFn, /this\._openArticle\(firstId, \{ speak: true \}\)/);
+});
