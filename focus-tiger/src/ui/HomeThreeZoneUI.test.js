@@ -34,6 +34,11 @@ describe('HomeThreeZoneUI H2 skeleton', () => {
     assert.match(src, /proxyMenuItem\?\.\('confide'\)/);
   });
 
+  it('joins the glass drag deck for header dragging', () => {
+    assert.match(src, /dataset\.ftGlassCard\s*=\s*'1'/);
+    assert.match(src, /ft-home-zone-memories__heading/);
+  });
+
   it('opens existing ⋯ groups from labeled previews', () => {
     assert.match(src, /MENU_GROUP_INSPIRATION/);
     assert.match(src, /MENU_GROUP_RECORDS/);

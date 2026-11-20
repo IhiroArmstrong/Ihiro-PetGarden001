@@ -5,6 +5,12 @@
 
 export const STORAGE_KEY = 'focus-tiger.mindflow-nebula-enabled.v1';
 
+/**
+ * Temporarily hide chrome until presentation is reliable (PO 2026-11-20).
+ * Preference toggle may still persist; chrome stays off while suspended.
+ */
+export const MINDFLOW_NEBULA_CHROME_SUSPENDED = true;
+
 /** @typedef {'rest' | 'confide' | 'companion_speak'} MindflowNebulaMode */
 
 /**
@@ -12,6 +18,7 @@ export const STORAGE_KEY = 'focus-tiger.mindflow-nebula-enabled.v1';
  * @returns {boolean}
  */
 export function readMindflowNebulaEnabled(storage) {
+  if (MINDFLOW_NEBULA_CHROME_SUSPENDED) return false;
   if (!storage) return false;
   try {
     return storage.getItem(STORAGE_KEY) === '1';
@@ -46,6 +53,9 @@ export function writeMindflowNebulaEnabled(storage, enabled) {
  * @returns {{ visible: boolean, mode: MindflowNebulaMode }}
  */
 export function resolveMindflowNebulaPresentation(ctx) {
+  if (MINDFLOW_NEBULA_CHROME_SUSPENDED) {
+    return { visible: false, mode: 'rest' };
+  }
   const enabled = Boolean(ctx.enabled);
   const focusing = Boolean(ctx.focusing);
   if (!enabled || focusing) {

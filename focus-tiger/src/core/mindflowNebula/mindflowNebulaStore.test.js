@@ -6,6 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  MINDFLOW_NEBULA_CHROME_SUSPENDED,
   STORAGE_KEY,
   readMindflowNebulaEnabled,
   resolveMindflowNebulaPresentation,
@@ -28,7 +29,11 @@ test('mindflow nebula defaults off', () => {
   assert.equal(readMindflowNebulaEnabled(storage), false);
   assert.equal(writeMindflowNebulaEnabled(storage, true), true);
   assert.equal(storage.data[STORAGE_KEY], '1');
-  assert.equal(readMindflowNebulaEnabled(storage), true);
+  if (MINDFLOW_NEBULA_CHROME_SUSPENDED) {
+    assert.equal(readMindflowNebulaEnabled(storage), false);
+  } else {
+    assert.equal(readMindflowNebulaEnabled(storage), true);
+  }
 });
 
 test('resolveMindflowNebulaPresentation hides when disabled or focusing', () => {
@@ -53,6 +58,18 @@ test('resolveMindflowNebulaPresentation hides when disabled or focusing', () => 
 });
 
 test('resolveMindflowNebulaPresentation modes when visible', () => {
+  if (MINDFLOW_NEBULA_CHROME_SUSPENDED) {
+    assert.deepEqual(
+      resolveMindflowNebulaPresentation({
+        enabled: true,
+        focusing: false,
+        confideOpen: true,
+        companionSpeaking: true
+      }),
+      { visible: false, mode: 'rest' }
+    );
+    return;
+  }
   assert.deepEqual(
     resolveMindflowNebulaPresentation({
       enabled: true,
