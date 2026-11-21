@@ -108,6 +108,14 @@ function zhCharCount(text) {
   return Array.from(String(text || '').replace(/\s/g, '')).length;
 }
 
+/** Dedicated harm-to-others corpus. Noticing A/B lint must not rewrite these. */
+export const NOTICING_LINT_EXEMPT_LINE_IDS = Object.freeze([
+  'aggression-01',
+  'aggression-02',
+  'aggression-03',
+  'aggression-04'
+]);
+
 export function lintNoticingFixedLine(line) {
   /** @type {string[]} */
   const errors = [];
@@ -138,6 +146,7 @@ export function lintNoticingFixedLine(line) {
 
 export function lintNoticingFixedLibrary(lines = NOTICING_FIXED_LINES) {
   return lines
+    .filter((line) => !NOTICING_LINT_EXEMPT_LINE_IDS.includes(line?.id))
     .map((line) => ({ id: line.id, errors: lintNoticingFixedLine(line) }))
     .filter((row) => row.errors.length > 0);
 }

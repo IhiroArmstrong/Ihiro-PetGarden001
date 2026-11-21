@@ -2,13 +2,13 @@
 
 **任务号**：不新开代号。挂场景 AE 3b 与账本「觉察一句把伤害他人专用回复池换成了通用接住句」。治理会话登记前实现旁支不得自编 T 号。  
 **人话**：有人写下「想伤害别人」这类直白话时，阿寅仍用当年那几句专门接怒气的话，不要用普通「我收到了」那种通用接住句，也不要念危机热线。  
-**类别**：**B 类**（会改变用户实际看到的回复正文）。本 PR **只锁 Brief**，不改 `src/`、不写夹具。  
-**状态**：待 PO 点头。点头后才可按这份开工代码。口令「立刻开工」不能跳过本页。  
+**类别**：**B 类**（会改变用户实际看到的回复正文）。代码已在 #1828；本页规格仍锁范围。不写夹具。  
+**状态**：PO 已点头。[#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) / [#1830](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1830) 已合。跟进：裁 `safety_care` 夹带（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836)）。  
 **日期**：2026-11-21  
-**基线**：`origin/develop` tip 含 [#1827](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1827)（NF-02 期望档 = 伤害他人路由）。  
+**基线**：`origin/develop` 含 #1827（NF-02 期望档）+ #1828（专用池）+ #1830（本 Brief）。  
 **从属**：[`task-confide-aggression-toward-others.md`](./task-confide-aggression-toward-others.md) · [`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) · [开门门禁 v2 §5](../audit/first-package-open-gate-v2.md) · [只读核对](../audit/findings/2026-11-21/noticing-aggression-pool-source.md) · 句库 Brief [`task-noticing-fixed-line-library.md`](./task-noticing-fixed-line-library.md)
 
-> 仓库里另有 [#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) 已写代码。本页是开工门禁。**未点头前不得合入 #1828。** 点头后对照本页审那份代码，不要另开第三套实现。
+> **过时句已废**：原先「先不合 1828」不再执行。仍有效：① 通用句 CI 不扫专用四句；② 安全审稿人对四句只读一遍、记入[书面风险接受](../audit/findings/2026-11-21/aggression-dedicated-pool-risk-acceptance.md)、本刀不改字。
 
 ---
 
@@ -158,7 +158,7 @@
 
 ## 12. 口令
 
-1. **本页**：只锁 Brief。你回复「按这份 Brief 开工」或书面点头后，才改 `src/`。  
-2. **代码**：优先审 [#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) 是否只做了第 3 节（若夹带 `safety_care`，按本页非目标拆出或回退）。禁止未点头合入。  
-3. **夹具**：专用池合入后再 **新 Chat**。本会话不写夹具。  
-4. 不调 0.78，不改分类。
+1. **本页**：规格仍有效。#1828 已合；夹带的 `safety_care` 用跟进小改裁掉（#1836），不要整包撤回。  
+2. **代码**：对照第 3 节：只把 `aggression_toward_others` 移出 overlay。四句正文不改。  
+3. **夹具**：专用池对齐后再 **新 Chat**（原定 11/26）。本会话不写夹具。  
+4. 不调 0.78，不改分类。12/5 开门判定与专用池补审不变。
