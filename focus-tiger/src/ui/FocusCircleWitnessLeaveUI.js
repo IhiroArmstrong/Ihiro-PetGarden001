@@ -14,7 +14,8 @@ import {
   FOCUS_CIRCLE_WITNESS_LEAVE_RETRY_MS,
   hasWitnessPromptedThisSession,
   markWitnessPromptedThisSession,
-  postFocusCircleWitness
+  postFocusCircleWitness,
+  witnessSubmitErrorLocaleKey
 } from '../core/focusCircleWitness.js';
 import {
   FOCUS_CIRCLE_WITNESS_LEAVE_PHRASE_KEYS,
@@ -436,7 +437,7 @@ export class FocusCircleWitnessLeaveUI {
   async _submitPhrase(mode, phraseKey, btn) {
     if (this._submitting) return;
     this._submitting = true;
-    this._showPickerError('');
+    this._showPickerError(t('FOCUS_CIRCLE_WITNESS_SUBMIT_PENDING'));
     const buttons = this._pickerRoot?.querySelectorAll('button') ?? [];
     for (const el of buttons) {
       el.disabled = true;
@@ -457,11 +458,7 @@ export class FocusCircleWitnessLeaveUI {
         this.handlers.onLeaveComplete?.();
         return;
       }
-      this._showPickerError(t('FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR'));
-      for (const el of buttons) {
-        el.disabled = false;
-      }
-      btn?.removeAttribute('aria-busy');
+      this._failPickerSubmit(buttons, btn, result.reason);
       return;
     }
 
@@ -478,7 +475,19 @@ export class FocusCircleWitnessLeaveUI {
       this.handlers.onRespondComplete?.(traceId);
       return;
     }
-    this._showPickerError(t('FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR'));
+    this._failPickerSubmit(buttons, btn, result.reason);
+  }
+
+  /**
+   * Fail stays on the picker: reason-mapped copy, buttons re-enabled.
+   * @param {NodeListOf<HTMLButtonElement> | HTMLButtonElement[]} buttons
+   * @param {HTMLButtonElement | null | undefined} btn
+   * @param {unknown} reason
+   */
+  _failPickerSubmit(buttons, btn, reason) {
+    this._showPickerError(
+      t(witnessSubmitErrorLocaleKey(reason) || 'FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR')
+    );
     for (const el of buttons) {
       el.disabled = false;
     }

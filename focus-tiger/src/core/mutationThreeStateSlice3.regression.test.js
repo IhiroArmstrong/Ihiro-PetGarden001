@@ -53,7 +53,8 @@ describe('Slice 3 cross-module three-state regression (#839 AND-3)', () => {
     const controls = readUi('FocusCircleControlsUI.js');
     const witnessUi = readUi('FocusCircleWitnessLeaveUI.js');
     assert.match(witnessCore, /status === 408/);
-    assert.match(witnessCore, /reason: 'timeout'/);
+    assert.match(witnessCore, /code === 'timeout'/);
+    assert.match(witnessCore, /return 'timeout'/);
     assert.match(wasHere, /status === 408/);
     assert.match(wasHere, /reason: 'timeout'/);
     assert.match(controls, /PRIVACY_SHEET_FOCUS_CIRCLE_WORKING/);

@@ -34,9 +34,12 @@ test('witness leave UI uses glass panel tokens and body-level z-index above narr
 });
 
 test('failed witness submit surfaces visible picker error instead of silent return', () => {
+  assert.match(src, /FOCUS_CIRCLE_WITNESS_SUBMIT_PENDING/);
+  assert.match(src, /witnessSubmitErrorLocaleKey/);
   assert.match(src, /FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR/);
   assert.match(src, /focus-circle-witness-picker__status/);
   assert.match(src, /role', 'alert'/);
+  assert.match(src, /_failPickerSubmit/);
 });
 
 test('leave picker expands upward inside bottom leave strip (non-modal)', () => {
