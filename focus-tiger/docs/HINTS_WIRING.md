@@ -8,7 +8,8 @@
 > **2026-08-04 运行时政策覆盖本表部分历史行**：`resolveAutoHintIds` / `resolveRemedy*` 仍可存在于 Store（单测/考古），但 `OnboardingHintsUI` **不得**再因 sync / 点「?」铺开 tip。验收与 e2e 以「purpose only + pulse hover」为准。  
 > **2026-08-05**：薄荷绿脉冲点**不得**因收窄 tip 喷洒而被删；⋯/抽屉行内 `.ft-secondary-menu-hint-dot` 与音符 `has-hint-mint` 仍按未读绘制。有脉冲的控件须去重原生/自绘悬停文案（见 `ONBOARDING_HINTS.md`）。  
 > **2026-08-15**：`focus-hud-*` **例外**——不画浮动 mint 脉冲；悬停金环 / 今日同坐条 / 近日同坐环出 tip（同「?」无脉冲也能悬停出文案）。音符与 ⋯ 行内 mint **仍保留**。  
-> **2026-09-01**：冷启动额头白玉句 `IDLE_YIN_TAP_HINT` **不是**本表 `triggerMode: auto` tip，不进 `OnboardingHintsUI` / mint。点额头一次后写入 `idle-yin-tap-hint.v1`。禁止借本条例恢复 auto tip 喷洒。
+> **2026-09-01**：冷启动额头白玉句 `IDLE_YIN_TAP_HINT` **不是**本表 `triggerMode: auto` tip，不进 `OnboardingHintsUI` / mint。点额头一次后写入 `idle-yin-tap-hint.v1`。禁止借本条例恢复 auto tip 喷洒。  
+> **2026-11-21**：发现性脉冲 **政策**（皮肤、死族、触屏、同屏最多 1 点、账本列）以 [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) 为唯一 SSOT。本表仍只管场景接线。同屏 1 点仲裁序见 [`task-entry-signal-ledger.md`](./task-briefs/task-entry-signal-ledger.md) §8（L4 实现刀）。
 
 > **诚实边界（2026-08-03 分析师）**：本文件 + 库存机器块 = **必要条件**，不是充分条件。  
 > - **已堵**：registry 新 tip 不登记批次簇 / 不同步库存表 → `docs:check` 失败；PR 模板批次钉。  

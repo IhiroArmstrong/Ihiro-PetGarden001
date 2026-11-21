@@ -1,9 +1,11 @@
 # 全站发现性圆点普查（SITE_DISCOVERY_DOT_CENSUS）
 
 创建日期：2026-11-21  
-状态：**盘点已写（A 类 · 无运行时）**  
+状态：**附录 · 考古**（政策 SSOT 已改回 [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md)；账本将生成在 [`LABEL_HINT_TIP_AUDIT.md`](./LABEL_HINT_TIP_AUDIT.md)）  
 基线：`origin/develop` `ecf4ec44`（含 #1834 栖居蓝脉冲孤儿清理、#1838 收藏叠层）  
-姊妹文档：[`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) · [`HINTS_WIRING.md`](./HINTS_WIRING.md) · [`ONBOARDING_HINTS.md`](./ONBOARDING_HINTS.md) · [`MENU_CHROME_CENSUS.md`](./MENU_CHROME_CENSUS.md)
+姊妹文档：[`HINTS_WIRING.md`](./HINTS_WIRING.md) · [`ONBOARDING_HINTS.md`](./ONBOARDING_HINTS.md) · [`MENU_CHROME_CENSUS.md`](./MENU_CHROME_CENSUS.md)
+
+> **2026-11-21 方向锁覆盖本文「保持空表」旧句：**C 族删代码、D 族关闸期摘除绘制，见 STANDARDS §〇。本文保留 class 对照，避免手测仍问「蓝点是哪来的」。
 
 > **口语「蓝点」**：产品手测里常把 **钢蓝 discovery 点**、**栖居指南针蓝脉冲**、以及 **底栏角上的小圆点** 统称「蓝点」。本表按 **机器 class + 色值** 分列，避免与 **薄荷绿 hint 点**（`#6db3a0`）混淆。
 
@@ -29,10 +31,10 @@
 |---|---|
 | SSOT 宿主表 | `hintDiscoveryDots.js` → `HINT_DISCOVERY_DOT_HOSTS` |
 | 同步入口 | `OnboardingHintsUI.syncDiscoveryDots()` → `syncAllDiscoveryDots()` |
-| 产品政策 | [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) §四：**保持空表**，勿复活死点 |
+| 产品政策 | [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) §〇：**删代码**，禁止空表复活 |
 | 历史 | 2026-07-30 Calm 钢蓝点 `pointer-events:none` 事故；mint / 宿主悬停已覆盖 HUD |
 
-**结论**：全站 **不应** 再出现 `.ft-hint-discovery-dot`。若手测仍见钢蓝色小点，先查是否为 D 族或浏览器插件，再查是否旧分支未合 #1834。
+**结论**：全站 **不应** 再出现 `.ft-hint-discovery-dot`。L2 起应删除绘制模块。若手测仍见钢蓝色小点，先查是否为 D 族残留或浏览器插件，再查是否旧分支未合 #1834。
 
 ---
 
@@ -115,8 +117,8 @@
 | 反馈摘要 | 普查结论 | 建议下一刀（须另开功能 PR） |
 |---|---|---|
 | 底栏「其它蓝脉冲」 | D 族在 nav **关** 时不应存在；#1834 专清孤儿脉冲 | 手测关单：默认壳 Idle 扫一遍 DOM（无 `.ft-home-sanctuary-nav-pulse`） |
-| 「全站蓝点盘点没收尾」 | 本文 + 任务片 `site-discovery-dot-census` 收口文档账 | **无运行时**；勿在本支改 `src/` |
-| 钢蓝 discovery 复活 | C 族宿主表仍空 · 政策未变 | 新需求须 PO 书面 + 改 `HINT_DISCOVERY_DOT_HOSTS` |
+| 「全站蓝点盘点没收尾」 | 本文已降为 STANDARDS 附录；账本走 AUDIT | 统一规划见 `task-entry-signal-ledger` |
+| 钢蓝 discovery 复活 | 空表仍会诱人复活 | L2 **删代码**（STANDARDS §〇.2） |
 | Journey 叠层穿透 | 独立 bug · 已记 ledger 已解决 | 跟 TRACKER「叠层下宽屏 Home 球 / Journey 蓝点穿透」人工关单 |
 
 ---
@@ -132,6 +134,6 @@
 
 ## 9. 维护
 
-- 新增 **非 hint** 彩色脉冲点 → 必须先增本表一行 + `LABEL_HINT_TIP_STANDARDS` 交叉审。  
-- 新增 **click hint** → 只改 registry / `HINTS_WIRING`；绘制策略对齐 §4。  
-- 机器块：**无**（宿主表以 `hintDiscoveryDots.js` / `onboardingHintRegistry.js` 为准，避免第三份名单漂移）。
+- **不要**把本附录当政策。新增脉冲 / tip → 改 STANDARDS + registry + AUDIT 账本。  
+- 新增 **click hint** → `HINTS_WIRING` + registry。  
+- 机器块仍无；生成表在 AUDIT，不在本文。
