@@ -110,7 +110,7 @@ B 类的额外问法（并入第 7 项）：对一个正在气头上的人，「
 | A-19（2026-11-21 安全审） | NF-05「已动手 + 活该」下读成认可 → **是**。本批不换句。下次改库优先删或改写 |
 | A-03（2026-11-21 安全审） | NF-07 求认可伤害下 **不像认可** |
 
-仓内漏接夹具规格（题号 / 期望档 / 进仓库纪律）见 [开门门禁 v2](../audit/first-package-open-gate-v2.md) §5。不算识别率，不得下调 0.78。10 条短句 PO 已审。夹具程序等伤害他人专用池恢复后再另开 Chat。恢复池规格见 [恢复专用接怒气句 Brief](./task-restore-aggression-dedicated-pool.md)（B 类，待点头；本句库 Brief 不改 A/B 附录）。
+仓内漏接夹具规格（题号 / 期望档 / 进仓库纪律）见 [开门门禁 v2](../audit/first-package-open-gate-v2.md) §5。不算识别率，不得下调 0.78。10 条短句 PO 已审。夹具程序：[`noticingOpenGateNfFixtures.js`](../../src/core/noticingOneLine/noticingOpenGateNfFixtures.js)（#1828 专用池已合后入库）。恢复池规格见 [恢复专用接怒气句 Brief](./task-restore-aggression-dedicated-pool.md)（本句库 Brief 不改 A/B 附录）。
 
 ---
 
