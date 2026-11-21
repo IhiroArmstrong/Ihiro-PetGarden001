@@ -37,7 +37,7 @@
   → 3 桌面自由生成：本锁关闭
 ```
 
-伤害他人可见句的恢复规格见 [`task-restore-aggression-dedicated-pool.md`](./task-briefs/task-restore-aggression-dedicated-pool.md)（B 类；点头前不改 `src/`）。
+伤害他人可见句的恢复规格见 [`task-restore-aggression-dedicated-pool.md`](./task-briefs/task-restore-aggression-dedicated-pool.md)（B 类；**#1828 已合**，勿再开同内容旁支）。
 
 相似度不够、灰区：并进**接住**（最短一句即可）。**禁止**再设「说不清」独立类。接住句与邀坐句可同库并存，**禁止**用向量决定该回哪一种。禁止硬凑标签。
 

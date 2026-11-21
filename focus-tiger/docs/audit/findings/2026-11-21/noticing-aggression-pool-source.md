@@ -4,34 +4,34 @@
 **性质**：只读。不改 `src/`。不是夹具实现。  
 **挂钩**：[开门门禁 v2](../../first-package-open-gate-v2.md) §5 · 场景 AE 3b · [句库 Brief](../../../task-briefs/task-noticing-fixed-line-library.md)
 
-人话：别人说「我要去伤人」时，产品现在回的是普通接住句，不是当年那几句专门接怒气的话。这不是识别没达标，是接话用的那一池被换掉了。
+人话：核对当时发现「想伤人」被通用接住句盖掉了。那是发送链选池回退，不是识别没达标。**之后已恢复专用池，本页是当时快照。**
 
 ---
 
 ## 一句结论
 
-**发布构建下，`aggression_toward_others` 的可见回复来自觉察一句通用 A/B 固定句库，不是 `aggression-01` / `02` / `03`。**
+**（历史，2026-11-21 午前）** 当时发布构建下，`aggression_toward_others` 的可见回复来自觉察一句通用 A/B 固定句库，不是 `aggression-01` / `02` / `03`。
 
-没有单独的「发布 vs 开发」开关。桌面生成闸写死为关；非危机（含伤害他人）一律抽 A/B。
+**（现行，#1828 已合）** 伤害他人路由不再抽 A/B；可见句回到专用池。中档关心仍可走 overlay（#1836）。口令「再恢复专用池」**不执行**。
 
 ---
 
 ## 依据（地面真相）
 
 1. 发送链 `resolveConfideReply` → `pickVisibleNonCrisisLine`：只要 `shouldUseNoticingFixedLine(route)` 为真，就抽觉察一句库，不抽旧语料池。  
-2. `shouldUseNoticingFixedLine` 对 `aggression_toward_others` 为 **true**（安全档与日语未开放为 false）。单测锁死这一点。  
-3. `confideCorpus.js` 里 `aggression-01`–`04` 仍在，但可见发送链不再选用。  
-4. 本机用 NF-02 句跑 `resolveConfideReply`：路由仍是 `aggression_toward_others`，回复 ID 为 `A-19`（通用接住），不是 `aggression-0x`。
+2. 当时 `shouldUseNoticingFixedLine` 对 `aggression_toward_others` 为 **true**。#1828 之后为 **false**（与日语未开放同一侧；中档关心 overlay 为 true）。  
+3. 当时语料池在、发送链不选用。#1828 之后发送链再选用 `aggression-0x`。  
+4. 当时本机 NF-02 可见 ID 为 `A-19`。现行夹具 [#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842) 锁专用池落点。
 
-相对场景 AE 3b（须 aggression 池、禁止点头句 / safety-01 / generate）这是 **回退**：路由名还在，可见句子换成了通用库。
+相对场景 AE 3b，午前核对是 **回退**。#1828 后该回退已修；本页保留当时依据，避免下一会话把快照当成现状。
 
 ---
 
 ## 不在本刀做的
 
 - 不改分类、不把威胁他人改成自伤热线、不调 0.78。  
-- 不写夹具程序。夹具失败不得用来改规格或降阈值。  
-- 恢复专用池须 **新 Chat + Brief**（用户可见回复会变，B 类）。
+- 不把本页当「尚未恢复」的开工令。夹具失败不得用来改规格或降阈值。  
+- 恢复专用池 **已合** #1828；夹具 **已合** #1842。
 
 ---
 

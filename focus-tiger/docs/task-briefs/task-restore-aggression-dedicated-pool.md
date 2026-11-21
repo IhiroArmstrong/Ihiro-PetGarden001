@@ -3,7 +3,7 @@
 **任务号**：不新开代号。挂场景 AE 3b 与账本「觉察一句把伤害他人专用回复池换成了通用接住句」。治理会话登记前实现旁支不得自编 T 号。  
 **人话**：有人写下「想伤害别人」这类直白话时，阿寅仍用当年那几句专门接怒气的话，不要用普通「我收到了」那种通用接住句，也不要念危机热线。  
 **类别**：**B 类**（会改变用户实际看到的回复正文）。代码已在 #1828；本页规格仍锁范围。不写夹具。  
-**状态**：PO 已点头。[#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) / [#1830](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1830) 已合。跟进：裁 `safety_care` 夹带（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836)）。  
+**状态**：PO 已点头。代码与跟进均已合：[#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) / [#1830](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1830) / [#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836) / [#1837](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1837) / [#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)。口令「按这份 Brief 开工」**不执行**。  
 **日期**：2026-11-21  
 **基线**：`origin/develop` 含 #1827（NF-02 期望档）+ #1828（专用池）+ #1830（本 Brief）。  
 **从属**：[`task-confide-aggression-toward-others.md`](./task-confide-aggression-toward-others.md) · [`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) · [开门门禁 v2 §5](../audit/first-package-open-gate-v2.md) · [只读核对](../audit/findings/2026-11-21/noticing-aggression-pool-source.md) · 句库 Brief [`task-noticing-fixed-line-library.md`](./task-noticing-fixed-line-library.md)
@@ -16,7 +16,7 @@
 
 觉察一句把「非危机」一律抽通用 A/B。分类仍叫 `aggression_toward_others`，但用户看见的是「这一句被好好收下了」一类接住句。对照审稿第 7 项，这会读成对伤害意图的认可。热线是给自伤的，用在「想伤别人」上也不对。
 
-真正卡住夹具入库的是这层回退，不是 12 月 5 日四道开门闸。夹具程序等本刀可见句恢复后再另开 Chat。
+真正卡住夹具入库的曾是这层回退，不是 12 月 5 日四道开门闸。夹具程序已合 [#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)；勿再开同内容旁支。
 
 ---
 
@@ -92,7 +92,7 @@
 | 项 | 本刀 |
 |---|---|
 | NF-02 期望档 | 伤害他人路由 + 专用池可见句（#1827 已锁规格） |
-| 夹具程序 | **不做。** 等本刀合入后再另开 Chat |
+| 夹具程序 | **已合** [#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)。口令「再开 NF 夹具」不执行 |
 | 0.78 | 不动 |
 | G1–G4 | 不改判定；本刀不是那四闸的开门条件 |
 
@@ -160,5 +160,5 @@
 
 1. **本页**：规格仍有效。#1828 已合；夹带的 `safety_care` 用跟进小改裁掉（#1836），不要整包撤回。  
 2. **代码**：对照第 3 节：只把 `aggression_toward_others` 移出 overlay。四句正文不改。  
-3. **夹具**：专用池对齐后再 **新 Chat**（原定 11/26）。本会话不写夹具。  
-4. 不调 0.78，不改分类。12/5 开门判定与专用池补审不变。
+3. **夹具**：[#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842) 已合。口令「再开 NF 夹具旁支」**不执行**。  
+4. 不调 0.78，不改分类。12/5 开门判定与专用池人签补审不变。口令「按这份 Brief 开工」**不执行**重写。

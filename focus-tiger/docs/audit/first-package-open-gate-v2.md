@@ -119,11 +119,11 @@
 
 恢复伤害他人专用池见 [恢复专用接怒气句 Brief](../task-briefs/task-restore-aggression-dedicated-pool.md)。**#1828 已合**（可见句回到 `aggression-02/01/03`）。夹具程序：[`noticingOpenGateNfFixtures.js`](../../src/core/noticingOneLine/noticingOpenGateNfFixtures.js)（PO 2026-11-21 十句）。
 
-NF-05 到 NF-07 可能落到 A/B：零生成下可接受，前提是 A/B 能过审稿第 7 项。第 7 项补审已做（#1814 删 A-13 / A-15 / B-12），**不是**「待下次改句才启用」。2026-11-21 安全审：A-19 在「已动手 + 活该」场景读成认可，下次改句优先删或改写 A-19；A-03 在求认可伤害场景偏安全。处理方式仍是删句，不改夹具、不改附录本批。
+NF-05 到 NF-07 可能落到 A/B：零生成下可接受，前提是 A/B 能过审稿第 7 项。第 7 项补审已做（#1814 删 A-13 / A-15 / B-12），**不是**「待下次改句才启用」。2026-11-21 安全审：A-19 在「已动手 + 活该」场景读成认可，下次改句优先删或改写 A-19；A-03 在求认可伤害场景偏安全。处理方式仍是删句，不改夹具、不改附录本批。口令「删 A-19」**不执行**，须新 Brief + G4 重审。
 
-**2026-11-21 只读核对（不改 `src/`）**：发布路径下，`aggression_toward_others` 的可见回复来自觉察一句通用 A/B 库，**不是** `aggression-01/02/03`。专用池仍在语料文件里，发送链不选用。相对 AE 3b 这是回退。夹具程序**暂不写**；下一刀先出「恢复专用池」Brief。详见 [核对记录](./findings/2026-11-21/noticing-aggression-pool-source.md)。
+**2026-11-21 只读核对（历史）**：当时发布路径把伤害他人抽到通用 A/B。**已由 [#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) 恢复专用池**；中档关心留在 overlay（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836)）；禁词豁免 + 待签表（[#1837](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1837)）；仓内夹具（[#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)）；12/5 工作纸（[#1843](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1843)）。核对原稿见 [核对记录](./findings/2026-11-21/noticing-aggression-pool-source.md)。**禁止**把该核对再读成「尚未恢复」。
 
-PO 已审 10 条自编短句（仓内、无细节）。实现见 `noticingOpenGateNfFixtures.js`（#1828 专用池已合后入库）。
+PO 已审 10 条自编短句（仓内、无细节）。夹具已入库，勿再开同内容旁支。
 
 出题者不打分；实现会话只看通过率和失败条数。
 
@@ -140,7 +140,7 @@ PO 已审 10 条自编短句（仓内、无细节）。实现见 `noticingOpenGa
 对照 [`SCENARIO_TESTS.md`](../SCENARIO_TESTS.md)：
 
 - **AE**：同一扇门，强度变轻。第一版用户气泡不再是自由聊天。已知下调，已拍板。  
-- **AE 3b**：NF-02 对齐「明确想打人走伤害他人路由、不走自伤求助句」。本页不把威胁他人改成 T0。可见回复仍应对齐专用池；现状见 §5 只读核对。  
+- **AE 3b**：NF-02 对齐「明确想打人走伤害他人路由、不走自伤求助句」。本页不把威胁他人改成 T0。可见回复已对齐专用池（#1828）。  
 - **AD**：开入口仍须唤醒坐姿。本页不改。  
 - Help Center：产品问仍去帮助中心。  
 - **T14**：求助链复用，不新做、不改走 Support 付款。  

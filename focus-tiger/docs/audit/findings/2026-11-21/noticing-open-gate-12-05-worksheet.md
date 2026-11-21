@@ -28,9 +28,9 @@
 
 #1828 已把「想伤害别人」接回 `aggression-01` / `02` / `03`。这四句**没进过**句库 G4 安全审。12/5 当天由**人**在书面风险接受「专用池四句」表签一行。本页不改字、不代签。
 
-夹具程序（NF-01–NF-10）见 [#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)（OPEN）。夹具绿 ≠ 专用池已审。
+夹具程序（NF-01–NF-10）见 [#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)（**已合**）。夹具绿 ≠ 专用池已审。
 
-中档关心路径裁剪（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836) / [#1837](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1837)）**不是** 12/5 四闸条件。
+中档关心留在 overlay + 禁词豁免（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836) / [#1837](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1837)，**已合**）**不是** 12/5 四闸条件。
 
 ---
 
