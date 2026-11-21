@@ -289,7 +289,7 @@ gh pr create --base develop --head "$(git branch --show-current)" --title "…" 
 - 直接修过期文档并开 PR：功能进度写 `focus-tiger/docs/task-entries/`（**禁止**功能旁支改 `TASKS.md` 已有段）；`GLOSSARY` / `SCHEDULING_GLOSSARY` 热点仍只走独立 `docs/*` 治理 PR（`queue-governance`），但**必须同一轮开出**，不等用户再发口令。  
 - 用户只需合并那个 docs PR。
 
-**正向流程**：带 Tn 的实现 PR 须在**同一 PR** 更新 `task-entries/` / `tracker-entries/`，描述填 `任务 ID：Tn` 并按模板二选一勾选。CI **`task-doc-sync`** 对分支名/标题/描述含 Tn 的 PR：要么 diff 命中文档路径，要么勾「无需改文档」且原因不少于 6 个字；勾了「已同步文档」却无文档 diff → 红灯。不带 Tn 的 PR（描述写 `任务 ID：无`）跳过。`PETS73` 不得被认成 `T73`。
+**正向流程**：带 Tn 的实现 PR 须在**同一 PR** 更新 `task-entries/` / `tracker-entries/`，描述填 `任务 ID：Tn` 并按模板二选一勾选。CI **`task-doc-sync`** 对分支名/标题/描述含 Tn 的 PR：要么 diff 命中文档路径，要么勾「无需改文档」且原因不少于 6 个字；勾了「已同步文档」却无文档 diff → 红灯。不带 Tn 的 PR（描述写 `任务 ID：无`）跳过。`PETS73` 不得被认成 `T73`。 自动对照表：`docs/STATUS.md`（`scripts/gen-task-status.py`，只写已合并/进行中 PR，**不**写「已完成」）。 周巡检：`scripts/audit-task-docs.py`（workflow `doc-drift-audit`，疑似过期开 `doc-drift` issue）。
 
 **用户显式覆盖**：仅当用户明确说「我知道 Tn 已合并，仍要重做 / 重构 / 回滚」才可越过预检，并在 PR 描述写明原 PR 号。
 
