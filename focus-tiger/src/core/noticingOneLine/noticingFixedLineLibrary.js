@@ -65,7 +65,8 @@ export function noticingFixedLineLocaleKey(id) {
 export function shouldUseNoticingFixedLine(route) {
   if (!route) return false;
   if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) return false;
-  if (route === CONFIDE_ROUTE.SAFETY_CARE) return false;
+  // Mid-tier care stays on the noticing overlay until its own Brief.
+  // Harm-to-others is the only extra opt-out from this cut (#1828 follow-up).
   if (route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) return false;
   if (route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) return false;
   return true;
