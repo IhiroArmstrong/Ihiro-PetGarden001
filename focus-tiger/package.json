@@ -28,6 +28,7 @@
     "check:z-index": "node scripts/z-index-registry-check.js",
     "check:z-index-literals": "node --test scripts/z-index-literal-check.test.js && node scripts/z-index-literal-check.js",
     "check:glass-card-roots": "node --test scripts/check-glass-card-roots.test.js && node scripts/check-glass-card-roots.js",
+    "check:glass-card-factory": "node --test scripts/check-glass-card-factory.test.js && node scripts/check-glass-card-factory.js",
     "check:companion-contract": "node --test scripts/check-companion-contract.test.js && node scripts/check-companion-contract.js",
     "check:generation-gate": "node --test scripts/check-generation-gate.test.js && node scripts/check-generation-gate.js --check",
     "check:plan-a-guest-confide-copy": "node --test scripts/check-plan-a-guest-confide-copy.test.js && node scripts/check-plan-a-guest-confide-copy.js",

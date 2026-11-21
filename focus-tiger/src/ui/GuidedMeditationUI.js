@@ -22,11 +22,8 @@ import {
 } from '../core/guidedMeditationSpeech.js';
 import { resolveGuidedMeditationCredit } from '../core/guidedMeditationLessons.js';
 import {
-  GLASS_BLUR_CSS,
-  GLASS_BORDER,
   GLASS_FILL_STRONG,
-  GLASS_RADIUS,
-  GLASS_SHADOW
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -37,7 +34,7 @@ import {
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'guided-meditation-styles-v1';
+const STYLE_ID = 'guided-meditation-styles-v2';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const DUCK_SPEAK = 0.45;
 
@@ -72,9 +69,12 @@ export class GuidedMeditationUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'guided-meditation';
-    this.root.className = 'guided-meditation';
+    this.root = createGlassCard({
+      id: 'guided-meditation',
+      className: 'guided-meditation',
+      strong: true,
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');
@@ -84,6 +84,7 @@ export class GuidedMeditationUI {
     this.titleEl = document.createElement('p');
     this.titleEl.id = 'guided-meditation-title';
     this.titleEl.className = 'guided-meditation__title';
+    this.titleEl.setAttribute('data-ft-glass-drag-chrome', '1');
 
     this.panel = document.createElement('div');
     this.panel.className = 'guided-meditation__panel';
@@ -474,6 +475,10 @@ export class GuidedMeditationUI {
         bottom: calc(env(safe-area-inset-bottom, 0px) + 8vh);
         transform: translateX(-50%) translateY(12px);
         width: min(94vw, 520px);
+        max-height: min(82vh, 640px);
+        overflow: auto;
+        padding: 16px;
+        box-sizing: border-box;
         z-index: ${Z.GLASS_CARD};
         opacity: 0;
         pointer-events: none;
@@ -495,12 +500,9 @@ export class GuidedMeditationUI {
         display: flex;
         flex-direction: column;
         gap: 10px;
-        padding: 16px;
-        border-radius: ${GLASS_RADIUS};
-        background: ${GLASS_FILL_STRONG};
-        border: ${GLASS_BORDER};
-        box-shadow: ${GLASS_SHADOW};
-        backdrop-filter: ${GLASS_BLUR_CSS};
+        background: transparent;
+        border: none;
+        box-shadow: none;
       }
       .guided-meditation__list {
         display: flex;
@@ -519,7 +521,7 @@ export class GuidedMeditationUI {
         font-size: 1rem;
         cursor: pointer;
         padding: 10px 12px;
-        background: rgba(255, 252, 245, 0.92);
+        background: ${GLASS_FILL_STRONG};
         color: var(--ft-text-primary, #2c2418);
       }
       .guided-meditation__btn:active { transform: scale(0.98); }

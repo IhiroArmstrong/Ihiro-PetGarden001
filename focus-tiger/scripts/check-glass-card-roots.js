@@ -185,6 +185,10 @@ export function scanGlassCardRootSource(src, target) {
   ];
   const values = chunks.flatMap(extractBackgroundValues);
   const classes = values.map(classifyGlassRootFill);
+  const factoryRe = new RegExp(
+    `createGlassCard\\s*\\([\\s\\S]{0,240}?id:\\s*['"]${target.id}['"]`
+  );
+  if (factoryRe.test(src)) classes.push('token');
   const problems = [];
   for (let i = 0; i < values.length; i += 1) {
     const kind = classes[i];

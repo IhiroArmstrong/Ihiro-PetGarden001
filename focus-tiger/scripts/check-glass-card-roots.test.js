@@ -53,6 +53,25 @@ test('live registered card roots stay sanctuary glass', () => {
   assert.equal(runGlassCardRootCheck(), true);
 });
 
+test('createGlassCard({ id }) counts as sanctuary glass even without a CSS fill rule', () => {
+  const result = scanGlassCardRootSource(
+    `
+    this.root = createGlassCard({
+      id: 'guided-meditation',
+      strong: true,
+      deck: true
+    });
+    .guided-meditation__panel { background: transparent; }
+    `,
+    {
+      id: 'guided-meditation',
+      selectors: ['#guided-meditation', '.guided-meditation', '.guided-meditation__panel']
+    }
+  );
+  assert.equal(result.ok, true, result.problems.join('; '));
+  assert.ok(result.classes.includes('token'));
+});
+
 test('presence-signals-panel is sanctuary glass, not an opaque-cream holdout', () => {
   assert.equal(GLASS_CARD_ROOT_HOLDOUT_IDS.includes('presence-signals-panel'), false);
   const src = readFileSync(

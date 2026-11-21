@@ -36,6 +36,7 @@ import { runZIndexRegistryCheck } from './z-index-registry-check.js';
 import { runProtectedPathLayerCheck } from './protected-path-layer-check.js';
 import { runZIndexLiteralCheck } from './z-index-literal-check.js';
 import { runGlassCardRootCheck } from './check-glass-card-roots.js';
+import { runGlassCardFactoryCheck } from './check-glass-card-factory.js';
 import { runConfideAcceptanceDevsetLeakAudit } from './audit-confide-acceptance-devset-leak.js';
 import { runQueueGovernanceCheck } from './check-queue-governance-docs.js';
 import { runCompanionContractCheck } from './check-companion-contract.js';
@@ -60,6 +61,7 @@ function main() {
   if (!runProtectedPathLayerCheck()) ok = false;
   if (!runZIndexLiteralCheck()) ok = false;
   if (!runGlassCardRootCheck()) ok = false;
+  if (!runGlassCardFactoryCheck()) ok = false;
   if (!runPracticeAggregateCoverageAudit()) ok = false;
   if (!runGrowthMetricsAudit()) ok = false;
   if (!runB1ArchitectureGateAudit()) ok = false;
