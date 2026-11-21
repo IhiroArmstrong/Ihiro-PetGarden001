@@ -974,6 +974,13 @@ export class OnboardingHintsUI {
       const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
       getGlassHoverTipHandle(el)?.setSuppressed(ambientUnread);
     }
+
+    getGlassHoverTipHandle(
+      document.getElementById('language-preference-fab')
+    )?.setSuppressed(this.isDiscoveryPulseVisible('language-preference'));
+    getGlassHoverTipHandle(
+      document.getElementById('reminder-preference-toggle')
+    )?.setSuppressed(this.isDiscoveryPulseVisible('in-app-reminder'));
   }
 
   /**

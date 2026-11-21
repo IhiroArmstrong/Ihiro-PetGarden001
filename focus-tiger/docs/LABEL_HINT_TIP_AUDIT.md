@@ -154,10 +154,12 @@ App 里解释按钮的办法至少有四套：按钮上直接写字、原生悬�
 
 | controlId | selector | visibleLabel | tooltip | pulse | oneShot | touch | stackExempt |
 |---|---|---|---|---|---|---|---|
+| `ambient-chimes-volume-slider` | `#ambient-chimes-volume-slider` | CHIMES_VOLUME_LABEL | `glass-ear` | `none` | `none` | `label-enough` | — |
+| `ambient-volume-slider` | `#ambient-volume-slider` | AMBIENT_VOLUME_LABEL | `glass-ear` | `none` | `none` | `label-enough` | — |
 | `btn-focus` | `#btn-focus` | Sit/Rise text | `none` | `none` | `none` | `label-enough` | — |
 | `confide-ear-chrome` | `#confide-ear-chrome` | 无 | `glass-ear` | `none` | `none` | `execute-plus-first-toast` | — |
 | `hint:ambient-gated` | `.ambient-soundscape__fab` | HINT_AMBIENT_GATED | `hint-host-hover` | `mint-float:ambient-gated` | `none` | `pulse-click` | — |
-| `hint:ambient-soundscape` | `.ambient-soundscape__mute` | HINT_AMBIENT_SOUNDSCAPE | `hint-host-hover` | `mint-float:ambient-soundscape` | `none` | `pulse-click` | — |
+| `hint:ambient-soundscape` | `.ambient-soundscape__mute` | HINT_AMBIENT_SOUNDSCAPE | `glass-ear` | `mint-float:ambient-soundscape` | `none` | `execute-plus-first-toast` | — |
 | `hint:breathing` | `#arrival-practice, #btn-focus` | HINT_BREATHING | `none` | `none` | `none` | `pulse-click` | — |
 | `hint:choose` | `#arrival-practice, #btn-focus` | HINT_CHOOSE | `none` | `none` | `none` | `pulse-click` | — |
 | `hint:companion-across-tools` | `.session-start-dock__panel` | HINT_COMPANION_ACROSS | `none` | `none` | `none` | `pulse-click` | — |
@@ -175,8 +177,8 @@ App 里解释按钮的办法至少有四套：按钮上直接写字、原生悬�
 | `hint:honesty-optional` | `#honesty-idle-entry` | HINT_HONESTY_OPTIONAL | `none` | `none` | `none` | `pulse-click` | — |
 | `hint:how-shall-we-sit` | `.session-start-dock__hint` | HINT_HOW_SHALL_WE_SIT | `hint-host-hover` | `mint-inline:how-shall-we-sit` | `none` | `pulse-click` | — |
 | `hint:idle-after-session` | `#btn-focus` | HINT_IDLE_AFTER_SESSION | `hint-host-hover` | `mint-float:idle-after-session` | `none` | `pulse-click` | — |
-| `hint:in-app-reminder` | `#reminder-preference-toggle` | HINT_IN_APP_REMINDER | `hint-host-hover` | `mint-float:in-app-reminder` | `none` | `pulse-click` | — |
-| `hint:language-preference` | `#language-preference-fab` | HINT_LANGUAGE_PREFERENCE | `hint-host-hover` | `mint-float:language-preference` | `none` | `pulse-click` | — |
+| `hint:in-app-reminder` | `#reminder-preference-toggle` | HINT_IN_APP_REMINDER | `glass-ear` | `mint-float:in-app-reminder` | `none` | `execute-plus-first-toast` | — |
+| `hint:language-preference` | `#language-preference-fab` | HINT_LANGUAGE_PREFERENCE | `glass-ear` | `mint-float:language-preference` | `none` | `execute-plus-first-toast` | — |
 | `hint:micro-ritual` | `#quick-start-focus, #ft-wide-home-quickstart, #ft-narrow-home-quickstart` | HINT_MICRO_RITUAL | `hint-host-hover` | `mint-inline:micro-ritual` | `none` | `pulse-click` | — |
 | `hint:narrow-drawer-menu` | `.ft-narrow-grabber` | HINT_NARROW_DRAWER_MENU | `hint-host-hover` | `none` | `none` | `label-enough` | — |
 | `hint:notice` | `#arrival-practice, #btn-focus` | HINT_NOTICE | `none` | `none` | `none` | `pulse-click` | — |
