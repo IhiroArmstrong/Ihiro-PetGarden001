@@ -11,7 +11,7 @@ updated: 2026-11-21
 
 - `#1831` 把卡根改成 `createGlassCard()` 后，**inline** 默认 `GLASS_FILL`（0.62）盖过 Collections 样式表里的 `GLASS_FILL_STRONG`（0.78），暖米变浅、像发白/空白。
 - Yin's Collections：`createGlassCard({ strong: true })`，与现网内层滚动契约对齐。
-- Art Collection：同样 `strong: true`；壳 `overflow: hidden`，货架滚 `#art-collection-panel-scroll`（不再在毛玻璃壳上 `overflow: auto`）。
+- Art Collection：同样 `strong: true`；壳 `overflow: hidden`，货架滚 `#art-collection-panel-scroll`（不再在毛玻璃壳上 `overflow: auto`）。`display: flex` 时必须 `.art-collection-panel[hidden] { display: none !important }` 且关卡 `pointer-events: none`，否则关着的卡仍会挡住 Sit。
 - 单测：未传 `strong: true` / 艺术收藏壳上 `overflow: auto` 会红。
 
 ## 仍须

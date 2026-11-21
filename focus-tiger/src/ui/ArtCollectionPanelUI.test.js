@@ -22,7 +22,9 @@ test('art collection panel is its own glass card', () => {
   assert.match(src, /GLASS_FILL_STRONG/);
   assert.match(src, /art-collection-panel-scroll/);
   assert.match(src, /overflow: hidden/);
+  assert.match(src, /\.art-collection-panel\[hidden\]/);
   assert.doesNotMatch(src, /\.art-collection-panel \{[^}]*overflow: auto/s);
+  assert.doesNotMatch(src, /\.art-collection-panel \{[^}]*pointer-events: auto/s);
   assert.match(src, /z-index: \$\{Z\.GLASS_CARD\}/);
   assert.match(src, /\.art-collection-panel__btn:active:not\(:disabled\)/);
   assert.match(src, /requestArtPurchase/);

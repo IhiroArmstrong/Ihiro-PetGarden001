@@ -463,8 +463,16 @@ export class ArtCollectionPanelUI {
         border-radius: ${GLASS_RADIUS};
         box-shadow: ${GLASS_SHADOW};
         opacity: 0;
-        pointer-events: auto;
+        pointer-events: none;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
+      }
+      .art-collection-panel.is-visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+        pointer-events: auto;
+      }
+      .art-collection-panel[hidden] {
+        display: none !important;
       }
       .art-collection-panel__scroll {
         flex: 1 1 auto;
@@ -472,10 +480,6 @@ export class ArtCollectionPanelUI {
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-      }
-      .art-collection-panel.is-visible {
-        opacity: 1;
-        transform: translate(-50%, 0);
       }
       .art-collection-panel__title {
         margin: 0 0 6px;
