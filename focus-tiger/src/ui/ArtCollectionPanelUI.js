@@ -27,7 +27,7 @@ import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js'
 import {
   GLASS_BLUR_CSS,
   GLASS_BORDER,
-  GLASS_FILL,
+  GLASS_FILL_STRONG,
   GLASS_RADIUS,
   GLASS_SHADOW,
   createGlassCard
@@ -40,7 +40,7 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'art-collection-panel-styles-v1';
+const STYLE_ID = 'art-collection-panel-styles-v2';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 export class ArtCollectionPanelUI {
@@ -64,6 +64,7 @@ export class ArtCollectionPanelUI {
     this.root = createGlassCard({
       id: 'art-collection-panel',
       className: 'art-collection-panel',
+      strong: true,
       deck: true
     });
     this.root.hidden = true;
@@ -109,7 +110,11 @@ export class ArtCollectionPanelUI {
     this.closeBtn.dataset.testid = 'art-collection-close';
     this.closeBtn.addEventListener('click', () => this.close());
 
-    this.root.append(this.titleEl, this.blurbEl, this.emailLabel, this.listEl, this.closeBtn);
+    this.scrollEl = document.createElement('div');
+    this.scrollEl.className = 'art-collection-panel__scroll';
+    this.scrollEl.dataset.testid = 'art-collection-panel-scroll';
+    this.scrollEl.append(this.blurbEl, this.emailLabel, this.listEl);
+    this.root.append(this.titleEl, this.scrollEl, this.closeBtn);
     mountRoot.appendChild(this.root);
 
     this._onKeyDown = (event) => {
@@ -443,14 +448,16 @@ export class ArtCollectionPanelUI {
         left: 50%;
         bottom: max(72px, env(safe-area-inset-bottom, 0px) + 56px);
         z-index: ${Z.GLASS_CARD};
+        display: flex;
+        flex-direction: column;
         width: min(420px, calc(100vw - 32px));
         max-height: min(72vh, 640px);
-        overflow: auto;
+        overflow: hidden;
         transform: translate(-50%, 10px);
         padding: 16px 16px 14px;
         box-sizing: border-box;
         color: #2c1f14;
-        background: ${GLASS_FILL};
+        background: ${GLASS_FILL_STRONG};
         ${GLASS_BLUR_CSS};
         border: ${GLASS_BORDER};
         border-radius: ${GLASS_RADIUS};
@@ -458,6 +465,13 @@ export class ArtCollectionPanelUI {
         opacity: 0;
         pointer-events: auto;
         transition: opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease;
+      }
+      .art-collection-panel__scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .art-collection-panel.is-visible {
         opacity: 1;
