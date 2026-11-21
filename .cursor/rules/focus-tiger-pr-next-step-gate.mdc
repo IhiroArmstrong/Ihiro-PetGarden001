@@ -6,7 +6,7 @@ alwaysApply: true
 # Focus Tiger · 下一步须先查有没有 PR（pr-next-step-gate · 常驻）
 
 > **条文 SSOT**：[`WORKFLOW.md`](../WORKFLOW.md)「任务切片：开工 / 继续 / 下一步须先查 PR」。  
-> 索引：`RULES_INDEX.md` → `git-pr-next-step-gate`。与 `git-cross-session`、`branch-freshness` /「地面真相优先级」配套，**不**互相替代。
+> 索引：`RULES_INDEX.md` → `git-pr-next-step-gate`。与 `git-cross-session`、`branch-freshness` /「地面真相优先级」、**`git-task-preflight`（`scripts/task-preflight.sh`）** 配套，**不**互相替代。
 
 ## 第一问（硬闸）：有没有 PR？
 

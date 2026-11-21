@@ -264,6 +264,35 @@ gh pr create --base develop --head "$(git branch --show-current)" --title "…" 
 
 **反例（禁止）**：#1565 已 **OPEN** 全绿，仍执行「开 T87-A2」——应汇报 **已有 PR、待合**，不得因未合进 develop 而重做。
 
+### 任务开工预检：git 是唯一真相（`git-task-preflight`）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-task-preflight`）。常驻：`.cursor/rules/task-preflight.mdc`。脚本：`scripts/task-preflight.sh`。CI：`.github/workflows/task-doc-sync.yml`（检查名 **`task-doc-sync`**）。  
+> 与上一小节 `git-pr-next-step-gate` **互补，不互相替代**：那条回答「有没有 PR / 待合还是已合」；本条回答「文档里的待做能不能当真」以及「发现过期后还要不要等口令」。
+
+**总原则**：git / GitHub 的合并记录是任务（Tn）状态的**唯一真相**。`GLOSSARY.md` / `SCHEDULING_GLOSSARY.md` / `TASKS.md` / 队列 / 口令表里的「待做 / 立即做 / Brief 已点头 / 进行中」只是**可能已过期的缓存**。文档与 git 冲突时以 git 为准。**禁止仅凭文档里的「待做」状态就开始实现。**
+
+**触发**：用户或交接出现任务 ID（`T` + 数字）并伴随开工 / 实现 / 第 N 刀 / 按 Brief / 继续做 / 重做 / 补做 / 开分支 / 开 PR。
+
+**开工前必做**（写任何 `focus-tiger/src/`、开任何 feature 分支之前；验证类，不受 `agent-tool-budget` 省 token 约束）：
+
+1. 运行 **`scripts/task-preflight.sh <Tn>`**（内部：`git fetch` + `git log origin/develop --grep` + `gh pr list` merged/open）。  
+2. **读命中 PR 的标题、描述、改动文件**，判断是否覆盖**本次请求的具体范围**。同一 Tn 常分多刀：「命中过 Tn」≠「本次范围已完成」。  
+3. 结论只许三种：  
+   - **A 已完成**：本次范围已被已合并 PR 覆盖 → **停止实现**；回复第一行写 `预检结论：Tn（范围）已由 #xxxx 于 YYYY-MM-DD 合入 develop，不重开实现；文档已过期。`  
+   - **B 部分完成**：只做尚未覆盖的剩余；第一行写已完成部分的 PR 号。  
+   - **C 无命中**：可按口令开工；第一行写预检无合并记录。  
+   有 **OPEN PR** 命中 → 不得另开同内容旁支（仍走 `git-pr-next-step-gate`）。
+
+**结论 A 的同一轮义务（禁止写成「待你下口令再 sync」）**：
+
+- 不创建 feature 分支，不写 `src/`。  
+- 直接修过期文档并开 PR：功能进度写 `focus-tiger/docs/task-entries/`（**禁止**功能旁支改 `TASKS.md` 已有段）；`GLOSSARY` / `SCHEDULING_GLOSSARY` 热点仍只走独立 `docs/*` 治理 PR（`queue-governance`），但**必须同一轮开出**，不等用户再发口令。  
+- 用户只需合并那个 docs PR。
+
+**正向流程**：带 Tn 的实现 PR 须在**同一 PR** 更新 `task-entries/` / `tracker-entries/`，描述填 `任务 ID：Tn` 并按模板二选一勾选。CI **`task-doc-sync`** 对分支名/标题/描述含 Tn 的 PR：要么 diff 命中文档路径，要么勾「无需改文档」且原因不少于 6 个字；勾了「已同步文档」却无文档 diff → 红灯。不带 Tn 的 PR（描述写 `任务 ID：无`）跳过。`PETS73` 不得被认成 `T73`。
+
+**用户显式覆盖**：仅当用户明确说「我知道 Tn 已合并，仍要重做 / 重构 / 回滚」才可越过预检，并在 PR 描述写明原 PR 号。
+
 ### 并行 Cursor 会话：必须用 git worktree 隔离写操作
 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-parallel-worktree`）。「跨会话指令冲突」管的是 PR / push / 合 `main` 的冷静；**本条管的是文件系统隔离**。二者互补，不互相替代。

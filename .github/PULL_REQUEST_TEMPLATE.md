@@ -9,6 +9,26 @@
 
 ---
 
+## 任务 ID（必填）
+
+任务 ID：T__
+<!-- 例：任务 ID：T73；若本 PR 与任何 Tn 无关，写：任务 ID：无 -->
+
+## 文档同步（二选一，必须勾一项）
+
+- [ ] 已同步文档（`focus-tiger/docs/task-entries/` / `tracker-entries/`；队列热点 GLOSSARY / SCHEDULING 仍走独立治理 PR，但须同一轮开出）
+- [ ] 本 PR 无需改文档
+  - 原因：
+
+<!--
+规则（SSOT：WORKFLOW.md → git-task-preflight；CI：task-doc-sync）：
+- 分支名、标题或「任务 ID：Tn」含 Tn 的 PR，diff 里必须有文档改动，或勾「无需改文档」并写清原因，否则 CI 不让合并。
+- 「已同步文档」必须真有文档改动（含 task-entries），只勾不改会被拦下。
+- 合并本 PR 即该任务状态的唯一真相来源；不要事后另开治理 sync 才改进度。
+-->
+
+---
+
 ## 截图（必填）
 
 请附 **至少两张** 截图（拖拽到本描述即可）：

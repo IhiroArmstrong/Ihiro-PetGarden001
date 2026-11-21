@@ -46,6 +46,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main | `.cursor/rules/focus-tiger-regression-lock.mdc` | Commit 汇报与分支门禁 |
 | `git-cross-session` | 跨会话指令冲突处理（开 PR / 合并 / push 前） | `WORKFLOW.md` | 跨会话指令冲突处理 |
 | `git-pr-next-step-gate` | 任务切片开工/继续/下一步须先查有没有 PR（不论是否已合） | `WORKFLOW.md` | 任务切片：开工 / 继续 / 下一步须先查 PR |
+| `git-task-preflight` | 任务开工预检：git 是唯一真相（脚本 + 同一轮修文档 + CI） | `WORKFLOW.md` | 任务开工预检：git 是唯一真相 |
 | `git-parallel-worktree` | 并行 Cursor 会话须用 git worktree 隔离写操作 | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-hygiene` | 闲置 worktree 只读盘点 + 口令拆除（不可逆） | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-occupancy` | 工作树占用检测与 `.ft-session-lock`（一树一线） | `WORKFLOW.md` | 工作树占用检测与 `.ft-session-lock` |
@@ -108,6 +109,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **任务完成后默认 push 旁支/开 PR** + Git 同步分级汇总 + 下班前口令补漏 + **SCENARIO_TESTS 增量核对** + **TEST_TRACKER 碎片拼装**） | 主张「先问再 commit」；主张**每次** push 须口头授权；完整抄门禁条文；**主张可直推 `develop`/`main`**；把 develop 与 feature/fix **并列**成同等可推目标；同步时只报「已 push」无 commit 列表 / 无高风险标注 / 无 PR；把「下班前 Git 同步」做成合并 main / 生产部署 / 推进无关 PR；**下班前同步却不更新 SCENARIO_TESTS**；**下班前同步却不拼装 TEST_TRACKER 碎片** |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」；对话交接摘要见 `session-handoff`，勿与本条混写 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针）；把本条扩成交接模板 |
 | `git-pr-next-step-gate` | 「开工/继续须先查有没有 PR 见 `WORKFLOW.md`」；常驻摘要见 `focus-tiger-pr-next-step-gate.mdc` | 主张只有 MERGED 才算完成；主张 Brief / PROCESS「下一步」可代替 `gh`；完整复述两问表 |
+| `git-task-preflight` | 「开工预检见 `WORKFLOW.md` `git-task-preflight`」；常驻 `.cursor/rules/task-preflight.mdc`；脚本 `scripts/task-preflight.sh` | 主张术语表「待做」可单独当开工依据；把文档 sync 写成等口令；完整复述预检三结论 |
 | `git-parallel-worktree` | 「并行写见 `WORKFLOW.md` 并行 worktree 节」；Cloud 旁支落本机见同节第 8 款（一行指针即可）；`ISSUE_LEDGER.md` 已有行与 `TASKS.md` 同为共享热点，进度见 `issue-ledger` | 主张同目录并行写可接受；主张可在主仓点 Cursor Apply / checkout migrated branch；在非 SSOT 复述完整 SOP |
 | `git-worktree-occupancy` | 「占用检测 / `.ft-session-lock` 见 `WORKFLOW.md`」；`releasable` **仅**锁占用态，**≠** develop-integrity（见 `git-feature-merge-preview`）；会话结束 N14 须报锁态 | 主张可按 OS mtime / git log 推断占用态；缺 `occupancy` 仍凭旁证当成可接管；主张可静默 stash 别人的脏树；完整复述清锁 SOP；把锁 `releasable` 说成主干可发布；把「锁可自动接管」扩成可静默 `worktree remove` |
 | `git-worktree-hygiene` | 「闲置 worktree」口令见 `WORKFLOW.md` 第 6 款：**方案 A** `check:worktree-hygiene` → `worktree:hygiene-remove` dry-run → `--apply`（只拆 `propose_remove`）；**方案 B 扩大清点**（同口令 +「扩大清点」或授权自行确认）：`fetch develop` + `git worktree list` 全集 + `gh` MERGED/`headRefOid`/无 OPEN PR + **有意义脏改**判定（仅 `node_modules` 等不算要留源码）；squash 后 cherry 仍有 `+` 但 PR 已合且 oid 对齐 **可拆**；**不**删远端分支；不拆主仓 / `…-wt-develop-qa`；口令表「按清单清」= 仅 A | 主张 Agent 可静默 `worktree remove`；一见 dirty 就 report_only、不查 develop；**cherry+ 一律不拆**（忽略已 MERGED+oid）；每回合默认问要不要清盘；无口令即拆除；把 hygiene 与锁陈旧自动接管混成同一宽松标准；仅用 cherry 判定已合入；把 `…-wt-develop-qa` 列入 `propose_remove`；用 Finder 列表代替 `git worktree list` |
@@ -305,6 +307,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-21 | 新增 `git-task-preflight`：开工前 `scripts/task-preflight.sh`；git 为唯一真相；同一轮修文档；CI `task-doc-sync`。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/task-preflight.mdc` |
 | 2026-11-13 | 冒烟失败处理：先归类 + 同种类补丁上限（`ci-failure-triage`）；E2E 禁止假关 / 失败诊断 / 正式构建对齐（`testing-strategy.mdc`）；不扩大必过关卡 + 静态拦截仅建议配套（`PR_SMOKE_FAILURE_CLASSES.md`）。不新开 rules-authority 主题 |
 | 2026-11-12 | `pr-smoke-failure-classes`：超长菜单走完从 Required `test:pr-smoke` / pre-push 拿掉（改菜单路径也不再加跑）。nightly + 合入 develop 后仍跑。**已废止**：改菜单路径时 `pr-smoke` 额外一步仍算必过关 |
 | 2026-11-09 | T99：必跑冒烟改为机械闸（`pre-push` `test:e2e:smoke`、行数闸前移、玻璃卡读挂载开关）。SSOT 仍 `PR_SMOKE_FAILURE_CLASSES.md`；常驻 `.cursor/rules/focus-tiger-pr-smoke-gates.mdc`。**已废止**：仅靠 `pre-push` 跑 `test:e2e:startup` 即视为必跑已拦 |
