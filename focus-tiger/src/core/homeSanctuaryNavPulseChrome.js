@@ -4,17 +4,16 @@
  */
 
 /**
- * Sanctuary compass first-use blue pulse — independent idle chrome (not HINTS_WIRING).
- * Resolves the live corner FAB each sync; wide/narrow home CTA refresh must not own this dot.
+ * Legacy D-family sanctuary nav pulse — orphan DOM cleanup only when nav is off (L2).
+ * No new pulses; reopening nav requires hint registry wiring (see entry-signal Brief L2).
  */
 
 import { isHomeSanctuaryNavEnabled } from './homeSanctuaryNavEnabled.js';
-import {
-  shouldShowHomeSanctuaryNavPulse,
-  syncHomeSanctuaryNavPulse
-} from './homeSanctuaryNavGate.js';
 
 export const SANCTUARY_NAV_COMPASS_FAB_ID = 'ft-sanctuary-nav-compass-fab';
+
+/** Legacy class token — query only for stale DOM removal (not allowlisted for new paint). */
+const LEGACY_SANCTUARY_PULSE_CLASS = 'ft-home-sanctuary-nav-pulse';
 
 /** @returns {HTMLElement | null} */
 export function resolveSanctuaryNavCompassFab() {
@@ -34,7 +33,8 @@ export function resolveSanctuaryNavCompassFab() {
  */
 export function removeOrphanSanctuaryNavPulses() {
   if (typeof document === 'undefined') return;
-  for (const node of document.querySelectorAll('.ft-home-sanctuary-nav-pulse')) {
+  const sel = `.${LEGACY_SANCTUARY_PULSE_CLASS}`;
+  for (const node of document.querySelectorAll(sel)) {
     const host = node.parentElement;
     if (host?.id === SANCTUARY_NAV_COMPASS_FAB_ID) continue;
     node.remove();
@@ -43,26 +43,20 @@ export function removeOrphanSanctuaryNavPulses() {
 }
 
 /**
- * @param {Storage | null | undefined} storage
+ * @param {Storage | null | undefined} _storage
  * @returns {void}
  */
-export function syncSanctuaryNavPulseChrome(storage) {
-  removeOrphanSanctuaryNavPulses();
-  const enabled = isHomeSanctuaryNavEnabled();
-  const fab = resolveSanctuaryNavCompassFab();
-  const show = enabled && shouldShowHomeSanctuaryNavPulse(storage) && Boolean(fab);
-  if (fab) {
-    syncHomeSanctuaryNavPulse(fab, show);
+export function syncSanctuaryNavPulseChrome(_storage) {
+  void _storage;
+  if (isHomeSanctuaryNavEnabled()) {
+    // Future: mint via hint registry only — no independent chrome pulse.
     return;
   }
-  const hiddenFab =
-    typeof document !== 'undefined'
-      ? document.getElementById(SANCTUARY_NAV_COMPASS_FAB_ID)
-      : null;
-  if (hiddenFab) {
-    syncHomeSanctuaryNavPulse(/** @type {HTMLElement} */ (hiddenFab), false);
+  removeOrphanSanctuaryNavPulses();
+  const fab = document.getElementById?.(SANCTUARY_NAV_COMPASS_FAB_ID);
+  if (!fab) return;
+  for (const node of fab.querySelectorAll(`:scope > .${LEGACY_SANCTUARY_PULSE_CLASS}`)) {
+    node.remove();
   }
-  if (!enabled) {
-    removeOrphanSanctuaryNavPulses();
-  }
+  fab.classList.remove('has-sanctuary-nav-pulse');
 }

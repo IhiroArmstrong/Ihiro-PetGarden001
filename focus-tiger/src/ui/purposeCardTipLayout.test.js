@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import {
   rectsOverlap,
   resolvePurposeCardAwayFromTips
-} from '../ui/hintDiscoveryDots.js';
+} from './purposeCardTipLayout.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 

@@ -37,7 +37,7 @@ App 里解释按钮的办法至少有四套：按钮上直接写字、原生悬�
 |---|---|---|
 | INC-1 | 图标悬停 | 倾听耳、换场入口 = 自绘 `__tip`（约 140–180ms 淡入）；Home 三球、音符残句、PiP、徽章下载 = 原生 `title`（约 1s）；HUD = Onboarding 宿主悬停气泡（未读时） |
 | INC-2 | 倾诉入口 | 宽屏耳钮自绘 tip + `CONFIDE_EAR_TOOLTIP`；窄屏 ActionBar 倾诉钮原生 `title` = `CONFIDE_MENU_LABEL`（更短、更慢） |
-| INC-3 | 脉冲 | ⋯ 行内 mint、音符 mint 仍在；Quick Start 球与 HUD **明文禁止** mint；钢蓝 `HINT_DISCOVERY_DOT_HOSTS` **空表**仍留 API |
+| INC-3 | 脉冲 | ⋯ 行内 mint、音符 mint 仍在；Quick Start 球与 HUD **明文禁止** mint；钢蓝 C 族与栖居 D 族绘制 **L2 已删**（仅孤儿清理） |
 | INC-4 | 自绘 tip 皮肤 | 耳钮玻璃浅底；Transition 深色小条。两套都不是 `data-ft-tip` |
 | INC-5 | 产品口头 vs 代码 | 用户称右球为 Five Moments；代码右球是 Honesty 补登（`#ft-*-home-honesty` + `HONESTY_IDLE_ENTRY`）。Five Moments 在 ⋯ / 抽屉文字行 + 冷启动 Compass 卡 |
 
@@ -212,7 +212,7 @@ App 里解释按钮的办法至少有四套：按钮上直接写字、原生悬�
 | 自绘 `__tip` | `ConfideEarChromeUI` · `TransitionMomentTriggerUI` | 140–180ms 淡入（几乎无额外 delay） | 是 |
 | Onboarding 宿主悬停 / mint | `OnboardingHintsUI._bindHostMintHover` · `_syncHudHostHover` | 气泡，非 title | 是；**auto 喷洒已关** |
 | `data-ft-tip` / `idleHomeCtaTip.js` | — | 任务书称 120ms | **否 · 未实现** |
-| 钢蓝 discovery dot | `hintDiscoveryDots.js` `HINT_DISCOVERY_DOT_HOSTS=[]` | — | API 在、宿主空 |
+| 钢蓝 discovery dot | *removed L2* · 布局见 `purposeCardTipLayout.js` | — | **否** |
 
 ---
 

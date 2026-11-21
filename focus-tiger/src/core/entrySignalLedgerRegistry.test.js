@@ -10,7 +10,10 @@ import {
   buildEntrySignalLedgerRows,
   collectRegisteredPulseClasses
 } from './entrySignalLedgerRegistry.js';
-import { ENTRY_SIGNAL_NO_MINT_HINT_IDS } from './entrySignalLedgerContract.js';
+import {
+  ENTRY_SIGNAL_NO_MINT_HINT_IDS,
+  ENTRY_SIGNAL_PULSE_CLASS_ALLOWLIST
+} from './entrySignalLedgerContract.js';
 
 describe('entrySignalLedgerRegistry', () => {
   it('quick-start click hint stays pulse none', () => {
@@ -33,5 +36,13 @@ describe('entrySignalLedgerRegistry', () => {
     const classes = collectRegisteredPulseClasses(rows);
     assert.ok(classes.has('onboarding-hint-badge'));
     assert.ok(classes.has('ft-secondary-menu-hint-dot'));
+  });
+
+  it('L2 dead C/D pulse classes are not allowlisted', () => {
+    assert.equal(ENTRY_SIGNAL_PULSE_CLASS_ALLOWLIST.has('ft-hint-discovery-dot'), false);
+    assert.equal(
+      ENTRY_SIGNAL_PULSE_CLASS_ALLOWLIST.has('ft-home-sanctuary-nav-pulse'),
+      false
+    );
   });
 });

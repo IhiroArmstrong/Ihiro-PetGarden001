@@ -160,7 +160,7 @@ npm test                    # 全部 *.test.js（含 unit*）
 |---|---|
 | `scenario-smoke` · `localStateKeys` · `SessionUiGate` · `sessionChromeSync` · `idleChromeOrchestration` · `IdleChromeFacade` | 门闩 / 壳 |
 | `focusHudHalo` · `focusHudLive` · `sharedSittingProgress` · `PracticeDaysStore` · `WeeklyPracticeHeatmap` | HUD / 热力图 |
-| `onboardingHintRegistry` · `OnboardingHintsStore` · `hintDiscoveryDots` · `outsideDismissGuard` | Hints |
+| `onboardingHintRegistry` · `OnboardingHintsStore` · `purposeCardTipLayout` · `outsideDismissGuard` | Hints |
 | `sessionUiGateContractRegistry` · `visibilityContractRegistry` | 文档契约 registry |
 | `MindfulReminderController` · `AcrossToolsIdleGuard` | Task 2 已入烟（含审计原先点名的 AcrossTools 阈值 mock） |
 
