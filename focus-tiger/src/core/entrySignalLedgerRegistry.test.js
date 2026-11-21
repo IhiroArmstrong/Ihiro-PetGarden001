@@ -38,6 +38,21 @@ describe('entrySignalLedgerRegistry', () => {
     assert.ok(classes.has('ft-secondary-menu-hint-dot'));
   });
 
+  it('L5 globe clock and note use glass-ear query skin', () => {
+    const rows = buildEntrySignalLedgerRows();
+    const globe = rows.find((row) => row.controlId === 'hint:language-preference');
+    const clock = rows.find((row) => row.controlId === 'hint:in-app-reminder');
+    const note = rows.find((row) => row.controlId === 'hint:ambient-soundscape');
+    const volume = rows.find((row) => row.controlId === 'ambient-volume-slider');
+    assert.equal(globe?.tooltip, 'glass-ear');
+    assert.equal(clock?.tooltip, 'glass-ear');
+    assert.equal(note?.tooltip, 'glass-ear');
+    assert.equal(globe?.touch, 'execute-plus-first-toast');
+    assert.equal(clock?.touch, 'execute-plus-first-toast');
+    assert.equal(volume?.tooltip, 'glass-ear');
+    assert.equal(volume?.touch, 'label-enough');
+  });
+
   it('L2 dead C/D pulse classes are not allowlisted', () => {
     assert.equal(ENTRY_SIGNAL_PULSE_CLASS_ALLOWLIST.has('ft-hint-discovery-dot'), false);
     assert.equal(

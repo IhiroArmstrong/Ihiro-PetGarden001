@@ -97,6 +97,26 @@ const ENTRY_SIGNAL_LEDGER_STATIC = Object.freeze([
     oneShot: 'none',
     touch: 'execute-plus-first-toast',
     stackExempt: ''
+  },
+  {
+    controlId: 'ambient-volume-slider',
+    selector: '#ambient-volume-slider',
+    visibleLabel: 'AMBIENT_VOLUME_LABEL',
+    tooltip: 'glass-ear',
+    pulse: 'none',
+    oneShot: 'none',
+    touch: 'label-enough',
+    stackExempt: ''
+  },
+  {
+    controlId: 'ambient-chimes-volume-slider',
+    selector: '#ambient-chimes-volume-slider',
+    visibleLabel: 'CHIMES_VOLUME_LABEL',
+    tooltip: 'glass-ear',
+    pulse: 'none',
+    oneShot: 'none',
+    touch: 'label-enough',
+    stackExempt: ''
   }
 ]);
 
@@ -124,11 +144,25 @@ function ledgerRowFromHint(entry) {
   if (triggerMode === 'click' || triggerMode === 'manual') {
     tooltip = 'hint-host-hover';
   }
+  if (
+    id === 'language-preference' ||
+    id === 'in-app-reminder' ||
+    id === 'ambient-soundscape'
+  ) {
+    tooltip = 'glass-ear';
+  }
 
   let touch = 'pulse-click';
   if (id === 'help-affordance') touch = 'pulse-click';
   if (pulse === 'none' && tooltip === 'hint-host-hover') {
     touch = 'label-enough';
+  }
+  if (
+    id === 'language-preference' ||
+    id === 'in-app-reminder' ||
+    id === 'ambient-soundscape'
+  ) {
+    touch = 'execute-plus-first-toast';
   }
 
   return {

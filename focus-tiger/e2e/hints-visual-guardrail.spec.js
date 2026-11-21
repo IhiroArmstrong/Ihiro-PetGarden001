@@ -25,8 +25,70 @@ import {
 test.describe('hints visual guardrail · wide Idle', () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
+  /** L4: How must win over note on fresh Idle — mark How resting before ambient mint checks. */
+  async function unlockAmbientDiscoveryPulse(page) {
+    await page.evaluate(() => {
+      const ui = window.__onboardingHints;
+      ui?.store?.markResting?.('how-shall-we-sit');
+      const ids = [
+        'sit-button',
+        'how-shall-we-sit',
+        'ambient-soundscape',
+        'focus-hud-ring',
+        'focus-hud-progress',
+        'focus-hud-streak',
+        'help-affordance'
+      ];
+      ui?.syncVisibleAutos?.(ids);
+      ui?.syncDiscoveryDots?.();
+    });
+  }
+
+  test('L4: fresh idle paints at most one discovery pulse (How wins)', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    await page.evaluate(() => {
+      window.__onboardingHints?.store?.clear?.();
+      const ids = [
+        'sit-button',
+        'how-shall-we-sit',
+        'ambient-soundscape',
+        'help-affordance'
+      ];
+      window.__onboardingHints?.syncVisibleAutos?.(ids);
+      window.__onboardingHints?.syncDiscoveryDots?.();
+    });
+    const total = await page.evaluate(() => {
+      const floating = document.querySelectorAll(
+        '.onboarding-hint-badge:not([hidden])'
+      ).length;
+      const hostMint = document.querySelectorAll('.has-hint-mint').length;
+      const menuDots = document.querySelectorAll(
+        '.ft-secondary-menu-hint-dot'
+      ).length;
+      return floating + hostMint + menuDots;
+    });
+    expect(total).toBeLessThanOrEqual(1);
+    await unlockAmbientDiscoveryPulse(page);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() =>
+            Boolean(
+              document
+                .querySelector('.ambient-soundscape__mute')
+                ?.classList.contains('has-hint-mint')
+            )
+          ),
+        { timeout: 8_000 }
+      )
+      .toBe(true);
+  });
+
   test('note mint ::after stays product mint (not cream)', async ({ page }) => {
     await openFreshProductShell(page);
+    await unlockAmbientDiscoveryPulse(page);
 
     await expect
       .poll(
@@ -77,8 +139,8 @@ test.describe('hints visual guardrail · wide Idle', () => {
     // Force unread mint if cold shell already peeked.
     await page.evaluate(() => {
       window.__onboardingHints?.store?.clear?.();
-      window.__onboardingHints?.syncDiscoveryDots?.();
     });
+    await unlockAmbientDiscoveryPulse(page);
     await expect(mute).toHaveClass(/has-hint-mint/, { timeout: 5_000 });
     await mute.hover();
     const tip = page.locator(

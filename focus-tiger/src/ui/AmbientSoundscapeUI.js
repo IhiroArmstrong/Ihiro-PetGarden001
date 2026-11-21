@@ -31,6 +31,7 @@ import {
   isSystemTtsAnnouncementsEnabled,
   setSystemTtsAnnouncementsEnabled
 } from '../core/systemTtsPreference.js';
+import { consumeTouchFirstToast } from '../core/OnboardingHintsStore.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { soundscapeMusicBlockNodes } from './soundscapeMusicBlockOrder.js';
 import { Z } from './zIndexLayers.js';
@@ -122,7 +123,8 @@ export class AmbientSoundscapeUI {
     this._muteTip = attachGlassHoverTip(this.muteBtn, {
       placement: 'bottom',
       tipId: 'ambient-soundscape-mute-tip',
-      text: t('AMBIENT_NOTE_HOVER')
+      text: t('AMBIENT_NOTE_HOVER'),
+      shouldFlashTouch: () => consumeTouchFirstToast('ambient-soundscape-mute')
     });
 
     this.focusChrome = document.createElement('div');
@@ -283,6 +285,11 @@ export class AmbientSoundscapeUI {
       this._refreshMuteBtn();
     });
     this.volumeLabel.append(this.volumeHead, this.volumeInput);
+    this._volumeTip = attachGlassHoverTip(this.volumeLabel, {
+      placement: 'top',
+      tipId: 'ambient-volume-slider-tip',
+      text: t('AMBIENT_VOLUME_HINT')
+    });
     this._syncVolumeChrome();
 
     this.chimeVolumeLabel = document.createElement('label');
@@ -317,6 +324,11 @@ export class AmbientSoundscapeUI {
       this._syncChimeVolumeChrome();
     });
     this.chimeVolumeLabel.append(this.chimeVolumeHead, this.chimeVolumeInput);
+    this._chimeVolumeTip = attachGlassHoverTip(this.chimeVolumeLabel, {
+      placement: 'top',
+      tipId: 'ambient-chimes-volume-slider-tip',
+      text: t('CHIMES_VOLUME_HINT')
+    });
     this._syncChimeVolumeChrome();
 
     this.cueToggleLabel = document.createElement('label');
@@ -931,7 +943,7 @@ export class AmbientSoundscapeUI {
     if (this.volumeCaption) this.volumeCaption.textContent = caption;
     if (this.volumeValueEl) this.volumeValueEl.textContent = valueText;
     this.volumeInput.setAttribute('aria-label', `${caption}, ${valueText}`);
-    this.volumeLabel?.setAttribute('title', t('AMBIENT_VOLUME_HINT'));
+    this._volumeTip?.setText(t('AMBIENT_VOLUME_HINT'));
   }
 
   /** Chimes tab volume — start/interval/end bells only. */
@@ -946,7 +958,7 @@ export class AmbientSoundscapeUI {
     if (this.chimeVolumeCaption) this.chimeVolumeCaption.textContent = caption;
     if (this.chimeVolumeValueEl) this.chimeVolumeValueEl.textContent = valueText;
     this.chimeVolumeInput.setAttribute('aria-label', `${caption}, ${valueText}`);
-    this.chimeVolumeLabel?.setAttribute('title', t('CHIMES_VOLUME_HINT'));
+    this._chimeVolumeTip?.setText(t('CHIMES_VOLUME_HINT'));
   }
 
   _renderPanel() {

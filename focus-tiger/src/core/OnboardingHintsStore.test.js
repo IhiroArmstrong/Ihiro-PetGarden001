@@ -9,7 +9,9 @@ import assert from 'node:assert/strict';
 import {
   HINT_IDS,
   normalizeHintsSeen,
+  normalizeTouchFirstToasts,
   createHintsSeenStore,
+  TOUCH_FIRST_TOAST_PREFIX,
   resolveHintForScene,
   resolveAutoHintIds,
   resolveRemedyHintIds,
@@ -34,6 +36,34 @@ test('normalizeHintsSeen only keeps known hintIds', () => {
   assert.equal(n.junk, undefined);
   assert.equal(n.notice, undefined);
   assert.equal(n['how-shall-we-sit'], 'peeked');
+});
+
+test('touch first toast is per controlId and survives markSeen', () => {
+  /** @type {Record<string, unknown>} */
+  let saved = {};
+  const store = createHintsSeenStore(
+    () => saved,
+    (v) => {
+      saved = v;
+    }
+  );
+  assert.equal(store.consumeTouchFirstToast('language-preference-fab'), true);
+  assert.equal(store.consumeTouchFirstToast('language-preference-fab'), false);
+  assert.equal(store.consumeTouchFirstToast('reminder-preference-toggle'), true);
+  store.markSeen('sit-button');
+  assert.equal(store.hasTouchFirstToast('language-preference-fab'), true);
+  assert.equal(saved[`${TOUCH_FIRST_TOAST_PREFIX}language-preference-fab`], true);
+  assert.equal(saved['sit-button'], 'done');
+  const toasts = normalizeTouchFirstToasts(saved);
+  assert.equal(toasts[`${TOUCH_FIRST_TOAST_PREFIX}reminder-preference-toggle`], true);
+  const other = createHintsSeenStore(
+    () => saved,
+    (v) => {
+      saved = v;
+    }
+  );
+  assert.equal(other.consumeTouchFirstToast('ambient-soundscape-mute'), true);
+  assert.equal(other.consumeTouchFirstToast('language-preference-fab'), false);
 });
 
 test('markSeen is first-write-only and ids do not interfere', () => {

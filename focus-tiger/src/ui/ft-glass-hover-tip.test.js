@@ -21,5 +21,6 @@ describe('ft-glass-hover-tip', () => {
     assert.match(src, /host\.removeAttribute\('title'\)/);
     assert.match(src, /ft-glass-tip-host--suppressed/);
     assert.match(src, /ft-glass-tip-host--touch-visible/);
+    assert.match(src, /shouldFlashTouch/);
   });
 });

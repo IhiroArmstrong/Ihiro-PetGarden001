@@ -187,6 +187,7 @@ export const LOCAL_BACKUP_RESET_ONLY_KEYS = Object.freeze([
   'focus-tiger.evening-practice-facts-consent.v1',
   'focus-tiger.evening-practice-facts.v1',
   'focus-tiger.hints-seen.v1',
+  'focus-tiger.hints-discovery-idle.v1',
   'focus-tiger.ambient-nudge.seen.v1',
   'focus-tiger.awaken-check-ins.v1',
   'focus-tiger.companion-channel-recent-ids.v1',
