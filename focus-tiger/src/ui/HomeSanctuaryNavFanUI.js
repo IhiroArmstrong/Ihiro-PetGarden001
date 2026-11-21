@@ -12,6 +12,7 @@
 import { t, onLocaleChange } from '../locales/i18n.js';
 import { isHomeSanctuaryNavEnabled } from '../core/homeSanctuaryNavEnabled.js';
 import { markHomeSanctuaryNavSeen } from '../core/homeSanctuaryNavGate.js';
+import { syncSanctuaryNavPulseChrome } from '../core/homeSanctuaryNavPulseChrome.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { SANCTUARY_NAV_COMPASS_SVG } from './sanctuaryNavCompassIcon.js';
 import { Z } from './zIndexLayers.js';
@@ -136,6 +137,11 @@ export class HomeSanctuaryNavFanUI {
     window.addEventListener('resize', this._onResize = () => this._placeCorner());
   }
 
+  /** @returns {void} */
+  syncPulseChrome() {
+    syncSanctuaryNavPulseChrome(this._storage);
+  }
+
   /** @returns {boolean} */
   isOpen() {
     return this._open;
@@ -150,6 +156,7 @@ export class HomeSanctuaryNavFanUI {
     if (this._open) return;
     this._open = true;
     markHomeSanctuaryNavSeen(this._storage);
+    syncSanctuaryNavPulseChrome(this._storage);
     this.handlers.onOpen?.();
 
     void opts;

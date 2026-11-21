@@ -47,7 +47,6 @@ import {
 } from './homeChromeClearance.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
-import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import { Z } from './zIndexLayers.js';
 import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
 import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
@@ -983,10 +982,7 @@ export class NarrowIdleShell {
       this.sanctuaryNavHomeBtn.hidden = Boolean(this._keepQuickStart);
       this.sanctuaryNavHomeBtn.disabled = false;
       this.sanctuaryNavHomeBtn.setAttribute('aria-disabled', 'false');
-      syncHomeSanctuaryNavPulse(
-        this.sanctuaryNavHomeBtn,
-        this.handlers.shouldShowSanctuaryNavPulse?.() === true
-      );
+      // Sanctuary nav pulse: independent chrome (homeSanctuaryNavPulseChrome.js)
     }
 
     const focusEl = document.getElementById('btn-focus');
