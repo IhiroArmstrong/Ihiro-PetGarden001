@@ -1,7 +1,7 @@
 ---
 id: entry-signal-ledger
 kind: feature
-status: L0 方向锁 + L4 仲裁已拍（#1844）；L1/L3 另开会话
+status: L1+L3 账本生成器+静态 lint 开工（#1844 已合 L0；L4 另会话）
 updated: 2026-11-21
 ---
 

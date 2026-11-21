@@ -1,7 +1,7 @@
 # LABEL_HINT_TIP_AUDIT.md — 可交互入口说明信号全量清单
 
 创建日期：2026-09-12  
-状态：**手写总账（过渡）** · L1 起改为 registry+DOM **机器块**（`docs:check`）；列定义见 [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) §六  
+状态：**手写总账 + 机器块**（L1：`docs:check` 静态闸；DOM 实扫仅 nightly）；列定义见 [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) §六  
 基线：`origin/develop` `274b02e1`（落后数 0；**不能**用营销旁支代表主干）  
 权威路径：`focus-tiger/docs/LABEL_HINT_TIP_AUDIT.md`  
 政策 SSOT（方向锁 2026-11-21）：[`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md)  
@@ -147,6 +147,64 @@ App 里解释按钮的办法至少有四套：按钮上直接写字、原生悬�
 ---
 
 ## 机制对照（实现层，便于开工）
+
+<!-- entry-signal-ledger:begin -->
+
+> **机器块 · 勿手改**。真源：`src/core/entrySignalLedgerRegistry.js` + `onboardingHintRegistry.js`。刷新：`npm run audit:entry-signal-ledger -- --write`。仅静态扫描；**禁止** DOM / 浏览器。
+
+| controlId | selector | visibleLabel | tooltip | pulse | oneShot | touch | stackExempt |
+|---|---|---|---|---|---|---|---|
+| `btn-focus` | `#btn-focus` | Sit/Rise text | `none` | `none` | `none` | `label-enough` | — |
+| `confide-ear-chrome` | `#confide-ear-chrome` | 无 | `glass-ear` | `none` | `none` | `execute-plus-first-toast` | — |
+| `hint:ambient-gated` | `.ambient-soundscape__fab` | HINT_AMBIENT_GATED | `hint-host-hover` | `mint-float:ambient-gated` | `none` | `pulse-click` | — |
+| `hint:ambient-soundscape` | `.ambient-soundscape__mute` | HINT_AMBIENT_SOUNDSCAPE | `hint-host-hover` | `mint-float:ambient-soundscape` | `none` | `pulse-click` | — |
+| `hint:breathing` | `#arrival-practice, #btn-focus` | HINT_BREATHING | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:choose` | `#arrival-practice, #btn-focus` | HINT_CHOOSE | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:companion-across-tools` | `.session-start-dock__panel` | HINT_COMPANION_ACROSS | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:companion-away` | `.session-start-dock__panel` | HINT_COMPANION_AWAY | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:companion-mode` | `.session-start-dock__panel, .session-start-dock__hint` | HINT_COMPANION_MODE | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:companion-stay` | `.session-start-dock__panel` | HINT_COMPANION_STAY | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:dormant-open` | `#btn-focus` | HINT_DORMANT_OPEN | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:focus-hud-progress` | `#focus-hud .ft-hud__bar` | HINT_FOCUS_HUD_PROGRESS | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `hint:focus-hud-ring` | `#focus-hud .ft-hud__gauge` | HINT_FOCUS_HUD_RING | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `hint:focus-hud-streak` | `#focus-hud .ft-hud__streak` | HINT_FOCUS_HUD_STREAK | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `hint:help-affordance` | `#onboarding-hint-help` | HINT_HELP_AFFORDANCE | `hint-host-hover` | `mint-float:help-affordance` | `none` | `pulse-click` | — |
+| `hint:help-fallback` | `#btn-focus` | HINT_HELP_FALLBACK | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `hint:help-remedy` | `#onboarding-hint-help` | HINT_HELP_REMEDY | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `hint:honesty-bridge` | `#honesty-bridge-cta` | HINT_HONESTY_BRIDGE | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:honesty-optional` | `#honesty-idle-entry` | HINT_HONESTY_OPTIONAL | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:how-shall-we-sit` | `.session-start-dock__hint` | HINT_HOW_SHALL_WE_SIT | `hint-host-hover` | `mint-inline:how-shall-we-sit` | `none` | `pulse-click` | — |
+| `hint:idle-after-session` | `#btn-focus` | HINT_IDLE_AFTER_SESSION | `hint-host-hover` | `mint-float:idle-after-session` | `none` | `pulse-click` | — |
+| `hint:in-app-reminder` | `#reminder-preference-toggle` | HINT_IN_APP_REMINDER | `hint-host-hover` | `mint-float:in-app-reminder` | `none` | `pulse-click` | — |
+| `hint:language-preference` | `#language-preference-fab` | HINT_LANGUAGE_PREFERENCE | `hint-host-hover` | `mint-float:language-preference` | `none` | `pulse-click` | — |
+| `hint:micro-ritual` | `#quick-start-focus, #ft-wide-home-quickstart, #ft-narrow-home-quickstart` | HINT_MICRO_RITUAL | `hint-host-hover` | `mint-inline:micro-ritual` | `none` | `pulse-click` | — |
+| `hint:narrow-drawer-menu` | `.ft-narrow-grabber` | HINT_NARROW_DRAWER_MENU | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `hint:notice` | `#arrival-practice, #btn-focus` | HINT_NOTICE | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:quick-start` | `#quick-start-focus` | HINT_QUICK_START | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `hint:reflection` | `#tiger-reflection-moment` | HINT_REFLECTION | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:rise-button` | `#btn-focus` | HINT_RISE_BUTTON | `hint-host-hover` | `mint-float:rise-button` | `none` | `pulse-click` | — |
+| `hint:sit-button` | `#btn-focus` | HINT_SIT_BUTTON | `none` | `none` | `none` | `pulse-click` | — |
+| `hint:weekly-heatmap` | `#weekly-practice-heatmap` | HINT_WEEKLY_HEATMAP | `hint-host-hover` | `mint-float:weekly-heatmap` | `none` | `pulse-click` | — |
+| `hint:wide-more-menu` | `#ft-wide-more-btn` | HINT_WIDE_MORE_MENU | `hint-host-hover` | `none` | `none` | `label-enough` | — |
+| `home-honesty-narrow` | `#ft-narrow-home-honesty` | Honesty (icon) | `glass-ear` | `none` | `none` | `execute-plus-first-toast` | — |
+| `home-honesty-wide` | `#ft-wide-home-honesty` | Honesty (icon) | `glass-ear` | `none` | `none` | `execute-plus-first-toast` | — |
+| `home-sit-narrow` | `#ft-narrow-home-sit` | Sit/Rise (icon) | `glass-ear` | `none` | `none` | `execute-plus-first-toast` | — |
+| `home-sit-wide` | `#ft-wide-home-sit` | Sit/Rise (icon) | `glass-ear` | `none` | `none` | `execute-plus-first-toast` | — |
+| `protected:data-testid-yin-support-companion-addon-cta` | `[data-testid=yin-support-companion-addon-cta]` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:data-testid-yin-support-fab` | `[data-testid=yin-support-fab]` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:data-testid-yin-support-membership-cta` | `[data-testid=yin-support-membership-cta]` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:data-testid-yin-support-pro-cta` | `[data-testid=yin-support-pro-cta]` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:data-testid-yin-support-sanctuary-cta` | `[data-testid=yin-support-sanctuary-cta]` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:data-testid-yin-support-tea-cta` | `[data-testid=yin-support-tea-cta]` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:yin-membership-card` | `#yin-membership-card` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:yin-sanctuary-card` | `#yin-sanctuary-card` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:yin-support-backdrop` | `#yin-support-backdrop` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:yin-support-fab` | `#yin-support-fab` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:yin-support-modal` | `#yin-support-modal` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `protected:yin-tip-jar-card` | `#yin-tip-jar-card` | payment/support | `none` | `none` | `none` | `label-enough` | protected-payment-path |
+| `transition-moment-trigger` | `#transition-moment-trigger` | 无 | `glass-legacy-dark` | `none` | `none` | `execute-plus-first-toast` | — |
+
+<!-- entry-signal-ledger:end -->
 
 | 机制 | 代表代码 | 延迟观感 | 是否在主干 |
 |---|---|---|---|
