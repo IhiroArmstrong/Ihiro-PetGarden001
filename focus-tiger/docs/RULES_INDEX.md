@@ -234,6 +234,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
 | `PRINCIPLES.md` | 硬性红线（**用户体验优先** / **Confide 评测 R-0** / 经济可持续 / **菜单逃生舱** / 非 MVP-only） |
 | `MENU_CHROME_CENSUS.md` | **角落按钮 vs ⋯/抽屉对照** + 菜单治理四条进度（从属 PRINCIPLES 逃生舱；**无新运行时**） |
+| `SITE_DISCOVERY_DOT_CENSUS.md` | **全站发现性圆点**（钢蓝 discovery · 栖居蓝脉冲 · mint click hint 绘制策略；**无新运行时**） |
 | `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收反馈 vs 结果反馈 vs 已知静默（`interaction-feedback`） |
 | `FEATURE_CONFLICT_REVIEW.md` | 实现前冲突扫描（`feature-conflict-review`）；对照剧本仍是 `SCENARIO_TESTS.md` |
 | `SILENT_BEHAVIORS.md` | 设计上就该没反应的白名单（从属上条） |
