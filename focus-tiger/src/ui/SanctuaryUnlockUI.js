@@ -32,7 +32,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 import {
@@ -74,9 +75,11 @@ export class SanctuaryUnlockUI {
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'yin-sanctuary-card';
-    this.root.className = 'yin-sanctuary';
+    this.root = createGlassCard({
+      id: 'yin-sanctuary-card',
+      className: 'yin-sanctuary',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

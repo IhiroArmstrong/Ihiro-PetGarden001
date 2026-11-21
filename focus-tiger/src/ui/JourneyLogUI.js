@@ -47,7 +47,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -77,9 +78,11 @@ export class JourneyLogUI {
     this.backdrop.dataset.testid = 'journey-log-backdrop';
     this.backdrop.addEventListener('click', () => this.close());
 
-    this.root = document.createElement('div');
-    this.root.id = 'journey-log';
-    this.root.className = 'journey-log';
+    this.root = createGlassCard({
+      id: 'journey-log',
+      className: 'journey-log',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

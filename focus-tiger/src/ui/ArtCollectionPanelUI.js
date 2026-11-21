@@ -29,7 +29,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -60,9 +61,11 @@ export class ArtCollectionPanelUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'art-collection-panel';
-    this.root.className = 'art-collection-panel';
+    this.root = createGlassCard({
+      id: 'art-collection-panel',
+      className: 'art-collection-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

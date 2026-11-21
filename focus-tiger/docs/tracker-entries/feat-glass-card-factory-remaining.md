@@ -1,0 +1,1 @@
+| 其余 26 张叠层旧卡走共享暖米玻璃 | UI可见 | 待人工测试 | **主路径**：`?product=1` 打开 Help Center、成长详情、请茶卡 → **0–1 秒内**见暖米玻璃卡根（不是手写底板）。**回流**：关掉再开仍是工厂卡。**付款对照**：Support → 加入会员 / 解锁 Sanctuary / 请茶，主 CTA 仍可点；已购仍淡化。**倾诉对照**：卡可开、空白处拖不动。自动化：`check-glass-card-factory.test.js` + `npm run test:payment-contract`。 | — | — | — | `#help-center` · `#yin-membership-card` · `#confide-to-yin-card` | 2026-11-21 |

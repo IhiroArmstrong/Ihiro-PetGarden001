@@ -21,7 +21,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -56,9 +57,11 @@ export class ZenCinemaCardUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'zen-cinema-card';
-    this.root.className = 'zen-cinema-card';
+    this.root = createGlassCard({
+      id: 'zen-cinema-card',
+      className: 'zen-cinema-card',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

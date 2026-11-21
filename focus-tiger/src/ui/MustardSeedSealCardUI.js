@@ -41,7 +41,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -72,9 +73,11 @@ export class MustardSeedSealCardUI {
     /** @type {string | null} */
     this._currentCaseId = null;
 
-    this.root = document.createElement('div');
-    this.root.id = 'mustard-seed-seal-card';
-    this.root.className = 'mustard-seed-seal-card';
+    this.root = createGlassCard({
+      id: 'mustard-seed-seal-card',
+      className: 'mustard-seed-seal-card',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

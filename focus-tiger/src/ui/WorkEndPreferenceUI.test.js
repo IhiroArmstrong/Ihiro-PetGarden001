@@ -38,6 +38,6 @@ describe('WorkEndPreferenceUI layering + confirm affordance (T61 §2)', () => {
   it('menu proxy opens via openPanel()', () => {
     const src = readFileSync(join(here, 'WorkEndPreferenceUI.js'), 'utf8');
     assert.match(src, /openPanel\(\)/);
-    assert.match(src, /id = 'work-end-preference-panel'/);
+    assert.match(src, /id: 'work-end-preference-panel'/);
   });
 });

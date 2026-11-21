@@ -137,7 +137,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { OVERLAY_OUTSIDE_DISMISS } from '../core/overlaySlotContractRegistry.js';
 import {
@@ -261,9 +262,11 @@ export class ConfideToYinUI {
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'confide-to-yin-card';
-    this.root.className = 'confide-to-yin';
+    this.root = createGlassCard({
+      id: 'confide-to-yin-card',
+      className: 'confide-to-yin',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

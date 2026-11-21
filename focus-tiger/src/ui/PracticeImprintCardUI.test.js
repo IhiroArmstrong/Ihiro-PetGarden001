@@ -16,7 +16,7 @@ const src = readFileSync(
 
 describe('PracticeImprintCardUI', () => {
   it('uses dedicated practice imprint card id and body class', () => {
-    assert.match(src, /id = 'practice-imprint-card'/);
+    assert.match(src, /id: 'practice-imprint-card'/);
     assert.match(src, /PRACTICE_IMPRINT_BODY_CLASS/);
     assert.match(src, /practice-imprint-card-continue/);
   });

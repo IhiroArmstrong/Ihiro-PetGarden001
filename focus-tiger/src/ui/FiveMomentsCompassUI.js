@@ -21,7 +21,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -88,9 +89,11 @@ export class FiveMomentsCompassUI {
       onDismiss: () => this._dismiss(this._firstRun)
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'five-moments-compass';
-    this.root.className = 'five-moments-compass';
+    this.root = createGlassCard({
+      id: 'five-moments-compass',
+      className: 'five-moments-compass',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

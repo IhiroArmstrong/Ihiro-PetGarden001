@@ -33,7 +33,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -112,9 +113,11 @@ export class WorkEndPreferenceUI {
       else this.handlers.onClose?.();
     });
 
-    this.panel = document.createElement('div');
-    this.panel.className = 'work-end-pref__panel';
-    this.panel.id = 'work-end-preference-panel';
+    this.panel = createGlassCard({
+      id: 'work-end-preference-panel',
+      className: 'work-end-pref__panel',
+      deck: true
+    });
     this.panel.hidden = true;
     this.panel.setAttribute('role', 'dialog');
     this.panel.setAttribute('aria-labelledby', 'work-end-preference-title');
