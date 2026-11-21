@@ -1,7 +1,7 @@
 ---
 id: t100-output-gate-pr4
 kind: note
-status: PR-4 第 1 轮审阅中
+status: 已完成 · #1747 已合
 updated: 2026-11-17
 ---
 
