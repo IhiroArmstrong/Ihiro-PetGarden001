@@ -24,6 +24,23 @@
 - 邮箱云端找回：**关闸发**。换机用本地导出/导入。开闸算另一次公开发布。
 - 首包仅 **Apple 芯片（arm64）Mac**。
 
+## 专用池四句 · 待安全审稿人签一行（12/5 补审）
+
+这四句在 #1828 已回到用户可见回复，但**从未**进过句库 G4 安全审。本页不改字。Agent **不得**代签。审稿人只读英文，在下表填一行。
+
+| id | 角色 | 英文（现网 draft） |
+|---|---|---|
+| `aggression-02` | 首选 | Something's really gotten to you. |
+| `aggression-01` | 备选 | That sounds like a lot of anger to carry. |
+| `aggression-03` | 备选 | That's a heavy thing to be sitting with. |
+| `aggression-04` | 仅在场，不轮换主力 | Yin isn't going anywhere. |
+
+| 审稿人 | 日期 | 结论（通过 / 记残余 / 须删句） | 备注 |
+|---|---|---|---|
+|  |  |  |  |
+
+勾选纸：[12/5 工作纸](./findings/2026-11-21/noticing-open-gate-12-05-worksheet.md)。
+
 ## 签发
 
 | 栏 | 填写 |
