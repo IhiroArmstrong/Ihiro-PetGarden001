@@ -235,6 +235,65 @@ function rememberWitnessPeek(traces, storage) {
   return { changed: true, trace: next };
 }
 
+export const WITNESS_SUBMIT_FAIL_LOCALE_BY_REASON = Object.freeze({
+  not_member: 'FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_MEMBER',
+  kv_missing: 'FOCUS_CIRCLE_WITNESS_SUBMIT_KV',
+  timeout: 'FOCUS_CIRCLE_WITNESS_SUBMIT_TIMEOUT',
+  rate_limited: 'FOCUS_CIRCLE_WITNESS_SUBMIT_RATE',
+  cloud_api_unconfigured: 'FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_READY',
+  no_membership: 'FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_READY',
+  bad_phrase: 'FOCUS_CIRCLE_WITNESS_SUBMIT_BAD_PHRASE',
+  already_responded: 'FOCUS_CIRCLE_WITNESS_SUBMIT_ALREADY'
+});
+
+/**
+ * Visible fail copy for a witness leave/respond result.reason.
+ * Unknown codes stay on the generic submit error (picker remains open).
+ * @param {unknown} reason
+ * @returns {string}
+ */
+export function witnessSubmitErrorLocaleKey(reason) {
+  const key =
+    typeof reason === 'string'
+      ? WITNESS_SUBMIT_FAIL_LOCALE_BY_REASON[reason]
+      : '';
+  return key || 'FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR';
+}
+
+/**
+ * @param {unknown} err
+ * @returns {string}
+ */
+function cloudWitnessErrorCode(err) {
+  if (!err || typeof err !== 'object') return '';
+  const body = /** @type {{ error?: unknown, reason?: unknown }} */ (err).body;
+  if (body && typeof body === 'object') {
+    if (typeof body.error === 'string' && body.error) return body.error;
+    if (typeof body.reason === 'string' && body.reason) return body.reason;
+  }
+  const message = err instanceof Error ? err.message : '';
+  if (message === 'cloud_api_unconfigured' || message === 'timeout') return message;
+  return '';
+}
+
+/**
+ * @param {unknown} err
+ * @returns {string}
+ */
+function cloudWitnessFailureReason(err) {
+  const status = err && typeof err === 'object' ? Number(err.status) : 0;
+  const code = cloudWitnessErrorCode(err);
+  if (status === 429 || code === 'rate_limited') return 'rate_limited';
+  if (status === 408 || code === 'timeout') return 'timeout';
+  if (code === 'not_member' || (status === 403 && code === 'not_member')) {
+    return 'not_member';
+  }
+  if (code === 'kv_missing') return 'kv_missing';
+  if (code === 'bad_phrase') return 'bad_phrase';
+  if (code === 'cloud_api_unconfigured') return 'cloud_api_unconfigured';
+  return 'network';
+}
+
 /**
  * @param {object} [opts]
  * @param {typeof postCloudJson} [opts.postJson]
@@ -309,15 +368,11 @@ export async function postFocusCircleWitness({
     }
     return { ok: false, reason: 'bad_action', skipped: true };
   } catch (err) {
-    const status = err && typeof err === 'object' ? Number(err.status) : 0;
-    if (status === 429) {
-      if (action === 'witness_peek') {
-        witnessPeekBackoffUntil = Date.now() + FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS;
-      }
-      return { ok: false, reason: 'rate_limited', skipped: true };
+    const reason = cloudWitnessFailureReason(err);
+    if (reason === 'rate_limited' && action === 'witness_peek') {
+      witnessPeekBackoffUntil = Date.now() + FOCUS_CIRCLE_RATE_LIMIT_BACKOFF_MS;
     }
-    if (status === 408) return { ok: false, reason: 'timeout', skipped: true };
-    return { ok: false, reason: 'network', skipped: true };
+    return { ok: false, reason, skipped: true };
   }
 }
 
