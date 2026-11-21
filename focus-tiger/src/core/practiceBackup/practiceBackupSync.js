@@ -178,7 +178,8 @@ export function normalizeCloudSnapshotStoresForApply(snapshot) {
       stores[key] = null;
     }
   }
-  return { ...snapshot, stores };
+  const withLotus = backfillLotusPondStoreForImport(stores);
+  return { ...snapshot, stores: withLotus };
 }
 
 /**
