@@ -412,18 +412,6 @@ export class HomeSanctuaryNavFanUI {
       .ft-narrow-home-ctas__btn.is-asset {
         position: relative;
       }
-      .ft-home-sanctuary-nav-pulse {
-        position: absolute;
-        top: 6px;
-        right: 6px;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #4a8fd4;
-        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.95);
-        pointer-events: none;
-        animation: ft-home-sanctuary-nav-pulse 1.45s ease-in-out infinite;
-      }
       #ft-wide-home-sanctuary-nav.is-home-ack,
       #ft-narrow-home-sanctuary-nav.is-home-ack {
         animation: ft-home-ack 640ms ease;
@@ -432,10 +420,6 @@ export class HomeSanctuaryNavFanUI {
         0% { transform: scale(1); }
         40% { transform: scale(1.08); }
         100% { transform: scale(1); }
-      }
-      @keyframes ft-home-sanctuary-nav-pulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(0.82); }
       }
       .ft-sanctuary-nav-compass-fab {
         position: fixed;

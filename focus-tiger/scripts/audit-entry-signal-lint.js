@@ -39,6 +39,11 @@ const PULSE_CLASS_LIST_CALL =
 const CSS_CLASS_PULSE =
   /\.([a-zA-Z0-9_-]*(?:pulse|hint-dot|discovery-dot|hint-mint)[a-zA-Z0-9_-]*)\b/g;
 
+/** Legacy D-family orphan cleanup only — must not paint new pulses (L2). */
+const PULSE_CLASS_LINT_SKIP_FILES = new Set([
+  'src/core/homeSanctuaryNavPulseChrome.js'
+]);
+
 const KEYFRAMES_PULSE = /@keyframes\s+([a-zA-Z0-9_-]*pulse[a-zA-Z0-9_-]*)/gi;
 const ANIMATION_PULSE =
   /animation\s*:[^;{]*\b([a-zA-Z0-9_-]*pulse[a-zA-Z0-9_-]*)/gi;
@@ -137,6 +142,7 @@ function isSuspiciousPulseClassToken(token) {
  * @returns {string[]}
  */
 export function scanUnregisteredPulseClasses(relPosix, source) {
+  if (PULSE_CLASS_LINT_SKIP_FILES.has(relPosix)) return [];
   /** @type {Set<string>} */
   const bad = new Set();
   for (const re of [PULSE_CLASS_NAME_ASSIGN, PULSE_CLASS_LIST_CALL, CSS_CLASS_PULSE]) {

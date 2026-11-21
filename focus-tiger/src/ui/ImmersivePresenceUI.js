@@ -420,7 +420,6 @@ export class ImmersivePresenceUI {
       body.ft-immersive-presence #yin-sanctuary-card,
       body.ft-immersive-presence .language-pref,
       body.ft-immersive-presence .onboarding-hint-help,
-      body.ft-immersive-presence .ft-hint-discovery-dot,
       body.ft-immersive-presence .ft-hint-catalog-chip,
       body.ft-immersive-presence #onboarding-privacy-sheet,
       body.ft-immersive-presence #onboarding-wellness-first,

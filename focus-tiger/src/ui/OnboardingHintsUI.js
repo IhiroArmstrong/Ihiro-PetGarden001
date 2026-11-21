@@ -47,11 +47,7 @@ import {
   NotificationBadge,
   NOTIFICATION_BADGE_TAG
 } from '../../ui-kit/components/notification-badge.js';
-import {
-  HINT_DISCOVERY_DOT_COLOR,
-  resolvePurposeCardAwayFromTips,
-  syncAllDiscoveryDots
-} from './hintDiscoveryDots.js';
+import { resolvePurposeCardAwayFromTips } from './purposeCardTipLayout.js';
 import {
   PRIVACY_SHEET_INTRO_KEY,
   PRIVACY_SHEET_FULL_LEAD_KEY,
@@ -830,11 +826,9 @@ export class OnboardingHintsUI {
   }
 
   /**
-   * Soft blue dots on unread Quick Start / Focusing HUD chrome.
-   * Also rebinds narrow ActionBar「?」hover → purpose only.
+   * Mint / menu / HUD host chrome + narrow「?」purpose hover (no C-family steel-blue dots).
    */
   syncDiscoveryDots() {
-    syncAllDiscoveryDots(this.store);
     this._syncHostMintDots();
     this._syncSecondaryMenuHostMints();
     this._syncHudHostHover();
@@ -3584,20 +3578,7 @@ export class OnboardingHintsUI {
       .onboarding-privacy-sheet__wellness-link:hover {
         color: #2f463c;
       }
-      .ft-hint-discovery-dot {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: ${HINT_DISCOVERY_DOT_COLOR};
-        box-shadow: 0 0 0 2px rgba(255, 252, 245, 0.9);
-        pointer-events: none;
-        z-index: ${Z.SCENE};
-      }
-      /* Calm HUD：不再画浮动 mint badge；残留选择器只防旧节点抢视线 */
-      #focus-hud .ft-hint-discovery-dot,
+      /* Calm HUD：不画浮动 mint badge；旧 badge 节点隐藏防抢视线 */
       #focus-hud .onboarding-hint-badge {
         display: none;
       }
@@ -3605,12 +3586,6 @@ export class OnboardingHintsUI {
       #focus-hud .ft-hud__bar,
       #focus-hud .ft-hud__streak {
         position: relative;
-      }
-      #focus-hud .ft-hud__gauge > .ft-hint-discovery-dot {
-        top: 2px;
-        right: 2px;
-        width: 7px;
-        height: 7px;
       }
       #quick-start-focus {
         position: relative;

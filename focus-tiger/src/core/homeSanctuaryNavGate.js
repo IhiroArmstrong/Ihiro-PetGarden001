@@ -4,8 +4,9 @@
  */
 
 /**
- * Sanctuary home navigation — first-use blue pulse on compass chrome.
+ * Sanctuary home navigation — seen-state only (D-family pulse drawing removed at L2).
  * PO 拍板 2026-09-26 · fan: Home / Calendar / Collection.
+ * Re-enable nav: pulse must enter hint registry (triggerMode: click), not this module.
  */
 
 export const HOME_SANCTUARY_NAV_SEEN_KEY =
@@ -43,26 +44,4 @@ export function markHomeSanctuaryNavSeen(storage) {
   } catch {
     // ignore
   }
-}
-
-/**
- * @param {HTMLElement | null | undefined} btn
- * @param {boolean} show
- * @returns {void}
- */
-export function syncHomeSanctuaryNavPulse(btn, show) {
-  if (!btn) return;
-  let dot = btn.querySelector(':scope > .ft-home-sanctuary-nav-pulse');
-  if (!show) {
-    dot?.remove();
-    btn.classList.remove('has-sanctuary-nav-pulse');
-    return;
-  }
-  if (!dot) {
-    dot = document.createElement('span');
-    dot.className = 'ft-home-sanctuary-nav-pulse';
-    dot.setAttribute('aria-hidden', 'true');
-    btn.appendChild(dot);
-  }
-  btn.classList.add('has-sanctuary-nav-pulse');
 }

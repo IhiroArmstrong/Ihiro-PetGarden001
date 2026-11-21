@@ -81,7 +81,7 @@ const WHITELIST_FILES = new Set([
   'outsideDismissGuard.js',
   'helpOverlayOutsideDismiss.js',
   'onboardingHintAnchors.js',
-  'hintDiscoveryDots.js',
+  'purposeCardTipLayout.js',
   'privacyNoticeCopy.js',
   'IdleChromeFacade.js',
   'IdleCompanionPipUI.js',

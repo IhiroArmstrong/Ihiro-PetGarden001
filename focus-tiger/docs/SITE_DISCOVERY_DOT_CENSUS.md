@@ -17,24 +17,22 @@
 |---|---|---|---|---|---|
 | **A · 薄荷绿浮动** | `.onboarding-hint-badge` | mint 脉冲 | `OnboardingHintsUI.js` | 是 · `triggerMode: click` | 活跃 |
 | **B · 薄荷绿行内** | `.ft-secondary-menu-hint-dot` · `has-hint-mint` | mint | `idleChromeOrchestration.syncSecondaryMenuHintDot` · `OnboardingHintsUI._syncHostMintDots` | 是 | 活跃（⋯/抽屉开时） |
-| **C · 钢蓝 discovery** | `.ft-hint-discovery-dot` | `#5b9bb5` 钢蓝 | `hintDiscoveryDots.js` | 设计上是 hint 变体 | **宿主表为空 → 全站不绘制** |
-| **D · 栖居蓝脉冲** | `.ft-home-sanctuary-nav-pulse` · `has-sanctuary-nav-pulse` | 蓝 pulse 动画 | `homeSanctuaryNavGate.js` · `homeSanctuaryNavPulseChrome.js` | **否**（独立 chrome） | **功能关** · 仅防孤儿点 |
+| **C · 钢蓝 discovery** | `.ft-hint-discovery-dot` | `#5b9bb5` 钢蓝 | *removed L2* | 历史 hint 变体 | **代码已删** |
+| **D · 栖居蓝脉冲** | `.ft-home-sanctuary-nav-pulse` · `has-sanctuary-nav-pulse` | 蓝 pulse 动画 | *removed L2* · 孤儿清理 `homeSanctuaryNavPulseChrome.js` | **否** | **绘制已删** · nav 关时仅清 DOM |
 | **排除 · 朱红 ?** | `notification-badge` on `#onboarding-hint-help` | 朱红 | `OnboardingHintsUI` | 警报 / 未读帮助 | 与 discovery 无关 |
-
-层级登记：钢蓝 discovery 点 z-index 见 [`Z_INDEX.md`](./Z_INDEX.md)（`.ft-hint-discovery-dot` 相对宿主角标）。
 
 ---
 
-## 2. 钢蓝 discovery（C 族）— 故意空表
+## 2. 钢蓝 discovery（C 族）— L2 已删
 
 | 字段 | 值 |
 |---|---|
-| SSOT 宿主表 | `hintDiscoveryDots.js` → `HINT_DISCOVERY_DOT_HOSTS` |
-| 同步入口 | `OnboardingHintsUI.syncDiscoveryDots()` → `syncAllDiscoveryDots()` |
+| 布局残留 | `purposeCardTipLayout.js`（用途卡避让 tip，无圆点） |
+| 宿主 chrome | `OnboardingHintsUI.syncDiscoveryDots()` — mint/HUD/菜单，**不**画钢蓝点 |
 | 产品政策 | [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) §〇：**删代码**，禁止空表复活 |
 | 历史 | 2026-07-30 Calm 钢蓝点 `pointer-events:none` 事故；mint / 宿主悬停已覆盖 HUD |
 
-**结论**：全站 **不应** 再出现 `.ft-hint-discovery-dot`。L2 起应删除绘制模块。若手测仍见钢蓝色小点，先查是否为 D 族残留或浏览器插件，再查是否旧分支未合 #1834。
+**结论**：全站 **不应** 再出现 `.ft-hint-discovery-dot`。若手测仍见钢蓝色小点，先查 D 族孤儿 DOM、浏览器插件，或旧分支未合。
 
 ---
 

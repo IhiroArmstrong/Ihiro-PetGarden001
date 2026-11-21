@@ -10,8 +10,7 @@ import {
   HOME_SANCTUARY_NAV_SEEN_KEY,
   hasSeenHomeSanctuaryNav,
   markHomeSanctuaryNavSeen,
-  shouldShowHomeSanctuaryNavPulse,
-  syncHomeSanctuaryNavPulse
+  shouldShowHomeSanctuaryNavPulse
 } from './homeSanctuaryNavGate.js';
 
 test('home sanctuary nav pulse until first fan open', () => {
@@ -25,14 +24,4 @@ test('home sanctuary nav pulse until first fan open', () => {
   markHomeSanctuaryNavSeen(ls);
   assert.equal(storage.get(HOME_SANCTUARY_NAV_SEEN_KEY), '1');
   assert.equal(shouldShowHomeSanctuaryNavPulse(ls), false);
-});
-
-test('syncHomeSanctuaryNavPulse adds and removes blue dot', () => {
-  if (typeof document === 'undefined') return;
-  const btn = document.createElement('button');
-  syncHomeSanctuaryNavPulse(btn, true);
-  assert.ok(btn.querySelector('.ft-home-sanctuary-nav-pulse'));
-  assert.ok(btn.classList.contains('has-sanctuary-nav-pulse'));
-  syncHomeSanctuaryNavPulse(btn, false);
-  assert.equal(btn.querySelector('.ft-home-sanctuary-nav-pulse'), null);
 });

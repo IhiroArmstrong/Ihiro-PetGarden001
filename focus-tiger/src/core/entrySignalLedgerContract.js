@@ -19,15 +19,12 @@ export const ENTRY_SIGNAL_NO_MINT_HINT_IDS = Object.freeze(
   ])
 );
 
-/** Colored / discovery pulse class tokens allowed in runtime (L2 may shrink this set). */
+/** Colored / discovery pulse class tokens allowed in runtime (C/D dead families removed at L2). */
 export const ENTRY_SIGNAL_PULSE_CLASS_ALLOWLIST = Object.freeze(
   new Set([
     'onboarding-hint-badge',
     'ft-secondary-menu-hint-dot',
     'has-hint-mint',
-    'ft-hint-discovery-dot',
-    'ft-home-sanctuary-nav-pulse',
-    'has-sanctuary-nav-pulse',
     'notification-badge'
   ])
 );
@@ -36,7 +33,6 @@ export const ENTRY_SIGNAL_PULSE_CLASS_ALLOWLIST = Object.freeze(
 export const ENTRY_SIGNAL_PULSE_ANIMATION_ALLOWLIST = Object.freeze(
   new Set([
     'ft-secondary-menu-hint-pulse',
-    'ft-home-sanctuary-nav-pulse',
     'ft-ambient-mute-hint-pulse',
     'hud-fill-pulse',
     'quest-pulse',
