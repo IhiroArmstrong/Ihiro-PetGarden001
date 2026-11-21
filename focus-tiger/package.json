@@ -27,6 +27,7 @@
     "docs:check": "node scripts/docs-check.js",
     "check:z-index": "node scripts/z-index-registry-check.js",
     "check:z-index-literals": "node --test scripts/z-index-literal-check.test.js && node scripts/z-index-literal-check.js",
+    "check:z-index-tokens": "node --test scripts/check-z-index-tokens.test.js && node scripts/check-z-index-tokens.js",
     "check:glass-card-roots": "node --test scripts/check-glass-card-roots.test.js && node scripts/check-glass-card-roots.js",
     "check:companion-contract": "node --test scripts/check-companion-contract.test.js && node scripts/check-companion-contract.js",
     "check:generation-gate": "node --test scripts/check-generation-gate.test.js && node scripts/check-generation-gate.js --check",

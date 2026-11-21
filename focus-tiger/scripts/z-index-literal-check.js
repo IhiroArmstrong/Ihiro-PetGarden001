@@ -28,7 +28,8 @@ const SKIP_PATH_RES = [
   /[\\/]__/,
   /[\\/]demo\.html$/,
   /[\\/]e2e[\\/]/,
-  /zIndexLayers\.js$/
+  /zIndexLayers\.js$/,
+  /z-index-tokens\.css$/
 ];
 
 const LITERAL_RES = [

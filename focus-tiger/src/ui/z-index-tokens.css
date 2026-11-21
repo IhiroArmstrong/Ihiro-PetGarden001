@@ -1,0 +1,51 @@
+/**
+ * Focus Tiger™ is a product of Twinsology.
+ * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
+ */
+
+/**
+ * Product z-index CSS variables. Values stay 1:1 with src/ui/zIndexLayers.js
+ * and docs/Z_INDEX.md. Do not invent a second table here.
+ * ui-kit --z-modal (1000) is appendix-only and lives in design-tokens.css.
+ */
+
+:root {
+  --z-park: -1;
+  --z-wash: 0;
+  --z-local: 1;
+  --z-scene: 2;
+  --z-sprite: 3;
+  --z-fx: 4;
+  --z-drawer-above-sheet: 5;
+  --z-ui-overlay: 10;
+  --z-kindness: 11;
+  --z-cluster: 12;
+  --z-circle: 13;
+  --z-witness: 14;
+  --z-panel: 15;
+  --z-dock: 16;
+  --z-overlay-dim: 17;
+  --z-glass-card: 18;
+  --z-glass-card-front: 19;
+  --z-dev: 20;
+  --z-dev-lab: 21;
+  --z-ambient: 22;
+  --z-sound-chrome: 23;
+  --z-idle-fab: 24;
+  --z-support-dim: 25;
+  --z-support-modal: 26;
+  --z-sanctuary-card: 27;
+  --z-hint-chip: 28;
+  --z-privacy-sheet: 29;
+  --z-narrow-shell: 30;
+  --z-journey-log-dim: 31;
+  --z-narrow-stage: 32;
+  --z-narrow-reminder: 33;
+  --z-hint-bubble: 34;
+  --z-reminder-panel: 35;
+  --z-nav-fan: 36;
+  --z-toast: 40;
+  --z-voice-undo: 42;
+  --z-loading: 100;
+  --z-tts-outlier: 12050;
+}
