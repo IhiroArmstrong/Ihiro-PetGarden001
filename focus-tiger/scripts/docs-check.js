@@ -35,6 +35,7 @@ import { runMutationM01Check } from './mutation-m01-check.js';
 import { runZIndexRegistryCheck } from './z-index-registry-check.js';
 import { runProtectedPathLayerCheck } from './protected-path-layer-check.js';
 import { runZIndexLiteralCheck } from './z-index-literal-check.js';
+import { runZIndexTokensCheck } from './check-z-index-tokens.js';
 import { runGlassCardRootCheck } from './check-glass-card-roots.js';
 import { runGlassCardFactoryCheck } from './check-glass-card-factory.js';
 import { runConfideAcceptanceDevsetLeakAudit } from './audit-confide-acceptance-devset-leak.js';
@@ -60,6 +61,7 @@ function main() {
   if (!runZIndexRegistryCheck()) ok = false;
   if (!runProtectedPathLayerCheck()) ok = false;
   if (!runZIndexLiteralCheck()) ok = false;
+  if (!runZIndexTokensCheck()) ok = false;
   if (!runGlassCardRootCheck()) ok = false;
   if (!runGlassCardFactoryCheck()) ok = false;
   if (!runPracticeAggregateCoverageAudit()) ok = false;

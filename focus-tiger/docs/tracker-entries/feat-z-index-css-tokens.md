@@ -1,0 +1,1 @@
+| 静态壳层级改走 CSS 变量 | 纯后端 | 仅单元测试覆盖 | **本条验收的是** `index.html` 不再手写 z-index 数字，且 `--z-*` 与 `Z` 同值。**不代表**叠层观感已人眼验收。自动化：`npm run check:z-index-tokens` + `npm run check:z-index-literals`。不测 Stripe。 | — | — | — | `src/ui/z-index-tokens.css` · `index.html` | 2026-11-21 |

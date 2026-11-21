@@ -5,13 +5,6 @@
 
 /**
  * A12 grandfather: remaining raw z-index digits in product files.
- * Caps only shrink. New files or extra hits fail check:z-index-literals.
+ * Caps only shrink. Empty means the static shell now uses --z-* tokens.
  */
-
-export const Z_INDEX_LITERAL_EXEMPTIONS = Object.freeze([
-  {
-    file: 'index.html',
-    maxHits: 6,
-    reason: 'Static shell CSS cannot import JS constants; CSS variables are a later slice.'
-  }
-]);
+export const Z_INDEX_LITERAL_EXEMPTIONS = Object.freeze([]);
