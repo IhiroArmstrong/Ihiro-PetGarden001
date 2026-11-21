@@ -79,8 +79,9 @@ test('resolveConfideReply: beat people → aggression pool, never nods quietly',
   });
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
-  assert.match(hit.line.id, /^[AB]-\d{2}$/);
+  assert.match(hit.line.id, /^aggression-0[1-4]$/);
   assert.notEqual(hit.line.id, 'safety-01');
+  assert.doesNotMatch(hit.line.id, /^[AB]-\d{2}$/);
   assert.doesNotMatch(hit.line.en, /nod/i);
   assert.doesNotMatch(hit.line.zh, /点头/);
   assert.doesNotMatch(hit.line.en, /^Heard\./);
@@ -94,7 +95,8 @@ test('resolveConfideReply: zh aggression → corpus pool without Heard or nod co
   });
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
-  assert.match(hit.line.id, /^[AB]-\d{2}$/);
+  assert.match(hit.line.id, /^aggression-0[1-4]$/);
+  assert.doesNotMatch(hit.line.id, /^[AB]-\d{2}$/);
   assert.doesNotMatch(hit.line.zh, /点头/);
   assert.doesNotMatch(hit.line.en, /nod/i);
   assert.doesNotMatch(hit.line.en, /^Heard\./);
@@ -108,7 +110,8 @@ test('resolveConfideReply: ja aggression → corpus pool without Heard or nod co
   });
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
-  assert.match(hit.line.id, /^[AB]-\d{2}$/);
+  assert.match(hit.line.id, /^aggression-0[1-4]$/);
+  assert.doesNotMatch(hit.line.id, /^[AB]-\d{2}$/);
   assert.doesNotMatch(hit.line.ja, /うなず/);
   assert.doesNotMatch(hit.line.en, /nod/i);
   assert.doesNotMatch(hit.line.en, /^Heard\./);
@@ -119,7 +122,7 @@ test('resolveConfideReply: colloquial ZH beating stays in acknowledging pool', (
     const hit = resolveConfideReply({ text, locale: 'zh', localDate: '2026-09-30' });
     assert.ok(hit, text);
     assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
-    assert.match(hit.line.id, /^[AB]-\d{2}$/);
+    assert.match(hit.line.id, /^aggression-0[1-4]$/);
     assert.notEqual(hit.line.id, 'safety-01');
   }
 });
@@ -132,7 +135,8 @@ test('resolveConfideReply: ZH beat-people phrase → aggression pool, never gene
   });
   assert.ok(hit);
   assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS);
-  assert.match(hit.line.id, /^[AB]-\d{2}$/);
+  assert.match(hit.line.id, /^aggression-0[1-4]$/);
+  assert.doesNotMatch(hit.line.id, /^[AB]-\d{2}$/);
   assert.doesNotMatch(hit.line.zh, /点头/);
 });
 
