@@ -2803,8 +2803,7 @@ async function init() {
   });
   window.__homeSanctuaryNavFan = homeSanctuaryNavFanUI;
   const syncHomeSanctuaryNavPulseChrome = () => {
-    idleChrome.wide?.refreshHomeCtas?.();
-    idleChrome.narrow?.refreshHomeCtas?.();
+    homeSanctuaryNavFanUI.syncPulseChrome?.();
   };
   const syncConfideEarChrome = () => {
     confideEarChrome.sync();
@@ -7701,3 +7700,4 @@ async function init() {
 init().catch((error) => {
   console.error('初始化失败:', error);
 });
+
