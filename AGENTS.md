@@ -9,3 +9,4 @@
   已合并则**停止实现**，并在同一轮内顺手提交文档修正 PR。
 - 详细规则见 `.cursor/rules/task-preflight.mdc`（条文 SSOT：`WORKFLOW.md` → `git-task-preflight`）。
 - 实现类 PR 必须在同一个 PR 里更新文档状态（CI：`task-doc-sync` 强制检查）。
+- 对照表（只写已合并 / 进行中 PR，不写「已完成」）：[`docs/STATUS.md`](docs/STATUS.md)，由 `scripts/gen-task-status.py` 生成。周巡检：`scripts/audit-task-docs.py`。

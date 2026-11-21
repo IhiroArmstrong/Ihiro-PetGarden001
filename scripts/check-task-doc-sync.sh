@@ -9,6 +9,7 @@ export LC_ALL=C.UTF-8
 DOC_PATTERNS=(
   '^AGENTS\.md$'
   '^WORKFLOW\.md$'
+  '^docs/'
   '^focus-tiger/docs/'
   '^\.cursor/rules/'
   '^\.github/PULL_REQUEST_TEMPLATE\.md$'
@@ -19,10 +20,10 @@ DOC_PATTERNS=(
 
 fail() { echo "::error title=task-doc-sync::$*"; echo "❌ $*"; exit 1; }
 
-# 1) 提取 Task ID（分支名 + 标题 + 描述里的「任务 ID：Tn」）
-# PETS73 不会被认成 T73：T 前必须是边界（非字母数字）。
+# 1) 提取 Task ID（分支名 + 标题 + 描述里「任务 ID：」开头的那一行）
+# 正文随口出现「任务ID」不算。PETS73 不会被认成 T73。
 ids="$(printf '%s\n%s\n%s\n' "$PR_HEAD_REF" "$PR_TITLE" \
-        "$(printf '%s\n' "$PR_BODY" | grep -E '任务 ?ID' || true)" \
+        "$(printf '%s\n' "$PR_BODY" | grep -E '^[[:space:]]*[-*]?[[:space:]]*任务 ?ID[[:space:]]*[：:]' || true)" \
   | grep -oiE '(^|[^A-Za-z0-9])T[0-9]+' | sed -E 's/^[^Tt]+//' | tr 't' 'T' | sort -u || true)"
 
 if [ -z "$ids" ]; then

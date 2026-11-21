@@ -1,0 +1,40 @@
+name: doc-drift-audit
+
+# 每周一巡检：文档仍写「待做」但 PR 已合并 → 开/更新一个 issue；全部修好则自动关闭
+on:
+  schedule:
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: 巡检
+        run: |
+          set +e
+          python3 scripts/audit-task-docs.py --out /tmp/report.md
+          code=$?
+          set -e
+          gh label create doc-drift --color D93F0B --description "文档状态与 git 不一致" 2>/dev/null || true
+          existing=$(gh issue list --label doc-drift --state open --json number --jq '.[0].number')
+          if [ "$code" -eq 3 ]; then
+            if [ -n "$existing" ]; then
+              gh issue edit "$existing" --body-file /tmp/report.md
+              echo "updated issue #$existing"
+            else
+              gh issue create --label doc-drift --title "文档状态疑似过期（周巡检）" --body-file /tmp/report.md
+            fi
+          elif [ "$code" -eq 0 ] && [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "最新巡检未发现过期条目，自动关闭。"
+          elif [ "$code" -ne 0 ]; then
+            exit "$code"
+          fi
