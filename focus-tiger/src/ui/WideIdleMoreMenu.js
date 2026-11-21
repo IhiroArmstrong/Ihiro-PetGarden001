@@ -35,7 +35,6 @@ import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
-import { syncHomeSanctuaryNavPulse } from '../core/homeSanctuaryNavGate.js';
 import {
   WIDE_MENU_RADIAL_GROUP_KEYS,
   isWideMenuViewport,
@@ -772,10 +771,7 @@ export class WideIdleMoreMenu {
         );
         setBoolPropIfChanged(this.sanctuaryNavHomeBtn, 'disabled', false);
         setAttrIfChanged(this.sanctuaryNavHomeBtn, 'aria-disabled', 'false');
-        syncHomeSanctuaryNavPulse(
-          this.sanctuaryNavHomeBtn,
-          this.handlers.shouldShowSanctuaryNavPulse?.() === true
-        );
+        // Sanctuary nav pulse: independent chrome (homeSanctuaryNavPulseChrome.js)
       }
 
       const focusEl = document.getElementById('btn-focus');

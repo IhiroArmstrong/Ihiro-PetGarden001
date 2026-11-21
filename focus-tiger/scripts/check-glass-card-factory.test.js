@@ -78,3 +78,51 @@ test('live tree: factory check green; GM is not grandfathered', () => {
   assert.match(src, /deck: true/);
   assert.doesNotMatch(src, /rgba\(255,\s*252,\s*245,\s*0\.92\)/);
 });
+
+test('live tree: remaining deck cards use the factory; exemption list is empty', () => {
+  assert.equal(GLASS_CARD_FACTORY_EXEMPT_IDS.length, 0);
+  const files = [
+    'DailyZenQuoteCardUI.js',
+    'MustardSeedSealCardUI.js',
+    'PracticeImprintCardUI.js',
+    'DigitalWallpapersCardUI.js',
+    'ArtCollectionPanelUI.js',
+    'SanctuaryUnlockUI.js',
+    'MembershipUnlockUI.js',
+    'TipJarUI.js',
+    'NewsletterCaptureUI.js',
+    'ConfideToYinUI.js',
+    'ZenCinemaCardUI.js',
+    'GroundExerciseChoiceUI.js',
+    'FiveMomentsCompassUI.js',
+    'ColdStartGoalCardUI.js',
+    'JourneyLogUI.js',
+    'HelpCenterUI.js',
+    'GrowthJourneyDetailUI.js',
+    'FocusCoinsPanelUI.js',
+    'LocalPracticeDataPanelUI.js',
+    'CoPracticeContractPanelUI.js',
+    'EmailJourneyRestorePanelUI.js',
+    'PracticeStudyConsentPanelUI.js',
+    'QuietTogetherPanelUI.js',
+    'FocusCirclePanelUI.js',
+    'ReminderPreferenceUI.js',
+    'WorkEndPreferenceUI.js'
+  ];
+  assert.equal(files.length, 26);
+  for (const name of files) {
+    const src = readFileSync(join(here, '../src/ui', name), 'utf8');
+    assert.equal(sourceUsesGlassFactory(src), true, name);
+    assert.match(src, /deck: true/, name);
+  }
+  const membership = readFileSync(
+    join(here, '../src/ui/MembershipUnlockUI.js'),
+    'utf8'
+  );
+  assert.match(membership, /id: 'yin-membership-card'/);
+  const support = readFileSync(
+    join(here, '../src/ui/SupportYinModalUI.js'),
+    'utf8'
+  );
+  assert.equal(sourceUsesGlassFactory(support), false);
+});

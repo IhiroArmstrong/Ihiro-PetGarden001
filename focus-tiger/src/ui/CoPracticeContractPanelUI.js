@@ -17,7 +17,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -36,9 +37,11 @@ export class CoPracticeContractPanelUI {
     this._settingsOpeners = {};
     this._open = false;
 
-    this.root = document.createElement('div');
-    this.root.id = 'co-practice-contract-panel';
-    this.root.className = 'co-practice-contract-panel';
+    this.root = createGlassCard({
+      id: 'co-practice-contract-panel',
+      className: 'co-practice-contract-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.dataset.testid = 'co-practice-contract-panel';
     this.root.setAttribute('role', 'dialog');

@@ -38,7 +38,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -56,9 +57,11 @@ export class FocusCirclePanelUI {
     this.handlers = handlers;
     this._open = false;
 
-    this.root = document.createElement('div');
-    this.root.id = 'focus-circle-panel';
-    this.root.className = 'focus-circle-panel';
+    this.root = createGlassCard({
+      id: 'focus-circle-panel',
+      className: 'focus-circle-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.dataset.testid = 'focus-circle-panel';
     this.root.setAttribute('role', 'dialog');

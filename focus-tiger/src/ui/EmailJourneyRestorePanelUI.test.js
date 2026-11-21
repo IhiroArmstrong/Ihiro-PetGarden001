@@ -13,7 +13,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, 'EmailJourneyRestorePanelUI.js'), 'utf8');
 
 test('email restore panel uses glass + dock z + press feedback', () => {
-  assert.match(src, /id = 'email-journey-restore-panel'/);
+  assert.match(src, /id: 'email-journey-restore-panel'/);
   assert.match(src, /Z\.DOCK/);
   assert.match(src, /GLASS_FILL/);
   assert.match(src, /:active:not\(:disabled\)/);

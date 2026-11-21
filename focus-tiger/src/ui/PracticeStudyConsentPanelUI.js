@@ -20,7 +20,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -48,9 +49,11 @@ export class PracticeStudyConsentPanelUI {
     this._joinPending = false;
     this._leavePending = false;
 
-    this.root = document.createElement('div');
-    this.root.id = 'practice-study-consent-panel';
-    this.root.className = 'practice-study-consent-panel';
+    this.root = createGlassCard({
+      id: 'practice-study-consent-panel',
+      className: 'practice-study-consent-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.dataset.testid = 'practice-study-consent-panel';
     this.root.setAttribute('role', 'dialog');

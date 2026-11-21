@@ -32,6 +32,7 @@ import {
   setSystemTtsAnnouncementsEnabled
 } from '../core/systemTtsPreference.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
+import { soundscapeMusicBlockNodes } from './soundscapeMusicBlockOrder.js';
 import { Z } from './zIndexLayers.js';
 
 /** 与 `localStateKeys.js` 白名单同步；新增 key 时两边一起改。 */
@@ -445,12 +446,7 @@ export class AmbientSoundscapeUI {
     );
 
     this.panelScroll.append(
-      this.musicBlockTitle,
-      this.uploadHintEl,
-      this.uploadRow,
-      this.uploadErrEl,
-      this.trackRow,
-      this.volumeLabel,
+      ...soundscapeMusicBlockNodes(this),
       this.sittingBellsBlockTitle,
       this.chimeVolumeLabel,
       this.cueToggleLabel,

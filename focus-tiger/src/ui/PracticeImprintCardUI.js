@@ -23,7 +23,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -46,9 +47,11 @@ export class PracticeImprintCardUI {
     /** @type {string | null} */
     this._catalogId = null;
 
-    this.root = document.createElement('div');
-    this.root.id = 'practice-imprint-card';
-    this.root.className = 'practice-imprint-card';
+    this.root = createGlassCard({
+      id: 'practice-imprint-card',
+      className: 'practice-imprint-card',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

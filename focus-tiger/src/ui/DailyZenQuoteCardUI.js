@@ -21,7 +21,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -62,9 +63,11 @@ export class DailyZenQuoteCardUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'daily-zen-quote-card';
-    this.root.className = 'daily-zen-quote-card';
+    this.root = createGlassCard({
+      id: 'daily-zen-quote-card',
+      className: 'daily-zen-quote-card',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

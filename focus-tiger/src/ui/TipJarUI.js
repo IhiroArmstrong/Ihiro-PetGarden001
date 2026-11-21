@@ -36,7 +36,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
@@ -81,9 +82,11 @@ export class TipJarUI {
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'yin-tip-jar-card';
-    this.root.className = 'yin-tip-jar';
+    this.root = createGlassCard({
+      id: 'yin-tip-jar-card',
+      className: 'yin-tip-jar',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');
