@@ -1,7 +1,7 @@
 ---
 id: t100-output-gate-pr5
 kind: note
-status: PR-1/2/3 已合，PR-4 第 1 轮审阅中 · PR-5 措辞待合
+status: PR-4 已合 · PR-5 措辞视需要另开
 updated: 2026-11-17
 ---
 

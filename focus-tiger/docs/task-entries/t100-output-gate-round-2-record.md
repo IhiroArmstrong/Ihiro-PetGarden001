@@ -1,7 +1,7 @@
 ---
 id: t100-output-gate-round-2-record
 kind: note
-status: PR-4 第 2 轮记录审阅中
+status: 红队记录已合 · 路线 X 关单
 updated: 2026-11-17
 ---
 

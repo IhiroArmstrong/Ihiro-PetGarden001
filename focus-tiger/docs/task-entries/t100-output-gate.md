@@ -1,7 +1,7 @@
 ---
 id: t100-output-gate
 kind: feature
-status: 立即做 · P2 · PR-1/2/3 已合 · PR-4 第 1 轮审阅中 · 预设句式补丁 #1752
+status: 已完成 · P2 · 路线 X 关单三项齐 · PR-1–4 已合
 updated: 2026-11-17
 ---
 
