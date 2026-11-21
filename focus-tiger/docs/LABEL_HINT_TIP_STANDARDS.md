@@ -111,5 +111,6 @@ rg -n --glob '*.js' -e '\.title\s*=' -e "setAttribute\(['\"]title['\"]" \
 | Confide 口头芯片 / observation 桶 | 否（芯片已有可见文字） | `confide-observation-honesty-bucket-audit.md` |
 | 冷启动第一幕入口仲裁 | 否 | `cold-start-first-scene-audit-inventory.md`（E11 额头句 = 一次发现气泡） |
 | Hint 接线 / mint / purpose 卡 | 发现性仍归那边；本文件只规定 **残句 hover 与 title 禁用** | `HINTS_WIRING.md` |
+| 全站圆点族谱（钢蓝 / 栖居蓝脉冲 / mint） | 本文件 §四政策；**宿主表与手测锚** | [`SITE_DISCOVERY_DOT_CENSUS.md`](./SITE_DISCOVERY_DOT_CENSUS.md) |
 
 改本草案的语义前，实现 PR 仍须对照 `FEATURE_CONFLICT_REVIEW.md`：新 tip 不得比 Recover / Confide 更重，不得把阿寅说成监工。
