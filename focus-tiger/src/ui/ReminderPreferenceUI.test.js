@@ -12,6 +12,13 @@ import { describe, it } from 'node:test';
 const here = dirname(fileURLToPath(import.meta.url));
 
 describe('ReminderPreferenceUI layering + confirm affordance', () => {
+  it('clock toggle uses listening-ear glass tip not native title', () => {
+    const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
+    assert.match(src, /attachGlassHoverTip\(this\.toggleBtn/);
+    assert.match(src, /consumeTouchFirstToast\('reminder-preference-toggle'\)/);
+    assert.doesNotMatch(src, /toggleBtn\.title\s*=/);
+  });
+
   it('panel sits above onboarding hint bubbles (z35 > z34)', () => {
     const src = readFileSync(join(here, 'ReminderPreferenceUI.js'), 'utf8');
     assert.match(src, /#reminder-preference-panel[\s\S]*z-index: \$\{Z\.REMINDER_PANEL\}/);

@@ -14,6 +14,17 @@ import { HINT_IDS, HINT_LOCALE_KEYS } from './onboardingHintRegistry.js';
 
 export const HINTS_SEEN_STORAGE_KEY = 'focus-tiger.hints-seen.v1';
 
+/** L5：触屏第一次短提示按控件记在同一 hints-seen 对象里，不是全站一个布尔。 */
+export const TOUCH_FIRST_TOAST_PREFIX = 'touchFirstToast:';
+
+/**
+ * @param {string} controlId
+ * @returns {string}
+ */
+export function touchFirstToastStorageKey(controlId) {
+  return `${TOUCH_FIRST_TOAST_PREFIX}${controlId}`;
+}
+
 /** @typedef {import('./onboardingHintRegistry.js').OnboardingHintRegistryEntry['id']} HintId */
 
 /** @typedef {'peeked'|'done'|'resting'} HintAckState */
@@ -38,8 +49,23 @@ export function normalizeHintsSeen(raw) {
 }
 
 /**
+ * @param {unknown} raw
+ * @returns {Record<string, true>}
+ */
+export function normalizeTouchFirstToasts(raw) {
+  if (!raw || typeof raw !== 'object') return {};
+  /** @type {Record<string, true>} */
+  const out = {};
+  for (const [key, value] of Object.entries(raw)) {
+    if (!key.startsWith(TOUCH_FIRST_TOAST_PREFIX)) continue;
+    if (value === true || value === 'done' || value === 1) out[key] = true;
+  }
+  return out;
+}
+
+/**
  * @param {() => unknown} [read]
- * @param {(value: Record<string, HintAckState>) => void} [write]
+ * @param {(value: Record<string, HintAckState | true>) => void} [write]
  */
 export function createHintsSeenStore(
   read = () => {
@@ -57,7 +83,13 @@ export function createHintsSeenStore(
     }
   }
 ) {
-  let cache = normalizeHintsSeen(read());
+  const initialRaw = read();
+  let cache = normalizeHintsSeen(initialRaw);
+  let toasts = normalizeTouchFirstToasts(initialRaw);
+
+  const persist = () => {
+    write({ ...cache, ...toasts });
+  };
 
   return {
     /**
@@ -101,7 +133,7 @@ export function createHintsSeenStore(
         return false;
       }
       cache = { ...cache, [hintId]: 'peeked' };
-      write(cache);
+      persist();
       return true;
     },
     /**
@@ -113,7 +145,7 @@ export function createHintsSeenStore(
       if (!HINT_IDS.includes(hintId)) return false;
       if (cache[hintId] === 'done') return false;
       cache = { ...cache, [hintId]: 'done' };
-      write(cache);
+      persist();
       return true;
     },
     /**
@@ -126,17 +158,44 @@ export function createHintsSeenStore(
       if (cache[hintId] === 'done') return false;
       if (cache[hintId] === 'resting') return false;
       cache = { ...cache, [hintId]: 'resting' };
-      write(cache);
+      persist();
       return true;
+    },
+    /**
+     * 触屏第一次短提示：每个 controlId 各一次。true = 本次应闪。
+     * @param {string} controlId
+     * @returns {boolean}
+     */
+    consumeTouchFirstToast(controlId) {
+      const id = String(controlId || '').trim();
+      if (!id) return false;
+      const key = touchFirstToastStorageKey(id);
+      if (toasts[key]) return false;
+      toasts = { ...toasts, [key]: true };
+      persist();
+      return true;
+    },
+    /** @param {string} controlId */
+    hasTouchFirstToast(controlId) {
+      return Boolean(toasts[touchFirstToastStorageKey(String(controlId || ''))]);
     },
     clear() {
       cache = {};
-      write(cache);
+      toasts = {};
+      persist();
     },
     getAll() {
       return { ...cache };
     }
   };
+}
+
+/**
+ * @param {string} controlId
+ * @returns {boolean} true = 本次应闪第一次短提示
+ */
+export function consumeTouchFirstToast(controlId) {
+  return createHintsSeenStore().consumeTouchFirstToast(controlId);
 }
 
 /**

@@ -36,7 +36,7 @@ export function getGlassHoverTipHandle(host) {
 
 /**
  * @param {HTMLElement} host
- * @param {{ text?: string, placement?: GlassTipPlacement, tipId?: string, multiline?: boolean }} [options]
+ * @param {{ text?: string, placement?: GlassTipPlacement, tipId?: string, multiline?: boolean, shouldFlashTouch?: () => boolean }} [options]
  * @returns {GlassHoverTipHandle}
  */
 export function attachGlassHoverTip(host, options = {}) {
@@ -75,6 +75,7 @@ export function attachGlassHoverTip(host, options = {}) {
 
   const onTouchFlash = () => {
     if (window.matchMedia('(hover: hover)').matches) return;
+    if (options.shouldFlashTouch && !options.shouldFlashTouch()) return;
     host.classList.add('ft-glass-tip-host--touch-visible');
     if (touchTimer != null) window.clearTimeout(touchTimer);
     touchTimer = window.setTimeout(() => {

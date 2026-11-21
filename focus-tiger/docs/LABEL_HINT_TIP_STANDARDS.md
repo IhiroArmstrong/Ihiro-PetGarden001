@@ -8,7 +8,7 @@
 接线（场景 × hintId，不是政策）：[`HINTS_WIRING.md`](./HINTS_WIRING.md) · [`ONBOARDING_HINTS.md`](./ONBOARDING_HINTS.md)  
 圆点族谱附录（历史盘点，不另立主题）：[`SITE_DISCOVERY_DOT_CENSUS.md`](./SITE_DISCOVERY_DOT_CENSUS.md)
 
-> **地面真相（批 1 后 · 仍待账本生成器）**：`ft-glass-hover-tip.js` 已收编倾听耳玻璃胶囊（~120ms 淡入）。**已迁**：Home 三球（宽/窄）、窄屏倾诉钮、音符/♪ 残句（mint done 后仍自绘）。**仍待**：地球仪/时钟残句、面板滑杆 `title`、用途类 `title` lint、死族删代码、同屏单脉冲。属性名现网多用子节点 `role="tooltip"`，目标仍对齐 `data-ft-tip`。
+> **地面真相（批 1 + L5）**：`ft-glass-hover-tip.js` 已收编倾听耳玻璃胶囊（~120ms 淡入）。**已迁**：Home 三球（宽/窄）、窄屏倾诉钮、音符/♪、地球仪、时钟、面板音量滑杆。触屏第一次短提示按 `controlId` 写入 `hints-seen`（`touchFirstToast:`）。**仍待**：用途类 `title` lint 全清、L6 脉冲与 tip 同句去重扫尾。属性名现网多用子节点 `role="tooltip"`，目标仍对齐 `data-ft-tip`。
 
 ---
 
