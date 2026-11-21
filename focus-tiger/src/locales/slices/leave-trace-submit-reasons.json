@@ -1,0 +1,32 @@
+{
+  "en": {
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_PENDING": "Leaving that trace…",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_MEMBER": "This device is not in that circle anymore. Rejoin, then try again.",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_KV": "The circle notebook is not on this server. Try again later.",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_TIMEOUT": "That took too long. The picker is still here — try again.",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_RATE": "Too many traces just now. Wait a moment, then try again.",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_READY": "Circle cloud is not ready on this device yet.",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_BAD_PHRASE": "That line cannot be sent. Pick another.",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_ALREADY": "Someone already answered that trace."
+  },
+  "zh": {
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_PENDING": "正在留下这道痕迹…",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_MEMBER": "这台设备已经不在这个圈子里。重新加入后再试。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_KV": "圈子的云端本子这会儿不可用。稍后再试。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_TIMEOUT": "等得太久了。选句还在，可以再点一次。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_RATE": "刚才留痕太密。停一下再试。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_READY": "这台设备上的圈子云端还没就绪。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_BAD_PHRASE": "这句不能送出。请另选一句。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_ALREADY": "这条痕迹已经有人回应过了。"
+  },
+  "ja": {
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_PENDING": "痕跡を残しています…",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_MEMBER": "この端末はもうその輪にいません。入り直してから、もう一度どうぞ。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_KV": "輪のノートが今は使えません。少ししてからもう一度。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_TIMEOUT": "時間がかかりすぎました。選ぶ画面は残っています。もう一度どうぞ。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_RATE": "いま痕跡が混み合っています。少し待ってからもう一度。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_READY": "この端末では輪のクラウドがまだ用意できていません。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_BAD_PHRASE": "その一文は送れません。別の文を選んでください。",
+    "FOCUS_CIRCLE_WITNESS_SUBMIT_ALREADY": "その痕跡には、すでに返答があります。"
+  }
+}

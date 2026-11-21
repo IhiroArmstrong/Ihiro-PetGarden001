@@ -18,7 +18,8 @@ import {
   readRespondedTraceIds,
   rememberRespondedTraceId,
   resetFocusCircleWitnessForTests,
-  setFocusCircleWitnessBusyProbe
+  setFocusCircleWitnessBusyProbe,
+  witnessSubmitErrorLocaleKey
 } from './focusCircleWitness.js';
 
 function memoryStorage(seed = {}) {
@@ -216,6 +217,56 @@ describe('focusCircleWitness', () => {
     });
     assert.equal(result.ok, false);
     assert.equal(result.reason, 'timeout');
+  });
+
+  it('maps Worker error body codes so leave picker can name the fail', async () => {
+    const storage = memoryStorage({
+      [FOCUS_CIRCLE_STORAGE_KEY]: JSON.stringify(MEMBERSHIP)
+    });
+    const notMember = await postFocusCircleWitness({
+      storage,
+      action: 'witness_leave',
+      phraseKey: 'FOCUS_CIRCLE_WITNESS_LEAVE_1',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        const err = new Error('Not a member of this circle');
+        /** @type {any} */ (err).status = 403;
+        /** @type {any} */ (err).body = { error: 'not_member', detail: 'Not a member of this circle' };
+        throw err;
+      }
+    });
+    assert.equal(notMember.ok, false);
+    assert.equal(notMember.reason, 'not_member');
+    assert.equal(
+      witnessSubmitErrorLocaleKey(notMember.reason),
+      'FOCUS_CIRCLE_WITNESS_SUBMIT_NOT_MEMBER'
+    );
+
+    const kvMissing = await postFocusCircleWitness({
+      storage,
+      action: 'witness_leave',
+      phraseKey: 'FOCUS_CIRCLE_WITNESS_LEAVE_1',
+      getBaseUrl: () => 'https://example.test',
+      postJson: async () => {
+        const err = new Error('Circle store unavailable');
+        /** @type {any} */ (err).status = 500;
+        /** @type {any} */ (err).body = { error: 'kv_missing', detail: 'Circle store unavailable' };
+        throw err;
+      }
+    });
+    assert.equal(kvMissing.reason, 'kv_missing');
+    assert.equal(
+      witnessSubmitErrorLocaleKey(kvMissing.reason),
+      'FOCUS_CIRCLE_WITNESS_SUBMIT_KV'
+    );
+    assert.equal(
+      witnessSubmitErrorLocaleKey('timeout'),
+      'FOCUS_CIRCLE_WITNESS_SUBMIT_TIMEOUT'
+    );
+    assert.equal(
+      witnessSubmitErrorLocaleKey('network'),
+      'FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR'
+    );
   });
 
 });
