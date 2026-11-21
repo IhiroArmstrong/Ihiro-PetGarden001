@@ -31,6 +31,8 @@ import { runSharedResourcesResetCoverageAuditCli } from './audit-shared-resource
 import { runKbLiveEntryAudit } from './audit-kb-live-entries.js';
 import { runKbLiveGapAudit } from './audit-kb-live-gap.js';
 import { runMenuChromeCensusAudit } from './audit-menu-chrome-census.js';
+import { runEntrySignalLedgerAudit } from './audit-entry-signal-ledger.js';
+import { runEntrySignalLint } from './audit-entry-signal-lint.js';
 import { runMutationM01Check } from './mutation-m01-check.js';
 import { runZIndexRegistryCheck } from './z-index-registry-check.js';
 import { runProtectedPathLayerCheck } from './protected-path-layer-check.js';
@@ -72,6 +74,8 @@ function main() {
   if (!runKbLiveEntryAudit()) ok = false;
   if (!runKbLiveGapAudit()) ok = false;
   if (!runMenuChromeCensusAudit()) ok = false;
+  if (!runEntrySignalLint()) ok = false;
+  if (!runEntrySignalLedgerAudit()) ok = false;
   if (!runMutationM01Check()) ok = false;
   if (!runConfideAcceptanceDevsetLeakAudit()) ok = false;
   if (!runQueueGovernanceCheck()) ok = false;
