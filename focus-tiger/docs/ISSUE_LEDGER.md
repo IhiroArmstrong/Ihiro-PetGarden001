@@ -108,3 +108,4 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 优化建议 | B3·5-01：场景剧本仍以网页 `?product=1` 为主路径，对客验收须改走 macOS 安装包 | 2026-11-09 B3 首稿 · #1638 | 旁路 [`issue-entries/docs-audit-b3-product-scenarios-2026-11-09.md`](./issue-entries/docs-audit-b3-product-scenarios-2026-11-09.md)。发现稿 §5-01。 | 未跟进 |
 | 优化建议 | B3·5-02：「只做专注陪伴」与多入口表面是否一致，须安装包冷启动第一眼清单 | 2026-11-09 B3 首稿 · #1638 | 旁路同上。发现稿 §5-02。 | 未跟进 |
 | 技术债 | B3·5-05：欢迎/提醒/节奏统计默认开关未在安装包设置里核对 | 2026-11-09 B3 首稿 · #1638 | 旁路同上。发现稿 §5-05。 | 未跟进 |
+| 独立bug | 觉察一句把伤害他人专用回复池换成了通用接住句 | 2026-11-21 只读核对 · PO 授权安全审 | 旁路 [`issue-entries/docs-noticing-nf02-aggression-pool-audit.md`](./issue-entries/docs-noticing-nf02-aggression-pool-audit.md)。路由名仍是 `aggression_toward_others`，可见句为 A/B（例 A-19），不是 `aggression-01/02/03`。相对场景 AE 3b 回退。不改热线、不调 0.78。恢复池须 Brief。 | 跟进中 |
