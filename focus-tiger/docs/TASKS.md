@@ -545,6 +545,38 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `aggression-noticing-overlay` · feature · 旁支实现中 · 伤害他人走 aggression 池不走 A/B · 2026-11-21
+
+Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。本支把该路由（及 `safety_care`）从 noticing overlay 拿掉，仍用现网 aggression 专用句。不是扩关键词、不是 T94 第 4 刀。
+
+### `glass-card-factory-census` · feature · 进行中 · 2026-11-21
+
+11/20 手测家族：叠层卡须走 `createGlassCard`。本刀引导冥想换工厂 + 扫描豁免只减不增。不做 CSS `--z-*`。不是 A15–A17。
+
+### `noticing-nf02-aggression-pool-audit` · note · 只读核对已记 · NF-02 规格改为伤害他人路由 · 夹具未写 · 未改 src · 2026-11-21
+
+发布路径下 aggression 可见回复来自通用 A/B，不是专用池。NF-01 仍必须 T0。夹具另开 Chat，且须先有恢复专用池 Brief。
+
+### `restore-aggression-dedicated-pool` · note · Brief 已起草 · 待 PO 点头 · 未改 src · 2026-11-21
+
+恢复伤害他人专用接住句。规格 `task-restore-aggression-dedicated-pool.md`。夹具另 Chat。
+
+### `soundscape-tracks-above-upload` · feature · 旁支实现中 · 曲目列表在上传钮之上 · 2026-11-21
+
+声音总表漏网布局：上传块曾排在曲目列表前面。本支只改面板顺序，不碰玻璃工厂豁免表。
+
+### `t100-route-x-phase1-close` · note · 路线 X 阶段关单证据齐 · G1 #1792 · G2 #1807 · G3 #1809 · G4 #1799 · 2026-11-21
+
+T100 在觉察一句路线下按开门门禁 v2 §4 收口：G2 #1807、G3 证据 #1809、G1 `release-no-generate`；不再开新红队轮次。**不是**闸实验室 K=3 已验证、**不是** V-02 已补。证据 [`noticing-open-gate-g2-g3-evidence.md`](../audit/findings/2026-11-20/noticing-open-gate-g2-g3-evidence.md)。
+
+### `t95-electron-shell-upgrade` · feature · 立即做 · P1 · #1711 已合 develop（45.3.1）· 剩桶/公证/壳回归 · 2026-11-21
+
+T95 电脑壳升级 + 更新通道。发包装日 2026-12-08。升壳合入不晚于 2026-12-01，否则 12 月 8 日整日顺延。目标大版本 45。GitHub 当天稳定标签是 45.3.2；npm 没有该版本，可安装钉是 45.3.1，不升 46。最低 macOS 13。对客根地址 `https://updates.twinsology.com/`；测试前缀 `/prep/`（`FT_UPDATE_FEED_URL`）。存储桶未建；公证未做过。原生库加载失败时，电脑上的倾诉语义分和短生成一起不可用，走现有语料退路。不改倾诉发送链。
+
+### `z-index-css-tokens` · feature · 进行中 · 2026-11-21
+
+玻璃卡家族第二刀：静态壳 z-index 改走 `--z-*`，与 `zIndexLayers.js` 对账。数值不变。不是 A15–A17。
+
 ### `noticing-g1-release-no-generate` · feature · 已合 develop · #1792 · 2026-11-20
 
 G1：发布构建里倾诉发送走不到可见生成。登记表 `releaseReach` + `check:generation-gate` + 打包闸。#1792 已合。不删生成代码。不是句库、不是 R2L-02。
@@ -564,10 +596,6 @@ PO 授权安全审稿后按第 7 项只读 40 句。删除三句，不改写。�
 ### `risk-register-v02-residual` · note · 登记册 v1.1.10 · 更新 #1811 · 未改 src · 2026-11-20
 
 V-02 编号保留、状态不关闭。残余补「漏识别后只见接住/邀坐、未见明确转介」，由句库审稿 + G2 承担，不写成待 T94。10-02 仍并入。不是打开自由生成。
-
-### `t100-route-x-phase1-close` · note · 路线 X 阶段关单证据齐 · G1 #1792 · G2 #1807 · G3 单测绿 · G4 #1799 · 2026-11-20
-
-T100 在觉察一句路线下按开门门禁 v2 §4 收口：G2 #1807、G3 句库单测、G1 `release-no-generate`；不再开新红队轮次。**不是**闸实验室 K=3 已验证、**不是** V-02 已补。证据 [`noticing-open-gate-g2-g3-evidence.md`](../audit/findings/2026-11-20/noticing-open-gate-g2-g3-evidence.md)。
 
 ### `confide-fact-card-surface-forms` · feature · 实现中 · 待人工测试 · 不得写换说法已接住 · 2026-11-19
 
@@ -657,15 +685,15 @@ Preferences Center：H7 信息架构与分组列表；H8 子页统一另 PR。
 
 T100 PR-2 补丁。Brief 4.3 句式：拦「叫不出病名」这类预设，不把 diagnosis / illness 当单词关键词。层 A 加该子类必拦样本与 capability / 茶名 / 难过 放行句。不另开说明书。
 
-### `t100-output-gate` · feature · 立即做 · P2 · PR-1/2/3 已合 · PR-4 第 1 轮审阅中 · 预设句式补丁 #1752 · 2026-11-17
+### `t100-output-gate` · feature · 已完成 · P2 · 路线 X 关单三项齐 · PR-1–4 已合 · 2026-11-17
 
 T100 输出侧刚性闸。说明已点头。PR-1 #1740、PR-2 #1741、PR-3 英语回落池 #1744、接线 #1745 已合。PR-4 第 1 轮：PO 判定 1/12 预设类漏网（rt-observe-mood）。句式补丁 #1752。不重开接线。
 
-### `t100-output-gate-pr4` · note · PR-4 第 1 轮审阅中 · 2026-11-17
+### `t100-output-gate-pr4` · note · 已完成 · #1747 已合 · 2026-11-17
 
 T100 PR-4 第 1 轮是记录，不是闸验证。有效采样 12；实验室管线（模型 + 闸模块）；未经过 #1745 的 `l1Runtime`；「真逃逸 0」待 PO。第 2 轮方案只写文档、不跑。
 
-### `t100-output-gate-pr5` · note · PR-1/2/3 已合，PR-4 第 1 轮审阅中 · PR-5 措辞待合 · 2026-11-17
+### `t100-output-gate-pr5` · note · PR-4 已合 · PR-5 措辞视需要另开 · 2026-11-17
 
 T100 说明书第 8 节 PR-5。风险册只记「已接线；红队仅 1 轮、有效采样 12、未降档、V-02 不变」。不宣称闸已验证，不宣称识别缺口已补。
 
@@ -673,7 +701,7 @@ T100 说明书第 8 节 PR-5。风险册只记「已接线；红队仅 1 轮、�
 
 T100 层 B 第 2 轮实验室入口改为 `CompanionL1Runtime.generate`。去护栏臂只在 `FT_OUTPUT_GATE_REDTEAM=1`。不改输入路由。本片不表示闸已验证，也不表示第 2 轮已跑完。
 
-### `t100-output-gate-round-2-record` · note · PR-4 第 2 轮记录审阅中 · 2026-11-17
+### `t100-output-gate-round-2-record` · note · 红队记录已合 · 路线 X 关单 · 2026-11-17
 
 T100 PR-4 第 2 轮是记录加层 A 补句式，不是闸验证。去护栏有效样本 213，生产 98，均未达方案约 400 / 200。启发式逃逸 10，Cursor 判漏网，PO 未抽查。K=3 本轮不计。不改 V-02。
 
@@ -809,10 +837,6 @@ T93：网页 / 自有电脑版打开练习云备份客户端闸。设置里「�
 ### `t93-email-sign-in-d5` · feature · 文档刀 · 改过时灰行说明书 · 不测真人 · 2026-11-13
 
 T93 D5：普查 / 场景 Z / TRACKER 去掉「永远灰行、没有真入口」的过时句，改成双态：首包关闸 Web 灰行；开闸 Preferences 真入口。不改 `src/`。不测真人。Circle 统一 Login 仍不写。
-
-### `t95-electron-shell-upgrade` · feature · 立即做 · P1 · 9-02b · 升壳实现中 · Electron 45.3.1 · 2026-11-13
-
-T95 电脑壳升级 + 更新通道。发包装日 2026-12-08。升壳合入不晚于 2026-12-01，否则 12 月 8 日整日顺延。目标大版本 45。GitHub 当天稳定标签是 45.3.2；npm 没有该版本，可安装钉是 45.3.1，不升 46。最低 macOS 13。对客根地址 `https://updates.twinsology.com/`；测试前缀 `/prep/`（`FT_UPDATE_FEED_URL`）。存储桶未建；公证未做过。原生库加载失败时，电脑上的倾诉语义分和短生成一起不可用，走现有语料退路。不改倾诉发送链。
 
 ### `deep-link-shortcuts-cookbook` · feature · Health 记入钮 + Preferences 开关（feature/health-shortcut-log）；深链 A/B/C 已合 · 2026-11-12
 
