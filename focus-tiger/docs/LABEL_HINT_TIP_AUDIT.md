@@ -1,11 +1,11 @@
 # LABEL_HINT_TIP_AUDIT.md — 可交互入口说明信号全量清单
 
 创建日期：2026-09-12  
-状态：**纯审计 · 不改代码**  
+状态：**手写总账（过渡）** · L1 起改为 registry+DOM **机器块**（`docs:check`）；列定义见 [`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md) §六  
 基线：`origin/develop` `274b02e1`（落后数 0；**不能**用营销旁支代表主干）  
 权威路径：`focus-tiger/docs/LABEL_HINT_TIP_AUDIT.md`  
-规则草案：[`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md)  
-任务书（仓外）：`task-label-hint-tip-unification-audit.md`
+政策 SSOT（方向锁 2026-11-21）：[`LABEL_HINT_TIP_STANDARDS.md`](./LABEL_HINT_TIP_STANDARDS.md)  
+实现 Brief：[`task-briefs/task-entry-signal-ledger.md`](./task-briefs/task-entry-signal-ledger.md)
 
 核对方式：对 `src/ui/*UI.js`、Home 壳、`ui-kit`、`desktop/main.js` 打开源码看实际赋值，不只搜 `data-ft-tip`。  
 **关键事实：**全仓 **无** `data-ft-tip`、**无** `idleHomeCtaTip.js`。任务书「三球已改自绘 tip」与 git **不一致**——以 git 为准。
