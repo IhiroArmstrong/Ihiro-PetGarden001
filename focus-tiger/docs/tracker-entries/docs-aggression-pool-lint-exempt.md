@@ -1,0 +1,1 @@
+| 伤害他人专用四句豁免通用禁词检查 | 仅单元测试覆盖 | 待人工测试 | **本条验收的是**：觉察一句 lint 默认库不含 `aggression-01`–`04`；把专用池丢进 `lintNoticingFixedLibrary` 仍绿；`aggression-01` 单独 lint 仍会因 `sounds like` / 「听起来」失败（证明是豁免不是改字）。**不代表**：安全审稿人已在风险接受页签名、12/5 开门已过。自动化：`noticingFixedLineLibrary.test.js`。 | — | — | — | 读 [书面风险接受](../audit/findings/2026-11-21/aggression-dedicated-pool-risk-acceptance.md) | 2026-11-21 |

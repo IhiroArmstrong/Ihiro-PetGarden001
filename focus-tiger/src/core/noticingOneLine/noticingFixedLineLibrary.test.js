@@ -9,16 +9,21 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { inspectModelOutput } from '../outputGate/outputGateRules.js';
+import { CONFIDE_CORPUS } from '../confide/confideCorpus.js';
 import { CONFIDE_ROUTE } from '../confide/confideRoutes.js';
 import {
   NOTICING_FIXED_LINES,
   NOTICING_HOLD_KIND,
   NOTICING_INVITE_KIND,
+  NOTICING_LINT_EXEMPT_LINE_IDS,
+  enBannedHits,
+  lintNoticingFixedLine,
   lintNoticingFixedLibrary,
   noticingFixedLineLocaleKey,
   noticingFixedLineText,
   pickNoticingFixedLine,
-  shouldUseNoticingFixedLine
+  shouldUseNoticingFixedLine,
+  zhBannedHits
 } from './noticingFixedLineLibrary.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -116,4 +121,26 @@ test('same-session exclude rotates IDs', () => {
     exclude.add(line.id);
   }
   assert.equal(new Set(ids).size, 12);
+});
+
+test('dedicated aggression pool is exempt from noticing banned-phrase lint', () => {
+  const pool = CONFIDE_CORPUS.filter(
+    (line) => line.route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
+  );
+  assert.deepEqual(
+    pool.map((line) => line.id).sort(),
+    [...NOTICING_LINT_EXEMPT_LINE_IDS].sort()
+  );
+  for (const line of pool) {
+    assert.equal(
+      NOTICING_FIXED_LINES.some((row) => row.id === line.id),
+      false
+    );
+  }
+  const anger = pool.find((line) => line.id === 'aggression-01');
+  assert.ok(enBannedHits(anger.en).includes('sounds like'));
+  assert.ok(zhBannedHits(anger.zh).includes('听起来'));
+  assert.ok(lintNoticingFixedLine(anger).length > 0);
+  assert.deepEqual(lintNoticingFixedLibrary(pool), []);
+  assert.deepEqual(lintNoticingFixedLibrary(), []);
 });
