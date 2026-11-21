@@ -1,7 +1,7 @@
 # LABEL_HINT_TIP_STANDARDS.md — 说明信号分层（方向锁）
 
 创建日期：2026-09-12  
-方向锁：2026-11-21（PO 书面：四层信号合理；乱在缺按控件总账 + 无机器拦截；同屏最多 1 个发现性脉冲）  
+方向锁：2026-11-21（PO 书面：四层信号合理；乱在缺按控件总账 + 无机器拦截；同屏最多 1 个发现性脉冲；L4 序主路径先于外围；触屏第一次按控件记）  
 状态：**方向锁**（实现切片见 [`task-briefs/task-entry-signal-ledger.md`](./task-briefs/task-entry-signal-ledger.md)；本文件是**唯一政策 SSOT**）  
 权威路径：`focus-tiger/docs/LABEL_HINT_TIP_STANDARDS.md`  
 账本（将改为机器生成）：[`LABEL_HINT_TIP_AUDIT.md`](./LABEL_HINT_TIP_AUDIT.md)  
@@ -18,8 +18,8 @@
 |---|---|---|
 | **1** | **全站 tip 一种皮肤** | 查询层只用倾听耳玻璃胶囊（浅底、随控件升起）。禁止再复制 Transition 深色小条；现存深条并入同一 token。 |
 | **2** | **死族删代码，不只空表** | **C 族** `.ft-hint-discovery-dot` / `HINT_DISCOVERY_DOT_HOSTS`：**删模块与绘制路径**，禁止留空表等人复活。**D 族** `.ft-home-sanctuary-nav-pulse`：导航功能关闭期**整体摘除**绘制；日后开闸必须进 hint **registry**（`triggerMode: click`），禁止再游离在 `HINTS_WIRING` 外（#1834 孤儿点教训）。 |
-| **3** | **触屏默认** | 图标入口：**点击即执行**；仅**第一次**贴边短提示约 **1.2s**。不可逆操作才允许「先 tip 再执行」。禁止把悬停当作触屏上的唯一说明。 |
-| **上限** | **同屏最多 1 个发现性脉冲** | 任意时刻可见的 mint 浮动点 + 行内 mint 合计 ≤ 1。改变现网 onboarding 节奏 → **B 类**，须按 Brief 开工，本文件只锁政策。朱红 `?` 警报 **不算**发现性脉冲。 |
+| **3** | **触屏默认** | 图标入口：**点击即执行**；**每个控件第一次**贴边短提示约 **1.2s**（按 `controlId` 写入既有 hints store，禁止全站只记一次）。不可逆操作才允许「先 tip 再执行」。禁止把悬停当作触屏上的唯一说明。 |
+| **上限** | **同屏最多 1 个发现性脉冲** | 任意时刻可见的 mint 浮动点 + 行内 mint 合计 ≤ 1。赢家按 Brief §8.1（How → Rise → 音符 → 时钟 → 热力图 → 地球 → `?`）。须**完成或冷落让位**（§四），禁止第一名卡住整队。改变现网 onboarding 节奏 → **B 类**。朱红 `?` 警报 **不算**发现性脉冲。 |
 
 四层信号本身**不砍**：可见 Label / 查询 tooltip / 发现性脉冲 / 一次性气泡。乱的根源是**没有按控件总账**、**没有机器拦截**。
 
@@ -31,7 +31,7 @@
 |---|---|---|---|
 | **可见文字 Label** | 永久说明用途，用户不必做任何动作 | 控件存在的全程 | 控件本身收起才消失 |
 | **悬停 / 查询 tooltip** | 用户已经看见入口，想确认「这是干什么的」 | 桌面悬停；触屏见 §五 | 指针离开 / 第一次短提示结束 |
-| **发现性脉冲点** | 让用户注意到「这里有还没看过的入口」 | 未读 / 未探索（`OnboardingHintsStore` 未 `done`）且通过同屏 1 点仲裁 | 看过或完成相关操作后按 tier 静止或移除 |
+| **发现性脉冲点** | 让用户注意到「这里有还没看过的入口」 | 未读 / 未探索（`OnboardingHintsStore` 未 `done`、未 `resting`）且通过同屏 1 点仲裁 | 完成相关操作后按 tier 移除；或冷落 3 次 Idle 后静止让位 |
 | **一次性气泡 / 幽灵句** | 动手前必须说一句（额头摸头、Recover 幽灵句） | 首次或会话内条件 | 点过 / 写入 seen 键 |
 
 同一控件默认：**最多一种发现性信号**（脉冲 **或** 一次性气泡，不同时）。查询 tooltip 可与脉冲并存，但**同句必须去重**（脉冲占用该句时摘 tooltip）。  
@@ -76,10 +76,12 @@
 ## 四、脉冲点（发现性）约定
 
 - **谁能画点**：只允许 `OnboardingHintsUI` + `syncSecondaryMenuHintDot` / `has-hint-mint`，且 hintId 在 registry、`triggerMode: click`。禁止 registry 之外的彩色脉冲 class。
-- **同屏上限**：可见发现性脉冲 **≤ 1**（浮动 badge 与行内 dot 合计）。仲裁：在屏、未 `done` 的 click hint 按 `HINTS_WIRING` 簇优先级取最高一条；菜单开着时仍遵守上限（禁止菜单内多行同时亮）。
+- **同屏上限**：可见发现性脉冲 **≤ 1**（浮动 badge 与行内 dot 合计）。菜单开着时仍遵守上限（禁止菜单内多行同时亮）。
+- **仲裁序**（政策锁；`HINTS_WIRING` 簇字母不是本序）：`how-shall-we-sit` → `rise-button` / `idle-after-session` → `ambient-soundscape` → `in-app-reminder` → `weekly-heatmap` → `language-preference` → `help-affordance`。未 `done`、未 `resting`、在屏、允许 mint 者取最先一条。
+- **让位**：点宿主完成 → `done` 出队；**或**同一赢家连续 **3 次**进入 Idle 为可见脉冲且宿主未点 → `resting` 出队（不是 `done`）。否则后面的 hint 永远不亮。
 - **Home 左球（Quick Start）**：不画 mint，只留 hover 残句（2026-08-11）。
 - **Focus HUD 金环 / 进度条 / 近日同坐**：不画浮动 mint，悬停宿主出 hint 文案（2026-08-15）。
-- **消失**：`simple` = 看过文案后静止弱化，相关操作完成后移除；`detailed` = 进详情才移除。悬停一次不得误标永久 done，除非 registry 已如此定义。
+- **消失**：`simple` = 看过文案后静止弱化，相关操作完成后移除；`detailed` = 进详情才移除。悬停一次不得误标永久 done，除非 registry 已如此定义。冷落静止见上条让位。
 - **禁止**为「看起来统一」给 Sit / 文字菜单行加 mint。
 - **死族**：C/D 见 §〇.2；附录普查只作考古。
 
@@ -87,17 +89,18 @@
 
 ## 五、触屏 fallback
 
-**已锁默认（§〇.3）：**图标入口点击执行 + 仅第一次 ~1.2s 贴边短提示。
+**已锁默认（§〇.3）：**图标入口点击执行 + **每个控件**第一次 ~1.2s 贴边短提示。
 
 1. 有清晰可见 Label → 触屏 **不必**再出 tip。
 2. 不可逆操作才允许「先 tip、再点执行」——须单独立项。
 3. **禁止**在触屏上把悬停当作唯一说明（与 `idleHomeCtaTip`「触屏不显示 hover tip」一致）。
+4. **第一次标记粒度**：按 `controlId` 各一次，存既有 hints store。点过地球仪，时钟与 ♪ 仍可出各自的第一次。禁止全站一个布尔。
 
 ---
 
 ## 六、入口信号账本（按控件一行）
 
-这是统一规划的抓手。真源：registry + DOM 扫描，**写入** [`LABEL_HINT_TIP_AUDIT.md`](./LABEL_HINT_TIP_AUDIT.md) 机器块（`docs:check`）。**不**新开第三份 SSOT。
+这是统一规划的抓手。真源：registry + 源码静态扫描，**写入** [`LABEL_HINT_TIP_AUDIT.md`](./LABEL_HINT_TIP_AUDIT.md) 机器块，由 **`docs:check` 静态闸**看守。**DOM 实扫（起浏览器）放 nightly**，禁止塞进每次 PR 的 `docs:check`。**不**新开第三份 SSOT。
 
 | 列 | 含义 |
 |---|---|
@@ -122,6 +125,7 @@
 
 - 禁止用途类 `.title =` / `setAttribute('title')`（白名单：`document.title`、测试读文本节点、`titleEl` / `__title`）。
 - 禁止 registry 之外出现新的彩色脉冲 class（`.onboarding-hint-badge` / `.ft-secondary-menu-hint-dot` / `has-hint-mint` 以外；C/D class 删除后亦禁回归）。
+- **同时**扫 CSS / 样式模块里名称含 `pulse` 的 `@keyframes` 与 `animation`，走**白名单**。只改 class 名不得绕过。
 
 建议命令（实现时落地，此处仅政策）：
 

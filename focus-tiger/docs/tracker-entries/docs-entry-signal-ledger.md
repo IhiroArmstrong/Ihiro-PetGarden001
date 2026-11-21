@@ -1,1 +1,1 @@
-| 说明信号方向锁 + 入口信号账本 Brief | 文档 | 待人工测试 | **不跑 App。** 打开 `docs/LABEL_HINT_TIP_STANDARDS.md` 文首「方向锁」与 §〇 四条拍板；打开 `docs/task-briefs/task-entry-signal-ledger.md`：L0 已写、L4 同屏 1 脉冲须点头才改代码。CENSUS 应为附录而非政策。本条验收的是文档方向锁，不代表 L4 已实现。 | — | — | — | 文档审阅 | 2026-11-21 |
+| 说明信号方向锁 + 入口信号账本 Brief | 文档 | 待人工测试 | **不跑 App。** 打开 `docs/LABEL_HINT_TIP_STANDARDS.md`：文首须为「方向锁」（不是草案）；§〇 触屏按控件第一次、§四 仲裁 How 先于音符。打开 `docs/task-briefs/task-entry-signal-ledger.md` §8：让位 + 按控件第一次。CENSUS 应为附录。本条验收的是文档方向锁，**不代表** L1/L4 已实现。 | — | — | — | 文档审阅 | 2026-11-21 |
