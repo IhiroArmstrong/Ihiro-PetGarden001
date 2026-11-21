@@ -15,7 +15,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -33,9 +34,11 @@ export class LocalPracticeDataPanelUI {
     this.handlers = handlers;
     this._open = false;
 
-    this.root = document.createElement('div');
-    this.root.id = 'local-practice-data-panel';
-    this.root.className = 'local-practice-data-panel';
+    this.root = createGlassCard({
+      id: 'local-practice-data-panel',
+      className: 'local-practice-data-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.dataset.testid = 'local-practice-data-panel';
     this.root.setAttribute('role', 'dialog');

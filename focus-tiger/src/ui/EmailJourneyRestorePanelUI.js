@@ -13,7 +13,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 import {
@@ -52,9 +53,11 @@ export class EmailJourneyRestorePanelUI {
     this._open = false;
     this._busy = false;
 
-    this.root = document.createElement('div');
-    this.root.id = 'email-journey-restore-panel';
-    this.root.className = 'email-journey-restore-panel';
+    this.root = createGlassCard({
+      id: 'email-journey-restore-panel',
+      className: 'email-journey-restore-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.dataset.testid = 'email-journey-restore-panel';
     this.root.setAttribute('role', 'dialog');

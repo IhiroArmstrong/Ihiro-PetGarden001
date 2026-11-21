@@ -14,7 +14,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -59,9 +60,11 @@ export class GroundExerciseChoiceUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'ground-exercise-choice';
-    this.root.className = 'ground-exercise-choice';
+    this.root = createGlassCard({
+      id: 'ground-exercise-choice',
+      className: 'ground-exercise-choice',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

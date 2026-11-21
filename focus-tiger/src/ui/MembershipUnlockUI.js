@@ -32,7 +32,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { getMonetizationFunnelStore } from '../core/monetizationIntentFunnel.js';
 import { resolveCheckoutErrorOverlay } from '../core/checkoutErrorOverlayPolicy.js';
@@ -81,9 +82,11 @@ export class MembershipUnlockUI {
       this.close();
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'yin-membership-card';
-    this.root.className = 'yin-membership';
+    this.root = createGlassCard({
+      id: 'yin-membership-card',
+      className: 'yin-membership',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

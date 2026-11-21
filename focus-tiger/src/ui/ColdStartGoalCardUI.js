@@ -20,7 +20,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -76,9 +77,11 @@ export class ColdStartGoalCardUI {
       onDismiss: () => this._dismissWithChoice('browse')
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'cold-start-goal-card';
-    this.root.className = 'cold-start-goal-card';
+    this.root = createGlassCard({
+      id: 'cold-start-goal-card',
+      className: 'cold-start-goal-card',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

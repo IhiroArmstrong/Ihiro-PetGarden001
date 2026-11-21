@@ -47,7 +47,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -92,9 +93,11 @@ export class HelpCenterUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'help-center';
-    this.root.className = 'help-center';
+    this.root = createGlassCard({
+      id: 'help-center',
+      className: 'help-center',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

@@ -23,7 +23,7 @@ test("Yin's Collections overlay backdrop contract", () => {
 });
 
 test("Yin's Collections panel is Journey-log glass family (z-index 18, 220ms fade, :active)", () => {
-  assert.match(src, /id = 'yin-coin-panel'/);
+  assert.match(src, /id: 'yin-coin-panel'/);
   assert.match(src, /z-index: \$\{Z\.GLASS_CARD\}/);
   assert.match(src, /const FADE_MS = OVERLAY_BACKDROP_FADE_MS/);
   assert.match(src, /\.yin-coin-panel__btn:active:not\(:disabled\)/);

@@ -55,7 +55,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   createOverlayBackdrop,
@@ -100,9 +101,11 @@ export class GrowthJourneyDetailUI {
       onDismiss: () => this.close()
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'growth-journey-detail';
-    this.root.className = 'growth-journey-detail';
+    this.root = createGlassCard({
+      id: 'growth-journey-detail',
+      className: 'growth-journey-detail',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

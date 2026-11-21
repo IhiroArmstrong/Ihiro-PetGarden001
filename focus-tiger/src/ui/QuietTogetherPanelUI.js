@@ -21,7 +21,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -39,9 +40,11 @@ export class QuietTogetherPanelUI {
     this.handlers = handlers;
     this._open = false;
 
-    this.root = document.createElement('div');
-    this.root.id = 'quiet-together-panel';
-    this.root.className = 'quiet-together-panel';
+    this.root = createGlassCard({
+      id: 'quiet-together-panel',
+      className: 'quiet-together-panel',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.dataset.testid = 'quiet-together-panel';
     this.root.setAttribute('role', 'dialog');

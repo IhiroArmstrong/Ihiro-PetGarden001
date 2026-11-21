@@ -23,7 +23,8 @@ import {
   GLASS_FILL,
   GLASS_FILL_STRONG,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import {
   OVERLAY_BACKDROP_FADE_MS,
@@ -62,9 +63,11 @@ export class NewsletterCaptureUI {
       outsideDismiss: OVERLAY_OUTSIDE_DISMISS.SB19_HOLD
     });
 
-    this.root = document.createElement('div');
-    this.root.id = 'newsletter-capture-card';
-    this.root.className = 'newsletter-capture';
+    this.root = createGlassCard({
+      id: 'newsletter-capture-card',
+      className: 'newsletter-capture',
+      deck: true
+    });
     this.root.hidden = true;
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');

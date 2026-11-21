@@ -44,7 +44,8 @@ import {
   GLASS_BORDER,
   GLASS_FILL,
   GLASS_RADIUS,
-  GLASS_SHADOW
+  GLASS_SHADOW,
+  createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
 
@@ -126,9 +127,11 @@ export class ReminderPreferenceUI {
       else this.handlers.onClose?.();
     });
 
-    this.panel = document.createElement('div');
-    this.panel.className = 'reminder-pref__panel';
-    this.panel.id = 'reminder-preference-panel';
+    this.panel = createGlassCard({
+      id: 'reminder-preference-panel',
+      className: 'reminder-pref__panel',
+      deck: true
+    });
     this.panel.hidden = true;
     this.panel.setAttribute('role', 'dialog');
     this.panel.setAttribute('aria-labelledby', 'reminder-preference-title');
