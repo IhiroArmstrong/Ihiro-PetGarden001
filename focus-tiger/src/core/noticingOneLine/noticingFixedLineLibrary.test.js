@@ -77,17 +77,25 @@ test('G3: every en/zh/ja line is allowed by the existing output-gate inspector',
   assert.deepEqual(hits, []);
 });
 
-test('non-crisis routes use the library; safety and ja-not-open do not', () => {
+test('non-crisis routes use the library; safety, care, aggression, ja-not-open do not', () => {
   assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.FALLBACK), true);
   assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.SAD), true);
   assert.equal(
     shouldUseNoticingFixedLine(CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS),
-    true
+    false
   );
+  assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.SAFETY_CARE), false);
   assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.SAFETY_REDIRECT), false);
   assert.equal(
     shouldUseNoticingFixedLine(CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN),
     false
+  );
+  assert.equal(
+    pickNoticingFixedLine({
+      route: CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS,
+      localDate: '2026-11-21'
+    }),
+    null
   );
 });
 
