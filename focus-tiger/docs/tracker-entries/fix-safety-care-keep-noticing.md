@@ -1,0 +1,1 @@
+| 中档关心不跟伤害他人一起退出觉察句库 | 仅单元测试覆盖 | 待人工测试 | **本条验收的是**：`shouldUseNoticingFixedLine(safety_care)` 为真（仍抽 A/B）；`aggression_toward_others` 仍为假（专用池）。**不代表**：中档关心已 live、已改占位关心句、识别率已补。自动化：`noticingFixedLineLibrary.test.js`。中档默认关，人只在打开 live 时抽 1 句对照。 | — | — | — | `?product=1&confide=1`（默认关中档） | 2026-11-21 |
