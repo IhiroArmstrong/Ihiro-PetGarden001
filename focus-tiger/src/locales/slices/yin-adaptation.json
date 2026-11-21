@@ -1,7 +1,7 @@
 {
   "en": {
-    "YIN_ADAPTATION_NOTEBOOK_TITLE": "What Yin keeps on this device",
-    "YIN_ADAPTATION_TOGGLE_LABEL": "Let Yin stay a little quieter when I ask",
+    "YIN_ADAPTATION_NOTEBOOK_TITLE": "Quiet adjustments on this device",
+    "YIN_ADAPTATION_TOGGLE_LABEL": "When I skip an invite, keep Yin quieter on this device",
     "YIN_ADAPTATION_REMEMBER_DURATION": "Last focus length you chose is still here.",
     "YIN_ADAPTATION_REMEMBER_CHECKIN": "Last end-of-sit check-in you tapped is still here.",
     "YIN_ADAPTATION_INVITE_PAUSE": "You said not now a few times. This kind of nudge rests for a few days.",
@@ -11,8 +11,8 @@
     "PRIVACY_SHEET_YIN_ADAPTATION": "On this device, Yin may pause a kind of focus nudge for a few days after you dismiss it several times, or suggest a slightly shorter default chip when you often mark tired at the end. Nothing is uploaded. You can turn this off or forget it in your growth journey."
   },
   "zh": {
-    "YIN_ADAPTATION_NOTEBOOK_TITLE": "这台机器上 Yin 记得的事",
-    "YIN_ADAPTATION_TOGGLE_LABEL": "让我说先不用时，Yin 更安静一点",
+    "YIN_ADAPTATION_NOTEBOOK_TITLE": "这台设备上的安静调整",
+    "YIN_ADAPTATION_TOGGLE_LABEL": "我说先不用时，让 Yin 在这台设备上更安静",
     "YIN_ADAPTATION_REMEMBER_DURATION": "你上次自己选过的专注时长还在。",
     "YIN_ADAPTATION_REMEMBER_CHECKIN": "你上次结束时点过的顺/乱/倦还在。",
     "YIN_ADAPTATION_INVITE_PAUSE": "你连续几次明确说先不用。这类提醒我先停几天。",
@@ -22,8 +22,8 @@
     "PRIVACY_SHEET_YIN_ADAPTATION": "本机可根据你怎么处理邀请、以及结束时的「倦」，让某一类提醒停几天，或把开表前的默认时长建议下调一档；不上传；可在成长旅程关掉或忘掉。"
   },
   "ja": {
-    "YIN_ADAPTATION_NOTEBOOK_TITLE": "この端末に残っていること",
-    "YIN_ADAPTATION_TOGGLE_LABEL": "「今はいい」と言ったとき、Yin を少し静かにする",
+    "YIN_ADAPTATION_NOTEBOOK_TITLE": "この端末での静かな調整",
+    "YIN_ADAPTATION_TOGGLE_LABEL": "「今はいい」と言ったとき、この端末の Yin を少し静かにする",
     "YIN_ADAPTATION_REMEMBER_DURATION": "前に選んだ集中の長さは、この端末に残っています。",
     "YIN_ADAPTATION_REMEMBER_CHECKIN": "前回の終わりに選んだ感じ（楽／落ち着かない／疲れ）は残っています。",
     "YIN_ADAPTATION_INVITE_PAUSE": "「今はいい」を続けたので、この種類の声かけは数日お休みします。",

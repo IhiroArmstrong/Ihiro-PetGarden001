@@ -13,7 +13,13 @@ import {
   inferLifetimeMinutesFromPracticeDays,
   buildBackfilledLotusPondValue
 } from './practiceBackupLotusBackfill.js';
-import { normalizeSnapshotStoresForApply } from './practiceBackupSync.js';
+import {
+  applyPracticeBackupCloudSnapshot,
+  normalizeSnapshotStoresForApply
+} from './practiceBackupSync.js';
+import {
+  GROWTH_JOURNEY_STAGE_FLOOR_KEY
+} from '../growthJourneyStage.js';
 import { validatePracticeImportPayload } from './practiceBackupLocalIo.js';
 import { parseLotusPondLifetimeMinutes } from '../LotusPondStore.js';
 import { importPracticeSnapshotAtomic } from './practiceBackupLocalIo.js';
@@ -85,5 +91,53 @@ describe('practiceBackupLotusBackfill', () => {
     assert.equal(result.ok, true);
     const lotus = JSON.parse(storage.getItem('focus-tiger.lotus-pond.v1') || 'null');
     assert.equal(lotus.lifetimeMinutes, 405);
+  });
+
+  it('cloud v1 restore without lotus backfills from practice-days', () => {
+    const storage = memStorage();
+    applyPracticeBackupCloudSnapshot(storage, {
+      schemaVersion: 1,
+      savedAt: '2026-11-20T00:00:00.000Z',
+      stores: {
+        'focus-tiger.journey-log.v1': { entries: [] },
+        'focus-tiger.practice-days.v1': {
+          days: [{ date: '2026-09-01', totalMinutes: 400 }]
+        },
+        'focus-tiger.milestone-glow.v1': null,
+        'focus-tiger.entitlement-ownership.v1': null,
+        'focus-tiger.ritual-completions.v1': null,
+        'focus-tiger.mustard-seed-seal.v1': null
+      }
+    });
+    const lotus = JSON.parse(storage.getItem('focus-tiger.lotus-pond.v1') || 'null');
+    assert.equal(lotus.lifetimeMinutes, 400);
+    assert.equal(lotus.scoreEligibleLifetimeMinutes, 400);
+  });
+
+  it('cloud v2 zero lotus still backfills and does not lower a larger local pond', () => {
+    const storage = memStorage({
+      'focus-tiger.lotus-pond.v1': JSON.stringify({
+        lifetimeMinutes: 900,
+        scoreEligibleLifetimeMinutes: 900
+      })
+    });
+    applyPracticeBackupCloudSnapshot(storage, {
+      schemaVersion: 2,
+      savedAt: '2026-11-20T00:00:00.000Z',
+      stores: {
+        'focus-tiger.journey-log.v1': { entries: [] },
+        'focus-tiger.practice-days.v1': {
+          days: [{ date: '2026-09-01', totalMinutes: 400 }]
+        },
+        'focus-tiger.milestone-glow.v1': null,
+        'focus-tiger.entitlement-ownership.v1': null,
+        'focus-tiger.ritual-completions.v1': null,
+        'focus-tiger.mustard-seed-seal.v1': null,
+        'focus-tiger.lotus-pond.v1': { lifetimeMinutes: 0 },
+        [GROWTH_JOURNEY_STAGE_FLOOR_KEY]: null
+      }
+    });
+    const lotus = JSON.parse(storage.getItem('focus-tiger.lotus-pond.v1') || 'null');
+    assert.equal(lotus.lifetimeMinutes, 900);
   });
 });

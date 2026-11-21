@@ -585,9 +585,19 @@ export function writePracticeBackupCloudStoresRaw(storage, snapshot) {
   if (!storage) return { wrote: 0, skipped: 0 };
   let wrote = 0;
   let skipped = 0;
-  const keys =
-    practiceBackupCloudStoreKeysForSchemaVersion(snapshot.schemaVersion) ??
-    PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS;
+  const keys = [
+    ...(practiceBackupCloudStoreKeysForSchemaVersion(snapshot.schemaVersion) ??
+      PRACTICE_BACKUP_CLOUD_V2_STORE_KEYS)
+  ];
+  const lotusKey = 'focus-tiger.lotus-pond.v1';
+  if (
+    snapshot.stores &&
+    snapshot.stores[lotusKey] &&
+    typeof snapshot.stores[lotusKey] === 'object' &&
+    !keys.includes(lotusKey)
+  ) {
+    keys.push(lotusKey);
+  }
   for (const key of keys) {
     let val = snapshot.stores[key];
     try {

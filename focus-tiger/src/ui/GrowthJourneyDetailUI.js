@@ -14,6 +14,7 @@ import { readJourneyLog } from '../core/journeyLogGate.js';
 import {
   getPracticePaperSentence,
   getSitBreathFacts,
+  sitBreathEmptyLocaleKey,
   isPracticePaperHidden,
   setPracticePaperHidden
 } from '../core/practicePaperFacts.js';
@@ -132,6 +133,10 @@ export class GrowthJourneyDetailUI {
     this.hereEl.className = 'growth-journey-detail__here';
     this.hereEl.dataset.testid = 'growth-journey-detail-here';
 
+    this.trackHintEl = document.createElement('p');
+    this.trackHintEl.className = 'growth-journey-detail__track-hint';
+    this.trackHintEl.dataset.testid = 'growth-journey-detail-track-hint';
+
     this.nextEl = document.createElement('p');
     this.nextEl.className = 'growth-journey-detail__next';
     this.nextEl.dataset.testid = 'growth-journey-detail-next';
@@ -177,6 +182,7 @@ export class GrowthJourneyDetailUI {
       this.titleEl,
       this.track,
       this.hereEl,
+      this.trackHintEl,
       this.nextEl,
       this.lotusRow,
       this.lifetimeEl,
@@ -264,6 +270,7 @@ export class GrowthJourneyDetailUI {
     this.titleEl.textContent = t('GROWTH_JOURNEY_DETAIL_TITLE');
     this.closeBtn.textContent = t('GROWTH_JOURNEY_CLOSE');
     this.hereEl.textContent = model.here;
+    this.trackHintEl.textContent = t('GROWTH_JOURNEY_TRACK_HINT');
     this.nextEl.textContent = model.nextStep;
     this.nextEl.hidden = model.nextStep === '';
     this.lifetimeEl.textContent = model.lifetimeText;
@@ -596,7 +603,7 @@ export class GrowthJourneyDetailUI {
 
     if (facts.uniqueDays === 0) {
       const empty = document.createElement('p');
-      empty.textContent = t('PRACTICE_PAPER_CARD_EMPTY');
+      empty.textContent = t(sitBreathEmptyLocaleKey(facts));
       factsEl.appendChild(empty);
     } else if (facts.incomplete) {
       const incomplete = document.createElement('p');
@@ -754,11 +761,16 @@ export class GrowthJourneyDetailUI {
         transform: translateX(-100%);
       }
       .growth-journey-detail__here,
+      .growth-journey-detail__track-hint,
       .growth-journey-detail__next,
       .growth-journey-detail__lifetime {
         margin: 0 0 8px;
         font-size: 0.88rem;
         line-height: 1.4;
+      }
+      .growth-journey-detail__track-hint {
+        font-size: 0.78rem;
+        opacity: 0.72;
       }
       .growth-journey-detail__next {
         opacity: 0.84;

@@ -5,8 +5,9 @@
 
 /**
  * Practice Paper facts — rolling 7 local calendar days.
- * Rhythm sentences read practice-days keys. The Sit & Breath card reads
- * every Journey Log row. No arrive split. Does not write ledgers.
+ * Rhythm sentences read practice-days keys. The Sit & Breath card counts
+ * Journey Log rows in a rolling 7 local days (older days only change empty copy).
+ * No arrive split. Does not write ledgers.
  */
 
 import { shiftLocalDateKey } from './PracticeDaysStore.js';
@@ -161,21 +162,25 @@ function normalizeLogEntries(journeyLog) {
  * @returns {{
  *   uniqueDays: number,
  *   lastMinutes: number | null,
- *   incomplete: boolean
+ *   incomplete: boolean,
+ *   olderDays: number
  * }}
  */
 export function getSitBreathFacts(journeyLog, todayKey) {
   const today = DATE_KEY_RE.test(todayKey) ? todayKey : '';
   const entries = normalizeLogEntries(journeyLog);
   if (!today || entries.length === 0) {
-    return { uniqueDays: 0, lastMinutes: null, incomplete: false };
+    return { uniqueDays: 0, lastMinutes: null, incomplete: false, olderDays: 0 };
   }
 
   const windowA = rollingWindowKeys(today, 0, PRACTICE_PAPER_WINDOW_DAYS);
   const days = new Set();
+  const older = new Set();
   for (const row of entries) {
     const key = journeyLogDateKey(row.at);
+    if (!DATE_KEY_RE.test(key)) continue;
     if (windowA.has(key)) days.add(key);
+    else older.add(key);
   }
 
   const newest = entries[entries.length - 1];
@@ -191,8 +196,20 @@ export function getSitBreathFacts(journeyLog, todayKey) {
   return {
     uniqueDays: days.size,
     lastMinutes: days.size === 0 ? null : lastMinutes,
-    incomplete
+    incomplete,
+    olderDays: older.size
   };
+}
+
+/**
+ * @param {{ uniqueDays: number, olderDays?: number }} facts
+ * @returns {string}
+ */
+export function sitBreathEmptyLocaleKey(facts) {
+  if (facts && Number(facts.olderDays) > 0) {
+    return 'PRACTICE_PAPER_CARD_EMPTY_OLDER';
+  }
+  return 'PRACTICE_PAPER_CARD_EMPTY';
 }
 
 /**

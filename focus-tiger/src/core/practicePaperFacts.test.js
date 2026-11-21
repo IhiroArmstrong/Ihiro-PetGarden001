@@ -18,7 +18,8 @@ import {
   getSitBreathFacts,
   isPracticePaperHidden,
   localCalendarDayDiff,
-  setPracticePaperHidden
+  setPracticePaperHidden,
+  sitBreathEmptyLocaleKey
 } from './practicePaperFacts.js';
 
 const TODAY = '2026-10-19';
@@ -127,8 +128,13 @@ describe('practice paper Sit & Breath facts', () => {
     assert.deepEqual(getSitBreathFacts({ entries: [] }, TODAY), {
       uniqueDays: 0,
       lastMinutes: null,
-      incomplete: false
+      incomplete: false,
+      olderDays: 0
     });
+    assert.equal(
+      sitBreathEmptyLocaleKey(getSitBreathFacts({ entries: [] }, TODAY)),
+      'PRACTICE_PAPER_CARD_EMPTY'
+    );
   });
 
   it('counts unique local days, not rows', () => {
@@ -163,6 +169,8 @@ describe('practice paper Sit & Breath facts', () => {
     );
     assert.equal(facts.uniqueDays, 0);
     assert.equal(facts.lastMinutes, null);
+    assert.equal(facts.olderDays, 1);
+    assert.equal(sitBreathEmptyLocaleKey(facts), 'PRACTICE_PAPER_CARD_EMPTY_OLDER');
   });
 
   it('covers seven distinct days in the window', () => {
@@ -248,7 +256,8 @@ describe('practice paper local calendar windows', () => {
     assert.deepEqual(getSitBreathFacts({ entries: [row] }, '2026-03-08'), {
       uniqueDays: 0,
       lastMinutes: null,
-      incomplete: false
+      incomplete: false,
+      olderDays: 1
     });
   });
 

@@ -1,0 +1,11 @@
+{
+  "en": {
+    "GROWTH_JOURNEY_TRACK_HINT": "This line follows sitting minutes on this device. It is not how Yin looks."
+  },
+  "zh": {
+    "GROWTH_JOURNEY_TRACK_HINT": "这条线跟的是这台设备上坐过的分钟，不是寅现在长什么样。"
+  },
+  "ja": {
+    "GROWTH_JOURNEY_TRACK_HINT": "この線は、この端末で座った分数に沿います。寅の見た目の変化ではありません。"
+  }
+}
