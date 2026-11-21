@@ -1,6 +1,6 @@
 # Task Brief · T73 记住—响应读层（账本 + 唯一读门）
 
-> **状态**：**已点头**（2026-11-01 PO：高亮跟常用；补排除沿用上次、倦优先于常用、常用加时间窗口；**并列不设常用**）。**第一刀已合** #1530。**第二刀**规格 [`task-remember-respond-second-knife.md`](./task-remember-respond-second-knife.md)（2026-11-02 已点头）。  
+> **状态**：**已点头**（2026-11-01）。**第一刀已合** #1530。**第二刀已合** #1539（修正 #1541）· 规格 [`task-remember-respond-second-knife.md`](./task-remember-respond-second-knife.md)。**T73 运行时两刀均已合 develop**。  
 > **代号**：**T73**（人话：先把散落的选择收成一本，再谈更懂你）。**不是 T69**（T69 = 桌面习惯文献对照，已占用）。  
 > **槽位**：可选 · 状态 **排队中**。**不是** P1。不插队 **T68** 发画。  
 > **类**：盘点 + 本 Brief = **A 类**。点头后运行时第一刀 = **B 类**。  
@@ -181,6 +181,6 @@ T59「还是上次那个」**保留**，仍只陈述上次偏好是否存在，*
 ## 开工闸
 
 - 口令「按 T73 Brief 开工第一刀」= **已合 #1530**，勿再开同内容旁支。  
-- 口令「按 T73 Brief 开工第二刀」= [`task-remember-respond-second-knife.md`](./task-remember-respond-second-knife.md)；**新 Chat** 写 `src/`。口令「按 T69 Brief 开工」**不执行**（T69 是桌面习惯）。  
+- 口令「按 T73 Brief 开工第二刀」= **不执行**（#1539 已合）；规格只读 [`task-remember-respond-second-knife.md`](./task-remember-respond-second-knife.md)。口令「按 T69 Brief 开工」**不执行**（T69 是桌面习惯）。  
 - 须已合：T58、T59、T60、T67 接合账、T73 第一刀。  
 - 建议模型：Grok 4.6 / Medium / Fast OFF。

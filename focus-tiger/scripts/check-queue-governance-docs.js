@@ -101,6 +101,7 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t72-co-practice-ambient-field.md',
   'focus-tiger/docs/task-briefs/task-remember-respond-read-layer.md',
   'focus-tiger/docs/task-entries/t73-remember-respond-read-layer.md',
+  'focus-tiger/docs/task-entries/t73-remember-respond-second-knife.md',
   'focus-tiger/docs/tracker-entries/docs-t73-remember-respond-read-layer.md',
   'focus-tiger/docs/task-briefs/task-remember-respond-second-knife.md',
   'focus-tiger/docs/task-briefs/task-constrained-generation-pregen-pool.md',

@@ -549,17 +549,76 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 
 Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。本支把该路由（及 `safety_care`）从 noticing overlay 拿掉，仍用现网 aggression 专用句。不是扩关键词、不是 T94 第 4 刀。
 
+### `aggression-pool-lint-exempt` · note · 旁支 · 专用四句豁免觉察禁词 lint + 书面风险接受 · 2026-11-21
+
+不改四句正文。`lintNoticingFixedLibrary` 跳过 `aggression-01`–`04`。夹具仍另 Chat。
+
+### `collections-glass-fill-readable` · feature · 实现旁支进行中 · 2026-11-21
+
+收藏屏工厂卡根用加厚暖米（`strong: true`），艺术收藏改为内层滚动。对照已锁 Brief [`task-yin-collections-readable-card.md`](../task-briefs/task-yin-collections-readable-card.md)。不是一键全开声音，不是蓝点盘点。
+
+### `entry-signal-ledger` · feature · L1+L3 账本生成器+静态 lint 开工（#1844 已合 L0；L4 另会话） · 2026-11-21
+
+说明信号统一规划：政策唯一 SSOT [`LABEL_HINT_TIP_STANDARDS.md`](../LABEL_HINT_TIP_STANDARDS.md)；实现切片 [`task-briefs/task-entry-signal-ledger.md`](../task-briefs/task-entry-signal-ledger.md)。
+
+- L0 本刀：方向锁 + Brief，无运行时
+- L4 仲裁已拍：How → Rise → 音符 → 时钟 → 热力图 → 地球 → `?`；完成或冷落 3 次 Idle 让位
+- 触屏第一次按 `controlId` 各记一次
+- L1 `docs:check` 只静态；DOM 实扫 nightly
+- L3 class + `@keyframes`/`animation` 白名单
+- **禁止** L1/L3 与 L4 绑一刀
+
+**不是** #1840 普查重做。CENSUS 降为 STANDARDS 附录。口令「大任务 入口信号账本」。
+
 ### `glass-card-factory-census` · feature · 进行中 · 2026-11-21
 
 11/20 手测家族：叠层卡须走 `createGlassCard`。本刀引导冥想换工厂 + 扫描豁免只减不增。不做 CSS `--z-*`。不是 A15–A17。
+
+### `glass-card-factory-remaining` · feature · 进行中 · 2026-11-21
+
+11/20 手测家族下一刀：其余 26 张叠层旧卡收进 `createGlassCard`。豁免表清空（只减不增）。Support 大卡仍 keep-stylesheet-z。不是 A15–A17。
+
+### `leave-trace-three-state` · feature · 实现中 · 2026-11-21
+
+留痕选句失败按云端原因显示句子；挂起见 pending；失败不关窗。
 
 ### `noticing-nf02-aggression-pool-audit` · note · 只读核对已记 · NF-02 规格改为伤害他人路由 · 夹具未写 · 未改 src · 2026-11-21
 
 发布路径下 aggression 可见回复来自通用 A/B，不是专用池。NF-01 仍必须 T0。夹具另开 Chat，且须先有恢复专用池 Brief。
 
+### `noticing-open-gate-12-05-materials` · note · 12/5 工作纸已写 · 未签发 · 专用池一行待人签 · 2026-11-21
+
+提前备好 12 月 5 日四闸勾选纸与专用池四句待签表。不是当天已绿，不改 `src/`，不代签。
+
+### `noticing-open-gate-briefs` · feature · G1–G4 证据已合 · 专用池 #1828 · 夹具 #1842 · 12/5 工作纸待人勾 · 2026-11-21
+
+觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审 + 独立安全审已书面完成（G4 两份齐）。2026-11-20：四闸红记残余、**不因红藏入口**（Route X 第一份包入口保持可达）。G1–G3 绿/红仍各看闸与 CI。不是打开自由生成，不新开 T 号。
+
+### `noticing-open-gate-nf-fixtures` · feature · 旁支实现中 · 10 条仓内夹具 + 单测 · 2026-11-21
+
+开门门禁 v2 §5：NF-01–NF-10 自编短句入库。不断言识别率，不调 0.78。NF-02 走伤害他人专用池。不是改句库、不是 12/5 签发。
+
+### `noticing-post-merge-truth` · note · 文档对齐 #1828/#1836/#1837/#1842/#1843 · 无 src · 2026-11-21
+
+把门禁页、核对记录、恢复池 Brief 从「尚未恢复 / 夹具暂缓」改成已合事实。不是新运行时。口令「再开恢复池」不执行。
+
 ### `restore-aggression-dedicated-pool` · note · Brief 已起草 · 待 PO 点头 · 未改 src · 2026-11-21
 
 恢复伤害他人专用接住句。规格 `task-restore-aggression-dedicated-pool.md`。夹具另 Chat。
+
+### `safety-care-keep-noticing` · feature · 旁支实现中 · 裁掉 #1828 对中档关心的 overlay 改动 · 2026-11-21
+
+对照 Brief 第 3 节非目标：`safety_care` 仍走觉察一句 overlay。伤害他人专用池保留。不是扩关键词、不是改四句正文、不是夹具。
+
+### `site-discovery-dot-census` · feature · 盘点已写（A 类；无运行时） · 2026-11-21
+
+11/20 手测项 **#11（底栏其它蓝脉冲 · 全站蓝点盘点没收尾）** 文档收口。
+
+- SSOT：[`SITE_DISCOVERY_DOT_CENSUS.md`](../SITE_DISCOVERY_DOT_CENSUS.md)
+- 代码参照（只读盘点）：`hintDiscoveryDots.js` · `homeSanctuaryNavGate.js` · `homeSanctuaryNavPulseChrome.js`（#1834）· `OnboardingHintsUI.syncDiscoveryDots`
+- **不是** hint 功能 PR；**不是** 重开栖居导航（`HOME_SANCTUARY_NAV_ENABLED` 仍 false）
+- 口令「按全站蓝点盘点再盘一遍」：除非 `src/` 圆点面变，否则勿重复同内容旁支
+- **2026-11-21**：普查降为 STANDARDS 附录；统一规划改走 `entry-signal-ledger`
 
 ### `soundscape-tracks-above-upload` · feature · 旁支实现中 · 曲目列表在上传钮之上 · 2026-11-21
 
@@ -569,9 +628,21 @@ Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。
 
 T100 在觉察一句路线下按开门门禁 v2 §4 收口：G2 #1807、G3 证据 #1809、G1 `release-no-generate`；不再开新红队轮次。**不是**闸实验室 K=3 已验证、**不是** V-02 已补。证据 [`noticing-open-gate-g2-g3-evidence.md`](../audit/findings/2026-11-20/noticing-open-gate-g2-g3-evidence.md)。
 
+### `t73-remember-respond-read-layer` · note · T73 两刀已合 #1530/#1539（#1541）· 第二刀见 t73-remember-respond-second-knife · 2026-11-21
+
+记住—响应读层：盘点 + 父 Brief 已点头。两刀 #1530/#1539 已合 develop。**不是** T58 重做、**不是** T69。
+
+### `t73-remember-respond-second-knife` · feature · 已合 #1539 · 修正 #1541 · T73 第二刀运行时 · 2026-11-21
+
+记住—响应第二刀：旅程小本子说出所见 + 要/不要。复用 T62 晚间槽。点不要则跳过常用高亮。勿再开同内容旁支。**不是** T54、**不是** T74。
+
 ### `t95-electron-shell-upgrade` · feature · 立即做 · P1 · #1711 已合 develop（45.3.1）· 剩桶/公证/壳回归 · 2026-11-21
 
 T95 电脑壳升级 + 更新通道。发包装日 2026-12-08。升壳合入不晚于 2026-12-01，否则 12 月 8 日整日顺延。目标大版本 45。GitHub 当天稳定标签是 45.3.2；npm 没有该版本，可安装钉是 45.3.1，不升 46。最低 macOS 13。对客根地址 `https://updates.twinsology.com/`；测试前缀 `/prep/`（`FT_UPDATE_FEED_URL`）。存储桶未建；公证未做过。原生库加载失败时，电脑上的倾诉语义分和短生成一起不可用，走现有语料退路。不改倾诉发送链。
+
+### `where-you-are-restore-copy` · feature · 实现中 · 2026-11-21
+
+云端练习备份恢复补莲花分钟（与本地导入同一回填）。Where you are 补充轨迹说明、晚间勾选文案、Sit & Breath 7 天空态。
 
 ### `z-index-css-tokens` · feature · 进行中 · 2026-11-21
 
@@ -624,10 +695,6 @@ PO 2026-11-19：取消「说不清」；高危不另造分类器；接住/邀坐
 ### `noticing-one-line-rename` · feature · 改名 Thought Drop / 觉察一句 · 生成不进气泡 · 2026-11-19
 
 第三步：可见名英文 Thought Drop、中文觉察一句；副标一次一句；桌面 generate 不进用户气泡。代码不删。不是分离试验、不是 R2L-02。
-
-### `noticing-open-gate-briefs` · feature · 附录 v0.3 · PO 语气已审 · G4 安全审已过 · 永不藏入口 2026-11-20 · G1–G3 各看闸 · 未改 src · 2026-11-19
-
-觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审 + 独立安全审已书面完成（G4 两份齐）。2026-11-20：四闸红记残余、**不因红藏入口**（Route X 第一份包入口保持可达）。G1–G3 绿/红仍各看闸与 CI。不是打开自由生成，不新开 T 号。
 
 ### `pro-addon-checkout-restore` · feature · 搁置 · PO 2026-11-19 关闭自由生成，暂停 Pro / 陪伴加购新结账 · 2026-11-19
 
@@ -985,14 +1052,6 @@ T86 官网数据字典、伦理审查、差分隐私后置。口令按 T86 Brief
 ### `presence-field-v0` · feature · Brief 已点头 · 实现中 · 旁支 feature/presence-field-v0 · 2026-11-02
 
 智能场 v0（同坐耦合场）。T 号交治理会话登记；本片不用自编 T 号。PO 已点头并补：最短 scatter + r 涌现进 lock；失败回弹无场单测；PR 附 375/768/宽屏截图。
-
-### `t73-remember-respond-read-layer` · note · T73 第一刀已合 #1530 · 第二刀见 t73-remember-respond-second-knife · 2026-11-02
-
-记住—响应读层：盘点 + 父 Brief 已点头。第一刀读门已合。**不是** T58 重做、**不是** T69。
-
-### `t73-remember-respond-second-knife` · feature · 本支 feature/t73-remember-respond-second-knife · T73 第二刀运行时 · 2026-11-02
-
-记住—响应第二刀：旅程小本子说出所见 + 要/不要。复用 T62 晚间槽。点不要则跳过常用高亮。不改 T58 数字。**不是** T54、**不是** T74。
 
 ### `t74-constrained-generation-pregen-pool` · feature · 本支 docs/t73-t74-t75-governance · T74 Brief 待点头 · 不得写 src · 2026-11-02
 
