@@ -442,9 +442,19 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     zIndexFloor: bodyMin(),
     mount: 'body',
     mutationFeedback: mutationStates({
+      pending: Object.freeze({
+        mode: 'token',
+        tokens: Object.freeze([
+          'FOCUS_CIRCLE_WITNESS_SUBMIT_PENDING',
+          'aria-busy'
+        ])
+      }),
       fail: Object.freeze({
         mode: 'token',
-        tokens: Object.freeze(['FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR'])
+        tokens: Object.freeze([
+          'FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR',
+          'witnessSubmitErrorLocaleKey'
+        ])
       })
     }),
     e2eOverlap: GAP,
