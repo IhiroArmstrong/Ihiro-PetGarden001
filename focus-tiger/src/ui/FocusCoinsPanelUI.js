@@ -115,6 +115,7 @@ export class FocusCoinsPanelUI {
     this.root = createGlassCard({
       id: 'yin-coin-panel',
       className: 'yin-coin-panel',
+      strong: true,
       deck: true
     });
     this.root.hidden = true;
