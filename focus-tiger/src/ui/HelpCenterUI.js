@@ -435,6 +435,11 @@ export class HelpCenterUI {
     this._askResultArticleIds = result.articleIds;
     this._askSearching = false;
     this._syncAskStatus();
+    const firstId = result.articleIds[0];
+    if (firstId) {
+      this._openArticle(firstId, { speak: true });
+      return;
+    }
     this._renderAskResults(result.empty);
     this._speakClosestAskAnswer({
       articleIds: result.articleIds,

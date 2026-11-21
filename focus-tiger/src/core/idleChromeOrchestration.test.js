@@ -771,6 +771,19 @@ describe('dispatchSecondaryChromeProxy', () => {
     assert.deepEqual(calls, ['clear', 'close', 'honesty']);
   });
 
+  it('closes Idle chrome before opening journey log', () => {
+    const calls = [];
+    const result = dispatchSecondaryChromeProxy('journey-log', {
+      handlers: {
+        onJourneyLog: () => calls.push('journey')
+      },
+      clearStage: () => calls.push('clear'),
+      close: () => calls.push('close')
+    });
+    assert.equal(result, 'invoked');
+    assert.deepEqual(calls, ['clear', 'close', 'journey']);
+  });
+
   it('routes locked ritual rows to membership and still blocks static rows', () => {
     const calls = [];
     assert.equal(

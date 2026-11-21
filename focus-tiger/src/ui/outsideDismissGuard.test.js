@@ -81,6 +81,19 @@ describe('shouldIgnoreOutsideDismissTarget', () => {
       }),
       true
     );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) => (sel === '#yin-personal-memory' ? {} : null)
+      }),
+      true
+    );
+    assert.equal(
+      shouldIgnoreOutsideDismissTarget({
+        closest: (sel) =>
+          sel === '[data-testid="confide-to-yin-memory-list-link"]' ? {} : null
+      }),
+      true
+    );
     assert.equal(shouldIgnoreOutsideDismissTarget(blank), false);
     assert.equal(shouldIgnoreOutsideDismissTarget(null), false);
   });

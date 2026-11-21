@@ -34,6 +34,8 @@ export function shouldIgnoreOutsideDismissTarget(target) {
   if (el.closest('#ground-exercise-choice')) return true;
   if (el.closest('#five-moments-compass')) return true;
   if (el.closest('#journey-log')) return true;
+  if (el.closest('#yin-personal-memory')) return true;
+  if (el.closest('[data-testid="confide-to-yin-memory-list-link"]')) return true;
   if (el.closest('#yin-coin-panel')) return true;
   if (el.closest('#art-collection-panel')) return true;
   if (el.closest('#moment-whisper')) return true;

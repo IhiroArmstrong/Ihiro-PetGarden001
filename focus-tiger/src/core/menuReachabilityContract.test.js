@@ -79,6 +79,11 @@ describe('menuReachabilityContract', () => {
     }
   });
 
+  it('journey log result requires the Idle menu to hide', () => {
+    assert.equal(MENU_REACHABILITY['journey-log'].menuMustHide, true);
+    assert.equal(MENU_REACHABILITY['journey-log'].resultSelector, '#journey-log');
+  });
+
   it('every open-panel mapping has a result selector', () => {
     for (const [proxy, contract] of Object.entries(MENU_REACHABILITY)) {
       if (contract.kind === 'open-panel') {

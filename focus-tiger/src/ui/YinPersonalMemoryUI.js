@@ -47,6 +47,8 @@ export class YinPersonalMemoryUI {
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._open = false;
+    /** Ignore the same pointerdown that opened the panel from Thought Drop. */
+    this._ignoreOutsideUntil = 0;
     /** @type {import('../core/yinPersonalMemory/yinPersonalMemorySchema.js').YinMemoryEntry[]} */
     this._displayEntries = [];
     this._forgetting = new Set();
@@ -142,8 +144,14 @@ export class YinPersonalMemoryUI {
 
     this._onDocPointer = (event) => {
       if (!this._open) return;
+      if (Date.now() < this._ignoreOutsideUntil) return;
       const target = /** @type {Node} */ (event.target);
       if (this.root.contains(target)) return;
+      const el =
+        target && typeof /** @type {Element} */ (target).closest === 'function'
+          ? /** @type {Element} */ (target)
+          : null;
+      if (el?.closest('[data-testid="confide-to-yin-memory-list-link"]')) return;
       this.close();
     };
     document.addEventListener('pointerdown', this._onDocPointer, true);
@@ -167,6 +175,7 @@ export class YinPersonalMemoryUI {
     if (!hasYinPersonalMemoryBridge()) return;
     if (this._open) return;
     this._open = true;
+    this._ignoreOutsideUntil = Date.now() + 400;
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');

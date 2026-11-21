@@ -5,7 +5,8 @@
 
 /**
  * Dedicated speak channel for script-guided meditation.
- * Independent of practice-announcement cue dedupe and the Voice announcements toggle.
+ * Independent of practice-announcement cue *dedupe*, but must honor the
+ * Voice announcements / 朗读练习引导 master switch (audio consumer census).
  */
 
 import {
@@ -13,6 +14,7 @@ import {
   speakSystemTts,
   stopSystemTts
 } from './systemTtsBridge.js';
+import { isSystemTtsAnnouncementsEnabled } from './systemTtsPreference.js';
 
 export const GUIDED_MEDITATION_SPEECH_RATE = 0.75;
 
@@ -33,12 +35,14 @@ export function canSpeakGuidedMeditation(opts = {}) {
  *   locale?: string,
  *   globalObj?: object,
  *   onFinished?: () => void,
- *   widthPx?: number
+ *   widthPx?: number,
+ *   storage?: Storage | null
  * }} payload
  * @returns {boolean} true when a speak was dispatched
  */
 export function speakGuidedMeditationSentence(payload = {}) {
   if (!canSpeakGuidedMeditation(payload)) return false;
+  if (!isSystemTtsAnnouncementsEnabled(payload.storage)) return false;
   const body = String(payload.text || '').trim();
   if (!body) return false;
   return speakSystemTts({
