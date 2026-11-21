@@ -81,7 +81,9 @@ export const RULE_AUTHORITY_SCAN_FILES = [
   'focus-tiger/docs/COMPANION_CONTRACT.md',
   'focus-tiger/docs/companion-contract-inventory.md',
   'focus-tiger/docs/INFRA_SNAPSHOT.md',
-  'focus-tiger/docs/ENV_CONFIG.md'
+  'focus-tiger/docs/ENV_CONFIG.md',
+  '.cursor/rules/task-preflight.mdc',
+  'AGENTS.md'
 ];
 
 /**
@@ -310,6 +312,44 @@ export const RULE_AUTHORITY_TOPICS = [
         id: 'brief-next-step-as-truth',
         pattern: /(?:无需|不必|不用)(?:先)?查(?:有没有 )?PR/,
         note: '禁止主张可跳过 gh 查 PR'
+      }
+    ]
+  },
+  {
+    id: 'git-task-preflight',
+    title: '任务开工预检：git 是唯一真相（脚本 + 同一轮修文档 + CI）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '任务开工预检：git 是唯一真相',
+    ssotMustContain: [
+      /git-task-preflight/,
+      /scripts\/task-preflight\.sh/,
+      /唯一真相/,
+      /可能已过期的缓存/,
+      /task-doc-sync/,
+      /待你下口令再 sync/
+    ],
+    topicSignals: [
+      /git-task-preflight/,
+      /task-preflight/,
+      /task-doc-sync/
+    ],
+    mustCite: [/WORKFLOW\.md|task-preflight\.mdc/],
+    restatementFingerprints: [
+      /scripts\/task-preflight\.sh/,
+      /可能已过期的缓存/,
+      /task-doc-sync/
+    ],
+    restatementThreshold: 3,
+    restatementExemptFiles: [
+      '.cursor/rules/task-preflight.mdc',
+      'AGENTS.md',
+      '.github/PULL_REQUEST_TEMPLATE.md'
+    ],
+    forbiddenOutsideSsot: [
+      {
+        id: 'glossary-as-truth',
+        pattern: /仅凭.{0,12}(?:GLOSSARY|术语表|队列文档).{0,12}开工/,
+        note: '禁止主张只看术语表即可开工'
       }
     ]
   },

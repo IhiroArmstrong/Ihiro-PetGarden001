@@ -1,0 +1,66 @@
+---
+description: 收到任何「按 Tn 开工 / 第二刀 / 继续做 Tn」类口令时，必须先做 git 预检；git 是唯一真相
+alwaysApply: true
+---
+
+# 任务开工预检规则（Task Preflight）
+
+> **条文 SSOT**：[`WORKFLOW.md`](../../WORKFLOW.md)「任务开工预检：git 是唯一真相」。  
+> 索引：`RULES_INDEX.md` → `git-task-preflight`。脚本：`scripts/task-preflight.sh`。CI：`task-doc-sync`。  
+> 与 `git-pr-next-step-gate` 互补：那条查有没有 PR；本条禁止把文档当真相，并强制同一轮修文档。
+
+## 0. 总原则
+**git / GitHub 的合并记录是任务状态的唯一真相。**
+治理文档（`focus-tiger/docs/GLOSSARY.md`、`SCHEDULING_GLOSSARY.md`、`TASKS.md`、`TEST_TRACKER.md`、队列文档、口令表等）里的
+「待做 / 立即做 / Brief 已点头 / 进行中」只是**可能已过期的缓存**。
+文档与 git 冲突时，一律以 git 为准。**禁止仅凭文档里的「待做」状态就开始实现。**
+
+## 1. 触发条件
+用户消息或文档口令中出现任务 ID（`T\d+`，如 T73），并伴随任一意图：
+开工 / 实现 / 第 N 刀 / 按 Brief / 继续做 / 重做 / 补做 / 开分支 / 开 PR。
+
+## 2. 预检步骤（写任何 src/ 代码、开任何 feature 分支之前，必须完成）
+1. 运行 `scripts/task-preflight.sh <Tn>`。
+   若脚本不可用，手动执行：
+   ```bash
+   git fetch origin --prune
+   git log origin/develop -i -E --grep='(^|[^A-Za-z0-9])<Tn>([^0-9]|$)' --pretty='%h %ad %s' --date=short
+   gh pr list --state merged --base develop --search '<Tn>' --limit 50
+   gh pr list --state open --search '<Tn>' --limit 50
+   git branch -r | grep -iE '<Tn>'
+   ```
+2. **读命中的 PR（标题 + 描述 + 改动文件列表）**，判断它们是否覆盖了**本次请求的具体范围**。
+   注意：同一个 Tn 常分多刀（第一刀 / 第二刀…），「命中过 Tn 的合并 PR」≠「本次范围已完成」。
+3. 得出三种结论之一：
+   - **A. 已完成**：本次范围已被已合并 PR 覆盖 → **停止实现**，见第 3 节。
+   - **B. 部分完成**：只做尚未覆盖的剩余部分；第一行说明「已完成部分 = #xxxx，本次只做 …」。
+   - **C. 无命中**：按口令正常开工，并在回复第一行写「预检：develop 上无 Tn 相关合并记录」。
+   - 若有**未合并的 open PR / 远程分支**命中：不得另开同内容旁支，先报告并询问是接手还是废弃。
+
+## 3. 结论 A（已完成）时必须做的事——同一轮内全部完成，不等用户再下口令
+1. **回复第一行**必须是结论，格式固定：
+   `预检结论：Tn（范围）已由 #xxxx、#yyyy 于 YYYY-MM-DD 合入 develop，不重开实现；文档已过期。`
+2. **不创建** feature 分支，**不写** src/ 或测试代码。
+3. 在同一轮里**直接修复过期文档**（不要问「要不要开 docs PR」、不要等「口令：Tn 治理 sync」）：
+   - `grep -rn '<Tn>' --include='*.md' focus-tiger/docs WORKFLOW.md AGENTS.md` 找出所有仍写「待做/立即做/Brief 已点头/开工」的位置；
+   - 功能进度写 `focus-tiger/docs/task-entries/`（**禁止**功能旁支改 `TASKS.md` 已有段）；
+   - `GLOSSARY.md` / `SCHEDULING_GLOSSARY.md` 热点仍只走独立 `docs/*` 治理 PR（见 [`queue-governance-readme.md`](../../focus-tiger/docs/queue-governance-readme.md)），但**必须同一轮开出**，不等口令；
+   - 口令表里对应的「开工」口令改成「不执行 / 已完成，勿再开旁支」；
+   - **不得夹带** `focus-tiger/src/` 改动；
+   - 开 docs PR，PR 描述写 `任务 ID：<Tn>`，并勾选「已同步文档」。
+4. 汇报时只给：结论一行 + docs PR 链接 + 需要用户做的唯一动作（合并该 PR）。
+
+## 4. 完成代码任务时（正向流程）
+- 实现类 PR 必须在**同一个 PR 内**更新该 Tn 的进度（`task-entries/` / `tracker-entries/`）；
+  分支名或标题带 Tn，PR 描述填 `任务 ID：Tn` 并按模板勾选。CI（`task-doc-sync`）会强制检查。
+- 不再把「文档同步」拆成事后单开的 PR，也不留给用户「下口令再做」。
+
+## 5. 禁止事项
+- ❌ 仅凭 GLOSSARY / 队列文档 / 口令表的「待做」状态开工。
+- ❌ 预检发现已合并后，仍开 `feature/<tn>-*` 同内容旁支。
+- ❌ 把低风险的文档同步写成「待你决定 / 等你下口令再做」。
+- ❌ 在回复里引用文档状态当事实，却没有 git 证据（PR 号 / commit hash）。
+
+## 6. 用户显式覆盖
+仅当用户明确说「我知道 Tn 已合并，仍要重做 / 重构 / 回滚」时，才可越过预检；
+此时在 PR 描述里写明「用户显式要求重做，原 PR：#xxxx」。
