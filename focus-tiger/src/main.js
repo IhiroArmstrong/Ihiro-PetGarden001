@@ -235,7 +235,10 @@ import { QuietTogetherPanelUI } from './ui/QuietTogetherPanelUI.js';
 import { FocusCirclePanelUI } from './ui/FocusCirclePanelUI.js';
 import { ZenCinemaCardUI } from './ui/ZenCinemaCardUI.js';
 import { GuidedMeditationUI } from './ui/GuidedMeditationUI.js';
-import { resolveGuidedMeditationMenuClick } from './core/guidedMeditationBusyYield.js';
+import {
+  createGuidedMeditationUIHandlers,
+  resolveGuidedMeditationMenuClick
+} from './core/guidedMeditationBusyYield.js';
 import { isGuidedMeditationAvailable } from './core/guidedMeditationScriptCatalog.js';
 import { ColdStartGoalCardUI } from './ui/ColdStartGoalCardUI.js';
 import { CoPracticeContinueSlotChrome } from './ui/CoPracticeContinueSlotChrome.js';
@@ -2315,10 +2318,7 @@ async function init() {
     },
     onClose: () => syncIdleYinTap()
   });
-  guidedMeditationUI = new GuidedMeditationUI(overlayRoot, {
-    onClose: () => syncIdleYinTap(),
-    onPracticeDay: (payload) => noteGuidedMeditationPracticeDay(payload)
-  });
+  guidedMeditationUI = new GuidedMeditationUI(overlayRoot, createGuidedMeditationUIHandlers({ bootAmbientHints, idleChrome, noteGuidedMeditationPracticeDay, syncIdleYinTap }));
   window.__recoverResetPractice = recoverResetPracticeUI;
   window.__groundExerciseChoice = groundExerciseChoiceUI;
   window.__guidedMeditation = guidedMeditationUI;

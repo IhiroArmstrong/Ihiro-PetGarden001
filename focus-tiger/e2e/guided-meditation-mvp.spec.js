@@ -39,6 +39,10 @@ test('Practice menu opens Guided meditation; script lesson can credit', async ({
   ).toBeVisible();
 
   await page.getByTestId('guided-meditation-lesson-breath-anchor-beginner').click();
+  await expect(page.getByTestId('guided-meditation-music-prompt')).toBeVisible({
+    timeout: 3_000
+  });
+  await page.getByTestId('guided-meditation-music-no').click();
   await expect(page.getByTestId('guided-meditation-player')).toBeVisible({
     timeout: 3_000
   });

@@ -38,7 +38,11 @@
     "GUIDED_MEDITATION_PREV": "Previous step",
     "GUIDED_MEDITATION_NEXT": "Next step",
     "GUIDED_MEDITATION_VOICE_ON": "Voice guidance on",
-    "GUIDED_MEDITATION_VOICE_OFF": "Voice guidance off"
+    "GUIDED_MEDITATION_VOICE_OFF": "Voice guidance off",
+    "GUIDED_MEDITATION_MUSIC_PROMPT": "Quiet moments can have soft background music. Turn it on for this practice?",
+    "GUIDED_MEDITATION_MUSIC_YES": "Play background music",
+    "GUIDED_MEDITATION_MUSIC_NO": "Not now",
+    "GUIDED_MEDITATION_MUSIC_BACK": "Back to lessons"
   },
   "zh": {
     "GUIDED_MEDITATION_MENU_LABEL": "引导冥想",
@@ -79,7 +83,11 @@
     "GUIDED_MEDITATION_PREV": "上一步",
     "GUIDED_MEDITATION_NEXT": "下一步",
     "GUIDED_MEDITATION_VOICE_ON": "语音指导开",
-    "GUIDED_MEDITATION_VOICE_OFF": "语音指导关"
+    "GUIDED_MEDITATION_VOICE_OFF": "语音指导关",
+    "GUIDED_MEDITATION_MUSIC_PROMPT": "静默时可以有很轻的背景音乐。要为这次练习打开吗？",
+    "GUIDED_MEDITATION_MUSIC_YES": "播放背景音乐",
+    "GUIDED_MEDITATION_MUSIC_NO": "先不用",
+    "GUIDED_MEDITATION_MUSIC_BACK": "返回选课"
   },
   "ja": {
     "GUIDED_MEDITATION_MENU_LABEL": "ガイド瞑想",
@@ -120,6 +128,10 @@
     "GUIDED_MEDITATION_PREV": "前のステップ",
     "GUIDED_MEDITATION_NEXT": "次のステップ",
     "GUIDED_MEDITATION_VOICE_ON": "音声ガイドオン",
-    "GUIDED_MEDITATION_VOICE_OFF": "音声ガイドオフ"
+    "GUIDED_MEDITATION_VOICE_OFF": "音声ガイドオフ",
+    "GUIDED_MEDITATION_MUSIC_PROMPT": "静かな区間には、やわらかな伴奏を流せます。この練習でオンにしますか？",
+    "GUIDED_MEDITATION_MUSIC_YES": "伴奏を流す",
+    "GUIDED_MEDITATION_MUSIC_NO": "今はしない",
+    "GUIDED_MEDITATION_MUSIC_BACK": "一覧に戻る"
   }
 }
