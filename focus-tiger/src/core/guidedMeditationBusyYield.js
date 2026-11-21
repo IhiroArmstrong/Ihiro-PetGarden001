@@ -3,6 +3,8 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
+export { createGuidedMeditationUIHandlers } from './guidedMeditationAmbientSession.js';
+
 /**
  * Guided Meditation must not stack on Focusing, Honesty, or Breath.
  * The menu row stays clickable (escape hatch) and shows a reason.

@@ -46,12 +46,18 @@ export class GuidedMeditationUI {
    * @param {() => void} [handlers.onClose]
    * @param {(payload: { durationMinutes: number, sourceId: string, lessonId: string }) => void} [handlers.onPracticeDay]
    * @param {() => { duckTo?: Function } | null} [handlers.getAmbient]
+   * @param {() => boolean} [handlers.shouldOfferMusic]
+   * @param {() => Promise<boolean> | boolean} [handlers.onRequestMusic]
+   * @param {() => void} [handlers.onReleaseEphemeralMusic]
    */
   constructor(mountRoot, handlers = {}) {
     this.handlers = handlers;
     this._open = false;
     /** @type {string | null} */
     this._lessonId = null;
+    /** @type {string | null} */
+    this._pendingLessonId = null;
+    this._ephemeralMusicStarted = false;
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
     this._credited = false;
@@ -97,6 +103,42 @@ export class GuidedMeditationUI {
     this.playerEl.className = 'guided-meditation__player';
     this.playerEl.hidden = true;
     this.playerEl.dataset.testid = 'guided-meditation-player';
+
+    this.prestartEl = document.createElement('div');
+    this.prestartEl.className = 'guided-meditation__prestart';
+    this.prestartEl.hidden = true;
+    this.prestartEl.dataset.testid = 'guided-meditation-music-prompt';
+
+    this.prestartPromptEl = document.createElement('p');
+    this.prestartPromptEl.className = 'guided-meditation__prestart-prompt';
+
+    this.prestartActions = document.createElement('div');
+    this.prestartActions.className = 'guided-meditation__prestart-actions';
+
+    this.musicYesBtn = document.createElement('button');
+    this.musicYesBtn.type = 'button';
+    this.musicYesBtn.className = 'guided-meditation__btn';
+    this.musicYesBtn.dataset.testid = 'guided-meditation-music-yes';
+    this.musicYesBtn.addEventListener('click', () => void this._confirmLessonWithMusic());
+
+    this.musicNoBtn = document.createElement('button');
+    this.musicNoBtn.type = 'button';
+    this.musicNoBtn.className =
+      'guided-meditation__btn guided-meditation__btn--ghost';
+    this.musicNoBtn.dataset.testid = 'guided-meditation-music-no';
+    this.musicNoBtn.addEventListener('click', () =>
+      this._confirmLessonWithoutMusic()
+    );
+
+    this.musicBackBtn = document.createElement('button');
+    this.musicBackBtn.type = 'button';
+    this.musicBackBtn.className =
+      'guided-meditation__btn guided-meditation__btn--ghost';
+    this.musicBackBtn.dataset.testid = 'guided-meditation-music-back';
+    this.musicBackBtn.addEventListener('click', () => this._showList());
+
+    this.prestartActions.append(this.musicYesBtn, this.musicNoBtn, this.musicBackBtn);
+    this.prestartEl.append(this.prestartPromptEl, this.prestartActions);
 
     this.companionEl = document.createElement('p');
     this.companionEl.className = 'guided-meditation__companion';
@@ -185,7 +227,7 @@ export class GuidedMeditationUI {
     this.closeBtn.dataset.testid = 'guided-meditation-close';
     this.closeBtn.addEventListener('click', () => this.close());
 
-    this.panel.append(this.listEl, this.playerEl, this.closeBtn);
+    this.panel.append(this.listEl, this.prestartEl, this.playerEl, this.closeBtn);
     this.root.append(this.titleEl, this.panel);
     mountRoot.appendChild(this.root);
 
@@ -228,6 +270,7 @@ export class GuidedMeditationUI {
   close() {
     if (!this._open) return;
     this._open = false;
+    this._releaseEphemeralMusic();
     this._stopEngine();
     this._popEscapeLayer?.();
     this._popEscapeLayer = null;
@@ -265,12 +308,56 @@ export class GuidedMeditationUI {
   }
 
   _showList() {
+    this._releaseEphemeralMusic();
     this._stopEngine();
     this._lessonId = null;
+    this._pendingLessonId = null;
     this._credited = false;
     this.listEl.hidden = false;
+    this.prestartEl.hidden = true;
     this.playerEl.hidden = true;
     this._refreshTexts();
+  }
+
+  _releaseEphemeralMusic() {
+    if (!this._ephemeralMusicStarted) return;
+    this._ephemeralMusicStarted = false;
+    this.handlers.onReleaseEphemeralMusic?.();
+  }
+
+  /**
+   * @param {string} lessonId
+   */
+  _onLessonPick(lessonId) {
+    const lesson = findGuidedMeditationScriptLesson(lessonId);
+    if (!lesson || !isGuidedMeditationAvailable()) return;
+    const offer = this.handlers.shouldOfferMusic?.() ?? true;
+    if (!offer) {
+      this._openLesson(lessonId);
+      return;
+    }
+    this._pendingLessonId = lessonId;
+    this.listEl.hidden = true;
+    this.playerEl.hidden = true;
+    this.prestartEl.hidden = false;
+    this._refreshTexts();
+    this.musicYesBtn.focus({ preventScroll: true });
+  }
+
+  async _confirmLessonWithMusic() {
+    const lessonId = this._pendingLessonId;
+    if (!lessonId) return;
+    const started = await this.handlers.onRequestMusic?.();
+    if (started) this._ephemeralMusicStarted = true;
+    this.prestartEl.hidden = true;
+    this._openLesson(lessonId);
+  }
+
+  _confirmLessonWithoutMusic() {
+    const lessonId = this._pendingLessonId;
+    if (!lessonId) return;
+    this.prestartEl.hidden = true;
+    this._openLesson(lessonId);
   }
 
   /**
@@ -433,6 +520,10 @@ export class GuidedMeditationUI {
     this.titleEl.textContent = t('GUIDED_MEDITATION_MENU_LABEL');
     this.closeBtn.textContent = t('GUIDED_MEDITATION_CLOSE');
     this.companionEl.textContent = t('GUIDED_MEDITATION_COMPANION_HINT');
+    this.prestartPromptEl.textContent = t('GUIDED_MEDITATION_MUSIC_PROMPT');
+    this.musicYesBtn.textContent = t('GUIDED_MEDITATION_MUSIC_YES');
+    this.musicNoBtn.textContent = t('GUIDED_MEDITATION_MUSIC_NO');
+    this.musicBackBtn.textContent = t('GUIDED_MEDITATION_MUSIC_BACK');
     this._refreshControlLabels();
     if (this._lessonId) {
       const lesson = findGuidedMeditationScriptLesson(this._lessonId);
@@ -459,7 +550,7 @@ export class GuidedMeditationUI {
       blurb.className = 'guided-meditation__blurb';
       blurb.textContent = t(lesson.blurbKey);
       btn.append(lang, label, blurb);
-      btn.addEventListener('click', () => this._openLesson(lesson.id));
+      btn.addEventListener('click', () => this._onLessonPick(lesson.id));
       this.listEl.appendChild(btn);
     }
   }
@@ -508,6 +599,17 @@ export class GuidedMeditationUI {
         display: flex;
         flex-direction: column;
         gap: 10px;
+      }
+      .guided-meditation__prestart-prompt {
+        margin: 0 0 10px;
+        font-size: 0.95rem;
+        line-height: 1.45;
+        color: var(--ft-text-primary, #2c2418);
+      }
+      .guided-meditation__prestart-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
       .guided-meditation__btn {
         display: flex;
