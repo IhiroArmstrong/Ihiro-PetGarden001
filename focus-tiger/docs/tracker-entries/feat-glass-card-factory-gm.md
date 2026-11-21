@@ -1,0 +1,1 @@
+| 引导冥想卡走共享暖米玻璃 | UI可见 | 待人工测试 | **主路径**：`?product=1` Idle → ⋯ → Practice → Guided meditation → **0–1 秒内**见一张暖米玻璃卡，标题在卡内、顶不被裁、课次行可点。**回流**：关掉再开仍是同一张玻璃，不是外层再套一层奶油底。**对照**：Support 三卡外观与 Subscribe 可点不变。自动化：`GuidedMeditationUI.test.js` + `npm run check:glass-card-factory`。 | — | — | — | `#guided-meditation` · `[data-testid=guided-meditation]` | 2026-11-21 |

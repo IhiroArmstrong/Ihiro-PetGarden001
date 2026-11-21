@@ -42,7 +42,7 @@
 | **D-04** | `resolveSessionIntentionLatch`（空 pending 不抹闩） | `SHARED_RESOURCES` §1 intentions 行 | **(b)** | `SessionIntentionStore.test.js` + `scenario-smoke` C |
 | **A-01** | 场景 A–D / I / J 主链路串联 | `SCENARIO_TESTS.md` | **(b)** | `scenario-smoke.test.js` |
 | **V-01** | 跨视口可见性（状态 × 视口 × 用户可见宿主） | `SHARED_RESOURCES` §6 机器块、`DEV_WORKFLOW_QUALITY` §8.6 / N25 | **(a)+(b)** | `visibilityContractRegistry.js` + `visibility:doc-check` + `npm run test:e2e:visibility`（改 suppress/hide 时 CI 整表） |
-| **A11-glass** | 浮动卡根暖米玻璃（禁止自写深色/近乎不透明奶油底板） | `SANCTUARY_UI_ART_DIRECTION.md`、`task-briefs/task-a11-shared-glass-card.md` | **(a)+(b)** | `createGlassCard()` + `scripts/check-glass-card-roots.js`（`docs:check`；#1147 前深色语音卡夹具必须红） |
+| **A11-glass** | 浮动卡根暖米玻璃（禁止自写深色/近乎不透明奶油底板） | `SANCTUARY_UI_ART_DIRECTION.md`、`task-briefs/task-a11-shared-glass-card.md` | **(a)+(b)** | `createGlassCard()` + `scripts/check-glass-card-roots.js`（`docs:check`；#1147 前深色语音卡夹具必须红）+ `scripts/check-glass-card-factory.js`（叠层卡须走工厂；豁免只减不增；`#yin-support-modal` 仍 keep-stylesheet-z） |
 | **A13-glass-visual** | 关键浮动卡暖米玻璃观感（防 #1147 深色底回归） | `task-briefs/task-a13-glass-card-screenshots.md`、`glassCardVisualSurfaces.js` | **(b)** | `e2e/glass-card-visual-guardrail.spec.js`（RGB 契约进 `test:e2e:smoke`）；可选 `FT_A13_SOFT_SNAP=1` 元件截图。人工叠层顺序仍 `TEST_TRACKER` |
 
 ### 暂未纳入（已知风险 / 不宜形式主义）
