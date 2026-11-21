@@ -1,7 +1,7 @@
 ---
 id: entry-signal-ledger
 kind: feature
-status: L1+L3 已合 #1846 · L2 删 C/D 绘制进行中 · L4 另会话
+status: L1–L3 已合 #1846 · L2 已合 #1847 · L4 同屏单脉冲进行中
 updated: 2026-11-21
 ---
 

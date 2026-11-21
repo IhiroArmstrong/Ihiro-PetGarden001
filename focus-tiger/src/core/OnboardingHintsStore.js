@@ -5,7 +5,7 @@
 
 /**
  * 分散式即时提示已读记忆：focus-tiger.hints-seen.v1
- * 值：'peeked'（simple 看过文案、圆点静止弱化）| 'done'（操作完成/进详情，圆点移除）
+ * 值：'peeked'（simple 看过文案、圆点静止弱化）| 'done'（操作完成/进详情，圆点移除）| 'resting'（L4 冷落让位，不出仲裁赢家池）
  * 旧布尔 true 读入时迁为 'done'。
  * @see ONBOARDING_HINTS.md
  */
@@ -16,7 +16,7 @@ export const HINTS_SEEN_STORAGE_KEY = 'focus-tiger.hints-seen.v1';
 
 /** @typedef {import('./onboardingHintRegistry.js').OnboardingHintRegistryEntry['id']} HintId */
 
-/** @typedef {'peeked'|'done'} HintAckState */
+/** @typedef {'peeked'|'done'|'resting'} HintAckState */
 
 export { HINT_IDS, HINT_LOCALE_KEYS };
 
@@ -31,6 +31,7 @@ export function normalizeHintsSeen(raw) {
   for (const id of HINT_IDS) {
     const v = raw[id];
     if (v === true || v === 'done') out[id] = 'done';
+    else if (v === 'resting') out[id] = 'resting';
     else if (v === 'peeked') out[id] = 'peeked';
   }
   return out;
@@ -74,6 +75,10 @@ export function createHintsSeenStore(
     isPeeked(hintId) {
       return cache[hintId] === 'peeked';
     },
+    /** L4 冷落让位：不再参与发现性脉冲仲裁（仍非 done）。 */
+    isResting(hintId) {
+      return cache[hintId] === 'resting';
+    },
     /**
      * @param {string} hintId
      * @returns {HintAckState | null}
@@ -88,7 +93,13 @@ export function createHintsSeenStore(
      */
     markPeeked(hintId) {
       if (!HINT_IDS.includes(hintId)) return false;
-      if (cache[hintId] === 'done' || cache[hintId] === 'peeked') return false;
+      if (
+        cache[hintId] === 'done' ||
+        cache[hintId] === 'peeked' ||
+        cache[hintId] === 'resting'
+      ) {
+        return false;
+      }
       cache = { ...cache, [hintId]: 'peeked' };
       write(cache);
       return true;
@@ -102,6 +113,19 @@ export function createHintsSeenStore(
       if (!HINT_IDS.includes(hintId)) return false;
       if (cache[hintId] === 'done') return false;
       cache = { ...cache, [hintId]: 'done' };
+      write(cache);
+      return true;
+    },
+    /**
+     * L4 冷落让位出队（不是 done；查询 tip 仍可用）。
+     * @param {string} hintId
+     * @returns {boolean}
+     */
+    markResting(hintId) {
+      if (!HINT_IDS.includes(hintId)) return false;
+      if (cache[hintId] === 'done') return false;
+      if (cache[hintId] === 'resting') return false;
+      cache = { ...cache, [hintId]: 'resting' };
       write(cache);
       return true;
     },

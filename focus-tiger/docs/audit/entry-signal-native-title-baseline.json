@@ -23,7 +23,7 @@
     "src/ui/IdleCompanionPipUI.js:234:this.enterBtn.title = t('IDLE_COMPANION_PIP_HINT');",
     "src/ui/ImmersivePresenceUI.js:345:this.pipBtn.title = t('IMMERSIVE_PIP_HINT');",
     "src/ui/MindflowNebulaChromeUI.js:196:this.root.title = t('MINDFLOW_NEBULA_HOVER');",
-    "src/ui/OnboardingHintsUI.js:1389:bubble.title = bubble.actionLabel || t('HINT_DISMISS_ARIA');",
+    "src/ui/OnboardingHintsUI.js:1473:bubble.title = bubble.actionLabel || t('HINT_DISMISS_ARIA');",
     "src/ui/QuietTogetherLanternsChrome.js:174:this.root.setAttribute('title', ariaLabel);",
     "src/ui/SanctuaryUnlockUI.js:433:btn.title = t('SANCTUARY_BADGES_DOWNLOAD_ONE');",
     "src/ui/TipJarUI.js:321:btn.title = t('TIP_BADGES_DOWNLOAD_ONE');",
