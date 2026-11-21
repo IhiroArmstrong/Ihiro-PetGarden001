@@ -545,6 +545,30 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
+### `noticing-g1-release-no-generate` · feature · 已合 develop · #1792 · 2026-11-20
+
+G1：发布构建里倾诉发送走不到可见生成。登记表 `releaseReach` + `check:generation-gate` + 打包闸。#1792 已合。不删生成代码。不是句库、不是 R2L-02。
+
+### `noticing-g2-help-e2e` · feature · 已合 develop · #1807 · G2 绿（e2e） · 2026-11-20
+
+开门闸 G2：发出 A/B 或安全句后，同一卡内 `[data-testid=confide-to-yin-help-resources]` 可见可点。`e2e/noticing-g2-help-resources.spec.js` #1807 已合。G3 证据见 `audit/findings/2026-11-20/noticing-open-gate-g2-g3-evidence.md`。不是打开自由生成，不新开 T 号。
+
+### `noticing-harm-others-fixture-spec` · note · 第 7 项与夹具规格已写入文档 · 未改 src · 未换 A-15 · 2026-11-20
+
+句库 Brief 增补伤害他人审稿第 7 项；开门门禁 v2 §5 锁 10 条夹具题号（进仓库、无原句）。v0.3 冻结不改。夹具实现另开 Chat。不是识别率，不调 0.78。
+
+### `noticing-item7-review-and-g2-gate` · note · 第 7 项补审已删 A-13/A-15/B-12 · G1/G2 不可豁免已写入门禁 · 未重开 G4 · 2026-11-20
+
+PO 授权安全审稿后按第 7 项只读 40 句。删除三句，不改写。门禁页写死 G1/G2 红不得当发布合格。§12 与状态行对齐（独立安全审已完成）。夹具句子文本仍缺。
+
+### `risk-register-v02-residual` · note · 登记册 v1.1.10 · 更新 #1811 · 未改 src · 2026-11-20
+
+V-02 编号保留、状态不关闭。残余补「漏识别后只见接住/邀坐、未见明确转介」，由句库审稿 + G2 承担，不写成待 T94。10-02 仍并入。不是打开自由生成。
+
+### `t100-route-x-phase1-close` · note · 路线 X 阶段关单证据齐 · G1 #1792 · G2 #1807 · G3 单测绿 · G4 #1799 · 2026-11-20
+
+T100 在觉察一句路线下按开门门禁 v2 §4 收口：G2 #1807、G3 句库单测、G1 `release-no-generate`；不再开新红队轮次。**不是**闸实验室 K=3 已验证、**不是** V-02 已补。证据 [`noticing-open-gate-g2-g3-evidence.md`](../audit/findings/2026-11-20/noticing-open-gate-g2-g3-evidence.md)。
+
 ### `confide-fact-card-surface-forms` · feature · 实现中 · 待人工测试 · 不得写换说法已接住 · 2026-11-19
 
 CR-49 续刀：同一问法形状上，一张卡最多 3 句事实键。先只扩 0037 / 0038 / 0020，各两句同形状事实键。短答不进向量。0.80 不动。说明稿在 #1775。关单仍须新封存英文未见批。
@@ -556,10 +580,6 @@ CR-49 续刀：同一问法形状上，一张卡最多 3 句事实键。先只�
 ### `noticing-fixed-line-library` · feature · 接线旁支 feature/noticing-fixed-line-wire · 2026-11-19
 
 觉察一句固定句库 v0.3 接到非危机回复。危机仍走 safety-01。生成代码不删、默认不进气泡。不是打开自由聊天。不是修 R2L-02。
-
-### `noticing-g1-release-no-generate` · feature · 实现中 · feature/noticing-release-no-generate-g1 · 2026-11-19
-
-G1：发布构建里倾诉发送走不到可见生成。登记表 `releaseReach` + `check:generation-gate` + 打包闸。不删生成代码。不是句库、不是 R2L-02。
 
 ### `noticing-label-disposition` · feature · Brief 已锁 · 代码旁支 feature/noticing-label-disposition · 2026-11-19
 
@@ -577,9 +597,9 @@ PO 2026-11-19：取消「说不清」；高危不另造分类器；接住/邀坐
 
 第三步：可见名英文 Thought Drop、中文觉察一句；副标一次一句；桌面 generate 不进用户气泡。代码不删。不是分离试验、不是 R2L-02。
 
-### `noticing-open-gate-briefs` · feature · 附录 v0.3 · PO 语气已审 · G4 欠独立安全审 · 未改 src · 2026-11-19
+### `noticing-open-gate-briefs` · feature · 附录 v0.3 · PO 语气已审 · G4 安全审已过 · 永不藏入口 2026-11-20 · G1–G3 各看闸 · 未改 src · 2026-11-19
 
-觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审已书面完成。独立安全审未过，不得接线。不是打开自由生成，不新开 T 号。
+觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审 + 独立安全审已书面完成（G4 两份齐）。2026-11-20：四闸红记残余、**不因红藏入口**（Route X 第一份包入口保持可达）。G1–G3 绿/红仍各看闸与 CI。不是打开自由生成，不新开 T 号。
 
 ### `pro-addon-checkout-restore` · feature · 搁置 · PO 2026-11-19 关闭自由生成，暂停 Pro / 陪伴加购新结账 · 2026-11-19
 
