@@ -9,8 +9,10 @@
  * Only `ready` locales appear (审完再露).
  */
 
+import { consumeTouchFirstToast } from '../core/OnboardingHintsStore.js';
 import { t, onLocaleChange, getLocale, setLocale } from '../locales/i18n.js';
 import { listPickerLocales } from '../locales/localePreference.js';
+import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { Z } from './zIndexLayers.js';
 
 const STYLE_ID = 'language-preference-styles-v7';
@@ -55,6 +57,12 @@ export class LanguagePreferenceUI {
       e.stopPropagation();
       if (this._expanded) this.closePanel();
       else this.openPanel();
+    });
+    this._fabTip = attachGlassHoverTip(this.fab, {
+      placement: 'left',
+      tipId: 'language-preference-fab-tip',
+      text: t('HINT_LANGUAGE_PREFERENCE'),
+      shouldFlashTouch: () => consumeTouchFirstToast('language-preference-fab')
     });
 
     this.root = document.createElement('div');
@@ -149,6 +157,7 @@ export class LanguagePreferenceUI {
   destroy() {
     document.removeEventListener('pointerdown', this._onDocPointer, true);
     this._unsubLocale?.();
+    this._fabTip?.destroy();
     this.fab.remove();
     this.root.remove();
   }
@@ -159,6 +168,7 @@ export class LanguagePreferenceUI {
     this.closeBtn.setAttribute('aria-label', t('LANGUAGE_CLOSE'));
     this.listEl.setAttribute('aria-label', t('LANGUAGE_SETTING_TITLE'));
     this.fab.setAttribute('aria-label', t('LANGUAGE_FAB_ARIA'));
+    this._fabTip?.setText(t('HINT_LANGUAGE_PREFERENCE'));
     this.fab.setAttribute('aria-expanded', this._expanded ? 'true' : 'false');
     this.fab.classList.toggle('is-open', this._expanded);
 

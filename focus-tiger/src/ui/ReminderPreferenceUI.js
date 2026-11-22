@@ -13,6 +13,7 @@
  * 面板文案：常显「每日时分」说明；情境软提示（已过时分 / 今日已练）可保存、可改时。
  */
 
+import { consumeTouchFirstToast } from '../core/OnboardingHintsStore.js';
 import { t, onLocaleChange } from '../locales/i18n.js';
 import {
   getReminderPreference,
@@ -33,6 +34,7 @@ import {
 } from '../core/icsReminderExport.js';
 import { RETENTION_EVENTS, trackRetentionEvent } from '../core/RetentionTelemetry.js';
 import { wideSecondaryDockCss } from '../core/wideSecondaryDockCss.js';
+import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { shouldIgnoreOutsideDismissTarget } from './outsideDismissGuard.js';
 import {
   installPreferencePanelDockListener,
@@ -119,6 +121,12 @@ export class ReminderPreferenceUI {
     this.toggleBtn.innerHTML = CLOCK_ICON;
     this.toggleBtn.setAttribute('aria-expanded', 'false');
     this.toggleBtn.setAttribute('aria-controls', 'reminder-preference-panel');
+    this._toggleTip = attachGlassHoverTip(this.toggleBtn, {
+      placement: 'left',
+      tipId: 'reminder-preference-toggle-tip',
+      text: t('HINT_IN_APP_REMINDER'),
+      shouldFlashTouch: () => consumeTouchFirstToast('reminder-preference-toggle')
+    });
     this.toggleBtn.addEventListener('click', () => {
       this._expanded = !this._expanded;
       if (this._expanded) onPreferencePanelOpen(this.panel, 'reminder-preference');
@@ -496,6 +504,7 @@ export class ReminderPreferenceUI {
     this.confirmHintEl.textContent = t('reminder.confirm_hint');
     this.blurbEl.textContent = t(notes.dailyBlurbKey);
     this.toggleBtn.setAttribute('aria-label', t('reminder.settings_aria'));
+    this._toggleTip?.setText(t('HINT_IN_APP_REMINDER'));
     this.toggleBtn.setAttribute(
       'aria-expanded',
       this._expanded ? 'true' : 'false'

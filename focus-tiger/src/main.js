@@ -737,7 +737,9 @@ import {
   createHintsSeenStore,
   resolveAutoHintIds
 } from './core/OnboardingHintsStore.js';
-import { isClickTriggerHint } from './core/onboardingHintRegistry.js';
+import { resolveSecondaryMenuHintUnread } from './core/entrySignalDiscoveryArbitration.js';
+import { createDiscoveryIdleVisitGate } from './core/entrySignalDiscoveryIdleVisit.js';
+import { createOnboardingHintAutoSync } from './core/onboardingHintAutoSync.js';
 import { OnboardingHintsUI } from './ui/OnboardingHintsUI.js';
 import { createIdleSecondaryPanelCoordinator } from './ui/idleSecondaryPanels.js';
 /** 有 `?sessionMinutes=` → 其值（e2e 可 1）；否则偏好 / 10。开表前无 URL 时再出时长 chip。 */
@@ -4918,12 +4920,12 @@ async function init() {
 
   idleChrome.setHandlers({
     isGrowthCardOverlayActive: () => isGrowthCardOverlayActive(),
-    isHintUnread: (hintId) => {
-      if (!bootAmbientHints.onboardingHints?.store) return false;
-      const store = bootAmbientHints.onboardingHints.store;
-      if (isClickTriggerHint(hintId)) return !store.isDone(hintId);
-      return !store.isSeen(hintId);
-    },
+    isHintUnread: (hintId) =>
+      resolveSecondaryMenuHintUnread(
+        hintId,
+        bootAmbientHints.onboardingHints?.store,
+        bootAmbientHints.onboardingHints
+      ),
     onCompanion: () => {
       bootHonestyCompanion.companionModePicker.open();
     },
@@ -5237,21 +5239,19 @@ async function init() {
     };
   }
 
-  let _syncingOnboardingHints = false;
+  const discoveryIdleVisit = createDiscoveryIdleVisitGate({
+    getScene: getOnboardingScene,
+    getAppState: () => stateManager.state,
+    STATES
+  });
+  const syncOnboardingAutoHintsCore = createOnboardingHintAutoSync({
+    getHints: () => bootAmbientHints.onboardingHints,
+    getScene: getOnboardingScene,
+    resolveAutoHintIds,
+    discoveryIdleVisit
+  });
   function syncOnboardingAutoHints() {
-    if (!bootAmbientHints.onboardingHints || _syncingOnboardingHints) return;
-    _syncingOnboardingHints = true;
-    try {
-      const ids = resolveAutoHintIds(getOnboardingScene());
-      bootAmbientHints.onboardingHints.syncVisibleAutos(ids);
-      // 布局刚切换时 DOM 可能尚未量好，下一帧再贴一次锚点
-      requestAnimationFrame(() => {
-        bootAmbientHints.onboardingHints?.repositionAll();
-        bootAmbientHints.onboardingHints?.syncDiscoveryDots();
-      });
-    } finally {
-      _syncingOnboardingHints = false;
-    }
+    syncOnboardingAutoHintsCore();
   }
 
   mountOnboardingHints(bootAmbientHints, document.body, {

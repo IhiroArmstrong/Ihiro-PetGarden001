@@ -80,6 +80,14 @@ import {
   syncSecondaryMenuHintDot
 } from '../core/idleChromeOrchestration.js';
 import {
+  pickDiscoveryPulseWinner,
+  paintsDiscoveryPulseHint
+} from '../core/entrySignalDiscoveryArbitration.js';
+import {
+  createDiscoveryIdlePassTracker,
+  DISCOVERY_IDLE_PASS_STORAGE_KEY
+} from '../core/entrySignalDiscoveryIdlePass.js';
+import {
   HELP_OUTSIDE_DISMISS,
   resolveHelpOutsideDismissAction
 } from './helpOverlayOutsideDismiss.js';
@@ -522,6 +530,30 @@ export class OnboardingHintsUI {
     this._catalogChip = null;
     /** @type {string[]} 最近一次 sync 的候选自动 id（未读过滤后），供 dismiss 后串行下一条 */
     this._lastAutoWant = [];
+    /** L4：当前同屏发现性脉冲赢家（合计 ≤1）。 */
+    this._discoveryPulseWinner = null;
+    this._lastNotedIdleVisitGen = -1;
+    this._discoveryIdlePass = createDiscoveryIdlePassTracker(
+      () => {
+        try {
+          return JSON.parse(
+            this._storage?.getItem(DISCOVERY_IDLE_PASS_STORAGE_KEY) || '{}'
+          );
+        } catch {
+          return {};
+        }
+      },
+      (value) => {
+        try {
+          this._storage?.setItem(
+            DISCOVERY_IDLE_PASS_STORAGE_KEY,
+            JSON.stringify(value)
+          );
+        } catch {
+          /* ignore */
+        }
+      }
+    );
     /** @type {Map<string, { remedy: boolean, anchorNearHelp: boolean }>} */
     this._paintMeta = new Map();
     /** @type {HTMLElement | null} */
@@ -759,6 +791,7 @@ export class OnboardingHintsUI {
       // Left home ball: residual title only — no mint pulse.
       if (NO_MINT_PULSE_HINT_IDS.has(hintId)) return false;
       if (this.store.isDone(hintId)) return false;
+      if (!this.isDiscoveryPulseVisible(hintId)) return false;
       this._showClickBadge(hintId);
       return true;
     }
@@ -784,20 +817,66 @@ export class OnboardingHintsUI {
         !NO_MINT_PULSE_HINT_IDS.has(id)
     );
 
+    const pulseWinner = pickDiscoveryPulseWinner(clickWant, this.store);
+    this._discoveryPulseWinner = pulseWinner;
+    const clickPaintWant = pulseWinner ? [pulseWinner] : [];
+
     // 清掉仍挂着的 auto / 非悬停 tip（补救已废）
     for (const id of [...this._visibleIds]) {
       if (this._clickExpandedIds.has(id)) continue;
       this.hideBubble(id);
     }
 
-    const clickWantSet = new Set(clickWant);
+    const clickWantSet = new Set(clickPaintWant);
     for (const id of [...this._badgeIds]) {
       if (!clickWantSet.has(id)) this._hideClickBadge(id);
     }
-    for (const id of clickWant) {
+    for (const id of clickPaintWant) {
       if (!this._clickExpandedIds.has(id)) this._showClickBadge(id);
     }
     this.syncDiscoveryDots();
+  }
+
+  /**
+   * L4：该行内 / 浮动 mint 是否应为当前唯一发现性脉冲。
+   * @param {string} hintId
+   * @returns {boolean}
+   */
+  isDiscoveryPulseVisible(hintId) {
+    if (!hintId || !paintsDiscoveryPulseHint(hintId)) return false;
+    if (this.store.isDone(hintId) || this.store.isResting(hintId)) return false;
+    return hintId === this._discoveryPulseWinner;
+  }
+
+  /**
+   * Idle 进入一代一行（由 main 递增 visitGen）。
+   * @param {number} idleVisitGen
+   */
+  noteDiscoveryIdleVisit(idleVisitGen) {
+    if (idleVisitGen < 0 || idleVisitGen === this._lastNotedIdleVisitGen) return;
+    const scene = this.getScene?.() || {};
+    if (
+      scene.isFocusing ||
+      scene.reflectionOpen ||
+      scene.arrivalOpen ||
+      scene.microRitualOpen ||
+      scene.honestyBridgeVisible
+    ) {
+      return;
+    }
+    const winner = this._discoveryPulseWinner;
+    if (!winner) return;
+    this._lastNotedIdleVisitGen = idleVisitGen;
+    const streak = this._discoveryIdlePass.noteIdleVisit(winner, idleVisitGen);
+    if (this._discoveryIdlePass.shouldMarkResting(streak)) {
+      this.store.markResting(winner);
+      this._discoveryPulseWinner = pickDiscoveryPulseWinner(
+        this._lastAutoWant.filter((id) => isClickTriggerHint(id)),
+        this.store
+      );
+      this.syncDiscoveryDots();
+      this.syncVisibleAutos(this._lastAutoWant);
+    }
   }
 
   _promoteNextAuto() {
@@ -810,6 +889,10 @@ export class OnboardingHintsUI {
    */
   markSeen(hintId) {
     this.store.markSeen(hintId);
+    if (this._discoveryPulseWinner === hintId) {
+      this._discoveryPulseWinner = null;
+      this._discoveryIdlePass.clear();
+    }
     this._hideClickBadge(hintId);
     this._clickExpandedIds.delete(hintId);
     if (this._visibleIds.has(hintId)) {
@@ -891,6 +974,13 @@ export class OnboardingHintsUI {
       const el = /** @type {HTMLElement | null} */ (document.querySelector(sel));
       getGlassHoverTipHandle(el)?.setSuppressed(ambientUnread);
     }
+
+    getGlassHoverTipHandle(
+      document.getElementById('language-preference-fab')
+    )?.setSuppressed(this.isDiscoveryPulseVisible('language-preference'));
+    getGlassHoverTipHandle(
+      document.getElementById('reminder-preference-toggle')
+    )?.setSuppressed(this.isDiscoveryPulseVisible('in-app-reminder'));
   }
 
   /**
@@ -899,7 +989,8 @@ export class OnboardingHintsUI {
    */
   _syncHostMintDots() {
     const show =
-      this._remedyIds.size === 0 && !this.store.isDone('ambient-soundscape');
+      this._remedyIds.size === 0 &&
+      this.isDiscoveryPulseVisible('ambient-soundscape');
     const mute = document.querySelector('.ambient-soundscape__mute');
     if (mute) mute.classList.toggle('has-hint-mint', show);
     syncSecondaryMenuHintDot(mute, show);
