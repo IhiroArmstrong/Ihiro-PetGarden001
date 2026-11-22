@@ -557,7 +557,7 @@ Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。
 
 收藏屏工厂卡根用加厚暖米（`strong: true`），艺术收藏改为内层滚动。对照已锁 Brief [`task-yin-collections-readable-card.md`](../task-briefs/task-yin-collections-readable-card.md)。不是一键全开声音，不是蓝点盘点。
 
-### `entry-signal-ledger` · feature · L1+L3 已合 #1846 · L2 删 C/D 绘制进行中 · L4 另会话 · 2026-11-21
+### `entry-signal-ledger` · feature · L1–L3 已合 #1846 · L2 已合 #1847 · L4 待合 #1849 · L5 原生 title→耳皮肤进行中 · 2026-11-21
 
 说明信号统一规划：政策唯一 SSOT [`LABEL_HINT_TIP_STANDARDS.md`](../LABEL_HINT_TIP_STANDARDS.md)；实现切片 [`task-briefs/task-entry-signal-ledger.md`](../task-briefs/task-entry-signal-ledger.md)。
 
