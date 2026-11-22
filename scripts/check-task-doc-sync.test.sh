@@ -50,6 +50,7 @@ run_case() {
 
 run_case skip-no-id 0 'echo x >> src/a.js' 'chore: tidy' '任务 ID：无' 'docs/ci'
 run_case pets73-not-t73 0 'echo x >> src/a.js' 'fix PETS73' '任务 ID：无' 'fix/pets73'
+run_case prose-task-id-not-counted 0 'echo x >> src/a.js' 'chore: tidy' $'正文随口写任务ID和 T73 不算\n' 'docs/ci'
 run_case t73-no-docs 1 'echo x >> src/a.js' '[Logic] T73 impl' $'任务 ID：T73\n' 'feature/t73-x'
 run_case t73-with-entry 0 'echo done >> focus-tiger/docs/task-entries/t73.md' '[Logic] T73 impl' $'任务 ID：T73\n- [x] 已同步文档（task-entries）' 'feature/t73-x'
 run_case t73-skip-reason 0 'echo x >> src/a.js' '[Logic] T73 impl' $'任务 ID：T73\n- [x] 本 PR 无需改文档\n  - 原因：仅改测试夹具不影响任务状态' 'feature/t73-x'

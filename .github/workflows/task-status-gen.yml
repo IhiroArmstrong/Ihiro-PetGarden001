@@ -1,0 +1,47 @@
+name: task-status-gen
+
+# develop 有新合并时，重新生成 docs/STATUS.md，并更新（不新增）同一个机器人 PR
+on:
+  push:
+    branches: [develop]
+    paths-ignore: ['docs/STATUS.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: task-status-gen
+  cancel-in-progress: true
+
+jobs:
+  gen:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 生成 STATUS.md（脚本用当前 ref；提交基线永远是 origin/develop）
+        run: |
+          python3 scripts/gen-task-status.py /tmp/STATUS.md
+          git fetch origin develop
+          git checkout -B bot/task-status origin/develop
+          mkdir -p docs
+          cp /tmp/STATUS.md docs/STATUS.md
+      - name: 有变化则推到固定分支并维护唯一 PR
+        run: |
+          if git diff --quiet -- docs/STATUS.md; then echo "无变化"; exit 0; fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/STATUS.md
+          git commit -m "docs: 自动刷新 STATUS.md"
+          git push --force origin bot/task-status
+          n=$(gh pr list --head bot/task-status --base develop --state open --json number --jq '.[0].number')
+          if [ -z "$n" ]; then
+            gh pr create --base develop --head bot/task-status \
+              --title "docs: 自动刷新任务状态 STATUS.md" \
+              --body $'自动生成，仅改 docs/STATUS.md。\n\n任务 ID：无\n- [x] 已同步文档（自动生成）'
+          fi
