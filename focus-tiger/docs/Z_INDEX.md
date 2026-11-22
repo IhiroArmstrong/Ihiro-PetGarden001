@@ -171,7 +171,7 @@
 | **16** | `src/ui/PresenceSignalsPanelUI.js` | `.presence-signals-panel` 在场信号面板（内含 z2 子层） |
 | **16** | `src/ui/QuietTogetherPanelUI.js` | `.quiet-together-panel` Quiet Together 面板 |
 | **18** | `src/ui/ColdStartGoalCardUI.js` | `.cold-start-goal-card` 冷启动目标卡 |
-| **18** | `src/ui/YinPersonalMemoryUI.js` | `.yin-personal-memory` 阿寅私人记忆面板 |
+| **18 / 19** | `src/ui/YinPersonalMemoryUI.js` | `.yin-personal-memory` 阿寅私人记忆面板（18）；从 Thought Drop 点开时置顶为 `GLASS_CARD_FRONT`（19），仍低于 Support 遮罩 25 |
 | **18 / 19** | `src/ui/PracticeImprintCardUI.js` | 练习印记卡遮罩（18）+ 卡本体（19） |
 | **35 / 36** | `src/ui/HomeSanctuaryNavFanUI.js` | Home/Sanctuary 导航扇遮罩（35）+ 扇本体（36）；**挂 body**，与 `#ui-overlay`（10）整层比较，不与其子层同带 |
 | **12050** | `src/ui/SystemTtsPreferenceUI.js` | 系统朗读偏好。**数值异常**，比全表任何一层高两个数量级，来历不明；审计 Z-2 记在案，本次只登记不改，改动须单独评估 |
