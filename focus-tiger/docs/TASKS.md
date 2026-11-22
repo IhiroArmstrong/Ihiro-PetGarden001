@@ -557,7 +557,7 @@ Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。
 
 收藏屏工厂卡根用加厚暖米（`strong: true`），艺术收藏改为内层滚动。对照已锁 Brief [`task-yin-collections-readable-card.md`](../task-briefs/task-yin-collections-readable-card.md)。不是一键全开声音，不是蓝点盘点。
 
-### `entry-signal-ledger` · feature · L1+L3 账本生成器+静态 lint 开工（#1844 已合 L0；L4 另会话） · 2026-11-21
+### `entry-signal-ledger` · feature · L1+L3 已合 #1846 · L2 删 C/D 绘制进行中 · L4 另会话 · 2026-11-21
 
 说明信号统一规划：政策唯一 SSOT [`LABEL_HINT_TIP_STANDARDS.md`](../LABEL_HINT_TIP_STANDARDS.md)；实现切片 [`task-briefs/task-entry-signal-ledger.md`](../task-briefs/task-entry-signal-ledger.md)。
 
@@ -615,7 +615,7 @@ Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。
 11/20 手测项 **#11（底栏其它蓝脉冲 · 全站蓝点盘点没收尾）** 文档收口。
 
 - SSOT：[`SITE_DISCOVERY_DOT_CENSUS.md`](../SITE_DISCOVERY_DOT_CENSUS.md)
-- 代码参照（只读盘点）：`hintDiscoveryDots.js` · `homeSanctuaryNavGate.js` · `homeSanctuaryNavPulseChrome.js`（#1834）· `OnboardingHintsUI.syncDiscoveryDots`
+- 代码参照（只读盘点）：`purposeCardTipLayout.js` · `homeSanctuaryNavPulseChrome.js`（孤儿清理）· `OnboardingHintsUI.syncDiscoveryDots`（无 C 族绘制）
 - **不是** hint 功能 PR；**不是** 重开栖居导航（`HOME_SANCTUARY_NAV_ENABLED` 仍 false）
 - 口令「按全站蓝点盘点再盘一遍」：除非 `src/` 圆点面变，否则勿重复同内容旁支
 - **2026-11-21**：普查降为 STANDARDS 附录；统一规划改走 `entry-signal-ledger`
