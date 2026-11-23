@@ -291,6 +291,8 @@ gh pr create --base develop --head "$(git branch --show-current)" --title "…" 
 
 **正向流程**：带 Tn 的实现 PR 须在**同一 PR** 更新 `task-entries/` / `tracker-entries/`，描述填 `任务 ID：Tn` 并按模板二选一勾选。CI **`task-doc-sync`** 对分支名/标题/描述含 Tn 的 PR：要么 diff 命中文档路径，要么勾「无需改文档」且原因不少于 6 个字；勾了「已同步文档」却无文档 diff → 红灯。不带 Tn 的 PR（描述写 `任务 ID：无`）跳过。`PETS73` 不得被认成 `T73`。 自动对照表：`docs/STATUS.md`（`scripts/gen-task-status.py`，只写已合并/进行中 PR，**不**写「已完成」）。 周巡检：`scripts/audit-task-docs.py`（workflow `doc-drift-audit`，疑似过期开 `doc-drift` issue）。
 
+**task-status-gen 与 `TASK_STATUS_GEN_PAT`（2026-11-23）**：workflow [`.github/workflows/task-status-gen.yml`](.github/workflows/task-status-gen.yml) 向 `bot/task-status` 推提交并用 `gh` 维护固定 PR **不得**使用默认 `GITHUB_TOKEN` 做写操作；否则该 PR 上由 `pull_request` 触发的 Required checks 会长期停在 **action_required**（合并区「批准运行工作流」，与 Review Approve 无关）。仓库须配置 Secret **`TASK_STATUS_GEN_PAT`**：推荐 **fine-grained PAT**（仅本仓库），权限 **Contents 读写**、**Pull requests 读写**、**Metadata 读**；也可用 **GitHub App 安装 token**（同等权限）写入同一 Secret，或改用 `actions/create-github-app-token` 生成后赋给 `GH_TOKEN` / `checkout` 的 `token`。合入相关修复 PR 前 PO 须在 Settings → Secrets → Actions 添加该 Secret，否则下次 `develop` 合并后 `task-status-gen` 会红灯。
+
 **用户显式覆盖**：仅当用户明确说「我知道 Tn 已合并，仍要重做 / 重构 / 回滚」才可越过预检，并在 PR 描述写明原 PR 号。
 
 ### 并行 Cursor 会话：必须用 git worktree 隔离写操作
