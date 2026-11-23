@@ -1,6 +1,10 @@
 name: task-status-gen
 
 # develop 有新合并时，重新生成 docs/STATUS.md，并更新（不新增）同一个机器人 PR
+#
+# 推分支 / 开 PR 必须用 PAT（secrets.TASK_STATUS_GEN_PAT），不可用 GITHUB_TOKEN：
+# 否则机器 PR 触发的 pull_request 检查会停在 action_required（须人工点「批准运行工作流」）。
+# 配置说明：WORKFLOW.md「task-status-gen 与 TASK_STATUS_GEN_PAT」。
 on:
   push:
     branches: [develop]
@@ -8,8 +12,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 concurrency:
   group: task-status-gen
@@ -19,11 +23,20 @@ jobs:
   gen:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.TASK_STATUS_GEN_PAT }}
     steps:
+      - name: 校验 TASK_STATUS_GEN_PAT
+        env:
+          TASK_STATUS_GEN_PAT: ${{ secrets.TASK_STATUS_GEN_PAT }}
+        run: |
+          if [ -z "$TASK_STATUS_GEN_PAT" ]; then
+            echo "::error::Missing repository secret TASK_STATUS_GEN_PAT. See WORKFLOW.md (task-status-gen 与 TASK_STATUS_GEN_PAT)."
+            exit 1
+          fi
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.TASK_STATUS_GEN_PAT }}
       - name: 生成 STATUS.md（脚本用当前 ref；提交基线永远是 origin/develop）
         run: |
           python3 scripts/gen-task-status.py /tmp/STATUS.md
