@@ -32,13 +32,15 @@
 
 中档关心留在 overlay + 禁词豁免（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836) / [#1837](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1837)，**已合**）**不是** 12/5 四闸条件。
 
+觉察一句 overlay 改白名单（[#1869](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1869)，**已合**）同样**不是**四闸条件。12/5 当天仍只勾 G1–G4；白名单只防止新路由误进 A/B。
+
 ---
 
 ## 3. 12/5 当天还要再跑的命令（人填通过行）
 
 ```bash
 cd focus-tiger && npm run check:generation-gate
-cd focus-tiger && node --test src/core/noticingOneLine/noticingFixedLineLibrary.test.js
+cd focus-tiger && node --test src/core/noticingOneLine/noticingFixedLineLibrary.test.js src/core/noticingOneLine/noticingOpenGateNfFixtures.test.js
 ```
 
 G2 以 develop 上已合 e2e 为准；不必为勾选新开实现旁支。
