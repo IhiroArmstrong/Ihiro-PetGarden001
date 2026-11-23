@@ -251,7 +251,8 @@ export class HomeThreeZoneUI {
         display: none !important;
       }
       body.ft-wide-more-open .ft-home-zone-memories,
-      body.ft-wide-more-radial-open .ft-home-zone-memories {
+      body.ft-wide-more-radial-open .ft-home-zone-memories,
+      body:has(#journey-log.is-visible) .ft-home-zone-memories {
         display: none !important;
       }
       .ft-home-zone-memories__heading {

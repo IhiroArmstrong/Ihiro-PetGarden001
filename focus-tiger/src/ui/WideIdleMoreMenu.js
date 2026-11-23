@@ -1630,6 +1630,11 @@ export class WideIdleMoreMenu {
       .ft-wide-more__backdrop[hidden] {
         display: none !important;
       }
+      body:has(#journey-log.is-visible) #ft-wide-more-menu,
+      body:has(#journey-log.is-visible) #ft-wide-more-radial,
+      body:has(#journey-log.is-visible) #ft-wide-more-backdrop {
+        display: none !important;
+      }
       .ft-wide-more-radial {
         position: fixed;
         top: 50%;

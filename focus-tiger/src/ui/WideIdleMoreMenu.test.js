@@ -97,6 +97,10 @@ describe('wide more menu click reception', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
     assert.match(src, /ft-wide-more__backdrop/);
+    assert.match(
+      src,
+      /body:has\(#journey-log\.is-visible\) #ft-wide-more-menu/
+    );
     assert.match(src, /width: min\(400px, calc\(100vw - 48px\)\)/);
     assert.match(src, /max-width: 420px/);
     assert.match(src, /height: auto;/);

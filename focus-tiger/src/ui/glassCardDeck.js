@@ -117,6 +117,12 @@ export const GLASS_CARD_KEEP_STYLESHEET_Z = Object.freeze(
   new Set(['yin-support-modal'])
 );
 
+/**
+ * Journey Log stylesheet is dim 31 / card 32 so it sits above wide ⋯ (25–27).
+ * The 18/19 deck must not inline the card under its own frosted dim.
+ */
+export const GLASS_CARD_STAGE_Z = Object.freeze(new Set(['journey-log']));
+
 /** Fixed layout cards — still in deck stack / max-open, but not pointer-dragged. */
 export const GLASS_CARD_NO_DRAG = Object.freeze(new Set(['confide-to-yin-card']));
 
@@ -127,6 +133,9 @@ export const GLASS_CARD_NO_DRAG = Object.freeze(new Set(['confide-to-yin-card'])
  */
 export function glassCardInlineZIndex(elementId, { isFront = false } = {}) {
   if (GLASS_CARD_KEEP_STYLESHEET_Z.has(elementId)) return null;
+  if (GLASS_CARD_STAGE_Z.has(elementId)) {
+    return String(Z.NARROW_STAGE);
+  }
   if (GLASS_CARD_ELEVATED_Z.has(elementId)) {
     return String(Z.REMINDER_PANEL);
   }
@@ -230,7 +239,11 @@ export function installGlassCardDeck(doc = document) {
     card.style.transform = 'none';
     card.style.margin = '0';
     card.style.zIndex = String(
-      GLASS_CARD_ELEVATED_Z.has(card.id) ? Z.REMINDER_PANEL : Z.GLASS_CARD_FRONT
+      GLASS_CARD_ELEVATED_Z.has(card.id)
+        ? Z.REMINDER_PANEL
+        : GLASS_CARD_STAGE_Z.has(card.id)
+          ? Z.NARROW_STAGE
+          : Z.GLASS_CARD_FRONT
     );
     drag = {
       card,

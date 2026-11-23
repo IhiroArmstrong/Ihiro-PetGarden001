@@ -52,6 +52,7 @@ describe('HomeThreeZoneUI H2 skeleton', () => {
     assert.match(src, /SLOT_ID = 'ft-home-memorabilia-slot'/);
     assert.match(src, /new HomeMemorabiliaSlotUI/);
     assert.match(src, /ft-wide-more-open \.ft-home-zone-memories/);
+    assert.match(src, /body:has\(#journey-log\.is-visible\) \.ft-home-zone-memories/);
     assert.match(src, /@media \(max-width: 479px\)/);
   });
 });
