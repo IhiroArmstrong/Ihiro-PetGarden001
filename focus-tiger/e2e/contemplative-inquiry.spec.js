@@ -56,3 +56,55 @@ test("turning the column off removes the inspiration row", async ({ page }) => {
     page.locator("#ft-wide-more-menu [data-proxy=\"contemplative-inquiry\"]")
   ).toHaveCount(0);
 });
+
+
+async function openInquiryPastFirewall(page) {
+  await page.locator("#ft-wide-more-btn").click();
+  await pickWideMoreRadialGroup(page, "MENU_GROUP_INSPIRATION");
+  const menu = page.locator("#ft-wide-more-menu");
+  await expect(menu.locator("[data-proxy=\"contemplative-inquiry\"]")).toBeVisible();
+  await menu.locator("[data-proxy=\"contemplative-inquiry\"]").click();
+  const comeIn = page.locator("[data-testid=\"contemplative-inquiry-come-in\"]");
+  await comeIn.waitFor({ state: "visible", timeout: 5_000 }).catch(() => {});
+  if (await comeIn.isVisible().catch(() => false)) {
+    await comeIn.click();
+  }
+  await expect(page.locator("[data-testid=\"contemplative-inquiry-card\"]")).toBeVisible();
+}
+
+async function startInquirySit(page) {
+  await page.evaluate(() => {
+    const ui = window.__contemplativeInquiryCard;
+    if (!ui) throw new Error("missing contemplative inquiry card");
+    ui._startSit();
+  });
+  await expect(page.locator("[data-testid=\"contemplative-inquiry-end-early\"]")).toBeAttached({
+    timeout: 5_000
+  });
+}
+
+test("early end lands then Done closes without Ground", async ({ page }) => {
+  await openFreshProductShell(page);
+  await dismissColdStartOverlay(page);
+  await openInquiryPastFirewall(page);
+  await startInquirySit(page);
+  await page.locator("[data-testid=\"contemplative-inquiry-end-early\"]").click({ force: true });
+  await expect(page.locator("[data-testid=\"contemplative-inquiry-done\"]")).toBeVisible({
+    timeout: 5_000
+  });
+  await page.locator("[data-testid=\"contemplative-inquiry-done\"]").click();
+  await expect(page.locator("[data-testid=\"contemplative-inquiry-card\"]")).toBeHidden();
+  await expect(page.locator("[data-testid=\"ground-exercise-choice\"]")).toBeHidden();
+});
+
+test("landing Feel the ground opens Ground choice", async ({ page }) => {
+  await openFreshProductShell(page);
+  await dismissColdStartOverlay(page);
+  await openInquiryPastFirewall(page);
+  await startInquirySit(page);
+  await page.locator("[data-testid=\"contemplative-inquiry-end-early\"]").click({ force: true });
+  await page.locator("[data-testid=\"contemplative-inquiry-land\"]").click();
+  await expect(page.locator("[data-testid=\"ground-exercise-choice\"]")).toBeVisible({
+    timeout: 5_000
+  });
+});

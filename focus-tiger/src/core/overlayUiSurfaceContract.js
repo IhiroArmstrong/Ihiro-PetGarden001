@@ -232,7 +232,28 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
   }),
   glassCard('FocusCoinsPanelUI.js'),
   glassCard('DailyZenQuoteCardUI.js'),
-  glassCard('ContemplativeInquiryUI.js'),
+  surface({
+    file: 'ContemplativeInquiryUI.js',
+    slotRequest: deriveSlot(),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: MUTATION_GAP,
+    e2eOverlap: {
+      mode: 'spec',
+      path: 'e2e/contemplative-inquiry.spec.js',
+      tokens: Object.freeze([
+        'contemplative-inquiry-done',
+        'contemplative-inquiry-land'
+      ])
+    },
+    trackerCoverage: Object.freeze({
+      mode: 'token',
+      files: Object.freeze([
+        'docs/tracker-entries/feature-t79-r1-landing-copy.md'
+      ]),
+      tokens: Object.freeze(['待人工测试'])
+    })
+  }),
   glassCard('DigitalWallpapersCardUI.js'),
   glassCard('ArtCollectionPanelUI.js'),
   glassCard('ZenCinemaCardUI.js'),
