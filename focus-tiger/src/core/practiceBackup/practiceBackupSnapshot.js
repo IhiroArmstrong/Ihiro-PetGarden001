@@ -11,7 +11,8 @@ import {
   PRACTICE_BACKUP_EXPORT_KEYS,
   PRACTICE_BACKUP_V5_ADDED_KEYS,
   PRACTICE_BACKUP_V6_ADDED_KEYS,
-  PRACTICE_BACKUP_V7_ADDED_KEYS
+  PRACTICE_BACKUP_V7_ADDED_KEYS,
+  PRACTICE_BACKUP_V8_ADDED_KEYS
 } from './localBackupStorageRegistry.js';
 import {
   attachStageFloorToLotusValue,
@@ -23,7 +24,7 @@ import {
 } from '../growthJourneyStage.js';
 import { mergePracticeBackupCloudStoreValue } from './practiceBackupCloudMerge.js';
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 7;
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 8;
 
 /** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
 export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
@@ -76,6 +77,11 @@ export const PRACTICE_BACKUP_V7_STORE_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V7_ADDED_KEYS
 ]);
 
+export const PRACTICE_BACKUP_V8_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V7_STORE_KEYS,
+  ...PRACTICE_BACKUP_V8_ADDED_KEYS
+]);
+
 export const PRACTICE_BACKUP_STORE_KEYS = PRACTICE_BACKUP_EXPORT_KEYS;
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
@@ -124,6 +130,9 @@ export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   if (schemaVersion === 5) return PRACTICE_BACKUP_V5_STORE_KEYS;
   if (schemaVersion === 6) {
     return PRACTICE_BACKUP_V6_STORE_KEYS;
+  }
+  if (schemaVersion === 7) {
+    return PRACTICE_BACKUP_V7_STORE_KEYS;
   }
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
@@ -469,6 +478,10 @@ export function isPracticeBackupStoreEmpty(storage, key) {
       const votes = Array.isArray(parsed.focusVoteWindow) ? parsed.focusVoteWindow : [];
       const hasStable = parsed.focusMinutes && typeof parsed.focusMinutes === 'object';
       return !hasStable && votes.length === 0 && parsed.focusAwaitingVote !== true;
+    }
+    case 'focus-tiger.menu-favorites.v1': {
+      const ids = parsed.itemIds;
+      return !Array.isArray(ids) || ids.length === 0;
     }
     case 'focus-tiger.focus-duration-pref.v1': {
       const minutes = Number(parsed.minutes);

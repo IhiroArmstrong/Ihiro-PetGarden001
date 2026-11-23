@@ -25,6 +25,8 @@ import {
   writeAlwaysOnTopEnabled
 } from '../core/alwaysOnTopBridge.js';
 import { paintSecondaryChromeMenuRow } from './secondaryMenuRowRender.js';
+import { attachSecondaryMenuFavoriteHeart } from './secondaryMenuFavoriteHeart.js';
+import { injectMenuFavoritesSection } from '../core/menuFavoritesStore.js';
 import {
   adoptPreferencePanelIntoSheet,
   preferenceSheetEmbedCss,
@@ -1076,6 +1078,9 @@ export class NarrowIdleShell {
       windowLayoutAvailable: canUseWindowLayout(),
       inputRhythmAvailable: canUseInputRhythm()
     });
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const entriesWithFavorites = injectMenuFavoritesSection(entries, storage);
 
     this.listEl.innerHTML = '';
     /** @type {HTMLUListElement | null} */
@@ -1084,7 +1089,7 @@ export class NarrowIdleShell {
     let groupCardItems = null;
   /** @type {string | null} */
   let currentGroupKey = null;
-    for (const item of entries) {
+    for (const item of entriesWithFavorites) {
       if (item.kind === 'sub-group-label') {
         const card = document.createElement('li');
         card.className = 'ft-pref-card';
@@ -1159,6 +1164,11 @@ export class NarrowIdleShell {
         });
       }
       li.appendChild(btn);
+      attachSecondaryMenuFavoriteHeart(li, btn, item, {
+        t,
+        storage,
+        onToggled: () => this._refreshDrawerItems()
+      });
       (cardItems || groupCardItems || this.listEl).appendChild(li);
     }
     void this._hydratePrefToggles();

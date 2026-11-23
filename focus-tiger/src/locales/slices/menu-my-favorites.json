@@ -1,0 +1,26 @@
+{
+  "en": {
+    "MENU_GROUP_MY_FAVORITES": "My Favorites",
+    "MENU_FAVORITE_ADD_TIP": "Add to My Favorites",
+    "MENU_FAVORITE_REMOVE_TIP": "Remove from My Favorites",
+    "MENU_FAVORITE_FULL_TIP": "My Favorites is full (8 items)",
+    "MENU_FAVORITE_ARIA_ADD": "Add to My Favorites",
+    "MENU_FAVORITE_ARIA_REMOVE": "Remove from My Favorites"
+  },
+  "zh": {
+    "MENU_GROUP_MY_FAVORITES": "我的常用",
+    "MENU_FAVORITE_ADD_TIP": "加入我的常用",
+    "MENU_FAVORITE_REMOVE_TIP": "从我的常用移除",
+    "MENU_FAVORITE_FULL_TIP": "我的常用已满（最多 8 项）",
+    "MENU_FAVORITE_ARIA_ADD": "加入我的常用",
+    "MENU_FAVORITE_ARIA_REMOVE": "从我的常用移除"
+  },
+  "ja": {
+    "MENU_GROUP_MY_FAVORITES": "よく使う",
+    "MENU_FAVORITE_ADD_TIP": "よく使うに追加",
+    "MENU_FAVORITE_REMOVE_TIP": "よく使うから外す",
+    "MENU_FAVORITE_FULL_TIP": "よく使うは上限（8件）です",
+    "MENU_FAVORITE_ARIA_ADD": "よく使うに追加",
+    "MENU_FAVORITE_ARIA_REMOVE": "よく使うから外す"
+  }
+}

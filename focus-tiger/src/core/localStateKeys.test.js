@@ -157,6 +157,7 @@ import {
 } from './yinAdaptationStore.js';
 import { PRACTICE_BACKUP_OPT_IN_KEY } from './practiceBackup/practiceBackupSnapshot.js';
 import { STABLE_PREFS_STORAGE_KEY } from './stablePrefsStore.js';
+import { MENU_FAVORITES_STORAGE_KEY } from './menuFavoritesStore.js';
 import {
   COLD_START_DIRECT_SIT_HINT_KEY,
   COLD_START_DIRECT_SIT_PENDING_KEY,
@@ -271,6 +272,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   PRACTICE_BACKUP_OPT_IN_KEY,
   PRACTICE_PAPER_HIDDEN_KEY,
   STABLE_PREFS_STORAGE_KEY,
+  MENU_FAVORITES_STORAGE_KEY,
   DAILY_WISDOM_STORAGE_KEY,
   MUSTARD_SEED_SEAL_STORAGE_KEY,
   CONTEMPLATIVE_ARCHIVE_SEAL_STORAGE_KEY,

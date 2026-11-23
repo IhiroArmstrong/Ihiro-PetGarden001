@@ -22,9 +22,9 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 
 ---
 
-## Export whitelist (schema v7)
+## Export whitelist (schema v8)
 
-`PRACTICE_BACKUP_SCHEMA_VERSION = 7` · **31** localStorage keys + optional Electron `companionFiles`:
+`PRACTICE_BACKUP_SCHEMA_VERSION = 8` · **32** localStorage keys + optional Electron `companionFiles`:
 
 | Group | Keys |
 |---|---|
@@ -33,6 +33,7 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 | Prefs + social (v5) | focus-duration-pref · intentions · quiet-together · focus-circle · focus-circle-witness-responded · focus-circle-passive-share · focus-circle-was-here-mark · focus-circle-identity · focus-circle-identity-hidden |
 | Essence (v6) | focus-essence |
 | Stable prefs (v7) | stable-prefs |
+| Menu favorites (v8) | menu-favorites |
 
 **Companion fields** (Electron): `yinPersonalMemory`
 
