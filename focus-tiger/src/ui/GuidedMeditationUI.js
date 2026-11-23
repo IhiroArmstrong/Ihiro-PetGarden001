@@ -35,7 +35,7 @@ import {
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'guided-meditation-styles-v2';
+const STYLE_ID = 'guided-meditation-styles-v3';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const DUCK_SPEAK = 0.45;
 
@@ -573,11 +573,14 @@ export class GuidedMeditationUI {
       .guided-meditation {
         position: fixed;
         left: 50%;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 8vh);
+        top: max(12px, env(safe-area-inset-top, 0px) + 8px);
+        bottom: max(72px, env(safe-area-inset-bottom, 0px) + 56px);
         transform: translateX(-50%) translateY(12px);
         width: min(94vw, 520px);
-        max-height: min(82vh, 640px);
-        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
         padding: 16px;
         box-sizing: border-box;
         z-index: ${Z.GLASS_CARD};
