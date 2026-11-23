@@ -1,0 +1,11 @@
+{
+  "en": {
+    "YIN_MEMORY_PANEL_UNAVAILABLE": "What Yin remembers is only on this computer. This browser cannot open that list."
+  },
+  "zh": {
+    "YIN_MEMORY_PANEL_UNAVAILABLE": "「阿寅记得什么」只在这台电脑上。这个浏览器打不开那份列表。"
+  },
+  "ja": {
+    "YIN_MEMORY_PANEL_UNAVAILABLE": "寅が覚えていることはこのコンピュータにだけあります。このブラウザでは開けません。"
+  }
+}

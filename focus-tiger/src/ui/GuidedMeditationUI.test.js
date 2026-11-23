@@ -17,7 +17,8 @@ test('GuidedMeditationUI uses sanctuary glass factory, not a nested cream plate'
   assert.match(src, /id: 'guided-meditation'/);
   assert.match(src, /deck: true/);
   assert.match(src, /data-ft-glass-drag-chrome/);
-  assert.match(src, /max-height: min\(82vh, 640px\)/);
+  assert.match(src, /top: max\(12px, env\(safe-area-inset-top/);
+  assert.match(src, /overflow-y: auto/);
   assert.match(src, /\.guided-meditation__panel \{[\s\S]*?background: transparent;/);
   assert.doesNotMatch(src, /rgba\(255,\s*252,\s*245,\s*0\.92\)/);
   assert.doesNotMatch(src, /yin-support-modal/);

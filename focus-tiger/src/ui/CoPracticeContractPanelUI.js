@@ -115,7 +115,8 @@ export class CoPracticeContractPanelUI {
     mountCoPracticeContractSurface(this.bodyEl, {
       onOpenReminderSettings: () => this._settingsOpeners.onOpenReminderSettings?.(),
       onOpenWorkEndSettings: () => this._settingsOpeners.onOpenWorkEndSettings?.(),
-      onOpenPrivacySettings: () => this._settingsOpeners.onOpenPrivacySettings?.()
+      onOpenPrivacySettings: () => this._settingsOpeners.onOpenPrivacySettings?.(),
+      onChanged: () => this._renderBody()
     });
   }
 

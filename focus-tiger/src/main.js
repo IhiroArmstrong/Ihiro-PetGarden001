@@ -250,6 +250,7 @@ import {
   glassCardIdsToClose,
   installGlassCardDeck
 } from './ui/glassCardDeck.js';
+import { openThoughtDropMemoryPanel } from './ui/openThoughtDropMemoryPanel.js';
 import { assertGlassGrowthOverlayCardOrder } from './core/glassGrowthOverlayCardRegistry.js';
 import { startFocusCircleOnlinePresence } from './core/focusCircleOnline.js';
 import { GrowthJourneyDetailUI } from './ui/GrowthJourneyDetailUI.js';
@@ -2723,10 +2724,9 @@ async function init() {
       mindflowNebulaChrome?.setConfideOpen(false);
       mindflowNebulaChrome?.refresh?.();
     },
-    onOpenMemoryPanel: () => {
-      closeGrowthOverlayCards({ except: 'yin-memory' });
-      yinPersonalMemoryUI.open();
-    },
+    // Elevate What Yin remembers over Thought Drop; toast if the desktop bridge is missing.
+    // Memory panel is not in GLASS_CARD_ELEMENT_IDS (factory gate).
+    onOpenMemoryPanel: () => openThoughtDropMemoryPanel({ closeOthers: () => closeGrowthOverlayCards({ except: 'yin-memory' }), memoryUi: yinPersonalMemoryUI, toast: mindfulToast }),
     onMemoryForgotten: (memoryId) => {
       yinPersonalMemoryUI.removeMemoryIfOpen(memoryId);
     },

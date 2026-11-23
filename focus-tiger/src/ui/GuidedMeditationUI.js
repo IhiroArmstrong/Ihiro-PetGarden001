@@ -20,6 +20,7 @@ import {
   speakGuidedMeditationSentence,
   stopGuidedMeditationSpeech
 } from '../core/guidedMeditationSpeech.js';
+import { isSystemTtsAnnouncementsEnabled } from '../core/systemTtsPreference.js';
 import { resolveGuidedMeditationCredit } from '../core/guidedMeditationLessons.js';
 import {
   GLASS_FILL_STRONG,
@@ -34,7 +35,7 @@ import {
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'guided-meditation-styles-v2';
+const STYLE_ID = 'guided-meditation-styles-v3';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const DUCK_SPEAK = 0.45;
 
@@ -61,7 +62,7 @@ export class GuidedMeditationUI {
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
     this._credited = false;
-    this._voiceOn = true;
+    this._voiceOn = isSystemTtsAnnouncementsEnabled();
     /** @type {ReturnType<typeof createGuidedMeditationScriptEngine> | null} */
     this._engine = null;
     /** @type {object | null} */
@@ -376,7 +377,7 @@ export class GuidedMeditationUI {
 
     this._engine = createGuidedMeditationScriptEngine({
       lesson,
-      voiceEnabled: this._voiceOn,
+      voiceEnabled: this._voiceOn && isSystemTtsAnnouncementsEnabled(),
       speak: (text, { onFinished }) =>
         speakGuidedMeditationSentence({
           text,
@@ -401,7 +402,9 @@ export class GuidedMeditationUI {
     if (snap.phase === 'speaking') {
       this._duckAmbient(DUCK_SPEAK);
       this._setStatus(
-        canSpeakGuidedMeditation({ widthPx: window.innerWidth }) && this._voiceOn
+        canSpeakGuidedMeditation({ widthPx: window.innerWidth }) &&
+          this._voiceOn &&
+          isSystemTtsAnnouncementsEnabled()
           ? 'speaking'
           : 'web-text'
       );
@@ -425,6 +428,13 @@ export class GuidedMeditationUI {
   }
 
   _toggleVoice() {
+    if (!isSystemTtsAnnouncementsEnabled()) {
+      this._voiceOn = false;
+      stopGuidedMeditationSpeech();
+      this._engine?.setVoiceEnabled(false);
+      this._refreshControlLabels();
+      return;
+    }
     this._voiceOn = !this._voiceOn;
     this._engine?.setVoiceEnabled(this._voiceOn);
     if (!this._voiceOn) stopGuidedMeditationSpeech();
@@ -563,11 +573,14 @@ export class GuidedMeditationUI {
       .guided-meditation {
         position: fixed;
         left: 50%;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 8vh);
+        top: max(12px, env(safe-area-inset-top, 0px) + 8px);
+        bottom: max(72px, env(safe-area-inset-bottom, 0px) + 56px);
         transform: translateX(-50%) translateY(12px);
         width: min(94vw, 520px);
-        max-height: min(82vh, 640px);
-        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
         padding: 16px;
         box-sizing: border-box;
         z-index: ${Z.GLASS_CARD};

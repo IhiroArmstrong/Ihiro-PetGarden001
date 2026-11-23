@@ -1,0 +1,14 @@
+{
+  "en": {
+    "SANCTUARY_NAV_MENU_LABEL": "Navigate Sanctuary",
+    "GROUND_EXERCISE_MENU_LABEL": "Ground Exercise"
+  },
+  "zh": {
+    "SANCTUARY_NAV_MENU_LABEL": "栖居导航",
+    "GROUND_EXERCISE_MENU_LABEL": "接地练习"
+  },
+  "ja": {
+    "SANCTUARY_NAV_MENU_LABEL": "サンクチュアリ案内",
+    "GROUND_EXERCISE_MENU_LABEL": "グラウンディング"
+  }
+}

@@ -56,6 +56,8 @@ describe('guidedMeditationLessons', () => {
     assert.equal(/createElement\(['"]video['"]\)/.test(ui), false);
     assert.equal(speech.includes('systemTtsAnnouncements'), false);
     assert.match(ui, /guidedMeditationScriptEngine/);
+    assert.match(ui, /top: max\(12px, env\(safe-area-inset-top/);
+    assert.match(ui, /overflow-y: auto/);
   });
 
   it('credits a short lesson at 90% for nominal minutes', () => {

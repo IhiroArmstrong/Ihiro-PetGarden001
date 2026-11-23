@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-11-18  
+生成日期：2026-11-23  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -93,7 +93,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - （无额外用户操作）
 
 **Then**
-- Idle 时见 Honesty Check-in 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 Sit with Yin 开始本场计时。宽屏 Idle 阿寅下方另有一句短问候（`#ft-home-idle-greeting`，当日固定一句）+ Begin Practice；问候不可点、不自动开坐。窄屏（≤479）同一句问候 + Begin Practice（`#ft-narrow-home-idle-greeting` / `#ft-narrow-home-begin-practice`），点 Begin Practice 0–1 秒见到达，与 Sit 球相同；抽屉仍是底边，不是宽屏侧栏
+- Idle 时见 Honesty Check-in 小钮（Sit 上方；点它可补登别处完成的练习）。Kelly 也可直接点 Sit with Yin 开始本场计时。宽屏 Idle 阿寅下方另有一句短问候（`#ft-home-idle-greeting`，当日固定一句）+ Begin Practice；问候不可点、不自动开坐。宽屏左侧另有 Sanctuary 导航扇（日历 / 收藏等；点一项 0–1 秒内扇关或进目标）；Begin Practice 与 Sit 球同效。宽屏 三区骨架（HUD 下进度簇 + 记忆轨 `[data-testid=ft-home-memorabilia]`：最新结缘缩略 + 枚数，点 进入收藏 开艺术收藏，非付费）；打开 ⋯ 菜单时记忆轨须让位。窄屏（≤479）同一句问候 + Begin Practice（`#ft-narrow-home-idle-greeting` / `#ft-narrow-home-begin-practice`），点 Begin Practice 0–1 秒见到达，与 Sit 球相同；抽屉仍是底边，不是宽屏侧栏
 
 #### A-3
 
@@ -1245,7 +1245,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 
 | 步骤 ID | 优先级 | 覆盖 | 摘要 |
 |---|---|---|---|
-| Q1-1 | P0 | 无自动化标注 | `?product=1` Idle → 右上（音符左侧）`#yin-support-fab`（默认小 |
+| Q1-1 | P0 | 无自动化标注 | `?product=1` Idle → 右上（音符左侧）`#yin-support-fab`（H4： |
 | Q1-2 | P0 | 无自动化标注 | 见三卡（头图暖纸底；三 CTA 同款米色立体，Join Membership 不得蒲团橙白字）： |
 | Q1-3 | P0 | 无自动化标注 | Maybe later 为文字链关闭（非全宽描边钮）。0–1 秒内：链按压 + 模态收起，Idle  |
 | Q1-4 | P0 | 无自动化标注 | 375：三卡上下堆叠、可关；FAB 与 ♪ 同系玻璃。 |
@@ -1266,7 +1266,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - `?product=1` Idle
 
 **Then**
-- 右上（音符左侧）`#yin-support-fab`（默认小标；hover / 键盘焦点 / 展开后才见完整药丸）→ 0–1 秒内：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
+- 右上（音符左侧）`#yin-support-fab`（H4：默认仅露小标 + 无障碍名；文案标签折叠，hover / 键盘焦点 / `aria-expanded=true` 才展开药丸文案）→ 0–1 秒内：FAB 按压态（`:active`）+ `#yin-support-modal` 展开。
 
 #### Q1-2
 
@@ -4710,7 +4710,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 |---|---|---|---|
 | AG-1 | P0 | 无自动化标注 | 1a Consent：首次 unmatched 句（非情绪桶/非练多久/非危机）→ L3 前应出现  |
 | AG-2 | P0 | 无自动化标注 | 1b Remember：Consent Allow → 发可抽取句（例：`I prefer quie |
-| AG-3 | P0 | 无自动化标注 | 1c 面板：点 What Yin remembers → 见类型/摘要/Why → 点 Forget |
+| AG-3 | P0 | 无自动化标注 | 1c 面板：点 What Yin remembers → 0–1 秒内见 `#yin-persona |
 | AG-4 | P0 | 无自动化标注 | 1d 注入：已有 Monday 记忆 medium+ → 再发「Monday feels crowd |
 | AG-5 | P0 | 无自动化标注 | 1e 口头 Forget：须先在 What Yin remembers 见到条目（例：`I pref |
 | AG-6 | P0 | 无自动化标注 | 1f Don't save · memory suppress：Consent Allow → (T |
@@ -4758,7 +4758,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 1c 面板：点 What Yin remembers
 
 **Then**
-- 见类型/摘要/Why → 点 Forget → 0–1 秒内行消失 → JSON 该条已删。面板保持打开再发可抽取句（例：`Mondays feel crowded`）→ 0–1 秒内出现 Pattern 行（摘要是观察句，不必逐字等于用户句）。回流：面板关着写入再打开须见新行；连续快速发两条不同规则（Monday + 一句 check-in）两条都在。空态：Consent 未决策 → `YIN_MEMORY_PANEL_EMPTY`；Allow 后仍无抽取条目 → `YIN_MEMORY_PANEL_EMPTY_GRANTED`（禁止再写「去 Confide 允许」；对不上抽取规则的闲聊 L3 答句默认不入库）。Denied：Consent Not now 后打开面板见 denied 文案。
+- 0–1 秒内见 `#yin-personal-memory` 叠在 Thought Drop 前面（卡本身可保持开着）。见类型/摘要/Why → 点 Forget → 0–1 秒内行消失 → JSON 该条已删。面板保持打开再发可抽取句（例：`Mondays feel crowded`）→ 0–1 秒内出现 Pattern 行（摘要是观察句，不必逐字等于用户句）。回流：面板关着写入再打开须见新行；连续快速发两条不同规则（Monday + 一句 check-in）两条都在。空态：Consent 未决策 → `YIN_MEMORY_PANEL_EMPTY`；Allow 后仍无抽取条目 → `YIN_MEMORY_PANEL_EMPTY_GRANTED`（禁止再写「去 Confide 允许」；对不上抽取规则的闲聊 L3 答句默认不入库）。Denied：Consent Not now 后打开面板见 denied 文案。
 
 #### AG-4
 
@@ -5726,7 +5726,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 节奏句下方
 
 **Then**
-- 0–1 秒内见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 Sit & Breath（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，禁止健康分 / 百分比 / 「本周」对外文案）。点 Hide → 0–1 秒内整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸不得改上半部阶段公式，不得另写 Journey log 行。
+- 0–1 秒内见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 Sit & Breath（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，禁止健康分 / 百分比 / 「本周」对外文案）。点 Hide → 0–1 秒内整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸不得改上半部阶段公式，不得另写 Journey log 行。详情内不得见适应总开关 / 晚间同意勾选（`yin-adaptation-toggle` / `practice-paper-evening-consent`）；这两项在 ⋯ → Preferences → How Yin may speak，点开该页 0–1 秒内见开关。
 
 #### AV-4
 

@@ -42,10 +42,15 @@ test('practice paper hangs under the rhythm, as one Sit & Breath card', () => {
   assert.doesNotMatch(src, /arrive\s*===\s*true/);
 });
 
-test('practice paper evening consent stops glass-card drag on pointerdown', () => {
+test('practice paper taps stop glass-card drag on pointerdown', () => {
   assert.match(
     src,
     /this\.paperEl\.addEventListener\('pointerdown',\s*\(event\)\s*=>\s*\{\s*event\.stopPropagation\(\);/s
   );
-  assert.match(src, /confirmBtn\.scrollIntoView/);
+});
+
+test('Where you are has no T58/T62 setting checkboxes', () => {
+  assert.doesNotMatch(src, /yin-adaptation-toggle/);
+  assert.doesNotMatch(src, /practice-paper-evening-consent/);
+  assert.doesNotMatch(src, /practice-paper-evening-confirm/);
 });

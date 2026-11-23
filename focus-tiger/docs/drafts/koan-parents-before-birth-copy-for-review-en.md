@@ -52,7 +52,7 @@ Buttons: **Come in** / **Not now**
 
 ## 3. Sit quietly (~5 minutes)
 
-Uses existing timer. No extra on-screen explanation. Can decline or end early—no “why did you leave?” **Early end still goes to step 5 (landing).**
+Uses existing timer (HUD sitting picture; no on-screen MM:SS). Show the question line only. Can decline or end early—no “why did you leave?” **Early end still goes to step 5 (landing).**
 
 ---
 
@@ -76,9 +76,11 @@ Options (descriptive, not ranked):
 
 ## 5. Landing (every round; required after early exit)
 
-> Yin: Let’s take three breaths and come back to right here. If focusing on breath makes you tighter, you can name three things around you, or feel your feet on the floor. Any one is enough.
+**Title:** Coming back
 
-Do not summarize “what you saw.”
+> Come back to right here. If you like, take three breaths, or feel your feet on the floor.
+
+Primary **Done** (close). Secondary **Feel the ground** (opens Ground exercise choice). Do not summarize “what you saw.”
 
 ---
 

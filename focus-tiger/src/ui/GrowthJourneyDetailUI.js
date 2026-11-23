@@ -24,12 +24,7 @@ import {
 } from '../core/practicePaperCheckInRhythm.js';
 import { AWAKEN_CHECKIN_STORAGE_KEY } from '../core/awakenCheckInStore.js';
 import { getStorage } from '../utils/Storage.js';
-import {
-  clearEveningPracticeFactsLedger,
-  getEveningPracticePaperFact,
-  readEveningFactsConsent,
-  setEveningPracticeFactsConsent
-} from '../core/eveningPracticeFacts.js';
+import { getEveningPracticePaperFact } from '../core/eveningPracticeFacts.js';
 import { getLocalDateKey } from '../utils/localDate.js';
 import {
   buildYinAdaptationNotebookLines
@@ -37,8 +32,6 @@ import {
 import { setHabitualHighlightConsent } from '../core/prefStateResolver.js';
 import {
   hideYinAdaptationNotebookLine,
-  isYinAdaptationEnabled,
-  setYinAdaptationEnabled,
   suspendYinAdaptationRule
 } from '../core/yinAdaptationStore.js';
 import {
@@ -163,7 +156,7 @@ export class GrowthJourneyDetailUI {
     this.paperEl = document.createElement('section');
     this.paperEl.className = 'growth-journey-detail__paper';
     this.paperEl.dataset.testid = 'practice-paper';
-    // Practice-paper taps must not start glass-card drag (steals checkbox / Turn on).
+    // Practice-paper taps must not start glass-card drag (steals Sit & Breath).
     this.paperEl.addEventListener('pointerdown', (event) => {
       event.stopPropagation();
     });
@@ -323,31 +316,20 @@ export class GrowthJourneyDetailUI {
   _refreshNotebook() {
     const storage = this._storage();
     this.notebookEl.replaceChildren();
+    const lines = buildYinAdaptationNotebookLines({
+      storage,
+      todayKey: this._todayKey()
+    });
+    if (!lines.length) {
+      this.notebookEl.hidden = true;
+      return;
+    }
+    this.notebookEl.hidden = false;
 
     const heading = document.createElement('p');
     heading.className = 'growth-journey-detail__notebook-title';
     heading.textContent = t('YIN_ADAPTATION_NOTEBOOK_TITLE');
     this.notebookEl.appendChild(heading);
-
-    const toggleRow = document.createElement('label');
-    toggleRow.className = 'growth-journey-detail__notebook-toggle';
-    const toggle = document.createElement('input');
-    toggle.type = 'checkbox';
-    toggle.checked = isYinAdaptationEnabled();
-    toggle.dataset.testid = 'yin-adaptation-toggle';
-    toggle.addEventListener('change', () => {
-      setYinAdaptationEnabled(toggle.checked);
-      this._refresh();
-    });
-    const toggleText = document.createElement('span');
-    toggleText.textContent = t('YIN_ADAPTATION_TOGGLE_LABEL');
-    toggleRow.append(toggle, toggleText);
-    this.notebookEl.appendChild(toggleRow);
-
-    const lines = buildYinAdaptationNotebookLines({
-      storage,
-      todayKey: this._todayKey()
-    });
     for (const line of lines) {
       const row = document.createElement('div');
       row.className = 'growth-journey-detail__notebook-line';
@@ -464,78 +446,6 @@ export class GrowthJourneyDetailUI {
     return this.handlers.getTodayKey?.() ?? getLocalDateKey(new Date());
   }
 
-  _appendEveningConsentControls(storage) {
-    const consent = readEveningFactsConsent(storage);
-    const wrap = document.createElement('div');
-    wrap.className = 'growth-journey-detail__paper-evening-controls';
-    wrap.dataset.testid = 'practice-paper-evening-controls';
-
-    const disclosure = document.createElement('p');
-    disclosure.className = 'growth-journey-detail__paper-evening-disclosure';
-    disclosure.dataset.testid = 'practice-paper-evening-disclosure';
-    disclosure.textContent = t('PRACTICE_PAPER_EVENING_DISCLOSURE');
-    wrap.appendChild(disclosure);
-
-    const label = document.createElement('label');
-    label.className = 'growth-journey-detail__paper-evening-toggle';
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.checked = consent.enabled;
-    input.dataset.testid = 'practice-paper-evening-consent';
-    const labelText = document.createElement('span');
-    labelText.textContent = t('PRACTICE_PAPER_EVENING_CONSENT_LABEL');
-    label.append(input, labelText);
-    wrap.appendChild(label);
-
-    let pendingEnable = false;
-    const confirmBtn = document.createElement('button');
-    confirmBtn.type = 'button';
-    confirmBtn.className = 'growth-journey-detail__paper-toggle';
-    confirmBtn.dataset.testid = 'practice-paper-evening-confirm';
-    confirmBtn.textContent = t('PRACTICE_PAPER_EVENING_CONFIRM');
-    confirmBtn.hidden = true;
-    confirmBtn.addEventListener('click', () => {
-      if (!setEveningPracticeFactsConsent(this._storage(), true)) return;
-      pendingEnable = false;
-      this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
-    });
-    wrap.appendChild(confirmBtn);
-
-    input.addEventListener('change', () => {
-      if (input.checked && !consent.enabled) {
-        input.checked = false;
-        pendingEnable = true;
-        confirmBtn.hidden = false;
-        confirmBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        return;
-      }
-      if (!input.checked && consent.enabled) {
-        if (!setEveningPracticeFactsConsent(this._storage(), false)) {
-          input.checked = true;
-          return;
-        }
-        pendingEnable = false;
-        confirmBtn.hidden = true;
-        this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
-      }
-    });
-
-    if (consent.enabled) {
-      const clearBtn = document.createElement('button');
-      clearBtn.type = 'button';
-      clearBtn.className = 'growth-journey-detail__paper-toggle';
-      clearBtn.dataset.testid = 'practice-paper-evening-clear';
-      clearBtn.textContent = t('PRACTICE_PAPER_EVENING_CLEAR');
-      clearBtn.addEventListener('click', () => {
-        if (!clearEveningPracticeFactsLedger(this._storage())) return;
-        this._refreshPaper(this.handlers.getPracticeDates?.() ?? []);
-      });
-      wrap.appendChild(clearBtn);
-    }
-
-    this.paperEl.appendChild(wrap);
-  }
-
   _refreshPaper(practiceDates) {
     const storage = this._storage();
     const today = this._todayKey();
@@ -574,8 +484,6 @@ export class GrowthJourneyDetailUI {
       );
       this.paperEl.appendChild(evening);
     }
-
-    this._appendEveningConsentControls(storage);
 
     const subtitle = document.createElement('p');
     subtitle.className = 'growth-journey-detail__paper-subtitle';
