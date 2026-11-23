@@ -10,9 +10,14 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { inspectModelOutput } from '../outputGate/outputGateRules.js';
 import { CONFIDE_CORPUS } from '../confide/confideCorpus.js';
-import { CONFIDE_ROUTE } from '../confide/confideRoutes.js';
+import {
+  CONFIDE_GENERATE_REPLY_ROUTE,
+  CONFIDE_HELP_CENTER_REDIRECT_REPLY_ROUTE,
+  CONFIDE_ROUTE
+} from '../confide/confideRoutes.js';
 import {
   NOTICING_FIXED_LINES,
+  NOTICING_FIXED_LINE_ROUTES,
   NOTICING_HOLD_KIND,
   NOTICING_INVITE_KIND,
   NOTICING_LINT_EXEMPT_LINE_IDS,
@@ -25,6 +30,20 @@ import {
   shouldUseNoticingFixedLine,
   zhBannedHits
 } from './noticingFixedLineLibrary.js';
+
+/** Every classify route must appear here. New ids fail until PO names overlay on/off. */
+const NOTICING_OVERLAY_BY_ROUTE = Object.freeze({
+  [CONFIDE_ROUTE.SAFETY_REDIRECT]: false,
+  [CONFIDE_ROUTE.SAFETY_CARE]: true,
+  [CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS]: false,
+  [CONFIDE_ROUTE.ANXIOUS]: true,
+  [CONFIDE_ROUTE.TIRED]: true,
+  [CONFIDE_ROUTE.STUCK]: true,
+  [CONFIDE_ROUTE.SAD]: true,
+  [CONFIDE_ROUTE.SCATTERED]: true,
+  [CONFIDE_ROUTE.FALLBACK]: true,
+  [CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN]: false
+});
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -82,17 +101,26 @@ test('G3: every en/zh/ja line is allowed by the existing output-gate inspector',
   assert.deepEqual(hits, []);
 });
 
-test('non-crisis routes use the library; safety redirect, aggression, ja-not-open do not', () => {
-  assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.FALLBACK), true);
-  assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.SAD), true);
-  assert.equal(
-    shouldUseNoticingFixedLine(CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS),
-    false
+test('noticing overlay is an explicit whitelist; every classify route is named', () => {
+  const classifyRoutes = Object.values(CONFIDE_ROUTE).sort();
+  assert.deepEqual(Object.keys(NOTICING_OVERLAY_BY_ROUTE).sort(), classifyRoutes);
+  const expectedOn = classifyRoutes.filter(
+    (route) => NOTICING_OVERLAY_BY_ROUTE[route]
   );
-  assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.SAFETY_CARE), true);
-  assert.equal(shouldUseNoticingFixedLine(CONFIDE_ROUTE.SAFETY_REDIRECT), false);
+  assert.deepEqual([...NOTICING_FIXED_LINE_ROUTES].sort(), expectedOn.sort());
+  for (const route of classifyRoutes) {
+    assert.equal(
+      shouldUseNoticingFixedLine(route),
+      NOTICING_OVERLAY_BY_ROUTE[route],
+      route
+    );
+  }
+  assert.equal(shouldUseNoticingFixedLine(''), false);
+  assert.equal(shouldUseNoticingFixedLine(undefined), false);
+  assert.equal(shouldUseNoticingFixedLine('future_unknown_route'), false);
+  assert.equal(shouldUseNoticingFixedLine(CONFIDE_GENERATE_REPLY_ROUTE), false);
   assert.equal(
-    shouldUseNoticingFixedLine(CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN),
+    shouldUseNoticingFixedLine(CONFIDE_HELP_CENTER_REDIRECT_REPLY_ROUTE),
     false
   );
   assert.equal(

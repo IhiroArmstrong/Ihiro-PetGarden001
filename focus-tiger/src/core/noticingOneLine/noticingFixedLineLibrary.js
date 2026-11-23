@@ -62,14 +62,24 @@ export function noticingFixedLineLocaleKey(id) {
   return `NOTICING_FIXED_${String(id).replace('-', '_')}`;
 }
 
+/**
+ * Classify routes allowed to draw noticing A/B.
+ * Unknown / future ids default off so they cannot inherit overlay by accident
+ * (#1828 opted `safety_care` out with a blacklist; #1836 restored it).
+ */
+export const NOTICING_FIXED_LINE_ROUTES = Object.freeze([
+  CONFIDE_ROUTE.SAFETY_CARE,
+  CONFIDE_ROUTE.ANXIOUS,
+  CONFIDE_ROUTE.TIRED,
+  CONFIDE_ROUTE.STUCK,
+  CONFIDE_ROUTE.SAD,
+  CONFIDE_ROUTE.SCATTERED,
+  CONFIDE_ROUTE.FALLBACK
+]);
+
 export function shouldUseNoticingFixedLine(route) {
   if (!route) return false;
-  if (route === CONFIDE_ROUTE.SAFETY_REDIRECT) return false;
-  // Mid-tier care stays on the noticing overlay until its own Brief.
-  // Harm-to-others is the only extra opt-out from this cut (#1828 follow-up).
-  if (route === CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS) return false;
-  if (route === CONFIDE_ROUTE.LANGUAGE_NOT_YET_OPEN) return false;
-  return true;
+  return NOTICING_FIXED_LINE_ROUTES.includes(route);
 }
 
 export function noticingFixedLineText(line, locale = 'en') {
