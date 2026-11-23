@@ -51,7 +51,7 @@
 - 窄窗发送钮被挡（R2L-02）：修掉，或写入本页残余风险。**单独**不构成 G1–G4 的红，但入口对客开时不得假装没有。
 - T91 会话锁：进过安全档则锁到退出应用。不新做第三把锁。
 
-**12/5 提前材料（2026-11-21）**：勾选纸见 [`findings/2026-11-21/noticing-open-gate-12-05-worksheet.md`](./findings/2026-11-21/noticing-open-gate-12-05-worksheet.md)。11/21 证据摘录 **不是** 12/5 签发。专用池四句待人在书面风险接受签一行。
+**12/5 提前材料（2026-11-21 · 2026-11-23 补记 #1869）**：勾选纸见 [`findings/2026-11-21/noticing-open-gate-12-05-worksheet.md`](./findings/2026-11-21/noticing-open-gate-12-05-worksheet.md)。11/21 证据摘录 **不是** 12/5 签发。专用池四句待人在书面风险接受签一行。overlay 白名单 [#1869](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1869) 已合，**不是**四闸。
 
 ---
 
@@ -121,7 +121,7 @@
 
 NF-05 到 NF-07 可能落到 A/B：零生成下可接受，前提是 A/B 能过审稿第 7 项。第 7 项补审已做（#1814 删 A-13 / A-15 / B-12），**不是**「待下次改句才启用」。2026-11-21 安全审：A-19 在「已动手 + 活该」场景读成认可，下次改句优先删或改写 A-19；A-03 在求认可伤害场景偏安全。处理方式仍是删句，不改夹具、不改附录本批。口令「删 A-19」**不执行**，须新 Brief + G4 重审。
 
-**2026-11-21 只读核对（历史）**：当时发布路径把伤害他人抽到通用 A/B。**已由 [#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) 恢复专用池**；中档关心留在 overlay（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836)）；禁词豁免 + 待签表（[#1837](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1837)）；仓内夹具（[#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)）；12/5 工作纸（[#1843](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1843)）。核对原稿见 [核对记录](./findings/2026-11-21/noticing-aggression-pool-source.md)。**禁止**把该核对再读成「尚未恢复」。
+**2026-11-21 只读核对（历史）**：当时发布路径把伤害他人抽到通用 A/B。**已由 [#1828](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1828) 恢复专用池**；中档关心留在 overlay（[#1836](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1836)）；禁词豁免 + 待签表（[#1837](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1837)）；仓内夹具（[#1842](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1842)）；12/5 工作纸（[#1843](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1843)）；overlay 白名单（[#1869](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1869)）。核对原稿见 [核对记录](./findings/2026-11-21/noticing-aggression-pool-source.md)。**禁止**把该核对再读成「尚未恢复」。
 
 PO 已审 10 条自编短句（仓内、无细节）。夹具已入库，勿再开同内容旁支。
 
