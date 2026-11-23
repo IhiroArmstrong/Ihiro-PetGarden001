@@ -363,7 +363,8 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     id: OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY,
     kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
     tier: 12,
-    readers: 'T79 Sit-with-a-question card; overlayBusy; independent 5-minute wall clock',
+    readers:
+      'T79 Sit-with-a-question card; overlayBusy; independent 5-minute wall clock; sit step hides backdrop so blank click does not close',
     blocksIdleYinTap: true,
     blocksEnterSleep: true,
     outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,

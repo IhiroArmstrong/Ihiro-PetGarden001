@@ -243,13 +243,15 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       path: 'e2e/contemplative-inquiry.spec.js',
       tokens: Object.freeze([
         'contemplative-inquiry-done',
-        'contemplative-inquiry-land'
+        'contemplative-inquiry-land',
+        'contemplative-inquiry-question'
       ])
     },
     trackerCoverage: Object.freeze({
       mode: 'token',
       files: Object.freeze([
-        'docs/tracker-entries/feature-t79-r1-landing-copy.md'
+        'docs/tracker-entries/feature-t79-r1-landing-copy.md',
+        'docs/tracker-entries/feature-t79-r1-sit-question-hud.md'
       ]),
       tokens: Object.freeze(['待人工测试'])
     })

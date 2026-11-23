@@ -27,11 +27,18 @@ test('ContemplativeInquiryUI sit step uses sitting picture, not a visible countd
   assert.doesNotMatch(src, /FocusSession/);
   assert.match(src, /contemplative-inquiry-end-early/);
   assert.match(src, /_goLanding\(''\)/);
+  assert.match(
+    src,
+    /_step === 'sit'[\s\S]*contemplative-inquiry-question[\s\S]*contemplative-inquiry-clock/
+  );
+  assert.match(src, /contemplative-inquiry-card-styles-v2/);
+  assert.doesNotMatch(src, /startSittingMusic/);
 });
 
 test('main HUD hides sitting-picture digits during T79 sit', () => {
   const mainSrc = readFileSync(join(here, '../main.js'), 'utf8');
   assert.match(mainSrc, /liveClockOverlay: !inquirySitting/);
+  assert.match(mainSrc, /countLiveSessionMinutes: !inquirySitting/);
 });
 
 test('ContemplativeInquiryUI early end still lands; fourth option is Exit B', () => {

@@ -108,3 +108,25 @@ test("landing Feel the ground opens Ground choice", async ({ page }) => {
     timeout: 5_000
   });
 });
+
+test("sit shows the question, hides MM:SS, then lands on the feeling step", async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await dismissColdStartOverlay(page);
+  await openInquiryPastFirewall(page);
+  await startInquirySit(page);
+  const question = page.locator("[data-testid=\"contemplative-inquiry-question\"]");
+  await expect(question).toBeVisible();
+  await expect(page.locator("[data-testid=\"contemplative-inquiry-clock\"]")).toBeHidden();
+  await page.mouse.click(16, 16);
+  await expect(question).toBeVisible();
+  await page.evaluate(() => {
+    const ui = window.__contemplativeInquiryCard;
+    ui._sitMs = 200;
+    ui._sitStartedAt = Date.now() - 500;
+  });
+  await expect(page.locator("[data-testid=\"contemplative-inquiry-opt-many\"]")).toBeVisible({
+    timeout: 5_000
+  });
+});

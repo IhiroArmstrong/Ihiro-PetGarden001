@@ -7,6 +7,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   resolveFocusHudLiveView,
+  sittingBarLiveMinutes,
   shouldHideSittingPictureDigits
 } from './focusHudLive.js';
 
@@ -49,6 +50,36 @@ describe('resolveFocusHudLiveView', () => {
     assert.equal(view.displayState, 'FOCUSING');
     assert.equal(view.elapsedSeconds, 45);
     assert.equal(view.level, 0.75);
+  });
+});
+
+describe('sittingBarLiveMinutes', () => {
+  it('zeros inquiry sit minutes without changing Focusing fill', () => {
+    assert.equal(
+      sittingBarLiveMinutes({
+        liveSessionMinutes: 5,
+        countLiveSessionMinutes: false
+      }),
+      0
+    );
+    assert.equal(
+      sittingBarLiveMinutes({
+        liveSessionMinutes: 12.4 / 60,
+        countLiveSessionMinutes: true
+      }),
+      12.4 / 60
+    );
+    const focusingView = resolveFocusHudLiveView({
+      state: 'FOCUSING',
+      sessionElapsedSeconds: 45,
+      sessionFocusLevel: 0.75
+    });
+    assert.equal(
+      sittingBarLiveMinutes({
+        liveSessionMinutes: focusingView.liveSessionMinutes
+      }),
+      0.75
+    );
   });
 });
 

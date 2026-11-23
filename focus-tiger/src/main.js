@@ -7462,7 +7462,7 @@ async function init() {
       softTargetMinutes: FOCUS_SESSION_DEFAULT_MINUTES,
       practiceRingFilled: practiceDaysStore.getRingFilled(PRACTICE_STREAK_RING_TOTAL),
       practiceRingTotal: PRACTICE_STREAK_RING_TOTAL,
-      treatAsFocusing: overlayBreathing, liveClockOverlay: !inquirySitting,
+      treatAsFocusing: overlayBreathing, liveClockOverlay: !inquirySitting, countLiveSessionMinutes: !inquirySitting,
       liveElapsedSeconds: overlayElapsed,
       focusLevelOverride: overlayProgress,
       sessionTargetMinutes: overlayBreathing
