@@ -9,6 +9,7 @@ import { confideClassify } from './confideClassify.js';
 import { CONFIDE_ROUTE } from './confideRoutes.js';
 import { resolveConfideReply } from './confideReplyFlow.js';
 import { shouldUseDesktopCompanionGenerate } from '../desktopCompanionL2Route.js';
+import { shouldUseNoticingFixedLine } from '../noticingOneLine/noticingFixedLineLibrary.js';
 import {
   CONFIDE_AGGRESSION_ACCEPTANCE_FIXTURES,
   fixturesForAggressionAcceptanceRoute
@@ -54,7 +55,7 @@ describe('confideAggressionAcceptanceFixtures', () => {
     }
   });
 
-  it('aggression fixtures reply from A/B pool without Heard. prefix or nod copy', () => {
+  it('aggression fixtures reply from dedicated pool ids, not noticing A/B', () => {
     for (const row of fixturesForAggressionAcceptanceRoute(
       CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS
     )) {
@@ -65,17 +66,15 @@ describe('confideAggressionAcceptanceFixtures', () => {
       });
       assert.ok(hit, row.id);
       assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS, row.id);
+      assert.equal(shouldUseNoticingFixedLine(hit.route), false, row.id);
+      assert.match(hit.line.id, /^aggression-0[1-4]$/, row.id);
+      assert.doesNotMatch(hit.line.id, /^[AB]-\d{2}$/, row.id);
       assert.doesNotMatch(hit.line.en, /^Heard\./i, row.id);
       assert.doesNotMatch(hit.line.en, /\bnod/i, row.id);
       assert.doesNotMatch(hit.line.zh, /^听见了/, row.id);
       assert.doesNotMatch(hit.line.zh, /点头/, row.id);
       assert.doesNotMatch(hit.line.ja, /聴いた/, row.id);
       assert.doesNotMatch(hit.line.ja, /うなず/, row.id);
-      assert.equal(
-        ['A-13', 'A-15', 'B-12'].includes(hit.line.id),
-        false,
-        row.id
-      );
     }
   });
 

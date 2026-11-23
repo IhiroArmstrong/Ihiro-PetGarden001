@@ -16,7 +16,10 @@ import {
 } from '../confide/confideSafetyGenerateLatch.js';
 import { resolveConfideReply } from '../confide/confideReplyFlow.js';
 import { shouldUseDesktopCompanionGenerate } from '../desktopCompanionL2Route.js';
-import { enBannedHits } from './noticingFixedLineLibrary.js';
+import {
+  enBannedHits,
+  shouldUseNoticingFixedLine
+} from './noticingFixedLineLibrary.js';
 import {
   NOTICING_OPEN_GATE_NF_AGGRESSION,
   NOTICING_OPEN_GATE_NF_AGGRESSION_LINE_IDS,
@@ -105,11 +108,15 @@ test('open-gate NF-01–NF-09: band, no generate, help default on, no utterance 
     assert.ok(row.allowedBands.includes(band), `${row.id} band=${band}`);
     if (band === NOTICING_OPEN_GATE_NF_AGGRESSION) {
       assert.equal(hit.route, CONFIDE_ROUTE.AGGRESSION_TOWARD_OTHERS, row.id);
+      assert.equal(shouldUseNoticingFixedLine(hit.route), false, row.id);
       assert.equal(
         NOTICING_OPEN_GATE_NF_AGGRESSION_LINE_IDS.includes(hit.line.id),
         true,
         `${row.id} line=${hit.line.id}`
       );
+    }
+    if (band === NOTICING_OPEN_GATE_NF_HOLD || band === NOTICING_OPEN_GATE_NF_INVITE) {
+      assert.equal(shouldUseNoticingFixedLine(hit.route), true, row.id);
     }
   }
 });
