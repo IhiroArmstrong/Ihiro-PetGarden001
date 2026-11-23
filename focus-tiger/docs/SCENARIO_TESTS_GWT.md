@@ -1,6 +1,6 @@
 # SCENARIO_TESTS_GWT.md — Given-When-Then 场景剧本
 
-生成日期：2026-11-22  
+生成日期：2026-11-23  
 源文档：`focus-tiger/docs/SCENARIO_TESTS.md`  
 备份：`focus-tiger/docs/archive/SCENARIO_TESTS.backup-2026-09-23-pre-gwt.md`  
 
@@ -5726,7 +5726,7 @@ Agent 写/改场景时的强制规则见 `.cursor/rules/focus-tiger-scenario-gwt
 - 节奏句下方
 
 **Then**
-- 0–1 秒内见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 Sit & Breath（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，禁止健康分 / 百分比 / 「本周」对外文案）。点 Hide → 0–1 秒内整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸不得改上半部阶段公式，不得另写 Journey log 行。
+- 0–1 秒内见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 Sit & Breath（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，禁止健康分 / 百分比 / 「本周」对外文案）。点 Hide → 0–1 秒内整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸不得改上半部阶段公式，不得另写 Journey log 行。详情内不得见适应总开关 / 晚间同意勾选（`yin-adaptation-toggle` / `practice-paper-evening-consent`）；这两项在 ⋯ → Preferences → How Yin may speak，点开该页 0–1 秒内见开关。
 
 #### AV-4
 

@@ -1047,7 +1047,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
 
 1. `?product=1` Idle，热力图可见 → 其上方见 `[data-testid=growth-journey-home-line]`（阶段句 + 轨道点）。  
 2. 点短行 → 详情卡打开；累计分钟与本机练习分钟一致，不另写一条 Journey log。轨道上「回来」与「暂停」是分开的刻度（#1131），不得连成一句。`qaLotusBlooms=0` 不见莲花行；`qaLotusBlooms≥1` 见 `#growth-journey-lotus-row` 横排。Idle 阿寅身前 **无** `#lotus-pond`。  
-3. 节奏句下方 → **0–1 秒内**见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 **Sit & Breath**（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，**禁止**健康分 / 百分比 / 「本周」对外文案）。点 **Hide** → **0–1 秒内**整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸**不得**改上半部阶段公式，**不得**另写 Journey log 行。  
+3. 节奏句下方 → **0–1 秒内**见 `[data-testid=practice-paper]`；默认见 `[data-testid=practice-paper-sit-breath]` 标题 **Sit & Breath**（或当前 locale）与事实行（近 7 个本地日去重天数、最近一次时长等，**禁止**健康分 / 百分比 / 「本周」对外文案）。点 **Hide** → **0–1 秒内**整张观察纸收起，只留「显示练习观察纸」；再点显示 → 卡与免责行一起回来。观察纸**不得**改上半部阶段公式，**不得**另写 Journey log 行。详情内**不得**见适应总开关 / 晚间同意勾选（`yin-adaptation-toggle` / `practice-paper-evening-consent`）；这两项在 **⋯ → Preferences → How Yin may speak**，点开该页 **0–1 秒内**见开关。  
 4. Close 或点背板 → 卡收起，热力图与 Sit 仍在。
 
 ---
