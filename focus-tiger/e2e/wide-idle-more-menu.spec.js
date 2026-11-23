@@ -119,6 +119,32 @@ test('wide Idle: H2 three-zone rail and progress cluster', async ({ page }) => {
   await expect(memories).toBeHidden();
 });
 
+test('wide Idle: Journey log sits above its dim and hides ⋯ chrome', async ({
+  page
+}) => {
+  await openFreshProductShell(page);
+  await page.locator('[data-testid=ft-home-preview-records]').click();
+  const menu = page.locator('#ft-wide-more-menu');
+  await expect(menu).toBeVisible({ timeout: 5_000 });
+  await menu.locator('[data-proxy="journey-log"]').click();
+  const log = page.locator('#journey-log');
+  await expect(log).toBeVisible({ timeout: 5_000 });
+  await expect(log).toHaveClass(/is-visible/);
+  await expect(menu).toBeHidden();
+  await expect(page.locator('#ft-wide-more-radial')).toBeHidden();
+  await expect(page.locator('#ft-home-zone-memories')).toBeHidden();
+  const layers = await page.evaluate(() => {
+    const card = document.getElementById('journey-log');
+    const dim = document.querySelector('.journey-log-backdrop');
+    return {
+      card: Number(getComputedStyle(card).zIndex),
+      dim: Number(getComputedStyle(dim).zIndex)
+    };
+  });
+  expect(layers.card).toBeGreaterThan(layers.dim);
+  expect(layers.card).toBeGreaterThan(27);
+});
+
 test('wide Idle: H3 memorabilia slot opens Yins Collections', async ({
   page
 }) => {

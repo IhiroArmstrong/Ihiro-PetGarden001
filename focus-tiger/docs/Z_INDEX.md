@@ -77,7 +77,7 @@
 | **17** | `src/ui/GuidedMeditationUI.js` | `#guided-meditation-backdrop` 引导冥想遮罩（`overlayBackdrop` · `BLANK_CLOSES`；复用 `Z.OVERLAY_DIM`） |
 | **18** | `src/ui/GuidedMeditationUI.js` | `#guided-meditation` 引导冥想列表与播放卡（复用 `Z.GLASS_CARD`；不进 Support 付款路径） |
 | **18** | `src/ui/FiveMomentsCompassUI.js` | `#five-moments-compass` Five Moments 指南卡（⋯ / 抽屉 / 首卡 /「?」次要链） |
-| **18** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit） |
+| **32** | `src/ui/JourneyLogUI.js` | `#journey-log` Journey Log 轻面板（⋯ / 抽屉；本地留痕；非 HealthKit）。**须高于** `#journey-log-backdrop` **31** 与宽屏 ⋯ sheet **26/27**。玻璃叠层 `GLASS_CARD_STAGE_Z` 只许 inline **32**，禁止压成 18/19（否则卡会糊在自己的毛玻璃遮罩后面） |
 | **18** | `src/ui/GrowthJourneyDetailUI.js` | `#growth-journey-detail` 成长旅程详情（点首页短轨迹；下半屏只读纸；Esc / 点外关掉） |
 | **17** | `src/ui/GrowthJourneyDetailUI.js` | `#growth-journey-detail-backdrop` 详情遮罩（`overlayBackdrop` · 打开时 Support / 静音 / 倾听耳走 idle-chrome dim） |
 | **18** | `src/ui/YinArtCollectionPanelUI.js` | `#yin-art-panel` Yin's Art Collection（与珍藏抽屉分开；购买未开通时不记拥有） |

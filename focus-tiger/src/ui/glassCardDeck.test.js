@@ -14,6 +14,7 @@ import {
   GLASS_CARD_DRAG_TITLE,
   GLASS_CARD_INTERACTIVE,
   GLASS_CARD_KEEP_STYLESHEET_Z,
+  GLASS_CARD_STAGE_Z,
   GLASS_CARD_TEXT_SELECT
 } from './glassCardDeck.js';
 
@@ -73,6 +74,20 @@ test('Support modal keeps stylesheet z-index so the dim layer cannot eat Subscri
   assert.equal(front, '19');
   assert.equal(back, '18');
   assert.ok(Number(front) < 25, 'deck stack stays below Support dim (25)');
+});
+
+test('Journey Log stays above its dim and the wide ⋯ sheet (not deck 18/19)', () => {
+  assert.equal(GLASS_CARD_STAGE_Z.has('journey-log'), true);
+  assert.equal(glassCardInlineZIndex('journey-log', { isFront: true }), '32');
+  assert.equal(glassCardInlineZIndex('journey-log', { isFront: false }), '32');
+  assert.ok(
+    Number(glassCardInlineZIndex('journey-log', { isFront: true })) > 31,
+    'card must sit above journey-log-backdrop (31)'
+  );
+  assert.ok(
+    Number(glassCardInlineZIndex('journey-log', { isFront: true })) > 27,
+    'card must sit above wide ⋯ sheet (26/27)'
+  );
 });
 
 test('copyable lines on a glass card keep a text cursor and do not start a drag', () => {
