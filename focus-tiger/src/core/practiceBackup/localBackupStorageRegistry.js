@@ -30,6 +30,11 @@ export const PRACTICE_BACKUP_V7_ADDED_KEYS = Object.freeze([
   'focus-tiger.stable-prefs.v1'
 ]);
 
+/** Keys added in schema v8 (2026-11-22 · menu My Favorites). */
+export const PRACTICE_BACKUP_V8_ADDED_KEYS = Object.freeze([
+  'focus-tiger.menu-favorites.v1'
+]);
+
 /** Keys added in schema v5 (2026-09-16). */
 export const PRACTICE_BACKUP_V5_ADDED_KEYS = Object.freeze([
   'focus-tiger.focus-duration-pref.v1',
@@ -70,7 +75,8 @@ export const PRACTICE_BACKUP_EXPORT_KEYS = Object.freeze([
   'focus-tiger.focus-coins.v1',
   ...PRACTICE_BACKUP_V5_ADDED_KEYS,
   ...PRACTICE_BACKUP_V6_ADDED_KEYS,
-  ...PRACTICE_BACKUP_V7_ADDED_KEYS
+  ...PRACTICE_BACKUP_V7_ADDED_KEYS,
+  ...PRACTICE_BACKUP_V8_ADDED_KEYS
 ]);
 
 /**

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-22",
+  "updated": "2026-11-23",
   "note": "Purpose native title assignments grandfathered until L5 migration.",
   "titleViolations": [
     "src/core/idleChromeOrchestration.js:381:btn.title = translate('ritual.menu_locked');",

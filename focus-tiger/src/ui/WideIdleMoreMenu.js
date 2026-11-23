@@ -43,6 +43,8 @@ import {
 import { Z } from './zIndexLayers.js';
 import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
 import { paintSecondaryChromeMenuRow } from './secondaryMenuRowRender.js';
+import { attachSecondaryMenuFavoriteHeart } from './secondaryMenuFavoriteHeart.js';
+import { injectMenuFavoritesSection } from '../core/menuFavoritesStore.js';
 import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
 import {
   adoptPreferencePanelIntoSheet,
@@ -1203,6 +1205,9 @@ export class WideIdleMoreMenu {
       windowLayoutAvailable: canUseWindowLayout(),
       inputRhythmAvailable: canUseInputRhythm()
     });
+    const storage =
+      typeof localStorage !== 'undefined' ? localStorage : null;
+    const entriesWithFavorites = injectMenuFavoritesSection(entries, storage);
 
     this.listEl.innerHTML = '';
     const radialListOnly =
@@ -1216,10 +1221,11 @@ export class WideIdleMoreMenu {
     let sectionItems = null;
     /** @type {HTMLUListElement | null} */
     let cardItems = null;
-    for (const item of entries) {
+    for (const item of entriesWithFavorites) {
       if (item.kind === 'group-label') {
         if (radialListOnly) {
           const showGroup =
+            item.labelKey === 'MENU_GROUP_MY_FAVORITES' ||
             item.labelKey === this._activeListGroup ||
             (item.labelKey === 'ritual.menu_group' &&
               this._activeListGroup === 'MENU_GROUP_PRACTICE');
@@ -1320,6 +1326,11 @@ export class WideIdleMoreMenu {
         });
       }
       li.appendChild(btn);
+      attachSecondaryMenuFavoriteHeart(li, btn, item, {
+        t,
+        storage,
+        onToggled: () => this._refreshItems()
+      });
       host.appendChild(li);
     }
     if (radialListOnly) void this._hydratePrefToggles();
