@@ -40,7 +40,11 @@ test('ContemplativeInquiryUI early end still lands; fourth option is Exit B', ()
   assert.match(src, /contemplative-inquiry-opt-uncomfy/);
   assert.match(src, /_goLanding\('b'\)/);
   assert.match(src, /CI_EX1_EXIT_B/);
+  assert.match(src, /CI_EX1_LANDING_TITLE/);
   assert.match(src, /CI_EX1_LANDING/);
+  assert.match(src, /contemplative-inquiry-done/);
+  assert.match(src, /contemplative-inquiry-land/);
+  assert.match(src, /onLand/);
   assert.match(src, /onRequestConfide/);
   assert.doesNotMatch(
     src,

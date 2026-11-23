@@ -402,18 +402,19 @@ export class ContemplativeInquiryUI {
     }
 
     if (this._step === 'landing') {
+      this.titleEl.textContent = t('CI_EX1_LANDING_TITLE');
       const parts = [];
       if (this._exitKind === 'b') parts.push(t('CI_EX1_EXIT_B'));
       parts.push(t('CI_EX1_LANDING'));
       if (this._exitKind === 'b') parts.push(t('CI_EX1_TRY_LATER'));
       this._setBodyText(parts.join('\n\n'));
       this.actions.append(
-        this._btn(t('CI_EX1_LANDING_CTA'), 'contemplative-inquiry-land', () => {
+        this._btn(t('CI_EX1_DONE'), 'contemplative-inquiry-done', () => {
+          this.close();
+        }),
+        this._btn(t('CI_EX1_FEEL_GROUND'), 'contemplative-inquiry-land', () => {
           this.close();
           this.handlers.onLand?.();
-        }),
-        this._btn(t('CI_EX1_CLOSE'), 'contemplative-inquiry-close', () => {
-          this.close();
         }, 'ghost')
       );
       return;
