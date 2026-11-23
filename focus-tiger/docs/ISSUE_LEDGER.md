@@ -6,6 +6,7 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
+| 优化建议 | Mac 生态钩子尚未按优先级收口（全局开坐 / 今日已坐 / Shortcuts 食谱 / 网页转安装包） | 2026-11-23 PO 书面四条 | [`issue-entries/docs-mac-ecosystem-hooks-t101-t104.md`](./issue-entries/docs-mac-ecosystem-hooks-t101-t104.md) · **T101–T104** | 跟进中 |
 | 根因扇出 | 觉察 overlay 用黑名单默认放行，#1828 夹带踢掉 safety_care，CI 没拦 | 2026-11-21 手测 · 2026-11-23 复盘 | [`issue-entries/fix-noticing-overlay-whitelist.md`](./issue-entries/fix-noticing-overlay-whitelist.md) | 跟进中 |
 | 独立bug | Thought Drop 点 What Yin remembers 无可见变化 | 2026-11-20 用户书面 · 2026-11-22 D3 | [`issue-entries/fix-thought-drop-memory-link-click.md`](./issue-entries/fix-thought-drop-memory-link-click.md) | 跟进中 |
 | 根因扇出 | 第 1 类 · 接线断了不报错：平行手抄名单 + 成功标准只看「菜单关上」+ 处理函数缺失 `?.()` 静默 + `main.js` `init()` 顺序依赖 + 冒烟只在文档 + 新工作目录里提交钩子静默不跑 + 手拼字符串 | 2026-10-12 根因盘点 · [`root-cause-audit-2026-10-12.md`](./root-cause-audit-2026-10-12.md) R1–R5、R19 | **已发生：** (1) #1136 扇形/语音开关；(2) #1138 Art Collection；(3) #1139/#1144 Help Close；(4) #1129 收藏详情 undefined；(5) #1137 帮助中心/硬币面板 undefined；(6) #1139 启动 TDZ 崩溃；(7) #1127 Honesty 黑圈；(8) #1146 入库脚本路径。**仍存平行名单：** (a)(b) 宽/窄次级菜单分派链 → **A2 已合 #1179**；(c) `main.js` `glassOverlayCards` → **A3 已合 #1181**；(d) 宽/窄点击路径 `handlers.onX?.()` → **A4 已合 #1184**；(e) 新工作目录钩子 → **A22 已合 #1171**。9 月同族：本表「冷启动第一幕靠平行白名单门闩」。**行动：** A1 已合 #1173 · A2 已合 #1179 · A3 已合 #1181 · A4 已合 #1184 · A22 已合 #1171 · A5 已合 #1186 · A6 已合 #1189 · A7 已合 #1258（Brief #1190 · A7.1–A7.6）· A8 已合 #1268。 | 行动已合（A1–A8·A22）· 历史个案 Bug 见 tracker |

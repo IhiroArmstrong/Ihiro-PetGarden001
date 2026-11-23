@@ -256,6 +256,25 @@ describe('isQueueGovernanceCoPrAllowed', () => {
     );
   });
 
+
+  it('allows T101-T104 Mac hook briefs with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/task-briefs/task-t101-global-sit-hotkey.md',
+        'focus-tiger/docs/task-briefs/task-t102-tray-today-sat.md',
+        'focus-tiger/docs/task-briefs/task-t103-shortcuts-cookbook-close.md',
+        'focus-tiger/docs/task-briefs/task-t104-web-to-dmg-funnel.md',
+        'focus-tiger/docs/task-entries/t101-global-sit-hotkey.md',
+        'focus-tiger/docs/ISSUE_LEDGER.md',
+        'focus-tiger/docs/issue-entries/docs-mac-ecosystem-hooks-t101-t104.md',
+        'focus-tiger/docs/tracker-entries/docs-t101-t104-mac-hooks.md'
+      ]),
+      null
+    );
+  });
+
   it('allows T100 output-gate brief with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([
