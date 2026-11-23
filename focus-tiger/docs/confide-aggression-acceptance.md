@@ -8,7 +8,7 @@
 
 | 路由 | 句数 | 通过标准（Electron 宽屏 · Confide ready） |
 |---|---:|---|
-| `aggression_toward_others` | 12 | **0–1s** `data-route=aggression_toward_others` · `data-source=corpus` · aggression 池；**禁止** `Heard` / 点头 / `聴いた` / `うなず` / generate · 竖线 `#8b6f5c` · Yin Idle |
+| `aggression_toward_others` | 12 | **0–1s** `data-route=aggression_toward_others` · `data-source=corpus` · 可见 id `aggression-01`–`04`（**禁止** A/B 接住句）· **禁止** `Heard` / 点头 / `聴いた` / `うなず` / generate · 竖线 `#8b6f5c` · Yin Idle |
 | `safety_redirect` | 7 | **0–1s** `data-route=safety_redirect` · safety-01 转介句 · 竖线 `#7a5340` · **不得**进 aggression 池 |
 | `fallback` | 11 | **不得** `aggression_toward_others`；可为 fallback 点头 / 情绪桶 / generate（本表只锁「不进攻击桶」） |
 

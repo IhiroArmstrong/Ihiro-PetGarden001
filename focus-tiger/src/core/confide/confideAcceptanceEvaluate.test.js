@@ -44,6 +44,8 @@ describe('confideAcceptanceEvaluate', () => {
     assert.equal(evaluateConfideAcceptanceRow(meta).pass, true);
     const agg = CONFIDE_ROUND_ACCEPTANCE_FIXTURES.find((r) => r.id === 'agg-zh-wo-xiang-daren');
     assert.ok(agg);
-    assert.equal(evaluateConfideAcceptanceRow(agg).pass, true);
+    const aggHit = evaluateConfideAcceptanceRow(agg);
+    assert.equal(aggHit.pass, true);
+    assert.match(String(aggHit.actual.replyId || ''), /^aggression-0[1-4]$/);
   });
 });

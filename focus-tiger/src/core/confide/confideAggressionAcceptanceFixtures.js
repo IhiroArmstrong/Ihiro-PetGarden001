@@ -12,7 +12,8 @@
  * Do not swap sentences across runs — compare like with like.
  *
  * Routes (confideClassify layer):
- * - aggression_toward_others: noticing A/B pool; no old "Heard." prefix / nod / generate
+ * - aggression_toward_others: dedicated corpus ids aggression-01–04
+ *   (not noticing A/B; no old "Heard." prefix / nod / generate)
  * - safety_redirect: crisis line; beats aggression
  * - fallback: must not enter aggression bucket
  */

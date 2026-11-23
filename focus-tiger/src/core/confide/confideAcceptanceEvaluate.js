@@ -119,6 +119,12 @@ export function evaluateConfideAcceptanceRow(row) {
       });
       actual.replyId = hit?.line?.id ?? null;
       actual.replyText = confideLineText(hit?.line, locale);
+      if (!/^aggression-0[1-4]$/.test(String(actual.replyId || ''))) {
+        failures.push(`replyId ${actual.replyId ?? 'null'} not aggression-0x`);
+      }
+      if (/^[AB]-\d{2}$/.test(String(actual.replyId || ''))) {
+        failures.push(`replyId ${actual.replyId} is noticing A/B`);
+      }
       failures.push(...replyRedlineViolations(hit?.line).map((v) => `reply ${v}`));
     } else if (row.expect === CONFIDE_ROUTE.SAFETY_REDIRECT) {
       if (actual.source !== 'corpus') {
