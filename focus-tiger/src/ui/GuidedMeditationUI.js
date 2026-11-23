@@ -20,6 +20,7 @@ import {
   speakGuidedMeditationSentence,
   stopGuidedMeditationSpeech
 } from '../core/guidedMeditationSpeech.js';
+import { isSystemTtsAnnouncementsEnabled } from '../core/systemTtsPreference.js';
 import { resolveGuidedMeditationCredit } from '../core/guidedMeditationLessons.js';
 import {
   GLASS_FILL_STRONG,
@@ -61,7 +62,7 @@ export class GuidedMeditationUI {
     /** @type {(() => void) | null} */
     this._popEscapeLayer = null;
     this._credited = false;
-    this._voiceOn = true;
+    this._voiceOn = isSystemTtsAnnouncementsEnabled();
     /** @type {ReturnType<typeof createGuidedMeditationScriptEngine> | null} */
     this._engine = null;
     /** @type {object | null} */
@@ -376,7 +377,7 @@ export class GuidedMeditationUI {
 
     this._engine = createGuidedMeditationScriptEngine({
       lesson,
-      voiceEnabled: this._voiceOn,
+      voiceEnabled: this._voiceOn && isSystemTtsAnnouncementsEnabled(),
       speak: (text, { onFinished }) =>
         speakGuidedMeditationSentence({
           text,
@@ -401,7 +402,9 @@ export class GuidedMeditationUI {
     if (snap.phase === 'speaking') {
       this._duckAmbient(DUCK_SPEAK);
       this._setStatus(
-        canSpeakGuidedMeditation({ widthPx: window.innerWidth }) && this._voiceOn
+        canSpeakGuidedMeditation({ widthPx: window.innerWidth }) &&
+          this._voiceOn &&
+          isSystemTtsAnnouncementsEnabled()
           ? 'speaking'
           : 'web-text'
       );
@@ -425,6 +428,13 @@ export class GuidedMeditationUI {
   }
 
   _toggleVoice() {
+    if (!isSystemTtsAnnouncementsEnabled()) {
+      this._voiceOn = false;
+      stopGuidedMeditationSpeech();
+      this._engine?.setVoiceEnabled(false);
+      this._refreshControlLabels();
+      return;
+    }
     this._voiceOn = !this._voiceOn;
     this._engine?.setVoiceEnabled(this._voiceOn);
     if (!this._voiceOn) stopGuidedMeditationSpeech();

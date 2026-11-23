@@ -425,16 +425,19 @@ export class AmbientSoundscapeUI {
     this.voiceBlockTitle = document.createElement('p');
     this.voiceBlockTitle.className = 'ambient-soundscape__block-title';
     this.voiceToggleLabel = document.createElement('label');
-    this.voiceToggleLabel.className = 'ambient-soundscape__voice-toggle';
+    this.voiceToggleLabel.className =
+      'ambient-soundscape__awareness-card ambient-soundscape__voice-toggle';
     this.voiceToggleInput = document.createElement('input');
     this.voiceToggleInput.type = 'checkbox';
     this.voiceToggleInput.id = 'system-tts-announcements-toggle';
-    this.voiceToggleInput.className = 'ambient-soundscape__voice-toggle-input';
+    this.voiceToggleInput.className =
+      'ambient-soundscape__awareness-card-input ambient-soundscape__voice-toggle-input';
     this.voiceToggleInput.addEventListener('change', () =>
       this._onVoiceToggleChange()
     );
     this.voiceToggleText = document.createElement('span');
-    this.voiceToggleText.className = 'ambient-soundscape__voice-toggle-text';
+    this.voiceToggleText.className =
+      'ambient-soundscape__awareness-card-text ambient-soundscape__voice-toggle-text';
     this.voiceToggleHint = document.createElement('span');
     this.voiceToggleHint.className = 'ambient-soundscape__field-hint';
     this.voiceToggleHint.id = 'ambient-voice-toggle-hint';
