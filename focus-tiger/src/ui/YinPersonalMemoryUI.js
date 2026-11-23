@@ -172,16 +172,17 @@ export class YinPersonalMemoryUI {
   }
 
   open() {
-    if (!hasYinPersonalMemoryBridge()) return;
-    if (this._open) return;
+    if (!hasYinPersonalMemoryBridge()) return false;
+    const alreadyOpen = this._open;
     this._open = true;
     this._ignoreOutsideUntil = Date.now() + 400;
     this.root.hidden = false;
     this.root.getBoundingClientRect();
     this.root.classList.add('is-visible');
-    void this._loadAndRefresh();
+    if (!alreadyOpen) void this._loadAndRefresh();
     this.closeBtn.focus({ preventScroll: true });
-    this.handlers.onOpen?.();
+    if (!alreadyOpen) this.handlers.onOpen?.();
+    return true;
   }
 
   close() {

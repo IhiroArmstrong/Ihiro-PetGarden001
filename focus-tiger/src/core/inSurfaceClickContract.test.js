@@ -30,5 +30,11 @@ describe('IN_SURFACE_CLICK_RESULTS', () => {
       /confide-to-yin-memory-list-link/
     );
     assert.match(confideUi, /onOpenMemoryPanel/);
+    const opener = readFileSync(
+      new URL('../ui/openThoughtDropMemoryPanel.js', import.meta.url),
+      'utf8'
+    );
+    assert.match(opener, /elevateYinMemoryOverThoughtDrop/);
+    assert.match(opener, /GLASS_CARD_FRONT/);
   });
 });
