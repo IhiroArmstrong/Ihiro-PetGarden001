@@ -35,7 +35,7 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'contemplative-inquiry-card-styles-v1';
+const STYLE_ID = 'contemplative-inquiry-card-styles-v2';
 const ROOT_ID = 'contemplative-inquiry-card';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
@@ -364,6 +364,12 @@ export class ContemplativeInquiryUI {
 
     if (this._step === 'sit') {
       this.bodyEl.textContent = '';
+      const q = document.createElement('p');
+      q.className =
+        'contemplative-inquiry-card__copy contemplative-inquiry-card__question-line';
+      q.dataset.testid = 'contemplative-inquiry-question';
+      q.textContent = t('CI_EX1_QUESTION');
+      this.bodyEl.appendChild(q);
       const clock = document.createElement('p');
       clock.className = 'contemplative-inquiry-card__clock';
       clock.dataset.testid = 'contemplative-inquiry-clock';
@@ -432,6 +438,7 @@ export class ContemplativeInquiryUI {
   }
 
   _injectStyles() {
+    document.getElementById('contemplative-inquiry-card-styles-v1')?.remove();
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = STYLE_ID;
@@ -465,20 +472,31 @@ export class ContemplativeInquiryUI {
         box-shadow: none;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        width: auto;
+        width: min(360px, calc(100vw - 40px));
         padding: 0;
         pointer-events: none;
       }
-      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__title,
-      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__clock {
+      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__title {
         position: absolute;
         width: 1px;
         height: 1px;
         overflow: hidden;
         clip: rect(0, 0, 0, 0);
       }
+      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__clock {
+        display: none;
+      }
+      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__question-line {
+        margin: 0 0 10px;
+        text-align: center;
+        pointer-events: none;
+      }
       .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__actions {
         pointer-events: auto;
+        justify-content: center;
+      }
+      .contemplative-inquiry-card.is-sitting-picture .contemplative-inquiry-card__btn--ghost {
+        opacity: 0.55;
       }
       .contemplative-inquiry-card__title {
         margin: 0 0 8px;

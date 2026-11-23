@@ -8,6 +8,7 @@ import { focusLevelToHaloVars } from './focusHudHalo.js';
 import { sharedSittingProgressPercent } from './sharedSittingProgress.js';
 import {
   resolveFocusHudLiveView,
+  sittingBarLiveMinutes,
   shouldHideSittingPictureDigits,
   shouldShowFocusLevelPercent
 } from './focusHudLive.js';
@@ -27,6 +28,7 @@ import {
 export { focusLevelToHaloVars };
 export {
   resolveFocusHudLiveView,
+  sittingBarLiveMinutes,
   shouldHideSittingPictureDigits
 } from './focusHudLive.js';
 
@@ -148,7 +150,10 @@ export class FocusHUD {
       opts.softTargetMinutes ?? FOCUS_SESSION_DEFAULT_MINUTES;
     const barValue = sharedSittingProgressPercent({
       completedMinutes: opts.todayCompletedMinutes ?? 0,
-      liveSessionMinutes: live.liveSessionMinutes,
+      liveSessionMinutes: sittingBarLiveMinutes({
+        liveSessionMinutes: live.liveSessionMinutes,
+        countLiveSessionMinutes: opts.countLiveSessionMinutes
+      }),
       softTargetMinutes: softTarget
     });
     const ringTotal = opts.practiceRingTotal ?? PRACTICE_STREAK_RING_TOTAL;

@@ -56,6 +56,22 @@ export function resolveFocusHudLiveView({
 }
 
 /**
+ * Daily HUD bar fill. T79 inquiry sit uses treating-as-focusing for the
+ * sitting picture but must not count those minutes toward today's bar.
+ * @param {{
+ *   liveSessionMinutes?: number,
+ *   countLiveSessionMinutes?: boolean
+ * }} input
+ */
+export function sittingBarLiveMinutes({
+  liveSessionMinutes = 0,
+  countLiveSessionMinutes = true
+} = {}) {
+  if (countLiveSessionMinutes === false) return 0;
+  return Number(liveSessionMinutes) || 0;
+}
+
+/**
  * T45 sitting picture: hide ticking MM:SS / target / percent on a real Focus
  * session. Overlay HUD (micro-ritual / ritual breath) keeps the live clock.
  * @param {{ focusing?: boolean, overlayHud?: boolean }} input
