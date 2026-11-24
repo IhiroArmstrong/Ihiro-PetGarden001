@@ -64,6 +64,7 @@ import {
 } from './l1SemanticShadowLog.js';
 import { createSemanticShadowEmbeddingGate } from './l1SemanticShadowEmbeddingGate.js';
 import { pruneLocalConfideTurnsJsonl } from './confideTurnsJsonlPrune.js';
+import { sanitizeL3GenerateTurnLogRecord } from './l3GenerateTurnLog.js';
 import { canReuseConfideSemanticLiveCache } from './l1SemanticLiveCache.js';
 import { sanitizeRendererTurnLogRecord } from './confideRendererTurnLogAllowlist.js';
 import { resolveStage2bSeedSource } from './l1SemanticStage2bShadow.js';
@@ -1514,11 +1515,15 @@ export class CompanionL1Runtime {
    */
   async _appendTurnLog(record) {
     try {
+      const payload =
+        record?.kind === 'l3_generate'
+          ? sanitizeL3GenerateTurnLogRecord(record)
+          : record;
       const dir = path.join(this.userDataDir, 'companion-l2');
       await mkdir(dir, { recursive: true });
       await appendFile(
         path.join(dir, 'turns.jsonl'),
-        `${JSON.stringify(record)}\n`,
+        `${JSON.stringify(payload)}\n`,
         'utf8'
       );
       this._turnLogAppendCount += 1;
