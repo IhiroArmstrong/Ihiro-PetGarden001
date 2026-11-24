@@ -41,6 +41,9 @@ const tFn = (key) =>
 describe('reflectionPresenceBridge', () => {
   it('appends one presence row per non-empty reflection field', () => {
     const storage = mockStorage();
+    // Must stay within PRESENCE_SIGNALS_FREE_TEXT_RETENTION_DAYS of real time:
+    // readPresenceSignals() prunes expired freeText using `new Date()` as reference.
+    const now = new Date('2026-11-20T12:00:00.000Z');
     const result = appendReflectionPresenceSignals(
       storage,
       {
@@ -49,7 +52,7 @@ describe('reflectionPresenceBridge', () => {
         nextFocus: 'breath'
       },
       {
-        now: () => new Date('2026-11-20T12:00:00.000Z'),
+        now: () => now,
         idFn: () => 'batch-1'
       }
     );

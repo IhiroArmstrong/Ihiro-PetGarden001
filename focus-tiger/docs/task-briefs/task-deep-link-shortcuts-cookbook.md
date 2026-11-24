@@ -21,7 +21,8 @@
 
 | 项 | 口径 |
 |---|---|
-| iOS 原生壳 | **暂不进路线图**（与 **T49** 不换网页壳一致） |
+| iOS 原生壳（Capacitor） | **v1 当前不实现**（本 Brief 用 Safari + Shortcuts）。**纳入后续路线图**：Mac 首发验证（付费转化、D30 留存、陪伴付费意愿）达标后的**明确复盘节点**上列入并排期；**非**永久搁置。**≠ T49**（Mac 不换网页壳，只锁电脑端） |
+| 本 Brief 内的 iOS 原生壳代码 | **不实现**（与上条路线图不矛盾） |
 | Apple Health | **只写、不读**；只走 Shortcuts 回写 Mindful Minutes；不做 HealthKit |
 | 账号 / OAuth / 云 | **不做** |
 | 本功能定位 | Never-Cloud / 本地动作路由。防剽窃层 **不算**（过不了准入：不是云上秘密表） |
@@ -301,7 +302,7 @@
 4. 第一刀实现：**只 Sit**；Breath/micro 等解析与白名单单测绿后再加。  
 5. Epic：**挂栖居壳层 #793**，不新建「上下游整合」。  
 6. Raycast/Alfred：**食谱 §5.4**，不单独扩展 Brief。  
-7. Things / Notion / Slack / Zapier / iOS 原生壳：**继续不做**（与 §1 拍板一致）。  
+7. Things / Notion / Slack / Zapier / **本 Brief 内的 iOS 原生壳实现**：**继续不做**（路线图列入见 `task-tech-direction-v1-shell-monetization.md` · 仓库根 [`Mac 首发定价与转化验证 Brief.md`](../../../Mac%20首发定价与转化验证%20Brief.md) §9）。  
 8. Markdown 导出：**等深链 + 日历有人用再写姊妹 Brief**；边界见 §5.5。
 
 **PO 点头（2026-11-10）**：书面「深链+ics 点头」— §13 第 1–8 条 **已锁**。**口令已可用**：`按深链 Shortcuts Brief 开工解析层`（A 刀：解析纯函数 + 单测，不接线 UI、不做 Health 钮）。
