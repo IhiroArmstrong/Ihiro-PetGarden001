@@ -119,6 +119,7 @@
     "audit:kb-live-entries:sync": "node scripts/audit-kb-live-entries.js --write",
     "audit:kb-live-gap": "node scripts/audit-kb-live-gap.js",
     "audit:kb-live-gap:sync": "node scripts/audit-kb-live-gap.js --write",
+    "audit:public-resource-weight": "node scripts/audit-public-resource-weight.js",
     "audit:menu-chrome-census": "node scripts/audit-menu-chrome-census.js",
     "audit:menu-chrome-census:sync": "node scripts/audit-menu-chrome-census.js --write",
     "audit:entry-signal-ledger": "node scripts/audit-entry-signal-ledger.js",
