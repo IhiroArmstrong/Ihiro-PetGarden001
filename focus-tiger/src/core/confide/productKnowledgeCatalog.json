@@ -906,7 +906,7 @@
       "helpCenterVisible": true,
       "helpSectionId": "start",
       "helpCenterOrder": 46,
-      "shortAnswerEn": "Samatia runs in Safari on iPhone and iPad. There is no App Store or TestFlight app in this release — open the website in Safari. You can add it to your Home Screen for a full-screen shortcut.\n\nPractice data stays on that device. The desktop app and another browser on the same account do not share the same local store.\n\nA native iOS shell is not on the current roadmap; when that changes, we will say so here.",
+      "shortAnswerEn": "Samatia runs in Safari on iPhone and iPad. There is no App Store or TestFlight app in this release — open the website in Safari. You can add it to your Home Screen for a full-screen shortcut.\n\nPractice data stays on that device. The desktop app and another browser on the same account do not share the same local store.\n\nA native iOS app is planned for a later phase after we validate paid conversion and retention on Mac — not permanently shelved. This release stays Safari-only; we will update this article when timing is set.",
       "keywords": [
         "Safari on iPhone",
         "no App Store app",

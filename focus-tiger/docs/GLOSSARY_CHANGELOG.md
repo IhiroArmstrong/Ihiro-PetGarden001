@@ -6,6 +6,7 @@
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-24 | **PO 拍板（无新 T 号）**：Mac 付费渠道顺序 = 官网直销 → Setapp（达标后再开、不与直销同时）→ Mac App Store 后置。修正「iOS 原生壳暂不进路线图」→ v1 不实现，**Capacitor iOS 纳入后续路线图**（Mac 付费转化 + D30 留存 + 陪伴付费意愿验证后的复盘节点排期）；**≠ T49**。未改 `GLOSSARY.md` 主表（T49 仍 = Mac 不换网页壳）。文档：`Mac 首发定价与转化验证 Brief.md`、`task-tech-direction-v1-shell-monetization.md`、`task-deep-link-shortcuts-cookbook.md` §1、Help Center 设备文。 |
 | 2026-11-23 | **【新增】T101–T104** Mac 生态钩子：T101 全局开坐 P1 排队中；T102 今日已坐 P2；T103 Shortcuts 食谱 P2；T104 网页转安装包 可选。Brief 待点头。覆盖深链 Brief 旧「Things 继续不做」为「仅用户食谱」。不抢 T95。 |
 | 2026-11-22 | 队列表扫行：页眉 2026-11-22。底部长口令 **T73** 与表行对齐（第二刀开工口令 **不执行**；去掉「立即做 / 新 Chat 写 src」）。仅 GLOSSARY + SCHEDULING，未动 TEST_TRACKER。 |
 | 2026-11-21 | **T73** 第二刀 **已完成** · #1539/#1541 已合 develop（自 2026-11-02；此前术语表误写「立即做/Brief 已点头」）。口令「按 T73 Brief 开工第二刀」= 勿再开同内容旁支。同步 `pref-state-read-inventory`、Brief、`TASKS`/`TEST_TRACKER` 碎片。 |

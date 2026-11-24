@@ -11,7 +11,8 @@
 | 项 | 口径 |
 |---|---|
 | v1.0.0 交付默认形态 | **纯 Web**；**不上** App Store / Play 原生包 |
-| 手机原生壳 | v1 **不实现**；未来默认 **Capacitor** |
+| 手机原生壳（iOS · Capacitor） | v1 **不实现**（Safari / Shortcuts）；技术默认 **Capacitor**。**纳入后续路线图**（PO 2026-11-24）：Mac 官网直销验证付费转化、D30 留存、陪伴付费意愿后，**明确复盘节点**列入并排具体计划；**非**永久搁置。**≠ T49** Mac 不换网页壳 |
+| 付费渠道顺序（Mac） | **官网直销** → **Setapp**（直销数据达标后；**禁止同期开**）→ **Mac App Store** 后置。Setapp 按使用量分成。详 [`Mac 首发定价与转化验证 Brief.md`](../../../Mac%20首发定价与转化验证%20Brief.md) |
 | 桌面壳 | **已拍板 Electron**（2026-08-16；Mac DMG / electron-builder）。Tauri 日后备选；PWA 非电脑版终局。见 `PROCESS.md` + `task-desktop-shell-electron.md` |
 | 健康同步 | **非 v1**；**禁止**写入 B 付费权益 |
 | **商业双轨（硬）** | **A** Buy Yin a Tea（不解锁）+ **B** 进阶内容解锁。**两者都要**，不二选一。**不是**「三套不同内容层级」 |
@@ -47,9 +48,10 @@
 
 ## 一、壳与发布形态
 
-1. v1 默认 **纯 Web**。  
-2. 未来手机壳默认 **Capacitor**。  
+1. v1 默认 **纯 Web**（手机端 v1 亦以 Safari 为主；原生 iOS 包不在 v1 交付范围）。  
+2. 未来手机壳默认 **Capacitor**；在 Mac 直销验证三项达标后的复盘节点上**纳入路线图**，非永久搁置。  
 3. 桌面壳 **已拍板 Electron**（Mac DMG · #326）；脚手架规格 `task-electron-desktop-scaffold.md`（运行时另开实现回合）。PWA 不是电脑版终局。  
+4. **渠道**：官网直销 Mac 先行 → Setapp（达标后再开，不与直销同时）→ Mac App Store 后置。  
 
 **v1 纯 Web 不可用（不得写入付费卖点）**：HealthKit / Health Connect；StoreKit / Play Billing；系统 Widget / Live Activities；「一键发到指定社交 App」核心承诺。
 
