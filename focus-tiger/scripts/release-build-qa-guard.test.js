@@ -27,13 +27,14 @@ test('verify-no-qa-boot-in-dist rejects inlined VITE_FT_QA_BOOT on', () => {
   assert.match(verifySrc, /VITE_FT_QA_BOOT/);
 });
 
-test('desktop pack verifies direct-channel cloud backup gate is on', () => {
+test('desktop pack verifies invite DMG inlines cloud gate OFF', () => {
   assert.match(packSrc, /build:verify-cloud-gate/);
+  assert.match(packSrc, /VITE_FT_PRACTICE_BACKUP_CLOUD/);
   const cloudVerifySrc = readFileSync(
     path.join(root, 'scripts/verify-first-pack-cloud-gate.js'),
     'utf8'
   );
-  assert.match(cloudVerifySrc, /practiceBackupCloudEnabled = true/);
+  assert.match(cloudVerifySrc, /isInvitePackCloudGateOff/);
   assert.match(cloudVerifySrc, /practiceBackupCloudEnabled=!1/);
 });
 
