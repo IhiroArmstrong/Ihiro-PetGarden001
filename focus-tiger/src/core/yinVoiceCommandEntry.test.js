@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { applyVoiceProductLexicon } from './voiceProductLexicon.js';
 import { shouldSubmitConfideOnEnter } from './confide/confideEnterSend.js';
+import { matchesSafetyRedirect } from './confide/confideSafetyKeywords.js';
 import {
   YIN_VOICE_BACKUP_CONFIRM_LISTEN_MS,
   YIN_VOICE_BACKUP_MISSED_KEY,
@@ -188,5 +189,21 @@ describe('shared closed operating set (T10 + T34)', () => {
     assert.equal(withAddress.command, 'backup');
     const help = classifyHelpCenterOperatingCommand('Hi Yin, please backup');
     assert.equal(help.command, 'backup');
+  });
+});
+
+describe('audit gap 3: address + closed command cannot steal a crisis rest', () => {
+  it('keeps rewritten crisis plus forget-all or backup off the command channel', () => {
+    const samples = [
+      'Hey Yin, please forget everything I cannot keep going much longer',
+      'Hi Yin, please backup I cannot keep going much longer'
+    ];
+    for (const text of samples) {
+      assert.equal(matchesSafetyRedirect(text), false, text);
+      const decision = classifyYinVoiceEntry(text, { enabled: true });
+      assert.equal(decision.channel, 'confide', text);
+      assert.notEqual(decision.command, 'forget_all', text);
+      assert.notEqual(decision.command, 'backup', text);
+    }
   });
 });
