@@ -192,6 +192,30 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-task-snapshot',
+    title: '任务级保护：何时不必打快照、何时加码（≠ 稳定 tag / infra 摘要）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '任务级保护：何时不必打快照、何时加码',
+    ssotMustContain: [
+      /默认：分支 \+ PR 就是快照/,
+      /开工前须处理/,
+      /INFRA_SNAPSHOT/,
+      /语义化版本与稳定发布点/
+    ],
+    topicSignals: [/git-task-snapshot/, /任务级保护/, /何时不必打快照/],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [/默认：分支 \+ PR 就是快照/, /开工前须处理/],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'mandatory-pre-tag-every-task',
+        pattern: /每次(?:开工|任务).{0,12}(?:必须|须|都要).{0,12}(?:打|建).{0,8}(?:快照|pre-)/i,
+        note: '日常任务默认不必 pre-tag；见 WORKFLOW 任务级保护',
+        exemptIfLineMatches: /禁止|不必|默认不用|靠.*分支/
+      }
+    ]
+  },
+  {
     id: 'git-agent-commit',
     title: 'Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main',
     ssotPath: '.cursor/rules/focus-tiger-regression-lock.mdc',

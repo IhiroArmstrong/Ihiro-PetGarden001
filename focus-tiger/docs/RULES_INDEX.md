@@ -43,6 +43,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-branch-model` | 分支模型（main / develop / feature / fix / hotfix） | `WORKFLOW.md` | 分支模型 |
 | `git-merge-main` | 合并 develop → main 的门禁与谁点合并 | `WORKFLOW.md` | 何时可以把 `develop` 合并进 `main`？ |
 | `git-semver-release` | 语义化版本与稳定发布点（tag，非 release 分支） | `WORKFLOW.md` | 语义化版本与稳定发布点 |
+| `git-task-snapshot` | 任务级保护：何时不必打快照、何时加码（≠ 稳定 tag / infra 摘要） | `WORKFLOW.md` | 任务级保护：何时不必打快照、何时加码 |
 | `git-agent-commit` | Agent 自动 commit / 汇报 / Git 同步分级汇总 / push 与禁自动合 main | `.cursor/rules/focus-tiger-regression-lock.mdc` | Commit 汇报与分支门禁 |
 | `git-cross-session` | 跨会话指令冲突处理（开 PR / 合并 / push 前） | `WORKFLOW.md` | 跨会话指令冲突处理 |
 | `git-pr-next-step-gate` | 任务切片开工/继续/下一步须先查有没有 PR（不论是否已合） | `WORKFLOW.md` | 任务切片：开工 / 继续 / 下一步须先查 PR |
@@ -106,6 +107,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-branch-model` | 「分支职责见 `WORKFLOW.md`」 | 再抄一份五列表 |
 | `git-merge-main` | 「合并 main 门禁见 `WORKFLOW.md`」 | 另造「须 N 人审批」等未立项条款；Agent 代点合并 |
 | `git-semver-release` | 「SemVer / 稳定 tag 见 `WORKFLOW.md` 语义化版本节」 | 主张开发期就开长期 `release/*` 线；平行复述完整 MAJOR/MINOR/PATCH 表与发版 SOP |
+| `git-task-snapshot` | 「任务级保护见 `WORKFLOW.md`」；开工前脏树/数据迁移可一行引用 | 主张每次开工必打 `pre-*` tag；与稳定 `vX.Y.Z` 或 `INFRA_SNAPSHOT` 混称；平行复述六类表 |
 | `git-agent-commit` | 「见 regression-lock「Commit 汇报与分支门禁」」（含自动 commit + **任务完成后默认 push 旁支/开 PR** + Git 同步分级汇总 + 下班前口令补漏 + **SCENARIO_TESTS 增量核对** + **TEST_TRACKER 碎片拼装**） | 主张「先问再 commit」；主张**每次** push 须口头授权；完整抄门禁条文；**主张可直推 `develop`/`main`**；把 develop 与 feature/fix **并列**成同等可推目标；同步时只报「已 push」无 commit 列表 / 无高风险标注 / 无 PR；把「下班前 Git 同步」做成合并 main / 生产部署 / 推进无关 PR；**下班前同步却不更新 SCENARIO_TESTS**；**下班前同步却不拼装 TEST_TRACKER 碎片** |
 | `git-cross-session` | 「见 `WORKFLOW.md` 跨会话节」；对话交接摘要见 `session-handoff`，勿与本条混写 | 在 regression-lock 再写完整三步骤（门禁文件只保留一行指针）；把本条扩成交接模板 |
 | `git-pr-next-step-gate` | 「开工/继续须先查有没有 PR 见 `WORKFLOW.md`」；常驻摘要见 `focus-tiger-pr-next-step-gate.mdc` | 主张只有 MERGED 才算完成；主张 Brief / PROCESS「下一步」可代替 `gh`；完整复述两问表 |
@@ -169,7 +171,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 文档 | 角色 |
 |---|---|
-| [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、SemVer / 稳定 tag、跨会话冲突、并行 worktree、**固定 QA develop 树**、**合入 develop（CI 绿）**、**生产 Worker 部署口令**、**A/B 类 Brief 开工门禁** |
+| [`WORKFLOW.md`](../../WORKFLOW.md)（仓库根） | **SSOT**：分支模型、合并 main、SemVer / 稳定 tag、**任务级保护（git 快照决策）**、跨会话冲突、并行 worktree、**固定 QA develop 树**、**合入 develop（CI 绿）**、**生产 Worker 部署口令**、**A/B 类 Brief 开工门禁** |
 | [`.cursor/rules/focus-tiger-brief-before-user-visible.mdc`](../../.cursor/rules/focus-tiger-brief-before-user-visible.mdc) | **按需层**：B 类用户可见改动开工前须锁 Brief（`brief-before-user-visible`；条文 SSOT 在 `WORKFLOW.md`） |
 | [`.cursor/rules/focus-tiger-chat-openable-file-links.mdc`](../../.cursor/rules/focus-tiger-chat-openable-file-links.mdc) | Agent 摘要：文件须可点开、可定位（**非** SSOT；条文在 `WORKFLOW.md`；`chat-openable-file-links`；**alwaysApply**） |
 | [`.cursor/rules/focus-tiger-regression-lock.mdc`](../../.cursor/rules/focus-tiger-regression-lock.mdc) | **SSOT**：回归锁完工门禁、Commit 汇报、Bug close §7、**分支新鲜度**、**发布候选门禁**（open blockers）门禁条文 |
@@ -400,4 +402,5 @@ cd focus-tiger && npm run rules:doc-sync
 | 2026-07-23 | 新增 `git-parallel-worktree`：并行 Cursor 写会话须 `git worktree` 隔离；SSOT 在 `WORKFLOW.md` |
 | 2026-07-23 | 补强 `git-agent-commit`：Git 同步 / 批量 push 须「分级汇总」（commit 列表 + 高风险单独标注）；与 Cursor user rule 对齐方向 |
 | 2026-09-24 | 新增 `chat-openable-file-links`：用户可见回复里仓库文件须 Markdown + GitHub https，禁止只写反引号路径；立刻打开须 `open_resource`。SSOT `WORKFLOW.md` |
+| 2026-11-24 | 新增 `git-task-snapshot`：任务级保护（默认分支+PR；加码六类；≠ 稳定 tag / `INFRA_SNAPSHOT`）；SSOT `WORKFLOW.md` |
 | 2026-07-23 | 初版：盘点规则文档、指定主题 SSOT、接入 `rules:doc-check`，收敛 commit/跨会话等平行复述 |
