@@ -38,15 +38,60 @@ export function normalizeYinVoiceUtterance(text) {
 const ADDRESS_RE =
   /^(?:hi|hey|ok) yin\b\s*(?:please|can you|could you)\b\s*(.*)$/;
 
+/** Operating filler only. Extra rest after a closed verb stays off the command channel. */
+const CLOSED_OPERATING_FILLER = new Set([
+  'please',
+  'now',
+  'all',
+  'the',
+  'app',
+  'data',
+  'for',
+  'me',
+  'my',
+  'files',
+  'file',
+  'a',
+  'an',
+  'to',
+  'do',
+  'it',
+  'yin',
+  'back',
+  'up',
+  'backup',
+  'forget',
+  'everything',
+  'switch',
+  'change',
+  'language',
+  'english',
+  'journey',
+  'log'
+]);
+
+/**
+ * @param {string} rest already passed through normalizeYinVoiceUtterance
+ * @returns {boolean}
+ */
+function restIsClosedOperatingPhrase(rest) {
+  const tokens = String(rest || '')
+    .split(/\s+/)
+    .filter(Boolean);
+  return tokens.length > 0 && tokens.every((token) => CLOSED_OPERATING_FILLER.has(token));
+}
+
 /**
  * Closed S2 set shared by T10 (after address) and Help Center (optional address).
  * Do not add Help Center-only verbs here.
+ * A command verb buried in extra rest is not a closed command.
  * @param {string} rest already passed through normalizeYinVoiceUtterance
  * @returns {{ command: string, tier: 'A' | 'B' | 'C', execute: boolean, targetLocale?: string | null } | null}
  */
 export function matchClosedOperatingCommand(rest) {
   const text = String(rest || '');
   if (!text) return null;
+  if (!restIsClosedOperatingPhrase(text)) return null;
   if (/\bforget everything\b/.test(text) || /\bforget all\b/.test(text)) {
     return { command: 'forget_all', tier: 'C', execute: false };
   }

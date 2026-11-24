@@ -8,6 +8,7 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | --- | --- | --- | --- | --- |
 | 技术债 | L3 generate 写入 turns.jsonl 时带用户原句，与语义危机日志（只存哈希和长度）不一致 | 2026-11-24 只读审计缺口 1 | [`issue-entries/fix-l3-generate-log-redact.md`](./issue-entries/fix-l3-generate-log-redact.md) | 跟进中 |
 | 技术债 | 日语倾诉未开放只认假名；仅汉字日语是源码已承认的漏检 | 2026-11-24 只读审计（未进三缺口） | [`issue-entries/docs-ja-kanji-confide-miss.md`](./issue-entries/docs-ja-kanji-confide-miss.md) | 未跟进 |
+| 独立bug | 倾诉称呼加封闭命令（备份/忘记全部）会夹走没有安全关键词的危机句，整条筛查被跳过 | 2026-11-24 只读审计缺口 3 | [`issue-entries/fix-voice-command-crisis-not-command.md`](./issue-entries/fix-voice-command-crisis-not-command.md) | 跟进中 |
 | 优化建议 | Mac 生态钩子尚未按优先级收口（全局开坐 / 今日已坐 / Shortcuts 食谱 / 网页转安装包） | 2026-11-24 PO 点头锁 | [`issue-entries/docs-t101-t104-brief-lock.md`](./issue-entries/docs-t101-t104-brief-lock.md) · **T101–T104** | 跟进中 |
 | 根因扇出 | 觉察 overlay 用黑名单默认放行，#1828 夹带踢掉 safety_care，CI 没拦 | 2026-11-21 手测 · 2026-11-23 复盘 | [`issue-entries/fix-noticing-overlay-whitelist.md`](./issue-entries/fix-noticing-overlay-whitelist.md) | 跟进中 |
 | 独立bug | Thought Drop 点 What Yin remembers 无可见变化 | 2026-11-20 用户书面 · 2026-11-22 D3 | [`issue-entries/fix-thought-drop-memory-link-click.md`](./issue-entries/fix-thought-drop-memory-link-click.md) | 跟进中 |
