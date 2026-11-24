@@ -4,9 +4,8 @@
  */
 
 /**
- * T100 output gate, not wired into any screen.
- * Callers in product code still reach the local model directly. PR-3 moves
- * that call here. This module does not import UI.
+ * T100 output gate. Desktop generate in l1Runtime.js wraps the model
+ * reply with guardedGenerate. This module does not import UI.
  *
  * Draft rules. Not clinically reviewed. A blocked sentence is replaced.
  * The model is not asked to rewrite it.
