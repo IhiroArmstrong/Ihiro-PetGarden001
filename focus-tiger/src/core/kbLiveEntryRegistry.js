@@ -515,6 +515,22 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0046'])
   }),
   Object.freeze({
+    id: 'kb-live-global-sit-hotkey',
+    surface: 'menu',
+    proxy: 'global-sit-hotkey',
+    labelKeys: Object.freeze(['GLOBAL_SIT_HOTKEY_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Sit shortcut (Electron Mac)',
+    liveStatus: 'conditional',
+    codeAnchors: Object.freeze([
+      "proxy: 'global-sit-hotkey'",
+      'idle-global-sit-hotkey'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze(['KB-FUNC-0051'])
+  }),
+  Object.freeze({
     id: 'kb-live-input-rhythm',
     surface: 'menu',
     proxy: 'input-rhythm',

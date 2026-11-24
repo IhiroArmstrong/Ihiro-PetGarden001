@@ -1257,9 +1257,15 @@
   yin_may_retrieve: 否
   审核状态: 已通过
   locale_keys: [ART_COLLECTION_MENU_LABEL, ART_COLLECTION_BLURB]
+
+- id: KB-FUNC-0051
+  标题: Sit shortcut
+  yin_may_retrieve: 否
+  审核状态: 已通过
+  locale_keys: [GLOBAL_SIT_HOTKEY_MENU_LABEL, GLOBAL_SIT_HOTKEY_HINT]
 ```
 
-> **权威源（0044–0050）**：`src/locales/slices/work-end.json` · `always-on-top.json` · `window-layout.json` · `input-rhythm.json` · `health-shortcut-log.json` · `en.json`（Newsletter）· `ArtCollectionPanelUI.js`
+> **权威源（0044–0051）**：`src/locales/slices/work-end.json` · `always-on-top.json` · `window-layout.json` · `input-rhythm.json` · `health-shortcut-log.json` · `en.json`（Newsletter）· `ArtCollectionPanelUI.js` · `global-sit-hotkey.json`
 
 ### 4.3 内部排障草案（不进倾诉索引）
 

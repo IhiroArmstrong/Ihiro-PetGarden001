@@ -23,7 +23,8 @@ const K4_HELP_ONLY = [
   'KB-FUNC-0047',
   'KB-FUNC-0048',
   'KB-FUNC-0049',
-  'KB-FUNC-0050'
+  'KB-FUNC-0050',
+  'KB-FUNC-0051'
 ];
 
 describe('KB help single-source knife 4', () => {

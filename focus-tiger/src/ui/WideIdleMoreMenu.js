@@ -32,6 +32,8 @@ import {
 } from '../core/alwaysOnTopBridge.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
+import { canUseGlobalSitHotkey } from '../core/globalSitHotkeyBridge.js';
+import { openGlobalSitHotkeyPreference } from './GlobalSitHotkeyPreferenceUI.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
@@ -134,6 +136,7 @@ export class WideIdleMoreMenu {
      *     onSystemTts?: () => void,
      *     onAlwaysOnTop?: () => void,
      *     onWindowLayout?: () => void,
+     *     onGlobalSitHotkey?: () => void,
      *     onInputRhythm?: () => void,
    *     onFiveMoments?: () => void,
      *     onJourneyLog?: () => void,
@@ -1203,6 +1206,7 @@ export class WideIdleMoreMenu {
       }),
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
+      globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
       inputRhythmAvailable: canUseInputRhythm()
     });
     const storage =
@@ -1371,7 +1375,10 @@ export class WideIdleMoreMenu {
     const result = dispatchSecondaryChromeProxy(
       key,
       {
-        handlers: this.handlers,
+        handlers: {
+          ...this.handlers,
+          onGlobalSitHotkey: () => openGlobalSitHotkeyPreference()
+        },
         closeFirst: false,
         runPrelude: true,
         clearStage: () => {

@@ -61,6 +61,7 @@ import {
   saveWindowLayoutPrefs
 } from './windowLayout/windowLayoutPolicy.js';
 
+import { attachGlobalSitHotkey } from './globalSitHotkey/globalSitHotkeyIpc.js';
 import { runT95LlamaGuiProbeIfRequested } from './companion/t95LlamaGuiProbe.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -897,6 +898,13 @@ if (gotSingleInstanceLock) {
       mainWindow.webContents.send('desktop:yin-voice-ptt');
     });
   }
+  attachGlobalSitHotkey({
+    app,
+    ipcMain,
+    globalShortcut,
+    showMainWindow,
+    navigatePractice: navigateDesktopPracticeDeepLink
+  });
   app.on('will-quit', () => {
     globalShortcut.unregister('Control+Shift+Y');
   });

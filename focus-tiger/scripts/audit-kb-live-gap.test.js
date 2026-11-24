@@ -154,6 +154,10 @@ const KB_DRAFT_LOCALE_KEYS = Object.freeze({
   'KB-FUNC-0050': Object.freeze([
     'ART_COLLECTION_MENU_LABEL',
     'ART_COLLECTION_BLURB'
+  ]),
+  'KB-FUNC-0051': Object.freeze([
+    'GLOBAL_SIT_HOTKEY_MENU_LABEL',
+    'GLOBAL_SIT_HOTKEY_HINT'
   ])
 });
 
@@ -216,6 +220,12 @@ describe('audit-kb-live-gap helpers', () => {
       ).en,
       JSON.parse(
         readFileSync(join(ROOT, 'src/locales/slices/window-layout.json'), 'utf8')
+      ).en,
+      JSON.parse(
+        readFileSync(
+          join(ROOT, 'src/locales/slices/global-sit-hotkey.json'),
+          'utf8'
+        )
       ).en,
       JSON.parse(
         readFileSync(join(ROOT, 'src/locales/slices/input-rhythm.json'), 'utf8')

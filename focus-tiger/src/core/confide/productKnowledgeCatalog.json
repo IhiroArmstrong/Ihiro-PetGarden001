@@ -1053,6 +1053,20 @@
         "寅の芸術コレクション",
         "Art Collection inventory"
       ]
+    },
+    {
+      "id": "KB-FUNC-0051",
+      "yinMayRetrieve": false,
+      "helpCenterVisible": true,
+      "helpSectionId": "start",
+      "helpCenterOrder": 57,
+      "shortAnswerEn": "Open More (⋯) or the drawer → Preferences → Sit shortcut (Mac desktop app only).\n\nDefault is Control-Command-Shift-S. You can change it. Do not use Control-Option (VoiceOver) or Control-Shift-Y (speak to Yin).\n\nAfter you Quit, the system swallows the keys. Yin only points here.",
+      "keywords": [
+        "Sit shortcut",
+        "开坐快捷键",
+        "坐のショートカット",
+        "global sit hotkey"
+      ]
     }
   ]
 }

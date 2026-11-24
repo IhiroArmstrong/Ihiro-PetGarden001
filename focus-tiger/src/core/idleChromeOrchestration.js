@@ -70,6 +70,7 @@ import {
  * @property {boolean} [systemTtsAvailable] macOS Electron wide System TTS menu row
  * @property {boolean} [alwaysOnTopAvailable] Electron Keep-in-front preference row
  * @property {boolean} [windowLayoutAvailable] Electron companion-window / fullscreen-sit row
+ * @property {boolean} [globalSitHotkeyAvailable] Electron global sit shortcut (T101)
  * @property {boolean} [inputRhythmAvailable] Electron Mac Focus rhythm preference row
  */
 
@@ -148,6 +149,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     handler: 'onWindowLayout',
     close: true,
     stage: 'windowLayout'
+  },
+  'global-sit-hotkey': {
+    handler: 'onGlobalSitHotkey',
+    close: true,
+    stage: 'globalSitHotkey'
   },
   'input-rhythm': {
     handler: 'onInputRhythm',
@@ -473,6 +479,7 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   focusCircle: 'ft-narrow-stage-focus-circle',
   alwaysOnTop: 'ft-narrow-stage-always-on-top',
   windowLayout: 'ft-narrow-stage-window-layout',
+  globalSitHotkey: 'ft-narrow-stage-global-sit-hotkey',
   inputRhythm: 'ft-narrow-stage-input-rhythm',
   mindflowNebula: 'ft-narrow-stage-mindflow-nebula',
   presenceField: 'ft-narrow-stage-presence-field',
@@ -489,6 +496,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   systemTts: 'ft-wide-stage-system-tts',
   alwaysOnTop: 'ft-wide-stage-always-on-top',
   windowLayout: 'ft-wide-stage-window-layout',
+  globalSitHotkey: 'ft-wide-stage-global-sit-hotkey',
   inputRhythm: 'ft-wide-stage-input-rhythm',
   mindflowNebula: 'ft-wide-stage-mindflow-nebula',
   presenceField: 'ft-wide-stage-presence-field',

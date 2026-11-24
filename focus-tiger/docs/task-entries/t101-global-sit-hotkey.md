@@ -1,7 +1,7 @@
 ---
 id: t101-global-sit-hotkey
 kind: feature
-status: 排队中 · P1 · Brief 已点头 · 不进 12/8 首包
+status: 进行中 · P1 · Brief 已点头 · 旁支 · 不进 12/8 首包
 updated: 2026-11-24
 ---
 
