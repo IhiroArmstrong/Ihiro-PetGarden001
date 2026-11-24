@@ -56,3 +56,8 @@
 ## 4. 冲突扫描
 
 相邻：深链 Sit、`.ics`、Health 默认关、T49、T44。职责 = 外部说明书。强度不得重于点 Sit。实现 PR 须写「仅食谱，非插件」。
+
+## 5. 仓库食谱交付（第一刀）
+
+- [en](../user-guides/shortcuts-cookbook.en.md) · [ja](../user-guides/shortcuts-cookbook.ja.md) · [zh 草稿](../user-guides/shortcuts-cookbook.zh.md)
+- Help / `src` 仍等首包后。
