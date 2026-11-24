@@ -42,7 +42,8 @@
  * Prices (Dashboard):
  *   Tip → STRIPE_PRICE_ID (one-time)
  *   Sanctuary Lifetime → STRIPE_SANCTUARY_PRICE_ID (one-time)
- *   Yin Membership / Focus Tiger Base → STRIPE_MEMBERSHIP_PRICE_ID (recurring)
+ *   Yin Membership / Focus Tiger Base → STRIPE_MEMBERSHIP_PRICE_ID (monthly recurring)
+ *   Yin Membership yearly → STRIPE_MEMBERSHIP_YEARLY_PRICE_ID (interval=year; placeholder until Dashboard)
  *   Focus Tiger Pro → STRIPE_PRO_PRICE_ID (recurring; Price price_1U6EB1FuIhgJPGLiuciuX1to; reserved — no checkout route yet)
  *   Lifetime AI add-on → STRIPE_COMPANION_ADDON_PRICE_ID (one-time; SKU companion.addon.lifetime; Price price_1U6GnXFuIhgJPGLiNlXs0IKe; reserved — no checkout)
  *
@@ -144,6 +145,7 @@
 		"SANCTUARY_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&sanctuary_session={CHECKOUT_SESSION_ID}",
 		"SANCTUARY_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&sanctuary=cancel",
 		"STRIPE_MEMBERSHIP_PRICE_ID": "price_1U2r5lFuIhgJPGLiEPOhJbst",
+		"STRIPE_MEMBERSHIP_YEARLY_PRICE_ID": "price_REPLACE_YEARLY",
 		"MEMBERSHIP_CHECKOUT_SUCCESS_URL": "http://127.0.0.1:5173/?product=1&membership_session={CHECKOUT_SESSION_ID}",
 		"MEMBERSHIP_CHECKOUT_CANCEL_URL": "http://127.0.0.1:5173/?product=1&membership=cancel",
 		"MEMBERSHIP_PORTAL_RETURN_URL": "http://127.0.0.1:5173/?product=1",

@@ -53,6 +53,13 @@ function focusTigerVersionPlugin() {
           // ?qaSeedStreak= / ?qaLotusBlooms= without shipping those hooks to users.
           'import.meta.env.VITE_FT_QA_BOOT': JSON.stringify(
             process.env.FT_QA_BOOT === '1' ? '1' : ''
+          ),
+          'import.meta.env.VITE_FT_PRACTICE_BACKUP_CLOUD': JSON.stringify(
+            process.env.VITE_FT_PRACTICE_BACKUP_CLOUD === '1'
+              ? '1'
+              : process.env.VITE_FT_PRACTICE_BACKUP_CLOUD === '0'
+                ? '0'
+                : ''
           )
         }
       };

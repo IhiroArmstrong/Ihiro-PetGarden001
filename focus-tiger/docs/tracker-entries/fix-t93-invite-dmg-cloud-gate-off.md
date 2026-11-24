@@ -1,0 +1,1 @@
+| 12/8 邀请 DMG 云闸关 | 纯后端 + 隐私口径 | 仅单元测试覆盖 | **无完整 Electron 手测。** 打包默认 `VITE_FT_PRACTICE_BACKUP_CLOUD=0`，`verify-first-pack-cloud-gate` 要求 dist 内联关闸；源码 fallback 仍 true。本地导出/导入 roundtrip 单测在关闸下仍能把旅程分钟写回。Privacy 总账 §4 已写「当前未提供云端备份」。**切回开闸：** C+D、B5 抓包、声明终审。不是付款。 | — | — | — | `practiceBackupCloudEnabled.js` · `verify-first-pack-cloud-gate.js` | 2026-11-24 |

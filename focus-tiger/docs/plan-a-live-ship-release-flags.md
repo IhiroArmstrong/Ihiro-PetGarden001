@@ -7,9 +7,9 @@ Mechanical checks: `npm run build:verify-no-qa-boot`, `npm run build:verify-clou
 |---|---|---|
 | **QA boot** | No `FT_QA_BOOT` / `VITE_FT_QA_BOOT` at pack time; dist has no `qaSeed*` / inlined `VITE_FT_QA_BOOT=1` | `desktop/scripts/pack.js` · `scripts/verify-no-qa-boot-in-dist.js` |
 | **Practice Study menu + T83 invite** | Production-shaped build hides ⋯ → Practice Study and blocks first-sit invite | `src/core/practiceStudyReleaseGate.js` · `idleChromeOrchestration.js` · `main.js` |
-| **Cloud practice backup** | `practiceBackupCloudEnabled === true` on direct/web/Electron; Setapp / MAS still hide the Preferences email row | `src/core/practiceBackup/practiceBackupCloudEnabled.js` · `isEmailJourneyCloudUiAllowedForChannel` · `scripts/verify-first-pack-cloud-gate.js` |
+| **Cloud practice backup (12/8 invite DMG)** | Packed dist inlines **OFF** (`VITE_FT_PRACTICE_BACKUP_CLOUD=0`, pack.js default). Source fallback stays **true**. Setapp / MAS still hide the Preferences email row. Public open-gate pack later: `VITE_FT_PRACTICE_BACKUP_CLOUD=1`. | `src/core/practiceBackup/practiceBackupCloudEnabled.js` · `isEmailJourneyCloudUiAllowedForChannel` · `scripts/verify-first-pack-cloud-gate.js` |
 | **Desktop update feed** | Canonical URL `https://updates.twinsology.com/` (https, that host only). Packaged builds use it even if `FT_UPDATE_FEED_URL` is unset. If the env is set, it must match the same host. | `src/core/desktopUpdateFeedUrl.js` · `scripts/verify-first-pack-update-feed.js` · `desktop/updater/updaterRuntime.js` |
 
 Internal QA may set `FT_PRACTICE_STUDY_MENU=1` or `VITE_FT_PRACTICE_STUDY_MENU=1` for local/vite only; **must not** be set during `desktop/scripts/pack.js`.
 
-Email cloud save is on for direct / web / our Mac build (T93 PO 2026-11-13). Store channels stay off.
+12/8 invite DMG: email cloud save **off** (PO 2026-11-24 · A). Source still contains D1–D4. Store channels stay off. Open-gate requires C+D, B5 capture, and Privacy copy sign-off.

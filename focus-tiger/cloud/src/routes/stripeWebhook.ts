@@ -28,6 +28,7 @@ import {
 	handleMembershipSubscriptionDeleted,
 	handleMembershipSubscriptionUpdated,
 } from "./membershipStripeWebhook";
+import { withMembershipWebhookIdempotency } from "../lib/membershipWebhookIdempotency.ts";
 import type { Env } from "../types";
 
 type StripeEvent = {
@@ -81,30 +82,39 @@ export async function handleStripeWebhook(
 
 	const type = event.type || "";
 	const object = event.data?.object;
+	const eventId = typeof event.id === "string" ? event.id.trim() : "";
 
 	switch (type) {
 		case "checkout.session.completed":
-			return handleCheckoutSessionCompleted(env, object);
+			return handleCheckoutSessionCompleted(env, object, eventId);
 		case "invoice.paid":
-			return handleMembershipInvoicePaid({
-				env,
-				invoice: (object || {}) as StripeInvoice,
-			});
+			return withMembershipWebhookIdempotency(env, eventId, () =>
+				handleMembershipInvoicePaid({
+					env,
+					invoice: (object || {}) as StripeInvoice,
+				}),
+			);
 		case "invoice.payment_failed":
-			return handleMembershipInvoicePaymentFailed({
-				env,
-				invoice: (object || {}) as StripeInvoice,
-			});
+			return withMembershipWebhookIdempotency(env, eventId, () =>
+				handleMembershipInvoicePaymentFailed({
+					env,
+					invoice: (object || {}) as StripeInvoice,
+				}),
+			);
 		case "customer.subscription.updated":
-			return handleMembershipSubscriptionUpdated({
-				env,
-				subscription: (object || {}) as StripeSubscription,
-			});
+			return withMembershipWebhookIdempotency(env, eventId, () =>
+				handleMembershipSubscriptionUpdated({
+					env,
+					subscription: (object || {}) as StripeSubscription,
+				}),
+			);
 		case "customer.subscription.deleted":
-			return handleMembershipSubscriptionDeleted({
-				env,
-				subscription: (object || {}) as StripeSubscription,
-			});
+			return withMembershipWebhookIdempotency(env, eventId, () =>
+				handleMembershipSubscriptionDeleted({
+					env,
+					subscription: (object || {}) as StripeSubscription,
+				}),
+			);
 		case "charge.refunded":
 			return handleArtCollectionChargeRefunded(
 				env,
@@ -118,6 +128,7 @@ export async function handleStripeWebhook(
 async function handleCheckoutSessionCompleted(
 	env: Env,
 	object: Record<string, unknown> | undefined,
+	eventId: string,
 ): Promise<Response> {
 	const session = object as StripeCheckoutSession | undefined;
 	if (!session) {
@@ -127,7 +138,9 @@ async function handleCheckoutSessionCompleted(
 	const mode = session.mode;
 
 	if (mode === "subscription") {
-		return handleMembershipCheckoutCompleted({ env, session });
+		return withMembershipWebhookIdempotency(env, eventId, () =>
+			handleMembershipCheckoutCompleted({ env, session }),
+		);
 	}
 
 	if (mode && mode !== "payment") {

@@ -5,8 +5,9 @@
  */
 
 /**
- * Direct-channel ship: client cloud backup gate must stay on in source
- * (Setapp / MAS still hide the Preferences row at runtime).
+ * Invite DMG (default pack): packed dist must inline the cloud gate OFF.
+ * Source default stays ON so D1–D4 remain in git for a later public open.
+ * Open-gate pack: set VITE_FT_PRACTICE_BACKUP_CLOUD=1 (dist must not inline OFF).
  *
  * Usage: node scripts/verify-first-pack-cloud-gate.js [--require-dist]
  */
@@ -16,13 +17,36 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const SOURCE_ON_LINE =
-  'export let practiceBackupCloudEnabled = true;';
+  'export let practiceBackupCloudEnabled = compileTimePracticeBackupCloudEnabled();';
 
-/** Packed dist accidentally inlined the old invite-off default. */
-export const FORBIDDEN_INLINED = [
+export const GATE_OFF_INLINES = [
   'practiceBackupCloudEnabled=!1',
   'practiceBackupCloudEnabled=false'
 ];
+
+export const GATE_ON_INLINES = [
+  'practiceBackupCloudEnabled=!0',
+  'practiceBackupCloudEnabled=true'
+];
+
+/** Vite define survives minify; export names do not. */
+export const INVITE_DIST_CLOUD_OFF_TOKENS = [
+  'VITE_FT_PRACTICE_BACKUP_CLOUD:"0"',
+  "VITE_FT_PRACTICE_BACKUP_CLOUD:'0'"
+];
+
+export const OPEN_DIST_CLOUD_ON_TOKENS = [
+  'VITE_FT_PRACTICE_BACKUP_CLOUD:"1"',
+  "VITE_FT_PRACTICE_BACKUP_CLOUD:'1'"
+];
+
+/**
+ * Invite pack unless the opener explicitly requests a public cloud-on build.
+ * @param {NodeJS.ProcessEnv} [env]
+ */
+export function isInvitePackCloudGateOff(env = process.env) {
+  return env.VITE_FT_PRACTICE_BACKUP_CLOUD !== '1';
+}
 
 /**
  * @param {string} src
@@ -33,7 +57,14 @@ export function evaluateSourceCloudGate(src) {
     return {
       ok: false,
       error:
-        'verify-first-pack-cloud-gate: source default must be `export let practiceBackupCloudEnabled = true;`'
+        'verify-first-pack-cloud-gate: source must keep compile-time helper default (D1–D4 stay in git)'
+    };
+  }
+  if (!src.includes('return true;')) {
+    return {
+      ok: false,
+      error:
+        'verify-first-pack-cloud-gate: source compile-time fallback must remain true'
     };
   }
   return { ok: true };
@@ -41,26 +72,30 @@ export function evaluateSourceCloudGate(src) {
 
 /**
  * @param {{ file: string, text: string }[]} files
+ * @param {readonly string[]} tokens
  * @returns {{ file: string, token: string }[]}
  */
-export function findForbiddenCloudGateInlines(files) {
+export function findCloudGateInlines(files, tokens) {
   /** @type {{ file: string, token: string }[]} */
   const hits = [];
   for (const { file, text } of files) {
-    for (const token of FORBIDDEN_INLINED) {
+    for (const token of tokens) {
       if (text.includes(token)) hits.push({ file, token });
     }
   }
   return hits;
 }
 
+/** @deprecated use findCloudGateInlines(files, GATE_OFF_INLINES) */
+export function findForbiddenCloudGateInlines(files) {
+  return findCloudGateInlines(files, GATE_OFF_INLINES);
+}
+
 const isCli =
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
-if (!isCli) {
-  // imported by unit tests
-} else {
+if (isCli) {
   const rootDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
   const enabledSrc = path.join(
     rootDir,
@@ -68,6 +103,7 @@ if (!isCli) {
   );
   const distDir = path.join(rootDir, 'dist');
   const requireDist = process.argv.includes('--require-dist');
+  const inviteOff = isInvitePackCloudGateOff(process.env);
 
   const srcResult = evaluateSourceCloudGate(readFileSync(enabledSrc, 'utf8'));
   if (!srcResult.ok) {
@@ -100,27 +136,53 @@ if (!isCli) {
       process.exit(1);
     }
     console.log(
-      'verify-first-pack-cloud-gate: OK (source default true; dist not present)'
+      inviteOff
+        ? 'verify-first-pack-cloud-gate: OK (source fallback true; invite pack; dist not present)'
+        : 'verify-first-pack-cloud-gate: OK (source fallback true; open-gate pack; dist not present)'
     );
     process.exit(0);
   }
 
-  const hits = findForbiddenCloudGateInlines(
-    walkJsFiles(distDir).map((file) => ({
-      file: path.relative(rootDir, file),
-      text: readFileSync(file, 'utf8')
-    }))
-  );
+  const files = walkJsFiles(distDir).map((file) => ({
+    file: path.relative(rootDir, file),
+    text: readFileSync(file, 'utf8')
+  }));
+  const offHits = findCloudGateInlines(files, GATE_OFF_INLINES);
+  const onHits = findCloudGateInlines(files, GATE_ON_INLINES);
 
-  if (hits.length > 0) {
-    console.error('Cloud backup gate inlined OFF in production dist:');
-    for (const hit of hits) {
-      console.error(`  - ${hit.token} in ${hit.file}`);
+  const inviteEnvHits = findCloudGateInlines(files, INVITE_DIST_CLOUD_OFF_TOKENS);
+  const openEnvHits = findCloudGateInlines(files, OPEN_DIST_CLOUD_ON_TOKENS);
+
+  if (inviteOff) {
+    if (inviteEnvHits.length === 0 && offHits.length === 0) {
+      console.error(
+        'verify-first-pack-cloud-gate: invite pack dist must inline VITE_FT_PRACTICE_BACKUP_CLOUD:"0"'
+      );
+      process.exit(1);
     }
-    process.exit(1);
+    if (openEnvHits.length > 0) {
+      console.error(
+        'verify-first-pack-cloud-gate: invite pack dist must not inline VITE_FT_PRACTICE_BACKUP_CLOUD:"1"'
+      );
+      process.exit(1);
+    }
+    console.log(
+      'verify-first-pack-cloud-gate: OK (invite pack; cloud env inlined 0)'
+    );
+    process.exit(0);
   }
 
+  if (inviteEnvHits.length > 0 || offHits.length > 0) {
+    console.error('Cloud backup gate inlined OFF in open-gate production dist');
+    process.exit(1);
+  }
+  if (openEnvHits.length === 0 && onHits.length === 0) {
+    console.error(
+      'verify-first-pack-cloud-gate: open-gate dist must inline VITE_FT_PRACTICE_BACKUP_CLOUD:\"1\"'
+    );
+    process.exit(1);
+  }
   console.log(
-    'verify-first-pack-cloud-gate: OK (source default true; dist has no OFF inline)'
+    'verify-first-pack-cloud-gate: OK (open-gate pack; cloud env inlined 1)'
   );
 }
