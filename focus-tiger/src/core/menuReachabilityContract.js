@@ -121,6 +121,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#always-on-top-preference'
   }),
+  'global-sit-hotkey': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#global-sit-hotkey-preference'
+  }),
   'input-rhythm': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#input-rhythm-preference'
@@ -205,6 +209,7 @@ export const PRODUCT_IDLE_MENU_VISIBILITY = Object.freeze({
   systemTtsAvailable: false,
   alwaysOnTopAvailable: false,
   windowLayoutAvailable: false,
+  globalSitHotkeyAvailable: false,
   inputRhythmAvailable: false,
   newsletterSubmitted: false,
   scenesEntitled: false

@@ -116,7 +116,7 @@
 | **18** | `src/ui/AlwaysOnTopPreferenceUI.js` | `#always-on-top-preference-panel` 始终在最前开关（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡，非系统 Sheet） |
 | **18** | `src/ui/InputRhythmPreferenceUI.js` | `#input-rhythm-preference-panel` 专注节奏开关（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡；不挡 Support FAB；复用设置卡，不新增 OVERLAY 行） |
 | **18** | `src/ui/WindowLayoutPreferenceUI.js` | `#window-layout-preference-panel` 适中陪伴窗 / 全屏静坐（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡，非系统 Sheet；不自绘红绿灯） |
-| **18** | `src/ui/WindowLayoutPreferenceUI.js` | `#window-layout-preference-panel` 适中陪伴窗 / 全屏静坐（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡，非系统 Sheet；不自绘红绿灯） |
+| **18** | `src/ui/GlobalSitHotkeyPreferenceUI.js` | `#global-sit-hotkey-preference-panel` 全局开坐快捷键（Electron ⋯ / 抽屉 Preferences；暖米玻璃卡；不新增 OVERLAY 行；不挡 Support FAB） |
 | **18** | `src/ui/MindfulAcknowledgeToast.js` | 「也算数」类 toast · 底部 placement |
 | **20** | `src/core/EmotionController.js` | DEV 情绪调试按钮列（右上） |
 | **20** | `src/ui/WideIdleMoreMenu.js` | （历史）宽屏 More 曾为 dock 内 popover z20；现行右侧 sheet 见 **25 / 26**（挂 `body`） |

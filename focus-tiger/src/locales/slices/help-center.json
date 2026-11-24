@@ -135,7 +135,9 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0049_TITLE": "Stay in touch",
     "HELP_CENTER_ARTICLE_KB_FUNC_0049_BODY": "Open More (⋯) or the drawer → Preferences → Stay in touch.\n\nOptional email for known-error fixes and release notes — not a sales list. Unsubscribe anytime.\n\nYin only points here.",
     "HELP_CENTER_ARTICLE_KB_FUNC_0050_TITLE": "Yin's Art Collection",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "Open More (⋯) or the drawer → Inspiration → Yin's Art Collection.\n\nVessel-inspired drawings you can buy or save. Purchase needs an email; records can be restored on another device with that email.\n\nYin only points here and does not read prices aloud."
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "Open More (⋯) or the drawer → Inspiration → Yin's Art Collection.\n\nVessel-inspired drawings you can buy or save. Purchase needs an email; records can be restored on another device with that email.\n\nYin only points here and does not read prices aloud.",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0051_TITLE": "Sit shortcut",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0051_BODY": "Open More (⋯) or the drawer → Preferences → Sit shortcut (Mac desktop app only).\n\nDefault is Control-Command-Shift-S. You can change it. Do not use Control-Option (VoiceOver) or Control-Shift-Y (speak to Yin).\n\nAfter you Quit, the system swallows the keys. Yin only points here."
   },
   "zh": {
     "HELP_CENTER_MENU_LABEL": "帮助中心",
@@ -273,7 +275,9 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0049_TITLE": "保持联络",
     "HELP_CENTER_ARTICLE_KB_FUNC_0049_BODY": "打开 ⋯ 或底栏抽屉 → 偏好 → 保持联络。\n\n可选留邮箱收已知问题修复与版本说明，不是推销名单，随时可退订。阿寅只指路。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0050_TITLE": "阿寅的艺术品",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "打开 ⋯ 或底栏抽屉 → 灵感 → 阿寅的艺术品。\n\n受器物启发的画，可购买或保存。购买须留邮箱，换设备可用该邮箱找回记录。\n\n阿寅只指路，不会念价格。"
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "打开 ⋯ 或底栏抽屉 → 灵感 → 阿寅的艺术品。\n\n受器物启发的画，可购买或保存。购买须留邮箱，换设备可用该邮箱找回记录。\n\n阿寅只指路，不会念价格。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0051_TITLE": "开坐快捷键",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0051_BODY": "打开 ⋯ 或抽屉 → 偏好设置 → 开坐快捷键（仅 Mac 桌面应用）。\n\n默认是 Control-Command-Shift-S。可以改。不要用 Control-Option（旁白），也不要抢 Control-Shift-Y（对寅说话）。\n\n退出应用后系统会吞掉按键。寅只指路，不读键位。"
   },
   "ja": {
     "HELP_CENTER_MENU_LABEL": "ヘルプセンター",
@@ -411,6 +415,8 @@
     "HELP_CENTER_ARTICLE_KB_FUNC_0049_TITLE": "つながる",
     "HELP_CENTER_ARTICLE_KB_FUNC_0049_BODY": "⋯ または引き出し → 設定 → つながる。\n\n任意のメールで既知の不具合修正やリリース案内を受け取れます。販売リストではなく、いつでも解除できます。寅は場所を示すだけです。",
     "HELP_CENTER_ARTICLE_KB_FUNC_0050_TITLE": "寅の芸術コレクション",
-    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "⋯ または引き出し → インスピレーション → 寅の芸術コレクション。\n\n器に着想した絵を購入・保存できます。購入にはメールが必要で、別端末はそのメールで取り戻せます。\n\n寅は場所を示すだけで、価格は読み上げません。"
+    "HELP_CENTER_ARTICLE_KB_FUNC_0050_BODY": "⋯ または引き出し → インスピレーション → 寅の芸術コレクション。\n\n器に着想した絵を購入・保存できます。購入にはメールが必要で、別端末はそのメールで取り戻せます。\n\n寅は場所を示すだけで、価格は読み上げません。",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0051_TITLE": "坐のショートカット",
+    "HELP_CENTER_ARTICLE_KB_FUNC_0051_BODY": "⋯ または引き出し → 設定 → 坐のショートカット（Mac デスクトップアプリのみ）。\n\n既定は Control-Command-Shift-S。変更できます。Control-Option（VoiceOver）と Control-Shift-Y（寅に話す）は使いません。\n\n終了後はシステムがキーを飲みます。寅は場所を示すだけです。"
   }
 }

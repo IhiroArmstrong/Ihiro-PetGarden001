@@ -26,6 +26,7 @@
 |---|---|---|
 
 | `userData/always-on-top.json` | `alwaysOnTopPolicy` / IPC `desktop:always-on-top-*` / `AlwaysOnTopPreferenceUI` | Electron 主窗始终在最前（**默认关**）；托盘勾选与 Preferences 玻璃卡同一状态；**不进**云端 / 练习备份；Web 无此文件 |
+| `userData/global-sit-hotkey.json` | `globalSitHotkeyPrefs` / IPC `desktop:global-sit-hotkey-*` / `GlobalSitHotkeyPreferenceUI` | Electron Mac 全局开坐快捷键（**默认 Command+Control+Shift+S**；禁 Control+Option / Control+Shift+Y）；**不进**云端 / 练习备份；网页无此文件；**首包发出前不得合 develop** |
 | `userData/input-rhythm.json` | `inputRhythmPolicy` / IPC `desktop:input-rhythm-*` / `InputRhythmPreferenceUI` | Electron Mac 专注节奏开关（**默认关**）；无权限即 L0（**SB-21**）；**不进**云端 / 练习备份；Web 无此文件 |
 | `userData/input-rhythm-features.json` | `inputRhythmPolicy` 聚合统计 | 仅切换次数 / 退格率等；**禁止**键值 / 窗口标题；可一键清；**不进**云端 |
 | `userData/window-layout.json` | `windowLayoutPolicy` / IPC `desktop:window-layout-*` / `WindowLayoutPreferenceUI` | Electron 主窗适中陪伴窗上次布局（**默认普通窗**；不把全屏写成下次启动）；托盘 / Window 菜单 / Preferences 玻璃卡同一动作；**不进**云端 / 练习备份；Web 无此文件 |

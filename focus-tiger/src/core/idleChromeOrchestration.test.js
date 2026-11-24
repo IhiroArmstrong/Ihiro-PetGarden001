@@ -508,6 +508,25 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
+  it('includes global-sit-hotkey on wide and narrow when available', () => {
+    assert.ok(
+      !listSecondaryChromeEntries('wide-more', allOn).some(
+        (e) => e.proxy === 'global-sit-hotkey'
+      )
+    );
+    const on = { ...allOn, globalSitHotkeyAvailable: true };
+    assert.ok(
+      listSecondaryChromeEntries('wide-more', on).some(
+        (e) => e.proxy === 'global-sit-hotkey'
+      )
+    );
+    assert.ok(
+      listSecondaryChromeEntries('narrow-drawer', on).some(
+        (e) => e.proxy === 'global-sit-hotkey'
+      )
+    );
+  });
+
   it('includes window-layout on wide and narrow when available', () => {
     assert.ok(
       !listSecondaryChromeEntries('wide-more', allOn).some(
@@ -757,6 +776,20 @@ describe('listSecondaryChromeEntries', () => {
 });
 
 describe('dispatchSecondaryChromeProxy', () => {
+  it('maps global-sit-hotkey to onGlobalSitHotkey', () => {
+    const calls = [];
+    const result = dispatchSecondaryChromeProxy('global-sit-hotkey', {
+      handlers: {
+        onGlobalSitHotkey: () => calls.push('sit-hotkey')
+      },
+      close: () => calls.push('close'),
+      clearStage: () => calls.push('clear'),
+      addStage: (stage) => calls.push(stage)
+    });
+    assert.equal(result, 'invoked');
+    assert.deepEqual(calls, ['clear', 'close', 'globalSitHotkey', 'sit-hotkey']);
+  });
+
   it('maps honesty to onHonesty (not onFiveMoments)', () => {
     const calls = [];
     const result = dispatchSecondaryChromeProxy('honesty', {

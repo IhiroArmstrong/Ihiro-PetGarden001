@@ -24,7 +24,8 @@ const HELP_ONLY_IDS = new Set([
   'KB-FUNC-0047',
   'KB-FUNC-0048',
   'KB-FUNC-0049',
-  'KB-FUNC-0050'
+  'KB-FUNC-0050',
+  'KB-FUNC-0051'
 ]);
 
 describe('help-only catalog rows stay on the live honesty empty state', () => {

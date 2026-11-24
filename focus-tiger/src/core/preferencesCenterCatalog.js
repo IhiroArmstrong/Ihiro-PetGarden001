@@ -168,6 +168,16 @@ export function listPreferenceCenterSubgroups(visibility, deps = {}) {
               icon: '▢'
             }
           : null,
+        visibility.globalSitHotkeyAvailable
+          ? {
+              proxy: 'global-sit-hotkey',
+              labelKey: 'GLOBAL_SIT_HOTKEY_MENU_LABEL',
+              testId: 'idle-global-sit-hotkey',
+              hintKey: 'PREF_CENTER_HINT_GLOBAL_SIT',
+              kind: 'page',
+              icon: '⌘'
+            }
+          : null,
         {
           proxy: 'health-shortcut-log',
           labelKey: 'HEALTH_SHORTCUT_MENU_LABEL',

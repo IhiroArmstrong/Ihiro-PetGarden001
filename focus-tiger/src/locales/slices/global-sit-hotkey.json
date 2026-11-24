@@ -1,0 +1,44 @@
+{
+  "en": {
+    "GLOBAL_SIT_HOTKEY_MENU_LABEL": "Sit shortcut",
+    "GLOBAL_SIT_HOTKEY_PANEL_TITLE": "Sit from any app",
+    "GLOBAL_SIT_HOTKEY_CURRENT_LABEL": "Current shortcut",
+    "GLOBAL_SIT_HOTKEY_CAPTURE": "Press a new shortcut",
+    "GLOBAL_SIT_HOTKEY_CAPTURING": "Press the keys…",
+    "GLOBAL_SIT_HOTKEY_HINT": "Works while this Mac app is open, even in the menu bar. Default is Control-Command-Shift-S. Do not use Control-Option (VoiceOver) or Control-Shift-Y (speak to Yin). After you Quit, the system swallows the keys — that is expected.",
+    "GLOBAL_SIT_HOTKEY_STATUS_OK": "Ready",
+    "GLOBAL_SIT_HOTKEY_STATUS_UNREGISTERED": "Could not take this shortcut. Choose another.",
+    "GLOBAL_SIT_HOTKEY_STATUS_CONTROL_OPTION": "Control-Option is VoiceOver. Choose another.",
+    "GLOBAL_SIT_HOTKEY_STATUS_T10": "Control-Shift-Y is already speak to Yin. Choose another.",
+    "GLOBAL_SIT_HOTKEY_STATUS_INVALID": "That combination cannot be used.",
+    "GLOBAL_SIT_HOTKEY_CLOSE": "Close"
+  },
+  "zh": {
+    "GLOBAL_SIT_HOTKEY_MENU_LABEL": "开坐快捷键",
+    "GLOBAL_SIT_HOTKEY_PANEL_TITLE": "在别的软件里也能坐下",
+    "GLOBAL_SIT_HOTKEY_CURRENT_LABEL": "当前快捷键",
+    "GLOBAL_SIT_HOTKEY_CAPTURE": "按下新的组合",
+    "GLOBAL_SIT_HOTKEY_CAPTURING": "请按键…",
+    "GLOBAL_SIT_HOTKEY_HINT": "只要这个 Mac 应用还开着（包括收在菜单栏）就能用。默认是 Control-Command-Shift-S。不要用 Control-Option（旁白），也不要抢 Control-Shift-Y（对寅说话）。退出应用后系统会吞掉按键，这是已知限制。",
+    "GLOBAL_SIT_HOTKEY_STATUS_OK": "已就绪",
+    "GLOBAL_SIT_HOTKEY_STATUS_UNREGISTERED": "没能占用这组键。请换一组。",
+    "GLOBAL_SIT_HOTKEY_STATUS_CONTROL_OPTION": "Control-Option 是旁白。请换一组。",
+    "GLOBAL_SIT_HOTKEY_STATUS_T10": "Control-Shift-Y 已经是对寅说话。请换一组。",
+    "GLOBAL_SIT_HOTKEY_STATUS_INVALID": "这组键不能用。",
+    "GLOBAL_SIT_HOTKEY_CLOSE": "关闭"
+  },
+  "ja": {
+    "GLOBAL_SIT_HOTKEY_MENU_LABEL": "坐のショートカット",
+    "GLOBAL_SIT_HOTKEY_PANEL_TITLE": "他のアプリから坐る",
+    "GLOBAL_SIT_HOTKEY_CURRENT_LABEL": "いまのショートカット",
+    "GLOBAL_SIT_HOTKEY_CAPTURE": "新しい組み合わせを押す",
+    "GLOBAL_SIT_HOTKEY_CAPTURING": "キーを押してください…",
+    "GLOBAL_SIT_HOTKEY_HINT": "この Mac アプリが開いている間（メニューバー格納中も含む）使えます。既定は Control-Command-Shift-S。Control-Option（VoiceOver）と Control-Shift-Y（寅に話す）は使いません。終了後はシステムがキーを飲みます。既知の制限です。",
+    "GLOBAL_SIT_HOTKEY_STATUS_OK": "準備できました",
+    "GLOBAL_SIT_HOTKEY_STATUS_UNREGISTERED": "この組み合わせは取れません。別のキーを選んでください。",
+    "GLOBAL_SIT_HOTKEY_STATUS_CONTROL_OPTION": "Control-Option は VoiceOver です。別のキーを選んでください。",
+    "GLOBAL_SIT_HOTKEY_STATUS_T10": "Control-Shift-Y は「寅に話す」です。別のキーを選んでください。",
+    "GLOBAL_SIT_HOTKEY_STATUS_INVALID": "この組み合わせは使えません。",
+    "GLOBAL_SIT_HOTKEY_CLOSE": "閉じる"
+  }
+}

@@ -33,6 +33,7 @@ describe('kb live menu proxy contract (knife 2)', () => {
       'work-end',
       'always-on-top',
       'window-layout',
+      'global-sit-hotkey',
       'input-rhythm',
       'art-collection',
       'newsletter',

@@ -79,6 +79,7 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.ok(desktopPkg.build.files.includes('floatingMarker/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('alwaysOnTop/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('windowLayout/**/*.js'));
+    assert.ok(desktopPkg.build.files.includes('globalSitHotkey/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('inputRhythm/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('native/**/*.swift'));
     assert.ok(desktopPkg.build.files.includes('guidedMeditation/**/*.js'));
@@ -101,6 +102,8 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:input-rhythm-set/);
     assert.match(preload, /desktop:window-layout-get/);
     assert.match(preload, /desktop:window-layout-apply/);
+    assert.match(preload, /desktop:global-sit-hotkey-get/);
+    assert.match(preload, /desktop:global-sit-hotkey-set/);
     assert.match(preload, /desktop:practice-deep-link/);
   });
 
@@ -115,6 +118,13 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(mainSrc, /setAlwaysOnTop/);
     assert.match(mainSrc, /desktop:window-layout-get/);
     assert.match(mainSrc, /desktop:window-layout-apply/);
+    assert.match(mainSrc, /attachGlobalSitHotkey/);
+    const sitIpc = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../../desktop/globalSitHotkey/globalSitHotkeyIpc.js'),
+      'utf8'
+    );
+    assert.match(sitIpc, /desktop:global-sit-hotkey-get/);
+    assert.match(sitIpc, /desktop:global-sit-hotkey-set/);
     assert.match(mainSrc, /setFullScreen/);
     assert.doesNotMatch(mainSrc, /frame:\s*false/);
     assert.doesNotMatch(mainSrc, /titleBarStyle:\s*['"]hidden/);

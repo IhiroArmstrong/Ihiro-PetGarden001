@@ -103,6 +103,7 @@ export function buildKbLiveMenuAuditVisibility() {
     newsletterSubmitted: false,
     alwaysOnTopAvailable: true,
     windowLayoutAvailable: true,
+    globalSitHotkeyAvailable: true,
     inputRhythmAvailable: true,
     contemplativeArchiveSealMenus
   };

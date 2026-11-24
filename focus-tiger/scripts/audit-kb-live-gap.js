@@ -106,6 +106,7 @@ export const KB_CANONICAL_LIVE_APPROVED_MAP = Object.freeze({
   'kb-live-work-end': Object.freeze(['KB-FUNC-0044']),
   'kb-live-always-on-top': Object.freeze(['KB-FUNC-0045']),
   'kb-live-window-layout': Object.freeze(['KB-FUNC-0046']),
+  'kb-live-global-sit-hotkey': Object.freeze(['KB-FUNC-0051']),
   'kb-live-input-rhythm': Object.freeze(['KB-FUNC-0047']),
   'kb-live-health-shortcut-log': Object.freeze(['KB-FUNC-0048']),
   'kb-live-newsletter': Object.freeze(['KB-FUNC-0049']),

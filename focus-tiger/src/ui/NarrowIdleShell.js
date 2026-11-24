@@ -37,6 +37,8 @@ import {
 } from '../core/preferenceSheetEmbed.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
+import { canUseGlobalSitHotkey } from '../core/globalSitHotkeyBridge.js';
+import { openGlobalSitHotkeyPreference } from './GlobalSitHotkeyPreferenceUI.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
@@ -1076,6 +1078,7 @@ export class NarrowIdleShell {
       ).menuEntries,
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
+      globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
       inputRhythmAvailable: canUseInputRhythm()
     });
     const storage =
@@ -1279,7 +1282,10 @@ export class NarrowIdleShell {
     const result = dispatchSecondaryChromeProxy(
       key,
       {
-        handlers: this.handlers,
+        handlers: {
+          ...this.handlers,
+          onGlobalSitHotkey: () => openGlobalSitHotkeyPreference()
+        },
         closeFirst: true,
         runPrelude: false,
         clearStage: () => {

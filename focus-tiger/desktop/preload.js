@@ -79,6 +79,9 @@ const desktopShell = {
   getWindowLayout: () => ipcRenderer.invoke('desktop:window-layout-get'),
   applyWindowLayout: (action) =>
     ipcRenderer.invoke('desktop:window-layout-apply', action),
+  getGlobalSitHotkey: () => ipcRenderer.invoke('desktop:global-sit-hotkey-get'),
+  setGlobalSitHotkey: (accelerator) =>
+    ipcRenderer.invoke('desktop:global-sit-hotkey-set', accelerator),
   getShellVisibility: () => ipcRenderer.invoke('desktop:shell-visibility-get'),
   onShellVisibility: (cb) => {
     if (typeof cb !== 'function') return () => {};
