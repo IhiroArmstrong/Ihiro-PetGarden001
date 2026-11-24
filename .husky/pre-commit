@@ -23,4 +23,5 @@ git add \
   focus-tiger/docs/GROWTH_METRICS_CHARTER.md \
   2>/dev/null || true
 
-cd focus-tiger && npm run test:smoke
+cd focus-tiger && npm run test:smoke || exit 1
+node scripts/check-test-weakening.mjs --staged || exit 1
