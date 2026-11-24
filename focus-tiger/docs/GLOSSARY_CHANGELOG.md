@@ -6,6 +6,7 @@
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-24 | **T101–T104** PO 点头：默认键改为 Command+Control+Shift+S（禁 Control+Option / Control+Shift+Y，须可自定义）；T102 加开关；T103 Things 仅食谱、Health 默认关；T104 先不动。**硬条款：全部不进 12/8 首包门闩**；T101/T102 运行时首包发出前不得合 develop。#1875 已合。 |
 | 2026-11-23 | **【新增】T101–T104** Mac 生态钩子：T101 全局开坐 P1 排队中；T102 今日已坐 P2；T103 Shortcuts 食谱 P2；T104 网页转安装包 可选。Brief 待点头。覆盖深链 Brief 旧「Things 继续不做」为「仅用户食谱」。不抢 T95。 |
 | 2026-11-22 | 队列表扫行：页眉 2026-11-22。底部长口令 **T73** 与表行对齐（第二刀开工口令 **不执行**；去掉「立即做 / 新 Chat 写 src」）。仅 GLOSSARY + SCHEDULING，未动 TEST_TRACKER。 |
 | 2026-11-21 | **T73** 第二刀 **已完成** · #1539/#1541 已合 develop（自 2026-11-02；此前术语表误写「立即做/Brief 已点头」）。口令「按 T73 Brief 开工第二刀」= 勿再开同内容旁支。同步 `pref-state-read-inventory`、Brief、`TASKS`/`TEST_TRACKER` 碎片。 |
