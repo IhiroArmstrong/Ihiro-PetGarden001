@@ -25,6 +25,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Test-weakening check
+        working-directory: ${{ github.workspace }}
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node focus-tiger/scripts/check-test-weakening.mjs --base "${{ github.event.pull_request.base.sha }}"
+
       - name: Detect product paths
         id: paths
         working-directory: ${{ github.workspace }}

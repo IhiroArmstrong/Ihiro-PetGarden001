@@ -41,6 +41,7 @@ alwaysApply: false
 | `docs/ARRIVE_MOMENT_DESIGN.md` | Arrival Practice 交互详规（v2：Notice/Choose 点选为主） |
 | `docs/LIGHT_PROGRESSION_DESIGN.md` | 光影物理渐进（2D DOM/CSS）：Arrival 氛围 + Recover 扰动；排除主界面 3D/Shader |
 | `docs/PRINCIPLES.md` | **硬性红线**：经济可持续（非学雷锋）、不制造焦虑、永不消失、**菜单逃生舱**、诚实机制、一次一任务、不超范围、性能与风格 |
+| `docs/COMPLIANCE.md` | **可检验硬约束索引**（隐私/陪伴/工程诚实；测试弱化闸；合并前评审 prompt）。权威仍在 PRINCIPLES / ARCHITECTURE / PRIVACY_NOTICE / COMPANION_CONTRACT |
 | `docs/MENU_CHROME_CENSUS.md` | **角落按钮 vs 菜单对照** + 菜单治理四条进度（从属 PRINCIPLES；无新运行时） |
 | `docs/ARCHITECTURE.md` | 模块边界、主线 **2D PNG 序列**、3D 资产保留给奖励场景、`EmotionController` 桥梁 |
 | `docs/ANTI_PLAGIARISM_LAYER.md` | **防剽窃层**（品味云 ∪ YPE 云 ∪ 句包 overlay；准入四问 + 值得保护四测；≠ 支付/备份/Confide 路由） |

@@ -138,6 +138,15 @@
 
 ---
 
+## 测试弱化确认（触及测试文件则必填）
+
+> 权威：[focus-tiger/docs/COMPLIANCE.md](../focus-tiger/docs/COMPLIANCE.md) §5 · 脚本 `npm run check:test-weakening`
+
+- [ ] **未**删断言 / 删测试文件 / 新增 skip·only·fixme → 勾此项；把下一行留空
+- [ ] 若有：已在描述里写明原因（机器闸要求 ≥6 个字符）
+
+Test-Weakening-Ack:
+
 ## 改动摘要
 
 <!-- 一两句话说明做了什么、为什么 -->

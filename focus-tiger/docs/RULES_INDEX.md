@@ -237,6 +237,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `ARRIVE_MOMENT_DESIGN.md` | Arrival 交互详规 |
 | `LIGHT_PROGRESSION_DESIGN.md` | 光影渐进 |
 | `PRINCIPLES.md` | 硬性红线（**用户体验优先** / **Confide 评测 R-0** / 经济可持续 / **菜单逃生舱** / 非 MVP-only） |
+| `COMPLIANCE.md` | **可检验硬约束索引**（检查方式：机器 / 评审 / 契约用例；测试弱化闸 `check:test-weakening`；合并前评审 prompt）。**不**替代 PRINCIPLES / ARCHITECTURE / PRIVACY_NOTICE / COMPANION_CONTRACT |
 | `MENU_CHROME_CENSUS.md` | **角落按钮 vs ⋯/抽屉对照** + 菜单治理四条进度（从属 PRINCIPLES 逃生舱；**无新运行时**） |
 | `LABEL_HINT_TIP_STANDARDS.md` | **说明信号分层方向锁**（Label / tooltip / 脉冲 / 一次性气泡；同屏 1 脉冲；账本列定义；从属交互反馈）。圆点考古附录 `SITE_DISCOVERY_DOT_CENSUS.md`；按控件总账 `LABEL_HINT_TIP_AUDIT.md` |
 | `INTERACTION_FEEDBACK_PRINCIPLES.md` | 点击接收反馈 vs 结果反馈 vs 已知静默（`interaction-feedback`） |
@@ -309,6 +310,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-24 | 产品表新增 `COMPLIANCE.md`（硬约束索引 + 测试弱化闸 + 合并前评审 prompt）。脚本 `scripts/check-test-weakening.mjs`；接线 pre-commit / `test:pr-smoke`。不进 rules-authority 机器块 |
 | 2026-11-21 | 新增 `git-task-preflight`：开工前 `scripts/task-preflight.sh`；git 为唯一真相；同一轮修文档；CI `task-doc-sync`。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/task-preflight.mdc` |
 | 2026-11-13 | 冒烟失败处理：先归类 + 同种类补丁上限（`ci-failure-triage`）；E2E 禁止假关 / 失败诊断 / 正式构建对齐（`testing-strategy.mdc`）；不扩大必过关卡 + 静态拦截仅建议配套（`PR_SMOKE_FAILURE_CLASSES.md`）。不新开 rules-authority 主题 |
 | 2026-11-12 | `pr-smoke-failure-classes`：超长菜单走完从 Required `test:pr-smoke` / pre-push 拿掉（改菜单路径也不再加跑）。nightly + 合入 develop 后仍跑。**已废止**：改菜单路径时 `pr-smoke` 额外一步仍算必过关 |

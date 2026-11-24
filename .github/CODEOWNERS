@@ -1,3 +1,11 @@
 # Raising architecture baselines is PO-gated (T99). Feature PRs must not
 # bump these numbers; extract logic instead.
 focus-tiger/docs/audit/b1-architecture-gate-baseline.json @IhiroArmstrong
+
+# Hard-constraint index + product SSOT docs (annotation; branch protection
+# must require code-owner review for this to block). See COMPLIANCE.md §6.
+focus-tiger/docs/COMPLIANCE.md @IhiroArmstrong
+focus-tiger/docs/PRINCIPLES.md @IhiroArmstrong
+focus-tiger/docs/ARCHITECTURE.md @IhiroArmstrong
+focus-tiger/docs/PRIVACY_NOTICE.md @IhiroArmstrong
+focus-tiger/docs/COMPANION_CONTRACT.md @IhiroArmstrong
