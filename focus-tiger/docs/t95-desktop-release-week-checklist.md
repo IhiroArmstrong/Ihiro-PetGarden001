@@ -92,6 +92,8 @@ spctl --assess --type execute -vv "release/mac-arm64/Samatia.app"
 2. yml 内 `path`/`url` 指向的 DMG 可下载，大小与本地 `release/*.dmg` 一致。
 3. 旧内部包（较低 version）启动后，在 Idle 见更新芯片 → 下载 → 「Restart to install」（见 Brief §5.2 项 5 与 [task-electron-desktop-updater.md](./task-briefs/task-electron-desktop-updater.md) 分层 C）。
 
+**PO 办理（2026-11-24）**：桶就绪**当天**须在干净 Mac 走完 **V_low → V_high**（不要拖到 12-08 当周才第一次跑）。逐步清单：[t95-prep-update-e2e-rehearsal.md](./t95-prep-update-e2e-rehearsal.md)。
+
 **本仓库暂未包含** R2 上传脚本；上传凭证不进 Git。上传操作记在 PO 侧运行日志，不替代 TEST_TRACKER 行。
 
 ### 3.3 与轨道 A 的衔接

@@ -71,7 +71,7 @@ describe('SessionEndFlow presence dual-write', () => {
       };
       const flow = new SessionEndFlow({
         reflectionMoment,
-        now: () => new Date('2026-08-25T18:00:00.000Z').getTime()
+        now: () => new Date('2026-11-20T18:00:00.000Z').getTime()
       });
       reflectionMoment.onDone?.(
         { notice: 'wind', emotion: 'soft tired' },

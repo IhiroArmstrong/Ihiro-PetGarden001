@@ -127,6 +127,7 @@ alwaysApply: false
 
 任何新任务开始前（尤其预计会改文件 / 跑验证 / 产生 git 写操作）：
 
+0. **任务级保护**：默认「旁支 + PR」即够；直改共享分支、数据迁移、脏工作区 → 见 `WORKFLOW.md`「任务级保护」（`RULES_INDEX` → `git-task-snapshot`）。  
 1. **确认专属 worktree**：若在主仓通用目录 → **必须**独立 worktree；**禁止**在主仓 `develop` 检出直接写/commit（pre-commit 硬拦）。  
 2. **读 `.ft-session-lock`**：无锁 → 创建本任务锁（必填 `occupancy: "active"` + `started_at` / `last_heartbeat`）并写 `.ft-session-identity`；自己的锁 → 继续并刷新心跳；别人的 `releasable` **或已陈旧**（默认 60m，`FT_SESSION_LOCK_STALE_MS`）→ 可接管（**须** history 留痕）；别人的非陈旧 `active` / 缺字段 / 非法 → 立刻停并汇报。占用态**只认** `occupancy`；陈旧**只认** heartbeat 链，**禁止**靠 mtime 猜测。  
 3. **脏树 / 异会话 stash**：非本会话改动或非本会话 stash → 只读汇报，禁止静默 stash / pop / drop / 再压一层。  
