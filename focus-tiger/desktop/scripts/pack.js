@@ -52,10 +52,17 @@ function runDesktopNode(script, extraEnv = {}) {
 runDesktopNode(path.join(desktopDir, 'scripts/assertInstalledElectron.js'));
 runDesktopNode(path.join(desktopDir, 'scripts/bakeLlamaBinaryForPack.js'));
 
+/** Invite DMG default: cloud gate OFF. Later open-gate pack: VITE_FT_PRACTICE_BACKUP_CLOUD=1. */
+const inviteCloudGateOff = process.env.VITE_FT_PRACTICE_BACKUP_CLOUD !== '1';
+const packBuildEnv = {
+  ...process.env,
+  ...(inviteCloudGateOff ? { VITE_FT_PRACTICE_BACKUP_CLOUD: '0' } : {})
+};
+
 const vite = spawnSync('npm', ['run', 'build'], {
   cwd: focusTigerRoot,
   stdio: 'inherit',
-  env: process.env,
+  env: packBuildEnv,
   shell: process.platform === 'win32'
 });
 if (vite.status !== 0) process.exit(vite.status ?? 1);
@@ -74,7 +81,7 @@ const verifyCloud = spawnSync(
   {
     cwd: focusTigerRoot,
     stdio: 'inherit',
-    env: process.env,
+    env: packBuildEnv,
     shell: process.platform === 'win32'
   }
 );
