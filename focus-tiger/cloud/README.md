@@ -134,7 +134,10 @@ cloud/
 > Cloud Agent / CI **没有** `CLOUDFLARE_API_TOKEN` 时 **不得** `wrangler deploy --temporary`（会落到旁路帐号，不是 `focus-tiger-cloud`）。须在已 `wrangler login` 的本机、针对 **163 / ihiro** 帐号执行。
 
 ```bash
-# Membership / Focus Tiger Base recurring Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
+# Membership / Focus Tiger Base monthly Price → wrangler.jsonc vars.STRIPE_MEMBERSHIP_PRICE_ID
+# Yearly Price (US$47.99, interval=year, same product) → STRIPE_MEMBERSHIP_YEARLY_PRICE_ID
+# Create in Stripe Dashboard (or Test Mode), then replace wrangler placeholder price_REPLACE_YEARLY.
+# Checkout body `{ plan: "yearly" }` uses the yearly Price; omitted plan stays monthly.
 # Focus Tiger Pro Price price_1U6EB1FuIhgJPGLiuciuX1to is reserved in docs — do not add checkout until L1
 # companion.addon.lifetime Price price_1U6GnXFuIhgJPGLiNlXs0IKe is reserved in docs — do not add checkout until L1
 npx wrangler kv namespace create MEMBERSHIP_KV

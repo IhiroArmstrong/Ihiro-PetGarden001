@@ -3,16 +3,16 @@
  * Called from stripeWebhook after signature verification.
  */
 
-import { errorJson, json } from "../lib/http";
+import { errorJson, json } from "../lib/http.ts";
 import {
-	MEMBERSHIP_PLAN_ID,
 	normalizeEmail,
+	normalizeMembershipPlanId,
 	readMembership,
 	readMembershipSubIndex,
 	revokeMembership,
 	upsertActiveMembership,
 	type MembershipRecord,
-} from "../lib/membershipKv";
+} from "../lib/membershipKv.ts";
 import {
 	emailFromCheckoutSession,
 	emailFromSubscription,
@@ -28,8 +28,8 @@ import {
 	type StripeCheckoutSession,
 	type StripeInvoice,
 	type StripeSubscription,
-} from "../lib/stripe";
-import type { Env } from "../types";
+} from "../lib/stripe.ts";
+import type { Env } from "../types.ts";
 
 type MembershipWebhookResult = Response;
 
@@ -119,10 +119,9 @@ async function activateOrRefreshMembership(opts: {
 	const record: MembershipRecord = {
 		active: true,
 		periodEndsAt,
-		planId:
-			planIdFromMeta(opts.subscription.metadata) ||
-			existing?.planId ||
-			MEMBERSHIP_PLAN_ID,
+		planId: normalizeMembershipPlanId(
+			planIdFromMeta(opts.subscription.metadata) || existing?.planId,
+		),
 		receiptId,
 		subscriptionId: opts.subscription.id,
 	};

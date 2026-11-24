@@ -3,6 +3,8 @@
  * Workers-friendly: fetch + Web Crypto HMAC-SHA256.
  */
 
+import { normalizeMembershipPlanId } from "./membershipPlanId.ts";
+
 const STRIPE_API = "https://api.stripe.com/v1";
 
 /** Reject webhook signatures older than this (Stripe default guidance ≈ 5 min). */
@@ -111,10 +113,11 @@ export async function createMembershipCheckoutSession(opts: {
 	successUrl: string;
 	cancelUrl: string;
 	customerEmail?: string;
+	planId?: string;
 }): Promise<StripeCheckoutSession> {
 	const membershipMeta = {
 		product: "membership",
-		planId: "yin-membership",
+		planId: normalizeMembershipPlanId(opts.planId),
 	};
 	return createCheckoutSession({
 		...opts,
