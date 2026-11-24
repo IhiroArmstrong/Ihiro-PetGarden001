@@ -859,6 +859,51 @@ gh run view <run-id> --log-failed | tail -80
 
 ---
 
+## 任务级保护：何时不必打快照、何时加码
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-task-snapshot`）。  
+> **≠** 稳定发布 tag（`vX.Y.Z`，见「语义化版本与稳定发布点」）；**≠** 基础设施配置摘要（`INFRA_SNAPSHOT.md`，`infra-snapshot`）。  
+> 本节说的「快照」= **可选的任务级 git 锚点**（本地 annotated tag 或「分支 + PR」本身），不是每次开工的固定仪式。
+
+### 默认：分支 + PR 就是快照
+
+日常 Cursor / Agent 任务已在 **`feature/*` / `fix/*` / `docs/*`** 旁支上跑（从 `develop` 切出；并行写会话用 **独立 worktree**，见「并行 Cursor 会话」），合并前有 CI、PR 审阅与 Task Brief / 测试闸。此时：
+
+- **`main` 不动**；任务出问题 → 关 PR、删或弃旁支即可回滚任务范围。  
+- **不必**在每次开工前额外 `git tag pre-…`。
+
+只有当改动**绕开**「旁支 + PR + 小步提交」这层保护，或风险特征符合下文「加码」表时，才值得多一步。
+
+### 何时值得加码（快照 tag 或先拆 PR）
+
+| # | 情形 | 建议 |
+|---|---|---|
+| 1 | 直接在 **`main` / `develop` 或共享分支**上改，没有 PR 兜底 | **禁止**（见分支模型）；若已发生 → 立刻切旁支 + 开 PR；本地可打 `pre-<简述>` 再改 |
+| 2 | **大范围机械改动**（全仓重命名、批量改 import、格式化、目录搬迁） | 一 PR 一事、尽量分片；diff 巨大时可在旁支 tip 打本地 `pre-<简述>` 便于 `reset`；须跑齐冒烟 |
+| 3 | **涉及数据或迁移**（localStorage 结构、备份/恢复格式、entitlement / Stripe 相关数据迁移） | **代码可 revert，已写出数据往往不能** → 迁移前做**数据**备份（例：练习备份 / Preferences 本地导出，见 [`SHARED_RESOURCES.md`](focus-tiger/docs/SHARED_RESOURCES.md) · `practice-backup`）；不单靠 git tag |
+| 4 | **一个 PR 混多件**未拆 | 先拆多个 PR；否则旁支回滚会连「好的部分」一起丢 |
+| 5 | **在未提交的脏工作区**上启动任务（你的改动与 Agent 改动易混在一起） | **开工前** `commit` 或 `stash`（非本会话脏树 → 只读汇报，见工作树占用门禁）；最常见「回不去」场景 |
+| 6 | **全仓级审计后的批量修复**（例 B1–B6 按审计结果连改多处） | **每项一个 PR**，不要攒成一个大 diff |
+
+### 轻量做法
+
+- **日常**：`git worktree add -b feature/<topic> … develop`（或 `git switch -c feature/<topic> develop`）→ 在旁支上改 → push + `--base develop` 的 PR。  
+- **高风险加码**（可选）：在**本机旁支 tip** 打 annotated 任务锚点（不与稳定版 `vX.Y.Z` 混淆）：
+  ```bash
+  git tag -a pre-<简述> -m "task anchor before risky change"
+  # 仅本机回退：git reset --hard pre-<简述>
+  ```
+  **须满足**：仅本机、该旁支、尚未 push 或团队已知情（与下节 §A 一致）。**禁止** Agent 擅自 `git push` 任务级 tag（稳定 tag 规则仍见「语义化版本」）。
+
+### 拍板（强制 vs 建议）
+
+| 级别 | # | 含义 |
+|---|---|---|
+| **开工前须处理** | 1、3、5 | 不得直改共享分支；数据迁移须有数据备份计划；脏树须 commit/stash 或停手问人 |
+| **靠流程即可，加码可选** | 2、4、6 | 靠「旁支 + PR + 一 PR 一任务」；tag 仅在机械大 diff 或个人不放心时用 |
+
+---
+
 ## 「改坏了什么」如何快速恢复？
 
 按严重程度选择：
@@ -935,7 +980,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 
 | 主题 | 权威（SSOT） |
 |---|---|
-| 分支 / 合并 main / SemVer 与稳定 tag / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** / **A/B 类 Brief 开工门禁** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
+| 分支 / 合并 main / SemVer 与稳定 tag / **任务级保护（何时打快照）** / 跨会话冲突 / 并行 worktree / 姊妹分支同步 / **固定 QA develop 树** / **用户可见汇报大白话总结** / **A/B 类 Brief 开工门禁** | **本文** `WORKFLOW.md`（见 [`RULES_INDEX.md`](focus-tiger/docs/RULES_INDEX.md)） |
 | Agent commit / 汇报 / push / 禁自动合 main | [`.cursor/rules/focus-tiger-regression-lock.mdc`](.cursor/rules/focus-tiger-regression-lock.mdc)「Commit 汇报与分支门禁」 |
 | 回归锁完工门禁、Bug close §7 | 同上 regression-lock；叙事见 [`DEV_WORKFLOW_QUALITY.md`](focus-tiger/docs/DEV_WORKFLOW_QUALITY.md) |
 | 中高风险功能落地降险（四件套 + 架构红线） | [`RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（本文仅入口引用） |
@@ -952,6 +997,7 @@ git checkout develop && git merge --no-ff hotfix/<简述>
 |---|---|
 | 用户下「立刻开工」但会改用户可见行为 | 先判 B 类 → 须有 PO 点头的 Brief 再写代码；见「用户可见改动：Brief 开工门禁」（`brief-before-user-visible`） |
 | 日常开发 | `git checkout develop` → `feature/…` 或直接 commit |
+| Agent 任务要不要先打 git 快照？ | **默认不用**；直改共享分支 / 数据迁移 / 脏工作区 → **必须先处理**；其余见「任务级保护」 |
 | PR 引用任务线 | 统一 `Closes #NNN`（仓库已关 auto-close；见「PR 描述须引用所属任务线 Issue」） |
 | 开第二个写会话 | `git worktree add -b feature/… ../…-wt-… develop`（见「并行 Cursor 会话」） |
 | 把 Cloud 旁支落到本机 | `git fetch` + `git worktree add …-wt-… origin/<branch>`；禁止主仓 Apply / migrated checkout（见「并行 Cursor 会话」第 8 款） |
