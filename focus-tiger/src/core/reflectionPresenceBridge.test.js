@@ -49,7 +49,7 @@ describe('reflectionPresenceBridge', () => {
         nextFocus: 'breath'
       },
       {
-        now: () => new Date('2026-08-25T12:00:00.000Z'),
+        now: () => new Date('2026-11-20T12:00:00.000Z'),
         idFn: () => 'batch-1'
       }
     );
