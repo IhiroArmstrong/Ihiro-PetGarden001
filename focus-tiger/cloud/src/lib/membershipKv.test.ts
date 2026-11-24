@@ -70,6 +70,7 @@ describe("parseMembershipRecord", () => {
 		assert.equal(r!.active, true);
 		assert.equal(r!.receiptId, "cs_test");
 		assert.equal(r!.lastPaymentFailedAt, "2026-08-10T12:00:00.000Z");
+		assert.equal(r!.planId, "yin-membership-monthly");
 	});
 
 	it("rejects active !== true (no tombstone path)", () => {

@@ -5,13 +5,20 @@
  * Separate from tip:{email} / sanctuary:{email}.
  */
 
+import { normalizeMembershipPlanId } from "./membershipPlanId.ts";
+
+export {
+	MEMBERSHIP_PLAN_ID,
+	MEMBERSHIP_PLAN_ID_MONTHLY,
+	MEMBERSHIP_PLAN_ID_YEARLY,
+	normalizeMembershipPlanId,
+} from "./membershipPlanId.ts";
+
 /**
  * Aligns with client `ENTITLEMENT_GRACE_MS` (entitlementState.js).
  * Used by verify-membership so post-expiry window cannot be infinite-refreshed.
  */
 export const MEMBERSHIP_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
-
-export const MEMBERSHIP_PLAN_ID = "yin-membership";
 
 export type MembershipRecord = {
 	active: true;
@@ -71,10 +78,7 @@ export function parseMembershipRecord(
 		const record: MembershipRecord = {
 			active: true,
 			periodEndsAt: o.periodEndsAt,
-			planId:
-				typeof o.planId === "string" && o.planId
-					? o.planId
-					: MEMBERSHIP_PLAN_ID,
+			planId: normalizeMembershipPlanId(o.planId),
 			receiptId: o.receiptId,
 			subscriptionId: o.subscriptionId,
 		};
@@ -106,7 +110,7 @@ export async function writeMembership(
 	const payload: MembershipRecord = {
 		active: true,
 		periodEndsAt: record.periodEndsAt,
-		planId: record.planId,
+		planId: normalizeMembershipPlanId(record.planId),
 		receiptId: record.receiptId,
 		subscriptionId: record.subscriptionId,
 	};
@@ -114,6 +118,34 @@ export async function writeMembership(
 		payload.lastPaymentFailedAt = record.lastPaymentFailedAt;
 	}
 	await kv.put(membershipKvKey(email), JSON.stringify(payload));
+}
+
+export const MEMBERSHIP_WEBHOOK_EVENT_TTL_SEC = 90 * 24 * 60 * 60;
+
+export function membershipWebhookEventKey(eventId: string): string {
+	return `membership-evt:${eventId.trim()}`;
+}
+
+export async function readMembershipWebhookEvent(
+	kv: KVNamespace,
+	eventId: string,
+): Promise<string | null> {
+	const id = eventId.trim();
+	if (!id) return null;
+	const raw = await kv.get(membershipWebhookEventKey(id));
+	return typeof raw === "string" && raw ? raw : null;
+}
+
+export async function writeMembershipWebhookEvent(
+	kv: KVNamespace,
+	eventId: string,
+	marker = "1",
+): Promise<void> {
+	const id = eventId.trim();
+	if (!id) return;
+	await kv.put(membershipWebhookEventKey(id), marker, {
+		expirationTtl: MEMBERSHIP_WEBHOOK_EVENT_TTL_SEC,
+	});
 }
 
 export async function deleteMembership(

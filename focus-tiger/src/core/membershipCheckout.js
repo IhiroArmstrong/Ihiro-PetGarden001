@@ -19,8 +19,17 @@ import {
   isEntitled
 } from './entitlement/entitlementGate.js';
 import { persistMembershipDeviceCredentialFromBody } from './membershipDeviceCredential.js';
+import {
+  MEMBERSHIP_PLAN_ID,
+  normalizeMembershipPlanId
+} from './membershipPlanId.js';
 
-export const MEMBERSHIP_PLAN_ID = 'yin-membership';
+export {
+  MEMBERSHIP_PLAN_ID,
+  MEMBERSHIP_PLAN_ID_MONTHLY,
+  MEMBERSHIP_PLAN_ID_YEARLY,
+  normalizeMembershipPlanId
+} from './membershipPlanId.js';
 
 /**
  * Display-only USD amount for Support / membership cards (`About ${price}`).
@@ -56,10 +65,7 @@ export function markMembershipFromPayment(
       subscription: {
         active: true,
         periodEndsAt: ends,
-        planId:
-          typeof planId === 'string' && planId.trim()
-            ? planId.trim()
-            : MEMBERSHIP_PLAN_ID,
+        planId: normalizeMembershipPlanId(planId),
         via: 'payment'
       }
     },

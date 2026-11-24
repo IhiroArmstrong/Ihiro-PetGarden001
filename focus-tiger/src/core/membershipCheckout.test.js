@@ -55,7 +55,7 @@ describe('membershipCheckout', () => {
     const cache = readEntitlementCache(storage);
     assert.equal(cache.subscription.active, true);
     assert.equal(cache.subscription.periodEndsAt, ends);
-    assert.equal(cache.subscription.planId, MEMBERSHIP_PLAN_ID);
+    assert.equal(cache.subscription.planId, 'yin-membership-monthly');
     assert.equal(cache.subscription.via, 'payment');
     assert.ok(cache.subscription.lastVerifiedAt);
     assert.equal(

@@ -1,4 +1,4 @@
-import { errorJson, json } from "../lib/http";
+import { errorJson, json } from "../lib/http.ts";
 import {
 	emailFromCheckoutSession,
 	emailFromSubscription,
@@ -7,15 +7,15 @@ import {
 	retrieveCheckoutSession,
 	retrieveSubscription,
 	subscriptionIdFromCheckoutSession,
-} from "../lib/stripe";
+} from "../lib/stripe.ts";
 import {
-	MEMBERSHIP_PLAN_ID,
 	normalizeEmail,
+	normalizeMembershipPlanId,
 	readMembership,
 	upsertActiveMembership,
-} from "../lib/membershipKv";
-import { mintMembershipDeviceToken } from "../lib/membershipDeviceToken";
-import type { Env } from "../types";
+} from "../lib/membershipKv.ts";
+import { mintMembershipDeviceToken } from "../lib/membershipDeviceToken.ts";
+import type { Env } from "../types.ts";
 
 /**
  * POST /api/confirm-membership-session
@@ -106,9 +106,7 @@ export async function handleConfirmMembershipSession(
 		return errorJson(502, "stripe_error", "subscription missing current_period_end");
 	}
 
-	const planId =
-		(typeof session.metadata?.planId === "string" && session.metadata.planId) ||
-		MEMBERSHIP_PLAN_ID;
+	const planId = normalizeMembershipPlanId(session.metadata?.planId);
 
 	let emailRaw = emailFromCheckoutSession(session);
 	if (!emailRaw) {
