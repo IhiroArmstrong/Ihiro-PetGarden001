@@ -1502,7 +1502,7 @@ Electron 宽屏 Confide 问 **How long have I practiced?** / **练了多久** / 
    - **场景 AE 步邻接**：#1886 只收窄语音 command 路由；**不**改危机竖线/TTS 安全句主链。
    - **Support / 结账邻接**：#1883 年付 CTA；**不**改 Lifetime 已购淡化或三卡模态 z-index 契约。
 3. **仍须人工 / 勿当缺口**：Mac 热键与已有 Sit 快捷键/System 冲突；年付 Checkout 回跳；危机混合句 PTT 观感。
-4. **TEST_TRACKER / TASKS**：本批 EOD `docs/eod-scenario-tracker-2026-11-24-night` 续拼 **817** 条 tracker 机器块（较 11-23 **+18** 行折入）；`tasks:assemble` **另开**仅改 `TASKS.md` 的 `docs/eod-tasks-assemble-2026-11-24-night`（**284** 片，门禁禁止与本文同提交）。**ISSUE_LEDGER** `issue-entries/` **本轮不拼装**（无拼装脚本）。**文案**走 `locale:slices`，**非**下班拼装三件套。**本文**只串故事。
+4. **TEST_TRACKER / TASKS**：本批 EOD `docs/eod-scenario-tracker-2026-11-24-night` 续拼 **817** 条 tracker 机器块（较 11-23 **+18** 行折入）；`tasks:assemble` **另开**仅改 `TASKS.md` 的 `docs/eod-tasks-assemble-2026-11-24-night`（**287** 片，门禁禁止与本文同提交）。**ISSUE_LEDGER** `issue-entries/` **本轮不拼装**（无拼装脚本）。**文案**走 `locale:slices`，**非**下班拼装三件套。**本文**只串故事。
 
 ---
 
