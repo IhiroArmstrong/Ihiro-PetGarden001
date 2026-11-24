@@ -191,6 +191,8 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/task-entries/t103-shortcuts-cookbook-close.md',
   'focus-tiger/docs/task-entries/t104-web-to-dmg-funnel.md',
   'focus-tiger/docs/tracker-entries/docs-t101-t104-mac-hooks.md',
+  'focus-tiger/docs/tracker-entries/docs-t101-t104-brief-lock.md',
+  'focus-tiger/docs/issue-entries/docs-t101-t104-brief-lock.md',
   'focus-tiger/docs/issue-entries/docs-mac-ecosystem-hooks-t101-t104.md',
   'focus-tiger/docs/task-briefs/task-output-gate-p0.md',
   'focus-tiger/docs/tracker-entries/docs-t100-pr1-merged-brief-wiring.md',

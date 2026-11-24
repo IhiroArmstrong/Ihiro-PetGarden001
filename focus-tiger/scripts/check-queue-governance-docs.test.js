@@ -269,7 +269,10 @@ describe('isQueueGovernanceCoPrAllowed', () => {
         'focus-tiger/docs/task-entries/t101-global-sit-hotkey.md',
         'focus-tiger/docs/ISSUE_LEDGER.md',
         'focus-tiger/docs/issue-entries/docs-mac-ecosystem-hooks-t101-t104.md',
-        'focus-tiger/docs/tracker-entries/docs-t101-t104-mac-hooks.md'
+        'focus-tiger/docs/tracker-entries/docs-t101-t104-mac-hooks.md',
+        'focus-tiger/docs/tracker-entries/docs-t101-t104-brief-lock.md',
+        'focus-tiger/docs/issue-entries/docs-t101-t104-brief-lock.md',
+        'focus-tiger/docs/audit/first-package-written-risk-acceptance.md'
       ]),
       null
     );
