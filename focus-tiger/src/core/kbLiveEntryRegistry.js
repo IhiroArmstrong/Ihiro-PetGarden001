@@ -289,6 +289,23 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0005', 'KB-FUNC-0010', 'KB-FUNC-0039'])
   }),
   Object.freeze({
+    id: 'kb-live-daily-noticing',
+    surface: 'menu',
+    proxy: 'daily-noticing',
+    labelKeys: Object.freeze(['DAILY_NOTICING_MENU_LABEL']),
+    menuPath: '⋯ → Practice → Daily noticing',
+    liveStatus: 'live',
+    codeAnchors: Object.freeze([
+      "proxy: 'daily-noticing'",
+      'DAILY_NOTICING_MENU_LABEL'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js',
+      'src/locales/slices/daily-noticing.json'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
     id: 'kb-live-daily-quote',
     surface: 'menu',
     proxy: 'daily-quote',

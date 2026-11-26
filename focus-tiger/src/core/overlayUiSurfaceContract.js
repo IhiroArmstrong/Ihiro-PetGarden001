@@ -256,6 +256,23 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
       tokens: Object.freeze(['待人工测试'])
     })
   }),
+  surface({
+    file: 'DailyNoticingUI.js',
+    slotRequest: deriveSlot(),
+    zIndexFloor: overlayStack(),
+    mount: 'ui-overlay',
+    mutationFeedback: MUTATION_GAP,
+    e2eOverlap: {
+      mode: 'spec',
+      path: 'e2e/daily-noticing-menu.spec.js',
+      tokens: Object.freeze(['daily-noticing-card', 'daily-noticing-skip'])
+    },
+    trackerCoverage: Object.freeze({
+      mode: 'token',
+      files: Object.freeze(['docs/tracker-entries/feature-t105-daily-noticing.md']),
+      tokens: Object.freeze(['待人工测试'])
+    })
+  }),
   glassCard('DigitalWallpapersCardUI.js'),
   glassCard('ArtCollectionPanelUI.js'),
   glassCard('ZenCinemaCardUI.js'),

@@ -51,6 +51,7 @@ export const OVERLAY_SOURCES = Object.freeze({
   SOFT_UPDATE: 'soft-update',
   SEASONAL_WHISPER: 'seasonal-whisper',
   CONFIDE: 'confide',
+  DAILY_NOTICING: 'daily-noticing',
   PRIVACY_SHEET: 'privacy-sheet',
   PURPOSE_CARD: 'purpose-card',
   JOURNEY_LOG: 'journey-log',
@@ -303,6 +304,17 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     dismissRoot: '#confide-to-yin-card',
     dormantWakeOnOpen: OVERLAY_DORMANT_WAKE.REQUIRED,
     snapshotField: 'confideOpen'
+  }),
+  contract({
+    id: OVERLAY_SOURCES.DAILY_NOTICING,
+    kind: OVERLAY_SLOT_KIND.GROWTH_CARD,
+    tier: 11,
+    readers: 'T105 Daily Noticing; fixed prompts; zero generate',
+    blocksIdleYinTap: true,
+    blocksEnterSleep: true,
+    outsideDismiss: OVERLAY_OUTSIDE_DISMISS.BLANK_CLOSES,
+    dismissRoot: '#daily-noticing-card',
+    snapshotField: 'dailyNoticingOpen'
   }),
   contract({
     id: OVERLAY_SOURCES.JOURNEY_LOG,
@@ -724,6 +736,7 @@ export const OVERLAY_UI_FILE_SOURCES = Object.freeze({
   'FocusCoinsPanelUI.js': [OVERLAY_SOURCES.YIN_COIN],
   'DailyZenQuoteCardUI.js': [OVERLAY_SOURCES.DAILY_QUOTE],
   'ContemplativeInquiryUI.js': [OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY],
+  'DailyNoticingUI.js': [OVERLAY_SOURCES.DAILY_NOTICING],
   'DigitalWallpapersCardUI.js': [OVERLAY_SOURCES.WALLPAPERS],
   'ArtCollectionPanelUI.js': [OVERLAY_SOURCES.ART_COLLECTION],
   'ZenCinemaCardUI.js': [OVERLAY_SOURCES.ZEN_CINEMA],

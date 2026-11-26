@@ -60,6 +60,7 @@ export const WELCOME_SEQUENCE_BLOCKER = 'welcome-sequence-playing';
  * @property {boolean} [welcomeSequencePlaying] 冷启动第一幕序列未播完（气泡可能已收）
  * @property {boolean} [secondaryMenuOpen]
  * @property {boolean} [confideOpen]
+ * @property {boolean} [dailyNoticingOpen]
  * @property {boolean} [journeyOpen]
  * @property {boolean} [helpCenterOpen]
  * @property {boolean} [growthJourneyDetailOpen]
@@ -136,6 +137,7 @@ export function buildOverlaySnapshot(input = {}) {
     welcomeSequencePlaying: Boolean(input.welcomeSequencePlaying),
     secondaryMenuOpen: Boolean(input.secondaryMenuOpen),
     confideOpen: Boolean(input.confideOpen),
+    dailyNoticingOpen: Boolean(input.dailyNoticingOpen),
     journeyOpen: Boolean(input.journeyOpen),
     helpCenterOpen: Boolean(input.helpCenterOpen),
     growthJourneyDetailOpen: Boolean(input.growthJourneyDetailOpen),
@@ -290,6 +292,7 @@ export function deriveMomentWhisperBusy(snapshot, forKey = '') {
 export function deriveFocusingSoftCardBusy(snapshot) {
   if (snapshot.recoverResetPracticeOpen) return true;
   if (snapshot.contemplativeInquiryOpen) return true;
+  if (snapshot.dailyNoticingOpen) return true;
   if (snapshot.guidedMeditationOpen) return true;
   if (snapshot.focusAwarenessOpen) return true;
   if (snapshot.awakenInviteOpen) return true;
@@ -515,6 +518,9 @@ function activeGrowthCard(snapshot) {
   if (snapshot.contemplativeInquiryOpen) {
     return OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY;
   }
+  if (snapshot.dailyNoticingOpen) {
+    return OVERLAY_SOURCES.DAILY_NOTICING;
+  }
   return null;
 }
 
@@ -638,6 +644,7 @@ function collectTransitionMomentYield(snapshot) {
     blockers.push(OVERLAY_SOURCES.COMPANION_PICKER);
   }
   if (snapshot.confideOpen) blockers.push(OVERLAY_SOURCES.CONFIDE);
+  if (snapshot.dailyNoticingOpen) blockers.push(OVERLAY_SOURCES.DAILY_NOTICING);
   if (snapshot.coldStartGoalOpen) {
     blockers.push(OVERLAY_SOURCES.COLD_START_GOAL);
   }
@@ -649,6 +656,9 @@ function collectTransitionMomentYield(snapshot) {
   }
   if (snapshot.contemplativeInquiryOpen) {
     blockers.push(OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY);
+  }
+  if (snapshot.dailyNoticingOpen) {
+    blockers.push(OVERLAY_SOURCES.DAILY_NOTICING);
   }
   if (snapshot.focusDurationPickerOpen) {
     blockers.push(OVERLAY_SOURCES.FOCUS_DURATION_PICKER);
@@ -685,6 +695,9 @@ function collectRecoverResetBaseYield(snapshot) {
   }
   if (snapshot.contemplativeInquiryOpen) {
     blockers.push(OVERLAY_SOURCES.CONTEMPLATIVE_INQUIRY);
+  }
+  if (snapshot.dailyNoticingOpen) {
+    blockers.push(OVERLAY_SOURCES.DAILY_NOTICING);
   }
   if (snapshot.mustardSeedOpen) {
     blockers.push(OVERLAY_SOURCES.GROWTH_MUSTARD_SEED);

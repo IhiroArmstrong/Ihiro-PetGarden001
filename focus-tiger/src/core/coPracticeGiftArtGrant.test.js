@@ -367,11 +367,14 @@ function collectPngBasenames(dir, out) {
 }
 
 describe('T68 glass deck gate (surface flag)', () => {
-  it('main.js still gates gift-art growth glass deck on CO_PRACTICE_GIFT_ART_SURFACE_ENABLED', () => {
+  it('glass growth deck gates gift-art on CO_PRACTICE_GIFT_ART_SURFACE_ENABLED', () => {
     assert.equal(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED, true);
-    const mainSrc = readFileSync(new URL('../main.js', import.meta.url), 'utf8');
+    const deckSrc = readFileSync(
+      new URL('./buildGlassGrowthOverlayCards.js', import.meta.url),
+      'utf8'
+    );
     assert.match(
-      mainSrc,
+      deckSrc,
       /CO_PRACTICE_GIFT_ART_SURFACE_ENABLED\s*\?[\s\S]*co-practice-gift-art/,
       'gift-art joins glass growth deck only while surface is on'
     );
