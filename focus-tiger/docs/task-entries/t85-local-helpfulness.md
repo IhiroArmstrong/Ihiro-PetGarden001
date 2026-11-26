@@ -1,7 +1,7 @@
 ---
 id: t85-local-helpfulness
 kind: feature
-status: 排队中 · 可选 · Brief 待点头 · 仅本机
+status: Brief 已点头（PO 2026-11-27）· 12/8 后
 updated: 2026-11-26
 ---
 

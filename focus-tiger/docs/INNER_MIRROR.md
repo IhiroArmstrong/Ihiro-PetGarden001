@@ -3,7 +3,7 @@
 > **状态**：方向锁（**无运行时**）· PO 2026-11-26 改口：**进 2026-12-08 首包**。准入范围没过 → 包装日顺延。**禁止暗发**（关掉回看、日志照发）。  
 > **从属**：[`PRODUCT_POSITIONING.md`](./PRODUCT_POSITIONING.md) · [`PRINCIPLES.md`](./PRINCIPLES.md) · [`COMPANION_CONTRACT.md`](./COMPANION_CONTRACT.md)（C-01–C-11）· [`NOTICING_ONE_LINE.md`](./NOTICING_ONE_LINE.md)（第一层不改）· [`LOCAL_AI_SCENARIOS_V1.md`](./LOCAL_AI_SCENARIOS_V1.md)（Describe / Temporal Compare；Interpret ❌）· [`audit/first-package-open-gate-v2.md`](./audit/first-package-open-gate-v2.md)（觉察一句四闸；永不藏入口）  
 > **不是**：日记 App、心理诊断、进步打分、成长旅程圆点、Reflection Companion 上线、重开倾诉现场生成、阿寅记忆摘要的弱替代  
-> **治理代号**：**T105** · 排期槽位 **P1**。实现 Brief [`task-briefs/task-t105-inner-mirror-first-package.md`](./task-briefs/task-t105-inner-mirror-first-package.md) **已起草、未点头**。口令「开工内在镜子」在点头前不执行（本锁 ≠ 开工令）。
+> **治理代号**：**T109** · 排期槽位 **P1**。实现 Brief [`task-briefs/task-t109-inner-mirror-first-package.md`](./task-briefs/task-t109-inner-mirror-first-package.md) **已起草、未点头**。口令「开工内在镜子」在点头前不执行（本锁 ≠ 开工令）。
 
 本锁只定「这面镜子是什么、第一层承诺怎么保住、纠正权与忘掉怎么硬闸」。**不写 `src/`。**
 
@@ -143,7 +143,7 @@ Thought Drop / 觉察一句已经能让人写下心里闪过的一句、被固�
 | 12/6–12/7 | 只修 bug |
 | 12/8 | 发包，或已经顺延 |
 
-口令「开工内在镜子」「按 T105 开工周回看」= **不执行**，直到实现 Brief 经 PO 点头。点头后仍按 Brief 里的两刀分开 PR，不在本文件开工。
+口令「开工内在镜子」「按 T109 开工周回看」= **不执行**，直到实现 Brief 经 PO 点头。点头后仍按 Brief 里的两刀分开 PR，不在本文件开工。
 
 ---
 
