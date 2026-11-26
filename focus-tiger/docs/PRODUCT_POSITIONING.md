@@ -13,8 +13,9 @@
 1. `PRODUCT_POSITIONING.md`：品牌定位、使命、长期方向；
 1a. `FROM_APP_TO_CULTURE.md`：**文化探索方向锁**（From App to Culture；验证框架；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
 1b. `YIN_EVOLUTION.md`：**陪伴成长意义层**（关系叙事；不改分数公式；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
-1c. `GROWTH_JOURNEY.md` + `PRACTICE_PAPER.md`：**走到哪**与**练习观察纸**（观察纸挂在旅程详情上；无健康分；方向锁见各文）；
+1c. `GROWTH_JOURNEY.md` + `PRACTICE_PAPER.md`：**走到哪**与**练习观察纸**（观察纸挂在旅程详情上；V1 无健康分；色标改口见 T28 Brief）；
 1d. `CO_PRACTICE_POSITIONING.md`：**人机共修口径**（叠加，不替换本文；能说 / 不能说；**无运行时**）；
+1d2. `PERSONAL_GROWTH_ENGINE.md`：**个人成长引擎四层对照**（上下文 → 状态 → 选练 → 学习；本机日记收窄「不存原句」；**无运行时**；实现 T106–T108 / T28 / T85）；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
 3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
 4. `PRODUCT_MOMENTS.md`：一天中的 Five Moments 产品叙事框架（Arrive / Focus / Recover / Transition / Reflect），位于定位之下、任务排期之上；

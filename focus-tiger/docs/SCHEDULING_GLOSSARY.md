@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 当前队列（2026-11-24 · **T101–T104 Brief 已点头 · 不进 12/8 首包 · T104 先不动** · **开门 G1–G4 四闸齐（G3 #1809）** · **T100 路线 X 关单三项齐** · **T95 #1711 壳 45.3.1 已合 develop · 发包装日 2026-12-08 · 手测不为升壳** · **首包关闸发** · **T93 D1–D4 已合 · 首包仍关闸** · **T99 #1654 已合** · **T14 #1627 已合** · **#1672 窄屏菜单已合** · **T98 生产 Worker #1658 已部署** · **#1646 已合 · T98 已购宽屏句已更正** · **T98 倾诉关闭入口盘点已完成** · **方案 A：V2 改为打开倾诉门槛** · **T96 #1622 已合** · **第一份安装包六条已拍** · **T97 过关线已改：免责声明 + 当地资源、不做自建标注（不算拦路虎）** · **T94 第 3 刀 Brief 已锁** · **T94 刀序第 3→2→4** · **T90–T92 已合** · **T89 已完成（非独立）** · **T88 #1567/#1571/#1572/#1579/#1580 已合（≠对外）** · **T87 #1582 已合** · **T77 #1584 · T78 #1608 已合** · **T79 #1551 已合** · **T76 B1 #1550 · B2 #1553 已合** · **T80 #1554 已合** · **T81–T84 已合（Brief PO 2026-11-14 点头）** · **T85/T86 搁置** · **T73 记住—响应两刀已合 #1530/#1539（#1541）** · **T74 预生成池 Brief 待点头** · **T75 适应开 vs 不开一页纸已写** · **T66 第二步 embedding 板块搁置（#1488 阶段 A 未过）** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
+## 1. 当前队列（2026-11-26 · **发包装日顺延（成长最小 UX 未齐 · 新日待填）** · **T105–T108 排队** · **T101–T104 Brief 已点头 · 不进首包 · T104 先不动** · **开门 G1–G4 四闸齐（G3 #1809）** · **T100 路线 X 关单三项齐** · **T95 #1711 壳 45.3.1 已合 develop · 发包装日顺延 · 手测不为升壳** · **首包关闸发** · **T93 D1–D4 已合 · 首包仍关闸** · **T99 #1654 已合** · **T14 #1627 已合** · **#1672 窄屏菜单已合** · **T98 生产 Worker #1658 已部署** · **#1646 已合 · T98 已购宽屏句已更正** · **T98 倾诉关闭入口盘点已完成** · **方案 A：V2 改为打开倾诉门槛** · **T96 #1622 已合** · **第一份安装包六条已拍** · **T97 过关线已改：免责声明 + 当地资源、不做自建标注（不算拦路虎）** · **T94 第 3 刀 Brief 已锁** · **T94 刀序第 3→2→4** · **T90–T92 已合** · **T89 已完成（非独立）** · **T88 #1567/#1571/#1572/#1579/#1580 已合（≠对外）** · **T87 #1582 已合** · **T77 #1584 · T78 #1608 已合** · **T79 #1551 已合** · **T76 B1 #1550 · B2 #1553 已合** · **T80 #1554 已合** · **T81–T84 已合（Brief PO 2026-11-14 点头）** · **T85 本机排队 · T86 搁置** · **T73 记住—响应两刀已合 #1530/#1539（#1541）** · **T74 预生成池不执行（选 R · #1543）** · **T75 适应开 vs 不开一页纸已写** · **T66 第二步 embedding 板块搁置（#1488 阶段 A 未过）** · **T71 三层共修方向锁已写** · **T72 环境场搁置** · **T69 口径纠正：早餐走 T70 · 越来越懂你是目标** · **T70 开桌锚点搁置待 Brief** · **T68 共修纪念画发放 Brief 已点头** · **T67 接合账 #1478 已合** · **T66 心念流 v0 #1475 已合** · **T55 · T63 · T64 已合 develop** · **T57–T65 共修线运行时已收口** · **T54 分享开关 #1434 已合·90 天仍搁置** · T52 #1424 已合 · T48 #1414 已合 · T34/T32/T25 已完成（代码）· **关单级手测并入下一批批量验收** · 十二条十行已合两行搁置 · T53 #1437 已合 · T28 仍搁置）
 
 | 槽位 | 标准名 | 状态 | 说明 |
 |---|---|---|---|
@@ -34,7 +34,7 @@
 | **P1** · **T25** | ⋯五组图标须先出现 | **已合 develop** | #1373。用户已确认点的是底栏 ⋯。关单级手测另排。**不是** T4 未排期 |
 | **P1** · **T26** | Help Center 问号右侧钮 | **已合 develop** | #1374。关单级手测另排 |
 | **P2** · **T27** | 练习中停 inhale/exhale 语音 | **已合 develop** | #1377。关单级手测另排 |
-| **可选** · **T28** | 练习纸彩色健康标记 | 搁置 | 先推翻 [`PRACTICE_PAPER.md`](./PRACTICE_PAPER.md) 才可做。PO 2026-10-25 问立刻安排：**方向锁仍是拦路虎**，本回合不开工 |
+| **可选** · **T28** | 练习纸用户自评色标 | **排队中** · Brief 待点头 | PO 2026-11-26：V1 禁色不是终局。Brief [`task-t28-practice-paper-user-colors.md`](./task-briefs/task-t28-practice-paper-user-colors.md)。点头前不写 `src/`。仍禁止临床健康分 |
 | **P2** · **T21** | 产品问入口转移 Brief | **已合 develop** | #1347 · [`task-confide-product-ask-entry-split.md`](./task-briefs/task-confide-product-ask-entry-split.md) |
 | **P2** · **T22** | Help Center 问卡 #1348 | **已合 develop** | 列卡 v1；办理已合 T34 #1381；手测关单仍待勾 |
 | **P2** · **T34** | Help Center 办理（T10 封闭集） | **已合 develop** | #1381。**挡 10/31 的是验收勾选**，不是再写代码 · [`task-help-center-operating-commands.md`](./task-briefs/task-help-center-operating-commands.md) |
@@ -82,7 +82,7 @@
 | **可选** · **T71** | 三层共修方向锁 | **已完成** | A 类 · [`CO_PRACTICE_POSITIONING.md`](./CO_PRACTICE_POSITIONING.md) §6。**无运行时** |
 | **可选** · **T72** | 环境场再收敛 | **搁置** · Brief 骨架 | 默认零新茶盏/烛火；须 SANCTUARY A.1。Brief [`task-co-practice-ambient-field-t72.md`](./task-briefs/task-co-practice-ambient-field-t72.md)。**不是** T70 · **不是** 第二套界面 |
 | **可选** · **T73** | 记住—响应读层 | **已合 develop** · #1530/#1539 | 两刀均在 develop（#1541 拒绝后计数）。第二刀 [`task-remember-respond-second-knife.md`](./task-briefs/task-remember-respond-second-knife.md)。口令「按 T73 Brief 开工第二刀」= **不执行**（已合）。**不是** T69、**不是** T54 |
-| **可选** · **T74** | 受限生成预生成池 | **排队中** · Brief 待点头 | B 类。[`task-constrained-generation-pregen-pool.md`](./task-constrained-generation-pregen-pool.md)。不插 T73 第二刀前接线。**不是** 倾诉开放生成 |
+| **可选** · **T74** | 受限生成预生成池 | **搁置** · **不执行填池** | PO 选 R 扩库 #1537/#1543。口令「立刻开工 T74」不执行本池 |
 | **可选** · **T75** | 适应开 vs 不开对照方案 | **已完成**（一页纸） | A 类。[`adaptation-on-off-research-protocol.md`](./adaptation-on-off-research-protocol.md)。写了 ≠ 开工 90 天 |
 | **P1** · **T76** | 冷启动静修入口 | **已完成** · B1 #1550 · B2 #1553 | 人话：第一次打开就能安静坐。Brief [`task-t76-cold-start-quiet-sit.md`](./task-briefs/task-t76-cold-start-quiet-sit.md)。关单级手测并入下一批。**不是** T71、**不是** 禅修引擎、**不是** 稳定偏好 |
 | **可选** · **T77** | 续练位 | **已完成** · #1584 | 人话：常做的那一套一键接着练。v1 无时段词。依赖 **T87** #1582。关单级手测见 [`develop-qa-t87-t84-hand-test-checklist.md`](./audit/develop-qa-t87-t84-hand-test-checklist.md)。**不是** T76 |
@@ -93,7 +93,7 @@
 | **可选** · **T82** | 研究共修同意页 | **已完成** · #1611 | 独立入口，不放进 Privacy 勾选。Brief 已点头（2026-11-14） |
 | **可选** · **T83** | 首次练习后研究提示 | **已完成** · #1617 | 练完一次后轻提示。依赖 T82。**不是** T51 |
 | **可选** · **T84** | 问号与隐私政策三层 | **已完成** · #1618 | 定位句 + 三层政策。Brief 已点头（2026-11-14） |
-| **未排期** · **T85** | 研究共修第 2 层问卷 | **搁置** | 第一版不上。Brief [`task-co-practice-research-tier2-survey.md`](./task-briefs/task-co-practice-research-tier2-survey.md) |
+| **可选** · **T85** | 帮助感本机采集 | **排队中** · Brief 待点头 | 仅本机。Brief [`task-t85-local-helpfulness.md`](./task-briefs/task-t85-local-helpfulness.md)。**不上** T81。旧云问卷 Brief 不执行 |
 | **未排期** · **T86** | 官网字典与伦理审查 | **搁置** | 公开字段页 + 顾问函。Brief [`task-co-practice-research-public-ethics.md`](./task-briefs/task-co-practice-research-public-ethics.md) |
 | **可选** · **T87** | 稳定偏好层 PR-1 | **已完成** · #1582 | 人话：记住你常练哪一种分钟，可以说出来、也可以说不是这样。Brief 已点头。**不是** T76 冷启动、**不是** T73 读门 |
 | **可选** · **T88** | 引导冥想对外前加固 | **已完成** · #1567/#1571/#1572/#1579/#1580 | 人话：网页边下边播、电脑版下载校验、发布闸拦 r2.dev 已进 develop。**合 develop ≠ 对外**。Brief 已点头。Electron 短课手测并入批量验收。Brief [`task-t88-guided-meditation-release-hardening.md`](./task-briefs/task-t88-guided-meditation-release-hardening.md)。**不是** T76、**不是** 收紧 CORS |
@@ -103,7 +103,7 @@
 | **P2** · **T92** | 安全回复写上求助资源 | **已合 develop** · #1614 | 人话：安全句里加上请拨打本地求助热线，并有第二句紧急电话（无号码）。对应 10-04 |
 | **P1** · **T93** | 邮箱登录（第一份 DMG 门闩） | **已完成**（D1–D4）· 首包关闸 | 人话：代码能用邮箱验证码找回旅程，但**第一份安装包不对客打开**。#1663/#1674/#1679/#1682。口令「开工邮箱登录 P0」不执行重写。**不是** T94 |
 | **P2** · **T94** | 识别率四刀说明 | **已完成**（说明） | 人话：先写清危机识别还要动哪四刀。Brief [`task-briefs/task-v2-recognition-four-knives.md`](./task-briefs/task-v2-recognition-four-knives.md)。第 1 刀 #1612 已合。**第 3 刀协议** [`task-briefs/task-t94-knife-3-item-protocol.md`](./task-briefs/task-t94-knife-3-item-protocol.md) 已锁（题面不进仓）。实现顺序第 3→2→4。10-05 修复归第 4 刀。第 2、4 刀待 Brief。**禁止**再叫 T93 |
-| **P1** · **T95** | 电脑壳升级 + 更新通道（9-02b） | **立即做** · #1711 已合 develop | 人话：发包装日 **2026-12-08**。**develop** 已钉 **45.3.1**。剩更新桶、公证、壳专属回归。对客根地址已锁；测试前缀 `/prep/`。**手测不为升壳**。Brief [`task-briefs/task-t95-electron-shell-upgrade.md`](./task-briefs/task-t95-electron-shell-upgrade.md) |
+| **P1** · **T95** | 电脑壳升级 + 更新通道（9-02b） | **立即做** · #1711 已合 develop | 人话：发包装日 **顺延**（成长 UX 未齐；新日待填）。壳桶/公证不停。**手测不为升壳**。Brief [`task-briefs/task-t95-electron-shell-upgrade.md`](./task-briefs/task-t95-electron-shell-upgrade.md) |
 | **P2** · **T96** | 未覆盖语言求助兜底 | **已合 develop** · #1622 | 人话：危机层没覆盖的语言，固定句也带上求助入口。Brief [`task-briefs/task-t96-uncovered-language-help.md`](./task-briefs/task-t96-uncovered-language-help.md)。**不是** 10-05 |
 | **P2** · **T97** | 危机题卷标注资质 | **已完成** | 人话：不再自建标注。过关线改成免责声明，并引导用户找当地资源。2026-11-22 找人期限作废，不算拦路虎。识别率缺口仍在。倾诉仍默认关。Brief [`task-briefs/task-t97-crisis-annotator-qualification.md`](./task-briefs/task-t97-crisis-annotator-qualification.md)。「让外部顾问01 标危机题」仍不执行 |
 | **P1** · **T98** | 倾诉默认关闭入口盘点 | **已完成** | 人话：核对安装包里倾诉是不是真关着、关掉以后别的入口会不会走进死路。盘点 [`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](./audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。盘点当时已购宽屏可开；**#1646 已合**后代码闸已关。Plan A 生产 Worker **已部署** `04a56014`（#1658）；再部署须重探。口令「按 T98 再盘一遍」代码面未变则勿再开 |
@@ -116,7 +116,11 @@
 | **P1** · **T101** | 全局快捷键开坐 | **排队中** · Brief 已点头 | 人话：默认 Command+Control+Shift+S，可改键。禁止旁白 Control+Option 与 T10 键。**不进 12/8 首包**；发出前不得合 develop。见 [`task-t101-global-sit-hotkey.md`](./task-briefs/task-t101-global-sit-hotkey.md) |
 | **P2** · **T102** | 菜单栏今日已坐 | **排队中** · Brief 已点头 | 人话：今日分钟 + 可关开关。禁止连续天数。T101 之后。**不进 12/8 首包**。见 [`task-t102-tray-today-sat.md`](./task-briefs/task-t102-tray-today-sat.md) |
 | **P2** · **T103** | 深链 Shortcuts 收口 | **排队中** · Brief 已点头 | 人话：用户食谱接专注模式/日历/Things。Health 默认关。仓库 docs 可并行；Help 首包后。**不进 12/8 首包**。见 [`task-t103-shortcuts-cookbook-close.md`](./task-briefs/task-t103-shortcuts-cookbook-close.md) |
-| **可选** · **T104** | 网页获客转安装包 | **排队中** · **先不动** | 人话：等 T95 安装包 URL。口令加 Download 不执行。**不进 12/8 首包**。见 [`task-t104-web-to-dmg-funnel.md`](./task-briefs/task-t104-web-to-dmg-funnel.md) |
+| **可选** · **T104** | 网页获客转安装包 | **排队中** · **先不动** | 人话：等 T95 安装包 URL。口令加 Download 不执行。**不进首包**。见 [`task-t104-web-to-dmg-funnel.md`](./task-briefs/task-t104-web-to-dmg-funnel.md) |
+| **可选** · **T105** | 个人成长引擎四层对照图 | **已完成** | [`PERSONAL_GROWTH_ENGINE.md`](./PERSONAL_GROWTH_ENGINE.md)。无运行时 |
+| **P1** · **T106** | 本机成长日记 | **排队中** · Brief 待点头 | 原文仅本机。见 [`task-t106-local-growth-journal.md`](./task-briefs/task-t106-local-growth-journal.md) |
+| **P1** · **T107** | 按体验选下一练 | **排队中** · Brief 待点头 | 允许更积极。见 [`task-t107-adaptive-next-practice.md`](./task-briefs/task-t107-adaptive-next-practice.md) |
+| **P1** · **T108** | 统一成长状态 + 授权目标 | **排队中** · Brief 待点头 | 见 [`task-t108-growth-state-and-goals.md`](./task-briefs/task-t108-growth-state-and-goals.md) |
 | **未排期** · **中档关怀** | 倾诉中档轻句 | **搁置** | 不进 T94 四刀。无新 T 号。CR-46 Brief 仍在，不开工 |
 
 ### T46 不执行的路线（登记，不开工）
@@ -138,7 +142,7 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 词条 | 含义 | 禁止当作同义词乱用 |
 |---|---|---|
 | **槽位 P1 / P2** | 当前在排、有明确分支或 PR 的工作 | 「#1 #2」「第一刀」「下一刀」（未写 P 编号时） |
-| **未排期** | PO 明确不安排。当前：**根因行动 A15–A17（T4）**；**T54** 90 天实验搁置 · 未排期——分享开关 #1434 已合，不占「立即做」；**T85** 第 2 层问卷、**T86** 官网字典与伦理审查；**中档关怀**（不进 T94 四刀） | 单独写「高风险全放下」（易让人以为整队取消）；把 T54 说成根因行动；把「开关已合」说成「90 天已启动」；把 T80 方案包说成已上送数据 |
+| **未排期** | PO 明确不安排。当前：**根因行动 A15–A17（T4）**；**T54** 90 天实验搁置 · 未排期——分享开关 #1434 已合，不占「立即做」；**T86** 官网字典与伦理审查；**中档关怀**（不进 T94 四刀）。**T85** 已改本机排队，不再占未排期 | 单独写「高风险全放下」（易让人以为整队取消）；把 T54 说成根因行动；把「开关已合」说成「90 天已启动」；把 T80 方案包说成已上送数据 |
 | **纯文档 PR** | 不改 `src/` 运行时；`docs:check` 类验证 | 「文档刀」「账本 PR」（不说清是否动代码时） |
 | **产品旁支** | 改用户路径或发送链等运行时 | 「功能 PR」「实现刀」 |
 | **口令** | 用户一句话触发 Agent **开始执行**已排槽位（不是新任务名） | 把口令写成「又冒出来的一条安排」 |
@@ -162,7 +166,7 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「开工五组扇形」或「按 T25 Brief 开工」 | **T25 已合 #1373**。勿再开同内容五图标旁支 |
 | 「问号右边放 Help Center」或「按 T26 Brief 开工」 | **T26 已合 #1374**。不是 T22 |
 | 「练习中不要 inhale exhale」或「按 T27 Brief 开工」 | **T27 已合 #1377**。不停结束句 |
-| 「练习纸做成健康地图」 | **T28**：须先书面推翻方向锁。**不是** T24 漏实现。2026-10-25 仍不执行 |
+| 「练习纸做成健康地图」 | **T28**：须 [`task-t28-practice-paper-user-colors.md`](./task-briefs/task-t28-practice-paper-user-colors.md) 点头后新 Chat。点头前不写 `src/` |
 | 「按 v4 出题合同出题」 | **不再开工**。合同留档，不新开封存批 |
 | 「开 CR-45」或混合句实现类口令 | **不再开工**。影子已交付，合并回应已砍 |
 | 「按考核口径拆分 Brief 点头」 | 已发生（附修改已写入） |
@@ -218,7 +222,7 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T72 Brief 开工」 | **不执行**（Brief 未点头 · SANCTUARY A.1 未过）。默认不加茶盏/烛火新美术。**不是** T70 |
 | 「按 T73 Brief 开工第一刀」或「按记住—响应 Brief 开工」 | **T73 第一刀已合 #1530**。勿再开同内容读门旁支。**不是** T69 |
 | 「按 T73 Brief 开工第二刀」 | **T73 第二刀已合 #1539/#1541**。勿再开同内容旁支。Brief 只读；余下 = 关单级手测。**不是** 从零写 `src/` |
-| 「按 T74 Brief 开工」 | **须 Brief 点头**后新 Chat。空闲填池。**不是** 倾诉开放生成。**不插** T73 第二刀前面 |
+| 「按 T74 Brief 开工」或「立刻开工 T74」 | **不执行**本机填池（PO 已选 R 扩库 #1543） |
 | 「按 T76 Brief 开工」 | Brief 已点头；**勿再开** 冷启动口径旁支。**不是** 稳定偏好 |
 | 「按 T76 B1 开工」 | **T76 B1 已合 #1550**。勿再开同内容旁支 |
 | 「按 T76 B2 开工」 | **T76 B2 已合 #1553**。勿再开同内容旁支 |
@@ -233,7 +237,12 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T82 Brief 开工」 | **T82 已合** #1611。勿再开同内容旁支。**不放进** Privacy 勾选 |
 | 「按 T83 Brief 开工」 | **T83 已合** #1617。勿再开同内容旁支。**不是** T51 |
 | 「按 T84 Brief 开工」 | **T84 已合** #1618。勿再开同内容旁支 |
-| 「按 T85 Brief 开工」或「按 T86 Brief 开工」 | **不执行**（搁置 · 未排期） |
+| 「按 T85 Brief 开工」 | **须** [`task-t85-local-helpfulness.md`](./task-briefs/task-t85-local-helpfulness.md) 点头后新 Chat。仅本机。上云 **不执行** |
+| 「按 T86 Brief 开工」 | **不执行**（搁置 · 未排期） |
+| 「按 T105 四层对照图开工」 | **不写 src**（图已合本治理 PR） |
+| 「按 T106 Brief 开工」 | **须点头**后新 Chat。**不是** 原文进云 |
+| 「按 T107 Brief 开工」 | **须点头**后新 Chat。**不是** 重做 T58 |
+| 「按 T108 Brief 开工」 | **须点头**后新 Chat |
 | 「按 T87 Brief 开工」或「按 stable-prefs Brief 开工 PR-1」 | **T87 已合** #1582。勿再开同内容旁支。**不是** T76 |
 | 「按 T77 Brief 开工」 | **T77 已合** #1584。勿再开同内容旁支。v1 无时段词 |
 | 「按 T78 Brief 开工」 | **T78 已合** #1608。勿再开同内容旁支 |

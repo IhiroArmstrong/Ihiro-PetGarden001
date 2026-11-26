@@ -1,7 +1,8 @@
 # Practice Paper — 练习观察纸 · 方向锁
 
 > **状态**：方向锁 · 界面第一刀挂成长旅程详情下半部（T24）· 2026-10-19
-> **点头分层**：**方向**（挂在成长旅程详情、不打分、不新造账本、不碰倾诉原文）PO 已书面点头。**文案规则**（滚动 7 天判定表、去掉「提前起身」）是分析师 2026-10-18 表。**第一刀一张卡**（Sit & Breath / 同坐与呼吸；2026-10-19 PO 收口：不按 `arrive` 拆）。不要把未审过的句子记成已批准界面。
+> **点头分层**：**方向**（挂在成长旅程详情、第一刀不打分、不新造账本）PO 已书面点头。**文案规则**（滚动 7 天判定表、去掉「提前起身」）是分析师 2026-10-18 表。**第一刀一张卡**（Sit & Breath / 同坐与呼吸；2026-10-19 PO 收口：不按 `arrive` 拆）。不要把未审过的句子记成已批准界面。  
+> **V1 禁红黄绿 / 健康分 = MVP，不是终局。** PO 2026-11-26：需要给引擎读的自评色标。改界面须 [`task-t28-practice-paper-user-colors.md`](./task-briefs/task-t28-practice-paper-user-colors.md) 点头；点头前现网仍无色标。倾诉原文不进本纸；日记归 **T106**。
 > **从属**：[`PRODUCT_POSITIONING.md`](./PRODUCT_POSITIONING.md) · [`PRINCIPLES.md`](./PRINCIPLES.md) · [`GROWTH_JOURNEY.md`](./GROWTH_JOURNEY.md) · [`GROWTH_METRICS_CHARTER.md`](./GROWTH_METRICS_CHARTER.md)
 > **不是**：健康仪表盘、ServiceMap、心智拓扑图、0–100 分数、红黄绿告警、情绪监测、新的 `scoreFormula`
 
