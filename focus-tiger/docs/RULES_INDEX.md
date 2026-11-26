@@ -215,7 +215,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `FROM_APP_TO_CULTURE.md` | **文化探索方向锁**（From App to Culture；App→Slack；废除证据门；§13 PO 评审；五空间 IA §8.2；无运行时；从属定位稿 + PRINCIPLES） |
 | `SLACK_COMMUNITY_GUIDELINES.md` | **Slack 实验室公约草案**（Quiet Room · Support 分流 · 隐私红线；从属 `FROM_APP_TO_CULTURE` §8） |
 | `MVP_PRODUCT_DEFINITION.md` | MVP 用户 / JTBD / 指标 / 付费假设 |
-| `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五） |
+| `FREE_PAID_MATRIX.md` | 功能×免费/付费×接线差距对账（**方向锁 / SSOT**；从属 MVP §五；含 2026-11-26 Mind Fitness 场景/功能映射） |
 | `FOCUS_COINS.md` | 寅币（Focus Coins）+ Yin's Collections：隔离 B 轨、花园 vs 珍藏、清供 8、序列帧铁律（**方向锁 2026-08-20**；运行时见 `task-focus-coins`；日封顶 Step D = A 见 `task-yin-coin-daily-cap-economy`） |
 | `GROWTH_METRICS_CHARTER.md` | **成长指标治理 SSOT**：多轨 registry · persona 回归 · 公式版本迁移 · QA seed 契约（`audit:growth-metrics` in `docs:check`） |
 | `GROWTH_JOURNEY.md` | **成长旅程 V1 方向锁**（首页一行加极细短轨迹；详情不写九十天天数；圆点只读莲花计入分钟，阶段有本地下限；无百分比、无五维分数；从属定位稿 + 成长章程） |
