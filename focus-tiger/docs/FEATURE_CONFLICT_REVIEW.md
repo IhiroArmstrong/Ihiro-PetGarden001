@@ -208,6 +208,7 @@ Cursor 规则（glob 注入，非 alwaysApply）：`.cursor/rules/focus-tiger-fe
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-26 | Inner Mirror：去掉「没意义」主题；危机检测先于计数。12/4 未绿不带留下钮。仍无运行时 |
 | 2026-11-26 | Inner Mirror 改里程碑：周回看不拖 12/8。与 T106 分键，危机句不进镜子。仍无运行时 |
 | 2026-11-26 | Inner Mirror / T105 改口进 12/8：同一三轴。新增「四闸红不搬入口、不另开菜单」。月回看与勾 2/3 不在首包准入。仍无运行时 |
 | 2026-11-26 | Inner Mirror / T105 方向锁：对照 AE Thought Drop、AL Reflection Companion lab、AG 记忆、成长旅程圆点、1B 时期对照。PO 已拍：第二层默认关、不改第一层不存原文、不挂圆点、不混 Companion、不重开生成。无运行时 |

@@ -52,7 +52,7 @@ alwaysApply: false
 | `docs/product-knowledge-base.md` | **产品知识库**（三库拆分 / `yin_may_retrieve` / 功能短答；**无运行时**；≠ 开放 FAQ） |
 | `docs/LOCAL_AI_PHASE1_TASK_PLAN.md` | **Local AI Phase 1 执行计划**：门禁 · 口令 · #472 A/B/C 验收 · 分 PR 纪律 |
 | `docs/LOCAL_AI_OPERATING_LAYER.md` | **Local AI Operating Layer**（方向锁；Auto-Operating ≠ Yin；只设计无运行时） |
-| `docs/INNER_MIRROR.md` | **Inner Mirror / 内在镜子方向锁**（T105；第二层默认关；数据面进 12/8，周回看走更新；**无运行时**） |
+| `docs/INNER_MIRROR.md` | **Inner Mirror / 内在镜子方向锁**（T105；第二层默认关；12/8 日期不因本项移动；周回看走更新；**无运行时**） |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/SCENE_ANIMATION_WIRING.md` | **场景→动画接线表**：用户时刻 × 档位 × 素材；v1.0.0 Slice A 范围 |
 | `docs/HINTS_WIRING.md` | **场景→Hint 接线表**：时刻 × 互斥/门闩/宽窄批次；文案仍看 `ONBOARDING_HINTS` |

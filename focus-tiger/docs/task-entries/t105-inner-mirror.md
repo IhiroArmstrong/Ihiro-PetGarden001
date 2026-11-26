@@ -1,8 +1,8 @@
 ---
 id: t105-inner-mirror
 kind: feature
-status: 立即做 · P1 · 数据面进 12/8 · 周回看走更新 · Brief 未点头
+status: 立即做 · P1 · 12/8 日期不动 · 12/4 未绿则不带留下钮 · Brief 未点头
 updated: 2026-11-26
 ---
 
-T105 Inner Mirror / 内在镜子。PO 2026-11-26 晚间：按里程碑，不整包顺延。SSOT [`INNER_MIRROR.md`](../INNER_MIRROR.md)。Brief [`task-briefs/task-t105-inner-mirror-first-package.md`](../task-briefs/task-t105-inner-mirror-first-package.md) 已修订、未点头。不读 T106。口令在点头前不执行。方向锁不等于周回看已上线。
+T105 Inner Mirror / 内在镜子。代号不改。12/8 不因本项移动。12/4 数据面未绿则首包不带留下按钮。周回看走更新。不读 T106。Brief 未点头。SSOT [`INNER_MIRROR.md`](../INNER_MIRROR.md)。
