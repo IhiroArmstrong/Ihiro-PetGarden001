@@ -164,6 +164,7 @@ export const WIDE_MORE_PROXY_MENU_GROUP = Object.freeze({
   'five-moments': 'MENU_GROUP_PRACTICE',
   honesty: 'MENU_GROUP_PRACTICE',
   confide: 'MENU_GROUP_PRACTICE',
+  'daily-noticing': 'MENU_GROUP_PRACTICE',
   'journey-log': 'MENU_GROUP_RECORDS',
   'presence-signals': 'MENU_GROUP_RECORDS',
   'yin-coin': 'MENU_GROUP_RECORDS',

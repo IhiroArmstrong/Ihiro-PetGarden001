@@ -25,9 +25,10 @@
 | lab-intent-diagnostic | `desktop/scripts/l0-intent-diagnostic-probe.js`。实验脚本。 | 同文件 `chat.prompt`。 | 无界面。 | 实验脚本，不进产品闸 | 无产品回落。 | lab-only | no | lab | desktop/scripts/l0-intent-diagnostic-probe.js:216 |
 | help-center-ask | `src/core/helpCenterAskSearch.js` 从 `HELP_CENTER_ARTICLES` 检索。`HelpCenterUI.js` 没有 `generate`。 | 无补全。 | 帮助卡正文是目录里的原文。 | 不适用 | 不适用 | catalog-not-model | no | n/a | — |
 | contemplative-inquiry | `src/ui/ContemplativeInquiryUI.js`。沉思探问用固定句。文件里没有 `generate` 或 `prompt(`。 | 无补全。 | 固定文案。 | 不适用 | 不适用 | fixed-copy | no | n/a | — |
+| daily-noticing | `src/ui/DailyNoticingUI.js`。T105 每日觉察固定问句与收束；危机仅用 `resolveConfideReply` 固定句。 | 无补全。 | locale 固定文案。 | 不适用 | 不适用 | fixed-copy | no | n/a | — |
 | voice-forward | `VoiceInputChrome` 把听到的话填进输入框。倾诉里接着 `_onSend`（`ConfideToYinUI.js` 1604）。反思页同样只是填输入。 | 无第二条补全。听到的话若后来发送，仍走上面已登记的路径。 | 语音本身不另画一句模型回复。 | 不适用 | 不适用 | forwards-into-registered-paths | no | n/a | — |
 
-登记表 12 行。其中会把模型句子给人看的代码仍是 4 行：`confide-observe-l3`、`confide-chat-l3`、`confide-observe-retry`、`reflection-companion`。前 3 条倾诉行 `releaseReach=no`（发布发送链走不到）。`reflection-companion` 仅实验室。`read-hybrid-classify` 会调模型，但界面不展示那句原文。
+登记表 13 行。其中会把模型句子给人看的代码仍是 4 行：`confide-observe-l3`、`confide-chat-l3`、`confide-observe-retry`、`reflection-companion`。前 3 条倾诉行 `releaseReach=no`（发布发送链走不到）。`reflection-companion` 仅实验室。`read-hybrid-classify` 会调模型，但界面不展示那句原文。
 
 ## 补全包装（不是第二台模型）
 

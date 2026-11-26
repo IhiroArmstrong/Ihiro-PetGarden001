@@ -184,6 +184,7 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
   'presence-signals': { handler: 'onPresenceSignals', close: true },
   'yin-coin': { handler: 'onYinCoin', close: true },
   confide: { handler: 'onConfide', close: true },
+  'daily-noticing': { handler: 'onDailyNoticing', close: true },
   'zen-cinema': { handler: 'onZenCinema', close: true },
   'daily-quote': { handler: 'onDailyQuote', close: true },
   'contemplative-inquiry': { handler: 'onContemplativeInquiry', close: true },
@@ -811,7 +812,12 @@ export function listSecondaryChromeEntries(surface, visibility) {
           proxy: 'confide',
           labelKey: 'CONFIDE_MENU_LABEL'
         }
-      : null
+      : null,
+    {
+      proxy: 'daily-noticing',
+      labelKey: 'DAILY_NOTICING_MENU_LABEL',
+      testId: 'idle-daily-noticing'
+    }
   ]);
 
   pushLabeledGroup(out, 'MENU_GROUP_RECORDS', [

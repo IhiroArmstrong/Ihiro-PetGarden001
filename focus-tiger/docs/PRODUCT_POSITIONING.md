@@ -111,7 +111,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 - **Wellness disclaimer（2026-08-14；2026-08-15 改落点）**：应用内须说明本产品是专注力 / 正念练习空间，用于 build focus skill、practice mindfulness、reduce everyday stress；**不是**医疗器械、心理诊疗或诊断，**不能**替代持证咨询师、治疗师或医生；并含标准化兜底句 **not intended to diagnose, treat, cure, or prevent any disease**。落点：（1）**常驻查阅（默认）**：**?** → `#onboarding-app-purpose` 免责区块（不在冷启动自动弹出，以免吓跑用户）；（2）Privacy Sheet 一句交叉引用；（3）QA 仅 `?wellnessFirst=1` 可强制 `#onboarding-wellness-first` Got it 卡。文案键 `HINT_APP_PURPOSE_WELLNESS_*`（en + ja）。禁止把功能写成治疗焦虑、抑郁或其它临床病症。危机语料 `confide` `safety-01` 须与此边界一致（指向真实求助渠道 + 不能代替专业帮助），不另写一套。红线见 `PRINCIPLES.md`「一般身心练习，不是诊疗」。
 - 当前不因长期愿景而提前实现多角色、换装 UI、多场景、成就墙或复杂成长树；
 - **觉察一句**（Route X · 2026-11-19 拍板）：同一入口从「AI 聊天 / 倾诉」降为写下一句、固定句接住。方向锁 [`NOTICING_ONE_LINE.md`](./NOTICING_ONE_LINE.md)。**收回** 2026-08-18 桌面宽屏现场短生成；生成代码不删，默认不进用户气泡。第一份安装包**要开这个入口**（日语仍隐）。中文可见名 **觉察一句**；英文 **Thought Drop**（PO 2026-11-19 点头）。**系统操作**（备份 / 更新 / 导出 / 改设置）**不**经由阿寅之口；长期入口为 Auto-Operating（`LOCAL_AI_OPERATING_LAYER.md`，方向锁、未实现）。
-- **Daily Noticing（每日觉察 · 缺口 · 2026-11-26）**：**不是** Honesty Check-in、**不是**第五套打卡、**不是**治疗产品。首包后 Brief 的第一刀：**固定问句库 + 规则轮换，零生成**；不替代到达 Notice 或回顾三问，补「不坐下也能觉察」入口。全文 [`inner-development-daily-noticing.md`](./inner-development-daily-noticing.md)。**不进 2026-12-08 首包运行时**。
+- **Daily Noticing（每日觉察 · 缺口 · 2026-11-26）**：**不是** Honesty Check-in、**不是**第五套打卡、**不是**治疗产品、**不是** T105 内在镜子。实现 Brief 已起草 [`task-briefs/task-daily-noticing-v1.md`](./task-briefs/task-daily-noticing-v1.md)（固定问句库 + 规则轮换，零生成）；不替代到达 Notice 或回顾三问，补「不坐下也能觉察」入口。全文 [`inner-development-daily-noticing.md`](./inner-development-daily-noticing.md)。**不进 2026-12-08 首包运行时**。T 号待治理登记。
 
 长期愿景不是当前功能承诺。任何扩展仍须遵守 `PRINCIPLES.md` 的「价值优先于复杂度」与 `PROCESS.md` 的立项流程。
 

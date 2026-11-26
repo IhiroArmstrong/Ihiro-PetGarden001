@@ -13,6 +13,7 @@ export const SECONDARY_MENU_ROW_BY_PROXY = Object.freeze({
   'five-moments': { icon: '✧', hintKey: 'MENU_ROW_HINT_FIVE_MOMENTS' },
   honesty: { icon: '◔', hintKey: 'MENU_ROW_HINT_HONESTY' },
   confide: { icon: '◌', hintKey: 'MENU_ROW_HINT_CONFIDE' },
+  'daily-noticing': { icon: '◦', hintKey: 'MENU_ROW_HINT_DAILY_NOTICING' },
   'journey-log': { icon: '≡', hintKey: 'MENU_ROW_HINT_JOURNEY' },
   'presence-signals': { icon: '◈', hintKey: 'MENU_ROW_HINT_PRESENCE_SIGNALS' },
   'yin-coin': { icon: '◇', hintKey: 'MENU_ROW_HINT_YIN_COIN' },

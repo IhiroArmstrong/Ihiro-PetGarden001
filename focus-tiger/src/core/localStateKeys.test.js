@@ -48,6 +48,7 @@ import {
 } from './t54ResearchLedger.js';
 import { LAST_POST_FINGERPRINT_KEY } from './t54ResearchUpload.js';
 import { CONTEMPLATIVE_INQUIRY_STORAGE_KEY } from './contemplativeInquiryMemory.js';
+import { DAILY_NOTICING_STORAGE_KEY } from './dailyNoticing/dailyNoticingMemory.js';
 import {
   createHintsSeenStore,
   HINTS_SEEN_STORAGE_KEY
@@ -323,6 +324,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   RITUAL_RECIPE_ANALYTICS_OPT_IN_STORAGE_KEY,
   COMPANION_CHANNEL_RECENT_IDS_KEY,
   CONTEMPLATIVE_INQUIRY_STORAGE_KEY,
+  DAILY_NOTICING_STORAGE_KEY,
   HEALTH_SHORTCUT_LOG_ENABLED_KEY
 ]);
 
