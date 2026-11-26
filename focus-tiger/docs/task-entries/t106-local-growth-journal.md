@@ -1,7 +1,7 @@
 ---
 id: t106-local-growth-journal
 kind: feature
-status: 排队中 · P1 · Brief 待点头
+status: Brief 已点头（PO 2026-11-27）· 可开工
 updated: 2026-11-26
 ---
 

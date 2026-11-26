@@ -3,7 +3,7 @@
 > **状态**：方向锁（**无运行时**）· PO 2026-11-26 晚间：**按里程碑**。**2026-12-08 安装包日期不因本锁移动。** 首包若数据面测试未绿，就不带「留下」按钮（功能整体缺席，不是半成品暗发）。周回看走更新通道。  
 > **从属**：[`PRODUCT_POSITIONING.md`](./PRODUCT_POSITIONING.md) · [`PRINCIPLES.md`](./PRINCIPLES.md) · [`COMPANION_CONTRACT.md`](./COMPANION_CONTRACT.md)（C-01–C-11）· [`NOTICING_ONE_LINE.md`](./NOTICING_ONE_LINE.md)（第一层不改）· [`LOCAL_AI_SCENARIOS_V1.md`](./LOCAL_AI_SCENARIOS_V1.md)（Describe / Temporal Compare；Interpret ❌）· [`audit/first-package-open-gate-v2.md`](./audit/first-package-open-gate-v2.md)（觉察一句四闸；永不藏入口）  
 > **不是**：日记 App、心理诊断、进步打分、成长旅程圆点、Reflection Companion 上线、重开倾诉现场生成、阿寅记忆摘要的弱替代、与 T106 本机日记共用一键  
-> **治理代号**：**T105**（不改号）· 排期槽位 **P1**。实现 Brief [`task-briefs/task-t105-inner-mirror-first-package.md`](./task-briefs/task-t105-inner-mirror-first-package.md) **已修订、未点头**。口令「开工内在镜子」在点头前不执行。
+> **治理代号**：**T105**（不改号）· 排期槽位 **P1**。实现 Brief [`task-briefs/task-t105-inner-mirror-first-package.md`](./task-briefs/task-t105-inner-mirror-first-package.md) **已点头**（2026-11-26）。口令「开工内在镜子」= 新 Chat 写刀 1，不在本文件写 `src/`。
 
 本锁只定「这面镜子是什么、第一层承诺怎么保住、纠正权与忘掉怎么硬闸」。**不写 `src/`。**
 
