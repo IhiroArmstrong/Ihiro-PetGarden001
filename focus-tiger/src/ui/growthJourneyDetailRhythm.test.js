@@ -35,7 +35,7 @@ test('Growth Journey omits co-practice contract host', () => {
 test('practice paper hangs under the rhythm, as one Sit & Breath card', () => {
   assert.match(
     src,
-    /this\.rhythmEl,\s*this\.notebookEl,\s*this\.paperEl,\s*this\.closeBtn/s
+    /this\.rhythmEl,\s*this\.goalsEl,\s*this\.notebookEl,\s*this\.paperEl,\s*this\.closeBtn/s
   );
   assert.match(src, /practice-paper-sit-breath/);
   assert.match(src, /practice-paper-check-in-rhythm/);

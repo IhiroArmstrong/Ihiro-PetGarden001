@@ -27,7 +27,7 @@ describe('intentionPresenceBridge', () => {
   it('appendIntentionPresenceSignal writes arrival_choose freeText row', () => {
     const storage = mockStorage();
     const row = appendIntentionPresenceSignal(storage, '📖 Reading', {
-      now: () => new Date('2026-08-28T12:00:00.000Z'),
+      now: () => new Date('2026-10-15T12:00:00.000Z'),
       idFn: () => 'choose-1'
     });
     assert.ok(row);
@@ -42,7 +42,7 @@ describe('intentionPresenceBridge', () => {
   it('recordIntention dual-writes intentions.v1 and presence-signals', () => {
     const previous = globalThis.localStorage;
     globalThis.localStorage = mockStorage();
-    const nowMs = new Date('2026-08-28T12:00:00.000Z').getTime();
+    const nowMs = new Date('2026-10-15T12:00:00.000Z').getTime();
     try {
       const entry = recordIntention('write quietly', {
         source: 'typed',

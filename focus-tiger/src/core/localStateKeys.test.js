@@ -33,6 +33,7 @@ import {
   LOTUS_POND_STORAGE_KEY
 } from './LotusPondStore.js';
 import { GROWTH_JOURNEY_STAGE_FLOOR_KEY } from './growthJourneyStage.js';
+import { GROWTH_STATE_STORAGE_KEY } from './growthState/growthStateStore.js';
 import { MILESTONE_GLOW_STORAGE_KEY } from './MilestoneGlowStore.js';
 import { RITUAL_COMPLETION_STORAGE_KEY } from './RitualCompletionStore.js';
 import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
@@ -217,6 +218,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   PRACTICE_DAYS_STORAGE_KEY,
   LOTUS_POND_STORAGE_KEY,
   GROWTH_JOURNEY_STAGE_FLOOR_KEY,
+  GROWTH_STATE_STORAGE_KEY,
   MILESTONE_GLOW_STORAGE_KEY,
   RITUAL_COMPLETION_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
