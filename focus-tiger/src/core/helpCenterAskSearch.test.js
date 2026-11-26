@@ -5,6 +5,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { matchesSafetyRedirect } from './confide/confideSafetyKeywords.js';
 import {
   isHelpCenterAskImperativeShape,
   normalizeHelpCenterAskText,
@@ -45,6 +46,21 @@ test('question-shaped backup ask still searches and does not operate', () => {
 
 test('crisis text in the ask box never starts backup', () => {
   const policy = resolveHelpCenterAskSubmitPolicy('I want to kill myself');
+  assert.equal(policy.shouldExecute, false);
+  assert.equal(policy.shouldSearch, false);
+  assert.equal(policy.reason, 'safety');
+});
+
+test('crisis paraphrase is not ordinary search when semantic crisis hits', () => {
+  const paraphrase = 'I cannot keep going much longer';
+  assert.equal(matchesSafetyRedirect(paraphrase), false);
+  const withoutVectors = resolveHelpCenterAskSubmitPolicy(paraphrase);
+  assert.equal(withoutVectors.reason, 'search');
+  assert.equal(withoutVectors.shouldSearch, true);
+  const policy = resolveHelpCenterAskSubmitPolicy(paraphrase, {
+    embeddingOk: true,
+    semanticCrisisScore: 0.9
+  });
   assert.equal(policy.shouldExecute, false);
   assert.equal(policy.shouldSearch, false);
   assert.equal(policy.reason, 'safety');

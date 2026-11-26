@@ -33,7 +33,7 @@
 | # | 决策 | 落点 |
 |---|---|---|
 | 范围 | 新菜单项只放 **Feel the Ground** + **Look Around**。**Take a Breath 维持现状完全不动**（不搬入新菜单、不与 MicroRitual 合并） | §四复用表 · §六排除项 |
-| 触发 | 仅用户点「更多」菜单；无任何被动触发 | §五 |
+| 触发 | 仅用户点「更多」菜单；无任何被动触发（另见 §3.5） | §五 |
 | 交互 | **去掉 5-emoji 心情层**。进菜单后直接两个练习按钮 | §五 |
 | 位置 | 「更多」里插在 **Five Moments 入口上方**。本轮落地；菜单治理线日后可能迁移 | §五 · 代码须留 TODO 注释 |
 | Recover | 主动 / 被动两条 Recover 路径都不接入 | §六 |
@@ -91,6 +91,22 @@
 | `main.js` | `onGroundExercise`：先关其它增长卡，再打开选择层（两按钮） |
 
 宽窄壳的 handler 构造参数与 `onFiveMoments` 并列新增即可。
+
+### 3.5 其他现网入口（文档同步 · 2026-11-26 · PO 拍板对照表）
+
+与本 Brief **决策 2**（主路径 = Idle「更多」点名）并存、**不推翻**两钮菜单的入口：
+
+| 入口 | 用户动作 | 打开什么 | 代码锚点 |
+|---|---|---|---|
+| **主路径** | Idle → 更多 → Ground exercise → 选钮 | 选择层 → `show('ground' \| 'look')` | §5.1 · `idleChromeOrchestration.js` |
+| **Focusing 觉察邀请** | 专注中邀请点「要」（`kind === 'pause'`，非 extend） | **直接**四段感受地面（**跳过**两钮选择层） | `main.js` `AwakenInviteUI` `onAccept` → `recoverResetPracticeUI.show(GROUND)`；行为登记见 [`task-constrained-generation-expanded-retrieval-impl.md`](./task-constrained-generation-expanded-retrieval-impl.md) §暂停点「要」表（T51 路径，无独立 T51 Brief 文件名） |
+| **公案落地次钮** | Sit with a question 提前结束 → 落地屏点「感受地面」 | **仅**打开两钮选择层（须再点 Feel the Ground / Look Around） | T79-R1 · `ContemplativeInquiryUI` · `main.js` `onLand` → `groundExerciseChoiceUI.open()` |
+
+**废弃、不得写回文档的路径**：被动 Re-focus 后 emoji 条（`RecoverResetOfferUI`）——见 §3.2。
+
+**§3.2「无任何被动触发」**在本 Brief 语境中指：**系统不再因 refocus 自动弹接地**；**不包含**上表第二行（用户已点「要」）与第三行（用户点次按钮）。
+
+**T51 `onAccept` 行为变更须同步本表。**
 
 ### 3.4 触发改主动点击后，还要不要过仲裁？
 

@@ -7,8 +7,10 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
 | 独立bug | 对话里的仓库相对链接打开的是当前窗口检出的文件，旁支新稿点开仍是旧标题 | 2026-11-26 用户核对 T105 Brief | 文件链接规则 `WORKFLOW.md` | 已修：窗口不在该旁支时必须改以 https blob 为核对稿 |
+| 优化建议 | 个人成长四层尚无基本完整用户体验，不得以 12-08 收工 | 2026-11-26 PO 拍板 | [`issue-entries/docs-pge-growth-engine-po-2026-11-26.md`](./issue-entries/docs-pge-growth-engine-po-2026-11-26.md) · **T105–T108** | 跟进中 |
 | 技术债 | L3 generate 写入 turns.jsonl 时带用户原句，与语义危机日志（只存哈希和长度）不一致 | 2026-11-24 只读审计缺口 1 | [`issue-entries/fix-l3-generate-log-redact.md`](./issue-entries/fix-l3-generate-log-redact.md) | 跟进中 |
 | 技术债 | 日语倾诉未开放只认假名；仅汉字日语是源码已承认的漏检 | 2026-11-24 只读审计（未进三缺口） | [`issue-entries/docs-ja-kanji-confide-miss.md`](./issue-entries/docs-ja-kanji-confide-miss.md) | 未跟进 |
+| 独立bug | 帮助中心问卡把没有安全关键词的改写危机句当成普通检索 | 2026-11-24 只读审计缺口 2 | [`issue-entries/fix-help-center-crisis-paraphrase-not-search.md`](./issue-entries/fix-help-center-crisis-paraphrase-not-search.md) | 跟进中 |
 | 独立bug | 倾诉称呼加封闭命令（备份/忘记全部）会夹走没有安全关键词的危机句，整条筛查被跳过 | 2026-11-24 只读审计缺口 3 | [`issue-entries/fix-voice-command-crisis-not-command.md`](./issue-entries/fix-voice-command-crisis-not-command.md) | 跟进中 |
 | 优化建议 | Mac 生态钩子尚未按优先级收口（全局开坐 / 今日已坐 / Shortcuts 食谱 / 网页转安装包） | 2026-11-24 PO 点头锁 | [`issue-entries/docs-t101-t104-brief-lock.md`](./issue-entries/docs-t101-t104-brief-lock.md) · **T101–T104** | 跟进中 |
 | 根因扇出 | 觉察 overlay 用黑名单默认放行，#1828 夹带踢掉 safety_care，CI 没拦 | 2026-11-21 手测 · 2026-11-23 复盘 | [`issue-entries/fix-noticing-overlay-whitelist.md`](./issue-entries/fix-noticing-overlay-whitelist.md) | 跟进中 |
