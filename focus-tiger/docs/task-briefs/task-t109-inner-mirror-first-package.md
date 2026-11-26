@@ -1,7 +1,7 @@
 # Task Brief · T109 内在镜子首包准入
 
-> **状态**：**未点头**。点头前不写 `src/`。口令「开工内在镜子」「按 T109 开工周回看」= 不执行。  
-> **代号**：**T109** Inner Mirror / 内在镜子。排期槽位 **P1**。与 **T95** 同一窗口：本 Brief 的准入范围没过，或文末三项任一失败 → **2026-12-08 整包顺延**。禁止暗发。  
+> **状态**：**已点头**（正文 SSOT = [`task-t105-inner-mirror-first-package.md`](./task-t105-inner-mirror-first-package.md) · PO 2026-11-26）。点头后刀 1 另开 Chat 写 `src/`。  
+> **代号**：**T109** Inner Mirror / 内在镜子（治理号；Brief 文件名仍含历史 t105）。排期槽位 **P1**。与 **T95** 同一窗口：本 Brief 的准入范围没过，或文末三项任一失败 → **2026-12-08 整包顺延**。禁止暗发。  
 > **类**：**B 类**（用户能看见留下、忘掉、纠正、周回看）。  
 > **依赖**：方向锁 [`INNER_MIRROR.md`](../INNER_MIRROR.md)。不改 [`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) 第一层「默认不存原文」。不依赖觉察一句 G3/G4 全绿。  
 > **旁支**：点头后新开 `feature/t109-inner-mirror-*`，不在 `docs/t105-inner-mirror-direction` 上写运行时。  
