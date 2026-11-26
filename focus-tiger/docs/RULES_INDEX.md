@@ -220,6 +220,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `GROWTH_METRICS_CHARTER.md` | **成长指标治理 SSOT**：多轨 registry · persona 回归 · 公式版本迁移 · QA seed 契约（`audit:growth-metrics` in `docs:check`） |
 | `GROWTH_JOURNEY.md` | **成长旅程 V1 方向锁**（首页一行加极细短轨迹；详情不写九十天天数；圆点只读莲花计入分钟，阶段有本地下限；无百分比、无五维分数；从属定位稿 + 成长章程） |
 | `PRACTICE_PAPER.md` | **练习观察纸方向锁**（Practice Paper；挂在成长旅程详情下半部；一张 Sit & Breath 卡 + 一句最近节奏；无健康分 / 无拓扑；界面第一刀见 T24；从属定位稿 + 成长旅程） |
+| `inner-development-daily-noticing.md` | **`inner-development-daily-noticing`**：人的内在成长叙事 + **Daily Noticing** 缺口（非治疗；固定问句轮换、第一刀零生成；痛苦信号走倾诉安全层；不进首包；从属定位稿） |
 | `GROWTH_JOURNEY_IMPLEMENTATION.md` | **成长旅程 V1 实现说明**（阶段门槛 + persona 落点；阶段函数与导入取较大值已落地；首页短轨迹与详情已接；从属方向锁） |
 | `REMOTE_PARAM_CANDIDATES.md` | **远程参数化候选审计 + PO 拍板**（2026-09-12）：五条门槛 · 伪远程 vs KV · ①权重KV→②莲花花园KV→③寅币经济评估（`task-yin-coin-daily-cap-economy` · Step D = A 已锁）· Stretch/好奇/冷却这次不做 |
 | `INFRA_SNAPSHOT.md` | **基础设施现状摘要**（Worker/KV/entitlement/locale/CI 等低频配置；`infra-snapshot`）；非 SSOT，过期读源文件 |
