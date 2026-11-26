@@ -161,6 +161,16 @@ export const LOCAL_BACKUP_NAMED_EXCLUDE_ROWS = Object.freeze([
     note: 'Chat with Yin first-use consent stays on this device; do not copy via practice backup'
   },
   {
+    key: 'focus-tiger.growth-journal.v1',
+    tier: 'exclude-product',
+    note: 'T106 Thought Drop originals stay on this device; never practice-backup export or cloud snapshot'
+  },
+  {
+    key: 'focus-tiger.growth-journal-consent.v1',
+    tier: 'exclude-product',
+    note: 'T106 journal Keep/Not-now stays on this device; do not copy via practice backup'
+  },
+  {
     key: 'focus-tiger.t54-research-last-post.v1',
     tier: 'exclude-ephemeral',
     note: 'T54 last POST fingerprint; device throttle'

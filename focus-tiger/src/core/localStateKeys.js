@@ -111,6 +111,8 @@ export const FOCUS_TIGER_LOCAL_STORAGE_KEYS = Object.freeze([
   'focus-tiger.focus-duration-pref.v1',
   'focus-tiger.confide-observation.v1',
   'focus-tiger.confide-consent.v1',
+  'focus-tiger.growth-journal.v1',
+  'focus-tiger.growth-journal-consent.v1',
   'focus-tiger.co-practice-research-week-ledger.v1',
   'focus-tiger.co-practice-research-consent.v1',
   'focus-tiger.co-practice-research-last-post.v1',

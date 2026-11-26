@@ -208,6 +208,11 @@ import {
   hasValidConfideConsent,
   recordConfideConsent
 } from '../core/confide/confideConsent.js';
+import {
+  considerGrowthJournalAfterSend,
+  writeGrowthJournalConsent,
+  appendGrowthJournalEntry
+} from '../core/growthJournal/growthJournalStore.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v4';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -241,6 +246,8 @@ export class ConfideToYinUI {
     this._sending = false;
     this._sendEpoch = 0;
     this._voiceRawForSend = null;
+    this._pendingGrowthJournalText = null;
+    this._growthJournalSaving = false;
     this._operatingOwnsMic = false;
     /** @type {((text: string) => void) | null} */
     this._operatingConfirmTypedSubmit = null;
@@ -356,6 +363,57 @@ export class ConfideToYinUI {
       this.memoryConsentTitle,
       this.memoryConsentCopy,
       this.memoryConsentActions
+    );
+
+    this.journalConsentWrap = document.createElement('div');
+    this.journalConsentWrap.className = 'confide-to-yin__memory-consent';
+    this.journalConsentWrap.dataset.testid = 'confide-growth-journal-ask';
+    this.journalConsentWrap.hidden = true;
+    this.journalConsentWrap.setAttribute('role', 'region');
+    this.journalConsentWrap.setAttribute('aria-live', 'polite');
+
+    this.journalConsentTitle = document.createElement('p');
+    this.journalConsentTitle.className = 'confide-to-yin__memory-consent-title';
+    this.journalConsentTitle.dataset.testid = 'confide-growth-journal-ask-title';
+
+    this.journalConsentCopy = document.createElement('p');
+    this.journalConsentCopy.className = 'confide-to-yin__memory-consent-copy';
+
+    this.journalConsentStatus = document.createElement('p');
+    this.journalConsentStatus.className = 'confide-to-yin__memory-consent-copy';
+    this.journalConsentStatus.dataset.testid = 'confide-growth-journal-status';
+    this.journalConsentStatus.hidden = true;
+
+    this.journalConsentActions = document.createElement('div');
+    this.journalConsentActions.className = 'confide-to-yin__memory-consent-actions';
+
+    this.journalConsentKeepBtn = document.createElement('button');
+    this.journalConsentKeepBtn.type = 'button';
+    this.journalConsentKeepBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--primary';
+    this.journalConsentKeepBtn.dataset.testid = 'confide-growth-journal-keep';
+    this.journalConsentKeepBtn.addEventListener('click', () =>
+      this._onGrowthJournalChoice(true)
+    );
+
+    this.journalConsentSkipBtn = document.createElement('button');
+    this.journalConsentSkipBtn.type = 'button';
+    this.journalConsentSkipBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--ghost';
+    this.journalConsentSkipBtn.dataset.testid = 'confide-growth-journal-skip';
+    this.journalConsentSkipBtn.addEventListener('click', () =>
+      this._onGrowthJournalChoice(false)
+    );
+
+    this.journalConsentActions.append(
+      this.journalConsentKeepBtn,
+      this.journalConsentSkipBtn
+    );
+    this.journalConsentWrap.append(
+      this.journalConsentTitle,
+      this.journalConsentCopy,
+      this.journalConsentStatus,
+      this.journalConsentActions
     );
 
     this.consentWrap = document.createElement('div');
@@ -579,6 +637,7 @@ export class ConfideToYinUI {
       this.userEl,
       this.thinkingEl,
       this.replyEl,
+      this.journalConsentWrap,
       this.operatingConfirmEl,
       this.secondaryLinks,
       this.helpResourcesPanel,
@@ -650,6 +709,8 @@ export class ConfideToYinUI {
     this._memoryConsentSaving = false;
     this._chatConsentSaving = false;
     this._hideMemoryConsent();
+    this._hideGrowthJournalAsk();
+    this._pendingGrowthJournalText = null;
     this._resetChatConsentBoxes();
     this._sendEpoch += 1;
     this._sending = false;
@@ -685,6 +746,8 @@ export class ConfideToYinUI {
     this._memoryConsentSaving = false;
     this._chatConsentSaving = false;
     this._hideMemoryConsent();
+    this._hideGrowthJournalAsk();
+    this._pendingGrowthJournalText = null;
     this._collapseHelpResourcesPanel();
     this.hideGenerateLayer({ unload: false });
     this._voiceInputChrome?.reset();
@@ -839,6 +902,7 @@ export class ConfideToYinUI {
     this.memoryConsentTitle.textContent = t('YIN_MEMORY_CONSENT_TITLE');
     this.memoryConsentAllowBtn.textContent = t('YIN_MEMORY_CONSENT_ALLOW');
     this.memoryConsentDenyBtn.textContent = t('YIN_MEMORY_CONSENT_DENY');
+    this._applyGrowthJournalCopy();
     if (this.memoryListLink) {
       this.memoryListLink.textContent = t('YIN_MEMORY_PANEL_LINK');
       this.memoryListLink.hidden = !hasYinPersonalMemoryBridge();
@@ -1115,6 +1179,7 @@ export class ConfideToYinUI {
     if (researchRouteClass) {
       noteCoPracticeResearchRouteClass(undefined, researchRouteClass);
     }
+    this._considerGrowthJournalAfterReply(asked, shown.route);
     this._l2Turns.push({ role: 'user', text: asked });
     this._l2Turns.push({
       role: 'yin',
@@ -1398,6 +1463,103 @@ export class ConfideToYinUI {
     if (!this.memoryConsentWrap) return;
     this.memoryConsentWrap.hidden = true;
     this._syncSendEnabled();
+  }
+
+  _applyGrowthJournalCopy() {
+    if (!this.journalConsentWrap) return;
+    this.journalConsentTitle.textContent = t('GROWTH_JOURNAL_ASK_TITLE');
+    this.journalConsentCopy.textContent = t('GROWTH_JOURNAL_ASK_BODY');
+    this.journalConsentKeepBtn.textContent = t('GROWTH_JOURNAL_ASK_KEEP');
+    this.journalConsentSkipBtn.textContent = t('GROWTH_JOURNAL_ASK_NOT_NOW');
+  }
+
+  _hideGrowthJournalAsk() {
+    if (!this.journalConsentWrap) return;
+    this.journalConsentWrap.hidden = true;
+    this.journalConsentActions.hidden = false;
+    this.journalConsentStatus.hidden = true;
+    this.journalConsentStatus.textContent = '';
+    this._growthJournalSaving = false;
+    if (this.journalConsentKeepBtn) this.journalConsentKeepBtn.disabled = false;
+    if (this.journalConsentSkipBtn) this.journalConsentSkipBtn.disabled = false;
+  }
+
+  /**
+   * @param {string} text
+   * @param {string} route
+   */
+  _considerGrowthJournalAfterReply(text, route) {
+    let storage = null;
+    try {
+      storage = globalThis.localStorage ?? null;
+    } catch {
+      storage = null;
+    }
+    const result = considerGrowthJournalAfterSend({ storage, text, route });
+    if (result.action !== 'ask') {
+      if (result.action === 'written') this._pendingGrowthJournalText = null;
+      return;
+    }
+    this._pendingGrowthJournalText = result.pendingText;
+    this.journalConsentStatus.hidden = true;
+    this.journalConsentStatus.textContent = '';
+    this.journalConsentActions.hidden = false;
+    this.journalConsentKeepBtn.disabled = false;
+    this.journalConsentSkipBtn.disabled = false;
+    this.journalConsentWrap.hidden = false;
+  }
+
+  /**
+   * @param {boolean} keep
+   */
+  _onGrowthJournalChoice(keep) {
+    if (this._growthJournalSaving) return;
+    this._growthJournalSaving = true;
+    this.journalConsentKeepBtn.disabled = true;
+    this.journalConsentSkipBtn.disabled = true;
+    let storage = null;
+    try {
+      storage = globalThis.localStorage ?? null;
+    } catch {
+      storage = null;
+    }
+    const pending = this._pendingGrowthJournalText;
+    try {
+      if (keep) {
+        writeGrowthJournalConsent(storage, 'granted');
+        const written = pending
+          ? appendGrowthJournalEntry(storage, {
+              text: pending,
+              source: 'confide'
+            })
+          : { ok: true };
+        if (!written.ok) {
+          this.journalConsentStatus.hidden = false;
+          this.journalConsentStatus.textContent = t('GROWTH_JOURNAL_SAVE_ERROR');
+          this.journalConsentKeepBtn.disabled = false;
+          this.journalConsentSkipBtn.disabled = false;
+          this._growthJournalSaving = false;
+          return;
+        }
+        this._pendingGrowthJournalText = null;
+        this.journalConsentActions.hidden = true;
+        this.journalConsentStatus.hidden = false;
+        this.journalConsentStatus.textContent = t('GROWTH_JOURNAL_SAVED');
+        this.journalConsentWrap.hidden = false;
+      } else {
+        writeGrowthJournalConsent(storage, 'declined');
+        this._pendingGrowthJournalText = null;
+        this.journalConsentActions.hidden = true;
+        this.journalConsentStatus.hidden = false;
+        this.journalConsentStatus.textContent = t('GROWTH_JOURNAL_SKIPPED');
+      }
+    } catch {
+      this.journalConsentStatus.hidden = false;
+      this.journalConsentStatus.textContent = t('GROWTH_JOURNAL_SAVE_ERROR');
+      this.journalConsentKeepBtn.disabled = false;
+      this.journalConsentSkipBtn.disabled = false;
+    }
+    this._growthJournalSaving = false;
   }
 
   /** First open only — before any L3 send (SCENARIO AG · Slice 1a). */
