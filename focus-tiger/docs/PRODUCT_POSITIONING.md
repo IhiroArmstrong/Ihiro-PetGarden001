@@ -13,9 +13,10 @@
 1. `PRODUCT_POSITIONING.md`：品牌定位、使命、长期方向；
 1a. `FROM_APP_TO_CULTURE.md`：**文化探索方向锁**（From App to Culture；验证框架；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
 1b. `YIN_EVOLUTION.md`：**陪伴成长意义层**（关系叙事；不改分数公式；**不**改运行时；不得绕过本文与 `PRINCIPLES.md`）；
-1c. `GROWTH_JOURNEY.md` + `PRACTICE_PAPER.md`：**走到哪**与**练习观察纸**（观察纸挂在旅程详情上；无健康分；方向锁见各文）；
+1c. `GROWTH_JOURNEY.md` + `PRACTICE_PAPER.md`：**走到哪**与**练习观察纸**（观察纸挂在旅程详情上；V1 无健康分；色标改口见 T28 Brief）；
 1d. `CO_PRACTICE_POSITIONING.md`：**人机共修口径**（叠加，不替换本文；能说 / 不能说；**无运行时**）；
-1e. `inner-development-daily-noticing.md`：**人的内在成长**与 **Daily Noticing（每日觉察）**（非治疗；固定问句轮换、零生成；痛苦信号走倾诉安全层；**T105 首包准入**；止损 2026-12-03）；
+1d2. `PERSONAL_GROWTH_ENGINE.md`：**个人成长引擎四层对照**（上下文 → 状态 → 选练 → 学习；本机日记收窄「不存原句」；**无运行时**；实现 T106–T108 / T28 / T85）；
+1e. `inner-development-daily-noticing.md`：**人的内在成长**与 **Daily Noticing（每日觉察）缺口**（非治疗；固定问句轮换、第一刀零生成；痛苦信号走倾诉安全层；**无运行时**；**不进 2026-12-08 首包**）；
 2. `PRINCIPLES.md`：不可违反的产品与开发红线；
 3. `MVP_PRODUCT_DEFINITION.md`：首要用户、JTBD、竞争、验证指标、付费与隐私假设；
 4. `PRODUCT_MOMENTS.md`：一天中的 Five Moments 产品叙事框架（Arrive / Focus / Recover / Transition / Reflect），位于定位之下、任务排期之上；
@@ -61,7 +62,7 @@ Focus Tiger：一只陪伴你练习专注与觉察的小老虎。
 
 这里的「觉察」不是系统对用户作出「真的专注 / 不够专注」的二元评判。产品应创造练习条件、提供温和反馈，但不对用户的人格、自律程度或专注真假打分。
 
-**人的内在成长（Human Inner Development · 2026-11-26）**：产品长期叙事包含自我觉察、心智力量、情绪韧性与内在智慧，服务对象是**希望更清醒、更稳的普通人**，默认问题不是「你有没有病」。这与 wellness 免责、**不做诊断**并列；**若出现严重痛苦或危机信号，仍须走现网倾诉安全层**（固定求助与锁定），不得因「非治疗定位」而弱化转介。缺口功能内部名 **Daily Noticing（每日觉察）**——不坐下也能做的短觉察；现网 Notice / 回顾三问 / T52 是零件，尚缺独立定义与入口。方向锁 [`inner-development-daily-noticing.md`](./inner-development-daily-noticing.md)；实现见 **T105** Brief（范围已点头，口令开工）。
+**人的内在成长（Human Inner Development · 2026-11-26）**：产品长期叙事包含自我觉察、心智力量、情绪韧性与内在智慧，服务对象是**希望更清醒、更稳的普通人**，默认问题不是「你有没有病」。这与 wellness 免责、**不做诊断**并列；**若出现严重痛苦或危机信号，仍须走现网倾诉安全层**（固定求助与锁定），不得因「非治疗定位」而弱化转介。缺口功能内部名 **Daily Noticing（每日觉察）**——不坐下也能做的短觉察；现网 Notice / 回顾三问 / T52 是零件，尚缺独立定义与入口。方向锁 [`inner-development-daily-noticing.md`](./inner-development-daily-noticing.md)；**首包前只文档、不写 `src/`**。
 
 **行为节奏只决定邀请时机，不定性（2026-10-23 · T50）**：允许用离开窗口、坐了多久、以及（仅电脑版、设置里默认关的）击键间隔等**节奏统计**，决定「要不要问一句要不要停一下」。禁止据此给用户贴「焦虑 / 分心 / 心流失败」等标签，禁止把内部指数显示成分数。对外只说「按你的节奏问要不要停一下」，不说「读懂你的心」。规格见 `DESIGN.md`「觉照邀请」与 Brief `task-awaken-invite-orchestrator.md`。
 
@@ -110,8 +111,7 @@ Focus Tiger 的长期主题可以覆盖专注、觉察与心流，但**当前产
 - **Wellness disclaimer（2026-08-14；2026-08-15 改落点）**：应用内须说明本产品是专注力 / 正念练习空间，用于 build focus skill、practice mindfulness、reduce everyday stress；**不是**医疗器械、心理诊疗或诊断，**不能**替代持证咨询师、治疗师或医生；并含标准化兜底句 **not intended to diagnose, treat, cure, or prevent any disease**。落点：（1）**常驻查阅（默认）**：**?** → `#onboarding-app-purpose` 免责区块（不在冷启动自动弹出，以免吓跑用户）；（2）Privacy Sheet 一句交叉引用；（3）QA 仅 `?wellnessFirst=1` 可强制 `#onboarding-wellness-first` Got it 卡。文案键 `HINT_APP_PURPOSE_WELLNESS_*`（en + ja）。禁止把功能写成治疗焦虑、抑郁或其它临床病症。危机语料 `confide` `safety-01` 须与此边界一致（指向真实求助渠道 + 不能代替专业帮助），不另写一套。红线见 `PRINCIPLES.md`「一般身心练习，不是诊疗」。
 - 当前不因长期愿景而提前实现多角色、换装 UI、多场景、成就墙或复杂成长树；
 - **觉察一句**（Route X · 2026-11-19 拍板）：同一入口从「AI 聊天 / 倾诉」降为写下一句、固定句接住。方向锁 [`NOTICING_ONE_LINE.md`](./NOTICING_ONE_LINE.md)。**收回** 2026-08-18 桌面宽屏现场短生成；生成代码不删，默认不进用户气泡。第一份安装包**要开这个入口**（日语仍隐）。中文可见名 **觉察一句**；英文 **Thought Drop**（PO 2026-11-19 点头）。**系统操作**（备份 / 更新 / 导出 / 改设置）**不**经由阿寅之口；长期入口为 Auto-Operating（`LOCAL_AI_OPERATING_LAYER.md`，方向锁、未实现）。
-- **Daily Noticing（每日觉察 · T105 · 2026-11-26）**：**不是** Honesty Check-in、**不是**第五套打卡、**不是**治疗产品。第一刀：**固定问句库 + 规则轮换，零生成**。**首包准入**（成长最小闭环）。全文 [`inner-development-daily-noticing.md`](./inner-development-daily-noticing.md) · Brief [`task-briefs/task-t105-daily-noticing.md`](./task-briefs/task-t105-daily-noticing.md)。止损 **2026-12-03**。
-- **Inner Mirror 第一层（T106）**：觉察一句积累后，固定模板回显用户原话并允许纠正；**零生成**；进首包。第二层周月/Journal = **T107 搁置**。Brief [`task-briefs/task-t106-inner-mirror-l1.md`](./task-briefs/task-t106-inner-mirror-l1.md)。
+- **Daily Noticing（每日觉察 · 缺口 · 2026-11-26）**：**不是** Honesty Check-in、**不是**第五套打卡、**不是**治疗产品。首包后 Brief 的第一刀：**固定问句库 + 规则轮换，零生成**；不替代到达 Notice 或回顾三问，补「不坐下也能觉察」入口。全文 [`inner-development-daily-noticing.md`](./inner-development-daily-noticing.md)。**不进 2026-12-08 首包运行时**。
 
 长期愿景不是当前功能承诺。任何扩展仍须遵守 `PRINCIPLES.md` 的「价值优先于复杂度」与 `PROCESS.md` 的立项流程。
 
