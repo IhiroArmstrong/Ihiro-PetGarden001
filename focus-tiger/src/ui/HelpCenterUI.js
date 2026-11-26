@@ -365,6 +365,29 @@ export class HelpCenterUI {
     this.askSubmitBtn.disabled = searching;
   }
 
+  _showAskSafetyT92() {
+    this._askResultArticleIds = [];
+    this._hideOperatingPanel();
+    this._askSearching = false;
+    this._syncAskStatus();
+    this._renderAskSafetyT92();
+    this._speakClosestAskAnswer({
+      safetyText: helpCenterAskSafetyT92Message(getLocale())
+    });
+  }
+
+  async _fetchAskSemanticCrisisScore(text) {
+    const companion = getDesktopCompanionBridge();
+    if (!companion || typeof companion.scoreSemanticCrisis !== 'function') {
+      return { embeddingOk: false, score: 0 };
+    }
+    try {
+      return await companion.scoreSemanticCrisis({ text });
+    } catch {
+      return { embeddingOk: false, score: 0 };
+    }
+  }
+
   async _fetchAskEmbeddingGate(text) {
     const companion = getDesktopCompanionBridge();
     if (!companion || typeof companion.semanticProductKnowledgeGate !== 'function') {
@@ -407,16 +430,9 @@ export class HelpCenterUI {
       this._renderAskResults();
       return;
     }
-    const policy = resolveHelpCenterAskSubmitPolicy(text);
+    let policy = resolveHelpCenterAskSubmitPolicy(text);
     if (policy.reason === 'safety') {
-      this._askResultArticleIds = [];
-      this._hideOperatingPanel();
-      this._askSearching = false;
-      this._syncAskStatus();
-      this._renderAskSafetyT92();
-      this._speakClosestAskAnswer({
-        safetyText: helpCenterAskSafetyT92Message(getLocale())
-      });
+      this._showAskSafetyT92();
       return;
     }
     if (policy.shouldExecute && policy.decision) {
@@ -432,6 +448,18 @@ export class HelpCenterUI {
     this._hideOperatingPanel();
     this._askSearching = true;
     this._syncAskStatus();
+    const crisisScore = await this._fetchAskSemanticCrisisScore(text);
+    if (epoch !== this._askSubmitEpoch || !this._open) return;
+    policy = resolveHelpCenterAskSubmitPolicy(text, {
+      embeddingOk: Boolean(crisisScore?.embeddingOk),
+      semanticCrisisScore: Number(crisisScore?.score) || 0
+    });
+    if (policy.reason === 'safety') {
+      this._askSearching = false;
+      this._syncAskStatus();
+      this._showAskSafetyT92();
+      return;
+    }
     const embed = await this._fetchAskEmbeddingGate(text);
     if (epoch !== this._askSubmitEpoch || !this._open) return;
     const result = searchHelpCenterAskCards(text, embed);

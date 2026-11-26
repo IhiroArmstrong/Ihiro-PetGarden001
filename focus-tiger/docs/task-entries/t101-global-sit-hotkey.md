@@ -1,8 +1,8 @@
 ---
 id: t101-global-sit-hotkey
 kind: feature
-status: 进行中 · P1 · Brief 已点头 · 旁支 · 不进 12/8 首包
-updated: 2026-11-24
+status: 已完成 · #1882 已合 develop · 可以进 12/8 首包
+updated: 2026-11-26
 ---
 
-T101 全局开坐。默认 Command+Control+Shift+S。须可自定义。禁止 Control+Option 与 Control+Shift+Y。首包发出前不得合 develop。
+T101 全局开坐快捷键。默认 Command+Control+Shift+S。PO 2026-11-26 改口：可以进 12 月 8 日安装包。勿再开同内容旁支。

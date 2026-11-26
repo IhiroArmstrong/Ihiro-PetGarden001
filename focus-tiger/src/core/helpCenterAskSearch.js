@@ -5,7 +5,8 @@
 
 /**
  * Help Center ask-cards retrieval (T22) plus T34 submit priority:
- * safety → closed operating set → else retrieve-and-list.
+ * literal safety → semantic crisis (when vectors exist) →
+ * closed operating set → else retrieve-and-list.
  * SSOT: docs/task-briefs/task-help-center-operating-commands.md
  */
 
@@ -22,6 +23,13 @@ import { resolveVoiceCommandOutcome } from './voiceCommandOutcome.js';
 import { classifyHelpCenterOperatingCommand } from './yinVoiceCommandEntry.js';
 import { resolveHelpCenterQuietSitAliasArticles } from './helpCenterQuietSitAliases.js';
 import { resolveHelpCenterPlatformAliasArticles } from './helpCenterPlatformAliases.js';
+import { CONFIDE_ROUTE } from './confide/confideRoutes.js';
+import {
+  applyConfideSemanticCrisis,
+  resolveConfideSemanticCrisisCosine,
+  resolveConfideSemanticCrisisMode,
+  shouldAttemptConfideSemanticCrisis
+} from './confide/confideSemanticCrisisLayer.js';
 
 export const HELP_CENTER_ASK_MAX_CARDS = 3;
 
@@ -85,6 +93,11 @@ export function isHelpCenterAskImperativeShape(text) {
  * Help Center submit: safety and questions never operate; closed-set
  * imperatives take T10 confirm (never silent write); else T22 search.
  * @param {string} text
+ * @param {{
+ *   embeddingOk?: boolean,
+ *   semanticCrisisScore?: number,
+ *   env?: NodeJS.ProcessEnv | null
+ * }} [opts]
  * @returns {{
  *   shouldExecute: boolean,
  *   shouldSearch: boolean,
@@ -92,7 +105,7 @@ export function isHelpCenterAskImperativeShape(text) {
  *   decision: object | null
  * }}
  */
-export function resolveHelpCenterAskSubmitPolicy(text) {
+export function resolveHelpCenterAskSubmitPolicy(text, opts = {}) {
   const raw = String(text || '').trim();
   if (!raw) {
     return {
@@ -110,6 +123,33 @@ export function resolveHelpCenterAskSubmitPolicy(text) {
       reason: 'safety',
       decision: operating
     };
+  }
+  const embeddingOk = Boolean(opts.embeddingOk);
+  if (
+    shouldAttemptConfideSemanticCrisis({
+      literalRoute: CONFIDE_ROUTE.FALLBACK,
+      text: raw,
+      wideViewport: false,
+      embeddingReady: embeddingOk,
+      env: opts.env
+    })
+  ) {
+    const crisis = applyConfideSemanticCrisis({
+      literalRoute: CONFIDE_ROUTE.FALLBACK,
+      score: Number(opts.semanticCrisisScore) || 0,
+      threshold: resolveConfideSemanticCrisisCosine(opts.env),
+      mode: resolveConfideSemanticCrisisMode(opts.env),
+      embeddingOk,
+      text: raw
+    });
+    if (crisis.applied && crisis.route === CONFIDE_ROUTE.SAFETY_REDIRECT) {
+      return {
+        shouldExecute: false,
+        shouldSearch: false,
+        reason: 'safety',
+        decision: operating
+      };
+    }
   }
   if (isHelpCenterAskQuestionShape(raw)) {
     return {
