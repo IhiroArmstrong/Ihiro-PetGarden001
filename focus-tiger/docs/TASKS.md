@@ -545,13 +545,109 @@ Arrive 在 Sit 之后、计时之前的 Arrival Practice（见 ARRIVE_MOMENT_DES
 上面的段落是既有排期，不再往里面改状态。新任务的进度，以及已部署、已备份，写 `docs/task-entries/` 里单独的文件。功能 PR 不要改本文件。说明见 `docs/task-entries/readme.md`。
 
 <!-- task-entries:begin -->
-### `aggression-noticing-overlay` · feature · 旁支实现中 · 伤害他人走 aggression 池不走 A/B · 2026-11-21
+### `docs-compliance-test-weakening-gate` · feature · 进行中 · 旁支 docs/compliance-test-weakening-gate · 2026-11-24
+
+可检验硬约束索引（COMPLIANCE.md）+ 测试弱化扫描（check-test-weakening）。不改产品运行时。允许新增回归测试；删断言 / 加 skip / 删测试文件须 Test-Weakening-Ack。
+
+### `fix-l3-generate-log-redact` · feature · 只读审计缺口 1 · L3 generate 日志去原句 · 2026-11-24
+
+桌面 `l3_generate` 写入 `turns.jsonl` 前去掉用户原句，与语义危机日志同一口径（`queryHash` + `textLength`）。缺口 3 / 缺口 2 另 PR。
+
+### `fix-voice-command-crisis-not-command` · feature · 只读审计缺口 3 · 称呼加命令不得夹走危机句 · 2026-11-24
+
+`matchClosedOperatingCommand` 要求 remaining 全是办理用词。无安全关键词的危机改写句套上称呼和备份/忘记全部时，通道保持倾诉。缺口 2 另 PR。
+
+### `membership-yearly-k1` · feature · 进行中 · 第 1 刀（年付 Price + plan=yearly 结账，不改 Support 主按钮） · 2026-11-24
+
+Yin Membership 年订阅 SKU 第 1 刀。Brief [`task-membership-yearly-sku.md`](../task-briefs/task-membership-yearly-sku.md)。本刀只接 `STRIPE_MEMBERSHIP_YEARLY_PRICE_ID` 与结账 `plan=yearly`；主按钮仍月付。未登记独立 T 号（治理热点不在本 PR 改）。
+
+### `t101-global-sit-hotkey` · feature · 进行中 · P1 · Brief 已点头 · 旁支 · 不进 12/8 首包 · 2026-11-24
+
+T101 全局开坐。默认 Command+Control+Shift+S。须可自定义。禁止 Control+Option 与 Control+Shift+Y。首包发出前不得合 develop。
+
+### `t102-tray-today-sat` · feature · 排队中 · P2 · Brief 已点头 · 不进 12/8 首包 · 2026-11-24
+
+T102 菜单栏今日已坐。Preferences 开关默认开。禁止连续天数。T101 之后。首包发出前不得合 develop。
+
+### `t103-shortcuts-cookbook-close` · feature · 仓库食谱本旁支 · P2 · Help/src 仍待首包后 · 2026-11-24
+
+T103 第一刀：仓库用户步骤（en/ja 可发、zh 草稿）。Things 仅食谱。Health 默认关未改。Help/`src` 不进本 PR、不进 12/8 首包。
+
+### `t104-web-to-dmg-funnel` · feature · 排队中 · 可选 · 先不动 · 等安装包 URL · 2026-11-24
+
+T104 网页转安装包。PO 2026-11-24 先不动。口令加 Download 不执行。
+
+### `t93-invite-dmg-cloud-gate-off` · note · 实现旁支 fix/t93-invite-dmg-cloud-gate-off · 12/8 邀请包打包关闸（选 A） · 2026-11-24
+
+T93：12/8 邀请 DMG 打包默认 `VITE_FT_PRACTICE_BACKUP_CLOUD=0`。代码已合（D1–D4）≠ 对客开闸。本地导出/导入仍可用；邮箱找回入口关。付款未改。切回开闸须 C+D 手测、B5 抓包、Privacy §4 终审后再用 `=1` 打包。
+
+### `aggression-acceptance-pool-ids` · feature · 旁支实现中 · 攻击冻表锁专用池 id 不是 A/B · 2026-11-23
+
+#1869 白名单已合。本支不改发送链。把攻击冻表 / 验收评估从「只禁三句觉察 id」改成必须 `aggression-0x`、禁止 `^[AB]-`。NF-02 另锁 overlay 关。不是 12/5 签发，不重写十题原文。
+
+### `aggression-noticing-overlay` · feature · #1828 已合 develop · 伤害他人走 aggression 池不走 A/B · 2026-11-23
 
 Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。本支把该路由（及 `safety_care`）从 noticing overlay 拿掉，仍用现网 aggression 专用句。不是扩关键词、不是 T94 第 4 刀。
 
-### `aggression-pool-lint-exempt` · note · 旁支 · 专用四句豁免觉察禁词 lint + 书面风险接受 · 2026-11-21
+### `aggression-pool-lint-exempt` · note · #1837 已合 develop · 专用四句豁免觉察禁词 lint · 书面风险接受待人签 · 2026-11-23
 
 不改四句正文。`lintNoticingFixedLibrary` 跳过 `aggression-01`–`04`。夹具仍另 Chat。
+
+### `journey-log-stage-z` · feature · 进行中 · 旁支 fix/journey-log-stage-z · 2026-11-23
+
+宽屏 Records → Journey log：玻璃叠层不得把 `#journey-log` 压成 18/19（会糊在遮罩 31 后面）。卡层锁 32，开卡时卸 ⋯ 与右栏。
+
+### `noticing-12-05-post-whitelist` · note · 旁支 · 12/5 工作纸补记 #1869 · 未签发 · 2026-11-23
+
+#1869 已合。本支只改文档：工作纸写明白名单不是四闸；过期状态片改成已合事实。不代签、不改 `src/`。
+
+### `noticing-nf02-aggression-pool-audit` · note · 只读核对已记（历史）· #1828/#1842/#1869 已合 · 夹具已写 · 2026-11-23
+
+当时发布路径下 aggression 可见回复来自通用 A/B。**已由 #1828 恢复专用池**；夹具 #1842；白名单 #1869。NF-01 仍必须 T0。禁止再读成「夹具未写」。
+
+### `noticing-open-gate-12-05-materials` · note · 12/5 工作纸已写 · #1869 已记入 · 未签发 · 专用池一行待人签 · 2026-11-23
+
+提前备好 12 月 5 日四闸勾选纸与专用池四句待签表。不是当天已绿，不改 `src/`，不代签。
+
+### `noticing-open-gate-briefs` · feature · G1–G4 证据已合 · 专用池 #1828 · 夹具 #1842 · 白名单 #1869 · 12/5 工作纸待人勾 · 2026-11-23
+
+觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审 + 独立安全审已书面完成（G4 两份齐）。2026-11-20：四闸红记残余、**不因红藏入口**（Route X 第一份包入口保持可达）。G1–G3 绿/红仍各看闸与 CI。不是打开自由生成，不新开 T 号。
+
+### `noticing-open-gate-nf-fixtures` · feature · #1842 已合 develop · 10 条仓内夹具 + 单测 · 2026-11-23
+
+开门门禁 v2 §5：NF-01–NF-10 自编短句入库。不断言识别率，不调 0.78。NF-02 走伤害他人专用池。不是改句库、不是 12/5 签发。
+
+### `noticing-overlay-whitelist` · feature · #1869 已合 develop · 白名单 + 逐路由表 · 2026-11-23
+
+不重开专用池、不重写十题夹具。#1828/#1836/#1842 已合。`shouldUseNoticingFixedLine` 已是显式白名单。`safety_care` 仍在名单内；伤害他人仍不在。未知路由默认不进觉察 A/B。口令「再开 overlay 白名单」不执行。
+
+### `restore-aggression-dedicated-pool` · note · Brief 已点头 · #1828/#1869 已合 · 勿再开同内容旁支 · 2026-11-23
+
+恢复伤害他人专用接住句。规格 `task-restore-aggression-dedicated-pool.md`。代码已合。口令「再开恢复池」不执行。
+
+### `safety-care-keep-noticing` · feature · #1836 已合 develop · 中档关心仍走觉察 overlay · 2026-11-23
+
+对照 Brief 第 3 节非目标：`safety_care` 仍走觉察一句 overlay。伤害他人专用池保留。不是扩关键词、不是改四句正文、不是夹具。
+
+### `t79-r1-landing-copy` · feature · 进行中 · PR1 落地屏主按钮完成 · 2026-11-23
+
+T79-R1 第一刀：落地标题「回到当下」；主按钮完成；次按钮感受地面仍开 Ground 选择层。
+
+### `t79-r1-sit-landing` · feature · Brief 已点头 · docs 本 PR · 运行时拆 PR1 落地 / PR2 坐步 HUD · 2026-11-23
+
+T79-R1：坐步只留问题一行（不分秒）；落地主按钮完成、次按钮接地；HUD 日进度不计入。不复用 Focus 会话。
+
+### `t79-r1-sit-question-hud` · feature · 进行中 · PR2 坐步问题一行 + HUD 日进度不计入 · 2026-11-23
+
+T79-R1 第二刀：sitting-picture 上显示本轮问题；屏上不分秒；inquiry 不计入 HUD 日进度条。不调用 FocusSession。
+
+### `where-you-are-prefs-toggles` · feature · 实现中 · 2026-11-23
+
+Where you are 去掉 T58 / T62 勾选；开关进 Preferences → How Yin may speak。本片不改 TASKS 总表。
+
+### `thought-drop-memory-link-click` · feature · 进行中 · 旁支 fix/thought-drop-memory-link-click · 2026-11-22
+
+会话 B：Thought Drop 内「What Yin remembers」点了没反应。根因是记忆面板 open 了但没置顶。PO D3：0–1 秒可见、无桥 toast、加 e2e。不碰伤害他人句池。
 
 ### `collections-glass-fill-readable` · feature · 实现旁支进行中 · 2026-11-21
 
@@ -582,33 +678,9 @@ Route X 觉察句库曾盖住 `aggression_toward_others`，用户看到泛句。
 
 留痕选句失败按云端原因显示句子；挂起见 pending；失败不关窗。
 
-### `noticing-nf02-aggression-pool-audit` · note · 只读核对已记 · NF-02 规格改为伤害他人路由 · 夹具未写 · 未改 src · 2026-11-21
-
-发布路径下 aggression 可见回复来自通用 A/B，不是专用池。NF-01 仍必须 T0。夹具另开 Chat，且须先有恢复专用池 Brief。
-
-### `noticing-open-gate-12-05-materials` · note · 12/5 工作纸已写 · 未签发 · 专用池一行待人签 · 2026-11-21
-
-提前备好 12 月 5 日四闸勾选纸与专用池四句待签表。不是当天已绿，不改 `src/`，不代签。
-
-### `noticing-open-gate-briefs` · feature · G1–G4 证据已合 · 专用池 #1828 · 夹具 #1842 · 12/5 工作纸待人勾 · 2026-11-21
-
-觉察一句开门门禁 v2、固定句库 Brief（附录 v0.3，A/B 各 20）、结构零生成 Brief。PO 语气审 + 独立安全审已书面完成（G4 两份齐）。2026-11-20：四闸红记残余、**不因红藏入口**（Route X 第一份包入口保持可达）。G1–G3 绿/红仍各看闸与 CI。不是打开自由生成，不新开 T 号。
-
-### `noticing-open-gate-nf-fixtures` · feature · 旁支实现中 · 10 条仓内夹具 + 单测 · 2026-11-21
-
-开门门禁 v2 §5：NF-01–NF-10 自编短句入库。不断言识别率，不调 0.78。NF-02 走伤害他人专用池。不是改句库、不是 12/5 签发。
-
 ### `noticing-post-merge-truth` · note · 文档对齐 #1828/#1836/#1837/#1842/#1843 · 无 src · 2026-11-21
 
 把门禁页、核对记录、恢复池 Brief 从「尚未恢复 / 夹具暂缓」改成已合事实。不是新运行时。口令「再开恢复池」不执行。
-
-### `restore-aggression-dedicated-pool` · note · Brief 已起草 · 待 PO 点头 · 未改 src · 2026-11-21
-
-恢复伤害他人专用接住句。规格 `task-restore-aggression-dedicated-pool.md`。夹具另 Chat。
-
-### `safety-care-keep-noticing` · feature · 旁支实现中 · 裁掉 #1828 对中档关心的 overlay 改动 · 2026-11-21
-
-对照 Brief 第 3 节非目标：`safety_care` 仍走觉察一句 overlay。伤害他人专用池保留。不是扩关键词、不是改四句正文、不是夹具。
 
 ### `site-discovery-dot-census` · feature · 盘点已写（A 类；无运行时） · 2026-11-21
 
