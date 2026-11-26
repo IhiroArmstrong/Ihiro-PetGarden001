@@ -2478,6 +2478,23 @@ export class OnboardingHintsUI {
       p.className = 'onboarding-privacy-sheet__p';
       p.dataset.privacyKey = section.bodyKey;
       body.appendChild(p);
+      if (section.id === 'growth-journal') {
+        const journalClear = document.createElement('button');
+        journalClear.type = 'button';
+        journalClear.className = 'onboarding-privacy-sheet__back';
+        journalClear.dataset.testid = 'privacy-growth-journal-clear';
+        journalClear.addEventListener('click', () => {
+          this._onPrivacyGrowthJournalClear();
+        });
+        const journalStatus = document.createElement('p');
+        journalStatus.className = 'onboarding-privacy-sheet__p';
+        journalStatus.dataset.testid = 'privacy-growth-journal-clear-status';
+        journalStatus.setAttribute('aria-live', 'polite');
+        journalStatus.hidden = true;
+        body.append(journalClear, journalStatus);
+        this._privacyJournalClearEl = journalClear;
+        this._privacyJournalClearStatusEl = journalStatus;
+      }
     }
 
     for (const key of PRIVACY_SHEET_TAIL_KEYS) {
@@ -2712,6 +2729,31 @@ export class OnboardingHintsUI {
     }
   }
 
+  async _onPrivacyGrowthJournalClear() {
+    if (!this._privacyJournalClearEl) return;
+    this._privacyJournalClearEl.disabled = true;
+    try {
+      const { clearGrowthJournalEntries } = await import(
+        '../core/growthJournal/growthJournalStore.js'
+      );
+      clearGrowthJournalEntries(globalThis.localStorage);
+      if (this._privacyJournalClearStatusEl) {
+        this._privacyJournalClearStatusEl.hidden = false;
+        this._privacyJournalClearStatusEl.textContent = t(
+          'PRIVACY_SHEET_JOURNAL_CLEARED'
+        );
+      }
+    } catch {
+      if (this._privacyJournalClearStatusEl) {
+        this._privacyJournalClearStatusEl.hidden = false;
+        this._privacyJournalClearStatusEl.textContent = t(
+          'PRIVACY_SHEET_JOURNAL_CLEAR_ERROR'
+        );
+      }
+    }
+    this._privacyJournalClearEl.disabled = false;
+  }
+
   _refreshPrivacySheetCopy() {
     if (!this.privacySheet) return;
     this._privacyTitleEl.textContent = t('PRIVACY_SHEET_TITLE');
@@ -2726,6 +2768,10 @@ export class OnboardingHintsUI {
     this._refreshYpeOptInCopy();
     this._refreshPrivacyOptInCopy();
     this._refreshT54ResearchOptInCopy();
+    if (this._privacyJournalClearEl) {
+      this._privacyJournalClearEl.textContent = t('PRIVACY_SHEET_JOURNAL_CLEAR');
+      this._privacyJournalClearEl.disabled = false;
+    }
     if (this._privacyWellnessNoteEl) {
       this._privacyWellnessNoteEl.textContent = t('PRIVACY_SHEET_WELLNESS_NOTE');
     }

@@ -5,7 +5,7 @@
 > This is the user-facing privacy notice. All three language versions are intended to be equivalent; the Chinese version governs in case of discrepancy.  
 > 本ドキュメントはユーザー向けプライバシーポリシーです。3言語版の内容は同一を意図しますが、相違がある場合は中国語版を優先します。
 
-最后更新 / Last updated / 最終更新日: 2026-11-15
+最后更新 / Last updated / 最終更新日: 2026-11-26
 
 本页描述**当前邀请制第一份安装包**。该版本不收款、不提供邮箱云端找回。代码里可能仍有后续版本才会打开的入口；以本页与安装包实际行为为准。
 
@@ -45,6 +45,8 @@ Mac 版「和阿寅聊聊」中的 **Speak to type** 仅使用本机语音识别
 
 **可选的晚间练习结束时刻（练习观察纸，默认关）**：只有你在成长旅程的练习观察纸里开启后，本机才会按日记录计时专注在本地凌晨 1 点到 6 点之间**结束**的日期和时刻。**不是**睡眠监测、**不上传**、**不进**研究分享。可随时关闭（关闭会清空已记录）或一键清除记录。
 
+**本机成长日记（觉察一句，点了才写）**：默认不自动记下你发出的句子。第一次发出非危机短句后会问一次；你点「留下」后，该句**未加密、留在本机、可在 Privacy 删除**。不进练习备份或云快照，也不用于生成回复。危机场次不写入。
+
 **付款：** 本应用日后可能通过 **Stripe** 处理订阅或请茶。**当前邀请制第一份安装包不开启正式收款**，不会向你收取费用。
 
 ### 3. 本地导出 / 导入
@@ -59,7 +61,7 @@ Mac 版「和阿寅聊聊」中的 **Speak to type** 仅使用本机语音识别
 - 导出文件**未加密**；**请自行妥善保管**。文件离开你的设备后，其安全性由你自行负责。
 - 导入会**覆盖**目标设备上对应的本机数据；本机已有数据时须勾选确认后再继续。
 - **导出范围（与工程白名单一致，当前 31 项键）**，主要包括：旅程记录、练习日历、里程碑标记、永久拥有标记、进阶仪式、芥子印、莲花池、部分偏好（语言、提醒、陪伴模式、氛围、语音等）、练习观察相关记录、部分已购标记与寅币账本、稳定偏好。名单以设置里「备份与恢复」实际勾选的键为准。
-- **不包含**：和阿寅聊聊（和阿寅聊聊）对话原文、阿寅个人记忆、研究共修编号与周包、云端登录令牌、派生缓存。反思日记键在导出白名单内；若你从未写过日记，导出文件里对应项为空。
+- **不包含**：觉察一句对话原文、本机成长日记原文、阿寅个人记忆、研究共修编号与周包、云端登录令牌、派生缓存。反思日记键在导出白名单内；若你从未写过日记，导出文件里对应项为空。
 
 ### 4. 云端备份 / 邮箱找回
 
@@ -110,6 +112,8 @@ We never collect Layer 0: anything you type, anything Yin says, Memory summaries
 
 **Optional late-evening end times (Practice Paper, off by default):** only if you turn this on in Practice Paper does this device store local date and end time of timed sits that finish between 1:00 and 6:00 a.m. This is **not** sleep monitoring, **not uploaded**, and **not** research sharing. Turning it off clears stored rows.
 
+**On-device growth journal (Thought Drop, write only after Keep):** we do not save your sentence automatically. After the first non-crisis send we ask once. If you tap Keep, that line is **unencrypted, stays on this device, and can be deleted in Privacy**. It is not in practice backup or cloud snapshots, and it is not used to generate replies. Crisis sessions are not written.
+
 **Payments:** we may later use **Stripe** for subscriptions or tips. **This invite build does not take live payment.**
 
 ### 3. Local Export / Import
@@ -124,7 +128,7 @@ Please note:
 - Exported files are **not encrypted**; **you are responsible for keeping them safe**.
 - Import **overwrites** matching on-device records; confirm if data already exists.
 - **Export scope (engineering whitelist, currently 31 keys)** includes Journey Log, practice calendar, milestone markers, ownership marks, ritual completions, the Mustard Seed seal, lotus pond, some preferences (locale, reminders, companion mode, ambient, TTS, and similar), practice-paper related rows, some entitlement marks and Focus Coins, and stable prefs. The live list is the Backup & restore registry.
-- **Not included:** Chat with Yin conversation text, Yin personal memory, research-study IDs and weekly packets, cloud login tokens, derived caches. The reflections key is on the export whitelist; if you never wrote a journal, that field is empty.
+- **Not included:** Thought Drop conversation text, on-device growth-journal originals, Yin personal memory, research-study IDs and weekly packets, cloud login tokens, derived caches. The reflections key is on the export whitelist; if you never wrote a journal, that field is empty.
 
 ### 4. Cloud backup / email restore
 
@@ -175,6 +179,8 @@ Mac版「寅と話す」の **Speak to type** は、端末内の音声認識の�
 
 **任意の夜遅い終了時刻（練習の観察紙、初期オフ）**：観察紙でオンにした場合のみ、午前 1 時から 6 時までに終わったタイマー座りについて、日付と終了時刻を端末内に記録します。睡眠モニタリングではなく、アップロードも研究共有もしません。
 
+**端末内の成長日記（Thought Drop、残すを押したときだけ書く）**：文は自動保存しません。初回の非危機送信のあと一度尋ねます。「残す」を押すと、その文は**暗号化されず、この端末に残り、Privacy で削除できます**。練習バックアップやクラウド控えには入らず、返信の生成にも使いません。危機の回は書きません。
+
 **支払い：** 将来 **Stripe** で購読やチップを扱う可能性があります。**この招待版では正式な課金を開きません。**
 
 ### 3. ローカルでのエクスポート / インポート
@@ -186,7 +192,7 @@ Mac版「寅と話す」の **Speak to type** は、端末内の音声認識の�
 - エクスポートファイルは**暗号化されていません**。**ご自身の責任で保管してください**。
 - インポートは該当する端末データを**上書き**します。
 - **対象範囲（現在 31 キー）**：旅の記録、練習カレンダー、節目、所有印、儀式、芥子の印、蓮の池、一部の設定（言語・リマインダー・同伴モードなど）、観察紙関連、一部の権利印と寅コイン、安定した好み。実リストは設定のバックアップ画面に従います。
-- **対象外**：寅と話すの原文、寅の個人記憶、研究共修の番号と週次パケット、クラウドログイントークン、派生キャッシュ。振り返り日記のキーはエクスポート対象に含まれます。書いていなければ空です。
+- **対象外**：寅と話すの原文、端末内成長日記の原文、寅の個人記憶、研究共修の番号と週次パケット、クラウドログイントークン、派生キャッシュ。振り返り日記のキーはエクスポート対象に含まれます。書いていなければ空です。
 
 ### 4. クラウドバックアップ / メール復元
 
