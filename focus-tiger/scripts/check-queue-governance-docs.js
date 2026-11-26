@@ -199,6 +199,7 @@ export const QUEUE_GOVERNANCE_CO_PR_ALLOWED = Object.freeze([
   'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
   'focus-tiger/docs/task-entries/t105-inner-mirror.md',
   'focus-tiger/docs/tracker-entries/docs-t105-inner-mirror.md',
+  'focus-tiger/docs/task-briefs/task-t105-inner-mirror-first-package.md',
   '.cursor/rules/focus-tiger-scheduling-glossary.mdc',
   '.cursor/rules/focus-tiger-docs.mdc',
   'focus-tiger/docs/task-briefs/task-output-gate-p0.md',
