@@ -6,6 +6,7 @@
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-26 | **【新增】T105** Inner Mirror / 内在镜子：搁置 · 未排期。方向锁 [`INNER_MIRROR.md`](./INNER_MIRROR.md)。不进 12/8。口令「开工内在镜子」不执行。不是觉察一句第一层、不是 Companion 上线。 |
 | 2026-11-24 | **T101–T104** PO 点头：默认键改为 Command+Control+Shift+S（禁 Control+Option / Control+Shift+Y，须可自定义）；T102 加开关；T103 Things 仅食谱、Health 默认关；T104 先不动。**硬条款：全部不进 12/8 首包门闩**；T101/T102 运行时首包发出前不得合 develop。#1875 已合。 |
 | 2026-11-24 | **PO 拍板（无新 T 号）**：Mac 付费渠道顺序 = 官网直销 → Setapp（达标后再开、不与直销同时）→ Mac App Store 后置。修正「iOS 原生壳暂不进路线图」→ v1 不实现，**Capacitor iOS 纳入后续路线图**（Mac 付费转化 + D30 留存 + 陪伴付费意愿验证后的复盘节点排期）；**≠ T49**。未改 `GLOSSARY.md` 主表（T49 仍 = Mac 不换网页壳）。文档：`Mac 首发定价与转化验证 Brief.md`、`task-tech-direction-v1-shell-monetization.md`、`task-deep-link-shortcuts-cookbook.md` §1、Help Center 设备文。 |
 | 2026-11-23 | **【新增】T101–T104** Mac 生态钩子：T101 全局开坐 P1 排队中；T102 今日已坐 P2；T103 Shortcuts 食谱 P2；T104 网页转安装包 可选。Brief 待点头。覆盖深链 Brief 旧「Things 继续不做」为「仅用户食谱」。不抢 T95。 |
