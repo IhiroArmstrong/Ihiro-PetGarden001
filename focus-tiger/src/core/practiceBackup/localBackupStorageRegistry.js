@@ -35,6 +35,11 @@ export const PRACTICE_BACKUP_V8_ADDED_KEYS = Object.freeze([
   'focus-tiger.menu-favorites.v1'
 ]);
 
+/** Keys added in schema v9 (2026-11-26 · T108 growth-state authorized goals). */
+export const PRACTICE_BACKUP_V9_ADDED_KEYS = Object.freeze([
+  'focus-tiger.growth-state.v1'
+]);
+
 /** Keys added in schema v5 (2026-09-16). */
 export const PRACTICE_BACKUP_V5_ADDED_KEYS = Object.freeze([
   'focus-tiger.focus-duration-pref.v1',
@@ -76,7 +81,8 @@ export const PRACTICE_BACKUP_EXPORT_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V5_ADDED_KEYS,
   ...PRACTICE_BACKUP_V6_ADDED_KEYS,
   ...PRACTICE_BACKUP_V7_ADDED_KEYS,
-  ...PRACTICE_BACKUP_V8_ADDED_KEYS
+  ...PRACTICE_BACKUP_V8_ADDED_KEYS,
+  ...PRACTICE_BACKUP_V9_ADDED_KEYS
 ]);
 
 /**

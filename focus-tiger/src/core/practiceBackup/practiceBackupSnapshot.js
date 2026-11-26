@@ -12,7 +12,8 @@ import {
   PRACTICE_BACKUP_V5_ADDED_KEYS,
   PRACTICE_BACKUP_V6_ADDED_KEYS,
   PRACTICE_BACKUP_V7_ADDED_KEYS,
-  PRACTICE_BACKUP_V8_ADDED_KEYS
+  PRACTICE_BACKUP_V8_ADDED_KEYS,
+  PRACTICE_BACKUP_V9_ADDED_KEYS
 } from './localBackupStorageRegistry.js';
 import {
   attachStageFloorToLotusValue,
@@ -24,7 +25,7 @@ import {
 } from '../growthJourneyStage.js';
 import { mergePracticeBackupCloudStoreValue } from './practiceBackupCloudMerge.js';
 
-export const PRACTICE_BACKUP_SCHEMA_VERSION = 8;
+export const PRACTICE_BACKUP_SCHEMA_VERSION = 9;
 
 /** Legacy cloud snapshot (6 keys). Import still accepted via migration. */
 export const PRACTICE_BACKUP_V1_STORE_KEYS = Object.freeze([
@@ -82,6 +83,11 @@ export const PRACTICE_BACKUP_V8_STORE_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V8_ADDED_KEYS
 ]);
 
+export const PRACTICE_BACKUP_V9_STORE_KEYS = Object.freeze([
+  ...PRACTICE_BACKUP_V8_STORE_KEYS,
+  ...PRACTICE_BACKUP_V9_ADDED_KEYS
+]);
+
 export const PRACTICE_BACKUP_STORE_KEYS = PRACTICE_BACKUP_EXPORT_KEYS;
 
 export const PRACTICE_BACKUP_OPT_IN_KEY = 'focus-tiger.practice-backup.v1';
@@ -133,6 +139,9 @@ export function practiceBackupStoreKeysForSchemaVersion(schemaVersion) {
   }
   if (schemaVersion === 7) {
     return PRACTICE_BACKUP_V7_STORE_KEYS;
+  }
+  if (schemaVersion === 9) {
+    return PRACTICE_BACKUP_V9_STORE_KEYS;
   }
   if (schemaVersion === PRACTICE_BACKUP_SCHEMA_VERSION) {
     return PRACTICE_BACKUP_STORE_KEYS;
