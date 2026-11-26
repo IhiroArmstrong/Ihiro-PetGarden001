@@ -1,7 +1,7 @@
 ---
 id: membership-yearly-k1-config
 kind: deploy
-status: 待合 · 年付 Test Mode Price id 写入 wrangler（不上线 Worker）
+status: 已合 #1893 · 年付 Test Mode Price id 写入 wrangler（部署见 membership-yearly-k1-worker-deploy-2026-11-26）
 updated: 2026-11-26
 ---
 
