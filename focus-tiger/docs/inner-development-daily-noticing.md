@@ -77,6 +77,7 @@
 | **T51 觉照邀请** | 专注中「要不要停一下」 | 编排层，**不是**每日入口 |
 | **T79 带着问题坐一会儿** | 哲思公案式练习 | 内在智慧向，**不是**情绪扫描 |
 | **觉察一句 / Thought Drop** | 写下一句、固定句接住 | 倾诉轨；**禁止**与 Daily Noticing 合成一个生成面 |
+| **T105 Inner Mirror / 内在镜子** | 觉察一句**第二层**：用户点「留下」才存原文，点开周回看 | **不是** Daily Noticing。禁止共用「留下」日志；镜子进 12/8 准入，本缺口**不进**首包运行时 |
 | **Confide 开放倾诉** | 倾听 + 安全 | 痛苦严重时走此道，**不是** Daily Noticing 的替代品 |
 
 ---
@@ -127,7 +128,7 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 - 0–100 情绪分、性格标签、「心流失败」类文案  
 - 与到达 / 回顾 / T52 **抢同一叠层**（须写让位规则，默认轻于 Reflection）  
 - **2026-12-08 首包**塞入运行时（**T95** 发包装窗口不插队）  
-- 未 Brief 写 `src/`
+- 未按 [`task-daily-noticing-v1.md`](./task-briefs/task-daily-noticing-v1.md) 且无 T 号时写 `src/`
 
 ---
 
@@ -135,9 +136,10 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 
 | 阶段 | 内容 |
 |---|---|
-| **当前（本 PR）** | 方向锁 + 定位稿指针；**无运行时** |
-| **首包后** | 独立 Brief：`task-briefs/task-daily-noticing-v1.md`（待建）；治理会话登记 T 号 |
-| **实现** | 单独立项 PR；须 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 对照场景 A / L / C 与倾诉安全 |
+| **当前** | 方向锁 + 定位稿指针 + **实现 Brief 已起草**（[`task-daily-noticing-v1.md`](./task-briefs/task-daily-noticing-v1.md)）；**无运行时** |
+| **T 号** | **待治理会话登记**。禁止实现旁支自编。等 OPEN **#1901**（T105–T107）合入后再占号，避免和首包准入队列抢号 |
+| **12/8 首包** | **禁止**本入口 `src/` |
+| **首包后** | 有 T 号 → 按 Brief 开 `feature/*-daily-noticing-v1`；须 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 对照场景 A / L / C、倾诉安全、**T105 镜子** |
 
 与队列关系：不修改 [`GLOSSARY.md`](./GLOSSARY.md) §当前任务，直至 PO 治理 PR 登记代号。
 
@@ -161,6 +163,7 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 - 陪伴红线：[`COMPANION_CONTRACT.md`](./COMPANION_CONTRACT.md)  
 - 输出闸纪律：[`NOTICING_ONE_LINE.md`](./NOTICING_ONE_LINE.md) · Brief `task-output-gate-p0.md`（T100）  
 - 情绪韧性五项拍板与核对：[`task-briefs/task-emotional-resilience-five-mapping.md`](./task-briefs/task-emotional-resilience-five-mapping.md)  
+- 实现 Brief（首包后）：[`task-briefs/task-daily-noticing-v1.md`](./task-briefs/task-daily-noticing-v1.md)  
 - 规则主题：[`RULES_INDEX.md`](./RULES_INDEX.md) → `inner-development-daily-noticing`
 
 ---
