@@ -28,7 +28,8 @@ alwaysApply: false
 | `docs/FROM_APP_TO_CULTURE.md` | **文化探索方向锁**：From App to Culture；六条 Culture Principles；App 社交塑造 Slack（废除证据门）；**无运行时** |
 | `docs/YIN_EVOLUTION.md` | **陪伴成长意义层**：关系叙事 / Come Back / Journey 记忆；**无运行时**；≠ `scoreFormula`；看板 #640+#643 |
 | `docs/GROWTH_JOURNEY.md` | **成长旅程 V1 方向锁**：首页一行加极细短轨迹；详情不写九十天天数；圆点只读莲花计入分钟，阶段有本地下限；≠ 等级 / 五维分数 / Yin Evolution |
-| `docs/PRACTICE_PAPER.md` | **练习观察纸方向锁**：挂在成长旅程详情下半部；一张 Sit & Breath 卡 + 一句最近节奏（滚动 7 天）；无健康分 / 无拓扑；界面第一刀见 T24 |
+| `docs/PRACTICE_PAPER.md` | **练习观察纸方向锁**：挂在成长旅程详情下半部；一张 Sit & Breath 卡 + 一句最近节奏（滚动 7 天）；V1 无健康分；色标改口见 T28 Brief |
+| `docs/PERSONAL_GROWTH_ENGINE.md` | **个人成长引擎四层对照**（T105；本机日记 / 选练 / 状态；无运行时） |
 | `docs/GROWTH_JOURNEY_IMPLEMENTATION.md` | **成长旅程 V1 实现说明**：阶段门槛与 persona 落点；阶段函数与导入取较大值已落地；首页短轨迹与详情已接 |
 | `docs/MVP_PRODUCT_DEFINITION.md` | **MVP 产品策略基线**：首要用户、JTBD、竞争替代品、验证指标、付费假设与隐私承诺；假设不等同于已上线功能 |
 | `docs/PRODUCT_MOMENTS.md` | **一天叙事框架（Five Moments）**：Arrive / Focus / Recover / Transition / Reflect；位于定位之下、`TASKS` 之上，不推翻已有实现 |
@@ -52,6 +53,7 @@ alwaysApply: false
 | `docs/product-knowledge-base.md` | **产品知识库**（三库拆分 / `yin_may_retrieve` / 功能短答；**无运行时**；≠ 开放 FAQ） |
 | `docs/LOCAL_AI_PHASE1_TASK_PLAN.md` | **Local AI Phase 1 执行计划**：门禁 · 口令 · #472 A/B/C 验收 · 分 PR 纪律 |
 | `docs/LOCAL_AI_OPERATING_LAYER.md` | **Local AI Operating Layer**（方向锁；Auto-Operating ≠ Yin；只设计无运行时） |
+| `docs/INNER_MIRROR.md` | **Inner Mirror / 内在镜子方向锁**（T105；Thought Drop 第二层默认关；纠正权；进 12/8，没过则顺延；**无运行时**） |
 | `docs/EMOTION_BIBLE.md` | 情绪/互动唯一权威清单；自主 vs 响应行为；文案标识符规范 |
 | `docs/SCENE_ANIMATION_WIRING.md` | **场景→动画接线表**：用户时刻 × 档位 × 素材；v1.0.0 Slice A 范围 |
 | `docs/HINTS_WIRING.md` | **场景→Hint 接线表**：时刻 × 互斥/门闩/宽窄批次；文案仍看 `ONBOARDING_HINTS` |

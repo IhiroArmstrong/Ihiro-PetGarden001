@@ -257,6 +257,40 @@ describe('isQueueGovernanceCoPrAllowed', () => {
   });
 
 
+it('allows T105-T108 growth-engine shards with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/PERSONAL_GROWTH_ENGINE.md',
+        'focus-tiger/docs/PRINCIPLES.md',
+        'focus-tiger/docs/task-briefs/task-t106-local-growth-journal.md',
+        'focus-tiger/docs/task-entries/t105-personal-growth-engine.md',
+        'focus-tiger/docs/issue-entries/docs-pge-growth-engine-po-2026-11-26.md',
+        'focus-tiger/docs/tracker-entries/docs-pge-growth-engine-po-2026-11-26.md'
+      ]),
+      null
+    );
+  });
+
+  it('allows T105 Inner Mirror lock with glossary', () => {
+    assert.equal(
+      queueGovernanceHotspotError([
+        'focus-tiger/docs/GLOSSARY.md',
+        'focus-tiger/docs/SCHEDULING_GLOSSARY.md',
+        'focus-tiger/docs/INNER_MIRROR.md',
+        'focus-tiger/docs/NOTICING_ONE_LINE.md',
+        'focus-tiger/docs/FEATURE_CONFLICT_REVIEW.md',
+        'focus-tiger/docs/task-entries/t105-inner-mirror.md',
+        'focus-tiger/docs/tracker-entries/docs-t105-inner-mirror.md',
+        'focus-tiger/docs/task-briefs/task-t105-inner-mirror-first-package.md',
+        '.cursor/rules/focus-tiger-docs.mdc',
+        '.cursor/rules/focus-tiger-scheduling-glossary.mdc'
+      ]),
+      null
+    );
+  });
+
   it('allows T101-T104 Mac hook briefs with glossary', () => {
     assert.equal(
       queueGovernanceHotspotError([
