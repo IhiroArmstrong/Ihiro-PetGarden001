@@ -82,6 +82,8 @@ const desktopShell = {
   getGlobalSitHotkey: () => ipcRenderer.invoke('desktop:global-sit-hotkey-get'),
   setGlobalSitHotkey: (accelerator) =>
     ipcRenderer.invoke('desktop:global-sit-hotkey-set', accelerator),
+  setTrayTodaySat: (payload) =>
+    ipcRenderer.invoke('desktop:tray-today-sat-set', payload),
   getShellVisibility: () => ipcRenderer.invoke('desktop:shell-visibility-get'),
   onShellVisibility: (cb) => {
     if (typeof cb !== 'function') return () => {};

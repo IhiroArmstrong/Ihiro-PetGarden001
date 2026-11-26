@@ -16,6 +16,7 @@ const vis = {
   reminderAvailable: true,
   workEndAvailable: true,
   alwaysOnTopAvailable: true,
+  trayTodaySatAvailable: true,
   windowLayoutAvailable: true,
   inputRhythmAvailable: true,
   newsletterSubmitted: false
@@ -54,8 +55,10 @@ describe('preferences center catalog', () => {
     const devices = groups.find((g) => g.labelKey === 'PREF_CENTER_GROUP_DEVICES');
     const sound = devices.rows.find((r) => r.proxy === 'sound');
     const pin = devices.rows.find((r) => r.proxy === 'always-on-top');
+    const sat = devices.rows.find((r) => r.proxy === 'tray-today-sat');
     assert.equal(sound.kind, 'page');
     assert.equal(pin.kind, 'toggle');
+    assert.equal(sat.kind, 'toggle');
   });
 
   it('flattens subgroup labels without dropping proxies', () => {

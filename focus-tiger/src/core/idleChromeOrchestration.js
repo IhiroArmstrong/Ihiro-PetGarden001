@@ -71,6 +71,7 @@ import {
  * @property {boolean} [alwaysOnTopAvailable] Electron Keep-in-front preference row
  * @property {boolean} [windowLayoutAvailable] Electron companion-window / fullscreen-sit row
  * @property {boolean} [globalSitHotkeyAvailable] Electron global sit shortcut (T101)
+ * @property {boolean} [trayTodaySatAvailable] Electron tray today-sat minutes (T102)
  * @property {boolean} [inputRhythmAvailable] Electron Mac Focus rhythm preference row
  */
 
@@ -154,6 +155,11 @@ export const SECONDARY_PROXY_DISPATCH = Object.freeze({
     handler: 'onGlobalSitHotkey',
     close: true,
     stage: 'globalSitHotkey'
+  },
+  'tray-today-sat': {
+    handler: 'onTrayTodaySat',
+    close: true,
+    stage: 'trayTodaySat'
   },
   'input-rhythm': {
     handler: 'onInputRhythm',
@@ -480,6 +486,7 @@ export const NARROW_STAGE_CLASS = Object.freeze({
   alwaysOnTop: 'ft-narrow-stage-always-on-top',
   windowLayout: 'ft-narrow-stage-window-layout',
   globalSitHotkey: 'ft-narrow-stage-global-sit-hotkey',
+  trayTodaySat: 'ft-narrow-stage-tray-today-sat',
   inputRhythm: 'ft-narrow-stage-input-rhythm',
   mindflowNebula: 'ft-narrow-stage-mindflow-nebula',
   presenceField: 'ft-narrow-stage-presence-field',
@@ -497,6 +504,7 @@ export const WIDE_STAGE_CLASS = Object.freeze({
   alwaysOnTop: 'ft-wide-stage-always-on-top',
   windowLayout: 'ft-wide-stage-window-layout',
   globalSitHotkey: 'ft-wide-stage-global-sit-hotkey',
+  trayTodaySat: 'ft-wide-stage-tray-today-sat',
   inputRhythm: 'ft-wide-stage-input-rhythm',
   mindflowNebula: 'ft-wide-stage-mindflow-nebula',
   presenceField: 'ft-wide-stage-presence-field',

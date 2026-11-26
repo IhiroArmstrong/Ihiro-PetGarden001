@@ -39,6 +39,13 @@ import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { canUseGlobalSitHotkey } from '../core/globalSitHotkeyBridge.js';
 import { openGlobalSitHotkeyPreference } from './GlobalSitHotkeyPreferenceUI.js';
+import {
+  canUseTrayTodaySat,
+  installTrayTodaySatSync,
+  readTrayTodaySatSnapshot,
+  writeTrayTodaySatPreference
+} from '../core/trayTodaySatBridge.js';
+import { openTrayTodaySatPreference } from './TrayTodaySatPreferenceUI.js';
 import { resolveMustardSeedSeal } from '../core/mustardSeedSeal.js';
 import { resolveContemplativeArchiveSeal } from '../core/contemplativeArchiveSeal.js';
 import { subscribePracticeDataImported } from '../core/practiceBackup/practiceBackupLocalIo.js';
@@ -125,6 +132,7 @@ export class NarrowIdleShell {
    * }} [options]
    */
   constructor(options = {}) {
+    installTrayTodaySatSync();
     this.root = options.root || document.body;
     this._getHudStateEl =
       options.getHudStateEl || (() => document.getElementById('hud-state'));
@@ -1079,6 +1087,7 @@ export class NarrowIdleShell {
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
       globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
+      trayTodaySatAvailable: canUseTrayTodaySat(),
       inputRhythmAvailable: canUseInputRhythm()
     });
     const storage =
@@ -1141,7 +1150,8 @@ export class NarrowIdleShell {
       paintSecondaryChromeMenuRow(btn, item, {
         t,
         storage,
-        alwaysOnTopOn: this._alwaysOnTopOn
+        alwaysOnTopOn: this._alwaysOnTopOn,
+        trayTodaySatOn: this._trayTodaySatOn
       });
       if (item.testId) btn.dataset.testid = item.testId;
       if (item.emphasis === 'beige-cta') {
@@ -1234,10 +1244,15 @@ export class NarrowIdleShell {
    */
   async _hydratePrefToggles() {
     this._alwaysOnTopOn = await readAlwaysOnTopEnabled();
+    this._trayTodaySatOn = readTrayTodaySatSnapshot().enabled;
     const sw = this.listEl?.querySelector(
       '[data-proxy="always-on-top"] [data-pref-switch]'
     );
     if (sw) sw.dataset.on = this._alwaysOnTopOn ? '1' : '0';
+    const sat = this.listEl?.querySelector(
+      '[data-proxy="tray-today-sat"] [data-pref-switch]'
+    );
+    if (sat) sat.dataset.on = this._trayTodaySatOn ? '1' : '0';
   }
 
   /**
@@ -1246,8 +1261,16 @@ export class NarrowIdleShell {
    * @returns {Promise<void>}
    */
   async _onPrefToggle(key, item) {
-    if (key !== 'always-on-top') return;
     const sw = item.querySelector('[data-pref-switch]');
+    if (key === 'tray-today-sat') {
+      const next = !(this._trayTodaySatOn === true);
+      if (sw) sw.dataset.on = next ? '1' : '0';
+      const result = await writeTrayTodaySatPreference(next);
+      this._trayTodaySatOn = result.enabled;
+      if (sw) sw.dataset.on = result.enabled ? '1' : '0';
+      return;
+    }
+    if (key !== 'always-on-top') return;
     const next = !(this._alwaysOnTopOn === true);
     if (sw) sw.dataset.on = next ? '1' : '0';
     const result = await writeAlwaysOnTopEnabled(next);
@@ -1284,7 +1307,8 @@ export class NarrowIdleShell {
       {
         handlers: {
           ...this.handlers,
-          onGlobalSitHotkey: () => openGlobalSitHotkeyPreference()
+          onGlobalSitHotkey: () => openGlobalSitHotkeyPreference(),
+          onTrayTodaySat: () => openTrayTodaySatPreference()
         },
         closeFirst: true,
         runPrelude: false,

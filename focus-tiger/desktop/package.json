@@ -71,6 +71,7 @@
       "alwaysOnTop/**/*.js",
       "windowLayout/**/*.js",
       "globalSitHotkey/**/*.js",
+      "trayTodaySat/**/*.js",
       "inputRhythm/**/*.js",
       "floatingMarker/**/*.js",
       "checkoutReturnDelivery.js",

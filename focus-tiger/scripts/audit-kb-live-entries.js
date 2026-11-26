@@ -104,6 +104,7 @@ export function buildKbLiveMenuAuditVisibility() {
     alwaysOnTopAvailable: true,
     windowLayoutAvailable: true,
     globalSitHotkeyAvailable: true,
+    trayTodaySatAvailable: true,
     inputRhythmAvailable: true,
     contemplativeArchiveSealMenus
   };

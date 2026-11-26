@@ -178,6 +178,16 @@ export function listPreferenceCenterSubgroups(visibility, deps = {}) {
               icon: '⌘'
             }
           : null,
+        visibility.trayTodaySatAvailable
+          ? {
+              proxy: 'tray-today-sat',
+              labelKey: 'TRAY_TODAY_SAT_MENU_LABEL',
+              testId: 'idle-tray-today-sat',
+              hintKey: 'TRAY_TODAY_SAT_TOGGLE_HINT',
+              kind: 'toggle',
+              icon: '⌘'
+            }
+          : null,
         {
           proxy: 'health-shortcut-log',
           labelKey: 'HEALTH_SHORTCUT_MENU_LABEL',

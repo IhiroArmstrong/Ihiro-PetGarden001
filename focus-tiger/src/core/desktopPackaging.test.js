@@ -80,6 +80,7 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.ok(desktopPkg.build.files.includes('alwaysOnTop/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('windowLayout/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('globalSitHotkey/**/*.js'));
+    assert.ok(desktopPkg.build.files.includes('trayTodaySat/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('inputRhythm/**/*.js'));
     assert.ok(desktopPkg.build.files.includes('native/**/*.swift'));
     assert.ok(desktopPkg.build.files.includes('guidedMeditation/**/*.js'));
@@ -104,6 +105,7 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(preload, /desktop:window-layout-apply/);
     assert.match(preload, /desktop:global-sit-hotkey-get/);
     assert.match(preload, /desktop:global-sit-hotkey-set/);
+    assert.match(preload, /desktop:tray-today-sat-set/);
     assert.match(preload, /desktop:practice-deep-link/);
   });
 
@@ -119,6 +121,8 @@ describe('desktop packaging contract (Step B tray)', () => {
     assert.match(mainSrc, /desktop:window-layout-get/);
     assert.match(mainSrc, /desktop:window-layout-apply/);
     assert.match(mainSrc, /attachGlobalSitHotkey/);
+    assert.match(mainSrc, /attachTrayTodaySat/);
+    assert.match(mainSrc, /setTitle/);
     const sitIpc = readFileSync(
       join(dirname(fileURLToPath(import.meta.url)), '../../desktop/globalSitHotkey/globalSitHotkeyIpc.js'),
       'utf8'

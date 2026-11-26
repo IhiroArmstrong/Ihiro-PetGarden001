@@ -62,6 +62,7 @@ import {
 } from './windowLayout/windowLayoutPolicy.js';
 
 import { attachGlobalSitHotkey } from './globalSitHotkey/globalSitHotkeyIpc.js';
+import { attachTrayTodaySat } from './trayTodaySat/trayTodaySatIpc.js';
 import { runT95LlamaGuiProbeIfRequested } from './companion/t95LlamaGuiProbe.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -481,7 +482,7 @@ function persistAlwaysOnTop(enabled) {
   alwaysOnTopEnabled = Boolean(enabled);
   saveAlwaysOnTopPrefs(app.getPath('userData'), { enabled: alwaysOnTopEnabled });
   applyAlwaysOnTop();
-  applyTrayMenu();
+  applyTrayChrome();
   return alwaysOnTopEnabled;
 }
 
@@ -521,7 +522,7 @@ function applyWindowLayoutAction(action) {
   });
   const commitPrefs = () => {
     windowLayoutPrefs = saveWindowLayoutPrefs(app.getPath('userData'), plan.persist);
-    applyTrayMenu();
+    applyTrayChrome();
   };
   const finishGeometry = () => {
     applyPlannedBounds(win, plan.setBounds);
@@ -544,7 +545,24 @@ function applyWindowLayoutAction(action) {
   return { layout: describeWindowLayout(win), saved: true };
 }
 
-function applyTrayMenu() {
+let trayTodaySatRuntime = null;
+
+function applyTrayChrome() {
+  if (!tray) return;
+  const locale = app.getLocale();
+  const presentation = trayTodaySatRuntime?.presentation(locale) ?? {
+    title: '',
+    tooltip: DESKTOP_DISPLAY_NAME,
+    menuLabel: null
+  };
+  if (process.platform === 'darwin' && typeof tray.setTitle === 'function') {
+    tray.setTitle(presentation.title);
+  }
+  tray.setToolTip(presentation.tooltip);
+  applyTrayMenu(presentation.menuLabel);
+}
+
+function applyTrayMenu(todaySatLabel = null) {
   if (!tray) return;
   const labels = trayMenuLabels(app.getLocale());
   const prefs = floatingMarkerRuntime?.prefs?.() ?? {
@@ -553,7 +571,15 @@ function applyTrayMenu() {
   };
   /** @type {import('electron').MenuItemConstructorOptions[]} */
   const items = [
-    { label: labels.show, click: () => showMainWindow() },
+    { label: labels.show, click: () => showMainWindow() }
+  ];
+  if (todaySatLabel) {
+    items.push({
+      label: todaySatLabel,
+      click: () => showMainWindow()
+    });
+  }
+  items.push(
     {
       label: labels.alwaysOnTop,
       type: 'checkbox',
@@ -608,9 +634,11 @@ function applyTrayMenu() {
 function createTray() {
   if (tray) return tray;
   tray = new Tray(trayIconImage());
-  tray.setToolTip(DESKTOP_DISPLAY_NAME);
-  applyTrayMenu();
-  tray.on('click', () => showMainWindow());
+  applyTrayChrome();
+  tray.on('click', () => {
+    applyTrayChrome();
+    showMainWindow();
+  });
   return tray;
 }
 
@@ -886,7 +914,12 @@ if (gotSingleInstanceLock) {
   floatingMarkerRuntime = createFloatingMarkerRuntime({
     userDataDir: app.getPath('userData'),
     onClicked: () => showMainWindow(),
-    onStateChange: () => applyTrayMenu()
+    onStateChange: () => applyTrayChrome()
+  });
+  trayTodaySatRuntime = attachTrayTodaySat({
+    ipcMain,
+    onChange: () => applyTrayChrome(),
+    productName: DESKTOP_DISPLAY_NAME
   });
   createTray();
   floatingMarkerRuntime.start();

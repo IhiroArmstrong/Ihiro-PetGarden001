@@ -9,7 +9,7 @@ import { fillPreferencesCenterRow } from './preferencesCenterRow.js';
 
 export function paintSecondaryChromeMenuRow(btn, item, ctx) {
   item = enrichSecondaryMenuRowPresentation(item);
-  const { t, storage, alwaysOnTopOn } = ctx;
+  const { t, storage, alwaysOnTopOn, trayTodaySatOn } = ctx;
   if (item.emphasis === 'beige-cta') {
     btn.textContent = t(item.labelKey);
     return;
@@ -23,7 +23,9 @@ export function paintSecondaryChromeMenuRow(btn, item, ctx) {
         : '',
       icon: item.prefIcon || '•',
       prefKind: item.prefKind || 'page',
-      toggleOn: item.proxy === 'always-on-top' && alwaysOnTopOn === true
+      toggleOn:
+        (item.proxy === 'always-on-top' && alwaysOnTopOn === true) ||
+        (item.proxy === 'tray-today-sat' && trayTodaySatOn === true)
     });
     return;
   }

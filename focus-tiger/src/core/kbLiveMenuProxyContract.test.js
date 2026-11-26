@@ -34,6 +34,7 @@ describe('kb live menu proxy contract (knife 2)', () => {
       'always-on-top',
       'window-layout',
       'global-sit-hotkey',
+      'tray-today-sat',
       'input-rhythm',
       'art-collection',
       'newsletter',

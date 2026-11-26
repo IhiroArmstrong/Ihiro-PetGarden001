@@ -23,6 +23,7 @@ describe('preferenceSheetEmbed', () => {
     assert.equal(shouldEmbedPreferenceInSheet('membership'), false);
     assert.equal(shouldEmbedPreferenceInSheet('today-direction'), false);
     assert.equal(shouldEmbedPreferenceInSheet('always-on-top'), false);
+    assert.equal(shouldEmbedPreferenceInSheet('tray-today-sat'), false);
     assert.ok(PREFERENCE_SHEET_EMBED_PROXIES.includes('language'));
   });
 

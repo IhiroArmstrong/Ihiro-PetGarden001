@@ -531,6 +531,22 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     catalogKbIds: Object.freeze(['KB-FUNC-0051'])
   }),
   Object.freeze({
+    id: 'kb-live-tray-today-sat',
+    surface: 'menu',
+    proxy: 'tray-today-sat',
+    labelKeys: Object.freeze(['TRAY_TODAY_SAT_MENU_LABEL']),
+    menuPath: '⋯ → Preferences → Menu bar today sat (Electron)',
+    liveStatus: 'conditional',
+    codeAnchors: Object.freeze([
+      "proxy: 'tray-today-sat'",
+      'idle-tray-today-sat'
+    ]),
+    authoritativeSources: Object.freeze([
+      'src/core/idleChromeOrchestration.js'
+    ]),
+    catalogKbIds: Object.freeze([])
+  }),
+  Object.freeze({
     id: 'kb-live-input-rhythm',
     surface: 'menu',
     proxy: 'input-rhythm',

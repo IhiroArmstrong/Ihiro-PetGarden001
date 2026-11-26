@@ -55,7 +55,7 @@
 | `MENU_GROUP_RECORDS` | `journey-log` · `presence-signals` · `yin-coin` |
 | `MENU_GROUP_INSPIRATION` | `daily-quote` · `contemplative-inquiry` · `zen-cinema` · `mustard-seed-seal` · `contemplative-archive-seal:ca-01-old-pond` · `contemplative-archive-seal:ca-02-cherry-blossoms` · `contemplative-archive-seal:ca-03-morning-field` · `contemplative-archive-seal:ca-04-empty-room` · `contemplative-archive-seal:ca-05-bird-has-flown` · `contemplative-archive-seal:ca-06-spring-water` · `contemplative-archive-seal:ca-07-distant-mountain` · `contemplative-archive-seal:ca-08-moonlight` · `contemplative-archive-seal:ca-09-still-tree` · `contemplative-archive-seal:ca-10-sound-after-bell` · `contemplative-archive-seal:ca-11-falling-leaf` · `contemplative-archive-seal:ca-12-cypress-old-lane` · `wallpapers` · `art-collection` |
 | `MENU_GROUP_NOT_ALONE` | `quiet-together` · `focus-circle` · `community` |
-| `MENU_GROUP_PREFERENCES` | `co-practice-contract` · `reminder` · `work-end` · `input-rhythm` · `today-direction` · `mindflow-nebula` · `presence-field` · `language` · `sound` · `always-on-top` · `window-layout` · `global-sit-hotkey` · `health-shortcut-log` · `newsletter` · `account` · `help-center` · `local-backup` · `practice-study` · `membership` |
+| `MENU_GROUP_PREFERENCES` | `co-practice-contract` · `reminder` · `work-end` · `input-rhythm` · `today-direction` · `mindflow-nebula` · `presence-field` · `language` · `sound` · `always-on-top` · `window-layout` · `global-sit-hotkey` · `tray-today-sat` · `health-shortcut-log` · `newsletter` · `account` · `help-center` · `local-backup` · `practice-study` · `membership` |
 | `ritual.menu_group` | `ritual-morning` · `ritual-emotional-reset` · `ritual-work-transition` |
 
 <!-- menu-chrome-census-proxies:end -->
