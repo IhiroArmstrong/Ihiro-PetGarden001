@@ -1,8 +1,11 @@
 # 第一份安装包 · 觉察一句开门门禁 v2
 
-**日期**：2026-11-19（**2026-11-20** 补：四闸红仍记残余，**永不藏入口**）  
+**日期**：2026-11-19（**2026-11-20** 补：四闸红仍记残余，**永不藏入口**；**2026-11-26** 补：包装日改由成长最小闭环决定）
 **性质**：纯文档。不改 `src/`。不是临床关单，不是 V2 已通过。  
 **拍板**：PO 2026-11-19 四句 + 补强（不做轻松档；求助入口每条回复旁可见；12/5 四闸判定）；PO 2026-11-20 书面：**不因四闸红而把倾诉/觉察入口藏回对客不可达**（与 Route X 第一份包须开入口一致）。  
+
+**2026-11-26 覆盖（PO）**：第一份安装包**不再以 12/8 为不可改日期**。准入三块 = **T110 Daily Noticing**（[`task-t110-daily-noticing.md`](../task-briefs/task-t110-daily-noticing.md) · 或 v1 [`task-daily-noticing-v1.md`](../task-briefs/task-daily-noticing-v1.md)）+ **觉察一句四闸维持** + **T109 Inner Mirror 首包**（[`task-t109-inner-mirror-first-package.md`](../task-briefs/task-t109-inner-mirror-first-package.md)）。**止损日 2026-12-03**：若 T110 或 T109 未过各自 Brief 验收，PO 宣布顺延包装，而不是临近 12/8 再慌。本页 **G1–G4 定义仍全部有效**；T110/T109 **复用这四条，禁止另造闸**。T95 壳工作仍做，但发日服从闭环。
+
 **从属**：[`NOTICING_ONE_LINE.md`](../NOTICING_ONE_LINE.md) · [`first-package-written-risk-acceptance.md`](./first-package-written-risk-acceptance.md)  
 **实现 Brief**：[句库](../task-briefs/task-noticing-fixed-line-library.md) · [结构不变量](../task-briefs/task-noticing-no-generate-invariant.md)
 

@@ -1,10 +1,10 @@
 # Human Inner Development · Daily Noticing — 方向锁
 
-> **状态**：方向锁（**无运行时**）· PO 2026-11-26 点头「只做文档、不进 2026-12-08 首包」  
+> **状态**：方向锁 · PO 2026-11-26 点头范围；**2026-11-26 改口：T105 进首包准入**（不再是「不进 12/8」）  
 > **从属**：[`PRODUCT_POSITIONING.md`](./PRODUCT_POSITIONING.md) · [`PRINCIPLES.md`](./PRINCIPLES.md) · [`COMPANION_CONTRACT.md`](./COMPANION_CONTRACT.md)（C-01–C-11）· [`PRODUCT_MOMENTS.md`](./PRODUCT_MOMENTS.md)（Arrive / Reflect）  
 > **不是**：心理咨询、临床诊断、治疗承诺、第五套打卡、AI 生成问句、与 Honesty Check-in 同名的用户功能  
 > **实现代号**：**Daily Noticing**（每日觉察，工程内部名）。对外用户可见名 **待 Brief 阶段再定**。  
-> **治理代号**：待治理会话登记 T 号；实现旁支 **禁止**自编 T 号。
+> **治理代号**：**T105** Daily Noticing · **T106** Inner Mirror L1 · **T107** L2（搁置）。实现旁支 **禁止**自编 T 号。
 
 本锁定「人的内在成长」在产品里的含义、现网已有哪几块、缺口是什么、第一刀怎么做、以及痛苦与安全的边界。**不写 `src/`。**
 
@@ -126,8 +126,8 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 - 第五套「打卡」UI（连签、红点、未做愧疚文案）  
 - 0–100 情绪分、性格标签、「心流失败」类文案  
 - 与到达 / 回顾 / T52 **抢同一叠层**（须写让位规则，默认轻于 Reflection）  
-- **2026-12-08 首包**塞入运行时（**T95** 发包装窗口不插队）  
-- 未 Brief 写 `src/`
+- 打开生成、另造第五闸  
+- 未口令开工就写 `src/`
 
 ---
 
@@ -135,11 +135,13 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 
 | 阶段 | 内容 |
 |---|---|
-| **当前（本 PR）** | 方向锁 + 定位稿指针；**无运行时** |
-| **首包后** | 独立 Brief：`task-briefs/task-daily-noticing-v1.md`（待建）；治理会话登记 T 号 |
-| **实现** | 单独立项 PR；须 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 对照场景 A / L / C 与倾诉安全 |
+| **方向锁** | #1895 已合 |
+| **T105 Brief** | [`task-t105-daily-noticing.md`](./task-briefs/task-t105-daily-noticing.md) · **首包准入** · 止损 2026-12-03 |
+| **T106 Brief** | [`task-t106-inner-mirror-l1.md`](./task-briefs/task-t106-inner-mirror-l1.md) · 第一层进首包 |
+| **T107** | 周月 / Journal · **搁置 · 未排期** |
+| **实现** | 口令开工独立旁支；须 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) |
 
-与队列关系：不修改 [`GLOSSARY.md`](./GLOSSARY.md) §当前任务，直至 PO 治理 PR 登记代号。
+包装日由成长最小闭环是否完成决定，不再固定 12/8。
 
 ---
 
@@ -154,6 +156,15 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 机械改动登记：**无用户路径**（本文档仅方向锁）。
 
 ---
+
+## 8. Inner Mirror（分层）
+
+| 层 | 代号 | 首包 |
+|---|---|---|
+| 第一层：固定模板 + 原话回显、可纠正 | **T106** | **进** |
+| 第二层：周/月、Personal Pattern Journal、Moments of Change | **T107** | **不进**（默认关、搁置） |
+
+觉察一句（Thought Drop）维持现网四闸，本锁不改发送链。
 
 ## 7. 相关权威索引
 
