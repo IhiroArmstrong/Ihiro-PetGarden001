@@ -23,6 +23,7 @@ import {
 import { clearSessionDurationOfferRecords } from './coPracticeSessionJoinLedger.js';
 import { AWAKEN_CHECKIN_STORAGE_KEY, normalizeCheckInRows } from './awakenCheckInStore.js';
 import { forgetStableFocusLearning } from './stablePrefsStore.js';
+import { clearGrowthStateDerivedOnAdaptationReset } from './growthState/growthStateStore.js';
 
 export const YIN_ADAPTATION_STORAGE_KEY = 'focus-tiger.yin-adaptation.v1';
 export const FOCUS_DURATION_MANUAL_ANCHOR_STORAGE_KEY =
@@ -100,6 +101,7 @@ export function setYinAdaptationEnabled(enabled, key = YIN_ADAPTATION_STORAGE_KE
   state.enabled = enabled;
   if (!enabled) state.kindState = {};
   writeYinAdaptationState(state, key);
+  if (!enabled) clearGrowthStateDerivedOnAdaptationReset();
 }
 
 function kindBucket(kind, state) {
@@ -273,6 +275,7 @@ export function suspendYinAdaptationRule(ruleId, key = YIN_ADAPTATION_STORAGE_KE
   const state = readYinAdaptationState(key);
   state.suspendedRules[ruleId] = true;
   writeYinAdaptationState(state, key);
+  clearGrowthStateDerivedOnAdaptationReset();
 }
 
 export function hideYinAdaptationNotebookLine(ruleId, key = YIN_ADAPTATION_STORAGE_KEY) {
@@ -287,6 +290,7 @@ export function hideYinAdaptationNotebookLine(ruleId, key = YIN_ADAPTATION_STORA
     state.kindState = {};
   }
   writeYinAdaptationState(state, key);
+  clearGrowthStateDerivedOnAdaptationReset();
 }
 
 export function forgetYinAdaptationTuning(key = YIN_ADAPTATION_STORAGE_KEY) {

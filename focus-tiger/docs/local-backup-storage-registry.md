@@ -24,7 +24,7 @@ Reverse-enumeration audit (Step 1) showed **61 → 65** reset keys vs **28** exp
 
 ## Export whitelist (schema v8)
 
-`PRACTICE_BACKUP_SCHEMA_VERSION = 8` · **32** localStorage keys + optional Electron `companionFiles`:
+`PRACTICE_BACKUP_SCHEMA_VERSION = 9` · **33** localStorage keys + optional Electron `companionFiles`:
 
 | Group | Keys |
 |---|---|

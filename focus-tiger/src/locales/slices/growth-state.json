@@ -1,0 +1,32 @@
+{
+  "en": {
+    "GROWTH_STATE_GOALS_TITLE": "What you want to practice",
+    "GROWTH_STATE_GOALS_EMPTY": "No goals here yet. Add one when you are ready.",
+    "GROWTH_STATE_GOALS_CONSENT": "Save goals on this device only (not uploaded).",
+    "GROWTH_STATE_GOALS_INPUT_PLACEHOLDER": "A short line about what you want to practice",
+    "GROWTH_STATE_GOALS_ADD": "Add goal",
+    "GROWTH_STATE_GOALS_DONE": "Mark done",
+    "GROWTH_STATE_GOALS_REMOVE": "Remove",
+    "GROWTH_STATE_GOALS_STATUS_DONE": "Done"
+  },
+  "zh": {
+    "GROWTH_STATE_GOALS_TITLE": "你想练的方向",
+    "GROWTH_STATE_GOALS_EMPTY": "还没有目标。准备好了可以写一条。",
+    "GROWTH_STATE_GOALS_CONSENT": "只保存在本机（不上传）。",
+    "GROWTH_STATE_GOALS_INPUT_PLACEHOLDER": "简短写一句你想练的方向",
+    "GROWTH_STATE_GOALS_ADD": "添加",
+    "GROWTH_STATE_GOALS_DONE": "标记完成",
+    "GROWTH_STATE_GOALS_REMOVE": "删除",
+    "GROWTH_STATE_GOALS_STATUS_DONE": "已完成"
+  },
+  "ja": {
+    "GROWTH_STATE_GOALS_TITLE": "練びたいこと",
+    "GROWTH_STATE_GOALS_EMPTY": "まだ目標はありません。",
+    "GROWTH_STATE_GOALS_CONSENT": "この端末だけに保存（アップロードしません）。",
+    "GROWTH_STATE_GOALS_INPUT_PLACEHOLDER": "練びたいことを短く",
+    "GROWTH_STATE_GOALS_ADD": "追加",
+    "GROWTH_STATE_GOALS_DONE": "完了にする",
+    "GROWTH_STATE_GOALS_REMOVE": "削除",
+    "GROWTH_STATE_GOALS_STATUS_DONE": "完了"
+  }
+}
