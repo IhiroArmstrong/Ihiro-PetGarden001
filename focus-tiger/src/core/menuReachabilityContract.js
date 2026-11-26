@@ -56,6 +56,10 @@ export const MENU_REACHABILITY = Object.freeze({
     kind: 'open-panel',
     resultSelector: '#confide-to-yin-card'
   }),
+  'daily-noticing': Object.freeze({
+    kind: 'open-panel',
+    resultSelector: '#daily-noticing-card'
+  }),
   'journey-log': Object.freeze({
     kind: 'open-panel',
     resultSelector: '#journey-log',

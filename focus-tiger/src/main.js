@@ -251,7 +251,9 @@ import {
   installGlassCardDeck
 } from './ui/glassCardDeck.js';
 import { openThoughtDropMemoryPanel } from './ui/openThoughtDropMemoryPanel.js';
-import { assertGlassGrowthOverlayCardOrder } from './core/glassGrowthOverlayCardRegistry.js';
+import { buildGlassGrowthOverlayCards } from './core/buildGlassGrowthOverlayCards.js';
+import { DailyNoticingUI } from './ui/DailyNoticingUI.js';
+import { resolveDailyNoticingMenuClick } from './core/dailyNoticing/dailyNoticingMenuClick.js';
 import { startFocusCircleOnlinePresence } from './core/focusCircleOnline.js';
 import { GrowthJourneyDetailUI } from './ui/GrowthJourneyDetailUI.js';
 import { PresenceSignalsPanelUI } from './ui/PresenceSignalsPanelUI.js';
@@ -2108,6 +2110,8 @@ async function init() {
   let pendingInviteOutcomeKind = null;
   /** @type {GroundExerciseChoiceUI | null} */
   let groundExerciseChoiceUI = null;
+  /** @type {DailyNoticingUI | null} */
+  let dailyNoticingUI = null;
   /** @type {GuidedMeditationUI | null} */
   let guidedMeditationUI = null;
 
@@ -2321,9 +2325,11 @@ async function init() {
     },
     onClose: () => syncIdleYinTap()
   });
+  dailyNoticingUI = new DailyNoticingUI(overlayRoot, { onClose: () => syncIdleYinTap() });
   guidedMeditationUI = new GuidedMeditationUI(overlayRoot, createGuidedMeditationUIHandlers({ bootAmbientHints, idleChrome, noteGuidedMeditationPracticeDay, syncIdleYinTap }));
   window.__recoverResetPractice = recoverResetPracticeUI;
   window.__groundExerciseChoice = groundExerciseChoiceUI;
+  window.__dailyNoticingCard = dailyNoticingUI;
   window.__guidedMeditation = guidedMeditationUI;
 
   function recordInviteOutcomeForSession(kind, outcome, ts) {
@@ -2825,114 +2831,37 @@ async function init() {
   /** @type {string[]} */
   const glassOpenOrder = [];
   // Built on close, not at startup. Support modal is created later in init.
-  const glassOverlayCards = () => {
-    const cards = [
-      { id: 'support', ui: bootMomentHosts.supportYinModalUI, close: () => bootMomentHosts.supportYinModalUI.close() },
-      { id: 'quote', ui: dailyZenQuoteCardUI, close: () => dailyZenQuoteCardUI.close() },
-      {
-        id: 'contemplative-inquiry',
-        ui: contemplativeInquiryUI,
-        close: () => contemplativeInquiryUI.close()
-      },
-      {
-        id: 'mustard-seed',
-        ui: mustardSeedSealCardUI,
-        close: () => mustardSeedSealCardUI.close()
-      },
-      {
-        id: 'practice-imprint',
-        ui: practiceImprintCardUI,
-        close: () => practiceImprintCardUI.close()
-      },
-      // Surface off: omit from glass growth deck — registration breaks
-      // Arrival keepQuickStart (scenario-a e2e) via closeGrowthOverlayCards.
-            ...(CO_PRACTICE_GIFT_ART_SURFACE_ENABLED
-        ? [
-            {
-              id: 'co-practice-gift-art',
-              ui: coPracticeGiftArtCardUI,
-              close: () => coPracticeGiftArtCardUI.close()
-            }
-          ]
-        : []),
-      {
-        id: 'wallpapers',
-        ui: digitalWallpapersCardUI,
-        close: () => digitalWallpapersCardUI.close()
-      },
-      {
-        id: 'art-collection',
-        ui: artCollectionPanelUI,
-        close: () => artCollectionPanelUI.close()
-      },
-      { id: 'sanctuary', ui: sanctuaryUnlockUI, close: () => sanctuaryUnlockUI.close() },
-      {
-        id: 'membership',
-        ui: membershipUnlockUI,
-        close: () => membershipUnlockUI.close()
-      },
-      { id: 'tip', ui: tipJarUI, close: () => tipJarUI.close() },
-      {
-        id: 'newsletter',
-        ui: newsletterCaptureUI,
-        close: () => newsletterCaptureUI.close()
-      },
-      { id: 'confide', ui: confideToYinUI, close: () => confideToYinUI.close() },
-      { id: 'cinema', ui: zenCinemaCardUI, close: () => zenCinemaCardUI.close() },
-      {
-        id: 'ground-exercise',
-        ui: groundExerciseChoiceUI,
-        close: () => groundExerciseChoiceUI?.close()
-      },
-      {
-        id: 'guided-meditation',
-        ui: guidedMeditationUI,
-        close: () => guidedMeditationUI?.close()
-      },
-      { id: 'moments', ui: bootMomentHosts.fiveMomentsCompassUI, close: () => bootMomentHosts.fiveMomentsCompassUI.close() },
-      {
-        id: 'cold-start-goal',
-        ui: coldStartGoalCardUI,
-        close: () => coldStartGoalCardUI.close()
-      },
-      { id: 'journey', ui: journeyLogUI, close: () => journeyLogUI.close() },
-      { id: 'help-center', ui: helpCenterUI, close: () => helpCenterUI.close() },
-      {
-        id: 'growth-journey',
-        ui: growthJourneyDetailUI,
-        close: () => growthJourneyDetailUI?.close()
-      },
-      {
-        id: 'presence',
-        ui: presenceSignalsPanelUI,
-        close: () => presenceSignalsPanelUI.close()
-      },
-      {
-        id: 'yin-memory',
-        ui: yinPersonalMemoryUI,
-        close: () => yinPersonalMemoryUI.close()
-      },
-      { id: 'yin-coin', ui: yinCoinPanelUI, close: () => yinCoinPanelUI?.close() },
-      ...preferenceBackupPanels.overlayCards,
-      {
-        id: 'practice-study',
-        ui: practiceStudyConsentPanelUI,
-        close: () => practiceStudyConsentPanelUI.closePanel()
-      },
-      {
-        id: 'quiet-together',
-        ui: quietTogetherPanelUI,
-        close: () => quietTogetherPanelUI.closePanel()
-      },
-      {
-        id: 'focus-circle',
-        ui: focusCirclePanelUI,
-        close: () => focusCirclePanelUI.closePanel()
-      }
-    ];
-    assertGlassGrowthOverlayCardOrder(cards.map((card) => card.id));
-    return cards;
-  };
+  const glassOverlayCards = () =>
+    buildGlassGrowthOverlayCards({
+      bootMomentHosts,
+      dailyZenQuoteCardUI,
+      contemplativeInquiryUI,
+      mustardSeedSealCardUI,
+      practiceImprintCardUI,
+      coPracticeGiftArtCardUI,
+      digitalWallpapersCardUI,
+      artCollectionPanelUI,
+      sanctuaryUnlockUI,
+      membershipUnlockUI,
+      tipJarUI,
+      newsletterCaptureUI,
+      confideToYinUI,
+      dailyNoticingUI,
+      zenCinemaCardUI,
+      groundExerciseChoiceUI,
+      guidedMeditationUI,
+      coldStartGoalCardUI,
+      journeyLogUI,
+      helpCenterUI,
+      growthJourneyDetailUI,
+      presenceSignalsPanelUI,
+      yinPersonalMemoryUI,
+      yinCoinPanelUI,
+      preferenceBackupPanels,
+      practiceStudyConsentPanelUI,
+      quietTogetherPanelUI,
+      focusCirclePanelUI
+    });
 
   function closeGrowthOverlayCards({ except = null } = {}) {
     installGlassCardDeck(document);
@@ -4077,6 +4006,7 @@ async function init() {
       zenCinemaCardUI?.isOpen?.() === true ||
       presenceSignalsPanelUI?.isOpen?.() === true ||
       confideToYinUI?.isOpen?.() === true ||
+      dailyNoticingUI?.isOpen?.() === true ||
       groundExerciseChoiceUI?.isOpen?.() === true ||
       guidedMeditationUI?.isOpen?.() === true ||
       bootMomentHosts.fiveMomentsCompassUI?.isOpen?.() === true ||
@@ -4141,6 +4071,7 @@ async function init() {
       flowerWelcomeVisible: flowerBlowWelcomeBubble?.isOpen?.() === true,
       welcomeSequencePlaying: isWelcomeFirstPaintPlaying(),
       confideOpen: window.__confideToYin?.isOpen?.() === true,
+      dailyNoticingOpen: window.__dailyNoticingCard?.isOpen?.() === true,
       journeyOpen: window.__journeyLog?.isOpen?.() === true,
       helpCenterOpen: window.__helpCenter?.isOpen?.() === true,
       growthJourneyDetailOpen:
@@ -5012,6 +4943,28 @@ async function init() {
     onConfide: () => {
       closeGrowthOverlayCards({ except: 'confide' });
       confideToYinUI.open();
+    },
+    onDailyNoticing: () => {
+      const action = resolveDailyNoticingMenuClick({
+        focusing: stateManager.state === STATES.FOCUSING,
+        honestyBusy:
+          typeof window.__honestyCheckInUI?.phase === 'string' &&
+          window.__honestyCheckInUI.phase !== 'hidden',
+        breathBusy: window.__microRitualUI?.isOpen?.() === true,
+        recoverBusy: recoverResetPracticeUI?.isVisible?.() === true,
+        confideBusy: window.__confideToYin?.isOpen?.() === true,
+        reflectionBusy: window.__reflectionMoment?.isOpen?.() === true,
+        arrivalBusy: window.__arrivalPractice?.isOpen?.() === true
+      });
+      if (action === 'busy') {
+        mindfulToast.show(t('DAILY_NOTICING_BUSY_HINT'), {
+          placement: MINDFUL_TOAST_PLACEMENT_ACKNOWLEDGE,
+          visibleMs: 4_500
+        });
+        return;
+      }
+      closeGrowthOverlayCards({ except: 'daily-noticing' });
+      dailyNoticingUI?.open();
     },
     onZenCinema: () => {
       closeGrowthOverlayCards({ except: 'cinema' });

@@ -27,6 +27,7 @@ export const GLASS_CARD_ELEMENT_IDS = Object.freeze({
   tip: 'yin-tip-jar-card',
   newsletter: 'newsletter-capture-card',
   confide: 'confide-to-yin-card',
+  'daily-noticing': 'daily-noticing-card',
   cinema: 'zen-cinema-card',
   'ground-exercise': 'ground-exercise-choice',
   'guided-meditation': 'guided-meditation',

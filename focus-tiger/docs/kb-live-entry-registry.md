@@ -24,7 +24,7 @@ This table answers: **which product surfaces are live in code right now**, which
 
 > **机器块 · 勿手改**。真源：`src/core/kbLiveEntryRegistry.js`。刷新：`npm run audit:kb-live-entries -- --write`。
 
-**Row count**: 58 (53 menu/ritual · 4 home-ball · 1 hud)
+**Row count**: 59 (54 menu/ritual · 4 home-ball · 1 hud)
 
 | id | surface | proxy | liveStatus | menuPath | labelKeys | catalogKbIds |
 |---|---|---|---|---|---|---|
@@ -41,6 +41,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-presence-signals` | menu | `presence-signals` | live | ⋯ → Practice → Presence signals | `PRESENCE_SIGNALS_MENU_LABEL` | `KB-FUNC-0013` |
 | `kb-live-yin-coin` | menu | `yin-coin` | gated-default-on | ⋯ → Practice → Yin Coin | `YIN_COIN_MENU_LABEL` | `KB-FUNC-0018` |
 | `kb-live-confide` | menu | `confide` | conditional | ⋯ → Practice → Thought Drop (wide ear shortcut) | `CONFIDE_MENU_LABEL` | `KB-FUNC-0005` `KB-FUNC-0010` `KB-FUNC-0039` |
+| `kb-live-daily-noticing` | menu | `daily-noticing` | live | ⋯ → Practice → Daily noticing | `DAILY_NOTICING_MENU_LABEL` |  |
 | `kb-live-daily-quote` | menu | `daily-quote` | live | ⋯ → Inspiration → Daily quote | `DAILY_ZEN_QUOTE_MENU_LABEL` | `KB-FUNC-0021` |
 | `kb-live-contemplative-inquiry` | menu | `contemplative-inquiry` | live | ⋯ → Inspiration → Sit with a question | `CI_EX1_MENU_LABEL` | `KB-FUNC-0040` |
 | `kb-live-zen-cinema` | menu | `zen-cinema` | live | ⋯ → Inspiration → Mindful Theater | `ZEN_CINEMA_MENU_LABEL` | `KB-FUNC-0022` |
