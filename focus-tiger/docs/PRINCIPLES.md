@@ -39,7 +39,8 @@
 
 > **冻结集不能单独当上线关卡。** 调过参的句子只证明回归；没见过的句子才证明泛化。
 
-- **不存原句**：倾诉日志只许 `queryHash` + 长度或按天汇总的计数。禁止把 Electron `turns.jsonl` 原文、从哈希还原的原句、或「为了凑样本编出来的问法」写进仓库、备份或长期遥测。滚动清理与备份排除仍守 Prompt 9（`confide-turns-jsonl-backup-exclude.md`）。补计数时**不得**因此放宽「不存原文」。读日志须遵守 `companion-debug`（`.cursor/rules/focus-tiger-companion-debug.mdc`）：只读最近一条、限行，禁止整份 `turns.jsonl` 进 Chat。
+- **不存原句（2026-11-26 收窄）**：评测日志、仓库、CI、长期遥测、练习云备份、研究上送仍**禁止**倾诉原文。倾诉调试日志只许 `queryHash` + 长度或按天汇总的计数。禁止把 Electron `turns.jsonl` 原文、从哈希还原的原句、或「为了凑样本编出来的问法」写进仓库或长期遥测。滚动清理与备份排除仍守 Prompt 9（`confide-turns-jsonl-backup-exclude.md`）。读日志须遵守 `companion-debug`：只读最近一条、限行，禁止整份 `turns.jsonl` 进 Chat。  
+  **本机用户日记（PO 2026-11-26）**：成长引擎需要用户写下的句子才能做自我反馈。允许产品内**本机**保存用户可见日记（可关可删，默认不进云备份）。**须 T106 Brief 点头后才改运行时。** 本地存储 ≠ 零风险（共用电脑 / 系统备份）；删除与排除备份是一等能力。不得把「本机可存」理解成可以进 git 或 Worker。
 - **实验室里加盲测分层，不另建一套框架。** 路径与命名仍看 `LAB_SCRIPT_CONVENTIONS.md`（`RULES_INDEX` → `companion-debug`）。现有情绪否决 / 目录复核 / Stage 2b 实验室继续用。每套评测分成：
   1. **冻结 / 开发集**：可以调规则。一旦用来调过，就只许当回归（不退步）。
   2. **封存盲测集**：另一个会话生成并封存。Cursor 实现会话只看通过率，不看句子。目录：`focus-tiger/.secrets/confide-blind-holdout/`（gitignore）。

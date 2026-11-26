@@ -1,0 +1,1 @@
+| 个人成长引擎四层对照图（T105） | 纯文档 | 仅单元测试覆盖 | **无用户路径。** 读 [`PERSONAL_GROWTH_ENGINE.md`](../PERSONAL_GROWTH_ENGINE.md)：四层定义、本机日记收窄、发包装日顺延。不代表日记/选练已上线。 | — | — | — | `focus-tiger/docs/PERSONAL_GROWTH_ENGINE.md` | 2026-11-26 |

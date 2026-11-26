@@ -1,10 +1,10 @@
 # Human Inner Development · Daily Noticing — 方向锁
 
-> **状态**：方向锁（**无运行时**）· PO 2026-11-26 点头「只做文档、不进 2026-12-08 首包」  
+> **状态**：方向锁 · PO 2026-11-26 点头范围；**2026-11-27 改号：T110 每日觉察进首包准入**（治理代号见 [`GLOSSARY.md`](./GLOSSARY.md)）  
 > **从属**：[`PRODUCT_POSITIONING.md`](./PRODUCT_POSITIONING.md) · [`PRINCIPLES.md`](./PRINCIPLES.md) · [`COMPANION_CONTRACT.md`](./COMPANION_CONTRACT.md)（C-01–C-11）· [`PRODUCT_MOMENTS.md`](./PRODUCT_MOMENTS.md)（Arrive / Reflect）  
 > **不是**：心理咨询、临床诊断、治疗承诺、第五套打卡、AI 生成问句、与 Honesty Check-in 同名的用户功能  
 > **实现代号**：**Daily Noticing**（每日觉察，工程内部名）。对外用户可见名 **待 Brief 阶段再定**。  
-> **治理代号**：待治理会话登记 T 号；实现旁支 **禁止**自编 T 号。
+> **治理代号**：**T110** Daily Noticing · **T109** Inner Mirror L1 · L2 搁置（见 [`GLOSSARY.md`](./GLOSSARY.md)）。实现旁支 **禁止**自编 T 号。
 
 本锁定「人的内在成长」在产品里的含义、现网已有哪几块、缺口是什么、第一刀怎么做、以及痛苦与安全的边界。**不写 `src/`。**
 
@@ -77,7 +77,7 @@
 | **T51 觉照邀请** | 专注中「要不要停一下」 | 编排层，**不是**每日入口 |
 | **T79 带着问题坐一会儿** | 哲思公案式练习 | 内在智慧向，**不是**情绪扫描 |
 | **觉察一句 / Thought Drop** | 写下一句、固定句接住 | 倾诉轨；**禁止**与 Daily Noticing 合成一个生成面 |
-| **T105 Inner Mirror / 内在镜子** | 觉察一句**第二层**：用户点「留下」才存原文，点开周回看 | **不是** Daily Noticing。禁止共用「留下」日志；镜子进 12/8 准入，本缺口**不进**首包运行时 |
+| **T109 Inner Mirror / 内在镜子** | 觉察一句**第二层**：用户点「留下」才存原文，点开周回看 | **不是** Daily Noticing。禁止共用「留下」日志；镜子与每日觉察分任务进首包准入 |
 | **Confide 开放倾诉** | 倾听 + 安全 | 痛苦严重时走此道，**不是** Daily Noticing 的替代品 |
 
 ---
@@ -128,7 +128,8 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 - 0–100 情绪分、性格标签、「心流失败」类文案  
 - 与到达 / 回顾 / T52 **抢同一叠层**（须写让位规则，默认轻于 Reflection）  
 - **2026-12-08 首包**塞入运行时（**T95** 发包装窗口不插队）  
-- 未按 [`task-daily-noticing-v1.md`](./task-briefs/task-daily-noticing-v1.md) 且无 T 号时写 `src/`
+- 打开生成、另造第五闸  
+- 未口令开工、未按 [`task-t110-daily-noticing.md`](./task-briefs/task-t110-daily-noticing.md) 且无 T 号时写 `src/`
 
 ---
 
@@ -136,12 +137,13 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 
 | 阶段 | 内容 |
 |---|---|
-| **当前** | 方向锁 + 定位稿指针 + **实现 Brief 已起草**（[`task-daily-noticing-v1.md`](./task-briefs/task-daily-noticing-v1.md)）；**无运行时** |
-| **T 号** | **待治理会话登记**。禁止实现旁支自编。等 OPEN **#1901**（T105–T107）合入后再占号，避免和首包准入队列抢号 |
-| **12/8 首包** | **禁止**本入口 `src/` |
-| **首包后** | 有 T 号 → 按 Brief 开 `feature/*-daily-noticing-v1`；须 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 对照场景 A / L / C、倾诉安全、**T105 镜子** |
+| **方向锁** | #1895 已合 |
+| **T110 Brief** | [`task-t110-daily-noticing.md`](./task-briefs/task-t110-daily-noticing.md) · **首包准入** · 止损 2026-12-03 |
+| **T109 Brief** | [`task-t109-inner-mirror-first-package.md`](./task-briefs/task-t109-inner-mirror-first-package.md) · 镜子第一层进首包 |
+| **L2** | 周月 / Journal · **搁置 · 未排期** |
+| **实现** | 口令开工独立旁支；须 [`FEATURE_CONFLICT_REVIEW.md`](./FEATURE_CONFLICT_REVIEW.md) 对照场景 A / L / C、倾诉安全、**T109 镜子** |
 
-与队列关系：不修改 [`GLOSSARY.md`](./GLOSSARY.md) §当前任务，直至 PO 治理 PR 登记代号。
+包装日由成长最小闭环是否完成决定，不再固定 12/8。
 
 ---
 
@@ -157,6 +159,15 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 
 ---
 
+## 8. Inner Mirror（分层）
+
+| 层 | 代号 | 首包 |
+|---|---|---|
+| 第一层：固定模板 + 原话回显、可纠正 | **T109** | **进** |
+| 第二层：周/月、Personal Pattern Journal、Moments of Change | L2 | **不进**（默认关、搁置） |
+
+觉察一句（Thought Drop）维持现网四闸，本锁不改发送链。
+
 ## 7. 相关权威索引
 
 - 一天叙事：[`PRODUCT_MOMENTS.md`](./PRODUCT_MOMENTS.md) §4.1 Arrive · §4.5 Reflect  
@@ -164,6 +175,7 @@ Kelly 某天不想开表，只想花 **1～3 分钟**看看自己今天怎样。
 - 输出闸纪律：[`NOTICING_ONE_LINE.md`](./NOTICING_ONE_LINE.md) · Brief `task-output-gate-p0.md`（T100）  
 - 情绪韧性五项拍板与核对：[`task-briefs/task-emotional-resilience-five-mapping.md`](./task-briefs/task-emotional-resilience-five-mapping.md)  
 - 实现 Brief（首包后）：[`task-briefs/task-daily-noticing-v1.md`](./task-briefs/task-daily-noticing-v1.md)  
+- 实现 Brief（首包准入）：[`task-briefs/task-t110-daily-noticing.md`](./task-briefs/task-t110-daily-noticing.md)  
 - 规则主题：[`RULES_INDEX.md`](./RULES_INDEX.md) → `inner-development-daily-noticing`
 
 ---
