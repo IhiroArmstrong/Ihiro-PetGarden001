@@ -103,7 +103,7 @@
 | **P2** · **T92** | 安全回复写上求助资源 | **已合 develop** · #1614 | 人话：安全句里加上请拨打本地求助热线，并有第二句紧急电话（无号码）。对应 10-04 |
 | **P1** · **T93** | 邮箱登录（第一份 DMG 门闩） | **已完成**（D1–D4）· 首包关闸 | 人话：代码能用邮箱验证码找回旅程，但**第一份安装包不对客打开**。#1663/#1674/#1679/#1682。口令「开工邮箱登录 P0」不执行重写。**不是** T94 |
 | **P2** · **T94** | 识别率四刀说明 | **已完成**（说明） | 人话：先写清危机识别还要动哪四刀。Brief [`task-briefs/task-v2-recognition-four-knives.md`](./task-briefs/task-v2-recognition-four-knives.md)。第 1 刀 #1612 已合。**第 3 刀协议** [`task-briefs/task-t94-knife-3-item-protocol.md`](./task-briefs/task-t94-knife-3-item-protocol.md) 已锁（题面不进仓）。实现顺序第 3→2→4。10-05 修复归第 4 刀。第 2、4 刀待 Brief。**禁止**再叫 T93 |
-| **P1** · **T95** | 电脑壳升级 + 更新通道（9-02b） | **立即做** · #1711 已合 develop | 人话：发包装日 **2026-12-08** **不因 T105 移动**。12/4 数据面未绿则首包不带留下钮。周回看走更新。**develop** 已钉 **45.3.1**。剩更新桶、公证、壳专属回归。对客根地址已锁；测试前缀 `/prep/`。**手测不为升壳**。Brief [`task-briefs/task-t95-electron-shell-upgrade.md`](./task-briefs/task-t95-electron-shell-upgrade.md) |
+| **P1** · **T95** | 电脑壳升级 + 更新通道（9-02b） | **立即做** · #1711 已合 develop | 人话：发包装日 **2026-12-08** **不因 T105 移动**。12/4 未绿或冻结后转红则不带留下钮。周回看走更新。**12/7 前**真机升级演练。**develop** 已钉 **45.3.1**。剩更新桶、公证、壳专属回归。对客根地址已锁；测试前缀 `/prep/`。**手测不为升壳**。Brief [`task-briefs/task-t95-electron-shell-upgrade.md`](./task-briefs/task-t95-electron-shell-upgrade.md) |
 | **P2** · **T96** | 未覆盖语言求助兜底 | **已合 develop** · #1622 | 人话：危机层没覆盖的语言，固定句也带上求助入口。Brief [`task-briefs/task-t96-uncovered-language-help.md`](./task-briefs/task-t96-uncovered-language-help.md)。**不是** 10-05 |
 | **P2** · **T97** | 危机题卷标注资质 | **已完成** | 人话：不再自建标注。过关线改成免责声明，并引导用户找当地资源。2026-11-22 找人期限作废，不算拦路虎。识别率缺口仍在。倾诉仍默认关。Brief [`task-briefs/task-t97-crisis-annotator-qualification.md`](./task-briefs/task-t97-crisis-annotator-qualification.md)。「让外部顾问01 标危机题」仍不执行 |
 | **P1** · **T98** | 倾诉默认关闭入口盘点 | **已完成** | 人话：核对安装包里倾诉是不是真关着、关掉以后别的入口会不会走进死路。盘点 [`audit/findings/2026-11-08/confide-mount-off-entry-inventory.md`](./audit/findings/2026-11-08/confide-mount-off-entry-inventory.md)。盘点当时已购宽屏可开；**#1646 已合**后代码闸已关。Plan A 生产 Worker **已部署** `04a56014`（#1658）；再部署须重探。口令「按 T98 再盘一遍」代码面未变则勿再开 |
@@ -117,7 +117,7 @@
 | **P2** · **T102** | 菜单栏今日已坐 | **排队中** · Brief 已点头 | 人话：今日分钟 + 可关开关。禁止连续天数。T101 之后。**不进 12/8 首包**。见 [`task-t102-tray-today-sat.md`](./task-briefs/task-t102-tray-today-sat.md) |
 | **P2** · **T103** | 深链 Shortcuts 收口 | **排队中** · Brief 已点头 | 人话：用户食谱接专注模式/日历/Things。Health 默认关。仓库 docs 可并行；Help 首包后。**不进 12/8 首包**。见 [`task-t103-shortcuts-cookbook-close.md`](./task-briefs/task-t103-shortcuts-cookbook-close.md) |
 | **可选** · **T104** | 网页获客转安装包 | **排队中** · **先不动** | 人话：等 T95 安装包 URL。口令加 Download 不执行。**不进 12/8 首包**。见 [`task-t104-web-to-dmg-funnel.md`](./task-briefs/task-t104-web-to-dmg-funnel.md) |
-| **P1** · **T105** | Inner Mirror / 内在镜子 | **立即做** · Brief 未点头 | 人话：12/8 日期不动。12/4 未绿则首包不带留下钮。周回看走更新。与 T106 分键。口令在点头前不执行。见 [`INNER_MIRROR.md`](./INNER_MIRROR.md)。不改号 |
+| **P1** · **T105** | Inner Mirror / 内在镜子 | **立即做** · Brief 已点头 | 人话：12/8 日期不动。12/4 未绿或冻结后转红则不带留下钮。周回看走更新。与 T106 分键。口令 = 新 Chat 写刀 1。见 [`INNER_MIRROR.md`](./INNER_MIRROR.md)。不改号 |
 | **未排期** · **中档关怀** | 倾诉中档轻句 | **搁置** | 不进 T94 四刀。无新 T 号。CR-46 Brief 仍在，不开工 |
 
 ### T46 不执行的路线（登记，不开工）
@@ -259,7 +259,7 @@ PO 2026-10-24：纯 CSS / 整数倍 `contain` **不是**可靠高清方案（位
 | 「按 T102 Brief 开工菜单栏今日已坐」 | Brief **已点头**。新 Chat。**首包发出前不得合 develop** |
 | 「按 T103 Brief 开工 Shortcuts 食谱收口」 | Brief **已点头**。仓库 docs 可并行合 develop。Help/`src` **首包后**。勿重开深链 A/B/C |
 | 「按 T104 Brief 开工网页转安装包」或「现在宣传站加 Download」 | **不执行**（先不动，等安装包 URL 书面锁定） |
-| 「开工内在镜子」或「按 T105 开工周回看」 | Brief **未点头**前 **不执行**。点头后新 Chat。12/8 日期不动；12/4 未绿则不带留下钮 |
+| 「开工内在镜子」或「按 T105 开工周回看」 | Brief **已点头**。新 Chat 写刀 1，不在治理 PR 写 `src/`。12/8 日期不动；12/4 未绿或冻结后转红则不带留下钮 |
 
 ---
 
