@@ -77,4 +77,7 @@ test('HelpCenterUI ask submit opens the first article body, not speech-only', ()
   const submitFn = src.slice(submitAt, src.indexOf('  _operatingConfirmTranscript()', submitAt));
   assert.match(submitFn, /const firstId = result\.articleIds\[0\]/);
   assert.match(submitFn, /this\._openArticle\(firstId, \{ speak: true \}\)/);
+  assert.match(submitFn, /_fetchAskSemanticCrisisScore/);
+  assert.match(submitFn, /semanticCrisisScore/);
+  assert.match(src, /scoreSemanticCrisis\(\{ text \}\)/);
 });
