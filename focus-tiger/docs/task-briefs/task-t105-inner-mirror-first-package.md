@@ -49,9 +49,9 @@
 
 **匹配（写死）：**
 
-- 中文只用**两字以上**的词组，按连续子串。禁止单字「累」「赶」，禁止单独的「忍住」。
-- 英文按**词边界**（整词），不区分大小写。禁止用会嵌进更长词的碎片（`critic` 不得配 `critical`，`rush` 不得配 `brush`，`tired` 不得配 `retired`）。单独的 `behind` 不进表，只许 `falling behind` 与 `behind schedule`（`behind the scenes` 不得算）。
-- 下表误命中句子必须计 **0**（夹具测试，缺一条就红）：积累、累计、连累、赶上了、赶紧、忍住笑、critical thinking、brush、retired、behind the scenes。
+- 中文只用**两字以上**的词组，按连续子串。禁止单字「累」「赶」，禁止单独的「忍住」。禁止用会嵌进更长日常词的碎片（「累了」会误中「积累了」；「冲突」会误中「日程冲突」；「摩擦」会误中「摩擦力」；「被说」会误中「被说服」）。
+- 英文按**词边界**匹配**封闭词形清单**（不区分大小写）。**禁止前缀匹配。** 须把常用词形明列进表（如 `criticized` / `criticism` / `criticizing`，不得只写 `critic`；`avoiding` / `avoided` 须单列，不得指望 `avoid` 前缀）。禁止用会嵌进更长词或事务用语的碎片（`critic` 不得配 `critical`，`rush` 不得配 `brush`，`tired` 不得配 `retired`，单独 `conflict` 不得配 `scheduling conflict`，单独 `argument` 不得配 `an argument for`，单独 `dismissed` 不得配 `meeting dismissed`）。单独的 `behind` 不进表，只许 `falling behind` 与 `behind schedule`（`behind the scenes` 不得算）。
+- 下表误命中句子必须计 **0**（夹具测试，缺一条就红）：积累、累计、连累、积累了、连累了、赶上了、赶紧、忍住笑、摩擦力、日程冲突、被说服、critical thinking、brush、retired、behind the scenes、scheduling conflict、an argument for this approach、meeting dismissed。
 
 **危机检测先于主题统计。** 现网安全层命中的句子：不写入、不计数、不出现在主题句。测试：先喂危机句再跑计数，该句对任何键的计数必须仍是 0。
 
@@ -59,12 +59,12 @@
 
 | 规则键 | 中文名 | 中文词 | English name | English tokens |
 |---|---|---|---|---|
-| `criticized` | 被否定 / 被批评 | 批评、否定、指责、不够好、被说 | criticized | critic, blame, not good enough, dismissed |
-| `rush` | 赶 | 赶时间、赶不上、赶工、来不及 | rush | rush, hurry, deadline, falling behind, behind schedule |
-| `tired` | 累 | 好累、很累、太累、累了、累死、疲惫 | tired | tired, drained, exhausted |
-| `avoid` | 想躲开 | 躲开、逃避、不想面对、拖延 | avoid | avoid, put off, don't want to face |
+| `criticized` | 被否定 / 被批评 | 批评、否定、指责、不够好 | criticized | criticized, criticizing, criticism, blame, blamed, blaming, not good enough, felt dismissed, was dismissed, being dismissed |
+| `rush` | 赶 | 赶时间、赶不上、赶工、来不及 | rush | rush, rushed, rushing, hurry, hurried, hurrying, deadline, falling behind, behind schedule |
+| `tired` | 累 | 好累、很累、太累、累死、疲惫 | tired | tired, drained, exhausted |
+| `avoid` | 想躲开 | 躲开、逃避、不想面对、拖延 | avoid | avoid, avoiding, avoided, put off, putting off, don't want to face |
 | `unspoken` | 说不出口 | 说不出口、没说出口、忍住没说 | unspoken | couldn't say, held back, didn't speak |
-| `friction` | 起了摩擦 | 吵架、冲突、摩擦、争执 | friction | argument, conflict, friction |
+| `friction` | 起了摩擦 | 吵架、起冲突、发生冲突、争执、起摩擦、有摩擦 | friction | had a conflict, in conflict with, had an argument, got into an argument, friction |
 | `pause` | 想停一下 | 想停一下、想坐一会儿、先停 | pause | need a pause, want to sit for a bit, stop a moment |
 
 **「想停一下」抓什么：** 不是家具、也不是「去坐下吃饭」。它抓的是练习边上的那句冲动——想停下手头的事、坐一会儿。词表不用单字「坐下」，以免和日常动作撞上。
