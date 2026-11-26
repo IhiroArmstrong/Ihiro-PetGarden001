@@ -10,6 +10,7 @@
  */
 
 import { getLocalDateKey } from '../utils/localDate.js';
+import { TRAY_TODAY_SAT_CHANGED_EVENT } from './trayTodaySatPolicy.js';
 
 export const DAILY_COMPLETION_STORAGE_KEY = 'focus-tiger.daily-completions.v1';
 
@@ -168,6 +169,11 @@ export class DailyCompletionStore {
       this.storage.setItem(this.storageKey, JSON.stringify(this._memoryState));
     } catch {
       // 持久化失败时仍保留本次运行期状态
+    }
+    try {
+      globalThis.dispatchEvent?.(new CustomEvent(TRAY_TODAY_SAT_CHANGED_EVENT));
+    } catch {
+      // node tests / missing CustomEvent
     }
   }
 }

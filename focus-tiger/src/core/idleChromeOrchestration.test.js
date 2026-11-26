@@ -508,6 +508,25 @@ describe('listSecondaryChromeEntries', () => {
     );
   });
 
+  it('includes tray-today-sat on wide and narrow when available', () => {
+    assert.ok(
+      !listSecondaryChromeEntries('wide-more', allOn).some(
+        (e) => e.proxy === 'tray-today-sat'
+      )
+    );
+    const on = { ...allOn, trayTodaySatAvailable: true };
+    assert.ok(
+      listSecondaryChromeEntries('wide-more', on).some(
+        (e) => e.proxy === 'tray-today-sat'
+      )
+    );
+    assert.ok(
+      listSecondaryChromeEntries('narrow-drawer', on).some(
+        (e) => e.proxy === 'tray-today-sat'
+      )
+    );
+  });
+
   it('includes global-sit-hotkey on wide and narrow when available', () => {
     assert.ok(
       !listSecondaryChromeEntries('wide-more', allOn).some(
@@ -750,7 +769,8 @@ describe('listSecondaryChromeEntries', () => {
       mustardSeedSealUnlocked: true,
       systemTtsAvailable: true,
       confideUserVisible: true,
-      companionGeneration: true
+      companionGeneration: true,
+      trayTodaySatAvailable: true
     };
     for (const surface of /** @type {const} */ (['wide-more', 'narrow-drawer'])) {
       const entries = listSecondaryChromeEntries(surface, maxVis);
@@ -788,6 +808,20 @@ describe('dispatchSecondaryChromeProxy', () => {
     });
     assert.equal(result, 'invoked');
     assert.deepEqual(calls, ['clear', 'close', 'globalSitHotkey', 'sit-hotkey']);
+  });
+
+  it('maps tray-today-sat to onTrayTodaySat', () => {
+    const calls = [];
+    const result = dispatchSecondaryChromeProxy('tray-today-sat', {
+      handlers: {
+        onTrayTodaySat: () => calls.push('tray-today-sat')
+      },
+      close: () => calls.push('close'),
+      clearStage: () => calls.push('clear'),
+      addStage: (stage) => calls.push(stage)
+    });
+    assert.equal(result, 'invoked');
+    assert.deepEqual(calls, ['clear', 'close', 'trayTodaySat', 'tray-today-sat']);
   });
 
   it('maps honesty to onHonesty (not onFiveMoments)', () => {

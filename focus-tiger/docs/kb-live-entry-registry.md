@@ -24,7 +24,7 @@ This table answers: **which product surfaces are live in code right now**, which
 
 > **机器块 · 勿手改**。真源：`src/core/kbLiveEntryRegistry.js`。刷新：`npm run audit:kb-live-entries -- --write`。
 
-**Row count**: 58 (53 menu/ritual · 4 home-ball · 1 hud)
+**Row count**: 59 (54 menu/ritual · 4 home-ball · 1 hud)
 
 | id | surface | proxy | liveStatus | menuPath | labelKeys | catalogKbIds |
 |---|---|---|---|---|---|---|
@@ -56,6 +56,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-always-on-top` | menu | `always-on-top` | conditional | ⋯ → Preferences → Keep in front (Electron) | `ALWAYS_ON_TOP_MENU_LABEL` | `KB-FUNC-0045` |
 | `kb-live-window-layout` | menu | `window-layout` | conditional | ⋯ → Preferences → Window (Electron) | `WINDOW_LAYOUT_MENU_LABEL` | `KB-FUNC-0046` |
 | `kb-live-global-sit-hotkey` | menu | `global-sit-hotkey` | conditional | ⋯ → Preferences → Sit shortcut (Electron Mac) | `GLOBAL_SIT_HOTKEY_MENU_LABEL` | `KB-FUNC-0051` |
+| `kb-live-tray-today-sat` | menu | `tray-today-sat` | conditional | ⋯ → Preferences → Menu bar today sat (Electron) | `TRAY_TODAY_SAT_MENU_LABEL` |  |
 | `kb-live-input-rhythm` | menu | `input-rhythm` | conditional | ⋯ → Preferences → Focus rhythm (Electron) | `INPUT_RHYTHM_MENU_LABEL` | `KB-FUNC-0047` |
 | `kb-live-mindflow-nebula` | menu | `mindflow-nebula` | live | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` | — |
 | `kb-live-presence-field` | menu | `presence-field` | live | ⋯ → Preferences → Presence Field | `PRESENCE_FIELD_MENU_LABEL` | `KB-FUNC-0041` |

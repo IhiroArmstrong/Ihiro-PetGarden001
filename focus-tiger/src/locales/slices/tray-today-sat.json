@@ -1,0 +1,32 @@
+{
+  "en": {
+    "TRAY_TODAY_SAT_MENU_LABEL": "Menu bar today sat",
+    "TRAY_TODAY_SAT_PANEL_TITLE": "Menu bar today sat",
+    "TRAY_TODAY_SAT_TOGGLE_LABEL": "Show today’s sit minutes in the menu bar",
+    "TRAY_TODAY_SAT_TOGGLE_HINT": "When on, the menu bar can show how many minutes you sat today. Off keeps only the product name. This is not a streak.",
+    "TRAY_TODAY_SAT_STATUS_ON": "On",
+    "TRAY_TODAY_SAT_STATUS_OFF": "Off",
+    "TRAY_TODAY_SAT_SAVE_FAILED": "Could not save. Try again.",
+    "TRAY_TODAY_SAT_CLOSE": "Close"
+  },
+  "zh": {
+    "TRAY_TODAY_SAT_MENU_LABEL": "菜单栏今日已坐",
+    "TRAY_TODAY_SAT_PANEL_TITLE": "菜单栏今日已坐",
+    "TRAY_TODAY_SAT_TOGGLE_LABEL": "在菜单栏显示今天已坐的分钟",
+    "TRAY_TODAY_SAT_TOGGLE_HINT": "打开后，菜单栏可以看见今天坐了几分钟。关掉就只留产品名。不是连续打卡。",
+    "TRAY_TODAY_SAT_STATUS_ON": "开",
+    "TRAY_TODAY_SAT_STATUS_OFF": "关",
+    "TRAY_TODAY_SAT_SAVE_FAILED": "没能记住。请再试一次。",
+    "TRAY_TODAY_SAT_CLOSE": "关闭"
+  },
+  "ja": {
+    "TRAY_TODAY_SAT_MENU_LABEL": "メニューバーの今日の静坐",
+    "TRAY_TODAY_SAT_PANEL_TITLE": "メニューバーの今日の静坐",
+    "TRAY_TODAY_SAT_TOGGLE_LABEL": "メニューバーに今日の静坐分数を出す",
+    "TRAY_TODAY_SAT_TOGGLE_HINT": "オンにすると、メニューバーに今日坐った分数が出ます。オフにすると製品名だけ残ります。連続記録ではありません。",
+    "TRAY_TODAY_SAT_STATUS_ON": "オン",
+    "TRAY_TODAY_SAT_STATUS_OFF": "オフ",
+    "TRAY_TODAY_SAT_SAVE_FAILED": "保存できませんでした。もう一度試してください。",
+    "TRAY_TODAY_SAT_CLOSE": "閉じる"
+  }
+}

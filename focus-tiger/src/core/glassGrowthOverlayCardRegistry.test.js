@@ -29,6 +29,7 @@ describe('glassGrowthOverlayCardRegistry (A3)', () => {
         proxy === 'always-on-top' ||
         proxy === 'window-layout' ||
         proxy === 'global-sit-hotkey' ||
+        proxy === 'tray-today-sat' ||
         proxy === 'input-rhythm' ||
         proxy === 'mindflow-nebula' ||
         proxy === 'presence-field' ||

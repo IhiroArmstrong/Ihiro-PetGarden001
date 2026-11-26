@@ -38,7 +38,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-11-26 · 58 live rows · 58 approved catalog ids
+**Snapshot**: 2026-11-26 · 59 live rows · 58 approved catalog ids
 
 ### Summary counts
 
@@ -47,7 +47,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | batch-2 live-surface candidates | 16 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
-| conditional/gated-off without approved KB | 2 | PO scope before drafting |
+| conditional/gated-off without approved KB | 3 | PO scope before drafting |
 | cross-cutting approved (no live row) | 17 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
@@ -86,6 +86,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | liveId | liveStatus | menuPath | note |
 |---|---|---|---|
 | `kb-live-language` | conditional | ⋯ → Preferences → Language | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-tray-today-sat` | conditional | ⋯ → Preferences → Menu bar today sat (Electron) | conditional / optional surface — draft after PO confirms scope |
 | `kb-live-account` | conditional | ⋯ → Preferences → Save or restore with email | conditional / optional surface — draft after PO confirms scope |
 
 ### Cross-cutting approved catalog rows (no live row required)

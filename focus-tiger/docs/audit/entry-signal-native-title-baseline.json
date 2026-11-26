@@ -2,7 +2,7 @@
   "updated": "2026-11-26",
   "note": "Purpose native title assignments grandfathered until L5 migration.",
   "titleViolations": [
-    "src/core/idleChromeOrchestration.js:387:btn.title = translate('ritual.menu_locked');",
+    "src/core/idleChromeOrchestration.js:393:btn.title = translate('ritual.menu_locked');",
     "src/effects/presence-field/presenceFieldSession.js:242:rim.title = t('PRESENCE_FIELD_HOVER');",
     "src/main.js:7218:clearHintsBtn.title =",
     "src/main.js:7245:funnelBtn.title =",

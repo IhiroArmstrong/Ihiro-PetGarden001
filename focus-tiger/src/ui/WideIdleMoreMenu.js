@@ -34,6 +34,13 @@ import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { canUseGlobalSitHotkey } from '../core/globalSitHotkeyBridge.js';
 import { openGlobalSitHotkeyPreference } from './GlobalSitHotkeyPreferenceUI.js';
+import {
+  canUseTrayTodaySat,
+  installTrayTodaySatSync,
+  readTrayTodaySatSnapshot,
+  writeTrayTodaySatPreference
+} from '../core/trayTodaySatBridge.js';
+import { openTrayTodaySatPreference } from './TrayTodaySatPreferenceUI.js';
 import { isCompanionEntitled } from '../core/companionEntitlement.js';
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
@@ -169,6 +176,7 @@ export class WideIdleMoreMenu {
    * }} [options]
    */
   constructor(options = {}) {
+    installTrayTodaySatSync();
     this.handlers = options.handlers || {};
     this._idle = true;
     this._suppressed = false;
@@ -1207,6 +1215,7 @@ export class WideIdleMoreMenu {
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
       globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
+      trayTodaySatAvailable: canUseTrayTodaySat(),
       inputRhythmAvailable: canUseInputRhythm()
     });
     const storage =
@@ -1304,7 +1313,8 @@ export class WideIdleMoreMenu {
       paintSecondaryChromeMenuRow(btn, item, {
         t,
         storage,
-        alwaysOnTopOn: this._alwaysOnTopOn
+        alwaysOnTopOn: this._alwaysOnTopOn,
+        trayTodaySatOn: this._trayTodaySatOn
       });
       if (item.testId) btn.dataset.testid = item.testId;
       if (item.emphasis === 'beige-cta') {
@@ -1345,10 +1355,15 @@ export class WideIdleMoreMenu {
    */
   async _hydratePrefToggles() {
     this._alwaysOnTopOn = await readAlwaysOnTopEnabled();
+    this._trayTodaySatOn = readTrayTodaySatSnapshot().enabled;
     const sw = this.listEl?.querySelector(
       '[data-proxy="always-on-top"] [data-pref-switch]'
     );
     if (sw) sw.dataset.on = this._alwaysOnTopOn ? '1' : '0';
+    const sat = this.listEl?.querySelector(
+      '[data-proxy="tray-today-sat"] [data-pref-switch]'
+    );
+    if (sat) sat.dataset.on = this._trayTodaySatOn ? '1' : '0';
   }
 
   /**
@@ -1357,8 +1372,16 @@ export class WideIdleMoreMenu {
    * @returns {Promise<void>}
    */
   async _onPrefToggle(key, item) {
-    if (key !== 'always-on-top') return;
     const sw = item.querySelector('[data-pref-switch]');
+    if (key === 'tray-today-sat') {
+      const next = !(this._trayTodaySatOn === true);
+      if (sw) sw.dataset.on = next ? '1' : '0';
+      const result = await writeTrayTodaySatPreference(next);
+      this._trayTodaySatOn = result.enabled;
+      if (sw) sw.dataset.on = result.enabled ? '1' : '0';
+      return;
+    }
+    if (key !== 'always-on-top') return;
     const next = !(this._alwaysOnTopOn === true);
     if (sw) sw.dataset.on = next ? '1' : '0';
     const result = await writeAlwaysOnTopEnabled(next);
@@ -1377,7 +1400,8 @@ export class WideIdleMoreMenu {
       {
         handlers: {
           ...this.handlers,
-          onGlobalSitHotkey: () => openGlobalSitHotkeyPreference()
+          onGlobalSitHotkey: () => openGlobalSitHotkeyPreference(),
+          onTrayTodaySat: () => openTrayTodaySatPreference()
         },
         closeFirst: false,
         runPrelude: true,
