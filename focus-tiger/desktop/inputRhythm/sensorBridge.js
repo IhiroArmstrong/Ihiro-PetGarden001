@@ -3,7 +3,6 @@
  * Copyright © 2026 Twinsology & Ihiro Armstrong. All rights reserved.
  */
 
-import { shell } from 'electron';
 import {
   InputRhythmWindow,
   decideRhythmTiming,
@@ -24,7 +23,8 @@ const INPUT_MONITORING_SETTINGS =
 
 export function createInputRhythmSensorBridge({
   userDataDir,
-  now = () => Date.now()
+  now = () => Date.now(),
+  spawnHelper = spawnInputRhythmHelper
 }) {
   const window = new InputRhythmWindow({ now });
   let child = null;
@@ -57,7 +57,7 @@ export function createInputRhythmSensorBridge({
   function startHelper() {
     stopHelper();
     if (process.platform !== 'darwin') return false;
-    child = spawnInputRhythmHelper({
+    child = spawnHelper({
       onSample: (sample) => {
         helperAlive = true;
         authorized = true;
@@ -69,8 +69,8 @@ export function createInputRhythmSensorBridge({
       onDenied: (error) => {
         lastDenied = error;
         authorized = false;
-        helperAlive = Boolean(child);
-        saveInputRhythmPrefs(userDataDir, { enabled: false });
+        helperAlive = false;
+        // Keep user pref on (SB-21): denied monitoring ≠ user turning the switch off.
         stopHelper();
       },
       onExit: () => {
@@ -141,7 +141,8 @@ export function createInputRhythmSensorBridge({
       resetInputRhythmForDeleteAll(userDataDir);
       return snapshot();
     },
-    openInputMonitoringSettings() {
+    async openInputMonitoringSettings() {
+      const { shell } = await import('electron');
       return shell.openExternal(INPUT_MONITORING_SETTINGS);
     },
     dispose: stopHelper
