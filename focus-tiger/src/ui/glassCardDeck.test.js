@@ -12,6 +12,8 @@ import {
   glassCardInlineZIndex,
   GLASS_CARD_DECK_STYLE,
   GLASS_CARD_DRAG_TITLE,
+  GLASS_CARD_EXTRA_ELEMENT_IDS,
+  GLASS_CARD_IDLE_MENU_IDS,
   GLASS_CARD_INTERACTIVE,
   GLASS_CARD_KEEP_STYLESHEET_Z,
   GLASS_CARD_STAGE_Z,
@@ -123,6 +125,14 @@ test('preference panels keep z35 in the deck and title chrome can drag', () => {
     glassCardAllowsDrag(fakePointerTarget({ dragChrome: true }), card),
     true
   );
+});
+
+test('wide ⋯ navigation sheets register in the drag deck', () => {
+  assert.ok(GLASS_CARD_EXTRA_ELEMENT_IDS.includes('ft-wide-more-menu'));
+  assert.ok(GLASS_CARD_EXTRA_ELEMENT_IDS.includes('ft-wide-more-radial'));
+  assert.equal(GLASS_CARD_IDLE_MENU_IDS.has('ft-wide-more-menu'), true);
+  const menuChrome = fakePointerTarget({ dragChrome: true });
+  assert.equal(glassCardAllowsDrag(menuChrome, { id: 'ft-wide-more-menu' }), true);
 });
 
 test('buttons stay pointer-hit and Support still does not drag', () => {
