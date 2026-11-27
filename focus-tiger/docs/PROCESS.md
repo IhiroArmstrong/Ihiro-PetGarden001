@@ -75,6 +75,7 @@
 
 - **T93 / T94 / T95 治理登记（2026-11-08 · 纯文档）**：T93 = 邮箱登录（**立即做** · 槽位 P1 · Brief #1605 · §4 已点头）。T94 = 识别率四刀说明（说明已锁 · P2 · [`task-v2-recognition-four-knives.md`](./task-briefs/task-v2-recognition-four-knives.md)；第 1 刀 #1612 已合；**禁止**再叫 T93）。T95 = 电脑壳升级 + 更新通道（排队 · P1 · 对客安装包发出前完成；两周内开工准备；升级后至少一周回归；现在不为手测升级）。口令「开工识别率」在第 2–4 刀 Brief 点头前不写 `src/`。
 
+- **T93 D6 Sign in 可发现性（2026-11-27 · 纯文档）**：PO 点头改用 Sign in 字样、入口移到 ⋯ 列表顶行。规格 [`task-briefs/task-t93-sign-in-discoverability.md`](./task-briefs/task-t93-sign-in-discoverability.md)。无运行时。挂 Epic [#631](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/631)。
 - **邮箱登录 P0（2026-11-13 · T93 D5 说明书）**：D1–D4 已合；生产 Worker 已部署。**2026-11-12 首包关闸发**：不对客打开邮箱找回；Web 菜单仍灰行。开闸后 Preferences 真入口 `idle-account-email-restore`。C+D 手测不挡邀请包。Brief [`task-briefs/task-email-sign-in-p0.md`](./task-briefs/task-email-sign-in-p0.md)。挂 Epic [#631](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/issues/631)。
 
 - **深链 + Shortcuts 食谱 / .ics 导出 Brief（2026-11-07 · 纯文档 · PO 已点头）**：[`task-briefs/task-deep-link-shortcuts-cookbook.md`](./task-briefs/task-deep-link-shortcuts-cookbook.md) · [`task-briefs/task-ics-reminder-export.md`](./task-briefs/task-ics-reminder-export.md)。PO 已拍：先开这两份 Brief；Health 只走 Shortcuts 回写、不读、不做 HealthKit。**iOS 原生壳**：本 Brief **不实现**；路线图口径见 **2026-11-24** 拍板（Mac 验证后复盘节点纳入 Capacitor iOS，非永久搁置）。复用 Electron 已有 `focus-tiger://app`，不新开 scheme。无运行时。点头 ≠ 开工代码。Epic 建议挂栖居壳层 #793（协议耦合 #5），**不**自行新建「上下游整合」。
