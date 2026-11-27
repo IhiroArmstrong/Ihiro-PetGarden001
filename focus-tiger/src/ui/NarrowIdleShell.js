@@ -29,6 +29,7 @@ import { attachSecondaryMenuFavoriteHeart } from './secondaryMenuFavoriteHeart.j
 import { injectMenuFavoritesSection } from '../core/menuFavoritesStore.js';
 import {
   adoptPreferencePanelIntoSheet,
+  applyPreferenceSheetBackButton,
   preferenceSheetEmbedCss,
   queryPreferenceSheetPanel,
   releasePreferencePanelFromSheet,
@@ -410,7 +411,7 @@ export class NarrowIdleShell {
     if (this.prefPageSlot) this.prefPageSlot.hidden = false;
     if (this.prefBack) {
       this.prefBack.hidden = false;
-      this.prefBack.textContent = t('PREF_CENTER_BACK');
+      applyPreferenceSheetBackButton(this.prefBack, t('PREF_CENTER_BACK'));
     }
     this._popPrefEscape?.();
     this._popPrefEscape = pushOverlayEscapeLayer({

@@ -79,6 +79,20 @@ export function releasePreferencePanelFromSheet(panel) {
  * @param {string} proxy
  * @returns {void}
  */
+/** Visible back control on H8 preference subpages (label stays in i18n for a11y). */
+export const PREF_SHEET_BACK_GLYPH = '←';
+
+/**
+ * @param {HTMLButtonElement | null | undefined} btn
+ * @param {string} label Localized phrase for screen readers (e.g. "Back to Preferences").
+ * @returns {void}
+ */
+export function applyPreferenceSheetBackButton(btn, label) {
+  if (!btn) return;
+  btn.textContent = PREF_SHEET_BACK_GLYPH;
+  btn.setAttribute('aria-label', label);
+}
+
 export function requestClosePreferencePanel(proxy) {
   const panel = queryPreferenceSheetPanel(proxy);
   if (!panel) return;
@@ -97,22 +111,29 @@ export function preferenceSheetEmbedCss() {
   return `
     .ft-pref-sheet-back {
       display: none;
+      flex: 0 0 32px;
+      width: 32px;
+      height: 32px;
       margin: 0;
-      padding: 6px 4px;
+      padding: 0;
       border: 0;
+      border-radius: 999px;
       background: transparent;
       color: rgba(74, 58, 40, 0.72);
-      font-size: 0.92rem;
+      font-size: 1.35rem;
       font-weight: 600;
+      line-height: 1;
       cursor: pointer;
-      text-align: left;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
     }
     .ft-pref-sheet-back:hover,
     .ft-pref-sheet-back:focus-visible {
       color: rgba(74, 58, 40, 0.95);
     }
     body.ft-pref-sheet-embed .ft-pref-sheet-back {
-      display: block;
+      display: inline-flex;
     }
     .ft-pref-sheet-page {
       display: none;
