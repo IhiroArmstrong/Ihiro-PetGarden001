@@ -50,6 +50,11 @@ export const PRIVACY_SHEET_SECTIONS = Object.freeze([
     bodyKey: 'PRIVACY_SHEET_DEFAULT_STORAGE'
   },
   {
+    id: 'growth-journal',
+    titleKey: 'PRIVACY_SHEET_SEC_JOURNAL_TITLE',
+    bodyKey: 'PRIVACY_SHEET_GROWTH_JOURNAL'
+  },
+  {
     id: 'export',
     titleKey: 'PRIVACY_SHEET_SEC_3_TITLE',
     bodyKey: 'PRIVACY_SHEET_EXPORT_IMPORT'

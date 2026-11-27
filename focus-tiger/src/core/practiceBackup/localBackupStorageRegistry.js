@@ -35,6 +35,11 @@ export const PRACTICE_BACKUP_V8_ADDED_KEYS = Object.freeze([
   'focus-tiger.menu-favorites.v1'
 ]);
 
+/** Keys added in schema v9 (2026-11-26 · T108 growth-state authorized goals). */
+export const PRACTICE_BACKUP_V9_ADDED_KEYS = Object.freeze([
+  'focus-tiger.growth-state.v1'
+]);
+
 /** Keys added in schema v5 (2026-09-16). */
 export const PRACTICE_BACKUP_V5_ADDED_KEYS = Object.freeze([
   'focus-tiger.focus-duration-pref.v1',
@@ -76,7 +81,8 @@ export const PRACTICE_BACKUP_EXPORT_KEYS = Object.freeze([
   ...PRACTICE_BACKUP_V5_ADDED_KEYS,
   ...PRACTICE_BACKUP_V6_ADDED_KEYS,
   ...PRACTICE_BACKUP_V7_ADDED_KEYS,
-  ...PRACTICE_BACKUP_V8_ADDED_KEYS
+  ...PRACTICE_BACKUP_V8_ADDED_KEYS,
+  ...PRACTICE_BACKUP_V9_ADDED_KEYS
 ]);
 
 /**
@@ -159,6 +165,16 @@ export const LOCAL_BACKUP_NAMED_EXCLUDE_ROWS = Object.freeze([
     key: 'focus-tiger.confide-consent.v1',
     tier: 'exclude-product',
     note: 'Chat with Yin first-use consent stays on this device; do not copy via practice backup'
+  },
+  {
+    key: 'focus-tiger.growth-journal.v1',
+    tier: 'exclude-product',
+    note: 'T106 Thought Drop originals stay on this device; never practice-backup export or cloud snapshot'
+  },
+  {
+    key: 'focus-tiger.growth-journal-consent.v1',
+    tier: 'exclude-product',
+    note: 'T106 journal Keep/Not-now stays on this device; do not copy via practice backup'
   },
   {
     key: 'focus-tiger.t54-research-last-post.v1',

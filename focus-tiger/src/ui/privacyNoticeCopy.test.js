@@ -57,7 +57,7 @@ describe('privacyNoticeCopy', () => {
     for (const file of ['en.json', 'ja.json']) {
       const map = loadLocale(file);
       assert.match(map[PRIVACY_SHEET_FULL_LEAD_KEY], /full privacy|完全なプライバシー/i);
-      assert.equal(PRIVACY_SHEET_SECTIONS.length, 6);
+      assert.equal(PRIVACY_SHEET_SECTIONS.length, 7);
       for (const section of PRIVACY_SHEET_SECTIONS) {
         assert.equal(typeof map[section.titleKey], 'string', `${file} ${section.titleKey}`);
         assert.equal(typeof map[section.bodyKey], 'string', `${file} ${section.bodyKey}`);
@@ -99,6 +99,20 @@ describe('privacyNoticeCopy', () => {
           /device|端末/i.test(map.PRIVACY_SHEET_INTRO)
       );
     }
+  });
+
+  it('en + zh + ja growth journal privacy names unencrypted on-device delete', () => {
+    const en = loadLocale('en.json');
+    const zh = loadLocale('zh.json');
+    const ja = loadLocale('ja.json');
+    assert.match(en.PRIVACY_SHEET_GROWTH_JOURNAL, /unencrypted/i);
+    assert.match(en.PRIVACY_SHEET_GROWTH_JOURNAL, /this device/i);
+    assert.match(en.PRIVACY_SHEET_GROWTH_JOURNAL, /delete/i);
+    assert.match(zh.PRIVACY_SHEET_GROWTH_JOURNAL, /未加密/);
+    assert.match(zh.PRIVACY_SHEET_GROWTH_JOURNAL, /本机/);
+    assert.match(zh.PRIVACY_SHEET_GROWTH_JOURNAL, /删除/);
+    assert.match(ja.PRIVACY_SHEET_GROWTH_JOURNAL, /暗号化/);
+    assert.match(ja.PRIVACY_SHEET_GROWTH_JOURNAL, /端末/);
   });
 
   it('en + ja Thought Drop privacy section is present', () => {

@@ -35,6 +35,15 @@ import {
   suspendYinAdaptationRule
 } from '../core/yinAdaptationStore.js';
 import {
+  addAuthorizedGrowthGoal,
+  clearGrowthStateDerivedOnAdaptationReset,
+  completeAuthorizedGrowthGoal,
+  grantGrowthGoalsConsent,
+  hasGrowthGoalsConsent,
+  readGrowthStatePersisted,
+  removeAuthorizedGrowthGoal
+} from '../core/growthState/growthStateStore.js';
+import {
   rejectStableFocusNotQuite,
   STABLE_FOCUS_NOTEBOOK_LINE_ID
 } from '../core/stablePrefsStore.js';
@@ -149,6 +158,10 @@ export class GrowthJourneyDetailUI {
     this.rhythmEl.className = 'growth-journey-detail__rhythm';
     this.rhythmEl.dataset.testid = 'growth-journey-detail-rhythm';
 
+    this.goalsEl = document.createElement('section');
+    this.goalsEl.className = 'growth-journey-detail__goals';
+    this.goalsEl.dataset.testid = 'growth-state-goals';
+
     this.notebookEl = document.createElement('section');
     this.notebookEl.className = 'growth-journey-detail__notebook';
     this.notebookEl.dataset.testid = 'yin-adaptation-notebook';
@@ -180,6 +193,7 @@ export class GrowthJourneyDetailUI {
       this.lotusRow,
       this.lifetimeEl,
       this.rhythmEl,
+      this.goalsEl,
       this.notebookEl,
       this.paperEl,
       this.closeBtn
@@ -309,8 +323,124 @@ export class GrowthJourneyDetailUI {
       this.rhythmEl.appendChild(item);
     }
 
+    this._refreshGoals();
     this._refreshNotebook();
     this._refreshPaper(practiceDates);
+  }
+
+  _refreshGoals() {
+    this.goalsEl.replaceChildren();
+    const heading = document.createElement('p');
+    heading.className = 'growth-journey-detail__goals-title';
+    heading.textContent = t('GROWTH_STATE_GOALS_TITLE');
+    this.goalsEl.appendChild(heading);
+
+    const persisted = readGrowthStatePersisted();
+    const list = document.createElement('ul');
+    list.className = 'growth-journey-detail__goals-list';
+    list.dataset.testid = 'growth-state-goals-list';
+
+    if (!persisted.goals.length) {
+      const empty = document.createElement('p');
+      empty.className = 'growth-journey-detail__goals-empty';
+      empty.dataset.testid = 'growth-state-goals-empty';
+      empty.textContent = t('GROWTH_STATE_GOALS_EMPTY');
+      this.goalsEl.appendChild(empty);
+    } else {
+      for (const goal of persisted.goals) {
+        const item = document.createElement('li');
+        item.className = 'growth-journey-detail__goals-item';
+        item.dataset.goalId = goal.id;
+        if (goal.status === 'done') item.dataset.status = 'done';
+
+        const text = document.createElement('span');
+        text.className = 'growth-journey-detail__goals-text';
+        text.textContent = goal.text;
+        item.appendChild(text);
+
+        const actions = document.createElement('div');
+        actions.className = 'growth-journey-detail__goals-actions';
+
+        if (goal.status === 'active') {
+          const doneBtn = document.createElement('button');
+          doneBtn.type = 'button';
+          doneBtn.className = 'growth-journey-detail__goals-btn';
+          doneBtn.textContent = t('GROWTH_STATE_GOALS_DONE');
+          doneBtn.dataset.testid = `growth-state-goal-done-${goal.id}`;
+          doneBtn.addEventListener('click', () => {
+            completeAuthorizedGrowthGoal(goal.id);
+            this._refresh();
+          });
+          actions.appendChild(doneBtn);
+        } else {
+          const doneTag = document.createElement('span');
+          doneTag.className = 'growth-journey-detail__goals-done-tag';
+          doneTag.textContent = t('GROWTH_STATE_GOALS_STATUS_DONE');
+          actions.appendChild(doneTag);
+        }
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'growth-journey-detail__goals-btn';
+        removeBtn.textContent = t('GROWTH_STATE_GOALS_REMOVE');
+        removeBtn.dataset.testid = `growth-state-goal-remove-${goal.id}`;
+        removeBtn.addEventListener('click', () => {
+          removeAuthorizedGrowthGoal(goal.id);
+          this._refresh();
+        });
+        actions.appendChild(removeBtn);
+
+        item.append(actions);
+        list.appendChild(item);
+      }
+      this.goalsEl.appendChild(list);
+    }
+
+    const form = document.createElement('div');
+    form.className = 'growth-journey-detail__goals-form';
+    form.dataset.testid = 'growth-state-goals-form';
+
+    if (!hasGrowthGoalsConsent()) {
+      const consent = document.createElement('label');
+      consent.className = 'growth-journey-detail__goals-consent';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.dataset.testid = 'growth-state-goals-consent';
+      const consentText = document.createElement('span');
+      consentText.textContent = t('GROWTH_STATE_GOALS_CONSENT');
+      consent.append(checkbox, consentText);
+      form.appendChild(consent);
+      this._goalsConsentBox = checkbox;
+    } else {
+      this._goalsConsentBox = null;
+    }
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'growth-journey-detail__goals-input';
+    input.dataset.testid = 'growth-state-goals-input';
+    input.placeholder = t('GROWTH_STATE_GOALS_INPUT_PLACEHOLDER');
+    input.maxLength = 120;
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'growth-journey-detail__goals-btn growth-journey-detail__goals-add';
+    addBtn.dataset.testid = 'growth-state-goals-add';
+    addBtn.textContent = t('GROWTH_STATE_GOALS_ADD');
+    addBtn.addEventListener('click', () => {
+      if (!hasGrowthGoalsConsent()) {
+        if (!this._goalsConsentBox?.checked) return;
+        grantGrowthGoalsConsent();
+      }
+      const result = addAuthorizedGrowthGoal(input.value);
+      if (!result.ok) return;
+      input.value = '';
+      this._refresh();
+    });
+
+    form.append(input, addBtn);
+    this.goalsEl.appendChild(form);
+    this.goalsEl.hidden = false;
   }
 
   _refreshNotebook() {
@@ -416,6 +546,7 @@ export class GrowthJourneyDetailUI {
         correct.dataset.testid = `yin-adaptation-correct-${line.id}`;
         correct.addEventListener('click', () => {
           suspendYinAdaptationRule(line.id);
+          clearGrowthStateDerivedOnAdaptationReset();
           this._refresh();
         });
         const forget = document.createElement('button');
@@ -425,6 +556,7 @@ export class GrowthJourneyDetailUI {
         forget.dataset.testid = `yin-adaptation-forget-${line.id}`;
         forget.addEventListener('click', () => {
           hideYinAdaptationNotebookLine(line.id);
+          clearGrowthStateDerivedOnAdaptationReset();
           this._refresh();
         });
         actions.append(correct, forget);
@@ -726,6 +858,86 @@ export class GrowthJourneyDetailUI {
         font-size: 11px;
         line-height: 1.2;
         color: rgba(44, 31, 20, 0.62);
+      }
+      .growth-journey-detail__goals {
+        margin: 0 0 12px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(44, 31, 20, 0.12);
+      }
+      .growth-journey-detail__goals-title {
+        margin: 0 0 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .growth-journey-detail__goals-empty {
+        margin: 0 0 10px;
+        font-size: 0.84rem;
+        line-height: 1.4;
+        opacity: 0.82;
+      }
+      .growth-journey-detail__goals-list {
+        margin: 0 0 10px;
+        padding: 0;
+        list-style: none;
+      }
+      .growth-journey-detail__goals-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin: 0 0 8px;
+        font-size: 0.86rem;
+        line-height: 1.35;
+      }
+      .growth-journey-detail__goals-item[data-status="done"] .growth-journey-detail__goals-text {
+        opacity: 0.68;
+        text-decoration: line-through;
+      }
+      .growth-journey-detail__goals-actions {
+        display: flex;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        gap: 4px 6px;
+        align-items: center;
+      }
+      .growth-journey-detail__goals-done-tag {
+        font-size: 0.72rem;
+        opacity: 0.7;
+      }
+      .growth-journey-detail__goals-form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .growth-journey-detail__goals-consent {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 0.78rem;
+        line-height: 1.35;
+        opacity: 0.88;
+        cursor: pointer;
+      }
+      .growth-journey-detail__goals-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(44, 31, 20, 0.18);
+        font: inherit;
+        background: rgba(255, 255, 255, 0.35);
+      }
+      .growth-journey-detail__goals-btn {
+        font: inherit;
+        font-size: 0.78rem;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(44, 31, 20, 0.2);
+        background: rgba(255, 255, 255, 0.45);
+        cursor: pointer;
+      }
+      .growth-journey-detail__goals-add {
+        align-self: flex-start;
       }
       .growth-journey-detail__paper {
         margin: 4px 0 12px;

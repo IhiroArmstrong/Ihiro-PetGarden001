@@ -33,6 +33,7 @@ import {
   LOTUS_POND_STORAGE_KEY
 } from './LotusPondStore.js';
 import { GROWTH_JOURNEY_STAGE_FLOOR_KEY } from './growthJourneyStage.js';
+import { GROWTH_STATE_STORAGE_KEY } from './growthState/growthStateStore.js';
 import { MILESTONE_GLOW_STORAGE_KEY } from './MilestoneGlowStore.js';
 import { RITUAL_COMPLETION_STORAGE_KEY } from './RitualCompletionStore.js';
 import { COMPANION_MODE_STORAGE_KEY } from './FocusSession.js';
@@ -131,6 +132,10 @@ import {
 } from './focusCircleIdentity.js';
 import { CONFIDE_OBSERVATION_STORAGE_KEY } from './confide/confideObservationTelemetry.js';
 import { CONFIDE_CONSENT_STORAGE_KEY } from './confide/confideConsent.js';
+import {
+  GROWTH_JOURNAL_CONSENT_KEY,
+  GROWTH_JOURNAL_STORAGE_KEY
+} from './growthJournal/growthJournalStore.js';
 import { CO_PRACTICE_RESEARCH_WEEK_LEDGER_KEY } from './coPracticeResearchWeekLedger.js';
 import {
   CO_PRACTICE_RESEARCH_CONSENT_STORAGE_KEY,
@@ -213,6 +218,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   PRACTICE_DAYS_STORAGE_KEY,
   LOTUS_POND_STORAGE_KEY,
   GROWTH_JOURNEY_STAGE_FLOOR_KEY,
+  GROWTH_STATE_STORAGE_KEY,
   MILESTONE_GLOW_STORAGE_KEY,
   RITUAL_COMPLETION_STORAGE_KEY,
   HONESTY_BRIDGE_STORAGE_KEY,
@@ -301,6 +307,8 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   FOCUS_DURATION_MANUAL_ANCHOR_STORAGE_KEY,
   CONFIDE_OBSERVATION_STORAGE_KEY,
   CONFIDE_CONSENT_STORAGE_KEY,
+  GROWTH_JOURNAL_STORAGE_KEY,
+  GROWTH_JOURNAL_CONSENT_KEY,
   CO_PRACTICE_RESEARCH_WEEK_LEDGER_KEY,
   CO_PRACTICE_RESEARCH_CONSENT_STORAGE_KEY,
   CO_PRACTICE_RESEARCH_LAST_POST_KEY,
