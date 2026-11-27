@@ -42,15 +42,20 @@ test('failed witness submit surfaces visible picker error instead of silent retu
   assert.match(src, /_failPickerSubmit/);
 });
 
-test('leave picker expands upward inside bottom leave strip (non-modal)', () => {
-  assert.match(src, /is-picker-open/);
+test('leave phrase picker mounts Tier27 respond shell (not nested in leave strip)', () => {
+  assert.match(src, /_mountRespondPickerShell/);
   assert.match(src, /focus-circle-witness-respond-shell/);
   assert.match(src, /bottom: calc\(\$\{homeClearanceBottomCss\(\)\}/);
+  assert.match(src, /_leaveRoot\.hidden = true/);
   assert.doesNotMatch(src, /top: 50%/);
   assert.doesNotMatch(src, /is-hidden-for-picker/);
 });
 
-test('leave strip hides while picker is open and restores on cancel', () => {
+test('local cloud skip dismisses leave picker after phrase click', () => {
+  assert.match(src, /shouldDismissWitnessLeavePickerOnSkip/);
+});
+
+test('leave strip restores visibility on picker cancel', () => {
   assert.match(src, /restoreLeave: mode === 'leave'/);
-  assert.match(src, /focus-circle-witness-leave__actions\[hidden\]/);
+  assert.match(src, /_leaveRoot\.hidden = false/);
 });

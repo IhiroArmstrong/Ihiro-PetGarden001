@@ -15,6 +15,7 @@ import {
   hasWitnessPromptedThisSession,
   markWitnessPromptedThisSession,
   postFocusCircleWitness,
+  shouldDismissWitnessLeavePickerOnSkip,
   witnessSubmitErrorLocaleKey
 } from '../core/focusCircleWitness.js';
 import {
@@ -271,8 +272,12 @@ export class FocusCircleWitnessLeaveUI {
     if (mode === 'leave' && !this._leaveVisible) return;
     this._removePickerDom();
 
-    const host =
-      mode === 'leave' ? this._leaveRoot : this._mountRespondPickerShell();
+    if (mode === 'leave' && this._leaveRoot) {
+      this._leaveRoot.hidden = true;
+      this._leaveRoot.setAttribute('aria-hidden', 'true');
+    }
+
+    const host = this._mountRespondPickerShell();
     if (!host) return;
 
     const root = document.createElement('div');
@@ -319,22 +324,8 @@ export class FocusCircleWitnessLeaveUI {
     });
 
     root.append(title, status, list, cancel);
-
-    if (mode === 'leave') {
-      const actions = host.querySelector('.focus-circle-witness-leave__actions');
-      const leaveTitle = host.querySelector('.focus-circle-witness-leave__title');
-      if (leaveTitle) leaveTitle.hidden = true;
-      if (actions) {
-        host.insertBefore(root, actions);
-        actions.hidden = true;
-      } else {
-        host.appendChild(root);
-      }
-      host.classList.add('is-picker-open');
-    } else {
-      host.appendChild(root);
-      requestAnimationFrame(() => host.classList.add('is-visible'));
-    }
+    host.appendChild(root);
+    requestAnimationFrame(() => host.classList.add('is-visible'));
 
     this._pickerRoot = root;
     this._pickerMode = mode;
@@ -360,6 +351,8 @@ export class FocusCircleWitnessLeaveUI {
     this._pickerMode = null;
     if (this._leaveRoot) {
       this._leaveRoot.classList.remove('is-picker-open');
+      this._leaveRoot.hidden = false;
+      this._leaveRoot.removeAttribute('aria-hidden');
       const actions = this._leaveRoot.querySelector(
         '.focus-circle-witness-leave__actions'
       );
@@ -444,38 +437,49 @@ export class FocusCircleWitnessLeaveUI {
     }
     btn?.setAttribute('aria-busy', 'true');
 
-    if (mode === 'leave') {
+    try {
+      if (mode === 'leave') {
+        const result = await postFocusCircleWitness({
+          storage: this._storage,
+          action: 'witness_leave',
+          phraseKey
+        });
+        if (result.ok) {
+          this._releasePickerSlot();
+          this._removePickerDom();
+          this.hideLeave();
+          this.handlers.onLeaveComplete?.();
+          return;
+        }
+        if (
+          result.skipped &&
+          shouldDismissWitnessLeavePickerOnSkip(result.reason)
+        ) {
+          this._releasePickerSlot();
+          this._removePickerDom();
+          this.hideLeave();
+          return;
+        }
+        this._failPickerSubmit(buttons, btn, result.reason);
+        return;
+      }
+
+      const traceId = this._respondTraceId;
       const result = await postFocusCircleWitness({
         storage: this._storage,
-        action: 'witness_leave',
+        action: 'witness_respond',
+        traceId,
         phraseKey
       });
-      this._submitting = false;
       if (result.ok) {
-        this._releasePickerSlot();
-        this._removePickerDom();
-        this.hideLeave();
-        this.handlers.onLeaveComplete?.();
+        this.hideRespondPicker();
+        this.handlers.onRespondComplete?.(traceId);
         return;
       }
       this._failPickerSubmit(buttons, btn, result.reason);
-      return;
+    } finally {
+      this._submitting = false;
     }
-
-    const traceId = this._respondTraceId;
-    const result = await postFocusCircleWitness({
-      storage: this._storage,
-      action: 'witness_respond',
-      traceId,
-      phraseKey
-    });
-    this._submitting = false;
-    if (result.ok) {
-      this.hideRespondPicker();
-      this.handlers.onRespondComplete?.(traceId);
-      return;
-    }
-    this._failPickerSubmit(buttons, btn, result.reason);
   }
 
   /**

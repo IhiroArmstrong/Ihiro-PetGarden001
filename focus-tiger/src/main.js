@@ -350,9 +350,9 @@ import { syncFocusCircleIdleObserverPeek } from './core/focusCircleIdleSchedule.
 import {
   bindFocusCircleWitnessPageHide,
   clearFocusCircleWitnessSnapshot,
-  isWitnessEligibleSession,
   peekFocusCircleWitness,
   rememberRespondedTraceId,
+  shouldOfferWitnessLeaveAfterRise,
   resetFocusCircleWitnessSessionPrompt,
   scheduleFocusCircleWitnessPeek,
   setFocusCircleWitnessBusyProbe
@@ -2605,7 +2605,7 @@ async function init() {
   }
 
   function maybeOfferWitnessLeave(elapsedSeconds) {
-    if (!isWitnessEligibleSession(elapsedSeconds)) return;
+    if (!shouldOfferWitnessLeaveAfterRise(elapsedSeconds)) return;
     focusCircleWitnessLeaveUI.scheduleLeaveOffer();
   }
 
