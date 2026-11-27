@@ -1100,6 +1100,13 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   _openRadialGroup(groupKey) {
+    if (this._prefPage) {
+      if (this._activeListGroup === groupKey) {
+        this._exitPreferencePage();
+        return;
+      }
+      this._exitPreferencePage();
+    }
     this._activeListGroup = groupKey;
     this._expandedGroups = new Set([groupKey]);
     this._refreshItems();

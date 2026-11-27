@@ -253,4 +253,13 @@ describe('wide more menu click reception', () => {
     assert.match(src, /ft-pref-sheet-back/);
     assert.match(src, /if \(this\._prefPage\) return;/);
   });
+
+  it('side-nav re-click on active group exits H8 preference subpage', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(
+      src,
+      /_openRadialGroup\(groupKey\) \{[\s\S]*?if \(this\._prefPage\) \{[\s\S]*?this\._activeListGroup === groupKey\) \{[\s\S]*?_exitPreferencePage/
+    );
+  });
 });
