@@ -12,7 +12,9 @@ import {
   PREFERENCE_SHEET_EMBED_PROXIES,
   PREF_SHEET_BACK_GLYPH,
   applyPreferenceSheetBackButton,
-  shouldEmbedPreferenceInSheet
+  requestClosePreferencePanel,
+  shouldEmbedPreferenceInSheet,
+  wirePreferenceSheetEmbedClose
 } from './preferenceSheetEmbed.js';
 
 describe('preferenceSheetEmbed', () => {
@@ -43,6 +45,19 @@ describe('preferenceSheetEmbed', () => {
     applyPreferenceSheetBackButton(btn, 'Back to Preferences');
     assert.equal(btn.textContent, PREF_SHEET_BACK_GLYPH);
     assert.equal(btn.getAttribute('aria-label'), 'Back to Preferences');
+  });
+
+  it('account embed back closes via ft-pref-embed-close (immediate)', () => {
+    if (typeof document === 'undefined') return;
+    const panel = document.createElement('div');
+    panel.id = 'email-journey-restore-panel';
+    let closed = 0;
+    wirePreferenceSheetEmbedClose(panel, () => {
+      closed += 1;
+    });
+    requestClosePreferencePanel('account');
+    assert.equal(closed, 1);
+    panel.remove();
   });
 
   it('wide and narrow sheets skip closeMenu for embed rows', () => {
