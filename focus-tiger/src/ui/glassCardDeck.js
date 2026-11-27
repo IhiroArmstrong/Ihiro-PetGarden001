@@ -65,7 +65,16 @@ export const GLASS_CARD_DRAG_TITLE =
   '[data-ft-glass-drag-chrome], [class*="__title"], [class*="__heading"]';
 
 /** Floating panels in the drag deck but outside max-open / handle registry. */
-export const GLASS_CARD_EXTRA_ELEMENT_IDS = Object.freeze(['ft-home-zone-memories']);
+export const GLASS_CARD_EXTRA_ELEMENT_IDS = Object.freeze([
+  'ft-home-zone-memories',
+  'ft-wide-more-menu',
+  'ft-wide-more-radial'
+]);
+
+/** Wide ⋯ navigation + group sheets — keep menu z above Support dim while dragging. */
+export const GLASS_CARD_IDLE_MENU_IDS = Object.freeze(
+  new Set(['ft-wide-more-menu', 'ft-wide-more-radial'])
+);
 
 export const GLASS_CARD_DECK_STYLE = `
     [data-ft-glass-card="1"] { cursor: grab; }
@@ -239,13 +248,18 @@ export function installGlassCardDeck(doc = document) {
     card.style.bottom = 'auto';
     card.style.transform = 'none';
     card.style.margin = '0';
-    card.style.zIndex = String(
-      GLASS_CARD_ELEVATED_Z.has(card.id)
-        ? Z.REMINDER_PANEL
-        : GLASS_CARD_STAGE_Z.has(card.id)
-          ? Z.NARROW_STAGE
-          : Z.GLASS_CARD_FRONT
-    );
+    if (GLASS_CARD_IDLE_MENU_IDS.has(card.id)) {
+      card.dataset.ftUserDragged = '1';
+      card.style.zIndex = String(Z.SUPPORT_MODAL + 1);
+    } else {
+      card.style.zIndex = String(
+        GLASS_CARD_ELEVATED_Z.has(card.id)
+          ? Z.REMINDER_PANEL
+          : GLASS_CARD_STAGE_Z.has(card.id)
+            ? Z.NARROW_STAGE
+            : Z.GLASS_CARD_FRONT
+      );
+    }
     drag = {
       card,
       dx: event.clientX - rect.left,
