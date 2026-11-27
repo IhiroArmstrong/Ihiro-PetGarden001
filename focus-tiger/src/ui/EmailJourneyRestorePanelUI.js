@@ -17,6 +17,7 @@ import {
   createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
+import { wirePreferenceSheetEmbedClose } from '../core/preferenceSheetEmbed.js';
 import {
   clearPracticeBackupOptIn,
   readPracticeBackupOptIn
@@ -159,6 +160,7 @@ export class EmailJourneyRestorePanelUI {
       this.closeBtn
     );
     mountRoot.appendChild(this.root);
+    wirePreferenceSheetEmbedClose(this.root, () => this.closePanel({ immediate: true }));
 
     this._injectStyles();
     this._unsubLocale = onLocaleChange(() => this._refreshTexts());
@@ -186,9 +188,19 @@ export class EmailJourneyRestorePanelUI {
     this.handlers.onOpen?.();
   }
 
-  closePanel() {
+  /**
+   * @param {{ immediate?: boolean }} [opts]
+   */
+  closePanel(opts = {}) {
     if (!this._open) return;
     this._open = false;
+    if (opts.immediate) {
+      this.root.hidden = true;
+      this.root.style.opacity = '0';
+      this.root.style.transform = 'translate(-50%, 8px)';
+      this.handlers.onClose?.();
+      return;
+    }
     this.root.style.opacity = '0';
     this.root.style.transform = 'translate(-50%, 8px)';
     window.setTimeout(() => {

@@ -74,6 +74,22 @@ export function releasePreferencePanelFromSheet(panel) {
   else if (!home) document.body.appendChild(panel);
 }
 
+const PREF_EMBED_CLOSE_BUTTON =
+  'button[id$="-close"], button[data-testid$="-close"], .co-practice-contract-panel__close, .email-journey-restore-panel__close, .local-practice-data-panel__close';
+
+/**
+ * Sheet embed back must hide panels immediately (no fade ghost on top of the list).
+ * @param {HTMLElement} panel
+ * @param {() => void} onClose
+ * @returns {void}
+ */
+export function wirePreferenceSheetEmbedClose(panel, onClose) {
+  if (!panel || typeof onClose !== 'function') return;
+  if (panel.dataset.ftPrefEmbedCloseWired === '1') return;
+  panel.dataset.ftPrefEmbedCloseWired = '1';
+  panel.addEventListener('ft-pref-embed-close', () => onClose());
+}
+
 /**
  * Close the live panel without going through main.js.
  * @param {string} proxy
@@ -82,10 +98,12 @@ export function releasePreferencePanelFromSheet(panel) {
 export function requestClosePreferencePanel(proxy) {
   const panel = queryPreferenceSheetPanel(proxy);
   if (!panel) return;
-  panel.dispatchEvent(new Event('ft-pref-embed-close'));
-  const closer = panel.querySelector(
-    'button[id$="-close"], button[data-testid$="-close"], .co-practice-contract-panel__close'
+  panel.dispatchEvent(
+    new CustomEvent('ft-pref-embed-close', {
+      detail: { immediate: true, proxy }
+    })
   );
+  const closer = panel.querySelector(PREF_EMBED_CLOSE_BUTTON);
   if (closer instanceof HTMLElement) closer.click();
 }
 
@@ -121,7 +139,23 @@ export function preferenceSheetEmbedCss() {
       overflow: auto;
     }
     body.ft-pref-sheet-embed .ft-pref-sheet-page {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    body.ft-pref-sheet-embed .ft-wide-more__menu,
+    body.ft-pref-sheet-embed .ft-narrow-sheet {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    body.ft-pref-sheet-embed .ft-narrow-sheet__list {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
     body.ft-pref-sheet-embed .ft-wide-more__list,
     body.ft-pref-sheet-embed .ft-narrow-sheet__list {

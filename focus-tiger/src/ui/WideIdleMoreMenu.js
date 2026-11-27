@@ -377,6 +377,9 @@ export class WideIdleMoreMenu {
     if (this.prefPageSlot) this.prefPageSlot.hidden = true;
     if (this.prefBack) this.prefBack.hidden = true;
     if (refresh) this._refreshItems();
+    if (this._menuOpen && this._activeListGroup) {
+      this._positionGroupSheet(this._activeListGroup);
+    }
   }
 
   /**

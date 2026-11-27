@@ -21,6 +21,7 @@ import {
   createGlassCard
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
+import { wirePreferenceSheetEmbedClose } from '../core/preferenceSheetEmbed.js';
 
 const STYLE_ID = 'co-practice-contract-panel-ui-v1';
 const FADE_MS = 220;
@@ -62,6 +63,7 @@ export class CoPracticeContractPanelUI {
 
     this.root.append(this.titleEl, this.bodyEl, this.closeBtn);
     mountRoot.appendChild(this.root);
+    wirePreferenceSheetEmbedClose(this.root, () => this.closePanel({ immediate: true }));
 
     injectCoPracticeContractPanelStyles();
     this._injectStyles();
@@ -100,9 +102,19 @@ export class CoPracticeContractPanelUI {
     this.closeBtn.focus({ preventScroll: true });
   }
 
-  closePanel() {
+  /**
+   * @param {{ immediate?: boolean }} [opts]
+   */
+  closePanel(opts = {}) {
     if (!this._open) return;
     this._open = false;
+    if (opts.immediate) {
+      this.root.hidden = true;
+      this.root.style.opacity = '0';
+      this.root.style.transform = 'translate(-50%, 8px)';
+      this.handlers.onClose?.();
+      return;
+    }
     this.root.style.opacity = '0';
     this.root.style.transform = 'translate(-50%, 8px)';
     window.setTimeout(() => {

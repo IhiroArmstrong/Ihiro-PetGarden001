@@ -10,7 +10,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   PREFERENCE_SHEET_EMBED_PROXIES,
-  shouldEmbedPreferenceInSheet
+  requestClosePreferencePanel,
+  shouldEmbedPreferenceInSheet,
+  wirePreferenceSheetEmbedClose
 } from './preferenceSheetEmbed.js';
 
 describe('preferenceSheetEmbed', () => {
@@ -24,6 +26,19 @@ describe('preferenceSheetEmbed', () => {
     assert.equal(shouldEmbedPreferenceInSheet('today-direction'), false);
     assert.equal(shouldEmbedPreferenceInSheet('always-on-top'), false);
     assert.ok(PREFERENCE_SHEET_EMBED_PROXIES.includes('language'));
+  });
+
+  it('account embed back closes via ft-pref-embed-close (immediate)', () => {
+    if (typeof document === 'undefined') return;
+    const panel = document.createElement('div');
+    panel.id = 'email-journey-restore-panel';
+    let closed = 0;
+    wirePreferenceSheetEmbedClose(panel, () => {
+      closed += 1;
+    });
+    requestClosePreferencePanel('account');
+    assert.equal(closed, 1);
+    panel.remove();
   });
 
   it('wide and narrow sheets skip closeMenu for embed rows', () => {
