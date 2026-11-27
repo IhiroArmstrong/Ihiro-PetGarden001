@@ -45,7 +45,7 @@ Mac 版「和阿寅聊聊」中的 **Speak to type** 仅使用本机语音识别
 
 **可选的晚间练习结束时刻（练习观察纸，默认关）**：只有你在成长旅程的练习观察纸里开启后，本机才会按日记录计时专注在本地凌晨 1 点到 6 点之间**结束**的日期和时刻。**不是**睡眠监测、**不上传**、**不进**研究分享。可随时关闭（关闭会清空已记录）或一键清除记录。
 
-**本机成长日记（觉察一句，点了才写）**：默认不自动记下你发出的句子。第一次发出非危机短句后会问一次；你点「留下」后，该句**未加密、留在本机、可在 Privacy 删除**。不进练习备份或云快照，也不用于生成回复。危机场次不写入。
+**本机成长日记（觉察一句，默认保存在本机）**：每条非危机句子会默认记在本机成长日记。**未加密、只留在本机、可在 Privacy 删除**。不进练习备份或云快照，用于本机后续成长辅导。危机场次不写入。
 
 **付款：** 本应用日后可能通过 **Stripe** 处理订阅或请茶。**当前邀请制第一份安装包不开启正式收款**，不会向你收取费用。
 
@@ -112,7 +112,7 @@ We never collect Layer 0: anything you type, anything Yin says, Memory summaries
 
 **Optional late-evening end times (Practice Paper, off by default):** only if you turn this on in Practice Paper does this device store local date and end time of timed sits that finish between 1:00 and 6:00 a.m. This is **not** sleep monitoring, **not uploaded**, and **not** research sharing. Turning it off clears stored rows.
 
-**On-device growth journal (Thought Drop, write only after Keep):** we do not save your sentence automatically. After the first non-crisis send we ask once. If you tap Keep, that line is **unencrypted, stays on this device, and can be deleted in Privacy**. It is not in practice backup or cloud snapshots, and it is not used to generate replies. Crisis sessions are not written.
+**On-device growth journal (Thought Drop, saved locally by default):** each non-crisis line is saved on this device as a growth journal. It is **unencrypted, stays on this device only, and can be deleted in Privacy**. It is not in practice backup or cloud snapshots. It supports future growth coaching on this device. Crisis sessions are not written.
 
 **Payments:** we may later use **Stripe** for subscriptions or tips. **This invite build does not take live payment.**
 
@@ -179,7 +179,7 @@ Mac版「寅と話す」の **Speak to type** は、端末内の音声認識の�
 
 **任意の夜遅い終了時刻（練習の観察紙、初期オフ）**：観察紙でオンにした場合のみ、午前 1 時から 6 時までに終わったタイマー座りについて、日付と終了時刻を端末内に記録します。睡眠モニタリングではなく、アップロードも研究共有もしません。
 
-**端末内の成長日記（Thought Drop、残すを押したときだけ書く）**：文は自動保存しません。初回の非危機送信のあと一度尋ねます。「残す」を押すと、その文は**暗号化されず、この端末に残り、Privacy で削除できます**。練習バックアップやクラウド控えには入らず、返信の生成にも使いません。危機の回は書きません。
+**端末内の成長日記（Thought Drop、既定でこの端末に保存）**：非危機の各文は成長日記としてこの端末に保存されます。**暗号化されず、この端末のみに残り、Privacy で削除できます**。練習バックアップやクラウド控えには入りません。この端末での将来の成長コーチングの材料になります。危機の回は書きません。
 
 **支払い：** 将来 **Stripe** で購読やチップを扱う可能性があります。**この招待版では正式な課金を開きません。**
 
