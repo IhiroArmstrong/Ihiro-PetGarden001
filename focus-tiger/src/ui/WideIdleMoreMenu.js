@@ -580,11 +580,13 @@ export class WideIdleMoreMenu {
     this.menu = document.createElement('div');
     this.menu.id = 'ft-wide-more-menu';
     this.menu.className = 'ft-wide-more__menu';
+    this.menu.dataset.ftGlassCard = '1';
     this.menu.setAttribute('role', 'menu');
     this.menu.hidden = true;
 
     this.sheetHead = document.createElement('div');
     this.sheetHead.className = 'ft-wide-more__head';
+    this.sheetHead.setAttribute('data-ft-glass-drag-chrome', '1');
     this.sheetTitle = document.createElement('p');
     this.sheetTitle.className = 'ft-wide-more__title';
     this.sheetClose = document.createElement('button');
@@ -617,6 +619,7 @@ export class WideIdleMoreMenu {
     this.radialRoot = document.createElement('div');
     this.radialRoot.id = 'ft-wide-more-radial';
     this.radialRoot.className = 'ft-wide-more-radial ft-wide-more-sidenav';
+    this.radialRoot.dataset.ftGlassCard = '1';
     this.radialRoot.hidden = true;
     this.radialRoot.setAttribute('role', 'toolbar');
     this.radialRoot.dataset.testid = 'ft-wide-more-radial';
@@ -998,6 +1001,7 @@ export class WideIdleMoreMenu {
       if (this.menu) this.menu.hidden = true;
       if (this.radialRoot) this.radialRoot.hidden = true;
       document.body.classList.remove('ft-wide-more-radial-open');
+      this._resetIdleMenuDragGeometry();
       return;
     }
     if (this.backdrop) this.backdrop.hidden = false;
@@ -1021,6 +1025,21 @@ export class WideIdleMoreMenu {
   }
 
   /** @returns {void} */
+  _resetIdleMenuDragGeometry() {
+    for (const el of [this.menu, this.radialRoot]) {
+      if (!el) continue;
+      delete el.dataset.ftUserDragged;
+      el.style.removeProperty('left');
+      el.style.removeProperty('top');
+      el.style.removeProperty('right');
+      el.style.removeProperty('bottom');
+      el.style.removeProperty('transform');
+      el.style.removeProperty('margin');
+      el.style.removeProperty('z-index');
+    }
+  }
+
+  /** @returns {void} */
   _clearGroupSheetPosition() {
     this.menu?.style.removeProperty('top');
   }
@@ -1035,6 +1054,7 @@ export class WideIdleMoreMenu {
       this._clearGroupSheetPosition();
       return;
     }
+    if (this.menu.dataset.ftUserDragged === '1') return;
     const row = this.radialRoot?.querySelector(
       `.ft-wide-more-radial__icon[data-group="${groupKey}"]`
     );
@@ -1063,6 +1083,7 @@ export class WideIdleMoreMenu {
     this.radialRoot.setAttribute('aria-label', t('HOME_SIDE_NAV_HEADING'));
     const heading = document.createElement('p');
     heading.className = 'ft-wide-more-radial__heading';
+    heading.setAttribute('data-ft-glass-drag-chrome', '1');
     heading.textContent = t('HOME_SIDE_NAV_HEADING');
     this.radialRoot.appendChild(heading);
     /** @type {Record<string, string>} */
