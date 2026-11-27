@@ -50,6 +50,7 @@ import {
 import { LAST_POST_FINGERPRINT_KEY } from './t54ResearchUpload.js';
 import { CONTEMPLATIVE_INQUIRY_STORAGE_KEY } from './contemplativeInquiryMemory.js';
 import { DAILY_NOTICING_STORAGE_KEY } from './dailyNoticing/dailyNoticingMemory.js';
+import { INNER_MIRROR_STORAGE_KEY } from './innerMirror/innerMirrorStore.js';
 import {
   createHintsSeenStore,
   HINTS_SEEN_STORAGE_KEY
@@ -309,6 +310,7 @@ const MODULE_LOCAL_STORAGE_KEYS = Object.freeze([
   CONFIDE_CONSENT_STORAGE_KEY,
   GROWTH_JOURNAL_STORAGE_KEY,
   GROWTH_JOURNAL_CONSENT_KEY,
+  INNER_MIRROR_STORAGE_KEY,
   CO_PRACTICE_RESEARCH_WEEK_LEDGER_KEY,
   CO_PRACTICE_RESEARCH_CONSENT_STORAGE_KEY,
   CO_PRACTICE_RESEARCH_LAST_POST_KEY,

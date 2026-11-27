@@ -213,6 +213,13 @@ import {
   writeGrowthJournalConsent,
   appendGrowthJournalEntry
 } from '../core/growthJournal/growthJournalStore.js';
+import { shouldShowInnerMirrorLeave } from '../core/innerMirror/innerMirrorMount.js';
+import { isInnerMirrorCrisisRoute } from '../core/innerMirror/innerMirrorCrisis.js';
+import {
+  correctInnerMirrorEntry,
+  forgetInnerMirror,
+  leaveInnerMirrorEntry
+} from '../core/innerMirror/innerMirrorStore.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v4';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -248,6 +255,9 @@ export class ConfideToYinUI {
     this._voiceRawForSend = null;
     this._pendingGrowthJournalText = null;
     this._growthJournalSaving = false;
+    this._innerMirrorEntryId = null;
+    this._innerMirrorPendingText = null;
+    this._innerMirrorSaving = false;
     this._operatingOwnsMic = false;
     /** @type {((text: string) => void) | null} */
     this._operatingConfirmTypedSubmit = null;
@@ -414,6 +424,73 @@ export class ConfideToYinUI {
       this.journalConsentCopy,
       this.journalConsentStatus,
       this.journalConsentActions
+    );
+
+    this.innerMirrorWrap = document.createElement('div');
+    this.innerMirrorWrap.className = 'confide-to-yin__memory-consent';
+    this.innerMirrorWrap.dataset.testid = 'inner-mirror-actions';
+    this.innerMirrorWrap.hidden = true;
+    this.innerMirrorWrap.setAttribute('role', 'region');
+    this.innerMirrorWrap.setAttribute('aria-live', 'polite');
+
+    this.innerMirrorStatus = document.createElement('p');
+    this.innerMirrorStatus.className = 'confide-to-yin__memory-consent-copy';
+    this.innerMirrorStatus.dataset.testid = 'inner-mirror-status';
+
+    this.innerMirrorActions = document.createElement('div');
+    this.innerMirrorActions.className = 'confide-to-yin__memory-consent-actions';
+
+    this.innerMirrorLeaveBtn = document.createElement('button');
+    this.innerMirrorLeaveBtn.type = 'button';
+    this.innerMirrorLeaveBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--primary';
+    this.innerMirrorLeaveBtn.dataset.testid = 'inner-mirror-leave';
+    this.innerMirrorLeaveBtn.addEventListener('click', () => this._onInnerMirrorLeave());
+
+    this.innerMirrorForgetBtn = document.createElement('button');
+    this.innerMirrorForgetBtn.type = 'button';
+    this.innerMirrorForgetBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--ghost';
+    this.innerMirrorForgetBtn.dataset.testid = 'inner-mirror-forget';
+    this.innerMirrorForgetBtn.hidden = true;
+    this.innerMirrorForgetBtn.addEventListener('click', () => this._onInnerMirrorForget());
+
+    this.innerMirrorCorrectBtn = document.createElement('button');
+    this.innerMirrorCorrectBtn.type = 'button';
+    this.innerMirrorCorrectBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--ghost';
+    this.innerMirrorCorrectBtn.dataset.testid = 'inner-mirror-correct';
+    this.innerMirrorCorrectBtn.hidden = true;
+    this.innerMirrorCorrectBtn.addEventListener('click', () => this._onInnerMirrorCorrectStart());
+
+    this.innerMirrorActions.append(
+      this.innerMirrorLeaveBtn,
+      this.innerMirrorForgetBtn,
+      this.innerMirrorCorrectBtn
+    );
+
+    this.innerMirrorCorrectInput = document.createElement('textarea');
+    this.innerMirrorCorrectInput.className = 'confide-to-yin__input';
+    this.innerMirrorCorrectInput.dataset.testid = 'inner-mirror-correct-input';
+    this.innerMirrorCorrectInput.hidden = true;
+    this.innerMirrorCorrectInput.rows = 2;
+    this.innerMirrorCorrectInput.maxLength = 280;
+
+    this.innerMirrorCorrectSaveBtn = document.createElement('button');
+    this.innerMirrorCorrectSaveBtn.type = 'button';
+    this.innerMirrorCorrectSaveBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--primary';
+    this.innerMirrorCorrectSaveBtn.dataset.testid = 'inner-mirror-correct-save';
+    this.innerMirrorCorrectSaveBtn.hidden = true;
+    this.innerMirrorCorrectSaveBtn.addEventListener('click', () =>
+      this._onInnerMirrorCorrectSave()
+    );
+
+    this.innerMirrorWrap.append(
+      this.innerMirrorStatus,
+      this.innerMirrorActions,
+      this.innerMirrorCorrectInput,
+      this.innerMirrorCorrectSaveBtn
     );
 
     this.consentWrap = document.createElement('div');
@@ -638,6 +715,7 @@ export class ConfideToYinUI {
       this.thinkingEl,
       this.replyEl,
       this.journalConsentWrap,
+      this.innerMirrorWrap,
       this.operatingConfirmEl,
       this.secondaryLinks,
       this.helpResourcesPanel,
@@ -710,6 +788,7 @@ export class ConfideToYinUI {
     this._chatConsentSaving = false;
     this._hideMemoryConsent();
     this._hideGrowthJournalAsk();
+    this._hideInnerMirrorActions();
     this._pendingGrowthJournalText = null;
     this._resetChatConsentBoxes();
     this._sendEpoch += 1;
@@ -747,6 +826,7 @@ export class ConfideToYinUI {
     this._chatConsentSaving = false;
     this._hideMemoryConsent();
     this._hideGrowthJournalAsk();
+    this._hideInnerMirrorActions();
     this._pendingGrowthJournalText = null;
     this._collapseHelpResourcesPanel();
     this.hideGenerateLayer({ unload: false });
@@ -1232,6 +1312,7 @@ export class ConfideToYinUI {
       route: shown.route,
       source: shown.source
     });
+    this._syncInnerMirrorAfterReply(asked, shown.route);
   }
 
   _stopConfideTts() {
@@ -1471,6 +1552,133 @@ export class ConfideToYinUI {
     this.journalConsentCopy.textContent = t('GROWTH_JOURNAL_ASK_BODY');
     this.journalConsentKeepBtn.textContent = t('GROWTH_JOURNAL_ASK_KEEP');
     this.journalConsentSkipBtn.textContent = t('GROWTH_JOURNAL_ASK_NOT_NOW');
+    this._applyInnerMirrorCopy();
+  }
+
+
+  _applyInnerMirrorCopy() {
+    if (!this.innerMirrorLeaveBtn) return;
+    this.innerMirrorLeaveBtn.textContent = t('INNER_MIRROR_LEAVE');
+    this.innerMirrorForgetBtn.textContent = t('INNER_MIRROR_FORGET');
+    this.innerMirrorCorrectBtn.textContent = t('INNER_MIRROR_CORRECT');
+    this.innerMirrorCorrectSaveBtn.textContent = t('INNER_MIRROR_CORRECT_SAVE');
+    this.innerMirrorCorrectInput.setAttribute('aria-label', t('INNER_MIRROR_CORRECT_PROMPT'));
+  }
+
+  _hideInnerMirrorActions() {
+    if (!this.innerMirrorWrap) return;
+    this.innerMirrorWrap.hidden = true;
+    this.innerMirrorForgetBtn.hidden = true;
+    this.innerMirrorCorrectBtn.hidden = true;
+    this.innerMirrorCorrectInput.hidden = true;
+    this.innerMirrorCorrectSaveBtn.hidden = true;
+    this.innerMirrorLeaveBtn.hidden = false;
+    this.innerMirrorLeaveBtn.disabled = false;
+    this.innerMirrorStatus.textContent = '';
+    this._innerMirrorEntryId = null;
+    this._innerMirrorPendingText = null;
+    this._innerMirrorSaving = false;
+  }
+
+  _innerMirrorStorage() {
+    try {
+      return globalThis.localStorage ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  _syncInnerMirrorAfterReply(text, route) {
+    const asked = String(text || '').trim();
+    this._hideInnerMirrorActions();
+    if (!asked) return;
+    const widthPx = typeof window !== 'undefined' ? window.innerWidth : 0;
+    const show = shouldShowInnerMirrorLeave({
+      locale: getLocale(),
+      widthPx,
+      crisis: isInnerMirrorCrisisRoute(route),
+      mountEnabled: this.handlers.innerMirrorLeaveMounted
+    });
+    if (!show) return;
+    this._innerMirrorPendingText = asked;
+    this._innerMirrorPendingRoute = route;
+    this.innerMirrorWrap.hidden = false;
+    this.innerMirrorLeaveBtn.hidden = false;
+    this.innerMirrorStatus.textContent = '';
+  }
+
+  _onInnerMirrorLeave() {
+    if (this._innerMirrorSaving) return;
+    const text = this._innerMirrorPendingText;
+    if (!text) return;
+    this._innerMirrorSaving = true;
+    this.innerMirrorLeaveBtn.disabled = true;
+    const written = leaveInnerMirrorEntry(this._innerMirrorStorage(), {
+      text,
+      route: this._innerMirrorPendingRoute,
+      locale: getLocale()
+    });
+    this._innerMirrorSaving = false;
+    if (!written.ok) {
+      this.innerMirrorLeaveBtn.disabled = false;
+      this.innerMirrorStatus.textContent = t(
+        written.reason === 'crisis' ? 'INNER_MIRROR_CRISIS_BLOCK' : 'INNER_MIRROR_SAVE_ERROR'
+      );
+      if (written.reason === 'crisis') this.innerMirrorLeaveBtn.hidden = true;
+      return;
+    }
+    this._innerMirrorEntryId = written.entry.id;
+    this.innerMirrorLeaveBtn.hidden = true;
+    this.innerMirrorForgetBtn.hidden = false;
+    this.innerMirrorCorrectBtn.hidden = false;
+    this.innerMirrorStatus.textContent = t('INNER_MIRROR_LEFT');
+  }
+
+  _onInnerMirrorForget() {
+    if (this._innerMirrorSaving) return;
+    this._innerMirrorSaving = true;
+    const result = forgetInnerMirror(this._innerMirrorStorage(), {
+      id: this._innerMirrorEntryId
+    });
+    this._innerMirrorSaving = false;
+    if (!result.ok) {
+      this.innerMirrorStatus.textContent = t('INNER_MIRROR_FORGET_ERROR');
+      return;
+    }
+    this._hideInnerMirrorActions();
+    this.innerMirrorWrap.hidden = false;
+    this.innerMirrorStatus.textContent = t('INNER_MIRROR_FORGOTTEN');
+  }
+
+  _onInnerMirrorCorrectStart() {
+    this.innerMirrorCorrectInput.hidden = false;
+    this.innerMirrorCorrectSaveBtn.hidden = false;
+    this.innerMirrorCorrectInput.value = this._innerMirrorPendingText || '';
+    this.innerMirrorCorrectInput.focus();
+  }
+
+  _onInnerMirrorCorrectSave() {
+    if (this._innerMirrorSaving || !this._innerMirrorEntryId) return;
+    this._innerMirrorSaving = true;
+    const result = correctInnerMirrorEntry(this._innerMirrorStorage(), {
+      id: this._innerMirrorEntryId,
+      replacement: this.innerMirrorCorrectInput.value,
+      locale: getLocale()
+    });
+    this._innerMirrorSaving = false;
+    if (result.reason === 'crisis') {
+      this.innerMirrorCorrectInput.hidden = true;
+      this.innerMirrorCorrectSaveBtn.hidden = true;
+      this.innerMirrorStatus.textContent = t('INNER_MIRROR_CRISIS_BLOCK');
+      return;
+    }
+    if (!result.ok) {
+      this.innerMirrorStatus.textContent = t('INNER_MIRROR_SAVE_ERROR');
+      return;
+    }
+    this.innerMirrorCorrectInput.hidden = true;
+    this.innerMirrorCorrectSaveBtn.hidden = true;
+    this.innerMirrorStatus.textContent = t('INNER_MIRROR_CORRECTED');
   }
 
   _hideGrowthJournalAsk() {
