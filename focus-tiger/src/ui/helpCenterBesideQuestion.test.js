@@ -8,7 +8,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
+import {
+  HELP_CENTER_BESIDE_GLYPH,
+  HELP_CENTER_BESIDE_GLYPH_PX
+} from './helpCenterBesideGlyph.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const hints = readFileSync(join(here, 'OnboardingHintsUI.js'), 'utf8');
@@ -38,11 +41,13 @@ test('Help Center beside ? uses compass glyph (not book)', () => {
   assert.match(shell, /from '\.\/helpCenterBesideGlyph\.js'/);
 });
 
-test('Help Center compass glyph is centered in the round chrome (regression)', () => {
+test('Help Center compass glyph is centered and sized in the round chrome (regression)', () => {
   assert.match(hints, /\.onboarding-hint-help-center \.onboarding-hint-help__glyph/);
   assert.match(hints, /margin: 0;/);
-  assert.match(hints, /width: 22px/);
+  assert.match(hints, /HELP_CENTER_BESIDE_GLYPH_PX/);
   assert.match(shell, /#ft-narrow-help-center-btn/);
   assert.match(shell, /align-items: center/);
-  assert.match(shell, /\.ft-narrow-help-center-glyph[\s\S]*width: 22px/);
+  assert.match(shell, /HELP_CENTER_BESIDE_GLYPH_PX/);
+  assert.match(HELP_CENTER_BESIDE_GLYPH, /viewBox="0 0 72 72"/);
+  assert.equal(HELP_CENTER_BESIDE_GLYPH_PX, 32);
 });

@@ -133,10 +133,10 @@ export function readGrowthJournalState(storage) {
 }
 
 /**
- * @param {{ consented?: boolean, crisis?: boolean }} opts
+ * @param {{ crisis?: boolean }} opts
  */
 export function shouldWriteGrowthJournal(opts = {}) {
-  return opts.consented === true && opts.crisis !== true;
+  return opts.crisis !== true;
 }
 
 /**
@@ -196,9 +196,9 @@ export function clearGrowthJournalEntries(storage) {
 }
 
 /**
- * After a Thought Drop send: write, ask, or skip. Never persist before Keep.
+ * After a Thought Drop send: write locally by default (crisis only skips), or skip.
  * @param {{ storage?: unknown, text?: string, route?: string, now?: string | Date }} opts
- * @returns {{ action: 'written' | 'ask' | 'skip', reason?: string, pendingText?: string }}
+ * @returns {{ action: 'written' | 'skip', reason?: string, showPolicyNotice?: boolean }}
  */
 export function considerGrowthJournalAfterSend(opts = {}) {
   const text = typeof opts.text === 'string' ? opts.text.trim() : '';
@@ -206,23 +206,20 @@ export function considerGrowthJournalAfterSend(opts = {}) {
   if (isGrowthJournalCrisisRoute(opts.route)) {
     return { action: 'skip', reason: 'crisis' };
   }
+  if (!shouldWriteGrowthJournal({ crisis: false })) {
+    return { action: 'skip', reason: 'blocked' };
+  }
   const consent = readGrowthJournalConsent(opts.storage);
-  if (consent.status === 'granted') {
-    if (
-      !shouldWriteGrowthJournal({ consented: true, crisis: false })
-    ) {
-      return { action: 'skip', reason: 'blocked' };
-    }
-    const written = appendGrowthJournalEntry(opts.storage, {
-      text,
-      source: 'confide',
-      at: opts.now
-    });
-    if (!written.ok) return { action: 'skip', reason: written.reason };
-    return { action: 'written' };
+  const showPolicyNotice =
+    consent.status === 'unset' || consent.status === 'declined';
+  const written = appendGrowthJournalEntry(opts.storage, {
+    text,
+    source: 'confide',
+    at: opts.now
+  });
+  if (!written.ok) return { action: 'skip', reason: written.reason };
+  if (consent.status !== 'granted') {
+    writeGrowthJournalConsent(opts.storage, 'granted', opts.now);
   }
-  if (consent.status === 'declined') {
-    return { action: 'skip', reason: 'declined' };
-  }
-  return { action: 'ask', pendingText: text };
+  return { action: 'written', showPolicyNotice };
 }

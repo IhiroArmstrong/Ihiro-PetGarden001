@@ -1,0 +1,41 @@
+{
+  "en": {
+    "INNER_MIRROR_LEAVE": "Leave this line",
+    "INNER_MIRROR_FORGET": "Forget",
+    "INNER_MIRROR_CORRECT": "Correct",
+    "INNER_MIRROR_CORRECT_PROMPT": "Write the line you mean now",
+    "INNER_MIRROR_CORRECT_SAVE": "Save correction",
+    "INNER_MIRROR_LEFT": "Left on this computer",
+    "INNER_MIRROR_FORGOTTEN": "Forgotten",
+    "INNER_MIRROR_CORRECTED": "Updated in your words",
+    "INNER_MIRROR_SAVE_ERROR": "Could not save. The line is not stored.",
+    "INNER_MIRROR_FORGET_ERROR": "Could not forget. Try again.",
+    "INNER_MIRROR_CRISIS_BLOCK": "This line was not left."
+  },
+  "zh": {
+    "INNER_MIRROR_LEAVE": "留下",
+    "INNER_MIRROR_FORGET": "忘掉",
+    "INNER_MIRROR_CORRECT": "纠正",
+    "INNER_MIRROR_CORRECT_PROMPT": "写下你现在想改口的那句",
+    "INNER_MIRROR_CORRECT_SAVE": "保存改口",
+    "INNER_MIRROR_LEFT": "已留在这台电脑",
+    "INNER_MIRROR_FORGOTTEN": "已忘掉",
+    "INNER_MIRROR_CORRECTED": "已按你的意思改过",
+    "INNER_MIRROR_SAVE_ERROR": "没存上。这句没有留下。",
+    "INNER_MIRROR_FORGET_ERROR": "没删掉。请再试一次。",
+    "INNER_MIRROR_CRISIS_BLOCK": "这句没有留下。"
+  },
+  "ja": {
+    "INNER_MIRROR_LEAVE": "残す",
+    "INNER_MIRROR_FORGET": "忘れる",
+    "INNER_MIRROR_CORRECT": "訂正する",
+    "INNER_MIRROR_CORRECT_PROMPT": "いま言いたい一文を書く",
+    "INNER_MIRROR_CORRECT_SAVE": "訂正を保存",
+    "INNER_MIRROR_LEFT": "このコンピュータに残しました",
+    "INNER_MIRROR_FORGOTTEN": "忘れました",
+    "INNER_MIRROR_CORRECTED": "あなたの言葉に直しました",
+    "INNER_MIRROR_SAVE_ERROR": "保存できませんでした。残していません。",
+    "INNER_MIRROR_FORGET_ERROR": "削除できませんでした。もう一度どうぞ。",
+    "INNER_MIRROR_CRISIS_BLOCK": "この一文は残していません。"
+  }
+}

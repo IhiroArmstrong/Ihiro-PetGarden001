@@ -9,6 +9,10 @@
 
 import { t } from '../locales/i18n.js';
 import {
+  GLASS_BORDER,
+  GLASS_FILL_STRONG
+} from './glassPanelStyles.js';
+import {
   buildCoPracticeContractRows,
   CO_PRACTICE_CONTRACT_ROW_IDS
 } from '../core/coPracticeContractSurface.js';
@@ -54,11 +58,6 @@ export function mountCoPracticeContractSurface(host, handlers = {}) {
     storage,
     now: handlers.now ?? Date.now()
   });
-
-  const heading = document.createElement('p');
-  heading.className = 'co-practice-contract__title';
-  heading.textContent = t('CO_PRACTICE_CONTRACT_TITLE');
-  host.appendChild(heading);
 
   const intro = document.createElement('p');
   intro.className = 'co-practice-contract__intro';
@@ -111,12 +110,10 @@ export function mountCoPracticeContractSurface(host, handlers = {}) {
     status.textContent = formatContractStatus(row.status);
     trail.appendChild(status);
 
-    line.append(copy, trail);
-
     if (row.action && row.actionKey) {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'co-practice-contract__action';
+      btn.className = 'co-practice-contract__action ft-pref-inline-action';
       btn.dataset.testid = `co-practice-contract-action-${row.id}`;
       btn.textContent = t(row.actionKey);
       btn.addEventListener('click', () => {
@@ -128,8 +125,10 @@ export function mountCoPracticeContractSurface(host, handlers = {}) {
           handlers.onOpenPrivacySettings?.();
         }
       });
-      line.appendChild(btn);
+      trail.appendChild(btn);
     }
+
+    line.append(copy, trail);
 
     host.appendChild(line);
   }
@@ -150,9 +149,8 @@ export function injectCoPracticeContractPanelStyles() {
   const style = document.createElement('style');
   style.id = CO_PRACTICE_CONTRACT_PANEL_STYLE_ID;
   style.textContent = `
-    .co-practice-contract__title {
-      font-weight: 600;
-      margin: 0 0 6px;
+    .co-practice-contract__intro {
+      margin: 0 0 8px;
     }
     .co-practice-contract__intro,
     .co-practice-contract__label,
@@ -180,11 +178,41 @@ export function injectCoPracticeContractPanelStyles() {
     }
     .co-practice-contract__row.ft-pref-row .ft-pref-row__trail {
       flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
       text-align: right;
     }
-    .co-practice-contract__action {
-      margin-top: 8px;
+    .co-practice-contract__action.ft-pref-inline-action,
+    .co-practice-contract__evening .co-practice-contract__action {
+      appearance: none;
+      margin: 0;
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: ${GLASS_BORDER};
+      background: ${GLASS_FILL_STRONG};
+      color: rgba(44, 31, 20, 0.92);
+      font: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.25;
       cursor: pointer;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+      transition: background 160ms ease, transform 160ms ease;
+    }
+    .co-practice-contract__action.ft-pref-inline-action:hover,
+    .co-practice-contract__evening .co-practice-contract__action:hover {
+      background: rgba(255, 252, 245, 0.92);
+    }
+    .co-practice-contract__action.ft-pref-inline-action:active,
+    .co-practice-contract__evening .co-practice-contract__action:active {
+      transform: scale(0.97);
+    }
+    .co-practice-contract__action.ft-pref-inline-action:focus-visible,
+    .co-practice-contract__evening .co-practice-contract__action:focus-visible {
+      outline: 2px solid rgba(181, 98, 58, 0.55);
+      outline-offset: 2px;
     }
     .co-practice-contract__evening {
       margin-top: 16px;
