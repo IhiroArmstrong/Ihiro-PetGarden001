@@ -269,7 +269,9 @@ export const OVERLAY_UI_SURFACE = Object.freeze([
     },
     trackerCoverage: Object.freeze({
       mode: 'token',
-      files: Object.freeze(['docs/tracker-entries/feature-t105-daily-noticing.md']),
+      files: Object.freeze([
+        'docs/tracker-entries/feature-t110-daily-noticing-stop-loss.md'
+      ]),
       tokens: Object.freeze(['待人工测试'])
     })
   }),
