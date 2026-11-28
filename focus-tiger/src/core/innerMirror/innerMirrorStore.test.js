@@ -59,6 +59,7 @@ describe('innerMirror store', () => {
     assert.match(ui, /inner-mirror-forget/);
     assert.match(ui, /inner-mirror-correct/);
     assert.match(ui, /leaveInnerMirrorEntry/);
+    assert.match(ui, /inner-mirror-weekly-open/);
   });
 
   it('hides Leave when the freeze switch is off', () => {

@@ -6,6 +6,8 @@ Confide 路由、语义、向量路由和算法盘点的依次跟进不在本表
 
 | 类型 | 问题描述 | 首次发现时间/来源 | 受影响项/范围 | 状态 |
 | --- | --- | --- | --- | --- |
+| 根因扇出 | 11/27 手测 26 条原话：窄修法已合仍红；须先红后绿、发布门闩不挡合并 | 2026-11-27 用户手测 · PO 2026-11-28 | [`issue-entries/docs-handtest-2026-11-27-ledger.md`](./issue-entries/docs-handtest-2026-11-27-ledger.md) | 跟进中 |
+| 优化建议 | 句子默认存本机；菜单顶层 Sign in 用现有邮箱卡；设置底部订阅删除 | 2026-11-28 PO 拍板（11/27 行 2/24/25） | [`issue-entries/docs-handtest-2026-11-27-ledger.md`](./issue-entries/docs-handtest-2026-11-27-ledger.md) | 跟进中 |
 | 独立bug | 对话里的仓库相对链接打开的是当前窗口检出的文件，旁支新稿点开仍是旧标题 | 2026-11-26 用户核对 T105 Brief | 文件链接规则 `WORKFLOW.md` | 已修：窗口不在该旁支时必须改以 https blob 为核对稿 |
 | 优化建议 | 个人成长四层尚无基本完整用户体验，不得以 12-08 收工 | 2026-11-26 PO 拍板 | [`issue-entries/docs-pge-growth-engine-po-2026-11-26.md`](./issue-entries/docs-pge-growth-engine-po-2026-11-26.md) · **T105–T108** | 跟进中 |
 | 技术债 | L3 generate 写入 turns.jsonl 时带用户原句，与语义危机日志（只存哈希和长度）不一致 | 2026-11-24 只读审计缺口 1 | [`issue-entries/fix-l3-generate-log-redact.md`](./issue-entries/fix-l3-generate-log-redact.md) | 跟进中 |

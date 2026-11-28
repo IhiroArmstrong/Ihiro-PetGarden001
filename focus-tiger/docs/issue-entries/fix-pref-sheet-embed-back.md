@@ -15,6 +15,7 @@ updated: 2026-11-28
 - 行 20 / 14：嵌入 CSS 压平 Presence / 心念流内层面板，藏重复标题。
 - 行 16：子页点标题「Preferences」回到列表（未拖动时）。
 - 行 18：网页仍只靠 `canUseInputRhythm()`，不出现可勾的死开关。
+- 玻璃拖：菜单行 `ft-pref-row__title` 不再抢 pointerdown（必跑声景护栏会因此打不开面板）。
 
 ## 还剩什么
 

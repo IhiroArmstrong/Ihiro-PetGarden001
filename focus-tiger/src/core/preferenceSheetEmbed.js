@@ -155,7 +155,23 @@ export function preferenceSheetEmbedCss() {
       overflow: auto;
     }
     body.ft-pref-sheet-embed .ft-pref-sheet-page {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    body.ft-pref-sheet-embed .ft-wide-more__menu,
+    body.ft-pref-sheet-embed .ft-narrow-sheet {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    body.ft-pref-sheet-embed .ft-narrow-sheet__list {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
     body.ft-pref-sheet-embed .ft-wide-more__list,
     body.ft-pref-sheet-embed .ft-narrow-sheet__list {

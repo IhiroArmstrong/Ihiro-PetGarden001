@@ -272,7 +272,8 @@ gh pr create --base develop --head "$(git branch --show-current)" --title "…" 
 > **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-task-preflight`）。常驻：`.cursor/rules/task-preflight.mdc`。脚本：`scripts/task-preflight.sh`。CI：`.github/workflows/task-doc-sync.yml`（检查名 **`task-doc-sync`**）。  
 > 与上一小节 `git-pr-next-step-gate` **互补，不互相替代**：那条回答「有没有 PR / 待合还是已合」；本条回答「文档里的待做能不能当真」以及「发现过期后还要不要等口令」。
 
-**总原则**：git / GitHub 的合并记录是任务（Tn）状态的**唯一真相**。`GLOSSARY.md` / `SCHEDULING_GLOSSARY.md` / `TASKS.md` / 队列 / 口令表里的「待做 / 立即做 / Brief 已点头 / 进行中」只是**可能已过期的缓存**。文档与 git 冲突时以 git 为准。**禁止仅凭文档里的「待做」状态就开始实现。**
+**总原则**：git / GitHub 的合并记录是任务（Tn）状态的**唯一真相**。`GLOSSARY.md` / `SCHEDULING_GLOSSARY.md` / `TASKS.md` / 队列 / 口令表里的「待做 / 立即做 / Brief 已点头 / 进行中」只是**可能已过期的缓存**。文档与 git 冲突时以 git 为准。**禁止仅凭文档里的「待做」状态就开始实现。**  
+用户**原话**是否做完，另读 [`ISSUE_LEDGER.md`](focus-tiger/docs/ISSUE_LEDGER.md)（及 `issue-entries/`）：已合并 PR 覆盖了窄改法 **≠** 原话已完成。账本该句仍「未经用户点过」或原话检查仍红 → **禁止**预检结论 A。详见「用户原话检查：先红后绿」。
 
 **触发**：用户或交接出现任务 ID（`T` + 数字）并伴随开工 / 实现 / 第 N 刀 / 按 Brief / 继续做 / 重做 / 补做 / 开分支 / 开 PR。
 
@@ -523,6 +524,15 @@ Safari 仍是 `http://127.0.0.1:5173/?product=1`。切完后硬刷新一次，�
 | **关单级人工验收**（`qa-develop-tip`） | **已合入 `develop` 之后**（可批量） | **仅**当时 `origin/develop` tip | 决定 TEST_TRACKER 能否标「已通过」/ 关闭「有问题」；决定能否声称「已修复」 |
 
 关单只认 develop tip，因此 **关单级人工测试的默认路径就是先合再测**。feature 上的试跑仍 **不得**单独当作关单证据（见 `TEST_TRACKER.md`）。**禁止**把「已合入 develop」写成「已验证 / 已修复」。
+
+#### 用户原话检查：先红后绿 · 发布门闩（不挡合并）（PO 2026-11-28）
+
+> 与上表两层验收并列：合入仍只认 CI 绿；本条管 **检查写哪句话** 以及 **哪一层挡住 12/8 首包**。叙事见 `DEV_WORKFLOW_QUALITY.md` §7.3。
+
+1. **先红后绿（原话）**：用户书面原话要修的可见行为，须先写成自动化检查（e2e 断言位置 / 可达性 / 点后 1 秒内目标可见；**禁止**像素对比）。该检查须在 **当时 `origin/develop` tip** 上先失败（红，附输出），再修到绿。断言须引用原话，或用户点头过的可量改写（例：「指南针放大」→ 双方同意的像素下限）。窄改法若在 develop 上已经绿、原话仍红 → **不得**把该 PR 当成原话已完成。  
+2. **合入口不变**：本条 **不**把人工点过写成合入 `develop` 的阻塞。第 2 条「合入门闩 = CI 绿」仍有效。  
+3. **发布门闩**：[`ISSUE_LEDGER.md`](focus-tiger/docs/ISSUE_LEDGER.md) 里标记为挡住首包、且「未经用户在固定 QA 树点过」的原话，挡住 **邀请制首包发出**（见 [`first-package-written-risk-acceptance.md`](focus-tiger/docs/audit/first-package-written-risk-acceptance.md)），**不**挡合并。  
+4. **预检读账本**：结论 A「已完成」须覆盖 **用户原话**，不是「已有合并 PR」。账本该句仍写未点过 / 原话仍红 → **禁止**结论 A。见上一节 `git-task-preflight`。
 
 #### 合入前是否须同步（rebase/merge）`develop`——可执行判断
 
