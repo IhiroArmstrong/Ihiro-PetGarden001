@@ -206,15 +206,6 @@ export function listPreferenceCenterSubgroups(visibility, deps = {}) {
               kind: 'action',
               icon: '✉'
             },
-        deps.accountRow
-          ? {
-              ...deps.accountRow,
-              hintKey:
-                deps.accountRow.hintKey || 'PREF_CENTER_HINT_EMAIL_RESTORE',
-              kind: deps.accountRow.kind || 'action',
-              icon: deps.accountRow.icon || '☁'
-            }
-          : null,
         {
           proxy: 'help-center',
           labelKey: 'HELP_CENTER_MENU_LABEL',

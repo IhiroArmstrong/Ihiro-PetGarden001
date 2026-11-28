@@ -24,6 +24,7 @@ import { isGuidedMeditationAvailable } from './guidedMeditationScriptCatalog.js'
 import { resolveUpdateChannel } from './desktopUpdaterChannel.js';
 import { practiceBackupCloudEnabled } from './practiceBackup/practiceBackupCloudEnabled.js';
 import { isEmailJourneyCloudUiAllowedForChannel } from './practiceBackup/emailJourneyRestoreStatus.js';
+import { maskEmailForAccount } from './practiceBackup/maskEmailForAccount.js';
 import { isHomeSanctuaryNavEnabled } from './homeSanctuaryNavEnabled.js';
 import {
   flattenPreferenceCenterEntries,
@@ -72,6 +73,8 @@ import {
  * @property {boolean} [windowLayoutAvailable] Electron companion-window / fullscreen-sit row
  * @property {boolean} [globalSitHotkeyAvailable] Electron global sit shortcut (T101)
  * @property {boolean} [inputRhythmAvailable] Electron Mac Focus rhythm preference row
+ * @property {boolean} [emailJourneyCloudUi] false hides Sign in (store / test)
+ * @property {string} [signedInEmail] bound practice-backup email; menu shows a mask
  */
 
 /**
@@ -86,6 +89,8 @@ import {
  * @property {'beige-cta'} [emphasis]
  * @property {string} [testId]
  * @property {string} [hoverTipKey] glass hover subtitle on menu row (wide ⋯ / narrow drawer)
+ * @property {string} [labelText] literal label (masked email); wins over labelKey
+ * @property {boolean} [pinToMenuTop] keep above groups / favorites (T93 D6 Sign in)
  */
 
 /** Menu / drawer row → onboarding hint id (mint dot on first visit). */
@@ -465,6 +470,36 @@ function isEmailJourneyMenuInteractive(visibility = {}) {
   return isEmailJourneyCloudUiAllowedForChannel(resolveUpdateChannel(env));
 }
 
+/**
+ * Top-of-menu Sign in / masked email. Hidden on invite-gate and store builds.
+ * @param {SecondaryEntryVisibility} visibility
+ * @returns {SecondaryChromeEntry | null}
+ */
+function buildEmailJourneyAccountMenuRow(visibility = {}) {
+  if (!isEmailJourneyMenuInteractive(visibility)) return null;
+  const email =
+    typeof visibility.signedInEmail === 'string'
+      ? visibility.signedInEmail.trim()
+      : '';
+  if (email) {
+    return {
+      proxy: 'account',
+      labelKey: 'EMAIL_JOURNEY_MENU_SIGN_IN',
+      labelText: maskEmailForAccount(email),
+      testId: 'idle-account-email-restore',
+      kind: 'action',
+      pinToMenuTop: true
+    };
+  }
+  return {
+    proxy: 'account',
+    labelKey: 'EMAIL_JOURNEY_MENU_SIGN_IN',
+    testId: 'idle-account-email-restore',
+    kind: 'action',
+    pinToMenuTop: true
+  };
+}
+
 /** Narrow park / stage body classes (single spelling). */
 export const NARROW_STAGE_CLASS = Object.freeze({
   companion: 'ft-narrow-stage-companion',
@@ -776,6 +811,9 @@ export function listSecondaryChromeEntries(surface, visibility) {
   /** @type {SecondaryChromeEntry[]} */
   const out = [];
 
+  const accountTop = buildEmailJourneyAccountMenuRow(visibility);
+  if (accountTop) out.push(attachSecondaryHandler(accountTop));
+
   // Breath practice is the home left ball — never list in drawer / ⋯.
   // Sound: ActionBar ♪ is primary; Preferences `sound` row is census escape hatch.
 
@@ -878,37 +916,9 @@ export function listSecondaryChromeEntries(surface, visibility) {
     { proxy: 'community', labelKey: 'COMMUNITY_MENU_LABEL' }
   ]);
 
-  const accountRow = isEmailJourneyMenuInteractive(visibility)
-    ? {
-        proxy: 'account',
-        labelKey: 'EMAIL_JOURNEY_MENU_LABEL',
-        testId: 'idle-account-email-restore',
-        kind: 'action'
-      }
-    : {
-        proxy: 'account',
-        labelKey: isEmailJourneyCloudUiAllowedForChannel(
-          resolveUpdateChannel(
-            typeof process !== 'undefined' && process.env ? process.env : {}
-          )
-        )
-          ? 'ACCOUNT_MENU_PLACEHOLDER'
-          : 'EMAIL_JOURNEY_MENU_STORE_OFF',
-        interactive: false,
-        testId: isEmailJourneyCloudUiAllowedForChannel(
-          resolveUpdateChannel(
-            typeof process !== 'undefined' && process.env ? process.env : {}
-          )
-        )
-          ? 'idle-account-placeholder'
-          : 'idle-account-store-off',
-        kind: 'action'
-      };
-
   const prefEntries = flattenPreferenceCenterEntries(
     listPreferenceCenterSubgroups(visibility, {
       shouldOfferLanguagePicker,
-      accountRow,
       membershipTestId: hasUnlockedAdvancedScenes(visibility)
         ? 'idle-membership-unlocked'
         : 'idle-membership-cta'

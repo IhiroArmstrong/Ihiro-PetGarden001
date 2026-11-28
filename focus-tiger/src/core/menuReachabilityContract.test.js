@@ -54,12 +54,12 @@ describe('menuReachabilityContract', () => {
     );
   });
 
-  it('keeps account grey when tests force the cloud gate off', () => {
+  it('omits account when tests force the cloud gate off', () => {
     setPracticeBackupCloudEnabledForTests(false);
     try {
       const rows = listMenuReachabilityRows('wide-more');
       const account = rows.find((r) => r.proxy === 'account');
-      assert.equal(account?.interactive, false);
+      assert.equal(account, undefined);
     } finally {
       setPracticeBackupCloudEnabledForTests(true);
     }

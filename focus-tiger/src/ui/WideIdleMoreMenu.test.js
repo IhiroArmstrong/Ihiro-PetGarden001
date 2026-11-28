@@ -73,6 +73,14 @@ describe('wide more menu click reception', () => {
     assert.match(src, /this\.radialRoot\?\.contains\(target\)/);
   });
 
+  it('pins Sign in above radial group lists', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /item\.pinToMenuTop/);
+    assert.match(src, /ft-wide-more__sign-in-pin/);
+    assert.doesNotMatch(src, /WIDE_MENU_RADIAL_GROUP_KEYS\.push/);
+  });
+
   it('keeps the H1 side nav while a group sheet is open', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');

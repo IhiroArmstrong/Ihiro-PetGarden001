@@ -20,6 +20,7 @@ Source: `src/core/kbLiveEntryRegistry.js`. Refresh: `node scripts/write-internal
 | `kb-live-presence-signals` | menu | live | ⋯ → Practice → Presence signals | PRESENCE_SIGNALS_MENU_LABEL | KB-FUNC-0013 |
 | `kb-live-yin-coin` | menu | gated-default-on | ⋯ → Practice → Yin Coin | YIN_COIN_MENU_LABEL | KB-FUNC-0018 |
 | `kb-live-confide` | menu | conditional | ⋯ → Practice → Thought Drop (wide ear shortcut) | CONFIDE_MENU_LABEL | KB-FUNC-0005 KB-FUNC-0010 KB-FUNC-0039 |
+| `kb-live-daily-noticing` | menu | live | ⋯ → Practice → Daily noticing | DAILY_NOTICING_MENU_LABEL | — |
 | `kb-live-daily-quote` | menu | live | ⋯ → Inspiration → Daily quote | DAILY_ZEN_QUOTE_MENU_LABEL | KB-FUNC-0021 |
 | `kb-live-contemplative-inquiry` | menu | live | ⋯ → Inspiration → Sit with a question | CI_EX1_MENU_LABEL | KB-FUNC-0040 |
 | `kb-live-zen-cinema` | menu | live | ⋯ → Inspiration → Mindful Theater | ZEN_CINEMA_MENU_LABEL | KB-FUNC-0022 |
@@ -43,7 +44,7 @@ Source: `src/core/kbLiveEntryRegistry.js`. Refresh: `node scripts/write-internal
 | `kb-live-today-direction` | menu | live | ⋯ → Preferences → Choose today's direction again | TODAY_DIRECTION_MENU_LABEL | KB-FUNC-0029 |
 | `kb-live-sanctuary-nav` | menu | gated-default-off | ⋯ → Practice → Navigate sanctuary (wide home compass ball shortcut) | SANCTUARY_NAV_MENU_LABEL | KB-FUNC-0030 |
 | `kb-live-newsletter` | menu | live | ⋯ → Preferences → Stay in touch | NEWSLETTER_MENU_LABEL NEWSLETTER_MENU_CONFIRMED | KB-FUNC-0049 |
-| `kb-live-account` | menu | conditional | ⋯ → Preferences → Save or restore with email | EMAIL_JOURNEY_MENU_LABEL ACCOUNT_MENU_PLACEHOLDER EMAIL_JOURNEY_MENU_STORE_OFF | — |
+| `kb-live-account` | menu | conditional | ⋯ → Sign in | EMAIL_JOURNEY_MENU_SIGN_IN EMAIL_JOURNEY_MENU_LABEL ACCOUNT_MENU_PLACEHOLDER EMAIL_JOURNEY_MENU_STORE_OFF | — |
 | `kb-live-help-center` | menu | live | ⋯ → Preferences → Help Center | HELP_CENTER_MENU_LABEL | KB-EDU-0001 KB-EDU-0002 KB-EDU-0003 KB-EDU-0004 KB-FUNC-0001 KB-FUNC-0002 KB-FUNC-0003 KB-FUNC-0004 KB-FUNC-0005 KB-FUNC-0006 KB-FUNC-0007 KB-FUNC-0008 KB-FUNC-0010 KB-FUNC-0011 KB-FUNC-0012 KB-FUNC-0013 KB-FUNC-0014 KB-FUNC-0015 KB-FUNC-0016 KB-FUNC-0017 KB-FUNC-0018 KB-FUNC-0019 KB-FUNC-0020 KB-FUNC-0021 KB-FUNC-0022 KB-FUNC-0023 KB-FUNC-0024 KB-FUNC-0025 KB-FUNC-0026 KB-FUNC-0027 KB-FUNC-0028 KB-FUNC-0029 KB-FUNC-0030 KB-FUNC-0031 KB-FUNC-0032 KB-FUNC-0033 KB-FUNC-0034 KB-FUNC-0035 KB-FUNC-0036 KB-FUNC-0037 KB-FUNC-0038 KB-FUNC-0039 KB-FUNC-0040 KB-FUNC-0041 |
 | `kb-live-local-backup` | menu | live | ⋯ → Preferences → Backup & restore | LOCAL_BACKUP_MENU_LABEL | KB-FUNC-0003 KB-FUNC-0015 |
 | `kb-live-practice-study` | menu | live | ⋯ → Preferences → Practice Study | PRACTICE_STUDY_MENU_LABEL | — |

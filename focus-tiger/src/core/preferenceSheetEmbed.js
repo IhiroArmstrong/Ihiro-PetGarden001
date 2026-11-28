@@ -20,8 +20,7 @@ export const PREFERENCE_SHEET_EMBED_SELECTORS = Object.freeze({
   'presence-field': '#presence-field-preference',
   'health-shortcut-log': '#health-shortcut-log-preference-panel',
   'co-practice-contract': '#co-practice-contract-panel',
-  'local-backup': '#local-practice-data-panel',
-  account: '#email-journey-restore-panel'
+  'local-backup': '#local-practice-data-panel'
 });
 
 export const PREFERENCE_SHEET_EMBED_PROXIES = Object.freeze(

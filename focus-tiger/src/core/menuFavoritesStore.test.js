@@ -114,4 +114,20 @@ describe('injectMenuFavoritesSection', () => {
     assert.equal(out[1].proxy, 'daily-quote');
     assert.equal(out[2].labelKey, 'MENU_GROUP_PRACTICE');
   });
+
+  it('keeps Sign in pinned above favorites', () => {
+    const storage = mockStorage();
+    writeMenuFavoritesState({ itemIds: ['daily-quote'] }, storage);
+    const withPin = [
+      {
+        proxy: 'account',
+        labelKey: 'EMAIL_JOURNEY_MENU_SIGN_IN',
+        pinToMenuTop: true
+      },
+      ...base
+    ];
+    const out = injectMenuFavoritesSection(withPin, storage);
+    assert.equal(out[0].proxy, 'account');
+    assert.equal(out[1].labelKey, 'MENU_GROUP_MY_FAVORITES');
+  });
 });

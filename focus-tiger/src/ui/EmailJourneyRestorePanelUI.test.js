@@ -25,6 +25,16 @@ test('email restore panel maps 410 and never silent-returns on send', () => {
   assert.match(src, /isEmailJourneyAddressValid/);
 });
 
+test('D6 two-step card: continue then code, no consent checkbox, masked account email', () => {
+  assert.match(src, /EMAIL_JOURNEY_CONTINUE/);
+  assert.match(src, /EMAIL_JOURNEY_FOOT_CONSENT/);
+  assert.match(src, /EMAIL_JOURNEY_CHANGE_EMAIL/);
+  assert.match(src, /maskEmailForAccount/);
+  assert.match(src, /this\._step = 'code'/);
+  assert.doesNotMatch(src, /consentCheck/);
+  assert.doesNotMatch(src, /type = 'checkbox'/);
+});
+
 test('Journey corner is not the D3 entry', () => {
   assert.doesNotMatch(src, /journey-log-backup/);
 });

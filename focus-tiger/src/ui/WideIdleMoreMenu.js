@@ -44,7 +44,10 @@ import {
 } from '../core/wideMenuRadialLayout.js';
 import { Z } from './zIndexLayers.js';
 import { HomeThreeZoneUI } from './HomeThreeZoneUI.js';
-import { paintSecondaryChromeMenuRow } from './secondaryMenuRowRender.js';
+import {
+  paintSecondaryChromeMenuRow,
+  signedInPracticeEmailFromStorage
+} from './secondaryMenuRowRender.js';
 import { attachSecondaryMenuFavoriteHeart } from './secondaryMenuFavoriteHeart.js';
 import { injectMenuFavoritesSection } from '../core/menuFavoritesStore.js';
 import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
@@ -1228,7 +1231,10 @@ export class WideIdleMoreMenu {
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
       globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
-      inputRhythmAvailable: canUseInputRhythm()
+      inputRhythmAvailable: canUseInputRhythm(),
+      signedInEmail: signedInPracticeEmailFromStorage(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      )
     });
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;
@@ -1248,6 +1254,25 @@ export class WideIdleMoreMenu {
     /** @type {HTMLUListElement | null} */
     let cardItems = null;
     for (const item of entriesWithFavorites) {
+      if (item.pinToMenuTop) {
+        const li = document.createElement('li');
+        li.setAttribute('role', 'none');
+        li.className = 'ft-wide-more__sign-in-pin';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ft-wide-more__item';
+        btn.setAttribute('role', 'menuitem');
+        btn.dataset.proxy = item.proxy;
+        paintSecondaryChromeMenuRow(btn, item, {
+          t,
+          storage,
+          alwaysOnTopOn: this._alwaysOnTopOn
+        });
+        if (item.testId) btn.dataset.testid = item.testId;
+        li.appendChild(btn);
+        this.listEl.appendChild(li);
+        continue;
+      }
       if (item.kind === 'group-label') {
         if (radialListOnly) {
           const showGroup =

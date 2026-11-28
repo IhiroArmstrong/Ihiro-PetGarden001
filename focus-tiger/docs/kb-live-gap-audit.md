@@ -38,7 +38,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 > **机器块 · 勿手改**。真源：`scripts/audit-kb-live-gap.js` + `kbLiveEntryRegistry.js` + `productKnowledgeCatalog.json`。刷新：`npm run audit:kb-live-gap -- --write`。
 
-**Snapshot**: 2026-11-27 · 59 live rows · 58 approved catalog ids
+**Snapshot**: 2026-11-28 · 59 live rows · 58 approved catalog ids
 
 ### Summary counts
 
@@ -87,7 +87,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | liveId | liveStatus | menuPath | note |
 |---|---|---|---|
 | `kb-live-language` | conditional | ⋯ → Preferences → Language | conditional / optional surface — draft after PO confirms scope |
-| `kb-live-account` | conditional | ⋯ → Preferences → Save or restore with email | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-account` | conditional | ⋯ → Sign in | conditional / optional surface — draft after PO confirms scope |
 
 ### Cross-cutting approved catalog rows (no live row required)
 

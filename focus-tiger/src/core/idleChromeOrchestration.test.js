@@ -350,6 +350,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'account',
         'companion',
         'ground-exercise',
         'guided-meditation',
@@ -378,7 +379,6 @@ describe('listSecondaryChromeEntries', () => {
         'sound',
         'health-shortcut-log',
         'newsletter',
-        'account',
         'help-center',
         'local-backup',
         'practice-study',
@@ -419,6 +419,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'account',
         'companion',
         'ground-exercise',
         'guided-meditation',
@@ -447,7 +448,6 @@ describe('listSecondaryChromeEntries', () => {
         'sound',
         'health-shortcut-log',
         'newsletter',
-        'account',
         'help-center',
         'local-backup',
         'practice-study',
@@ -580,6 +580,7 @@ describe('listSecondaryChromeEntries', () => {
     assert.deepEqual(
       entries.filter((e) => e.proxy).map((e) => e.proxy),
       [
+        'account',
         'ground-exercise',
         'guided-meditation',
         'five-moments',
@@ -605,7 +606,6 @@ describe('listSecondaryChromeEntries', () => {
         'sound',
         'health-shortcut-log',
         'newsletter',
-        'account',
         'help-center',
         'local-backup',
         'practice-study',

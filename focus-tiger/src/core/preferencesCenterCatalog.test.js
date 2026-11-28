@@ -25,11 +25,6 @@ describe('preferences center catalog', () => {
   it('keeps leftover Help / Backup / Study / Subscription in Account', () => {
     const groups = listPreferenceCenterSubgroups(vis, {
       shouldOfferLanguagePicker: () => true,
-      accountRow: {
-        proxy: 'account',
-        labelKey: 'EMAIL_JOURNEY_MENU_LABEL',
-        kind: 'action'
-      },
       membershipTestId: 'idle-membership-cta'
     });
     const account = groups.find((g) => g.labelKey === 'PREF_CENTER_GROUP_ACCOUNT');
@@ -37,19 +32,18 @@ describe('preferences center catalog', () => {
       account.rows.map((r) => r.proxy),
       [
         'newsletter',
-        'account',
         'help-center',
         'local-backup',
         'practice-study',
         'membership'
       ]
     );
+    assert.ok(!account.rows.some((r) => r.proxy === 'account'));
   });
 
   it('marks Keep in front as an in-list toggle and Sound as a page', () => {
     const groups = listPreferenceCenterSubgroups(vis, {
       shouldOfferLanguagePicker: () => true,
-      accountRow: { proxy: 'account', labelKey: 'EMAIL_JOURNEY_MENU_LABEL' }
     });
     const devices = groups.find((g) => g.labelKey === 'PREF_CENTER_GROUP_DEVICES');
     const sound = devices.rows.find((r) => r.proxy === 'sound');
@@ -62,7 +56,6 @@ describe('preferences center catalog', () => {
     const flat = flattenPreferenceCenterEntries(
       listPreferenceCenterSubgroups(vis, {
         shouldOfferLanguagePicker: () => false,
-        accountRow: { proxy: 'account', labelKey: 'EMAIL_JOURNEY_MENU_LABEL' }
       })
     );
     assert.ok(flat.some((e) => e.kind === 'sub-group-label'));

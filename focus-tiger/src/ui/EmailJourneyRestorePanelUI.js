@@ -4,7 +4,7 @@
  */
 
 /**
- * Preferences · email save/restore (T93 D3). Journey log corner stays unused.
+ * ⋯ top-row Sign in / account card (T93 D6). Journey log corner stays unused.
  */
 
 import { t, onLocaleChange } from '../locales/i18n.js';
@@ -33,6 +33,7 @@ import {
   emailJourneyStatusKeyForError,
   isEmailJourneyAddressValid
 } from '../core/practiceBackup/emailJourneyRestoreStatus.js';
+import { maskEmailForAccount } from '../core/practiceBackup/maskEmailForAccount.js';
 
 const STYLE_ID = 'email-journey-restore-panel-ui-v1';
 const FADE_MS = 220;
@@ -52,6 +53,7 @@ export class EmailJourneyRestorePanelUI {
       (typeof localStorage !== 'undefined' ? localStorage : null);
     this._open = false;
     this._busy = false;
+    this._step = 'email';
 
     this.root = createGlassCard({
       id: 'email-journey-restore-panel',
@@ -89,13 +91,23 @@ export class EmailJourneyRestorePanelUI {
     this.codeInput.className = 'email-journey-restore-panel__input';
     this.codeInput.dataset.testid = 'email-journey-restore-code';
 
-    this.consentLabel = document.createElement('label');
-    this.consentLabel.className = 'email-journey-restore-panel__consent';
-    this.consentCheck = document.createElement('input');
-    this.consentCheck.type = 'checkbox';
-    this.consentCheck.dataset.testid = 'email-journey-restore-consent';
-    this.consentText = document.createElement('span');
-    this.consentLabel.append(this.consentCheck, this.consentText);
+    this.footConsentEl = document.createElement('p');
+    this.footConsentEl.className = 'email-journey-restore-panel__foot-consent';
+    this.footConsentEl.dataset.testid = 'email-journey-restore-foot-consent';
+
+    this.changeEmailBtn = document.createElement('button');
+    this.changeEmailBtn.type = 'button';
+    this.changeEmailBtn.className = 'email-journey-restore-panel__btn is-quiet';
+    this.changeEmailBtn.dataset.testid = 'email-journey-restore-change-email';
+    this.changeEmailBtn.addEventListener('click', () => this._onChangeEmail());
+
+    this.retryBtn = document.createElement('button');
+    this.retryBtn.type = 'button';
+    this.retryBtn.className = 'email-journey-restore-panel__btn';
+    this.retryBtn.dataset.testid = 'email-journey-restore-retry';
+    this.retryBtn.addEventListener('click', () => {
+      void this._onRetryBackup();
+    });
 
     this.statusEl = document.createElement('p');
     this.statusEl.className = 'email-journey-restore-panel__status';
@@ -141,7 +153,9 @@ export class EmailJourneyRestorePanelUI {
     this.actions.className = 'email-journey-restore-panel__actions';
     this.actions.append(
       this.sendCodeBtn,
+      this.changeEmailBtn,
       this.verifyBtn,
+      this.retryBtn,
       this.signOutBtn,
       this.deleteBtn
     );
@@ -153,9 +167,9 @@ export class EmailJourneyRestorePanelUI {
       this.boundEl,
       this.emailInput,
       this.codeInput,
-      this.consentLabel,
       this.statusEl,
       this.actions,
+      this.footConsentEl,
       this.closeBtn
     );
     mountRoot.appendChild(this.root);
@@ -178,6 +192,7 @@ export class EmailJourneyRestorePanelUI {
   openPanel() {
     if (this._open) return;
     this._open = true;
+    this._step = this._isBound() ? 'account' : 'email';
     this._refreshBound();
     this.root.hidden = false;
     this.root.getBoundingClientRect();
@@ -198,32 +213,60 @@ export class EmailJourneyRestorePanelUI {
   }
 
   _refreshTexts() {
-    this.titleEl.textContent = t('EMAIL_JOURNEY_PANEL_TITLE');
     this.blurbEl.textContent = t('EMAIL_JOURNEY_PANEL_BLURB');
     this.privacyEl.textContent = t('EMAIL_JOURNEY_PRIVACY');
     this.emailInput.placeholder = t('EMAIL_JOURNEY_EMAIL');
     this.codeInput.placeholder = t('EMAIL_JOURNEY_CODE');
-    this.consentText.textContent = t('EMAIL_JOURNEY_CONSENT');
-    this.sendCodeBtn.textContent = t('EMAIL_JOURNEY_SEND_CODE');
+    this.footConsentEl.textContent = t('EMAIL_JOURNEY_FOOT_CONSENT');
+    this.sendCodeBtn.textContent = t('EMAIL_JOURNEY_CONTINUE');
+    this.changeEmailBtn.textContent = t('EMAIL_JOURNEY_CHANGE_EMAIL');
     this.verifyBtn.textContent = t('EMAIL_JOURNEY_VERIFY');
+    this.retryBtn.textContent = t('EMAIL_JOURNEY_BACKUP_RETRY');
     this.signOutBtn.textContent = t('EMAIL_JOURNEY_SIGN_OUT');
     this.deleteBtn.textContent = t('EMAIL_JOURNEY_DELETE_CLOUD');
     this.closeBtn.textContent = t('EMAIL_JOURNEY_CLOSE');
     this._refreshBound();
   }
 
+  _isBound() {
+    const opt = readPracticeBackupOptIn(this._storage);
+    return Boolean(opt.enabled && opt.deviceToken && opt.email);
+  }
+
   _refreshBound() {
     const opt = readPracticeBackupOptIn(this._storage);
     const on = Boolean(opt.enabled && opt.deviceToken && opt.email);
-    this.consentLabel.hidden = on;
-    this.verifyBtn.hidden = on;
-    this.sendCodeBtn.hidden = on;
-    this.signOutBtn.hidden = !on;
-    this.deleteBtn.hidden = !on;
-    if (on) {
+    if (on) this._step = 'account';
+    const step = this._step;
+    const emailStep = step === 'email';
+    const codeStep = step === 'code';
+    const accountStep = step === 'account';
+
+    this.titleEl.textContent = accountStep
+      ? t('EMAIL_JOURNEY_ACCOUNT_TITLE')
+      : t('EMAIL_JOURNEY_PANEL_TITLE');
+    this.blurbEl.hidden = accountStep;
+    this.privacyEl.hidden = true;
+    this.emailInput.hidden = accountStep;
+    this.emailInput.readOnly = codeStep;
+    this.codeInput.hidden = emailStep;
+    this.footConsentEl.hidden = !emailStep;
+    this.sendCodeBtn.hidden = !emailStep;
+    this.changeEmailBtn.hidden = !codeStep;
+    this.verifyBtn.hidden = !codeStep;
+    this.signOutBtn.hidden = !accountStep;
+    this.deleteBtn.hidden = !accountStep;
+    const backupFailed = Boolean(accountStep && opt.lastUploadError);
+    this.retryBtn.hidden = !backupFailed;
+    if (accountStep) {
       this.boundEl.hidden = false;
-      this.boundEl.textContent = `${t('EMAIL_JOURNEY_BOUND')} ${opt.email}`;
+      this.boundEl.textContent = maskEmailForAccount(opt.email);
       this.emailInput.value = opt.email || '';
+      this.statusEl.hidden = false;
+      this.statusEl.dataset.kind = backupFailed ? 'error' : 'ok';
+      this.statusEl.textContent = backupFailed
+        ? t('EMAIL_JOURNEY_BACKUP_FAIL')
+        : t('EMAIL_JOURNEY_BACKUP_OK');
     } else {
       this.boundEl.hidden = true;
     }
@@ -242,9 +285,33 @@ export class EmailJourneyRestorePanelUI {
   _setBusy(busy) {
     this._busy = Boolean(busy);
     this.sendCodeBtn.disabled = this._busy;
+    this.changeEmailBtn.disabled = this._busy;
     this.verifyBtn.disabled = this._busy;
+    this.retryBtn.disabled = this._busy;
     this.signOutBtn.disabled = this._busy;
     this.deleteBtn.disabled = this._busy;
+  }
+
+  _onChangeEmail() {
+    if (this._busy) return;
+    this._step = 'email';
+    this.codeInput.value = '';
+    this.emailInput.readOnly = false;
+    this._refreshBound();
+  }
+
+  async _onRetryBackup() {
+    if (this._busy) return;
+    this._setBusy(true);
+    this._setFormStatus('EMAIL_JOURNEY_STATUS_SENDING', 'pending');
+    try {
+      await flushPracticeBackupUpload({ storage: this._storage, force: true });
+      this._refreshBound();
+    } catch (err) {
+      this._setFormStatus(emailJourneyStatusKeyForError(err), 'error');
+    } finally {
+      this._setBusy(false);
+    }
   }
 
   async _onSendCode() {
@@ -258,6 +325,8 @@ export class EmailJourneyRestorePanelUI {
     this._setFormStatus('EMAIL_JOURNEY_STATUS_SENDING', 'pending');
     try {
       await requestPracticeBackupOtp(email);
+      this._step = 'code';
+      this._refreshBound();
       this._setFormStatus('EMAIL_JOURNEY_STATUS_SENT', 'ok');
     } catch (err) {
       this._setFormStatus(emailJourneyStatusKeyForError(err), 'error');
@@ -268,10 +337,6 @@ export class EmailJourneyRestorePanelUI {
 
   async _onVerify() {
     if (this._busy) return;
-    if (!this.consentCheck.checked) {
-      this._setFormStatus('EMAIL_JOURNEY_STATUS_CONSENT', 'error');
-      return;
-    }
     const email = this.emailInput.value.trim();
     if (!isEmailJourneyAddressValid(email)) {
       this._setFormStatus('EMAIL_JOURNEY_STATUS_INVALID', 'error');
@@ -319,8 +384,11 @@ export class EmailJourneyRestorePanelUI {
   _onSignOut() {
     if (this._busy) return;
     clearPracticeBackupOptIn(this._storage);
-    this._setFormStatus('EMAIL_JOURNEY_STATUS_SIGNED_OUT', 'ok');
+    this._step = 'email';
+    this.codeInput.value = '';
+    this.emailInput.readOnly = false;
     this._refreshBound();
+    this._setFormStatus('EMAIL_JOURNEY_STATUS_SIGNED_OUT', 'ok');
   }
 
   async _onDeleteCloud() {
@@ -410,12 +478,14 @@ export class EmailJourneyRestorePanelUI {
         background: rgba(255,252,245,.9);
         color: #4a3a28;
       }
-      .email-journey-restore-panel__consent {
-        display: flex;
-        gap: 8px;
-        align-items: flex-start;
-        margin: 0 0 10px;
-        font-size: 13px;
+      .email-journey-restore-panel__foot-consent {
+        margin: 10px 0 0;
+        font-size: 12px;
+        line-height: 1.4;
+        opacity: 0.82;
+      }
+      .email-journey-restore-panel__btn.is-quiet {
+        background: transparent;
       }
       .email-journey-restore-panel__actions {
         display: flex;
