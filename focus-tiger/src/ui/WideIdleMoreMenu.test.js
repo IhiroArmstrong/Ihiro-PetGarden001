@@ -79,6 +79,10 @@ describe('wide more menu click reception', () => {
     assert.match(src, /const showRadial = !this\._homeRailListOnly/);
     assert.match(
       src,
+      /const radialListOnly =[\s\S]*_homeRailListOnly/
+    );
+    assert.match(
+      src,
       /if \(this\.radialRoot\) this\.radialRoot\.hidden = !showRadial/
     );
   });

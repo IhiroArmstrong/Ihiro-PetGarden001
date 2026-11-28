@@ -1228,7 +1228,8 @@ export class WideIdleMoreMenu {
 
     this.listEl.innerHTML = '';
     const radialListOnly =
-      !this._menuFlat && Boolean(this._activeListGroup);
+      Boolean(this._activeListGroup) &&
+      (!this._menuFlat || this._homeRailListOnly);
     if (this.sheetTitle) {
       this.sheetTitle.textContent = radialListOnly
         ? t(this._activeListGroup)
