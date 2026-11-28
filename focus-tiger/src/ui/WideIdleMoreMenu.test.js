@@ -276,6 +276,13 @@ describe('wide more menu click reception', () => {
     assert.match(src, /if \(this\._prefPage\) return;/);
   });
 
+  it('sheet title click exits H8 preference subpage', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /sheetTitle\.addEventListener\('click'/);
+    assert.match(src, /isMindflowNebulaUserMountEnabled/);
+  });
+
   it('side-nav re-click on active group exits H8 preference subpage', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');

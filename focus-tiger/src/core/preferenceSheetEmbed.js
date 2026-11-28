@@ -90,11 +90,6 @@ export function wirePreferenceSheetEmbedClose(panel, onClose) {
   panel.addEventListener('ft-pref-embed-close', () => onClose());
 }
 
-/**
- * Close the live panel without going through main.js.
- * @param {string} proxy
- * @returns {void}
- */
 /** Visible back control on H8 preference subpages (label stays in i18n for a11y). */
 export const PREF_SHEET_BACK_GLYPH = '←';
 
@@ -204,8 +199,36 @@ export function preferenceSheetEmbedCss() {
     }
     [data-pref-sheet-embed="1"] button[id$="-close"],
     [data-pref-sheet-embed="1"] button[data-testid$="-close"],
-    [data-pref-sheet-embed="1"] .co-practice-contract-panel__close {
+    [data-pref-sheet-embed="1"] .co-practice-contract-panel__close,
+    [data-pref-sheet-embed="1"] .presence-field-pref__close,
+    [data-pref-sheet-embed="1"] .mindflow-nebula-pref__close {
       display: none !important;
+    }
+    [data-pref-sheet-embed="1"] .presence-field-pref__panel,
+    [data-pref-sheet-embed="1"] .mindflow-nebula-pref__panel {
+      position: relative !important;
+      inset: auto !important;
+      left: auto !important;
+      right: auto !important;
+      top: auto !important;
+      bottom: auto !important;
+      transform: none !important;
+      width: 100% !important;
+      max-width: none !important;
+      box-shadow: none !important;
+      border: none !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    [data-pref-sheet-embed="1"] .presence-field-pref__title,
+    [data-pref-sheet-embed="1"] .mindflow-nebula-pref__title,
+    [data-pref-sheet-embed="1"] .co-practice-contract-panel__title {
+      display: none !important;
+    }
+    body.ft-pref-sheet-embed .ft-wide-more__title,
+    body.ft-pref-sheet-embed .ft-narrow-sheet__title {
+      cursor: pointer;
     }
   `;
 }

@@ -570,7 +570,11 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     proxy: 'mindflow-nebula',
     labelKeys: Object.freeze(['MINDFLOW_NEBULA_MENU_LABEL']),
     menuPath: '⋯ → Preferences → Mindflow nebula',
-    liveStatus: 'live',
+    liveStatus: 'gated-default-off',
+    gate: Object.freeze({
+      moduleRelPath: 'src/core/mindflowNebula/mindflowNebulaStore.js',
+      anchor: 'MINDFLOW_NEBULA_CHROME_SUSPENDED = true'
+    }),
     codeAnchors: Object.freeze([
       "proxy: 'mindflow-nebula'",
       'MINDFLOW_NEBULA_MENU_LABEL',

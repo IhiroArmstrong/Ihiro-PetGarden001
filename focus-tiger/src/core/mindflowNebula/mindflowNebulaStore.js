@@ -6,10 +6,15 @@
 export const STORAGE_KEY = 'focus-tiger.mindflow-nebula-enabled.v1';
 
 /**
- * Temporarily hide chrome until presentation is reliable (PO 2026-11-20).
- * Preference toggle may still persist; chrome stays off while suspended.
+ * Hide user mount (menu + chrome) until presentation is reliable (PO 2026-11-20 / 11-27).
+ * Preference storage may still persist; nothing user-facing mounts while suspended.
  */
 export const MINDFLOW_NEBULA_CHROME_SUSPENDED = true;
+
+/** @returns {boolean} */
+export function isMindflowNebulaUserMountEnabled() {
+  return MINDFLOW_NEBULA_CHROME_SUSPENDED !== true;
+}
 
 /** @typedef {'rest' | 'confide' | 'companion_speak'} MindflowNebulaMode */
 
