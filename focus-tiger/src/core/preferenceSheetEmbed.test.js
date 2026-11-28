@@ -30,6 +30,19 @@ describe('preferenceSheetEmbed', () => {
     assert.ok(PREFERENCE_SHEET_EMBED_PROXIES.includes('language'));
   });
 
+  it('account embed back closes via ft-pref-embed-close (immediate)', () => {
+    if (typeof document === 'undefined') return;
+    const panel = document.createElement('div');
+    panel.id = 'email-journey-restore-panel';
+    let closed = 0;
+    wirePreferenceSheetEmbedClose(panel, () => {
+      closed += 1;
+    });
+    requestClosePreferencePanel('account');
+    assert.equal(closed, 1);
+    panel.remove();
+  });
+
   it('shows a back arrow with localized aria-label', () => {
     /** @type {{ textContent: string, attrs: Record<string, string>, setAttribute: (k: string, v: string) => void, getAttribute: (k: string) => string | null }} */
     const btn = {
@@ -45,19 +58,6 @@ describe('preferenceSheetEmbed', () => {
     applyPreferenceSheetBackButton(btn, 'Back to Preferences');
     assert.equal(btn.textContent, PREF_SHEET_BACK_GLYPH);
     assert.equal(btn.getAttribute('aria-label'), 'Back to Preferences');
-  });
-
-  it('account embed back closes via ft-pref-embed-close (immediate)', () => {
-    if (typeof document === 'undefined') return;
-    const panel = document.createElement('div');
-    panel.id = 'email-journey-restore-panel';
-    let closed = 0;
-    wirePreferenceSheetEmbedClose(panel, () => {
-      closed += 1;
-    });
-    requestClosePreferencePanel('account');
-    assert.equal(closed, 1);
-    panel.remove();
   });
 
   it('embed CSS flattens presence / nebula inner panels and hides duplicate titles', () => {
