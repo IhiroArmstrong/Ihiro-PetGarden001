@@ -19,6 +19,29 @@ function helpCenter(page) {
 test.describe('wide Help Center beside ?', () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
+  test('compass glyph fills round chrome beside ? (regression)', async ({
+    page
+  }) => {
+    await openFreshProductShell(page);
+    const beside = page.locator('[data-testid=idle-help-center-beside]');
+    await expect(beside).toBeVisible({ timeout: 8_000 });
+    const metrics = await page.evaluate(() => {
+      const btn = document.querySelector(
+        '[data-testid=idle-help-center-beside]'
+      );
+      const svg = btn?.querySelector('.ft-help-center-beside-compass');
+      if (!btn || !svg) return null;
+      const br = btn.getBoundingClientRect();
+      const sr = svg.getBoundingClientRect();
+      const btnSide = Math.min(br.width, br.height);
+      const glyphSide = Math.min(sr.width, sr.height);
+      return { ratio: glyphSide / btnSide };
+    });
+    expect(metrics).toBeTruthy();
+    // 22px in a 40px button looked like a speck (~0.55); target ~0.8 at 32px.
+    expect(metrics.ratio).toBeGreaterThanOrEqual(0.72);
+  });
+
   test('new button sits right of ? and opens Help Center only', async ({
     page
   }) => {

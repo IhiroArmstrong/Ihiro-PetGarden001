@@ -177,6 +177,11 @@ export const LOCAL_BACKUP_NAMED_EXCLUDE_ROWS = Object.freeze([
     note: 'T106 journal Keep/Not-now stays on this device; do not copy via practice backup'
   },
   {
+    key: 'focus-tiger.inner-mirror.v1',
+    tier: 'exclude-product',
+    note: 'T105 Inner Mirror left lines stay on this device; never export or cloud-backup'
+  },
+  {
     key: 'focus-tiger.t54-research-last-post.v1',
     tier: 'exclude-ephemeral',
     note: 'T54 last POST fingerprint; device throttle'

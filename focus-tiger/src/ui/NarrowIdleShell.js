@@ -29,6 +29,7 @@ import { attachSecondaryMenuFavoriteHeart } from './secondaryMenuFavoriteHeart.j
 import { injectMenuFavoritesSection } from '../core/menuFavoritesStore.js';
 import {
   adoptPreferencePanelIntoSheet,
+  applyPreferenceSheetBackButton,
   preferenceSheetEmbedCss,
   queryPreferenceSheetPanel,
   releasePreferencePanelFromSheet,
@@ -52,7 +53,10 @@ import {
 import { attachGlassHoverTip } from './ft-glass-hover-tip.js';
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { Z } from './zIndexLayers.js';
-import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
+import {
+  HELP_CENTER_BESIDE_GLYPH,
+  HELP_CENTER_BESIDE_GLYPH_PX
+} from './helpCenterBesideGlyph.js';
 import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
 
 const STYLE_ID = 'ft-narrow-idle-shell-styles-v26';
@@ -407,7 +411,7 @@ export class NarrowIdleShell {
     if (this.prefPageSlot) this.prefPageSlot.hidden = false;
     if (this.prefBack) {
       this.prefBack.hidden = false;
-      this.prefBack.textContent = t('PREF_CENTER_BACK');
+      applyPreferenceSheetBackButton(this.prefBack, t('PREF_CENTER_BACK'));
     }
     this._popPrefEscape?.();
     this._popPrefEscape = pushOverlayEscapeLayer({
@@ -1415,8 +1419,8 @@ export class NarrowIdleShell {
       }
       .ft-narrow-help-center-glyph {
         display: block;
-        width: 22px;
-        height: 22px;
+        width: ${HELP_CENTER_BESIDE_GLYPH_PX}px;
+        height: ${HELP_CENTER_BESIDE_GLYPH_PX}px;
         margin: 0;
         flex: 0 0 auto;
       }

@@ -40,19 +40,21 @@ function memoryStorage() {
 }
 
 describe('T106 growth journal', () => {
-  it('does not write without Keep, and never writes crisis', () => {
+  it('writes by default on send and never writes crisis', () => {
     const storage = memoryStorage();
-    assert.equal(shouldWriteGrowthJournal({ consented: false, crisis: false }), false);
-    assert.equal(shouldWriteGrowthJournal({ consented: true, crisis: true }), false);
-    assert.equal(shouldWriteGrowthJournal({ consented: true, crisis: false }), true);
+    assert.equal(shouldWriteGrowthJournal({ crisis: false }), true);
+    assert.equal(shouldWriteGrowthJournal({ crisis: true }), false);
 
     const first = considerGrowthJournalAfterSend({
       storage,
       text: 'a quiet thought',
-      route: CONFIDE_ROUTE.FALLBACK
+      route: CONFIDE_ROUTE.FALLBACK,
+      now: '2026-11-26T00:00:00.000Z'
     });
-    assert.equal(first.action, 'ask');
-    assert.equal(readGrowthJournalState(storage).entries.length, 0);
+    assert.equal(first.action, 'written');
+    assert.equal(first.showPolicyNotice, true);
+    assert.equal(readGrowthJournalState(storage).entries.length, 1);
+    assert.equal(readGrowthJournalConsent(storage).status, 'granted');
 
     const crisis = considerGrowthJournalAfterSend({
       storage,
@@ -61,10 +63,10 @@ describe('T106 growth journal', () => {
     });
     assert.equal(crisis.action, 'skip');
     assert.equal(crisis.reason, 'crisis');
-    assert.equal(readGrowthJournalState(storage).entries.length, 0);
+    assert.equal(readGrowthJournalState(storage).entries.length, 1);
   });
 
-  it('writes only after granted consent and skips after decline', () => {
+  it('writes after prior decline and skips policy notice after grant', () => {
     const storage = memoryStorage();
     writeGrowthJournalConsent(storage, 'granted', '2026-11-26T00:00:00.000Z');
     const written = considerGrowthJournalAfterSend({
@@ -74,6 +76,7 @@ describe('T106 growth journal', () => {
       now: '2026-11-26T01:00:00.000Z'
     });
     assert.equal(written.action, 'written');
+    assert.equal(written.showPolicyNotice, false);
     const rows = readGrowthJournalState(storage).entries;
     assert.equal(rows.length, 1);
     assert.equal(rows[0].text, 'keep this line');
@@ -81,14 +84,16 @@ describe('T106 growth journal', () => {
 
     const other = memoryStorage();
     writeGrowthJournalConsent(other, 'declined', '2026-11-26T00:00:00.000Z');
-    const skipped = considerGrowthJournalAfterSend({
+    const resumed = considerGrowthJournalAfterSend({
       storage: other,
       text: 'keep this line',
-      route: 'share'
+      route: 'share',
+      now: '2026-11-26T02:00:00.000Z'
     });
-    assert.equal(skipped.action, 'skip');
-    assert.equal(skipped.reason, 'declined');
-    assert.equal(readGrowthJournalState(other).entries.length, 0);
+    assert.equal(resumed.action, 'written');
+    assert.equal(resumed.showPolicyNotice, true);
+    assert.equal(readGrowthJournalState(other).entries.length, 1);
+    assert.equal(readGrowthJournalConsent(other).status, 'granted');
   });
 
   it('clear deletes entries; keys stay off practice backup export', () => {

@@ -76,9 +76,14 @@ describe('wide more menu click reception', () => {
   it('keeps the H1 side nav while a group sheet is open', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /const showRadial = !this\._homeRailListOnly/);
     assert.match(
       src,
-      /const listPhase = Boolean\(this\._activeListGroup\);[\s\S]*this\.radialRoot\.hidden = false;/
+      /const radialListOnly =[\s\S]*_homeRailListOnly/
+    );
+    assert.match(
+      src,
+      /if \(this\.radialRoot\) this\.radialRoot\.hidden = !showRadial/
     );
   });
 
@@ -168,7 +173,7 @@ describe('wide more menu click reception', () => {
     assert.match(src, /_dismissIdleVisualPrimaryOverlays/);
     assert.match(
       src,
-      /openMenu\(\) \{[\s\S]*_dismissIdleVisualPrimaryOverlays\(\);[\s\S]*this\._menuOpen = true/
+      /openMenu\(opts = \{\}\) \{[\s\S]*_dismissIdleVisualPrimaryOverlays\(\);[\s\S]*this\._menuOpen = true/
     );
     assert.match(src, /clearStage\(\) \{[\s\S]*_dismissIdleVisualPrimaryOverlays\(\)/);
   });
@@ -238,6 +243,14 @@ describe('wide more menu click reception', () => {
     assert.match(src, /new HomeThreeZoneUI/);
   });
 
+  it('hides side NAVIGATION when H2 home rail opens a group list', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(src, /_homeRailListOnly/);
+    assert.match(src, /openMenu\(\{ homeRailListOnly: true \}\)/);
+    assert.match(src, /const showRadial = !this\._homeRailListOnly/);
+  });
+
   it('hides ⋯ during Honesty bridge but keeps escape hatch for overlay suppress', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
@@ -252,5 +265,14 @@ describe('wide more menu click reception', () => {
     assert.match(src, /_enterPreferencePage/);
     assert.match(src, /ft-pref-sheet-back/);
     assert.match(src, /if \(this\._prefPage\) return;/);
+  });
+
+  it('side-nav re-click on active group exits H8 preference subpage', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'WideIdleMoreMenu.js'), 'utf8');
+    assert.match(
+      src,
+      /_openRadialGroup\(groupKey\) \{[\s\S]*?if \(this\._prefPage\) \{[\s\S]*?this\._activeListGroup === groupKey\) \{[\s\S]*?_exitPreferencePage/
+    );
   });
 });

@@ -24,7 +24,9 @@
 | **3** | 要不要基础 Login/Logout；至少「恢复购买 / 账号与设备」占位 | **同意先占位、不急着做账号**；T93 另开「用邮箱保存或找回」 | **双态。** 开闸（2026-11-13）：Preferences 真入口 `idle-account-email-restore`，开 `#email-journey-restore-panel`。Setapp / MAS：`idle-account-store-off`，不可点。Journey 角落不再当登录。购买恢复仍走原卡 | 开闸文案切片 `email-journey-restore`；关闸占位 `ACCOUNT_MENU_PLACEHOLDER` | **Circle 统一 Login / Logout /「账号与设备」仍不写。** 禁止把商店渠道做成假可点 | **统一身份触发仍未到（2026-09-26 PO）**：（A）开工 **Circle 跨设备认人** 须先写统一 Brief；（B）或换设备/清缓存找不回投诉 ≥3。T93 旅程找回 **不算** 统一 Login。网页与自有电脑版已开邮箱找回 |
 | **4** | 入口放右上角齿轮或 `⋯`；左上留给日历；不要两边都塞菜单 | **同意右上 `⋯`，左上日历** | **早已如此，两刀都没改位置。** 宽屏 `#ft-wide-more-btn` 右上；窄屏 grabber 底缘抽屉。左上仍是打卡/热力图 | 代码里曾有 TODO「audit 后再搬菜单位置」——**位置已拍死，不应再搬** | 无功能缺口 | **禁止再提案左上汉堡。** TODO 改为指向本文 |
 
-**一句话：** 四条里，1/4 的约定行为已在 #757+#759；第 3 条代码已有 Preferences 真入口（#1679），2026-11-13 网页与自有电脑版开闸；Circle 统一账号仍不写。2 的「漏项补行」已做。Support 五卡不必进菜单（**2026-09-15 拍板**）。
+**一句话：** 四条里，1/4 的约定行为已在 #757+#759；第 3 条代码**现状**仍是 Preferences 真入口（#1679），2026-11-13 网页与自有电脑版开闸；Circle 统一账号仍不写。2 的「漏项补行」已做。Support 五卡不必进菜单（**2026-09-15 拍板**）。
+
+**PO 2026-11-27（未写运行时）：** 可发现性改口——开闸后入口改为 `⋯` **列表最顶一行**，未登录文案 **Sign in**，已登录脱敏邮箱；不再埋在 Preferences，也不再避开 Sign in 字样。这**不是** Circle 统一 Login，也**不是**把菜单从右上搬到左上（第 4 条仍禁止左上汉堡）。规格 SSOT：[`task-briefs/task-t93-sign-in-discoverability.md`](./task-briefs/task-t93-sign-in-discoverability.md)。本表 §1 第 3 行「代码现状」在 D6 合入前保持 Preferences。
 
 ---
 

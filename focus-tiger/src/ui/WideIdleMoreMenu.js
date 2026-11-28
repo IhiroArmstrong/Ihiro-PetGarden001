@@ -50,6 +50,7 @@ import { injectMenuFavoritesSection } from '../core/menuFavoritesStore.js';
 import { pickHomeIdleGreetingKey } from '../core/homeIdleGreeting.js';
 import {
   adoptPreferencePanelIntoSheet,
+  applyPreferenceSheetBackButton,
   preferenceSheetEmbedCss,
   queryPreferenceSheetPanel,
   releasePreferencePanelFromSheet,
@@ -188,6 +189,8 @@ export class WideIdleMoreMenu {
     this._refreshingHomeCtas = false;
     /** @type {boolean} */
     this._edgeRecallRevealed = false;
+    /** H2 right rail: open one group list without the side NAVIGATION column. */
+    this._homeRailListOnly = false;
 
     this._mq =
       typeof window.matchMedia === 'function'
@@ -266,14 +269,16 @@ export class WideIdleMoreMenu {
   }
 
   /**
+   * @param {{ homeRailListOnly?: boolean }} [opts]
    * @returns {void}
    */
-  openMenu() {
+  openMenu(opts = {}) {
     if (!this._isWide() || this._honestyBridgeActive) return;
     if (!this._canOpenMoreMenu()) return;
     this._dismissIdleVisualPrimaryOverlays();
     this._menuOpen = true;
     this._menuFlat = shouldDegenerateWideMenuRadialForButton(this.moreBtn);
+    this._homeRailListOnly = Boolean(opts.homeRailListOnly);
     this._activeListGroup = null;
     this._radialFocusIdx = 0;
     if (this._menuFlat) {
@@ -308,6 +313,7 @@ export class WideIdleMoreMenu {
     this._exitPreferencePage({ refresh: false });
     this._menuOpen = false;
     this._activeListGroup = null;
+    this._homeRailListOnly = false;
     this._popEscapeLayer?.();
     this._popEscapeLayer = null;
     document.removeEventListener('keydown', this._onKeyDown, true);
@@ -331,7 +337,7 @@ export class WideIdleMoreMenu {
     if (this.prefPageSlot) this.prefPageSlot.hidden = false;
     if (this.prefBack) {
       this.prefBack.hidden = false;
-      this.prefBack.textContent = t('PREF_CENTER_BACK');
+      applyPreferenceSheetBackButton(this.prefBack, t('PREF_CENTER_BACK'));
     }
     this._popPrefEscape?.();
     this._popPrefEscape = pushOverlayEscapeLayer({
@@ -970,7 +976,7 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   openMenuGroup(groupKey) {
-    this.openMenu();
+    this.openMenu({ homeRailListOnly: true });
     if (!this._menuOpen || !groupKey) return;
     if (this._menuFlat) {
       this._activeListGroup = groupKey;
@@ -1009,9 +1015,11 @@ export class WideIdleMoreMenu {
     }
     const listPhase = Boolean(this._activeListGroup);
     if (this.menu) this.menu.hidden = !listPhase;
+    const showRadial = !this._homeRailListOnly;
     // H1 side nav stays while a group sheet is open so the user can switch groups.
-    if (this.radialRoot) this.radialRoot.hidden = false;
-    document.body.classList.toggle('ft-wide-more-radial-open', true);
+    // H2 Yin & memories previews open only the group sheet (Brief: 浅遮罩 + 该组列表).
+    if (this.radialRoot) this.radialRoot.hidden = !showRadial;
+    document.body.classList.toggle('ft-wide-more-radial-open', showRadial);
     if (!listPhase) {
       this._placeRadial();
       this._clearGroupSheetPosition();
@@ -1031,7 +1039,13 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   _positionGroupSheet(groupKey) {
-    if (!this.menu || this._menuFlat || !groupKey || this.menu.hidden) {
+    if (
+      !this.menu ||
+      this._menuFlat ||
+      this._homeRailListOnly ||
+      !groupKey ||
+      this.menu.hidden
+    ) {
       this._clearGroupSheetPosition();
       return;
     }
@@ -1099,6 +1113,13 @@ export class WideIdleMoreMenu {
    * @returns {void}
    */
   _openRadialGroup(groupKey) {
+    if (this._prefPage) {
+      if (this._activeListGroup === groupKey) {
+        this._exitPreferencePage();
+        return;
+      }
+      this._exitPreferencePage();
+    }
     this._activeListGroup = groupKey;
     this._expandedGroups = new Set([groupKey]);
     this._refreshItems();
@@ -1215,7 +1236,8 @@ export class WideIdleMoreMenu {
 
     this.listEl.innerHTML = '';
     const radialListOnly =
-      !this._menuFlat && Boolean(this._activeListGroup);
+      Boolean(this._activeListGroup) &&
+      (!this._menuFlat || this._homeRailListOnly);
     if (this.sheetTitle) {
       this.sheetTitle.textContent = radialListOnly
         ? t(this._activeListGroup)
