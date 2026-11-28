@@ -8,10 +8,15 @@ import assert from 'node:assert/strict';
 import {
   MINDFLOW_NEBULA_CHROME_SUSPENDED,
   STORAGE_KEY,
+  isMindflowNebulaUserMountEnabled,
   readMindflowNebulaEnabled,
   resolveMindflowNebulaPresentation,
   writeMindflowNebulaEnabled
 } from './mindflowNebulaStore.js';
+
+test('user mount follows chrome suspend flag', () => {
+  assert.equal(isMindflowNebulaUserMountEnabled(), !MINDFLOW_NEBULA_CHROME_SUSPENDED);
+});
 
 test('mindflow nebula defaults off', () => {
   const storage = {

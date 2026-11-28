@@ -128,7 +128,12 @@ export function diffMenuProxyCoverage(registryRows, menuRows) {
 
   // Runtime gates that can hide a registered row even with max audit visibility.
   // Extra menu proxies are never skipped: missing registry = CI red.
-  const absentFromDumpOk = new Set(['language', 'guided-meditation', 'sanctuary-nav']);
+  const absentFromDumpOk = new Set([
+    'language',
+    'guided-meditation',
+    'sanctuary-nav',
+    'mindflow-nebula'
+  ]);
 
   const missingFromMenu = [...registryProxies].filter(
     (proxy) => !menuProxies.has(proxy) && !absentFromDumpOk.has(proxy)

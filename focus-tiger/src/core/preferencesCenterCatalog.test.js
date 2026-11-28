@@ -58,6 +58,21 @@ describe('preferences center catalog', () => {
     assert.equal(pin.kind, 'toggle');
   });
 
+  it('omits mindflow nebula unless the mount flag is on', () => {
+    const off = listPreferenceCenterSubgroups(vis, {
+      shouldOfferLanguagePicker: () => true
+    });
+    assert.equal(
+      off.some((g) => g.rows.some((r) => r.proxy === 'mindflow-nebula')),
+      false
+    );
+    const on = listPreferenceCenterSubgroups(
+      { ...vis, mindflowNebulaAvailable: true },
+      { shouldOfferLanguagePicker: () => true }
+    );
+    assert.ok(on.some((g) => g.rows.some((r) => r.proxy === 'mindflow-nebula')));
+  });
+
   it('flattens subgroup labels without dropping proxies', () => {
     const flat = flattenPreferenceCenterEntries(
       listPreferenceCenterSubgroups(vis, {

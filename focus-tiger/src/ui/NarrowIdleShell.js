@@ -37,6 +37,7 @@ import {
   shouldEmbedPreferenceInSheet
 } from '../core/preferenceSheetEmbed.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
+import { isMindflowNebulaUserMountEnabled } from '../core/mindflowNebula/mindflowNebulaStore.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { canUseGlobalSitHotkey } from '../core/globalSitHotkeyBridge.js';
 import { openGlobalSitHotkeyPreference } from './GlobalSitHotkeyPreferenceUI.js';
@@ -661,6 +662,13 @@ export class NarrowIdleShell {
       event.stopPropagation();
       this._exitPreferencePage();
     });
+    this.sheet
+      ?.querySelector('[data-role="sheet-title"]')
+      ?.addEventListener('click', (event) => {
+        if (!this._prefPage) return;
+        event.stopPropagation();
+        this._exitPreferencePage();
+      });
     this.sanctuaryNavHomeBtn = document.getElementById(
       'ft-sanctuary-nav-compass-fab'
     );
@@ -1083,7 +1091,8 @@ export class NarrowIdleShell {
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
       globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
-      inputRhythmAvailable: canUseInputRhythm()
+      inputRhythmAvailable: canUseInputRhythm(),
+      mindflowNebulaAvailable: isMindflowNebulaUserMountEnabled()
     });
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;

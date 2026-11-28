@@ -372,7 +372,6 @@ describe('listSecondaryChromeEntries', () => {
         'reminder',
         'work-end',
         'today-direction',
-        'mindflow-nebula',
         'presence-field',
         'language',
         'sound',
@@ -441,7 +440,6 @@ describe('listSecondaryChromeEntries', () => {
         'reminder',
         'work-end',
         'today-direction',
-        'mindflow-nebula',
         'presence-field',
         'language',
         'sound',
@@ -487,6 +485,26 @@ describe('listSecondaryChromeEntries', () => {
     assert.ok(
       listSecondaryChromeEntries('narrow-drawer', on).some(
         (e) => e.proxy === 'always-on-top'
+      )
+    );
+  });
+
+  it('hides mindflow-nebula unless mindflowNebulaAvailable', () => {
+    assert.equal(
+      listSecondaryChromeEntries('wide-more', allOn).some(
+        (e) => e.proxy === 'mindflow-nebula'
+      ),
+      false
+    );
+    const on = { ...allOn, mindflowNebulaAvailable: true };
+    assert.ok(
+      listSecondaryChromeEntries('wide-more', on).some(
+        (e) => e.proxy === 'mindflow-nebula'
+      )
+    );
+    assert.ok(
+      listSecondaryChromeEntries('narrow-drawer', on).some(
+        (e) => e.proxy === 'mindflow-nebula'
       )
     );
   });
@@ -599,7 +617,6 @@ describe('listSecondaryChromeEntries', () => {
         'community',
         'co-practice-contract',
         'today-direction',
-        'mindflow-nebula',
         'presence-field',
         'language',
         'sound',

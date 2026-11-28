@@ -60,6 +60,14 @@ describe('preferenceSheetEmbed', () => {
     assert.equal(btn.getAttribute('aria-label'), 'Back to Preferences');
   });
 
+  it('embed CSS flattens presence / nebula inner panels and hides duplicate titles', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'preferenceSheetEmbed.js'), 'utf8');
+    assert.match(src, /presence-field-pref__panel/);
+    assert.match(src, /mindflow-nebula-pref__panel/);
+    assert.match(src, /co-practice-contract-panel__title/);
+  });
+
   it('wide and narrow sheets skip closeMenu for embed rows', () => {
     const here = dirname(fileURLToPath(import.meta.url));
     const wide = readFileSync(join(here, '../ui/WideIdleMoreMenu.js'), 'utf8');
