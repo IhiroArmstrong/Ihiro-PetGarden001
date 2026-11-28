@@ -482,6 +482,34 @@ Safari 仍是 `http://127.0.0.1:5173/?product=1`。切完后硬刷新一次，�
 
 **反面教材**：`feature/wide-idle-more-menu` 建在窄屏初版 tip 上、未跟随后续窄屏修复 → 宽屏复现已修 bug（2026-07-21）。
 
+### 并行枢纽 PR 与冒烟纪律（硬闸 · N18）
+
+> **本小节为 SSOT**（索引：`RULES_INDEX.md` → `git-hub-pr-smoke-discipline`）。按需层：`.cursor/rules/focus-tiger-hub-pr-smoke-discipline.mdc`。  
+> 背景：2026-11-27–28 一批并行 PR 同时改 Idle chrome 枢纽，叠加 Linux CI 验 Mac 桌面行为、红底座叠刀与 `FT_SKIP_PRE_PUSH_SMOKE` 推送，导致冲突与 `test:pr-smoke` 成片红（与「并行 worktree」「姊妹线同步」**叠加**，不替代）。  
+> 冒烟失败须先按 [`focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md`](focus-tiger/docs/PR_SMOKE_FAILURE_CLASSES.md) 归类，再决定修或重跑（见 `focus-tiger-pr-smoke-gates.mdc`）。
+
+#### 枢纽路径（同一时间只允许一个 OPEN **功能/fix** PR 改下列路径）
+
+| 枢纽 | 典型路径（以代码为准，非穷举） |
+|---|---|
+| 宽屏 More 菜单 | `focus-tiger/src/ui/WideIdleMoreMenu.js` · `wideMenu*` · `idleChromeOrchestration.js` · `listSecondaryChromeEntries` 契约测试 |
+| 偏好嵌页 / Preferences sheet | `preferenceSheetEmbed.js` · `preferencesCenterCatalog.js` · `WorkEndPreferenceUI.js` · 相关 `*-pref-*` e2e |
+| 玻璃卡叠层 | `glassCardDeck.js` · `bringGlassCardToFront` · `GLASS_CARD_KEEP_STYLESHEET_Z` 受保护路径 |
+
+1. **同一枢纽同时只留 1 个 OPEN 功能/fix PR**。下一刀须等上一 PR **合入 `develop`** 后从 **当时 `origin/develop` tip** 新建旁支；或 **stacked PR** 且描述写明 `Depends on #NNN` / `stacked on` + 依赖 PR 已绿。  
+   **禁止**两条 OPEN PR 改上表同一枢纽（`dependabot/*` 与纯 `docs/*` 治理 PR 除外）。  
+   Agent 开第二刀前须 `gh pr list --state open` 扫 head 文件是否命中上表；命中则停手、先 rebase/合依赖或排队。  
+2. **底座 PR 冒烟红，禁止叠进下一刀**。若 PR A 的 Required `test:pr-smoke` 或本地 `test:e2e:smoke` 红，**禁止**在含 A 的 commit 上继续写 B 的功能提交；须先修绿 A，或从 B **拿掉** A 已覆盖的文件后再开 PR。  
+   **禁止**「cherry-pick 另一 OPEN PR 的整 commit」进本 PR 当 workaround（例：节奏开关修复已单独 PR 时，圈修复 PR 不得再叠那颗 commit）。  
+3. **本地必跑已红，禁止 skip 推送功能/fix PR**。`npm run test:e2e:smoke`（或 `smoke:required`）红时 **禁止** `git push` 该旁支，**禁止** `FT_SKIP_PRE_PUSH_SMOKE=1` / `FT_SKIP_PRE_PUSH_STARTUP=1` 推产品改动。  
+   唯一例外：纯 `docs/*` / `type:process` PR（无 `focus-tiger/src` diff），或 PO **单独** 开流程 PR 下调必跑范围（不得在功能 PR 里偷偷改闸或跳过）。  
+4. **桌面 / Mac 专有单测须注入平台，禁止绑死 runner `process.platform`**。覆盖 Input Monitoring、Darwin 快捷键、Companion 路径等行为的单测须：`create*(…, { platform: 'darwin' })` 或等效注入；Linux CI 上 **skip** 须写明原因且不得替代产品断言。  
+   实现侧宜接受可注入 `platform`（见 #1922 `sensorBridge`）；**禁止**在 Ubuntu 上靠真实 `process.platform` 断言「用户偏好仍为开」。  
+5. **`docs:sync` 机器块冲突：取 `develop`，不当产品冲突**。`git merge origin/develop` 若冲突**仅**在 `scripts/docs-sync.js` 的 `DOCS_SYNC_MACHINE_BLOCK_PATHS`（含 [`kb-live-gap-audit.md`](focus-tiger/docs/kb-live-gap-audit.md) 日期戳等），须 **保留 `origin/develop` 版本** 并完成 merge，或跑 `focus-tiger/scripts/batch-merge-develop-open-prs.sh`（语义冲突仍中止）。  
+   **禁止**把机器块手工改当成需要 PO 拍板的产品分歧；合入后 `npm run docs:check` 须绿。
+
+**与 wide-menu Brief 分支纪律的关系**：[`task-wide-menu-radial-index.md`](focus-tiger/docs/task-briefs/task-wide-menu-radial-index.md)「分支纪律」仍是宽屏扇形历史线细则；**本条是仓级硬闸**，覆盖上述三枢纽及冒烟叠刀。
+
 ### 中高风险功能落地：先套降险 Playbook（引用）
 
 > **政策 SSOT**：[`focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md`](focus-tiger/docs/RISK_MITIGATION_PLAYBOOK.md)（索引：`RULES_INDEX.md` → `risk-mitigation-playbook`）。  

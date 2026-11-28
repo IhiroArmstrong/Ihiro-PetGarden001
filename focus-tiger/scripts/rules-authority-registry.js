@@ -512,6 +512,44 @@ export const RULE_AUTHORITY_TOPICS = [
     ]
   },
   {
+    id: 'git-hub-pr-smoke-discipline',
+    title: '并行枢纽 PR 与冒烟纪律（硬闸 · N18）',
+    ssotPath: 'WORKFLOW.md',
+    ssotSection: '并行枢纽 PR 与冒烟纪律（硬闸 · N18）',
+    ssotMustContain: [
+      /同一枢纽同时只留 1 个 OPEN/,
+      /底座 PR 冒烟红，禁止叠进下一刀/,
+      /FT_SKIP_PRE_PUSH_SMOKE/,
+      /platform: 'darwin'/,
+      /batch-merge-develop-open-prs/
+    ],
+    topicSignals: [
+      /枢纽 PR/,
+      /hub.*smoke/i,
+      /并行枢纽/,
+      /红底座/
+    ],
+    mustCite: [/WORKFLOW\.md/],
+    restatementFingerprints: [
+      /同一枢纽同时只留 1 个 OPEN/,
+      /底座 PR 冒烟红/,
+      /禁止 skip 推送/
+    ],
+    restatementThreshold: 2,
+    forbiddenOutsideSsot: [
+      {
+        id: 'parallel-hub-prs-ok',
+        pattern: /(?:可以|允许)(?:两个|多条).*(?:OPEN|开放).*(?:WideIdleMoreMenu|preferenceSheetEmbed|glassCardDeck)/,
+        note: '禁止主张同一枢纽多 OPEN 功能 PR 可并行'
+      },
+      {
+        id: 'skip-pre-push-on-red-smoke',
+        pattern: /FT_SKIP_PRE_PUSH_SMOKE.*(?:功能|fix|产品)/,
+        note: '禁止主张功能 PR 在本地冒烟红时 skip 推送'
+      }
+    ]
+  },
+  {
     id: 'git-feature-merge-preview',
     title: 'feature/fix 合入 develop：研发自检 + 主干同步（非人工关单）',
     ssotPath: 'WORKFLOW.md',

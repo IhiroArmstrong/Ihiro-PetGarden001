@@ -1,0 +1,14 @@
+---
+description: 并行枢纽 PR 与冒烟硬纪律——同一枢纽只留一个 OPEN 功能 PR、红底座不叠刀、禁止 skip 推、桌面单测注入 platform、机器块自动 merge
+globs:
+alwaysApply: false
+---
+
+# Focus Tiger · 并行枢纽 PR 与冒烟纪律（按需）
+
+> **条文 SSOT**：[`WORKFLOW.md`](../WORKFLOW.md)「并行枢纽 PR 与冒烟纪律（硬闸 · N18）」。  
+> 索引：`RULES_INDEX.md` → `git-hub-pr-smoke-discipline`。归类冒烟红灯见 `PR_SMOKE_FAILURE_CLASSES.md`（`pr-smoke-failure-classes`）。
+
+开工 / 开第二刀 / 变基 / push 前，若会碰 **宽屏 More 菜单**、**偏好嵌页**、**玻璃卡叠层** 或其它列于 WORKFLOW 的枢纽路径，须 **Read WORKFLOW 该节全文**。
+
+禁止：叠在红底座上开下一刀；`FT_SKIP_PRE_PUSH_SMOKE=1` 推功能 PR；桌面专有单测在 Linux 上读真实 `process.platform` 当 Mac。
