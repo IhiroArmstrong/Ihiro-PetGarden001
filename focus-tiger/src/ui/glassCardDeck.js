@@ -116,8 +116,10 @@ export function glassCardAllowsDrag(target, card) {
   if (!card?.id || GLASS_CARD_KEEP_STYLESHEET_Z.has(card.id)) return false;
   if (GLASS_CARD_NO_DRAG.has(card.id)) return false;
   if (!(target && typeof target.closest === 'function')) return false;
-  if (target.closest(GLASS_CARD_DRAG_TITLE)) return true;
+  // Buttons win over `[class*="__title"]` so Preference rows (`ft-pref-row__title`)
+  // still click. Sheet head uses `data-ft-glass-drag-chrome` outside controls.
   if (target.closest(GLASS_CARD_INTERACTIVE)) return false;
+  if (target.closest(GLASS_CARD_DRAG_TITLE)) return true;
   if (glassCardAllowsTextSelect(target)) return false;
   return true;
 }

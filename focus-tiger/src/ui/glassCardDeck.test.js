@@ -135,6 +135,14 @@ test('wide ⋯ navigation sheets register in the drag deck', () => {
   assert.equal(glassCardAllowsDrag(menuChrome, { id: 'ft-wide-more-menu' }), true);
 });
 
+test('preference row titles inside buttons do not start a menu drag', () => {
+  const rowTitle = fakePointerTarget({ interactive: true, titleHandle: true });
+  assert.equal(
+    glassCardAllowsDrag(rowTitle, { id: 'ft-wide-more-menu' }),
+    false
+  );
+});
+
 test('buttons stay pointer-hit and Support still does not drag', () => {
   const confide = { id: 'confide-to-yin-card' };
   assert.equal(glassCardAllowsDrag(fakePointerTarget({ interactive: true }), confide), false);
