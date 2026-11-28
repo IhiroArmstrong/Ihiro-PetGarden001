@@ -18,6 +18,7 @@ describe('inputRhythmSensorBridge', () => {
     let denied;
     const bridge = createInputRhythmSensorBridge({
       userDataDir: dir,
+      platform: 'darwin',
       spawnHelper: (handlers) => {
         denied = handlers.onDenied;
         return fakeChild;
@@ -38,10 +39,24 @@ describe('inputRhythmSensorBridge', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ft-rhythm-nostart-'));
     const bridge = createInputRhythmSensorBridge({
       userDataDir: dir,
+      platform: 'darwin',
       spawnHelper: () => null
     });
     const snap = bridge.setEnabled(true);
     assert.equal(snap.enabled, false);
+    assert.equal(loadInputRhythmPrefs(dir).enabled, false);
+  });
+
+  it('does not persist the switch on Linux even if a helper is injected', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ft-rhythm-linux-'));
+    const bridge = createInputRhythmSensorBridge({
+      userDataDir: dir,
+      platform: 'linux',
+      spawnHelper: () => ({ killed: false, kill() {} })
+    });
+    const snap = bridge.setEnabled(true);
+    assert.equal(snap.enabled, false);
+    assert.equal(snap.available, false);
     assert.equal(loadInputRhythmPrefs(dir).enabled, false);
   });
 });

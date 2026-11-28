@@ -24,7 +24,8 @@ const INPUT_MONITORING_SETTINGS =
 export function createInputRhythmSensorBridge({
   userDataDir,
   now = () => Date.now(),
-  spawnHelper = spawnInputRhythmHelper
+  spawnHelper = spawnInputRhythmHelper,
+  platform = process.platform
 }) {
   const window = new InputRhythmWindow({ now });
   let child = null;
@@ -56,7 +57,7 @@ export function createInputRhythmSensorBridge({
 
   function startHelper() {
     stopHelper();
-    if (process.platform !== 'darwin') return false;
+    if (platform !== 'darwin') return false;
     child = spawnHelper({
       onSample: (sample) => {
         helperAlive = true;
@@ -96,7 +97,7 @@ export function createInputRhythmSensorBridge({
       backspaceCount5m: totals.backs
     });
     return {
-      available: process.platform === 'darwin',
+      available: platform === 'darwin',
       enabled: prefs.enabled === true,
       authorized,
       helperAlive,
@@ -119,7 +120,7 @@ export function createInputRhythmSensorBridge({
         stopHelper();
         return snapshot();
       }
-      if (process.platform !== 'darwin') {
+      if (platform !== 'darwin') {
         saveInputRhythmPrefs(userDataDir, { enabled: false });
         return snapshot();
       }
