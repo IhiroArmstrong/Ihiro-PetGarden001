@@ -104,7 +104,7 @@ describe('KB help single-source knife 3', () => {
     assert.equal(candidates.includes('kb-live-sound'), false);
     assert.equal(candidates.includes('kb-live-contemplative-inquiry'), false);
     assert.equal(candidates.includes('kb-live-presence-field'), false);
-    assert.ok(candidates.includes('kb-live-mindflow-nebula'));
+    assert.equal(candidates.includes('kb-live-mindflow-nebula'), false);
     assert.ok(candidates.includes('kb-live-practice-study'));
   });
 });

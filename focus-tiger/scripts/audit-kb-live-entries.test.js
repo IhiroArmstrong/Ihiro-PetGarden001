@@ -70,6 +70,17 @@ describe('audit-kb-live-entries helpers', () => {
     assert.deepEqual(extraInMenu, ['account']);
   });
 
+  it('diffMenuProxyCoverage allows mindflow-nebula to be gated off the menu', () => {
+    const registry = [{ proxy: 'ground-exercise' }, { proxy: 'mindflow-nebula' }];
+    const menu = [{ proxy: 'ground-exercise' }];
+    const { missingFromMenu, extraInMenu } = diffMenuProxyCoverage(
+      registry,
+      menu
+    );
+    assert.deepEqual(missingFromMenu, []);
+    assert.deepEqual(extraInMenu, []);
+  });
+
   it('diffMenuProxyCoverage still allows language to be hidden by runtime gate', () => {
     const registry = [{ proxy: 'ground-exercise' }, { proxy: 'language' }];
     const menu = [{ proxy: 'ground-exercise' }];

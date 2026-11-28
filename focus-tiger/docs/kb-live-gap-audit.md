@@ -44,10 +44,10 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 
 | bucket | count | next step |
 |---|---:|---|
-| batch-2 live-surface candidates | 17 | Step 4 authoritative draft → PO tone spot-check |
+| batch-2 live-surface candidates | 16 | Step 4 authoritative draft → PO tone spot-check |
 | registry mapping drift | 0 | fix `catalogKbIds` on registry rows (docs-only) |
 | registry links unapproved | 0 | swap to approved ids or wait for PO on 0006/0009 |
-| conditional/gated-off without approved KB | 2 | PO scope before drafting |
+| conditional/gated-off without approved KB | 3 | PO scope before drafting |
 | cross-cutting approved (no live row) | 17 | keep as behavior/platform facts |
 
 ### Batch-2 candidates (live · default-on · entitlement-gated · no approved link)
@@ -56,7 +56,6 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 |---|---|---|---|
 | `kb-live-daily-noticing` | live | ⋯ → Practice → Daily noticing | `DAILY_NOTICING_MENU_LABEL` |
 | `kb-live-mustard-seed-seal` | entitlement-gated | ⋯ → Inspiration → Mustard Seed · Sumeru (after unlock) | `MUSTARD_SEED_SEAL_MENU_LABEL` |
-| `kb-live-mindflow-nebula` | live | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` |
 | `kb-live-co-practice-contract` | live | ⋯ → Preferences → How Yin may speak | `CO_PRACTICE_CONTRACT_MENU_LABEL` |
 | `kb-live-practice-study` | live | ⋯ → Preferences → Practice Study | `PRACTICE_STUDY_MENU_LABEL` |
 | `kb-live-archive-seal-ca-01-old-pond` | entitlement-gated | ⋯ → Inspiration → Contemplative Archive (CA-01) | `CONTEMPLATIVE_ARCHIVE_CA01_MENU_LABEL` |
@@ -87,6 +86,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | liveId | liveStatus | menuPath | note |
 |---|---|---|---|
 | `kb-live-language` | conditional | ⋯ → Preferences → Language | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-mindflow-nebula` | gated-default-off | ⋯ → Preferences → Mindflow nebula | gated off by default — draft only after PO re-opens user mount |
 | `kb-live-account` | conditional | ⋯ → Preferences → Save or restore with email | conditional / optional surface — draft after PO confirms scope |
 
 ### Cross-cutting approved catalog rows (no live row required)

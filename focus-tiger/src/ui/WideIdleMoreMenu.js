@@ -31,6 +31,7 @@ import {
   writeAlwaysOnTopEnabled
 } from '../core/alwaysOnTopBridge.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
+import { isMindflowNebulaUserMountEnabled } from '../core/mindflowNebula/mindflowNebulaStore.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { canUseGlobalSitHotkey } from '../core/globalSitHotkeyBridge.js';
 import { openGlobalSitHotkeyPreference } from './GlobalSitHotkeyPreferenceUI.js';
@@ -383,6 +384,9 @@ export class WideIdleMoreMenu {
     if (this.prefPageSlot) this.prefPageSlot.hidden = true;
     if (this.prefBack) this.prefBack.hidden = true;
     if (refresh) this._refreshItems();
+    if (this._menuOpen && this._activeListGroup) {
+      this._positionGroupSheet(this._activeListGroup);
+    }
   }
 
   /**
@@ -586,13 +590,21 @@ export class WideIdleMoreMenu {
     this.menu = document.createElement('div');
     this.menu.id = 'ft-wide-more-menu';
     this.menu.className = 'ft-wide-more__menu';
+    this.menu.dataset.ftGlassCard = '1';
     this.menu.setAttribute('role', 'menu');
     this.menu.hidden = true;
 
     this.sheetHead = document.createElement('div');
     this.sheetHead.className = 'ft-wide-more__head';
+    this.sheetHead.setAttribute('data-ft-glass-drag-chrome', '1');
     this.sheetTitle = document.createElement('p');
     this.sheetTitle.className = 'ft-wide-more__title';
+    this.sheetTitle.addEventListener('click', (event) => {
+      if (!this._prefPage) return;
+      if (this.menu?.dataset.ftUserDragged === '1') return;
+      event.stopPropagation();
+      this._exitPreferencePage();
+    });
     this.sheetClose = document.createElement('button');
     this.sheetClose.type = 'button';
     this.sheetClose.className = 'ft-wide-more__close';
@@ -623,6 +635,7 @@ export class WideIdleMoreMenu {
     this.radialRoot = document.createElement('div');
     this.radialRoot.id = 'ft-wide-more-radial';
     this.radialRoot.className = 'ft-wide-more-radial ft-wide-more-sidenav';
+    this.radialRoot.dataset.ftGlassCard = '1';
     this.radialRoot.hidden = true;
     this.radialRoot.setAttribute('role', 'toolbar');
     this.radialRoot.dataset.testid = 'ft-wide-more-radial';
@@ -1004,6 +1017,7 @@ export class WideIdleMoreMenu {
       if (this.menu) this.menu.hidden = true;
       if (this.radialRoot) this.radialRoot.hidden = true;
       document.body.classList.remove('ft-wide-more-radial-open');
+      this._resetIdleMenuDragGeometry();
       return;
     }
     if (this.backdrop) this.backdrop.hidden = false;
@@ -1029,6 +1043,21 @@ export class WideIdleMoreMenu {
   }
 
   /** @returns {void} */
+  _resetIdleMenuDragGeometry() {
+    for (const el of [this.menu, this.radialRoot]) {
+      if (!el) continue;
+      delete el.dataset.ftUserDragged;
+      el.style.removeProperty('left');
+      el.style.removeProperty('top');
+      el.style.removeProperty('right');
+      el.style.removeProperty('bottom');
+      el.style.removeProperty('transform');
+      el.style.removeProperty('margin');
+      el.style.removeProperty('z-index');
+    }
+  }
+
+  /** @returns {void} */
   _clearGroupSheetPosition() {
     this.menu?.style.removeProperty('top');
   }
@@ -1049,6 +1078,7 @@ export class WideIdleMoreMenu {
       this._clearGroupSheetPosition();
       return;
     }
+    if (this.menu.dataset.ftUserDragged === '1') return;
     const row = this.radialRoot?.querySelector(
       `.ft-wide-more-radial__icon[data-group="${groupKey}"]`
     );
@@ -1077,6 +1107,7 @@ export class WideIdleMoreMenu {
     this.radialRoot.setAttribute('aria-label', t('HOME_SIDE_NAV_HEADING'));
     const heading = document.createElement('p');
     heading.className = 'ft-wide-more-radial__heading';
+    heading.setAttribute('data-ft-glass-drag-chrome', '1');
     heading.textContent = t('HOME_SIDE_NAV_HEADING');
     this.radialRoot.appendChild(heading);
     /** @type {Record<string, string>} */
@@ -1228,7 +1259,8 @@ export class WideIdleMoreMenu {
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
       globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
-      inputRhythmAvailable: canUseInputRhythm()
+      inputRhythmAvailable: canUseInputRhythm(),
+      mindflowNebulaAvailable: isMindflowNebulaUserMountEnabled()
     });
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;

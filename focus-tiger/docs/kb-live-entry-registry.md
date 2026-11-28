@@ -58,7 +58,7 @@ This table answers: **which product surfaces are live in code right now**, which
 | `kb-live-window-layout` | menu | `window-layout` | conditional | ⋯ → Preferences → Window (Electron) | `WINDOW_LAYOUT_MENU_LABEL` | `KB-FUNC-0046` |
 | `kb-live-global-sit-hotkey` | menu | `global-sit-hotkey` | conditional | ⋯ → Preferences → Sit shortcut (Electron Mac) | `GLOBAL_SIT_HOTKEY_MENU_LABEL` | `KB-FUNC-0051` |
 | `kb-live-input-rhythm` | menu | `input-rhythm` | conditional | ⋯ → Preferences → Focus rhythm (Electron) | `INPUT_RHYTHM_MENU_LABEL` | `KB-FUNC-0047` |
-| `kb-live-mindflow-nebula` | menu | `mindflow-nebula` | live | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` | — |
+| `kb-live-mindflow-nebula` | menu | `mindflow-nebula` | gated-default-off | ⋯ → Preferences → Mindflow nebula | `MINDFLOW_NEBULA_MENU_LABEL` | — |
 | `kb-live-presence-field` | menu | `presence-field` | live | ⋯ → Preferences → Presence Field | `PRESENCE_FIELD_MENU_LABEL` | `KB-FUNC-0041` |
 | `kb-live-co-practice-contract` | menu | `co-practice-contract` | live | ⋯ → Preferences → How Yin may speak | `CO_PRACTICE_CONTRACT_MENU_LABEL` |  |
 | `kb-live-health-shortcut-log` | menu | `health-shortcut-log` | live | ⋯ → Preferences → Log to Health (Shortcuts) | `HEALTH_SHORTCUT_MENU_LABEL` | `KB-FUNC-0048` |
