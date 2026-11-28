@@ -249,6 +249,12 @@ describe('wide more menu click reception', () => {
     assert.match(src, /_homeRailListOnly/);
     assert.match(src, /openMenu\(\{ homeRailListOnly: true \}\)/);
     assert.match(src, /const showRadial = !this\._homeRailListOnly/);
+    assert.match(src, /Home-rail previews: one group list only/);
+    const groupFn = src.match(
+      /openMenuGroup\(groupKey\) \{[\s\S]*?\n  \}/
+    )?.[0];
+    assert.ok(groupFn);
+    assert.doesNotMatch(groupFn, /_openRadialGroup/);
   });
 
   it('hides ⋯ during Honesty bridge but keeps escape hatch for overlay suppress', () => {

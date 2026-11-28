@@ -40,7 +40,7 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'art-collection-panel-styles-v2';
+const STYLE_ID = 'art-collection-panel-styles-v3';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 
 export class ArtCollectionPanelUI {
@@ -476,7 +476,7 @@ export class ArtCollectionPanelUI {
       }
       .art-collection-panel__scroll {
         flex: 1 1 auto;
-        min-height: 0;
+        min-height: 12rem;
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;

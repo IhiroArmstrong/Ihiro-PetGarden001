@@ -37,4 +37,22 @@ describe('IN_SURFACE_CLICK_RESULTS', () => {
     assert.match(opener, /elevateYinMemoryOverThoughtDrop/);
     assert.match(opener, /GLASS_CARD_FRONT/);
   });
+
+  it('names a visible result for quiet gift rows in collections', () => {
+    const row = IN_SURFACE_CLICK_RESULTS.find(
+      (item) => item.id === 'collections-quiet-gift'
+    );
+    assert.ok(row);
+    assert.equal(row.resultSelector, '#co-practice-gift-art-card');
+    const coins = readFileSync(
+      new URL('../ui/FocusCoinsPanelUI.js', import.meta.url),
+      'utf8'
+    );
+    assert.match(coins, /onGiftArtOpen/);
+    const gift = readFileSync(
+      new URL('../ui/CoPracticeGiftArtCardUI.js', import.meta.url),
+      'utf8'
+    );
+    assert.match(gift, /this\.root\.id = 'co-practice-gift-art-card'/);
+  });
 });

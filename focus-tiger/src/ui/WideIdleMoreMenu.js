@@ -991,14 +991,11 @@ export class WideIdleMoreMenu {
   openMenuGroup(groupKey) {
     this.openMenu({ homeRailListOnly: true });
     if (!this._menuOpen || !groupKey) return;
-    if (this._menuFlat) {
-      this._activeListGroup = groupKey;
-      this._expandedGroups = new Set([groupKey]);
-      this._refreshItems();
-      this._syncMenuLayers();
-      return;
-    }
-    this._openRadialGroup(groupKey);
+    // Home-rail previews: one group list only. Radial + list together is two menus.
+    this._activeListGroup = groupKey;
+    this._expandedGroups = new Set([groupKey]);
+    this._refreshItems();
+    this._syncMenuLayers();
   }
 
   /**

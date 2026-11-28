@@ -22,5 +22,10 @@ export const IN_SURFACE_CLICK_RESULTS = Object.freeze([
     id: 'thought-drop-what-yin-remembers',
     clickSelector: '[data-testid="confide-to-yin-memory-list-link"]',
     resultSelector: '#yin-personal-memory'
+  }),
+  Object.freeze({
+    id: 'collections-quiet-gift',
+    clickSelector: '[data-testid="yin-coin-gift-art-list"] .yin-coin-panel__memorial-row--unlocked',
+    resultSelector: '#co-practice-gift-art-card'
   })
 ]);

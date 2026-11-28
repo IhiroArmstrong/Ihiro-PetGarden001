@@ -52,7 +52,7 @@ import {
 } from './overlayBackdrop.js';
 import { Z } from './zIndexLayers.js';
 
-const STYLE_ID = 'yin-coin-panel-styles-v9';
+const STYLE_ID = 'yin-coin-panel-styles-v10';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
 const CEREMONIAL_MS = 2400;
 
@@ -776,6 +776,11 @@ export class FocusCoinsPanelUI {
       copy.className = 'yin-coin-panel__memorial-copy';
       copy.textContent = t(piece.storyKey);
       li.append(name, copy);
+      li.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.handlers.onGiftArtOpen?.(piece.id);
+      });
       this.giftArtListEl.append(li);
     }
   }
@@ -1206,7 +1211,7 @@ export class FocusCoinsPanelUI {
       }
       .yin-coin-panel__scroll {
         flex: 1 1 auto;
-        min-height: 0;
+        min-height: 12rem;
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;

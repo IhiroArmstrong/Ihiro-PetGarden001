@@ -21,6 +21,7 @@ test('art collection panel is its own glass card', () => {
   assert.match(src, /strong: true/);
   assert.match(src, /GLASS_FILL_STRONG/);
   assert.match(src, /art-collection-panel-scroll/);
+  assert.match(src, /min-height: 12rem/);
   assert.match(src, /overflow: hidden/);
   assert.match(src, /\.art-collection-panel\[hidden\]/);
   assert.doesNotMatch(src, /\.art-collection-panel \{[^}]*overflow: auto/s);
