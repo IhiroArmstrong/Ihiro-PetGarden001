@@ -10,7 +10,21 @@
     "INNER_MIRROR_CORRECTED": "Updated in your words",
     "INNER_MIRROR_SAVE_ERROR": "Could not save. The line is not stored.",
     "INNER_MIRROR_FORGET_ERROR": "Could not forget. Try again.",
-    "INNER_MIRROR_CRISIS_BLOCK": "This line was not left."
+    "INNER_MIRROR_CRISIS_BLOCK": "This line was not left.",
+    "INNER_MIRROR_WEEKLY_OPEN": "Look at this week",
+    "INNER_MIRROR_NOT_ENOUGH": "Not enough yet",
+    "INNER_MIRROR_WEEKLY_LINE": "In these 7 days, {count} of the lines you left mention “{name}.”",
+    "INNER_MIRROR_ASK_ONCE": "Of these, is there one you would say differently now?",
+    "INNER_MIRROR_CHANGE_PROMPT": "Name a change in your own words",
+    "INNER_MIRROR_CHANGE_SAVE": "Mark this as a change",
+    "INNER_MIRROR_CHANGE_ERROR": "Could not mark. Try again.",
+    "INNER_MIRROR_LABEL_CRITICIZED": "being criticized",
+    "INNER_MIRROR_LABEL_RUSH": "rushing",
+    "INNER_MIRROR_LABEL_TIRED": "being tired",
+    "INNER_MIRROR_LABEL_AVOID": "wanting to step away",
+    "INNER_MIRROR_LABEL_UNSPOKEN": "not saying it",
+    "INNER_MIRROR_LABEL_FRICTION": "friction",
+    "INNER_MIRROR_LABEL_PAUSE": "wanting a pause"
   },
   "zh": {
     "INNER_MIRROR_LEAVE": "留下",
@@ -23,7 +37,21 @@
     "INNER_MIRROR_CORRECTED": "已按你的意思改过",
     "INNER_MIRROR_SAVE_ERROR": "没存上。这句没有留下。",
     "INNER_MIRROR_FORGET_ERROR": "没删掉。请再试一次。",
-    "INNER_MIRROR_CRISIS_BLOCK": "这句没有留下。"
+    "INNER_MIRROR_CRISIS_BLOCK": "这句没有留下。",
+    "INNER_MIRROR_WEEKLY_OPEN": "看这一周",
+    "INNER_MIRROR_NOT_ENOUGH": "还不够",
+    "INNER_MIRROR_WEEKLY_LINE": "这 7 天里，你留下的句子有 {count} 次写到「{name}」。",
+    "INNER_MIRROR_ASK_ONCE": "这几次里，有没有一句你现在想改口？",
+    "INNER_MIRROR_CHANGE_PROMPT": "用你自己的话记下一次改变",
+    "INNER_MIRROR_CHANGE_SAVE": "这是一次改变",
+    "INNER_MIRROR_CHANGE_ERROR": "没记下。请再试一次。",
+    "INNER_MIRROR_LABEL_CRITICIZED": "被批评",
+    "INNER_MIRROR_LABEL_RUSH": "赶",
+    "INNER_MIRROR_LABEL_TIRED": "累",
+    "INNER_MIRROR_LABEL_AVOID": "想躲开",
+    "INNER_MIRROR_LABEL_UNSPOKEN": "说不出口",
+    "INNER_MIRROR_LABEL_FRICTION": "起了摩擦",
+    "INNER_MIRROR_LABEL_PAUSE": "想停一下"
   },
   "ja": {
     "INNER_MIRROR_LEAVE": "残す",
@@ -36,6 +64,20 @@
     "INNER_MIRROR_CORRECTED": "あなたの言葉に直しました",
     "INNER_MIRROR_SAVE_ERROR": "保存できませんでした。残していません。",
     "INNER_MIRROR_FORGET_ERROR": "削除できませんでした。もう一度どうぞ。",
-    "INNER_MIRROR_CRISIS_BLOCK": "この一文は残していません。"
+    "INNER_MIRROR_CRISIS_BLOCK": "この一文は残していません。",
+    "INNER_MIRROR_WEEKLY_OPEN": "この一週間を見る",
+    "INNER_MIRROR_NOT_ENOUGH": "まだ足りません",
+    "INNER_MIRROR_WEEKLY_LINE": "この7日で、残した文に「{name}」が{count}回ありました。",
+    "INNER_MIRROR_ASK_ONCE": "このうち、いま言い直したい一文はありますか？",
+    "INNER_MIRROR_CHANGE_PROMPT": "自分の言葉で変化を残す",
+    "INNER_MIRROR_CHANGE_SAVE": "これは変化だった",
+    "INNER_MIRROR_CHANGE_ERROR": "記録できませんでした。もう一度どうぞ。",
+    "INNER_MIRROR_LABEL_CRITICIZED": "否定された",
+    "INNER_MIRROR_LABEL_RUSH": "急ぐ",
+    "INNER_MIRROR_LABEL_TIRED": "疲れ",
+    "INNER_MIRROR_LABEL_AVOID": "避けたい",
+    "INNER_MIRROR_LABEL_UNSPOKEN": "言えなかった",
+    "INNER_MIRROR_LABEL_FRICTION": "摩擦",
+    "INNER_MIRROR_LABEL_PAUSE": "いったん止まりたい"
   }
 }

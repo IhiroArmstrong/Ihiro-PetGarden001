@@ -216,10 +216,13 @@ import {
 import { shouldShowInnerMirrorLeave } from '../core/innerMirror/innerMirrorMount.js';
 import { isInnerMirrorCrisisRoute } from '../core/innerMirror/innerMirrorCrisis.js';
 import {
+  addInnerMirrorChangeMoment,
   correctInnerMirrorEntry,
   forgetInnerMirror,
-  leaveInnerMirrorEntry
+  leaveInnerMirrorEntry,
+  readInnerMirrorState
 } from '../core/innerMirror/innerMirrorStore.js';
+import { buildInnerMirrorWeeklyReview } from '../core/innerMirror/innerMirrorWeeklyReview.js';
 
 const STYLE_ID = 'confide-to-yin-card-styles-v4';
 const FADE_MS = OVERLAY_BACKDROP_FADE_MS;
@@ -258,6 +261,7 @@ export class ConfideToYinUI {
     this._innerMirrorEntryId = null;
     this._innerMirrorPendingText = null;
     this._innerMirrorSaving = false;
+    this._innerMirrorWeeklyOpen = false;
     this._operatingOwnsMic = false;
     /** @type {((text: string) => void) | null} */
     this._operatingConfirmTypedSubmit = null;
@@ -486,11 +490,64 @@ export class ConfideToYinUI {
       this._onInnerMirrorCorrectSave()
     );
 
+    this.innerMirrorWeeklyOpenBtn = document.createElement('button');
+    this.innerMirrorWeeklyOpenBtn.type = 'button';
+    this.innerMirrorWeeklyOpenBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--ghost';
+    this.innerMirrorWeeklyOpenBtn.dataset.testid = 'inner-mirror-weekly-open';
+    this.innerMirrorWeeklyOpenBtn.addEventListener('click', () =>
+      this._onInnerMirrorWeeklyOpen()
+    );
+
+    this.innerMirrorWeeklyPanel = document.createElement('div');
+    this.innerMirrorWeeklyPanel.dataset.testid = 'inner-mirror-weekly';
+    this.innerMirrorWeeklyPanel.hidden = true;
+
+    this.innerMirrorWeeklyBody = document.createElement('p');
+    this.innerMirrorWeeklyBody.className = 'confide-to-yin__memory-consent-copy';
+    this.innerMirrorWeeklyBody.dataset.testid = 'inner-mirror-weekly-body';
+
+    this.innerMirrorAskBtn = document.createElement('button');
+    this.innerMirrorAskBtn.type = 'button';
+    this.innerMirrorAskBtn.className = 'confide-to-yin__btn confide-to-yin__btn--ghost';
+    this.innerMirrorAskBtn.dataset.testid = 'inner-mirror-ask-once';
+    this.innerMirrorAskBtn.hidden = true;
+    this.innerMirrorAskBtn.addEventListener('click', () => this._onInnerMirrorCorrectStart());
+
+    this.innerMirrorChangeList = document.createElement('p');
+    this.innerMirrorChangeList.className = 'confide-to-yin__memory-consent-copy';
+    this.innerMirrorChangeList.dataset.testid = 'inner-mirror-change-list';
+
+    this.innerMirrorChangeInput = document.createElement('textarea');
+    this.innerMirrorChangeInput.className = 'confide-to-yin__input';
+    this.innerMirrorChangeInput.dataset.testid = 'inner-mirror-change-input';
+    this.innerMirrorChangeInput.rows = 2;
+    this.innerMirrorChangeInput.maxLength = 280;
+
+    this.innerMirrorChangeSaveBtn = document.createElement('button');
+    this.innerMirrorChangeSaveBtn.type = 'button';
+    this.innerMirrorChangeSaveBtn.className =
+      'confide-to-yin__btn confide-to-yin__btn--primary';
+    this.innerMirrorChangeSaveBtn.dataset.testid = 'inner-mirror-change-save';
+    this.innerMirrorChangeSaveBtn.addEventListener('click', () =>
+      this._onInnerMirrorChangeSave()
+    );
+
+    this.innerMirrorWeeklyPanel.append(
+      this.innerMirrorWeeklyBody,
+      this.innerMirrorAskBtn,
+      this.innerMirrorChangeList,
+      this.innerMirrorChangeInput,
+      this.innerMirrorChangeSaveBtn
+    );
+
     this.innerMirrorWrap.append(
       this.innerMirrorStatus,
       this.innerMirrorActions,
       this.innerMirrorCorrectInput,
-      this.innerMirrorCorrectSaveBtn
+      this.innerMirrorCorrectSaveBtn,
+      this.innerMirrorWeeklyOpenBtn,
+      this.innerMirrorWeeklyPanel
     );
 
     this.consentWrap = document.createElement('div');
@@ -1563,6 +1620,71 @@ export class ConfideToYinUI {
     this.innerMirrorCorrectBtn.textContent = t('INNER_MIRROR_CORRECT');
     this.innerMirrorCorrectSaveBtn.textContent = t('INNER_MIRROR_CORRECT_SAVE');
     this.innerMirrorCorrectInput.setAttribute('aria-label', t('INNER_MIRROR_CORRECT_PROMPT'));
+    if (this.innerMirrorWeeklyOpenBtn) {
+      this.innerMirrorWeeklyOpenBtn.textContent = t('INNER_MIRROR_WEEKLY_OPEN');
+    }
+    if (this.innerMirrorChangeSaveBtn) {
+      this.innerMirrorChangeSaveBtn.textContent = t('INNER_MIRROR_CHANGE_SAVE');
+    }
+    if (this.innerMirrorChangeInput) {
+      this.innerMirrorChangeInput.setAttribute('aria-label', t('INNER_MIRROR_CHANGE_PROMPT'));
+    }
+    if (this._innerMirrorWeeklyOpen) this._renderInnerMirrorWeekly();
+  }
+
+  _innerMirrorWeeklyCopy() {
+    return {
+      notEnough: t('INNER_MIRROR_NOT_ENOUGH'),
+      themeLine: t('INNER_MIRROR_WEEKLY_LINE'),
+      askOnce: t('INNER_MIRROR_ASK_ONCE'),
+      labels: {
+        criticized: t('INNER_MIRROR_LABEL_CRITICIZED'),
+        rush: t('INNER_MIRROR_LABEL_RUSH'),
+        tired: t('INNER_MIRROR_LABEL_TIRED'),
+        avoid: t('INNER_MIRROR_LABEL_AVOID'),
+        unspoken: t('INNER_MIRROR_LABEL_UNSPOKEN'),
+        friction: t('INNER_MIRROR_LABEL_FRICTION'),
+        pause: t('INNER_MIRROR_LABEL_PAUSE')
+      }
+    };
+  }
+
+  _renderInnerMirrorWeekly() {
+    if (!this.innerMirrorWeeklyPanel) return;
+    const review = buildInnerMirrorWeeklyReview(
+      readInnerMirrorState(this._innerMirrorStorage()),
+      { copy: this._innerMirrorWeeklyCopy() }
+    );
+    this.innerMirrorWeeklyBody.textContent = review.lines.filter(Boolean).join('\n');
+    const showAsk = review.kind === 'themes' && Boolean(review.ask);
+    this.innerMirrorAskBtn.hidden = !showAsk;
+    this.innerMirrorAskBtn.textContent = review.ask || t('INNER_MIRROR_ASK_ONCE');
+    const moments = readInnerMirrorState(this._innerMirrorStorage()).changeMoments || [];
+    this.innerMirrorChangeList.textContent = moments.map((row) => row.text).join('\n');
+    this.innerMirrorWeeklyPanel.hidden = !this._innerMirrorWeeklyOpen;
+  }
+
+  _onInnerMirrorWeeklyOpen() {
+    this._innerMirrorWeeklyOpen = true;
+    this._renderInnerMirrorWeekly();
+  }
+
+  _onInnerMirrorChangeSave() {
+    if (this._innerMirrorSaving) return;
+    this._innerMirrorSaving = true;
+    const result = addInnerMirrorChangeMoment(this._innerMirrorStorage(), {
+      text: this.innerMirrorChangeInput.value,
+      locale: getLocale()
+    });
+    this._innerMirrorSaving = false;
+    if (!result.ok) {
+      this.innerMirrorChangeList.textContent = t(
+        result.reason === 'crisis' ? 'INNER_MIRROR_CRISIS_BLOCK' : 'INNER_MIRROR_CHANGE_ERROR'
+      );
+      return;
+    }
+    this.innerMirrorChangeInput.value = '';
+    this._renderInnerMirrorWeekly();
   }
 
   _hideInnerMirrorActions() {
@@ -1578,6 +1700,12 @@ export class ConfideToYinUI {
     this._innerMirrorEntryId = null;
     this._innerMirrorPendingText = null;
     this._innerMirrorSaving = false;
+    this._innerMirrorWeeklyOpen = false;
+    if (this.innerMirrorWeeklyPanel) this.innerMirrorWeeklyPanel.hidden = true;
+    if (this.innerMirrorAskBtn) this.innerMirrorAskBtn.hidden = true;
+    if (this.innerMirrorWeeklyBody) this.innerMirrorWeeklyBody.textContent = '';
+    if (this.innerMirrorChangeList) this.innerMirrorChangeList.textContent = '';
+    if (this.innerMirrorChangeInput) this.innerMirrorChangeInput.value = '';
   }
 
   _innerMirrorStorage() {
@@ -1632,6 +1760,7 @@ export class ConfideToYinUI {
     this.innerMirrorForgetBtn.hidden = false;
     this.innerMirrorCorrectBtn.hidden = false;
     this.innerMirrorStatus.textContent = t('INNER_MIRROR_LEFT');
+    if (this._innerMirrorWeeklyOpen) this._renderInnerMirrorWeekly();
   }
 
   _onInnerMirrorForget() {
@@ -1679,6 +1808,7 @@ export class ConfideToYinUI {
     this.innerMirrorCorrectInput.hidden = true;
     this.innerMirrorCorrectSaveBtn.hidden = true;
     this.innerMirrorStatus.textContent = t('INNER_MIRROR_CORRECTED');
+    if (this._innerMirrorWeeklyOpen) this._renderInnerMirrorWeekly();
   }
 
   _hideGrowthJournalAsk() {
