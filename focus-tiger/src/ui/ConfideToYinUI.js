@@ -1476,9 +1476,11 @@ export class ConfideToYinUI {
   _hideGrowthJournalAsk() {
     if (!this.journalConsentWrap) return;
     this.journalConsentWrap.hidden = true;
-    this.journalConsentActions.hidden = false;
+    this.journalConsentActions.hidden = true;
     this.journalConsentStatus.hidden = true;
     this.journalConsentStatus.textContent = '';
+    if (this.journalConsentTitle) this.journalConsentTitle.hidden = false;
+    if (this.journalConsentCopy) this.journalConsentCopy.hidden = false;
     this._growthJournalSaving = false;
     if (this.journalConsentKeepBtn) this.journalConsentKeepBtn.disabled = false;
     if (this.journalConsentSkipBtn) this.journalConsentSkipBtn.disabled = false;
@@ -1496,16 +1498,24 @@ export class ConfideToYinUI {
       storage = null;
     }
     const result = considerGrowthJournalAfterSend({ storage, text, route });
-    if (result.action !== 'ask') {
-      if (result.action === 'written') this._pendingGrowthJournalText = null;
+    this._pendingGrowthJournalText = null;
+    if (result.action !== 'written') {
+      this._hideGrowthJournalAsk();
       return;
     }
-    this._pendingGrowthJournalText = result.pendingText;
-    this.journalConsentStatus.hidden = true;
-    this.journalConsentStatus.textContent = '';
-    this.journalConsentActions.hidden = false;
-    this.journalConsentKeepBtn.disabled = false;
-    this.journalConsentSkipBtn.disabled = false;
+    this._applyGrowthJournalCopy();
+    this.journalConsentActions.hidden = true;
+    this.journalConsentKeepBtn.disabled = true;
+    this.journalConsentSkipBtn.disabled = true;
+    this.journalConsentStatus.hidden = false;
+    this.journalConsentStatus.textContent = t('GROWTH_JOURNAL_SAVED');
+    if (result.showPolicyNotice) {
+      this.journalConsentTitle.hidden = false;
+      this.journalConsentCopy.hidden = false;
+    } else {
+      this.journalConsentTitle.hidden = true;
+      this.journalConsentCopy.hidden = true;
+    }
     this.journalConsentWrap.hidden = false;
   }
 
