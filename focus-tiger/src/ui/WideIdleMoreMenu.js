@@ -31,6 +31,7 @@ import {
   writeAlwaysOnTopEnabled
 } from '../core/alwaysOnTopBridge.js';
 import { canUseInputRhythm } from '../core/inputRhythmBridge.js';
+import { isMindflowNebulaUserMountEnabled } from '../core/mindflowNebula/mindflowNebulaStore.js';
 import { canUseWindowLayout } from '../core/windowLayoutBridge.js';
 import { canUseGlobalSitHotkey } from '../core/globalSitHotkeyBridge.js';
 import { openGlobalSitHotkeyPreference } from './GlobalSitHotkeyPreferenceUI.js';
@@ -383,6 +384,9 @@ export class WideIdleMoreMenu {
     if (this.prefPageSlot) this.prefPageSlot.hidden = true;
     if (this.prefBack) this.prefBack.hidden = true;
     if (refresh) this._refreshItems();
+    if (this._menuOpen && this._activeListGroup) {
+      this._positionGroupSheet(this._activeListGroup);
+    }
   }
 
   /**
@@ -593,6 +597,12 @@ export class WideIdleMoreMenu {
     this.sheetHead.className = 'ft-wide-more__head';
     this.sheetTitle = document.createElement('p');
     this.sheetTitle.className = 'ft-wide-more__title';
+    this.sheetTitle.addEventListener('click', (event) => {
+      if (!this._prefPage) return;
+      if (this.menu?.dataset.ftUserDragged === '1') return;
+      event.stopPropagation();
+      this._exitPreferencePage();
+    });
     this.sheetClose = document.createElement('button');
     this.sheetClose.type = 'button';
     this.sheetClose.className = 'ft-wide-more__close';
@@ -1228,7 +1238,8 @@ export class WideIdleMoreMenu {
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
       globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
-      inputRhythmAvailable: canUseInputRhythm()
+      inputRhythmAvailable: canUseInputRhythm(),
+      mindflowNebulaAvailable: isMindflowNebulaUserMountEnabled()
     });
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;

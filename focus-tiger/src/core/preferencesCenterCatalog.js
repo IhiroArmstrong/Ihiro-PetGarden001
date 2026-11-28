@@ -110,14 +110,16 @@ export function listPreferenceCenterSubgroups(visibility, deps = {}) {
     {
       labelKey: 'PREF_CENTER_GROUP_SPACE',
       rows: [
-        {
-          proxy: 'mindflow-nebula',
-          labelKey: 'MINDFLOW_NEBULA_MENU_LABEL',
-          testId: 'idle-mindflow-nebula',
-          hintKey: 'PREF_CENTER_HINT_MINDFLOW',
-          kind: 'page',
-          icon: '✧'
-        },
+        visibility.mindflowNebulaAvailable
+          ? {
+              proxy: 'mindflow-nebula',
+              labelKey: 'MINDFLOW_NEBULA_MENU_LABEL',
+              testId: 'idle-mindflow-nebula',
+              hintKey: 'PREF_CENTER_HINT_MINDFLOW',
+              kind: 'page',
+              icon: '✧'
+            }
+          : null,
         {
           proxy: 'presence-field',
           labelKey: 'PRESENCE_FIELD_MENU_LABEL',
@@ -126,7 +128,7 @@ export function listPreferenceCenterSubgroups(visibility, deps = {}) {
           kind: 'page',
           icon: '✦'
         }
-      ]
+      ].filter(Boolean)
     },
     {
       labelKey: 'PREF_CENTER_GROUP_DEVICES',

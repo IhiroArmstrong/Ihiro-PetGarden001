@@ -12,7 +12,9 @@ import {
   PREFERENCE_SHEET_EMBED_PROXIES,
   PREF_SHEET_BACK_GLYPH,
   applyPreferenceSheetBackButton,
-  shouldEmbedPreferenceInSheet
+  requestClosePreferencePanel,
+  shouldEmbedPreferenceInSheet,
+  wirePreferenceSheetEmbedClose
 } from './preferenceSheetEmbed.js';
 
 describe('preferenceSheetEmbed', () => {
@@ -26,6 +28,19 @@ describe('preferenceSheetEmbed', () => {
     assert.equal(shouldEmbedPreferenceInSheet('today-direction'), false);
     assert.equal(shouldEmbedPreferenceInSheet('always-on-top'), false);
     assert.ok(PREFERENCE_SHEET_EMBED_PROXIES.includes('language'));
+  });
+
+  it('account embed back closes via ft-pref-embed-close (immediate)', () => {
+    if (typeof document === 'undefined') return;
+    const panel = document.createElement('div');
+    panel.id = 'email-journey-restore-panel';
+    let closed = 0;
+    wirePreferenceSheetEmbedClose(panel, () => {
+      closed += 1;
+    });
+    requestClosePreferencePanel('account');
+    assert.equal(closed, 1);
+    panel.remove();
   });
 
   it('shows a back arrow with localized aria-label', () => {
@@ -43,6 +58,14 @@ describe('preferenceSheetEmbed', () => {
     applyPreferenceSheetBackButton(btn, 'Back to Preferences');
     assert.equal(btn.textContent, PREF_SHEET_BACK_GLYPH);
     assert.equal(btn.getAttribute('aria-label'), 'Back to Preferences');
+  });
+
+  it('embed CSS flattens presence / nebula inner panels and hides duplicate titles', () => {
+    const here = dirname(fileURLToPath(import.meta.url));
+    const src = readFileSync(join(here, 'preferenceSheetEmbed.js'), 'utf8');
+    assert.match(src, /presence-field-pref__panel/);
+    assert.match(src, /mindflow-nebula-pref__panel/);
+    assert.match(src, /co-practice-contract-panel__title/);
   });
 
   it('wide and narrow sheets skip closeMenu for embed rows', () => {

@@ -18,6 +18,7 @@ import {
   GLASS_SHADOW
 } from './glassPanelStyles.js';
 import { Z } from './zIndexLayers.js';
+import { wirePreferenceSheetEmbedClose } from '../core/preferenceSheetEmbed.js';
 
 const STYLE_ID = 'mindflow-nebula-preference-styles-v1';
 
@@ -80,6 +81,7 @@ export class MindflowNebulaPreferenceUI {
     this.panel.append(this.titleEl, this.toggleLabel, this.statusEl, this.closeBtn);
     this.root.append(this.panel);
     mountRoot.appendChild(this.root);
+    wirePreferenceSheetEmbedClose(this.root, () => this.closePanel());
 
     this._onDocPointer = (event) => {
       if (!this._expanded) return;

@@ -74,11 +74,22 @@ export function releasePreferencePanelFromSheet(panel) {
   else if (!home) document.body.appendChild(panel);
 }
 
+const PREF_EMBED_CLOSE_BUTTON =
+  'button[id$="-close"], button[data-testid$="-close"], .co-practice-contract-panel__close, .email-journey-restore-panel__close, .local-practice-data-panel__close';
+
 /**
- * Close the live panel without going through main.js.
- * @param {string} proxy
+ * Sheet embed back must hide panels immediately (no fade ghost on top of the list).
+ * @param {HTMLElement} panel
+ * @param {() => void} onClose
  * @returns {void}
  */
+export function wirePreferenceSheetEmbedClose(panel, onClose) {
+  if (!panel || typeof onClose !== 'function') return;
+  if (panel.dataset.ftPrefEmbedCloseWired === '1') return;
+  panel.dataset.ftPrefEmbedCloseWired = '1';
+  panel.addEventListener('ft-pref-embed-close', () => onClose());
+}
+
 /** Visible back control on H8 preference subpages (label stays in i18n for a11y). */
 export const PREF_SHEET_BACK_GLYPH = '←';
 
@@ -96,10 +107,12 @@ export function applyPreferenceSheetBackButton(btn, label) {
 export function requestClosePreferencePanel(proxy) {
   const panel = queryPreferenceSheetPanel(proxy);
   if (!panel) return;
-  panel.dispatchEvent(new Event('ft-pref-embed-close'));
-  const closer = panel.querySelector(
-    'button[id$="-close"], button[data-testid$="-close"], .co-practice-contract-panel__close'
+  panel.dispatchEvent(
+    new CustomEvent('ft-pref-embed-close', {
+      detail: { immediate: true, proxy }
+    })
   );
+  const closer = panel.querySelector(PREF_EMBED_CLOSE_BUTTON);
   if (closer instanceof HTMLElement) closer.click();
 }
 
@@ -170,8 +183,36 @@ export function preferenceSheetEmbedCss() {
     }
     [data-pref-sheet-embed="1"] button[id$="-close"],
     [data-pref-sheet-embed="1"] button[data-testid$="-close"],
-    [data-pref-sheet-embed="1"] .co-practice-contract-panel__close {
+    [data-pref-sheet-embed="1"] .co-practice-contract-panel__close,
+    [data-pref-sheet-embed="1"] .presence-field-pref__close,
+    [data-pref-sheet-embed="1"] .mindflow-nebula-pref__close {
       display: none !important;
+    }
+    [data-pref-sheet-embed="1"] .presence-field-pref__panel,
+    [data-pref-sheet-embed="1"] .mindflow-nebula-pref__panel {
+      position: relative !important;
+      inset: auto !important;
+      left: auto !important;
+      right: auto !important;
+      top: auto !important;
+      bottom: auto !important;
+      transform: none !important;
+      width: 100% !important;
+      max-width: none !important;
+      box-shadow: none !important;
+      border: none !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    [data-pref-sheet-embed="1"] .presence-field-pref__title,
+    [data-pref-sheet-embed="1"] .mindflow-nebula-pref__title,
+    [data-pref-sheet-embed="1"] .co-practice-contract-panel__title {
+      display: none !important;
+    }
+    body.ft-pref-sheet-embed .ft-wide-more__title,
+    body.ft-pref-sheet-embed .ft-narrow-sheet__title {
+      cursor: pointer;
     }
   `;
 }
