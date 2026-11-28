@@ -1,0 +1,29 @@
+{
+  "en": {
+    "INNER_MIRROR_THEME_CRITICIZED": "criticized, criticizing, criticism, blame, blamed, blaming, not good enough, felt dismissed, was dismissed, being dismissed",
+    "INNER_MIRROR_THEME_RUSH": "rush, rushed, rushing, hurry, hurried, hurrying, deadline, falling behind, behind schedule",
+    "INNER_MIRROR_THEME_TIRED": "tired, drained, exhausted",
+    "INNER_MIRROR_THEME_AVOID": "avoid, avoiding, avoided, put off, putting off, don't want to face",
+    "INNER_MIRROR_THEME_UNSPOKEN": "couldn't say, held back, didn't speak",
+    "INNER_MIRROR_THEME_FRICTION": "had a conflict, in conflict with, had an argument, got into an argument, friction",
+    "INNER_MIRROR_THEME_PAUSE": "need a pause, want to sit for a bit, stop a moment"
+  },
+  "zh": {
+    "INNER_MIRROR_THEME_CRITICIZED": "批评、否定、指责、不够好",
+    "INNER_MIRROR_THEME_RUSH": "赶时间、赶不上、赶工、来不及",
+    "INNER_MIRROR_THEME_TIRED": "好累、很累、太累、累死、疲惫",
+    "INNER_MIRROR_THEME_AVOID": "躲开、逃避、不想面对、拖延",
+    "INNER_MIRROR_THEME_UNSPOKEN": "说不出口、没说出口、忍住没说",
+    "INNER_MIRROR_THEME_FRICTION": "吵架、起冲突、发生冲突、争执、起摩擦、有摩擦",
+    "INNER_MIRROR_THEME_PAUSE": "想停一下、想坐一会儿、先停"
+  },
+  "ja": {
+    "INNER_MIRROR_THEME_CRITICIZED": "未使用（日本語入口は非表示）",
+    "INNER_MIRROR_THEME_RUSH": "未使用（日本語入口は非表示）",
+    "INNER_MIRROR_THEME_TIRED": "未使用（日本語入口は非表示）",
+    "INNER_MIRROR_THEME_AVOID": "未使用（日本語入口は非表示）",
+    "INNER_MIRROR_THEME_UNSPOKEN": "未使用（日本語入口は非表示）",
+    "INNER_MIRROR_THEME_FRICTION": "未使用（日本語入口は非表示）",
+    "INNER_MIRROR_THEME_PAUSE": "未使用（日本語入口は非表示）"
+  }
+}
