@@ -94,7 +94,10 @@ import {
 import { pushOverlayEscapeLayer } from '../core/overlayEscapeStack.js';
 import { Z } from './zIndexLayers.js';
 
-import { HELP_CENTER_BESIDE_GLYPH } from './helpCenterBesideGlyph.js';
+import {
+  HELP_CENTER_BESIDE_GLYPH,
+  HELP_CENTER_BESIDE_GLYPH_PX
+} from './helpCenterBesideGlyph.js';
 
 if (!customElements.get(NOTIFICATION_BADGE_TAG)) {
   customElements.define(NOTIFICATION_BADGE_TAG, NotificationBadge);
@@ -3199,8 +3202,8 @@ export class OnboardingHintsUI {
       .weekly-practice-heatmap-cluster
         .onboarding-hint-help-center
         .onboarding-hint-help__glyph {
-        width: 22px;
-        height: 22px;
+        width: ${HELP_CENTER_BESIDE_GLYPH_PX}px;
+        height: ${HELP_CENTER_BESIDE_GLYPH_PX}px;
         margin: 0;
       }
       body:has(#help-center:not([hidden])) .weekly-practice-heatmap-cluster {
