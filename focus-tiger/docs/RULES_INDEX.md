@@ -51,6 +51,7 @@ cd focus-tiger && npm run rules:doc-sync
 | `git-parallel-worktree` | 并行 Cursor 会话须用 git worktree 隔离写操作 | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-hygiene` | 闲置 worktree 只读盘点 + 口令拆除（不可逆） | `WORKFLOW.md` | 并行 Cursor 会话：必须用 git worktree 隔离写操作 |
 | `git-worktree-occupancy` | 工作树占用检测与 `.ft-session-lock`（一树一线） | `WORKFLOW.md` | 工作树占用检测与 `.ft-session-lock` |
+| `git-hub-pr-smoke-discipline` | 并行枢纽 PR 与冒烟纪律（硬闸 · N18） | `WORKFLOW.md` | 并行枢纽 PR 与冒烟纪律（硬闸 · N18） |
 | `git-feature-merge-preview` | feature/fix 合入 develop：研发自检 + 主干同步（非人工关单） | `WORKFLOW.md` | feature/fix 合入 develop：研发自检 + 主干同步 |
 | `git-develop-small-pr-run-merge` | 合入 develop：CI 绿即可合并（人工测试非合入门闩） | `WORKFLOW.md` | 合入 develop：CI 绿即可合并 |
 | `prod-worker-deploy` | 生产 Worker Redeploy 须明确「部署」口令 | `WORKFLOW.md` | 生产 Worker Redeploy |
@@ -315,6 +316,7 @@ cd focus-tiger && npm run rules:doc-sync
 |---|---|
 | 2026-11-28 | `git-feature-merge-preview` / `git-task-preflight`：用户原话检查须先在 `origin/develop` 上红再修到绿；合入口仍 CI 绿；未经用户点过的原话挡首包不挡合并。SSOT `WORKFLOW.md`。不新开 rules-authority 主题 |
 | 2026-11-24 | 产品表新增 `COMPLIANCE.md`（硬约束索引 + 测试弱化闸 + 合并前评审 prompt）。脚本 `scripts/check-test-weakening.mjs`；接线 pre-commit / `test:pr-smoke`。不进 rules-authority 机器块 |
+| 2026-11-28 | 新增 `git-hub-pr-smoke-discipline`：并行枢纽只留 1 OPEN 功能 PR、红底座不叠刀、禁止 skip 推、桌面单测注入 platform、机器块 batch merge。SSOT `WORKFLOW.md` N18；按需 `.cursor/rules/focus-tiger-hub-pr-smoke-discipline.mdc` |
 | 2026-11-21 | 新增 `git-task-preflight`：开工前 `scripts/task-preflight.sh`；git 为唯一真相；同一轮修文档；CI `task-doc-sync`。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/task-preflight.mdc` |
 | 2026-11-13 | 冒烟失败处理：先归类 + 同种类补丁上限（`ci-failure-triage`）；E2E 禁止假关 / 失败诊断 / 正式构建对齐（`testing-strategy.mdc`）；不扩大必过关卡 + 静态拦截仅建议配套（`PR_SMOKE_FAILURE_CLASSES.md`）。不新开 rules-authority 主题 |
 | 2026-11-12 | `pr-smoke-failure-classes`：超长菜单走完从 Required `test:pr-smoke` / pre-push 拿掉（改菜单路径也不再加跑）。nightly + 合入 develop 后仍跑。**已废止**：改菜单路径时 `pr-smoke` 额外一步仍算必过关 |

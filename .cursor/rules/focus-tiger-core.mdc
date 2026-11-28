@@ -74,6 +74,7 @@ alwaysApply: true
 | 队列/倾诉日历热点（功能 PR 禁止改 GLOSSARY 等） | `queue-governance-readme.md`（`queue-governance`）· `npm run queue:check` |
 | 改 z-index / overlay / 玻璃卡 / 付款入口 | `00-protected-paths.mdc`（常驻）+ `10-ui-layers.mdc`；契约 `npm run test:payment-contract` |
 | 开 PR / `gh pr close` / `gh pr edit` 认领票 / 并行会话抢同一 PR 号 / 删远程旁支 | `WORKFLOW.md`「开 PR / 关 PR 硬闸」（`RULES_INDEX` → `git-pr-open-close-gate`）；并行写仍须 `git-parallel-worktree`；删 `refs/heads` 前须 `gh pr list --head` 为空 |
+| 并行改宽屏菜单 / 偏好嵌页 / 玻璃卡、红底座叠刀、skip 推冒烟 | `WORKFLOW.md`「并行枢纽 PR 与冒烟纪律」（`RULES_INDEX` → `git-hub-pr-smoke-discipline`）；按需 `focus-tiger-hub-pr-smoke-discipline.mdc` |
 
 ## 产品红线
 
