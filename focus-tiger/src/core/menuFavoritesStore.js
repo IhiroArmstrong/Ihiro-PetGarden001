@@ -125,10 +125,13 @@ export function injectMenuFavoritesSection(entries, storage) {
   if (!itemIds.length) return entries;
   const favoriteRows = resolveMenuFavoriteEntries(entries, itemIds);
   if (!favoriteRows.length) return entries;
+  const pins = entries.filter((row) => row.pinToMenuTop);
+  const rest = entries.filter((row) => !row.pinToMenuTop);
   return [
+    ...pins,
     { kind: 'group-label', labelKey: 'MENU_GROUP_MY_FAVORITES' },
     ...favoriteRows,
-    ...entries
+    ...rest
   ];
 }
 

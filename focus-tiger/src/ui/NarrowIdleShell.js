@@ -24,7 +24,10 @@ import {
   readAlwaysOnTopEnabled,
   writeAlwaysOnTopEnabled
 } from '../core/alwaysOnTopBridge.js';
-import { paintSecondaryChromeMenuRow } from './secondaryMenuRowRender.js';
+import {
+  paintSecondaryChromeMenuRow,
+  signedInPracticeEmailFromStorage
+} from './secondaryMenuRowRender.js';
 import { attachSecondaryMenuFavoriteHeart } from './secondaryMenuFavoriteHeart.js';
 import { injectMenuFavoritesSection } from '../core/menuFavoritesStore.js';
 import {
@@ -1083,7 +1086,10 @@ export class NarrowIdleShell {
       alwaysOnTopAvailable: canUseAlwaysOnTop(),
       windowLayoutAvailable: canUseWindowLayout(),
       globalSitHotkeyAvailable: canUseGlobalSitHotkey(),
-      inputRhythmAvailable: canUseInputRhythm()
+      inputRhythmAvailable: canUseInputRhythm(),
+      signedInEmail: signedInPracticeEmailFromStorage(
+        typeof localStorage !== 'undefined' ? localStorage : null
+      )
     });
     const storage =
       typeof localStorage !== 'undefined' ? localStorage : null;

@@ -1,0 +1,17 @@
+{
+  "en": {
+    "YIN_ART_SIGNIN_HINT": "Restore with email to bring pieces you already own onto this device.",
+    "YIN_ART_SIGNIN_SUBMIT": "Restore with email",
+    "YIN_ART_SIGNIN_FAILED": "That did not restore your pieces. Nothing was marked as yours."
+  },
+  "zh": {
+    "YIN_ART_SIGNIN_HINT": "用邮箱找回已拥有的作品到这台设备。",
+    "YIN_ART_SIGNIN_SUBMIT": "用邮箱找回",
+    "YIN_ART_SIGNIN_FAILED": "没有找回成功。没有把任何一件记成已拥有。"
+  },
+  "ja": {
+    "YIN_ART_SIGNIN_HINT": "メールで確認すると、すでに所持している作品がこの端末に戻ります。",
+    "YIN_ART_SIGNIN_SUBMIT": "メールで戻す",
+    "YIN_ART_SIGNIN_FAILED": "作品を戻せませんでした。所持にはしていません。"
+  }
+}

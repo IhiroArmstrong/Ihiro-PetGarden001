@@ -698,11 +698,12 @@ export const KB_LIVE_ENTRY_ROWS = Object.freeze([
     surface: 'menu',
     proxy: 'account',
     labelKeys: Object.freeze([
+      'EMAIL_JOURNEY_MENU_SIGN_IN',
       'EMAIL_JOURNEY_MENU_LABEL',
       'ACCOUNT_MENU_PLACEHOLDER',
       'EMAIL_JOURNEY_MENU_STORE_OFF'
     ]),
-    menuPath: '⋯ → Preferences → Save or restore with email',
+    menuPath: '⋯ → Sign in',
     liveStatus: 'conditional',
     codeAnchors: Object.freeze([
       "proxy: 'account'",

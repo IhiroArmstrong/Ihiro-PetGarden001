@@ -14,7 +14,7 @@
 1. 起点就是现在停在底部控制排里的 `#ft-wide-more-btn`。五个图标在它上方浅浅展开，不新开角落，不盖住寅的脸。
 2. 悬停只显示组名。打开某一组必须点一下（或键盘回车）。
 3. 首页不加 PRO 勋章。右上 Support 五张卡仍只在 `#yin-support-fab`。
-4. **登录 / 旅程找回**：开闸时 Preferences 真入口「用邮箱保存或找回」（`idle-account-email-restore`，#1679）。首包关闸时 Web 仍是灰行。Circle 统一 Login 仍不写。商店渠道不可点。维持 [MENU_CHROME_CENSUS.md](../MENU_CHROME_CENSUS.md) §1 第 3 条。
+4. **登录 / 旅程找回**：**不进五图标扇面。** 开闸时 Sign in 只占 `⋯` **展开列表**最顶一行（`idle-account-email-restore`，T93 D6）。首包关闸 / 商店渠道隐藏该行。Circle 统一 Login 仍不写。维持 [MENU_CHROME_CENSUS.md](../MENU_CHROME_CENSUS.md) §1 第 3 条。
 5. 英文组名不改：Practice & moments、Records、Quiet gifts、You are not alone、Preferences。
 6. **静思印**：芥子须弥及以后的印，揭晓之后才出现在 Quiet gifts。揭晓前不列出、不做淡锁。门槛仍只看累计练习（[CONTEMPLATIVE_ARCHIVE.md](../CONTEMPLATIVE_ARCHIVE.md)）。
 7. 社区（Join our community）挪进 You are not alone。Choose today's direction again 与 Stay in touch 留在 Preferences。

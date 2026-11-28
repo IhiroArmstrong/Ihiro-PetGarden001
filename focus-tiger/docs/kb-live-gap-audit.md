@@ -87,7 +87,7 @@ This is an **A 类** audit artifact. Gaps listed here are **expected** until Ste
 | liveId | liveStatus | menuPath | note |
 |---|---|---|---|
 | `kb-live-language` | conditional | ⋯ → Preferences → Language | conditional / optional surface — draft after PO confirms scope |
-| `kb-live-account` | conditional | ⋯ → Preferences → Save or restore with email | conditional / optional surface — draft after PO confirms scope |
+| `kb-live-account` | conditional | ⋯ → Sign in | conditional / optional surface — draft after PO confirms scope |
 
 ### Cross-cutting approved catalog rows (no live row required)
 
