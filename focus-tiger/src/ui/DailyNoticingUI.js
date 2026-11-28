@@ -166,7 +166,11 @@ export class DailyNoticingUI {
     btn.className = `daily-noticing-card__btn daily-noticing-card__btn--${kind}`;
     btn.dataset.testid = testId;
     btn.textContent = t(labelKey);
-    btn.addEventListener('click', onClick);
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      onClick(event);
+    });
     return btn;
   }
 
@@ -235,6 +239,8 @@ export class DailyNoticingUI {
 
     this.actions.appendChild(
       this._btn('DAILY_NOTICING_CONTINUE', 'daily-noticing-continue', 'primary', () => {
+        // Original sentence: typing then Continue must not land on sit Pause.
+        input.blur();
         const text = input.value;
         const route = routeDailyNoticingAnswer({
           text,

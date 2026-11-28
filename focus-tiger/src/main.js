@@ -350,9 +350,9 @@ import { syncFocusCircleIdleObserverPeek } from './core/focusCircleIdleSchedule.
 import {
   bindFocusCircleWitnessPageHide,
   clearFocusCircleWitnessSnapshot,
-  isWitnessEligibleSession,
   peekFocusCircleWitness,
   rememberRespondedTraceId,
+  shouldOfferWitnessLeaveAfterRise,
   resetFocusCircleWitnessSessionPrompt,
   scheduleFocusCircleWitnessPeek,
   setFocusCircleWitnessBusyProbe
@@ -2605,7 +2605,7 @@ async function init() {
   }
 
   function maybeOfferWitnessLeave(elapsedSeconds) {
-    if (!isWitnessEligibleSession(elapsedSeconds)) return;
+    if (!shouldOfferWitnessLeaveAfterRise(elapsedSeconds)) return;
     focusCircleWitnessLeaveUI.scheduleLeaveOffer();
   }
 
@@ -3453,6 +3453,7 @@ async function init() {
       closeGrowthOverlayCards({ except: 'art-collection' });
       artCollectionPanelUI.reveal();
     },
+    onGiftArtOpen: (pieceId) => { pendingGiftArtPieceId = pieceId || pendingGiftArtPieceId; giftArtPreviewOnly = true; closeGrowthOverlayCards({ except: 'co-practice-gift-art' }); coPracticeGiftArtCardUI.open({ pieceId }); },
     onMessage: (message) =>
       mindfulToast.show(message, { placement: 'center' }),
     getMemorialRows: () => {
@@ -3923,11 +3924,10 @@ async function init() {
       const result = mod.runCoPracticeGiftArtJoinFourScenes();
       return { ...result, allPass: mod.fourScenesAllPass(result) };
     };
-    window.__coPracticeGiftArtPreviewCard = (pieceId = 'mountain-boat-tray') => {
-      giftArtPreviewOnly = true;
-      coPracticeGiftArtCardUI.open({ pieceId });
-      return { pieceId, wroteGrant: false };
-    };
+    window.__coPracticeGiftArtPreviewCard = (pieceId = 'mountain-boat-tray') => (
+      giftArtPreviewOnly = true,
+      coPracticeGiftArtCardUI.open({ pieceId }),
+      { pieceId, wroteGrant: false });
   }
 
   let hasEndedAnySession = false;
