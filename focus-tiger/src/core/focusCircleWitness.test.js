@@ -19,6 +19,8 @@ import {
   rememberRespondedTraceId,
   resetFocusCircleWitnessForTests,
   setFocusCircleWitnessBusyProbe,
+  shouldDismissWitnessLeavePickerOnSkip,
+  shouldOfferWitnessLeaveAfterRise,
   witnessSubmitErrorLocaleKey
 } from './focusCircleWitness.js';
 
@@ -266,6 +268,39 @@ describe('focusCircleWitness', () => {
     assert.equal(
       witnessSubmitErrorLocaleKey('network'),
       'FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR'
+    );
+  });
+
+  it('dismisses leave picker when cloud path is skipped on device', () => {
+    assert.equal(shouldDismissWitnessLeavePickerOnSkip('cloud_api_unconfigured'), true);
+    assert.equal(shouldDismissWitnessLeavePickerOnSkip('no_membership'), true);
+    assert.equal(shouldDismissWitnessLeavePickerOnSkip('not_member'), false);
+    assert.equal(shouldDismissWitnessLeavePickerOnSkip('network'), false);
+  });
+
+  it('offers rise leave strip only when witness client is enabled', () => {
+    const storage = memoryStorage({
+      [FOCUS_CIRCLE_STORAGE_KEY]: JSON.stringify(MEMBERSHIP)
+    });
+    assert.equal(shouldOfferWitnessLeaveAfterRise(59, { storage }), false);
+    assert.equal(
+      shouldOfferWitnessLeaveAfterRise(60, { storage, cloudBaseUrl: '' }),
+      false
+    );
+    assert.equal(
+      shouldOfferWitnessLeaveAfterRise(60, {
+        storage,
+        search: '?focusCircleWitness=0',
+        cloudBaseUrl: 'https://example.test'
+      }),
+      false
+    );
+    assert.equal(
+      shouldOfferWitnessLeaveAfterRise(60, {
+        storage,
+        cloudBaseUrl: 'https://example.test'
+      }),
+      true
     );
   });
 

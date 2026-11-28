@@ -653,7 +653,7 @@ export const OVERLAY_SOURCE_CONTRACTS = Object.freeze([
     kind: OVERLAY_SLOT_KIND.HINT,
     tier: 27,
     readers: 'Focus Circle Gentle Witness respond phrase picker',
-    blocksIdleYinTap: false,
+    blocksIdleYinTap: true,
     blocksEnterSleep: false,
     snapshotField: 'focusCircleWitnessRespondOpen'
   }),

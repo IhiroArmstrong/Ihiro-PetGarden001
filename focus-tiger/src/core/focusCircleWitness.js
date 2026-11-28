@@ -260,6 +260,21 @@ export function witnessSubmitErrorLocaleKey(reason) {
   return key || 'FOCUS_CIRCLE_WITNESS_SUBMIT_ERROR';
 }
 
+/** Device/cloud not ready — no server path; close picker after user chose a phrase. */
+export const WITNESS_LEAVE_PICKER_DISMISS_SKIP_REASONS = Object.freeze(
+  new Set(['cloud_api_unconfigured', 'no_membership'])
+);
+
+/**
+ * @param {unknown} reason
+ * @returns {boolean}
+ */
+export function shouldDismissWitnessLeavePickerOnSkip(reason) {
+  return WITNESS_LEAVE_PICKER_DISMISS_SKIP_REASONS.has(
+    typeof reason === 'string' ? reason : ''
+  );
+}
+
 /**
  * @param {unknown} err
  * @returns {string}
@@ -498,6 +513,19 @@ export function startFocusCircleWitnessIdleObserverPeek(opts = {}) {
 export function isWitnessEligibleSession(elapsedSeconds) {
   const n = Number(elapsedSeconds);
   return Number.isFinite(n) && n >= FOCUS_CIRCLE_WITNESS_MIN_SESSION_SECONDS;
+}
+
+/**
+ * @param {number} elapsedSeconds
+ * @param {{ search?: string, storage?: Storage | null, cloudBaseUrl?: string }} [opts]
+ */
+export function shouldOfferWitnessLeaveAfterRise(elapsedSeconds, opts = {}) {
+  if (!isWitnessEligibleSession(elapsedSeconds)) return false;
+  return isFocusCircleWitnessClientEnabled({
+    search: opts.search ?? globalThis.location?.search ?? '',
+    storage: opts.storage ?? globalThis.localStorage ?? null,
+    cloudBaseUrl: opts.cloudBaseUrl
+  });
 }
 
 export function clearFocusCircleWitnessSnapshot() {
