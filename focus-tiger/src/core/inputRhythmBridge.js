@@ -44,12 +44,12 @@ export async function writeInputRhythmEnabled(enabled, globalObj = globalThis) {
     return { enabled: false, saved: false, snapshot: await readInputRhythmSnapshot(globalObj) };
   }
   try {
-    const snapshot = await getDesktopShellBridge(globalObj).setInputRhythmEnabled(
-      Boolean(enabled)
-    );
+    const wantOn = Boolean(enabled);
+    const snapshot = await getDesktopShellBridge(globalObj).setInputRhythmEnabled(wantOn);
+    const persisted = wantOn ? snapshot?.enabled === true : snapshot?.enabled !== true;
     return {
       enabled: snapshot?.enabled === true,
-      saved: true,
+      saved: persisted,
       snapshot
     };
   } catch {
