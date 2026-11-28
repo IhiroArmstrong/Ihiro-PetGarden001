@@ -13,7 +13,8 @@ alwaysApply: true
 **git / GitHub 的合并记录是任务状态的唯一真相。**
 治理文档（`focus-tiger/docs/GLOSSARY.md`、`SCHEDULING_GLOSSARY.md`、`TASKS.md`、`TEST_TRACKER.md`、队列文档、口令表等）里的
 「待做 / 立即做 / Brief 已点头 / 进行中」只是**可能已过期的缓存**。
-文档与 git 冲突时，一律以 git 为准。**禁止仅凭文档里的「待做」状态就开始实现。**
+文档与 git 冲突时，一律以 git 为准。**禁止仅凭文档里的「待做」状态就开始实现。**  
+用户原话是否做完以 `ISSUE_LEDGER` / `issue-entries/` 为准，不以「已有合并 PR」为准（条文：`WORKFLOW.md`「用户原话检查：先红后绿」；账本门禁 `.cursor/rules/focus-tiger-issue-ledger.mdc`，`RULES_INDEX` → `issue-ledger`）。
 
 ## 1. 触发条件
 用户消息或文档口令中出现任务 ID（`T\d+`，如 T73），并伴随任一意图：

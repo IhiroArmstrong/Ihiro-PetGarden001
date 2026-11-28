@@ -313,6 +313,7 @@ cd focus-tiger && npm run rules:doc-sync
 
 | 日期 | 说明 |
 |---|---|
+| 2026-11-28 | `git-feature-merge-preview` / `git-task-preflight`：用户原话检查须先在 `origin/develop` 上红再修到绿；合入口仍 CI 绿；未经用户点过的原话挡首包不挡合并。SSOT `WORKFLOW.md`。不新开 rules-authority 主题 |
 | 2026-11-24 | 产品表新增 `COMPLIANCE.md`（硬约束索引 + 测试弱化闸 + 合并前评审 prompt）。脚本 `scripts/check-test-weakening.mjs`；接线 pre-commit / `test:pr-smoke`。不进 rules-authority 机器块 |
 | 2026-11-21 | 新增 `git-task-preflight`：开工前 `scripts/task-preflight.sh`；git 为唯一真相；同一轮修文档；CI `task-doc-sync`。SSOT `WORKFLOW.md`；常驻 `.cursor/rules/task-preflight.mdc` |
 | 2026-11-13 | 冒烟失败处理：先归类 + 同种类补丁上限（`ci-failure-triage`）；E2E 禁止假关 / 失败诊断 / 正式构建对齐（`testing-strategy.mdc`）；不扩大必过关卡 + 静态拦截仅建议配套（`PR_SMOKE_FAILURE_CLASSES.md`）。不新开 rules-authority 主题 |
