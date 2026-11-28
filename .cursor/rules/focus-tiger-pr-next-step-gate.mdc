@@ -14,7 +14,8 @@ alwaysApply: true
 
 用 `gh pr list --state all`（OPEN **和** MERGED 都查）。**不论是否已合进 develop**：只要同切片 **已有 PR 且带实质实现 commit**，即视为 **开发可能已完成**，**禁止**当未开工重实现。
 
-合没合 **不是**「这刀做没做完」的门槛，只回答第二问。
+合没合 **不是**「这刀做没做完」的门槛，只回答第二问。  
+用户**原话**是否做完另读 `ISSUE_LEDGER`：已有 PR 覆盖窄改法 **≠** 原话已完成（`WORKFLOW.md`「用户原话检查：先红后绿」；`.cursor/rules/focus-tiger-issue-ledger.mdc`，`issue-ledger`）。
 
 ## 第二问（合没合）：用户下一步做什么？
 

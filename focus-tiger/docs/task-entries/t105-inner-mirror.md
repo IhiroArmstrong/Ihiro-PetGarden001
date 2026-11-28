@@ -1,8 +1,8 @@
 ---
 id: t105-inner-mirror
 kind: feature
-status: 立即做 · P1 · Brief 已点头 · 刀 1 旁支已写 src · 留下按钮默认关
-updated: 2026-11-27
+status: 历史指针 · 实现改号 T109 · 刀 1 已合 #1919
+updated: 2026-11-28
 ---
 
-T105 Inner Mirror / 内在镜子。代号不改。Brief 2026-11-26 点头。§4 词表精度见 docs PR。刀 1：留下 / 忘掉 / 纠正、危机先于计数、真删六处、挂载开关默认关。12/8 不因本项移动。12/4 未绿或冻结后验收转红则首包不带留下按钮。周回看走更新。不读 T106。SSOT [`INNER_MIRROR.md`](../INNER_MIRROR.md)。
+历史条目。Inner Mirror 运行时治理号是 **T109**。刀 1 已合 [#1919](https://github.com/IhiroArmstrong/Ihiro-PetGarden001/pull/1919)（标题仍写 T105）。现行进度见 [`t109-inner-mirror.md`](./t109-inner-mirror.md)。**T105** 现行含义是四层对照图 [`t105-personal-growth-engine.md`](./t105-personal-growth-engine.md)。
